@@ -1,0 +1,1 @@
+{"version":3,"file":"VisCamera.d.ts","sourceRoot":"","sources":["../../../src/visObject/visCamera/VisCamera.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,OAAO,CAAC;AAC/B,OAAO,EAAE,WAAW,EAAE,MAAM,cAAc,CAAC;AAE3C,MAAM,WAAW,kBAAkB;IACjC,OAAO,CAAE,KAAK,EAAE,MAAM,EAAE,MAAM,EAAE,MAAM,GAAG,IAAI,CAAA;CAC9C;AAED,oBAAY,SAAS,GAAG,MAAM,GAAG,kBAAkB,GAAG,WAAW,CAAA"}
