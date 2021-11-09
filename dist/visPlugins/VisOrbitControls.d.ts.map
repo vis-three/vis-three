@@ -1,1 +1,0 @@
-{"version":3,"file":"VisOrbitControls.d.ts","sourceRoot":"","sources":["../../src/visPlugins/VisOrbitControls.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,2CAA2C,CAAA;AACzE,OAAO,EAAE,SAAS,EAAE,MAAM,kCAAkC,CAAA;AAG5D,qBAAa,gBAAiB,SAAQ,aAAa;gBACpC,MAAM,EAAE,SAAS,EAAE,UAAU,CAAC,EAAE,WAAW;IAUxD,SAAS,CAAE,MAAM,EAAE,SAAS,GAAG,IAAI;CAKpC"}

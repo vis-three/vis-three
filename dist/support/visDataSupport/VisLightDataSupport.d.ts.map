@@ -1,1 +1,0 @@
-{"version":3,"file":"VisLightDataSupport.d.ts","sourceRoot":"","sources":["../../../src/support/visDataSupport/VisLightDataSupport.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,gBAAgB,EAAE,qBAAqB,EAAE,MAAM,oCAAoC,CAAC;AAE7F,OAAO,EAAE,cAAc,EAAE,MAAM,kBAAkB,CAAC;AAElD,qBAAa,mBAAoB,SAAQ,cAAc,CAAC,qBAAqB,EAAE,gBAAgB,CAAC;gBACjF,IAAI,EAAE,qBAAqB;CAGzC"}

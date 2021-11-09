@@ -1,1 +1,0 @@
-{"version":3,"file":"VisEventDispatcher.d.ts","sourceRoot":"","sources":["../../src/visFix/VisEventDispatcher.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,SAAS,EAAE,MAAM,OAAO,CAAC;AAGnD,qBAAa,kBAAkB,CAAC,CAAC,SAAS,SAAS,GAAG,KAAK,CAAE,SAAQ,eAAe,CAAC,CAAC,CAAC;IAErF,UAAU,CAAC,EAAE,GAAG,CAAA;IAEhB,aAAa,CAAG,KAAK,EAAE,CAAC,GAAI,IAAI;CAgCjC"}

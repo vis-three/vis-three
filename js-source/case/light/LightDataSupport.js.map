@@ -1,0 +1,1 @@
+{"version":3,"file":"LightDataSupport.js","sourceRoot":"","sources":["../../../src/case/light/LightDataSupport.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,WAAW,EAAE,MAAM,8BAA8B,CAAC;AAE3D,OAAO,EAAE,SAAS,EAAE,MAAM,aAAa,CAAC;AAExC,MAAM,OAAO,gBAAiB,SAAQ,WAA+C;IACnF,YAAa,IAAyB;QACpC,KAAK,CAAC,SAAS,EAAE,IAAI,CAAC,CAAA;IACxB,CAAC;CACF"}
