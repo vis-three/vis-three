@@ -1,6 +1,6 @@
-import { Vector2Config, Vector3Config, SymbolConfig } from "./CommonConfig"
+import { Vector2Config, Vector3Config, SymbolConfig } from "../common/CommonConfig"
 
-export interface Object3DConfig extends SymbolConfig {
+export interface ObjectConfig extends SymbolConfig {
   type: string
   castShadow: boolean
   receiveShadow: boolean
@@ -10,7 +10,7 @@ export interface Object3DConfig extends SymbolConfig {
   scale: Vector3Config
 }
 
-export const getObject3DConfig = (): Object3DConfig => {
+export const getObjectConfig = (): ObjectConfig => {
   return {
     vid: '',
     type: 'Object3D',

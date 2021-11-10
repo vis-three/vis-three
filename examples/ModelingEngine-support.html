@@ -13,6 +13,16 @@
     width: 100%;
     height: 100%;
   }
+
+  .operate-box {
+    position: fixed;
+    color: white;
+    top: 20%;
+    left: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 </style>
 
 <body>
@@ -27,47 +37,54 @@
     Vue.createApp({
       template: `
       <div
-        style="position: fixed; color: white;top: 0;
-        "v-for="(item, index) in configMap"
+        class="operate-box"
+        v-for="(item, index) in configMap"
         :key="index">
         <h1  v-text="item.position.y"></h1>
-        <button @click="addPositionY(item)">y add</button>
+        <button @click="addPositionY(item)">light position y add 5</button>
       </div>
       `,
       setup () {
-
+        // 初始配置数据
         const lightMap = {}
         const lightConfig = Vis.getPointLightConfig()
         lightConfig.vid = getUUid()
-        lightConfig.position = {
-          x: 20,
-          y: 0,
-          z: 20
-        }
-        lightConfig.distance = 30
+        lightConfig.position.x = 10
         lightMap[lightConfig.vid] = lightConfig
 
         const lightDataSupport = new Vis.LightDataSupport(lightMap)
 
+        const geometryMap = {}
+        const boxGeometryConfig = Vis.getBoxGeometryConfig()
+        boxGeometryConfig.vid = getUUid()
+        geometryMap[boxGeometryConfig.vid] = boxGeometryConfig
+
+        const geometryDataSupport = new Vis.GeometryDataSupport(geometryMap)
+
+        const modelMap = {}
+        const modelConfig = Vis.getModelConfig()
+        modelConfig.vid = getUUid()
+        modelConfig.geometry = boxGeometryConfig.vid
+        modelMap[modelConfig.vid] = modelConfig
+
+        const modelDataSupport = new Vis.ModelDataSupport(modelMap)
+
         const engine = new Vis.ModelingEngineSupport({
           dom: document.getElementById('app'),
-          lightDataSupport: lightDataSupport
+          lightDataSupport,
+          modelDataSupport,
+          geometryDataSupport,
         })
         engine.render()
         
-        const box = new THREE.Mesh(
-          new THREE.BoxBufferGeometry(10, 10, 10),
-          new THREE.MeshStandardMaterial({color: 'red'})
-        )
-        engine.getScene().add(box)
-        
+        console.log(engine.getScene())
 
         const addPositionY = function(item)  {
           item.position.y += 5
         }
 
         return {
-          configMap: Vue.reactive(lightMap),
+          configMap: Vue.reactive(lightDataSupport.getData()),
           addPositionY
         }
       }

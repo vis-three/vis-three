@@ -1,7 +1,7 @@
 import { PointLight, SpotLight } from "three";
-import { Object3DConfig, getObject3DConfig } from "../common/ObjectConfig";
+import { ObjectConfig, getObjectConfig } from "../object/ObjectConfig";
 
-export interface LightConifg extends Object3DConfig {
+export interface LightConifg extends ObjectConfig {
   color: string,
   intensity: number
 }
@@ -20,7 +20,7 @@ export interface SpotLightConfig extends LightConifg {
 }
 
 export const getLightConfig = function (): LightConifg {
-  return Object.assign(getObject3DConfig(), {
+  return Object.assign(getObjectConfig(), {
     type: 'Light',
     color: 'rgb(255, 255, 255)',
     intensity: 1
