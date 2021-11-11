@@ -221,7 +221,7 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
     renderManager.addEventListener('render', (event) => {
       const e = event as RenderEvent
       composer.render(e.delta)
-    })
+    })  
 
     this.renderer = renderer
     this.orbitControls = orbitControls
