@@ -1,8 +1,8 @@
-import { Box3, BoxBufferGeometry, BufferGeometry, Euler, Matrix4, Quaternion, Vector3 } from "three";
+import { Box3, BoxBufferGeometry, BufferGeometry, Euler, Matrix4, Quaternion, SphereBufferGeometry, Vector3 } from "three";
 import { validate } from "uuid";
 import { Compiler, CompilerTarget } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
-import { AnchorConfig, BoxGeometryConfig, GeometryAllType } from "./GeometryConfig";
+import { AnchorConfig, BoxGeometryConfig, GeometryAllType, SphereGeometryConfig } from "./GeometryConfig";
 
 export interface GeometryCompilerTarget extends CompilerTarget {
   [key: string]: GeometryAllType
@@ -38,6 +38,7 @@ export class GeometryCompiler extends Compiler {
   private target: GeometryCompilerTarget
   private map: Map<SymbolConfig['vid'], BufferGeometry>
   private constructMap: Map<string, () => BufferGeometry>
+  private resourceMap: Map<string, unknown>
 
   constructor (parameters: GeometryCompilerParameters) {
     super()
@@ -45,20 +46,37 @@ export class GeometryCompiler extends Compiler {
     this.map = new Map()
 
     const constructMap = new Map()
+
     constructMap.set('BoxBufferGeometry', (config: BoxGeometryConfig) => {
-      const geometry = new BoxBufferGeometry(
+      return GeometryCompiler.transfromAnchor(new BoxBufferGeometry(
         config.width,
         config.height,
         config.depth,
         config.widthSegments,
         config.heightSegments,
         config.depthSegments
-      )
-      return GeometryCompiler.transfromAnchor(geometry, config.anchor)
+      ), config.anchor)
+    })
+
+    constructMap.set('SphereBufferGeometry', (config: SphereGeometryConfig) => {
+      return GeometryCompiler.transfromAnchor(new SphereBufferGeometry(
+        config.radius,
+        config.widthSegments,
+        config.heightSegments,
+        config.phiStart,
+        config.phiLength,
+        config.thetaStart,
+        config.thetaLength
+      ), config.anchor)
     })
 
     this.constructMap = constructMap
-  
+    this.resourceMap = new Map()
+  }
+
+  linkRescourceMap (map: Map<string, unknown>): this {
+    this.resourceMap = map
+    return this
   }
 
   getMap (): Map<SymbolConfig['vid'], BufferGeometry> {

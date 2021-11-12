@@ -1,4 +1,6 @@
 import { ModelingEngine } from "../../main";
+import { LoadedEvent, LoaderManager, LoaderManagerEventType } from "../../manager/LoaderManager";
+import { ResourceManager } from "../../manager/ResourceManager";
 import { GeometryCompiler } from "../geometry/GeometryCompiler";
 import { GeometryDataSupport } from "../geometry/GeometryDataSupport";
 import { LightCompiler } from "../light/LightCompiler";
@@ -10,7 +12,8 @@ export interface ModelingEngineSupportParametets {
   dom?: HTMLElement
   lightDataSupport: LightDataSupport,
   geometryDataSupport: GeometryDataSupport,
-  modelDataSupport: ModelDataSupport
+  modelDataSupport: ModelDataSupport,
+  resourceManager: ResourceManager
 }
 
 export class ModelingEngineSupport extends ModelingEngine {
@@ -21,6 +24,8 @@ export class ModelingEngineSupport extends ModelingEngine {
 
   constructor (parameters: ModelingEngineSupportParametets) {
     super(parameters.dom)
+
+    
 
     const lightCompiler = new LightCompiler({
       scene: this.scene,
@@ -36,22 +41,22 @@ export class ModelingEngineSupport extends ModelingEngine {
       target: parameters.modelDataSupport.getData()
     })
 
+    const resourceManager = parameters.resourceManager
+
     // 建立编译器链接
     modelCompiler.linkGeometryMap(geometryCompiler.getMap())
+
+    geometryCompiler.linkRescourceMap(resourceManager.getMappingResourceMap())
 
     // 添加通知
     parameters.lightDataSupport.addCompiler(lightCompiler)
     parameters.geometryDataSupport.addCompiler(geometryCompiler)
     parameters.modelDataSupport.addCompiler(modelCompiler)
 
-
-
     this.lightCompiler = lightCompiler
     this.modelCompiler = modelCompiler
     this.geometryCompiler = geometryCompiler
   }
 
-  load () {}
-
-  export () {}
+  toJSON () {}
 }

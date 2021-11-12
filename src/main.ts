@@ -11,9 +11,17 @@ import { getModelConfig } from "./case/model/ModelConfig";
 import { GeometryDataSupport } from "./case/geometry/GeometryDataSupport";
 import { getBoxGeometryConfig } from "./case/geometry/GeometryConfig";
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
-
+import { LoaderManager, LoaderManagerEventType } from "./manager/LoaderManager";
+import { ResourceManager } from "./manager/ResourceManager";
 
 export {
+  // menu
+  LoaderManagerEventType,
+
+  // manager
+  LoaderManager,
+  ResourceManager,
+
   // engin
   ModelingEngine,
   ModelingEngineSupport,

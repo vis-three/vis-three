@@ -21,14 +21,14 @@ export enum VisResourceManagerEventType {
 export class ResourceManager extends EventDispatcher<MappedEvent> {
 
   private mappingResourceMap: Map<string, unknown> = new Map() // mappingUrl -> source
-  private configMappingMap: Map<string, unknown> = new Map() // url -> config -> mappingUrl
+  private configMappingMap: Map<string, unknown> = new Map() // url -> mappingUrl
 
   constructor () {
     super()
   }
 
   mappingResource (resourceMap: Map<string, unknown>): this {
-
+    console.log('mappingResource')
     const mappingResourceMap = this.mappingResourceMap
     const configMappingMap = this.configMappingMap
 
@@ -36,7 +36,7 @@ export class ResourceManager extends EventDispatcher<MappedEvent> {
     const recursionMappingObject = function (url: string, object: Object3D): ModelMappingUrlConfig {
       // TODO: 区分灯光相机等物体
       const config: ModelMappingUrlConfig = {
-        type: `Vis${object.type}`
+        type: `${object.type}`
       }
 
       let mappingUrl = ''
@@ -69,6 +69,7 @@ export class ResourceManager extends EventDispatcher<MappedEvent> {
 
       // 映射子项配置
       if (object.children.length) {
+        config.children = []
         object.children.forEach((child, i, arr) => {
           mappingUrl = `${url}.children.${i}`
           config.children![i] = recursionMappingObject(mappingUrl, child)
@@ -95,12 +96,16 @@ export class ResourceManager extends EventDispatcher<MappedEvent> {
     return this
   }
 
-// TODO: 枚举贴图类型，几何类型，材质类型
+  getMappingResourceMap (): Map<string, unknown> {
+    return this.mappingResourceMap
+  }
+
+  // TODO: 枚举贴图类型，几何类型，材质类型
   getResource (mappingUrl: string): unknown {
     return this.mappingResourceMap.get(mappingUrl)
   }
 
-// TODO: 枚举贴图类型，几何类型，材质类型
+  // TODO: 枚举贴图类型，几何类型，材质类型
   getConfig (url: string): unknown {
     return this.configMappingMap.get(url)
   }

@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./css/common.css">
-  <title>ModelingEngine-support</title>
+  <title>Vue3-support</title>
 </head>
 
 <style>
@@ -34,6 +34,25 @@
     import * as Vis from '../dist/Vis.es.js' 
     import * as THREE from 'three'
 
+    // 初始配置数据
+    const lightMap = {}
+    const lightConfig = Vis.getPointLightConfig()
+    lightConfig.vid = getUUid()
+    lightConfig.position.x = 10
+    lightMap[lightConfig.vid] = lightConfig
+
+    const geometryMap = {}
+    const boxGeometryConfig = Vis.getBoxGeometryConfig()
+    boxGeometryConfig.vid = getUUid()
+    geometryMap[boxGeometryConfig.vid] = boxGeometryConfig
+
+    const modelMap = {}
+    const modelConfig = Vis.getModelConfig()
+    modelConfig.vid = getUUid()
+    modelConfig.geometry = boxGeometryConfig.vid
+    modelMap[modelConfig.vid] = modelConfig
+
+
     Vue.createApp({
       template: `
       <div
@@ -45,28 +64,9 @@
       </div>
       `,
       setup () {
-        // 初始配置数据
-        const lightMap = {}
-        const lightConfig = Vis.getPointLightConfig()
-        lightConfig.vid = getUUid()
-        lightConfig.position.x = 10
-        lightMap[lightConfig.vid] = lightConfig
 
         const lightDataSupport = new Vis.LightDataSupport(lightMap)
-
-        const geometryMap = {}
-        const boxGeometryConfig = Vis.getBoxGeometryConfig()
-        boxGeometryConfig.vid = getUUid()
-        geometryMap[boxGeometryConfig.vid] = boxGeometryConfig
-
         const geometryDataSupport = new Vis.GeometryDataSupport(geometryMap)
-
-        const modelMap = {}
-        const modelConfig = Vis.getModelConfig()
-        modelConfig.vid = getUUid()
-        modelConfig.geometry = boxGeometryConfig.vid
-        modelMap[modelConfig.vid] = modelConfig
-
         const modelDataSupport = new Vis.ModelDataSupport(modelMap)
 
         const engine = new Vis.ModelingEngineSupport({
@@ -74,10 +74,10 @@
           lightDataSupport,
           modelDataSupport,
           geometryDataSupport,
+          resourceManager: new Vis.ResourceManager()
         })
         engine.render()
-        
-        console.log(engine.getScene())
+            
 
         const addPositionY = function(item)  {
           item.position.y += 5

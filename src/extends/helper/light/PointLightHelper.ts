@@ -35,7 +35,7 @@ export class PointLightHelper extends LineSegments{
     ]
     this.geometry.setAttribute('position', new Float32BufferAttribute(points, 3))
     this.material = getHelperLineMaterial()
-
+    this.geometry.boundingSphere
     // 形状
     const color = new Color().copy(pointLight.color).multiplyScalar(pointLight.intensity)
     const shape = new Mesh(

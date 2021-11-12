@@ -110,16 +110,10 @@ export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | 
         this.loadError += 1
         continue
       }
-
-      this.dispatchEvent({
-        type: 'loading',
-        loadTotal: this.loadTotal,
-        loadSuccess: this.loadSuccess,
-        loadError: this.loadError
-      })
+      
 
       loader.loadAsync(url, (event: ProgressEvent) => {
-        detail.progress = Number((event.total / event.loaded).toFixed(2))
+        detail.progress = Number((event.loaded / event.total).toFixed(2))
         this.dispatchEvent({
           type: 'detailLoading',
           detail
@@ -127,11 +121,17 @@ export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | 
       }).then(res => {
         detail.progress = 1
         this.loadSuccess += 1
+        this.resourceMap.set(url, res)
         this.dispatchEvent({
           type: 'detailLoaded',
           detail
         })
-        this.resourceMap.set(url, res)
+        this.dispatchEvent({
+          type: 'loading',
+          loadTotal: this.loadTotal,
+          loadSuccess: this.loadSuccess,
+          loadError: this.loadError
+        })
         this.checkLoaded()
       }).catch (err => {
         detail.error = true
@@ -141,8 +141,16 @@ export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | 
           type: 'detailLoaded',
           detail
         })
+        this.dispatchEvent({
+          type: 'loading',
+          loadTotal: this.loadTotal,
+          loadSuccess: this.loadSuccess,
+          loadError: this.loadError
+        })
         this.checkLoaded()
       })
+
+
     }
 
     return this

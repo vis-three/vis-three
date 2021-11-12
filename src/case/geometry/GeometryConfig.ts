@@ -20,6 +20,16 @@ export interface BoxGeometryConfig extends GeometryConfig {
   depthSegments: number
 }
 
+export interface SphereGeometryConfig extends GeometryConfig {
+  radius: number
+  widthSegments: number
+  heightSegments: number
+  phiStart: number
+  phiLength: number
+  thetaStart: number
+  thetaLength: number
+}
+
 export type GeometryAllType = BoxGeometryConfig
 
 export const getGeometryConfig = function (): GeometryConfig {
@@ -54,5 +64,17 @@ export const getBoxGeometryConfig  = function (): BoxGeometryConfig {
     widthSegments: 1,
     heightSegments: 1,
     depthSegments: 1
+  })
+}
+
+export const getSphereGeometryConfig = function (): SphereGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    radius: 1,
+    widthSegments: 32,
+    heightSegments: 32,
+    phiStart: 0,
+    phiLength: Math.PI * 2,
+    thetaStart: 0,
+    thetaLength: Math.PI
   })
 }
