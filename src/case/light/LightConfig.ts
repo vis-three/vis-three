@@ -6,6 +6,9 @@ export interface LightConifg extends ObjectConfig {
   intensity: number
 }
 
+export interface AmbientLightConfig extends LightConifg {
+
+}
 
 export interface PointLightConfig extends LightConifg {
   distance: number
@@ -22,6 +25,14 @@ export interface SpotLightConfig extends LightConifg {
 export const getLightConfig = function (): LightConifg {
   return Object.assign(getObjectConfig(), {
     type: 'Light',
+    color: 'rgb(255, 255, 255)',
+    intensity: 1
+  })
+}
+
+export const getAmbientLightConfig = function (): AmbientLightConfig {
+  return Object.assign(getObjectConfig(), {
+    type: 'AmbientLight',
     color: 'rgb(255, 255, 255)',
     intensity: 1
   })

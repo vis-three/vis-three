@@ -30,6 +30,10 @@ export interface SphereGeometryConfig extends GeometryConfig {
   thetaLength: number
 }
 
+export interface LoadGeometryConfig extends GeometryConfig {
+  url: string
+}
+
 export type GeometryAllType = BoxGeometryConfig
 
 export const getGeometryConfig = function (): GeometryConfig {
@@ -76,5 +80,12 @@ export const getSphereGeometryConfig = function (): SphereGeometryConfig {
     phiLength: Math.PI * 2,
     thetaStart: 0,
     thetaLength: Math.PI
+  })
+}
+
+export const getLoadGeometryConfig = function (): LoadGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    type: 'LoadBufferGeometry',
+    url: ''
   })
 }

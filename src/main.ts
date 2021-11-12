@@ -2,14 +2,14 @@ import { ModelingEngine } from "./engine/ModelingEngine/ModelingEngine";
 
 import { LightCompiler } from "./case/light/LightCompiler";
 import { LightDataSupport } from "./case/light/LightDataSupport";
-import { getPointLightConfig } from "./case/light/LightConfig";
+import { getAmbientLightConfig, getPointLightConfig } from "./case/light/LightConfig";
 
 import { ModelDataSupport } from "./case/model/ModelDataSupport";
 
 import { ModelingEngineSupport } from "./case/engine/ModelingEngineSupport";
 import { getModelConfig } from "./case/model/ModelConfig";
 import { GeometryDataSupport } from "./case/geometry/GeometryDataSupport";
-import { getBoxGeometryConfig } from "./case/geometry/GeometryConfig";
+import { getBoxGeometryConfig, getLoadGeometryConfig } from "./case/geometry/GeometryConfig";
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
 import { LoaderManager, LoaderManagerEventType } from "./manager/LoaderManager";
 import { ResourceManager, ResourceManagerEventType } from "./manager/ResourceManager";
@@ -38,5 +38,7 @@ export {
   // config
   getPointLightConfig,
   getModelConfig,
-  getBoxGeometryConfig
+  getBoxGeometryConfig,
+  getLoadGeometryConfig,
+  getAmbientLightConfig
 }

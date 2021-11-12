@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/common.css">
+  <title>load-resource-support</title>
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+  #exportConfig {
+    position: fixed;
+    color: white;
+    top: 0%;
+    left: 0%;
+    background: black;
+    max-width: 100%;
+    max-height: 100%;
+    overflow: auto;
+  }
+</style>
+
+<body>
+  <div class="exportconfig" id="exportConfig"></div>
+  <div id="app"></div>
+
+  <script type="module">
+    import { v4 as getUUid} from 'uuid'
+    import * as Vis from '../dist/Vis.es.js' 
+    import * as THREE from 'three'
+    import assets from '/examples/public/assetsConfig/configLoadResource.json'
+
+    const loaderManager = new Vis.LoaderManager()
+    const resourceManager = new Vis.ResourceManager()
+
+    loaderManager.addEventListener(Vis.LoaderManagerEventType.LOADED, e => {
+      resourceManager.mappingResource(e.resourceMap)
+    })
+
+    const lightConfig = {}
+    const ambientLightConfig =  Vis.getAmbientLightConfig()
+    ambientLightConfig.vid = getUUid()
+    lightConfig[ambientLightConfig.vid] = ambientLightConfig
+
+    const lightDataSupport = new Vis.LightDataSupport(lightConfig)
+    const geometryDataSupport = new Vis.GeometryDataSupport({})
+    const modelDataSupport = new Vis.ModelDataSupport({})
+
+    const engine = new Vis.ModelingEngineSupport({
+      dom: document.getElementById('app'),
+      lightDataSupport,
+      modelDataSupport,
+      geometryDataSupport,
+      resourceManager
+    })
+    
+    loaderManager.load(assets)
+
+    const geometryData = geometryDataSupport.getData()
+    const modelData = modelDataSupport.getData()
+    
+    let x = -10
+    let config = {}
+    resourceManager.addEventListener(Vis.ResourceManagerEventType.MAPPED, e => {
+      e.configMappingMap.forEach((config, url) => {
+        if (config.children) {
+          config.children.forEach(mesh => {
+            config = Object.assign(Vis.getLoadGeometryConfig(), {
+              url: mesh.geometry
+            })
+            config.vid = getUUid()
+            geometryData[config.vid] = config
+            const vid = config.vid
+            config = Vis.getModelConfig()
+            config.geometry = vid
+            config.vid = getUUid()
+            config.position.x = x
+            x += 5
+            config.scale = {
+              x: 20,
+              y: 20,
+              z: 20
+            }
+            modelData[config.vid] = config
+          })
+        }
+      })
+    })
+
+    engine.render()
+  </script>
+</body>
+</html>

@@ -1,8 +1,9 @@
 import { Box3, BoxBufferGeometry, BufferGeometry, Euler, Matrix4, Quaternion, SphereBufferGeometry, Vector3 } from "three";
 import { validate } from "uuid";
+import { LoadGeometry } from "../../extends/geometry/LoadGeometry";
 import { Compiler, CompilerTarget } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
-import { AnchorConfig, BoxGeometryConfig, GeometryAllType, SphereGeometryConfig } from "./GeometryConfig";
+import { AnchorConfig, BoxGeometryConfig, GeometryAllType, LoadGeometryConfig, SphereGeometryConfig } from "./GeometryConfig";
 
 export interface GeometryCompilerTarget extends CompilerTarget {
   [key: string]: GeometryAllType
@@ -37,8 +38,9 @@ export class GeometryCompiler extends Compiler {
 
   private target: GeometryCompilerTarget
   private map: Map<SymbolConfig['vid'], BufferGeometry>
-  private constructMap: Map<string, () => BufferGeometry>
+  private constructMap: Map<string, (config: unknown) => BufferGeometry>
   private resourceMap: Map<string, unknown>
+  private replaceGeometry: BufferGeometry
 
   constructor (parameters: GeometryCompilerParameters) {
     super()
@@ -70,13 +72,36 @@ export class GeometryCompiler extends Compiler {
       ), config.anchor)
     })
 
+    constructMap.set('LoadBufferGeometry', (config: LoadGeometryConfig) => {
+      return GeometryCompiler.transfromAnchor(new LoadGeometry(
+        this.getRescource(config.url)
+      ), config.anchor)
+    })
+
     this.constructMap = constructMap
     this.resourceMap = new Map()
+
+    this.replaceGeometry = new BoxBufferGeometry(10, 10, 10)
   }
 
   linkRescourceMap (map: Map<string, unknown>): this {
     this.resourceMap = map
     return this
+  }
+
+  private getRescource (url: string): BufferGeometry {
+    if (! this.resourceMap.has(url)) {
+      console.error(`rescoure can not found url: ${url}`)
+      return this.replaceGeometry.clone()
+    }
+
+    if (this.resourceMap.has(url) && this.resourceMap.get(url) instanceof BufferGeometry) {
+      const geometry = this.resourceMap.get(url)! as BufferGeometry
+      return geometry.clone()
+    } else {
+      console.error(`url mapping rescource is not class with BufferGeometry: ${url}`)
+      return this.replaceGeometry.clone()
+    }
   }
 
   getMap (): Map<SymbolConfig['vid'], BufferGeometry> {
@@ -90,7 +115,7 @@ export class GeometryCompiler extends Compiler {
   add (vid: string, config: GeometryAllType): this {
     if (validate(vid)) {
       if (config.type && this.constructMap.has(config.type)) {
-        const geometry = this.constructMap[config.type](config)
+        const geometry = this.constructMap.get(config.type)!(config)
         this.map.set(vid, geometry)
       }
     } else {

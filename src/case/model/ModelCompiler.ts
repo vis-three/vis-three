@@ -97,10 +97,10 @@ export class ModelCompiler extends Compiler {
 
   private getMaterial (vid: string): Material {
     if (validate(vid)) {
-      if (this.materialMap[vid]) {
+      if (this.geometryMap.has(vid)) {
         return this.materialMap[vid]
       } else {
-        console.warn(`can not found material which vid: ${vid} in compiler materialMap`)
+        console.warn(`can not found material which vid: ${vid}`)
         return this.replaceMaterial
       }
     } else {
@@ -111,10 +111,10 @@ export class ModelCompiler extends Compiler {
 
   private getGeometry (vid: string): BufferGeometry {
     if (validate(vid)) {
-      if (this.map[vid]) {
-        return this.map[vid]
+      if (this.geometryMap.has(vid)) {
+        return this.geometryMap.get(vid)!
       } else {
-        console.warn(`can not found material which vid: ${vid} in model-compiler\`s material-map`)
+        console.warn(`can not found geometry which vid: ${vid}`)
         return this.replaceGeometry
       }
     } else {

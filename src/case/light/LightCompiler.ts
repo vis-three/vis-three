@@ -1,4 +1,4 @@
-import { Color, Light, PointLight, Scene, SpotLight } from "three";
+import { AmbientLight, Color, Light, PointLight, Scene, SpotLight } from "three";
 import { Compiler, CompilerTarget } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { PointLightConfig, SpotLightConfig } from "./LightConfig";
@@ -29,6 +29,7 @@ export class LightCompiler extends Compiler {
     this.constructMap = new Map()
     this.constructMap.set('PointLight', () => new PointLight())
     this.constructMap.set('SpotLight', () => new SpotLight())
+    this.constructMap.set('AmbientLight', () => new AmbientLight())
   }
 
   add (vid: string, config: SpotLightConfig | PointLightConfig) {
