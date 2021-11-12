@@ -13,7 +13,7 @@ export interface MappedEvent extends BaseEvent {
   configMappingMap: Map<string, unknown>
 }
 
-export enum VisResourceManagerEventType {
+export enum ResourceManagerEventType {
   MAPPED = 'mapped'
 }
 
@@ -28,7 +28,6 @@ export class ResourceManager extends EventDispatcher<MappedEvent> {
   }
 
   mappingResource (resourceMap: Map<string, unknown>): this {
-    console.log('mappingResource')
     const mappingResourceMap = this.mappingResourceMap
     const configMappingMap = this.configMappingMap
 

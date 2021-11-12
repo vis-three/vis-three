@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/common.css">
+  <title>LoaderManager</title>
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+  #mappingStructure {
+    position: fixed;
+    color: white;
+    top: 0%;
+    left: 0%;
+    background: black;
+    max-width: 100%;
+    max-height: 100%;
+    overflow: auto;
+  }
+</style>
+
+<body>
+  <div class="mappingStructure" id="mappingStructure"></div>
+  <div id="app"></div>
+
+  <script type="module">
+    import * as THREE from 'three'
+    import * as Vis from '../dist/Vis.es.js'
+    import assetsList from '/examples/public/assetsConfig/resourceManager.json'
+
+    const loaderManager = new Vis.LoaderManager()
+    const resourceManager = new Vis.ResourceManager()
+
+    const engine = new Vis.ModelingEngine(document.getElementById('app'))
+    const scene = engine.getScene()
+
+    const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 100, 0.01)
+    pointLight.position.set(10, 10, 10)
+    scene.add(pointLight)
+
+    const PointLightHelper = new Vis.PointLightHelper(pointLight)
+    scene.add(PointLightHelper)
+
+    loaderManager.addEventListener(Vis.LoaderManagerEventType.LOADED, e => {
+      resourceManager.mappingResource(e.resourceMap)
+      e.resourceMap.forEach((resource, url) => {
+        resource.scale.set(10, 10, 10)
+        scene.add(resource)
+      })    
+      engine.render()
+    })
+
+    resourceManager.addEventListener(Vis.ResourceManagerEventType.MAPPED, e => {
+      console.log(e.configMappingMap)
+      let str = ''
+      e.configMappingMap.forEach((config, url) => {
+        console.log(config, url)
+        str += `${url}: ${JSON.stringify(config)}\n`
+      })
+      str = str.replace(/",/g, '",\n').replace(/"},/g, '"},\n').replace(/{"/g, '{"\n')
+      document.getElementById('mappingStructure').innerText = str
+      
+    })
+
+    
+
+    loaderManager.load(assetsList)
+    
+
+
+  </script>
+</body>
+</html>

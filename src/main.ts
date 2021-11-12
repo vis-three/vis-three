@@ -12,12 +12,13 @@ import { GeometryDataSupport } from "./case/geometry/GeometryDataSupport";
 import { getBoxGeometryConfig } from "./case/geometry/GeometryConfig";
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
 import { LoaderManager, LoaderManagerEventType } from "./manager/LoaderManager";
-import { ResourceManager } from "./manager/ResourceManager";
+import { ResourceManager, ResourceManagerEventType } from "./manager/ResourceManager";
+
 
 export {
   // menu
   LoaderManagerEventType,
-
+  ResourceManagerEventType,
   // manager
   LoaderManager,
   ResourceManager,
