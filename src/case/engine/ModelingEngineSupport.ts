@@ -57,6 +57,4 @@ export class ModelingEngineSupport extends ModelingEngine {
     this.modelCompiler = modelCompiler
     this.geometryCompiler = geometryCompiler
   }
-
-  toJSON () {}
 }

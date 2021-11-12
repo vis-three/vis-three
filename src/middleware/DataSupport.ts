@@ -27,4 +27,16 @@ export class DataSupport<D extends CompilerTarget, C extends Compiler> {
     this.translater.apply(compiler)
     return this
   }
+
+  toJSON (): string {
+    return JSON.stringify(this.data)
+  }
+
+  load (config: D): this {
+    const data = this.data
+    for (const key in config) {
+      data[key] = config[key]
+    }
+    return this
+  }
 }

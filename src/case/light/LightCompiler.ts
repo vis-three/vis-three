@@ -57,7 +57,7 @@ export class LightCompiler extends Compiler {
       })
       config[key] = value
     } else {
-      console.error(`vid parameter is illegal: ${vid} or can not found this vid object`)
+      console.error(`vid parameter is illegal: ${vid} or can not found this vid light`)
     }
   }
 

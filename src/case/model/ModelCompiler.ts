@@ -66,6 +66,13 @@ export class ModelCompiler extends Compiler {
     if (validate(vid)) {
       if (config.type && this.constructMap.has(config.type)) {
         const object = this.constructMap.get(config.type)!(config)
+        const tempConfig = JSON.parse(JSON.stringify(config))
+        delete tempConfig.vid
+        delete tempConfig.type
+        delete tempConfig.geometry
+        delete tempConfig.material
+        Compiler.applyConfig(tempConfig, object)
+
         this.map.set(vid, object)
         this.scene.add(object)
       }
@@ -75,7 +82,18 @@ export class ModelCompiler extends Compiler {
     return this
   }
 
-  set () {}
+  set (path: string[], key: string, value: any) {
+    const vid = path.shift()!
+    if (validate(vid) && this.map.has(vid)) {
+      let config = this.map.get(vid)!
+      path.forEach((key, i, arr) => {
+        config = config[key]
+      })
+      config[key] = value
+    } else {
+      console.error(`vid parameter is illegal: ${vid} or can not found this vid model`)
+    }
+  }
 
   private getMaterial (vid: string): Material {
     if (validate(vid)) {

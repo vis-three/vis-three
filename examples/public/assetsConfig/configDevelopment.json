@@ -1,0 +1,85 @@
+{
+  "light": {
+    "5554221b-81aa-425c-b769-127df9be9094":{
+      "vid":"5554221b-81aa-425c-b769-127df9be9094",
+      "type":"PointLight",
+      "castShadow":true,
+      "receiveShadow":true,
+      "lookAt":"",
+      "position":{
+          "x":0,
+          "y":10,
+          "z":0
+      },
+      "rotation":{
+          "x":0,
+          "y":0,
+          "z":0
+      },
+      "scale":{
+          "x":1,
+          "y":1,
+          "z":1
+      },
+      "color":"rgb(255, 255, 255)",
+      "intensity":1,
+      "distance":150,
+      "decay":0.01
+    }
+  } ,
+  "geometry": {
+    "2e5deeea-68f9-48a8-bde7-1d247aebac0f":{
+      "vid":"2e5deeea-68f9-48a8-bde7-1d247aebac0f",
+      "type":"Geometry",
+      "anchor":{
+          "position":{
+              "x":0,
+              "y":0,
+              "z":0
+          },
+          "rotation":{
+              "x":0,
+              "y":0,
+              "z":0
+          },
+          "scale":{
+              "x":1,
+              "y":1,
+              "z":1
+          }
+      },
+      "width":5,
+      "height":5,
+      "depth":5,
+      "widthSegments":1,
+      "heightSegments":1,
+      "depthSegments":1
+    }
+  },
+  "model": {
+    "91b20b7a-aed9-4ce0-84ae-555e39273cb1":{
+      "vid":"91b20b7a-aed9-4ce0-84ae-555e39273cb1",
+      "type":"Mesh",
+      "castShadow":true,
+      "receiveShadow":true,
+      "lookAt":"",
+      "position":{
+          "x":-10,
+          "y":0,
+          "z":-10
+      },
+      "rotation":{
+          "x":0,
+          "y":0,
+          "z":0
+      },
+      "scale":{
+          "x":1,
+          "y":1,
+          "z":1
+      },
+      "geometry":"2e5deeea-68f9-48a8-bde7-1d247aebac0f",
+      "material":""
+    }
+  }
+}
