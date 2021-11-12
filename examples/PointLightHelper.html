@@ -31,7 +31,6 @@
       new THREE.BoxBufferGeometry(10, 10, 10),
       new THREE.MeshStandardMaterial({ color: 'rgb(255, 105, 100)' })
     )
-    box.position.x = 10
     scene.add(box)
 
     const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 300, 0.01)
@@ -41,10 +40,10 @@
     scene.add(PointLightHelper)
   
     setInterval(() => {
-      pointLight.position.set(Math.random() * 60, Math.random() * 60, Math.random() * 60)
+      pointLight.position.set(Math.random() * 50, Math.random() * 50, Math.random() * 50)
       pointLight.color = new THREE.Color(Math.random(), Math.random(), Math.random)
       pointLight.intensity = Math.random() * 2
-      pointLight.distance = Math.random() * (100 - 30) + 30
+      pointLight.distance = Math.random() * (80 - 10) + 30
     }, 1000)
 
   </script>
