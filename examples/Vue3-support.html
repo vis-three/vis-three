@@ -36,20 +36,25 @@
 
     // 初始配置数据
     const lightMap = {}
-    const lightConfig = Vis.getPointLightConfig()
-    lightConfig.vid = getUUid()
-    lightConfig.position.x = 10
+    const lightConfig = Vis.generateConfig('PointLight', {
+      vid: getUUid(),
+      position: {
+        x: 10
+      }
+    })
     lightMap[lightConfig.vid] = lightConfig
-
     const geometryMap = {}
-    const boxGeometryConfig = Vis.getBoxGeometryConfig()
-    boxGeometryConfig.vid = getUUid()
+    const boxGeometryConfig = Vis.generateConfig('BoxBufferGeometry', {
+      vid: getUUid()
+    })
     geometryMap[boxGeometryConfig.vid] = boxGeometryConfig
 
     const modelMap = {}
-    const modelConfig = Vis.getModelConfig()
-    modelConfig.vid = getUUid()
-    modelConfig.geometry = boxGeometryConfig.vid
+    const modelConfig = Vis.generateConfig('Model', {
+      vid: getUUid(),
+      type: 'Mesh',
+      geometry: boxGeometryConfig.vid
+    })
     modelMap[modelConfig.vid] = modelConfig
 
 

@@ -44,8 +44,7 @@
     })
 
     const lightConfig = {}
-    const ambientLightConfig =  Vis.getAmbientLightConfig()
-    ambientLightConfig.vid = getUUid()
+    const ambientLightConfig =  Vis.generateConfig('AmbientLight', {vid: getUUid()})
     lightConfig[ambientLightConfig.vid] = ambientLightConfig
 
     const lightDataSupport = new Vis.LightDataSupport(lightConfig)
@@ -71,22 +70,25 @@
       e.configMappingMap.forEach((config, url) => {
         if (config.children) {
           config.children.forEach(mesh => {
-            config = Object.assign(Vis.getLoadGeometryConfig(), {
+            config = Vis.generateConfig('LoadBufferGeometry', {
+              vid: getUUid(),
               url: mesh.geometry
             })
-            config.vid = getUUid()
             geometryData[config.vid] = config
-            const vid = config.vid
-            config = Vis.getModelConfig()
-            config.geometry = vid
-            config.vid = getUUid()
-            config.position.x = x
+            
+            config = Vis.generateConfig('Model', {
+              vid: getUUid(),
+              geometry: config.vid,
+              position: {
+                x
+              },
+              scale: {
+                x: 20,
+                y: 20,
+                z: 20
+              }
+            })
             x += 5
-            config.scale = {
-              x: 20,
-              y: 20,
-              z: 20
-            }
             modelData[config.vid] = config
           })
         }

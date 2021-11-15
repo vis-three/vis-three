@@ -34,7 +34,6 @@ export interface LoadGeometryConfig extends GeometryConfig {
   url: string
 }
 
-export type GeometryAllType = BoxGeometryConfig
 
 export const getGeometryConfig = function (): GeometryConfig {
   return {
@@ -73,6 +72,7 @@ export const getBoxGeometryConfig  = function (): BoxGeometryConfig {
 
 export const getSphereGeometryConfig = function (): SphereGeometryConfig {
   return Object.assign(getGeometryConfig(), {
+    type: 'SphereBufferGeometry',
     radius: 1,
     widthSegments: 32,
     heightSegments: 32,
@@ -89,3 +89,6 @@ export const getLoadGeometryConfig = function (): LoadGeometryConfig {
     url: ''
   })
 }
+
+
+export type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | LoadGeometryConfig

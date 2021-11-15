@@ -13,7 +13,7 @@ import { getBoxGeometryConfig, getLoadGeometryConfig } from "./case/geometry/Geo
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
 import { LoaderManager, LoaderManagerEventType } from "./manager/LoaderManager";
 import { ResourceManager, ResourceManagerEventType } from "./manager/ResourceManager";
-
+import { generateConfig } from "./convenient/generateConfig";
 
 export {
   // menu
@@ -36,6 +36,7 @@ export {
   PointLightHelper,
 
   // config
+  generateConfig,
   getPointLightConfig,
   getModelConfig,
   getBoxGeometryConfig,
