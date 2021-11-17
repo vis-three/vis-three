@@ -32,6 +32,7 @@ export class ModelingEngineSupport extends ModelingEngine {
 
   constructor (parameters: ModelingEngineSupportParametets) {
     super(parameters.dom)
+
     const textureCompiler = new TextureCompiler({
       target: parameters.textureDataSupport.getData()
     })
@@ -55,7 +56,7 @@ export class ModelingEngineSupport extends ModelingEngine {
     })
 
     const resourceManager = parameters.resourceManager
-    
+
     // 建立编译器链接
     materialCompiler.linkTextureMap(textureCompiler.getMap())
     modelCompiler.linkGeometryMap(geometryCompiler.getMap())

@@ -128,7 +128,6 @@ export class ModelCompiler extends Compiler {
     return this
   }
 
-  // TODO:
   linkMaterialMap (materialMap: Map<string, Material>): this {
     this.materialMap = materialMap
     return this

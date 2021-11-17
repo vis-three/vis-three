@@ -37,34 +37,52 @@
     import * as THREE from 'three'
     import config from '/examples/public/assetsConfig/configDevelopment.json'
 
-    const lightDataSupport = new Vis.LightDataSupport({}).load(config.light)
-    const geometryDataSupport = new Vis.GeometryDataSupport({}).load(config.geometry)
-    const modelDataSupport = new Vis.ModelDataSupport({}).load(config.model)
+    const loaderManager = new Vis.LoaderManager()
+    const resourceManager = new Vis.ResourceManager()
 
-    const engine = new Vis.ModelingEngineSupport({
-      dom: document.getElementById('app'),
-      lightDataSupport,
-      modelDataSupport,
-      geometryDataSupport,
-      resourceManager: new Vis.ResourceManager()
+    loaderManager.addEventListener(Vis.LoaderManagerEventType.LOADED, e => {
+      resourceManager.mappingResource(e.resourceMap)
     })
-    
-    engine.render()
 
-    const lightData = lightDataSupport.getData()
-    for (const key in lightData) {
-      lightData[key].position.y = -10
-      lightData[key].distance = 100
-    }
+    resourceManager.addEventListener(Vis.ResourceManagerEventType.MAPPED, e => {
 
-    const configLight = lightDataSupport.toJSON()
+      const textureDataSupport = new Vis.TextureDataSupport({}).load(config.texture)
+      const materialDataSupport = new Vis.MaterialDataSupport({}).load(config.material)
+      const lightDataSupport = new Vis.LightDataSupport({}).load(config.light)
+      const geometryDataSupport = new Vis.GeometryDataSupport({}).load(config.geometry)
+      const modelDataSupport = new Vis.ModelDataSupport({}).load(config.model)
 
-    document.getElementById('exportConfig').innerText = configLight
-    .replace(/",/g, '",\n')
-    .replace(/"},/g, '"},\n')
-    .replace(/{"/g, '{"\n')
-    .replace(/,"/g, ',"\n')
-    .replace(/},"/g, '\n},"')
+      const engine = new Vis.ModelingEngineSupport({
+        dom: document.getElementById('app'),
+        textureDataSupport ,
+        materialDataSupport,
+        lightDataSupport,
+        modelDataSupport,
+        geometryDataSupport,
+        resourceManager
+      })
+
+      engine.render()
+
+      const lightData = lightDataSupport.getData()
+      for (const key in lightData) {
+        lightData[key].position.y = -10
+        lightData[key].distance = 100
+      }
+
+      const configLight = lightDataSupport.toJSON()
+
+      document.getElementById('exportConfig').innerText = configLight
+      .replace(/",/g, '",\n')
+      .replace(/"},/g, '"},\n')
+      .replace(/{"/g, '{"\n')
+      .replace(/,"/g, ',"\n')
+      .replace(/},"/g, '\n},"')
+    })
+
+
+    loaderManager.load(config.assets)
+   
   </script>
 </body>
 </html>
