@@ -1,8 +1,14 @@
 import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig} from "../case/light/LightConfig"
 import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig } from "../case/geometry/GeometryConfig"
 import { getModelConfig } from "../case/model/ModelConfig"
+import { getImageTextureConfig } from "../case/texture/TextureConfig"
+import { getMeshStandardMaterialConfig } from "../case/material/MaterialConfig"
 
 const typeMap: {[key: string]: Function} = {
+  'ImageTexture': getImageTextureConfig,
+
+  'MeshStandardMaterial': getMeshStandardMaterialConfig,
+
   'AmbientLight': getAmbientLightConfig,
   'SpotLight': getSpotLightConfig,
   'PointLight': getPointLightConfig,

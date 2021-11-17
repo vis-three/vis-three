@@ -51,6 +51,8 @@ export interface MeshStandardMaterialConfig extends MaterialConfig {
   aoMap: string
 }
 
+// TODO: LoadMaterial
+
 export type MaterialAllType = MeshStandardMaterialConfig
 
 export const getMaterialConfig = function(): MaterialConfig {
@@ -77,7 +79,7 @@ export const getMaterialConfig = function(): MaterialConfig {
 
 export const getMeshStandardMaterialConfig = function(): MeshStandardMaterialConfig {
   return Object.assign(getMaterialConfig(), {
-    type: 'MeshStantardMaterial',
+    type: 'MeshStandardMaterial',
     aoMapIntensity: 1,
     bumpScale: 1,
     color: 'rgb(255, 255, 255)',

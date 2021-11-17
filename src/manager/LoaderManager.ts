@@ -1,4 +1,4 @@
-import { BaseEvent, EventDispatcher, Loader, TextureLoader } from "three"
+import { BaseEvent, EventDispatcher, ImageLoader, Loader, TextureLoader } from "three"
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader"
 
@@ -58,12 +58,12 @@ export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | 
     this.isLoaded = false
     this.loadDetailMap = {}
 
-    const textureLoader = new TextureLoader()
+    const imageLoader = new ImageLoader()
 
     this.loaderMap = {
-      'jpg': textureLoader,
-      'png': textureLoader,
-      'jpeg': textureLoader,
+      'jpg': imageLoader,
+      'png': imageLoader,
+      'jpeg': imageLoader,
       'obj': new OBJLoader(),
       'mtl': new MTLLoader()
     }

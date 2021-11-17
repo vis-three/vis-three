@@ -1,9 +1,9 @@
-import { ClampToEdgeWrapping, LinearEncoding, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, UVMapping } from "three";
+import { ClampToEdgeWrapping, LinearEncoding, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, Texture, UVMapping } from "three";
 import { SymbolConfig, Vector2Config } from "../common/CommonConfig";
 
 export interface TextureConfig extends SymbolConfig {
   name: string
-  image: string
+  image: string,
   mapping: number
   wrapS: number
   wrapT: number
@@ -20,7 +20,11 @@ export interface TextureConfig extends SymbolConfig {
   needsUpdate: boolean
 }
 
-export type TextureAllType = TextureConfig
+export interface ImageTextureConfig extends TextureConfig {
+
+}
+
+export type TextureAllType = ImageTextureConfig
 
 export const getTextureConfig = function(): TextureConfig {
   return {
@@ -52,4 +56,10 @@ export const getTextureConfig = function(): TextureConfig {
     encoding: LinearEncoding,
     needsUpdate: false
   }
+}
+
+export const getImageTextureConfig = function(): ImageTextureConfig {
+  return Object.assign(getTextureConfig(), {
+    type: 'ImageTexture'
+  })
 }

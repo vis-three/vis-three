@@ -35,6 +35,18 @@
     import * as Vis from '../dist/Vis.es.js' 
     import * as THREE from 'three'
 
+    import configList from '/examples/public/assetsConfig/vue3Support.json'
+
+    // 加载器
+    const loaderManager = new Vis.LoaderManager()
+    const resourceManager = new Vis.ResourceManager()
+
+    loaderManager.addEventListener(Vis.LoaderManagerEventType.LOADED, e => {
+      resourceManager.mappingResource(e.resourceMap)
+    })
+
+    loaderManager.load(configList.assets)
+
     // 初始配置数据
     const lightMap = {}
     const lightConfig = Vis.generateConfig('PointLight', {
@@ -44,17 +56,35 @@
       }
     })
     lightMap[lightConfig.vid] = lightConfig
+
+    const textureMap = {}
+    const imageTexture = Vis.generateConfig('ImageTexture', {
+      vid: getUUid(),
+      image: '/examples/public/texture/Marble023/Marble023_1K_Color.jpg'
+    })
+    textureMap[imageTexture.vid] = imageTexture
+
+    const materialMap = {}
+    const meshStandardMaterial = Vis.generateConfig('MeshStandardMaterial', {
+      vid: getUUid(),
+      color: 'rgb(255, 0, 0)',
+      map: imageTexture.vid
+    })
+    materialMap[meshStandardMaterial.vid] = meshStandardMaterial
+
     const geometryMap = {}
     const boxGeometryConfig = Vis.generateConfig('BoxBufferGeometry', {
       vid: getUUid()
     })
     geometryMap[boxGeometryConfig.vid] = boxGeometryConfig
 
+
     const modelMap = {}
     const modelConfig = Vis.generateConfig('Model', {
       vid: getUUid(),
       type: 'Mesh',
-      geometry: boxGeometryConfig.vid
+      geometry: boxGeometryConfig.vid,
+      material: meshStandardMaterial.vid
     })
     modelMap[modelConfig.vid] = modelConfig
 
@@ -70,20 +100,25 @@
       </div>
       `,
       setup () {
-
+        const textureDataSupport = new Vis.TextureDataSupport(textureMap)
+        const materialDataSupport = new Vis.MaterialDataSupport(materialMap)
         const lightDataSupport = new Vis.LightDataSupport(lightMap)
         const geometryDataSupport = new Vis.GeometryDataSupport(geometryMap)
         const modelDataSupport = new Vis.ModelDataSupport(modelMap)
 
-        const engine = new Vis.ModelingEngineSupport({
-          dom: document.getElementById('app'),
-          lightDataSupport,
-          modelDataSupport,
-          geometryDataSupport,
-          resourceManager: new Vis.ResourceManager()
+        resourceManager.addEventListener(Vis.ResourceManagerEventType.MAPPED, e => {
+          const engine = new Vis.ModelingEngineSupport({
+            dom: document.getElementById('app'),
+            textureDataSupport ,
+            materialDataSupport,
+            lightDataSupport,
+            modelDataSupport,
+            geometryDataSupport,
+            resourceManager
+          })
+          engine.render()
         })
-        engine.render()
-            
+        
 
         const addPositionY = function(item)  {
           item.position.y += 5

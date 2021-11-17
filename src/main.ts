@@ -14,11 +14,14 @@ import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
 import { LoaderManager, LoaderManagerEventType } from "./manager/LoaderManager";
 import { ResourceManager, ResourceManagerEventType } from "./manager/ResourceManager";
 import { generateConfig } from "./convenient/generateConfig";
+import { TextureDataSupport } from "./case/texture/TextureDataSupport";
+import { MaterialDataSupport } from "./case/material/MaterialDataSupport";
 
 export {
   // menu
   LoaderManagerEventType,
   ResourceManagerEventType,
+
   // manager
   LoaderManager,
   ResourceManager,
@@ -28,6 +31,8 @@ export {
   ModelingEngineSupport,
 
   // support
+  TextureDataSupport,
+  MaterialDataSupport,
   LightDataSupport,
   ModelDataSupport,
   GeometryDataSupport,

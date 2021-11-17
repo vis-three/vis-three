@@ -13,7 +13,7 @@ export interface ModelCompilerParameters {
   scene?: Scene
   target?: ModelCompilerTarget
   geometryMap?: Map<SymbolConfig['vid'], BufferGeometry>
-  materialMap?: {[key: string]: Material}
+  materialMap?: Map<SymbolConfig['vid'], Material>
 }
 
 export class ModelCompiler extends Compiler {
@@ -23,7 +23,7 @@ export class ModelCompiler extends Compiler {
   private map: Map<string, Object3D>
   private constructMap: Map<string, (config: ModelConfig) => Object3D>
   private geometryMap!: Map<SymbolConfig['vid'], BufferGeometry>
-  private materialMap!: {[key: string]: Material}
+  private materialMap!: Map<SymbolConfig['vid'], Material>
   private replaceMaterial: Material
   private replaceGeometry: BufferGeometry
 
@@ -38,7 +38,7 @@ export class ModelCompiler extends Compiler {
       this.scene = new Scene()
       this.target = {}
       this.geometryMap = new Map()
-      this.materialMap = {}
+      this.materialMap = new Map()
     }
 
     this.map = new Map()
@@ -97,8 +97,9 @@ export class ModelCompiler extends Compiler {
 
   private getMaterial (vid: string): Material {
     if (validate(vid)) {
-      if (this.geometryMap.has(vid)) {
-        return this.materialMap[vid]
+      if (this.materialMap.has(vid)) {
+        console.log(this.materialMap.get(vid))
+        return this.materialMap.get(vid)!
       } else {
         console.warn(`can not found material which vid: ${vid}`)
         return this.replaceMaterial
@@ -129,7 +130,8 @@ export class ModelCompiler extends Compiler {
   }
 
   // TODO:
-  linkMaterialMap (): this {
+  linkMaterialMap (materialMap: Map<string, Material>): this {
+    this.materialMap = materialMap
     return this
   }
 

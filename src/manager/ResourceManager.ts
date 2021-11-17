@@ -79,7 +79,7 @@ export class ResourceManager extends EventDispatcher<MappedEvent> {
     }
 
     resourceMap.forEach((resource, url) => {
-      if (resource instanceof Texture) {
+      if (resource instanceof HTMLElement) {
         mappingResourceMap.set(url, resource)
         // this.configMappingMap.set(url, )
       } else if (resource instanceof Object3D) {

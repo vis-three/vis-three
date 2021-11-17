@@ -1,4 +1,5 @@
-import { Material, MeshStandardMaterial } from "three";
+import { Color, Material, MeshStandardMaterial, Texture } from "three";
+import { validate } from "uuid";
 import { Compiler, CompilerTarget } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { MaterialAllType } from "./MaterialConfig";
@@ -14,8 +15,15 @@ export interface MaterialCompilerParameters {
 export class MaterialCompiler extends Compiler {
 
   private target!: MaterialCompilerTarget
-  private map: Map<SymbolConfig['type'], Material | Material[]>
-  private constructMap: Map<string, () => Material | Material[]>
+  private map: Map<SymbolConfig['vid'], Material>
+  private constructMap: Map<SymbolConfig['type'], () => Material>
+
+  private mapAttribute: {[key: string]: boolean}
+  private colorAttribute: {[key: string]: boolean}
+  private texturelMap: Map<string, Texture>
+  private resourceMap: Map<string, unknown>
+
+  private cachaColor: Color
 
   constructor (parameters?: MaterialCompilerParameters) {
     super()
@@ -25,17 +33,99 @@ export class MaterialCompiler extends Compiler {
       this.target = {}
     }
     this.map = new Map()
-    
+    this.texturelMap = new Map()
+    this.resourceMap = new Map()
+    this.cachaColor = new Color()
+
     const constructMap = new Map()
     constructMap.set('MeshStandardMaterial', () => new MeshStandardMaterial())
     this.constructMap = constructMap
+
+    this.colorAttribute = {
+      'color': true,
+      'emissive': true
+    }
+
+    this.mapAttribute = {
+      'roughnessMap': true,
+      'normalMap': true,
+      'metalnessMap': true,
+      'map': true,
+      'lightMap': true,
+      'envMap': true,
+      'emissiveMap': true,
+      'displacementMap': true,
+      'bumpMap': true,
+      'alphaMap': true,
+      'aoMap': true,
+    }
   }
 
-  add (vid: string, config: MaterialAllType) {
-
+  linkRescourceMap (map: Map<string, unknown>): this {
+    this.resourceMap = map
+    return this
   }
 
-  getMap (): Map<SymbolConfig['type'], Material | Material[]> {
+  linkTextureMap (textureMap: Map<SymbolConfig['vid'], Texture>): this {
+    this.texturelMap = textureMap
+    return this
+  }
+
+  add (vid: string, config: MaterialAllType): this {
+    if (validate(vid)) {
+      if (config.type && this.constructMap.has(config.type)) {
+        const material = this.constructMap.get(config.type)!()
+        const tempConfig = JSON.parse(JSON.stringify(config))
+        
+        delete tempConfig.type
+        delete tempConfig.vid
+        // 转化颜色
+        const colorAttribute = this.colorAttribute
+        for (const key in colorAttribute) {
+          if (tempConfig[key]) {
+            material[key] = new Color(tempConfig[key])
+            delete tempConfig[key]
+          }
+        }
+        // 应用贴图
+        const mapAttribute = this.mapAttribute
+        for (const key in mapAttribute) {
+          if (tempConfig[key]) {
+            material[key] = this.getTexture(tempConfig[key])
+            delete tempConfig[key]
+          }
+        }
+        // 应用属性
+        Compiler.applyConfig(tempConfig, material)
+
+        material.needsUpdate = true
+
+        this.map.set(vid, material)
+      } else {
+        console.warn(`material compiler can not support this type: ${config.type}`)
+      }
+    } else {
+      console.error(`material vid parameter is illegal: ${vid}`)
+    }
+    return this
+  }
+
+  private getTexture (vid: string): Texture | null {
+    if (this.texturelMap.has(vid)) {
+      const texture = this.texturelMap.get(vid)!
+      if (texture instanceof Texture) {
+        return texture
+      } else {
+        console.error(`this object which mapped by vid is not instance of Texture: ${vid}`)
+        return null
+      }
+    } else {
+      console.error(`texture map can not found this vid: ${vid}`)
+      return null
+    }
+  }
+
+  getMap (): Map<SymbolConfig['vid'], Material> {
     return this.map
   }
 
@@ -45,6 +135,10 @@ export class MaterialCompiler extends Compiler {
   }
 
   compileAll(): this {
+    const target = this.target
+    for (const key in target) {
+      this.add(key, target[key])
+    }
     return this
   }
 
