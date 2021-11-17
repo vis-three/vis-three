@@ -44,23 +44,62 @@
       resourceManager.mappingResource(e.resourceMap)
     })
 
+    loaderManager.load(assets)
+
     const lightConfig = {}
     const ambientLightConfig =  Vis.generateConfig('AmbientLight', {vid: getUUid()})
+    const pointLightConfig =  Vis.generateConfig('PointLight', {
+      vid: getUUid(),
+      position: {
+        z: 10,
+        y: 5
+      }
+    })
     lightConfig[ambientLightConfig.vid] = ambientLightConfig
+    lightConfig[pointLightConfig.vid] = pointLightConfig
 
+    const textureMap = {}
+    const mapTexture = Vis.generateConfig('ImageTexture', {
+      vid: getUUid(),
+      image: "/examples/public/texture/katana/katana_BaseColor.png"
+    })
+    const normalTexture = Vis.generateConfig('ImageTexture', {
+      vid: getUUid(),
+      image: "/examples/public/texture/katana/katana_Normal.png"
+    })
+    const roughnessTexture = Vis.generateConfig('ImageTexture', {
+      vid: getUUid(),
+      image: "/examples/public/texture/katana/katana_Roughness.png"
+    })
+    const metalnessTexture = Vis.generateConfig('ImageTexture', {
+      vid: getUUid(),
+      image: "/examples/public/texture/katana/katanal_Metallic.png"
+    })
+    textureMap[mapTexture.vid] = mapTexture
+    textureMap[normalTexture.vid] = normalTexture
+    textureMap[roughnessTexture.vid] = roughnessTexture
+    textureMap[metalnessTexture.vid] = metalnessTexture
+
+    const materialMap = {}
+    const meshStandardMaterial = Vis.generateConfig('MeshStandardMaterial', {
+      vid: getUUid(),
+      color: 'rgb(255, 255, 255)',
+      map: mapTexture.vid,
+      normalMap: normalTexture.vid,
+      roughnessMap: roughnessTexture.vid,
+      metalnessMap: metalnessTexture.vid
+    })
+    materialMap[meshStandardMaterial.vid] = meshStandardMaterial
+
+    const textureDataSupport = new Vis.TextureDataSupport(textureMap)
+    const materialDataSupport = new Vis.MaterialDataSupport(materialMap)
     const lightDataSupport = new Vis.LightDataSupport(lightConfig)
     const geometryDataSupport = new Vis.GeometryDataSupport({})
     const modelDataSupport = new Vis.ModelDataSupport({})
 
-    const engine = new Vis.ModelingEngineSupport({
-      dom: document.getElementById('app'),
-      lightDataSupport,
-      modelDataSupport,
-      geometryDataSupport,
-      resourceManager
-    })
+
     
-    loaderManager.load(assets)
+
 
     const geometryData = geometryDataSupport.getData()
     const modelData = modelDataSupport.getData()
@@ -80,6 +119,7 @@
             config = Vis.generateConfig('Model', {
               vid: getUUid(),
               geometry: config.vid,
+              material: meshStandardMaterial.vid,
               position: {
                 x
               },
@@ -94,9 +134,20 @@
           })
         }
       })
+
+      const engine = new Vis.ModelingEngineSupport({
+        dom: document.getElementById('app'),
+        textureDataSupport ,
+        materialDataSupport,
+        lightDataSupport,
+        modelDataSupport,
+        geometryDataSupport,
+        resourceManager
+      })
+      engine.render()
     })
 
-    engine.render()
+
   </script>
 </body>
 </html>

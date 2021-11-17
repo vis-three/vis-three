@@ -98,7 +98,6 @@ export class ModelCompiler extends Compiler {
   private getMaterial (vid: string): Material {
     if (validate(vid)) {
       if (this.materialMap.has(vid)) {
-        console.log(this.materialMap.get(vid))
         return this.materialMap.get(vid)!
       } else {
         console.warn(`can not found material which vid: ${vid}`)
