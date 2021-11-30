@@ -18,6 +18,8 @@ import { TextureDataSupport } from "./case/texture/TextureDataSupport";
 import { MaterialDataSupport } from "./case/material/MaterialDataSupport";
 import { CameraDataSupport } from "./case/camera/CameraDataSupport";
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "./case/camera/CameraConfig";
+import { CameraHelper } from "./extends/helper/camera/CameraHelper";
+
 
 export {
   // menu
@@ -42,6 +44,7 @@ export {
 
   // helper
   PointLightHelper,
+  CameraHelper,
 
   // config
   generateConfig,

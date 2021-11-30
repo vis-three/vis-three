@@ -1,13 +1,15 @@
 import { BufferGeometry, Color, Float32BufferAttribute, Intersection, Line, LineBasicMaterial, LineSegments, Mesh, MeshBasicMaterial, Object3D, OctahedronBufferGeometry, PointLight, Points, Raycaster, Sphere, SphereBufferGeometry, Vector3 } from "three";
-import { getHelperLineMaterial } from "../common";
+import { getHelperLineMaterial, VisHelper } from "../common";
 
-export class PointLightHelper extends LineSegments{
+export class PointLightHelper extends LineSegments implements VisHelper{
     sphere: Sphere
     target: PointLight
     shape: Mesh
-    cachaColor: number
-    cachaDistance: number
     type: string = 'VisPointLightHelper'
+    
+    private cachaColor: number
+    private cachaDistance: number
+    
 
   constructor (pointLight: PointLight) {
     super()
