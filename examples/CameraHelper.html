@@ -32,7 +32,7 @@
     scene.add(
       new THREE.Mesh(
         new THREE.BoxBufferGeometry(10, 10, 10),
-        new THREE.MeshStandardMaterial({ color: 'rgb(255, 105, 100)' })
+        new THREE.MeshStandardMaterial({ color: 'rgb(255, 105, 70)' })
       )
     )
 
@@ -44,13 +44,13 @@
     camera.position.y = 20
 
     const cameraHelper = new Vis.CameraHelper(camera)
-    console.log(cameraHelper)
     scene.add(cameraHelper)
   
     setInterval(() => {
       camera.position.set(Math.random() * 50, Math.random() * 50, Math.random() * 50)
-      camera.near = Math.random() * (80 - 1) + 1
-      camera.far = Math.random() * (400 - 100) + 100
+      camera.rotation.set(Math.random() * 3.14, Math.random() * 3.14, Math.random() * 3.14)
+      camera.near = Math.random() * (30 - 1) + 1
+      camera.far = Math.random() * (100 - 50) + 100
       camera.aspect = Math.random() * 2
       camera.updateProjectionMatrix()
     }, 1000)

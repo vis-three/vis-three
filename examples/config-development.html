@@ -46,15 +46,15 @@
 
     resourceManager.addEventListener(Vis.ResourceManagerEventType.MAPPED, e => {
 
-      const textureDataSupport = new Vis.TextureDataSupport({}).load(config.texture)
-      const materialDataSupport = new Vis.MaterialDataSupport({}).load(config.material)
-      const lightDataSupport = new Vis.LightDataSupport({}).load(config.light)
-      const geometryDataSupport = new Vis.GeometryDataSupport({}).load(config.geometry)
-      const modelDataSupport = new Vis.ModelDataSupport({}).load(config.model)
+      const textureDataSupport = new Vis.TextureDataSupport().load(config.texture)
+      const materialDataSupport = new Vis.MaterialDataSupport().load(config.material)
+      const lightDataSupport = new Vis.LightDataSupport().load(config.light)
+      const geometryDataSupport = new Vis.GeometryDataSupport().load(config.geometry)
+      const modelDataSupport = new Vis.ModelDataSupport().load(config.model)
 
       const engine = new Vis.ModelingEngineSupport({
         dom: document.getElementById('app'),
-        cameraDataSupport: new Vis.CameraDataSupport({}),
+        cameraDataSupport: new Vis.CameraDataSupport(),
         textureDataSupport ,
         materialDataSupport,
         lightDataSupport,
