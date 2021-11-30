@@ -1,6 +1,8 @@
 import { ModelingEngine } from "../../main";
 import { LoadedEvent, LoaderManager, LoaderManagerEventType } from "../../manager/LoaderManager";
 import { ResourceManager } from "../../manager/ResourceManager";
+import { CameraCompiler } from "../camera/CameraCompiler";
+import { CameraDataSupport } from "../camera/CameraDataSupport";
 import { GeometryCompiler } from "../geometry/GeometryCompiler";
 import { GeometryDataSupport } from "../geometry/GeometryDataSupport";
 import { LightCompiler } from "../light/LightCompiler";
@@ -14,6 +16,7 @@ import { TextureDataSupport } from "../texture/TextureDataSupport";
 
 export interface ModelingEngineSupportParametets {
   dom?: HTMLElement
+  cameraDataSupport: CameraDataSupport,
   lightDataSupport: LightDataSupport,
   geometryDataSupport: GeometryDataSupport,
   modelDataSupport: ModelDataSupport,
@@ -26,6 +29,7 @@ export class ModelingEngineSupport extends ModelingEngine {
 
   private textureCompiler: TextureCompiler
   private materialCompiler: MaterialCompiler
+  private cameraCompiler: CameraCompiler
   private lightCompiler: LightCompiler
   private modelCompiler: ModelCompiler
   private geometryCompiler: GeometryCompiler
@@ -39,6 +43,10 @@ export class ModelingEngineSupport extends ModelingEngine {
 
     const materialCompiler = new MaterialCompiler({
       target: parameters.materialDataSupport.getData()
+    })
+
+    const cameraCompiler = new CameraCompiler({
+      target: parameters.cameraDataSupport.getData()
     })
 
     const lightCompiler = new LightCompiler({
@@ -68,12 +76,14 @@ export class ModelingEngineSupport extends ModelingEngine {
     // 添加通知
     parameters.textureDataSupport.addCompiler(textureCompiler)
     parameters.materialDataSupport.addCompiler(materialCompiler)
+    parameters.cameraDataSupport.addCompiler(cameraCompiler)
     parameters.lightDataSupport.addCompiler(lightCompiler)
     parameters.geometryDataSupport.addCompiler(geometryCompiler)
     parameters.modelDataSupport.addCompiler(modelCompiler)
 
     this.textureCompiler = textureCompiler
     this.materialCompiler = materialCompiler
+    this.cameraCompiler = cameraCompiler
     this.lightCompiler = lightCompiler
     this.modelCompiler = modelCompiler
     this.geometryCompiler = geometryCompiler

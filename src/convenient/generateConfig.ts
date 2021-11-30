@@ -3,6 +3,7 @@ import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig } 
 import { getModelConfig } from "../case/model/ModelConfig"
 import { getImageTextureConfig } from "../case/texture/TextureConfig"
 import { getMeshStandardMaterialConfig } from "../case/material/MaterialConfig"
+import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../case/camera/CameraConfig"
 
 const typeMap: {[key: string]: Function} = {
   'ImageTexture': getImageTextureConfig,
@@ -13,11 +14,14 @@ const typeMap: {[key: string]: Function} = {
   'SpotLight': getSpotLightConfig,
   'PointLight': getPointLightConfig,
 
-  'BoxBufferGeometry': getBoxGeometryConfig,
-  'SphereBufferGeometry': getSphereGeometryConfig,
-  'LoadBufferGeometry': getLoadGeometryConfig,
+  'BoxGeometry': getBoxGeometryConfig,
+  'SphereGeometry': getSphereGeometryConfig,
+  'LoadGeometry': getLoadGeometryConfig,
 
   'Model': getModelConfig,
+
+  'PerspectiveCamera': getPerspectiveCameraConfig,
+  'OrthographicCamera': getOrthographicCameraConfig
 }
 
 

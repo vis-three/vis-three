@@ -228,7 +228,7 @@
   "geometry": {
     "422b0e9a-5d0d-483f-b18e-df0736127fed": {
       "vid": "422b0e9a-5d0d-483f-b18e-df0736127fed",
-      "type": "LoadBufferGeometry",
+      "type": "LoadGeometry",
       "anchor": {
         "position": {
           "x": 0,
@@ -250,7 +250,7 @@
     },
     "bf005806-f288-46dc-83a2-f2e7e2e7a988": {
       "vid": "bf005806-f288-46dc-83a2-f2e7e2e7a988",
-      "type": "LoadBufferGeometry",
+      "type": "LoadGeometry",
       "anchor": {
         "position": {
           "x": 0,
@@ -272,7 +272,7 @@
     },
     "a4ecb518-2b9a-4c6b-871d-743270368595": {
       "vid": "a4ecb518-2b9a-4c6b-871d-743270368595",
-      "type": "LoadBufferGeometry",
+      "type": "LoadGeometry",
       "anchor": {
         "position": {
           "x": 0,
@@ -294,7 +294,7 @@
     },
     "38953a5b-bd6c-4734-bf24-b936f8608216": {
       "vid": "38953a5b-bd6c-4734-bf24-b936f8608216",
-      "type": "LoadBufferGeometry",
+      "type": "LoadGeometry",
       "anchor": {
         "position": {
           "x": 0,
@@ -316,7 +316,7 @@
     },
     "bb10af6a-d777-49d7-b0a3-36b37551ed43": {
       "vid": "bb10af6a-d777-49d7-b0a3-36b37551ed43",
-      "type": "LoadBufferGeometry",
+      "type": "LoadGeometry",
       "anchor": {
         "position": {
           "x": 0,

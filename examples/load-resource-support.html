@@ -110,7 +110,7 @@
       e.configMappingMap.forEach((config, url) => {
         if (config.children) {
           config.children.forEach(mesh => {
-            config = Vis.generateConfig('LoadBufferGeometry', {
+            config = Vis.generateConfig('LoadGeometry', {
               vid: getUUid(),
               url: mesh.geometry
             })

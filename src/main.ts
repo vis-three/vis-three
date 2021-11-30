@@ -16,6 +16,8 @@ import { ResourceManager, ResourceManagerEventType } from "./manager/ResourceMan
 import { generateConfig } from "./convenient/generateConfig";
 import { TextureDataSupport } from "./case/texture/TextureDataSupport";
 import { MaterialDataSupport } from "./case/material/MaterialDataSupport";
+import { CameraDataSupport } from "./case/camera/CameraDataSupport";
+import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "./case/camera/CameraConfig";
 
 export {
   // menu
@@ -36,6 +38,7 @@ export {
   LightDataSupport,
   ModelDataSupport,
   GeometryDataSupport,
+  CameraDataSupport,
 
   // helper
   PointLightHelper,
@@ -46,5 +49,7 @@ export {
   getModelConfig,
   getBoxGeometryConfig,
   getLoadGeometryConfig,
-  getAmbientLightConfig
+  getAmbientLightConfig,
+  getPerspectiveCameraConfig,
+  getOrthographicCameraConfig
 }

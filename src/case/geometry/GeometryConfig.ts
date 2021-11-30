@@ -1,14 +1,10 @@
 import { SymbolConfig, Vector3Config } from "../common/CommonConfig";
 
-export interface AnchorConfig {
+export interface GeometryConfig extends SymbolConfig {
+  type: string
   position: Vector3Config
   rotation: Vector3Config
   scale: Vector3Config
-}
-
-export interface GeometryConfig extends SymbolConfig {
-  type: string,
-  anchor: AnchorConfig
 }
 
 export interface BoxGeometryConfig extends GeometryConfig {
@@ -39,22 +35,20 @@ export const getGeometryConfig = function (): GeometryConfig {
   return {
     vid: '',
     type: 'Geometry',
-    anchor: {
-      position: {
-        x: 0,
-        y: 0,
-        z: 0
-      },
-      rotation: {
-        x: 0,
-        y: 0,
-        z: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
+    position: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    rotation: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    scale: {
+      x: 1,
+      y: 1,
+      z: 1
     }
   }
 }
@@ -72,7 +66,7 @@ export const getBoxGeometryConfig  = function (): BoxGeometryConfig {
 
 export const getSphereGeometryConfig = function (): SphereGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: 'SphereBufferGeometry',
+    type: 'SphereGeometry',
     radius: 1,
     widthSegments: 32,
     heightSegments: 32,
@@ -85,7 +79,7 @@ export const getSphereGeometryConfig = function (): SphereGeometryConfig {
 
 export const getLoadGeometryConfig = function (): LoadGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: 'LoadBufferGeometry',
+    type: 'LoadGeometry',
     url: ''
   })
 }

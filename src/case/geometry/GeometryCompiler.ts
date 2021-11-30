@@ -3,7 +3,7 @@ import { validate } from "uuid";
 import { LoadGeometry } from "../../extends/geometry/LoadGeometry";
 import { Compiler, CompilerTarget } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
-import { AnchorConfig, BoxGeometryConfig, GeometryAllType, LoadGeometryConfig, SphereGeometryConfig } from "./GeometryConfig";
+import { BoxGeometryConfig, GeometryAllType, LoadGeometryConfig, SphereGeometryConfig } from "./GeometryConfig";
 
 export interface GeometryCompilerTarget extends CompilerTarget {
   [key: string]: GeometryAllType
@@ -15,13 +15,13 @@ export interface GeometryCompilerParameters {
 
 export class GeometryCompiler extends Compiler {
   // 变换锚点
-  static transfromAnchor = function (geometry: BufferGeometry, anchor: AnchorConfig): BufferGeometry {
+  static transfromAnchor = function (geometry: BufferGeometry, config: GeometryAllType): BufferGeometry {
     geometry.center()
     !geometry.boundingBox && geometry.computeBoundingBox()
     const box: Box3 = geometry.boundingBox!
-    const position = anchor.position
-    const rotation = anchor.rotation
-    const scale = anchor.scale
+    const position = config.position
+    const rotation = config.rotation
+    const scale = config.scale
     const materix = new Matrix4()
     const vPostion = new Vector3(
       (box.max.x - box.min.x) / 2 * position.x,
@@ -49,7 +49,7 @@ export class GeometryCompiler extends Compiler {
 
     const constructMap = new Map()
 
-    constructMap.set('BoxBufferGeometry', (config: BoxGeometryConfig) => {
+    constructMap.set('BoxGeometry', (config: BoxGeometryConfig) => {
       return GeometryCompiler.transfromAnchor(new BoxBufferGeometry(
         config.width,
         config.height,
@@ -57,10 +57,10 @@ export class GeometryCompiler extends Compiler {
         config.widthSegments,
         config.heightSegments,
         config.depthSegments
-      ), config.anchor)
+      ), config)
     })
 
-    constructMap.set('SphereBufferGeometry', (config: SphereGeometryConfig) => {
+    constructMap.set('SphereGeometry', (config: SphereGeometryConfig) => {
       return GeometryCompiler.transfromAnchor(new SphereBufferGeometry(
         config.radius,
         config.widthSegments,
@@ -69,13 +69,13 @@ export class GeometryCompiler extends Compiler {
         config.phiLength,
         config.thetaStart,
         config.thetaLength
-      ), config.anchor)
+      ), config)
     })
 
-    constructMap.set('LoadBufferGeometry', (config: LoadGeometryConfig) => {
+    constructMap.set('LoadGeometry', (config: LoadGeometryConfig) => {
       return GeometryCompiler.transfromAnchor(new LoadGeometry(
         this.getRescource(config.url)
-      ), config.anchor)
+      ), config)
     })
 
     this.constructMap = constructMap
