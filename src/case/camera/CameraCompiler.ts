@@ -1,7 +1,7 @@
 import { Camera, OrthographicCamera, PerspectiveCamera, Scene } from "three";
 import { validate } from "uuid";
 import { Compiler, CompilerTarget } from "../../middleware/Compiler";
-import { CameraAllType, OrthographicCameraConfig, PerspectiveCameraConfig } from "./CameraConfig";
+import { CameraAllType } from "./CameraConfig";
 
 export interface CameraCompilerTarget extends CompilerTarget {
   [key: string]: CameraAllType
@@ -72,6 +72,10 @@ export class CameraCompiler extends Compiler {
   }
 
   compileAll (): this {
+    const target = this.target
+    for (const key in target) {
+      this.add(key, target[key])
+    }
     return this
   }
 

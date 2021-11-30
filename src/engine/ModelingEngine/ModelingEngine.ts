@@ -277,6 +277,11 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
     this.renderManager.render()
   }
 
+  // 播放
+  play (): void {
+    this.renderManager.play()
+  }
+
   // 停止
   stop (): void {
     this.renderManager.stop()

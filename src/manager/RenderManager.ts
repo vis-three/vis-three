@@ -27,8 +27,19 @@ export class RenderManager extends EventDispatcher<RenderEvent | BaseEvent> {
       delta,
       total
     })
+  }
 
-    this.animationFrame = requestAnimationFrame(() => this.render())
+  // 播放
+  play = (): void => {
+    this.dispatchEvent({
+      type: 'play'
+    })
+
+    const playFun = () => {
+      this.render()
+      this.animationFrame =  requestAnimationFrame(playFun)
+    }
+    playFun()
   }
 
   // 停止渲染

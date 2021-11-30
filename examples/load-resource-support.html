@@ -137,6 +137,7 @@
 
       const engine = new Vis.ModelingEngineSupport({
         dom: document.getElementById('app'),
+        cameraDataSupport: new Vis.CameraDataSupport({}),
         textureDataSupport ,
         materialDataSupport,
         lightDataSupport,
@@ -144,7 +145,7 @@
         geometryDataSupport,
         resourceManager
       })
-      engine.render()
+      engine.play()
     })
 
 

@@ -54,6 +54,7 @@
 
       const engine = new Vis.ModelingEngineSupport({
         dom: document.getElementById('app'),
+        cameraDataSupport: new Vis.CameraDataSupport({}),
         textureDataSupport ,
         materialDataSupport,
         lightDataSupport,
@@ -62,7 +63,7 @@
         resourceManager
       })
 
-      engine.render()
+      engine.play()
 
       const lightData = lightDataSupport.getData()
       for (const key in lightData) {
