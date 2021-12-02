@@ -13,7 +13,7 @@ export interface MappedEvent extends BaseEvent {
   configMappingMap: Map<string, unknown>
 }
 
-export enum ResourceManagerEventType {
+export enum RESOURCEEVENTTYPE {
   MAPPED = 'mapped'
 }
 

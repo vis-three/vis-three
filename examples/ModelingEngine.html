@@ -39,12 +39,12 @@
     scene.add(pointLight)
 
     const line = new THREE.Line(
-      box.geometry.clone()
+      box.geometry
     )
     scene.add(line)
 
     const points = new THREE.Points(
-      box.geometry.clone()
+      box.geometry
     )
 
     points.position.x = -10

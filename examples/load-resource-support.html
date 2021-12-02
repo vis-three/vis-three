@@ -40,7 +40,7 @@
     const loaderManager = new Vis.LoaderManager()
     const resourceManager = new Vis.ResourceManager()
 
-    loaderManager.addEventListener(Vis.LoaderManagerEventType.LOADED, e => {
+    loaderManager.addEventListener(Vis.LOADEEVENTTYPE.LOADED, e => {
       resourceManager.mappingResource(e.resourceMap)
     })
 
@@ -94,19 +94,23 @@
     const textureDataSupport = new Vis.TextureDataSupport(textureMap)
     const materialDataSupport = new Vis.MaterialDataSupport(materialMap)
     const lightDataSupport = new Vis.LightDataSupport(lightConfig)
-    const geometryDataSupport = new Vis.GeometryDataSupport({})
-    const modelDataSupport = new Vis.ModelDataSupport({})
+    const geometryDataSupport = new Vis.GeometryDataSupport()
+    const modelDataSupport = new Vis.ModelDataSupport()
 
-
-    
-
+    const dataSupportManager = new Vis.DataSupportManager({
+      textureDataSupport,
+      materialDataSupport,
+      lightDataSupport,
+      geometryDataSupport,
+      modelDataSupport
+    })
 
     const geometryData = geometryDataSupport.getData()
     const modelData = modelDataSupport.getData()
     
     let x = -10
     let config = {}
-    resourceManager.addEventListener(Vis.ResourceManagerEventType.MAPPED, e => {
+    resourceManager.addEventListener(Vis.RESOURCEEVENTTYPE.MAPPED, e => {
       e.configMappingMap.forEach((config, url) => {
         if (config.children) {
           config.children.forEach(mesh => {
@@ -137,12 +141,7 @@
 
       const engine = new Vis.ModelingEngineSupport({
         dom: document.getElementById('app'),
-        cameraDataSupport: new Vis.CameraDataSupport({}),
-        textureDataSupport ,
-        materialDataSupport,
-        lightDataSupport,
-        modelDataSupport,
-        geometryDataSupport,
+        dataSupportManager,
         resourceManager
       })
       engine.play()

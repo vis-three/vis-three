@@ -9,7 +9,7 @@ export interface MappedEvent extends BaseEvent {
     mappingResourceMap: Map<string, unknown>;
     configMappingMap: Map<string, unknown>;
 }
-export declare enum VisResourceManagerEventType {
+export declare enum VisRESOURCEEVENTTYPE {
     MAPPED = "mapped"
 }
 export declare class ResourceManager extends EventDispatcher<MappedEvent> {

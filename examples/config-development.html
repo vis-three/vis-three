@@ -40,45 +40,42 @@
     const loaderManager = new Vis.LoaderManager()
     const resourceManager = new Vis.ResourceManager()
 
-    loaderManager.addEventListener(Vis.LoaderManagerEventType.LOADED, e => {
+    loaderManager.addEventListener(Vis.LOADEEVENTTYPE.LOADED, e => {
       resourceManager.mappingResource(e.resourceMap)
     })
 
-    resourceManager.addEventListener(Vis.ResourceManagerEventType.MAPPED, e => {
+    resourceManager.addEventListener(Vis.RESOURCEEVENTTYPE.MAPPED, e => {
 
-      const textureDataSupport = new Vis.TextureDataSupport().load(config.texture)
-      const materialDataSupport = new Vis.MaterialDataSupport().load(config.material)
-      const lightDataSupport = new Vis.LightDataSupport().load(config.light)
-      const geometryDataSupport = new Vis.GeometryDataSupport().load(config.geometry)
-      const modelDataSupport = new Vis.ModelDataSupport().load(config.model)
+      try {
+        const dataSupportManager = new Vis.DataSupportManager().load(config)
 
-      const engine = new Vis.ModelingEngineSupport({
-        dom: document.getElementById('app'),
-        cameraDataSupport: new Vis.CameraDataSupport(),
-        textureDataSupport ,
-        materialDataSupport,
-        lightDataSupport,
-        modelDataSupport,
-        geometryDataSupport,
-        resourceManager
-      })
+        const engine = new Vis.ModelingEngineSupport({
+          dom: document.getElementById('app'),
+          dataSupportManager,
+          resourceManager
+        })
 
-      engine.play()
+        engine.play()
 
-      const lightData = lightDataSupport.getData()
-      for (const key in lightData) {
-        lightData[key].position.y = -10
-        lightData[key].distance = 100
+        const lightDataSupport = dataSupportManager.getDataSupport(Vis.DATASUPPORTTYPE.LIGHT)
+        const lightData = lightDataSupport.getData()
+
+        for (const key in lightData) {
+          lightData[key].position.y = -10
+          lightData[key].distance = 100
+        }
+
+        const configLight = lightDataSupport.toJSON()
+
+        document.getElementById('exportConfig').innerText = configLight
+        .replace(/",/g, '",\n')
+        .replace(/"},/g, '"},\n')
+        .replace(/{"/g, '{"\n')
+        .replace(/,"/g, ',"\n')
+        .replace(/},"/g, '\n},"')
+      } catch (error) {
+        console.error(error)
       }
-
-      const configLight = lightDataSupport.toJSON()
-
-      document.getElementById('exportConfig').innerText = configLight
-      .replace(/",/g, '",\n')
-      .replace(/"},/g, '"},\n')
-      .replace(/{"/g, '{"\n')
-      .replace(/,"/g, ',"\n')
-      .replace(/},"/g, '\n},"')
     })
 
 

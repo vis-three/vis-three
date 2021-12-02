@@ -49,7 +49,7 @@
     const PointLightHelper = new Vis.PointLightHelper(pointLight)
     scene.add(PointLightHelper)
 
-    loaderManager.addEventListener(Vis.LoaderManagerEventType.LOADED, e => {
+    loaderManager.addEventListener(Vis.LOADEEVENTTYPE.LOADED, e => {
       resourceManager.mappingResource(e.resourceMap)
       e.resourceMap.forEach((resource, url) => {
         resource.scale.set(10, 10, 10)
@@ -58,7 +58,7 @@
       engine.play()
     })
 
-    resourceManager.addEventListener(Vis.ResourceManagerEventType.MAPPED, e => {
+    resourceManager.addEventListener(Vis.RESOURCEEVENTTYPE.MAPPED, e => {
       console.log(e.configMappingMap)
       let str = ''
       e.configMappingMap.forEach((config, url) => {

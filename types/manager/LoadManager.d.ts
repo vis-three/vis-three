@@ -22,7 +22,7 @@ export interface LoadedEvent extends BaseEvent {
     loadError: number;
     resourceMap: Map<string, unknown>;
 }
-export declare enum LoaderManagerEventType {
+export declare enum LOADEEVENTTYPE {
     LOADING = "loading",
     DETAILLOADING = "detailLoading",
     DETAILLOADED = "detailLoaded",

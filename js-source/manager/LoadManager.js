@@ -1,13 +1,13 @@
 import { EventDispatcher, TextureLoader } from "three";
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
-export var LoaderManagerEventType;
-(function (LoaderManagerEventType) {
-    LoaderManagerEventType["LOADING"] = "loading";
-    LoaderManagerEventType["DETAILLOADING"] = "detailLoading";
-    LoaderManagerEventType["DETAILLOADED"] = "detailLoaded";
-    LoaderManagerEventType["LOADED"] = "loaded";
-})(LoaderManagerEventType || (LoaderManagerEventType = {}));
+export var LOADEEVENTTYPE;
+(function (LOADEEVENTTYPE) {
+    LOADEEVENTTYPE["LOADING"] = "loading";
+    LOADEEVENTTYPE["DETAILLOADING"] = "detailLoading";
+    LOADEEVENTTYPE["DETAILLOADED"] = "detailLoaded";
+    LOADEEVENTTYPE["LOADED"] = "loaded";
+})(LOADEEVENTTYPE || (LOADEEVENTTYPE = {}));
 export class LoaderManager extends EventDispatcher {
     resourceMap;
     loaderMap;

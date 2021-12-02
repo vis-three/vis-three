@@ -41,7 +41,7 @@
     const loaderManager = new Vis.LoaderManager()
     const resourceManager = new Vis.ResourceManager()
 
-    loaderManager.addEventListener(Vis.LoaderManagerEventType.LOADED, e => {
+    loaderManager.addEventListener(Vis.LOADEEVENTTYPE.LOADED, e => {
       resourceManager.mappingResource(e.resourceMap)
     })
 
@@ -100,21 +100,19 @@
       </div>
       `,
       setup () {
-        const textureDataSupport = new Vis.TextureDataSupport(textureMap)
-        const materialDataSupport = new Vis.MaterialDataSupport(materialMap)
-        const lightDataSupport = new Vis.LightDataSupport(lightMap)
-        const geometryDataSupport = new Vis.GeometryDataSupport(geometryMap)
-        const modelDataSupport = new Vis.ModelDataSupport(modelMap)
 
-        resourceManager.addEventListener(Vis.ResourceManagerEventType.MAPPED, e => {
+        const dataSupportManager = new Vis.DataSupportManager({
+          textureDataSupport: new Vis.TextureDataSupport(textureMap),
+          materialDataSupport: new Vis.MaterialDataSupport(materialMap),
+          lightDataSupport: new Vis.LightDataSupport(lightMap),
+          geometryDataSupport: new Vis.GeometryDataSupport(geometryMap),
+          modelDataSupport: new Vis.ModelDataSupport(modelMap)
+        })
+
+        resourceManager.addEventListener(Vis.RESOURCEEVENTTYPE.MAPPED, e => {
           const engine = new Vis.ModelingEngineSupport({
             dom: document.getElementById('app'),
-            cameraDataSupport: new Vis.CameraDataSupport({}),
-            textureDataSupport ,
-            materialDataSupport,
-            lightDataSupport,
-            modelDataSupport,
-            geometryDataSupport,
+            dataSupportManager,
             resourceManager
           })
           engine.play()
@@ -125,8 +123,10 @@
           item.position.y += 5
         }
 
+        const lightData = dataSupportManager.getDataSupport(Vis.DATASUPPORTTYPE.LIGHT).getData()
+
         return {
-          configMap: Vue.reactive(lightDataSupport.getData()),
+          configMap: Vue.reactive(lightData),
           addPositionY
         }
       }

@@ -1,8 +1,8 @@
 import { EventDispatcher, Object3D, Texture } from "three";
-export var VisResourceManagerEventType;
-(function (VisResourceManagerEventType) {
-    VisResourceManagerEventType["MAPPED"] = "mapped";
-})(VisResourceManagerEventType || (VisResourceManagerEventType = {}));
+export var VisRESOURCEEVENTTYPE;
+(function (VisRESOURCEEVENTTYPE) {
+    VisRESOURCEEVENTTYPE["MAPPED"] = "mapped";
+})(VisRESOURCEEVENTTYPE || (VisRESOURCEEVENTTYPE = {}));
 // TODO: 枚举贴图类型，几何类型，材质类型
 export class ResourceManager extends EventDispatcher {
     mappingResourceMap = new Map(); // mappingUrl -> source

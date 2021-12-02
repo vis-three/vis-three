@@ -11,24 +11,26 @@ import { getModelConfig } from "./case/model/ModelConfig";
 import { GeometryDataSupport } from "./case/geometry/GeometryDataSupport";
 import { getBoxGeometryConfig, getLoadGeometryConfig } from "./case/geometry/GeometryConfig";
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
-import { LoaderManager, LoaderManagerEventType } from "./manager/LoaderManager";
-import { ResourceManager, ResourceManagerEventType } from "./manager/ResourceManager";
+import { LoaderManager, LOADEEVENTTYPE } from "./manager/LoaderManager";
+import { ResourceManager, RESOURCEEVENTTYPE } from "./manager/ResourceManager";
 import { generateConfig } from "./convenient/generateConfig";
 import { TextureDataSupport } from "./case/texture/TextureDataSupport";
 import { MaterialDataSupport } from "./case/material/MaterialDataSupport";
 import { CameraDataSupport } from "./case/camera/CameraDataSupport";
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "./case/camera/CameraConfig";
 import { CameraHelper } from "./extends/helper/camera/CameraHelper";
-
+import { DataSupportManager, DATASUPPORTTYPE } from "./manager/DataSupportManager";
 
 export {
   // menu
-  LoaderManagerEventType,
-  ResourceManagerEventType,
+  LOADEEVENTTYPE,
+  RESOURCEEVENTTYPE,
+  DATASUPPORTTYPE,
 
   // manager
   LoaderManager,
   ResourceManager,
+  DataSupportManager,
 
   // engin
   ModelingEngine,

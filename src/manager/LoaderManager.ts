@@ -30,7 +30,7 @@ export interface LoadedEvent extends BaseEvent {
   resourceMap: Map<string, unknown>
 }
 
-export enum LoaderManagerEventType {
+export enum LOADEEVENTTYPE {
   LOADING = 'loading',
   DETAILLOADING = 'detailLoading',
   DETAILLOADED = 'detailLoaded',
