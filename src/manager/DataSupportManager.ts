@@ -10,6 +10,7 @@ import { LightCompilerTarget } from "../case/light/LightCompiler";
 import { GeometryCompilerTarget } from "../case/geometry/GeometryCompiler";
 import { CameraCompilerTarget } from "../case/camera/CameraCompiler";
 import { MaterialCompilerTarget } from "../case/material/MaterialCompiler";
+import { MODULETYPE } from "../case/common/CommonConfig";
 
 export interface DataSupportManagerLoadOptions {
   texture?: TextureCompilerTarget,
@@ -37,15 +38,6 @@ export interface DataSupportManagerParameters {
   materialDataSupport?: MaterialDataSupport
 }
 
-export enum DATASUPPORTTYPE {
-  CAMERA = 'camera',
-  LIGHT = 'light',
-  GEOMETRY = 'geometry',
-  MODEL = 'model',
-  TEXTURE = 'texture',
-  MATERIAL = 'material'
-}
-
 export class DataSupportManager {
   private cameraDataSupport: CameraDataSupport
   private lightDataSupport: LightDataSupport
@@ -54,7 +46,7 @@ export class DataSupportManager {
   private textureDataSupport: TextureDataSupport
   private materialDataSupport: MaterialDataSupport
 
-  private dataSupportMap: Map<DATASUPPORTTYPE, DataSupportAllType>
+  private dataSupportMap: Map<MODULETYPE, DataSupportAllType>
 
 
   constructor (parameters?: DataSupportManagerParameters) {
@@ -67,17 +59,17 @@ export class DataSupportManager {
 
     const dataSupportMap = new Map()
 
-    dataSupportMap.set(DATASUPPORTTYPE.CAMERA, this.cameraDataSupport)
-    dataSupportMap.set(DATASUPPORTTYPE.LIGHT, this.lightDataSupport)
-    dataSupportMap.set(DATASUPPORTTYPE.GEOMETRY, this.geometryDataSupport)
-    dataSupportMap.set(DATASUPPORTTYPE.MODEL, this.modelDataSupport)
-    dataSupportMap.set(DATASUPPORTTYPE.TEXTURE, this.textureDataSupport)
-    dataSupportMap.set(DATASUPPORTTYPE.MATERIAL, this.materialDataSupport)
+    dataSupportMap.set(MODULETYPE.CAMERA, this.cameraDataSupport)
+    dataSupportMap.set(MODULETYPE.LIGHT, this.lightDataSupport)
+    dataSupportMap.set(MODULETYPE.GEOMETRY, this.geometryDataSupport)
+    dataSupportMap.set(MODULETYPE.MODEL, this.modelDataSupport)
+    dataSupportMap.set(MODULETYPE.TEXTURE, this.textureDataSupport)
+    dataSupportMap.set(MODULETYPE.MATERIAL, this.materialDataSupport)
 
     this.dataSupportMap = dataSupportMap
   }
 
-  getDataSupport (type: DATASUPPORTTYPE): DataSupportAllType | null {
+  getDataSupport (type: MODULETYPE): DataSupportAllType | null {
     if (this.dataSupportMap.has(type)) {
       return this.dataSupportMap.get(type)!
     } else {

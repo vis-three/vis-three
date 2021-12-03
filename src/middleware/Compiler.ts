@@ -2,7 +2,7 @@ import { SymbolConfig } from "../case/common/CommonConfig";
 import { isValidKey } from "../utils/utils";
 
 export interface CompilerTarget {
-  [key: string]: unknown
+  [key: string]: SymbolConfig
 }
 
 export abstract class Compiler {

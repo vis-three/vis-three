@@ -4,24 +4,28 @@ import { getModelConfig } from "../case/model/ModelConfig"
 import { getImageTextureConfig } from "../case/texture/TextureConfig"
 import { getMeshStandardMaterialConfig } from "../case/material/MaterialConfig"
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../case/camera/CameraConfig"
+import { CONFIGTYPE } from "../case/common/CommonConfig"
 
 const typeMap: {[key: string]: Function} = {
-  'ImageTexture': getImageTextureConfig,
+  [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
 
-  'MeshStandardMaterial': getMeshStandardMaterialConfig,
+  [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
 
-  'AmbientLight': getAmbientLightConfig,
-  'SpotLight': getSpotLightConfig,
-  'PointLight': getPointLightConfig,
+  [CONFIGTYPE.AMBIENTLIGHT]: getAmbientLightConfig,
+  [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,
+  [CONFIGTYPE.POINTLIGHT]: getPointLightConfig,
 
-  'BoxGeometry': getBoxGeometryConfig,
-  'SphereGeometry': getSphereGeometryConfig,
-  'LoadGeometry': getLoadGeometryConfig,
+  [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
+  [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
+  [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
 
-  'Model': getModelConfig,
+  [CONFIGTYPE.MODEL]: getModelConfig,
+  [CONFIGTYPE.MESH]: getModelConfig,
+  [CONFIGTYPE.LINE]: getModelConfig,
+  [CONFIGTYPE.POINTS]: getModelConfig,
 
-  'PerspectiveCamera': getPerspectiveCameraConfig,
-  'OrthographicCamera': getOrthographicCameraConfig
+  [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
+  [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig
 }
 
 

@@ -47,46 +47,46 @@
 
     loaderManager.load(configList.assets)
 
+    const dataGenerator = new Vis.SupportDataGenerator()
+
     // 初始配置数据
-    const lightMap = {}
-    const lightConfig = Vis.generateConfig('PointLight', {
+    const lightMap = dataGenerator.create().add({
+      type: Vis.CONFIGTYPE.POINTLIGHT,
       vid: getUUid(),
       position: {
         x: 10
       }
-    })
-    lightMap[lightConfig.vid] = lightConfig
-
-    const textureMap = {}
+    }).get()
+    
     const imageTexture = Vis.generateConfig('ImageTexture', {
       vid: getUUid(),
       image: '/examples/public/texture/Marble023/Marble023_1K_Color.jpg'
     })
-    textureMap[imageTexture.vid] = imageTexture
+    const textureMap = dataGenerator.create().add(imageTexture).get()
 
-    const materialMap = {}
+    
     const meshStandardMaterial = Vis.generateConfig('MeshStandardMaterial', {
       vid: getUUid(),
       color: 'rgb(255, 0, 0)',
       map: imageTexture.vid
     })
-    materialMap[meshStandardMaterial.vid] = meshStandardMaterial
+    const materialMap = dataGenerator.create().add(meshStandardMaterial).get()
 
-    const geometryMap = {}
+    
     const boxGeometryConfig = Vis.generateConfig('BoxGeometry', {
       vid: getUUid()
     })
-    geometryMap[boxGeometryConfig.vid] = boxGeometryConfig
+    const geometryMap = dataGenerator.create().add(boxGeometryConfig).get()
 
 
-    const modelMap = {}
+    
     const modelConfig = Vis.generateConfig('Model', {
       vid: getUUid(),
       type: 'Mesh',
       geometry: boxGeometryConfig.vid,
       material: meshStandardMaterial.vid
     })
-    modelMap[modelConfig.vid] = modelConfig
+    const modelMap = dataGenerator.create().add(modelConfig).get()
 
 
     Vue.createApp({
@@ -123,7 +123,7 @@
           item.position.y += 5
         }
 
-        const lightData = dataSupportManager.getDataSupport(Vis.DATASUPPORTTYPE.LIGHT).getData()
+        const lightData = dataSupportManager.getDataSupport(Vis.MODULETYPE.LIGHT).getData()
 
         return {
           configMap: Vue.reactive(lightData),

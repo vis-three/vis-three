@@ -1,5 +1,4 @@
 import { SymbolConfig, Vector3Config } from "../common/CommonConfig";
-
 export interface GeometryConfig extends SymbolConfig {
   type: string
   position: Vector3Config
@@ -55,6 +54,7 @@ export const getGeometryConfig = function (): GeometryConfig {
 
 export const getBoxGeometryConfig  = function (): BoxGeometryConfig {
   return Object.assign(getGeometryConfig(), {
+    type: 'BoxGeometry',
     width: 5,
     height: 5,
     depth: 5,

@@ -19,13 +19,17 @@ import { MaterialDataSupport } from "./case/material/MaterialDataSupport";
 import { CameraDataSupport } from "./case/camera/CameraDataSupport";
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "./case/camera/CameraConfig";
 import { CameraHelper } from "./extends/helper/camera/CameraHelper";
-import { DataSupportManager, DATASUPPORTTYPE } from "./manager/DataSupportManager";
+import { DataSupportManager } from "./manager/DataSupportManager";
+import { CONFIGTYPE, MODULETYPE } from "./case/common/CommonConfig";
+import { SupportDataGenerator } from "./convenient/SupportDataGenerator";
+
 
 export {
   // menu
   LOADEEVENTTYPE,
   RESOURCEEVENTTYPE,
-  DATASUPPORTTYPE,
+  MODULETYPE,
+  CONFIGTYPE,
 
   // manager
   LoaderManager,
@@ -56,5 +60,7 @@ export {
   getLoadGeometryConfig,
   getAmbientLightConfig,
   getPerspectiveCameraConfig,
-  getOrthographicCameraConfig
+  getOrthographicCameraConfig,
+
+  SupportDataGenerator,
 }

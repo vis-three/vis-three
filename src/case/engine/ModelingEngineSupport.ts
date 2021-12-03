@@ -1,8 +1,9 @@
 import { ModelingEngine } from "../../main";
-import { DataSupportManager, DATASUPPORTTYPE } from "../../manager/DataSupportManager";
+import { DataSupportManager } from "../../manager/DataSupportManager";
 import { ResourceManager } from "../../manager/ResourceManager";
 import { CameraCompiler } from "../camera/CameraCompiler";
 import { CameraDataSupport } from "../camera/CameraDataSupport";
+import { MODULETYPE } from "../common/CommonConfig";
 import { GeometryCompiler } from "../geometry/GeometryCompiler";
 import { GeometryDataSupport } from "../geometry/GeometryDataSupport";
 import { LightCompiler } from "../light/LightCompiler";
@@ -13,7 +14,6 @@ import { ModelCompiler } from "../model/ModelCompiler";
 import { ModelDataSupport } from "../model/ModelDataSupport";
 import { TextureCompiler } from "../texture/TextureCompiler";
 import { TextureDataSupport } from "../texture/TextureDataSupport";
-
 export interface ModelingEngineSupportParameters {
   dom?: HTMLElement
   dataSupportManager: DataSupportManager
@@ -36,12 +36,12 @@ export class ModelingEngineSupport extends ModelingEngine {
     super(parameters.dom)
 
     const dataSupportManager = parameters.dataSupportManager
-    const textureDataSupport = dataSupportManager.getDataSupport(DATASUPPORTTYPE.TEXTURE)! as TextureDataSupport
-    const materialDataSupport = dataSupportManager.getDataSupport(DATASUPPORTTYPE.MATERIAL)! as MaterialDataSupport
-    const cameraDataSupport = dataSupportManager.getDataSupport(DATASUPPORTTYPE.CAMERA)! as CameraDataSupport
-    const lightDataSupport =  dataSupportManager.getDataSupport(DATASUPPORTTYPE.LIGHT)! as LightDataSupport
-    const geometryDataSupport =  dataSupportManager.getDataSupport(DATASUPPORTTYPE.GEOMETRY)! as GeometryDataSupport
-    const modelDataSupport =  dataSupportManager.getDataSupport(DATASUPPORTTYPE.MODEL)! as ModelDataSupport
+    const textureDataSupport = dataSupportManager.getDataSupport(MODULETYPE.TEXTURE)! as TextureDataSupport
+    const materialDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MATERIAL)! as MaterialDataSupport
+    const cameraDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CAMERA)! as CameraDataSupport
+    const lightDataSupport =  dataSupportManager.getDataSupport(MODULETYPE.LIGHT)! as LightDataSupport
+    const geometryDataSupport =  dataSupportManager.getDataSupport(MODULETYPE.GEOMETRY)! as GeometryDataSupport
+    const modelDataSupport =  dataSupportManager.getDataSupport(MODULETYPE.MODEL)! as ModelDataSupport
 
 
     const textureCompiler = new TextureCompiler({

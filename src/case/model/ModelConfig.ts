@@ -5,9 +5,42 @@ export interface ModelConfig extends ObjectConfig {
   material: string
 }
 
+export interface MeshConfig extends ModelConfig {
+}
+
+export interface LineConfig extends ModelConfig {
+}
+
+export interface PointsConfig extends ModelConfig {
+}
+
 export const getModelConfig = function(): ModelConfig {
   return Object.assign(getObjectConfig(), {
     type: 'Mesh',
+    geometry: '',
+    material: ''
+  })
+}
+
+export const getMeshConfig = function(): MeshConfig {
+  return Object.assign(getObjectConfig(), {
+    type: 'Mesh',
+    geometry: '',
+    material: ''
+  })
+}
+
+export const getLineConfig = function(): LineConfig {
+  return Object.assign(getObjectConfig(), {
+    type: 'Line',
+    geometry: '',
+    material: ''
+  })
+}
+
+export const getPointsConfig = function(): PointsConfig {
+  return Object.assign(getObjectConfig(), {
+    type: 'Points',
     geometry: '',
     material: ''
   })
