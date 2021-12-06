@@ -3,7 +3,7 @@ import { DataSupportManager } from "../../manager/DataSupportManager";
 import { ResourceManager } from "../../manager/ResourceManager";
 import { CameraCompiler } from "../camera/CameraCompiler";
 import { CameraDataSupport } from "../camera/CameraDataSupport";
-import { MODULETYPE } from "../common/CommonConfig";
+import { MODULETYPE } from "../constants/MODULETYPE";
 import { GeometryCompiler } from "../geometry/GeometryCompiler";
 import { GeometryDataSupport } from "../geometry/GeometryDataSupport";
 import { LightCompiler } from "../light/LightCompiler";
@@ -12,6 +12,8 @@ import { MaterialCompiler } from "../material/MaterialCompiler";
 import { MaterialDataSupport } from "../material/MaterialDataSupport";
 import { ModelCompiler } from "../model/ModelCompiler";
 import { ModelDataSupport } from "../model/ModelDataSupport";
+import { RendererCompiler } from "../render/RendererCompiler";
+import { RendererDataSupport } from "../render/RendererDataSupport";
 import { TextureCompiler } from "../texture/TextureCompiler";
 import { TextureDataSupport } from "../texture/TextureDataSupport";
 export interface ModelingEngineSupportParameters {
@@ -28,6 +30,7 @@ export class ModelingEngineSupport extends ModelingEngine {
   private lightCompiler: LightCompiler
   private modelCompiler: ModelCompiler
   private geometryCompiler: GeometryCompiler
+  private rendererCompiler: RendererCompiler
 
   private resourceManager: ResourceManager
   private dataSupportManager: DataSupportManager
@@ -42,6 +45,7 @@ export class ModelingEngineSupport extends ModelingEngine {
     const lightDataSupport =  dataSupportManager.getDataSupport(MODULETYPE.LIGHT)! as LightDataSupport
     const geometryDataSupport =  dataSupportManager.getDataSupport(MODULETYPE.GEOMETRY)! as GeometryDataSupport
     const modelDataSupport =  dataSupportManager.getDataSupport(MODULETYPE.MODEL)! as ModelDataSupport
+    const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER)! as RendererDataSupport
 
 
     const textureCompiler = new TextureCompiler({
@@ -70,6 +74,11 @@ export class ModelingEngineSupport extends ModelingEngine {
       target: modelDataSupport.getData()
     })
 
+    const rendererCompiler = new RendererCompiler({
+      target: rendererDataSupport.getData(),
+      glRenderer: this.renderer
+    })
+
     const resourceManager = parameters.resourceManager
 
     // 建立编译器链接
@@ -87,6 +96,7 @@ export class ModelingEngineSupport extends ModelingEngine {
     lightDataSupport.addCompiler(lightCompiler)
     geometryDataSupport.addCompiler(geometryCompiler)
     modelDataSupport.addCompiler(modelCompiler)
+    rendererDataSupport.addCompiler(rendererCompiler)
 
     this.textureCompiler = textureCompiler
     this.materialCompiler = materialCompiler
@@ -94,8 +104,13 @@ export class ModelingEngineSupport extends ModelingEngine {
     this.lightCompiler = lightCompiler
     this.modelCompiler = modelCompiler
     this.geometryCompiler = geometryCompiler
+    this.rendererCompiler = rendererCompiler
 
     this.dataSupportManager = parameters.dataSupportManager
     this.resourceManager = parameters.resourceManager
+  }
+
+  getDataSupportManager (): DataSupportManager {
+    return this.dataSupportManager
   }
 }

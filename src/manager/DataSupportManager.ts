@@ -10,15 +10,18 @@ import { LightCompilerTarget } from "../case/light/LightCompiler";
 import { GeometryCompilerTarget } from "../case/geometry/GeometryCompiler";
 import { CameraCompilerTarget } from "../case/camera/CameraCompiler";
 import { MaterialCompilerTarget } from "../case/material/MaterialCompiler";
-import { MODULETYPE } from "../case/common/CommonConfig";
+import { MODULETYPE } from "../case/constants/MODULETYPE";
+import { RendererCompilerTarget } from "../case/render/RendererCompiler";
+import { RendererDataSupport } from "../case/render/RendererDataSupport";
 
 export interface DataSupportManagerLoadOptions {
-  texture?: TextureCompilerTarget,
-  material?: MaterialCompilerTarget,
-  light?: LightCompilerTarget,
-  geometry?: GeometryCompilerTarget,
-  model?: ModelCompilerTarget
-  camera?: CameraCompilerTarget
+  [MODULETYPE.TEXTURE]?: TextureCompilerTarget,
+  [MODULETYPE.MATERIAL]?: MaterialCompilerTarget,
+  [MODULETYPE.LIGHT]?: LightCompilerTarget,
+  [MODULETYPE.GEOMETRY]?: GeometryCompilerTarget,
+  [MODULETYPE.MODEL]?: ModelCompilerTarget
+  [MODULETYPE.CAMERA]?: CameraCompilerTarget
+  [MODULETYPE.RENDERER]?: RendererCompilerTarget
 }
 
 export type DataSupportAllType =
@@ -27,7 +30,8 @@ export type DataSupportAllType =
   GeometryDataSupport |
   ModelDataSupport |
   TextureDataSupport |
-  MaterialDataSupport
+  MaterialDataSupport |
+  RendererDataSupport
 
 export interface DataSupportManagerParameters {
   cameraDataSupport?: CameraDataSupport
@@ -36,6 +40,7 @@ export interface DataSupportManagerParameters {
   modelDataSupport?: ModelDataSupport
   textureDataSupport?: TextureDataSupport
   materialDataSupport?: MaterialDataSupport
+  rendererDataSupport?: RendererDataSupport
 }
 
 export class DataSupportManager {
@@ -45,6 +50,7 @@ export class DataSupportManager {
   private modelDataSupport: ModelDataSupport
   private textureDataSupport: TextureDataSupport
   private materialDataSupport: MaterialDataSupport
+  private rendererDataSupport: RendererDataSupport
 
   private dataSupportMap: Map<MODULETYPE, DataSupportAllType>
 
@@ -56,6 +62,7 @@ export class DataSupportManager {
     this.modelDataSupport = parameters?.modelDataSupport || new ModelDataSupport()
     this.textureDataSupport = parameters?.textureDataSupport || new TextureDataSupport()
     this.materialDataSupport = parameters?.materialDataSupport || new MaterialDataSupport()
+    this.rendererDataSupport = parameters?.rendererDataSupport || new RendererDataSupport()
 
     const dataSupportMap = new Map()
 
@@ -65,6 +72,7 @@ export class DataSupportManager {
     dataSupportMap.set(MODULETYPE.MODEL, this.modelDataSupport)
     dataSupportMap.set(MODULETYPE.TEXTURE, this.textureDataSupport)
     dataSupportMap.set(MODULETYPE.MATERIAL, this.materialDataSupport)
+    dataSupportMap.set(MODULETYPE.RENDERER, this.rendererDataSupport)
 
     this.dataSupportMap = dataSupportMap
   }
@@ -85,17 +93,19 @@ export class DataSupportManager {
     config.material && this.materialDataSupport.load(config.material)
     config.model && this.modelDataSupport.load(config.model)
     config.texture && this.textureDataSupport.load(config.texture)
+    config.renderer && this.rendererDataSupport.load(config.renderer)
     return this
   }
 
   toJSON (): string {
     const jsonObject = {
-      camera: this.cameraDataSupport.toJSON(),
-      geometry: this.geometryDataSupport.toJSON(),
-      light: this.lightDataSupport.toJSON(),
-      material: this.materialDataSupport.toJSON(),
-      model: this.modelDataSupport.toJSON(),
-      texture: this.textureDataSupport.toJSON()
+      [MODULETYPE.RENDERER]: this.rendererDataSupport.toJSON(),
+      [MODULETYPE.CAMERA]: this.cameraDataSupport.toJSON(),
+      [MODULETYPE.GEOMETRY]: this.geometryDataSupport.toJSON(),
+      [MODULETYPE.LIGHT]: this.lightDataSupport.toJSON(),
+      [MODULETYPE.MATERIAL]: this.materialDataSupport.toJSON(),
+      [MODULETYPE.MODEL]: this.modelDataSupport.toJSON(),
+      [MODULETYPE.TEXTURE]: this.textureDataSupport.toJSON()
     }
 
     return JSON.stringify(jsonObject)

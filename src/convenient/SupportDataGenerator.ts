@@ -1,9 +1,12 @@
 import { CameraCompilerTarget } from "../case/camera/CameraCompiler"
-import { CONFIGTYPE, MODULETYPE, SymbolConfig } from "../case/common/CommonConfig"
+import { SymbolConfig } from "../case/common/CommonConfig"
+import { CONFIGTYPE } from "../case/constants/configType"
+import { MODULETYPE } from "../case/constants/MODULETYPE"
 import { GeometryCompilerTarget } from "../case/geometry/GeometryCompiler"
 import { LightCompilerTarget } from "../case/light/LightCompiler"
 import { MaterialCompilerTarget } from "../case/material/MaterialCompiler"
 import { ModelCompilerTarget } from "../case/model/ModelCompiler"
+import { RendererCompilerTarget } from "../case/render/RendererCompiler"
 import { TextureCompilerTarget } from "../case/texture/TextureCompiler"
 import { generateConfig } from "./generateConfig"
 
@@ -13,8 +16,8 @@ export type SupportDataAllType =
   LightCompilerTarget |
   GeometryCompilerTarget |
   ModelCompilerTarget |
-  CameraCompilerTarget
-
+  CameraCompilerTarget |
+  RendererCompilerTarget
 
 export class SupportDataGenerator {
 
@@ -37,7 +40,9 @@ export class SupportDataGenerator {
     [CONFIGTYPE.POINTS]: MODULETYPE.MODEL,
 
     [CONFIGTYPE.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
-    [CONFIGTYPE.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA
+    [CONFIGTYPE.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
+
+    [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER
   }
 
   private supportData?: SupportDataAllType

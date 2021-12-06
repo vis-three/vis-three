@@ -6,6 +6,22 @@
     "/examples/public/texture/katana/katana_Roughness.png",
     "/examples/public/texture/katana/katanal_Metallic.png"
   ],
+  "renderer": {
+    "WebGLRenderer": {
+      "vid": "WebGLRenderer",
+      "type": "WebGLRenderer",
+      "clearColor": "rgba(50, 14, 78, 1)",
+      "outputEncoding": 3000,
+      "physicallyCorrectLights": false,
+      "shadowMap": { "enabled": false, "autoUpdate": true, "type": 1 },
+      "toneMapping": 0,
+      "toneMappingExposure": 1,
+      "pixelRatio": 1,
+      "viewport": null,
+      "scissor": null,
+      "size": null
+    }
+  },
   "texture": {
     "25cd5785-6a4d-4dfe-8db2-ce9d74c0b64f": {
       "vid": "25cd5785-6a4d-4dfe-8db2-ce9d74c0b64f",
@@ -448,5 +464,5 @@
       "geometry": "bb10af6a-d777-49d7-b0a3-36b37551ed43",
       "material": "3a2f661c-959a-4143-bb5a-017d7675b7b6"
     }
-  } 
+  }
 }

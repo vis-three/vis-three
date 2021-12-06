@@ -4,7 +4,8 @@ import { getModelConfig } from "../case/model/ModelConfig"
 import { getImageTextureConfig } from "../case/texture/TextureConfig"
 import { getMeshStandardMaterialConfig } from "../case/material/MaterialConfig"
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../case/camera/CameraConfig"
-import { CONFIGTYPE } from "../case/common/CommonConfig"
+import { CONFIGTYPE } from "../case/constants/configType"
+import { getWebGLRendererConfig } from "../case/render/RendererConfig"
 
 const typeMap: {[key: string]: Function} = {
   [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
@@ -25,9 +26,10 @@ const typeMap: {[key: string]: Function} = {
   [CONFIGTYPE.POINTS]: getModelConfig,
 
   [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
-  [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig
-}
+  [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
 
+  [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig
+}
 
 export const generateConfig = function<C> (type: string, merge: object): C | null {
   if (typeMap[type]) {

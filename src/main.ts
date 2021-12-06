@@ -1,6 +1,5 @@
 import { ModelingEngine } from "./engine/ModelingEngine/ModelingEngine";
 
-import { LightCompiler } from "./case/light/LightCompiler";
 import { LightDataSupport } from "./case/light/LightDataSupport";
 import { getAmbientLightConfig, getPointLightConfig } from "./case/light/LightConfig";
 
@@ -20,9 +19,9 @@ import { CameraDataSupport } from "./case/camera/CameraDataSupport";
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "./case/camera/CameraConfig";
 import { CameraHelper } from "./extends/helper/camera/CameraHelper";
 import { DataSupportManager } from "./manager/DataSupportManager";
-import { CONFIGTYPE, MODULETYPE } from "./case/common/CommonConfig";
 import { SupportDataGenerator } from "./convenient/SupportDataGenerator";
-
+import { MODULETYPE } from "./case/constants/MODULETYPE";
+import { CONFIGTYPE } from "./case/constants/configType";
 
 export {
   // menu
