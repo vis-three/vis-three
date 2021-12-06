@@ -45,16 +45,13 @@ export class SupportDataGenerator {
 
   constructor () {}
 
-  create (map?: SupportDataAllType): this {
-    this.supportData = {}
-    this.supportDataType = undefined
-    if (map) {
-      Object.keys(map).some(key => {
-        this.supportDataType = SupportDataGenerator.dataTypeMap[map[key].type]
-        return true
-      })
-      this.supportData = map
+  create (type: MODULETYPE): this {
+    if (!type) {
+      console.warn('you must give a module type in create params')
+      return this
     }
+    this.supportData = {}
+    this.supportDataType = type
     
     return this
   }
@@ -70,18 +67,9 @@ export class SupportDataGenerator {
       return this
     }
 
-    if (!this.supportDataType) {
-      if (!SupportDataGenerator.dataTypeMap[config.type]) {
-        console.warn(`module can not found type '${config.type}'`)
-        return this
-      }
-      console.log(config.type)
-      this.supportDataType = SupportDataGenerator.dataTypeMap[config.type]
-    } else {
-      if (SupportDataGenerator.dataTypeMap[config.type] !== this.supportDataType) {
-        console.warn(`current generator create config which module is in: ${this.supportDataType}, but you provide type is '${config.type}'`)
-        return this
-      }
+    if (SupportDataGenerator.dataTypeMap[config.type] !== this.supportDataType) {
+      console.warn(`current generator create config which module is in: ${this.supportDataType}, but you provide type is '${config.type}'`)
+      return this
     }
 
     this.supportData[config.vid] = generateConfig(config.type, config)!

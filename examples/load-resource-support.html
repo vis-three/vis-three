@@ -46,19 +46,19 @@
 
     loaderManager.load(assets)
 
-    const lightConfig = {}
-    const ambientLightConfig =  Vis.generateConfig('AmbientLight', {vid: getUUid()})
-    const pointLightConfig =  Vis.generateConfig('PointLight', {
+    const dataGenerator = new Vis.SupportDataGenerator()
+    
+    const lightMap = dataGenerator.create(Vis.MODULETYPE.LIGHT)
+    .add(Vis.generateConfig('AmbientLight', {vid: getUUid()}))
+    .add(Vis.generateConfig('PointLight', {
       vid: getUUid(),
       position: {
         z: 10,
         y: 5
       }
-    })
-    lightConfig[ambientLightConfig.vid] = ambientLightConfig
-    lightConfig[pointLightConfig.vid] = pointLightConfig
+    }))
+    .get()
 
-    const textureMap = {}
     const mapTexture = Vis.generateConfig('ImageTexture', {
       vid: getUUid(),
       image: "/examples/public/texture/katana/katana_BaseColor.png"
@@ -75,12 +75,14 @@
       vid: getUUid(),
       image: "/examples/public/texture/katana/katanal_Metallic.png"
     })
-    textureMap[mapTexture.vid] = mapTexture
-    textureMap[normalTexture.vid] = normalTexture
-    textureMap[roughnessTexture.vid] = roughnessTexture
-    textureMap[metalnessTexture.vid] = metalnessTexture
 
-    const materialMap = {}
+    const textureMap = dataGenerator.create(Vis.MODULETYPE.TEXTURE)
+    .add(mapTexture)
+    .add(normalTexture)
+    .add(roughnessTexture)
+    .add(metalnessTexture)
+    .get()
+
     const meshStandardMaterial = Vis.generateConfig('MeshStandardMaterial', {
       vid: getUUid(),
       color: 'rgb(255, 255, 255)',
@@ -89,11 +91,14 @@
       roughnessMap: roughnessTexture.vid,
       metalnessMap: metalnessTexture.vid
     })
-    materialMap[meshStandardMaterial.vid] = meshStandardMaterial
+
+    const materialMap = dataGenerator.create(Vis.MODULETYPE.MATERIAL)
+    .add(meshStandardMaterial)
+    .get()
 
     const textureDataSupport = new Vis.TextureDataSupport(textureMap)
     const materialDataSupport = new Vis.MaterialDataSupport(materialMap)
-    const lightDataSupport = new Vis.LightDataSupport(lightConfig)
+    const lightDataSupport = new Vis.LightDataSupport(lightMap)
     const geometryDataSupport = new Vis.GeometryDataSupport()
     const modelDataSupport = new Vis.ModelDataSupport()
 
