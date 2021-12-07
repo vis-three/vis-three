@@ -19,5 +19,7 @@ export enum CONFIGTYPE {
   PERSPECTIVECAMERA = 'PerspectiveCamera',
   ORTHOGRAPHICCAMERA = 'OrthographicCamera',
 
-  WEBGLRENDERER = 'WebGLRenderer'
+  WEBGLRENDERER = 'WebGLRenderer',
+
+  SCENE = 'Scene'
 }

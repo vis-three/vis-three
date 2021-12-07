@@ -8,7 +8,7 @@ export interface RendererCompilerTarget extends CompilerTarget {
 }
 
 export interface RendererCompilerParameters {
-  target?: RendererCompilerTarget,
+  target?: RendererCompilerTarget
   glRenderer?: WebGLRenderer
 }
 
@@ -56,7 +56,7 @@ export class RendererCompiler extends Compiler {
       glRenderer.clear()
       return this
     } else {
-      console.warn(`compiler can not support this type: ${rendererType}`)
+      console.warn(`renderer compiler can not support this type: ${rendererType}`)
       return this
     }
   }

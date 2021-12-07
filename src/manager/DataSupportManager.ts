@@ -13,15 +13,18 @@ import { MaterialCompilerTarget } from "../case/material/MaterialCompiler";
 import { MODULETYPE } from "../case/constants/MODULETYPE";
 import { RendererCompilerTarget } from "../case/render/RendererCompiler";
 import { RendererDataSupport } from "../case/render/RendererDataSupport";
+import { SceneCompilerTarget } from "../case/scene/SceneCompiler";
+import { SceneDataSupport } from "../case/scene/SceneDataSupport";
 
 export interface DataSupportManagerLoadOptions {
-  [MODULETYPE.TEXTURE]?: TextureCompilerTarget,
-  [MODULETYPE.MATERIAL]?: MaterialCompilerTarget,
-  [MODULETYPE.LIGHT]?: LightCompilerTarget,
-  [MODULETYPE.GEOMETRY]?: GeometryCompilerTarget,
+  [MODULETYPE.TEXTURE]?: TextureCompilerTarget
+  [MODULETYPE.MATERIAL]?: MaterialCompilerTarget
+  [MODULETYPE.LIGHT]?: LightCompilerTarget
+  [MODULETYPE.GEOMETRY]?: GeometryCompilerTarget
   [MODULETYPE.MODEL]?: ModelCompilerTarget
   [MODULETYPE.CAMERA]?: CameraCompilerTarget
   [MODULETYPE.RENDERER]?: RendererCompilerTarget
+  [MODULETYPE.SCENE]?: SceneCompilerTarget
 }
 
 export type DataSupportAllType =
@@ -31,7 +34,8 @@ export type DataSupportAllType =
   ModelDataSupport |
   TextureDataSupport |
   MaterialDataSupport |
-  RendererDataSupport
+  RendererDataSupport |
+  SceneDataSupport
 
 export interface DataSupportManagerParameters {
   cameraDataSupport?: CameraDataSupport
@@ -41,6 +45,7 @@ export interface DataSupportManagerParameters {
   textureDataSupport?: TextureDataSupport
   materialDataSupport?: MaterialDataSupport
   rendererDataSupport?: RendererDataSupport
+  sceneDataSupport?: SceneDataSupport
 }
 
 export class DataSupportManager {
@@ -51,6 +56,7 @@ export class DataSupportManager {
   private textureDataSupport: TextureDataSupport
   private materialDataSupport: MaterialDataSupport
   private rendererDataSupport: RendererDataSupport
+  private sceneDataSupport: SceneDataSupport
 
   private dataSupportMap: Map<MODULETYPE, DataSupportAllType>
 
@@ -63,6 +69,7 @@ export class DataSupportManager {
     this.textureDataSupport = parameters?.textureDataSupport || new TextureDataSupport()
     this.materialDataSupport = parameters?.materialDataSupport || new MaterialDataSupport()
     this.rendererDataSupport = parameters?.rendererDataSupport || new RendererDataSupport()
+    this.sceneDataSupport = parameters?.sceneDataSupport || new SceneDataSupport()
 
     const dataSupportMap = new Map()
 
@@ -73,6 +80,7 @@ export class DataSupportManager {
     dataSupportMap.set(MODULETYPE.TEXTURE, this.textureDataSupport)
     dataSupportMap.set(MODULETYPE.MATERIAL, this.materialDataSupport)
     dataSupportMap.set(MODULETYPE.RENDERER, this.rendererDataSupport)
+    dataSupportMap.set(MODULETYPE.SCENE, this.sceneDataSupport)
 
     this.dataSupportMap = dataSupportMap
   }
@@ -94,12 +102,14 @@ export class DataSupportManager {
     config.model && this.modelDataSupport.load(config.model)
     config.texture && this.textureDataSupport.load(config.texture)
     config.renderer && this.rendererDataSupport.load(config.renderer)
+    config.scene && this.sceneDataSupport.load(config.scene)
     return this
   }
 
   toJSON (): string {
     const jsonObject = {
       [MODULETYPE.RENDERER]: this.rendererDataSupport.toJSON(),
+      [MODULETYPE.SCENE]: this.sceneDataSupport.toJSON(),
       [MODULETYPE.CAMERA]: this.cameraDataSupport.toJSON(),
       [MODULETYPE.GEOMETRY]: this.geometryDataSupport.toJSON(),
       [MODULETYPE.LIGHT]: this.lightDataSupport.toJSON(),

@@ -6,6 +6,7 @@ import { getMeshStandardMaterialConfig } from "../case/material/MaterialConfig"
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../case/camera/CameraConfig"
 import { CONFIGTYPE } from "../case/constants/configType"
 import { getWebGLRendererConfig } from "../case/render/RendererConfig"
+import { getSceneConfig } from "../case/scene/SceneConfig"
 
 const typeMap: {[key: string]: Function} = {
   [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
@@ -28,7 +29,9 @@ const typeMap: {[key: string]: Function} = {
   [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
   [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
 
-  [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig
+  [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,
+
+  [CONFIGTYPE.SCENE]: getSceneConfig
 }
 
 export const generateConfig = function<C> (type: string, merge: object): C | null {

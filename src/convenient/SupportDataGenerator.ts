@@ -42,7 +42,9 @@ export class SupportDataGenerator {
     [CONFIGTYPE.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
 
-    [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER
+    [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER,
+
+    [CONFIGTYPE.SCENE]: MODULETYPE.SCENE
   }
 
   private supportData?: SupportDataAllType
@@ -62,8 +64,8 @@ export class SupportDataGenerator {
   }
 
   add<C extends SymbolConfig> (config: C): this {
-    if (!this.supportData) {
-      console.warn(`you must call method 'create' before the 'add' method`)
+    if (!this.supportData || !this.supportDataType) {
+      console.warn(`you must call 'create' method before the 'add' method`)
       return this
     }
 
@@ -82,6 +84,7 @@ export class SupportDataGenerator {
   }
 
   get (): SupportDataAllType {
+    this.supportDataType = undefined
     if (this.supportData) {
       return this.supportData
     } else {

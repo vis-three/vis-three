@@ -6,6 +6,15 @@
     "/examples/public/texture/katana/katana_Roughness.png",
     "/examples/public/texture/katana/katanal_Metallic.png"
   ],
+  "scene": {
+    "scene": {
+      "vid": "Scene",
+      "type": "Scene",
+      "background": "",
+      "environment": "",
+      "fog": null
+    }
+  },
   "renderer": {
     "WebGLRenderer": {
       "vid": "WebGLRenderer",

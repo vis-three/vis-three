@@ -1,3 +1,4 @@
+import { Scene } from "three";
 import { ModelingEngine } from "../../main";
 import { DataSupportManager } from "../../manager/DataSupportManager";
 import { ResourceManager } from "../../manager/ResourceManager";
@@ -14,6 +15,8 @@ import { ModelCompiler } from "../model/ModelCompiler";
 import { ModelDataSupport } from "../model/ModelDataSupport";
 import { RendererCompiler } from "../render/RendererCompiler";
 import { RendererDataSupport } from "../render/RendererDataSupport";
+import { SceneCompiler } from "../scene/SceneCompiler";
+import { SceneDataSupport } from "../scene/SceneDataSupport";
 import { TextureCompiler } from "../texture/TextureCompiler";
 import { TextureDataSupport } from "../texture/TextureDataSupport";
 export interface ModelingEngineSupportParameters {
@@ -31,6 +34,7 @@ export class ModelingEngineSupport extends ModelingEngine {
   private modelCompiler: ModelCompiler
   private geometryCompiler: GeometryCompiler
   private rendererCompiler: RendererCompiler
+  private sceneCompiler: SceneCompiler
 
   private resourceManager: ResourceManager
   private dataSupportManager: DataSupportManager
@@ -46,7 +50,7 @@ export class ModelingEngineSupport extends ModelingEngine {
     const geometryDataSupport =  dataSupportManager.getDataSupport(MODULETYPE.GEOMETRY)! as GeometryDataSupport
     const modelDataSupport =  dataSupportManager.getDataSupport(MODULETYPE.MODEL)! as ModelDataSupport
     const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER)! as RendererDataSupport
-
+    const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE)! as SceneDataSupport
 
     const textureCompiler = new TextureCompiler({
       target: textureDataSupport.getData()
@@ -79,9 +83,15 @@ export class ModelingEngineSupport extends ModelingEngine {
       glRenderer: this.renderer
     })
 
+    const sceneCompiler = new SceneCompiler({
+      target: sceneDataSupport.getData(),
+      scene: this.scene
+    })
+
     const resourceManager = parameters.resourceManager
 
     // 建立编译器链接
+    sceneCompiler.linkTextureMap(textureCompiler.getMap())
     materialCompiler.linkTextureMap(textureCompiler.getMap())
     modelCompiler.linkGeometryMap(geometryCompiler.getMap())
     modelCompiler.linkMaterialMap(materialCompiler.getMap())
@@ -97,6 +107,7 @@ export class ModelingEngineSupport extends ModelingEngine {
     geometryDataSupport.addCompiler(geometryCompiler)
     modelDataSupport.addCompiler(modelCompiler)
     rendererDataSupport.addCompiler(rendererCompiler)
+    sceneDataSupport.addCompiler(sceneCompiler)
 
     this.textureCompiler = textureCompiler
     this.materialCompiler = materialCompiler
@@ -105,6 +116,7 @@ export class ModelingEngineSupport extends ModelingEngine {
     this.modelCompiler = modelCompiler
     this.geometryCompiler = geometryCompiler
     this.rendererCompiler = rendererCompiler
+    this.sceneCompiler = sceneCompiler
 
     this.dataSupportManager = parameters.dataSupportManager
     this.resourceManager = parameters.resourceManager
