@@ -2,6 +2,7 @@ import { Material, Mesh, Object3D } from "three";
 import { PointLightHelper } from "../../extends/helper/light/PointLightHelper";
 import { CameraHelper } from "../../extends/helper/camera/CameraHelper";
 import { ModelingScene } from "./ModelingScene";
+import { MeshHelper } from "../../extends/helper/object/MeshHelper";
 
 
 export class SceneHelperCompiler {
@@ -9,7 +10,8 @@ export class SceneHelperCompiler {
   private static typeHelperMap = {
     'PointLight': PointLightHelper,
     'PerspectiveCamera': CameraHelper,
-    'OrthographicCamera': CameraHelper
+    'OrthographicCamera': CameraHelper,
+    'Mesh': MeshHelper
   }
 
   private static filterHelperMap = {
@@ -42,7 +44,7 @@ export class SceneHelperCompiler {
     if (SceneHelperCompiler.filterHelperMap[object.type]) {
       return
     }
-    
+
     if (this.map.has(object)) {
       const helper = this.map.get(object)! as Mesh
       this.scene._remove(helper)

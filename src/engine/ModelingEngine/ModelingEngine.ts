@@ -7,17 +7,13 @@ import {
   Vector2,
   WebGLMultisampleRenderTarget,
   RGBAFormat,
-  Color,
   BaseEvent,
-  MeshStandardMaterial
 } from "three"
 
 import { ModelingScene, ModelingSceneDisplayMode, ModelingSceneViewpoint } from "./ModelingScene";
 
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-//@ts-ignore
-import { OutlinePass } from '../../optimize/OutlinePass'
 
 import { PointerManager, VisPointerEvent } from "../../plugins/PointerManager"
 import { SceneStatusManager } from "../../plugins/SceneStatusManager"
@@ -60,7 +56,10 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
   constructor (dom?: HTMLElement) {
     super()
     // 渲染器
-    const renderer: WebGLRenderer = new WebGLRenderer({ antialias: true })
+    const renderer: WebGLRenderer = new WebGLRenderer({ 
+      antialias: true,
+      alpha: true
+    })
     const rendererCanvas: HTMLCanvasElement = renderer.domElement
 
     // 场景
@@ -102,31 +101,8 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
     const composer = new EffectComposer(renderer, renderTarget)
 
     const renderPass = new RenderPass(scene, camera)
-    const hoverOutlinePass = new OutlinePass (
-      new Vector2(rendererCanvas.offsetWidth * pixelRatio, rendererCanvas.offsetHeight * pixelRatio),
-      scene,
-      camera
-    )
-    hoverOutlinePass.pulsePeriod = 0
-    hoverOutlinePass.edgeStrength = 5
-    hoverOutlinePass.edgeThickness = 1
-    hoverOutlinePass.visibleEdgeColor = new Color('rgb(255, 158, 240)')
-    hoverOutlinePass.hiddenEdgeColor = new Color('rgb(255, 158, 240)')
-
-    const activeOutlinePass = new OutlinePass(
-      new Vector2(rendererCanvas.offsetWidth * pixelRatio, rendererCanvas.offsetHeight * pixelRatio),
-      scene,
-      camera
-    )
-    activeOutlinePass.pulsePeriod = 0
-    activeOutlinePass.edgeStrength = 5
-    activeOutlinePass.edgeThickness = 1
-    activeOutlinePass.visibleEdgeColor = new Color('rgb(230, 20, 240)')
-    activeOutlinePass.hiddenEdgeColor = new Color('rgb(230, 20, 240)')
 
     composer.addPass(renderPass)
-    composer.addPass(hoverOutlinePass)
-    composer.addPass(activeOutlinePass)
 
     // 渲染管理器
     const renderManager = new RenderManager()
@@ -187,8 +163,6 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
       transformControls.setCamera(camera)
       sceneStatusManager.setCamera(camera)
       renderPass.camera = camera
-      hoverOutlinePass.renderCamera = camera
-      activeOutlinePass.renderCamera = camera
     })
 
     // 鼠标事件
@@ -207,13 +181,11 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
           hoverObjectSet.delete(object)
         }
       })
-      hoverOutlinePass.selectedObjects = Array.from(hoverObjectSet)
     })
     pointerManager.addEventListener<VisPointerEvent>('pointerup', (event: VisPointerEvent) => {
       if (event.button === 0) {
         sceneStatusManager.selectEnd(event)
         sceneStatusManager.checkActiveObject(event)
-        activeOutlinePass.selectedObjects = Array.from(activeObjectSet)
       }
     })
 
