@@ -1,10 +1,11 @@
 import { SymbolConfig } from "../case/common/CommonConfig";
 export interface CompilerTarget {
-    [key: string]: unknown;
+    [key: string]: SymbolConfig;
 }
 export declare abstract class Compiler {
     static applyConfig<C extends SymbolConfig, O>(config: C, object: O, callBack?: Function): void;
     constructor();
-    abstract compileAll(parameter: unknown): this;
+    abstract setTarget(parameter: unknown): this;
+    abstract compileAll(): this;
     abstract dispose(parameter: unknown): this;
 }

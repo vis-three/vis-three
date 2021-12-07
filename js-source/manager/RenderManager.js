@@ -12,7 +12,17 @@ export class RenderManager extends EventDispatcher {
             delta,
             total
         });
-        this.animationFrame = requestAnimationFrame(() => this.render());
+    };
+    // 播放
+    play = () => {
+        this.dispatchEvent({
+            type: 'play'
+        });
+        const playFun = () => {
+            this.render();
+            this.animationFrame = requestAnimationFrame(playFun);
+        };
+        playFun();
     };
     // 停止渲染
     stop = () => {

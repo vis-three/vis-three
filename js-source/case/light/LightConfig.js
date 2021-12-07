@@ -1,7 +1,14 @@
-import { getObject3DConfig } from "../common/ObjectConfig";
+import { getObjectConfig } from "../object/ObjectConfig";
 export const getLightConfig = function () {
-    return Object.assign(getObject3DConfig(), {
+    return Object.assign(getObjectConfig(), {
         type: 'Light',
+        color: 'rgb(255, 255, 255)',
+        intensity: 1
+    });
+};
+export const getAmbientLightConfig = function () {
+    return Object.assign(getObjectConfig(), {
+        type: 'AmbientLight',
         color: 'rgb(255, 255, 255)',
         intensity: 1
     });
@@ -9,8 +16,8 @@ export const getLightConfig = function () {
 export const getPointLightConfig = function () {
     return Object.assign(getLightConfig(), {
         type: 'PointLight',
-        distance: 100,
-        decay: 0.1
+        distance: 150,
+        decay: 0.01
     });
 };
 export const getSpotLightConfig = function () {

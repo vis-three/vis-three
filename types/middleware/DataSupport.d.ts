@@ -7,4 +7,6 @@ export declare class DataSupport<D extends CompilerTarget, C extends Compiler> {
     constructor(rule: Rule<C>, data: D);
     getData(): D;
     addCompiler(compiler: C): this;
+    toJSON(): string;
+    load(config: D): this;
 }

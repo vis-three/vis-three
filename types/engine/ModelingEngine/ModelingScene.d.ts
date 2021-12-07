@@ -62,6 +62,7 @@ export declare class ModelingScene extends Scene {
     private lineSet;
     private pointsSet;
     private spriteSet;
+    private helperCompiler;
     private displayMode?;
     private meshOverrideMaterial?;
     private lineOverrideMaterial?;
@@ -84,6 +85,7 @@ export declare class ModelingScene extends Scene {
     setGridHelper?: (setting: ModelingGridHelperSetting) => void;
     setDispalyMode?: (mode: ModelingSceneDisplayMode) => void;
     constructor(config: ModelingSceneParameters);
+    setObjectHelperVisiable(visiable: boolean): void;
     setViewPoint(direction: ModelingSceneViewpoint): void;
     add(...object: Object3D[]): this;
     remove(...object: Object3D[]): this;

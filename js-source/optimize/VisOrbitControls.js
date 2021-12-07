@@ -4,7 +4,6 @@ export class VisOrbitControls extends OrbitControls {
     constructor(camera, domElement) {
         super(camera, domElement);
         this.mouseButtons = {
-            // @ts-ignore: Unreachable code error
             LEFT: null,
             MIDDLE: MOUSE.DOLLY,
             RIGHT: MOUSE.ROTATE

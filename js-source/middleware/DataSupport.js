@@ -16,7 +16,19 @@ export class DataSupport {
         return this.data;
     }
     addCompiler(compiler) {
+        compiler.setTarget(this.data);
+        compiler.compileAll();
         this.translater.apply(compiler);
+        return this;
+    }
+    toJSON() {
+        return JSON.stringify(this.data);
+    }
+    load(config) {
+        const data = this.data;
+        for (const key in config) {
+            data[key] = config[key];
+        }
         return this;
     }
 }

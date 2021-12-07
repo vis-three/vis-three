@@ -1,0 +1,1 @@
+{"version":3,"file":"LoadGeometry.js","sourceRoot":"","sources":["../../../src/extends/geometry/LoadGeometry.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,OAAO,CAAC;AAEvC,MAAM,OAAO,YAAa,SAAQ,cAAc;IAC9C,IAAI,GAAG,oBAAoB,CAAA;IAC3B,YAAa,QAAyB;QACpC,KAAK,EAAE,CAAA;QACP,QAAQ,IAAI,IAAI,CAAC,IAAI,CAAC,QAAQ,CAAC,CAAA;IACjC,CAAC;CACF"}

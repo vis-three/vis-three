@@ -1,12 +1,12 @@
-import { EventDispatcher, Object3D, Texture } from "three";
-export var VisRESOURCEEVENTTYPE;
-(function (VisRESOURCEEVENTTYPE) {
-    VisRESOURCEEVENTTYPE["MAPPED"] = "mapped";
-})(VisRESOURCEEVENTTYPE || (VisRESOURCEEVENTTYPE = {}));
+import { EventDispatcher, Object3D } from "three";
+export var RESOURCEEVENTTYPE;
+(function (RESOURCEEVENTTYPE) {
+    RESOURCEEVENTTYPE["MAPPED"] = "mapped";
+})(RESOURCEEVENTTYPE || (RESOURCEEVENTTYPE = {}));
 // TODO: 枚举贴图类型，几何类型，材质类型
 export class ResourceManager extends EventDispatcher {
     mappingResourceMap = new Map(); // mappingUrl -> source
-    configMappingMap = new Map(); // url -> config -> mappingUrl
+    configMappingMap = new Map(); // url -> mappingUrl
     constructor() {
         super();
     }
@@ -17,7 +17,7 @@ export class ResourceManager extends EventDispatcher {
         const recursionMappingObject = function (url, object) {
             // TODO: 区分灯光相机等物体
             const config = {
-                type: `Vis${object.type}`
+                type: `${object.type}`
             };
             let mappingUrl = '';
             // 映射几何配置
@@ -47,6 +47,7 @@ export class ResourceManager extends EventDispatcher {
             }
             // 映射子项配置
             if (object.children.length) {
+                config.children = [];
                 object.children.forEach((child, i, arr) => {
                     mappingUrl = `${url}.children.${i}`;
                     config.children[i] = recursionMappingObject(mappingUrl, child);
@@ -55,7 +56,7 @@ export class ResourceManager extends EventDispatcher {
             return config;
         };
         resourceMap.forEach((resource, url) => {
-            if (resource instanceof Texture) {
+            if (resource instanceof HTMLElement) {
                 mappingResourceMap.set(url, resource);
                 // this.configMappingMap.set(url, )
             }
@@ -69,6 +70,9 @@ export class ResourceManager extends EventDispatcher {
             configMappingMap: this.configMappingMap
         });
         return this;
+    }
+    getMappingResourceMap() {
+        return this.mappingResourceMap;
     }
     // TODO: 枚举贴图类型，几何类型，材质类型
     getResource(mappingUrl) {

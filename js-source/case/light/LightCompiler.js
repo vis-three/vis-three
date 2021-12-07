@@ -1,4 +1,4 @@
-import { PointLight, SpotLight } from "three";
+import { AmbientLight, Color, PointLight, SpotLight } from "three";
 import { Compiler } from "../../middleware/Compiler";
 import { validate } from "uuid";
 export class LightCompiler extends Compiler {
@@ -14,12 +14,14 @@ export class LightCompiler extends Compiler {
         this.constructMap = new Map();
         this.constructMap.set('PointLight', () => new PointLight());
         this.constructMap.set('SpotLight', () => new SpotLight());
+        this.constructMap.set('AmbientLight', () => new AmbientLight());
     }
     add(vid, config) {
         if (validate(vid)) {
             if (config.type && this.constructMap.has(config.type)) {
                 const light = this.constructMap.get(config.type)();
                 Compiler.applyConfig(config, light);
+                light.color = new Color(config.color);
                 this.map.set(vid, light);
                 this.scene.add(light);
             }
@@ -27,6 +29,23 @@ export class LightCompiler extends Compiler {
         else {
             console.error(`vid parameter is illegal: ${vid}`);
         }
+    }
+    set(path, key, value) {
+        const vid = path.shift();
+        if (validate(vid) && this.map.has(vid)) {
+            let config = this.map.get(vid);
+            path.forEach((key, i, arr) => {
+                config = config[key];
+            });
+            config[key] = value;
+        }
+        else {
+            console.error(`vid parameter is illegal: ${vid} or can not found this vid light`);
+        }
+    }
+    setTarget(target) {
+        this.target = target;
+        return this;
     }
     compileAll() {
         const target = this.target;

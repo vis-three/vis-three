@@ -7,6 +7,7 @@ export declare class RenderManager extends EventDispatcher<RenderEvent | BaseEve
     private clock;
     private animationFrame;
     render: () => void;
+    play: () => void;
     stop: () => void;
     checkHasRendering: () => boolean;
     hasVaildRender: () => boolean;

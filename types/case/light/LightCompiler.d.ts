@@ -14,7 +14,9 @@ export declare class LightCompiler extends Compiler {
     private map;
     private constructMap;
     constructor(parameters: LightCompilerParameters);
-    add(vid: any, config: any): void;
+    add(vid: string, config: SpotLightConfig | PointLightConfig): void;
+    set(path: string[], key: string, value: any): void;
+    setTarget(target: LightCompilerTarget): this;
     compileAll(): this;
     dispose(): this;
 }

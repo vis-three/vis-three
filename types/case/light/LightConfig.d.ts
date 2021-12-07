@@ -1,7 +1,9 @@
-import { Object3DConfig } from "../common/ObjectConfig";
-export interface LightConifg extends Object3DConfig {
+import { ObjectConfig } from "../object/ObjectConfig";
+export interface LightConifg extends ObjectConfig {
     color: string;
     intensity: number;
+}
+export interface AmbientLightConfig extends LightConifg {
 }
 export interface PointLightConfig extends LightConifg {
     distance: number;
@@ -14,5 +16,6 @@ export interface SpotLightConfig extends LightConifg {
     decay: number;
 }
 export declare const getLightConfig: () => LightConifg;
+export declare const getAmbientLightConfig: () => AmbientLightConfig;
 export declare const getPointLightConfig: () => PointLightConfig;
 export declare const getSpotLightConfig: () => SpotLightConfig;

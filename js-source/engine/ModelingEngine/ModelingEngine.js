@@ -1,5 +1,5 @@
 import { WebGLRenderer, EventDispatcher, Vector2, WebGLMultisampleRenderTarget, RGBAFormat, Color } from "three";
-import { ModelingScene, ModelingSceneViewpoint } from "./ModelingScene";
+import { ModelingScene, ModelingSceneDisplayMode, ModelingSceneViewpoint } from "./ModelingScene";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 //@ts-ignore
@@ -34,7 +34,7 @@ export class ModelingEngine extends EventDispatcher {
             hasAxesHelper: true,
             hasGridHelper: true,
             hasDisplayMode: true,
-            displayMode: 0
+            displayMode: ModelingSceneDisplayMode.ENV
         });
         const camera = scene.getDefaultPerspectiveCamera();
         const defaultPerspectiveCamera = scene.getDefaultPerspectiveCamera();
@@ -203,8 +203,11 @@ export class ModelingEngine extends EventDispatcher {
     }
     // 渲染
     render() {
-        console.log(1);
         this.renderManager.render();
+    }
+    // 播放
+    play() {
+        this.renderManager.play();
     }
     // 停止
     stop() {
