@@ -67,11 +67,10 @@ console.log(engine.getDataSupportManager().toJSON())
 ``` js
 
 import config from '/examples/config.json'
-const dataSupportManager = new Vis.DataSupportManager().load(config)
 
 const engine = new Vis.ModelingEngineSupport({
   dom: document.getElementById('app'),
-  dataSupportManager: dataSupportManager,
+  dataSupportManager: new Vis.DataSupportManager().load(config),
   resourceManager: new Vis.ResourceManager()
 })
 
