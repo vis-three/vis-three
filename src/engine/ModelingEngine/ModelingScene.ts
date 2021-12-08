@@ -145,6 +145,8 @@ export class ModelingScene extends Scene {
   private spriteSet: Set<Sprite>
 
   private helperCompiler: SceneHelperCompiler
+  private resetHoverObjectSet: Set<Object3D>
+  private resetActiveObjectSet: Set<Object3D>
 
   private displayMode?: ModelingSceneDisplayMode // 展示mode
   private meshOverrideMaterial?: MeshLambertMaterial
@@ -185,6 +187,8 @@ export class ModelingScene extends Scene {
     this.spriteSet = new Set()
 
     this.helperCompiler = new SceneHelperCompiler(this)
+    this.resetHoverObjectSet = new Set()
+    this.resetActiveObjectSet = new Set()
 
     // 初始化透视相机
     if (config.hasDefaultPerspectiveCamera) {
@@ -517,6 +521,52 @@ export class ModelingScene extends Scene {
   // 设置物体辅助
   setObjectHelperVisiable (visiable: boolean): void {
     this.helperCompiler.setVisiable(visiable)
+  }
+
+  // 设置物体辅助hover状态
+  setObjectHelperHover (...object: Object3D[]): this {
+    const resetObjectSet = this.resetHoverObjectSet
+    const activeObjectSet = this.resetActiveObjectSet
+    // object中存在active不会被hover影响
+    object.forEach((elem, i, arr) => {
+      resetObjectSet.delete(elem)
+      if (activeObjectSet.has(elem)) {
+        arr.splice(i, 1)
+      }
+    })
+    // 清除需要重置的active物体，他应对交给setAcitve
+    activeObjectSet.forEach(elem => {
+      resetObjectSet.delete(elem)
+    })
+
+    this.helperCompiler.resetHelperColor(...resetObjectSet)
+    resetObjectSet.clear()
+
+    this.helperCompiler.setHelperHoverColor(...object)
+
+    object.forEach(elem => {
+      resetObjectSet.add(elem)
+    })
+    
+    return this
+  }
+
+  // 设置物体辅助active
+  setObjectHelperActive (...object: Object3D[]): this {
+    const resetObjectSet = this.resetActiveObjectSet
+    object.forEach(elem => {
+      resetObjectSet.delete(elem)
+    })
+
+    this.helperCompiler.resetHelperColor(...resetObjectSet)
+    resetObjectSet.clear()
+
+    this.helperCompiler.setHelperActiveColor(...object)
+
+    object.forEach(elem => {
+      resetObjectSet.add(elem)
+    })
+    return this
   }
   
   // 设置视角方向

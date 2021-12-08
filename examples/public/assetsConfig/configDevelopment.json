@@ -22,13 +22,45 @@
       "clearColor": "rgba(50, 14, 78, 1)",
       "outputEncoding": 3000,
       "physicallyCorrectLights": false,
-      "shadowMap": { "enabled": false, "autoUpdate": true, "type": 1 },
+      "shadowMap": {
+        "enabled": false,
+        "autoUpdate": true,
+        "type": 1
+      },
       "toneMapping": 0,
       "toneMappingExposure": 1,
       "pixelRatio": 1,
       "viewport": null,
       "scissor": null,
       "size": null
+    }
+  },
+  "camera": {
+    "67b4de22-3e2e-44d3-9fd2-236c73daca00": {
+      "vid": "67b4de22-3e2e-44d3-9fd2-236c73daca00",
+      "type": "PerspectiveCamera",
+      "castShadow": true,
+      "receiveShadow": true,
+      "lookAt": "",
+      "position": {
+        "x": 0,
+        "y": 15,
+        "z": 50
+      },
+      "rotation": {
+        "x": -0.5,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "fov": 45,
+      "aspect": 1.7777777777777777,
+      "near": 10,
+      "far": 100
     }
   },
   "texture": {

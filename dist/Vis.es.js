@@ -10,7 +10,8 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
-const getHelperLineMaterial = () => new LineBasicMaterial({ color: "rgb(255, 255, 255)" });
+const HELPERCOLOR = "rgb(255, 255, 255)";
+const getHelperLineMaterial = () => new LineBasicMaterial({ color: HELPERCOLOR });
 class PointLightHelper extends LineSegments {
   constructor(pointLight) {
     super();
@@ -20,6 +21,7 @@ class PointLightHelper extends LineSegments {
     __publicField(this, "type", "VisPointLightHelper");
     __publicField(this, "cachaColor");
     __publicField(this, "cachaDistance");
+    __publicField(this, "cachaVector3");
     this.geometry = new BufferGeometry();
     const points = [
       -1,
@@ -92,6 +94,7 @@ class PointLightHelper extends LineSegments {
     this.sphere = new Sphere(new Vector3(0, 0, 0), 1);
     this.cachaColor = pointLight.color.getHex();
     this.cachaDistance = pointLight.distance;
+    this.cachaVector3 = new Vector3();
     this.add(this.shape);
     this.matrixAutoUpdate = false;
     this.matrix = pointLight.matrix;
@@ -112,11 +115,12 @@ class PointLightHelper extends LineSegments {
     };
   }
   raycast(raycaster, intersects) {
-    const matrixWorld = this.matrixWorld;
+    const target = this.target;
+    const matrixWorld = target.matrixWorld;
     const sphere = this.sphere;
+    sphere.set(this.cachaVector3.set(0, 0, 0), 1);
     sphere.applyMatrix4(matrixWorld);
     if (raycaster.ray.intersectsSphere(sphere)) {
-      const target = this.target;
       intersects.push({
         distance: raycaster.ray.origin.distanceTo(target.position),
         object: target,
@@ -128,7 +132,6 @@ class PointLightHelper extends LineSegments {
 class CameraHelper extends LineSegments {
   constructor(camera) {
     super();
-    __publicField(this, "box");
     __publicField(this, "shape");
     __publicField(this, "target");
     __publicField(this, "type", "CameraHelper");
@@ -290,7 +293,6 @@ class CameraHelper extends LineSegments {
     };
     this.add(shape);
     this.shape = shape;
-    this.box = geometry.boundingBox;
     this.geometry = geometry;
     this.material = getHelperLineMaterial();
     this.target = camera;
@@ -329,7 +331,7 @@ class CameraHelper extends LineSegments {
   }
   raycast(raycaster, intersects) {
     const matrixWorld = this.matrixWorld;
-    const box = this.box;
+    const box = this.geometry.boundingBox.clone();
     box.applyMatrix4(matrixWorld);
     if (raycaster.ray.intersectsBox(box)) {
       const target = this.target;
@@ -366,6 +368,8 @@ class MeshHelper extends LineSegments {
     };
   }
 }
+const ACTIVECOLOR = "rgb(230, 20, 240)";
+const HOVERCOLOR = "rgb(255, 158, 240)";
 const _SceneHelperCompiler = class {
   constructor(scene) {
     __publicField(this, "map");
@@ -419,8 +423,41 @@ const _SceneHelperCompiler = class {
       });
     }
   }
+  resetHelperColor(...object) {
+    const map = this.map;
+    const helperColorHex = _SceneHelperCompiler.helperColor.getHex();
+    object.forEach((elem) => {
+      if (map.has(elem)) {
+        const helper = map.get(elem);
+        helper.material.color.setHex(helperColorHex);
+      }
+    });
+  }
+  setHelperHoverColor(...object) {
+    const map = this.map;
+    const hoverColorHex = _SceneHelperCompiler.hoverColor.getHex();
+    object.forEach((elem) => {
+      if (map.has(elem)) {
+        const helper = map.get(elem);
+        helper.material.color.setHex(hoverColorHex);
+      }
+    });
+  }
+  setHelperActiveColor(...object) {
+    const map = this.map;
+    const activeColorHex = _SceneHelperCompiler.activeColor.getHex();
+    object.forEach((elem) => {
+      if (map.has(elem)) {
+        const helper = map.get(elem);
+        helper.material.color.setHex(activeColorHex);
+      }
+    });
+  }
 };
 let SceneHelperCompiler = _SceneHelperCompiler;
+__publicField(SceneHelperCompiler, "helperColor", new Color(HELPERCOLOR));
+__publicField(SceneHelperCompiler, "activeColor", new Color(ACTIVECOLOR));
+__publicField(SceneHelperCompiler, "hoverColor", new Color(HOVERCOLOR));
 __publicField(SceneHelperCompiler, "typeHelperMap", {
   "PointLight": PointLightHelper,
   "PerspectiveCamera": CameraHelper,
@@ -494,6 +531,8 @@ class ModelingScene extends Scene {
     __publicField(this, "pointsSet");
     __publicField(this, "spriteSet");
     __publicField(this, "helperCompiler");
+    __publicField(this, "resetHoverObjectSet");
+    __publicField(this, "resetActiveObjectSet");
     __publicField(this, "displayMode");
     __publicField(this, "meshOverrideMaterial");
     __publicField(this, "lineOverrideMaterial");
@@ -522,6 +561,8 @@ class ModelingScene extends Scene {
     this.pointsSet = new Set();
     this.spriteSet = new Set();
     this.helperCompiler = new SceneHelperCompiler(this);
+    this.resetHoverObjectSet = new Set();
+    this.resetActiveObjectSet = new Set();
     if (config.hasDefaultPerspectiveCamera) {
       if (config.defaultPerspectiveCameraSetting) {
         this.defaultPerspectiveCamera = new PerspectiveCamera(config.defaultPerspectiveCameraSetting.fov, config.defaultPerspectiveCameraSetting.aspect, config.defaultPerspectiveCameraSetting.near, config.defaultPerspectiveCameraSetting.far);
@@ -782,6 +823,39 @@ class ModelingScene extends Scene {
   }
   setObjectHelperVisiable(visiable) {
     this.helperCompiler.setVisiable(visiable);
+  }
+  setObjectHelperHover(...object) {
+    const resetObjectSet = this.resetHoverObjectSet;
+    const activeObjectSet = this.resetActiveObjectSet;
+    object.forEach((elem, i, arr) => {
+      resetObjectSet.delete(elem);
+      if (activeObjectSet.has(elem)) {
+        arr.splice(i, 1);
+      }
+    });
+    activeObjectSet.forEach((elem) => {
+      resetObjectSet.delete(elem);
+    });
+    this.helperCompiler.resetHelperColor(...resetObjectSet);
+    resetObjectSet.clear();
+    this.helperCompiler.setHelperHoverColor(...object);
+    object.forEach((elem) => {
+      resetObjectSet.add(elem);
+    });
+    return this;
+  }
+  setObjectHelperActive(...object) {
+    const resetObjectSet = this.resetActiveObjectSet;
+    object.forEach((elem) => {
+      resetObjectSet.delete(elem);
+    });
+    this.helperCompiler.resetHelperColor(...resetObjectSet);
+    resetObjectSet.clear();
+    this.helperCompiler.setHelperActiveColor(...object);
+    object.forEach((elem) => {
+      resetObjectSet.add(elem);
+    });
+    return this;
   }
   setViewPoint(direction) {
     this.dispatchEvent({ type: `${direction}ViewPoint` });
@@ -1311,9 +1385,9 @@ class ModelingEngine extends EventDispatcher$1 {
     const sceneStatusManager = new SceneStatusManager(renderer.domElement, camera, scene);
     const hoverObjectSet = sceneStatusManager.getHoverObjectSet();
     const activeObjectSet = sceneStatusManager.getActiveObjectSet();
-    renderer.getPixelRatio();
+    const pixelRatio = renderer.getPixelRatio();
     const size = renderer.getDrawingBufferSize(new Vector2());
-    const renderTarget = new WebGLMultisampleRenderTarget(size.width, size.height, {
+    const renderTarget = new WebGLMultisampleRenderTarget(size.width * pixelRatio, size.height * pixelRatio, {
       format: RGBAFormat
     });
     const composer = new EffectComposer(renderer, renderTarget);
@@ -1380,16 +1454,23 @@ class ModelingEngine extends EventDispatcher$1 {
         sceneStatusManager.selecting(event);
       }
       sceneStatusManager.checkHoverObject(event);
-      activeObjectSet.forEach((object) => {
-        if (hoverObjectSet.has(object)) {
-          hoverObjectSet.delete(object);
-        }
+      scene.setObjectHelperHover(...hoverObjectSet);
+      hoverObjectSet.forEach((object) => {
+        object.dispatchEvent({
+          type: "hover"
+        });
       });
     });
     pointerManager.addEventListener("pointerup", (event) => {
       if (event.button === 0) {
         sceneStatusManager.selectEnd(event);
         sceneStatusManager.checkActiveObject(event);
+        scene.setObjectHelperActive(...activeObjectSet);
+        activeObjectSet.forEach((object) => {
+          object.dispatchEvent({
+            type: "active"
+          });
+        });
       }
     });
     renderManager.addEventListener("render", (event) => {
@@ -2456,7 +2537,8 @@ class ModelingEngineSupport extends ModelingEngine {
       target: materialDataSupport.getData()
     });
     const cameraCompiler = new CameraCompiler({
-      target: cameraDataSupport.getData()
+      target: cameraDataSupport.getData(),
+      scene: this.scene
     });
     const lightCompiler = new LightCompiler({
       scene: this.scene,

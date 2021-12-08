@@ -1,6 +1,8 @@
 import { LineBasicMaterial, Object3D } from "three";
 
-export const getHelperLineMaterial = () => new LineBasicMaterial({ color: 'rgb(255, 255, 255)' })
+export const HELPERCOLOR = 'rgb(255, 255, 255)'
+
+export const getHelperLineMaterial = () => new LineBasicMaterial({ color: HELPERCOLOR })
 
 export interface VisHelper {
   target: Object3D

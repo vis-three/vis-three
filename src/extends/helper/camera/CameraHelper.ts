@@ -2,7 +2,7 @@ import { Box3, BufferGeometry, Camera, CameraHelper as TCameraHelper, Float32Buf
 import { getHelperLineMaterial, VisHelper } from "../common";
 
 export class CameraHelper extends LineSegments implements VisHelper {
-  box: Box3
+
   shape: TCameraHelper
   target: Camera
   type: string = 'CameraHelper'
@@ -54,7 +54,6 @@ export class CameraHelper extends LineSegments implements VisHelper {
     
     this.add(shape)
     this.shape = shape
-    this.box = geometry.boundingBox!
     this.geometry = geometry
     this.material = getHelperLineMaterial()
     this.target = camera
@@ -103,7 +102,7 @@ export class CameraHelper extends LineSegments implements VisHelper {
 
   raycast (raycaster: Raycaster, intersects: Intersection[]) {
     const matrixWorld = this.matrixWorld
-    const box = this.box
+    const box = this.geometry.boundingBox!.clone()
 
     box.applyMatrix4(matrixWorld)
 

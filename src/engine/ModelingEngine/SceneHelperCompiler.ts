@@ -1,11 +1,19 @@
-import { Material, Mesh, Object3D } from "three";
+import { Color, Material, Mesh, MeshBasicMaterial, Object3D } from "three";
 import { PointLightHelper } from "../../extends/helper/light/PointLightHelper";
 import { CameraHelper } from "../../extends/helper/camera/CameraHelper";
 import { ModelingScene } from "./ModelingScene";
 import { MeshHelper } from "../../extends/helper/object/MeshHelper";
+import { HELPERCOLOR } from "../../extends/helper/common";
 
+export const ACTIVECOLOR = 'rgb(230, 20, 240)'
+
+export const HOVERCOLOR = 'rgb(255, 158, 240)'
 
 export class SceneHelperCompiler {
+
+  private static helperColor = new Color(HELPERCOLOR)
+  private static activeColor = new Color(ACTIVECOLOR)
+  private static hoverColor = new Color(HOVERCOLOR)
 
   private static typeHelperMap = {
     'PointLight': PointLightHelper,
@@ -75,5 +83,41 @@ export class SceneHelperCompiler {
         scene._remove(helper)
       })
     }
+  }
+
+  // 重置辅助的颜色
+  resetHelperColor (...object: Object3D[]) {
+    const map = this.map
+    const helperColorHex = SceneHelperCompiler.helperColor.getHex()
+    object.forEach(elem => {
+      if (map.has(elem)) {
+        const helper = map.get(elem)! as Mesh
+        (helper.material as MeshBasicMaterial).color.setHex(helperColorHex)
+      }
+    })
+  }
+
+  // 设置hover辅助色
+  setHelperHoverColor (...object: Object3D[]) {
+    const map = this.map
+    const hoverColorHex = SceneHelperCompiler.hoverColor.getHex()
+    object.forEach(elem => {
+      if (map.has(elem)) {
+        const helper = map.get(elem)! as Mesh
+        (helper.material as MeshBasicMaterial).color.setHex(hoverColorHex)
+      }
+    })
+  }
+
+  // 设置激活辅助色
+  setHelperActiveColor (...object: Object3D[]) {
+    const map = this.map
+    const activeColorHex = SceneHelperCompiler.activeColor.getHex()
+    object.forEach(elem => {
+      if (map.has(elem)) {
+        const helper = map.get(elem)! as Mesh
+        (helper.material as MeshBasicMaterial).color.setHex(activeColorHex)
+      }
+    })
   }
 }

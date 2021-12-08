@@ -9,6 +9,7 @@ export class PointLightHelper extends LineSegments implements VisHelper{
     
     private cachaColor: number
     private cachaDistance: number
+    private cachaVector3: Vector3
     
 
   constructor (pointLight: PointLight) {
@@ -54,6 +55,7 @@ export class PointLightHelper extends LineSegments implements VisHelper{
     this.sphere = new Sphere(new Vector3(0, 0, 0), 1)
     this.cachaColor = pointLight.color.getHex()
     this.cachaDistance = pointLight.distance
+    this.cachaVector3 = new Vector3()
 
     this.add(this.shape)
     this.matrixAutoUpdate = false
@@ -80,13 +82,16 @@ export class PointLightHelper extends LineSegments implements VisHelper{
 
 
   raycast (raycaster: Raycaster, intersects: Intersection[]) {
-    const matrixWorld = this.matrixWorld
+    
+    const target = this.target
+    const matrixWorld = target.matrixWorld
     const sphere = this.sphere
-
+    
+    sphere.set(this.cachaVector3.set(0, 0, 0), 1)
     sphere.applyMatrix4(matrixWorld)
 
     if (raycaster.ray.intersectsSphere(sphere)) {
-      const target = this.target
+      
       intersects.push({
         distance: raycaster.ray.origin.distanceTo(target.position),
         object: target,

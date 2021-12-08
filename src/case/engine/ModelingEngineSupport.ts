@@ -61,7 +61,8 @@ export class ModelingEngineSupport extends ModelingEngine {
     })
 
     const cameraCompiler = new CameraCompiler({
-      target: cameraDataSupport.getData()
+      target: cameraDataSupport.getData(),
+      scene: this.scene
     })
 
     const lightCompiler = new LightCompiler({

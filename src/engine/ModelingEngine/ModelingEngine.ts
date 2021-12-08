@@ -95,7 +95,7 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
 
     const pixelRatio = renderer.getPixelRatio()
     const size = renderer.getDrawingBufferSize(new Vector2())
-    const renderTarget = new WebGLMultisampleRenderTarget(size.width, size.height, {
+    const renderTarget = new WebGLMultisampleRenderTarget(size.width * pixelRatio, size.height * pixelRatio, {
       format: RGBAFormat
     })
     const composer = new EffectComposer(renderer, renderTarget)
@@ -176,16 +176,23 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
         sceneStatusManager.selecting(event)
       }
       sceneStatusManager.checkHoverObject(event)
-      activeObjectSet.forEach(object => {
-        if (hoverObjectSet.has(object)) {
-          hoverObjectSet.delete(object)
-        }
+      scene.setObjectHelperHover(...hoverObjectSet)
+      hoverObjectSet.forEach(object => {
+        object.dispatchEvent({
+          type: 'hover'
+        })
       })
     })
     pointerManager.addEventListener<VisPointerEvent>('pointerup', (event: VisPointerEvent) => {
       if (event.button === 0) {
         sceneStatusManager.selectEnd(event)
         sceneStatusManager.checkActiveObject(event)
+        scene.setObjectHelperActive(...activeObjectSet)
+        activeObjectSet.forEach(object => {
+          object.dispatchEvent({
+            type: 'active'
+          })
+        })
       }
     })
 
