@@ -172,7 +172,7 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
       }
     })
     pointerManager.addEventListener<VisPointerEvent>('pointermove', (event: VisPointerEvent) => {
-      if (event.button === 0) {
+      if (event.buttons === 1) {
         sceneStatusManager.selecting(event)
       }
       sceneStatusManager.checkHoverObject(event)
@@ -185,8 +185,8 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
     })
     pointerManager.addEventListener<VisPointerEvent>('pointerup', (event: VisPointerEvent) => {
       if (event.button === 0) {
-        sceneStatusManager.selectEnd(event)
         sceneStatusManager.checkActiveObject(event)
+        sceneStatusManager.selectEnd(event)
         scene.setObjectHelperActive(...activeObjectSet)
         activeObjectSet.forEach(object => {
           object.dispatchEvent({

@@ -10,7 +10,11 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
+const ACTIVECOLOR = "rgb(230, 20, 240)";
+const HOVERCOLOR = "rgb(255, 158, 240)";
 const HELPERCOLOR = "rgb(255, 255, 255)";
+const SELECTCOLOR = "rgb(230, 20, 240)";
+const SELECTBGCOLOR = "rgba(230, 20, 240, 0.15)";
 const getHelperLineMaterial = () => new LineBasicMaterial({ color: HELPERCOLOR });
 class PointLightHelper extends LineSegments {
   constructor(pointLight) {
@@ -368,8 +372,6 @@ class MeshHelper extends LineSegments {
     };
   }
 }
-const ACTIVECOLOR = "rgb(230, 20, 240)";
-const HOVERCOLOR = "rgb(255, 158, 240)";
 const _SceneHelperCompiler = class {
   constructor(scene) {
     __publicField(this, "map");
@@ -425,7 +427,7 @@ const _SceneHelperCompiler = class {
   }
   resetHelperColor(...object) {
     const map = this.map;
-    const helperColorHex = _SceneHelperCompiler.helperColor.getHex();
+    const helperColorHex = _SceneHelperCompiler.helperColorHex;
     object.forEach((elem) => {
       if (map.has(elem)) {
         const helper = map.get(elem);
@@ -435,7 +437,7 @@ const _SceneHelperCompiler = class {
   }
   setHelperHoverColor(...object) {
     const map = this.map;
-    const hoverColorHex = _SceneHelperCompiler.hoverColor.getHex();
+    const hoverColorHex = _SceneHelperCompiler.hoverColorHex;
     object.forEach((elem) => {
       if (map.has(elem)) {
         const helper = map.get(elem);
@@ -445,7 +447,7 @@ const _SceneHelperCompiler = class {
   }
   setHelperActiveColor(...object) {
     const map = this.map;
-    const activeColorHex = _SceneHelperCompiler.activeColor.getHex();
+    const activeColorHex = _SceneHelperCompiler.activeColorHex;
     object.forEach((elem) => {
       if (map.has(elem)) {
         const helper = map.get(elem);
@@ -455,9 +457,9 @@ const _SceneHelperCompiler = class {
   }
 };
 let SceneHelperCompiler = _SceneHelperCompiler;
-__publicField(SceneHelperCompiler, "helperColor", new Color(HELPERCOLOR));
-__publicField(SceneHelperCompiler, "activeColor", new Color(ACTIVECOLOR));
-__publicField(SceneHelperCompiler, "hoverColor", new Color(HOVERCOLOR));
+__publicField(SceneHelperCompiler, "helperColorHex", new Color(HELPERCOLOR).getHex());
+__publicField(SceneHelperCompiler, "activeColorHex", new Color(ACTIVECOLOR).getHex());
+__publicField(SceneHelperCompiler, "hoverColorHex", new Color(HOVERCOLOR).getHex());
 __publicField(SceneHelperCompiler, "typeHelperMap", {
   "PointLight": PointLightHelper,
   "PerspectiveCamera": CameraHelper,
@@ -638,6 +640,8 @@ class ModelingScene extends Scene {
     }
     if (config.hasGridHelper) {
       const gridHelper = new GridHelper(500, 50, "rgb(130, 130, 130)", "rgb(70, 70, 70)");
+      gridHelper.raycast = () => {
+      };
       if (gridHelper.material instanceof Material) {
         const material = gridHelper.material;
         material.transparent = true;
@@ -1151,8 +1155,13 @@ class SelectionHelper {
     __publicField(this, "pointBottomRight");
     __publicField(this, "isDown");
     this.dom = dom;
-    this.element = document.createElement("div");
-    this.element.style.pointerEvents = "none";
+    const element = document.createElement("div");
+    element.style.pointerEvents = "none";
+    element.style.border = `1px solid ${SELECTCOLOR}`;
+    element.style.position = "fixed";
+    element.style.zIndex = "100";
+    element.style.backgroundColor = SELECTBGCOLOR;
+    this.element = element;
     this.startPoint = new Vector2();
     this.pointTopLeft = new Vector2();
     this.pointBottomRight = new Vector2();
@@ -1160,7 +1169,7 @@ class SelectionHelper {
   }
   onSelectStart(event) {
     this.isDown = true;
-    this.dom.appendChild(this.element);
+    document.body.appendChild(this.element);
     this.element.style.left = event.clientX + "px";
     this.element.style.top = event.clientY + "px";
     this.element.style.width = "0px";
@@ -1186,7 +1195,7 @@ class SelectionHelper {
       return;
     }
     this.isDown = false;
-    this.dom.removeChild(this.element);
+    document.body.removeChild(this.element);
   }
 }
 class SceneStatusManager extends SelectionBox {
@@ -1450,7 +1459,7 @@ class ModelingEngine extends EventDispatcher$1 {
       }
     });
     pointerManager.addEventListener("pointermove", (event) => {
-      if (event.button === 0) {
+      if (event.buttons === 1) {
         sceneStatusManager.selecting(event);
       }
       sceneStatusManager.checkHoverObject(event);
@@ -1463,8 +1472,8 @@ class ModelingEngine extends EventDispatcher$1 {
     });
     pointerManager.addEventListener("pointerup", (event) => {
       if (event.button === 0) {
-        sceneStatusManager.selectEnd(event);
         sceneStatusManager.checkActiveObject(event);
+        sceneStatusManager.selectEnd(event);
         scene.setObjectHelperActive(...activeObjectSet);
         activeObjectSet.forEach((object) => {
           object.dispatchEvent({

@@ -310,6 +310,7 @@ export class ModelingScene extends Scene {
     // 初始化网格
     if (config.hasGridHelper) {
       const gridHelper = new GridHelper(500, 50, 'rgb(130, 130, 130)', 'rgb(70, 70, 70)')
+      gridHelper.raycast = () => {}
       if (gridHelper.material instanceof Material) {
         const material = gridHelper.material 
         material.transparent = true

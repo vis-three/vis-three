@@ -66,7 +66,7 @@ export class SceneStatusManager extends SelectionBox{
     this.selectionHelper.onSelectOver(event)
     this.endPoint.set(mouse.x, mouse.y, 0.5)
     this.select()
-
+    
     this.collection.forEach(object => {
       this.activeObjectSet.add(object)
     })

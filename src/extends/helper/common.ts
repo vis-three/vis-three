@@ -1,6 +1,5 @@
 import { LineBasicMaterial, Object3D } from "three";
-
-export const HELPERCOLOR = 'rgb(255, 255, 255)'
+import { HELPERCOLOR } from "../../case/constants/COLOR";
 
 export const getHelperLineMaterial = () => new LineBasicMaterial({ color: HELPERCOLOR })
 
