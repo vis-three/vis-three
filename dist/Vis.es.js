@@ -1375,7 +1375,6 @@ class ModelingEngine extends EventDispatcher$1 {
       antialias: true,
       alpha: true
     });
-    renderer.domElement;
     const scene = new ModelingScene({
       hasDefaultPerspectiveCamera: true,
       hasDefaultOrthographicCamera: true,

@@ -7,7 +7,7 @@ import {
   Vector2,
   WebGLMultisampleRenderTarget,
   RGBAFormat,
-  BaseEvent,
+  BaseEvent
 } from "three"
 
 import { ModelingScene, ModelingSceneDisplayMode, ModelingSceneViewpoint } from "./ModelingScene";
@@ -60,7 +60,6 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
       antialias: true,
       alpha: true
     })
-    const rendererCanvas: HTMLCanvasElement = renderer.domElement
 
     // 场景
     const scene: ModelingScene = new ModelingScene({
