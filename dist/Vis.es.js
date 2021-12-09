@@ -1332,8 +1332,39 @@ class VisTransformControls extends TransformControls {
   constructor(camera, dom) {
     super(camera, dom);
     __publicField(this, "target");
+    __publicField(this, "transObjectSet");
     this.target = new Object3D();
+    this.transObjectSet = new Set();
     this.attach(this.target);
+    let mode = "";
+    let target = this.target;
+    let transObjectSet = this.transObjectSet;
+    let cachaTargetTrans = {
+      x: 0,
+      y: 0,
+      z: 0
+    };
+    this.addEventListener("mouseDown", (event) => {
+      mode = event.target.mode;
+      mode === "translate" && (mode = "position");
+      mode === "rotate" && (mode = "rotation");
+      cachaTargetTrans.x = target[mode].x;
+      cachaTargetTrans.y = target[mode].y;
+      cachaTargetTrans.z = target[mode].z;
+    });
+    this.addEventListener("objectChange", (event) => {
+      const offsetX = target[mode].x - cachaTargetTrans.x;
+      const offsetY = target[mode].y - cachaTargetTrans.y;
+      const offsetZ = target[mode].z - cachaTargetTrans.z;
+      cachaTargetTrans.x = target[mode].x;
+      cachaTargetTrans.y = target[mode].y;
+      cachaTargetTrans.z = target[mode].z;
+      transObjectSet.forEach((elem) => {
+        elem[mode].x += offsetX;
+        elem[mode].y += offsetY;
+        elem[mode].z += offsetZ;
+      });
+    });
   }
   getTarget() {
     return this.target;
@@ -1343,6 +1374,7 @@ class VisTransformControls extends TransformControls {
     return this;
   }
   setAttach(...object) {
+    this.transObjectSet.clear();
     if (!object.length) {
       this.visible = false;
       return this;
@@ -1355,6 +1387,7 @@ class VisTransformControls extends TransformControls {
       target.position.copy(currentObject.position);
       target.updateMatrix();
       target.updateMatrixWorld();
+      this.transObjectSet.add(currentObject);
       return this;
     }
     const xList = [];
@@ -1365,17 +1398,16 @@ class VisTransformControls extends TransformControls {
       yList.push(elem.position.y);
       zList.push(elem.position.z);
     });
-    console.log(xList);
-    console.log(yList);
-    console.log(zList);
     target.rotation.set(0, 0, 0);
     target.scale.set(0, 0, 0);
     target.position.x = (Math.max(...xList) - Math.min(...xList)) / 2 + Math.min(...xList);
     target.position.y = (Math.max(...yList) - Math.min(...yList)) / 2 + Math.min(...yList);
     target.position.z = (Math.max(...zList) - Math.min(...zList)) / 2 + Math.min(...zList);
-    console.log(target.position);
     target.updateMatrix();
     target.updateMatrixWorld();
+    object.forEach((elem) => {
+      this.transObjectSet.add(elem);
+    });
     return this;
   }
 }
@@ -1808,6 +1840,7 @@ class ModelDataSupport extends DataSupport {
 class Compiler {
   static applyConfig(config, object, callBack) {
     const filterMap = {
+      vid: true,
       type: true
     };
     const recursiveConfig = (config2, object2) => {

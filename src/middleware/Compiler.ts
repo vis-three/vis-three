@@ -9,6 +9,7 @@ export abstract class Compiler {
 
   static applyConfig<C extends SymbolConfig, O> (config: C, object: O, callBack?: Function) {
     const filterMap = {
+      vid: true,
       type: true
     }
 

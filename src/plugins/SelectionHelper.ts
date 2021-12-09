@@ -1,5 +1,5 @@
 import { Vector2 } from "three"
-import { ACTIVECOLOR, SELECTBGCOLOR, SELECTCOLOR } from "../case/constants/COLOR"
+import { SELECTBGCOLOR, SELECTCOLOR } from "../case/constants/COLOR"
 
 export class SelectionHelper {
 

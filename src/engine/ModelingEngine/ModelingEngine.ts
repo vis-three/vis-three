@@ -207,6 +207,7 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
         sceneStatusManager.checkActiveObject(event)
         sceneStatusManager.selectEnd(event)
         scene.setObjectHelperActive(...activeObjectSet)
+        
         if (activeObjectSet.size) {
           scene._add(transformControls.getTarget())
           scene._add(transformControls)
