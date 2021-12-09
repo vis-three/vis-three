@@ -78,9 +78,61 @@ const engine = new Vis.ModelingEngineSupport({
 
 ## 外部资源加载
 
+##### 加载管理器
+``` js
+const assets = [
+  "/examples/public/model/katana/katana.obj",
+  "/examples/public/texture/katana/katana_BaseColor.png",
+  "/examples/public/texture/katana/katana_Normal.png",
+  "/examples/public/texture/katana/katana_Roughness.png",
+  "/examples/public/texture/katana/katanal_Metallic.png"
+]
+
+const loaderManager = new Vis.LoaderManager()
+
+loaderManager.load(assets)
+
+loaderManager.addEventListener(Vis.LOADEEVENTTYPE.LOADED, e => {
+  // do something...
+})
+```
+##### 资源管理器
+``` js
+const resourceManager = new Vis.ResourceManager()
+
+// 资源映射
+loaderManager.addEventListener(Vis.LOADEEVENTTYPE.LOADED, e => {
+  resourceManager.mappingResource(e.resourceMap)
+})
+
+resourceManager.addEventListener(Vis.RESOURCEEVENTTYPE.MAPPED, e => {
+  // do something...
+})
+
+```
+
 ## 原生THREE应用
 
 ## 多窗口
+
+``` js
+const resourceManager = new Vis.ResourceManager()
+const dataSupportManager = new Vis.DataSupportManager().load(config)
+
+new Vis.ModelingEngineSupport({
+  dom: document.getElementById('window1'),
+  dataSupportManager,
+  resourceManager
+}).play()
+
+
+new Vis.ModelingEngineSupport({
+  dom: document.getElementById('window2'),
+  dataSupportManager,
+  resourceManager
+}).play()
+
+```
 
 ## 项目
 * 开发：`npm run dev`

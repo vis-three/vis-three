@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="./css/common.css">
+  <title>config-development</title>
+</head>
+
+<style>
+  body {
+    display: flex;
+  }
+
+  #window1, #window2 {
+    width: 50%;
+    height: 100%;
+  }
+</style>
+
+<body>
+  <div id="window1"></div>
+  <div id="window2"></div>
+
+  <script type="module">
+    import { v4 as getUUid} from 'uuid'
+    import * as Vis from '../dist/Vis.es.js' 
+    import * as THREE from 'three'
+    import config from '/examples/public/assetsConfig/configDevelopment.json'
+
+    const loaderManager = new Vis.LoaderManager()
+    const resourceManager = new Vis.ResourceManager()
+
+    loaderManager.addEventListener(Vis.LOADEEVENTTYPE.LOADED, e => {
+      resourceManager.mappingResource(e.resourceMap)
+    })
+
+    resourceManager.addEventListener(Vis.RESOURCEEVENTTYPE.MAPPED, e => {
+
+      try {
+        const dataSupportManager = new Vis.DataSupportManager().load(config)
+
+        const engine1 = new Vis.ModelingEngineSupport({
+          dom: document.getElementById('window1'),
+          dataSupportManager,
+          resourceManager
+        })
+
+        engine1.play()
+
+        const engine2 = new Vis.ModelingEngineSupport({
+          dom: document.getElementById('window2'),
+          dataSupportManager,
+          resourceManager
+        })
+
+        engine2.play()
+
+        engine2.getScene().setViewPoint('top')
+
+        
+      } catch (error) {
+        console.error(error)
+      }
+    })
+
+    loaderManager.load(config.assets)
+   
+  </script>
+</body>
+</html>
