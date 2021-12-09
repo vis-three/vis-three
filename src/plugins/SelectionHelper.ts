@@ -3,15 +3,13 @@ import { ACTIVECOLOR, SELECTBGCOLOR, SELECTCOLOR } from "../case/constants/COLOR
 
 export class SelectionHelper {
 
-  private dom: HTMLElement
   private element: HTMLElement
   private startPoint: Vector2
   private pointTopLeft: Vector2
   private pointBottomRight: Vector2
   private isDown: boolean
 
-  constructor (dom: HTMLElement) {
-    this.dom = dom
+  constructor () {
 
     const element = document.createElement('div')
 

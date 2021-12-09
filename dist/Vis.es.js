@@ -1147,14 +1147,12 @@ class SelectionBox {
   }
 }
 class SelectionHelper {
-  constructor(dom) {
-    __publicField(this, "dom");
+  constructor() {
     __publicField(this, "element");
     __publicField(this, "startPoint");
     __publicField(this, "pointTopLeft");
     __publicField(this, "pointBottomRight");
     __publicField(this, "isDown");
-    this.dom = dom;
     const element = document.createElement("div");
     element.style.pointerEvents = "none";
     element.style.border = `1px solid ${SELECTCOLOR}`;
@@ -1199,19 +1197,27 @@ class SelectionHelper {
   }
 }
 class SceneStatusManager extends SelectionBox {
-  constructor(dom, camera, scene, deep) {
+  constructor(camera, scene, deep = Number.MAX_VALUE) {
     super(camera, scene, deep);
     __publicField(this, "selectionHelper");
     __publicField(this, "raycaster");
     __publicField(this, "hoverObjectSet");
     __publicField(this, "activeObjectSet");
+    __publicField(this, "transformControlsFilterMap");
     this.hoverObjectSet = new Set();
     this.activeObjectSet = new Set();
     this.raycaster = new Raycaster();
-    this.selectionHelper = new SelectionHelper(dom);
+    this.selectionHelper = new SelectionHelper();
   }
   setCamera(camera) {
     this.camera = camera;
+    return this;
+  }
+  filterTransformControls(controls) {
+    this.transformControlsFilterMap = {};
+    controls.traverse((object) => {
+      this.transformControlsFilterMap[object.uuid] = true;
+    });
     return this;
   }
   checkHoverObject(event) {
@@ -1219,9 +1225,8 @@ class SceneStatusManager extends SelectionBox {
     const mouse = event.mouse;
     this.raycaster.setFromCamera(mouse, this.camera);
     const intersects = this.raycaster.intersectObjects(this.scene.children);
-    if (intersects[0]) {
-      this.hoverObjectSet.add(intersects[0].object);
-    }
+    const reycastObject = this.getRaycastbject(intersects);
+    reycastObject && this.hoverObjectSet.add(reycastObject);
     return this;
   }
   checkActiveObject(event) {
@@ -1229,10 +1234,29 @@ class SceneStatusManager extends SelectionBox {
     const mouse = event.mouse;
     this.raycaster.setFromCamera(mouse, this.camera);
     const intersects = this.raycaster.intersectObjects(this.scene.children);
-    if (intersects[0]) {
-      this.activeObjectSet.add(intersects[0].object);
-    }
+    const reycastObject = this.getRaycastbject(intersects);
+    reycastObject && this.activeObjectSet.add(reycastObject);
     return this;
+  }
+  getRaycastbject(intersects) {
+    if (!intersects.length) {
+      return null;
+    }
+    if (!this.transformControlsFilterMap) {
+      return intersects[0].object;
+    }
+    const transformControlsFilterMap = this.transformControlsFilterMap;
+    let index = -1;
+    intersects.some((elem, i, arr) => {
+      if (!transformControlsFilterMap[elem.object.uuid]) {
+        index = i;
+        return true;
+      }
+    });
+    if (index === -1) {
+      return null;
+    }
+    return intersects[index].object;
   }
   selectStart(event) {
     const mouse = event.mouse;
@@ -1250,7 +1274,13 @@ class SceneStatusManager extends SelectionBox {
     this.selectionHelper.onSelectOver(event);
     this.endPoint.set(mouse.x, mouse.y, 0.5);
     this.select();
-    this.collection.forEach((object) => {
+    let collection = this.collection;
+    collection = collection.filter((object) => !object.type.includes("Helper"));
+    if (this.transformControlsFilterMap) {
+      const filterMap = this.transformControlsFilterMap;
+      collection = collection.filter((object) => !filterMap[object.uuid]);
+    }
+    collection.forEach((object) => {
       this.activeObjectSet.add(object);
     });
     return this;
@@ -1312,6 +1342,42 @@ class VisTransformControls extends TransformControls {
     this.camera = camera;
     return this;
   }
+  setAttach(...object) {
+    if (!object.length) {
+      this.visible = false;
+      return this;
+    }
+    const target = this.target;
+    if (object.length === 1) {
+      const currentObject = object[0];
+      target.scale.copy(currentObject.scale);
+      target.rotation.copy(currentObject.rotation);
+      target.position.copy(currentObject.position);
+      target.updateMatrix();
+      target.updateMatrixWorld();
+      return this;
+    }
+    const xList = [];
+    const yList = [];
+    const zList = [];
+    object.forEach((elem) => {
+      xList.push(elem.position.x);
+      yList.push(elem.position.y);
+      zList.push(elem.position.z);
+    });
+    console.log(xList);
+    console.log(yList);
+    console.log(zList);
+    target.rotation.set(0, 0, 0);
+    target.scale.set(0, 0, 0);
+    target.position.x = (Math.max(...xList) - Math.min(...xList)) / 2 + Math.min(...xList);
+    target.position.y = (Math.max(...yList) - Math.min(...yList)) / 2 + Math.min(...yList);
+    target.position.z = (Math.max(...zList) - Math.min(...zList)) / 2 + Math.min(...zList);
+    console.log(target.position);
+    target.updateMatrix();
+    target.updateMatrixWorld();
+    return this;
+  }
 }
 class RenderManager extends EventDispatcher$1 {
   constructor() {
@@ -1371,6 +1437,7 @@ class ModelingEngine extends EventDispatcher$1 {
     __publicField(this, "renderManager");
     __publicField(this, "hoverObjectSet");
     __publicField(this, "activeObjectSet");
+    __publicField(this, "transing");
     const renderer = new WebGLRenderer({
       antialias: true,
       alpha: true
@@ -1389,10 +1456,12 @@ class ModelingEngine extends EventDispatcher$1 {
     const stats = new VisStats();
     const orbitControls = new VisOrbitControls(camera, renderer.domElement);
     const transformControls = new VisTransformControls(camera, renderer.domElement);
+    this.transing = false;
     const pointerManager = new PointerManager(renderer.domElement);
-    const sceneStatusManager = new SceneStatusManager(renderer.domElement, camera, scene);
+    const sceneStatusManager = new SceneStatusManager(camera, scene);
     const hoverObjectSet = sceneStatusManager.getHoverObjectSet();
     const activeObjectSet = sceneStatusManager.getActiveObjectSet();
+    sceneStatusManager.filterTransformControls(transformControls);
     const pixelRatio = renderer.getPixelRatio();
     const size = renderer.getDrawingBufferSize(new Vector2());
     const renderTarget = new WebGLMultisampleRenderTarget(size.width * pixelRatio, size.height * pixelRatio, {
@@ -1452,33 +1521,54 @@ class ModelingEngine extends EventDispatcher$1 {
       sceneStatusManager.setCamera(camera2);
       renderPass.camera = camera2;
     });
+    transformControls.addEventListener("mouseDown", () => {
+      this.transing = true;
+    });
     pointerManager.addEventListener("pointerdown", (event) => {
-      if (event.button === 0) {
+      if (event.button === 0 && !this.transing) {
         sceneStatusManager.selectStart(event);
       }
     });
     pointerManager.addEventListener("pointermove", (event) => {
-      if (event.buttons === 1) {
-        sceneStatusManager.selecting(event);
+      if (!this.transing) {
+        if (event.buttons === 1) {
+          sceneStatusManager.selecting(event);
+        }
+        sceneStatusManager.checkHoverObject(event);
+        scene.setObjectHelperHover(...hoverObjectSet);
+        if (hoverObjectSet.size) {
+          hoverObjectSet.forEach((object) => {
+            object.dispatchEvent({
+              type: "hover"
+            });
+          });
+        }
+      } else {
+        scene.setObjectHelperHover();
       }
-      sceneStatusManager.checkHoverObject(event);
-      scene.setObjectHelperHover(...hoverObjectSet);
-      hoverObjectSet.forEach((object) => {
-        object.dispatchEvent({
-          type: "hover"
-        });
-      });
     });
     pointerManager.addEventListener("pointerup", (event) => {
-      if (event.button === 0) {
+      if (this.transing) {
+        this.transing = false;
+        return;
+      }
+      if (event.button === 0 && !this.transing) {
         sceneStatusManager.checkActiveObject(event);
         sceneStatusManager.selectEnd(event);
         scene.setObjectHelperActive(...activeObjectSet);
-        activeObjectSet.forEach((object) => {
-          object.dispatchEvent({
-            type: "active"
+        if (activeObjectSet.size) {
+          scene._add(transformControls.getTarget());
+          scene._add(transformControls);
+          transformControls.setAttach(...activeObjectSet);
+          activeObjectSet.forEach((object) => {
+            object.dispatchEvent({
+              type: "active"
+            });
           });
-        });
+        } else {
+          scene._remove(transformControls.getTarget());
+          scene._remove(transformControls);
+        }
       }
     });
     renderManager.addEventListener("render", (event) => {

@@ -53,6 +53,8 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
   protected hoverObjectSet: Set<Object3D>
   protected activeObjectSet: Set<Object3D>
 
+  private transing: boolean
+
   constructor (dom?: HTMLElement) {
     super()
     // 渲染器
@@ -83,14 +85,17 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
 
     // 变换控制器
     const transformControls = new VisTransformControls(camera, renderer.domElement)
+    this.transing = false
 
     // 鼠标管理器
     const pointerManager = new PointerManager(renderer.domElement)
 
     // 场景状态管理器
-    const sceneStatusManager = new SceneStatusManager(renderer.domElement, camera, scene)
+    const sceneStatusManager = new SceneStatusManager(camera, scene)
     const hoverObjectSet: Set<Object3D> = sceneStatusManager.getHoverObjectSet()
     const activeObjectSet: Set<Object3D> = sceneStatusManager.getActiveObjectSet()
+    
+    sceneStatusManager.filterTransformControls(transformControls)
 
     const pixelRatio = renderer.getPixelRatio()
     const size = renderer.getDrawingBufferSize(new Vector2())
@@ -164,34 +169,58 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
       renderPass.camera = camera
     })
 
+    // 变换事件
+    transformControls.addEventListener('mouseDown', () => { this.transing = true })
+
     // 鼠标事件
     pointerManager.addEventListener<VisPointerEvent>('pointerdown', (event) => {
-      if (event.button === 0) {
+      if (event.button === 0 && !this.transing) {
         sceneStatusManager.selectStart(event)
       }
     })
     pointerManager.addEventListener<VisPointerEvent>('pointermove', (event: VisPointerEvent) => {
-      if (event.buttons === 1) {
-        sceneStatusManager.selecting(event)
+      if (!this.transing) {
+        if (event.buttons === 1) {
+          sceneStatusManager.selecting(event)
+        }
+        sceneStatusManager.checkHoverObject(event)
+        scene.setObjectHelperHover(...hoverObjectSet)
+
+        if (hoverObjectSet.size) {
+          hoverObjectSet.forEach(object => {
+            object.dispatchEvent({
+              type: 'hover'
+            })
+          })
+        }
+      } else {
+        scene.setObjectHelperHover()
       }
-      sceneStatusManager.checkHoverObject(event)
-      scene.setObjectHelperHover(...hoverObjectSet)
-      hoverObjectSet.forEach(object => {
-        object.dispatchEvent({
-          type: 'hover'
-        })
-      })
     })
     pointerManager.addEventListener<VisPointerEvent>('pointerup', (event: VisPointerEvent) => {
-      if (event.button === 0) {
+      if (this.transing) {
+        this.transing = false
+        return
+      }
+
+      if (event.button === 0 && !this.transing) {
         sceneStatusManager.checkActiveObject(event)
         sceneStatusManager.selectEnd(event)
         scene.setObjectHelperActive(...activeObjectSet)
-        activeObjectSet.forEach(object => {
-          object.dispatchEvent({
-            type: 'active'
+        if (activeObjectSet.size) {
+          scene._add(transformControls.getTarget())
+          scene._add(transformControls)
+          transformControls.setAttach(...activeObjectSet)
+          activeObjectSet.forEach(object => {
+            object.dispatchEvent({
+              type: 'active'
+            })
           })
-        })
+        } else {
+          scene._remove(transformControls.getTarget())
+          scene._remove(transformControls)
+        }
+        
       }
     })
 
