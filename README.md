@@ -90,11 +90,11 @@ const assets = [
 
 const loaderManager = new Vis.LoaderManager()
 
-loaderManager.load(assets)
-
 loaderManager.addEventListener(Vis.LOADEEVENTTYPE.LOADED, e => {
   // do something...
 })
+
+loaderManager.load(assets)
 ```
 ##### 资源管理器
 ``` js
