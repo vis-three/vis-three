@@ -67,6 +67,10 @@ export class LightCompiler extends Compiler {
     return this
   }
 
+  getMap (): Map<SymbolConfig['type'], Light> {
+    return this.map
+  }
+
   compileAll (): this {
     const target = this.target
     for (const key in target) {

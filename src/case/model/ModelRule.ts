@@ -10,5 +10,7 @@ export const ModelRule: Rule<ModelCompiler> = function (notice: ProxyNotice, com
     if (validate(key)) {
       compiler.add(key, value)
     }
+  } else if (operate === 'set') {
+    compiler.set(path.concat([]), key, value)
   }
 }

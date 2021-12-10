@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Vector2, Frustum, Quaternion, Raycaster, MOUSE, Object3D, EventDispatcher as EventDispatcher$1, Clock, WebGLRenderer, WebGLMultisampleRenderTarget, RGBAFormat, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, LinearEncoding, PCFShadowMap, NoToneMapping, Fog, FogExp2, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, TangentSpaceNormalMap } from "three";
+import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Vector2, Frustum, Quaternion, EventDispatcher as EventDispatcher$1, Raycaster, MOUSE, Object3D, Clock, WebGLRenderer, WebGLMultisampleRenderTarget, RGBAFormat, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, LinearEncoding, PCFShadowMap, NoToneMapping, Fog, FogExp2, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, TangentSpaceNormalMap } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -467,7 +467,8 @@ __publicField(SceneHelperCompiler, "typeHelperMap", {
   "Mesh": MeshHelper
 });
 __publicField(SceneHelperCompiler, "filterHelperMap", {
-  "AmbientLight": true
+  "AmbientLight": true,
+  "Object3D": true
 });
 var ModelingSceneCameraDefalutType;
 (function(ModelingSceneCameraDefalutType2) {
@@ -1196,25 +1197,39 @@ class SelectionHelper {
     document.body.removeChild(this.element);
   }
 }
-class SceneStatusManager extends SelectionBox {
+var SCENESTATUSTYPE;
+(function(SCENESTATUSTYPE2) {
+  SCENESTATUSTYPE2["HOVERCHANGE"] = "hover-change";
+  SCENESTATUSTYPE2["ACTIVECHANGE"] = "active-change";
+})(SCENESTATUSTYPE || (SCENESTATUSTYPE = {}));
+class SceneStatusManager extends EventDispatcher$1 {
   constructor(camera, scene, deep = Number.MAX_VALUE) {
-    super(camera, scene, deep);
+    super();
+    __publicField(this, "scene");
+    __publicField(this, "camera");
+    __publicField(this, "selectionBox");
     __publicField(this, "selectionHelper");
     __publicField(this, "raycaster");
     __publicField(this, "hoverObjectSet");
     __publicField(this, "activeObjectSet");
+    __publicField(this, "transformControls");
     __publicField(this, "transformControlsFilterMap");
+    this.scene = scene;
+    this.camera = camera;
     this.hoverObjectSet = new Set();
     this.activeObjectSet = new Set();
     this.raycaster = new Raycaster();
     this.selectionHelper = new SelectionHelper();
+    this.selectionBox = new SelectionBox(camera, scene, deep);
   }
   setCamera(camera) {
+    this.selectionBox.camera = camera;
     this.camera = camera;
     return this;
   }
   filterTransformControls(controls) {
     this.transformControlsFilterMap = {};
+    this.transformControls = controls;
     controls.traverse((object) => {
       this.transformControlsFilterMap[object.uuid] = true;
     });
@@ -1226,16 +1241,47 @@ class SceneStatusManager extends SelectionBox {
     this.raycaster.setFromCamera(mouse, this.camera);
     const intersects = this.raycaster.intersectObjects(this.scene.children);
     const reycastObject = this.getRaycastbject(intersects);
-    reycastObject && this.hoverObjectSet.add(reycastObject);
+    if (reycastObject) {
+      reycastObject.dispatchEvent({
+        type: "hover"
+      });
+      this.hoverObjectSet.add(reycastObject);
+    }
+    this.dispatchEvent({
+      type: "hover-change",
+      objectSet: this.hoverObjectSet
+    });
     return this;
   }
   checkActiveObject(event) {
-    this.activeObjectSet.clear();
+    const activeObjectSet = this.activeObjectSet;
+    const scene = this.scene;
     const mouse = event.mouse;
     this.raycaster.setFromCamera(mouse, this.camera);
     const intersects = this.raycaster.intersectObjects(this.scene.children);
     const reycastObject = this.getRaycastbject(intersects);
-    reycastObject && this.activeObjectSet.add(reycastObject);
+    activeObjectSet.clear();
+    if (reycastObject) {
+      reycastObject.dispatchEvent({
+        type: "active"
+      });
+      activeObjectSet.add(reycastObject);
+    }
+    this.dispatchEvent({
+      type: "active-change",
+      objectSet: this.hoverObjectSet
+    });
+    if (this.transformControls) {
+      const transformControls = this.transformControls;
+      if (activeObjectSet.size) {
+        scene.add(transformControls.getTarget());
+        scene.add(transformControls);
+        transformControls.setAttach(...activeObjectSet);
+      } else {
+        scene.remove(transformControls.getTarget());
+        scene.remove(transformControls);
+      }
+    }
     return this;
   }
   getRaycastbject(intersects) {
@@ -1261,8 +1307,8 @@ class SceneStatusManager extends SelectionBox {
   selectStart(event) {
     const mouse = event.mouse;
     this.selectionHelper.onSelectStart(event);
-    this.collection = [];
-    this.startPoint.set(mouse.x, mouse.y, 0.5);
+    this.selectionBox.collection = [];
+    this.selectionBox.startPoint.set(mouse.x, mouse.y, 0.5);
     return this;
   }
   selecting(event) {
@@ -1270,19 +1316,39 @@ class SceneStatusManager extends SelectionBox {
     return this;
   }
   selectEnd(event) {
+    const activeObjectSet = this.activeObjectSet;
+    const scene = this.scene;
     const mouse = event.mouse;
     this.selectionHelper.onSelectOver(event);
-    this.endPoint.set(mouse.x, mouse.y, 0.5);
-    this.select();
-    let collection = this.collection;
+    this.selectionBox.endPoint.set(mouse.x, mouse.y, 0.5);
+    this.selectionBox.select();
+    let collection = this.selectionBox.collection;
     collection = collection.filter((object) => !object.type.includes("Helper"));
     if (this.transformControlsFilterMap) {
       const filterMap = this.transformControlsFilterMap;
       collection = collection.filter((object) => !filterMap[object.uuid]);
     }
     collection.forEach((object) => {
-      this.activeObjectSet.add(object);
+      object.dispatchEvent({
+        type: "active"
+      });
+      activeObjectSet.add(object);
     });
+    this.dispatchEvent({
+      type: "active-change",
+      objectSet: activeObjectSet
+    });
+    if (this.transformControls) {
+      const transformControls = this.transformControls;
+      if (activeObjectSet.size) {
+        scene.add(transformControls.getTarget());
+        scene.add(transformControls);
+        transformControls.setAttach(...activeObjectSet);
+      } else {
+        scene.remove(transformControls.getTarget());
+        scene.remove(transformControls);
+      }
+    }
     return this;
   }
   getActiveObjectSet() {
@@ -1328,6 +1394,11 @@ class VisOrbitControls extends OrbitControls {
     return this;
   }
 }
+var VISTRANSFORMEVENTRYPE;
+(function(VISTRANSFORMEVENTRYPE2) {
+  VISTRANSFORMEVENTRYPE2["OBJECTCHANGE"] = "objectChange";
+  VISTRANSFORMEVENTRYPE2["OBJECTCHANGED"] = "objectChanged";
+})(VISTRANSFORMEVENTRYPE || (VISTRANSFORMEVENTRYPE = {}));
 class VisTransformControls extends TransformControls {
   constructor(camera, dom) {
     super(camera, dom);
@@ -1363,6 +1434,11 @@ class VisTransformControls extends TransformControls {
         elem[mode].x += offsetX;
         elem[mode].y += offsetY;
         elem[mode].z += offsetZ;
+      });
+      this.dispatchEvent({
+        type: VISTRANSFORMEVENTRYPE.OBJECTCHANGED,
+        transObjectSet,
+        mode
       });
     });
   }
@@ -1467,8 +1543,6 @@ class ModelingEngine extends EventDispatcher$1 {
     __publicField(this, "renderer");
     __publicField(this, "scene");
     __publicField(this, "renderManager");
-    __publicField(this, "hoverObjectSet");
-    __publicField(this, "activeObjectSet");
     __publicField(this, "transing");
     const renderer = new WebGLRenderer({
       antialias: true,
@@ -1567,14 +1641,6 @@ class ModelingEngine extends EventDispatcher$1 {
           sceneStatusManager.selecting(event);
         }
         sceneStatusManager.checkHoverObject(event);
-        scene.setObjectHelperHover(...hoverObjectSet);
-        if (hoverObjectSet.size) {
-          hoverObjectSet.forEach((object) => {
-            object.dispatchEvent({
-              type: "hover"
-            });
-          });
-        }
       } else {
         scene.setObjectHelperHover();
       }
@@ -1587,21 +1653,13 @@ class ModelingEngine extends EventDispatcher$1 {
       if (event.button === 0 && !this.transing) {
         sceneStatusManager.checkActiveObject(event);
         sceneStatusManager.selectEnd(event);
-        scene.setObjectHelperActive(...activeObjectSet);
-        if (activeObjectSet.size) {
-          scene._add(transformControls.getTarget());
-          scene._add(transformControls);
-          transformControls.setAttach(...activeObjectSet);
-          activeObjectSet.forEach((object) => {
-            object.dispatchEvent({
-              type: "active"
-            });
-          });
-        } else {
-          scene._remove(transformControls.getTarget());
-          scene._remove(transformControls);
-        }
       }
+    });
+    sceneStatusManager.addEventListener(SCENESTATUSTYPE.HOVERCHANGE, (event) => {
+      scene.setObjectHelperHover(...hoverObjectSet);
+    });
+    sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, (event) => {
+      scene.setObjectHelperActive(...activeObjectSet);
     });
     renderManager.addEventListener("render", (event) => {
       const e = event;
@@ -1616,12 +1674,13 @@ class ModelingEngine extends EventDispatcher$1 {
     this.stats = stats;
     this.scene = scene;
     this.renderManager = renderManager;
-    this.hoverObjectSet = hoverObjectSet;
-    this.activeObjectSet = activeObjectSet;
     if (dom) {
       this.setSize(dom.offsetWidth, dom.offsetHeight);
       dom.appendChild(renderer.domElement);
     }
+  }
+  getSceneStatusManager() {
+    return this.sceneStatusManager;
   }
   getRenderer() {
     return this.renderer;
@@ -1786,6 +1845,10 @@ class DataSupport {
   getData() {
     return this.data;
   }
+  setData(data) {
+    this.data = data;
+    return this;
+  }
   addCompiler(compiler) {
     compiler.setTarget(this.data);
     compiler.compileAll();
@@ -1829,6 +1892,8 @@ const ModelRule = function(notice, compiler) {
     if (validate(key)) {
       compiler.add(key, value);
     }
+  } else if (operate === "set") {
+    compiler.set(path.concat([]), key, value);
   }
 };
 class ModelDataSupport extends DataSupport {
@@ -1906,6 +1971,9 @@ class CameraCompiler extends Compiler {
   setTarget(target) {
     this.target = target;
     return this;
+  }
+  getMap() {
+    return this.map;
   }
   compileAll() {
     const target = this.target;
@@ -2066,6 +2134,9 @@ class LightCompiler extends Compiler {
   setTarget(target) {
     this.target = target;
     return this;
+  }
+  getMap() {
+    return this.map;
   }
   compileAll() {
     const target = this.target;
@@ -2293,6 +2364,9 @@ class ModelCompiler extends Compiler {
   setTarget(target) {
     this.target = target;
     return this;
+  }
+  getMap() {
+    return this.map;
   }
   compileAll() {
     const target = this.target;
@@ -2642,16 +2716,10 @@ class TextureCompiler extends Compiler {
 class ModelingEngineSupport extends ModelingEngine {
   constructor(parameters) {
     super(parameters.dom);
-    __publicField(this, "textureCompiler");
-    __publicField(this, "materialCompiler");
-    __publicField(this, "cameraCompiler");
-    __publicField(this, "lightCompiler");
-    __publicField(this, "modelCompiler");
-    __publicField(this, "geometryCompiler");
-    __publicField(this, "rendererCompiler");
-    __publicField(this, "sceneCompiler");
+    __publicField(this, "compilerMap");
     __publicField(this, "resourceManager");
     __publicField(this, "dataSupportManager");
+    __publicField(this, "objectConfigMap");
     const dataSupportManager = parameters.dataSupportManager;
     const textureDataSupport = dataSupportManager.getDataSupport(MODULETYPE.TEXTURE);
     const materialDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MATERIAL);
@@ -2661,6 +2729,9 @@ class ModelingEngineSupport extends ModelingEngine {
     const modelDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MODEL);
     const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER);
     const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE);
+    const cameraSupportData = cameraDataSupport.getData();
+    const lightSupportData = lightDataSupport.getData();
+    const modelSupportData = modelDataSupport.getData();
     const textureCompiler = new TextureCompiler({
       target: textureDataSupport.getData()
     });
@@ -2668,19 +2739,19 @@ class ModelingEngineSupport extends ModelingEngine {
       target: materialDataSupport.getData()
     });
     const cameraCompiler = new CameraCompiler({
-      target: cameraDataSupport.getData(),
+      target: cameraSupportData,
       scene: this.scene
     });
     const lightCompiler = new LightCompiler({
       scene: this.scene,
-      target: lightDataSupport.getData()
+      target: lightSupportData
     });
     const geometryCompiler = new GeometryCompiler({
       target: geometryDataSupport.getData()
     });
     const modelCompiler = new ModelCompiler({
       scene: this.scene,
-      target: modelDataSupport.getData()
+      target: modelSupportData
     });
     const rendererCompiler = new RendererCompiler({
       target: rendererDataSupport.getData(),
@@ -2705,19 +2776,59 @@ class ModelingEngineSupport extends ModelingEngine {
     modelDataSupport.addCompiler(modelCompiler);
     rendererDataSupport.addCompiler(rendererCompiler);
     sceneDataSupport.addCompiler(sceneCompiler);
-    this.textureCompiler = textureCompiler;
-    this.materialCompiler = materialCompiler;
-    this.cameraCompiler = cameraCompiler;
-    this.lightCompiler = lightCompiler;
-    this.modelCompiler = modelCompiler;
-    this.geometryCompiler = geometryCompiler;
-    this.rendererCompiler = rendererCompiler;
-    this.sceneCompiler = sceneCompiler;
+    const tempMap = new Map();
+    cameraCompiler.getMap().forEach((camera, vid) => {
+      tempMap.set(vid, camera);
+    });
+    lightCompiler.getMap().forEach((light, vid) => {
+      tempMap.set(vid, light);
+    });
+    modelCompiler.getMap().forEach((model, vid) => {
+      tempMap.set(vid, model);
+    });
+    const objectConfigMap = new WeakMap();
+    Object.keys(cameraSupportData).forEach((vid) => {
+      objectConfigMap.set(tempMap.get(vid), cameraSupportData[vid]);
+    });
+    Object.keys(lightSupportData).forEach((vid) => {
+      objectConfigMap.set(tempMap.get(vid), lightSupportData[vid]);
+    });
+    Object.keys(modelSupportData).forEach((vid) => {
+      objectConfigMap.set(tempMap.get(vid), modelSupportData[vid]);
+    });
+    tempMap.clear();
+    this.transformControls.addEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED, (event) => {
+      const e = event;
+      const mode = e.mode;
+      e.transObjectSet.forEach((object) => {
+        const config = objectConfigMap.get(object);
+        config[mode].x = object[mode].x;
+        config[mode].y = object[mode].y;
+        config[mode].z = object[mode].z;
+      });
+    });
+    const compilerMap = new Map();
+    compilerMap.set(MODULETYPE.TEXTURE, textureCompiler);
+    compilerMap.set(MODULETYPE.MATERIAL, materialCompiler);
+    compilerMap.set(MODULETYPE.CAMERA, cameraCompiler);
+    compilerMap.set(MODULETYPE.LIGHT, lightCompiler);
+    compilerMap.set(MODULETYPE.MODEL, modelCompiler);
+    compilerMap.set(MODULETYPE.GEOMETRY, geometryCompiler);
+    compilerMap.set(MODULETYPE.RENDERER, rendererCompiler);
+    compilerMap.set(MODULETYPE.SCENE, sceneCompiler);
+    this.compilerMap = compilerMap;
     this.dataSupportManager = parameters.dataSupportManager;
     this.resourceManager = parameters.resourceManager;
+    this.objectConfigMap = objectConfigMap;
   }
   getDataSupportManager() {
     return this.dataSupportManager;
+  }
+  getResourceManager() {
+    return this.resourceManager;
+  }
+  getCompiler(module) {
+    return this.compilerMap.get(module);
   }
 }
 const GeometryRule = function(notice, compiler) {

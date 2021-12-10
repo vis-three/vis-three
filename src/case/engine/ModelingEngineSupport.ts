@@ -1,9 +1,12 @@
-import { Scene } from "three";
+import { Object3D } from "three";
 import { ModelingEngine } from "../../main";
 import { DataSupportManager } from "../../manager/DataSupportManager";
 import { ResourceManager } from "../../manager/ResourceManager";
+import { Compiler, CompilerTarget } from "../../middleware/Compiler";
+import { ObjectChangedEvent, VISTRANSFORMEVENTRYPE } from "../../optimize/VisTransformControls";
 import { CameraCompiler } from "../camera/CameraCompiler";
 import { CameraDataSupport } from "../camera/CameraDataSupport";
+import { SymbolConfig } from "../common/CommonConfig";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { GeometryCompiler } from "../geometry/GeometryCompiler";
 import { GeometryDataSupport } from "../geometry/GeometryDataSupport";
@@ -27,21 +30,17 @@ export interface ModelingEngineSupportParameters {
 
 export class ModelingEngineSupport extends ModelingEngine {
 
-  private textureCompiler: TextureCompiler
-  private materialCompiler: MaterialCompiler
-  private cameraCompiler: CameraCompiler
-  private lightCompiler: LightCompiler
-  private modelCompiler: ModelCompiler
-  private geometryCompiler: GeometryCompiler
-  private rendererCompiler: RendererCompiler
-  private sceneCompiler: SceneCompiler
+  private compilerMap: Map<MODULETYPE, Compiler>
 
   private resourceManager: ResourceManager
   private dataSupportManager: DataSupportManager
 
+  private objectConfigMap: WeakMap<Object3D, SymbolConfig>
+
   constructor (parameters: ModelingEngineSupportParameters) {
     super(parameters.dom)
 
+    // 所有support
     const dataSupportManager = parameters.dataSupportManager
     const textureDataSupport = dataSupportManager.getDataSupport(MODULETYPE.TEXTURE)! as TextureDataSupport
     const materialDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MATERIAL)! as MaterialDataSupport
@@ -52,6 +51,12 @@ export class ModelingEngineSupport extends ModelingEngine {
     const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER)! as RendererDataSupport
     const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE)! as SceneDataSupport
 
+    // 物体配置数据
+    const cameraSupportData = cameraDataSupport.getData()
+    const lightSupportData = lightDataSupport.getData()
+    const modelSupportData = modelDataSupport.getData()
+    
+
     const textureCompiler = new TextureCompiler({
       target: textureDataSupport.getData()
     })
@@ -61,13 +66,13 @@ export class ModelingEngineSupport extends ModelingEngine {
     })
 
     const cameraCompiler = new CameraCompiler({
-      target: cameraDataSupport.getData(),
+      target: cameraSupportData,
       scene: this.scene
     })
 
     const lightCompiler = new LightCompiler({
       scene: this.scene,
-      target: lightDataSupport.getData()
+      target: lightSupportData
     })
 
     const geometryCompiler = new GeometryCompiler({
@@ -76,7 +81,7 @@ export class ModelingEngineSupport extends ModelingEngine {
 
     const modelCompiler = new ModelCompiler({
       scene: this.scene,
-      target: modelDataSupport.getData()
+      target: modelSupportData
     })
 
     const rendererCompiler = new RendererCompiler({
@@ -110,20 +115,79 @@ export class ModelingEngineSupport extends ModelingEngine {
     rendererDataSupport.addCompiler(rendererCompiler)
     sceneDataSupport.addCompiler(sceneCompiler)
 
-    this.textureCompiler = textureCompiler
-    this.materialCompiler = materialCompiler
-    this.cameraCompiler = cameraCompiler
-    this.lightCompiler = lightCompiler
-    this.modelCompiler = modelCompiler
-    this.geometryCompiler = geometryCompiler
-    this.rendererCompiler = rendererCompiler
-    this.sceneCompiler = sceneCompiler
+    // 引擎操作更新support —— 同步变换操作
+    
+    const tempMap = new Map()
+
+    cameraCompiler.getMap().forEach((camera, vid) => {
+      tempMap.set(vid, camera)
+    })
+
+    lightCompiler.getMap().forEach((light, vid) => {
+      tempMap.set(vid, light)
+    })
+
+    modelCompiler.getMap().forEach((model, vid) => {
+      tempMap.set(vid, model)
+    })
+
+    const objectConfigMap = new WeakMap()
+
+    Object.keys(cameraSupportData).forEach(vid => {
+      objectConfigMap.set(tempMap.get(vid), cameraSupportData[vid])
+    })
+
+    Object.keys(lightSupportData).forEach(vid => {
+      objectConfigMap.set(tempMap.get(vid), lightSupportData[vid])
+    })
+
+    Object.keys(modelSupportData).forEach(vid => {
+      objectConfigMap.set(tempMap.get(vid), modelSupportData[vid])
+    })
+    
+    tempMap.clear() // 清除缓存
+
+    this.transformControls.addEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED, (event) => {
+      const e = event as unknown as ObjectChangedEvent
+      const mode = e.mode
+      
+      e.transObjectSet.forEach(object => {
+        const config = objectConfigMap.get(object)
+        config[mode].x = object[mode].x
+        config[mode].y = object[mode].y
+        config[mode].z = object[mode].z
+      })
+    })
+
+
+    // 缓存编译器
+    const compilerMap = new Map()
+    compilerMap.set(MODULETYPE.TEXTURE, textureCompiler)
+    compilerMap.set(MODULETYPE.MATERIAL, materialCompiler)
+    compilerMap.set(MODULETYPE.CAMERA, cameraCompiler)
+    compilerMap.set(MODULETYPE.LIGHT, lightCompiler)
+    compilerMap.set(MODULETYPE.MODEL, modelCompiler)
+    compilerMap.set(MODULETYPE.GEOMETRY, geometryCompiler)
+    compilerMap.set(MODULETYPE.RENDERER, rendererCompiler)
+    compilerMap.set(MODULETYPE.SCENE, sceneCompiler)
+
+    this.compilerMap = compilerMap
 
     this.dataSupportManager = parameters.dataSupportManager
     this.resourceManager = parameters.resourceManager
+
+    this.objectConfigMap = objectConfigMap
   }
 
   getDataSupportManager (): DataSupportManager {
     return this.dataSupportManager
+  }
+
+  getResourceManager (): ResourceManager {
+    return this.resourceManager
+  }
+
+  getCompiler<C extends Compiler> (module: MODULETYPE): C {
+    return this.compilerMap.get(module) as C
   }
 }

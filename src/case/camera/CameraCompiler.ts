@@ -1,6 +1,7 @@
 import { Camera, OrthographicCamera, PerspectiveCamera, Scene } from "three";
 import { validate } from "uuid";
 import { Compiler, CompilerTarget } from "../../middleware/Compiler";
+import { SymbolConfig } from "../common/CommonConfig";
 import { CameraAllType } from "./CameraConfig";
 
 export interface CameraCompilerTarget extends CompilerTarget {
@@ -69,6 +70,10 @@ export class CameraCompiler extends Compiler {
   setTarget (target: CameraCompilerTarget): this {
     this.target = target
     return this
+  }
+
+  getMap (): Map<SymbolConfig['type'], Camera> {
+    return this.map
   }
 
   compileAll (): this {

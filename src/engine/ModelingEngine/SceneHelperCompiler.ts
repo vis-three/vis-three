@@ -19,7 +19,8 @@ export class SceneHelperCompiler {
   }
 
   private static filterHelperMap = {
-    'AmbientLight': true
+    'AmbientLight': true,
+    'Object3D': true
   }
 
   private map: Map<Object3D, Object3D>

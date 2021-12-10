@@ -16,7 +16,7 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 
 import { PointerManager, VisPointerEvent } from "../../plugins/PointerManager"
-import { SceneStatusManager } from "../../plugins/SceneStatusManager"
+import { SceneStatusManager, SCENESTATUSTYPE } from "../../plugins/SceneStatusManager"
 
 import { VisStats } from "../../optimize/VisStats"
 import { VisOrbitControls } from "../../optimize/VisOrbitControls";
@@ -49,9 +49,6 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
   protected renderer: WebGLRenderer
   protected scene: Scene
   protected renderManager: RenderManager
-
-  protected hoverObjectSet: Set<Object3D>
-  protected activeObjectSet: Set<Object3D>
 
   private transing: boolean
 
@@ -184,15 +181,6 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
           sceneStatusManager.selecting(event)
         }
         sceneStatusManager.checkHoverObject(event)
-        scene.setObjectHelperHover(...hoverObjectSet)
-
-        if (hoverObjectSet.size) {
-          hoverObjectSet.forEach(object => {
-            object.dispatchEvent({
-              type: 'hover'
-            })
-          })
-        }
       } else {
         scene.setObjectHelperHover()
       }
@@ -206,23 +194,15 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
       if (event.button === 0 && !this.transing) {
         sceneStatusManager.checkActiveObject(event)
         sceneStatusManager.selectEnd(event)
-        scene.setObjectHelperActive(...activeObjectSet)
-        
-        if (activeObjectSet.size) {
-          scene._add(transformControls.getTarget())
-          scene._add(transformControls)
-          transformControls.setAttach(...activeObjectSet)
-          activeObjectSet.forEach(object => {
-            object.dispatchEvent({
-              type: 'active'
-            })
-          })
-        } else {
-          scene._remove(transformControls.getTarget())
-          scene._remove(transformControls)
-        }
-        
       }
+    })
+
+    // 场景状态事件
+    sceneStatusManager.addEventListener(SCENESTATUSTYPE.HOVERCHANGE, (event) => {
+      scene.setObjectHelperHover(...hoverObjectSet)
+    })
+    sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, (event) => {
+      scene.setObjectHelperActive(...activeObjectSet)
     })
 
     // 渲染事件
@@ -241,14 +221,16 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
     this.scene = scene
     this.renderManager = renderManager
 
-    this.hoverObjectSet = hoverObjectSet
-    this.activeObjectSet = activeObjectSet
-
     if (dom) {
       this.setSize(dom.offsetWidth, dom.offsetHeight)
       dom.appendChild(renderer.domElement)
 
     }
+  }
+
+  // 获取场景状态管理器
+  getSceneStatusManager(): SceneStatusManager {
+    return this.sceneStatusManager
   }
   
   // 获取渲染器

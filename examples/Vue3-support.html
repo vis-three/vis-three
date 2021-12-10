@@ -123,10 +123,15 @@
           item.position.y += 5
         }
 
-        const lightData = dataSupportManager.getDataSupport(Vis.MODULETYPE.LIGHT).getData()
+        const lightDataSupport = dataSupportManager.getDataSupport(Vis.MODULETYPE.LIGHT)
+        const lightData = lightDataSupport.getData()
+
+        const configMap = Vue.reactive(lightData)
+
+        lightDataSupport.setData(configMap)
 
         return {
-          configMap: Vue.reactive(lightData),
+          configMap,
           addPositionY
         }
       }

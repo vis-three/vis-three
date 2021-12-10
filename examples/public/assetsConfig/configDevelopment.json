@@ -19,7 +19,7 @@
     "WebGLRenderer": {
       "vid": "WebGLRenderer",
       "type": "WebGLRenderer",
-      "clearColor": "rgba(50, 14, 78, 1)",
+      "clearColor": "rgba(0, 0, 0, 1)",
       "outputEncoding": 3000,
       "physicallyCorrectLights": false,
       "shadowMap": {

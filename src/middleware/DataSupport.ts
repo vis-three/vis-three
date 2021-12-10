@@ -21,6 +21,11 @@ export class DataSupport<D extends CompilerTarget, C extends Compiler> {
     return this.data
   }
 
+  setData (data: D): this {
+    this.data = data
+    return this
+  }
+
   addCompiler (compiler: C): this {
     compiler.setTarget(this.data)
     compiler.compileAll()

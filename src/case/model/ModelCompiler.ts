@@ -143,6 +143,10 @@ export class ModelCompiler extends Compiler {
     return this
   }
 
+  getMap (): Map<SymbolConfig['type'], Object3D> {
+    return this.map
+  }
+
   compileAll (): this {
     const target = this.target
     for (const key in target) {
