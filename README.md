@@ -143,9 +143,24 @@ engine2.play()
 
 ## 阶段
 
-* 完善构建逻辑
-* 核心抽离与js->ts重构
+##### 功能
+* 多窗口变换控制器同步
+* 精灵模块
+* 场景结构模块
+* 后期模块
+* 运行时编译
+* 材质展示器
+* 纹理展示器
+* canvas纹理加载器
+* video纹理加载器
 
+
+##### 优化
+* 多窗口物体变换同步
+* 多窗口物体材质同步
+* 多窗口物体几何同步
+* 翻译器通知阻断
+* 加载管理器优化
 
 ## 例子demo
 github: [https://github.com/Shiotsukikaedesari/vis-three/tree/main/examples](https://github.com/Shiotsukikaedesari/vis-three/tree/main/examples)
