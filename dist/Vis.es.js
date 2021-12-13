@@ -1234,77 +1234,17 @@ class SceneStatusManager extends EventDispatcher$1 {
     __publicField(this, "raycaster");
     __publicField(this, "hoverObjectSet");
     __publicField(this, "activeObjectSet");
+    __publicField(this, "isSelecting");
     __publicField(this, "transformControls");
     __publicField(this, "transformControlsFilterMap");
     this.scene = scene;
     this.camera = camera;
+    this.isSelecting = false;
     this.hoverObjectSet = new Set();
     this.activeObjectSet = new Set();
     this.raycaster = new Raycaster();
     this.selectionHelper = new SelectionHelper();
     this.selectionBox = new SelectionBox(camera, scene, deep);
-  }
-  setCamera(camera) {
-    this.selectionBox.camera = camera;
-    this.camera = camera;
-    return this;
-  }
-  filterTransformControls(controls) {
-    this.transformControlsFilterMap = {};
-    this.transformControls = controls;
-    controls.traverse((object) => {
-      this.transformControlsFilterMap[object.uuid] = true;
-    });
-    return this;
-  }
-  checkHoverObject(event) {
-    this.hoverObjectSet.clear();
-    const mouse = event.mouse;
-    this.raycaster.setFromCamera(mouse, this.camera);
-    const intersects = this.raycaster.intersectObjects(this.scene.children);
-    const reycastObject = this.getRaycastbject(intersects);
-    if (reycastObject) {
-      reycastObject.dispatchEvent({
-        type: "hover"
-      });
-      this.hoverObjectSet.add(reycastObject);
-    }
-    this.dispatchEvent({
-      type: "hover-change",
-      objectSet: this.hoverObjectSet
-    });
-    return this;
-  }
-  checkActiveObject(event) {
-    const activeObjectSet = this.activeObjectSet;
-    const scene = this.scene;
-    const mouse = event.mouse;
-    this.raycaster.setFromCamera(mouse, this.camera);
-    const intersects = this.raycaster.intersectObjects(this.scene.children);
-    const reycastObject = this.getRaycastbject(intersects);
-    activeObjectSet.clear();
-    if (reycastObject) {
-      reycastObject.dispatchEvent({
-        type: "active"
-      });
-      activeObjectSet.add(reycastObject);
-    }
-    this.dispatchEvent({
-      type: "active-change",
-      objectSet: this.hoverObjectSet
-    });
-    if (this.transformControls) {
-      const transformControls = this.transformControls;
-      if (activeObjectSet.size) {
-        scene.add(transformControls.getTarget());
-        scene.add(transformControls);
-        transformControls.setAttach(...activeObjectSet);
-      } else {
-        scene.remove(transformControls.getTarget());
-        scene.remove(transformControls);
-      }
-    }
-    return this;
   }
   getRaycastbject(intersects) {
     if (!intersects.length) {
@@ -1326,39 +1266,17 @@ class SceneStatusManager extends EventDispatcher$1 {
     }
     return intersects[index].object;
   }
-  selectStart(event) {
-    const mouse = event.mouse;
-    this.selectionHelper.onSelectStart(event);
-    this.selectionBox.collection = [];
-    this.selectionBox.startPoint.set(mouse.x, mouse.y, 0.5);
-    return this;
-  }
-  selecting(event) {
-    this.selectionHelper.onSelectMove(event);
-    return this;
-  }
-  selectEnd(event) {
-    const activeObjectSet = this.activeObjectSet;
+  triggerActiveEvent() {
     const scene = this.scene;
-    const mouse = event.mouse;
-    this.selectionHelper.onSelectOver(event);
-    this.selectionBox.endPoint.set(mouse.x, mouse.y, 0.5);
-    this.selectionBox.select();
-    let collection = this.selectionBox.collection;
-    collection = collection.filter((object) => !object.type.includes("Helper"));
-    if (this.transformControlsFilterMap) {
-      const filterMap = this.transformControlsFilterMap;
-      collection = collection.filter((object) => !filterMap[object.uuid]);
-    }
-    collection.forEach((object) => {
+    const activeObjectSet = this.activeObjectSet;
+    activeObjectSet.forEach((object) => {
       object.dispatchEvent({
         type: "active"
       });
-      activeObjectSet.add(object);
     });
     this.dispatchEvent({
       type: "active-change",
-      objectSet: activeObjectSet
+      objectSet: this.activeObjectSet
     });
     if (this.transformControls) {
       const transformControls = this.transformControls;
@@ -1371,6 +1289,94 @@ class SceneStatusManager extends EventDispatcher$1 {
         scene.remove(transformControls);
       }
     }
+  }
+  triggerHoverEvent() {
+    const hoverObjectSet = this.hoverObjectSet;
+    hoverObjectSet.forEach((object) => {
+      object.dispatchEvent({
+        type: "hover"
+      });
+    });
+    this.dispatchEvent({
+      type: "hover-change",
+      objectSet: hoverObjectSet
+    });
+  }
+  setCamera(camera) {
+    this.selectionBox.camera = camera;
+    this.camera = camera;
+    return this;
+  }
+  filterTransformControls(controls) {
+    this.transformControlsFilterMap = {};
+    this.transformControls = controls;
+    controls.traverse((object) => {
+      this.transformControlsFilterMap[object.uuid] = true;
+    });
+    return this;
+  }
+  checkHoverObject(event) {
+    this.hoverObjectSet.clear();
+    const mouse = event.mouse;
+    this.raycaster.setFromCamera(mouse, this.camera);
+    const intersects = this.raycaster.intersectObjects(this.scene.children);
+    const reycastObject = this.getRaycastbject(intersects);
+    if (reycastObject) {
+      this.hoverObjectSet.add(reycastObject);
+    }
+    this.triggerHoverEvent();
+    return this;
+  }
+  checkActiveObject(event) {
+    if (this.isSelecting) {
+      return this;
+    }
+    console.log("check");
+    const activeObjectSet = this.activeObjectSet;
+    const mouse = event.mouse;
+    this.raycaster.setFromCamera(mouse, this.camera);
+    const intersects = this.raycaster.intersectObjects(this.scene.children);
+    const reycastObject = this.getRaycastbject(intersects);
+    activeObjectSet.clear();
+    if (reycastObject) {
+      activeObjectSet.add(reycastObject);
+    }
+    this.triggerActiveEvent();
+    return this;
+  }
+  selectStart(event) {
+    const mouse = event.mouse;
+    this.selectionHelper.onSelectStart(event);
+    this.selectionBox.collection = [];
+    this.selectionBox.startPoint.set(mouse.x, mouse.y, 0.5);
+    return this;
+  }
+  selecting(event) {
+    this.selectionHelper.onSelectMove(event);
+    this.isSelecting = true;
+    return this;
+  }
+  selectEnd(event) {
+    this.selectionHelper.onSelectOver(event);
+    if (!this.isSelecting) {
+      return this;
+    }
+    this.isSelecting = false;
+    const activeObjectSet = this.activeObjectSet;
+    const mouse = event.mouse;
+    this.selectionBox.endPoint.set(mouse.x, mouse.y, 0.5);
+    this.selectionBox.select();
+    activeObjectSet.clear();
+    let collection = this.selectionBox.collection;
+    collection = collection.filter((object) => !object.type.includes("Helper"));
+    if (this.transformControlsFilterMap) {
+      const filterMap = this.transformControlsFilterMap;
+      collection = collection.filter((object) => !filterMap[object.uuid]);
+    }
+    collection.forEach((object) => {
+      activeObjectSet.add(object);
+    });
+    this.triggerActiveEvent();
     return this;
   }
   getActiveObjectSet() {
@@ -1378,6 +1384,24 @@ class SceneStatusManager extends EventDispatcher$1 {
   }
   getHoverObjectSet() {
     return this.hoverObjectSet;
+  }
+  setHoverObjectSet(...object) {
+    const hoverObjectSet = this.hoverObjectSet;
+    hoverObjectSet.clear();
+    object.forEach((object2) => {
+      hoverObjectSet.add(object2);
+    });
+    this.triggerHoverEvent();
+    return this;
+  }
+  setActiveObject(...object) {
+    const activeObjectSet = this.activeObjectSet;
+    activeObjectSet.clear();
+    object.forEach((object2) => {
+      activeObjectSet.add(object2);
+    });
+    this.triggerActiveEvent();
+    return this;
   }
 }
 class VisStats {
@@ -1703,6 +1727,9 @@ class ModelingEngine extends EventDispatcher$1 {
   }
   getSceneStatusManager() {
     return this.sceneStatusManager;
+  }
+  getTransformControls() {
+    return this.transformControls;
   }
   getRenderer() {
     return this.renderer;
@@ -2836,9 +2863,13 @@ class ModelingEngineSupport extends ModelingEngine {
       const mode = e.mode;
       e.transObjectSet.forEach((object) => {
         const config = objectConfigMap.get(object);
-        config[mode].x = object[mode].x;
-        config[mode].y = object[mode].y;
-        config[mode].z = object[mode].z;
+        if (config && config[mode]) {
+          config[mode].x = object[mode].x;
+          config[mode].y = object[mode].y;
+          config[mode].z = object[mode].z;
+        } else {
+          console.warn(`can not font config in this object: '${object}'`);
+        }
       });
     });
     const compilerMap = new Map();
@@ -4424,10 +4455,66 @@ class ModelingEngineSupportConnector {
         }
       });
     };
+    const domSceneStatusManagerMap = new Map();
+    let cacheVidSet = new Set();
+    const syncActiveFunction = function(event) {
+      const e = event;
+      const objectSet = e.objectSet;
+      objectSet.forEach((object) => {
+        if (objectReversalMap.has(object)) {
+          cacheVidSet.add(objectReversalMap.get(object));
+        } else {
+          console.warn(`connector can not found this object mapping vid: `, object);
+        }
+      });
+      domSceneStatusManagerMap.forEach((manager, dom) => {
+        if (manager !== this) {
+          manager.removeEventListener(SCENESTATUSTYPE.ACTIVECHANGE, syncActiveFunction);
+          const allObjectMapSet = domCompilerObjectMap.get(dom);
+          const currentObjecSet = new Set();
+          cacheVidSet.forEach((vid) => {
+            allObjectMapSet.forEach((objectMap) => {
+              if (objectMap.has(vid)) {
+                currentObjecSet.add(objectMap.get(vid));
+              }
+            });
+          });
+          manager.setActiveObject(...currentObjecSet);
+          currentObjecSet.clear();
+          manager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, syncActiveFunction);
+        }
+      });
+      cacheVidSet.clear();
+    };
+    const syncSceneStatus = (dom, i, arr) => {
+      const sceneStatusManager = domEngineMap.get(dom).getSceneStatusManager();
+      domSceneStatusManagerMap.set(dom, sceneStatusManager);
+      sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, syncActiveFunction);
+    };
+    const domTransformControlsMap = new Map();
+    const syncTransformControlsFunction = function(event) {
+      const e = event;
+      const target = this.getTarget();
+      const mode = e.mode;
+      domTransformControlsMap.forEach((controls, dom) => {
+        if (controls !== this) {
+          controls.removeEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED, syncTransformControlsFunction);
+          controls.getTarget()[mode].copy(target[mode]);
+          controls.addEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED, syncTransformControlsFunction);
+        }
+      });
+    };
+    const syncTransformControls = (dom, i, arr) => {
+      const controls = domEngineMap.get(dom).getTransformControls();
+      domTransformControlsMap.set(dom, controls);
+      controls.addEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED, syncTransformControlsFunction);
+    };
     parameters.domList.forEach((dom, i, arr) => {
       DIEngine(dom);
       syncObject(dom);
       syncHelper(dom, i);
+      syncSceneStatus(dom);
+      syncTransformControls(dom);
     });
     cacheRootVidHelperMap.clear();
     this.domEngineMap = domEngineMap;

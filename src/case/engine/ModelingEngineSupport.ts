@@ -150,12 +150,17 @@ export class ModelingEngineSupport extends ModelingEngine {
     this.transformControls.addEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED, (event) => {
       const e = event as unknown as ObjectChangedEvent
       const mode = e.mode
-      
+
       e.transObjectSet.forEach(object => {
         const config = objectConfigMap.get(object)
-        config[mode].x = object[mode].x
-        config[mode].y = object[mode].y
-        config[mode].z = object[mode].z
+        if (config && config[mode]) {
+          config[mode].x = object[mode].x
+          config[mode].y = object[mode].y
+          config[mode].z = object[mode].z
+        } else {
+          // TODO: 这里不应该会出现选不到的物体，需要做优化 例如 helper的children等
+          console.warn(`can not font config in this object: '${object}'`)
+        }
       })
     })
 

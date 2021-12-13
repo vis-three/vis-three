@@ -7,6 +7,8 @@ import { AddHelperEvent, HELPERCOMPILEREVENTTYPE } from '../engine/ModelingEngin
 import { ModelingEngineSupport, MODULETYPE } from '../main';
 import { DataSupportManager} from '../manager/DataSupportManager';
 import { ResourceManager } from '../manager/ResourceManager';
+import { ObjectChangedEvent, VisTransformControls, VISTRANSFORMEVENTRYPE } from '../optimize/VisTransformControls';
+import { activeChangeEvent, hoverChangeEvent, SceneStatusManager, SCENESTATUSTYPE } from '../plugins/SceneStatusManager';
 
 export interface ModelingConnectorParameters {
   domList: Array<HTMLElement>
@@ -169,8 +171,80 @@ export class ModelingEngineSupportConnector {
         
       })
     }
-    
 
+    // 同步场景状态
+    const domSceneStatusManagerMap = new Map<HTMLElement, SceneStatusManager>()
+    let cacheVidSet = new Set<string>()
+    // 同步激活的function
+    const syncActiveFunction = function(event: activeChangeEvent) {
+      const e = event as activeChangeEvent
+      const objectSet = e.objectSet
+
+      // 从激活物体中找出相关vid 
+      objectSet.forEach(object => {
+        if (objectReversalMap.has(object)) {
+          cacheVidSet.add(objectReversalMap.get(object)!)
+        } else {
+          console.warn(`connector can not found this object mapping vid: `, object)
+        }
+      })
+
+      // 主动设置到其他engine的状态管理器中
+      domSceneStatusManagerMap.forEach((manager, dom) => {
+        //@ts-ignore
+        if (manager !== this) {
+          manager.removeEventListener(SCENESTATUSTYPE.ACTIVECHANGE ,syncActiveFunction) // 防止交叉触发
+          const allObjectMapSet = domCompilerObjectMap.get(dom)!
+          const currentObjecSet = new Set<Object3D>()
+          cacheVidSet.forEach(vid => {
+            // TODO: perf some or break
+            allObjectMapSet.forEach(objectMap => {
+              if (objectMap.has(vid)) {
+                currentObjecSet.add(objectMap.get(vid)!)
+              }
+            })
+          })
+          manager.setActiveObject(...currentObjecSet)
+
+          currentObjecSet.clear()
+          manager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE ,syncActiveFunction)
+        }
+      })
+      cacheVidSet.clear()
+    }
+    const syncSceneStatus = (dom: HTMLElement, i: number, arr: HTMLElement[]) => {
+      // 只有运行时同步
+      const sceneStatusManager = domEngineMap.get(dom)!.getSceneStatusManager()
+      domSceneStatusManagerMap.set(dom, sceneStatusManager)
+      sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, syncActiveFunction)
+    }
+
+    // 同步transformControls
+    const domTransformControlsMap = new Map<HTMLElement, VisTransformControls>()
+    const syncTransformControlsFunction = function(event) {
+      const e = event as ObjectChangedEvent
+      // @ts-ignore
+      const target = this.getTarget()
+      const mode = e.mode
+      // 通知其他控制器改变位置
+      domTransformControlsMap.forEach((controls, dom) => {
+        // @ts-ignore
+        if (controls !== this) {
+          controls.removeEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED ,syncTransformControlsFunction) // 防止交叉触发
+          controls.getTarget()[mode].copy(target[mode])
+          controls.addEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED ,syncTransformControlsFunction)
+        }
+      })
+    }
+
+    const syncTransformControls = (dom: HTMLElement, i: number, arr: HTMLElement[]) => {
+      // 只有运行时同步
+      const controls = domEngineMap.get(dom)!.getTransformControls()
+      domTransformControlsMap.set(dom, controls)
+      controls.addEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED, syncTransformControlsFunction)
+    }
+    
+    // TODO:换一种写法，这个太乱了
     parameters.domList.forEach((dom, i, arr) => {
       // 创建引擎
       DIEngine(dom, i, arr)
@@ -178,7 +252,10 @@ export class ModelingEngineSupportConnector {
       syncObject(dom, i, arr)
       // 同步辅助
       syncHelper(dom, i, arr)
-      // 同步ransformControls
+      // 同步
+      syncSceneStatus(dom, i, arr)
+      // 同步
+      syncTransformControls(dom, i, arr)
     })
 
     cacheRootVidHelperMap.clear()

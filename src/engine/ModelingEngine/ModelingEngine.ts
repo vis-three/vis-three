@@ -232,6 +232,11 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
   getSceneStatusManager(): SceneStatusManager {
     return this.sceneStatusManager
   }
+
+  // 获取变换控制器
+  getTransformControls(): VisTransformControls {
+    return this.transformControls
+  }
   
   // 获取渲染器
   getRenderer(): WebGLRenderer {

@@ -30,6 +30,8 @@ export class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activ
   private hoverObjectSet: Set<Object3D>
   private activeObjectSet: Set<Object3D>
 
+  private isSelecting: boolean // 用来区分是单选还是框选，避免重复触发
+
   private transformControls?: VisTransformControls
   private transformControlsFilterMap?: {[key: string]: boolean}
 
@@ -38,92 +40,12 @@ export class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activ
 
     this.scene = scene
     this.camera = camera
+    this.isSelecting = false
     this.hoverObjectSet = new Set()
     this.activeObjectSet = new Set()
     this.raycaster = new Raycaster()
     this.selectionHelper = new SelectionHelper()
     this.selectionBox = new SelectionBox(camera, scene, deep)
-  }
-
-  setCamera (camera: Camera): this {
-    this.selectionBox.camera = camera
-    this.camera = camera
-    return this
-  }
-
-  // 过滤掉transformControls的选择
-  filterTransformControls (controls: VisTransformControls): this {
-    this.transformControlsFilterMap = {}
-    this.transformControls = controls
-    controls.traverse((object) => {
-      this.transformControlsFilterMap![object.uuid] = true
-    })
-    return this
-  }
-  
-  /// 单选
-  checkHoverObject (event: VisPointerEvent): this {
-    this.hoverObjectSet.clear()
-    const mouse: Vector2 = event.mouse
-    this.raycaster.setFromCamera(mouse, this.camera)
-    const intersects = this.raycaster.intersectObjects(this.scene.children)
-    const reycastObject = this.getRaycastbject(intersects)
-
-    if (reycastObject) {
-      reycastObject.dispatchEvent({
-        type: 'hover'
-      })
-      this.hoverObjectSet.add(reycastObject)
-    }
-
-    this.dispatchEvent({
-      type: 'hover-change',
-      objectSet: this.hoverObjectSet
-    })
-
-    return this
-  }
-
-  checkActiveObject (event: VisPointerEvent): this {
-
-    const activeObjectSet = this.activeObjectSet
-    const scene = this.scene
-
-    const mouse: Vector2 = event.mouse
-    this.raycaster.setFromCamera(mouse, this.camera)
-    const intersects = this.raycaster.intersectObjects(this.scene.children)
-    const reycastObject = this.getRaycastbject(intersects)
-
-    activeObjectSet.clear()
-
-    if (reycastObject) {
-      reycastObject.dispatchEvent({
-        type: 'active'
-      })
-      activeObjectSet.add(reycastObject)
-      
-    }
-
-    this.dispatchEvent({
-      type: 'active-change',
-      objectSet: this.hoverObjectSet
-    })
-    
-    if (this.transformControls) {
-      const transformControls = this.transformControls
-
-      if (activeObjectSet.size) {
-        scene.add(transformControls.getTarget())
-        scene.add(transformControls)
-        transformControls.setAttach(...activeObjectSet)
-      } else {
-        scene.remove(transformControls.getTarget())
-        scene.remove(transformControls)
-      }
-    }
-    
-
-    return this
   }
 
   // 检测选中的物体
@@ -152,6 +74,106 @@ export class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activ
     return intersects[index].object
   }
 
+  // 激活active事件
+  private triggerActiveEvent () {
+    const scene = this.scene
+    const activeObjectSet = this.activeObjectSet
+
+    activeObjectSet.forEach(object => {
+      object.dispatchEvent({
+        type: 'active'
+      })
+    })
+
+    this.dispatchEvent({
+      type: 'active-change',
+      objectSet: this.activeObjectSet
+    })
+    
+    if (this.transformControls) {
+      const transformControls = this.transformControls
+
+      if (activeObjectSet.size) {
+        scene.add(transformControls.getTarget())
+        scene.add(transformControls)
+        transformControls.setAttach(...activeObjectSet)
+      } else {
+        scene.remove(transformControls.getTarget())
+        scene.remove(transformControls)
+      }
+    }
+  }
+
+  // 激活hover事件
+  private triggerHoverEvent () {
+    const hoverObjectSet = this.hoverObjectSet
+    hoverObjectSet.forEach(object => {
+      object.dispatchEvent({
+        type: 'hover'
+      })
+    })
+    
+    this.dispatchEvent({
+      type: 'hover-change',
+      objectSet: hoverObjectSet
+    })
+  }
+
+  setCamera (camera: Camera): this {
+    this.selectionBox.camera = camera
+    this.camera = camera
+    return this
+  }
+
+  // 过滤掉transformControls的选择
+  filterTransformControls (controls: VisTransformControls): this {
+    this.transformControlsFilterMap = {}
+    this.transformControls = controls
+    controls.traverse((object) => {
+      this.transformControlsFilterMap![object.uuid] = true
+    })
+    return this
+  }
+  
+  /// 单选
+  checkHoverObject (event: VisPointerEvent): this {
+    this.hoverObjectSet.clear()
+    const mouse: Vector2 = event.mouse
+    this.raycaster.setFromCamera(mouse, this.camera)
+    const intersects = this.raycaster.intersectObjects(this.scene.children)
+    const reycastObject = this.getRaycastbject(intersects)
+
+    if (reycastObject) {
+      this.hoverObjectSet.add(reycastObject)
+    }
+
+    this.triggerHoverEvent()
+
+    return this
+  }
+
+  checkActiveObject (event: VisPointerEvent): this {
+    if (this.isSelecting) {
+      return this
+    }
+    console.log('check')
+    const activeObjectSet = this.activeObjectSet
+
+    const mouse: Vector2 = event.mouse
+    this.raycaster.setFromCamera(mouse, this.camera)
+    const intersects = this.raycaster.intersectObjects(this.scene.children)
+    const reycastObject = this.getRaycastbject(intersects)
+
+    activeObjectSet.clear()
+
+    if (reycastObject) {
+      activeObjectSet.add(reycastObject)
+    }
+
+    this.triggerActiveEvent()
+    return this
+  }
+
   /// 框选
   // 选择开始
   selectStart(event: VisPointerEvent): this {
@@ -164,17 +186,24 @@ export class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activ
   // 选择中
   selecting (event: VisPointerEvent): this {
     this.selectionHelper.onSelectMove(event)
+    this.isSelecting = true
     return this
   }
 
   // 选择结束
   selectEnd (event: VisPointerEvent): this {
-    const activeObjectSet = this.activeObjectSet
-    const scene = this.scene
-    const mouse: Vector2 = event.mouse
     this.selectionHelper.onSelectOver(event)
+    if (!this.isSelecting) {
+      return this
+    }
+
+    this.isSelecting = false
+    const activeObjectSet = this.activeObjectSet
+    const mouse: Vector2 = event.mouse
     this.selectionBox.endPoint.set(mouse.x, mouse.y, 0.5)
     this.selectionBox.select()
+
+    activeObjectSet.clear()
 
     let collection = this.selectionBox.collection
 
@@ -188,30 +217,10 @@ export class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activ
     }
 
     collection.forEach(object => {
-      object.dispatchEvent({
-        type: 'active'
-      })
       activeObjectSet.add(object)
-      
     })
 
-    this.dispatchEvent({
-      type: 'active-change',
-      objectSet: activeObjectSet
-    })
-
-    if (this.transformControls) {
-      const transformControls = this.transformControls
-
-      if (activeObjectSet.size) {
-        scene.add(transformControls.getTarget())
-        scene.add(transformControls)
-        transformControls.setAttach(...activeObjectSet)
-      } else {
-        scene.remove(transformControls.getTarget())
-        scene.remove(transformControls)
-      }
-    }
+    this.triggerActiveEvent()
     return this
   }
 
@@ -221,5 +230,25 @@ export class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activ
 
   getHoverObjectSet (): Set<Object3D> {
     return this.hoverObjectSet
+  }
+
+  setHoverObjectSet (...object: Object3D[]): this {
+    const hoverObjectSet = this.hoverObjectSet
+    hoverObjectSet.clear()
+    object.forEach(object => {
+      hoverObjectSet.add(object)
+    })
+    this.triggerHoverEvent()
+    return this
+  }
+
+  setActiveObject (...object: Object3D[]): this {
+    const activeObjectSet = this.activeObjectSet
+    activeObjectSet.clear()
+    object.forEach(object => {
+      activeObjectSet.add(object)
+    })
+    this.triggerActiveEvent()
+    return this
   }
 }
