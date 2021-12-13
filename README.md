@@ -119,18 +119,20 @@ resourceManager.addEventListener(Vis.RESOURCEEVENTTYPE.MAPPED, e => {
 const resourceManager = new Vis.ResourceManager()
 const dataSupportManager = new Vis.DataSupportManager().load(config)
 
-new Vis.ModelingEngineSupport({
-  dom: document.getElementById('window1'),
+const connector = new Vis.ModelingEngineSupportConnector({
+  domList: [
+    document.getElementById('window1'),
+    document.getElementById('window2'),
+  ],
   dataSupportManager,
   resourceManager
-}).play()
+})
 
+const engine1 = connector.getEngineSupport(document.getElementById('window1'))
+engine1.play()
 
-new Vis.ModelingEngineSupport({
-  dom: document.getElementById('window2'),
-  dataSupportManager,
-  resourceManager
-}).play()
+const engine2 = connector.getEngineSupport(document.getElementById('window2'))
+engine2.play()
 
 ```
 

@@ -42,23 +42,24 @@
       try {
         const dataSupportManager = new Vis.DataSupportManager().load(config)
 
-        const engine1 = new Vis.ModelingEngineSupport({
-          dom: document.getElementById('window1'),
+        const connector = new Vis.ModelingEngineSupportConnector({
+          domList: [
+            document.getElementById('window1'),
+            document.getElementById('window2'),
+          ],
           dataSupportManager,
           resourceManager
         })
+
+        const engine1 = connector.getEngineSupport(document.getElementById('window1'))
 
         engine1.play()
 
-        const engine2 = new Vis.ModelingEngineSupport({
-          dom: document.getElementById('window2'),
-          dataSupportManager,
-          resourceManager
-        })
+        const engine2 = connector.getEngineSupport(document.getElementById('window2'))
 
         engine2.play()
 
-        engine2.getScene().setViewPoint('top')
+        engine2.getScene().setViewPoint('front')
 
         
       } catch (error) {

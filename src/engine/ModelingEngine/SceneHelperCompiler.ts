@@ -1,11 +1,27 @@
-import { Color, Material, Mesh, MeshBasicMaterial, Object3D } from "three";
+import { BaseEvent, Color, EventDispatcher, Material, Mesh, MeshBasicMaterial, Object3D } from "three";
 import { PointLightHelper } from "../../extends/helper/light/PointLightHelper";
 import { CameraHelper } from "../../extends/helper/camera/CameraHelper";
 import { ModelingScene } from "./ModelingScene";
 import { MeshHelper } from "../../extends/helper/object/MeshHelper";
 import { ACTIVECOLOR, HELPERCOLOR, HOVERCOLOR } from "../../case/constants/COLOR";
 
-export class SceneHelperCompiler {
+export enum HELPERCOMPILEREVENTTYPE {
+  ADD = 'add',
+  REMOVE = 'remove'
+}
+
+export interface AddHelperEvent extends BaseEvent {
+  type: HELPERCOMPILEREVENTTYPE.ADD
+  helper: Object3D
+  object: Object3D
+}
+
+export interface RemoveHelperEvent extends BaseEvent {
+  type: HELPERCOMPILEREVENTTYPE.REMOVE
+  helper: Object3D
+  object: Object3D
+}
+export class SceneHelperCompiler extends EventDispatcher<AddHelperEvent | RemoveHelperEvent> {
 
   private static helperColorHex = new Color(HELPERCOLOR).getHex()
   private static activeColorHex = new Color(ACTIVECOLOR).getHex()
@@ -27,8 +43,13 @@ export class SceneHelperCompiler {
   private scene: ModelingScene
 
   constructor (scene: ModelingScene) {
+    super()
     this.map = new Map()
     this.scene = scene
+  }
+
+  getMap (): Map<Object3D, Object3D> {
+    return this.map
   }
 
   add (object: Object3D) {
@@ -40,6 +61,11 @@ export class SceneHelperCompiler {
       const helper = new SceneHelperCompiler.typeHelperMap[object.type](object)
       this.map.set(object, helper)
       this.scene._add(helper)
+      this.dispatchEvent({
+        type: HELPERCOMPILEREVENTTYPE.ADD,
+        helper,
+        object
+      })
     } else {
       console.warn(`Scene helper compiler can not support this type object: '${object.type}'`)
     }
@@ -64,6 +90,11 @@ export class SceneHelperCompiler {
         }
       }
       this.map.delete(object)
+      this.dispatchEvent({
+        type: HELPERCOMPILEREVENTTYPE.REMOVE,
+        helper,
+        object
+      })
     } else {
       console.warn(`Scene helper compiler can not found this object\`s helper: ${object}`)
     }

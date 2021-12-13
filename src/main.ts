@@ -16,6 +16,8 @@ import { DataSupportManager } from "./manager/DataSupportManager";
 import { SupportDataGenerator } from "./convenient/SupportDataGenerator";
 import { MODULETYPE } from "./case/constants/MODULETYPE";
 import { CONFIGTYPE } from "./case/constants/configType";
+import { ModelingEngineSupportConnector } from "./connector/ModelingEngineSupportConnector";
+
 
 export {
   // menu
@@ -40,6 +42,9 @@ export {
   ModelDataSupport,
   GeometryDataSupport,
   CameraDataSupport,
+
+  // connector
+  ModelingEngineSupportConnector,
 
   // helper
   PointLightHelper,

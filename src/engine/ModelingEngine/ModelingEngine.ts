@@ -47,7 +47,7 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
   protected sceneStatusManager: SceneStatusManager
   protected composer: EffectComposer
   protected renderer: WebGLRenderer
-  protected scene: Scene
+  protected scene: ModelingScene
   protected renderManager: RenderManager
 
   private transing: boolean
@@ -239,7 +239,7 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
   }
 
   // 获取场景
-  getScene (): Scene {
+  getScene (): ModelingScene {
     return this.scene
   }
 

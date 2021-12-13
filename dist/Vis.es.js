@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Vector2, Frustum, Quaternion, EventDispatcher as EventDispatcher$1, Raycaster, MOUSE, Object3D, Clock, WebGLRenderer, WebGLMultisampleRenderTarget, RGBAFormat, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, LinearEncoding, PCFShadowMap, NoToneMapping, Fog, FogExp2, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, TangentSpaceNormalMap } from "three";
+import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Vector2, Frustum, Quaternion, Raycaster, MOUSE, Object3D, Clock, WebGLRenderer, WebGLMultisampleRenderTarget, RGBAFormat, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, LinearEncoding, PCFShadowMap, NoToneMapping, Fog, FogExp2, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, TangentSpaceNormalMap } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -372,12 +372,21 @@ class MeshHelper extends LineSegments {
     };
   }
 }
-const _SceneHelperCompiler = class {
+var HELPERCOMPILEREVENTTYPE;
+(function(HELPERCOMPILEREVENTTYPE2) {
+  HELPERCOMPILEREVENTTYPE2["ADD"] = "add";
+  HELPERCOMPILEREVENTTYPE2["REMOVE"] = "remove";
+})(HELPERCOMPILEREVENTTYPE || (HELPERCOMPILEREVENTTYPE = {}));
+const _SceneHelperCompiler = class extends EventDispatcher$1 {
   constructor(scene) {
+    super();
     __publicField(this, "map");
     __publicField(this, "scene");
     this.map = new Map();
     this.scene = scene;
+  }
+  getMap() {
+    return this.map;
   }
   add(object) {
     if (_SceneHelperCompiler.filterHelperMap[object.type]) {
@@ -387,6 +396,11 @@ const _SceneHelperCompiler = class {
       const helper = new _SceneHelperCompiler.typeHelperMap[object.type](object);
       this.map.set(object, helper);
       this.scene._add(helper);
+      this.dispatchEvent({
+        type: HELPERCOMPILEREVENTTYPE.ADD,
+        helper,
+        object
+      });
     } else {
       console.warn(`Scene helper compiler can not support this type object: '${object.type}'`);
     }
@@ -409,6 +423,11 @@ const _SceneHelperCompiler = class {
         }
       }
       this.map.delete(object);
+      this.dispatchEvent({
+        type: HELPERCOMPILEREVENTTYPE.REMOVE,
+        helper,
+        object
+      });
     } else {
       console.warn(`Scene helper compiler can not found this object\`s helper: ${object}`);
     }
@@ -825,6 +844,9 @@ class ModelingScene extends Scene {
         this.setDispalyMode(this.displayMode);
       }
     }
+  }
+  getHelperCompiler() {
+    return this.helperCompiler;
   }
   setObjectHelperVisiable(visiable) {
     this.helperCompiler.setVisiable(visiable);
@@ -1963,6 +1985,18 @@ class CameraCompiler extends Compiler {
       console.error(`camera vid parameter is illegal: ${vid}`);
     }
     return this;
+  }
+  set(path, key, value) {
+    const vid = path.shift();
+    if (validate(vid) && this.map.has(vid)) {
+      let config = this.map.get(vid);
+      path.forEach((key2, i, arr) => {
+        config = config[key2];
+      });
+      config[key] = value;
+    } else {
+      console.error(`vid parameter is illegal: ${vid} or can not found this vid camera`);
+    }
   }
   setScene(scene) {
     this.scene = scene;
@@ -4121,6 +4155,8 @@ const CameraRule = function(notice, compiler) {
     if (validate(key)) {
       compiler.add(key, value);
     }
+  } else if (operate === "set") {
+    compiler.set(path.concat([]), key, value);
   }
 };
 class CameraDataSupport extends DataSupport {
@@ -4278,4 +4314,126 @@ __publicField(SupportDataGenerator, "dataTypeMap", {
   [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER,
   [CONFIGTYPE.SCENE]: MODULETYPE.SCENE
 });
-export { CONFIGTYPE, CameraDataSupport, CameraHelper, DataSupportManager, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, ModelDataSupport, ModelingEngine, ModelingEngineSupport, PointLightHelper, RESOURCEEVENTTYPE, ResourceManager, SupportDataGenerator, TextureDataSupport, generateConfig };
+class ModelingEngineSupportConnector {
+  constructor(parameters) {
+    __publicField(this, "domEngineMap");
+    if (!parameters.domList.length) {
+      console.error(`modeling engine connector must have a dom target`);
+      return;
+    }
+    const dataSupportManager = parameters.dataSupportManager || new DataSupportManager();
+    const resourceManager = parameters.resourceManager || new ResourceManager();
+    const domEngineMap = new Map();
+    const DIEngine = (dom, i, arr) => {
+      const engineSupport = new ModelingEngineSupport({
+        dom,
+        dataSupportManager,
+        resourceManager
+      });
+      domEngineMap.set(dom, engineSupport);
+    };
+    let cameraMap;
+    let lightMap;
+    let modelMap;
+    const domCompilerObjectMap = new Map();
+    const objectReversalMap = new WeakMap();
+    const syncObject = (dom, i, arr) => {
+      const engineSupport = domEngineMap.get(dom);
+      cameraMap = engineSupport.getCompiler(MODULETYPE.CAMERA).getMap();
+      lightMap = engineSupport.getCompiler(MODULETYPE.LIGHT).getMap();
+      modelMap = engineSupport.getCompiler(MODULETYPE.MODEL).getMap();
+      const objectMapSet = new Set();
+      objectMapSet.add(cameraMap);
+      objectMapSet.add(lightMap);
+      objectMapSet.add(modelMap);
+      domCompilerObjectMap.set(dom, objectMapSet);
+      cameraMap.forEach((camera, vid) => {
+        objectReversalMap.set(camera, vid);
+      });
+      lightMap.forEach((light, vid) => {
+        objectReversalMap.set(light, vid);
+      });
+      modelMap.forEach((model, vid) => {
+        objectReversalMap.set(model, vid);
+      });
+    };
+    const domHelperMap = new Map();
+    const cacheRootVidHelperMap = new Map();
+    const syncHelper = (dom, i, arr) => {
+      const helperCompiler = domEngineMap.get(dom).getScene().getHelperCompiler();
+      const helperMap = helperCompiler.getMap();
+      domHelperMap.set(dom, helperMap);
+      if (i === 0) {
+        helperMap.forEach((helper, object) => {
+          cacheRootVidHelperMap.set(objectReversalMap.get(object), helper);
+        });
+      } else {
+        const currentHelperMap = helperCompiler.getMap();
+        currentHelperMap.forEach((helper, object) => {
+          const rootHelper = cacheRootVidHelperMap.get(objectReversalMap.get(object));
+          const oldMaterial = helper.material;
+          if (Array.isArray(oldMaterial)) {
+            oldMaterial.forEach((material) => {
+              material.dispose();
+            });
+          } else {
+            oldMaterial.dispose();
+          }
+          helper.material = rootHelper.material;
+        });
+      }
+      helperCompiler.addEventListener(HELPERCOMPILEREVENTTYPE.ADD, (event) => {
+        const e = event;
+        const helper = e.helper;
+        const object = e.object;
+        const vid = objectReversalMap.get(object);
+        if (vid) {
+          const otherObjectSet = new Set();
+          domCompilerObjectMap.forEach((engineObjectMapSet, dom2) => {
+            engineObjectMapSet.forEach((vidObjectMap) => {
+              if (vidObjectMap.has(vid) && vidObjectMap.get(vid) !== object) {
+                otherObjectSet.add(vidObjectMap.get(vid));
+              }
+            });
+          });
+          const otherHelperSet = new Set();
+          domHelperMap.forEach((helperMap2, dom2) => {
+            otherObjectSet.forEach((targetObject) => {
+              const otherHelper = helperMap2.get(targetObject);
+              if (otherHelper && otherHelper !== helper) {
+                otherHelperSet.add(otherHelper);
+              }
+            });
+          });
+          otherObjectSet.clear();
+          otherHelperSet.forEach((otherHelper) => {
+            const oldMaterial = otherHelper.material;
+            if (oldMaterial !== helper.material) {
+              if (Array.isArray(oldMaterial)) {
+                oldMaterial.forEach((material) => {
+                  material.dispose();
+                });
+              } else {
+                oldMaterial.dispose();
+              }
+              otherHelper.material = helper.material;
+            }
+          });
+        } else {
+          console.error(`connector can not found this object vid sign: ${object}`);
+        }
+      });
+    };
+    parameters.domList.forEach((dom, i, arr) => {
+      DIEngine(dom);
+      syncObject(dom);
+      syncHelper(dom, i);
+    });
+    cacheRootVidHelperMap.clear();
+    this.domEngineMap = domEngineMap;
+  }
+  getEngineSupport(dom) {
+    return this.domEngineMap.get(dom);
+  }
+}
+export { CONFIGTYPE, CameraDataSupport, CameraHelper, DataSupportManager, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, PointLightHelper, RESOURCEEVENTTYPE, ResourceManager, SupportDataGenerator, TextureDataSupport, generateConfig };

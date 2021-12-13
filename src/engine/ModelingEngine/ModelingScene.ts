@@ -519,6 +519,11 @@ export class ModelingScene extends Scene {
     }
   }
 
+  // 获取辅助编译
+  getHelperCompiler (): SceneHelperCompiler {
+    return this.helperCompiler
+  }
+
   // 设置物体辅助
   setObjectHelperVisiable (visiable: boolean): void {
     this.helperCompiler.setVisiable(visiable)

@@ -62,6 +62,19 @@ export class CameraCompiler extends Compiler {
     return this
   }
 
+  set (path: string[], key: string, value: any) {
+    const vid = path.shift()!
+    if (validate(vid) && this.map.has(vid)) {
+      let config = this.map.get(vid)!
+      path.forEach((key, i, arr) => {
+        config = config[key]
+      })
+      config[key] = value
+    } else {
+      console.error(`vid parameter is illegal: ${vid} or can not found this vid camera`)
+    }
+  }
+
   setScene (scene: Scene): this {
     this.scene = scene
     return this
