@@ -30,7 +30,7 @@ export enum ModelingSceneCameraDefalutType {
 }
 
 // 默认视角枚举
-export enum ModelingSceneViewpoint {
+export enum SCENEVIEWPOINT {
   DEFAULT = 'default',
   TOP = 'top',
   BOTTOM = 'bottom',
@@ -40,7 +40,7 @@ export enum ModelingSceneViewpoint {
   BACK ='back'
 }
 // 默认展示枚举
-export enum ModelingSceneDisplayMode {
+export enum SCENEDISPLAYMODE {
   GEOMETRY = 0,
   MATERIAL = 1,
   LIGHT = 2,
@@ -55,7 +55,7 @@ export interface ModelingSceneParameters {
   hasGridHelper?: boolean // 是否需要网格辅助
   hasDisplayMode?: boolean // 是否需要渲染模式
 
-  displayMode?: ModelingSceneDisplayMode //渲染mode
+  displayMode?: SCENEDISPLAYMODE //渲染mode
 
   defaultPerspectiveCameraSetting?: { // 透视相机初始配置
     fov: number,
@@ -148,7 +148,7 @@ export class ModelingScene extends Scene {
   private resetHoverObjectSet: Set<Object3D>
   private resetActiveObjectSet: Set<Object3D>
 
-  private displayMode?: ModelingSceneDisplayMode // 展示mode
+  private displayMode?: SCENEDISPLAYMODE // 展示mode
   private meshOverrideMaterial?: MeshLambertMaterial
   private lineOverrideMaterial?: LineBasicMaterial
   private pointsOverrideMaterial?: PointsMaterial
@@ -174,7 +174,7 @@ export class ModelingScene extends Scene {
   public getDefaultOrthographicCamera?: () => OrthographicCamera // 获取默认正交相机
   public setAxesHelper?: (setting: ModelingAxesHelperSetting) => void // 设置坐标轴辅助
   public setGridHelper?: (setting: ModelingGridHelperSetting) => void // 设置网格辅助
-  public setDispalyMode?: (mode: ModelingSceneDisplayMode) => void // 设置场景的渲染模式
+  public setDispalyMode?: (mode: SCENEDISPLAYMODE) => void // 设置场景的渲染模式
 
   constructor (config: ModelingSceneParameters) {
     super()
@@ -251,22 +251,22 @@ export class ModelingScene extends Scene {
         return this.defaultOrthograpbicCamera!
       }
       // 视角监听
-      this.addEventListener(`${ModelingSceneViewpoint.TOP}ViewPoint`, e => {
+      this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, e => {
         this.defaultOrthograpbicCamera!.position.set(0, 100, 0)
       })
-      this.addEventListener(`${ModelingSceneViewpoint.BOTTOM}ViewPoint`, e => {
+      this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, e => {
         this.defaultOrthograpbicCamera!.position.set(0, -100, 0)
       })
-      this.addEventListener(`${ModelingSceneViewpoint.RIGHT}ViewPoint`, e => {
+      this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, e => {
         this.defaultOrthograpbicCamera!.position.set(100, 0, 0)
       })
-      this.addEventListener(`${ModelingSceneViewpoint.LEFT}ViewPoint`, e => {
+      this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, e => {
         this.defaultOrthograpbicCamera!.position.set(-100, 0, 0)
       })
-      this.addEventListener(`${ModelingSceneViewpoint.FRONT}ViewPoint`, e => {
+      this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, e => {
         this.defaultOrthograpbicCamera!.position.set(0, 0, 100)
       })
-      this.addEventListener(`${ModelingSceneViewpoint.BACK}ViewPoint`, e => {
+      this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, e => {
         this.defaultOrthograpbicCamera!.position.set(0, 0, -100)
       })
     }
@@ -323,37 +323,37 @@ export class ModelingScene extends Scene {
       this.gridHelper = gridHelper
       super.add(gridHelper)
       // 视角监听
-      this.addEventListener(`${ModelingSceneViewpoint.DEFAULT}ViewPoint`, e => {
+      this.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, e => {
         gridHelper.rotation.set(0, 0, 0)
         gridHelper.updateMatrix()
         gridHelper.updateMatrixWorld()
       })
-      this.addEventListener(`${ModelingSceneViewpoint.TOP}ViewPoint`, e => {
+      this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, e => {
         gridHelper.rotation.set(0, 0, 0)
         gridHelper.updateMatrix()
         gridHelper.updateMatrixWorld()
       })
-      this.addEventListener(`${ModelingSceneViewpoint.BOTTOM}ViewPoint`, e => {
+      this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, e => {
         gridHelper.rotation.set(0, 0, 0)
         gridHelper.updateMatrix()
         gridHelper.updateMatrixWorld()
       })
-      this.addEventListener(`${ModelingSceneViewpoint.RIGHT}ViewPoint`, e => {
+      this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, e => {
         gridHelper.rotation.set(0, 0, Math.PI / 2)
         gridHelper.updateMatrix()
         gridHelper.updateMatrixWorld()
       })
-      this.addEventListener(`${ModelingSceneViewpoint.LEFT}ViewPoint`, e => {
+      this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, e => {
         gridHelper.rotation.set(0, 0, Math.PI / 2)
         gridHelper.updateMatrix()
         gridHelper.updateMatrixWorld()
       })
-      this.addEventListener(`${ModelingSceneViewpoint.FRONT}ViewPoint`, e => {
+      this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, e => {
         gridHelper.rotation.set(Math.PI / 2, 0, 0)
         gridHelper.updateMatrix()
         gridHelper.updateMatrixWorld()
       })
-      this.addEventListener(`${ModelingSceneViewpoint.BACK}ViewPoint`, e => {
+      this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, e => {
         gridHelper.rotation.set(Math.PI / 2, 0, 0)
         gridHelper.updateMatrix()
         gridHelper.updateMatrixWorld()
@@ -391,7 +391,7 @@ export class ModelingScene extends Scene {
       this.defaultDirectionalLight.updateMatrixWorld()
       this.defaultDirectionalLight.matrixAutoUpdate = false
 
-      this.setDispalyMode = (mode: ModelingSceneDisplayMode) => {
+      this.setDispalyMode = (mode: SCENEDISPLAYMODE) => {
         // 过滤材质
         const filterMaterial = (): void => {
           const meterialCacheMap = this.materialCacheMap!
@@ -488,19 +488,19 @@ export class ModelingScene extends Scene {
           }
         }
 
-        if (mode === ModelingSceneDisplayMode.GEOMETRY) {
+        if (mode === SCENEDISPLAYMODE.GEOMETRY) {
           filterMaterial()
           filterScene()
           filterLight()
-        } else if (mode === ModelingSceneDisplayMode.MATERIAL) {
+        } else if (mode === SCENEDISPLAYMODE.MATERIAL) {
           reduceMaterial()
           filterScene()
           filterLight()
-        } else if (mode === ModelingSceneDisplayMode.LIGHT) {
+        } else if (mode === SCENEDISPLAYMODE.LIGHT) {
           reduceMaterial()
           filterScene()
           reduceLight()
-        } else if (mode === ModelingSceneDisplayMode.ENV) {
+        } else if (mode === SCENEDISPLAYMODE.ENV) {
           reduceMaterial()
           reduceScene()
           reduceLight()
@@ -513,7 +513,7 @@ export class ModelingScene extends Scene {
         this.displayMode = config.displayMode
         this.setDispalyMode(this.displayMode)
       } else {
-        this.displayMode = ModelingSceneDisplayMode.ENV
+        this.displayMode = SCENEDISPLAYMODE.ENV
         this.setDispalyMode(this.displayMode)
       }
     }
@@ -574,9 +574,15 @@ export class ModelingScene extends Scene {
     })
     return this
   }
+
+  // 设置物体辅助显示
+  showObjectHelper (show: boolean): this {
+    this.helperCompiler.setVisiable(show)
+    return this
+  }
   
   // 设置视角方向
-  setViewPoint (direction: ModelingSceneViewpoint): void {
+  setViewPoint (direction: SCENEVIEWPOINT): void {
     
     this.dispatchEvent({type: `${direction}ViewPoint`})
     

@@ -10,7 +10,7 @@ import {
   BaseEvent
 } from "three"
 
-import { ModelingScene, ModelingSceneDisplayMode, ModelingSceneViewpoint } from "./ModelingScene";
+import { ModelingScene, SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./ModelingScene";
 
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -67,7 +67,7 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
       hasAxesHelper: true,
       hasGridHelper: true,
       hasDisplayMode: true,
-      displayMode: ModelingSceneDisplayMode.ENV
+      displayMode: SCENEDISPLAYMODE.ENV
     })
 
     const camera = scene.getDefaultPerspectiveCamera!()!
@@ -109,31 +109,31 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
     const renderManager = new RenderManager()
 
     // 视角监听
-    scene.addEventListener(`${ModelingSceneViewpoint.DEFAULT}ViewPoint`, e => {
+    scene.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, e => {
       this.setCamera(defaultPerspectiveCamera)
       orbitControls.enableRotate = true
     })
-    scene.addEventListener(`${ModelingSceneViewpoint.TOP}ViewPoint`, e => {
+    scene.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, e => {
       this.setCamera(defaultOrthograpbicCamera)
       orbitControls.enableRotate = false
     })
-    scene.addEventListener(`${ModelingSceneViewpoint.BOTTOM}ViewPoint`, e => {
+    scene.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, e => {
       this.setCamera(defaultOrthograpbicCamera)
       orbitControls.enableRotate = false
     })
-    scene.addEventListener(`${ModelingSceneViewpoint.RIGHT}ViewPoint`, e => {
+    scene.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, e => {
       this.setCamera(defaultOrthograpbicCamera)
       orbitControls.enableRotate = false
     })
-    scene.addEventListener(`${ModelingSceneViewpoint.LEFT}ViewPoint`, e => {
+    scene.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, e => {
       this.setCamera(defaultOrthograpbicCamera)
       orbitControls.enableRotate = false
     })
-    scene.addEventListener(`${ModelingSceneViewpoint.FRONT}ViewPoint`, e => {
+    scene.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, e => {
       this.setCamera(defaultOrthograpbicCamera)
       orbitControls.enableRotate = false
     })
-    scene.addEventListener(`${ModelingSceneViewpoint.BACK}ViewPoint`, e => {
+    scene.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, e => {
       this.setCamera(defaultOrthograpbicCamera)
       orbitControls.enableRotate = false
     })
@@ -233,6 +233,12 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
     return this.sceneStatusManager
   }
 
+  // 设置变换控制器是否可见
+  showTransformControls(visiable: boolean): this {
+    this.transformControls.visible = visiable
+    return this
+  }
+
   // 获取变换控制器
   getTransformControls(): VisTransformControls {
     return this.transformControls
@@ -260,7 +266,7 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
    // 设置窗口尺寸
   setSize (width: number, height: number): this {
     if(width <= 0 || height <= 0) {
-      console.error(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`)
+      console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`)
       return this
     }
     this.dispatchEvent({type: 'setSize', width, height})

@@ -17,7 +17,7 @@ import { SupportDataGenerator } from "./convenient/SupportDataGenerator";
 import { MODULETYPE } from "./case/constants/MODULETYPE";
 import { CONFIGTYPE } from "./case/constants/configType";
 import { ModelingEngineSupportConnector } from "./connector/ModelingEngineSupportConnector";
-
+import { SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./engine/ModelingEngine/ModelingScene";
 
 export {
   // menu
@@ -25,6 +25,8 @@ export {
   RESOURCEEVENTTYPE,
   MODULETYPE,
   CONFIGTYPE,
+  SCENEDISPLAYMODE,
+  SCENEVIEWPOINT,
 
   // manager
   LoaderManager,

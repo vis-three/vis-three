@@ -494,23 +494,23 @@ var ModelingSceneCameraDefalutType;
   ModelingSceneCameraDefalutType2["DefaultPerspectiveCamera"] = "DefaultPerspectiveCamera";
   ModelingSceneCameraDefalutType2["DefaultOrthograpbicCamera"] = "DefaultOrthograpbicCamera";
 })(ModelingSceneCameraDefalutType || (ModelingSceneCameraDefalutType = {}));
-var ModelingSceneViewpoint;
-(function(ModelingSceneViewpoint2) {
-  ModelingSceneViewpoint2["DEFAULT"] = "default";
-  ModelingSceneViewpoint2["TOP"] = "top";
-  ModelingSceneViewpoint2["BOTTOM"] = "bottom";
-  ModelingSceneViewpoint2["LEFT"] = "left";
-  ModelingSceneViewpoint2["RIGHT"] = "right";
-  ModelingSceneViewpoint2["FRONT"] = "front";
-  ModelingSceneViewpoint2["BACK"] = "back";
-})(ModelingSceneViewpoint || (ModelingSceneViewpoint = {}));
-var ModelingSceneDisplayMode;
-(function(ModelingSceneDisplayMode2) {
-  ModelingSceneDisplayMode2[ModelingSceneDisplayMode2["GEOMETRY"] = 0] = "GEOMETRY";
-  ModelingSceneDisplayMode2[ModelingSceneDisplayMode2["MATERIAL"] = 1] = "MATERIAL";
-  ModelingSceneDisplayMode2[ModelingSceneDisplayMode2["LIGHT"] = 2] = "LIGHT";
-  ModelingSceneDisplayMode2[ModelingSceneDisplayMode2["ENV"] = 3] = "ENV";
-})(ModelingSceneDisplayMode || (ModelingSceneDisplayMode = {}));
+var SCENEVIEWPOINT;
+(function(SCENEVIEWPOINT2) {
+  SCENEVIEWPOINT2["DEFAULT"] = "default";
+  SCENEVIEWPOINT2["TOP"] = "top";
+  SCENEVIEWPOINT2["BOTTOM"] = "bottom";
+  SCENEVIEWPOINT2["LEFT"] = "left";
+  SCENEVIEWPOINT2["RIGHT"] = "right";
+  SCENEVIEWPOINT2["FRONT"] = "front";
+  SCENEVIEWPOINT2["BACK"] = "back";
+})(SCENEVIEWPOINT || (SCENEVIEWPOINT = {}));
+var SCENEDISPLAYMODE;
+(function(SCENEDISPLAYMODE2) {
+  SCENEDISPLAYMODE2[SCENEDISPLAYMODE2["GEOMETRY"] = 0] = "GEOMETRY";
+  SCENEDISPLAYMODE2[SCENEDISPLAYMODE2["MATERIAL"] = 1] = "MATERIAL";
+  SCENEDISPLAYMODE2[SCENEDISPLAYMODE2["LIGHT"] = 2] = "LIGHT";
+  SCENEDISPLAYMODE2[SCENEDISPLAYMODE2["ENV"] = 3] = "ENV";
+})(SCENEDISPLAYMODE || (SCENEDISPLAYMODE = {}));
 Scene.prototype.add = function(...object) {
   if (!arguments.length) {
     return this;
@@ -612,22 +612,22 @@ class ModelingScene extends Scene {
       this.getDefaultOrthographicCamera = function() {
         return this.defaultOrthograpbicCamera;
       };
-      this.addEventListener(`${ModelingSceneViewpoint.TOP}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
         this.defaultOrthograpbicCamera.position.set(0, 100, 0);
       });
-      this.addEventListener(`${ModelingSceneViewpoint.BOTTOM}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
         this.defaultOrthograpbicCamera.position.set(0, -100, 0);
       });
-      this.addEventListener(`${ModelingSceneViewpoint.RIGHT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
         this.defaultOrthograpbicCamera.position.set(100, 0, 0);
       });
-      this.addEventListener(`${ModelingSceneViewpoint.LEFT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
         this.defaultOrthograpbicCamera.position.set(-100, 0, 0);
       });
-      this.addEventListener(`${ModelingSceneViewpoint.FRONT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
         this.defaultOrthograpbicCamera.position.set(0, 0, 100);
       });
-      this.addEventListener(`${ModelingSceneViewpoint.BACK}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
         this.defaultOrthograpbicCamera.position.set(0, 0, -100);
       });
     }
@@ -673,37 +673,37 @@ class ModelingScene extends Scene {
       };
       this.gridHelper = gridHelper;
       super.add(gridHelper);
-      this.addEventListener(`${ModelingSceneViewpoint.DEFAULT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, (e) => {
         gridHelper.rotation.set(0, 0, 0);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
       });
-      this.addEventListener(`${ModelingSceneViewpoint.TOP}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
         gridHelper.rotation.set(0, 0, 0);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
       });
-      this.addEventListener(`${ModelingSceneViewpoint.BOTTOM}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
         gridHelper.rotation.set(0, 0, 0);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
       });
-      this.addEventListener(`${ModelingSceneViewpoint.RIGHT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
         gridHelper.rotation.set(0, 0, Math.PI / 2);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
       });
-      this.addEventListener(`${ModelingSceneViewpoint.LEFT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
         gridHelper.rotation.set(0, 0, Math.PI / 2);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
       });
-      this.addEventListener(`${ModelingSceneViewpoint.FRONT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
         gridHelper.rotation.set(Math.PI / 2, 0, 0);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
       });
-      this.addEventListener(`${ModelingSceneViewpoint.BACK}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
         gridHelper.rotation.set(Math.PI / 2, 0, 0);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
@@ -882,6 +882,10 @@ class ModelingScene extends Scene {
     object.forEach((elem) => {
       resetObjectSet.add(elem);
     });
+    return this;
+  }
+  showObjectHelper(show) {
+    this.helperCompiler.setVisiable(show);
     return this;
   }
   setViewPoint(direction) {
@@ -1600,7 +1604,7 @@ class ModelingEngine extends EventDispatcher$1 {
       hasAxesHelper: true,
       hasGridHelper: true,
       hasDisplayMode: true,
-      displayMode: ModelingSceneDisplayMode.ENV
+      displayMode: SCENEDISPLAYMODE.ENV
     });
     const camera = scene.getDefaultPerspectiveCamera();
     const defaultPerspectiveCamera = scene.getDefaultPerspectiveCamera();
@@ -1623,31 +1627,31 @@ class ModelingEngine extends EventDispatcher$1 {
     const renderPass = new RenderPass(scene, camera);
     composer.addPass(renderPass);
     const renderManager = new RenderManager();
-    scene.addEventListener(`${ModelingSceneViewpoint.DEFAULT}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, (e) => {
       this.setCamera(defaultPerspectiveCamera);
       orbitControls.enableRotate = true;
     });
-    scene.addEventListener(`${ModelingSceneViewpoint.TOP}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
       this.setCamera(defaultOrthograpbicCamera);
       orbitControls.enableRotate = false;
     });
-    scene.addEventListener(`${ModelingSceneViewpoint.BOTTOM}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
       this.setCamera(defaultOrthograpbicCamera);
       orbitControls.enableRotate = false;
     });
-    scene.addEventListener(`${ModelingSceneViewpoint.RIGHT}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
       this.setCamera(defaultOrthograpbicCamera);
       orbitControls.enableRotate = false;
     });
-    scene.addEventListener(`${ModelingSceneViewpoint.LEFT}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
       this.setCamera(defaultOrthograpbicCamera);
       orbitControls.enableRotate = false;
     });
-    scene.addEventListener(`${ModelingSceneViewpoint.FRONT}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
       this.setCamera(defaultOrthograpbicCamera);
       orbitControls.enableRotate = false;
     });
-    scene.addEventListener(`${ModelingSceneViewpoint.BACK}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
       this.setCamera(defaultOrthograpbicCamera);
       orbitControls.enableRotate = false;
     });
@@ -1728,6 +1732,10 @@ class ModelingEngine extends EventDispatcher$1 {
   getSceneStatusManager() {
     return this.sceneStatusManager;
   }
+  showTransformControls(visiable) {
+    this.transformControls.visible = visiable;
+    return this;
+  }
   getTransformControls() {
     return this.transformControls;
   }
@@ -1746,7 +1754,7 @@ class ModelingEngine extends EventDispatcher$1 {
   }
   setSize(width, height) {
     if (width <= 0 || height <= 0) {
-      console.error(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
+      console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
       return this;
     }
     this.dispatchEvent({ type: "setSize", width, height });
@@ -4523,4 +4531,4 @@ class ModelingEngineSupportConnector {
     return this.domEngineMap.get(dom);
   }
 }
-export { CONFIGTYPE, CameraDataSupport, CameraHelper, DataSupportManager, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, PointLightHelper, RESOURCEEVENTTYPE, ResourceManager, SupportDataGenerator, TextureDataSupport, generateConfig };
+export { CONFIGTYPE, CameraDataSupport, CameraHelper, DataSupportManager, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, PointLightHelper, RESOURCEEVENTTYPE, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, generateConfig };
