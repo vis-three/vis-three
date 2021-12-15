@@ -46,7 +46,9 @@ export class RendererCompiler extends Compiler {
         }
     }
     setClearColor(value) {
-        this.glRenderer.setClearColor(value);
+        // 取出alpha的值
+        const alpha = Number(value.slice(0, -1).split(',').pop().trim());
+        this.glRenderer.setClearColor(value, alpha);
         this.glRenderer.clear();
         return this;
     }

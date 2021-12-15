@@ -353,7 +353,7 @@ class MeshHelper extends LineSegments {
     __publicField(this, "target");
     __publicField(this, "type", "VisMeshHelper");
     __publicField(this, "cachaGeometryUUid");
-    const thresholdAngle = 10;
+    const thresholdAngle = 1;
     this.target = mesh;
     this.geometry = new EdgesGeometry(mesh.geometry, thresholdAngle);
     this.cachaGeometryUUid = mesh.geometry.uuid;
@@ -435,11 +435,11 @@ const _SceneHelperCompiler = class extends EventDispatcher$1 {
   setVisiable(visiable) {
     const scene = this.scene;
     if (visiable) {
-      this.map.forEach((origin, helper) => {
+      this.map.forEach((helper, origin) => {
         scene._add(helper);
       });
     } else {
-      this.map.forEach((origin, helper) => {
+      this.map.forEach((helper, origin) => {
         scene._remove(helper);
       });
     }
@@ -575,7 +575,8 @@ class ModelingScene extends Scene {
     __publicField(this, "getDefaultOrthographicCamera");
     __publicField(this, "setAxesHelper");
     __publicField(this, "setGridHelper");
-    __publicField(this, "setDispalyMode");
+    __publicField(this, "switchDisplayMode");
+    __publicField(this, "setDisplayMode");
     this.cameraSet = new Set();
     this.lightSet = new Set();
     this.meshSet = new Set();
@@ -613,22 +614,22 @@ class ModelingScene extends Scene {
         return this.defaultOrthograpbicCamera;
       };
       this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
-        this.defaultOrthograpbicCamera.position.set(0, 100, 0);
+        this.defaultOrthograpbicCamera.position.set(0, 60, 0);
       });
       this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
-        this.defaultOrthograpbicCamera.position.set(0, -100, 0);
+        this.defaultOrthograpbicCamera.position.set(0, -60, 0);
       });
       this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
-        this.defaultOrthograpbicCamera.position.set(100, 0, 0);
+        this.defaultOrthograpbicCamera.position.set(60, 0, 0);
       });
       this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
-        this.defaultOrthograpbicCamera.position.set(-100, 0, 0);
+        this.defaultOrthograpbicCamera.position.set(-60, 0, 0);
       });
       this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
-        this.defaultOrthograpbicCamera.position.set(0, 0, 100);
+        this.defaultOrthograpbicCamera.position.set(0, 0, 60);
       });
       this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
-        this.defaultOrthograpbicCamera.position.set(0, 0, -100);
+        this.defaultOrthograpbicCamera.position.set(0, 0, -60);
       });
     }
     if (config.hasAxesHelper) {
@@ -731,7 +732,7 @@ class ModelingScene extends Scene {
       this.defaultDirectionalLight.updateMatrix();
       this.defaultDirectionalLight.updateMatrixWorld();
       this.defaultDirectionalLight.matrixAutoUpdate = false;
-      this.setDispalyMode = (mode) => {
+      this.switchDisplayMode = (mode) => {
         const filterMaterial = () => {
           const meterialCacheMap = this.materialCacheMap;
           const meshOverrideMaterial = this.meshOverrideMaterial;
@@ -836,12 +837,15 @@ class ModelingScene extends Scene {
           console.warn(`VisScene can not set this mode: ${mode}`);
         }
       };
+      this.setDisplayMode = (mode) => {
+        this.displayMode = mode;
+      };
       if (config.displayMode !== void 0) {
-        this.displayMode = config.displayMode;
-        this.setDispalyMode(this.displayMode);
+        this.setDisplayMode(config.displayMode);
+        this.switchDisplayMode(this.displayMode);
       } else {
-        this.displayMode = 3;
-        this.setDispalyMode(this.displayMode);
+        this.setDisplayMode(3);
+        this.switchDisplayMode(this.displayMode);
       }
     }
   }
@@ -909,7 +913,7 @@ class ModelingScene extends Scene {
       this.helperCompiler.add(elem);
     });
     if (this.displayMode !== void 0) {
-      this.setDispalyMode(this.displayMode);
+      this.switchDisplayMode(this.displayMode);
     }
     return super.add(...object);
   }
@@ -1412,6 +1416,7 @@ class VisStats {
   constructor(parameter) {
     __publicField(this, "stats");
     __publicField(this, "domElement");
+    __publicField(this, "render");
     this.stats = Stats();
     const dom = this.stats.domElement;
     dom.style.position = "absolute";
@@ -1423,10 +1428,10 @@ class VisStats {
       dom.style.right = `${parameter.right}px`;
       dom.style.bottom = `${parameter.bottom}px`;
     }
+    this.render = () => {
+      this.stats.update();
+    };
     this.domElement = dom;
-  }
-  render() {
-    this.stats.update();
   }
 }
 class VisOrbitControls extends OrbitControls {
@@ -1444,11 +1449,11 @@ class VisOrbitControls extends OrbitControls {
     return this;
   }
 }
-var VISTRANSFORMEVENTRYPE;
-(function(VISTRANSFORMEVENTRYPE2) {
-  VISTRANSFORMEVENTRYPE2["OBJECTCHANGE"] = "objectChange";
-  VISTRANSFORMEVENTRYPE2["OBJECTCHANGED"] = "objectChanged";
-})(VISTRANSFORMEVENTRYPE || (VISTRANSFORMEVENTRYPE = {}));
+var VISTRANSFORMEVENTTYPE;
+(function(VISTRANSFORMEVENTTYPE2) {
+  VISTRANSFORMEVENTTYPE2["OBJECTCHANGE"] = "objectChange";
+  VISTRANSFORMEVENTTYPE2["OBJECTCHANGED"] = "objectChanged";
+})(VISTRANSFORMEVENTTYPE || (VISTRANSFORMEVENTTYPE = {}));
 class VisTransformControls extends TransformControls {
   constructor(camera, dom) {
     super(camera, dom);
@@ -1486,7 +1491,7 @@ class VisTransformControls extends TransformControls {
         elem[mode].z += offsetZ;
       });
       this.dispatchEvent({
-        type: VISTRANSFORMEVENTRYPE.OBJECTCHANGED,
+        type: VISTRANSFORMEVENTTYPE.OBJECTCHANGED,
         transObjectSet,
         mode
       });
@@ -1736,6 +1741,29 @@ class ModelingEngine extends EventDispatcher$1 {
     this.transformControls.visible = visiable;
     return this;
   }
+  showStats(visiable) {
+    if (visiable) {
+      this.renderManager.addEventListener("render", this.stats.render);
+      const targetElement = this.renderer.domElement.parentElement;
+      if (targetElement) {
+        targetElement.appendChild(this.stats.domElement);
+      } else {
+        console.warn("can not found renderer canvas parent dom");
+      }
+    } else {
+      if (this.renderManager.hasEventListener("render", this.stats.render)) {
+        this.renderManager.removeEventListener("render", this.stats.render);
+      }
+      const targetElement = this.renderer.domElement.parentElement;
+      if (targetElement) {
+        try {
+          targetElement.removeChild(this.stats.domElement);
+        } catch (error) {
+        }
+      }
+    }
+    return this;
+  }
   getTransformControls() {
     return this.transformControls;
   }
@@ -1791,18 +1819,19 @@ const _ProxyBroadcast = class extends EventDispatcher {
     if (_ProxyBroadcast.proxyWeakSet.has(object) || typeof object !== "object" && object !== null) {
       return object;
     }
-    const self = this;
     const handler = {
-      get(target, key) {
+      get: (target, key) => {
         return Reflect.get(target, key);
       },
-      set(target, key, value) {
+      set: (target, key, value) => {
+        let result;
         if (target[key] === void 0) {
           if (typeof value === "object" && value !== null) {
             const newPath = path.concat([key]);
-            value = self.proxyExtends(value, newPath);
+            value = this.proxyExtends(value, newPath);
           }
-          self.broadcast({
+          result = Reflect.set(target, key, value);
+          this.broadcast({
             operate: "add",
             path: path.concat([]),
             key,
@@ -1811,25 +1840,27 @@ const _ProxyBroadcast = class extends EventDispatcher {
         } else {
           if (typeof value === "object" && !_ProxyBroadcast.proxyWeakSet.has(object)) {
             const newPath = path.concat([key]);
-            value = self.proxyExtends(value, newPath);
+            value = this.proxyExtends(value, newPath);
           }
-          self.broadcast({
+          result = Reflect.set(target, key, value);
+          this.broadcast({
             operate: "set",
             path: path.concat([]),
             key,
             value
           });
         }
-        return Reflect.set(target, key, value);
+        return result;
       },
-      deleteProperty(target, key) {
-        self.broadcast({
+      deleteProperty: (target, key) => {
+        const result = Reflect.deleteProperty(target, key);
+        this.broadcast({
           operate: "delete",
           path: path.concat([]),
           key,
           value: ""
         });
-        return Reflect.deleteProperty(target, key);
+        return result;
       }
     };
     if (typeof object === "object" && object !== null) {
@@ -1959,7 +1990,12 @@ class ModelDataSupport extends DataSupport {
     super(ModelRule, data);
   }
 }
-class Compiler {
+var COMPILEREVENTTYPE;
+(function(COMPILEREVENTTYPE2) {
+  COMPILEREVENTTYPE2["ADD"] = "add";
+  COMPILEREVENTTYPE2["REMOVE"] = "remove";
+})(COMPILEREVENTTYPE || (COMPILEREVENTTYPE = {}));
+class Compiler extends EventDispatcher$1 {
   static applyConfig(config, object, callBack) {
     const filterMap = {
       vid: true,
@@ -1980,6 +2016,7 @@ class Compiler {
     callBack && callBack();
   }
   constructor() {
+    super();
   }
 }
 class CameraCompiler extends Compiler {
@@ -2340,8 +2377,8 @@ class ModelCompiler extends Compiler {
     __publicField(this, "constructMap");
     __publicField(this, "geometryMap");
     __publicField(this, "materialMap");
-    __publicField(this, "replaceMaterial");
-    __publicField(this, "replaceGeometry");
+    __publicField(this, "getReplaceMaterial");
+    __publicField(this, "getReplaceGeometry");
     if (parameters) {
       parameters.scene && (this.scene = parameters.scene);
       parameters.target && (this.target = parameters.target);
@@ -2354,8 +2391,8 @@ class ModelCompiler extends Compiler {
       this.materialMap = new Map();
     }
     this.map = new Map();
-    this.replaceMaterial = new MeshStandardMaterial({ color: "rgb(150, 150, 150)" });
-    this.replaceGeometry = new BoxBufferGeometry(10, 10, 10);
+    this.getReplaceMaterial = () => new MeshStandardMaterial({ color: "rgb(150, 150, 150)" });
+    this.getReplaceGeometry = () => new BoxBufferGeometry(10, 10, 10);
     const constructMap = new Map();
     constructMap.set("Mesh", (config) => new Mesh(this.getGeometry(config.geometry), this.getMaterial(config.material)));
     constructMap.set("Line", (config) => new Line(this.getGeometry(config.geometry), this.getMaterial(config.material)));
@@ -2373,6 +2410,11 @@ class ModelCompiler extends Compiler {
         delete tempConfig.material;
         Compiler.applyConfig(tempConfig, object);
         this.map.set(vid, object);
+        this.dispatchEvent({
+          type: COMPILEREVENTTYPE.ADD,
+          object,
+          vid
+        });
         this.scene.add(object);
       }
     } else {
@@ -2398,11 +2440,11 @@ class ModelCompiler extends Compiler {
         return this.materialMap.get(vid);
       } else {
         console.warn(`can not found material which vid: ${vid}`);
-        return this.replaceMaterial;
+        return this.getReplaceMaterial();
       }
     } else {
       console.error(`material vid parameter is illegal: ${vid}`);
-      return this.replaceMaterial;
+      return this.getReplaceMaterial();
     }
   }
   getGeometry(vid) {
@@ -2411,11 +2453,11 @@ class ModelCompiler extends Compiler {
         return this.geometryMap.get(vid);
       } else {
         console.warn(`can not found geometry which vid: ${vid}`);
-        return this.replaceGeometry;
+        return this.getReplaceGeometry();
       }
     } else {
       console.error(`geometry vid parameter is illegal: ${vid}`);
-      return this.replaceGeometry;
+      return this.getReplaceGeometry();
     }
   }
   linkGeometryMap(map) {
@@ -2866,7 +2908,11 @@ class ModelingEngineSupport extends ModelingEngine {
       objectConfigMap.set(tempMap.get(vid), modelSupportData[vid]);
     });
     tempMap.clear();
-    this.transformControls.addEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED, (event) => {
+    modelCompiler.addEventListener(COMPILEREVENTTYPE.ADD, (event) => {
+      const e = event;
+      objectConfigMap.set(e.object, modelSupportData[e.vid]);
+    });
+    this.transformControls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, (event) => {
       const e = event;
       const mode = e.mode;
       e.transObjectSet.forEach((object) => {
@@ -3968,7 +4014,7 @@ const getBoxGeometryConfig = function() {
 const getSphereGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
     type: "SphereGeometry",
-    radius: 1,
+    radius: 3,
     widthSegments: 32,
     heightSegments: 32,
     phiStart: 0,
@@ -4378,9 +4424,10 @@ class ModelingEngineSupportConnector {
     const objectReversalMap = new WeakMap();
     const syncObject = (dom, i, arr) => {
       const engineSupport = domEngineMap.get(dom);
+      const modelCompiler = engineSupport.getCompiler(MODULETYPE.MODEL);
       cameraMap = engineSupport.getCompiler(MODULETYPE.CAMERA).getMap();
       lightMap = engineSupport.getCompiler(MODULETYPE.LIGHT).getMap();
-      modelMap = engineSupport.getCompiler(MODULETYPE.MODEL).getMap();
+      modelMap = modelCompiler.getMap();
       const objectMapSet = new Set();
       objectMapSet.add(cameraMap);
       objectMapSet.add(lightMap);
@@ -4394,6 +4441,10 @@ class ModelingEngineSupportConnector {
       });
       modelMap.forEach((model, vid) => {
         objectReversalMap.set(model, vid);
+      });
+      modelCompiler.addEventListener(COMPILEREVENTTYPE.ADD, (event) => {
+        const e = event;
+        objectReversalMap.set(e.object, e.vid);
       });
     };
     const domHelperMap = new Map();
@@ -4459,7 +4510,7 @@ class ModelingEngineSupportConnector {
             }
           });
         } else {
-          console.error(`connector can not found this object vid sign: ${object}`);
+          console.error(`connector can not found this object vid sign`, object);
         }
       });
     };
@@ -4506,16 +4557,16 @@ class ModelingEngineSupportConnector {
       const mode = e.mode;
       domTransformControlsMap.forEach((controls, dom) => {
         if (controls !== this) {
-          controls.removeEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED, syncTransformControlsFunction);
+          controls.removeEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, syncTransformControlsFunction);
           controls.getTarget()[mode].copy(target[mode]);
-          controls.addEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED, syncTransformControlsFunction);
+          controls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, syncTransformControlsFunction);
         }
       });
     };
     const syncTransformControls = (dom, i, arr) => {
       const controls = domEngineMap.get(dom).getTransformControls();
       domTransformControlsMap.set(dom, controls);
-      controls.addEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED, syncTransformControlsFunction);
+      controls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, syncTransformControlsFunction);
     };
     parameters.domList.forEach((dom, i, arr) => {
       DIEngine(dom);

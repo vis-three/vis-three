@@ -2,6 +2,7 @@ import Stats from 'three/examples/jsm/libs/stats.module';
 export class VisStats {
     stats;
     domElement;
+    render;
     constructor(parameter) {
         this.stats = Stats();
         const dom = this.stats.domElement;
@@ -14,10 +15,10 @@ export class VisStats {
             dom.style.right = `${parameter.right}px`;
             dom.style.bottom = `${parameter.bottom}px`;
         }
+        this.render = () => {
+            this.stats.update();
+        };
         this.domElement = dom;
-    }
-    render() {
-        this.stats.update();
     }
 }
 //# sourceMappingURL=VisStats.js.map

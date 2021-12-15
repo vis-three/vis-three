@@ -47,6 +47,9 @@ export class LightCompiler extends Compiler {
         this.target = target;
         return this;
     }
+    getMap() {
+        return this.map;
+    }
     compileAll() {
         const target = this.target;
         for (const key in target) {

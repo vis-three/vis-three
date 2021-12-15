@@ -1,7 +1,14 @@
+import { EventDispatcher } from "three";
 import { isValidKey } from "../utils/utils";
-export class Compiler {
+export var COMPILEREVENTTYPE;
+(function (COMPILEREVENTTYPE) {
+    COMPILEREVENTTYPE["ADD"] = "add";
+    COMPILEREVENTTYPE["REMOVE"] = "remove";
+})(COMPILEREVENTTYPE || (COMPILEREVENTTYPE = {}));
+export class Compiler extends EventDispatcher {
     static applyConfig(config, object, callBack) {
         const filterMap = {
+            vid: true,
             type: true
         };
         const recursiveConfig = (config, object) => {
@@ -20,6 +27,7 @@ export class Compiler {
         callBack && callBack();
     }
     constructor() {
+        super();
     }
 }
 //# sourceMappingURL=Compiler.js.map

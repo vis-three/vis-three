@@ -42,6 +42,19 @@ export class CameraCompiler extends Compiler {
         }
         return this;
     }
+    set(path, key, value) {
+        const vid = path.shift();
+        if (validate(vid) && this.map.has(vid)) {
+            let config = this.map.get(vid);
+            path.forEach((key, i, arr) => {
+                config = config[key];
+            });
+            config[key] = value;
+        }
+        else {
+            console.error(`vid parameter is illegal: ${vid} or can not found this vid camera`);
+        }
+    }
     setScene(scene) {
         this.scene = scene;
         return this;
@@ -49,6 +62,9 @@ export class CameraCompiler extends Compiler {
     setTarget(target) {
         this.target = target;
         return this;
+    }
+    getMap() {
+        return this.map;
     }
     compileAll() {
         const target = this.target;

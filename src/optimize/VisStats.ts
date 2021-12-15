@@ -12,6 +12,7 @@ export class VisStats {
 
   private stats: Stats
   public domElement: HTMLElement
+  public render: () => void
 
   constructor (parameter?: VisStatsParameter) {
     this.stats = Stats()
@@ -28,12 +29,12 @@ export class VisStats {
       dom.style.right = `${parameter.right}px`
       dom.style.bottom = `${parameter.bottom}px`
     }
+
+    this.render = () => {
+      this.stats.update()
+    }
     
     this.domElement = dom
-  }
-
-  render (): void {
-    this.stats.update()
   }
 
 }

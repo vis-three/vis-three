@@ -1,6 +1,6 @@
 import { BoxBufferGeometry, BufferGeometry, Line, Material, Mesh, MeshStandardMaterial, Object3D, Points, Scene } from "three";
 import { validate } from "uuid";
-import { Compiler, CompilerTarget } from "../../middleware/Compiler";
+import { Compiler, COMPILEREVENTTYPE, CompilerTarget } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { GeometryCompilerTarget } from "../geometry/GeometryCompiler";
 import { ModelConfig } from "./ModelConfig";
@@ -24,8 +24,8 @@ export class ModelCompiler extends Compiler {
   private constructMap: Map<string, (config: ModelConfig) => Object3D>
   private geometryMap!: Map<SymbolConfig['vid'], BufferGeometry>
   private materialMap!: Map<SymbolConfig['vid'], Material>
-  private replaceMaterial: Material
-  private replaceGeometry: BufferGeometry
+  private getReplaceMaterial: () => Material
+  private getReplaceGeometry: () => BufferGeometry
 
   constructor (parameters?: ModelCompilerParameters) {
     super()
@@ -42,8 +42,8 @@ export class ModelCompiler extends Compiler {
     }
 
     this.map = new Map()
-    this.replaceMaterial = new MeshStandardMaterial({color: 'rgb(150, 150, 150)'})
-    this.replaceGeometry = new BoxBufferGeometry(10, 10, 10)
+    this.getReplaceMaterial = () => new MeshStandardMaterial({color: 'rgb(150, 150, 150)'})
+    this.getReplaceGeometry = () => new BoxBufferGeometry(10, 10, 10)
     
     const constructMap = new Map()
     constructMap.set('Mesh', (config: ModelConfig) => new Mesh(
@@ -74,7 +74,14 @@ export class ModelCompiler extends Compiler {
         Compiler.applyConfig(tempConfig, object)
 
         this.map.set(vid, object)
-        this.scene.add(object)
+
+        this.dispatchEvent({
+          type: COMPILEREVENTTYPE.ADD,
+          object,
+          vid
+        })
+
+        this.scene.add(object)     
       }
     } else {
       console.error(`model vid parameter is illegal: ${vid}`)
@@ -101,11 +108,11 @@ export class ModelCompiler extends Compiler {
         return this.materialMap.get(vid)!
       } else {
         console.warn(`can not found material which vid: ${vid}`)
-        return this.replaceMaterial
+        return this.getReplaceMaterial()
       }
     } else {
       console.error(`material vid parameter is illegal: ${vid}`)
-      return this.replaceMaterial
+      return this.getReplaceMaterial()
     }
   }
 
@@ -115,11 +122,11 @@ export class ModelCompiler extends Compiler {
         return this.geometryMap.get(vid)!
       } else {
         console.warn(`can not found geometry which vid: ${vid}`)
-        return this.replaceGeometry
+        return this.getReplaceGeometry()
       }
     } else {
       console.error(`geometry vid parameter is illegal: ${vid}`)
-      return this.replaceGeometry
+      return this.getReplaceGeometry()
     }
   }
 

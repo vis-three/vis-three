@@ -32,20 +32,27 @@ export class ProxyBroadcast extends EventDispatcher {
     const self = this
 
     const handler: ProxyHandler<object> = {
-      get (target: object, key: any) {
+      get: (target: object, key: any) => {
         return Reflect.get(target, key)
       },
 
-      set (target: object, key: any, value: any) {
+      set: (target: object, key: any, value: any) => {
+
+        // 先执行反射
+        let result: boolean
+
         // 新增
         if (target[key as never] === undefined) {
+          
           // 如果是对象就递归
           if (typeof value === 'object' && value !== null) {
             const newPath = path!.concat([key])
-            value = self.proxyExtends(value, newPath)
+            value = this.proxyExtends(value, newPath)
           }
 
-          self.broadcast({
+          result = Reflect.set(target, key, value)
+
+          this.broadcast({
             operate: 'add',
             path: path!.concat([]),
             key,
@@ -56,9 +63,12 @@ export class ProxyBroadcast extends EventDispatcher {
           // 如果是对象就递归
           if (typeof value === 'object' && !ProxyBroadcast.proxyWeakSet.has(object)) {
             const newPath = path!.concat([key])
-            value = self.proxyExtends(value, newPath)
+            value = this.proxyExtends(value, newPath)
           }
-          self.broadcast({
+
+          result = Reflect.set(target, key, value)
+
+          this.broadcast({
             operate: 'set',
             path: path!.concat([]),
             key,
@@ -66,17 +76,20 @@ export class ProxyBroadcast extends EventDispatcher {
           })
         }
 
-        return Reflect.set(target, key, value)
+        return result
       },
 
-      deleteProperty (target: object, key: any) {
-        self.broadcast({
+      deleteProperty: (target: object, key: any) => {
+        // 先执行反射
+        const result = Reflect.deleteProperty(target, key)
+
+        this.broadcast({
           operate: 'delete',
           path: path!.concat([]),
           key,
           value: ''
         })
-        return Reflect.deleteProperty(target, key)
+        return result
       }
     }
 

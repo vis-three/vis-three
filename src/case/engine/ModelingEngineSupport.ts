@@ -2,8 +2,8 @@ import { Object3D } from "three";
 import { ModelingEngine } from "../../main";
 import { DataSupportManager } from "../../manager/DataSupportManager";
 import { ResourceManager } from "../../manager/ResourceManager";
-import { Compiler, CompilerTarget } from "../../middleware/Compiler";
-import { ObjectChangedEvent, VISTRANSFORMEVENTRYPE } from "../../optimize/VisTransformControls";
+import { Compiler, CompilerAddEvent, COMPILEREVENTTYPE, CompilerTarget } from "../../middleware/Compiler";
+import { ObjectChangedEvent, VISTRANSFORMEVENTTYPE } from "../../optimize/VisTransformControls";
 import { CameraCompiler } from "../camera/CameraCompiler";
 import { CameraDataSupport } from "../camera/CameraDataSupport";
 import { SymbolConfig } from "../common/CommonConfig";
@@ -115,7 +115,7 @@ export class ModelingEngineSupport extends ModelingEngine {
     rendererDataSupport.addCompiler(rendererCompiler)
     sceneDataSupport.addCompiler(sceneCompiler)
 
-    // 引擎操作更新support —— 同步变换操作
+    // 引擎操作更新support
     
     const tempMap = new Map()
 
@@ -147,7 +147,14 @@ export class ModelingEngineSupport extends ModelingEngine {
     
     tempMap.clear() // 清除缓存
 
-    this.transformControls.addEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED, (event) => {
+    // 运行时添加物体映射
+    modelCompiler.addEventListener(COMPILEREVENTTYPE.ADD, event => {
+      const e = event as CompilerAddEvent
+      objectConfigMap.set(e.object, modelSupportData[e.vid])
+    })
+
+    // 控制器变换物体更新support
+    this.transformControls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, (event) => {
       const e = event as unknown as ObjectChangedEvent
       const mode = e.mode
 

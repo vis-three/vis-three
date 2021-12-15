@@ -1,6 +1,6 @@
 import { BoxBufferGeometry, Line, Mesh, MeshStandardMaterial, Points, Scene } from "three";
 import { validate } from "uuid";
-import { Compiler } from "../../middleware/Compiler";
+import { Compiler, COMPILEREVENTTYPE } from "../../middleware/Compiler";
 export class ModelCompiler extends Compiler {
     scene;
     target;
@@ -8,8 +8,8 @@ export class ModelCompiler extends Compiler {
     constructMap;
     geometryMap;
     materialMap;
-    replaceMaterial;
-    replaceGeometry;
+    getReplaceMaterial;
+    getReplaceGeometry;
     constructor(parameters) {
         super();
         if (parameters) {
@@ -25,8 +25,8 @@ export class ModelCompiler extends Compiler {
             this.materialMap = new Map();
         }
         this.map = new Map();
-        this.replaceMaterial = new MeshStandardMaterial({ color: 'rgb(150, 150, 150)' });
-        this.replaceGeometry = new BoxBufferGeometry(10, 10, 10);
+        this.getReplaceMaterial = () => new MeshStandardMaterial({ color: 'rgb(150, 150, 150)' });
+        this.getReplaceGeometry = () => new BoxBufferGeometry(10, 10, 10);
         const constructMap = new Map();
         constructMap.set('Mesh', (config) => new Mesh(this.getGeometry(config.geometry), this.getMaterial(config.material)));
         constructMap.set('Line', (config) => new Line(this.getGeometry(config.geometry), this.getMaterial(config.material)));
@@ -45,6 +45,11 @@ export class ModelCompiler extends Compiler {
                 Compiler.applyConfig(tempConfig, object);
                 this.map.set(vid, object);
                 this.scene.add(object);
+                this.dispatchEvent({
+                    type: COMPILEREVENTTYPE.ADD,
+                    object,
+                    vid
+                });
             }
         }
         else {
@@ -72,12 +77,12 @@ export class ModelCompiler extends Compiler {
             }
             else {
                 console.warn(`can not found material which vid: ${vid}`);
-                return this.replaceMaterial;
+                return this.getReplaceMaterial();
             }
         }
         else {
             console.error(`material vid parameter is illegal: ${vid}`);
-            return this.replaceMaterial;
+            return this.getReplaceMaterial();
         }
     }
     getGeometry(vid) {
@@ -87,12 +92,12 @@ export class ModelCompiler extends Compiler {
             }
             else {
                 console.warn(`can not found geometry which vid: ${vid}`);
-                return this.replaceGeometry;
+                return this.getReplaceGeometry();
             }
         }
         else {
             console.error(`geometry vid parameter is illegal: ${vid}`);
-            return this.replaceGeometry;
+            return this.getReplaceGeometry();
         }
     }
     linkGeometryMap(map) {
@@ -110,6 +115,9 @@ export class ModelCompiler extends Compiler {
     setTarget(target) {
         this.target = target;
         return this;
+    }
+    getMap() {
+        return this.map;
     }
     compileAll() {
         const target = this.target;

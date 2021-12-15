@@ -7,7 +7,8 @@ import { AddHelperEvent, HELPERCOMPILEREVENTTYPE } from '../engine/ModelingEngin
 import { ModelingEngineSupport, MODULETYPE } from '../main';
 import { DataSupportManager} from '../manager/DataSupportManager';
 import { ResourceManager } from '../manager/ResourceManager';
-import { ObjectChangedEvent, VisTransformControls, VISTRANSFORMEVENTRYPE } from '../optimize/VisTransformControls';
+import { CompilerAddEvent, COMPILEREVENTTYPE } from '../middleware/Compiler';
+import { ObjectChangedEvent, VisTransformControls, VISTRANSFORMEVENTTYPE } from '../optimize/VisTransformControls';
 import { activeChangeEvent, hoverChangeEvent, SceneStatusManager, SCENESTATUSTYPE } from '../plugins/SceneStatusManager';
 
 export interface ModelingConnectorParameters {
@@ -54,10 +55,12 @@ export class ModelingEngineSupportConnector {
 
     const syncObject = (dom: HTMLElement, i: number, arr: HTMLElement[]) => {
       const engineSupport = domEngineMap.get(dom)!
+      // 物体编译器
+      const modelCompiler = engineSupport.getCompiler(MODULETYPE.MODEL) as ModelCompiler
       // 物体map
       cameraMap = (engineSupport.getCompiler(MODULETYPE.CAMERA) as CameraCompiler).getMap()
       lightMap = (engineSupport.getCompiler(MODULETYPE.LIGHT) as LightCompiler).getMap()
-      modelMap = (engineSupport.getCompiler(MODULETYPE.MODEL) as ModelCompiler).getMap()
+      modelMap = modelCompiler.getMap()
 
       // 添加物体map vid -- object
       const objectMapSet = new Set<Map<string, Object3D>>()
@@ -79,6 +82,12 @@ export class ModelingEngineSupportConnector {
 
       modelMap.forEach((model, vid) => {
         objectReversalMap.set(model, vid)
+      })
+
+      // 运行时添加物体
+      modelCompiler.addEventListener(COMPILEREVENTTYPE.ADD, event => {
+        const e = event as CompilerAddEvent
+        objectReversalMap.set(e.object, e.vid)
       })
     }
 
@@ -166,9 +175,8 @@ export class ModelingEngineSupportConnector {
             }
           })
         } else {
-          console.error(`connector can not found this object vid sign: ${object}`)
+          console.error(`connector can not found this object vid sign`, object)
         }
-        
       })
     }
 
@@ -230,9 +238,9 @@ export class ModelingEngineSupportConnector {
       domTransformControlsMap.forEach((controls, dom) => {
         // @ts-ignore
         if (controls !== this) {
-          controls.removeEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED ,syncTransformControlsFunction) // 防止交叉触发
+          controls.removeEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED ,syncTransformControlsFunction) // 防止交叉触发
           controls.getTarget()[mode].copy(target[mode])
-          controls.addEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED ,syncTransformControlsFunction)
+          controls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED ,syncTransformControlsFunction)
         }
       })
     }
@@ -241,7 +249,7 @@ export class ModelingEngineSupportConnector {
       // 只有运行时同步
       const controls = domEngineMap.get(dom)!.getTransformControls()
       domTransformControlsMap.set(dom, controls)
-      controls.addEventListener(VISTRANSFORMEVENTRYPE.OBJECTCHANGED, syncTransformControlsFunction)
+      controls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, syncTransformControlsFunction)
     }
     
     // TODO:换一种写法，这个太乱了

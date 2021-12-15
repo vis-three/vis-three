@@ -1,16 +1,19 @@
 import { Vector2 } from "three";
+import { SELECTBGCOLOR, SELECTCOLOR } from "../case/constants/COLOR";
 export class SelectionHelper {
-    dom;
     element;
     startPoint;
     pointTopLeft;
     pointBottomRight;
     isDown;
-    constructor(dom) {
-        this.dom = dom;
-        // TODO: 选择框的样式自定义
-        this.element = document.createElement('div');
-        this.element.style.pointerEvents = 'none';
+    constructor() {
+        const element = document.createElement('div');
+        element.style.pointerEvents = 'none';
+        element.style.border = `1px solid ${SELECTCOLOR}`;
+        element.style.position = 'fixed';
+        element.style.zIndex = '100';
+        element.style.backgroundColor = SELECTBGCOLOR;
+        this.element = element;
         this.startPoint = new Vector2();
         this.pointTopLeft = new Vector2();
         this.pointBottomRight = new Vector2();
@@ -18,7 +21,7 @@ export class SelectionHelper {
     }
     onSelectStart(event) {
         this.isDown = true;
-        this.dom.appendChild(this.element);
+        document.body.appendChild(this.element);
         this.element.style.left = event.clientX + 'px';
         this.element.style.top = event.clientY + 'px';
         this.element.style.width = '0px';
@@ -44,7 +47,7 @@ export class SelectionHelper {
             return;
         }
         this.isDown = false;
-        this.dom.removeChild(this.element);
+        document.body.removeChild(this.element);
     }
 }
 //# sourceMappingURL=SelectionHelper.js.map

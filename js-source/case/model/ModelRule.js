@@ -6,5 +6,8 @@ export const ModelRule = function (notice, compiler) {
             compiler.add(key, value);
         }
     }
+    else if (operate === 'set') {
+        compiler.set(path.concat([]), key, value);
+    }
 };
 //# sourceMappingURL=ModelRule.js.map

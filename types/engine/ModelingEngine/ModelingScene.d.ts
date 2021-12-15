@@ -1,9 +1,10 @@
 import { Scene, Object3D, PerspectiveCamera, OrthographicCamera } from "three";
+import { SceneHelperCompiler } from "./SceneHelperCompiler";
 export declare enum ModelingSceneCameraDefalutType {
     DefaultPerspectiveCamera = "DefaultPerspectiveCamera",
     DefaultOrthograpbicCamera = "DefaultOrthograpbicCamera"
 }
-export declare enum ModelingSceneViewpoint {
+export declare enum SCENEVIEWPOINT {
     DEFAULT = "default",
     TOP = "top",
     BOTTOM = "bottom",
@@ -12,7 +13,7 @@ export declare enum ModelingSceneViewpoint {
     FRONT = "front",
     BACK = "back"
 }
-export declare enum ModelingSceneDisplayMode {
+export declare enum SCENEDISPLAYMODE {
     GEOMETRY = 0,
     MATERIAL = 1,
     LIGHT = 2,
@@ -24,7 +25,7 @@ export interface ModelingSceneParameters {
     hasAxesHelper?: boolean;
     hasGridHelper?: boolean;
     hasDisplayMode?: boolean;
-    displayMode?: ModelingSceneDisplayMode;
+    displayMode?: SCENEDISPLAYMODE;
     defaultPerspectiveCameraSetting?: {
         fov: number;
         aspect: number;
@@ -63,6 +64,8 @@ export declare class ModelingScene extends Scene {
     private pointsSet;
     private spriteSet;
     private helperCompiler;
+    private resetHoverObjectSet;
+    private resetActiveObjectSet;
     private displayMode?;
     private meshOverrideMaterial?;
     private lineOverrideMaterial?;
@@ -83,10 +86,14 @@ export declare class ModelingScene extends Scene {
     getDefaultOrthographicCamera?: () => OrthographicCamera;
     setAxesHelper?: (setting: ModelingAxesHelperSetting) => void;
     setGridHelper?: (setting: ModelingGridHelperSetting) => void;
-    setDispalyMode?: (mode: ModelingSceneDisplayMode) => void;
+    setDispalyMode?: (mode: SCENEDISPLAYMODE) => void;
     constructor(config: ModelingSceneParameters);
+    getHelperCompiler(): SceneHelperCompiler;
     setObjectHelperVisiable(visiable: boolean): void;
-    setViewPoint(direction: ModelingSceneViewpoint): void;
+    setObjectHelperHover(...object: Object3D[]): this;
+    setObjectHelperActive(...object: Object3D[]): this;
+    showObjectHelper(show: boolean): this;
+    setViewPoint(direction: SCENEVIEWPOINT): void;
     add(...object: Object3D[]): this;
     remove(...object: Object3D[]): this;
     _add(...object: Object3D[]): this;

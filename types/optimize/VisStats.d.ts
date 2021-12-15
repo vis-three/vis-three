@@ -8,6 +8,6 @@ export interface VisStatsParameter {
 export declare class VisStats {
     private stats;
     domElement: HTMLElement;
+    render: () => void;
     constructor(parameter?: VisStatsParameter);
-    render(): void;
 }

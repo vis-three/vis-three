@@ -103,11 +103,11 @@ export class SceneHelperCompiler extends EventDispatcher<AddHelperEvent | Remove
   setVisiable (visiable: boolean) {
     const scene = this.scene
     if (visiable) {
-      this.map.forEach((origin, helper) => {
+      this.map.forEach((helper, origin) => {
         scene._add(helper)
       })
     } else {
-      this.map.forEach((origin, helper) => {
+      this.map.forEach((helper, origin) => {
         scene._remove(helper)
       })
     }

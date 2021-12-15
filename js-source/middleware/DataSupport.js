@@ -15,6 +15,10 @@ export class DataSupport {
     getData() {
         return this.data;
     }
+    setData(data) {
+        this.data = data;
+        return this;
+    }
     addCompiler(compiler) {
         compiler.setTarget(this.data);
         compiler.compileAll();

@@ -7,24 +7,24 @@ export var ModelingSceneCameraDefalutType;
     ModelingSceneCameraDefalutType["DefaultOrthograpbicCamera"] = "DefaultOrthograpbicCamera";
 })(ModelingSceneCameraDefalutType || (ModelingSceneCameraDefalutType = {}));
 // 默认视角枚举
-export var ModelingSceneViewpoint;
-(function (ModelingSceneViewpoint) {
-    ModelingSceneViewpoint["DEFAULT"] = "default";
-    ModelingSceneViewpoint["TOP"] = "top";
-    ModelingSceneViewpoint["BOTTOM"] = "bottom";
-    ModelingSceneViewpoint["LEFT"] = "left";
-    ModelingSceneViewpoint["RIGHT"] = "right";
-    ModelingSceneViewpoint["FRONT"] = "front";
-    ModelingSceneViewpoint["BACK"] = "back";
-})(ModelingSceneViewpoint || (ModelingSceneViewpoint = {}));
+export var SCENEVIEWPOINT;
+(function (SCENEVIEWPOINT) {
+    SCENEVIEWPOINT["DEFAULT"] = "default";
+    SCENEVIEWPOINT["TOP"] = "top";
+    SCENEVIEWPOINT["BOTTOM"] = "bottom";
+    SCENEVIEWPOINT["LEFT"] = "left";
+    SCENEVIEWPOINT["RIGHT"] = "right";
+    SCENEVIEWPOINT["FRONT"] = "front";
+    SCENEVIEWPOINT["BACK"] = "back";
+})(SCENEVIEWPOINT || (SCENEVIEWPOINT = {}));
 // 默认展示枚举
-export var ModelingSceneDisplayMode;
-(function (ModelingSceneDisplayMode) {
-    ModelingSceneDisplayMode[ModelingSceneDisplayMode["GEOMETRY"] = 0] = "GEOMETRY";
-    ModelingSceneDisplayMode[ModelingSceneDisplayMode["MATERIAL"] = 1] = "MATERIAL";
-    ModelingSceneDisplayMode[ModelingSceneDisplayMode["LIGHT"] = 2] = "LIGHT";
-    ModelingSceneDisplayMode[ModelingSceneDisplayMode["ENV"] = 3] = "ENV";
-})(ModelingSceneDisplayMode || (ModelingSceneDisplayMode = {}));
+export var SCENEDISPLAYMODE;
+(function (SCENEDISPLAYMODE) {
+    SCENEDISPLAYMODE[SCENEDISPLAYMODE["GEOMETRY"] = 0] = "GEOMETRY";
+    SCENEDISPLAYMODE[SCENEDISPLAYMODE["MATERIAL"] = 1] = "MATERIAL";
+    SCENEDISPLAYMODE[SCENEDISPLAYMODE["LIGHT"] = 2] = "LIGHT";
+    SCENEDISPLAYMODE[SCENEDISPLAYMODE["ENV"] = 3] = "ENV";
+})(SCENEDISPLAYMODE || (SCENEDISPLAYMODE = {}));
 // 重写一下scene的add方法，由于其内部add会调用remove方法，存在藕合性
 Scene.prototype.add = function (...object) {
     if (!arguments.length) {
@@ -67,6 +67,8 @@ export class ModelingScene extends Scene {
     pointsSet;
     spriteSet;
     helperCompiler;
+    resetHoverObjectSet;
+    resetActiveObjectSet;
     displayMode; // 展示mode
     meshOverrideMaterial;
     lineOverrideMaterial;
@@ -97,6 +99,8 @@ export class ModelingScene extends Scene {
         this.pointsSet = new Set();
         this.spriteSet = new Set();
         this.helperCompiler = new SceneHelperCompiler(this);
+        this.resetHoverObjectSet = new Set();
+        this.resetActiveObjectSet = new Set();
         // 初始化透视相机
         if (config.hasDefaultPerspectiveCamera) {
             if (config.defaultPerspectiveCameraSetting) {
@@ -131,22 +135,22 @@ export class ModelingScene extends Scene {
                 return this.defaultOrthograpbicCamera;
             };
             // 视角监听
-            this.addEventListener(`${ModelingSceneViewpoint.TOP}ViewPoint`, e => {
+            this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, e => {
                 this.defaultOrthograpbicCamera.position.set(0, 100, 0);
             });
-            this.addEventListener(`${ModelingSceneViewpoint.BOTTOM}ViewPoint`, e => {
+            this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, e => {
                 this.defaultOrthograpbicCamera.position.set(0, -100, 0);
             });
-            this.addEventListener(`${ModelingSceneViewpoint.RIGHT}ViewPoint`, e => {
+            this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, e => {
                 this.defaultOrthograpbicCamera.position.set(100, 0, 0);
             });
-            this.addEventListener(`${ModelingSceneViewpoint.LEFT}ViewPoint`, e => {
+            this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, e => {
                 this.defaultOrthograpbicCamera.position.set(-100, 0, 0);
             });
-            this.addEventListener(`${ModelingSceneViewpoint.FRONT}ViewPoint`, e => {
+            this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, e => {
                 this.defaultOrthograpbicCamera.position.set(0, 0, 100);
             });
-            this.addEventListener(`${ModelingSceneViewpoint.BACK}ViewPoint`, e => {
+            this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, e => {
                 this.defaultOrthograpbicCamera.position.set(0, 0, -100);
             });
         }
@@ -184,6 +188,7 @@ export class ModelingScene extends Scene {
         // 初始化网格
         if (config.hasGridHelper) {
             const gridHelper = new GridHelper(500, 50, 'rgb(130, 130, 130)', 'rgb(70, 70, 70)');
+            gridHelper.raycast = () => { };
             if (gridHelper.material instanceof Material) {
                 const material = gridHelper.material;
                 material.transparent = true;
@@ -195,37 +200,37 @@ export class ModelingScene extends Scene {
             this.gridHelper = gridHelper;
             super.add(gridHelper);
             // 视角监听
-            this.addEventListener(`${ModelingSceneViewpoint.DEFAULT}ViewPoint`, e => {
+            this.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, e => {
                 gridHelper.rotation.set(0, 0, 0);
                 gridHelper.updateMatrix();
                 gridHelper.updateMatrixWorld();
             });
-            this.addEventListener(`${ModelingSceneViewpoint.TOP}ViewPoint`, e => {
+            this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, e => {
                 gridHelper.rotation.set(0, 0, 0);
                 gridHelper.updateMatrix();
                 gridHelper.updateMatrixWorld();
             });
-            this.addEventListener(`${ModelingSceneViewpoint.BOTTOM}ViewPoint`, e => {
+            this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, e => {
                 gridHelper.rotation.set(0, 0, 0);
                 gridHelper.updateMatrix();
                 gridHelper.updateMatrixWorld();
             });
-            this.addEventListener(`${ModelingSceneViewpoint.RIGHT}ViewPoint`, e => {
+            this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, e => {
                 gridHelper.rotation.set(0, 0, Math.PI / 2);
                 gridHelper.updateMatrix();
                 gridHelper.updateMatrixWorld();
             });
-            this.addEventListener(`${ModelingSceneViewpoint.LEFT}ViewPoint`, e => {
+            this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, e => {
                 gridHelper.rotation.set(0, 0, Math.PI / 2);
                 gridHelper.updateMatrix();
                 gridHelper.updateMatrixWorld();
             });
-            this.addEventListener(`${ModelingSceneViewpoint.FRONT}ViewPoint`, e => {
+            this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, e => {
                 gridHelper.rotation.set(Math.PI / 2, 0, 0);
                 gridHelper.updateMatrix();
                 gridHelper.updateMatrixWorld();
             });
-            this.addEventListener(`${ModelingSceneViewpoint.BACK}ViewPoint`, e => {
+            this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, e => {
                 gridHelper.rotation.set(Math.PI / 2, 0, 0);
                 gridHelper.updateMatrix();
                 gridHelper.updateMatrixWorld();
@@ -348,22 +353,22 @@ export class ModelingScene extends Scene {
                         this.environmentCache = undefined;
                     }
                 };
-                if (mode === ModelingSceneDisplayMode.GEOMETRY) {
+                if (mode === SCENEDISPLAYMODE.GEOMETRY) {
                     filterMaterial();
                     filterScene();
                     filterLight();
                 }
-                else if (mode === ModelingSceneDisplayMode.MATERIAL) {
+                else if (mode === SCENEDISPLAYMODE.MATERIAL) {
                     reduceMaterial();
                     filterScene();
                     filterLight();
                 }
-                else if (mode === ModelingSceneDisplayMode.LIGHT) {
+                else if (mode === SCENEDISPLAYMODE.LIGHT) {
                     reduceMaterial();
                     filterScene();
                     reduceLight();
                 }
-                else if (mode === ModelingSceneDisplayMode.ENV) {
+                else if (mode === SCENEDISPLAYMODE.ENV) {
                     reduceMaterial();
                     reduceScene();
                     reduceLight();
@@ -377,14 +382,60 @@ export class ModelingScene extends Scene {
                 this.setDispalyMode(this.displayMode);
             }
             else {
-                this.displayMode = ModelingSceneDisplayMode.ENV;
+                this.displayMode = SCENEDISPLAYMODE.ENV;
                 this.setDispalyMode(this.displayMode);
             }
         }
     }
+    // 获取辅助编译
+    getHelperCompiler() {
+        return this.helperCompiler;
+    }
     // 设置物体辅助
     setObjectHelperVisiable(visiable) {
         this.helperCompiler.setVisiable(visiable);
+    }
+    // 设置物体辅助hover状态
+    setObjectHelperHover(...object) {
+        const resetObjectSet = this.resetHoverObjectSet;
+        const activeObjectSet = this.resetActiveObjectSet;
+        // object中存在active不会被hover影响
+        object.forEach((elem, i, arr) => {
+            resetObjectSet.delete(elem);
+            if (activeObjectSet.has(elem)) {
+                arr.splice(i, 1);
+            }
+        });
+        // 清除需要重置的active物体，他应对交给setAcitve
+        activeObjectSet.forEach(elem => {
+            resetObjectSet.delete(elem);
+        });
+        this.helperCompiler.resetHelperColor(...resetObjectSet);
+        resetObjectSet.clear();
+        this.helperCompiler.setHelperHoverColor(...object);
+        object.forEach(elem => {
+            resetObjectSet.add(elem);
+        });
+        return this;
+    }
+    // 设置物体辅助active
+    setObjectHelperActive(...object) {
+        const resetObjectSet = this.resetActiveObjectSet;
+        object.forEach(elem => {
+            resetObjectSet.delete(elem);
+        });
+        this.helperCompiler.resetHelperColor(...resetObjectSet);
+        resetObjectSet.clear();
+        this.helperCompiler.setHelperActiveColor(...object);
+        object.forEach(elem => {
+            resetObjectSet.add(elem);
+        });
+        return this;
+    }
+    // 设置物体辅助显示
+    showObjectHelper(show) {
+        this.helperCompiler.setVisiable(show);
+        return this;
     }
     // 设置视角方向
     setViewPoint(direction) {

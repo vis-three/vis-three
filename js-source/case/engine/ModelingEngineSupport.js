@@ -1,4 +1,5 @@
 import { ModelingEngine } from "../../main";
+import { VISTRANSFORMEVENTTYPE } from "../../optimize/VisTransformControls";
 import { CameraCompiler } from "../camera/CameraCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { GeometryCompiler } from "../geometry/GeometryCompiler";
@@ -9,18 +10,13 @@ import { RendererCompiler } from "../render/RendererCompiler";
 import { SceneCompiler } from "../scene/SceneCompiler";
 import { TextureCompiler } from "../texture/TextureCompiler";
 export class ModelingEngineSupport extends ModelingEngine {
-    textureCompiler;
-    materialCompiler;
-    cameraCompiler;
-    lightCompiler;
-    modelCompiler;
-    geometryCompiler;
-    rendererCompiler;
-    sceneCompiler;
+    compilerMap;
     resourceManager;
     dataSupportManager;
+    objectConfigMap;
     constructor(parameters) {
         super(parameters.dom);
+        // 所有support
         const dataSupportManager = parameters.dataSupportManager;
         const textureDataSupport = dataSupportManager.getDataSupport(MODULETYPE.TEXTURE);
         const materialDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MATERIAL);
@@ -30,6 +26,10 @@ export class ModelingEngineSupport extends ModelingEngine {
         const modelDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MODEL);
         const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER);
         const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE);
+        // 物体配置数据
+        const cameraSupportData = cameraDataSupport.getData();
+        const lightSupportData = lightDataSupport.getData();
+        const modelSupportData = modelDataSupport.getData();
         const textureCompiler = new TextureCompiler({
             target: textureDataSupport.getData()
         });
@@ -37,18 +37,19 @@ export class ModelingEngineSupport extends ModelingEngine {
             target: materialDataSupport.getData()
         });
         const cameraCompiler = new CameraCompiler({
-            target: cameraDataSupport.getData()
+            target: cameraSupportData,
+            scene: this.scene
         });
         const lightCompiler = new LightCompiler({
             scene: this.scene,
-            target: lightDataSupport.getData()
+            target: lightSupportData
         });
         const geometryCompiler = new GeometryCompiler({
             target: geometryDataSupport.getData()
         });
         const modelCompiler = new ModelCompiler({
             scene: this.scene,
-            target: modelDataSupport.getData()
+            target: modelSupportData
         });
         const rendererCompiler = new RendererCompiler({
             target: rendererDataSupport.getData(),
@@ -75,19 +76,67 @@ export class ModelingEngineSupport extends ModelingEngine {
         modelDataSupport.addCompiler(modelCompiler);
         rendererDataSupport.addCompiler(rendererCompiler);
         sceneDataSupport.addCompiler(sceneCompiler);
-        this.textureCompiler = textureCompiler;
-        this.materialCompiler = materialCompiler;
-        this.cameraCompiler = cameraCompiler;
-        this.lightCompiler = lightCompiler;
-        this.modelCompiler = modelCompiler;
-        this.geometryCompiler = geometryCompiler;
-        this.rendererCompiler = rendererCompiler;
-        this.sceneCompiler = sceneCompiler;
+        // 引擎操作更新support —— 同步变换操作
+        const tempMap = new Map();
+        cameraCompiler.getMap().forEach((camera, vid) => {
+            tempMap.set(vid, camera);
+        });
+        lightCompiler.getMap().forEach((light, vid) => {
+            tempMap.set(vid, light);
+        });
+        modelCompiler.getMap().forEach((model, vid) => {
+            tempMap.set(vid, model);
+        });
+        const objectConfigMap = new WeakMap();
+        Object.keys(cameraSupportData).forEach(vid => {
+            objectConfigMap.set(tempMap.get(vid), cameraSupportData[vid]);
+        });
+        Object.keys(lightSupportData).forEach(vid => {
+            objectConfigMap.set(tempMap.get(vid), lightSupportData[vid]);
+        });
+        Object.keys(modelSupportData).forEach(vid => {
+            objectConfigMap.set(tempMap.get(vid), modelSupportData[vid]);
+        });
+        tempMap.clear(); // 清除缓存
+        this.transformControls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, (event) => {
+            const e = event;
+            const mode = e.mode;
+            e.transObjectSet.forEach(object => {
+                const config = objectConfigMap.get(object);
+                if (config && config[mode]) {
+                    config[mode].x = object[mode].x;
+                    config[mode].y = object[mode].y;
+                    config[mode].z = object[mode].z;
+                }
+                else {
+                    // TODO: 这里不应该会出现选不到的物体，需要做优化 例如 helper的children等
+                    console.warn(`can not font config in this object: '${object}'`);
+                }
+            });
+        });
+        // 缓存编译器
+        const compilerMap = new Map();
+        compilerMap.set(MODULETYPE.TEXTURE, textureCompiler);
+        compilerMap.set(MODULETYPE.MATERIAL, materialCompiler);
+        compilerMap.set(MODULETYPE.CAMERA, cameraCompiler);
+        compilerMap.set(MODULETYPE.LIGHT, lightCompiler);
+        compilerMap.set(MODULETYPE.MODEL, modelCompiler);
+        compilerMap.set(MODULETYPE.GEOMETRY, geometryCompiler);
+        compilerMap.set(MODULETYPE.RENDERER, rendererCompiler);
+        compilerMap.set(MODULETYPE.SCENE, sceneCompiler);
+        this.compilerMap = compilerMap;
         this.dataSupportManager = parameters.dataSupportManager;
         this.resourceManager = parameters.resourceManager;
+        this.objectConfigMap = objectConfigMap;
     }
     getDataSupportManager() {
         return this.dataSupportManager;
+    }
+    getResourceManager() {
+        return this.resourceManager;
+    }
+    getCompiler(module) {
+        return this.compilerMap.get(module);
     }
 }
 //# sourceMappingURL=ModelingEngineSupport.js.map

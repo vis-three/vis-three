@@ -1,4 +1,5 @@
-import { Camera, Scene, WebGLRenderer, Object3D, EventDispatcher, BaseEvent } from "three";
+import { Camera, WebGLRenderer, EventDispatcher, BaseEvent } from "three";
+import { ModelingScene } from "./ModelingScene";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { PointerManager } from "../../plugins/PointerManager";
 import { SceneStatusManager } from "../../plugins/SceneStatusManager";
@@ -21,13 +22,16 @@ export declare class ModelingEngine extends EventDispatcher<SetCameraEvent | Set
     protected sceneStatusManager: SceneStatusManager;
     protected composer: EffectComposer;
     protected renderer: WebGLRenderer;
-    protected scene: Scene;
+    protected scene: ModelingScene;
     protected renderManager: RenderManager;
-    protected hoverObjectSet: Set<Object3D>;
-    protected activeObjectSet: Set<Object3D>;
+    private transing;
     constructor(dom?: HTMLElement);
+    getSceneStatusManager(): SceneStatusManager;
+    showTransformControls(visiable: boolean): this;
+    showStats(visiable: boolean): this;
+    getTransformControls(): VisTransformControls;
     getRenderer(): WebGLRenderer;
-    getScene(): Scene;
+    getScene(): ModelingScene;
     setCamera(camera: Camera): this;
     setSize(width: number, height: number): this;
     render(): void;

@@ -1,5 +1,6 @@
-import { Scene } from "three";
+import { Light, Scene } from "three";
 import { Compiler, CompilerTarget } from "../../middleware/Compiler";
+import { SymbolConfig } from "../common/CommonConfig";
 import { PointLightConfig, SpotLightConfig } from "./LightConfig";
 export interface LightCompilerTarget extends CompilerTarget {
     [key: string]: SpotLightConfig | PointLightConfig;
@@ -17,6 +18,7 @@ export declare class LightCompiler extends Compiler {
     add(vid: string, config: SpotLightConfig | PointLightConfig): void;
     set(path: string[], key: string, value: any): void;
     setTarget(target: LightCompilerTarget): this;
+    getMap(): Map<SymbolConfig['type'], Light>;
     compileAll(): this;
     dispose(): this;
 }

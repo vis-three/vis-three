@@ -6,16 +6,19 @@ export class MeshHelper extends LineSegments {
     cachaGeometryUUid; // 存uuid防止内存泄漏
     constructor(mesh) {
         super();
+        const thresholdAngle = 5;
         this.target = mesh;
-        this.geometry = new EdgesGeometry(mesh.geometry, 30);
+        this.geometry = new EdgesGeometry(mesh.geometry, thresholdAngle);
         this.cachaGeometryUUid = mesh.geometry.uuid;
         this.material = getHelperLineMaterial();
         this.raycast = () => { };
+        this.matrixAutoUpdate = false;
+        this.matrix = mesh.matrix;
         this.onBeforeRender = () => {
             const target = this.target;
             if (target.geometry.uuid !== this.cachaGeometryUUid) {
                 this.geometry.dispose();
-                this.geometry = new EdgesGeometry(target.geometry, 30);
+                this.geometry = new EdgesGeometry(target.geometry, thresholdAngle);
                 this.cachaGeometryUUid = target.geometry.uuid;
             }
         };

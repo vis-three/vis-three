@@ -6,5 +6,8 @@ export const CameraRule = function (notice, compiler) {
             compiler.add(key, value);
         }
     }
+    else if (operate === 'set') {
+        compiler.set(path.concat([]), key, value);
+    }
 };
 //# sourceMappingURL=CameraRule.js.map

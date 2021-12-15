@@ -174,7 +174,8 @@ export class ModelingScene extends Scene {
   public getDefaultOrthographicCamera?: () => OrthographicCamera // 获取默认正交相机
   public setAxesHelper?: (setting: ModelingAxesHelperSetting) => void // 设置坐标轴辅助
   public setGridHelper?: (setting: ModelingGridHelperSetting) => void // 设置网格辅助
-  public setDispalyMode?: (mode: SCENEDISPLAYMODE) => void // 设置场景的渲染模式
+  public switchDisplayMode?: (mode: SCENEDISPLAYMODE) => void // 切换场景的渲染模式
+  public setDisplayMode?: (mode: SCENEDISPLAYMODE) => void // 设置场景渲染模式
 
   constructor (config: ModelingSceneParameters) {
     super()
@@ -252,22 +253,22 @@ export class ModelingScene extends Scene {
       }
       // 视角监听
       this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, e => {
-        this.defaultOrthograpbicCamera!.position.set(0, 100, 0)
+        this.defaultOrthograpbicCamera!.position.set(0, 60, 0)
       })
       this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, e => {
-        this.defaultOrthograpbicCamera!.position.set(0, -100, 0)
+        this.defaultOrthograpbicCamera!.position.set(0, -60, 0)
       })
       this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, e => {
-        this.defaultOrthograpbicCamera!.position.set(100, 0, 0)
+        this.defaultOrthograpbicCamera!.position.set(60, 0, 0)
       })
       this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, e => {
-        this.defaultOrthograpbicCamera!.position.set(-100, 0, 0)
+        this.defaultOrthograpbicCamera!.position.set(-60, 0, 0)
       })
       this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, e => {
-        this.defaultOrthograpbicCamera!.position.set(0, 0, 100)
+        this.defaultOrthograpbicCamera!.position.set(0, 0, 60)
       })
       this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, e => {
-        this.defaultOrthograpbicCamera!.position.set(0, 0, -100)
+        this.defaultOrthograpbicCamera!.position.set(0, 0, -60)
       })
     }
 
@@ -391,7 +392,7 @@ export class ModelingScene extends Scene {
       this.defaultDirectionalLight.updateMatrixWorld()
       this.defaultDirectionalLight.matrixAutoUpdate = false
 
-      this.setDispalyMode = (mode: SCENEDISPLAYMODE) => {
+      this.switchDisplayMode = (mode: SCENEDISPLAYMODE) => {
         // 过滤材质
         const filterMaterial = (): void => {
           const meterialCacheMap = this.materialCacheMap!
@@ -509,12 +510,16 @@ export class ModelingScene extends Scene {
         }
       }
 
+      this.setDisplayMode = (mode: SCENEDISPLAYMODE) => {
+        this.displayMode = mode
+      }
+
       if (config.displayMode !== undefined) {
-        this.displayMode = config.displayMode
-        this.setDispalyMode(this.displayMode)
+        this.setDisplayMode(config.displayMode)
+        this.switchDisplayMode(this.displayMode!)
       } else {
-        this.displayMode = SCENEDISPLAYMODE.ENV
-        this.setDispalyMode(this.displayMode)
+        this.setDisplayMode(SCENEDISPLAYMODE.ENV)
+        this.switchDisplayMode(this.displayMode!)
       }
     }
   }
@@ -609,7 +614,7 @@ export class ModelingScene extends Scene {
       this.helperCompiler.add(elem)
     })
     if (this.displayMode !== undefined) {
-      this.setDispalyMode!(this.displayMode)
+      this.switchDisplayMode!(this.displayMode)
     }
 
     return super.add(...object)

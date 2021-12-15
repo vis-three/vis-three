@@ -15,4 +15,6 @@ import { DataSupportManager } from "./manager/DataSupportManager";
 import { SupportDataGenerator } from "./convenient/SupportDataGenerator";
 import { MODULETYPE } from "./case/constants/MODULETYPE";
 import { CONFIGTYPE } from "./case/constants/configType";
-export { LOADEEVENTTYPE, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, LoaderManager, ResourceManager, DataSupportManager, ModelingEngine, ModelingEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, ModelDataSupport, GeometryDataSupport, CameraDataSupport, PointLightHelper, CameraHelper, generateConfig, SupportDataGenerator, };
+import { ModelingEngineSupportConnector } from "./connector/ModelingEngineSupportConnector";
+import { SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./engine/ModelingEngine/ModelingScene";
+export { LOADEEVENTTYPE, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, SCENEDISPLAYMODE, SCENEVIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, ModelingEngine, ModelingEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, ModelDataSupport, GeometryDataSupport, CameraDataSupport, ModelingEngineSupportConnector, PointLightHelper, CameraHelper, generateConfig, SupportDataGenerator, };

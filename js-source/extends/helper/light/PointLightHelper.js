@@ -7,6 +7,7 @@ export class PointLightHelper extends LineSegments {
     type = 'VisPointLightHelper';
     cachaColor;
     cachaDistance;
+    cachaVector3;
     constructor(pointLight) {
         super();
         // 光源
@@ -46,6 +47,7 @@ export class PointLightHelper extends LineSegments {
         this.sphere = new Sphere(new Vector3(0, 0, 0), 1);
         this.cachaColor = pointLight.color.getHex();
         this.cachaDistance = pointLight.distance;
+        this.cachaVector3 = new Vector3();
         this.add(this.shape);
         this.matrixAutoUpdate = false;
         this.matrix = pointLight.matrix;
@@ -67,11 +69,12 @@ export class PointLightHelper extends LineSegments {
         };
     }
     raycast(raycaster, intersects) {
-        const matrixWorld = this.matrixWorld;
+        const target = this.target;
+        const matrixWorld = target.matrixWorld;
         const sphere = this.sphere;
+        sphere.set(this.cachaVector3.set(0, 0, 0), 1);
         sphere.applyMatrix4(matrixWorld);
         if (raycaster.ray.intersectsSphere(sphere)) {
-            const target = this.target;
             intersects.push({
                 distance: raycaster.ray.origin.distanceTo(target.position),
                 object: target,

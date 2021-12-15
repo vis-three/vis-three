@@ -239,6 +239,32 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
     return this
   }
 
+  // 设置性能监视器监控是否可见
+  showStats(visiable: boolean): this {
+    if (visiable) {
+      this.renderManager.addEventListener('render', this.stats.render)
+      const targetElement = this.renderer.domElement.parentElement
+      if (targetElement) {
+        targetElement.appendChild(this.stats.domElement)
+      } else {
+        console.warn('can not found renderer canvas parent dom')
+      }
+    } else {
+      if (this.renderManager.hasEventListener('render', this.stats.render)) {
+        this.renderManager.removeEventListener('render', this.stats.render)
+      }
+      const targetElement = this.renderer.domElement.parentElement
+      if (targetElement) {
+        try {
+          targetElement.removeChild(this.stats.domElement)
+        } catch (error) {
+          
+        }
+      }
+    }
+    return this
+  }
+
   // 获取变换控制器
   getTransformControls(): VisTransformControls {
     return this.transformControls

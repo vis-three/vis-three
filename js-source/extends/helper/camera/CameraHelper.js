@@ -1,7 +1,6 @@
 import { BufferGeometry, CameraHelper as TCameraHelper, Float32BufferAttribute, LineSegments, Matrix4, OrthographicCamera, PerspectiveCamera } from "three";
 import { getHelperLineMaterial } from "../common";
 export class CameraHelper extends LineSegments {
-    box;
     shape;
     target;
     type = 'CameraHelper';
@@ -45,7 +44,6 @@ export class CameraHelper extends LineSegments {
         shape.raycast = () => { };
         this.add(shape);
         this.shape = shape;
-        this.box = geometry.boundingBox;
         this.geometry = geometry;
         this.material = getHelperLineMaterial();
         this.target = camera;
@@ -88,7 +86,7 @@ export class CameraHelper extends LineSegments {
     }
     raycast(raycaster, intersects) {
         const matrixWorld = this.matrixWorld;
-        const box = this.box;
+        const box = this.geometry.boundingBox.clone();
         box.applyMatrix4(matrixWorld);
         if (raycaster.ray.intersectsBox(box)) {
             const target = this.target;

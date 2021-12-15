@@ -11,7 +11,7 @@ export class MeshHelper extends LineSegments implements VisHelper {
   constructor (mesh: Mesh) {
     super()
 
-    const thresholdAngle = 10
+    const thresholdAngle = 1
 
     this.target = mesh
 
