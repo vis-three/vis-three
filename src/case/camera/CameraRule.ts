@@ -10,7 +10,13 @@ export const CameraRule: Rule<CameraCompiler> = function (notice: ProxyNotice, c
     if (validate(key)) {
       compiler.add(key, value)
     }
-  } else if (operate === 'set') {
-    compiler.set(path.concat([]), key, value)
+  }else if (operate === 'set') {
+    const tempPath = path.concat([])
+    const vid = tempPath.shift()
+    if (vid && validate(vid)) {
+      compiler.set(vid, tempPath, key, value)
+    } else {
+      console.warn(`camera rule vid is illeage: '${vid}'`)
+    }
   }
 }

@@ -1,6 +1,6 @@
 import { Camera, OrthographicCamera, PerspectiveCamera, Scene } from "three";
 import { validate } from "uuid";
-import { Compiler, CompilerTarget } from "../../middleware/Compiler";
+import { Compiler, COMPILEREVENTTYPE, CompilerTarget, ObjectCompiler } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CameraAllType } from "./CameraConfig";
 
@@ -13,7 +13,7 @@ export interface CameraCompilerParameters {
   target?: CameraCompilerTarget
 }
 
-export class CameraCompiler extends Compiler {
+export class CameraCompiler extends Compiler implements ObjectCompiler {
 
   private target!: CameraCompilerTarget
   private scene!: Scene
@@ -54,6 +54,13 @@ export class CameraCompiler extends Compiler {
 
 
         this.map.set(vid, camera)
+
+        this.dispatchEvent({
+          type: COMPILEREVENTTYPE.ADD,
+          object: camera,
+          vid
+        })
+
         this.scene.add(camera)
       }
     } else {
@@ -62,18 +69,34 @@ export class CameraCompiler extends Compiler {
     return this
   }
 
-  set (path: string[], key: string, value: any) {
-    const vid = path.shift()!
-    if (validate(vid) && this.map.has(vid)) {
-      let config = this.map.get(vid)!
-      path.forEach((key, i, arr) => {
-        config = config[key]
-      })
-      config[key] = value
-    } else {
-      console.error(`vid parameter is illegal: ${vid} or can not found this vid camera`)
+  set (vid: string, path: string[], key: string, value: any): this {
+    if (!validate(vid)) {
+      console.warn(`camera compiler set function vid parameters is illeage: '${vid}'`)
+      return this
     }
+
+    if (!this.map.has(vid)) {
+      console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`)
+      return this
+    }
+
+    const camera = this.map.get(vid)!
+    let config = camera
+    path.forEach((key, i, arr) => {
+      config = camera[key]
+    })
+    config[key] = value
+
+    // TODO: 根据特点属性update
+    if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
+      (camera as PerspectiveCamera).updateProjectionMatrix()
+    }
+    return this
+
   }
+
+  // TODO:
+  remove () {}
 
   setScene (scene: Scene): this {
     this.scene = scene

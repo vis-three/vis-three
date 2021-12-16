@@ -7,7 +7,14 @@ export const CameraRule = function (notice, compiler) {
         }
     }
     else if (operate === 'set') {
-        compiler.set(path.concat([]), key, value);
+        const tempPath = path.concat([]);
+        const vid = tempPath.shift();
+        if (vid && validate(vid)) {
+            compiler.set(vid, tempPath, key, value);
+        }
+        else {
+            console.warn(`camera rule vid is illeage: '${vid}'`);
+        }
     }
 };
 //# sourceMappingURL=CameraRule.js.map

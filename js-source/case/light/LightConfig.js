@@ -16,14 +16,14 @@ export const getAmbientLightConfig = function () {
 export const getPointLightConfig = function () {
     return Object.assign(getLightConfig(), {
         type: 'PointLight',
-        distance: 150,
+        distance: 30,
         decay: 0.01
     });
 };
 export const getSpotLightConfig = function () {
     return Object.assign(getLightConfig(), {
         type: 'SpotLight',
-        distance: 150,
+        distance: 30,
         angle: Math.PI / 180 * 45,
         penumbra: 0.01,
         decay: 0.01

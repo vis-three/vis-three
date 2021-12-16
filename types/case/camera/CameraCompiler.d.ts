@@ -1,5 +1,5 @@
 import { Camera, Scene } from "three";
-import { Compiler, CompilerTarget } from "../../middleware/Compiler";
+import { Compiler, CompilerTarget, ObjectCompiler } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CameraAllType } from "./CameraConfig";
 export interface CameraCompilerTarget extends CompilerTarget {
@@ -9,14 +9,15 @@ export interface CameraCompilerParameters {
     scene?: Scene;
     target?: CameraCompilerTarget;
 }
-export declare class CameraCompiler extends Compiler {
+export declare class CameraCompiler extends Compiler implements ObjectCompiler {
     private target;
     private scene;
     private map;
     private constructMap;
     constructor(parameters?: CameraCompilerParameters);
     add(vid: string, config: CameraAllType): this;
-    set(path: string[], key: string, value: any): void;
+    set(vid: string, path: string[], key: string, value: any): this;
+    remove(): void;
     setScene(scene: Scene): this;
     setTarget(target: CameraCompilerTarget): this;
     getMap(): Map<SymbolConfig['type'], Camera>;

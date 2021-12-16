@@ -2081,6 +2081,11 @@ class CameraCompiler extends Compiler {
           camera.updateProjectionMatrix();
         }
         this.map.set(vid, camera);
+        this.dispatchEvent({
+          type: COMPILEREVENTTYPE.ADD,
+          object: camera,
+          vid
+        });
         this.scene.add(camera);
       }
     } else {
@@ -2088,17 +2093,27 @@ class CameraCompiler extends Compiler {
     }
     return this;
   }
-  set(path, key, value) {
-    const vid = path.shift();
-    if (validate(vid) && this.map.has(vid)) {
-      let config = this.map.get(vid);
-      path.forEach((key2, i, arr) => {
-        config = config[key2];
-      });
-      config[key] = value;
-    } else {
-      console.error(`vid parameter is illegal: ${vid} or can not found this vid camera`);
+  set(vid, path, key, value) {
+    if (!validate(vid)) {
+      console.warn(`camera compiler set function vid parameters is illeage: '${vid}'`);
+      return this;
     }
+    if (!this.map.has(vid)) {
+      console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
+      return this;
+    }
+    const camera = this.map.get(vid);
+    let config = camera;
+    path.forEach((key2, i, arr) => {
+      config = camera[key2];
+    });
+    config[key] = value;
+    if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
+      camera.updateProjectionMatrix();
+    }
+    return this;
+  }
+  remove() {
   }
   setScene(scene) {
     this.scene = scene;
@@ -2976,6 +2991,10 @@ class ModelingEngineSupport extends ModelingEngine {
     lightCompiler.addEventListener(COMPILEREVENTTYPE.ADD, (event) => {
       const e = event;
       objectConfigMap.set(e.object, lightSupportData[e.vid]);
+    });
+    cameraCompiler.addEventListener(COMPILEREVENTTYPE.ADD, (event) => {
+      const e = event;
+      objectConfigMap.set(e.object, cameraSupportData[e.vid]);
     });
     this.transformControls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, (event) => {
       const e = event;
@@ -4240,8 +4259,8 @@ const getPerspectiveCameraConfig = function() {
     type: "PerspectiveCamera",
     fov: 45,
     aspect: 1920 / 1080,
-    near: 1,
-    far: 1e3
+    near: 5,
+    far: 50
   });
 };
 const getOrthographicCameraConfig = function() {
@@ -4251,8 +4270,8 @@ const getOrthographicCameraConfig = function() {
     right: 1920 / 16,
     top: 1080 / 16,
     bottom: 1080 / 16,
-    near: 0,
-    far: 1e3
+    near: 5,
+    far: 50
   });
 };
 var CONFIGTYPE;
@@ -4350,7 +4369,13 @@ const CameraRule = function(notice, compiler) {
       compiler.add(key, value);
     }
   } else if (operate === "set") {
-    compiler.set(path.concat([]), key, value);
+    const tempPath = path.concat([]);
+    const vid = tempPath.shift();
+    if (vid && validate(vid)) {
+      compiler.set(vid, tempPath, key, value);
+    } else {
+      console.warn(`camera rule vid is illeage: '${vid}'`);
+    }
   }
 };
 class CameraDataSupport extends DataSupport {
@@ -4535,7 +4560,8 @@ class ModelingEngineSupportConnector {
       const engineSupport = domEngineMap.get(dom);
       const modelCompiler = engineSupport.getCompiler(MODULETYPE.MODEL);
       const lightCompiler = engineSupport.getCompiler(MODULETYPE.LIGHT);
-      cameraMap = engineSupport.getCompiler(MODULETYPE.CAMERA).getMap();
+      const cameraCompiler = engineSupport.getCompiler(MODULETYPE.CAMERA);
+      cameraMap = cameraCompiler.getMap();
       lightMap = lightCompiler.getMap();
       modelMap = modelCompiler.getMap();
       const objectMapSet = new Set();
@@ -4557,6 +4583,10 @@ class ModelingEngineSupportConnector {
         objectReversalMap.set(e.object, e.vid);
       });
       lightCompiler.addEventListener(COMPILEREVENTTYPE.ADD, (event) => {
+        const e = event;
+        objectReversalMap.set(e.object, e.vid);
+      });
+      cameraCompiler.addEventListener(COMPILEREVENTTYPE.ADD, (event) => {
         const e = event;
         objectReversalMap.set(e.object, e.vid);
       });

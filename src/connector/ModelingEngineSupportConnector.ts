@@ -58,8 +58,10 @@ export class ModelingEngineSupportConnector {
       // 物体编译器
       const modelCompiler = engineSupport.getCompiler(MODULETYPE.MODEL) as ModelCompiler
       const lightCompiler = engineSupport.getCompiler(MODULETYPE.LIGHT) as LightCompiler
+      const cameraCompiler = engineSupport.getCompiler(MODULETYPE.CAMERA) as CameraCompiler
+
       // 物体map
-      cameraMap = (engineSupport.getCompiler(MODULETYPE.CAMERA) as CameraCompiler).getMap()
+      cameraMap = cameraCompiler.getMap()
       lightMap = lightCompiler.getMap()
       modelMap = modelCompiler.getMap()
 
@@ -92,6 +94,11 @@ export class ModelingEngineSupportConnector {
       })
 
       lightCompiler.addEventListener(COMPILEREVENTTYPE.ADD, event => {
+        const e = event as unknown as CompilerAddEvent
+        objectReversalMap.set(e.object, e.vid)
+      })
+
+      cameraCompiler.addEventListener(COMPILEREVENTTYPE.ADD, event => {
         const e = event as unknown as CompilerAddEvent
         objectReversalMap.set(e.object, e.vid)
       })
