@@ -1267,6 +1267,8 @@ class SceneStatusManager extends EventDispatcher$1 {
       if (!transformControlsFilterMap[elem.object.uuid]) {
         index = i;
         return true;
+      } else {
+        return false;
       }
     });
     if (index === -1) {
@@ -1289,9 +1291,9 @@ class SceneStatusManager extends EventDispatcher$1 {
     if (this.transformControls) {
       const transformControls = this.transformControls;
       if (activeObjectSet.size) {
+        transformControls.setAttach(...activeObjectSet);
         scene.add(transformControls.getTarget());
         scene.add(transformControls);
-        transformControls.setAttach(...activeObjectSet);
       } else {
         scene.remove(transformControls.getTarget());
         scene.remove(transformControls);
@@ -1339,7 +1341,6 @@ class SceneStatusManager extends EventDispatcher$1 {
     if (this.isSelecting) {
       return this;
     }
-    console.log("check");
     const activeObjectSet = this.activeObjectSet;
     const mouse = event.mouse;
     this.raycaster.setFromCamera(mouse, this.camera);
@@ -1402,7 +1403,7 @@ class SceneStatusManager extends EventDispatcher$1 {
     this.triggerHoverEvent();
     return this;
   }
-  setActiveObject(...object) {
+  setActiveObjectSet(...object) {
     const activeObjectSet = this.activeObjectSet;
     activeObjectSet.clear();
     object.forEach((object2) => {
@@ -1459,9 +1460,19 @@ class VisTransformControls extends TransformControls {
     super(camera, dom);
     __publicField(this, "target");
     __publicField(this, "transObjectSet");
+    this.domElement.removeEventListener("pointerdown", this._onPointerDown);
+    this._onPointerDown = (event) => {
+      var _a;
+      if (!this.enabled || !((_a = this.object) == null ? void 0 : _a.parent))
+        return;
+      this.domElement.setPointerCapture(event.pointerId);
+      this.domElement.addEventListener("pointermove", this._onPointerMove);
+      this.pointerHover(this._getPointer(event));
+      this.pointerDown(this._getPointer(event));
+    };
+    this.domElement.addEventListener("pointerdown", this._onPointerDown);
     this.target = new Object3D();
     this.transObjectSet = new Set();
-    this.attach(this.target);
     let mode = "";
     let target = this.target;
     let transObjectSet = this.transObjectSet;
@@ -1507,9 +1518,10 @@ class VisTransformControls extends TransformControls {
   setAttach(...object) {
     this.transObjectSet.clear();
     if (!object.length) {
-      this.visible = false;
+      this.detach();
       return this;
     }
+    this.attach(this.target);
     const target = this.target;
     if (object.length === 1) {
       const currentObject = object[0];
@@ -2170,6 +2182,22 @@ const _GeometryCompiler = class extends Compiler {
     }
     return this;
   }
+  set(vid, path, value) {
+    if (!validate(vid)) {
+      console.warn(`geometry compiler set function vid parameters is illeage: '${vid}'`);
+      return this;
+    }
+    if (!this.map.has(vid)) {
+      console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
+    }
+    const currentGeometry = this.map.get(vid);
+    const config = this.target[vid];
+    const newGeometry = this.constructMap.get(config.type)(config);
+    currentGeometry.copy(newGeometry);
+    currentGeometry.uuid = newGeometry.uuid;
+    newGeometry.dispose();
+    return this;
+  }
   compileAll() {
     const target = this.target;
     for (const key in target) {
@@ -2433,6 +2461,8 @@ class ModelCompiler extends Compiler {
     } else {
       console.error(`vid parameter is illegal: ${vid} or can not found this vid model`);
     }
+  }
+  remove() {
   }
   getMaterial(vid) {
     if (validate(vid)) {
@@ -2824,6 +2854,11 @@ class TextureCompiler extends Compiler {
     return this;
   }
 }
+var MESEVENTTYPE;
+(function(MESEVENTTYPE2) {
+  MESEVENTTYPE2["ACTIVE"] = "active";
+  MESEVENTTYPE2["HOVER"] = "hover";
+})(MESEVENTTYPE || (MESEVENTTYPE = {}));
 class ModelingEngineSupport extends ModelingEngine {
   constructor(parameters) {
     super(parameters.dom);
@@ -2926,6 +2961,36 @@ class ModelingEngineSupport extends ModelingEngine {
         }
       });
     });
+    this.sceneStatusManager.addEventListener(SCENESTATUSTYPE.HOVERCHANGE, (event) => {
+      const e = event;
+      const vidSet = new Set();
+      e.objectSet.forEach((object) => {
+        if (objectConfigMap.has(object)) {
+          vidSet.add(objectConfigMap.get(object).vid);
+        } else {
+          console.warn(`modeling engine support hover can not found this object mapping vid`, object);
+        }
+      });
+      this.dispatchEvent({
+        type: MESEVENTTYPE.HOVER,
+        vidSet
+      });
+    });
+    this.sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, (event) => {
+      const e = event;
+      const vidSet = new Set();
+      e.objectSet.forEach((object) => {
+        if (objectConfigMap.has(object)) {
+          vidSet.add(objectConfigMap.get(object).vid);
+        } else {
+          console.warn(`modeling engine support avtive can not found this object mapping vid`, object);
+        }
+      });
+      this.dispatchEvent({
+        type: MESEVENTTYPE.ACTIVE,
+        vidSet
+      });
+    });
     const compilerMap = new Map();
     compilerMap.set(MODULETYPE.TEXTURE, textureCompiler);
     compilerMap.set(MODULETYPE.MATERIAL, materialCompiler);
@@ -2949,12 +3014,26 @@ class ModelingEngineSupport extends ModelingEngine {
   getCompiler(module) {
     return this.compilerMap.get(module);
   }
+  setHoverObjects(...vidList) {
+    return this;
+  }
+  setActiveObjects(...vidList) {
+    return this;
+  }
 }
 const GeometryRule = function(notice, compiler) {
   const { operate, key, path, value } = notice;
   if (operate === "add") {
     if (validate(key)) {
       compiler.add(key, value);
+    }
+  } else if (operate === "set") {
+    const tempPath = path.concat([]);
+    const vid = tempPath.shift();
+    if (vid && validate(vid)) {
+      compiler.set(vid, tempPath, value);
+    } else {
+      console.warn(`vid is illeage: '${vid}'`);
     }
   }
 };
@@ -4538,7 +4617,7 @@ class ModelingEngineSupportConnector {
               }
             });
           });
-          manager.setActiveObject(...currentObjecSet);
+          manager.setActiveObjectSet(...currentObjecSet);
           currentObjecSet.clear();
           manager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, syncActiveFunction);
         }
@@ -4582,4 +4661,4 @@ class ModelingEngineSupportConnector {
     return this.domEngineMap.get(dom);
   }
 }
-export { CONFIGTYPE, CameraDataSupport, CameraHelper, DataSupportManager, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, PointLightHelper, RESOURCEEVENTTYPE, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, generateConfig };
+export { CONFIGTYPE, CameraDataSupport, CameraHelper, DataSupportManager, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MESEVENTTYPE, MODULETYPE, MaterialDataSupport, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, PointLightHelper, RESOURCEEVENTTYPE, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, generateConfig };

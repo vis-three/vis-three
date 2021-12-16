@@ -6,7 +6,7 @@ export class MeshHelper extends LineSegments {
     cachaGeometryUUid; // 存uuid防止内存泄漏
     constructor(mesh) {
         super();
-        const thresholdAngle = 5;
+        const thresholdAngle = 1;
         this.target = mesh;
         this.geometry = new EdgesGeometry(mesh.geometry, thresholdAngle);
         this.cachaGeometryUUid = mesh.geometry.uuid;

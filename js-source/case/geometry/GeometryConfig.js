@@ -33,7 +33,7 @@ export const getBoxGeometryConfig = function () {
 export const getSphereGeometryConfig = function () {
     return Object.assign(getGeometryConfig(), {
         type: 'SphereGeometry',
-        radius: 1,
+        radius: 3,
         widthSegments: 32,
         heightSegments: 32,
         phiStart: 0,

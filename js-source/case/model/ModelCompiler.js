@@ -44,12 +44,12 @@ export class ModelCompiler extends Compiler {
                 delete tempConfig.material;
                 Compiler.applyConfig(tempConfig, object);
                 this.map.set(vid, object);
-                this.scene.add(object);
                 this.dispatchEvent({
                     type: COMPILEREVENTTYPE.ADD,
                     object,
                     vid
                 });
+                this.scene.add(object);
             }
         }
         else {
@@ -70,6 +70,7 @@ export class ModelCompiler extends Compiler {
             console.error(`vid parameter is illegal: ${vid} or can not found this vid model`);
         }
     }
+    remove() { }
     getMaterial(vid) {
         if (validate(vid)) {
             if (this.materialMap.has(vid)) {

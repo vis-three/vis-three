@@ -86,7 +86,8 @@ export declare class ModelingScene extends Scene {
     getDefaultOrthographicCamera?: () => OrthographicCamera;
     setAxesHelper?: (setting: ModelingAxesHelperSetting) => void;
     setGridHelper?: (setting: ModelingGridHelperSetting) => void;
-    setDispalyMode?: (mode: SCENEDISPLAYMODE) => void;
+    switchDisplayMode?: (mode: SCENEDISPLAYMODE) => void;
+    setDisplayMode?: (mode: SCENEDISPLAYMODE) => void;
     constructor(config: ModelingSceneParameters);
     getHelperCompiler(): SceneHelperCompiler;
     setObjectHelperVisiable(visiable: boolean): void;

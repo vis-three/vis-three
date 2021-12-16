@@ -1,5 +1,7 @@
 import { ModelingEngine } from "../../main";
+import { COMPILEREVENTTYPE } from "../../middleware/Compiler";
 import { VISTRANSFORMEVENTTYPE } from "../../optimize/VisTransformControls";
+import { SCENESTATUSTYPE } from "../../plugins/SceneStatusManager";
 import { CameraCompiler } from "../camera/CameraCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { GeometryCompiler } from "../geometry/GeometryCompiler";
@@ -9,6 +11,11 @@ import { ModelCompiler } from "../model/ModelCompiler";
 import { RendererCompiler } from "../render/RendererCompiler";
 import { SceneCompiler } from "../scene/SceneCompiler";
 import { TextureCompiler } from "../texture/TextureCompiler";
+export var MESEVENTTYPE;
+(function (MESEVENTTYPE) {
+    MESEVENTTYPE["ACTIVE"] = "active";
+    MESEVENTTYPE["HOVER"] = "hover";
+})(MESEVENTTYPE || (MESEVENTTYPE = {}));
 export class ModelingEngineSupport extends ModelingEngine {
     compilerMap;
     resourceManager;
@@ -76,7 +83,7 @@ export class ModelingEngineSupport extends ModelingEngine {
         modelDataSupport.addCompiler(modelCompiler);
         rendererDataSupport.addCompiler(rendererCompiler);
         sceneDataSupport.addCompiler(sceneCompiler);
-        // 引擎操作更新support —— 同步变换操作
+        // 引擎操作更新support
         const tempMap = new Map();
         cameraCompiler.getMap().forEach((camera, vid) => {
             tempMap.set(vid, camera);
@@ -98,6 +105,13 @@ export class ModelingEngineSupport extends ModelingEngine {
             objectConfigMap.set(tempMap.get(vid), modelSupportData[vid]);
         });
         tempMap.clear(); // 清除缓存
+        // 运行时添加物体映射
+        modelCompiler.addEventListener(COMPILEREVENTTYPE.ADD, event => {
+            const e = event;
+            objectConfigMap.set(e.object, modelSupportData[e.vid]);
+        });
+        //TODO: light camera ...
+        // 控制器变换物体更新support
         this.transformControls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, (event) => {
             const e = event;
             const mode = e.mode;
@@ -112,6 +126,39 @@ export class ModelingEngineSupport extends ModelingEngine {
                     // TODO: 这里不应该会出现选不到的物体，需要做优化 例如 helper的children等
                     console.warn(`can not font config in this object: '${object}'`);
                 }
+            });
+        });
+        // 状态事件抛出support的vid
+        this.sceneStatusManager.addEventListener(SCENESTATUSTYPE.HOVERCHANGE, (event) => {
+            const e = event;
+            const vidSet = new Set();
+            e.objectSet.forEach(object => {
+                if (objectConfigMap.has(object)) {
+                    vidSet.add(objectConfigMap.get(object).vid);
+                }
+                else {
+                    console.warn(`modeling engine support hover can not found this object mapping vid`, object);
+                }
+            });
+            this.dispatchEvent({
+                type: MESEVENTTYPE.HOVER,
+                vidSet
+            });
+        });
+        this.sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, (event) => {
+            const e = event;
+            const vidSet = new Set();
+            e.objectSet.forEach(object => {
+                if (objectConfigMap.has(object)) {
+                    vidSet.add(objectConfigMap.get(object).vid);
+                }
+                else {
+                    console.warn(`modeling engine support avtive can not found this object mapping vid`, object);
+                }
+            });
+            this.dispatchEvent({
+                type: MESEVENTTYPE.ACTIVE,
+                vidSet
             });
         });
         // 缓存编译器
@@ -137,6 +184,13 @@ export class ModelingEngineSupport extends ModelingEngine {
     }
     getCompiler(module) {
         return this.compilerMap.get(module);
+    }
+    // TODO:设置激活物体和hover物体
+    setHoverObjects(...vidList) {
+        return this;
+    }
+    setActiveObjects(...vidList) {
+        return this;
     }
 }
 //# sourceMappingURL=ModelingEngineSupport.js.map

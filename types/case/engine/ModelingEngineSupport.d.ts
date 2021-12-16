@@ -1,3 +1,4 @@
+import { BaseEvent } from "three";
 import { ModelingEngine } from "../../main";
 import { DataSupportManager } from "../../manager/DataSupportManager";
 import { ResourceManager } from "../../manager/ResourceManager";
@@ -8,6 +9,18 @@ export interface ModelingEngineSupportParameters {
     dataSupportManager: DataSupportManager;
     resourceManager: ResourceManager;
 }
+export declare enum MESEVENTTYPE {
+    ACTIVE = "active",
+    HOVER = "hover"
+}
+export interface MESActiveEvent extends BaseEvent {
+    type: MESEVENTTYPE.ACTIVE;
+    vidSet: Set<string>;
+}
+export interface MESHoverEvent extends BaseEvent {
+    type: MESEVENTTYPE.HOVER;
+    vidSet: Set<string>;
+}
 export declare class ModelingEngineSupport extends ModelingEngine {
     private compilerMap;
     private resourceManager;
@@ -17,4 +30,6 @@ export declare class ModelingEngineSupport extends ModelingEngine {
     getDataSupportManager(): DataSupportManager;
     getResourceManager(): ResourceManager;
     getCompiler<C extends Compiler>(module: MODULETYPE): C;
+    setHoverObjects(...vidList: string[]): this;
+    setActiveObjects(...vidList: string[]): this;
 }

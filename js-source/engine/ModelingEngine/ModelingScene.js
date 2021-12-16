@@ -89,7 +89,8 @@ export class ModelingScene extends Scene {
     getDefaultOrthographicCamera; // 获取默认正交相机
     setAxesHelper; // 设置坐标轴辅助
     setGridHelper; // 设置网格辅助
-    setDispalyMode; // 设置场景的渲染模式
+    switchDisplayMode; // 切换场景的渲染模式
+    setDisplayMode; // 设置场景渲染模式
     constructor(config) {
         super();
         this.cameraSet = new Set();
@@ -136,22 +137,22 @@ export class ModelingScene extends Scene {
             };
             // 视角监听
             this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, e => {
-                this.defaultOrthograpbicCamera.position.set(0, 100, 0);
+                this.defaultOrthograpbicCamera.position.set(0, 60, 0);
             });
             this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, e => {
-                this.defaultOrthograpbicCamera.position.set(0, -100, 0);
+                this.defaultOrthograpbicCamera.position.set(0, -60, 0);
             });
             this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, e => {
-                this.defaultOrthograpbicCamera.position.set(100, 0, 0);
+                this.defaultOrthograpbicCamera.position.set(60, 0, 0);
             });
             this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, e => {
-                this.defaultOrthograpbicCamera.position.set(-100, 0, 0);
+                this.defaultOrthograpbicCamera.position.set(-60, 0, 0);
             });
             this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, e => {
-                this.defaultOrthograpbicCamera.position.set(0, 0, 100);
+                this.defaultOrthograpbicCamera.position.set(0, 0, 60);
             });
             this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, e => {
-                this.defaultOrthograpbicCamera.position.set(0, 0, -100);
+                this.defaultOrthograpbicCamera.position.set(0, 0, -60);
             });
         }
         // 初始化坐标轴辅助
@@ -262,7 +263,7 @@ export class ModelingScene extends Scene {
             this.defaultDirectionalLight.updateMatrix();
             this.defaultDirectionalLight.updateMatrixWorld();
             this.defaultDirectionalLight.matrixAutoUpdate = false;
-            this.setDispalyMode = (mode) => {
+            this.switchDisplayMode = (mode) => {
                 // 过滤材质
                 const filterMaterial = () => {
                     const meterialCacheMap = this.materialCacheMap;
@@ -377,13 +378,16 @@ export class ModelingScene extends Scene {
                     console.warn(`VisScene can not set this mode: ${mode}`);
                 }
             };
+            this.setDisplayMode = (mode) => {
+                this.displayMode = mode;
+            };
             if (config.displayMode !== undefined) {
-                this.displayMode = config.displayMode;
-                this.setDispalyMode(this.displayMode);
+                this.setDisplayMode(config.displayMode);
+                this.switchDisplayMode(this.displayMode);
             }
             else {
-                this.displayMode = SCENEDISPLAYMODE.ENV;
-                this.setDispalyMode(this.displayMode);
+                this.setDisplayMode(SCENEDISPLAYMODE.ENV);
+                this.switchDisplayMode(this.displayMode);
             }
         }
     }
@@ -466,7 +470,7 @@ export class ModelingScene extends Scene {
             this.helperCompiler.add(elem);
         });
         if (this.displayMode !== undefined) {
-            this.setDispalyMode(this.displayMode);
+            this.switchDisplayMode(this.displayMode);
         }
         return super.add(...object);
     }

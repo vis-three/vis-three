@@ -1,9 +1,10 @@
-import { Object3D } from "three";
+import { BaseEvent, Object3D } from "three";
 import { ModelingEngine } from "../../main";
 import { DataSupportManager } from "../../manager/DataSupportManager";
 import { ResourceManager } from "../../manager/ResourceManager";
 import { Compiler, CompilerAddEvent, COMPILEREVENTTYPE, CompilerTarget } from "../../middleware/Compiler";
 import { ObjectChangedEvent, VISTRANSFORMEVENTTYPE } from "../../optimize/VisTransformControls";
+import { activeChangeEvent, hoverChangeEvent, SCENESTATUSTYPE } from "../../plugins/SceneStatusManager";
 import { CameraCompiler } from "../camera/CameraCompiler";
 import { CameraDataSupport } from "../camera/CameraDataSupport";
 import { SymbolConfig } from "../common/CommonConfig";
@@ -26,6 +27,21 @@ export interface ModelingEngineSupportParameters {
   dom?: HTMLElement
   dataSupportManager: DataSupportManager
   resourceManager: ResourceManager
+}
+
+export enum MESEVENTTYPE {
+  ACTIVE = 'active',
+  HOVER = 'hover'
+}
+
+export interface MESActiveEvent extends BaseEvent {
+  type: MESEVENTTYPE.ACTIVE
+  vidSet: Set<string>
+}
+
+export interface MESHoverEvent extends BaseEvent {
+  type: MESEVENTTYPE.HOVER
+  vidSet: Set<string>
 }
 
 export class ModelingEngineSupport extends ModelingEngine {
@@ -149,9 +165,11 @@ export class ModelingEngineSupport extends ModelingEngine {
 
     // 运行时添加物体映射
     modelCompiler.addEventListener(COMPILEREVENTTYPE.ADD, event => {
-      const e = event as CompilerAddEvent
+      const e = event as unknown as CompilerAddEvent
       objectConfigMap.set(e.object, modelSupportData[e.vid])
     })
+
+    //TODO: light camera ...
 
     // 控制器变换物体更新support
     this.transformControls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, (event) => {
@@ -168,6 +186,41 @@ export class ModelingEngineSupport extends ModelingEngine {
           // TODO: 这里不应该会出现选不到的物体，需要做优化 例如 helper的children等
           console.warn(`can not font config in this object: '${object}'`)
         }
+      })
+    })
+
+    // 状态事件抛出support的vid
+    this.sceneStatusManager.addEventListener(SCENESTATUSTYPE.HOVERCHANGE, (event) => {
+      const e = event as hoverChangeEvent
+      const vidSet = new Set<string>()
+      e.objectSet.forEach(object => {
+        if (objectConfigMap.has(object)) {
+          vidSet.add(objectConfigMap.get(object)!.vid)
+        } else {
+          console.warn(`modeling engine support hover can not found this object mapping vid`, object)
+        }
+      })
+
+      this.dispatchEvent({
+        type: MESEVENTTYPE.HOVER,
+        vidSet
+      })
+    })
+
+    this.sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, (event) => {
+      const e = event as activeChangeEvent
+      const vidSet = new Set<string>()
+      e.objectSet.forEach(object => {
+        if (objectConfigMap.has(object)) {
+          vidSet.add(objectConfigMap.get(object)!.vid)
+        } else {
+          console.warn(`modeling engine support avtive can not found this object mapping vid`, object)
+        }
+      })
+
+      this.dispatchEvent({
+        type: MESEVENTTYPE.ACTIVE,
+        vidSet
       })
     })
 
@@ -201,5 +254,14 @@ export class ModelingEngineSupport extends ModelingEngine {
 
   getCompiler<C extends Compiler> (module: MODULETYPE): C {
     return this.compilerMap.get(module) as C
+  }
+
+  // TODO:设置激活物体和hover物体
+  setHoverObjects (...vidList: string[]): this {
+    return this
+  }
+
+  setActiveObjects (...vidList: string[]): this {
+    return this
   }
 }

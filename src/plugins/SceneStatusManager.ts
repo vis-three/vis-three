@@ -64,6 +64,8 @@ export class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activ
       if (!transformControlsFilterMap[elem.object.uuid]) {
         index = i
         return true
+      } else {
+        return false
       }
     })
 
@@ -94,9 +96,9 @@ export class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activ
       const transformControls = this.transformControls
 
       if (activeObjectSet.size) {
+        transformControls.setAttach(...activeObjectSet)
         scene.add(transformControls.getTarget())
         scene.add(transformControls)
-        transformControls.setAttach(...activeObjectSet)
       } else {
         scene.remove(transformControls.getTarget())
         scene.remove(transformControls)
@@ -156,7 +158,7 @@ export class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activ
     if (this.isSelecting) {
       return this
     }
-    console.log('check')
+
     const activeObjectSet = this.activeObjectSet
 
     const mouse: Vector2 = event.mouse
@@ -242,7 +244,7 @@ export class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activ
     return this
   }
 
-  setActiveObject (...object: Object3D[]): this {
+  setActiveObjectSet (...object: Object3D[]): this {
     const activeObjectSet = this.activeObjectSet
     activeObjectSet.clear()
     object.forEach(object => {

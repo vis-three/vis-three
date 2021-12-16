@@ -2,7 +2,7 @@ import { ModelingEngine } from "./engine/ModelingEngine/ModelingEngine";
 
 import { LightDataSupport } from "./case/light/LightDataSupport";
 import { ModelDataSupport } from "./case/model/ModelDataSupport";
-import { ModelingEngineSupport } from "./case/engine/ModelingEngineSupport";
+import { MESEVENTTYPE, ModelingEngineSupport } from "./case/engine/ModelingEngineSupport";
 import { GeometryDataSupport } from "./case/geometry/GeometryDataSupport";
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
 import { LoaderManager, LOADEEVENTTYPE } from "./manager/LoaderManager";
@@ -27,6 +27,7 @@ export {
   CONFIGTYPE,
   SCENEDISPLAYMODE,
   SCENEVIEWPOINT,
+  MESEVENTTYPE,
 
   // manager
   LoaderManager,

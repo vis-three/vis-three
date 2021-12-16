@@ -14,7 +14,7 @@ export interface SetSizeEvent extends BaseEvent {
     width: number;
     height: number;
 }
-export declare class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEvent> {
+export declare class ModelingEngine extends EventDispatcher {
     protected stats: VisStats;
     protected orbitControls: VisOrbitControls;
     protected transformControls: VisTransformControls;

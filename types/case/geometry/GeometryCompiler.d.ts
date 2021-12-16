@@ -21,6 +21,7 @@ export declare class GeometryCompiler extends Compiler {
     getMap(): Map<SymbolConfig['vid'], BufferGeometry>;
     setTarget(): this;
     add(vid: string, config: GeometryAllType): this;
+    set(vid: string, path: string[], value: any): this;
     compileAll(): this;
     dispose(): this;
 }

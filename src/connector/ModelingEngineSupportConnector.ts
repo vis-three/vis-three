@@ -86,7 +86,7 @@ export class ModelingEngineSupportConnector {
 
       // 运行时添加物体
       modelCompiler.addEventListener(COMPILEREVENTTYPE.ADD, event => {
-        const e = event as CompilerAddEvent
+        const e = event as unknown as CompilerAddEvent
         objectReversalMap.set(e.object, e.vid)
       })
     }
@@ -212,7 +212,7 @@ export class ModelingEngineSupportConnector {
               }
             })
           })
-          manager.setActiveObject(...currentObjecSet)
+          manager.setActiveObjectSet(...currentObjecSet)
 
           currentObjecSet.clear()
           manager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE ,syncActiveFunction)

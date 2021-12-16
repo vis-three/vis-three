@@ -38,7 +38,7 @@ export interface SetSizeEvent extends BaseEvent {
   height: number
 }
 
-export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEvent> {
+export class ModelingEngine extends EventDispatcher {
 
   protected stats: VisStats
   protected orbitControls: VisOrbitControls
@@ -140,7 +140,7 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
 
     // 尺寸变化
     this.addEventListener('setSize', event => {
-      const e = event as SetSizeEvent
+      const e = event as unknown as SetSizeEvent
       const width = e.width
       const height = e.height
       defaultPerspectiveCamera.aspect = width / height
@@ -158,7 +158,7 @@ export class ModelingEngine extends EventDispatcher<SetCameraEvent | SetSizeEven
 
     // 相机变化
     this.addEventListener('setCamera', event => {
-      const e = event as SetCameraEvent
+      const e = event as unknown as SetCameraEvent
       const camera = e.camera
       orbitControls.setCamera(camera)
       transformControls.setCamera(camera)

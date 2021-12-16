@@ -1,5 +1,5 @@
 import { BufferGeometry, Material, Object3D, Scene } from "three";
-import { Compiler, CompilerTarget } from "../../middleware/Compiler";
+import { Compiler, CompilerTarget, ObjectCompiler } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { ModelConfig } from "./ModelConfig";
 export interface ModelCompilerTarget extends CompilerTarget {
@@ -11,7 +11,7 @@ export interface ModelCompilerParameters {
     geometryMap?: Map<SymbolConfig['vid'], BufferGeometry>;
     materialMap?: Map<SymbolConfig['vid'], Material>;
 }
-export declare class ModelCompiler extends Compiler {
+export declare class ModelCompiler extends Compiler implements ObjectCompiler {
     private scene;
     private target;
     private map;
@@ -23,6 +23,7 @@ export declare class ModelCompiler extends Compiler {
     constructor(parameters?: ModelCompilerParameters);
     add(vid: string, config: ModelConfig): this;
     set(path: string[], key: string, value: any): void;
+    remove(): void;
     private getMaterial;
     private getGeometry;
     linkGeometryMap(map: Map<SymbolConfig['vid'], BufferGeometry>): this;

@@ -179,7 +179,7 @@ export class ModelingEngineSupportConnector {
                             }
                         });
                     });
-                    manager.setActiveObject(...currentObjecSet);
+                    manager.setActiveObjectSet(...currentObjecSet);
                     currentObjecSet.clear();
                     manager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, syncActiveFunction);
                 }

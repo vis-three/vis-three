@@ -1,6 +1,6 @@
 import { BoxBufferGeometry, BufferGeometry, Line, Material, Mesh, MeshStandardMaterial, Object3D, Points, Scene } from "three";
 import { validate } from "uuid";
-import { Compiler, COMPILEREVENTTYPE, CompilerTarget } from "../../middleware/Compiler";
+import { Compiler, COMPILEREVENTTYPE, CompilerTarget, ObjectCompiler } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { GeometryCompilerTarget } from "../geometry/GeometryCompiler";
 import { ModelConfig } from "./ModelConfig";
@@ -16,7 +16,7 @@ export interface ModelCompilerParameters {
   materialMap?: Map<SymbolConfig['vid'], Material>
 }
 
-export class ModelCompiler extends Compiler {
+export class ModelCompiler extends Compiler implements ObjectCompiler {
 
   private scene!: Scene
   private target!: ModelCompilerTarget
@@ -101,6 +101,8 @@ export class ModelCompiler extends Compiler {
       console.error(`vid parameter is illegal: ${vid} or can not found this vid model`)
     }
   }
+
+  remove () {}
 
   private getMaterial (vid: string): Material {
     if (validate(vid)) {

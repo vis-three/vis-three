@@ -78,6 +78,24 @@ export class GeometryCompiler extends Compiler {
         }
         return this;
     }
+    // 几何的set是重新生成几何然后clone或者copy
+    set(vid, path, value) {
+        if (!validate(vid)) {
+            console.warn(`geometry compiler set function vid parameters is illeage: '${vid}'`);
+            return this;
+        }
+        if (!this.map.has(vid)) {
+            console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
+        }
+        const currentGeometry = this.map.get(vid);
+        const config = this.target[vid];
+        const newGeometry = this.constructMap.get(config.type)(config);
+        currentGeometry.copy(newGeometry);
+        // 辅助的更新根据uuid的更新而更新，直接copy无法判断是否更新
+        currentGeometry.uuid = newGeometry.uuid;
+        newGeometry.dispose();
+        return this;
+    }
     compileAll() {
         const target = this.target;
         for (const key in target) {

@@ -43,6 +43,9 @@ export class SceneStatusManager extends EventDispatcher {
                 index = i;
                 return true;
             }
+            else {
+                return false;
+            }
         });
         if (index === -1) {
             return null;
@@ -65,9 +68,9 @@ export class SceneStatusManager extends EventDispatcher {
         if (this.transformControls) {
             const transformControls = this.transformControls;
             if (activeObjectSet.size) {
+                transformControls.setAttach(...activeObjectSet);
                 scene.add(transformControls.getTarget());
                 scene.add(transformControls);
-                transformControls.setAttach(...activeObjectSet);
             }
             else {
                 scene.remove(transformControls.getTarget());
@@ -119,7 +122,6 @@ export class SceneStatusManager extends EventDispatcher {
         if (this.isSelecting) {
             return this;
         }
-        console.log('check');
         const activeObjectSet = this.activeObjectSet;
         const mouse = event.mouse;
         this.raycaster.setFromCamera(mouse, this.camera);
@@ -188,7 +190,7 @@ export class SceneStatusManager extends EventDispatcher {
         this.triggerHoverEvent();
         return this;
     }
-    setActiveObject(...object) {
+    setActiveObjectSet(...object) {
         const activeObjectSet = this.activeObjectSet;
         activeObjectSet.clear();
         object.forEach(object => {

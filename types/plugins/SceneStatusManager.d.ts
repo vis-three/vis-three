@@ -38,5 +38,5 @@ export declare class SceneStatusManager extends EventDispatcher<hoverChangeEvent
     getActiveObjectSet(): Set<Object3D>;
     getHoverObjectSet(): Set<Object3D>;
     setHoverObjectSet(...object: Object3D[]): this;
-    setActiveObject(...object: Object3D[]): this;
+    setActiveObjectSet(...object: Object3D[]): this;
 }

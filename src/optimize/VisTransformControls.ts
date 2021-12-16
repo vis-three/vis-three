@@ -12,16 +12,33 @@ export interface ObjectChangedEvent extends BaseEvent {
   mode: string
 }
 
+
 export class VisTransformControls extends TransformControls {
   private target: Object3D // 控制器的内部控制目标
   private transObjectSet: Set<Object3D> // 影响的变换物体列表
 
   constructor (camera: Camera, dom: HTMLElement) {
     super(camera, dom)
+
+    // 重写pointerDown types的transformControl没写全这里直接忽略
+    // @ts-ignore
+    this.domElement.removeEventListener('pointerdown', this._onPointerDown )
+    // @ts-ignore
+    this._onPointerDown = (event) => {
+      if ( ! this.enabled || !this.object?.parent) return;
+      this.domElement.setPointerCapture( event.pointerId );
+      // @ts-ignore
+      this.domElement.addEventListener( 'pointermove', this._onPointerMove );
+      // @ts-ignore
+      this.pointerHover( this._getPointer( event ) );
+      // @ts-ignore
+      this.pointerDown( this._getPointer( event ) );
+    }
+    // @ts-ignore
+    this.domElement.addEventListener( 'pointerdown', this._onPointerDown );
+    
     this.target = new Object3D()
     this.transObjectSet = new Set()
-    this.attach(this.target)
-
 
     let mode = ''
     let target = this.target
@@ -88,9 +105,11 @@ export class VisTransformControls extends TransformControls {
     this.transObjectSet.clear()
 
     if (!object.length) {
-      this.visible = false
+      this.detach()
       return this
     }
+
+    this.attach(this.target)
 
     const target = this.target
 

@@ -15,18 +15,21 @@ export class ProxyBroadcast extends EventDispatcher {
         }
         const self = this;
         const handler = {
-            get(target, key) {
+            get: (target, key) => {
                 return Reflect.get(target, key);
             },
-            set(target, key, value) {
+            set: (target, key, value) => {
+                // 先执行反射
+                let result;
                 // 新增
                 if (target[key] === undefined) {
                     // 如果是对象就递归
                     if (typeof value === 'object' && value !== null) {
                         const newPath = path.concat([key]);
-                        value = self.proxyExtends(value, newPath);
+                        value = this.proxyExtends(value, newPath);
                     }
-                    self.broadcast({
+                    result = Reflect.set(target, key, value);
+                    this.broadcast({
                         operate: 'add',
                         path: path.concat([]),
                         key,
@@ -38,25 +41,28 @@ export class ProxyBroadcast extends EventDispatcher {
                     // 如果是对象就递归
                     if (typeof value === 'object' && !ProxyBroadcast.proxyWeakSet.has(object)) {
                         const newPath = path.concat([key]);
-                        value = self.proxyExtends(value, newPath);
+                        value = this.proxyExtends(value, newPath);
                     }
-                    self.broadcast({
+                    result = Reflect.set(target, key, value);
+                    this.broadcast({
                         operate: 'set',
                         path: path.concat([]),
                         key,
                         value: value
                     });
                 }
-                return Reflect.set(target, key, value);
+                return result;
             },
-            deleteProperty(target, key) {
-                self.broadcast({
+            deleteProperty: (target, key) => {
+                // 先执行反射
+                const result = Reflect.deleteProperty(target, key);
+                this.broadcast({
                     operate: 'delete',
                     path: path.concat([]),
                     key,
                     value: ''
                 });
-                return Reflect.deleteProperty(target, key);
+                return result;
             }
         };
         // 递归整个对象进行代理拓展
