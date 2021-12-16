@@ -6,10 +6,12 @@ export enum VISTRANSFORMEVENTTYPE {
   OBJECTCHANGED = 'objectChanged'
 }
 
+// 控制器更新物体完成后的事件
 export interface ObjectChangedEvent extends BaseEvent {
   type: VISTRANSFORMEVENTTYPE.OBJECTCHANGED
   transObjectSet: Set<Object3D>
   mode: string
+  target: Object3D
 }
 
 
@@ -48,6 +50,9 @@ export class VisTransformControls extends TransformControls {
       y: 0,
       z: 0
     }
+
+    // 缓存目标物体的自动变换设置
+    let objectMatrixAutoMap = new WeakMap<Object3D, boolean>()
     // TODO: 轴应用
     this.addEventListener('mouseDown', (event) => {
       mode = event.target.mode
@@ -60,6 +65,11 @@ export class VisTransformControls extends TransformControls {
       cachaTargetTrans.y = target[mode].y
       cachaTargetTrans.z = target[mode].z
 
+      // 关闭所有物体的自动矩阵更新，由控制器控制物体进行矩阵更新
+      transObjectSet.forEach(object => {
+        objectMatrixAutoMap.set(object, object.matrixAutoUpdate)
+        object.matrixAutoUpdate = false
+      })
     })
 
     this.addEventListener('objectChange', (event) => {
@@ -79,20 +89,33 @@ export class VisTransformControls extends TransformControls {
         elem[mode].x += offsetX
         elem[mode].y += offsetY
         elem[mode].z += offsetZ
+        elem.updateMatrix()
+        elem.updateMatrixWorld()
       })
 
       this.dispatchEvent({
         type: VISTRANSFORMEVENTTYPE.OBJECTCHANGED,
         transObjectSet,
-        mode
+        mode,
+        target
       })
     })
 
-    
+    this.addEventListener('mouseUp', event => {
+      // 归还物体自动更新设置
+      transObjectSet.forEach(object => {
+        object.matrixAutoUpdate = objectMatrixAutoMap.get(object)!
+        objectMatrixAutoMap.delete(object)
+      })
+    })
   }
 
   getTarget (): Object3D {
     return this.target
+  }
+
+  getTransObjectSet (): Set<Object3D> {
+    return this.transObjectSet
   }
 
   setCamera (camera: Camera): this {

@@ -57,9 +57,10 @@ export class ModelingEngineSupportConnector {
       const engineSupport = domEngineMap.get(dom)!
       // 物体编译器
       const modelCompiler = engineSupport.getCompiler(MODULETYPE.MODEL) as ModelCompiler
+      const lightCompiler = engineSupport.getCompiler(MODULETYPE.LIGHT) as LightCompiler
       // 物体map
       cameraMap = (engineSupport.getCompiler(MODULETYPE.CAMERA) as CameraCompiler).getMap()
-      lightMap = (engineSupport.getCompiler(MODULETYPE.LIGHT) as LightCompiler).getMap()
+      lightMap = lightCompiler.getMap()
       modelMap = modelCompiler.getMap()
 
       // 添加物体map vid -- object
@@ -86,6 +87,11 @@ export class ModelingEngineSupportConnector {
 
       // 运行时添加物体
       modelCompiler.addEventListener(COMPILEREVENTTYPE.ADD, event => {
+        const e = event as unknown as CompilerAddEvent
+        objectReversalMap.set(e.object, e.vid)
+      })
+
+      lightCompiler.addEventListener(COMPILEREVENTTYPE.ADD, event => {
         const e = event as unknown as CompilerAddEvent
         objectReversalMap.set(e.object, e.vid)
       })
@@ -240,6 +246,12 @@ export class ModelingEngineSupportConnector {
         if (controls !== this) {
           controls.removeEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED ,syncTransformControlsFunction) // 防止交叉触发
           controls.getTarget()[mode].copy(target[mode])
+
+          controls.getTransObjectSet().forEach(object => {
+            object.updateMatrix()
+            object.updateMatrixWorld()
+          })
+
           controls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED ,syncTransformControlsFunction)
         }
       })

@@ -512,6 +512,7 @@ export class ModelingScene extends Scene {
 
       this.setDisplayMode = (mode: SCENEDISPLAYMODE) => {
         this.displayMode = mode
+        this.switchDisplayMode!(mode)
       }
 
       if (config.displayMode !== undefined) {

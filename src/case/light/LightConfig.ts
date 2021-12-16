@@ -41,7 +41,7 @@ export const getAmbientLightConfig = function (): AmbientLightConfig {
 export const getPointLightConfig = function (): PointLightConfig {
   return Object.assign(getLightConfig(), {
     type: 'PointLight',
-    distance: 150,
+    distance: 30,
     decay: 0.01
   })
 }
@@ -49,7 +49,7 @@ export const getPointLightConfig = function (): PointLightConfig {
 export const getSpotLightConfig = function (): SpotLightConfig {
   return Object.assign(getLightConfig(), {
     type: 'SpotLight',
-    distance: 150,
+    distance: 30,
     angle: Math.PI / 180 * 45,
     penumbra: 0.01,
     decay: 0.01

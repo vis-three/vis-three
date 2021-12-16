@@ -1,5 +1,5 @@
 import { AmbientLight, Color, Light, PointLight, Scene, SpotLight } from "three";
-import { Compiler, CompilerTarget } from "../../middleware/Compiler";
+import { Compiler, COMPILEREVENTTYPE, CompilerTarget, ObjectCompiler } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { PointLightConfig, SpotLightConfig } from "./LightConfig";
 import { validate } from "uuid";
@@ -13,7 +13,7 @@ export interface LightCompilerParameters {
   target: LightCompilerTarget
 }
 
-export class LightCompiler extends Compiler {
+export class LightCompiler extends Compiler implements ObjectCompiler {
 
   private scene: Scene
   private target: LightCompilerTarget
@@ -42,6 +42,13 @@ export class LightCompiler extends Compiler {
         light.color = new Color(config.color)
 
         this.map.set(vid, light)
+
+        this.dispatchEvent({
+          type: COMPILEREVENTTYPE.ADD,
+          object: light,
+          vid
+        })
+
         this.scene.add(light)
       }
     } else {
@@ -60,6 +67,10 @@ export class LightCompiler extends Compiler {
     } else {
       console.error(`vid parameter is illegal: ${vid} or can not found this vid light`)
     }
+  }
+
+  remove () {
+
   }
 
   setTarget (target: LightCompilerTarget): this {

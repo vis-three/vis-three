@@ -133,6 +133,7 @@ export class GeometryCompiler extends Compiler {
 
     if (!this.map.has(vid)) {
       console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`)
+      return this
     }
 
     const currentGeometry = this.map.get(vid)!

@@ -839,6 +839,7 @@ class ModelingScene extends Scene {
       };
       this.setDisplayMode = (mode) => {
         this.displayMode = mode;
+        this.switchDisplayMode(mode);
       };
       if (config.displayMode !== void 0) {
         this.setDisplayMode(config.displayMode);
@@ -1481,6 +1482,7 @@ class VisTransformControls extends TransformControls {
       y: 0,
       z: 0
     };
+    let objectMatrixAutoMap = new WeakMap();
     this.addEventListener("mouseDown", (event) => {
       mode = event.target.mode;
       mode === "translate" && (mode = "position");
@@ -1488,6 +1490,10 @@ class VisTransformControls extends TransformControls {
       cachaTargetTrans.x = target[mode].x;
       cachaTargetTrans.y = target[mode].y;
       cachaTargetTrans.z = target[mode].z;
+      transObjectSet.forEach((object) => {
+        objectMatrixAutoMap.set(object, object.matrixAutoUpdate);
+        object.matrixAutoUpdate = false;
+      });
     });
     this.addEventListener("objectChange", (event) => {
       const offsetX = target[mode].x - cachaTargetTrans.x;
@@ -1500,16 +1506,28 @@ class VisTransformControls extends TransformControls {
         elem[mode].x += offsetX;
         elem[mode].y += offsetY;
         elem[mode].z += offsetZ;
+        elem.updateMatrix();
+        elem.updateMatrixWorld();
       });
       this.dispatchEvent({
         type: VISTRANSFORMEVENTTYPE.OBJECTCHANGED,
         transObjectSet,
-        mode
+        mode,
+        target
+      });
+    });
+    this.addEventListener("mouseUp", (event) => {
+      transObjectSet.forEach((object) => {
+        object.matrixAutoUpdate = objectMatrixAutoMap.get(object);
+        objectMatrixAutoMap.delete(object);
       });
     });
   }
   getTarget() {
     return this.target;
+  }
+  getTransObjectSet() {
+    return this.transObjectSet;
   }
   setCamera(camera) {
     this.camera = camera;
@@ -2189,6 +2207,7 @@ const _GeometryCompiler = class extends Compiler {
     }
     if (!this.map.has(vid)) {
       console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
+      return this;
     }
     const currentGeometry = this.map.get(vid);
     const config = this.target[vid];
@@ -2247,6 +2266,11 @@ class LightCompiler extends Compiler {
         Compiler.applyConfig(config, light);
         light.color = new Color(config.color);
         this.map.set(vid, light);
+        this.dispatchEvent({
+          type: COMPILEREVENTTYPE.ADD,
+          object: light,
+          vid
+        });
         this.scene.add(light);
       }
     } else {
@@ -2264,6 +2288,8 @@ class LightCompiler extends Compiler {
     } else {
       console.error(`vid parameter is illegal: ${vid} or can not found this vid light`);
     }
+  }
+  remove() {
   }
   setTarget(target) {
     this.target = target;
@@ -2946,6 +2972,10 @@ class ModelingEngineSupport extends ModelingEngine {
     modelCompiler.addEventListener(COMPILEREVENTTYPE.ADD, (event) => {
       const e = event;
       objectConfigMap.set(e.object, modelSupportData[e.vid]);
+    });
+    lightCompiler.addEventListener(COMPILEREVENTTYPE.ADD, (event) => {
+      const e = event;
+      objectConfigMap.set(e.object, lightSupportData[e.vid]);
     });
     this.transformControls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, (event) => {
       const e = event;
@@ -4045,14 +4075,14 @@ const getAmbientLightConfig = function() {
 const getPointLightConfig = function() {
   return Object.assign(getLightConfig(), {
     type: "PointLight",
-    distance: 150,
+    distance: 30,
     decay: 0.01
   });
 };
 const getSpotLightConfig = function() {
   return Object.assign(getLightConfig(), {
     type: "SpotLight",
-    distance: 150,
+    distance: 30,
     angle: Math.PI / 180 * 45,
     penumbra: 0.01,
     decay: 0.01
@@ -4504,8 +4534,9 @@ class ModelingEngineSupportConnector {
     const syncObject = (dom, i, arr) => {
       const engineSupport = domEngineMap.get(dom);
       const modelCompiler = engineSupport.getCompiler(MODULETYPE.MODEL);
+      const lightCompiler = engineSupport.getCompiler(MODULETYPE.LIGHT);
       cameraMap = engineSupport.getCompiler(MODULETYPE.CAMERA).getMap();
-      lightMap = engineSupport.getCompiler(MODULETYPE.LIGHT).getMap();
+      lightMap = lightCompiler.getMap();
       modelMap = modelCompiler.getMap();
       const objectMapSet = new Set();
       objectMapSet.add(cameraMap);
@@ -4522,6 +4553,10 @@ class ModelingEngineSupportConnector {
         objectReversalMap.set(model, vid);
       });
       modelCompiler.addEventListener(COMPILEREVENTTYPE.ADD, (event) => {
+        const e = event;
+        objectReversalMap.set(e.object, e.vid);
+      });
+      lightCompiler.addEventListener(COMPILEREVENTTYPE.ADD, (event) => {
         const e = event;
         objectReversalMap.set(e.object, e.vid);
       });
@@ -4638,6 +4673,10 @@ class ModelingEngineSupportConnector {
         if (controls !== this) {
           controls.removeEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, syncTransformControlsFunction);
           controls.getTarget()[mode].copy(target[mode]);
+          controls.getTransObjectSet().forEach((object) => {
+            object.updateMatrix();
+            object.updateMatrixWorld();
+          });
           controls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, syncTransformControlsFunction);
         }
       });

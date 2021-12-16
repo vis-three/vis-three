@@ -169,7 +169,12 @@ export class ModelingEngineSupport extends ModelingEngine {
       objectConfigMap.set(e.object, modelSupportData[e.vid])
     })
 
-    //TODO: light camera ...
+    lightCompiler.addEventListener(COMPILEREVENTTYPE.ADD, event => {
+      const e = event as unknown as CompilerAddEvent
+      objectConfigMap.set(e.object, lightSupportData[e.vid])
+    })
+
+    //TODO:camera ...
 
     // 控制器变换物体更新support
     this.transformControls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, (event) => {
