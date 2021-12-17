@@ -1,3 +1,4 @@
+import { validate } from "uuid";
 import { ModelingEngine } from "../../main";
 import { COMPILEREVENTTYPE } from "../../middleware/Compiler";
 import { VISTRANSFORMEVENTTYPE } from "../../optimize/VisTransformControls";
@@ -18,6 +19,7 @@ export class ModelingEngineSupport extends ModelingEngine {
     resourceManager;
     dataSupportManager;
     objectConfigMap;
+    cacheDefaultCamera;
     constructor(parameters) {
         super(parameters.dom);
         // 所有support
@@ -72,8 +74,12 @@ export class ModelingEngineSupport extends ModelingEngine {
         // 建立编译器链接
         sceneCompiler.linkTextureMap(textureCompiler.getMap());
         materialCompiler.linkTextureMap(textureCompiler.getMap());
-        modelCompiler.linkGeometryMap(geometryCompiler.getMap());
-        modelCompiler.linkMaterialMap(materialCompiler.getMap());
+        modelCompiler
+            .linkGeometryMap(geometryCompiler.getMap())
+            .linkMaterialMap(materialCompiler.getMap())
+            .linkObjectMap(lightCompiler.getMap())
+            .linkObjectMap(cameraCompiler.getMap())
+            .linkObjectMap(modelCompiler.getMap());
         textureCompiler.linkRescourceMap(resourceManager.getMappingResourceMap());
         geometryCompiler.linkRescourceMap(resourceManager.getMappingResourceMap());
         // 添加通知
@@ -194,6 +200,33 @@ export class ModelingEngineSupport extends ModelingEngine {
     }
     getCompiler(module) {
         return this.compilerMap.get(module);
+    }
+    // 通过vid设置相机
+    setCameraByVid(vid) {
+        if (!vid) {
+            if (this.cacheDefaultCamera) {
+                this.setCamera(this.cacheDefaultCamera);
+                this.cacheDefaultCamera = undefined;
+                return this;
+            }
+            else {
+                return this;
+            }
+        }
+        if (!validate(vid)) {
+            console.warn(`modeling engine support: vid is illeage: '${vid}'`);
+            return this;
+        }
+        const cameraMap = this.compilerMap.get(MODULETYPE.CAMERA).getMap();
+        if (!cameraMap.has(vid)) {
+            console.warn(`modeling engine support: camera compiler can not fount this vid camera: '${vid}'`);
+            return this;
+        }
+        if (!this.cacheDefaultCamera) {
+            this.cacheDefaultCamera = this.orbitControls.object;
+        }
+        super.setCamera(cameraMap.get(vid));
+        return this;
     }
     // TODO:设置激活物体和hover物体
     setHoverObjects(...vidList) {

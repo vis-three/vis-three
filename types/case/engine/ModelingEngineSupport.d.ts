@@ -23,10 +23,12 @@ export declare class ModelingEngineSupport extends ModelingEngine {
     private resourceManager;
     private dataSupportManager;
     private objectConfigMap;
+    private cacheDefaultCamera?;
     constructor(parameters: ModelingEngineSupportParameters);
     getDataSupportManager(): DataSupportManager;
     getResourceManager(): ResourceManager;
     getCompiler<C extends Compiler>(module: MODULETYPE): C;
+    setCameraByVid(vid: string): this;
     setHoverObjects(...vidList: string[]): this;
     setActiveObjects(...vidList: string[]): this;
 }

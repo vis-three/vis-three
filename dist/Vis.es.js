@@ -2082,6 +2082,7 @@ class CameraCompiler extends Compiler {
         const tempConfig = JSON.parse(JSON.stringify(config));
         delete tempConfig.vid;
         delete tempConfig.type;
+        delete tempConfig.lookAt;
         Compiler.applyConfig(tempConfig, camera);
         if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
           camera.updateProjectionMatrix();
@@ -3034,6 +3035,7 @@ class ModelingEngineSupport extends ModelingEngine {
     __publicField(this, "resourceManager");
     __publicField(this, "dataSupportManager");
     __publicField(this, "objectConfigMap");
+    __publicField(this, "cacheDefaultCamera");
     const dataSupportManager = parameters.dataSupportManager;
     const textureDataSupport = dataSupportManager.getDataSupport(MODULETYPE.TEXTURE);
     const materialDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MATERIAL);
@@ -3194,6 +3196,31 @@ class ModelingEngineSupport extends ModelingEngine {
   }
   getCompiler(module) {
     return this.compilerMap.get(module);
+  }
+  setCameraByVid(vid) {
+    if (!vid) {
+      if (this.cacheDefaultCamera) {
+        this.setCamera(this.cacheDefaultCamera);
+        this.cacheDefaultCamera = void 0;
+        return this;
+      } else {
+        return this;
+      }
+    }
+    if (!validate(vid)) {
+      console.warn(`modeling engine support: vid is illeage: '${vid}'`);
+      return this;
+    }
+    const cameraMap = this.compilerMap.get(MODULETYPE.CAMERA).getMap();
+    if (!cameraMap.has(vid)) {
+      console.warn(`modeling engine support: camera compiler can not fount this vid camera: '${vid}'`);
+      return this;
+    }
+    if (!this.cacheDefaultCamera) {
+      this.cacheDefaultCamera = this.orbitControls.object;
+    }
+    super.setCamera(cameraMap.get(vid));
+    return this;
   }
   setHoverObjects(...vidList) {
     return this;

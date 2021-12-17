@@ -1,4 +1,5 @@
-import { BaseEvent, Object3D } from "three";
+import { BaseEvent, Camera, Object3D } from "three";
+import { validate } from "uuid";
 import { ModelingEngine } from "../../main";
 import { DataSupportManager } from "../../manager/DataSupportManager";
 import { ResourceManager } from "../../manager/ResourceManager";
@@ -50,6 +51,8 @@ export class ModelingEngineSupport extends ModelingEngine {
   private dataSupportManager: DataSupportManager
 
   private objectConfigMap: WeakMap<Object3D, SymbolConfig>
+
+  private cacheDefaultCamera?: Camera
 
   constructor (parameters: ModelingEngineSupportParameters) {
     super(parameters.dom)
@@ -119,7 +122,7 @@ export class ModelingEngineSupport extends ModelingEngine {
     // 建立编译器链接
     sceneCompiler.linkTextureMap(textureCompiler.getMap())
     materialCompiler.linkTextureMap(textureCompiler.getMap())
-    
+
     modelCompiler
     .linkGeometryMap(geometryCompiler.getMap())
     .linkMaterialMap(materialCompiler.getMap())
@@ -272,6 +275,40 @@ export class ModelingEngineSupport extends ModelingEngine {
 
   getCompiler<C extends Compiler> (module: MODULETYPE): C {
     return this.compilerMap.get(module) as C
+  }
+
+ 
+  // 通过vid设置相机
+  setCameraByVid (vid: string): this {
+    if (!vid) {
+      if (this.cacheDefaultCamera) {
+        this.setCamera(this.cacheDefaultCamera)
+        this.cacheDefaultCamera = undefined
+        return this
+      } else {
+        return this
+      }
+    }
+
+    if (!validate(vid)) {
+      console.warn(`modeling engine support: vid is illeage: '${vid}'`)
+      return this
+    }
+
+    const cameraMap = (this.compilerMap.get(MODULETYPE.CAMERA)! as CameraCompiler).getMap()
+    
+    if (!cameraMap.has(vid)) {
+      console.warn(`modeling engine support: camera compiler can not fount this vid camera: '${vid}'`)
+      return this
+    }
+
+    if (!this.cacheDefaultCamera) {
+      this.cacheDefaultCamera = this.orbitControls.object
+    }
+
+    super.setCamera(cameraMap.get(vid)!)
+
+    return this
   }
 
   // TODO:设置激活物体和hover物体

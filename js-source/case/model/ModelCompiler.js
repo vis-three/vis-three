@@ -8,6 +8,7 @@ export class ModelCompiler extends Compiler {
     constructMap;
     geometryMap;
     materialMap;
+    objectMapSet;
     getReplaceMaterial;
     getReplaceGeometry;
     constructor(parameters) {
@@ -32,6 +33,7 @@ export class ModelCompiler extends Compiler {
         constructMap.set('Line', (config) => new Line(this.getGeometry(config.geometry), this.getMaterial(config.material)));
         constructMap.set('Points', (config) => new Points(this.getGeometry(config.geometry), this.getMaterial(config.material)));
         this.constructMap = constructMap;
+        this.objectMapSet = new Set();
     }
     add(vid, config) {
         if (validate(vid)) {
@@ -42,8 +44,10 @@ export class ModelCompiler extends Compiler {
                 delete tempConfig.type;
                 delete tempConfig.geometry;
                 delete tempConfig.material;
+                delete tempConfig.lookAt;
                 Compiler.applyConfig(tempConfig, object);
                 this.map.set(vid, object);
+                this.setLookAt(vid, config.lookAt);
                 this.dispatchEvent({
                     type: COMPILEREVENTTYPE.ADD,
                     object,
@@ -57,20 +61,64 @@ export class ModelCompiler extends Compiler {
         }
         return this;
     }
-    set(path, key, value) {
-        const vid = path.shift();
-        if (validate(vid) && this.map.has(vid)) {
-            let config = this.map.get(vid);
-            path.forEach((key, i, arr) => {
-                config = config[key];
-            });
-            config[key] = value;
+    set(vid, path, key, value) {
+        if (!validate(vid)) {
+            console.warn(`model compiler vid is illegal: '${vid}'`);
+            return this;
         }
-        else {
-            console.error(`vid parameter is illegal: ${vid} or can not found this vid model`);
+        if (!this.map.has(vid)) {
+            console.warn(`model compiler can not found this vid mapping object: '${vid}'`);
+            return this;
         }
+        if (key === 'lookAt') {
+            return this.setLookAt(vid, value);
+        }
+        let config = this.map.get(vid);
+        path.forEach((key, i, arr) => {
+            config = config[key];
+        });
+        config[key] = value;
+        return this;
     }
     remove() { }
+    // 设置物体的lookAt方法
+    setLookAt(vid, target) {
+        // 不能自己看自己
+        if (vid === target) {
+            console.error(`can not set object lookAt itself.`);
+            return this;
+        }
+        const model = this.map.get(vid);
+        const userData = model.userData;
+        if (!target) {
+            if (!userData.updateMatrixWorldFun) {
+                return this;
+            }
+            model.updateMatrixWorld = userData.updateMatrixWorldFun;
+            userData.lookAtTarget = null;
+            userData.updateMatrixWorldFun = null;
+            return this;
+        }
+        let lookAtTarget = null;
+        for (const map of this.objectMapSet) {
+            if (map.has(target)) {
+                lookAtTarget = map.get(target);
+                break;
+            }
+        }
+        if (!lookAtTarget) {
+            console.warn(`model compiler can not found this vid mapping object in objectMapSet: '${vid}'`);
+            return this;
+        }
+        const updateMatrixWorldFun = model.updateMatrixWorld;
+        userData.updateMatrixWorldFun = updateMatrixWorldFun;
+        userData.lookAtTarget = lookAtTarget.position;
+        model.updateMatrixWorld = (focus) => {
+            updateMatrixWorldFun.bind(model)(focus);
+            model.lookAt(userData.lookAtTarget);
+        };
+        return this;
+    }
     getMaterial(vid) {
         if (validate(vid)) {
             if (this.materialMap.has(vid)) {
@@ -107,6 +155,12 @@ export class ModelCompiler extends Compiler {
     }
     linkMaterialMap(materialMap) {
         this.materialMap = materialMap;
+        return this;
+    }
+    linkObjectMap(map) {
+        if (!this.objectMapSet.has(map)) {
+            this.objectMapSet.add(map);
+        }
         return this;
     }
     setScene(scene) {

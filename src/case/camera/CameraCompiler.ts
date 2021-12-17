@@ -46,6 +46,9 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
         delete tempConfig.vid
         delete tempConfig.type
 
+        // TODO: lookAt
+        delete tempConfig.lookAt
+
         Compiler.applyConfig(tempConfig, camera)
 
         if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {

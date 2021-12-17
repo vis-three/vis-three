@@ -24,6 +24,7 @@ export declare class ModelingEngine extends EventDispatcher {
     protected renderer: WebGLRenderer;
     protected scene: ModelingScene;
     protected renderManager: RenderManager;
+    private transing;
     constructor(dom?: HTMLElement);
     getSceneStatusManager(): SceneStatusManager;
     showTransformControls(visiable: boolean): this;

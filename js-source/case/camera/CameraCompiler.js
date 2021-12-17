@@ -29,6 +29,8 @@ export class CameraCompiler extends Compiler {
                 const tempConfig = JSON.parse(JSON.stringify(config));
                 delete tempConfig.vid;
                 delete tempConfig.type;
+                // TODO: lookAt
+                delete tempConfig.lookAt;
                 Compiler.applyConfig(tempConfig, camera);
                 if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
                     camera.updateProjectionMatrix();
