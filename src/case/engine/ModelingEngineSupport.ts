@@ -119,8 +119,13 @@ export class ModelingEngineSupport extends ModelingEngine {
     // 建立编译器链接
     sceneCompiler.linkTextureMap(textureCompiler.getMap())
     materialCompiler.linkTextureMap(textureCompiler.getMap())
-    modelCompiler.linkGeometryMap(geometryCompiler.getMap())
-    modelCompiler.linkMaterialMap(materialCompiler.getMap())
+    
+    modelCompiler
+    .linkGeometryMap(geometryCompiler.getMap())
+    .linkMaterialMap(materialCompiler.getMap())
+    .linkObjectMap(lightCompiler.getMap())
+    .linkObjectMap(cameraCompiler.getMap())
+    .linkObjectMap(modelCompiler.getMap())
 
     textureCompiler.linkRescourceMap(resourceManager.getMappingResourceMap())
     geometryCompiler.linkRescourceMap(resourceManager.getMappingResourceMap())

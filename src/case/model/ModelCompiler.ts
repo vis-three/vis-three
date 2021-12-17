@@ -1,4 +1,4 @@
-import { BoxBufferGeometry, BufferGeometry, Line, Material, Mesh, MeshStandardMaterial, Object3D, Points, Scene } from "three";
+import { BoxBufferGeometry, BufferGeometry, Line, Material, Mesh, MeshStandardMaterial, Object3D, Points, Scene, Vector3 } from "three";
 import { validate } from "uuid";
 import { Compiler, COMPILEREVENTTYPE, CompilerTarget, ObjectCompiler } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
@@ -7,6 +7,11 @@ import { ModelConfig } from "./ModelConfig";
 
 export interface ModelCompilerTarget extends CompilerTarget {
   [key: string]: ModelConfig
+}
+
+export interface ModelUserData {
+  lookAtTarget: Vector3 | null
+  updateMatrixWorldFun: ((focus: boolean) => void) | null
 }
 
 export interface ModelCompilerParameters {
@@ -24,6 +29,8 @@ export class ModelCompiler extends Compiler implements ObjectCompiler {
   private constructMap: Map<string, (config: ModelConfig) => Object3D>
   private geometryMap!: Map<SymbolConfig['vid'], BufferGeometry>
   private materialMap!: Map<SymbolConfig['vid'], Material>
+  private objectMapSet: Set<Map<SymbolConfig['vid'], Object3D>>
+
   private getReplaceMaterial: () => Material
   private getReplaceGeometry: () => BufferGeometry
 
@@ -60,6 +67,7 @@ export class ModelCompiler extends Compiler implements ObjectCompiler {
     ))
 
     this.constructMap = constructMap
+    this.objectMapSet = new Set()
   }
 
   add (vid: string, config: ModelConfig): this {
@@ -67,13 +75,18 @@ export class ModelCompiler extends Compiler implements ObjectCompiler {
       if (config.type && this.constructMap.has(config.type)) {
         const object = this.constructMap.get(config.type)!(config)
         const tempConfig = JSON.parse(JSON.stringify(config))
+
         delete tempConfig.vid
         delete tempConfig.type
         delete tempConfig.geometry
         delete tempConfig.material
+        delete tempConfig.lookAt
+
         Compiler.applyConfig(tempConfig, object)
 
         this.map.set(vid, object)
+
+        this.setLookAt(vid, config.lookAt)
 
         this.dispatchEvent({
           type: COMPILEREVENTTYPE.ADD,
@@ -89,20 +102,82 @@ export class ModelCompiler extends Compiler implements ObjectCompiler {
     return this
   }
 
-  set (path: string[], key: string, value: any) {
-    const vid = path.shift()!
-    if (validate(vid) && this.map.has(vid)) {
-      let config = this.map.get(vid)!
-      path.forEach((key, i, arr) => {
-        config = config[key]
-      })
-      config[key] = value
-    } else {
-      console.error(`vid parameter is illegal: ${vid} or can not found this vid model`)
+  set (vid: string, path: string[], key: string, value: any): this {
+
+    if (!validate(vid)) {
+      console.warn(`model compiler vid is illegal: '${vid}'`)
+      return this
     }
+
+    if (!this.map.has(vid)) {
+      console.warn(`model compiler can not found this vid mapping object: '${vid}'`)
+      return this
+    }
+
+    if (key === 'lookAt') {
+      return this.setLookAt(vid, value)
+    }
+
+    let config = this.map.get(vid)!
+    path.forEach((key, i, arr) => {
+      config = config[key]
+    })
+    config[key] = value
+    return this
   }
 
   remove () {}
+
+  // 设置物体的lookAt方法
+  private setLookAt (vid: string, target: string): this {
+
+    // 不能自己看自己
+    if (vid === target) {
+      console.error(`can not set object lookAt itself.`)
+      return this
+    }
+
+    const model = this.map.get(vid)!
+    const userData = model.userData as ModelUserData
+
+    if (!target) {
+      if (!userData.updateMatrixWorldFun) {
+        return this
+      }
+
+      model.updateMatrixWorld = userData.updateMatrixWorldFun
+      userData.lookAtTarget = null
+      userData.updateMatrixWorldFun = null
+      return this
+    }
+
+    let lookAtTarget: Object3D | null = null
+
+    for (const map of this.objectMapSet) {
+      if (map.has(target)) {
+        lookAtTarget = map.get(target)!
+        break
+      }
+    }
+
+    if (!lookAtTarget) {
+      console.warn(`model compiler can not found this vid mapping object in objectMapSet: '${vid}'`)
+      return this
+    }
+
+
+    const updateMatrixWorldFun = model.updateMatrixWorld
+
+    userData.updateMatrixWorldFun = updateMatrixWorldFun
+    userData.lookAtTarget = lookAtTarget.position
+
+    model.updateMatrixWorld = (focus: boolean) => {
+      updateMatrixWorldFun.bind(model)(focus)
+      model.lookAt(userData.lookAtTarget!)
+    }
+
+    return this
+  }
 
   private getMaterial (vid: string): Material {
     if (validate(vid)) {
@@ -139,6 +214,13 @@ export class ModelCompiler extends Compiler implements ObjectCompiler {
 
   linkMaterialMap (materialMap: Map<string, Material>): this {
     this.materialMap = materialMap
+    return this
+  }
+
+  linkObjectMap (map: Map<SymbolConfig['vid'], Object3D>): this {
+    if (!this.objectMapSet.has(map)) {
+      this.objectMapSet.add(map)
+    }
     return this
   }
 

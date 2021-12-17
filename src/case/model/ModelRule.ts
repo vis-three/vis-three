@@ -11,6 +11,12 @@ export const ModelRule: Rule<ModelCompiler> = function (notice: ProxyNotice, com
       compiler.add(key, value)
     }
   } else if (operate === 'set') {
-    compiler.set(path.concat([]), key, value)
+    const tempPath = path.concat([])
+    const vid = tempPath.shift()
+    if (vid && validate(vid)) {
+      compiler.set(vid, tempPath, key, value)
+    } else {
+      console.warn(`model rule vid is illeage: '${vid}'`)
+    }
   }
 }

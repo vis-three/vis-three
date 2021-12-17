@@ -2011,7 +2011,13 @@ const ModelRule = function(notice, compiler) {
       compiler.add(key, value);
     }
   } else if (operate === "set") {
-    compiler.set(path.concat([]), key, value);
+    const tempPath = path.concat([]);
+    const vid = tempPath.shift();
+    if (vid && validate(vid)) {
+      compiler.set(vid, tempPath, key, value);
+    } else {
+      console.warn(`model rule vid is illeage: '${vid}'`);
+    }
   }
 };
 class ModelDataSupport extends DataSupport {
@@ -2519,6 +2525,7 @@ class ModelCompiler extends Compiler {
     __publicField(this, "constructMap");
     __publicField(this, "geometryMap");
     __publicField(this, "materialMap");
+    __publicField(this, "objectMapSet");
     __publicField(this, "getReplaceMaterial");
     __publicField(this, "getReplaceGeometry");
     if (parameters) {
@@ -2540,6 +2547,7 @@ class ModelCompiler extends Compiler {
     constructMap.set("Line", (config) => new Line(this.getGeometry(config.geometry), this.getMaterial(config.material)));
     constructMap.set("Points", (config) => new Points(this.getGeometry(config.geometry), this.getMaterial(config.material)));
     this.constructMap = constructMap;
+    this.objectMapSet = new Set();
   }
   add(vid, config) {
     if (validate(vid)) {
@@ -2550,8 +2558,10 @@ class ModelCompiler extends Compiler {
         delete tempConfig.type;
         delete tempConfig.geometry;
         delete tempConfig.material;
+        delete tempConfig.lookAt;
         Compiler.applyConfig(tempConfig, object);
         this.map.set(vid, object);
+        this.setLookAt(vid, config.lookAt);
         this.dispatchEvent({
           type: COMPILEREVENTTYPE.ADD,
           object,
@@ -2564,19 +2574,62 @@ class ModelCompiler extends Compiler {
     }
     return this;
   }
-  set(path, key, value) {
-    const vid = path.shift();
-    if (validate(vid) && this.map.has(vid)) {
-      let config = this.map.get(vid);
-      path.forEach((key2, i, arr) => {
-        config = config[key2];
-      });
-      config[key] = value;
-    } else {
-      console.error(`vid parameter is illegal: ${vid} or can not found this vid model`);
+  set(vid, path, key, value) {
+    if (!validate(vid)) {
+      console.warn(`model compiler vid is illegal: '${vid}'`);
+      return this;
     }
+    if (!this.map.has(vid)) {
+      console.warn(`model compiler can not found this vid mapping object: '${vid}'`);
+      return this;
+    }
+    if (key === "lookAt") {
+      return this.setLookAt(vid, value);
+    }
+    let config = this.map.get(vid);
+    path.forEach((key2, i, arr) => {
+      config = config[key2];
+    });
+    config[key] = value;
+    return this;
   }
   remove() {
+  }
+  setLookAt(vid, target) {
+    if (vid === target) {
+      console.error(`can not set object lookAt itself.`);
+      return this;
+    }
+    const model = this.map.get(vid);
+    const userData = model.userData;
+    if (!target) {
+      if (!userData.updateMatrixWorldFun) {
+        return this;
+      }
+      model.updateMatrixWorld = userData.updateMatrixWorldFun;
+      userData.lookAtTarget = null;
+      userData.updateMatrixWorldFun = null;
+      return this;
+    }
+    let lookAtTarget = null;
+    for (const map of this.objectMapSet) {
+      if (map.has(target)) {
+        lookAtTarget = map.get(target);
+        break;
+      }
+    }
+    if (!lookAtTarget) {
+      console.warn(`model compiler can not found this vid mapping object in objectMapSet: '${vid}'`);
+      return this;
+    }
+    const updateMatrixWorldFun = model.updateMatrixWorld;
+    userData.updateMatrixWorldFun = updateMatrixWorldFun;
+    userData.lookAtTarget = lookAtTarget.position;
+    model.updateMatrixWorld = (focus) => {
+      updateMatrixWorldFun.bind(model)(focus);
+      model.lookAt(userData.lookAtTarget);
+    };
+    return this;
   }
   getMaterial(vid) {
     if (validate(vid)) {
@@ -2610,6 +2663,12 @@ class ModelCompiler extends Compiler {
   }
   linkMaterialMap(materialMap) {
     this.materialMap = materialMap;
+    return this;
+  }
+  linkObjectMap(map) {
+    if (!this.objectMapSet.has(map)) {
+      this.objectMapSet.add(map);
+    }
     return this;
   }
   setScene(scene) {
@@ -3024,8 +3083,7 @@ class ModelingEngineSupport extends ModelingEngine {
     const resourceManager = parameters.resourceManager;
     sceneCompiler.linkTextureMap(textureCompiler.getMap());
     materialCompiler.linkTextureMap(textureCompiler.getMap());
-    modelCompiler.linkGeometryMap(geometryCompiler.getMap());
-    modelCompiler.linkMaterialMap(materialCompiler.getMap());
+    modelCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap());
     textureCompiler.linkRescourceMap(resourceManager.getMappingResourceMap());
     geometryCompiler.linkRescourceMap(resourceManager.getMappingResourceMap());
     textureDataSupport.addCompiler(textureCompiler);
