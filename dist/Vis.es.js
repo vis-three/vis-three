@@ -1628,7 +1628,6 @@ class ModelingEngine extends EventDispatcher$1 {
     __publicField(this, "renderer");
     __publicField(this, "scene");
     __publicField(this, "renderManager");
-    __publicField(this, "transing");
     const renderer = new WebGLRenderer({
       antialias: true,
       alpha: true
@@ -1647,7 +1646,6 @@ class ModelingEngine extends EventDispatcher$1 {
     const stats = new VisStats();
     const orbitControls = new VisOrbitControls(camera, renderer.domElement);
     const transformControls = new VisTransformControls(camera, renderer.domElement);
-    this.transing = false;
     const pointerManager = new PointerManager(renderer.domElement);
     const sceneStatusManager = new SceneStatusManager(camera, scene);
     const hoverObjectSet = sceneStatusManager.getHoverObjectSet();
@@ -1712,16 +1710,13 @@ class ModelingEngine extends EventDispatcher$1 {
       sceneStatusManager.setCamera(camera2);
       renderPass.camera = camera2;
     });
-    transformControls.addEventListener("mouseDown", () => {
-      this.transing = true;
-    });
     pointerManager.addEventListener("pointerdown", (event) => {
-      if (event.button === 0 && !this.transing) {
+      if (event.button === 0 && !transformControls.dragging) {
         sceneStatusManager.selectStart(event);
       }
     });
     pointerManager.addEventListener("pointermove", (event) => {
-      if (!this.transing) {
+      if (!transformControls.dragging) {
         if (event.buttons === 1) {
           sceneStatusManager.selecting(event);
         }
@@ -1731,11 +1726,10 @@ class ModelingEngine extends EventDispatcher$1 {
       }
     });
     pointerManager.addEventListener("pointerup", (event) => {
-      if (this.transing) {
-        this.transing = false;
+      if (transformControls.dragging) {
         return;
       }
-      if (event.button === 0 && !this.transing) {
+      if (event.button === 0 && !transformControls.dragging) {
         sceneStatusManager.checkActiveObject(event);
         sceneStatusManager.selectEnd(event);
       }
