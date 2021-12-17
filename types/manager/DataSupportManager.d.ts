@@ -15,6 +15,8 @@ import { RendererCompilerTarget } from "../case/render/RendererCompiler";
 import { RendererDataSupport } from "../case/render/RendererDataSupport";
 import { SceneCompilerTarget } from "../case/scene/SceneCompiler";
 import { SceneDataSupport } from "../case/scene/SceneDataSupport";
+import { ControlsCompilerTarget } from "../case/controls/ControlsCompiler";
+import { ControlsDataSupport } from "../case/controls/ControlsDataSupport";
 export interface DataSupportManagerLoadOptions {
     [MODULETYPE.TEXTURE]?: TextureCompilerTarget;
     [MODULETYPE.MATERIAL]?: MaterialCompilerTarget;
@@ -24,8 +26,9 @@ export interface DataSupportManagerLoadOptions {
     [MODULETYPE.CAMERA]?: CameraCompilerTarget;
     [MODULETYPE.RENDERER]?: RendererCompilerTarget;
     [MODULETYPE.SCENE]?: SceneCompilerTarget;
+    [MODULETYPE.CONTROLS]?: ControlsCompilerTarget;
 }
-export declare type DataSupportAllType = CameraDataSupport | LightDataSupport | GeometryDataSupport | ModelDataSupport | TextureDataSupport | MaterialDataSupport | RendererDataSupport | SceneDataSupport;
+export declare type DataSupportAllType = CameraDataSupport | LightDataSupport | GeometryDataSupport | ModelDataSupport | TextureDataSupport | MaterialDataSupport | RendererDataSupport | SceneDataSupport | ControlsDataSupport;
 export interface DataSupportManagerParameters {
     cameraDataSupport?: CameraDataSupport;
     lightDataSupport?: LightDataSupport;
@@ -35,6 +38,7 @@ export interface DataSupportManagerParameters {
     materialDataSupport?: MaterialDataSupport;
     rendererDataSupport?: RendererDataSupport;
     sceneDataSupport?: SceneDataSupport;
+    controlsDataSupport?: ControlsDataSupport;
 }
 export declare class DataSupportManager {
     private cameraDataSupport;
@@ -45,6 +49,7 @@ export declare class DataSupportManager {
     private materialDataSupport;
     private rendererDataSupport;
     private sceneDataSupport;
+    private controlsDataSupport;
     private dataSupportMap;
     constructor(parameters?: DataSupportManagerParameters);
     getDataSupport(type: MODULETYPE): DataSupportAllType | null;

@@ -14,5 +14,6 @@ export declare enum CONFIGTYPE {
     PERSPECTIVECAMERA = "PerspectiveCamera",
     ORTHOGRAPHICCAMERA = "OrthographicCamera",
     WEBGLRENDERER = "WebGLRenderer",
-    SCENE = "Scene"
+    SCENE = "Scene",
+    TRNASFORMCONTROLS = "TransformControls"
 }

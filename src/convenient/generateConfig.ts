@@ -7,6 +7,7 @@ import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../case
 import { CONFIGTYPE } from "../case/constants/configType"
 import { getWebGLRendererConfig } from "../case/render/RendererConfig"
 import { getSceneConfig } from "../case/scene/SceneConfig"
+import { getTransformControlsConfig } from "../case/controls/ControlsConfig"
 
 const typeMap: {[key: string]: Function} = {
   [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
@@ -31,7 +32,9 @@ const typeMap: {[key: string]: Function} = {
 
   [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,
 
-  [CONFIGTYPE.SCENE]: getSceneConfig
+  [CONFIGTYPE.SCENE]: getSceneConfig,
+
+  [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig
 }
 
 export const generateConfig = function<C> (type: string, merge: object): C | null {

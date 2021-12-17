@@ -15,6 +15,8 @@ import { RendererCompilerTarget } from "../case/render/RendererCompiler";
 import { RendererDataSupport } from "../case/render/RendererDataSupport";
 import { SceneCompilerTarget } from "../case/scene/SceneCompiler";
 import { SceneDataSupport } from "../case/scene/SceneDataSupport";
+import { ControlsCompilerTarget } from "../case/controls/ControlsCompiler";
+import { ControlsDataSupport } from "../case/controls/ControlsDataSupport";
 
 export interface DataSupportManagerLoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget
@@ -25,6 +27,7 @@ export interface DataSupportManagerLoadOptions {
   [MODULETYPE.CAMERA]?: CameraCompilerTarget
   [MODULETYPE.RENDERER]?: RendererCompilerTarget
   [MODULETYPE.SCENE]?: SceneCompilerTarget
+  [MODULETYPE.CONTROLS]?: ControlsCompilerTarget
 }
 
 export type DataSupportAllType =
@@ -35,7 +38,8 @@ export type DataSupportAllType =
   TextureDataSupport |
   MaterialDataSupport |
   RendererDataSupport |
-  SceneDataSupport
+  SceneDataSupport |
+  ControlsDataSupport
 
 export interface DataSupportManagerParameters {
   cameraDataSupport?: CameraDataSupport
@@ -46,6 +50,7 @@ export interface DataSupportManagerParameters {
   materialDataSupport?: MaterialDataSupport
   rendererDataSupport?: RendererDataSupport
   sceneDataSupport?: SceneDataSupport
+  controlsDataSupport?: ControlsDataSupport
 }
 
 export class DataSupportManager {
@@ -57,6 +62,7 @@ export class DataSupportManager {
   private materialDataSupport: MaterialDataSupport
   private rendererDataSupport: RendererDataSupport
   private sceneDataSupport: SceneDataSupport
+  private controlsDataSupport: ControlsDataSupport
 
   private dataSupportMap: Map<MODULETYPE, DataSupportAllType>
 
@@ -70,6 +76,7 @@ export class DataSupportManager {
     this.materialDataSupport = parameters?.materialDataSupport || new MaterialDataSupport()
     this.rendererDataSupport = parameters?.rendererDataSupport || new RendererDataSupport()
     this.sceneDataSupport = parameters?.sceneDataSupport || new SceneDataSupport()
+    this.controlsDataSupport = parameters?.controlsDataSupport || new ControlsDataSupport()
 
     const dataSupportMap = new Map()
 
@@ -81,6 +88,7 @@ export class DataSupportManager {
     dataSupportMap.set(MODULETYPE.MATERIAL, this.materialDataSupport)
     dataSupportMap.set(MODULETYPE.RENDERER, this.rendererDataSupport)
     dataSupportMap.set(MODULETYPE.SCENE, this.sceneDataSupport)
+    dataSupportMap.set(MODULETYPE.CONTROLS, this.controlsDataSupport)
 
     this.dataSupportMap = dataSupportMap
   }
@@ -103,6 +111,7 @@ export class DataSupportManager {
     config.texture && this.textureDataSupport.load(config.texture)
     config.renderer && this.rendererDataSupport.load(config.renderer)
     config.scene && this.sceneDataSupport.load(config.scene)
+    config.controls && this.controlsDataSupport.load(config.controls)
     return this
   }
 
@@ -115,7 +124,8 @@ export class DataSupportManager {
       [MODULETYPE.LIGHT]: this.lightDataSupport.toJSON(),
       [MODULETYPE.MATERIAL]: this.materialDataSupport.toJSON(),
       [MODULETYPE.MODEL]: this.modelDataSupport.toJSON(),
-      [MODULETYPE.TEXTURE]: this.textureDataSupport.toJSON()
+      [MODULETYPE.TEXTURE]: this.textureDataSupport.toJSON(),
+      [MODULETYPE.CONTROLS]: this.controlsDataSupport.toJSON()
     }
 
     return JSON.stringify(jsonObject)

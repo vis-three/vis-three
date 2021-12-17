@@ -2,7 +2,7 @@ import { ModelingEngine } from "./engine/ModelingEngine/ModelingEngine";
 
 import { LightDataSupport } from "./case/light/LightDataSupport";
 import { ModelDataSupport } from "./case/model/ModelDataSupport";
-import { MESEVENTTYPE, ModelingEngineSupport } from "./case/engine/ModelingEngineSupport";
+import { ModelingEngineSupport } from "./case/engine/ModelingEngineSupport";
 import { GeometryDataSupport } from "./case/geometry/GeometryDataSupport";
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
 import { LoaderManager, LOADEEVENTTYPE } from "./manager/LoaderManager";
@@ -18,6 +18,9 @@ import { MODULETYPE } from "./case/constants/MODULETYPE";
 import { CONFIGTYPE } from "./case/constants/configType";
 import { ModelingEngineSupportConnector } from "./connector/ModelingEngineSupportConnector";
 import { SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./engine/ModelingEngine/ModelingScene";
+import { OBJECTEVENT } from "./case/constants/OBJECTEVENT";
+import { ControlsDataSupport } from "./case/controls/ControlsDataSupport";
+
 
 export {
   // menu
@@ -27,27 +30,30 @@ export {
   CONFIGTYPE,
   SCENEDISPLAYMODE,
   SCENEVIEWPOINT,
-  MESEVENTTYPE,
+  OBJECTEVENT,
 
   // manager
   LoaderManager,
   ResourceManager,
   DataSupportManager,
 
-  // engin
+  // engine
   ModelingEngine,
+
+  // engine support
   ModelingEngineSupport,
 
-  // support
+  // engine connector
+  ModelingEngineSupportConnector,
+
+  // data support
   TextureDataSupport,
   MaterialDataSupport,
   LightDataSupport,
   ModelDataSupport,
   GeometryDataSupport,
   CameraDataSupport,
-
-  // connector
-  ModelingEngineSupportConnector,
+  ControlsDataSupport,
 
   // helper
   PointLightHelper,

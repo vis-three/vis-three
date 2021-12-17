@@ -21,5 +21,7 @@ export enum CONFIGTYPE {
 
   WEBGLRENDERER = 'WebGLRenderer',
 
-  SCENE = 'Scene'
+  SCENE = 'Scene',
+
+  TRNASFORMCONTROLS = 'TransformControls'
 }

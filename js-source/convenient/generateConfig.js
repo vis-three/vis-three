@@ -7,6 +7,7 @@ import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../case
 import { CONFIGTYPE } from "../case/constants/configType";
 import { getWebGLRendererConfig } from "../case/render/RendererConfig";
 import { getSceneConfig } from "../case/scene/SceneConfig";
+import { getTransformControlsConfig } from "../case/controls/ControlsConfig";
 const typeMap = {
     [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
     [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
@@ -23,7 +24,8 @@ const typeMap = {
     [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
     [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,
-    [CONFIGTYPE.SCENE]: getSceneConfig
+    [CONFIGTYPE.SCENE]: getSceneConfig,
+    [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig
 };
 export const generateConfig = function (type, merge) {
     if (typeMap[type]) {

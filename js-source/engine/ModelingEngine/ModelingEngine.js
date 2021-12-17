@@ -18,7 +18,6 @@ export class ModelingEngine extends EventDispatcher {
     renderer;
     scene;
     renderManager;
-    transing;
     constructor(dom) {
         super();
         // 渲染器
@@ -44,7 +43,6 @@ export class ModelingEngine extends EventDispatcher {
         const orbitControls = new VisOrbitControls(camera, renderer.domElement);
         // 变换控制器
         const transformControls = new VisTransformControls(camera, renderer.domElement);
-        this.transing = false;
         // 鼠标管理器
         const pointerManager = new PointerManager(renderer.domElement);
         // 场景状态管理器
@@ -115,16 +113,14 @@ export class ModelingEngine extends EventDispatcher {
             sceneStatusManager.setCamera(camera);
             renderPass.camera = camera;
         });
-        // 变换事件
-        transformControls.addEventListener('mouseDown', () => { this.transing = true; });
         // 鼠标事件
         pointerManager.addEventListener('pointerdown', (event) => {
-            if (event.button === 0 && !this.transing) {
+            if (event.button === 0 && !transformControls.dragging) {
                 sceneStatusManager.selectStart(event);
             }
         });
         pointerManager.addEventListener('pointermove', (event) => {
-            if (!this.transing) {
+            if (!transformControls.dragging) {
                 if (event.buttons === 1) {
                     sceneStatusManager.selecting(event);
                 }
@@ -135,11 +131,10 @@ export class ModelingEngine extends EventDispatcher {
             }
         });
         pointerManager.addEventListener('pointerup', (event) => {
-            if (this.transing) {
-                this.transing = false;
+            if (transformControls.dragging) {
                 return;
             }
-            if (event.button === 0 && !this.transing) {
+            if (event.button === 0 && !transformControls.dragging) {
                 sceneStatusManager.checkActiveObject(event);
                 sceneStatusManager.selectEnd(event);
             }

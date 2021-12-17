@@ -1628,6 +1628,7 @@ class ModelingEngine extends EventDispatcher$1 {
     __publicField(this, "renderer");
     __publicField(this, "scene");
     __publicField(this, "renderManager");
+    __publicField(this, "transing");
     const renderer = new WebGLRenderer({
       antialias: true,
       alpha: true
@@ -1646,6 +1647,7 @@ class ModelingEngine extends EventDispatcher$1 {
     const stats = new VisStats();
     const orbitControls = new VisOrbitControls(camera, renderer.domElement);
     const transformControls = new VisTransformControls(camera, renderer.domElement);
+    this.transing = false;
     const pointerManager = new PointerManager(renderer.domElement);
     const sceneStatusManager = new SceneStatusManager(camera, scene);
     const hoverObjectSet = sceneStatusManager.getHoverObjectSet();
@@ -1710,13 +1712,16 @@ class ModelingEngine extends EventDispatcher$1 {
       sceneStatusManager.setCamera(camera2);
       renderPass.camera = camera2;
     });
+    transformControls.addEventListener("mouseDown", () => {
+      this.transing = true;
+    });
     pointerManager.addEventListener("pointerdown", (event) => {
-      if (event.button === 0 && !transformControls.dragging) {
+      if (event.button === 0 && !this.transing) {
         sceneStatusManager.selectStart(event);
       }
     });
     pointerManager.addEventListener("pointermove", (event) => {
-      if (!transformControls.dragging) {
+      if (!this.transing) {
         if (event.buttons === 1) {
           sceneStatusManager.selecting(event);
         }
@@ -1726,10 +1731,11 @@ class ModelingEngine extends EventDispatcher$1 {
       }
     });
     pointerManager.addEventListener("pointerup", (event) => {
-      if (transformControls.dragging) {
+      if (this.transing) {
+        this.transing = false;
         return;
       }
-      if (event.button === 0 && !transformControls.dragging) {
+      if (event.button === 0 && !this.transing) {
         sceneStatusManager.checkActiveObject(event);
         sceneStatusManager.selectEnd(event);
       }
@@ -2143,7 +2149,80 @@ var MODULETYPE;
   MODULETYPE2["SCENE"] = "scene";
   MODULETYPE2["SPRITE"] = "sprite";
   MODULETYPE2["STRUCTURE"] = "structure";
+  MODULETYPE2["CONTROLS"] = "controls";
 })(MODULETYPE || (MODULETYPE = {}));
+var OBJECTEVENT;
+(function(OBJECTEVENT2) {
+  OBJECTEVENT2["ACTIVE"] = "active";
+  OBJECTEVENT2["HOVER"] = "hover";
+})(OBJECTEVENT || (OBJECTEVENT = {}));
+const getTransformControlsConfig = function() {
+  return {
+    vid: "TransformControls",
+    type: "TransformControls",
+    axis: "XYZ",
+    enabled: true,
+    mode: "translate",
+    snapAllow: false,
+    rotationSnap: Math.PI / 180 * 10,
+    translationSnap: 5,
+    scaleSnap: 0.1,
+    showX: true,
+    showY: true,
+    showZ: true,
+    size: 1,
+    space: "world"
+  };
+};
+class ControlsCompiler extends Compiler {
+  constructor(parameters) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "transformControls");
+    if (parameters) {
+      parameters.target && (this.target = parameters.target);
+      parameters.transformControls && (this.transformControls = parameters.transformControls);
+    } else {
+      this.target = {
+        TransformControls: getTransformControlsConfig()
+      };
+      this.transformControls = new TransformControls(new Camera());
+    }
+  }
+  set(type, path, key, value) {
+    if (type === "TransformControls") {
+      const controls = this.transformControls;
+      if (key === "snapAllow") {
+        const config = this.target["TransformControls"];
+        if (value) {
+          controls.translationSnap = config.translationSnap;
+          controls.rotationSnap = config.rotationSnap;
+          controls.scaleSnap = config.scaleSnap;
+        } else {
+          controls.translationSnap = null;
+          controls.rotationSnap = null;
+          controls.scaleSnap = null;
+        }
+        return this;
+      }
+      controls[key] = value;
+    } else {
+      console.warn(`controls compiler can not support this controls: '${type}'`);
+      return this;
+    }
+    return this;
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  compileAll() {
+    return this;
+  }
+  dispose(parameter) {
+    return this;
+  }
+}
 class LoadGeometry extends BufferGeometry {
   constructor(geometry) {
     super();
@@ -2889,11 +2968,6 @@ class TextureCompiler extends Compiler {
     return this;
   }
 }
-var MESEVENTTYPE;
-(function(MESEVENTTYPE2) {
-  MESEVENTTYPE2["ACTIVE"] = "active";
-  MESEVENTTYPE2["HOVER"] = "hover";
-})(MESEVENTTYPE || (MESEVENTTYPE = {}));
 class ModelingEngineSupport extends ModelingEngine {
   constructor(parameters) {
     super(parameters.dom);
@@ -2910,6 +2984,7 @@ class ModelingEngineSupport extends ModelingEngine {
     const modelDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MODEL);
     const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER);
     const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE);
+    const controlsDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CONTROLS);
     const cameraSupportData = cameraDataSupport.getData();
     const lightSupportData = lightDataSupport.getData();
     const modelSupportData = modelDataSupport.getData();
@@ -2942,6 +3017,10 @@ class ModelingEngineSupport extends ModelingEngine {
       target: sceneDataSupport.getData(),
       scene: this.scene
     });
+    const controlsCompiler = new ControlsCompiler({
+      target: controlsDataSupport.getData(),
+      transformControls: this.transformControls
+    });
     const resourceManager = parameters.resourceManager;
     sceneCompiler.linkTextureMap(textureCompiler.getMap());
     materialCompiler.linkTextureMap(textureCompiler.getMap());
@@ -2957,6 +3036,7 @@ class ModelingEngineSupport extends ModelingEngine {
     modelDataSupport.addCompiler(modelCompiler);
     rendererDataSupport.addCompiler(rendererCompiler);
     sceneDataSupport.addCompiler(sceneCompiler);
+    controlsDataSupport.addCompiler(controlsCompiler);
     const tempMap = new Map();
     cameraCompiler.getMap().forEach((camera, vid) => {
       tempMap.set(vid, camera);
@@ -3015,7 +3095,7 @@ class ModelingEngineSupport extends ModelingEngine {
         }
       });
       this.dispatchEvent({
-        type: MESEVENTTYPE.HOVER,
+        type: OBJECTEVENT.HOVER,
         vidSet
       });
     });
@@ -3030,7 +3110,7 @@ class ModelingEngineSupport extends ModelingEngine {
         }
       });
       this.dispatchEvent({
-        type: MESEVENTTYPE.ACTIVE,
+        type: OBJECTEVENT.ACTIVE,
         vidSet
       });
     });
@@ -4286,6 +4366,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
   CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
   CONFIGTYPE2["SCENE"] = "Scene";
+  CONFIGTYPE2["TRNASFORMCONTROLS"] = "TransformControls";
 })(CONFIGTYPE || (CONFIGTYPE = {}));
 const typeMap = {
   [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
@@ -4303,7 +4384,8 @@ const typeMap = {
   [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
   [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
   [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,
-  [CONFIGTYPE.SCENE]: getSceneConfig
+  [CONFIGTYPE.SCENE]: getSceneConfig,
+  [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig
 };
 const generateConfig = function(type, merge) {
   if (typeMap[type]) {
@@ -4406,6 +4488,26 @@ class SceneDataSupport extends DataSupport {
     super(SceneRule, data);
   }
 }
+const ControlsRule = function(input, compiler) {
+  const { operate, key, path, value } = input;
+  if (operate === "set") {
+    const tempPath = path.concat([]);
+    const type = tempPath.shift();
+    if (type) {
+      compiler.set(type, tempPath, key, value);
+    } else {
+      console.error(`controls rule can not found controls type in set operate.`);
+    }
+  }
+};
+class ControlsDataSupport extends DataSupport {
+  constructor(data) {
+    !data && (data = {
+      TransformControls: getTransformControlsConfig()
+    });
+    super(ControlsRule, data);
+  }
+}
 class DataSupportManager {
   constructor(parameters) {
     __publicField(this, "cameraDataSupport");
@@ -4416,6 +4518,7 @@ class DataSupportManager {
     __publicField(this, "materialDataSupport");
     __publicField(this, "rendererDataSupport");
     __publicField(this, "sceneDataSupport");
+    __publicField(this, "controlsDataSupport");
     __publicField(this, "dataSupportMap");
     this.cameraDataSupport = (parameters == null ? void 0 : parameters.cameraDataSupport) || new CameraDataSupport();
     this.lightDataSupport = (parameters == null ? void 0 : parameters.lightDataSupport) || new LightDataSupport();
@@ -4425,6 +4528,7 @@ class DataSupportManager {
     this.materialDataSupport = (parameters == null ? void 0 : parameters.materialDataSupport) || new MaterialDataSupport();
     this.rendererDataSupport = (parameters == null ? void 0 : parameters.rendererDataSupport) || new RendererDataSupport();
     this.sceneDataSupport = (parameters == null ? void 0 : parameters.sceneDataSupport) || new SceneDataSupport();
+    this.controlsDataSupport = (parameters == null ? void 0 : parameters.controlsDataSupport) || new ControlsDataSupport();
     const dataSupportMap = new Map();
     dataSupportMap.set(MODULETYPE.CAMERA, this.cameraDataSupport);
     dataSupportMap.set(MODULETYPE.LIGHT, this.lightDataSupport);
@@ -4434,6 +4538,7 @@ class DataSupportManager {
     dataSupportMap.set(MODULETYPE.MATERIAL, this.materialDataSupport);
     dataSupportMap.set(MODULETYPE.RENDERER, this.rendererDataSupport);
     dataSupportMap.set(MODULETYPE.SCENE, this.sceneDataSupport);
+    dataSupportMap.set(MODULETYPE.CONTROLS, this.controlsDataSupport);
     this.dataSupportMap = dataSupportMap;
   }
   getDataSupport(type) {
@@ -4453,6 +4558,7 @@ class DataSupportManager {
     config.texture && this.textureDataSupport.load(config.texture);
     config.renderer && this.rendererDataSupport.load(config.renderer);
     config.scene && this.sceneDataSupport.load(config.scene);
+    config.controls && this.controlsDataSupport.load(config.controls);
     return this;
   }
   toJSON() {
@@ -4464,7 +4570,8 @@ class DataSupportManager {
       [MODULETYPE.LIGHT]: this.lightDataSupport.toJSON(),
       [MODULETYPE.MATERIAL]: this.materialDataSupport.toJSON(),
       [MODULETYPE.MODEL]: this.modelDataSupport.toJSON(),
-      [MODULETYPE.TEXTURE]: this.textureDataSupport.toJSON()
+      [MODULETYPE.TEXTURE]: this.textureDataSupport.toJSON(),
+      [MODULETYPE.CONTROLS]: this.controlsDataSupport.toJSON()
     };
     return JSON.stringify(jsonObject);
   }
@@ -4525,7 +4632,8 @@ __publicField(SupportDataGenerator, "dataTypeMap", {
   [CONFIGTYPE.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
   [CONFIGTYPE.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
   [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER,
-  [CONFIGTYPE.SCENE]: MODULETYPE.SCENE
+  [CONFIGTYPE.SCENE]: MODULETYPE.SCENE,
+  [CONFIGTYPE.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS
 });
 class ModelingEngineSupportConnector {
   constructor(parameters) {
@@ -4724,4 +4832,4 @@ class ModelingEngineSupportConnector {
     return this.domEngineMap.get(dom);
   }
 }
-export { CONFIGTYPE, CameraDataSupport, CameraHelper, DataSupportManager, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MESEVENTTYPE, MODULETYPE, MaterialDataSupport, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, PointLightHelper, RESOURCEEVENTTYPE, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, generateConfig };
+export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, generateConfig };

@@ -16,5 +16,6 @@ export var CONFIGTYPE;
     CONFIGTYPE["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
     CONFIGTYPE["WEBGLRENDERER"] = "WebGLRenderer";
     CONFIGTYPE["SCENE"] = "Scene";
+    CONFIGTYPE["TRNASFORMCONTROLS"] = "TransformControls";
 })(CONFIGTYPE || (CONFIGTYPE = {}));
 //# sourceMappingURL=configType.js.map

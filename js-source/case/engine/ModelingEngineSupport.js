@@ -4,6 +4,8 @@ import { VISTRANSFORMEVENTTYPE } from "../../optimize/VisTransformControls";
 import { SCENESTATUSTYPE } from "../../plugins/SceneStatusManager";
 import { CameraCompiler } from "../camera/CameraCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
+import { OBJECTEVENT } from "../constants/OBJECTEVENT";
+import { ControlsCompiler } from "../controls/ControlsCompiler";
 import { GeometryCompiler } from "../geometry/GeometryCompiler";
 import { LightCompiler } from "../light/LightCompiler";
 import { MaterialCompiler } from "../material/MaterialCompiler";
@@ -11,11 +13,6 @@ import { ModelCompiler } from "../model/ModelCompiler";
 import { RendererCompiler } from "../render/RendererCompiler";
 import { SceneCompiler } from "../scene/SceneCompiler";
 import { TextureCompiler } from "../texture/TextureCompiler";
-export var MESEVENTTYPE;
-(function (MESEVENTTYPE) {
-    MESEVENTTYPE["ACTIVE"] = "active";
-    MESEVENTTYPE["HOVER"] = "hover";
-})(MESEVENTTYPE || (MESEVENTTYPE = {}));
 export class ModelingEngineSupport extends ModelingEngine {
     compilerMap;
     resourceManager;
@@ -33,6 +30,7 @@ export class ModelingEngineSupport extends ModelingEngine {
         const modelDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MODEL);
         const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER);
         const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE);
+        const controlsDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CONTROLS);
         // 物体配置数据
         const cameraSupportData = cameraDataSupport.getData();
         const lightSupportData = lightDataSupport.getData();
@@ -66,6 +64,10 @@ export class ModelingEngineSupport extends ModelingEngine {
             target: sceneDataSupport.getData(),
             scene: this.scene
         });
+        const controlsCompiler = new ControlsCompiler({
+            target: controlsDataSupport.getData(),
+            transformControls: this.transformControls
+        });
         const resourceManager = parameters.resourceManager;
         // 建立编译器链接
         sceneCompiler.linkTextureMap(textureCompiler.getMap());
@@ -83,6 +85,7 @@ export class ModelingEngineSupport extends ModelingEngine {
         modelDataSupport.addCompiler(modelCompiler);
         rendererDataSupport.addCompiler(rendererCompiler);
         sceneDataSupport.addCompiler(sceneCompiler);
+        controlsDataSupport.addCompiler(controlsCompiler);
         // 引擎操作更新support
         const tempMap = new Map();
         cameraCompiler.getMap().forEach((camera, vid) => {
@@ -148,7 +151,7 @@ export class ModelingEngineSupport extends ModelingEngine {
                 }
             });
             this.dispatchEvent({
-                type: MESEVENTTYPE.HOVER,
+                type: OBJECTEVENT.HOVER,
                 vidSet
             });
         });
@@ -164,7 +167,7 @@ export class ModelingEngineSupport extends ModelingEngine {
                 }
             });
             this.dispatchEvent({
-                type: MESEVENTTYPE.ACTIVE,
+                type: OBJECTEVENT.ACTIVE,
                 vidSet
             });
         });

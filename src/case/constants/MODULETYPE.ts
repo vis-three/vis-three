@@ -8,5 +8,6 @@ export enum MODULETYPE {
   RENDERER = 'renderer',
   SCENE = 'scene',
   SPRITE = 'sprite',
-  STRUCTURE = 'structure'
+  STRUCTURE = 'structure',
+  CONTROLS = 'controls'
 }

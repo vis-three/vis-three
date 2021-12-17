@@ -9,6 +9,9 @@ import { CameraCompiler } from "../camera/CameraCompiler";
 import { CameraDataSupport } from "../camera/CameraDataSupport";
 import { SymbolConfig } from "../common/CommonConfig";
 import { MODULETYPE } from "../constants/MODULETYPE";
+import { OBJECTEVENT } from "../constants/OBJECTEVENT";
+import { ControlsCompiler } from "../controls/ControlsCompiler";
+import { ControlsDataSupport } from "../controls/ControlsDataSupport";
 import { GeometryCompiler } from "../geometry/GeometryCompiler";
 import { GeometryDataSupport } from "../geometry/GeometryDataSupport";
 import { LightCompiler } from "../light/LightCompiler";
@@ -29,18 +32,13 @@ export interface ModelingEngineSupportParameters {
   resourceManager: ResourceManager
 }
 
-export enum MESEVENTTYPE {
-  ACTIVE = 'active',
-  HOVER = 'hover'
-}
-
 export interface MESActiveEvent extends BaseEvent {
-  type: MESEVENTTYPE.ACTIVE
+  type: OBJECTEVENT.ACTIVE
   vidSet: Set<string>
 }
 
 export interface MESHoverEvent extends BaseEvent {
-  type: MESEVENTTYPE.HOVER
+  type: OBJECTEVENT.HOVER
   vidSet: Set<string>
 }
 
@@ -66,6 +64,7 @@ export class ModelingEngineSupport extends ModelingEngine {
     const modelDataSupport =  dataSupportManager.getDataSupport(MODULETYPE.MODEL)! as ModelDataSupport
     const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER)! as RendererDataSupport
     const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE)! as SceneDataSupport
+    const controlsDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CONTROLS)! as ControlsDataSupport
 
     // 物体配置数据
     const cameraSupportData = cameraDataSupport.getData()
@@ -110,6 +109,11 @@ export class ModelingEngineSupport extends ModelingEngine {
       scene: this.scene
     })
 
+    const controlsCompiler = new ControlsCompiler({
+      target: controlsDataSupport.getData(),
+      transformControls: this.transformControls
+    })
+
     const resourceManager = parameters.resourceManager
 
     // 建立编译器链接
@@ -130,6 +134,7 @@ export class ModelingEngineSupport extends ModelingEngine {
     modelDataSupport.addCompiler(modelCompiler)
     rendererDataSupport.addCompiler(rendererCompiler)
     sceneDataSupport.addCompiler(sceneCompiler)
+    controlsDataSupport.addCompiler(controlsCompiler)
 
     // 引擎操作更新support
     
@@ -210,7 +215,7 @@ export class ModelingEngineSupport extends ModelingEngine {
       })
 
       this.dispatchEvent({
-        type: MESEVENTTYPE.HOVER,
+        type: OBJECTEVENT.HOVER,
         vidSet
       })
     })
@@ -227,7 +232,7 @@ export class ModelingEngineSupport extends ModelingEngine {
       })
 
       this.dispatchEvent({
-        type: MESEVENTTYPE.ACTIVE,
+        type: OBJECTEVENT.ACTIVE,
         vidSet
       })
     })

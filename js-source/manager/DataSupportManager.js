@@ -7,6 +7,7 @@ import { CameraDataSupport } from "../case/camera/CameraDataSupport";
 import { MODULETYPE } from "../case/constants/MODULETYPE";
 import { RendererDataSupport } from "../case/render/RendererDataSupport";
 import { SceneDataSupport } from "../case/scene/SceneDataSupport";
+import { ControlsDataSupport } from "../case/controls/ControlsDataSupport";
 export class DataSupportManager {
     cameraDataSupport;
     lightDataSupport;
@@ -16,6 +17,7 @@ export class DataSupportManager {
     materialDataSupport;
     rendererDataSupport;
     sceneDataSupport;
+    controlsDataSupport;
     dataSupportMap;
     constructor(parameters) {
         this.cameraDataSupport = parameters?.cameraDataSupport || new CameraDataSupport();
@@ -26,6 +28,7 @@ export class DataSupportManager {
         this.materialDataSupport = parameters?.materialDataSupport || new MaterialDataSupport();
         this.rendererDataSupport = parameters?.rendererDataSupport || new RendererDataSupport();
         this.sceneDataSupport = parameters?.sceneDataSupport || new SceneDataSupport();
+        this.controlsDataSupport = parameters?.controlsDataSupport || new ControlsDataSupport();
         const dataSupportMap = new Map();
         dataSupportMap.set(MODULETYPE.CAMERA, this.cameraDataSupport);
         dataSupportMap.set(MODULETYPE.LIGHT, this.lightDataSupport);
@@ -35,6 +38,7 @@ export class DataSupportManager {
         dataSupportMap.set(MODULETYPE.MATERIAL, this.materialDataSupport);
         dataSupportMap.set(MODULETYPE.RENDERER, this.rendererDataSupport);
         dataSupportMap.set(MODULETYPE.SCENE, this.sceneDataSupport);
+        dataSupportMap.set(MODULETYPE.CONTROLS, this.controlsDataSupport);
         this.dataSupportMap = dataSupportMap;
     }
     getDataSupport(type) {
@@ -55,6 +59,7 @@ export class DataSupportManager {
         config.texture && this.textureDataSupport.load(config.texture);
         config.renderer && this.rendererDataSupport.load(config.renderer);
         config.scene && this.sceneDataSupport.load(config.scene);
+        config.controls && this.controlsDataSupport.load(config.controls);
         return this;
     }
     toJSON() {
@@ -66,7 +71,8 @@ export class DataSupportManager {
             [MODULETYPE.LIGHT]: this.lightDataSupport.toJSON(),
             [MODULETYPE.MATERIAL]: this.materialDataSupport.toJSON(),
             [MODULETYPE.MODEL]: this.modelDataSupport.toJSON(),
-            [MODULETYPE.TEXTURE]: this.textureDataSupport.toJSON()
+            [MODULETYPE.TEXTURE]: this.textureDataSupport.toJSON(),
+            [MODULETYPE.CONTROLS]: this.controlsDataSupport.toJSON()
         };
         return JSON.stringify(jsonObject);
     }
