@@ -29,6 +29,7 @@ export interface WebGLRendererConfig extends RenderConfig {
   shadowMap: ShadowMapConfig
   toneMapping: number
   toneMappingExposure: number
+  adaptiveCamera: boolean // 适应相机
   viewport: WebGLRendererViewPort | null // 为null 默认跟随canves
   scissor: WebGLRendererScissor | null // 为null 默认跟随canves
   size: Vector2Config | null // 为null 默认跟随canves
@@ -53,6 +54,7 @@ export const getWebGLRendererConfig = function (): WebGLRendererConfig {
     toneMapping: NoToneMapping,
     toneMappingExposure: 1,
     pixelRatio: window.devicePixelRatio,
+    adaptiveCamera: false,
     viewport: null,
     scissor: null,
     size: null,

@@ -143,24 +143,19 @@ engine2.play()
 
 ## 阶段
 
+refactor
 ##### 功能
-* 多窗口变换控制器同步
-* 精灵模块
-* 场景结构模块
-* 后期模块
-* 运行时编译
-* 材质展示器
-* 纹理展示器
-* canvas纹理加载器
-* video纹理加载器
 
-
-##### 优化
-* 多窗口物体变换同步
-* 多窗口物体材质同步
-* 多窗口物体几何同步
-* 翻译器通知阻断
-* 加载管理器优化
+- [x] 相机视角跟随
+- [ ] 相机自适应窗口
+- [ ] 窗口自适应相机
+- [ ] 材质展示器
+- [ ] 贴图展示器
+- [ ] 后期处理模块
+- [ ] 模型模块优化 - type -> mode , 根据display去判断展示模型类型
+- [ ] 拓扑模块
+- [ ] 动画帧模块
+- [ ] 物体约束器
 
 ## 例子demo
 github: [https://github.com/Shiotsukikaedesari/vis-three/tree/main/examples](https://github.com/Shiotsukikaedesari/vis-three/tree/main/examples)

@@ -130,6 +130,11 @@ export class ModelingEngineSupport extends ModelingEngine {
     .linkObjectMap(cameraCompiler.getMap())
     .linkObjectMap(modelCompiler.getMap())
 
+    cameraCompiler
+    .linkObjectMap(lightCompiler.getMap())
+    .linkObjectMap(cameraCompiler.getMap())
+    .linkObjectMap(modelCompiler.getMap())
+
     textureCompiler.linkRescourceMap(resourceManager.getMappingResourceMap())
     geometryCompiler.linkRescourceMap(resourceManager.getMappingResourceMap())
 

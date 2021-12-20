@@ -1,7 +1,7 @@
 import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
 
 export interface CameraConfig extends ObjectConfig {
-
+  adaptiveWindow: boolean // 自适应窗口大小
 }
 
 export interface PerspectiveCameraConfig extends CameraConfig {
@@ -25,6 +25,7 @@ export type CameraAllType = PerspectiveCameraConfig | OrthographicCameraConfig
 export const getPerspectiveCameraConfig = function(): PerspectiveCameraConfig {
   return Object.assign(getObjectConfig(), {
     type: 'PerspectiveCamera',
+    adaptiveWindow: false,
     fov: 45,
     aspect: 1920 / 1080,
     near: 5,
@@ -35,6 +36,7 @@ export const getPerspectiveCameraConfig = function(): PerspectiveCameraConfig {
 export const getOrthographicCameraConfig = function(): OrthographicCameraConfig {
   return Object.assign(getObjectConfig(), {
     type: 'OrthographicCamera',
+    adaptiveWindow: false,
     left: 1920 / 16,
     right: 1920 / 16,
     top: 1080 / 16,

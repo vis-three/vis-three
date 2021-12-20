@@ -1,4 +1,4 @@
-import { Camera, OrthographicCamera, PerspectiveCamera, Scene } from "three";
+import { Camera, Object3D, OrthographicCamera, PerspectiveCamera, Scene, Vector3 } from "three";
 import { validate } from "uuid";
 import { Compiler, COMPILEREVENTTYPE, CompilerTarget, ObjectCompiler } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
@@ -13,12 +13,18 @@ export interface CameraCompilerParameters {
   target?: CameraCompilerTarget
 }
 
+export interface CameraUserData {
+  lookAtTarget: Vector3 | null
+  updateMatrixWorldFun: ((focus: boolean) => void) | null
+}
+
 export class CameraCompiler extends Compiler implements ObjectCompiler {
 
   private target!: CameraCompilerTarget
   private scene!: Scene
   private map: Map<string, Camera>
   private constructMap: Map<string, () => Camera>
+  private objectMapSet: Set<Map<SymbolConfig['vid'], Object3D>>
 
   constructor (parameters?: CameraCompilerParameters) {
     super()
@@ -35,6 +41,65 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
     constructMap.set('OrthographicCamera', () => new OrthographicCamera())
 
     this.constructMap = constructMap
+    this.objectMapSet = new Set()
+  }
+
+  // 设置物体的lookAt方法
+  private setLookAt (vid: string, target: string): this {
+
+    // 不能自己看自己
+    if (vid === target) {
+      console.error(`can not set object lookAt itself.`)
+      return this
+    }
+
+    const camera = this.map.get(vid)!
+    const userData = camera.userData as CameraUserData
+
+    if (!target) {
+      if (!userData.updateMatrixWorldFun) {
+        return this
+      }
+
+      camera.updateMatrixWorld = userData.updateMatrixWorldFun
+      userData.lookAtTarget = null
+      userData.updateMatrixWorldFun = null
+      return this
+    }
+
+    let lookAtTarget: Object3D | null = null
+
+    for (const map of this.objectMapSet) {
+      if (map.has(target)) {
+        lookAtTarget = map.get(target)!
+        break
+      }
+    }
+
+    if (!lookAtTarget) {
+      console.warn(`camera compiler can not found this vid mapping object in objectMapSet: '${vid}'`)
+      return this
+    }
+
+
+    const updateMatrixWorldFun = camera.updateMatrixWorld
+
+    userData.updateMatrixWorldFun = updateMatrixWorldFun
+    userData.lookAtTarget = lookAtTarget.position
+
+    camera.updateMatrixWorld = (focus: boolean) => {
+      updateMatrixWorldFun.bind(camera)(focus)
+      camera.lookAt(userData.lookAtTarget!)
+    }
+
+    return this
+  }
+
+  linkObjectMap (map: Map<SymbolConfig['vid'], Object3D>): this {
+    if (!this.objectMapSet.has(map)) {
+      this.objectMapSet.add(map)
+    }
+    return this
   }
 
   add (vid: string, config: CameraAllType): this {
@@ -81,6 +146,10 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
     if (!this.map.has(vid)) {
       console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`)
       return this
+    }
+
+    if (key === 'lookAt') {
+      return this.setLookAt(vid, value)
     }
 
     const camera = this.map.get(vid)!

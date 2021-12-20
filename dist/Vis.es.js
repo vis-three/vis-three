@@ -2062,6 +2062,7 @@ class CameraCompiler extends Compiler {
     __publicField(this, "scene");
     __publicField(this, "map");
     __publicField(this, "constructMap");
+    __publicField(this, "objectMapSet");
     if (parameters) {
       parameters.target && (this.target = parameters.target);
       parameters.scene && (this.scene = parameters.scene);
@@ -2074,6 +2075,49 @@ class CameraCompiler extends Compiler {
     constructMap.set("PerspectiveCamera", () => new PerspectiveCamera());
     constructMap.set("OrthographicCamera", () => new OrthographicCamera());
     this.constructMap = constructMap;
+    this.objectMapSet = new Set();
+  }
+  setLookAt(vid, target) {
+    if (vid === target) {
+      console.error(`can not set object lookAt itself.`);
+      return this;
+    }
+    const camera = this.map.get(vid);
+    const userData = camera.userData;
+    if (!target) {
+      if (!userData.updateMatrixWorldFun) {
+        return this;
+      }
+      camera.updateMatrixWorld = userData.updateMatrixWorldFun;
+      userData.lookAtTarget = null;
+      userData.updateMatrixWorldFun = null;
+      return this;
+    }
+    let lookAtTarget = null;
+    for (const map of this.objectMapSet) {
+      if (map.has(target)) {
+        lookAtTarget = map.get(target);
+        break;
+      }
+    }
+    if (!lookAtTarget) {
+      console.warn(`camera compiler can not found this vid mapping object in objectMapSet: '${vid}'`);
+      return this;
+    }
+    const updateMatrixWorldFun = camera.updateMatrixWorld;
+    userData.updateMatrixWorldFun = updateMatrixWorldFun;
+    userData.lookAtTarget = lookAtTarget.position;
+    camera.updateMatrixWorld = (focus) => {
+      updateMatrixWorldFun.bind(camera)(focus);
+      camera.lookAt(userData.lookAtTarget);
+    };
+    return this;
+  }
+  linkObjectMap(map) {
+    if (!this.objectMapSet.has(map)) {
+      this.objectMapSet.add(map);
+    }
+    return this;
   }
   add(vid, config) {
     if (validate(vid)) {
@@ -2108,6 +2152,9 @@ class CameraCompiler extends Compiler {
     if (!this.map.has(vid)) {
       console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
       return this;
+    }
+    if (key === "lookAt") {
+      return this.setLookAt(vid, value);
     }
     const camera = this.map.get(vid);
     let config = camera;
@@ -2709,6 +2756,7 @@ const getWebGLRendererConfig = function() {
     toneMapping: NoToneMapping,
     toneMappingExposure: 1,
     pixelRatio: window.devicePixelRatio,
+    adaptiveCamera: false,
     viewport: null,
     scissor: null,
     size: null
@@ -3086,6 +3134,7 @@ class ModelingEngineSupport extends ModelingEngine {
     sceneCompiler.linkTextureMap(textureCompiler.getMap());
     materialCompiler.linkTextureMap(textureCompiler.getMap());
     modelCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap());
+    cameraCompiler.linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap());
     textureCompiler.linkRescourceMap(resourceManager.getMappingResourceMap());
     geometryCompiler.linkRescourceMap(resourceManager.getMappingResourceMap());
     textureDataSupport.addCompiler(textureCompiler);
@@ -4416,6 +4465,7 @@ const getMeshStandardMaterialConfig = function() {
 const getPerspectiveCameraConfig = function() {
   return Object.assign(getObjectConfig(), {
     type: "PerspectiveCamera",
+    adaptiveWindow: false,
     fov: 45,
     aspect: 1920 / 1080,
     near: 5,
@@ -4425,6 +4475,7 @@ const getPerspectiveCameraConfig = function() {
 const getOrthographicCameraConfig = function() {
   return Object.assign(getObjectConfig(), {
     type: "OrthographicCamera",
+    adaptiveWindow: false,
     left: 1920 / 16,
     right: 1920 / 16,
     top: 1080 / 16,
