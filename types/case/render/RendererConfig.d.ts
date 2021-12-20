@@ -23,6 +23,7 @@ export interface WebGLRendererConfig extends RenderConfig {
     shadowMap: ShadowMapConfig;
     toneMapping: number;
     toneMappingExposure: number;
+    adaptiveCamera: boolean;
     viewport: WebGLRendererViewPort | null;
     scissor: WebGLRendererScissor | null;
     size: Vector2Config | null;

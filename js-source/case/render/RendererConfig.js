@@ -14,6 +14,7 @@ export const getWebGLRendererConfig = function () {
         toneMapping: NoToneMapping,
         toneMappingExposure: 1,
         pixelRatio: window.devicePixelRatio,
+        adaptiveCamera: false,
         viewport: null,
         scissor: null,
         size: null,

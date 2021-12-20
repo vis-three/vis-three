@@ -24,8 +24,10 @@ import { VisTransformControls } from "../../optimize/VisTransformControls";
 import { RenderEvent, RenderManager } from "../../manager/RenderManager";
 
 
-
-
+export enum MODELINGENGINEEVNET {
+  SETCAMERA = 'setCamera',
+  SETSIZE = 'setSize'
+}
 
 // 相机事件
 export interface SetCameraEvent extends BaseEvent {
@@ -139,7 +141,7 @@ export class ModelingEngine extends EventDispatcher {
     })
 
     // 尺寸变化
-    this.addEventListener('setSize', event => {
+    this.addEventListener(MODELINGENGINEEVNET.SETSIZE, event => {
       const e = event as unknown as SetSizeEvent
       const width = e.width
       const height = e.height
@@ -157,7 +159,7 @@ export class ModelingEngine extends EventDispatcher {
     })
 
     // 相机变化
-    this.addEventListener('setCamera', event => {
+    this.addEventListener(MODELINGENGINEEVNET.SETCAMERA, event => {
       const e = event as unknown as SetCameraEvent
       const camera = e.camera
       orbitControls.setCamera(camera)

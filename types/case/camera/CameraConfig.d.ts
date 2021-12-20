@@ -1,5 +1,6 @@
 import { ObjectConfig } from "../object/ObjectConfig";
 export interface CameraConfig extends ObjectConfig {
+    adaptiveWindow: boolean;
 }
 export interface PerspectiveCameraConfig extends CameraConfig {
     fov: number;

@@ -45,7 +45,8 @@ export class ModelingEngineSupport extends ModelingEngine {
         });
         const cameraCompiler = new CameraCompiler({
             target: cameraSupportData,
-            scene: this.scene
+            scene: this.scene,
+            engine: this
         });
         const lightCompiler = new LightCompiler({
             scene: this.scene,
@@ -77,6 +78,10 @@ export class ModelingEngineSupport extends ModelingEngine {
         modelCompiler
             .linkGeometryMap(geometryCompiler.getMap())
             .linkMaterialMap(materialCompiler.getMap())
+            .linkObjectMap(lightCompiler.getMap())
+            .linkObjectMap(cameraCompiler.getMap())
+            .linkObjectMap(modelCompiler.getMap());
+        cameraCompiler
             .linkObjectMap(lightCompiler.getMap())
             .linkObjectMap(cameraCompiler.getMap())
             .linkObjectMap(modelCompiler.getMap());

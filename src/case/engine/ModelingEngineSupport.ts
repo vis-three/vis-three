@@ -1,6 +1,6 @@
 import { BaseEvent, Camera, Object3D } from "three";
 import { validate } from "uuid";
-import { ModelingEngine } from "../../main";
+import { ModelingEngine, SCENEVIEWPOINT } from "../../main";
 import { DataSupportManager } from "../../manager/DataSupportManager";
 import { ResourceManager } from "../../manager/ResourceManager";
 import { Compiler, CompilerAddEvent, COMPILEREVENTTYPE, CompilerTarget } from "../../middleware/Compiler";
@@ -85,7 +85,8 @@ export class ModelingEngineSupport extends ModelingEngine {
 
     const cameraCompiler = new CameraCompiler({
       target: cameraSupportData,
-      scene: this.scene
+      scene: this.scene,
+      engine: this
     })
 
     const lightCompiler = new LightCompiler({

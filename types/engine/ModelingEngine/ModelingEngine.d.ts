@@ -7,6 +7,10 @@ import { VisStats } from "../../optimize/VisStats";
 import { VisOrbitControls } from "../../optimize/VisOrbitControls";
 import { VisTransformControls } from "../../optimize/VisTransformControls";
 import { RenderManager } from "../../manager/RenderManager";
+export declare enum MODELINGENGINEEVNET {
+    SETCAMERA = "setCamera",
+    SETSIZE = "setSize"
+}
 export interface SetCameraEvent extends BaseEvent {
     camera: Camera;
 }

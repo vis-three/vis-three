@@ -1616,6 +1616,11 @@ class RenderManager extends EventDispatcher$1 {
     });
   }
 }
+var MODELINGENGINEEVNET;
+(function(MODELINGENGINEEVNET2) {
+  MODELINGENGINEEVNET2["SETCAMERA"] = "setCamera";
+  MODELINGENGINEEVNET2["SETSIZE"] = "setSize";
+})(MODELINGENGINEEVNET || (MODELINGENGINEEVNET = {}));
 class ModelingEngine extends EventDispatcher$1 {
   constructor(dom) {
     super();
@@ -1690,7 +1695,7 @@ class ModelingEngine extends EventDispatcher$1 {
       this.setCamera(defaultOrthograpbicCamera);
       orbitControls.enableRotate = false;
     });
-    this.addEventListener("setSize", (event) => {
+    this.addEventListener(MODELINGENGINEEVNET.SETSIZE, (event) => {
       const e = event;
       const width = e.width;
       const height = e.height;
@@ -1704,7 +1709,7 @@ class ModelingEngine extends EventDispatcher$1 {
       renderer.setSize(width, height);
       composer.setSize(width, height);
     });
-    this.addEventListener("setCamera", (event) => {
+    this.addEventListener(MODELINGENGINEEVNET.SETCAMERA, (event) => {
       const e = event;
       const camera2 = e.camera;
       orbitControls.setCamera(camera2);
@@ -2060,20 +2065,23 @@ class CameraCompiler extends Compiler {
     super();
     __publicField(this, "target");
     __publicField(this, "scene");
+    __publicField(this, "engine");
     __publicField(this, "map");
     __publicField(this, "constructMap");
     __publicField(this, "objectMapSet");
     if (parameters) {
       parameters.target && (this.target = parameters.target);
       parameters.scene && (this.scene = parameters.scene);
+      parameters.engine && (this.engine = parameters.engine);
     } else {
       this.scene = new Scene();
       this.target = {};
+      this.engine = new ModelingEngine();
     }
     this.map = new Map();
     const constructMap = new Map();
     constructMap.set("PerspectiveCamera", () => new PerspectiveCamera());
-    constructMap.set("OrthographicCamera", () => new OrthographicCamera());
+    constructMap.set("OrthographicCamera", () => new OrthographicCamera(0, 0, 0, 0));
     this.constructMap = constructMap;
     this.objectMapSet = new Set();
   }
@@ -2089,11 +2097,11 @@ class CameraCompiler extends Compiler {
         return this;
       }
       camera.updateMatrixWorld = userData.updateMatrixWorldFun;
-      userData.lookAtTarget = null;
-      userData.updateMatrixWorldFun = null;
+      userData.lookAtTarget = void 0;
+      userData.updateMatrixWorldFun = void 0;
       return this;
     }
-    let lookAtTarget = null;
+    let lookAtTarget = void 0;
     for (const map of this.objectMapSet) {
       if (map.has(target)) {
         lookAtTarget = map.get(target);
@@ -2113,6 +2121,67 @@ class CameraCompiler extends Compiler {
     };
     return this;
   }
+  setAdaptiveWindow(vid, value) {
+    if (!validate(vid)) {
+      console.error(`camera compiler adaptive window vid is illeage: '${vid}'`);
+      return this;
+    }
+    if (!this.map.has(vid)) {
+      console.warn(`camera compiler can not found this vid camera: '${vid}'`);
+      return this;
+    }
+    const camera = this.map.get(vid);
+    if (!value) {
+      if (camera.userData.setSizeFun && this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)) {
+        this.engine.removeEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun);
+        camera.userData.setSizeFun = void 0;
+        return this;
+      }
+      if (!camera.userData.setSizeFun && !this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)) {
+        return this;
+      }
+      if (camera.userData.setSizeFun && !this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)) {
+        camera.userData.setSizeFun = void 0;
+        return this;
+      }
+    }
+    if (value) {
+      if (camera.userData.setSizeFun && this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)) {
+        return this;
+      }
+      if (!this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun) && camera.userData.setSizeFun) {
+        this.engine.addEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun);
+        return this;
+      }
+      let setSizeFun = (event) => {
+      };
+      if (camera instanceof PerspectiveCamera) {
+        setSizeFun = (event) => {
+          camera.aspect = event.width / event.height;
+          camera.updateProjectionMatrix();
+        };
+      } else if (camera instanceof OrthographicCamera) {
+        setSizeFun = (event) => {
+          const width = event.width;
+          const height = event.height;
+          camera.left = -width / 16;
+          camera.right = width / 16;
+          camera.top = height / 16;
+          camera.bottom = -height / 16;
+        };
+      } else {
+        console.warn(`camera compiler can not support this class camera:`, camera);
+      }
+      this.engine.addEventListener(MODELINGENGINEEVNET.SETSIZE, setSizeFun);
+      const domElement = this.engine.getRenderer().domElement;
+      setSizeFun({
+        type: MODELINGENGINEEVNET.SETSIZE,
+        width: domElement.offsetWidth,
+        height: domElement.offsetHeight
+      });
+    }
+    return this;
+  }
   linkObjectMap(map) {
     if (!this.objectMapSet.has(map)) {
       this.objectMapSet.add(map);
@@ -2127,11 +2196,14 @@ class CameraCompiler extends Compiler {
         delete tempConfig.vid;
         delete tempConfig.type;
         delete tempConfig.lookAt;
+        delete tempConfig.adaptiveWindow;
         Compiler.applyConfig(tempConfig, camera);
         if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
           camera.updateProjectionMatrix();
         }
         this.map.set(vid, camera);
+        this.setLookAt(config.vid, config.lookAt);
+        this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
         this.dispatchEvent({
           type: COMPILEREVENTTYPE.ADD,
           object: camera,
@@ -2156,6 +2228,9 @@ class CameraCompiler extends Compiler {
     if (key === "lookAt") {
       return this.setLookAt(vid, value);
     }
+    if (key === "adaptiveWindow") {
+      return this.setAdaptiveWindow(vid, value);
+    }
     const camera = this.map.get(vid);
     let config = camera;
     path.forEach((key2, i, arr) => {
@@ -2168,6 +2243,10 @@ class CameraCompiler extends Compiler {
     return this;
   }
   remove() {
+  }
+  setEngine(engine) {
+    this.engine = engine;
+    return this;
   }
   setScene(scene) {
     this.scene = scene;
@@ -3105,7 +3184,8 @@ class ModelingEngineSupport extends ModelingEngine {
     });
     const cameraCompiler = new CameraCompiler({
       target: cameraSupportData,
-      scene: this.scene
+      scene: this.scene,
+      engine: this
     });
     const lightCompiler = new LightCompiler({
       scene: this.scene,

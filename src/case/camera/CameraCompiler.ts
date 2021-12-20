@@ -1,5 +1,8 @@
-import { Camera, Object3D, OrthographicCamera, PerspectiveCamera, Scene, Vector3 } from "three";
+import { withDefaults } from "@vue/runtime-core";
+import { BaseEvent, Camera, Event, Object3D, OrthographicCamera, PerspectiveCamera, Scene, Vector3 } from "three";
 import { validate } from "uuid";
+import { MODELINGENGINEEVNET, SetSizeEvent } from "../../engine/ModelingEngine/ModelingEngine";
+import { ModelingEngine } from "../../main";
 import { Compiler, COMPILEREVENTTYPE, CompilerTarget, ObjectCompiler } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CameraAllType } from "./CameraConfig";
@@ -11,17 +14,20 @@ export interface CameraCompilerTarget extends CompilerTarget {
 export interface CameraCompilerParameters {
   scene?: Scene
   target?: CameraCompilerTarget
+  engine?: ModelingEngine
 }
 
 export interface CameraUserData {
-  lookAtTarget: Vector3 | null
-  updateMatrixWorldFun: ((focus: boolean) => void) | null
+  lookAtTarget?: Vector3
+  updateMatrixWorldFun?: (focus: boolean) => void
+  setSizeFun?: (event: SetSizeEvent) => void
 }
 
 export class CameraCompiler extends Compiler implements ObjectCompiler {
 
   private target!: CameraCompilerTarget
   private scene!: Scene
+  private engine!: ModelingEngine
   private map: Map<string, Camera>
   private constructMap: Map<string, () => Camera>
   private objectMapSet: Set<Map<SymbolConfig['vid'], Object3D>>
@@ -31,14 +37,16 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
     if (parameters) {
       parameters.target && (this.target = parameters.target)
       parameters.scene && (this.scene = parameters.scene)
+      parameters.engine && (this.engine = parameters.engine)
     } else {
       this.scene = new Scene()
       this.target = {}
+      this.engine = new ModelingEngine()
     }
     this.map = new Map()
     const constructMap = new Map()
     constructMap.set('PerspectiveCamera', () => new PerspectiveCamera())
-    constructMap.set('OrthographicCamera', () => new OrthographicCamera())
+    constructMap.set('OrthographicCamera', () => new OrthographicCamera(0, 0, 0, 0))
 
     this.constructMap = constructMap
     this.objectMapSet = new Set()
@@ -62,12 +70,12 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
       }
 
       camera.updateMatrixWorld = userData.updateMatrixWorldFun
-      userData.lookAtTarget = null
-      userData.updateMatrixWorldFun = null
+      userData.lookAtTarget = undefined
+      userData.updateMatrixWorldFun = undefined
       return this
     }
 
-    let lookAtTarget: Object3D | null = null
+    let lookAtTarget: Object3D | undefined = undefined
 
     for (const map of this.objectMapSet) {
       if (map.has(target)) {
@@ -95,6 +103,81 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
     return this
   }
 
+  // 自适应窗口大小
+  private setAdaptiveWindow (vid: string, value: boolean): this {
+    if (!validate(vid)) {
+      console.error(`camera compiler adaptive window vid is illeage: '${vid}'`)
+      return this
+    }
+
+    if (!this.map.has(vid)) {
+      console.warn(`camera compiler can not found this vid camera: '${vid}'`)
+      return this
+    }
+
+    const camera = this.map.get(vid)!
+
+    if (!value) {
+      if (camera.userData.setSizeFun && this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)) {
+        this.engine.removeEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)
+        camera.userData.setSizeFun = undefined
+        return this
+      }
+
+      if (!camera.userData.setSizeFun && !this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)) {
+        return this
+      }
+
+      if (camera.userData.setSizeFun && !this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)) {
+        camera.userData.setSizeFun = undefined
+        return this
+      }
+    }
+
+    if (value) {
+      if (camera.userData.setSizeFun && this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)) {
+        return this
+      }
+
+      if (!this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun) && camera.userData.setSizeFun) {
+        this.engine.addEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)
+        return this
+      }
+
+      let setSizeFun = (event: SetSizeEvent) => {}
+      if (camera instanceof PerspectiveCamera) {
+        setSizeFun = (event: SetSizeEvent) => {
+          camera.aspect = event.width / event.height
+          camera.updateProjectionMatrix()
+        }
+      } else if (camera instanceof OrthographicCamera) {
+        setSizeFun = (event: SetSizeEvent) => {
+          const width = event.width
+          const height = event.height
+          camera.left = -width / 16
+          camera.right = width / 16
+          camera.top = height / 16
+          camera.bottom = -height / 16
+        }
+      } else {
+        console.warn(`camera compiler can not support this class camera:`, camera)
+      }
+
+      this.engine.addEventListener(MODELINGENGINEEVNET.SETSIZE, setSizeFun as any)
+
+      // 执行一次
+      const domElement = this.engine.getRenderer().domElement
+      setSizeFun({
+        type: MODELINGENGINEEVNET.SETSIZE,
+        width: domElement.offsetWidth,
+        height: domElement.offsetHeight
+      })
+    }
+
+    return this
+
+  }
+
   linkObjectMap (map: Map<SymbolConfig['vid'], Object3D>): this {
     if (!this.objectMapSet.has(map)) {
       this.objectMapSet.add(map)
@@ -111,8 +194,8 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
         delete tempConfig.vid
         delete tempConfig.type
 
-        // TODO: lookAt
         delete tempConfig.lookAt
+        delete tempConfig.adaptiveWindow
 
         Compiler.applyConfig(tempConfig, camera)
 
@@ -120,8 +203,10 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
           (camera as PerspectiveCamera).updateProjectionMatrix()
         }
 
-
         this.map.set(vid, camera)
+
+        this.setLookAt(config.vid, config.lookAt)
+        this.setAdaptiveWindow(config.vid, config.adaptiveWindow)
 
         this.dispatchEvent({
           type: COMPILEREVENTTYPE.ADD,
@@ -152,6 +237,10 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
       return this.setLookAt(vid, value)
     }
 
+    if (key === 'adaptiveWindow') {
+      return this.setAdaptiveWindow(vid, value)
+    }
+
     const camera = this.map.get(vid)!
     let config = camera
     path.forEach((key, i, arr) => {
@@ -169,6 +258,11 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
 
   // TODO:
   remove () {}
+
+  setEngine (engine: ModelingEngine): this {
+    this.engine = engine
+    return this
+  }
 
   setScene (scene: Scene): this {
     this.scene = scene

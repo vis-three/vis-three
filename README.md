@@ -147,7 +147,7 @@ refactor
 ##### 功能
 
 - [x] 相机视角跟随
-- [ ] 相机自适应窗口
+- [x] 相机自适应窗口
 - [ ] 窗口自适应相机
 - [ ] 材质展示器
 - [ ] 贴图展示器
@@ -156,6 +156,7 @@ refactor
 - [ ] 拓扑模块
 - [ ] 动画帧模块
 - [ ] 物体约束器
+- [ ] orbitControls可以实时改变相机support 
 
 ## 例子demo
 github: [https://github.com/Shiotsukikaedesari/vis-three/tree/main/examples](https://github.com/Shiotsukikaedesari/vis-three/tree/main/examples)

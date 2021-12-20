@@ -8,6 +8,11 @@ import { VisStats } from "../../optimize/VisStats";
 import { VisOrbitControls } from "../../optimize/VisOrbitControls";
 import { VisTransformControls } from "../../optimize/VisTransformControls";
 import { RenderManager } from "../../manager/RenderManager";
+export var MODELINGENGINEEVNET;
+(function (MODELINGENGINEEVNET) {
+    MODELINGENGINEEVNET["SETCAMERA"] = "setCamera";
+    MODELINGENGINEEVNET["SETSIZE"] = "setSize";
+})(MODELINGENGINEEVNET || (MODELINGENGINEEVNET = {}));
 export class ModelingEngine extends EventDispatcher {
     stats;
     orbitControls;
@@ -92,7 +97,7 @@ export class ModelingEngine extends EventDispatcher {
             orbitControls.enableRotate = false;
         });
         // 尺寸变化
-        this.addEventListener('setSize', event => {
+        this.addEventListener(MODELINGENGINEEVNET.SETSIZE, event => {
             const e = event;
             const width = e.width;
             const height = e.height;
@@ -107,7 +112,7 @@ export class ModelingEngine extends EventDispatcher {
             composer.setSize(width, height);
         });
         // 相机变化
-        this.addEventListener('setCamera', event => {
+        this.addEventListener(MODELINGENGINEEVNET.SETCAMERA, event => {
             const e = event;
             const camera = e.camera;
             orbitControls.setCamera(camera);
