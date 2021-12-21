@@ -29,6 +29,7 @@ export declare class ModelingEngine extends EventDispatcher {
     protected scene: ModelingScene;
     protected renderManager: RenderManager;
     private transing;
+    private currentCamera;
     constructor(dom?: HTMLElement);
     getSceneStatusManager(): SceneStatusManager;
     showTransformControls(visiable: boolean): this;
@@ -36,6 +37,8 @@ export declare class ModelingEngine extends EventDispatcher {
     getTransformControls(): VisTransformControls;
     getRenderer(): WebGLRenderer;
     getScene(): ModelingScene;
+    getCurrentCamera(): Camera;
+    getRenderManager(): RenderManager;
     setCamera(camera: Camera): this;
     setSize(width: number, height: number): this;
     render(): void;

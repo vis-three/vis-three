@@ -19,4 +19,6 @@ import { ModelingEngineSupportConnector } from "./connector/ModelingEngineSuppor
 import { SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./engine/ModelingEngine/ModelingScene";
 import { OBJECTEVENT } from "./case/constants/OBJECTEVENT";
 import { ControlsDataSupport } from "./case/controls/ControlsDataSupport";
-export { LOADEEVENTTYPE, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, SCENEDISPLAYMODE, SCENEVIEWPOINT, OBJECTEVENT, LoaderManager, ResourceManager, DataSupportManager, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, TextureDataSupport, MaterialDataSupport, LightDataSupport, ModelDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, PointLightHelper, CameraHelper, generateConfig, SupportDataGenerator, };
+import { RendererDataSupport } from "./case/render/RendererDataSupport";
+import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
+export { LOADEEVENTTYPE, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, SCENEDISPLAYMODE, SCENEVIEWPOINT, OBJECTEVENT, LoaderManager, ResourceManager, DataSupportManager, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, TextureDataSupport, MaterialDataSupport, LightDataSupport, ModelDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, PointLightHelper, CameraHelper, generateConfig, SupportDataGenerator, MaterialDisplayer };

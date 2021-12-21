@@ -1,4 +1,5 @@
 import { EventDispatcher, Clock, } from "three";
+import { RENDERERMANAGER } from "../case/constants/EVENTTYPE";
 export class RenderManager extends EventDispatcher {
     clock = new Clock(); // 引擎时钟
     animationFrame = -1; // 渲染定时器
@@ -8,7 +9,7 @@ export class RenderManager extends EventDispatcher {
         const delta = clock.getDelta();
         const total = clock.getElapsedTime();
         this.dispatchEvent({
-            type: 'render',
+            type: RENDERERMANAGER.RENDER,
             delta,
             total
         });
@@ -16,7 +17,7 @@ export class RenderManager extends EventDispatcher {
     // 播放
     play = () => {
         this.dispatchEvent({
-            type: 'play'
+            type: RENDERERMANAGER.PLAY
         });
         const playFun = () => {
             this.render();
@@ -29,7 +30,7 @@ export class RenderManager extends EventDispatcher {
         cancelAnimationFrame(this.animationFrame);
         this.animationFrame = -1;
         this.dispatchEvent({
-            type: 'stop'
+            type: RENDERERMANAGER.STOP
         });
     };
     // 是否处于渲染当中

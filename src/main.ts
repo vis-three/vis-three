@@ -21,6 +21,7 @@ import { SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./engine/ModelingEngine/Modeli
 import { OBJECTEVENT } from "./case/constants/OBJECTEVENT";
 import { ControlsDataSupport } from "./case/controls/ControlsDataSupport";
 import { RendererDataSupport } from "./case/render/RendererDataSupport";
+import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
 
 export {
   // menu
@@ -63,4 +64,7 @@ export {
   // config
   generateConfig,
   SupportDataGenerator,
+
+  // displayer
+  MaterialDisplayer
 }

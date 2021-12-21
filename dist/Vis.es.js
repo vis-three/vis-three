@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Vector2, Frustum, Quaternion, Raycaster, MOUSE, Object3D, Clock, WebGLRenderer, WebGLMultisampleRenderTarget, RGBAFormat, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, LinearEncoding, PCFShadowMap, NoToneMapping, Fog, FogExp2, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, TangentSpaceNormalMap } from "three";
+import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Vector2, Frustum, Quaternion, Raycaster, MOUSE, Object3D, Clock, WebGLRenderer, WebGLMultisampleRenderTarget, RGBAFormat, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, LinearEncoding, PCFShadowMap, NoToneMapping, Fog, FogExp2, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, TangentSpaceNormalMap, PCFSoftShadowMap } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -17,7 +17,7 @@ const SELECTCOLOR = "rgb(230, 20, 240)";
 const SELECTBGCOLOR = "rgba(230, 20, 240, 0.15)";
 const getHelperLineMaterial = () => new LineBasicMaterial({ color: HELPERCOLOR });
 class PointLightHelper extends LineSegments {
-  constructor(pointLight) {
+  constructor(pointLight2) {
     super();
     __publicField(this, "sphere");
     __publicField(this, "target");
@@ -86,22 +86,22 @@ class PointLightHelper extends LineSegments {
     this.geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
     this.material = getHelperLineMaterial();
     this.geometry.boundingSphere;
-    const color = new Color().copy(pointLight.color).multiplyScalar(pointLight.intensity);
-    const shape = new Mesh(new OctahedronBufferGeometry(pointLight.distance, 0), new MeshBasicMaterial({
+    const color = new Color().copy(pointLight2.color).multiplyScalar(pointLight2.intensity);
+    const shape = new Mesh(new OctahedronBufferGeometry(pointLight2.distance, 0), new MeshBasicMaterial({
       color,
       wireframe: true
     }));
     shape.raycast = () => {
     };
     this.shape = shape;
-    this.target = pointLight;
+    this.target = pointLight2;
     this.sphere = new Sphere(new Vector3(0, 0, 0), 1);
-    this.cachaColor = pointLight.color.getHex();
-    this.cachaDistance = pointLight.distance;
+    this.cachaColor = pointLight2.color.getHex();
+    this.cachaDistance = pointLight2.distance;
     this.cachaVector3 = new Vector3();
     this.add(this.shape);
     this.matrixAutoUpdate = false;
-    this.matrix = pointLight.matrix;
+    this.matrix = pointLight2.matrix;
     this.onBeforeRender = () => {
       const light = this.target;
       const shape2 = this.shape;
@@ -2994,11 +2994,12 @@ class RendererCompiler extends Compiler {
         actionMap[path[0] || key]();
         return this;
       }
-      let glRenderer = this.glRenderer;
+      const glRenderer = this.glRenderer;
+      let config = glRenderer;
       path.forEach((key2, i, arr) => {
-        glRenderer = glRenderer[key2];
+        config = config[key2];
       });
-      glRenderer[key] = value;
+      config[key] = value;
       glRenderer.clear();
       return this;
     } else {
@@ -5132,4 +5133,102 @@ class ModelingEngineSupportConnector {
     return this.domEngineMap.get(dom);
   }
 }
-export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, generateConfig };
+const pointLight = new PointLight("rgb(255, 255, 255)", 0.5, 200, 1);
+pointLight.position.set(-30, 5, 20);
+pointLight.castShadow = true;
+const plane = new Mesh(new BoxBufferGeometry(80, 2, 80), new MeshStandardMaterial({
+  color: "rgb(255, 255, 255)"
+}));
+plane.position.set(0, -11, 0);
+plane.receiveShadow = true;
+plane.castShadow = true;
+const _MaterialDisplayer = class {
+  constructor(parameters) {
+    __publicField(this, "material");
+    __publicField(this, "dom");
+    __publicField(this, "renderer");
+    __publicField(this, "scene");
+    __publicField(this, "camera");
+    __publicField(this, "object");
+    const renderer = new WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setClearColor("rgb(150, 150, 150)");
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = PCFSoftShadowMap;
+    const scene = new Scene();
+    const camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
+    camera.position.set(0, 0, 35);
+    camera.up.x = 0;
+    camera.up.y = 1;
+    camera.up.z = 0;
+    camera.lookAt(new Vector3(0, 0, 0));
+    scene.add(_MaterialDisplayer.ambientLight);
+    scene.add(_MaterialDisplayer.pointLight);
+    scene.add(_MaterialDisplayer.plane);
+    this.scene = scene;
+    this.renderer = renderer;
+    this.camera = camera;
+    this.object = new Object3D();
+    (parameters == null ? void 0 : parameters.material) && this.setMaterial(parameters.material);
+    (parameters == null ? void 0 : parameters.dom) && this.setDom(parameters.dom);
+  }
+  setMaterial(material) {
+    this.scene.remove(this.object);
+    this.material = material;
+    if (material.type.includes("Mesh")) {
+      this.object = new Mesh(_MaterialDisplayer.geometry, material);
+    } else if (material.type.includes("Line")) {
+      this.object = new Line(_MaterialDisplayer.geometry, material);
+    } else if (material.type.includes("Ponits")) {
+      this.object = new Points(_MaterialDisplayer.geometry, material);
+    } else if (material.type.includes("Sprite")) {
+      this.object = new Sprite(material);
+    } else {
+      console.warn(`material displayer can not support this type material: '${material.type}'`);
+      return this;
+    }
+    this.object.castShadow = true;
+    this.object.receiveShadow = true;
+    this.scene.add(this.object);
+    return this;
+  }
+  setDom(dom) {
+    this.dom = dom;
+    this.setSize();
+    dom.appendChild(this.renderer.domElement);
+    return this;
+  }
+  setSize(width, height) {
+    if (width && height) {
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(width, height, true);
+    } else {
+      if (!this.dom) {
+        console.warn(`material displayer must set dom before setSize with empty parameters`);
+        return this;
+      }
+      const dom = this.dom;
+      this.camera.aspect = dom.offsetWidth / dom.offsetHeight;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(dom.offsetWidth, dom.offsetHeight, true);
+    }
+    return this;
+  }
+  render() {
+    this.renderer.render(this.scene, this.camera);
+  }
+  dispose() {
+    this.renderer.dispose();
+  }
+};
+let MaterialDisplayer = _MaterialDisplayer;
+__publicField(MaterialDisplayer, "ambientLight", new AmbientLight("rgb(255, 255, 255)", 0.7));
+__publicField(MaterialDisplayer, "pointLight", pointLight);
+__publicField(MaterialDisplayer, "geometry", new SphereBufferGeometry(10, 12, 12));
+__publicField(MaterialDisplayer, "plane", plane);
+__publicField(MaterialDisplayer, "dispose", () => {
+  _MaterialDisplayer.geometry.dispose();
+  _MaterialDisplayer.plane.geometry.dispose();
+});
+export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, generateConfig };

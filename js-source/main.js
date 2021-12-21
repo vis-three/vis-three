@@ -19,6 +19,8 @@ import { ModelingEngineSupportConnector } from "./connector/ModelingEngineSuppor
 import { SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./engine/ModelingEngine/ModelingScene";
 import { OBJECTEVENT } from "./case/constants/OBJECTEVENT";
 import { ControlsDataSupport } from "./case/controls/ControlsDataSupport";
+import { RendererDataSupport } from "./case/render/RendererDataSupport";
+import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
 export { 
 // menu
 LOADEEVENTTYPE, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, SCENEDISPLAYMODE, SCENEVIEWPOINT, OBJECTEVENT, 
@@ -31,9 +33,11 @@ ModelingEngineSupport,
 // engine connector
 ModelingEngineSupportConnector, 
 // data support
-TextureDataSupport, MaterialDataSupport, LightDataSupport, ModelDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, 
+TextureDataSupport, MaterialDataSupport, LightDataSupport, ModelDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, 
 // helper
 PointLightHelper, CameraHelper, 
 // config
-generateConfig, SupportDataGenerator, };
+generateConfig, SupportDataGenerator, 
+// displayer
+MaterialDisplayer };
 //# sourceMappingURL=main.js.map

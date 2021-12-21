@@ -61,7 +61,8 @@ export class ModelingEngineSupport extends ModelingEngine {
         });
         const rendererCompiler = new RendererCompiler({
             target: rendererDataSupport.getData(),
-            glRenderer: this.renderer
+            glRenderer: this.renderer,
+            engine: this
         });
         const sceneCompiler = new SceneCompiler({
             target: sceneDataSupport.getData(),
@@ -192,6 +193,7 @@ export class ModelingEngineSupport extends ModelingEngine {
         compilerMap.set(MODULETYPE.GEOMETRY, geometryCompiler);
         compilerMap.set(MODULETYPE.RENDERER, rendererCompiler);
         compilerMap.set(MODULETYPE.SCENE, sceneCompiler);
+        compilerMap.set(MODULETYPE.CONTROLS, controlsCompiler);
         this.compilerMap = compilerMap;
         this.dataSupportManager = parameters.dataSupportManager;
         this.resourceManager = parameters.resourceManager;
