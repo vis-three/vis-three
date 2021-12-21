@@ -4,6 +4,7 @@ import {
   BaseEvent,
 
   } from "three";
+import { RENDERERMANAGER } from "../case/constants/EVENTTYPE";
 
 // 渲染事件
 export interface RenderEvent extends BaseEvent {
@@ -23,7 +24,7 @@ export class RenderManager extends EventDispatcher<RenderEvent | BaseEvent> {
     const total: number = clock.getElapsedTime()
 
     this.dispatchEvent({
-      type: 'render',
+      type: RENDERERMANAGER.RENDER,
       delta,
       total
     })
@@ -32,7 +33,7 @@ export class RenderManager extends EventDispatcher<RenderEvent | BaseEvent> {
   // 播放
   play = (): void => {
     this.dispatchEvent({
-      type: 'play'
+      type: RENDERERMANAGER.PLAY
     })
 
     const playFun = () => {
@@ -47,7 +48,7 @@ export class RenderManager extends EventDispatcher<RenderEvent | BaseEvent> {
     cancelAnimationFrame(this.animationFrame)
     this.animationFrame = -1
     this.dispatchEvent({
-      type: 'stop'
+      type: RENDERERMANAGER.STOP
     })
   }
 

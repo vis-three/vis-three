@@ -1,6 +1,9 @@
-import { WebGLRenderer } from "three";
+import { BaseEvent, Camera, OrthographicCamera, PerspectiveCamera, WebGLRenderer } from "three";
+import { ModelingEngine } from "../../main";
+import { RenderEvent, RenderManager } from "../../manager/RenderManager";
 import { Compiler, CompilerTarget } from "../../middleware/Compiler";
 import { Vector2Config } from "../common/CommonConfig";
+import { RENDERERMANAGER } from "../constants/EVENTTYPE";
 import { getWebGLRendererConfig, WebGLRendererConfig, WebGLRendererScissor, WebGLRendererViewPort } from "./RendererConfig";
 
 export interface RendererCompilerTarget extends CompilerTarget {
@@ -10,55 +13,34 @@ export interface RendererCompilerTarget extends CompilerTarget {
 export interface RendererCompilerParameters {
   target?: RendererCompilerTarget
   glRenderer?: WebGLRenderer
+  engine?: ModelingEngine
+}
+
+export interface GLRendererCacheData {
+  adaptiveCameraFun?: (event: (BaseEvent | RenderEvent) & { type: RENDERERMANAGER.RENDER; } & { target: RenderManager; }) => void
 }
 
 export class RendererCompiler extends Compiler {
 
   private target!: RendererCompilerTarget
   private glRenderer!: WebGLRenderer
+  private engine?: ModelingEngine
+  private glRendererCacheData: GLRendererCacheData
 
   constructor (parameters?: RendererCompilerParameters) {
     super()
     if (parameters) {
       parameters.target && (this.target = parameters.target)
       parameters.glRenderer && (this.glRenderer = parameters.glRenderer)
+      parameters.engine && (this.engine = parameters.engine)
     } else {
       this.target = {
         WebGLRenderer: getWebGLRendererConfig()
       }
       this.glRenderer = new WebGLRenderer()
     }
-  }
 
-  set (path: string[], key: string, value: any): this {
-    const rendererType = path.shift()!
-    
-    if (rendererType === 'WebGLRenderer') {
-      const glRendererTarget = this.target.WebGLRenderer
-      const actionMap = {
-        clearColor: () => this.setClearColor(value),
-        pixelRatio: () => this.setPixelRatio(value),
-        size: () => this.setSize(glRendererTarget.size),
-        viewport: () => this.setViewpoint(glRendererTarget.viewport),
-        scissor:() =>  this.setScissor(glRendererTarget.scissor)
-      }
-
-      if (actionMap[path[0]]) {
-        actionMap[path[0]]()
-        return this
-      }
-
-      let glRenderer = this.glRenderer
-      path.forEach((key, i, arr) => {
-        glRenderer = glRenderer[key]
-      })
-      glRenderer[key] = value
-      glRenderer.clear()
-      return this
-    } else {
-      console.warn(`renderer compiler can not support this type: ${rendererType}`)
-      return this
-    }
+    this.glRendererCacheData = {}
   }
 
   private setClearColor (value): this {
@@ -111,6 +93,108 @@ export class RendererCompiler extends Compiler {
     return this
   }
 
+  private setAdaptiveCamera (value: boolean): this {
+    if (!this.engine) {
+      console.warn(`renderer compiler is not set engine.`)
+      return this
+    }
+
+    const glRenderer = this.glRenderer
+    const engine = this.engine!
+    const renderManager = engine.getRenderManager()
+
+    if (!value) {
+      if (!this.glRendererCacheData.adaptiveCameraFun) {
+        return this
+      }
+
+      if (this.glRendererCacheData.adaptiveCameraFun) {
+        renderManager.removeEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun)
+        this.glRendererCacheData.adaptiveCameraFun = undefined
+        return this
+      }
+    }
+
+    if (value) {
+      if (this.glRendererCacheData.adaptiveCameraFun) {
+        renderManager.addEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun)
+        return this
+      }
+
+      const adaptiveCameraFun = (event:  (BaseEvent | RenderEvent) & { type: RENDERERMANAGER.RENDER; } & { target: RenderManager; }) => {
+        const camera = engine.getCurrentCamera()
+        const domWidth = glRenderer.domElement.offsetWidth
+        const domHeight = glRenderer.domElement.offsetHeight
+        let width = 0
+        let height = 0
+        let offsetX = 0
+        let offsetY = 0
+        let aspect = 0
+        // 根据相机类型去设置viewPoint
+        if (camera instanceof PerspectiveCamera) {
+          aspect = camera.aspect
+        } else if (camera instanceof OrthographicCamera) {
+          width = camera.right - camera.left
+          height = camera.top - camera.bottom
+          aspect = width / height
+        } else {
+          console.warn(`renderer compiler can not support this camera`, camera)
+          return
+        }
+
+        if (aspect >= 1) {
+          width = domWidth
+          height = width / aspect
+          offsetY = domHeight / 2 - height / 2
+        } else {
+          height = domHeight
+          width = height * aspect
+          offsetX = domWidth / 2 - width / 2
+        }
+        glRenderer.setScissor(offsetX, offsetY, width, height)
+        glRenderer.setViewport(offsetX, offsetY, width, height)
+        glRenderer.setScissorTest(true)
+      }
+
+      this.glRendererCacheData.adaptiveCameraFun = adaptiveCameraFun
+      renderManager.addEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun)
+    } 
+
+    return this
+  }
+
+  set (path: string[], key: string, value: any): this {
+    const rendererType = path.shift()!
+    
+    if (rendererType === 'WebGLRenderer') {
+      const glRendererTarget = this.target.WebGLRenderer
+      const actionMap = {
+        clearColor: () => this.setClearColor(value),
+        pixelRatio: () => this.setPixelRatio(value),
+        size: () => this.setSize(glRendererTarget.size),
+        viewport: () => this.setViewpoint(glRendererTarget.viewport),
+        scissor:() =>  this.setScissor(glRendererTarget.scissor),
+        adaptiveCamera: () => this.setAdaptiveCamera(value)
+      }
+
+      if (actionMap[path[0] || key]) {
+        actionMap[path[0] || key]()
+        return this
+      }
+      const glRenderer = this.glRenderer
+      let config = glRenderer
+      path.forEach((key, i, arr) => {
+        config = config[key]
+      })
+      config[key] = value
+      glRenderer.clear()
+      return this
+    } else {
+      console.warn(`renderer compiler can not support this type: ${rendererType}`)
+      return this
+    }
+  }
+
   setTarget (target: RendererCompilerTarget): this {
     this.target = target
     return this
@@ -125,6 +209,7 @@ export class RendererCompiler extends Compiler {
     this.setSize(glRendererTarget.size)
     this.setViewpoint(glRendererTarget.viewport)
     this.setScissor(glRendererTarget.scissor)
+    this.setAdaptiveCamera(glRendererTarget.adaptiveCamera)
 
     const otherConfig = JSON.parse(JSON.stringify(glRendererTarget))
     delete otherConfig.vid
@@ -134,6 +219,7 @@ export class RendererCompiler extends Compiler {
     delete otherConfig.size
     delete otherConfig.viewport
     delete otherConfig.scissor
+    delete otherConfig.adaptiveCamera
 
     Compiler.applyConfig(otherConfig, this.glRenderer)
     this.glRenderer.clear()

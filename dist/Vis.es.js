@@ -1572,6 +1572,12 @@ class VisTransformControls extends TransformControls {
     return this;
   }
 }
+var RENDERERMANAGER;
+(function(RENDERERMANAGER2) {
+  RENDERERMANAGER2["RENDER"] = "render";
+  RENDERERMANAGER2["PLAY"] = "play";
+  RENDERERMANAGER2["STOP"] = "stop";
+})(RENDERERMANAGER || (RENDERERMANAGER = {}));
 class RenderManager extends EventDispatcher$1 {
   constructor() {
     super(...arguments);
@@ -1582,14 +1588,14 @@ class RenderManager extends EventDispatcher$1 {
       const delta = clock.getDelta();
       const total = clock.getElapsedTime();
       this.dispatchEvent({
-        type: "render",
+        type: RENDERERMANAGER.RENDER,
         delta,
         total
       });
     });
     __publicField(this, "play", () => {
       this.dispatchEvent({
-        type: "play"
+        type: RENDERERMANAGER.PLAY
       });
       const playFun = () => {
         this.render();
@@ -1601,7 +1607,7 @@ class RenderManager extends EventDispatcher$1 {
       cancelAnimationFrame(this.animationFrame);
       this.animationFrame = -1;
       this.dispatchEvent({
-        type: "stop"
+        type: RENDERERMANAGER.STOP
       });
     });
     __publicField(this, "checkHasRendering", () => {
@@ -1634,6 +1640,7 @@ class ModelingEngine extends EventDispatcher$1 {
     __publicField(this, "scene");
     __publicField(this, "renderManager");
     __publicField(this, "transing");
+    __publicField(this, "currentCamera");
     const renderer = new WebGLRenderer({
       antialias: true,
       alpha: true
@@ -1716,6 +1723,7 @@ class ModelingEngine extends EventDispatcher$1 {
       transformControls.setCamera(camera2);
       sceneStatusManager.setCamera(camera2);
       renderPass.camera = camera2;
+      this.currentCamera = camera2;
     });
     transformControls.addEventListener("mouseDown", () => {
       this.transing = true;
@@ -1764,6 +1772,7 @@ class ModelingEngine extends EventDispatcher$1 {
     this.stats = stats;
     this.scene = scene;
     this.renderManager = renderManager;
+    this.currentCamera = camera;
     if (dom) {
       this.setSize(dom.offsetWidth, dom.offsetHeight);
       dom.appendChild(renderer.domElement);
@@ -1807,6 +1816,12 @@ class ModelingEngine extends EventDispatcher$1 {
   }
   getScene() {
     return this.scene;
+  }
+  getCurrentCamera() {
+    return this.currentCamera;
+  }
+  getRenderManager() {
+    return this.renderManager;
   }
   setCamera(camera) {
     this.dispatchEvent({
@@ -2846,42 +2861,19 @@ class RendererCompiler extends Compiler {
     super();
     __publicField(this, "target");
     __publicField(this, "glRenderer");
+    __publicField(this, "engine");
+    __publicField(this, "glRendererCacheData");
     if (parameters) {
       parameters.target && (this.target = parameters.target);
       parameters.glRenderer && (this.glRenderer = parameters.glRenderer);
+      parameters.engine && (this.engine = parameters.engine);
     } else {
       this.target = {
         WebGLRenderer: getWebGLRendererConfig()
       };
       this.glRenderer = new WebGLRenderer();
     }
-  }
-  set(path, key, value) {
-    const rendererType = path.shift();
-    if (rendererType === "WebGLRenderer") {
-      const glRendererTarget = this.target.WebGLRenderer;
-      const actionMap = {
-        clearColor: () => this.setClearColor(value),
-        pixelRatio: () => this.setPixelRatio(value),
-        size: () => this.setSize(glRendererTarget.size),
-        viewport: () => this.setViewpoint(glRendererTarget.viewport),
-        scissor: () => this.setScissor(glRendererTarget.scissor)
-      };
-      if (actionMap[path[0]]) {
-        actionMap[path[0]]();
-        return this;
-      }
-      let glRenderer = this.glRenderer;
-      path.forEach((key2, i, arr) => {
-        glRenderer = glRenderer[key2];
-      });
-      glRenderer[key] = value;
-      glRenderer.clear();
-      return this;
-    } else {
-      console.warn(`renderer compiler can not support this type: ${rendererType}`);
-      return this;
-    }
+    this.glRendererCacheData = {};
   }
   setClearColor(value) {
     const alpha = Number(value.slice(0, -1).split(",").pop().trim());
@@ -2926,6 +2918,94 @@ class RendererCompiler extends Compiler {
     }
     return this;
   }
+  setAdaptiveCamera(value) {
+    if (!this.engine) {
+      console.warn(`renderer compiler is not set engine.`);
+      return this;
+    }
+    const glRenderer = this.glRenderer;
+    const engine = this.engine;
+    const renderManager = engine.getRenderManager();
+    if (!value) {
+      if (!this.glRendererCacheData.adaptiveCameraFun) {
+        return this;
+      }
+      if (this.glRendererCacheData.adaptiveCameraFun) {
+        renderManager.removeEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun);
+        this.glRendererCacheData.adaptiveCameraFun = void 0;
+        return this;
+      }
+    }
+    if (value) {
+      if (this.glRendererCacheData.adaptiveCameraFun) {
+        renderManager.addEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun);
+        return this;
+      }
+      const adaptiveCameraFun = (event) => {
+        const camera = engine.getCurrentCamera();
+        const domWidth = glRenderer.domElement.offsetWidth;
+        const domHeight = glRenderer.domElement.offsetHeight;
+        let width = 0;
+        let height = 0;
+        let offsetX = 0;
+        let offsetY = 0;
+        let aspect = 0;
+        if (camera instanceof PerspectiveCamera) {
+          aspect = camera.aspect;
+        } else if (camera instanceof OrthographicCamera) {
+          width = camera.right - camera.left;
+          height = camera.top - camera.bottom;
+          aspect = width / height;
+        } else {
+          console.warn(`renderer compiler can not support this camera`, camera);
+          return;
+        }
+        if (aspect >= 1) {
+          width = domWidth;
+          height = width / aspect;
+          offsetY = domHeight / 2 - height / 2;
+        } else {
+          height = domHeight;
+          width = height * aspect;
+          offsetX = domWidth / 2 - width / 2;
+        }
+        glRenderer.setScissor(offsetX, offsetY, width, height);
+        glRenderer.setViewport(offsetX, offsetY, width, height);
+        glRenderer.setScissorTest(true);
+      };
+      this.glRendererCacheData.adaptiveCameraFun = adaptiveCameraFun;
+      renderManager.addEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun);
+    }
+    return this;
+  }
+  set(path, key, value) {
+    const rendererType = path.shift();
+    if (rendererType === "WebGLRenderer") {
+      const glRendererTarget = this.target.WebGLRenderer;
+      const actionMap = {
+        clearColor: () => this.setClearColor(value),
+        pixelRatio: () => this.setPixelRatio(value),
+        size: () => this.setSize(glRendererTarget.size),
+        viewport: () => this.setViewpoint(glRendererTarget.viewport),
+        scissor: () => this.setScissor(glRendererTarget.scissor),
+        adaptiveCamera: () => this.setAdaptiveCamera(value)
+      };
+      if (actionMap[path[0] || key]) {
+        actionMap[path[0] || key]();
+        return this;
+      }
+      let glRenderer = this.glRenderer;
+      path.forEach((key2, i, arr) => {
+        glRenderer = glRenderer[key2];
+      });
+      glRenderer[key] = value;
+      glRenderer.clear();
+      return this;
+    } else {
+      console.warn(`renderer compiler can not support this type: ${rendererType}`);
+      return this;
+    }
+  }
   setTarget(target) {
     this.target = target;
     return this;
@@ -2938,6 +3018,7 @@ class RendererCompiler extends Compiler {
     this.setSize(glRendererTarget.size);
     this.setViewpoint(glRendererTarget.viewport);
     this.setScissor(glRendererTarget.scissor);
+    this.setAdaptiveCamera(glRendererTarget.adaptiveCamera);
     const otherConfig = JSON.parse(JSON.stringify(glRendererTarget));
     delete otherConfig.vid;
     delete otherConfig.type;
@@ -2946,6 +3027,7 @@ class RendererCompiler extends Compiler {
     delete otherConfig.size;
     delete otherConfig.viewport;
     delete otherConfig.scissor;
+    delete otherConfig.adaptiveCamera;
     Compiler.applyConfig(otherConfig, this.glRenderer);
     this.glRenderer.clear();
     return this;
@@ -3200,7 +3282,8 @@ class ModelingEngineSupport extends ModelingEngine {
     });
     const rendererCompiler = new RendererCompiler({
       target: rendererDataSupport.getData(),
-      glRenderer: this.renderer
+      glRenderer: this.renderer,
+      engine: this
     });
     const sceneCompiler = new SceneCompiler({
       target: sceneDataSupport.getData(),
@@ -3312,6 +3395,7 @@ class ModelingEngineSupport extends ModelingEngine {
     compilerMap.set(MODULETYPE.GEOMETRY, geometryCompiler);
     compilerMap.set(MODULETYPE.RENDERER, rendererCompiler);
     compilerMap.set(MODULETYPE.SCENE, sceneCompiler);
+    compilerMap.set(MODULETYPE.CONTROLS, controlsCompiler);
     this.compilerMap = compilerMap;
     this.dataSupportManager = parameters.dataSupportManager;
     this.resourceManager = parameters.resourceManager;
@@ -5048,4 +5132,4 @@ class ModelingEngineSupportConnector {
     return this.domEngineMap.get(dom);
   }
 }
-export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, generateConfig };
+export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, generateConfig };

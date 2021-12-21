@@ -52,7 +52,8 @@ export class ModelingEngine extends EventDispatcher {
   protected scene: ModelingScene
   protected renderManager: RenderManager
 
-  private transing: boolean
+  private transing: boolean // 是否处于变换控制器状态下
+  private currentCamera: Camera // 当前正在使用的相机
 
   constructor (dom?: HTMLElement) {
     super()
@@ -166,6 +167,7 @@ export class ModelingEngine extends EventDispatcher {
       transformControls.setCamera(camera)
       sceneStatusManager.setCamera(camera)
       renderPass.camera = camera
+      this.currentCamera = camera
     })
 
     // 变换事件
@@ -222,6 +224,7 @@ export class ModelingEngine extends EventDispatcher {
     this.stats = stats
     this.scene = scene
     this.renderManager = renderManager
+    this.currentCamera = camera
 
     if (dom) {
       this.setSize(dom.offsetWidth, dom.offsetHeight)
@@ -280,6 +283,16 @@ export class ModelingEngine extends EventDispatcher {
   // 获取场景
   getScene (): ModelingScene {
     return this.scene
+  }
+
+  // 获取当前渲染相机
+  getCurrentCamera (): Camera {
+    return this.currentCamera
+  }
+
+  // 获取引擎渲染管理器
+  getRenderManager (): RenderManager {
+    return this.renderManager
   }
 
   // 设置相机

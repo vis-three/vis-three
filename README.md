@@ -12,7 +12,7 @@
 mport * as Vis from './dist/Vis.es.js'
 ```
 
-##### 生成配置
+#### 生成配置
 
 ``` js
 const pointLight = Vis.generateConfig('pointLight', {
@@ -25,7 +25,7 @@ const pointLight = Vis.generateConfig('pointLight', {
 })
 ```
 
-##### 生成模块配置
+#### 生成模块配置
 
 ``` js
 const lightMap = new Vis.SupportDataGenerator()
@@ -34,12 +34,12 @@ const lightMap = new Vis.SupportDataGenerator()
   .get()
 ```
 
-##### 使用支持插件
+#### 使用支持插件
 ``` js
 const lightDataSupport = new Vis.LightDataSupport(lightMap)
 ```
 
-##### 使用支持建模引擎
+#### 使用支持建模引擎
 ``` js
 const engine = new Vis.ModelingEngineSupport({
   dom: document.getElementById('app'),
@@ -50,7 +50,7 @@ const engine = new Vis.ModelingEngineSupport({
 })
 ```
 
-##### 快速编辑场景物体
+#### 快速编辑场景物体
 ``` js
 const lightSupportData = lightDataSupport.getData()
 const pointLightSupportData = lightSupportData[pointLight.vid]
@@ -58,12 +58,12 @@ pointLightSupportData.position.x = 10
 pointLightSupportData.position.y = 20
 ```
 
-##### 导出配置
+#### 导出配置
 ``` js
 console.log(engine.getDataSupportManager().toJSON())
 ```
 
-##### 导入配置生成场景
+#### 导入配置生成场景
 ``` js
 
 import config from '/examples/config.json'
@@ -78,7 +78,7 @@ const engine = new Vis.ModelingEngineSupport({
 
 ## 外部资源加载
 
-##### 加载管理器
+#### 加载管理器
 ``` js
 const assets = [
   "/examples/public/model/katana/katana.obj",
@@ -96,7 +96,7 @@ loaderManager.addEventListener(Vis.LOADEEVENTTYPE.LOADED, e => {
 
 loaderManager.load(assets)
 ```
-##### 资源管理器
+#### 资源管理器
 ``` js
 const resourceManager = new Vis.ResourceManager()
 
@@ -112,6 +112,22 @@ resourceManager.addEventListener(Vis.RESOURCEEVENTTYPE.MAPPED, e => {
 ```
 
 ## 原生THREE应用
+
+``` js
+const engine = new Vis.ModelingEngine(document.getElementById('app'))
+
+const scene = engine.getScene()
+
+scene.add(new THREE.Mesh(
+  new THREE.BoxGeometry(5, 5, 5),
+  new THREE.MeshStandardMaterial({color: 'red'})
+))
+
+scene.add(new THREE.PointLight('white', 1))
+
+engine.play()
+
+```
 
 ## 多窗口
 
@@ -144,19 +160,30 @@ engine2.play()
 ## 阶段
 
 refactor
-##### 功能
+#### 功能
 
 - [x] 相机视角跟随
 - [x] 相机自适应窗口
-- [ ] 窗口自适应相机
+- [x] 窗口自适应相机
 - [ ] 材质展示器
 - [ ] 贴图展示器
 - [ ] 后期处理模块
 - [ ] 模型模块优化 - type -> mode , 根据display去判断展示模型类型
-- [ ] 拓扑模块
 - [ ] 动画帧模块
-- [ ] 物体约束器
 - [ ] orbitControls可以实时改变相机support 
+
+#### 预设
+
+- [ ] css3Renderer
+- [ ] css3相关物体模块
+- [ ] svgRenderer
+- [ ] svg相关物体模块
+- [ ] 拓扑模块
+- [ ] 物体约束器
+
+#### bug
+
+- [ ] 切换相机自适应窗口，相机辅助未跟随变化 `普通` 
 
 ## 例子demo
 github: [https://github.com/Shiotsukikaedesari/vis-three/tree/main/examples](https://github.com/Shiotsukikaedesari/vis-three/tree/main/examples)

@@ -20,7 +20,7 @@ import { ModelingEngineSupportConnector } from "./connector/ModelingEngineSuppor
 import { SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./engine/ModelingEngine/ModelingScene";
 import { OBJECTEVENT } from "./case/constants/OBJECTEVENT";
 import { ControlsDataSupport } from "./case/controls/ControlsDataSupport";
-
+import { RendererDataSupport } from "./case/render/RendererDataSupport";
 
 export {
   // menu
@@ -54,6 +54,7 @@ export {
   GeometryDataSupport,
   CameraDataSupport,
   ControlsDataSupport,
+  RendererDataSupport,
 
   // helper
   PointLightHelper,
