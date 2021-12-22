@@ -448,29 +448,36 @@ export class ModelingScene extends Scene {
     }
     // 添加物体进入场景记录物体与分组 与 渲染模式
     add(...object) {
+        let addNumber = 0;
         object.forEach(elem => {
             if (elem instanceof Mesh) {
                 this.meshSet.add(elem);
+                addNumber += 1;
             }
             else if (elem instanceof Line) {
                 this.lineSet.add(elem);
+                addNumber += 1;
             }
             else if (elem instanceof Light) {
                 this.lightSet.add(elem);
+                addNumber += 1;
             }
             else if (elem instanceof Points) {
                 this.pointsSet.add(elem);
+                addNumber += 1;
             }
             else if (elem instanceof Sprite) {
                 this.spriteSet.add(elem);
+                addNumber += 1;
             }
             else if (elem instanceof Camera) {
                 this.cameraSet.add(elem);
+                addNumber += 1;
             }
             // 添加辅助编译
             this.helperCompiler.add(elem);
         });
-        if (this.displayMode !== undefined) {
+        if (this.displayMode !== undefined && addNumber > 0) {
             this.switchDisplayMode(this.displayMode);
         }
         return super.add(...object);
@@ -510,6 +517,15 @@ export class ModelingScene extends Scene {
     // 内部直接移出场景
     _remove(...object) {
         return super.remove(...object);
+    }
+    // 升级物体的材质
+    updateMaterial(object) {
+        // displayMode为GEOMETRY模式下，需要手动去更新材质的缓存
+        if (this.displayMode !== undefined && this.displayMode === 0) {
+            this.materialCacheMap?.set(object, object.material);
+            this.switchDisplayMode && this.switchDisplayMode(this.displayMode);
+        }
+        return this;
     }
 }
 //# sourceMappingURL=ModelingScene.js.map

@@ -1,4 +1,5 @@
 import { Vector2 } from "three";
+import { POINTERMANAGER } from "../case/constants/EVENTTYPE";
 import { EventDispatcher } from "../middleware/EventDispatcher";
 export class PointerManager extends EventDispatcher {
     dom;
@@ -13,10 +14,10 @@ export class PointerManager extends EventDispatcher {
         this.canMouseMove = true;
         this.mouseEventTimer = null;
         this.throttleTime = throttleTime;
-        dom.addEventListener('pointerdown', (event) => {
+        dom.addEventListener(POINTERMANAGER.POINTERDOWN, (event) => {
             this.pointerDown(event);
         });
-        dom.addEventListener('pointermove', (event) => {
+        dom.addEventListener(POINTERMANAGER.POINTERMOVE, (event) => {
             if (!this.canMouseMove) {
                 return;
             }
@@ -30,7 +31,7 @@ export class PointerManager extends EventDispatcher {
                 this.pointerMove(event);
             }, this.throttleTime);
         });
-        dom.addEventListener('pointerup', (event) => {
+        dom.addEventListener(POINTERMANAGER.POINTERUP, (event) => {
             this.pointerUp(event);
         });
     }

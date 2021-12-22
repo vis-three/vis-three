@@ -596,25 +596,32 @@ export class ModelingScene extends Scene {
   
   // 添加物体进入场景记录物体与分组 与 渲染模式
   add(...object: Object3D[]): this {
+    let addNumber = 0
     object.forEach(elem => {
       if (elem instanceof Mesh) {
         this.meshSet.add(elem)
+        addNumber += 1
       } else if (elem instanceof Line) {
         this.lineSet.add(elem)
+        addNumber += 1
       } else if (elem instanceof Light) {
         this.lightSet.add(elem)
+        addNumber += 1
       } else if (elem instanceof Points) {
         this.pointsSet.add(elem)
+        addNumber += 1
       } else if (elem instanceof Sprite) {
         this.spriteSet.add(elem)
+        addNumber += 1
       } else if (elem instanceof Camera) {
         this.cameraSet.add(elem)
+        addNumber += 1
       }
-
       // 添加辅助编译
       this.helperCompiler.add(elem)
     })
-    if (this.displayMode !== undefined) {
+
+    if (this.displayMode !== undefined && addNumber > 0) {
       this.switchDisplayMode!(this.displayMode)
     }
 
@@ -655,5 +662,15 @@ export class ModelingScene extends Scene {
   // 内部直接移出场景
   _remove(...object: Object3D[]): this {
     return super.remove(...object)
+  }
+
+  // 升级物体的材质
+  updateMaterial (object: Object3D): this {
+    // displayMode为GEOMETRY模式下，需要手动去更新材质的缓存
+    if (this.displayMode !== undefined && this.displayMode === 0) {
+      this.materialCacheMap?.set(object, (object as Mesh).material)
+      this.switchDisplayMode && this.switchDisplayMode(this.displayMode)
+    }
+    return this
   }
 }

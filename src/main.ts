@@ -22,6 +22,8 @@ import { OBJECTEVENT } from "./case/constants/OBJECTEVENT";
 import { ControlsDataSupport } from "./case/controls/ControlsDataSupport";
 import { RendererDataSupport } from "./case/render/RendererDataSupport";
 import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
+import { EVENTTYPE } from "./case/constants/EVENTTYPE";
+
 
 export {
   // menu
@@ -32,6 +34,7 @@ export {
   SCENEDISPLAYMODE,
   SCENEVIEWPOINT,
   OBJECTEVENT,
+  EVENTTYPE,
 
   // manager
   LoaderManager,

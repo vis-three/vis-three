@@ -1,6 +1,7 @@
 import { BoxBufferGeometry, Line, Mesh, MeshStandardMaterial, Points, Scene } from "three";
 import { validate } from "uuid";
 import { Compiler, COMPILEREVENTTYPE } from "../../middleware/Compiler";
+import { MODELCOMPILER } from "../constants/EVENTTYPE";
 export class ModelCompiler extends Compiler {
     scene;
     target;
@@ -35,52 +36,38 @@ export class ModelCompiler extends Compiler {
         this.constructMap = constructMap;
         this.objectMapSet = new Set();
     }
-    add(vid, config) {
+    // 获取材质
+    getMaterial(vid) {
         if (validate(vid)) {
-            if (config.type && this.constructMap.has(config.type)) {
-                const object = this.constructMap.get(config.type)(config);
-                const tempConfig = JSON.parse(JSON.stringify(config));
-                delete tempConfig.vid;
-                delete tempConfig.type;
-                delete tempConfig.geometry;
-                delete tempConfig.material;
-                delete tempConfig.lookAt;
-                Compiler.applyConfig(tempConfig, object);
-                this.map.set(vid, object);
-                this.setLookAt(vid, config.lookAt);
-                this.dispatchEvent({
-                    type: COMPILEREVENTTYPE.ADD,
-                    object,
-                    vid
-                });
-                this.scene.add(object);
+            if (this.materialMap.has(vid)) {
+                return this.materialMap.get(vid);
+            }
+            else {
+                console.warn(`can not found material which vid: ${vid}`);
+                return this.getReplaceMaterial();
             }
         }
         else {
-            console.error(`model vid parameter is illegal: ${vid}`);
+            console.error(`material vid parameter is illegal: ${vid}`);
+            return this.getReplaceMaterial();
         }
-        return this;
     }
-    set(vid, path, key, value) {
-        if (!validate(vid)) {
-            console.warn(`model compiler vid is illegal: '${vid}'`);
-            return this;
+    // 获取几何
+    getGeometry(vid) {
+        if (validate(vid)) {
+            if (this.geometryMap.has(vid)) {
+                return this.geometryMap.get(vid);
+            }
+            else {
+                console.warn(`can not found geometry which vid: ${vid}`);
+                return this.getReplaceGeometry();
+            }
         }
-        if (!this.map.has(vid)) {
-            console.warn(`model compiler can not found this vid mapping object: '${vid}'`);
-            return this;
+        else {
+            console.error(`geometry vid parameter is illegal: ${vid}`);
+            return this.getReplaceGeometry();
         }
-        if (key === 'lookAt') {
-            return this.setLookAt(vid, value);
-        }
-        let config = this.map.get(vid);
-        path.forEach((key, i, arr) => {
-            config = config[key];
-        });
-        config[key] = value;
-        return this;
     }
-    remove() { }
     // 设置物体的lookAt方法
     setLookAt(vid, target) {
         // 不能自己看自己
@@ -119,36 +106,64 @@ export class ModelCompiler extends Compiler {
         };
         return this;
     }
-    getMaterial(vid) {
+    // 设置材质方法
+    setMaterial(vid, target) {
+        this.map.get(vid).material = this.getMaterial(target);
+        this.dispatchEvent({
+            type: MODELCOMPILER.SETMATERIAL,
+            object: this.map.get(vid)
+        });
+        return this;
+    }
+    add(vid, config) {
         if (validate(vid)) {
-            if (this.materialMap.has(vid)) {
-                return this.materialMap.get(vid);
-            }
-            else {
-                console.warn(`can not found material which vid: ${vid}`);
-                return this.getReplaceMaterial();
+            if (config.type && this.constructMap.has(config.type)) {
+                const object = this.constructMap.get(config.type)(config);
+                const tempConfig = JSON.parse(JSON.stringify(config));
+                delete tempConfig.vid;
+                delete tempConfig.type;
+                delete tempConfig.geometry;
+                delete tempConfig.material;
+                delete tempConfig.lookAt;
+                Compiler.applyConfig(tempConfig, object);
+                this.map.set(vid, object);
+                this.setLookAt(vid, config.lookAt);
+                this.dispatchEvent({
+                    type: COMPILEREVENTTYPE.ADD,
+                    object,
+                    vid
+                });
+                this.scene.add(object);
             }
         }
         else {
-            console.error(`material vid parameter is illegal: ${vid}`);
-            return this.getReplaceMaterial();
+            console.warn(`model compiler add function: model vid parameter is illegal: ${vid}`);
         }
+        return this;
     }
-    getGeometry(vid) {
-        if (validate(vid)) {
-            if (this.geometryMap.has(vid)) {
-                return this.geometryMap.get(vid);
-            }
-            else {
-                console.warn(`can not found geometry which vid: ${vid}`);
-                return this.getReplaceGeometry();
-            }
+    set(vid, path, key, value) {
+        if (!validate(vid)) {
+            console.warn(`model compiler vid is illegal: '${vid}'`);
+            return this;
         }
-        else {
-            console.error(`geometry vid parameter is illegal: ${vid}`);
-            return this.getReplaceGeometry();
+        if (!this.map.has(vid)) {
+            console.warn(`model compiler can not found this vid mapping object: '${vid}'`);
+            return this;
         }
+        if (key === 'lookAt') {
+            return this.setLookAt(vid, value);
+        }
+        if (key === 'material') {
+            return this.setMaterial(vid, value);
+        }
+        let config = this.map.get(vid);
+        path.forEach((key, i, arr) => {
+            config = config[key];
+        });
+        config[key] = value;
+        return this;
     }
+    remove() { }
     linkGeometryMap(map) {
         this.geometryMap = map;
         return this;

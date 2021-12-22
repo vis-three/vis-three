@@ -1,10 +1,10 @@
+import { SCENESTATUSMANAGER } from '../case/constants/EVENTTYPE';
 import { HELPERCOMPILEREVENTTYPE } from '../engine/ModelingEngine/SceneHelperCompiler';
 import { ModelingEngineSupport, MODULETYPE } from '../main';
 import { DataSupportManager } from '../manager/DataSupportManager';
 import { ResourceManager } from '../manager/ResourceManager';
 import { COMPILEREVENTTYPE } from '../middleware/Compiler';
 import { VISTRANSFORMEVENTTYPE } from '../optimize/VisTransformControls';
-import { SCENESTATUSTYPE } from '../plugins/SceneStatusManager';
 export class ModelingEngineSupportConnector {
     domEngineMap;
     constructor(parameters) {
@@ -178,7 +178,7 @@ export class ModelingEngineSupportConnector {
             domSceneStatusManagerMap.forEach((manager, dom) => {
                 //@ts-ignore
                 if (manager !== this) {
-                    manager.removeEventListener(SCENESTATUSTYPE.ACTIVECHANGE, syncActiveFunction); // 防止交叉触发
+                    manager.removeEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, syncActiveFunction); // 防止交叉触发
                     const allObjectMapSet = domCompilerObjectMap.get(dom);
                     const currentObjecSet = new Set();
                     cacheVidSet.forEach(vid => {
@@ -191,7 +191,7 @@ export class ModelingEngineSupportConnector {
                     });
                     manager.setActiveObjectSet(...currentObjecSet);
                     currentObjecSet.clear();
-                    manager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, syncActiveFunction);
+                    manager.addEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, syncActiveFunction);
                 }
             });
             cacheVidSet.clear();
@@ -200,7 +200,7 @@ export class ModelingEngineSupportConnector {
             // 只有运行时同步
             const sceneStatusManager = domEngineMap.get(dom).getSceneStatusManager();
             domSceneStatusManagerMap.set(dom, sceneStatusManager);
-            sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, syncActiveFunction);
+            sceneStatusManager.addEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, syncActiveFunction);
         };
         // 同步transformControls
         const domTransformControlsMap = new Map();

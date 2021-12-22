@@ -16,12 +16,13 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 
 import { PointerManager, VisPointerEvent } from "../../plugins/PointerManager"
-import { SceneStatusManager, SCENESTATUSTYPE } from "../../plugins/SceneStatusManager"
+import { SceneStatusManager } from "../../plugins/SceneStatusManager"
 
 import { VisStats } from "../../optimize/VisStats"
 import { VisOrbitControls } from "../../optimize/VisOrbitControls";
 import { VisTransformControls } from "../../optimize/VisTransformControls";
 import { RenderEvent, RenderManager } from "../../manager/RenderManager";
+import { POINTERMANAGER, SCENESTATUSMANAGER } from "../../case/constants/EVENTTYPE";
 
 
 export enum MODELINGENGINEEVNET {
@@ -174,12 +175,12 @@ export class ModelingEngine extends EventDispatcher {
     transformControls.addEventListener('mouseDown', () => { this.transing = true })
 
     // 鼠标事件
-    pointerManager.addEventListener<VisPointerEvent>('pointerdown', (event) => {
+    pointerManager.addEventListener<VisPointerEvent>(POINTERMANAGER.POINTERDOWN, (event) => {
       if (event.button === 0 && !this.transing) {
         sceneStatusManager.selectStart(event)
       }
     })
-    pointerManager.addEventListener<VisPointerEvent>('pointermove', (event: VisPointerEvent) => {
+    pointerManager.addEventListener<VisPointerEvent>(POINTERMANAGER.POINTERMOVE, (event: VisPointerEvent) => {
       if (!this.transing) {
         if (event.buttons === 1) {
           sceneStatusManager.selecting(event)
@@ -189,7 +190,7 @@ export class ModelingEngine extends EventDispatcher {
         scene.setObjectHelperHover()
       }
     })
-    pointerManager.addEventListener<VisPointerEvent>('pointerup', (event: VisPointerEvent) => {
+    pointerManager.addEventListener<VisPointerEvent>(POINTERMANAGER.POINTERUP, (event: VisPointerEvent) => {
       if (this.transing) {
         this.transing = false
         return
@@ -202,10 +203,10 @@ export class ModelingEngine extends EventDispatcher {
     })
 
     // 场景状态事件
-    sceneStatusManager.addEventListener(SCENESTATUSTYPE.HOVERCHANGE, (event) => {
+    sceneStatusManager.addEventListener(SCENESTATUSMANAGER.HOVERCHANGE, (event) => {
       scene.setObjectHelperHover(...hoverObjectSet)
     })
-    sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, (event) => {
+    sceneStatusManager.addEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, (event) => {
       scene.setObjectHelperActive(...activeObjectSet)
     })
 
@@ -231,11 +232,6 @@ export class ModelingEngine extends EventDispatcher {
       dom.appendChild(renderer.domElement)
 
     }
-  }
-
-  // 获取场景状态管理器
-  getSceneStatusManager(): SceneStatusManager {
-    return this.sceneStatusManager
   }
 
   // 设置变换控制器是否可见
@@ -269,6 +265,10 @@ export class ModelingEngine extends EventDispatcher {
     }
     return this
   }
+  // 获取场景状态管理器
+  getSceneStatusManager(): SceneStatusManager {
+    return this.sceneStatusManager
+  }
 
   // 获取变换控制器
   getTransformControls(): VisTransformControls {
@@ -293,6 +293,11 @@ export class ModelingEngine extends EventDispatcher {
   // 获取引擎渲染管理器
   getRenderManager (): RenderManager {
     return this.renderManager
+  }
+
+  // 获取指针管理器
+  getPointerManager (): PointerManager {
+    return this.pointerManager
   }
 
   // 设置相机

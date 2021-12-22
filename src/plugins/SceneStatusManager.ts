@@ -1,23 +1,18 @@
 import { BaseEvent, Camera, EventDispatcher, Frustum, Intersection, Object3D, Raycaster, Scene, Vector2, Vector3 } from 'three'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox.js'
+import { SCENESTATUSMANAGER } from '../case/constants/EVENTTYPE'
 import { VisTransformControls } from '../optimize/VisTransformControls'
 import { VisPointerEvent } from './PointerManager'
 import { SelectionHelper } from './SelectionHelper'
 
-
-export enum SCENESTATUSTYPE {
-  HOVERCHANGE = 'hover-change',
-  ACTIVECHANGE = 'active-change'
-}
-
 export interface hoverChangeEvent extends BaseEvent{
-  type: 'hover-change'
+  type: SCENESTATUSMANAGER.HOVERCHANGE
   objectSet: Set<Object3D>
 }
 
 export interface activeChangeEvent extends BaseEvent {
-  type: 'active-change'
+  type: SCENESTATUSMANAGER.ACTIVECHANGE
   objectSet: Set<Object3D>
 }
 export class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activeChangeEvent>{
@@ -88,7 +83,7 @@ export class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activ
     })
 
     this.dispatchEvent({
-      type: 'active-change',
+      type: SCENESTATUSMANAGER.ACTIVECHANGE,
       objectSet: this.activeObjectSet
     })
     
@@ -116,7 +111,7 @@ export class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activ
     })
     
     this.dispatchEvent({
-      type: 'hover-change',
+      type: SCENESTATUSMANAGER.HOVERCHANGE,
       objectSet: hoverObjectSet
     })
   }

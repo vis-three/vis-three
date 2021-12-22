@@ -1,4 +1,5 @@
 import { BaseEvent, Vector2 } from "three";
+import { POINTERMANAGER } from "../case/constants/EVENTTYPE";
 import { EventDispatcher } from "../middleware/EventDispatcher";
 
 export interface VisPointerEvent extends Omit<PointerEvent, 'type'>, BaseEvent {
@@ -23,11 +24,11 @@ export class PointerManager extends EventDispatcher {
     this.mouseEventTimer = null
     this.throttleTime = throttleTime
 
-    dom.addEventListener('pointerdown', (event: PointerEvent) => {
+    dom.addEventListener(POINTERMANAGER.POINTERDOWN, (event: PointerEvent) => {
       this.pointerDown(event)
     })
 
-    dom.addEventListener('pointermove', (event: PointerEvent) => {
+    dom.addEventListener(POINTERMANAGER.POINTERMOVE, (event: PointerEvent) => {
       if (!this.canMouseMove) {
         return
       }
@@ -45,7 +46,7 @@ export class PointerManager extends EventDispatcher {
       }, this.throttleTime)
     })
 
-    dom.addEventListener('pointerup', (event: PointerEvent) => {
+    dom.addEventListener(POINTERMANAGER.POINTERUP, (event: PointerEvent) => {
       this.pointerUp(event)
     })
   }

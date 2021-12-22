@@ -1,16 +1,13 @@
 import { BaseEvent, Camera, EventDispatcher, Object3D, Scene } from 'three';
+import { SCENESTATUSMANAGER } from '../case/constants/EVENTTYPE';
 import { VisTransformControls } from '../optimize/VisTransformControls';
 import { VisPointerEvent } from './PointerManager';
-export declare enum SCENESTATUSTYPE {
-    HOVERCHANGE = "hover-change",
-    ACTIVECHANGE = "active-change"
-}
 export interface hoverChangeEvent extends BaseEvent {
-    type: 'hover-change';
+    type: SCENESTATUSMANAGER.HOVERCHANGE;
     objectSet: Set<Object3D>;
 }
 export interface activeChangeEvent extends BaseEvent {
-    type: 'active-change';
+    type: SCENESTATUSMANAGER.ACTIVECHANGE;
     objectSet: Set<Object3D>;
 }
 export declare class SceneStatusManager extends EventDispatcher<hoverChangeEvent | activeChangeEvent> {

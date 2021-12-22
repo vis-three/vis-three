@@ -21,9 +21,10 @@ import { OBJECTEVENT } from "./case/constants/OBJECTEVENT";
 import { ControlsDataSupport } from "./case/controls/ControlsDataSupport";
 import { RendererDataSupport } from "./case/render/RendererDataSupport";
 import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
+import { EVENTTYPE } from "./case/constants/EVENTTYPE";
 export { 
 // menu
-LOADEEVENTTYPE, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, SCENEDISPLAYMODE, SCENEVIEWPOINT, OBJECTEVENT, 
+LOADEEVENTTYPE, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, SCENEDISPLAYMODE, SCENEVIEWPOINT, OBJECTEVENT, EVENTTYPE, 
 // manager
 LoaderManager, ResourceManager, DataSupportManager, 
 // engine

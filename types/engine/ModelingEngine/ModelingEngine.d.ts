@@ -31,14 +31,15 @@ export declare class ModelingEngine extends EventDispatcher {
     private transing;
     private currentCamera;
     constructor(dom?: HTMLElement);
-    getSceneStatusManager(): SceneStatusManager;
     showTransformControls(visiable: boolean): this;
     showStats(visiable: boolean): this;
+    getSceneStatusManager(): SceneStatusManager;
     getTransformControls(): VisTransformControls;
     getRenderer(): WebGLRenderer;
     getScene(): ModelingScene;
     getCurrentCamera(): Camera;
     getRenderManager(): RenderManager;
+    getPointerManager(): PointerManager;
     setCamera(camera: Camera): this;
     setSize(width: number, height: number): this;
     render(): void;

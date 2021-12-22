@@ -99,4 +99,5 @@ export declare class ModelingScene extends Scene {
     remove(...object: Object3D[]): this;
     _add(...object: Object3D[]): this;
     _remove(...object: Object3D[]): this;
+    updateMaterial(object: Object3D): this;
 }

@@ -1,11 +1,7 @@
 import { EventDispatcher, Raycaster } from 'three';
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox.js';
+import { SCENESTATUSMANAGER } from '../case/constants/EVENTTYPE';
 import { SelectionHelper } from './SelectionHelper';
-export var SCENESTATUSTYPE;
-(function (SCENESTATUSTYPE) {
-    SCENESTATUSTYPE["HOVERCHANGE"] = "hover-change";
-    SCENESTATUSTYPE["ACTIVECHANGE"] = "active-change";
-})(SCENESTATUSTYPE || (SCENESTATUSTYPE = {}));
 export class SceneStatusManager extends EventDispatcher {
     scene;
     camera;
@@ -62,7 +58,7 @@ export class SceneStatusManager extends EventDispatcher {
             });
         });
         this.dispatchEvent({
-            type: 'active-change',
+            type: SCENESTATUSMANAGER.ACTIVECHANGE,
             objectSet: this.activeObjectSet
         });
         if (this.transformControls) {
@@ -87,7 +83,7 @@ export class SceneStatusManager extends EventDispatcher {
             });
         });
         this.dispatchEvent({
-            type: 'hover-change',
+            type: SCENESTATUSMANAGER.HOVERCHANGE,
             objectSet: hoverObjectSet
         });
     }

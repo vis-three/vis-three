@@ -2,6 +2,7 @@ import { BoxBufferGeometry, BufferGeometry, Line, Material, Mesh, MeshStandardMa
 import { validate } from "uuid";
 import { Compiler, COMPILEREVENTTYPE, CompilerTarget, ObjectCompiler } from "../../middleware/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
+import { MODELCOMPILER } from "../constants/EVENTTYPE";
 import { GeometryCompilerTarget } from "../geometry/GeometryCompiler";
 import { ModelConfig } from "./ModelConfig";
 
@@ -69,64 +70,36 @@ export class ModelCompiler extends Compiler implements ObjectCompiler {
     this.constructMap = constructMap
     this.objectMapSet = new Set()
   }
-
-  add (vid: string, config: ModelConfig): this {
+  
+  // 获取材质
+  private getMaterial (vid: string): Material {
     if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const object = this.constructMap.get(config.type)!(config)
-        const tempConfig = JSON.parse(JSON.stringify(config))
-
-        delete tempConfig.vid
-        delete tempConfig.type
-        delete tempConfig.geometry
-        delete tempConfig.material
-        delete tempConfig.lookAt
-
-        Compiler.applyConfig(tempConfig, object)
-
-        this.map.set(vid, object)
-
-        this.setLookAt(vid, config.lookAt)
-
-        this.dispatchEvent({
-          type: COMPILEREVENTTYPE.ADD,
-          object,
-          vid
-        })
-
-        this.scene.add(object)     
+      if (this.materialMap.has(vid)) {
+        return this.materialMap.get(vid)!
+      } else {
+        console.warn(`can not found material which vid: ${vid}`)
+        return this.getReplaceMaterial()
       }
     } else {
-      console.error(`model vid parameter is illegal: ${vid}`)
+      console.error(`material vid parameter is illegal: ${vid}`)
+      return this.getReplaceMaterial()
     }
-    return this
   }
 
-  set (vid: string, path: string[], key: string, value: any): this {
-
-    if (!validate(vid)) {
-      console.warn(`model compiler vid is illegal: '${vid}'`)
-      return this
+  // 获取几何
+  private getGeometry (vid: string): BufferGeometry {
+    if (validate(vid)) {
+      if (this.geometryMap.has(vid)) {
+        return this.geometryMap.get(vid)!
+      } else {
+        console.warn(`can not found geometry which vid: ${vid}`)
+        return this.getReplaceGeometry()
+      }
+    } else {
+      console.error(`geometry vid parameter is illegal: ${vid}`)
+      return this.getReplaceGeometry()
     }
-
-    if (!this.map.has(vid)) {
-      console.warn(`model compiler can not found this vid mapping object: '${vid}'`)
-      return this
-    }
-
-    if (key === 'lookAt') {
-      return this.setLookAt(vid, value)
-    }
-
-    let config = this.map.get(vid)!
-    path.forEach((key, i, arr) => {
-      config = config[key]
-    })
-    config[key] = value
-    return this
   }
-
-  remove () {}
 
   // 设置物体的lookAt方法
   private setLookAt (vid: string, target: string): this {
@@ -179,33 +152,80 @@ export class ModelCompiler extends Compiler implements ObjectCompiler {
     return this
   }
 
-  private getMaterial (vid: string): Material {
-    if (validate(vid)) {
-      if (this.materialMap.has(vid)) {
-        return this.materialMap.get(vid)!
-      } else {
-        console.warn(`can not found material which vid: ${vid}`)
-        return this.getReplaceMaterial()
-      }
-    } else {
-      console.error(`material vid parameter is illegal: ${vid}`)
-      return this.getReplaceMaterial()
-    }
+  // 设置材质方法
+  private setMaterial (vid: string, target: string): this {
+    (this.map.get(vid)! as Mesh).material = this.getMaterial(target)
+    
+    this.dispatchEvent({
+      type: MODELCOMPILER.SETMATERIAL,
+      object: this.map.get(vid)
+    })
+    return this
   }
 
-  private getGeometry (vid: string): BufferGeometry {
+  add (vid: string, config: ModelConfig): this {
     if (validate(vid)) {
-      if (this.geometryMap.has(vid)) {
-        return this.geometryMap.get(vid)!
-      } else {
-        console.warn(`can not found geometry which vid: ${vid}`)
-        return this.getReplaceGeometry()
+      if (config.type && this.constructMap.has(config.type)) {
+        const object = this.constructMap.get(config.type)!(config)
+        const tempConfig = JSON.parse(JSON.stringify(config))
+
+        delete tempConfig.vid
+        delete tempConfig.type
+        delete tempConfig.geometry
+        delete tempConfig.material
+        delete tempConfig.lookAt
+
+        Compiler.applyConfig(tempConfig, object)
+
+        this.map.set(vid, object)
+
+        this.setLookAt(vid, config.lookAt)
+
+        this.dispatchEvent({
+          type: COMPILEREVENTTYPE.ADD,
+          object,
+          vid
+        })
+
+        this.scene.add(object)     
       }
     } else {
-      console.error(`geometry vid parameter is illegal: ${vid}`)
-      return this.getReplaceGeometry()
+      console.warn(`model compiler add function: model vid parameter is illegal: ${vid}`)
     }
+    return this
   }
+
+  set (vid: string, path: string[], key: string, value: any): this {
+
+    if (!validate(vid)) {
+      console.warn(`model compiler vid is illegal: '${vid}'`)
+      return this
+    }
+
+    if (!this.map.has(vid)) {
+      console.warn(`model compiler can not found this vid mapping object: '${vid}'`)
+      return this
+    }
+
+    if (key === 'lookAt') {
+      return this.setLookAt(vid, value)
+    }
+
+    if (key === 'material') {
+      return this.setMaterial(vid, value)
+    }
+
+    let config = this.map.get(vid)!
+    path.forEach((key, i, arr) => {
+      config = config[key]
+    })
+    config[key] = value
+    return this
+  }
+
+  remove () {}
+
+
 
   linkGeometryMap (map: Map<SymbolConfig['vid'], BufferGeometry>): this {
     this.geometryMap = map

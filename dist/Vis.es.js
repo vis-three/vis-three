@@ -897,23 +897,30 @@ class ModelingScene extends Scene {
     this.dispatchEvent({ type: `${direction}ViewPoint` });
   }
   add(...object) {
+    let addNumber = 0;
     object.forEach((elem) => {
       if (elem instanceof Mesh) {
         this.meshSet.add(elem);
+        addNumber += 1;
       } else if (elem instanceof Line) {
         this.lineSet.add(elem);
+        addNumber += 1;
       } else if (elem instanceof Light) {
         this.lightSet.add(elem);
+        addNumber += 1;
       } else if (elem instanceof Points) {
         this.pointsSet.add(elem);
+        addNumber += 1;
       } else if (elem instanceof Sprite) {
         this.spriteSet.add(elem);
+        addNumber += 1;
       } else if (elem instanceof Camera) {
         this.cameraSet.add(elem);
+        addNumber += 1;
       }
       this.helperCompiler.add(elem);
     });
-    if (this.displayMode !== void 0) {
+    if (this.displayMode !== void 0 && addNumber > 0) {
       this.switchDisplayMode(this.displayMode);
     }
     return super.add(...object);
@@ -945,7 +952,42 @@ class ModelingScene extends Scene {
   _remove(...object) {
     return super.remove(...object);
   }
+  updateMaterial(object) {
+    var _a;
+    if (this.displayMode !== void 0 && this.displayMode === 0) {
+      (_a = this.materialCacheMap) == null ? void 0 : _a.set(object, object.material);
+      this.switchDisplayMode && this.switchDisplayMode(this.displayMode);
+    }
+    return this;
+  }
 }
+var RENDERERMANAGER;
+(function(RENDERERMANAGER2) {
+  RENDERERMANAGER2["RENDER"] = "render";
+  RENDERERMANAGER2["PLAY"] = "play";
+  RENDERERMANAGER2["STOP"] = "stop";
+})(RENDERERMANAGER || (RENDERERMANAGER = {}));
+var SCENESTATUSMANAGER;
+(function(SCENESTATUSMANAGER2) {
+  SCENESTATUSMANAGER2["HOVERCHANGE"] = "hover-change";
+  SCENESTATUSMANAGER2["ACTIVECHANGE"] = "active-change";
+})(SCENESTATUSMANAGER || (SCENESTATUSMANAGER = {}));
+var POINTERMANAGER;
+(function(POINTERMANAGER2) {
+  POINTERMANAGER2["POINTERDOWN"] = "pointerdown";
+  POINTERMANAGER2["POINTERMOVE"] = "pointermove";
+  POINTERMANAGER2["POINTERUP"] = "pointerup";
+})(POINTERMANAGER || (POINTERMANAGER = {}));
+var MODELCOMPILER;
+(function(MODELCOMPILER2) {
+  MODELCOMPILER2["SETMATERIAL"] = "setMaterial";
+})(MODELCOMPILER || (MODELCOMPILER = {}));
+const EVENTTYPE = {
+  RENDERERMANAGER,
+  SCENESTATUSMANAGER,
+  POINTERMANAGER,
+  MODELCOMPILER
+};
 class EventDispatcher {
   constructor() {
     __publicField(this, "listeners", new Map());
@@ -998,10 +1040,10 @@ class PointerManager extends EventDispatcher {
     this.canMouseMove = true;
     this.mouseEventTimer = null;
     this.throttleTime = throttleTime;
-    dom.addEventListener("pointerdown", (event) => {
+    dom.addEventListener(POINTERMANAGER.POINTERDOWN, (event) => {
       this.pointerDown(event);
     });
-    dom.addEventListener("pointermove", (event) => {
+    dom.addEventListener(POINTERMANAGER.POINTERMOVE, (event) => {
       if (!this.canMouseMove) {
         return;
       }
@@ -1015,7 +1057,7 @@ class PointerManager extends EventDispatcher {
         this.pointerMove(event);
       }, this.throttleTime);
     });
-    dom.addEventListener("pointerup", (event) => {
+    dom.addEventListener(POINTERMANAGER.POINTERUP, (event) => {
       this.pointerUp(event);
     });
   }
@@ -1228,11 +1270,6 @@ class SelectionHelper {
     document.body.removeChild(this.element);
   }
 }
-var SCENESTATUSTYPE;
-(function(SCENESTATUSTYPE2) {
-  SCENESTATUSTYPE2["HOVERCHANGE"] = "hover-change";
-  SCENESTATUSTYPE2["ACTIVECHANGE"] = "active-change";
-})(SCENESTATUSTYPE || (SCENESTATUSTYPE = {}));
 class SceneStatusManager extends EventDispatcher$1 {
   constructor(camera, scene, deep = Number.MAX_VALUE) {
     super();
@@ -1286,7 +1323,7 @@ class SceneStatusManager extends EventDispatcher$1 {
       });
     });
     this.dispatchEvent({
-      type: "active-change",
+      type: SCENESTATUSMANAGER.ACTIVECHANGE,
       objectSet: this.activeObjectSet
     });
     if (this.transformControls) {
@@ -1309,7 +1346,7 @@ class SceneStatusManager extends EventDispatcher$1 {
       });
     });
     this.dispatchEvent({
-      type: "hover-change",
+      type: SCENESTATUSMANAGER.HOVERCHANGE,
       objectSet: hoverObjectSet
     });
   }
@@ -1572,12 +1609,6 @@ class VisTransformControls extends TransformControls {
     return this;
   }
 }
-var RENDERERMANAGER;
-(function(RENDERERMANAGER2) {
-  RENDERERMANAGER2["RENDER"] = "render";
-  RENDERERMANAGER2["PLAY"] = "play";
-  RENDERERMANAGER2["STOP"] = "stop";
-})(RENDERERMANAGER || (RENDERERMANAGER = {}));
 class RenderManager extends EventDispatcher$1 {
   constructor() {
     super(...arguments);
@@ -1728,12 +1759,12 @@ class ModelingEngine extends EventDispatcher$1 {
     transformControls.addEventListener("mouseDown", () => {
       this.transing = true;
     });
-    pointerManager.addEventListener("pointerdown", (event) => {
+    pointerManager.addEventListener(POINTERMANAGER.POINTERDOWN, (event) => {
       if (event.button === 0 && !this.transing) {
         sceneStatusManager.selectStart(event);
       }
     });
-    pointerManager.addEventListener("pointermove", (event) => {
+    pointerManager.addEventListener(POINTERMANAGER.POINTERMOVE, (event) => {
       if (!this.transing) {
         if (event.buttons === 1) {
           sceneStatusManager.selecting(event);
@@ -1743,7 +1774,7 @@ class ModelingEngine extends EventDispatcher$1 {
         scene.setObjectHelperHover();
       }
     });
-    pointerManager.addEventListener("pointerup", (event) => {
+    pointerManager.addEventListener(POINTERMANAGER.POINTERUP, (event) => {
       if (this.transing) {
         this.transing = false;
         return;
@@ -1753,10 +1784,10 @@ class ModelingEngine extends EventDispatcher$1 {
         sceneStatusManager.selectEnd(event);
       }
     });
-    sceneStatusManager.addEventListener(SCENESTATUSTYPE.HOVERCHANGE, (event) => {
+    sceneStatusManager.addEventListener(SCENESTATUSMANAGER.HOVERCHANGE, (event) => {
       scene.setObjectHelperHover(...hoverObjectSet);
     });
-    sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, (event) => {
+    sceneStatusManager.addEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, (event) => {
       scene.setObjectHelperActive(...activeObjectSet);
     });
     renderManager.addEventListener("render", (event) => {
@@ -1777,9 +1808,6 @@ class ModelingEngine extends EventDispatcher$1 {
       this.setSize(dom.offsetWidth, dom.offsetHeight);
       dom.appendChild(renderer.domElement);
     }
-  }
-  getSceneStatusManager() {
-    return this.sceneStatusManager;
   }
   showTransformControls(visiable) {
     this.transformControls.visible = visiable;
@@ -1808,6 +1836,9 @@ class ModelingEngine extends EventDispatcher$1 {
     }
     return this;
   }
+  getSceneStatusManager() {
+    return this.sceneStatusManager;
+  }
   getTransformControls() {
     return this.transformControls;
   }
@@ -1822,6 +1853,9 @@ class ModelingEngine extends EventDispatcher$1 {
   }
   getRenderManager() {
     return this.renderManager;
+  }
+  getPointerManager() {
+    return this.pointerManager;
   }
   setCamera(camera) {
     this.dispatchEvent({
@@ -2716,51 +2750,31 @@ class ModelCompiler extends Compiler {
     this.constructMap = constructMap;
     this.objectMapSet = new Set();
   }
-  add(vid, config) {
+  getMaterial(vid) {
     if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const object = this.constructMap.get(config.type)(config);
-        const tempConfig = JSON.parse(JSON.stringify(config));
-        delete tempConfig.vid;
-        delete tempConfig.type;
-        delete tempConfig.geometry;
-        delete tempConfig.material;
-        delete tempConfig.lookAt;
-        Compiler.applyConfig(tempConfig, object);
-        this.map.set(vid, object);
-        this.setLookAt(vid, config.lookAt);
-        this.dispatchEvent({
-          type: COMPILEREVENTTYPE.ADD,
-          object,
-          vid
-        });
-        this.scene.add(object);
+      if (this.materialMap.has(vid)) {
+        return this.materialMap.get(vid);
+      } else {
+        console.warn(`can not found material which vid: ${vid}`);
+        return this.getReplaceMaterial();
       }
     } else {
-      console.error(`model vid parameter is illegal: ${vid}`);
+      console.error(`material vid parameter is illegal: ${vid}`);
+      return this.getReplaceMaterial();
     }
-    return this;
   }
-  set(vid, path, key, value) {
-    if (!validate(vid)) {
-      console.warn(`model compiler vid is illegal: '${vid}'`);
-      return this;
+  getGeometry(vid) {
+    if (validate(vid)) {
+      if (this.geometryMap.has(vid)) {
+        return this.geometryMap.get(vid);
+      } else {
+        console.warn(`can not found geometry which vid: ${vid}`);
+        return this.getReplaceGeometry();
+      }
+    } else {
+      console.error(`geometry vid parameter is illegal: ${vid}`);
+      return this.getReplaceGeometry();
     }
-    if (!this.map.has(vid)) {
-      console.warn(`model compiler can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    if (key === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-    let config = this.map.get(vid);
-    path.forEach((key2, i, arr) => {
-      config = config[key2];
-    });
-    config[key] = value;
-    return this;
-  }
-  remove() {
   }
   setLookAt(vid, target) {
     if (vid === target) {
@@ -2798,31 +2812,62 @@ class ModelCompiler extends Compiler {
     };
     return this;
   }
-  getMaterial(vid) {
-    if (validate(vid)) {
-      if (this.materialMap.has(vid)) {
-        return this.materialMap.get(vid);
-      } else {
-        console.warn(`can not found material which vid: ${vid}`);
-        return this.getReplaceMaterial();
-      }
-    } else {
-      console.error(`material vid parameter is illegal: ${vid}`);
-      return this.getReplaceMaterial();
-    }
+  setMaterial(vid, target) {
+    this.map.get(vid).material = this.getMaterial(target);
+    this.dispatchEvent({
+      type: MODELCOMPILER.SETMATERIAL,
+      object: this.map.get(vid)
+    });
+    return this;
   }
-  getGeometry(vid) {
+  add(vid, config) {
     if (validate(vid)) {
-      if (this.geometryMap.has(vid)) {
-        return this.geometryMap.get(vid);
-      } else {
-        console.warn(`can not found geometry which vid: ${vid}`);
-        return this.getReplaceGeometry();
+      if (config.type && this.constructMap.has(config.type)) {
+        const object = this.constructMap.get(config.type)(config);
+        const tempConfig = JSON.parse(JSON.stringify(config));
+        delete tempConfig.vid;
+        delete tempConfig.type;
+        delete tempConfig.geometry;
+        delete tempConfig.material;
+        delete tempConfig.lookAt;
+        Compiler.applyConfig(tempConfig, object);
+        this.map.set(vid, object);
+        this.setLookAt(vid, config.lookAt);
+        this.dispatchEvent({
+          type: COMPILEREVENTTYPE.ADD,
+          object,
+          vid
+        });
+        this.scene.add(object);
       }
     } else {
-      console.error(`geometry vid parameter is illegal: ${vid}`);
-      return this.getReplaceGeometry();
+      console.warn(`model compiler add function: model vid parameter is illegal: ${vid}`);
     }
+    return this;
+  }
+  set(vid, path, key, value) {
+    if (!validate(vid)) {
+      console.warn(`model compiler vid is illegal: '${vid}'`);
+      return this;
+    }
+    if (!this.map.has(vid)) {
+      console.warn(`model compiler can not found this vid mapping object: '${vid}'`);
+      return this;
+    }
+    if (key === "lookAt") {
+      return this.setLookAt(vid, value);
+    }
+    if (key === "material") {
+      return this.setMaterial(vid, value);
+    }
+    let config = this.map.get(vid);
+    path.forEach((key2, i, arr) => {
+      config = config[key2];
+    });
+    config[key] = value;
+    return this;
+  }
+  remove() {
   }
   linkGeometryMap(map) {
     this.geometryMap = map;
@@ -3368,6 +3413,9 @@ class ModelingEngineSupport extends ModelingEngine {
       const e = event;
       objectConfigMap.set(e.object, cameraSupportData[e.vid]);
     });
+    modelCompiler.addEventListener(MODELCOMPILER.SETMATERIAL, (event) => {
+      this.scene.updateMaterial(event.object);
+    });
     this.transformControls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, (event) => {
       const e = event;
       const mode = e.mode;
@@ -3382,7 +3430,7 @@ class ModelingEngineSupport extends ModelingEngine {
         }
       });
     });
-    this.sceneStatusManager.addEventListener(SCENESTATUSTYPE.HOVERCHANGE, (event) => {
+    this.sceneStatusManager.addEventListener(SCENESTATUSMANAGER.HOVERCHANGE, (event) => {
       const e = event;
       const vidSet = new Set();
       e.objectSet.forEach((object) => {
@@ -3397,7 +3445,7 @@ class ModelingEngineSupport extends ModelingEngine {
         vidSet
       });
     });
-    this.sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, (event) => {
+    this.sceneStatusManager.addEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, (event) => {
       const e = event;
       const vidSet = new Set();
       e.objectSet.forEach((object) => {
@@ -5110,7 +5158,7 @@ class ModelingEngineSupportConnector {
       });
       domSceneStatusManagerMap.forEach((manager, dom) => {
         if (manager !== this) {
-          manager.removeEventListener(SCENESTATUSTYPE.ACTIVECHANGE, syncActiveFunction);
+          manager.removeEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, syncActiveFunction);
           const allObjectMapSet = domCompilerObjectMap.get(dom);
           const currentObjecSet = new Set();
           cacheVidSet.forEach((vid) => {
@@ -5122,7 +5170,7 @@ class ModelingEngineSupportConnector {
           });
           manager.setActiveObjectSet(...currentObjecSet);
           currentObjecSet.clear();
-          manager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, syncActiveFunction);
+          manager.addEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, syncActiveFunction);
         }
       });
       cacheVidSet.clear();
@@ -5130,7 +5178,7 @@ class ModelingEngineSupportConnector {
     const syncSceneStatus = (dom, i, arr) => {
       const sceneStatusManager = domEngineMap.get(dom).getSceneStatusManager();
       domSceneStatusManagerMap.set(dom, sceneStatusManager);
-      sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, syncActiveFunction);
+      sceneStatusManager.addEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, syncActiveFunction);
     };
     const domTransformControlsMap = new Map();
     const syncTransformControlsFunction = function(event) {
@@ -5266,4 +5314,4 @@ __publicField(MaterialDisplayer, "dispose", () => {
   _MaterialDisplayer.geometry.dispose();
   _MaterialDisplayer.plane.geometry.dispose();
 });
-export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, generateConfig };
+export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, EVENTTYPE, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, generateConfig };

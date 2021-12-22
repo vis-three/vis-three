@@ -3,11 +3,12 @@ import { ModelingScene, SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./ModelingScene
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { PointerManager } from "../../plugins/PointerManager";
-import { SceneStatusManager, SCENESTATUSTYPE } from "../../plugins/SceneStatusManager";
+import { SceneStatusManager } from "../../plugins/SceneStatusManager";
 import { VisStats } from "../../optimize/VisStats";
 import { VisOrbitControls } from "../../optimize/VisOrbitControls";
 import { VisTransformControls } from "../../optimize/VisTransformControls";
 import { RenderManager } from "../../manager/RenderManager";
+import { POINTERMANAGER, SCENESTATUSMANAGER } from "../../case/constants/EVENTTYPE";
 export var MODELINGENGINEEVNET;
 (function (MODELINGENGINEEVNET) {
     MODELINGENGINEEVNET["SETCAMERA"] = "setCamera";
@@ -125,12 +126,12 @@ export class ModelingEngine extends EventDispatcher {
         // 变换事件
         transformControls.addEventListener('mouseDown', () => { this.transing = true; });
         // 鼠标事件
-        pointerManager.addEventListener('pointerdown', (event) => {
+        pointerManager.addEventListener(POINTERMANAGER.POINTERDOWN, (event) => {
             if (event.button === 0 && !this.transing) {
                 sceneStatusManager.selectStart(event);
             }
         });
-        pointerManager.addEventListener('pointermove', (event) => {
+        pointerManager.addEventListener(POINTERMANAGER.POINTERMOVE, (event) => {
             if (!this.transing) {
                 if (event.buttons === 1) {
                     sceneStatusManager.selecting(event);
@@ -141,7 +142,7 @@ export class ModelingEngine extends EventDispatcher {
                 scene.setObjectHelperHover();
             }
         });
-        pointerManager.addEventListener('pointerup', (event) => {
+        pointerManager.addEventListener(POINTERMANAGER.POINTERUP, (event) => {
             if (this.transing) {
                 this.transing = false;
                 return;
@@ -152,10 +153,10 @@ export class ModelingEngine extends EventDispatcher {
             }
         });
         // 场景状态事件
-        sceneStatusManager.addEventListener(SCENESTATUSTYPE.HOVERCHANGE, (event) => {
+        sceneStatusManager.addEventListener(SCENESTATUSMANAGER.HOVERCHANGE, (event) => {
             scene.setObjectHelperHover(...hoverObjectSet);
         });
-        sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, (event) => {
+        sceneStatusManager.addEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, (event) => {
             scene.setObjectHelperActive(...activeObjectSet);
         });
         // 渲染事件
@@ -177,10 +178,6 @@ export class ModelingEngine extends EventDispatcher {
             this.setSize(dom.offsetWidth, dom.offsetHeight);
             dom.appendChild(renderer.domElement);
         }
-    }
-    // 获取场景状态管理器
-    getSceneStatusManager() {
-        return this.sceneStatusManager;
     }
     // 设置变换控制器是否可见
     showTransformControls(visiable) {
@@ -214,6 +211,10 @@ export class ModelingEngine extends EventDispatcher {
         }
         return this;
     }
+    // 获取场景状态管理器
+    getSceneStatusManager() {
+        return this.sceneStatusManager;
+    }
     // 获取变换控制器
     getTransformControls() {
         return this.transformControls;
@@ -233,6 +234,10 @@ export class ModelingEngine extends EventDispatcher {
     // 获取引擎渲染管理器
     getRenderManager() {
         return this.renderManager;
+    }
+    // 获取指针管理器
+    getPointerManager() {
+        return this.pointerManager;
     }
     // 设置相机
     setCamera(camera) {

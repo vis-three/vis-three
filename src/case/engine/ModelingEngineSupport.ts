@@ -5,10 +5,11 @@ import { DataSupportManager } from "../../manager/DataSupportManager";
 import { ResourceManager } from "../../manager/ResourceManager";
 import { Compiler, CompilerAddEvent, COMPILEREVENTTYPE, CompilerTarget } from "../../middleware/Compiler";
 import { ObjectChangedEvent, VISTRANSFORMEVENTTYPE } from "../../optimize/VisTransformControls";
-import { activeChangeEvent, hoverChangeEvent, SCENESTATUSTYPE } from "../../plugins/SceneStatusManager";
+import { activeChangeEvent, hoverChangeEvent } from "../../plugins/SceneStatusManager";
 import { CameraCompiler } from "../camera/CameraCompiler";
 import { CameraDataSupport } from "../camera/CameraDataSupport";
 import { SymbolConfig } from "../common/CommonConfig";
+import { MODELCOMPILER, SCENESTATUSMANAGER } from "../constants/EVENTTYPE";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { OBJECTEVENT } from "../constants/OBJECTEVENT";
 import { ControlsCompiler } from "../controls/ControlsCompiler";
@@ -199,6 +200,11 @@ export class ModelingEngineSupport extends ModelingEngine {
       objectConfigMap.set(e.object, cameraSupportData[e.vid])
     })
 
+    // 材质变换通知modeling scene更新状态
+    modelCompiler.addEventListener(MODELCOMPILER.SETMATERIAL, event => {
+      this.scene.updateMaterial(event.object)
+    })
+
     // 控制器变换物体更新support
     this.transformControls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, (event) => {
       const e = event as unknown as ObjectChangedEvent
@@ -218,7 +224,7 @@ export class ModelingEngineSupport extends ModelingEngine {
     })
 
     // 状态事件抛出support的vid
-    this.sceneStatusManager.addEventListener(SCENESTATUSTYPE.HOVERCHANGE, (event) => {
+    this.sceneStatusManager.addEventListener(SCENESTATUSMANAGER.HOVERCHANGE, (event) => {
       const e = event as hoverChangeEvent
       const vidSet = new Set<string>()
       e.objectSet.forEach(object => {
@@ -235,7 +241,7 @@ export class ModelingEngineSupport extends ModelingEngine {
       })
     })
 
-    this.sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, (event) => {
+    this.sceneStatusManager.addEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, (event) => {
       const e = event as activeChangeEvent
       const vidSet = new Set<string>()
       e.objectSet.forEach(object => {

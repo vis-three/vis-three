@@ -1,6 +1,7 @@
 import { Camera, Light, Material, Mesh, Object3D } from 'three';
 import { CameraCompiler } from '../case/camera/CameraCompiler';
 import { SymbolConfig } from '../case/common/CommonConfig';
+import { SCENESTATUSMANAGER } from '../case/constants/EVENTTYPE';
 import { LightCompiler } from '../case/light/LightCompiler';
 import { ModelCompiler } from '../case/model/ModelCompiler';
 import { AddHelperEvent, HELPERCOMPILEREVENTTYPE } from '../engine/ModelingEngine/SceneHelperCompiler';
@@ -9,7 +10,7 @@ import { DataSupportManager} from '../manager/DataSupportManager';
 import { ResourceManager } from '../manager/ResourceManager';
 import { CompilerAddEvent, COMPILEREVENTTYPE } from '../middleware/Compiler';
 import { ObjectChangedEvent, VisTransformControls, VISTRANSFORMEVENTTYPE } from '../optimize/VisTransformControls';
-import { activeChangeEvent, hoverChangeEvent, SceneStatusManager, SCENESTATUSTYPE } from '../plugins/SceneStatusManager';
+import { activeChangeEvent, hoverChangeEvent, SceneStatusManager } from '../plugins/SceneStatusManager';
 
 export interface ModelingConnectorParameters {
   domList: Array<HTMLElement>
@@ -214,7 +215,7 @@ export class ModelingEngineSupportConnector {
       domSceneStatusManagerMap.forEach((manager, dom) => {
         //@ts-ignore
         if (manager !== this) {
-          manager.removeEventListener(SCENESTATUSTYPE.ACTIVECHANGE ,syncActiveFunction) // 防止交叉触发
+          manager.removeEventListener(SCENESTATUSMANAGER.ACTIVECHANGE ,syncActiveFunction) // 防止交叉触发
           const allObjectMapSet = domCompilerObjectMap.get(dom)!
           const currentObjecSet = new Set<Object3D>()
           cacheVidSet.forEach(vid => {
@@ -228,7 +229,7 @@ export class ModelingEngineSupportConnector {
           manager.setActiveObjectSet(...currentObjecSet)
 
           currentObjecSet.clear()
-          manager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE ,syncActiveFunction)
+          manager.addEventListener(SCENESTATUSMANAGER.ACTIVECHANGE ,syncActiveFunction)
         }
       })
       cacheVidSet.clear()
@@ -237,7 +238,7 @@ export class ModelingEngineSupportConnector {
       // 只有运行时同步
       const sceneStatusManager = domEngineMap.get(dom)!.getSceneStatusManager()
       domSceneStatusManagerMap.set(dom, sceneStatusManager)
-      sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, syncActiveFunction)
+      sceneStatusManager.addEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, syncActiveFunction)
     }
 
     // 同步transformControls

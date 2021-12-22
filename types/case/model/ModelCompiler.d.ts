@@ -26,12 +26,13 @@ export declare class ModelCompiler extends Compiler implements ObjectCompiler {
     private getReplaceMaterial;
     private getReplaceGeometry;
     constructor(parameters?: ModelCompilerParameters);
+    private getMaterial;
+    private getGeometry;
+    private setLookAt;
+    private setMaterial;
     add(vid: string, config: ModelConfig): this;
     set(vid: string, path: string[], key: string, value: any): this;
     remove(): void;
-    private setLookAt;
-    private getMaterial;
-    private getGeometry;
     linkGeometryMap(map: Map<SymbolConfig['vid'], BufferGeometry>): this;
     linkMaterialMap(materialMap: Map<string, Material>): this;
     linkObjectMap(map: Map<SymbolConfig['vid'], Object3D>): this;

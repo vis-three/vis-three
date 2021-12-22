@@ -2,8 +2,8 @@ import { validate } from "uuid";
 import { ModelingEngine } from "../../main";
 import { COMPILEREVENTTYPE } from "../../middleware/Compiler";
 import { VISTRANSFORMEVENTTYPE } from "../../optimize/VisTransformControls";
-import { SCENESTATUSTYPE } from "../../plugins/SceneStatusManager";
 import { CameraCompiler } from "../camera/CameraCompiler";
+import { MODELCOMPILER, SCENESTATUSMANAGER } from "../constants/EVENTTYPE";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { OBJECTEVENT } from "../constants/OBJECTEVENT";
 import { ControlsCompiler } from "../controls/ControlsCompiler";
@@ -133,6 +133,10 @@ export class ModelingEngineSupport extends ModelingEngine {
             const e = event;
             objectConfigMap.set(e.object, cameraSupportData[e.vid]);
         });
+        // model材质变换通知scene更新状态
+        modelCompiler.addEventListener(MODELCOMPILER.SETMATERIAL, event => {
+            this.scene.updateMaterial(event.object);
+        });
         // 控制器变换物体更新support
         this.transformControls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, (event) => {
             const e = event;
@@ -151,7 +155,7 @@ export class ModelingEngineSupport extends ModelingEngine {
             });
         });
         // 状态事件抛出support的vid
-        this.sceneStatusManager.addEventListener(SCENESTATUSTYPE.HOVERCHANGE, (event) => {
+        this.sceneStatusManager.addEventListener(SCENESTATUSMANAGER.HOVERCHANGE, (event) => {
             const e = event;
             const vidSet = new Set();
             e.objectSet.forEach(object => {
@@ -167,7 +171,7 @@ export class ModelingEngineSupport extends ModelingEngine {
                 vidSet
             });
         });
-        this.sceneStatusManager.addEventListener(SCENESTATUSTYPE.ACTIVECHANGE, (event) => {
+        this.sceneStatusManager.addEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, (event) => {
             const e = event;
             const vidSet = new Set();
             e.objectSet.forEach(object => {
