@@ -21,9 +21,17 @@ export enum MODELCOMPILER {
   SETMATERIAL = 'setMaterial'
 }
 
+export enum LOADERMANAGER {
+  LOADING = 'loading',
+  DETAILLOADING = 'detailLoading',
+  DETAILLOADED = 'detailLoaded',
+  LOADED = 'loaded'
+}
+
 export const EVENTTYPE = {
   RENDERERMANAGER,
   SCENESTATUSMANAGER,
   POINTERMANAGER,
-  MODELCOMPILER
+  MODELCOMPILER,
+  LOADERMANAGER
 }

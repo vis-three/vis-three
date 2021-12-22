@@ -1,6 +1,7 @@
 import { BaseEvent, EventDispatcher, ImageLoader, Loader, TextureLoader } from "three"
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader"
+import { LOADERMANAGER } from "../case/constants/EVENTTYPE"
 
 export interface LoaderMap {
   [key: string]: Loader
@@ -28,13 +29,6 @@ export interface LoadedEvent extends BaseEvent {
   loadSuccess: number
   loadError: number
   resourceMap: Map<string, unknown>
-}
-
-export enum LOADEEVENTTYPE {
-  LOADING = 'loading',
-  DETAILLOADING = 'detailLoading',
-  DETAILLOADED = 'detailLoaded',
-  LOADED = 'loaded'
 }
 
 export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | LoadedEvent> {
@@ -67,6 +61,27 @@ export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | 
       'obj': new OBJLoader(),
       'mtl': new MTLLoader()
     }
+  }
+
+  private loaded (): this {
+    this.dispatchEvent({
+      type: LOADERMANAGER.LOADED,
+      loadTotal: this.loadTotal,
+      loadSuccess: this.loadSuccess,
+      loadError: this.loadError,
+      resourceMap: this.resourceMap
+    })
+    return this
+  }
+
+  private checkLoaded (): this {
+    if (this.loadTotal === this.loadSuccess + this.loadError) {
+      this.isError = true
+      this.isLoaded = true
+      this.isLoading = false
+      this.loaded()
+    }
+    return this
   }
 
   load (urlList: Array<string>): this {
@@ -115,7 +130,7 @@ export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | 
       loader.loadAsync(url, (event: ProgressEvent) => {
         detail.progress = Number((event.loaded / event.total).toFixed(2))
         this.dispatchEvent({
-          type: 'detailLoading',
+          type: LOADERMANAGER.DETAILLOADING,
           detail
         })
       }).then(res => {
@@ -123,11 +138,11 @@ export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | 
         this.loadSuccess += 1
         this.resourceMap.set(url, res)
         this.dispatchEvent({
-          type: 'detailLoaded',
+          type: LOADERMANAGER.DETAILLOADED,
           detail
         })
         this.dispatchEvent({
-          type: 'loading',
+          type: LOADERMANAGER.LOADING,
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
           loadError: this.loadError
@@ -138,11 +153,11 @@ export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | 
         detail.message = JSON.stringify(err)
         this.loadError += 1
         this.dispatchEvent({
-          type: 'detailLoaded',
+          type: LOADERMANAGER.DETAILLOADED,
           detail
         })
         this.dispatchEvent({
-          type: 'loading',
+          type: LOADERMANAGER.LOADING,
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
           loadError: this.loadError
@@ -153,17 +168,6 @@ export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | 
 
     }
 
-    return this
-  }
-
-   private loaded (): this {
-    this.dispatchEvent({
-      type: 'loaded',
-      loadTotal: this.loadTotal,
-      loadSuccess: this.loadSuccess,
-      loadError: this.loadError,
-      resourceMap: this.resourceMap
-    })
     return this
   }
 
@@ -178,18 +182,14 @@ export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | 
     return this
   }
 
+  // 资源是否已经加装
+  hasLoaded (url: string): boolean {
+    return this.resourceMap.has(url)
+  }
+
   dispose (): this {
     this.resourceMap.clear()
     return this
   }
 
-  private checkLoaded (): this {
-    if (this.loadTotal === this.loadSuccess + this.loadError) {
-      this.isError = true
-      this.isLoaded = true
-      this.isLoading = false
-      this.loaded()
-    }
-    return this
-  }
 }

@@ -57,12 +57,12 @@
     const totalProgress = document.getElementById('totalProgress')
     const detailProgress = document.getElementById('detailProgress')
 
-    loaderManager.addEventListener(Vis.LOADEEVENTTYPE.LOADING, e => {
+    loaderManager.addEventListener(Vis.EVENTTYPE.LOADINGMANAGER.LOADING, e => {
       totalProgress.innerHTML = `total: ${e.loadTotal}, success: ${e.loadSuccess}, error: ${e.loadError}`
     })
 
     
-    loaderManager.addEventListener(Vis.LOADEEVENTTYPE.DETAILLOADING, e => {
+    loaderManager.addEventListener(Vis.EVENTTYPE.LOADINGMANAGER.DETAILLOADING, e => {
       detailProgress.innerText = `
         url: ${e.detail.url}
         progress: ${e.detail.progress}
@@ -71,7 +71,7 @@
       `
     })
 
-    loaderManager.addEventListener(Vis.LOADEEVENTTYPE.LOADED, e => {
+    loaderManager.addEventListener(Vis.EVENTTYPE.LOADINGMANAGER.LOADED, e => {
       e.resourceMap.forEach((resource, url) => {
         if (url === "/examples/public/model/Lowpoly/Lowpoly.obj") {
           resource.scale.set(0.02, 0.02, 0.02)

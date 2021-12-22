@@ -41,7 +41,7 @@
     const loaderManager = new Vis.LoaderManager()
     const resourceManager = new Vis.ResourceManager()
 
-    loaderManager.addEventListener(Vis.LOADEEVENTTYPE.LOADED, e => {
+    loaderManager.addEventListener('loaded', e => {
       resourceManager.mappingResource(e.resourceMap)
     })
 
