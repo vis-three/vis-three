@@ -2626,6 +2626,31 @@ class MaterialCompiler extends Compiler {
     }
     return this;
   }
+  set(vid, path, key, value) {
+    if (!validate(vid)) {
+      console.warn(`material compiler set function: vid is illeage: '${vid}'`);
+      return this;
+    }
+    if (!this.map.has(vid)) {
+      console.warn(`material compiler set function: can not found material which vid is: '${vid}'`);
+      return this;
+    }
+    const material = this.map.get(vid);
+    if (this.colorAttribute[key]) {
+      material[key] = new Color(value);
+      return this;
+    }
+    if (this.mapAttribute[key]) {
+      material[key] = this.getTexture(value);
+      return this;
+    }
+    let config = material;
+    path.forEach((key2, i, arr) => {
+      config = config[key2];
+    });
+    config[key] = value;
+    return this;
+  }
   getTexture(vid) {
     if (this.texturelMap.has(vid)) {
       const texture = this.texturelMap.get(vid);
@@ -3455,7 +3480,8 @@ const GeometryRule = function(notice, compiler) {
     if (vid && validate(vid)) {
       compiler.set(vid, tempPath, value);
     } else {
-      console.warn(`vid is illeage: '${vid}'`);
+      console.warn(`geometry rule vid is illeage: '${vid}'`);
+      return;
     }
   }
 };
@@ -4730,6 +4756,15 @@ const MaterialRule = function(notice, compiler) {
   if (operate === "add") {
     if (validate(key)) {
       compiler.add(key, value);
+    }
+  } else if (operate === "set") {
+    const tempPath = path.concat([]);
+    const vid = tempPath.shift();
+    if (vid && validate(vid)) {
+      compiler.set(vid, tempPath, key, value);
+    } else {
+      console.warn(`material rule vid is illeage: '${vid}'`);
+      return;
     }
   }
 };

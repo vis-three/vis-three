@@ -88,6 +88,33 @@ export class MaterialCompiler extends Compiler {
         }
         return this;
     }
+    set(vid, path, key, value) {
+        if (!validate(vid)) {
+            console.warn(`material compiler set function: vid is illeage: '${vid}'`);
+            return this;
+        }
+        if (!this.map.has(vid)) {
+            console.warn(`material compiler set function: can not found material which vid is: '${vid}'`);
+            return this;
+        }
+        const material = this.map.get(vid);
+        // 颜色
+        if (this.colorAttribute[key]) {
+            material[key] = new Color(value);
+            return this;
+        }
+        // 贴图
+        if (this.mapAttribute[key]) {
+            material[key] = this.getTexture(value);
+            return this;
+        }
+        let config = material;
+        path.forEach((key, i, arr) => {
+            config = config[key];
+        });
+        config[key] = value;
+        return this;
+    }
     getTexture(vid) {
         if (this.texturelMap.has(vid)) {
             const texture = this.texturelMap.get(vid);

@@ -21,6 +21,7 @@ export declare class MaterialCompiler extends Compiler {
     linkRescourceMap(map: Map<string, unknown>): this;
     linkTextureMap(textureMap: Map<SymbolConfig['vid'], Texture>): this;
     add(vid: string, config: MaterialAllType): this;
+    set(vid: string, path: string[], key: string, value: any): this;
     private getTexture;
     getMap(): Map<SymbolConfig['vid'], Material>;
     setTarget(target: MaterialCompilerTarget): this;

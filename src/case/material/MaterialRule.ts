@@ -10,5 +10,14 @@ export const MaterialRule: Rule<MaterialCompiler> = function (notice: ProxyNotic
     if (validate(key)) {
       compiler.add(key, value)
     }
+  } else if (operate === 'set') {
+    const tempPath = path.concat([])
+    const vid = tempPath.shift()
+    if (vid && validate(vid)) {
+      compiler.set(vid, tempPath, key, value)
+    } else {
+      console.warn(`material rule vid is illeage: '${vid}'`)
+      return
+    }
   }
 }

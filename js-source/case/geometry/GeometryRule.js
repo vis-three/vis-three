@@ -13,7 +13,8 @@ export const GeometryRule = function (notice, compiler) {
             compiler.set(vid, tempPath, value);
         }
         else {
-            console.warn(`vid is illeage: '${vid}'`);
+            console.warn(`geometry rule vid is illeage: '${vid}'`);
+            return;
         }
     }
 };
