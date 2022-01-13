@@ -37,6 +37,22 @@ export class TextureCompiler extends Compiler {
     this.constructMap = constructMap
   }
 
+  private getResource (url: string): HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | null {
+    const resourceMap = this.resourceMap 
+    if (resourceMap.has(url)) {
+      const resource = resourceMap.get(url)!
+      if (resource instanceof HTMLImageElement || resource instanceof HTMLCanvasElement || resource instanceof HTMLVideoElement) {
+        return resource
+      } else {
+        console.error(`this url mapping resource is not a texture image class: ${url}`)
+        return null
+      }
+    } else {
+      console.warn(`resource can not font url: ${url}`)
+      return null
+    }
+  }
+
   linkRescourceMap (map: Map<string, unknown>): this {
     this.resourceMap = map
     return this
@@ -68,21 +84,31 @@ export class TextureCompiler extends Compiler {
     return this
   }
 
-  private getResource (url: string): HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | null {
-    const resourceMap = this.resourceMap 
-    if (resourceMap.has(url)) {
-      const resource = resourceMap.get(url)!
-      if (resource instanceof HTMLImageElement || resource instanceof HTMLCanvasElement || resource instanceof HTMLVideoElement) {
-        return resource
-      } else {
-        console.error(`this url mapping resource is not a texture image class: ${url}`)
-        return null
-      }
-    } else {
-      console.warn(`resource can not font url: ${url}`)
-      return null
+  set (vid: string, path: string[], key: string, value: any): this {
+    if (!validate(vid)) {
+      console.warn(`texture compiler set function: vid is illeage: '${vid}'`)
+      return this
     }
+
+    if (!this.map.has(vid)) {
+      console.warn(`texture compiler set function: can not found texture which vid is: '${vid}'`)
+      return this
+    }
+
+    const texture = this.map.get(vid)!
+
+    let config = texture
+    path.forEach((key, i, arr) => {
+      config = config[key]
+    })
+    config[key] = value
+
+    texture.needsUpdate = true
+
+    return this
   }
+
+
 
   getMap (): Map<SymbolConfig['type'], Texture> {
     return this.map

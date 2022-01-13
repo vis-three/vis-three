@@ -133,7 +133,7 @@ export class ModelingEngineSupport extends ModelingEngine {
             const e = event;
             objectConfigMap.set(e.object, cameraSupportData[e.vid]);
         });
-        // model材质变换通知scene更新状态
+        // 材质变换通知modeling scene更新状态
         modelCompiler.addEventListener(MODELCOMPILER.SETMATERIAL, event => {
             this.scene.updateMaterial(event.object);
         });

@@ -1,13 +1,7 @@
 import { EventDispatcher, ImageLoader } from "three";
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
-export var LOADEEVENTTYPE;
-(function (LOADEEVENTTYPE) {
-    LOADEEVENTTYPE["LOADING"] = "loading";
-    LOADEEVENTTYPE["DETAILLOADING"] = "detailLoading";
-    LOADEEVENTTYPE["DETAILLOADED"] = "detailLoaded";
-    LOADEEVENTTYPE["LOADED"] = "loaded";
-})(LOADEEVENTTYPE || (LOADEEVENTTYPE = {}));
+import { LOADERMANAGER } from "../case/constants/EVENTTYPE";
 export class LoaderManager extends EventDispatcher {
     resourceMap;
     loaderMap;
@@ -37,7 +31,27 @@ export class LoaderManager extends EventDispatcher {
             'mtl': new MTLLoader()
         };
     }
+    loaded() {
+        this.dispatchEvent({
+            type: LOADERMANAGER.LOADED,
+            loadTotal: this.loadTotal,
+            loadSuccess: this.loadSuccess,
+            loadError: this.loadError,
+            resourceMap: this.resourceMap
+        });
+        return this;
+    }
+    checkLoaded() {
+        if (this.loadTotal === this.loadSuccess + this.loadError) {
+            this.isError = true;
+            this.isLoaded = true;
+            this.isLoading = false;
+            this.loaded();
+        }
+        return this;
+    }
     load(urlList) {
+        this.reset();
         this.isLoading = true;
         if (urlList.length <= 0) {
             this.checkLoaded();
@@ -74,7 +88,7 @@ export class LoaderManager extends EventDispatcher {
             loader.loadAsync(url, (event) => {
                 detail.progress = Number((event.loaded / event.total).toFixed(2));
                 this.dispatchEvent({
-                    type: 'detailLoading',
+                    type: LOADERMANAGER.DETAILLOADING,
                     detail
                 });
             }).then(res => {
@@ -82,11 +96,11 @@ export class LoaderManager extends EventDispatcher {
                 this.loadSuccess += 1;
                 this.resourceMap.set(url, res);
                 this.dispatchEvent({
-                    type: 'detailLoaded',
+                    type: LOADERMANAGER.DETAILLOADED,
                     detail
                 });
                 this.dispatchEvent({
-                    type: 'loading',
+                    type: LOADERMANAGER.LOADING,
                     loadTotal: this.loadTotal,
                     loadSuccess: this.loadSuccess,
                     loadError: this.loadError
@@ -97,11 +111,11 @@ export class LoaderManager extends EventDispatcher {
                 detail.message = JSON.stringify(err);
                 this.loadError += 1;
                 this.dispatchEvent({
-                    type: 'detailLoaded',
+                    type: LOADERMANAGER.DETAILLOADED,
                     detail
                 });
                 this.dispatchEvent({
-                    type: 'loading',
+                    type: LOADERMANAGER.LOADING,
                     loadTotal: this.loadTotal,
                     loadSuccess: this.loadSuccess,
                     loadError: this.loadError
@@ -109,16 +123,6 @@ export class LoaderManager extends EventDispatcher {
                 this.checkLoaded();
             });
         }
-        return this;
-    }
-    loaded() {
-        this.dispatchEvent({
-            type: 'loaded',
-            loadTotal: this.loadTotal,
-            loadSuccess: this.loadSuccess,
-            loadError: this.loadError,
-            resourceMap: this.resourceMap
-        });
         return this;
     }
     reset() {
@@ -131,17 +135,24 @@ export class LoaderManager extends EventDispatcher {
         this.loadDetailMap = {};
         return this;
     }
-    dispose() {
-        this.resourceMap.clear();
+    // 资源是否已经加装
+    hasLoaded(url) {
+        return this.resourceMap.has(url);
+    }
+    getResource(url) {
+        return this.resourceMap.get(url);
+    }
+    // 获取详细资源信息
+    getLoadDetailMap() {
+        return this.loadDetailMap;
+    }
+    // 设置详细资源信息
+    setLoadDetailMap(map) {
+        this.loadDetailMap = map;
         return this;
     }
-    checkLoaded() {
-        if (this.loadTotal === this.loadSuccess + this.loadError) {
-            this.isError = true;
-            this.isLoaded = true;
-            this.isLoading = false;
-            this.loaded();
-        }
+    dispose() {
+        this.resourceMap.clear();
         return this;
     }
 }

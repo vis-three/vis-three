@@ -22,12 +22,6 @@ export interface LoadedEvent extends BaseEvent {
     loadError: number;
     resourceMap: Map<string, unknown>;
 }
-export declare enum LOADEEVENTTYPE {
-    LOADING = "loading",
-    DETAILLOADING = "detailLoading",
-    DETAILLOADED = "detailLoaded",
-    LOADED = "loaded"
-}
 export declare class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | LoadedEvent> {
     private resourceMap;
     private loaderMap;
@@ -39,9 +33,17 @@ export declare class LoaderManager extends EventDispatcher<LoadingEvent | Detail
     private isLoaded;
     private loadDetailMap;
     constructor();
-    load(urlList: Array<string>): this;
     private loaded;
-    reset(): this;
-    dispose(): this;
     private checkLoaded;
+    load(urlList: Array<string>): this;
+    reset(): this;
+    hasLoaded(url: string): boolean;
+    getResource(url: string): unknown;
+    getLoadDetailMap(): {
+        [key: string]: LoadDetail;
+    };
+    setLoadDetailMap(map: {
+        [key: string]: LoadDetail;
+    }): this;
+    dispose(): this;
 }

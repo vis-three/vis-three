@@ -23,6 +23,8 @@ export class TextureDisplayer {
         this.scene = scene;
         this.renderer = renderer;
         this.camera = camera;
+        parameters?.texture && this.setTexture(parameters.texture);
+        parameters?.dom && this.setDom(parameters.dom);
     }
     // 设置贴图
     setTexture(texture) {

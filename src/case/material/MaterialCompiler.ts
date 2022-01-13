@@ -132,6 +132,7 @@ export class MaterialCompiler extends Compiler {
     // 贴图
     if (this.mapAttribute[key]) {
       material[key] = this.getTexture(value)
+      material.needsUpdate= true
       return this
     }
 

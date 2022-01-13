@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="./css/common.css">
+  <title>Document</title>
+</head>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #app {
+    width: 50%;
+    height: 50%;
+  }
+
+</style>
+
+<body>
+  <div id="app"></div>
+
+
+  <script type="module">
+    import * as Vis from '../dist/Vis.es.js' 
+    import * as THREE from 'three'
+
+    // 加载器
+    const loaderManager = new Vis.LoaderManager()
+
+    loaderManager.addEventListener('loaded', event => {
+      const texture = new THREE.Texture()
+      texture.image = loaderManager.getResource("/examples/public/texture/Bricks_Color.jpg")
+      texture.needsUpdate = true
+
+      new Vis.TextureDisplayer({
+        dom: document.getElementById('app'),
+        texture
+      }).render()
+    })
+
+    loaderManager.load(["/examples/public/texture/Bricks_Color.jpg"])
+
+  </script>
+</body>
+</html>

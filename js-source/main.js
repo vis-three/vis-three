@@ -4,7 +4,7 @@ import { ModelDataSupport } from "./case/model/ModelDataSupport";
 import { ModelingEngineSupport } from "./case/engine/ModelingEngineSupport";
 import { GeometryDataSupport } from "./case/geometry/GeometryDataSupport";
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
-import { LoaderManager, LOADEEVENTTYPE } from "./manager/LoaderManager";
+import { LoaderManager } from "./manager/LoaderManager";
 import { ResourceManager, RESOURCEEVENTTYPE } from "./manager/ResourceManager";
 import { generateConfig } from "./convenient/generateConfig";
 import { TextureDataSupport } from "./case/texture/TextureDataSupport";
@@ -22,9 +22,10 @@ import { ControlsDataSupport } from "./case/controls/ControlsDataSupport";
 import { RendererDataSupport } from "./case/render/RendererDataSupport";
 import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
 import { EVENTTYPE } from "./case/constants/EVENTTYPE";
+import { TextureDisplayer } from "./displayer/TextureDisplayer";
 export { 
 // menu
-LOADEEVENTTYPE, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, SCENEDISPLAYMODE, SCENEVIEWPOINT, OBJECTEVENT, EVENTTYPE, 
+RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, SCENEDISPLAYMODE, SCENEVIEWPOINT, OBJECTEVENT, EVENTTYPE, 
 // manager
 LoaderManager, ResourceManager, DataSupportManager, 
 // engine
@@ -40,5 +41,5 @@ PointLightHelper, CameraHelper,
 // config
 generateConfig, SupportDataGenerator, 
 // displayer
-MaterialDisplayer };
+MaterialDisplayer, TextureDisplayer };
 //# sourceMappingURL=main.js.map

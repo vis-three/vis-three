@@ -15,9 +15,16 @@ export declare enum POINTERMANAGER {
 export declare enum MODELCOMPILER {
     SETMATERIAL = "setMaterial"
 }
+export declare enum LOADERMANAGER {
+    LOADING = "loading",
+    DETAILLOADING = "detailLoading",
+    DETAILLOADED = "detailLoaded",
+    LOADED = "loaded"
+}
 export declare const EVENTTYPE: {
     RENDERERMANAGER: typeof RENDERERMANAGER;
     SCENESTATUSMANAGER: typeof SCENESTATUSMANAGER;
     POINTERMANAGER: typeof POINTERMANAGER;
     MODELCOMPILER: typeof MODELCOMPILER;
+    LOADERMANAGER: typeof LOADERMANAGER;
 };

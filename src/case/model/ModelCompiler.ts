@@ -81,7 +81,7 @@ export class ModelCompiler extends Compiler implements ObjectCompiler {
         return this.getReplaceMaterial()
       }
     } else {
-      console.error(`material vid parameter is illegal: ${vid}`)
+      console.warn(`material vid parameter is illegal: ${vid}`)
       return this.getReplaceMaterial()
     }
   }
@@ -96,7 +96,7 @@ export class ModelCompiler extends Compiler implements ObjectCompiler {
         return this.getReplaceGeometry()
       }
     } else {
-      console.error(`geometry vid parameter is illegal: ${vid}`)
+      console.warn(`geometry vid parameter is illegal: ${vid}`)
       return this.getReplaceGeometry()
     }
   }

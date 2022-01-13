@@ -48,7 +48,7 @@ export class ModelCompiler extends Compiler {
             }
         }
         else {
-            console.error(`material vid parameter is illegal: ${vid}`);
+            console.warn(`material vid parameter is illegal: ${vid}`);
             return this.getReplaceMaterial();
         }
     }
@@ -64,7 +64,7 @@ export class ModelCompiler extends Compiler {
             }
         }
         else {
-            console.error(`geometry vid parameter is illegal: ${vid}`);
+            console.warn(`geometry vid parameter is illegal: ${vid}`);
             return this.getReplaceGeometry();
         }
     }

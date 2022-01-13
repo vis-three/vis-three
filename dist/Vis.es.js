@@ -982,11 +982,19 @@ var MODELCOMPILER;
 (function(MODELCOMPILER2) {
   MODELCOMPILER2["SETMATERIAL"] = "setMaterial";
 })(MODELCOMPILER || (MODELCOMPILER = {}));
+var LOADERMANAGER;
+(function(LOADERMANAGER2) {
+  LOADERMANAGER2["LOADING"] = "loading";
+  LOADERMANAGER2["DETAILLOADING"] = "detailLoading";
+  LOADERMANAGER2["DETAILLOADED"] = "detailLoaded";
+  LOADERMANAGER2["LOADED"] = "loaded";
+})(LOADERMANAGER || (LOADERMANAGER = {}));
 const EVENTTYPE = {
   RENDERERMANAGER,
   SCENESTATUSMANAGER,
   POINTERMANAGER,
-  MODELCOMPILER
+  MODELCOMPILER,
+  LOADERMANAGER
 };
 class EventDispatcher {
   constructor() {
@@ -2676,6 +2684,7 @@ class MaterialCompiler extends Compiler {
     }
     if (this.mapAttribute[key]) {
       material[key] = this.getTexture(value);
+      material.needsUpdate = true;
       return this;
     }
     let config = material;
@@ -2759,7 +2768,7 @@ class ModelCompiler extends Compiler {
         return this.getReplaceMaterial();
       }
     } else {
-      console.error(`material vid parameter is illegal: ${vid}`);
+      console.warn(`material vid parameter is illegal: ${vid}`);
       return this.getReplaceMaterial();
     }
   }
@@ -2772,7 +2781,7 @@ class ModelCompiler extends Compiler {
         return this.getReplaceGeometry();
       }
     } else {
-      console.error(`geometry vid parameter is illegal: ${vid}`);
+      console.warn(`geometry vid parameter is illegal: ${vid}`);
       return this.getReplaceGeometry();
     }
   }
@@ -3251,6 +3260,21 @@ class TextureCompiler extends Compiler {
     constructMap.set("ImageTexture", () => new ImageTexture());
     this.constructMap = constructMap;
   }
+  getResource(url) {
+    const resourceMap = this.resourceMap;
+    if (resourceMap.has(url)) {
+      const resource = resourceMap.get(url);
+      if (resource instanceof HTMLImageElement || resource instanceof HTMLCanvasElement || resource instanceof HTMLVideoElement) {
+        return resource;
+      } else {
+        console.error(`this url mapping resource is not a texture image class: ${url}`);
+        return null;
+      }
+    } else {
+      console.warn(`resource can not font url: ${url}`);
+      return null;
+    }
+  }
   linkRescourceMap(map) {
     this.resourceMap = map;
     return this;
@@ -3275,20 +3299,23 @@ class TextureCompiler extends Compiler {
     }
     return this;
   }
-  getResource(url) {
-    const resourceMap = this.resourceMap;
-    if (resourceMap.has(url)) {
-      const resource = resourceMap.get(url);
-      if (resource instanceof HTMLImageElement || resource instanceof HTMLCanvasElement || resource instanceof HTMLVideoElement) {
-        return resource;
-      } else {
-        console.error(`this url mapping resource is not a texture image class: ${url}`);
-        return null;
-      }
-    } else {
-      console.warn(`resource can not font url: ${url}`);
-      return null;
+  set(vid, path, key, value) {
+    if (!validate(vid)) {
+      console.warn(`texture compiler set function: vid is illeage: '${vid}'`);
+      return this;
     }
+    if (!this.map.has(vid)) {
+      console.warn(`texture compiler set function: can not found texture which vid is: '${vid}'`);
+      return this;
+    }
+    const texture = this.map.get(vid);
+    let config = texture;
+    path.forEach((key2, i, arr) => {
+      config = config[key2];
+    });
+    config[key] = value;
+    texture.needsUpdate = true;
+    return this;
   }
   getMap() {
     return this.map;
@@ -4282,13 +4309,6 @@ class MaterialCreator {
     return texture;
   }
 }
-var LOADEEVENTTYPE;
-(function(LOADEEVENTTYPE2) {
-  LOADEEVENTTYPE2["LOADING"] = "loading";
-  LOADEEVENTTYPE2["DETAILLOADING"] = "detailLoading";
-  LOADEEVENTTYPE2["DETAILLOADED"] = "detailLoaded";
-  LOADEEVENTTYPE2["LOADED"] = "loaded";
-})(LOADEEVENTTYPE || (LOADEEVENTTYPE = {}));
 class LoaderManager extends EventDispatcher$1 {
   constructor() {
     super();
@@ -4318,8 +4338,28 @@ class LoaderManager extends EventDispatcher$1 {
       "mtl": new MTLLoader()
     };
   }
+  loaded() {
+    this.dispatchEvent({
+      type: LOADERMANAGER.LOADED,
+      loadTotal: this.loadTotal,
+      loadSuccess: this.loadSuccess,
+      loadError: this.loadError,
+      resourceMap: this.resourceMap
+    });
+    return this;
+  }
+  checkLoaded() {
+    if (this.loadTotal === this.loadSuccess + this.loadError) {
+      this.isError = true;
+      this.isLoaded = true;
+      this.isLoading = false;
+      this.loaded();
+    }
+    return this;
+  }
   load(urlList) {
     var _a;
+    this.reset();
     this.isLoading = true;
     if (urlList.length <= 0) {
       this.checkLoaded();
@@ -4356,7 +4396,7 @@ class LoaderManager extends EventDispatcher$1 {
       loader.loadAsync(url, (event) => {
         detail.progress = Number((event.loaded / event.total).toFixed(2));
         this.dispatchEvent({
-          type: "detailLoading",
+          type: LOADERMANAGER.DETAILLOADING,
           detail
         });
       }).then((res) => {
@@ -4364,11 +4404,11 @@ class LoaderManager extends EventDispatcher$1 {
         this.loadSuccess += 1;
         this.resourceMap.set(url, res);
         this.dispatchEvent({
-          type: "detailLoaded",
+          type: LOADERMANAGER.DETAILLOADED,
           detail
         });
         this.dispatchEvent({
-          type: "loading",
+          type: LOADERMANAGER.LOADING,
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
           loadError: this.loadError
@@ -4379,11 +4419,11 @@ class LoaderManager extends EventDispatcher$1 {
         detail.message = JSON.stringify(err);
         this.loadError += 1;
         this.dispatchEvent({
-          type: "detailLoaded",
+          type: LOADERMANAGER.DETAILLOADED,
           detail
         });
         this.dispatchEvent({
-          type: "loading",
+          type: LOADERMANAGER.LOADING,
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
           loadError: this.loadError
@@ -4391,16 +4431,6 @@ class LoaderManager extends EventDispatcher$1 {
         this.checkLoaded();
       });
     }
-    return this;
-  }
-  loaded() {
-    this.dispatchEvent({
-      type: "loaded",
-      loadTotal: this.loadTotal,
-      loadSuccess: this.loadSuccess,
-      loadError: this.loadError,
-      resourceMap: this.resourceMap
-    });
     return this;
   }
   reset() {
@@ -4413,17 +4443,21 @@ class LoaderManager extends EventDispatcher$1 {
     this.loadDetailMap = {};
     return this;
   }
-  dispose() {
-    this.resourceMap.clear();
+  hasLoaded(url) {
+    return this.resourceMap.has(url);
+  }
+  getResource(url) {
+    return this.resourceMap.get(url);
+  }
+  getLoadDetailMap() {
+    return this.loadDetailMap;
+  }
+  setLoadDetailMap(map) {
+    this.loadDetailMap = map;
     return this;
   }
-  checkLoaded() {
-    if (this.loadTotal === this.loadSuccess + this.loadError) {
-      this.isError = true;
-      this.isLoaded = true;
-      this.isLoading = false;
-      this.loaded();
-    }
+  dispose() {
+    this.resourceMap.clear();
     return this;
   }
 }
@@ -4790,6 +4824,15 @@ const TextureRule = function(notice, compiler) {
   if (operate === "add") {
     if (validate(key)) {
       compiler.add(key, value);
+    }
+  } else if (operate === "set") {
+    const tempPath = path.concat([]);
+    const vid = tempPath.shift();
+    if (vid && validate(vid)) {
+      compiler.set(vid, tempPath, key, value);
+    } else {
+      console.warn(`texture rule vid is illeage: '${vid}'`);
+      return;
     }
   }
 };
@@ -5314,4 +5357,66 @@ __publicField(MaterialDisplayer, "dispose", () => {
   _MaterialDisplayer.geometry.dispose();
   _MaterialDisplayer.plane.geometry.dispose();
 });
-export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, EVENTTYPE, GeometryDataSupport, LOADEEVENTTYPE, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, generateConfig };
+const _TextureDisplayer = class {
+  constructor(parameters) {
+    __publicField(this, "dom");
+    __publicField(this, "texture");
+    __publicField(this, "renderer");
+    __publicField(this, "scene");
+    __publicField(this, "camera");
+    const renderer = new WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setClearColor("rgb(150, 150, 150)");
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = PCFSoftShadowMap;
+    const scene = new Scene();
+    const camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
+    camera.position.set(0, 0, 35);
+    camera.up.x = 0;
+    camera.up.y = 1;
+    camera.up.z = 0;
+    camera.lookAt(new Vector3(0, 0, 0));
+    scene.add(_TextureDisplayer.ambientLight);
+    this.scene = scene;
+    this.renderer = renderer;
+    this.camera = camera;
+    (parameters == null ? void 0 : parameters.texture) && this.setTexture(parameters.texture);
+    (parameters == null ? void 0 : parameters.dom) && this.setDom(parameters.dom);
+  }
+  setTexture(texture) {
+    this.scene.background = texture;
+    return this;
+  }
+  setDom(dom) {
+    this.dom = dom;
+    this.setSize();
+    dom.appendChild(this.renderer.domElement);
+    return this;
+  }
+  setSize(width, height) {
+    if (width && height) {
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(width, height, true);
+    } else {
+      if (!this.dom) {
+        console.warn(`texture displayer must set dom before setSize with empty parameters`);
+        return this;
+      }
+      const dom = this.dom;
+      this.camera.aspect = dom.offsetWidth / dom.offsetHeight;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(dom.offsetWidth, dom.offsetHeight, true);
+    }
+    return this;
+  }
+  render() {
+    this.renderer.render(this.scene, this.camera);
+  }
+  dispose() {
+    this.renderer.dispose();
+  }
+};
+let TextureDisplayer = _TextureDisplayer;
+__publicField(TextureDisplayer, "ambientLight", new AmbientLight("rgb(255, 255, 255)", 1));
+export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, EVENTTYPE, GeometryDataSupport, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };

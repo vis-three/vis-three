@@ -85,6 +85,7 @@ export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | 
   }
 
   load (urlList: Array<string>): this {
+    this.reset()
     this.isLoading = true
     if (urlList.length <= 0) {
       this.checkLoaded()
@@ -185,6 +186,21 @@ export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | 
   // 资源是否已经加装
   hasLoaded (url: string): boolean {
     return this.resourceMap.has(url)
+  }
+
+  getResource (url: string): unknown {
+    return this.resourceMap.get(url)
+  }
+
+  // 获取详细资源信息
+  getLoadDetailMap (): {[key: string]: LoadDetail} {
+    return this.loadDetailMap
+  }
+
+  // 设置详细资源信息
+  setLoadDetailMap (map: {[key: string]: LoadDetail}): this {
+    this.loadDetailMap = map
+    return this
   }
 
   dispose (): this {
