@@ -24,6 +24,8 @@ import { RendererDataSupport } from "./case/render/RendererDataSupport";
 import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
 import { EVENTTYPE } from "./case/constants/EVENTTYPE";
 import { TextureDisplayer } from "./displayer/TextureDisplayer";
+import { Engine } from "./engine/Engine";
+import { ModelingScene } from "./extends/ModelingScene/ModelingScene";
 
 export {
   // menu
@@ -41,6 +43,7 @@ export {
   DataSupportManager,
 
   // engine
+  Engine,
   ModelingEngine,
 
   // engine support
@@ -69,5 +72,8 @@ export {
 
   // displayer
   MaterialDisplayer,
-  TextureDisplayer
+  TextureDisplayer,
+
+  // extends
+  ModelingScene
 }

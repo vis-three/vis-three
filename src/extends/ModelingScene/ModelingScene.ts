@@ -208,7 +208,8 @@ export class ModelingScene extends Scene {
           1000
         )
       }
-      this.defaultPerspectiveCamera.position.set(30, 30, 30)
+      this.defaultPerspectiveCamera.position.set(50, 50, 50)
+      this.defaultPerspectiveCamera.lookAt(0, 0, 0)
       this.defaultPerspectiveCamera.name = '默认透视相机'
 
       this.cameraSet.add(this.defaultPerspectiveCamera)

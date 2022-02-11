@@ -372,12 +372,12 @@ class MeshHelper extends LineSegments {
     };
   }
 }
-var HELPERCOMPILEREVENTTYPE;
+var HELPERCOMPILEREVENTTYPE$1;
 (function(HELPERCOMPILEREVENTTYPE2) {
   HELPERCOMPILEREVENTTYPE2["ADD"] = "add";
   HELPERCOMPILEREVENTTYPE2["REMOVE"] = "remove";
-})(HELPERCOMPILEREVENTTYPE || (HELPERCOMPILEREVENTTYPE = {}));
-const _SceneHelperCompiler = class extends EventDispatcher$1 {
+})(HELPERCOMPILEREVENTTYPE$1 || (HELPERCOMPILEREVENTTYPE$1 = {}));
+const _SceneHelperCompiler$1 = class extends EventDispatcher$1 {
   constructor(scene) {
     super();
     __publicField(this, "map");
@@ -389,15 +389,15 @@ const _SceneHelperCompiler = class extends EventDispatcher$1 {
     return this.map;
   }
   add(object) {
-    if (_SceneHelperCompiler.filterHelperMap[object.type]) {
+    if (_SceneHelperCompiler$1.filterHelperMap[object.type]) {
       return;
     }
-    if (_SceneHelperCompiler.typeHelperMap[object.type]) {
-      const helper = new _SceneHelperCompiler.typeHelperMap[object.type](object);
+    if (_SceneHelperCompiler$1.typeHelperMap[object.type]) {
+      const helper = new _SceneHelperCompiler$1.typeHelperMap[object.type](object);
       this.map.set(object, helper);
       this.scene._add(helper);
       this.dispatchEvent({
-        type: HELPERCOMPILEREVENTTYPE.ADD,
+        type: HELPERCOMPILEREVENTTYPE$1.ADD,
         helper,
         object
       });
@@ -406,7 +406,7 @@ const _SceneHelperCompiler = class extends EventDispatcher$1 {
     }
   }
   remove(object) {
-    if (_SceneHelperCompiler.filterHelperMap[object.type]) {
+    if (_SceneHelperCompiler$1.filterHelperMap[object.type]) {
       return;
     }
     if (this.map.has(object)) {
@@ -424,7 +424,7 @@ const _SceneHelperCompiler = class extends EventDispatcher$1 {
       }
       this.map.delete(object);
       this.dispatchEvent({
-        type: HELPERCOMPILEREVENTTYPE.REMOVE,
+        type: HELPERCOMPILEREVENTTYPE$1.REMOVE,
         helper,
         object
       });
@@ -446,7 +446,7 @@ const _SceneHelperCompiler = class extends EventDispatcher$1 {
   }
   resetHelperColor(...object) {
     const map = this.map;
-    const helperColorHex = _SceneHelperCompiler.helperColorHex;
+    const helperColorHex = _SceneHelperCompiler$1.helperColorHex;
     object.forEach((elem) => {
       if (map.has(elem)) {
         const helper = map.get(elem);
@@ -456,7 +456,7 @@ const _SceneHelperCompiler = class extends EventDispatcher$1 {
   }
   setHelperHoverColor(...object) {
     const map = this.map;
-    const hoverColorHex = _SceneHelperCompiler.hoverColorHex;
+    const hoverColorHex = _SceneHelperCompiler$1.hoverColorHex;
     object.forEach((elem) => {
       if (map.has(elem)) {
         const helper = map.get(elem);
@@ -466,7 +466,7 @@ const _SceneHelperCompiler = class extends EventDispatcher$1 {
   }
   setHelperActiveColor(...object) {
     const map = this.map;
-    const activeColorHex = _SceneHelperCompiler.activeColorHex;
+    const activeColorHex = _SceneHelperCompiler$1.activeColorHex;
     object.forEach((elem) => {
       if (map.has(elem)) {
         const helper = map.get(elem);
@@ -475,26 +475,26 @@ const _SceneHelperCompiler = class extends EventDispatcher$1 {
     });
   }
 };
-let SceneHelperCompiler = _SceneHelperCompiler;
-__publicField(SceneHelperCompiler, "helperColorHex", new Color(HELPERCOLOR).getHex());
-__publicField(SceneHelperCompiler, "activeColorHex", new Color(ACTIVECOLOR).getHex());
-__publicField(SceneHelperCompiler, "hoverColorHex", new Color(HOVERCOLOR).getHex());
-__publicField(SceneHelperCompiler, "typeHelperMap", {
+let SceneHelperCompiler$1 = _SceneHelperCompiler$1;
+__publicField(SceneHelperCompiler$1, "helperColorHex", new Color(HELPERCOLOR).getHex());
+__publicField(SceneHelperCompiler$1, "activeColorHex", new Color(ACTIVECOLOR).getHex());
+__publicField(SceneHelperCompiler$1, "hoverColorHex", new Color(HOVERCOLOR).getHex());
+__publicField(SceneHelperCompiler$1, "typeHelperMap", {
   "PointLight": PointLightHelper,
   "PerspectiveCamera": CameraHelper,
   "OrthographicCamera": CameraHelper,
   "Mesh": MeshHelper
 });
-__publicField(SceneHelperCompiler, "filterHelperMap", {
+__publicField(SceneHelperCompiler$1, "filterHelperMap", {
   "AmbientLight": true,
   "Object3D": true
 });
-var ModelingSceneCameraDefalutType;
+var ModelingSceneCameraDefalutType$1;
 (function(ModelingSceneCameraDefalutType2) {
   ModelingSceneCameraDefalutType2["DefaultPerspectiveCamera"] = "DefaultPerspectiveCamera";
   ModelingSceneCameraDefalutType2["DefaultOrthograpbicCamera"] = "DefaultOrthograpbicCamera";
-})(ModelingSceneCameraDefalutType || (ModelingSceneCameraDefalutType = {}));
-var SCENEVIEWPOINT;
+})(ModelingSceneCameraDefalutType$1 || (ModelingSceneCameraDefalutType$1 = {}));
+var SCENEVIEWPOINT$1;
 (function(SCENEVIEWPOINT2) {
   SCENEVIEWPOINT2["DEFAULT"] = "default";
   SCENEVIEWPOINT2["TOP"] = "top";
@@ -503,14 +503,14 @@ var SCENEVIEWPOINT;
   SCENEVIEWPOINT2["RIGHT"] = "right";
   SCENEVIEWPOINT2["FRONT"] = "front";
   SCENEVIEWPOINT2["BACK"] = "back";
-})(SCENEVIEWPOINT || (SCENEVIEWPOINT = {}));
-var SCENEDISPLAYMODE;
+})(SCENEVIEWPOINT$1 || (SCENEVIEWPOINT$1 = {}));
+var SCENEDISPLAYMODE$1;
 (function(SCENEDISPLAYMODE2) {
-  SCENEDISPLAYMODE2[SCENEDISPLAYMODE2["GEOMETRY"] = 0] = "GEOMETRY";
-  SCENEDISPLAYMODE2[SCENEDISPLAYMODE2["MATERIAL"] = 1] = "MATERIAL";
-  SCENEDISPLAYMODE2[SCENEDISPLAYMODE2["LIGHT"] = 2] = "LIGHT";
-  SCENEDISPLAYMODE2[SCENEDISPLAYMODE2["ENV"] = 3] = "ENV";
-})(SCENEDISPLAYMODE || (SCENEDISPLAYMODE = {}));
+  SCENEDISPLAYMODE2["GEOMETRY"] = "geometry";
+  SCENEDISPLAYMODE2["MATERIAL"] = "material";
+  SCENEDISPLAYMODE2["LIGHT"] = "light";
+  SCENEDISPLAYMODE2["ENV"] = "env";
+})(SCENEDISPLAYMODE$1 || (SCENEDISPLAYMODE$1 = {}));
 Scene.prototype.add = function(...object) {
   if (!arguments.length) {
     return this;
@@ -543,7 +543,7 @@ Scene.prototype.add = function(...object) {
   }
   return this;
 };
-class ModelingScene extends Scene {
+class ModelingScene$1 extends Scene {
   constructor(config) {
     super();
     __publicField(this, "cameraSet");
@@ -583,7 +583,7 @@ class ModelingScene extends Scene {
     this.lineSet = new Set();
     this.pointsSet = new Set();
     this.spriteSet = new Set();
-    this.helperCompiler = new SceneHelperCompiler(this);
+    this.helperCompiler = new SceneHelperCompiler$1(this);
     this.resetHoverObjectSet = new Set();
     this.resetActiveObjectSet = new Set();
     if (config.hasDefaultPerspectiveCamera) {
@@ -613,22 +613,22 @@ class ModelingScene extends Scene {
       this.getDefaultOrthographicCamera = function() {
         return this.defaultOrthograpbicCamera;
       };
-      this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT$1.TOP}ViewPoint`, (e) => {
         this.defaultOrthograpbicCamera.position.set(0, 60, 0);
       });
-      this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT$1.BOTTOM}ViewPoint`, (e) => {
         this.defaultOrthograpbicCamera.position.set(0, -60, 0);
       });
-      this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT$1.RIGHT}ViewPoint`, (e) => {
         this.defaultOrthograpbicCamera.position.set(60, 0, 0);
       });
-      this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT$1.LEFT}ViewPoint`, (e) => {
         this.defaultOrthograpbicCamera.position.set(-60, 0, 0);
       });
-      this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT$1.FRONT}ViewPoint`, (e) => {
         this.defaultOrthograpbicCamera.position.set(0, 0, 60);
       });
-      this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT$1.BACK}ViewPoint`, (e) => {
         this.defaultOrthograpbicCamera.position.set(0, 0, -60);
       });
     }
@@ -674,37 +674,37 @@ class ModelingScene extends Scene {
       };
       this.gridHelper = gridHelper;
       super.add(gridHelper);
-      this.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT$1.DEFAULT}ViewPoint`, (e) => {
         gridHelper.rotation.set(0, 0, 0);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
       });
-      this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT$1.TOP}ViewPoint`, (e) => {
         gridHelper.rotation.set(0, 0, 0);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
       });
-      this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT$1.BOTTOM}ViewPoint`, (e) => {
         gridHelper.rotation.set(0, 0, 0);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
       });
-      this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT$1.RIGHT}ViewPoint`, (e) => {
         gridHelper.rotation.set(0, 0, Math.PI / 2);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
       });
-      this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT$1.LEFT}ViewPoint`, (e) => {
         gridHelper.rotation.set(0, 0, Math.PI / 2);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
       });
-      this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT$1.FRONT}ViewPoint`, (e) => {
         gridHelper.rotation.set(Math.PI / 2, 0, 0);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
       });
-      this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
+      this.addEventListener(`${SCENEVIEWPOINT$1.BACK}ViewPoint`, (e) => {
         gridHelper.rotation.set(Math.PI / 2, 0, 0);
         gridHelper.updateMatrix();
         gridHelper.updateMatrixWorld();
@@ -817,19 +817,19 @@ class ModelingScene extends Scene {
             this.environmentCache = void 0;
           }
         };
-        if (mode === 0) {
+        if (mode === SCENEDISPLAYMODE$1.GEOMETRY) {
           filterMaterial();
           filterScene();
           filterLight();
-        } else if (mode === 1) {
+        } else if (mode === SCENEDISPLAYMODE$1.MATERIAL) {
           reduceMaterial();
           filterScene();
           filterLight();
-        } else if (mode === 2) {
+        } else if (mode === SCENEDISPLAYMODE$1.LIGHT) {
           reduceMaterial();
           filterScene();
           reduceLight();
-        } else if (mode === 3) {
+        } else if (mode === SCENEDISPLAYMODE$1.ENV) {
           reduceMaterial();
           reduceScene();
           reduceLight();
@@ -845,7 +845,7 @@ class ModelingScene extends Scene {
         this.setDisplayMode(config.displayMode);
         this.switchDisplayMode(this.displayMode);
       } else {
-        this.setDisplayMode(3);
+        this.setDisplayMode(SCENEDISPLAYMODE$1.ENV);
         this.switchDisplayMode(this.displayMode);
       }
     }
@@ -954,7 +954,7 @@ class ModelingScene extends Scene {
   }
   updateMaterial(object) {
     var _a;
-    if (this.displayMode !== void 0 && this.displayMode === 0) {
+    if (this.displayMode !== void 0 && this.displayMode === "geometry") {
       (_a = this.materialCacheMap) == null ? void 0 : _a.set(object, object.material);
       this.switchDisplayMode && this.switchDisplayMode(this.displayMode);
     }
@@ -1029,9 +1029,13 @@ class EventDispatcher {
     const type = event.type;
     const listeners = this.listeners;
     if (listeners.has(type)) {
-      (_a = listeners.get(type)) == null ? void 0 : _a.forEach((listener) => {
-        listener.call(this, event);
-      });
+      try {
+        (_a = listeners.get(type)) == null ? void 0 : _a.forEach((listener) => {
+          listener.call(this, event);
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 }
@@ -1684,13 +1688,13 @@ class ModelingEngine extends EventDispatcher$1 {
       antialias: true,
       alpha: true
     });
-    const scene = new ModelingScene({
+    const scene = new ModelingScene$1({
       hasDefaultPerspectiveCamera: true,
       hasDefaultOrthographicCamera: true,
       hasAxesHelper: true,
       hasGridHelper: true,
       hasDisplayMode: true,
-      displayMode: SCENEDISPLAYMODE.ENV
+      displayMode: SCENEDISPLAYMODE$1.ENV
     });
     const camera = scene.getDefaultPerspectiveCamera();
     const defaultPerspectiveCamera = scene.getDefaultPerspectiveCamera();
@@ -1713,31 +1717,31 @@ class ModelingEngine extends EventDispatcher$1 {
     const renderPass = new RenderPass(scene, camera);
     composer.addPass(renderPass);
     const renderManager = new RenderManager();
-    scene.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT$1.DEFAULT}ViewPoint`, (e) => {
       this.setCamera(defaultPerspectiveCamera);
       orbitControls.enableRotate = true;
     });
-    scene.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT$1.TOP}ViewPoint`, (e) => {
       this.setCamera(defaultOrthograpbicCamera);
       orbitControls.enableRotate = false;
     });
-    scene.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT$1.BOTTOM}ViewPoint`, (e) => {
       this.setCamera(defaultOrthograpbicCamera);
       orbitControls.enableRotate = false;
     });
-    scene.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT$1.RIGHT}ViewPoint`, (e) => {
       this.setCamera(defaultOrthograpbicCamera);
       orbitControls.enableRotate = false;
     });
-    scene.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT$1.LEFT}ViewPoint`, (e) => {
       this.setCamera(defaultOrthograpbicCamera);
       orbitControls.enableRotate = false;
     });
-    scene.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT$1.FRONT}ViewPoint`, (e) => {
       this.setCamera(defaultOrthograpbicCamera);
       orbitControls.enableRotate = false;
     });
-    scene.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
+    scene.addEventListener(`${SCENEVIEWPOINT$1.BACK}ViewPoint`, (e) => {
       this.setCamera(defaultOrthograpbicCamera);
       orbitControls.enableRotate = false;
     });
@@ -5145,7 +5149,7 @@ class ModelingEngineSupportConnector {
           helper.material = rootHelper.material;
         });
       }
-      helperCompiler.addEventListener(HELPERCOMPILEREVENTTYPE.ADD, (event) => {
+      helperCompiler.addEventListener(HELPERCOMPILEREVENTTYPE$1.ADD, (event) => {
         const e = event;
         const helper = e.helper;
         const object = e.object;
@@ -5419,4 +5423,751 @@ const _TextureDisplayer = class {
 };
 let TextureDisplayer = _TextureDisplayer;
 __publicField(TextureDisplayer, "ambientLight", new AmbientLight("rgb(255, 255, 255)", 1));
-export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, EVENTTYPE, GeometryDataSupport, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };
+const WebGLRendererPlugin = function(engine, params) {
+  if (engine.webGLRenderer) {
+    console.warn("engine has installed webglRenderer plugin.");
+    return;
+  }
+  engine.webGLRenderer = new WebGLRenderer(params);
+  engine.setSize = function(width, height) {
+    var _a, _b;
+    if (width && width <= 0 || height && height <= 0) {
+      console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
+      return this;
+    }
+    !width && (width = (_a = this.dom) == null ? void 0 : _a.offsetWidth);
+    !height && (height = (_b = this.dom) == null ? void 0 : _b.offsetHeight);
+    this.dispatchEvent({ type: "setSize", width, height });
+    return this;
+  };
+  engine.setCamera = function setCamera(camera) {
+    this.currentCamera = camera;
+    this.dispatchEvent({
+      type: "setCamera",
+      camera
+    });
+    return this;
+  };
+  engine.setDom = function(dom) {
+    this.dom = dom;
+    dom.appendChild(this.webGLRenderer.domElement);
+    return this;
+  };
+  engine.addEventListener("setSize", (event) => {
+    console.log("setSize");
+    const width = event.width;
+    const height = event.height;
+    engine.webGLRenderer.setSize(width, height, true);
+  });
+  engine.addEventListener("dispose", () => {
+    engine.webGLRenderer.dispose();
+  });
+};
+const ScenePlugin = function(engine, params) {
+  if (engine.scene) {
+    console.warn("engine has installed scene plugin.");
+    return;
+  }
+  engine.scene = new Scene();
+};
+var HELPERCOMPILEREVENTTYPE;
+(function(HELPERCOMPILEREVENTTYPE2) {
+  HELPERCOMPILEREVENTTYPE2["ADD"] = "add";
+  HELPERCOMPILEREVENTTYPE2["REMOVE"] = "remove";
+})(HELPERCOMPILEREVENTTYPE || (HELPERCOMPILEREVENTTYPE = {}));
+const _SceneHelperCompiler = class extends EventDispatcher$1 {
+  constructor(scene) {
+    super();
+    __publicField(this, "map");
+    __publicField(this, "scene");
+    this.map = new Map();
+    this.scene = scene;
+  }
+  getMap() {
+    return this.map;
+  }
+  add(object) {
+    if (_SceneHelperCompiler.filterHelperMap[object.type]) {
+      return;
+    }
+    if (_SceneHelperCompiler.typeHelperMap[object.type]) {
+      const helper = new _SceneHelperCompiler.typeHelperMap[object.type](object);
+      this.map.set(object, helper);
+      this.scene._add(helper);
+      this.dispatchEvent({
+        type: HELPERCOMPILEREVENTTYPE.ADD,
+        helper,
+        object
+      });
+    } else {
+      console.warn(`Scene helper compiler can not support this type object: '${object.type}'`);
+    }
+  }
+  remove(object) {
+    if (_SceneHelperCompiler.filterHelperMap[object.type]) {
+      return;
+    }
+    if (this.map.has(object)) {
+      const helper = this.map.get(object);
+      this.scene._remove(helper);
+      helper.geometry.dispose();
+      if (helper.material) {
+        if (helper.material instanceof Material) {
+          helper.material.dispose();
+        } else {
+          helper.material.forEach((material) => {
+            material.dispose();
+          });
+        }
+      }
+      this.map.delete(object);
+      this.dispatchEvent({
+        type: HELPERCOMPILEREVENTTYPE.REMOVE,
+        helper,
+        object
+      });
+    } else {
+      console.warn(`Scene helper compiler can not found this object\`s helper: ${object}`);
+    }
+  }
+  setVisiable(visiable) {
+    const scene = this.scene;
+    if (visiable) {
+      this.map.forEach((helper, origin) => {
+        scene._add(helper);
+      });
+    } else {
+      this.map.forEach((helper, origin) => {
+        scene._remove(helper);
+      });
+    }
+  }
+  resetHelperColor(...object) {
+    const map = this.map;
+    const helperColorHex = _SceneHelperCompiler.helperColorHex;
+    object.forEach((elem) => {
+      if (map.has(elem)) {
+        const helper = map.get(elem);
+        helper.material.color.setHex(helperColorHex);
+      }
+    });
+  }
+  setHelperHoverColor(...object) {
+    const map = this.map;
+    const hoverColorHex = _SceneHelperCompiler.hoverColorHex;
+    object.forEach((elem) => {
+      if (map.has(elem)) {
+        const helper = map.get(elem);
+        helper.material.color.setHex(hoverColorHex);
+      }
+    });
+  }
+  setHelperActiveColor(...object) {
+    const map = this.map;
+    const activeColorHex = _SceneHelperCompiler.activeColorHex;
+    object.forEach((elem) => {
+      if (map.has(elem)) {
+        const helper = map.get(elem);
+        helper.material.color.setHex(activeColorHex);
+      }
+    });
+  }
+};
+let SceneHelperCompiler = _SceneHelperCompiler;
+__publicField(SceneHelperCompiler, "helperColorHex", new Color(HELPERCOLOR).getHex());
+__publicField(SceneHelperCompiler, "activeColorHex", new Color(ACTIVECOLOR).getHex());
+__publicField(SceneHelperCompiler, "hoverColorHex", new Color(HOVERCOLOR).getHex());
+__publicField(SceneHelperCompiler, "typeHelperMap", {
+  "PointLight": PointLightHelper,
+  "PerspectiveCamera": CameraHelper,
+  "OrthographicCamera": CameraHelper,
+  "Mesh": MeshHelper
+});
+__publicField(SceneHelperCompiler, "filterHelperMap", {
+  "AmbientLight": true,
+  "Object3D": true
+});
+var ModelingSceneCameraDefalutType;
+(function(ModelingSceneCameraDefalutType2) {
+  ModelingSceneCameraDefalutType2["DefaultPerspectiveCamera"] = "DefaultPerspectiveCamera";
+  ModelingSceneCameraDefalutType2["DefaultOrthograpbicCamera"] = "DefaultOrthograpbicCamera";
+})(ModelingSceneCameraDefalutType || (ModelingSceneCameraDefalutType = {}));
+var SCENEVIEWPOINT;
+(function(SCENEVIEWPOINT2) {
+  SCENEVIEWPOINT2["DEFAULT"] = "default";
+  SCENEVIEWPOINT2["TOP"] = "top";
+  SCENEVIEWPOINT2["BOTTOM"] = "bottom";
+  SCENEVIEWPOINT2["LEFT"] = "left";
+  SCENEVIEWPOINT2["RIGHT"] = "right";
+  SCENEVIEWPOINT2["FRONT"] = "front";
+  SCENEVIEWPOINT2["BACK"] = "back";
+})(SCENEVIEWPOINT || (SCENEVIEWPOINT = {}));
+var SCENEDISPLAYMODE;
+(function(SCENEDISPLAYMODE2) {
+  SCENEDISPLAYMODE2["GEOMETRY"] = "geometry";
+  SCENEDISPLAYMODE2["MATERIAL"] = "material";
+  SCENEDISPLAYMODE2["LIGHT"] = "light";
+  SCENEDISPLAYMODE2["ENV"] = "env";
+})(SCENEDISPLAYMODE || (SCENEDISPLAYMODE = {}));
+Scene.prototype.add = function(...object) {
+  if (!arguments.length) {
+    return this;
+  }
+  if (arguments.length > 1) {
+    for (let i = 0; i < arguments.length; i++) {
+      this.add(arguments[i]);
+    }
+    return this;
+  }
+  const currentObject = object[0];
+  if (currentObject === this) {
+    console.error("THREE.Object3D.add: object can't be added as a child of itself.", object);
+    return this;
+  }
+  if (currentObject && currentObject.isObject3D) {
+    if (currentObject.parent !== null) {
+      const index = this.children.indexOf(currentObject);
+      if (index !== -1) {
+        currentObject.parent = null;
+        this.children.splice(index, 1);
+        currentObject.dispatchEvent({ type: "removed" });
+      }
+    }
+    currentObject.parent = this;
+    this.children.push(currentObject);
+    currentObject.dispatchEvent({ type: "added" });
+  } else {
+    console.error("THREE.Object3D.add: object not an instance of THREE.Object3D.", object);
+  }
+  return this;
+};
+class ModelingScene extends Scene {
+  constructor(config) {
+    super();
+    __publicField(this, "cameraSet");
+    __publicField(this, "lightSet");
+    __publicField(this, "meshSet");
+    __publicField(this, "lineSet");
+    __publicField(this, "pointsSet");
+    __publicField(this, "spriteSet");
+    __publicField(this, "helperCompiler");
+    __publicField(this, "resetHoverObjectSet");
+    __publicField(this, "resetActiveObjectSet");
+    __publicField(this, "displayMode");
+    __publicField(this, "meshOverrideMaterial");
+    __publicField(this, "lineOverrideMaterial");
+    __publicField(this, "pointsOverrideMaterial");
+    __publicField(this, "spriteOverrideMaterial");
+    __publicField(this, "materialCacheMap");
+    __publicField(this, "defaultAmbientLight");
+    __publicField(this, "defaultDirectionalLight");
+    __publicField(this, "backgroundCache");
+    __publicField(this, "environmentCache");
+    __publicField(this, "defaultPerspectiveCamera");
+    __publicField(this, "defaultOrthograpbicCamera");
+    __publicField(this, "axesHelper");
+    __publicField(this, "gridHelper");
+    __publicField(this, "showAxesHelper");
+    __publicField(this, "showGridHelper");
+    __publicField(this, "getDefaultPerspectiveCamera");
+    __publicField(this, "getDefaultOrthographicCamera");
+    __publicField(this, "setAxesHelper");
+    __publicField(this, "setGridHelper");
+    __publicField(this, "switchDisplayMode");
+    __publicField(this, "setDisplayMode");
+    this.cameraSet = new Set();
+    this.lightSet = new Set();
+    this.meshSet = new Set();
+    this.lineSet = new Set();
+    this.pointsSet = new Set();
+    this.spriteSet = new Set();
+    this.helperCompiler = new SceneHelperCompiler(this);
+    this.resetHoverObjectSet = new Set();
+    this.resetActiveObjectSet = new Set();
+    if (config.hasDefaultPerspectiveCamera) {
+      if (config.defaultPerspectiveCameraSetting) {
+        this.defaultPerspectiveCamera = new PerspectiveCamera(config.defaultPerspectiveCameraSetting.fov, config.defaultPerspectiveCameraSetting.aspect, config.defaultPerspectiveCameraSetting.near, config.defaultPerspectiveCameraSetting.far);
+      } else {
+        this.defaultPerspectiveCamera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1e3);
+      }
+      this.defaultPerspectiveCamera.position.set(50, 50, 50);
+      this.defaultPerspectiveCamera.lookAt(0, 0, 0);
+      this.defaultPerspectiveCamera.name = "\u9ED8\u8BA4\u900F\u89C6\u76F8\u673A";
+      this.cameraSet.add(this.defaultPerspectiveCamera);
+      this.getDefaultPerspectiveCamera = function() {
+        return this.defaultPerspectiveCamera;
+      };
+    }
+    if (config.hasDefaultOrthographicCamera) {
+      if (config.defaultOrthographicCameraSetting) {
+        const setting = config.defaultOrthographicCameraSetting;
+        this.defaultOrthograpbicCamera = new OrthographicCamera(setting.left, setting.right, setting.top, setting.bottom, setting.near, setting.far);
+      } else {
+        const domWidth = window.innerWidth / 2;
+        const domHeight = window.innerHeight / 2;
+        this.defaultOrthograpbicCamera = new OrthographicCamera(-domWidth / 8, domWidth / 8, domHeight / 8, -domHeight / 8, 1, 1e3);
+      }
+      this.defaultOrthograpbicCamera.name = "\u9ED8\u8BA4\u6B63\u4EA4\u76F8\u673A";
+      this.cameraSet.add(this.defaultOrthograpbicCamera);
+      this.getDefaultOrthographicCamera = function() {
+        return this.defaultOrthograpbicCamera;
+      };
+      this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
+        this.defaultOrthograpbicCamera.position.set(0, 60, 0);
+      });
+      this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
+        this.defaultOrthograpbicCamera.position.set(0, -60, 0);
+      });
+      this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
+        this.defaultOrthograpbicCamera.position.set(60, 0, 0);
+      });
+      this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
+        this.defaultOrthograpbicCamera.position.set(-60, 0, 0);
+      });
+      this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
+        this.defaultOrthograpbicCamera.position.set(0, 0, 60);
+      });
+      this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
+        this.defaultOrthograpbicCamera.position.set(0, 0, -60);
+      });
+    }
+    if (config.hasAxesHelper) {
+      this.axesHelper = new AxesHelper(500);
+      this.axesHelper.matrixAutoUpdate = false;
+      this.axesHelper.raycast = () => {
+      };
+      super.add(this.axesHelper);
+      this.setAxesHelper = function(setting) {
+        const axesHelper = this.axesHelper;
+        if (setting.size) {
+          const position = axesHelper.geometry.getAttribute("position");
+          position.setX(setting.size, 1);
+          position.setY(setting.size, 3);
+          position.setZ(setting.size, 5);
+          position.needsUpdate = true;
+        }
+        if (typeof setting.visiable !== void 0) {
+          axesHelper.visible = setting.visiable;
+        }
+      };
+      this.showAxesHelper = (show) => {
+        if (show) {
+          super.add(this.axesHelper);
+        } else {
+          super.remove(this.axesHelper);
+        }
+      };
+    }
+    if (config.hasGridHelper) {
+      const gridHelper = new GridHelper(500, 50, "rgb(130, 130, 130)", "rgb(70, 70, 70)");
+      gridHelper.raycast = () => {
+      };
+      if (gridHelper.material instanceof Material) {
+        const material = gridHelper.material;
+        material.transparent = true;
+        material.opacity = 0.5;
+        material.needsUpdate = true;
+      }
+      gridHelper.matrixAutoUpdate = false;
+      gridHelper.raycast = () => {
+      };
+      this.gridHelper = gridHelper;
+      super.add(gridHelper);
+      this.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, (e) => {
+        gridHelper.rotation.set(0, 0, 0);
+        gridHelper.updateMatrix();
+        gridHelper.updateMatrixWorld();
+      });
+      this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
+        gridHelper.rotation.set(0, 0, 0);
+        gridHelper.updateMatrix();
+        gridHelper.updateMatrixWorld();
+      });
+      this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
+        gridHelper.rotation.set(0, 0, 0);
+        gridHelper.updateMatrix();
+        gridHelper.updateMatrixWorld();
+      });
+      this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
+        gridHelper.rotation.set(0, 0, Math.PI / 2);
+        gridHelper.updateMatrix();
+        gridHelper.updateMatrixWorld();
+      });
+      this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
+        gridHelper.rotation.set(0, 0, Math.PI / 2);
+        gridHelper.updateMatrix();
+        gridHelper.updateMatrixWorld();
+      });
+      this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
+        gridHelper.rotation.set(Math.PI / 2, 0, 0);
+        gridHelper.updateMatrix();
+        gridHelper.updateMatrixWorld();
+      });
+      this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
+        gridHelper.rotation.set(Math.PI / 2, 0, 0);
+        gridHelper.updateMatrix();
+        gridHelper.updateMatrixWorld();
+      });
+      this.showGridHelper = (show) => {
+        if (show) {
+          super.add(this.gridHelper);
+        } else {
+          super.remove(this.gridHelper);
+        }
+      };
+    }
+    if (config.hasDisplayMode) {
+      const overrideColor = "rgb(250, 250, 250)";
+      this.meshOverrideMaterial = new MeshLambertMaterial({ color: overrideColor });
+      this.lineOverrideMaterial = new LineBasicMaterial({ color: overrideColor });
+      this.pointsOverrideMaterial = new PointsMaterial({ color: overrideColor, size: 5, sizeAttenuation: false });
+      this.spriteOverrideMaterial = new SpriteMaterial({ color: overrideColor });
+      this.materialCacheMap = new WeakMap();
+      this.defaultAmbientLight = new AmbientLight("rgb(255, 255, 255)", 0.5);
+      this.defaultAmbientLight.matrixAutoUpdate = false;
+      this.defaultDirectionalLight = new DirectionalLight("rgb(255, 255, 255)", 0.3);
+      this.defaultDirectionalLight.castShadow = false;
+      this.defaultDirectionalLight.position.set(-100, 100, 100);
+      this.defaultDirectionalLight.updateMatrix();
+      this.defaultDirectionalLight.updateMatrixWorld();
+      this.defaultDirectionalLight.matrixAutoUpdate = false;
+      this.switchDisplayMode = (mode) => {
+        const filterMaterial = () => {
+          const meterialCacheMap = this.materialCacheMap;
+          const meshOverrideMaterial = this.meshOverrideMaterial;
+          this.meshSet.forEach((mesh) => {
+            meterialCacheMap.set(mesh, mesh.material);
+            mesh.material = meshOverrideMaterial;
+          });
+          const lineOverrideMaterial = this.lineOverrideMaterial;
+          this.lineSet.forEach((line) => {
+            meterialCacheMap.set(line, line.material);
+            line.material = lineOverrideMaterial;
+          });
+          const pointsOverrideMaterial = this.pointsOverrideMaterial;
+          this.pointsSet.forEach((points) => {
+            meterialCacheMap.set(points, points.material);
+            points.material = pointsOverrideMaterial;
+          });
+          const spriteOverrideMaterial = this.spriteOverrideMaterial;
+          this.spriteSet.forEach((sprite) => {
+            meterialCacheMap.set(sprite, sprite.material);
+            sprite.material = spriteOverrideMaterial;
+          });
+        };
+        const reduceMaterial = () => {
+          const meterialCacheMap = this.materialCacheMap;
+          this.meshSet.forEach((mesh) => {
+            if (meterialCacheMap.get(mesh)) {
+              mesh.material = meterialCacheMap.get(mesh);
+              meterialCacheMap.delete(mesh);
+            }
+          });
+          this.lineSet.forEach((line) => {
+            if (meterialCacheMap.get(line)) {
+              line.material = meterialCacheMap.get(line);
+              meterialCacheMap.delete(line);
+            }
+          });
+          this.pointsSet.forEach((points) => {
+            if (meterialCacheMap.get(points)) {
+              points.material = meterialCacheMap.get(points);
+              meterialCacheMap.delete(points);
+            }
+          });
+          this.spriteSet.forEach((sprite) => {
+            if (meterialCacheMap.get(sprite)) {
+              sprite.material = meterialCacheMap.get(sprite);
+              meterialCacheMap.delete(sprite);
+            }
+          });
+        };
+        const filterLight = () => {
+          this.lightSet.forEach((light) => {
+            super.remove(light);
+          });
+          super.add(this.defaultAmbientLight);
+          super.add(this.defaultDirectionalLight);
+        };
+        const reduceLight = () => {
+          this.lightSet.forEach((light) => {
+            super.add(light);
+          });
+          super.remove(this.defaultAmbientLight);
+          super.remove(this.defaultDirectionalLight);
+        };
+        const filterScene = () => {
+          if (this.background instanceof Texture) {
+            this.backgroundCache = this.background;
+            this.background = null;
+          }
+          if (this.environment instanceof Texture) {
+            this.environmentCache = this.environment;
+            this.environment = null;
+          }
+        };
+        const reduceScene = () => {
+          if (this.backgroundCache) {
+            this.background = this.backgroundCache;
+            this.backgroundCache = void 0;
+          }
+          if (this.environmentCache) {
+            this.environment = this.environmentCache;
+            this.environmentCache = void 0;
+          }
+        };
+        if (mode === SCENEDISPLAYMODE.GEOMETRY) {
+          filterMaterial();
+          filterScene();
+          filterLight();
+        } else if (mode === SCENEDISPLAYMODE.MATERIAL) {
+          reduceMaterial();
+          filterScene();
+          filterLight();
+        } else if (mode === SCENEDISPLAYMODE.LIGHT) {
+          reduceMaterial();
+          filterScene();
+          reduceLight();
+        } else if (mode === SCENEDISPLAYMODE.ENV) {
+          reduceMaterial();
+          reduceScene();
+          reduceLight();
+        } else {
+          console.warn(`VisScene can not set this mode: ${mode}`);
+        }
+      };
+      this.setDisplayMode = (mode) => {
+        this.displayMode = mode;
+        this.switchDisplayMode(mode);
+      };
+      if (config.displayMode !== void 0) {
+        this.setDisplayMode(config.displayMode);
+        this.switchDisplayMode(this.displayMode);
+      } else {
+        this.setDisplayMode(SCENEDISPLAYMODE.ENV);
+        this.switchDisplayMode(this.displayMode);
+      }
+    }
+  }
+  getHelperCompiler() {
+    return this.helperCompiler;
+  }
+  setObjectHelperVisiable(visiable) {
+    this.helperCompiler.setVisiable(visiable);
+  }
+  setObjectHelperHover(...object) {
+    const resetObjectSet = this.resetHoverObjectSet;
+    const activeObjectSet = this.resetActiveObjectSet;
+    object.forEach((elem, i, arr) => {
+      resetObjectSet.delete(elem);
+      if (activeObjectSet.has(elem)) {
+        arr.splice(i, 1);
+      }
+    });
+    activeObjectSet.forEach((elem) => {
+      resetObjectSet.delete(elem);
+    });
+    this.helperCompiler.resetHelperColor(...resetObjectSet);
+    resetObjectSet.clear();
+    this.helperCompiler.setHelperHoverColor(...object);
+    object.forEach((elem) => {
+      resetObjectSet.add(elem);
+    });
+    return this;
+  }
+  setObjectHelperActive(...object) {
+    const resetObjectSet = this.resetActiveObjectSet;
+    object.forEach((elem) => {
+      resetObjectSet.delete(elem);
+    });
+    this.helperCompiler.resetHelperColor(...resetObjectSet);
+    resetObjectSet.clear();
+    this.helperCompiler.setHelperActiveColor(...object);
+    object.forEach((elem) => {
+      resetObjectSet.add(elem);
+    });
+    return this;
+  }
+  showObjectHelper(show) {
+    this.helperCompiler.setVisiable(show);
+    return this;
+  }
+  setViewPoint(direction) {
+    this.dispatchEvent({ type: `${direction}ViewPoint` });
+  }
+  add(...object) {
+    let addNumber = 0;
+    object.forEach((elem) => {
+      if (elem instanceof Mesh) {
+        this.meshSet.add(elem);
+        addNumber += 1;
+      } else if (elem instanceof Line) {
+        this.lineSet.add(elem);
+        addNumber += 1;
+      } else if (elem instanceof Light) {
+        this.lightSet.add(elem);
+        addNumber += 1;
+      } else if (elem instanceof Points) {
+        this.pointsSet.add(elem);
+        addNumber += 1;
+      } else if (elem instanceof Sprite) {
+        this.spriteSet.add(elem);
+        addNumber += 1;
+      } else if (elem instanceof Camera) {
+        this.cameraSet.add(elem);
+        addNumber += 1;
+      }
+      this.helperCompiler.add(elem);
+    });
+    if (this.displayMode !== void 0 && addNumber > 0) {
+      this.switchDisplayMode(this.displayMode);
+    }
+    return super.add(...object);
+  }
+  remove(...object) {
+    const materialCacheMap = this.materialCacheMap;
+    object.forEach((elem) => {
+      materialCacheMap && materialCacheMap.has(elem) && materialCacheMap.delete(elem);
+      if (elem instanceof Mesh) {
+        this.meshSet.delete(elem);
+      } else if (elem instanceof Line) {
+        this.lineSet.delete(elem);
+      } else if (elem instanceof Light) {
+        this.lightSet.delete(elem);
+      } else if (elem instanceof Points) {
+        this.pointsSet.delete(elem);
+      } else if (elem instanceof Sprite) {
+        this.spriteSet.delete(elem);
+      } else if (elem instanceof Camera) {
+        this.cameraSet.delete(elem);
+      }
+      this.helperCompiler.remove(elem);
+    });
+    return super.remove(...object);
+  }
+  _add(...object) {
+    return super.add(...object);
+  }
+  _remove(...object) {
+    return super.remove(...object);
+  }
+  updateMaterial(object) {
+    var _a;
+    if (this.displayMode !== void 0 && this.displayMode === "geometry") {
+      (_a = this.materialCacheMap) == null ? void 0 : _a.set(object, object.material);
+      this.switchDisplayMode && this.switchDisplayMode(this.displayMode);
+    }
+    return this;
+  }
+}
+const ModelingScenePlugin = function(engine, params) {
+  var _a;
+  if (!engine.webGLRenderer) {
+    console.error("must install som renderer before this plugin.");
+    return;
+  }
+  if (engine.modelingScene) {
+    console.warn("engine has installed modeling scene plugin.");
+    return;
+  }
+  const scene = new ModelingScene(params);
+  engine.modelingScene = scene;
+  engine.render = () => {
+    engine.webGLRenderer.render(scene, engine.currentCamera);
+  };
+  const defaultPerspectiveCamera = scene.getDefaultPerspectiveCamera && scene.getDefaultPerspectiveCamera();
+  if (defaultPerspectiveCamera) {
+    (_a = engine.completeSet) == null ? void 0 : _a.add(() => {
+      engine.setCamera(defaultPerspectiveCamera);
+    });
+  }
+};
+const RendererManagerPlugin = function(engine) {
+  if (engine.renderManager) {
+    console.warn("engine has installed render manager plugin.");
+    return;
+  }
+  engine.renderManager = new RenderManager();
+  engine.render && engine.renderManager.addEventListener("render", engine.render);
+};
+const OrbitControlsPlugin = function(engine) {
+  console.log(1);
+  if (engine.orbitControls) {
+    console.warn("engine has installed orbitControls plugin.");
+    return;
+  }
+  if (!engine.webGLRenderer) {
+    console.warn("engine must install renderer before install orbitControls plugin.");
+    return;
+  }
+  if (!engine.renderManager) {
+    console.warn("engine must install renderManager before install orbitControls plugin.");
+    return;
+  }
+  engine.orbitControls = new VisOrbitControls(engine.currentCamera, engine.dom);
+  engine.addEventListener("setCamera", (event) => {
+    engine.orbitControls.setCamera(event.camera);
+  });
+  engine.renderManager.addEventListener("render", () => {
+    engine.orbitControls.update();
+  });
+};
+var EnginePlugin;
+(function(EnginePlugin2) {
+  EnginePlugin2["WEBGLRENDERER"] = "WebGLRenderer";
+  EnginePlugin2["SCENE"] = "Scene";
+  EnginePlugin2["MODELINGSCENE"] = "ModelingScene";
+  EnginePlugin2["RENDERMANAGER"] = "RenderManager";
+  EnginePlugin2["ORBITCONTROLS"] = "OrbitControls";
+})(EnginePlugin || (EnginePlugin = {}));
+class Engine extends EventDispatcher {
+  constructor() {
+    super();
+    __publicField(this, "pluginHandler");
+    __publicField(this, "completeSet");
+    __publicField(this, "dom");
+    __publicField(this, "webGLRenderer");
+    __publicField(this, "currentCamera");
+    __publicField(this, "scene");
+    __publicField(this, "modelingScene");
+    __publicField(this, "orbitControls");
+    __publicField(this, "composer");
+    __publicField(this, "renderManager");
+    __publicField(this, "setSize");
+    __publicField(this, "setCamera");
+    __publicField(this, "setDom");
+    __publicField(this, "render");
+    this.completeSet = new Set();
+    const pluginHandler = new Map();
+    pluginHandler.set("WebGLRenderer", WebGLRendererPlugin);
+    pluginHandler.set("Scene", ScenePlugin);
+    pluginHandler.set("ModelingScene", ModelingScenePlugin);
+    pluginHandler.set("RenderManager", RendererManagerPlugin);
+    pluginHandler.set("OrbitControls", OrbitControlsPlugin);
+    this.pluginHandler = pluginHandler;
+    this.render = function() {
+      console.warn("can not install some plugin");
+    };
+  }
+  install(plugin, params) {
+    if (this.pluginHandler.has(plugin)) {
+      this.pluginHandler.get(plugin)(this, params);
+    }
+    return this;
+  }
+  complete() {
+    this.completeSet.forEach((fun) => {
+      fun(this);
+    });
+    this.completeSet = void 0;
+    this.pluginHandler = void 0;
+    return this;
+  }
+  dispose() {
+    this.dispatchEvent({
+      type: "dispose"
+    });
+    return this;
+  }
+}
+export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, EVENTTYPE, Engine, GeometryDataSupport, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingEngineSupportConnector, ModelingScene, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE$1 as SCENEDISPLAYMODE, SCENEVIEWPOINT$1 as SCENEVIEWPOINT, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };

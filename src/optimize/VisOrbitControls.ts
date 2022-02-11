@@ -1,6 +1,5 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { Camera, MOUSE } from 'three'
-
 export class VisOrbitControls extends OrbitControls{
   constructor (camera: Camera, domElement?: HTMLElement) {
     super(camera, domElement)

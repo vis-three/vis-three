@@ -51,9 +51,13 @@ export class EventDispatcher {
 		const type = event.type
 		const listeners = this.listeners
 		if (listeners.has(type)) {
-			listeners.get(type)?.forEach(listener => {
-				listener.call(this, event)
-			})
+      try {
+        listeners.get(type)?.forEach(listener => {
+          listener.call(this, event)
+        })
+      } catch (error) {
+        console.error(error)
+      }
 		}
   }
 }
