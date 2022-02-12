@@ -4,11 +4,11 @@ import { Plugin } from "./plugin";
 
 export interface SceneParameters {}
 
-export const ScenePlugin: Plugin<Scene> = function (engine: Engine, params: SceneParameters) {
-  if (engine.scene) {
-    console.warn('engine has installed scene plugin.')
+export const ScenePlugin: Plugin<Scene> = function (this: Engine, params: SceneParameters) {
+  if (this.scene) {
+    console.warn('this has installed scene plugin.')
     return
   }
 
-  engine.scene = new Scene()
+  this.scene = new Scene()
 }

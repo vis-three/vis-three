@@ -38,10 +38,15 @@
       displayMode: 'env'
     })
     .install('RenderManager')
+    .install('Stats')
+    .install('EffectComposer', {
+      WebGLMultisampleRenderTarget: true
+    })
     .install('OrbitControls')
     .complete()
     .setDom(document.getElementById('app'))
     .setSize()
+    .setStats(true)
 
     engine.renderManager.play()
   </script>

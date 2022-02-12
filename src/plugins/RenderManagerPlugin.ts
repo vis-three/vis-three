@@ -2,13 +2,13 @@ import { Engine } from "../engine/Engine";
 import { RenderManager } from "../manager/RenderManager";
 import { Plugin } from "./plugin";
 
-export const RendererManagerPlugin: Plugin<Object> = function (engine: Engine) {
-  if (engine.renderManager) {
-    console.warn('engine has installed render manager plugin.')
+export const RendererManagerPlugin: Plugin<Object> = function (this: Engine) {
+  if (this.renderManager) {
+    console.warn('this has installed render manager plugin.')
     return
   }
 
-  engine.renderManager = new RenderManager()
+  this.renderManager = new RenderManager()
 
-  engine.render && engine.renderManager!.addEventListener('render', engine.render)
+  this.render && this.renderManager!.addEventListener('render', this.render)
 }

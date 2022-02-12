@@ -14,16 +14,18 @@ export interface SetCameraEvent extends BaseEvent {
   camera: Camera
 }
 
-export const WebGLRendererPlugin: Plugin<WebGLRenderer> = function (engine: Engine, params: WebGLRendererParameters) {
-  if (engine.webGLRenderer) {
-    console.warn('engine has installed webglRenderer plugin.')
+export const WebGLRendererPlugin: Plugin<WebGLRendererParameters> = function (this: Engine, params: WebGLRendererParameters) {
+  if (this.webGLRenderer) {
+    console.warn('this has installed webglRenderer plugin.')
     return
   }
 
-  engine.webGLRenderer = new WebGLRenderer(params)
+  this.webGLRenderer = new WebGLRenderer(params)
+
+  this.dom = this.webGLRenderer.domElement
 
   // 设置尺寸
-  engine.setSize = function (width?: number, height?: number): Engine {
+  this.setSize = function (width?: number, height?: number): Engine {
     if(width && width <= 0 || height && height <= 0) {
       console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`)
       return this
@@ -36,7 +38,7 @@ export const WebGLRendererPlugin: Plugin<WebGLRenderer> = function (engine: Engi
   }
 
   // 设置相机
-  engine.setCamera = function setCamera (camera: Camera): Engine {
+  this.setCamera = function setCamera (camera: Camera): Engine {
     this.currentCamera = camera
     this.dispatchEvent({
       type: 'setCamera',
@@ -46,20 +48,19 @@ export const WebGLRendererPlugin: Plugin<WebGLRenderer> = function (engine: Engi
   }
 
   // 设置渲染的dom
-  engine.setDom = function (dom: HTMLElement): Engine {
+  this.setDom = function (dom: HTMLElement): Engine {
     this.dom = dom
     dom.appendChild(this.webGLRenderer!.domElement)
     return this
   }
 
-  engine.addEventListener<SetSizeEvent>('setSize', (event) => {
-    console.log('setSize')
+  this.addEventListener<SetSizeEvent>('setSize', (event) => {
     const width = event.width
     const height = event.height
-    engine.webGLRenderer!.setSize(width, height, true)
+    this.webGLRenderer!.setSize(width, height, true)
   })
 
-  engine.addEventListener('dispose', () => {
-    engine.webGLRenderer!.dispose()
+  this.addEventListener('dispose', () => {
+    this.webGLRenderer!.dispose()
   })
 }

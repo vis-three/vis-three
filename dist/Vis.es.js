@@ -1464,25 +1464,36 @@ class SceneStatusManager extends EventDispatcher$1 {
   }
 }
 class VisStats {
-  constructor(parameter) {
-    __publicField(this, "stats");
+  constructor(parameters) {
+    __publicField(this, "REVISION");
+    __publicField(this, "dom");
+    __publicField(this, "addPanel");
+    __publicField(this, "showPanel");
+    __publicField(this, "begin");
+    __publicField(this, "end");
+    __publicField(this, "update");
     __publicField(this, "domElement");
-    __publicField(this, "render");
-    this.stats = Stats();
-    const dom = this.stats.domElement;
+    __publicField(this, "setMode");
+    const stats = Stats();
+    this.REVISION = stats.REVISION;
+    this.dom = stats.dom;
+    this.domElement = stats.domElement;
+    this.begin = stats.begin.bind(stats);
+    this.end = stats.end.bind(stats);
+    this.update = stats.update.bind(stats);
+    this.addPanel = stats.addPanel.bind(stats);
+    this.showPanel = stats.showPanel.bind(stats);
+    this.setMode = stats.setMode.bind(stats);
+    const dom = this.domElement;
     dom.style.position = "absolute";
     dom.style.top = "0";
     dom.style.left = "35px";
-    if (parameter) {
-      dom.style.top = `${parameter.top}px`;
-      dom.style.left = `${parameter.left}px`;
-      dom.style.right = `${parameter.right}px`;
-      dom.style.bottom = `${parameter.bottom}px`;
+    if (parameters) {
+      dom.style.top = `${parameters.top}px`;
+      dom.style.left = `${parameters.left}px`;
+      dom.style.right = `${parameters.right}px`;
+      dom.style.bottom = `${parameters.bottom}px`;
     }
-    this.render = () => {
-      this.stats.update();
-    };
-    this.domElement = dom;
   }
 }
 class VisOrbitControls extends OrbitControls {
@@ -5423,13 +5434,14 @@ const _TextureDisplayer = class {
 };
 let TextureDisplayer = _TextureDisplayer;
 __publicField(TextureDisplayer, "ambientLight", new AmbientLight("rgb(255, 255, 255)", 1));
-const WebGLRendererPlugin = function(engine, params) {
-  if (engine.webGLRenderer) {
-    console.warn("engine has installed webglRenderer plugin.");
+const WebGLRendererPlugin = function(params) {
+  if (this.webGLRenderer) {
+    console.warn("this has installed webglRenderer plugin.");
     return;
   }
-  engine.webGLRenderer = new WebGLRenderer(params);
-  engine.setSize = function(width, height) {
+  this.webGLRenderer = new WebGLRenderer(params);
+  this.dom = this.webGLRenderer.domElement;
+  this.setSize = function(width, height) {
     var _a, _b;
     if (width && width <= 0 || height && height <= 0) {
       console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
@@ -5440,7 +5452,7 @@ const WebGLRendererPlugin = function(engine, params) {
     this.dispatchEvent({ type: "setSize", width, height });
     return this;
   };
-  engine.setCamera = function setCamera(camera) {
+  this.setCamera = function setCamera(camera) {
     this.currentCamera = camera;
     this.dispatchEvent({
       type: "setCamera",
@@ -5448,27 +5460,26 @@ const WebGLRendererPlugin = function(engine, params) {
     });
     return this;
   };
-  engine.setDom = function(dom) {
+  this.setDom = function(dom) {
     this.dom = dom;
     dom.appendChild(this.webGLRenderer.domElement);
     return this;
   };
-  engine.addEventListener("setSize", (event) => {
-    console.log("setSize");
+  this.addEventListener("setSize", (event) => {
     const width = event.width;
     const height = event.height;
-    engine.webGLRenderer.setSize(width, height, true);
+    this.webGLRenderer.setSize(width, height, true);
   });
-  engine.addEventListener("dispose", () => {
-    engine.webGLRenderer.dispose();
+  this.addEventListener("dispose", () => {
+    this.webGLRenderer.dispose();
   });
 };
-const ScenePlugin = function(engine, params) {
-  if (engine.scene) {
-    console.warn("engine has installed scene plugin.");
+const ScenePlugin = function(params) {
+  if (this.scene) {
+    console.warn("this has installed scene plugin.");
     return;
   }
-  engine.scene = new Scene();
+  this.scene = new Scene();
 };
 var HELPERCOMPILEREVENTTYPE;
 (function(HELPERCOMPILEREVENTTYPE2) {
@@ -6060,57 +6071,189 @@ class ModelingScene extends Scene {
     return this;
   }
 }
-const ModelingScenePlugin = function(engine, params) {
-  var _a;
-  if (!engine.webGLRenderer) {
+const ModelingScenePlugin = function(params) {
+  if (this.modelingScene) {
+    console.warn("this has installed modeling scene plugin.");
+    return;
+  }
+  if (!this.webGLRenderer) {
     console.error("must install som renderer before this plugin.");
     return;
   }
-  if (engine.modelingScene) {
-    console.warn("engine has installed modeling scene plugin.");
-    return;
-  }
   const scene = new ModelingScene(params);
-  engine.modelingScene = scene;
-  engine.render = () => {
-    engine.webGLRenderer.render(scene, engine.currentCamera);
+  this.modelingScene = scene;
+  this.render = () => {
+    this.webGLRenderer.render(scene, this.currentCamera);
   };
-  const defaultPerspectiveCamera = scene.getDefaultPerspectiveCamera && scene.getDefaultPerspectiveCamera();
-  if (defaultPerspectiveCamera) {
-    (_a = engine.completeSet) == null ? void 0 : _a.add(() => {
-      engine.setCamera(defaultPerspectiveCamera);
+  if (params.hasDefaultPerspectiveCamera) {
+    const defaultPerspectiveCamera = scene.getDefaultPerspectiveCamera();
+    this.currentCamera = defaultPerspectiveCamera;
+    this.addEventListener("setSize", (event) => {
+      defaultPerspectiveCamera.aspect = event.width / event.height;
+      defaultPerspectiveCamera.updateProjectionMatrix();
+    });
+    scene.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, (e) => {
+      this.setCamera(defaultPerspectiveCamera);
+    });
+  }
+  if (params.hasDefaultOrthographicCamera) {
+    const defaultOrthograpbicCamera = scene.getDefaultOrthographicCamera();
+    this.addEventListener("setSize", (event) => {
+      const width = event.width;
+      const height = event.height;
+      defaultOrthograpbicCamera.left = -width / 16;
+      defaultOrthograpbicCamera.right = width / 16;
+      defaultOrthograpbicCamera.top = height / 16;
+      defaultOrthograpbicCamera.bottom = -height / 16;
+      defaultOrthograpbicCamera.updateProjectionMatrix();
+    });
+    scene.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
+      this.setCamera(defaultOrthograpbicCamera);
+    });
+    scene.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
+      this.setCamera(defaultOrthograpbicCamera);
+    });
+    scene.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
+      this.setCamera(defaultOrthograpbicCamera);
+    });
+    scene.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
+      this.setCamera(defaultOrthograpbicCamera);
+    });
+    scene.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
+      this.setCamera(defaultOrthograpbicCamera);
+    });
+    scene.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
+      this.setCamera(defaultOrthograpbicCamera);
     });
   }
 };
-const RendererManagerPlugin = function(engine) {
-  if (engine.renderManager) {
-    console.warn("engine has installed render manager plugin.");
+const RendererManagerPlugin = function() {
+  if (this.renderManager) {
+    console.warn("this has installed render manager plugin.");
     return;
   }
-  engine.renderManager = new RenderManager();
-  engine.render && engine.renderManager.addEventListener("render", engine.render);
+  this.renderManager = new RenderManager();
+  this.render && this.renderManager.addEventListener("render", this.render);
 };
-const OrbitControlsPlugin = function(engine) {
-  console.log(1);
-  if (engine.orbitControls) {
-    console.warn("engine has installed orbitControls plugin.");
+const OrbitControlsPlugin = function() {
+  if (this.orbitControls) {
+    console.warn("this has installed orbitControls plugin.");
     return;
   }
-  if (!engine.webGLRenderer) {
-    console.warn("engine must install renderer before install orbitControls plugin.");
+  if (!this.webGLRenderer) {
+    console.warn("this must install renderer before install orbitControls plugin.");
     return;
   }
-  if (!engine.renderManager) {
-    console.warn("engine must install renderManager before install orbitControls plugin.");
+  if (!this.renderManager) {
+    console.warn("this must install renderManager before install orbitControls plugin.");
     return;
   }
-  engine.orbitControls = new VisOrbitControls(engine.currentCamera, engine.dom);
-  engine.addEventListener("setCamera", (event) => {
-    engine.orbitControls.setCamera(event.camera);
+  this.orbitControls = new VisOrbitControls(this.currentCamera, this.dom);
+  this.addEventListener("setCamera", (event) => {
+    this.orbitControls.setCamera(event.camera);
   });
-  engine.renderManager.addEventListener("render", () => {
-    engine.orbitControls.update();
+  this.renderManager.addEventListener("render", () => {
+    this.orbitControls.update();
   });
+  if (this.modelingScene) {
+    const scene = this.modelingScene;
+    scene.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, (e) => {
+      this.orbitControls.enableRotate = true;
+    });
+    scene.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
+      this.orbitControls.enableRotate = false;
+    });
+    scene.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
+      this.orbitControls.enableRotate = false;
+    });
+    scene.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
+      this.orbitControls.enableRotate = false;
+    });
+    scene.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
+      this.orbitControls.enableRotate = false;
+    });
+    scene.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
+      this.orbitControls.enableRotate = false;
+    });
+    scene.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
+      this.orbitControls.enableRotate = false;
+    });
+  }
+};
+const StatsPlugin = function(params) {
+  if (this.stats) {
+    console.warn("this has installed stats plugin.");
+    return;
+  }
+  if (!this.renderManager) {
+    console.warn("this must install renderManager before install orbitControls plugin.");
+    return;
+  }
+  const stats = new VisStats(params);
+  this.stats = stats;
+  this.setStats = function(show) {
+    if (show) {
+      this.dom.appendChild(this.stats.domElement);
+    } else {
+      try {
+        this.dom.removeChild(this.stats.domElement);
+      } catch (error) {
+      }
+    }
+    return this;
+  };
+  this.renderManager.addEventListener("render", () => {
+    this.stats.update();
+  });
+};
+const EffectComposerPlugin = function(params) {
+  if (this.effectComposer) {
+    console.warn("this has installed effect composer plugin.");
+    return;
+  }
+  if (!this.webGLRenderer) {
+    console.error("must install som renderer before this plugin.");
+    return;
+  }
+  let composer;
+  if (params == null ? void 0 : params.WebGLMultisampleRenderTarget) {
+    const renderer = this.webGLRenderer;
+    const pixelRatio = renderer.getPixelRatio();
+    const size = renderer.getDrawingBufferSize(new Vector2());
+    composer = new EffectComposer(renderer, new WebGLMultisampleRenderTarget(size.width * pixelRatio, size.height * pixelRatio, {
+      format: RGBAFormat
+    }));
+  } else {
+    composer = new EffectComposer(this.webGLRenderer);
+  }
+  this.effectComposer = composer;
+  let renderPass;
+  if (this.scene) {
+    renderPass = new RenderPass(this.scene, this.currentCamera);
+  } else if (this.modelingScene) {
+    renderPass = new RenderPass(this.modelingScene, this.currentCamera);
+  } else {
+    console.error(`composer con not found support scene plugin.`);
+    return;
+  }
+  composer.addPass(renderPass);
+  this.addEventListener("setCamera", (event) => {
+    renderPass.camera = event.camera;
+  });
+  this.addEventListener("setSize", (event) => {
+    composer.setSize(event.width, event.height);
+  });
+  if (this.renderManager) {
+    this.renderManager.removeEventListener("render", this.render);
+  }
+  this.render = () => {
+    this.effectComposer.render();
+  };
+  if (this.renderManager) {
+    this.renderManager.addEventListener("render", (event) => {
+      this.effectComposer.render(event.delta);
+    });
+  }
 };
 var EnginePlugin;
 (function(EnginePlugin2) {
@@ -6119,11 +6262,20 @@ var EnginePlugin;
   EnginePlugin2["MODELINGSCENE"] = "ModelingScene";
   EnginePlugin2["RENDERMANAGER"] = "RenderManager";
   EnginePlugin2["ORBITCONTROLS"] = "OrbitControls";
+  EnginePlugin2["STATS"] = "Stats";
+  EnginePlugin2["EFFECTCOMPOSER"] = "EffectComposer";
 })(EnginePlugin || (EnginePlugin = {}));
+let pluginHandler = new Map();
+pluginHandler.set("WebGLRenderer", WebGLRendererPlugin);
+pluginHandler.set("Scene", ScenePlugin);
+pluginHandler.set("ModelingScene", ModelingScenePlugin);
+pluginHandler.set("RenderManager", RendererManagerPlugin);
+pluginHandler.set("OrbitControls", OrbitControlsPlugin);
+pluginHandler.set("Stats", StatsPlugin);
+pluginHandler.set("EffectComposer", EffectComposerPlugin);
 class Engine extends EventDispatcher {
   constructor() {
     super();
-    __publicField(this, "pluginHandler");
     __publicField(this, "completeSet");
     __publicField(this, "dom");
     __publicField(this, "webGLRenderer");
@@ -6131,27 +6283,24 @@ class Engine extends EventDispatcher {
     __publicField(this, "scene");
     __publicField(this, "modelingScene");
     __publicField(this, "orbitControls");
-    __publicField(this, "composer");
+    __publicField(this, "effectComposer");
     __publicField(this, "renderManager");
+    __publicField(this, "stats");
     __publicField(this, "setSize");
     __publicField(this, "setCamera");
     __publicField(this, "setDom");
+    __publicField(this, "setStats");
     __publicField(this, "render");
     this.completeSet = new Set();
-    const pluginHandler = new Map();
-    pluginHandler.set("WebGLRenderer", WebGLRendererPlugin);
-    pluginHandler.set("Scene", ScenePlugin);
-    pluginHandler.set("ModelingScene", ModelingScenePlugin);
-    pluginHandler.set("RenderManager", RendererManagerPlugin);
-    pluginHandler.set("OrbitControls", OrbitControlsPlugin);
-    this.pluginHandler = pluginHandler;
     this.render = function() {
       console.warn("can not install some plugin");
     };
   }
   install(plugin, params) {
-    if (this.pluginHandler.has(plugin)) {
-      this.pluginHandler.get(plugin)(this, params);
+    if (pluginHandler.has(plugin)) {
+      pluginHandler.get(plugin).call(this, params);
+    } else {
+      console.error(`engine can not support ${plugin} plugin.`);
     }
     return this;
   }
@@ -6160,7 +6309,7 @@ class Engine extends EventDispatcher {
       fun(this);
     });
     this.completeSet = void 0;
-    this.pluginHandler = void 0;
+    pluginHandler = null;
     return this;
   }
   dispose() {

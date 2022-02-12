@@ -18,6 +18,10 @@ import { ModelingSceneParameters } from "./ModelingEngine/ModelingScene";
 import { RenderManager } from "../manager/RenderManager";
 import { RendererManagerPlugin } from "../plugins/RenderManagerPlugin";
 import { OrbitControlsPlugin } from "../plugins/OrbitControlsPlugin";
+import { VisStatsParameters } from "../optimize/VisStats";
+import Stats from "three/examples/jsm/libs/stats.module";
+import { StatsPlugin } from "../plugins/StatsPlugin";
+import { EffectComposerParameters, EffectComposerPlugin } from "../plugins/EffectComposerPlugin";
 
 // 存在的插件接口
 export enum EnginePlugin {
@@ -25,18 +29,31 @@ export enum EnginePlugin {
   SCENE = 'Scene',
   MODELINGSCENE = 'ModelingScene',
   RENDERMANAGER = 'RenderManager',
-  ORBITCONTROLS = 'OrbitControls'
+  ORBITCONTROLS = 'OrbitControls',
+  STATS = 'Stats',
+  EFFECTCOMPOSER = 'EffectComposer'
 }
 
 export type EnginePluginParams = 
   WebGLRendererParameters |
   SceneParameters |
-  ModelingSceneParameters
+  ModelingSceneParameters |
+  VisStatsParameters |
+  EffectComposerParameters
+
+// 插件处理集合
+let pluginHandler: Map<string, Function> | null = new Map()
+pluginHandler.set('WebGLRenderer', WebGLRendererPlugin)
+pluginHandler.set('Scene', ScenePlugin)
+pluginHandler.set('ModelingScene', ModelingScenePlugin)
+pluginHandler.set('RenderManager', RendererManagerPlugin)
+pluginHandler.set('OrbitControls', OrbitControlsPlugin)
+pluginHandler.set('Stats', StatsPlugin)
+pluginHandler.set('EffectComposer', EffectComposerPlugin)
+
 
 // 引擎槽
 export class Engine extends EventDispatcher {
-
-  private pluginHandler?: Map<string, Plugin<Object>>
 
   completeSet?: Set<(engine: Engine) => void>
 
@@ -47,29 +64,21 @@ export class Engine extends EventDispatcher {
   scene?: Scene
   modelingScene?: ModelingScene
   orbitControls?: OrbitControls
-  composer?: EffectComposer
+  effectComposer?: EffectComposer
   renderManager?: RenderManager
+  stats?: Stats 
 
   setSize?: (width: number, height: number) => this
   setCamera?: (camera: Camera) => this
   setDom?: (dom: HTMLElement) => this
+  setStats?: (show: boolean) => this
 
   render?: () => void
 
   constructor () {
     super()
+
     this.completeSet = new Set()
-
-    // 插件处理集合
-    const pluginHandler = new Map()
-    pluginHandler.set('WebGLRenderer', WebGLRendererPlugin)
-    pluginHandler.set('Scene', ScenePlugin)
-    pluginHandler.set('ModelingScene', ModelingScenePlugin)
-    pluginHandler.set('RenderManager', RendererManagerPlugin)
-    pluginHandler.set('OrbitControls', OrbitControlsPlugin)
-
-    this.pluginHandler = pluginHandler
-
     this.render = function () {
       console.warn('can not install some plugin')
     }
@@ -77,8 +86,10 @@ export class Engine extends EventDispatcher {
 
   // 安装
   install (plugin: EnginePlugin, params: EnginePluginParams): this {
-    if (this.pluginHandler!.has(plugin)) {
-      this.pluginHandler!.get(plugin)!(this, params)
+    if (pluginHandler!.has(plugin)) {
+      pluginHandler!.get(plugin)!.call(this, params)
+    } else {
+      console.error(`engine can not support ${plugin} plugin.`)
     }
     return this
   }
@@ -89,7 +100,7 @@ export class Engine extends EventDispatcher {
       fun(this)
     })
     this.completeSet = undefined
-    this.pluginHandler = undefined
+    pluginHandler = null
     return this
   }
 
