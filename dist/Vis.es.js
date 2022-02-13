@@ -1043,15 +1043,24 @@ class PointerManager extends EventDispatcher {
     return this.mouse;
   }
   pointerDown(event) {
-    const eventObject = Object.assign(event, { mouse: this.mouse });
+    const eventObject = { mouse: this.mouse };
+    for (let key in event) {
+      eventObject[key] = event[key];
+    }
     this.dispatchEvent(eventObject);
   }
   pointerMove(event) {
-    const eventObject = Object.assign(event, { mouse: this.mouse });
+    const eventObject = { mouse: this.mouse };
+    for (let key in event) {
+      eventObject[key] = event[key];
+    }
     this.dispatchEvent(eventObject);
   }
   pointerUp(event) {
-    const eventObject = Object.assign(event, { mouse: this.mouse });
+    const eventObject = { mouse: this.mouse };
+    for (let key in event) {
+      eventObject[key] = event[key];
+    }
     this.dispatchEvent(eventObject);
   }
 }
@@ -6293,95 +6302,98 @@ class EventManager extends EventDispatcher {
     return this.raycaster.intersectObjects(this.scene.children, this.recursive);
   }
   use(pointerManager) {
+    const mergeEvent = function(event, object) {
+      return Object.assign({}, event, object);
+    };
     pointerManager.addEventListener("pointerdown", (event) => {
       const intersections = this.intersectObject(event.mouse);
+      this.dispatchEvent(mergeEvent(event, {
+        type: "pointerdown",
+        intersections
+      }));
+      this.dispatchEvent(mergeEvent(event, {
+        type: "mousedown",
+        intersections
+      }));
       if (intersections.length) {
-        this.dispatchEvent({
-          type: "pointerdown",
-          intersections
-        });
-        this.dispatchEvent({
-          type: "mousedown",
-          intersections
-        });
         if (this.penetrate) {
           for (let intersection of intersections) {
-            intersection.object.dispatchEvent({
+            intersection.object.dispatchEvent(mergeEvent(event, {
               type: "pointerdown",
               intersection
-            });
-            intersection.object.dispatchEvent({
+            }));
+            intersection.object.dispatchEvent(mergeEvent(event, {
               type: "mousedown",
               intersection
-            });
+            }));
           }
         } else {
           const intersection = intersections[0];
-          intersection.object.dispatchEvent({
+          intersection.object.dispatchEvent(mergeEvent(event, {
             type: "pointerdown",
             intersection
-          });
-          intersection.object.dispatchEvent({
+          }));
+          intersection.object.dispatchEvent(mergeEvent(event, {
             type: "mousedown",
             intersection
-          });
+          }));
         }
       }
     });
     const cacheObjectMap = new Map();
     pointerManager.addEventListener("pointermove", (event) => {
       const intersections = this.intersectObject(event.mouse);
+      this.dispatchEvent(mergeEvent(event, {
+        type: "pointermove",
+        intersections
+      }));
+      this.dispatchEvent(mergeEvent(event, {
+        type: "mousemove",
+        intersections
+      }));
       if (intersections.length) {
-        this.dispatchEvent({
-          type: "pointermove",
-          intersections
-        });
-        this.dispatchEvent({
-          type: "mousemove",
-          intersections
-        });
         if (this.penetrate) {
           for (let intersection of intersections) {
             if (cacheObjectMap.has(intersection.object)) {
-              intersection.object.dispatchEvent({
+              intersection.object.dispatchEvent(mergeEvent(event, {
                 type: "pointermove",
                 intersection
-              });
-              intersection.object.dispatchEvent({
+              }));
+              intersection.object.dispatchEvent(mergeEvent(event, {
                 type: "mousemove",
                 intersection
-              });
+              }));
             } else {
-              intersection.object.dispatchEvent({
+              intersection.object.dispatchEvent(mergeEvent(event, {
                 type: "pointerenter",
                 intersection
-              });
-              intersection.object.dispatchEvent({
+              }));
+              intersection.object.dispatchEvent(mergeEvent(event, {
                 type: "mouseenter",
                 intersection
-              });
+              }));
             }
           }
         } else {
           const intersection = intersections[0];
           if (cacheObjectMap.has(intersection.object)) {
-            intersection.object.dispatchEvent({
+            intersection.object.dispatchEvent(mergeEvent(event, {
               type: "pointermove",
               intersection
-            });
-            intersection.object.dispatchEvent({
+            }));
+            intersection.object.dispatchEvent(mergeEvent(event, {
               type: "mousemove",
               intersection
-            });
+            }));
           } else {
-            intersection.object.dispatchEvent({
+            intersection.object.dispatchEvent(mergeEvent(event, {
               type: "pointerenter",
               intersection
-            });
-            intersection.object.dispatchEvent({
+            }));
+            intersection.object.dispatchEvent(mergeEvent(event, {
               type: "mouseenter",
               intersection
-            });
+            }));
           }
         }
         for (let intersection of intersections) {
@@ -6389,70 +6401,62 @@ class EventManager extends EventDispatcher {
         }
       } else {
         cacheObjectMap.forEach((intersection) => {
-          intersection.object.dispatchEvent({
+          intersection.object.dispatchEvent(mergeEvent(event, {
             type: "pointerleave",
             intersection
-          });
-          intersection.object.dispatchEvent({
+          }));
+          intersection.object.dispatchEvent(mergeEvent(event, {
             type: "mouseleave",
             intersection
-          });
+          }));
         });
         cacheObjectMap.clear();
       }
     });
-    pointerManager.addEventListener("pointup", (event) => {
+    pointerManager.addEventListener("pointerup", (event) => {
       const intersections = this.intersectObject(event.mouse);
+      this.dispatchEvent(mergeEvent(event, {
+        type: "pointerup",
+        intersections
+      }));
+      this.dispatchEvent(mergeEvent(event, {
+        type: "mouseup",
+        intersections
+      }));
+      this.dispatchEvent(mergeEvent(event, {
+        type: "click",
+        intersections
+      }));
       if (intersections.length) {
-        this.dispatchEvent({
-          type: "pointerup",
-          intersections
-        });
-        this.dispatchEvent({
-          type: "mouseup",
-          intersections
-        });
-        this.dispatchEvent({
-          type: "click",
-          intersections
-        });
         if (this.penetrate) {
           for (let intersection of intersections) {
-            intersection.object.dispatchEvent({
+            intersection.object.dispatchEvent(mergeEvent(event, {
               type: "pointerup",
               intersection
-            });
-            intersection.object.dispatchEvent({
+            }));
+            intersection.object.dispatchEvent(mergeEvent(event, {
               type: "mouseup",
               intersection
-            });
-            intersection.object.dispatchEvent({
+            }));
+            intersection.object.dispatchEvent(mergeEvent(event, {
               type: "click",
               intersection
-            });
-            intersection.object.dispatchEvent({
-              type: "click",
-              intersection
-            });
+            }));
           }
         } else {
           const intersection = intersections[0];
-          intersection.object.dispatchEvent({
+          intersection.object.dispatchEvent(mergeEvent(event, {
             type: "pointerup",
             intersection
-          });
-          intersection.object.dispatchEvent({
+          }));
+          intersection.object.dispatchEvent(mergeEvent(event, {
             type: "mouseup",
             intersection
-          });
-          intersection.object.dispatchEvent({
+          }));
+          intersection.object.dispatchEvent(mergeEvent(event, {
             type: "click",
             intersection
-          });
-          intersection.object.dispatchEvent({
-            type: "click",
-            intersection
-          });
+          }));
         }
       }
     });
@@ -6482,6 +6486,46 @@ const EventManagerPlugin = function(params) {
     this.eventManager.setCamera(event.camera);
   });
 };
+const TransformControlsPlugin = function() {
+  if (this.transformControls) {
+    console.warn("this has installed transformControls plugin.");
+    return;
+  }
+  if (!this.webGLRenderer) {
+    console.warn("this must install renderer before install transformControls plugin.");
+    return;
+  }
+  if (!this.pointerManager) {
+    console.warn("this must install pointerManager before install transformControls plugin.");
+    return;
+  }
+  if (!this.eventManager) {
+    console.warn("this must install eventManager before install transformControls plugin.");
+    return;
+  }
+  const transformControls = new VisTransformControls(this.currentCamera, this.dom);
+  this.transformControls = transformControls;
+  if (this.scene) {
+    this.scene.add(this.transformControls);
+    this.scene.add(this.transformControls.target);
+  } else if (this.modelingScene) {
+    this.modelingScene._add(this.transformControls);
+    this.modelingScene._add(this.transformControls.target);
+  }
+  this.setTransformControls = function(show) {
+    this.transformControls.visible = show;
+    return this;
+  };
+  this.addEventListener("setCamera", (event) => {
+    transformControls.setCamera(event.camera);
+  });
+  this.eventManager.addEventListener("click", (event) => {
+    if (event.button === 0) {
+      const objectList = event.intersections.map((elem) => elem.object);
+      transformControls.setAttach(...objectList);
+    }
+  });
+};
 var EnginePlugin;
 (function(EnginePlugin2) {
   EnginePlugin2["WEBGLRENDERER"] = "WebGLRenderer";
@@ -6493,6 +6537,7 @@ var EnginePlugin;
   EnginePlugin2["EFFECTCOMPOSER"] = "EffectComposer";
   EnginePlugin2["POINTERMANAGER"] = "PointerManager";
   EnginePlugin2["EVENTMANAGER"] = "EventManager";
+  EnginePlugin2["TRANSFORMCONTROLS"] = "TransformControls";
 })(EnginePlugin || (EnginePlugin = {}));
 let pluginHandler = new Map();
 pluginHandler.set("WebGLRenderer", WebGLRendererPlugin);
@@ -6504,6 +6549,7 @@ pluginHandler.set("Stats", StatsPlugin);
 pluginHandler.set("EffectComposer", EffectComposerPlugin);
 pluginHandler.set("PointerManager", PointerManagerPlugin);
 pluginHandler.set("EventManager", EventManagerPlugin);
+pluginHandler.set("TransformControls", TransformControlsPlugin);
 class Engine extends EventDispatcher {
   constructor() {
     super();
@@ -6514,6 +6560,7 @@ class Engine extends EventDispatcher {
     __publicField(this, "scene");
     __publicField(this, "modelingScene");
     __publicField(this, "orbitControls");
+    __publicField(this, "transformControls");
     __publicField(this, "effectComposer");
     __publicField(this, "renderManager");
     __publicField(this, "pointerManager");
@@ -6523,6 +6570,7 @@ class Engine extends EventDispatcher {
     __publicField(this, "setCamera");
     __publicField(this, "setDom");
     __publicField(this, "setStats");
+    __publicField(this, "setTransformControls");
     __publicField(this, "render");
     this.completeSet = new Set();
     this.render = function() {

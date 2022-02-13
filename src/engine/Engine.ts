@@ -27,6 +27,8 @@ import { PointerManagerParameters } from "../manager/PointerManager";
 import { PointerManagerPlugin } from "../plugins/PointerManagerPlugin";
 import { EventManager, EventManagerParameters } from "../manager/EventManager";
 import { EventManagerPlugin } from "../plugins/EventManagerPlugin";
+import { TransformControls } from "three/examples/jsm/controls/TransformControls";
+import { TransformControlsPlugin } from "../plugins/TransformControlsPlugin";
 
 // 存在的插件接口
 export enum EnginePlugin {
@@ -38,7 +40,8 @@ export enum EnginePlugin {
   STATS = 'Stats',
   EFFECTCOMPOSER = 'EffectComposer',
   POINTERMANAGER = 'PointerManager',
-  EVENTMANAGER = 'EventManager'
+  EVENTMANAGER = 'EventManager',
+  TRANSFORMCONTROLS = 'TransformControls'
 }
 
 export type EnginePluginParams = 
@@ -61,6 +64,7 @@ pluginHandler.set('Stats', StatsPlugin)
 pluginHandler.set('EffectComposer', EffectComposerPlugin)
 pluginHandler.set('PointerManager', PointerManagerPlugin)
 pluginHandler.set('EventManager', EventManagerPlugin)
+pluginHandler.set('TransformControls', TransformControlsPlugin)
 
 
 // 引擎槽
@@ -75,6 +79,7 @@ export class Engine extends EventDispatcher {
   scene?: Scene
   modelingScene?: ModelingScene
   orbitControls?: OrbitControls
+  transformControls?: TransformControls
   effectComposer?: EffectComposer
   renderManager?: RenderManager
   pointerManager?: PointerManager
@@ -85,6 +90,7 @@ export class Engine extends EventDispatcher {
   setCamera?: (camera: Camera) => this
   setDom?: (dom: HTMLElement) => this
   setStats?: (show: boolean) => this
+  setTransformControls?: (show: boolean) => this
 
   render?: () => void
 

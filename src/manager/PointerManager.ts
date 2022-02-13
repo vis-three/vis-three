@@ -64,19 +64,28 @@ export class PointerManager extends EventDispatcher {
 
   // 鼠标指针按下
   pointerDown (event: PointerEvent) {
-    const eventObject: VisPointerEvent = Object.assign(event, {mouse: this.mouse})
-    this.dispatchEvent(eventObject)
+    const eventObject = {mouse: this.mouse}
+    for (let key in event) {
+      eventObject[key] = event[key]
+    }
+    this.dispatchEvent(eventObject as VisPointerEvent)
   }
 
   // 鼠标指针移动
   pointerMove (event: PointerEvent) {
-    const eventObject = Object.assign(event, {mouse: this.mouse})
-    this.dispatchEvent(eventObject)
+    const eventObject = {mouse: this.mouse}
+    for (let key in event) {
+      eventObject[key] = event[key]
+    }
+    this.dispatchEvent(eventObject as VisPointerEvent)
   }
 
   // 鼠标指针抬起
   pointerUp (event: PointerEvent) {
-    const eventObject: VisPointerEvent = Object.assign(event, {mouse: this.mouse})
-    this.dispatchEvent(eventObject)
+    const eventObject = {mouse: this.mouse}
+    for (let key in event) {
+      eventObject[key] = event[key]
+    }
+    this.dispatchEvent(eventObject as VisPointerEvent)
   }
 }

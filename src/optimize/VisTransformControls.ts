@@ -8,7 +8,7 @@ export enum VISTRANSFORMEVENTTYPE {
 
 // 控制器更新物体完成后的事件
 export interface ObjectChangedEvent extends BaseEvent {
-  type: VISTRANSFORMEVENTTYPE.OBJECTCHANGED
+  type: 'objectChanged'
   transObjectSet: Set<Object3D>
   mode: string
   target: Object3D
@@ -16,7 +16,7 @@ export interface ObjectChangedEvent extends BaseEvent {
 
 
 export class VisTransformControls extends TransformControls {
-  private target: Object3D // 控制器的内部控制目标
+  target: Object3D // 控制器的内部控制目标
   private transObjectSet: Set<Object3D> // 影响的变换物体列表
 
   constructor (camera: Camera, dom: HTMLElement) {

@@ -1,9 +1,13 @@
 import { Camera, Event, Intersection, Object3D, Raycaster, Scene, Vector2 } from "three";
-import { EventDispatcher } from "../middleware/EventDispatcher";
+import { BaseEvent, EventDispatcher } from "../middleware/EventDispatcher";
 import { PointerManager, VisPointerEvent } from "./PointerManager";
 
 export interface ObjectEvent extends Event {
   intersection: Intersection<Object3D<Event>>
+}
+
+export interface GlobalEvent extends VisPointerEvent {
+  intersections: Intersection<Object3D<Event>>[]
 }
 
 export interface EventManagerParameters {
@@ -44,43 +48,48 @@ export class EventManager extends EventDispatcher {
 
   use(pointerManager: PointerManager): this {
 
+    const mergeEvent = function (event, object) {
+      return Object.assign({}, event, object)
+    }
+
     pointerManager.addEventListener<VisPointerEvent>('pointerdown', (event) => {
       const intersections = this.intersectObject(event.mouse)
 
+      // 全局事件代理
+      this.dispatchEvent(mergeEvent(event, {
+        type: 'pointerdown',
+        intersections
+      }))
+      this.dispatchEvent(mergeEvent(event, {
+        type: 'mousedown',
+        intersections
+      }))
+
       if (intersections.length) {
-        // 全局事件代理
-        this.dispatchEvent({
-          type: 'pointerdown',
-          intersections
-        })
-        this.dispatchEvent({
-          type: 'mousedown',
-          intersections
-        })
 
         // 穿透事件
         if (this.penetrate) {
           for(let intersection of intersections) {
-            (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+            (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
               type: 'pointerdown',
               intersection
-            });
-            (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+            }));
+            (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
               type: 'mousedown',
               intersection
-            })
+            }))
           }
         // 单层事件 
         } else {
           const intersection = intersections[0];
-          (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+          (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
             type: 'pointerdown',
             intersection
-          });
-          (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+          }));
+          (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
             type: 'mousedown',
             intersection
-          })
+          }))
         }
       }
     })
@@ -89,58 +98,59 @@ export class EventManager extends EventDispatcher {
     pointerManager.addEventListener<VisPointerEvent>('pointermove', (event) => {
       const intersections = this.intersectObject(event.mouse)
 
+      this.dispatchEvent(mergeEvent(event, {
+        type: 'pointermove',
+        intersections
+      }))
+      this.dispatchEvent(mergeEvent(event, {
+        type: 'mousemove',
+        intersections
+      }))
+
       if (intersections.length) {
-        this.dispatchEvent({
-          type: 'pointermove',
-          intersections
-        })
-        this.dispatchEvent({
-          type: 'mousemove',
-          intersections
-        })
         
         if (this.penetrate) {
           for (let intersection of intersections) {
             if (cacheObjectMap.has(intersection.object)) {
-              (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+              (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
                 type: 'pointermove',
                 intersection
-              });
-              (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+              }));
+              (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
                 type: 'mousemove',
                 intersection
-              });
+              }));
             } else {
-              (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+              (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
                 type: 'pointerenter',
                 intersection
-              });
-              (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+              }));
+              (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
                 type: 'mouseenter',
                 intersection
-              });
+              }));
             }
           }
         } else {
           const intersection = intersections[0]
           if (cacheObjectMap.has(intersection.object)) {
-            (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+            (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
               type: 'pointermove',
               intersection
-            });
-            (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+            }));
+            (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
               type: 'mousemove',
               intersection
-            });
+            }));
           } else {
-            (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+            (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
               type: 'pointerenter',
               intersection
-            });
-            (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+            }));
+            (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
               type: 'mouseenter',
               intersection
-            });
+            }));
           }
         }
 
@@ -150,77 +160,69 @@ export class EventManager extends EventDispatcher {
 
       } else {
         cacheObjectMap.forEach(intersection => {
-          (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+          (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
             type: 'pointerleave',
             intersection
-          });
-          (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+          }));
+          (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
             type: 'mouseleave',
             intersection
-          });
+          }));
         })
 
         cacheObjectMap.clear()
       }
     })
 
-    pointerManager.addEventListener<VisPointerEvent>('pointup', (event) => {
+    pointerManager.addEventListener<VisPointerEvent>('pointerup', (event) => {
       const intersections = this.intersectObject(event.mouse)
 
+      // 全局事件代理
+      this.dispatchEvent(mergeEvent(event, {
+        type: 'pointerup',
+        intersections
+      }))
+      this.dispatchEvent(mergeEvent(event, {
+        type: 'mouseup',
+        intersections
+      }))
+      this.dispatchEvent(mergeEvent(event, {
+        type: 'click',
+        intersections
+      }))
       if (intersections.length) {
-        // 全局事件代理
-        this.dispatchEvent({
-          type: 'pointerup',
-          intersections
-        })
-        this.dispatchEvent({
-          type: 'mouseup',
-          intersections
-        })
-        this.dispatchEvent({
-          type: 'click',
-          intersections
-        })
 
         // 穿透事件
         if (this.penetrate) {
           for(let intersection of intersections) {
-            (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
-              type: 'pointerup',
-              intersection
-            });
-            (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+            (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
+                type: 'pointerup',
+                intersection
+              }));
+            (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
               type: 'mouseup',
               intersection
-            });
-            (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+            }));
+            (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
               type: 'click',
               intersection
-            });
-            (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
-              type: 'click',
-              intersection
-            })
+            }));
           }
         // 单层事件 
         } else {
           const intersection = intersections[0];
-          (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+          (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
             type: 'pointerup',
             intersection
-          });
-          (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+          }));
+          (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
             type: 'mouseup',
             intersection
-          });
-          (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
+          }));
+          (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
             type: 'click',
             intersection
-          });
-          (intersection.object as Object3D<ObjectEvent>).dispatchEvent({
-            type: 'click',
-            intersection
-          })
+          }));
         }
       }
     })
