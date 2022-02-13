@@ -22,6 +22,11 @@ import { VisStatsParameters } from "../optimize/VisStats";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { StatsPlugin } from "../plugins/StatsPlugin";
 import { EffectComposerParameters, EffectComposerPlugin } from "../plugins/EffectComposerPlugin";
+import { PointerManager } from "../manager/PointerManager";
+import { PointerManagerParameters } from "../manager/PointerManager";
+import { PointerManagerPlugin } from "../plugins/PointerManagerPlugin";
+import { EventManager, EventManagerParameters } from "../manager/EventManager";
+import { EventManagerPlugin } from "../plugins/EventManagerPlugin";
 
 // 存在的插件接口
 export enum EnginePlugin {
@@ -31,7 +36,9 @@ export enum EnginePlugin {
   RENDERMANAGER = 'RenderManager',
   ORBITCONTROLS = 'OrbitControls',
   STATS = 'Stats',
-  EFFECTCOMPOSER = 'EffectComposer'
+  EFFECTCOMPOSER = 'EffectComposer',
+  POINTERMANAGER = 'PointerManager',
+  EVENTMANAGER = 'EventManager'
 }
 
 export type EnginePluginParams = 
@@ -39,7 +46,9 @@ export type EnginePluginParams =
   SceneParameters |
   ModelingSceneParameters |
   VisStatsParameters |
-  EffectComposerParameters
+  EffectComposerParameters |
+  PointerManagerParameters |
+  EventManagerParameters
 
 // 插件处理集合
 let pluginHandler: Map<string, Function> | null = new Map()
@@ -50,6 +59,8 @@ pluginHandler.set('RenderManager', RendererManagerPlugin)
 pluginHandler.set('OrbitControls', OrbitControlsPlugin)
 pluginHandler.set('Stats', StatsPlugin)
 pluginHandler.set('EffectComposer', EffectComposerPlugin)
+pluginHandler.set('PointerManager', PointerManagerPlugin)
+pluginHandler.set('EventManager', EventManagerPlugin)
 
 
 // 引擎槽
@@ -66,6 +77,8 @@ export class Engine extends EventDispatcher {
   orbitControls?: OrbitControls
   effectComposer?: EffectComposer
   renderManager?: RenderManager
+  pointerManager?: PointerManager
+  eventManager?: EventManager
   stats?: Stats 
 
   setSize?: (width: number, height: number) => this

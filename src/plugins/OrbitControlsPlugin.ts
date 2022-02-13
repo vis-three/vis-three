@@ -1,4 +1,3 @@
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Engine } from "../engine/Engine";
 import { SCENEVIEWPOINT } from "../extends/ModelingScene/ModelingScene";
 import { VisOrbitControls } from "../optimize/VisOrbitControls";

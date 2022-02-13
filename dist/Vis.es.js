@@ -961,41 +961,6 @@ class ModelingScene$1 extends Scene {
     return this;
   }
 }
-var RENDERERMANAGER;
-(function(RENDERERMANAGER2) {
-  RENDERERMANAGER2["RENDER"] = "render";
-  RENDERERMANAGER2["PLAY"] = "play";
-  RENDERERMANAGER2["STOP"] = "stop";
-})(RENDERERMANAGER || (RENDERERMANAGER = {}));
-var SCENESTATUSMANAGER;
-(function(SCENESTATUSMANAGER2) {
-  SCENESTATUSMANAGER2["HOVERCHANGE"] = "hover-change";
-  SCENESTATUSMANAGER2["ACTIVECHANGE"] = "active-change";
-})(SCENESTATUSMANAGER || (SCENESTATUSMANAGER = {}));
-var POINTERMANAGER;
-(function(POINTERMANAGER2) {
-  POINTERMANAGER2["POINTERDOWN"] = "pointerdown";
-  POINTERMANAGER2["POINTERMOVE"] = "pointermove";
-  POINTERMANAGER2["POINTERUP"] = "pointerup";
-})(POINTERMANAGER || (POINTERMANAGER = {}));
-var MODELCOMPILER;
-(function(MODELCOMPILER2) {
-  MODELCOMPILER2["SETMATERIAL"] = "setMaterial";
-})(MODELCOMPILER || (MODELCOMPILER = {}));
-var LOADERMANAGER;
-(function(LOADERMANAGER2) {
-  LOADERMANAGER2["LOADING"] = "loading";
-  LOADERMANAGER2["DETAILLOADING"] = "detailLoading";
-  LOADERMANAGER2["DETAILLOADED"] = "detailLoaded";
-  LOADERMANAGER2["LOADED"] = "loaded";
-})(LOADERMANAGER || (LOADERMANAGER = {}));
-const EVENTTYPE = {
-  RENDERERMANAGER,
-  SCENESTATUSMANAGER,
-  POINTERMANAGER,
-  MODELCOMPILER,
-  LOADERMANAGER
-};
 class EventDispatcher {
   constructor() {
     __publicField(this, "listeners", new Map());
@@ -1040,22 +1005,23 @@ class EventDispatcher {
   }
 }
 class PointerManager extends EventDispatcher {
-  constructor(dom, throttleTime = 1e3 / 60) {
+  constructor(parameters) {
     super();
     __publicField(this, "dom");
     __publicField(this, "mouse");
     __publicField(this, "canMouseMove");
     __publicField(this, "mouseEventTimer");
     __publicField(this, "throttleTime");
+    const dom = parameters.dom;
     this.dom = dom;
     this.mouse = new Vector2();
     this.canMouseMove = true;
     this.mouseEventTimer = null;
-    this.throttleTime = throttleTime;
-    dom.addEventListener(POINTERMANAGER.POINTERDOWN, (event) => {
+    this.throttleTime = parameters.throttleTime || 1e3 / 60;
+    dom.addEventListener("pointerdown", (event) => {
       this.pointerDown(event);
     });
-    dom.addEventListener(POINTERMANAGER.POINTERMOVE, (event) => {
+    dom.addEventListener("pointermove", (event) => {
       if (!this.canMouseMove) {
         return;
       }
@@ -1069,7 +1035,7 @@ class PointerManager extends EventDispatcher {
         this.pointerMove(event);
       }, this.throttleTime);
     });
-    dom.addEventListener(POINTERMANAGER.POINTERUP, (event) => {
+    dom.addEventListener("pointerup", (event) => {
       this.pointerUp(event);
     });
   }
@@ -1232,6 +1198,41 @@ class SelectionBox {
     }
   }
 }
+var RENDERERMANAGER;
+(function(RENDERERMANAGER2) {
+  RENDERERMANAGER2["RENDER"] = "render";
+  RENDERERMANAGER2["PLAY"] = "play";
+  RENDERERMANAGER2["STOP"] = "stop";
+})(RENDERERMANAGER || (RENDERERMANAGER = {}));
+var SCENESTATUSMANAGER;
+(function(SCENESTATUSMANAGER2) {
+  SCENESTATUSMANAGER2["HOVERCHANGE"] = "hover-change";
+  SCENESTATUSMANAGER2["ACTIVECHANGE"] = "active-change";
+})(SCENESTATUSMANAGER || (SCENESTATUSMANAGER = {}));
+var POINTERMANAGER;
+(function(POINTERMANAGER2) {
+  POINTERMANAGER2["POINTERDOWN"] = "pointerdown";
+  POINTERMANAGER2["POINTERMOVE"] = "pointermove";
+  POINTERMANAGER2["POINTERUP"] = "pointerup";
+})(POINTERMANAGER || (POINTERMANAGER = {}));
+var MODELCOMPILER;
+(function(MODELCOMPILER2) {
+  MODELCOMPILER2["SETMATERIAL"] = "setMaterial";
+})(MODELCOMPILER || (MODELCOMPILER = {}));
+var LOADERMANAGER;
+(function(LOADERMANAGER2) {
+  LOADERMANAGER2["LOADING"] = "loading";
+  LOADERMANAGER2["DETAILLOADING"] = "detailLoading";
+  LOADERMANAGER2["DETAILLOADED"] = "detailLoaded";
+  LOADERMANAGER2["LOADED"] = "loaded";
+})(LOADERMANAGER || (LOADERMANAGER = {}));
+const EVENTTYPE = {
+  RENDERERMANAGER,
+  SCENESTATUSMANAGER,
+  POINTERMANAGER,
+  MODELCOMPILER,
+  LOADERMANAGER
+};
 class SelectionHelper {
   constructor() {
     __publicField(this, "element");
@@ -6212,7 +6213,7 @@ const EffectComposerPlugin = function(params) {
     return;
   }
   if (!this.webGLRenderer) {
-    console.error("must install som renderer before this plugin.");
+    console.error("must install some renderer before this plugin.");
     return;
   }
   let composer;
@@ -6255,6 +6256,232 @@ const EffectComposerPlugin = function(params) {
     });
   }
 };
+const PointerManagerPlugin = function(params) {
+  if (this.pointerManager) {
+    console.warn("this has installed pointerManager plugin.");
+    return;
+  }
+  if (!this.webGLRenderer) {
+    console.error("must install some renderer before this plugin.");
+    return;
+  }
+  const pointerManager = new PointerManager(Object.assign(params || {}, {
+    dom: this.dom
+  }));
+  this.pointerManager = pointerManager;
+};
+class EventManager extends EventDispatcher {
+  constructor(parameters) {
+    super();
+    __publicField(this, "raycaster");
+    __publicField(this, "scene");
+    __publicField(this, "camera");
+    __publicField(this, "recursive", false);
+    __publicField(this, "penetrate", false);
+    this.raycaster = new Raycaster();
+    this.camera = parameters.camera;
+    this.scene = parameters.scene;
+    parameters.recursive && (this.recursive = parameters.recursive);
+    parameters.penetrate && (this.penetrate = parameters.penetrate);
+  }
+  setCamera(camera) {
+    this.camera = camera;
+    return this;
+  }
+  intersectObject(mouse) {
+    this.raycaster.setFromCamera(mouse, this.camera);
+    return this.raycaster.intersectObjects(this.scene.children, this.recursive);
+  }
+  use(pointerManager) {
+    pointerManager.addEventListener("pointerdown", (event) => {
+      const intersections = this.intersectObject(event.mouse);
+      if (intersections.length) {
+        this.dispatchEvent({
+          type: "pointerdown",
+          intersections
+        });
+        this.dispatchEvent({
+          type: "mousedown",
+          intersections
+        });
+        if (this.penetrate) {
+          for (let intersection of intersections) {
+            intersection.object.dispatchEvent({
+              type: "pointerdown",
+              intersection
+            });
+            intersection.object.dispatchEvent({
+              type: "mousedown",
+              intersection
+            });
+          }
+        } else {
+          const intersection = intersections[0];
+          intersection.object.dispatchEvent({
+            type: "pointerdown",
+            intersection
+          });
+          intersection.object.dispatchEvent({
+            type: "mousedown",
+            intersection
+          });
+        }
+      }
+    });
+    const cacheObjectMap = new Map();
+    pointerManager.addEventListener("pointermove", (event) => {
+      const intersections = this.intersectObject(event.mouse);
+      if (intersections.length) {
+        this.dispatchEvent({
+          type: "pointermove",
+          intersections
+        });
+        this.dispatchEvent({
+          type: "mousemove",
+          intersections
+        });
+        if (this.penetrate) {
+          for (let intersection of intersections) {
+            if (cacheObjectMap.has(intersection.object)) {
+              intersection.object.dispatchEvent({
+                type: "pointermove",
+                intersection
+              });
+              intersection.object.dispatchEvent({
+                type: "mousemove",
+                intersection
+              });
+            } else {
+              intersection.object.dispatchEvent({
+                type: "pointerenter",
+                intersection
+              });
+              intersection.object.dispatchEvent({
+                type: "mouseenter",
+                intersection
+              });
+            }
+          }
+        } else {
+          const intersection = intersections[0];
+          if (cacheObjectMap.has(intersection.object)) {
+            intersection.object.dispatchEvent({
+              type: "pointermove",
+              intersection
+            });
+            intersection.object.dispatchEvent({
+              type: "mousemove",
+              intersection
+            });
+          } else {
+            intersection.object.dispatchEvent({
+              type: "pointerenter",
+              intersection
+            });
+            intersection.object.dispatchEvent({
+              type: "mouseenter",
+              intersection
+            });
+          }
+        }
+        for (let intersection of intersections) {
+          cacheObjectMap.set(intersection.object, intersection);
+        }
+      } else {
+        cacheObjectMap.forEach((intersection) => {
+          intersection.object.dispatchEvent({
+            type: "pointerleave",
+            intersection
+          });
+          intersection.object.dispatchEvent({
+            type: "mouseleave",
+            intersection
+          });
+        });
+        cacheObjectMap.clear();
+      }
+    });
+    pointerManager.addEventListener("pointup", (event) => {
+      const intersections = this.intersectObject(event.mouse);
+      if (intersections.length) {
+        this.dispatchEvent({
+          type: "pointerup",
+          intersections
+        });
+        this.dispatchEvent({
+          type: "mouseup",
+          intersections
+        });
+        this.dispatchEvent({
+          type: "click",
+          intersections
+        });
+        if (this.penetrate) {
+          for (let intersection of intersections) {
+            intersection.object.dispatchEvent({
+              type: "pointerup",
+              intersection
+            });
+            intersection.object.dispatchEvent({
+              type: "mouseup",
+              intersection
+            });
+            intersection.object.dispatchEvent({
+              type: "click",
+              intersection
+            });
+            intersection.object.dispatchEvent({
+              type: "click",
+              intersection
+            });
+          }
+        } else {
+          const intersection = intersections[0];
+          intersection.object.dispatchEvent({
+            type: "pointerup",
+            intersection
+          });
+          intersection.object.dispatchEvent({
+            type: "mouseup",
+            intersection
+          });
+          intersection.object.dispatchEvent({
+            type: "click",
+            intersection
+          });
+          intersection.object.dispatchEvent({
+            type: "click",
+            intersection
+          });
+        }
+      }
+    });
+    return this;
+  }
+}
+const EventManagerPlugin = function(params) {
+  if (this.eventManager) {
+    console.warn("engine has installed eventManager plugin.");
+    return;
+  }
+  if (!this.webGLRenderer) {
+    console.error("must install some renderer before this plugin.");
+    return;
+  }
+  if (!this.pointerManager) {
+    console.error("must install pointerManager before this plugin.");
+    return;
+  }
+  const eventManager = new EventManager(Object.assign({
+    scene: this.scene || this.modelingScene,
+    camera: this.currentCamera
+  }, params));
+  eventManager.use(this.pointerManager);
+  this.eventManager = eventManager;
+  this.addEventListener("setCamera", (event) => {
+    this.eventManager.setCamera(event.camera);
+  });
+};
 var EnginePlugin;
 (function(EnginePlugin2) {
   EnginePlugin2["WEBGLRENDERER"] = "WebGLRenderer";
@@ -6264,6 +6491,8 @@ var EnginePlugin;
   EnginePlugin2["ORBITCONTROLS"] = "OrbitControls";
   EnginePlugin2["STATS"] = "Stats";
   EnginePlugin2["EFFECTCOMPOSER"] = "EffectComposer";
+  EnginePlugin2["POINTERMANAGER"] = "PointerManager";
+  EnginePlugin2["EVENTMANAGER"] = "EventManager";
 })(EnginePlugin || (EnginePlugin = {}));
 let pluginHandler = new Map();
 pluginHandler.set("WebGLRenderer", WebGLRendererPlugin);
@@ -6273,6 +6502,8 @@ pluginHandler.set("RenderManager", RendererManagerPlugin);
 pluginHandler.set("OrbitControls", OrbitControlsPlugin);
 pluginHandler.set("Stats", StatsPlugin);
 pluginHandler.set("EffectComposer", EffectComposerPlugin);
+pluginHandler.set("PointerManager", PointerManagerPlugin);
+pluginHandler.set("EventManager", EventManagerPlugin);
 class Engine extends EventDispatcher {
   constructor() {
     super();
@@ -6285,6 +6516,8 @@ class Engine extends EventDispatcher {
     __publicField(this, "orbitControls");
     __publicField(this, "effectComposer");
     __publicField(this, "renderManager");
+    __publicField(this, "pointerManager");
+    __publicField(this, "eventManager");
     __publicField(this, "stats");
     __publicField(this, "setSize");
     __publicField(this, "setCamera");

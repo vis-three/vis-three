@@ -43,10 +43,20 @@
       WebGLMultisampleRenderTarget: true
     })
     .install('OrbitControls')
+    .install('PointerManager')
+    .install('EventManager')
     .complete()
     .setDom(document.getElementById('app'))
     .setSize()
     .setStats(true)
+
+    const box = new THREE.Mesh(new THREE.BoxBufferGeometry(30, 30, 30), new THREE.MeshStandardMaterial())
+
+    box.addEventListener('mousemove', event => {
+      console.log(event)
+    })
+
+    engine.modelingScene.add(box)
 
     engine.renderManager.play()
   </script>

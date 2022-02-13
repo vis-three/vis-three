@@ -15,7 +15,7 @@ import { ModelingScene, SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./ModelingScene
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 
-import { PointerManager, VisPointerEvent } from "../../plugins/PointerManager"
+import { PointerManager, VisPointerEvent } from "../../manager/PointerManager"
 import { SceneStatusManager } from "../../plugins/SceneStatusManager"
 
 import { VisStats } from "../../optimize/VisStats"

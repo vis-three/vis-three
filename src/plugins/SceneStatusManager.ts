@@ -3,7 +3,7 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox.js'
 import { SCENESTATUSMANAGER } from '../case/constants/EVENTTYPE'
 import { VisTransformControls } from '../optimize/VisTransformControls'
-import { VisPointerEvent } from './PointerManager'
+import { VisPointerEvent } from '../manager/PointerManager'
 import { SelectionHelper } from './SelectionHelper'
 
 export interface hoverChangeEvent extends BaseEvent{

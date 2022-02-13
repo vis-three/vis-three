@@ -1,9 +1,13 @@
 import { BaseEvent, Vector2 } from "three";
-import { POINTERMANAGER } from "../case/constants/EVENTTYPE";
 import { EventDispatcher } from "../middleware/EventDispatcher";
 
 export interface VisPointerEvent extends Omit<PointerEvent, 'type'>, BaseEvent {
   mouse: Vector2
+}
+
+export interface PointerManagerParameters {
+  dom: HTMLCanvasElement
+  throttleTime?: number
 }
 
 export class PointerManager extends EventDispatcher {
@@ -15,20 +19,22 @@ export class PointerManager extends EventDispatcher {
   private mouseEventTimer: number | null
   private throttleTime: number
 
-  constructor (dom: HTMLCanvasElement, throttleTime: number = 1000 / 60) {
+  constructor (parameters: PointerManagerParameters) {
     super()
+    const dom = parameters.dom
+
     this.dom = dom
     this.mouse = new Vector2()
 
     this.canMouseMove = true
     this.mouseEventTimer = null
-    this.throttleTime = throttleTime
+    this.throttleTime = parameters.throttleTime || 1000 / 60
 
-    dom.addEventListener(POINTERMANAGER.POINTERDOWN, (event: PointerEvent) => {
+    dom.addEventListener('pointerdown', (event: PointerEvent) => {
       this.pointerDown(event)
     })
 
-    dom.addEventListener(POINTERMANAGER.POINTERMOVE, (event: PointerEvent) => {
+    dom.addEventListener('pointermove', (event: PointerEvent) => {
       if (!this.canMouseMove) {
         return
       }
@@ -46,7 +52,7 @@ export class PointerManager extends EventDispatcher {
       }, this.throttleTime)
     })
 
-    dom.addEventListener(POINTERMANAGER.POINTERUP, (event: PointerEvent) => {
+    dom.addEventListener('pointerup', (event: PointerEvent) => {
       this.pointerUp(event)
     })
   }

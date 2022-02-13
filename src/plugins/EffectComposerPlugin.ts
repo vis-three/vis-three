@@ -17,7 +17,7 @@ export const EffectComposerPlugin: Plugin<EffectComposerParameters> = function (
   }
 
   if (!this.webGLRenderer) {
-    console.error('must install som renderer before this plugin.')
+    console.error('must install some renderer before this plugin.')
     return
   }
 
