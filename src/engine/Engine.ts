@@ -5,16 +5,15 @@ import {
   WebGLRendererParameters
 } from "three";
 import { 
-  WebGLRendererPlugin, ScenePlugin, Plugin
+  WebGLRendererPlugin, ScenePlugin
 } from "../plugins/plugin";
 import { EventDispatcher } from "../middleware/EventDispatcher";
-import { ModelingScene } from "../extends/ModelingScene/ModelingScene";
+import { ModelingScene, ModelingSceneParameters } from "../extends/ModelingScene/ModelingScene";
 import { ModelingScenePlugin } from "../plugins/ModelingScenePlugin";
 
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { SceneParameters } from "../plugins/ScenePlugin";
-import { ModelingSceneParameters } from "./ModelingEngine/ModelingScene";
 import { RenderManager } from "../manager/RenderManager";
 import { RendererManagerPlugin } from "../plugins/RenderManagerPlugin";
 import { OrbitControlsPlugin } from "../plugins/OrbitControlsPlugin";
@@ -93,7 +92,9 @@ export class Engine extends EventDispatcher {
   setStats?: (show: boolean) => this
   setTransformControls?: (show: boolean) => this
 
-  render?: () => void
+  play?: () => this
+  stop?: () => this
+  render?: () => this
 
   constructor () {
     super()
@@ -101,11 +102,12 @@ export class Engine extends EventDispatcher {
     this.completeSet = new Set()
     this.render = function () {
       console.warn('can not install some plugin')
+      return this
     }
   }
 
   // 安装
-  install (plugin: EnginePlugin, params: EnginePluginParams): this {
+  install (plugin: EnginePlugin, params?: EnginePluginParams): this {
     if (pluginHandler!.has(plugin)) {
       pluginHandler!.get(plugin)!.call(this, params)
     } else {

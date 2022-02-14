@@ -1,4 +1,4 @@
-import { ModelingEngine } from "./engine/ModelingEngine/ModelingEngine";
+import { ModelingEngine } from "./engine/ModelingEngine";
 
 import { LightDataSupport } from "./case/light/LightDataSupport";
 import { ModelDataSupport } from "./case/model/ModelDataSupport";
@@ -16,8 +16,6 @@ import { DataSupportManager } from "./manager/DataSupportManager";
 import { SupportDataGenerator } from "./convenient/SupportDataGenerator";
 import { MODULETYPE } from "./case/constants/MODULETYPE";
 import { CONFIGTYPE } from "./case/constants/configType";
-import { ModelingEngineSupportConnector } from "./connector/ModelingEngineSupportConnector";
-import { SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./engine/ModelingEngine/ModelingScene";
 import { OBJECTEVENT } from "./case/constants/OBJECTEVENT";
 import { ControlsDataSupport } from "./case/controls/ControlsDataSupport";
 import { RendererDataSupport } from "./case/render/RendererDataSupport";
@@ -32,8 +30,6 @@ export {
   RESOURCEEVENTTYPE,
   MODULETYPE,
   CONFIGTYPE,
-  SCENEDISPLAYMODE,
-  SCENEVIEWPOINT,
   OBJECTEVENT,
   EVENTTYPE,
 
@@ -50,8 +46,7 @@ export {
   ModelingEngineSupport,
 
   // engine connector
-  ModelingEngineSupportConnector,
-
+  
   // data support
   TextureDataSupport,
   MaterialDataSupport,

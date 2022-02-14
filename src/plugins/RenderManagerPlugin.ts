@@ -11,4 +11,17 @@ export const RendererManagerPlugin: Plugin<Object> = function (this: Engine) {
   this.renderManager = new RenderManager()
 
   this.render && this.renderManager!.addEventListener('render', this.render)
+
+  this.render = function() {
+    this.renderManager!.render()
+    return this
+  }
+  this.play = function () {
+    this.renderManager!.play()
+    return this
+  }
+  this.stop = function () {
+    this.renderManager!.stop()
+    return this
+  }
 }

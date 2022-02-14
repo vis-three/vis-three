@@ -1,9 +1,8 @@
-import { withDefaults } from "@vue/runtime-core";
 import { BaseEvent, Camera, Event, Object3D, OrthographicCamera, PerspectiveCamera, Scene, Vector3 } from "three";
 import { validate } from "uuid";
-import { MODELINGENGINEEVNET, SetSizeEvent } from "../../engine/ModelingEngine/ModelingEngine";
 import { ModelingEngine } from "../../main";
 import { Compiler, COMPILEREVENTTYPE, CompilerTarget, ObjectCompiler } from "../../middleware/Compiler";
+import { SetSizeEvent } from "../../plugins/WebGLRendererPlugin";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CameraAllType } from "./CameraConfig";
 
@@ -118,29 +117,29 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
     const camera = this.map.get(vid)!
 
     if (!value) {
-      if (camera.userData.setSizeFun && this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)) {
-        this.engine.removeEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)
+      if (camera.userData.setSizeFun && this.engine.hasEventListener('setSize', camera.userData.setSizeFun)) {
+        this.engine.removeEventListener('setSize', camera.userData.setSizeFun)
         camera.userData.setSizeFun = undefined
         return this
       }
 
-      if (!camera.userData.setSizeFun && !this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)) {
+      if (!camera.userData.setSizeFun && !this.engine.hasEventListener('setSize', camera.userData.setSizeFun)) {
         return this
       }
 
-      if (camera.userData.setSizeFun && !this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)) {
+      if (camera.userData.setSizeFun && !this.engine.hasEventListener('setSize', camera.userData.setSizeFun)) {
         camera.userData.setSizeFun = undefined
         return this
       }
     }
 
     if (value) {
-      if (camera.userData.setSizeFun && this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)) {
+      if (camera.userData.setSizeFun && this.engine.hasEventListener('setSize', camera.userData.setSizeFun)) {
         return this
       }
 
-      if (!this.engine.hasEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun) && camera.userData.setSizeFun) {
-        this.engine.addEventListener(MODELINGENGINEEVNET.SETSIZE, camera.userData.setSizeFun)
+      if (!this.engine.hasEventListener('setSize', camera.userData.setSizeFun) && camera.userData.setSizeFun) {
+        this.engine.addEventListener('setSize', camera.userData.setSizeFun)
         return this
       }
 
@@ -163,12 +162,12 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
         console.warn(`camera compiler can not support this class camera:`, camera)
       }
 
-      this.engine.addEventListener(MODELINGENGINEEVNET.SETSIZE, setSizeFun as any)
+      this.engine.addEventListener('setSize', setSizeFun as any)
 
       // 执行一次
-      const domElement = this.engine.getRenderer().domElement
+      const domElement = this.engine.webGLRenderer!.domElement
       setSizeFun({
-        type: MODELINGENGINEEVNET.SETSIZE,
+        type: 'setSize',
         width: domElement.offsetWidth,
         height: domElement.offsetHeight
       })

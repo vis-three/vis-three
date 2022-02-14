@@ -101,7 +101,7 @@ export class RendererCompiler extends Compiler {
 
     const glRenderer = this.glRenderer
     const engine = this.engine!
-    const renderManager = engine.getRenderManager()
+    const renderManager = engine.renderManager!
 
     if (!value) {
       if (!this.glRendererCacheData.adaptiveCameraFun) {
@@ -122,7 +122,7 @@ export class RendererCompiler extends Compiler {
       }
 
       const adaptiveCameraFun = (event:  (BaseEvent | RenderEvent) & { type: RENDERERMANAGER.RENDER; } & { target: RenderManager; }) => {
-        const camera = engine.getCurrentCamera()
+        const camera = engine.currentCamera!
         const domWidth = glRenderer.domElement.offsetWidth
         const domHeight = glRenderer.domElement.offsetHeight
         let width = 0

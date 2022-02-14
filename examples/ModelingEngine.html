@@ -23,9 +23,12 @@
     import * as THREE from 'three'
     import * as Vis from '../dist/Vis.es.js'
     const engine = new Vis.ModelingEngine(document.getElementById('app'))
-    engine.play()
+    .setDom(document.getElementById('app'))
+    .setSize()
+    .setStats(true)
+    .play()
 
-    const scene = engine.getScene()
+    const scene = engine.modelingScene
 
     const box = new THREE.Mesh(
       new THREE.BoxBufferGeometry(10, 10, 10),

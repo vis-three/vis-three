@@ -21,6 +21,7 @@ export const ModelingScenePlugin: Plugin<ModelingSceneParameters> = function (th
 
   this.render = () => {
     this.webGLRenderer!.render(scene, this.currentCamera!)
+    return this
   }
 
   if (params.hasDefaultPerspectiveCamera) {
