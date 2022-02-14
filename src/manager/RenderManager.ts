@@ -4,7 +4,7 @@ import {
   BaseEvent,
 
   } from "three";
-import { RENDERERMANAGER } from "../case/constants/EVENTTYPE";
+import { RENDERERMANAGER } from "../middleware/constants/EVENTTYPE";
 
 // 渲染事件
 export interface RenderEvent extends BaseEvent {

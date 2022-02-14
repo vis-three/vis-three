@@ -1,22 +1,22 @@
-import { TextureDataSupport } from "../case/texture/TextureDataSupport";
-import { ModelDataSupport } from "../case/model/ModelDataSupport";
-import { MaterialDataSupport } from "../case/material/MaterialDataSupport";
-import { LightDataSupport } from "../case/light/LightDataSupport";
-import { GeometryDataSupport } from "../case/geometry/GeometryDataSupport";
-import { CameraDataSupport } from "../case/camera/CameraDataSupport";
-import { TextureCompilerTarget } from "../case/texture/TextureCompiler";
-import { ModelCompilerTarget } from "../case/model/ModelCompiler";
-import { LightCompilerTarget } from "../case/light/LightCompiler";
-import { GeometryCompilerTarget } from "../case/geometry/GeometryCompiler";
-import { CameraCompilerTarget } from "../case/camera/CameraCompiler";
-import { MaterialCompilerTarget } from "../case/material/MaterialCompiler";
-import { MODULETYPE } from "../case/constants/MODULETYPE";
-import { RendererCompilerTarget } from "../case/render/RendererCompiler";
-import { RendererDataSupport } from "../case/render/RendererDataSupport";
-import { SceneCompilerTarget } from "../case/scene/SceneCompiler";
-import { SceneDataSupport } from "../case/scene/SceneDataSupport";
-import { ControlsCompilerTarget } from "../case/controls/ControlsCompiler";
-import { ControlsDataSupport } from "../case/controls/ControlsDataSupport";
+import { TextureDataSupport } from "../middleware/texture/TextureDataSupport";
+import { ModelDataSupport } from "../middleware/model/ModelDataSupport";
+import { MaterialDataSupport } from "../middleware/material/MaterialDataSupport";
+import { LightDataSupport } from "../middleware/light/LightDataSupport";
+import { GeometryDataSupport } from "../middleware/geometry/GeometryDataSupport";
+import { CameraDataSupport } from "../middleware/camera/CameraDataSupport";
+import { TextureCompilerTarget } from "../middleware/texture/TextureCompiler";
+import { ModelCompilerTarget } from "../middleware/model/ModelCompiler";
+import { LightCompilerTarget } from "../middleware/light/LightCompiler";
+import { GeometryCompilerTarget } from "../middleware/geometry/GeometryCompiler";
+import { CameraCompilerTarget } from "../middleware/camera/CameraCompiler";
+import { MaterialCompilerTarget } from "../middleware/material/MaterialCompiler";
+import { MODULETYPE } from "../middleware/constants/MODULETYPE";
+import { RendererCompilerTarget } from "../middleware/render/RendererCompiler";
+import { RendererDataSupport } from "../middleware/render/RendererDataSupport";
+import { SceneCompilerTarget } from "../middleware/scene/SceneCompiler";
+import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
+import { ControlsCompilerTarget } from "../middleware/controls/ControlsCompiler";
+import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
 
 export interface DataSupportManagerLoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget

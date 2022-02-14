@@ -1,5 +1,5 @@
 import { Camera, Event, Intersection, Object3D, Raycaster, Scene, Vector2 } from "three";
-import { BaseEvent, EventDispatcher } from "../middleware/EventDispatcher";
+import { BaseEvent, EventDispatcher } from "../core/EventDispatcher";
 import { PointerManager, VisPointerEvent } from "./PointerManager";
 
 export interface ObjectEvent extends VisPointerEvent {

@@ -1,13 +1,13 @@
-import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig} from "../case/light/LightConfig"
-import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig } from "../case/geometry/GeometryConfig"
-import { getModelConfig } from "../case/model/ModelConfig"
-import { getImageTextureConfig } from "../case/texture/TextureConfig"
-import { getMeshStandardMaterialConfig } from "../case/material/MaterialConfig"
-import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../case/camera/CameraConfig"
-import { CONFIGTYPE } from "../case/constants/configType"
-import { getWebGLRendererConfig } from "../case/render/RendererConfig"
-import { getSceneConfig } from "../case/scene/SceneConfig"
-import { getTransformControlsConfig } from "../case/controls/ControlsConfig"
+import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig} from "../middleware/light/LightConfig"
+import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig } from "../middleware/geometry/GeometryConfig"
+import { getModelConfig } from "../middleware/model/ModelConfig"
+import { getImageTextureConfig } from "../middleware/texture/TextureConfig"
+import { getMeshStandardMaterialConfig } from "../middleware/material/MaterialConfig"
+import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../middleware/camera/CameraConfig"
+import { CONFIGTYPE } from "../middleware/constants/configType"
+import { getWebGLRendererConfig } from "../middleware/render/RendererConfig"
+import { getSceneConfig } from "../middleware/scene/SceneConfig"
+import { getTransformControlsConfig } from "../middleware/controls/ControlsConfig"
 
 const typeMap: {[key: string]: Function} = {
   [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,

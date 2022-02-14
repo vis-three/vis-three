@@ -1,7 +1,7 @@
 import { BaseEvent, EventDispatcher, ImageLoader, Loader, TextureLoader } from "three"
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader"
-import { LOADERMANAGER } from "../case/constants/EVENTTYPE"
+import { LOADERMANAGER } from "../middleware/constants/EVENTTYPE"
 
 export interface LoaderMap {
   [key: string]: Loader

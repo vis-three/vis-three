@@ -1,7 +1,7 @@
 import { BaseEvent, Camera, EventDispatcher, Frustum, Intersection, Object3D, Raycaster, Scene, Vector2, Vector3 } from 'three'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox.js'
-import { SCENESTATUSMANAGER } from '../case/constants/EVENTTYPE'
+import { SCENESTATUSMANAGER } from '../middleware/constants/EVENTTYPE'
 import { SelectionHelper } from '../optimize/SelectionHelper'
 import { VisTransformControls } from '../optimize/VisTransformControls'
 import { VisPointerEvent } from './PointerManager'

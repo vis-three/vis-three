@@ -7,7 +7,7 @@ import {
 import { 
   WebGLRendererPlugin, ScenePlugin
 } from "../plugins/plugin";
-import { EventDispatcher } from "../middleware/EventDispatcher";
+import { EventDispatcher } from "../core/EventDispatcher";
 import { ModelingScene, ModelingSceneParameters } from "../extends/ModelingScene/ModelingScene";
 import { ModelingScenePlugin } from "../plugins/ModelingScenePlugin";
 

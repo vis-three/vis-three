@@ -1,6 +1,6 @@
 import { Camera, WebGLRenderer, WebGLRendererParameters } from "three"
 import { Engine } from "../engine/Engine"
-import { BaseEvent } from "../middleware/EventDispatcher"
+import { BaseEvent } from "../core/EventDispatcher"
 import { Plugin } from "./plugin"
 
 export interface SetSizeEvent extends BaseEvent {

@@ -3,7 +3,7 @@ import { PointLightHelper } from "../helper/light/PointLightHelper";
 import { CameraHelper } from "../helper/camera/CameraHelper";
 import { ModelingScene } from "./ModelingScene";
 import { MeshHelper } from "../helper/object/MeshHelper";
-import { ACTIVECOLOR, HELPERCOLOR, HOVERCOLOR } from "../../case/constants/COLOR";
+import { ACTIVECOLOR, HELPERCOLOR, HOVERCOLOR } from "../../middleware/constants/COLOR";
 
 export enum HELPERCOMPILEREVENTTYPE {
   ADD = 'add',
