@@ -1873,7 +1873,7 @@ pluginHandler.set("EffectComposer", EffectComposerPlugin);
 pluginHandler.set("PointerManager", PointerManagerPlugin);
 pluginHandler.set("EventManager", EventManagerPlugin);
 pluginHandler.set("TransformControls", TransformControlsPlugin);
-class Engine extends EventDispatcher {
+const _Engine = class extends EventDispatcher {
   constructor() {
     super();
     __publicField(this, "completeSet");
@@ -1903,12 +1903,9 @@ class Engine extends EventDispatcher {
       return this;
     };
   }
-  register(name, handler) {
-    pluginHandler && pluginHandler.set(name, handler);
-  }
   install(plugin, params) {
-    if (pluginHandler.has(plugin)) {
-      pluginHandler.get(plugin).call(this, params);
+    if (_Engine.pluginHandler.has(plugin)) {
+      _Engine.pluginHandler.get(plugin).call(this, params);
     } else {
       console.error(`engine can not support ${plugin} plugin.`);
     }
@@ -1922,13 +1919,20 @@ class Engine extends EventDispatcher {
     return this;
   }
   dispose() {
-    pluginHandler = void 0;
     this.dispatchEvent({
       type: "dispose"
     });
     return this;
   }
-}
+};
+let Engine = _Engine;
+__publicField(Engine, "pluginHandler", pluginHandler);
+__publicField(Engine, "register", function(name, handler) {
+  _Engine.pluginHandler && _Engine.pluginHandler.set(name, handler);
+});
+__publicField(Engine, "dispose", function() {
+  _Engine.pluginHandler = void 0;
+});
 class DisplayEngine extends Engine {
   constructor() {
     super();
@@ -3412,7 +3416,7 @@ class TextureCompiler extends Compiler {
 }
 class ModelingEngineSupport extends ModelingEngine {
   constructor(parameters) {
-    super(parameters.dom);
+    super();
     __publicField(this, "compilerMap");
     __publicField(this, "resourceManager");
     __publicField(this, "dataSupportManager");

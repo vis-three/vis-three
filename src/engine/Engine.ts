@@ -53,7 +53,7 @@ export type EnginePluginParams =
   EventManagerParameters
 
 // 插件处理集合
-let pluginHandler: Map<string, Function> | undefined = new Map()
+let pluginHandler: Map<string, Function> = new Map()
 pluginHandler.set('WebGLRenderer', WebGLRendererPlugin)
 pluginHandler.set('Scene', ScenePlugin)
 pluginHandler.set('ModelingScene', ModelingScenePlugin)
@@ -68,6 +68,18 @@ pluginHandler.set('TransformControls', TransformControlsPlugin)
 
 // 引擎槽
 export class Engine extends EventDispatcher {
+
+  private static pluginHandler: Map<string, Function> | undefined = pluginHandler
+
+  // 注册
+  static register = function (name: string, handler: (this: Engine, params?: Object) => void) {
+    Engine.pluginHandler && Engine.pluginHandler.set(name, handler)
+  }
+
+  // 清空缓存
+  static dispose = function () {
+    Engine.pluginHandler = undefined
+  }  
 
   completeSet?: Set<(engine: Engine) => void>
 
@@ -104,15 +116,11 @@ export class Engine extends EventDispatcher {
       return this
     }
   }
-  // 注册
-  register(name: string, handler: (this: Engine, params?: Object) => void) {
-    pluginHandler && pluginHandler.set(name, handler)
-  }
 
   // 安装
   install (plugin: EnginePlugin, params?: EnginePluginParams): this {
-    if (pluginHandler!.has(plugin)) {
-      pluginHandler!.get(plugin)!.call(this, params)
+    if (Engine.pluginHandler!.has(plugin)) {
+      Engine.pluginHandler!.get(plugin)!.call(this, params)
     } else {
       console.error(`engine can not support ${plugin} plugin.`)
     }
@@ -130,7 +138,6 @@ export class Engine extends EventDispatcher {
 
   // 清除缓存
   dispose (): this {
-    pluginHandler = undefined
     this.dispatchEvent({
       type: 'dispose'
     })

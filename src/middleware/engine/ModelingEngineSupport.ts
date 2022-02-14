@@ -56,7 +56,7 @@ export class ModelingEngineSupport extends ModelingEngine {
   private cacheDefaultCamera?: Camera
 
   constructor (parameters: ModelingEngineSupportParameters) {
-    super(parameters.dom)
+    super()
 
     // 所有support
     const dataSupportManager = parameters.dataSupportManager
