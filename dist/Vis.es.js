@@ -6485,6 +6485,20 @@ const EventManagerPlugin = function(params) {
   this.addEventListener("setCamera", (event) => {
     this.eventManager.setCamera(event.camera);
   });
+  if (this.modelingScene) {
+    this.eventManager.addEventListener("pointermove", (event) => {
+      this.modelingScene.setObjectHelperHover(...event.intersections.map((elem) => elem.object));
+    });
+    this.eventManager.addEventListener("click", (event) => {
+      if (this.transing) {
+        this.transing = false;
+        return;
+      }
+      if (event.button === 0) {
+        this.modelingScene.setObjectHelperActive(...event.intersections.map((elem) => elem.object));
+      }
+    });
+  }
 };
 const TransformControlsPlugin = function() {
   if (this.transformControls) {
@@ -6505,6 +6519,10 @@ const TransformControlsPlugin = function() {
   }
   const transformControls = new VisTransformControls(this.currentCamera, this.dom);
   this.transformControls = transformControls;
+  this.transing = false;
+  transformControls.addEventListener("mouseDown", () => {
+    this.transing = true;
+  });
   if (this.scene) {
     this.scene.add(this.transformControls);
     this.scene.add(this.transformControls.target);
@@ -6519,7 +6537,10 @@ const TransformControlsPlugin = function() {
   this.addEventListener("setCamera", (event) => {
     transformControls.setCamera(event.camera);
   });
-  this.eventManager.addEventListener("click", (event) => {
+  this.eventManager.addEventListener("pointerup", (event) => {
+    if (this.transing) {
+      return;
+    }
     if (event.button === 0) {
       const objectList = event.intersections.map((elem) => elem.object);
       transformControls.setAttach(...objectList);
@@ -6566,6 +6587,7 @@ class Engine extends EventDispatcher {
     __publicField(this, "pointerManager");
     __publicField(this, "eventManager");
     __publicField(this, "stats");
+    __publicField(this, "transing");
     __publicField(this, "setSize");
     __publicField(this, "setCamera");
     __publicField(this, "setDom");

@@ -85,6 +85,7 @@ export class Engine extends EventDispatcher {
   pointerManager?: PointerManager
   eventManager?: EventManager
   stats?: Stats 
+  transing?: boolean
 
   setSize?: (width: number, height: number) => this
   setCamera?: (camera: Camera) => this

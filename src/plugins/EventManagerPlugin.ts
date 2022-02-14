@@ -1,5 +1,5 @@
 import { Engine } from "../engine/Engine";
-import { EventManager, EventManagerParameters } from "../manager/EventManager";
+import { EventManager, EventManagerParameters, GlobalEvent, ObjectEvent } from "../manager/EventManager";
 import { Plugin } from "./plugin";
 import { SetCameraEvent } from "./WebGLRendererPlugin";
 
@@ -30,4 +30,20 @@ export const EventManagerPlugin: Plugin<EventManagerParameters> = function (this
   this.addEventListener<SetCameraEvent>('setCamera', event => {
     this.eventManager!.setCamera(event.camera)
   })
+
+  if (this.modelingScene) {
+    this.eventManager.addEventListener<GlobalEvent>('pointermove', (event) => {
+      this.modelingScene!.setObjectHelperHover(...event.intersections.map(elem => elem.object))
+    })
+    // click发生在pointerup之后
+    this.eventManager.addEventListener<GlobalEvent>('click', (event) => {
+      if (this.transing) {
+        this.transing = false
+        return
+      }
+      if (event.button === 0) {
+        this.modelingScene!.setObjectHelperActive(...event.intersections.map(elem => elem.object))
+      }
+    })
+  }
 }

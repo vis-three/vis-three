@@ -31,6 +31,11 @@ export const TransformControlsPlugin: Plugin<Object> = function (this: Engine) {
   const transformControls = new VisTransformControls(this.currentCamera!, this.dom!)
 
   this.transformControls = transformControls
+  this.transing = false
+
+  transformControls.addEventListener('mouseDown', () => {
+    this.transing = true
+  })
 
   if (this.scene) {
     this.scene.add(this.transformControls)
@@ -49,7 +54,10 @@ export const TransformControlsPlugin: Plugin<Object> = function (this: Engine) {
     transformControls.setCamera(event.camera)
   })
 
-  this.eventManager.addEventListener<GlobalEvent>('click', (event) => {
+  this.eventManager.addEventListener<GlobalEvent>('pointerup', (event) => {
+    if (this.transing) {
+      return
+    }
     if (event.button === 0) {
       const objectList = event.intersections.map(elem => elem.object)
       transformControls.setAttach(...objectList)
