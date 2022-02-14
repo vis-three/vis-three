@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ModelingEngine</title>
+  <title>DisplayEngine</title>
   <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
   <link rel="stylesheet" href="./css/common.css">
 </head>
@@ -22,10 +22,9 @@
   <script type="module">
     import * as THREE from 'three'
     import * as Vis from '../dist/Vis.es.js'
-    const engine = new Vis.ModelingEngine(document.getElementById('app'))
+    const engine = new Vis.DisplayEngine(document.getElementById('app'))
     .setDom(document.getElementById('app'))
     .setSize()
-    .setStats(true)
     .play()
 
     const scene = engine.scene

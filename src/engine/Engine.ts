@@ -53,7 +53,7 @@ export type EnginePluginParams =
   EventManagerParameters
 
 // 插件处理集合
-let pluginHandler: Map<string, Function> | null = new Map()
+let pluginHandler: Map<string, Function> | undefined = new Map()
 pluginHandler.set('WebGLRenderer', WebGLRendererPlugin)
 pluginHandler.set('Scene', ScenePlugin)
 pluginHandler.set('ModelingScene', ModelingScenePlugin)
@@ -75,8 +75,7 @@ export class Engine extends EventDispatcher {
   dom?: HTMLElement
   webGLRenderer?: WebGLRenderer
   currentCamera?: Camera
-  scene?: Scene
-  modelingScene?: ModelingScene
+  scene?: Scene | ModelingScene
   orbitControls?: OrbitControls
   transformControls?: TransformControls
   effectComposer?: EffectComposer
@@ -105,6 +104,10 @@ export class Engine extends EventDispatcher {
       return this
     }
   }
+  // 注册
+  register(name: string, handler: (this: Engine, params?: Object) => void) {
+    pluginHandler && pluginHandler.set(name, handler)
+  }
 
   // 安装
   install (plugin: EnginePlugin, params?: EnginePluginParams): this {
@@ -122,12 +125,12 @@ export class Engine extends EventDispatcher {
       fun(this)
     })
     this.completeSet = undefined
-    pluginHandler = null
     return this
   }
 
   // 清除缓存
   dispose (): this {
+    pluginHandler = undefined
     this.dispatchEvent({
       type: 'dispose'
     })

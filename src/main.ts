@@ -1,3 +1,4 @@
+import { DisplayEngine } from './engine/DisplayEngine';
 import { ModelingEngine } from "./engine/ModelingEngine";
 
 import { LightDataSupport } from "./middleware/light/LightDataSupport";
@@ -25,6 +26,7 @@ import { TextureDisplayer } from "./displayer/TextureDisplayer";
 import { Engine } from "./engine/Engine";
 import { ModelingScene } from "./extends/ModelingScene/ModelingScene";
 
+
 export {
   // menu
   RESOURCEEVENTTYPE,
@@ -41,6 +43,7 @@ export {
   // engine
   Engine,
   ModelingEngine,
+  DisplayEngine,
 
   // engine support
   ModelingEngineSupport,

@@ -1,3 +1,4 @@
+import { ModelingScene } from './../extends/ModelingScene/ModelingScene';
 import { Engine } from "../engine/Engine";
 import { SCENEVIEWPOINT } from "../extends/ModelingScene/ModelingScene";
 import { VisOrbitControls } from "../optimize/VisOrbitControls";
@@ -31,8 +32,8 @@ export const OrbitControlsPlugin: Plugin<Object> = function (this: Engine) {
     this.orbitControls!.update()
   })
 
-  if (this.modelingScene) {
-    const scene = this.modelingScene
+  if (this.scene instanceof ModelingScene) {
+    const scene = this.scene as ModelingScene
     scene.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, e => {
       this.orbitControls!.enableRotate = true
     })

@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { WebGLRenderer, Scene, LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, RGBAFormat, Raycaster, Object3D, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, LinearEncoding, PCFShadowMap, NoToneMapping, Fog, FogExp2, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, TangentSpaceNormalMap, PCFSoftShadowMap } from "three";
+import { WebGLRenderer, PerspectiveCamera, OrthographicCamera, Scene, LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, RGBAFormat, Raycaster, Object3D, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, LinearEncoding, PCFShadowMap, NoToneMapping, Fog, FogExp2, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, TangentSpaceNormalMap, PCFSoftShadowMap } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -45,6 +45,19 @@ const WebGLRendererPlugin = function(params) {
     const width = event.width;
     const height = event.height;
     this.webGLRenderer.setSize(width, height, true);
+    const camera = this.currentCamera;
+    if (camera) {
+      if (camera instanceof PerspectiveCamera) {
+        camera.aspect = event.width / event.height;
+        camera.updateProjectionMatrix();
+      } else if (camera instanceof OrthographicCamera) {
+        camera.left = -width / 16;
+        camera.right = width / 16;
+        camera.top = height / 16;
+        camera.bottom = -height / 16;
+        camera.updateProjectionMatrix();
+      }
+    }
   });
   this.addEventListener("dispose", () => {
     this.webGLRenderer.dispose();
@@ -55,7 +68,19 @@ const ScenePlugin = function(params) {
     console.warn("this has installed scene plugin.");
     return;
   }
+  if (!this.webGLRenderer) {
+    console.error("must install some renderer before this plugin.");
+    return;
+  }
   this.scene = new Scene();
+  this.render = () => {
+    this.webGLRenderer.render(this.scene, this.currentCamera);
+    return this;
+  };
+  const defalutCamera = new PerspectiveCamera();
+  defalutCamera.position.set(50, 50, 50);
+  defalutCamera.lookAt(0, 0, 0);
+  this.currentCamera = defalutCamera;
 };
 const ACTIVECOLOR = "rgb(230, 20, 240)";
 const HOVERCOLOR = "rgb(255, 158, 240)";
@@ -1008,16 +1033,16 @@ class ModelingScene extends Scene {
   }
 }
 const ModelingScenePlugin = function(params) {
-  if (this.modelingScene) {
+  if (this.scene instanceof ModelingScene) {
     console.warn("this has installed modeling scene plugin.");
     return;
   }
   if (!this.webGLRenderer) {
-    console.error("must install som renderer before this plugin.");
+    console.error("must install some renderer before this plugin.");
     return;
   }
   const scene = new ModelingScene(params);
-  this.modelingScene = scene;
+  this.scene = scene;
   this.render = () => {
     this.webGLRenderer.render(scene, this.currentCamera);
     return this;
@@ -1025,25 +1050,12 @@ const ModelingScenePlugin = function(params) {
   if (params.hasDefaultPerspectiveCamera) {
     const defaultPerspectiveCamera = scene.getDefaultPerspectiveCamera();
     this.currentCamera = defaultPerspectiveCamera;
-    this.addEventListener("setSize", (event) => {
-      defaultPerspectiveCamera.aspect = event.width / event.height;
-      defaultPerspectiveCamera.updateProjectionMatrix();
-    });
     scene.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, (e) => {
       this.setCamera(defaultPerspectiveCamera);
     });
   }
   if (params.hasDefaultOrthographicCamera) {
     const defaultOrthograpbicCamera = scene.getDefaultOrthographicCamera();
-    this.addEventListener("setSize", (event) => {
-      const width = event.width;
-      const height = event.height;
-      defaultOrthograpbicCamera.left = -width / 16;
-      defaultOrthograpbicCamera.right = width / 16;
-      defaultOrthograpbicCamera.top = height / 16;
-      defaultOrthograpbicCamera.bottom = -height / 16;
-      defaultOrthograpbicCamera.updateProjectionMatrix();
-    });
     scene.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
       this.setCamera(defaultOrthograpbicCamera);
     });
@@ -1241,8 +1253,8 @@ const OrbitControlsPlugin = function() {
   this.renderManager.addEventListener("render", () => {
     this.orbitControls.update();
   });
-  if (this.modelingScene) {
-    const scene = this.modelingScene;
+  if (this.scene instanceof ModelingScene) {
+    const scene = this.scene;
     scene.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, (e) => {
       this.orbitControls.enableRotate = true;
     });
@@ -1646,7 +1658,7 @@ const EventManagerPlugin = function(params) {
     return;
   }
   const eventManager = new EventManager(Object.assign({
-    scene: this.scene || this.modelingScene,
+    scene: this.scene,
     camera: this.currentCamera
   }, params));
   eventManager.use(this.pointerManager);
@@ -1654,9 +1666,9 @@ const EventManagerPlugin = function(params) {
   this.addEventListener("setCamera", (event) => {
     this.eventManager.setCamera(event.camera);
   });
-  if (this.modelingScene) {
+  if (this.scene instanceof ModelingScene) {
     this.eventManager.addEventListener("pointermove", (event) => {
-      this.modelingScene.setObjectHelperHover(...event.intersections.map((elem) => elem.object));
+      this.scene.setObjectHelperHover(...event.intersections.map((elem) => elem.object));
     });
     this.eventManager.addEventListener("click", (event) => {
       if (this.transing) {
@@ -1664,7 +1676,7 @@ const EventManagerPlugin = function(params) {
         return;
       }
       if (event.button === 0) {
-        this.modelingScene.setObjectHelperActive(...event.intersections.map((elem) => elem.object));
+        this.scene.setObjectHelperActive(...event.intersections.map((elem) => elem.object));
       }
     });
   }
@@ -1753,7 +1765,7 @@ class VisTransformControls extends TransformControls {
   }
   setAttach(...object) {
     this.transObjectSet.clear();
-    if (!object.length) {
+    if (!object.length || !object[0]) {
       this.detach();
       return this;
     }
@@ -1813,12 +1825,12 @@ const TransformControlsPlugin = function() {
   transformControls.addEventListener("mouseDown", () => {
     this.transing = true;
   });
-  if (this.scene) {
+  if (this.scene instanceof Scene) {
     this.scene.add(this.transformControls);
     this.scene.add(this.transformControls.target);
-  } else if (this.modelingScene) {
-    this.modelingScene._add(this.transformControls);
-    this.modelingScene._add(this.transformControls.target);
+  } else if (this.scene instanceof ModelingScene) {
+    this.scene._add(this.transformControls);
+    this.scene._add(this.transformControls.target);
   }
   this.setTransformControls = function(show) {
     this.transformControls.visible = show;
@@ -1833,7 +1845,7 @@ const TransformControlsPlugin = function() {
     }
     if (event.button === 0) {
       const objectList = event.intersections.map((elem) => elem.object);
-      transformControls.setAttach(...objectList);
+      transformControls.setAttach(objectList[0]);
     }
   });
 };
@@ -1869,7 +1881,6 @@ class Engine extends EventDispatcher {
     __publicField(this, "webGLRenderer");
     __publicField(this, "currentCamera");
     __publicField(this, "scene");
-    __publicField(this, "modelingScene");
     __publicField(this, "orbitControls");
     __publicField(this, "transformControls");
     __publicField(this, "effectComposer");
@@ -1892,6 +1903,9 @@ class Engine extends EventDispatcher {
       return this;
     };
   }
+  register(name, handler) {
+    pluginHandler && pluginHandler.set(name, handler);
+  }
   install(plugin, params) {
     if (pluginHandler.has(plugin)) {
       pluginHandler.get(plugin).call(this, params);
@@ -1905,14 +1919,31 @@ class Engine extends EventDispatcher {
       fun(this);
     });
     this.completeSet = void 0;
-    pluginHandler = null;
     return this;
   }
   dispose() {
+    pluginHandler = void 0;
     this.dispatchEvent({
       type: "dispose"
     });
     return this;
+  }
+}
+class DisplayEngine extends Engine {
+  constructor() {
+    super();
+    this.install(EnginePlugin.WEBGLRENDERER, {
+      antialias: true,
+      alpha: true
+    });
+    this.install(EnginePlugin.SCENE);
+    this.install(EnginePlugin.RENDERMANAGER);
+    this.install(EnginePlugin.EFFECTCOMPOSER, {
+      WebGLMultisampleRenderTarget: true
+    });
+    this.install(EnginePlugin.ORBITCONTROLS);
+    this.install(EnginePlugin.POINTERMANAGER);
+    this.install(EnginePlugin.EVENTMANAGER);
   }
 }
 class ModelingEngine extends Engine {
@@ -1939,7 +1970,6 @@ class ModelingEngine extends Engine {
     this.install(EnginePlugin.POINTERMANAGER);
     this.install(EnginePlugin.EVENTMANAGER);
     this.install(EnginePlugin.TRANSFORMCONTROLS);
-    this.complete();
   }
 }
 function isValidKey(key, object) {
@@ -5267,4 +5297,4 @@ const _TextureDisplayer = class {
 };
 let TextureDisplayer = _TextureDisplayer;
 __publicField(TextureDisplayer, "ambientLight", new AmbientLight("rgb(255, 255, 255)", 1));
-export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, EVENTTYPE, Engine, GeometryDataSupport, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };
+export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, DisplayEngine, EVENTTYPE, Engine, GeometryDataSupport, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };

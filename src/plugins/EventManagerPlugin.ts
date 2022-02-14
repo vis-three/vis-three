@@ -1,3 +1,4 @@
+import { ModelingScene } from './../extends/ModelingScene/ModelingScene';
 import { Engine } from "../engine/Engine";
 import { EventManager, EventManagerParameters, GlobalEvent, ObjectEvent } from "../manager/EventManager";
 import { Plugin } from "./plugin";
@@ -20,7 +21,7 @@ export const EventManagerPlugin: Plugin<EventManagerParameters> = function (this
   }
 
   const eventManager = new EventManager(Object.assign({
-    scene: this.scene || this.modelingScene,
+    scene: this.scene,
     camera: this.currentCamera
   }, params))
 
@@ -31,9 +32,9 @@ export const EventManagerPlugin: Plugin<EventManagerParameters> = function (this
     this.eventManager!.setCamera(event.camera)
   })
 
-  if (this.modelingScene) {
+  if (this.scene instanceof ModelingScene) {
     this.eventManager.addEventListener<GlobalEvent>('pointermove', (event) => {
-      this.modelingScene!.setObjectHelperHover(...event.intersections.map(elem => elem.object))
+      (this.scene! as ModelingScene).setObjectHelperHover(...event.intersections.map(elem => elem.object))
     })
     // click发生在pointerup之后
     this.eventManager.addEventListener<GlobalEvent>('click', (event) => {
@@ -42,7 +43,7 @@ export const EventManagerPlugin: Plugin<EventManagerParameters> = function (this
         return
       }
       if (event.button === 0) {
-        this.modelingScene!.setObjectHelperActive(...event.intersections.map(elem => elem.object))
+        (this.scene! as ModelingScene).setObjectHelperActive(...event.intersections.map(elem => elem.object))
       }
     })
   }

@@ -1,3 +1,5 @@
+import { Scene } from 'three';
+import { ModelingScene } from './../extends/ModelingScene/ModelingScene';
 import { Engine } from "../engine/Engine";
 import { GlobalEvent } from "../manager/EventManager";
 import { VisPointerEvent } from "../manager/PointerManager";
@@ -37,12 +39,12 @@ export const TransformControlsPlugin: Plugin<Object> = function (this: Engine) {
     this.transing = true
   })
 
-  if (this.scene) {
+  if (this.scene instanceof Scene) {
     this.scene.add(this.transformControls)
     this.scene.add((this.transformControls as VisTransformControls).target)
-  } else if (this.modelingScene) {
-    this.modelingScene._add(this.transformControls)
-    this.modelingScene._add((this.transformControls as VisTransformControls).target)
+  } else if (this.scene! instanceof ModelingScene) {
+    (this.scene! as ModelingScene)._add(this.transformControls);
+    (this.scene! as ModelingScene)._add((this.transformControls as VisTransformControls).target)
   }
 
   this.setTransformControls = function(show: boolean): Engine {
@@ -59,8 +61,8 @@ export const TransformControlsPlugin: Plugin<Object> = function (this: Engine) {
       return
     }
     if (event.button === 0) {
-      const objectList = event.intersections.map(elem => elem.object)
-      transformControls.setAttach(...objectList)
+      const objectList = event.intersections.map((elem) => elem.object)
+      transformControls.setAttach(objectList[0])
     }
   })
 }
