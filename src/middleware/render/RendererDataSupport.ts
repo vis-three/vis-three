@@ -5,9 +5,7 @@ import { RendererRule } from "./RendererRule";
 
 export class RendererDataSupport extends DataSupport<RendererCompilerTarget, RendererCompiler> {
   constructor (data?: RendererCompilerTarget) {
-    !data && (data = {
-      WebGLRenderer: getWebGLRendererConfig()
-    })
+    !data && (data = {})
     super(RendererRule, data)
   }
 }

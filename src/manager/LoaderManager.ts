@@ -1,4 +1,5 @@
-import { BaseEvent, EventDispatcher, ImageLoader, Loader, TextureLoader } from "three"
+import { EventDispatcher, BaseEvent } from './../core/EventDispatcher';
+import { ImageLoader, Loader, TextureLoader } from "three"
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader"
 import { LOADERMANAGER } from "../middleware/constants/EVENTTYPE"
@@ -31,7 +32,7 @@ export interface LoadedEvent extends BaseEvent {
   resourceMap: Map<string, unknown>
 }
 
-export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | LoadedEvent> {
+export class LoaderManager extends EventDispatcher {
   private resourceMap: Map<string, unknown>
   private loaderMap: LoaderMap
   private loadTotal: number
@@ -180,6 +181,12 @@ export class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | 
     this.isLoading = false
     this.isLoaded = false
     this.loadDetailMap = {}
+    return this
+  }
+
+  // 注册自定loader
+  register (ext: string, loader: Loader): this {
+    this.loaderMap[ext] = loader
     return this
   }
 

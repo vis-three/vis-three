@@ -2,15 +2,15 @@ import { Engine } from "../engine/Engine";
 import { PointerManager, PointerManagerParameters } from "../manager/PointerManager";
 import { Plugin } from "./plugin";
 
-export const PointerManagerPlugin: Plugin<PointerManagerParameters> = function (this: Engine, params: PointerManagerParameters) {
+export const PointerManagerPlugin: Plugin<PointerManagerParameters> = function (this: Engine, params: PointerManagerParameters): boolean {
   if (this.pointerManager) {
     console.warn('this has installed pointerManager plugin.')
-    return
+    return false
   }
 
   if (!this.webGLRenderer) {
     console.error('must install some renderer before this plugin.')
-    return
+    return false
   }
 
   const pointerManager = new PointerManager(Object.assign(params || {}, {
@@ -18,4 +18,6 @@ export const PointerManagerPlugin: Plugin<PointerManagerParameters> = function (
   }))
 
   this.pointerManager = pointerManager
+
+  return true
 }

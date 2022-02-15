@@ -2,6 +2,11 @@ import { Camera, OrthographicCamera, PerspectiveCamera, WebGLRenderer, WebGLRend
 import { Engine } from "../engine/Engine"
 import { BaseEvent } from "../core/EventDispatcher"
 import { Plugin } from "./plugin"
+import { EngineSupport } from "../middleware/engineSupport/EngineSupport"
+import { RendererDataSupport } from "../middleware/render/RendererDataSupport"
+import { MODULETYPE } from "../middleware/constants/MODULETYPE"
+import { CONFIGTYPE } from "../middleware/constants/CONFIGTYPE"
+import { generateConfig } from "../convenient/generateConfig"
 
 export interface SetSizeEvent extends BaseEvent {
   type: 'setSize'
@@ -14,10 +19,10 @@ export interface SetCameraEvent extends BaseEvent {
   camera: Camera
 }
 
-export const WebGLRendererPlugin: Plugin<WebGLRendererParameters> = function (this: Engine, params: WebGLRendererParameters) {
+export const WebGLRendererPlugin: Plugin<WebGLRendererParameters> = function (this: Engine, params: WebGLRendererParameters): boolean {
   if (this.webGLRenderer) {
     console.warn('this has installed webglRenderer plugin.')
-    return
+    return false
   }
 
   this.webGLRenderer = new WebGLRenderer(params)
@@ -77,4 +82,16 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererParameters> = function (th
   this.addEventListener('dispose', () => {
     this.webGLRenderer!.dispose()
   })
+
+  return true
+}
+
+export const WebGLRendererSupportPlugin: Plugin<WebGLRendererParameters> = function (this: EngineSupport, params: WebGLRendererParameters): boolean {
+  if (WebGLRendererPlugin.call(this, params)) {
+    const dataSupport = this.dataSupportManager.getDataSupport<RendererDataSupport>(MODULETYPE.RENDERER)!.getData()
+    dataSupport.WebGLRenderer = generateConfig(CONFIGTYPE.WEBGLRENDERER)!
+    return true
+  } else {
+    return false
+  }
 }

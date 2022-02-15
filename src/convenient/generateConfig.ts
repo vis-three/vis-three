@@ -7,7 +7,7 @@ import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../midd
 import { CONFIGTYPE } from "../middleware/constants/configType"
 import { getWebGLRendererConfig } from "../middleware/render/RendererConfig"
 import { getSceneConfig } from "../middleware/scene/SceneConfig"
-import { getTransformControlsConfig } from "../middleware/controls/ControlsConfig"
+import { getOrbitControlsConfig, getTransformControlsConfig } from "../middleware/controls/ControlsConfig"
 
 const typeMap: {[key: string]: Function} = {
   [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
@@ -34,10 +34,11 @@ const typeMap: {[key: string]: Function} = {
 
   [CONFIGTYPE.SCENE]: getSceneConfig,
 
-  [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig
+  [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig,
+  [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig
 }
 
-export const generateConfig = function<C> (type: string, merge: object): C | null {
+export const generateConfig = function<C> (type: string, merge?: object): C | null {
   if (typeMap[type]) {
     const recursion = (config: C, merge: object) => {
       for (const key in merge) {
@@ -53,7 +54,7 @@ export const generateConfig = function<C> (type: string, merge: object): C | nul
       }
     }
     const initConfig = typeMap[type]()
-    recursion(initConfig, merge)
+    merge && recursion(initConfig, merge)
     return initConfig
 
   } else {

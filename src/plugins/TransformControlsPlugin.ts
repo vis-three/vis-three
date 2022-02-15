@@ -6,28 +6,33 @@ import { VisPointerEvent } from "../manager/PointerManager";
 import { VisTransformControls } from "../optimize/VisTransformControls";
 import { Plugin } from "./plugin";
 import { SetCameraEvent } from "./WebGLRendererPlugin";
+import { ControlsDataSupport } from '../middleware/controls/ControlsDataSupport';
+import { MODULETYPE } from '../middleware/constants/MODULETYPE';
+import { CONFIGTYPE } from '../middleware/constants/configType';
+import { generateConfig } from '../convenient/generateConfig';
+import { EngineSupport } from '../middleware/engineSupport/EngineSupport';
 
-export const TransformControlsPlugin: Plugin<Object> = function (this: Engine) {
+export const TransformControlsPlugin: Plugin<Object> = function (this: Engine, params: Object): boolean {
   if (this.transformControls) {
     console.warn('this has installed transformControls plugin.')
-    return
+    return false
   }
 
   if (!this.webGLRenderer) {
     console.warn('this must install renderer before install transformControls plugin.')
-    return
+    return false
   }
 
   
   if (!this.pointerManager) {
     console.warn('this must install pointerManager before install transformControls plugin.')
-    return
+    return false
   }
 
 
   if (!this.eventManager) {
     console.warn('this must install eventManager before install transformControls plugin.')
-    return
+    return false
   }
 
   const transformControls = new VisTransformControls(this.currentCamera!, this.dom!)
@@ -65,4 +70,16 @@ export const TransformControlsPlugin: Plugin<Object> = function (this: Engine) {
       transformControls.setAttach(objectList[0])
     }
   })
+
+  return true
+}
+
+export const TransformControlsSupportPlugin: Plugin<Object> = function (this: EngineSupport, params: Object): boolean {
+  if (TransformControlsPlugin.call(this, params)) {
+    const dataSupport = this.dataSupportManager.getDataSupport<ControlsDataSupport>(MODULETYPE.CONTROLS)!.getData()
+    dataSupport[CONFIGTYPE.TRNASFORMCONTROLS] = generateConfig(CONFIGTYPE.TRNASFORMCONTROLS)!
+    return true
+  } else {
+    return false
+  }
 }

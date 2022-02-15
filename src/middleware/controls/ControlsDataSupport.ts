@@ -5,9 +5,7 @@ import { ControlsRule } from "./ControlsRule";
 
 export class ControlsDataSupport extends DataSupport<ControlsCompilerTarget, ControlsCompiler> {
   constructor (data?: ControlsCompilerTarget) {
-    !data && (data = {
-      TransformControls: getTransformControlsConfig()
-    })
+    !data && (data = {})
     super(ControlsRule, data)
   }
 }

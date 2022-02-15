@@ -2,15 +2,15 @@ import { Engine } from "../engine/Engine";
 import { Plugin } from "./plugin";
 import { VisStats, VisStatsParameters } from '../optimize/VisStats'
 
-export const StatsPlugin: Plugin<VisStatsParameters> = function (this: Engine, params: VisStatsParameters) {
+export const StatsPlugin: Plugin<VisStatsParameters> = function (this: Engine, params: VisStatsParameters): boolean {
   if (this.stats) {
     console.warn('this has installed stats plugin.')
-    return
+    return false
   }
 
   if (!this.renderManager) {
     console.warn('this must install renderManager before install orbitControls plugin.')
-    return
+    return false
   }
 
   const stats = new VisStats(params)
@@ -33,4 +33,6 @@ export const StatsPlugin: Plugin<VisStatsParameters> = function (this: Engine, p
   this.renderManager.addEventListener('render', () => {
     this.stats!.update()
   })
+
+  return true
 }

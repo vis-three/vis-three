@@ -3,7 +3,7 @@ import { ModelingEngine } from "./engine/ModelingEngine";
 
 import { LightDataSupport } from "./middleware/light/LightDataSupport";
 import { ModelDataSupport } from "./middleware/model/ModelDataSupport";
-import { ModelingEngineSupport } from "./middleware/engine/ModelingEngineSupport";
+import { ModelingEngineSupport } from "./middleware/engineSupport/ModelingEngineSupport";
 import { GeometryDataSupport } from "./middleware/geometry/GeometryDataSupport";
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
 import { LoaderManager } from "./manager/LoaderManager";
@@ -25,7 +25,8 @@ import { EVENTTYPE } from "./middleware/constants/EVENTTYPE";
 import { TextureDisplayer } from "./displayer/TextureDisplayer";
 import { Engine } from "./engine/Engine";
 import { ModelingScene } from "./extends/ModelingScene/ModelingScene";
-
+import { EngineSupport } from './middleware/engineSupport/EngineSupport';
+import { DisplayEngineSupport } from './middleware/engineSupport/DisplayEngineSupport';
 
 export {
   // menu
@@ -47,6 +48,8 @@ export {
 
   // engine support
   ModelingEngineSupport,
+  EngineSupport,
+  DisplayEngineSupport,
 
   // engine connector
 

@@ -4,22 +4,27 @@ import { SCENEVIEWPOINT } from "../extends/ModelingScene/ModelingScene";
 import { VisOrbitControls } from "../optimize/VisOrbitControls";
 import { Plugin } from "./plugin";
 import { SetCameraEvent } from "./WebGLRendererPlugin";
+import { EngineSupport } from '../middleware/engineSupport/EngineSupport';
+import { MODULETYPE } from '../middleware/constants/MODULETYPE';
+import { CONFIGTYPE } from '../middleware/constants/configType';
+import { generateConfig } from '../convenient/generateConfig';
+import { ControlsDataSupport } from '../middleware/controls/ControlsDataSupport';
 
 
-export const OrbitControlsPlugin: Plugin<Object> = function (this: Engine) {
+export const OrbitControlsPlugin: Plugin<Object> = function (this: Engine, params: Object): boolean {
   if (this.orbitControls) {
     console.warn('this has installed orbitControls plugin.')
-    return
+    return false
   }
 
   if (!this.webGLRenderer) {
     console.warn('this must install renderer before install orbitControls plugin.')
-    return
+    return false
   }
 
   if (!this.renderManager) {
     console.warn('this must install renderManager before install orbitControls plugin.')
-    return
+    return false
   }
 
   this.orbitControls = new VisOrbitControls(this.currentCamera!, this.dom!)
@@ -55,5 +60,17 @@ export const OrbitControlsPlugin: Plugin<Object> = function (this: Engine) {
     scene.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, e => {
       this.orbitControls!.enableRotate = false
     })
+  }
+
+  return true
+}
+
+export const OrbitControlsSupportPlugin: Plugin<Object> = function (this: EngineSupport, params: Object): boolean {
+  if (OrbitControlsPlugin.call(this, params)) {
+    const dataSupport = this.dataSupportManager.getDataSupport<ControlsDataSupport>(MODULETYPE.CONTROLS)!.getData()
+    dataSupport[CONFIGTYPE.ORBITCONTROLS] = generateConfig(CONFIGTYPE.ORBITCONTROLS)!
+    return true
+  } else {
+    return false
   }
 }

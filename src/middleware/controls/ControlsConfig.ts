@@ -22,6 +22,13 @@ export interface TransformControlsConfig extends ControlsConfig {
 
 }
 
+export interface OrbitControlsConfig extends ControlsConfig {
+  autoRotate: boolean
+  autoRotateSpeed: number
+  enableDamping: boolean
+  dampingFactor: number
+}
+
 export type ControlsAllConfig = TransformControlsConfig
 
 export const getTransformControlsConfig = function (): TransformControlsConfig {
@@ -44,5 +51,16 @@ export const getTransformControlsConfig = function (): TransformControlsConfig {
     size: 1,
 
     space: 'world'
+  }
+}
+
+export const getOrbitControlsConfig = function (): OrbitControlsConfig {
+  return {
+    vid: 'OrbitControls',
+    type: 'OrbitControls',
+    autoRotate: false,
+    autoRotateSpeed: 2.0,
+    enableDamping: false,
+    dampingFactor: 0.05
   }
 }

@@ -1,4 +1,5 @@
-import { BaseEvent, BufferGeometry, EventDispatcher, Group, Material, Mesh, Object3D, Texture } from "three";
+import { BaseEvent, Mesh, Object3D } from "three";
+import { EventDispatcher } from "../core/EventDispatcher";
 
 
 export interface ModelMappingUrlConfig {
@@ -18,7 +19,7 @@ export enum RESOURCEEVENTTYPE {
 }
 
 // TODO: 枚举贴图类型，几何类型，材质类型
-export class ResourceManager extends EventDispatcher<MappedEvent> {
+export class ResourceManager extends EventDispatcher {
 
   private mappingResourceMap: Map<string, unknown> = new Map() // mappingUrl -> source
   private configMappingMap: Map<string, unknown> = new Map() // url -> mappingUrl

@@ -4,20 +4,20 @@ import { EventManager, EventManagerParameters, GlobalEvent, ObjectEvent } from "
 import { Plugin } from "./plugin";
 import { SetCameraEvent } from "./WebGLRendererPlugin";
 
-export const EventManagerPlugin: Plugin<EventManagerParameters> = function (this: Engine, params: EventManagerParameters) {
+export const EventManagerPlugin: Plugin<EventManagerParameters> = function (this: Engine, params: EventManagerParameters): boolean {
   if (this.eventManager) {
     console.warn('engine has installed eventManager plugin.')
-    return
+    return false
   }
 
   if (!this.webGLRenderer) {
     console.error('must install some renderer before this plugin.')
-    return
+    return false
   }
 
   if (!this.pointerManager) {
     console.error('must install pointerManager before this plugin.')
-    return
+    return false
   }
 
   const eventManager = new EventManager(Object.assign({
@@ -47,4 +47,6 @@ export const EventManagerPlugin: Plugin<EventManagerParameters> = function (this
       }
     })
   }
+
+  return true
 }

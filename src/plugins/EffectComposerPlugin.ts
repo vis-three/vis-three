@@ -10,15 +10,15 @@ export interface EffectComposerParameters {
   WebGLMultisampleRenderTarget?: boolean
 }
 
-export const EffectComposerPlugin: Plugin<EffectComposerParameters> = function (this: Engine, params: EffectComposerParameters) {
+export const EffectComposerPlugin: Plugin<EffectComposerParameters> = function (this: Engine, params: EffectComposerParameters): boolean {
   if (this.effectComposer) {
     console.warn('this has installed effect composer plugin.')
-    return
+    return false
   }
 
   if (!this.webGLRenderer) {
     console.error('must install some renderer before this plugin.')
-    return
+    return false
   }
 
   let composer: EffectComposer
@@ -43,11 +43,9 @@ export const EffectComposerPlugin: Plugin<EffectComposerParameters> = function (
 
   if (this.scene) {
     renderPass = new RenderPass(this.scene, this.currentCamera!)
-  } else if (this.modelingScene) {
-    renderPass = new RenderPass(this.modelingScene, this.currentCamera!)
   } else {
     console.error(`composer con not found support scene plugin.`)
-    return
+    return false
   }
 
   composer.addPass(renderPass)
@@ -66,6 +64,7 @@ export const EffectComposerPlugin: Plugin<EffectComposerParameters> = function (
 
   this.render = () => {
     this.effectComposer!.render()
+    return this
   }
 
   if (this.renderManager) {
@@ -73,4 +72,6 @@ export const EffectComposerPlugin: Plugin<EffectComposerParameters> = function (
       this.effectComposer!.render((event as RenderEvent).delta)
     })
   }
+
+  return true
 }

@@ -1,7 +1,3 @@
 export interface Plugin<O extends Object> {
-  (params: O): void
+  (params: O): boolean
 }
-
-export { WebGLRendererPlugin } from './WebGLRendererPlugin'
-export { ScenePlugin } from './ScenePlugin'
-export { ModelingScenePlugin } from './ModelingScenePlugin'

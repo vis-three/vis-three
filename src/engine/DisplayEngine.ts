@@ -4,7 +4,6 @@ import {
   WebGLRenderer
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { ModelingScene } from "../extends/ModelingScene/ModelingScene";
 import { EventManager } from "../manager/EventManager";
@@ -26,8 +25,6 @@ export class DisplayEngine extends Engine {
   declare setSize: (width: number, height: number) => this
   declare setCamera: (camera: Camera) => this
   declare setDom: (dom: HTMLElement) => this
-  declare setStats: (show: boolean) => this
-  declare setTransformControls: (show: boolean) => this
 
   declare play: () => this
   declare stop: () => this

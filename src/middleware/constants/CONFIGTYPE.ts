@@ -23,5 +23,6 @@ export enum CONFIGTYPE {
 
   SCENE = 'Scene',
 
-  TRNASFORMCONTROLS = 'TransformControls'
+  TRNASFORMCONTROLS = 'TransformControls',
+  ORBITCONTROLS = 'OrbitControls'
 }

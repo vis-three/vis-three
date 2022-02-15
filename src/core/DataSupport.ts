@@ -26,6 +26,11 @@ export class DataSupport<D extends CompilerTarget, C extends Compiler> {
     return this
   }
 
+  proxyData (data: D): D {
+    this.data = this.broadcast.proxyExtends<D>(data)
+    return this.data
+  }
+
   addCompiler (compiler: C): this {
     compiler.setTarget(this.data)
     compiler.compileAll()

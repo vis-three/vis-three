@@ -1,10 +1,11 @@
-import { BaseEvent, Camera, Event, Object3D, OrthographicCamera, PerspectiveCamera, Scene, Vector3 } from "three";
+import { Camera, Object3D, OrthographicCamera, PerspectiveCamera, Scene, Vector3 } from "three";
 import { validate } from "uuid";
 import { ModelingEngine } from "../../main";
 import { Compiler, COMPILEREVENTTYPE, CompilerTarget, ObjectCompiler } from "../../core/Compiler";
 import { SetSizeEvent } from "../../plugins/WebGLRendererPlugin";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CameraAllType } from "./CameraConfig";
+import { Engine, EnginePlugin } from "../../engine/Engine";
 
 export interface CameraCompilerTarget extends CompilerTarget {
   [key: string]: CameraAllType
@@ -13,7 +14,7 @@ export interface CameraCompilerTarget extends CompilerTarget {
 export interface CameraCompilerParameters {
   scene?: Scene
   target?: CameraCompilerTarget
-  engine?: ModelingEngine
+  engine?: Engine
 }
 
 export interface CameraUserData {
@@ -26,7 +27,7 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
 
   private target!: CameraCompilerTarget
   private scene!: Scene
-  private engine!: ModelingEngine
+  private engine!: Engine
   private map: Map<string, Camera>
   private constructMap: Map<string, () => Camera>
   private objectMapSet: Set<Map<SymbolConfig['vid'], Object3D>>
@@ -40,7 +41,7 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
     } else {
       this.scene = new Scene()
       this.target = {}
-      this.engine = new ModelingEngine()
+      this.engine = new Engine().install(EnginePlugin.WEBGLRENDERER)
     }
     this.map = new Map()
     const constructMap = new Map()

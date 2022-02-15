@@ -4,83 +4,399 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { WebGLRenderer, PerspectiveCamera, OrthographicCamera, Scene, LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, RGBAFormat, Raycaster, Object3D, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, LinearEncoding, PCFShadowMap, NoToneMapping, Fog, FogExp2, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, TangentSpaceNormalMap, PCFSoftShadowMap } from "three";
+import { UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, LinearEncoding, FrontSide, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, Fog, FogExp2, PCFSoftShadowMap } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
-const WebGLRendererPlugin = function(params) {
-  if (this.webGLRenderer) {
-    console.warn("this has installed webglRenderer plugin.");
-    return;
+class EventDispatcher {
+  constructor() {
+    __publicField(this, "listeners", new Map());
   }
-  this.webGLRenderer = new WebGLRenderer(params);
-  this.dom = this.webGLRenderer.domElement;
-  this.setSize = function(width, height) {
-    var _a, _b;
-    if (width && width <= 0 || height && height <= 0) {
-      console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
-      return this;
+  addEventListener(type, listener) {
+    const listeners = this.listeners;
+    if (!listeners.has(type)) {
+      listeners.set(type, new Set());
     }
-    !width && (width = (_a = this.dom) == null ? void 0 : _a.offsetWidth);
-    !height && (height = (_b = this.dom) == null ? void 0 : _b.offsetHeight);
-    this.dispatchEvent({ type: "setSize", width, height });
-    return this;
-  };
-  this.setCamera = function setCamera(camera) {
-    this.currentCamera = camera;
-    this.dispatchEvent({
-      type: "setCamera",
-      camera
-    });
-    return this;
-  };
-  this.setDom = function(dom) {
-    this.dom = dom;
-    dom.appendChild(this.webGLRenderer.domElement);
-    return this;
-  };
-  this.addEventListener("setSize", (event) => {
-    const width = event.width;
-    const height = event.height;
-    this.webGLRenderer.setSize(width, height, true);
-    const camera = this.currentCamera;
-    if (camera) {
-      if (camera instanceof PerspectiveCamera) {
-        camera.aspect = event.width / event.height;
-        camera.updateProjectionMatrix();
-      } else if (camera instanceof OrthographicCamera) {
-        camera.left = -width / 16;
-        camera.right = width / 16;
-        camera.top = height / 16;
-        camera.bottom = -height / 16;
-        camera.updateProjectionMatrix();
+    listeners.get(type).add(listener);
+  }
+  hasEventListener(type, listener) {
+    const listeners = this.listeners;
+    if (!listeners.has(type)) {
+      return false;
+    }
+    return listeners.get(type).has(listener);
+  }
+  removeEventListener(type, listener) {
+    const listeners = this.listeners;
+    if (!listeners.has(type)) {
+      return;
+    }
+    if (!listeners.get(type).has(listener)) {
+      return;
+    }
+    listeners.get(type).delete(listener);
+  }
+  dispatchEvent(event) {
+    var _a;
+    const type = event.type;
+    const listeners = this.listeners;
+    if (listeners.has(type)) {
+      try {
+        (_a = listeners.get(type)) == null ? void 0 : _a.forEach((listener) => {
+          listener.call(this, event);
+        });
+      } catch (error) {
+        console.error(error);
       }
     }
-  });
-  this.addEventListener("dispose", () => {
-    this.webGLRenderer.dispose();
+  }
+}
+const getObjectConfig = () => {
+  return {
+    vid: "",
+    type: "Object3D",
+    castShadow: true,
+    receiveShadow: true,
+    lookAt: "",
+    position: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    rotation: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    scale: {
+      x: 1,
+      y: 1,
+      z: 1
+    }
+  };
+};
+const getLightConfig = function() {
+  return Object.assign(getObjectConfig(), {
+    type: "Light",
+    color: "rgb(255, 255, 255)",
+    intensity: 1
   });
 };
-const ScenePlugin = function(params) {
-  if (this.scene) {
-    console.warn("this has installed scene plugin.");
-    return;
-  }
-  if (!this.webGLRenderer) {
-    console.error("must install some renderer before this plugin.");
-    return;
-  }
-  this.scene = new Scene();
-  this.render = () => {
-    this.webGLRenderer.render(this.scene, this.currentCamera);
-    return this;
+const getAmbientLightConfig = function() {
+  return Object.assign(getObjectConfig(), {
+    type: "AmbientLight",
+    color: "rgb(255, 255, 255)",
+    intensity: 1
+  });
+};
+const getPointLightConfig = function() {
+  return Object.assign(getLightConfig(), {
+    type: "PointLight",
+    distance: 30,
+    decay: 0.01
+  });
+};
+const getSpotLightConfig = function() {
+  return Object.assign(getLightConfig(), {
+    type: "SpotLight",
+    distance: 30,
+    angle: Math.PI / 180 * 45,
+    penumbra: 0.01,
+    decay: 0.01
+  });
+};
+const getGeometryConfig = function() {
+  return {
+    vid: "",
+    type: "Geometry",
+    position: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    rotation: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    scale: {
+      x: 1,
+      y: 1,
+      z: 1
+    }
   };
-  const defalutCamera = new PerspectiveCamera();
-  defalutCamera.position.set(50, 50, 50);
-  defalutCamera.lookAt(0, 0, 0);
-  this.currentCamera = defalutCamera;
+};
+const getBoxGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: "BoxGeometry",
+    width: 5,
+    height: 5,
+    depth: 5,
+    widthSegments: 1,
+    heightSegments: 1,
+    depthSegments: 1
+  });
+};
+const getSphereGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: "SphereGeometry",
+    radius: 3,
+    widthSegments: 32,
+    heightSegments: 32,
+    phiStart: 0,
+    phiLength: Math.PI * 2,
+    thetaStart: 0,
+    thetaLength: Math.PI
+  });
+};
+const getLoadGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: "LoadGeometry",
+    url: ""
+  });
+};
+const getModelConfig = function() {
+  return Object.assign(getObjectConfig(), {
+    type: "Mesh",
+    geometry: "",
+    material: ""
+  });
+};
+const getTextureConfig = function() {
+  return {
+    vid: "",
+    type: "Texture",
+    name: "",
+    image: "",
+    mapping: UVMapping,
+    wrapS: ClampToEdgeWrapping,
+    wrapT: ClampToEdgeWrapping,
+    magFilter: LinearFilter,
+    minFilter: LinearMipmapLinearFilter,
+    anisotropy: 1,
+    format: RGBAFormat,
+    offset: {
+      x: 0,
+      y: 0
+    },
+    repeat: {
+      x: 1,
+      y: 1
+    },
+    rotation: 0,
+    center: {
+      x: 0,
+      y: 0
+    },
+    matrixAutoUpdate: true,
+    encoding: LinearEncoding,
+    needsUpdate: false
+  };
+};
+const getImageTextureConfig = function() {
+  return Object.assign(getTextureConfig(), {
+    type: "ImageTexture"
+  });
+};
+const getMaterialConfig = function() {
+  return {
+    vid: "",
+    type: "Material",
+    alphaTest: 0,
+    colorWrite: true,
+    depthTest: true,
+    depthWrite: true,
+    format: RGBAFormat,
+    fog: true,
+    name: "",
+    needsUpdate: false,
+    opacity: 1,
+    dithering: false,
+    shadowSide: null,
+    side: FrontSide,
+    toneMapped: true,
+    transparent: false,
+    visible: true
+  };
+};
+const getMeshStandardMaterialConfig = function() {
+  return Object.assign(getMaterialConfig(), {
+    type: "MeshStandardMaterial",
+    aoMapIntensity: 1,
+    bumpScale: 1,
+    color: "rgb(255, 255, 255)",
+    displacementScale: 1,
+    displacementBias: 0,
+    emissive: "rgb(0, 0, 0)",
+    emissiveIntensity: 1,
+    envMapIntensity: 1,
+    flatShading: false,
+    lightMapIntensity: 1,
+    metalness: 0,
+    normalMapType: TangentSpaceNormalMap,
+    refractionRatio: 0.98,
+    roughness: 1,
+    wireframe: false,
+    wireframeLinecap: "round",
+    wireframeLinejoin: "round",
+    roughnessMap: "",
+    normalMap: "",
+    metalnessMap: "",
+    map: "",
+    lightMap: "",
+    envMap: "",
+    emissiveMap: "",
+    displacementMap: "",
+    bumpMap: "",
+    alphaMap: "",
+    aoMap: ""
+  });
+};
+const getPerspectiveCameraConfig = function() {
+  return Object.assign(getObjectConfig(), {
+    type: "PerspectiveCamera",
+    adaptiveWindow: false,
+    fov: 45,
+    aspect: 1920 / 1080,
+    near: 5,
+    far: 50
+  });
+};
+const getOrthographicCameraConfig = function() {
+  return Object.assign(getObjectConfig(), {
+    type: "OrthographicCamera",
+    adaptiveWindow: false,
+    left: 1920 / 16,
+    right: 1920 / 16,
+    top: 1080 / 16,
+    bottom: 1080 / 16,
+    near: 5,
+    far: 50
+  });
+};
+var CONFIGTYPE$1;
+(function(CONFIGTYPE2) {
+  CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
+  CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
+  CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
+  CONFIGTYPE2["MODEL"] = "Model";
+  CONFIGTYPE2["MESH"] = "Mesh";
+  CONFIGTYPE2["LINE"] = "Line";
+  CONFIGTYPE2["POINTS"] = "Points";
+  CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
+  CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
+  CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
+  CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
+  CONFIGTYPE2["POINTLIGHT"] = "PointLight";
+  CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
+  CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
+  CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
+  CONFIGTYPE2["SCENE"] = "Scene";
+  CONFIGTYPE2["TRNASFORMCONTROLS"] = "TransformControls";
+  CONFIGTYPE2["ORBITCONTROLS"] = "OrbitControls";
+})(CONFIGTYPE$1 || (CONFIGTYPE$1 = {}));
+const getWebGLRendererConfig = function() {
+  return {
+    vid: "WebGLRenderer",
+    type: "WebGLRenderer",
+    clearColor: "rgba(0, 0, 0, 0)",
+    outputEncoding: LinearEncoding,
+    physicallyCorrectLights: false,
+    shadowMap: {
+      enabled: false,
+      autoUpdate: true,
+      type: PCFShadowMap
+    },
+    toneMapping: NoToneMapping,
+    toneMappingExposure: 1,
+    pixelRatio: window.devicePixelRatio,
+    adaptiveCamera: false,
+    viewport: null,
+    scissor: null,
+    size: null
+  };
+};
+const getSceneConfig = function() {
+  return {
+    vid: "Scene",
+    type: "Scene",
+    background: "",
+    environment: "",
+    fog: null
+  };
+};
+const getTransformControlsConfig = function() {
+  return {
+    vid: "TransformControls",
+    type: "TransformControls",
+    axis: "XYZ",
+    enabled: true,
+    mode: "translate",
+    snapAllow: false,
+    rotationSnap: Math.PI / 180 * 10,
+    translationSnap: 5,
+    scaleSnap: 0.1,
+    showX: true,
+    showY: true,
+    showZ: true,
+    size: 1,
+    space: "world"
+  };
+};
+const getOrbitControlsConfig = function() {
+  return {
+    vid: "OrbitControls",
+    type: "OrbitControls",
+    autoRotate: false,
+    autoRotateSpeed: 2,
+    enableDamping: false,
+    dampingFactor: 0.05
+  };
+};
+const typeMap = {
+  [CONFIGTYPE$1.IMAGETEXTURE]: getImageTextureConfig,
+  [CONFIGTYPE$1.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
+  [CONFIGTYPE$1.AMBIENTLIGHT]: getAmbientLightConfig,
+  [CONFIGTYPE$1.SPOTLIGHT]: getSpotLightConfig,
+  [CONFIGTYPE$1.POINTLIGHT]: getPointLightConfig,
+  [CONFIGTYPE$1.BOXGEOMETRY]: getBoxGeometryConfig,
+  [CONFIGTYPE$1.SPHEREGEOMETRY]: getSphereGeometryConfig,
+  [CONFIGTYPE$1.LOADGEOMETRY]: getLoadGeometryConfig,
+  [CONFIGTYPE$1.MODEL]: getModelConfig,
+  [CONFIGTYPE$1.MESH]: getModelConfig,
+  [CONFIGTYPE$1.LINE]: getModelConfig,
+  [CONFIGTYPE$1.POINTS]: getModelConfig,
+  [CONFIGTYPE$1.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
+  [CONFIGTYPE$1.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
+  [CONFIGTYPE$1.WEBGLRENDERER]: getWebGLRendererConfig,
+  [CONFIGTYPE$1.SCENE]: getSceneConfig,
+  [CONFIGTYPE$1.TRNASFORMCONTROLS]: getTransformControlsConfig,
+  [CONFIGTYPE$1.ORBITCONTROLS]: getOrbitControlsConfig
+};
+const generateConfig = function(type, merge) {
+  if (typeMap[type]) {
+    const recursion = (config, merge2) => {
+      for (const key in merge2) {
+        if (config[key] === void 0) {
+          console.warn(`'${type}' config can not set key: ${key}`);
+          continue;
+        }
+        if (typeof merge2[key] === "object" && merge2[key] !== null) {
+          recursion(config[key], merge2[key]);
+        } else {
+          config[key] = merge2[key];
+        }
+      }
+    };
+    const initConfig = typeMap[type]();
+    merge && recursion(initConfig, merge);
+    return initConfig;
+  } else {
+    console.error(`type: ${type} can not be found in configList.`);
+    return null;
+  }
 };
 const ACTIVECOLOR = "rgb(230, 20, 240)";
 const HOVERCOLOR = "rgb(255, 158, 240)";
@@ -1032,14 +1348,28 @@ class ModelingScene extends Scene {
     return this;
   }
 }
+var MODULETYPE;
+(function(MODULETYPE2) {
+  MODULETYPE2["CAMERA"] = "camera";
+  MODULETYPE2["LIGHT"] = "light";
+  MODULETYPE2["GEOMETRY"] = "geometry";
+  MODULETYPE2["MODEL"] = "model";
+  MODULETYPE2["TEXTURE"] = "texture";
+  MODULETYPE2["MATERIAL"] = "material";
+  MODULETYPE2["RENDERER"] = "renderer";
+  MODULETYPE2["SCENE"] = "scene";
+  MODULETYPE2["SPRITE"] = "sprite";
+  MODULETYPE2["STRUCTURE"] = "structure";
+  MODULETYPE2["CONTROLS"] = "controls";
+})(MODULETYPE || (MODULETYPE = {}));
 const ModelingScenePlugin = function(params) {
   if (this.scene instanceof ModelingScene) {
     console.warn("this has installed modeling scene plugin.");
-    return;
+    return false;
   }
   if (!this.webGLRenderer) {
     console.error("must install some renderer before this plugin.");
-    return;
+    return false;
   }
   const scene = new ModelingScene(params);
   this.scene = scene;
@@ -1075,50 +1405,67 @@ const ModelingScenePlugin = function(params) {
       this.setCamera(defaultOrthograpbicCamera);
     });
   }
+  return true;
 };
-class EventDispatcher {
-  constructor() {
-    __publicField(this, "listeners", new Map());
+const ModelingSceneSupportPlugin = function(params) {
+  if (ModelingScenePlugin.call(this, params)) {
+    const dataSupport = this.dataSupportManager.getDataSupport(MODULETYPE.RENDERER).getData();
+    dataSupport.scene = generateConfig(CONFIGTYPE$1.WEBGLRENDERER);
+    return true;
+  } else {
+    return false;
   }
-  addEventListener(type, listener) {
-    const listeners = this.listeners;
-    if (!listeners.has(type)) {
-      listeners.set(type, new Set());
-    }
-    listeners.get(type).add(listener);
+};
+var CONFIGTYPE;
+(function(CONFIGTYPE2) {
+  CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
+  CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
+  CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
+  CONFIGTYPE2["MODEL"] = "Model";
+  CONFIGTYPE2["MESH"] = "Mesh";
+  CONFIGTYPE2["LINE"] = "Line";
+  CONFIGTYPE2["POINTS"] = "Points";
+  CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
+  CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
+  CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
+  CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
+  CONFIGTYPE2["POINTLIGHT"] = "PointLight";
+  CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
+  CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
+  CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
+  CONFIGTYPE2["SCENE"] = "Scene";
+  CONFIGTYPE2["TRNASFORMCONTROLS"] = "TransformControls";
+  CONFIGTYPE2["ORBITCONTROLS"] = "OrbitControls";
+})(CONFIGTYPE || (CONFIGTYPE = {}));
+const ScenePlugin = function(params) {
+  if (this.scene) {
+    console.warn("this has installed scene plugin.");
+    return false;
   }
-  hasEventListener(type, listener) {
-    const listeners = this.listeners;
-    if (!listeners.has(type)) {
-      return false;
-    }
-    return listeners.get(type).has(listener);
+  if (!this.webGLRenderer) {
+    console.error("must install some renderer before this plugin.");
+    return false;
   }
-  removeEventListener(type, listener) {
-    const listeners = this.listeners;
-    if (!listeners.has(type)) {
-      return;
-    }
-    if (!listeners.get(type).has(listener)) {
-      return;
-    }
-    listeners.get(type).delete(listener);
+  this.scene = new Scene();
+  this.render = () => {
+    this.webGLRenderer.render(this.scene, this.currentCamera);
+    return this;
+  };
+  const defalutCamera = new PerspectiveCamera();
+  defalutCamera.position.set(50, 50, 50);
+  defalutCamera.lookAt(0, 0, 0);
+  this.currentCamera = defalutCamera;
+  return true;
+};
+const SceneSupportPlugin = function(params) {
+  if (ScenePlugin.call(this, params)) {
+    const dataSupport = this.dataSupportManager.getDataSupport(MODULETYPE.RENDERER).getData();
+    dataSupport.scene = generateConfig(CONFIGTYPE.WEBGLRENDERER);
+    return true;
+  } else {
+    return false;
   }
-  dispatchEvent(event) {
-    var _a;
-    const type = event.type;
-    const listeners = this.listeners;
-    if (listeners.has(type)) {
-      try {
-        (_a = listeners.get(type)) == null ? void 0 : _a.forEach((listener) => {
-          listener.call(this, event);
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
-}
+};
 var RENDERERMANAGER;
 (function(RENDERERMANAGER2) {
   RENDERERMANAGER2["RENDER"] = "render";
@@ -1201,7 +1548,7 @@ class RenderManager extends EventDispatcher$1 {
 const RendererManagerPlugin = function() {
   if (this.renderManager) {
     console.warn("this has installed render manager plugin.");
-    return;
+    return false;
   }
   this.renderManager = new RenderManager();
   this.render && this.renderManager.addEventListener("render", this.render);
@@ -1217,6 +1564,7 @@ const RendererManagerPlugin = function() {
     this.renderManager.stop();
     return this;
   };
+  return true;
 };
 class VisOrbitControls extends OrbitControls {
   constructor(camera, domElement) {
@@ -1233,18 +1581,18 @@ class VisOrbitControls extends OrbitControls {
     return this;
   }
 }
-const OrbitControlsPlugin = function() {
+const OrbitControlsPlugin = function(params) {
   if (this.orbitControls) {
     console.warn("this has installed orbitControls plugin.");
-    return;
+    return false;
   }
   if (!this.webGLRenderer) {
     console.warn("this must install renderer before install orbitControls plugin.");
-    return;
+    return false;
   }
   if (!this.renderManager) {
     console.warn("this must install renderManager before install orbitControls plugin.");
-    return;
+    return false;
   }
   this.orbitControls = new VisOrbitControls(this.currentCamera, this.dom);
   this.addEventListener("setCamera", (event) => {
@@ -1276,6 +1624,16 @@ const OrbitControlsPlugin = function() {
     scene.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
       this.orbitControls.enableRotate = false;
     });
+  }
+  return true;
+};
+const OrbitControlsSupportPlugin = function(params) {
+  if (OrbitControlsPlugin.call(this, params)) {
+    const dataSupport = this.dataSupportManager.getDataSupport(MODULETYPE.CONTROLS).getData();
+    dataSupport[CONFIGTYPE$1.ORBITCONTROLS] = generateConfig(CONFIGTYPE$1.ORBITCONTROLS);
+    return true;
+  } else {
+    return false;
   }
 };
 class VisStats {
@@ -1314,11 +1672,11 @@ class VisStats {
 const StatsPlugin = function(params) {
   if (this.stats) {
     console.warn("this has installed stats plugin.");
-    return;
+    return false;
   }
   if (!this.renderManager) {
     console.warn("this must install renderManager before install orbitControls plugin.");
-    return;
+    return false;
   }
   const stats = new VisStats(params);
   this.stats = stats;
@@ -1336,15 +1694,16 @@ const StatsPlugin = function(params) {
   this.renderManager.addEventListener("render", () => {
     this.stats.update();
   });
+  return true;
 };
 const EffectComposerPlugin = function(params) {
   if (this.effectComposer) {
     console.warn("this has installed effect composer plugin.");
-    return;
+    return false;
   }
   if (!this.webGLRenderer) {
     console.error("must install some renderer before this plugin.");
-    return;
+    return false;
   }
   let composer;
   if (params == null ? void 0 : params.WebGLMultisampleRenderTarget) {
@@ -1361,11 +1720,9 @@ const EffectComposerPlugin = function(params) {
   let renderPass;
   if (this.scene) {
     renderPass = new RenderPass(this.scene, this.currentCamera);
-  } else if (this.modelingScene) {
-    renderPass = new RenderPass(this.modelingScene, this.currentCamera);
   } else {
     console.error(`composer con not found support scene plugin.`);
-    return;
+    return false;
   }
   composer.addPass(renderPass);
   this.addEventListener("setCamera", (event) => {
@@ -1379,12 +1736,14 @@ const EffectComposerPlugin = function(params) {
   }
   this.render = () => {
     this.effectComposer.render();
+    return this;
   };
   if (this.renderManager) {
     this.renderManager.addEventListener("render", (event) => {
       this.effectComposer.render(event.delta);
     });
   }
+  return true;
 };
 class PointerManager extends EventDispatcher {
   constructor(parameters) {
@@ -1449,16 +1808,17 @@ class PointerManager extends EventDispatcher {
 const PointerManagerPlugin = function(params) {
   if (this.pointerManager) {
     console.warn("this has installed pointerManager plugin.");
-    return;
+    return false;
   }
   if (!this.webGLRenderer) {
     console.error("must install some renderer before this plugin.");
-    return;
+    return false;
   }
   const pointerManager = new PointerManager(Object.assign(params || {}, {
     dom: this.dom
   }));
   this.pointerManager = pointerManager;
+  return true;
 };
 class EventManager extends EventDispatcher {
   constructor(parameters) {
@@ -1647,15 +2007,15 @@ class EventManager extends EventDispatcher {
 const EventManagerPlugin = function(params) {
   if (this.eventManager) {
     console.warn("engine has installed eventManager plugin.");
-    return;
+    return false;
   }
   if (!this.webGLRenderer) {
     console.error("must install some renderer before this plugin.");
-    return;
+    return false;
   }
   if (!this.pointerManager) {
     console.error("must install pointerManager before this plugin.");
-    return;
+    return false;
   }
   const eventManager = new EventManager(Object.assign({
     scene: this.scene,
@@ -1680,6 +2040,7 @@ const EventManagerPlugin = function(params) {
       }
     });
   }
+  return true;
 };
 var VISTRANSFORMEVENTTYPE;
 (function(VISTRANSFORMEVENTTYPE2) {
@@ -1802,22 +2163,22 @@ class VisTransformControls extends TransformControls {
     return this;
   }
 }
-const TransformControlsPlugin = function() {
+const TransformControlsPlugin = function(params) {
   if (this.transformControls) {
     console.warn("this has installed transformControls plugin.");
-    return;
+    return false;
   }
   if (!this.webGLRenderer) {
     console.warn("this must install renderer before install transformControls plugin.");
-    return;
+    return false;
   }
   if (!this.pointerManager) {
     console.warn("this must install pointerManager before install transformControls plugin.");
-    return;
+    return false;
   }
   if (!this.eventManager) {
     console.warn("this must install eventManager before install transformControls plugin.");
-    return;
+    return false;
   }
   const transformControls = new VisTransformControls(this.currentCamera, this.dom);
   this.transformControls = transformControls;
@@ -1848,6 +2209,79 @@ const TransformControlsPlugin = function() {
       transformControls.setAttach(objectList[0]);
     }
   });
+  return true;
+};
+const TransformControlsSupportPlugin = function(params) {
+  if (TransformControlsPlugin.call(this, params)) {
+    const dataSupport = this.dataSupportManager.getDataSupport(MODULETYPE.CONTROLS).getData();
+    dataSupport[CONFIGTYPE$1.TRNASFORMCONTROLS] = generateConfig(CONFIGTYPE$1.TRNASFORMCONTROLS);
+    return true;
+  } else {
+    return false;
+  }
+};
+const WebGLRendererPlugin = function(params) {
+  if (this.webGLRenderer) {
+    console.warn("this has installed webglRenderer plugin.");
+    return false;
+  }
+  this.webGLRenderer = new WebGLRenderer(params);
+  this.dom = this.webGLRenderer.domElement;
+  this.setSize = function(width, height) {
+    var _a, _b;
+    if (width && width <= 0 || height && height <= 0) {
+      console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
+      return this;
+    }
+    !width && (width = (_a = this.dom) == null ? void 0 : _a.offsetWidth);
+    !height && (height = (_b = this.dom) == null ? void 0 : _b.offsetHeight);
+    this.dispatchEvent({ type: "setSize", width, height });
+    return this;
+  };
+  this.setCamera = function setCamera(camera) {
+    this.currentCamera = camera;
+    this.dispatchEvent({
+      type: "setCamera",
+      camera
+    });
+    return this;
+  };
+  this.setDom = function(dom) {
+    this.dom = dom;
+    dom.appendChild(this.webGLRenderer.domElement);
+    return this;
+  };
+  this.addEventListener("setSize", (event) => {
+    const width = event.width;
+    const height = event.height;
+    this.webGLRenderer.setSize(width, height, true);
+    const camera = this.currentCamera;
+    if (camera) {
+      if (camera instanceof PerspectiveCamera) {
+        camera.aspect = event.width / event.height;
+        camera.updateProjectionMatrix();
+      } else if (camera instanceof OrthographicCamera) {
+        camera.left = -width / 16;
+        camera.right = width / 16;
+        camera.top = height / 16;
+        camera.bottom = -height / 16;
+        camera.updateProjectionMatrix();
+      }
+    }
+  });
+  this.addEventListener("dispose", () => {
+    this.webGLRenderer.dispose();
+  });
+  return true;
+};
+const WebGLRendererSupportPlugin = function(params) {
+  if (WebGLRendererPlugin.call(this, params)) {
+    const dataSupport = this.dataSupportManager.getDataSupport(MODULETYPE.RENDERER).getData();
+    dataSupport.WebGLRenderer = generateConfig(CONFIGTYPE.WEBGLRENDERER);
+    return true;
+  } else {
+    return false;
+  }
 };
 var EnginePlugin;
 (function(EnginePlugin2) {
@@ -1862,17 +2296,17 @@ var EnginePlugin;
   EnginePlugin2["EVENTMANAGER"] = "EventManager";
   EnginePlugin2["TRANSFORMCONTROLS"] = "TransformControls";
 })(EnginePlugin || (EnginePlugin = {}));
-let pluginHandler = new Map();
-pluginHandler.set("WebGLRenderer", WebGLRendererPlugin);
-pluginHandler.set("Scene", ScenePlugin);
-pluginHandler.set("ModelingScene", ModelingScenePlugin);
-pluginHandler.set("RenderManager", RendererManagerPlugin);
-pluginHandler.set("OrbitControls", OrbitControlsPlugin);
-pluginHandler.set("Stats", StatsPlugin);
-pluginHandler.set("EffectComposer", EffectComposerPlugin);
-pluginHandler.set("PointerManager", PointerManagerPlugin);
-pluginHandler.set("EventManager", EventManagerPlugin);
-pluginHandler.set("TransformControls", TransformControlsPlugin);
+let pluginHandler$1 = new Map();
+pluginHandler$1.set("WebGLRenderer", WebGLRendererPlugin);
+pluginHandler$1.set("Scene", ScenePlugin);
+pluginHandler$1.set("ModelingScene", ModelingScenePlugin);
+pluginHandler$1.set("RenderManager", RendererManagerPlugin);
+pluginHandler$1.set("OrbitControls", OrbitControlsPlugin);
+pluginHandler$1.set("Stats", StatsPlugin);
+pluginHandler$1.set("EffectComposer", EffectComposerPlugin);
+pluginHandler$1.set("PointerManager", PointerManagerPlugin);
+pluginHandler$1.set("EventManager", EventManagerPlugin);
+pluginHandler$1.set("TransformControls", TransformControlsPlugin);
 const _Engine = class extends EventDispatcher {
   constructor() {
     super();
@@ -1926,7 +2360,7 @@ const _Engine = class extends EventDispatcher {
   }
 };
 let Engine = _Engine;
-__publicField(Engine, "pluginHandler", pluginHandler);
+__publicField(Engine, "pluginHandler", pluginHandler$1);
 __publicField(Engine, "register", function(name, handler) {
   _Engine.pluginHandler && _Engine.pluginHandler.set(name, handler);
 });
@@ -2108,6 +2542,10 @@ class DataSupport {
     this.data = data;
     return this;
   }
+  proxyData(data) {
+    this.data = this.broadcast.proxyExtends(data);
+    return this.data;
+  }
   addCompiler(compiler) {
     compiler.setTarget(this.data);
     compiler.compileAll();
@@ -2165,1484 +2603,6 @@ class ModelDataSupport extends DataSupport {
   constructor(data) {
     !data && (data = {});
     super(ModelRule, data);
-  }
-}
-var COMPILEREVENTTYPE;
-(function(COMPILEREVENTTYPE2) {
-  COMPILEREVENTTYPE2["ADD"] = "add";
-  COMPILEREVENTTYPE2["REMOVE"] = "remove";
-})(COMPILEREVENTTYPE || (COMPILEREVENTTYPE = {}));
-class Compiler extends EventDispatcher$1 {
-  static applyConfig(config, object, callBack) {
-    const filterMap = {
-      vid: true,
-      type: true
-    };
-    const recursiveConfig = (config2, object2) => {
-      for (const key in config2) {
-        if (typeof config2[key] === "object" && typeof config2[key] !== null && isValidKey(key, object2)) {
-          recursiveConfig(config2[key], object2[key]);
-        } else {
-          if (isValidKey(key, object2) && !filterMap[key]) {
-            object2[key] = config2[key];
-          }
-        }
-      }
-    };
-    recursiveConfig(config, object);
-    callBack && callBack();
-  }
-  constructor() {
-    super();
-  }
-}
-class CameraCompiler extends Compiler {
-  constructor(parameters) {
-    super();
-    __publicField(this, "target");
-    __publicField(this, "scene");
-    __publicField(this, "engine");
-    __publicField(this, "map");
-    __publicField(this, "constructMap");
-    __publicField(this, "objectMapSet");
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-      parameters.scene && (this.scene = parameters.scene);
-      parameters.engine && (this.engine = parameters.engine);
-    } else {
-      this.scene = new Scene();
-      this.target = {};
-      this.engine = new ModelingEngine();
-    }
-    this.map = new Map();
-    const constructMap = new Map();
-    constructMap.set("PerspectiveCamera", () => new PerspectiveCamera());
-    constructMap.set("OrthographicCamera", () => new OrthographicCamera(0, 0, 0, 0));
-    this.constructMap = constructMap;
-    this.objectMapSet = new Set();
-  }
-  setLookAt(vid, target) {
-    if (vid === target) {
-      console.error(`can not set object lookAt itself.`);
-      return this;
-    }
-    const camera = this.map.get(vid);
-    const userData = camera.userData;
-    if (!target) {
-      if (!userData.updateMatrixWorldFun) {
-        return this;
-      }
-      camera.updateMatrixWorld = userData.updateMatrixWorldFun;
-      userData.lookAtTarget = void 0;
-      userData.updateMatrixWorldFun = void 0;
-      return this;
-    }
-    let lookAtTarget = void 0;
-    for (const map of this.objectMapSet) {
-      if (map.has(target)) {
-        lookAtTarget = map.get(target);
-        break;
-      }
-    }
-    if (!lookAtTarget) {
-      console.warn(`camera compiler can not found this vid mapping object in objectMapSet: '${vid}'`);
-      return this;
-    }
-    const updateMatrixWorldFun = camera.updateMatrixWorld;
-    userData.updateMatrixWorldFun = updateMatrixWorldFun;
-    userData.lookAtTarget = lookAtTarget.position;
-    camera.updateMatrixWorld = (focus) => {
-      updateMatrixWorldFun.bind(camera)(focus);
-      camera.lookAt(userData.lookAtTarget);
-    };
-    return this;
-  }
-  setAdaptiveWindow(vid, value) {
-    if (!validate(vid)) {
-      console.error(`camera compiler adaptive window vid is illeage: '${vid}'`);
-      return this;
-    }
-    if (!this.map.has(vid)) {
-      console.warn(`camera compiler can not found this vid camera: '${vid}'`);
-      return this;
-    }
-    const camera = this.map.get(vid);
-    if (!value) {
-      if (camera.userData.setSizeFun && this.engine.hasEventListener("setSize", camera.userData.setSizeFun)) {
-        this.engine.removeEventListener("setSize", camera.userData.setSizeFun);
-        camera.userData.setSizeFun = void 0;
-        return this;
-      }
-      if (!camera.userData.setSizeFun && !this.engine.hasEventListener("setSize", camera.userData.setSizeFun)) {
-        return this;
-      }
-      if (camera.userData.setSizeFun && !this.engine.hasEventListener("setSize", camera.userData.setSizeFun)) {
-        camera.userData.setSizeFun = void 0;
-        return this;
-      }
-    }
-    if (value) {
-      if (camera.userData.setSizeFun && this.engine.hasEventListener("setSize", camera.userData.setSizeFun)) {
-        return this;
-      }
-      if (!this.engine.hasEventListener("setSize", camera.userData.setSizeFun) && camera.userData.setSizeFun) {
-        this.engine.addEventListener("setSize", camera.userData.setSizeFun);
-        return this;
-      }
-      let setSizeFun = (event) => {
-      };
-      if (camera instanceof PerspectiveCamera) {
-        setSizeFun = (event) => {
-          camera.aspect = event.width / event.height;
-          camera.updateProjectionMatrix();
-        };
-      } else if (camera instanceof OrthographicCamera) {
-        setSizeFun = (event) => {
-          const width = event.width;
-          const height = event.height;
-          camera.left = -width / 16;
-          camera.right = width / 16;
-          camera.top = height / 16;
-          camera.bottom = -height / 16;
-        };
-      } else {
-        console.warn(`camera compiler can not support this class camera:`, camera);
-      }
-      this.engine.addEventListener("setSize", setSizeFun);
-      const domElement = this.engine.webGLRenderer.domElement;
-      setSizeFun({
-        type: "setSize",
-        width: domElement.offsetWidth,
-        height: domElement.offsetHeight
-      });
-    }
-    return this;
-  }
-  linkObjectMap(map) {
-    if (!this.objectMapSet.has(map)) {
-      this.objectMapSet.add(map);
-    }
-    return this;
-  }
-  add(vid, config) {
-    if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const camera = this.constructMap.get(config.type)();
-        const tempConfig = JSON.parse(JSON.stringify(config));
-        delete tempConfig.vid;
-        delete tempConfig.type;
-        delete tempConfig.lookAt;
-        delete tempConfig.adaptiveWindow;
-        Compiler.applyConfig(tempConfig, camera);
-        if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
-          camera.updateProjectionMatrix();
-        }
-        this.map.set(vid, camera);
-        this.setLookAt(config.vid, config.lookAt);
-        this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
-        this.dispatchEvent({
-          type: COMPILEREVENTTYPE.ADD,
-          object: camera,
-          vid
-        });
-        this.scene.add(camera);
-      }
-    } else {
-      console.error(`camera vid parameter is illegal: ${vid}`);
-    }
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!validate(vid)) {
-      console.warn(`camera compiler set function vid parameters is illeage: '${vid}'`);
-      return this;
-    }
-    if (!this.map.has(vid)) {
-      console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
-      return this;
-    }
-    if (key === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-    if (key === "adaptiveWindow") {
-      return this.setAdaptiveWindow(vid, value);
-    }
-    const camera = this.map.get(vid);
-    let config = camera;
-    path.forEach((key2, i, arr) => {
-      config = camera[key2];
-    });
-    config[key] = value;
-    if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
-      camera.updateProjectionMatrix();
-    }
-    return this;
-  }
-  remove() {
-  }
-  setEngine(engine) {
-    this.engine = engine;
-    return this;
-  }
-  setScene(scene) {
-    this.scene = scene;
-    return this;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  getMap() {
-    return this.map;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const key in target) {
-      this.add(key, target[key]);
-    }
-    return this;
-  }
-  dispose() {
-    return this;
-  }
-}
-var MODULETYPE;
-(function(MODULETYPE2) {
-  MODULETYPE2["CAMERA"] = "camera";
-  MODULETYPE2["LIGHT"] = "light";
-  MODULETYPE2["GEOMETRY"] = "geometry";
-  MODULETYPE2["MODEL"] = "model";
-  MODULETYPE2["TEXTURE"] = "texture";
-  MODULETYPE2["MATERIAL"] = "material";
-  MODULETYPE2["RENDERER"] = "renderer";
-  MODULETYPE2["SCENE"] = "scene";
-  MODULETYPE2["SPRITE"] = "sprite";
-  MODULETYPE2["STRUCTURE"] = "structure";
-  MODULETYPE2["CONTROLS"] = "controls";
-})(MODULETYPE || (MODULETYPE = {}));
-var OBJECTEVENT;
-(function(OBJECTEVENT2) {
-  OBJECTEVENT2["ACTIVE"] = "active";
-  OBJECTEVENT2["HOVER"] = "hover";
-})(OBJECTEVENT || (OBJECTEVENT = {}));
-const getTransformControlsConfig = function() {
-  return {
-    vid: "TransformControls",
-    type: "TransformControls",
-    axis: "XYZ",
-    enabled: true,
-    mode: "translate",
-    snapAllow: false,
-    rotationSnap: Math.PI / 180 * 10,
-    translationSnap: 5,
-    scaleSnap: 0.1,
-    showX: true,
-    showY: true,
-    showZ: true,
-    size: 1,
-    space: "world"
-  };
-};
-class ControlsCompiler extends Compiler {
-  constructor(parameters) {
-    super();
-    __publicField(this, "target");
-    __publicField(this, "transformControls");
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-      parameters.transformControls && (this.transformControls = parameters.transformControls);
-    } else {
-      this.target = {
-        TransformControls: getTransformControlsConfig()
-      };
-      this.transformControls = new TransformControls(new Camera());
-    }
-  }
-  set(type, path, key, value) {
-    if (type === "TransformControls") {
-      const controls = this.transformControls;
-      if (key === "snapAllow") {
-        const config = this.target["TransformControls"];
-        if (value) {
-          controls.translationSnap = config.translationSnap;
-          controls.rotationSnap = config.rotationSnap;
-          controls.scaleSnap = config.scaleSnap;
-        } else {
-          controls.translationSnap = null;
-          controls.rotationSnap = null;
-          controls.scaleSnap = null;
-        }
-        return this;
-      }
-      controls[key] = value;
-    } else {
-      console.warn(`controls compiler can not support this controls: '${type}'`);
-      return this;
-    }
-    return this;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  compileAll() {
-    return this;
-  }
-  dispose(parameter) {
-    return this;
-  }
-}
-class LoadGeometry extends BufferGeometry {
-  constructor(geometry) {
-    super();
-    __publicField(this, "type", "LoadBufferGeometry");
-    geometry && this.copy(geometry);
-  }
-}
-const _GeometryCompiler = class extends Compiler {
-  constructor(parameters) {
-    super();
-    __publicField(this, "target");
-    __publicField(this, "map");
-    __publicField(this, "constructMap");
-    __publicField(this, "resourceMap");
-    __publicField(this, "replaceGeometry");
-    this.target = parameters.target;
-    this.map = new Map();
-    const constructMap = new Map();
-    constructMap.set("BoxGeometry", (config) => {
-      return _GeometryCompiler.transfromAnchor(new BoxBufferGeometry(config.width, config.height, config.depth, config.widthSegments, config.heightSegments, config.depthSegments), config);
-    });
-    constructMap.set("SphereGeometry", (config) => {
-      return _GeometryCompiler.transfromAnchor(new SphereBufferGeometry(config.radius, config.widthSegments, config.heightSegments, config.phiStart, config.phiLength, config.thetaStart, config.thetaLength), config);
-    });
-    constructMap.set("LoadGeometry", (config) => {
-      return _GeometryCompiler.transfromAnchor(new LoadGeometry(this.getRescource(config.url)), config);
-    });
-    this.constructMap = constructMap;
-    this.resourceMap = new Map();
-    this.replaceGeometry = new BoxBufferGeometry(10, 10, 10);
-  }
-  linkRescourceMap(map) {
-    this.resourceMap = map;
-    return this;
-  }
-  getRescource(url) {
-    if (!this.resourceMap.has(url)) {
-      console.error(`rescoure can not found url: ${url}`);
-      return this.replaceGeometry.clone();
-    }
-    if (this.resourceMap.has(url) && this.resourceMap.get(url) instanceof BufferGeometry) {
-      const geometry = this.resourceMap.get(url);
-      return geometry.clone();
-    } else {
-      console.error(`url mapping rescource is not class with BufferGeometry: ${url}`);
-      return this.replaceGeometry.clone();
-    }
-  }
-  getMap() {
-    return this.map;
-  }
-  setTarget() {
-    return this;
-  }
-  add(vid, config) {
-    if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const geometry = this.constructMap.get(config.type)(config);
-        this.map.set(vid, geometry);
-      }
-    } else {
-      console.error(`geometry vid parameter is illegal: ${vid}`);
-    }
-    return this;
-  }
-  set(vid, path, value) {
-    if (!validate(vid)) {
-      console.warn(`geometry compiler set function vid parameters is illeage: '${vid}'`);
-      return this;
-    }
-    if (!this.map.has(vid)) {
-      console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
-      return this;
-    }
-    const currentGeometry = this.map.get(vid);
-    const config = this.target[vid];
-    const newGeometry = this.constructMap.get(config.type)(config);
-    currentGeometry.copy(newGeometry);
-    currentGeometry.uuid = newGeometry.uuid;
-    newGeometry.dispose();
-    return this;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const key in target) {
-      this.add(key, target[key]);
-    }
-    return this;
-  }
-  dispose() {
-    return this;
-  }
-};
-let GeometryCompiler = _GeometryCompiler;
-__publicField(GeometryCompiler, "transfromAnchor", function(geometry, config) {
-  geometry.center();
-  !geometry.boundingBox && geometry.computeBoundingBox();
-  const box = geometry.boundingBox;
-  const position = config.position;
-  const rotation = config.rotation;
-  const scale = config.scale;
-  const materix = new Matrix4();
-  const vPostion = new Vector3((box.max.x - box.min.x) / 2 * position.x, (box.max.y - box.min.y) / 2 * position.y, (box.max.z - box.min.z) / 2 * position.z);
-  const quaternion = new Quaternion().setFromEuler(new Euler(rotation.x, rotation.y, rotation.z, "XYZ"));
-  const vScale = new Vector3(scale.x, scale.y, scale.z);
-  materix.compose(vPostion, quaternion, vScale);
-  geometry.applyMatrix4(materix);
-  return geometry;
-});
-class LightCompiler extends Compiler {
-  constructor(parameters) {
-    super();
-    __publicField(this, "scene");
-    __publicField(this, "target");
-    __publicField(this, "map");
-    __publicField(this, "constructMap");
-    this.scene = parameters.scene;
-    this.target = parameters.target;
-    this.map = new Map();
-    this.constructMap = new Map();
-    this.constructMap.set("PointLight", () => new PointLight());
-    this.constructMap.set("SpotLight", () => new SpotLight());
-    this.constructMap.set("AmbientLight", () => new AmbientLight());
-  }
-  add(vid, config) {
-    if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const light = this.constructMap.get(config.type)();
-        Compiler.applyConfig(config, light);
-        light.color = new Color(config.color);
-        this.map.set(vid, light);
-        this.dispatchEvent({
-          type: COMPILEREVENTTYPE.ADD,
-          object: light,
-          vid
-        });
-        this.scene.add(light);
-      }
-    } else {
-      console.error(`vid parameter is illegal: ${vid}`);
-    }
-  }
-  set(path, key, value) {
-    const vid = path.shift();
-    if (validate(vid) && this.map.has(vid)) {
-      let config = this.map.get(vid);
-      path.forEach((key2, i, arr) => {
-        config = config[key2];
-      });
-      config[key] = value;
-    } else {
-      console.error(`vid parameter is illegal: ${vid} or can not found this vid light`);
-    }
-  }
-  remove() {
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  getMap() {
-    return this.map;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const key in target) {
-      this.add(key, target[key]);
-    }
-    return this;
-  }
-  dispose() {
-    return this;
-  }
-}
-class MaterialCompiler extends Compiler {
-  constructor(parameters) {
-    super();
-    __publicField(this, "target");
-    __publicField(this, "map");
-    __publicField(this, "constructMap");
-    __publicField(this, "mapAttribute");
-    __publicField(this, "colorAttribute");
-    __publicField(this, "texturelMap");
-    __publicField(this, "resourceMap");
-    __publicField(this, "cachaColor");
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-    } else {
-      this.target = {};
-    }
-    this.map = new Map();
-    this.texturelMap = new Map();
-    this.resourceMap = new Map();
-    this.cachaColor = new Color();
-    const constructMap = new Map();
-    constructMap.set("MeshStandardMaterial", () => new MeshStandardMaterial());
-    this.constructMap = constructMap;
-    this.colorAttribute = {
-      "color": true,
-      "emissive": true
-    };
-    this.mapAttribute = {
-      "roughnessMap": true,
-      "normalMap": true,
-      "metalnessMap": true,
-      "map": true,
-      "lightMap": true,
-      "envMap": true,
-      "emissiveMap": true,
-      "displacementMap": true,
-      "bumpMap": true,
-      "alphaMap": true,
-      "aoMap": true
-    };
-  }
-  linkRescourceMap(map) {
-    this.resourceMap = map;
-    return this;
-  }
-  linkTextureMap(textureMap) {
-    this.texturelMap = textureMap;
-    return this;
-  }
-  add(vid, config) {
-    if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const material = this.constructMap.get(config.type)();
-        const tempConfig = JSON.parse(JSON.stringify(config));
-        delete tempConfig.type;
-        delete tempConfig.vid;
-        const colorAttribute = this.colorAttribute;
-        for (const key in colorAttribute) {
-          if (tempConfig[key]) {
-            material[key] = new Color(tempConfig[key]);
-            delete tempConfig[key];
-          }
-        }
-        const mapAttribute = this.mapAttribute;
-        for (const key in mapAttribute) {
-          if (tempConfig[key]) {
-            material[key] = this.getTexture(tempConfig[key]);
-            delete tempConfig[key];
-          }
-        }
-        Compiler.applyConfig(tempConfig, material);
-        material.needsUpdate = true;
-        this.map.set(vid, material);
-      } else {
-        console.warn(`material compiler can not support this type: ${config.type}`);
-      }
-    } else {
-      console.error(`material vid parameter is illegal: ${vid}`);
-    }
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!validate(vid)) {
-      console.warn(`material compiler set function: vid is illeage: '${vid}'`);
-      return this;
-    }
-    if (!this.map.has(vid)) {
-      console.warn(`material compiler set function: can not found material which vid is: '${vid}'`);
-      return this;
-    }
-    const material = this.map.get(vid);
-    if (this.colorAttribute[key]) {
-      material[key] = new Color(value);
-      return this;
-    }
-    if (this.mapAttribute[key]) {
-      material[key] = this.getTexture(value);
-      material.needsUpdate = true;
-      return this;
-    }
-    let config = material;
-    path.forEach((key2, i, arr) => {
-      config = config[key2];
-    });
-    config[key] = value;
-    return this;
-  }
-  getTexture(vid) {
-    if (this.texturelMap.has(vid)) {
-      const texture = this.texturelMap.get(vid);
-      if (texture instanceof Texture) {
-        return texture;
-      } else {
-        console.error(`this object which mapped by vid is not instance of Texture: ${vid}`);
-        return null;
-      }
-    } else {
-      console.error(`texture map can not found this vid: ${vid}`);
-      return null;
-    }
-  }
-  getMap() {
-    return this.map;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const key in target) {
-      this.add(key, target[key]);
-    }
-    return this;
-  }
-  dispose() {
-    return this;
-  }
-}
-class ModelCompiler extends Compiler {
-  constructor(parameters) {
-    super();
-    __publicField(this, "scene");
-    __publicField(this, "target");
-    __publicField(this, "map");
-    __publicField(this, "constructMap");
-    __publicField(this, "geometryMap");
-    __publicField(this, "materialMap");
-    __publicField(this, "objectMapSet");
-    __publicField(this, "getReplaceMaterial");
-    __publicField(this, "getReplaceGeometry");
-    if (parameters) {
-      parameters.scene && (this.scene = parameters.scene);
-      parameters.target && (this.target = parameters.target);
-      parameters.geometryMap && (this.geometryMap = parameters.geometryMap);
-      parameters.materialMap && (this.materialMap = parameters.materialMap);
-    } else {
-      this.scene = new Scene();
-      this.target = {};
-      this.geometryMap = new Map();
-      this.materialMap = new Map();
-    }
-    this.map = new Map();
-    this.getReplaceMaterial = () => new MeshStandardMaterial({ color: "rgb(150, 150, 150)" });
-    this.getReplaceGeometry = () => new BoxBufferGeometry(10, 10, 10);
-    const constructMap = new Map();
-    constructMap.set("Mesh", (config) => new Mesh(this.getGeometry(config.geometry), this.getMaterial(config.material)));
-    constructMap.set("Line", (config) => new Line(this.getGeometry(config.geometry), this.getMaterial(config.material)));
-    constructMap.set("Points", (config) => new Points(this.getGeometry(config.geometry), this.getMaterial(config.material)));
-    this.constructMap = constructMap;
-    this.objectMapSet = new Set();
-  }
-  getMaterial(vid) {
-    if (validate(vid)) {
-      if (this.materialMap.has(vid)) {
-        return this.materialMap.get(vid);
-      } else {
-        console.warn(`can not found material which vid: ${vid}`);
-        return this.getReplaceMaterial();
-      }
-    } else {
-      console.warn(`material vid parameter is illegal: ${vid}`);
-      return this.getReplaceMaterial();
-    }
-  }
-  getGeometry(vid) {
-    if (validate(vid)) {
-      if (this.geometryMap.has(vid)) {
-        return this.geometryMap.get(vid);
-      } else {
-        console.warn(`can not found geometry which vid: ${vid}`);
-        return this.getReplaceGeometry();
-      }
-    } else {
-      console.warn(`geometry vid parameter is illegal: ${vid}`);
-      return this.getReplaceGeometry();
-    }
-  }
-  setLookAt(vid, target) {
-    if (vid === target) {
-      console.error(`can not set object lookAt itself.`);
-      return this;
-    }
-    const model = this.map.get(vid);
-    const userData = model.userData;
-    if (!target) {
-      if (!userData.updateMatrixWorldFun) {
-        return this;
-      }
-      model.updateMatrixWorld = userData.updateMatrixWorldFun;
-      userData.lookAtTarget = null;
-      userData.updateMatrixWorldFun = null;
-      return this;
-    }
-    let lookAtTarget = null;
-    for (const map of this.objectMapSet) {
-      if (map.has(target)) {
-        lookAtTarget = map.get(target);
-        break;
-      }
-    }
-    if (!lookAtTarget) {
-      console.warn(`model compiler can not found this vid mapping object in objectMapSet: '${vid}'`);
-      return this;
-    }
-    const updateMatrixWorldFun = model.updateMatrixWorld;
-    userData.updateMatrixWorldFun = updateMatrixWorldFun;
-    userData.lookAtTarget = lookAtTarget.position;
-    model.updateMatrixWorld = (focus) => {
-      updateMatrixWorldFun.bind(model)(focus);
-      model.lookAt(userData.lookAtTarget);
-    };
-    return this;
-  }
-  setMaterial(vid, target) {
-    this.map.get(vid).material = this.getMaterial(target);
-    this.dispatchEvent({
-      type: MODELCOMPILER.SETMATERIAL,
-      object: this.map.get(vid)
-    });
-    return this;
-  }
-  add(vid, config) {
-    if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const object = this.constructMap.get(config.type)(config);
-        const tempConfig = JSON.parse(JSON.stringify(config));
-        delete tempConfig.vid;
-        delete tempConfig.type;
-        delete tempConfig.geometry;
-        delete tempConfig.material;
-        delete tempConfig.lookAt;
-        Compiler.applyConfig(tempConfig, object);
-        this.map.set(vid, object);
-        this.setLookAt(vid, config.lookAt);
-        this.dispatchEvent({
-          type: COMPILEREVENTTYPE.ADD,
-          object,
-          vid
-        });
-        this.scene.add(object);
-      }
-    } else {
-      console.warn(`model compiler add function: model vid parameter is illegal: ${vid}`);
-    }
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!validate(vid)) {
-      console.warn(`model compiler vid is illegal: '${vid}'`);
-      return this;
-    }
-    if (!this.map.has(vid)) {
-      console.warn(`model compiler can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    if (key === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-    if (key === "material") {
-      return this.setMaterial(vid, value);
-    }
-    let config = this.map.get(vid);
-    path.forEach((key2, i, arr) => {
-      config = config[key2];
-    });
-    config[key] = value;
-    return this;
-  }
-  remove() {
-  }
-  linkGeometryMap(map) {
-    this.geometryMap = map;
-    return this;
-  }
-  linkMaterialMap(materialMap) {
-    this.materialMap = materialMap;
-    return this;
-  }
-  linkObjectMap(map) {
-    if (!this.objectMapSet.has(map)) {
-      this.objectMapSet.add(map);
-    }
-    return this;
-  }
-  setScene(scene) {
-    this.scene = scene;
-    return this;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  getMap() {
-    return this.map;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const key in target) {
-      this.add(key, target[key]);
-    }
-    return this;
-  }
-  dispose() {
-    return this;
-  }
-}
-const getWebGLRendererConfig = function() {
-  return {
-    vid: "WebGLRenderer",
-    type: "WebGLRenderer",
-    clearColor: "rgba(0, 0, 0, 0)",
-    outputEncoding: LinearEncoding,
-    physicallyCorrectLights: false,
-    shadowMap: {
-      enabled: false,
-      autoUpdate: true,
-      type: PCFShadowMap
-    },
-    toneMapping: NoToneMapping,
-    toneMappingExposure: 1,
-    pixelRatio: window.devicePixelRatio,
-    adaptiveCamera: false,
-    viewport: null,
-    scissor: null,
-    size: null
-  };
-};
-class RendererCompiler extends Compiler {
-  constructor(parameters) {
-    super();
-    __publicField(this, "target");
-    __publicField(this, "glRenderer");
-    __publicField(this, "engine");
-    __publicField(this, "glRendererCacheData");
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-      parameters.glRenderer && (this.glRenderer = parameters.glRenderer);
-      parameters.engine && (this.engine = parameters.engine);
-    } else {
-      this.target = {
-        WebGLRenderer: getWebGLRendererConfig()
-      };
-      this.glRenderer = new WebGLRenderer();
-    }
-    this.glRendererCacheData = {};
-  }
-  setClearColor(value) {
-    const alpha = Number(value.slice(0, -1).split(",").pop().trim());
-    this.glRenderer.setClearColor(value, alpha);
-    this.glRenderer.clear();
-    return this;
-  }
-  setPixelRatio(value) {
-    this.glRenderer.setPixelRatio(value);
-    this.glRenderer.clear();
-    return this;
-  }
-  setSize(vector2) {
-    const glRenderer = this.glRenderer;
-    if (vector2) {
-      glRenderer.setSize(vector2.x, vector2.y);
-    } else {
-      const domElement = glRenderer.domElement;
-      glRenderer.setSize(domElement.offsetWidth, domElement.offsetHeight);
-    }
-    return this;
-  }
-  setViewpoint(config) {
-    const glRenderer = this.glRenderer;
-    if (config) {
-      glRenderer.setViewport(config.x, config.y, config.width, config.height);
-    } else {
-      const domElement = glRenderer.domElement;
-      glRenderer.setViewport(0, 0, domElement.offsetWidth, domElement.offsetHeight);
-    }
-    return this;
-  }
-  setScissor(config) {
-    const glRenderer = this.glRenderer;
-    if (config) {
-      glRenderer.setScissorTest(true);
-      glRenderer.setScissor(config.x, config.y, config.width, config.height);
-    } else {
-      glRenderer.setScissorTest(false);
-      const domElement = glRenderer.domElement;
-      glRenderer.setScissor(0, 0, domElement.offsetWidth, domElement.offsetHeight);
-    }
-    return this;
-  }
-  setAdaptiveCamera(value) {
-    if (!this.engine) {
-      console.warn(`renderer compiler is not set engine.`);
-      return this;
-    }
-    const glRenderer = this.glRenderer;
-    const engine = this.engine;
-    const renderManager = engine.renderManager;
-    if (!value) {
-      if (!this.glRendererCacheData.adaptiveCameraFun) {
-        return this;
-      }
-      if (this.glRendererCacheData.adaptiveCameraFun) {
-        renderManager.removeEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun);
-        this.glRendererCacheData.adaptiveCameraFun = void 0;
-        return this;
-      }
-    }
-    if (value) {
-      if (this.glRendererCacheData.adaptiveCameraFun) {
-        renderManager.addEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun);
-        return this;
-      }
-      const adaptiveCameraFun = (event) => {
-        const camera = engine.currentCamera;
-        const domWidth = glRenderer.domElement.offsetWidth;
-        const domHeight = glRenderer.domElement.offsetHeight;
-        let width = 0;
-        let height = 0;
-        let offsetX = 0;
-        let offsetY = 0;
-        let aspect = 0;
-        if (camera instanceof PerspectiveCamera) {
-          aspect = camera.aspect;
-        } else if (camera instanceof OrthographicCamera) {
-          width = camera.right - camera.left;
-          height = camera.top - camera.bottom;
-          aspect = width / height;
-        } else {
-          console.warn(`renderer compiler can not support this camera`, camera);
-          return;
-        }
-        if (aspect >= 1) {
-          width = domWidth;
-          height = width / aspect;
-          offsetY = domHeight / 2 - height / 2;
-        } else {
-          height = domHeight;
-          width = height * aspect;
-          offsetX = domWidth / 2 - width / 2;
-        }
-        glRenderer.setScissor(offsetX, offsetY, width, height);
-        glRenderer.setViewport(offsetX, offsetY, width, height);
-        glRenderer.setScissorTest(true);
-      };
-      this.glRendererCacheData.adaptiveCameraFun = adaptiveCameraFun;
-      renderManager.addEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun);
-    }
-    return this;
-  }
-  set(path, key, value) {
-    const rendererType = path.shift();
-    if (rendererType === "WebGLRenderer") {
-      const glRendererTarget = this.target.WebGLRenderer;
-      const actionMap = {
-        clearColor: () => this.setClearColor(value),
-        pixelRatio: () => this.setPixelRatio(value),
-        size: () => this.setSize(glRendererTarget.size),
-        viewport: () => this.setViewpoint(glRendererTarget.viewport),
-        scissor: () => this.setScissor(glRendererTarget.scissor),
-        adaptiveCamera: () => this.setAdaptiveCamera(value)
-      };
-      if (actionMap[path[0] || key]) {
-        actionMap[path[0] || key]();
-        return this;
-      }
-      const glRenderer = this.glRenderer;
-      let config = glRenderer;
-      path.forEach((key2, i, arr) => {
-        config = config[key2];
-      });
-      config[key] = value;
-      glRenderer.clear();
-      return this;
-    } else {
-      console.warn(`renderer compiler can not support this type: ${rendererType}`);
-      return this;
-    }
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  compileAll() {
-    const target = this.target;
-    const glRendererTarget = target.WebGLRenderer;
-    this.setClearColor(glRendererTarget.clearColor);
-    this.setPixelRatio(glRendererTarget.pixelRatio);
-    this.setSize(glRendererTarget.size);
-    this.setViewpoint(glRendererTarget.viewport);
-    this.setScissor(glRendererTarget.scissor);
-    this.setAdaptiveCamera(glRendererTarget.adaptiveCamera);
-    const otherConfig = JSON.parse(JSON.stringify(glRendererTarget));
-    delete otherConfig.vid;
-    delete otherConfig.type;
-    delete otherConfig.clearColor;
-    delete otherConfig.pixelRatio;
-    delete otherConfig.size;
-    delete otherConfig.viewport;
-    delete otherConfig.scissor;
-    delete otherConfig.adaptiveCamera;
-    Compiler.applyConfig(otherConfig, this.glRenderer);
-    this.glRenderer.clear();
-    return this;
-  }
-  dispose() {
-    return this;
-  }
-}
-const getSceneConfig = function() {
-  return {
-    vid: "Scene",
-    type: "Scene",
-    background: "",
-    environment: "",
-    fog: null
-  };
-};
-class SceneCompiler extends Compiler {
-  constructor(parameters) {
-    super();
-    __publicField(this, "textureMap");
-    __publicField(this, "target");
-    __publicField(this, "scene");
-    __publicField(this, "fogCache");
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-      parameters.scene && (this.scene = parameters.scene);
-    } else {
-      this.target = {
-        scene: getSceneConfig()
-      };
-      this.scene = new Scene();
-    }
-    this.textureMap = new Map();
-    this.fogCache = null;
-  }
-  background(value) {
-    if (!value) {
-      this.scene.background = null;
-      return;
-    }
-    if (validate(value)) {
-      if (this.textureMap.has(value)) {
-        this.scene.background = this.textureMap.get(value);
-      } else {
-        console.warn(`scene compiler can not found this vid texture : '${value}'`);
-      }
-    } else {
-      this.scene.background = new Color(value);
-    }
-  }
-  environment(value) {
-    if (!value) {
-      this.scene.environment = null;
-      return;
-    }
-    if (validate(value)) {
-      if (this.textureMap.has(value)) {
-        this.scene.environment = this.textureMap.get(value);
-      } else {
-        console.warn(`scene compiler can not found this vid texture : '${value}'`);
-      }
-    } else {
-      console.warn(`this vid is illegal: '${value}'`);
-    }
-  }
-  fog(config) {
-    if (!config) {
-      this.scene.fog = null;
-      return;
-    }
-    if (config.type === "Fog") {
-      if (this.fogCache instanceof Fog) {
-        const fog = this.fogCache;
-        fog.color = new Color(config.color);
-        fog.near = config.near;
-        fog.far = config.far;
-      } else {
-        this.scene.fog = new Fog(config.color, config.near, config.far);
-        this.fogCache = this.scene.fog;
-      }
-    } else if (config.type === "FogExp2") {
-      if (this.fogCache instanceof FogExp2) {
-        const fog = this.fogCache;
-        fog.color = new Color(config.color);
-        fog.density = config.density;
-      } else {
-        this.scene.fog = new FogExp2(config.color, config.density);
-        this.fogCache = this.scene.fog;
-      }
-    } else {
-      console.warn(`scene compiler can not support this type fog:'${config.type}'`);
-    }
-  }
-  linkTextureMap(map) {
-    this.textureMap = map;
-    return this;
-  }
-  set(path, key, value) {
-    const sceneType = path.shift();
-    if (sceneType === "scene") {
-      const attribute = path[0];
-      const actionMap = {
-        background: () => this.background(value),
-        environment: () => this.environment(value),
-        fog: () => this.fog(this.target.scene.fog)
-      };
-      actionMap[attribute]();
-      return this;
-    } else {
-      console.warn(`scene compiler can not support this type: ${sceneType}`);
-      return this;
-    }
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  compileAll() {
-    const sceneTarget = this.target.scene;
-    this.background(sceneTarget.background);
-    this.environment(sceneTarget.environment);
-    this.fog(sceneTarget.fog);
-    return this;
-  }
-  dispose() {
-    return this;
-  }
-}
-class ImageTexture extends Texture {
-  constructor(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding) {
-    super(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding);
-  }
-}
-class TextureCompiler extends Compiler {
-  constructor(parameters) {
-    super();
-    __publicField(this, "target");
-    __publicField(this, "map");
-    __publicField(this, "constructMap");
-    __publicField(this, "resourceMap");
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-    } else {
-      this.target = {};
-    }
-    this.map = new Map();
-    this.resourceMap = new Map();
-    const constructMap = new Map();
-    constructMap.set("ImageTexture", () => new ImageTexture());
-    this.constructMap = constructMap;
-  }
-  getResource(url) {
-    const resourceMap = this.resourceMap;
-    if (resourceMap.has(url)) {
-      const resource = resourceMap.get(url);
-      if (resource instanceof HTMLImageElement || resource instanceof HTMLCanvasElement || resource instanceof HTMLVideoElement) {
-        return resource;
-      } else {
-        console.error(`this url mapping resource is not a texture image class: ${url}`);
-        return null;
-      }
-    } else {
-      console.warn(`resource can not font url: ${url}`);
-      return null;
-    }
-  }
-  linkRescourceMap(map) {
-    this.resourceMap = map;
-    return this;
-  }
-  add(vid, config) {
-    if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const texture = this.constructMap.get(config.type)();
-        const tempConfig = JSON.parse(JSON.stringify(config));
-        delete tempConfig.type;
-        delete tempConfig.vid;
-        texture.image = this.getResource(tempConfig.image);
-        delete tempConfig.image;
-        Compiler.applyConfig(tempConfig, texture);
-        texture.needsUpdate = true;
-        this.map.set(vid, texture);
-      } else {
-        console.warn(`texture compiler can not support this type: ${config.type}`);
-      }
-    } else {
-      console.error(`texture vid parameter is illegal: ${vid}`);
-    }
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!validate(vid)) {
-      console.warn(`texture compiler set function: vid is illeage: '${vid}'`);
-      return this;
-    }
-    if (!this.map.has(vid)) {
-      console.warn(`texture compiler set function: can not found texture which vid is: '${vid}'`);
-      return this;
-    }
-    const texture = this.map.get(vid);
-    let config = texture;
-    path.forEach((key2, i, arr) => {
-      config = config[key2];
-    });
-    config[key] = value;
-    texture.needsUpdate = true;
-    return this;
-  }
-  getMap() {
-    return this.map;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const key in target) {
-      this.add(key, target[key]);
-    }
-    return this;
-  }
-  dispose() {
-    return this;
-  }
-}
-class ModelingEngineSupport extends ModelingEngine {
-  constructor(parameters) {
-    super();
-    __publicField(this, "compilerMap");
-    __publicField(this, "resourceManager");
-    __publicField(this, "dataSupportManager");
-    __publicField(this, "objectConfigMap");
-    __publicField(this, "cacheDefaultCamera");
-    const dataSupportManager = parameters.dataSupportManager;
-    const textureDataSupport = dataSupportManager.getDataSupport(MODULETYPE.TEXTURE);
-    const materialDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MATERIAL);
-    const cameraDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CAMERA);
-    const lightDataSupport = dataSupportManager.getDataSupport(MODULETYPE.LIGHT);
-    const geometryDataSupport = dataSupportManager.getDataSupport(MODULETYPE.GEOMETRY);
-    const modelDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MODEL);
-    const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER);
-    const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE);
-    const controlsDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CONTROLS);
-    const cameraSupportData = cameraDataSupport.getData();
-    const lightSupportData = lightDataSupport.getData();
-    const modelSupportData = modelDataSupport.getData();
-    const textureCompiler = new TextureCompiler({
-      target: textureDataSupport.getData()
-    });
-    const materialCompiler = new MaterialCompiler({
-      target: materialDataSupport.getData()
-    });
-    const cameraCompiler = new CameraCompiler({
-      target: cameraSupportData,
-      scene: this.scene,
-      engine: this
-    });
-    const lightCompiler = new LightCompiler({
-      scene: this.scene,
-      target: lightSupportData
-    });
-    const geometryCompiler = new GeometryCompiler({
-      target: geometryDataSupport.getData()
-    });
-    const modelCompiler = new ModelCompiler({
-      scene: this.scene,
-      target: modelSupportData
-    });
-    const rendererCompiler = new RendererCompiler({
-      target: rendererDataSupport.getData(),
-      glRenderer: this.renderer,
-      engine: this
-    });
-    const sceneCompiler = new SceneCompiler({
-      target: sceneDataSupport.getData(),
-      scene: this.scene
-    });
-    const controlsCompiler = new ControlsCompiler({
-      target: controlsDataSupport.getData(),
-      transformControls: this.transformControls
-    });
-    const resourceManager = parameters.resourceManager;
-    sceneCompiler.linkTextureMap(textureCompiler.getMap());
-    materialCompiler.linkTextureMap(textureCompiler.getMap());
-    modelCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap());
-    cameraCompiler.linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap());
-    textureCompiler.linkRescourceMap(resourceManager.getMappingResourceMap());
-    geometryCompiler.linkRescourceMap(resourceManager.getMappingResourceMap());
-    textureDataSupport.addCompiler(textureCompiler);
-    materialDataSupport.addCompiler(materialCompiler);
-    cameraDataSupport.addCompiler(cameraCompiler);
-    lightDataSupport.addCompiler(lightCompiler);
-    geometryDataSupport.addCompiler(geometryCompiler);
-    modelDataSupport.addCompiler(modelCompiler);
-    rendererDataSupport.addCompiler(rendererCompiler);
-    sceneDataSupport.addCompiler(sceneCompiler);
-    controlsDataSupport.addCompiler(controlsCompiler);
-    const tempMap = new Map();
-    cameraCompiler.getMap().forEach((camera, vid) => {
-      tempMap.set(vid, camera);
-    });
-    lightCompiler.getMap().forEach((light, vid) => {
-      tempMap.set(vid, light);
-    });
-    modelCompiler.getMap().forEach((model, vid) => {
-      tempMap.set(vid, model);
-    });
-    const objectConfigMap = new WeakMap();
-    Object.keys(cameraSupportData).forEach((vid) => {
-      objectConfigMap.set(tempMap.get(vid), cameraSupportData[vid]);
-    });
-    Object.keys(lightSupportData).forEach((vid) => {
-      objectConfigMap.set(tempMap.get(vid), lightSupportData[vid]);
-    });
-    Object.keys(modelSupportData).forEach((vid) => {
-      objectConfigMap.set(tempMap.get(vid), modelSupportData[vid]);
-    });
-    tempMap.clear();
-    modelCompiler.addEventListener(COMPILEREVENTTYPE.ADD, (event) => {
-      const e = event;
-      objectConfigMap.set(e.object, modelSupportData[e.vid]);
-    });
-    lightCompiler.addEventListener(COMPILEREVENTTYPE.ADD, (event) => {
-      const e = event;
-      objectConfigMap.set(e.object, lightSupportData[e.vid]);
-    });
-    cameraCompiler.addEventListener(COMPILEREVENTTYPE.ADD, (event) => {
-      const e = event;
-      objectConfigMap.set(e.object, cameraSupportData[e.vid]);
-    });
-    modelCompiler.addEventListener(MODELCOMPILER.SETMATERIAL, (event) => {
-      this.scene.updateMaterial(event.object);
-    });
-    this.transformControls.addEventListener(VISTRANSFORMEVENTTYPE.OBJECTCHANGED, (event) => {
-      const e = event;
-      const mode = e.mode;
-      e.transObjectSet.forEach((object) => {
-        const config = objectConfigMap.get(object);
-        if (config && config[mode]) {
-          config[mode].x = object[mode].x;
-          config[mode].y = object[mode].y;
-          config[mode].z = object[mode].z;
-        } else {
-          console.warn(`can not font config in this object: '${object}'`);
-        }
-      });
-    });
-    this.sceneStatusManager.addEventListener(SCENESTATUSMANAGER.HOVERCHANGE, (event) => {
-      const e = event;
-      const vidSet = new Set();
-      e.objectSet.forEach((object) => {
-        if (objectConfigMap.has(object)) {
-          vidSet.add(objectConfigMap.get(object).vid);
-        } else {
-          console.warn(`modeling engine support hover can not found this object mapping vid`, object);
-        }
-      });
-      this.dispatchEvent({
-        type: OBJECTEVENT.HOVER,
-        vidSet
-      });
-    });
-    this.sceneStatusManager.addEventListener(SCENESTATUSMANAGER.ACTIVECHANGE, (event) => {
-      const e = event;
-      const vidSet = new Set();
-      e.objectSet.forEach((object) => {
-        if (objectConfigMap.has(object)) {
-          vidSet.add(objectConfigMap.get(object).vid);
-        } else {
-          console.warn(`modeling engine support avtive can not found this object mapping vid`, object);
-        }
-      });
-      this.dispatchEvent({
-        type: OBJECTEVENT.ACTIVE,
-        vidSet
-      });
-    });
-    const compilerMap = new Map();
-    compilerMap.set(MODULETYPE.TEXTURE, textureCompiler);
-    compilerMap.set(MODULETYPE.MATERIAL, materialCompiler);
-    compilerMap.set(MODULETYPE.CAMERA, cameraCompiler);
-    compilerMap.set(MODULETYPE.LIGHT, lightCompiler);
-    compilerMap.set(MODULETYPE.MODEL, modelCompiler);
-    compilerMap.set(MODULETYPE.GEOMETRY, geometryCompiler);
-    compilerMap.set(MODULETYPE.RENDERER, rendererCompiler);
-    compilerMap.set(MODULETYPE.SCENE, sceneCompiler);
-    compilerMap.set(MODULETYPE.CONTROLS, controlsCompiler);
-    this.compilerMap = compilerMap;
-    this.dataSupportManager = parameters.dataSupportManager;
-    this.resourceManager = parameters.resourceManager;
-    this.objectConfigMap = objectConfigMap;
-  }
-  getDataSupportManager() {
-    return this.dataSupportManager;
-  }
-  getResourceManager() {
-    return this.resourceManager;
-  }
-  getCompiler(module) {
-    return this.compilerMap.get(module);
-  }
-  setCameraByVid(vid) {
-    if (!vid) {
-      if (this.cacheDefaultCamera) {
-        this.setCamera(this.cacheDefaultCamera);
-        this.cacheDefaultCamera = void 0;
-        return this;
-      } else {
-        return this;
-      }
-    }
-    if (!validate(vid)) {
-      console.warn(`modeling engine support: vid is illeage: '${vid}'`);
-      return this;
-    }
-    const cameraMap = this.compilerMap.get(MODULETYPE.CAMERA).getMap();
-    if (!cameraMap.has(vid)) {
-      console.warn(`modeling engine support: camera compiler can not fount this vid camera: '${vid}'`);
-      return this;
-    }
-    if (!this.cacheDefaultCamera) {
-      this.cacheDefaultCamera = this.orbitControls.object;
-    }
-    super.setCamera(cameraMap.get(vid));
-    return this;
-  }
-  setHoverObjects(...vidList) {
-    return this;
-  }
-  setActiveObjects(...vidList) {
-    return this;
-  }
-}
-const GeometryRule = function(notice, compiler) {
-  const { operate, key, path, value } = notice;
-  if (operate === "add") {
-    if (validate(key)) {
-      compiler.add(key, value);
-    }
-  } else if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift();
-    if (vid && validate(vid)) {
-      compiler.set(vid, tempPath, value);
-    } else {
-      console.warn(`geometry rule vid is illeage: '${vid}'`);
-      return;
-    }
-  }
-};
-class GeometryDataSupport extends DataSupport {
-  constructor(data) {
-    !data && (data = {});
-    super(GeometryRule, data);
   }
 }
 const _object_pattern = /^[og]\s*(.+)?/;
@@ -4388,7 +3348,7 @@ class MaterialCreator {
     return texture;
   }
 }
-class LoaderManager extends EventDispatcher$1 {
+class LoaderManager extends EventDispatcher {
   constructor() {
     super();
     __publicField(this, "resourceMap");
@@ -4522,6 +3482,10 @@ class LoaderManager extends EventDispatcher$1 {
     this.loadDetailMap = {};
     return this;
   }
+  register(ext, loader) {
+    this.loaderMap[ext] = loader;
+    return this;
+  }
   hasLoaded(url) {
     return this.resourceMap.has(url);
   }
@@ -4544,7 +3508,7 @@ var RESOURCEEVENTTYPE;
 (function(RESOURCEEVENTTYPE2) {
   RESOURCEEVENTTYPE2["MAPPED"] = "mapped";
 })(RESOURCEEVENTTYPE || (RESOURCEEVENTTYPE = {}));
-class ResourceManager extends EventDispatcher$1 {
+class ResourceManager extends EventDispatcher {
   constructor() {
     super();
     __publicField(this, "mappingResourceMap", new Map());
@@ -4613,291 +3577,1186 @@ class ResourceManager extends EventDispatcher$1 {
   dispose() {
   }
 }
-const getObjectConfig = () => {
-  return {
-    vid: "",
-    type: "Object3D",
-    castShadow: true,
-    receiveShadow: true,
-    lookAt: "",
-    position: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    rotation: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    scale: {
-      x: 1,
-      y: 1,
-      z: 1
-    }
-  };
-};
-const getLightConfig = function() {
-  return Object.assign(getObjectConfig(), {
-    type: "Light",
-    color: "rgb(255, 255, 255)",
-    intensity: 1
-  });
-};
-const getAmbientLightConfig = function() {
-  return Object.assign(getObjectConfig(), {
-    type: "AmbientLight",
-    color: "rgb(255, 255, 255)",
-    intensity: 1
-  });
-};
-const getPointLightConfig = function() {
-  return Object.assign(getLightConfig(), {
-    type: "PointLight",
-    distance: 30,
-    decay: 0.01
-  });
-};
-const getSpotLightConfig = function() {
-  return Object.assign(getLightConfig(), {
-    type: "SpotLight",
-    distance: 30,
-    angle: Math.PI / 180 * 45,
-    penumbra: 0.01,
-    decay: 0.01
-  });
-};
-const getGeometryConfig = function() {
-  return {
-    vid: "",
-    type: "Geometry",
-    position: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    rotation: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    scale: {
-      x: 1,
-      y: 1,
-      z: 1
-    }
-  };
-};
-const getBoxGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    type: "BoxGeometry",
-    width: 5,
-    height: 5,
-    depth: 5,
-    widthSegments: 1,
-    heightSegments: 1,
-    depthSegments: 1
-  });
-};
-const getSphereGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    type: "SphereGeometry",
-    radius: 3,
-    widthSegments: 32,
-    heightSegments: 32,
-    phiStart: 0,
-    phiLength: Math.PI * 2,
-    thetaStart: 0,
-    thetaLength: Math.PI
-  });
-};
-const getLoadGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    type: "LoadGeometry",
-    url: ""
-  });
-};
-const getModelConfig = function() {
-  return Object.assign(getObjectConfig(), {
-    type: "Mesh",
-    geometry: "",
-    material: ""
-  });
-};
-const getTextureConfig = function() {
-  return {
-    vid: "",
-    type: "Texture",
-    name: "",
-    image: "",
-    mapping: UVMapping,
-    wrapS: ClampToEdgeWrapping,
-    wrapT: ClampToEdgeWrapping,
-    magFilter: LinearFilter,
-    minFilter: LinearMipmapLinearFilter,
-    anisotropy: 1,
-    format: RGBAFormat,
-    offset: {
-      x: 0,
-      y: 0
-    },
-    repeat: {
-      x: 1,
-      y: 1
-    },
-    rotation: 0,
-    center: {
-      x: 0,
-      y: 0
-    },
-    matrixAutoUpdate: true,
-    encoding: LinearEncoding,
-    needsUpdate: false
-  };
-};
-const getImageTextureConfig = function() {
-  return Object.assign(getTextureConfig(), {
-    type: "ImageTexture"
-  });
-};
-const getMaterialConfig = function() {
-  return {
-    vid: "",
-    type: "Material",
-    alphaTest: 0,
-    colorWrite: true,
-    depthTest: true,
-    depthWrite: true,
-    format: RGBAFormat,
-    fog: true,
-    name: "",
-    needsUpdate: false,
-    opacity: 1,
-    dithering: false,
-    shadowSide: null,
-    side: FrontSide,
-    toneMapped: true,
-    transparent: false,
-    visible: true
-  };
-};
-const getMeshStandardMaterialConfig = function() {
-  return Object.assign(getMaterialConfig(), {
-    type: "MeshStandardMaterial",
-    aoMapIntensity: 1,
-    bumpScale: 1,
-    color: "rgb(255, 255, 255)",
-    displacementScale: 1,
-    displacementBias: 0,
-    emissive: "rgb(0, 0, 0)",
-    emissiveIntensity: 1,
-    envMapIntensity: 1,
-    flatShading: false,
-    lightMapIntensity: 1,
-    metalness: 0,
-    normalMapType: TangentSpaceNormalMap,
-    refractionRatio: 0.98,
-    roughness: 1,
-    wireframe: false,
-    wireframeLinecap: "round",
-    wireframeLinejoin: "round",
-    roughnessMap: "",
-    normalMap: "",
-    metalnessMap: "",
-    map: "",
-    lightMap: "",
-    envMap: "",
-    emissiveMap: "",
-    displacementMap: "",
-    bumpMap: "",
-    alphaMap: "",
-    aoMap: ""
-  });
-};
-const getPerspectiveCameraConfig = function() {
-  return Object.assign(getObjectConfig(), {
-    type: "PerspectiveCamera",
-    adaptiveWindow: false,
-    fov: 45,
-    aspect: 1920 / 1080,
-    near: 5,
-    far: 50
-  });
-};
-const getOrthographicCameraConfig = function() {
-  return Object.assign(getObjectConfig(), {
-    type: "OrthographicCamera",
-    adaptiveWindow: false,
-    left: 1920 / 16,
-    right: 1920 / 16,
-    top: 1080 / 16,
-    bottom: 1080 / 16,
-    near: 5,
-    far: 50
-  });
-};
-var CONFIGTYPE;
-(function(CONFIGTYPE2) {
-  CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
-  CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
-  CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
-  CONFIGTYPE2["MODEL"] = "Model";
-  CONFIGTYPE2["MESH"] = "Mesh";
-  CONFIGTYPE2["LINE"] = "Line";
-  CONFIGTYPE2["POINTS"] = "Points";
-  CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
-  CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
-  CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
-  CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
-  CONFIGTYPE2["POINTLIGHT"] = "PointLight";
-  CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
-  CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
-  CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
-  CONFIGTYPE2["SCENE"] = "Scene";
-  CONFIGTYPE2["TRNASFORMCONTROLS"] = "TransformControls";
-})(CONFIGTYPE || (CONFIGTYPE = {}));
-const typeMap = {
-  [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
-  [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
-  [CONFIGTYPE.AMBIENTLIGHT]: getAmbientLightConfig,
-  [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,
-  [CONFIGTYPE.POINTLIGHT]: getPointLightConfig,
-  [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
-  [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
-  [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
-  [CONFIGTYPE.MODEL]: getModelConfig,
-  [CONFIGTYPE.MESH]: getModelConfig,
-  [CONFIGTYPE.LINE]: getModelConfig,
-  [CONFIGTYPE.POINTS]: getModelConfig,
-  [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
-  [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
-  [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,
-  [CONFIGTYPE.SCENE]: getSceneConfig,
-  [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig
-};
-const generateConfig = function(type, merge) {
-  if (typeMap[type]) {
-    const recursion = (config, merge2) => {
-      for (const key in merge2) {
-        if (config[key] === void 0) {
-          console.warn(`'${type}' config can not set key: ${key}`);
-          continue;
-        }
-        if (typeof merge2[key] === "object" && merge2[key] !== null) {
-          recursion(config[key], merge2[key]);
+var COMPILEREVENTTYPE;
+(function(COMPILEREVENTTYPE2) {
+  COMPILEREVENTTYPE2["ADD"] = "add";
+  COMPILEREVENTTYPE2["REMOVE"] = "remove";
+})(COMPILEREVENTTYPE || (COMPILEREVENTTYPE = {}));
+class Compiler extends EventDispatcher$1 {
+  static applyConfig(config, object, callBack) {
+    const filterMap = {
+      vid: true,
+      type: true
+    };
+    const recursiveConfig = (config2, object2) => {
+      for (const key in config2) {
+        if (typeof config2[key] === "object" && typeof config2[key] !== null && isValidKey(key, object2)) {
+          recursiveConfig(config2[key], object2[key]);
         } else {
-          config[key] = merge2[key];
+          if (isValidKey(key, object2) && !filterMap[key]) {
+            object2[key] = config2[key];
+          }
         }
       }
     };
-    const initConfig = typeMap[type]();
-    recursion(initConfig, merge);
-    return initConfig;
-  } else {
-    console.error(`type: ${type} can not be found in configList.`);
-    return null;
+    recursiveConfig(config, object);
+    callBack && callBack();
+  }
+  constructor() {
+    super();
+  }
+}
+class CameraCompiler extends Compiler {
+  constructor(parameters) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "scene");
+    __publicField(this, "engine");
+    __publicField(this, "map");
+    __publicField(this, "constructMap");
+    __publicField(this, "objectMapSet");
+    if (parameters) {
+      parameters.target && (this.target = parameters.target);
+      parameters.scene && (this.scene = parameters.scene);
+      parameters.engine && (this.engine = parameters.engine);
+    } else {
+      this.scene = new Scene();
+      this.target = {};
+      this.engine = new Engine().install(EnginePlugin.WEBGLRENDERER);
+    }
+    this.map = new Map();
+    const constructMap = new Map();
+    constructMap.set("PerspectiveCamera", () => new PerspectiveCamera());
+    constructMap.set("OrthographicCamera", () => new OrthographicCamera(0, 0, 0, 0));
+    this.constructMap = constructMap;
+    this.objectMapSet = new Set();
+  }
+  setLookAt(vid, target) {
+    if (vid === target) {
+      console.error(`can not set object lookAt itself.`);
+      return this;
+    }
+    const camera = this.map.get(vid);
+    const userData = camera.userData;
+    if (!target) {
+      if (!userData.updateMatrixWorldFun) {
+        return this;
+      }
+      camera.updateMatrixWorld = userData.updateMatrixWorldFun;
+      userData.lookAtTarget = void 0;
+      userData.updateMatrixWorldFun = void 0;
+      return this;
+    }
+    let lookAtTarget = void 0;
+    for (const map of this.objectMapSet) {
+      if (map.has(target)) {
+        lookAtTarget = map.get(target);
+        break;
+      }
+    }
+    if (!lookAtTarget) {
+      console.warn(`camera compiler can not found this vid mapping object in objectMapSet: '${vid}'`);
+      return this;
+    }
+    const updateMatrixWorldFun = camera.updateMatrixWorld;
+    userData.updateMatrixWorldFun = updateMatrixWorldFun;
+    userData.lookAtTarget = lookAtTarget.position;
+    camera.updateMatrixWorld = (focus) => {
+      updateMatrixWorldFun.bind(camera)(focus);
+      camera.lookAt(userData.lookAtTarget);
+    };
+    return this;
+  }
+  setAdaptiveWindow(vid, value) {
+    if (!validate(vid)) {
+      console.error(`camera compiler adaptive window vid is illeage: '${vid}'`);
+      return this;
+    }
+    if (!this.map.has(vid)) {
+      console.warn(`camera compiler can not found this vid camera: '${vid}'`);
+      return this;
+    }
+    const camera = this.map.get(vid);
+    if (!value) {
+      if (camera.userData.setSizeFun && this.engine.hasEventListener("setSize", camera.userData.setSizeFun)) {
+        this.engine.removeEventListener("setSize", camera.userData.setSizeFun);
+        camera.userData.setSizeFun = void 0;
+        return this;
+      }
+      if (!camera.userData.setSizeFun && !this.engine.hasEventListener("setSize", camera.userData.setSizeFun)) {
+        return this;
+      }
+      if (camera.userData.setSizeFun && !this.engine.hasEventListener("setSize", camera.userData.setSizeFun)) {
+        camera.userData.setSizeFun = void 0;
+        return this;
+      }
+    }
+    if (value) {
+      if (camera.userData.setSizeFun && this.engine.hasEventListener("setSize", camera.userData.setSizeFun)) {
+        return this;
+      }
+      if (!this.engine.hasEventListener("setSize", camera.userData.setSizeFun) && camera.userData.setSizeFun) {
+        this.engine.addEventListener("setSize", camera.userData.setSizeFun);
+        return this;
+      }
+      let setSizeFun = (event) => {
+      };
+      if (camera instanceof PerspectiveCamera) {
+        setSizeFun = (event) => {
+          camera.aspect = event.width / event.height;
+          camera.updateProjectionMatrix();
+        };
+      } else if (camera instanceof OrthographicCamera) {
+        setSizeFun = (event) => {
+          const width = event.width;
+          const height = event.height;
+          camera.left = -width / 16;
+          camera.right = width / 16;
+          camera.top = height / 16;
+          camera.bottom = -height / 16;
+        };
+      } else {
+        console.warn(`camera compiler can not support this class camera:`, camera);
+      }
+      this.engine.addEventListener("setSize", setSizeFun);
+      const domElement = this.engine.webGLRenderer.domElement;
+      setSizeFun({
+        type: "setSize",
+        width: domElement.offsetWidth,
+        height: domElement.offsetHeight
+      });
+    }
+    return this;
+  }
+  linkObjectMap(map) {
+    if (!this.objectMapSet.has(map)) {
+      this.objectMapSet.add(map);
+    }
+    return this;
+  }
+  add(vid, config) {
+    if (validate(vid)) {
+      if (config.type && this.constructMap.has(config.type)) {
+        const camera = this.constructMap.get(config.type)();
+        const tempConfig = JSON.parse(JSON.stringify(config));
+        delete tempConfig.vid;
+        delete tempConfig.type;
+        delete tempConfig.lookAt;
+        delete tempConfig.adaptiveWindow;
+        Compiler.applyConfig(tempConfig, camera);
+        if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
+          camera.updateProjectionMatrix();
+        }
+        this.map.set(vid, camera);
+        this.setLookAt(config.vid, config.lookAt);
+        this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
+        this.dispatchEvent({
+          type: COMPILEREVENTTYPE.ADD,
+          object: camera,
+          vid
+        });
+        this.scene.add(camera);
+      }
+    } else {
+      console.error(`camera vid parameter is illegal: ${vid}`);
+    }
+    return this;
+  }
+  set(vid, path, key, value) {
+    if (!validate(vid)) {
+      console.warn(`camera compiler set function vid parameters is illeage: '${vid}'`);
+      return this;
+    }
+    if (!this.map.has(vid)) {
+      console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
+      return this;
+    }
+    if (key === "lookAt") {
+      return this.setLookAt(vid, value);
+    }
+    if (key === "adaptiveWindow") {
+      return this.setAdaptiveWindow(vid, value);
+    }
+    const camera = this.map.get(vid);
+    let config = camera;
+    path.forEach((key2, i, arr) => {
+      config = camera[key2];
+    });
+    config[key] = value;
+    if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
+      camera.updateProjectionMatrix();
+    }
+    return this;
+  }
+  remove() {
+  }
+  setEngine(engine) {
+    this.engine = engine;
+    return this;
+  }
+  setScene(scene) {
+    this.scene = scene;
+    return this;
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  getMap() {
+    return this.map;
+  }
+  compileAll() {
+    const target = this.target;
+    for (const key in target) {
+      this.add(key, target[key]);
+    }
+    return this;
+  }
+  dispose() {
+    return this;
+  }
+}
+class ControlsCompiler extends Compiler {
+  constructor(parameters) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "transformControls");
+    if (parameters) {
+      parameters.target && (this.target = parameters.target);
+      parameters.transformControls && (this.transformControls = parameters.transformControls);
+    } else {
+      this.target = {
+        TransformControls: getTransformControlsConfig()
+      };
+      this.transformControls = new TransformControls(new Camera());
+    }
+  }
+  set(type, path, key, value) {
+    if (type === "TransformControls") {
+      const controls = this.transformControls;
+      if (key === "snapAllow") {
+        const config = this.target["TransformControls"];
+        if (value) {
+          controls.translationSnap = config.translationSnap;
+          controls.rotationSnap = config.rotationSnap;
+          controls.scaleSnap = config.scaleSnap;
+        } else {
+          controls.translationSnap = null;
+          controls.rotationSnap = null;
+          controls.scaleSnap = null;
+        }
+        return this;
+      }
+      controls[key] = value;
+    } else {
+      console.warn(`controls compiler can not support this controls: '${type}'`);
+      return this;
+    }
+    return this;
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  compileAll() {
+    return this;
+  }
+  dispose(parameter) {
+    return this;
+  }
+}
+class LoadGeometry extends BufferGeometry {
+  constructor(geometry) {
+    super();
+    __publicField(this, "type", "LoadBufferGeometry");
+    geometry && this.copy(geometry);
+  }
+}
+const _GeometryCompiler = class extends Compiler {
+  constructor(parameters) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "map");
+    __publicField(this, "constructMap");
+    __publicField(this, "resourceMap");
+    __publicField(this, "replaceGeometry");
+    this.target = parameters.target;
+    this.map = new Map();
+    const constructMap = new Map();
+    constructMap.set("BoxGeometry", (config) => {
+      return _GeometryCompiler.transfromAnchor(new BoxBufferGeometry(config.width, config.height, config.depth, config.widthSegments, config.heightSegments, config.depthSegments), config);
+    });
+    constructMap.set("SphereGeometry", (config) => {
+      return _GeometryCompiler.transfromAnchor(new SphereBufferGeometry(config.radius, config.widthSegments, config.heightSegments, config.phiStart, config.phiLength, config.thetaStart, config.thetaLength), config);
+    });
+    constructMap.set("LoadGeometry", (config) => {
+      return _GeometryCompiler.transfromAnchor(new LoadGeometry(this.getRescource(config.url)), config);
+    });
+    this.constructMap = constructMap;
+    this.resourceMap = new Map();
+    this.replaceGeometry = new BoxBufferGeometry(10, 10, 10);
+  }
+  linkRescourceMap(map) {
+    this.resourceMap = map;
+    return this;
+  }
+  getRescource(url) {
+    if (!this.resourceMap.has(url)) {
+      console.error(`rescoure can not found url: ${url}`);
+      return this.replaceGeometry.clone();
+    }
+    if (this.resourceMap.has(url) && this.resourceMap.get(url) instanceof BufferGeometry) {
+      const geometry = this.resourceMap.get(url);
+      return geometry.clone();
+    } else {
+      console.error(`url mapping rescource is not class with BufferGeometry: ${url}`);
+      return this.replaceGeometry.clone();
+    }
+  }
+  getMap() {
+    return this.map;
+  }
+  setTarget() {
+    return this;
+  }
+  add(vid, config) {
+    if (validate(vid)) {
+      if (config.type && this.constructMap.has(config.type)) {
+        const geometry = this.constructMap.get(config.type)(config);
+        this.map.set(vid, geometry);
+      }
+    } else {
+      console.error(`geometry vid parameter is illegal: ${vid}`);
+    }
+    return this;
+  }
+  set(vid, path, value) {
+    if (!validate(vid)) {
+      console.warn(`geometry compiler set function vid parameters is illeage: '${vid}'`);
+      return this;
+    }
+    if (!this.map.has(vid)) {
+      console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
+      return this;
+    }
+    const currentGeometry = this.map.get(vid);
+    const config = this.target[vid];
+    const newGeometry = this.constructMap.get(config.type)(config);
+    currentGeometry.copy(newGeometry);
+    currentGeometry.uuid = newGeometry.uuid;
+    newGeometry.dispose();
+    return this;
+  }
+  compileAll() {
+    const target = this.target;
+    for (const key in target) {
+      this.add(key, target[key]);
+    }
+    return this;
+  }
+  dispose() {
+    return this;
   }
 };
+let GeometryCompiler = _GeometryCompiler;
+__publicField(GeometryCompiler, "transfromAnchor", function(geometry, config) {
+  geometry.center();
+  !geometry.boundingBox && geometry.computeBoundingBox();
+  const box = geometry.boundingBox;
+  const position = config.position;
+  const rotation = config.rotation;
+  const scale = config.scale;
+  const materix = new Matrix4();
+  const vPostion = new Vector3((box.max.x - box.min.x) / 2 * position.x, (box.max.y - box.min.y) / 2 * position.y, (box.max.z - box.min.z) / 2 * position.z);
+  const quaternion = new Quaternion().setFromEuler(new Euler(rotation.x, rotation.y, rotation.z, "XYZ"));
+  const vScale = new Vector3(scale.x, scale.y, scale.z);
+  materix.compose(vPostion, quaternion, vScale);
+  geometry.applyMatrix4(materix);
+  return geometry;
+});
+class LightCompiler extends Compiler {
+  constructor(parameters) {
+    super();
+    __publicField(this, "scene");
+    __publicField(this, "target");
+    __publicField(this, "map");
+    __publicField(this, "constructMap");
+    this.scene = parameters.scene;
+    this.target = parameters.target;
+    this.map = new Map();
+    this.constructMap = new Map();
+    this.constructMap.set("PointLight", () => new PointLight());
+    this.constructMap.set("SpotLight", () => new SpotLight());
+    this.constructMap.set("AmbientLight", () => new AmbientLight());
+  }
+  add(vid, config) {
+    if (validate(vid)) {
+      if (config.type && this.constructMap.has(config.type)) {
+        const light = this.constructMap.get(config.type)();
+        Compiler.applyConfig(config, light);
+        light.color = new Color(config.color);
+        this.map.set(vid, light);
+        this.dispatchEvent({
+          type: COMPILEREVENTTYPE.ADD,
+          object: light,
+          vid
+        });
+        this.scene.add(light);
+      }
+    } else {
+      console.error(`vid parameter is illegal: ${vid}`);
+    }
+  }
+  set(path, key, value) {
+    const vid = path.shift();
+    if (validate(vid) && this.map.has(vid)) {
+      let config = this.map.get(vid);
+      path.forEach((key2, i, arr) => {
+        config = config[key2];
+      });
+      config[key] = value;
+    } else {
+      console.error(`vid parameter is illegal: ${vid} or can not found this vid light`);
+    }
+  }
+  remove() {
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  getMap() {
+    return this.map;
+  }
+  compileAll() {
+    const target = this.target;
+    for (const key in target) {
+      this.add(key, target[key]);
+    }
+    return this;
+  }
+  dispose() {
+    return this;
+  }
+}
+class MaterialCompiler extends Compiler {
+  constructor(parameters) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "map");
+    __publicField(this, "constructMap");
+    __publicField(this, "mapAttribute");
+    __publicField(this, "colorAttribute");
+    __publicField(this, "texturelMap");
+    __publicField(this, "resourceMap");
+    __publicField(this, "cachaColor");
+    if (parameters) {
+      parameters.target && (this.target = parameters.target);
+    } else {
+      this.target = {};
+    }
+    this.map = new Map();
+    this.texturelMap = new Map();
+    this.resourceMap = new Map();
+    this.cachaColor = new Color();
+    const constructMap = new Map();
+    constructMap.set("MeshStandardMaterial", () => new MeshStandardMaterial());
+    this.constructMap = constructMap;
+    this.colorAttribute = {
+      "color": true,
+      "emissive": true
+    };
+    this.mapAttribute = {
+      "roughnessMap": true,
+      "normalMap": true,
+      "metalnessMap": true,
+      "map": true,
+      "lightMap": true,
+      "envMap": true,
+      "emissiveMap": true,
+      "displacementMap": true,
+      "bumpMap": true,
+      "alphaMap": true,
+      "aoMap": true
+    };
+  }
+  linkRescourceMap(map) {
+    this.resourceMap = map;
+    return this;
+  }
+  linkTextureMap(textureMap) {
+    this.texturelMap = textureMap;
+    return this;
+  }
+  add(vid, config) {
+    if (validate(vid)) {
+      if (config.type && this.constructMap.has(config.type)) {
+        const material = this.constructMap.get(config.type)();
+        const tempConfig = JSON.parse(JSON.stringify(config));
+        delete tempConfig.type;
+        delete tempConfig.vid;
+        const colorAttribute = this.colorAttribute;
+        for (const key in colorAttribute) {
+          if (tempConfig[key]) {
+            material[key] = new Color(tempConfig[key]);
+            delete tempConfig[key];
+          }
+        }
+        const mapAttribute = this.mapAttribute;
+        for (const key in mapAttribute) {
+          if (tempConfig[key]) {
+            material[key] = this.getTexture(tempConfig[key]);
+            delete tempConfig[key];
+          }
+        }
+        Compiler.applyConfig(tempConfig, material);
+        material.needsUpdate = true;
+        this.map.set(vid, material);
+      } else {
+        console.warn(`material compiler can not support this type: ${config.type}`);
+      }
+    } else {
+      console.error(`material vid parameter is illegal: ${vid}`);
+    }
+    return this;
+  }
+  set(vid, path, key, value) {
+    if (!validate(vid)) {
+      console.warn(`material compiler set function: vid is illeage: '${vid}'`);
+      return this;
+    }
+    if (!this.map.has(vid)) {
+      console.warn(`material compiler set function: can not found material which vid is: '${vid}'`);
+      return this;
+    }
+    const material = this.map.get(vid);
+    if (this.colorAttribute[key]) {
+      material[key] = new Color(value);
+      return this;
+    }
+    if (this.mapAttribute[key]) {
+      material[key] = this.getTexture(value);
+      material.needsUpdate = true;
+      return this;
+    }
+    let config = material;
+    path.forEach((key2, i, arr) => {
+      config = config[key2];
+    });
+    config[key] = value;
+    return this;
+  }
+  getTexture(vid) {
+    if (this.texturelMap.has(vid)) {
+      const texture = this.texturelMap.get(vid);
+      if (texture instanceof Texture) {
+        return texture;
+      } else {
+        console.error(`this object which mapped by vid is not instance of Texture: ${vid}`);
+        return null;
+      }
+    } else {
+      console.error(`texture map can not found this vid: ${vid}`);
+      return null;
+    }
+  }
+  getMap() {
+    return this.map;
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  compileAll() {
+    const target = this.target;
+    for (const key in target) {
+      this.add(key, target[key]);
+    }
+    return this;
+  }
+  dispose() {
+    return this;
+  }
+}
+class ModelCompiler extends Compiler {
+  constructor(parameters) {
+    super();
+    __publicField(this, "scene");
+    __publicField(this, "target");
+    __publicField(this, "map");
+    __publicField(this, "constructMap");
+    __publicField(this, "geometryMap");
+    __publicField(this, "materialMap");
+    __publicField(this, "objectMapSet");
+    __publicField(this, "getReplaceMaterial");
+    __publicField(this, "getReplaceGeometry");
+    if (parameters) {
+      parameters.scene && (this.scene = parameters.scene);
+      parameters.target && (this.target = parameters.target);
+      parameters.geometryMap && (this.geometryMap = parameters.geometryMap);
+      parameters.materialMap && (this.materialMap = parameters.materialMap);
+    } else {
+      this.scene = new Scene();
+      this.target = {};
+      this.geometryMap = new Map();
+      this.materialMap = new Map();
+    }
+    this.map = new Map();
+    this.getReplaceMaterial = () => new MeshStandardMaterial({ color: "rgb(150, 150, 150)" });
+    this.getReplaceGeometry = () => new BoxBufferGeometry(10, 10, 10);
+    const constructMap = new Map();
+    constructMap.set("Mesh", (config) => new Mesh(this.getGeometry(config.geometry), this.getMaterial(config.material)));
+    constructMap.set("Line", (config) => new Line(this.getGeometry(config.geometry), this.getMaterial(config.material)));
+    constructMap.set("Points", (config) => new Points(this.getGeometry(config.geometry), this.getMaterial(config.material)));
+    this.constructMap = constructMap;
+    this.objectMapSet = new Set();
+  }
+  getMaterial(vid) {
+    if (validate(vid)) {
+      if (this.materialMap.has(vid)) {
+        return this.materialMap.get(vid);
+      } else {
+        console.warn(`can not found material which vid: ${vid}`);
+        return this.getReplaceMaterial();
+      }
+    } else {
+      console.warn(`material vid parameter is illegal: ${vid}`);
+      return this.getReplaceMaterial();
+    }
+  }
+  getGeometry(vid) {
+    if (validate(vid)) {
+      if (this.geometryMap.has(vid)) {
+        return this.geometryMap.get(vid);
+      } else {
+        console.warn(`can not found geometry which vid: ${vid}`);
+        return this.getReplaceGeometry();
+      }
+    } else {
+      console.warn(`geometry vid parameter is illegal: ${vid}`);
+      return this.getReplaceGeometry();
+    }
+  }
+  setLookAt(vid, target) {
+    if (vid === target) {
+      console.error(`can not set object lookAt itself.`);
+      return this;
+    }
+    const model = this.map.get(vid);
+    const userData = model.userData;
+    if (!target) {
+      if (!userData.updateMatrixWorldFun) {
+        return this;
+      }
+      model.updateMatrixWorld = userData.updateMatrixWorldFun;
+      userData.lookAtTarget = null;
+      userData.updateMatrixWorldFun = null;
+      return this;
+    }
+    let lookAtTarget = null;
+    for (const map of this.objectMapSet) {
+      if (map.has(target)) {
+        lookAtTarget = map.get(target);
+        break;
+      }
+    }
+    if (!lookAtTarget) {
+      console.warn(`model compiler can not found this vid mapping object in objectMapSet: '${vid}'`);
+      return this;
+    }
+    const updateMatrixWorldFun = model.updateMatrixWorld;
+    userData.updateMatrixWorldFun = updateMatrixWorldFun;
+    userData.lookAtTarget = lookAtTarget.position;
+    model.updateMatrixWorld = (focus) => {
+      updateMatrixWorldFun.bind(model)(focus);
+      model.lookAt(userData.lookAtTarget);
+    };
+    return this;
+  }
+  setMaterial(vid, target) {
+    this.map.get(vid).material = this.getMaterial(target);
+    this.dispatchEvent({
+      type: MODELCOMPILER.SETMATERIAL,
+      object: this.map.get(vid)
+    });
+    return this;
+  }
+  add(vid, config) {
+    if (validate(vid)) {
+      if (config.type && this.constructMap.has(config.type)) {
+        const object = this.constructMap.get(config.type)(config);
+        const tempConfig = JSON.parse(JSON.stringify(config));
+        delete tempConfig.vid;
+        delete tempConfig.type;
+        delete tempConfig.geometry;
+        delete tempConfig.material;
+        delete tempConfig.lookAt;
+        Compiler.applyConfig(tempConfig, object);
+        this.map.set(vid, object);
+        this.setLookAt(vid, config.lookAt);
+        this.dispatchEvent({
+          type: COMPILEREVENTTYPE.ADD,
+          object,
+          vid
+        });
+        this.scene.add(object);
+      }
+    } else {
+      console.warn(`model compiler add function: model vid parameter is illegal: ${vid}`);
+    }
+    return this;
+  }
+  set(vid, path, key, value) {
+    if (!validate(vid)) {
+      console.warn(`model compiler vid is illegal: '${vid}'`);
+      return this;
+    }
+    if (!this.map.has(vid)) {
+      console.warn(`model compiler can not found this vid mapping object: '${vid}'`);
+      return this;
+    }
+    if (key === "lookAt") {
+      return this.setLookAt(vid, value);
+    }
+    if (key === "material") {
+      return this.setMaterial(vid, value);
+    }
+    let config = this.map.get(vid);
+    path.forEach((key2, i, arr) => {
+      config = config[key2];
+    });
+    config[key] = value;
+    return this;
+  }
+  remove() {
+  }
+  linkGeometryMap(map) {
+    this.geometryMap = map;
+    return this;
+  }
+  linkMaterialMap(materialMap) {
+    this.materialMap = materialMap;
+    return this;
+  }
+  linkObjectMap(map) {
+    if (!this.objectMapSet.has(map)) {
+      this.objectMapSet.add(map);
+    }
+    return this;
+  }
+  setScene(scene) {
+    this.scene = scene;
+    return this;
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  getMap() {
+    return this.map;
+  }
+  compileAll() {
+    const target = this.target;
+    for (const key in target) {
+      this.add(key, target[key]);
+    }
+    return this;
+  }
+  dispose() {
+    return this;
+  }
+}
+class RendererCompiler extends Compiler {
+  constructor(parameters) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "glRenderer");
+    __publicField(this, "engine");
+    __publicField(this, "glRendererCacheData");
+    if (parameters) {
+      parameters.target && (this.target = parameters.target);
+      parameters.glRenderer && (this.glRenderer = parameters.glRenderer);
+      parameters.engine && (this.engine = parameters.engine);
+    } else {
+      this.target = {
+        WebGLRenderer: getWebGLRendererConfig()
+      };
+      this.glRenderer = new WebGLRenderer();
+    }
+    this.glRendererCacheData = {};
+  }
+  setClearColor(value) {
+    const alpha = Number(value.slice(0, -1).split(",").pop().trim());
+    this.glRenderer.setClearColor(value, alpha);
+    this.glRenderer.clear();
+    return this;
+  }
+  setPixelRatio(value) {
+    this.glRenderer.setPixelRatio(value);
+    this.glRenderer.clear();
+    return this;
+  }
+  setSize(vector2) {
+    const glRenderer = this.glRenderer;
+    if (vector2) {
+      glRenderer.setSize(vector2.x, vector2.y);
+    } else {
+      const domElement = glRenderer.domElement;
+      glRenderer.setSize(domElement.offsetWidth, domElement.offsetHeight);
+    }
+    return this;
+  }
+  setViewpoint(config) {
+    const glRenderer = this.glRenderer;
+    if (config) {
+      glRenderer.setViewport(config.x, config.y, config.width, config.height);
+    } else {
+      const domElement = glRenderer.domElement;
+      glRenderer.setViewport(0, 0, domElement.offsetWidth, domElement.offsetHeight);
+    }
+    return this;
+  }
+  setScissor(config) {
+    const glRenderer = this.glRenderer;
+    if (config) {
+      glRenderer.setScissorTest(true);
+      glRenderer.setScissor(config.x, config.y, config.width, config.height);
+    } else {
+      glRenderer.setScissorTest(false);
+      const domElement = glRenderer.domElement;
+      glRenderer.setScissor(0, 0, domElement.offsetWidth, domElement.offsetHeight);
+    }
+    return this;
+  }
+  setAdaptiveCamera(value) {
+    if (!this.engine) {
+      console.warn(`renderer compiler is not set engine.`);
+      return this;
+    }
+    const glRenderer = this.glRenderer;
+    const engine = this.engine;
+    const renderManager = engine.renderManager;
+    if (!value) {
+      if (!this.glRendererCacheData.adaptiveCameraFun) {
+        return this;
+      }
+      if (this.glRendererCacheData.adaptiveCameraFun) {
+        renderManager.removeEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun);
+        this.glRendererCacheData.adaptiveCameraFun = void 0;
+        return this;
+      }
+    }
+    if (value) {
+      if (this.glRendererCacheData.adaptiveCameraFun) {
+        renderManager.addEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun);
+        return this;
+      }
+      const adaptiveCameraFun = (event) => {
+        const camera = engine.currentCamera;
+        const domWidth = glRenderer.domElement.offsetWidth;
+        const domHeight = glRenderer.domElement.offsetHeight;
+        let width = 0;
+        let height = 0;
+        let offsetX = 0;
+        let offsetY = 0;
+        let aspect = 0;
+        if (camera instanceof PerspectiveCamera) {
+          aspect = camera.aspect;
+        } else if (camera instanceof OrthographicCamera) {
+          width = camera.right - camera.left;
+          height = camera.top - camera.bottom;
+          aspect = width / height;
+        } else {
+          console.warn(`renderer compiler can not support this camera`, camera);
+          return;
+        }
+        if (aspect >= 1) {
+          width = domWidth;
+          height = width / aspect;
+          offsetY = domHeight / 2 - height / 2;
+        } else {
+          height = domHeight;
+          width = height * aspect;
+          offsetX = domWidth / 2 - width / 2;
+        }
+        glRenderer.setScissor(offsetX, offsetY, width, height);
+        glRenderer.setViewport(offsetX, offsetY, width, height);
+        glRenderer.setScissorTest(true);
+      };
+      this.glRendererCacheData.adaptiveCameraFun = adaptiveCameraFun;
+      renderManager.addEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun);
+    }
+    return this;
+  }
+  set(path, key, value) {
+    const rendererType = path.shift();
+    if (rendererType === "WebGLRenderer") {
+      const glRendererTarget = this.target.WebGLRenderer;
+      const actionMap = {
+        clearColor: () => this.setClearColor(value),
+        pixelRatio: () => this.setPixelRatio(value),
+        size: () => this.setSize(glRendererTarget.size),
+        viewport: () => this.setViewpoint(glRendererTarget.viewport),
+        scissor: () => this.setScissor(glRendererTarget.scissor),
+        adaptiveCamera: () => this.setAdaptiveCamera(value)
+      };
+      if (actionMap[path[0] || key]) {
+        actionMap[path[0] || key]();
+        return this;
+      }
+      const glRenderer = this.glRenderer;
+      let config = glRenderer;
+      path.forEach((key2, i, arr) => {
+        config = config[key2];
+      });
+      config[key] = value;
+      glRenderer.clear();
+      return this;
+    } else {
+      console.warn(`renderer compiler can not support this type: ${rendererType}`);
+      return this;
+    }
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  compileAll() {
+    const target = this.target;
+    const glRendererTarget = target.WebGLRenderer;
+    this.setClearColor(glRendererTarget.clearColor);
+    this.setPixelRatio(glRendererTarget.pixelRatio);
+    this.setSize(glRendererTarget.size);
+    this.setViewpoint(glRendererTarget.viewport);
+    this.setScissor(glRendererTarget.scissor);
+    this.setAdaptiveCamera(glRendererTarget.adaptiveCamera);
+    const otherConfig = JSON.parse(JSON.stringify(glRendererTarget));
+    delete otherConfig.vid;
+    delete otherConfig.type;
+    delete otherConfig.clearColor;
+    delete otherConfig.pixelRatio;
+    delete otherConfig.size;
+    delete otherConfig.viewport;
+    delete otherConfig.scissor;
+    delete otherConfig.adaptiveCamera;
+    Compiler.applyConfig(otherConfig, this.glRenderer);
+    this.glRenderer.clear();
+    return this;
+  }
+  dispose() {
+    return this;
+  }
+}
+class SceneCompiler extends Compiler {
+  constructor(parameters) {
+    super();
+    __publicField(this, "textureMap");
+    __publicField(this, "target");
+    __publicField(this, "scene");
+    __publicField(this, "fogCache");
+    if (parameters) {
+      parameters.target && (this.target = parameters.target);
+      parameters.scene && (this.scene = parameters.scene);
+    } else {
+      this.target = {
+        scene: getSceneConfig()
+      };
+      this.scene = new Scene();
+    }
+    this.textureMap = new Map();
+    this.fogCache = null;
+  }
+  background(value) {
+    if (!value) {
+      this.scene.background = null;
+      return;
+    }
+    if (validate(value)) {
+      if (this.textureMap.has(value)) {
+        this.scene.background = this.textureMap.get(value);
+      } else {
+        console.warn(`scene compiler can not found this vid texture : '${value}'`);
+      }
+    } else {
+      this.scene.background = new Color(value);
+    }
+  }
+  environment(value) {
+    if (!value) {
+      this.scene.environment = null;
+      return;
+    }
+    if (validate(value)) {
+      if (this.textureMap.has(value)) {
+        this.scene.environment = this.textureMap.get(value);
+      } else {
+        console.warn(`scene compiler can not found this vid texture : '${value}'`);
+      }
+    } else {
+      console.warn(`this vid is illegal: '${value}'`);
+    }
+  }
+  fog(config) {
+    if (!config) {
+      this.scene.fog = null;
+      return;
+    }
+    if (config.type === "Fog") {
+      if (this.fogCache instanceof Fog) {
+        const fog = this.fogCache;
+        fog.color = new Color(config.color);
+        fog.near = config.near;
+        fog.far = config.far;
+      } else {
+        this.scene.fog = new Fog(config.color, config.near, config.far);
+        this.fogCache = this.scene.fog;
+      }
+    } else if (config.type === "FogExp2") {
+      if (this.fogCache instanceof FogExp2) {
+        const fog = this.fogCache;
+        fog.color = new Color(config.color);
+        fog.density = config.density;
+      } else {
+        this.scene.fog = new FogExp2(config.color, config.density);
+        this.fogCache = this.scene.fog;
+      }
+    } else {
+      console.warn(`scene compiler can not support this type fog:'${config.type}'`);
+    }
+  }
+  linkTextureMap(map) {
+    this.textureMap = map;
+    return this;
+  }
+  set(path, key, value) {
+    const sceneType = path.shift();
+    if (sceneType === "scene") {
+      const attribute = path[0];
+      const actionMap = {
+        background: () => this.background(value),
+        environment: () => this.environment(value),
+        fog: () => this.fog(this.target.scene.fog)
+      };
+      actionMap[attribute]();
+      return this;
+    } else {
+      console.warn(`scene compiler can not support this type: ${sceneType}`);
+      return this;
+    }
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  compileAll() {
+    const sceneTarget = this.target.scene;
+    this.background(sceneTarget.background);
+    this.environment(sceneTarget.environment);
+    this.fog(sceneTarget.fog);
+    return this;
+  }
+  dispose() {
+    return this;
+  }
+}
+class ImageTexture extends Texture {
+  constructor(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding) {
+    super(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding);
+  }
+}
+class TextureCompiler extends Compiler {
+  constructor(parameters) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "map");
+    __publicField(this, "constructMap");
+    __publicField(this, "resourceMap");
+    if (parameters) {
+      parameters.target && (this.target = parameters.target);
+    } else {
+      this.target = {};
+    }
+    this.map = new Map();
+    this.resourceMap = new Map();
+    const constructMap = new Map();
+    constructMap.set("ImageTexture", () => new ImageTexture());
+    this.constructMap = constructMap;
+  }
+  getResource(url) {
+    const resourceMap = this.resourceMap;
+    if (resourceMap.has(url)) {
+      const resource = resourceMap.get(url);
+      if (resource instanceof HTMLImageElement || resource instanceof HTMLCanvasElement || resource instanceof HTMLVideoElement) {
+        return resource;
+      } else {
+        console.error(`this url mapping resource is not a texture image class: ${url}`);
+        return null;
+      }
+    } else {
+      console.warn(`resource can not font url: ${url}`);
+      return null;
+    }
+  }
+  linkRescourceMap(map) {
+    this.resourceMap = map;
+    return this;
+  }
+  add(vid, config) {
+    if (validate(vid)) {
+      if (config.type && this.constructMap.has(config.type)) {
+        const texture = this.constructMap.get(config.type)();
+        const tempConfig = JSON.parse(JSON.stringify(config));
+        delete tempConfig.type;
+        delete tempConfig.vid;
+        texture.image = this.getResource(tempConfig.image);
+        delete tempConfig.image;
+        Compiler.applyConfig(tempConfig, texture);
+        texture.needsUpdate = true;
+        this.map.set(vid, texture);
+      } else {
+        console.warn(`texture compiler can not support this type: ${config.type}`);
+      }
+    } else {
+      console.error(`texture vid parameter is illegal: ${vid}`);
+    }
+    return this;
+  }
+  set(vid, path, key, value) {
+    if (!validate(vid)) {
+      console.warn(`texture compiler set function: vid is illeage: '${vid}'`);
+      return this;
+    }
+    if (!this.map.has(vid)) {
+      console.warn(`texture compiler set function: can not found texture which vid is: '${vid}'`);
+      return this;
+    }
+    const texture = this.map.get(vid);
+    let config = texture;
+    path.forEach((key2, i, arr) => {
+      config = config[key2];
+    });
+    config[key] = value;
+    texture.needsUpdate = true;
+    return this;
+  }
+  getMap() {
+    return this.map;
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  compileAll() {
+    const target = this.target;
+    for (const key in target) {
+      this.add(key, target[key]);
+    }
+    return this;
+  }
+  dispose() {
+    return this;
+  }
+}
 const TextureRule = function(notice, compiler) {
   const { operate, key, path, value } = notice;
   if (operate === "add") {
@@ -4944,6 +4803,29 @@ class MaterialDataSupport extends DataSupport {
     super(MaterialRule, data);
   }
 }
+const GeometryRule = function(notice, compiler) {
+  const { operate, key, path, value } = notice;
+  if (operate === "add") {
+    if (validate(key)) {
+      compiler.add(key, value);
+    }
+  } else if (operate === "set") {
+    const tempPath = path.concat([]);
+    const vid = tempPath.shift();
+    if (vid && validate(vid)) {
+      compiler.set(vid, tempPath, value);
+    } else {
+      console.warn(`geometry rule vid is illeage: '${vid}'`);
+      return;
+    }
+  }
+};
+class GeometryDataSupport extends DataSupport {
+  constructor(data) {
+    !data && (data = {});
+    super(GeometryRule, data);
+  }
+}
 const CameraRule = function(notice, compiler) {
   const { operate, key, path, value } = notice;
   if (operate === "add") {
@@ -4974,9 +4856,7 @@ const RendererRule = function(input, compiler) {
 };
 class RendererDataSupport extends DataSupport {
   constructor(data) {
-    !data && (data = {
-      WebGLRenderer: getWebGLRendererConfig()
-    });
+    !data && (data = {});
     super(RendererRule, data);
   }
 }
@@ -5008,9 +4888,7 @@ const ControlsRule = function(input, compiler) {
 };
 class ControlsDataSupport extends DataSupport {
   constructor(data) {
-    !data && (data = {
-      TransformControls: getTransformControlsConfig()
-    });
+    !data && (data = {});
     super(ControlsRule, data);
   }
 }
@@ -5026,15 +4904,21 @@ class DataSupportManager {
     __publicField(this, "sceneDataSupport");
     __publicField(this, "controlsDataSupport");
     __publicField(this, "dataSupportMap");
-    this.cameraDataSupport = (parameters == null ? void 0 : parameters.cameraDataSupport) || new CameraDataSupport();
-    this.lightDataSupport = (parameters == null ? void 0 : parameters.lightDataSupport) || new LightDataSupport();
-    this.geometryDataSupport = (parameters == null ? void 0 : parameters.geometryDataSupport) || new GeometryDataSupport();
-    this.modelDataSupport = (parameters == null ? void 0 : parameters.modelDataSupport) || new ModelDataSupport();
-    this.textureDataSupport = (parameters == null ? void 0 : parameters.textureDataSupport) || new TextureDataSupport();
-    this.materialDataSupport = (parameters == null ? void 0 : parameters.materialDataSupport) || new MaterialDataSupport();
-    this.rendererDataSupport = (parameters == null ? void 0 : parameters.rendererDataSupport) || new RendererDataSupport();
-    this.sceneDataSupport = (parameters == null ? void 0 : parameters.sceneDataSupport) || new SceneDataSupport();
-    this.controlsDataSupport = (parameters == null ? void 0 : parameters.controlsDataSupport) || new ControlsDataSupport();
+    if (parameters) {
+      Object.keys(parameters).forEach((key) => {
+        this[key] = parameters[key];
+      });
+    } else {
+      this.cameraDataSupport = new CameraDataSupport();
+      this.lightDataSupport = new LightDataSupport();
+      this.geometryDataSupport = new GeometryDataSupport();
+      this.modelDataSupport = new ModelDataSupport();
+      this.textureDataSupport = new TextureDataSupport();
+      this.materialDataSupport = new MaterialDataSupport();
+      this.rendererDataSupport = new RendererDataSupport();
+      this.sceneDataSupport = new SceneDataSupport();
+      this.controlsDataSupport = new ControlsDataSupport();
+    }
     const dataSupportMap = new Map();
     dataSupportMap.set(MODULETYPE.CAMERA, this.cameraDataSupport);
     dataSupportMap.set(MODULETYPE.LIGHT, this.lightDataSupport);
@@ -5054,6 +4938,22 @@ class DataSupportManager {
       console.warn(`can not found this type in dataSupportManager: ${type}`);
       return null;
     }
+  }
+  getSupportData(type) {
+    if (this.dataSupportMap.has(type)) {
+      return this.dataSupportMap.get(type).getData();
+    } else {
+      console.warn(`can not found this type in dataSupportManager: ${type}`);
+      return null;
+    }
+  }
+  setSupportData(type, data) {
+    if (this.dataSupportMap.has(type)) {
+      this.dataSupportMap.get(type).setData(data);
+    } else {
+      console.warn(`can not found this type in dataSupportManager: ${type}`);
+    }
+    return this;
   }
   load(config) {
     config.camera && this.cameraDataSupport.load(config.camera);
@@ -5080,6 +4980,153 @@ class DataSupportManager {
       [MODULETYPE.CONTROLS]: this.controlsDataSupport.toJSON()
     };
     return JSON.stringify(jsonObject);
+  }
+}
+let pluginHandler = new Map();
+pluginHandler.set("WebGLRenderer", WebGLRendererSupportPlugin);
+pluginHandler.set("Scene", SceneSupportPlugin);
+pluginHandler.set("ModelingScene", ModelingSceneSupportPlugin);
+pluginHandler.set("RenderManager", RendererManagerPlugin);
+pluginHandler.set("Stats", StatsPlugin);
+pluginHandler.set("EffectComposer", EffectComposerPlugin);
+pluginHandler.set("PointerManager", PointerManagerPlugin);
+pluginHandler.set("EventManager", EventManagerPlugin);
+pluginHandler.set("OrbitControls", OrbitControlsSupportPlugin);
+pluginHandler.set("TransformControls", TransformControlsSupportPlugin);
+const _EngineSupport = class extends Engine {
+  constructor(parameters) {
+    super();
+    __publicField(this, "dataSupportManager", new DataSupportManager());
+    __publicField(this, "resourceManager", new ResourceManager());
+    __publicField(this, "loaderManager", new LoaderManager());
+    if (parameters && parameters.dataSupportManager) {
+      this.dataSupportManager = parameters.dataSupportManager;
+    }
+    this.loaderManager.addEventListener("loaded", (event) => {
+      this.resourceManager.mappingResource(event.resourceMap);
+    });
+  }
+  mappingResource(resourceMap) {
+    this.resourceManager.mappingResource(resourceMap);
+    return this;
+  }
+  load(config) {
+    this.loaderManager.reset().load(config.assets || []);
+    const mappedFun = () => {
+      const dataSupportManager = this.dataSupportManager;
+      config.texture && dataSupportManager.load({ texture: config.texture });
+      config.material && dataSupportManager.load({ material: config.material });
+      delete config.assets;
+      delete config.texture;
+      delete config.material;
+      dataSupportManager.load(config);
+      this.resourceManager.removeEventListener("mapped", mappedFun);
+    };
+    this.resourceManager.addEventListener("mapped", mappedFun);
+  }
+  support() {
+    if (!this.webGLRenderer) {
+      console.warn(`support exec must after installed webGLRenderer`);
+      return this;
+    }
+    if (!this.scene) {
+      console.warn(`support exec must after installed some scene`);
+      return this;
+    }
+    if (!this.renderManager) {
+      console.warn(`support exec must after installed renderManager`);
+      return this;
+    }
+    const dataSupportManager = this.dataSupportManager;
+    const textureDataSupport = dataSupportManager.getDataSupport(MODULETYPE.TEXTURE);
+    const materialDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MATERIAL);
+    const cameraDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CAMERA);
+    const lightDataSupport = dataSupportManager.getDataSupport(MODULETYPE.LIGHT);
+    const geometryDataSupport = dataSupportManager.getDataSupport(MODULETYPE.GEOMETRY);
+    const modelDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MODEL);
+    const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER);
+    const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE);
+    const controlsDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CONTROLS);
+    const textureCompiler = new TextureCompiler({
+      target: textureDataSupport.getData()
+    });
+    const materialCompiler = new MaterialCompiler({
+      target: materialDataSupport.getData()
+    });
+    const cameraCompiler = new CameraCompiler({
+      target: cameraDataSupport.getData(),
+      scene: this.scene,
+      engine: this
+    });
+    const lightCompiler = new LightCompiler({
+      scene: this.scene,
+      target: lightDataSupport.getData()
+    });
+    const geometryCompiler = new GeometryCompiler({
+      target: geometryDataSupport.getData()
+    });
+    const modelCompiler = new ModelCompiler({
+      scene: this.scene,
+      target: modelDataSupport.getData()
+    });
+    const rendererCompiler = new RendererCompiler({
+      target: rendererDataSupport.getData(),
+      glRenderer: this.webGLRenderer,
+      engine: this
+    });
+    const sceneCompiler = new SceneCompiler({
+      target: sceneDataSupport.getData(),
+      scene: this.scene
+    });
+    const controlsCompiler = new ControlsCompiler({
+      target: controlsDataSupport.getData(),
+      transformControls: this.transformControls
+    });
+    const resourceManager = this.resourceManager;
+    sceneCompiler.linkTextureMap(textureCompiler.getMap());
+    materialCompiler.linkTextureMap(textureCompiler.getMap());
+    modelCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap());
+    cameraCompiler.linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap());
+    textureCompiler.linkRescourceMap(resourceManager.getMappingResourceMap());
+    geometryCompiler.linkRescourceMap(resourceManager.getMappingResourceMap());
+    textureDataSupport.addCompiler(textureCompiler);
+    materialDataSupport.addCompiler(materialCompiler);
+    cameraDataSupport.addCompiler(cameraCompiler);
+    lightDataSupport.addCompiler(lightCompiler);
+    geometryDataSupport.addCompiler(geometryCompiler);
+    modelDataSupport.addCompiler(modelCompiler);
+    rendererDataSupport.addCompiler(rendererCompiler);
+    sceneDataSupport.addCompiler(sceneCompiler);
+    controlsDataSupport.addCompiler(controlsCompiler);
+    return this;
+  }
+  install(plugin, params) {
+    if (_EngineSupport.pluginHandler.has(plugin)) {
+      _EngineSupport.pluginHandler.get(plugin).call(this, params);
+    } else {
+      console.error(`EngineSupport can not support ${plugin} plugin.`);
+    }
+    return this;
+  }
+};
+let EngineSupport = _EngineSupport;
+__publicField(EngineSupport, "pluginHandler", pluginHandler);
+class ModelingEngineSupport extends EngineSupport {
+  constructor(parameters) {
+    super(parameters);
+    this.install(EnginePlugin.WEBGLRENDERER, {
+      antialias: true,
+      alpha: true
+    }).install(EnginePlugin.MODELINGSCENE, {
+      hasDefaultPerspectiveCamera: true,
+      hasDefaultOrthographicCamera: true,
+      hasAxesHelper: true,
+      hasGridHelper: true,
+      hasDisplayMode: true,
+      displayMode: "env"
+    }).install(EnginePlugin.RENDERMANAGER).install(EnginePlugin.STATS).install(EnginePlugin.EFFECTCOMPOSER, {
+      WebGLMultisampleRenderTarget: true
+    }).install(EnginePlugin.ORBITCONTROLS).install(EnginePlugin.POINTERMANAGER).install(EnginePlugin.EVENTMANAGER).install(EnginePlugin.TRANSFORMCONTROLS).support();
   }
 }
 const _SupportDataGenerator = class {
@@ -5123,24 +5170,29 @@ const _SupportDataGenerator = class {
 };
 let SupportDataGenerator = _SupportDataGenerator;
 __publicField(SupportDataGenerator, "dataTypeMap", {
-  [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
-  [CONFIGTYPE.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
-  [CONFIGTYPE.AMBIENTLIGHT]: MODULETYPE.LIGHT,
-  [CONFIGTYPE.SPOTLIGHT]: MODULETYPE.LIGHT,
-  [CONFIGTYPE.POINTLIGHT]: MODULETYPE.LIGHT,
-  [CONFIGTYPE.BOXGEOMETRY]: MODULETYPE.GEOMETRY,
-  [CONFIGTYPE.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
-  [CONFIGTYPE.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
-  [CONFIGTYPE.MODEL]: MODULETYPE.MODEL,
-  [CONFIGTYPE.MESH]: MODULETYPE.MODEL,
-  [CONFIGTYPE.LINE]: MODULETYPE.MODEL,
-  [CONFIGTYPE.POINTS]: MODULETYPE.MODEL,
-  [CONFIGTYPE.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
-  [CONFIGTYPE.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
-  [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER,
-  [CONFIGTYPE.SCENE]: MODULETYPE.SCENE,
-  [CONFIGTYPE.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS
+  [CONFIGTYPE$1.IMAGETEXTURE]: MODULETYPE.TEXTURE,
+  [CONFIGTYPE$1.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
+  [CONFIGTYPE$1.AMBIENTLIGHT]: MODULETYPE.LIGHT,
+  [CONFIGTYPE$1.SPOTLIGHT]: MODULETYPE.LIGHT,
+  [CONFIGTYPE$1.POINTLIGHT]: MODULETYPE.LIGHT,
+  [CONFIGTYPE$1.BOXGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE$1.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE$1.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE$1.MODEL]: MODULETYPE.MODEL,
+  [CONFIGTYPE$1.MESH]: MODULETYPE.MODEL,
+  [CONFIGTYPE$1.LINE]: MODULETYPE.MODEL,
+  [CONFIGTYPE$1.POINTS]: MODULETYPE.MODEL,
+  [CONFIGTYPE$1.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
+  [CONFIGTYPE$1.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
+  [CONFIGTYPE$1.WEBGLRENDERER]: MODULETYPE.RENDERER,
+  [CONFIGTYPE$1.SCENE]: MODULETYPE.SCENE,
+  [CONFIGTYPE$1.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS
 });
+var OBJECTEVENT;
+(function(OBJECTEVENT2) {
+  OBJECTEVENT2["ACTIVE"] = "active";
+  OBJECTEVENT2["HOVER"] = "hover";
+})(OBJECTEVENT || (OBJECTEVENT = {}));
 const pointLight = new PointLight("rgb(255, 255, 255)", 0.5, 200, 1);
 pointLight.position.set(-30, 5, 20);
 pointLight.castShadow = true;
@@ -5301,4 +5353,15 @@ const _TextureDisplayer = class {
 };
 let TextureDisplayer = _TextureDisplayer;
 __publicField(TextureDisplayer, "ambientLight", new AmbientLight("rgb(255, 255, 255)", 1));
-export { CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, DisplayEngine, EVENTTYPE, Engine, GeometryDataSupport, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };
+class DisplayEngineSupport extends EngineSupport {
+  constructor(parameters) {
+    super(parameters);
+    this.install(EnginePlugin.WEBGLRENDERER, {
+      antialias: true,
+      alpha: true
+    }).install(EnginePlugin.SCENE).install(EnginePlugin.RENDERMANAGER).install(EnginePlugin.EFFECTCOMPOSER, {
+      WebGLMultisampleRenderTarget: true
+    }).install(EnginePlugin.ORBITCONTROLS).install(EnginePlugin.POINTERMANAGER).install(EnginePlugin.EVENTMANAGER).support();
+  }
+}
+export { CONFIGTYPE$1 as CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };

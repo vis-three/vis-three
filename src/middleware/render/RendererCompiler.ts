@@ -1,5 +1,5 @@
 import { BaseEvent, Camera, OrthographicCamera, PerspectiveCamera, WebGLRenderer } from "three";
-import { ModelingEngine } from "../../main";
+import { Engine } from "../../engine/Engine";
 import { RenderEvent, RenderManager } from "../../manager/RenderManager";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { Vector2Config } from "../common/CommonConfig";
@@ -7,13 +7,13 @@ import { RENDERERMANAGER } from "../constants/EVENTTYPE";
 import { getWebGLRendererConfig, WebGLRendererConfig, WebGLRendererScissor, WebGLRendererViewPort } from "./RendererConfig";
 
 export interface RendererCompilerTarget extends CompilerTarget {
-  WebGLRenderer: WebGLRendererConfig
+  [key: string]: WebGLRendererConfig
 }
 
 export interface RendererCompilerParameters {
   target?: RendererCompilerTarget
   glRenderer?: WebGLRenderer
-  engine?: ModelingEngine
+  engine?: Engine
 }
 
 export interface GLRendererCacheData {
@@ -24,7 +24,7 @@ export class RendererCompiler extends Compiler {
 
   private target!: RendererCompilerTarget
   private glRenderer!: WebGLRenderer
-  private engine?: ModelingEngine
+  private engine?: Engine
   private glRendererCacheData: GLRendererCacheData
 
   constructor (parameters?: RendererCompilerParameters) {

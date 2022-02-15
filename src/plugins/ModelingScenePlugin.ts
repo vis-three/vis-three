@@ -1,18 +1,22 @@
+import { generateConfig } from "../convenient/generateConfig";
 import { Engine } from "../engine/Engine";
 import { ModelingScene, ModelingSceneParameters, SCENEVIEWPOINT } from "../extends/ModelingScene/ModelingScene";
+import { CONFIGTYPE } from "../middleware/constants/configType";
+import { MODULETYPE } from "../middleware/constants/MODULETYPE";
+import { EngineSupport } from "../middleware/engineSupport/EngineSupport";
+import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { Plugin } from "./plugin";
-import { SetSizeEvent } from "./WebGLRendererPlugin";
 
-export const ModelingScenePlugin: Plugin<ModelingSceneParameters> = function (this: Engine, params: ModelingSceneParameters) {
+export const ModelingScenePlugin: Plugin<ModelingSceneParameters> = function (this: Engine, params: ModelingSceneParameters): boolean {
   if (this.scene instanceof ModelingScene) {
     console.warn('this has installed modeling scene plugin.')
-    return
+    return false
   }
 
   // 前置条件
   if (!this.webGLRenderer) {
     console.error('must install some renderer before this plugin.')
-    return
+    return false
   }
 
 
@@ -54,5 +58,17 @@ export const ModelingScenePlugin: Plugin<ModelingSceneParameters> = function (th
     scene.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, e => {
       this.setCamera!(defaultOrthograpbicCamera)
     })
+  }
+
+  return true
+}
+
+export const ModelingSceneSupportPlugin: Plugin<ModelingSceneParameters> = function (this: EngineSupport, params: ModelingSceneParameters): boolean {
+  if (ModelingScenePlugin.call(this, params)) {
+    const dataSupport = this.dataSupportManager.getDataSupport<SceneDataSupport>(MODULETYPE.RENDERER)!.getData()
+    dataSupport.scene = generateConfig(CONFIGTYPE.WEBGLRENDERER)!
+    return true
+  } else {
+    return false
   }
 }

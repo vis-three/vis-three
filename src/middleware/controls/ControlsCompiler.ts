@@ -5,7 +5,7 @@ import { getTransformControlsConfig, TransformControlsConfig } from "./ControlsC
 
 
 export interface ControlsCompilerTarget extends CompilerTarget {
-  TransformControls: TransformControlsConfig
+  [key: string]: TransformControlsConfig
 }
 
 export interface ControlsCompilerParameters {

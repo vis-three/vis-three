@@ -4,16 +4,13 @@ import {
   WebGLRenderer,
   WebGLRendererParameters
 } from "three";
-import { 
-  WebGLRendererPlugin, ScenePlugin
-} from "../plugins/plugin";
 import { EventDispatcher } from "../core/EventDispatcher";
 import { ModelingScene, ModelingSceneParameters } from "../extends/ModelingScene/ModelingScene";
 import { ModelingScenePlugin } from "../plugins/ModelingScenePlugin";
 
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { SceneParameters } from "../plugins/ScenePlugin";
+import { SceneParameters, ScenePlugin } from "../plugins/ScenePlugin";
 import { RenderManager } from "../manager/RenderManager";
 import { RendererManagerPlugin } from "../plugins/RenderManagerPlugin";
 import { OrbitControlsPlugin } from "../plugins/OrbitControlsPlugin";
@@ -28,6 +25,7 @@ import { EventManager, EventManagerParameters } from "../manager/EventManager";
 import { EventManagerPlugin } from "../plugins/EventManagerPlugin";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { TransformControlsPlugin } from "../plugins/TransformControlsPlugin";
+import { WebGLRendererPlugin } from "../plugins/WebGLRendererPlugin";
 
 // 存在的插件接口
 export enum EnginePlugin {
@@ -69,7 +67,7 @@ pluginHandler.set('TransformControls', TransformControlsPlugin)
 // 引擎槽
 export class Engine extends EventDispatcher {
 
-  private static pluginHandler: Map<string, Function> | undefined = pluginHandler
+  static pluginHandler: Map<string, Function> | undefined = pluginHandler
 
   // 注册
   static register = function (name: string, handler: (this: Engine, params?: Object) => void) {
