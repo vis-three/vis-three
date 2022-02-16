@@ -2,7 +2,7 @@ import { Engine, EnginePlugin, EnginePluginParams } from '../../engine/Engine';
 import { LoadedEvent, LoaderManager } from '../../manager/LoaderManager';
 import { MappedEvent, ResourceManager } from '../../manager/ResourceManager';
 import { EffectComposerPlugin } from '../../plugins/EffectComposerPlugin';
-import { EventManagerPlugin } from '../../plugins/EventManagerPlugin';
+import { EventManagerPlugin, EventManagerSupportPlugin } from '../../plugins/EventManagerPlugin';
 import { ModelingSceneSupportPlugin } from '../../plugins/ModelingScenePlugin';
 import { OrbitControlsSupportPlugin } from '../../plugins/OrbitControlsPlugin';
 import { PointerManagerPlugin } from '../../plugins/PointerManagerPlugin';
@@ -31,6 +31,9 @@ import { SceneDataSupport } from '../scene/SceneDataSupport';
 import { TextureCompiler } from '../texture/TextureCompiler';
 import { TextureDataSupport } from '../texture/TextureDataSupport';
 import { DataSupportManager, LoadOptions } from '../../manager/DataSupportManager';
+import { SymbolConfig } from '../common/CommonConfig';
+import { Object3D } from 'three';
+import { CompilerManager } from '../../manager/CompilerManager';
 
 export interface EngineSupportLoadOptions extends LoadOptions{
   assets?: string[]
@@ -49,7 +52,7 @@ pluginHandler.set('RenderManager', RendererManagerPlugin)
 pluginHandler.set('Stats', StatsPlugin)
 pluginHandler.set('EffectComposer', EffectComposerPlugin)
 pluginHandler.set('PointerManager', PointerManagerPlugin)
-pluginHandler.set('EventManager', EventManagerPlugin)
+pluginHandler.set('EventManager', EventManagerSupportPlugin)
 pluginHandler.set('OrbitControls', OrbitControlsSupportPlugin)
 pluginHandler.set('TransformControls', TransformControlsSupportPlugin)
 
@@ -60,6 +63,7 @@ export class EngineSupport extends Engine {
   dataSupportManager: DataSupportManager = new DataSupportManager()
   resourceManager: ResourceManager = new ResourceManager()
   loaderManager: LoaderManager = new LoaderManager()
+  compilerManager?: CompilerManager
 
   constructor (parameters?: EngineSupportParameters) {
     super()
@@ -73,7 +77,6 @@ export class EngineSupport extends Engine {
     })
   }
 
-
   // 注入无需loader的外部资源例如scirpt生成的资源
   mappingResource (resourceMap: Map<string, unknown>): this {
     this.resourceManager.mappingResource(resourceMap)
@@ -82,30 +85,40 @@ export class EngineSupport extends Engine {
 
   // load 生命周期
   load (config: EngineSupportLoadOptions) {
-    // 导入外部资源
-    this.loaderManager.reset().load(config.assets || [])
-
-    const mappedFun = () => {
- 
+    const loadLifeCycle = () => {
       const dataSupportManager = this.dataSupportManager
 
       // 生成贴图
       config.texture && dataSupportManager.load({texture: config.texture})
-
+        
       // 生成材质
       config.material && dataSupportManager.load({material: config.material})
 
       // 其他
-      delete config.assets
+
       delete config.texture
       delete config.material
 
       dataSupportManager.load(config)
-
-      this.resourceManager.removeEventListener('mapped', mappedFun)
     }
+    // 导入外部资源
+    if (config.assets && config.assets.length) {
 
-    this.resourceManager.addEventListener<MappedEvent>('mapped', mappedFun)
+      this.loaderManager.reset().load(config.assets)
+
+      const mappedFun = () => {
+
+        delete config.assets
+        loadLifeCycle()
+        
+  
+        this.resourceManager.removeEventListener('mapped', mappedFun)
+      }
+  
+      this.resourceManager.addEventListener<MappedEvent>('mapped', mappedFun)
+    } else {
+      loadLifeCycle()
+    }
   }
 
   // 安装完插件之后开始进行支持
@@ -200,8 +213,8 @@ export class EngineSupport extends Engine {
     .linkObjectMap(cameraCompiler.getMap())
     .linkObjectMap(modelCompiler.getMap())
 
-    textureCompiler.linkRescourceMap(resourceManager.getMappingResourceMap())
-    geometryCompiler.linkRescourceMap(resourceManager.getMappingResourceMap())
+    textureCompiler.linkRescourceMap(resourceManager.resourceMap)
+    geometryCompiler.linkRescourceMap(resourceManager.resourceMap)
 
     // 添加通知
     textureDataSupport.addCompiler(textureCompiler)
@@ -213,6 +226,18 @@ export class EngineSupport extends Engine {
     rendererDataSupport.addCompiler(rendererCompiler)
     sceneDataSupport.addCompiler(sceneCompiler)
     controlsDataSupport.addCompiler(controlsCompiler)
+
+    this.compilerManager = new CompilerManager({
+      textureCompiler,
+      materialCompiler,
+      cameraCompiler,
+      lightCompiler,
+      geometryCompiler,
+      modelCompiler,
+      rendererCompiler,
+      sceneCompiler,
+      controlsCompiler
+    })
 
     return this
   }

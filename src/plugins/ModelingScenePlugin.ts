@@ -65,8 +65,8 @@ export const ModelingScenePlugin: Plugin<ModelingSceneParameters> = function (th
 
 export const ModelingSceneSupportPlugin: Plugin<ModelingSceneParameters> = function (this: EngineSupport, params: ModelingSceneParameters): boolean {
   if (ModelingScenePlugin.call(this, params)) {
-    const dataSupport = this.dataSupportManager.getDataSupport<SceneDataSupport>(MODULETYPE.RENDERER)!.getData()
-    dataSupport.scene = generateConfig(CONFIGTYPE.WEBGLRENDERER)!
+    const dataSupport = this.dataSupportManager.getDataSupport<SceneDataSupport>(MODULETYPE.SCENE)!.getData()
+    dataSupport.scene = generateConfig(CONFIGTYPE.SCENE)!
     return true
   } else {
     return false

@@ -8,6 +8,7 @@ import { MaterialCompilerTarget } from "../middleware/material/MaterialCompiler"
 import { ModelCompilerTarget } from "../middleware/model/ModelCompiler"
 import { RendererCompilerTarget } from "../middleware/render/RendererCompiler"
 import { TextureCompilerTarget } from "../middleware/texture/TextureCompiler"
+import { getConfigModelMap } from "../utils/utils"
 import { generateConfig } from "./generateConfig"
 
 export type SupportDataAllType =
@@ -21,33 +22,7 @@ export type SupportDataAllType =
 
 export class SupportDataGenerator {
 
-  private static dataTypeMap = {
-    [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
-
-    [CONFIGTYPE.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
-
-    [CONFIGTYPE.AMBIENTLIGHT]: MODULETYPE.LIGHT,
-    [CONFIGTYPE.SPOTLIGHT]: MODULETYPE.LIGHT,
-    [CONFIGTYPE.POINTLIGHT]: MODULETYPE.LIGHT,
-
-    [CONFIGTYPE.BOXGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
-
-    [CONFIGTYPE.MODEL]: MODULETYPE.MODEL,
-    [CONFIGTYPE.MESH]: MODULETYPE.MODEL,
-    [CONFIGTYPE.LINE]: MODULETYPE.MODEL,
-    [CONFIGTYPE.POINTS]: MODULETYPE.MODEL,
-
-    [CONFIGTYPE.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
-    [CONFIGTYPE.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
-
-    [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER,
-
-    [CONFIGTYPE.SCENE]: MODULETYPE.SCENE,
-
-    [CONFIGTYPE.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS
-  }
+  private static configModelMap = getConfigModelMap()
 
   private supportData?: SupportDataAllType
   private supportDataType?: MODULETYPE
@@ -76,7 +51,7 @@ export class SupportDataGenerator {
       return this
     }
 
-    if (SupportDataGenerator.dataTypeMap[config.type] !== this.supportDataType) {
+    if (SupportDataGenerator.configModelMap[config.type] !== this.supportDataType) {
       console.warn(`current generator create config which module is in: ${this.supportDataType}, but you provide type is '${config.type}'`)
       return this
     }

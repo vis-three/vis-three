@@ -1,4 +1,5 @@
-import { BaseEvent, EventDispatcher, Loader } from "three";
+import { EventDispatcher, BaseEvent } from './../core/EventDispatcher';
+import { Loader } from "three";
 export interface LoaderMap {
     [key: string]: Loader;
 }
@@ -22,7 +23,7 @@ export interface LoadedEvent extends BaseEvent {
     loadError: number;
     resourceMap: Map<string, unknown>;
 }
-export declare class LoaderManager extends EventDispatcher<LoadingEvent | DetailEvent | LoadedEvent> {
+export declare class LoaderManager extends EventDispatcher {
     private resourceMap;
     private loaderMap;
     private loadTotal;
@@ -37,6 +38,7 @@ export declare class LoaderManager extends EventDispatcher<LoadingEvent | Detail
     private checkLoaded;
     load(urlList: Array<string>): this;
     reset(): this;
+    register(ext: string, loader: Loader): this;
     hasLoaded(url: string): boolean;
     getResource(url: string): unknown;
     getLoadDetailMap(): {

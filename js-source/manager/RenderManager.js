@@ -1,5 +1,5 @@
 import { EventDispatcher, Clock, } from "three";
-import { RENDERERMANAGER } from "../case/constants/EVENTTYPE";
+import { RENDERERMANAGER } from "../middleware/constants/EVENTTYPE";
 export class RenderManager extends EventDispatcher {
     clock = new Clock(); // 引擎时钟
     animationFrame = -1; // 渲染定时器

@@ -37,8 +37,8 @@ export const ScenePlugin: Plugin<SceneParameters> = function (this: Engine, para
 
 export const SceneSupportPlugin: Plugin<SceneParameters> = function (this: EngineSupport, params: SceneParameters): boolean {
   if (ScenePlugin.call(this, params)) {
-    const dataSupport = this.dataSupportManager.getDataSupport<SceneDataSupport>(MODULETYPE.RENDERER)!.getData()
-    dataSupport.scene = generateConfig(CONFIGTYPE.WEBGLRENDERER)!
+    const dataSupport = this.dataSupportManager.getDataSupport<SceneDataSupport>(MODULETYPE.SCENE)!.getData()
+    dataSupport.scene = generateConfig(CONFIGTYPE.SCENE)!
     return true
   } else {
     return false

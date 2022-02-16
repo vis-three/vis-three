@@ -5,24 +5,13 @@ import { isValidKey } from "../utils/utils";
 export interface CompilerTarget {
   [key: string]: SymbolConfig
 }
-
-export enum COMPILEREVENTTYPE {
-  ADD = 'add',
-  REMOVE = 'remove'
-}
-
-export interface CompilerAddEvent extends BaseEvent {
-  type: COMPILEREVENTTYPE.ADD
-  object: Object3D
-  vid: string
-}
-
 export interface ObjectCompiler {
   add: Function
   remove: Function
+  getSupportVid(parameter: unknown): SymbolConfig['vid'] | null
 }
 
-export abstract class Compiler extends EventDispatcher {
+export abstract class Compiler{
 
   static applyConfig<C extends SymbolConfig, O> (config: C, object: O, callBack?: Function) {
     const filterMap = {
@@ -47,9 +36,8 @@ export abstract class Compiler extends EventDispatcher {
   }
 
   constructor() {
-    super()
   }
-
+  
   abstract setTarget (parameter: unknown): this
   abstract compileAll(): this
   abstract dispose(parameter: unknown): this

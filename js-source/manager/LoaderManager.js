@@ -1,7 +1,8 @@
-import { EventDispatcher, ImageLoader } from "three";
+import { EventDispatcher } from './../core/EventDispatcher';
+import { ImageLoader } from "three";
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
-import { LOADERMANAGER } from "../case/constants/EVENTTYPE";
+import { LOADERMANAGER } from "../middleware/constants/EVENTTYPE";
 export class LoaderManager extends EventDispatcher {
     resourceMap;
     loaderMap;
@@ -59,6 +60,7 @@ export class LoaderManager extends EventDispatcher {
             return this;
         }
         this.loadTotal += urlList.length;
+        const resourceMap = this.resourceMap;
         const loaderMap = this.loaderMap;
         const loadDetailMap = this.loadDetailMap;
         for (let url of urlList) {
@@ -69,6 +71,23 @@ export class LoaderManager extends EventDispatcher {
                 message: url
             };
             loadDetailMap[url] = detail;
+            // 判断有无缓存
+            if (resourceMap.has(url)) {
+                detail.progress = 1;
+                this.loadSuccess += 1;
+                this.dispatchEvent({
+                    type: LOADERMANAGER.DETAILLOADED,
+                    detail
+                });
+                this.dispatchEvent({
+                    type: LOADERMANAGER.LOADING,
+                    loadTotal: this.loadTotal,
+                    loadSuccess: this.loadSuccess,
+                    loadError: this.loadError
+                });
+                this.checkLoaded();
+                continue;
+            }
             const ext = url.split('.').pop()?.toLocaleLowerCase();
             if (!ext) {
                 detail.message = `url: ${url} 地址有误，无法获取文件格式。`;
@@ -133,6 +152,11 @@ export class LoaderManager extends EventDispatcher {
         this.isLoading = false;
         this.isLoaded = false;
         this.loadDetailMap = {};
+        return this;
+    }
+    // 注册自定loader
+    register(ext, loader) {
+        this.loaderMap[ext] = loader;
         return this;
     }
     // 资源是否已经加装

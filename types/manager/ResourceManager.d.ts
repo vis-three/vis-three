@@ -1,24 +1,24 @@
-import { BaseEvent, EventDispatcher } from "three";
-export interface ModelMappingUrlConfig {
+import { BaseEvent } from "three";
+import { EventDispatcher } from "../core/EventDispatcher";
+export interface ObjectMappingStructure {
     type: string;
     geometry?: string;
     material?: string | string[];
-    children?: ModelMappingUrlConfig[];
+    children?: ObjectMappingStructure[];
 }
 export interface MappedEvent extends BaseEvent {
-    mappingResourceMap: Map<string, unknown>;
-    configMappingMap: Map<string, unknown>;
+    structureMap: Map<string, unknown>;
+    configMap: Map<string, unknown>;
+    resourceMap: Map<string, unknown>;
 }
 export declare enum RESOURCEEVENTTYPE {
     MAPPED = "mapped"
 }
-export declare class ResourceManager extends EventDispatcher<MappedEvent> {
-    private mappingResourceMap;
-    private configMappingMap;
+export declare class ResourceManager extends EventDispatcher {
+    structureMap: Map<string, unknown>;
+    configMap: Map<string, unknown>;
+    resourceMap: Map<string, unknown>;
     constructor();
-    mappingResource(resourceMap: Map<string, unknown>): this;
-    getMappingResourceMap(): Map<string, unknown>;
-    getResource(mappingUrl: string): unknown;
-    getConfig(url: string): unknown;
+    mappingResource(loadResourceMap: Map<string, unknown>): this;
     dispose(): void;
 }

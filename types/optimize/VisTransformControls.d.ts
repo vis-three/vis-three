@@ -5,13 +5,13 @@ export declare enum VISTRANSFORMEVENTTYPE {
     OBJECTCHANGED = "objectChanged"
 }
 export interface ObjectChangedEvent extends BaseEvent {
-    type: VISTRANSFORMEVENTTYPE.OBJECTCHANGED;
+    type: 'objectChanged';
     transObjectSet: Set<Object3D>;
     mode: string;
     target: Object3D;
 }
 export declare class VisTransformControls extends TransformControls {
-    private target;
+    target: Object3D;
     private transObjectSet;
     constructor(camera: Camera, dom: HTMLElement);
     getTarget(): Object3D;

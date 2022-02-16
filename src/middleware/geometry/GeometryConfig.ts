@@ -35,9 +35,9 @@ export const getGeometryConfig = function (): GeometryConfig {
     vid: '',
     type: 'Geometry',
     position: {
-      x: 0,
-      y: 0,
-      z: 0
+      x: 0, // percent
+      y: 0, // percent
+      z: 0 // percent
     },
     rotation: {
       x: 0,

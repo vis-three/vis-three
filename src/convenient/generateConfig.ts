@@ -2,7 +2,7 @@ import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig} from ".
 import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig } from "../middleware/geometry/GeometryConfig"
 import { getModelConfig } from "../middleware/model/ModelConfig"
 import { getImageTextureConfig } from "../middleware/texture/TextureConfig"
-import { getMeshStandardMaterialConfig } from "../middleware/material/MaterialConfig"
+import { getMeshPhongMaterialConfig, getMeshStandardMaterialConfig } from "../middleware/material/MaterialConfig"
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../middleware/camera/CameraConfig"
 import { CONFIGTYPE } from "../middleware/constants/configType"
 import { getWebGLRendererConfig } from "../middleware/render/RendererConfig"
@@ -13,6 +13,7 @@ const typeMap: {[key: string]: Function} = {
   [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
 
   [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
+  [CONFIGTYPE.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
 
   [CONFIGTYPE.AMBIENTLIGHT]: getAmbientLightConfig,
   [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,
@@ -23,9 +24,6 @@ const typeMap: {[key: string]: Function} = {
   [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
 
   [CONFIGTYPE.MODEL]: getModelConfig,
-  [CONFIGTYPE.MESH]: getModelConfig,
-  [CONFIGTYPE.LINE]: getModelConfig,
-  [CONFIGTYPE.POINTS]: getModelConfig,
 
   [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
   [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
@@ -38,12 +36,12 @@ const typeMap: {[key: string]: Function} = {
   [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig
 }
 
-export const generateConfig = function<C> (type: string, merge?: object): C | null {
+export const generateConfig = function<C> (type: string, merge?: object, warn?: boolean): C | null {
   if (typeMap[type]) {
     const recursion = (config: C, merge: object) => {
       for (const key in merge) {
         if (config[key] === undefined) {
-          console.warn(`'${type}' config can not set key: ${key}`)
+          warn && console.warn(`'${type}' config can not set key: ${key}`)
           continue
         }
         if (typeof merge[key] === 'object' && merge[key] !== null) {

@@ -89,7 +89,9 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererParameters> = function (th
 export const WebGLRendererSupportPlugin: Plugin<WebGLRendererParameters> = function (this: EngineSupport, params: WebGLRendererParameters): boolean {
   if (WebGLRendererPlugin.call(this, params)) {
     const dataSupport = this.dataSupportManager.getDataSupport<RendererDataSupport>(MODULETYPE.RENDERER)!.getData()
-    dataSupport.WebGLRenderer = generateConfig(CONFIGTYPE.WEBGLRENDERER)!
+    if (!dataSupport.WebGLRenderer) {
+      dataSupport.WebGLRenderer = generateConfig(CONFIGTYPE.WEBGLRENDERER)!
+    }
     return true
   } else {
     return false

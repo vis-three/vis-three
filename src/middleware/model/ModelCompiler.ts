@@ -1,6 +1,6 @@
 import { BoxBufferGeometry, BufferGeometry, Line, Material, Mesh, MeshStandardMaterial, Object3D, Points, Scene, Vector3 } from "three";
 import { validate } from "uuid";
-import { Compiler, COMPILEREVENTTYPE, CompilerTarget, ObjectCompiler } from "../../core/Compiler";
+import { Compiler, CompilerTarget, ObjectCompiler } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { MODELCOMPILER } from "../constants/EVENTTYPE";
 import { GeometryCompilerTarget } from "../geometry/GeometryCompiler";
@@ -26,7 +26,8 @@ export class ModelCompiler extends Compiler implements ObjectCompiler {
 
   private scene!: Scene
   private target!: ModelCompilerTarget
-  private map: Map<string, Object3D>
+  private map: Map<SymbolConfig['vid'], Object3D>
+  private weakMap: WeakMap<Object3D, SymbolConfig['vid']>
   private constructMap: Map<string, (config: ModelConfig) => Object3D>
   private geometryMap!: Map<SymbolConfig['vid'], BufferGeometry>
   private materialMap!: Map<SymbolConfig['vid'], Material>
@@ -50,6 +51,7 @@ export class ModelCompiler extends Compiler implements ObjectCompiler {
     }
 
     this.map = new Map()
+    this.weakMap = new WeakMap()
     this.getReplaceMaterial = () => new MeshStandardMaterial({color: 'rgb(150, 150, 150)'})
     this.getReplaceGeometry = () => new BoxBufferGeometry(10, 10, 10)
     
@@ -155,22 +157,26 @@ export class ModelCompiler extends Compiler implements ObjectCompiler {
   // 设置材质方法
   private setMaterial (vid: string, target: string): this {
     (this.map.get(vid)! as Mesh).material = this.getMaterial(target)
-    
-    this.dispatchEvent({
-      type: MODELCOMPILER.SETMATERIAL,
-      object: this.map.get(vid)
-    })
     return this
+  }
+
+  getSupportVid(object: Object3D):SymbolConfig['vid'] | null{
+    if (this.weakMap.has(object)) {
+      return this.weakMap.get(object)!
+    } else {
+      return null
+    }
   }
 
   add (vid: string, config: ModelConfig): this {
     if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const object = this.constructMap.get(config.type)!(config)
+      if (config.type && this.constructMap.has(config.display)) {
+        const object = this.constructMap.get(config.display)!(config)
         const tempConfig = JSON.parse(JSON.stringify(config))
 
         delete tempConfig.vid
         delete tempConfig.type
+        delete tempConfig.display
         delete tempConfig.geometry
         delete tempConfig.material
         delete tempConfig.lookAt
@@ -178,14 +184,9 @@ export class ModelCompiler extends Compiler implements ObjectCompiler {
         Compiler.applyConfig(tempConfig, object)
 
         this.map.set(vid, object)
+        this.weakMap.set(object, vid)
 
         this.setLookAt(vid, config.lookAt)
-
-        this.dispatchEvent({
-          type: COMPILEREVENTTYPE.ADD,
-          object,
-          vid
-        })
 
         this.scene.add(object)     
       }

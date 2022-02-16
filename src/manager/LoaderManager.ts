@@ -96,6 +96,7 @@ export class LoaderManager extends EventDispatcher {
 
     this.loadTotal += urlList.length
 
+    const resourceMap = this.resourceMap
     const loaderMap = this.loaderMap
     const loadDetailMap = this.loadDetailMap
 
@@ -108,6 +109,24 @@ export class LoaderManager extends EventDispatcher {
       }
 
       loadDetailMap[url] = detail
+
+      // 判断有无缓存
+      if (resourceMap.has(url)) {
+        detail.progress = 1
+        this.loadSuccess += 1
+        this.dispatchEvent({
+          type: LOADERMANAGER.DETAILLOADED,
+          detail
+        })
+        this.dispatchEvent({
+          type: LOADERMANAGER.LOADING,
+          loadTotal: this.loadTotal,
+          loadSuccess: this.loadSuccess,
+          loadError: this.loadError
+        })
+        this.checkLoaded()
+        continue
+      }
 
       const ext = url.split('.').pop()?.toLocaleLowerCase()
       if (!ext) {
@@ -166,8 +185,6 @@ export class LoaderManager extends EventDispatcher {
         })
         this.checkLoaded()
       })
-
-
     }
 
     return this

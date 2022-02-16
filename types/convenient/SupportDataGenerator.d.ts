@@ -1,15 +1,15 @@
-import { CameraCompilerTarget } from "../case/camera/CameraCompiler";
-import { SymbolConfig } from "../case/common/CommonConfig";
-import { MODULETYPE } from "../case/constants/MODULETYPE";
-import { GeometryCompilerTarget } from "../case/geometry/GeometryCompiler";
-import { LightCompilerTarget } from "../case/light/LightCompiler";
-import { MaterialCompilerTarget } from "../case/material/MaterialCompiler";
-import { ModelCompilerTarget } from "../case/model/ModelCompiler";
-import { RendererCompilerTarget } from "../case/render/RendererCompiler";
-import { TextureCompilerTarget } from "../case/texture/TextureCompiler";
+import { CameraCompilerTarget } from "../middleware/camera/CameraCompiler";
+import { SymbolConfig } from "../middleware/common/CommonConfig";
+import { MODULETYPE } from "../middleware/constants/MODULETYPE";
+import { GeometryCompilerTarget } from "../middleware/geometry/GeometryCompiler";
+import { LightCompilerTarget } from "../middleware/light/LightCompiler";
+import { MaterialCompilerTarget } from "../middleware/material/MaterialCompiler";
+import { ModelCompilerTarget } from "../middleware/model/ModelCompiler";
+import { RendererCompilerTarget } from "../middleware/render/RendererCompiler";
+import { TextureCompilerTarget } from "../middleware/texture/TextureCompiler";
 export declare type SupportDataAllType = TextureCompilerTarget | MaterialCompilerTarget | LightCompilerTarget | GeometryCompilerTarget | ModelCompilerTarget | CameraCompilerTarget | RendererCompilerTarget;
 export declare class SupportDataGenerator {
-    private static dataTypeMap;
+    private static configModelMap;
     private supportData?;
     private supportDataType?;
     constructor();

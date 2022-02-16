@@ -21,7 +21,7 @@
     top: 0%;
     left: 0%;
     background: black;
-    max-width: 100%;
+    max-width: 30%;
     max-height: 100%;
     overflow: auto;
   }
@@ -39,43 +39,39 @@
     const loaderManager = new Vis.LoaderManager()
     const resourceManager = new Vis.ResourceManager()
 
-    const engine = new Vis.ModelingEngine(document.getElementById('app'))
-    const scene = engine.getScene()
+    const engine = new Vis.ModelingEngine()
+    .setDom(document.getElementById('app'))
+    .setStats(true)
+    .setSize()
+    .play()
+
+    const scene = engine.scene
 
     const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 100, 0.01)
     pointLight.position.set(10, 10, 10)
     scene.add(pointLight)
 
-    const PointLightHelper = new Vis.PointLightHelper(pointLight)
-    scene.add(PointLightHelper)
-
-    loaderManager.addEventListener('loaded', e => {
-      resourceManager.mappingResource(e.resourceMap)
-      e.resourceMap.forEach((resource, url) => {
-        resource.scale.set(10, 10, 10)
-        scene.add(resource)
-      })    
-      engine.play()
+    loaderManager.addEventListener('loaded', event => {
+      resourceManager.mappingResource(event.resourceMap)
+      event.resourceMap.forEach((resource, url) => {
+        if (resource instanceof THREE.Object3D) {
+          resource.scale.set(30, 30, 30)
+          scene.add(resource)
+        }
+      })
     })
 
-    resourceManager.addEventListener(Vis.RESOURCEEVENTTYPE.MAPPED, e => {
-      console.log(e.configMappingMap)
+    resourceManager.addEventListener('mapped', e => {
+      console.log(e)
       let str = ''
-      e.configMappingMap.forEach((config, url) => {
-        console.log(config, url)
+      e.configMap.forEach((config, url) => {
         str += `${url}: ${JSON.stringify(config)}\n`
       })
       str = str.replace(/",/g, '",\n').replace(/"},/g, '"},\n').replace(/{"/g, '{"\n')
       document.getElementById('mappingStructure').innerText = str
-      
     })
 
-    
-
     loaderManager.load(assetsList)
-    
-
-
   </script>
 </body>
 </html>

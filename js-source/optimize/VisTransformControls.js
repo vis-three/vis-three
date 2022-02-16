@@ -98,7 +98,7 @@ export class VisTransformControls extends TransformControls {
     }
     setAttach(...object) {
         this.transObjectSet.clear();
-        if (!object.length) {
+        if (!object.length || !object[0]) {
             this.detach();
             return this;
         }

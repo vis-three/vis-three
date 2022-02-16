@@ -2,7 +2,7 @@ import { BaseEvent, Camera, OrthographicCamera, PerspectiveCamera, WebGLRenderer
 import { Engine } from "../../engine/Engine";
 import { RenderEvent, RenderManager } from "../../manager/RenderManager";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
-import { Vector2Config } from "../common/CommonConfig";
+import { SymbolConfig, Vector2Config } from "../common/CommonConfig";
 import { RENDERERMANAGER } from "../constants/EVENTTYPE";
 import { getWebGLRendererConfig, WebGLRendererConfig, WebGLRendererScissor, WebGLRendererViewPort } from "./RendererConfig";
 

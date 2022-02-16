@@ -1,26 +1,7 @@
-import { CONFIGTYPE } from "../case/constants/configType";
-import { MODULETYPE } from "../case/constants/MODULETYPE";
+import { getConfigModelMap } from "../utils/utils";
 import { generateConfig } from "./generateConfig";
 export class SupportDataGenerator {
-    static dataTypeMap = {
-        [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
-        [CONFIGTYPE.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
-        [CONFIGTYPE.AMBIENTLIGHT]: MODULETYPE.LIGHT,
-        [CONFIGTYPE.SPOTLIGHT]: MODULETYPE.LIGHT,
-        [CONFIGTYPE.POINTLIGHT]: MODULETYPE.LIGHT,
-        [CONFIGTYPE.BOXGEOMETRY]: MODULETYPE.GEOMETRY,
-        [CONFIGTYPE.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
-        [CONFIGTYPE.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
-        [CONFIGTYPE.MODEL]: MODULETYPE.MODEL,
-        [CONFIGTYPE.MESH]: MODULETYPE.MODEL,
-        [CONFIGTYPE.LINE]: MODULETYPE.MODEL,
-        [CONFIGTYPE.POINTS]: MODULETYPE.MODEL,
-        [CONFIGTYPE.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
-        [CONFIGTYPE.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
-        [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER,
-        [CONFIGTYPE.SCENE]: MODULETYPE.SCENE,
-        [CONFIGTYPE.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS
-    };
+    static configModelMap = getConfigModelMap();
     supportData;
     supportDataType;
     constructor() { }
@@ -42,7 +23,7 @@ export class SupportDataGenerator {
             console.warn(`config can not found attribute 'type'`);
             return this;
         }
-        if (SupportDataGenerator.dataTypeMap[config.type] !== this.supportDataType) {
+        if (SupportDataGenerator.configModelMap[config.type] !== this.supportDataType) {
             console.warn(`current generator create config which module is in: ${this.supportDataType}, but you provide type is '${config.type}'`);
             return this;
         }

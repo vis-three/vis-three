@@ -1,0 +1,1 @@
+{"version":3,"file":"ModelConfig.js","sourceRoot":"","sources":["../../../src/middleware/model/ModelConfig.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAgB,MAAM,wBAAwB,CAAC;AAQvE,MAAM,CAAC,MAAM,cAAc,GAAG;IAC5B,OAAO,MAAM,CAAC,MAAM,CAAC,eAAe,EAAE,EAAE;QACtC,IAAI,EAAE,OAAO;QACb,OAAO,EAAE,MAAM;QACf,QAAQ,EAAE,EAAE;QACZ,QAAQ,EAAE,EAAE;KACb,CAAC,CAAA;AACJ,CAAC,CAAA"}

@@ -1,7 +1,7 @@
 import { Camera, Object3D, OrthographicCamera, PerspectiveCamera, Scene, Vector3 } from "three";
 import { validate } from "uuid";
 import { ModelingEngine } from "../../main";
-import { Compiler, COMPILEREVENTTYPE, CompilerTarget, ObjectCompiler } from "../../core/Compiler";
+import { Compiler, CompilerTarget, ObjectCompiler } from "../../core/Compiler";
 import { SetSizeEvent } from "../../plugins/WebGLRendererPlugin";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CameraAllType } from "./CameraConfig";
@@ -29,6 +29,7 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
   private scene!: Scene
   private engine!: Engine
   private map: Map<string, Camera>
+  private weakMap: WeakMap<Camera, string>
   private constructMap: Map<string, () => Camera>
   private objectMapSet: Set<Map<SymbolConfig['vid'], Object3D>>
 
@@ -44,6 +45,7 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
       this.engine = new Engine().install(EnginePlugin.WEBGLRENDERER)
     }
     this.map = new Map()
+    this.weakMap = new WeakMap()
     const constructMap = new Map()
     constructMap.set('PerspectiveCamera', () => new PerspectiveCamera())
     constructMap.set('OrthographicCamera', () => new OrthographicCamera(0, 0, 0, 0))
@@ -185,6 +187,14 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
     return this
   }
 
+  getSupportVid(object: Camera):SymbolConfig['vid'] | null{
+    if (this.weakMap.has(object)) {
+      return this.weakMap.get(object)!
+    } else {
+      return null
+    }
+  }
+
   add (vid: string, config: CameraAllType): this {
     if (validate(vid)) {
       if (config.type && this.constructMap.has(config.type)) {
@@ -207,12 +217,6 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
 
         this.setLookAt(config.vid, config.lookAt)
         this.setAdaptiveWindow(config.vid, config.adaptiveWindow)
-
-        this.dispatchEvent({
-          type: COMPILEREVENTTYPE.ADD,
-          object: camera,
-          vid
-        })
 
         this.scene.add(camera)
       }

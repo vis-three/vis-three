@@ -11,6 +11,7 @@ export enum CONFIGTYPE {
   IMAGETEXTURE = 'ImageTexture',
 
   MESHSTANDARDMATERIAL = 'MeshStandardMaterial',
+  MESHPHONGMATERIAL = "MeshPhongMaterial",
 
   AMBIENTLIGHT = 'AmbientLight',
   SPOTLIGHT = 'SpotLight',

@@ -18,16 +18,18 @@
   #totalProgress {
     position: fixed;
     color: white;
-    top: 0%;
-    left: 0%;
+    top: 10%;
+    right: 10%;
+    left: unset;
     background: black;
   }
 
   #detailProgress {
     position: fixed;
     color: white;
-    top: 5%;
-    left: 0%;
+    top: 15%;
+    right: 10%;
+    left: unset;
     background: black;
   }
 </style>
@@ -42,27 +44,29 @@
     import * as Vis from '../dist/Vis.es.js'
     import assetsList from '/examples/public/assetsConfig/loaderManager.json'
 
-    const loaderManager = new Vis.LoaderManager()
+    const engine = new Vis.ModelingEngine()
+    .setDom(document.getElementById('app'))
+    .setStats(true)
+    .setSize()
+    .play()
 
-    const engine = new Vis.ModelingEngine(document.getElementById('app'))
-    const scene = engine.getScene()
+    const scene = engine.scene
 
     const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 100, 0.01)
     pointLight.position.set(10, 10, 10)
     scene.add(pointLight)
 
-    const PointLightHelper = new Vis.PointLightHelper(pointLight)
-    scene.add(PointLightHelper)
-
     const totalProgress = document.getElementById('totalProgress')
     const detailProgress = document.getElementById('detailProgress')
 
-    loaderManager.addEventListener(Vis.EVENTTYPE.LOADINGMANAGER.LOADING, e => {
+    const loaderManager = new Vis.LoaderManager()
+
+    loaderManager.addEventListener('loading', e => {
       totalProgress.innerHTML = `total: ${e.loadTotal}, success: ${e.loadSuccess}, error: ${e.loadError}`
     })
 
     
-    loaderManager.addEventListener(Vis.EVENTTYPE.LOADINGMANAGER.DETAILLOADING, e => {
+    loaderManager.addEventListener('detailLoading', e => {
       detailProgress.innerText = `
         url: ${e.detail.url}
         progress: ${e.detail.progress}
@@ -71,7 +75,7 @@
       `
     })
 
-    loaderManager.addEventListener(Vis.EVENTTYPE.LOADINGMANAGER.LOADED, e => {
+    loaderManager.addEventListener('loaded', e => {
       e.resourceMap.forEach((resource, url) => {
         if (url === "/examples/public/model/Lowpoly/Lowpoly.obj") {
           resource.scale.set(0.02, 0.02, 0.02)
@@ -81,12 +85,9 @@
         resource.position.set(Math.random() * 30, 0, Math.random() * 30)
         scene.add(resource)
       })    
-      engine.play()
     })
 
     loaderManager.load(assetsList)
-
-
 
   </script>
 </body>

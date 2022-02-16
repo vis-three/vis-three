@@ -1,5 +1,5 @@
 import { AmbientLight, Color, Light, PointLight, Scene, SpotLight } from "three";
-import { Compiler, COMPILEREVENTTYPE, CompilerTarget, ObjectCompiler } from "../../core/Compiler";
+import { Compiler, CompilerTarget, ObjectCompiler } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { PointLightConfig, SpotLightConfig } from "./LightConfig";
 import { validate } from "uuid";
@@ -18,6 +18,7 @@ export class LightCompiler extends Compiler implements ObjectCompiler {
   private scene: Scene
   private target: LightCompilerTarget
   private map: Map<SymbolConfig['vid'], Light>
+  private weakMap: WeakMap<Light, SymbolConfig['vid']>
   private constructMap: Map<string, () => Light>
 
   constructor (parameters: LightCompilerParameters) {
@@ -25,11 +26,20 @@ export class LightCompiler extends Compiler implements ObjectCompiler {
     this.scene = parameters.scene
     this.target = parameters.target
     this.map = new Map()
+    this.weakMap = new WeakMap()
 
     this.constructMap = new Map()
     this.constructMap.set('PointLight', () => new PointLight())
     this.constructMap.set('SpotLight', () => new SpotLight())
     this.constructMap.set('AmbientLight', () => new AmbientLight())
+  }
+
+  getSupportVid(object: Light):SymbolConfig['vid'] | null{
+    if (this.weakMap.has(object)) {
+      return this.weakMap.get(object)!
+    } else {
+      return null
+    }
   }
 
   add (vid: string, config: SpotLightConfig | PointLightConfig) {
@@ -42,12 +52,7 @@ export class LightCompiler extends Compiler implements ObjectCompiler {
         light.color = new Color(config.color)
 
         this.map.set(vid, light)
-
-        this.dispatchEvent({
-          type: COMPILEREVENTTYPE.ADD,
-          object: light,
-          vid
-        })
+        this.weakMap.set(light, vid)
 
         this.scene.add(light)
       }

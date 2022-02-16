@@ -1,4 +1,4 @@
-import { FrontSide, RGBAFormat, TangentSpaceNormalMap } from "three";
+import { FrontSide, MultiplyOperation, RGBAFormat, TangentSpaceNormalMap } from "three";
 import { SymbolConfig } from "../common/CommonConfig";
 
 export interface MaterialConfig extends SymbolConfig {
@@ -51,9 +51,42 @@ export interface MeshStandardMaterialConfig extends MaterialConfig {
   aoMap: string
 }
 
+export interface MeshPhongMaterialConfig extends MaterialConfig {
+  aoMapIntensity: number
+  bumpScale: number
+  color: string
+  displacementScale: number
+  displacementBias: number
+  emissive: string
+  emissiveIntensity: number
+  flatShading: boolean
+  lightMapIntensity: number
+  normalMapType: number
+  refractionRatio: number
+  wireframe: boolean
+  wireframeLinecap: string
+  wireframeLinejoin: string
+  specular: string
+  shininess: number
+  combine: number
+
+  normalMap: string
+  map: string
+  lightMap: string
+  envMap: string
+  emissiveMap: string
+  displacementMap: string
+  bumpMap: string
+  alphaMap: string
+  aoMap: string
+  specularMap: string
+}
+
 // TODO: LoadMaterial
 
-export type MaterialAllType = MeshStandardMaterialConfig
+export type MaterialAllType = 
+  MeshStandardMaterialConfig |
+  MeshPhongMaterialConfig
 
 export const getMaterialConfig = function(): MaterialConfig {
   return {
@@ -110,5 +143,40 @@ export const getMeshStandardMaterialConfig = function(): MeshStandardMaterialCon
     alphaMap: '',
     aoMap: ''
   
+  })
+}
+
+export const getMeshPhongMaterialConfig = function(): MeshPhongMaterialConfig {
+  return Object.assign(getMaterialConfig(), {
+    type: 'MeshPhongMateria',
+    aoMapIntensity: 1,
+    bumpScale: 1,
+    color: 'rgb(255, 255, 255)',
+    displacementScale: 1,
+    displacementBias: 0,
+    emissive: 'rgb(0, 0, 0)',
+    emissiveIntensity: 1,
+    envMapIntensity: 1,
+    flatShading: false,
+    lightMapIntensity: 1,
+    normalMapType: TangentSpaceNormalMap,
+    refractionRatio: 0.98,
+    wireframe: false,
+    wireframeLinecap: 'round',
+    wireframeLinejoin: 'round',
+    specular: 'rgb(17, 17, 17)',
+    shininess: 30,
+    combine: MultiplyOperation,
+  
+    normalMap: '',
+    map: '',
+    lightMap: '',
+    envMap: '',
+    emissiveMap: '',
+    displacementMap: '',
+    bumpMap: '',
+    alphaMap: '',
+    aoMap: '',
+    specularMap: ''
   })
 }

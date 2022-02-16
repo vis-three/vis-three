@@ -19,6 +19,8 @@ import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { ControlsCompilerTarget } from "../middleware/controls/ControlsCompiler";
 import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
 import { Compiler, CompilerTarget } from "../core/Compiler";
+import { Object3D } from 'three';
+import { SymbolConfig } from '../middleware/common/CommonConfig';
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget

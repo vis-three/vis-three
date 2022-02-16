@@ -24,9 +24,11 @@ import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
 import { EVENTTYPE } from "./middleware/constants/EVENTTYPE";
 import { TextureDisplayer } from "./displayer/TextureDisplayer";
 import { Engine } from "./engine/Engine";
-import { ModelingScene } from "./extends/ModelingScene/ModelingScene";
+import { ModelingScene, SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./extends/ModelingScene/ModelingScene";
 import { EngineSupport } from './middleware/engineSupport/EngineSupport';
 import { DisplayEngineSupport } from './middleware/engineSupport/DisplayEngineSupport';
+import { SceneDataSupport } from './middleware/scene/SceneDataSupport';
+
 
 export {
   // menu
@@ -35,6 +37,8 @@ export {
   CONFIGTYPE,
   OBJECTEVENT,
   EVENTTYPE,
+  SCENEDISPLAYMODE,
+  SCENEVIEWPOINT,
 
   // manager
   LoaderManager,
@@ -62,6 +66,7 @@ export {
   CameraDataSupport,
   ControlsDataSupport,
   RendererDataSupport,
+  SceneDataSupport,
 
   // helper
   PointLightHelper,
