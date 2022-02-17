@@ -1,7 +1,6 @@
 import { SymbolConfig, Vector2Config } from "../common/CommonConfig";
 export interface TextureConfig extends SymbolConfig {
     name: string;
-    image: string;
     mapping: number;
     wrapS: number;
     wrapT: number;
@@ -18,7 +17,19 @@ export interface TextureConfig extends SymbolConfig {
     needsUpdate: boolean;
 }
 export interface ImageTextureConfig extends TextureConfig {
+    url: string;
 }
-export declare type TextureAllType = ImageTextureConfig;
+export interface CubeTextureConfig extends TextureConfig {
+    cube: {
+        nx: string;
+        ny: string;
+        nz: string;
+        px: string;
+        py: string;
+        pz: string;
+    };
+}
+export declare type TextureAllType = ImageTextureConfig | CubeTextureConfig;
 export declare const getTextureConfig: () => TextureConfig;
 export declare const getImageTextureConfig: () => ImageTextureConfig;
+export declare const getCubeTextureConfig: () => CubeTextureConfig;

@@ -63,39 +63,6 @@ export const EventManagerPlugin: Plugin<EventManagerParameters> = function (this
 
 export const EventManagerSupportPlugin: Plugin<EventManagerParameters> = function (this: EngineSupport, params: EventManagerParameters): boolean {
   if (EventManagerPlugin.call(this, params)) {
-
-    const generateGlobalSupportEvent = (event: GlobalEvent, type: string): GlobalSupportEvent => {
-      const newEvent = Object.assign({}, event) as GlobalSupportEvent
-
-      newEvent.type = type
-
-      newEvent.vidList = []
-      if (newEvent.intersections && newEvent.intersections.length) {
-        newEvent.vidList = newEvent.intersections.map(intersection => {
-          const vid =  this.compilerManager!.getObjectVid(intersection.object)
-          if (!vid) {
-            console.warn(`can not found this object symbol vid in compiler manager: ${intersection.object}`)
-          }
-          return vid
-        })
-      }
-      return newEvent
-    }
-
-    // 增加event support事件
-    this.eventManager!.addEventListener<GlobalEvent>('pointermove', (event) => {
-      this.eventManager!.dispatchEvent(generateGlobalSupportEvent(event, 'pointermove-support'))
-    })
-    this.eventManager!.addEventListener<GlobalEvent>('pointerdown', (event) => {
-      this.eventManager!.dispatchEvent(generateGlobalSupportEvent(event, 'pointerdown-support'))
-    })
-    this.eventManager!.addEventListener<GlobalEvent>('pointerup', (event) => {
-      this.eventManager!.dispatchEvent(generateGlobalSupportEvent(event, 'pointerup-support'))
-    })
-    this.eventManager!.addEventListener<GlobalEvent>('click', (event) => {
-      this.eventManager!.dispatchEvent(generateGlobalSupportEvent(event, 'click-support'))
-    })
-
     return true
   } else {
     return false

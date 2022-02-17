@@ -8,6 +8,7 @@ export function isValidKey(key: string | number | symbol , object: object): key 
 export function getConfigModelMap (): {[key: string]: string} {
   return {
     [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
+    [CONFIGTYPE.CUBETEXTURE]: MODULETYPE.TEXTURE,
 
     [CONFIGTYPE.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
     [CONFIGTYPE.MESHPHONGMATERIAL]: MODULETYPE.MATERIAL,

@@ -15,6 +15,7 @@ export interface EventManagerParameters {
   camera: Camera
   recursive?: boolean
   penetrate?: boolean
+  support?: boolean
 }
 
 export class EventManager extends EventDispatcher {
@@ -22,8 +23,8 @@ export class EventManager extends EventDispatcher {
   private raycaster: Raycaster
   private scene: Scene
   private camera: Camera
-  private recursive: boolean = false
-  private penetrate: boolean = false
+  private recursive: boolean = false // 递归子物体
+  private penetrate: boolean = false // 事件穿透
 
   constructor (parameters: EventManagerParameters) {
     super()

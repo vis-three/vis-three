@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, LinearEncoding, FrontSide, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, Fog, FogExp2, PCFSoftShadowMap } from "three";
+import { UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, LinearEncoding, FrontSide, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, Fog, FogExp2, CubeTexture, PCFSoftShadowMap } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -170,7 +170,6 @@ const getTextureConfig = function() {
     vid: "",
     type: "Texture",
     name: "",
-    image: "",
     mapping: UVMapping,
     wrapS: ClampToEdgeWrapping,
     wrapT: ClampToEdgeWrapping,
@@ -198,7 +197,21 @@ const getTextureConfig = function() {
 };
 const getImageTextureConfig = function() {
   return Object.assign(getTextureConfig(), {
-    type: "ImageTexture"
+    type: "ImageTexture",
+    url: ""
+  });
+};
+const getCubeTextureConfig = function() {
+  return Object.assign(getTextureConfig(), {
+    type: "CubeTexture",
+    cube: {
+      nx: "",
+      ny: "",
+      nz: "",
+      px: "",
+      py: "",
+      pz: ""
+    }
   });
 };
 const getMaterialConfig = function() {
@@ -320,6 +333,7 @@ var CONFIGTYPE$1;
   CONFIGTYPE2["LINE"] = "Line";
   CONFIGTYPE2["POINTS"] = "Points";
   CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
+  CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
   CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
   CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
   CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
@@ -392,6 +406,7 @@ const getOrbitControlsConfig = function() {
 };
 const typeMap = {
   [CONFIGTYPE$1.IMAGETEXTURE]: getImageTextureConfig,
+  [CONFIGTYPE$1.CUBETEXTURE]: getCubeTextureConfig,
   [CONFIGTYPE$1.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
   [CONFIGTYPE$1.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
   [CONFIGTYPE$1.AMBIENTLIGHT]: getAmbientLightConfig,
@@ -1459,6 +1474,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["LINE"] = "Line";
   CONFIGTYPE2["POINTS"] = "Points";
   CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
+  CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
   CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
   CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
   CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
@@ -2078,33 +2094,6 @@ const EventManagerPlugin = function(params) {
 };
 const EventManagerSupportPlugin = function(params) {
   if (EventManagerPlugin.call(this, params)) {
-    const generateGlobalSupportEvent = (event, type) => {
-      const newEvent = Object.assign({}, event);
-      newEvent.type = type;
-      newEvent.vidList = [];
-      if (newEvent.intersections && newEvent.intersections.length) {
-        newEvent.vidList = newEvent.intersections.map((intersection) => {
-          const vid = this.compilerManager.getObjectVid(intersection.object);
-          if (!vid) {
-            console.warn(`can not found this object symbol vid in compiler manager: ${intersection.object}`);
-          }
-          return vid;
-        });
-      }
-      return newEvent;
-    };
-    this.eventManager.addEventListener("pointermove", (event) => {
-      this.eventManager.dispatchEvent(generateGlobalSupportEvent(event, "pointermove-support"));
-    });
-    this.eventManager.addEventListener("pointerdown", (event) => {
-      this.eventManager.dispatchEvent(generateGlobalSupportEvent(event, "pointerdown-support"));
-    });
-    this.eventManager.addEventListener("pointerup", (event) => {
-      this.eventManager.dispatchEvent(generateGlobalSupportEvent(event, "pointerup-support"));
-    });
-    this.eventManager.addEventListener("click", (event) => {
-      this.eventManager.dispatchEvent(generateGlobalSupportEvent(event, "click-support"));
-    });
     return true;
   } else {
     return false;
@@ -2486,6 +2475,7 @@ function isValidKey(key, object) {
 function getConfigModelMap() {
   return {
     [CONFIGTYPE$1.IMAGETEXTURE]: MODULETYPE.TEXTURE,
+    [CONFIGTYPE$1.CUBETEXTURE]: MODULETYPE.TEXTURE,
     [CONFIGTYPE$1.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
     [CONFIGTYPE$1.MESHPHONGMATERIAL]: MODULETYPE.MATERIAL,
     [CONFIGTYPE$1.AMBIENTLIGHT]: MODULETYPE.LIGHT,
@@ -4757,13 +4747,12 @@ class SceneCompiler extends Compiler {
   set(path, key, value) {
     const sceneType = path.shift();
     if (sceneType === "scene") {
-      const attribute = path[0];
       const actionMap = {
         background: () => this.background(value),
         environment: () => this.environment(value),
         fog: () => this.fog(this.target.scene.fog)
       };
-      actionMap[attribute]();
+      actionMap[key] && actionMap[key]();
       return this;
     } else {
       console.warn(`scene compiler can not support this type: ${sceneType}`);
@@ -4806,6 +4795,7 @@ class TextureCompiler extends Compiler {
     this.resourceMap = new Map();
     const constructMap = new Map();
     constructMap.set("ImageTexture", () => new ImageTexture());
+    constructMap.set("CubeTexture", () => new CubeTexture());
     this.constructMap = constructMap;
   }
   getResource(url) {
@@ -4834,8 +4824,22 @@ class TextureCompiler extends Compiler {
         const tempConfig = JSON.parse(JSON.stringify(config));
         delete tempConfig.type;
         delete tempConfig.vid;
-        texture.image = this.getResource(tempConfig.image);
-        delete tempConfig.image;
+        if (config.type === "ImageTexture") {
+          texture.image = this.getResource(tempConfig.url);
+          delete tempConfig.url;
+        } else if (config.type === "CubeTexture") {
+          const cube = config.cube;
+          const images = [
+            this.getResource(cube.px),
+            this.getResource(cube.nx),
+            this.getResource(cube.py),
+            this.getResource(cube.ny),
+            this.getResource(cube.pz),
+            this.getResource(cube.nz)
+          ];
+          texture.image = images;
+          delete tempConfig.cube;
+        }
         Compiler.applyConfig(tempConfig, texture);
         texture.needsUpdate = true;
         this.map.set(vid, texture);
@@ -5137,6 +5141,22 @@ class CompilerManager {
     }
     return null;
   }
+  getMaterial(vid) {
+    if (!validate(vid)) {
+      console.warn(`compiler manager vid is illeage: ${vid}`);
+      return void 0;
+    }
+    const materialCompiler = this.materialCompiler;
+    return materialCompiler.getMap().get(vid);
+  }
+  getTexture(vid) {
+    if (!validate(vid)) {
+      console.warn(`compiler manager vid is illeage: ${vid}`);
+      return void 0;
+    }
+    const textureCompiler = this.textureCompiler;
+    return textureCompiler.getMap().get(vid);
+  }
 }
 let pluginHandler = new Map();
 pluginHandler.set("WebGLRenderer", WebGLRendererSupportPlugin);
@@ -5167,7 +5187,7 @@ const _EngineSupport = class extends Engine {
     this.resourceManager.mappingResource(resourceMap);
     return this;
   }
-  load(config) {
+  load(config, callback) {
     const loadLifeCycle = () => {
       const dataSupportManager = this.dataSupportManager;
       config.texture && dataSupportManager.load({ texture: config.texture });
@@ -5178,14 +5198,16 @@ const _EngineSupport = class extends Engine {
     };
     if (config.assets && config.assets.length) {
       this.loaderManager.reset().load(config.assets);
-      const mappedFun = () => {
+      const mappedFun = (event) => {
         delete config.assets;
         loadLifeCycle();
         this.resourceManager.removeEventListener("mapped", mappedFun);
+        callback && callback(event);
       };
       this.resourceManager.addEventListener("mapped", mappedFun);
     } else {
       loadLifeCycle();
+      callback && callback();
     }
   }
   support() {

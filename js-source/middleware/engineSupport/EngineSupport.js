@@ -56,7 +56,7 @@ export class EngineSupport extends Engine {
         return this;
     }
     // load 生命周期
-    load(config) {
+    load(config, callback) {
         const loadLifeCycle = () => {
             const dataSupportManager = this.dataSupportManager;
             // 生成贴图
@@ -71,15 +71,17 @@ export class EngineSupport extends Engine {
         // 导入外部资源
         if (config.assets && config.assets.length) {
             this.loaderManager.reset().load(config.assets);
-            const mappedFun = () => {
+            const mappedFun = (event) => {
                 delete config.assets;
                 loadLifeCycle();
                 this.resourceManager.removeEventListener('mapped', mappedFun);
+                callback && callback(event);
             };
             this.resourceManager.addEventListener('mapped', mappedFun);
         }
         else {
             loadLifeCycle();
+            callback && callback();
         }
     }
     // 安装完插件之后开始进行支持

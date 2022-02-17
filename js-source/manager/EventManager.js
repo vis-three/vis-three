@@ -4,8 +4,8 @@ export class EventManager extends EventDispatcher {
     raycaster;
     scene;
     camera;
-    recursive = false;
-    penetrate = false;
+    recursive = false; // 递归子物体
+    penetrate = false; // 事件穿透
     constructor(parameters) {
         super();
         this.raycaster = new Raycaster();

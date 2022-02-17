@@ -1,3 +1,4 @@
+import { validate } from "uuid";
 export class CompilerManager {
     cameraCompiler;
     lightCompiler;
@@ -26,6 +27,22 @@ export class CompilerManager {
             }
         }
         return null;
+    }
+    getMaterial(vid) {
+        if (!validate(vid)) {
+            console.warn(`compiler manager vid is illeage: ${vid}`);
+            return undefined;
+        }
+        const materialCompiler = this.materialCompiler;
+        return materialCompiler.getMap().get(vid);
+    }
+    getTexture(vid) {
+        if (!validate(vid)) {
+            console.warn(`compiler manager vid is illeage: ${vid}`);
+            return undefined;
+        }
+        const textureCompiler = this.textureCompiler;
+        return textureCompiler.getMap().get(vid);
     }
 }
 //# sourceMappingURL=CompilerManager.js.map

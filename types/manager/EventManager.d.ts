@@ -12,6 +12,7 @@ export interface EventManagerParameters {
     camera: Camera;
     recursive?: boolean;
     penetrate?: boolean;
+    support?: boolean;
 }
 export declare class EventManager extends EventDispatcher {
     private raycaster;

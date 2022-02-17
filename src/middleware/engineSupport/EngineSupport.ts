@@ -84,7 +84,7 @@ export class EngineSupport extends Engine {
   }
 
   // load 生命周期
-  load (config: EngineSupportLoadOptions) {
+  load (config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void) {
     const loadLifeCycle = () => {
       const dataSupportManager = this.dataSupportManager
 
@@ -106,18 +106,20 @@ export class EngineSupport extends Engine {
 
       this.loaderManager.reset().load(config.assets)
 
-      const mappedFun = () => {
+      const mappedFun = (event: MappedEvent) => {
 
         delete config.assets
         loadLifeCycle()
         
   
         this.resourceManager.removeEventListener('mapped', mappedFun)
+        callback && callback(event)
       }
   
       this.resourceManager.addEventListener<MappedEvent>('mapped', mappedFun)
     } else {
       loadLifeCycle()
+      callback && callback()
     }
   }
 

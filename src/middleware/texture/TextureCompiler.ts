@@ -1,9 +1,9 @@
-import { Texture } from "three";
+import { CubeTexture, Texture } from "three";
 import { validate } from "uuid";
 import { ImageTexture } from "../../extends/texture/ImageTexture";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
-import { TextureAllType } from "./TextureConfig";
+import { CubeTextureConfig, TextureAllType } from "./TextureConfig";
 
 export interface TextureCompilerTarget extends CompilerTarget {
   [key: string]: TextureAllType
@@ -33,6 +33,7 @@ export class TextureCompiler extends Compiler {
 
     const constructMap = new Map()
     constructMap.set('ImageTexture', () => new ImageTexture())
+    constructMap.set('CubeTexture', () => new CubeTexture())
 
     this.constructMap = constructMap
   }
@@ -67,8 +68,25 @@ export class TextureCompiler extends Compiler {
         delete tempConfig.vid
 
         // 应用资源
-        texture.image = this.getResource(tempConfig.image)
-        delete tempConfig.image
+        // 区分不同的texture类型
+        if (config.type === 'ImageTexture') {
+          texture.image = this.getResource(tempConfig.url)
+          delete tempConfig.url
+        } else if (config.type === 'CubeTexture') {
+          const cube = (config as CubeTextureConfig).cube
+          const images = [
+            this.getResource(cube.px),
+            this.getResource(cube.nx),
+
+            this.getResource(cube.py),
+            this.getResource(cube.ny),
+
+            this.getResource(cube.pz),
+            this.getResource(cube.nz),
+          ]
+          texture.image = images
+          delete tempConfig.cube
+        }
 
         Compiler.applyConfig(tempConfig, texture)
 

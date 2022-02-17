@@ -95,13 +95,12 @@ export class SceneCompiler extends Compiler {
     set(path, key, value) {
         const sceneType = path.shift();
         if (sceneType === 'scene') {
-            const attribute = path[0];
             const actionMap = {
                 background: () => this.background(value),
                 environment: () => this.environment(value),
                 fog: () => this.fog(this.target.scene.fog)
             };
-            actionMap[attribute]();
+            actionMap[key] && actionMap[key]();
             return this;
         }
         else {

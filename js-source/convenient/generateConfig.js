@@ -1,7 +1,7 @@
 import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig } from "../middleware/light/LightConfig";
 import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig } from "../middleware/geometry/GeometryConfig";
 import { getModelConfig } from "../middleware/model/ModelConfig";
-import { getImageTextureConfig } from "../middleware/texture/TextureConfig";
+import { getCubeTextureConfig, getImageTextureConfig } from "../middleware/texture/TextureConfig";
 import { getMeshPhongMaterialConfig, getMeshStandardMaterialConfig } from "../middleware/material/MaterialConfig";
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../middleware/camera/CameraConfig";
 import { CONFIGTYPE } from "../middleware/constants/configType";
@@ -10,6 +10,7 @@ import { getSceneConfig } from "../middleware/scene/SceneConfig";
 import { getOrbitControlsConfig, getTransformControlsConfig } from "../middleware/controls/ControlsConfig";
 const typeMap = {
     [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
+    [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
     [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
     [CONFIGTYPE.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
     [CONFIGTYPE.AMBIENTLIGHT]: getAmbientLightConfig,

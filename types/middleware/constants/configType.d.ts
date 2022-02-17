@@ -7,6 +7,7 @@ export declare enum CONFIGTYPE {
     LINE = "Line",
     POINTS = "Points",
     IMAGETEXTURE = "ImageTexture",
+    CUBETEXTURE = "CubeTexture",
     MESHSTANDARDMATERIAL = "MeshStandardMaterial",
     MESHPHONGMATERIAL = "MeshPhongMaterial",
     AMBIENTLIGHT = "AmbientLight",

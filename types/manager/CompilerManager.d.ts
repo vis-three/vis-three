@@ -1,4 +1,4 @@
-import { Object3D } from "three";
+import { Material, Object3D, Texture } from "three";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
@@ -32,4 +32,6 @@ export declare class CompilerManager {
     private controlsCompiler;
     constructor(parameters: CompilerManagerParameters);
     getObjectVid<O extends Object3D>(object: O): SymbolConfig['vid'] | null;
+    getMaterial(vid: string): Material | undefined;
+    getTexture(vid: string): Texture | undefined;
 }

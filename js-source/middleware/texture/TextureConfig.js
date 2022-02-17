@@ -4,7 +4,6 @@ export const getTextureConfig = function () {
         vid: '',
         type: 'Texture',
         name: '',
-        image: '',
         mapping: UVMapping,
         wrapS: ClampToEdgeWrapping,
         wrapT: ClampToEdgeWrapping,
@@ -32,7 +31,21 @@ export const getTextureConfig = function () {
 };
 export const getImageTextureConfig = function () {
     return Object.assign(getTextureConfig(), {
-        type: 'ImageTexture'
+        type: 'ImageTexture',
+        url: ''
+    });
+};
+export const getCubeTextureConfig = function () {
+    return Object.assign(getTextureConfig(), {
+        type: 'CubeTexture',
+        cube: {
+            nx: '',
+            ny: '',
+            nz: '',
+            px: '',
+            py: '',
+            pz: ''
+        }
     });
 };
 //# sourceMappingURL=TextureConfig.js.map

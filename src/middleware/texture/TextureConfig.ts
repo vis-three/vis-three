@@ -3,7 +3,6 @@ import { SymbolConfig, Vector2Config } from "../common/CommonConfig";
 
 export interface TextureConfig extends SymbolConfig {
   name: string
-  image: string,
   mapping: number
   wrapS: number
   wrapT: number
@@ -21,17 +20,27 @@ export interface TextureConfig extends SymbolConfig {
 }
 
 export interface ImageTextureConfig extends TextureConfig {
-
+  url: string
 }
 
-export type TextureAllType = ImageTextureConfig
+export interface CubeTextureConfig extends TextureConfig {
+  cube: {
+    nx: string,
+    ny: string,
+    nz: string,
+    px: string,
+    py: string,
+    pz: string
+  }
+}
+
+export type TextureAllType = ImageTextureConfig | CubeTextureConfig
 
 export const getTextureConfig = function(): TextureConfig {
   return {
     vid: '',
     type: 'Texture',
     name: '',
-    image: '',
     mapping: UVMapping,
     wrapS: ClampToEdgeWrapping,
     wrapT: ClampToEdgeWrapping,
@@ -60,6 +69,21 @@ export const getTextureConfig = function(): TextureConfig {
 
 export const getImageTextureConfig = function(): ImageTextureConfig {
   return Object.assign(getTextureConfig(), {
-    type: 'ImageTexture'
+    type: 'ImageTexture',
+    url: ''
+  })
+}
+
+export const getCubeTextureConfig = function(): CubeTextureConfig {
+  return Object.assign(getTextureConfig(), {
+    type: 'CubeTexture',
+    cube: {
+      nx: '',
+      ny: '',
+      nz: '',
+      px: '',
+      py: '',
+      pz: ''
+    }
   })
 }

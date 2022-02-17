@@ -8,6 +8,7 @@ export var CONFIGTYPE;
     CONFIGTYPE["LINE"] = "Line";
     CONFIGTYPE["POINTS"] = "Points";
     CONFIGTYPE["IMAGETEXTURE"] = "ImageTexture";
+    CONFIGTYPE["CUBETEXTURE"] = "CubeTexture";
     CONFIGTYPE["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
     CONFIGTYPE["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
     CONFIGTYPE["AMBIENTLIGHT"] = "AmbientLight";

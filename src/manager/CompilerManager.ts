@@ -1,4 +1,5 @@
-import { Object3D } from "three";
+import { Material, Object3D, Texture } from "three";
+import { validate } from "uuid";
 import { ObjectCompiler } from "../core/Compiler";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
@@ -56,5 +57,25 @@ export class CompilerManager {
     }
 
     return null
+  }
+
+  getMaterial (vid: string): Material | undefined {
+    if (!validate(vid)) {
+      console.warn(`compiler manager vid is illeage: ${vid}`)
+      return undefined
+    }
+
+    const materialCompiler = this.materialCompiler
+    return materialCompiler.getMap().get(vid)
+  }
+
+  getTexture (vid: string): Texture | undefined {
+    if (!validate(vid)) {
+      console.warn(`compiler manager vid is illeage: ${vid}`)
+      return undefined
+    }
+
+    const textureCompiler = this.textureCompiler
+    return textureCompiler.getMap().get(vid)
   }
 }
