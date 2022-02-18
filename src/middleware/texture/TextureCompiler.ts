@@ -126,8 +126,6 @@ export class TextureCompiler extends Compiler {
     return this
   }
 
-
-
   getMap (): Map<SymbolConfig['type'], Texture> {
     return this.map
   }

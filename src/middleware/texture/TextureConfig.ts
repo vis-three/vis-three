@@ -34,7 +34,15 @@ export interface CubeTextureConfig extends TextureConfig {
   }
 }
 
-export type TextureAllType = ImageTextureConfig | CubeTextureConfig
+export interface CanvasTextureConfig extends TextureConfig {
+  url: string
+  needsUpdate: boolean
+}
+
+export type TextureAllType = 
+  ImageTextureConfig |
+  CubeTextureConfig |
+  CanvasTextureConfig
 
 export const getTextureConfig = function(): TextureConfig {
   return {
@@ -85,5 +93,13 @@ export const getCubeTextureConfig = function(): CubeTextureConfig {
       py: '',
       pz: ''
     }
+  })
+}
+
+export const getCanvasTextureConfig = function (): CanvasTextureConfig {
+  return Object.assign(getTextureConfig(), {
+    type: 'CanvasTexture',
+    url: '',
+    needsUpdate: false
   })
 }
