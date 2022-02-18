@@ -1,9 +1,7 @@
 import { 
-  EventDispatcher,
   Clock,
-  BaseEvent,
-
   } from "three";
+import { BaseEvent, EventDispatcher } from "../core/EventDispatcher";
 import { RENDERERMANAGER } from "../middleware/constants/EVENTTYPE";
 
 // 渲染事件
@@ -12,7 +10,7 @@ export interface RenderEvent extends BaseEvent {
   total: number
 }
 
-export class RenderManager extends EventDispatcher<RenderEvent | BaseEvent> {
+export class RenderManager extends EventDispatcher {
 
   private clock: Clock = new Clock() // 引擎时钟
   private animationFrame = -1 // 渲染定时器
@@ -59,13 +57,6 @@ export class RenderManager extends EventDispatcher<RenderEvent | BaseEvent> {
 
   // 是否有效渲染队列
   hasVaildRender = (): boolean => {
-    // @ts-ignore
-    if (!this._listeners) {
-      return false
-    }
-    // @ts-ignore
-    const listener = this._listeners['render']
-
-    return listener && listener.length
+    return this.useful()
   }
 }

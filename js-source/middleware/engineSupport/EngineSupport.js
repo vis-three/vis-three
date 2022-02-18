@@ -133,7 +133,6 @@ export class EngineSupport extends Engine {
         });
         const rendererCompiler = new RendererCompiler({
             target: rendererDataSupport.getData(),
-            glRenderer: this.webGLRenderer,
             engine: this
         });
         const sceneCompiler = new SceneCompiler({

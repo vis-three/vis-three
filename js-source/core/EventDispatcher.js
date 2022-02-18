@@ -38,5 +38,11 @@ export class EventDispatcher {
             }
         }
     }
+    clear() {
+        this.listeners = new Map();
+    }
+    useful() {
+        return Boolean([...this.listeners.keys()].length);
+    }
 }
 //# sourceMappingURL=EventDispatcher.js.map

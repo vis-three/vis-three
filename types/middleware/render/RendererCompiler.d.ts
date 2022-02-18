@@ -1,36 +1,23 @@
-import { BaseEvent, WebGLRenderer } from "three";
 import { Engine } from "../../engine/Engine";
-import { RenderEvent, RenderManager } from "../../manager/RenderManager";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
-import { RENDERERMANAGER } from "../constants/EVENTTYPE";
-import { WebGLRendererConfig } from "./RendererConfig";
+import { RendererAllType, WebGLRendererConfig } from "./RendererConfig";
+import { WebGLRendererCompiler } from "./WebGLRendererCompiler";
 export interface RendererCompilerTarget extends CompilerTarget {
     [key: string]: WebGLRendererConfig;
 }
+export interface RendererComilerMap {
+    WebGLRenderer?: WebGLRendererCompiler;
+}
 export interface RendererCompilerParameters {
     target?: RendererCompilerTarget;
-    glRenderer?: WebGLRenderer;
-    engine?: Engine;
-}
-export interface GLRendererCacheData {
-    adaptiveCameraFun?: (event: (BaseEvent | RenderEvent) & {
-        type: RENDERERMANAGER.RENDER;
-    } & {
-        target: RenderManager;
-    }) => void;
+    engine: Engine;
 }
 export declare class RendererCompiler extends Compiler {
     private target;
-    private glRenderer;
-    private engine?;
-    private glRendererCacheData;
+    private engine;
+    private map;
     constructor(parameters?: RendererCompilerParameters);
-    private setClearColor;
-    private setPixelRatio;
-    private setSize;
-    private setViewpoint;
-    private setScissor;
-    private setAdaptiveCamera;
+    add(type: string, config: RendererAllType): void;
     set(path: string[], key: string, value: any): this;
     setTarget(target: RendererCompilerTarget): this;
     compileAll(): this;

@@ -52,6 +52,12 @@ class EventDispatcher {
       }
     }
   }
+  clear() {
+    this.listeners = new Map();
+  }
+  useful() {
+    return Boolean([...this.listeners.keys()].length);
+  }
 }
 const getObjectConfig = () => {
   return {
@@ -1551,7 +1557,7 @@ const EVENTTYPE = {
   MODELCOMPILER,
   LOADERMANAGER
 };
-class RenderManager extends EventDispatcher$1 {
+class RenderManager extends EventDispatcher {
   constructor() {
     super(...arguments);
     __publicField(this, "clock", new Clock());
@@ -1587,11 +1593,7 @@ class RenderManager extends EventDispatcher$1 {
       return this.animationFrame !== -1;
     });
     __publicField(this, "hasVaildRender", () => {
-      if (!this._listeners) {
-        return false;
-      }
-      const listener = this._listeners["render"];
-      return listener && listener.length;
+      return this.useful();
     });
   }
 }
@@ -4482,65 +4484,58 @@ class ModelCompiler extends Compiler {
     return this;
   }
 }
-class RendererCompiler extends Compiler {
+class WebGLRendererCompiler extends Compiler {
   constructor(parameters) {
     super();
-    __publicField(this, "target");
-    __publicField(this, "glRenderer");
+    __publicField(this, "renderer");
     __publicField(this, "engine");
-    __publicField(this, "glRendererCacheData");
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-      parameters.glRenderer && (this.glRenderer = parameters.glRenderer);
-      parameters.engine && (this.engine = parameters.engine);
-    } else {
-      this.target = {
-        WebGLRenderer: getWebGLRendererConfig()
-      };
-      this.glRenderer = new WebGLRenderer();
-    }
-    this.glRendererCacheData = {};
+    __publicField(this, "target");
+    __publicField(this, "rendererCacheData");
+    this.engine = parameters.engine;
+    this.target = parameters.target;
+    this.renderer = this.engine.webGLRenderer;
+    this.rendererCacheData = {};
   }
   setClearColor(value) {
     const alpha = Number(value.slice(0, -1).split(",").pop().trim());
-    this.glRenderer.setClearColor(value, alpha);
-    this.glRenderer.clear();
+    this.renderer.setClearColor(value, alpha);
+    this.renderer.clear();
     return this;
   }
   setPixelRatio(value) {
-    this.glRenderer.setPixelRatio(value);
-    this.glRenderer.clear();
+    this.renderer.setPixelRatio(value);
+    this.renderer.clear();
     return this;
   }
   setSize(vector2) {
-    const glRenderer = this.glRenderer;
+    const renderer = this.renderer;
     if (vector2) {
-      glRenderer.setSize(vector2.x, vector2.y);
+      renderer.setSize(vector2.x, vector2.y);
     } else {
-      const domElement = glRenderer.domElement;
-      glRenderer.setSize(domElement.offsetWidth, domElement.offsetHeight);
+      const domElement = renderer.domElement;
+      renderer.setSize(domElement.offsetWidth, domElement.offsetHeight);
     }
     return this;
   }
   setViewpoint(config) {
-    const glRenderer = this.glRenderer;
+    const renderer = this.renderer;
     if (config) {
-      glRenderer.setViewport(config.x, config.y, config.width, config.height);
+      renderer.setViewport(config.x, config.y, config.width, config.height);
     } else {
-      const domElement = glRenderer.domElement;
-      glRenderer.setViewport(0, 0, domElement.offsetWidth, domElement.offsetHeight);
+      const domElement = renderer.domElement;
+      renderer.setViewport(0, 0, domElement.offsetWidth, domElement.offsetHeight);
     }
     return this;
   }
   setScissor(config) {
-    const glRenderer = this.glRenderer;
+    const renderer = this.renderer;
     if (config) {
-      glRenderer.setScissorTest(true);
-      glRenderer.setScissor(config.x, config.y, config.width, config.height);
+      renderer.setScissorTest(true);
+      renderer.setScissor(config.x, config.y, config.width, config.height);
     } else {
-      glRenderer.setScissorTest(false);
-      const domElement = glRenderer.domElement;
-      glRenderer.setScissor(0, 0, domElement.offsetWidth, domElement.offsetHeight);
+      renderer.setScissorTest(false);
+      const domElement = renderer.domElement;
+      renderer.setScissor(0, 0, domElement.offsetWidth, domElement.offsetHeight);
     }
     return this;
   }
@@ -4549,28 +4544,28 @@ class RendererCompiler extends Compiler {
       console.warn(`renderer compiler is not set engine.`);
       return this;
     }
-    const glRenderer = this.glRenderer;
+    const renderer = this.renderer;
     const engine = this.engine;
     const renderManager = engine.renderManager;
     if (!value) {
-      if (!this.glRendererCacheData.adaptiveCameraFun) {
+      if (!this.rendererCacheData.adaptiveCameraFun) {
         return this;
       }
-      if (this.glRendererCacheData.adaptiveCameraFun) {
-        renderManager.removeEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun);
-        this.glRendererCacheData.adaptiveCameraFun = void 0;
+      if (this.rendererCacheData.adaptiveCameraFun) {
+        renderManager.removeEventListener("render", this.rendererCacheData.adaptiveCameraFun);
+        this.rendererCacheData.adaptiveCameraFun = void 0;
         return this;
       }
     }
     if (value) {
-      if (this.glRendererCacheData.adaptiveCameraFun) {
-        renderManager.addEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun);
+      if (this.rendererCacheData.adaptiveCameraFun) {
+        renderManager.addEventListener("render", this.rendererCacheData.adaptiveCameraFun);
         return this;
       }
       const adaptiveCameraFun = (event) => {
         const camera = engine.currentCamera;
-        const domWidth = glRenderer.domElement.offsetWidth;
-        const domHeight = glRenderer.domElement.offsetHeight;
+        const domWidth = renderer.domElement.offsetWidth;
+        const domHeight = renderer.domElement.offsetHeight;
         let width = 0;
         let height = 0;
         let offsetX = 0;
@@ -4595,38 +4590,95 @@ class RendererCompiler extends Compiler {
           width = height * aspect;
           offsetX = domWidth / 2 - width / 2;
         }
-        glRenderer.setScissor(offsetX, offsetY, width, height);
-        glRenderer.setViewport(offsetX, offsetY, width, height);
-        glRenderer.setScissorTest(true);
+        renderer.setScissor(offsetX, offsetY, width, height);
+        renderer.setViewport(offsetX, offsetY, width, height);
+        renderer.setScissorTest(true);
       };
-      this.glRendererCacheData.adaptiveCameraFun = adaptiveCameraFun;
-      renderManager.addEventListener(RENDERERMANAGER.RENDER, this.glRendererCacheData.adaptiveCameraFun);
+      this.rendererCacheData.adaptiveCameraFun = adaptiveCameraFun;
+      renderManager.addEventListener("render", this.rendererCacheData.adaptiveCameraFun);
     }
     return this;
   }
   set(path, key, value) {
-    const rendererType = path.shift();
-    if (rendererType === "WebGLRenderer") {
-      const glRendererTarget = this.target.WebGLRenderer;
-      const actionMap = {
-        clearColor: () => this.setClearColor(value),
-        pixelRatio: () => this.setPixelRatio(value),
-        size: () => this.setSize(glRendererTarget.size),
-        viewport: () => this.setViewpoint(glRendererTarget.viewport),
-        scissor: () => this.setScissor(glRendererTarget.scissor),
-        adaptiveCamera: () => this.setAdaptiveCamera(value)
-      };
-      if (actionMap[path[0] || key]) {
-        actionMap[path[0] || key]();
-        return this;
-      }
-      const glRenderer = this.glRenderer;
-      let config = glRenderer;
-      path.forEach((key2, i, arr) => {
-        config = config[key2];
+    const actionMap = {
+      clearColor: () => this.setClearColor(value),
+      pixelRatio: () => this.setPixelRatio(value),
+      size: () => this.setSize(this.target.size),
+      viewport: () => this.setViewpoint(this.target.viewport),
+      scissor: () => this.setScissor(this.target.scissor),
+      adaptiveCamera: () => this.setAdaptiveCamera(value)
+    };
+    if (actionMap[path[0] || key]) {
+      actionMap[path[0] || key]();
+      return this;
+    }
+    let config = this.renderer;
+    path.forEach((key2, i, arr) => {
+      config = config[key2];
+    });
+    config[key] = value;
+    this.renderer.clear();
+    return this;
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  compileAll() {
+    const target = this.target;
+    this.setClearColor(target.clearColor);
+    this.setPixelRatio(target.pixelRatio);
+    this.setSize(target.size);
+    this.setViewpoint(target.viewport);
+    this.setScissor(target.scissor);
+    this.setAdaptiveCamera(target.adaptiveCamera);
+    const otherConfig = JSON.parse(JSON.stringify(target));
+    delete otherConfig.vid;
+    delete otherConfig.type;
+    delete otherConfig.clearColor;
+    delete otherConfig.pixelRatio;
+    delete otherConfig.size;
+    delete otherConfig.viewport;
+    delete otherConfig.scissor;
+    delete otherConfig.adaptiveCamera;
+    Compiler.applyConfig(otherConfig, this.renderer);
+    this.renderer.clear();
+    return this;
+  }
+  dispose() {
+    this.renderer.dispose();
+    return this;
+  }
+}
+class RendererCompiler extends Compiler {
+  constructor(parameters) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "engine");
+    __publicField(this, "map");
+    if (parameters) {
+      parameters.target && (this.target = parameters.target);
+      parameters.engine && (this.engine = parameters.engine);
+    } else {
+      this.target = {};
+      this.engine = new Engine();
+    }
+    this.map = {};
+  }
+  add(type, config) {
+    if (type === "WebGLRenderer") {
+      const rendererCompiler = new WebGLRendererCompiler({
+        engine: this.engine,
+        target: config
       });
-      config[key] = value;
-      glRenderer.clear();
+      rendererCompiler.compileAll();
+      this.map[type] = rendererCompiler;
+    }
+  }
+  set(path, key, value) {
+    const rendererType = path.shift();
+    if (this.map[rendererType]) {
+      this.map[rendererType].set(path, key, value);
       return this;
     } else {
       console.warn(`renderer compiler can not support this type: ${rendererType}`);
@@ -4639,24 +4691,9 @@ class RendererCompiler extends Compiler {
   }
   compileAll() {
     const target = this.target;
-    const glRendererTarget = target.WebGLRenderer;
-    this.setClearColor(glRendererTarget.clearColor);
-    this.setPixelRatio(glRendererTarget.pixelRatio);
-    this.setSize(glRendererTarget.size);
-    this.setViewpoint(glRendererTarget.viewport);
-    this.setScissor(glRendererTarget.scissor);
-    this.setAdaptiveCamera(glRendererTarget.adaptiveCamera);
-    const otherConfig = JSON.parse(JSON.stringify(glRendererTarget));
-    delete otherConfig.vid;
-    delete otherConfig.type;
-    delete otherConfig.clearColor;
-    delete otherConfig.pixelRatio;
-    delete otherConfig.size;
-    delete otherConfig.viewport;
-    delete otherConfig.scissor;
-    delete otherConfig.adaptiveCamera;
-    Compiler.applyConfig(otherConfig, this.glRenderer);
-    this.glRenderer.clear();
+    Object.keys(target).forEach((type) => {
+      this.add(type, target[type]);
+    });
     return this;
   }
   dispose() {
@@ -4980,8 +5017,13 @@ class CameraDataSupport extends DataSupport {
 }
 const RendererRule = function(input, compiler) {
   const { operate, key, path, value } = input;
+  if (operate === "add") {
+    compiler.add(key, value);
+    return;
+  }
   if (operate === "set") {
     compiler.set(path.concat([]), key, value);
+    return;
   }
 };
 class RendererDataSupport extends DataSupport {
@@ -5257,7 +5299,6 @@ const _EngineSupport = class extends Engine {
     });
     const rendererCompiler = new RendererCompiler({
       target: rendererDataSupport.getData(),
-      glRenderer: this.webGLRenderer,
       engine: this
     });
     const sceneCompiler = new SceneCompiler({

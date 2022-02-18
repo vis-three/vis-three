@@ -28,6 +28,10 @@ export interface WebGLRendererConfig extends RenderConfig {
     scissor: WebGLRendererScissor | null;
     size: Vector2Config | null;
 }
+export declare type RendererAllType = WebGLRendererConfig | CSS3DRendererConfig;
 export interface CSS3DRendererConfig extends RenderConfig {
+    vid: 'CSS3DRenderer';
+    type: 'CSS3DRenderer';
+    size: null;
 }
 export declare const getWebGLRendererConfig: () => WebGLRendererConfig;

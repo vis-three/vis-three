@@ -34,9 +34,12 @@ export interface WebGLRendererConfig extends RenderConfig {
   scissor: WebGLRendererScissor | null // 为null 默认跟随canves
   size: Vector2Config | null // 为null 默认跟随canves
 }
-//TODO: 放到第二版本做
-export interface CSS3DRendererConfig extends RenderConfig {
 
+export type RendererAllType = WebGLRendererConfig | CSS3DRendererConfig
+export interface CSS3DRendererConfig extends RenderConfig {
+  vid: 'CSS3DRenderer', // unique
+  type: 'CSS3DRenderer',
+  size: null,
 }
 
 export const getWebGLRendererConfig = function (): WebGLRendererConfig {

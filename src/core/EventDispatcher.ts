@@ -60,4 +60,12 @@ export class EventDispatcher {
       }
 		}
   }
+  
+  clear() {
+    this.listeners = new Map()
+  }
+
+  useful (): boolean {
+    return Boolean([...this.listeners.keys()].length)
+  }
 }

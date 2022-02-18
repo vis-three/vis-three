@@ -1,4 +1,5 @@
-import { EventDispatcher, Clock, } from "three";
+import { Clock, } from "three";
+import { EventDispatcher } from "../core/EventDispatcher";
 import { RENDERERMANAGER } from "../middleware/constants/EVENTTYPE";
 export class RenderManager extends EventDispatcher {
     clock = new Clock(); // 引擎时钟
@@ -39,13 +40,7 @@ export class RenderManager extends EventDispatcher {
     };
     // 是否有效渲染队列
     hasVaildRender = () => {
-        // @ts-ignore
-        if (!this._listeners) {
-            return false;
-        }
-        // @ts-ignore
-        const listener = this._listeners['render'];
-        return listener && listener.length;
+        return this.useful();
     };
 }
 //# sourceMappingURL=RenderManager.js.map
