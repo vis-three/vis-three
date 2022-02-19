@@ -1,7 +1,8 @@
-import { CubeTexture } from "three";
+import { CanvasTexture, CubeTexture } from "three";
 import { validate } from "uuid";
 import { ImageTexture } from "../../extends/texture/ImageTexture";
 import { Compiler } from "../../core/Compiler";
+import { CONFIGTYPE } from "../constants/configType";
 export class TextureCompiler extends Compiler {
     target;
     map;
@@ -18,8 +19,9 @@ export class TextureCompiler extends Compiler {
         this.map = new Map();
         this.resourceMap = new Map();
         const constructMap = new Map();
-        constructMap.set('ImageTexture', () => new ImageTexture());
-        constructMap.set('CubeTexture', () => new CubeTexture());
+        constructMap.set(CONFIGTYPE.IMAGETEXTURE, () => new ImageTexture());
+        constructMap.set(CONFIGTYPE.CUBETEXTURE, () => new CubeTexture());
+        constructMap.set(CONFIGTYPE.CANVASTEXTURE, () => new CanvasTexture(document.createElement('canvas')));
         this.constructMap = constructMap;
     }
     getResource(url) {
@@ -52,11 +54,11 @@ export class TextureCompiler extends Compiler {
                 delete tempConfig.vid;
                 // 应用资源
                 // 区分不同的texture类型
-                if (config.type === 'ImageTexture') {
+                if (config.type === CONFIGTYPE.IMAGETEXTURE || config.type === CONFIGTYPE.CANVASTEXTURE) {
                     texture.image = this.getResource(tempConfig.url);
                     delete tempConfig.url;
                 }
-                else if (config.type === 'CubeTexture') {
+                else if (config.type === CONFIGTYPE.CUBETEXTURE) {
                     const cube = config.cube;
                     const images = [
                         this.getResource(cube.px),
@@ -92,6 +94,14 @@ export class TextureCompiler extends Compiler {
             return this;
         }
         const texture = this.map.get(vid);
+        if (key === 'needsUpdate') {
+            if (value) {
+                texture.needsUpdate = true;
+                const config = this.target[vid];
+                config.needsUpdate = false;
+            }
+            return this;
+        }
         let config = texture;
         path.forEach((key, i, arr) => {
             config = config[key];

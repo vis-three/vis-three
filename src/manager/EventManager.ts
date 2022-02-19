@@ -98,7 +98,6 @@ export class EventManager extends EventDispatcher {
     const cacheObjectMap = new Map<Object3D, Intersection<Object3D<Event>>>()
     pointerManager.addEventListener<VisPointerEvent>('pointermove', (event) => {
       const intersections = this.intersectObject(event.mouse)
-
       this.dispatchEvent(mergeEvent(event, {
         type: 'pointermove',
         intersections

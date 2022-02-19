@@ -6,9 +6,7 @@ export const getSpriteConfig = function () {
         center: {
             x: 0.5,
             y: 0.5
-        },
-        width: 1,
-        height: 1
+        }
     });
 };
 //# sourceMappingURL=SpriteConfig.js.map

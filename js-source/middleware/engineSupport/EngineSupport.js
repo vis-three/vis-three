@@ -23,6 +23,7 @@ import { SceneCompiler } from '../scene/SceneCompiler';
 import { TextureCompiler } from '../texture/TextureCompiler';
 import { DataSupportManager } from '../../manager/DataSupportManager';
 import { CompilerManager } from '../../manager/CompilerManager';
+import { SpriteCompiler } from '../sprite/SpriteCompiler';
 // 插件处理集合
 let pluginHandler = new Map();
 pluginHandler.set('WebGLRenderer', WebGLRendererSupportPlugin);
@@ -52,7 +53,11 @@ export class EngineSupport extends Engine {
     }
     // 注入无需loader的外部资源例如scirpt生成的资源
     mappingResource(resourceMap) {
-        this.resourceManager.mappingResource(resourceMap);
+        const map = new Map();
+        Object.keys(resourceMap).forEach(key => {
+            map.set(key, resourceMap[key]);
+        });
+        this.resourceManager.mappingResource(map);
         return this;
     }
     // load 生命周期
@@ -83,6 +88,7 @@ export class EngineSupport extends Engine {
             loadLifeCycle();
             callback && callback();
         }
+        return this;
     }
     // 安装完插件之后开始进行支持
     support() {
@@ -109,6 +115,7 @@ export class EngineSupport extends Engine {
         const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER);
         const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE);
         const controlsDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CONTROLS);
+        const spriteDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SPRITE);
         const textureCompiler = new TextureCompiler({
             target: textureDataSupport.getData()
         });
@@ -143,6 +150,10 @@ export class EngineSupport extends Engine {
             target: controlsDataSupport.getData(),
             transformControls: this.transformControls
         });
+        const spriteCompiler = new SpriteCompiler({
+            target: spriteDataSupport.getData(),
+            scene: this.scene
+        });
         const resourceManager = this.resourceManager;
         // 建立编译器链接
         sceneCompiler.linkTextureMap(textureCompiler.getMap());
@@ -152,11 +163,14 @@ export class EngineSupport extends Engine {
             .linkMaterialMap(materialCompiler.getMap())
             .linkObjectMap(lightCompiler.getMap())
             .linkObjectMap(cameraCompiler.getMap())
-            .linkObjectMap(modelCompiler.getMap());
+            .linkObjectMap(modelCompiler.getMap())
+            .linkObjectMap(spriteCompiler.getMap());
         cameraCompiler
             .linkObjectMap(lightCompiler.getMap())
             .linkObjectMap(cameraCompiler.getMap())
-            .linkObjectMap(modelCompiler.getMap());
+            .linkObjectMap(modelCompiler.getMap())
+            .linkObjectMap(spriteCompiler.getMap());
+        spriteCompiler.linkMaterialMap(materialCompiler.getMap());
         textureCompiler.linkRescourceMap(resourceManager.resourceMap);
         geometryCompiler.linkRescourceMap(resourceManager.resourceMap);
         // 添加通知
@@ -169,6 +183,7 @@ export class EngineSupport extends Engine {
         rendererDataSupport.addCompiler(rendererCompiler);
         sceneDataSupport.addCompiler(sceneCompiler);
         controlsDataSupport.addCompiler(controlsCompiler);
+        spriteDataSupport.addCompiler(spriteCompiler);
         this.compilerManager = new CompilerManager({
             textureCompiler,
             materialCompiler,
@@ -178,7 +193,8 @@ export class EngineSupport extends Engine {
             modelCompiler,
             rendererCompiler,
             sceneCompiler,
-            controlsCompiler
+            controlsCompiler,
+            spriteCompiler
         });
         return this;
     }

@@ -4,8 +4,6 @@ import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
 export interface SpriteConfig extends ObjectConfig {
   material: string
   center: Vector2Config
-  width: number
-  height: number
 }
 
 export const getSpriteConfig = function(): SpriteConfig {
@@ -15,8 +13,6 @@ export const getSpriteConfig = function(): SpriteConfig {
     center: {
       x: 0.5,
       y: 0.5
-    },
-    width: 1,
-    height: 1
+    }
   })
 }

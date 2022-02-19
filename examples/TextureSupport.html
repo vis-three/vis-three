@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SpriteSupport</title>
+  <title>TextureSupport</title>
   <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
   <link rel="stylesheet" href="./css/common.css">
 </head>
@@ -25,11 +25,31 @@
     import * as Vis from '../dist/Vis.es.js'
     import { v4 as getUUid } from 'uuid'
 
+    const canvasTextureGenerator = new Vis.CanvasTextureGenerator({
+      width: 800,
+      height: 160
+    }).draw(ctx => {
+      ctx.textBaseline = 'middle'
+      ctx.textAlign = "center"
+
+      ctx.fillStyle= 'rgb(206, 42, 230)'
+   
+      ctx.font=" bold 72px 微软雅黑"
+      ctx.fillText("Hello World!", 400, 80)
+    }).preview({
+      top: '10%',
+      left: '10%'
+    })
+
     const engine = new Vis.ModelingEngineSupport()
     .setDom(document.getElementById('app'))
     .setSize()
     .setStats(true)
     .play()
+    .mappingResource({
+      'example.canvasTexture': canvasTextureGenerator.get()
+    })
+
 
     const pointLight = Vis.generateConfig('PointLight', {
       vid: getUUid(),
@@ -41,11 +61,16 @@
     })
     engine.dataSupportManager.lightDataSupport.getData()[pointLight.vid] = pointLight
 
+    const canvasTexture = Vis.generateConfig('CanvasTexture', {
+      vid: getUUid(),
+      url: 'example.canvasTexture',
+    })
+    engine.dataSupportManager.textureDataSupport.getData()[canvasTexture.vid] = canvasTexture
+
 
     const material = Vis.generateConfig('SpriteMaterial', {
-      vid: getUUid(),
-      color: 'rgb(255, 0, 0)',
-
+      vid: getUUid(), 
+      map: canvasTexture.vid,
     })
     engine.dataSupportManager.materialDataSupport.getData()[material.vid] = material
     
@@ -53,8 +78,10 @@
     const sprite = Vis.generateConfig('Sprite', {
       vid: getUUid(),
       material: material.vid,
-      width: 20,
-      height: 40
+      scale: {
+        x: 25,
+        y: 5
+      }
     })
     engine.dataSupportManager.spriteDataSupport.getData()[sprite.vid] = sprite
   </script>

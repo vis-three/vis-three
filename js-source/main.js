@@ -27,6 +27,7 @@ import { ModelingScene, SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./extends/Model
 import { EngineSupport } from './middleware/engineSupport/EngineSupport';
 import { DisplayEngineSupport } from './middleware/engineSupport/DisplayEngineSupport';
 import { SceneDataSupport } from './middleware/scene/SceneDataSupport';
+import { CanvasTextureGenerator } from './convenient/CanvasTextureGenerator';
 export { 
 // menu
 RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, OBJECTEVENT, EVENTTYPE, SCENEDISPLAYMODE, SCENEVIEWPOINT, 
@@ -41,8 +42,8 @@ ModelingEngineSupport, EngineSupport, DisplayEngineSupport,
 TextureDataSupport, MaterialDataSupport, LightDataSupport, ModelDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, 
 // helper
 PointLightHelper, CameraHelper, 
-// config
-generateConfig, SupportDataGenerator, 
+// convenient
+generateConfig, SupportDataGenerator, CanvasTextureGenerator, 
 // displayer
 MaterialDisplayer, TextureDisplayer, 
 // extends

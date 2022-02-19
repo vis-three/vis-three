@@ -69,26 +69,6 @@ export class SpriteCompiler extends Compiler implements ObjectCompiler {
     }
   }
 
-  private replaceGeometry (params: ReplaceGeometryParameters): this {
-    const oldGeometry = params.sprite.geometry
-    if (!params.height) {
-      if (oldGeometry instanceof PlaneBufferGeometry) {
-        params.height = oldGeometry.parameters.height
-      }
-    }
-
-    if (!params.width) {
-      if (oldGeometry instanceof PlaneBufferGeometry) {
-        params.width = oldGeometry.parameters.width
-      }
-    }
-
-    const plane = new PlaneBufferGeometry(params.width, params.height)
-    oldGeometry.dispose()
-    params.sprite.geometry = plane
-    return this
-  }
-
   linkMaterialMap (materialMap: Map<string, Material>): this {
     this.materialMap = materialMap
     return this
@@ -109,15 +89,15 @@ export class SpriteCompiler extends Compiler implements ObjectCompiler {
     }
 
     const sprite = new Sprite()
-    this.replaceGeometry({
-      sprite,
-      width: config.width,
-      height: config.height
-    })
 
     sprite.material = this.getMaterial(config.material)
 
     sprite.center.set(config.center.x, config.center.y)
+
+    const tempConfig = JSON.parse(JSON.stringify(config))
+    delete tempConfig.material
+    delete tempConfig.center
+    Compiler.applyConfig(tempConfig, sprite)
 
     this.map.set(vid, sprite)
     this.weakMap.set(sprite, vid)
@@ -140,14 +120,6 @@ export class SpriteCompiler extends Compiler implements ObjectCompiler {
     let sprite = this.map.get(vid)!
     if (key === 'material') {
       sprite.material = this.getMaterial(vid)
-      return this
-    }
-
-    if (key === 'width' || key === 'height') {
-      this.replaceGeometry({
-        sprite,
-        [key]: value
-      })
       return this
     }
 

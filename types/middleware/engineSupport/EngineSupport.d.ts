@@ -16,8 +16,10 @@ export declare class EngineSupport extends Engine {
     loaderManager: LoaderManager;
     compilerManager?: CompilerManager;
     constructor(parameters?: EngineSupportParameters);
-    mappingResource(resourceMap: Map<string, unknown>): this;
-    load(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): void;
+    mappingResource(resourceMap: {
+        [key: string]: unknown;
+    }): this;
+    load(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
     support(): this;
     install(plugin: EnginePlugin, params?: EnginePluginParams): this;
 }

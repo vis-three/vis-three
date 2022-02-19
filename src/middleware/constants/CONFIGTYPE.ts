@@ -8,6 +8,7 @@ export enum CONFIGTYPE {
 
   IMAGETEXTURE = 'ImageTexture',
   CUBETEXTURE = 'CubeTexture',
+  CANVASTEXTURE = 'CanvasTexture',
 
   MESHSTANDARDMATERIAL = 'MeshStandardMaterial',
   MESHPHONGMATERIAL = "MeshPhongMaterial",

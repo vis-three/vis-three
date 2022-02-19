@@ -1,8 +1,9 @@
-import { PlaneBufferGeometry, Sprite, SpriteMaterial } from "three";
+import { Sprite, SpriteMaterial } from "three";
 import { validate } from "uuid";
 import { Compiler } from "../../core/Compiler";
 export class SpriteCompiler extends Compiler {
     target;
+    scene;
     map;
     weakMap;
     materialMap;
@@ -10,6 +11,7 @@ export class SpriteCompiler extends Compiler {
         super();
         if (parametes) {
             parametes.target && (this.target = parametes.target);
+            parametes.scene && (this.scene = parametes.scene);
         }
         else {
             this.target = {};
@@ -46,23 +48,6 @@ export class SpriteCompiler extends Compiler {
             return this.getReplaceMaterial();
         }
     }
-    replaceGeometry(params) {
-        const oldGeometry = params.sprite.geometry;
-        if (!params.height) {
-            if (oldGeometry instanceof PlaneBufferGeometry) {
-                params.height = oldGeometry.parameters.height;
-            }
-        }
-        if (!params.width) {
-            if (oldGeometry instanceof PlaneBufferGeometry) {
-                params.width = oldGeometry.parameters.width;
-            }
-        }
-        const plane = new PlaneBufferGeometry(params.width, params.height);
-        oldGeometry.dispose();
-        params.sprite.geometry = plane;
-        return this;
-    }
     linkMaterialMap(materialMap) {
         this.materialMap = materialMap;
         return this;
@@ -81,15 +66,15 @@ export class SpriteCompiler extends Compiler {
             return this;
         }
         const sprite = new Sprite();
-        this.replaceGeometry({
-            sprite,
-            width: config.width,
-            height: config.height
-        });
         sprite.material = this.getMaterial(config.material);
         sprite.center.set(config.center.x, config.center.y);
+        const tempConfig = JSON.parse(JSON.stringify(config));
+        delete tempConfig.material;
+        delete tempConfig.center;
+        Compiler.applyConfig(tempConfig, sprite);
         this.map.set(vid, sprite);
         this.weakMap.set(sprite, vid);
+        this.scene.add(sprite);
         return this;
     }
     set(vid, path, key, value) {
@@ -106,13 +91,6 @@ export class SpriteCompiler extends Compiler {
             sprite.material = this.getMaterial(vid);
             return this;
         }
-        if (key === 'width' || key === 'height') {
-            this.replaceGeometry({
-                sprite,
-                [key]: value
-            });
-            return this;
-        }
         path.forEach((key, i, arr) => {
             sprite = sprite[key];
         });
@@ -120,6 +98,9 @@ export class SpriteCompiler extends Compiler {
         return this;
     }
     remove() { }
+    getMap() {
+        return this.map;
+    }
     setTarget(target) {
         this.target = target;
         return this;

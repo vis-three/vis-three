@@ -6,6 +6,7 @@ export declare enum CONFIGTYPE {
     SPRITE = "Sprite",
     IMAGETEXTURE = "ImageTexture",
     CUBETEXTURE = "CubeTexture",
+    CANVASTEXTURE = "CanvasTexture",
     MESHSTANDARDMATERIAL = "MeshStandardMaterial",
     MESHPHONGMATERIAL = "MeshPhongMaterial",
     SPRITEMATERIAL = "SpriteMaterial",

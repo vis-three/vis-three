@@ -88,6 +88,7 @@ export const getMeshPhongMaterialConfig = function () {
 };
 export const getSpriteMaterialConfig = function () {
     return Object.assign(getMaterialConfig(), {
+        type: 'SpriteMaterial',
         color: 'rgb(255, 255, 255)',
         rotation: 0,
         map: '',

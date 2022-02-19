@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, LinearEncoding, FrontSide, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, Fog, FogExp2, CubeTexture, PlaneBufferGeometry, PCFSoftShadowMap } from "three";
+import { UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, LinearEncoding, FrontSide, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, Fog, FogExp2, CubeTexture, CanvasTexture, PCFSoftShadowMap } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -59,6 +59,43 @@ class EventDispatcher {
     return Boolean([...this.listeners.keys()].length);
   }
 }
+var CONFIGTYPE$1;
+(function(CONFIGTYPE2) {
+  CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
+  CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
+  CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
+  CONFIGTYPE2["MODEL"] = "Model";
+  CONFIGTYPE2["SPRITE"] = "Sprite";
+  CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
+  CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
+  CONFIGTYPE2["CANVASTEXTURE"] = "CanvasTexture";
+  CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
+  CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
+  CONFIGTYPE2["SPRITEMATERIAL"] = "SpriteMaterial";
+  CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
+  CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
+  CONFIGTYPE2["POINTLIGHT"] = "PointLight";
+  CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
+  CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
+  CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
+  CONFIGTYPE2["SCENE"] = "Scene";
+  CONFIGTYPE2["TRNASFORMCONTROLS"] = "TransformControls";
+  CONFIGTYPE2["ORBITCONTROLS"] = "OrbitControls";
+})(CONFIGTYPE$1 || (CONFIGTYPE$1 = {}));
+var MODULETYPE;
+(function(MODULETYPE2) {
+  MODULETYPE2["CAMERA"] = "camera";
+  MODULETYPE2["LIGHT"] = "light";
+  MODULETYPE2["GEOMETRY"] = "geometry";
+  MODULETYPE2["MODEL"] = "model";
+  MODULETYPE2["TEXTURE"] = "texture";
+  MODULETYPE2["MATERIAL"] = "material";
+  MODULETYPE2["RENDERER"] = "renderer";
+  MODULETYPE2["SCENE"] = "scene";
+  MODULETYPE2["SPRITE"] = "sprite";
+  MODULETYPE2["STRUCTURE"] = "structure";
+  MODULETYPE2["CONTROLS"] = "controls";
+})(MODULETYPE || (MODULETYPE = {}));
 const getObjectConfig = () => {
   return {
     vid: "",
@@ -220,6 +257,13 @@ const getCubeTextureConfig = function() {
     }
   });
 };
+const getCanvasTextureConfig = function() {
+  return Object.assign(getTextureConfig(), {
+    type: "CanvasTexture",
+    url: "",
+    needsUpdate: false
+  });
+};
 const getMaterialConfig = function() {
   return {
     vid: "",
@@ -339,28 +383,6 @@ const getOrthographicCameraConfig = function() {
     far: 50
   });
 };
-var CONFIGTYPE$1;
-(function(CONFIGTYPE2) {
-  CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
-  CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
-  CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
-  CONFIGTYPE2["MODEL"] = "Model";
-  CONFIGTYPE2["SPRITE"] = "Sprite";
-  CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
-  CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
-  CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
-  CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
-  CONFIGTYPE2["SPRITEMATERIAL"] = "SpriteMaterial";
-  CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
-  CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
-  CONFIGTYPE2["POINTLIGHT"] = "PointLight";
-  CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
-  CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
-  CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
-  CONFIGTYPE2["SCENE"] = "Scene";
-  CONFIGTYPE2["TRNASFORMCONTROLS"] = "TransformControls";
-  CONFIGTYPE2["ORBITCONTROLS"] = "OrbitControls";
-})(CONFIGTYPE$1 || (CONFIGTYPE$1 = {}));
 const getWebGLRendererConfig = function() {
   return {
     vid: "WebGLRenderer",
@@ -426,32 +448,60 @@ const getSpriteConfig = function() {
     center: {
       x: 0.5,
       y: 0.5
-    },
-    width: 1,
-    height: 1
+    }
   });
 };
-const typeMap = {
-  [CONFIGTYPE$1.IMAGETEXTURE]: getImageTextureConfig,
-  [CONFIGTYPE$1.CUBETEXTURE]: getCubeTextureConfig,
-  [CONFIGTYPE$1.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
-  [CONFIGTYPE$1.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
-  [CONFIGTYPE$1.SPRITEMATERIAL]: getSpriteMaterialConfig,
-  [CONFIGTYPE$1.AMBIENTLIGHT]: getAmbientLightConfig,
-  [CONFIGTYPE$1.SPOTLIGHT]: getSpotLightConfig,
-  [CONFIGTYPE$1.POINTLIGHT]: getPointLightConfig,
-  [CONFIGTYPE$1.BOXGEOMETRY]: getBoxGeometryConfig,
-  [CONFIGTYPE$1.SPHEREGEOMETRY]: getSphereGeometryConfig,
-  [CONFIGTYPE$1.LOADGEOMETRY]: getLoadGeometryConfig,
-  [CONFIGTYPE$1.MODEL]: getModelConfig,
-  [CONFIGTYPE$1.SPRITE]: getSpriteConfig,
-  [CONFIGTYPE$1.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
-  [CONFIGTYPE$1.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
-  [CONFIGTYPE$1.WEBGLRENDERER]: getWebGLRendererConfig,
-  [CONFIGTYPE$1.SCENE]: getSceneConfig,
-  [CONFIGTYPE$1.TRNASFORMCONTROLS]: getTransformControlsConfig,
-  [CONFIGTYPE$1.ORBITCONTROLS]: getOrbitControlsConfig
-};
+function isValidKey(key, object) {
+  return key in object;
+}
+function getConfigModelMap() {
+  return {
+    [CONFIGTYPE$1.IMAGETEXTURE]: MODULETYPE.TEXTURE,
+    [CONFIGTYPE$1.CUBETEXTURE]: MODULETYPE.TEXTURE,
+    [CONFIGTYPE$1.CANVASTEXTURE]: MODULETYPE.TEXTURE,
+    [CONFIGTYPE$1.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
+    [CONFIGTYPE$1.MESHPHONGMATERIAL]: MODULETYPE.MATERIAL,
+    [CONFIGTYPE$1.SPRITEMATERIAL]: MODULETYPE.MATERIAL,
+    [CONFIGTYPE$1.AMBIENTLIGHT]: MODULETYPE.LIGHT,
+    [CONFIGTYPE$1.SPOTLIGHT]: MODULETYPE.LIGHT,
+    [CONFIGTYPE$1.POINTLIGHT]: MODULETYPE.LIGHT,
+    [CONFIGTYPE$1.BOXGEOMETRY]: MODULETYPE.GEOMETRY,
+    [CONFIGTYPE$1.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
+    [CONFIGTYPE$1.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
+    [CONFIGTYPE$1.MODEL]: MODULETYPE.MODEL,
+    [CONFIGTYPE$1.SPRITE]: MODULETYPE.SPRITE,
+    [CONFIGTYPE$1.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
+    [CONFIGTYPE$1.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
+    [CONFIGTYPE$1.WEBGLRENDERER]: MODULETYPE.RENDERER,
+    [CONFIGTYPE$1.SCENE]: MODULETYPE.SCENE,
+    [CONFIGTYPE$1.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS
+  };
+}
+function getConfigFunctionMap() {
+  return {
+    [CONFIGTYPE$1.IMAGETEXTURE]: getImageTextureConfig,
+    [CONFIGTYPE$1.CUBETEXTURE]: getCubeTextureConfig,
+    [CONFIGTYPE$1.CANVASTEXTURE]: getCanvasTextureConfig,
+    [CONFIGTYPE$1.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
+    [CONFIGTYPE$1.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
+    [CONFIGTYPE$1.SPRITEMATERIAL]: getSpriteMaterialConfig,
+    [CONFIGTYPE$1.AMBIENTLIGHT]: getAmbientLightConfig,
+    [CONFIGTYPE$1.SPOTLIGHT]: getSpotLightConfig,
+    [CONFIGTYPE$1.POINTLIGHT]: getPointLightConfig,
+    [CONFIGTYPE$1.BOXGEOMETRY]: getBoxGeometryConfig,
+    [CONFIGTYPE$1.SPHEREGEOMETRY]: getSphereGeometryConfig,
+    [CONFIGTYPE$1.LOADGEOMETRY]: getLoadGeometryConfig,
+    [CONFIGTYPE$1.MODEL]: getModelConfig,
+    [CONFIGTYPE$1.SPRITE]: getSpriteConfig,
+    [CONFIGTYPE$1.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
+    [CONFIGTYPE$1.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
+    [CONFIGTYPE$1.WEBGLRENDERER]: getWebGLRendererConfig,
+    [CONFIGTYPE$1.SCENE]: getSceneConfig,
+    [CONFIGTYPE$1.TRNASFORMCONTROLS]: getTransformControlsConfig,
+    [CONFIGTYPE$1.ORBITCONTROLS]: getOrbitControlsConfig
+  };
+}
+const typeMap = getConfigFunctionMap();
 const generateConfig = function(type, merge, warn) {
   if (typeMap[type]) {
     const recursion = (config, merge2) => {
@@ -1425,20 +1475,6 @@ class ModelingScene extends Scene {
     return this;
   }
 }
-var MODULETYPE;
-(function(MODULETYPE2) {
-  MODULETYPE2["CAMERA"] = "camera";
-  MODULETYPE2["LIGHT"] = "light";
-  MODULETYPE2["GEOMETRY"] = "geometry";
-  MODULETYPE2["MODEL"] = "model";
-  MODULETYPE2["TEXTURE"] = "texture";
-  MODULETYPE2["MATERIAL"] = "material";
-  MODULETYPE2["RENDERER"] = "renderer";
-  MODULETYPE2["SCENE"] = "scene";
-  MODULETYPE2["SPRITE"] = "sprite";
-  MODULETYPE2["STRUCTURE"] = "structure";
-  MODULETYPE2["CONTROLS"] = "controls";
-})(MODULETYPE || (MODULETYPE = {}));
 const ModelingScenePlugin = function(params) {
   if (this.scene instanceof ModelingScene) {
     console.warn("this has installed modeling scene plugin.");
@@ -1502,6 +1538,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["SPRITE"] = "Sprite";
   CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
   CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
+  CONFIGTYPE2["CANVASTEXTURE"] = "CanvasTexture";
   CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
   CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
   CONFIGTYPE2["SPRITEMATERIAL"] = "SpriteMaterial";
@@ -2492,31 +2529,6 @@ class ModelingEngine extends Engine {
     this.install(EnginePlugin.EVENTMANAGER);
     this.install(EnginePlugin.TRANSFORMCONTROLS);
   }
-}
-function isValidKey(key, object) {
-  return key in object;
-}
-function getConfigModelMap() {
-  return {
-    [CONFIGTYPE$1.IMAGETEXTURE]: MODULETYPE.TEXTURE,
-    [CONFIGTYPE$1.CUBETEXTURE]: MODULETYPE.TEXTURE,
-    [CONFIGTYPE$1.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
-    [CONFIGTYPE$1.MESHPHONGMATERIAL]: MODULETYPE.MATERIAL,
-    [CONFIGTYPE$1.SPRITEMATERIAL]: MODULETYPE.MATERIAL,
-    [CONFIGTYPE$1.AMBIENTLIGHT]: MODULETYPE.LIGHT,
-    [CONFIGTYPE$1.SPOTLIGHT]: MODULETYPE.LIGHT,
-    [CONFIGTYPE$1.POINTLIGHT]: MODULETYPE.LIGHT,
-    [CONFIGTYPE$1.BOXGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE$1.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE$1.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE$1.MODEL]: MODULETYPE.MODEL,
-    [CONFIGTYPE$1.SPRITE]: MODULETYPE.SPRITE,
-    [CONFIGTYPE$1.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
-    [CONFIGTYPE$1.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
-    [CONFIGTYPE$1.WEBGLRENDERER]: MODULETYPE.RENDERER,
-    [CONFIGTYPE$1.SCENE]: MODULETYPE.SCENE,
-    [CONFIGTYPE$1.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS
-  };
 }
 const _ProxyBroadcast = class extends EventDispatcher {
   constructor() {
@@ -4858,8 +4870,9 @@ class TextureCompiler extends Compiler {
     this.map = new Map();
     this.resourceMap = new Map();
     const constructMap = new Map();
-    constructMap.set("ImageTexture", () => new ImageTexture());
-    constructMap.set("CubeTexture", () => new CubeTexture());
+    constructMap.set(CONFIGTYPE$1.IMAGETEXTURE, () => new ImageTexture());
+    constructMap.set(CONFIGTYPE$1.CUBETEXTURE, () => new CubeTexture());
+    constructMap.set(CONFIGTYPE$1.CANVASTEXTURE, () => new CanvasTexture(document.createElement("canvas")));
     this.constructMap = constructMap;
   }
   getResource(url) {
@@ -4888,10 +4901,10 @@ class TextureCompiler extends Compiler {
         const tempConfig = JSON.parse(JSON.stringify(config));
         delete tempConfig.type;
         delete tempConfig.vid;
-        if (config.type === "ImageTexture") {
+        if (config.type === CONFIGTYPE$1.IMAGETEXTURE || config.type === CONFIGTYPE$1.CANVASTEXTURE) {
           texture.image = this.getResource(tempConfig.url);
           delete tempConfig.url;
-        } else if (config.type === "CubeTexture") {
+        } else if (config.type === CONFIGTYPE$1.CUBETEXTURE) {
           const cube = config.cube;
           const images = [
             this.getResource(cube.px),
@@ -4925,6 +4938,14 @@ class TextureCompiler extends Compiler {
       return this;
     }
     const texture = this.map.get(vid);
+    if (key === "needsUpdate") {
+      if (value) {
+        texture.needsUpdate = true;
+        const config2 = this.target[vid];
+        config2.needsUpdate = false;
+      }
+      return this;
+    }
     let config = texture;
     path.forEach((key2, i, arr) => {
       config = config[key2];
@@ -5273,23 +5294,6 @@ class SpriteCompiler extends Compiler {
       return this.getReplaceMaterial();
     }
   }
-  replaceGeometry(params) {
-    const oldGeometry = params.sprite.geometry;
-    if (!params.height) {
-      if (oldGeometry instanceof PlaneBufferGeometry) {
-        params.height = oldGeometry.parameters.height;
-      }
-    }
-    if (!params.width) {
-      if (oldGeometry instanceof PlaneBufferGeometry) {
-        params.width = oldGeometry.parameters.width;
-      }
-    }
-    const plane2 = new PlaneBufferGeometry(params.width, params.height);
-    oldGeometry.dispose();
-    params.sprite.geometry = plane2;
-    return this;
-  }
   linkMaterialMap(materialMap) {
     this.materialMap = materialMap;
     return this;
@@ -5307,13 +5311,12 @@ class SpriteCompiler extends Compiler {
       return this;
     }
     const sprite = new Sprite();
-    this.replaceGeometry({
-      sprite,
-      width: config.width,
-      height: config.height
-    });
     sprite.material = this.getMaterial(config.material);
     sprite.center.set(config.center.x, config.center.y);
+    const tempConfig = JSON.parse(JSON.stringify(config));
+    delete tempConfig.material;
+    delete tempConfig.center;
+    Compiler.applyConfig(tempConfig, sprite);
     this.map.set(vid, sprite);
     this.weakMap.set(sprite, vid);
     this.scene.add(sprite);
@@ -5331,13 +5334,6 @@ class SpriteCompiler extends Compiler {
     let sprite = this.map.get(vid);
     if (key === "material") {
       sprite.material = this.getMaterial(vid);
-      return this;
-    }
-    if (key === "width" || key === "height") {
-      this.replaceGeometry({
-        sprite,
-        [key]: value
-      });
       return this;
     }
     path.forEach((key2, i, arr) => {
@@ -5392,7 +5388,11 @@ const _EngineSupport = class extends Engine {
     });
   }
   mappingResource(resourceMap) {
-    this.resourceManager.mappingResource(resourceMap);
+    const map = new Map();
+    Object.keys(resourceMap).forEach((key) => {
+      map.set(key, resourceMap[key]);
+    });
+    this.resourceManager.mappingResource(map);
     return this;
   }
   load(config, callback) {
@@ -5417,6 +5417,7 @@ const _EngineSupport = class extends Engine {
       loadLifeCycle();
       callback && callback();
     }
+    return this;
   }
   support() {
     if (!this.webGLRenderer) {
@@ -5758,4 +5759,38 @@ class DisplayEngineSupport extends EngineSupport {
     }).install(EnginePlugin.ORBITCONTROLS).install(EnginePlugin.POINTERMANAGER).install(EnginePlugin.EVENTMANAGER).support();
   }
 }
-export { CONFIGTYPE$1 as CONFIGTYPE, CameraDataSupport, CameraHelper, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };
+class CanvasTextureGenerator {
+  constructor(parameters) {
+    __publicField(this, "canvas");
+    this.canvas = document.createElement("canvas");
+    const devicePixelRatio = window.devicePixelRatio;
+    this.canvas.width = ((parameters == null ? void 0 : parameters.width) || 512) * devicePixelRatio;
+    this.canvas.height = ((parameters == null ? void 0 : parameters.height) || 512) * devicePixelRatio;
+    this.canvas.style.backgroundColor = (parameters == null ? void 0 : parameters.bgColor) || "rgb(255, 255, 255)";
+  }
+  get() {
+    return this.canvas;
+  }
+  draw(fun) {
+    const ctx = this.canvas.getContext("2d");
+    ctx == null ? void 0 : ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    if (ctx) {
+      fun(ctx);
+      return this;
+    } else {
+      console.warn(`you browser can not support canvas 2d`);
+      return this;
+    }
+  }
+  preview(parameters) {
+    const canvas = this.canvas;
+    canvas.style.position = "fixed";
+    canvas.style.top = (parameters == null ? void 0 : parameters.top) || "5%";
+    canvas.style.left = (parameters == null ? void 0 : parameters.left) || "5%";
+    canvas.style.right = (parameters == null ? void 0 : parameters.right) || "unset";
+    canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
+    document.body.appendChild(this.canvas);
+    return this;
+  }
+}
+export { CONFIGTYPE$1 as CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, LightDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };

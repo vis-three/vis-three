@@ -9,6 +9,7 @@ export class CompilerManager {
     rendererCompiler;
     sceneCompiler;
     controlsCompiler;
+    spriteCompiler;
     constructor(parameters) {
         Object.keys(parameters).forEach(key => {
             this[key] = parameters[key];
@@ -18,7 +19,8 @@ export class CompilerManager {
         const objectCompilerList = [
             this.cameraCompiler,
             this.lightCompiler,
-            this.modelCompiler
+            this.modelCompiler,
+            this.spriteCompiler
         ];
         for (let compiler of objectCompilerList) {
             const vid = compiler.getSupportVid(object);

@@ -28,7 +28,7 @@ import { ModelingScene, SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./extends/Model
 import { EngineSupport } from './middleware/engineSupport/EngineSupport';
 import { DisplayEngineSupport } from './middleware/engineSupport/DisplayEngineSupport';
 import { SceneDataSupport } from './middleware/scene/SceneDataSupport';
-
+import { CanvasTextureGenerator } from './convenient/CanvasTextureGenerator';
 
 export {
   // menu
@@ -72,9 +72,10 @@ export {
   PointLightHelper,
   CameraHelper,
 
-  // config
+  // convenient
   generateConfig,
   SupportDataGenerator,
+  CanvasTextureGenerator,
 
   // displayer
   MaterialDisplayer,

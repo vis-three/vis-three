@@ -8,6 +8,7 @@ import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { ModelCompiler } from "../middleware/model/ModelCompiler";
 import { RendererCompiler } from "../middleware/render/RendererCompiler";
 import { SceneCompiler } from "../middleware/scene/SceneCompiler";
+import { SpriteCompiler } from "../middleware/sprite/SpriteCompiler";
 import { TextureCompiler } from "../middleware/texture/TextureCompiler";
 export interface CompilerManagerParameters {
     cameraCompiler: CameraCompiler;
@@ -19,6 +20,7 @@ export interface CompilerManagerParameters {
     rendererCompiler: RendererCompiler;
     sceneCompiler: SceneCompiler;
     controlsCompiler: ControlsCompiler;
+    spriteCompiler: SpriteCompiler;
 }
 export declare class CompilerManager {
     private cameraCompiler;
@@ -30,6 +32,7 @@ export declare class CompilerManager {
     private rendererCompiler;
     private sceneCompiler;
     private controlsCompiler;
+    private spriteCompiler;
     constructor(parameters: CompilerManagerParameters);
     getObjectVid<O extends Object3D>(object: O): SymbolConfig['vid'] | null;
     getMaterial(vid: string): Material | undefined;

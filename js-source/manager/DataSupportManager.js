@@ -38,16 +38,9 @@ export class DataSupportManager {
             });
         }
         const dataSupportMap = new Map();
-        dataSupportMap.set(MODULETYPE.CAMERA, this.cameraDataSupport);
-        dataSupportMap.set(MODULETYPE.LIGHT, this.lightDataSupport);
-        dataSupportMap.set(MODULETYPE.GEOMETRY, this.geometryDataSupport);
-        dataSupportMap.set(MODULETYPE.MODEL, this.modelDataSupport);
-        dataSupportMap.set(MODULETYPE.TEXTURE, this.textureDataSupport);
-        dataSupportMap.set(MODULETYPE.MATERIAL, this.materialDataSupport);
-        dataSupportMap.set(MODULETYPE.RENDERER, this.rendererDataSupport);
-        dataSupportMap.set(MODULETYPE.SCENE, this.sceneDataSupport);
-        dataSupportMap.set(MODULETYPE.CONTROLS, this.controlsDataSupport);
-        dataSupportMap.set(MODULETYPE.CONTROLS, this.spriteDataSupport);
+        for (let module in MODULETYPE) {
+            dataSupportMap.set(MODULETYPE[module], this[`${MODULETYPE[module]}DataSupport`]);
+        }
         this.dataSupportMap = dataSupportMap;
     }
     getDataSupport(type) {

@@ -7,6 +7,7 @@ export var CONFIGTYPE;
     CONFIGTYPE["SPRITE"] = "Sprite";
     CONFIGTYPE["IMAGETEXTURE"] = "ImageTexture";
     CONFIGTYPE["CUBETEXTURE"] = "CubeTexture";
+    CONFIGTYPE["CANVASTEXTURE"] = "CanvasTexture";
     CONFIGTYPE["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
     CONFIGTYPE["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
     CONFIGTYPE["SPRITEMATERIAL"] = "SpriteMaterial";

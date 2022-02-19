@@ -80,13 +80,17 @@ export class EngineSupport extends Engine {
   }
 
   // 注入无需loader的外部资源例如scirpt生成的资源
-  mappingResource (resourceMap: Map<string, unknown>): this {
-    this.resourceManager.mappingResource(resourceMap)
+  mappingResource (resourceMap: {[key: string]: unknown}): this {
+    const map = new Map()
+    Object.keys(resourceMap).forEach(key => {
+      map.set(key, resourceMap[key])
+    })
+    this.resourceManager.mappingResource(map)
     return this
   }
 
   // load 生命周期
-  load (config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void) {
+  load (config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this {
     const loadLifeCycle = () => {
       const dataSupportManager = this.dataSupportManager
 
@@ -123,6 +127,8 @@ export class EngineSupport extends Engine {
       loadLifeCycle()
       callback && callback()
     }
+
+    return this
   }
 
   // 安装完插件之后开始进行支持
