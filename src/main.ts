@@ -29,6 +29,7 @@ import { EngineSupport } from './middleware/engineSupport/EngineSupport';
 import { DisplayEngineSupport } from './middleware/engineSupport/DisplayEngineSupport';
 import { SceneDataSupport } from './middleware/scene/SceneDataSupport';
 import { CanvasTextureGenerator } from './convenient/CanvasTextureGenerator';
+import { SpriteDataSupport } from './middleware/sprite/SpriteDataSupport';
 
 export {
   // menu
@@ -67,6 +68,7 @@ export {
   ControlsDataSupport,
   RendererDataSupport,
   SceneDataSupport,
+  SpriteDataSupport,
 
   // helper
   PointLightHelper,

@@ -9,6 +9,11 @@
 
 ## 基本用法
 
+#### 安装
+```
+npm i vis-three
+```
+
 #### 导入
 
 ``` js
@@ -18,7 +23,7 @@ import * as Vis from 'vis-three'
 #### 生成配置
 
 ``` js
-const pointLight = Vis.generateConfig('pointLight', {
+const pointLight = Vis.generateConfig('PointLight', {
   vid: getUUid(),
   position: {
     x: 10,
@@ -104,7 +109,7 @@ engineSupport.load({assets})
 #### 资源管理器
 ``` js
 engineSupport.mappingResource({
-'examples.canvas': new HTMLCanvasElement()
+  'examples.canvas': new document.createElement('canvas')
 })
 
 const resourceManager = engineSupport.resourceManager
@@ -139,7 +144,10 @@ engine.scene.add(new THREE.PointLight('white', 1))
 
 ```
 
-## 项目
+## 说明
+* 内置了ID检查，生成id请使用`npm i uuid`, `import {v4 as getUuid} from 'uuid'`
+
+## 项目相关
 * 开发：`npm run dev`
 * 构建： `npm run build`
 * 查看例子： `npm run examples`
