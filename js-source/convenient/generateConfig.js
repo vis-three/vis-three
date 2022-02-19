@@ -8,6 +8,7 @@ import { CONFIGTYPE } from "../middleware/constants/configType";
 import { getWebGLRendererConfig } from "../middleware/render/RendererConfig";
 import { getSceneConfig } from "../middleware/scene/SceneConfig";
 import { getOrbitControlsConfig, getTransformControlsConfig } from "../middleware/controls/ControlsConfig";
+import { getSpriteConfig } from "../middleware/sprite/SpriteConfig";
 const typeMap = {
     [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
     [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
@@ -20,6 +21,7 @@ const typeMap = {
     [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
     [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
     [CONFIGTYPE.MODEL]: getModelConfig,
+    [CONFIGTYPE.SPRITE]: getSpriteConfig,
     [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
     [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,

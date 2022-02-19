@@ -9,5 +9,5 @@ export enum MODULETYPE {
   SCENE = 'scene',
   SPRITE = 'sprite',
   STRUCTURE = 'structure',
-  CONTROLS = 'controls'
+  CONTROLS = 'controls',
 }

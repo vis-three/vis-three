@@ -86,4 +86,13 @@ export const getMeshPhongMaterialConfig = function () {
         specularMap: ''
     });
 };
+export const getSpriteMaterialConfig = function () {
+    return Object.assign(getMaterialConfig(), {
+        color: 'rgb(255, 255, 255)',
+        rotation: 0,
+        map: '',
+        alphaMap: '',
+        sizeAttenuation: true
+    });
+};
 //# sourceMappingURL=MaterialConfig.js.map

@@ -75,7 +75,15 @@ export interface MeshPhongMaterialConfig extends MaterialConfig {
     aoMap: string;
     specularMap: string;
 }
+export interface SpriteMaterialConfig extends MaterialConfig {
+    color: string;
+    rotation: number;
+    map: string;
+    alphaMap: string;
+    sizeAttenuation: boolean;
+}
 export declare type MaterialAllType = MeshStandardMaterialConfig | MeshPhongMaterialConfig;
 export declare const getMaterialConfig: () => MaterialConfig;
 export declare const getMeshStandardMaterialConfig: () => MeshStandardMaterialConfig;
 export declare const getMeshPhongMaterialConfig: () => MeshPhongMaterialConfig;
+export declare const getSpriteMaterialConfig: () => SpriteMaterialConfig;

@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, LinearEncoding, FrontSide, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, Fog, FogExp2, CubeTexture, PCFSoftShadowMap } from "three";
+import { UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, LinearEncoding, FrontSide, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, Fog, FogExp2, CubeTexture, PlaneBufferGeometry, PCFSoftShadowMap } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -307,6 +307,16 @@ const getMeshPhongMaterialConfig = function() {
     specularMap: ""
   });
 };
+const getSpriteMaterialConfig = function() {
+  return Object.assign(getMaterialConfig(), {
+    type: "SpriteMaterial",
+    color: "rgb(255, 255, 255)",
+    rotation: 0,
+    map: "",
+    alphaMap: "",
+    sizeAttenuation: true
+  });
+};
 const getPerspectiveCameraConfig = function() {
   return Object.assign(getObjectConfig(), {
     type: "PerspectiveCamera",
@@ -335,13 +345,12 @@ var CONFIGTYPE$1;
   CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
   CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
   CONFIGTYPE2["MODEL"] = "Model";
-  CONFIGTYPE2["MESH"] = "Mesh";
-  CONFIGTYPE2["LINE"] = "Line";
-  CONFIGTYPE2["POINTS"] = "Points";
+  CONFIGTYPE2["SPRITE"] = "Sprite";
   CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
   CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
   CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
   CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
+  CONFIGTYPE2["SPRITEMATERIAL"] = "SpriteMaterial";
   CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
   CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
   CONFIGTYPE2["POINTLIGHT"] = "PointLight";
@@ -410,11 +419,24 @@ const getOrbitControlsConfig = function() {
     dampingFactor: 0.05
   };
 };
+const getSpriteConfig = function() {
+  return Object.assign(getObjectConfig(), {
+    type: "Sprite",
+    material: "",
+    center: {
+      x: 0.5,
+      y: 0.5
+    },
+    width: 1,
+    height: 1
+  });
+};
 const typeMap = {
   [CONFIGTYPE$1.IMAGETEXTURE]: getImageTextureConfig,
   [CONFIGTYPE$1.CUBETEXTURE]: getCubeTextureConfig,
   [CONFIGTYPE$1.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
   [CONFIGTYPE$1.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
+  [CONFIGTYPE$1.SPRITEMATERIAL]: getSpriteMaterialConfig,
   [CONFIGTYPE$1.AMBIENTLIGHT]: getAmbientLightConfig,
   [CONFIGTYPE$1.SPOTLIGHT]: getSpotLightConfig,
   [CONFIGTYPE$1.POINTLIGHT]: getPointLightConfig,
@@ -422,6 +444,7 @@ const typeMap = {
   [CONFIGTYPE$1.SPHEREGEOMETRY]: getSphereGeometryConfig,
   [CONFIGTYPE$1.LOADGEOMETRY]: getLoadGeometryConfig,
   [CONFIGTYPE$1.MODEL]: getModelConfig,
+  [CONFIGTYPE$1.SPRITE]: getSpriteConfig,
   [CONFIGTYPE$1.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
   [CONFIGTYPE$1.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
   [CONFIGTYPE$1.WEBGLRENDERER]: getWebGLRendererConfig,
@@ -1476,13 +1499,12 @@ var CONFIGTYPE;
   CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
   CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
   CONFIGTYPE2["MODEL"] = "Model";
-  CONFIGTYPE2["MESH"] = "Mesh";
-  CONFIGTYPE2["LINE"] = "Line";
-  CONFIGTYPE2["POINTS"] = "Points";
+  CONFIGTYPE2["SPRITE"] = "Sprite";
   CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
   CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
   CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
   CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
+  CONFIGTYPE2["SPRITEMATERIAL"] = "SpriteMaterial";
   CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
   CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
   CONFIGTYPE2["POINTLIGHT"] = "PointLight";
@@ -2480,6 +2502,7 @@ function getConfigModelMap() {
     [CONFIGTYPE$1.CUBETEXTURE]: MODULETYPE.TEXTURE,
     [CONFIGTYPE$1.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
     [CONFIGTYPE$1.MESHPHONGMATERIAL]: MODULETYPE.MATERIAL,
+    [CONFIGTYPE$1.SPRITEMATERIAL]: MODULETYPE.MATERIAL,
     [CONFIGTYPE$1.AMBIENTLIGHT]: MODULETYPE.LIGHT,
     [CONFIGTYPE$1.SPOTLIGHT]: MODULETYPE.LIGHT,
     [CONFIGTYPE$1.POINTLIGHT]: MODULETYPE.LIGHT,
@@ -2487,6 +2510,7 @@ function getConfigModelMap() {
     [CONFIGTYPE$1.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
     [CONFIGTYPE$1.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
     [CONFIGTYPE$1.MODEL]: MODULETYPE.MODEL,
+    [CONFIGTYPE$1.SPRITE]: MODULETYPE.SPRITE,
     [CONFIGTYPE$1.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
     [CONFIGTYPE$1.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
     [CONFIGTYPE$1.WEBGLRENDERER]: MODULETYPE.RENDERER,
@@ -4177,6 +4201,8 @@ class MaterialCompiler extends Compiler {
     this.cachaColor = new Color();
     const constructMap = new Map();
     constructMap.set("MeshStandardMaterial", () => new MeshStandardMaterial());
+    constructMap.set("MeshPhongMaterial", () => new MeshPhongMaterial());
+    constructMap.set("SpriteMaterial", () => new SpriteMaterial());
     this.constructMap = constructMap;
     this.colorAttribute = {
       "color": true,
@@ -4193,8 +4219,23 @@ class MaterialCompiler extends Compiler {
       "displacementMap": true,
       "bumpMap": true,
       "alphaMap": true,
-      "aoMap": true
+      "aoMap": true,
+      "specularMap": true
     };
+  }
+  getTexture(vid) {
+    if (this.texturelMap.has(vid)) {
+      const texture = this.texturelMap.get(vid);
+      if (texture instanceof Texture) {
+        return texture;
+      } else {
+        console.error(`this object which mapped by vid is not instance of Texture: ${vid}`);
+        return null;
+      }
+    } else {
+      console.error(`texture map can not found this vid: ${vid}`);
+      return null;
+    }
   }
   linkRescourceMap(map) {
     this.resourceMap = map;
@@ -4261,20 +4302,6 @@ class MaterialCompiler extends Compiler {
     });
     config[key] = value;
     return this;
-  }
-  getTexture(vid) {
-    if (this.texturelMap.has(vid)) {
-      const texture = this.texturelMap.get(vid);
-      if (texture instanceof Texture) {
-        return texture;
-      } else {
-        console.error(`this object which mapped by vid is not instance of Texture: ${vid}`);
-        return null;
-      }
-    } else {
-      console.error(`texture map can not found this vid: ${vid}`);
-      return null;
-    }
   }
   getMap() {
     return this.map;
@@ -5064,6 +5091,24 @@ class ControlsDataSupport extends DataSupport {
     super(ControlsRule, data);
   }
 }
+const SpriteRule = function(notice, compiler) {
+  const { operate, key, path, value } = notice;
+  if (operate === "add") {
+    compiler.add(key, value);
+    return;
+  }
+  if (operate === "set") {
+    const tempPath = path.concat([]);
+    const vid = tempPath.shift();
+    compiler.set(vid, tempPath, key, value);
+  }
+};
+class SpriteDataSupport extends DataSupport {
+  constructor(data) {
+    !data && (data = {});
+    super(SpriteRule, data);
+  }
+}
 class DataSupportManager {
   constructor(parameters) {
     __publicField(this, "cameraDataSupport");
@@ -5075,32 +5120,27 @@ class DataSupportManager {
     __publicField(this, "rendererDataSupport");
     __publicField(this, "sceneDataSupport");
     __publicField(this, "controlsDataSupport");
+    __publicField(this, "spriteDataSupport");
     __publicField(this, "dataSupportMap");
+    this.cameraDataSupport = new CameraDataSupport();
+    this.lightDataSupport = new LightDataSupport();
+    this.geometryDataSupport = new GeometryDataSupport();
+    this.modelDataSupport = new ModelDataSupport();
+    this.textureDataSupport = new TextureDataSupport();
+    this.materialDataSupport = new MaterialDataSupport();
+    this.rendererDataSupport = new RendererDataSupport();
+    this.sceneDataSupport = new SceneDataSupport();
+    this.controlsDataSupport = new ControlsDataSupport();
+    this.spriteDataSupport = new SpriteDataSupport();
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
         this[key] = parameters[key];
       });
-    } else {
-      this.cameraDataSupport = new CameraDataSupport();
-      this.lightDataSupport = new LightDataSupport();
-      this.geometryDataSupport = new GeometryDataSupport();
-      this.modelDataSupport = new ModelDataSupport();
-      this.textureDataSupport = new TextureDataSupport();
-      this.materialDataSupport = new MaterialDataSupport();
-      this.rendererDataSupport = new RendererDataSupport();
-      this.sceneDataSupport = new SceneDataSupport();
-      this.controlsDataSupport = new ControlsDataSupport();
     }
     const dataSupportMap = new Map();
-    dataSupportMap.set(MODULETYPE.CAMERA, this.cameraDataSupport);
-    dataSupportMap.set(MODULETYPE.LIGHT, this.lightDataSupport);
-    dataSupportMap.set(MODULETYPE.GEOMETRY, this.geometryDataSupport);
-    dataSupportMap.set(MODULETYPE.MODEL, this.modelDataSupport);
-    dataSupportMap.set(MODULETYPE.TEXTURE, this.textureDataSupport);
-    dataSupportMap.set(MODULETYPE.MATERIAL, this.materialDataSupport);
-    dataSupportMap.set(MODULETYPE.RENDERER, this.rendererDataSupport);
-    dataSupportMap.set(MODULETYPE.SCENE, this.sceneDataSupport);
-    dataSupportMap.set(MODULETYPE.CONTROLS, this.controlsDataSupport);
+    for (let module in MODULETYPE) {
+      dataSupportMap.set(MODULETYPE[module], this[`${MODULETYPE[module]}DataSupport`]);
+    }
     this.dataSupportMap = dataSupportMap;
   }
   getDataSupport(type) {
@@ -5128,29 +5168,18 @@ class DataSupportManager {
     return this;
   }
   load(config) {
-    config.camera && this.cameraDataSupport.load(config.camera);
-    config.geometry && this.geometryDataSupport.load(config.geometry);
-    config.light && this.lightDataSupport.load(config.light);
-    config.material && this.materialDataSupport.load(config.material);
-    config.model && this.modelDataSupport.load(config.model);
-    config.texture && this.textureDataSupport.load(config.texture);
-    config.renderer && this.rendererDataSupport.load(config.renderer);
-    config.scene && this.sceneDataSupport.load(config.scene);
-    config.controls && this.controlsDataSupport.load(config.controls);
+    const dataSupportMap = this.dataSupportMap;
+    dataSupportMap.forEach((dataSupport, module) => {
+      config[module] && dataSupport.load(config[module]);
+    });
     return this;
   }
   toJSON() {
-    const jsonObject = {
-      [MODULETYPE.RENDERER]: this.rendererDataSupport.toJSON(),
-      [MODULETYPE.SCENE]: this.sceneDataSupport.toJSON(),
-      [MODULETYPE.CAMERA]: this.cameraDataSupport.toJSON(),
-      [MODULETYPE.GEOMETRY]: this.geometryDataSupport.toJSON(),
-      [MODULETYPE.LIGHT]: this.lightDataSupport.toJSON(),
-      [MODULETYPE.MATERIAL]: this.materialDataSupport.toJSON(),
-      [MODULETYPE.MODEL]: this.modelDataSupport.toJSON(),
-      [MODULETYPE.TEXTURE]: this.textureDataSupport.toJSON(),
-      [MODULETYPE.CONTROLS]: this.controlsDataSupport.toJSON()
-    };
+    const jsonObject = {};
+    const dataSupportMap = this.dataSupportMap;
+    dataSupportMap.forEach((dataSupport, module) => {
+      jsonObject[module] = dataSupport.toJSON();
+    });
     return JSON.stringify(jsonObject);
   }
 }
@@ -5165,6 +5194,7 @@ class CompilerManager {
     __publicField(this, "rendererCompiler");
     __publicField(this, "sceneCompiler");
     __publicField(this, "controlsCompiler");
+    __publicField(this, "spriteCompiler");
     Object.keys(parameters).forEach((key) => {
       this[key] = parameters[key];
     });
@@ -5173,7 +5203,8 @@ class CompilerManager {
     const objectCompilerList = [
       this.cameraCompiler,
       this.lightCompiler,
-      this.modelCompiler
+      this.modelCompiler,
+      this.spriteCompiler
     ];
     for (let compiler of objectCompilerList) {
       const vid = compiler.getSupportVid(object);
@@ -5198,6 +5229,141 @@ class CompilerManager {
     }
     const textureCompiler = this.textureCompiler;
     return textureCompiler.getMap().get(vid);
+  }
+}
+class SpriteCompiler extends Compiler {
+  constructor(parametes) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "scene");
+    __publicField(this, "map");
+    __publicField(this, "weakMap");
+    __publicField(this, "materialMap");
+    if (parametes) {
+      parametes.target && (this.target = parametes.target);
+      parametes.scene && (this.scene = parametes.scene);
+    } else {
+      this.target = {};
+    }
+    this.map = new Map();
+    this.weakMap = new WeakMap();
+    this.materialMap = new Map();
+  }
+  getReplaceMaterial() {
+    return new SpriteMaterial({
+      color: "rgb(150, 150, 150)"
+    });
+  }
+  getMaterial(vid) {
+    if (validate(vid)) {
+      if (this.materialMap.has(vid)) {
+        const material = this.materialMap.get(vid);
+        if (material instanceof SpriteMaterial) {
+          return material;
+        } else {
+          console.warn(`vid mapping material not instanceof SpriteMaterial. vid: ${vid}, material: ${material}`);
+          return this.getReplaceMaterial();
+        }
+      } else {
+        console.warn(`can not found material which vid: ${vid}`);
+        return this.getReplaceMaterial();
+      }
+    } else {
+      console.warn(`material vid parameter is illegal: ${vid}`);
+      return this.getReplaceMaterial();
+    }
+  }
+  replaceGeometry(params) {
+    const oldGeometry = params.sprite.geometry;
+    if (!params.height) {
+      if (oldGeometry instanceof PlaneBufferGeometry) {
+        params.height = oldGeometry.parameters.height;
+      }
+    }
+    if (!params.width) {
+      if (oldGeometry instanceof PlaneBufferGeometry) {
+        params.width = oldGeometry.parameters.width;
+      }
+    }
+    const plane2 = new PlaneBufferGeometry(params.width, params.height);
+    oldGeometry.dispose();
+    params.sprite.geometry = plane2;
+    return this;
+  }
+  linkMaterialMap(materialMap) {
+    this.materialMap = materialMap;
+    return this;
+  }
+  getSupportVid(object) {
+    if (this.weakMap.has(object)) {
+      return this.weakMap.get(object);
+    } else {
+      return null;
+    }
+  }
+  add(vid, config) {
+    if (!validate(vid)) {
+      console.log(`Sprite compiler vid is illeage: ${vid}`);
+      return this;
+    }
+    const sprite = new Sprite();
+    this.replaceGeometry({
+      sprite,
+      width: config.width,
+      height: config.height
+    });
+    sprite.material = this.getMaterial(config.material);
+    sprite.center.set(config.center.x, config.center.y);
+    this.map.set(vid, sprite);
+    this.weakMap.set(sprite, vid);
+    this.scene.add(sprite);
+    return this;
+  }
+  set(vid, path, key, value) {
+    if (!validate(vid)) {
+      console.warn(`sprite compiler vid is illegal: '${vid}'`);
+      return this;
+    }
+    if (!this.map.has(vid)) {
+      console.warn(`sprite compiler can not found this vid mapping object: '${vid}'`);
+      return this;
+    }
+    let sprite = this.map.get(vid);
+    if (key === "material") {
+      sprite.material = this.getMaterial(vid);
+      return this;
+    }
+    if (key === "width" || key === "height") {
+      this.replaceGeometry({
+        sprite,
+        [key]: value
+      });
+      return this;
+    }
+    path.forEach((key2, i, arr) => {
+      sprite = sprite[key2];
+    });
+    sprite[key] = value;
+    return this;
+  }
+  remove() {
+  }
+  getMap() {
+    return this.map;
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  compileAll() {
+    const target = this.target;
+    for (const key in target) {
+      this.add(key, target[key]);
+    }
+    return this;
+  }
+  dispose() {
+    return this;
   }
 }
 let pluginHandler = new Map();
@@ -5275,6 +5441,7 @@ const _EngineSupport = class extends Engine {
     const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER);
     const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE);
     const controlsDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CONTROLS);
+    const spriteDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SPRITE);
     const textureCompiler = new TextureCompiler({
       target: textureDataSupport.getData()
     });
@@ -5309,11 +5476,16 @@ const _EngineSupport = class extends Engine {
       target: controlsDataSupport.getData(),
       transformControls: this.transformControls
     });
+    const spriteCompiler = new SpriteCompiler({
+      target: spriteDataSupport.getData(),
+      scene: this.scene
+    });
     const resourceManager = this.resourceManager;
     sceneCompiler.linkTextureMap(textureCompiler.getMap());
     materialCompiler.linkTextureMap(textureCompiler.getMap());
-    modelCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap());
-    cameraCompiler.linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap());
+    modelCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap()).linkObjectMap(spriteCompiler.getMap());
+    cameraCompiler.linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap()).linkObjectMap(spriteCompiler.getMap());
+    spriteCompiler.linkMaterialMap(materialCompiler.getMap());
     textureCompiler.linkRescourceMap(resourceManager.resourceMap);
     geometryCompiler.linkRescourceMap(resourceManager.resourceMap);
     textureDataSupport.addCompiler(textureCompiler);
@@ -5325,6 +5497,7 @@ const _EngineSupport = class extends Engine {
     rendererDataSupport.addCompiler(rendererCompiler);
     sceneDataSupport.addCompiler(sceneCompiler);
     controlsDataSupport.addCompiler(controlsCompiler);
+    spriteDataSupport.addCompiler(spriteCompiler);
     this.compilerManager = new CompilerManager({
       textureCompiler,
       materialCompiler,
@@ -5334,7 +5507,8 @@ const _EngineSupport = class extends Engine {
       modelCompiler,
       rendererCompiler,
       sceneCompiler,
-      controlsCompiler
+      controlsCompiler,
+      spriteCompiler
     });
     return this;
   }

@@ -1,7 +1,22 @@
 import { Vector2Config } from "../common/CommonConfig";
-import { ObjectConfig } from "../object/ObjectConfig";
+import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
 
 export interface SpriteConfig extends ObjectConfig {
   material: string
   center: Vector2Config
+  width: number
+  height: number
+}
+
+export const getSpriteConfig = function(): SpriteConfig {
+  return Object.assign(getObjectConfig(), {
+    type: 'Sprite',
+    material: '',
+    center: {
+      x: 0.5,
+      y: 0.5
+    },
+    width: 1,
+    height: 1
+  })
 }

@@ -1,4 +1,4 @@
-import { Color, MeshStandardMaterial, Texture } from "three";
+import { Color, MeshPhongMaterial, MeshStandardMaterial, SpriteMaterial, Texture } from "three";
 import { validate } from "uuid";
 import { Compiler } from "../../core/Compiler";
 export class MaterialCompiler extends Compiler {
@@ -24,6 +24,8 @@ export class MaterialCompiler extends Compiler {
         this.cachaColor = new Color();
         const constructMap = new Map();
         constructMap.set('MeshStandardMaterial', () => new MeshStandardMaterial());
+        constructMap.set('MeshPhongMaterial', () => new MeshPhongMaterial());
+        constructMap.set('SpriteMaterial', () => new SpriteMaterial());
         this.constructMap = constructMap;
         this.colorAttribute = {
             'color': true,
@@ -41,7 +43,24 @@ export class MaterialCompiler extends Compiler {
             'bumpMap': true,
             'alphaMap': true,
             'aoMap': true,
+            'specularMap': true
         };
+    }
+    getTexture(vid) {
+        if (this.texturelMap.has(vid)) {
+            const texture = this.texturelMap.get(vid);
+            if (texture instanceof Texture) {
+                return texture;
+            }
+            else {
+                console.error(`this object which mapped by vid is not instance of Texture: ${vid}`);
+                return null;
+            }
+        }
+        else {
+            console.error(`texture map can not found this vid: ${vid}`);
+            return null;
+        }
     }
     linkRescourceMap(map) {
         this.resourceMap = map;
@@ -115,22 +134,6 @@ export class MaterialCompiler extends Compiler {
         });
         config[key] = value;
         return this;
-    }
-    getTexture(vid) {
-        if (this.texturelMap.has(vid)) {
-            const texture = this.texturelMap.get(vid);
-            if (texture instanceof Texture) {
-                return texture;
-            }
-            else {
-                console.error(`this object which mapped by vid is not instance of Texture: ${vid}`);
-                return null;
-            }
-        }
-        else {
-            console.error(`texture map can not found this vid: ${vid}`);
-            return null;
-        }
     }
     getMap() {
         return this.map;

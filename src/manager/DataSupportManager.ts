@@ -19,16 +19,19 @@ import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { ControlsCompilerTarget } from "../middleware/controls/ControlsCompiler";
 import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
 import { Compiler, CompilerTarget } from "../core/Compiler";
-import { Object3D } from 'three';
-import { SymbolConfig } from '../middleware/common/CommonConfig';
+import { SpriteCompilerTarget } from '../middleware/sprite/SpriteCompiler';
+import { SpriteDataSupport } from '../middleware/sprite/SpriteDataSupport';
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget
   [MODULETYPE.MATERIAL]?: MaterialCompilerTarget
-  [MODULETYPE.LIGHT]?: LightCompilerTarget
   [MODULETYPE.GEOMETRY]?: GeometryCompilerTarget
+
+  [MODULETYPE.LIGHT]?: LightCompilerTarget
   [MODULETYPE.MODEL]?: ModelCompilerTarget
   [MODULETYPE.CAMERA]?: CameraCompilerTarget
+  [MODULETYPE.SPRITE]?: SpriteCompilerTarget
+
   [MODULETYPE.RENDERER]?: RendererCompilerTarget
   [MODULETYPE.SCENE]?: SceneCompilerTarget
   [MODULETYPE.CONTROLS]?: ControlsCompilerTarget
@@ -44,6 +47,7 @@ export interface DataSupportManagerParameters {
   rendererDataSupport: RendererDataSupport
   sceneDataSupport: SceneDataSupport
   controlsDataSupport: ControlsDataSupport
+  spriteDataSupport: SpriteDataSupport
 }
 
 export class DataSupportManager {
@@ -56,38 +60,33 @@ export class DataSupportManager {
   private rendererDataSupport!: RendererDataSupport
   private sceneDataSupport!: SceneDataSupport
   private controlsDataSupport!: ControlsDataSupport
+  private spriteDataSupport!: SpriteDataSupport
 
   private dataSupportMap: Map<MODULETYPE, DataSupport<CompilerTarget, Compiler>>
 
   constructor (parameters?: DataSupportManagerParameters) {
 
+    this.cameraDataSupport = new CameraDataSupport()
+    this.lightDataSupport = new LightDataSupport()
+    this.geometryDataSupport = new GeometryDataSupport()
+    this.modelDataSupport = new ModelDataSupport()
+    this.textureDataSupport = new TextureDataSupport()
+    this.materialDataSupport = new MaterialDataSupport()
+    this.rendererDataSupport = new RendererDataSupport()
+    this.sceneDataSupport = new SceneDataSupport()
+    this.controlsDataSupport = new ControlsDataSupport()
+    this.spriteDataSupport = new SpriteDataSupport()
+
     if (parameters) {
       Object.keys(parameters).forEach(key => {
         this[key] = parameters[key]
       })
-    } else {
-      this.cameraDataSupport = new CameraDataSupport()
-      this.lightDataSupport = new LightDataSupport()
-      this.geometryDataSupport = new GeometryDataSupport()
-      this.modelDataSupport = new ModelDataSupport()
-      this.textureDataSupport = new TextureDataSupport()
-      this.materialDataSupport = new MaterialDataSupport()
-      this.rendererDataSupport = new RendererDataSupport()
-      this.sceneDataSupport = new SceneDataSupport()
-      this.controlsDataSupport = new ControlsDataSupport()
     }
 
     const dataSupportMap = new Map()
-
-    dataSupportMap.set(MODULETYPE.CAMERA, this.cameraDataSupport)
-    dataSupportMap.set(MODULETYPE.LIGHT, this.lightDataSupport)
-    dataSupportMap.set(MODULETYPE.GEOMETRY, this.geometryDataSupport)
-    dataSupportMap.set(MODULETYPE.MODEL, this.modelDataSupport)
-    dataSupportMap.set(MODULETYPE.TEXTURE, this.textureDataSupport)
-    dataSupportMap.set(MODULETYPE.MATERIAL, this.materialDataSupport)
-    dataSupportMap.set(MODULETYPE.RENDERER, this.rendererDataSupport)
-    dataSupportMap.set(MODULETYPE.SCENE, this.sceneDataSupport)
-    dataSupportMap.set(MODULETYPE.CONTROLS, this.controlsDataSupport)
+    for (let module in MODULETYPE) {
+      dataSupportMap.set(MODULETYPE[module], this[`${MODULETYPE[module]}DataSupport`])
+    }
 
     this.dataSupportMap = dataSupportMap
   }
@@ -120,30 +119,19 @@ export class DataSupportManager {
   }
 
   load (config: LoadOptions): this {
-    config.camera && this.cameraDataSupport.load(config.camera)
-    config.geometry && this.geometryDataSupport.load(config.geometry)
-    config.light && this.lightDataSupport.load(config.light)
-    config.material && this.materialDataSupport.load(config.material)
-    config.model && this.modelDataSupport.load(config.model)
-    config.texture && this.textureDataSupport.load(config.texture)
-    config.renderer && this.rendererDataSupport.load(config.renderer)
-    config.scene && this.sceneDataSupport.load(config.scene)
-    config.controls && this.controlsDataSupport.load(config.controls)
+    const dataSupportMap = this.dataSupportMap
+    dataSupportMap.forEach((dataSupport, module) => {
+      config[module] && dataSupport.load(config[module])
+    })
     return this
   }
 
   toJSON (): string {
-    const jsonObject = {
-      [MODULETYPE.RENDERER]: this.rendererDataSupport.toJSON(),
-      [MODULETYPE.SCENE]: this.sceneDataSupport.toJSON(),
-      [MODULETYPE.CAMERA]: this.cameraDataSupport.toJSON(),
-      [MODULETYPE.GEOMETRY]: this.geometryDataSupport.toJSON(),
-      [MODULETYPE.LIGHT]: this.lightDataSupport.toJSON(),
-      [MODULETYPE.MATERIAL]: this.materialDataSupport.toJSON(),
-      [MODULETYPE.MODEL]: this.modelDataSupport.toJSON(),
-      [MODULETYPE.TEXTURE]: this.textureDataSupport.toJSON(),
-      [MODULETYPE.CONTROLS]: this.controlsDataSupport.toJSON()
-    }
+    const jsonObject = {}
+    const dataSupportMap = this.dataSupportMap
+    dataSupportMap.forEach((dataSupport, module) => {
+      jsonObject[module] = dataSupport.toJSON()
+    })
 
     return JSON.stringify(jsonObject)
   }

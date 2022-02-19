@@ -34,6 +34,8 @@ import { DataSupportManager, LoadOptions } from '../../manager/DataSupportManage
 import { SymbolConfig } from '../common/CommonConfig';
 import { Object3D } from 'three';
 import { CompilerManager } from '../../manager/CompilerManager';
+import { SpriteCompiler } from '../sprite/SpriteCompiler';
+import { SpriteDataSupport } from '../sprite/SpriteDataSupport';
 
 export interface EngineSupportLoadOptions extends LoadOptions{
   assets?: string[]
@@ -152,6 +154,7 @@ export class EngineSupport extends Engine {
     const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER)! as RendererDataSupport
     const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE)! as SceneDataSupport
     const controlsDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CONTROLS)! as ControlsDataSupport
+    const spriteDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SPRITE)! as SpriteDataSupport
 
     const textureCompiler = new TextureCompiler({
       target: textureDataSupport.getData()
@@ -196,6 +199,11 @@ export class EngineSupport extends Engine {
       transformControls: this.transformControls
     })
 
+    const spriteCompiler = new SpriteCompiler({
+      target: spriteDataSupport.getData(),
+      scene: this.scene!
+    })
+
     const resourceManager = this.resourceManager
 
     // 建立编译器链接
@@ -208,11 +216,15 @@ export class EngineSupport extends Engine {
     .linkObjectMap(lightCompiler.getMap())
     .linkObjectMap(cameraCompiler.getMap())
     .linkObjectMap(modelCompiler.getMap())
+    .linkObjectMap(spriteCompiler.getMap())
 
     cameraCompiler
     .linkObjectMap(lightCompiler.getMap())
     .linkObjectMap(cameraCompiler.getMap())
     .linkObjectMap(modelCompiler.getMap())
+    .linkObjectMap(spriteCompiler.getMap())
+
+    spriteCompiler.linkMaterialMap(materialCompiler.getMap())
 
     textureCompiler.linkRescourceMap(resourceManager.resourceMap)
     geometryCompiler.linkRescourceMap(resourceManager.resourceMap)
@@ -227,6 +239,7 @@ export class EngineSupport extends Engine {
     rendererDataSupport.addCompiler(rendererCompiler)
     sceneDataSupport.addCompiler(sceneCompiler)
     controlsDataSupport.addCompiler(controlsCompiler)
+    spriteDataSupport.addCompiler(spriteCompiler)
 
     this.compilerManager = new CompilerManager({
       textureCompiler,
@@ -237,7 +250,8 @@ export class EngineSupport extends Engine {
       modelCompiler,
       rendererCompiler,
       sceneCompiler,
-      controlsCompiler
+      controlsCompiler,
+      spriteCompiler
     })
 
     return this

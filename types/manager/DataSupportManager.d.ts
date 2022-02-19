@@ -19,13 +19,16 @@ import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { ControlsCompilerTarget } from "../middleware/controls/ControlsCompiler";
 import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
 import { Compiler, CompilerTarget } from "../core/Compiler";
+import { SpriteCompilerTarget } from '../middleware/sprite/SpriteCompiler';
+import { SpriteDataSupport } from '../middleware/sprite/SpriteDataSupport';
 export interface LoadOptions {
     [MODULETYPE.TEXTURE]?: TextureCompilerTarget;
     [MODULETYPE.MATERIAL]?: MaterialCompilerTarget;
-    [MODULETYPE.LIGHT]?: LightCompilerTarget;
     [MODULETYPE.GEOMETRY]?: GeometryCompilerTarget;
+    [MODULETYPE.LIGHT]?: LightCompilerTarget;
     [MODULETYPE.MODEL]?: ModelCompilerTarget;
     [MODULETYPE.CAMERA]?: CameraCompilerTarget;
+    [MODULETYPE.SPRITE]?: SpriteCompilerTarget;
     [MODULETYPE.RENDERER]?: RendererCompilerTarget;
     [MODULETYPE.SCENE]?: SceneCompilerTarget;
     [MODULETYPE.CONTROLS]?: ControlsCompilerTarget;
@@ -40,6 +43,7 @@ export interface DataSupportManagerParameters {
     rendererDataSupport: RendererDataSupport;
     sceneDataSupport: SceneDataSupport;
     controlsDataSupport: ControlsDataSupport;
+    spriteDataSupport: SpriteDataSupport;
 }
 export declare class DataSupportManager {
     private cameraDataSupport;
@@ -51,6 +55,7 @@ export declare class DataSupportManager {
     private rendererDataSupport;
     private sceneDataSupport;
     private controlsDataSupport;
+    private spriteDataSupport;
     private dataSupportMap;
     constructor(parameters?: DataSupportManagerParameters);
     getDataSupport<D>(type: MODULETYPE): D | null;

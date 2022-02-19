@@ -82,6 +82,14 @@ export interface MeshPhongMaterialConfig extends MaterialConfig {
   specularMap: string
 }
 
+export interface SpriteMaterialConfig extends MaterialConfig {
+  color: string
+  rotation: number
+  map: string
+  alphaMap: string
+  sizeAttenuation: boolean
+}
+
 // TODO: LoadMaterial
 
 export type MaterialAllType = 
@@ -178,5 +186,16 @@ export const getMeshPhongMaterialConfig = function(): MeshPhongMaterialConfig {
     alphaMap: '',
     aoMap: '',
     specularMap: ''
+  })
+}
+
+export const getSpriteMaterialConfig = function(): SpriteMaterialConfig {
+  return Object.assign(getMaterialConfig(), {
+    type: 'SpriteMaterial',
+    color: 'rgb(255, 255, 255)',
+    rotation: 0,
+    map: '',
+    alphaMap: '',
+    sizeAttenuation: true
   })
 }

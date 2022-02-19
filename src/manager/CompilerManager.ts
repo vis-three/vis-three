@@ -10,6 +10,7 @@ import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { ModelCompiler } from "../middleware/model/ModelCompiler";
 import { RendererCompiler } from "../middleware/render/RendererCompiler";
 import { SceneCompiler } from "../middleware/scene/SceneCompiler";
+import { SpriteCompiler } from "../middleware/sprite/SpriteCompiler";
 import { TextureCompiler } from "../middleware/texture/TextureCompiler";
 
 export interface CompilerManagerParameters {
@@ -22,6 +23,7 @@ export interface CompilerManagerParameters {
   rendererCompiler: RendererCompiler
   sceneCompiler: SceneCompiler
   controlsCompiler: ControlsCompiler
+  spriteCompiler: SpriteCompiler
 }
 
 export class CompilerManager {
@@ -35,6 +37,7 @@ export class CompilerManager {
   private rendererCompiler!: RendererCompiler
   private sceneCompiler!: SceneCompiler
   private controlsCompiler!: ControlsCompiler
+  private spriteCompiler!: SpriteCompiler
 
   constructor (parameters: CompilerManagerParameters) {
     Object.keys(parameters).forEach(key => {
@@ -46,7 +49,8 @@ export class CompilerManager {
     const objectCompilerList: ObjectCompiler[] = [
       this.cameraCompiler,
       this.lightCompiler,
-      this.modelCompiler
+      this.modelCompiler,
+      this.spriteCompiler
     ]
 
     for (let compiler of objectCompilerList) {

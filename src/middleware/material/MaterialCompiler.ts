@@ -1,4 +1,4 @@
-import { Color, Material, MeshStandardMaterial, Texture } from "three";
+import { Color, Material, MeshPhongMaterial, MeshStandardMaterial, SpriteMaterial, Texture } from "three";
 import { validate } from "uuid";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
@@ -38,7 +38,11 @@ export class MaterialCompiler extends Compiler {
     this.cachaColor = new Color()
 
     const constructMap = new Map()
+
     constructMap.set('MeshStandardMaterial', () => new MeshStandardMaterial())
+    constructMap.set('MeshPhongMaterial', () => new MeshPhongMaterial())
+    constructMap.set('SpriteMaterial', () => new SpriteMaterial())
+
     this.constructMap = constructMap
 
     this.colorAttribute = {
@@ -58,6 +62,22 @@ export class MaterialCompiler extends Compiler {
       'bumpMap': true,
       'alphaMap': true,
       'aoMap': true,
+      'specularMap': true
+    }
+  }
+
+  private getTexture (vid: string): Texture | null {
+    if (this.texturelMap.has(vid)) {
+      const texture = this.texturelMap.get(vid)!
+      if (texture instanceof Texture) {
+        return texture
+      } else {
+        console.error(`this object which mapped by vid is not instance of Texture: ${vid}`)
+        return null
+      }
+    } else {
+      console.error(`texture map can not found this vid: ${vid}`)
+      return null
     }
   }
 
@@ -143,21 +163,6 @@ export class MaterialCompiler extends Compiler {
     config[key] = value
     
     return this
-  }
-
-  private getTexture (vid: string): Texture | null {
-    if (this.texturelMap.has(vid)) {
-      const texture = this.texturelMap.get(vid)!
-      if (texture instanceof Texture) {
-        return texture
-      } else {
-        console.error(`this object which mapped by vid is not instance of Texture: ${vid}`)
-        return null
-      }
-    } else {
-      console.error(`texture map can not found this vid: ${vid}`)
-      return null
-    }
   }
 
   getMap (): Map<SymbolConfig['vid'], Material> {

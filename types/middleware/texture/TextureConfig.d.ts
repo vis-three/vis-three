@@ -29,7 +29,12 @@ export interface CubeTextureConfig extends TextureConfig {
         pz: string;
     };
 }
-export declare type TextureAllType = ImageTextureConfig | CubeTextureConfig;
+export interface CanvasTextureConfig extends TextureConfig {
+    url: string;
+    needsUpdate: boolean;
+}
+export declare type TextureAllType = ImageTextureConfig | CubeTextureConfig | CanvasTextureConfig;
 export declare const getTextureConfig: () => TextureConfig;
 export declare const getImageTextureConfig: () => ImageTextureConfig;
 export declare const getCubeTextureConfig: () => CubeTextureConfig;
+export declare const getCanvasTextureConfig: () => CanvasTextureConfig;

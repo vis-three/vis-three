@@ -48,4 +48,11 @@ export const getCubeTextureConfig = function () {
         }
     });
 };
+export const getCanvasTextureConfig = function () {
+    return Object.assign(getTextureConfig(), {
+        type: 'CanvasTexture',
+        url: '',
+        needsUpdate: false
+    });
+};
 //# sourceMappingURL=TextureConfig.js.map
