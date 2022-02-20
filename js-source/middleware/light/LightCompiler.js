@@ -2,6 +2,7 @@ import { AmbientLight, Color, PointLight, SpotLight } from "three";
 import { Compiler } from "../../core/Compiler";
 import { validate } from "uuid";
 export class LightCompiler extends Compiler {
+    IS_OBJECTCOMPILER = true;
     scene;
     target;
     map;

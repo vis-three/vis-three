@@ -6,6 +6,7 @@ export interface CompilerTarget {
   [key: string]: SymbolConfig
 }
 export interface ObjectCompiler {
+  readonly IS_OBJECTCOMPILER: boolean
   add: Function
   remove: Function
   getSupportVid(parameter: unknown): SymbolConfig['vid'] | null

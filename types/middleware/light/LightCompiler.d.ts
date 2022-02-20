@@ -10,6 +10,7 @@ export interface LightCompilerParameters {
     target: LightCompilerTarget;
 }
 export declare class LightCompiler extends Compiler implements ObjectCompiler {
+    IS_OBJECTCOMPILER: boolean;
     private scene;
     private target;
     private map;

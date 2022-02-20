@@ -3,7 +3,7 @@
 配置化的three.js开发。
 
 <p>
-  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.2-{}" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.3-{}" alt="Version"></a>
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MIT-{}" alt="License"></a>
 </p>
 
@@ -17,7 +17,15 @@ npm i vis-three
 #### 导入
 
 ``` js
+// 整体导入
 import * as Vis from 'vis-three'
+
+// 按需导入
+import { 
+  ModelingEngineSupport,
+  SupportDataGenerator,
+  generateConfig
+} from 'vis-three'
 ```
 
 #### 生成配置
@@ -77,10 +85,12 @@ console.log(engine.dataSupportManager.toJSON())
 import config from '/examples/config.json'
 
 const engine = new Vis.ModelingEngineSupport()
-.load(config)
 .setDom(document.getElementById('app'))
 .setSize()
 .play()
+.loadConfig(config, (event) => {
+  // loaded do something...
+})
 ```
 
 ## 外部资源加载
@@ -103,12 +113,12 @@ loaderManager.addEventListener('loaded', e => {
   // do something...
 })
 
-engineSupport.load({assets})
+engineSupport.loadResources(assets)
 
 ```
 #### 资源管理器
 ``` js
-engineSupport.mappingResource({
+engineSupport.registerResources({
   'examples.canvas': new document.createElement('canvas')
 })
 
@@ -153,10 +163,16 @@ engine.scene.add(new THREE.PointLight('white', 1))
 * 查看例子： `npm run examples`
 
 
+## 版本更新
+
+#### vsersion 0.03
+* 新增loaderManager, resourceManager, compilerManager插件
+* 将middleware中的engineSupport模块进行engine插件化处理，部分api有所变动
 #### 预设
 
 - [ ] css3Renderer
 - [ ] css3相关物体模块
+- [ ] 实时动画系统
 - [ ] 物体约束器
 
 

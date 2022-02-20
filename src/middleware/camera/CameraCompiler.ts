@@ -25,6 +25,8 @@ export interface CameraUserData {
 
 export class CameraCompiler extends Compiler implements ObjectCompiler {
 
+  IS_OBJECTCOMPILER = true
+
   private target!: CameraCompilerTarget
   private scene!: Scene
   private engine!: Engine
@@ -261,7 +263,7 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
   }
 
   // TODO:
-  remove () {}
+  remove (vid: string) {}
 
   setEngine (engine: ModelingEngine): this {
     this.engine = engine

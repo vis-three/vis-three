@@ -1,8 +1,5 @@
 import { EventDispatcher, BaseEvent } from './../core/EventDispatcher';
 import { Loader } from "three";
-export interface LoaderMap {
-    [key: string]: Loader;
-}
 export interface LoadDetail {
     url: string;
     progress: number;
@@ -23,6 +20,11 @@ export interface LoadedEvent extends BaseEvent {
     loadError: number;
     resourceMap: Map<string, unknown>;
 }
+export interface LoaderManagerParameters {
+    loaderExtends: {
+        [key: string]: Loader;
+    };
+}
 export declare class LoaderManager extends EventDispatcher {
     private resourceMap;
     private loaderMap;
@@ -33,7 +35,7 @@ export declare class LoaderManager extends EventDispatcher {
     private isLoading;
     private isLoaded;
     private loadDetailMap;
-    constructor();
+    constructor(parameters?: LoaderManagerParameters);
     private loaded;
     private checkLoaded;
     load(urlList: Array<string>): this;

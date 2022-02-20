@@ -19,6 +19,7 @@ export interface CameraUserData {
     setSizeFun?: (event: SetSizeEvent) => void;
 }
 export declare class CameraCompiler extends Compiler implements ObjectCompiler {
+    IS_OBJECTCOMPILER: boolean;
     private target;
     private scene;
     private engine;
@@ -33,7 +34,7 @@ export declare class CameraCompiler extends Compiler implements ObjectCompiler {
     getSupportVid(object: Camera): SymbolConfig['vid'] | null;
     add(vid: string, config: CameraAllType): this;
     set(vid: string, path: string[], key: string, value: any): this;
-    remove(): void;
+    remove(vid: string): void;
     setEngine(engine: ModelingEngine): this;
     setScene(scene: Scene): this;
     setTarget(target: CameraCompilerTarget): this;

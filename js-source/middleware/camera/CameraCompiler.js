@@ -3,6 +3,7 @@ import { validate } from "uuid";
 import { Compiler } from "../../core/Compiler";
 import { Engine, EnginePlugin } from "../../engine/Engine";
 export class CameraCompiler extends Compiler {
+    IS_OBJECTCOMPILER = true;
     target;
     scene;
     engine;
@@ -198,7 +199,7 @@ export class CameraCompiler extends Compiler {
         return this;
     }
     // TODO:
-    remove() { }
+    remove(vid) { }
     setEngine(engine) {
         this.engine = engine;
         return this;

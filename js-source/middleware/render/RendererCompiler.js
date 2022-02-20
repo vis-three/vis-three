@@ -29,6 +29,9 @@ export class RendererCompiler extends Compiler {
     }
     set(path, key, value) {
         const rendererType = path.shift();
+        if (!rendererType) {
+            return this;
+        }
         if (this.map[rendererType]) {
             this.map[rendererType].set(path, key, value);
             return this;

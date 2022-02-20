@@ -10,6 +10,7 @@ export interface SpriteCompilerParameters {
     scene: Scene;
 }
 export declare class SpriteCompiler extends Compiler implements ObjectCompiler {
+    IS_OBJECTCOMPILER: boolean;
     private target;
     private scene;
     private map;

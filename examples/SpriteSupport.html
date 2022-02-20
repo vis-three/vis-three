@@ -53,8 +53,10 @@
     const sprite = Vis.generateConfig('Sprite', {
       vid: getUUid(),
       material: material.vid,
-      width: 20,
-      height: 40
+      scale: {
+        x: 20,
+        y: 40
+      }
     })
     engine.dataSupportManager.spriteDataSupport.getData()[sprite.vid] = sprite
   </script>

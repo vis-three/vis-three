@@ -41,7 +41,6 @@ export class EngineSupport extends Engine {
     dataSupportManager = new DataSupportManager();
     resourceManager = new ResourceManager();
     loaderManager = new LoaderManager();
-    compilerManager;
     constructor(parameters) {
         super();
         if (parameters && parameters.dataSupportManager) {

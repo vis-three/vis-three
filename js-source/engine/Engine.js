@@ -9,6 +9,10 @@ import { PointerManagerPlugin } from "../plugins/PointerManagerPlugin";
 import { EventManagerPlugin } from "../plugins/EventManagerPlugin";
 import { TransformControlsPlugin } from "../plugins/TransformControlsPlugin";
 import { WebGLRendererPlugin } from "../plugins/WebGLRendererPlugin";
+import { LoaderManagerPlugin } from "../plugins/LoaderManagerPlugin";
+import { ResourceManagerPlugin } from "../plugins/ResourceManagerPlugin";
+import { DataSupportManagerPlugin } from "../plugins/DataSupportManagerPlugin";
+import { CompilerManagerPlugin } from "../plugins/CompilerManagerPlugin";
 // 存在的插件接口
 export var EnginePlugin;
 (function (EnginePlugin) {
@@ -22,6 +26,10 @@ export var EnginePlugin;
     EnginePlugin["POINTERMANAGER"] = "PointerManager";
     EnginePlugin["EVENTMANAGER"] = "EventManager";
     EnginePlugin["TRANSFORMCONTROLS"] = "TransformControls";
+    EnginePlugin["LOADERMANAGER"] = "LoaderManager";
+    EnginePlugin["RESOURCEMANAGER"] = "ResourceManager";
+    EnginePlugin["DATASUPPORTMANAGER"] = "DataSupportManager";
+    EnginePlugin["COMPILERMANAGER"] = "CompilerManager";
 })(EnginePlugin || (EnginePlugin = {}));
 // 插件处理集合
 let pluginHandler = new Map();
@@ -35,6 +43,10 @@ pluginHandler.set('EffectComposer', EffectComposerPlugin);
 pluginHandler.set('PointerManager', PointerManagerPlugin);
 pluginHandler.set('EventManager', EventManagerPlugin);
 pluginHandler.set('TransformControls', TransformControlsPlugin);
+pluginHandler.set('LoaderManager', LoaderManagerPlugin);
+pluginHandler.set('ResourceManager', ResourceManagerPlugin);
+pluginHandler.set('DataSupportManager', DataSupportManagerPlugin);
+pluginHandler.set('CompilerManager', CompilerManagerPlugin);
 // 引擎槽
 export class Engine extends EventDispatcher {
     static pluginHandler = pluginHandler;
@@ -57,6 +69,10 @@ export class Engine extends EventDispatcher {
     renderManager;
     pointerManager;
     eventManager;
+    loaderManager;
+    resourceManager;
+    dataSupportManager;
+    compilerManager;
     stats;
     transing;
     setSize;
@@ -64,6 +80,8 @@ export class Engine extends EventDispatcher {
     setDom;
     setStats;
     setTransformControls;
+    loadResources;
+    registerResources;
     play;
     stop;
     render;
@@ -74,8 +92,16 @@ export class Engine extends EventDispatcher {
             console.warn('can not install some plugin');
             return this;
         };
+        this.optimizeMemory();
     }
-    // 安装
+    optimizeMemory() {
+        Object.keys(this).forEach(key => {
+            if (this[key] === undefined) {
+                delete this[key];
+            }
+        });
+    }
+    // 安装插件
     install(plugin, params) {
         if (Engine.pluginHandler.has(plugin)) {
             Engine.pluginHandler.get(plugin).call(this, params);

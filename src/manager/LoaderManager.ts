@@ -4,10 +4,6 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader"
 import { LOADERMANAGER } from "../middleware/constants/EVENTTYPE"
 
-export interface LoaderMap {
-  [key: string]: Loader
-}
-
 export interface LoadDetail {
   url: string
   progress: number
@@ -32,9 +28,13 @@ export interface LoadedEvent extends BaseEvent {
   resourceMap: Map<string, unknown>
 }
 
+export interface LoaderManagerParameters {
+  loaderExtends: {[key: string]: Loader}
+}
+
 export class LoaderManager extends EventDispatcher {
   private resourceMap: Map<string, unknown>
-  private loaderMap: LoaderMap
+  private loaderMap: {[key: string]: Loader}
   private loadTotal: number
   private loadSuccess: number
   private loadError: number
@@ -42,7 +42,7 @@ export class LoaderManager extends EventDispatcher {
   private isLoading: boolean
   private isLoaded: boolean
   private loadDetailMap: {[key: string]: LoadDetail}
-  constructor () {
+  constructor (parameters?: LoaderManagerParameters) {
     super()
     this.resourceMap = new Map()
     this.loadTotal = 0
@@ -61,6 +61,10 @@ export class LoaderManager extends EventDispatcher {
       'jpeg': imageLoader,
       'obj': new OBJLoader(),
       'mtl': new MTLLoader()
+    }
+
+    if (parameters) {
+      this.loaderMap = Object.assign(this.loaderMap, parameters.loaderExtends)
     }
   }
 

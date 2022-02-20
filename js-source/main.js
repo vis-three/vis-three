@@ -2,7 +2,6 @@ import { DisplayEngine } from './engine/DisplayEngine';
 import { ModelingEngine } from "./engine/ModelingEngine";
 import { LightDataSupport } from "./middleware/light/LightDataSupport";
 import { ModelDataSupport } from "./middleware/model/ModelDataSupport";
-import { ModelingEngineSupport } from "./middleware/engineSupport/ModelingEngineSupport";
 import { GeometryDataSupport } from "./middleware/geometry/GeometryDataSupport";
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
 import { LoaderManager } from "./manager/LoaderManager";
@@ -24,22 +23,21 @@ import { EVENTTYPE } from "./middleware/constants/EVENTTYPE";
 import { TextureDisplayer } from "./displayer/TextureDisplayer";
 import { Engine } from "./engine/Engine";
 import { ModelingScene, SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./extends/ModelingScene/ModelingScene";
-import { EngineSupport } from './middleware/engineSupport/EngineSupport';
-import { DisplayEngineSupport } from './middleware/engineSupport/DisplayEngineSupport';
 import { SceneDataSupport } from './middleware/scene/SceneDataSupport';
 import { CanvasTextureGenerator } from './convenient/CanvasTextureGenerator';
+import { SpriteDataSupport } from './middleware/sprite/SpriteDataSupport';
+import { ModelingEngineSupport } from './engine/ModelingEngineSupport';
+import { DisplayEngineSupport } from './engine/DisplayEngineSupport';
 export { 
 // menu
 RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, OBJECTEVENT, EVENTTYPE, SCENEDISPLAYMODE, SCENEVIEWPOINT, 
 // manager
 LoaderManager, ResourceManager, DataSupportManager, 
 // engine
-Engine, ModelingEngine, DisplayEngine, 
-// engine support
-ModelingEngineSupport, EngineSupport, DisplayEngineSupport, 
+Engine, ModelingEngine, DisplayEngine, ModelingEngineSupport, DisplayEngineSupport, 
 // engine connector
 // data support
-TextureDataSupport, MaterialDataSupport, LightDataSupport, ModelDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, 
+TextureDataSupport, MaterialDataSupport, LightDataSupport, ModelDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, SpriteDataSupport, 
 // helper
 PointLightHelper, CameraHelper, 
 // convenient

@@ -2,6 +2,7 @@ import { Sprite, SpriteMaterial } from "three";
 import { validate } from "uuid";
 import { Compiler } from "../../core/Compiler";
 export class SpriteCompiler extends Compiler {
+    IS_OBJECTCOMPILER = true;
     target;
     scene;
     map;

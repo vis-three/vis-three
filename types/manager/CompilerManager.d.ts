@@ -1,4 +1,5 @@
 import { Material, Object3D, Texture } from "three";
+import { Engine } from "../main";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
@@ -33,7 +34,9 @@ export declare class CompilerManager {
     private sceneCompiler;
     private controlsCompiler;
     private spriteCompiler;
-    constructor(parameters: CompilerManagerParameters);
+    private objectCompilerList;
+    constructor(parameters?: CompilerManagerParameters);
+    support(engine: Engine): this;
     getObjectVid<O extends Object3D>(object: O): SymbolConfig['vid'] | null;
     getMaterial(vid: string): Material | undefined;
     getTexture(vid: string): Texture | undefined;

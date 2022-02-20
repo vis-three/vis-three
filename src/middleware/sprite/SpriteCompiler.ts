@@ -21,6 +21,8 @@ interface ReplaceGeometryParameters {
 
 export class SpriteCompiler extends Compiler implements ObjectCompiler {
 
+  IS_OBJECTCOMPILER = true
+
   private target!: SpriteCompilerTarget
   private scene!: Scene
   private map: Map<SymbolConfig['vid'], Sprite>

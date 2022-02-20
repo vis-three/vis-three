@@ -15,6 +15,8 @@ export interface LightCompilerParameters {
 
 export class LightCompiler extends Compiler implements ObjectCompiler {
 
+  IS_OBJECTCOMPILER = true
+
   private scene: Scene
   private target: LightCompilerTarget
   private map: Map<SymbolConfig['vid'], Light>

@@ -24,6 +24,8 @@ export interface ModelCompilerParameters {
 
 export class ModelCompiler extends Compiler implements ObjectCompiler {
 
+  IS_OBJECTCOMPILER = true
+
   private scene!: Scene
   private target!: ModelCompilerTarget
   private map: Map<SymbolConfig['vid'], Object3D>

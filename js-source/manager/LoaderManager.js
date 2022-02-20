@@ -13,7 +13,7 @@ export class LoaderManager extends EventDispatcher {
     isLoading;
     isLoaded;
     loadDetailMap;
-    constructor() {
+    constructor(parameters) {
         super();
         this.resourceMap = new Map();
         this.loadTotal = 0;
@@ -31,6 +31,9 @@ export class LoaderManager extends EventDispatcher {
             'obj': new OBJLoader(),
             'mtl': new MTLLoader()
         };
+        if (parameters) {
+            this.loaderMap = Object.assign(this.loaderMap, parameters.loaderExtends);
+        }
     }
     loaded() {
         this.dispatchEvent({

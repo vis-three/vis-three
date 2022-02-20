@@ -2,6 +2,7 @@ import { BoxBufferGeometry, Line, Mesh, MeshStandardMaterial, Points, Scene } fr
 import { validate } from "uuid";
 import { Compiler } from "../../core/Compiler";
 export class ModelCompiler extends Compiler {
+    IS_OBJECTCOMPILER = true;
     scene;
     target;
     map;

@@ -3,7 +3,6 @@ import { ModelingEngine } from "./engine/ModelingEngine";
 
 import { LightDataSupport } from "./middleware/light/LightDataSupport";
 import { ModelDataSupport } from "./middleware/model/ModelDataSupport";
-import { ModelingEngineSupport } from "./middleware/engineSupport/ModelingEngineSupport";
 import { GeometryDataSupport } from "./middleware/geometry/GeometryDataSupport";
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
 import { LoaderManager } from "./manager/LoaderManager";
@@ -25,11 +24,11 @@ import { EVENTTYPE } from "./middleware/constants/EVENTTYPE";
 import { TextureDisplayer } from "./displayer/TextureDisplayer";
 import { Engine } from "./engine/Engine";
 import { ModelingScene, SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./extends/ModelingScene/ModelingScene";
-import { EngineSupport } from './middleware/engineSupport/EngineSupport';
-import { DisplayEngineSupport } from './middleware/engineSupport/DisplayEngineSupport';
 import { SceneDataSupport } from './middleware/scene/SceneDataSupport';
 import { CanvasTextureGenerator } from './convenient/CanvasTextureGenerator';
 import { SpriteDataSupport } from './middleware/sprite/SpriteDataSupport';
+import { ModelingEngineSupport } from './engine/ModelingEngineSupport';
+import { DisplayEngineSupport } from './engine/DisplayEngineSupport';
 
 export {
   // menu
@@ -50,10 +49,7 @@ export {
   Engine,
   ModelingEngine,
   DisplayEngine,
-
-  // engine support
   ModelingEngineSupport,
-  EngineSupport,
   DisplayEngineSupport,
 
   // engine connector

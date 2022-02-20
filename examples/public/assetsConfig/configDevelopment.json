@@ -7,7 +7,7 @@
     "/examples/public/texture/katana/katanal_Metallic.png"
   ],
   "scene": {
-    "scene": {
+    "Scene": {
       "vid": "Scene",
       "type": "Scene",
       "background": "",
@@ -68,7 +68,7 @@
       "vid": "25cd5785-6a4d-4dfe-8db2-ce9d74c0b64f",
       "type": "ImageTexture",
       "name": "",
-      "image": "/examples/public/texture/katana/katana_BaseColor.png",
+      "url": "/examples/public/texture/katana/katana_BaseColor.png",
       "mapping": 300,
       "wrapS": 1001,
       "wrapT": 1001,
@@ -97,7 +97,7 @@
       "vid": "c2bfae43-acee-4da7-a938-6b02b1c8c98d",
       "type": "ImageTexture",
       "name": "",
-      "image": "/examples/public/texture/katana/katana_Normal.png",
+      "url": "/examples/public/texture/katana/katana_Normal.png",
       "mapping": 300,
       "wrapS": 1001,
       "wrapT": 1001,
@@ -126,7 +126,7 @@
       "vid": "51a29b5f-44f3-4e92-89b4-5c577c34111d",
       "type": "ImageTexture",
       "name": "",
-      "image": "/examples/public/texture/katana/katana_Roughness.png",
+      "url": "/examples/public/texture/katana/katana_Roughness.png",
       "mapping": 300,
       "wrapS": 1001,
       "wrapT": 1001,
@@ -155,7 +155,7 @@
       "vid": "52de19e8-60fe-4392-b0f3-25deb310dbe2",
       "type": "ImageTexture",
       "name": "",
-      "image": "/examples/public/texture/katana/katanal_Metallic.png",
+      "url": "/examples/public/texture/katana/katanal_Metallic.png",
       "mapping": 300,
       "wrapS": 1001,
       "wrapT": 1001,
@@ -387,7 +387,8 @@
   "model": {
     "559aa946-aaca-444f-b6cd-d885352e91c3": {
       "vid": "559aa946-aaca-444f-b6cd-d885352e91c3",
-      "type": "Mesh",
+      "type": "model",
+      "display": "Mesh",
       "castShadow": true,
       "receiveShadow": true,
       "lookAt": "",
@@ -411,7 +412,8 @@
     },
     "92153ffa-7efd-4ea9-bfa0-605de175c4e9": {
       "vid": "92153ffa-7efd-4ea9-bfa0-605de175c4e9",
-      "type": "Mesh",
+      "type": "model",
+      "display": "Mesh",
       "castShadow": true,
       "receiveShadow": true,
       "lookAt": "",
@@ -435,7 +437,8 @@
     },
     "cd088c02-0270-4efe-bfc6-16b617bac074": {
       "vid": "cd088c02-0270-4efe-bfc6-16b617bac074",
-      "type": "Mesh",
+      "type": "model",
+      "display": "Mesh",
       "castShadow": true,
       "receiveShadow": true,
       "lookAt": "",
@@ -459,7 +462,8 @@
     },
     "616dd956-a5d9-4479-b5e5-e7fbea1bc572": {
       "vid": "616dd956-a5d9-4479-b5e5-e7fbea1bc572",
-      "type": "Mesh",
+      "type": "model",
+      "display": "Mesh",
       "castShadow": true,
       "receiveShadow": true,
       "lookAt": "",
@@ -483,7 +487,8 @@
     },
     "f0fa42dd-44dc-424c-9226-1ab733d444cc": {
       "vid": "f0fa42dd-44dc-424c-9226-1ab733d444cc",
-      "type": "Mesh",
+      "type": "model",
+      "display": "Mesh",
       "castShadow": true,
       "receiveShadow": true,
       "lookAt": "",

@@ -16,6 +16,7 @@ export interface ModelCompilerParameters {
     materialMap?: Map<SymbolConfig['vid'], Material>;
 }
 export declare class ModelCompiler extends Compiler implements ObjectCompiler {
+    IS_OBJECTCOMPILER: boolean;
     private scene;
     private target;
     private map;

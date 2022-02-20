@@ -26,6 +26,14 @@ import { EventManagerPlugin } from "../plugins/EventManagerPlugin";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { TransformControlsPlugin } from "../plugins/TransformControlsPlugin";
 import { WebGLRendererPlugin } from "../plugins/WebGLRendererPlugin";
+import { LoaderManager, LoaderManagerParameters } from "../manager/LoaderManager";
+import { LoaderManagerPlugin } from "../plugins/LoaderManagerPlugin";
+import { ResourceManager } from "../manager/ResourceManager";
+import { ResourceManagerPlugin } from "../plugins/ResourceManagerPlugin";
+import { DataSupportManager, DataSupportManagerParameters } from "../manager/DataSupportManager";
+import { DataSupportManagerPlugin } from "../plugins/DataSupportManagerPlugin";
+import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerManager";
+import { CompilerManagerPlugin } from "../plugins/CompilerManagerPlugin";
 
 // 存在的插件接口
 export enum EnginePlugin {
@@ -38,7 +46,11 @@ export enum EnginePlugin {
   EFFECTCOMPOSER = 'EffectComposer',
   POINTERMANAGER = 'PointerManager',
   EVENTMANAGER = 'EventManager',
-  TRANSFORMCONTROLS = 'TransformControls'
+  TRANSFORMCONTROLS = 'TransformControls',
+  LOADERMANAGER = 'LoaderManager',
+  RESOURCEMANAGER = 'ResourceManager',
+  DATASUPPORTMANAGER = 'DataSupportManager',
+  COMPILERMANAGER = 'CompilerManager'
 }
 
 export type EnginePluginParams = 
@@ -48,7 +60,10 @@ export type EnginePluginParams =
   VisStatsParameters |
   EffectComposerParameters |
   PointerManagerParameters |
-  EventManagerParameters
+  EventManagerParameters |
+  LoaderManagerParameters |
+  DataSupportManagerParameters |
+  CompilerManagerParameters
 
 // 插件处理集合
 let pluginHandler: Map<string, Function> = new Map()
@@ -62,7 +77,10 @@ pluginHandler.set('EffectComposer', EffectComposerPlugin)
 pluginHandler.set('PointerManager', PointerManagerPlugin)
 pluginHandler.set('EventManager', EventManagerPlugin)
 pluginHandler.set('TransformControls', TransformControlsPlugin)
-
+pluginHandler.set('LoaderManager', LoaderManagerPlugin)
+pluginHandler.set('ResourceManager', ResourceManagerPlugin)
+pluginHandler.set('DataSupportManager', DataSupportManagerPlugin)
+pluginHandler.set('CompilerManager', CompilerManagerPlugin)
 
 // 引擎槽
 export class Engine extends EventDispatcher {
@@ -92,6 +110,10 @@ export class Engine extends EventDispatcher {
   renderManager?: RenderManager
   pointerManager?: PointerManager
   eventManager?: EventManager
+  loaderManager?: LoaderManager
+  resourceManager?: ResourceManager
+  dataSupportManager?: DataSupportManager
+  compilerManager?: CompilerManager
   stats?: Stats 
   transing?: boolean
 
@@ -100,6 +122,9 @@ export class Engine extends EventDispatcher {
   setDom?: (dom: HTMLElement) => this
   setStats?: (show: boolean) => this
   setTransformControls?: (show: boolean) => this
+
+  loadResources?: (urlList: Array<string>) => this
+  registerResources?: (resourceMap: {[key: string]: unknown}) => this
 
   play?: () => this
   stop?: () => this
@@ -113,9 +138,19 @@ export class Engine extends EventDispatcher {
       console.warn('can not install some plugin')
       return this
     }
+
+    this.optimizeMemory()
   }
 
-  // 安装
+  protected optimizeMemory () {
+    Object.keys(this).forEach(key => {
+      if (this[key] === undefined) {
+        delete this[key]
+      }
+    })
+  }
+
+  // 安装插件
   install (plugin: EnginePlugin, params?: EnginePluginParams): this {
     if (Engine.pluginHandler!.has(plugin)) {
       Engine.pluginHandler!.get(plugin)!.call(this, params)

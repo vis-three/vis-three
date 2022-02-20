@@ -12,6 +12,10 @@ import { PointerManager } from "../manager/PointerManager";
 import { PointerManagerParameters } from "../manager/PointerManager";
 import { EventManager, EventManagerParameters } from "../manager/EventManager";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
+import { LoaderManager, LoaderManagerParameters } from "../manager/LoaderManager";
+import { ResourceManager } from "../manager/ResourceManager";
+import { DataSupportManager, DataSupportManagerParameters } from "../manager/DataSupportManager";
+import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerManager";
 export declare enum EnginePlugin {
     WEBGLRENDERER = "WebGLRenderer",
     SCENE = "Scene",
@@ -22,9 +26,13 @@ export declare enum EnginePlugin {
     EFFECTCOMPOSER = "EffectComposer",
     POINTERMANAGER = "PointerManager",
     EVENTMANAGER = "EventManager",
-    TRANSFORMCONTROLS = "TransformControls"
+    TRANSFORMCONTROLS = "TransformControls",
+    LOADERMANAGER = "LoaderManager",
+    RESOURCEMANAGER = "ResourceManager",
+    DATASUPPORTMANAGER = "DataSupportManager",
+    COMPILERMANAGER = "CompilerManager"
 }
-export declare type EnginePluginParams = WebGLRendererParameters | SceneParameters | ModelingSceneParameters | VisStatsParameters | EffectComposerParameters | PointerManagerParameters | EventManagerParameters;
+export declare type EnginePluginParams = WebGLRendererParameters | SceneParameters | ModelingSceneParameters | VisStatsParameters | EffectComposerParameters | PointerManagerParameters | EventManagerParameters | LoaderManagerParameters | DataSupportManagerParameters | CompilerManagerParameters;
 export declare class Engine extends EventDispatcher {
     static pluginHandler: Map<string, Function> | undefined;
     static register: (name: string, handler: (this: Engine, params?: Object | undefined) => void) => void;
@@ -40,6 +48,10 @@ export declare class Engine extends EventDispatcher {
     renderManager?: RenderManager;
     pointerManager?: PointerManager;
     eventManager?: EventManager;
+    loaderManager?: LoaderManager;
+    resourceManager?: ResourceManager;
+    dataSupportManager?: DataSupportManager;
+    compilerManager?: CompilerManager;
     stats?: Stats;
     transing?: boolean;
     setSize?: (width: number, height: number) => this;
@@ -47,10 +59,15 @@ export declare class Engine extends EventDispatcher {
     setDom?: (dom: HTMLElement) => this;
     setStats?: (show: boolean) => this;
     setTransformControls?: (show: boolean) => this;
+    loadResources?: (urlList: Array<string>) => this;
+    registerResources?: (resourceMap: {
+        [key: string]: unknown;
+    }) => this;
     play?: () => this;
     stop?: () => this;
     render?: () => this;
     constructor();
+    protected optimizeMemory(): void;
     install(plugin: EnginePlugin, params?: EnginePluginParams): this;
     complete(): this;
     dispose(): this;

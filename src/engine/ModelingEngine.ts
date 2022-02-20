@@ -44,7 +44,7 @@ export class ModelingEngine extends Engine{
       antialias: true,
       alpha: true
     })
-    this.install(EnginePlugin.MODELINGSCENE, {
+    .install(EnginePlugin.MODELINGSCENE, {
       hasDefaultPerspectiveCamera: true,
       hasDefaultOrthographicCamera: true,
       hasAxesHelper: true,
@@ -52,14 +52,14 @@ export class ModelingEngine extends Engine{
       hasDisplayMode: true,
       displayMode: 'env'
     })
-    this.install(EnginePlugin.RENDERMANAGER)
-    this.install(EnginePlugin.STATS)
-    this.install(EnginePlugin.EFFECTCOMPOSER, {
+    .install(EnginePlugin.RENDERMANAGER)
+    .install(EnginePlugin.STATS)
+    .install(EnginePlugin.EFFECTCOMPOSER, {
       WebGLMultisampleRenderTarget: true
     })
-    this.install(EnginePlugin.ORBITCONTROLS)
-    this.install(EnginePlugin.POINTERMANAGER)
-    this.install(EnginePlugin.EVENTMANAGER)
-    this.install(EnginePlugin.TRANSFORMCONTROLS)
+    .install(EnginePlugin.ORBITCONTROLS)
+    .install(EnginePlugin.POINTERMANAGER)
+    .install(EnginePlugin.EVENTMANAGER)
+    .install(EnginePlugin.TRANSFORMCONTROLS)
   }
 }

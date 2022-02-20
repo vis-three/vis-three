@@ -52,7 +52,11 @@ export class RendererCompiler extends Compiler {
   }
 
   set (path: string[], key: string, value: any): this {
-    const rendererType = path.shift()!
+    const rendererType = path.shift()
+
+    if (!rendererType) {
+      return this
+    }
 
     if (this.map[rendererType]) {
       this.map[rendererType].set(path, key, value)

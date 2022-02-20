@@ -24,10 +24,14 @@
     import * as Vis from '../dist/Vis.es.js'
 
     const dom = document.getElementById('app')
-    const engine = new Vis.ModelingEngine(dom)
-    engine.play()
 
-    const scene = engine.getScene()
+    const engine = new Vis.ModelingEngine()
+    .setDom(dom)
+    .setSize()
+    .setStats(true)
+    .play()
+
+    const scene = engine.scene
 
     scene.add(
       new THREE.Mesh(

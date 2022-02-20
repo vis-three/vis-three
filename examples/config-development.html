@@ -25,6 +25,21 @@
     max-height: 100%;
     overflow: auto;
   }
+
+  .loadingDom {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 36px;
+    z-index: 10;
+  }
 </style>
 
 <body>
@@ -37,49 +52,35 @@
     import * as THREE from 'three'
     import config from '/examples/public/assetsConfig/configDevelopment.json'
 
-    const loaderManager = new Vis.LoaderManager()
-    const resourceManager = new Vis.ResourceManager()
+    const loadingDom = document.createElement('div')
+    loadingDom.innerText = '正在加载...'
+    loadingDom.className = 'loadingDom'
+    document.body.appendChild(loadingDom)
 
-    loaderManager.addEventListener('loaded', e => {
-      resourceManager.mappingResource(e.resourceMap)
-    })
+    const engine = new Vis.ModelingEngineSupport()
+    .setDom(document.getElementById('app'))
+    .setSize()
+    .play()
+    .loadConfig(config, () => {
+      const lightDataSupport = engine.dataSupportManager.getDataSupport(Vis.MODULETYPE.LIGHT)
+      const lightData = lightDataSupport.getData()
 
-    resourceManager.addEventListener(Vis.RESOURCEEVENTTYPE.MAPPED, e => {
-
-      try {
-        const dataSupportManager = new Vis.DataSupportManager().load(config)
-
-        const engine = new Vis.ModelingEngineSupport({
-          dom: document.getElementById('app'),
-          dataSupportManager,
-          resourceManager
-        })
-
-        engine.play()
-
-        const lightDataSupport = dataSupportManager.getDataSupport(Vis.MODULETYPE.LIGHT)
-        const lightData = lightDataSupport.getData()
-
-        for (const key in lightData) {
-          lightData[key].position.y = -10
-          lightData[key].distance = 100
-        }
-
-        const configLight = lightDataSupport.toJSON()
-
-        document.getElementById('exportConfig').innerText = configLight
-        .replace(/",/g, '",\n')
-        .replace(/"},/g, '"},\n')
-        .replace(/{"/g, '{"\n')
-        .replace(/,"/g, ',"\n')
-        .replace(/},"/g, '\n},"')
-      } catch (error) {
-        console.error(error)
+      for (const key in lightData) {
+        lightData[key].position.y = -10
+        lightData[key].distance = 100
       }
+
+      const configLight = lightDataSupport.toJSON()
+
+      document.getElementById('exportConfig').innerText = configLight
+      .replace(/",/g, '",\n')
+      .replace(/"},/g, '"},\n')
+      .replace(/{"/g, '{"\n')
+      .replace(/,"/g, ',"\n')
+      .replace(/},"/g, '\n},"')
+      document.body.removeChild(loadingDom)
     })
 
-    loaderManager.load(config.assets)
-   
   </script>
 </body>
 </html>
