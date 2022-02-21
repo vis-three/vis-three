@@ -1,9 +1,6 @@
 import { ModelingScene } from './../extends/ModelingScene/ModelingScene';
 import { SCENEVIEWPOINT } from "../extends/ModelingScene/ModelingScene";
 import { VisOrbitControls } from "../optimize/VisOrbitControls";
-import { MODULETYPE } from '../middleware/constants/MODULETYPE';
-import { CONFIGTYPE } from '../middleware/constants/configType';
-import { generateConfig } from '../convenient/generateConfig';
 export const OrbitControlsPlugin = function (params) {
     if (this.orbitControls) {
         console.warn('this has installed orbitControls plugin.');
@@ -49,15 +46,5 @@ export const OrbitControlsPlugin = function (params) {
         });
     }
     return true;
-};
-export const OrbitControlsSupportPlugin = function (params) {
-    if (OrbitControlsPlugin.call(this, params)) {
-        const dataSupport = this.dataSupportManager.getDataSupport(MODULETYPE.CONTROLS).getData();
-        dataSupport[CONFIGTYPE.ORBITCONTROLS] = generateConfig(CONFIGTYPE.ORBITCONTROLS);
-        return true;
-    }
-    else {
-        return false;
-    }
 };
 //# sourceMappingURL=OrbitControlsPlugin.js.map

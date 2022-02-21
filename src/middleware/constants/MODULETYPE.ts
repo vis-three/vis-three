@@ -10,4 +10,6 @@ export enum MODULETYPE {
   SPRITE = 'sprite',
   STRUCTURE = 'structure',
   CONTROLS = 'controls',
+  EVENT = 'event',
+  LINE = 'line'
 }

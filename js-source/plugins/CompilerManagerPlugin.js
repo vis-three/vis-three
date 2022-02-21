@@ -1,7 +1,4 @@
-import { generateConfig } from "../convenient/generateConfig";
 import { CompilerManager } from "../manager/CompilerManager";
-import { CONFIGTYPE } from "../middleware/constants/configType";
-import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 export const CompilerManagerPlugin = function (params) {
     if (this.compilerManager) {
         console.warn('engine has installed compilerManager plugin.');
@@ -25,25 +22,9 @@ export const CompilerManagerPlugin = function (params) {
     }
     const compilerManager = new CompilerManager().support(this);
     this.compilerManager = compilerManager;
-    // 帮助其他插件进行support初始化
-    const rendererData = this.dataSupportManager.getDataSupport(MODULETYPE.RENDERER).getData();
-    if (!rendererData.WebGLRenderer) {
-        rendererData.WebGLRenderer = generateConfig(CONFIGTYPE.WEBGLRENDERER);
-    }
-    const sceneData = this.dataSupportManager.getDataSupport(MODULETYPE.SCENE).getData();
-    if (!sceneData.scene) {
-        sceneData.scene = generateConfig(CONFIGTYPE.SCENE);
-    }
-    const controlsData = this.dataSupportManager.getDataSupport(MODULETYPE.CONTROLS).getData();
-    if (this.transformControls) {
-        if (!controlsData[CONFIGTYPE.TRNASFORMCONTROLS]) {
-            controlsData[CONFIGTYPE.TRNASFORMCONTROLS] = generateConfig(CONFIGTYPE.TRNASFORMCONTROLS);
-        }
-    }
-    if (this.orbitControls) {
-        if (!controlsData[CONFIGTYPE.ORBITCONTROLS]) {
-            controlsData[CONFIGTYPE.ORBITCONTROLS] = generateConfig(CONFIGTYPE.ORBITCONTROLS);
-        }
+    // 有事件管理器，装饰所有物体编译器的add,remove，监听增加相关事件
+    if (this.eventManager) {
+        const objectCompilerList = compilerManager.getObjectCompilerList();
     }
     return true;
 };

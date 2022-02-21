@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LineSupport</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="./css/common.css">
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+</style>
+
+<body>
+  <div id="app"></div>
+
+  <script type="module">
+    import * as THREE from 'three'
+    import * as Vis from '../dist/Vis.es.js'
+    import { v4 as getUUid } from 'uuid'
+
+
+    const engine = new Vis.ModelingEngineSupport()
+    .setDom(document.getElementById('app'))
+    .setSize()
+    .setStats(true)
+    .play()
+
+
+    const pointLight = Vis.generateConfig('PointLight', {
+      vid: getUUid(),
+      position: {
+        x: 30,
+        y: 50
+      },
+      distance: 100
+    })
+    engine.dataSupportManager.lightDataSupport.getData()[pointLight.vid] = pointLight
+
+    const model1 = Vis.generateConfig('Model', {
+      vid: getUUid(),
+      position: {
+        x: 10,
+        y: 5,
+        z: 10
+      }
+    })
+
+    const model2 = Vis.generateConfig('Model', {
+      vid: getUUid(),
+      position: {
+        x: -10,
+        y: -5,
+        z: -10
+      }
+    })
+    engine.dataSupportManager.modelDataSupport.getData()[model1.vid] = model1
+    engine.dataSupportManager.modelDataSupport.getData()[model2.vid] = model2
+
+    const line = Vis.generateConfig('LineSegments', {
+      vid: getUUid(), 
+      pairPoints: [
+        [
+          {
+          x: -10,
+          y: -20,
+          z: -10
+        },
+        {
+          x: 30,
+          y: 10,
+          z: 10
+        }
+      ],
+    ]
+    })
+
+    const line2 = Vis.generateConfig('LineSegments', {
+      vid: getUUid(), 
+      pairPoints: [
+        [model1.vid, model2.vid],
+      ]
+    })
+
+    engine.dataSupportManager.lineDataSupport.getData()[line.vid] = line
+    engine.dataSupportManager.lineDataSupport.getData()[line2.vid] = line2
+    console.log(engine)
+  </script>
+  
+</body>
+</html>

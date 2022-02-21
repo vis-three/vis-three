@@ -10,7 +10,7 @@ export const generateConfig = function<C> (type: string, merge?: object, warn?: 
           warn && console.warn(`'${type}' config can not set key: ${key}`)
           continue
         }
-        if (typeof merge[key] === 'object' && merge[key] !== null) {
+        if (typeof merge[key] === 'object' && merge[key] !== null && !Array.isArray(merge[key])) {
           recursion(config[key], merge[key])
         } else {
           config[key] = merge[key]

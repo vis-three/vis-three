@@ -11,5 +11,7 @@ export var MODULETYPE;
     MODULETYPE["SPRITE"] = "sprite";
     MODULETYPE["STRUCTURE"] = "structure";
     MODULETYPE["CONTROLS"] = "controls";
+    MODULETYPE["EVENT"] = "event";
+    MODULETYPE["LINE"] = "line";
 })(MODULETYPE || (MODULETYPE = {}));
 //# sourceMappingURL=MODULETYPE.js.map

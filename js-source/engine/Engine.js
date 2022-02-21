@@ -82,6 +82,7 @@ export class Engine extends EventDispatcher {
     setTransformControls;
     loadResources;
     registerResources;
+    toJSON;
     play;
     stop;
     render;

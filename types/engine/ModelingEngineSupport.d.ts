@@ -39,6 +39,11 @@ export declare class ModelingEngineSupport extends Engine implements EngineSuppo
     resourceManager: ResourceManager;
     dataSupportManager: DataSupportManager;
     compilerManager: CompilerManager;
+    loadResources: (urlList: Array<string>) => this;
+    registerResources: (resourceMap: {
+        [key: string]: unknown;
+    }) => this;
+    toJSON: () => string;
     constructor(parameters?: EngineSupportParameters);
     loadConfig(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
 }

@@ -1,7 +1,4 @@
 import { OrthographicCamera, PerspectiveCamera, WebGLRenderer } from "three";
-import { MODULETYPE } from "../middleware/constants/MODULETYPE";
-import { CONFIGTYPE } from "../middleware/constants/CONFIGTYPE";
-import { generateConfig } from "../convenient/generateConfig";
 export const WebGLRendererPlugin = function (params) {
     if (this.webGLRenderer) {
         console.warn('this has installed webglRenderer plugin.');
@@ -58,17 +55,5 @@ export const WebGLRendererPlugin = function (params) {
         this.webGLRenderer.dispose();
     });
     return true;
-};
-export const WebGLRendererSupportPlugin = function (params) {
-    if (WebGLRendererPlugin.call(this, params)) {
-        const dataSupport = this.dataSupportManager.getDataSupport(MODULETYPE.RENDERER).getData();
-        if (!dataSupport.WebGLRenderer) {
-            dataSupport.WebGLRenderer = generateConfig(CONFIGTYPE.WEBGLRENDERER);
-        }
-        return true;
-    }
-    else {
-        return false;
-    }
 };
 //# sourceMappingURL=WebGLRendererPlugin.js.map

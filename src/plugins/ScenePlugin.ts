@@ -1,10 +1,5 @@
 import { PerspectiveCamera, Scene } from "three";
-import { generateConfig } from "../convenient/generateConfig";
 import { Engine } from "../engine/Engine";
-import { CONFIGTYPE } from "../middleware/constants/CONFIGTYPE";
-import { MODULETYPE } from "../middleware/constants/MODULETYPE";
-import { EngineSupport } from "../middleware/engineSupport/EngineSupport";
-import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { Plugin } from "./plugin";
 
 export interface SceneParameters {}
@@ -33,14 +28,4 @@ export const ScenePlugin: Plugin<SceneParameters> = function (this: Engine, para
 
   this.currentCamera = defalutCamera
   return true
-}
-
-export const SceneSupportPlugin: Plugin<SceneParameters> = function (this: EngineSupport, params: SceneParameters): boolean {
-  if (ScenePlugin.call(this, params)) {
-    const dataSupport = this.dataSupportManager.getDataSupport<SceneDataSupport>(MODULETYPE.SCENE)!.getData()
-    dataSupport.scene = generateConfig(CONFIGTYPE.SCENE)!
-    return true
-  } else {
-    return false
-  }
 }

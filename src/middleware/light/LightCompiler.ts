@@ -59,7 +59,7 @@ export class LightCompiler extends Compiler implements ObjectCompiler {
         this.scene.add(light)
       }
     } else {
-      console.error(`vid parameter is illegal: ${vid}`)
+      console.warn(`LightCompiler: vid parameter is illegal: ${vid}`)
     }
   }
 

@@ -49,6 +49,11 @@ export class ModelingEngineSupport extends Engine implements EngineSupport {
   declare dataSupportManager: DataSupportManager
   declare compilerManager: CompilerManager
 
+  
+  declare loadResources: (urlList: Array<string>) => this
+  declare registerResources: (resourceMap: {[key: string]: unknown}) => this
+  declare toJSON: () => string
+
   constructor (parameters?: EngineSupportParameters) {
     super()
     this.install(EnginePlugin.WEBGLRENDERER, {

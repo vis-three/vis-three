@@ -54,7 +54,9 @@ export class RendererCompiler extends Compiler {
   set (path: string[], key: string, value: any): this {
     const rendererType = path.shift()
 
+    // 整体替换
     if (!rendererType) {
+      this.map[key].setTarget(value).compileAll()
       return this
     }
 

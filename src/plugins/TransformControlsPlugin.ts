@@ -2,15 +2,9 @@ import { Scene } from 'three';
 import { ModelingScene } from './../extends/ModelingScene/ModelingScene';
 import { Engine } from "../engine/Engine";
 import { GlobalEvent } from "../manager/EventManager";
-import { VisPointerEvent } from "../manager/PointerManager";
 import { VisTransformControls } from "../optimize/VisTransformControls";
 import { Plugin } from "./plugin";
 import { SetCameraEvent } from "./WebGLRendererPlugin";
-import { ControlsDataSupport } from '../middleware/controls/ControlsDataSupport';
-import { MODULETYPE } from '../middleware/constants/MODULETYPE';
-import { CONFIGTYPE } from '../middleware/constants/configType';
-import { generateConfig } from '../convenient/generateConfig';
-import { EngineSupport } from '../middleware/engineSupport/EngineSupport';
 
 export const TransformControlsPlugin: Plugin<Object> = function (this: Engine, params: Object): boolean {
   if (this.transformControls) {
@@ -72,14 +66,4 @@ export const TransformControlsPlugin: Plugin<Object> = function (this: Engine, p
   })
 
   return true
-}
-
-export const TransformControlsSupportPlugin: Plugin<Object> = function (this: EngineSupport, params: Object): boolean {
-  if (TransformControlsPlugin.call(this, params)) {
-    const dataSupport = this.dataSupportManager.getDataSupport<ControlsDataSupport>(MODULETYPE.CONTROLS)!.getData()
-    dataSupport[CONFIGTYPE.TRNASFORMCONTROLS] = generateConfig(CONFIGTYPE.TRNASFORMCONTROLS)!
-    return true
-  } else {
-    return false
-  }
 }

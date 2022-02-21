@@ -168,6 +168,7 @@ engine.scene.add(new THREE.PointLight('white', 1))
 #### vsersion 0.03
 * 新增loaderManager, resourceManager, compilerManager插件
 * 将middleware中的engineSupport模块进行engine插件化处理，部分api有所变动
+* 新增Line连线模块
 #### 预设
 
 - [ ] css3Renderer

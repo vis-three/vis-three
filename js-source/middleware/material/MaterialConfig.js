@@ -96,4 +96,13 @@ export const getSpriteMaterialConfig = function () {
         sizeAttenuation: true
     });
 };
+export const getLineBasicMaterialConfig = function () {
+    return Object.assign(getMaterialConfig(), {
+        type: 'LineBasicMaterial',
+        color: 'rgb(255, 255, 255)',
+        linecap: 'round',
+        linejoin: 'round',
+        linewidth: 1
+    });
+};
 //# sourceMappingURL=MaterialConfig.js.map

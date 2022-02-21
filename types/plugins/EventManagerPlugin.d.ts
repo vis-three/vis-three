@@ -5,4 +5,3 @@ export interface GlobalSupportEvent extends GlobalEvent {
     vidList: Array<SymbolConfig['vid'] | null>;
 }
 export declare const EventManagerPlugin: Plugin<EventManagerParameters>;
-export declare const EventManagerSupportPlugin: Plugin<EventManagerParameters>;

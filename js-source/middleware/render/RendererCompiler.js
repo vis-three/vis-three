@@ -29,7 +29,9 @@ export class RendererCompiler extends Compiler {
     }
     set(path, key, value) {
         const rendererType = path.shift();
+        // 整体替换
         if (!rendererType) {
+            this.map[key].setTarget(value).compileAll();
             return this;
         }
         if (this.map[rendererType]) {

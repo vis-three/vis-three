@@ -21,6 +21,9 @@ import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport"
 import { Compiler, CompilerTarget } from "../core/Compiler";
 import { SpriteCompilerTarget } from '../middleware/sprite/SpriteCompiler';
 import { SpriteDataSupport } from '../middleware/sprite/SpriteDataSupport';
+import { EventCompilerTarget } from '../middleware/event/EventCompiler';
+import { EventDataSupport } from '../middleware/event/EventDataSupport';
+import { LineDataSupport } from '../middleware/line/LineDataSupport';
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget
@@ -35,6 +38,8 @@ export interface LoadOptions {
   [MODULETYPE.RENDERER]?: RendererCompilerTarget
   [MODULETYPE.SCENE]?: SceneCompilerTarget
   [MODULETYPE.CONTROLS]?: ControlsCompilerTarget
+  [MODULETYPE.EVENT]?: EventCompilerTarget
+  [MODULETYPE.LINE]?: LightCompilerTarget
 }
 
 export interface DataSupportManagerParameters {
@@ -48,6 +53,8 @@ export interface DataSupportManagerParameters {
   sceneDataSupport: SceneDataSupport
   controlsDataSupport: ControlsDataSupport
   spriteDataSupport: SpriteDataSupport
+  eventDataSupport: EventDataSupport
+  lineDataSupport: LineDataSupport
 }
 
 export class DataSupportManager {
@@ -61,6 +68,8 @@ export class DataSupportManager {
   private sceneDataSupport!: SceneDataSupport
   private controlsDataSupport!: ControlsDataSupport
   private spriteDataSupport!: SpriteDataSupport
+  private eventDataSupport!: EventDataSupport
+  private lineDataSupport!: LineDataSupport
 
   private dataSupportMap: Map<MODULETYPE, DataSupport<CompilerTarget, Compiler>>
 
@@ -76,6 +85,8 @@ export class DataSupportManager {
     this.sceneDataSupport = new SceneDataSupport()
     this.controlsDataSupport = new ControlsDataSupport()
     this.spriteDataSupport = new SpriteDataSupport()
+    this.eventDataSupport = new EventDataSupport()
+    this.lineDataSupport = new LineDataSupport()
 
     if (parameters) {
       Object.keys(parameters).forEach(key => {

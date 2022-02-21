@@ -1,0 +1,1 @@
+{"version":3,"file":"eventConfig.js","sourceRoot":"","sources":["../../../src/middleware/event/eventConfig.ts"],"names":[],"mappings":"AAWA,MAAM,CAAC,MAAM,cAAc,GAAG;IAC5B,OAAO;QACL,GAAG,EAAE,EAAE;QACP,IAAI,EAAE,OAAO;QACb,WAAW,EAAE,EAAE;QACf,WAAW,EAAE,EAAE;QACf,SAAS,EAAE,EAAE;QACb,YAAY,EAAE,EAAE;QAChB,YAAY,EAAE,EAAE;QAChB,KAAK,EAAE,EAAE;KACV,CAAA;AACH,CAAC,CAAA"}

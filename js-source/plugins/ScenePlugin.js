@@ -1,7 +1,4 @@
 import { PerspectiveCamera, Scene } from "three";
-import { generateConfig } from "../convenient/generateConfig";
-import { CONFIGTYPE } from "../middleware/constants/CONFIGTYPE";
-import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 export const ScenePlugin = function (params) {
     if (this.scene) {
         console.warn('this has installed scene plugin.');
@@ -21,15 +18,5 @@ export const ScenePlugin = function (params) {
     defalutCamera.lookAt(0, 0, 0);
     this.currentCamera = defalutCamera;
     return true;
-};
-export const SceneSupportPlugin = function (params) {
-    if (ScenePlugin.call(this, params)) {
-        const dataSupport = this.dataSupportManager.getDataSupport(MODULETYPE.SCENE).getData();
-        dataSupport.scene = generateConfig(CONFIGTYPE.SCENE);
-        return true;
-    }
-    else {
-        return false;
-    }
 };
 //# sourceMappingURL=ScenePlugin.js.map

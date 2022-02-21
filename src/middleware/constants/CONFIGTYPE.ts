@@ -5,6 +5,7 @@ export enum CONFIGTYPE {
 
   MODEL = 'Model',
   SPRITE = 'Sprite',
+  LINESEGMENTS = 'LineSegments',
 
   IMAGETEXTURE = 'ImageTexture',
   CUBETEXTURE = 'CubeTexture',
@@ -13,6 +14,7 @@ export enum CONFIGTYPE {
   MESHSTANDARDMATERIAL = 'MeshStandardMaterial',
   MESHPHONGMATERIAL = "MeshPhongMaterial",
   SPRITEMATERIAL = 'SpriteMaterial',
+  LINEBASICMATERIAL = 'LineBasicMaterial',
 
   AMBIENTLIGHT = 'AmbientLight',
   SPOTLIGHT = 'SpotLight',
@@ -26,5 +28,7 @@ export enum CONFIGTYPE {
   SCENE = 'Scene',
 
   TRNASFORMCONTROLS = 'TransformControls',
-  ORBITCONTROLS = 'OrbitControls'
+  ORBITCONTROLS = 'OrbitControls',
+
+  EVENT = 'Event'
 }

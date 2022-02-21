@@ -125,6 +125,7 @@ export class Engine extends EventDispatcher {
 
   loadResources?: (urlList: Array<string>) => this
   registerResources?: (resourceMap: {[key: string]: unknown}) => this
+  toJSON?: () => string
 
   play?: () => this
   stop?: () => this

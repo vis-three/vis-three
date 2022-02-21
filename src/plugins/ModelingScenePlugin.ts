@@ -1,10 +1,5 @@
-import { generateConfig } from "../convenient/generateConfig";
 import { Engine } from "../engine/Engine";
 import { ModelingScene, ModelingSceneParameters, SCENEVIEWPOINT } from "../extends/ModelingScene/ModelingScene";
-import { CONFIGTYPE } from "../middleware/constants/configType";
-import { MODULETYPE } from "../middleware/constants/MODULETYPE";
-import { EngineSupport } from "../middleware/engineSupport/EngineSupport";
-import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { Plugin } from "./plugin";
 
 export const ModelingScenePlugin: Plugin<ModelingSceneParameters> = function (this: Engine, params: ModelingSceneParameters): boolean {
@@ -61,14 +56,4 @@ export const ModelingScenePlugin: Plugin<ModelingSceneParameters> = function (th
   }
 
   return true
-}
-
-export const ModelingSceneSupportPlugin: Plugin<ModelingSceneParameters> = function (this: EngineSupport, params: ModelingSceneParameters): boolean {
-  if (ModelingScenePlugin.call(this, params)) {
-    const dataSupport = this.dataSupportManager.getDataSupport<SceneDataSupport>(MODULETYPE.SCENE)!.getData()
-    dataSupport.scene = generateConfig(CONFIGTYPE.SCENE)!
-    return true
-  } else {
-    return false
-  }
 }

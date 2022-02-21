@@ -39,7 +39,7 @@ export class LightCompiler extends Compiler {
             }
         }
         else {
-            console.error(`vid parameter is illegal: ${vid}`);
+            console.warn(`LightCompiler: vid parameter is illegal: ${vid}`);
         }
     }
     set(path, key, value) {

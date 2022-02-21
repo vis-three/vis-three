@@ -9,6 +9,8 @@ import { RendererDataSupport } from "../middleware/render/RendererDataSupport";
 import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
 import { SpriteDataSupport } from '../middleware/sprite/SpriteDataSupport';
+import { EventDataSupport } from '../middleware/event/EventDataSupport';
+import { LineDataSupport } from '../middleware/line/LineDataSupport';
 export class DataSupportManager {
     cameraDataSupport;
     lightDataSupport;
@@ -20,6 +22,8 @@ export class DataSupportManager {
     sceneDataSupport;
     controlsDataSupport;
     spriteDataSupport;
+    eventDataSupport;
+    lineDataSupport;
     dataSupportMap;
     constructor(parameters) {
         this.cameraDataSupport = new CameraDataSupport();
@@ -32,6 +36,8 @@ export class DataSupportManager {
         this.sceneDataSupport = new SceneDataSupport();
         this.controlsDataSupport = new ControlsDataSupport();
         this.spriteDataSupport = new SpriteDataSupport();
+        this.eventDataSupport = new EventDataSupport();
+        this.lineDataSupport = new LineDataSupport();
         if (parameters) {
             Object.keys(parameters).forEach(key => {
                 this[key] = parameters[key];

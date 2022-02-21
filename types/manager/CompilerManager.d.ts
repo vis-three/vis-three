@@ -1,10 +1,12 @@
 import { Material, Object3D, Texture } from "three";
+import { ObjectCompiler } from "../core/Compiler";
 import { Engine } from "../main";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
 import { GeometryCompiler } from "../middleware/geometry/GeometryCompiler";
 import { LightCompiler } from "../middleware/light/LightCompiler";
+import { LineCompiler } from "../middleware/line/LineCompiler";
 import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { ModelCompiler } from "../middleware/model/ModelCompiler";
 import { RendererCompiler } from "../middleware/render/RendererCompiler";
@@ -22,6 +24,7 @@ export interface CompilerManagerParameters {
     sceneCompiler: SceneCompiler;
     controlsCompiler: ControlsCompiler;
     spriteCompiler: SpriteCompiler;
+    lineCompiler: LineCompiler;
 }
 export declare class CompilerManager {
     private cameraCompiler;
@@ -34,10 +37,14 @@ export declare class CompilerManager {
     private sceneCompiler;
     private controlsCompiler;
     private spriteCompiler;
+    private eventCompiler;
+    private lineCompiler;
     private objectCompilerList;
     constructor(parameters?: CompilerManagerParameters);
     support(engine: Engine): this;
     getObjectVid<O extends Object3D>(object: O): SymbolConfig['vid'] | null;
     getMaterial(vid: string): Material | undefined;
     getTexture(vid: string): Texture | undefined;
+    getObject(vid: string): Object3D | undefined;
+    getObjectCompilerList(): ObjectCompiler[];
 }

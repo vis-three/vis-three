@@ -28,6 +28,7 @@ import { CanvasTextureGenerator } from './convenient/CanvasTextureGenerator';
 import { SpriteDataSupport } from './middleware/sprite/SpriteDataSupport';
 import { ModelingEngineSupport } from './engine/ModelingEngineSupport';
 import { DisplayEngineSupport } from './engine/DisplayEngineSupport';
+import { LineDataSupport } from './middleware/line/LineDataSupport';
 export { 
 // menu
 RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, OBJECTEVENT, EVENTTYPE, SCENEDISPLAYMODE, SCENEVIEWPOINT, 
@@ -37,7 +38,7 @@ LoaderManager, ResourceManager, DataSupportManager,
 Engine, ModelingEngine, DisplayEngine, ModelingEngineSupport, DisplayEngineSupport, 
 // engine connector
 // data support
-TextureDataSupport, MaterialDataSupport, LightDataSupport, ModelDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, SpriteDataSupport, 
+TextureDataSupport, MaterialDataSupport, LightDataSupport, ModelDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, SpriteDataSupport, LineDataSupport, 
 // helper
 PointLightHelper, CameraHelper, 
 // convenient

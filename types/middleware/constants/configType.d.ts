@@ -4,12 +4,14 @@ export declare enum CONFIGTYPE {
     LOADGEOMETRY = "LoadGeometry",
     MODEL = "Model",
     SPRITE = "Sprite",
+    LINESEGMENTS = "LineSegments",
     IMAGETEXTURE = "ImageTexture",
     CUBETEXTURE = "CubeTexture",
     CANVASTEXTURE = "CanvasTexture",
     MESHSTANDARDMATERIAL = "MeshStandardMaterial",
     MESHPHONGMATERIAL = "MeshPhongMaterial",
     SPRITEMATERIAL = "SpriteMaterial",
+    LINEBASICMATERIAL = "LineBasicMaterial",
     AMBIENTLIGHT = "AmbientLight",
     SPOTLIGHT = "SpotLight",
     POINTLIGHT = "PointLight",
@@ -18,5 +20,6 @@ export declare enum CONFIGTYPE {
     WEBGLRENDERER = "WebGLRenderer",
     SCENE = "Scene",
     TRNASFORMCONTROLS = "TransformControls",
-    ORBITCONTROLS = "OrbitControls"
+    ORBITCONTROLS = "OrbitControls",
+    EVENT = "Event"
 }

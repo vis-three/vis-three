@@ -33,6 +33,11 @@ export declare class DisplayEngineSupport extends Engine implements EngineSuppor
     resourceManager: ResourceManager;
     dataSupportManager: DataSupportManager;
     compilerManager: CompilerManager;
+    loadResources: (urlList: Array<string>) => this;
+    registerResources: (resourceMap: {
+        [key: string]: unknown;
+    }) => this;
+    toJSON: () => string;
     constructor(parameters?: EngineSupportParameters);
     loadConfig(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
 }

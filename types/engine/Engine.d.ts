@@ -63,6 +63,7 @@ export declare class Engine extends EventDispatcher {
     registerResources?: (resourceMap: {
         [key: string]: unknown;
     }) => this;
+    toJSON?: () => string;
     play?: () => this;
     stop?: () => this;
     render?: () => this;

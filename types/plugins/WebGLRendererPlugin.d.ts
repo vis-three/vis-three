@@ -11,4 +11,3 @@ export interface SetCameraEvent extends BaseEvent {
     camera: Camera;
 }
 export declare const WebGLRendererPlugin: Plugin<WebGLRendererParameters>;
-export declare const WebGLRendererSupportPlugin: Plugin<WebGLRendererParameters>;

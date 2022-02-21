@@ -1,9 +1,6 @@
 import { Scene } from 'three';
 import { ModelingScene } from './../extends/ModelingScene/ModelingScene';
 import { VisTransformControls } from "../optimize/VisTransformControls";
-import { MODULETYPE } from '../middleware/constants/MODULETYPE';
-import { CONFIGTYPE } from '../middleware/constants/configType';
-import { generateConfig } from '../convenient/generateConfig';
 export const TransformControlsPlugin = function (params) {
     if (this.transformControls) {
         console.warn('this has installed transformControls plugin.');
@@ -52,15 +49,5 @@ export const TransformControlsPlugin = function (params) {
         }
     });
     return true;
-};
-export const TransformControlsSupportPlugin = function (params) {
-    if (TransformControlsPlugin.call(this, params)) {
-        const dataSupport = this.dataSupportManager.getDataSupport(MODULETYPE.CONTROLS).getData();
-        dataSupport[CONFIGTYPE.TRNASFORMCONTROLS] = generateConfig(CONFIGTYPE.TRNASFORMCONTROLS);
-        return true;
-    }
-    else {
-        return false;
-    }
 };
 //# sourceMappingURL=TransformControlsPlugin.js.map

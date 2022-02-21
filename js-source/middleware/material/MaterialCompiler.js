@@ -1,6 +1,7 @@
-import { Color, MeshPhongMaterial, MeshStandardMaterial, SpriteMaterial, Texture } from "three";
+import { Color, LineBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, SpriteMaterial, Texture } from "three";
 import { validate } from "uuid";
 import { Compiler } from "../../core/Compiler";
+import { CONFIGTYPE } from "../constants/configType";
 export class MaterialCompiler extends Compiler {
     target;
     map;
@@ -23,9 +24,10 @@ export class MaterialCompiler extends Compiler {
         this.resourceMap = new Map();
         this.cachaColor = new Color();
         const constructMap = new Map();
-        constructMap.set('MeshStandardMaterial', () => new MeshStandardMaterial());
-        constructMap.set('MeshPhongMaterial', () => new MeshPhongMaterial());
-        constructMap.set('SpriteMaterial', () => new SpriteMaterial());
+        constructMap.set(CONFIGTYPE.MESHSTANDARDMATERIAL, () => new MeshStandardMaterial());
+        constructMap.set(CONFIGTYPE.MESHPHONGMATERIAL, () => new MeshPhongMaterial());
+        constructMap.set(CONFIGTYPE.SPRITEMATERIAL, () => new SpriteMaterial());
+        constructMap.set(CONFIGTYPE.LINEBASICMATERIAL, () => new LineBasicMaterial());
         this.constructMap = constructMap;
         this.colorAttribute = {
             'color': true,

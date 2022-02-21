@@ -90,11 +90,20 @@ export interface SpriteMaterialConfig extends MaterialConfig {
   sizeAttenuation: boolean
 }
 
+export interface LineBasicMaterialConfig extends MaterialConfig {
+  color: string
+  linecap: string
+  linejoin: string
+  linewidth: number // webgl limit always 1, use line2
+}
+
 // TODO: LoadMaterial
 
 export type MaterialAllType = 
   MeshStandardMaterialConfig |
-  MeshPhongMaterialConfig
+  MeshPhongMaterialConfig |
+  LineBasicMaterialConfig |
+  SpriteMaterialConfig
 
 export const getMaterialConfig = function(): MaterialConfig {
   return {
@@ -197,5 +206,15 @@ export const getSpriteMaterialConfig = function(): SpriteMaterialConfig {
     map: '',
     alphaMap: '',
     sizeAttenuation: true
+  })
+}
+
+export const getLineBasicMaterialConfig = function(): LineBasicMaterialConfig {
+  return Object.assign(getMaterialConfig(), {
+    type: 'LineBasicMaterial',
+    color: 'rgb(255, 255, 255)',
+    linecap: 'round',
+    linejoin: 'round',
+    linewidth: 1
   })
 }

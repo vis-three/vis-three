@@ -3,11 +3,6 @@ import { Engine } from "../engine/Engine";
 import { EventManager, EventManagerParameters, GlobalEvent, ObjectEvent } from "../manager/EventManager";
 import { Plugin } from "./plugin";
 import { SetCameraEvent } from "./WebGLRendererPlugin";
-import { EngineSupport } from '../middleware/engineSupport/EngineSupport';
-import { MODULETYPE } from '../middleware/constants/MODULETYPE';
-import { CameraDataSupport } from '../middleware/camera/CameraDataSupport';
-import { ModelDataSupport } from '../middleware/model/ModelDataSupport';
-import { LightDataSupport } from '../middleware/light/LightDataSupport';
 import { SymbolConfig } from '../middleware/common/CommonConfig';
 
 export interface GlobalSupportEvent extends GlobalEvent {
@@ -59,12 +54,4 @@ export const EventManagerPlugin: Plugin<EventManagerParameters> = function (this
   }
 
   return true
-}
-
-export const EventManagerSupportPlugin: Plugin<EventManagerParameters> = function (this: EngineSupport, params: EventManagerParameters): boolean {
-  if (EventManagerPlugin.call(this, params)) {
-    return true
-  } else {
-    return false
-  }
 }

@@ -5,8 +5,9 @@ export const GeometryRule = function (notice, compiler) {
         if (validate(key)) {
             compiler.add(key, value);
         }
+        return;
     }
-    else if (operate === 'set') {
+    if (operate === 'set') {
         const tempPath = path.concat([]);
         const vid = tempPath.shift();
         if (vid && validate(vid)) {
@@ -14,8 +15,8 @@ export const GeometryRule = function (notice, compiler) {
         }
         else {
             console.warn(`geometry rule vid is illeage: '${vid}'`);
-            return;
         }
+        return;
     }
 };
 //# sourceMappingURL=GeometryRule.js.map

@@ -39,12 +39,4 @@ export const EventManagerPlugin = function (params) {
     }
     return true;
 };
-export const EventManagerSupportPlugin = function (params) {
-    if (EventManagerPlugin.call(this, params)) {
-        return true;
-    }
-    else {
-        return false;
-    }
-};
 //# sourceMappingURL=EventManagerPlugin.js.map

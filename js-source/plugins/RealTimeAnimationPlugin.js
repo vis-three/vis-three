@@ -1,4 +1,4 @@
-export const RealTimeAnimationSupportPlugin = function (params) {
+export const RealTimeAnimationPlugin = function (params) {
     if (this.pointerManager) {
         console.warn('this has installed pointerManager plugin.');
         return false;

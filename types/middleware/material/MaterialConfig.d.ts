@@ -82,8 +82,15 @@ export interface SpriteMaterialConfig extends MaterialConfig {
     alphaMap: string;
     sizeAttenuation: boolean;
 }
-export declare type MaterialAllType = MeshStandardMaterialConfig | MeshPhongMaterialConfig;
+export interface LineBasicMaterialConfig extends MaterialConfig {
+    color: string;
+    linecap: string;
+    linejoin: string;
+    linewidth: number;
+}
+export declare type MaterialAllType = MeshStandardMaterialConfig | MeshPhongMaterialConfig | LineBasicMaterialConfig | SpriteMaterialConfig;
 export declare const getMaterialConfig: () => MaterialConfig;
 export declare const getMeshStandardMaterialConfig: () => MeshStandardMaterialConfig;
 export declare const getMeshPhongMaterialConfig: () => MeshPhongMaterialConfig;
 export declare const getSpriteMaterialConfig: () => SpriteMaterialConfig;
+export declare const getLineBasicMaterialConfig: () => LineBasicMaterialConfig;

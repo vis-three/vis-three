@@ -8,10 +8,14 @@ import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
 import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
+import { EventCompiler } from "../middleware/event/EventCompiler";
+import { EventDataSupport } from "../middleware/event/EventDataSupport";
 import { GeometryCompiler } from "../middleware/geometry/GeometryCompiler";
 import { GeometryDataSupport } from "../middleware/geometry/GeometryDataSupport";
 import { LightCompiler } from "../middleware/light/LightCompiler";
 import { LightDataSupport } from "../middleware/light/LightDataSupport";
+import { LineCompiler } from "../middleware/line/LineCompiler";
+import { LineDataSupport } from "../middleware/line/LineDataSupport";
 import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { MaterialDataSupport } from "../middleware/material/MaterialDataSupport";
 import { ModelCompiler } from "../middleware/model/ModelCompiler";
@@ -24,7 +28,6 @@ import { SpriteCompiler } from "../middleware/sprite/SpriteCompiler";
 import { SpriteDataSupport } from "../middleware/sprite/SpriteDataSupport";
 import { TextureCompiler } from "../middleware/texture/TextureCompiler";
 import { TextureDataSupport } from "../middleware/texture/TextureDataSupport";
-import { DataSupportManager } from "./DataSupportManager";
 
 export interface CompilerManagerParameters {
   cameraCompiler: CameraCompiler
@@ -37,6 +40,7 @@ export interface CompilerManagerParameters {
   sceneCompiler: SceneCompiler
   controlsCompiler: ControlsCompiler
   spriteCompiler: SpriteCompiler
+  lineCompiler: LineCompiler
 }
 
 export class CompilerManager {
@@ -51,6 +55,8 @@ export class CompilerManager {
   private sceneCompiler!: SceneCompiler
   private controlsCompiler!: ControlsCompiler
   private spriteCompiler!: SpriteCompiler
+  private eventCompiler!: EventCompiler
+  private lineCompiler!: LineCompiler
 
   private objectCompilerList: Array<ObjectCompiler>
 
@@ -81,54 +87,90 @@ export class CompilerManager {
     const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE)! as SceneDataSupport
     const controlsDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CONTROLS)! as ControlsDataSupport
     const spriteDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SPRITE)! as SpriteDataSupport
+    const eventDataSupport = dataSupportManager.getDataSupport(MODULETYPE.EVENT)! as EventDataSupport
+    const lineDataSupport  = dataSupportManager.getDataSupport(MODULETYPE.LINE)! as LineDataSupport
 
     const textureCompiler = new TextureCompiler({
       target: textureDataSupport.getData()
     })
 
+    this.textureCompiler = textureCompiler
+
+
     const materialCompiler = new MaterialCompiler({
       target: materialDataSupport.getData()
     })
+    this.materialCompiler = materialCompiler
+
 
     const cameraCompiler = new CameraCompiler({
       target: cameraDataSupport.getData(),
       scene: engine.scene!,
       engine: engine
     })
+    this.cameraCompiler = cameraCompiler
+    this.objectCompilerList.push(cameraCompiler)
 
     const lightCompiler = new LightCompiler({
       scene: engine.scene!,
       target: lightDataSupport.getData()
     })
+    this.lightCompiler = lightCompiler
+    this.objectCompilerList.push(lightCompiler)
 
     const geometryCompiler = new GeometryCompiler({
       target: geometryDataSupport.getData()
     })
+    this.geometryCompiler = geometryCompiler
+
 
     const modelCompiler = new ModelCompiler({
       scene: engine.scene,
       target: modelDataSupport.getData()
     })
+    this.modelCompiler = modelCompiler
+    this.objectCompilerList.push(modelCompiler)
+
 
     const rendererCompiler = new RendererCompiler({
       target: rendererDataSupport.getData(),
       engine: engine
     })
+    this.rendererCompiler = rendererCompiler
+
 
     const sceneCompiler = new SceneCompiler({
       target: sceneDataSupport.getData(),
       scene: engine.scene
     })
+    this.sceneCompiler = sceneCompiler
+
 
     const controlsCompiler = new ControlsCompiler({
       target: controlsDataSupport.getData(),
       transformControls: engine.transformControls
     })
+    this.controlsCompiler = controlsCompiler
+
 
     const spriteCompiler = new SpriteCompiler({
       target: spriteDataSupport.getData(),
       scene: engine.scene!
     })
+    this.spriteCompiler = spriteCompiler
+    this.objectCompilerList.push(spriteCompiler)
+
+
+    const eventCompiler = new EventCompiler({
+      target: eventDataSupport.getData()
+    })
+    this.eventCompiler = eventCompiler
+
+    const lineCompiler = new LineCompiler({
+      target: lineDataSupport.getData(),
+      engine
+    })
+    this.lineCompiler = lineCompiler
 
     const resourceManager = engine.resourceManager!
 
@@ -138,6 +180,13 @@ export class CompilerManager {
 
     modelCompiler
     .linkGeometryMap(geometryCompiler.getMap())
+    .linkMaterialMap(materialCompiler.getMap())
+    .linkObjectMap(lightCompiler.getMap())
+    .linkObjectMap(cameraCompiler.getMap())
+    .linkObjectMap(modelCompiler.getMap())
+    .linkObjectMap(spriteCompiler.getMap())
+
+    lineCompiler
     .linkMaterialMap(materialCompiler.getMap())
     .linkObjectMap(lightCompiler.getMap())
     .linkObjectMap(cameraCompiler.getMap())
@@ -166,6 +215,7 @@ export class CompilerManager {
     sceneDataSupport.addCompiler(sceneCompiler)
     controlsDataSupport.addCompiler(controlsCompiler)
     spriteDataSupport.addCompiler(spriteCompiler)
+    lineDataSupport.addCompiler(lineCompiler)
     return this
   }
 
@@ -200,5 +250,13 @@ export class CompilerManager {
 
     const textureCompiler = this.textureCompiler
     return textureCompiler.getMap().get(vid)
+  }
+
+  getObject (vid: string): Object3D | undefined {
+    return undefined
+  }
+
+  getObjectCompilerList (): ObjectCompiler[] {
+    return this.objectCompilerList
   }
 }
