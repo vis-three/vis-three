@@ -105,6 +105,9 @@ export class GeometryCompiler extends Compiler {
         return this;
     }
     dispose() {
+        this.map.forEach((geometry, vid) => {
+            geometry.dispose();
+        });
         return this;
     }
 }

@@ -36,7 +36,7 @@ import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerM
 import { CompilerManagerPlugin } from "../plugins/CompilerManagerPlugin";
 
 // 存在的插件接口
-export enum EnginePlugin {
+export enum ENGINEPLUGIN {
   WEBGLRENDERER = 'WebGLRenderer',
   SCENE = 'Scene',
   MODELINGSCENE = 'ModelingScene',
@@ -97,7 +97,7 @@ export class Engine extends EventDispatcher {
     Engine.pluginHandler = undefined
   }  
 
-  completeSet?: Set<(engine: Engine) => void>
+  completeSet: Set<(engine: Engine) => void>
 
 
   dom?: HTMLElement
@@ -139,8 +139,6 @@ export class Engine extends EventDispatcher {
       console.warn('can not install some plugin')
       return this
     }
-
-    this.optimizeMemory()
   }
 
   protected optimizeMemory () {
@@ -152,7 +150,7 @@ export class Engine extends EventDispatcher {
   }
 
   // 安装插件
-  install (plugin: EnginePlugin, params?: EnginePluginParams): this {
+  install (plugin: ENGINEPLUGIN, params?: EnginePluginParams): this {
     if (Engine.pluginHandler!.has(plugin)) {
       Engine.pluginHandler!.get(plugin)!.call(this, params)
     } else {
@@ -163,10 +161,10 @@ export class Engine extends EventDispatcher {
 
   // 完成
   complete (): this {
-    this.completeSet!.forEach(fun => {
+    this.completeSet.forEach(fun => {
       fun(this)
     })
-    this.completeSet = undefined
+    this.completeSet.clear()
     return this
   }
 

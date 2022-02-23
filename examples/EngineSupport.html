@@ -48,14 +48,13 @@
     .install('EventManager')
     .install('TransformControls')
     .complete()
-    .support()
     .setDom(document.getElementById('app'))
     .setSize()
     .setStats(true)
     .play()
 
     const pointLight = Vis.generateConfig('PointLight', {
-      vid: getUUid(),
+      
       position: {
         x: 30,
         y: 50
@@ -64,19 +63,19 @@
     })
 
     const meshStandardMaterial = Vis.generateConfig('MeshStandardMaterial', {
-      vid: getUUid(),
+      
       color: 'rgb(255, 0, 0)'
     })
     
     const boxGeometry = Vis.generateConfig('BoxGeometry', {
-      vid: getUUid(),
+      
       width: 20,
       height: 40,
       depth: 60
     })
     
     const model = Vis.generateConfig('Model', {
-      vid: getUUid(),
+      
       type: 'Mesh',
       geometry: boxGeometry.vid,
       material: meshStandardMaterial.vid

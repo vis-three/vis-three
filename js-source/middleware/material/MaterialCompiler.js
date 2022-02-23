@@ -152,6 +152,9 @@ export class MaterialCompiler extends Compiler {
         return this;
     }
     dispose() {
+        this.map.forEach((material, vid) => {
+            material.dispose();
+        });
         return this;
     }
 }

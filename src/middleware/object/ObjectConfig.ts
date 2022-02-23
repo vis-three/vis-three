@@ -8,6 +8,7 @@ export interface ObjectConfig extends SymbolConfig {
   position: Vector3Config
   rotation: Vector3Config
   scale: Vector3Config
+  visible: boolean
 }
 
 export const getObjectConfig = (): ObjectConfig => {
@@ -17,6 +18,7 @@ export const getObjectConfig = (): ObjectConfig => {
     castShadow: true,
     receiveShadow: true,
     lookAt: '',
+    visible: true,
     position: {
       x: 0,
       y: 0,

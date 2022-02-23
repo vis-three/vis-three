@@ -32,7 +32,6 @@ import {
 
 ``` js
 const pointLight = Vis.generateConfig('PointLight', {
-  vid: getUUid(),
   position: {
     x: 10,
     y: 20,
@@ -168,7 +167,11 @@ engine.scene.add(new THREE.PointLight('white', 1))
 #### vsersion 0.03
 * 新增loaderManager, resourceManager, compilerManager插件
 * 将middleware中的engineSupport模块进行engine插件化处理，部分api有所变动
-* 新增Line连线模块
+* 新增Line模块
+* 新增Mesh模块
+* 新增Points模块
+
+* model模块准备弃用
 #### 预设
 
 - [ ] css3Renderer

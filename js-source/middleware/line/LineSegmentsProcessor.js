@@ -79,6 +79,7 @@ export class LineSegmentsProcessor {
                 }
             };
         }
+        lineSegments.visible = config.visible;
         return lineSegments;
     }
     set() { }

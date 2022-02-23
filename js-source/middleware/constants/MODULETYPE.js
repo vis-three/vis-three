@@ -13,5 +13,6 @@ export var MODULETYPE;
     MODULETYPE["CONTROLS"] = "controls";
     MODULETYPE["EVENT"] = "event";
     MODULETYPE["LINE"] = "line";
+    MODULETYPE["MESH"] = "mesh";
 })(MODULETYPE || (MODULETYPE = {}));
 //# sourceMappingURL=MODULETYPE.js.map

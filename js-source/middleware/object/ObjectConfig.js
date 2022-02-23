@@ -5,6 +5,7 @@ export const getObjectConfig = () => {
         castShadow: true,
         receiveShadow: true,
         lookAt: '',
+        visible: true,
         position: {
             x: 0,
             y: 0,

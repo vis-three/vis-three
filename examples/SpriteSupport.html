@@ -25,14 +25,30 @@
     import * as Vis from '../dist/Vis.es.js'
     import { v4 as getUUid } from 'uuid'
 
+    const canvasTextureGenerator = new Vis.CanvasTextureGenerator({
+      width: 256,
+      height: 256
+    }).draw(ctx => {
+      ctx.textBaseline = 'middle'
+      ctx.textAlign = "center"
+
+      ctx.fillStyle= 'rgb(206, 42, 230)'
+   
+      ctx.font=" bold 68px 微软雅黑"
+      ctx.fillText("SPRITE", 128, 128)
+    }).preview()
+
     const engine = new Vis.ModelingEngineSupport()
     .setDom(document.getElementById('app'))
     .setSize()
     .setStats(true)
     .play()
+    .registerResources({
+      'example.canvasTexture': canvasTextureGenerator.get()
+    })
+
 
     const pointLight = Vis.generateConfig('PointLight', {
-      vid: getUUid(),
       position: {
         x: 30,
         y: 50
@@ -41,23 +57,27 @@
     })
     engine.dataSupportManager.lightDataSupport.getData()[pointLight.vid] = pointLight
 
+    
+    const canvasTexture = Vis.generateConfig('CanvasTexture', {
+      url: 'example.canvasTexture',
+    })
+    engine.dataSupportManager.textureDataSupport.getData()[canvasTexture.vid] = canvasTexture
+
 
     const material = Vis.generateConfig('SpriteMaterial', {
-      vid: getUUid(),
-      color: 'rgb(255, 0, 0)',
-
+      map: canvasTexture.vid,
     })
     engine.dataSupportManager.materialDataSupport.getData()[material.vid] = material
-    
+
 
     const sprite = Vis.generateConfig('Sprite', {
-      vid: getUUid(),
       material: material.vid,
       scale: {
         x: 20,
-        y: 40
+        y: 20
       }
     })
+
     engine.dataSupportManager.spriteDataSupport.getData()[sprite.vid] = sprite
   </script>
   

@@ -14,23 +14,23 @@ import { ResourceManagerPlugin } from "../plugins/ResourceManagerPlugin";
 import { DataSupportManagerPlugin } from "../plugins/DataSupportManagerPlugin";
 import { CompilerManagerPlugin } from "../plugins/CompilerManagerPlugin";
 // 存在的插件接口
-export var EnginePlugin;
-(function (EnginePlugin) {
-    EnginePlugin["WEBGLRENDERER"] = "WebGLRenderer";
-    EnginePlugin["SCENE"] = "Scene";
-    EnginePlugin["MODELINGSCENE"] = "ModelingScene";
-    EnginePlugin["RENDERMANAGER"] = "RenderManager";
-    EnginePlugin["ORBITCONTROLS"] = "OrbitControls";
-    EnginePlugin["STATS"] = "Stats";
-    EnginePlugin["EFFECTCOMPOSER"] = "EffectComposer";
-    EnginePlugin["POINTERMANAGER"] = "PointerManager";
-    EnginePlugin["EVENTMANAGER"] = "EventManager";
-    EnginePlugin["TRANSFORMCONTROLS"] = "TransformControls";
-    EnginePlugin["LOADERMANAGER"] = "LoaderManager";
-    EnginePlugin["RESOURCEMANAGER"] = "ResourceManager";
-    EnginePlugin["DATASUPPORTMANAGER"] = "DataSupportManager";
-    EnginePlugin["COMPILERMANAGER"] = "CompilerManager";
-})(EnginePlugin || (EnginePlugin = {}));
+export var ENGINEPLUGIN;
+(function (ENGINEPLUGIN) {
+    ENGINEPLUGIN["WEBGLRENDERER"] = "WebGLRenderer";
+    ENGINEPLUGIN["SCENE"] = "Scene";
+    ENGINEPLUGIN["MODELINGSCENE"] = "ModelingScene";
+    ENGINEPLUGIN["RENDERMANAGER"] = "RenderManager";
+    ENGINEPLUGIN["ORBITCONTROLS"] = "OrbitControls";
+    ENGINEPLUGIN["STATS"] = "Stats";
+    ENGINEPLUGIN["EFFECTCOMPOSER"] = "EffectComposer";
+    ENGINEPLUGIN["POINTERMANAGER"] = "PointerManager";
+    ENGINEPLUGIN["EVENTMANAGER"] = "EventManager";
+    ENGINEPLUGIN["TRANSFORMCONTROLS"] = "TransformControls";
+    ENGINEPLUGIN["LOADERMANAGER"] = "LoaderManager";
+    ENGINEPLUGIN["RESOURCEMANAGER"] = "ResourceManager";
+    ENGINEPLUGIN["DATASUPPORTMANAGER"] = "DataSupportManager";
+    ENGINEPLUGIN["COMPILERMANAGER"] = "CompilerManager";
+})(ENGINEPLUGIN || (ENGINEPLUGIN = {}));
 // 插件处理集合
 let pluginHandler = new Map();
 pluginHandler.set('WebGLRenderer', WebGLRendererPlugin);
@@ -93,7 +93,6 @@ export class Engine extends EventDispatcher {
             console.warn('can not install some plugin');
             return this;
         };
-        this.optimizeMemory();
     }
     optimizeMemory() {
         Object.keys(this).forEach(key => {
@@ -117,7 +116,7 @@ export class Engine extends EventDispatcher {
         this.completeSet.forEach(fun => {
             fun(this);
         });
-        this.completeSet = undefined;
+        this.completeSet.clear();
         return this;
     }
     // 清除缓存

@@ -8,6 +8,15 @@ export const LineRule = function (input, compiler) {
         }
     }
     if (operate === 'set') {
+        const tempPath = path.concat([]);
+        const vid = tempPath.shift();
+        if (vid && validate(vid)) {
+            compiler.set(vid, tempPath, key, value);
+        }
+        else {
+            console.warn(`model rule vid is illeage: '${vid}'`);
+        }
+        return;
     }
 };
 //# sourceMappingURL=LineRule.js.map

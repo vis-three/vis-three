@@ -1,30 +1,15 @@
-import { Vector3Config } from "../common/CommonConfig";
+import { CONFIGTYPE } from "../constants/configType";
 import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
 
 export interface LineConfig extends ObjectConfig {
   material: string
-  points: (Vector3Config| string)[]
+  geometry: string
 }
 
-export interface Line2Config extends LineConfig {
-
-}
-
-export interface LineSegmentsConfig extends ObjectConfig {
-  material: string
-  pairPoints: Array<(Vector3Config| string)[]>
-}
-
-export interface LineSegments2Config extends LineSegmentsConfig {
-
-}
-
-export type LineAllType = LineSegmentsConfig
-
-export const getLineSegmentsConfig = function(): LineSegmentsConfig {
+export const getLineConfig = function(): LineConfig {
   return Object.assign(getObjectConfig(), {
-    type: 'LineSegments',
-    pairPoints: [],
-    material: ''
+    type: CONFIGTYPE.LINE,
+    geometry: '',
+    material: '',
   })
 }

@@ -1,4 +1,5 @@
 import { PointLight, SpotLight } from "three";
+import { CONFIGTYPE } from "../constants/configType";
 import { ObjectConfig, getObjectConfig } from "../object/ObjectConfig";
 
 export interface LightConifg extends ObjectConfig {
@@ -22,7 +23,12 @@ export interface SpotLightConfig extends LightConifg {
   decay: number
 }
 
-export const getLightConfig = function (): LightConifg {
+export type LightConfigAllType = 
+  AmbientLightConfig |
+  PointLightConfig |
+  SpotLightConfig
+
+const getLightConfig = function (): LightConifg {
   return Object.assign(getObjectConfig(), {
     type: 'Light',
     color: 'rgb(255, 255, 255)',
@@ -32,7 +38,7 @@ export const getLightConfig = function (): LightConifg {
 
 export const getAmbientLightConfig = function (): AmbientLightConfig {
   return Object.assign(getObjectConfig(), {
-    type: 'AmbientLight',
+    type: CONFIGTYPE.AMBIENTLIGHT,
     color: 'rgb(255, 255, 255)',
     intensity: 1
   })
@@ -40,7 +46,7 @@ export const getAmbientLightConfig = function (): AmbientLightConfig {
 
 export const getPointLightConfig = function (): PointLightConfig {
   return Object.assign(getLightConfig(), {
-    type: 'PointLight',
+    type: CONFIGTYPE.POINTLIGHT,
     distance: 30,
     decay: 0.01
   })
@@ -48,7 +54,7 @@ export const getPointLightConfig = function (): PointLightConfig {
 
 export const getSpotLightConfig = function (): SpotLightConfig {
   return Object.assign(getLightConfig(), {
-    type: 'SpotLight',
+    type: CONFIGTYPE.SPOTLIGHT,
     distance: 30,
     angle: Math.PI / 180 * 45,
     penumbra: 0.01,

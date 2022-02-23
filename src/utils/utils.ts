@@ -4,14 +4,16 @@ import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig} from ".
 import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig } from "../middleware/geometry/GeometryConfig"
 import { getModelConfig } from "../middleware/model/ModelConfig"
 import { getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig } from "../middleware/texture/TextureConfig"
-import { getLineBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshStandardMaterialConfig, getSpriteMaterialConfig } from "../middleware/material/MaterialConfig"
+import { getLineBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getSpriteMaterialConfig } from "../middleware/material/MaterialConfig"
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../middleware/camera/CameraConfig"
 import { getWebGLRendererConfig } from "../middleware/render/RendererConfig"
 import { getSceneConfig } from "../middleware/scene/SceneConfig"
 import { getOrbitControlsConfig, getTransformControlsConfig } from "../middleware/controls/ControlsConfig"
 import { getSpriteConfig } from "../middleware/sprite/SpriteConfig"
 import { getEventConfig } from "../middleware/event/eventConfig";
-import { getLineSegmentsConfig } from "../middleware/line/LineConfig";
+import { getMeshConfig } from "../middleware/mesh/MeshConfig";
+import { getPointsConfig } from "../middleware/points/PointsConfig";
+import { getLineConfig } from "../middleware/line/LineConfig";
 
 
 export function isValidKey(key: string | number | symbol , object: object): key is keyof typeof object {
@@ -29,6 +31,7 @@ export function getConfigModelMap (): {[key: string]: string} {
     [CONFIGTYPE.MESHPHONGMATERIAL]: MODULETYPE.MATERIAL,
     [CONFIGTYPE.SPRITEMATERIAL]: MODULETYPE.MATERIAL,
     [CONFIGTYPE.LINEBASICMATERIAL]: MODULETYPE.MATERIAL,
+    [CONFIGTYPE.POINTSMATERIAL]: MODULETYPE.MATERIAL,
 
     [CONFIGTYPE.AMBIENTLIGHT]: MODULETYPE.LIGHT,
     [CONFIGTYPE.SPOTLIGHT]: MODULETYPE.LIGHT,
@@ -40,7 +43,9 @@ export function getConfigModelMap (): {[key: string]: string} {
 
     [CONFIGTYPE.MODEL]: MODULETYPE.MODEL,
     [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
-    [CONFIGTYPE.LINESEGMENTS]: MODULETYPE.LINE,
+    [CONFIGTYPE.LINE]: MODULETYPE.LINE,
+    [CONFIGTYPE.MESH]: MODULETYPE.MESH,
+    [CONFIGTYPE.POINTS]: MODULETYPE.POINTS,
 
     [CONFIGTYPE.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
@@ -65,6 +70,7 @@ export function getConfigFunctionMap (): {[key: string]: Function} {
     [CONFIGTYPE.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
     [CONFIGTYPE.SPRITEMATERIAL]: getSpriteMaterialConfig,
     [CONFIGTYPE.LINEBASICMATERIAL]: getLineBasicMaterialConfig,
+    [CONFIGTYPE.POINTSMATERIAL]: getPointsMaterialConfig,
   
     [CONFIGTYPE.AMBIENTLIGHT]: getAmbientLightConfig,
     [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,
@@ -76,7 +82,9 @@ export function getConfigFunctionMap (): {[key: string]: Function} {
   
     [CONFIGTYPE.MODEL]: getModelConfig,
     [CONFIGTYPE.SPRITE]: getSpriteConfig,
-    [CONFIGTYPE.LINESEGMENTS]: getLineSegmentsConfig,
+    [CONFIGTYPE.LINE]: getLineConfig,
+    [CONFIGTYPE.MESH]: getMeshConfig,
+    [CONFIGTYPE.POINTS]: getPointsConfig,
   
     [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,

@@ -4,8 +4,11 @@ export enum CONFIGTYPE {
   LOADGEOMETRY = 'LoadGeometry',
 
   MODEL = 'Model',
-  SPRITE = 'Sprite',
+  MESH = 'Mesh',
+  LINE = 'Line',
   LINESEGMENTS = 'LineSegments',
+  POINTS ='Points',
+  SPRITE = 'Sprite',
 
   IMAGETEXTURE = 'ImageTexture',
   CUBETEXTURE = 'CubeTexture',
@@ -15,6 +18,7 @@ export enum CONFIGTYPE {
   MESHPHONGMATERIAL = "MeshPhongMaterial",
   SPRITEMATERIAL = 'SpriteMaterial',
   LINEBASICMATERIAL = 'LineBasicMaterial',
+  POINTSMATERIAL = 'PointsMaterial',
 
   AMBIENTLIGHT = 'AmbientLight',
   SPOTLIGHT = 'SpotLight',

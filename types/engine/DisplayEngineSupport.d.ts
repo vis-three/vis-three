@@ -5,14 +5,8 @@ import { ModelingScene } from "../extends/ModelingScene/ModelingScene";
 import { EventManager } from "../manager/EventManager";
 import { PointerManager } from "../manager/PointerManager";
 import { RenderManager } from "../manager/RenderManager";
-import { Engine } from "./Engine";
-import { CompilerManager } from "../manager/CompilerManager";
-import { DataSupportManager } from "../manager/DataSupportManager";
-import { LoaderManager } from "../manager/LoaderManager";
-import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
-import { EngineSupport, EngineSupportLoadOptions, EngineSupportParameters } from "./EngineSupport";
-export declare class DisplayEngineSupport extends Engine implements EngineSupport {
-    IS_ENGINESUPPORT: boolean;
+import { EngineSupport, EngineSupportParameters } from "./EngineSupport";
+export declare class DisplayEngineSupport extends EngineSupport {
     dom: HTMLElement;
     webGLRenderer: WebGLRenderer;
     currentCamera: Camera;
@@ -29,15 +23,5 @@ export declare class DisplayEngineSupport extends Engine implements EngineSuppor
     play: () => this;
     stop: () => this;
     render: () => this;
-    loaderManager: LoaderManager;
-    resourceManager: ResourceManager;
-    dataSupportManager: DataSupportManager;
-    compilerManager: CompilerManager;
-    loadResources: (urlList: Array<string>) => this;
-    registerResources: (resourceMap: {
-        [key: string]: unknown;
-    }) => this;
-    toJSON: () => string;
     constructor(parameters?: EngineSupportParameters);
-    loadConfig(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
 }

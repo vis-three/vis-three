@@ -181,5 +181,12 @@ export class CompilerManager {
     getObjectCompilerList() {
         return this.objectCompilerList;
     }
+    dispose() {
+        this.geometryCompiler.dispose();
+        this.materialCompiler.dispose();
+        this.lineCompiler.dispose();
+        this.spriteCompiler.dispose();
+        return this;
+    }
 }
 //# sourceMappingURL=CompilerManager.js.map

@@ -153,6 +153,9 @@ export class SpriteCompiler extends Compiler implements ObjectCompiler {
   }
 
   dispose (): this {
+    this.map.forEach((sprite, vid) => {
+      sprite.geometry.dispose()
+    })
     return this
   }
 }

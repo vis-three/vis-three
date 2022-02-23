@@ -25,16 +25,30 @@
     import * as Vis from '../dist/Vis.es.js'
     import { v4 as getUUid } from 'uuid'
 
+    const canvasTextureGenerator = new Vis.CanvasTextureGenerator({
+      width: 256,
+      height: 256
+    }).draw(ctx => {
+      ctx.textBaseline = 'middle'
+      ctx.textAlign = "center"
+
+      ctx.fillStyle= 'rgb(206, 42, 230)'
+   
+      ctx.font=" bold 72px 微软雅黑"
+      ctx.fillText("LINE", 128, 128)
+    }).preview()
 
     const engine = new Vis.ModelingEngineSupport()
     .setDom(document.getElementById('app'))
     .setSize()
     .setStats(true)
     .play()
+    .registerResources({
+      'example.canvasTexture': canvasTextureGenerator.get()
+    })
 
 
     const pointLight = Vis.generateConfig('PointLight', {
-      vid: getUUid(),
       position: {
         x: 30,
         y: 50
@@ -43,54 +57,36 @@
     })
     engine.dataSupportManager.lightDataSupport.getData()[pointLight.vid] = pointLight
 
-    const model1 = Vis.generateConfig('Model', {
-      vid: getUUid(),
-      position: {
-        x: 10,
-        y: 5,
-        z: 10
-      }
+    
+    const canvasTexture = Vis.generateConfig('CanvasTexture', {
+      url: 'example.canvasTexture',
     })
+    engine.dataSupportManager.textureDataSupport.getData()[canvasTexture.vid] = canvasTexture
 
-    const model2 = Vis.generateConfig('Model', {
-      vid: getUUid(),
-      position: {
-        x: -10,
-        y: -5,
-        z: -10
-      }
+
+    const material = Vis.generateConfig('MeshStandardMaterial', {
+      map: canvasTexture.vid,
     })
-    engine.dataSupportManager.modelDataSupport.getData()[model1.vid] = model1
-    engine.dataSupportManager.modelDataSupport.getData()[model2.vid] = model2
+    engine.dataSupportManager.materialDataSupport.getData()[material.vid] = material
 
-    const line = Vis.generateConfig('LineSegments', {
-      vid: getUUid(), 
-      pairPoints: [
-        [
-          {
-          x: -10,
-          y: -20,
-          z: -10
-        },
-        {
-          x: 30,
-          y: 10,
-          z: 10
-        }
-      ],
-    ]
+
+    const geometry = Vis.generateConfig('BoxGeometry', {
+      width: 20,
+      height: 20,
+      depth: 20,
+      widthSegments: 20,
+      heightSegments: 20,
+      depthSegments: 20
     })
+    engine.dataSupportManager.geometryDataSupport.getData()[geometry.vid] = geometry
 
-    const line2 = Vis.generateConfig('LineSegments', {
-      vid: getUUid(), 
-      pairPoints: [
-        [model1.vid, model2.vid],
-      ]
+
+    const line = Vis.generateConfig('Line', {
+      material: material.vid,
+      geometry: geometry.vid
     })
 
     engine.dataSupportManager.lineDataSupport.getData()[line.vid] = line
-    engine.dataSupportManager.lineDataSupport.getData()[line2.vid] = line2
-    console.log(engine)
   </script>
   
 </body>

@@ -2,7 +2,7 @@ import { CompilerManager } from "../manager/CompilerManager";
 import { DataSupportManager } from "../manager/DataSupportManager";
 import { LoaderManager } from "../manager/LoaderManager";
 import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
-import { Engine, EnginePlugin } from "./Engine";
+import { ENGINEPLUGIN } from "./Engine";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -17,7 +17,7 @@ import {
 } from "three";
 import { EngineSupport, EngineSupportLoadOptions, EngineSupportParameters } from "./EngineSupport";
 
-export class ModelingEngineSupport extends Engine implements EngineSupport {
+export class ModelingEngineSupport extends EngineSupport {
 
   IS_ENGINESUPPORT: boolean = true
 
@@ -44,23 +44,13 @@ export class ModelingEngineSupport extends Engine implements EngineSupport {
   declare stop: () => this
   declare render: () => this
 
-  declare loaderManager: LoaderManager
-  declare resourceManager: ResourceManager
-  declare dataSupportManager: DataSupportManager
-  declare compilerManager: CompilerManager
-
-  
-  declare loadResources: (urlList: Array<string>) => this
-  declare registerResources: (resourceMap: {[key: string]: unknown}) => this
-  declare toJSON: () => string
-
   constructor (parameters?: EngineSupportParameters) {
-    super()
-    this.install(EnginePlugin.WEBGLRENDERER, {
+    super(parameters)
+    this.install(ENGINEPLUGIN.WEBGLRENDERER, {
       antialias: true,
       alpha: true
     })
-    .install(EnginePlugin.MODELINGSCENE, {
+    .install(ENGINEPLUGIN.MODELINGSCENE, {
       hasDefaultPerspectiveCamera: true,
       hasDefaultOrthographicCamera: true,
       hasAxesHelper: true,
@@ -68,65 +58,15 @@ export class ModelingEngineSupport extends Engine implements EngineSupport {
       hasDisplayMode: true,
       displayMode: 'env'
     })
-    .install(EnginePlugin.RENDERMANAGER)
-    .install(EnginePlugin.STATS)
-    .install(EnginePlugin.EFFECTCOMPOSER, {
+    .install(ENGINEPLUGIN.RENDERMANAGER)
+    .install(ENGINEPLUGIN.STATS)
+    .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
       WebGLMultisampleRenderTarget: true
     })
-    .install(EnginePlugin.ORBITCONTROLS)
-    .install(EnginePlugin.POINTERMANAGER)
-    .install(EnginePlugin.EVENTMANAGER)
-    .install(EnginePlugin.TRANSFORMCONTROLS)
-    .install(EnginePlugin.LOADERMANAGER)
-    .install(EnginePlugin.RESOURCEMANAGER)
-
-    if (parameters) {
-      this.install(EnginePlugin.DATASUPPORTMANAGER, parameters.dataSupportManager)
-    } else {
-      this.install(EnginePlugin.DATASUPPORTMANAGER)
-    }
-
-    this.install(EnginePlugin.COMPILERMANAGER)
-  }
-
-  loadConfig (config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this {
-    const loadLifeCycle = () => {
-      const dataSupportManager = this.dataSupportManager
-
-      // 生成贴图
-      config.texture && dataSupportManager.load({texture: config.texture})
-        
-      // 生成材质
-      config.material && dataSupportManager.load({material: config.material})
-
-      // 其他
-
-      delete config.texture
-      delete config.material
-
-      dataSupportManager.load(config)
-    }
-    // 导入外部资源
-    if (config.assets && config.assets.length) {
-
-      this.loaderManager.reset().load(config.assets)
-
-      const mappedFun = (event: MappedEvent) => {
-
-        delete config.assets
-        loadLifeCycle()
-        
-  
-        this.resourceManager.removeEventListener('mapped', mappedFun)
-        callback && callback(event)
-      }
-  
-      this.resourceManager.addEventListener<MappedEvent>('mapped', mappedFun)
-    } else {
-      loadLifeCycle()
-      callback && callback()
-    }
-
-    return this
+    .install(ENGINEPLUGIN.ORBITCONTROLS)
+    .install(ENGINEPLUGIN.POINTERMANAGER)
+    .install(ENGINEPLUGIN.EVENTMANAGER)
+    .install(ENGINEPLUGIN.TRANSFORMCONTROLS)
+    .complete()
   }
 }

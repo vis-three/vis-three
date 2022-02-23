@@ -1,13 +1,13 @@
-import { EnginePlugin } from "../../engine/Engine";
+import { ENGINEPLUGIN } from "../../engine/Engine";
 import { EngineSupport } from "./EngineSupport";
 export class ModelingEngineSupport extends EngineSupport {
     constructor(parameters) {
         super(parameters);
-        this.install(EnginePlugin.WEBGLRENDERER, {
+        this.install(ENGINEPLUGIN.WEBGLRENDERER, {
             antialias: true,
             alpha: true
         })
-            .install(EnginePlugin.MODELINGSCENE, {
+            .install(ENGINEPLUGIN.MODELINGSCENE, {
             hasDefaultPerspectiveCamera: true,
             hasDefaultOrthographicCamera: true,
             hasAxesHelper: true,
@@ -15,15 +15,15 @@ export class ModelingEngineSupport extends EngineSupport {
             hasDisplayMode: true,
             displayMode: 'env'
         })
-            .install(EnginePlugin.RENDERMANAGER)
-            .install(EnginePlugin.STATS)
-            .install(EnginePlugin.EFFECTCOMPOSER, {
+            .install(ENGINEPLUGIN.RENDERMANAGER)
+            .install(ENGINEPLUGIN.STATS)
+            .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
             WebGLMultisampleRenderTarget: true
         })
-            .install(EnginePlugin.ORBITCONTROLS)
-            .install(EnginePlugin.POINTERMANAGER)
-            .install(EnginePlugin.EVENTMANAGER)
-            .install(EnginePlugin.TRANSFORMCONTROLS)
+            .install(ENGINEPLUGIN.ORBITCONTROLS)
+            .install(ENGINEPLUGIN.POINTERMANAGER)
+            .install(ENGINEPLUGIN.EVENTMANAGER)
+            .install(ENGINEPLUGIN.TRANSFORMCONTROLS)
             .support();
     }
 }

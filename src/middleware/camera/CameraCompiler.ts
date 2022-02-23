@@ -1,154 +1,105 @@
-import { Camera, Object3D, OrthographicCamera, PerspectiveCamera, Scene, Vector3 } from "three";
-import { validate } from "uuid";
+import { BufferGeometry, Camera, Material, Object3D, OrthographicCamera, PerspectiveCamera, Scene, Vector3 } from "three";
 import { ModelingEngine } from "../../main";
-import { Compiler, CompilerTarget, ObjectCompiler } from "../../core/Compiler";
+import { Compiler } from "../../core/Compiler";
 import { SetSizeEvent } from "../../plugins/WebGLRendererPlugin";
-import { SymbolConfig } from "../common/CommonConfig";
-import { CameraAllType } from "./CameraConfig";
-import { Engine, EnginePlugin } from "../../engine/Engine";
+import { CameraConfigAllType } from "./CameraConfig";
+import { Engine, ENGINEPLUGIN } from "../../engine/Engine";
+import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
 
-export interface CameraCompilerTarget extends CompilerTarget {
-  [key: string]: CameraAllType
+export interface CameraCompilerTarget extends ObjectCompilerTarget<CameraConfigAllType> {
+  [key: string]: CameraConfigAllType
 }
 
-export interface CameraCompilerParameters {
-  scene?: Scene
-  target?: CameraCompilerTarget
-  engine?: Engine
+export interface CameraCompilerParameters extends ObjectCompilerParameters<CameraConfigAllType, CameraCompilerTarget> {
+  engine: Engine
 }
 
-export interface CameraUserData {
+export interface CacheCameraData {
   lookAtTarget?: Vector3
   updateMatrixWorldFun?: (focus: boolean) => void
   setSizeFun?: (event: SetSizeEvent) => void
 }
 
-export class CameraCompiler extends Compiler implements ObjectCompiler {
+export class CameraCompiler extends ObjectCompiler<CameraConfigAllType, CameraCompilerTarget, Camera> {
 
-  IS_OBJECTCOMPILER = true
-
-  private target!: CameraCompilerTarget
-  private scene!: Scene
   private engine!: Engine
-  private map: Map<string, Camera>
-  private weakMap: WeakMap<Camera, string>
   private constructMap: Map<string, () => Camera>
-  private objectMapSet: Set<Map<SymbolConfig['vid'], Object3D>>
+  private filterAttribute: {[key: string]: boolean}
+  private cacheCameraMap: WeakMap<Camera, CacheCameraData>
+
+  private replaceMaterial = new Material()
+  private replaceGeometry = new BufferGeometry()
 
   constructor (parameters?: CameraCompilerParameters) {
-    super()
+    super(parameters)
     if (parameters) {
-      parameters.target && (this.target = parameters.target)
-      parameters.scene && (this.scene = parameters.scene)
       parameters.engine && (this.engine = parameters.engine)
     } else {
-      this.scene = new Scene()
-      this.target = {}
-      this.engine = new Engine().install(EnginePlugin.WEBGLRENDERER)
+      this.engine = new Engine().install(ENGINEPLUGIN.WEBGLRENDERER)
     }
-    this.map = new Map()
-    this.weakMap = new WeakMap()
     const constructMap = new Map()
     constructMap.set('PerspectiveCamera', () => new PerspectiveCamera())
     constructMap.set('OrthographicCamera', () => new OrthographicCamera(0, 0, 0, 0))
 
     this.constructMap = constructMap
-    this.objectMapSet = new Set()
+
+    this.filterAttribute = {
+      scale: true
+    }
+
+    this.cacheCameraMap = new WeakMap()
   }
 
-  // 设置物体的lookAt方法
-  private setLookAt (vid: string, target: string): this {
+  getReplaceMaterial (): Material {
+    console.warn(`CameraCompiler: can not use material in CameraCompiler.`)
+    return this.replaceMaterial
+  }
 
-    // 不能自己看自己
-    if (vid === target) {
-      console.error(`can not set object lookAt itself.`)
-      return this
-    }
-
-    const camera = this.map.get(vid)!
-    const userData = camera.userData as CameraUserData
-
-    if (!target) {
-      if (!userData.updateMatrixWorldFun) {
-        return this
-      }
-
-      camera.updateMatrixWorld = userData.updateMatrixWorldFun
-      userData.lookAtTarget = undefined
-      userData.updateMatrixWorldFun = undefined
-      return this
-    }
-
-    let lookAtTarget: Object3D | undefined = undefined
-
-    for (const map of this.objectMapSet) {
-      if (map.has(target)) {
-        lookAtTarget = map.get(target)!
-        break
-      }
-    }
-
-    if (!lookAtTarget) {
-      console.warn(`camera compiler can not found this vid mapping object in objectMapSet: '${vid}'`)
-      return this
-    }
-
-
-    const updateMatrixWorldFun = camera.updateMatrixWorld
-
-    userData.updateMatrixWorldFun = updateMatrixWorldFun
-    userData.lookAtTarget = lookAtTarget.position
-
-    camera.updateMatrixWorld = (focus: boolean) => {
-      updateMatrixWorldFun.bind(camera)(focus)
-      camera.lookAt(userData.lookAtTarget!)
-    }
-
-    return this
+  getReplaceGeometry (): BufferGeometry {
+    console.warn(`CameraCompiler: can not use geometry in CameraCompiler.`)
+    return this.replaceGeometry
   }
 
   // 自适应窗口大小
   private setAdaptiveWindow (vid: string, value: boolean): this {
-    if (!validate(vid)) {
-      console.error(`camera compiler adaptive window vid is illeage: '${vid}'`)
-      return this
-    }
-
     if (!this.map.has(vid)) {
       console.warn(`camera compiler can not found this vid camera: '${vid}'`)
       return this
     }
 
     const camera = this.map.get(vid)!
+    let cacheData = this.cacheCameraMap.get(camera)
+
+    if (!cacheData) {
+      cacheData = {}
+      this.cacheCameraMap.set(camera, cacheData)
+    }
 
     if (!value) {
-      if (camera.userData.setSizeFun && this.engine.hasEventListener('setSize', camera.userData.setSizeFun)) {
-        this.engine.removeEventListener('setSize', camera.userData.setSizeFun)
-        camera.userData.setSizeFun = undefined
+      if (cacheData.setSizeFun && this.engine.hasEventListener('setSize', cacheData.setSizeFun)) {
+        this.engine.removeEventListener('setSize', cacheData.setSizeFun)
+        cacheData.setSizeFun = undefined
         return this
       }
 
-      if (!camera.userData.setSizeFun && !this.engine.hasEventListener('setSize', camera.userData.setSizeFun)) {
-        return this
-      }
-
-      if (camera.userData.setSizeFun && !this.engine.hasEventListener('setSize', camera.userData.setSizeFun)) {
-        camera.userData.setSizeFun = undefined
+      if (cacheData.setSizeFun && !this.engine.hasEventListener('setSize', cacheData.setSizeFun)) {
+        cacheData.setSizeFun = undefined
         return this
       }
     }
 
     if (value) {
-      if (camera.userData.setSizeFun && this.engine.hasEventListener('setSize', camera.userData.setSizeFun)) {
+      if (cacheData.setSizeFun && this.engine.hasEventListener('setSize', cacheData.setSizeFun)) {
         return this
       }
 
-      if (!this.engine.hasEventListener('setSize', camera.userData.setSizeFun) && camera.userData.setSizeFun) {
-        this.engine.addEventListener('setSize', camera.userData.setSizeFun)
+      if (cacheData.setSizeFun && !this.engine.hasEventListener('setSize', cacheData.setSizeFun)) {
+        this.engine.addEventListener('setSize', cacheData.setSizeFun)
         return this
       }
 
       let setSizeFun = (event: SetSizeEvent) => {}
+
       if (camera instanceof PerspectiveCamera) {
         setSizeFun = (event: SetSizeEvent) => {
           camera.aspect = event.width / event.height
@@ -167,10 +118,12 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
         console.warn(`camera compiler can not support this class camera:`, camera)
       }
 
-      this.engine.addEventListener('setSize', setSizeFun as any)
+      this.engine.addEventListener('setSize', setSizeFun)
+      cacheData.setSizeFun = setSizeFun
 
       // 执行一次
       const domElement = this.engine.webGLRenderer!.domElement
+
       setSizeFun({
         type: 'setSize',
         width: domElement.offsetWidth,
@@ -182,60 +135,40 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
 
   }
 
-  linkObjectMap (map: Map<SymbolConfig['vid'], Object3D>): this {
-    if (!this.objectMapSet.has(map)) {
-      this.objectMapSet.add(map)
-    }
-    return this
-  }
+  add (vid: string, config: CameraConfigAllType): this {
+    if (config.type && this.constructMap.has(config.type)) {
+      const camera = this.constructMap.get(config.type)!()
 
-  getSupportVid(object: Camera):SymbolConfig['vid'] | null{
-    if (this.weakMap.has(object)) {
-      return this.weakMap.get(object)!
-    } else {
-      return null
-    }
-  }
+      Compiler.applyConfig(config, camera, Object.assign({
+        lookAt:  true,
+        adaptiveWindow: true
+      }, this.filterAttribute))
 
-  add (vid: string, config: CameraAllType): this {
-    if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const camera = this.constructMap.get(config.type)!()
+      this.setLookAt(config.vid, config.lookAt)
+      this.setAdaptiveWindow(config.vid, config.adaptiveWindow)
 
-        const tempConfig = JSON.parse(JSON.stringify(config))
-        delete tempConfig.vid
-        delete tempConfig.type
-
-        delete tempConfig.lookAt
-        delete tempConfig.adaptiveWindow
-
-        Compiler.applyConfig(tempConfig, camera)
-
-        if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
-          (camera as PerspectiveCamera).updateProjectionMatrix()
-        }
-
-        this.map.set(vid, camera)
-
-        this.setLookAt(config.vid, config.lookAt)
-        this.setAdaptiveWindow(config.vid, config.adaptiveWindow)
-
-        this.scene.add(camera)
+      if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
+        (camera as PerspectiveCamera).updateProjectionMatrix()
       }
+
+      this.map.set(vid, camera)
+      this.weakMap.set(camera, vid)
+
+      this.scene.add(camera)
     } else {
-      console.error(`camera vid parameter is illegal: ${vid}`)
+      console.warn(`CameraCompiler: can not support this config type: ${config.type}`)
     }
+
     return this
   }
 
   set (vid: string, path: string[], key: string, value: any): this {
-    if (!validate(vid)) {
-      console.warn(`camera compiler set function vid parameters is illeage: '${vid}'`)
+    if (!this.map.has(vid)) {
+      console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`)
       return this
     }
 
-    if (!this.map.has(vid)) {
-      console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`)
+    if (this.filterAttribute[key]) {
       return this
     }
 
@@ -247,52 +180,35 @@ export class CameraCompiler extends Compiler implements ObjectCompiler {
       return this.setAdaptiveWindow(vid, value)
     }
 
-    const camera = this.map.get(vid)!
-    let config = camera
-    path.forEach((key, i, arr) => {
-      config = camera[key]
-    })
-    config[key] = value
+    let object = this.map.get(vid)!
 
-    // TODO: 根据特点属性update
-    if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
-      (camera as PerspectiveCamera).updateProjectionMatrix()
+    for (let key of path) {
+      if (this.filterAttribute[key]) {
+        return this
+      }
+      object = object[key]
     }
+
+    object[key] = value
+
+
+    if (object instanceof PerspectiveCamera || object instanceof OrthographicCamera) {
+      (object as PerspectiveCamera).updateProjectionMatrix()
+    }
+
     return this
 
   }
-
-  // TODO:
-  remove (vid: string) {}
 
   setEngine (engine: ModelingEngine): this {
     this.engine = engine
     return this
   }
 
-  setScene (scene: Scene): this {
-    this.scene = scene
-    return this
-  }
-
-  setTarget (target: CameraCompilerTarget): this {
-    this.target = target
-    return this
-  }
-
-  getMap (): Map<SymbolConfig['type'], Camera> {
-    return this.map
-  }
-
-  compileAll (): this {
-    const target = this.target
-    for (const key in target) {
-      this.add(key, target[key])
-    }
-    return this
-  }
-
   dispose (): this {
+    super.dispose()
+    this.replaceGeometry.dispose()
+    this.replaceMaterial.dispose()
     return this
   }
 }

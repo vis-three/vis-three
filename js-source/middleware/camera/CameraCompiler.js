@@ -1,7 +1,7 @@
 import { OrthographicCamera, PerspectiveCamera, Scene } from "three";
 import { validate } from "uuid";
 import { Compiler } from "../../core/Compiler";
-import { Engine, EnginePlugin } from "../../engine/Engine";
+import { Engine, ENGINEPLUGIN } from "../../engine/Engine";
 export class CameraCompiler extends Compiler {
     IS_OBJECTCOMPILER = true;
     target;
@@ -21,7 +21,7 @@ export class CameraCompiler extends Compiler {
         else {
             this.scene = new Scene();
             this.target = {};
-            this.engine = new Engine().install(EnginePlugin.WEBGLRENDERER);
+            this.engine = new Engine().install(ENGINEPLUGIN.WEBGLRENDERER);
         }
         this.map = new Map();
         this.weakMap = new WeakMap();

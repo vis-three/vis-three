@@ -9,7 +9,7 @@ import { ModelingScene } from "../extends/ModelingScene/ModelingScene";
 import { EventManager } from "../manager/EventManager";
 import { PointerManager } from "../manager/PointerManager";
 import { RenderManager } from "../manager/RenderManager";
-import { Engine, EnginePlugin } from "./Engine";
+import { Engine, ENGINEPLUGIN } from "./Engine";
 export class DisplayEngine extends Engine {
   declare dom: HTMLElement
   declare webGLRenderer: WebGLRenderer
@@ -32,17 +32,17 @@ export class DisplayEngine extends Engine {
 
   constructor () {
     super()
-    this.install(EnginePlugin.WEBGLRENDERER, {
+    this.install(ENGINEPLUGIN.WEBGLRENDERER, {
       antialias: true,
       alpha: true
     })
-    this.install(EnginePlugin.SCENE)
-    this.install(EnginePlugin.RENDERMANAGER)
-    this.install(EnginePlugin.EFFECTCOMPOSER, {
+    this.install(ENGINEPLUGIN.SCENE)
+    this.install(ENGINEPLUGIN.RENDERMANAGER)
+    this.install(ENGINEPLUGIN.EFFECTCOMPOSER, {
       WebGLMultisampleRenderTarget: true
     })
-    this.install(EnginePlugin.ORBITCONTROLS)
-    this.install(EnginePlugin.POINTERMANAGER)
-    this.install(EnginePlugin.EVENTMANAGER)
+    this.install(ENGINEPLUGIN.ORBITCONTROLS)
+    this.install(ENGINEPLUGIN.POINTERMANAGER)
+    this.install(ENGINEPLUGIN.EVENTMANAGER)
   }
 }

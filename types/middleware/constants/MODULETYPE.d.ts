@@ -11,5 +11,6 @@ export declare enum MODULETYPE {
     STRUCTURE = "structure",
     CONTROLS = "controls",
     EVENT = "event",
-    LINE = "line"
+    LINE = "line",
+    MESH = "mesh"
 }

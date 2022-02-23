@@ -1,6 +1,6 @@
-import { Material, Object3D, Texture } from "three";
+import { Material, Mesh, Object3D, Texture } from "three";
 import { validate } from "uuid";
-import { ObjectCompiler } from "../core/Compiler";
+import { Compiler } from "../core/Compiler";
 import { Engine } from "../main";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { CameraDataSupport } from "../middleware/camera/CameraDataSupport";
@@ -18,8 +18,10 @@ import { LineCompiler } from "../middleware/line/LineCompiler";
 import { LineDataSupport } from "../middleware/line/LineDataSupport";
 import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { MaterialDataSupport } from "../middleware/material/MaterialDataSupport";
+import { MeshCompiler } from "../middleware/mesh/MeshCompiler";
 import { ModelCompiler } from "../middleware/model/ModelCompiler";
 import { ModelDataSupport } from "../middleware/model/ModelDataSupport";
+import { PointsCompiler } from "../middleware/points/PointsCompiler";
 import { RendererCompiler } from "../middleware/render/RendererCompiler";
 import { RendererDataSupport } from "../middleware/render/RendererDataSupport";
 import { SceneCompiler } from "../middleware/scene/SceneCompiler";
@@ -41,6 +43,8 @@ export interface CompilerManagerParameters {
   controlsCompiler: ControlsCompiler
   spriteCompiler: SpriteCompiler
   lineCompiler: LineCompiler
+  meshCompiler: MeshCompiler
+  pointsCompiler: PointsCompiler
 }
 
 export class CompilerManager {
@@ -57,8 +61,10 @@ export class CompilerManager {
   private spriteCompiler!: SpriteCompiler
   private eventCompiler!: EventCompiler
   private lineCompiler!: LineCompiler
+  private meshCompiler!: MeshCompiler
+  private pointsCompiler!: PointsCompiler
 
-  private objectCompilerList: Array<ObjectCompiler>
+  private objectCompilerList: Array<Compiler>
 
   constructor (parameters?: CompilerManagerParameters) {
     
@@ -77,18 +83,20 @@ export class CompilerManager {
 
     const dataSupportManager = engine.dataSupportManager!
 
-    const textureDataSupport = dataSupportManager.getDataSupport(MODULETYPE.TEXTURE)! as TextureDataSupport
-    const materialDataSupport = dataSupportManager.getDataSupport(MODULETYPE.MATERIAL)! as MaterialDataSupport
-    const cameraDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CAMERA)! as CameraDataSupport
-    const lightDataSupport =  dataSupportManager.getDataSupport(MODULETYPE.LIGHT)! as LightDataSupport
-    const geometryDataSupport =  dataSupportManager.getDataSupport(MODULETYPE.GEOMETRY)! as GeometryDataSupport
-    const modelDataSupport =  dataSupportManager.getDataSupport(MODULETYPE.MODEL)! as ModelDataSupport
-    const rendererDataSupport = dataSupportManager.getDataSupport(MODULETYPE.RENDERER)! as RendererDataSupport
-    const sceneDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SCENE)! as SceneDataSupport
-    const controlsDataSupport = dataSupportManager.getDataSupport(MODULETYPE.CONTROLS)! as ControlsDataSupport
-    const spriteDataSupport = dataSupportManager.getDataSupport(MODULETYPE.SPRITE)! as SpriteDataSupport
-    const eventDataSupport = dataSupportManager.getDataSupport(MODULETYPE.EVENT)! as EventDataSupport
-    const lineDataSupport  = dataSupportManager.getDataSupport(MODULETYPE.LINE)! as LineDataSupport
+    const textureDataSupport = dataSupportManager.textureDataSupport
+    const materialDataSupport = dataSupportManager.materialDataSupport
+    const cameraDataSupport = dataSupportManager.cameraDataSupport
+    const lightDataSupport =  dataSupportManager.lightDataSupport
+    const geometryDataSupport =  dataSupportManager.geometryDataSupport
+    const modelDataSupport =  dataSupportManager.modelDataSupport
+    const rendererDataSupport = dataSupportManager.rendererDataSupport
+    const sceneDataSupport = dataSupportManager.sceneDataSupport
+    const controlsDataSupport = dataSupportManager.controlsDataSupport
+    const spriteDataSupport = dataSupportManager.spriteDataSupport
+    const eventDataSupport = dataSupportManager.eventDataSupport
+    const lineDataSupport  = dataSupportManager.lineDataSupport
+    const meshDataSupport = dataSupportManager.meshDataSupport
+    const pointsDataSupport = dataSupportManager.pointsDataSupport
 
     const textureCompiler = new TextureCompiler({
       target: textureDataSupport.getData()
@@ -168,9 +176,21 @@ export class CompilerManager {
 
     const lineCompiler = new LineCompiler({
       target: lineDataSupport.getData(),
-      engine
+      scene: engine.scene!
     })
     this.lineCompiler = lineCompiler
+
+    const meshCompiler = new MeshCompiler({
+      target: meshDataSupport.getData(),
+      scene: engine.scene!
+    })
+    this.meshCompiler = meshCompiler
+
+    const pointsCompiler = new PointsCompiler({
+      target: pointsDataSupport.getData(),
+      scene: engine.scene!
+    })
+    this.pointsCompiler = pointsCompiler
 
     const resourceManager = engine.resourceManager!
 
@@ -186,7 +206,24 @@ export class CompilerManager {
     .linkObjectMap(modelCompiler.getMap())
     .linkObjectMap(spriteCompiler.getMap())
 
+    meshCompiler
+    .linkGeometryMap(geometryCompiler.getMap())
+    .linkMaterialMap(materialCompiler.getMap())
+    .linkObjectMap(lightCompiler.getMap())
+    .linkObjectMap(cameraCompiler.getMap())
+    .linkObjectMap(modelCompiler.getMap())
+    .linkObjectMap(spriteCompiler.getMap())
+    
+    pointsCompiler
+    .linkGeometryMap(geometryCompiler.getMap())
+    .linkMaterialMap(materialCompiler.getMap())
+    .linkObjectMap(lightCompiler.getMap())
+    .linkObjectMap(cameraCompiler.getMap())
+    .linkObjectMap(modelCompiler.getMap())
+    .linkObjectMap(spriteCompiler.getMap())
+
     lineCompiler
+    .linkGeometryMap(geometryCompiler.getMap())
     .linkMaterialMap(materialCompiler.getMap())
     .linkObjectMap(lightCompiler.getMap())
     .linkObjectMap(cameraCompiler.getMap())
@@ -216,6 +253,8 @@ export class CompilerManager {
     controlsDataSupport.addCompiler(controlsCompiler)
     spriteDataSupport.addCompiler(spriteCompiler)
     lineDataSupport.addCompiler(lineCompiler)
+    meshDataSupport.addCompiler(meshCompiler)
+    pointsDataSupport.addCompiler(pointsCompiler)
     return this
   }
 
@@ -223,7 +262,8 @@ export class CompilerManager {
     const objectCompilerList = this.objectCompilerList
 
     for (let compiler of objectCompilerList) {
-      const vid = compiler.getSupportVid(object)
+      // @ts-ignore
+      const vid = compiler.getSupportVid(object) || compiler.getObjectSymbol(object)
       if (vid) {
         return vid
       }
@@ -256,7 +296,15 @@ export class CompilerManager {
     return undefined
   }
 
-  getObjectCompilerList (): ObjectCompiler[] {
+  getObjectCompilerList (): Compiler[] {
     return this.objectCompilerList
+  }
+
+  dispose (): this {
+    this.geometryCompiler.dispose()
+    this.materialCompiler.dispose()
+    this.lineCompiler.dispose()
+    this.spriteCompiler.dispose()
+    return this
   }
 }

@@ -114,6 +114,9 @@ export class SpriteCompiler extends Compiler {
         return this;
     }
     dispose() {
+        this.map.forEach((sprite, vid) => {
+            sprite.geometry.dispose();
+        });
         return this;
     }
 }

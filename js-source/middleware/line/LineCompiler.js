@@ -93,6 +93,22 @@ export class LineCompiler extends Compiler {
         }
         return this;
     }
+    set(vid, path, key, value) {
+        if (!validate(vid)) {
+            console.warn(`model compiler vid is illegal: '${vid}'`);
+            return this;
+        }
+        if (!this.map.has(vid)) {
+            console.warn(`model compiler can not found this vid mapping object: '${vid}'`);
+            return this;
+        }
+        let config = this.map.get(vid);
+        path.forEach((key, i, arr) => {
+            config = config[key];
+        });
+        config[key] = value;
+        return this;
+    }
     remove() { }
     setTarget(target) {
         this.target = target;
@@ -109,6 +125,9 @@ export class LineCompiler extends Compiler {
         return this;
     }
     dispose() {
+        this.map.forEach((object, vid) => {
+            object.geometry.dispose();
+        });
         return this;
     }
 }

@@ -9,7 +9,7 @@ export const StatsPlugin: Plugin<VisStatsParameters> = function (this: Engine, p
   }
 
   if (!this.renderManager) {
-    console.warn('this must install renderManager before install orbitControls plugin.')
+    console.warn('this must install renderManager before install stats plugin.')
     return false
   }
 

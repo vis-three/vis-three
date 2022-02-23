@@ -1,147 +1,79 @@
-import { Line, LineBasicMaterial, LineSegments, Material, Object3D, Scene } from "three";
-import { validate } from "uuid";
-import { Compiler, CompilerTarget, ObjectCompiler } from "../../core/Compiler";
-import { Engine } from "../../main";
-import { SymbolConfig } from "../common/CommonConfig";
-import { LineAllType } from "./LineConfig";
-import { LineSegmentsProcessor } from "./LineSegmentsProcessor";
-import { Processor } from "./Processor";
+import { BoxBufferGeometry, BufferGeometry, Line, LineBasicMaterial, Material } from "three";
+import { Compiler } from "../../core/Compiler";
+import { MeshConfig } from "../mesh/MeshConfig";
+import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { LineConfig } from "./LineConfig";
 
-export interface LineCompilerTarget extends CompilerTarget {
-  [key: string]: LineAllType
+export interface LineCompilerTarget extends ObjectCompilerTarget<LineConfig> {
+  [key: string]: MeshConfig
 }
 
-export interface LineCompilerParameters {
-  target: LineCompilerTarget
-  engine: Engine
-}
+export interface LineCompilerParameters extends ObjectCompilerParameters<LineConfig, LineCompilerTarget> {}
 
-export class LineCompiler extends Compiler implements ObjectCompiler {
-  IS_OBJECTCOMPILER: boolean = true
-
-  private target!: LineCompilerTarget
-  private scene!: Scene
-  private engine!: Engine
-  private map: Map<SymbolConfig['vid'], Object3D>
-  private weakMap: WeakMap<Object3D, SymbolConfig['vid']>
-  private materialMap!: Map<SymbolConfig['vid'], Material>
-  private objectMapSet: Set<Map<SymbolConfig['vid'], Object3D>>
-
-  private processorMap =  new Map<string, Processor>()
+export class LineCompiler extends ObjectCompiler<LineConfig, LineCompilerTarget, Line> {
+  private replaceMaterial = new LineBasicMaterial({color: 'rgb(150, 150, 150)'})
+  private replaceGeometry = new BoxBufferGeometry(10, 10, 10)
 
   constructor (parameters?: LineCompilerParameters) {
-    super()
-
-    if (parameters) {
-      this.target = parameters.target
-      this.scene = parameters.engine.scene!
-      this.engine = parameters.engine
-    } else {
-      this.scene = new Scene()
-      this.target = {}
-    }
-    this.map = new Map()
-    this.weakMap = new WeakMap()
-    this.materialMap = new Map()
-    this.objectMapSet = new Set()
-
-    const processorMap = new Map()
-    processorMap.set('LineSegments', new LineSegmentsProcessor(this))
-    
-    this.processorMap = processorMap
+    super(parameters)
   }
 
-  // 替换材质
-  private getReplaceMaterial (): LineBasicMaterial {
-    return new LineBasicMaterial({
-      color: 'rgb(150, 150, 150)'
+  getReplaceMaterial (): Material {
+    return this.replaceMaterial
+  }
+
+  getReplaceGeometry (): BufferGeometry {
+    return this.replaceGeometry
+  }
+
+  add (vid: string, config: MeshConfig): this {
+    const object = new Line(this.getGeometry(config.geometry), this.getMaterial(config.material))
+
+    Compiler.applyConfig(config, object, {
+      geometry: true,
+      material: true,
+      lookAt: true
     })
-  }
 
-  // 获取材质
-  getMaterial (vid: string): Material {
-    if (validate(vid)) {
-      if (this.materialMap.has(vid)) {
-        return this.materialMap.get(vid)!
-      } else {
-        console.warn(`lineCompiler: can not found material which vid: ${vid}`)
-        return this.getReplaceMaterial()
-      }
-    } else {
-      console.warn(`lineCompiler: material vid parameter is illegal: ${vid}`)
-      return this.getReplaceMaterial()
-    }
-  }
+    this.map.set(vid, object)
+    this.weakMap.set(object, vid)
 
-  // 获取物体
-  getObject (vid: string): Object3D | null {
-    for (const map of this.objectMapSet) {
-      if (map.has(vid)) {
-        return map.get(vid)!
-      }
-    }
-    return null
-  }
+    this.setLookAt(vid, config.lookAt)
 
-  linkMaterialMap (materialMap: Map<string, Material>): this {
-    this.materialMap = materialMap
+    this.scene.add(object)
     return this
   }
 
-  linkObjectMap (map: Map<SymbolConfig['vid'], Object3D>): this {
-    if (!this.objectMapSet.has(map)) {
-      this.objectMapSet.add(map)
-    }
-    return this
-  }
-
-  getSupportVid(object: Object3D):SymbolConfig['vid'] | null{
-    if (this.weakMap.has(object)) {
-      return this.weakMap.get(object)!
-    } else {
-      return null
-    }
-  }
-
-  add (vid: string, config: LineAllType): this {
-    if (!validate(vid)) {
-      console.warn(`LineCompiler: vid parameter is illegal: ${vid}`)
+  set (vid: string, path: string[], key: string, value: any): this {
+    if (!this.map.has(vid)) {
+      console.warn(`model compiler can not found this vid mapping object: '${vid}'`)
       return this
     }
 
-    if (this.processorMap.has(config.type)) {
-      const object = this.processorMap.get(config.type)!.add(config)
+    let mesh = this.map.get(vid)!
 
-      this.map.set(config.vid, object)
-      this.weakMap.set(object, config.vid)
-      this.scene.add(object)
+    if (key === 'lookAt') {
+      return this.setLookAt(vid, value)
     }
 
-    return this
-  }
-
-  remove() {}
-
-  setTarget (target: LineCompilerTarget): this {
-    this.target = target
-    return this
-  }
-
-  getMap (): Map<SymbolConfig['type'], Object3D> {
-    return this.map
-  }
-
-  compileAll (): this {
-    const target = this.target
-    for (const key in target) {
-      this.add(key, target[key])
+    if (key === 'material') {
+      mesh.material = this.getMaterial(value)
+      return this
     }
+
+    for (let key of path) {
+      mesh = mesh[key]
+    }
+
+    mesh[key] = value
+
     return this
   }
 
   dispose (): this {
+    super.dispose()
+    this.replaceGeometry.dispose()
+    this.replaceMaterial.dispose()
     return this
   }
-
-
 }

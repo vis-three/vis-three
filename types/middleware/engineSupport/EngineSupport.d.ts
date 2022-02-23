@@ -1,4 +1,4 @@
-import { Engine, EnginePlugin, EnginePluginParams } from '../../engine/Engine';
+import { Engine, ENGINEPLUGIN, EnginePluginParams } from '../../engine/Engine';
 import { LoaderManager } from '../../manager/LoaderManager';
 import { MappedEvent, ResourceManager } from '../../manager/ResourceManager';
 import { DataSupportManager, LoadOptions } from '../../manager/DataSupportManager';
@@ -21,5 +21,5 @@ export declare class EngineSupport extends Engine {
     }): this;
     load(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
     support(): this;
-    install(plugin: EnginePlugin, params?: EnginePluginParams): this;
+    install(plugin: ENGINEPLUGIN, params?: EnginePluginParams): this;
 }

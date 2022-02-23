@@ -16,7 +16,7 @@ import { LoaderManager, LoaderManagerParameters } from "../manager/LoaderManager
 import { ResourceManager } from "../manager/ResourceManager";
 import { DataSupportManager, DataSupportManagerParameters } from "../manager/DataSupportManager";
 import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerManager";
-export declare enum EnginePlugin {
+export declare enum ENGINEPLUGIN {
     WEBGLRENDERER = "WebGLRenderer",
     SCENE = "Scene",
     MODELINGSCENE = "ModelingScene",
@@ -37,7 +37,7 @@ export declare class Engine extends EventDispatcher {
     static pluginHandler: Map<string, Function> | undefined;
     static register: (name: string, handler: (this: Engine, params?: Object | undefined) => void) => void;
     static dispose: () => void;
-    completeSet?: Set<(engine: Engine) => void>;
+    completeSet: Set<(engine: Engine) => void>;
     dom?: HTMLElement;
     webGLRenderer?: WebGLRenderer;
     currentCamera?: Camera;
@@ -69,7 +69,7 @@ export declare class Engine extends EventDispatcher {
     render?: () => this;
     constructor();
     protected optimizeMemory(): void;
-    install(plugin: EnginePlugin, params?: EnginePluginParams): this;
+    install(plugin: ENGINEPLUGIN, params?: EnginePluginParams): this;
     complete(): this;
     dispose(): this;
 }

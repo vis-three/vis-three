@@ -24,6 +24,10 @@ import { SpriteDataSupport } from '../middleware/sprite/SpriteDataSupport';
 import { EventCompilerTarget } from '../middleware/event/EventCompiler';
 import { EventDataSupport } from '../middleware/event/EventDataSupport';
 import { LineDataSupport } from '../middleware/line/LineDataSupport';
+import { MeshCompilerTarget } from '../middleware/mesh/MeshCompiler';
+import { MeshDataSupport } from '../middleware/mesh/MeshDataSupport';
+import { PointsCompilerTarget } from '../middleware/points/PointsCompiler';
+import { PointsDataSupport } from '../middleware/points/PointsDataSupport';
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget
@@ -40,6 +44,8 @@ export interface LoadOptions {
   [MODULETYPE.CONTROLS]?: ControlsCompilerTarget
   [MODULETYPE.EVENT]?: EventCompilerTarget
   [MODULETYPE.LINE]?: LightCompilerTarget
+  [MODULETYPE.MESH]?: MeshCompilerTarget
+  [MODULETYPE.POINTS]?: PointsCompilerTarget
 }
 
 export interface DataSupportManagerParameters {
@@ -55,21 +61,25 @@ export interface DataSupportManagerParameters {
   spriteDataSupport: SpriteDataSupport
   eventDataSupport: EventDataSupport
   lineDataSupport: LineDataSupport
+  meshDataSupport: MeshDataSupport
+  pointsDataSupport: PointsDataSupport
 }
 
 export class DataSupportManager {
-  private cameraDataSupport!: CameraDataSupport
-  private lightDataSupport!: LightDataSupport
-  private geometryDataSupport!: GeometryDataSupport
-  private modelDataSupport!: ModelDataSupport
-  private textureDataSupport!: TextureDataSupport
-  private materialDataSupport!: MaterialDataSupport
-  private rendererDataSupport!: RendererDataSupport
-  private sceneDataSupport!: SceneDataSupport
-  private controlsDataSupport!: ControlsDataSupport
-  private spriteDataSupport!: SpriteDataSupport
-  private eventDataSupport!: EventDataSupport
-  private lineDataSupport!: LineDataSupport
+  cameraDataSupport!: CameraDataSupport
+  lightDataSupport!: LightDataSupport
+  geometryDataSupport!: GeometryDataSupport
+  modelDataSupport!: ModelDataSupport
+  textureDataSupport!: TextureDataSupport
+  materialDataSupport!: MaterialDataSupport
+  rendererDataSupport!: RendererDataSupport
+  sceneDataSupport!: SceneDataSupport
+  controlsDataSupport!: ControlsDataSupport
+  spriteDataSupport!: SpriteDataSupport
+  eventDataSupport!: EventDataSupport
+  lineDataSupport!: LineDataSupport
+  meshDataSupport!: MeshDataSupport
+  pointsDataSupport!: PointsDataSupport
 
   private dataSupportMap: Map<MODULETYPE, DataSupport<CompilerTarget, Compiler>>
 
@@ -87,6 +97,8 @@ export class DataSupportManager {
     this.spriteDataSupport = new SpriteDataSupport()
     this.eventDataSupport = new EventDataSupport()
     this.lineDataSupport = new LineDataSupport()
+    this.meshDataSupport = new MeshDataSupport()
+    this.pointsDataSupport = new PointsDataSupport()
 
     if (parameters) {
       Object.keys(parameters).forEach(key => {

@@ -47,4 +47,5 @@ export declare class CompilerManager {
     getTexture(vid: string): Texture | undefined;
     getObject(vid: string): Object3D | undefined;
     getObjectCompilerList(): ObjectCompiler[];
+    dispose(): this;
 }

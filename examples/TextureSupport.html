@@ -52,7 +52,6 @@
 
 
     const pointLight = Vis.generateConfig('PointLight', {
-      vid: getUUid(),
       position: {
         x: 30,
         y: 50
@@ -62,21 +61,18 @@
     engine.dataSupportManager.lightDataSupport.getData()[pointLight.vid] = pointLight
 
     const canvasTexture = Vis.generateConfig('CanvasTexture', {
-      vid: getUUid(),
       url: 'example.canvasTexture',
     })
     engine.dataSupportManager.textureDataSupport.getData()[canvasTexture.vid] = canvasTexture
 
 
     const material = Vis.generateConfig('SpriteMaterial', {
-      vid: getUUid(), 
       map: canvasTexture.vid,
     })
     engine.dataSupportManager.materialDataSupport.getData()[material.vid] = material
     
 
     const sprite = Vis.generateConfig('Sprite', {
-      vid: getUUid(),
       material: material.vid,
       scale: {
         x: 25,

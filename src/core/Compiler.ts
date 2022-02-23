@@ -14,20 +14,26 @@ export interface ObjectCompiler {
 
 export abstract class Compiler{
 
-  static applyConfig<C extends SymbolConfig, O> (config: C, object: O, callBack?: Function) {
-    const filterMap = {
+  static applyConfig<C extends SymbolConfig, O> (config: C, object: O, filter: object = {}, callBack?: Function) {
+    const filterMap = Object.assign({
       vid: true,
       type: true
-    }
+    }, filter)
 
     const recursiveConfig = (config, object) => {
       for (const key in config) {
+
+        if (filterMap[key]) {
+          continue
+        }
+
         if (typeof config[key] === 'object' && typeof config[key] !== null && isValidKey(key, object)) {
           recursiveConfig(config[key], object[key])
-        } else {
-          if (isValidKey(key, object) && !filterMap[key]) {
-            object[key] = config[key]
-          }
+          continue
+        }
+
+        if (isValidKey(key, object)) {
+          object[key] = config[key]
         }
       }
     }

@@ -1,6 +1,6 @@
 import { FrontSide, MultiplyOperation, RGBAFormat, TangentSpaceNormalMap } from "three";
 import { SymbolConfig } from "../common/CommonConfig";
-
+import { CONFIGTYPE } from "../constants/configType";
 export interface MaterialConfig extends SymbolConfig {
   alphaTest: number
   colorWrite: boolean
@@ -97,13 +97,21 @@ export interface LineBasicMaterialConfig extends MaterialConfig {
   linewidth: number // webgl limit always 1, use line2
 }
 
-// TODO: LoadMaterial
+export interface PointsMaterialConfig extends MaterialConfig {
+  alphaMap: string
+  color: string
+  map: string
+  size: number
+  sizeAttenuation: boolean
+}
+
 
 export type MaterialAllType = 
   MeshStandardMaterialConfig |
   MeshPhongMaterialConfig |
   LineBasicMaterialConfig |
-  SpriteMaterialConfig
+  SpriteMaterialConfig |
+  PointsMaterialConfig
 
 export const getMaterialConfig = function(): MaterialConfig {
   return {
@@ -129,7 +137,7 @@ export const getMaterialConfig = function(): MaterialConfig {
 
 export const getMeshStandardMaterialConfig = function(): MeshStandardMaterialConfig {
   return Object.assign(getMaterialConfig(), {
-    type: 'MeshStandardMaterial',
+    type: CONFIGTYPE.MESHSTANDARDMATERIAL,
     aoMapIntensity: 1,
     bumpScale: 1,
     color: 'rgb(255, 255, 255)',
@@ -165,7 +173,7 @@ export const getMeshStandardMaterialConfig = function(): MeshStandardMaterialCon
 
 export const getMeshPhongMaterialConfig = function(): MeshPhongMaterialConfig {
   return Object.assign(getMaterialConfig(), {
-    type: 'MeshPhongMateria',
+    type: CONFIGTYPE.MESHPHONGMATERIAL,
     aoMapIntensity: 1,
     bumpScale: 1,
     color: 'rgb(255, 255, 255)',
@@ -200,7 +208,7 @@ export const getMeshPhongMaterialConfig = function(): MeshPhongMaterialConfig {
 
 export const getSpriteMaterialConfig = function(): SpriteMaterialConfig {
   return Object.assign(getMaterialConfig(), {
-    type: 'SpriteMaterial',
+    type: CONFIGTYPE.SPRITEMATERIAL,
     color: 'rgb(255, 255, 255)',
     rotation: 0,
     map: '',
@@ -211,10 +219,21 @@ export const getSpriteMaterialConfig = function(): SpriteMaterialConfig {
 
 export const getLineBasicMaterialConfig = function(): LineBasicMaterialConfig {
   return Object.assign(getMaterialConfig(), {
-    type: 'LineBasicMaterial',
+    type: CONFIGTYPE.LINEBASICMATERIAL,
     color: 'rgb(255, 255, 255)',
     linecap: 'round',
     linejoin: 'round',
     linewidth: 1
+  })
+}
+
+export const getPointsMaterialConfig = function(): PointsMaterialConfig {
+  return Object.assign(getMaterialConfig(), {
+    type: CONFIGTYPE.POINTSMATERIAL,
+    map: '',
+    alphaMap: '',
+    color: 'rgb(255, 255, 255)',
+    sizeAttenuation: true,
+    size: 1
   })
 }

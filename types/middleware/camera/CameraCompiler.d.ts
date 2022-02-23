@@ -3,10 +3,10 @@ import { ModelingEngine } from "../../main";
 import { Compiler, CompilerTarget, ObjectCompiler } from "../../core/Compiler";
 import { SetSizeEvent } from "../../plugins/WebGLRendererPlugin";
 import { SymbolConfig } from "../common/CommonConfig";
-import { CameraAllType } from "./CameraConfig";
+import { CameraConfigAllType } from "./CameraConfig";
 import { Engine } from "../../engine/Engine";
 export interface CameraCompilerTarget extends CompilerTarget {
-    [key: string]: CameraAllType;
+    [key: string]: CameraConfigAllType;
 }
 export interface CameraCompilerParameters {
     scene?: Scene;
@@ -32,7 +32,7 @@ export declare class CameraCompiler extends Compiler implements ObjectCompiler {
     private setAdaptiveWindow;
     linkObjectMap(map: Map<SymbolConfig['vid'], Object3D>): this;
     getSupportVid(object: Camera): SymbolConfig['vid'] | null;
-    add(vid: string, config: CameraAllType): this;
+    add(vid: string, config: CameraConfigAllType): this;
     set(vid: string, path: string[], key: string, value: any): this;
     remove(vid: string): void;
     setEngine(engine: ModelingEngine): this;

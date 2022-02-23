@@ -28,6 +28,7 @@ export declare class LineCompiler extends Compiler implements ObjectCompiler {
     linkObjectMap(map: Map<SymbolConfig['vid'], Object3D>): this;
     getSupportVid(object: Object3D): SymbolConfig['vid'] | null;
     add(vid: string, config: LineAllType): this;
+    set(vid: string, path: string[], key: string, value: any): this;
     remove(): void;
     setTarget(target: LineCompilerTarget): this;
     getMap(): Map<SymbolConfig['type'], Object3D>;

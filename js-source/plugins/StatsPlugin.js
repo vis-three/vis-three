@@ -5,7 +5,7 @@ export const StatsPlugin = function (params) {
         return false;
     }
     if (!this.renderManager) {
-        console.warn('this must install renderManager before install orbitControls plugin.');
+        console.warn('this must install renderManager before install stats plugin.');
         return false;
     }
     const stats = new VisStats(params);

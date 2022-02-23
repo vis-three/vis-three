@@ -52,36 +52,30 @@
     // 初始配置数据
     const lightMap = dataGenerator.create(Vis.MODULETYPE.LIGHT).add({
       type: Vis.CONFIGTYPE.POINTLIGHT,
-      vid: getUUid(),
       position: {
         x: 10
       }
     }).get()
     
     const imageTexture = Vis.generateConfig('ImageTexture', {
-      vid: getUUid(),
       image: '/examples/public/texture/Marble023/Marble023_1K_Color.jpg'
     })
     const textureMap = dataGenerator.create(Vis.MODULETYPE.TEXTURE).add(imageTexture).get()
 
     
     const meshStandardMaterial = Vis.generateConfig('MeshStandardMaterial', {
-      vid: getUUid(),
       color: 'rgb(255, 0, 0)',
       map: imageTexture.vid
     })
     const materialMap = dataGenerator.create(Vis.MODULETYPE.MATERIAL).add(meshStandardMaterial).get()
 
     
-    const boxGeometryConfig = Vis.generateConfig('BoxGeometry', {
-      vid: getUUid()
-    })
+    const boxGeometryConfig = Vis.generateConfig('BoxGeometry')
     const geometryMap = dataGenerator.create(Vis.MODULETYPE.GEOMETRY).add(boxGeometryConfig).get()
 
 
     
     const modelConfig = Vis.generateConfig('Model', {
-      vid: getUUid(),
       type: 'Mesh',
       geometry: boxGeometryConfig.vid,
       material: meshStandardMaterial.vid

@@ -12,8 +12,18 @@ export const LightRule: Rule<LightCompiler> = function (input: ProxyNotice, comp
     if (validate(key)) {
       compiler.add(key, value)
     }
-  } else if (operate === 'set') {
-    compiler.set(path.concat([]), key, value)
+    return
+  }
+  
+  if (operate === 'set') {
+    const tempPath = path.concat([])
+    const vid = tempPath.shift()
+    if (vid && validate(vid)) {
+      compiler.set(vid, tempPath, key, value)
+    } else {
+      console.warn(`model rule vid is illeage: '${vid}'`)
+    }
+    return
   }
   
 }

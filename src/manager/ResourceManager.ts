@@ -86,7 +86,7 @@ export class ResourceManager extends EventDispatcher {
             // 存资源
             resourceMap.set(mappingUrl, materialChild);
             // 生成配置单
-            configMap.set(mappingUrl, generateConfig(materialChild.type, materialChild, false));
+            configMap.set(mappingUrl, generateConfig(materialChild.type, materialChild, true, false));
             // 载入结构
             (config.material as string[])[i] = mappingUrl
           })
@@ -95,7 +95,7 @@ export class ResourceManager extends EventDispatcher {
           // 存资源
           resourceMap.set(mappingUrl, material);
           // 生成配置单
-          configMap.set(mappingUrl, generateConfig(material.type, material, false));
+          configMap.set(mappingUrl, generateConfig(material.type, material, true, false));
            // 载入结构
           (config.material as string) = mappingUrl
         }
