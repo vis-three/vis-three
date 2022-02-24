@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, RGBAFormat, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, DodecahedronBufferGeometry, Fog, FogExp2, CubeTexture, CanvasTexture, PCFSoftShadowMap } from "three";
+import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, RGBAFormat, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, DodecahedronBufferGeometry, Fog, FogExp2, PlaneBufferGeometry, CubeTexture, CanvasTexture, PCFSoftShadowMap } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -3662,28 +3662,6 @@ class TextureDataSupport extends DataSupport {
     super(TextureRule, data);
   }
 }
-const ModelRule = function(notice, compiler) {
-  const { operate, key, path, value } = notice;
-  if (operate === "add") {
-    if (validate(key)) {
-      compiler.add(key, value);
-    }
-  } else if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift();
-    if (vid && validate(vid)) {
-      compiler.set(vid, tempPath, key, value);
-    } else {
-      console.warn(`model rule vid is illeage: '${vid}'`);
-    }
-  }
-};
-class ModelDataSupport extends DataSupport {
-  constructor(data) {
-    !data && (data = {});
-    super(ModelRule, data);
-  }
-}
 const MaterialRule = function(notice, compiler) {
   const { operate, key, path, value } = notice;
   if (operate === "add") {
@@ -3941,7 +3919,6 @@ class DataSupportManager {
     __publicField(this, "cameraDataSupport");
     __publicField(this, "lightDataSupport");
     __publicField(this, "geometryDataSupport");
-    __publicField(this, "modelDataSupport");
     __publicField(this, "textureDataSupport");
     __publicField(this, "materialDataSupport");
     __publicField(this, "rendererDataSupport");
@@ -3956,7 +3933,6 @@ class DataSupportManager {
     this.cameraDataSupport = new CameraDataSupport();
     this.lightDataSupport = new LightDataSupport();
     this.geometryDataSupport = new GeometryDataSupport();
-    this.modelDataSupport = new ModelDataSupport();
     this.textureDataSupport = new TextureDataSupport();
     this.materialDataSupport = new MaterialDataSupport();
     this.rendererDataSupport = new RendererDataSupport();
@@ -4108,11 +4084,11 @@ class ObjectCompiler extends Compiler {
       if (this.materialMap.has(vid)) {
         return this.materialMap.get(vid);
       } else {
-        console.warn(`ObjectCompiler: can not found material which vid: ${vid}`);
+        console.warn(`${this.COMPILER_NAME}Compiler: can not found material which vid: ${vid}`);
         return this.getReplaceMaterial();
       }
     } else {
-      console.warn(`ObjectCompiler: material vid parameter is illegal: ${vid}`);
+      console.warn(`${this.COMPILER_NAME}Compiler: material vid parameter is illegal: ${vid}`);
       return this.getReplaceMaterial();
     }
   }
@@ -4121,11 +4097,11 @@ class ObjectCompiler extends Compiler {
       if (this.geometryMap.has(vid)) {
         return this.geometryMap.get(vid);
       } else {
-        console.warn(`ObjectCompiler: can not found geometry which vid: ${vid}`);
+        console.warn(`${this.COMPILER_NAME}Compiler: can not found geometry which vid: ${vid}`);
         return this.getReplaceGeometry();
       }
     } else {
-      console.warn(`ObjectCompiler: geometry vid parameter is illegal: ${vid}`);
+      console.warn(`${this.COMPILER_NAME}Compiler: geometry vid parameter is illegal: ${vid}`);
       return this.getReplaceGeometry();
     }
   }
@@ -4143,7 +4119,7 @@ class ObjectCompiler extends Compiler {
       return this;
     }
     if (!this.map.has(vid)) {
-      console.error(`ObjectCompiler: can not found object which vid: ${vid}.`);
+      console.error(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
       return this;
     }
     const model = this.map.get(vid);
@@ -4163,7 +4139,7 @@ class ObjectCompiler extends Compiler {
     }
     let lookAtTarget = this.getObject(target);
     if (!lookAtTarget) {
-      console.warn(`ObjectCompiler: can not found this vid mapping object: '${vid}'`);
+      console.warn(`${this.COMPILER_NAME}Compiler: can not found this vid mapping object: '${vid}'`);
       return this;
     }
     const updateMatrixWorldFun = model.updateMatrixWorld;
@@ -4183,9 +4159,11 @@ class ObjectCompiler extends Compiler {
     this.materialMap = materialMap;
     return this;
   }
-  linkObjectMap(map) {
-    if (!this.objectMapSet.has(map)) {
-      this.objectMapSet.add(map);
+  linkObjectMap(...map) {
+    for (let objectMap of map) {
+      if (!this.objectMapSet.has(objectMap)) {
+        this.objectMapSet.add(objectMap);
+      }
     }
     return this;
   }
@@ -4216,7 +4194,7 @@ class ObjectCompiler extends Compiler {
   }
   remove(vid) {
     if (!this.map.has(vid)) {
-      console.warn(`ObjectCompiler: can not found object which vid: ${vid}.`);
+      console.warn(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
       return this;
     }
     this.weakMap.delete(this.map.get(vid));
@@ -4232,6 +4210,7 @@ class ObjectCompiler extends Compiler {
 class CameraCompiler extends ObjectCompiler {
   constructor(parameters) {
     super(parameters);
+    __publicField(this, "COMPILER_NAME", MODULETYPE.CAMERA);
     __publicField(this, "engine");
     __publicField(this, "constructMap");
     __publicField(this, "filterAttribute");
@@ -4327,13 +4306,13 @@ class CameraCompiler extends ObjectCompiler {
         lookAt: true,
         adaptiveWindow: true
       }, this.filterAttribute));
-      this.setLookAt(config.vid, config.lookAt);
-      this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
       if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
         camera.updateProjectionMatrix();
       }
       this.map.set(vid, camera);
       this.weakMap.set(camera, vid);
+      this.setLookAt(config.vid, config.lookAt);
+      this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
       this.scene.add(camera);
     } else {
       console.warn(`CameraCompiler: can not support this config type: ${config.type}`);
@@ -4573,6 +4552,7 @@ __publicField(GeometryCompiler, "transfromAnchor", function(geometry, config) {
 class LightCompiler extends ObjectCompiler {
   constructor(parameters) {
     super(parameters);
+    __publicField(this, "COMPILER_NAME", MODULETYPE.LIGHT);
     __publicField(this, "constructMap");
     __publicField(this, "filterAttribute");
     __publicField(this, "replaceMaterial", new Material());
@@ -4836,6 +4816,7 @@ class MaterialCompiler extends Compiler {
 class MeshCompiler extends ObjectCompiler {
   constructor(parameters) {
     super(parameters);
+    __publicField(this, "COMPILER_NAME", MODULETYPE.MESH);
     __publicField(this, "replaceMaterial", new MeshBasicMaterial({ color: "rgb(150, 150, 150)" }));
     __publicField(this, "replaceGeometry", new BoxBufferGeometry(10, 10, 10));
   }
@@ -4881,197 +4862,6 @@ class MeshCompiler extends ObjectCompiler {
     super.dispose();
     this.replaceGeometry.dispose();
     this.replaceMaterial.dispose();
-    return this;
-  }
-}
-class ModelCompiler extends Compiler {
-  constructor(parameters) {
-    super();
-    __publicField(this, "IS_OBJECTCOMPILER", true);
-    __publicField(this, "scene");
-    __publicField(this, "target");
-    __publicField(this, "map");
-    __publicField(this, "weakMap");
-    __publicField(this, "constructMap");
-    __publicField(this, "geometryMap");
-    __publicField(this, "materialMap");
-    __publicField(this, "objectMapSet");
-    __publicField(this, "getReplaceMaterial");
-    __publicField(this, "getReplaceGeometry");
-    if (parameters) {
-      parameters.scene && (this.scene = parameters.scene);
-      parameters.target && (this.target = parameters.target);
-      parameters.geometryMap && (this.geometryMap = parameters.geometryMap);
-      parameters.materialMap && (this.materialMap = parameters.materialMap);
-    } else {
-      this.scene = new Scene();
-      this.target = {};
-      this.geometryMap = new Map();
-      this.materialMap = new Map();
-    }
-    this.map = new Map();
-    this.weakMap = new WeakMap();
-    this.getReplaceMaterial = () => new MeshStandardMaterial({ color: "rgb(150, 150, 150)" });
-    this.getReplaceGeometry = () => new BoxBufferGeometry(10, 10, 10);
-    const constructMap = new Map();
-    constructMap.set("Mesh", (config) => new Mesh(this.getGeometry(config.geometry), this.getMaterial(config.material)));
-    constructMap.set("Line", (config) => new Line(this.getGeometry(config.geometry), this.getMaterial(config.material)));
-    constructMap.set("Points", (config) => new Points(this.getGeometry(config.geometry), this.getMaterial(config.material)));
-    this.constructMap = constructMap;
-    this.objectMapSet = new Set();
-  }
-  getMaterial(vid) {
-    if (validate(vid)) {
-      if (this.materialMap.has(vid)) {
-        return this.materialMap.get(vid);
-      } else {
-        console.warn(`can not found material which vid: ${vid}`);
-        return this.getReplaceMaterial();
-      }
-    } else {
-      console.warn(`material vid parameter is illegal: ${vid}`);
-      return this.getReplaceMaterial();
-    }
-  }
-  getGeometry(vid) {
-    if (validate(vid)) {
-      if (this.geometryMap.has(vid)) {
-        return this.geometryMap.get(vid);
-      } else {
-        console.warn(`can not found geometry which vid: ${vid}`);
-        return this.getReplaceGeometry();
-      }
-    } else {
-      console.warn(`geometry vid parameter is illegal: ${vid}`);
-      return this.getReplaceGeometry();
-    }
-  }
-  setLookAt(vid, target) {
-    if (vid === target) {
-      console.error(`can not set object lookAt itself.`);
-      return this;
-    }
-    const model = this.map.get(vid);
-    const userData = model.userData;
-    if (!target) {
-      if (!userData.updateMatrixWorldFun) {
-        return this;
-      }
-      model.updateMatrixWorld = userData.updateMatrixWorldFun;
-      userData.lookAtTarget = null;
-      userData.updateMatrixWorldFun = null;
-      return this;
-    }
-    let lookAtTarget = null;
-    for (const map of this.objectMapSet) {
-      if (map.has(target)) {
-        lookAtTarget = map.get(target);
-        break;
-      }
-    }
-    if (!lookAtTarget) {
-      console.warn(`model compiler can not found this vid mapping object in objectMapSet: '${vid}'`);
-      return this;
-    }
-    const updateMatrixWorldFun = model.updateMatrixWorld;
-    userData.updateMatrixWorldFun = updateMatrixWorldFun;
-    userData.lookAtTarget = lookAtTarget.position;
-    model.updateMatrixWorld = (focus) => {
-      updateMatrixWorldFun.bind(model)(focus);
-      model.lookAt(userData.lookAtTarget);
-    };
-    return this;
-  }
-  setMaterial(vid, target) {
-    this.map.get(vid).material = this.getMaterial(target);
-    return this;
-  }
-  getSupportVid(object) {
-    if (this.weakMap.has(object)) {
-      return this.weakMap.get(object);
-    } else {
-      return null;
-    }
-  }
-  add(vid, config) {
-    if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.display)) {
-        const object = this.constructMap.get(config.display)(config);
-        const tempConfig = JSON.parse(JSON.stringify(config));
-        delete tempConfig.vid;
-        delete tempConfig.type;
-        delete tempConfig.display;
-        delete tempConfig.geometry;
-        delete tempConfig.material;
-        delete tempConfig.lookAt;
-        Compiler.applyConfig(tempConfig, object);
-        this.map.set(vid, object);
-        this.weakMap.set(object, vid);
-        this.setLookAt(vid, config.lookAt);
-        this.scene.add(object);
-      }
-    } else {
-      console.warn(`model compiler add function: model vid parameter is illegal: ${vid}`);
-    }
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!validate(vid)) {
-      console.warn(`model compiler vid is illegal: '${vid}'`);
-      return this;
-    }
-    if (!this.map.has(vid)) {
-      console.warn(`model compiler can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    if (key === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-    if (key === "material") {
-      return this.setMaterial(vid, value);
-    }
-    let config = this.map.get(vid);
-    path.forEach((key2, i, arr) => {
-      config = config[key2];
-    });
-    config[key] = value;
-    return this;
-  }
-  remove() {
-  }
-  linkGeometryMap(map) {
-    this.geometryMap = map;
-    return this;
-  }
-  linkMaterialMap(materialMap) {
-    this.materialMap = materialMap;
-    return this;
-  }
-  linkObjectMap(map) {
-    if (!this.objectMapSet.has(map)) {
-      this.objectMapSet.add(map);
-    }
-    return this;
-  }
-  setScene(scene) {
-    this.scene = scene;
-    return this;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  getMap() {
-    return this.map;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const key in target) {
-      this.add(key, target[key]);
-    }
-    return this;
-  }
-  dispose() {
     return this;
   }
 }
@@ -5457,117 +5247,68 @@ class SceneCompiler extends Compiler {
     return this;
   }
 }
-class SpriteCompiler extends Compiler {
+class SpriteCompiler extends ObjectCompiler {
   constructor(parametes) {
-    super();
-    __publicField(this, "IS_OBJECTCOMPILER", true);
-    __publicField(this, "target");
-    __publicField(this, "scene");
-    __publicField(this, "map");
-    __publicField(this, "weakMap");
-    __publicField(this, "materialMap");
-    if (parametes) {
-      parametes.target && (this.target = parametes.target);
-      parametes.scene && (this.scene = parametes.scene);
-    } else {
-      this.target = {};
-    }
-    this.map = new Map();
-    this.weakMap = new WeakMap();
-    this.materialMap = new Map();
+    super(parametes);
+    __publicField(this, "COMPILER_NAME", MODULETYPE.SPRITE);
+    __publicField(this, "replaceMaterial", new SpriteMaterial({ color: "rgb(150, 150, 150)" }));
+    __publicField(this, "replaceGeometry", new PlaneBufferGeometry(10, 10, 10));
   }
   getReplaceMaterial() {
-    return new SpriteMaterial({
-      color: "rgb(150, 150, 150)"
-    });
+    return this.replaceMaterial;
   }
-  getMaterial(vid) {
-    if (validate(vid)) {
-      if (this.materialMap.has(vid)) {
-        const material = this.materialMap.get(vid);
-        if (material instanceof SpriteMaterial) {
-          return material;
-        } else {
-          console.warn(`vid mapping material not instanceof SpriteMaterial. vid: ${vid}, material: ${material}`);
-          return this.getReplaceMaterial();
-        }
-      } else {
-        console.warn(`can not found material which vid: ${vid}`);
-        return this.getReplaceMaterial();
-      }
+  getReplaceGeometry() {
+    console.warn(`SpriteCompiler: can not use geometry in SpriteCompiler.`);
+    return this.replaceGeometry;
+  }
+  getSpriteMaterial(vid) {
+    const tempMaterial = this.getMaterial(vid);
+    if (tempMaterial instanceof SpriteMaterial) {
+      return tempMaterial;
     } else {
-      console.warn(`material vid parameter is illegal: ${vid}`);
+      console.warn(`SpriteCompiler: sprite object can not support this type material: ${tempMaterial.type}, vid: ${vid}.`);
       return this.getReplaceMaterial();
     }
   }
-  linkMaterialMap(materialMap) {
-    this.materialMap = materialMap;
-    return this;
-  }
-  getSupportVid(object) {
-    if (this.weakMap.has(object)) {
-      return this.weakMap.get(object);
-    } else {
-      return null;
-    }
-  }
   add(vid, config) {
-    if (!validate(vid)) {
-      console.log(`Sprite compiler vid is illeage: ${vid}`);
-      return this;
-    }
     const sprite = new Sprite();
-    sprite.material = this.getMaterial(config.material);
-    sprite.center.set(config.center.x, config.center.y);
-    const tempConfig = JSON.parse(JSON.stringify(config));
-    delete tempConfig.material;
-    delete tempConfig.center;
-    Compiler.applyConfig(tempConfig, sprite);
     this.map.set(vid, sprite);
     this.weakMap.set(sprite, vid);
+    sprite.material = this.getSpriteMaterial(config.material);
+    sprite.center.set(config.center.x, config.center.y);
+    Compiler.applyConfig(config, sprite, {
+      center: true,
+      material: true
+    });
     this.scene.add(sprite);
     return this;
   }
   set(vid, path, key, value) {
-    if (!validate(vid)) {
-      console.warn(`sprite compiler vid is illegal: '${vid}'`);
-      return this;
-    }
     if (!this.map.has(vid)) {
-      console.warn(`sprite compiler can not found this vid mapping object: '${vid}'`);
+      console.warn(`SpriteCompiler: can not found this vid mapping object: '${vid}'`);
       return this;
     }
     let sprite = this.map.get(vid);
     if (key === "material") {
-      sprite.material = this.getMaterial(vid);
+      sprite.material = this.getSpriteMaterial(value);
       return this;
     }
-    path.forEach((key2, i, arr) => {
-      sprite = sprite[key2];
-    });
-    sprite[key] = value;
-    return this;
-  }
-  remove() {
-  }
-  getMap() {
-    return this.map;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const key in target) {
-      this.add(key, target[key]);
+    if (key === "lookAt") {
+      return this.setLookAt(vid, value);
     }
+    for (let key2 of path) {
+      sprite = sprite[key2];
+    }
+    sprite[key] = value;
     return this;
   }
   dispose() {
     this.map.forEach((sprite, vid) => {
       sprite.geometry.dispose();
     });
+    super.dispose();
+    this.replaceGeometry.dispose();
+    this.replaceMaterial.dispose();
     return this;
   }
 }
@@ -5698,7 +5439,6 @@ class CompilerManager {
     __publicField(this, "cameraCompiler");
     __publicField(this, "lightCompiler");
     __publicField(this, "geometryCompiler");
-    __publicField(this, "modelCompiler");
     __publicField(this, "textureCompiler");
     __publicField(this, "materialCompiler");
     __publicField(this, "rendererCompiler");
@@ -5725,7 +5465,6 @@ class CompilerManager {
     const cameraDataSupport = dataSupportManager.cameraDataSupport;
     const lightDataSupport = dataSupportManager.lightDataSupport;
     const geometryDataSupport = dataSupportManager.geometryDataSupport;
-    const modelDataSupport = dataSupportManager.modelDataSupport;
     const rendererDataSupport = dataSupportManager.rendererDataSupport;
     const sceneDataSupport = dataSupportManager.sceneDataSupport;
     const controlsDataSupport = dataSupportManager.controlsDataSupport;
@@ -5742,6 +5481,10 @@ class CompilerManager {
       target: materialDataSupport.getData()
     });
     this.materialCompiler = materialCompiler;
+    const geometryCompiler = new GeometryCompiler({
+      target: geometryDataSupport.getData()
+    });
+    this.geometryCompiler = geometryCompiler;
     const cameraCompiler = new CameraCompiler({
       target: cameraDataSupport.getData(),
       scene: engine.scene,
@@ -5755,16 +5498,30 @@ class CompilerManager {
     });
     this.lightCompiler = lightCompiler;
     this.objectCompilerList.push(lightCompiler);
-    const geometryCompiler = new GeometryCompiler({
-      target: geometryDataSupport.getData()
+    const spriteCompiler = new SpriteCompiler({
+      target: spriteDataSupport.getData(),
+      scene: engine.scene
     });
-    this.geometryCompiler = geometryCompiler;
-    const modelCompiler = new ModelCompiler({
-      scene: engine.scene,
-      target: modelDataSupport.getData()
+    this.spriteCompiler = spriteCompiler;
+    this.objectCompilerList.push(spriteCompiler);
+    const lineCompiler = new LineCompiler({
+      target: lineDataSupport.getData(),
+      scene: engine.scene
     });
-    this.modelCompiler = modelCompiler;
-    this.objectCompilerList.push(modelCompiler);
+    this.lineCompiler = lineCompiler;
+    this.objectCompilerList.push(lineCompiler);
+    const meshCompiler = new MeshCompiler({
+      target: meshDataSupport.getData(),
+      scene: engine.scene
+    });
+    this.meshCompiler = meshCompiler;
+    this.objectCompilerList.push(meshCompiler);
+    const pointsCompiler = new PointsCompiler({
+      target: pointsDataSupport.getData(),
+      scene: engine.scene
+    });
+    this.pointsCompiler = pointsCompiler;
+    this.objectCompilerList.push(pointsCompiler);
     const rendererCompiler = new RendererCompiler({
       target: rendererDataSupport.getData(),
       engine
@@ -5780,40 +5537,16 @@ class CompilerManager {
       transformControls: engine.transformControls
     });
     this.controlsCompiler = controlsCompiler;
-    const spriteCompiler = new SpriteCompiler({
-      target: spriteDataSupport.getData(),
-      scene: engine.scene
-    });
-    this.spriteCompiler = spriteCompiler;
-    this.objectCompilerList.push(spriteCompiler);
     const eventCompiler = new EventCompiler({
       target: eventDataSupport.getData()
     });
     this.eventCompiler = eventCompiler;
-    const lineCompiler = new LineCompiler({
-      target: lineDataSupport.getData(),
-      scene: engine.scene
-    });
-    this.lineCompiler = lineCompiler;
-    const meshCompiler = new MeshCompiler({
-      target: meshDataSupport.getData(),
-      scene: engine.scene
-    });
-    this.meshCompiler = meshCompiler;
-    const pointsCompiler = new PointsCompiler({
-      target: pointsDataSupport.getData(),
-      scene: engine.scene
-    });
-    this.pointsCompiler = pointsCompiler;
     const resourceManager = engine.resourceManager;
     sceneCompiler.linkTextureMap(textureCompiler.getMap());
     materialCompiler.linkTextureMap(textureCompiler.getMap());
-    modelCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap()).linkObjectMap(spriteCompiler.getMap());
-    meshCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap()).linkObjectMap(spriteCompiler.getMap());
-    pointsCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap()).linkObjectMap(spriteCompiler.getMap());
-    lineCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap()).linkObjectMap(spriteCompiler.getMap());
-    cameraCompiler.linkObjectMap(lightCompiler.getMap()).linkObjectMap(cameraCompiler.getMap()).linkObjectMap(modelCompiler.getMap()).linkObjectMap(spriteCompiler.getMap());
-    spriteCompiler.linkMaterialMap(materialCompiler.getMap());
+    for (let objectCompiler of this.objectCompilerList) {
+      objectCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(...this.objectCompilerList.map((elem) => elem.getMap()));
+    }
     textureCompiler.linkRescourceMap(resourceManager.resourceMap);
     geometryCompiler.linkRescourceMap(resourceManager.resourceMap);
     textureDataSupport.addCompiler(textureCompiler);
@@ -5821,7 +5554,6 @@ class CompilerManager {
     cameraDataSupport.addCompiler(cameraCompiler);
     lightDataSupport.addCompiler(lightCompiler);
     geometryDataSupport.addCompiler(geometryCompiler);
-    modelDataSupport.addCompiler(modelCompiler);
     rendererDataSupport.addCompiler(rendererCompiler);
     sceneDataSupport.addCompiler(sceneCompiler);
     controlsDataSupport.addCompiler(controlsCompiler);
@@ -6045,6 +5777,28 @@ class ModelingEngine extends Engine {
     }).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.STATS).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
       WebGLMultisampleRenderTarget: true
     }).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).install(ENGINEPLUGIN.TRANSFORMCONTROLS);
+  }
+}
+const ModelRule = function(notice, compiler) {
+  const { operate, key, path, value } = notice;
+  if (operate === "add") {
+    if (validate(key)) {
+      compiler.add(key, value);
+    }
+  } else if (operate === "set") {
+    const tempPath = path.concat([]);
+    const vid = tempPath.shift();
+    if (vid && validate(vid)) {
+      compiler.set(vid, tempPath, key, value);
+    } else {
+      console.warn(`model rule vid is illeage: '${vid}'`);
+    }
+  }
+};
+class ModelDataSupport extends DataSupport {
+  constructor(data) {
+    !data && (data = {});
+    super(ModelRule, data);
   }
 }
 const _SupportDataGenerator = class {

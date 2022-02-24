@@ -104,8 +104,6 @@ const assets = [
   "/examples/public/texture/katana/katanal_Metallic.png"
 ]
 
-
-
 const loaderManager = engineSupport.loaderManager
 
 loaderManager.addEventListener('loaded', e => {
@@ -171,7 +169,7 @@ engine.scene.add(new THREE.PointLight('white', 1))
 * 新增Mesh模块
 * 新增Points模块
 
-* model模块准备弃用
+* model模块弃用
 #### 预设
 
 - [ ] css3Renderer

@@ -1,5 +1,6 @@
 import { BoxBufferGeometry, BufferGeometry, Material, Mesh, MeshBasicMaterial } from "three";
 import { Compiler } from "../../core/Compiler";
+import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { MeshConfig } from "./MeshConfig";
 
@@ -11,6 +12,8 @@ export interface MeshCompilerParameters extends ObjectCompilerParameters<MeshCon
 
 
 export class MeshCompiler extends ObjectCompiler<MeshConfig, MeshCompilerTarget, Mesh> {
+
+  COMPILER_NAME: string = MODULETYPE.MESH
 
   private replaceMaterial = new MeshBasicMaterial({color: 'rgb(150, 150, 150)'})
   private replaceGeometry = new BoxBufferGeometry(10, 10, 10)

@@ -22,6 +22,8 @@ export abstract class ObjectCompiler<C extends ObjectConfig, T extends ObjectCom
 
   IS_OBJECTCOMPILER: boolean = true
 
+  abstract COMPILER_NAME: string
+
   protected scene!: Scene
   protected target!: T
   protected map: Map<SymbolConfig['vid'], O>
@@ -58,11 +60,11 @@ export abstract class ObjectCompiler<C extends ObjectConfig, T extends ObjectCom
         if (this.materialMap.has(vid)) {
           return this.materialMap.get(vid)!
         } else {
-          console.warn(`ObjectCompiler: can not found material which vid: ${vid}`)
+          console.warn(`${this.COMPILER_NAME}Compiler: can not found material which vid: ${vid}`)
           return this.getReplaceMaterial()
         }
       } else {
-        console.warn(`ObjectCompiler: material vid parameter is illegal: ${vid}`)
+        console.warn(`${this.COMPILER_NAME}Compiler: material vid parameter is illegal: ${vid}`)
         return this.getReplaceMaterial()
       }
     }
@@ -73,11 +75,11 @@ export abstract class ObjectCompiler<C extends ObjectConfig, T extends ObjectCom
         if (this.geometryMap.has(vid)) {
           return this.geometryMap.get(vid)!
         } else {
-          console.warn(`ObjectCompiler: can not found geometry which vid: ${vid}`)
+          console.warn(`${this.COMPILER_NAME}Compiler: can not found geometry which vid: ${vid}`)
           return this.getReplaceGeometry()
         }
       } else {
-        console.warn(`ObjectCompiler: geometry vid parameter is illegal: ${vid}`)
+        console.warn(`${this.COMPILER_NAME}Compiler: geometry vid parameter is illegal: ${vid}`)
         return this.getReplaceGeometry()
       }
     }
@@ -102,7 +104,7 @@ export abstract class ObjectCompiler<C extends ObjectConfig, T extends ObjectCom
       }
 
       if (!this.map.has(vid)) {
-        console.error(`ObjectCompiler: can not found object which vid: ${vid}.`)
+        console.error(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`)
         return this
       }
 
@@ -128,7 +130,7 @@ export abstract class ObjectCompiler<C extends ObjectConfig, T extends ObjectCom
       let lookAtTarget = this.getObject(target)
 
       if (!lookAtTarget) {
-        console.warn(`ObjectCompiler: can not found this vid mapping object: '${vid}'`)
+        console.warn(`${this.COMPILER_NAME}Compiler: can not found this vid mapping object: '${vid}'`)
         return this
       }
 
@@ -156,9 +158,11 @@ export abstract class ObjectCompiler<C extends ObjectConfig, T extends ObjectCom
       return this
     }
 
-    linkObjectMap (map: Map<SymbolConfig['vid'], Object3D>): this {
-      if (!this.objectMapSet.has(map)) {
-        this.objectMapSet.add(map)
+    linkObjectMap (...map: Map<SymbolConfig['vid'], Object3D>[]): this {
+      for (let objectMap of map) {
+        if (!this.objectMapSet.has(objectMap)) {
+          this.objectMapSet.add(objectMap)
+        }
       }
       return this
     }
@@ -195,7 +199,7 @@ export abstract class ObjectCompiler<C extends ObjectConfig, T extends ObjectCom
 
     remove (vid: string): this {
       if (!this.map.has(vid)) {
-        console.warn(`ObjectCompiler: can not found object which vid: ${vid}.`)
+        console.warn(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`)
         return this
       }
       this.weakMap.delete(this.map.get(vid)!)

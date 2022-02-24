@@ -48,8 +48,7 @@
       depth: 60
     })
     
-    const model = Vis.generateConfig('Model', {
-      type: 'Mesh',
+    const mesh = Vis.generateConfig('Mesh', {
       geometry: boxGeometry.vid,
       material: meshStandardMaterial.vid
     })
@@ -57,7 +56,7 @@
     engine.dataSupportManager.lightDataSupport.getData()[pointLight.vid] = pointLight
     engine.dataSupportManager.materialDataSupport.getData()[meshStandardMaterial.vid] = meshStandardMaterial
     engine.dataSupportManager.geometryDataSupport.getData()[boxGeometry.vid] = boxGeometry
-    engine.dataSupportManager.modelDataSupport.getData()[model.vid] = model
+    engine.dataSupportManager.meshDataSupport.getData()[mesh.vid] = mesh
 
   </script>
   

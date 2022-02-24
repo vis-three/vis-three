@@ -6,7 +6,6 @@ import { LightDataSupport } from "../middleware/light/LightDataSupport";
 import { GeometryDataSupport } from "../middleware/geometry/GeometryDataSupport";
 import { CameraDataSupport } from "../middleware/camera/CameraDataSupport";
 import { TextureCompilerTarget } from "../middleware/texture/TextureCompiler";
-import { ModelCompilerTarget } from "../middleware/model/ModelCompiler";
 import { LightCompilerTarget } from "../middleware/light/LightCompiler";
 import { GeometryCompilerTarget } from "../middleware/geometry/GeometryCompiler";
 import { CameraCompilerTarget } from "../middleware/camera/CameraCompiler";
@@ -35,24 +34,22 @@ export interface LoadOptions {
   [MODULETYPE.GEOMETRY]?: GeometryCompilerTarget
 
   [MODULETYPE.LIGHT]?: LightCompilerTarget
-  [MODULETYPE.MODEL]?: ModelCompilerTarget
   [MODULETYPE.CAMERA]?: CameraCompilerTarget
   [MODULETYPE.SPRITE]?: SpriteCompilerTarget
+  [MODULETYPE.LINE]?: LightCompilerTarget
+  [MODULETYPE.MESH]?: MeshCompilerTarget
+  [MODULETYPE.POINTS]?: PointsCompilerTarget
 
   [MODULETYPE.RENDERER]?: RendererCompilerTarget
   [MODULETYPE.SCENE]?: SceneCompilerTarget
   [MODULETYPE.CONTROLS]?: ControlsCompilerTarget
   [MODULETYPE.EVENT]?: EventCompilerTarget
-  [MODULETYPE.LINE]?: LightCompilerTarget
-  [MODULETYPE.MESH]?: MeshCompilerTarget
-  [MODULETYPE.POINTS]?: PointsCompilerTarget
 }
 
 export interface DataSupportManagerParameters {
   cameraDataSupport: CameraDataSupport
   lightDataSupport: LightDataSupport
   geometryDataSupport: GeometryDataSupport
-  modelDataSupport: ModelDataSupport
   textureDataSupport: TextureDataSupport
   materialDataSupport: MaterialDataSupport
   rendererDataSupport: RendererDataSupport
@@ -69,7 +66,6 @@ export class DataSupportManager {
   cameraDataSupport!: CameraDataSupport
   lightDataSupport!: LightDataSupport
   geometryDataSupport!: GeometryDataSupport
-  modelDataSupport!: ModelDataSupport
   textureDataSupport!: TextureDataSupport
   materialDataSupport!: MaterialDataSupport
   rendererDataSupport!: RendererDataSupport
@@ -88,7 +84,6 @@ export class DataSupportManager {
     this.cameraDataSupport = new CameraDataSupport()
     this.lightDataSupport = new LightDataSupport()
     this.geometryDataSupport = new GeometryDataSupport()
-    this.modelDataSupport = new ModelDataSupport()
     this.textureDataSupport = new TextureDataSupport()
     this.materialDataSupport = new MaterialDataSupport()
     this.rendererDataSupport = new RendererDataSupport()

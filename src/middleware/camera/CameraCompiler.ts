@@ -1,10 +1,10 @@
-import { BufferGeometry, Camera, Material, Object3D, OrthographicCamera, PerspectiveCamera, Scene, Vector3 } from "three";
-import { ModelingEngine } from "../../main";
+import { BufferGeometry, Camera, Material, OrthographicCamera, PerspectiveCamera, Scene, Vector3 } from "three";
 import { Compiler } from "../../core/Compiler";
 import { SetSizeEvent } from "../../plugins/WebGLRendererPlugin";
 import { CameraConfigAllType } from "./CameraConfig";
 import { Engine, ENGINEPLUGIN } from "../../engine/Engine";
 import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { MODULETYPE } from "../constants/MODULETYPE";
 
 export interface CameraCompilerTarget extends ObjectCompilerTarget<CameraConfigAllType> {
   [key: string]: CameraConfigAllType
@@ -21,6 +21,8 @@ export interface CacheCameraData {
 }
 
 export class CameraCompiler extends ObjectCompiler<CameraConfigAllType, CameraCompilerTarget, Camera> {
+
+  COMPILER_NAME: string = MODULETYPE.CAMERA
 
   private engine!: Engine
   private constructMap: Map<string, () => Camera>
@@ -144,15 +146,15 @@ export class CameraCompiler extends ObjectCompiler<CameraConfigAllType, CameraCo
         adaptiveWindow: true
       }, this.filterAttribute))
 
-      this.setLookAt(config.vid, config.lookAt)
-      this.setAdaptiveWindow(config.vid, config.adaptiveWindow)
-
       if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
         (camera as PerspectiveCamera).updateProjectionMatrix()
       }
 
       this.map.set(vid, camera)
       this.weakMap.set(camera, vid)
+      
+      this.setLookAt(config.vid, config.lookAt)
+      this.setAdaptiveWindow(config.vid, config.adaptiveWindow)
 
       this.scene.add(camera)
     } else {
@@ -200,7 +202,7 @@ export class CameraCompiler extends ObjectCompiler<CameraConfigAllType, CameraCo
 
   }
 
-  setEngine (engine: ModelingEngine): this {
+  setEngine (engine: Engine): this {
     this.engine = engine
     return this
   }

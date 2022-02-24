@@ -3,6 +3,7 @@ import { Compiler} from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { LightConfigAllType } from "./LightConfig";
 import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { MODULETYPE } from "../constants/MODULETYPE";
 
 export interface LightCompilerTarget extends ObjectCompilerTarget<LightConfigAllType> {
   [key: string]: LightConfigAllType
@@ -11,6 +12,8 @@ export interface LightCompilerTarget extends ObjectCompilerTarget<LightConfigAll
 export interface LightCompilerParameters extends ObjectCompilerParameters<LightConfigAllType, LightCompilerTarget> {}
 
 export class LightCompiler extends ObjectCompiler<LightConfigAllType, LightCompilerTarget, Light> {
+
+  COMPILER_NAME: string = MODULETYPE.LIGHT
 
   private constructMap: Map<string, () => Light>
 
