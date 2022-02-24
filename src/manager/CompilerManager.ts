@@ -177,11 +177,13 @@ export class CompilerManager {
     sceneCompiler.linkTextureMap(textureCompiler.getMap())
     materialCompiler.linkTextureMap(textureCompiler.getMap())
 
+    const objectMapList = this.objectCompilerList.map(elem => elem.getMap())
+
     for (let objectCompiler of this.objectCompilerList) {
       objectCompiler
       .linkGeometryMap(geometryCompiler.getMap())
       .linkMaterialMap(materialCompiler.getMap())
-      .linkObjectMap(...this.objectCompilerList.map(elem => elem.getMap()))
+      .linkObjectMap(...objectMapList)
     }
 
     textureCompiler.linkRescourceMap(resourceManager.resourceMap)
@@ -203,12 +205,11 @@ export class CompilerManager {
     return this
   }
 
-  getObjectVid<O extends Object3D>(object: O): SymbolConfig['vid'] | null {
+  getObjectSymbol<O extends Object3D>(object: O): SymbolConfig['vid'] | null {
     const objectCompilerList = this.objectCompilerList
-
+    
     for (let compiler of objectCompilerList) {
-      // @ts-ignore
-      const vid = compiler.getSupportVid(object) || compiler.getObjectSymbol(object)
+      const vid = compiler.getObjectSymbol(object)
       if (vid) {
         return vid
       }

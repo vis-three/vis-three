@@ -1,15 +1,8 @@
-import { BaseEvent, EventDispatcher, Object3D } from "three";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { isValidKey } from "../utils/utils";
 
 export interface CompilerTarget {
   [key: string]: SymbolConfig
-}
-export interface ObjectCompiler {
-  readonly IS_OBJECTCOMPILER: boolean
-  add: Function
-  remove: Function
-  getSupportVid(parameter: unknown): SymbolConfig['vid'] | null
 }
 
 export abstract class Compiler{

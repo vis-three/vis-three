@@ -1,6 +1,5 @@
 import { DataSupport } from './../core/DataSupport';
 import { TextureDataSupport } from "../middleware/texture/TextureDataSupport";
-import { ModelDataSupport } from "../middleware/model/ModelDataSupport";
 import { MaterialDataSupport } from "../middleware/material/MaterialDataSupport";
 import { LightDataSupport } from "../middleware/light/LightDataSupport";
 import { GeometryDataSupport } from "../middleware/geometry/GeometryDataSupport";
@@ -47,19 +46,19 @@ export interface LoadOptions {
 }
 
 export interface DataSupportManagerParameters {
-  cameraDataSupport: CameraDataSupport
-  lightDataSupport: LightDataSupport
-  geometryDataSupport: GeometryDataSupport
-  textureDataSupport: TextureDataSupport
-  materialDataSupport: MaterialDataSupport
-  rendererDataSupport: RendererDataSupport
-  sceneDataSupport: SceneDataSupport
-  controlsDataSupport: ControlsDataSupport
-  spriteDataSupport: SpriteDataSupport
-  eventDataSupport: EventDataSupport
-  lineDataSupport: LineDataSupport
-  meshDataSupport: MeshDataSupport
-  pointsDataSupport: PointsDataSupport
+  cameraDataSupport?: CameraDataSupport
+  lightDataSupport?: LightDataSupport
+  geometryDataSupport?: GeometryDataSupport
+  textureDataSupport?: TextureDataSupport
+  materialDataSupport?: MaterialDataSupport
+  rendererDataSupport?: RendererDataSupport
+  sceneDataSupport?: SceneDataSupport
+  controlsDataSupport?: ControlsDataSupport
+  spriteDataSupport?: SpriteDataSupport
+  eventDataSupport?: EventDataSupport
+  lineDataSupport?: LineDataSupport
+  meshDataSupport?: MeshDataSupport
+  pointsDataSupport?: PointsDataSupport
 }
 
 export class DataSupportManager {
@@ -97,7 +96,7 @@ export class DataSupportManager {
 
     if (parameters) {
       Object.keys(parameters).forEach(key => {
-        this[key] = parameters[key]
+        this[key] !== undefined && (this[key] = parameters[key])
       })
     }
 
@@ -139,16 +138,16 @@ export class DataSupportManager {
   load (config: LoadOptions): this {
     const dataSupportMap = this.dataSupportMap
     dataSupportMap.forEach((dataSupport, module) => {
-      config[module] && dataSupport.load(config[module])
+      config[module] && dataSupport.load(config[module]!)
     })
     return this
   }
 
-  toJSON (): string {
-    const jsonObject = {}
+  toJSON (extendsConfig?: object): string {
+    const jsonObject = extendsConfig || {}
     const dataSupportMap = this.dataSupportMap
     dataSupportMap.forEach((dataSupport, module) => {
-      jsonObject[module] = dataSupport.toJSON()
+      jsonObject[module] = dataSupport.getData()
     })
 
     return JSON.stringify(jsonObject)

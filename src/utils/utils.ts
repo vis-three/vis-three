@@ -41,7 +41,6 @@ export function getConfigModelMap (): {[key: string]: string} {
     [CONFIGTYPE.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
     [CONFIGTYPE.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
 
-    [CONFIGTYPE.MODEL]: MODULETYPE.MODEL,
     [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
     [CONFIGTYPE.LINE]: MODULETYPE.LINE,
     [CONFIGTYPE.MESH]: MODULETYPE.MESH,
@@ -80,7 +79,6 @@ export function getConfigFunctionMap (): {[key: string]: Function} {
     [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
     [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
   
-    [CONFIGTYPE.MODEL]: getModelConfig,
     [CONFIGTYPE.SPRITE]: getSpriteConfig,
     [CONFIGTYPE.LINE]: getLineConfig,
     [CONFIGTYPE.MESH]: getMeshConfig,

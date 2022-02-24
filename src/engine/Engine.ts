@@ -26,7 +26,7 @@ import { EventManagerPlugin } from "../plugins/EventManagerPlugin";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { TransformControlsPlugin } from "../plugins/TransformControlsPlugin";
 import { WebGLRendererPlugin } from "../plugins/WebGLRendererPlugin";
-import { LoaderManager, LoaderManagerParameters } from "../manager/LoaderManager";
+import { LoadedEvent, LoaderManager, LoaderManagerParameters } from "../manager/LoaderManager";
 import { LoaderManagerPlugin } from "../plugins/LoaderManagerPlugin";
 import { ResourceManager } from "../manager/ResourceManager";
 import { ResourceManagerPlugin } from "../plugins/ResourceManagerPlugin";
@@ -123,7 +123,9 @@ export class Engine extends EventDispatcher {
   setStats?: (show: boolean) => this
   setTransformControls?: (show: boolean) => this
 
-  loadResources?: (urlList: Array<string>) => this
+  loadResources?: (urlList: Array<string>, callback: (err: Error | undefined, event?: LoadedEvent) => void) => this
+  loadResourcesAsync?: (urlList: Array<string>) => Promise<LoadedEvent>
+
   registerResources?: (resourceMap: {[key: string]: unknown}) => this
   toJSON?: () => string
 

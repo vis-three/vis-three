@@ -57,9 +57,7 @@ const lightDataSupport = new Vis.LightDataSupport(lightMap)
 #### 使用支持建模引擎
 ``` js
 const engine = new Vis.ModelingEngineSupport({
-  dataSupportManager: new Vis.DataSupportManager({
-    lightDataSupport: lightDataSupport
-  })
+  lightDataSupport: lightDataSupport
 }).setDom(document.getElementById('app'))
   .setSize()
   .play()
@@ -75,7 +73,7 @@ pointLight.position.y = 20
 
 #### 导出配置
 ``` js
-console.log(engine.dataSupportManager.toJSON())
+console.log(engine.toJSON())
 ```
 
 #### 导入配置生成场景

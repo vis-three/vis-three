@@ -30,7 +30,8 @@ import { SpriteDataSupport } from './middleware/sprite/SpriteDataSupport';
 import { ModelingEngineSupport } from './engine/ModelingEngineSupport';
 import { DisplayEngineSupport } from './engine/DisplayEngineSupport';
 import { LineDataSupport } from './middleware/line/LineDataSupport';
-
+import { MeshDataSupport } from './middleware/mesh/MeshDataSupport';
+import { PointsDataSupport } from './middleware/points/PointsDataSupport';
 
 export {
   // menu
@@ -61,14 +62,15 @@ export {
   TextureDataSupport,
   MaterialDataSupport,
   LightDataSupport,
-  ModelDataSupport,
   GeometryDataSupport,
   CameraDataSupport,
   ControlsDataSupport,
   RendererDataSupport,
   SceneDataSupport,
+  MeshDataSupport,
   SpriteDataSupport,
   LineDataSupport,
+  PointsDataSupport,
 
   // helper
   PointLightHelper,

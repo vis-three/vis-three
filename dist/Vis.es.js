@@ -1034,21 +1034,39 @@ const ModelingScenePlugin = function(params) {
   if (params.hasDefaultOrthographicCamera) {
     const defaultOrthograpbicCamera = scene.getDefaultOrthographicCamera();
     scene.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
+      if (this.orbitControls) {
+        this.orbitControls.target.set(0, 0, 0);
+      }
       this.setCamera(defaultOrthograpbicCamera);
     });
     scene.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
+      if (this.orbitControls) {
+        this.orbitControls.target.set(0, 0, 0);
+      }
       this.setCamera(defaultOrthograpbicCamera);
     });
     scene.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
+      if (this.orbitControls) {
+        this.orbitControls.target.set(0, 0, 0);
+      }
       this.setCamera(defaultOrthograpbicCamera);
     });
     scene.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
+      if (this.orbitControls) {
+        this.orbitControls.target.set(0, 0, 0);
+      }
       this.setCamera(defaultOrthograpbicCamera);
     });
     scene.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
+      if (this.orbitControls) {
+        this.orbitControls.target.set(0, 0, 0);
+      }
       this.setCamera(defaultOrthograpbicCamera);
     });
     scene.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
+      if (this.orbitControls) {
+        this.orbitControls.target.set(0, 0, 0);
+      }
       this.setCamera(defaultOrthograpbicCamera);
     });
   }
@@ -1095,19 +1113,11 @@ var MODELCOMPILER;
 (function(MODELCOMPILER2) {
   MODELCOMPILER2["SETMATERIAL"] = "setMaterial";
 })(MODELCOMPILER || (MODELCOMPILER = {}));
-var LOADERMANAGER;
-(function(LOADERMANAGER2) {
-  LOADERMANAGER2["LOADING"] = "loading";
-  LOADERMANAGER2["DETAILLOADING"] = "detailLoading";
-  LOADERMANAGER2["DETAILLOADED"] = "detailLoaded";
-  LOADERMANAGER2["LOADED"] = "loaded";
-})(LOADERMANAGER || (LOADERMANAGER = {}));
 const EVENTTYPE = {
   RENDERERMANAGER,
   SCENESTATUSMANAGER,
   POINTERMANAGER,
-  MODELCOMPILER,
-  LOADERMANAGER
+  MODELCOMPILER
 };
 class RenderManager extends EventDispatcher {
   constructor() {
@@ -2603,6 +2613,13 @@ class MaterialCreator {
     return texture;
   }
 }
+var LOADERMANAGER;
+(function(LOADERMANAGER2) {
+  LOADERMANAGER2["LOADING"] = "loading";
+  LOADERMANAGER2["DETAILLOADING"] = "detailLoading";
+  LOADERMANAGER2["DETAILLOADED"] = "detailLoaded";
+  LOADERMANAGER2["LOADED"] = "loaded";
+})(LOADERMANAGER || (LOADERMANAGER = {}));
 class LoaderManager extends EventDispatcher {
   constructor(parameters) {
     super();
@@ -2694,17 +2711,39 @@ class LoaderManager extends EventDispatcher {
       const ext = (_a = url.split(".").pop()) == null ? void 0 : _a.toLocaleLowerCase();
       if (!ext) {
         detail.message = `url: ${url} \u5730\u5740\u6709\u8BEF\uFF0C\u65E0\u6CD5\u83B7\u53D6\u6587\u4EF6\u683C\u5F0F\u3002`;
+        console.warn(detail.message);
         detail.error = true;
         this.isError = true;
         this.loadError += 1;
+        this.dispatchEvent({
+          type: LOADERMANAGER.DETAILLOADED,
+          detail
+        });
+        this.dispatchEvent({
+          type: LOADERMANAGER.LOADING,
+          loadTotal: this.loadTotal,
+          loadSuccess: this.loadSuccess,
+          loadError: this.loadError
+        });
         continue;
       }
       const loader = loaderMap[ext];
       if (!loader) {
         detail.message = `url: ${url} \u4E0D\u652F\u6301\u6B64\u6587\u4EF6\u683C\u5F0F\u52A0\u8F7D\u3002`;
+        console.warn(detail.message);
         detail.error = true;
         this.isError = true;
         this.loadError += 1;
+        this.dispatchEvent({
+          type: LOADERMANAGER.DETAILLOADED,
+          detail
+        });
+        this.dispatchEvent({
+          type: LOADERMANAGER.LOADING,
+          loadTotal: this.loadTotal,
+          loadSuccess: this.loadSuccess,
+          loadError: this.loadError
+        });
         continue;
       }
       loader.loadAsync(url, (event) => {
@@ -2774,6 +2813,13 @@ class LoaderManager extends EventDispatcher {
     this.loadDetailMap = map;
     return this;
   }
+  toJSON() {
+    const assets = [];
+    this.resourceMap.forEach((value, url) => {
+      assets.push(url);
+    });
+    return JSON.stringify(assets);
+  }
   dispose() {
     this.resourceMap.clear();
     return this;
@@ -2786,9 +2832,32 @@ const LoaderManagerPlugin = function(params) {
   }
   const loaderManager = new LoaderManager(params);
   this.loaderManager = loaderManager;
-  this.loadResources = (urlList) => {
+  this.loadResources = (urlList, callback) => {
+    const lodedFun = (event) => {
+      callback(void 0, event);
+      this.loaderManager.removeEventListener("loaded", lodedFun);
+    };
+    try {
+      this.loaderManager.addEventListener("loaded", lodedFun);
+    } catch (error) {
+      callback(error);
+    }
     this.loaderManager.load(urlList);
     return this;
+  };
+  this.loadResourcesAsync = (urlList) => {
+    return new Promise((resolve, reject) => {
+      const lodedFun = (event) => {
+        resolve(event);
+        this.loaderManager.removeEventListener("loaded", lodedFun);
+      };
+      try {
+        this.loaderManager.addEventListener("loaded", lodedFun);
+      } catch (error) {
+        reject(error);
+      }
+      this.loaderManager.load(urlList);
+    });
   };
   return true;
 };
@@ -2827,13 +2896,11 @@ var MODULETYPE;
   MODULETYPE2["CAMERA"] = "camera";
   MODULETYPE2["LIGHT"] = "light";
   MODULETYPE2["GEOMETRY"] = "geometry";
-  MODULETYPE2["MODEL"] = "model";
   MODULETYPE2["TEXTURE"] = "texture";
   MODULETYPE2["MATERIAL"] = "material";
   MODULETYPE2["RENDERER"] = "renderer";
   MODULETYPE2["SCENE"] = "scene";
   MODULETYPE2["SPRITE"] = "sprite";
-  MODULETYPE2["STRUCTURE"] = "structure";
   MODULETYPE2["CONTROLS"] = "controls";
   MODULETYPE2["EVENT"] = "event";
   MODULETYPE2["LINE"] = "line";
@@ -2943,14 +3010,6 @@ const getLoadGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
     type: "LoadGeometry",
     url: ""
-  });
-};
-const getModelConfig = function() {
-  return Object.assign(getObjectConfig(), {
-    type: "Model",
-    display: "Mesh",
-    geometry: "",
-    material: ""
   });
 };
 const getTextureConfig = function() {
@@ -3267,7 +3326,6 @@ function getConfigModelMap() {
     [CONFIGTYPE.BOXGEOMETRY]: MODULETYPE.GEOMETRY,
     [CONFIGTYPE.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
     [CONFIGTYPE.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE.MODEL]: MODULETYPE.MODEL,
     [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
     [CONFIGTYPE.LINE]: MODULETYPE.LINE,
     [CONFIGTYPE.MESH]: MODULETYPE.MESH,
@@ -3296,7 +3354,6 @@ function getConfigFunctionMap() {
     [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
     [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
     [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
-    [CONFIGTYPE.MODEL]: getModelConfig,
     [CONFIGTYPE.SPRITE]: getSpriteConfig,
     [CONFIGTYPE.LINE]: getLineConfig,
     [CONFIGTYPE.MESH]: getMeshConfig,
@@ -3446,7 +3503,7 @@ class ResourceManager extends EventDispatcher {
       if (resource instanceof HTMLImageElement) {
         resourceMap.set(url, resource);
         configMap.set(url, generateConfig(CONFIGTYPE.IMAGETEXTURE, {
-          image: url
+          url
         }));
         structureMap.set(url, url);
       } else if (resource instanceof HTMLCanvasElement) {
@@ -3945,7 +4002,7 @@ class DataSupportManager {
     this.pointsDataSupport = new PointsDataSupport();
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
-        this[key] = parameters[key];
+        this[key] !== void 0 && (this[key] = parameters[key]);
       });
     }
     const dataSupportMap = new Map();
@@ -3985,11 +4042,11 @@ class DataSupportManager {
     });
     return this;
   }
-  toJSON() {
-    const jsonObject = {};
+  toJSON(extendsConfig) {
+    const jsonObject = extendsConfig || {};
     const dataSupportMap = this.dataSupportMap;
     dataSupportMap.forEach((dataSupport, module) => {
-      jsonObject[module] = dataSupport.toJSON();
+      jsonObject[module] = dataSupport.getData();
     });
     return JSON.stringify(jsonObject);
   }
@@ -4002,6 +4059,12 @@ const DataSupportManagerPlugin = function(params) {
   const dataSupportManager = new DataSupportManager(params);
   this.dataSupportManager = dataSupportManager;
   this.toJSON = function() {
+    if (this.loaderManager) {
+      const assets = {
+        assets: JSON.parse(this.loaderManager.toJSON())
+      };
+      return this.dataSupportManager.toJSON(assets);
+    }
     return this.dataSupportManager.toJSON();
   };
   this.completeSet.add(() => {
@@ -5544,8 +5607,9 @@ class CompilerManager {
     const resourceManager = engine.resourceManager;
     sceneCompiler.linkTextureMap(textureCompiler.getMap());
     materialCompiler.linkTextureMap(textureCompiler.getMap());
+    const objectMapList = this.objectCompilerList.map((elem) => elem.getMap());
     for (let objectCompiler of this.objectCompilerList) {
-      objectCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(...this.objectCompilerList.map((elem) => elem.getMap()));
+      objectCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(...objectMapList);
     }
     textureCompiler.linkRescourceMap(resourceManager.resourceMap);
     geometryCompiler.linkRescourceMap(resourceManager.resourceMap);
@@ -5563,10 +5627,10 @@ class CompilerManager {
     pointsDataSupport.addCompiler(pointsCompiler);
     return this;
   }
-  getObjectVid(object) {
+  getObjectSymbol(object) {
     const objectCompilerList = this.objectCompilerList;
     for (let compiler of objectCompilerList) {
-      const vid = compiler.getSupportVid(object) || compiler.getObjectSymbol(object);
+      const vid = compiler.getObjectSymbol(object);
       if (vid) {
         return vid;
       }
@@ -5696,6 +5760,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "setStats");
     __publicField(this, "setTransformControls");
     __publicField(this, "loadResources");
+    __publicField(this, "loadResourcesAsync");
     __publicField(this, "registerResources");
     __publicField(this, "toJSON");
     __publicField(this, "play");
@@ -5777,28 +5842,6 @@ class ModelingEngine extends Engine {
     }).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.STATS).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
       WebGLMultisampleRenderTarget: true
     }).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).install(ENGINEPLUGIN.TRANSFORMCONTROLS);
-  }
-}
-const ModelRule = function(notice, compiler) {
-  const { operate, key, path, value } = notice;
-  if (operate === "add") {
-    if (validate(key)) {
-      compiler.add(key, value);
-    }
-  } else if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift();
-    if (vid && validate(vid)) {
-      compiler.set(vid, tempPath, key, value);
-    } else {
-      console.warn(`model rule vid is illeage: '${vid}'`);
-    }
-  }
-};
-class ModelDataSupport extends DataSupport {
-  constructor(data) {
-    !data && (data = {});
-    super(ModelRule, data);
   }
 }
 const _SupportDataGenerator = class {
@@ -6045,7 +6088,7 @@ class EngineSupport extends Engine {
   constructor(parameters) {
     super();
     __publicField(this, "IS_ENGINESUPPORT", true);
-    this.install(ENGINEPLUGIN.LOADERMANAGER).install(ENGINEPLUGIN.RESOURCEMANAGER).install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters == null ? void 0 : parameters.dataSupportManager).install(ENGINEPLUGIN.COMPILERMANAGER);
+    this.install(ENGINEPLUGIN.LOADERMANAGER).install(ENGINEPLUGIN.RESOURCEMANAGER).install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters).install(ENGINEPLUGIN.COMPILERMANAGER);
   }
   loadConfig(config, callback) {
     const loadLifeCycle = () => {
@@ -6133,4 +6176,4 @@ class DisplayEngineSupport extends EngineSupport {
     this.install(ENGINEPLUGIN.EVENTMANAGER).complete();
   }
 }
-export { CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, GeometryDataSupport, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, ModelDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };
+export { CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, GeometryDataSupport, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };

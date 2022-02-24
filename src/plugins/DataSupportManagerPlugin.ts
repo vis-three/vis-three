@@ -19,6 +19,12 @@ export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> = fu
   this.dataSupportManager = dataSupportManager
 
   this.toJSON = function () {
+    if (this.loaderManager) {
+      const assets = {
+        assets: JSON.parse(this.loaderManager.toJSON())
+      }
+      return this.dataSupportManager!.toJSON(assets)
+    }
     return this.dataSupportManager!.toJSON()
   }
 
