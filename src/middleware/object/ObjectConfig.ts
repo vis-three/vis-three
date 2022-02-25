@@ -2,6 +2,7 @@ import { Vector2Config, Vector3Config, SymbolConfig } from "../common/CommonConf
 
 export interface ObjectConfig extends SymbolConfig {
   type: string
+  name: string
   castShadow: boolean
   receiveShadow: boolean
   lookAt: string
@@ -14,6 +15,7 @@ export interface ObjectConfig extends SymbolConfig {
 export const getObjectConfig = (): ObjectConfig => {
   return {
     vid: '',
+    name: '',
     type: 'Object3D',
     castShadow: true,
     receiveShadow: true,
