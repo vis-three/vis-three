@@ -7,6 +7,12 @@
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MIT-{}" alt="License"></a>
 </p>
 
+## 项目命令
+
+* 开发：`npm run dev`
+* 构建： `npm run build`
+* 查看例子： `npm run examples`
+
 ## 基本用法
 
 #### 安装
@@ -152,11 +158,6 @@ engine.scene.add(new THREE.PointLight('white', 1))
 ## 说明
 * 内置了ID检查，生成id请使用`npm i uuid`, `import {v4 as getUuid} from 'uuid'`
 
-## 项目相关
-* 开发：`npm run dev`
-* 构建： `npm run build`
-* 查看例子： `npm run examples`
-
 
 ## 版本更新
 
@@ -175,20 +176,13 @@ engine.scene.add(new THREE.PointLight('white', 1))
 - [ ] 实时动画系统
 - [ ] 物体约束器
 
-
-## 例子demo
-github: [https://github.com/Shiotsukikaedesari/vis-three/tree/main/examples](https://github.com/Shiotsukikaedesari/vis-three/tree/main/examples)
-
-gitee: [https://gitee.com/Shiotsukikaedesari/vis-three/tree/main/examples](https://gitee.com/Shiotsukikaedesari/vis-three/tree/main/examples)
-
-
 ## 项目案例
 
 github: 
-[https://github.com/Shiotsukikaedesari/three-vis-display-editor](https://github.com/Shiotsukikaedesari/three-vis-display-editor)
+[three-vis-display-editor](https://github.com/Shiotsukikaedesari/three-vis-display-editor)
 
 
 gitee:
-[https://gitee.com/Shiotsukikaedesari/three-vis-display-editor](https://gitee.com/Shiotsukikaedesari/three-vis-display-editor)
-[http://shiotsukikaedesari.gitee.io/vis-model-generator](http://shiotsukikaedesari.gitee.io/vis-model-generator)
+[three-vis-display-editor](https://gitee.com/Shiotsukikaedesari/three-vis-display-editor)
+[vis-model-generator](http://shiotsukikaedesari.gitee.io/vis-model-generator)
 
