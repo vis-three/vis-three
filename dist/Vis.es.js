@@ -4650,7 +4650,7 @@ const _EventCompiler = class extends Compiler {
     this.map.set(vid, structure);
     for (let key in config) {
       let value = config[key];
-      if (Array.isArray(value) && isValidKey(key, EVENTNAME) && value.length) {
+      if (Array.isArray(value) && isValidEnum(EVENTNAME, key) && value.length) {
         for (let configure of value) {
           this.addEvent(vid, key, configure);
         }

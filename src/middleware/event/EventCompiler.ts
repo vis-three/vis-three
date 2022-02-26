@@ -3,7 +3,7 @@ import { EventConfig } from "./eventConfig";
 import { SymbolConfig } from "../common/CommonConfig";
 import { Object3D } from "three";
 import { EVENTNAME, ObjectEvent } from "../../manager/EventManager";
-import { isValidKey } from "../../utils/utils";
+import { isValidEnum, isValidKey } from "../../utils/utils";
 import {v4 as getUuid} from 'uuid'
 
 import * as BasicEventLirary from '../../convenient/BasicEventLibrary/handler'
@@ -105,9 +105,9 @@ export class EventCompiler extends Compiler {
     this.map.set(vid, structure)
     for (let key in config) {
       let value = config[key]
-      if (Array.isArray(value) &&  isValidKey(key, EVENTNAME) && value.length) {
+      if (Array.isArray(value) &&  isValidEnum(EVENTNAME, key) && value.length) {
         for (let configure of value) {
-          this.addEvent(vid, key, configure)
+          this.addEvent(vid, key as EVENTNAME, configure)
         }
       }
     }

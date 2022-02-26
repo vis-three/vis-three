@@ -75,16 +75,18 @@
     engine.dataSupportManager.meshDataSupport.getData()[mesh.vid] = mesh
 
     const event = Vis.generateConfig('Event', {
-      target: mesh.vid
+      target: mesh.vid,
+      pointerup: [
+        Vis.BasicEventLibrary.openWindow({
+          params: {
+            url: 'https://gitee.com/Shiotsukikaedesari/vis-three'
+          }
+        })
+      ]
     })
 
     engine.dataSupportManager.eventDataSupport.getData()[event.vid] = event
 
-    event.pointerup.push(Vis.BasicEventLibrary.openWindow({
-      params: {
-        url: 'https://gitee.com/Shiotsukikaedesari/vis-three'
-      }
-    }))
 
     console.log(engine)
   </script>
