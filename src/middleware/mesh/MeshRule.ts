@@ -1,9 +1,18 @@
+import { Mesh } from "three";
 import { validate } from "uuid";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
-import { Rule } from "../../core/Rule";
-import { MeshCompiler } from "./MeshCompiler";
+import { ObjectRule } from "../object/ObjectRule";
+import { MeshCompiler, MeshCompilerTarget } from "./MeshCompiler";
+import { MeshConfig } from "./MeshConfig";
 
-export const MeshRule: Rule<MeshCompiler> = function (notice: ProxyNotice, compiler: MeshCompiler) {
+export type MeshRule = ObjectRule<
+  MeshCompiler,
+  MeshConfig,
+  MeshCompilerTarget,
+  Mesh
+>
+
+export const MeshRule: MeshRule = function (notice: ProxyNotice, compiler: MeshCompiler) {
   const {operate, key, path, value} = notice
 
   if (operate === 'add') {

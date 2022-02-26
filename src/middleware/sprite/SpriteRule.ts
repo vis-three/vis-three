@@ -1,8 +1,18 @@
+import { Sprite } from "three";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
 import { Rule } from "../../core/Rule";
-import { SpriteCompiler } from "./SpriteCompiler";
+import { ObjectRule } from "../object/ObjectRule";
+import { SpriteCompiler, SpriteCompilerTarget } from "./SpriteCompiler";
+import { SpriteConfig } from "./SpriteConfig";
 
-export const SpriteRule: Rule<SpriteCompiler> = function (notice: ProxyNotice, compiler: SpriteCompiler) {
+export type SpriteRule = ObjectRule<
+  SpriteCompiler,
+  SpriteConfig,
+  SpriteCompilerTarget,
+  Sprite
+>
+
+export const SpriteRule: SpriteRule = function (notice: ProxyNotice, compiler: SpriteCompiler) {
   const {operate, key, path, value} = notice
 
   if (operate === 'add') {

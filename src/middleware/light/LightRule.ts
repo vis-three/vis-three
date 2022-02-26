@@ -1,10 +1,19 @@
+import { Light } from "three";
 import { validate } from "uuid";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
 import { Rule } from "../../core/Rule";
-import { LightCompiler} from "./LightCompiler";
+import { ObjectRule } from "../object/ObjectRule";
+import { LightCompiler, LightCompilerTarget} from "./LightCompiler";
+import { LightConfigAllType } from "./LightConfig";
 
+export type LightRule = ObjectRule<
+  LightCompiler,
+  LightConfigAllType,
+  LightCompilerTarget,
+  Light
+>
 
-export const LightRule: Rule<LightCompiler> = function (input: ProxyNotice, compiler: LightCompiler) {
+export const LightRule: LightRule = function (input: ProxyNotice, compiler: LightCompiler) {
   
   const {operate, key, path, value} = input
 

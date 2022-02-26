@@ -1,9 +1,17 @@
+import { Camera } from "three";
 import { validate } from "uuid";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
-import { Rule } from "../../core/Rule";
-import { CameraCompiler } from "./CameraCompiler";
+import { ObjectRule } from "../object/ObjectRule";
+import { CameraCompiler, CameraCompilerTarget } from "./CameraCompiler";
+import { CameraConfigAllType } from "./CameraConfig";
 
-export const CameraRule: Rule<CameraCompiler> = function (notice: ProxyNotice, compiler: CameraCompiler) {
+export type CameraRule = ObjectRule<
+CameraCompiler,
+CameraConfigAllType,
+CameraCompilerTarget,
+Camera
+>
+export const CameraRule: CameraRule = function (notice: ProxyNotice, compiler: CameraCompiler) {
   const {operate, key, path, value} = notice
 
   if (operate === 'add') {

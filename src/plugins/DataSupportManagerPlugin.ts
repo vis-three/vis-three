@@ -7,6 +7,8 @@ import { RendererDataSupport } from "../middleware/render/RendererDataSupport";
 import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { generateConfig } from "../convenient/generateConfig";
 import { Plugin } from "./plugin";
+import { ObjectCompilerTarget } from "../middleware/object/ObjectCompiler";
+import { ObjectConfig } from "../middleware/object/ObjectConfig";
 
 export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> = function (this: Engine, params: DataSupportManagerParameters): boolean {
   if (this.dataSupportManager) {
@@ -50,6 +52,29 @@ export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> = fu
     if (this.orbitControls) {
       if (!controlsData[CONFIGTYPE.ORBITCONTROLS]) {
         controlsData[CONFIGTYPE.ORBITCONTROLS] = generateConfig(CONFIGTYPE.ORBITCONTROLS)!
+      }
+    }
+
+    // 事件
+    if (this.eventManager && this.compilerManager) {
+      // 对所有object增加事件，还有场景
+      const eventData = this.dataSupportManager!.eventDataSupport!
+
+      // TODO: global
+      const objectDataSupportList = this.dataSupportManager!.getObjectDataSupportList()
+
+      let data: ObjectCompilerTarget<ObjectConfig>
+      for (let objectDataSuport of objectDataSupportList) {
+        data = objectDataSuport.getData()
+        for (let vid in data) {
+          if (eventData[vid]) {
+            continue
+          }
+
+          eventData[vid] = generateConfig(CONFIGTYPE.EVENT, {
+            vid: vid
+          })
+        }
       }
     }
   })

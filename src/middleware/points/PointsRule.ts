@@ -1,9 +1,19 @@
+import { Points } from "three";
 import { validate } from "uuid";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
 import { Rule } from "../../core/Rule";
-import { PointsCompiler } from "./PointsCompiler";
+import { ObjectRule } from "../object/ObjectRule";
+import { PointsCompiler, PointsCompilerTarget } from "./PointsCompiler";
+import { PointsConfig } from "./PointsConfig";
 
-export const PointsRule: Rule<PointsCompiler> = function (notice: ProxyNotice, compiler: PointsCompiler) {
+export type PointsRule = ObjectRule<
+  PointsCompiler,
+  PointsConfig,
+  PointsCompilerTarget,
+  Points
+>
+
+export const PointsRule: PointsRule = function (notice: ProxyNotice, compiler: PointsCompiler) {
   const {operate, key, path, value} = notice
 
   if (operate === 'add') {
