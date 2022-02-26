@@ -4,6 +4,7 @@ import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { ObjectConfig } from "./ObjectConfig";
 
+export type BasicObjectCompiler = ObjectCompiler<ObjectConfig, ObjectCompilerTarget<ObjectConfig>, Object3D>
 export interface ObjectCompilerTarget<C extends ObjectConfig> extends CompilerTarget {
   [key: string]: C
 }

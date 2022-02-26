@@ -2,7 +2,6 @@ import { DisplayEngine } from './engine/DisplayEngine';
 import { ModelingEngine } from "./engine/ModelingEngine";
 
 import { LightDataSupport } from "./middleware/light/LightDataSupport";
-import { ModelDataSupport } from "./middleware/model/ModelDataSupport";
 import { GeometryDataSupport } from "./middleware/geometry/GeometryDataSupport";
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
 import { LoaderManager } from "./manager/LoaderManager";
@@ -32,6 +31,7 @@ import { DisplayEngineSupport } from './engine/DisplayEngineSupport';
 import { LineDataSupport } from './middleware/line/LineDataSupport';
 import { MeshDataSupport } from './middleware/mesh/MeshDataSupport';
 import { PointsDataSupport } from './middleware/points/PointsDataSupport';
+import { BasicEventLibrary } from './convenient/BasicEventLibrary/configure'
 
 export {
   // menu
@@ -71,6 +71,9 @@ export {
   SpriteDataSupport,
   LineDataSupport,
   PointsDataSupport,
+
+  // eventLibaray
+  BasicEventLibrary,
 
   // helper
   PointLightHelper,

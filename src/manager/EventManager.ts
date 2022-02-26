@@ -18,6 +18,17 @@ export interface EventManagerParameters {
   support?: boolean
 }
 
+export enum EVENTNAME {
+  POINTERDOWN = 'pointerdown',
+  POINTERUP = 'pointerup',
+  POINTERMOVE = 'pointermove',
+  POINTERENTER = 'pointerenter',
+  POINTERLEAVE = 'pointerleave',
+  CLICK = 'click',
+  DBLCLICK = 'dblclick',
+  CONTEXTMENU = 'contextmenu'
+}
+
 export class EventManager extends EventDispatcher {
 
   private raycaster: Raycaster

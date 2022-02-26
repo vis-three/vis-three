@@ -1425,6 +1425,17 @@ const PointerManagerPlugin = function(params) {
   this.pointerManager = pointerManager;
   return true;
 };
+var EVENTNAME;
+(function(EVENTNAME2) {
+  EVENTNAME2["POINTERDOWN"] = "pointerdown";
+  EVENTNAME2["POINTERUP"] = "pointerup";
+  EVENTNAME2["POINTERMOVE"] = "pointermove";
+  EVENTNAME2["POINTERENTER"] = "pointerenter";
+  EVENTNAME2["POINTERLEAVE"] = "pointerleave";
+  EVENTNAME2["CLICK"] = "click";
+  EVENTNAME2["DBLCLICK"] = "dblclick";
+  EVENTNAME2["CONTEXTMENU"] = "contextmenu";
+})(EVENTNAME || (EVENTNAME = {}));
 class EventManager extends EventDispatcher {
   constructor(parameters) {
     super();
@@ -3337,13 +3348,16 @@ const getSpriteConfig = function() {
 const getEventConfig = function() {
   return {
     vid: "",
-    type: "Event",
+    type: CONFIGTYPE.EVENT,
+    target: "",
     pointerdown: [],
     pointermove: [],
     pointerup: [],
     pointerenter: [],
     pointerleave: [],
-    click: []
+    click: [],
+    dblclick: [],
+    contextmenu: []
   };
 };
 const getMeshConfig = function() {
@@ -3369,6 +3383,9 @@ const getLineConfig = function() {
 };
 function isValidKey(key, object) {
   return key in object;
+}
+function isValidEnum(enumeration, value) {
+  return Object.values(enumeration).includes(value);
 }
 function getConfigModelMap() {
   return {
@@ -3802,6 +3819,13 @@ class MaterialDataSupport extends DataSupport {
     super(MaterialRule, data);
   }
 }
+class ObjectDataSupport extends DataSupport {
+  constructor(rule, data) {
+    !data && (data = Object.create(Object.prototype));
+    super(rule, data);
+    __publicField(this, "IS_OBJECTDATASUPPORT", true);
+  }
+}
 const LightRule = function(input, compiler) {
   const { operate, key, path, value } = input;
   if (operate === "add") {
@@ -3821,7 +3845,7 @@ const LightRule = function(input, compiler) {
     return;
   }
 };
-class LightDataSupport extends DataSupport {
+class LightDataSupport extends ObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(LightRule, data);
@@ -3868,7 +3892,7 @@ const CameraRule = function(notice, compiler) {
     }
   }
 };
-class CameraDataSupport extends DataSupport {
+class CameraDataSupport extends ObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(CameraRule, data);
@@ -3935,7 +3959,7 @@ const SpriteRule = function(notice, compiler) {
     compiler.set(vid, tempPath, key, value);
   }
 };
-class SpriteDataSupport extends DataSupport {
+class SpriteDataSupport extends ObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(SpriteRule, data);
@@ -3943,9 +3967,23 @@ class SpriteDataSupport extends DataSupport {
 }
 const EventRule = function(notice, compiler) {
   const { operate, key, path, value } = notice;
+  console.log(notice);
   if (operate === "add") {
-    if (validate(key)) {
+    if (validate(key) && !path.length) {
       compiler.add(key, value);
+    } else {
+      if (Number.isInteger(Number(key)) && path.length === 2) {
+        const [vid, eventName] = path;
+        if (!validate(vid)) {
+          console.warn(`EventRule: vid is illeage: ${vid}`);
+          return;
+        }
+        if (!isValidEnum(EVENTNAME, eventName)) {
+          console.warn(`EventRule: eventName is not support: ${eventName}`);
+          return;
+        }
+        compiler.addEvent(vid, eventName, value);
+      }
     }
     return;
   }
@@ -4000,7 +4038,7 @@ const MeshRule = function(notice, compiler) {
     return;
   }
 };
-class MeshDataSupport extends DataSupport {
+class MeshDataSupport extends ObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(MeshRule, data);
@@ -4025,7 +4063,7 @@ const PointsRule = function(notice, compiler) {
     return;
   }
 };
-class PointsDataSupport extends DataSupport {
+class PointsDataSupport extends ObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(PointsRule, data);
@@ -4047,6 +4085,7 @@ class DataSupportManager {
     __publicField(this, "meshDataSupport");
     __publicField(this, "pointsDataSupport");
     __publicField(this, "dataSupportMap");
+    __publicField(this, "objectDataSupportList");
     this.cameraDataSupport = new CameraDataSupport();
     this.lightDataSupport = new LightDataSupport();
     this.geometryDataSupport = new GeometryDataSupport();
@@ -4060,9 +4099,21 @@ class DataSupportManager {
     this.lineDataSupport = new LineDataSupport();
     this.meshDataSupport = new MeshDataSupport();
     this.pointsDataSupport = new PointsDataSupport();
+    this.objectDataSupportList = [];
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
-        this[key] !== void 0 && (this[key] = parameters[key]);
+        if (this[key] !== void 0) {
+          this[key] = parameters[key];
+          if (parameters[key].IS_OBJECTDATASUPPORT) {
+            this.objectDataSupportList.push(parameters[key]);
+          }
+        }
+      });
+    } else {
+      Object.keys(this).forEach((key) => {
+        if (typeof this[key] === "object" && this[key].IS_OBJECTDATASUPPORT) {
+          this.objectDataSupportList.push(this[key]);
+        }
       });
     }
     const dataSupportMap = new Map();
@@ -4070,6 +4121,9 @@ class DataSupportManager {
       dataSupportMap.set(MODULETYPE[module], this[`${MODULETYPE[module]}DataSupport`]);
     }
     this.dataSupportMap = dataSupportMap;
+  }
+  getObjectDataSupportList() {
+    return this.objectDataSupportList;
   }
   getDataSupport(type) {
     if (this.dataSupportMap.has(type)) {
@@ -4529,17 +4583,101 @@ class ControlsCompiler extends Compiler {
     return this;
   }
 }
-class EventCompiler extends Compiler {
+const openWindow$1 = function(url) {
+  window.open(url);
+};
+const openWindow = function(compiler, config) {
+  return () => {
+    openWindow$1(config.params.url);
+  };
+};
+var BasicEventLirary = /* @__PURE__ */ Object.freeze({
+  __proto__: null,
+  [Symbol.toStringTag]: "Module",
+  openWindow
+});
+const _EventCompiler = class extends Compiler {
   constructor(parameters) {
     super();
     __publicField(this, "target");
+    __publicField(this, "map");
+    __publicField(this, "funMap");
+    __publicField(this, "objectMapSet");
     if (parameters) {
       this.target = parameters.target;
     } else {
       this.target = {};
     }
+    this.map = new Map();
+    this.funMap = new Map();
+    this.objectMapSet = new Set();
+  }
+  getObject(vid) {
+    for (const map of this.objectMapSet) {
+      if (map.has(vid)) {
+        return map.get(vid);
+      }
+    }
+    return null;
+  }
+  getTargetObject(vid) {
+    if (!this.map.has(vid)) {
+      return null;
+    }
+    const structure = this.map.get(vid);
+    return this.getObject(structure.target);
+  }
+  linkObjectMap(...map) {
+    for (let objectMap of map) {
+      if (!this.objectMapSet.has(objectMap)) {
+        this.objectMapSet.add(objectMap);
+      }
+    }
+    return this;
   }
   add(vid, config) {
+    const structure = {
+      target: config.target,
+      [EVENTNAME.POINTERDOWN]: [],
+      [EVENTNAME.POINTERUP]: [],
+      [EVENTNAME.POINTERMOVE]: [],
+      [EVENTNAME.POINTERENTER]: [],
+      [EVENTNAME.POINTERLEAVE]: [],
+      [EVENTNAME.CLICK]: [],
+      [EVENTNAME.DBLCLICK]: [],
+      [EVENTNAME.CONTEXTMENU]: []
+    };
+    this.map.set(vid, structure);
+    for (let key in config) {
+      let value = config[key];
+      if (Array.isArray(value) && isValidKey(key, EVENTNAME) && value.length) {
+        for (let configure of value) {
+          this.addEvent(vid, key, configure);
+        }
+      }
+    }
+    return this;
+  }
+  addEvent(vid, eventName, config) {
+    if (!this.map.has(vid)) {
+      console.warn(`EventCompiler: No matching vid found: ${vid}`);
+      return this;
+    }
+    if (!_EventCompiler.eventLibrary[config.name]) {
+      console.warn(`EventCompiler: can not support this event: ${config.name}`);
+      return this;
+    }
+    const targetObject = this.getTargetObject(vid);
+    if (!targetObject) {
+      console.warn(`EventCompiler: no object with matching vid found: ${vid}`);
+      return this;
+    }
+    const fun = _EventCompiler.eventLibrary[config.name](this, config);
+    const funSymbol = v4();
+    this.funMap.set(funSymbol, fun);
+    const structure = this.map.get(vid);
+    structure[eventName].push(funSymbol);
+    targetObject.addEventListener(eventName, fun);
     return this;
   }
   remove() {
@@ -4559,7 +4697,13 @@ class EventCompiler extends Compiler {
   dispose() {
     return this;
   }
-}
+};
+let EventCompiler = _EventCompiler;
+__publicField(EventCompiler, "eventLibrary", {});
+__publicField(EventCompiler, "registerEvent", function(map) {
+  _EventCompiler.eventLibrary = Object.assign(_EventCompiler.eventLibrary, map);
+});
+EventCompiler.registerEvent(BasicEventLirary);
 class LoadGeometry extends BufferGeometry {
   constructor(geometry) {
     super();
@@ -5671,6 +5815,7 @@ class CompilerManager {
     for (let objectCompiler of this.objectCompilerList) {
       objectCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(...objectMapList);
     }
+    eventCompiler.linkObjectMap(...objectMapList);
     textureCompiler.linkRescourceMap(resourceManager.resourceMap);
     geometryCompiler.linkRescourceMap(resourceManager.resourceMap);
     textureDataSupport.addCompiler(textureCompiler);
@@ -5685,6 +5830,7 @@ class CompilerManager {
     lineDataSupport.addCompiler(lineCompiler);
     meshDataSupport.addCompiler(meshCompiler);
     pointsDataSupport.addCompiler(pointsCompiler);
+    eventDataSupport.addCompiler(eventCompiler);
     return this;
   }
   getObjectSymbol(object) {
@@ -5720,10 +5866,12 @@ class CompilerManager {
     return this.objectCompilerList;
   }
   dispose() {
-    this.geometryCompiler.dispose();
-    this.materialCompiler.dispose();
-    this.lineCompiler.dispose();
-    this.spriteCompiler.dispose();
+    Object.keys(this).forEach((key) => {
+      if (this[key] instanceof Compiler) {
+        this[key].dispose();
+      }
+    });
+    this.objectCompilerList = [];
     return this;
   }
 }
@@ -5756,9 +5904,6 @@ const CompilerManagerPlugin = function(params) {
       return;
     }
     (_a = this.compilerManager) == null ? void 0 : _a.support(this);
-    if (this.eventManager) {
-      compilerManager.getObjectCompilerList();
-    }
   });
   return true;
 };
@@ -6236,4 +6381,17 @@ class DisplayEngineSupport extends EngineSupport {
     this.install(ENGINEPLUGIN.EVENTMANAGER).complete();
   }
 }
-export { CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, GeometryDataSupport, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };
+const configGenerator = function(config) {
+  return (merge) => {
+    return Object.assign(config, merge);
+  };
+};
+const BasicEventLibrary = {
+  openWindow: configGenerator({
+    name: "openWindow",
+    params: {
+      url: ""
+    }
+  })
+};
+export { BasicEventLibrary, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, GeometryDataSupport, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };

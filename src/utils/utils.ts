@@ -2,7 +2,6 @@ import { CONFIGTYPE } from "../middleware/constants/configType";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig} from "../middleware/light/LightConfig"
 import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig } from "../middleware/geometry/GeometryConfig"
-import { getModelConfig } from "../middleware/model/ModelConfig"
 import { getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig } from "../middleware/texture/TextureConfig"
 import { getLineBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getSpriteMaterialConfig } from "../middleware/material/MaterialConfig"
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../middleware/camera/CameraConfig"
@@ -18,6 +17,10 @@ import { getLineConfig } from "../middleware/line/LineConfig";
 
 export function isValidKey(key: string | number | symbol , object: object): key is keyof typeof object {
   return key in object;
+}
+
+export function isValidEnum (enumeration: object, value: string | number): boolean {
+  return Object.values(enumeration).includes(value)
 }
 
 

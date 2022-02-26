@@ -54,29 +54,6 @@ export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> = fu
         controlsData[CONFIGTYPE.ORBITCONTROLS] = generateConfig(CONFIGTYPE.ORBITCONTROLS)!
       }
     }
-
-    // 事件
-    if (this.eventManager && this.compilerManager) {
-      // 对所有object增加事件，还有场景
-      const eventData = this.dataSupportManager!.eventDataSupport!
-
-      // TODO: global
-      const objectDataSupportList = this.dataSupportManager!.getObjectDataSupportList()
-
-      let data: ObjectCompilerTarget<ObjectConfig>
-      for (let objectDataSuport of objectDataSupportList) {
-        data = objectDataSuport.getData()
-        for (let vid in data) {
-          if (eventData[vid]) {
-            continue
-          }
-
-          eventData[vid] = generateConfig(CONFIGTYPE.EVENT, {
-            vid: vid
-          })
-        }
-      }
-    }
   })
 
   return true

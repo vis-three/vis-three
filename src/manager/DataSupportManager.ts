@@ -26,6 +26,11 @@ import { MeshCompilerTarget } from '../middleware/mesh/MeshCompiler';
 import { MeshDataSupport } from '../middleware/mesh/MeshDataSupport';
 import { PointsCompilerTarget } from '../middleware/points/PointsCompiler';
 import { PointsDataSupport } from '../middleware/points/PointsDataSupport';
+import { BasicObjectDataSupport, ObjectDataSupport } from '../middleware/object/ObjectDataSupport';
+import { Rule } from '../core/Rule';
+import { ObjectCompiler, ObjectCompilerTarget } from '../middleware/object/ObjectCompiler';
+import { ObjectConfig } from '../middleware/object/ObjectConfig';
+import { Object3D } from 'three';
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget
@@ -77,6 +82,7 @@ export class DataSupportManager {
   pointsDataSupport!: PointsDataSupport
 
   private dataSupportMap: Map<MODULETYPE, DataSupport<CompilerTarget, Compiler>>
+  private objectDataSupportList: BasicObjectDataSupport[]
 
   constructor (parameters?: DataSupportManagerParameters) {
 
@@ -93,10 +99,22 @@ export class DataSupportManager {
     this.lineDataSupport = new LineDataSupport()
     this.meshDataSupport = new MeshDataSupport()
     this.pointsDataSupport = new PointsDataSupport()
+    this.objectDataSupportList = []
 
     if (parameters) {
       Object.keys(parameters).forEach(key => {
-        this[key] !== undefined && (this[key] = parameters[key])
+        if (this[key] !== undefined ) {
+          this[key] = parameters[key]
+          if (parameters[key].IS_OBJECTDATASUPPORT) {
+            this.objectDataSupportList.push(parameters[key])
+          }
+        }
+      })
+    } else {
+      Object.keys(this).forEach(key => {
+        if (typeof this[key] === 'object' && this[key].IS_OBJECTDATASUPPORT) {
+          this.objectDataSupportList.push(this[key])
+        }
       })
     }
 
@@ -106,6 +124,10 @@ export class DataSupportManager {
     }
 
     this.dataSupportMap = dataSupportMap
+  }
+
+  getObjectDataSupportList (): BasicObjectDataSupport[] {
+    return this.objectDataSupportList
   }
 
   getDataSupport<D> (type: MODULETYPE): D | null {

@@ -11,7 +11,7 @@ import { LightCompiler } from "../middleware/light/LightCompiler";
 import { LineCompiler } from "../middleware/line/LineCompiler";
 import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { MeshCompiler } from "../middleware/mesh/MeshCompiler";
-import { ObjectCompiler, ObjectCompilerTarget } from "../middleware/object/ObjectCompiler";
+import { BasicObjectCompiler, ObjectCompiler, ObjectCompilerTarget } from "../middleware/object/ObjectCompiler";
 import { ObjectConfig } from "../middleware/object/ObjectConfig";
 import { PointsCompiler } from "../middleware/points/PointsCompiler";
 import { RendererCompiler } from "../middleware/render/RendererCompiler";
@@ -50,7 +50,7 @@ export class CompilerManager {
   private meshCompiler!: MeshCompiler
   private pointsCompiler!: PointsCompiler
 
-  private objectCompilerList: Array<ObjectCompiler<ObjectConfig, ObjectCompilerTarget<ObjectConfig>, Object3D>>
+  private objectCompilerList: Array<BasicObjectCompiler>
 
   constructor (parameters?: CompilerManagerParameters) {
     
@@ -186,6 +186,8 @@ export class CompilerManager {
       .linkObjectMap(...objectMapList)
     }
 
+    eventCompiler.linkObjectMap(...objectMapList)
+
     textureCompiler.linkRescourceMap(resourceManager.resourceMap)
     geometryCompiler.linkRescourceMap(resourceManager.resourceMap)
 
@@ -202,6 +204,7 @@ export class CompilerManager {
     lineDataSupport.addCompiler(lineCompiler)
     meshDataSupport.addCompiler(meshCompiler)
     pointsDataSupport.addCompiler(pointsCompiler)
+    eventDataSupport.addCompiler(eventCompiler)
     return this
   }
 
@@ -242,15 +245,17 @@ export class CompilerManager {
     return undefined
   }
 
-  getObjectCompilerList (): Compiler[] {
+  getObjectCompilerList (): BasicObjectCompiler[] {
     return this.objectCompilerList
   }
 
   dispose (): this {
-    this.geometryCompiler.dispose()
-    this.materialCompiler.dispose()
-    this.lineCompiler.dispose()
-    this.spriteCompiler.dispose()
+    Object.keys(this).forEach(key => {
+      if (this[key] instanceof Compiler) {
+        this[key].dispose()
+      }
+    })
+    this.objectCompilerList = []
     return this
   }
 }

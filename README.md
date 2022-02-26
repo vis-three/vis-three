@@ -167,6 +167,7 @@ engine.scene.add(new THREE.PointLight('white', 1))
 * 新增Line模块
 * 新增Mesh模块
 * 新增Points模块
+* 新增event模块
 
 * model模块弃用
 #### 预设

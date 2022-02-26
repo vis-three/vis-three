@@ -1,5 +1,7 @@
 import { Engine } from "../engine/Engine";
 import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerManager";
+import { BasicObjectCompiler } from "../middleware/object/ObjectCompiler";
+import { ObjectConfig } from "../middleware/object/ObjectConfig";
 
 import { Plugin } from "./plugin";
 
@@ -42,9 +44,19 @@ export const CompilerManagerPlugin: Plugin<CompilerManagerParameters> = function
     this.compilerManager?.support(this)
 
     // 有事件管理器，装饰所有物体编译器的add,remove，监听增加相关事件
-    if (this.eventManager) {
-      const objectCompilerList = compilerManager.getObjectCompilerList()
-    }
+    // if (this.eventManager) {
+    //   const objectCompilerList = compilerManager.getObjectCompilerList()
+    //   for (let objectCompiler of objectCompilerList) {
+    //     objectCompiler.add = function (vid: string, config: ObjectConfig): BasicObjectCompiler {
+
+    //       return this
+    //     }
+
+    //     objectCompiler.remove = function (vid: string): BasicObjectCompiler {
+    //       return this
+    //     }
+    //   }
+    // }
   })
 
   return true
