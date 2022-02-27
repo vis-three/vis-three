@@ -31,6 +31,10 @@ export class DataSupport<D extends CompilerTarget, C extends Compiler> {
     return this.data
   }
 
+  getConfig (vid: string) {
+    return this.data[vid]
+  }
+
   addCompiler (compiler: C): this {
     compiler.setTarget(this.data)
     compiler.compileAll()

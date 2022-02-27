@@ -2,6 +2,7 @@ import { Tween } from "@tweenjs/tween.js";
 import { ObjectEvent } from "../../manager/EventManager";
 import { RenderEvent } from "../../manager/RenderManager";
 import { EventCompiler, EventHandler } from "../../middleware/event/EventCompiler";
+import { ObjectConfig } from "../../middleware/object/ObjectConfig";
 import { MoveSpacing, MoveTo } from "./configure";
 
 export const moveTo: EventHandler<MoveTo> = function (compiler: EventCompiler, config: MoveTo): (event?: ObjectEvent) => void {
@@ -14,6 +15,13 @@ export const moveTo: EventHandler<MoveTo> = function (compiler: EventCompiler, c
   }
 
   let renderManager = compiler.engine.renderManager!
+  // 同步配置
+  const supportData = compiler.engine.dataSupportManager.getObjectConfig<ObjectConfig>(params.target)
+
+  if (!config) {
+    console.error(`can not found object config: ${params.target}`)
+    return () => {}
+  }
 
   return () => {
     const tween = new Tween(object!.position)
@@ -31,6 +39,9 @@ export const moveTo: EventHandler<MoveTo> = function (compiler: EventCompiler, c
 
     tween.onComplete(() => {
       renderManager.removeEventListener<RenderEvent>('render', renderFun)
+      supportData!.position.x = params.position.x
+      supportData!.position.y = params.position.y
+      supportData!.position.z = params.position.z
     })
   }
 }
@@ -45,14 +56,17 @@ export const moveSpacing: EventHandler<MoveSpacing> = function (compiler: EventC
   }
 
   let renderManager = compiler.engine.renderManager!
+  // 同步配置
+  const supportData = compiler.engine.dataSupportManager.getObjectConfig<ObjectConfig>(params.target)
 
   return () => {
-    const tween = new Tween(object!.position)
-    .to({
+    let position = {
       x: object!.position.x + params.spacing.x,
       y: object!.position.y + params.spacing.y,
       z: object!.position.z + params.spacing.z,
-    })
+    }
+    const tween = new Tween(object!.position)
+    .to(position)
     .duration(params.duration)
     .delay(params.delay)
     .easing(params.timingFunction)
@@ -66,6 +80,9 @@ export const moveSpacing: EventHandler<MoveSpacing> = function (compiler: EventC
 
     tween.onComplete(() => {
       renderManager.removeEventListener<RenderEvent>('render', renderFun)
+      supportData!.position.x = position.x
+      supportData!.position.y = position.y
+      supportData!.position.z = position.z
     })
   }
 } 

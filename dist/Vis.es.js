@@ -3777,6 +3777,9 @@ class DataSupport {
     this.data = this.broadcast.proxyExtends(data);
     return this.data;
   }
+  getConfig(vid) {
+    return this.data[vid];
+  }
   addCompiler(compiler) {
     compiler.setTarget(this.data);
     compiler.compileAll();
@@ -4207,6 +4210,19 @@ class DataSupportManager {
       console.warn(`can not found this type in dataSupportManager: ${type}`);
     }
     return this;
+  }
+  getObjectConfig(vid) {
+    if (!validate(vid)) {
+      console.warn(`vid is illeage: ${vid}`);
+      return null;
+    }
+    for (let objectDataSupport of this.objectDataSupportList) {
+      const config = objectDataSupport.getConfig(vid);
+      if (config) {
+        return config;
+      }
+    }
+    return null;
   }
   load(config) {
     const dataSupportMap = this.dataSupportMap;
@@ -5333,6 +5349,12 @@ const moveTo$1 = function(compiler, config) {
     };
   }
   let renderManager = compiler.engine.renderManager;
+  const supportData = compiler.engine.dataSupportManager.getObjectConfig(params.target);
+  if (!config) {
+    console.error(`can not found object config: ${params.target}`);
+    return () => {
+    };
+  }
   return () => {
     const tween = new Tween(object.position).to(params.position).duration(params.duration).delay(params.delay).easing(params.timingFunction).start();
     const renderFun = (event) => {
@@ -5341,6 +5363,9 @@ const moveTo$1 = function(compiler, config) {
     renderManager.addEventListener("render", renderFun);
     tween.onComplete(() => {
       renderManager.removeEventListener("render", renderFun);
+      supportData.position.x = params.position.x;
+      supportData.position.y = params.position.y;
+      supportData.position.z = params.position.z;
     });
   };
 };
@@ -5353,18 +5378,23 @@ const moveSpacing$1 = function(compiler, config) {
     };
   }
   let renderManager = compiler.engine.renderManager;
+  const supportData = compiler.engine.dataSupportManager.getObjectConfig(params.target);
   return () => {
-    const tween = new Tween(object.position).to({
+    let position = {
       x: object.position.x + params.spacing.x,
       y: object.position.y + params.spacing.y,
       z: object.position.z + params.spacing.z
-    }).duration(params.duration).delay(params.delay).easing(params.timingFunction).start();
+    };
+    const tween = new Tween(object.position).to(position).duration(params.duration).delay(params.delay).easing(params.timingFunction).start();
     const renderFun = (event) => {
       tween.update();
     };
     renderManager.addEventListener("render", renderFun);
     tween.onComplete(() => {
       renderManager.removeEventListener("render", renderFun);
+      supportData.position.x = position.x;
+      supportData.position.y = position.y;
+      supportData.position.z = position.z;
     });
   };
 };

@@ -31,6 +31,8 @@ import { Rule } from '../core/Rule';
 import { ObjectCompiler, ObjectCompilerTarget } from '../middleware/object/ObjectCompiler';
 import { ObjectConfig } from '../middleware/object/ObjectConfig';
 import { Object3D } from 'three';
+import { validate } from 'uuid';
+import { SymbolConfig } from '../middleware/common/CommonConfig';
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget
@@ -155,6 +157,22 @@ export class DataSupportManager {
       console.warn(`can not found this type in dataSupportManager: ${type}`)
     }
     return this
+  }
+
+  getObjectConfig<T extends SymbolConfig>(vid: string): T | null {
+    if (!validate(vid)) {
+      console.warn(`vid is illeage: ${vid}`)
+      return null
+    }
+
+    for (let objectDataSupport of this.objectDataSupportList) {
+      const config = objectDataSupport.getConfig(vid)
+      if (config) {
+        return config as T
+      }
+    }
+
+    return null
   }
 
   load (config: LoadOptions): this {
