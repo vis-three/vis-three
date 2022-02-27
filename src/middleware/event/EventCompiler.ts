@@ -3,15 +3,17 @@ import { EventConfig } from "./eventConfig";
 import { SymbolConfig } from "../common/CommonConfig";
 import { Object3D } from "three";
 import { EVENTNAME, ObjectEvent } from "../../manager/EventManager";
-import { isValidEnum, isValidKey } from "../../utils/utils";
+import { isValidEnum } from "../../utils/utils";
 import {v4 as getUuid} from 'uuid'
 
-import * as BasicEventLirary from '../../convenient/BasicEventLibrary/handler'
-import { BasicEventAllConfig } from "../../convenient/BasicEventLibrary/configure";
+import * as BasicEventLbirary from '../../convenient/BasicEventLibrary/handler'
+import * as RealTimeAnimateLibrary from '../../convenient/RealTimeAnimateLibrary/handler'
+import { EngineSupport } from "../../engine/EngineSupport";
 
 export type EventHandler<C extends BasicEventConfig> = (compiler: EventCompiler, config: C) => (event?: ObjectEvent) => void
 export interface BasicEventConfig {
   name: string
+  desp: string
 }
 
 export interface EventCompilerTarget extends CompilerTarget {
@@ -19,7 +21,8 @@ export interface EventCompilerTarget extends CompilerTarget {
 }
 
 export interface EventCompilerParameters {
-  target: EventCompilerTarget
+  target: EventCompilerTarget,
+  engine: EngineSupport
 }
 
 interface EventStructure {
@@ -38,9 +41,11 @@ export class EventCompiler extends Compiler {
 
   static eventLibrary:{[key: string]: EventHandler<BasicEventConfig>} = {}
 
-  static registerEvent = function<T extends BasicEventConfig> (map: {[key: string]: EventHandler<T>}) {
+  static registerEvent = function (map: unknown) {
     EventCompiler.eventLibrary = Object.assign(EventCompiler.eventLibrary, map)
   }
+
+  engine!: EngineSupport
 
   private target: EventCompilerTarget
   private map: Map<string, EventStructure>
@@ -50,19 +55,22 @@ export class EventCompiler extends Compiler {
 
   constructor (parameters?: EventCompilerParameters) {
     super()
-
     if (parameters) {
       this.target = parameters.target
+      this.engine = parameters.engine
     } else {
       this.target = {}
+      // TSC: Uncaught ReferenceError: Cannot access 'Engine' before initialization
+      // this.engine = new EngineSupport()
     }
+
     this.map = new Map()
     this.funMap = new Map()
     this.objectMapSet = new Set()
   }
 
   // 获取物体
-  private getObject (vid: string): Object3D | null {
+  getObject (vid: string): Object3D | null {
     for (const map of this.objectMapSet) {
       if (map.has(vid)) {
         return map.get(vid)!
@@ -233,4 +241,5 @@ export class EventCompiler extends Compiler {
   }
 }
 
-EventCompiler.registerEvent<BasicEventAllConfig>(BasicEventLirary)
+EventCompiler.registerEvent(BasicEventLbirary)
+EventCompiler.registerEvent(RealTimeAnimateLibrary)

@@ -1,7 +1,7 @@
-import { Material, Mesh, Object3D, Texture } from "three";
+import { Material, Object3D, Texture } from "three";
 import { validate } from "uuid";
 import { Compiler } from "../core/Compiler";
-import { Engine } from "../main";
+import { EngineSupport } from "../engine/EngineSupport";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
@@ -11,8 +11,7 @@ import { LightCompiler } from "../middleware/light/LightCompiler";
 import { LineCompiler } from "../middleware/line/LineCompiler";
 import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { MeshCompiler } from "../middleware/mesh/MeshCompiler";
-import { BasicObjectCompiler, ObjectCompiler, ObjectCompilerTarget } from "../middleware/object/ObjectCompiler";
-import { ObjectConfig } from "../middleware/object/ObjectConfig";
+import { BasicObjectCompiler} from "../middleware/object/ObjectCompiler";
 import { PointsCompiler } from "../middleware/points/PointsCompiler";
 import { RendererCompiler } from "../middleware/render/RendererCompiler";
 import { SceneCompiler } from "../middleware/scene/SceneCompiler";
@@ -65,7 +64,7 @@ export class CompilerManager {
 
   }
 
-  support (engine: Engine): this {
+  support (engine: EngineSupport): this {
 
     const dataSupportManager = engine.dataSupportManager!
 
@@ -166,7 +165,8 @@ export class CompilerManager {
     this.controlsCompiler = controlsCompiler
 
     const eventCompiler = new EventCompiler({
-      target: eventDataSupport.getData()
+      target: eventDataSupport.getData(),
+      engine: engine
     })
     this.eventCompiler = eventCompiler
 

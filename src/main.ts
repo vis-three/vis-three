@@ -31,7 +31,8 @@ import { DisplayEngineSupport } from './engine/DisplayEngineSupport';
 import { LineDataSupport } from './middleware/line/LineDataSupport';
 import { MeshDataSupport } from './middleware/mesh/MeshDataSupport';
 import { PointsDataSupport } from './middleware/points/PointsDataSupport';
-import { BasicEventLibrary } from './convenient/BasicEventLibrary/configure'
+import * as BasicEventLibrary from './convenient/BasicEventLibrary/configure'
+import * as RealTimeAnimateLibrary from './convenient/RealTimeAnimateLibrary/configure'
 
 export {
   // menu
@@ -74,6 +75,7 @@ export {
 
   // eventLibaray
   BasicEventLibrary,
+  RealTimeAnimateLibrary,
 
   // helper
   PointLightHelper,

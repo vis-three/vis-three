@@ -1,4 +1,5 @@
 import { BasicEventConfig } from "../../middleware/event/EventCompiler"
+import { generateConfigFunction } from "../../utils/utils"
 
 export interface OpenWindow extends BasicEventConfig{
   params: {
@@ -6,19 +7,10 @@ export interface OpenWindow extends BasicEventConfig{
   }
 }
 
-export type BasicEventAllConfig = OpenWindow
-
-const configGenerator = function<T extends BasicEventConfig> (config: T) {
-  return (merge: OpenWindow): OpenWindow => {
-    return Object.assign(config, merge)
+export const openWindow = generateConfigFunction<OpenWindow>({
+  name: 'openWindow',
+  desp: '打开url浏览窗口',
+  params: {
+    url: ''
   }
-}
-
-export const BasicEventLibrary  = {
-  openWindow: configGenerator<OpenWindow>({
-    name: 'openWindow',
-    params: {
-      url: ''
-    }
-  })
-}
+})
