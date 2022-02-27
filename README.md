@@ -95,8 +95,77 @@ const engine = new Vis.ModelingEngineSupport()
   // loaded do something...
 })
 ```
+## 渲染引擎
 
-## 外部资源加载
+#### 内置引擎
+##### ModelingEngine开发下的渲染引擎
+* 提供物体可视化辅助
+* 内置变换控制器，轨道控制器, 性能监视器，事件管理器，后期插件
+* 使用ModelingScene提供多视角观察，场景渲染模式：geometry,material,light, env
+
+##### DisplayEngine展示下的渲染引擎
+* 内置轨道控制器，事件管理器，后期插件
+
+##### EngineSupport（xxxEngineSupport） 配置化支持引擎
+* 能够使用配置化开发
+* 内置loader管理器，资源管理器，配置化support的相关插件
+
+#### 自定义引擎
+
+##### 引擎基板
+* Engine 纯净的引擎基板
+* EngineSupport 配置化支持引擎基板
+
+##### 引擎插件
+* WebGLRenderer: 3D渲染器插件
+* Scene: 普通场景插件
+* ModelingScene: 开发下的场景插件
+* RenderManager: 渲染管理器插件
+* OrbitControls: 轨道控制器插件
+* Stats: 资源监视器插件
+* EffectComposer: 后期处理器插件
+* PointerManager: 指针管理器插件
+* EventManager: 事件管理器插件
+* TransformControls: 变换控制器插件
+* LoaderManager: 加载器管理器插件
+* ResourceManager: 资源管理器插件
+* DataSupportManager: 数据支持管理器插件
+* CompilerManager: 编译管理器插件
+* CSS3DRenderer: CSS3D渲染器插件（预）
+
+##### 自定义引擎使用
+``` js
+// ModelingEngine
+const engine = new Engine()
+  .install('WebGLRenderer', {
+      antialias: true,
+      alpha: true
+    })
+  .install('ModelingScene', {
+    hasDefaultPerspectiveCamera: true,
+    hasDefaultOrthographicCamera: true,
+    hasAxesHelper: true,
+    hasGridHelper: true,
+    hasDisplayMode: true,
+    displayMode: 'env'
+  })
+  .install('RenderManager')
+  .install('Stats')
+  .install('EffectComposer', {
+    WebGLMultisampleRenderTarget: true
+  })
+  .install('OrbitControls')
+  .install('PointerManager')
+  .install('EventManager')
+  .install('TransformControls')
+  .complete() // 安装插件完成后调用
+  .setDom(document.getElementById('app'))
+  .setSize()
+  .setStats(true)
+  .play()
+```
+
+## 资源管理
 
 #### 加载管理器
 ``` js
@@ -132,7 +201,7 @@ resourceManager.addEventListener('mapped', e => {
 
 ```
 
-## 原生THREE应用
+## 支持原生THREE应用
 
 ``` js
 const engine = new Vis.ModelingEngine()

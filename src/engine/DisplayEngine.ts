@@ -20,7 +20,6 @@ export class DisplayEngine extends Engine {
   declare renderManager: RenderManager
   declare pointerManager: PointerManager
   declare eventManager: EventManager
-  declare transing: boolean
 
   declare setSize: (width: number, height: number) => this
   declare setCamera: (camera: Camera) => this
