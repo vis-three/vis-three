@@ -3967,7 +3967,6 @@ class SpriteDataSupport extends ObjectDataSupport {
 }
 const EventRule = function(notice, compiler) {
   const { operate, key, path, value } = notice;
-  console.log(notice);
   if (operate === "add") {
     if (validate(key) && !path.length) {
       compiler.add(key, value);
@@ -3983,6 +3982,45 @@ const EventRule = function(notice, compiler) {
           return;
         }
         compiler.addEvent(vid, eventName, value);
+      }
+    }
+    return;
+  }
+  if (operate === "set") {
+    if (!path.length) {
+      return;
+    }
+    const [vid, eventName, index] = path;
+    if (!validate(vid)) {
+      console.warn(`EventRule: vid is illeage: ${vid}`);
+      return;
+    }
+    if (!isValidEnum(EVENTNAME, eventName)) {
+      console.warn(`EventRule: eventName is not support: ${eventName}`);
+      return;
+    }
+    if (!Number.isInteger(Number(index))) {
+      console.warn(`EventRule: this index is not integer: ${index}`);
+      return;
+    }
+    compiler.updateEvent(vid, eventName, Number(index));
+    return;
+  }
+  if (operate === "delete") {
+    if (validate(key) && !path.length) {
+      compiler.remove(key);
+    } else {
+      if (Number.isInteger(Number(key)) && path.length === 2) {
+        const [vid, eventName] = path;
+        if (!validate(vid)) {
+          console.warn(`EventRule: vid is illeage: ${vid}`);
+          return;
+        }
+        if (!isValidEnum(EVENTNAME, eventName)) {
+          console.warn(`EventRule: eventName is not support: ${eventName}`);
+          return;
+        }
+        compiler.removeEvent(vid, eventName, Number(key));
       }
     }
     return;
@@ -4381,6 +4419,7 @@ class ObjectCompiler extends Compiler {
   }
   dispose() {
     this.map.clear();
+    this.objectMapSet.clear();
     return this;
   }
 }
@@ -4680,7 +4719,53 @@ const _EventCompiler = class extends Compiler {
     targetObject.addEventListener(eventName, fun);
     return this;
   }
-  remove() {
+  removeEvent(vid, eventName, index) {
+    if (!this.map.has(vid)) {
+      console.warn(`EventCompiler: No matching vid found: ${vid}`);
+      return this;
+    }
+    const targetObject = this.getTargetObject(vid);
+    if (!targetObject) {
+      console.warn(`EventCompiler: no object with matching vid found: ${vid}`);
+      return this;
+    }
+    const structure = this.map.get(vid);
+    const funSymbol = structure[eventName][index];
+    const fun = this.funMap.get(funSymbol);
+    if (!fun) {
+      console.warn(`EventCompiler: No matching fun found: ${vid}, ${eventName}, ${index}`);
+      return this;
+    }
+    targetObject.removeEventListener(eventName, fun);
+    this.funMap.delete(funSymbol);
+    structure[eventName].splice(index, 1);
+    return this;
+  }
+  updateEvent(vid, eventName, index) {
+    this.removeEvent(vid, eventName, index);
+    const config = this.target[vid][eventName][index];
+    this.addEvent(vid, eventName, config);
+  }
+  remove(vid) {
+    if (!this.map.has(vid)) {
+      console.warn(`EventCompiler: No matching vid found: ${vid}`);
+      return this;
+    }
+    const targetObject = this.getTargetObject(vid);
+    if (!targetObject) {
+      console.warn(`EventCompiler: no object with matching vid found: ${vid}`);
+      return this;
+    }
+    const structure = this.map.get(vid);
+    for (let key in structure) {
+      let funSymbolList = structure[key];
+      if (Array.isArray(funSymbolList) && isValidEnum(EVENTNAME, key) && funSymbolList.length) {
+        for (let funSymbol of funSymbolList) {
+          this.removeEvent(vid, key, funSymbol);
+        }
+      }
+    }
+    this.map.delete(vid);
     return this;
   }
   setTarget(target) {
@@ -4695,6 +4780,9 @@ const _EventCompiler = class extends Compiler {
     return this;
   }
   dispose() {
+    this.map.clear();
+    this.funMap.clear();
+    this.objectMapSet.clear();
     return this;
   }
 };

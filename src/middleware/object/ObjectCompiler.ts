@@ -211,6 +211,7 @@ export abstract class ObjectCompiler<C extends ObjectConfig, T extends ObjectCom
     
     dispose (): this {
       this.map.clear()
+      this.objectMapSet.clear()
       return this
     }
 

@@ -88,7 +88,9 @@
     engine.dataSupportManager.eventDataSupport.getData()[event.vid] = event
 
 
-    console.log(engine)
+    setTimeout(() => {
+      event.pointerup[0].params.url = 'https://www.baidu.com'
+    }, 2000)
   </script>
   
 </body>

@@ -44,7 +44,7 @@ export class EventCompiler extends Compiler {
 
   private target: EventCompilerTarget
   private map: Map<string, EventStructure>
-  private funMap: Map<string, Function>
+  private funMap: Map<string, (event?: ObjectEvent) => void>
   private objectMapSet: Set<Map<SymbolConfig['vid'], Object3D>>
 
 
@@ -147,7 +147,68 @@ export class EventCompiler extends Compiler {
     return this
   }
 
-  remove (): this {
+  removeEvent (vid: string, eventName: EVENTNAME, index: number): this {
+    if (!this.map.has(vid)) {
+      console.warn(`EventCompiler: No matching vid found: ${vid}`)
+      return this
+    }
+
+    const targetObject = this.getTargetObject(vid) as Object3D<ObjectEvent>
+
+    if (!targetObject) {
+      console.warn(`EventCompiler: no object with matching vid found: ${vid}`)
+      return this
+    }   
+
+    const structure = this.map.get(vid)!
+    const funSymbol = structure[eventName][index]
+    const fun = this.funMap.get(funSymbol)
+
+    if (!fun) {
+      console.warn(`EventCompiler: No matching fun found: ${vid}, ${eventName}, ${index}`)
+      return this
+    }
+
+    targetObject.removeEventListener(eventName, fun!)
+    this.funMap.delete(funSymbol)
+    structure[eventName].splice(index, 1)
+
+    return this
+  }
+
+  updateEvent (vid: string, eventName: EVENTNAME, index: number) {
+    this.removeEvent(vid, eventName, index)
+
+    // 找到最新配置
+    const config = this.target[vid][eventName][index]
+
+    this.addEvent(vid, eventName, config)
+  }
+
+  remove (vid: string): this {
+    if (!this.map.has(vid)) {
+      console.warn(`EventCompiler: No matching vid found: ${vid}`)
+      return this
+    }
+
+    const targetObject = this.getTargetObject(vid) as Object3D<ObjectEvent>
+
+    if (!targetObject) {
+      console.warn(`EventCompiler: no object with matching vid found: ${vid}`)
+      return this
+    }  
+
+    const structure = this.map.get(vid)!
+
+    for (let key in structure) {
+      let funSymbolList = structure[key]
+      if (Array.isArray(funSymbolList) &&  isValidEnum(EVENTNAME, key) && funSymbolList.length) {
+        for (let funSymbol of funSymbolList) {
+          this.removeEvent(vid, key as EVENTNAME, funSymbol)
+        }
+      }
+    }
+    this.map.delete(vid)
     return this
   }
 
@@ -165,6 +226,9 @@ export class EventCompiler extends Compiler {
   }
 
   dispose (): this {
+    this.map.clear()
+    this.funMap.clear()
+    this.objectMapSet.clear()
     return this
   }
 }
