@@ -7290,4 +7290,31 @@ var configure = /* @__PURE__ */ Object.freeze({
   moveTo,
   moveSpacing
 });
-export { configure$1 as BasicEventLibrary, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, GeometryDataSupport, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };
+class GroupHelper extends LineSegments {
+  constructor(group) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "type", "VisGroupHelper");
+    this.target = group;
+    const geometry = new EdgesGeometry(new BoxBufferGeometry(1, 1, 1));
+    geometry.computeBoundingBox();
+    this.geometry = geometry;
+    this.material = getHelperLineMaterial();
+    this.matrixAutoUpdate = false;
+    this.matrix = group.matrix;
+  }
+  raycast(raycaster, intersects) {
+    const matrixWorld = this.matrixWorld;
+    const box = this.geometry.boundingBox.clone();
+    box.applyMatrix4(matrixWorld);
+    if (raycaster.ray.intersectsBox(box)) {
+      const target = this.target;
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(target.position),
+        object: target,
+        point: target.position
+      });
+    }
+  }
+}
+export { configure$1 as BasicEventLibrary, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, GeometryDataSupport, GroupHelper, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };
