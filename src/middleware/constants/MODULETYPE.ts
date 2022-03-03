@@ -11,5 +11,6 @@ export enum MODULETYPE {
   EVENT = 'event',
   LINE = 'line',
   MESH = 'mesh',
-  POINTS = 'points'
+  POINTS = 'points',
+  GROUP = 'group'
 }

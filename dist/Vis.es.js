@@ -2942,6 +2942,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["LINESEGMENTS"] = "LineSegments";
   CONFIGTYPE2["POINTS"] = "Points";
   CONFIGTYPE2["SPRITE"] = "Sprite";
+  CONFIGTYPE2["GROUP"] = "Group";
   CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
   CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
   CONFIGTYPE2["CANVASTEXTURE"] = "CanvasTexture";
@@ -2976,6 +2977,7 @@ var MODULETYPE;
   MODULETYPE2["LINE"] = "line";
   MODULETYPE2["MESH"] = "mesh";
   MODULETYPE2["POINTS"] = "points";
+  MODULETYPE2["GROUP"] = "group";
 })(MODULETYPE || (MODULETYPE = {}));
 const getObjectConfig = () => {
   return {

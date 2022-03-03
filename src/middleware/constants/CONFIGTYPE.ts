@@ -9,6 +9,7 @@ export enum CONFIGTYPE {
   LINESEGMENTS = 'LineSegments',
   POINTS ='Points',
   SPRITE = 'Sprite',
+  GROUP = 'Group',
 
   IMAGETEXTURE = 'ImageTexture',
   CUBETEXTURE = 'CubeTexture',
