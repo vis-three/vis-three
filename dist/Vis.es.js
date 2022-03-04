@@ -4345,62 +4345,6 @@ const DataSupportManagerPlugin = function(params) {
   });
   return true;
 };
-class EngineSupport extends Engine {
-  constructor(parameters) {
-    super();
-    __publicField(this, "IS_ENGINESUPPORT", true);
-    this.install(ENGINEPLUGIN.LOADERMANAGER).install(ENGINEPLUGIN.RESOURCEMANAGER).install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters).install(ENGINEPLUGIN.COMPILERMANAGER);
-  }
-  loadConfig(config, callback) {
-    const loadLifeCycle = () => {
-      const dataSupportManager = this.dataSupportManager;
-      config.texture && dataSupportManager.load({ texture: config.texture });
-      config.material && dataSupportManager.load({ material: config.material });
-      delete config.texture;
-      delete config.material;
-      dataSupportManager.load(config);
-    };
-    if (config.assets && config.assets.length) {
-      this.loaderManager.reset().load(config.assets);
-      const mappedFun = (event) => {
-        delete config.assets;
-        loadLifeCycle();
-        this.resourceManager.removeEventListener("mapped", mappedFun);
-        callback && callback(event);
-      };
-      this.resourceManager.addEventListener("mapped", mappedFun);
-    } else {
-      loadLifeCycle();
-      callback && callback();
-    }
-    return this;
-  }
-  loadConfigAsync(config) {
-    return new Promise((resolve, reject) => {
-      const loadLifeCycle = () => {
-        const dataSupportManager = this.dataSupportManager;
-        config.texture && dataSupportManager.load({ texture: config.texture });
-        config.material && dataSupportManager.load({ material: config.material });
-        delete config.texture;
-        delete config.material;
-        dataSupportManager.load(config);
-      };
-      if (config.assets && config.assets.length) {
-        this.loaderManager.reset().load(config.assets);
-        const mappedFun = (event) => {
-          delete config.assets;
-          loadLifeCycle();
-          this.resourceManager.removeEventListener("mapped", mappedFun);
-          resolve(event);
-        };
-        this.resourceManager.addEventListener("mapped", mappedFun);
-      } else {
-        loadLifeCycle();
-        resolve(void 0);
-      }
-    });
-  }
-}
 class Compiler {
   static applyConfig(config, object, filter = {}, callBack) {
     const filterMap = Object.assign({
@@ -6982,9 +6926,7 @@ const CompilerManagerPlugin = function(params) {
       console.warn("must install dataSupportManager before compilerManager plugin.");
       return;
     }
-    if (this instanceof EngineSupport) {
-      this.compilerManager.support(this);
-    }
+    this.compilerManager.support(this);
   });
   return true;
 };
@@ -7368,6 +7310,62 @@ class CanvasTextureGenerator {
     canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
     document.body.appendChild(this.canvas);
     return this;
+  }
+}
+class EngineSupport extends Engine {
+  constructor(parameters) {
+    super();
+    __publicField(this, "IS_ENGINESUPPORT", true);
+    this.install(ENGINEPLUGIN.LOADERMANAGER).install(ENGINEPLUGIN.RESOURCEMANAGER).install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters).install(ENGINEPLUGIN.COMPILERMANAGER);
+  }
+  loadConfig(config, callback) {
+    const loadLifeCycle = () => {
+      const dataSupportManager = this.dataSupportManager;
+      config.texture && dataSupportManager.load({ texture: config.texture });
+      config.material && dataSupportManager.load({ material: config.material });
+      delete config.texture;
+      delete config.material;
+      dataSupportManager.load(config);
+    };
+    if (config.assets && config.assets.length) {
+      this.loaderManager.reset().load(config.assets);
+      const mappedFun = (event) => {
+        delete config.assets;
+        loadLifeCycle();
+        this.resourceManager.removeEventListener("mapped", mappedFun);
+        callback && callback(event);
+      };
+      this.resourceManager.addEventListener("mapped", mappedFun);
+    } else {
+      loadLifeCycle();
+      callback && callback();
+    }
+    return this;
+  }
+  loadConfigAsync(config) {
+    return new Promise((resolve, reject) => {
+      const loadLifeCycle = () => {
+        const dataSupportManager = this.dataSupportManager;
+        config.texture && dataSupportManager.load({ texture: config.texture });
+        config.material && dataSupportManager.load({ material: config.material });
+        delete config.texture;
+        delete config.material;
+        dataSupportManager.load(config);
+      };
+      if (config.assets && config.assets.length) {
+        this.loaderManager.reset().load(config.assets);
+        const mappedFun = (event) => {
+          delete config.assets;
+          loadLifeCycle();
+          this.resourceManager.removeEventListener("mapped", mappedFun);
+          resolve(event);
+        };
+        this.resourceManager.addEventListener("mapped", mappedFun);
+      } else {
+        loadLifeCycle();
+        resolve(void 0);
+      }
+    });
   }
 }
 class ModelingEngineSupport extends EngineSupport {

@@ -1,3 +1,4 @@
+import { Engine, ENGINEPLUGIN } from "./engine/Engine";
 import { DisplayEngine } from './engine/DisplayEngine';
 import { ModelingEngine } from "./engine/ModelingEngine";
 
@@ -21,7 +22,6 @@ import { RendererDataSupport } from "./middleware/render/RendererDataSupport";
 import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
 import { EVENTTYPE } from "./middleware/constants/EVENTTYPE";
 import { TextureDisplayer } from "./displayer/TextureDisplayer";
-import { Engine, ENGINEPLUGIN } from "./engine/Engine";
 import { ModelingScene, SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./extends/ModelingScene/ModelingScene";
 import { SceneDataSupport } from './middleware/scene/SceneDataSupport';
 import { CanvasTextureGenerator } from './convenient/CanvasTextureGenerator';

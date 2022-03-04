@@ -1,10 +1,9 @@
-import { Engine } from "../engine/Engine";
 import { EngineSupport } from "../engine/EngineSupport";
 import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerManager";
 
 import { Plugin } from "./plugin";
 
-export const CompilerManagerPlugin: Plugin<CompilerManagerParameters> = function (this: Engine, params: CompilerManagerParameters): boolean {
+export const CompilerManagerPlugin: Plugin<CompilerManagerParameters> = function (this: EngineSupport, params: CompilerManagerParameters): boolean {
   if (this.compilerManager) {
     console.warn('engine has installed compilerManager plugin.')
     return false
@@ -41,9 +40,9 @@ export const CompilerManagerPlugin: Plugin<CompilerManagerParameters> = function
       return
     }
 
-    if (this instanceof EngineSupport) {
+    // if (this instanceof EngineSupport) {
       this.compilerManager!.support(this)
-    }
+    // }
 
 
     // 有事件管理器，装饰所有物体编译器的add,remove，监听增加相关事件

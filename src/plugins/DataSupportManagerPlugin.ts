@@ -9,8 +9,9 @@ import { generateConfig } from "../convenient/generateConfig";
 import { Plugin } from "./plugin";
 import { ObjectCompilerTarget } from "../middleware/object/ObjectCompiler";
 import { ObjectConfig } from "../middleware/object/ObjectConfig";
+import { EngineSupport } from "../main";
 
-export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> = function (this: Engine, params: DataSupportManagerParameters): boolean {
+export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> = function (this: EngineSupport, params: DataSupportManagerParameters): boolean {
   if (this.dataSupportManager) {
     console.warn('engine has installed dataSupportManager plugin.')
     return false
