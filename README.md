@@ -3,7 +3,7 @@
 配置化的three.js开发。
 
 <p>
-  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.4-{}" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.5-{}" alt="Version"></a>
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MIT-{}" alt="License"></a>
 </p>
 
@@ -230,12 +230,17 @@ engine.scene.add(new THREE.PointLight('white', 1))
 
 ## 版本更新
 
-#### vsersion 0.04
+#### version 0.0.6
+* loaderManager增加beforeLoad事件
+
+#### version 0.0.5
+* fix：Error: Cannot access 'Engine' before initialization
+#### version 0.0.4
 * 新增group模块
 * 导出engineSupport
 * 新增基础事件库——BasicEventLibrary
 * 新增实时动画库——RealTimeAnimateLibrary
-#### vsersion 0.03
+#### version 0.0.3
 * 新增loaderManager, resourceManager, compilerManager插件
 * 将middleware中的engineSupport模块进行engine插件化处理，部分api有所变动
 * 新增Line模块

@@ -4,6 +4,7 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader"
 
 export enum LOADERMANAGER {
+  BEFORELOAD = 'beforeLoad',
   LOADING = 'loading',
   DETAILLOADING = 'detailLoading',
   DETAILLOADED = 'detailLoaded',
@@ -17,6 +18,10 @@ export interface LoadDetail {
   message: string
 }
 
+export interface BeforeLoadEvent extends BaseEvent {
+  urlList: string[]
+}
+
 export interface LoadingEvent extends BaseEvent {
   loadTotal: number
   loadSuccess: number
@@ -26,6 +31,7 @@ export interface LoadingEvent extends BaseEvent {
 export interface DetailEvent extends BaseEvent {
   detail: LoadDetail
 }
+
 
 export interface LoadedEvent extends BaseEvent {
   loadTotal: number
@@ -98,6 +104,10 @@ export class LoaderManager extends EventDispatcher {
   load (urlList: Array<string>): this {
     this.reset()
     this.isLoading = true
+    this.dispatchEvent({
+      type: LOADERMANAGER.BEFORELOAD,
+      urlList: [...urlList]
+    })
     if (urlList.length <= 0) {
       this.checkLoaded()
       console.warn(`url list is empty.`)
