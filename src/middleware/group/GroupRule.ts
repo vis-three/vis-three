@@ -16,6 +16,8 @@ export const GroupRule: GroupRule = function (input: ProxyNotice, compiler: Grou
   
   const {operate, key, path, value} = input
 
+  console.log(input)
+  
   if (operate === 'add') {
     if (validate(key)) {
       compiler.add(key, value)

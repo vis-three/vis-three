@@ -4,6 +4,8 @@ import { CameraHelper } from "../helper/camera/CameraHelper";
 import { ModelingScene } from "./ModelingScene";
 import { MeshHelper } from "../helper/object/MeshHelper";
 import { ACTIVECOLOR, HELPERCOLOR, HOVERCOLOR } from "../../middleware/constants/COLOR";
+import { CONFIGTYPE } from "../../middleware/constants/configType";
+import { GroupHelper } from "../helper/object/GroupHelper";
 
 export enum HELPERCOMPILEREVENTTYPE {
   ADD = 'add',
@@ -28,10 +30,11 @@ export class SceneHelperCompiler extends EventDispatcher<AddHelperEvent | Remove
   private static hoverColorHex = new Color(HOVERCOLOR).getHex()
 
   private static typeHelperMap = {
-    'PointLight': PointLightHelper,
-    'PerspectiveCamera': CameraHelper,
-    'OrthographicCamera': CameraHelper,
-    'Mesh': MeshHelper
+    [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
+    [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
+    [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
+    [CONFIGTYPE.MESH]: MeshHelper,
+    [CONFIGTYPE.GROUP]: GroupHelper
   }
 
   private static filterHelperMap = {

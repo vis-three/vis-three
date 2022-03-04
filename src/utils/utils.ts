@@ -13,6 +13,7 @@ import { getEventConfig } from "../middleware/event/eventConfig";
 import { getMeshConfig } from "../middleware/mesh/MeshConfig";
 import { getPointsConfig } from "../middleware/points/PointsConfig";
 import { getLineConfig } from "../middleware/line/LineConfig";
+import { getGroupConfig } from "../middleware/group/GroupConfig";
 
 
 export function isValidKey(key: string | number | symbol , object: object): key is keyof typeof object {
@@ -70,6 +71,7 @@ export function getConfigModelMap (): {[key: string]: string} {
     [CONFIGTYPE.LINE]: MODULETYPE.LINE,
     [CONFIGTYPE.MESH]: MODULETYPE.MESH,
     [CONFIGTYPE.POINTS]: MODULETYPE.POINTS,
+    [CONFIGTYPE.GROUP]: MODULETYPE.GROUP,
 
     [CONFIGTYPE.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
@@ -108,6 +110,7 @@ export function getConfigFunctionMap (): {[key: string]: Function} {
     [CONFIGTYPE.LINE]: getLineConfig,
     [CONFIGTYPE.MESH]: getMeshConfig,
     [CONFIGTYPE.POINTS]: getPointsConfig,
+    [CONFIGTYPE.GROUP]: getGroupConfig,
   
     [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,

@@ -33,6 +33,8 @@ import { ObjectConfig } from '../middleware/object/ObjectConfig';
 import { Object3D } from 'three';
 import { validate } from 'uuid';
 import { SymbolConfig } from '../middleware/common/CommonConfig';
+import { GroupCompilerTarget } from '../middleware/group/GroupCompiler';
+import { GroupDataSupport } from '../middleware/group/GroupDataSupport';
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget
@@ -45,6 +47,7 @@ export interface LoadOptions {
   [MODULETYPE.LINE]?: LightCompilerTarget
   [MODULETYPE.MESH]?: MeshCompilerTarget
   [MODULETYPE.POINTS]?: PointsCompilerTarget
+  [MODULETYPE.GROUP]?: GroupCompilerTarget
 
   [MODULETYPE.RENDERER]?: RendererCompilerTarget
   [MODULETYPE.SCENE]?: SceneCompilerTarget
@@ -66,6 +69,7 @@ export interface DataSupportManagerParameters {
   lineDataSupport?: LineDataSupport
   meshDataSupport?: MeshDataSupport
   pointsDataSupport?: PointsDataSupport
+  groupDataSupport?: GroupDataSupport
 }
 
 export class DataSupportManager {
@@ -82,6 +86,7 @@ export class DataSupportManager {
   lineDataSupport!: LineDataSupport
   meshDataSupport!: MeshDataSupport
   pointsDataSupport!: PointsDataSupport
+  groupDataSupport!: GroupDataSupport
 
   private dataSupportMap: Map<MODULETYPE, DataSupport<CompilerTarget, Compiler>>
   private objectDataSupportList: BasicObjectDataSupport[]
@@ -101,6 +106,7 @@ export class DataSupportManager {
     this.lineDataSupport = new LineDataSupport()
     this.meshDataSupport = new MeshDataSupport()
     this.pointsDataSupport = new PointsDataSupport()
+    this.groupDataSupport = new GroupDataSupport()
     this.objectDataSupportList = []
 
     if (parameters) {

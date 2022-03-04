@@ -7,6 +7,7 @@ import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
 import { EventCompiler } from "../middleware/event/EventCompiler";
 import { GeometryCompiler } from "../middleware/geometry/GeometryCompiler";
+import { GroupCompiler } from "../middleware/group/GroupCompiler";
 import { LightCompiler } from "../middleware/light/LightCompiler";
 import { LineCompiler } from "../middleware/line/LineCompiler";
 import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
@@ -31,6 +32,7 @@ export interface CompilerManagerParameters {
   lineCompiler: LineCompiler
   meshCompiler: MeshCompiler
   pointsCompiler: PointsCompiler
+  groupCompiler: GroupCompiler
 }
 
 export class CompilerManager {
@@ -48,6 +50,7 @@ export class CompilerManager {
   private lineCompiler!: LineCompiler
   private meshCompiler!: MeshCompiler
   private pointsCompiler!: PointsCompiler
+  private groupCompiler!: GroupCompiler
 
   private objectCompilerList: Array<BasicObjectCompiler>
 
@@ -81,6 +84,7 @@ export class CompilerManager {
     const lineDataSupport  = dataSupportManager.lineDataSupport
     const meshDataSupport = dataSupportManager.meshDataSupport
     const pointsDataSupport = dataSupportManager.pointsDataSupport
+    const groupDataSupport = dataSupportManager.groupDataSupport
 
     const textureCompiler = new TextureCompiler({
       target: textureDataSupport.getData()
@@ -144,6 +148,13 @@ export class CompilerManager {
     this.pointsCompiler = pointsCompiler
     this.objectCompilerList.push(pointsCompiler)
 
+    const groupCompiler = new GroupCompiler({
+      target: groupDataSupport.getData(),
+      scene: engine.scene!
+    })
+    this.groupCompiler = groupCompiler
+    this.objectCompilerList.push(groupCompiler)
+
     const rendererCompiler = new RendererCompiler({
       target: rendererDataSupport.getData(),
       engine: engine
@@ -191,7 +202,7 @@ export class CompilerManager {
     textureCompiler.linkRescourceMap(resourceManager.resourceMap)
     geometryCompiler.linkRescourceMap(resourceManager.resourceMap)
 
-    // 添加通知
+    // 添加通知 TODO: 注意生命周期 lookAt group等
     textureDataSupport.addCompiler(textureCompiler)
     materialDataSupport.addCompiler(materialCompiler)
     cameraDataSupport.addCompiler(cameraCompiler)
@@ -204,6 +215,7 @@ export class CompilerManager {
     lineDataSupport.addCompiler(lineCompiler)
     meshDataSupport.addCompiler(meshCompiler)
     pointsDataSupport.addCompiler(pointsCompiler)
+    groupDataSupport.addCompiler(groupCompiler)
     eventDataSupport.addCompiler(eventCompiler)
     return this
   }

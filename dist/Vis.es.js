@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, RGBAFormat, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, DodecahedronBufferGeometry, Fog, FogExp2, PlaneBufferGeometry, CubeTexture, CanvasTexture, PCFSoftShadowMap } from "three";
+import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, BoxBufferGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, RGBAFormat, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Quaternion, Euler, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, DodecahedronBufferGeometry, Fog, FogExp2, PlaneBufferGeometry, CubeTexture, CanvasTexture, PCFSoftShadowMap } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -419,6 +419,64 @@ class MeshHelper extends LineSegments {
     };
   }
 }
+var CONFIGTYPE;
+(function(CONFIGTYPE2) {
+  CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
+  CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
+  CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
+  CONFIGTYPE2["MODEL"] = "Model";
+  CONFIGTYPE2["MESH"] = "Mesh";
+  CONFIGTYPE2["LINE"] = "Line";
+  CONFIGTYPE2["LINESEGMENTS"] = "LineSegments";
+  CONFIGTYPE2["POINTS"] = "Points";
+  CONFIGTYPE2["SPRITE"] = "Sprite";
+  CONFIGTYPE2["GROUP"] = "Group";
+  CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
+  CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
+  CONFIGTYPE2["CANVASTEXTURE"] = "CanvasTexture";
+  CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
+  CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
+  CONFIGTYPE2["SPRITEMATERIAL"] = "SpriteMaterial";
+  CONFIGTYPE2["LINEBASICMATERIAL"] = "LineBasicMaterial";
+  CONFIGTYPE2["POINTSMATERIAL"] = "PointsMaterial";
+  CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
+  CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
+  CONFIGTYPE2["POINTLIGHT"] = "PointLight";
+  CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
+  CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
+  CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
+  CONFIGTYPE2["SCENE"] = "Scene";
+  CONFIGTYPE2["TRNASFORMCONTROLS"] = "TransformControls";
+  CONFIGTYPE2["ORBITCONTROLS"] = "OrbitControls";
+  CONFIGTYPE2["EVENT"] = "Event";
+})(CONFIGTYPE || (CONFIGTYPE = {}));
+class GroupHelper extends LineSegments {
+  constructor(group) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "type", "VisGroupHelper");
+    this.target = group;
+    const geometry = new EdgesGeometry(new BoxBufferGeometry(1, 1, 1));
+    geometry.computeBoundingBox();
+    this.geometry = geometry;
+    this.material = getHelperLineMaterial();
+    this.matrixAutoUpdate = false;
+    this.matrix = group.matrix;
+  }
+  raycast(raycaster, intersects) {
+    const matrixWorld = this.matrixWorld;
+    const box = this.geometry.boundingBox.clone();
+    box.applyMatrix4(matrixWorld);
+    if (raycaster.ray.intersectsBox(box)) {
+      const target = this.target;
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(target.position),
+        object: target,
+        point: target.position
+      });
+    }
+  }
+}
 var HELPERCOMPILEREVENTTYPE;
 (function(HELPERCOMPILEREVENTTYPE2) {
   HELPERCOMPILEREVENTTYPE2["ADD"] = "add";
@@ -527,10 +585,11 @@ __publicField(SceneHelperCompiler, "helperColorHex", new Color(HELPERCOLOR).getH
 __publicField(SceneHelperCompiler, "activeColorHex", new Color(ACTIVECOLOR).getHex());
 __publicField(SceneHelperCompiler, "hoverColorHex", new Color(HOVERCOLOR).getHex());
 __publicField(SceneHelperCompiler, "typeHelperMap", {
-  "PointLight": PointLightHelper,
-  "PerspectiveCamera": CameraHelper,
-  "OrthographicCamera": CameraHelper,
-  "Mesh": MeshHelper
+  [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
+  [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
+  [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
+  [CONFIGTYPE.MESH]: MeshHelper,
+  [CONFIGTYPE.GROUP]: GroupHelper
 });
 __publicField(SceneHelperCompiler, "filterHelperMap", {
   "AmbientLight": true,
@@ -2931,37 +2990,6 @@ const LoaderManagerPlugin = function(params) {
   };
   return true;
 };
-var CONFIGTYPE;
-(function(CONFIGTYPE2) {
-  CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
-  CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
-  CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
-  CONFIGTYPE2["MODEL"] = "Model";
-  CONFIGTYPE2["MESH"] = "Mesh";
-  CONFIGTYPE2["LINE"] = "Line";
-  CONFIGTYPE2["LINESEGMENTS"] = "LineSegments";
-  CONFIGTYPE2["POINTS"] = "Points";
-  CONFIGTYPE2["SPRITE"] = "Sprite";
-  CONFIGTYPE2["GROUP"] = "Group";
-  CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
-  CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
-  CONFIGTYPE2["CANVASTEXTURE"] = "CanvasTexture";
-  CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
-  CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
-  CONFIGTYPE2["SPRITEMATERIAL"] = "SpriteMaterial";
-  CONFIGTYPE2["LINEBASICMATERIAL"] = "LineBasicMaterial";
-  CONFIGTYPE2["POINTSMATERIAL"] = "PointsMaterial";
-  CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
-  CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
-  CONFIGTYPE2["POINTLIGHT"] = "PointLight";
-  CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
-  CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
-  CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
-  CONFIGTYPE2["SCENE"] = "Scene";
-  CONFIGTYPE2["TRNASFORMCONTROLS"] = "TransformControls";
-  CONFIGTYPE2["ORBITCONTROLS"] = "OrbitControls";
-  CONFIGTYPE2["EVENT"] = "Event";
-})(CONFIGTYPE || (CONFIGTYPE = {}));
 var MODULETYPE;
 (function(MODULETYPE2) {
   MODULETYPE2["CAMERA"] = "camera";
@@ -3383,6 +3411,12 @@ const getLineConfig = function() {
     material: ""
   });
 };
+const getGroupConfig = function() {
+  return Object.assign(getObjectConfig(), {
+    type: CONFIGTYPE.GROUP,
+    children: []
+  });
+};
 function isValidKey(key, object) {
   return key in object;
 }
@@ -3430,6 +3464,7 @@ function getConfigModelMap() {
     [CONFIGTYPE.LINE]: MODULETYPE.LINE,
     [CONFIGTYPE.MESH]: MODULETYPE.MESH,
     [CONFIGTYPE.POINTS]: MODULETYPE.POINTS,
+    [CONFIGTYPE.GROUP]: MODULETYPE.GROUP,
     [CONFIGTYPE.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
     [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER,
@@ -3458,6 +3493,7 @@ function getConfigFunctionMap() {
     [CONFIGTYPE.LINE]: getLineConfig,
     [CONFIGTYPE.MESH]: getMeshConfig,
     [CONFIGTYPE.POINTS]: getPointsConfig,
+    [CONFIGTYPE.GROUP]: getGroupConfig,
     [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
     [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,
@@ -4133,6 +4169,32 @@ class PointsDataSupport extends ObjectDataSupport {
     super(PointsRule, data);
   }
 }
+const GroupRule = function(input, compiler) {
+  const { operate, key, path, value } = input;
+  console.log(input);
+  if (operate === "add") {
+    if (validate(key)) {
+      compiler.add(key, value);
+    }
+    return;
+  }
+  if (operate === "set") {
+    const tempPath = path.concat([]);
+    const vid = tempPath.shift();
+    if (vid && validate(vid)) {
+      compiler.set(vid, tempPath, key, value);
+    } else {
+      console.warn(`model rule vid is illeage: '${vid}'`);
+    }
+    return;
+  }
+};
+class GroupDataSupport extends ObjectDataSupport {
+  constructor(data) {
+    !data && (data = {});
+    super(GroupRule, data);
+  }
+}
 class DataSupportManager {
   constructor(parameters) {
     __publicField(this, "cameraDataSupport");
@@ -4148,6 +4210,7 @@ class DataSupportManager {
     __publicField(this, "lineDataSupport");
     __publicField(this, "meshDataSupport");
     __publicField(this, "pointsDataSupport");
+    __publicField(this, "groupDataSupport");
     __publicField(this, "dataSupportMap");
     __publicField(this, "objectDataSupportList");
     this.cameraDataSupport = new CameraDataSupport();
@@ -4163,6 +4226,7 @@ class DataSupportManager {
     this.lineDataSupport = new LineDataSupport();
     this.meshDataSupport = new MeshDataSupport();
     this.pointsDataSupport = new PointsDataSupport();
+    this.groupDataSupport = new GroupDataSupport();
     this.objectDataSupportList = [];
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
@@ -5678,6 +5742,92 @@ __publicField(GeometryCompiler, "transfromAnchor", function(geometry, config) {
   geometry.applyMatrix4(materix);
   return geometry;
 });
+class GroupCompiler extends ObjectCompiler {
+  constructor(parameters) {
+    super(parameters);
+    __publicField(this, "COMPILER_NAME", MODULETYPE.GROUP);
+    __publicField(this, "replaceMaterial", new Material());
+    __publicField(this, "replaceGeometry", new BufferGeometry());
+    __publicField(this, "filterAttribute");
+    this.filterAttribute = {
+      lookAt: true,
+      children: true
+    };
+  }
+  getReplaceMaterial() {
+    console.warn(`GroupCompiler: can not use material in GroupCompiler.`);
+    return this.replaceMaterial;
+  }
+  getReplaceGeometry() {
+    console.warn(`GroupCompiler: can not use geometry in GroupCompiler.`);
+    return this.replaceGeometry;
+  }
+  add(vid, config) {
+    const group = new Group$1();
+    Compiler.applyConfig(config, group, this.filterAttribute);
+    this.map.set(vid, group);
+    this.weakMap.set(group, vid);
+    this.scene.add(group);
+    for (let target of config.children) {
+      this.addChildren(vid, target);
+    }
+    this.setLookAt(vid, config.lookAt);
+    return this;
+  }
+  set(vid, path, key, value) {
+    if (!this.map.has(vid)) {
+      console.warn(`GroupCompiler: can not found this vid mapping object: '${vid}'`);
+      return this;
+    }
+    if (key === "lookAt") {
+      this.setLookAt(vid, value);
+      return this;
+    }
+    let object = this.map.get(vid);
+    for (let key2 of path) {
+      if (this.filterAttribute[key2]) {
+        return this;
+      }
+      object = object[key2];
+    }
+    object[key] = value;
+    return this;
+  }
+  addChildren(vid, target) {
+    if (!this.map.has(vid)) {
+      console.warn(`GroupCompiler: can not found this vid in compiler: ${vid}.`);
+      return this;
+    }
+    const group = this.map.get(vid);
+    const targetObject = this.getObject(target);
+    if (!targetObject) {
+      console.warn(`GroupCompiler: can not found this vid in compiler: ${target}.`);
+      return this;
+    }
+    group.attach(targetObject);
+    return this;
+  }
+  removeChildren(vid, target) {
+    if (!this.map.has(vid)) {
+      console.warn(`GroupCompiler: can not found this vid in compiler: ${vid}.`);
+      return this;
+    }
+    const group = this.map.get(vid);
+    const targetObject = this.getObject(target);
+    if (!targetObject) {
+      console.warn(`GroupCompiler: can not found this vid in compiler: ${target}.`);
+      return this;
+    }
+    group.remove(targetObject);
+    return this;
+  }
+  dispose() {
+    super.dispose();
+    this.replaceGeometry.dispose();
+    this.replaceMaterial.dispose();
+    return this;
+  }
+}
 class LightCompiler extends ObjectCompiler {
   constructor(parameters) {
     super(parameters);
@@ -6578,6 +6728,7 @@ class CompilerManager {
     __publicField(this, "lineCompiler");
     __publicField(this, "meshCompiler");
     __publicField(this, "pointsCompiler");
+    __publicField(this, "groupCompiler");
     __publicField(this, "objectCompilerList");
     this.objectCompilerList = [];
     if (parameters) {
@@ -6602,6 +6753,7 @@ class CompilerManager {
     const lineDataSupport = dataSupportManager.lineDataSupport;
     const meshDataSupport = dataSupportManager.meshDataSupport;
     const pointsDataSupport = dataSupportManager.pointsDataSupport;
+    const groupDataSupport = dataSupportManager.groupDataSupport;
     const textureCompiler = new TextureCompiler({
       target: textureDataSupport.getData()
     });
@@ -6651,6 +6803,12 @@ class CompilerManager {
     });
     this.pointsCompiler = pointsCompiler;
     this.objectCompilerList.push(pointsCompiler);
+    const groupCompiler = new GroupCompiler({
+      target: groupDataSupport.getData(),
+      scene: engine.scene
+    });
+    this.groupCompiler = groupCompiler;
+    this.objectCompilerList.push(groupCompiler);
     const rendererCompiler = new RendererCompiler({
       target: rendererDataSupport.getData(),
       engine
@@ -6693,6 +6851,7 @@ class CompilerManager {
     lineDataSupport.addCompiler(lineCompiler);
     meshDataSupport.addCompiler(meshCompiler);
     pointsDataSupport.addCompiler(pointsCompiler);
+    groupDataSupport.addCompiler(groupCompiler);
     eventDataSupport.addCompiler(eventCompiler);
     return this;
   }
@@ -7292,31 +7451,4 @@ var configure = /* @__PURE__ */ Object.freeze({
   moveTo,
   moveSpacing
 });
-class GroupHelper extends LineSegments {
-  constructor(group) {
-    super();
-    __publicField(this, "target");
-    __publicField(this, "type", "VisGroupHelper");
-    this.target = group;
-    const geometry = new EdgesGeometry(new BoxBufferGeometry(1, 1, 1));
-    geometry.computeBoundingBox();
-    this.geometry = geometry;
-    this.material = getHelperLineMaterial();
-    this.matrixAutoUpdate = false;
-    this.matrix = group.matrix;
-  }
-  raycast(raycaster, intersects) {
-    const matrixWorld = this.matrixWorld;
-    const box = this.geometry.boundingBox.clone();
-    box.applyMatrix4(matrixWorld);
-    if (raycaster.ray.intersectsBox(box)) {
-      const target = this.target;
-      intersects.push({
-        distance: raycaster.ray.origin.distanceTo(target.position),
-        object: target,
-        point: target.position
-      });
-    }
-  }
-}
 export { configure$1 as BasicEventLibrary, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, GeometryDataSupport, GroupHelper, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };
