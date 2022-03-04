@@ -34,6 +34,7 @@ import { PointsDataSupport } from './middleware/points/PointsDataSupport';
 import * as BasicEventLibrary from './convenient/BasicEventLibrary/configure'
 import * as RealTimeAnimateLibrary from './convenient/RealTimeAnimateLibrary/configure'
 import { GroupHelper } from './extends/helper/object/GroupHelper';
+import { EngineSupport } from './engine/EngineSupport';
 
 export {
   // menu
@@ -55,6 +56,7 @@ export {
   Engine,
   ModelingEngine,
   DisplayEngine,
+  EngineSupport,
   ModelingEngineSupport,
   DisplayEngineSupport,
 

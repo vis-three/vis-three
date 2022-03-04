@@ -3,15 +3,9 @@
 配置化的three.js开发。
 
 <p>
-  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.3-{}" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.4-{}" alt="Version"></a>
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MIT-{}" alt="License"></a>
 </p>
-
-## 项目命令
-
-* 开发：`npm run dev`
-* 构建： `npm run build`
-* 查看例子： `npm run examples`
 
 ## 基本用法
 
@@ -224,12 +218,23 @@ engine.scene.add(new THREE.PointLight('white', 1))
 
 ```
 
+## 项目命令
+
+* 开发：`npm run dev`
+* 构建： `npm run build`
+* 查看例子： `npm run examples`
+
 ## 说明
 * 内置了ID检查，生成id请使用`npm i uuid`, `import {v4 as getUuid} from 'uuid'`
 
 
 ## 版本更新
 
+#### vsersion 0.04
+* 新增group模块
+* 导出engineSupport
+* 新增基础事件库——BasicEventLibrary
+* 新增实时动画库——RealTimeAnimateLibrary
 #### vsersion 0.03
 * 新增loaderManager, resourceManager, compilerManager插件
 * 将middleware中的engineSupport模块进行engine插件化处理，部分api有所变动
@@ -243,7 +248,6 @@ engine.scene.add(new THREE.PointLight('white', 1))
 
 - [ ] css3Renderer
 - [ ] css3相关物体模块
-- [ ] 实时动画系统
 - [ ] 物体约束器
 
 ## 项目案例
