@@ -1,5 +1,11 @@
 import { EventDispatcher, BaseEvent } from './../core/EventDispatcher';
 import { Loader } from "three";
+export declare enum LOADERMANAGER {
+    LOADING = "loading",
+    DETAILLOADING = "detailLoading",
+    DETAILLOADED = "detailLoaded",
+    LOADED = "loaded"
+}
 export interface LoadDetail {
     url: string;
     progress: number;
@@ -49,5 +55,6 @@ export declare class LoaderManager extends EventDispatcher {
     setLoadDetailMap(map: {
         [key: string]: LoadDetail;
     }): this;
+    toJSON(): string;
     dispose(): this;
 }

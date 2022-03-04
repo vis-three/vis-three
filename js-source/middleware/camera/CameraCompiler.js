@@ -1,105 +1,70 @@
-import { OrthographicCamera, PerspectiveCamera, Scene } from "three";
-import { validate } from "uuid";
+import { BufferGeometry, Material, OrthographicCamera, PerspectiveCamera } from "three";
 import { Compiler } from "../../core/Compiler";
 import { Engine, ENGINEPLUGIN } from "../../engine/Engine";
-export class CameraCompiler extends Compiler {
-    IS_OBJECTCOMPILER = true;
-    target;
-    scene;
+import { ObjectCompiler } from "../object/ObjectCompiler";
+import { MODULETYPE } from "../constants/MODULETYPE";
+export class CameraCompiler extends ObjectCompiler {
+    COMPILER_NAME = MODULETYPE.CAMERA;
     engine;
-    map;
-    weakMap;
     constructMap;
-    objectMapSet;
+    filterAttribute;
+    cacheCameraMap;
+    replaceMaterial = new Material();
+    replaceGeometry = new BufferGeometry();
     constructor(parameters) {
-        super();
+        super(parameters);
         if (parameters) {
-            parameters.target && (this.target = parameters.target);
-            parameters.scene && (this.scene = parameters.scene);
             parameters.engine && (this.engine = parameters.engine);
         }
         else {
-            this.scene = new Scene();
-            this.target = {};
             this.engine = new Engine().install(ENGINEPLUGIN.WEBGLRENDERER);
         }
-        this.map = new Map();
-        this.weakMap = new WeakMap();
         const constructMap = new Map();
         constructMap.set('PerspectiveCamera', () => new PerspectiveCamera());
         constructMap.set('OrthographicCamera', () => new OrthographicCamera(0, 0, 0, 0));
         this.constructMap = constructMap;
-        this.objectMapSet = new Set();
-    }
-    // 设置物体的lookAt方法
-    setLookAt(vid, target) {
-        // 不能自己看自己
-        if (vid === target) {
-            console.error(`can not set object lookAt itself.`);
-            return this;
-        }
-        const camera = this.map.get(vid);
-        const userData = camera.userData;
-        if (!target) {
-            if (!userData.updateMatrixWorldFun) {
-                return this;
-            }
-            camera.updateMatrixWorld = userData.updateMatrixWorldFun;
-            userData.lookAtTarget = undefined;
-            userData.updateMatrixWorldFun = undefined;
-            return this;
-        }
-        let lookAtTarget = undefined;
-        for (const map of this.objectMapSet) {
-            if (map.has(target)) {
-                lookAtTarget = map.get(target);
-                break;
-            }
-        }
-        if (!lookAtTarget) {
-            console.warn(`camera compiler can not found this vid mapping object in objectMapSet: '${vid}'`);
-            return this;
-        }
-        const updateMatrixWorldFun = camera.updateMatrixWorld;
-        userData.updateMatrixWorldFun = updateMatrixWorldFun;
-        userData.lookAtTarget = lookAtTarget.position;
-        camera.updateMatrixWorld = (focus) => {
-            updateMatrixWorldFun.bind(camera)(focus);
-            camera.lookAt(userData.lookAtTarget);
+        this.filterAttribute = {
+            scale: true
         };
-        return this;
+        this.cacheCameraMap = new WeakMap();
+    }
+    getReplaceMaterial() {
+        console.warn(`CameraCompiler: can not use material in CameraCompiler.`);
+        return this.replaceMaterial;
+    }
+    getReplaceGeometry() {
+        console.warn(`CameraCompiler: can not use geometry in CameraCompiler.`);
+        return this.replaceGeometry;
     }
     // 自适应窗口大小
     setAdaptiveWindow(vid, value) {
-        if (!validate(vid)) {
-            console.error(`camera compiler adaptive window vid is illeage: '${vid}'`);
-            return this;
-        }
         if (!this.map.has(vid)) {
             console.warn(`camera compiler can not found this vid camera: '${vid}'`);
             return this;
         }
         const camera = this.map.get(vid);
+        let cacheData = this.cacheCameraMap.get(camera);
+        if (!cacheData) {
+            cacheData = {};
+            this.cacheCameraMap.set(camera, cacheData);
+        }
         if (!value) {
-            if (camera.userData.setSizeFun && this.engine.hasEventListener('setSize', camera.userData.setSizeFun)) {
-                this.engine.removeEventListener('setSize', camera.userData.setSizeFun);
-                camera.userData.setSizeFun = undefined;
+            if (cacheData.setSizeFun && this.engine.hasEventListener('setSize', cacheData.setSizeFun)) {
+                this.engine.removeEventListener('setSize', cacheData.setSizeFun);
+                cacheData.setSizeFun = undefined;
                 return this;
             }
-            if (!camera.userData.setSizeFun && !this.engine.hasEventListener('setSize', camera.userData.setSizeFun)) {
-                return this;
-            }
-            if (camera.userData.setSizeFun && !this.engine.hasEventListener('setSize', camera.userData.setSizeFun)) {
-                camera.userData.setSizeFun = undefined;
+            if (cacheData.setSizeFun && !this.engine.hasEventListener('setSize', cacheData.setSizeFun)) {
+                cacheData.setSizeFun = undefined;
                 return this;
             }
         }
         if (value) {
-            if (camera.userData.setSizeFun && this.engine.hasEventListener('setSize', camera.userData.setSizeFun)) {
+            if (cacheData.setSizeFun && this.engine.hasEventListener('setSize', cacheData.setSizeFun)) {
                 return this;
             }
-            if (!this.engine.hasEventListener('setSize', camera.userData.setSizeFun) && camera.userData.setSizeFun) {
-                this.engine.addEventListener('setSize', camera.userData.setSizeFun);
+            if (cacheData.setSizeFun && !this.engine.hasEventListener('setSize', cacheData.setSizeFun)) {
+                this.engine.addEventListener('setSize', cacheData.setSizeFun);
                 return this;
             }
             let setSizeFun = (event) => { };
@@ -123,6 +88,7 @@ export class CameraCompiler extends Compiler {
                 console.warn(`camera compiler can not support this class camera:`, camera);
             }
             this.engine.addEventListener('setSize', setSizeFun);
+            cacheData.setSizeFun = setSizeFun;
             // 执行一次
             const domElement = this.engine.webGLRenderer.domElement;
             setSizeFun({
@@ -133,51 +99,33 @@ export class CameraCompiler extends Compiler {
         }
         return this;
     }
-    linkObjectMap(map) {
-        if (!this.objectMapSet.has(map)) {
-            this.objectMapSet.add(map);
-        }
-        return this;
-    }
-    getSupportVid(object) {
-        if (this.weakMap.has(object)) {
-            return this.weakMap.get(object);
-        }
-        else {
-            return null;
-        }
-    }
     add(vid, config) {
-        if (validate(vid)) {
-            if (config.type && this.constructMap.has(config.type)) {
-                const camera = this.constructMap.get(config.type)();
-                const tempConfig = JSON.parse(JSON.stringify(config));
-                delete tempConfig.vid;
-                delete tempConfig.type;
-                delete tempConfig.lookAt;
-                delete tempConfig.adaptiveWindow;
-                Compiler.applyConfig(tempConfig, camera);
-                if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
-                    camera.updateProjectionMatrix();
-                }
-                this.map.set(vid, camera);
-                this.setLookAt(config.vid, config.lookAt);
-                this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
-                this.scene.add(camera);
+        if (config.type && this.constructMap.has(config.type)) {
+            const camera = this.constructMap.get(config.type)();
+            Compiler.applyConfig(config, camera, Object.assign({
+                lookAt: true,
+                adaptiveWindow: true
+            }, this.filterAttribute));
+            if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
+                camera.updateProjectionMatrix();
             }
+            this.map.set(vid, camera);
+            this.weakMap.set(camera, vid);
+            this.setLookAt(config.vid, config.lookAt);
+            this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
+            this.scene.add(camera);
         }
         else {
-            console.error(`camera vid parameter is illegal: ${vid}`);
+            console.warn(`CameraCompiler: can not support this config type: ${config.type}`);
         }
         return this;
     }
     set(vid, path, key, value) {
-        if (!validate(vid)) {
-            console.warn(`camera compiler set function vid parameters is illeage: '${vid}'`);
-            return this;
-        }
         if (!this.map.has(vid)) {
             console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
+            return this;
+        }
+        if (this.filterAttribute[key]) {
             return this;
         }
         if (key === 'lookAt') {
@@ -186,43 +134,27 @@ export class CameraCompiler extends Compiler {
         if (key === 'adaptiveWindow') {
             return this.setAdaptiveWindow(vid, value);
         }
-        const camera = this.map.get(vid);
-        let config = camera;
-        path.forEach((key, i, arr) => {
-            config = camera[key];
-        });
-        config[key] = value;
-        // TODO: 根据特点属性update
-        if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
-            camera.updateProjectionMatrix();
+        let object = this.map.get(vid);
+        for (let key of path) {
+            if (this.filterAttribute[key]) {
+                return this;
+            }
+            object = object[key];
+        }
+        object[key] = value;
+        if (object instanceof PerspectiveCamera || object instanceof OrthographicCamera) {
+            object.updateProjectionMatrix();
         }
         return this;
     }
-    // TODO:
-    remove(vid) { }
     setEngine(engine) {
         this.engine = engine;
         return this;
     }
-    setScene(scene) {
-        this.scene = scene;
-        return this;
-    }
-    setTarget(target) {
-        this.target = target;
-        return this;
-    }
-    getMap() {
-        return this.map;
-    }
-    compileAll() {
-        const target = this.target;
-        for (const key in target) {
-            this.add(key, target[key]);
-        }
-        return this;
-    }
     dispose() {
+        super.dispose();
+        this.replaceGeometry.dispose();
+        this.replaceMaterial.dispose();
         return this;
     }
 }

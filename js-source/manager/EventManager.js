@@ -1,5 +1,16 @@
 import { Raycaster } from "three";
 import { EventDispatcher } from "../core/EventDispatcher";
+export var EVENTNAME;
+(function (EVENTNAME) {
+    EVENTNAME["POINTERDOWN"] = "pointerdown";
+    EVENTNAME["POINTERUP"] = "pointerup";
+    EVENTNAME["POINTERMOVE"] = "pointermove";
+    EVENTNAME["POINTERENTER"] = "pointerenter";
+    EVENTNAME["POINTERLEAVE"] = "pointerleave";
+    EVENTNAME["CLICK"] = "click";
+    EVENTNAME["DBLCLICK"] = "dblclick";
+    EVENTNAME["CONTEXTMENU"] = "contextmenu";
+})(EVENTNAME || (EVENTNAME = {}));
 export class EventManager extends EventDispatcher {
     raycaster;
     scene;
@@ -28,19 +39,26 @@ export class EventManager extends EventDispatcher {
         };
         pointerManager.addEventListener('pointerdown', (event) => {
             const intersections = this.intersectObject(event.mouse);
-            // 全局事件代理
-            this.dispatchEvent(mergeEvent(event, {
-                type: 'pointerdown',
-                intersections
-            }));
-            this.dispatchEvent(mergeEvent(event, {
-                type: 'mousedown',
-                intersections
-            }));
             if (intersections.length) {
                 // 穿透事件
                 if (this.penetrate) {
-                    for (let intersection of intersections) {
+                    if (event.button === 0) {
+                        for (let intersection of intersections) {
+                            intersection.object.dispatchEvent(mergeEvent(event, {
+                                type: 'pointerdown',
+                                intersection
+                            }));
+                            intersection.object.dispatchEvent(mergeEvent(event, {
+                                type: 'mousedown',
+                                intersection
+                            }));
+                        }
+                    }
+                    // 单层事件 
+                }
+                else {
+                    const intersection = intersections[0];
+                    if (event.button === 0) {
                         intersection.object.dispatchEvent(mergeEvent(event, {
                             type: 'pointerdown',
                             intersection
@@ -50,32 +68,23 @@ export class EventManager extends EventDispatcher {
                             intersection
                         }));
                     }
-                    // 单层事件 
                 }
-                else {
-                    const intersection = intersections[0];
-                    intersection.object.dispatchEvent(mergeEvent(event, {
-                        type: 'pointerdown',
-                        intersection
-                    }));
-                    intersection.object.dispatchEvent(mergeEvent(event, {
-                        type: 'mousedown',
-                        intersection
-                    }));
-                }
+            }
+            if (event.button === 0) {
+                // 全局事件代理
+                this.dispatchEvent(mergeEvent(event, {
+                    type: 'pointerdown',
+                    intersections
+                }));
+                this.dispatchEvent(mergeEvent(event, {
+                    type: 'mousedown',
+                    intersections
+                }));
             }
         });
         const cacheObjectMap = new Map();
         pointerManager.addEventListener('pointermove', (event) => {
             const intersections = this.intersectObject(event.mouse);
-            this.dispatchEvent(mergeEvent(event, {
-                type: 'pointermove',
-                intersections
-            }));
-            this.dispatchEvent(mergeEvent(event, {
-                type: 'mousemove',
-                intersections
-            }));
             if (intersections.length) {
                 if (this.penetrate) {
                     for (let intersection of intersections) {
@@ -141,26 +150,55 @@ export class EventManager extends EventDispatcher {
                 });
                 cacheObjectMap.clear();
             }
+            this.dispatchEvent(mergeEvent(event, {
+                type: 'pointermove',
+                intersections
+            }));
+            this.dispatchEvent(mergeEvent(event, {
+                type: 'mousemove',
+                intersections
+            }));
         });
+        const cacheClickObject = new Map();
+        let cacheClickTimer = null;
         pointerManager.addEventListener('pointerup', (event) => {
             const intersections = this.intersectObject(event.mouse);
-            // 全局事件代理
-            this.dispatchEvent(mergeEvent(event, {
-                type: 'pointerup',
-                intersections
-            }));
-            this.dispatchEvent(mergeEvent(event, {
-                type: 'mouseup',
-                intersections
-            }));
-            this.dispatchEvent(mergeEvent(event, {
-                type: 'click',
-                intersections
-            }));
             if (intersections.length) {
                 // 穿透事件
                 if (this.penetrate) {
                     for (let intersection of intersections) {
+                        if (event.button === 0) {
+                            intersection.object.dispatchEvent(mergeEvent(event, {
+                                type: 'pointerup',
+                                intersection
+                            }));
+                            intersection.object.dispatchEvent(mergeEvent(event, {
+                                type: 'mouseup',
+                                intersection
+                            }));
+                            intersection.object.dispatchEvent(mergeEvent(event, {
+                                type: 'click',
+                                intersection
+                            }));
+                            if (cacheClickObject.has(intersection.object)) {
+                                intersection.object.dispatchEvent(mergeEvent(event, {
+                                    type: 'dblclick',
+                                    intersection
+                                }));
+                            }
+                        }
+                        else if (event.button === 2) {
+                            intersection.object.dispatchEvent(mergeEvent(event, {
+                                type: 'contextmenu',
+                                intersection
+                            }));
+                        }
+                    }
+                    // 单层事件 
+                }
+                else {
+                    const intersection = intersections[0];
+                    if (event.button === 0) {
                         intersection.object.dispatchEvent(mergeEvent(event, {
                             type: 'pointerup',
                             intersection
@@ -173,24 +211,60 @@ export class EventManager extends EventDispatcher {
                             type: 'click',
                             intersection
                         }));
+                        if (cacheClickObject.has(intersection.object)) {
+                            intersection.object.dispatchEvent(mergeEvent(event, {
+                                type: 'dblclick',
+                                intersection
+                            }));
+                        }
                     }
-                    // 单层事件 
+                    else if (event.button === 2) {
+                        intersection.object.dispatchEvent(mergeEvent(event, {
+                            type: 'contextmenu',
+                            intersection
+                        }));
+                    }
+                }
+            }
+            if (event.button === 0) {
+                // 全局事件代理
+                this.dispatchEvent(mergeEvent(event, {
+                    type: 'pointerup',
+                    intersections
+                }));
+                this.dispatchEvent(mergeEvent(event, {
+                    type: 'mouseup',
+                    intersections
+                }));
+                this.dispatchEvent(mergeEvent(event, {
+                    type: 'click',
+                    intersections
+                }));
+                if (cacheClickTimer) {
+                    clearTimeout(cacheClickTimer);
+                    cacheClickTimer = null;
+                    this.dispatchEvent(mergeEvent(event, {
+                        type: 'dblclick',
+                        intersections
+                    }));
                 }
                 else {
-                    const intersection = intersections[0];
-                    intersection.object.dispatchEvent(mergeEvent(event, {
-                        type: 'pointerup',
-                        intersection
-                    }));
-                    intersection.object.dispatchEvent(mergeEvent(event, {
-                        type: 'mouseup',
-                        intersection
-                    }));
-                    intersection.object.dispatchEvent(mergeEvent(event, {
-                        type: 'click',
-                        intersection
-                    }));
+                    if (intersections.length) {
+                        for (let intersection of intersections) {
+                            cacheClickObject.set(intersection.object, true);
+                        }
+                    }
+                    cacheClickTimer = setTimeout(() => {
+                        cacheClickTimer = null;
+                        cacheClickObject.clear();
+                    }, 300);
                 }
+            }
+            else if (event.button === 2) {
+                this.dispatchEvent(mergeEvent(event, {
+                    type: 'contextmenu',
+                    intersections
+                }));
             }
         });
         return this;

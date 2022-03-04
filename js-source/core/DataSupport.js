@@ -23,6 +23,9 @@ export class DataSupport {
         this.data = this.broadcast.proxyExtends(data);
         return this.data;
     }
+    getConfig(vid) {
+        return this.data[vid];
+    }
     addCompiler(compiler) {
         compiler.setTarget(this.data);
         compiler.compileAll();

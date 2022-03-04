@@ -15,7 +15,7 @@ export interface SpotLightConfig extends LightConifg {
     penumbra: number;
     decay: number;
 }
-export declare const getLightConfig: () => LightConifg;
+export declare type LightConfigAllType = AmbientLightConfig | PointLightConfig | SpotLightConfig;
 export declare const getAmbientLightConfig: () => AmbientLightConfig;
 export declare const getPointLightConfig: () => PointLightConfig;
 export declare const getSpotLightConfig: () => SpotLightConfig;

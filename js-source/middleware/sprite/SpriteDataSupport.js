@@ -1,6 +1,6 @@
-import { DataSupport } from "../../core/DataSupport";
+import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { SpriteRule } from "./SpriteRule";
-export class SpriteDataSupport extends DataSupport {
+export class SpriteDataSupport extends ObjectDataSupport {
     constructor(data) {
         !data && (data = {});
         super(SpriteRule, data);

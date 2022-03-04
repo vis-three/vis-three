@@ -1,77 +1,72 @@
-import { AmbientLight, Color, PointLight, SpotLight } from "three";
+import { AmbientLight, BufferGeometry, Color, Material, PointLight, SpotLight } from "three";
 import { Compiler } from "../../core/Compiler";
-import { validate } from "uuid";
-export class LightCompiler extends Compiler {
-    IS_OBJECTCOMPILER = true;
-    scene;
-    target;
-    map;
-    weakMap;
+import { ObjectCompiler } from "../object/ObjectCompiler";
+import { MODULETYPE } from "../constants/MODULETYPE";
+export class LightCompiler extends ObjectCompiler {
+    COMPILER_NAME = MODULETYPE.LIGHT;
     constructMap;
+    filterAttribute;
+    replaceMaterial = new Material();
+    replaceGeometry = new BufferGeometry();
     constructor(parameters) {
-        super();
-        this.scene = parameters.scene;
-        this.target = parameters.target;
-        this.map = new Map();
-        this.weakMap = new WeakMap();
+        super(parameters);
         this.constructMap = new Map();
         this.constructMap.set('PointLight', () => new PointLight());
         this.constructMap.set('SpotLight', () => new SpotLight());
         this.constructMap.set('AmbientLight', () => new AmbientLight());
+        this.setLookAt = function (vid, target) {
+            return this;
+        };
+        this.filterAttribute = {
+            scale: true,
+            rotation: true,
+            lookAt: true
+        };
     }
-    getSupportVid(object) {
-        if (this.weakMap.has(object)) {
-            return this.weakMap.get(object);
-        }
-        else {
-            return null;
-        }
+    getReplaceMaterial() {
+        console.warn(`LightCompiler: can not use material in LightCompiler.`);
+        return this.replaceMaterial;
+    }
+    getReplaceGeometry() {
+        console.warn(`LightCompiler: can not use geometry in LightCompiler.`);
+        return this.replaceGeometry;
     }
     add(vid, config) {
-        if (validate(vid)) {
-            if (config.type && this.constructMap.has(config.type)) {
-                const light = this.constructMap.get(config.type)();
-                Compiler.applyConfig(config, light);
-                light.color = new Color(config.color);
-                this.map.set(vid, light);
-                this.weakMap.set(light, vid);
-                this.scene.add(light);
-            }
+        if (config.type && this.constructMap.has(config.type)) {
+            const light = this.constructMap.get(config.type)();
+            Compiler.applyConfig(config, light, this.filterAttribute);
+            light.color = new Color(config.color);
+            this.map.set(vid, light);
+            this.weakMap.set(light, vid);
+            this.scene.add(light);
         }
         else {
-            console.warn(`LightCompiler: vid parameter is illegal: ${vid}`);
+            console.warn(`LightCompiler: can not support Light type: ${config.type}.`);
         }
-    }
-    set(path, key, value) {
-        const vid = path.shift();
-        if (validate(vid) && this.map.has(vid)) {
-            let config = this.map.get(vid);
-            path.forEach((key, i, arr) => {
-                config = config[key];
-            });
-            config[key] = value;
-        }
-        else {
-            console.error(`vid parameter is illegal: ${vid} or can not found this vid light`);
-        }
-    }
-    remove() {
-    }
-    setTarget(target) {
-        this.target = target;
         return this;
     }
-    getMap() {
-        return this.map;
-    }
-    compileAll() {
-        const target = this.target;
-        for (const key in target) {
-            this.add(key, target[key]);
+    set(vid, path, key, value) {
+        if (!this.map.has(vid)) {
+            console.warn(`LightCompiler: can not found this vid mapping object: '${vid}'`);
+            return this;
         }
+        if (this.filterAttribute[key]) {
+            return this;
+        }
+        let object = this.map.get(vid);
+        for (let key of path) {
+            if (this.filterAttribute[key]) {
+                return this;
+            }
+            object = object[key];
+        }
+        object[key] = value;
         return this;
     }
     dispose() {
+        super.dispose();
+        this.replaceGeometry.dispose();
+        this.replaceMaterial.dispose();
         return this;
     }
 }

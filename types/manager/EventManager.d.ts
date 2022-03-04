@@ -14,6 +14,16 @@ export interface EventManagerParameters {
     penetrate?: boolean;
     support?: boolean;
 }
+export declare enum EVENTNAME {
+    POINTERDOWN = "pointerdown",
+    POINTERUP = "pointerup",
+    POINTERMOVE = "pointermove",
+    POINTERENTER = "pointerenter",
+    POINTERLEAVE = "pointerleave",
+    CLICK = "click",
+    DBLCLICK = "dblclick",
+    CONTEXTMENU = "contextmenu"
+}
 export declare class EventManager extends EventDispatcher {
     private raycaster;
     private scene;

@@ -1,9 +1,10 @@
+import { CONFIGTYPE } from "../constants/configType";
 import { getObjectConfig } from "../object/ObjectConfig";
-export const getLineSegmentsConfig = function () {
+export const getLineConfig = function () {
     return Object.assign(getObjectConfig(), {
-        type: 'LineSegments',
-        pairPoints: [],
-        material: ''
+        type: CONFIGTYPE.LINE,
+        geometry: '',
+        material: '',
     });
 };
 //# sourceMappingURL=LineConfig.js.map

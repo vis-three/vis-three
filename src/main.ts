@@ -36,6 +36,10 @@ import * as RealTimeAnimateLibrary from './convenient/RealTimeAnimateLibrary/con
 import { GroupHelper } from './extends/helper/object/GroupHelper';
 import { EngineSupport } from './engine/EngineSupport';
 
+if (!window.__THREE__) {
+  console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`)
+}
+
 export {
   // menu
   RESOURCEEVENTTYPE,

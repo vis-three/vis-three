@@ -38,6 +38,7 @@ export class VisTransformControls extends TransformControls {
             z: 0
         };
         // 缓存目标物体的自动变换设置
+        // TODO: 有children的物体更新
         let objectMatrixAutoMap = new WeakMap();
         // TODO: 轴应用
         this.addEventListener('mouseDown', (event) => {

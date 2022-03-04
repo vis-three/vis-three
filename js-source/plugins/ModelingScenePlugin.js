@@ -25,21 +25,39 @@ export const ModelingScenePlugin = function (params) {
     if (params.hasDefaultOrthographicCamera) {
         const defaultOrthograpbicCamera = scene.getDefaultOrthographicCamera();
         scene.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, e => {
+            if (this.orbitControls) {
+                this.orbitControls.target.set(0, 0, 0);
+            }
             this.setCamera(defaultOrthograpbicCamera);
         });
         scene.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, e => {
+            if (this.orbitControls) {
+                this.orbitControls.target.set(0, 0, 0);
+            }
             this.setCamera(defaultOrthograpbicCamera);
         });
         scene.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, e => {
+            if (this.orbitControls) {
+                this.orbitControls.target.set(0, 0, 0);
+            }
             this.setCamera(defaultOrthograpbicCamera);
         });
         scene.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, e => {
+            if (this.orbitControls) {
+                this.orbitControls.target.set(0, 0, 0);
+            }
             this.setCamera(defaultOrthograpbicCamera);
         });
         scene.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, e => {
+            if (this.orbitControls) {
+                this.orbitControls.target.set(0, 0, 0);
+            }
             this.setCamera(defaultOrthograpbicCamera);
         });
         scene.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, e => {
+            if (this.orbitControls) {
+                this.orbitControls.target.set(0, 0, 0);
+            }
             this.setCamera(defaultOrthograpbicCamera);
         });
     }

@@ -1,7 +1,8 @@
+import { CONFIGTYPE } from "../constants/configType";
 import { getObjectConfig } from "../object/ObjectConfig";
 export const getPerspectiveCameraConfig = function () {
     return Object.assign(getObjectConfig(), {
-        type: 'PerspectiveCamera',
+        type: CONFIGTYPE.PERSPECTIVECAMERA,
         adaptiveWindow: false,
         fov: 45,
         aspect: 1920 / 1080,
@@ -11,7 +12,7 @@ export const getPerspectiveCameraConfig = function () {
 };
 export const getOrthographicCameraConfig = function () {
     return Object.assign(getObjectConfig(), {
-        type: 'OrthographicCamera',
+        type: CONFIGTYPE.ORTHOGRAPHICCAMERA,
         adaptiveWindow: false,
         left: 1920 / 16,
         right: 1920 / 16,

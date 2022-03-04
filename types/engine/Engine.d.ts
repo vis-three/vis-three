@@ -12,7 +12,7 @@ import { PointerManager } from "../manager/PointerManager";
 import { PointerManagerParameters } from "../manager/PointerManager";
 import { EventManager, EventManagerParameters } from "../manager/EventManager";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
-import { LoaderManager, LoaderManagerParameters } from "../manager/LoaderManager";
+import { LoadedEvent, LoaderManager, LoaderManagerParameters } from "../manager/LoaderManager";
 import { ResourceManager } from "../manager/ResourceManager";
 import { DataSupportManager, DataSupportManagerParameters } from "../manager/DataSupportManager";
 import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerManager";
@@ -59,7 +59,8 @@ export declare class Engine extends EventDispatcher {
     setDom?: (dom: HTMLElement) => this;
     setStats?: (show: boolean) => this;
     setTransformControls?: (show: boolean) => this;
-    loadResources?: (urlList: Array<string>) => this;
+    loadResources?: (urlList: Array<string>, callback: (err: Error | undefined, event?: LoadedEvent) => void) => this;
+    loadResourcesAsync?: (urlList: Array<string>) => Promise<LoadedEvent>;
     registerResources?: (resourceMap: {
         [key: string]: unknown;
     }) => this;

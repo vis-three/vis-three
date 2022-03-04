@@ -1,3 +1,6 @@
-import { Rule } from "../../core/Rule";
-import { CameraCompiler } from "./CameraCompiler";
-export declare const CameraRule: Rule<CameraCompiler>;
+import { Camera } from "three";
+import { ObjectRule } from "../object/ObjectRule";
+import { CameraCompiler, CameraCompilerTarget } from "./CameraCompiler";
+import { CameraConfigAllType } from "./CameraConfig";
+export declare type CameraRule = ObjectRule<CameraCompiler, CameraConfigAllType, CameraCompilerTarget, Camera>;
+export declare const CameraRule: CameraRule;

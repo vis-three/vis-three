@@ -1,5 +1,6 @@
 import { BufferGeometry, DodecahedronBufferGeometry, Material, Points, PointsMaterial } from "three";
 import { Compiler } from "../../core/Compiler";
+import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { PointsConfig } from "./PointsConfig";
 
@@ -10,6 +11,8 @@ export interface PointsCompilerTarget extends ObjectCompilerTarget<PointsConfig>
 export interface PointsCompilerParameters extends ObjectCompilerParameters<PointsConfig, PointsCompilerTarget> {}
 
 export class PointsCompiler extends ObjectCompiler<PointsConfig, PointsCompilerTarget, Points> {
+
+  COMPILER_NAME = MODULETYPE.POINTS
 
   private replaceMaterial = new PointsMaterial({color: 'rgb(150, 150, 150)'})
   private replaceGeometry = new DodecahedronBufferGeometry(5)

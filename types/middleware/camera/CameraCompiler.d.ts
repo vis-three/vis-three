@@ -1,44 +1,33 @@
-import { Camera, Object3D, Scene, Vector3 } from "three";
-import { ModelingEngine } from "../../main";
-import { Compiler, CompilerTarget, ObjectCompiler } from "../../core/Compiler";
+import { BufferGeometry, Camera, Material, Vector3 } from "three";
 import { SetSizeEvent } from "../../plugins/WebGLRendererPlugin";
-import { SymbolConfig } from "../common/CommonConfig";
 import { CameraConfigAllType } from "./CameraConfig";
 import { Engine } from "../../engine/Engine";
-export interface CameraCompilerTarget extends CompilerTarget {
+import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
+export interface CameraCompilerTarget extends ObjectCompilerTarget<CameraConfigAllType> {
     [key: string]: CameraConfigAllType;
 }
-export interface CameraCompilerParameters {
-    scene?: Scene;
-    target?: CameraCompilerTarget;
-    engine?: Engine;
+export interface CameraCompilerParameters extends ObjectCompilerParameters<CameraConfigAllType, CameraCompilerTarget> {
+    engine: Engine;
 }
-export interface CameraUserData {
+export interface CacheCameraData {
     lookAtTarget?: Vector3;
     updateMatrixWorldFun?: (focus: boolean) => void;
     setSizeFun?: (event: SetSizeEvent) => void;
 }
-export declare class CameraCompiler extends Compiler implements ObjectCompiler {
-    IS_OBJECTCOMPILER: boolean;
-    private target;
-    private scene;
+export declare class CameraCompiler extends ObjectCompiler<CameraConfigAllType, CameraCompilerTarget, Camera> {
+    COMPILER_NAME: string;
     private engine;
-    private map;
-    private weakMap;
     private constructMap;
-    private objectMapSet;
+    private filterAttribute;
+    private cacheCameraMap;
+    private replaceMaterial;
+    private replaceGeometry;
     constructor(parameters?: CameraCompilerParameters);
-    private setLookAt;
+    getReplaceMaterial(): Material;
+    getReplaceGeometry(): BufferGeometry;
     private setAdaptiveWindow;
-    linkObjectMap(map: Map<SymbolConfig['vid'], Object3D>): this;
-    getSupportVid(object: Camera): SymbolConfig['vid'] | null;
     add(vid: string, config: CameraConfigAllType): this;
     set(vid: string, path: string[], key: string, value: any): this;
-    remove(vid: string): void;
-    setEngine(engine: ModelingEngine): this;
-    setScene(scene: Scene): this;
-    setTarget(target: CameraCompilerTarget): this;
-    getMap(): Map<SymbolConfig['type'], Camera>;
-    compileAll(): this;
+    setEngine(engine: Engine): this;
     dispose(): this;
 }

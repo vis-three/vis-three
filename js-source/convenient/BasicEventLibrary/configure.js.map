@@ -1,0 +1,1 @@
+{"version":3,"file":"configure.js","sourceRoot":"","sources":["../../../src/convenient/BasicEventLibrary/configure.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,sBAAsB,EAAE,MAAM,mBAAmB,CAAA;AAQ1D,MAAM,CAAC,MAAM,UAAU,GAAG,sBAAsB,CAAa;IAC3D,IAAI,EAAE,YAAY;IAClB,IAAI,EAAE,WAAW;IACjB,MAAM,EAAE;QACN,GAAG,EAAE,EAAE;KACR;CACF,CAAC,CAAA"}

@@ -5,9 +5,18 @@ export const LightRule = function (input, compiler) {
         if (validate(key)) {
             compiler.add(key, value);
         }
+        return;
     }
-    else if (operate === 'set') {
-        compiler.set(path.concat([]), key, value);
+    if (operate === 'set') {
+        const tempPath = path.concat([]);
+        const vid = tempPath.shift();
+        if (vid && validate(vid)) {
+            compiler.set(vid, tempPath, key, value);
+        }
+        else {
+            console.warn(`model rule vid is illeage: '${vid}'`);
+        }
+        return;
     }
 };
 //# sourceMappingURL=LightRule.js.map

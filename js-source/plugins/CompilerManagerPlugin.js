@@ -1,3 +1,4 @@
+import { EngineSupport } from "../engine/EngineSupport";
 import { CompilerManager } from "../manager/CompilerManager";
 export const CompilerManagerPlugin = function (params) {
     if (this.compilerManager) {
@@ -26,11 +27,21 @@ export const CompilerManagerPlugin = function (params) {
             console.warn('must install dataSupportManager before compilerManager plugin.');
             return;
         }
-        this.compilerManager?.support(this);
-        // 有事件管理器，装饰所有物体编译器的add,remove，监听增加相关事件
-        if (this.eventManager) {
-            const objectCompilerList = compilerManager.getObjectCompilerList();
+        if (this instanceof EngineSupport) {
+            this.compilerManager.support(this);
         }
+        // 有事件管理器，装饰所有物体编译器的add,remove，监听增加相关事件
+        // if (this.eventManager) {
+        //   const objectCompilerList = compilerManager.getObjectCompilerList()
+        //   for (let objectCompiler of objectCompilerList) {
+        //     objectCompiler.add = function (vid: string, config: ObjectConfig): BasicObjectCompiler {
+        //       return this
+        //     }
+        //     objectCompiler.remove = function (vid: string): BasicObjectCompiler {
+        //       return this
+        //     }
+        //   }
+        // }
     });
     return true;
 };

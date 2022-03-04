@@ -1,6 +1,7 @@
 export const getObjectConfig = () => {
     return {
         vid: '',
+        name: '',
         type: 'Object3D',
         castShadow: true,
         receiveShadow: true,

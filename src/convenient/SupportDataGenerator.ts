@@ -3,10 +3,14 @@ import { SymbolConfig } from "../middleware/common/CommonConfig"
 import { CONFIGTYPE } from "../middleware/constants/configType"
 import { MODULETYPE } from "../middleware/constants/MODULETYPE"
 import { GeometryCompilerTarget } from "../middleware/geometry/GeometryCompiler"
+import { GroupCompilerTarget } from "../middleware/group/GroupCompiler"
 import { LightCompilerTarget } from "../middleware/light/LightCompiler"
+import { LineCompilerTarget } from "../middleware/line/LineCompiler"
 import { MaterialCompilerTarget } from "../middleware/material/MaterialCompiler"
-import { ModelCompilerTarget } from "../middleware/model/ModelCompiler"
+import { MeshCompilerTarget } from "../middleware/mesh/MeshCompiler"
+import { PointsCompilerTarget } from "../middleware/points/PointsCompiler"
 import { RendererCompilerTarget } from "../middleware/render/RendererCompiler"
+import { SpriteCompilerTarget } from "../middleware/sprite/SpriteCompiler"
 import { TextureCompilerTarget } from "../middleware/texture/TextureCompiler"
 import { getConfigModelMap } from "../utils/utils"
 import { generateConfig } from "./generateConfig"
@@ -16,9 +20,13 @@ export type SupportDataAllType =
   MaterialCompilerTarget |
   LightCompilerTarget |
   GeometryCompilerTarget |
-  ModelCompilerTarget |
   CameraCompilerTarget |
-  RendererCompilerTarget
+  RendererCompilerTarget |
+  SpriteCompilerTarget |
+  GroupCompilerTarget |
+  MeshCompilerTarget |
+  PointsCompilerTarget |
+  LineCompilerTarget
 
 export class SupportDataGenerator {
 

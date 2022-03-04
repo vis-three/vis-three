@@ -5,7 +5,7 @@ export class EngineSupport extends Engine {
         super();
         this.install(ENGINEPLUGIN.LOADERMANAGER)
             .install(ENGINEPLUGIN.RESOURCEMANAGER)
-            .install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters?.dataSupportManager)
+            .install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters)
             .install(ENGINEPLUGIN.COMPILERMANAGER);
     }
     loadConfig(config, callback) {

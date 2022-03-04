@@ -1,0 +1,1 @@
+{"version":3,"file":"GroupConfig.js","sourceRoot":"","sources":["../../../src/middleware/group/GroupConfig.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,yBAAyB,CAAC;AACrD,OAAO,EAAE,eAAe,EAAgB,MAAM,wBAAwB,CAAC;AAMvE,MAAM,CAAC,MAAM,cAAc,GAAG;IAC5B,OAAO,MAAM,CAAC,MAAM,CAAC,eAAe,EAAE,EAAE;QACtC,IAAI,EAAE,UAAU,CAAC,KAAK;QACtB,QAAQ,EAAE,EAAE;KACb,CAAC,CAAA;AACJ,CAAC,CAAA"}

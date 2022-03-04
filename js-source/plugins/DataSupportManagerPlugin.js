@@ -10,6 +10,12 @@ export const DataSupportManagerPlugin = function (params) {
     const dataSupportManager = new DataSupportManager(params);
     this.dataSupportManager = dataSupportManager;
     this.toJSON = function () {
+        if (this.loaderManager) {
+            const assets = {
+                assets: JSON.parse(this.loaderManager.toJSON())
+            };
+            return this.dataSupportManager.toJSON(assets);
+        }
         return this.dataSupportManager.toJSON();
     };
     this.completeSet.add(() => {

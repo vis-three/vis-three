@@ -1,7 +1,6 @@
 import { DisplayEngine } from './engine/DisplayEngine';
 import { ModelingEngine } from "./engine/ModelingEngine";
 import { LightDataSupport } from "./middleware/light/LightDataSupport";
-import { ModelDataSupport } from "./middleware/model/ModelDataSupport";
 import { GeometryDataSupport } from "./middleware/geometry/GeometryDataSupport";
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
 import { LoaderManager } from "./manager/LoaderManager";
@@ -29,18 +28,29 @@ import { SpriteDataSupport } from './middleware/sprite/SpriteDataSupport';
 import { ModelingEngineSupport } from './engine/ModelingEngineSupport';
 import { DisplayEngineSupport } from './engine/DisplayEngineSupport';
 import { LineDataSupport } from './middleware/line/LineDataSupport';
+import { MeshDataSupport } from './middleware/mesh/MeshDataSupport';
+import { PointsDataSupport } from './middleware/points/PointsDataSupport';
+import * as BasicEventLibrary from './convenient/BasicEventLibrary/configure';
+import * as RealTimeAnimateLibrary from './convenient/RealTimeAnimateLibrary/configure';
+import { GroupHelper } from './extends/helper/object/GroupHelper';
+import { EngineSupport } from './engine/EngineSupport';
+if (!window.__THREE__) {
+    console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
+}
 export { 
 // menu
 RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, OBJECTEVENT, EVENTTYPE, SCENEDISPLAYMODE, SCENEVIEWPOINT, ENGINEPLUGIN, 
 // manager
 LoaderManager, ResourceManager, DataSupportManager, 
 // engine
-Engine, ModelingEngine, DisplayEngine, ModelingEngineSupport, DisplayEngineSupport, 
+Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, 
 // engine connector
 // data support
-TextureDataSupport, MaterialDataSupport, LightDataSupport, ModelDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, SpriteDataSupport, LineDataSupport, 
+TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, 
+// eventLibaray
+BasicEventLibrary, RealTimeAnimateLibrary, 
 // helper
-PointLightHelper, CameraHelper, 
+PointLightHelper, CameraHelper, GroupHelper, 
 // convenient
 generateConfig, SupportDataGenerator, CanvasTextureGenerator, 
 // displayer

@@ -1,7 +1,6 @@
 import { Engine } from "../engine/Engine";
+import { EngineSupport } from "../engine/EngineSupport";
 import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerManager";
-import { BasicObjectCompiler } from "../middleware/object/ObjectCompiler";
-import { ObjectConfig } from "../middleware/object/ObjectConfig";
 
 import { Plugin } from "./plugin";
 
@@ -41,7 +40,11 @@ export const CompilerManagerPlugin: Plugin<CompilerManagerParameters> = function
       console.warn('must install dataSupportManager before compilerManager plugin.')
       return
     }
-    this.compilerManager?.support(this)
+
+    if (this instanceof EngineSupport) {
+      this.compilerManager!.support(this)
+    }
+
 
     // 有事件管理器，装饰所有物体编译器的add,remove，监听增加相关事件
     // if (this.eventManager) {

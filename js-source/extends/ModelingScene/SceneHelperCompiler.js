@@ -1,7 +1,10 @@
 import { Color, EventDispatcher, Material } from "three";
+import { PointLightHelper } from "../helper/light/PointLightHelper";
 import { CameraHelper } from "../helper/camera/CameraHelper";
 import { MeshHelper } from "../helper/object/MeshHelper";
 import { ACTIVECOLOR, HELPERCOLOR, HOVERCOLOR } from "../../middleware/constants/COLOR";
+import { CONFIGTYPE } from "../../middleware/constants/configType";
+import { GroupHelper } from "../helper/object/GroupHelper";
 export var HELPERCOMPILEREVENTTYPE;
 (function (HELPERCOMPILEREVENTTYPE) {
     HELPERCOMPILEREVENTTYPE["ADD"] = "add";
@@ -12,10 +15,11 @@ export class SceneHelperCompiler extends EventDispatcher {
     static activeColorHex = new Color(ACTIVECOLOR).getHex();
     static hoverColorHex = new Color(HOVERCOLOR).getHex();
     static typeHelperMap = {
-        // 'PointLight': PointLightHelper,
-        'PerspectiveCamera': CameraHelper,
-        'OrthographicCamera': CameraHelper,
-        'Mesh': MeshHelper
+        [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
+        [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
+        [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
+        [CONFIGTYPE.MESH]: MeshHelper,
+        [CONFIGTYPE.GROUP]: GroupHelper
     };
     static filterHelperMap = {
         'AmbientLight': true,

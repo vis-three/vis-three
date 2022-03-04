@@ -4345,6 +4345,62 @@ const DataSupportManagerPlugin = function(params) {
   });
   return true;
 };
+class EngineSupport extends Engine {
+  constructor(parameters) {
+    super();
+    __publicField(this, "IS_ENGINESUPPORT", true);
+    this.install(ENGINEPLUGIN.LOADERMANAGER).install(ENGINEPLUGIN.RESOURCEMANAGER).install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters).install(ENGINEPLUGIN.COMPILERMANAGER);
+  }
+  loadConfig(config, callback) {
+    const loadLifeCycle = () => {
+      const dataSupportManager = this.dataSupportManager;
+      config.texture && dataSupportManager.load({ texture: config.texture });
+      config.material && dataSupportManager.load({ material: config.material });
+      delete config.texture;
+      delete config.material;
+      dataSupportManager.load(config);
+    };
+    if (config.assets && config.assets.length) {
+      this.loaderManager.reset().load(config.assets);
+      const mappedFun = (event) => {
+        delete config.assets;
+        loadLifeCycle();
+        this.resourceManager.removeEventListener("mapped", mappedFun);
+        callback && callback(event);
+      };
+      this.resourceManager.addEventListener("mapped", mappedFun);
+    } else {
+      loadLifeCycle();
+      callback && callback();
+    }
+    return this;
+  }
+  loadConfigAsync(config) {
+    return new Promise((resolve, reject) => {
+      const loadLifeCycle = () => {
+        const dataSupportManager = this.dataSupportManager;
+        config.texture && dataSupportManager.load({ texture: config.texture });
+        config.material && dataSupportManager.load({ material: config.material });
+        delete config.texture;
+        delete config.material;
+        dataSupportManager.load(config);
+      };
+      if (config.assets && config.assets.length) {
+        this.loaderManager.reset().load(config.assets);
+        const mappedFun = (event) => {
+          delete config.assets;
+          loadLifeCycle();
+          this.resourceManager.removeEventListener("mapped", mappedFun);
+          resolve(event);
+        };
+        this.resourceManager.addEventListener("mapped", mappedFun);
+      } else {
+        loadLifeCycle();
+        resolve(void 0);
+      }
+    });
+  }
+}
 class Compiler {
   static applyConfig(config, object, filter = {}, callBack) {
     const filterMap = Object.assign({
@@ -5898,6 +5954,7 @@ class LightCompiler extends ObjectCompiler {
 class LineCompiler extends ObjectCompiler {
   constructor(parameters) {
     super(parameters);
+    __publicField(this, "COMPILER_NAME", MODULETYPE.LINE);
     __publicField(this, "replaceMaterial", new LineBasicMaterial({ color: "rgb(150, 150, 150)" }));
     __publicField(this, "replaceGeometry", new BoxBufferGeometry(10, 10, 10));
   }
@@ -6147,6 +6204,7 @@ class MeshCompiler extends ObjectCompiler {
 class PointsCompiler extends ObjectCompiler {
   constructor(parameters) {
     super(parameters);
+    __publicField(this, "COMPILER_NAME", MODULETYPE.POINTS);
     __publicField(this, "replaceMaterial", new PointsMaterial({ color: "rgb(150, 150, 150)" }));
     __publicField(this, "replaceGeometry", new DodecahedronBufferGeometry(5));
   }
@@ -6908,7 +6966,6 @@ const CompilerManagerPlugin = function(params) {
     this.compilerManager.dispose();
   });
   this.completeSet.add(() => {
-    var _a;
     if (!this.webGLRenderer) {
       console.warn(`must install webGLRenderer before compilerManager plugin.`);
       return;
@@ -6925,7 +6982,9 @@ const CompilerManagerPlugin = function(params) {
       console.warn("must install dataSupportManager before compilerManager plugin.");
       return;
     }
-    (_a = this.compilerManager) == null ? void 0 : _a.support(this);
+    if (this instanceof EngineSupport) {
+      this.compilerManager.support(this);
+    }
   });
   return true;
 };
@@ -7311,62 +7370,6 @@ class CanvasTextureGenerator {
     return this;
   }
 }
-class EngineSupport extends Engine {
-  constructor(parameters) {
-    super();
-    __publicField(this, "IS_ENGINESUPPORT", true);
-    this.install(ENGINEPLUGIN.LOADERMANAGER).install(ENGINEPLUGIN.RESOURCEMANAGER).install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters).install(ENGINEPLUGIN.COMPILERMANAGER);
-  }
-  loadConfig(config, callback) {
-    const loadLifeCycle = () => {
-      const dataSupportManager = this.dataSupportManager;
-      config.texture && dataSupportManager.load({ texture: config.texture });
-      config.material && dataSupportManager.load({ material: config.material });
-      delete config.texture;
-      delete config.material;
-      dataSupportManager.load(config);
-    };
-    if (config.assets && config.assets.length) {
-      this.loaderManager.reset().load(config.assets);
-      const mappedFun = (event) => {
-        delete config.assets;
-        loadLifeCycle();
-        this.resourceManager.removeEventListener("mapped", mappedFun);
-        callback && callback(event);
-      };
-      this.resourceManager.addEventListener("mapped", mappedFun);
-    } else {
-      loadLifeCycle();
-      callback && callback();
-    }
-    return this;
-  }
-  loadConfigAsync(config) {
-    return new Promise((resolve, reject) => {
-      const loadLifeCycle = () => {
-        const dataSupportManager = this.dataSupportManager;
-        config.texture && dataSupportManager.load({ texture: config.texture });
-        config.material && dataSupportManager.load({ material: config.material });
-        delete config.texture;
-        delete config.material;
-        dataSupportManager.load(config);
-      };
-      if (config.assets && config.assets.length) {
-        this.loaderManager.reset().load(config.assets);
-        const mappedFun = (event) => {
-          delete config.assets;
-          loadLifeCycle();
-          this.resourceManager.removeEventListener("mapped", mappedFun);
-          resolve(event);
-        };
-        this.resourceManager.addEventListener("mapped", mappedFun);
-      } else {
-        loadLifeCycle();
-        resolve(void 0);
-      }
-    });
-  }
-}
 class ModelingEngineSupport extends EngineSupport {
   constructor(parameters) {
     super(parameters);
@@ -7451,4 +7454,7 @@ var configure = /* @__PURE__ */ Object.freeze({
   moveTo,
   moveSpacing
 });
-export { configure$1 as BasicEventLibrary, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, GeometryDataSupport, GroupHelper, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };
+if (!window.__THREE__) {
+  console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
+}
+export { configure$1 as BasicEventLibrary, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };

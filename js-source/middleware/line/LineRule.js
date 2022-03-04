@@ -4,8 +4,8 @@ export const LineRule = function (input, compiler) {
     if (operate === 'add') {
         if (validate(key)) {
             compiler.add(key, value);
-            return;
         }
+        return;
     }
     if (operate === 'set') {
         const tempPath = path.concat([]);

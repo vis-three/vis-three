@@ -88,7 +88,7 @@ export class ResourceManager extends EventDispatcher {
             if (resource instanceof HTMLImageElement) {
                 resourceMap.set(url, resource);
                 configMap.set(url, generateConfig(CONFIGTYPE.IMAGETEXTURE, {
-                    image: url
+                    url: url
                 }));
                 structureMap.set(url, url);
                 // canvas贴图  

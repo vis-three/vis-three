@@ -1,4 +1,4 @@
-import { Color, LineBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, SpriteMaterial, Texture } from "three";
+import { Color, LineBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, PointsMaterial, SpriteMaterial, Texture } from "three";
 import { validate } from "uuid";
 import { Compiler } from "../../core/Compiler";
 import { CONFIGTYPE } from "../constants/configType";
@@ -28,6 +28,7 @@ export class MaterialCompiler extends Compiler {
         constructMap.set(CONFIGTYPE.MESHPHONGMATERIAL, () => new MeshPhongMaterial());
         constructMap.set(CONFIGTYPE.SPRITEMATERIAL, () => new SpriteMaterial());
         constructMap.set(CONFIGTYPE.LINEBASICMATERIAL, () => new LineBasicMaterial());
+        constructMap.set(CONFIGTYPE.POINTSMATERIAL, () => new PointsMaterial());
         this.constructMap = constructMap;
         this.colorAttribute = {
             'color': true,
@@ -77,14 +78,13 @@ export class MaterialCompiler extends Compiler {
             if (config.type && this.constructMap.has(config.type)) {
                 const material = this.constructMap.get(config.type)();
                 const tempConfig = JSON.parse(JSON.stringify(config));
-                delete tempConfig.type;
-                delete tempConfig.vid;
+                const filterMap = {};
                 // 转化颜色
                 const colorAttribute = this.colorAttribute;
                 for (const key in colorAttribute) {
                     if (tempConfig[key]) {
                         material[key] = new Color(tempConfig[key]);
-                        delete tempConfig[key];
+                        filterMap[key] = true;
                     }
                 }
                 // 应用贴图
@@ -92,11 +92,11 @@ export class MaterialCompiler extends Compiler {
                 for (const key in mapAttribute) {
                     if (tempConfig[key]) {
                         material[key] = this.getTexture(tempConfig[key]);
-                        delete tempConfig[key];
+                        filterMap[key] = true;
                     }
                 }
                 // 应用属性
-                Compiler.applyConfig(tempConfig, material);
+                Compiler.applyConfig(config, material, filterMap);
                 material.needsUpdate = true;
                 this.map.set(vid, material);
             }

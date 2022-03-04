@@ -8,6 +8,7 @@ export declare class DataSupport<D extends CompilerTarget, C extends Compiler> {
     getData(): D;
     setData(data: D): this;
     proxyData(data: D): D;
+    getConfig(vid: string): import("../middleware/common/CommonConfig").SymbolConfig;
     addCompiler(compiler: C): this;
     toJSON(): string;
     load(config: D): this;

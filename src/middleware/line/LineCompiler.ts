@@ -1,5 +1,6 @@
 import { BoxBufferGeometry, BufferGeometry, Line, LineBasicMaterial, Material } from "three";
 import { Compiler } from "../../core/Compiler";
+import { MODULETYPE } from "../constants/MODULETYPE";
 import { MeshConfig } from "../mesh/MeshConfig";
 import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { LineConfig } from "./LineConfig";
@@ -11,6 +12,9 @@ export interface LineCompilerTarget extends ObjectCompilerTarget<LineConfig> {
 export interface LineCompilerParameters extends ObjectCompilerParameters<LineConfig, LineCompilerTarget> {}
 
 export class LineCompiler extends ObjectCompiler<LineConfig, LineCompilerTarget, Line> {
+
+  COMPILER_NAME: string = MODULETYPE.LINE
+
   private replaceMaterial = new LineBasicMaterial({color: 'rgb(150, 150, 150)'})
   private replaceGeometry = new BoxBufferGeometry(10, 10, 10)
 

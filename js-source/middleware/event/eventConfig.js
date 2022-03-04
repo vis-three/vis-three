@@ -1,13 +1,17 @@
+import { CONFIGTYPE } from "../constants/configType";
 export const getEventConfig = function () {
     return {
         vid: '',
-        type: 'Event',
+        type: CONFIGTYPE.EVENT,
+        target: '',
         pointerdown: [],
         pointermove: [],
         pointerup: [],
         pointerenter: [],
         pointerleave: [],
-        click: []
+        click: [],
+        dblclick: [],
+        contextmenu: []
     };
 };
 //# sourceMappingURL=eventConfig.js.map

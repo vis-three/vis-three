@@ -88,9 +88,17 @@ export interface LineBasicMaterialConfig extends MaterialConfig {
     linejoin: string;
     linewidth: number;
 }
-export declare type MaterialAllType = MeshStandardMaterialConfig | MeshPhongMaterialConfig | LineBasicMaterialConfig | SpriteMaterialConfig;
+export interface PointsMaterialConfig extends MaterialConfig {
+    alphaMap: string;
+    color: string;
+    map: string;
+    size: number;
+    sizeAttenuation: boolean;
+}
+export declare type MaterialAllType = MeshStandardMaterialConfig | MeshPhongMaterialConfig | LineBasicMaterialConfig | SpriteMaterialConfig | PointsMaterialConfig;
 export declare const getMaterialConfig: () => MaterialConfig;
 export declare const getMeshStandardMaterialConfig: () => MeshStandardMaterialConfig;
 export declare const getMeshPhongMaterialConfig: () => MeshPhongMaterialConfig;
 export declare const getSpriteMaterialConfig: () => SpriteMaterialConfig;
 export declare const getLineBasicMaterialConfig: () => LineBasicMaterialConfig;
+export declare const getPointsMaterialConfig: () => PointsMaterialConfig;

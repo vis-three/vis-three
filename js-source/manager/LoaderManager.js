@@ -2,7 +2,13 @@ import { EventDispatcher } from './../core/EventDispatcher';
 import { ImageLoader } from "three";
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
-import { LOADERMANAGER } from "../middleware/constants/EVENTTYPE";
+export var LOADERMANAGER;
+(function (LOADERMANAGER) {
+    LOADERMANAGER["LOADING"] = "loading";
+    LOADERMANAGER["DETAILLOADING"] = "detailLoading";
+    LOADERMANAGER["DETAILLOADED"] = "detailLoaded";
+    LOADERMANAGER["LOADED"] = "loaded";
+})(LOADERMANAGER || (LOADERMANAGER = {}));
 export class LoaderManager extends EventDispatcher {
     resourceMap;
     loaderMap;
@@ -94,17 +100,39 @@ export class LoaderManager extends EventDispatcher {
             const ext = url.split('.').pop()?.toLocaleLowerCase();
             if (!ext) {
                 detail.message = `url: ${url} 地址有误，无法获取文件格式。`;
+                console.warn(detail.message);
                 detail.error = true;
                 this.isError = true;
                 this.loadError += 1;
+                this.dispatchEvent({
+                    type: LOADERMANAGER.DETAILLOADED,
+                    detail
+                });
+                this.dispatchEvent({
+                    type: LOADERMANAGER.LOADING,
+                    loadTotal: this.loadTotal,
+                    loadSuccess: this.loadSuccess,
+                    loadError: this.loadError
+                });
                 continue;
             }
             const loader = loaderMap[ext];
             if (!loader) {
                 detail.message = `url: ${url} 不支持此文件格式加载。`;
+                console.warn(detail.message);
                 detail.error = true;
                 this.isError = true;
                 this.loadError += 1;
+                this.dispatchEvent({
+                    type: LOADERMANAGER.DETAILLOADED,
+                    detail
+                });
+                this.dispatchEvent({
+                    type: LOADERMANAGER.LOADING,
+                    loadTotal: this.loadTotal,
+                    loadSuccess: this.loadSuccess,
+                    loadError: this.loadError
+                });
                 continue;
             }
             loader.loadAsync(url, (event) => {
@@ -177,6 +205,14 @@ export class LoaderManager extends EventDispatcher {
     setLoadDetailMap(map) {
         this.loadDetailMap = map;
         return this;
+    }
+    // 导出资源单
+    toJSON() {
+        const assets = [];
+        this.resourceMap.forEach((value, url) => {
+            assets.push(url);
+        });
+        return JSON.stringify(assets);
     }
     dispose() {
         this.resourceMap.clear();

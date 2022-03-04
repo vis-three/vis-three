@@ -1,6 +1,7 @@
 import { Vector3Config, SymbolConfig } from "../common/CommonConfig";
 export interface ObjectConfig extends SymbolConfig {
     type: string;
+    name: string;
     castShadow: boolean;
     receiveShadow: boolean;
     lookAt: string;

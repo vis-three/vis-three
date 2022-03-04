@@ -1,4 +1,5 @@
 import { FrontSide, MultiplyOperation, RGBAFormat, TangentSpaceNormalMap } from "three";
+import { CONFIGTYPE } from "../constants/configType";
 export const getMaterialConfig = function () {
     return {
         vid: '',
@@ -22,7 +23,7 @@ export const getMaterialConfig = function () {
 };
 export const getMeshStandardMaterialConfig = function () {
     return Object.assign(getMaterialConfig(), {
-        type: 'MeshStandardMaterial',
+        type: CONFIGTYPE.MESHSTANDARDMATERIAL,
         aoMapIntensity: 1,
         bumpScale: 1,
         color: 'rgb(255, 255, 255)',
@@ -55,7 +56,7 @@ export const getMeshStandardMaterialConfig = function () {
 };
 export const getMeshPhongMaterialConfig = function () {
     return Object.assign(getMaterialConfig(), {
-        type: 'MeshPhongMateria',
+        type: CONFIGTYPE.MESHPHONGMATERIAL,
         aoMapIntensity: 1,
         bumpScale: 1,
         color: 'rgb(255, 255, 255)',
@@ -88,7 +89,7 @@ export const getMeshPhongMaterialConfig = function () {
 };
 export const getSpriteMaterialConfig = function () {
     return Object.assign(getMaterialConfig(), {
-        type: 'SpriteMaterial',
+        type: CONFIGTYPE.SPRITEMATERIAL,
         color: 'rgb(255, 255, 255)',
         rotation: 0,
         map: '',
@@ -98,11 +99,21 @@ export const getSpriteMaterialConfig = function () {
 };
 export const getLineBasicMaterialConfig = function () {
     return Object.assign(getMaterialConfig(), {
-        type: 'LineBasicMaterial',
+        type: CONFIGTYPE.LINEBASICMATERIAL,
         color: 'rgb(255, 255, 255)',
         linecap: 'round',
         linejoin: 'round',
         linewidth: 1
+    });
+};
+export const getPointsMaterialConfig = function () {
+    return Object.assign(getMaterialConfig(), {
+        type: CONFIGTYPE.POINTSMATERIAL,
+        map: '',
+        alphaMap: '',
+        color: 'rgb(255, 255, 255)',
+        sizeAttenuation: true,
+        size: 1
     });
 };
 //# sourceMappingURL=MaterialConfig.js.map
