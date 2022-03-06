@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, BoxBufferGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLMultisampleRenderTarget, RGBAFormat, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Quaternion, Euler, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, DodecahedronBufferGeometry, Fog, FogExp2, PlaneBufferGeometry, CubeTexture, CanvasTexture, PCFSoftShadowMap } from "three";
+import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, BoxBufferGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Quaternion, Euler, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, DodecahedronBufferGeometry, Fog, FogExp2, PlaneBufferGeometry, CubeTexture, CanvasTexture, PCFSoftShadowMap } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -1374,9 +1374,16 @@ const EffectComposerPlugin = function(params) {
     const renderer = this.webGLRenderer;
     const pixelRatio = renderer.getPixelRatio();
     const size = renderer.getDrawingBufferSize(new Vector2());
-    composer = new EffectComposer(renderer, new WebGLMultisampleRenderTarget(size.width * pixelRatio, size.height * pixelRatio, {
-      format: RGBAFormat
-    }));
+    if (Number(window.__THREE__) > 137) {
+      composer = new EffectComposer(renderer, new WebGLRenderTarget(size.width * pixelRatio, size.height * pixelRatio, {
+        format: params.format || RGBAFormat,
+        samples: params.samples || 4
+      }));
+    } else {
+      composer = new EffectComposer(renderer, new WebGLMultisampleRenderTarget(size.width * pixelRatio, size.height * pixelRatio, {
+        format: params.format || RGBAFormat
+      }));
+    }
   } else {
     composer = new EffectComposer(this.webGLRenderer);
   }

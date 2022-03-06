@@ -1,4 +1,4 @@
-import { RGBAFormat, Vector2, WebGLMultisampleRenderTarget } from "three";
+import { RGBAFormat, Vector2, WebGLMultisampleRenderTarget, WebGLRenderTarget } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { Engine } from "../engine/Engine";
@@ -8,6 +8,8 @@ import { SetCameraEvent, SetSizeEvent } from "./WebGLRendererPlugin";
 
 export interface EffectComposerParameters {
   WebGLMultisampleRenderTarget?: boolean
+  samples?: number
+  format?: number
 }
 
 export const EffectComposerPlugin: Plugin<EffectComposerParameters> = function (this: Engine, params: EffectComposerParameters): boolean {
@@ -24,15 +26,30 @@ export const EffectComposerPlugin: Plugin<EffectComposerParameters> = function (
   let composer: EffectComposer
 
   if (params?.WebGLMultisampleRenderTarget) {
+
     const renderer = this.webGLRenderer!
     const pixelRatio = renderer.getPixelRatio()
     const size = renderer.getDrawingBufferSize(new Vector2())
-    composer = new EffectComposer(
-      renderer,
-      new WebGLMultisampleRenderTarget(size.width * pixelRatio, size.height * pixelRatio, {
-        format: RGBAFormat
-      })
-    )
+
+    if (Number(window.__THREE__) > 137) {
+      composer = new EffectComposer(
+        renderer,
+        new WebGLRenderTarget(size.width * pixelRatio, size.height * pixelRatio, {
+          format: params.format || RGBAFormat,
+          // @ts-ignore
+          samples: params.samples || 4
+        })
+      )
+    } else {
+      composer = new EffectComposer(
+        renderer,
+        new WebGLMultisampleRenderTarget(size.width * pixelRatio, size.height * pixelRatio, {
+          format: params.format || RGBAFormat
+        })
+      )
+    }
+
+
   } else {
     composer = new EffectComposer(this.webGLRenderer)
   }
