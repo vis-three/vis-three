@@ -28,6 +28,7 @@
     "types",
     "examples",
     "package.json",
+    "doc",
     "LICENSE"
   ]
 }

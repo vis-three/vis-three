@@ -12,7 +12,7 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { SceneParameters, ScenePlugin } from "../plugins/ScenePlugin";
 import { RenderManager } from "../manager/RenderManager";
-import { RendererManagerPlugin } from "../plugins/RenderManagerPlugin";
+import { RenderManagerPlugin } from "../plugins/RenderManagerPlugin";
 import { OrbitControlsPlugin } from "../plugins/OrbitControlsPlugin";
 import { VisStatsParameters } from "../optimize/VisStats";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -34,6 +34,8 @@ import { DataSupportManager, DataSupportManagerParameters } from "../manager/Dat
 import { DataSupportManagerPlugin } from "../plugins/DataSupportManagerPlugin";
 import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerManager";
 import { CompilerManagerPlugin } from "../plugins/CompilerManagerPlugin";
+import { KeyboardManager } from "../manager/KeyboardManager";
+import { KeyboardManagerPlugin } from "../plugins/KeyboardManagerPlugin";
 
 // 存在的插件接口
 export enum ENGINEPLUGIN {
@@ -50,7 +52,8 @@ export enum ENGINEPLUGIN {
   LOADERMANAGER = 'LoaderManager',
   RESOURCEMANAGER = 'ResourceManager',
   DATASUPPORTMANAGER = 'DataSupportManager',
-  COMPILERMANAGER = 'CompilerManager'
+  COMPILERMANAGER = 'CompilerManager',
+  KEYBOARDMANAGER = 'KeyboardManager'
 }
 
 export type EnginePluginParams = 
@@ -67,20 +70,30 @@ export type EnginePluginParams =
 
 // 插件处理集合
 let pluginHandler: Map<string, Function> = new Map()
-pluginHandler.set('WebGLRenderer', WebGLRendererPlugin)
-pluginHandler.set('Scene', ScenePlugin)
-pluginHandler.set('ModelingScene', ModelingScenePlugin)
-pluginHandler.set('RenderManager', RendererManagerPlugin)
-pluginHandler.set('OrbitControls', OrbitControlsPlugin)
-pluginHandler.set('Stats', StatsPlugin)
-pluginHandler.set('EffectComposer', EffectComposerPlugin)
-pluginHandler.set('PointerManager', PointerManagerPlugin)
-pluginHandler.set('EventManager', EventManagerPlugin)
-pluginHandler.set('TransformControls', TransformControlsPlugin)
-pluginHandler.set('LoaderManager', LoaderManagerPlugin)
-pluginHandler.set('ResourceManager', ResourceManagerPlugin)
-pluginHandler.set('DataSupportManager', DataSupportManagerPlugin)
-pluginHandler.set('CompilerManager', CompilerManagerPlugin)
+
+pluginHandler.set(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin)
+pluginHandler.set(ENGINEPLUGIN.EFFECTCOMPOSER, EffectComposerPlugin)
+
+pluginHandler.set(ENGINEPLUGIN.SCENE, ScenePlugin)
+pluginHandler.set(ENGINEPLUGIN.MODELINGSCENE, ModelingScenePlugin)
+
+pluginHandler.set(ENGINEPLUGIN.RENDERMANAGER, RenderManagerPlugin)
+pluginHandler.set(ENGINEPLUGIN.POINTERMANAGER, PointerManagerPlugin)
+pluginHandler.set(ENGINEPLUGIN.EVENTMANAGER, EventManagerPlugin)
+pluginHandler.set(ENGINEPLUGIN.LOADERMANAGER, LoaderManagerPlugin)
+pluginHandler.set(ENGINEPLUGIN.RESOURCEMANAGER, ResourceManagerPlugin)
+pluginHandler.set(ENGINEPLUGIN.DATASUPPORTMANAGER, DataSupportManagerPlugin)
+pluginHandler.set(ENGINEPLUGIN.COMPILERMANAGER, CompilerManagerPlugin)
+pluginHandler.set(ENGINEPLUGIN.KEYBOARDMANAGER, KeyboardManagerPlugin)
+
+pluginHandler.set(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin)
+pluginHandler.set(ENGINEPLUGIN.TRANSFORMCONTROLS, TransformControlsPlugin)
+
+pluginHandler.set(ENGINEPLUGIN.STATS, StatsPlugin)
+
+
+
+
 
 // 引擎槽
 export class Engine extends EventDispatcher {
@@ -99,6 +112,7 @@ export class Engine extends EventDispatcher {
 
   completeSet: Set<(engine: Engine) => void>
 
+  IS_ENGINESUPPORT: boolean = false
 
   dom?: HTMLElement
   webGLRenderer?: WebGLRenderer
@@ -114,6 +128,7 @@ export class Engine extends EventDispatcher {
   resourceManager?: ResourceManager
   dataSupportManager?: DataSupportManager
   compilerManager?: CompilerManager
+  keyboardManager?: KeyboardManager
   stats?: Stats 
   transing?: boolean
 

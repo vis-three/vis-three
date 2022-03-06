@@ -1,10 +1,12 @@
-import { Scene } from 'three';
+import { Object3D, Scene } from 'three';
 import { ModelingScene } from './../extends/ModelingScene/ModelingScene';
 import { Engine } from "../engine/Engine";
 import { GlobalEvent } from "../manager/EventManager";
-import { VisTransformControls } from "../optimize/VisTransformControls";
+import { ObjectChangedEvent, TRANSFORMEVENT, VisTransformControls } from "../optimize/VisTransformControls";
 import { Plugin } from "./plugin";
 import { SetCameraEvent } from "./WebGLRendererPlugin";
+import { SymbolConfig } from '../middleware/common/CommonConfig';
+import { ObjectConfig } from '../middleware/object/ObjectConfig';
 
 export const TransformControlsPlugin: Plugin<Object> = function (this: Engine, params: Object): boolean {
   if (this.transformControls) {
@@ -62,6 +64,35 @@ export const TransformControlsPlugin: Plugin<Object> = function (this: Engine, p
     if (event.button === 0) {
       const objectList = event.intersections.map((elem) => elem.object)
       transformControls.setAttach(objectList[0])
+    }
+  })
+
+  this.completeSet.add(() => {
+    if (this.IS_ENGINESUPPORT) {
+
+      const objectToConfig = (object: Object3D): ObjectConfig | null => {
+        const symbol = this.compilerManager!.getObjectSymbol(object)
+        if (!symbol) {
+          return null
+        }
+    
+        return this.dataSupportManager!.getObjectConfig(symbol)
+      }
+
+      let config: ObjectConfig | null = null
+      let mode: string
+      transformControls.addEventListener(TRANSFORMEVENT.OBJECTCHANGED, (event) => {
+        const e = event as unknown as ObjectChangedEvent
+        e.transObjectSet.forEach(object => {
+          config = objectToConfig(object)
+          mode = e.mode
+          if (config) {
+            config[mode].x = object[mode].x
+            config[mode].y = object[mode].y
+            config[mode].z = object[mode].z
+          }
+        })
+      })
     }
   })
 

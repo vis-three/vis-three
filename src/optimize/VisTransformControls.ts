@@ -1,8 +1,7 @@
 import { BaseEvent, Camera, Object3D } from 'three'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
 
-export enum VISTRANSFORMEVENTTYPE {
-  OBJECTCHANGE = 'objectChange',
+export enum TRANSFORMEVENT {
   OBJECTCHANGED = 'objectChanged'
 }
 
@@ -95,7 +94,7 @@ export class VisTransformControls extends TransformControls {
       })
 
       this.dispatchEvent({
-        type: VISTRANSFORMEVENTTYPE.OBJECTCHANGED,
+        type: TRANSFORMEVENT.OBJECTCHANGED,
         transObjectSet,
         mode,
         target

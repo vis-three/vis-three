@@ -2,9 +2,9 @@ import { Engine } from "../engine/Engine";
 import { RenderManager } from "../manager/RenderManager";
 import { Plugin } from "./plugin";
 
-export const RendererManagerPlugin: Plugin<Object> = function (this: Engine): boolean {
+export const RenderManagerPlugin: Plugin<Object> = function (this: Engine): boolean {
   if (this.renderManager) {
-    console.warn('this has installed render manager plugin.')
+    console.warn('has installed render manager plugin.')
     return false
   }
 

@@ -1,7 +1,9 @@
+import { Object3D } from "three";
 import { CompilerManager } from "../manager/CompilerManager";
 import { DataSupportManager, DataSupportManagerParameters, LoadOptions } from "../manager/DataSupportManager";
 import { LoaderManager } from "../manager/LoaderManager";
 import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
+import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { Engine, ENGINEPLUGIN } from "./Engine";
 
 export interface EngineSupportParameters extends DataSupportManagerParameters {

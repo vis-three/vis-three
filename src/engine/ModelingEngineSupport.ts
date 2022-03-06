@@ -16,6 +16,7 @@ import {
   WebGLRenderer
 } from "three";
 import { EngineSupport, EngineSupportLoadOptions, EngineSupportParameters } from "./EngineSupport";
+import { KeyboardManager } from "../manager/KeyboardManager";
 
 export class ModelingEngineSupport extends EngineSupport {
 
@@ -31,6 +32,7 @@ export class ModelingEngineSupport extends EngineSupport {
   declare renderManager: RenderManager
   declare pointerManager: PointerManager
   declare eventManager: EventManager
+  declare keyboardManager: KeyboardManager
   declare stats: Stats 
   declare transing: boolean
 
@@ -66,6 +68,7 @@ export class ModelingEngineSupport extends EngineSupport {
     .install(ENGINEPLUGIN.ORBITCONTROLS)
     .install(ENGINEPLUGIN.POINTERMANAGER)
     .install(ENGINEPLUGIN.EVENTMANAGER)
+    .install(ENGINEPLUGIN.KEYBOARDMANAGER)
     .install(ENGINEPLUGIN.TRANSFORMCONTROLS)
     .complete()
   }

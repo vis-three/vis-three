@@ -9,6 +9,7 @@ import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { ModelingScene } from "../extends/ModelingScene/ModelingScene";
 import { EventManager } from "../manager/EventManager";
+import { KeyboardManager } from "../manager/KeyboardManager";
 import { PointerManager } from "../manager/PointerManager";
 import { RenderManager } from "../manager/RenderManager";
 import { Engine, ENGINEPLUGIN } from "./Engine";
@@ -25,6 +26,7 @@ export class ModelingEngine extends Engine{
   declare renderManager: RenderManager
   declare pointerManager: PointerManager
   declare eventManager: EventManager
+  declare keyboardManager: KeyboardManager
   declare stats: Stats 
   declare transing: boolean
 
@@ -60,6 +62,8 @@ export class ModelingEngine extends Engine{
     .install(ENGINEPLUGIN.ORBITCONTROLS)
     .install(ENGINEPLUGIN.POINTERMANAGER)
     .install(ENGINEPLUGIN.EVENTMANAGER)
+    .install(ENGINEPLUGIN.KEYBOARDMANAGER)
     .install(ENGINEPLUGIN.TRANSFORMCONTROLS)
+    .complete()
   }
 }
