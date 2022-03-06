@@ -4192,6 +4192,7 @@ class LineDataSupport extends DataSupport {
 }
 const MeshRule = function(notice, compiler) {
   const { operate, key, path, value } = notice;
+  console.log(notice);
   if (operate === "add") {
     if (validate(key)) {
       compiler.add(key, value);
@@ -4604,7 +4605,9 @@ class ObjectCompiler extends Compiler {
       console.warn(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
       return this;
     }
-    this.weakMap.delete(this.map.get(vid));
+    const object = this.map.get(vid);
+    this.scene.remove(object);
+    this.weakMap.delete(object);
     this.cacheObjectMap.delete(this.map.get(vid));
     this.map.delete(vid);
     return this;
