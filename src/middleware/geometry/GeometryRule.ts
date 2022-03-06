@@ -9,6 +9,8 @@ export const GeometryRule: Rule<GeometryCompiler> = function (notice: ProxyNotic
   if (operate === 'add') {
     if (validate(key)) {
       compiler.add(key, value)
+    } else {
+      console.warn(`geometry rule vid is illeage: '${key}'`)
     }
     return
   }
@@ -20,6 +22,15 @@ export const GeometryRule: Rule<GeometryCompiler> = function (notice: ProxyNotic
       compiler.set(vid, tempPath, value)
     } else {
       console.warn(`geometry rule vid is illeage: '${vid}'`)
+    }
+    return
+  }
+
+  if (operate === 'delete') {
+    if (validate(key)) {
+      compiler.remove(key)
+    } else {
+      console.warn(`geometry rule vid is illeage: '${key}'`)
     }
     return
   }

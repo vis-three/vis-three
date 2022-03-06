@@ -113,13 +113,9 @@ export class GeometryCompiler extends Compiler {
   }
 
   add (vid: string, config: GeometryAllType): this {
-    if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const geometry = this.constructMap.get(config.type)!(config)
-        this.map.set(vid, geometry)
-      }
-    } else {
-      console.error(`geometry vid parameter is illegal: ${vid}`)
+    if (config.type && this.constructMap.has(config.type)) {
+      const geometry = this.constructMap.get(config.type)!(config)
+      this.map.set(vid, geometry)
     }
     return this
   }
@@ -144,6 +140,20 @@ export class GeometryCompiler extends Compiler {
     currentGeometry.uuid = newGeometry.uuid
     newGeometry.dispose()
 
+    return this
+  }
+
+  remove (vid: string): this {
+    if (!this.map.has(vid)) {
+      console.warn(`Geometry Compiler: can not found vid in compiler: ${vid}`)
+      return this
+    }
+
+    const geometry = this.map.get(vid)!
+
+    geometry.dispose()
+
+    this.map.delete(vid)
     return this
   }
 

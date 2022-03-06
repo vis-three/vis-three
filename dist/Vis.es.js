@@ -3962,6 +3962,8 @@ const GeometryRule = function(notice, compiler) {
   if (operate === "add") {
     if (validate(key)) {
       compiler.add(key, value);
+    } else {
+      console.warn(`geometry rule vid is illeage: '${key}'`);
     }
     return;
   }
@@ -3972,6 +3974,14 @@ const GeometryRule = function(notice, compiler) {
       compiler.set(vid, tempPath, value);
     } else {
       console.warn(`geometry rule vid is illeage: '${vid}'`);
+    }
+    return;
+  }
+  if (operate === "delete") {
+    if (validate(key)) {
+      compiler.remove(key);
+    } else {
+      console.warn(`geometry rule vid is illeage: '${key}'`);
     }
     return;
   }
@@ -5764,13 +5774,9 @@ const _GeometryCompiler = class extends Compiler {
     return this;
   }
   add(vid, config) {
-    if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const geometry = this.constructMap.get(config.type)(config);
-        this.map.set(vid, geometry);
-      }
-    } else {
-      console.error(`geometry vid parameter is illegal: ${vid}`);
+    if (config.type && this.constructMap.has(config.type)) {
+      const geometry = this.constructMap.get(config.type)(config);
+      this.map.set(vid, geometry);
     }
     return this;
   }
@@ -5789,6 +5795,16 @@ const _GeometryCompiler = class extends Compiler {
     currentGeometry.copy(newGeometry);
     currentGeometry.uuid = newGeometry.uuid;
     newGeometry.dispose();
+    return this;
+  }
+  remove(vid) {
+    if (!this.map.has(vid)) {
+      console.warn(`Geometry Compiler: can not found vid in compiler: ${vid}`);
+      return this;
+    }
+    const geometry = this.map.get(vid);
+    geometry.dispose();
+    this.map.delete(vid);
     return this;
   }
   compileAll() {
