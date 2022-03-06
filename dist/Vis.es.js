@@ -3370,7 +3370,13 @@ const getSceneConfig = function() {
     type: "Scene",
     background: "",
     environment: "",
-    fog: null
+    fog: {
+      type: "",
+      color: "rgb(150, 150, 150)",
+      near: 1,
+      far: 200,
+      density: 3e-3
+    }
   };
 };
 const getTransformControlsConfig = function() {
@@ -6526,7 +6532,7 @@ class SceneCompiler extends Compiler {
       parameters.scene && (this.scene = parameters.scene);
     } else {
       this.target = {
-        scene: getSceneConfig()
+        [CONFIGTYPE.SCENE]: getSceneConfig()
       };
       this.scene = new Scene();
     }
@@ -6564,7 +6570,8 @@ class SceneCompiler extends Compiler {
     }
   }
   fog(config) {
-    if (!config) {
+    if (config.type === "") {
+      this.fogCache = null;
       this.scene.fog = null;
       return;
     }
@@ -6578,7 +6585,9 @@ class SceneCompiler extends Compiler {
         this.scene.fog = new Fog(config.color, config.near, config.far);
         this.fogCache = this.scene.fog;
       }
-    } else if (config.type === "FogExp2") {
+      return;
+    }
+    if (config.type === "FogExp2") {
       if (this.fogCache instanceof FogExp2) {
         const fog = this.fogCache;
         fog.color = new Color(config.color);
@@ -6587,9 +6596,9 @@ class SceneCompiler extends Compiler {
         this.scene.fog = new FogExp2(config.color, config.density);
         this.fogCache = this.scene.fog;
       }
-    } else {
-      console.warn(`scene compiler can not support this type fog:'${config.type}'`);
+      return;
     }
+    console.warn(`scene compiler can not support this type fog:'${config.type}'`);
   }
   linkTextureMap(map) {
     this.textureMap = map;
@@ -6597,12 +6606,15 @@ class SceneCompiler extends Compiler {
   }
   set(path, key, value) {
     const sceneType = path.shift();
-    if (sceneType === "scene") {
+    if (sceneType === CONFIGTYPE.SCENE) {
       const actionMap = {
         background: () => this.background(value),
         environment: () => this.environment(value),
-        fog: () => this.fog(this.target.scene.fog)
+        fog: () => this.fog(this.target[CONFIGTYPE.SCENE].fog)
       };
+      if (path.length) {
+        key = path.pop();
+      }
       actionMap[key] && actionMap[key]();
       return this;
     } else {
@@ -6615,7 +6627,7 @@ class SceneCompiler extends Compiler {
     return this;
   }
   compileAll() {
-    const sceneTarget = this.target.scene;
+    const sceneTarget = this.target[CONFIGTYPE.SCENE];
     this.background(sceneTarget.background);
     this.environment(sceneTarget.environment);
     this.fog(sceneTarget.fog);

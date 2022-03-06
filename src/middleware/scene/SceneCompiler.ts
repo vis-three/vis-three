@@ -2,10 +2,11 @@ import { Color, Fog, FogExp2, Scene, Texture } from "three";
 import { validate } from "uuid";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
+import { CONFIGTYPE } from "../constants/configType";
 import { getSceneConfig, SceneConfig, SceneFogConfig } from "./SceneConfig";
 
 export interface SceneCompilerTarget extends CompilerTarget {
-  scene: SceneConfig
+  [CONFIGTYPE.SCENE]: SceneConfig
 }
 
 export interface SceneCompilerParameters {
@@ -28,7 +29,7 @@ export class SceneCompiler extends Compiler {
       parameters.scene && (this.scene = parameters.scene)
     } else {
       this.target = {
-        scene: getSceneConfig()
+        [CONFIGTYPE.SCENE]: getSceneConfig()
       }
       this.scene = new Scene()
     }
@@ -70,11 +71,12 @@ export class SceneCompiler extends Compiler {
     }
   }
 
-  private fog (config: SceneFogConfig | null) {
-    if (!config) {
+  private fog (config: SceneFogConfig) {
+    if (config.type === '') {
+      this.fogCache = null
       this.scene.fog = null
       return
-    }
+    } 
 
     if (config.type === 'Fog') {
       if (this.fogCache instanceof Fog) {
@@ -86,8 +88,10 @@ export class SceneCompiler extends Compiler {
         this.scene.fog = new Fog(config.color, config.near, config.far)
         this.fogCache = this.scene.fog as Fog
       }
-      
-    } else if (config.type === 'FogExp2') {
+      return
+    }
+     
+    if (config.type === 'FogExp2') {
       if (this.fogCache instanceof FogExp2) {
         const fog = this.fogCache
         fog.color = new Color(config.color)
@@ -96,9 +100,10 @@ export class SceneCompiler extends Compiler {
         this.scene.fog = new FogExp2(config.color, config.density)
         this.fogCache = this.scene.fog as FogExp2
       }
-    } else {
-      console.warn(`scene compiler can not support this type fog:'${config.type}'`)
+      return
     }
+
+    console.warn(`scene compiler can not support this type fog:'${config.type}'`)
   }
 
   linkTextureMap (map: Map<SymbolConfig['type'], Texture>): this {
@@ -108,13 +113,18 @@ export class SceneCompiler extends Compiler {
 
   set (path: string[], key: string, value: any): this {
     const sceneType = path.shift()!
-    
-    if (sceneType === 'scene') {
+
+    if (sceneType === CONFIGTYPE.SCENE) {
       const actionMap = {
         background: () => this.background(value),
         environment: () => this.environment(value),
-        fog: () => this.fog(this.target.scene.fog)
+        fog: () => this.fog(this.target[CONFIGTYPE.SCENE].fog)
       }
+
+      if (path.length) {
+        key = path.pop()!
+      }
+
       actionMap[key] && actionMap[key]()
       return this
     } else {
@@ -129,7 +139,7 @@ export class SceneCompiler extends Compiler {
   }
 
   compileAll (): this {
-    const sceneTarget = this.target.scene
+    const sceneTarget = this.target[CONFIGTYPE.SCENE]
     this.background(sceneTarget.background)
     this.environment(sceneTarget.environment)
     this.fog(sceneTarget.fog)
