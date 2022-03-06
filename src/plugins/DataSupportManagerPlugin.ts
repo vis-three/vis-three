@@ -3,7 +3,7 @@ import { DataSupportManager, DataSupportManagerParameters } from "../manager/Dat
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
-import { RendererDataSupport } from "../middleware/render/RendererDataSupport";
+import { RendererDataSupport } from "../middleware/renderer/RendererDataSupport";
 import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { generateConfig } from "../convenient/generateConfig";
 import { Plugin } from "./plugin";

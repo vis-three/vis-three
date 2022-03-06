@@ -4192,7 +4192,6 @@ class LineDataSupport extends DataSupport {
 }
 const MeshRule = function(notice, compiler) {
   const { operate, key, path, value } = notice;
-  console.log(notice);
   if (operate === "add") {
     if (validate(key)) {
       compiler.add(key, value);

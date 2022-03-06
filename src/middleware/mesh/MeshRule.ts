@@ -14,7 +14,7 @@ export type MeshRule = ObjectRule<
 
 export const MeshRule: MeshRule = function (notice: ProxyNotice, compiler: MeshCompiler) {
   const {operate, key, path, value} = notice
-  console.log(notice)
+
   if (operate === 'add') {
     if (validate(key)) {
       compiler.add(key, value)

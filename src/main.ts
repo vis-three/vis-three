@@ -18,7 +18,7 @@ import { MODULETYPE } from "./middleware/constants/MODULETYPE";
 import { CONFIGTYPE } from "./middleware/constants/configType";
 import { OBJECTEVENT } from "./middleware/constants/OBJECTEVENT";
 import { ControlsDataSupport } from "./middleware/controls/ControlsDataSupport";
-import { RendererDataSupport } from "./middleware/render/RendererDataSupport";
+import { RendererDataSupport } from "./middleware/renderer/RendererDataSupport";
 import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
 import { EVENTTYPE } from "./middleware/constants/EVENTTYPE";
 import { TextureDisplayer } from "./displayer/TextureDisplayer";

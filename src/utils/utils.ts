@@ -5,7 +5,7 @@ import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig } 
 import { getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig } from "../middleware/texture/TextureConfig"
 import { getLineBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getSpriteMaterialConfig } from "../middleware/material/MaterialConfig"
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../middleware/camera/CameraConfig"
-import { getWebGLRendererConfig } from "../middleware/render/RendererConfig"
+import { getWebGLRendererConfig } from "../middleware/renderer/RendererConfig"
 import { getSceneConfig } from "../middleware/scene/SceneConfig"
 import { getOrbitControlsConfig, getTransformControlsConfig } from "../middleware/controls/ControlsConfig"
 import { getSpriteConfig } from "../middleware/sprite/SpriteConfig"
