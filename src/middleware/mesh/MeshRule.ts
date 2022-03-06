@@ -31,5 +31,11 @@ export const MeshRule: MeshRule = function (notice: ProxyNotice, compiler: MeshC
     }
     return
   }
-  
+
+  if (operate === 'delete') {
+    if (validate(key)) {
+      compiler.remove(key)
+    }
+    return
+  }
 }

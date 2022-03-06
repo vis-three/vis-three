@@ -35,4 +35,10 @@ export const LightRule: LightRule = function (input: ProxyNotice, compiler: Ligh
     return
   }
   
+  if (operate === 'delete') {
+    if (validate(key)) {
+      compiler.remove(key)
+    }
+    return
+  }
 }

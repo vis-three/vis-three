@@ -3900,15 +3900,17 @@ const MaterialRule = function(notice, compiler) {
     if (validate(key)) {
       compiler.add(key, value);
     }
-  } else if (operate === "set") {
+    return;
+  }
+  if (operate === "set") {
     const tempPath = path.concat([]);
     const vid = tempPath.shift();
     if (vid && validate(vid)) {
       compiler.set(vid, tempPath, key, value);
     } else {
       console.warn(`material rule vid is illeage: '${vid}'`);
-      return;
     }
+    return;
   }
 };
 class MaterialDataSupport extends DataSupport {
@@ -3939,6 +3941,12 @@ const LightRule = function(input, compiler) {
       compiler.set(vid, tempPath, key, value);
     } else {
       console.warn(`model rule vid is illeage: '${vid}'`);
+    }
+    return;
+  }
+  if (operate === "delete") {
+    if (validate(key)) {
+      compiler.remove(key);
     }
     return;
   }
@@ -3980,7 +3988,9 @@ const CameraRule = function(notice, compiler) {
     if (validate(key)) {
       compiler.add(key, value);
     }
-  } else if (operate === "set") {
+    return;
+  }
+  if (operate === "set") {
     const tempPath = path.concat([]);
     const vid = tempPath.shift();
     if (vid && validate(vid)) {
@@ -3988,6 +3998,13 @@ const CameraRule = function(notice, compiler) {
     } else {
       console.warn(`camera rule vid is illeage: '${vid}'`);
     }
+    return;
+  }
+  if (operate === "delete") {
+    if (validate(key)) {
+      compiler.remove(key);
+    }
+    return;
   }
 };
 class CameraDataSupport extends ObjectDataSupport {
@@ -4048,13 +4065,21 @@ class ControlsDataSupport extends DataSupport {
 const SpriteRule = function(notice, compiler) {
   const { operate, key, path, value } = notice;
   if (operate === "add") {
-    compiler.add(key, value);
+    if (validate(key)) {
+      compiler.add(key, value);
+    }
     return;
   }
   if (operate === "set") {
     const tempPath = path.concat([]);
     const vid = tempPath.shift();
     compiler.set(vid, tempPath, key, value);
+  }
+  if (operate === "delete") {
+    if (validate(key)) {
+      compiler.remove(key);
+    }
+    return;
   }
 };
 class SpriteDataSupport extends ObjectDataSupport {
@@ -4173,6 +4198,12 @@ const MeshRule = function(notice, compiler) {
     }
     return;
   }
+  if (operate === "delete") {
+    if (validate(key)) {
+      compiler.remove(key);
+    }
+    return;
+  }
 };
 class MeshDataSupport extends ObjectDataSupport {
   constructor(data) {
@@ -4195,6 +4226,12 @@ const PointsRule = function(notice, compiler) {
       compiler.set(vid, tempPath, key, value);
     } else {
       console.warn(`model rule vid is illeage: '${vid}'`);
+    }
+    return;
+  }
+  if (operate === "delete") {
+    if (validate(key)) {
+      compiler.remove(key);
     }
     return;
   }
@@ -4221,6 +4258,12 @@ const GroupRule = function(input, compiler) {
       compiler.set(vid, tempPath, key, value);
     } else {
       console.warn(`model rule vid is illeage: '${vid}'`);
+    }
+    return;
+  }
+  if (operate === "delete") {
+    if (validate(key)) {
+      compiler.remove(key);
     }
     return;
   }

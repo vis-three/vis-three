@@ -34,4 +34,10 @@ export const PointsRule: PointsRule = function (notice: ProxyNotice, compiler: P
     return
   }
   
+  if (operate === 'delete') {
+    if (validate(key)) {
+      compiler.remove(key)
+    }
+    return
+  }
 }

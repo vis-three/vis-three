@@ -36,4 +36,10 @@ export const GroupRule: GroupRule = function (input: ProxyNotice, compiler: Grou
     return
   }
   
+  if (operate === 'delete') {
+    if (validate(key)) {
+      compiler.remove(key)
+    }
+    return
+  }
 }
