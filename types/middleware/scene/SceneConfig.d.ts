@@ -1,6 +1,6 @@
 import { SymbolConfig } from "../common/CommonConfig";
 export interface SceneFogConfig {
-    type: 'Fog' | 'FogExp2';
+    type: 'Fog' | 'FogExp2' | '';
     color: string;
     near: number;
     far: number;
@@ -9,6 +9,6 @@ export interface SceneFogConfig {
 export interface SceneConfig extends SymbolConfig {
     background: string | null;
     environment: string | null;
-    fog: SceneFogConfig | null;
+    fog: SceneFogConfig;
 }
 export declare const getSceneConfig: () => SceneConfig;

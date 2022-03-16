@@ -22,7 +22,9 @@ export class ModelingEngine extends Engine {
             .install(ENGINEPLUGIN.ORBITCONTROLS)
             .install(ENGINEPLUGIN.POINTERMANAGER)
             .install(ENGINEPLUGIN.EVENTMANAGER)
-            .install(ENGINEPLUGIN.TRANSFORMCONTROLS);
+            .install(ENGINEPLUGIN.KEYBOARDMANAGER)
+            .install(ENGINEPLUGIN.TRANSFORMCONTROLS)
+            .complete();
     }
 }
 //# sourceMappingURL=ModelingEngine.js.map

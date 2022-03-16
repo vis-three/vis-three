@@ -22,6 +22,7 @@ export declare class GeometryCompiler extends Compiler {
     setTarget(): this;
     add(vid: string, config: GeometryAllType): this;
     set(vid: string, path: string[], value: any): this;
+    remove(vid: string): this;
     compileAll(): this;
     dispose(): this;
 }

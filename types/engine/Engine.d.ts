@@ -16,6 +16,7 @@ import { LoadedEvent, LoaderManager, LoaderManagerParameters } from "../manager/
 import { ResourceManager } from "../manager/ResourceManager";
 import { DataSupportManager, DataSupportManagerParameters } from "../manager/DataSupportManager";
 import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerManager";
+import { KeyboardManager } from "../manager/KeyboardManager";
 export declare enum ENGINEPLUGIN {
     WEBGLRENDERER = "WebGLRenderer",
     SCENE = "Scene",
@@ -30,7 +31,8 @@ export declare enum ENGINEPLUGIN {
     LOADERMANAGER = "LoaderManager",
     RESOURCEMANAGER = "ResourceManager",
     DATASUPPORTMANAGER = "DataSupportManager",
-    COMPILERMANAGER = "CompilerManager"
+    COMPILERMANAGER = "CompilerManager",
+    KEYBOARDMANAGER = "KeyboardManager"
 }
 export declare type EnginePluginParams = WebGLRendererParameters | SceneParameters | ModelingSceneParameters | VisStatsParameters | EffectComposerParameters | PointerManagerParameters | EventManagerParameters | LoaderManagerParameters | DataSupportManagerParameters | CompilerManagerParameters;
 export declare class Engine extends EventDispatcher {
@@ -38,6 +40,7 @@ export declare class Engine extends EventDispatcher {
     static register: (name: string, handler: (this: Engine, params?: Object | undefined) => void) => void;
     static dispose: () => void;
     completeSet: Set<(engine: Engine) => void>;
+    IS_ENGINESUPPORT: boolean;
     dom?: HTMLElement;
     webGLRenderer?: WebGLRenderer;
     currentCamera?: Camera;
@@ -52,6 +55,7 @@ export declare class Engine extends EventDispatcher {
     resourceManager?: ResourceManager;
     dataSupportManager?: DataSupportManager;
     compilerManager?: CompilerManager;
+    keyboardManager?: KeyboardManager;
     stats?: Stats;
     transing?: boolean;
     setSize?: (width: number, height: number) => this;

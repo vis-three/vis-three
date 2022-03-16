@@ -5,6 +5,7 @@ import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { ModelingScene } from "../extends/ModelingScene/ModelingScene";
 import { EventManager } from "../manager/EventManager";
+import { KeyboardManager } from "../manager/KeyboardManager";
 import { PointerManager } from "../manager/PointerManager";
 import { RenderManager } from "../manager/RenderManager";
 import { Engine } from "./Engine";
@@ -19,6 +20,7 @@ export declare class ModelingEngine extends Engine {
     renderManager: RenderManager;
     pointerManager: PointerManager;
     eventManager: EventManager;
+    keyboardManager: KeyboardManager;
     stats: Stats;
     transing: boolean;
     setSize: (width: number, height: number) => this;

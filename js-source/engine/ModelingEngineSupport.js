@@ -24,6 +24,7 @@ export class ModelingEngineSupport extends EngineSupport {
             .install(ENGINEPLUGIN.ORBITCONTROLS)
             .install(ENGINEPLUGIN.POINTERMANAGER)
             .install(ENGINEPLUGIN.EVENTMANAGER)
+            .install(ENGINEPLUGIN.KEYBOARDMANAGER)
             .install(ENGINEPLUGIN.TRANSFORMCONTROLS)
             .complete();
     }

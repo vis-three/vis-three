@@ -18,5 +18,11 @@ export const PointsRule = function (notice, compiler) {
         }
         return;
     }
+    if (operate === 'delete') {
+        if (validate(key)) {
+            compiler.remove(key);
+        }
+        return;
+    }
 };
 //# sourceMappingURL=PointsRule.js.map

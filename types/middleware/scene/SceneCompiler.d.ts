@@ -1,9 +1,10 @@
 import { Scene, Texture } from "three";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
+import { CONFIGTYPE } from "../constants/configType";
 import { SceneConfig } from "./SceneConfig";
 export interface SceneCompilerTarget extends CompilerTarget {
-    scene: SceneConfig;
+    [CONFIGTYPE.SCENE]: SceneConfig;
 }
 export interface SceneCompilerParameters {
     target?: SceneCompilerTarget;

@@ -54,6 +54,9 @@ export class LoaderManager extends EventDispatcher {
   private isLoading: boolean
   private isLoaded: boolean
   private loadDetailMap: {[key: string]: LoadDetail}
+
+  path: string = ''
+
   constructor (parameters?: LoaderManagerParameters) {
     super()
     this.resourceMap = new Map()
@@ -98,6 +101,15 @@ export class LoaderManager extends EventDispatcher {
       this.isLoading = false
       this.loaded()
     }
+    return this
+  }
+
+  setPath(path: string): this {
+    const map = this.loaderMap
+    Object.keys(map).forEach(ext => {
+      map[ext].setPath(path)
+    })
+    this.path = path
     return this
   }
 

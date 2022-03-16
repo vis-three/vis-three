@@ -67,14 +67,9 @@ export class GeometryCompiler extends Compiler {
         return this;
     }
     add(vid, config) {
-        if (validate(vid)) {
-            if (config.type && this.constructMap.has(config.type)) {
-                const geometry = this.constructMap.get(config.type)(config);
-                this.map.set(vid, geometry);
-            }
-        }
-        else {
-            console.error(`geometry vid parameter is illegal: ${vid}`);
+        if (config.type && this.constructMap.has(config.type)) {
+            const geometry = this.constructMap.get(config.type)(config);
+            this.map.set(vid, geometry);
         }
         return this;
     }
@@ -95,6 +90,16 @@ export class GeometryCompiler extends Compiler {
         // 辅助的更新根据uuid的更新而更新，直接copy无法判断是否更新
         currentGeometry.uuid = newGeometry.uuid;
         newGeometry.dispose();
+        return this;
+    }
+    remove(vid) {
+        if (!this.map.has(vid)) {
+            console.warn(`Geometry Compiler: can not found vid in compiler: ${vid}`);
+            return this;
+        }
+        const geometry = this.map.get(vid);
+        geometry.dispose();
+        this.map.delete(vid);
         return this;
     }
     compileAll() {

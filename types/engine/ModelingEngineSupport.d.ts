@@ -8,6 +8,7 @@ import { PointerManager } from "../manager/PointerManager";
 import { RenderManager } from "../manager/RenderManager";
 import { Camera, WebGLRenderer } from "three";
 import { EngineSupport, EngineSupportParameters } from "./EngineSupport";
+import { KeyboardManager } from "../manager/KeyboardManager";
 export declare class ModelingEngineSupport extends EngineSupport {
     IS_ENGINESUPPORT: boolean;
     dom: HTMLElement;
@@ -20,6 +21,7 @@ export declare class ModelingEngineSupport extends EngineSupport {
     renderManager: RenderManager;
     pointerManager: PointerManager;
     eventManager: EventManager;
+    keyboardManager: KeyboardManager;
     stats: Stats;
     transing: boolean;
     setSize: (width: number, height: number) => this;

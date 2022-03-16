@@ -11,7 +11,7 @@ import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { MeshCompiler } from "../middleware/mesh/MeshCompiler";
 import { BasicObjectCompiler } from "../middleware/object/ObjectCompiler";
 import { PointsCompiler } from "../middleware/points/PointsCompiler";
-import { RendererCompiler } from "../middleware/render/RendererCompiler";
+import { RendererCompiler } from "../middleware/renderer/RendererCompiler";
 import { SceneCompiler } from "../middleware/scene/SceneCompiler";
 import { SpriteCompiler } from "../middleware/sprite/SpriteCompiler";
 import { TextureCompiler } from "../middleware/texture/TextureCompiler";

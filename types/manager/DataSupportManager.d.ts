@@ -10,8 +10,8 @@ import { GeometryCompilerTarget } from "../middleware/geometry/GeometryCompiler"
 import { CameraCompilerTarget } from "../middleware/camera/CameraCompiler";
 import { MaterialCompilerTarget } from "../middleware/material/MaterialCompiler";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
-import { RendererCompilerTarget } from "../middleware/render/RendererCompiler";
-import { RendererDataSupport } from "../middleware/render/RendererDataSupport";
+import { RendererCompilerTarget } from "../middleware/renderer/RendererCompiler";
+import { RendererDataSupport } from "../middleware/renderer/RendererDataSupport";
 import { SceneCompilerTarget } from "../middleware/scene/SceneCompiler";
 import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { ControlsCompilerTarget } from "../middleware/controls/ControlsCompiler";

@@ -18,5 +18,11 @@ export const LightRule = function (input, compiler) {
         }
         return;
     }
+    if (operate === 'delete') {
+        if (validate(key)) {
+            compiler.remove(key);
+        }
+        return;
+    }
 };
 //# sourceMappingURL=LightRule.js.map

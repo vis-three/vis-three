@@ -2793,6 +2793,7 @@ class LoaderManager extends EventDispatcher {
     __publicField(this, "isLoading");
     __publicField(this, "isLoaded");
     __publicField(this, "loadDetailMap");
+    __publicField(this, "path", "");
     this.resourceMap = new Map();
     this.loadTotal = 0;
     this.loadSuccess = 0;
@@ -2830,6 +2831,14 @@ class LoaderManager extends EventDispatcher {
       this.isLoading = false;
       this.loaded();
     }
+    return this;
+  }
+  setPath(path) {
+    const map = this.loaderMap;
+    Object.keys(map).forEach((ext) => {
+      map[ext].setPath(path);
+    });
+    this.path = path;
     return this;
   }
   load(urlList) {
@@ -4055,7 +4064,7 @@ const SceneRule = function(input, compiler) {
 class SceneDataSupport extends DataSupport {
   constructor(data) {
     !data && (data = {
-      scene: getSceneConfig()
+      [CONFIGTYPE.SCENE]: getSceneConfig()
     });
     super(SceneRule, data);
   }
@@ -4423,8 +4432,8 @@ const DataSupportManagerPlugin = function(params) {
       rendererData.WebGLRenderer = generateConfig(CONFIGTYPE.WEBGLRENDERER);
     }
     const sceneData = this.dataSupportManager.getDataSupport(MODULETYPE.SCENE).getData();
-    if (!sceneData.scene) {
-      sceneData.scene = generateConfig(CONFIGTYPE.SCENE);
+    if (!sceneData[CONFIGTYPE.SCENE]) {
+      sceneData[CONFIGTYPE.SCENE] = generateConfig(CONFIGTYPE.SCENE);
     }
     const controlsData = this.dataSupportManager.getDataSupport(MODULETYPE.CONTROLS).getData();
     if (this.transformControls) {

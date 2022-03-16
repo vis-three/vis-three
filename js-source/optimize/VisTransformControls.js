@@ -1,10 +1,9 @@
 import { Object3D } from 'three';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
-export var VISTRANSFORMEVENTTYPE;
-(function (VISTRANSFORMEVENTTYPE) {
-    VISTRANSFORMEVENTTYPE["OBJECTCHANGE"] = "objectChange";
-    VISTRANSFORMEVENTTYPE["OBJECTCHANGED"] = "objectChanged";
-})(VISTRANSFORMEVENTTYPE || (VISTRANSFORMEVENTTYPE = {}));
+export var TRANSFORMEVENT;
+(function (TRANSFORMEVENT) {
+    TRANSFORMEVENT["OBJECTCHANGED"] = "objectChanged";
+})(TRANSFORMEVENT || (TRANSFORMEVENT = {}));
 export class VisTransformControls extends TransformControls {
     target; // 控制器的内部控制目标
     transObjectSet; // 影响的变换物体列表
@@ -73,7 +72,7 @@ export class VisTransformControls extends TransformControls {
                 elem.updateMatrixWorld();
             });
             this.dispatchEvent({
-                type: VISTRANSFORMEVENTTYPE.OBJECTCHANGED,
+                type: TRANSFORMEVENT.OBJECTCHANGED,
                 transObjectSet,
                 mode,
                 target

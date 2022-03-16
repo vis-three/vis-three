@@ -19,5 +19,11 @@ export const GroupRule = function (input, compiler) {
         }
         return;
     }
+    if (operate === 'delete') {
+        if (validate(key)) {
+            compiler.remove(key);
+        }
+        return;
+    }
 };
 //# sourceMappingURL=GroupRule.js.map

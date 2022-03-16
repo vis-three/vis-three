@@ -1,7 +1,6 @@
 import { BaseEvent, Camera, Object3D } from 'three';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
-export declare enum VISTRANSFORMEVENTTYPE {
-    OBJECTCHANGE = "objectChange",
+export declare enum TRANSFORMEVENT {
     OBJECTCHANGED = "objectChanged"
 }
 export interface ObjectChangedEvent extends BaseEvent {

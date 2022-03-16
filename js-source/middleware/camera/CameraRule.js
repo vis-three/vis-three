@@ -5,8 +5,9 @@ export const CameraRule = function (notice, compiler) {
         if (validate(key)) {
             compiler.add(key, value);
         }
+        return;
     }
-    else if (operate === 'set') {
+    if (operate === 'set') {
         const tempPath = path.concat([]);
         const vid = tempPath.shift();
         if (vid && validate(vid)) {
@@ -15,6 +16,13 @@ export const CameraRule = function (notice, compiler) {
         else {
             console.warn(`camera rule vid is illeage: '${vid}'`);
         }
+        return;
+    }
+    if (operate === 'delete') {
+        if (validate(key)) {
+            compiler.remove(key);
+        }
+        return;
     }
 };
 //# sourceMappingURL=CameraRule.js.map

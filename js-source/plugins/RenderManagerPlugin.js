@@ -1,7 +1,7 @@
 import { RenderManager } from "../manager/RenderManager";
-export const RendererManagerPlugin = function () {
+export const RenderManagerPlugin = function () {
     if (this.renderManager) {
-        console.warn('this has installed render manager plugin.');
+        console.warn('has installed render manager plugin.');
         return false;
     }
     this.renderManager = new RenderManager();

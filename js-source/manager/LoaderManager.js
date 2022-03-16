@@ -4,6 +4,7 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 export var LOADERMANAGER;
 (function (LOADERMANAGER) {
+    LOADERMANAGER["BEFORELOAD"] = "beforeLoad";
     LOADERMANAGER["LOADING"] = "loading";
     LOADERMANAGER["DETAILLOADING"] = "detailLoading";
     LOADERMANAGER["DETAILLOADED"] = "detailLoaded";
@@ -19,6 +20,7 @@ export class LoaderManager extends EventDispatcher {
     isLoading;
     isLoaded;
     loadDetailMap;
+    path = '';
     constructor(parameters) {
         super();
         this.resourceMap = new Map();
@@ -60,9 +62,21 @@ export class LoaderManager extends EventDispatcher {
         }
         return this;
     }
+    setPath(path) {
+        const map = this.loaderMap;
+        Object.keys(map).forEach(ext => {
+            map[ext].setPath(path);
+        });
+        this.path = path;
+        return this;
+    }
     load(urlList) {
         this.reset();
         this.isLoading = true;
+        this.dispatchEvent({
+            type: LOADERMANAGER.BEFORELOAD,
+            urlList: [...urlList]
+        });
         if (urlList.length <= 0) {
             this.checkLoaded();
             console.warn(`url list is empty.`);

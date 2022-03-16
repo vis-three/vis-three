@@ -8,7 +8,7 @@ import { LineCompilerTarget } from "../middleware/line/LineCompiler";
 import { MaterialCompilerTarget } from "../middleware/material/MaterialCompiler";
 import { MeshCompilerTarget } from "../middleware/mesh/MeshCompiler";
 import { PointsCompilerTarget } from "../middleware/points/PointsCompiler";
-import { RendererCompilerTarget } from "../middleware/render/RendererCompiler";
+import { RendererCompilerTarget } from "../middleware/renderer/RendererCompiler";
 import { SpriteCompilerTarget } from "../middleware/sprite/SpriteCompiler";
 import { TextureCompilerTarget } from "../middleware/texture/TextureCompiler";
 export declare type SupportDataAllType = TextureCompilerTarget | MaterialCompilerTarget | LightCompilerTarget | GeometryCompilerTarget | CameraCompilerTarget | RendererCompilerTarget | SpriteCompilerTarget | GroupCompilerTarget | MeshCompilerTarget | PointsCompilerTarget | LineCompilerTarget;

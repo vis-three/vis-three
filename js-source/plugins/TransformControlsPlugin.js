@@ -1,6 +1,6 @@
 import { Scene } from 'three';
 import { ModelingScene } from './../extends/ModelingScene/ModelingScene';
-import { VisTransformControls } from "../optimize/VisTransformControls";
+import { TRANSFORMEVENT, VisTransformControls } from "../optimize/VisTransformControls";
 export const TransformControlsPlugin = function (params) {
     if (this.transformControls) {
         console.warn('this has installed transformControls plugin.');
@@ -46,6 +46,31 @@ export const TransformControlsPlugin = function (params) {
         if (event.button === 0) {
             const objectList = event.intersections.map((elem) => elem.object);
             transformControls.setAttach(objectList[0]);
+        }
+    });
+    this.completeSet.add(() => {
+        if (this.IS_ENGINESUPPORT) {
+            const objectToConfig = (object) => {
+                const symbol = this.compilerManager.getObjectSymbol(object);
+                if (!symbol) {
+                    return null;
+                }
+                return this.dataSupportManager.getObjectConfig(symbol);
+            };
+            let config = null;
+            let mode;
+            transformControls.addEventListener(TRANSFORMEVENT.OBJECTCHANGED, (event) => {
+                const e = event;
+                e.transObjectSet.forEach(object => {
+                    config = objectToConfig(object);
+                    mode = e.mode;
+                    if (config) {
+                        config[mode].x = object[mode].x;
+                        config[mode].y = object[mode].y;
+                        config[mode].z = object[mode].z;
+                    }
+                });
+            });
         }
     });
     return true;

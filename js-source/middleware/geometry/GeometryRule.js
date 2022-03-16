@@ -5,6 +5,9 @@ export const GeometryRule = function (notice, compiler) {
         if (validate(key)) {
             compiler.add(key, value);
         }
+        else {
+            console.warn(`geometry rule vid is illeage: '${key}'`);
+        }
         return;
     }
     if (operate === 'set') {
@@ -15,6 +18,15 @@ export const GeometryRule = function (notice, compiler) {
         }
         else {
             console.warn(`geometry rule vid is illeage: '${vid}'`);
+        }
+        return;
+    }
+    if (operate === 'delete') {
+        if (validate(key)) {
+            compiler.remove(key);
+        }
+        else {
+            console.warn(`geometry rule vid is illeage: '${key}'`);
         }
         return;
     }

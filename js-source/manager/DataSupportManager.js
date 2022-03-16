@@ -4,7 +4,7 @@ import { LightDataSupport } from "../middleware/light/LightDataSupport";
 import { GeometryDataSupport } from "../middleware/geometry/GeometryDataSupport";
 import { CameraDataSupport } from "../middleware/camera/CameraDataSupport";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
-import { RendererDataSupport } from "../middleware/render/RendererDataSupport";
+import { RendererDataSupport } from "../middleware/renderer/RendererDataSupport";
 import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
 import { SpriteDataSupport } from '../middleware/sprite/SpriteDataSupport';
