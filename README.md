@@ -3,7 +3,7 @@
 配置化的three.js开发。
 
 <p>
-  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.6-{}" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.7-{}" alt="Version"></a>
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MIT-{}" alt="License"></a>
 </p>
 

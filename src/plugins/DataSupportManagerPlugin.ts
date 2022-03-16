@@ -39,8 +39,8 @@ export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> = fu
     }
 
     const sceneData = this.dataSupportManager!.getDataSupport<SceneDataSupport>(MODULETYPE.SCENE)!.getData()
-    if (!sceneData.scene) {
-      sceneData.scene = generateConfig(CONFIGTYPE.SCENE)!
+    if (!sceneData[CONFIGTYPE.SCENE]) {
+      sceneData[CONFIGTYPE.SCENE] = generateConfig(CONFIGTYPE.SCENE)!
     }
 
     const controlsData = this.dataSupportManager!.getDataSupport<ControlsDataSupport>(MODULETYPE.CONTROLS)!.getData()
