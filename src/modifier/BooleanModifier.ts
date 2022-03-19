@@ -42,7 +42,7 @@ export class BooleanModifier extends Modifier {
     this.source.geometry = this.modifiedGeometry
   }
 
-  private modify () {
+  private async modify () {
     const source = this.source
     const likeMesh = {
       geometry: this.originalGeometry,
@@ -57,7 +57,7 @@ export class BooleanModifier extends Modifier {
   }
 
   render () {
-    if (this.use) {
+    if (this.visible) {
       // 判断物体位置更新以及几何更新
       if (!this.cacheSourceMatrix.equals(this.source.matrix)) {
         this.modify()
@@ -85,6 +85,12 @@ export class BooleanModifier extends Modifier {
     } else {
       this.modifiedGeometry.copy(this.originalGeometry)
     }
+  }
+
+  use () {
+    this.originalGeometry.copy(this.modifiedGeometry)
+    this.originalGeometry.uuid = this.modifiedGeometry.uuid
+    this.source.geometry = this.originalGeometry
   }
 
   dispose() {
