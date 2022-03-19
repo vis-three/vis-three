@@ -9177,34 +9177,77 @@ class CSG {
     return CSG.toGeometry(this, toMatrix);
   }
 }
-class BooleanModifier {
+class Modifier {
   constructor(parameters) {
+    __publicField(this, "use", true);
+    this.use = parameters.use !== void 0 ? parameters.use : true;
+  }
+}
+class BooleanModifier extends Modifier {
+  constructor(parameters) {
+    super(parameters);
     __publicField(this, "source");
     __publicField(this, "target");
-    __publicField(this, "_mode");
-    __publicField(this, "cacheGeometry");
+    __publicField(this, "mode");
+    __publicField(this, "cacheSourceMatrix");
+    __publicField(this, "cacheTargetMatrix");
+    __publicField(this, "cacheSoruceGeometryUuid");
+    __publicField(this, "cacheTargetGeometryUuid");
+    __publicField(this, "originalGeometry");
+    __publicField(this, "modifiedGeometry");
     this.source = parameters.source;
     this.target = parameters.target;
-    this.cacheGeometry = this.source.geometry;
     this.mode = parameters.mode || "subtract";
+    this.cacheSourceMatrix = this.source.matrix.clone();
+    this.cacheTargetMatrix = this.target.matrix.clone();
+    this.cacheSoruceGeometryUuid = this.source.geometry.uuid;
+    this.cacheTargetGeometryUuid = this.target.geometry.uuid;
+    this.originalGeometry = this.source.geometry;
+    this.modifiedGeometry = new BufferGeometry();
+    this.modify();
+    this.source.geometry = this.modifiedGeometry;
   }
-  get mode() {
-    return this._mode;
-  }
-  set mode(value) {
-    this._mode = value;
-    this[value]();
-  }
-  subtract() {
+  modify() {
     const source = this.source;
-    const csgSource = CSG.fromMesh(source);
+    const likeMesh = {
+      geometry: this.originalGeometry,
+      matrix: this.source.matrix
+    };
+    const csgSource = CSG.fromMesh(likeMesh);
     const csgTarget = CSG.fromMesh(this.target);
-    const newGeometry = CSG.toGeometry(csgSource.subtract(csgTarget), source.matrix);
-    source.geometry = newGeometry;
+    const csgGeometry = CSG.toGeometry(csgSource[this.mode](csgTarget), source.matrix);
+    this.modifiedGeometry.copy(csgGeometry);
+    this.modifiedGeometry.uuid = csgGeometry.uuid;
   }
-  union() {
+  render() {
+    if (this.use) {
+      if (!this.cacheSourceMatrix.equals(this.source.matrix)) {
+        this.modify();
+        this.cacheSourceMatrix.copy(this.source.matrix);
+        return;
+      }
+      if (!this.cacheTargetMatrix.equals(this.target.matrix)) {
+        this.modify();
+        this.cacheTargetMatrix.copy(this.target.matrix);
+        return;
+      }
+      if (this.originalGeometry.uuid !== this.cacheSoruceGeometryUuid) {
+        this.modify();
+        this.cacheSoruceGeometryUuid = this.originalGeometry.uuid;
+        return;
+      }
+      if (this.target.geometry.uuid !== this.cacheTargetGeometryUuid) {
+        this.modify();
+        this.cacheTargetGeometryUuid = this.target.geometry.uuid;
+        return;
+      }
+    } else {
+      this.modifiedGeometry.copy(this.originalGeometry);
+    }
   }
-  intersect() {
+  dispose() {
+    this.source.geometry = this.originalGeometry;
+    this.modifiedGeometry.dispose();
   }
 }
 if (!window.__THREE__) {

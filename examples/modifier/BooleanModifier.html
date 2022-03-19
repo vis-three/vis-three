@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ModelingEngine</title>
+  <title>BooleanModifier</title>
   <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
   <link rel="stylesheet" href="../css/common.css">
 </head>
@@ -35,8 +35,11 @@
     scene.add(pointLight)
 
     const box = new THREE.Mesh(
-      new THREE.BoxBufferGeometry(10, 10, 10),
-      new THREE.MeshStandardMaterial({ color: 'rgb(255, 105, 100)' })
+      new THREE.BoxBufferGeometry(20, 10, 10),
+      new THREE.MeshStandardMaterial({ 
+        // color: 'rgb(255, 105, 100)',
+        map: new THREE.TextureLoader().load('/examples/public/texture/Bricks_Color.jpg')
+      })
     )
     scene.add(box)
 
@@ -49,11 +52,32 @@
         opacity: 0.5
       })
     )
+    sphere.position.x = -5
+    sphere.updateMatrix()
     scene.add(sphere)
 
-    new Vis.BooleanModifier({
+    const cylinder = new THREE.Mesh(
+      new THREE.CylinderGeometry(3, 3, 15, 16),
+      sphere.material
+    )
+    cylinder.position.x = 5
+    cylinder.updateMatrix()
+    scene.add(cylinder)
+
+    const modifier1 = new Vis.BooleanModifier({
       source: box,
       target: sphere
+    })
+
+    const modifier2 = new Vis.BooleanModifier({
+      source: box,
+      target: cylinder,
+      mode: 'union'
+    })
+
+    engine.renderManager.addEventListener('render', () => {
+      modifier1.render()
+      modifier2.render()
     })
 
   </script>
