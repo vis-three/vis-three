@@ -36,6 +36,8 @@ import * as RealTimeAnimateLibrary from './convenient/RealTimeAnimateLibrary/con
 import { GroupHelper } from './extends/helper/object/GroupHelper';
 import { EngineSupport } from './engine/EngineSupport';
 
+import { BooleanModifier } from "./modifier/BooleanModifier";
+
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`)
 }
@@ -99,5 +101,8 @@ export {
   TextureDisplayer,
 
   // extends
-  ModelingScene
+  ModelingScene,
+
+  // modifier
+  BooleanModifier
 }
