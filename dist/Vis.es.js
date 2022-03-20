@@ -9179,8 +9179,8 @@ class CSG {
 }
 class Modifier {
   constructor(parameters) {
-    __publicField(this, "use", true);
-    this.use = parameters.use !== void 0 ? parameters.use : true;
+    __publicField(this, "visible", true);
+    this.visible = parameters.visible !== void 0 ? parameters.visible : true;
   }
 }
 class BooleanModifier extends Modifier {
@@ -9207,7 +9207,7 @@ class BooleanModifier extends Modifier {
     this.modify();
     this.source.geometry = this.modifiedGeometry;
   }
-  modify() {
+  async modify() {
     const source = this.source;
     const likeMesh = {
       geometry: this.originalGeometry,
@@ -9220,7 +9220,7 @@ class BooleanModifier extends Modifier {
     this.modifiedGeometry.uuid = csgGeometry.uuid;
   }
   render() {
-    if (this.use) {
+    if (this.visible) {
       if (!this.cacheSourceMatrix.equals(this.source.matrix)) {
         this.modify();
         this.cacheSourceMatrix.copy(this.source.matrix);
@@ -9244,6 +9244,11 @@ class BooleanModifier extends Modifier {
     } else {
       this.modifiedGeometry.copy(this.originalGeometry);
     }
+  }
+  use() {
+    this.originalGeometry.copy(this.modifiedGeometry);
+    this.originalGeometry.uuid = this.modifiedGeometry.uuid;
+    this.source.geometry = this.originalGeometry;
   }
   dispose() {
     this.source.geometry = this.originalGeometry;
