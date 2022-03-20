@@ -1,20 +1,19 @@
-## vis-three
+# vis-three
 
-配置化的three.js开发。
+three库二次功能封装 + 配置化的three.js开发。
 
 <p>
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.7-{}" alt="Version"></a>
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MIT-{}" alt="License"></a>
 </p>
 
-## 基本用法
 
-#### 安装
+## 安装
 ```
 npm i vis-three
 ```
 
-#### 导入
+## 导入
 
 ``` js
 // 整体导入
@@ -28,6 +27,16 @@ import {
 } from 'vis-three'
 ```
 
+## 查看demo示例
+1. 下载或者克隆main分支代码
+2. 执行`npm i` 安装依赖
+3. 执行`npm run examples`
+4. 打开浏览器访问: [http://localhost:3000/examples/index.html](http://localhost:3000/examples/index.html)
+
+5. 示例代码位于：`examples`文件夹下
+
+
+## 基本用法
 #### 生成配置
 
 ``` js
