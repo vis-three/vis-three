@@ -106,6 +106,8 @@ export const ViewpointPlugin: Plugin<ViewpointParameters> = function (this: Engi
     params.perspective.up.z,
   )
 
+
+
   this.setViewpoint = function (viewpoint: VIEWPOINT): Engine {
     this.dispatchEvent({
       type: 'setViewpoint',
@@ -117,6 +119,8 @@ export const ViewpointPlugin: Plugin<ViewpointParameters> = function (this: Engi
   this.addEventListener<SetSizeEvent>('setSize', event => {
     const width = event.width
     const height = event.height
+
+    console.log(width, height)
 
     perspectiveCamera.aspect = width / height
     perspectiveCamera.updateProjectionMatrix()
@@ -152,6 +156,14 @@ export const ViewpointPlugin: Plugin<ViewpointParameters> = function (this: Engi
     }
 
     this.setCamera!(orthograpbicCamera)
+  })
+
+  this.completeSet.add(() => {
+    if (params.viewpoint === VIEWPOINT.DEFAULT) {
+      this.setCamera!(perspectiveCamera)
+    } else {
+      this.setCamera!(orthograpbicCamera)
+    }
   })
   return true
 

@@ -36,7 +36,7 @@ import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerM
 import { CompilerManagerPlugin } from "../plugins/CompilerManagerPlugin";
 import { KeyboardManager } from "../manager/KeyboardManager";
 import { KeyboardManagerPlugin } from "../plugins/KeyboardManagerPlugin";
-import { VIEWPOINT, ViewpointParameters, ViewpointPlugin } from "../plugins/BasicViewpointPlugin";
+import { VIEWPOINT, ViewpointParameters, ViewpointPlugin } from "../plugins/ViewpointPlugin";
 import { AxesHelperParameters, AxesHelperPlugin } from "../plugins/AxesHelperPlugin";
 import { GridHelperParameters, GridHelperPlugin } from "../plugins/GridHelperPlugin";
 
@@ -62,41 +62,10 @@ export enum ENGINEPLUGIN {
   VIEWPOINT = 'Viewpoint'
 }
 
-export type EnginePluginParams = 
-  WebGLRendererParameters |
-  SceneParameters |
-  ModelingSceneParameters |
-  VisStatsParameters |
-  EffectComposerParameters |
-  PointerManagerParameters |
-  EventManagerParameters |
-  LoaderManagerParameters |
-  DataSupportManagerParameters |
-  CompilerManagerParameters
-
 // 插件处理集合
 let pluginHandler: Map<string, Function> = new Map()
 
-pluginHandler.set(ENGINEPLUGIN.EFFECTCOMPOSER, EffectComposerPlugin)
-
-pluginHandler.set(ENGINEPLUGIN.SCENE, ScenePlugin)
 pluginHandler.set(ENGINEPLUGIN.MODELINGSCENE, ModelingScenePlugin)
-
-pluginHandler.set(ENGINEPLUGIN.RENDERMANAGER, RenderManagerPlugin)
-pluginHandler.set(ENGINEPLUGIN.POINTERMANAGER, PointerManagerPlugin)
-pluginHandler.set(ENGINEPLUGIN.EVENTMANAGER, EventManagerPlugin)
-pluginHandler.set(ENGINEPLUGIN.LOADERMANAGER, LoaderManagerPlugin)
-pluginHandler.set(ENGINEPLUGIN.RESOURCEMANAGER, ResourceManagerPlugin)
-pluginHandler.set(ENGINEPLUGIN.DATASUPPORTMANAGER, DataSupportManagerPlugin)
-pluginHandler.set(ENGINEPLUGIN.COMPILERMANAGER, CompilerManagerPlugin)
-pluginHandler.set(ENGINEPLUGIN.KEYBOARDMANAGER, KeyboardManagerPlugin)
-
-pluginHandler.set(ENGINEPLUGIN.TRANSFORMCONTROLS, TransformControlsPlugin)
-
-pluginHandler.set(ENGINEPLUGIN.STATS, StatsPlugin)
-
-
-
 
 
 // 引擎槽
@@ -105,8 +74,9 @@ export class Engine extends EventDispatcher {
   static pluginHandler: Map<string, Function> | undefined = pluginHandler
 
   // 注册引擎插件
-  static register = function<T extends object> (name: string, handler: (this: Engine, params: T) => void) {
+  static register = function<T extends object> (name: string, handler: (this: Engine, params: T) => void): typeof Engine {
     Engine.pluginHandler && Engine.pluginHandler.set(name, handler)
+    return Engine
   }
 
   // 清空插件缓存
@@ -172,7 +142,7 @@ export class Engine extends EventDispatcher {
   }
 
   // 安装插件
-  install (plugin: ENGINEPLUGIN, params?: EnginePluginParams): this {
+  install<T extends object> (plugin: ENGINEPLUGIN, params?: T): this {
     if (Engine.pluginHandler!.has(plugin)) {
       Engine.pluginHandler!.get(plugin)!.call(this, params)
     } else {
@@ -198,8 +168,26 @@ export class Engine extends EventDispatcher {
     return this
   }
 }
+
 Engine.register<WebGLRendererParameters>(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin)
+
+Engine.register<EffectComposerParameters>(ENGINEPLUGIN.EFFECTCOMPOSER, EffectComposerPlugin)
+Engine.register<SceneParameters>(ENGINEPLUGIN.SCENE, ScenePlugin)
+
+Engine.register<object>(ENGINEPLUGIN.RENDERMANAGER, RenderManagerPlugin)
+Engine.register<PointerManagerParameters>(ENGINEPLUGIN.POINTERMANAGER, PointerManagerPlugin)
+Engine.register<EventManagerParameters>(ENGINEPLUGIN.EVENTMANAGER, EventManagerPlugin)
+Engine.register<LoaderManagerParameters>(ENGINEPLUGIN.LOADERMANAGER, LoaderManagerPlugin)
+Engine.register<object>(ENGINEPLUGIN.RESOURCEMANAGER, ResourceManagerPlugin)
+Engine.register<object>(ENGINEPLUGIN.DATASUPPORTMANAGER, DataSupportManagerPlugin)
+Engine.register<CompilerManagerParameters>(ENGINEPLUGIN.COMPILERMANAGER, CompilerManagerPlugin)
+Engine.register<object>(ENGINEPLUGIN.KEYBOARDMANAGER, KeyboardManagerPlugin)
+
+Engine.register<object>(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin)
+Engine.register<object>(ENGINEPLUGIN.TRANSFORMCONTROLS, TransformControlsPlugin)
+
 Engine.register<AxesHelperParameters>(ENGINEPLUGIN.AXESHELPER, AxesHelperPlugin)
 Engine.register<GridHelperParameters>(ENGINEPLUGIN.GRIDHELPER, GridHelperPlugin)
-Engine.register<object>(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin)
+
 Engine.register<ViewpointParameters>(ENGINEPLUGIN.VIEWPOINT, ViewpointPlugin)
+Engine.register<VisStatsParameters>(ENGINEPLUGIN.STATS, StatsPlugin)

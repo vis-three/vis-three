@@ -1313,6 +1313,7 @@ const ViewpointPlugin = function(params) {
   this.addEventListener("setSize", (event) => {
     const width = event.width;
     const height = event.height;
+    console.log(width, height);
     perspectiveCamera.aspect = width / height;
     perspectiveCamera.updateProjectionMatrix();
     orthograpbicCamera.left = -width / 16;
@@ -1342,6 +1343,13 @@ const ViewpointPlugin = function(params) {
       orthograpbicCamera.position.set(0, 0, -distance);
     }
     this.setCamera(orthograpbicCamera);
+  });
+  this.completeSet.add(() => {
+    if (params.viewpoint === VIEWPOINT.DEFAULT) {
+      this.setCamera(perspectiveCamera);
+    } else {
+      this.setCamera(orthograpbicCamera);
+    }
   });
   return true;
 };
@@ -8311,19 +8319,7 @@ var ENGINEPLUGIN;
   ENGINEPLUGIN2["VIEWPOINT"] = "Viewpoint";
 })(ENGINEPLUGIN || (ENGINEPLUGIN = {}));
 let pluginHandler = new Map();
-pluginHandler.set(ENGINEPLUGIN.EFFECTCOMPOSER, EffectComposerPlugin);
-pluginHandler.set(ENGINEPLUGIN.SCENE, ScenePlugin);
 pluginHandler.set(ENGINEPLUGIN.MODELINGSCENE, ModelingScenePlugin);
-pluginHandler.set(ENGINEPLUGIN.RENDERMANAGER, RenderManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.POINTERMANAGER, PointerManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.EVENTMANAGER, EventManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.LOADERMANAGER, LoaderManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.RESOURCEMANAGER, ResourceManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.DATASUPPORTMANAGER, DataSupportManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.COMPILERMANAGER, CompilerManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.KEYBOARDMANAGER, KeyboardManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.TRANSFORMCONTROLS, TransformControlsPlugin);
-pluginHandler.set(ENGINEPLUGIN.STATS, StatsPlugin);
 const _Engine = class extends EventDispatcher {
   constructor() {
     super();
@@ -8398,15 +8394,28 @@ let Engine = _Engine;
 __publicField(Engine, "pluginHandler", pluginHandler);
 __publicField(Engine, "register", function(name, handler) {
   _Engine.pluginHandler && _Engine.pluginHandler.set(name, handler);
+  return _Engine;
 });
 __publicField(Engine, "dispose", function() {
   _Engine.pluginHandler = void 0;
 });
 Engine.register(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin);
+Engine.register(ENGINEPLUGIN.EFFECTCOMPOSER, EffectComposerPlugin);
+Engine.register(ENGINEPLUGIN.SCENE, ScenePlugin);
+Engine.register(ENGINEPLUGIN.RENDERMANAGER, RenderManagerPlugin);
+Engine.register(ENGINEPLUGIN.POINTERMANAGER, PointerManagerPlugin);
+Engine.register(ENGINEPLUGIN.EVENTMANAGER, EventManagerPlugin);
+Engine.register(ENGINEPLUGIN.LOADERMANAGER, LoaderManagerPlugin);
+Engine.register(ENGINEPLUGIN.RESOURCEMANAGER, ResourceManagerPlugin);
+Engine.register(ENGINEPLUGIN.DATASUPPORTMANAGER, DataSupportManagerPlugin);
+Engine.register(ENGINEPLUGIN.COMPILERMANAGER, CompilerManagerPlugin);
+Engine.register(ENGINEPLUGIN.KEYBOARDMANAGER, KeyboardManagerPlugin);
+Engine.register(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin);
+Engine.register(ENGINEPLUGIN.TRANSFORMCONTROLS, TransformControlsPlugin);
 Engine.register(ENGINEPLUGIN.AXESHELPER, AxesHelperPlugin);
 Engine.register(ENGINEPLUGIN.GRIDHELPER, GridHelperPlugin);
-Engine.register(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin);
 Engine.register(ENGINEPLUGIN.VIEWPOINT, ViewpointPlugin);
+Engine.register(ENGINEPLUGIN.STATS, StatsPlugin);
 class DisplayEngine extends Engine {
   constructor() {
     super();

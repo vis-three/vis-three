@@ -37,7 +37,7 @@ import { GroupHelper } from './extends/helper/object/GroupHelper';
 import { EngineSupport } from './engine/EngineSupport';
 
 import { BooleanModifier } from "./modifier/BooleanModifier";
-import { VIEWPOINT } from "./plugins/BasicViewpointPlugin";
+import { VIEWPOINT } from "./plugins/ViewpointPlugin";
 
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`)

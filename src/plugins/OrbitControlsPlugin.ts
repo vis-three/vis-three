@@ -2,7 +2,7 @@ import { Engine } from "../engine/Engine";
 import { VisOrbitControls } from "../optimize/VisOrbitControls";
 import { Plugin } from "./plugin";
 import { SetCameraEvent } from "./WebGLRendererPlugin";
-import { VIEWPOINT, ViewpointEvent } from './BasicViewpointPlugin';
+import { VIEWPOINT, ViewpointEvent } from './ViewpointPlugin';
 
 
 export const OrbitControlsPlugin: Plugin<Object> = function (this: Engine, params: Object): boolean {

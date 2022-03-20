@@ -1,6 +1,6 @@
 import { GridHelper, Material } from "three";
 import { Engine, ENGINEPLUGIN } from "../engine/Engine";
-import { VIEWPOINT, ViewpointEvent } from "./BasicViewpointPlugin";
+import { VIEWPOINT, ViewpointEvent } from "./ViewpointPlugin";
 import { Plugin } from "./plugin";
 
 export interface GridHelperParameters {
