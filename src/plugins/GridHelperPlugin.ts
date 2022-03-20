@@ -11,7 +11,7 @@ export interface GridHelperParameters {
   opacity?: number
 }
 
-export const GridHelperPlugin: Plugin<GridHelperParameters> = function (this: Engine, params: GridHelperParameters): boolean {
+export const GridHelperPlugin: Plugin<GridHelperParameters> = function (this: Engine, params: GridHelperParameters = {}): boolean {
   
   if (!this.scene) {
     console.error('must install some scene before BasicViewpoint plugin.')

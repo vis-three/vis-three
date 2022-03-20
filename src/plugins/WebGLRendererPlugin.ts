@@ -58,20 +58,6 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererParameters> = function (th
     const width = event.width
     const height = event.height
     this.webGLRenderer!.setSize(width, height, true)
-    
-    const camera = this.currentCamera
-    if (camera) {
-      if (camera instanceof PerspectiveCamera) {
-        camera.aspect = event.width / event.height
-        camera.updateProjectionMatrix()
-      } else if (camera instanceof OrthographicCamera) {
-        camera.left = -width / 16
-        camera.right = width / 16
-        camera.top = height / 16
-        camera.bottom = -height / 16
-        camera.updateProjectionMatrix()
-      }
-    }
   })
 
   this.addEventListener('dispose', () => {

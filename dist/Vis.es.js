@@ -1255,6 +1255,96 @@ class VisOrbitControls extends OrbitControls {
     return this;
   }
 }
+var VIEWPOINT;
+(function(VIEWPOINT2) {
+  VIEWPOINT2["DEFAULT"] = "default";
+  VIEWPOINT2["TOP"] = "top";
+  VIEWPOINT2["BOTTOM"] = "bottom";
+  VIEWPOINT2["LEFT"] = "left";
+  VIEWPOINT2["RIGHT"] = "right";
+  VIEWPOINT2["FRONT"] = "front";
+  VIEWPOINT2["BACK"] = "back";
+})(VIEWPOINT || (VIEWPOINT = {}));
+const ViewpointPlugin = function(params) {
+  if (!this.webGLRenderer) {
+    console.error("must install some renderer before BasicViewpoint plugin.");
+    return false;
+  }
+  if (!this.scene) {
+    console.error("must install some scene before BasicViewpoint plugin.");
+    return false;
+  }
+  !params.viewpoint && (params.viewpoint = VIEWPOINT.DEFAULT);
+  !params.perspective && (params.perspective = {});
+  !params.perspective.position && (params.perspective.position = {
+    x: 60,
+    y: 60,
+    z: 60
+  });
+  !params.perspective.lookAt && (params.perspective.lookAt = {
+    x: 0,
+    y: 0,
+    z: 0
+  });
+  !params.perspective.up && (params.perspective.up = {
+    x: 0,
+    y: 1,
+    z: 0
+  });
+  !params.orthograpbic && (params.orthograpbic = {});
+  !params.orthograpbic.up && (params.orthograpbic.up = {
+    x: 0,
+    y: 1,
+    z: 0
+  });
+  const perspectiveCamera = new PerspectiveCamera();
+  perspectiveCamera.position.set(params.perspective.position.x, params.perspective.position.y, params.perspective.position.z);
+  perspectiveCamera.lookAt(params.perspective.lookAt.x, params.perspective.lookAt.y, params.perspective.lookAt.z);
+  perspectiveCamera.up.set(params.perspective.up.x, params.perspective.up.y, params.perspective.up.z);
+  const orthograpbicCamera = new OrthographicCamera(-window.innerWidth / 8, window.innerWidth / 8, -window.innerHeight / 8, window.innerHeight / 8);
+  orthograpbicCamera.up.set(params.perspective.up.x, params.perspective.up.y, params.perspective.up.z);
+  this.setViewpoint = function(viewpoint) {
+    this.dispatchEvent({
+      type: "setViewpoint",
+      viewpoint
+    });
+    return this;
+  };
+  this.addEventListener("setSize", (event) => {
+    const width = event.width;
+    const height = event.height;
+    perspectiveCamera.aspect = width / height;
+    perspectiveCamera.updateProjectionMatrix();
+    orthograpbicCamera.left = -width / 16;
+    orthograpbicCamera.right = width / 16;
+    orthograpbicCamera.top = height / 16;
+    orthograpbicCamera.bottom = -height / 16;
+    orthograpbicCamera.updateProjectionMatrix();
+  });
+  const distance = params.orthograpbic.distance || 60;
+  this.addEventListener("setViewpoint", (event) => {
+    const viewpoint = event.viewpoint;
+    if (viewpoint === VIEWPOINT.DEFAULT) {
+      this.setCamera(perspectiveCamera);
+      return;
+    }
+    if (viewpoint === VIEWPOINT.TOP) {
+      orthograpbicCamera.position.set(0, distance, 0);
+    } else if (viewpoint === VIEWPOINT.BOTTOM) {
+      orthograpbicCamera.position.set(0, -distance, 0);
+    } else if (viewpoint === VIEWPOINT.RIGHT) {
+      orthograpbicCamera.position.set(distance, 0, 0);
+    } else if (viewpoint === VIEWPOINT.LEFT) {
+      orthograpbicCamera.position.set(-distance, 0, 0);
+    } else if (viewpoint === VIEWPOINT.FRONT) {
+      orthograpbicCamera.position.set(0, 0, distance);
+    } else if (viewpoint === VIEWPOINT.BACK) {
+      orthograpbicCamera.position.set(0, 0, -distance);
+    }
+    this.setCamera(orthograpbicCamera);
+  });
+  return true;
+};
 const OrbitControlsPlugin = function(params) {
   if (this.orbitControls) {
     console.warn("this has installed orbitControls plugin.");
@@ -1275,30 +1365,29 @@ const OrbitControlsPlugin = function(params) {
   this.renderManager.addEventListener("render", () => {
     this.orbitControls.update();
   });
-  if (this.scene instanceof ModelingScene) {
-    const scene = this.scene;
-    scene.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, (e) => {
-      this.orbitControls.enableRotate = true;
-    });
-    scene.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
-      this.orbitControls.enableRotate = false;
-    });
-    scene.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
-      this.orbitControls.enableRotate = false;
-    });
-    scene.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
-      this.orbitControls.enableRotate = false;
-    });
-    scene.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
-      this.orbitControls.enableRotate = false;
-    });
-    scene.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
-      this.orbitControls.enableRotate = false;
-    });
-    scene.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
-      this.orbitControls.enableRotate = false;
-    });
-  }
+  this.completeSet.add(() => {
+    if (this.setViewpoint) {
+      this.addEventListener("setViewpoint", (event) => {
+        const viewpoint = event.viewpoint;
+        this.orbitControls.target.set(0, 0, 0);
+        if (viewpoint === VIEWPOINT.DEFAULT) {
+          this.orbitControls.enableRotate = true;
+        } else if (viewpoint === VIEWPOINT.TOP) {
+          this.orbitControls.enableRotate = false;
+        } else if (viewpoint === VIEWPOINT.BOTTOM) {
+          this.orbitControls.enableRotate = false;
+        } else if (viewpoint === VIEWPOINT.RIGHT) {
+          this.orbitControls.enableRotate = false;
+        } else if (viewpoint === VIEWPOINT.LEFT) {
+          this.orbitControls.enableRotate = false;
+        } else if (viewpoint === VIEWPOINT.FRONT) {
+          this.orbitControls.enableRotate = false;
+        } else if (viewpoint === VIEWPOINT.BACK) {
+          this.orbitControls.enableRotate = false;
+        }
+      });
+    }
+  });
   return true;
 };
 class VisStats {
@@ -2012,19 +2101,6 @@ const WebGLRendererPlugin = function(params) {
     const width = event.width;
     const height = event.height;
     this.webGLRenderer.setSize(width, height, true);
-    const camera = this.currentCamera;
-    if (camera) {
-      if (camera instanceof PerspectiveCamera) {
-        camera.aspect = event.width / event.height;
-        camera.updateProjectionMatrix();
-      } else if (camera instanceof OrthographicCamera) {
-        camera.left = -width / 16;
-        camera.right = width / 16;
-        camera.top = height / 16;
-        camera.bottom = -height / 16;
-        camera.updateProjectionMatrix();
-      }
-    }
   });
   this.addEventListener("dispose", () => {
     this.webGLRenderer.dispose();
@@ -8159,7 +8235,7 @@ const KeyboardManagerPlugin = function(params) {
   });
   return true;
 };
-const AxesHelperPlugin = function(params) {
+const AxesHelperPlugin = function(params = {}) {
   if (!this.scene) {
     console.error("must install some scene before BasicViewpoint plugin.");
     return false;
@@ -8171,17 +8247,7 @@ const AxesHelperPlugin = function(params) {
   this.scene.add(axesHelper);
   return true;
 };
-var VIEWPOINT;
-(function(VIEWPOINT2) {
-  VIEWPOINT2["DEFAULT"] = "default";
-  VIEWPOINT2["TOP"] = "top";
-  VIEWPOINT2["BOTTOM"] = "bottom";
-  VIEWPOINT2["LEFT"] = "left";
-  VIEWPOINT2["RIGHT"] = "right";
-  VIEWPOINT2["FRONT"] = "front";
-  VIEWPOINT2["BACK"] = "back";
-})(VIEWPOINT || (VIEWPOINT = {}));
-const GridHelperPlugin = function(params) {
+const GridHelperPlugin = function(params = {}) {
   if (!this.scene) {
     console.error("must install some scene before BasicViewpoint plugin.");
     return false;
@@ -8242,9 +8308,9 @@ var ENGINEPLUGIN;
   ENGINEPLUGIN2["KEYBOARDMANAGER"] = "KeyboardManager";
   ENGINEPLUGIN2["AXESHELPER"] = "AxesHelper";
   ENGINEPLUGIN2["GRIDHELPER"] = "GridHelper";
+  ENGINEPLUGIN2["VIEWPOINT"] = "Viewpoint";
 })(ENGINEPLUGIN || (ENGINEPLUGIN = {}));
 let pluginHandler = new Map();
-pluginHandler.set(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin);
 pluginHandler.set(ENGINEPLUGIN.EFFECTCOMPOSER, EffectComposerPlugin);
 pluginHandler.set(ENGINEPLUGIN.SCENE, ScenePlugin);
 pluginHandler.set(ENGINEPLUGIN.MODELINGSCENE, ModelingScenePlugin);
@@ -8256,7 +8322,6 @@ pluginHandler.set(ENGINEPLUGIN.RESOURCEMANAGER, ResourceManagerPlugin);
 pluginHandler.set(ENGINEPLUGIN.DATASUPPORTMANAGER, DataSupportManagerPlugin);
 pluginHandler.set(ENGINEPLUGIN.COMPILERMANAGER, CompilerManagerPlugin);
 pluginHandler.set(ENGINEPLUGIN.KEYBOARDMANAGER, KeyboardManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin);
 pluginHandler.set(ENGINEPLUGIN.TRANSFORMCONTROLS, TransformControlsPlugin);
 pluginHandler.set(ENGINEPLUGIN.STATS, StatsPlugin);
 const _Engine = class extends EventDispatcher {
@@ -8337,8 +8402,11 @@ __publicField(Engine, "register", function(name, handler) {
 __publicField(Engine, "dispose", function() {
   _Engine.pluginHandler = void 0;
 });
+Engine.register(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin);
 Engine.register(ENGINEPLUGIN.AXESHELPER, AxesHelperPlugin);
 Engine.register(ENGINEPLUGIN.GRIDHELPER, GridHelperPlugin);
+Engine.register(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin);
+Engine.register(ENGINEPLUGIN.VIEWPOINT, ViewpointPlugin);
 class DisplayEngine extends Engine {
   constructor() {
     super();
@@ -9328,4 +9396,4 @@ class BooleanModifier extends Modifier {
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
-export { configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, generateConfig };
+export { configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, generateConfig };

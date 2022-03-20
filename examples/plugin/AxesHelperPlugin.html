@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GridHelper</title>
+  <title>AxesHelperPlugin</title>
   <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
   <link rel="stylesheet" href="../css/common.css">
 </head>
@@ -23,13 +23,10 @@
     import * as THREE from 'three'
     import * as Vis from '../../dist/Vis.es.js'
     const engine = new Vis.DisplayEngine()
-    .install('GridHelper', {
-      range: 200,
-      spacing: 50,
-      axesColor: 'red',
-      cellColor: 'yellow',
-      opacity: 1
+    .install('AxesHelper', {
+      length: 200,
     })
+    .complete()
     .setDom(document.getElementById('app'))
     .setSize()
     .play()

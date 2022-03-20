@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ViewpointPlugin</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="../css/common.css">
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+  #button-position {
+    position: fixed;
+    top:30px;
+    left: 50%;
+  }
+
+  #button-group {
+    transform: translate(-50%, 0);
+  }
+
+  #button-group p {
+    color: white;
+  }
+
+  #button-group button {
+    margin: 0 5px;
+    font-size: 16px;
+    padding: 8px 10px;
+    background: rgb(237, 75, 243);
+    border-radius: 3px;
+    box-shadow: 0 0 6px rgb(236, 182, 238);
+  }
+
+</style>
+
+<body>
+  <div id="app"></div>
+  <div id="button-position">
+    <div id="button-group">
+      <p>change viewpoint:</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three'
+    import * as Vis from '../../dist/Vis.es.js'
+
+    const engine = new Vis.DisplayEngine()
+    .install('GridHelper', {
+      axesColor: 'rgb(100, 100, 100)',
+      cellColor: 'yellow',
+      opacity: 0.5
+    })
+    .install('AxesHelper')
+    .install('Viewpoint', {
+      viewpoint: 'default',
+    })
+    .complete()
+    .setDom(document.getElementById('app'))
+    .setSize()
+    .play()
+
+    const buttonGroup = document.getElementById('button-group')
+    Object.keys(Vis.VIEWPOINT).forEach(key => {
+      const buttonDom = document.createElement('button')
+      buttonDom.innerText = Vis.VIEWPOINT[key]
+      buttonDom.onclick = () => {
+        engine.setViewpoint(Vis.VIEWPOINT[key])
+      }
+
+      buttonGroup.appendChild(buttonDom)
+    })
+  </script>
+  
+</body>
+</html>

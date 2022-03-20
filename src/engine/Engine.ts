@@ -36,7 +36,7 @@ import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerM
 import { CompilerManagerPlugin } from "../plugins/CompilerManagerPlugin";
 import { KeyboardManager } from "../manager/KeyboardManager";
 import { KeyboardManagerPlugin } from "../plugins/KeyboardManagerPlugin";
-import { VIEWPOINT } from "../plugins/BasicViewpointPlugin";
+import { VIEWPOINT, ViewpointParameters, ViewpointPlugin } from "../plugins/BasicViewpointPlugin";
 import { AxesHelperParameters, AxesHelperPlugin } from "../plugins/AxesHelperPlugin";
 import { GridHelperParameters, GridHelperPlugin } from "../plugins/GridHelperPlugin";
 
@@ -58,7 +58,8 @@ export enum ENGINEPLUGIN {
   COMPILERMANAGER = 'CompilerManager',
   KEYBOARDMANAGER = 'KeyboardManager',
   AXESHELPER = 'AxesHelper',
-  GRIDHELPER = 'GridHelper'
+  GRIDHELPER = 'GridHelper',
+  VIEWPOINT = 'Viewpoint'
 }
 
 export type EnginePluginParams = 
@@ -76,7 +77,6 @@ export type EnginePluginParams =
 // 插件处理集合
 let pluginHandler: Map<string, Function> = new Map()
 
-pluginHandler.set(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin)
 pluginHandler.set(ENGINEPLUGIN.EFFECTCOMPOSER, EffectComposerPlugin)
 
 pluginHandler.set(ENGINEPLUGIN.SCENE, ScenePlugin)
@@ -91,7 +91,6 @@ pluginHandler.set(ENGINEPLUGIN.DATASUPPORTMANAGER, DataSupportManagerPlugin)
 pluginHandler.set(ENGINEPLUGIN.COMPILERMANAGER, CompilerManagerPlugin)
 pluginHandler.set(ENGINEPLUGIN.KEYBOARDMANAGER, KeyboardManagerPlugin)
 
-pluginHandler.set(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin)
 pluginHandler.set(ENGINEPLUGIN.TRANSFORMCONTROLS, TransformControlsPlugin)
 
 pluginHandler.set(ENGINEPLUGIN.STATS, StatsPlugin)
@@ -199,6 +198,8 @@ export class Engine extends EventDispatcher {
     return this
   }
 }
-
+Engine.register<WebGLRendererParameters>(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin)
 Engine.register<AxesHelperParameters>(ENGINEPLUGIN.AXESHELPER, AxesHelperPlugin)
 Engine.register<GridHelperParameters>(ENGINEPLUGIN.GRIDHELPER, GridHelperPlugin)
+Engine.register<object>(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin)
+Engine.register<ViewpointParameters>(ENGINEPLUGIN.VIEWPOINT, ViewpointPlugin)

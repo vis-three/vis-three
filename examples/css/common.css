@@ -8,3 +8,9 @@ html, body {
 body {
   background: rgb(39, 39, 39);
 }
+
+button {
+  margin: 0;
+  border: 0;
+  cursor: pointer;
+}

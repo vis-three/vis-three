@@ -6,7 +6,7 @@ export interface AxesHelperParameters {
   length?: number
 }
 
-export const AxesHelperPlugin: Plugin<AxesHelperParameters> = function (this: Engine, params: AxesHelperParameters): boolean {
+export const AxesHelperPlugin: Plugin<AxesHelperParameters> = function (this: Engine, params: AxesHelperParameters = {}): boolean {
   if (!this.scene) {
     console.error('must install some scene before BasicViewpoint plugin.')
     return false
