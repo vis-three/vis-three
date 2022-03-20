@@ -100,12 +100,12 @@ export class Engine extends EventDispatcher {
 
   static pluginHandler: Map<string, Function> | undefined = pluginHandler
 
-  // 注册
+  // 注册引擎插件
   static register = function (name: string, handler: (this: Engine, params?: Object) => void) {
     Engine.pluginHandler && Engine.pluginHandler.set(name, handler)
   }
 
-  // 清空缓存
+  // 清空插件缓存
   static dispose = function () {
     Engine.pluginHandler = undefined
   }  

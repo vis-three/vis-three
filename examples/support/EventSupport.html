@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventSupport</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="../css/common.css">
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+</style>
+
+<body>
+  <div id="app"></div>
+
+  <script type="module">
+    import * as THREE from 'three'
+    import * as Vis from '../../dist/Vis.es.js'
+    import { v4 as getUUid } from 'uuid'
+
+    const canvasTextureGenerator = new Vis.CanvasTextureGenerator({
+      width: 256,
+      height: 256
+    }).draw(ctx => {
+      ctx.textBaseline = 'middle'
+      ctx.textAlign = "center"
+
+      ctx.fillStyle= 'rgb(206, 42, 230)'
+   
+      ctx.font=" bold 54px 微软雅黑"
+      ctx.fillText("EVENT", 128, 128)
+    }).preview()
+
+    const engine = new Vis.ModelingEngineSupport()
+    .setDom(document.getElementById('app'))
+    .setSize()
+    .setStats(true)
+    .play()
+
+    const pointLight = Vis.generateConfig('PointLight', {
+      position: {
+        x: 30,
+        y: 50
+      },
+      distance: 100
+    })
+    engine.dataSupportManager.lightDataSupport.getData()[pointLight.vid] = pointLight
+
+    
+
+    const material = Vis.generateConfig('MeshStandardMaterial')
+    engine.dataSupportManager.materialDataSupport.getData()[material.vid] = material
+
+
+    const geometry = Vis.generateConfig('BoxGeometry', {
+      width: 5,
+      height: 5,
+      depth: 5
+    })
+    engine.dataSupportManager.geometryDataSupport.getData()[geometry.vid] = geometry
+
+
+    const mesh = Vis.generateConfig('Mesh', {
+      material: material.vid,
+      geometry: geometry.vid
+    })
+
+    const mesh2 = Vis.generateConfig('Mesh', {
+      material: material.vid,
+      geometry: geometry.vid,
+      position: {
+        x: 0,
+        y: 20,
+        z: 0
+      }
+    })
+
+    const mesh3 = Vis.generateConfig('Mesh', {
+      material: material.vid,
+      geometry: geometry.vid,
+      position: {
+        x: -35,
+        y: 0,
+        z: 0
+      }
+    })
+
+    engine.dataSupportManager.meshDataSupport.getData()[mesh.vid] = mesh
+    engine.dataSupportManager.meshDataSupport.getData()[mesh2.vid] = mesh2
+    engine.dataSupportManager.meshDataSupport.getData()[mesh3.vid] = mesh3
+
+    const event = Vis.generateConfig('Event', {
+      target: mesh.vid,
+      pointerup: [
+        Vis.BasicEventLibrary.openWindow({
+          params: {
+            url: 'https://gitee.com/Shiotsukikaedesari/vis-three'
+          }
+        })
+      ]
+    })
+
+    const event2 = Vis.generateConfig('Event', {
+      target: mesh2.vid,
+      pointerup: [
+        Vis.RealTimeAnimateLibrary.moveTo({
+          params: {
+            target: mesh2.vid,
+            position: {
+              x: 20,
+              y: -10,
+              z: 10
+            }
+          }
+        })
+      ]
+    })
+
+    const event3 = Vis.generateConfig('Event', {
+      target: mesh3.vid,
+      pointerenter: [
+        Vis.RealTimeAnimateLibrary.moveSpacing({
+          params: {
+            target: mesh3.vid,
+            spacing: {
+              x: 15,
+              y: 0,
+              z: 0
+            }
+          }
+        })
+      ]
+    })
+    engine.dataSupportManager.eventDataSupport.getData()[event.vid] = event
+    engine.dataSupportManager.eventDataSupport.getData()[event2.vid] = event2
+    engine.dataSupportManager.eventDataSupport.getData()[event3.vid] = event3
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="../css/common.css">
+  <title>LoaderManager</title>
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+  #mappingStructure {
+    position: fixed;
+    color: white;
+    top: 0%;
+    left: 0%;
+    background: black;
+    max-width: 30%;
+    max-height: 100%;
+    overflow: auto;
+  }
+</style>
+
+<body>
+  <div class="mappingStructure" id="mappingStructure"></div>
+  <div id="app"></div>
+
+  <script type="module">
+    import * as THREE from 'three'
+    import * as Vis from '../../dist/Vis.es.js'
+    import assetsList from '/examples/public/assetsConfig/resourceManager.json'
+
+    const loaderManager = new Vis.LoaderManager()
+    const resourceManager = new Vis.ResourceManager()
+
+    const engine = new Vis.ModelingEngine()
+    .setDom(document.getElementById('app'))
+    .setStats(true)
+    .setSize()
+    .play()
+
+    const scene = engine.scene
+
+    const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 100, 0.01)
+    pointLight.position.set(10, 10, 10)
+    scene.add(pointLight)
+
+    loaderManager.addEventListener('loaded', event => {
+      resourceManager.mappingResource(event.resourceMap)
+      event.resourceMap.forEach((resource, url) => {
+        if (resource instanceof THREE.Object3D) {
+          resource.scale.set(30, 30, 30)
+          scene.add(resource)
+        }
+      })
+    })
+
+    resourceManager.addEventListener('mapped', e => {
+      console.log(e)
+      let str = ''
+      e.configMap.forEach((config, url) => {
+        str += `${url}: ${JSON.stringify(config)}\n`
+      })
+      str = str.replace(/",/g, '",\n').replace(/"},/g, '"},\n').replace(/{"/g, '{"\n')
+      document.getElementById('mappingStructure').innerText = str
+    })
+
+    loaderManager.load(assetsList)
+  </script>
+</body>
+</html>

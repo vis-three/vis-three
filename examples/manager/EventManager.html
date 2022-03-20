@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventManager</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="../css/common.css">
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+</style>
+
+<body>
+  <div id="app"></div>
+  <script type="module">
+    import * as THREE from 'three'
+    import * as Vis from '../../dist/Vis.es.js'
+    
+    const engine = new Vis.DisplayEngine()
+    .setDom(document.getElementById('app'))
+    .setSize()
+    .play()
+
+    const scene = engine.scene
+
+    const box = new THREE.Mesh(
+      new THREE.BoxBufferGeometry(10, 10, 10),
+      new THREE.MeshStandardMaterial({ color: 'rgb(255, 105, 100)' })
+    )
+    box.position.x = 10
+    scene.add(box)
+
+    const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 300, 0)
+    pointLight.position.y = 30
+    scene.add(pointLight)
+
+    const global = engine.eventManager
+
+    // pointer or mouse but support use pointer follow three
+
+    global.addEventListener('click', (e) => {
+      console.log('global click')
+    })
+    global.addEventListener('contextmenu', (e) => {
+      console.log('global contextmenu')
+    })
+    global.addEventListener('dblclick', (e) => {
+      console.log('global dblclick')
+    })
+    // global.addEventListener('pointermove', (e) => {
+    //   console.log('global pointermove')
+    // })
+
+
+
+    box.addEventListener('pointerdown', (e) => {
+      console.log('box pointerdown')
+    })
+    box.addEventListener('pointerup', (e) => {
+      console.log('box pointerup')
+    })
+    box.addEventListener('pointerenter', (e) => {
+      console.log('box pointerenter')
+    })
+    box.addEventListener('pointermove', (e) => {
+      console.log('box pointermove')
+    })
+    box.addEventListener('pointerleave', (e) => {
+      console.log('box pointerleave')
+    })
+    box.addEventListener('click', (e) => {
+      console.log('box click')
+    })
+    box.addEventListener('contextmenu', (e) => {
+      console.log('box contextmenu')
+    })
+    box.addEventListener('dblclick', (e) => {
+      console.log('box dblclick')
+    })
+
+  </script>
+  
+</body>
+</html>

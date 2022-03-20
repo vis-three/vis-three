@@ -10,78 +10,123 @@
 </head>
 
 <style>
+
  body a, h3{
    color: white;
+ }
+
+ body {
+   display: flex;
+   flex-wrap: wrap;
  }
 
  body a::visited {
   color: white;
  }
+
+ .module-box {
+  display: flex;
+  flex-direction: column;
+  margin: 12px;
+  margin-bottom: 24px;
+ }
+
+ .module-box h3 {
+   margin-bottom: 12px;
+ }
+
+ .module-box .children-box {
+   display: flex;
+   flex-direction: column;
+   margin: 8px 0;
+  }
 </style>
 
 <body>
-  <h3>Engine</h3>
-  <a href="/examples/Engine.html">Engine.html</a>
-  <br>
-  <a href="/examples/ModelingEngine.html">ModelingEngine.html</a>
-  <br>
-  <a href="/examples/DisplayEngine.html">DisplayEngine.html</a>
-  <br>
-  <!-- <a href="/examples/EngineSupport.html">EngineSupport.html</a>
-  <br> -->
-  <a href="/examples/ModelingEngineSupport.html">ModelingEngineSupport.html</a>
-  <br>
-  <a href="/examples/DisplayEngineSupport.html">DisplayEngineSupport.html</a>
-  <br>
-  <br>
-  <h3>Support</h3>
-  <a href="/examples/CameraSupport.html">CameraSupport.html</a>
-  <br>
-  <a href="/examples/MeshSupport.html">MeshSupport.html</a>
-  <br>
-  <a href="/examples/SpriteSupport.html">SpriteSupport.html</a>
-  <br>
-  <a href="/examples/LineSupport.html">LineSupport.html</a>
-  <br>
-  <a href="/examples/PointsSupport.html">PointsSupport.html</a>
-  <br>
-  <a href="/examples/LightSupport.html">LightSupport.html</a>
-  <br>
-  <a href="/examples/GroupSupport.html">GroupSupport.html</a>
-  <br>
-  <a href="/examples/TextureSupport.html">TextureSupport.html</a>
-  <br>
-  <a href="/examples/EventSupport.html">EventSupport.html</a>
-  <br>
-  <br>
-  <h3>Manager</h3>
-  <a href="/examples/EventManager.html">EventManager.html</a>
-  <br>
-  <a href="/examples/LoaderManager.html">LoaderManager.html</a>
-  <br>
-  <a href="/examples/ResourceManager.html">ResourceManager.html</a>
-  <br>
-  <br>
-  <h3>Helper</h3>
-  <a href="/examples/PointLightHelper.html">PointLightHelper.html</a>
-  <br>
-  <a href="/examples/CameraHelper.html">CameraHelper.html</a>
-  <br>
-  <a href="/examples/GroupHelper.html">GroupHelper.html</a>
-  <br>
-  <br>
-  <h3>Displayer</h3>
-  <a href="/examples/TextureDisplayer.html">TextureDisplayer.html</a>
-  <br>
-  <br>
-  <h3>Modifier</h3>
-  <a href="/examples/modifier/BooleanModifier.html">BooleanModifier.html</a>
-  <br>
-  <br>
-  <h3>use</h3>
-  <a href="/examples/config-development.html">config-development.html</a>
-  <br>
-  <a href="/examples/Vue3-support.html">Vue3-support.html</a>
+  <script>
 
+    const tree = [
+      {
+        router: 'engine',
+        children: [
+          '/Engine.html',
+          '/ModelingEngine.html',
+          '/DisplayEngine.html',
+          '/ModelingEngineSupport.html',
+          '/DisplayEngineSupport.html'
+        ]
+      },
+      {
+        router: 'support',
+        children: [
+          '/CameraSupport.html',
+          '/MeshSupport.html',
+          '/SpriteSupport.html',
+          '/LineSupport.html',
+          '/PointsSupport.html',
+          '/LightSupport.html',
+          '/GroupSupport.html',
+          '/TextureSupport.html',
+          '/EventSupport.html'
+        ]
+      },
+      {
+        router: 'manager',
+        children: [
+          '/EventManager.html',
+          '/LoaderManager.html',
+          '/ResourceManager.html',
+        ]
+      },
+      {
+        router: 'modifier',
+        children: [
+          '/BooleanModifier.html',
+        ]
+      },
+      {
+        router: 'helper',
+        children: [
+          '/PointLightHelper.html',
+          '/CameraHelper.html',
+          '/GroupHelper.html',
+        ]
+      },
+      {
+        router: 'displayer',
+        children: [
+          '/TextureDisplayer.html',
+        ]
+      },
+      {
+        router: 'develop',
+        children: [
+          '/configure.html',
+          '/Vue3.html',
+        ]
+      },
+    ]
+
+    tree.forEach(module => {
+
+      let childrenDom = ''
+
+      if (module.children && module.children.length) {
+        for (let url of module.children) {
+          childrenDom += `<a href="${module.router}${url}">${url.split('/').pop()}</a>`
+        }
+      }
+      const moduleDom = document.createElement('div')
+      moduleDom.className = 'module-box'
+      moduleDom.innerHTML = `
+        <h3>${module.router.toLocaleUpperCase()}</h3>
+        <div class="children-box">
+          ${childrenDom}
+        </div>
+      `
+
+      document.body.appendChild(moduleDom)
+    })
+  </script>
 </body>
 </html>

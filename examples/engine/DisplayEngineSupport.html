@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DisplayEngine</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="../css/common.css">
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+</style>
+
+<body>
+  <div id="app"></div>
+  <script type="module">
+        import * as THREE from 'three'
+    import * as Vis from '../../dist/Vis.es.js'
+    import { v4 as getUUid } from 'uuid'
+
+    const engine = new Vis.DisplayEngineSupport()
+    .setDom(document.getElementById('app'))
+    .setSize()
+    .play()
+
+
+    const pointLight = Vis.generateConfig('PointLight', {
+      position: {
+        x: 30,
+        y: 50
+      },
+      distance: 100
+    })
+
+    const meshStandardMaterial = Vis.generateConfig('MeshStandardMaterial', {
+      color: 'rgb(255, 0, 0)'
+    })
+    
+    const boxGeometry = Vis.generateConfig('BoxGeometry', {
+      width: 20,
+      height: 40,
+      depth: 60
+    })
+    
+    const mesh = Vis.generateConfig('Mesh', {
+      geometry: boxGeometry.vid,
+      material: meshStandardMaterial.vid
+    })
+
+    engine.dataSupportManager.lightDataSupport.getData()[pointLight.vid] = pointLight
+    engine.dataSupportManager.materialDataSupport.getData()[meshStandardMaterial.vid] = meshStandardMaterial
+    engine.dataSupportManager.geometryDataSupport.getData()[boxGeometry.vid] = boxGeometry
+    engine.dataSupportManager.meshDataSupport.getData()[mesh.vid] = mesh
+
+  </script>
+  
+</body>
+</html>

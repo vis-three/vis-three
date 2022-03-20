@@ -14,6 +14,7 @@ export class RenderManager extends EventDispatcher {
 
   private clock: Clock = new Clock() // 引擎时钟
   private animationFrame = -1 // 渲染定时器
+  private fps: number = 0 // 帧率 0 跟随系统
 
   // 渲染
   render = (): void => {

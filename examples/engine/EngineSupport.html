@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engine</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="../css/common.css">
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+</style>
+
+<body>
+  <div id="app"></div>
+
+  <script type="module">
+    import * as THREE from 'three'
+    import * as Vis from '../../dist/Vis.es.js'
+    import { v4 as getUUid } from 'uuid'
+
+    const engine = new Vis.EngineSupport()
+    .install('WebGLRenderer', {
+      antialias: true,
+      alpha: true
+    })
+    .install('ModelingScene', {
+      hasDefaultPerspectiveCamera: true,
+      hasDefaultOrthographicCamera: true,
+      hasAxesHelper: true,
+      hasGridHelper: true,
+      hasDisplayMode: true,
+      displayMode: 'env'
+    })
+    .install('RenderManager')
+    .install('Stats')
+    .install('EffectComposer', {
+      WebGLMultisampleRenderTarget: true
+    })
+    .install('OrbitControls')
+    .install('PointerManager')
+    .install('EventManager')
+    .install('TransformControls')
+    .complete()
+    .setDom(document.getElementById('app'))
+    .setSize()
+    .setStats(true)
+    .play()
+
+    const pointLight = Vis.generateConfig('PointLight', {
+      
+      position: {
+        x: 30,
+        y: 50
+      },
+      distance: 100
+    })
+
+    const meshStandardMaterial = Vis.generateConfig('MeshStandardMaterial', {
+      
+      color: 'rgb(255, 0, 0)'
+    })
+    
+    const boxGeometry = Vis.generateConfig('BoxGeometry', {
+      
+      width: 20,
+      height: 40,
+      depth: 60
+    })
+    
+    const model = Vis.generateConfig('Model', {
+      
+      type: 'Mesh',
+      geometry: boxGeometry.vid,
+      material: meshStandardMaterial.vid
+    })
+
+    engine.dataSupportManager.lightDataSupport.getData()[pointLight.vid] = pointLight
+    engine.dataSupportManager.materialDataSupport.getData()[meshStandardMaterial.vid] = meshStandardMaterial
+    engine.dataSupportManager.geometryDataSupport.getData()[boxGeometry.vid] = boxGeometry
+    engine.dataSupportManager.modelDataSupport.getData()[model.vid] = model
+
+  </script>
+  
+</body>
+</html>

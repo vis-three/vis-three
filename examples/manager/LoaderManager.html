@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/common.css">
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <title>LoaderManager</title>
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+  #totalProgress {
+    position: fixed;
+    color: white;
+    top: 10%;
+    right: 10%;
+    left: unset;
+    background: black;
+  }
+
+  #detailProgress {
+    position: fixed;
+    color: white;
+    top: 15%;
+    right: 10%;
+    left: unset;
+    background: black;
+  }
+</style>
+
+<body>
+  <div class="totalProgress" id="totalProgress"></div>
+  <div class="detailProgress" id="detailProgress"></div>
+  <div id="app"></div>
+
+  <script type="module">
+    import * as THREE from 'three'
+    import * as Vis from '../../dist/Vis.es.js'
+    import assetsList from '/examples/public/assetsConfig/loaderManager.json'
+
+    const engine = new Vis.ModelingEngine()
+    .setDom(document.getElementById('app'))
+    .setStats(true)
+    .setSize()
+    .play()
+
+    const scene = engine.scene
+
+    const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 100, 0.01)
+    pointLight.position.set(10, 10, 10)
+    scene.add(pointLight)
+
+    const totalProgress = document.getElementById('totalProgress')
+    const detailProgress = document.getElementById('detailProgress')
+
+    const loaderManager = new Vis.LoaderManager()
+
+    loaderManager.addEventListener('loading', e => {
+      totalProgress.innerHTML = `total: ${e.loadTotal}, success: ${e.loadSuccess}, error: ${e.loadError}`
+    })
+
+    
+    loaderManager.addEventListener('detailLoading', e => {
+      detailProgress.innerText = `
+        url: ${e.detail.url}
+        progress: ${e.detail.progress}
+        error: ${e.detail.error}
+        message: ${e.detail.message}
+      `
+    })
+
+    loaderManager.addEventListener('loaded', e => {
+      e.resourceMap.forEach((resource, url) => {
+        if (url === "/examples/public/model/Lowpoly/Lowpoly.obj") {
+          resource.scale.set(0.02, 0.02, 0.02)
+        } else if (url === "/examples/public/model/katana/katana.obj") {
+          resource.scale.set(10, 10, 10)
+        }
+        resource.position.set(Math.random() * 30, 0, Math.random() * 30)
+        scene.add(resource)
+      })    
+    })
+
+    loaderManager.load(assetsList)
+
+  </script>
+</body>
+</html>

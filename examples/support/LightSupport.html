@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LineSupport</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="../css/common.css">
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+</style>
+
+<body>
+  <div id="app"></div>
+
+  <script type="module">
+    import * as THREE from 'three'
+    import * as Vis from '../../dist/Vis.es.js'
+    import { v4 as getUUid } from 'uuid'
+
+    const canvasTextureGenerator = new Vis.CanvasTextureGenerator({
+      width: 256,
+      height: 256
+    }).draw(ctx => {
+      ctx.textBaseline = 'middle'
+      ctx.textAlign = "center"
+
+      ctx.fillStyle= 'rgb(206, 42, 230)'
+   
+      ctx.font=" bold 68px 微软雅黑"
+      ctx.fillText("LIGHT", 128, 128)
+    }).preview()
+
+    const engine = new Vis.ModelingEngineSupport()
+    .setDom(document.getElementById('app'))
+    .setSize()
+    .setStats(true)
+    .play()
+
+    const lightData = engine.dataSupportManager.lightDataSupport.getData()
+    const ambientLight = Vis.generateConfig('AmbientLight', {
+      intensity: 0.2
+    })
+    const pointLight = Vis.generateConfig('PointLight', {
+      position: {
+        y: 28
+      },
+      distance: 20,
+      color: 'rgb(255, 0, 0)',
+      intensity: 0.6
+    })
+    const spotLight = Vis.generateConfig('SpotLight', {
+      position: {
+        x: 20
+      },
+      distance: 30,
+      color: 'rgb(0, 0, 255)',
+      intensity: 0.6
+    })
+
+    lightData[pointLight.vid] = pointLight
+    lightData[spotLight.vid] = spotLight
+    lightData[ambientLight.vid] = ambientLight
+
+
+    const material = Vis.generateConfig('MeshStandardMaterial')
+    engine.dataSupportManager.materialDataSupport.getData()[material.vid] = material
+
+
+    const geometry = Vis.generateConfig('BoxGeometry', {
+      width: 20,
+      height: 20,
+      depth: 20
+    })
+    engine.dataSupportManager.geometryDataSupport.getData()[geometry.vid] = geometry
+
+
+    const mesh = Vis.generateConfig('Mesh', {
+      material: material.vid,
+      geometry: geometry.vid
+    })
+
+    engine.dataSupportManager.meshDataSupport.getData()[mesh.vid] = mesh
+  </script>
+  
+</body>
+</html>
