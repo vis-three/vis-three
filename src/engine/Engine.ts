@@ -36,6 +36,9 @@ import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerM
 import { CompilerManagerPlugin } from "../plugins/CompilerManagerPlugin";
 import { KeyboardManager } from "../manager/KeyboardManager";
 import { KeyboardManagerPlugin } from "../plugins/KeyboardManagerPlugin";
+import { VIEWPOINT } from "../plugins/BasicViewpointPlugin";
+import { AxesHelperParameters, AxesHelperPlugin } from "../plugins/AxesHelperPlugin";
+import { GridHelperParameters, GridHelperPlugin } from "../plugins/GridHelperPlugin";
 
 // 存在的插件接口
 export enum ENGINEPLUGIN {
@@ -53,7 +56,9 @@ export enum ENGINEPLUGIN {
   RESOURCEMANAGER = 'ResourceManager',
   DATASUPPORTMANAGER = 'DataSupportManager',
   COMPILERMANAGER = 'CompilerManager',
-  KEYBOARDMANAGER = 'KeyboardManager'
+  KEYBOARDMANAGER = 'KeyboardManager',
+  AXESHELPER = 'AxesHelper',
+  GRIDHELPER = 'GridHelper'
 }
 
 export type EnginePluginParams = 
@@ -101,7 +106,7 @@ export class Engine extends EventDispatcher {
   static pluginHandler: Map<string, Function> | undefined = pluginHandler
 
   // 注册引擎插件
-  static register = function (name: string, handler: (this: Engine, params?: Object) => void) {
+  static register = function<T extends object> (name: string, handler: (this: Engine, params: T) => void) {
     Engine.pluginHandler && Engine.pluginHandler.set(name, handler)
   }
 
@@ -137,6 +142,7 @@ export class Engine extends EventDispatcher {
   setDom?: (dom: HTMLElement) => this
   setStats?: (show: boolean) => this
   setTransformControls?: (show: boolean) => this
+  setViewpoint?: (viewpoint: VIEWPOINT) => this
 
   loadResources?: (urlList: Array<string>, callback: (err: Error | undefined, event?: LoadedEvent) => void) => this
   loadResourcesAsync?: (urlList: Array<string>) => Promise<LoadedEvent>
@@ -193,3 +199,6 @@ export class Engine extends EventDispatcher {
     return this
   }
 }
+
+Engine.register<AxesHelperParameters>(ENGINEPLUGIN.AXESHELPER, AxesHelperPlugin)
+Engine.register<GridHelperParameters>(ENGINEPLUGIN.GRIDHELPER, GridHelperPlugin)

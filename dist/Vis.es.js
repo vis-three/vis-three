@@ -1183,6 +1183,7 @@ class RenderManager extends EventDispatcher {
     super(...arguments);
     __publicField(this, "clock", new Clock());
     __publicField(this, "animationFrame", -1);
+    __publicField(this, "fps", 0);
     __publicField(this, "render", () => {
       const clock = this.clock;
       const delta = clock.getDelta();
@@ -8158,6 +8159,70 @@ const KeyboardManagerPlugin = function(params) {
   });
   return true;
 };
+const AxesHelperPlugin = function(params) {
+  if (!this.scene) {
+    console.error("must install some scene before BasicViewpoint plugin.");
+    return false;
+  }
+  const axesHelper = new AxesHelper(params.length || 500);
+  axesHelper.matrixAutoUpdate = false;
+  axesHelper.raycast = () => {
+  };
+  this.scene.add(axesHelper);
+  return true;
+};
+var VIEWPOINT;
+(function(VIEWPOINT2) {
+  VIEWPOINT2["DEFAULT"] = "default";
+  VIEWPOINT2["TOP"] = "top";
+  VIEWPOINT2["BOTTOM"] = "bottom";
+  VIEWPOINT2["LEFT"] = "left";
+  VIEWPOINT2["RIGHT"] = "right";
+  VIEWPOINT2["FRONT"] = "front";
+  VIEWPOINT2["BACK"] = "back";
+})(VIEWPOINT || (VIEWPOINT = {}));
+const GridHelperPlugin = function(params) {
+  if (!this.scene) {
+    console.error("must install some scene before BasicViewpoint plugin.");
+    return false;
+  }
+  const gridHelper = new GridHelper(params.range || 500, params.spacing || 50, params.axesColor || "rgb(130, 130, 130)", params.cellColor || "rgb(70, 70, 70)");
+  if (params.opacity !== 1) {
+    const material = gridHelper.material;
+    material.transparent = true;
+    material.opacity = params.opacity || 0.5;
+    material.needsUpdate = true;
+  }
+  gridHelper.matrixAutoUpdate = false;
+  gridHelper.raycast = () => {
+  };
+  this.scene.add(gridHelper);
+  this.completeSet.add(() => {
+    if (this.setViewpoint) {
+      this.addEventListener("setViewpoint", (event) => {
+        const viewpoint = event.viewpoint;
+        if (viewpoint === VIEWPOINT.DEFAULT) {
+          gridHelper.rotation.set(0, 0, 0);
+        } else if (viewpoint === VIEWPOINT.TOP) {
+          gridHelper.rotation.set(0, 0, 0);
+        } else if (viewpoint === VIEWPOINT.BOTTOM) {
+          gridHelper.rotation.set(0, 0, 0);
+        } else if (viewpoint === VIEWPOINT.RIGHT) {
+          gridHelper.rotation.set(0, 0, Math.PI / 2);
+        } else if (viewpoint === VIEWPOINT.LEFT) {
+          gridHelper.rotation.set(0, 0, Math.PI / 2);
+        } else if (viewpoint === VIEWPOINT.FRONT) {
+          gridHelper.rotation.set(Math.PI / 2, 0, 0);
+        } else if (viewpoint === VIEWPOINT.BACK) {
+          gridHelper.rotation.set(Math.PI / 2, 0, 0);
+        }
+        gridHelper.updateMatrix();
+        gridHelper.updateMatrixWorld();
+      });
+    }
+  });
+  return true;
+};
 var ENGINEPLUGIN;
 (function(ENGINEPLUGIN2) {
   ENGINEPLUGIN2["WEBGLRENDERER"] = "WebGLRenderer";
@@ -8175,6 +8240,8 @@ var ENGINEPLUGIN;
   ENGINEPLUGIN2["DATASUPPORTMANAGER"] = "DataSupportManager";
   ENGINEPLUGIN2["COMPILERMANAGER"] = "CompilerManager";
   ENGINEPLUGIN2["KEYBOARDMANAGER"] = "KeyboardManager";
+  ENGINEPLUGIN2["AXESHELPER"] = "AxesHelper";
+  ENGINEPLUGIN2["GRIDHELPER"] = "GridHelper";
 })(ENGINEPLUGIN || (ENGINEPLUGIN = {}));
 let pluginHandler = new Map();
 pluginHandler.set(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin);
@@ -8219,6 +8286,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "setDom");
     __publicField(this, "setStats");
     __publicField(this, "setTransformControls");
+    __publicField(this, "setViewpoint");
     __publicField(this, "loadResources");
     __publicField(this, "loadResourcesAsync");
     __publicField(this, "registerResources");
@@ -8269,6 +8337,8 @@ __publicField(Engine, "register", function(name, handler) {
 __publicField(Engine, "dispose", function() {
   _Engine.pluginHandler = void 0;
 });
+Engine.register(ENGINEPLUGIN.AXESHELPER, AxesHelperPlugin);
+Engine.register(ENGINEPLUGIN.GRIDHELPER, GridHelperPlugin);
 class DisplayEngine extends Engine {
   constructor() {
     super();
