@@ -1149,6 +1149,12 @@ const ScenePlugin = function(params) {
   defalutCamera.position.set(50, 50, 50);
   defalutCamera.lookAt(0, 0, 0);
   this.currentCamera = defalutCamera;
+  this.addEventListener("setSize", (event) => {
+    const width = event.width;
+    const height = event.height;
+    defalutCamera.aspect = width / height;
+    defalutCamera.updateProjectionMatrix();
+  });
   return true;
 };
 var RENDERERMANAGER;
@@ -1313,7 +1319,6 @@ const ViewpointPlugin = function(params) {
   this.addEventListener("setSize", (event) => {
     const width = event.width;
     const height = event.height;
-    console.log(width, height);
     perspectiveCamera.aspect = width / height;
     perspectiveCamera.updateProjectionMatrix();
     orthograpbicCamera.left = -width / 16;
@@ -8348,6 +8353,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "setStats");
     __publicField(this, "setTransformControls");
     __publicField(this, "setViewpoint");
+    __publicField(this, "setDisplayMode");
     __publicField(this, "loadResources");
     __publicField(this, "loadResourcesAsync");
     __publicField(this, "registerResources");

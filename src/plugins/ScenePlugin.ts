@@ -1,6 +1,7 @@
 import { PerspectiveCamera, Scene } from "three";
 import { Engine } from "../engine/Engine";
 import { Plugin } from "./plugin";
+import { SetSizeEvent } from "./WebGLRendererPlugin";
 
 export interface SceneParameters {}
 
@@ -27,5 +28,14 @@ export const ScenePlugin: Plugin<SceneParameters> = function (this: Engine, para
   defalutCamera.lookAt(0, 0, 0)
 
   this.currentCamera = defalutCamera
+
+  this.addEventListener<SetSizeEvent>('setSize', event => {
+    const width = event.width
+    const height = event.height
+
+    defalutCamera.aspect = width / height
+    defalutCamera.updateProjectionMatrix()
+  })
+
   return true
 }

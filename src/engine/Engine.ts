@@ -1,4 +1,5 @@
 import {
+  BufferGeometry,
   Camera,
   Scene,
   WebGLRenderer,
@@ -39,6 +40,7 @@ import { KeyboardManagerPlugin } from "../plugins/KeyboardManagerPlugin";
 import { VIEWPOINT, ViewpointParameters, ViewpointPlugin } from "../plugins/ViewpointPlugin";
 import { AxesHelperParameters, AxesHelperPlugin } from "../plugins/AxesHelperPlugin";
 import { GridHelperParameters, GridHelperPlugin } from "../plugins/GridHelperPlugin";
+import { DISPLAYMODE } from "../plugins/DisplayModePlugin";
 
 // 存在的插件接口
 export enum ENGINEPLUGIN {
@@ -64,9 +66,8 @@ export enum ENGINEPLUGIN {
 
 // 插件处理集合
 let pluginHandler: Map<string, Function> = new Map()
-
+// TODO: deprecated 
 pluginHandler.set(ENGINEPLUGIN.MODELINGSCENE, ModelingScenePlugin)
-
 
 // 引擎槽
 export class Engine extends EventDispatcher {
@@ -91,7 +92,7 @@ export class Engine extends EventDispatcher {
   dom?: HTMLElement
   webGLRenderer?: WebGLRenderer
   currentCamera?: Camera
-  scene?: Scene | ModelingScene
+  scene?: Scene
   orbitControls?: OrbitControls
   transformControls?: TransformControls
   effectComposer?: EffectComposer
@@ -112,6 +113,7 @@ export class Engine extends EventDispatcher {
   setStats?: (show: boolean) => this
   setTransformControls?: (show: boolean) => this
   setViewpoint?: (viewpoint: VIEWPOINT) => this
+  setDisplayMode?: (mode: DISPLAYMODE) => this
 
   loadResources?: (urlList: Array<string>, callback: (err: Error | undefined, event?: LoadedEvent) => void) => this
   loadResourcesAsync?: (urlList: Array<string>) => Promise<LoadedEvent>

@@ -120,8 +120,6 @@ export const ViewpointPlugin: Plugin<ViewpointParameters> = function (this: Engi
     const width = event.width
     const height = event.height
 
-    console.log(width, height)
-
     perspectiveCamera.aspect = width / height
     perspectiveCamera.updateProjectionMatrix()
 
