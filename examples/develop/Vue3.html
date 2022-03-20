@@ -17,12 +17,22 @@
 
   .operate-box {
     position: fixed;
-    color: white;
+    color: rgb(255, 255, 255);
     top: 20%;
     left: 40%;
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  button {
+    padding: 10px;
+    background:rgb(126, 255, 255);
+    color: rgb(0, 0, 0);
+    border: 0;
+    border-radius: 5px;
+    box-shadow: 2px 2px 6px rgb(53, 170, 160);
+    cursor: pointer;
   }
 </style>
 
@@ -37,51 +47,6 @@
 
     import configList from '/examples/public/assetsConfig/vue3Support.json'
 
-    // 加载器
-    const loaderManager = new Vis.LoaderManager()
-    const resourceManager = new Vis.ResourceManager()
-
-    loaderManager.addEventListener('loaded', e => {
-      resourceManager.mappingResource(e.resourceMap)
-    })
-
-    loaderManager.load(configList.assets)
-
-    const dataGenerator = new Vis.SupportDataGenerator()
-
-    // 初始配置数据
-    const lightMap = dataGenerator.create(Vis.MODULETYPE.LIGHT).add({
-      type: Vis.CONFIGTYPE.POINTLIGHT,
-      position: {
-        x: 10
-      }
-    }).get()
-    
-    const imageTexture = Vis.generateConfig('ImageTexture', {
-      image: '/examples/public/texture/Marble023/Marble023_1K_Color.jpg'
-    })
-    const textureMap = dataGenerator.create(Vis.MODULETYPE.TEXTURE).add(imageTexture).get()
-
-    
-    const meshStandardMaterial = Vis.generateConfig('MeshStandardMaterial', {
-      color: 'rgb(255, 0, 0)',
-      map: imageTexture.vid
-    })
-    const materialMap = dataGenerator.create(Vis.MODULETYPE.MATERIAL).add(meshStandardMaterial).get()
-
-    
-    const boxGeometryConfig = Vis.generateConfig('BoxGeometry')
-    const geometryMap = dataGenerator.create(Vis.MODULETYPE.GEOMETRY).add(boxGeometryConfig).get()
-
-
-    
-    const modelConfig = Vis.generateConfig('Model', {
-      type: 'Mesh',
-      geometry: boxGeometryConfig.vid,
-      material: meshStandardMaterial.vid
-    })
-    const modelMap = dataGenerator.create(Vis.MODULETYPE.MODEL).add(modelConfig).get()
-
 
     Vue.createApp({
       template: `
@@ -95,29 +60,17 @@
       `,
       setup () {
 
-        const dataSupportManager = new Vis.DataSupportManager({
-          textureDataSupport: new Vis.TextureDataSupport(textureMap),
-          materialDataSupport: new Vis.MaterialDataSupport(materialMap),
-          lightDataSupport: new Vis.LightDataSupport(lightMap),
-          geometryDataSupport: new Vis.GeometryDataSupport(geometryMap),
-          modelDataSupport: new Vis.ModelDataSupport(modelMap)
-        })
-
-        resourceManager.addEventListener(Vis.RESOURCEEVENTTYPE.MAPPED, e => {
-          const engine = new Vis.ModelingEngineSupport({
-            dom: document.getElementById('app'),
-            dataSupportManager,
-            resourceManager
-          })
-          engine.play()
-        })
-        
+        const engine = new Vis.ModelingEngineSupport()
+        .setDom(document.getElementById('app'))
+        .setSize()
+        .play()
+        engine.loadConfigAsync(configList)
 
         const addPositionY = function(item)  {
           item.position.y += 5
         }
 
-        const lightDataSupport = dataSupportManager.getDataSupport(Vis.MODULETYPE.LIGHT)
+        const lightDataSupport = engine.dataSupportManager.lightDataSupport
         const lightData = lightDataSupport.getData()
 
         const configMap = Vue.reactive(lightData)
