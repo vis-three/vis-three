@@ -1,5 +1,6 @@
 import {
   Camera,
+  Object3D,
   Scene,
   WebGLRenderer,
   WebGLRendererParameters
@@ -40,6 +41,7 @@ import { AxesHelperParameters, AxesHelperPlugin } from "../plugins/AxesHelperPlu
 import { GridHelperParameters, GridHelperPlugin } from "../plugins/GridHelperPlugin";
 import { DISPLAYMODE, DisplayModelPlugin, DisplayModeParameters } from "../plugins/DisplayModePlugin";
 import { ObjectHelperParameters, ObjectHelperPlugin } from "../plugins/ObjectHelperPlugin";
+import { SelectionParameters, SelectionPlugin } from "../plugins/SelectionPlugin";
 
 // 存在的插件接口
 export enum ENGINEPLUGIN {
@@ -62,7 +64,8 @@ export enum ENGINEPLUGIN {
   GRIDHELPER = 'GridHelper',
   VIEWPOINT = 'Viewpoint',
   DISPLAYMODE = 'DisplayMode',
-  OBJECTHELPER = 'ObjectHelper'
+  OBJECTHELPER = 'ObjectHelper',
+  SELECTION = 'Selection'
 }
 
 // 插件处理集合
@@ -108,6 +111,7 @@ export class Engine extends EventDispatcher {
   stats?: Stats 
   transing?: boolean
   displayMode?: DISPLAYMODE
+  selectionBox?: Set<Object3D>
 
   setSize?: (width: number, height: number) => this
   setCamera?: (camera: Camera) => this
@@ -200,3 +204,4 @@ Engine.register<ObjectHelperParameters>(ENGINEPLUGIN.OBJECTHELPER, ObjectHelperP
 Engine.register<DisplayModeParameters>(ENGINEPLUGIN.DISPLAYMODE, DisplayModelPlugin)
 Engine.register<ViewpointParameters>(ENGINEPLUGIN.VIEWPOINT, ViewpointPlugin)
 Engine.register<VisStatsParameters>(ENGINEPLUGIN.STATS, StatsPlugin)
+Engine.register<SelectionParameters>(ENGINEPLUGIN.SELECTION, SelectionPlugin)

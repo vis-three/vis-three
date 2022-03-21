@@ -1,4 +1,4 @@
-import { BaseEvent, Color, Material, Mesh, Object3D, Scene } from "three";
+import { BaseEvent, Color, Material, Mesh, MeshStandardMaterial, Object3D, Scene, Sprite } from "three";
 import { Engine } from "../engine/Engine";
 import { CameraHelper } from "../extends/helper/camera/CameraHelper";
 import { PointLightHelper } from "../extends/helper/light/PointLightHelper";
@@ -6,6 +6,7 @@ import { GroupHelper } from "../extends/helper/object/GroupHelper";
 import { MeshHelper } from "../extends/helper/object/MeshHelper";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { Plugin } from "./plugin";
+import { SelectedEvent } from "./SelectionPlugin";
 
 export interface ObjectHelperParameters {
   interact?: boolean
@@ -78,13 +79,29 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (this
 
         if (params.interact) {
           const pointerenterFun = () => {
+            if (this.selectionBox) {
+              if (this.selectionBox.has(object)) {
+                return
+              }
+            }
             helper.material.color.setHex(hoverColorHex)
           }
           const pointerleaveFun = () => {
+            if (this.selectionBox) {
+              if (this.selectionBox.has(object)) {
+                return
+              }
+            }
+
             helper.material.color.setHex(defaultColorHex)
           }
 
           const clickFun = () => {
+            if (this.selectionBox) {
+              if (this.selectionBox.has(object)) {
+                return
+              }
+            }
             helper.material.color.setHex(activeColorHex)
           }
 
@@ -112,7 +129,7 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (this
       if (filterHelperMap[object.type] || object.type.includes('Helper')) {
         continue
       }
-      
+
       if (!helperMap.has(object)) {
         console.warn(`Object helper plugin can not found this object\`s helper: ${object}`)
         continue
@@ -160,5 +177,26 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (this
     }
     return this
   }
+
+  const cacheObjectsHelper = new Set<Object3D>()
+
+  this.completeSet.add(() => {
+    if (this.selectionBox) {
+      this.addEventListener<SelectedEvent>('selected', (event) => {
+        cacheObjectsHelper.forEach(helper => {
+          (helper as Sprite).material.color.setHex(defaultColorHex)
+        })
+        cacheObjectsHelper.clear()
+
+        for (let object of event.objects) {
+          if (helperMap.has(object)) {
+            const helper  = (helperMap.get(object) as Sprite)
+            helper.material.color.setHex(activeColorHex)
+            cacheObjectsHelper.add(helper)
+          }
+        }
+      })
+    }
+  })
   return true
 }

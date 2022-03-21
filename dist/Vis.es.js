@@ -8629,12 +8629,27 @@ const ObjectHelperPlugin = function(params = {}) {
         scene.add(helper);
         if (params.interact) {
           const pointerenterFun = () => {
+            if (this.selectionBox) {
+              if (this.selectionBox.has(object)) {
+                return;
+              }
+            }
             helper.material.color.setHex(hoverColorHex);
           };
           const pointerleaveFun = () => {
+            if (this.selectionBox) {
+              if (this.selectionBox.has(object)) {
+                return;
+              }
+            }
             helper.material.color.setHex(defaultColorHex);
           };
           const clickFun = () => {
+            if (this.selectionBox) {
+              if (this.selectionBox.has(object)) {
+                return;
+              }
+            }
             helper.material.color.setHex(activeColorHex);
           };
           object.addEventListener("pointerenter", pointerenterFun);
@@ -8694,6 +8709,51 @@ const ObjectHelperPlugin = function(params = {}) {
     }
     return this;
   };
+  const cacheObjectsHelper = new Set();
+  this.completeSet.add(() => {
+    if (this.selectionBox) {
+      this.addEventListener("selected", (event) => {
+        cacheObjectsHelper.forEach((helper) => {
+          helper.material.color.setHex(defaultColorHex);
+        });
+        cacheObjectsHelper.clear();
+        for (let object of event.objects) {
+          if (helperMap.has(object)) {
+            const helper = helperMap.get(object);
+            helper.material.color.setHex(activeColorHex);
+            cacheObjectsHelper.add(helper);
+          }
+        }
+      });
+    }
+  });
+  return true;
+};
+const SelectionPlugin = function(params = {}) {
+  if (!this.eventManager) {
+    console.warn("must install eventManager plugin before Selection plugin.");
+    return false;
+  }
+  this.selectionBox = new Set();
+  this.eventManager.addEventListener("click", (event) => {
+    var _a;
+    const intersections = event.intersections;
+    this.selectionBox.clear();
+    if (this.eventManager.penetrate) {
+      for (let intersection of intersections) {
+        this.selectionBox.add(intersection.object);
+      }
+    } else {
+      if (intersections.length) {
+        (_a = this.selectionBox) == null ? void 0 : _a.add(intersections[0].object);
+      }
+    }
+    this.dispatchEvent({
+      type: "selected",
+      objects: [...this.selectionBox],
+      objectSymbols: []
+    });
+  });
   return true;
 };
 var ENGINEPLUGIN;
@@ -8718,6 +8778,7 @@ var ENGINEPLUGIN;
   ENGINEPLUGIN2["VIEWPOINT"] = "Viewpoint";
   ENGINEPLUGIN2["DISPLAYMODE"] = "DisplayMode";
   ENGINEPLUGIN2["OBJECTHELPER"] = "ObjectHelper";
+  ENGINEPLUGIN2["SELECTION"] = "Selection";
 })(ENGINEPLUGIN || (ENGINEPLUGIN = {}));
 let pluginHandler = new Map();
 pluginHandler.set(ENGINEPLUGIN.MODELINGSCENE, ModelingScenePlugin);
@@ -8744,6 +8805,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "stats");
     __publicField(this, "transing");
     __publicField(this, "displayMode");
+    __publicField(this, "selectionBox");
     __publicField(this, "setSize");
     __publicField(this, "setCamera");
     __publicField(this, "setDom");
@@ -8824,6 +8886,7 @@ Engine.register(ENGINEPLUGIN.OBJECTHELPER, ObjectHelperPlugin);
 Engine.register(ENGINEPLUGIN.DISPLAYMODE, DisplayModelPlugin);
 Engine.register(ENGINEPLUGIN.VIEWPOINT, ViewpointPlugin);
 Engine.register(ENGINEPLUGIN.STATS, StatsPlugin);
+Engine.register(ENGINEPLUGIN.SELECTION, SelectionPlugin);
 class DisplayEngine extends Engine {
   constructor() {
     super();

@@ -34,8 +34,8 @@ export class EventManager extends EventDispatcher {
   private raycaster: Raycaster
   private scene: Scene
   private camera: Camera
-  private recursive: boolean = false // 递归子物体
-  private penetrate: boolean = false // 事件穿透
+   recursive: boolean = false // 递归子物体
+   penetrate: boolean = false // 事件穿透
 
   constructor (parameters: EventManagerParameters) {
     super()
