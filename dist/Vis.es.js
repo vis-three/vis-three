@@ -8258,6 +8258,14 @@ const AxesHelperPlugin = function(params = {}) {
   axesHelper.raycast = () => {
   };
   this.scene.add(axesHelper);
+  this.setAxesHelper = function(params2) {
+    if (params2.show) {
+      this.scene.add(axesHelper);
+    } else {
+      this.scene.remove(axesHelper);
+    }
+    return this;
+  };
   return true;
 };
 const GridHelperPlugin = function(params = {}) {
@@ -8276,6 +8284,14 @@ const GridHelperPlugin = function(params = {}) {
   gridHelper.raycast = () => {
   };
   this.scene.add(gridHelper);
+  this.setGridHelper = function(params2) {
+    if (params2.show) {
+      this.scene.add(gridHelper);
+    } else {
+      this.scene.remove(gridHelper);
+    }
+    return this;
+  };
   this.completeSet.add(() => {
     if (this.setViewpoint) {
       this.addEventListener("setViewpoint", (event) => {
@@ -8354,6 +8370,8 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "setTransformControls");
     __publicField(this, "setViewpoint");
     __publicField(this, "setDisplayMode");
+    __publicField(this, "setAxesHelper");
+    __publicField(this, "setGridHelper");
     __publicField(this, "loadResources");
     __publicField(this, "loadResourcesAsync");
     __publicField(this, "registerResources");

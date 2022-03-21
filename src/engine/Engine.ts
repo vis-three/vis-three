@@ -1,12 +1,10 @@
 import {
-  BufferGeometry,
   Camera,
   Scene,
   WebGLRenderer,
   WebGLRendererParameters
 } from "three";
 import { EventDispatcher } from "../core/EventDispatcher";
-import { ModelingScene, ModelingSceneParameters } from "../extends/ModelingScene/ModelingScene";
 import { ModelingScenePlugin } from "../plugins/ModelingScenePlugin";
 
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -114,6 +112,8 @@ export class Engine extends EventDispatcher {
   setTransformControls?: (show: boolean) => this
   setViewpoint?: (viewpoint: VIEWPOINT) => this
   setDisplayMode?: (mode: DISPLAYMODE) => this
+  setAxesHelper?: (params: {show: boolean}) => this
+  setGridHelper?: (params: {show: boolean}) => this
 
   loadResources?: (urlList: Array<string>, callback: (err: Error | undefined, event?: LoadedEvent) => void) => this
   loadResourcesAsync?: (urlList: Array<string>) => Promise<LoadedEvent>
@@ -181,7 +181,7 @@ Engine.register<PointerManagerParameters>(ENGINEPLUGIN.POINTERMANAGER, PointerMa
 Engine.register<EventManagerParameters>(ENGINEPLUGIN.EVENTMANAGER, EventManagerPlugin)
 Engine.register<LoaderManagerParameters>(ENGINEPLUGIN.LOADERMANAGER, LoaderManagerPlugin)
 Engine.register<object>(ENGINEPLUGIN.RESOURCEMANAGER, ResourceManagerPlugin)
-Engine.register<object>(ENGINEPLUGIN.DATASUPPORTMANAGER, DataSupportManagerPlugin)
+Engine.register<DataSupportManagerParameters>(ENGINEPLUGIN.DATASUPPORTMANAGER, DataSupportManagerPlugin)
 Engine.register<CompilerManagerParameters>(ENGINEPLUGIN.COMPILERMANAGER, CompilerManagerPlugin)
 Engine.register<object>(ENGINEPLUGIN.KEYBOARDMANAGER, KeyboardManagerPlugin)
 

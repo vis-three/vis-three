@@ -38,6 +38,16 @@ export const GridHelperPlugin: Plugin<GridHelperParameters> = function (this: En
 
   this.scene.add(gridHelper)
 
+  this.setGridHelper = function (params: {show: boolean}): Engine {
+    if (params.show) {
+      this.scene!.add(gridHelper)
+    } else {
+      this.scene!.remove(gridHelper)
+    }
+    return this
+  }
+
+
   this.completeSet.add(() => {
     if (this.setViewpoint) {
       this.addEventListener<ViewpointEvent>('setViewpoint', event => {

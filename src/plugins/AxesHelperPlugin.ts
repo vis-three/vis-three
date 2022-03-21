@@ -18,5 +18,15 @@ export const AxesHelperPlugin: Plugin<AxesHelperParameters> = function (this: En
 
 
   this.scene.add(axesHelper)
+
+  this.setAxesHelper = function (params: {show: boolean}): Engine {
+    if (params.show) {
+      this.scene!.add(axesHelper)
+    } else {
+      this.scene!.remove(axesHelper)
+    }
+    return this
+  }
+
   return true
 }

@@ -15,10 +15,25 @@
     height: 100%;
   }
 
+  button {
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    transform: translate(-50%);
+    margin: 0 5px;
+    font-size: 16px;
+    padding: 8px 10px;
+    background: rgb(237, 75, 243);
+    border-radius: 3px;
+    box-shadow: 0 0 6px rgb(236, 182, 238);
+  }
+
 </style>
 
 <body>
   <div id="app"></div>
+  <button id="operate">tirggle</button>
+
   <script type="module">
     import * as THREE from 'three'
     import * as Vis from '../../dist/Vis.es.js'
@@ -34,6 +49,13 @@
     .setDom(document.getElementById('app'))
     .setSize()
     .play()
+
+    let show = true
+    document.getElementById('operate').onclick = event => {
+
+      show = !show
+      engine.setGridHelper({show})
+    }
   </script>
   
 </body>
