@@ -22,7 +22,6 @@ import { RendererDataSupport } from "./middleware/renderer/RendererDataSupport";
 import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
 import { EVENTTYPE } from "./middleware/constants/EVENTTYPE";
 import { TextureDisplayer } from "./displayer/TextureDisplayer";
-import { ModelingScene, SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./extends/ModelingScene/ModelingScene";
 import { SceneDataSupport } from './middleware/scene/SceneDataSupport';
 import { CanvasTextureGenerator } from './convenient/CanvasTextureGenerator';
 import { SpriteDataSupport } from './middleware/sprite/SpriteDataSupport';
@@ -102,9 +101,6 @@ export {
   // displayer
   MaterialDisplayer,
   TextureDisplayer,
-
-  // extends
-  ModelingScene,
 
   // modifier
   BooleanModifier

@@ -1141,6 +1141,24 @@ const ScenePlugin = function(params) {
     return false;
   }
   this.scene = new Scene();
+  const sceneAdd = this.scene.add.bind(this.scene);
+  this.scene.add = function(...object) {
+    sceneAdd(...object);
+    this.dispatchEvent({
+      type: "afterAdd",
+      objects: object
+    });
+    return this;
+  };
+  const sceneRemove = this.scene.remove.bind(this.scene);
+  this.scene.remove = function(...object) {
+    sceneRemove(...object);
+    this.dispatchEvent({
+      type: "afterRemove",
+      objects: object
+    });
+    return this;
+  };
   this.render = () => {
     this.webGLRenderer.render(this.scene, this.currentCamera);
     return this;
@@ -8250,7 +8268,7 @@ const KeyboardManagerPlugin = function(params) {
 };
 const AxesHelperPlugin = function(params = {}) {
   if (!this.scene) {
-    console.error("must install some scene before BasicViewpoint plugin.");
+    console.error("must install some scene plugin before BasicViewpoint plugin.");
     return false;
   }
   const axesHelper = new AxesHelper(params.length || 500);
@@ -8334,24 +8352,6 @@ const DisplayModelPlugin = function(params = {}) {
     console.error("must install some scene before DisplayModel plugin.");
     return false;
   }
-  const sceneAdd = this.scene.add.bind(this.scene);
-  this.scene.add = function(...object) {
-    sceneAdd(...object);
-    this.dispatchEvent({
-      type: "afterAdd",
-      objects: object
-    });
-    return this;
-  };
-  const sceneRemove = this.scene.remove.bind(this.scene);
-  this.scene.remove = function(...object) {
-    sceneRemove(...object);
-    this.dispatchEvent({
-      type: "afterRemove",
-      objects: object
-    });
-    return this;
-  };
   !params.overrideColor && (params.overrideColor = "rgb(250, 250, 250)");
   !params.defaultAmbientLightSetting && (params.defaultAmbientLightSetting = {});
   !params.defaultAmbientLightSetting.color && (params.defaultAmbientLightSetting.color = "rgb(255, 255, 255)");
@@ -8580,6 +8580,122 @@ const DisplayModelPlugin = function(params = {}) {
   };
   return true;
 };
+const ObjectHelperPlugin = function(params = {}) {
+  if (!this.scene) {
+    console.error("must install some scene plugin before ObjectHelper plugin.");
+    return false;
+  }
+  if (params.interact === void 0) {
+    params.interact = true;
+  }
+  if (params.interact) {
+    if (!this.eventManager) {
+      console.warn("must install eventManager plugin that can use interact function.");
+      params.interact = false;
+    }
+  }
+  const typeHelperMap = {
+    [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
+    [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
+    [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
+    [CONFIGTYPE.MESH]: MeshHelper,
+    [CONFIGTYPE.GROUP]: GroupHelper
+  };
+  const filterHelperMap = {
+    "AmbientLight": true,
+    "Object3D": true
+  };
+  const helperMap = new Map();
+  const pointerenterFunMap = new Map();
+  const pointerleaveFunMap = new Map();
+  const clickFunMap = new Map();
+  const scene = this.scene;
+  !params.activeColor && (params.activeColor = "rgb(230, 20, 240)");
+  !params.hoverColor && (params.hoverColor = "rgb(255, 158, 240)");
+  !params.defaultColor && (params.defaultColor = "rgb(255, 255, 255)");
+  const defaultColorHex = new Color(params.defaultColor).getHex();
+  const activeColorHex = new Color(params.activeColor).getHex();
+  const hoverColorHex = new Color(params.hoverColor).getHex();
+  scene.addEventListener("afterAdd", (event) => {
+    const objects = event.objects;
+    for (let object of objects) {
+      if (filterHelperMap[object.type] || object.type.includes("Helper")) {
+        continue;
+      }
+      if (typeHelperMap[object.type]) {
+        const helper = new typeHelperMap[object.type](object);
+        helper.material.color.setHex(defaultColorHex);
+        helperMap.set(object, helper);
+        scene.add(helper);
+        if (params.interact) {
+          const pointerenterFun = () => {
+            helper.material.color.setHex(hoverColorHex);
+          };
+          const pointerleaveFun = () => {
+            helper.material.color.setHex(defaultColorHex);
+          };
+          const clickFun = () => {
+            helper.material.color.setHex(activeColorHex);
+          };
+          object.addEventListener("pointerenter", pointerenterFun);
+          object.addEventListener("pointerleave", pointerleaveFun);
+          object.addEventListener("click", clickFun);
+          pointerenterFunMap.set(object, pointerenterFun);
+          pointerleaveFunMap.set(object, pointerleaveFun);
+          clickFunMap.set(object, clickFun);
+        }
+      } else {
+        console.warn(`object helper can not support this type object: '${object.type}'`);
+      }
+    }
+  });
+  scene.addEventListener("afterRemove", (event) => {
+    const objects = event.objects;
+    for (let object of objects) {
+      if (filterHelperMap[object.type] || object.type.includes("Helper")) {
+        continue;
+      }
+      if (!helperMap.has(object)) {
+        console.warn(`Object helper plugin can not found this object\`s helper: ${object}`);
+        continue;
+      }
+      const helper = helperMap.get(object);
+      scene.remove(helper);
+      if (params.interact) {
+        object.removeEventListener("pointerenter", pointerenterFunMap.get(object));
+        object.removeEventListener("pointerleave", pointerleaveFunMap.get(object));
+        object.removeEventListener("click", clickFunMap.get(object));
+        pointerenterFunMap.delete(object);
+        pointerleaveFunMap.delete(object);
+        clickFunMap.delete(object);
+      }
+      helper.geometry && helper.geometry.dispose();
+      if (helper.material) {
+        if (helper.material instanceof Material) {
+          helper.material.dispose();
+        } else {
+          helper.material.forEach((material) => {
+            material.dispose();
+          });
+        }
+      }
+      helperMap.delete(object);
+    }
+  });
+  this.setObjectHelper = function(params2) {
+    if (params2.show) {
+      helperMap.forEach((helper) => {
+        scene.add(helper);
+      });
+    } else {
+      helperMap.forEach((helper) => {
+        scene.remove(helper);
+      });
+    }
+    return this;
+  };
+  return true;
+};
 var ENGINEPLUGIN;
 (function(ENGINEPLUGIN2) {
   ENGINEPLUGIN2["WEBGLRENDERER"] = "WebGLRenderer";
@@ -8601,6 +8717,7 @@ var ENGINEPLUGIN;
   ENGINEPLUGIN2["GRIDHELPER"] = "GridHelper";
   ENGINEPLUGIN2["VIEWPOINT"] = "Viewpoint";
   ENGINEPLUGIN2["DISPLAYMODE"] = "DisplayMode";
+  ENGINEPLUGIN2["OBJECTHELPER"] = "ObjectHelper";
 })(ENGINEPLUGIN || (ENGINEPLUGIN = {}));
 let pluginHandler = new Map();
 pluginHandler.set(ENGINEPLUGIN.MODELINGSCENE, ModelingScenePlugin);
@@ -8636,6 +8753,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "setDisplayMode");
     __publicField(this, "setAxesHelper");
     __publicField(this, "setGridHelper");
+    __publicField(this, "setObjectHelper");
     __publicField(this, "loadResources");
     __publicField(this, "loadResourcesAsync");
     __publicField(this, "registerResources");
@@ -8702,6 +8820,7 @@ Engine.register(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin);
 Engine.register(ENGINEPLUGIN.TRANSFORMCONTROLS, TransformControlsPlugin);
 Engine.register(ENGINEPLUGIN.AXESHELPER, AxesHelperPlugin);
 Engine.register(ENGINEPLUGIN.GRIDHELPER, GridHelperPlugin);
+Engine.register(ENGINEPLUGIN.OBJECTHELPER, ObjectHelperPlugin);
 Engine.register(ENGINEPLUGIN.DISPLAYMODE, DisplayModelPlugin);
 Engine.register(ENGINEPLUGIN.VIEWPOINT, ViewpointPlugin);
 Engine.register(ENGINEPLUGIN.STATS, StatsPlugin);
@@ -9694,4 +9813,4 @@ class BooleanModifier extends Modifier {
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
-export { configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, generateConfig };
+export { configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, generateConfig };

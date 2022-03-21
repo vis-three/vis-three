@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DisplayModePlugin</title>
+  <title>ObjectHelperPlugin</title>
   <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
   <link rel="stylesheet" href="../css/common.css">
 </head>
@@ -15,21 +15,11 @@
     height: 100%;
   }
 
-  #button-position {
+  button {
     position: fixed;
-    top:30px;
+    top: 50px;
     left: 50%;
-  }
-
-  #button-group {
-    transform: translate(-50%, 0);
-  }
-
-  #button-group p {
-    color: white;
-  }
-
-  #button-group button {
+    transform: translate(-50%);
     margin: 0 5px;
     font-size: 16px;
     padding: 8px 10px;
@@ -42,34 +32,20 @@
 
 <body>
   <div id="app"></div>
-  <div id="button-position">
-    <div id="button-group">
-      <p>change DisplayMode:</p>
-    </div>
-  </div>
+  <button id="operate">tirggle</button>
 
   <script type="module">
     import * as THREE from 'three'
     import * as Vis from '../../dist/Vis.es.js'
 
     const engine = new Vis.DisplayEngine()
-    .install('DisplayMode')
+    .install('ObjectHelper')
     .complete()
     .setDom(document.getElementById('app'))
     .setSize()
     .play()
 
     const scene = engine.scene
-
-    const background = new THREE.CubeTextureLoader()
-    .setPath('/examples/public/texture/skyBox/snowVillage/')
-    .load([
-    'px.jpg', 'nx.jpg',
-    'py.jpg', 'ny.jpg',
-    'pz.jpg', 'nz.jpg'
-    ])
-
-    scene.background = background
 
     const box = new THREE.Mesh(
       new THREE.BoxBufferGeometry(10, 10, 10),
@@ -78,8 +54,8 @@
     box.position.x = 10
     scene.add(box)
 
-    const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 300, 0)
-    pointLight.position.y = 30
+    const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 30, 0)
+    pointLight.position.y = 20
     scene.add(pointLight)
 
     const line = new THREE.Line(
@@ -96,16 +72,12 @@
     points.position.x = -10
     scene.add(points)
 
-    const buttonGroup = document.getElementById('button-group')
-    Object.keys(Vis.DISPLAYMODE).forEach(key => {
-      const buttonDom = document.createElement('button')
-      buttonDom.innerText = Vis.DISPLAYMODE[key]
-      buttonDom.onclick = () => {
-        engine.setDisplayMode(Vis.DISPLAYMODE[key])
-      }
+    let show = true
+    document.getElementById('operate').onclick = event => {
 
-      buttonGroup.appendChild(buttonDom)
-    })
+      show = !show
+      engine.setObjectHelper({show})
+    }
   </script>
   
 </body>

@@ -39,6 +39,7 @@ import { VIEWPOINT, ViewpointParameters, ViewpointPlugin } from "../plugins/View
 import { AxesHelperParameters, AxesHelperPlugin } from "../plugins/AxesHelperPlugin";
 import { GridHelperParameters, GridHelperPlugin } from "../plugins/GridHelperPlugin";
 import { DISPLAYMODE, DisplayModelPlugin, DisplayModeParameters } from "../plugins/DisplayModePlugin";
+import { ObjectHelperParameters, ObjectHelperPlugin } from "../plugins/ObjectHelperPlugin";
 
 // 存在的插件接口
 export enum ENGINEPLUGIN {
@@ -60,7 +61,8 @@ export enum ENGINEPLUGIN {
   AXESHELPER = 'AxesHelper',
   GRIDHELPER = 'GridHelper',
   VIEWPOINT = 'Viewpoint',
-  DISPLAYMODE = 'DisplayMode'
+  DISPLAYMODE = 'DisplayMode',
+  OBJECTHELPER = 'ObjectHelper'
 }
 
 // 插件处理集合
@@ -116,6 +118,7 @@ export class Engine extends EventDispatcher {
   setDisplayMode?: (mode: DISPLAYMODE) => this
   setAxesHelper?: (params: {show: boolean}) => this
   setGridHelper?: (params: {show: boolean}) => this
+  setObjectHelper?: (params: {show: boolean}) => this
 
   loadResources?: (urlList: Array<string>, callback: (err: Error | undefined, event?: LoadedEvent) => void) => this
   loadResourcesAsync?: (urlList: Array<string>) => Promise<LoadedEvent>
@@ -192,6 +195,7 @@ Engine.register<object>(ENGINEPLUGIN.TRANSFORMCONTROLS, TransformControlsPlugin)
 
 Engine.register<AxesHelperParameters>(ENGINEPLUGIN.AXESHELPER, AxesHelperPlugin)
 Engine.register<GridHelperParameters>(ENGINEPLUGIN.GRIDHELPER, GridHelperPlugin)
+Engine.register<ObjectHelperParameters>(ENGINEPLUGIN.OBJECTHELPER, ObjectHelperPlugin)
 
 Engine.register<DisplayModeParameters>(ENGINEPLUGIN.DISPLAYMODE, DisplayModelPlugin)
 Engine.register<ViewpointParameters>(ENGINEPLUGIN.VIEWPOINT, ViewpointPlugin)

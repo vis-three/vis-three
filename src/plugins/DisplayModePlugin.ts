@@ -18,16 +18,6 @@ export interface DisplayModeParameters {
   // TODO:增加默认的scene environment
 }
 
-export interface SceneAddEvent extends BaseEvent {
-  type: 'afterAdd' // 不与three内置的ed事件命名冲突
-  objects: Object3D[]
-}
-
-export interface SceneRemoveEvent extends BaseEvent {
-  type: 'afterRemove' // 不与three内置的ed事件命名冲突
-  objects: Object3D[]
-}
-
 export enum DISPLAYMODE {
   // WIREWFRAME = 'wireframe',
   GEOMETRY = 'geometry',
@@ -45,30 +35,6 @@ export const DisplayModelPlugin: Plugin<DisplayModeParameters> = function(this: 
   if (!this.scene) {
     console.error('must install some scene before DisplayModel plugin.')
     return false
-  }
-
-  // 场景add装饰
-  const sceneAdd = this.scene.add.bind(this.scene)
-
-  this.scene.add = function (...object: Object3D[]): Scene {
-    sceneAdd(...object)
-    this.dispatchEvent({
-      type: 'afterAdd',
-      objects: object
-    })
-    return this
-  }
-
-  // 场景remove装饰
-  const sceneRemove = this.scene.remove.bind(this.scene)
-
-  this.scene.remove = function (...object: Object3D[]): Scene {
-    sceneRemove(...object)
-    this.dispatchEvent({
-      type: 'afterRemove',
-      objects: object
-    })
-    return this
   }
 
   !params.overrideColor && (params.overrideColor = 'rgb(250, 250, 250)')
