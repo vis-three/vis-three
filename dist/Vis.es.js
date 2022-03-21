@@ -8318,6 +8318,268 @@ const GridHelperPlugin = function(params = {}) {
   });
   return true;
 };
+var DISPLAYMODE;
+(function(DISPLAYMODE2) {
+  DISPLAYMODE2["GEOMETRY"] = "geometry";
+  DISPLAYMODE2["MATERIAL"] = "material";
+  DISPLAYMODE2["LIGHT"] = "light";
+  DISPLAYMODE2["ENV"] = "env";
+})(DISPLAYMODE || (DISPLAYMODE = {}));
+const DisplayModelPlugin = function(params = {}) {
+  if (!this.webGLRenderer) {
+    console.error("must install some renderer before DisplayModel plugin.");
+    return false;
+  }
+  if (!this.scene) {
+    console.error("must install some scene before DisplayModel plugin.");
+    return false;
+  }
+  const sceneAdd = this.scene.add.bind(this.scene);
+  this.scene.add = function(...object) {
+    sceneAdd(...object);
+    this.dispatchEvent({
+      type: "afterAdd",
+      objects: object
+    });
+    return this;
+  };
+  const sceneRemove = this.scene.remove.bind(this.scene);
+  this.scene.remove = function(...object) {
+    sceneRemove(...object);
+    this.dispatchEvent({
+      type: "afterRemove",
+      objects: object
+    });
+    return this;
+  };
+  !params.overrideColor && (params.overrideColor = "rgb(250, 250, 250)");
+  !params.defaultAmbientLightSetting && (params.defaultAmbientLightSetting = {});
+  !params.defaultAmbientLightSetting.color && (params.defaultAmbientLightSetting.color = "rgb(255, 255, 255)");
+  !params.defaultAmbientLightSetting.intensity && (params.defaultAmbientLightSetting.intensity = 0.5);
+  const defaultAmbientLight = new AmbientLight(params.defaultAmbientLightSetting.color, params.defaultAmbientLightSetting.intensity);
+  defaultAmbientLight.matrixAutoUpdate = false;
+  !params.defaultDirectionalLightSetting && (params.defaultDirectionalLightSetting = {});
+  !params.defaultDirectionalLightSetting.color && (params.defaultDirectionalLightSetting.color = "rgb(255, 255, 255)");
+  !params.defaultDirectionalLightSetting.intensity && (params.defaultDirectionalLightSetting.intensity = 0.5);
+  !params.defaultDirectionalLightSetting.position && (params.defaultDirectionalLightSetting.position = {
+    x: -100,
+    y: 100,
+    z: 100
+  });
+  const defaultDirectionalLight = new DirectionalLight(params.defaultDirectionalLightSetting.color, params.defaultDirectionalLightSetting.intensity);
+  defaultDirectionalLight.castShadow = false;
+  defaultDirectionalLight.position.set(params.defaultDirectionalLightSetting.position.x, params.defaultDirectionalLightSetting.position.y, params.defaultDirectionalLightSetting.position.z);
+  defaultDirectionalLight.updateMatrix();
+  defaultDirectionalLight.updateMatrixWorld();
+  defaultDirectionalLight.matrixAutoUpdate = false;
+  !params.mode && (params.mode = DISPLAYMODE.ENV);
+  this.displayMode = params.mode;
+  const meshOverrideMaterial = new MeshLambertMaterial({ color: params.overrideColor });
+  const lineOverrideMaterial = new LineBasicMaterial({ color: params.overrideColor });
+  const pointsOverrideMaterial = new PointsMaterial({ color: params.overrideColor, size: 5, sizeAttenuation: false });
+  const spriteOverrideMaterial = new SpriteMaterial({ color: params.overrideColor });
+  const materialCacheMap = new WeakMap();
+  const lightSet = new Set();
+  const meshSet = new Set();
+  const lineSet = new Set();
+  const pointsSet = new Set();
+  const spriteSet = new Set();
+  let backgroundCache;
+  let environmentCache;
+  const filterTypeMap = {
+    Object3D: true,
+    Group: true
+  };
+  const modeSymbol = Symbol.for("light");
+  this.scene.addEventListener("afterAdd", (event) => {
+    const displayMode = this.displayMode;
+    const objects = event.objects;
+    for (let elem of objects) {
+      if (filterTypeMap[elem.type]) {
+        continue;
+      }
+      if (elem instanceof Mesh && elem.type === "Mesh") {
+        meshSet.add(elem);
+        if (displayMode === DISPLAYMODE.GEOMETRY) {
+          materialCacheMap.set(elem, elem.material);
+          elem.material = meshOverrideMaterial;
+        }
+      } else if (elem instanceof Line && elem.type.includes("Line")) {
+        lineSet.add(elem);
+        if (displayMode === DISPLAYMODE.GEOMETRY) {
+          materialCacheMap.set(elem, elem.material);
+          elem.material = lineOverrideMaterial;
+        }
+      } else if (elem instanceof Light && elem.type.includes("Light")) {
+        if (elem === defaultAmbientLight || elem === defaultDirectionalLight) {
+          continue;
+        }
+        lightSet.add(elem);
+        elem[modeSymbol] = true;
+        if (displayMode !== DISPLAYMODE.ENV && displayMode !== DISPLAYMODE.LIGHT) {
+          console.log(displayMode);
+          this.scene.remove(elem);
+        }
+      } else if (elem instanceof Points && elem.type === "Points") {
+        pointsSet.add(elem);
+        if (displayMode === DISPLAYMODE.GEOMETRY) {
+          materialCacheMap.set(elem, elem.material);
+          elem.material = pointsOverrideMaterial;
+        }
+      } else if (elem instanceof Sprite && elem.type === "Sprite") {
+        spriteSet.add(elem);
+        if (displayMode === DISPLAYMODE.GEOMETRY) {
+          materialCacheMap.set(elem, elem.material);
+          elem.material = spriteOverrideMaterial;
+        }
+      }
+    }
+  });
+  this.scene.addEventListener("afterRemove", (event) => {
+    const objects = event.objects;
+    for (let elem of objects) {
+      if (filterTypeMap[elem.type]) {
+        continue;
+      }
+      if (elem instanceof Mesh && elem.type === "Mesh") {
+        meshSet.delete(elem);
+        materialCacheMap.has(elem) && materialCacheMap.delete(elem);
+      } else if (elem instanceof Line && elem.type.includes("Line")) {
+        lineSet.delete(elem);
+        materialCacheMap.has(elem) && materialCacheMap.delete(elem);
+      } else if (elem instanceof Light && elem.type.includes("Light")) {
+        if (elem === defaultAmbientLight || elem === defaultDirectionalLight) {
+          continue;
+        }
+        if (!elem[modeSymbol]) {
+          lightSet.delete(elem);
+        }
+      } else if (elem instanceof Points && elem.type === "Points") {
+        pointsSet.delete(elem);
+        materialCacheMap.has(elem) && materialCacheMap.delete(elem);
+      } else if (elem instanceof Sprite && elem.type === "Sprite") {
+        spriteSet.delete(elem);
+        materialCacheMap.has(elem) && materialCacheMap.delete(elem);
+      }
+    }
+  });
+  this.setDisplayMode = function(mode) {
+    this.displayMode = mode || DISPLAYMODE.ENV;
+    const filterMaterial = () => {
+      for (let mesh of meshSet) {
+        if (mesh.material === meshOverrideMaterial) {
+          continue;
+        }
+        materialCacheMap.set(mesh, mesh.material);
+        mesh.material = meshOverrideMaterial;
+      }
+      for (let line of lineSet) {
+        if (line.material === lineOverrideMaterial) {
+          continue;
+        }
+        materialCacheMap.set(line, line.material);
+        line.material = lineOverrideMaterial;
+      }
+      for (let points of pointsSet) {
+        if (points.material === pointsOverrideMaterial) {
+          continue;
+        }
+        materialCacheMap.set(points, points.material);
+        points.material = pointsOverrideMaterial;
+      }
+      for (let sprite of spriteSet) {
+        if (sprite.material === spriteOverrideMaterial) {
+          continue;
+        }
+        materialCacheMap.set(sprite, sprite.material);
+        sprite.material = spriteOverrideMaterial;
+      }
+    };
+    const reduceMaterial = () => {
+      meshSet.forEach((mesh) => {
+        if (materialCacheMap.has(mesh)) {
+          mesh.material = materialCacheMap.get(mesh);
+          materialCacheMap.delete(mesh);
+        }
+      });
+      lineSet.forEach((line) => {
+        if (materialCacheMap.has(line)) {
+          line.material = materialCacheMap.get(line);
+          materialCacheMap.delete(line);
+        }
+      });
+      pointsSet.forEach((points) => {
+        if (materialCacheMap.has(points)) {
+          points.material = materialCacheMap.get(points);
+          materialCacheMap.delete(points);
+        }
+      });
+      spriteSet.forEach((sprite) => {
+        if (materialCacheMap.has(sprite)) {
+          sprite.material = materialCacheMap.get(sprite);
+          materialCacheMap.delete(sprite);
+        }
+      });
+    };
+    const filterLight = () => {
+      lightSet.forEach((light) => {
+        light[modeSymbol] = true;
+        this.scene.remove(light);
+      });
+      this.scene.add(defaultAmbientLight);
+      this.scene.add(defaultDirectionalLight);
+    };
+    const reduceLight = () => {
+      lightSet.forEach((light) => {
+        light[modeSymbol] = false;
+        this.scene.add(light);
+      });
+      this.scene.remove(defaultAmbientLight);
+      this.scene.remove(defaultDirectionalLight);
+    };
+    const filterScene = () => {
+      if (this.scene.background instanceof Texture) {
+        backgroundCache = this.scene.background;
+        this.scene.background = null;
+      }
+      if (this.scene.environment instanceof Texture) {
+        environmentCache = this.scene.environment;
+        this.scene.environment = null;
+      }
+    };
+    const reduceScene = () => {
+      if (backgroundCache) {
+        this.scene.background = backgroundCache;
+        backgroundCache = void 0;
+      }
+      if (environmentCache) {
+        this.scene.environment = environmentCache;
+        environmentCache = void 0;
+      }
+    };
+    if (mode === DISPLAYMODE.GEOMETRY) {
+      filterMaterial();
+      filterScene();
+      filterLight();
+    } else if (mode === DISPLAYMODE.MATERIAL) {
+      reduceMaterial();
+      filterScene();
+      filterLight();
+    } else if (mode === DISPLAYMODE.LIGHT) {
+      reduceMaterial();
+      filterScene();
+      reduceLight();
+    } else if (mode === DISPLAYMODE.ENV) {
+      reduceMaterial();
+      reduceScene();
+      reduceLight();
+    } else {
+      console.warn(`displayMode plugin can not set this mode: ${mode}`);
+    }
+    return this;
+  };
+  return true;
+};
 var ENGINEPLUGIN;
 (function(ENGINEPLUGIN2) {
   ENGINEPLUGIN2["WEBGLRENDERER"] = "WebGLRenderer";
@@ -8338,6 +8600,7 @@ var ENGINEPLUGIN;
   ENGINEPLUGIN2["AXESHELPER"] = "AxesHelper";
   ENGINEPLUGIN2["GRIDHELPER"] = "GridHelper";
   ENGINEPLUGIN2["VIEWPOINT"] = "Viewpoint";
+  ENGINEPLUGIN2["DISPLAYMODE"] = "DisplayMode";
 })(ENGINEPLUGIN || (ENGINEPLUGIN = {}));
 let pluginHandler = new Map();
 pluginHandler.set(ENGINEPLUGIN.MODELINGSCENE, ModelingScenePlugin);
@@ -8363,6 +8626,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "keyboardManager");
     __publicField(this, "stats");
     __publicField(this, "transing");
+    __publicField(this, "displayMode");
     __publicField(this, "setSize");
     __publicField(this, "setCamera");
     __publicField(this, "setDom");
@@ -8438,6 +8702,7 @@ Engine.register(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin);
 Engine.register(ENGINEPLUGIN.TRANSFORMCONTROLS, TransformControlsPlugin);
 Engine.register(ENGINEPLUGIN.AXESHELPER, AxesHelperPlugin);
 Engine.register(ENGINEPLUGIN.GRIDHELPER, GridHelperPlugin);
+Engine.register(ENGINEPLUGIN.DISPLAYMODE, DisplayModelPlugin);
 Engine.register(ENGINEPLUGIN.VIEWPOINT, ViewpointPlugin);
 Engine.register(ENGINEPLUGIN.STATS, StatsPlugin);
 class DisplayEngine extends Engine {
@@ -9429,4 +9694,4 @@ class BooleanModifier extends Modifier {
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
-export { configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SCENEDISPLAYMODE, SCENEVIEWPOINT, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, generateConfig };
+export { configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, ModelingScene, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, generateConfig };

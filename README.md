@@ -1,6 +1,6 @@
 # vis-three
 
-three库二次功能封装 + 配置化的three.js开发。
+three.js库二次功能封装 + 配置化的three.js开发。
 
 <p>
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.7-{}" alt="Version"></a>
@@ -35,6 +35,10 @@ import {
 
 5. 示例代码位于：`examples`文件夹下
 
+
+## 备注
+gitee仓库为github的同步备份仓库
+github地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github.com/Shiotsukikaedesari/vis-three)
 
 ## 基本用法
 #### 生成配置
@@ -233,11 +237,11 @@ engine.scene.add(new THREE.PointLight('white', 1))
 * 构建： `npm run build`
 * 查看例子： `npm run examples`
 
-## 说明
+## 提示
 * 内置了ID检查，生成id请使用`npm i uuid`, `import {v4 as getUuid} from 'uuid'`
 
 
-## 版本更新
+## 版本更新文档
 
 * `/doc/**/*`
 

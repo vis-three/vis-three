@@ -38,6 +38,7 @@ import { EngineSupport } from './engine/EngineSupport';
 
 import { BooleanModifier } from "./modifier/BooleanModifier";
 import { VIEWPOINT } from "./plugins/ViewpointPlugin";
+import { DISPLAYMODE } from "./plugins/DisplayModePlugin";
 
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`)
@@ -51,8 +52,7 @@ export {
   CONFIGTYPE,
   OBJECTEVENT,
   EVENTTYPE,
-  SCENEDISPLAYMODE,
-  SCENEVIEWPOINT,
+  DISPLAYMODE,
   ENGINEPLUGIN,
   VIEWPOINT,
 
