@@ -126,10 +126,11 @@ export const DisplayModelPlugin: Plugin<DisplayModeParameters> = function(this: 
         if (elem === defaultAmbientLight || elem === defaultDirectionalLight) {
           continue
         }
-        lightSet.add(elem)
+        if (!lightSet.has(elem)) {
+          lightSet.add(elem)
+        }
         elem[modeSymbol] = true
         if (displayMode !== DISPLAYMODE.ENV && displayMode !== DISPLAYMODE.LIGHT) {
-          console.log(displayMode)
           this.scene!.remove(elem)
         }
       } else if (elem instanceof Points && elem.type === 'Points') {
@@ -170,6 +171,7 @@ export const DisplayModelPlugin: Plugin<DisplayModeParameters> = function(this: 
         if (elem === defaultAmbientLight || elem === defaultDirectionalLight) {
           continue
         }
+
         if (!elem[modeSymbol]) {
           lightSet.delete(elem)
         }

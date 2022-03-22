@@ -22,8 +22,43 @@ export const SelectionPlugin: Plugin<SelectionParameters> = function (this: Engi
   this.selectionBox = new Set()
 
 
+  const dispatchEvent = () => {
+    let objectSymbols: string[] = []
+    if (this.IS_ENGINESUPPORT) {
+      this.selectionBox!.forEach(object => {
+        let objectSymbol = this.compilerManager!.getObjectSymbol(object)
+        if (objectSymbol) {
+          objectSymbols.push(objectSymbol)
+        } else {
+          console.warn('selection plugin can not font vid in compilerManager.', object)
+        }
+      })
+    }
+    
+    this.dispatchEvent({
+      type: 'selected',
+      objects: [...this.selectionBox!],
+      objectSymbols
+    })
+  }
+
+  this.setSelectionBox = function (params: {objects: Object3D[]}): Engine {
+    this.selectionBox!.clear()
+    for(let object of params.objects) {
+      this.selectionBox!.add(object)
+    }
+    dispatchEvent()
+    return this
+  }
+
   // 单选
   this.eventManager.addEventListener<GlobalEvent>('click', (event) => {
+
+    // 兼容transformControls事件
+    if (this.transing) {
+      this.transing = false
+      return
+    }
     const intersections = event.intersections
     // ctrl多选
     if (!event.ctrlKey) {
@@ -54,25 +89,7 @@ export const SelectionPlugin: Plugin<SelectionParameters> = function (this: Engi
         this.selectionBox?.add(object)
       }
     }
-
-    let objectSymbols: string[] = []
-    if (this.IS_ENGINESUPPORT) {
-      this.selectionBox!.forEach(object => {
-        let objectSymbol = this.compilerManager!.getObjectSymbol(object)
-        if (objectSymbol) {
-          objectSymbols.push(objectSymbol)
-        } else {
-          console.warn('selection plugin can not font vid in compilerManager.', object)
-        }
-
-      })
-    }
-    
-    this.dispatchEvent({
-      type: 'selected',
-      objects: [...this.selectionBox!],
-      objectSymbols: []
-    })
+    dispatchEvent()
   })
 
   // TODO: 框选 selectionBox selectionHelper

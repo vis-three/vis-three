@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, Color, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Sphere, Vector3, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, EdgesGeometry, BoxBufferGeometry, EventDispatcher as EventDispatcher$1, Material, Scene, AxesHelper, GridHelper, MeshLambertMaterial, PointsMaterial, SpriteMaterial, AmbientLight, DirectionalLight, Line, Light, Points, Sprite, Camera, Texture, Clock, MOUSE, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, MeshPhongMaterial, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Quaternion, Euler, SphereBufferGeometry, PointLight, SpotLight, MeshStandardMaterial, DodecahedronBufferGeometry, Fog, FogExp2, PlaneBufferGeometry, CubeTexture, CanvasTexture, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Scene, PerspectiveCamera, Clock, MOUSE, OrthographicCamera, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Vector3, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Camera, Matrix4, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, AmbientLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, PlaneBufferGeometry, Sprite, CubeTexture, CanvasTexture, AxesHelper, GridHelper, DirectionalLight, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, OctahedronBufferGeometry, Sphere, EdgesGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -59,1078 +59,6 @@ class EventDispatcher {
     return Boolean([...this.listeners.keys()].length);
   }
 }
-const ACTIVECOLOR = "rgb(230, 20, 240)";
-const HOVERCOLOR = "rgb(255, 158, 240)";
-const HELPERCOLOR = "rgb(255, 255, 255)";
-const getHelperLineMaterial = () => new LineBasicMaterial({ color: HELPERCOLOR });
-class PointLightHelper extends LineSegments {
-  constructor(pointLight2) {
-    super();
-    __publicField(this, "sphere");
-    __publicField(this, "target");
-    __publicField(this, "shape");
-    __publicField(this, "type", "VisPointLightHelper");
-    __publicField(this, "cachaColor");
-    __publicField(this, "cachaDistance");
-    __publicField(this, "cachaVector3");
-    this.geometry = new BufferGeometry();
-    const points = [
-      -1,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      -1,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      -1,
-      0,
-      0,
-      1,
-      -0.707,
-      -0.707,
-      0,
-      0.707,
-      0.707,
-      0,
-      0.707,
-      -0.707,
-      0,
-      -0.707,
-      0.707,
-      0,
-      0,
-      -0.707,
-      -0.707,
-      0,
-      0.707,
-      0.707,
-      0,
-      0.707,
-      -0.707,
-      0,
-      -0.707,
-      0.707,
-      -0.707,
-      0,
-      -0.707,
-      0.707,
-      0,
-      0.707,
-      0.707,
-      0,
-      -0.707,
-      -0.707,
-      0,
-      0.707
-    ];
-    this.geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
-    this.material = getHelperLineMaterial();
-    this.geometry.boundingSphere;
-    const color = new Color().copy(pointLight2.color).multiplyScalar(pointLight2.intensity);
-    const shape = new Mesh(new OctahedronBufferGeometry(pointLight2.distance, 0), new MeshBasicMaterial({
-      color,
-      wireframe: true
-    }));
-    shape.raycast = () => {
-    };
-    this.shape = shape;
-    this.target = pointLight2;
-    this.sphere = new Sphere(new Vector3(0, 0, 0), 1);
-    this.cachaColor = pointLight2.color.getHex();
-    this.cachaDistance = pointLight2.distance;
-    this.cachaVector3 = new Vector3();
-    this.add(this.shape);
-    this.matrixAutoUpdate = false;
-    this.matrix = pointLight2.matrix;
-    this.onBeforeRender = () => {
-      const light = this.target;
-      const shape2 = this.shape;
-      const scource = this;
-      if (light.distance !== this.cachaDistance) {
-        shape2.geometry.dispose();
-        shape2.geometry = new OctahedronBufferGeometry(light.distance, 0);
-        this.cachaDistance = light.distance;
-      }
-      if (light.color.getHex() !== this.cachaColor) {
-        shape2.material.color.copy(light.color).multiplyScalar(light.intensity);
-        scource.material.color.copy(light.color).multiplyScalar(light.intensity);
-        this.cachaColor = light.color.getHex();
-      }
-    };
-  }
-  raycast(raycaster, intersects) {
-    const target = this.target;
-    const matrixWorld = target.matrixWorld;
-    const sphere = this.sphere;
-    sphere.set(this.cachaVector3.set(0, 0, 0), 1);
-    sphere.applyMatrix4(matrixWorld);
-    if (raycaster.ray.intersectsSphere(sphere)) {
-      intersects.push({
-        distance: raycaster.ray.origin.distanceTo(target.position),
-        object: target,
-        point: target.position
-      });
-    }
-  }
-}
-class CameraHelper extends LineSegments {
-  constructor(camera) {
-    super();
-    __publicField(this, "shape");
-    __publicField(this, "target");
-    __publicField(this, "type", "CameraHelper");
-    __publicField(this, "cachaData");
-    const geometry = new BufferGeometry();
-    const positions = [
-      0,
-      0,
-      0,
-      -1,
-      1,
-      -1,
-      0,
-      0,
-      0,
-      -1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      -1,
-      -1,
-      -1,
-      0,
-      0,
-      0,
-      -1,
-      -1,
-      1,
-      -1,
-      -1,
-      1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      1,
-      -1,
-      -1,
-      1,
-      -1,
-      -1,
-      1,
-      1,
-      -1,
-      1,
-      1,
-      -1,
-      -1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      -1,
-      0,
-      0,
-      0,
-      0,
-      -1,
-      -1,
-      0,
-      0,
-      0,
-      0,
-      -1,
-      1,
-      0,
-      1,
-      1,
-      0,
-      1,
-      -1,
-      0,
-      1,
-      -1,
-      0,
-      -1,
-      -1,
-      0,
-      -1,
-      -1,
-      0,
-      -1,
-      1,
-      0,
-      -1,
-      1,
-      0,
-      1,
-      1,
-      0,
-      -1,
-      1,
-      2,
-      -1,
-      1,
-      0,
-      1,
-      -1,
-      2,
-      1,
-      -1,
-      0,
-      -1,
-      -1,
-      2,
-      -1,
-      -1,
-      0,
-      1,
-      1,
-      2,
-      1,
-      1,
-      2,
-      1,
-      1,
-      2,
-      -1,
-      1,
-      2,
-      -1,
-      1,
-      2,
-      -1,
-      -1,
-      2,
-      -1,
-      -1,
-      2,
-      1,
-      -1,
-      2,
-      1,
-      -1,
-      2,
-      1,
-      1
-    ];
-    geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
-    geometry.rotateY(-90 * Math.PI / 180);
-    geometry.computeBoundingBox();
-    const shape = new CameraHelper$1(camera);
-    shape.matrix = new Matrix4();
-    shape.matrixAutoUpdate = true;
-    shape.raycast = () => {
-    };
-    this.add(shape);
-    this.shape = shape;
-    this.geometry = geometry;
-    this.material = getHelperLineMaterial();
-    this.target = camera;
-    this.matrixAutoUpdate = false;
-    this.matrix = camera.matrix;
-    if (camera instanceof PerspectiveCamera) {
-      this.cachaData = {
-        fov: camera.fov,
-        aspect: camera.aspect,
-        near: camera.near,
-        far: camera.far
-      };
-    } else if (camera instanceof OrthographicCamera) {
-      this.cachaData = {
-        left: camera.left,
-        right: camera.right,
-        top: camera.top,
-        bottom: camera.bottom,
-        near: camera.near,
-        far: camera.far
-      };
-    } else {
-      this.cachaData = {};
-    }
-    this.onBeforeRender = () => {
-      let needsUpdate = false;
-      const cachaData = this.cachaData;
-      Object.keys(cachaData).forEach((key) => {
-        if (cachaData[key] !== camera[key]) {
-          cachaData[key] = camera[key];
-          needsUpdate = true;
-        }
-      });
-      needsUpdate && this.shape.update();
-    };
-  }
-  raycast(raycaster, intersects) {
-    const matrixWorld = this.matrixWorld;
-    const box = this.geometry.boundingBox.clone();
-    box.applyMatrix4(matrixWorld);
-    if (raycaster.ray.intersectsBox(box)) {
-      const target = this.target;
-      intersects.push({
-        distance: raycaster.ray.origin.distanceTo(target.position),
-        object: target,
-        point: target.position
-      });
-    }
-  }
-}
-class MeshHelper extends LineSegments {
-  constructor(mesh) {
-    super();
-    __publicField(this, "target");
-    __publicField(this, "type", "VisMeshHelper");
-    __publicField(this, "cachaGeometryUUid");
-    const thresholdAngle = 1;
-    this.target = mesh;
-    this.geometry = new EdgesGeometry(mesh.geometry, thresholdAngle);
-    this.cachaGeometryUUid = mesh.geometry.uuid;
-    this.material = getHelperLineMaterial();
-    this.raycast = () => {
-    };
-    this.matrixAutoUpdate = false;
-    this.matrix = mesh.matrix;
-    this.onBeforeRender = () => {
-      const target = this.target;
-      if (target.geometry.uuid !== this.cachaGeometryUUid) {
-        this.geometry.dispose();
-        this.geometry = new EdgesGeometry(target.geometry, thresholdAngle);
-        this.cachaGeometryUUid = target.geometry.uuid;
-      }
-    };
-  }
-}
-var CONFIGTYPE;
-(function(CONFIGTYPE2) {
-  CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
-  CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
-  CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
-  CONFIGTYPE2["MODEL"] = "Model";
-  CONFIGTYPE2["MESH"] = "Mesh";
-  CONFIGTYPE2["LINE"] = "Line";
-  CONFIGTYPE2["LINESEGMENTS"] = "LineSegments";
-  CONFIGTYPE2["POINTS"] = "Points";
-  CONFIGTYPE2["SPRITE"] = "Sprite";
-  CONFIGTYPE2["GROUP"] = "Group";
-  CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
-  CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
-  CONFIGTYPE2["CANVASTEXTURE"] = "CanvasTexture";
-  CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
-  CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
-  CONFIGTYPE2["SPRITEMATERIAL"] = "SpriteMaterial";
-  CONFIGTYPE2["LINEBASICMATERIAL"] = "LineBasicMaterial";
-  CONFIGTYPE2["POINTSMATERIAL"] = "PointsMaterial";
-  CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
-  CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
-  CONFIGTYPE2["POINTLIGHT"] = "PointLight";
-  CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
-  CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
-  CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
-  CONFIGTYPE2["SCENE"] = "Scene";
-  CONFIGTYPE2["TRNASFORMCONTROLS"] = "TransformControls";
-  CONFIGTYPE2["ORBITCONTROLS"] = "OrbitControls";
-  CONFIGTYPE2["EVENT"] = "Event";
-})(CONFIGTYPE || (CONFIGTYPE = {}));
-class GroupHelper extends LineSegments {
-  constructor(group) {
-    super();
-    __publicField(this, "target");
-    __publicField(this, "type", "VisGroupHelper");
-    this.target = group;
-    const geometry = new EdgesGeometry(new BoxBufferGeometry(1, 1, 1));
-    geometry.computeBoundingBox();
-    this.geometry = geometry;
-    this.material = getHelperLineMaterial();
-    this.matrixAutoUpdate = false;
-    this.matrix = group.matrix;
-  }
-  raycast(raycaster, intersects) {
-    const matrixWorld = this.matrixWorld;
-    const box = this.geometry.boundingBox.clone();
-    box.applyMatrix4(matrixWorld);
-    if (raycaster.ray.intersectsBox(box)) {
-      const target = this.target;
-      intersects.push({
-        distance: raycaster.ray.origin.distanceTo(target.position),
-        object: target,
-        point: target.position
-      });
-    }
-  }
-}
-var HELPERCOMPILEREVENTTYPE;
-(function(HELPERCOMPILEREVENTTYPE2) {
-  HELPERCOMPILEREVENTTYPE2["ADD"] = "add";
-  HELPERCOMPILEREVENTTYPE2["REMOVE"] = "remove";
-})(HELPERCOMPILEREVENTTYPE || (HELPERCOMPILEREVENTTYPE = {}));
-const _SceneHelperCompiler = class extends EventDispatcher$1 {
-  constructor(scene) {
-    super();
-    __publicField(this, "map");
-    __publicField(this, "scene");
-    this.map = new Map();
-    this.scene = scene;
-  }
-  getMap() {
-    return this.map;
-  }
-  add(object) {
-    if (_SceneHelperCompiler.filterHelperMap[object.type]) {
-      return;
-    }
-    if (_SceneHelperCompiler.typeHelperMap[object.type]) {
-      const helper = new _SceneHelperCompiler.typeHelperMap[object.type](object);
-      this.map.set(object, helper);
-      this.scene._add(helper);
-      this.dispatchEvent({
-        type: HELPERCOMPILEREVENTTYPE.ADD,
-        helper,
-        object
-      });
-    } else {
-      console.warn(`Scene helper compiler can not support this type object: '${object.type}'`);
-    }
-  }
-  remove(object) {
-    if (_SceneHelperCompiler.filterHelperMap[object.type]) {
-      return;
-    }
-    if (this.map.has(object)) {
-      const helper = this.map.get(object);
-      this.scene._remove(helper);
-      helper.geometry.dispose();
-      if (helper.material) {
-        if (helper.material instanceof Material) {
-          helper.material.dispose();
-        } else {
-          helper.material.forEach((material) => {
-            material.dispose();
-          });
-        }
-      }
-      this.map.delete(object);
-      this.dispatchEvent({
-        type: HELPERCOMPILEREVENTTYPE.REMOVE,
-        helper,
-        object
-      });
-    } else {
-      console.warn(`Scene helper compiler can not found this object\`s helper: ${object}`);
-    }
-  }
-  setVisiable(visiable) {
-    const scene = this.scene;
-    if (visiable) {
-      this.map.forEach((helper, origin) => {
-        scene._add(helper);
-      });
-    } else {
-      this.map.forEach((helper, origin) => {
-        scene._remove(helper);
-      });
-    }
-  }
-  resetHelperColor(...object) {
-    const map = this.map;
-    const helperColorHex = _SceneHelperCompiler.helperColorHex;
-    object.forEach((elem) => {
-      if (map.has(elem)) {
-        const helper = map.get(elem);
-        helper.material.color.setHex(helperColorHex);
-      }
-    });
-  }
-  setHelperHoverColor(...object) {
-    const map = this.map;
-    const hoverColorHex = _SceneHelperCompiler.hoverColorHex;
-    object.forEach((elem) => {
-      if (map.has(elem)) {
-        const helper = map.get(elem);
-        helper.material.color.setHex(hoverColorHex);
-      }
-    });
-  }
-  setHelperActiveColor(...object) {
-    const map = this.map;
-    const activeColorHex = _SceneHelperCompiler.activeColorHex;
-    object.forEach((elem) => {
-      if (map.has(elem)) {
-        const helper = map.get(elem);
-        helper.material.color.setHex(activeColorHex);
-      }
-    });
-  }
-};
-let SceneHelperCompiler = _SceneHelperCompiler;
-__publicField(SceneHelperCompiler, "helperColorHex", new Color(HELPERCOLOR).getHex());
-__publicField(SceneHelperCompiler, "activeColorHex", new Color(ACTIVECOLOR).getHex());
-__publicField(SceneHelperCompiler, "hoverColorHex", new Color(HOVERCOLOR).getHex());
-__publicField(SceneHelperCompiler, "typeHelperMap", {
-  [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
-  [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
-  [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
-  [CONFIGTYPE.MESH]: MeshHelper,
-  [CONFIGTYPE.GROUP]: GroupHelper
-});
-__publicField(SceneHelperCompiler, "filterHelperMap", {
-  "AmbientLight": true,
-  "Object3D": true
-});
-var ModelingSceneCameraDefalutType;
-(function(ModelingSceneCameraDefalutType2) {
-  ModelingSceneCameraDefalutType2["DefaultPerspectiveCamera"] = "DefaultPerspectiveCamera";
-  ModelingSceneCameraDefalutType2["DefaultOrthograpbicCamera"] = "DefaultOrthograpbicCamera";
-})(ModelingSceneCameraDefalutType || (ModelingSceneCameraDefalutType = {}));
-var SCENEVIEWPOINT;
-(function(SCENEVIEWPOINT2) {
-  SCENEVIEWPOINT2["DEFAULT"] = "default";
-  SCENEVIEWPOINT2["TOP"] = "top";
-  SCENEVIEWPOINT2["BOTTOM"] = "bottom";
-  SCENEVIEWPOINT2["LEFT"] = "left";
-  SCENEVIEWPOINT2["RIGHT"] = "right";
-  SCENEVIEWPOINT2["FRONT"] = "front";
-  SCENEVIEWPOINT2["BACK"] = "back";
-})(SCENEVIEWPOINT || (SCENEVIEWPOINT = {}));
-var SCENEDISPLAYMODE;
-(function(SCENEDISPLAYMODE2) {
-  SCENEDISPLAYMODE2["GEOMETRY"] = "geometry";
-  SCENEDISPLAYMODE2["MATERIAL"] = "material";
-  SCENEDISPLAYMODE2["LIGHT"] = "light";
-  SCENEDISPLAYMODE2["ENV"] = "env";
-})(SCENEDISPLAYMODE || (SCENEDISPLAYMODE = {}));
-Scene.prototype.add = function(...object) {
-  if (!arguments.length) {
-    return this;
-  }
-  if (arguments.length > 1) {
-    for (let i = 0; i < arguments.length; i++) {
-      this.add(arguments[i]);
-    }
-    return this;
-  }
-  const currentObject = object[0];
-  if (currentObject === this) {
-    console.error("THREE.Object3D.add: object can't be added as a child of itself.", object);
-    return this;
-  }
-  if (currentObject && currentObject.isObject3D) {
-    if (currentObject.parent !== null) {
-      const index = this.children.indexOf(currentObject);
-      if (index !== -1) {
-        currentObject.parent = null;
-        this.children.splice(index, 1);
-        currentObject.dispatchEvent({ type: "removed" });
-      }
-    }
-    currentObject.parent = this;
-    this.children.push(currentObject);
-    currentObject.dispatchEvent({ type: "added" });
-  } else {
-    console.error("THREE.Object3D.add: object not an instance of THREE.Object3D.", object);
-  }
-  return this;
-};
-class ModelingScene extends Scene {
-  constructor(config) {
-    super();
-    __publicField(this, "cameraSet");
-    __publicField(this, "lightSet");
-    __publicField(this, "meshSet");
-    __publicField(this, "lineSet");
-    __publicField(this, "pointsSet");
-    __publicField(this, "spriteSet");
-    __publicField(this, "helperCompiler");
-    __publicField(this, "resetHoverObjectSet");
-    __publicField(this, "resetActiveObjectSet");
-    __publicField(this, "displayMode");
-    __publicField(this, "meshOverrideMaterial");
-    __publicField(this, "lineOverrideMaterial");
-    __publicField(this, "pointsOverrideMaterial");
-    __publicField(this, "spriteOverrideMaterial");
-    __publicField(this, "materialCacheMap");
-    __publicField(this, "defaultAmbientLight");
-    __publicField(this, "defaultDirectionalLight");
-    __publicField(this, "backgroundCache");
-    __publicField(this, "environmentCache");
-    __publicField(this, "defaultPerspectiveCamera");
-    __publicField(this, "defaultOrthograpbicCamera");
-    __publicField(this, "axesHelper");
-    __publicField(this, "gridHelper");
-    __publicField(this, "showAxesHelper");
-    __publicField(this, "showGridHelper");
-    __publicField(this, "getDefaultPerspectiveCamera");
-    __publicField(this, "getDefaultOrthographicCamera");
-    __publicField(this, "setAxesHelper");
-    __publicField(this, "setGridHelper");
-    __publicField(this, "switchDisplayMode");
-    __publicField(this, "setDisplayMode");
-    this.cameraSet = new Set();
-    this.lightSet = new Set();
-    this.meshSet = new Set();
-    this.lineSet = new Set();
-    this.pointsSet = new Set();
-    this.spriteSet = new Set();
-    this.helperCompiler = new SceneHelperCompiler(this);
-    this.resetHoverObjectSet = new Set();
-    this.resetActiveObjectSet = new Set();
-    if (config.hasDefaultPerspectiveCamera) {
-      if (config.defaultPerspectiveCameraSetting) {
-        this.defaultPerspectiveCamera = new PerspectiveCamera(config.defaultPerspectiveCameraSetting.fov, config.defaultPerspectiveCameraSetting.aspect, config.defaultPerspectiveCameraSetting.near, config.defaultPerspectiveCameraSetting.far);
-      } else {
-        this.defaultPerspectiveCamera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1e3);
-      }
-      this.defaultPerspectiveCamera.position.set(50, 50, 50);
-      this.defaultPerspectiveCamera.lookAt(0, 0, 0);
-      this.defaultPerspectiveCamera.name = "\u9ED8\u8BA4\u900F\u89C6\u76F8\u673A";
-      this.cameraSet.add(this.defaultPerspectiveCamera);
-      this.getDefaultPerspectiveCamera = function() {
-        return this.defaultPerspectiveCamera;
-      };
-    }
-    if (config.hasDefaultOrthographicCamera) {
-      if (config.defaultOrthographicCameraSetting) {
-        const setting = config.defaultOrthographicCameraSetting;
-        this.defaultOrthograpbicCamera = new OrthographicCamera(setting.left, setting.right, setting.top, setting.bottom, setting.near, setting.far);
-      } else {
-        const domWidth = window.innerWidth / 2;
-        const domHeight = window.innerHeight / 2;
-        this.defaultOrthograpbicCamera = new OrthographicCamera(-domWidth / 8, domWidth / 8, domHeight / 8, -domHeight / 8, 1, 1e3);
-      }
-      this.defaultOrthograpbicCamera.name = "\u9ED8\u8BA4\u6B63\u4EA4\u76F8\u673A";
-      this.cameraSet.add(this.defaultOrthograpbicCamera);
-      this.getDefaultOrthographicCamera = function() {
-        return this.defaultOrthograpbicCamera;
-      };
-      this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
-        this.defaultOrthograpbicCamera.position.set(0, 60, 0);
-      });
-      this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
-        this.defaultOrthograpbicCamera.position.set(0, -60, 0);
-      });
-      this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
-        this.defaultOrthograpbicCamera.position.set(60, 0, 0);
-      });
-      this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
-        this.defaultOrthograpbicCamera.position.set(-60, 0, 0);
-      });
-      this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
-        this.defaultOrthograpbicCamera.position.set(0, 0, 60);
-      });
-      this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
-        this.defaultOrthograpbicCamera.position.set(0, 0, -60);
-      });
-    }
-    if (config.hasAxesHelper) {
-      this.axesHelper = new AxesHelper(500);
-      this.axesHelper.matrixAutoUpdate = false;
-      this.axesHelper.raycast = () => {
-      };
-      super.add(this.axesHelper);
-      this.setAxesHelper = function(setting) {
-        const axesHelper = this.axesHelper;
-        if (setting.size) {
-          const position = axesHelper.geometry.getAttribute("position");
-          position.setX(setting.size, 1);
-          position.setY(setting.size, 3);
-          position.setZ(setting.size, 5);
-          position.needsUpdate = true;
-        }
-        if (typeof setting.visiable !== void 0) {
-          axesHelper.visible = setting.visiable;
-        }
-      };
-      this.showAxesHelper = (show) => {
-        if (show) {
-          super.add(this.axesHelper);
-        } else {
-          super.remove(this.axesHelper);
-        }
-      };
-    }
-    if (config.hasGridHelper) {
-      const gridHelper = new GridHelper(500, 50, "rgb(130, 130, 130)", "rgb(70, 70, 70)");
-      gridHelper.raycast = () => {
-      };
-      if (gridHelper.material instanceof Material) {
-        const material = gridHelper.material;
-        material.transparent = true;
-        material.opacity = 0.5;
-        material.needsUpdate = true;
-      }
-      gridHelper.matrixAutoUpdate = false;
-      gridHelper.raycast = () => {
-      };
-      this.gridHelper = gridHelper;
-      super.add(gridHelper);
-      this.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, (e) => {
-        gridHelper.rotation.set(0, 0, 0);
-        gridHelper.updateMatrix();
-        gridHelper.updateMatrixWorld();
-      });
-      this.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
-        gridHelper.rotation.set(0, 0, 0);
-        gridHelper.updateMatrix();
-        gridHelper.updateMatrixWorld();
-      });
-      this.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
-        gridHelper.rotation.set(0, 0, 0);
-        gridHelper.updateMatrix();
-        gridHelper.updateMatrixWorld();
-      });
-      this.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
-        gridHelper.rotation.set(0, 0, Math.PI / 2);
-        gridHelper.updateMatrix();
-        gridHelper.updateMatrixWorld();
-      });
-      this.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
-        gridHelper.rotation.set(0, 0, Math.PI / 2);
-        gridHelper.updateMatrix();
-        gridHelper.updateMatrixWorld();
-      });
-      this.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
-        gridHelper.rotation.set(Math.PI / 2, 0, 0);
-        gridHelper.updateMatrix();
-        gridHelper.updateMatrixWorld();
-      });
-      this.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
-        gridHelper.rotation.set(Math.PI / 2, 0, 0);
-        gridHelper.updateMatrix();
-        gridHelper.updateMatrixWorld();
-      });
-      this.showGridHelper = (show) => {
-        if (show) {
-          super.add(this.gridHelper);
-        } else {
-          super.remove(this.gridHelper);
-        }
-      };
-    }
-    if (config.hasDisplayMode) {
-      const overrideColor = "rgb(250, 250, 250)";
-      this.meshOverrideMaterial = new MeshLambertMaterial({ color: overrideColor });
-      this.lineOverrideMaterial = new LineBasicMaterial({ color: overrideColor });
-      this.pointsOverrideMaterial = new PointsMaterial({ color: overrideColor, size: 5, sizeAttenuation: false });
-      this.spriteOverrideMaterial = new SpriteMaterial({ color: overrideColor });
-      this.materialCacheMap = new WeakMap();
-      this.defaultAmbientLight = new AmbientLight("rgb(255, 255, 255)", 0.5);
-      this.defaultAmbientLight.matrixAutoUpdate = false;
-      this.defaultDirectionalLight = new DirectionalLight("rgb(255, 255, 255)", 0.3);
-      this.defaultDirectionalLight.castShadow = false;
-      this.defaultDirectionalLight.position.set(-100, 100, 100);
-      this.defaultDirectionalLight.updateMatrix();
-      this.defaultDirectionalLight.updateMatrixWorld();
-      this.defaultDirectionalLight.matrixAutoUpdate = false;
-      this.switchDisplayMode = (mode) => {
-        const filterMaterial = () => {
-          const meterialCacheMap = this.materialCacheMap;
-          const meshOverrideMaterial = this.meshOverrideMaterial;
-          this.meshSet.forEach((mesh) => {
-            meterialCacheMap.set(mesh, mesh.material);
-            mesh.material = meshOverrideMaterial;
-          });
-          const lineOverrideMaterial = this.lineOverrideMaterial;
-          this.lineSet.forEach((line) => {
-            meterialCacheMap.set(line, line.material);
-            line.material = lineOverrideMaterial;
-          });
-          const pointsOverrideMaterial = this.pointsOverrideMaterial;
-          this.pointsSet.forEach((points) => {
-            meterialCacheMap.set(points, points.material);
-            points.material = pointsOverrideMaterial;
-          });
-          const spriteOverrideMaterial = this.spriteOverrideMaterial;
-          this.spriteSet.forEach((sprite) => {
-            meterialCacheMap.set(sprite, sprite.material);
-            sprite.material = spriteOverrideMaterial;
-          });
-        };
-        const reduceMaterial = () => {
-          const meterialCacheMap = this.materialCacheMap;
-          this.meshSet.forEach((mesh) => {
-            if (meterialCacheMap.get(mesh)) {
-              mesh.material = meterialCacheMap.get(mesh);
-              meterialCacheMap.delete(mesh);
-            }
-          });
-          this.lineSet.forEach((line) => {
-            if (meterialCacheMap.get(line)) {
-              line.material = meterialCacheMap.get(line);
-              meterialCacheMap.delete(line);
-            }
-          });
-          this.pointsSet.forEach((points) => {
-            if (meterialCacheMap.get(points)) {
-              points.material = meterialCacheMap.get(points);
-              meterialCacheMap.delete(points);
-            }
-          });
-          this.spriteSet.forEach((sprite) => {
-            if (meterialCacheMap.get(sprite)) {
-              sprite.material = meterialCacheMap.get(sprite);
-              meterialCacheMap.delete(sprite);
-            }
-          });
-        };
-        const filterLight = () => {
-          this.lightSet.forEach((light) => {
-            super.remove(light);
-          });
-          super.add(this.defaultAmbientLight);
-          super.add(this.defaultDirectionalLight);
-        };
-        const reduceLight = () => {
-          this.lightSet.forEach((light) => {
-            super.add(light);
-          });
-          super.remove(this.defaultAmbientLight);
-          super.remove(this.defaultDirectionalLight);
-        };
-        const filterScene = () => {
-          if (this.background instanceof Texture) {
-            this.backgroundCache = this.background;
-            this.background = null;
-          }
-          if (this.environment instanceof Texture) {
-            this.environmentCache = this.environment;
-            this.environment = null;
-          }
-        };
-        const reduceScene = () => {
-          if (this.backgroundCache) {
-            this.background = this.backgroundCache;
-            this.backgroundCache = void 0;
-          }
-          if (this.environmentCache) {
-            this.environment = this.environmentCache;
-            this.environmentCache = void 0;
-          }
-        };
-        if (mode === SCENEDISPLAYMODE.GEOMETRY) {
-          filterMaterial();
-          filterScene();
-          filterLight();
-        } else if (mode === SCENEDISPLAYMODE.MATERIAL) {
-          reduceMaterial();
-          filterScene();
-          filterLight();
-        } else if (mode === SCENEDISPLAYMODE.LIGHT) {
-          reduceMaterial();
-          filterScene();
-          reduceLight();
-        } else if (mode === SCENEDISPLAYMODE.ENV) {
-          reduceMaterial();
-          reduceScene();
-          reduceLight();
-        } else {
-          console.warn(`VisScene can not set this mode: ${mode}`);
-        }
-      };
-      this.setDisplayMode = (mode) => {
-        this.displayMode = mode;
-        this.switchDisplayMode(mode);
-      };
-      if (config.displayMode !== void 0) {
-        this.setDisplayMode(config.displayMode);
-        this.switchDisplayMode(this.displayMode);
-      } else {
-        this.setDisplayMode(SCENEDISPLAYMODE.ENV);
-        this.switchDisplayMode(this.displayMode);
-      }
-    }
-  }
-  getHelperCompiler() {
-    return this.helperCompiler;
-  }
-  setObjectHelperVisiable(visiable) {
-    this.helperCompiler.setVisiable(visiable);
-  }
-  setObjectHelperHover(...object) {
-    const resetObjectSet = this.resetHoverObjectSet;
-    const activeObjectSet = this.resetActiveObjectSet;
-    object.forEach((elem, i, arr) => {
-      resetObjectSet.delete(elem);
-      if (activeObjectSet.has(elem)) {
-        arr.splice(i, 1);
-      }
-    });
-    activeObjectSet.forEach((elem) => {
-      resetObjectSet.delete(elem);
-    });
-    this.helperCompiler.resetHelperColor(...resetObjectSet);
-    resetObjectSet.clear();
-    this.helperCompiler.setHelperHoverColor(...object);
-    object.forEach((elem) => {
-      resetObjectSet.add(elem);
-    });
-    return this;
-  }
-  setObjectHelperActive(...object) {
-    const resetObjectSet = this.resetActiveObjectSet;
-    object.forEach((elem) => {
-      resetObjectSet.delete(elem);
-    });
-    this.helperCompiler.resetHelperColor(...resetObjectSet);
-    resetObjectSet.clear();
-    this.helperCompiler.setHelperActiveColor(...object);
-    object.forEach((elem) => {
-      resetObjectSet.add(elem);
-    });
-    return this;
-  }
-  showObjectHelper(show) {
-    this.helperCompiler.setVisiable(show);
-    return this;
-  }
-  setViewPoint(direction) {
-    this.dispatchEvent({ type: `${direction}ViewPoint` });
-  }
-  add(...object) {
-    let addNumber = 0;
-    object.forEach((elem) => {
-      if (elem instanceof Mesh) {
-        this.meshSet.add(elem);
-        addNumber += 1;
-      } else if (elem instanceof Line) {
-        this.lineSet.add(elem);
-        addNumber += 1;
-      } else if (elem instanceof Light) {
-        this.lightSet.add(elem);
-        addNumber += 1;
-      } else if (elem instanceof Points) {
-        this.pointsSet.add(elem);
-        addNumber += 1;
-      } else if (elem instanceof Sprite) {
-        this.spriteSet.add(elem);
-        addNumber += 1;
-      } else if (elem instanceof Camera) {
-        this.cameraSet.add(elem);
-        addNumber += 1;
-      }
-      this.helperCompiler.add(elem);
-    });
-    if (this.displayMode !== void 0 && addNumber > 0) {
-      this.switchDisplayMode(this.displayMode);
-    }
-    return super.add(...object);
-  }
-  remove(...object) {
-    const materialCacheMap = this.materialCacheMap;
-    object.forEach((elem) => {
-      materialCacheMap && materialCacheMap.has(elem) && materialCacheMap.delete(elem);
-      if (elem instanceof Mesh) {
-        this.meshSet.delete(elem);
-      } else if (elem instanceof Line) {
-        this.lineSet.delete(elem);
-      } else if (elem instanceof Light) {
-        this.lightSet.delete(elem);
-      } else if (elem instanceof Points) {
-        this.pointsSet.delete(elem);
-      } else if (elem instanceof Sprite) {
-        this.spriteSet.delete(elem);
-      } else if (elem instanceof Camera) {
-        this.cameraSet.delete(elem);
-      }
-      this.helperCompiler.remove(elem);
-    });
-    return super.remove(...object);
-  }
-  _add(...object) {
-    return super.add(...object);
-  }
-  _remove(...object) {
-    return super.remove(...object);
-  }
-  updateMaterial(object) {
-    var _a;
-    if (this.displayMode !== void 0 && this.displayMode === "geometry") {
-      (_a = this.materialCacheMap) == null ? void 0 : _a.set(object, object.material);
-      this.switchDisplayMode && this.switchDisplayMode(this.displayMode);
-    }
-    return this;
-  }
-}
-const ModelingScenePlugin = function(params) {
-  if (this.scene instanceof ModelingScene) {
-    console.warn("this has installed modeling scene plugin.");
-    return false;
-  }
-  if (!this.webGLRenderer) {
-    console.error("must install some renderer before this plugin.");
-    return false;
-  }
-  const scene = new ModelingScene(params);
-  this.scene = scene;
-  this.render = () => {
-    this.webGLRenderer.render(scene, this.currentCamera);
-    return this;
-  };
-  if (params.hasDefaultPerspectiveCamera) {
-    const defaultPerspectiveCamera = scene.getDefaultPerspectiveCamera();
-    this.currentCamera = defaultPerspectiveCamera;
-    scene.addEventListener(`${SCENEVIEWPOINT.DEFAULT}ViewPoint`, (e) => {
-      this.setCamera(defaultPerspectiveCamera);
-    });
-  }
-  if (params.hasDefaultOrthographicCamera) {
-    const defaultOrthograpbicCamera = scene.getDefaultOrthographicCamera();
-    scene.addEventListener(`${SCENEVIEWPOINT.TOP}ViewPoint`, (e) => {
-      if (this.orbitControls) {
-        this.orbitControls.target.set(0, 0, 0);
-      }
-      this.setCamera(defaultOrthograpbicCamera);
-    });
-    scene.addEventListener(`${SCENEVIEWPOINT.BOTTOM}ViewPoint`, (e) => {
-      if (this.orbitControls) {
-        this.orbitControls.target.set(0, 0, 0);
-      }
-      this.setCamera(defaultOrthograpbicCamera);
-    });
-    scene.addEventListener(`${SCENEVIEWPOINT.RIGHT}ViewPoint`, (e) => {
-      if (this.orbitControls) {
-        this.orbitControls.target.set(0, 0, 0);
-      }
-      this.setCamera(defaultOrthograpbicCamera);
-    });
-    scene.addEventListener(`${SCENEVIEWPOINT.LEFT}ViewPoint`, (e) => {
-      if (this.orbitControls) {
-        this.orbitControls.target.set(0, 0, 0);
-      }
-      this.setCamera(defaultOrthograpbicCamera);
-    });
-    scene.addEventListener(`${SCENEVIEWPOINT.FRONT}ViewPoint`, (e) => {
-      if (this.orbitControls) {
-        this.orbitControls.target.set(0, 0, 0);
-      }
-      this.setCamera(defaultOrthograpbicCamera);
-    });
-    scene.addEventListener(`${SCENEVIEWPOINT.BACK}ViewPoint`, (e) => {
-      if (this.orbitControls) {
-        this.orbitControls.target.set(0, 0, 0);
-      }
-      this.setCamera(defaultOrthograpbicCamera);
-    });
-  }
-  return true;
-};
 const ScenePlugin = function(params) {
   if (this.scene) {
     console.warn("this has installed scene plugin.");
@@ -1140,6 +68,38 @@ const ScenePlugin = function(params) {
     console.error("must install some renderer before this plugin.");
     return false;
   }
+  Scene.prototype.add = function(...object) {
+    if (!arguments.length) {
+      return this;
+    }
+    if (arguments.length > 1) {
+      for (let i = 0; i < arguments.length; i++) {
+        this.add(arguments[i]);
+      }
+      return this;
+    }
+    const currentObject = object[0];
+    if (currentObject === this) {
+      console.error("THREE.Object3D.add: object can't be added as a child of itself.", object);
+      return this;
+    }
+    if (currentObject && currentObject.isObject3D) {
+      if (currentObject.parent !== null) {
+        const index = this.children.indexOf(currentObject);
+        if (index !== -1) {
+          currentObject.parent = null;
+          this.children.splice(index, 1);
+          currentObject.dispatchEvent({ type: "removed" });
+        }
+      }
+      currentObject.parent = this;
+      this.children.push(currentObject);
+      currentObject.dispatchEvent({ type: "added" });
+    } else {
+      console.error("THREE.Object3D.add: object not an instance of THREE.Object3D.", object);
+    }
+    return this;
+  };
   this.scene = new Scene();
   const sceneAdd = this.scene.add.bind(this.scene);
   this.scene.add = function(...object) {
@@ -1289,7 +249,7 @@ var VIEWPOINT;
   VIEWPOINT2["FRONT"] = "front";
   VIEWPOINT2["BACK"] = "back";
 })(VIEWPOINT || (VIEWPOINT = {}));
-const ViewpointPlugin = function(params) {
+const ViewpointPlugin = function(params = {}) {
   if (!this.webGLRenderer) {
     console.error("must install some renderer before BasicViewpoint plugin.");
     return false;
@@ -1888,20 +848,6 @@ const EventManagerPlugin = function(params) {
   this.addEventListener("setCamera", (event) => {
     this.eventManager.setCamera(event.camera);
   });
-  if (this.scene instanceof ModelingScene) {
-    this.eventManager.addEventListener("pointermove", (event) => {
-      this.scene.setObjectHelperHover(...event.intersections.map((elem) => elem.object));
-    });
-    this.eventManager.addEventListener("click", (event) => {
-      if (this.transing) {
-        this.transing = false;
-        return;
-      }
-      if (event.button === 0) {
-        this.scene.setObjectHelperActive(...event.intersections.map((elem) => elem.object));
-      }
-    });
-  }
   return true;
 };
 var TRANSFORMEVENT;
@@ -2047,13 +993,8 @@ const TransformControlsPlugin = function(params) {
   transformControls.addEventListener("mouseDown", () => {
     this.transing = true;
   });
-  if (this.scene instanceof Scene) {
-    this.scene.add(this.transformControls);
-    this.scene.add(this.transformControls.target);
-  } else if (this.scene instanceof ModelingScene) {
-    this.scene._add(this.transformControls);
-    this.scene._add(this.transformControls.target);
-  }
+  this.scene.add(this.transformControls);
+  this.scene.add(this.transformControls.target);
   this.setTransformControls = function(show) {
     this.transformControls.visible = show;
     return this;
@@ -2061,15 +1002,21 @@ const TransformControlsPlugin = function(params) {
   this.addEventListener("setCamera", (event) => {
     transformControls.setCamera(event.camera);
   });
-  this.eventManager.addEventListener("pointerup", (event) => {
-    if (this.transing) {
-      return;
-    }
-    if (event.button === 0) {
-      const objectList = event.intersections.map((elem) => elem.object);
-      transformControls.setAttach(objectList[0]);
-    }
-  });
+  if (this.selectionBox) {
+    this.addEventListener("selected", (event) => {
+      transformControls.setAttach(...event.objects);
+    });
+  } else {
+    this.eventManager.addEventListener("pointerup", (event) => {
+      if (this.transing) {
+        return;
+      }
+      if (event.button === 0) {
+        const objectList = event.intersections.map((elem) => elem.object);
+        transformControls.setAttach(objectList[0]);
+      }
+    });
+  }
   this.completeSet.add(() => {
     if (this.IS_ENGINESUPPORT) {
       const objectToConfig = (object) => {
@@ -2097,7 +1044,7 @@ const TransformControlsPlugin = function(params) {
   });
   return true;
 };
-const WebGLRendererPlugin = function(params) {
+const WebGLRendererPlugin = function(params = {}) {
   if (this.webGLRenderer) {
     console.warn("this has installed webglRenderer plugin.");
     return false;
@@ -3143,6 +2090,37 @@ const LoaderManagerPlugin = function(params) {
   };
   return true;
 };
+var CONFIGTYPE;
+(function(CONFIGTYPE2) {
+  CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
+  CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
+  CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
+  CONFIGTYPE2["MODEL"] = "Model";
+  CONFIGTYPE2["MESH"] = "Mesh";
+  CONFIGTYPE2["LINE"] = "Line";
+  CONFIGTYPE2["LINESEGMENTS"] = "LineSegments";
+  CONFIGTYPE2["POINTS"] = "Points";
+  CONFIGTYPE2["SPRITE"] = "Sprite";
+  CONFIGTYPE2["GROUP"] = "Group";
+  CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
+  CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
+  CONFIGTYPE2["CANVASTEXTURE"] = "CanvasTexture";
+  CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
+  CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
+  CONFIGTYPE2["SPRITEMATERIAL"] = "SpriteMaterial";
+  CONFIGTYPE2["LINEBASICMATERIAL"] = "LineBasicMaterial";
+  CONFIGTYPE2["POINTSMATERIAL"] = "PointsMaterial";
+  CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
+  CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
+  CONFIGTYPE2["POINTLIGHT"] = "PointLight";
+  CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
+  CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
+  CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
+  CONFIGTYPE2["SCENE"] = "Scene";
+  CONFIGTYPE2["TRNASFORMCONTROLS"] = "TransformControls";
+  CONFIGTYPE2["ORBITCONTROLS"] = "OrbitControls";
+  CONFIGTYPE2["EVENT"] = "Event";
+})(CONFIGTYPE || (CONFIGTYPE = {}));
 var MODULETYPE;
 (function(MODULETYPE2) {
   MODULETYPE2["CAMERA"] = "camera";
@@ -8414,10 +7392,11 @@ const DisplayModelPlugin = function(params = {}) {
         if (elem === defaultAmbientLight || elem === defaultDirectionalLight) {
           continue;
         }
-        lightSet.add(elem);
+        if (!lightSet.has(elem)) {
+          lightSet.add(elem);
+        }
         elem[modeSymbol] = true;
         if (displayMode !== DISPLAYMODE.ENV && displayMode !== DISPLAYMODE.LIGHT) {
-          console.log(displayMode);
           this.scene.remove(elem);
         }
       } else if (elem instanceof Points && elem.type === "Points") {
@@ -8580,6 +7559,391 @@ const DisplayModelPlugin = function(params = {}) {
   };
   return true;
 };
+const HELPERCOLOR = "rgb(255, 255, 255)";
+const getHelperLineMaterial = () => new LineBasicMaterial({ color: HELPERCOLOR });
+class CameraHelper extends LineSegments {
+  constructor(camera) {
+    super();
+    __publicField(this, "shape");
+    __publicField(this, "target");
+    __publicField(this, "type", "CameraHelper");
+    __publicField(this, "cachaData");
+    const geometry = new BufferGeometry();
+    const positions = [
+      0,
+      0,
+      0,
+      -1,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      -1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      0,
+      0,
+      -1,
+      -1,
+      1,
+      -1,
+      -1,
+      1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1,
+      -1,
+      -1,
+      1,
+      -1,
+      -1,
+      1,
+      1,
+      -1,
+      1,
+      1,
+      -1,
+      -1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      -1,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      -1,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      -1,
+      0,
+      1,
+      -1,
+      0,
+      -1,
+      -1,
+      0,
+      -1,
+      -1,
+      0,
+      -1,
+      1,
+      0,
+      -1,
+      1,
+      0,
+      1,
+      1,
+      0,
+      -1,
+      1,
+      2,
+      -1,
+      1,
+      0,
+      1,
+      -1,
+      2,
+      1,
+      -1,
+      0,
+      -1,
+      -1,
+      2,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      2,
+      1,
+      1,
+      2,
+      1,
+      1,
+      2,
+      -1,
+      1,
+      2,
+      -1,
+      1,
+      2,
+      -1,
+      -1,
+      2,
+      -1,
+      -1,
+      2,
+      1,
+      -1,
+      2,
+      1,
+      -1,
+      2,
+      1,
+      1
+    ];
+    geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
+    geometry.rotateY(-90 * Math.PI / 180);
+    geometry.computeBoundingBox();
+    const shape = new CameraHelper$1(camera);
+    shape.matrix = new Matrix4();
+    shape.matrixAutoUpdate = true;
+    shape.raycast = () => {
+    };
+    this.add(shape);
+    this.shape = shape;
+    this.geometry = geometry;
+    this.material = getHelperLineMaterial();
+    this.target = camera;
+    this.matrixAutoUpdate = false;
+    this.matrix = camera.matrix;
+    if (camera instanceof PerspectiveCamera) {
+      this.cachaData = {
+        fov: camera.fov,
+        aspect: camera.aspect,
+        near: camera.near,
+        far: camera.far
+      };
+    } else if (camera instanceof OrthographicCamera) {
+      this.cachaData = {
+        left: camera.left,
+        right: camera.right,
+        top: camera.top,
+        bottom: camera.bottom,
+        near: camera.near,
+        far: camera.far
+      };
+    } else {
+      this.cachaData = {};
+    }
+    this.onBeforeRender = () => {
+      let needsUpdate = false;
+      const cachaData = this.cachaData;
+      Object.keys(cachaData).forEach((key) => {
+        if (cachaData[key] !== camera[key]) {
+          cachaData[key] = camera[key];
+          needsUpdate = true;
+        }
+      });
+      needsUpdate && this.shape.update();
+    };
+  }
+  raycast(raycaster, intersects) {
+    const matrixWorld = this.matrixWorld;
+    const box = this.geometry.boundingBox.clone();
+    box.applyMatrix4(matrixWorld);
+    if (raycaster.ray.intersectsBox(box)) {
+      const target = this.target;
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(target.position),
+        object: target,
+        point: target.position
+      });
+    }
+  }
+}
+class PointLightHelper extends LineSegments {
+  constructor(pointLight2) {
+    super();
+    __publicField(this, "sphere");
+    __publicField(this, "target");
+    __publicField(this, "shape");
+    __publicField(this, "type", "VisPointLightHelper");
+    __publicField(this, "cachaColor");
+    __publicField(this, "cachaDistance");
+    __publicField(this, "cachaVector3");
+    this.geometry = new BufferGeometry();
+    const points = [
+      -1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      1,
+      -0.707,
+      -0.707,
+      0,
+      0.707,
+      0.707,
+      0,
+      0.707,
+      -0.707,
+      0,
+      -0.707,
+      0.707,
+      0,
+      0,
+      -0.707,
+      -0.707,
+      0,
+      0.707,
+      0.707,
+      0,
+      0.707,
+      -0.707,
+      0,
+      -0.707,
+      0.707,
+      -0.707,
+      0,
+      -0.707,
+      0.707,
+      0,
+      0.707,
+      0.707,
+      0,
+      -0.707,
+      -0.707,
+      0,
+      0.707
+    ];
+    this.geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
+    this.material = getHelperLineMaterial();
+    this.geometry.boundingSphere;
+    const color = new Color().copy(pointLight2.color).multiplyScalar(pointLight2.intensity);
+    const shape = new Mesh(new OctahedronBufferGeometry(pointLight2.distance, 0), new MeshBasicMaterial({
+      color,
+      wireframe: true
+    }));
+    shape.raycast = () => {
+    };
+    this.shape = shape;
+    this.target = pointLight2;
+    this.sphere = new Sphere(new Vector3(0, 0, 0), 1);
+    this.cachaColor = pointLight2.color.getHex();
+    this.cachaDistance = pointLight2.distance;
+    this.cachaVector3 = new Vector3();
+    this.add(this.shape);
+    this.matrixAutoUpdate = false;
+    this.matrix = pointLight2.matrix;
+    this.onBeforeRender = () => {
+      const light = this.target;
+      const shape2 = this.shape;
+      const scource = this;
+      if (light.distance !== this.cachaDistance) {
+        shape2.geometry.dispose();
+        shape2.geometry = new OctahedronBufferGeometry(light.distance, 0);
+        this.cachaDistance = light.distance;
+      }
+      if (light.color.getHex() !== this.cachaColor) {
+        shape2.material.color.copy(light.color).multiplyScalar(light.intensity);
+        scource.material.color.copy(light.color).multiplyScalar(light.intensity);
+        this.cachaColor = light.color.getHex();
+      }
+    };
+  }
+  raycast(raycaster, intersects) {
+    const target = this.target;
+    const matrixWorld = target.matrixWorld;
+    const sphere = this.sphere;
+    sphere.set(this.cachaVector3.set(0, 0, 0), 1);
+    sphere.applyMatrix4(matrixWorld);
+    if (raycaster.ray.intersectsSphere(sphere)) {
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(target.position),
+        object: target,
+        point: target.position
+      });
+    }
+  }
+}
+class GroupHelper extends LineSegments {
+  constructor(group) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "type", "VisGroupHelper");
+    this.target = group;
+    const geometry = new EdgesGeometry(new BoxBufferGeometry(1, 1, 1));
+    geometry.computeBoundingBox();
+    this.geometry = geometry;
+    this.material = getHelperLineMaterial();
+    this.matrixAutoUpdate = false;
+    this.matrix = group.matrix;
+  }
+  raycast(raycaster, intersects) {
+    const matrixWorld = this.matrixWorld;
+    const box = this.geometry.boundingBox.clone();
+    box.applyMatrix4(matrixWorld);
+    if (raycaster.ray.intersectsBox(box)) {
+      const target = this.target;
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(target.position),
+        object: target,
+        point: target.position
+      });
+    }
+  }
+}
+class MeshHelper extends LineSegments {
+  constructor(mesh) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "type", "VisMeshHelper");
+    __publicField(this, "cachaGeometryUUid");
+    const thresholdAngle = 1;
+    this.target = mesh;
+    this.geometry = new EdgesGeometry(mesh.geometry, thresholdAngle);
+    this.cachaGeometryUUid = mesh.geometry.uuid;
+    this.material = getHelperLineMaterial();
+    this.raycast = () => {
+    };
+    this.matrixAutoUpdate = false;
+    this.matrix = mesh.matrix;
+    this.onBeforeRender = () => {
+      const target = this.target;
+      if (target.geometry.uuid !== this.cachaGeometryUUid) {
+        this.geometry.dispose();
+        this.geometry = new EdgesGeometry(target.geometry, thresholdAngle);
+        this.cachaGeometryUUid = target.geometry.uuid;
+      }
+    };
+  }
+}
 const ObjectHelperPlugin = function(params = {}) {
   if (!this.scene) {
     console.error("must install some scene plugin before ObjectHelper plugin.");
@@ -8737,8 +8101,38 @@ const SelectionPlugin = function(params = {}) {
     return false;
   }
   this.selectionBox = new Set();
+  const dispatchEvent = () => {
+    let objectSymbols = [];
+    if (this.IS_ENGINESUPPORT) {
+      this.selectionBox.forEach((object) => {
+        let objectSymbol = this.compilerManager.getObjectSymbol(object);
+        if (objectSymbol) {
+          objectSymbols.push(objectSymbol);
+        } else {
+          console.warn("selection plugin can not font vid in compilerManager.", object);
+        }
+      });
+    }
+    this.dispatchEvent({
+      type: "selected",
+      objects: [...this.selectionBox],
+      objectSymbols
+    });
+  };
+  this.setSelectionBox = function(params2) {
+    this.selectionBox.clear();
+    for (let object of params2.objects) {
+      this.selectionBox.add(object);
+    }
+    dispatchEvent();
+    return this;
+  };
   this.eventManager.addEventListener("click", (event) => {
     var _a, _b, _c;
+    if (this.transing) {
+      this.transing = false;
+      return;
+    }
     const intersections = event.intersections;
     if (!event.ctrlKey) {
       this.selectionBox.clear();
@@ -8765,21 +8159,7 @@ const SelectionPlugin = function(params = {}) {
         (_c = this.selectionBox) == null ? void 0 : _c.add(object);
       }
     }
-    if (this.IS_ENGINESUPPORT) {
-      this.selectionBox.forEach((object) => {
-        let objectSymbol = this.compilerManager.getObjectSymbol(object);
-        if (objectSymbol)
-          ;
-        else {
-          console.warn("selection plugin can not font vid in compilerManager.", object);
-        }
-      });
-    }
-    this.dispatchEvent({
-      type: "selected",
-      objects: [...this.selectionBox],
-      objectSymbols: []
-    });
+    dispatchEvent();
   });
   return true;
 };
@@ -8807,8 +8187,6 @@ var ENGINEPLUGIN;
   ENGINEPLUGIN2["OBJECTHELPER"] = "ObjectHelper";
   ENGINEPLUGIN2["SELECTION"] = "Selection";
 })(ENGINEPLUGIN || (ENGINEPLUGIN = {}));
-let pluginHandler = new Map();
-pluginHandler.set(ENGINEPLUGIN.MODELINGSCENE, ModelingScenePlugin);
 const _Engine = class extends EventDispatcher {
   constructor() {
     super();
@@ -8843,6 +8221,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "setAxesHelper");
     __publicField(this, "setGridHelper");
     __publicField(this, "setObjectHelper");
+    __publicField(this, "setSelectionBox");
     __publicField(this, "loadResources");
     __publicField(this, "loadResourcesAsync");
     __publicField(this, "registerResources");
@@ -8886,7 +8265,7 @@ const _Engine = class extends EventDispatcher {
   }
 };
 let Engine = _Engine;
-__publicField(Engine, "pluginHandler", pluginHandler);
+__publicField(Engine, "pluginHandler", new Map());
 __publicField(Engine, "register", function(name, handler) {
   _Engine.pluginHandler && _Engine.pluginHandler.set(name, handler);
   return _Engine;
@@ -8937,16 +8316,9 @@ class ModelingEngine extends Engine {
     this.install(ENGINEPLUGIN.WEBGLRENDERER, {
       antialias: true,
       alpha: true
-    }).install(ENGINEPLUGIN.MODELINGSCENE, {
-      hasDefaultPerspectiveCamera: true,
-      hasDefaultOrthographicCamera: true,
-      hasAxesHelper: true,
-      hasGridHelper: true,
-      hasDisplayMode: true,
-      displayMode: "env"
-    }).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.STATS).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
+    }).install(ENGINEPLUGIN.SCENE).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
       WebGLMultisampleRenderTarget: true
-    }).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).install(ENGINEPLUGIN.KEYBOARDMANAGER).install(ENGINEPLUGIN.TRANSFORMCONTROLS).complete();
+    }).install(ENGINEPLUGIN.SELECTION).install(ENGINEPLUGIN.AXESHELPER).install(ENGINEPLUGIN.GRIDHELPER).install(ENGINEPLUGIN.OBJECTHELPER).install(ENGINEPLUGIN.VIEWPOINT).install(ENGINEPLUGIN.DISPLAYMODE).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.STATS).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.KEYBOARDMANAGER).install(ENGINEPLUGIN.TRANSFORMCONTROLS).complete();
   }
 }
 const _SupportDataGenerator = class {
@@ -9252,16 +8624,9 @@ class ModelingEngineSupport extends EngineSupport {
     this.install(ENGINEPLUGIN.WEBGLRENDERER, {
       antialias: true,
       alpha: true
-    }).install(ENGINEPLUGIN.MODELINGSCENE, {
-      hasDefaultPerspectiveCamera: true,
-      hasDefaultOrthographicCamera: true,
-      hasAxesHelper: true,
-      hasGridHelper: true,
-      hasDisplayMode: true,
-      displayMode: "env"
-    }).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.STATS).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
+    }).install(ENGINEPLUGIN.SCENE).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
       WebGLMultisampleRenderTarget: true
-    }).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).install(ENGINEPLUGIN.KEYBOARDMANAGER).install(ENGINEPLUGIN.TRANSFORMCONTROLS).complete();
+    }).install(ENGINEPLUGIN.SELECTION).install(ENGINEPLUGIN.AXESHELPER).install(ENGINEPLUGIN.GRIDHELPER).install(ENGINEPLUGIN.OBJECTHELPER).install(ENGINEPLUGIN.VIEWPOINT).install(ENGINEPLUGIN.DISPLAYMODE).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.STATS).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.KEYBOARDMANAGER).install(ENGINEPLUGIN.TRANSFORMCONTROLS).complete();
   }
 }
 class DisplayEngineSupport extends EngineSupport {

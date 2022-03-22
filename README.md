@@ -3,7 +3,7 @@
 three.js库二次功能封装 + 配置化的three.js开发。
 
 <p>
-  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.7-{}" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.8-{}" alt="Version"></a>
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MIT-{}" alt="License"></a>
 </p>
 
@@ -104,7 +104,254 @@ const engine = new Vis.ModelingEngineSupport()
 ```
 ## 渲染引擎
 
-#### 内置引擎
+##### 引擎使用
+``` js
+
+const ENGINEPLUGIN = Vis.ENGINEPLUGIN
+
+// ModelingEngine
+const engine = new Vis.Engine()
+  .install(ENGINEPLUGIN.WEBGLRENDERER, {
+    antialias: true,
+    alpha: true
+  })
+  .install(ENGINEPLUGIN.SCENE)
+  .install(ENGINEPLUGIN.POINTERMANAGER)
+  .install(ENGINEPLUGIN.EVENTMANAGER)
+  .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
+    WebGLMultisampleRenderTarget: true
+  })
+  .install(ENGINEPLUGIN.SELECTION)
+  .install(ENGINEPLUGIN.AXESHELPER)
+  .install(ENGINEPLUGIN.GRIDHELPER)
+  .install(ENGINEPLUGIN.OBJECTHELPER)
+  .install(ENGINEPLUGIN.VIEWPOINT)
+  .install(ENGINEPLUGIN.DISPLAYMODE)
+  .install(ENGINEPLUGIN.RENDERMANAGER)
+  .install(ENGINEPLUGIN.STATS)
+  .install(ENGINEPLUGIN.ORBITCONTROLS)
+  .install(ENGINEPLUGIN.KEYBOARDMANAGER)
+  .install(ENGINEPLUGIN.TRANSFORMCONTROLS)
+  .complete() // 安装插件完成后调用
+  .setDom(document.getElementById('app'))
+  .setSize()
+  .setStats(true)
+  .play()
+```
+
+##### 引擎插件
+
+###### WebGLRenderer
+
+GL渲染器插件
+
+``` js
+const engine = new Vis.Engine()
+.install(Vis.ENGINEPLUGIN.WEBGLRENDERER, {
+  // WebGLRendererParameters
+  antialias: true, // 抗锯齿
+  alpha: true // 允许透明度
+  //...
+})
+
+// event 
+engine.addEventListener('setSize', (event) => {
+  // event.width
+  // event.height
+})
+
+engine.addEventListener('setCamera', (event) => {
+  // event.camera
+})
+```
+###### Scene
+
+场景插件
+
+``` js
+const engine = new Vis.Engine()
+.install(Vis.ENGINEPLUGIN.SCENE)
+
+// event 
+engine.addEventListener('afterAdd', (event) => {
+  // event.objects
+})
+
+engine.addEventListener('afterRemove', (event) => {
+  // event.objects
+})
+```
+###### EffectComposer
+
+ 后期处理器插件
+
+ ``` js
+const engine = new Vis.Engine()
+.install(Vis.ENGINEPLUGIN.EFFECTCOMPOSER ,{
+  WebGLMultisampleRenderTarget: true // 137版本以下MSAA
+  samples: 4 // 采样程度
+  format: THREE.RGBAFormat // 后期编码
+  MSAA: boolean // 预设
+  FXAA: boolean // 预设
+  SMAA: boolean // 预设
+})
+
+// event 
+ ```
+
+ ###### PointerManager
+ 
+ 指针，鼠标管理器插件
+
+  ``` js
+const engine = new Vis.Engine()
+.install(Vis.ENGINEPLUGIN.POINTERMANAGER ,{
+  throttleTime: number // 节流时间
+})
+
+// event
+engine.dom.addEventListener('pointerdown', (event) => {
+  // mouseevent
+})
+
+engine.dom.addEventListener('pointermove', (event) => {
+  // mouseevent
+})
+
+engine.dom.addEventListener('pointerup', (event) => {
+  // mouseevent
+})
+ ```
+
+ ###### EventManager
+ 
+ 场景与物体的事件管理器插件
+
+``` js
+const engine = new Vis.Engine()
+.install(Vis.ENGINEPLUGIN.EVENTMANAGER, {
+  recursive: false, // 是否可递归计算物体包括children
+  penetrate: false // 是否可以穿透触发事件委托
+})
+
+// event
+
+// global
+engine.eventManager.addEventListener('pointerdown', (event) => {
+  // mouseevent
+  // event.intersections
+})
+
+engine.eventManager.addEventListener('pointermove', (event) => {
+  // mouseevent
+  // event.intersections
+})
+
+
+engine.eventManager.addEventListener('pointerup', (event) => {
+  // mouseevent
+  // event.intersections
+})
+
+engine.eventManager.addEventListener('pointerenter', (event) => {
+  // mouseevent
+  // event.intersections
+})
+
+engine.eventManager.addEventListener('pointerleave', (event) => {
+  // mouseevent
+  // event.intersections
+})
+
+engine.eventManager.addEventListener('click', (event) => {
+  // mouseevent
+  // event.intersections
+})
+
+engine.eventManager.addEventListener('dblclick', (event) => {
+  // mouseevent
+  // event.intersections
+})
+
+engine.eventManager.addEventListener('contextmenu', (event) => {
+  // mouseevent
+  // event.intersections
+})
+
+// object
+engine.eventManager.addEventListener('pointerdown', (event) => {
+  // event.intersections
+})
+
+threeObject.addEventListener('pointermove', (event) => {
+  // mouseevent
+  // event.intersection
+})
+
+threeObject.addEventListener('pointerup', (event) => {
+  // mouseevent
+  // event.intersection
+})
+
+threeObject.addEventListener('pointerenter', (event) => {
+  // mouseevent
+  // event.intersection
+})
+
+threeObject.addEventListener('pointerleave', (event) => {
+  // mouseevent
+  // event.intersection
+})
+
+threeObject.addEventListener('click', (event) => {
+  // mouseevent
+  // event.intersection
+})
+
+threeObject.addEventListener('dblclick', (event) => {
+  // mouseevent
+  // event.intersection
+})
+
+threeObject.addEventListener('contextmenu', (event) => {
+  // mouseevent
+  // event.intersection
+})
+ ```
+
+ ###### RenderManager
+ 
+渲染管理器插件
+
+###### LoaderManager
+
+加载器管理器插件
+###### ResourceManager
+
+资源管理器插件
+###### DataSupportManager
+
+数据支持管理器插件
+###### CompilerManager
+
+编译管理器插件
+
+###### OrbitControls
+
+轨道控制器插件
+###### TransformControls
+
+变换控制器插件
+###### Stats
+
+资源监视器插件
+
+###### CSS3DRenderer（预）
+
+CSS3D渲染器插件
+
+
+#### 预设引擎
 ##### ModelingEngine开发下的渲染引擎
 * 提供物体可视化辅助
 * 内置变换控制器，轨道控制器, 性能监视器，事件管理器，后期插件
@@ -123,54 +370,9 @@ const engine = new Vis.ModelingEngineSupport()
 * Engine 纯净的引擎基板
 * EngineSupport 配置化支持引擎基板
 
-##### 引擎插件
-* WebGLRenderer: 3D渲染器插件
-* Scene: 普通场景插件
-* ModelingScene: 开发下的场景插件
-* RenderManager: 渲染管理器插件
-* OrbitControls: 轨道控制器插件
-* Stats: 资源监视器插件
-* EffectComposer: 后期处理器插件
-* PointerManager: 指针管理器插件
-* EventManager: 事件管理器插件
-* TransformControls: 变换控制器插件
-* LoaderManager: 加载器管理器插件
-* ResourceManager: 资源管理器插件
-* DataSupportManager: 数据支持管理器插件
-* CompilerManager: 编译管理器插件
-* CSS3DRenderer: CSS3D渲染器插件（预）
 
-##### 自定义引擎使用
-``` js
-// ModelingEngine
-const engine = new Engine()
-  .install('WebGLRenderer', {
-      antialias: true,
-      alpha: true
-    })
-  .install('ModelingScene', {
-    hasDefaultPerspectiveCamera: true,
-    hasDefaultOrthographicCamera: true,
-    hasAxesHelper: true,
-    hasGridHelper: true,
-    hasDisplayMode: true,
-    displayMode: 'env'
-  })
-  .install('RenderManager')
-  .install('Stats')
-  .install('EffectComposer', {
-    WebGLMultisampleRenderTarget: true
-  })
-  .install('OrbitControls')
-  .install('PointerManager')
-  .install('EventManager')
-  .install('TransformControls')
-  .complete() // 安装插件完成后调用
-  .setDom(document.getElementById('app'))
-  .setSize()
-  .setStats(true)
-  .play()
-```
+
+
 
 ## 资源管理
 

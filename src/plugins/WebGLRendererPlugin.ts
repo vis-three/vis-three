@@ -14,7 +14,7 @@ export interface SetCameraEvent extends BaseEvent {
   camera: Camera
 }
 
-export const WebGLRendererPlugin: Plugin<WebGLRendererParameters> = function (this: Engine, params: WebGLRendererParameters): boolean {
+export const WebGLRendererPlugin: Plugin<WebGLRendererParameters> = function (this: Engine, params: WebGLRendererParameters = {}): boolean {
   if (this.webGLRenderer) {
     console.warn('this has installed webglRenderer plugin.')
     return false

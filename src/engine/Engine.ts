@@ -68,15 +68,10 @@ export enum ENGINEPLUGIN {
   SELECTION = 'Selection'
 }
 
-// 插件处理集合
-let pluginHandler: Map<string, Function> = new Map()
-// TODO: deprecated 
-pluginHandler.set(ENGINEPLUGIN.MODELINGSCENE, ModelingScenePlugin)
-
 // 引擎槽
 export class Engine extends EventDispatcher {
 
-  static pluginHandler: Map<string, Function> | undefined = pluginHandler
+  static pluginHandler: Map<string, Function> | undefined = new Map()
 
   // 注册引擎插件
   static register = function<T extends object> (name: string, handler: (this: Engine, params: T) => void): typeof Engine {
@@ -123,6 +118,7 @@ export class Engine extends EventDispatcher {
   setAxesHelper?: (params: {show: boolean}) => this
   setGridHelper?: (params: {show: boolean}) => this
   setObjectHelper?: (params: {show: boolean}) => this
+  setSelectionBox?: (params: {objects: Object3D[]}) => this
 
   loadResources?: (urlList: Array<string>, callback: (err: Error | undefined, event?: LoadedEvent) => void) => this
   loadResourcesAsync?: (urlList: Array<string>) => Promise<LoadedEvent>

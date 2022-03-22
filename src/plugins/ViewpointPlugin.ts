@@ -32,7 +32,7 @@ export interface ViewpointParameters {
   }
 }
 
-export const ViewpointPlugin: Plugin<ViewpointParameters> = function (this: Engine, params: ViewpointParameters): boolean {
+export const ViewpointPlugin: Plugin<ViewpointParameters> = function (this: Engine, params: ViewpointParameters = {}): boolean {
   
   // 前置条件
   if (!this.webGLRenderer) {

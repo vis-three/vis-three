@@ -1,5 +1,4 @@
 import { Object3D, Scene } from 'three';
-import { ModelingScene } from './../extends/ModelingScene/ModelingScene';
 import { Engine } from "../engine/Engine";
 import { GlobalEvent } from "../manager/EventManager";
 import { ObjectChangedEvent, TRANSFORMEVENT, VisTransformControls } from "../optimize/VisTransformControls";
@@ -7,6 +6,7 @@ import { Plugin } from "./plugin";
 import { SetCameraEvent } from "./WebGLRendererPlugin";
 import { SymbolConfig } from '../middleware/common/CommonConfig';
 import { ObjectConfig } from '../middleware/object/ObjectConfig';
+import { SelectedEvent } from './SelectionPlugin';
 
 export const TransformControlsPlugin: Plugin<Object> = function (this: Engine, params: Object): boolean {
   if (this.transformControls) {
@@ -40,13 +40,8 @@ export const TransformControlsPlugin: Plugin<Object> = function (this: Engine, p
     this.transing = true
   })
 
-  if (this.scene instanceof Scene) {
-    this.scene.add(this.transformControls)
-    this.scene.add((this.transformControls as VisTransformControls).target)
-  } else if (this.scene! instanceof ModelingScene) {
-    (this.scene! as ModelingScene)._add(this.transformControls);
-    (this.scene! as ModelingScene)._add((this.transformControls as VisTransformControls).target)
-  }
+  this.scene!.add(this.transformControls)
+  this.scene!.add((this.transformControls as VisTransformControls).target)
 
   this.setTransformControls = function(show: boolean): Engine {
     this.transformControls!.visible = show
@@ -57,15 +52,23 @@ export const TransformControlsPlugin: Plugin<Object> = function (this: Engine, p
     transformControls.setCamera(event.camera)
   })
 
-  this.eventManager.addEventListener<GlobalEvent>('pointerup', (event) => {
-    if (this.transing) {
-      return
-    }
-    if (event.button === 0) {
-      const objectList = event.intersections.map((elem) => elem.object)
-      transformControls.setAttach(objectList[0])
-    }
-  })
+
+  // 与selection联调
+  if (this.selectionBox) {
+    this.addEventListener<SelectedEvent>('selected', (event) => {
+      transformControls.setAttach(...event.objects)
+    })
+  } else {
+    this.eventManager.addEventListener<GlobalEvent>('pointerup', (event) => {
+      if (this.transing) {
+        return
+      }
+      if (event.button === 0) {
+        const objectList = event.intersections.map((elem) => elem.object)
+        transformControls.setAttach(objectList[0])
+      }
+    })
+  }
 
   this.completeSet.add(() => {
     if (this.IS_ENGINESUPPORT) {
