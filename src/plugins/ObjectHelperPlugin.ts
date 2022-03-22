@@ -13,6 +13,7 @@ export interface ObjectHelperParameters {
   activeColor?: string
   hoverColor?: string
   defaultColor?: string
+  selectedColor?: string
 }
 
 
@@ -57,10 +58,12 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (this
   !params.activeColor && (params.activeColor = 'rgb(230, 20, 240)')
   !params.hoverColor && (params.hoverColor ='rgb(255, 158, 240)')
   !params.defaultColor && (params.defaultColor = 'rgb(255, 255, 255)')
+  !params.selectedColor && (params.selectedColor = params.activeColor)
 
   const defaultColorHex = new Color(params.defaultColor).getHex()
   const activeColorHex = new Color(params.activeColor).getHex()
   const hoverColorHex = new Color(params.hoverColor).getHex()
+  const selectedColorHex = new Color(params.selectedColor).getHex()
 
   scene.addEventListener('afterAdd', event => {
     const objects = event.objects
@@ -191,7 +194,7 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (this
         for (let object of event.objects) {
           if (helperMap.has(object)) {
             const helper  = (helperMap.get(object) as Sprite)
-            helper.material.color.setHex(activeColorHex)
+            helper.material.color.setHex(selectedColorHex)
             cacheObjectsHelper.add(helper)
           }
         }

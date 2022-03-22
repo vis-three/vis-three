@@ -8613,9 +8613,11 @@ const ObjectHelperPlugin = function(params = {}) {
   !params.activeColor && (params.activeColor = "rgb(230, 20, 240)");
   !params.hoverColor && (params.hoverColor = "rgb(255, 158, 240)");
   !params.defaultColor && (params.defaultColor = "rgb(255, 255, 255)");
+  !params.selectedColor && (params.selectedColor = params.activeColor);
   const defaultColorHex = new Color(params.defaultColor).getHex();
   const activeColorHex = new Color(params.activeColor).getHex();
   const hoverColorHex = new Color(params.hoverColor).getHex();
+  const selectedColorHex = new Color(params.selectedColor).getHex();
   scene.addEventListener("afterAdd", (event) => {
     const objects = event.objects;
     for (let object of objects) {
@@ -8720,7 +8722,7 @@ const ObjectHelperPlugin = function(params = {}) {
         for (let object of event.objects) {
           if (helperMap.has(object)) {
             const helper = helperMap.get(object);
-            helper.material.color.setHex(activeColorHex);
+            helper.material.color.setHex(selectedColorHex);
             cacheObjectsHelper.add(helper);
           }
         }
@@ -8736,17 +8738,42 @@ const SelectionPlugin = function(params = {}) {
   }
   this.selectionBox = new Set();
   this.eventManager.addEventListener("click", (event) => {
-    var _a;
+    var _a, _b, _c;
     const intersections = event.intersections;
-    this.selectionBox.clear();
+    if (!event.ctrlKey) {
+      this.selectionBox.clear();
+    }
     if (this.eventManager.penetrate) {
       for (let intersection of intersections) {
+        if (event.ctrlKey) {
+          if ((_a = this.selectionBox) == null ? void 0 : _a.has(intersection.object)) {
+            this.selectionBox.delete(intersection.object);
+            continue;
+          }
+        }
         this.selectionBox.add(intersection.object);
       }
     } else {
       if (intersections.length) {
-        (_a = this.selectionBox) == null ? void 0 : _a.add(intersections[0].object);
+        const object = intersections[0].object;
+        if (event.ctrlKey) {
+          if ((_b = this.selectionBox) == null ? void 0 : _b.has(object)) {
+            this.selectionBox.delete(object);
+            return;
+          }
+        }
+        (_c = this.selectionBox) == null ? void 0 : _c.add(object);
       }
+    }
+    if (this.IS_ENGINESUPPORT) {
+      this.selectionBox.forEach((object) => {
+        let objectSymbol = this.compilerManager.getObjectSymbol(object);
+        if (objectSymbol)
+          ;
+        else {
+          console.warn("selection plugin can not font vid in compilerManager.", object);
+        }
+      });
     }
     this.dispatchEvent({
       type: "selected",

@@ -25,17 +25,48 @@ export const SelectionPlugin: Plugin<SelectionParameters> = function (this: Engi
   // 单选
   this.eventManager.addEventListener<GlobalEvent>('click', (event) => {
     const intersections = event.intersections
-    this.selectionBox!.clear()
+    // ctrl多选
+    if (!event.ctrlKey) {
+      this.selectionBox!.clear()
+    }
+
     if (this.eventManager!.penetrate) {
       for (let intersection of intersections) {
+        // 反选
+        if (event.ctrlKey) {
+          if (this.selectionBox?.has(intersection.object)) {
+            this.selectionBox.delete(intersection.object)
+            continue
+          }
+        }
         this.selectionBox!.add(intersection.object)
       }
     } else {
       if (intersections.length) {
-        this.selectionBox?.add(intersections[0].object)
+        const object = intersections[0].object
+        // 反选
+        if (event.ctrlKey) {
+          if (this.selectionBox?.has(object)) {
+            this.selectionBox.delete(object)
+            return
+          }
+        }
+        this.selectionBox?.add(object)
       }
     }
-    // TODO: 判断 IS_ENGINESUPPORT
+
+    let objectSymbols: string[] = []
+    if (this.IS_ENGINESUPPORT) {
+      this.selectionBox!.forEach(object => {
+        let objectSymbol = this.compilerManager!.getObjectSymbol(object)
+        if (objectSymbol) {
+          objectSymbols.push(objectSymbol)
+        } else {
+          console.warn('selection plugin can not font vid in compilerManager.', object)
+        }
+
+      })
+    }
     
     this.dispatchEvent({
       type: 'selected',
@@ -44,7 +75,7 @@ export const SelectionPlugin: Plugin<SelectionParameters> = function (this: Engi
     })
   })
 
-  // TODO: 框选
+  // TODO: 框选 selectionBox selectionHelper
 
   return true
 }
