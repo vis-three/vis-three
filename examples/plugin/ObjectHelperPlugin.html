@@ -72,6 +72,11 @@
     points.position.x = -10
     scene.add(points)
 
+    const camera = new THREE.PerspectiveCamera( 180 / Math.PI * 45, 16 / 9, 5, 70)
+    camera.position.set(0, 20, 50)
+    camera.lookAt(0, 0, 0)
+    scene.add(camera)
+
     let show = true
     document.getElementById('operate').onclick = event => {
 
