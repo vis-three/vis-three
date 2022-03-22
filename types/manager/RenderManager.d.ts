@@ -6,6 +6,7 @@ export interface RenderEvent extends BaseEvent {
 export declare class RenderManager extends EventDispatcher {
     private clock;
     private animationFrame;
+    private fps;
     render: () => void;
     play: () => void;
     stop: () => void;

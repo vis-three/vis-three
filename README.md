@@ -53,7 +53,7 @@ const pointLight = Vis.generateConfig('PointLight', {
 })
 ```
 
-#### 生成模块配置
+#### 生成配置模块
 
 ``` js
 const lightMap = new Vis.SupportDataGenerator()
@@ -164,6 +164,11 @@ engine.addEventListener('setCamera', (event) => {
   // event.camera
 })
 ```
+
+###### CSS3DRenderer（预）
+
+CSS3D渲染器插件
+
 ###### Scene
 
 场景插件
@@ -279,7 +284,7 @@ engine.eventManager.addEventListener('contextmenu', (event) => {
 })
 
 // object
-engine.eventManager.addEventListener('pointerdown', (event) => {
+threeObject.addEventListener('pointerdown', (event) => {
   // event.intersections
 })
 
@@ -323,18 +328,116 @@ threeObject.addEventListener('contextmenu', (event) => {
  
 渲染管理器插件
 
+  ``` js
+const engine = new Vis.Engine()
+.install(Vis.ENGINEPLUGIN.RENDERMANAGER ,{
+  fps: 0 //(预设) 帧率
+})
+
+// event
+engine.renderManager.addEventListener('render', (event) => {
+  // event.delta
+  // event.total
+})
+
+engine.renderManager.addEventListener('play', () => {
+})
+
+engine.renderManager.addEventListener('stop', () => {
+})
+ ```
+
 ###### LoaderManager
 
 加载器管理器插件
+
+  ``` js
+const engine = new Vis.Engine()
+.install(Vis.ENGINEPLUGIN.LOADERMANAGER ,{
+  loaderExtends: {'diy': DIYLoader } // 扩展的加载器 extends THREE.Loader
+})
+
+// event
+engine.loaderManager.addEventListener('beforeLoad', (event) => {
+  // event.urlList
+})
+
+engine.loaderManager.addEventListener('loading', (event) => {
+  // event.loadTotal
+  // event.loadSuccess,
+  // event.loadError
+})
+
+engine.loaderManager.addEventListener('loaded', (event) => {
+  // event.loadTotal,
+  // event.loadSuccess
+  // event.loadError
+  // event.resourceMap
+})
+
+engine.loaderManager.addEventListener('detailLoading', (event) => {
+  // event.detail
+  // detail = {
+  //   url,
+  //   progress: 0,
+  //   error: false,
+  //   message: url
+  // }
+})
+
+engine.loaderManager.addEventListener('detailLoaded', (event) => {
+  // event.detail
+  // detail = {
+  //   url,
+  //   progress: 0,
+  //   error: false,
+  //   message: url
+  // }
+})
+ ```
 ###### ResourceManager
 
 资源管理器插件
+
+ ``` js
+const engine = new Vis.Engine()
+.install(Vis.ENGINEPLUGIN.RESOURCEMANAGER)
+
+// event
+engine.resourceManager.addEventListener('mapped', (event) => {
+  // event.structureMap: Map<string, unknown>
+  // event.configMap: Map<string, unknown>
+  // event.resourceMap: Map<string, unknown>
+})
+ ```
 ###### DataSupportManager
 
 数据支持管理器插件
+
+ ``` js
+const engine = new Vis.Engine()
+.install(Vis.ENGINEPLUGIN.DATASUPPORTMANAGER, {
+  //module DataSupport
+  lightDataSupport: new Vis.LightDataSupport()
+  // ...
+})
+
+// event
+
+ ```
 ###### CompilerManager
 
 编译管理器插件
+
+一般情况下DataSupportManager要与CompilerManager一起安装
+后期会考虑作为一个插件
+ ``` js
+const engine = new Vis.Engine()
+.install(Vis.ENGINEPLUGIN.COMPILERMANAGER)
+
+// event
+
+ ```
 
 ###### OrbitControls
 
@@ -346,32 +449,100 @@ threeObject.addEventListener('contextmenu', (event) => {
 
 资源监视器插件
 
-###### CSS3DRenderer（预）
+###### AxesHelper
 
-CSS3D渲染器插件
+坐标轴辅助插件
+###### GridHelper
 
+网格辅助插件
+###### ObjectHelper
+
+物体辅助插件
+###### Viewpoint
+
+视角切换插件
+###### DisplayMode
+
+渲染模式插件
+###### Selection
+
+物体选择插件
+
+#### 自定义插件
+``` js
+const customPlugin = function (params) {
+  // this is engine
+  this.scene.add(new THREE.Mesh())
+
+  this.completeSet.add(() => {
+    // 稍微允许无须安装插件，所以部分逻辑放在completeSet中最后complete()调用完成
+  })
+}
+
+Vis.Engine.register('customPlugin', customPlugin)
+
+new Vis.Engine().install('customPlugin', params)
+```
 
 #### 预设引擎
 ##### ModelingEngine开发下的渲染引擎
-* 提供物体可视化辅助
-* 内置变换控制器，轨道控制器, 性能监视器，事件管理器，后期插件
-* 使用ModelingScene提供多视角观察，场景渲染模式：geometry,material,light, env
+``` js
+this.install(ENGINEPLUGIN.WEBGLRENDERER, {
+  antialias: true,
+  alpha: true
+})
+.install(ENGINEPLUGIN.SCENE)
+.install(ENGINEPLUGIN.POINTERMANAGER)
+.install(ENGINEPLUGIN.EVENTMANAGER)
+.install(ENGINEPLUGIN.EFFECTCOMPOSER, {
+  WebGLMultisampleRenderTarget: true
+})
+.install(ENGINEPLUGIN.SELECTION)
+.install(ENGINEPLUGIN.AXESHELPER)
+.install(ENGINEPLUGIN.GRIDHELPER)
+.install(ENGINEPLUGIN.OBJECTHELPER)
+.install(ENGINEPLUGIN.VIEWPOINT)
+.install(ENGINEPLUGIN.DISPLAYMODE)
+.install(ENGINEPLUGIN.RENDERMANAGER)
+.install(ENGINEPLUGIN.STATS)
+.install(ENGINEPLUGIN.ORBITCONTROLS)
+.install(ENGINEPLUGIN.KEYBOARDMANAGER)
+.install(ENGINEPLUGIN.TRANSFORMCONTROLS)
+.complete()
+```
 
 ##### DisplayEngine展示下的渲染引擎
-* 内置轨道控制器，事件管理器，后期插件
 
-##### EngineSupport（xxxEngineSupport） 配置化支持引擎
-* 能够使用配置化开发
-* 内置loader管理器，资源管理器，配置化support的相关插件
+``` js
+this.install(ENGINEPLUGIN.WEBGLRENDERER, {
+  antialias: true,
+  alpha: true
+})
+.install(ENGINEPLUGIN.SCENE)
+.install(ENGINEPLUGIN.RENDERMANAGER)
+.install(ENGINEPLUGIN.EFFECTCOMPOSER, {
+  WebGLMultisampleRenderTarget: true
+})
+.install(ENGINEPLUGIN.ORBITCONTROLS)
+.install(ENGINEPLUGIN.POINTERMANAGER)
+.install(ENGINEPLUGIN.EVENTMANAGER)
+.complete()
+```
 
-#### 自定义引擎
+##### EngineSupport 配置化支持引擎
+``` js
+this.install(ENGINEPLUGIN.LOADERMANAGER)
+.install(ENGINEPLUGIN.RESOURCEMANAGER)
+.install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters)
+.install(ENGINEPLUGIN.COMPILERMANAGER)
+```
 
-##### 引擎基板
-* Engine 纯净的引擎基板
-* EngineSupport 配置化支持引擎基板
+##### ModelingEngineSupport
 
+EngineSupport + ModelingEngine
+##### DisplayEngineSupport
 
-
+EngineSupport + DisplayEngine
 
 
 ## 资源管理

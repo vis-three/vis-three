@@ -1,22 +1,19 @@
-import { Camera, Scene, WebGLRenderer, WebGLRendererParameters } from "three";
+import { Camera, Object3D, Scene, WebGLRenderer } from "three";
 import { EventDispatcher } from "../core/EventDispatcher";
-import { ModelingScene, ModelingSceneParameters } from "../extends/ModelingScene/ModelingScene";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { SceneParameters } from "../plugins/ScenePlugin";
 import { RenderManager } from "../manager/RenderManager";
-import { VisStatsParameters } from "../optimize/VisStats";
 import Stats from "three/examples/jsm/libs/stats.module";
-import { EffectComposerParameters } from "../plugins/EffectComposerPlugin";
 import { PointerManager } from "../manager/PointerManager";
-import { PointerManagerParameters } from "../manager/PointerManager";
-import { EventManager, EventManagerParameters } from "../manager/EventManager";
+import { EventManager } from "../manager/EventManager";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
-import { LoadedEvent, LoaderManager, LoaderManagerParameters } from "../manager/LoaderManager";
+import { LoadedEvent, LoaderManager } from "../manager/LoaderManager";
 import { ResourceManager } from "../manager/ResourceManager";
-import { DataSupportManager, DataSupportManagerParameters } from "../manager/DataSupportManager";
-import { CompilerManager, CompilerManagerParameters } from "../manager/CompilerManager";
+import { DataSupportManager } from "../manager/DataSupportManager";
+import { CompilerManager } from "../manager/CompilerManager";
 import { KeyboardManager } from "../manager/KeyboardManager";
+import { VIEWPOINT } from "../plugins/ViewpointPlugin";
+import { DISPLAYMODE } from "../plugins/DisplayModePlugin";
 export declare enum ENGINEPLUGIN {
     WEBGLRENDERER = "WebGLRenderer",
     SCENE = "Scene",
@@ -32,19 +29,24 @@ export declare enum ENGINEPLUGIN {
     RESOURCEMANAGER = "ResourceManager",
     DATASUPPORTMANAGER = "DataSupportManager",
     COMPILERMANAGER = "CompilerManager",
-    KEYBOARDMANAGER = "KeyboardManager"
+    KEYBOARDMANAGER = "KeyboardManager",
+    AXESHELPER = "AxesHelper",
+    GRIDHELPER = "GridHelper",
+    VIEWPOINT = "Viewpoint",
+    DISPLAYMODE = "DisplayMode",
+    OBJECTHELPER = "ObjectHelper",
+    SELECTION = "Selection"
 }
-export declare type EnginePluginParams = WebGLRendererParameters | SceneParameters | ModelingSceneParameters | VisStatsParameters | EffectComposerParameters | PointerManagerParameters | EventManagerParameters | LoaderManagerParameters | DataSupportManagerParameters | CompilerManagerParameters;
 export declare class Engine extends EventDispatcher {
     static pluginHandler: Map<string, Function> | undefined;
-    static register: (name: string, handler: (this: Engine, params?: Object | undefined) => void) => void;
+    static register: <T extends object>(name: string, handler: (this: Engine, params: T) => void) => typeof Engine;
     static dispose: () => void;
     completeSet: Set<(engine: Engine) => void>;
     IS_ENGINESUPPORT: boolean;
     dom?: HTMLElement;
     webGLRenderer?: WebGLRenderer;
     currentCamera?: Camera;
-    scene?: Scene | ModelingScene;
+    scene?: Scene;
     orbitControls?: OrbitControls;
     transformControls?: TransformControls;
     effectComposer?: EffectComposer;
@@ -58,11 +60,27 @@ export declare class Engine extends EventDispatcher {
     keyboardManager?: KeyboardManager;
     stats?: Stats;
     transing?: boolean;
+    displayMode?: DISPLAYMODE;
+    selectionBox?: Set<Object3D>;
     setSize?: (width: number, height: number) => this;
     setCamera?: (camera: Camera) => this;
     setDom?: (dom: HTMLElement) => this;
     setStats?: (show: boolean) => this;
     setTransformControls?: (show: boolean) => this;
+    setViewpoint?: (viewpoint: VIEWPOINT) => this;
+    setDisplayMode?: (mode: DISPLAYMODE) => this;
+    setAxesHelper?: (params: {
+        show: boolean;
+    }) => this;
+    setGridHelper?: (params: {
+        show: boolean;
+    }) => this;
+    setObjectHelper?: (params: {
+        show: boolean;
+    }) => this;
+    setSelectionBox?: (params: {
+        objects: Object3D[];
+    }) => this;
     loadResources?: (urlList: Array<string>, callback: (err: Error | undefined, event?: LoadedEvent) => void) => this;
     loadResourcesAsync?: (urlList: Array<string>) => Promise<LoadedEvent>;
     registerResources?: (resourceMap: {
@@ -74,7 +92,7 @@ export declare class Engine extends EventDispatcher {
     render?: () => this;
     constructor();
     protected optimizeMemory(): void;
-    install(plugin: ENGINEPLUGIN, params?: EnginePluginParams): this;
+    install<T extends object>(plugin: ENGINEPLUGIN, params?: T): this;
     complete(): this;
     dispose(): this;
 }

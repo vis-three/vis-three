@@ -1,5 +1,4 @@
 import { EventDispatcher } from "../core/EventDispatcher";
-import { ModelingScenePlugin } from "../plugins/ModelingScenePlugin";
 import { ScenePlugin } from "../plugins/ScenePlugin";
 import { RenderManagerPlugin } from "../plugins/RenderManagerPlugin";
 import { OrbitControlsPlugin } from "../plugins/OrbitControlsPlugin";
@@ -14,6 +13,12 @@ import { ResourceManagerPlugin } from "../plugins/ResourceManagerPlugin";
 import { DataSupportManagerPlugin } from "../plugins/DataSupportManagerPlugin";
 import { CompilerManagerPlugin } from "../plugins/CompilerManagerPlugin";
 import { KeyboardManagerPlugin } from "../plugins/KeyboardManagerPlugin";
+import { ViewpointPlugin } from "../plugins/ViewpointPlugin";
+import { AxesHelperPlugin } from "../plugins/AxesHelperPlugin";
+import { GridHelperPlugin } from "../plugins/GridHelperPlugin";
+import { DisplayModelPlugin } from "../plugins/DisplayModePlugin";
+import { ObjectHelperPlugin } from "../plugins/ObjectHelperPlugin";
+import { SelectionPlugin } from "../plugins/SelectionPlugin";
 // 存在的插件接口
 export var ENGINEPLUGIN;
 (function (ENGINEPLUGIN) {
@@ -32,32 +37,22 @@ export var ENGINEPLUGIN;
     ENGINEPLUGIN["DATASUPPORTMANAGER"] = "DataSupportManager";
     ENGINEPLUGIN["COMPILERMANAGER"] = "CompilerManager";
     ENGINEPLUGIN["KEYBOARDMANAGER"] = "KeyboardManager";
+    ENGINEPLUGIN["AXESHELPER"] = "AxesHelper";
+    ENGINEPLUGIN["GRIDHELPER"] = "GridHelper";
+    ENGINEPLUGIN["VIEWPOINT"] = "Viewpoint";
+    ENGINEPLUGIN["DISPLAYMODE"] = "DisplayMode";
+    ENGINEPLUGIN["OBJECTHELPER"] = "ObjectHelper";
+    ENGINEPLUGIN["SELECTION"] = "Selection";
 })(ENGINEPLUGIN || (ENGINEPLUGIN = {}));
-// 插件处理集合
-let pluginHandler = new Map();
-pluginHandler.set(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin);
-pluginHandler.set(ENGINEPLUGIN.EFFECTCOMPOSER, EffectComposerPlugin);
-pluginHandler.set(ENGINEPLUGIN.SCENE, ScenePlugin);
-pluginHandler.set(ENGINEPLUGIN.MODELINGSCENE, ModelingScenePlugin);
-pluginHandler.set(ENGINEPLUGIN.RENDERMANAGER, RenderManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.POINTERMANAGER, PointerManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.EVENTMANAGER, EventManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.LOADERMANAGER, LoaderManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.RESOURCEMANAGER, ResourceManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.DATASUPPORTMANAGER, DataSupportManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.COMPILERMANAGER, CompilerManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.KEYBOARDMANAGER, KeyboardManagerPlugin);
-pluginHandler.set(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin);
-pluginHandler.set(ENGINEPLUGIN.TRANSFORMCONTROLS, TransformControlsPlugin);
-pluginHandler.set(ENGINEPLUGIN.STATS, StatsPlugin);
 // 引擎槽
 export class Engine extends EventDispatcher {
-    static pluginHandler = pluginHandler;
-    // 注册
+    static pluginHandler = new Map();
+    // 注册引擎插件
     static register = function (name, handler) {
         Engine.pluginHandler && Engine.pluginHandler.set(name, handler);
+        return Engine;
     };
-    // 清空缓存
+    // 清空插件缓存
     static dispose = function () {
         Engine.pluginHandler = undefined;
     };
@@ -80,11 +75,19 @@ export class Engine extends EventDispatcher {
     keyboardManager;
     stats;
     transing;
+    displayMode;
+    selectionBox;
     setSize;
     setCamera;
     setDom;
     setStats;
     setTransformControls;
+    setViewpoint;
+    setDisplayMode;
+    setAxesHelper;
+    setGridHelper;
+    setObjectHelper;
+    setSelectionBox;
     loadResources;
     loadResourcesAsync;
     registerResources;
@@ -133,4 +136,24 @@ export class Engine extends EventDispatcher {
         return this;
     }
 }
+Engine.register(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin);
+Engine.register(ENGINEPLUGIN.EFFECTCOMPOSER, EffectComposerPlugin);
+Engine.register(ENGINEPLUGIN.SCENE, ScenePlugin);
+Engine.register(ENGINEPLUGIN.RENDERMANAGER, RenderManagerPlugin);
+Engine.register(ENGINEPLUGIN.POINTERMANAGER, PointerManagerPlugin);
+Engine.register(ENGINEPLUGIN.EVENTMANAGER, EventManagerPlugin);
+Engine.register(ENGINEPLUGIN.LOADERMANAGER, LoaderManagerPlugin);
+Engine.register(ENGINEPLUGIN.RESOURCEMANAGER, ResourceManagerPlugin);
+Engine.register(ENGINEPLUGIN.DATASUPPORTMANAGER, DataSupportManagerPlugin);
+Engine.register(ENGINEPLUGIN.COMPILERMANAGER, CompilerManagerPlugin);
+Engine.register(ENGINEPLUGIN.KEYBOARDMANAGER, KeyboardManagerPlugin);
+Engine.register(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin);
+Engine.register(ENGINEPLUGIN.TRANSFORMCONTROLS, TransformControlsPlugin);
+Engine.register(ENGINEPLUGIN.AXESHELPER, AxesHelperPlugin);
+Engine.register(ENGINEPLUGIN.GRIDHELPER, GridHelperPlugin);
+Engine.register(ENGINEPLUGIN.OBJECTHELPER, ObjectHelperPlugin);
+Engine.register(ENGINEPLUGIN.DISPLAYMODE, DisplayModelPlugin);
+Engine.register(ENGINEPLUGIN.VIEWPOINT, ViewpointPlugin);
+Engine.register(ENGINEPLUGIN.STATS, StatsPlugin);
+Engine.register(ENGINEPLUGIN.SELECTION, SelectionPlugin);
 //# sourceMappingURL=Engine.js.map

@@ -1,7 +1,6 @@
-import { Camera, WebGLRenderer } from "three";
+import { Camera, Scene, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { ModelingScene } from "../extends/ModelingScene/ModelingScene";
 import { EventManager } from "../manager/EventManager";
 import { PointerManager } from "../manager/PointerManager";
 import { RenderManager } from "../manager/RenderManager";
@@ -10,7 +9,7 @@ export declare class DisplayEngine extends Engine {
     dom: HTMLElement;
     webGLRenderer: WebGLRenderer;
     currentCamera: Camera;
-    scene: ModelingScene;
+    scene: Scene;
     orbitControls: OrbitControls;
     effectComposer: EffectComposer;
     renderManager: RenderManager;

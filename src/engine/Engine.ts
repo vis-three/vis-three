@@ -6,7 +6,6 @@ import {
   WebGLRendererParameters
 } from "three";
 import { EventDispatcher } from "../core/EventDispatcher";
-import { ModelingScenePlugin } from "../plugins/ModelingScenePlugin";
 
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";

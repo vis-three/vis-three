@@ -14,5 +14,6 @@ export var MODULETYPE;
     MODULETYPE["MESH"] = "mesh";
     MODULETYPE["POINTS"] = "points";
     MODULETYPE["GROUP"] = "group";
+    MODULETYPE["MODIFIER"] = "modifier";
 })(MODULETYPE || (MODULETYPE = {}));
 //# sourceMappingURL=MODULETYPE.js.map

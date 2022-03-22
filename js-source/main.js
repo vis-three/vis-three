@@ -21,7 +21,6 @@ import { RendererDataSupport } from "./middleware/renderer/RendererDataSupport";
 import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
 import { EVENTTYPE } from "./middleware/constants/EVENTTYPE";
 import { TextureDisplayer } from "./displayer/TextureDisplayer";
-import { ModelingScene, SCENEDISPLAYMODE, SCENEVIEWPOINT } from "./extends/ModelingScene/ModelingScene";
 import { SceneDataSupport } from './middleware/scene/SceneDataSupport';
 import { CanvasTextureGenerator } from './convenient/CanvasTextureGenerator';
 import { SpriteDataSupport } from './middleware/sprite/SpriteDataSupport';
@@ -34,12 +33,15 @@ import * as BasicEventLibrary from './convenient/BasicEventLibrary/configure';
 import * as RealTimeAnimateLibrary from './convenient/RealTimeAnimateLibrary/configure';
 import { GroupHelper } from './extends/helper/object/GroupHelper';
 import { EngineSupport } from './engine/EngineSupport';
+import { BooleanModifier } from "./modifier/BooleanModifier";
+import { VIEWPOINT } from "./plugins/ViewpointPlugin";
+import { DISPLAYMODE } from "./plugins/DisplayModePlugin";
 if (!window.__THREE__) {
     console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
 export { 
 // menu
-RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, OBJECTEVENT, EVENTTYPE, SCENEDISPLAYMODE, SCENEVIEWPOINT, ENGINEPLUGIN, 
+RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, OBJECTEVENT, EVENTTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, 
 // manager
 LoaderManager, ResourceManager, DataSupportManager, 
 // engine
@@ -55,6 +57,6 @@ PointLightHelper, CameraHelper, GroupHelper,
 generateConfig, SupportDataGenerator, CanvasTextureGenerator, 
 // displayer
 MaterialDisplayer, TextureDisplayer, 
-// extends
-ModelingScene };
+// modifier
+BooleanModifier };
 //# sourceMappingURL=main.js.map

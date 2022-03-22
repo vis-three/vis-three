@@ -28,8 +28,8 @@ export declare class EventManager extends EventDispatcher {
     private raycaster;
     private scene;
     private camera;
-    private recursive;
-    private penetrate;
+    recursive: boolean;
+    penetrate: boolean;
     constructor(parameters: EventManagerParameters);
     setCamera(camera: Camera): this;
     intersectObject(mouse: Vector2): Intersection<Object3D<Event>>[];

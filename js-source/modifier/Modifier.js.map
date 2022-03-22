@@ -1,0 +1,1 @@
+{"version":3,"file":"Modifier.js","sourceRoot":"","sources":["../../src/modifier/Modifier.ts"],"names":[],"mappings":"AAIA,MAAM,OAAgB,QAAQ;IAE5B,OAAO,GAAY,IAAI,CAAA;IAEvB,YAAa,UAA8B;QACzC,IAAI,CAAC,OAAO,GAAG,UAAU,CAAC,OAAO,KAAK,SAAS,CAAC,CAAC,CAAC,UAAU,CAAC,OAAO,CAAC,CAAC,CAAC,IAAI,CAAA;IAC7E,CAAC;CAKF"}

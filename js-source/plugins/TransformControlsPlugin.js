@@ -1,5 +1,3 @@
-import { Scene } from 'three';
-import { ModelingScene } from './../extends/ModelingScene/ModelingScene';
 import { TRANSFORMEVENT, VisTransformControls } from "../optimize/VisTransformControls";
 export const TransformControlsPlugin = function (params) {
     if (this.transformControls) {
@@ -24,14 +22,8 @@ export const TransformControlsPlugin = function (params) {
     transformControls.addEventListener('mouseDown', () => {
         this.transing = true;
     });
-    if (this.scene instanceof Scene) {
-        this.scene.add(this.transformControls);
-        this.scene.add(this.transformControls.target);
-    }
-    else if (this.scene instanceof ModelingScene) {
-        this.scene._add(this.transformControls);
-        this.scene._add(this.transformControls.target);
-    }
+    this.scene.add(this.transformControls);
+    this.scene.add(this.transformControls.target);
     this.setTransformControls = function (show) {
         this.transformControls.visible = show;
         return this;
@@ -39,15 +31,23 @@ export const TransformControlsPlugin = function (params) {
     this.addEventListener('setCamera', event => {
         transformControls.setCamera(event.camera);
     });
-    this.eventManager.addEventListener('pointerup', (event) => {
-        if (this.transing) {
-            return;
-        }
-        if (event.button === 0) {
-            const objectList = event.intersections.map((elem) => elem.object);
-            transformControls.setAttach(objectList[0]);
-        }
-    });
+    // 与selection联调
+    if (this.selectionBox) {
+        this.addEventListener('selected', (event) => {
+            transformControls.setAttach(...event.objects);
+        });
+    }
+    else {
+        this.eventManager.addEventListener('pointerup', (event) => {
+            if (this.transing) {
+                return;
+            }
+            if (event.button === 0) {
+                const objectList = event.intersections.map((elem) => elem.object);
+                transformControls.setAttach(objectList[0]);
+            }
+        });
+    }
     this.completeSet.add(() => {
         if (this.IS_ENGINESUPPORT) {
             const objectToConfig = (object) => {

@@ -1,4 +1,3 @@
-import { ModelingScene } from './../extends/ModelingScene/ModelingScene';
 import { EventManager } from "../manager/EventManager";
 export const EventManagerPlugin = function (params) {
     if (this.eventManager) {
@@ -22,21 +21,6 @@ export const EventManagerPlugin = function (params) {
     this.addEventListener('setCamera', event => {
         this.eventManager.setCamera(event.camera);
     });
-    if (this.scene instanceof ModelingScene) {
-        this.eventManager.addEventListener('pointermove', (event) => {
-            this.scene.setObjectHelperHover(...event.intersections.map(elem => elem.object));
-        });
-        // click发生在pointerup之后
-        this.eventManager.addEventListener('click', (event) => {
-            if (this.transing) {
-                this.transing = false;
-                return;
-            }
-            if (event.button === 0) {
-                this.scene.setObjectHelperActive(...event.intersections.map(elem => elem.object));
-            }
-        });
-    }
     return true;
 };
 //# sourceMappingURL=EventManagerPlugin.js.map

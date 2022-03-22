@@ -8299,15 +8299,9 @@ class DisplayEngine extends Engine {
     this.install(ENGINEPLUGIN.WEBGLRENDERER, {
       antialias: true,
       alpha: true
-    });
-    this.install(ENGINEPLUGIN.SCENE);
-    this.install(ENGINEPLUGIN.RENDERMANAGER);
-    this.install(ENGINEPLUGIN.EFFECTCOMPOSER, {
+    }).install(ENGINEPLUGIN.SCENE).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
       WebGLMultisampleRenderTarget: true
-    });
-    this.install(ENGINEPLUGIN.ORBITCONTROLS);
-    this.install(ENGINEPLUGIN.POINTERMANAGER);
-    this.install(ENGINEPLUGIN.EVENTMANAGER);
+    }).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).complete();
   }
 }
 class ModelingEngine extends Engine {

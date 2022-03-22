@@ -8,22 +8,21 @@ export class ModelingEngineSupport extends EngineSupport {
             antialias: true,
             alpha: true
         })
-            .install(ENGINEPLUGIN.MODELINGSCENE, {
-            hasDefaultPerspectiveCamera: true,
-            hasDefaultOrthographicCamera: true,
-            hasAxesHelper: true,
-            hasGridHelper: true,
-            hasDisplayMode: true,
-            displayMode: 'env'
-        })
-            .install(ENGINEPLUGIN.RENDERMANAGER)
-            .install(ENGINEPLUGIN.STATS)
+            .install(ENGINEPLUGIN.SCENE)
+            .install(ENGINEPLUGIN.POINTERMANAGER)
+            .install(ENGINEPLUGIN.EVENTMANAGER)
             .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
             WebGLMultisampleRenderTarget: true
         })
+            .install(ENGINEPLUGIN.SELECTION)
+            .install(ENGINEPLUGIN.AXESHELPER)
+            .install(ENGINEPLUGIN.GRIDHELPER)
+            .install(ENGINEPLUGIN.OBJECTHELPER)
+            .install(ENGINEPLUGIN.VIEWPOINT)
+            .install(ENGINEPLUGIN.DISPLAYMODE)
+            .install(ENGINEPLUGIN.RENDERMANAGER)
+            .install(ENGINEPLUGIN.STATS)
             .install(ENGINEPLUGIN.ORBITCONTROLS)
-            .install(ENGINEPLUGIN.POINTERMANAGER)
-            .install(ENGINEPLUGIN.EVENTMANAGER)
             .install(ENGINEPLUGIN.KEYBOARDMANAGER)
             .install(ENGINEPLUGIN.TRANSFORMCONTROLS)
             .complete();

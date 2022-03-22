@@ -4,6 +4,7 @@ import { RENDERERMANAGER } from "../middleware/constants/EVENTTYPE";
 export class RenderManager extends EventDispatcher {
     clock = new Clock(); // 引擎时钟
     animationFrame = -1; // 渲染定时器
+    fps = 0; // 帧率 0 跟随系统
     // 渲染
     render = () => {
         const clock = this.clock;

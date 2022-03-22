@@ -1,26 +1,22 @@
 import {
   Camera,
+  Scene,
   WebGLRenderer
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { ModelingScene } from "../extends/ModelingScene/ModelingScene";
 import { EventManager } from "../manager/EventManager";
 import { PointerManager } from "../manager/PointerManager";
 import { RenderManager } from "../manager/RenderManager";
-import { Engine, ENGINEPLUGIN } from "./Engine";
-import { CompilerManager } from "../manager/CompilerManager";
-import { DataSupportManager } from "../manager/DataSupportManager";
-import { LoaderManager } from "../manager/LoaderManager";
-import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
-import { EngineSupport, EngineSupportLoadOptions, EngineSupportParameters } from "./EngineSupport";
+import { ENGINEPLUGIN } from "./Engine";
+import { EngineSupport, EngineSupportParameters } from "./EngineSupport";
 
 export class DisplayEngineSupport extends EngineSupport {
 
   declare dom: HTMLElement
   declare webGLRenderer: WebGLRenderer
   declare currentCamera: Camera
-  declare scene: ModelingScene
+  declare scene: Scene
   declare orbitControls: OrbitControls
   declare effectComposer: EffectComposer
   declare renderManager: RenderManager

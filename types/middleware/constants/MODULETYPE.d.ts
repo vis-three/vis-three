@@ -12,5 +12,6 @@ export declare enum MODULETYPE {
     LINE = "line",
     MESH = "mesh",
     POINTS = "points",
-    GROUP = "group"
+    GROUP = "group",
+    MODIFIER = "modifier"
 }
