@@ -63,6 +63,7 @@ export interface DataSupportManagerParameters {
     groupDataSupport?: GroupDataSupport;
 }
 export declare class DataSupportManager {
+    static register: <D>(module: MODULETYPE, dataSupport: D) => typeof DataSupportManager;
     cameraDataSupport: CameraDataSupport;
     lightDataSupport: LightDataSupport;
     geometryDataSupport: GeometryDataSupport;

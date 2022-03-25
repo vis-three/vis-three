@@ -50,6 +50,9 @@ export const KeyboardManagerPlugin: Plugin<object> = function (this: Engine, par
           desp: 'tranformControls switch y axis',
           keyup: (event) => {
             event?.preventDefault()
+            if (event?.ctrlKey) {
+              return
+            }
             transformControls.showY = !transformControls.showY
           }
         }).register({
@@ -57,6 +60,9 @@ export const KeyboardManagerPlugin: Plugin<object> = function (this: Engine, par
           desp: 'tranformControls switch z axis',
           keyup: (event) => {
             event?.preventDefault()
+            if (event?.ctrlKey) {
+              return
+            }
             transformControls.showZ = !transformControls.showZ
           }
         }).register({
@@ -114,6 +120,9 @@ export const KeyboardManagerPlugin: Plugin<object> = function (this: Engine, par
           desp: 'tranformControls switch y axis',
           keyup: (event) => {
             event?.preventDefault()
+            if (event?.ctrlKey) {
+              return
+            }
             transformControls.showY = !transformControls.showY
           }
         }).register({
@@ -121,6 +130,9 @@ export const KeyboardManagerPlugin: Plugin<object> = function (this: Engine, par
           desp: 'tranformControls switch z axis',
           keyup: (event) => {
             event?.preventDefault()
+            if (event?.ctrlKey) {
+              return
+            }
             transformControls.showZ = !transformControls.showZ
           }
         }).register({

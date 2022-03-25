@@ -3386,7 +3386,7 @@ class GroupDataSupport extends ObjectDataSupport {
     super(GroupRule, data);
   }
 }
-class DataSupportManager {
+const _DataSupportManager = class {
   constructor(parameters) {
     __publicField(this, "cameraDataSupport");
     __publicField(this, "lightDataSupport");
@@ -3437,7 +3437,7 @@ class DataSupportManager {
     }
     const dataSupportMap = new Map();
     for (let module in MODULETYPE) {
-      dataSupportMap.set(MODULETYPE[module], this[`${MODULETYPE[module]}DataSupport`]);
+      this[`${MODULETYPE[module]}DataSupport`] && dataSupportMap.set(MODULETYPE[module], this[`${MODULETYPE[module]}DataSupport`]);
     }
     this.dataSupportMap = dataSupportMap;
   }
@@ -3496,7 +3496,11 @@ class DataSupportManager {
     });
     return JSON.stringify(jsonObject);
   }
-}
+};
+let DataSupportManager = _DataSupportManager;
+__publicField(DataSupportManager, "register", function(module, dataSupport) {
+  return _DataSupportManager;
+});
 const DataSupportManagerPlugin = function(params) {
   if (this.dataSupportManager) {
     console.warn("engine has installed dataSupportManager plugin.");
@@ -7142,6 +7146,9 @@ const KeyboardManagerPlugin = function(params) {
           desp: "tranformControls switch y axis",
           keyup: (event) => {
             event == null ? void 0 : event.preventDefault();
+            if (event == null ? void 0 : event.ctrlKey) {
+              return;
+            }
             transformControls.showY = !transformControls.showY;
           }
         }).register({
@@ -7149,6 +7156,9 @@ const KeyboardManagerPlugin = function(params) {
           desp: "tranformControls switch z axis",
           keyup: (event) => {
             event == null ? void 0 : event.preventDefault();
+            if (event == null ? void 0 : event.ctrlKey) {
+              return;
+            }
             transformControls.showZ = !transformControls.showZ;
           }
         }).register({
@@ -7206,6 +7216,9 @@ const KeyboardManagerPlugin = function(params) {
           desp: "tranformControls switch y axis",
           keyup: (event) => {
             event == null ? void 0 : event.preventDefault();
+            if (event == null ? void 0 : event.ctrlKey) {
+              return;
+            }
             transformControls.showY = !transformControls.showY;
           }
         }).register({
@@ -7213,6 +7226,9 @@ const KeyboardManagerPlugin = function(params) {
           desp: "tranformControls switch z axis",
           keyup: (event) => {
             event == null ? void 0 : event.preventDefault();
+            if (event == null ? void 0 : event.ctrlKey) {
+              return;
+            }
             transformControls.showZ = !transformControls.showZ;
           }
         }).register({
@@ -7902,6 +7918,8 @@ class GroupHelper extends LineSegments {
     geometry.computeBoundingBox();
     this.geometry = geometry;
     this.material = getHelperLineMaterial();
+    this.material.depthTest = false;
+    this.material.depthWrite = false;
     this.matrixAutoUpdate = false;
     this.matrix = group.matrix;
   }
@@ -9259,7 +9277,49 @@ class BooleanModifier extends Modifier {
     this.modifiedGeometry.dispose();
   }
 }
+class History {
+  constructor(step) {
+    __publicField(this, "actionList", []);
+    __publicField(this, "index", -1);
+    __publicField(this, "step", 50);
+    this.step = step || 50;
+  }
+  do(command) {
+    this.actionList[this.index][command]();
+  }
+  apply(action) {
+    const actionList = this.actionList;
+    if (this.index === actionList.length - 1 && actionList.length >= this.step) {
+      actionList.shift();
+      this.index = this.actionList.length - 1;
+    } else if (this.index !== -1) {
+      actionList.splice(this.index + 1, actionList.length - 1);
+    } else if (this.index === -1) {
+      this.actionList = [];
+    }
+    this.actionList.push(action);
+    this.redo();
+  }
+  redo() {
+    this.index += 1;
+    if (this.index > this.actionList.length - 1) {
+      this.index = this.actionList.length - 1;
+      return;
+    }
+    this.do("next");
+  }
+  undo() {
+    if (this.index < 0) {
+      return;
+    }
+    this.do("prev");
+    this.index -= 1;
+  }
+  clear() {
+    this.actionList = [];
+  }
+}
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
-export { configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, generateConfig };
+export { configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, generateConfig };

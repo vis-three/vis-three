@@ -15,6 +15,9 @@ import { PointsDataSupport } from '../middleware/points/PointsDataSupport';
 import { validate } from 'uuid';
 import { GroupDataSupport } from '../middleware/group/GroupDataSupport';
 export class DataSupportManager {
+    static register = function (module, dataSupport) {
+        return DataSupportManager;
+    };
     cameraDataSupport;
     lightDataSupport;
     geometryDataSupport;
@@ -66,7 +69,7 @@ export class DataSupportManager {
         }
         const dataSupportMap = new Map();
         for (let module in MODULETYPE) {
-            dataSupportMap.set(MODULETYPE[module], this[`${MODULETYPE[module]}DataSupport`]);
+            this[`${MODULETYPE[module]}DataSupport`] && dataSupportMap.set(MODULETYPE[module], this[`${MODULETYPE[module]}DataSupport`]);
         }
         this.dataSupportMap = dataSupportMap;
     }

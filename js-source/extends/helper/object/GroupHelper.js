@@ -10,6 +10,8 @@ export class GroupHelper extends LineSegments {
         geometry.computeBoundingBox();
         this.geometry = geometry;
         this.material = getHelperLineMaterial();
+        this.material.depthTest = false;
+        this.material.depthWrite = false;
         this.matrixAutoUpdate = false;
         this.matrix = group.matrix;
     }

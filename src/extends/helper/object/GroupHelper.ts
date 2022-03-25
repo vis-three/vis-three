@@ -16,6 +16,8 @@ export class GroupHelper extends LineSegments implements VisHelper {
 
     this.geometry = geometry
     this.material = getHelperLineMaterial()
+    this.material.depthTest = false
+    this.material.depthWrite = false
 
     this.matrixAutoUpdate = false
     this.matrix = group.matrix

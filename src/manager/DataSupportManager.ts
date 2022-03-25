@@ -73,6 +73,11 @@ export interface DataSupportManagerParameters {
 }
 
 export class DataSupportManager {
+
+  static register = function<D> (module: MODULETYPE, dataSupport: D) {
+    return DataSupportManager
+  }
+
   cameraDataSupport!: CameraDataSupport
   lightDataSupport!: LightDataSupport
   geometryDataSupport!: GeometryDataSupport
@@ -128,7 +133,7 @@ export class DataSupportManager {
 
     const dataSupportMap = new Map()
     for (let module in MODULETYPE) {
-      dataSupportMap.set(MODULETYPE[module], this[`${MODULETYPE[module]}DataSupport`])
+      this[`${MODULETYPE[module]}DataSupport`] && dataSupportMap.set(MODULETYPE[module], this[`${MODULETYPE[module]}DataSupport`])
     }
 
     this.dataSupportMap = dataSupportMap
