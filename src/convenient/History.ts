@@ -17,7 +17,7 @@ export class History {
     this.actionList[this.index][command]();
   }
 
-  apply (action: Action) {
+  apply (action: Action, exec: boolean = false) {
     const actionList = this.actionList
     // 动作超过50情空前面缓存
     if (
@@ -35,7 +35,12 @@ export class History {
     }
 
     this.actionList.push(action);
-    this.redo()
+
+    if (exec) {
+      this.redo()
+    } else {
+      this.index += 1;
+    }
   }
 
   redo() {

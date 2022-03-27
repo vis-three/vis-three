@@ -33,7 +33,7 @@ import {
 3. 执行`npm run examples`
 4. 打开浏览器访问: [http://localhost:3000/examples/index.html](http://localhost:3000/examples/index.html)
 
-5. 示例代码位于：`examples`文件夹下
+5. demo源码位于：`examples`文件夹下
 
 
 ## 备注
@@ -41,7 +41,7 @@ gitee仓库为github的同步备份仓库
 github地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github.com/Shiotsukikaedesari/vis-three)
 
 ## 基本用法
-#### 生成配置
+### 生成配置
 
 ``` js
 const pointLight = Vis.generateConfig('PointLight', {
@@ -53,7 +53,7 @@ const pointLight = Vis.generateConfig('PointLight', {
 })
 ```
 
-#### 生成配置模块
+### 生成配置模块
 
 ``` js
 const lightMap = new Vis.SupportDataGenerator()
@@ -62,12 +62,12 @@ const lightMap = new Vis.SupportDataGenerator()
   .get()
 ```
 
-#### 使用支持插件
+### 使用支持插件
 ``` js
 const lightDataSupport = new Vis.LightDataSupport(lightMap)
 ```
 
-#### 使用支持建模引擎
+### 使用支持建模引擎
 ``` js
 const engine = new Vis.ModelingEngineSupport({
   lightDataSupport: lightDataSupport
@@ -76,7 +76,7 @@ const engine = new Vis.ModelingEngineSupport({
   .play()
 ```
 
-#### 快速编辑场景物体
+### 快速编辑场景物体
 ``` js
 const lightSupportData = lightDataSupport.getData()
 const pointLight = lightSupportData[pointLight.vid]
@@ -84,12 +84,12 @@ pointLight.position.x = 10
 pointLight.position.y = 20
 ```
 
-#### 导出配置
+### 导出配置
 ``` js
 console.log(engine.toJSON())
 ```
 
-#### 导入配置生成场景
+### 导入配置生成场景
 ``` js
 
 import config from '/examples/config.json'
@@ -98,13 +98,13 @@ const engine = new Vis.ModelingEngineSupport()
 .setDom(document.getElementById('app'))
 .setSize()
 .play()
-.loadConfig(config, (event) => {
+.loadConfigAsync(config).then(event => {
   // loaded do something...
 })
 ```
 ## 渲染引擎
 
-##### 引擎使用
+### 引擎使用
 ``` js
 
 const ENGINEPLUGIN = Vis.ENGINEPLUGIN
@@ -139,9 +139,9 @@ const engine = new Vis.Engine()
   .play()
 ```
 
-##### 引擎插件
+### 引擎插件
 
-###### WebGLRenderer
+#### WebGLRenderer
 
 GL渲染器插件
 
@@ -165,11 +165,11 @@ engine.addEventListener('setCamera', (event) => {
 })
 ```
 
-###### CSS3DRenderer（预）
+#### CSS3DRenderer（预）
 
 CSS3D渲染器插件
 
-###### Scene
+#### Scene
 
 场景插件
 
@@ -186,7 +186,7 @@ engine.addEventListener('afterRemove', (event) => {
   // event.objects
 })
 ```
-###### EffectComposer
+#### EffectComposer
 
  后期处理器插件
 
@@ -204,7 +204,7 @@ const engine = new Vis.Engine()
 // event 
  ```
 
- ###### PointerManager
+ #### PointerManager
  
  指针，鼠标管理器插件
 
@@ -228,7 +228,7 @@ engine.dom.addEventListener('pointerup', (event) => {
 })
  ```
 
- ###### EventManager
+ #### EventManager
  
  场景与物体的事件管理器插件
 
@@ -324,7 +324,7 @@ threeObject.addEventListener('contextmenu', (event) => {
 })
  ```
 
- ###### RenderManager
+ #### RenderManager
  
 渲染管理器插件
 
@@ -347,7 +347,7 @@ engine.renderManager.addEventListener('stop', () => {
 })
  ```
 
-###### LoaderManager
+#### LoaderManager
 
 加载器管理器插件
 
@@ -395,7 +395,7 @@ engine.loaderManager.addEventListener('detailLoaded', (event) => {
   // }
 })
  ```
-###### ResourceManager
+#### ResourceManager
 
 资源管理器插件
 
@@ -410,7 +410,7 @@ engine.resourceManager.addEventListener('mapped', (event) => {
   // event.resourceMap: Map<string, unknown>
 })
  ```
-###### DataSupportManager
+#### DataSupportManager
 
 数据支持管理器插件
 
@@ -425,7 +425,7 @@ const engine = new Vis.Engine()
 // event
 
  ```
-###### CompilerManager
+#### CompilerManager
 
 编译管理器插件
 
@@ -439,36 +439,36 @@ const engine = new Vis.Engine()
 
  ```
 
-###### OrbitControls
+#### OrbitControls
 
 轨道控制器插件
-###### TransformControls
+#### TransformControls
 
 变换控制器插件
-###### Stats
+#### Stats
 
 资源监视器插件
 
-###### AxesHelper
+#### AxesHelper
 
 坐标轴辅助插件
-###### GridHelper
+#### GridHelper
 
 网格辅助插件
-###### ObjectHelper
+#### ObjectHelper
 
 物体辅助插件
-###### Viewpoint
+#### Viewpoint
 
 视角切换插件
-###### DisplayMode
+#### DisplayMode
 
 渲染模式插件
-###### Selection
+#### Selection
 
 物体选择插件
 
-#### 自定义插件
+### 自定义插件
 ``` js
 const customPlugin = function (params) {
   // this is engine
@@ -484,70 +484,80 @@ Vis.Engine.register('customPlugin', customPlugin)
 new Vis.Engine().install('customPlugin', params)
 ```
 
-#### 预设引擎
-##### ModelingEngine开发下的渲染引擎
+### 预设引擎
+### ModelingEngine开发下的渲染引擎
 ``` js
-this.install(ENGINEPLUGIN.WEBGLRENDERER, {
-  antialias: true,
-  alpha: true
-})
-.install(ENGINEPLUGIN.SCENE)
-.install(ENGINEPLUGIN.POINTERMANAGER)
-.install(ENGINEPLUGIN.EVENTMANAGER)
-.install(ENGINEPLUGIN.EFFECTCOMPOSER, {
-  WebGLMultisampleRenderTarget: true
-})
-.install(ENGINEPLUGIN.SELECTION)
-.install(ENGINEPLUGIN.AXESHELPER)
-.install(ENGINEPLUGIN.GRIDHELPER)
-.install(ENGINEPLUGIN.OBJECTHELPER)
-.install(ENGINEPLUGIN.VIEWPOINT)
-.install(ENGINEPLUGIN.DISPLAYMODE)
-.install(ENGINEPLUGIN.RENDERMANAGER)
-.install(ENGINEPLUGIN.STATS)
-.install(ENGINEPLUGIN.ORBITCONTROLS)
-.install(ENGINEPLUGIN.KEYBOARDMANAGER)
-.install(ENGINEPLUGIN.TRANSFORMCONTROLS)
-.complete()
+const engine = new Vis.ModelingEngine()
+
+// .install(ENGINEPLUGIN.WEBGLRENDERER, {
+//   antialias: true,
+//   alpha: true
+// })
+// .install(ENGINEPLUGIN.SCENE)
+// .install(ENGINEPLUGIN.POINTERMANAGER)
+// .install(ENGINEPLUGIN.EVENTMANAGER)
+// .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
+//   WebGLMultisampleRenderTarget: true
+// })
+// .install(ENGINEPLUGIN.SELECTION)
+// .install(ENGINEPLUGIN.AXESHELPER)
+// .install(ENGINEPLUGIN.GRIDHELPER)
+// .install(ENGINEPLUGIN.OBJECTHELPER)
+// .install(ENGINEPLUGIN.VIEWPOINT)
+// .install(ENGINEPLUGIN.DISPLAYMODE)
+// .install(ENGINEPLUGIN.RENDERMANAGER)
+// .install(ENGINEPLUGIN.STATS)
+// .install(ENGINEPLUGIN.ORBITCONTROLS)
+// .install(ENGINEPLUGIN.KEYBOARDMANAGER)
+// .install(ENGINEPLUGIN.TRANSFORMCONTROLS)
+// .complete()
 ```
 
-##### DisplayEngine展示下的渲染引擎
+### DisplayEngine展示下的渲染引擎
 
 ``` js
-this.install(ENGINEPLUGIN.WEBGLRENDERER, {
-  antialias: true,
-  alpha: true
-})
-.install(ENGINEPLUGIN.SCENE)
-.install(ENGINEPLUGIN.RENDERMANAGER)
-.install(ENGINEPLUGIN.EFFECTCOMPOSER, {
-  WebGLMultisampleRenderTarget: true
-})
-.install(ENGINEPLUGIN.ORBITCONTROLS)
-.install(ENGINEPLUGIN.POINTERMANAGER)
-.install(ENGINEPLUGIN.EVENTMANAGER)
-.complete()
+const engine = Vis.DisplayEngine()
+
+// .install(ENGINEPLUGIN.WEBGLRENDERER, {
+//   antialias: true,
+//   alpha: true
+// })
+// .install(ENGINEPLUGIN.SCENE)
+// .install(ENGINEPLUGIN.RENDERMANAGER)
+// .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
+//   WebGLMultisampleRenderTarget: true
+// })
+// .install(ENGINEPLUGIN.ORBITCONTROLS)
+// .install(ENGINEPLUGIN.POINTERMANAGER)
+// .install(ENGINEPLUGIN.EVENTMANAGER)
+// .complete()
 ```
 
-##### EngineSupport 配置化支持引擎
+### EngineSupport 配置化支持引擎
 ``` js
-this.install(ENGINEPLUGIN.LOADERMANAGER)
-.install(ENGINEPLUGIN.RESOURCEMANAGER)
-.install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters)
-.install(ENGINEPLUGIN.COMPILERMANAGER)
+// .install(ENGINEPLUGIN.LOADERMANAGER)
+// .install(ENGINEPLUGIN.RESOURCEMANAGER)
+// .install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters)
+// .install(ENGINEPLUGIN.COMPILERMANAGER)
 ```
 
-##### ModelingEngineSupport
+### ModelingEngineSupport
 
 EngineSupport + ModelingEngine
-##### DisplayEngineSupport
+
+``` js
+const engine = Vis.ModelingEngineSupport()
+```
+### DisplayEngineSupport
 
 EngineSupport + DisplayEngine
-
+``` js
+const engine = Vis.DisplayEngineSupport()
+```
 
 ## 资源管理
 
-#### 加载管理器
+### 加载管理器
 ``` js
 const assets = [
   "/examples/public/model/katana/katana.obj",
@@ -566,7 +576,7 @@ loaderManager.addEventListener('loaded', e => {
 engineSupport.loadResources(assets)
 
 ```
-#### 资源管理器
+### 资源管理器
 ``` js
 engineSupport.registerResources({
   'examples.canvas': new document.createElement('canvas')
@@ -618,7 +628,7 @@ engine.scene.add(new THREE.PointLight('white', 1))
 
 * `/doc/**/*`
 
-#### 预设
+### 预设
 
 - [ ] css3Renderer
 - [ ] css3相关物体模块
@@ -627,10 +637,11 @@ engine.scene.add(new THREE.PointLight('white', 1))
 ## 项目案例
 
 github: 
-[three-vis-display-editor](https://github.com/Shiotsukikaedesari/three-vis-display-editor)
+* [https://github.com/Shiotsukikaedesari/three-vis-display-editor](https://github.com/Shiotsukikaedesari/three-vis-display-editor)
+* [https://github.com/Shiotsukikaedesari/vis-model-generator](https://github.com/Shiotsukikaedesari/vis-model-generator)
 
 
 gitee:
-[three-vis-display-editor](https://gitee.com/Shiotsukikaedesari/three-vis-display-editor)
-[vis-model-generator](http://shiotsukikaedesari.gitee.io/vis-model-generator)
+* [https://gitee.com/Shiotsukikaedesari/three-vis-display-editor](https://gitee.com/Shiotsukikaedesari/three-vis-display-editor)
+* [https://gitee.com/Shiotsukikaedesari/vis-model-generator](https://gitee.com/Shiotsukikaedesari/vis-model-generator)
 

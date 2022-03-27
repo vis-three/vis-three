@@ -51,74 +51,68 @@
     pointLight.position.y = 30
     scene.add(pointLight)
 
-    const history = new Vis.History(10)
+    const history = new Vis.History(50)
+    
 
+    const SectionAction = Vis.ActionLibrary.SectionAction
 
-    class TransformAction {
-      constructor () {
-      }
+    class ModelingSectionAction extends SectionAction {
+      static status = false
+      static cacheSection = []
 
-      modeToTrans (mode) {
-        return mode === 'rotate' ? 'rotation' : mode === 'translate' ? 'position' : mode;
-      }
+      constructor ({objects, engine}) {
 
-      apply (status, selectionBox, transformControls) {
-
-        const mode = transformControls.mode
-
-        const transMode = this.modeToTrans(mode)
-
-        const cacheMap = new Map()
-        selectionBox.forEach(object => {
-          cacheMap.set(object, {
-            x: object[transMode].x,
-            y: object[transMode].y,
-            z: object[transMode].z
-          })
-        })
-
-        if (status === 'next') {
-          this.$next = {}
-          this.$next.mode = mode
-          this.$next.map = cacheMap
-        } else if (status === 'prev') {
-          this.$prev = {}
-          this.$prev.mode = mode
-          this.$prev.map = cacheMap
+        const params = {
+          oldObjects: [].concat(ModelingSectionAction.cacheSection),
+          newObjects: [].concat(objects),
+          engine
         }
 
-        this[status] = () => {
-          const cache = this[`$${status}`]
-          const transMode = this.modeToTrans(cache.mode)
-          const selectedBox = []
-          transformControls.mode = cache.mode
-          cache.map.forEach((vector3, object) => {
-            object[transMode].x = vector3.x
-            object[transMode].y = vector3.y
-            object[transMode].z = vector3.z
-            selectedBox.push(object)
-          })
-          transformControls.setAttach(...selectedBox)
-          selectionBox.add(...selectedBox)
-        }
+        super(params)
+
+        ModelingSectionAction.cacheSection = [].concat(objects)
+      }
+
+      next () {
+        ModelingSectionAction.status = true
+        super.next()
+      }
+
+      prev () {
+        ModelingSectionAction.status = true
+        super.prev()
       }
     }
 
+    engine.addEventListener('selected', (event) => {
+      if (ModelingSectionAction.status) {
+        ModelingSectionAction.status = false
+        return
+      }
+
+      history.apply(new ModelingSectionAction({
+        objects: event.objects,
+        engine: engine
+      }))
+    })
+
+
 
     const transformControls = engine.transformControls
+    const TransformAction = Vis.ActionLibrary.TransformAction
 
     let action  = ''
     transformControls.addEventListener('mouseDown', (event) => {
 
-      action = new TransformAction()
-      action.apply('prev',engine.selectionBox, event.target)
+      action = new TransformAction({transformControls})
+      action.generate('prev')
     })
 
 
     transformControls.addEventListener('mouseUp', (event) => {
-
-      action.apply('next',engine.selectionBox, event.target)
+      action.generate('next')
       history.apply(action)
+      action = ''
     })
 
 

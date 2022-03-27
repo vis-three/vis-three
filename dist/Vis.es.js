@@ -8706,6 +8706,99 @@ var configure = /* @__PURE__ */ Object.freeze({
   moveTo,
   moveSpacing
 });
+class SectionAction {
+  constructor(parameters) {
+    __publicField(this, "oldObjects");
+    __publicField(this, "newObjects");
+    __publicField(this, "engine");
+    __publicField(this, "impact");
+    this.oldObjects = parameters.oldObjects;
+    this.newObjects = parameters.newObjects;
+    this.engine = parameters.engine;
+    this.impact = true;
+    if (!this.engine.selectionBox) {
+      console.warn(`section action can not make any impact.`);
+      this.impact = false;
+    }
+  }
+  next() {
+    if (!this.impact) {
+      return;
+    }
+    this.engine.setSelectionBox({
+      objects: this.newObjects
+    });
+  }
+  prev() {
+    if (!this.impact) {
+      return;
+    }
+    this.engine.setSelectionBox({
+      objects: this.oldObjects
+    });
+  }
+}
+class TransformAction {
+  constructor(params) {
+    __publicField(this, "transfromControls");
+    __publicField(this, "nextState", {
+      mode: "translate",
+      space: "world",
+      tranform: "",
+      objectMap: new Map()
+    });
+    __publicField(this, "prevState", {
+      mode: "translate",
+      space: "world",
+      tranform: "",
+      objectMap: new Map()
+    });
+    this.transfromControls = params.transformControls;
+  }
+  generate(status) {
+    const transformControls = this.transfromControls;
+    const mode = transformControls.mode;
+    const tranform = mode === "rotate" ? "rotation" : mode === "translate" ? "position" : mode;
+    const objectSet = transformControls.getTransObjectSet();
+    const state = this[`${status}State`];
+    state.mode = mode;
+    state.tranform = tranform;
+    state.space = transformControls.space;
+    const cacheMap = state.objectMap;
+    objectSet.forEach((object) => {
+      cacheMap.set(object, {
+        x: object[tranform].x,
+        y: object[tranform].y,
+        z: object[tranform].z
+      });
+    });
+    this[status] = function() {
+      const transformControls2 = this.transfromControls;
+      const state2 = this[`${status}State`];
+      transformControls2.mode = state2.mode;
+      transformControls2.space = state2.space;
+      const tranform2 = state2.tranform;
+      const objects = [];
+      state2.objectMap.forEach((vector3, object) => {
+        object[tranform2].x = vector3.x;
+        object[tranform2].y = vector3.y;
+        object[tranform2].z = vector3.z;
+        objects.push(object);
+      });
+      transformControls2.setAttach(...objects);
+    };
+  }
+  next() {
+  }
+  prev() {
+  }
+}
+var Action = /* @__PURE__ */ Object.freeze({
+  __proto__: null,
+  [Symbol.toStringTag]: "Module",
+  SectionAction,
+  TransformAction
+});
 class NBuf3 {
   constructor(ct) {
     this.top = 0;
@@ -9287,7 +9380,7 @@ class History {
   do(command) {
     this.actionList[this.index][command]();
   }
-  apply(action) {
+  apply(action, exec = false) {
     const actionList = this.actionList;
     if (this.index === actionList.length - 1 && actionList.length >= this.step) {
       actionList.shift();
@@ -9298,7 +9391,11 @@ class History {
       this.actionList = [];
     }
     this.actionList.push(action);
-    this.redo();
+    if (exec) {
+      this.redo();
+    } else {
+      this.index += 1;
+    }
   }
   redo() {
     this.index += 1;
@@ -9322,4 +9419,4 @@ class History {
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
-export { configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, generateConfig };
+export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, generateConfig };

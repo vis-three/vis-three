@@ -32,6 +32,7 @@ import { MeshDataSupport } from './middleware/mesh/MeshDataSupport';
 import { PointsDataSupport } from './middleware/points/PointsDataSupport';
 import * as BasicEventLibrary from './convenient/BasicEventLibrary/configure'
 import * as RealTimeAnimateLibrary from './convenient/RealTimeAnimateLibrary/configure'
+import * as ActionLibrary from './convenient/ActionLibrary/Action'
 import { GroupHelper } from './extends/helper/object/GroupHelper';
 import { EngineSupport } from './engine/EngineSupport';
 
@@ -84,10 +85,6 @@ export {
   LineDataSupport,
   PointsDataSupport,
 
-  // eventLibaray
-  BasicEventLibrary,
-  RealTimeAnimateLibrary,
-
   // helper
   PointLightHelper,
   CameraHelper,
@@ -98,6 +95,9 @@ export {
   SupportDataGenerator,
   CanvasTextureGenerator,
   History,
+  ActionLibrary,
+  BasicEventLibrary,
+  RealTimeAnimateLibrary,
 
   // displayer
   MaterialDisplayer,
