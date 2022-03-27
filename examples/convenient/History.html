@@ -116,16 +116,19 @@
     })
 
 
-
-    window.addEventListener('keyup', (event) => {
-      if (event.ctrlKey && event.key === 'z') {
+    engine.keyboardManager.register({
+      shortcutKey: ['ctrl', 'z'],
+      desp: 'undo',
+      keyup: (event) => {
+        event?.preventDefault()
         history.undo()
-        return
       }
-
-      if (event.ctrlKey && event.key === 'y') {
+    }).register({
+      shortcutKey: ['ctrl', 'y'],
+      desp: 'redo',
+      keyup: (event) => {
+        event?.preventDefault()
         history.redo()
-        return
       }
     })
   </script>

@@ -410,6 +410,10 @@ engine.resourceManager.addEventListener('mapped', (event) => {
   // event.resourceMap: Map<string, unknown>
 })
  ```
+ 
+ #### KeyboardManager
+
+快捷键管理插件
 #### DataSupportManager
 
 数据支持管理器插件
@@ -425,6 +429,8 @@ const engine = new Vis.Engine()
 // event
 
  ```
+
+
 #### CompilerManager
 
 编译管理器插件
