@@ -281,6 +281,9 @@ export class LoaderManager extends EventDispatcher {
     return this
   }
 
+  // TODO:
+  remove(url: string) {}
+
   // 导出资源单
   toJSON (): string {
     const assets: string[] = []

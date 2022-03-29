@@ -28,7 +28,7 @@ export const MeshRule: MeshRule = function (notice: ProxyNotice, compiler: MeshC
     if (vid && validate(vid)) {
       compiler.set(vid, tempPath, key, value)
     } else {
-      console.warn(`model rule vid is illeage: '${vid}'`)
+      console.warn(`Mesh rule vid is illeage: '${vid}'`)
     }
     return
   }

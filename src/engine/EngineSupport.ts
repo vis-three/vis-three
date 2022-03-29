@@ -1,4 +1,5 @@
 import { Object3D } from "three";
+import { MODULETYPE } from "../main";
 import { CompilerManager } from "../manager/CompilerManager";
 import { DataSupportManager, DataSupportManagerParameters, LoadOptions } from "../manager/DataSupportManager";
 import { LoaderManager } from "../manager/LoaderManager";
@@ -35,23 +36,51 @@ export class EngineSupport extends Engine {
 
   }
 
+  private loadLifeCycle (config: Omit<EngineSupportLoadOptions, 'assets'>) {
+    const dataSupportManager = this.dataSupportManager
+
+    // 生成贴图
+    config.texture && dataSupportManager.load({texture: config.texture})
+      
+    // 生成材质
+    config.material && dataSupportManager.load({material: config.material})
+
+    // 其他
+    delete config.texture
+    delete config.material
+
+    dataSupportManager.load(config)
+  }
+
+  private removeLifeCycle (config: EngineSupportLoadOptions) {
+    const dataSupportManager = this.dataSupportManager
+    const texture = config[MODULETYPE.TEXTURE] || {}
+    const material = config[MODULETYPE.MATERIAL] || {}
+    const assets = config.assets || []
+
+    delete config.texture
+    delete config.material
+    delete config.assets
+
+    // 先删物体
+    dataSupportManager.remove(config)
+    // 再删材质
+    dataSupportManager.remove({[MODULETYPE.MATERIAL]: material})
+    // 再删贴图
+    dataSupportManager.remove({[MODULETYPE.TEXTURE]: texture})
+    // 再清空外部资源缓存
+    const resourceManager = this.resourceManager
+    const loaderManager = this.loaderManager
+    assets.forEach(url => {
+      resourceManager.remove(url)
+      loaderManager.remove(url)
+    })
+
+  }
+
   loadConfig (config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this {
-    const loadLifeCycle = () => {
-      const dataSupportManager = this.dataSupportManager
-
-      // 生成贴图
-      config.texture && dataSupportManager.load({texture: config.texture})
-        
-      // 生成材质
-      config.material && dataSupportManager.load({material: config.material})
-
-      // 其他
-
-      delete config.texture
-      delete config.material
-
-      dataSupportManager.load(config)
-    }
+    
+    this.renderManager!.stop()
     // 导入外部资源
     if (config.assets && config.assets.length) {
 
@@ -60,17 +89,19 @@ export class EngineSupport extends Engine {
       const mappedFun = (event: MappedEvent) => {
 
         delete config.assets
-        loadLifeCycle()
+        this.loadLifeCycle(config)
         
   
         this.resourceManager.removeEventListener('mapped', mappedFun)
         callback && callback(event)
+        this.renderManager!.play()
       }
   
       this.resourceManager.addEventListener<MappedEvent>('mapped', mappedFun)
     } else {
-      loadLifeCycle()
+      this.loadLifeCycle(config)
       callback && callback()
+      this.renderManager!.play()
     }
 
     return this
@@ -78,22 +109,7 @@ export class EngineSupport extends Engine {
 
   loadConfigAsync (config: EngineSupportLoadOptions): Promise<MappedEvent | undefined> {
     return new Promise((resolve, reject) => {
-      const loadLifeCycle = () => {
-        const dataSupportManager = this.dataSupportManager
-  
-        // 生成贴图
-        config.texture && dataSupportManager.load({texture: config.texture})
-          
-        // 生成材质
-        config.material && dataSupportManager.load({material: config.material})
-  
-        // 其他
-  
-        delete config.texture
-        delete config.material
-  
-        dataSupportManager.load(config)
-      }
+      this.renderManager!.stop()
       // 导入外部资源
       if (config.assets && config.assets.length) {
   
@@ -102,18 +118,24 @@ export class EngineSupport extends Engine {
         const mappedFun = (event: MappedEvent) => {
   
           delete config.assets
-          loadLifeCycle()
+          this.loadLifeCycle(config)
           
     
           this.resourceManager.removeEventListener('mapped', mappedFun)
+          this.renderManager!.play()
           resolve(event)
         }
     
         this.resourceManager.addEventListener<MappedEvent>('mapped', mappedFun)
       } else {
-        loadLifeCycle()
+        this.loadLifeCycle(config)
+        this.renderManager!.play()
         resolve(undefined)
       }
     })
+  }
+
+  removeConfig (config: EngineSupportLoadOptions) {
+    this.removeLifeCycle(config)
   }
 }

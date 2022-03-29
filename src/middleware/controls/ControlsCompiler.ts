@@ -35,6 +35,16 @@ export class ControlsCompiler extends Compiler {
     if (type === 'TransformControls') {
       const controls = this.transformControls
 
+      const filterMap = {
+        translationSnap: true,
+        rotationSnap: true,
+        scaleSnap: true
+      }
+
+      if (filterMap[key]) {
+        return this
+      }
+
       if (key === 'snapAllow') {
         const config = this.target['TransformControls']
         if (value) {
@@ -50,6 +60,8 @@ export class ControlsCompiler extends Compiler {
         }
         return this
       }
+
+
       
       controls[key] = value
     } else {

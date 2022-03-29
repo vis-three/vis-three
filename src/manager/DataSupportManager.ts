@@ -194,6 +194,14 @@ export class DataSupportManager {
     return this
   }
 
+  remove (config: LoadOptions): this {
+    const dataSupportMap = this.dataSupportMap
+    dataSupportMap.forEach((dataSupport, module) => {
+      config[module] && dataSupport.remove(config[module]!)
+    })
+    return this
+  }
+
   toJSON (extendsConfig?: object): string {
     const jsonObject = extendsConfig || {}
     const dataSupportMap = this.dataSupportMap

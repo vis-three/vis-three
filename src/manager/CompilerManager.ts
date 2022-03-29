@@ -233,6 +233,18 @@ export class CompilerManager {
     return null
   }
 
+  getObjectBySymbol (vid: string): Object3D | null {
+    const objectCompilerList = this.objectCompilerList
+    
+    for (let compiler of objectCompilerList) {
+      const object = compiler.getMap().get(vid)
+      if (object) {
+        return object
+      }
+    }
+    return null
+  }
+
   getMaterial (vid: string): Material | undefined {
     if (!validate(vid)) {
       console.warn(`compiler manager vid is illeage: ${vid}`)
@@ -251,10 +263,6 @@ export class CompilerManager {
 
     const textureCompiler = this.textureCompiler
     return textureCompiler.getMap().get(vid)
-  }
-
-  getObject (vid: string): Object3D | undefined {
-    return undefined
   }
 
   getObjectCompilerList (): BasicObjectCompiler[] {

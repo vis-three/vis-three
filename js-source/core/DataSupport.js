@@ -42,5 +42,12 @@ export class DataSupport {
         }
         return this;
     }
+    remove(config) {
+        const data = this.data;
+        for (const key in config) {
+            data[key] !== undefined && (delete data[key]);
+        }
+        return this;
+    }
 }
 //# sourceMappingURL=DataSupport.js.map

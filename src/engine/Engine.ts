@@ -24,7 +24,7 @@ import { EventManager, EventManagerParameters } from "../manager/EventManager";
 import { EventManagerPlugin } from "../plugins/EventManagerPlugin";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { TransformControlsPlugin } from "../plugins/TransformControlsPlugin";
-import { WebGLRendererPlugin } from "../plugins/WebGLRendererPlugin";
+import { Screenshot, WebGLRendererPlugin } from "../plugins/WebGLRendererPlugin";
 import { LoadedEvent, LoaderManager, LoaderManagerParameters } from "../manager/LoaderManager";
 import { LoaderManagerPlugin } from "../plugins/LoaderManagerPlugin";
 import { ResourceManager } from "../manager/ResourceManager";
@@ -106,6 +106,8 @@ export class Engine extends EventDispatcher {
   transing?: boolean
   displayMode?: DISPLAYMODE
   selectionBox?: Set<Object3D>
+
+  getScreenshot?: (params: Screenshot) => HTMLImageElement
 
   setSize?: (width: number, height: number) => this
   setCamera?: (camera: Camera) => this

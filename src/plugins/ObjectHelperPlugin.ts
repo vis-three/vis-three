@@ -82,6 +82,9 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (this
 
         if (params.interact) {
           const pointerenterFun = () => {
+            if (this.transing) {
+              return
+            }
             if (this.selectionBox) {
               if (this.selectionBox.has(object)) {
                 return
@@ -90,6 +93,9 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (this
             helper.material.color.setHex(hoverColorHex)
           }
           const pointerleaveFun = () => {
+            if (this.transing) {
+              return
+            }
             if (this.selectionBox) {
               if (this.selectionBox.has(object)) {
                 return
@@ -100,6 +106,9 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (this
           }
 
           const clickFun = () => {
+            if (this.transing) {
+              return
+            }
             if (this.selectionBox) {
               if (this.selectionBox.has(object)) {
                 return

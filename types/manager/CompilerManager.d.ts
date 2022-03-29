@@ -49,9 +49,9 @@ export declare class CompilerManager {
     constructor(parameters?: CompilerManagerParameters);
     support(engine: EngineSupport): this;
     getObjectSymbol<O extends Object3D>(object: O): SymbolConfig['vid'] | null;
+    getObjectBySymbol(vid: string): Object3D | null;
     getMaterial(vid: string): Material | undefined;
     getTexture(vid: string): Texture | undefined;
-    getObject(vid: string): Object3D | undefined;
     getObjectCompilerList(): BasicObjectCompiler[];
     dispose(): this;
 }

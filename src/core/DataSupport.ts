@@ -53,4 +53,12 @@ export class DataSupport<D extends CompilerTarget, C extends Compiler> {
     }
     return this
   }
+
+  remove (config: D): this {
+    const data = this.data
+    for (const key in config) {
+      data[key] !== undefined && (delete data[key])
+    }
+    return this
+  }
 }

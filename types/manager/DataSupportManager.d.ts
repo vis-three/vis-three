@@ -87,5 +87,6 @@ export declare class DataSupportManager {
     setSupportData<C extends CompilerTarget, D extends DataSupport<C, Compiler>>(type: MODULETYPE, data: C): this;
     getObjectConfig<T extends SymbolConfig>(vid: string): T | null;
     load(config: LoadOptions): this;
+    remove(config: LoadOptions): this;
     toJSON(extendsConfig?: object): string;
 }

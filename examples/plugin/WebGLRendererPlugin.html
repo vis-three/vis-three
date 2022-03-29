@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebGLRendererPlugin</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="../css/common.css">
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+  #button-position {
+    position: fixed;
+    top:30px;
+    left: 50%;
+  }
+
+  #button-group {
+    transform: translate(-50%, 0);
+  }
+
+  #button-group button {
+    margin: 0 5px;
+    font-size: 16px;
+    padding: 8px 10px;
+    background: rgb(237, 75, 243);
+    border-radius: 3px;
+    box-shadow: 0 0 6px rgb(236, 182, 238);
+  }
+</style>
+
+<body>
+  <div id="app"></div>
+
+  <div id="button-position">
+    <div id="button-group">
+      <button id="screenShot">getScreenshot</button>
+
+      <button id="screenShot4k">getScreenshot 4k</button>
+    </div>
+  </div>
+
+
+  <script type="module">
+    import * as THREE from 'three'
+    import * as Vis from '../../dist/Vis.es.js'
+    const engine = new Vis.ModelingEngine()
+    .setDom(document.getElementById('app'))
+    .setSize()
+    .setStats(true)
+    .play()
+
+    const scene = engine.scene
+
+    const box = new THREE.Mesh(
+      new THREE.BoxBufferGeometry(10, 10, 10),
+      new THREE.MeshStandardMaterial({ color: 'rgb(255, 105, 100)' })
+    )
+    box.position.x = 10
+    scene.add(box)
+
+    const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 300, 0)
+    pointLight.position.y = 30
+    scene.add(pointLight)
+
+    const line = new THREE.Line(
+      box.geometry
+    )
+    scene.add(line)
+
+    const points = new THREE.Points(
+      box.geometry
+    )
+
+    points.position.x = -10
+    scene.add(points)
+
+    console.log(engine)
+
+    document.getElementById('screenShot').onclick = () => {
+      const img = engine.getScreenshot()
+      const a = document.createElement('a')
+      a.download = 'vis-three' + new Date().getTime()
+      a.href = img.src;
+      a.click()
+    }
+
+    document.getElementById('screenShot4k').onclick = () => {
+      const img = engine.getScreenshot({
+        width: 4096,
+        height: 2160
+      })
+      const a = document.createElement('a')
+      a.download = 'vis-three-4k' + new Date().getTime()
+      a.href = img.src;
+      a.click()
+    }
+
+    window.addEventListener('resize', () => {
+      engine.setSize()
+    })
+  </script>
+  
+</body>
+</html>

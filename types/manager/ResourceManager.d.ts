@@ -20,5 +20,6 @@ export declare class ResourceManager extends EventDispatcher {
     resourceMap: Map<string, unknown>;
     constructor();
     mappingResource(loadResourceMap: Map<string, unknown>): this;
+    remove(url: string): void;
     dispose(): void;
 }

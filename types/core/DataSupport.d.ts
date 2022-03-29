@@ -12,4 +12,5 @@ export declare class DataSupport<D extends CompilerTarget, C extends Compiler> {
     addCompiler(compiler: C): this;
     toJSON(): string;
     load(config: D): this;
+    remove(config: D): this;
 }

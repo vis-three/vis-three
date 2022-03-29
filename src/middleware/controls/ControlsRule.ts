@@ -10,7 +10,7 @@ export const ControlsRule: Rule<ControlsCompiler> = function (input: ProxyNotice
     if (type) {
       compiler.set(type, tempPath, key, value)
     } else {
-      console.error(`controls rule can not found controls type in set operate.`)
+      console.warn(`controls rule can not found controls type in set operate: ${type}`)
     }
   }
 }

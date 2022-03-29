@@ -220,6 +220,8 @@ export class LoaderManager extends EventDispatcher {
         this.loadDetailMap = map;
         return this;
     }
+    // TODO:
+    remove(url) { }
     // 导出资源单
     toJSON() {
         const assets = [];

@@ -195,7 +195,7 @@ class RenderManager extends EventDispatcher {
         type: RENDERERMANAGER.STOP
       });
     });
-    __publicField(this, "checkHasRendering", () => {
+    __publicField(this, "hasRendering", () => {
       return this.animationFrame !== -1;
     });
     __publicField(this, "hasVaildRender", () => {
@@ -1062,13 +1062,37 @@ const WebGLRendererPlugin = function(params = {}) {
     this.dispatchEvent({ type: "setSize", width, height });
     return this;
   };
-  this.setCamera = function setCamera(camera) {
+  this.setCamera = function(camera) {
     this.currentCamera = camera;
     this.dispatchEvent({
       type: "setCamera",
       camera
     });
     return this;
+  };
+  this.getScreenshot = function(params2 = {}) {
+    const cacheSize = {
+      width: this.dom.offsetWidth,
+      height: this.dom.offsetHeight
+    };
+    !params2.width && (params2.width = this.dom.offsetWidth);
+    !params2.height && (params2.height = this.dom.offsetHeight);
+    !params2.mine && (params2.mine = "image/png");
+    let renderFlag = false;
+    if (this.renderManager.hasRendering()) {
+      this.renderManager.stop();
+      renderFlag = true;
+    }
+    this.setSize(params2.width, params2.height);
+    this.renderManager.render();
+    const element = document.createElement("img");
+    const DataURI = this.webGLRenderer.domElement.toDataURL(params2.mine);
+    element.src = DataURI;
+    this.setSize(cacheSize.width, cacheSize.height);
+    if (renderFlag) {
+      this.renderManager.play();
+    }
+    return element;
   };
   this.setDom = function(dom) {
     this.dom = dom;
@@ -2042,6 +2066,8 @@ class LoaderManager extends EventDispatcher {
     this.loadDetailMap = map;
     return this;
   }
+  remove(url) {
+  }
   toJSON() {
     const assets = [];
     this.resourceMap.forEach((value, url) => {
@@ -2795,6 +2821,8 @@ class ResourceManager extends EventDispatcher {
     });
     return this;
   }
+  remove(url) {
+  }
   dispose() {
   }
 }
@@ -2969,6 +2997,13 @@ class DataSupport {
     const data = this.data;
     for (const key in config) {
       data[key] = config[key];
+    }
+    return this;
+  }
+  remove(config) {
+    const data = this.data;
+    for (const key in config) {
+      data[key] !== void 0 && delete data[key];
     }
     return this;
   }
@@ -3164,7 +3199,7 @@ const ControlsRule = function(input, compiler) {
     if (type) {
       compiler.set(type, tempPath, key, value);
     } else {
-      console.error(`controls rule can not found controls type in set operate.`);
+      console.warn(`controls rule can not found controls type in set operate: ${type}`);
     }
   }
 };
@@ -3306,7 +3341,7 @@ const MeshRule = function(notice, compiler) {
     if (vid && validate(vid)) {
       compiler.set(vid, tempPath, key, value);
     } else {
-      console.warn(`model rule vid is illeage: '${vid}'`);
+      console.warn(`Mesh rule vid is illeage: '${vid}'`);
     }
     return;
   }
@@ -3485,6 +3520,13 @@ const _DataSupportManager = class {
     const dataSupportMap = this.dataSupportMap;
     dataSupportMap.forEach((dataSupport, module) => {
       config[module] && dataSupport.load(config[module]);
+    });
+    return this;
+  }
+  remove(config) {
+    const dataSupportMap = this.dataSupportMap;
+    dataSupportMap.forEach((dataSupport, module) => {
+      config[module] && dataSupport.remove(config[module]);
     });
     return this;
   }
@@ -6076,6 +6118,16 @@ class CompilerManager {
     }
     return null;
   }
+  getObjectBySymbol(vid) {
+    const objectCompilerList = this.objectCompilerList;
+    for (let compiler of objectCompilerList) {
+      const object = compiler.getMap().get(vid);
+      if (object) {
+        return object;
+      }
+    }
+    return null;
+  }
   getMaterial(vid) {
     if (!validate(vid)) {
       console.warn(`compiler manager vid is illeage: ${vid}`);
@@ -6091,9 +6143,6 @@ class CompilerManager {
     }
     const textureCompiler = this.textureCompiler;
     return textureCompiler.getMap().get(vid);
-  }
-  getObject(vid) {
-    return void 0;
   }
   getObjectCompilerList() {
     return this.objectCompilerList;
@@ -8013,6 +8062,9 @@ const ObjectHelperPlugin = function(params = {}) {
         scene.add(helper);
         if (params.interact) {
           const pointerenterFun = () => {
+            if (this.transing) {
+              return;
+            }
             if (this.selectionBox) {
               if (this.selectionBox.has(object)) {
                 return;
@@ -8021,6 +8073,9 @@ const ObjectHelperPlugin = function(params = {}) {
             helper.material.color.setHex(hoverColorHex);
           };
           const pointerleaveFun = () => {
+            if (this.transing) {
+              return;
+            }
             if (this.selectionBox) {
               if (this.selectionBox.has(object)) {
                 return;
@@ -8029,6 +8084,9 @@ const ObjectHelperPlugin = function(params = {}) {
             helper.material.color.setHex(defaultColorHex);
           };
           const clickFun = () => {
+            if (this.transing) {
+              return;
+            }
             if (this.selectionBox) {
               if (this.selectionBox.has(object)) {
                 return;
@@ -8229,6 +8287,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "transing");
     __publicField(this, "displayMode");
     __publicField(this, "selectionBox");
+    __publicField(this, "getScreenshot");
     __publicField(this, "setSize");
     __publicField(this, "setCamera");
     __publicField(this, "setDom");
@@ -8579,54 +8638,73 @@ class EngineSupport extends Engine {
     __publicField(this, "IS_ENGINESUPPORT", true);
     this.install(ENGINEPLUGIN.LOADERMANAGER).install(ENGINEPLUGIN.RESOURCEMANAGER).install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters).install(ENGINEPLUGIN.COMPILERMANAGER);
   }
+  loadLifeCycle(config) {
+    const dataSupportManager = this.dataSupportManager;
+    config.texture && dataSupportManager.load({ texture: config.texture });
+    config.material && dataSupportManager.load({ material: config.material });
+    delete config.texture;
+    delete config.material;
+    dataSupportManager.load(config);
+  }
+  removeLifeCycle(config) {
+    const dataSupportManager = this.dataSupportManager;
+    const texture = config[MODULETYPE.TEXTURE] || {};
+    const material = config[MODULETYPE.MATERIAL] || {};
+    const assets = config.assets || [];
+    delete config.texture;
+    delete config.material;
+    delete config.assets;
+    dataSupportManager.remove(config);
+    dataSupportManager.remove({ [MODULETYPE.MATERIAL]: material });
+    dataSupportManager.remove({ [MODULETYPE.TEXTURE]: texture });
+    const resourceManager = this.resourceManager;
+    const loaderManager = this.loaderManager;
+    assets.forEach((url) => {
+      resourceManager.remove(url);
+      loaderManager.remove(url);
+    });
+  }
   loadConfig(config, callback) {
-    const loadLifeCycle = () => {
-      const dataSupportManager = this.dataSupportManager;
-      config.texture && dataSupportManager.load({ texture: config.texture });
-      config.material && dataSupportManager.load({ material: config.material });
-      delete config.texture;
-      delete config.material;
-      dataSupportManager.load(config);
-    };
+    this.renderManager.stop();
     if (config.assets && config.assets.length) {
       this.loaderManager.reset().load(config.assets);
       const mappedFun = (event) => {
         delete config.assets;
-        loadLifeCycle();
+        this.loadLifeCycle(config);
         this.resourceManager.removeEventListener("mapped", mappedFun);
         callback && callback(event);
+        this.renderManager.play();
       };
       this.resourceManager.addEventListener("mapped", mappedFun);
     } else {
-      loadLifeCycle();
+      this.loadLifeCycle(config);
       callback && callback();
+      this.renderManager.play();
     }
     return this;
   }
   loadConfigAsync(config) {
     return new Promise((resolve, reject) => {
-      const loadLifeCycle = () => {
-        const dataSupportManager = this.dataSupportManager;
-        config.texture && dataSupportManager.load({ texture: config.texture });
-        config.material && dataSupportManager.load({ material: config.material });
-        delete config.texture;
-        delete config.material;
-        dataSupportManager.load(config);
-      };
+      this.renderManager.stop();
       if (config.assets && config.assets.length) {
         this.loaderManager.reset().load(config.assets);
         const mappedFun = (event) => {
           delete config.assets;
-          loadLifeCycle();
+          this.loadLifeCycle(config);
           this.resourceManager.removeEventListener("mapped", mappedFun);
+          this.renderManager.play();
           resolve(event);
         };
         this.resourceManager.addEventListener("mapped", mappedFun);
       } else {
-        loadLifeCycle();
+        this.loadLifeCycle(config);
+        this.renderManager.play();
         resolve(void 0);
       }
     });
+  }
+  removeConfig(config) {
+    this.removeLifeCycle(config);
   }
 }
 class ModelingEngineSupport extends EngineSupport {

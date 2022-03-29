@@ -20,6 +20,9 @@ export declare class EngineSupport extends Engine {
     }) => this;
     toJSON: () => string;
     constructor(parameters?: EngineSupportParameters);
+    private loadLifeCycle;
+    private removeLifeCycle;
     loadConfig(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
     loadConfigAsync(config: EngineSupportLoadOptions): Promise<MappedEvent | undefined>;
+    removeConfig(config: EngineSupportLoadOptions): void;
 }

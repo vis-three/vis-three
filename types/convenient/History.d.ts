@@ -8,7 +8,7 @@ export declare class History {
     private step;
     constructor(step?: number);
     private do;
-    apply(action: Action): void;
+    apply(action: Action, exec?: boolean): void;
     redo(): void;
     undo(): void;
     clear(): void;

@@ -14,7 +14,7 @@ export const MeshRule = function (notice, compiler) {
             compiler.set(vid, tempPath, key, value);
         }
         else {
-            console.warn(`model rule vid is illeage: '${vid}'`);
+            console.warn(`Mesh rule vid is illeage: '${vid}'`);
         }
         return;
     }

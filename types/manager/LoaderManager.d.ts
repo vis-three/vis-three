@@ -61,6 +61,7 @@ export declare class LoaderManager extends EventDispatcher {
     setLoadDetailMap(map: {
         [key: string]: LoadDetail;
     }): this;
+    remove(url: string): void;
     toJSON(): string;
     dispose(): this;
 }

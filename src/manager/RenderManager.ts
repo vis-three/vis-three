@@ -52,7 +52,7 @@ export class RenderManager extends EventDispatcher {
   }
 
   // 是否处于渲染当中
-  checkHasRendering = (): boolean => {
+  hasRendering = (): boolean => {
     return this.animationFrame !== -1
   }
 

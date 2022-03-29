@@ -110,6 +110,8 @@ export class ResourceManager extends EventDispatcher {
         });
         return this;
     }
+    // TODO: 根据strictureMap去清空configMap和resourceMap
+    remove(url) { }
     // TODO: dispose
     dispose() { }
 }
