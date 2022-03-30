@@ -118,9 +118,6 @@ export class DataSupportManager {
       Object.keys(parameters).forEach(key => {
         if (this[key] !== undefined ) {
           this[key] = parameters[key]
-          if (parameters[key].IS_OBJECTDATASUPPORT) {
-            this.objectDataSupportList.push(parameters[key])
-          }
         }
       })
     } else {
@@ -133,7 +130,15 @@ export class DataSupportManager {
 
     const dataSupportMap = new Map()
     for (let module in MODULETYPE) {
-      this[`${MODULETYPE[module]}DataSupport`] && dataSupportMap.set(MODULETYPE[module], this[`${MODULETYPE[module]}DataSupport`])
+      const dataSupport = this[`${MODULETYPE[module]}DataSupport`]
+      if (dataSupport) {
+        dataSupportMap.set(MODULETYPE[module], dataSupport)
+        if (dataSupport.IS_OBJECTDATASUPPORT) {
+          this.objectDataSupportList.push(dataSupport)
+        }
+      } else {
+        console.warn(`dataSupportManager can not support this module dataSupport: ${module}`)
+      }
     }
 
     this.dataSupportMap = dataSupportMap
@@ -170,6 +175,7 @@ export class DataSupportManager {
     return this
   }
 
+  // TODO:去掉
   getObjectConfig<T extends SymbolConfig>(vid: string): T | null {
     if (!validate(vid)) {
       console.warn(`vid is illeage: ${vid}`)
@@ -180,6 +186,42 @@ export class DataSupportManager {
       const config = objectDataSupport.getConfig(vid)
       if (config) {
         return config as T
+      }
+    }
+
+    return null
+  }
+
+  getConfigBySymbol<T extends SymbolConfig> (vid: string): T | null {
+    const dataSupportList = this.dataSupportMap.values()
+
+    for (let dataSupport of dataSupportList) {
+      const config = dataSupport.getConfig(vid) as T
+      if (config) {
+        return config
+      }
+    }
+
+    return null
+  }
+
+  removeConfigBySymbol (vid: string) {
+    const dataSupportList = this.dataSupportMap.values()
+
+    for (let dataSupport of dataSupportList) {
+      if (dataSupport.existSymbol(vid)) {
+        dataSupport.removeConfig(vid)
+        return
+      }
+    }
+  }
+
+  getModuleBySymbol(vid: string): MODULETYPE | null {
+    const dataSupportList = this.dataSupportMap.values()
+
+    for (let dataSupport of dataSupportList) {
+      if (dataSupport.existSymbol(vid)) {
+        return dataSupport.MODULE
       }
     }
 

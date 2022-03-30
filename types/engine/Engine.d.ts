@@ -7,6 +7,7 @@ import Stats from "three/examples/jsm/libs/stats.module";
 import { PointerManager } from "../manager/PointerManager";
 import { EventManager } from "../manager/EventManager";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
+import { Screenshot } from "../plugins/WebGLRendererPlugin";
 import { LoadedEvent, LoaderManager } from "../manager/LoaderManager";
 import { ResourceManager } from "../manager/ResourceManager";
 import { DataSupportManager } from "../manager/DataSupportManager";
@@ -62,6 +63,7 @@ export declare class Engine extends EventDispatcher {
     transing?: boolean;
     displayMode?: DISPLAYMODE;
     selectionBox?: Set<Object3D>;
+    getScreenshot?: (params: Screenshot) => HTMLImageElement;
     setSize?: (width: number, height: number) => this;
     setCamera?: (camera: Camera) => this;
     setDom?: (dom: HTMLElement) => this;

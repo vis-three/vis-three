@@ -54,6 +54,10 @@ export class LightCompiler extends ObjectCompiler {
             return this;
         }
         let object = this.map.get(vid);
+        if (key === 'color') {
+            object.color = new Color(value);
+            return this;
+        }
         for (let key of path) {
             if (this.filterAttribute[key]) {
                 return this;

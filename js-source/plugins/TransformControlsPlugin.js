@@ -17,6 +17,7 @@ export const TransformControlsPlugin = function (params) {
         return false;
     }
     const transformControls = new VisTransformControls(this.currentCamera, this.dom);
+    transformControls.detach();
     this.transformControls = transformControls;
     this.transing = false;
     transformControls.addEventListener('mouseDown', () => {
@@ -25,7 +26,12 @@ export const TransformControlsPlugin = function (params) {
     this.scene.add(this.transformControls);
     this.scene.add(this.transformControls.target);
     this.setTransformControls = function (show) {
-        this.transformControls.visible = show;
+        if (show) {
+            this.scene.add(this.transformControls);
+        }
+        else {
+            this.scene.remove(this.transformControls);
+        }
         return this;
     };
     this.addEventListener('setCamera', event => {

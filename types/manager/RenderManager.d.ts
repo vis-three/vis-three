@@ -10,6 +10,6 @@ export declare class RenderManager extends EventDispatcher {
     render: () => void;
     play: () => void;
     stop: () => void;
-    checkHasRendering: () => boolean;
+    hasRendering: () => boolean;
     hasVaildRender: () => boolean;
 }

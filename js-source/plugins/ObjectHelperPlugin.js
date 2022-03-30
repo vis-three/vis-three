@@ -27,7 +27,8 @@ export const ObjectHelperPlugin = function (params = {}) {
     };
     const filterHelperMap = {
         'AmbientLight': true,
-        'Object3D': true
+        'Object3D': true,
+        'TransformControls': true
     };
     const helperMap = new Map();
     const pointerenterFunMap = new Map();
@@ -55,6 +56,9 @@ export const ObjectHelperPlugin = function (params = {}) {
                 scene.add(helper);
                 if (params.interact) {
                     const pointerenterFun = () => {
+                        if (this.transing) {
+                            return;
+                        }
                         if (this.selectionBox) {
                             if (this.selectionBox.has(object)) {
                                 return;
@@ -63,6 +67,9 @@ export const ObjectHelperPlugin = function (params = {}) {
                         helper.material.color.setHex(hoverColorHex);
                     };
                     const pointerleaveFun = () => {
+                        if (this.transing) {
+                            return;
+                        }
                         if (this.selectionBox) {
                             if (this.selectionBox.has(object)) {
                                 return;
@@ -71,6 +78,9 @@ export const ObjectHelperPlugin = function (params = {}) {
                         helper.material.color.setHex(defaultColorHex);
                     };
                     const clickFun = () => {
+                        if (this.transing) {
+                            return;
+                        }
                         if (this.selectionBox) {
                             if (this.selectionBox.has(object)) {
                                 return;

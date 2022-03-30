@@ -77,6 +77,7 @@ export class Engine extends EventDispatcher {
     transing;
     displayMode;
     selectionBox;
+    getScreenshot;
     setSize;
     setCamera;
     setDom;

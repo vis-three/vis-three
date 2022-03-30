@@ -18,13 +18,38 @@ export const WebGLRendererPlugin = function (params = {}) {
         return this;
     };
     // 设置相机
-    this.setCamera = function setCamera(camera) {
+    this.setCamera = function (camera) {
         this.currentCamera = camera;
         this.dispatchEvent({
             type: 'setCamera',
             camera
         });
         return this;
+    };
+    // 截图
+    this.getScreenshot = function (params = {}) {
+        const cacheSize = {
+            width: this.dom.offsetWidth,
+            height: this.dom.offsetHeight
+        };
+        !params.width && (params.width = this.dom.offsetWidth);
+        !params.height && (params.height = this.dom.offsetHeight);
+        !params.mine && (params.mine = 'image/png');
+        let renderFlag = false;
+        if (this.renderManager.hasRendering()) {
+            this.renderManager.stop();
+            renderFlag = true;
+        }
+        this.setSize(params.width, params.height);
+        this.renderManager.render();
+        const element = document.createElement('img');
+        const DataURI = this.webGLRenderer.domElement.toDataURL(params.mine);
+        element.src = DataURI;
+        this.setSize(cacheSize.width, cacheSize.height);
+        if (renderFlag) {
+            this.renderManager.play();
+        }
+        return element;
     };
     // 设置渲染的dom
     this.setDom = function (dom) {

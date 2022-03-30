@@ -10,22 +10,24 @@ export const StatsPlugin = function (params) {
     }
     const stats = new VisStats(params);
     this.stats = stats;
+    const statsUpdateFun = () => {
+        this.stats.update();
+    };
     this.setStats = function (show) {
         if (show) {
             this.dom.appendChild(this.stats.domElement);
+            this.renderManager.addEventListener('render', statsUpdateFun);
         }
         else {
             try {
                 this.dom.removeChild(this.stats.domElement);
+                this.renderManager.removeEventListener('render', statsUpdateFun);
             }
             catch (error) {
             }
         }
         return this;
     };
-    this.renderManager.addEventListener('render', () => {
-        this.stats.update();
-    });
     return true;
 };
 //# sourceMappingURL=StatsPlugin.js.map

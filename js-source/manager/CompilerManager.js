@@ -122,7 +122,8 @@ export class CompilerManager {
         this.sceneCompiler = sceneCompiler;
         const controlsCompiler = new ControlsCompiler({
             target: controlsDataSupport.getData(),
-            transformControls: engine.transformControls
+            transformControls: engine.transformControls,
+            orbitControls: engine.orbitControls
         });
         this.controlsCompiler = controlsCompiler;
         const eventCompiler = new EventCompiler({

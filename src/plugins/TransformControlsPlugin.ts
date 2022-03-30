@@ -32,8 +32,10 @@ export const TransformControlsPlugin: Plugin<Object> = function (this: Engine, p
   }
 
   const transformControls = new VisTransformControls(this.currentCamera!, this.dom!)
+  transformControls.detach()
 
   this.transformControls = transformControls
+
   this.transing = false
 
   transformControls.addEventListener('mouseDown', () => {
@@ -44,7 +46,11 @@ export const TransformControlsPlugin: Plugin<Object> = function (this: Engine, p
   this.scene!.add((this.transformControls as VisTransformControls).target)
 
   this.setTransformControls = function(show: boolean): Engine {
-    this.transformControls!.visible = show
+    if (show) {
+      this.scene!.add(this.transformControls!)
+    } else {
+      this.scene!.remove(this.transformControls!)
+    }
     return this
   }
 

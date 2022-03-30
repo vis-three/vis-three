@@ -1,19 +1,26 @@
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
-import { TransformControlsConfig } from "./ControlsConfig";
+import { ControlsAllConfig } from "./ControlsConfig";
 export interface ControlsCompilerTarget extends CompilerTarget {
-    [key: string]: TransformControlsConfig;
+    [key: string]: ControlsAllConfig;
 }
 export interface ControlsCompilerParameters {
     target?: ControlsCompilerTarget;
     transformControls?: TransformControls;
+    orbitControls?: OrbitControls;
 }
 export declare class ControlsCompiler extends Compiler {
     private target;
-    private transformControls;
+    private transformControls?;
+    private orbitControls?;
+    private processorMap;
+    private controlMap;
     constructor(parameters?: ControlsCompilerParameters);
-    set(type: string, path: string[], key: string, value: any): this;
+    private getAssembly;
+    set(vid: string, path: string[], key: string, value: any): this;
+    setAll(vid: string): this;
     setTarget(target: ControlsCompilerTarget): this;
     compileAll(): this;
-    dispose(parameter: unknown): this;
+    dispose(): this;
 }

@@ -115,35 +115,32 @@ export class EventManager extends EventDispatcher {
     })
 
     const cacheObjectMap = new Map<Object3D, Intersection<Object3D<Event>>>()
+    let topCacheIntersection : Intersection<Object3D<Event>> | null = null
+
     pointerManager.addEventListener<VisPointerEvent>('pointermove', (event) => {
       const intersections = this.intersectObject(event.mouse)
 
-      if (intersections.length) {
-        
-        if (this.penetrate) {
-          for (let intersection of intersections) {
-            if (cacheObjectMap.has(intersection.object)) {
-              (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
-                type: 'pointermove',
-                intersection
-              }));
-              (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
-                type: 'mousemove',
-                intersection
-              }));
-            } else {
-              (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
-                type: 'pointerenter',
-                intersection
-              }));
-              (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
-                type: 'mouseenter',
-                intersection
-              }));
-            }
-          }
-        } else {
-          const intersection = intersections[0]
+      // 穿透触发
+      if (this.penetrate) {
+        // 无交集触发离开，清空缓存
+        if (!intersections.length) {
+          cacheObjectMap.forEach(intersection => {
+            (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
+              type: 'pointerleave',
+              intersection
+            }));
+            (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
+              type: 'mouseleave',
+              intersection
+            }));
+          })
+  
+          cacheObjectMap.clear()
+          return
+        }
+
+        for (let intersection of intersections) {
+          // 缓存中存在的物体触发move
           if (cacheObjectMap.has(intersection.object)) {
             (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
               type: 'pointermove',
@@ -153,7 +150,9 @@ export class EventManager extends EventDispatcher {
               type: 'mousemove',
               intersection
             }));
+            cacheObjectMap.delete(intersection.object)
           } else {
+            // 缓存中没有物体触发enter
             (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
               type: 'pointerenter',
               intersection
@@ -165,12 +164,8 @@ export class EventManager extends EventDispatcher {
           }
         }
 
-        for (let intersection of intersections) {
-          cacheObjectMap.set(intersection.object, intersection)
-        }
-
-      } else {
-        cacheObjectMap.forEach(intersection => {
+        // 缓存中剩下的物体触发leave
+        for (let intersection of cacheObjectMap.values()) {
           (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
             type: 'pointerleave',
             intersection
@@ -179,9 +174,85 @@ export class EventManager extends EventDispatcher {
             type: 'mouseleave',
             intersection
           }));
-        })
-
+        }
+        
+        // 重新记录缓存
         cacheObjectMap.clear()
+        for (let intersection of intersections) {
+          cacheObjectMap.set(intersection.object, intersection)
+        }
+
+      } else {
+
+        // 没交集
+        if (!intersections.length) {
+          // 有缓存触发leave
+          if (topCacheIntersection) {
+            (topCacheIntersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
+              type: 'pointerleave',
+              intersection: topCacheIntersection
+            }));
+            (topCacheIntersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
+              type: 'mouseleave',
+              intersection: topCacheIntersection
+            }));
+            topCacheIntersection = null
+          }
+          return
+        }
+
+        const intersection = intersections[0]
+        // 没缓存触发enter 并缓存
+        if (!topCacheIntersection) {
+          (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
+            type: 'pointerenter',
+            intersection
+          }));
+          (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
+            type: 'mouseenter',
+            intersection
+          }));
+
+          topCacheIntersection = intersection
+          return
+        }
+
+        // 如何当前与缓存不一致触发缓存leave 触发当前enter 缓存
+        if (intersection.object !== topCacheIntersection.object) {
+          (topCacheIntersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
+            type: 'pointerleave',
+            intersection
+          }));
+          (topCacheIntersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
+            type: 'mouseleave',
+            intersection
+          }));
+
+          (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
+            type: 'pointerenter',
+            intersection
+          }));
+          (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
+            type: 'mouseenter',
+            intersection
+          }));
+
+          topCacheIntersection = intersection
+
+          return
+        }
+
+        // 一致触发move
+        if (intersection.object === topCacheIntersection.object) {
+          (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
+            type: 'pointermove',
+            intersection
+          }));
+          (intersection.object as Object3D<ObjectEvent>).dispatchEvent(mergeEvent(event, {
+            type: 'mousemove',
+            intersection
+          }));
+        }
       }
 
       this.dispatchEvent(mergeEvent(event, {

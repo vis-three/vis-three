@@ -10,4 +10,9 @@ export interface SetCameraEvent extends BaseEvent {
     type: 'setCamera';
     camera: Camera;
 }
+export interface Screenshot {
+    width?: number;
+    height?: number;
+    mine?: string;
+}
 export declare const WebGLRendererPlugin: Plugin<WebGLRendererParameters>;

@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Scene, PerspectiveCamera, Clock, MOUSE, OrthographicCamera, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Vector3, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Camera, Matrix4, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, AmbientLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, PlaneBufferGeometry, Sprite, CubeTexture, CanvasTexture, AxesHelper, GridHelper, DirectionalLight, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, OctahedronBufferGeometry, Sphere, EdgesGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Scene, PerspectiveCamera, Clock, MOUSE, OrthographicCamera, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Vector3, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, AmbientLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, PlaneBufferGeometry, Sprite, CubeTexture, CanvasTexture, AxesHelper, GridHelper, DirectionalLight, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, OctahedronBufferGeometry, Sphere, EdgesGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -179,6 +179,10 @@ class RenderManager extends EventDispatcher {
       });
     });
     __publicField(this, "play", () => {
+      if (this.hasRendering()) {
+        console.warn(`render manager has rendering.`);
+        return;
+      }
       this.dispatchEvent({
         type: RENDERERMANAGER.PLAY
       });
@@ -425,20 +429,22 @@ const StatsPlugin = function(params) {
   }
   const stats = new VisStats(params);
   this.stats = stats;
+  const statsUpdateFun = () => {
+    this.stats.update();
+  };
   this.setStats = function(show) {
     if (show) {
       this.dom.appendChild(this.stats.domElement);
+      this.renderManager.addEventListener("render", statsUpdateFun);
     } else {
       try {
         this.dom.removeChild(this.stats.domElement);
+        this.renderManager.removeEventListener("render", statsUpdateFun);
       } catch (error) {
       }
     }
     return this;
   };
-  this.renderManager.addEventListener("render", () => {
-    this.stats.update();
-  });
   return true;
 };
 const EffectComposerPlugin = function(params) {
@@ -651,33 +657,25 @@ class EventManager extends EventDispatcher {
       }
     });
     const cacheObjectMap = new Map();
+    let topCacheIntersection = null;
     pointerManager.addEventListener("pointermove", (event) => {
       const intersections = this.intersectObject(event.mouse);
-      if (intersections.length) {
-        if (this.penetrate) {
-          for (let intersection of intersections) {
-            if (cacheObjectMap.has(intersection.object)) {
-              intersection.object.dispatchEvent(mergeEvent(event, {
-                type: "pointermove",
-                intersection
-              }));
-              intersection.object.dispatchEvent(mergeEvent(event, {
-                type: "mousemove",
-                intersection
-              }));
-            } else {
-              intersection.object.dispatchEvent(mergeEvent(event, {
-                type: "pointerenter",
-                intersection
-              }));
-              intersection.object.dispatchEvent(mergeEvent(event, {
-                type: "mouseenter",
-                intersection
-              }));
-            }
-          }
-        } else {
-          const intersection = intersections[0];
+      if (this.penetrate) {
+        if (!intersections.length) {
+          cacheObjectMap.forEach((intersection) => {
+            intersection.object.dispatchEvent(mergeEvent(event, {
+              type: "pointerleave",
+              intersection
+            }));
+            intersection.object.dispatchEvent(mergeEvent(event, {
+              type: "mouseleave",
+              intersection
+            }));
+          });
+          cacheObjectMap.clear();
+          return;
+        }
+        for (let intersection of intersections) {
           if (cacheObjectMap.has(intersection.object)) {
             intersection.object.dispatchEvent(mergeEvent(event, {
               type: "pointermove",
@@ -687,6 +685,7 @@ class EventManager extends EventDispatcher {
               type: "mousemove",
               intersection
             }));
+            cacheObjectMap.delete(intersection.object);
           } else {
             intersection.object.dispatchEvent(mergeEvent(event, {
               type: "pointerenter",
@@ -698,11 +697,7 @@ class EventManager extends EventDispatcher {
             }));
           }
         }
-        for (let intersection of intersections) {
-          cacheObjectMap.set(intersection.object, intersection);
-        }
-      } else {
-        cacheObjectMap.forEach((intersection) => {
+        for (let intersection of cacheObjectMap.values()) {
           intersection.object.dispatchEvent(mergeEvent(event, {
             type: "pointerleave",
             intersection
@@ -711,8 +706,69 @@ class EventManager extends EventDispatcher {
             type: "mouseleave",
             intersection
           }));
-        });
+        }
         cacheObjectMap.clear();
+        for (let intersection of intersections) {
+          cacheObjectMap.set(intersection.object, intersection);
+        }
+      } else {
+        if (!intersections.length) {
+          if (topCacheIntersection) {
+            topCacheIntersection.object.dispatchEvent(mergeEvent(event, {
+              type: "pointerleave",
+              intersection: topCacheIntersection
+            }));
+            topCacheIntersection.object.dispatchEvent(mergeEvent(event, {
+              type: "mouseleave",
+              intersection: topCacheIntersection
+            }));
+            topCacheIntersection = null;
+          }
+          return;
+        }
+        const intersection = intersections[0];
+        if (!topCacheIntersection) {
+          intersection.object.dispatchEvent(mergeEvent(event, {
+            type: "pointerenter",
+            intersection
+          }));
+          intersection.object.dispatchEvent(mergeEvent(event, {
+            type: "mouseenter",
+            intersection
+          }));
+          topCacheIntersection = intersection;
+          return;
+        }
+        if (intersection.object !== topCacheIntersection.object) {
+          topCacheIntersection.object.dispatchEvent(mergeEvent(event, {
+            type: "pointerleave",
+            intersection
+          }));
+          topCacheIntersection.object.dispatchEvent(mergeEvent(event, {
+            type: "mouseleave",
+            intersection
+          }));
+          intersection.object.dispatchEvent(mergeEvent(event, {
+            type: "pointerenter",
+            intersection
+          }));
+          intersection.object.dispatchEvent(mergeEvent(event, {
+            type: "mouseenter",
+            intersection
+          }));
+          topCacheIntersection = intersection;
+          return;
+        }
+        if (intersection.object === topCacheIntersection.object) {
+          intersection.object.dispatchEvent(mergeEvent(event, {
+            type: "pointermove",
+            intersection
+          }));
+          intersection.object.dispatchEvent(mergeEvent(event, {
+            type: "mousemove",
+            intersection
+          }));
+        }
       }
       this.dispatchEvent(mergeEvent(event, {
         type: "pointermove",
@@ -988,6 +1044,7 @@ const TransformControlsPlugin = function(params) {
     return false;
   }
   const transformControls = new VisTransformControls(this.currentCamera, this.dom);
+  transformControls.detach();
   this.transformControls = transformControls;
   this.transing = false;
   transformControls.addEventListener("mouseDown", () => {
@@ -996,7 +1053,11 @@ const TransformControlsPlugin = function(params) {
   this.scene.add(this.transformControls);
   this.scene.add(this.transformControls.target);
   this.setTransformControls = function(show) {
-    this.transformControls.visible = show;
+    if (show) {
+      this.scene.add(this.transformControls);
+    } else {
+      this.scene.remove(this.transformControls);
+    }
     return this;
   };
   this.addEventListener("setCamera", (event) => {
@@ -2503,8 +2564,8 @@ const getSceneConfig = function() {
 };
 const getTransformControlsConfig = function() {
   return {
-    vid: "TransformControls",
-    type: "TransformControls",
+    vid: CONFIGTYPE.TRNASFORMCONTROLS,
+    type: CONFIGTYPE.TRNASFORMCONTROLS,
     axis: "XYZ",
     enabled: true,
     mode: "translate",
@@ -2521,12 +2582,28 @@ const getTransformControlsConfig = function() {
 };
 const getOrbitControlsConfig = function() {
   return {
-    vid: "OrbitControls",
-    type: "OrbitControls",
+    vid: CONFIGTYPE.ORBITCONTROLS,
+    type: CONFIGTYPE.ORBITCONTROLS,
     autoRotate: false,
     autoRotateSpeed: 2,
     enableDamping: false,
-    dampingFactor: 0.05
+    dampingFactor: 0.05,
+    enabled: true,
+    enablePan: true,
+    enableRotate: true,
+    enableZoom: true,
+    maxAzimuthAngle: Infinity,
+    maxDistance: Infinity,
+    maxPolarAngle: Math.PI,
+    maxZoom: Infinity,
+    minAzimuthAngle: -Infinity,
+    minDistance: 0,
+    minPolarAngle: 0,
+    minZoom: 0,
+    panSpeed: 1,
+    rotateSpeed: 1,
+    zoomSpeed: 1,
+    screenSpacePanning: true
   };
 };
 const getSpriteConfig = function() {
@@ -2866,7 +2943,7 @@ const _ProxyBroadcast = class extends EventDispatcher {
       set: (target, key, value) => {
         let result;
         if (target[key] === void 0) {
-          if (typeof value === "object" && value !== null) {
+          if (typeof value === "object" && value !== null && !_ProxyBroadcast.proxyWeakSet.has(value)) {
             const newPath = path.concat([key]);
             value = this.proxyExtends(value, newPath);
           }
@@ -2878,7 +2955,7 @@ const _ProxyBroadcast = class extends EventDispatcher {
             value
           });
         } else {
-          if (typeof value === "object" && !_ProxyBroadcast.proxyWeakSet.has(object)) {
+          if (typeof value === "object" && value !== null && !_ProxyBroadcast.proxyWeakSet.has(value)) {
             const newPath = path.concat([key]);
             value = this.proxyExtends(value, newPath);
           }
@@ -2911,7 +2988,9 @@ const _ProxyBroadcast = class extends EventDispatcher {
         }
       }
     }
-    return new Proxy(object, handler);
+    const proxy = new Proxy(object, handler);
+    _ProxyBroadcast.proxyWeakSet.add(proxy);
+    return proxy;
   }
   broadcast({ operate, path, key, value }) {
     const filterMap = {
@@ -2981,8 +3060,15 @@ class DataSupport {
     this.data = this.broadcast.proxyExtends(data);
     return this.data;
   }
+  existSymbol(vid) {
+    return Boolean(this.data[vid]);
+  }
   getConfig(vid) {
     return this.data[vid];
+  }
+  removeConfig(vid) {
+    const data = this.data;
+    data[vid] !== void 0 && delete data[vid];
   }
   addCompiler(compiler) {
     compiler.setTarget(this.data);
@@ -3007,6 +3093,9 @@ class DataSupport {
     }
     return this;
   }
+  getModule() {
+    return this.MODULE;
+  }
 }
 const TextureRule = function(notice, compiler) {
   const { operate, key, path, value } = notice;
@@ -3029,6 +3118,7 @@ class TextureDataSupport extends DataSupport {
   constructor(data) {
     !data && (data = {});
     super(TextureRule, data);
+    __publicField(this, "MODULE", MODULETYPE.TEXTURE);
   }
 }
 const MaterialRule = function(notice, compiler) {
@@ -3054,12 +3144,14 @@ class MaterialDataSupport extends DataSupport {
   constructor(data) {
     !data && (data = {});
     super(MaterialRule, data);
+    __publicField(this, "MODULE", MODULETYPE.MATERIAL);
   }
 }
 class ObjectDataSupport extends DataSupport {
   constructor(rule, data) {
     !data && (data = Object.create(Object.prototype));
     super(rule, data);
+    __publicField(this, "MODULE", MODULETYPE.MESH);
     __publicField(this, "IS_OBJECTDATASUPPORT", true);
   }
 }
@@ -3092,6 +3184,7 @@ class LightDataSupport extends ObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(LightRule, data);
+    __publicField(this, "MODULE", MODULETYPE.LIGHT);
   }
 }
 const GeometryRule = function(notice, compiler) {
@@ -3127,6 +3220,7 @@ class GeometryDataSupport extends DataSupport {
   constructor(data) {
     !data && (data = {});
     super(GeometryRule, data);
+    __publicField(this, "MODULE", MODULETYPE.GEOMETRY);
   }
 }
 const CameraRule = function(notice, compiler) {
@@ -3158,6 +3252,7 @@ class CameraDataSupport extends ObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(CameraRule, data);
+    __publicField(this, "MODULE", MODULETYPE.CAMERA);
   }
 }
 const RendererRule = function(input, compiler) {
@@ -3175,6 +3270,7 @@ class RendererDataSupport extends DataSupport {
   constructor(data) {
     !data && (data = {});
     super(RendererRule, data);
+    __publicField(this, "MODULE", MODULETYPE.RENDERER);
   }
 }
 const SceneRule = function(input, compiler) {
@@ -3189,17 +3285,20 @@ class SceneDataSupport extends DataSupport {
       [CONFIGTYPE.SCENE]: getSceneConfig()
     });
     super(SceneRule, data);
+    __publicField(this, "MODULE", MODULETYPE.SCENE);
   }
 }
 const ControlsRule = function(input, compiler) {
   const { operate, key, path, value } = input;
   if (operate === "set") {
     const tempPath = path.concat([]);
-    const type = tempPath.shift();
-    if (type) {
-      compiler.set(type, tempPath, key, value);
+    const vid = tempPath.shift();
+    if (vid) {
+      compiler.set(vid, tempPath, key, value);
+    } else if (key) {
+      compiler.setAll(key);
     } else {
-      console.warn(`controls rule can not found controls type in set operate: ${type}`);
+      console.warn(`controls rule can not found controls type in set operate: ${vid}`);
     }
   }
 };
@@ -3207,6 +3306,7 @@ class ControlsDataSupport extends DataSupport {
   constructor(data) {
     !data && (data = {});
     super(ControlsRule, data);
+    __publicField(this, "MODULE", MODULETYPE.CONTROLS);
   }
 }
 const SpriteRule = function(notice, compiler) {
@@ -3233,6 +3333,7 @@ class SpriteDataSupport extends ObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(SpriteRule, data);
+    __publicField(this, "MODULE", MODULETYPE.SPRITE);
   }
 }
 const EventRule = function(notice, compiler) {
@@ -3300,6 +3401,7 @@ class EventDataSupport extends DataSupport {
   constructor(data) {
     !data && (data = {});
     super(EventRule, data);
+    __publicField(this, "MODULE", MODULETYPE.EVENT);
   }
 }
 const LineRule = function(input, compiler) {
@@ -3325,6 +3427,7 @@ class LineDataSupport extends DataSupport {
   constructor(data) {
     !data && (data = {});
     super(LineRule, data);
+    __publicField(this, "MODULE", MODULETYPE.LINE);
   }
 }
 const MeshRule = function(notice, compiler) {
@@ -3356,6 +3459,7 @@ class MeshDataSupport extends ObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(MeshRule, data);
+    __publicField(this, "MODULE", MODULETYPE.MESH);
   }
 }
 const PointsRule = function(notice, compiler) {
@@ -3387,6 +3491,7 @@ class PointsDataSupport extends ObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(PointsRule, data);
+    __publicField(this, "MODULE", MODULETYPE.POINTS);
   }
 }
 const GroupRule = function(input, compiler) {
@@ -3419,6 +3524,7 @@ class GroupDataSupport extends ObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(GroupRule, data);
+    __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
 const _DataSupportManager = class {
@@ -3458,9 +3564,6 @@ const _DataSupportManager = class {
       Object.keys(parameters).forEach((key) => {
         if (this[key] !== void 0) {
           this[key] = parameters[key];
-          if (parameters[key].IS_OBJECTDATASUPPORT) {
-            this.objectDataSupportList.push(parameters[key]);
-          }
         }
       });
     } else {
@@ -3472,7 +3575,15 @@ const _DataSupportManager = class {
     }
     const dataSupportMap = new Map();
     for (let module in MODULETYPE) {
-      this[`${MODULETYPE[module]}DataSupport`] && dataSupportMap.set(MODULETYPE[module], this[`${MODULETYPE[module]}DataSupport`]);
+      const dataSupport = this[`${MODULETYPE[module]}DataSupport`];
+      if (dataSupport) {
+        dataSupportMap.set(MODULETYPE[module], dataSupport);
+        if (dataSupport.IS_OBJECTDATASUPPORT) {
+          this.objectDataSupportList.push(dataSupport);
+        }
+      } else {
+        console.warn(`dataSupportManager can not support this module dataSupport: ${module}`);
+      }
     }
     this.dataSupportMap = dataSupportMap;
   }
@@ -3512,6 +3623,34 @@ const _DataSupportManager = class {
       const config = objectDataSupport.getConfig(vid);
       if (config) {
         return config;
+      }
+    }
+    return null;
+  }
+  getConfigBySymbol(vid) {
+    const dataSupportList = this.dataSupportMap.values();
+    for (let dataSupport of dataSupportList) {
+      const config = dataSupport.getConfig(vid);
+      if (config) {
+        return config;
+      }
+    }
+    return null;
+  }
+  removeConfigBySymbol(vid) {
+    const dataSupportList = this.dataSupportMap.values();
+    for (let dataSupport of dataSupportList) {
+      if (dataSupport.existSymbol(vid)) {
+        dataSupport.removeConfig(vid);
+        return;
+      }
+    }
+  }
+  getModuleBySymbol(vid) {
+    const dataSupportList = this.dataSupportMap.values();
+    for (let dataSupport of dataSupportList) {
+      if (dataSupport.existSymbol(vid)) {
+        return dataSupport.MODULE;
       }
     }
     return null;
@@ -3915,42 +4054,191 @@ class CameraCompiler extends ObjectCompiler {
     return this;
   }
 }
+class OrbitControlsProcessor {
+  constructor() {
+    __publicField(this, "config");
+    __publicField(this, "control");
+    __publicField(this, "assembly", false);
+  }
+  assemble(params) {
+    this.config = params.config;
+    this.control = params.control;
+    this.assembly = true;
+    return this;
+  }
+  process(params) {
+    if (!this.assembly) {
+      console.warn(`OrbitControls Processor unassembled`);
+      return this;
+    }
+    this.merge(params.key, params.value);
+    return this;
+  }
+  processAll() {
+    if (!this.assembly) {
+      console.warn(`OrbitControls Processor unassembled`);
+      return this;
+    }
+    const control = this.control;
+    const config = this.config;
+    for (let key of Object.keys(config)) {
+      control[key] !== void 0 && (control[key] = config[key]);
+    }
+    return this;
+  }
+  dispose() {
+    this.config = void 0;
+    this.control = void 0;
+    this.assembly = false;
+    return this;
+  }
+  merge(key, value) {
+    this.control[key] = value;
+    return true;
+  }
+}
+class TransformControlsProcessor {
+  constructor() {
+    __publicField(this, "config");
+    __publicField(this, "control");
+    __publicField(this, "assembly", false);
+    __publicField(this, "filterMap", {
+      translationSnap: true,
+      rotationSnap: true,
+      scaleSnap: true
+    });
+  }
+  assemble(params) {
+    this.config = params.config;
+    this.control = params.control;
+    this.assembly = true;
+    return this;
+  }
+  process(params) {
+    if (!this.assembly) {
+      console.warn(`transformControls Processor unassembled`);
+      return this;
+    }
+    if (this.filterMap[params.key]) {
+      return this;
+    }
+    if (this[params.key]) {
+      this[params.key](params.value);
+      return this;
+    }
+    this.merge(params.key, params.value);
+    return this;
+  }
+  processAll() {
+    if (!this.assembly) {
+      console.warn(`transformControls Processor unassembled`);
+      return this;
+    }
+    const config = this.config;
+    for (let key of Object.keys(config)) {
+      this.process({
+        path: [],
+        key,
+        value: config[key]
+      });
+    }
+    return this;
+  }
+  dispose() {
+    this.config = void 0;
+    this.control = void 0;
+    return this;
+  }
+  snapAllow(value) {
+    const config = this.config;
+    const control = this.control;
+    if (value) {
+      control.translationSnap = config.translationSnap;
+      control.rotationSnap = config.rotationSnap;
+      control.scaleSnap = config.scaleSnap;
+    } else {
+      control.translationSnap = null;
+      control.rotationSnap = null;
+      control.scaleSnap = null;
+    }
+    return true;
+  }
+  merge(key, value) {
+    this.control[key] = value;
+    return true;
+  }
+}
 class ControlsCompiler extends Compiler {
   constructor(parameters) {
     super();
     __publicField(this, "target");
     __publicField(this, "transformControls");
+    __publicField(this, "orbitControls");
+    __publicField(this, "processorMap", {
+      [CONFIGTYPE.TRNASFORMCONTROLS]: new TransformControlsProcessor(),
+      [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor()
+    });
+    __publicField(this, "controlMap", {
+      [CONFIGTYPE.TRNASFORMCONTROLS]: void 0,
+      [CONFIGTYPE.ORBITCONTROLS]: void 0
+    });
     if (parameters) {
       parameters.target && (this.target = parameters.target);
-      parameters.transformControls && (this.transformControls = parameters.transformControls);
+      parameters.transformControls && (this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] = parameters.transformControls);
+      parameters.orbitControls && (this.controlMap[CONFIGTYPE.ORBITCONTROLS] = parameters.orbitControls);
     } else {
       this.target = {
-        TransformControls: getTransformControlsConfig()
+        [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig(),
+        [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig()
       };
-      this.transformControls = new TransformControls(new Camera());
     }
   }
-  set(type, path, key, value) {
-    if (type === "TransformControls") {
-      const controls = this.transformControls;
-      if (key === "snapAllow") {
-        const config = this.target["TransformControls"];
-        if (value) {
-          controls.translationSnap = config.translationSnap;
-          controls.rotationSnap = config.rotationSnap;
-          controls.scaleSnap = config.scaleSnap;
-        } else {
-          controls.translationSnap = null;
-          controls.rotationSnap = null;
-          controls.scaleSnap = null;
-        }
-        return this;
-      }
-      controls[key] = value;
-    } else {
-      console.warn(`controls compiler can not support this controls: '${type}'`);
+  getAssembly(vid) {
+    const config = this.target[vid];
+    if (!config) {
+      console.warn(`controls compiler can not found this config: '${vid}'`);
+      return null;
+    }
+    const processer = this.processorMap[config.type];
+    if (!processer) {
+      console.warn(`controls compiler can not support this controls: '${vid}'`);
+      return null;
+    }
+    const control = this.controlMap[config.type];
+    if (!control) {
+      console.warn(`controls compiler can not found type of control: '${config.type}'`);
+      return null;
+    }
+    return {
+      config,
+      processer,
+      control
+    };
+  }
+  set(vid, path, key, value) {
+    const assembly = this.getAssembly(vid);
+    if (!assembly) {
       return this;
     }
+    assembly.processer.assemble({
+      config: assembly.config,
+      control: assembly.control
+    }).process({
+      key,
+      path,
+      value
+    });
+    return this;
+  }
+  setAll(vid) {
+    const assembly = this.getAssembly(vid);
+    if (!assembly) {
+      return this;
+    }
+    assembly.processer.assemble({
+      config: assembly.config,
+      control: assembly.control
+    }).processAll().dispose();
     return this;
   }
   setTarget(target) {
@@ -3958,9 +4246,19 @@ class ControlsCompiler extends Compiler {
     return this;
   }
   compileAll() {
+    for (let vid of Object.keys(this.target)) {
+      const assembly = this.getAssembly(vid);
+      if (!assembly) {
+        continue;
+      }
+      assembly.processer.assemble({
+        config: assembly.config,
+        control: assembly.control
+      }).processAll().dispose();
+    }
     return this;
   }
-  dispose(parameter) {
+  dispose() {
     return this;
   }
 }
@@ -5124,6 +5422,10 @@ class LightCompiler extends ObjectCompiler {
       return this;
     }
     let object = this.map.get(vid);
+    if (key === "color") {
+      object.color = new Color(value);
+      return this;
+    }
     for (let key2 of path) {
       if (this.filterAttribute[key2]) {
         return this;
@@ -6074,7 +6376,8 @@ class CompilerManager {
     this.sceneCompiler = sceneCompiler;
     const controlsCompiler = new ControlsCompiler({
       target: controlsDataSupport.getData(),
-      transformControls: engine.transformControls
+      transformControls: engine.transformControls,
+      orbitControls: engine.orbitControls
     });
     this.controlsCompiler = controlsCompiler;
     const eventCompiler = new EventCompiler({
@@ -8034,7 +8337,8 @@ const ObjectHelperPlugin = function(params = {}) {
   };
   const filterHelperMap = {
     "AmbientLight": true,
-    "Object3D": true
+    "Object3D": true,
+    "TransformControls": true
   };
   const helperMap = new Map();
   const pointerenterFunMap = new Map();

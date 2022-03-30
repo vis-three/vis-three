@@ -1,48 +1,81 @@
-import { Camera } from "three";
-import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { Compiler } from "../../core/Compiler";
-import { getTransformControlsConfig } from "./ControlsConfig";
+import { CONFIGTYPE } from "../constants/configType";
+import { getOrbitControlsConfig, getTransformControlsConfig } from "./ControlsConfig";
+import { OrbitControlsProcessor } from "./OrbitControlsProcessor";
+import { TransformControlsProcessor } from "./TransformControlsProcessor";
 export class ControlsCompiler extends Compiler {
     target;
+    // TODO: 需要支持不止一个控件
     transformControls;
+    orbitControls;
+    processorMap = {
+        [CONFIGTYPE.TRNASFORMCONTROLS]: new TransformControlsProcessor(),
+        [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor()
+    };
+    controlMap = {
+        [CONFIGTYPE.TRNASFORMCONTROLS]: undefined,
+        [CONFIGTYPE.ORBITCONTROLS]: undefined
+    };
     constructor(parameters) {
         super();
         if (parameters) {
             parameters.target && (this.target = parameters.target);
-            parameters.transformControls && (this.transformControls = parameters.transformControls);
+            parameters.transformControls && (this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] = parameters.transformControls);
+            parameters.orbitControls && (this.controlMap[CONFIGTYPE.ORBITCONTROLS] = parameters.orbitControls);
         }
         else {
             this.target = {
-                TransformControls: getTransformControlsConfig()
+                [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig(),
+                [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig()
             };
-            this.transformControls = new TransformControls(new Camera());
         }
     }
-    set(type, path, key, value) {
-        if (type === 'TransformControls') {
-            const controls = this.transformControls;
-            if (key === 'snapAllow') {
-                const config = this.target['TransformControls'];
-                if (value) {
-                    controls.translationSnap = config.translationSnap;
-                    controls.rotationSnap = config.rotationSnap;
-                    // @ts-ignore types 没写 源码有这个属性
-                    controls.scaleSnap = config.scaleSnap;
-                }
-                else {
-                    controls.translationSnap = null;
-                    controls.rotationSnap = null;
-                    // @ts-ignore types 没写 源码有这个属性
-                    controls.scaleSnap = null;
-                }
-                return this;
-            }
-            controls[key] = value;
+    getAssembly(vid) {
+        const config = this.target[vid];
+        if (!config) {
+            console.warn(`controls compiler can not found this config: '${vid}'`);
+            return null;
         }
-        else {
-            console.warn(`controls compiler can not support this controls: '${type}'`);
+        const processer = this.processorMap[config.type];
+        if (!processer) {
+            console.warn(`controls compiler can not support this controls: '${vid}'`);
+            return null;
+        }
+        const control = this.controlMap[config.type];
+        if (!control) {
+            console.warn(`controls compiler can not found type of control: '${config.type}'`);
+            return null;
+        }
+        return {
+            config,
+            processer,
+            control
+        };
+    }
+    set(vid, path, key, value) {
+        const assembly = this.getAssembly(vid);
+        if (!assembly) {
             return this;
         }
+        assembly.processer.assemble({
+            config: assembly.config,
+            control: assembly.control
+        }).process({
+            key,
+            path,
+            value
+        });
+        return this;
+    }
+    setAll(vid) {
+        const assembly = this.getAssembly(vid);
+        if (!assembly) {
+            return this;
+        }
+        assembly.processer.assemble({
+            config: assembly.config,
+            control: assembly.control
+        }).processAll().dispose();
         return this;
     }
     setTarget(target) {
@@ -50,9 +83,19 @@ export class ControlsCompiler extends Compiler {
         return this;
     }
     compileAll() {
+        for (let vid of Object.keys(this.target)) {
+            const assembly = this.getAssembly(vid);
+            if (!assembly) {
+                continue;
+            }
+            assembly.processer.assemble({
+                config: assembly.config,
+                control: assembly.control
+            }).processAll().dispose();
+        }
         return this;
     }
-    dispose(parameter) {
+    dispose() {
         return this;
     }
 }

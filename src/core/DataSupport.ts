@@ -1,9 +1,13 @@
+import { MODULETYPE } from "../middleware/constants/MODULETYPE"
 import { Compiler, CompilerTarget } from "./Compiler"
 import { ProxyBroadcast, ProxyEvent } from "./ProxyBroadcast"
 import { Rule } from "./Rule"
 import { Translater } from "./Translater"
 
-export class DataSupport<D extends CompilerTarget, C extends Compiler> {
+export abstract class DataSupport<D extends CompilerTarget, C extends Compiler> {
+
+  abstract MODULE: MODULETYPE
+
   private data: D
   private broadcast: ProxyBroadcast
   private translater: Translater<C>
@@ -31,8 +35,17 @@ export class DataSupport<D extends CompilerTarget, C extends Compiler> {
     return this.data
   }
 
+  existSymbol (vid: string): boolean {
+    return Boolean(this.data[vid])
+  }
+
   getConfig (vid: string) {
     return this.data[vid]
+  }
+
+  removeConfig (vid: string) {
+    const data = this.data
+    data[vid] !== undefined && (delete data[vid])
   }
 
   addCompiler (compiler: C): this {
@@ -60,5 +73,9 @@ export class DataSupport<D extends CompilerTarget, C extends Compiler> {
       data[key] !== undefined && (delete data[key])
     }
     return this
+  }
+
+  getModule(): MODULETYPE {
+    return this.MODULE
   }
 }

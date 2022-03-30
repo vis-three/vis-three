@@ -37,6 +37,14 @@
     box.position.x = 10
     scene.add(box)
 
+    const box2 = new THREE.Mesh(
+      new THREE.BoxBufferGeometry(10, 10, 10),
+      new THREE.MeshStandardMaterial({ color: 'rgb(255, 105, 100)' })
+    )
+    box2.position.x = 5
+    box2.position.y = 5
+    scene.add(box2)
+
     const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 300, 0)
     pointLight.position.y = 30
     scene.add(pointLight)
@@ -45,15 +53,15 @@
 
     // pointer or mouse but support use pointer follow three
 
-    global.addEventListener('click', (e) => {
-      console.log('global click')
-    })
-    global.addEventListener('contextmenu', (e) => {
-      console.log('global contextmenu')
-    })
-    global.addEventListener('dblclick', (e) => {
-      console.log('global dblclick')
-    })
+    // global.addEventListener('click', (e) => {
+    //   console.log('global click')
+    // })
+    // global.addEventListener('contextmenu', (e) => {
+    //   console.log('global contextmenu')
+    // })
+    // global.addEventListener('dblclick', (e) => {
+    //   console.log('global dblclick')
+    // })
     // global.addEventListener('pointermove', (e) => {
     //   console.log('global pointermove')
     // })
@@ -83,6 +91,33 @@
     })
     box.addEventListener('dblclick', (e) => {
       console.log('box dblclick')
+    })
+
+
+    
+    box2.addEventListener('pointerdown', (e) => {
+      console.log('box2 pointerdown')
+    })
+    box2.addEventListener('pointerup', (e) => {
+      console.log('box2 pointerup')
+    })
+    box2.addEventListener('pointerenter', (e) => {
+      console.log('box2 pointerenter')
+    })
+    box2.addEventListener('pointermove', (e) => {
+      console.log('box2 pointermove')
+    })
+    box2.addEventListener('pointerleave', (e) => {
+      console.log('box2 pointerleave')
+    })
+    box2.addEventListener('click', (e) => {
+      console.log('box2 click')
+    })
+    box2.addEventListener('contextmenu', (e) => {
+      console.log('box2 contextmenu')
+    })
+    box2.addEventListener('dblclick', (e) => {
+      console.log('box2 dblclick')
     })
 
   </script>

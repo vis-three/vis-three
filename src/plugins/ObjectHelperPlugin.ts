@@ -45,7 +45,8 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (this
 
   const filterHelperMap = {
     'AmbientLight': true,
-    'Object3D': true
+    'Object3D': true,
+    'TransformControls': true
   }
 
   const helperMap = new Map<Object3D, Object3D>()

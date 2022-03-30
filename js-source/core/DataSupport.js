@@ -23,8 +23,15 @@ export class DataSupport {
         this.data = this.broadcast.proxyExtends(data);
         return this.data;
     }
+    existSymbol(vid) {
+        return Boolean(this.data[vid]);
+    }
     getConfig(vid) {
         return this.data[vid];
+    }
+    removeConfig(vid) {
+        const data = this.data;
+        data[vid] !== undefined && (delete data[vid]);
     }
     addCompiler(compiler) {
         compiler.setTarget(this.data);
@@ -48,6 +55,9 @@ export class DataSupport {
             data[key] !== undefined && (delete data[key]);
         }
         return this;
+    }
+    getModule() {
+        return this.MODULE;
     }
 }
 //# sourceMappingURL=DataSupport.js.map

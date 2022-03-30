@@ -24,7 +24,7 @@ export class ProxyBroadcast extends EventDispatcher {
                 // 新增
                 if (target[key] === undefined) {
                     // 如果是对象就递归
-                    if (typeof value === 'object' && value !== null) {
+                    if (typeof value === 'object' && value !== null && !ProxyBroadcast.proxyWeakSet.has(value)) {
                         const newPath = path.concat([key]);
                         value = this.proxyExtends(value, newPath);
                     }
@@ -39,7 +39,7 @@ export class ProxyBroadcast extends EventDispatcher {
                 }
                 else {
                     // 如果是对象就递归
-                    if (typeof value === 'object' && !ProxyBroadcast.proxyWeakSet.has(object)) {
+                    if (typeof value === 'object' && value !== null && !ProxyBroadcast.proxyWeakSet.has(value)) {
                         const newPath = path.concat([key]);
                         value = this.proxyExtends(value, newPath);
                     }
@@ -74,7 +74,9 @@ export class ProxyBroadcast extends EventDispatcher {
                 }
             }
         }
-        return new Proxy(object, handler);
+        const proxy = new Proxy(object, handler);
+        ProxyBroadcast.proxyWeakSet.add(proxy);
+        return proxy;
     }
     // 广播
     broadcast({ operate, path, key, value }) {

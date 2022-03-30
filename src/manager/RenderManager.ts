@@ -31,6 +31,11 @@ export class RenderManager extends EventDispatcher {
 
   // 播放
   play = (): void => {
+    if (this.hasRendering()) {
+      console.warn(`render manager has rendering.`)
+      return 
+    }
+
     this.dispatchEvent({
       type: RENDERERMANAGER.PLAY
     })

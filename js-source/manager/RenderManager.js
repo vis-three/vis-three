@@ -18,6 +18,10 @@ export class RenderManager extends EventDispatcher {
     };
     // 播放
     play = () => {
+        if (this.hasRendering()) {
+            console.warn(`render manager has rendering.`);
+            return;
+        }
         this.dispatchEvent({
             type: RENDERERMANAGER.PLAY
         });
@@ -36,7 +40,7 @@ export class RenderManager extends EventDispatcher {
         });
     };
     // 是否处于渲染当中
-    checkHasRendering = () => {
+    hasRendering = () => {
         return this.animationFrame !== -1;
     };
     // 是否有效渲染队列

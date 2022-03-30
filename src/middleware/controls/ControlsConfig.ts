@@ -1,4 +1,5 @@
 import { SymbolConfig } from "../common/CommonConfig";
+import { CONFIGTYPE } from "../constants/configType";
 
 export interface ControlsConfig extends SymbolConfig {}
 
@@ -27,14 +28,30 @@ export interface OrbitControlsConfig extends ControlsConfig {
   autoRotateSpeed: number
   enableDamping: boolean
   dampingFactor: number
+  enabled: boolean
+  enablePan: boolean
+  enableRotate: boolean
+  enableZoom: boolean
+  maxAzimuthAngle: number
+  maxDistance: number
+  maxPolarAngle: number
+  maxZoom: number
+  minAzimuthAngle: number
+  minDistance: number
+  minPolarAngle: number
+  minZoom: number
+  panSpeed: number
+  rotateSpeed: number
+  zoomSpeed: number
+  screenSpacePanning: boolean
 }
 
-export type ControlsAllConfig = TransformControlsConfig
+export type ControlsAllConfig = TransformControlsConfig | OrbitControlsConfig
 
 export const getTransformControlsConfig = function (): TransformControlsConfig {
   return {
-    vid: 'TransformControls',
-    type: 'TransformControls',
+    vid: CONFIGTYPE.TRNASFORMCONTROLS,
+    type: CONFIGTYPE.TRNASFORMCONTROLS,
     axis: 'XYZ',
     enabled: true,
     mode: 'translate',
@@ -56,11 +73,27 @@ export const getTransformControlsConfig = function (): TransformControlsConfig {
 
 export const getOrbitControlsConfig = function (): OrbitControlsConfig {
   return {
-    vid: 'OrbitControls',
-    type: 'OrbitControls',
+    vid: CONFIGTYPE.ORBITCONTROLS,
+    type: CONFIGTYPE.ORBITCONTROLS,
     autoRotate: false,
     autoRotateSpeed: 2.0,
     enableDamping: false,
-    dampingFactor: 0.05
+    dampingFactor: 0.05,
+    enabled: true,
+    enablePan: true,
+    enableRotate: true,
+    enableZoom: true,
+    maxAzimuthAngle: Infinity,
+    maxDistance: Infinity,
+    maxPolarAngle: Math.PI,
+    maxZoom: Infinity,
+    minAzimuthAngle: -Infinity,
+    minDistance: 0,
+    minPolarAngle: 0,
+    minZoom: 0,
+    panSpeed: 1,
+    rotateSpeed: 1,
+    zoomSpeed: 1,
+    screenSpacePanning: true
   }
 }

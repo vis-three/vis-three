@@ -1,5 +1,6 @@
 
 import { Points } from "three";
+import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { PointsCompiler, PointsCompilerTarget } from "./PointsCompiler";
 import { PointsConfig } from "./PointsConfig";
@@ -12,6 +13,9 @@ export class PointsDataSupport extends ObjectDataSupport<
   PointsCompilerTarget,
   Points
 > {
+
+  MODULE: MODULETYPE = MODULETYPE.POINTS
+
   constructor (data?: PointsCompilerTarget) {
     !data && (data = {})
     super(PointsRule, data)

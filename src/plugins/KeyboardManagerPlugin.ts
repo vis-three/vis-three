@@ -1,6 +1,7 @@
 import { Engine } from "../engine/Engine";
 import { KeyboardManager } from "../manager/KeyboardManager";
 import { CONFIGTYPE } from "../middleware/constants/configType";
+import { TransformControlsConfig } from "../middleware/controls/ControlsConfig";
 import { Plugin } from "./plugin";
 
 export const KeyboardManagerPlugin: Plugin<object> = function (this: Engine, params: object): boolean {
@@ -16,7 +17,7 @@ export const KeyboardManagerPlugin: Plugin<object> = function (this: Engine, par
   this.completeSet.add(() => {
     if (this.transformControls) {
       if (this.IS_ENGINESUPPORT) {
-        const transformControls = this.dataSupportManager!.controlsDataSupport.getData()[CONFIGTYPE.TRNASFORMCONTROLS]
+        const transformControls = this.dataSupportManager!.controlsDataSupport.getData()[CONFIGTYPE.TRNASFORMCONTROLS] as TransformControlsConfig
         keyboardManager.register({
           shortcutKey: ['r'],
           desp: 'tranformControls rotate mode',

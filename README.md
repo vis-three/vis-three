@@ -3,7 +3,7 @@
 three.js库二次功能封装 + 配置化的three.js开发。
 
 <p>
-  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.9-{}" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.10-{}" alt="Version"></a>
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MIT-{}" alt="License"></a>
 </p>
 
@@ -435,8 +435,6 @@ const engine = new Vis.Engine()
 
 编译管理器插件
 
-一般情况下DataSupportManager要与CompilerManager一起安装
-后期会考虑作为一个插件
  ``` js
 const engine = new Vis.Engine()
 .install(Vis.ENGINEPLUGIN.COMPILERMANAGER)

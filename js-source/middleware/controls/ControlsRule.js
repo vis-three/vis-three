@@ -1,13 +1,17 @@
+//TODO: rule 直接调用compiler.process
 export const ControlsRule = function (input, compiler) {
     const { operate, key, path, value } = input;
     if (operate === 'set') {
         const tempPath = path.concat([]);
-        const type = tempPath.shift();
-        if (type) {
-            compiler.set(type, tempPath, key, value);
+        const vid = tempPath.shift();
+        if (vid) {
+            compiler.set(vid, tempPath, key, value);
+        }
+        else if (key) {
+            compiler.setAll(key);
         }
         else {
-            console.error(`controls rule can not found controls type in set operate.`);
+            console.warn(`controls rule can not found controls type in set operate: ${vid}`);
         }
     }
 };
