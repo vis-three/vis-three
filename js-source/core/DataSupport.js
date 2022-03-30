@@ -1,3 +1,4 @@
+import { stringify } from "../convenient/JSONHandler";
 import { ProxyBroadcast } from "./ProxyBroadcast";
 import { Translater } from "./Translater";
 export class DataSupport {
@@ -40,7 +41,7 @@ export class DataSupport {
         return this;
     }
     toJSON() {
-        return JSON.stringify(this.data);
+        return JSON.stringify(this.data, stringify);
     }
     load(config) {
         const data = this.data;

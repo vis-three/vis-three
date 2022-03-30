@@ -34,8 +34,9 @@ import * as RealTimeAnimateLibrary from './convenient/RealTimeAnimateLibrary/con
 import * as ActionLibrary from './convenient/ActionLibrary/Action';
 import { GroupHelper } from './extends/helper/object/GroupHelper';
 import { EngineSupport } from './engine/EngineSupport';
+import * as JSONHandler from './convenient/JSONHandler';
 import { BooleanModifier } from "./modifier/BooleanModifier";
 import { VIEWPOINT } from "./plugins/ViewpointPlugin";
 import { DISPLAYMODE } from "./plugins/DisplayModePlugin";
 import { History } from "./convenient/History";
-export { RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, OBJECTEVENT, EVENTTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, PointLightHelper, CameraHelper, GroupHelper, generateConfig, SupportDataGenerator, CanvasTextureGenerator, History, ActionLibrary, BasicEventLibrary, RealTimeAnimateLibrary, MaterialDisplayer, TextureDisplayer, BooleanModifier };
+export { RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, OBJECTEVENT, EVENTTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, PointLightHelper, CameraHelper, GroupHelper, generateConfig, SupportDataGenerator, CanvasTextureGenerator, History, ActionLibrary, BasicEventLibrary, RealTimeAnimateLibrary, JSONHandler, MaterialDisplayer, TextureDisplayer, BooleanModifier };

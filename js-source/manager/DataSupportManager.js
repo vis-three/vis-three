@@ -14,6 +14,7 @@ import { MeshDataSupport } from '../middleware/mesh/MeshDataSupport';
 import { PointsDataSupport } from '../middleware/points/PointsDataSupport';
 import { validate } from 'uuid';
 import { GroupDataSupport } from '../middleware/group/GroupDataSupport';
+import { stringify } from '../convenient/JSONHandler';
 export class DataSupportManager {
     static register = function (module, dataSupport) {
         return DataSupportManager;
@@ -171,7 +172,7 @@ export class DataSupportManager {
         dataSupportMap.forEach((dataSupport, module) => {
             jsonObject[module] = dataSupport.getData();
         });
-        return JSON.stringify(jsonObject);
+        return JSON.stringify(jsonObject, stringify);
     }
 }
 //# sourceMappingURL=DataSupportManager.js.map

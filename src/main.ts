@@ -35,6 +35,7 @@ import * as RealTimeAnimateLibrary from './convenient/RealTimeAnimateLibrary/con
 import * as ActionLibrary from './convenient/ActionLibrary/Action'
 import { GroupHelper } from './extends/helper/object/GroupHelper';
 import { EngineSupport } from './engine/EngineSupport';
+import * as JSONHandler from './convenient/JSONHandler'
 
 import { BooleanModifier } from "./modifier/BooleanModifier";
 import { VIEWPOINT } from "./plugins/ViewpointPlugin";
@@ -98,6 +99,7 @@ export {
   ActionLibrary,
   BasicEventLibrary,
   RealTimeAnimateLibrary,
+  JSONHandler,
 
   // displayer
   MaterialDisplayer,

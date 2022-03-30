@@ -1,3 +1,4 @@
+import { stringify } from "../convenient/JSONHandler"
 import { MODULETYPE } from "../middleware/constants/MODULETYPE"
 import { Compiler, CompilerTarget } from "./Compiler"
 import { ProxyBroadcast, ProxyEvent } from "./ProxyBroadcast"
@@ -56,7 +57,7 @@ export abstract class DataSupport<D extends CompilerTarget, C extends Compiler> 
   }
 
   toJSON (): string {
-    return JSON.stringify(this.data)
+    return JSON.stringify(this.data, stringify)
   }
 
   load (config: D): this {

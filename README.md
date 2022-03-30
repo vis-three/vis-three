@@ -3,7 +3,7 @@
 three.js库二次功能封装 + 配置化的three.js开发。
 
 <p>
-  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.10-{}" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Versioin-0.0.11-{}" alt="Version"></a>
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MIT-{}" alt="License"></a>
 </p>
 
@@ -94,11 +94,13 @@ console.log(engine.toJSON())
 
 import config from '/examples/config.json'
 
+const handlerConfig = JSON.parse(JSON.stringify(config), Vis.JSONHandler.parse)
+
 const engine = new Vis.ModelingEngineSupport()
 .setDom(document.getElementById('app'))
 .setSize()
 .play()
-.loadConfigAsync(config).then(event => {
+.loadConfigAsync(handlerConfig).then(event => {
   // loaded do something...
 })
 ```

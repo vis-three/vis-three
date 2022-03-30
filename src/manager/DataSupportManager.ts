@@ -35,6 +35,7 @@ import { validate } from 'uuid';
 import { SymbolConfig } from '../middleware/common/CommonConfig';
 import { GroupCompilerTarget } from '../middleware/group/GroupCompiler';
 import { GroupDataSupport } from '../middleware/group/GroupDataSupport';
+import { stringify } from '../convenient/JSONHandler';
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget
@@ -251,7 +252,7 @@ export class DataSupportManager {
       jsonObject[module] = dataSupport.getData()
     })
 
-    return JSON.stringify(jsonObject)
+    return JSON.stringify(jsonObject, stringify)
   }
 
 }

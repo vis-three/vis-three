@@ -52,6 +52,8 @@
     import * as THREE from 'three'
     import config from '/examples/public/assetsConfig/configDevelopment.json'
 
+    const visConfig = JSON.parse(JSON.stringify(config), Vis.JSONHandler.parse)
+
     const loadingDom = document.createElement('div')
     loadingDom.innerText = '正在加载...'
     loadingDom.className = 'loadingDom'
@@ -61,7 +63,7 @@
     .setDom(document.getElementById('app'))
     .setSize()
     .play()
-    .loadConfig(config, () => {
+    .loadConfig(visConfig, () => {
       const lightDataSupport = engine.dataSupportManager.getDataSupport(Vis.MODULETYPE.LIGHT)
       const lightData = lightDataSupport.getData()
 
@@ -79,6 +81,8 @@
       .replace(/,"/g, ',"\n')
       .replace(/},"/g, '\n},"')
       document.body.removeChild(loadingDom)
+
+      console.log(engine.toJSON())
     })
 
   </script>

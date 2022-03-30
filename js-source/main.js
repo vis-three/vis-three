@@ -34,6 +34,7 @@ import * as RealTimeAnimateLibrary from './convenient/RealTimeAnimateLibrary/con
 import * as ActionLibrary from './convenient/ActionLibrary/Action';
 import { GroupHelper } from './extends/helper/object/GroupHelper';
 import { EngineSupport } from './engine/EngineSupport';
+import * as JSONHandler from './convenient/JSONHandler';
 import { BooleanModifier } from "./modifier/BooleanModifier";
 import { VIEWPOINT } from "./plugins/ViewpointPlugin";
 import { DISPLAYMODE } from "./plugins/DisplayModePlugin";
@@ -54,7 +55,7 @@ TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, 
 // helper
 PointLightHelper, CameraHelper, GroupHelper, 
 // convenient
-generateConfig, SupportDataGenerator, CanvasTextureGenerator, History, ActionLibrary, BasicEventLibrary, RealTimeAnimateLibrary, 
+generateConfig, SupportDataGenerator, CanvasTextureGenerator, History, ActionLibrary, BasicEventLibrary, RealTimeAnimateLibrary, JSONHandler, 
 // displayer
 MaterialDisplayer, TextureDisplayer, 
 // modifier

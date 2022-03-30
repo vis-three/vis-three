@@ -2763,7 +2763,7 @@ var byteToHex = [];
 for (var i = 0; i < 256; ++i) {
   byteToHex.push((i + 256).toString(16).substr(1));
 }
-function stringify(arr) {
+function stringify$1(arr) {
   var offset = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
   var uuid = (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase();
   if (!validate(uuid)) {
@@ -2783,7 +2783,7 @@ function v4(options, buf, offset) {
     }
     return buf;
   }
-  return stringify(rnds);
+  return stringify$1(rnds);
 }
 const typeMap = getConfigFunctionMap();
 const generateConfig = function(type, merge, strict = true, warn = true) {
@@ -2925,6 +2925,30 @@ const ResourceManagerPlugin = function(params) {
   };
   return true;
 };
+const stringify = (key, value) => {
+  if (value === Infinity) {
+    return "Infinity";
+  }
+  if (value === -Infinity) {
+    return "-Infinity";
+  }
+  return value;
+};
+const parse = (key, value) => {
+  if (value === "Infinity") {
+    return Infinity;
+  }
+  if (value === "-Infinity") {
+    return -Infinity;
+  }
+  return value;
+};
+var JSONHandler = /* @__PURE__ */ Object.freeze({
+  __proto__: null,
+  [Symbol.toStringTag]: "Module",
+  stringify,
+  parse
+});
 const _ProxyBroadcast = class extends EventDispatcher {
   constructor() {
     super();
@@ -3077,7 +3101,7 @@ class DataSupport {
     return this;
   }
   toJSON() {
-    return JSON.stringify(this.data);
+    return JSON.stringify(this.data, stringify);
   }
   load(config) {
     const data = this.data;
@@ -3675,7 +3699,7 @@ const _DataSupportManager = class {
     dataSupportMap.forEach((dataSupport, module) => {
       jsonObject[module] = dataSupport.getData();
     });
-    return JSON.stringify(jsonObject);
+    return JSON.stringify(jsonObject, stringify);
   }
 };
 let DataSupportManager = _DataSupportManager;
@@ -9801,4 +9825,4 @@ class History {
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
-export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, generateConfig };
+export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, generateConfig };

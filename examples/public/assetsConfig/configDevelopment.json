@@ -505,5 +505,47 @@
       "geometry": "bb10af6a-d777-49d7-b0a3-36b37551ed43",
       "material": "3a2f661c-959a-4143-bb5a-017d7675b7b6"
     }
+  },
+  "controls": {
+    "TransformControls": {
+      "vid": "TransformControls",
+      "type": "TransformControls",
+      "axis": "XYZ",
+      "enabled": true,
+      "mode": "translate",
+      "snapAllow": false,
+      "rotationSnap": 0.17453292519943295,
+      "translationSnap": 5,
+      "scaleSnap": 0.1,
+      "showX": true,
+      "showY": true,
+      "showZ": true,
+      "size": 1,
+      "space": "world"
+    },
+    "OrbitControls": {
+      "vid": "OrbitControls",
+      "type": "OrbitControls",
+      "autoRotate": true,
+      "autoRotateSpeed": 2,
+      "enableDamping": false,
+      "dampingFactor": 0.05,
+      "enabled": true,
+      "enablePan": true,
+      "enableRotate": true,
+      "enableZoom": true,
+      "maxAzimuthAngle": "Infinity",
+      "maxDistance": "Infinity",
+      "maxPolarAngle": 3.141592653589793,
+      "maxZoom": "Infinity",
+      "minAzimuthAngle": "-Infinity",
+      "minDistance": 0,
+      "minPolarAngle": 0,
+      "minZoom": 0,
+      "panSpeed": 1,
+      "rotateSpeed": 1,
+      "zoomSpeed": 1,
+      "screenSpacePanning": true
+    }
   }
 }
