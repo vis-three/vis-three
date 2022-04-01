@@ -1,4 +1,4 @@
-import { ClampToEdgeWrapping, LinearEncoding, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, Texture, UVMapping } from "three";
+import { ClampToEdgeWrapping, CubeReflectionMapping, LinearEncoding, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, Texture, UVMapping } from "three";
 import { SymbolConfig, Vector2Config } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
 
@@ -106,7 +106,9 @@ export const getCubeTextureConfig = function(): CubeTextureConfig {
       px: '',
       py: '',
       pz: ''
-    }
+    },
+    mapping: CubeReflectionMapping,
+    flipY: false
   })
 }
 

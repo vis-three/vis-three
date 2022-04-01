@@ -37,7 +37,7 @@
       ctx.fillStyle= 'rgb(206, 42, 230)'
    
       ctx.font=" bold 72px 微软雅黑"
-      ctx.fillText("Hello World!", 400, 80)
+      ctx.fillText("Texture", 400, 80)
     }).preview({
       top: '10%',
       left: '10%'
@@ -53,9 +53,21 @@
     })
 
 
-    engine.loadResourcesAsync(['/examples/public/video/1.mp4']).then(() => {
+    engine.loadResourcesAsync([
+      '/examples/public/video/1.mp4',
+      '/examples/public/texture/skyBox/snowVillage/nx.jpg',
+      '/examples/public/texture/skyBox/snowVillage/ny.jpg',
+      '/examples/public/texture/skyBox/snowVillage/nz.jpg',
+      '/examples/public/texture/skyBox/snowVillage/px.jpg',
+      '/examples/public/texture/skyBox/snowVillage/py.jpg',
+      '/examples/public/texture/skyBox/snowVillage/pz.jpg',
+    ]).then(() => {
+
        const ambientLight = Vis.generateConfig('AmbientLight')
       engine.dataSupportManager.lightDataSupport.getData()[ambientLight.vid] = ambientLight
+
+
+      const textureSupportDate = engine.dataSupportManager.textureDataSupport.getData()
 
       const canvasTexture = Vis.generateConfig('CanvasTexture', {
         url: 'example.canvasTexture',
@@ -63,28 +75,48 @@
       const videoTexture = Vis.generateConfig('VideoTexture', {
         url: '/examples/public/video/1.mp4'
       })
-
-      engine.dataSupportManager.textureDataSupport.getData()[canvasTexture.vid] = canvasTexture
-      engine.dataSupportManager.textureDataSupport.getData()[videoTexture.vid] = videoTexture
-
-
-      const spriteMaterial = Vis.generateConfig('SpriteMaterial', {
-        map: canvasTexture.vid,
+      const cubeTexture = Vis.generateConfig('CubeTexture', {
+        cube: {
+          nx: '/examples/public/texture/skyBox/snowVillage/nx.jpg',
+          ny: '/examples/public/texture/skyBox/snowVillage/ny.jpg',
+          nz: '/examples/public/texture/skyBox/snowVillage/nz.jpg',
+          px: '/examples/public/texture/skyBox/snowVillage/px.jpg',
+          py: '/examples/public/texture/skyBox/snowVillage/py.jpg',
+          pz: '/examples/public/texture/skyBox/snowVillage/pz.jpg'
+        }
       })
 
-      const boxMaterial = Vis.generateConfig('MeshStandardMaterial', {
-        // alphaMap: videoTexture.vid,
+      textureSupportDate[canvasTexture.vid] = canvasTexture
+      textureSupportDate[videoTexture.vid] = videoTexture
+      textureSupportDate[cubeTexture.vid] = cubeTexture
+
+      engine.dataSupportManager.sceneDataSupport.getData()['Scene'].background = cubeTexture.vid
+      engine.dataSupportManager.sceneDataSupport.getData()['Scene'].environment = cubeTexture.vid
+
+      const materialSupportData = engine.dataSupportManager.materialDataSupport.getData()
+
+      const spriteMaterial = Vis.generateConfig('SpriteMaterial', {
+        map: canvasTexture.vid
+      })
+
+      const box1Material = Vis.generateConfig('MeshStandardMaterial', {
         map: videoTexture.vid
       })
 
-      engine.dataSupportManager.materialDataSupport.getData()[spriteMaterial.vid] = spriteMaterial
-      engine.dataSupportManager.materialDataSupport.getData()[boxMaterial.vid] = boxMaterial
+      const box2Material = Vis.generateConfig('MeshStandardMaterial', {
+        roughness: 0,
+        metalness: 1,
+      })
+
+      materialSupportData[spriteMaterial.vid] = spriteMaterial
+      materialSupportData[box1Material.vid] = box1Material
+      materialSupportData[box2Material.vid] = box2Material
 
 
       const sprite = Vis.generateConfig('Sprite', {
         material: spriteMaterial.vid,
         position: {
-          x: 20
+          y: 15
         },
         scale: {
           x: 25,
@@ -100,11 +132,25 @@
       })
       engine.dataSupportManager.geometryDataSupport.getData()[boxGeometry.vid] = boxGeometry
 
-      const box = Vis.generateConfig('Mesh', {
+
+
+      const box1 = Vis.generateConfig('Mesh', {
         geometry: boxGeometry.vid,
-        material: boxMaterial.vid
+        material: box1Material.vid,
+        position: {
+          x: -15
+        },
       })
-      engine.dataSupportManager.meshDataSupport.getData()[box.vid] = box
+
+      const box2 = Vis.generateConfig('Mesh', {
+        geometry: boxGeometry.vid,
+        material: box2Material.vid,
+        position: {
+          x: 15
+        },
+      })
+      engine.dataSupportManager.meshDataSupport.getData()[box1.vid] = box1
+      engine.dataSupportManager.meshDataSupport.getData()[box2.vid] = box2
 
       console.log(engine)
     }) 

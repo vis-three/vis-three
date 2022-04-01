@@ -1,4 +1,4 @@
-import { ClampToEdgeWrapping, LinearEncoding, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, UVMapping } from "three";
+import { ClampToEdgeWrapping, CubeReflectionMapping, LinearEncoding, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, UVMapping } from "three";
 import { CONFIGTYPE } from "../constants/configType";
 export const getTextureConfig = function () {
     return {
@@ -53,7 +53,9 @@ export const getCubeTextureConfig = function () {
             px: '',
             py: '',
             pz: ''
-        }
+        },
+        mapping: CubeReflectionMapping,
+        flipY: false
     });
 };
 export const getCanvasTextureConfig = function () {

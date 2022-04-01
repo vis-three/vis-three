@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Scene, PerspectiveCamera, Clock, MOUSE, OrthographicCamera, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Vector3, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PlaneBufferGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, OctahedronBufferGeometry, Sphere, EdgesGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Scene, PerspectiveCamera, Clock, MOUSE, OrthographicCamera, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Vector3, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PlaneBufferGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, OctahedronBufferGeometry, Sphere, EdgesGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -2488,7 +2488,9 @@ const getCubeTextureConfig = function() {
       px: "",
       py: "",
       pz: ""
-    }
+    },
+    mapping: CubeReflectionMapping,
+    flipY: false
   });
 };
 const getCanvasTextureConfig = function() {
