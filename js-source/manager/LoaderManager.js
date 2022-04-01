@@ -2,6 +2,7 @@ import { EventDispatcher } from './../core/EventDispatcher';
 import { ImageLoader } from "three";
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
+import { VideoLoader } from '../extends/loader/VideoLoader';
 export var LOADERMANAGER;
 (function (LOADERMANAGER) {
     LOADERMANAGER["BEFORELOAD"] = "beforeLoad";
@@ -32,12 +33,16 @@ export class LoaderManager extends EventDispatcher {
         this.isLoaded = false;
         this.loadDetailMap = {};
         const imageLoader = new ImageLoader();
+        const videoLoader = new VideoLoader();
         this.loaderMap = {
             'jpg': imageLoader,
             'png': imageLoader,
             'jpeg': imageLoader,
             'obj': new OBJLoader(),
-            'mtl': new MTLLoader()
+            'mtl': new MTLLoader(),
+            'mp4': videoLoader,
+            'webm': videoLoader,
+            'ogg': videoLoader,
         };
         if (parameters) {
             this.loaderMap = Object.assign(this.loaderMap, parameters.loaderExtends);

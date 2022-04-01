@@ -27,7 +27,7 @@ import { TransformControlsPlugin } from "../plugins/TransformControlsPlugin";
 import { Screenshot, WebGLRendererPlugin } from "../plugins/WebGLRendererPlugin";
 import { LoadedEvent, LoaderManager, LoaderManagerParameters } from "../manager/LoaderManager";
 import { LoaderManagerPlugin } from "../plugins/LoaderManagerPlugin";
-import { ResourceManager } from "../manager/ResourceManager";
+import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
 import { ResourceManagerPlugin } from "../plugins/ResourceManagerPlugin";
 import { DataSupportManager, DataSupportManagerParameters } from "../manager/DataSupportManager";
 import { DataSupportManagerPlugin } from "../plugins/DataSupportManagerPlugin";
@@ -121,8 +121,8 @@ export class Engine extends EventDispatcher {
   setObjectHelper?: (params: {show: boolean}) => this
   setSelectionBox?: (params: {objects: Object3D[]}) => this
 
-  loadResources?: (urlList: Array<string>, callback: (err: Error | undefined, event?: LoadedEvent) => void) => this
-  loadResourcesAsync?: (urlList: Array<string>) => Promise<LoadedEvent>
+  loadResources?: (urlList: Array<string>, callback: (err: Error | undefined, event?: LoadedEvent | MappedEvent) => void) => this
+  loadResourcesAsync?: (urlList: Array<string>) => Promise<LoadedEvent | MappedEvent>
 
   registerResources?: (resourceMap: {[key: string]: unknown}) => this
   toJSON?: () => string

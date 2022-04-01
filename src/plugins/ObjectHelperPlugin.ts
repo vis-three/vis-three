@@ -4,9 +4,11 @@ import { CameraHelper } from "../extends/helper/camera/CameraHelper";
 import { PointLightHelper } from "../extends/helper/light/PointLightHelper";
 import { GroupHelper } from "../extends/helper/object/GroupHelper";
 import { MeshHelper } from "../extends/helper/object/MeshHelper";
+import { SpotLightHelper } from "../extends/helper/light/SpotLightHelper";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { Plugin } from "./plugin";
 import { SelectedEvent } from "./SelectionPlugin";
+import { DirectionalLightHelper } from "../extends/helper/light/DirectionalLightHelper";
 
 export interface ObjectHelperParameters {
   interact?: boolean
@@ -37,6 +39,8 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (this
 
   const typeHelperMap = {
     [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
+    [CONFIGTYPE.SPOTLIGHT]: SpotLightHelper,
+    [CONFIGTYPE.DIRECTIONALLIGHT]: DirectionalLightHelper,
     [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
     [CONFIGTYPE.MESH]: MeshHelper,

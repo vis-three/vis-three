@@ -7,11 +7,11 @@ export class PointLightHelper extends LineSegments implements VisHelper{
     shape: Mesh
     type: string = 'VisPointLightHelper'
     
-    private cachaColor: number
-    private cachaDistance: number
-    private cachaVector3: Vector3
+    private cacheColor: number
+    private cacheDistance: number
+    private cacheVector3: Vector3
     
-
+  //TODO: 手动更新api，自动更新api，support更新
   constructor (pointLight: PointLight) {
     super()
     // 光源
@@ -49,33 +49,36 @@ export class PointLightHelper extends LineSegments implements VisHelper{
       })
     )
     shape.raycast = () => {}
+    shape.matrixAutoUpdate = false
 
     this.shape = shape
     this.target = pointLight
     this.sphere = new Sphere(new Vector3(0, 0, 0), 1)
-    this.cachaColor = pointLight.color.getHex()
-    this.cachaDistance = pointLight.distance
-    this.cachaVector3 = new Vector3()
+    this.cacheColor = pointLight.color.getHex()
+    this.cacheDistance = pointLight.distance
+    this.cacheVector3 = new Vector3()
 
     this.add(this.shape)
+
     this.matrixAutoUpdate = false
     this.matrix = pointLight.matrix
+    this.matrixWorldNeedsUpdate = false
+    this.matrixWorld = pointLight.matrixWorld
+    
 
-    // https://github.com/mrdoob/three.js/issues/14970
+    // TODO: compiler触发eventDistpatch
     this.onBeforeRender = () => {
       const light = this.target
       const shape = this.shape
-      const scource = this
-      if (light.distance !== this.cachaDistance) {
+      if (light.distance !== this.cacheDistance) {
         shape.geometry.dispose()
         shape.geometry = new OctahedronBufferGeometry(light.distance, 0)
-        this.cachaDistance = light.distance
+        this.cacheDistance = light.distance
       }
 
-      if (light.color.getHex() !== this.cachaColor) {
+      if (light.color.getHex() !== this.cacheColor) {
         (shape.material as MeshBasicMaterial).color.copy(light.color).multiplyScalar(light.intensity);
-        (scource.material as LineBasicMaterial).color.copy(light.color).multiplyScalar(light.intensity)
-        this.cachaColor = light.color.getHex()
+        this.cacheColor = light.color.getHex()
       } 
     }
   }
@@ -87,7 +90,7 @@ export class PointLightHelper extends LineSegments implements VisHelper{
     const matrixWorld = target.matrixWorld
     const sphere = this.sphere
     
-    sphere.set(this.cachaVector3.set(0, 0, 0), 1)
+    sphere.set(this.cacheVector3.set(0, 0, 0), 1)
     sphere.applyMatrix4(matrixWorld)
 
     if (raycaster.ray.intersectsSphere(sphere)) {

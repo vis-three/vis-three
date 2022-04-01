@@ -5,9 +5,9 @@ export declare class PointLightHelper extends LineSegments implements VisHelper 
     target: PointLight;
     shape: Mesh;
     type: string;
-    private cachaColor;
-    private cachaDistance;
-    private cachaVector3;
+    private cacheColor;
+    private cacheDistance;
+    private cacheVector3;
     constructor(pointLight: PointLight);
     raycast(raycaster: Raycaster, intersects: Intersection[]): void;
 }

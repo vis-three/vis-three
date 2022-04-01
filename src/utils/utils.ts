@@ -1,8 +1,8 @@
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
-import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig} from "../middleware/light/LightConfig"
-import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig } from "../middleware/geometry/GeometryConfig"
-import { getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig } from "../middleware/texture/TextureConfig"
+import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig, getDirectionalLightConfig} from "../middleware/light/LightConfig"
+import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig, getPlaneGeometryConfig } from "../middleware/geometry/GeometryConfig"
+import { getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig, getVideoTextureConfig } from "../middleware/texture/TextureConfig"
 import { getLineBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getSpriteMaterialConfig } from "../middleware/material/MaterialConfig"
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../middleware/camera/CameraConfig"
 import { getWebGLRendererConfig } from "../middleware/renderer/RendererConfig"
@@ -52,6 +52,7 @@ export function getConfigModelMap (): {[key: string]: string} {
     [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
     [CONFIGTYPE.CUBETEXTURE]: MODULETYPE.TEXTURE,
     [CONFIGTYPE.CANVASTEXTURE]: MODULETYPE.TEXTURE,
+    [CONFIGTYPE.VIDEOTEXTURE]: MODULETYPE.TEXTURE,
 
     [CONFIGTYPE.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
     [CONFIGTYPE.MESHPHONGMATERIAL]: MODULETYPE.MATERIAL,
@@ -62,10 +63,12 @@ export function getConfigModelMap (): {[key: string]: string} {
     [CONFIGTYPE.AMBIENTLIGHT]: MODULETYPE.LIGHT,
     [CONFIGTYPE.SPOTLIGHT]: MODULETYPE.LIGHT,
     [CONFIGTYPE.POINTLIGHT]: MODULETYPE.LIGHT,
+    [CONFIGTYPE.DIRECTIONALLIGHT]: MODULETYPE.LIGHT,
 
     [CONFIGTYPE.BOXGEOMETRY]: MODULETYPE.GEOMETRY,
     [CONFIGTYPE.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
     [CONFIGTYPE.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
+    [CONFIGTYPE.PLANEGEOMETRY]: MODULETYPE.GEOMETRY,
 
     [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
     [CONFIGTYPE.LINE]: MODULETYPE.LINE,
@@ -91,6 +94,7 @@ export function getConfigFunctionMap (): {[key: string]: Function} {
     [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
     [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
     [CONFIGTYPE.CANVASTEXTURE]: getCanvasTextureConfig,
+    [CONFIGTYPE.VIDEOTEXTURE]: getVideoTextureConfig,
   
     [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
     [CONFIGTYPE.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
@@ -101,10 +105,12 @@ export function getConfigFunctionMap (): {[key: string]: Function} {
     [CONFIGTYPE.AMBIENTLIGHT]: getAmbientLightConfig,
     [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,
     [CONFIGTYPE.POINTLIGHT]: getPointLightConfig,
+    [CONFIGTYPE.DIRECTIONALLIGHT]: getDirectionalLightConfig,
   
     [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
     [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
     [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
+    [CONFIGTYPE.PLANEGEOMETRY]: getPlaneGeometryConfig,
   
     [CONFIGTYPE.SPRITE]: getSpriteConfig,
     [CONFIGTYPE.LINE]: getLineConfig,

@@ -9,7 +9,7 @@ import { EventManager } from "../manager/EventManager";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { Screenshot } from "../plugins/WebGLRendererPlugin";
 import { LoadedEvent, LoaderManager } from "../manager/LoaderManager";
-import { ResourceManager } from "../manager/ResourceManager";
+import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
 import { DataSupportManager } from "../manager/DataSupportManager";
 import { CompilerManager } from "../manager/CompilerManager";
 import { KeyboardManager } from "../manager/KeyboardManager";
@@ -83,8 +83,8 @@ export declare class Engine extends EventDispatcher {
     setSelectionBox?: (params: {
         objects: Object3D[];
     }) => this;
-    loadResources?: (urlList: Array<string>, callback: (err: Error | undefined, event?: LoadedEvent) => void) => this;
-    loadResourcesAsync?: (urlList: Array<string>) => Promise<LoadedEvent>;
+    loadResources?: (urlList: Array<string>, callback: (err: Error | undefined, event?: LoadedEvent | MappedEvent) => void) => this;
+    loadResourcesAsync?: (urlList: Array<string>) => Promise<LoadedEvent | MappedEvent>;
     registerResources?: (resourceMap: {
         [key: string]: unknown;
     }) => this;

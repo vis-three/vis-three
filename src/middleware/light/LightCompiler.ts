@@ -1,9 +1,10 @@
-import { AmbientLight, BufferGeometry, Color, Light, Material, PointLight, Scene, SpotLight } from "three";
+import { AmbientLight, BufferGeometry, Color, DirectionalLight, Light, Material, PointLight, Scene, SpotLight } from "three";
 import { Compiler} from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { LightConfigAllType } from "./LightConfig";
 import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
+import { CONFIGTYPE } from "../constants/configType";
 
 export interface LightCompilerTarget extends ObjectCompilerTarget<LightConfigAllType> {
   [key: string]: LightConfigAllType
@@ -25,9 +26,11 @@ export class LightCompiler extends ObjectCompiler<LightConfigAllType, LightCompi
   constructor (parameters?: LightCompilerParameters) {
     super(parameters)
     this.constructMap = new Map()
-    this.constructMap.set('PointLight', () => new PointLight())
-    this.constructMap.set('SpotLight', () => new SpotLight())
-    this.constructMap.set('AmbientLight', () => new AmbientLight())
+    this.constructMap.set(CONFIGTYPE.POINTLIGHT, () => new PointLight())
+    this.constructMap.set(CONFIGTYPE.SPOTLIGHT, () => new SpotLight())
+    this.constructMap.set(CONFIGTYPE.AMBIENTLIGHT, () => new AmbientLight())
+    this.constructMap.set(CONFIGTYPE.DIRECTIONALLIGHT, () => new DirectionalLight())
+
 
     this.setLookAt = function(vid: string, target: string) {
       return this

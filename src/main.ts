@@ -41,10 +41,14 @@ import { BooleanModifier } from "./modifier/BooleanModifier";
 import { VIEWPOINT } from "./plugins/ViewpointPlugin";
 import { DISPLAYMODE } from "./plugins/DisplayModePlugin";
 import { History } from "./convenient/History";
+import { SpotLightHelper } from "./extends/helper/light/SpotLightHelper";
+import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightHelper";
+import { VideoLoader } from "./extends/loader/VideoLoader";
 
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`)
 }
+
 
 export {
   // menu
@@ -90,6 +94,8 @@ export {
   PointLightHelper,
   CameraHelper,
   GroupHelper,
+  SpotLightHelper,
+  DirectionalLightHelper,
 
   // convenient
   generateConfig,
@@ -104,6 +110,9 @@ export {
   // displayer
   MaterialDisplayer,
   TextureDisplayer,
+
+  // loader
+  VideoLoader,
 
   // modifier
   BooleanModifier

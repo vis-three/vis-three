@@ -39,6 +39,9 @@ import { BooleanModifier } from "./modifier/BooleanModifier";
 import { VIEWPOINT } from "./plugins/ViewpointPlugin";
 import { DISPLAYMODE } from "./plugins/DisplayModePlugin";
 import { History } from "./convenient/History";
+import { SpotLightHelper } from "./extends/helper/light/SpotLightHelper";
+import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightHelper";
+import { VideoLoader } from "./extends/loader/VideoLoader";
 if (!window.__THREE__) {
     console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
@@ -53,11 +56,13 @@ Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, Dis
 // data support
 TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, 
 // helper
-PointLightHelper, CameraHelper, GroupHelper, 
+PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, 
 // convenient
 generateConfig, SupportDataGenerator, CanvasTextureGenerator, History, ActionLibrary, BasicEventLibrary, RealTimeAnimateLibrary, JSONHandler, 
 // displayer
 MaterialDisplayer, TextureDisplayer, 
+// loader
+VideoLoader, 
 // modifier
 BooleanModifier };
 //# sourceMappingURL=main.js.map

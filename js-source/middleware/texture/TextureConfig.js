@@ -1,4 +1,5 @@
 import { ClampToEdgeWrapping, LinearEncoding, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, UVMapping } from "three";
+import { CONFIGTYPE } from "../constants/configType";
 export const getTextureConfig = function () {
     return {
         vid: '',
@@ -31,13 +32,20 @@ export const getTextureConfig = function () {
 };
 export const getImageTextureConfig = function () {
     return Object.assign(getTextureConfig(), {
-        type: 'ImageTexture',
+        type: CONFIGTYPE.IMAGETEXTURE,
         url: ''
+    });
+};
+export const getVideoTextureConfig = function () {
+    return Object.assign(getTextureConfig(), {
+        type: CONFIGTYPE.VIDEOTEXTURE,
+        url: '',
+        minFilter: LinearFilter
     });
 };
 export const getCubeTextureConfig = function () {
     return Object.assign(getTextureConfig(), {
-        type: 'CubeTexture',
+        type: CONFIGTYPE.CUBETEXTURE,
         cube: {
             nx: '',
             ny: '',
@@ -50,7 +58,7 @@ export const getCubeTextureConfig = function () {
 };
 export const getCanvasTextureConfig = function () {
     return Object.assign(getTextureConfig(), {
-        type: 'CanvasTexture',
+        type: CONFIGTYPE.CANVASTEXTURE,
         url: '',
         needsUpdate: false
     });

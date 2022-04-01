@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpotLightHelper</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="../css/common.css">
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+</style>
+
+<body>
+  <div id="app"></div>
+  <script type="module">
+    import * as THREE from 'three'
+    import { GUI } from 'three/examples/jsm/libs/dat.gui.module'
+    import * as Vis from '../../dist/Vis.es.js'
+
+    const engine = new Vis.DisplayEngine()
+    .install('TransformControls')
+    .complete()
+    .setDom(document.getElementById('app'))
+    .setSize()
+    .play()
+
+    const scene = engine.scene
+
+    const box = new THREE.Mesh(
+      new THREE.BoxBufferGeometry(100, 10, 100),
+      new THREE.MeshStandardMaterial({ color: 'rgb(255, 105, 100)' })
+    )
+    scene.add(box)
+
+    const spotLight = new THREE.SpotLight('rgb(255, 255, 255)', 1, 80, Math.PI / 180 * 30)
+    scene.add(spotLight)
+    spotLight.position.set(10, 30, 0)
+
+    const spotLightHelper = new Vis.SpotLightHelper(spotLight)
+    scene.add(spotLightHelper)
+
+
+    const gui = new GUI()
+
+    const guiParam = {
+      color: spotLight.color.getHex(),
+      distance: spotLight.distance,
+      angle: spotLight.angle * 180 / Math.PI,
+      penumbra: spotLight.penumbra,
+      decay: spotLight.decay
+    }
+
+    gui.addColor(guiParam, 'color', -500, 500)
+      .onChange(data => {
+        spotLight.color.setHex(data)
+      })
+    gui.add(guiParam, 'angle', 0, 90)
+      .onChange(data => {
+        spotLight.angle = Math.PI / 180 * data
+      })
+    gui.add(guiParam, 'distance', 0, 500)
+      .onChange(data => {
+        spotLight.distance = data
+      })
+    gui.add(guiParam, 'penumbra', 0, 1, 0.01)
+      .onChange(data => {
+        spotLight.penumbra = data
+      })
+    gui.add(guiParam, 'decay', 0, 1, 0.01)
+      .onChange(data => {
+        spotLight.decay = data
+      })
+  </script>
+  
+</body>
+</html>

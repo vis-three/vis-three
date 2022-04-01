@@ -3,7 +3,9 @@ import { CameraHelper } from "../extends/helper/camera/CameraHelper";
 import { PointLightHelper } from "../extends/helper/light/PointLightHelper";
 import { GroupHelper } from "../extends/helper/object/GroupHelper";
 import { MeshHelper } from "../extends/helper/object/MeshHelper";
+import { SpotLightHelper } from "../extends/helper/light/SpotLightHelper";
 import { CONFIGTYPE } from "../middleware/constants/configType";
+import { DirectionalLightHelper } from "../extends/helper/light/DirectionalLightHelper";
 export const ObjectHelperPlugin = function (params = {}) {
     if (!this.scene) {
         console.error('must install some scene plugin before ObjectHelper plugin.');
@@ -20,6 +22,8 @@ export const ObjectHelperPlugin = function (params = {}) {
     }
     const typeHelperMap = {
         [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
+        [CONFIGTYPE.SPOTLIGHT]: SpotLightHelper,
+        [CONFIGTYPE.DIRECTIONALLIGHT]: DirectionalLightHelper,
         [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
         [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
         [CONFIGTYPE.MESH]: MeshHelper,

@@ -19,6 +19,9 @@ export interface TextureConfig extends SymbolConfig {
 export interface ImageTextureConfig extends TextureConfig {
     url: string;
 }
+export interface VideoTextureConfig extends TextureConfig {
+    url: string;
+}
 export interface CubeTextureConfig extends TextureConfig {
     cube: {
         nx: string;
@@ -33,8 +36,9 @@ export interface CanvasTextureConfig extends TextureConfig {
     url: string;
     needsUpdate: boolean;
 }
-export declare type TextureAllType = ImageTextureConfig | CubeTextureConfig | CanvasTextureConfig;
+export declare type TextureAllType = ImageTextureConfig | CubeTextureConfig | CanvasTextureConfig | VideoTextureConfig;
 export declare const getTextureConfig: () => TextureConfig;
 export declare const getImageTextureConfig: () => ImageTextureConfig;
+export declare const getVideoTextureConfig: () => ImageTextureConfig;
 export declare const getCubeTextureConfig: () => CubeTextureConfig;
 export declare const getCanvasTextureConfig: () => CanvasTextureConfig;

@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Scene, PerspectiveCamera, Clock, MOUSE, OrthographicCamera, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Vector3, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PointLight, SpotLight, AmbientLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, PlaneBufferGeometry, Sprite, CubeTexture, CanvasTexture, AxesHelper, GridHelper, DirectionalLight, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, OctahedronBufferGeometry, Sphere, EdgesGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Scene, PerspectiveCamera, Clock, MOUSE, OrthographicCamera, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Vector3, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PlaneBufferGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, OctahedronBufferGeometry, Sphere, EdgesGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -1913,6 +1913,55 @@ class MaterialCreator {
     return texture;
   }
 }
+const _VideoLoader = class extends Loader {
+  constructor(manager) {
+    super(manager);
+  }
+  load(url, onLoad, onProgress, onError) {
+    if (this.path !== void 0) {
+      url = this.path + url;
+    }
+    this.manager.itemStart(url);
+    url = this.manager.resolveURL(url);
+    const cached = Cache.get(url);
+    if (cached !== void 0) {
+      setTimeout(() => {
+        if (onLoad)
+          onLoad(cached);
+        this.manager.itemEnd(url);
+      }, 0);
+      return cached;
+    }
+    const video = document.createElement("video");
+    video.preload = _VideoLoader.preload;
+    video.autoplay = _VideoLoader.autoplay;
+    video.loop = _VideoLoader.loop;
+    video.muted = _VideoLoader.muted;
+    video.src = url;
+    video.style.position = "fixed";
+    video.style.top = "0";
+    video.style.left = "0";
+    video.style.zIndex = "-1";
+    document.body.appendChild(video);
+    video.oncanplay = () => {
+      Cache.add(url, video);
+      this.manager.itemEnd(url);
+      if (onLoad)
+        onLoad(video);
+    };
+    video.onerror = (e) => {
+      this.manager.itemEnd(url);
+      if (onError)
+        onError(e);
+    };
+    return video;
+  }
+};
+let VideoLoader = _VideoLoader;
+__publicField(VideoLoader, "autoplay", true);
+__publicField(VideoLoader, "preload", "auto");
+__publicField(VideoLoader, "muted", true);
+__publicField(VideoLoader, "loop", true);
 var LOADERMANAGER;
 (function(LOADERMANAGER2) {
   LOADERMANAGER2["BEFORELOAD"] = "beforeLoad";
@@ -1943,12 +1992,16 @@ class LoaderManager extends EventDispatcher {
     this.isLoaded = false;
     this.loadDetailMap = {};
     const imageLoader = new ImageLoader();
+    const videoLoader = new VideoLoader();
     this.loaderMap = {
       "jpg": imageLoader,
       "png": imageLoader,
       "jpeg": imageLoader,
       "obj": new OBJLoader(),
-      "mtl": new MTLLoader()
+      "mtl": new MTLLoader(),
+      "mp4": videoLoader,
+      "webm": videoLoader,
+      "ogg": videoLoader
     };
     if (parameters) {
       this.loaderMap = Object.assign(this.loaderMap, parameters.loaderExtends);
@@ -2149,28 +2202,52 @@ const LoaderManagerPlugin = function(params) {
   const loaderManager = new LoaderManager(params);
   this.loaderManager = loaderManager;
   this.loadResources = (urlList, callback) => {
-    const lodedFun = (event) => {
-      callback(void 0, event);
-      this.loaderManager.removeEventListener("loaded", lodedFun);
-    };
-    try {
-      this.loaderManager.addEventListener("loaded", lodedFun);
-    } catch (error) {
-      callback(error);
+    if (this.resourceManager) {
+      const lodedFun = (event) => {
+        callback(void 0, event);
+        this.resourceManager.removeEventListener("mapped", lodedFun);
+      };
+      try {
+        this.resourceManager.addEventListener("mapped", lodedFun);
+      } catch (error) {
+        callback(error);
+      }
+    } else {
+      const lodedFun = (event) => {
+        callback(void 0, event);
+        this.loaderManager.removeEventListener("loaded", lodedFun);
+      };
+      try {
+        this.loaderManager.addEventListener("loaded", lodedFun);
+      } catch (error) {
+        callback(error);
+      }
     }
     this.loaderManager.load(urlList);
     return this;
   };
   this.loadResourcesAsync = (urlList) => {
     return new Promise((resolve, reject) => {
-      const lodedFun = (event) => {
-        resolve(event);
-        this.loaderManager.removeEventListener("loaded", lodedFun);
-      };
-      try {
-        this.loaderManager.addEventListener("loaded", lodedFun);
-      } catch (error) {
-        reject(error);
+      if (this.resourceManager) {
+        const lodedFun = (event) => {
+          resolve(event);
+          this.resourceManager.removeEventListener("mapped", lodedFun);
+        };
+        try {
+          this.resourceManager.addEventListener("mapped", lodedFun);
+        } catch (error) {
+          reject(error);
+        }
+      } else {
+        const lodedFun = (event) => {
+          resolve(event);
+          this.loaderManager.removeEventListener("loaded", lodedFun);
+        };
+        try {
+          this.loaderManager.addEventListener("loaded", lodedFun);
+        } catch (error) {
+          reject(error);
+        }
       }
       this.loaderManager.load(urlList);
     });
@@ -2182,7 +2259,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
   CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
   CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
-  CONFIGTYPE2["MODEL"] = "Model";
+  CONFIGTYPE2["PLANEGEOMETRY"] = "PlaneGeometry";
   CONFIGTYPE2["MESH"] = "Mesh";
   CONFIGTYPE2["LINE"] = "Line";
   CONFIGTYPE2["LINESEGMENTS"] = "LineSegments";
@@ -2192,6 +2269,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
   CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
   CONFIGTYPE2["CANVASTEXTURE"] = "CanvasTexture";
+  CONFIGTYPE2["VIDEOTEXTURE"] = "VideoTexture";
   CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
   CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
   CONFIGTYPE2["SPRITEMATERIAL"] = "SpriteMaterial";
@@ -2200,6 +2278,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
   CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
   CONFIGTYPE2["POINTLIGHT"] = "PointLight";
+  CONFIGTYPE2["DIRECTIONALLIGHT"] = "DirectionalLight";
   CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
   CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
   CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
@@ -2282,6 +2361,21 @@ const getSpotLightConfig = function() {
     decay: 0.01
   });
 };
+const getDirectionalLightConfig = function() {
+  return Object.assign(getLightConfig(), {
+    type: CONFIGTYPE.DIRECTIONALLIGHT,
+    shadow: {
+      mapSize: {
+        width: 512,
+        height: 512
+      },
+      camera: {
+        near: 0.5,
+        far: 500
+      }
+    }
+  });
+};
 const getGeometryConfig = function() {
   return {
     vid: "",
@@ -2305,7 +2399,7 @@ const getGeometryConfig = function() {
 };
 const getBoxGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
-    type: "BoxGeometry",
+    type: CONFIGTYPE.BOXGEOMETRY,
     width: 5,
     height: 5,
     depth: 5,
@@ -2316,7 +2410,7 @@ const getBoxGeometryConfig = function() {
 };
 const getSphereGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
-    type: "SphereGeometry",
+    type: CONFIGTYPE.SPHEREGEOMETRY,
     radius: 3,
     widthSegments: 32,
     heightSegments: 32,
@@ -2326,9 +2420,18 @@ const getSphereGeometryConfig = function() {
     thetaLength: Math.PI
   });
 };
+const getPlaneGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.PLANEGEOMETRY,
+    width: 1,
+    height: 1,
+    widthSegments: 1,
+    heightSegments: 1
+  });
+};
 const getLoadGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
-    type: "LoadGeometry",
+    type: CONFIGTYPE.LOADGEOMETRY,
     url: ""
   });
 };
@@ -2364,13 +2467,20 @@ const getTextureConfig = function() {
 };
 const getImageTextureConfig = function() {
   return Object.assign(getTextureConfig(), {
-    type: "ImageTexture",
+    type: CONFIGTYPE.IMAGETEXTURE,
     url: ""
+  });
+};
+const getVideoTextureConfig = function() {
+  return Object.assign(getTextureConfig(), {
+    type: CONFIGTYPE.VIDEOTEXTURE,
+    url: "",
+    minFilter: LinearFilter
   });
 };
 const getCubeTextureConfig = function() {
   return Object.assign(getTextureConfig(), {
-    type: "CubeTexture",
+    type: CONFIGTYPE.CUBETEXTURE,
     cube: {
       nx: "",
       ny: "",
@@ -2383,7 +2493,7 @@ const getCubeTextureConfig = function() {
 };
 const getCanvasTextureConfig = function() {
   return Object.assign(getTextureConfig(), {
-    type: "CanvasTexture",
+    type: CONFIGTYPE.CANVASTEXTURE,
     url: "",
     needsUpdate: false
   });
@@ -2690,6 +2800,7 @@ function getConfigModelMap() {
     [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
     [CONFIGTYPE.CUBETEXTURE]: MODULETYPE.TEXTURE,
     [CONFIGTYPE.CANVASTEXTURE]: MODULETYPE.TEXTURE,
+    [CONFIGTYPE.VIDEOTEXTURE]: MODULETYPE.TEXTURE,
     [CONFIGTYPE.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
     [CONFIGTYPE.MESHPHONGMATERIAL]: MODULETYPE.MATERIAL,
     [CONFIGTYPE.SPRITEMATERIAL]: MODULETYPE.MATERIAL,
@@ -2698,9 +2809,11 @@ function getConfigModelMap() {
     [CONFIGTYPE.AMBIENTLIGHT]: MODULETYPE.LIGHT,
     [CONFIGTYPE.SPOTLIGHT]: MODULETYPE.LIGHT,
     [CONFIGTYPE.POINTLIGHT]: MODULETYPE.LIGHT,
+    [CONFIGTYPE.DIRECTIONALLIGHT]: MODULETYPE.LIGHT,
     [CONFIGTYPE.BOXGEOMETRY]: MODULETYPE.GEOMETRY,
     [CONFIGTYPE.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
     [CONFIGTYPE.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
+    [CONFIGTYPE.PLANEGEOMETRY]: MODULETYPE.GEOMETRY,
     [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
     [CONFIGTYPE.LINE]: MODULETYPE.LINE,
     [CONFIGTYPE.MESH]: MODULETYPE.MESH,
@@ -2719,6 +2832,7 @@ function getConfigFunctionMap() {
     [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
     [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
     [CONFIGTYPE.CANVASTEXTURE]: getCanvasTextureConfig,
+    [CONFIGTYPE.VIDEOTEXTURE]: getVideoTextureConfig,
     [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
     [CONFIGTYPE.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
     [CONFIGTYPE.SPRITEMATERIAL]: getSpriteMaterialConfig,
@@ -2727,9 +2841,11 @@ function getConfigFunctionMap() {
     [CONFIGTYPE.AMBIENTLIGHT]: getAmbientLightConfig,
     [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,
     [CONFIGTYPE.POINTLIGHT]: getPointLightConfig,
+    [CONFIGTYPE.DIRECTIONALLIGHT]: getDirectionalLightConfig,
     [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
     [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
     [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
+    [CONFIGTYPE.PLANEGEOMETRY]: getPlaneGeometryConfig,
     [CONFIGTYPE.SPRITE]: getSpriteConfig,
     [CONFIGTYPE.LINE]: getLineConfig,
     [CONFIGTYPE.MESH]: getMeshConfig,
@@ -2883,11 +2999,14 @@ class ResourceManager extends EventDispatcher {
           url
         }));
         structureMap.set(url, url);
-      } else if (resource instanceof HTMLCanvasElement) {
+      } else if (resource instanceof HTMLCanvasElement || resource instanceof HTMLVideoElement) {
         resourceMap.set(url, resource);
         structureMap.set(url, url);
       } else if (resource instanceof Object3D) {
         structureMap.set(url, recursionMappingObject(url, resource));
+      } else {
+        resourceMap.set(url, resource);
+        structureMap.set(url, url);
       }
     });
     this.dispatchEvent({
@@ -5209,13 +5328,16 @@ const _GeometryCompiler = class extends Compiler {
     this.target = parameters.target;
     this.map = new Map();
     const constructMap = new Map();
-    constructMap.set("BoxGeometry", (config) => {
+    constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config) => {
       return _GeometryCompiler.transfromAnchor(new BoxBufferGeometry(config.width, config.height, config.depth, config.widthSegments, config.heightSegments, config.depthSegments), config);
     });
-    constructMap.set("SphereGeometry", (config) => {
+    constructMap.set(CONFIGTYPE.SPHEREGEOMETRY, (config) => {
       return _GeometryCompiler.transfromAnchor(new SphereBufferGeometry(config.radius, config.widthSegments, config.heightSegments, config.phiStart, config.phiLength, config.thetaStart, config.thetaLength), config);
     });
-    constructMap.set("LoadGeometry", (config) => {
+    constructMap.set(CONFIGTYPE.PLANEGEOMETRY, (config) => {
+      return _GeometryCompiler.transfromAnchor(new PlaneBufferGeometry(config.width, config.height, config.widthSegments, config.heightSegments), config);
+    });
+    constructMap.set(CONFIGTYPE.LOADGEOMETRY, (config) => {
       return _GeometryCompiler.transfromAnchor(new LoadGeometry(this.getRescource(config.url)), config);
     });
     this.constructMap = constructMap;
@@ -5404,9 +5526,10 @@ class LightCompiler extends ObjectCompiler {
     __publicField(this, "replaceMaterial", new Material());
     __publicField(this, "replaceGeometry", new BufferGeometry());
     this.constructMap = new Map();
-    this.constructMap.set("PointLight", () => new PointLight());
-    this.constructMap.set("SpotLight", () => new SpotLight());
-    this.constructMap.set("AmbientLight", () => new AmbientLight());
+    this.constructMap.set(CONFIGTYPE.POINTLIGHT, () => new PointLight());
+    this.constructMap.set(CONFIGTYPE.SPOTLIGHT, () => new SpotLight());
+    this.constructMap.set(CONFIGTYPE.AMBIENTLIGHT, () => new AmbientLight());
+    this.constructMap.set(CONFIGTYPE.DIRECTIONALLIGHT, () => new DirectionalLight());
     this.setLookAt = function(vid, target) {
       return this;
     };
@@ -6175,6 +6298,28 @@ class ImageTexture extends Texture {
     super(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding);
   }
 }
+class VideoTexture extends Texture {
+  constructor(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
+    super(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
+    __publicField(this, "isVideoTexture", true);
+    this.format = format !== void 0 ? format : RGBFormat;
+    this.minFilter = minFilter !== void 0 ? minFilter : LinearFilter;
+    this.magFilter = magFilter !== void 0 ? magFilter : LinearFilter;
+    this.generateMipmaps = false;
+  }
+  clone() {
+    return new this.constructor(this.image).copy(this);
+  }
+  update() {
+    const video = this.image;
+    const hasVideoFrameCallback = "requestVideoFrameCallback" in video;
+    if (hasVideoFrameCallback) {
+      this.needsUpdate = true;
+    } else if (hasVideoFrameCallback === false && video.readyState >= video.HAVE_CURRENT_DATA) {
+      this.needsUpdate = true;
+    }
+  }
+}
 class TextureCompiler extends Compiler {
   constructor(parameters) {
     super();
@@ -6193,6 +6338,7 @@ class TextureCompiler extends Compiler {
     constructMap.set(CONFIGTYPE.IMAGETEXTURE, () => new ImageTexture());
     constructMap.set(CONFIGTYPE.CUBETEXTURE, () => new CubeTexture());
     constructMap.set(CONFIGTYPE.CANVASTEXTURE, () => new CanvasTexture(document.createElement("canvas")));
+    constructMap.set(CONFIGTYPE.VIDEOTEXTURE, () => new VideoTexture(document.createElement("video")));
     this.constructMap = constructMap;
   }
   getResource(url) {
@@ -6221,7 +6367,7 @@ class TextureCompiler extends Compiler {
         const tempConfig = JSON.parse(JSON.stringify(config));
         delete tempConfig.type;
         delete tempConfig.vid;
-        if (config.type === CONFIGTYPE.IMAGETEXTURE || config.type === CONFIGTYPE.CANVASTEXTURE) {
+        if ([CONFIGTYPE.IMAGETEXTURE, CONFIGTYPE.CANVASTEXTURE, CONFIGTYPE.VIDEOTEXTURE].includes(config.type)) {
           texture.image = this.getResource(tempConfig.url);
           delete tempConfig.url;
         } else if (config.type === CONFIGTYPE.CUBETEXTURE) {
@@ -8174,9 +8320,9 @@ class PointLightHelper extends LineSegments {
     __publicField(this, "target");
     __publicField(this, "shape");
     __publicField(this, "type", "VisPointLightHelper");
-    __publicField(this, "cachaColor");
-    __publicField(this, "cachaDistance");
-    __publicField(this, "cachaVector3");
+    __publicField(this, "cacheColor");
+    __publicField(this, "cacheDistance");
+    __publicField(this, "cacheVector3");
     this.geometry = new BufferGeometry();
     const points = [
       -1,
@@ -8244,28 +8390,29 @@ class PointLightHelper extends LineSegments {
     }));
     shape.raycast = () => {
     };
+    shape.matrixAutoUpdate = false;
     this.shape = shape;
     this.target = pointLight2;
     this.sphere = new Sphere(new Vector3(0, 0, 0), 1);
-    this.cachaColor = pointLight2.color.getHex();
-    this.cachaDistance = pointLight2.distance;
-    this.cachaVector3 = new Vector3();
+    this.cacheColor = pointLight2.color.getHex();
+    this.cacheDistance = pointLight2.distance;
+    this.cacheVector3 = new Vector3();
     this.add(this.shape);
     this.matrixAutoUpdate = false;
     this.matrix = pointLight2.matrix;
+    this.matrixWorldNeedsUpdate = false;
+    this.matrixWorld = pointLight2.matrixWorld;
     this.onBeforeRender = () => {
       const light = this.target;
       const shape2 = this.shape;
-      const scource = this;
-      if (light.distance !== this.cachaDistance) {
+      if (light.distance !== this.cacheDistance) {
         shape2.geometry.dispose();
         shape2.geometry = new OctahedronBufferGeometry(light.distance, 0);
-        this.cachaDistance = light.distance;
+        this.cacheDistance = light.distance;
       }
-      if (light.color.getHex() !== this.cachaColor) {
+      if (light.color.getHex() !== this.cacheColor) {
         shape2.material.color.copy(light.color).multiplyScalar(light.intensity);
-        scource.material.color.copy(light.color).multiplyScalar(light.intensity);
-        this.cachaColor = light.color.getHex();
+        this.cacheColor = light.color.getHex();
       }
     };
   }
@@ -8273,7 +8420,7 @@ class PointLightHelper extends LineSegments {
     const target = this.target;
     const matrixWorld = target.matrixWorld;
     const sphere = this.sphere;
-    sphere.set(this.cachaVector3.set(0, 0, 0), 1);
+    sphere.set(this.cacheVector3.set(0, 0, 0), 1);
     sphere.applyMatrix4(matrixWorld);
     if (raycaster.ray.intersectsSphere(sphere)) {
       intersects.push({
@@ -8327,7 +8474,9 @@ class MeshHelper extends LineSegments {
     this.raycast = () => {
     };
     this.matrixAutoUpdate = false;
+    this.matrixWorldNeedsUpdate = false;
     this.matrix = mesh.matrix;
+    this.matrixWorld = mesh.matrixWorld;
     this.onBeforeRender = () => {
       const target = this.target;
       if (target.geometry.uuid !== this.cachaGeometryUUid) {
@@ -8336,6 +8485,281 @@ class MeshHelper extends LineSegments {
         this.cachaGeometryUUid = target.geometry.uuid;
       }
     };
+  }
+}
+class SpotLightHelper extends LineSegments {
+  constructor(spotLight) {
+    super();
+    __publicField(this, "sphere");
+    __publicField(this, "target");
+    __publicField(this, "shape");
+    __publicField(this, "type", "VisSpotLightHelper");
+    __publicField(this, "cacheVector3");
+    __publicField(this, "cacheColor");
+    __publicField(this, "cacheAngle");
+    __publicField(this, "cacheDistance");
+    this.geometry = new BufferGeometry();
+    const points = [
+      -1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      1,
+      -0.707,
+      -0.707,
+      0,
+      0.707,
+      0.707,
+      0,
+      0.707,
+      -0.707,
+      0,
+      -0.707,
+      0.707,
+      0,
+      0,
+      -0.707,
+      -0.707,
+      0,
+      0.707,
+      0.707,
+      0,
+      0.707,
+      -0.707,
+      0,
+      -0.707,
+      0.707,
+      -0.707,
+      0,
+      -0.707,
+      0.707,
+      0,
+      0.707,
+      0.707,
+      0,
+      -0.707,
+      -0.707,
+      0,
+      0.707
+    ];
+    this.geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
+    this.material = getHelperLineMaterial();
+    this.geometry.boundingSphere;
+    const shapeGeometry = new BufferGeometry();
+    const positions = [
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      -1,
+      1
+    ];
+    for (let i = 0, j = 1, l = 32; i < l; i++, j++) {
+      const p1 = i / l * Math.PI * 2;
+      const p2 = j / l * Math.PI * 2;
+      positions.push(Math.cos(p1), Math.sin(p1), 1, Math.cos(p2), Math.sin(p2), 1);
+    }
+    shapeGeometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
+    const material = getHelperLineMaterial();
+    const shape = new LineSegments(shapeGeometry, material);
+    shape.material.color.copy(spotLight.color).multiplyScalar(spotLight.intensity);
+    const coneLength = spotLight.distance ? spotLight.distance : 1e3;
+    const coneWidth = coneLength * Math.tan(spotLight.angle);
+    shape.scale.set(coneWidth, coneWidth, coneLength);
+    shape.raycast = () => {
+    };
+    this.add(shape);
+    this.matrixAutoUpdate = false;
+    this.matrix = spotLight.matrix;
+    this.matrixWorldNeedsUpdate = false;
+    this.matrixWorld = spotLight.matrixWorld;
+    this.target = spotLight;
+    this.shape = shape;
+    this.sphere = new Sphere(new Vector3(0, 0, 0), 1);
+    this.cacheColor = spotLight.color.getHex();
+    this.cacheDistance = spotLight.distance;
+    this.cacheAngle = spotLight.angle;
+    this.cacheVector3 = new Vector3();
+    this.onBeforeRender = () => {
+      const light = this.target;
+      const shape2 = this.shape;
+      let shapeUpdate = false;
+      if (light.distance !== this.cacheDistance) {
+        this.cacheDistance = light.distance;
+        shape2.scale.z = light.distance;
+        shapeUpdate = true;
+      }
+      if (light.angle !== this.cacheAngle) {
+        this.cacheAngle = light.angle;
+        shapeUpdate = true;
+      }
+      if (shapeUpdate) {
+        let range = light.distance * Math.tan(light.angle);
+        shape2.scale.set(range, range, light.distance);
+      }
+      if (light.color.getHex() !== this.cacheColor) {
+        shape2.material.color.copy(light.color).multiplyScalar(light.intensity);
+        this.cacheColor = light.color.getHex();
+      }
+      shape2.lookAt(light.target.position);
+    };
+  }
+  raycast(raycaster, intersects) {
+    const target = this.target;
+    const matrixWorld = target.matrixWorld;
+    const sphere = this.sphere;
+    sphere.set(this.cacheVector3.set(0, 0, 0), 1);
+    sphere.applyMatrix4(matrixWorld);
+    if (raycaster.ray.intersectsSphere(sphere)) {
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(target.position),
+        object: target,
+        point: target.position
+      });
+    }
+  }
+}
+class DirectionalLightHelper extends LineSegments {
+  constructor(directionalLight) {
+    super();
+    __publicField(this, "sphere");
+    __publicField(this, "target");
+    __publicField(this, "shape");
+    __publicField(this, "type", "VisDirectionalLightHelper");
+    __publicField(this, "cacheColor");
+    __publicField(this, "cacheVector3");
+    this.geometry = new BufferGeometry();
+    const points = [
+      -1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      1,
+      -0.707,
+      -0.707,
+      0,
+      0.707,
+      0.707,
+      0,
+      0.707,
+      -0.707,
+      0,
+      -0.707,
+      0.707,
+      0,
+      0,
+      -0.707,
+      -0.707,
+      0,
+      0.707,
+      0.707,
+      0,
+      0.707,
+      -0.707,
+      0,
+      -0.707,
+      0.707,
+      -0.707,
+      0,
+      -0.707,
+      0.707,
+      0,
+      0.707,
+      0.707,
+      0,
+      -0.707,
+      -0.707,
+      0,
+      0.707
+    ];
+    this.geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
+    this.material = getHelperLineMaterial();
+    this.geometry.boundingSphere;
+    const color = new Color().copy(directionalLight.color).multiplyScalar(directionalLight.intensity);
+    const planeGemetry = new PlaneBufferGeometry(20, 20);
+    planeGemetry.dispose();
+    const shape = new LineSegments(new EdgesGeometry(planeGemetry), new LineBasicMaterial({
+      color
+    }));
+    shape.raycast = () => {
+    };
+    this.shape = shape;
+    this.target = directionalLight;
+    this.sphere = new Sphere(new Vector3(0, 0, 0), 1);
+    this.cacheColor = directionalLight.color.getHex();
+    this.cacheVector3 = new Vector3();
+    this.add(this.shape);
+    this.matrixAutoUpdate = false;
+    this.matrix = directionalLight.matrix;
+    this.matrixWorldNeedsUpdate = false;
+    this.matrixWorld = directionalLight.matrixWorld;
+    this.onBeforeRender = () => {
+      const light = this.target;
+      const shape2 = this.shape;
+      if (light.color.getHex() !== this.cacheColor) {
+        shape2.material.color.copy(light.color).multiplyScalar(light.intensity);
+        this.cacheColor = light.color.getHex();
+      }
+      shape2.lookAt(light.target.position);
+    };
+  }
+  raycast(raycaster, intersects) {
+    const target = this.target;
+    const matrixWorld = target.matrixWorld;
+    const sphere = this.sphere;
+    sphere.set(this.cacheVector3.set(0, 0, 0), 1);
+    sphere.applyMatrix4(matrixWorld);
+    if (raycaster.ray.intersectsSphere(sphere)) {
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(target.position),
+        object: target,
+        point: target.position
+      });
+    }
   }
 }
 const ObjectHelperPlugin = function(params = {}) {
@@ -8354,6 +8778,8 @@ const ObjectHelperPlugin = function(params = {}) {
   }
   const typeHelperMap = {
     [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
+    [CONFIGTYPE.SPOTLIGHT]: SpotLightHelper,
+    [CONFIGTYPE.DIRECTIONALLIGHT]: DirectionalLightHelper,
     [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
     [CONFIGTYPE.MESH]: MeshHelper,
@@ -9825,4 +10251,4 @@ class History {
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
-export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, generateConfig };
+export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, VideoLoader, generateConfig };

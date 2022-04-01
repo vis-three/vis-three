@@ -1,7 +1,8 @@
-import { BoxBufferGeometry, BufferGeometry, Euler, Matrix4, Quaternion, SphereBufferGeometry, Vector3 } from "three";
+import { BoxBufferGeometry, BufferGeometry, Euler, Matrix4, PlaneBufferGeometry, Quaternion, SphereBufferGeometry, Vector3 } from "three";
 import { validate } from "uuid";
 import { LoadGeometry } from "../../extends/geometry/LoadGeometry";
 import { Compiler } from "../../core/Compiler";
+import { CONFIGTYPE } from "../constants/configType";
 export class GeometryCompiler extends Compiler {
     // 变换锚点
     static transfromAnchor = function (geometry, config) {
@@ -29,13 +30,16 @@ export class GeometryCompiler extends Compiler {
         this.target = parameters.target;
         this.map = new Map();
         const constructMap = new Map();
-        constructMap.set('BoxGeometry', (config) => {
+        constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config) => {
             return GeometryCompiler.transfromAnchor(new BoxBufferGeometry(config.width, config.height, config.depth, config.widthSegments, config.heightSegments, config.depthSegments), config);
         });
-        constructMap.set('SphereGeometry', (config) => {
+        constructMap.set(CONFIGTYPE.SPHEREGEOMETRY, (config) => {
             return GeometryCompiler.transfromAnchor(new SphereBufferGeometry(config.radius, config.widthSegments, config.heightSegments, config.phiStart, config.phiLength, config.thetaStart, config.thetaLength), config);
         });
-        constructMap.set('LoadGeometry', (config) => {
+        constructMap.set(CONFIGTYPE.PLANEGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(new PlaneBufferGeometry(config.width, config.height, config.widthSegments, config.heightSegments), config);
+        });
+        constructMap.set(CONFIGTYPE.LOADGEOMETRY, (config) => {
             return GeometryCompiler.transfromAnchor(new LoadGeometry(this.getRescource(config.url)), config);
         });
         this.constructMap = constructMap;
@@ -88,6 +92,7 @@ export class GeometryCompiler extends Compiler {
         const newGeometry = this.constructMap.get(config.type)(config);
         currentGeometry.copy(newGeometry);
         // 辅助的更新根据uuid的更新而更新，直接copy无法判断是否更新
+        // TODO: 使用dispatch通知更新
         currentGeometry.uuid = newGeometry.uuid;
         newGeometry.dispose();
         return this;

@@ -3,6 +3,7 @@ import { validate } from "uuid";
 import { ImageTexture } from "../../extends/texture/ImageTexture";
 import { Compiler } from "../../core/Compiler";
 import { CONFIGTYPE } from "../constants/configType";
+import { VideoTexture } from "../../optimize/VideoTexture";
 export class TextureCompiler extends Compiler {
     target;
     map;
@@ -22,6 +23,7 @@ export class TextureCompiler extends Compiler {
         constructMap.set(CONFIGTYPE.IMAGETEXTURE, () => new ImageTexture());
         constructMap.set(CONFIGTYPE.CUBETEXTURE, () => new CubeTexture());
         constructMap.set(CONFIGTYPE.CANVASTEXTURE, () => new CanvasTexture(document.createElement('canvas')));
+        constructMap.set(CONFIGTYPE.VIDEOTEXTURE, () => new VideoTexture(document.createElement('video')));
         this.constructMap = constructMap;
     }
     getResource(url) {
@@ -54,7 +56,7 @@ export class TextureCompiler extends Compiler {
                 delete tempConfig.vid;
                 // 应用资源
                 // 区分不同的texture类型
-                if (config.type === CONFIGTYPE.IMAGETEXTURE || config.type === CONFIGTYPE.CANVASTEXTURE) {
+                if ([CONFIGTYPE.IMAGETEXTURE, CONFIGTYPE.CANVASTEXTURE, CONFIGTYPE.VIDEOTEXTURE].includes(config.type)) {
                     texture.image = this.getResource(tempConfig.url);
                     delete tempConfig.url;
                 }

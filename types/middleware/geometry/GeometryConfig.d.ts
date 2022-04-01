@@ -22,11 +22,18 @@ export interface SphereGeometryConfig extends GeometryConfig {
     thetaStart: number;
     thetaLength: number;
 }
+export interface PlaneGeometryConfig extends GeometryConfig {
+    width: number;
+    height: number;
+    widthSegments: number;
+    heightSegments: number;
+}
 export interface LoadGeometryConfig extends GeometryConfig {
     url: string;
 }
 export declare const getGeometryConfig: () => GeometryConfig;
 export declare const getBoxGeometryConfig: () => BoxGeometryConfig;
 export declare const getSphereGeometryConfig: () => SphereGeometryConfig;
+export declare const getPlaneGeometryConfig: () => PlaneGeometryConfig;
 export declare const getLoadGeometryConfig: () => LoadGeometryConfig;
-export declare type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | LoadGeometryConfig;
+export declare type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig;

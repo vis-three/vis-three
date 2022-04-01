@@ -1,5 +1,6 @@
 import { ClampToEdgeWrapping, LinearEncoding, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, Texture, UVMapping } from "three";
 import { SymbolConfig, Vector2Config } from "../common/CommonConfig";
+import { CONFIGTYPE } from "../constants/configType";
 
 export interface TextureConfig extends SymbolConfig {
   name: string
@@ -23,6 +24,10 @@ export interface ImageTextureConfig extends TextureConfig {
   url: string
 }
 
+export interface VideoTextureConfig extends TextureConfig {
+  url: string
+}
+
 export interface CubeTextureConfig extends TextureConfig {
   cube: {
     nx: string,
@@ -42,7 +47,8 @@ export interface CanvasTextureConfig extends TextureConfig {
 export type TextureAllType = 
   ImageTextureConfig |
   CubeTextureConfig |
-  CanvasTextureConfig
+  CanvasTextureConfig |
+  VideoTextureConfig
 
 export const getTextureConfig = function(): TextureConfig {
   return {
@@ -77,14 +83,22 @@ export const getTextureConfig = function(): TextureConfig {
 
 export const getImageTextureConfig = function(): ImageTextureConfig {
   return Object.assign(getTextureConfig(), {
-    type: 'ImageTexture',
+    type: CONFIGTYPE.IMAGETEXTURE,
     url: ''
+  })
+}
+
+export const getVideoTextureConfig = function(): ImageTextureConfig {
+  return Object.assign(getTextureConfig(), {
+    type: CONFIGTYPE.VIDEOTEXTURE,
+    url: '',
+    minFilter: LinearFilter
   })
 }
 
 export const getCubeTextureConfig = function(): CubeTextureConfig {
   return Object.assign(getTextureConfig(), {
-    type: 'CubeTexture',
+    type: CONFIGTYPE.CUBETEXTURE,
     cube: {
       nx: '',
       ny: '',
@@ -98,7 +112,7 @@ export const getCubeTextureConfig = function(): CubeTextureConfig {
 
 export const getCanvasTextureConfig = function (): CanvasTextureConfig {
   return Object.assign(getTextureConfig(), {
-    type: 'CanvasTexture',
+    type: CONFIGTYPE.CANVASTEXTURE,
     url: '',
     needsUpdate: false
   })

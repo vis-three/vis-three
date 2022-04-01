@@ -5,6 +5,7 @@ import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CubeTextureConfig, TextureAllType } from "./TextureConfig";
 import { CONFIGTYPE } from "../constants/configType";
+import { VideoTexture } from "../../optimize/VideoTexture";
 
 export interface TextureCompilerTarget extends CompilerTarget {
   [key: string]: TextureAllType
@@ -36,6 +37,7 @@ export class TextureCompiler extends Compiler {
     constructMap.set(CONFIGTYPE.IMAGETEXTURE, () => new ImageTexture())
     constructMap.set(CONFIGTYPE.CUBETEXTURE, () => new CubeTexture())
     constructMap.set(CONFIGTYPE.CANVASTEXTURE, () => new CanvasTexture(document.createElement('canvas')))
+    constructMap.set(CONFIGTYPE.VIDEOTEXTURE, () => new VideoTexture(document.createElement('video')))
 
     this.constructMap = constructMap
   }
@@ -71,7 +73,8 @@ export class TextureCompiler extends Compiler {
 
         // 应用资源
         // 区分不同的texture类型
-        if (config.type === CONFIGTYPE.IMAGETEXTURE || config.type === CONFIGTYPE.CANVASTEXTURE) {
+        
+        if ([CONFIGTYPE.IMAGETEXTURE, CONFIGTYPE.CANVASTEXTURE, CONFIGTYPE.VIDEOTEXTURE].includes(config.type as CONFIGTYPE)) {
           texture.image = this.getResource(tempConfig.url)
           delete tempConfig.url
         } else if (config.type === CONFIGTYPE.CUBETEXTURE) {

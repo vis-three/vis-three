@@ -65,10 +65,20 @@
       intensity: 0.6
     })
 
+    const directionalLight = Vis.generateConfig('DirectionalLight', {
+      color: 'rgb(0, 255, 0)',
+      intensity: 0.5,
+      position: {
+        x: 0,
+        y: 0,
+        z: -20
+      }
+    })
+
     lightData[pointLight.vid] = pointLight
     lightData[spotLight.vid] = spotLight
     lightData[ambientLight.vid] = ambientLight
-
+    lightData[directionalLight.vid] = directionalLight
 
     const material = Vis.generateConfig('MeshStandardMaterial')
     engine.dataSupportManager.materialDataSupport.getData()[material.vid] = material
@@ -88,6 +98,7 @@
     })
 
     engine.dataSupportManager.meshDataSupport.getData()[mesh.vid] = mesh
+
   </script>
   
 </body>

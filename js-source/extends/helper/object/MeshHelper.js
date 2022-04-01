@@ -13,7 +13,9 @@ export class MeshHelper extends LineSegments {
         this.material = getHelperLineMaterial();
         this.raycast = () => { };
         this.matrixAutoUpdate = false;
+        this.matrixWorldNeedsUpdate = false;
         this.matrix = mesh.matrix;
+        this.matrixWorld = mesh.matrixWorld;
         this.onBeforeRender = () => {
             const target = this.target;
             if (target.geometry.uuid !== this.cachaGeometryUUid) {

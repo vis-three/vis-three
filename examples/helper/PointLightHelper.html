@@ -21,35 +21,53 @@
   <div id="app"></div>
   <script type="module">
     import * as THREE from 'three'
+    import { GUI } from 'three/examples/jsm/libs/dat.gui.module'
     import * as Vis from '../../dist/Vis.es.js'
 
-    const engine = new Vis.ModelingEngine()
+    const engine = new Vis.DisplayEngine()
+    .install('TransformControls')
+    .complete()
     .setDom(document.getElementById('app'))
     .setSize()
-    .setStats(true)
     .play()
 
     const scene = engine.scene
 
     const box = new THREE.Mesh(
-      new THREE.BoxBufferGeometry(10, 10, 10),
+      new THREE.BoxBufferGeometry(50, 10, 50),
       new THREE.MeshStandardMaterial({ color: 'rgb(255, 105, 100)' })
     )
     scene.add(box)
 
-    const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 300, 0.01)
+    const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 30, 0.01)
+    pointLight.position.set(0, 15, 0)
     scene.add(pointLight)
 
     const PointLightHelper = new Vis.PointLightHelper(pointLight)
     scene.add(PointLightHelper)
   
-    setInterval(() => {
-      pointLight.position.set(Math.random() * 50, Math.random() * 50, Math.random() * 50)
-      pointLight.color = new THREE.Color(Math.random(), Math.random(), Math.random)
-      pointLight.intensity = Math.random() * 2
-      pointLight.distance = Math.random() * (80 - 10) + 30
-    }, 1000)
+    const gui = new GUI()
 
+    const guiParam = {
+      color: pointLight.color.getHex(),
+      distance: pointLight.distance,
+      decay: pointLight.decay
+    }
+
+    gui.addColor(guiParam, 'color', -500, 500)
+      .onChange(data => {
+        pointLight.color.setHex(data)
+      })
+    gui.add(guiParam, 'distance', 0, 100)
+      .onChange(data => {
+        pointLight.distance = data
+      })
+    gui.add(guiParam, 'decay', 0, 1, 0.01)
+      .onChange(data => {
+        pointLight.decay = data
+      })
+
+    window.engine = engine
   </script>
   
 </body>

@@ -1,9 +1,10 @@
-import { Box3, BoxBufferGeometry, BufferGeometry, Euler, Matrix4, Quaternion, SphereBufferGeometry, Vector3 } from "three";
+import { Box3, BoxBufferGeometry, BufferGeometry, Euler, Matrix4, PlaneBufferGeometry, Quaternion, SphereBufferGeometry, Vector3 } from "three";
 import { validate } from "uuid";
 import { LoadGeometry } from "../../extends/geometry/LoadGeometry";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
-import { BoxGeometryConfig, GeometryAllType, LoadGeometryConfig, SphereGeometryConfig } from "./GeometryConfig";
+import { BoxGeometryConfig, GeometryAllType, LoadGeometryConfig, PlaneGeometryConfig, SphereGeometryConfig } from "./GeometryConfig";
+import { CONFIGTYPE } from "../constants/configType";
 
 export interface GeometryCompilerTarget extends CompilerTarget {
   [key: string]: GeometryAllType
@@ -49,7 +50,7 @@ export class GeometryCompiler extends Compiler {
 
     const constructMap = new Map()
 
-    constructMap.set('BoxGeometry', (config: BoxGeometryConfig) => {
+    constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config: BoxGeometryConfig) => {
       return GeometryCompiler.transfromAnchor(new BoxBufferGeometry(
         config.width,
         config.height,
@@ -60,7 +61,7 @@ export class GeometryCompiler extends Compiler {
       ), config)
     })
 
-    constructMap.set('SphereGeometry', (config: SphereGeometryConfig) => {
+    constructMap.set(CONFIGTYPE.SPHEREGEOMETRY, (config: SphereGeometryConfig) => {
       return GeometryCompiler.transfromAnchor(new SphereBufferGeometry(
         config.radius,
         config.widthSegments,
@@ -72,7 +73,16 @@ export class GeometryCompiler extends Compiler {
       ), config)
     })
 
-    constructMap.set('LoadGeometry', (config: LoadGeometryConfig) => {
+    constructMap.set(CONFIGTYPE.PLANEGEOMETRY, (config: PlaneGeometryConfig) => {
+      return GeometryCompiler.transfromAnchor(new PlaneBufferGeometry(
+        config.width,
+        config.height,
+        config.widthSegments,
+        config.heightSegments
+      ), config)
+    })
+
+    constructMap.set(CONFIGTYPE.LOADGEOMETRY, (config: LoadGeometryConfig) => {
       return GeometryCompiler.transfromAnchor(new LoadGeometry(
         this.getRescource(config.url)
       ), config)
@@ -137,6 +147,7 @@ export class GeometryCompiler extends Compiler {
     const newGeometry = this.constructMap.get(config.type)!(config)
     currentGeometry.copy(newGeometry)
     // 辅助的更新根据uuid的更新而更新，直接copy无法判断是否更新
+    // TODO: 使用dispatch通知更新
     currentGeometry.uuid = newGeometry.uuid
     newGeometry.dispose()
 

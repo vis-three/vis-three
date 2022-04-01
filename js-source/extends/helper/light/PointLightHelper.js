@@ -5,9 +5,10 @@ export class PointLightHelper extends LineSegments {
     target;
     shape;
     type = 'VisPointLightHelper';
-    cachaColor;
-    cachaDistance;
-    cachaVector3;
+    cacheColor;
+    cacheDistance;
+    cacheVector3;
+    //TODO: 手动更新api，自动更新api，support更新
     constructor(pointLight) {
         super();
         // 光源
@@ -42,29 +43,30 @@ export class PointLightHelper extends LineSegments {
             wireframe: true
         }));
         shape.raycast = () => { };
+        shape.matrixAutoUpdate = false;
         this.shape = shape;
         this.target = pointLight;
         this.sphere = new Sphere(new Vector3(0, 0, 0), 1);
-        this.cachaColor = pointLight.color.getHex();
-        this.cachaDistance = pointLight.distance;
-        this.cachaVector3 = new Vector3();
+        this.cacheColor = pointLight.color.getHex();
+        this.cacheDistance = pointLight.distance;
+        this.cacheVector3 = new Vector3();
         this.add(this.shape);
         this.matrixAutoUpdate = false;
         this.matrix = pointLight.matrix;
-        // https://github.com/mrdoob/three.js/issues/14970
+        this.matrixWorldNeedsUpdate = false;
+        this.matrixWorld = pointLight.matrixWorld;
+        // TODO: compiler触发eventDistpatch
         this.onBeforeRender = () => {
             const light = this.target;
             const shape = this.shape;
-            const scource = this;
-            if (light.distance !== this.cachaDistance) {
+            if (light.distance !== this.cacheDistance) {
                 shape.geometry.dispose();
                 shape.geometry = new OctahedronBufferGeometry(light.distance, 0);
-                this.cachaDistance = light.distance;
+                this.cacheDistance = light.distance;
             }
-            if (light.color.getHex() !== this.cachaColor) {
+            if (light.color.getHex() !== this.cacheColor) {
                 shape.material.color.copy(light.color).multiplyScalar(light.intensity);
-                scource.material.color.copy(light.color).multiplyScalar(light.intensity);
-                this.cachaColor = light.color.getHex();
+                this.cacheColor = light.color.getHex();
             }
         };
     }
@@ -72,7 +74,7 @@ export class PointLightHelper extends LineSegments {
         const target = this.target;
         const matrixWorld = target.matrixWorld;
         const sphere = this.sphere;
-        sphere.set(this.cachaVector3.set(0, 0, 0), 1);
+        sphere.set(this.cacheVector3.set(0, 0, 0), 1);
         sphere.applyMatrix4(matrixWorld);
         if (raycaster.ray.intersectsSphere(sphere)) {
             intersects.push({

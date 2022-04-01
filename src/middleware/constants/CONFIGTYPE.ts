@@ -2,8 +2,8 @@ export enum CONFIGTYPE {
   BOXGEOMETRY = 'BoxGeometry',
   SPHEREGEOMETRY = 'SphereGeometry',
   LOADGEOMETRY = 'LoadGeometry',
+  PLANEGEOMETRY = 'PlaneGeometry',
 
-  MODEL = 'Model',
   MESH = 'Mesh',
   LINE = 'Line',
   LINESEGMENTS = 'LineSegments',
@@ -14,6 +14,7 @@ export enum CONFIGTYPE {
   IMAGETEXTURE = 'ImageTexture',
   CUBETEXTURE = 'CubeTexture',
   CANVASTEXTURE = 'CanvasTexture',
+  VIDEOTEXTURE = 'VideoTexture',
 
   MESHSTANDARDMATERIAL = 'MeshStandardMaterial',
   MESHPHONGMATERIAL = "MeshPhongMaterial",
@@ -24,6 +25,7 @@ export enum CONFIGTYPE {
   AMBIENTLIGHT = 'AmbientLight',
   SPOTLIGHT = 'SpotLight',
   POINTLIGHT = 'PointLight',
+  DIRECTIONALLIGHT = 'DirectionalLight',
 
   PERSPECTIVECAMERA = 'PerspectiveCamera',
   ORTHOGRAPHICCAMERA = 'OrthographicCamera',

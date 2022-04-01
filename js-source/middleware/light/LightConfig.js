@@ -30,4 +30,19 @@ export const getSpotLightConfig = function () {
         decay: 0.01
     });
 };
+export const getDirectionalLightConfig = function () {
+    return Object.assign(getLightConfig(), {
+        type: CONFIGTYPE.DIRECTIONALLIGHT,
+        shadow: {
+            mapSize: {
+                width: 512,
+                height: 512
+            },
+            camera: {
+                near: 0.5,
+                far: 500
+            }
+        }
+    });
+};
 //# sourceMappingURL=LightConfig.js.map

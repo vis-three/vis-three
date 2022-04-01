@@ -22,7 +22,9 @@ export class MeshHelper extends LineSegments implements VisHelper {
     this.raycast = () => {}
 
     this.matrixAutoUpdate = false
+    this.matrixWorldNeedsUpdate = false
     this.matrix = mesh.matrix
+    this.matrixWorld = mesh.matrixWorld
 
     this.onBeforeRender = () => {
       const target = this.target

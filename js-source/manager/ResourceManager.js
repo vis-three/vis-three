@@ -91,15 +91,19 @@ export class ResourceManager extends EventDispatcher {
                     url: url
                 }));
                 structureMap.set(url, url);
-                // canvas贴图  
+                // canvas贴图  video
             }
-            else if (resource instanceof HTMLCanvasElement) {
+            else if (resource instanceof HTMLCanvasElement || resource instanceof HTMLVideoElement) {
                 resourceMap.set(url, resource);
                 structureMap.set(url, url);
                 // 物体  
             }
             else if (resource instanceof Object3D) {
                 structureMap.set(url, recursionMappingObject(url, resource));
+            }
+            else {
+                resourceMap.set(url, resource);
+                structureMap.set(url, url);
             }
         });
         this.dispatchEvent({

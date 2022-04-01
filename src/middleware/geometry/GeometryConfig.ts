@@ -1,4 +1,5 @@
 import { SymbolConfig, Vector3Config } from "../common/CommonConfig";
+import { CONFIGTYPE } from "../constants/configType";
 export interface GeometryConfig extends SymbolConfig {
   type: string
   position: Vector3Config
@@ -23,6 +24,13 @@ export interface SphereGeometryConfig extends GeometryConfig {
   phiLength: number
   thetaStart: number
   thetaLength: number
+}
+
+export interface PlaneGeometryConfig extends GeometryConfig {
+  width: number
+  height: number
+  widthSegments: number
+  heightSegments: number
 }
 
 export interface LoadGeometryConfig extends GeometryConfig {
@@ -54,7 +62,7 @@ export const getGeometryConfig = function (): GeometryConfig {
 
 export const getBoxGeometryConfig  = function (): BoxGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: 'BoxGeometry',
+    type: CONFIGTYPE.BOXGEOMETRY,
     width: 5,
     height: 5,
     depth: 5,
@@ -66,7 +74,7 @@ export const getBoxGeometryConfig  = function (): BoxGeometryConfig {
 
 export const getSphereGeometryConfig = function (): SphereGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: 'SphereGeometry',
+    type: CONFIGTYPE.SPHEREGEOMETRY,
     radius: 3,
     widthSegments: 32,
     heightSegments: 32,
@@ -77,12 +85,26 @@ export const getSphereGeometryConfig = function (): SphereGeometryConfig {
   })
 }
 
+export const getPlaneGeometryConfig = function (): PlaneGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.PLANEGEOMETRY,
+    width: 1,
+    height: 1,
+    widthSegments: 1,
+    heightSegments: 1,
+  })
+}
+
 export const getLoadGeometryConfig = function (): LoadGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: 'LoadGeometry',
+    type: CONFIGTYPE.LOADGEOMETRY,
     url: ''
   })
 }
 
 
-export type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | LoadGeometryConfig
+export type GeometryAllType = 
+  BoxGeometryConfig |
+  SphereGeometryConfig |
+  PlaneGeometryConfig |
+  LoadGeometryConfig

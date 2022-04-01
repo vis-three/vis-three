@@ -23,10 +23,24 @@ export interface SpotLightConfig extends LightConifg {
   decay: number
 }
 
+export interface DirectionalLightConfig extends LightConifg {
+  shadow: {
+    mapSize: {
+      width: number
+      height: number
+    },
+    camera: {
+      near: number
+      far: number
+    }
+  }
+}
+
 export type LightConfigAllType = 
   AmbientLightConfig |
   PointLightConfig |
-  SpotLightConfig
+  SpotLightConfig |
+  DirectionalLightConfig
 
 const getLightConfig = function (): LightConifg {
   return Object.assign(getObjectConfig(), {
@@ -59,5 +73,21 @@ export const getSpotLightConfig = function (): SpotLightConfig {
     angle: Math.PI / 180 * 45,
     penumbra: 0.01,
     decay: 0.01
+  })
+}
+
+export const getDirectionalLightConfig = function (): DirectionalLightConfig {
+  return Object.assign(getLightConfig(), {
+    type: CONFIGTYPE.DIRECTIONALLIGHT,
+    shadow: {
+      mapSize: {
+        width: 512,
+        height: 512
+      },
+      camera: {
+        near: 0.5,
+        far: 500
+      }
+    }
   })
 }

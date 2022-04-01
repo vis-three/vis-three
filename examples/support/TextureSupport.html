@@ -13,6 +13,8 @@
   #app {
     width: 100%;
     height: 100%;
+    position: relative;
+    background-color: black;
   }
 
 </style>
@@ -51,35 +53,61 @@
     })
 
 
-    const pointLight = Vis.generateConfig('PointLight', {
-      position: {
-        x: 30,
-        y: 50
-      },
-      distance: 100
-    })
-    engine.dataSupportManager.lightDataSupport.getData()[pointLight.vid] = pointLight
+    engine.loadResourcesAsync(['/examples/public/video/1.mp4']).then(() => {
+       const ambientLight = Vis.generateConfig('AmbientLight')
+      engine.dataSupportManager.lightDataSupport.getData()[ambientLight.vid] = ambientLight
 
-    const canvasTexture = Vis.generateConfig('CanvasTexture', {
-      url: 'example.canvasTexture',
-    })
-    engine.dataSupportManager.textureDataSupport.getData()[canvasTexture.vid] = canvasTexture
+      const canvasTexture = Vis.generateConfig('CanvasTexture', {
+        url: 'example.canvasTexture',
+      })
+      const videoTexture = Vis.generateConfig('VideoTexture', {
+        url: '/examples/public/video/1.mp4'
+      })
+
+      engine.dataSupportManager.textureDataSupport.getData()[canvasTexture.vid] = canvasTexture
+      engine.dataSupportManager.textureDataSupport.getData()[videoTexture.vid] = videoTexture
 
 
-    const material = Vis.generateConfig('SpriteMaterial', {
-      map: canvasTexture.vid,
-    })
-    engine.dataSupportManager.materialDataSupport.getData()[material.vid] = material
-    
+      const spriteMaterial = Vis.generateConfig('SpriteMaterial', {
+        map: canvasTexture.vid,
+      })
 
-    const sprite = Vis.generateConfig('Sprite', {
-      material: material.vid,
-      scale: {
-        x: 25,
-        y: 5
-      }
-    })
-    engine.dataSupportManager.spriteDataSupport.getData()[sprite.vid] = sprite
+      const boxMaterial = Vis.generateConfig('MeshStandardMaterial', {
+        // alphaMap: videoTexture.vid,
+        map: videoTexture.vid
+      })
+
+      engine.dataSupportManager.materialDataSupport.getData()[spriteMaterial.vid] = spriteMaterial
+      engine.dataSupportManager.materialDataSupport.getData()[boxMaterial.vid] = boxMaterial
+
+
+      const sprite = Vis.generateConfig('Sprite', {
+        material: spriteMaterial.vid,
+        position: {
+          x: 20
+        },
+        scale: {
+          x: 25,
+          y: 5
+        }
+      })
+      engine.dataSupportManager.spriteDataSupport.getData()[sprite.vid] = sprite
+
+      const boxGeometry = Vis.generateConfig('BoxGeometry', {
+        width: 20,
+        height: 20,
+        depth: 20,
+      })
+      engine.dataSupportManager.geometryDataSupport.getData()[boxGeometry.vid] = boxGeometry
+
+      const box = Vis.generateConfig('Mesh', {
+        geometry: boxGeometry.vid,
+        material: boxMaterial.vid
+      })
+      engine.dataSupportManager.meshDataSupport.getData()[box.vid] = box
+
+      console.log(engine)
+    }) 
   </script>
   
 </body>
