@@ -25,7 +25,7 @@
     import * as Vis from '../../dist/Vis.es.js'
     import { v4 as getUUid } from 'uuid'
 
-    const canvasTextureGenerator = new Vis.CanvasTextureGenerator({
+    const canvasGenerator = new Vis.CanvasGenerator({
       width: 256,
       height: 256
     }).draw(ctx => {
@@ -44,7 +44,7 @@
     .setStats(true)
     .play()
     .registerResources({
-      'example.canvasTexture': canvasTextureGenerator.get()
+      'example.canvas': canvasGenerator.get()
     })
 
     const pointLight = Vis.generateConfig('PointLight', {
@@ -58,7 +58,7 @@
 
     
     const canvasTexture = Vis.generateConfig('CanvasTexture', {
-      url: 'example.canvasTexture',
+      url: 'example.canvas',
     })
     engine.dataSupportManager.textureDataSupport.getData()[canvasTexture.vid] = canvasTexture
 

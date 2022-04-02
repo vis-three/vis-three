@@ -9388,6 +9388,40 @@ class CanvasTextureGenerator {
     return this;
   }
 }
+class CanvasGenerator {
+  constructor(parameters) {
+    __publicField(this, "canvas");
+    this.canvas = document.createElement("canvas");
+    const devicePixelRatio = window.devicePixelRatio;
+    this.canvas.width = ((parameters == null ? void 0 : parameters.width) || 512) * devicePixelRatio;
+    this.canvas.height = ((parameters == null ? void 0 : parameters.height) || 512) * devicePixelRatio;
+    this.canvas.style.backgroundColor = (parameters == null ? void 0 : parameters.bgColor) || "rgb(255, 255, 255)";
+  }
+  get() {
+    return this.canvas;
+  }
+  draw(fun) {
+    const ctx = this.canvas.getContext("2d");
+    ctx == null ? void 0 : ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    if (ctx) {
+      fun(ctx);
+      return this;
+    } else {
+      console.warn(`you browser can not support canvas 2d`);
+      return this;
+    }
+  }
+  preview(parameters) {
+    const canvas = this.canvas;
+    canvas.style.position = "fixed";
+    canvas.style.top = (parameters == null ? void 0 : parameters.top) || "5%";
+    canvas.style.left = (parameters == null ? void 0 : parameters.left) || "5%";
+    canvas.style.right = (parameters == null ? void 0 : parameters.right) || "unset";
+    canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
+    document.body.appendChild(this.canvas);
+    return this;
+  }
+}
 class EngineSupport extends Engine {
   constructor(parameters) {
     super();
@@ -10253,4 +10287,4 @@ class History {
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
-export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, VideoLoader, generateConfig };
+export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, VideoLoader, generateConfig };

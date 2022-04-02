@@ -27,7 +27,7 @@
     import * as Vis from '../../dist/Vis.es.js'
     import { v4 as getUUid } from 'uuid'
 
-    const canvasTextureGenerator = new Vis.CanvasTextureGenerator({
+    const canvasGenerator = new Vis.CanvasGenerator({
       width: 800,
       height: 160
     }).draw(ctx => {
@@ -49,7 +49,7 @@
     .setStats(true)
     .play()
     .registerResources({
-      'example.canvasTexture': canvasTextureGenerator.get()
+      'example.canvas': canvasGenerator.get()
     })
 
 
@@ -70,7 +70,7 @@
       const textureSupportDate = engine.dataSupportManager.textureDataSupport.getData()
 
       const canvasTexture = Vis.generateConfig('CanvasTexture', {
-        url: 'example.canvasTexture',
+        url: 'example.canvas',
       })
       const videoTexture = Vis.generateConfig('VideoTexture', {
         url: '/examples/public/video/1.mp4'

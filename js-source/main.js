@@ -22,7 +22,7 @@ import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
 import { EVENTTYPE } from "./middleware/constants/EVENTTYPE";
 import { TextureDisplayer } from "./displayer/TextureDisplayer";
 import { SceneDataSupport } from './middleware/scene/SceneDataSupport';
-import { CanvasTextureGenerator } from './convenient/CanvasTextureGenerator';
+import { CanvasGenerator, CanvasTextureGenerator } from './convenient/CanvasGenerator';
 import { SpriteDataSupport } from './middleware/sprite/SpriteDataSupport';
 import { ModelingEngineSupport } from './engine/ModelingEngineSupport';
 import { DisplayEngineSupport } from './engine/DisplayEngineSupport';
@@ -58,7 +58,7 @@ TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, 
 // helper
 PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, 
 // convenient
-generateConfig, SupportDataGenerator, CanvasTextureGenerator, History, ActionLibrary, BasicEventLibrary, RealTimeAnimateLibrary, JSONHandler, 
+generateConfig, SupportDataGenerator, CanvasTextureGenerator, CanvasGenerator, History, ActionLibrary, BasicEventLibrary, RealTimeAnimateLibrary, JSONHandler, 
 // displayer
 MaterialDisplayer, TextureDisplayer, 
 // loader

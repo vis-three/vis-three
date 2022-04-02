@@ -23,7 +23,7 @@ import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
 import { EVENTTYPE } from "./middleware/constants/EVENTTYPE";
 import { TextureDisplayer } from "./displayer/TextureDisplayer";
 import { SceneDataSupport } from './middleware/scene/SceneDataSupport';
-import { CanvasTextureGenerator } from './convenient/CanvasTextureGenerator';
+import { CanvasGenerator, CanvasTextureGenerator } from './convenient/CanvasGenerator';
 import { SpriteDataSupport } from './middleware/sprite/SpriteDataSupport';
 import { ModelingEngineSupport } from './engine/ModelingEngineSupport';
 import { DisplayEngineSupport } from './engine/DisplayEngineSupport';
@@ -101,6 +101,7 @@ export {
   generateConfig,
   SupportDataGenerator,
   CanvasTextureGenerator,
+  CanvasGenerator,
   History,
   ActionLibrary,
   BasicEventLibrary,

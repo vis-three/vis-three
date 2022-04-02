@@ -15,8 +15,8 @@
     align-items: center;
   }
   #app {
-    width: 300px;
-    height: 300px;
+    width: 50vh;
+    height: 50vh;
   }
 
 </style>
@@ -28,6 +28,7 @@
   <script type="module">
     import * as Vis from '../../dist/Vis.es.js' 
     import * as THREE from 'three'
+    import { GUI } from 'three/examples/jsm/libs/dat.gui.module'
 
     // 加载器
     const loaderManager = new Vis.LoaderManager()
@@ -37,10 +38,38 @@
       texture.image = loaderManager.getResource("/examples/public/texture/Bricks_Color.jpg")
       texture.needsUpdate = true
 
-      new Vis.TextureDisplayer({
+      const displayer = new Vis.TextureDisplayer({
         dom: document.getElementById('app'),
         texture
-      }).render()
+      })
+      
+      displayer.render()
+
+      const gui = new GUI()
+
+      const guiParams = {
+        rotation: texture.rotation * 180 / Math.PI,
+        centerX: texture.center.x,
+        centerY: texture.center.y
+      }
+
+      gui.add(guiParams, 'rotation', 0, 360, 1)
+        .onChange(data => {
+          texture.rotation = data * Math.PI / 180
+          displayer.render()
+        })
+      
+      gui.add(guiParams, 'centerX', 0, 1, 0.01)
+        .onChange(data => {
+          texture.center.x = data
+          displayer.render()
+        })
+
+      gui.add(guiParams, 'centerY', 0, 1, 0.01)
+        .onChange(data => {
+          texture.center.y = data
+          displayer.render()
+        }) 
     })
 
     loaderManager.load(["/examples/public/texture/Bricks_Color.jpg"])

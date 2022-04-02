@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="../css/common.css">
+  <title>TextureDisplayer</title>
+</head>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #app {
+    width: 50vh;
+    height: 50vh;
+  }
+
+</style>
+
+<body>
+  <div id="app"></div>
+
+
+  <script type="module">
+    import * as Vis from '../../dist/Vis.es.js' 
+    import * as THREE from 'three'
+    import { GUI } from 'three/examples/jsm/libs/dat.gui.module'
+
+    // 加载器
+    const loaderManager = new Vis.LoaderManager()
+
+    loaderManager.addEventListener('loaded', event => {
+      const texture = new THREE.Texture()
+      texture.image = loaderManager.getResource("/examples/public/texture/Bricks_Color.jpg")
+      texture.needsUpdate = true
+
+      const material = new THREE.MeshStandardMaterial({
+        map: texture,
+        bumpMap: texture,
+        bumpScale: 2
+      })
+
+      const displayer = new Vis.MaterialDisplayer({
+        dom: document.getElementById('app'),
+        material
+      })
+      
+      displayer.render()
+
+      const gui = new GUI()
+
+      const guiParams = {
+        rotation: texture.rotation * 180 / Math.PI,
+        centerX: texture.center.x,
+        centerY: texture.center.y,
+        wireframe: material.wireframe,
+        color: material.color.getHex()
+      }
+
+      gui.addColor(guiParams, 'color')
+        .onChange(data => {
+          material.color.setHex(data)
+          displayer.render()
+        })
+
+      gui.add(guiParams, 'wireframe')
+        .onChange(data => {
+          material.wireframe = data
+          displayer.render()
+        })
+
+      gui.add(guiParams, 'rotation', 0, 360, 1)
+        .onChange(data => {
+          texture.rotation = data * Math.PI / 180
+          displayer.render()
+        })
+
+      gui.add(guiParams, 'rotation', 0, 360, 1)
+        .onChange(data => {
+          texture.rotation = data * Math.PI / 180
+          displayer.render()
+        })
+      
+      gui.add(guiParams, 'centerX', 0, 1, 0.01)
+        .onChange(data => {
+          texture.center.x = data
+          displayer.render()
+        })
+
+      gui.add(guiParams, 'centerY', 0, 1, 0.01)
+        .onChange(data => {
+          texture.center.y = data
+          displayer.render()
+        }) 
+    })
+
+    loaderManager.load(["/examples/public/texture/Bricks_Color.jpg"])
+
+  </script>
+</body>
+</html>
