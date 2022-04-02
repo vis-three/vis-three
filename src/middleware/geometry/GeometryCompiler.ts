@@ -1,9 +1,9 @@
-import { Box3, BoxBufferGeometry, BufferGeometry, Euler, Matrix4, PlaneBufferGeometry, Quaternion, SphereBufferGeometry, Vector3 } from "three";
+import { Box3, BoxBufferGeometry, BufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, Euler, Matrix4, PlaneBufferGeometry, Quaternion, SphereBufferGeometry, Vector3 } from "three";
 import { validate } from "uuid";
 import { LoadGeometry } from "../../extends/geometry/LoadGeometry";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
-import { BoxGeometryConfig, GeometryAllType, LoadGeometryConfig, PlaneGeometryConfig, SphereGeometryConfig } from "./GeometryConfig";
+import { BoxGeometryConfig, CircleGeometryConfig, ConeGeometryConfig, CylinderGeometryConfig, EdgesGeometryConfig, GeometryAllType, LoadGeometryConfig, PlaneGeometryConfig, SphereGeometryConfig } from "./GeometryConfig";
 import { CONFIGTYPE } from "../constants/configType";
 
 export interface GeometryCompilerTarget extends CompilerTarget {
@@ -84,14 +84,55 @@ export class GeometryCompiler extends Compiler {
 
     constructMap.set(CONFIGTYPE.LOADGEOMETRY, (config: LoadGeometryConfig) => {
       return GeometryCompiler.transfromAnchor(new LoadGeometry(
-        this.getRescource(config.url)
+        this.getGeometry(config.url)
+      ), config)
+    })
+
+    constructMap.set(CONFIGTYPE.CIRCLEGEOMETRY, (config: CircleGeometryConfig) => {
+      return GeometryCompiler.transfromAnchor(new CircleBufferGeometry(
+        config.radius,
+        config.segments,
+        config.thetaStart,
+        config.thetaLength
+      ), config)
+    })
+
+    constructMap.set(CONFIGTYPE.CONEGEOMETRY, (config: ConeGeometryConfig) => {
+      return GeometryCompiler.transfromAnchor(new ConeBufferGeometry(
+        config.radius,
+        config.height,
+        config.radialSegments,
+        config.heightSegments,
+        config.openEnded,
+        config.thetaStart,
+        config.thetaLength,
+      ), config)
+    })
+
+    constructMap.set(CONFIGTYPE.CYLINDERGEOMETRY, (config: CylinderGeometryConfig) => {
+      return GeometryCompiler.transfromAnchor(new CylinderBufferGeometry(
+        config.radiusTop,
+        config.radiusBottom,
+        config.height,
+        config.radialSegments,
+        config.heightSegments,
+        config.openEnded,
+        config.thetaStart,
+        config.thetaLength,
+      ), config)
+    })
+
+    constructMap.set(CONFIGTYPE.EDGESGEOMETRY, (config: EdgesGeometryConfig) => {
+      return GeometryCompiler.transfromAnchor(new EdgesGeometry(
+        this.map.get(config.url),
+        config.thresholdAngle
       ), config)
     })
 
     this.constructMap = constructMap
     this.resourceMap = new Map()
 
-    this.replaceGeometry = new BoxBufferGeometry(10, 10, 10)
+    this.replaceGeometry = new BoxBufferGeometry(5, 5, 5)
   }
 
   linkRescourceMap (map: Map<string, unknown>): this {
@@ -114,6 +155,14 @@ export class GeometryCompiler extends Compiler {
     }
   }
 
+  private getGeometry (url: string): BufferGeometry {
+    if (this.map.has(url)) {
+      return this.map.get(url)!
+    }
+
+    return this.getRescource(url)
+  }
+ 
   getMap (): Map<SymbolConfig['vid'], BufferGeometry> {
     return this.map
   }

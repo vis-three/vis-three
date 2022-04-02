@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Scene, PerspectiveCamera, Clock, MOUSE, OrthographicCamera, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Vector3, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PlaneBufferGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, OctahedronBufferGeometry, Sphere, EdgesGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Scene, PerspectiveCamera, Clock, MOUSE, OrthographicCamera, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Vector3, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PlaneBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, OctahedronBufferGeometry, Sphere, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -2260,6 +2260,11 @@ var CONFIGTYPE;
   CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
   CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
   CONFIGTYPE2["PLANEGEOMETRY"] = "PlaneGeometry";
+  CONFIGTYPE2["CIRCLEGEOMETRY"] = "CircleGeometry";
+  CONFIGTYPE2["CONEGEOMETRY"] = "ConeGeometry";
+  CONFIGTYPE2["CYLINDERGEOMETRY"] = "CylinderGeometry";
+  CONFIGTYPE2["DODECAHEDRONGEOMETRY"] = "DodecahedronGeometry";
+  CONFIGTYPE2["EDGESGEOMETRY"] = "EdgesGeometry";
   CONFIGTYPE2["MESH"] = "Mesh";
   CONFIGTYPE2["LINE"] = "Line";
   CONFIGTYPE2["LINESEGMENTS"] = "LineSegments";
@@ -2314,6 +2319,8 @@ const getObjectConfig = () => {
     receiveShadow: true,
     lookAt: "",
     visible: true,
+    matrixAutoUpdate: true,
+    renderOrder: 0,
     position: {
       x: 0,
       y: 0,
@@ -2328,6 +2335,11 @@ const getObjectConfig = () => {
       x: 1,
       y: 1,
       z: 1
+    },
+    up: {
+      x: 0,
+      y: 1,
+      z: 0
     }
   };
 };
@@ -2423,16 +2435,57 @@ const getSphereGeometryConfig = function() {
 const getPlaneGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
     type: CONFIGTYPE.PLANEGEOMETRY,
-    width: 1,
-    height: 1,
+    width: 5,
+    height: 5,
     widthSegments: 1,
     heightSegments: 1
+  });
+};
+const getCircleGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.CIRCLEGEOMETRY,
+    radius: 3,
+    segments: 8,
+    thetaStart: 0,
+    thetaLength: Math.PI * 2
+  });
+};
+const getConeGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.CONEGEOMETRY,
+    radius: 3,
+    height: 5,
+    radialSegments: 8,
+    heightSegments: 1,
+    openEnded: false,
+    thetaStart: 0,
+    thetaLength: Math.PI * 2
   });
 };
 const getLoadGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
     type: CONFIGTYPE.LOADGEOMETRY,
     url: ""
+  });
+};
+const getCylinderGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.CYLINDERGEOMETRY,
+    radiusTop: 3,
+    radiusBottom: 3,
+    height: 5,
+    radialSegments: 8,
+    heightSegments: 1,
+    openEnded: false,
+    thetaStart: 0,
+    thetaLength: Math.PI * 2
+  });
+};
+const getEdgesGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.LOADGEOMETRY,
+    url: "",
+    thresholdAngle: 1
   });
 };
 const getTextureConfig = function() {
@@ -2816,6 +2869,10 @@ function getConfigModelMap() {
     [CONFIGTYPE.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
     [CONFIGTYPE.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
     [CONFIGTYPE.PLANEGEOMETRY]: MODULETYPE.GEOMETRY,
+    [CONFIGTYPE.CIRCLEGEOMETRY]: MODULETYPE.GEOMETRY,
+    [CONFIGTYPE.CONEGEOMETRY]: MODULETYPE.GEOMETRY,
+    [CONFIGTYPE.CIRCLEGEOMETRY]: MODULETYPE.GEOMETRY,
+    [CONFIGTYPE.EDGESGEOMETRY]: MODULETYPE.GEOMETRY,
     [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
     [CONFIGTYPE.LINE]: MODULETYPE.LINE,
     [CONFIGTYPE.MESH]: MODULETYPE.MESH,
@@ -2848,6 +2905,10 @@ function getConfigFunctionMap() {
     [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
     [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
     [CONFIGTYPE.PLANEGEOMETRY]: getPlaneGeometryConfig,
+    [CONFIGTYPE.CIRCLEGEOMETRY]: getCircleGeometryConfig,
+    [CONFIGTYPE.CONEGEOMETRY]: getConeGeometryConfig,
+    [CONFIGTYPE.CYLINDERGEOMETRY]: getCylinderGeometryConfig,
+    [CONFIGTYPE.EDGESGEOMETRY]: getEdgesGeometryConfig,
     [CONFIGTYPE.SPRITE]: getSpriteConfig,
     [CONFIGTYPE.LINE]: getLineConfig,
     [CONFIGTYPE.MESH]: getMeshConfig,
@@ -3207,6 +3268,10 @@ class DataSupport {
   }
   existSymbol(vid) {
     return Boolean(this.data[vid]);
+  }
+  addConfig(config) {
+    this.data[config.vid] = config;
+    return this;
   }
   getConfig(vid) {
     return this.data[vid];
@@ -5340,11 +5405,23 @@ const _GeometryCompiler = class extends Compiler {
       return _GeometryCompiler.transfromAnchor(new PlaneBufferGeometry(config.width, config.height, config.widthSegments, config.heightSegments), config);
     });
     constructMap.set(CONFIGTYPE.LOADGEOMETRY, (config) => {
-      return _GeometryCompiler.transfromAnchor(new LoadGeometry(this.getRescource(config.url)), config);
+      return _GeometryCompiler.transfromAnchor(new LoadGeometry(this.getGeometry(config.url)), config);
+    });
+    constructMap.set(CONFIGTYPE.CIRCLEGEOMETRY, (config) => {
+      return _GeometryCompiler.transfromAnchor(new CircleBufferGeometry(config.radius, config.segments, config.thetaStart, config.thetaLength), config);
+    });
+    constructMap.set(CONFIGTYPE.CONEGEOMETRY, (config) => {
+      return _GeometryCompiler.transfromAnchor(new ConeBufferGeometry(config.radius, config.height, config.radialSegments, config.heightSegments, config.openEnded, config.thetaStart, config.thetaLength), config);
+    });
+    constructMap.set(CONFIGTYPE.CYLINDERGEOMETRY, (config) => {
+      return _GeometryCompiler.transfromAnchor(new CylinderBufferGeometry(config.radiusTop, config.radiusBottom, config.height, config.radialSegments, config.heightSegments, config.openEnded, config.thetaStart, config.thetaLength), config);
+    });
+    constructMap.set(CONFIGTYPE.EDGESGEOMETRY, (config) => {
+      return _GeometryCompiler.transfromAnchor(new EdgesGeometry(this.map.get(config.url), config.thresholdAngle), config);
     });
     this.constructMap = constructMap;
     this.resourceMap = new Map();
-    this.replaceGeometry = new BoxBufferGeometry(10, 10, 10);
+    this.replaceGeometry = new BoxBufferGeometry(5, 5, 5);
   }
   linkRescourceMap(map) {
     this.resourceMap = map;
@@ -5362,6 +5439,12 @@ const _GeometryCompiler = class extends Compiler {
       console.error(`url mapping rescource is not class with BufferGeometry: ${url}`);
       return this.replaceGeometry.clone();
     }
+  }
+  getGeometry(url) {
+    if (this.map.has(url)) {
+      return this.map.get(url);
+    }
+    return this.getRescource(url);
   }
   getMap() {
     return this.map;

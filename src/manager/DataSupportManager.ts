@@ -160,7 +160,7 @@ export class DataSupportManager {
 
   getSupportData<C extends CompilerTarget, D extends DataSupport<C, Compiler>> (type: MODULETYPE): C | null {
     if (this.dataSupportMap.has(type)) {
-      return (this.dataSupportMap.get(type)! as D).getData()
+      return (this.dataSupportMap.get(type)! as unknown as D).getData()
     } else {
       console.warn(`can not found this type in dataSupportManager: ${type}`)
       return null
@@ -169,14 +169,18 @@ export class DataSupportManager {
 
   setSupportData<C extends CompilerTarget, D extends DataSupport<C, Compiler>> (type: MODULETYPE, data: C): this {
     if (this.dataSupportMap.has(type)) {
-      (this.dataSupportMap.get(type)! as D).setData(data)
+      (this.dataSupportMap.get(type)! as unknown as D).setData(data)
     } else {
       console.warn(`can not found this type in dataSupportManager: ${type}`)
     }
     return this
   }
 
-  // TODO:去掉
+  /**
+   * 
+   * @deprecated - 下版本废弃
+   *
+   */
   getObjectConfig<T extends SymbolConfig>(vid: string): T | null {
     if (!validate(vid)) {
       console.warn(`vid is illeage: ${vid}`)

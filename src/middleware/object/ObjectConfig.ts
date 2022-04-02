@@ -1,4 +1,4 @@
-import { Vector2Config, Vector3Config, SymbolConfig } from "../common/CommonConfig"
+import { Vector3Config, SymbolConfig } from "../common/CommonConfig"
 
 export interface ObjectConfig extends SymbolConfig {
   type: string
@@ -9,7 +9,10 @@ export interface ObjectConfig extends SymbolConfig {
   position: Vector3Config
   rotation: Vector3Config
   scale: Vector3Config
+  up: Vector3Config
   visible: boolean
+  matrixAutoUpdate: boolean
+  renderOrder: number
 }
 
 export const getObjectConfig = (): ObjectConfig => {
@@ -21,6 +24,8 @@ export const getObjectConfig = (): ObjectConfig => {
     receiveShadow: true,
     lookAt: '',
     visible: true,
+    matrixAutoUpdate: true,
+    renderOrder: 0,
     position: {
       x: 0,
       y: 0,
@@ -35,6 +40,11 @@ export const getObjectConfig = (): ObjectConfig => {
       x: 1,
       y: 1,
       z: 1
+    },
+    up: {
+      x: 0,
+      y: 1,
+      z: 0
     }
   }
 }

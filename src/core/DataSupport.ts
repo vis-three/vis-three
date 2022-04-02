@@ -39,6 +39,11 @@ export abstract class DataSupport<D extends CompilerTarget, C extends Compiler> 
   existSymbol (vid: string): boolean {
     return Boolean(this.data[vid])
   }
+  
+  addConfig (config: valueOf<D>): this {
+    this.data[config.vid as keyof D] = config
+    return this
+  }
 
   getConfig (vid: string) {
     return this.data[vid]

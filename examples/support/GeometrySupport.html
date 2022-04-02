@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeometrySupport</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="../css/common.css">
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+</style>
+
+<body>
+  <div id="app"></div>
+
+  <script type="module">
+    import * as THREE from 'three'
+    import * as Vis from '../../dist/Vis.es.js'
+    import { v4 as getUUid } from 'uuid'
+
+    const canvasGenerator = new Vis.CanvasGenerator({
+      width: 256,
+      height: 256
+    }).draw(ctx => {
+      ctx.textBaseline = 'middle'
+      ctx.textAlign = "center"
+
+      ctx.fillStyle= 'rgb(206, 42, 230)'
+   
+      ctx.font=" bold 42px 微软雅黑"
+      ctx.fillText("GEOMETRY", 128, 128)
+    }).preview()
+
+    const engine = new Vis.ModelingEngineSupport()
+    .setDom(document.getElementById('app'))
+    .setSize()
+    .setStats(true)
+    .play()
+
+
+    const pointLight = Vis.generateConfig('PointLight', {
+      position: {
+        y: 50
+      },
+      distance: 150
+    })
+    engine.dataSupportManager.lightDataSupport.getData()[pointLight.vid] = pointLight
+
+
+    const material = Vis.generateConfig('MeshStandardMaterial')
+    engine.dataSupportManager.materialDataSupport.getData()[material.vid] = material
+
+
+    const geometryTypeList = [
+      Vis.CONFIGTYPE.BOXGEOMETRY,
+      Vis.CONFIGTYPE.SPHEREGEOMETRY,
+      Vis.CONFIGTYPE.PLANEGEOMETRY,
+      Vis.CONFIGTYPE.CIRCLEGEOMETRY,
+      Vis.CONFIGTYPE.CONEGEOMETRY,
+      Vis.CONFIGTYPE.CYLINDERGEOMETRY,
+      Vis.CONFIGTYPE.LOADGEOMETRY,
+      Vis.CONFIGTYPE.EDGESGEOMETRY
+    ]
+
+    const size = 15
+
+    const geometrySupportData = engine.dataSupportManager.geometryDataSupport.getData()
+    const meshSupportData = engine.dataSupportManager.meshDataSupport.getData()
+
+    geometryTypeList.forEach((cofigType, i) => {
+      const geometry = Vis.generateConfig(cofigType)
+      const number = i + 1
+      const mesh = Vis.generateConfig('Mesh', {
+        material: material.vid,
+        geometry: geometry.vid,
+        position: {
+          x: number % 2 ? - (Math.floor(number / 2) + 1) * size : Math.floor(number / 2) * size
+        },
+        scale: {
+          x: 2,
+          y: 2,
+          z: 2
+        }
+      })
+
+      geometrySupportData[geometry.vid] = geometry
+      meshSupportData[mesh.vid] = mesh
+    })
+  </script>
+  
+</body>
+</html>

@@ -3,6 +3,11 @@ export enum CONFIGTYPE {
   SPHEREGEOMETRY = 'SphereGeometry',
   LOADGEOMETRY = 'LoadGeometry',
   PLANEGEOMETRY = 'PlaneGeometry',
+  CIRCLEGEOMETRY = 'CircleGeometry',
+  CONEGEOMETRY = 'ConeGeometry',
+  CYLINDERGEOMETRY = 'CylinderGeometry',
+  DODECAHEDRONGEOMETRY = 'DodecahedronGeometry',
+  EDGESGEOMETRY = 'EdgesGeometry',
 
   MESH = 'Mesh',
   LINE = 'Line',

@@ -33,10 +33,47 @@ export interface PlaneGeometryConfig extends GeometryConfig {
   heightSegments: number
 }
 
+export interface CircleGeometryConfig extends GeometryConfig {
+  radius : number
+  segments : number
+  thetaStart : number
+  thetaLength : number
+}
+
+export interface ConeGeometryConfig extends GeometryConfig {
+  radius : number
+  height : number
+  radialSegments : number
+  heightSegments : number
+  openEnded : boolean
+  thetaStart : number
+  thetaLength : number
+}
+
 export interface LoadGeometryConfig extends GeometryConfig {
   url: string
 }
 
+export interface CylinderGeometryConfig extends GeometryConfig {
+  radiusTop : number
+  radiusBottom : number
+  height : number
+  radialSegments : number
+  heightSegments : number
+  openEnded : boolean
+  thetaStart : number
+  thetaLength : number
+}
+
+export interface DodecahedronGeometryConfig extends GeometryConfig {
+  radius: number
+  detail: number
+}
+
+export interface EdgesGeometryConfig extends GeometryConfig {
+  url: string
+  thresholdAngle: number
+}
 
 export const getGeometryConfig = function (): GeometryConfig {
   return {
@@ -88,10 +125,33 @@ export const getSphereGeometryConfig = function (): SphereGeometryConfig {
 export const getPlaneGeometryConfig = function (): PlaneGeometryConfig {
   return Object.assign(getGeometryConfig(), {
     type: CONFIGTYPE.PLANEGEOMETRY,
-    width: 1,
-    height: 1,
+    width: 5,
+    height: 5,
     widthSegments: 1,
     heightSegments: 1,
+  })
+}
+
+export const getCircleGeometryConfig = function (): CircleGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.CIRCLEGEOMETRY,
+    radius : 3,
+    segments : 8,
+    thetaStart : 0,
+    thetaLength : Math.PI * 2
+  })
+}
+
+export const getConeGeometryConfig = function (): ConeGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.CONEGEOMETRY,
+    radius : 3,
+    height : 5,
+    radialSegments : 8,
+    heightSegments : 1,
+    openEnded : false,
+    thetaStart : 0,
+    thetaLength : Math.PI * 2
   })
 }
 
@@ -102,9 +162,44 @@ export const getLoadGeometryConfig = function (): LoadGeometryConfig {
   })
 }
 
+export const getCylinderGeometryConfig = function (): CylinderGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.CYLINDERGEOMETRY,
+    radiusTop : 3,
+    radiusBottom : 3,
+    height : 5,
+    radialSegments : 8,
+    heightSegments : 1,
+    openEnded : false,
+    thetaStart : 0,
+    thetaLength : Math.PI * 2
+  })
+}
+
+export const getDodecahedronGeometryConfig = function (): DodecahedronGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    type: '',
+    radius: 3,
+    detail: 0
+  })
+}
+
+export const getEdgesGeometryConfig = function (): EdgesGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.LOADGEOMETRY,
+    url: '',
+    thresholdAngle: 1
+  })
+}
+
 
 export type GeometryAllType = 
   BoxGeometryConfig |
   SphereGeometryConfig |
   PlaneGeometryConfig |
-  LoadGeometryConfig
+  LoadGeometryConfig |
+  CircleGeometryConfig |
+  ConeGeometryConfig |
+  CylinderGeometryConfig |
+  DodecahedronGeometryConfig |
+  EdgesGeometryConfig
