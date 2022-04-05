@@ -3,7 +3,7 @@ import { validate } from "uuid";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
 import { Rule } from "../../core/Rule";
 import { ObjectRule } from "../object/ObjectRule";
-import { LightCompiler, LightCompilerTarget} from "./LightCompiler";
+import { LightCompiler, LightCompilerTarget } from "./LightCompiler";
 import { LightConfigAllType } from "./LightConfig";
 
 export type LightRule = ObjectRule<
@@ -11,34 +11,36 @@ export type LightRule = ObjectRule<
   LightConfigAllType,
   LightCompilerTarget,
   Light
->
+>;
 
-export const LightRule: LightRule = function (input: ProxyNotice, compiler: LightCompiler) {
-  
-  const {operate, key, path, value} = input
+export const LightRule: LightRule = function (
+  input: ProxyNotice,
+  compiler: LightCompiler
+) {
+  const { operate, key, path, value } = input;
 
-  if (operate === 'add') {
+  if (operate === "add") {
     if (validate(key)) {
-      compiler.add(key, value)
+      compiler.add(key, value);
     }
-    return
+    return;
   }
-  
-  if (operate === 'set') {
-    const tempPath = path.concat([])
-    const vid = tempPath.shift()
+
+  if (operate === "set") {
+    const tempPath = path.concat([]);
+    const vid = tempPath.shift();
     if (vid && validate(vid)) {
-      compiler.set(vid, tempPath, key, value)
+      compiler.set(vid, tempPath, key, value);
     } else {
-      console.warn(`model rule vid is illeage: '${vid}'`)
+      console.warn(`model rule vid is illeage: '${vid}'`);
     }
-    return
+    return;
   }
-  
-  if (operate === 'delete') {
+
+  if (operate === "delete") {
     if (validate(key)) {
-      compiler.remove(key)
+      compiler.remove(key);
     }
-    return
+    return;
   }
-}
+};

@@ -10,36 +10,38 @@ export type GroupRule = ObjectRule<
   GroupConfig,
   GroupCompilerTarget,
   Group
->
+>;
 
-export const GroupRule: GroupRule = function (input: ProxyNotice, compiler: GroupCompiler) {
-  
-  const {operate, key, path, value} = input
+export const GroupRule: GroupRule = function (
+  input: ProxyNotice,
+  compiler: GroupCompiler
+) {
+  const { operate, key, path, value } = input;
 
-  console.log(input)
-  
-  if (operate === 'add') {
+  console.log(input);
+
+  if (operate === "add") {
     if (validate(key)) {
-      compiler.add(key, value)
+      compiler.add(key, value);
     }
-    return
+    return;
   }
-  
-  if (operate === 'set') {
-    const tempPath = path.concat([])
-    const vid = tempPath.shift()
+
+  if (operate === "set") {
+    const tempPath = path.concat([]);
+    const vid = tempPath.shift();
     if (vid && validate(vid)) {
-      compiler.set(vid, tempPath, key, value)
+      compiler.set(vid, tempPath, key, value);
     } else {
-      console.warn(`model rule vid is illeage: '${vid}'`)
+      console.warn(`model rule vid is illeage: '${vid}'`);
     }
-    return
+    return;
   }
-  
-  if (operate === 'delete') {
+
+  if (operate === "delete") {
     if (validate(key)) {
-      compiler.remove(key)
+      compiler.remove(key);
     }
-    return
+    return;
   }
-}
+};

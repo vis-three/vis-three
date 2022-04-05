@@ -1,75 +1,74 @@
 import { SymbolConfig } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
 
-export interface ControlsConfig extends SymbolConfig {}
+export type ControlsConfig = SymbolConfig;
 
 export interface TransformControlsConfig extends ControlsConfig {
-  axis: string
-  enabled: boolean
-  mode: string
+  axis: string;
+  enabled: boolean;
+  mode: string;
 
-  snapAllow: boolean // 是否开启步幅功能
-  rotationSnap: number
-  translationSnap: number
-  scaleSnap: number
-  
-  showX: boolean
-  showY: boolean
-  showZ: boolean
+  snapAllow: boolean; // 是否开启步幅功能
+  rotationSnap: number;
+  translationSnap: number;
+  scaleSnap: number;
 
-  size: number
+  showX: boolean;
+  showY: boolean;
+  showZ: boolean;
 
-  space: string
+  size: number;
 
+  space: string;
 }
 
 export interface OrbitControlsConfig extends ControlsConfig {
-  autoRotate: boolean
-  autoRotateSpeed: number
-  enableDamping: boolean
-  dampingFactor: number
-  enabled: boolean
-  enablePan: boolean
-  enableRotate: boolean
-  enableZoom: boolean
-  maxAzimuthAngle: number
-  maxDistance: number
-  maxPolarAngle: number
-  maxZoom: number
-  minAzimuthAngle: number
-  minDistance: number
-  minPolarAngle: number
-  minZoom: number
-  panSpeed: number
-  rotateSpeed: number
-  zoomSpeed: number
-  screenSpacePanning: boolean
+  autoRotate: boolean;
+  autoRotateSpeed: number;
+  enableDamping: boolean;
+  dampingFactor: number;
+  enabled: boolean;
+  enablePan: boolean;
+  enableRotate: boolean;
+  enableZoom: boolean;
+  maxAzimuthAngle: number;
+  maxDistance: number;
+  maxPolarAngle: number;
+  maxZoom: number;
+  minAzimuthAngle: number;
+  minDistance: number;
+  minPolarAngle: number;
+  minZoom: number;
+  panSpeed: number;
+  rotateSpeed: number;
+  zoomSpeed: number;
+  screenSpacePanning: boolean;
 }
 
-export type ControlsAllConfig = TransformControlsConfig | OrbitControlsConfig
+export type ControlsAllConfig = TransformControlsConfig | OrbitControlsConfig;
 
 export const getTransformControlsConfig = function (): TransformControlsConfig {
   return {
     vid: CONFIGTYPE.TRNASFORMCONTROLS,
     type: CONFIGTYPE.TRNASFORMCONTROLS,
-    axis: 'XYZ',
+    axis: "XYZ",
     enabled: true,
-    mode: 'translate',
+    mode: "translate",
 
     snapAllow: false,
-    rotationSnap: Math.PI / 180 * 10,
+    rotationSnap: (Math.PI / 180) * 10,
     translationSnap: 5,
     scaleSnap: 0.1,
-    
+
     showX: true,
     showY: true,
     showZ: true,
 
     size: 1,
 
-    space: 'world'
-  }
-}
+    space: "world",
+  };
+};
 
 export const getOrbitControlsConfig = function (): OrbitControlsConfig {
   return {
@@ -94,6 +93,6 @@ export const getOrbitControlsConfig = function (): OrbitControlsConfig {
     panSpeed: 1,
     rotateSpeed: 1,
     zoomSpeed: 1,
-    screenSpacePanning: true
-  }
-}
+    screenSpacePanning: true,
+  };
+};

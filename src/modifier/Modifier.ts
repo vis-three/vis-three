@@ -1,16 +1,15 @@
 export interface ModifierParameters {
-  visible: boolean
+  visible: boolean;
 }
 
 export abstract class Modifier {
+  visible = true;
 
-  visible: boolean = true
-
-  constructor (parameters: ModifierParameters) {
-    this.visible = parameters.visible !== undefined ? parameters.visible : true
+  constructor(parameters: ModifierParameters) {
+    this.visible = parameters.visible !== undefined ? parameters.visible : true;
   }
 
-  abstract use()
-  abstract render()
-  abstract dispose()
+  abstract use();
+  abstract render();
+  abstract dispose();
 }

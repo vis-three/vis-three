@@ -4,12 +4,14 @@ import { RendererCompiler, RendererCompilerTarget } from "./RendererCompiler";
 import { getWebGLRendererConfig } from "./RendererConfig";
 import { RendererRule } from "./RendererRule";
 
-export class RendererDataSupport extends DataSupport<RendererCompilerTarget, RendererCompiler> {
+export class RendererDataSupport extends DataSupport<
+  RendererCompilerTarget,
+  RendererCompiler
+> {
+  MODULE: MODULETYPE = MODULETYPE.RENDERER;
 
-  MODULE: MODULETYPE = MODULETYPE.RENDERER
-
-  constructor (data?: RendererCompilerTarget) {
-    !data && (data = {})
-    super(RendererRule, data)
+  constructor(data?: RendererCompilerTarget) {
+    !data && (data = {});
+    super(RendererRule, data);
   }
 }

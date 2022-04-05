@@ -10,14 +10,13 @@ export class SpriteDataSupport extends ObjectDataSupport<
   SpriteRule,
   SpriteCompiler,
   SpriteConfig,
-  SpriteCompilerTarget, 
+  SpriteCompilerTarget,
   Sprite
 > {
+  MODULE: MODULETYPE = MODULETYPE.SPRITE;
 
-  MODULE: MODULETYPE = MODULETYPE.SPRITE
-
-  constructor (data?: SpriteCompilerTarget) {
-    !data && (data = {})
-    super(SpriteRule, data)
+  constructor(data?: SpriteCompilerTarget) {
+    !data && (data = {});
+    super(SpriteRule, data);
   }
 }

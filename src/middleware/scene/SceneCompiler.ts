@@ -6,147 +6,152 @@ import { CONFIGTYPE } from "../constants/configType";
 import { getSceneConfig, SceneConfig, SceneFogConfig } from "./SceneConfig";
 
 export interface SceneCompilerTarget extends CompilerTarget {
-  [CONFIGTYPE.SCENE]: SceneConfig
+  [CONFIGTYPE.SCENE]: SceneConfig;
 }
 
 export interface SceneCompilerParameters {
-  target?: SceneCompilerTarget
-  scene?: Scene
+  target?: SceneCompilerTarget;
+  scene?: Scene;
 }
 
 export class SceneCompiler extends Compiler {
+  private textureMap: Map<SymbolConfig["type"], Texture>;
+  private target!: SceneCompilerTarget;
+  private scene!: Scene;
 
-  private textureMap: Map<SymbolConfig['type'], Texture>
-  private target!: SceneCompilerTarget
-  private scene!: Scene
+  private fogCache: Fog | FogExp2 | null;
 
-  private fogCache: Fog | FogExp2 | null
-
-  constructor (parameters?: SceneCompilerParameters) {
-    super()
+  constructor(parameters?: SceneCompilerParameters) {
+    super();
     if (parameters) {
-      parameters.target && (this.target = parameters.target)
-      parameters.scene && (this.scene = parameters.scene)
+      parameters.target && (this.target = parameters.target);
+      parameters.scene && (this.scene = parameters.scene);
     } else {
       this.target = {
-        [CONFIGTYPE.SCENE]: getSceneConfig()
-      }
-      this.scene = new Scene()
+        [CONFIGTYPE.SCENE]: getSceneConfig(),
+      };
+      this.scene = new Scene();
     }
-    this.textureMap = new Map()
-    this.fogCache = null
+    this.textureMap = new Map();
+    this.fogCache = null;
   }
 
-  private background (value: string | null) {
+  private background(value: string | null) {
     if (!value) {
-      this.scene.background = null
-      return
+      this.scene.background = null;
+      return;
     }
 
     if (validate(value)) {
       if (this.textureMap.has(value)) {
-        this.scene.background = this.textureMap.get(value)!
+        this.scene.background = this.textureMap.get(value)!;
       } else {
-        console.warn(`scene compiler can not found this vid texture : '${value}'`)
+        console.warn(
+          `scene compiler can not found this vid texture : '${value}'`
+        );
       }
     } else {
-      this.scene.background = new Color(value)
+      this.scene.background = new Color(value);
     }
   }
 
-  private environment (value: string | null) {
+  private environment(value: string | null) {
     if (!value) {
-      this.scene.environment = null
-      return
+      this.scene.environment = null;
+      return;
     }
 
     if (validate(value)) {
       if (this.textureMap.has(value)) {
-        this.scene.environment = this.textureMap.get(value)!
+        this.scene.environment = this.textureMap.get(value)!;
       } else {
-        console.warn(`scene compiler can not found this vid texture : '${value}'`)
+        console.warn(
+          `scene compiler can not found this vid texture : '${value}'`
+        );
       }
     } else {
-      console.warn(`this vid is illegal: '${value}'`)
+      console.warn(`this vid is illegal: '${value}'`);
     }
   }
 
-  private fog (config: SceneFogConfig) {
-    if (config.type === '') {
-      this.fogCache = null
-      this.scene.fog = null
-      return
-    } 
+  private fog(config: SceneFogConfig) {
+    if (config.type === "") {
+      this.fogCache = null;
+      this.scene.fog = null;
+      return;
+    }
 
-    if (config.type === 'Fog') {
+    if (config.type === "Fog") {
       if (this.fogCache instanceof Fog) {
-        const fog = this.fogCache
-        fog.color = new Color(config.color)
-        fog.near = config.near
-        fog.far = config.far
+        const fog = this.fogCache;
+        fog.color = new Color(config.color);
+        fog.near = config.near;
+        fog.far = config.far;
       } else {
-        this.scene.fog = new Fog(config.color, config.near, config.far)
-        this.fogCache = this.scene.fog as Fog
+        this.scene.fog = new Fog(config.color, config.near, config.far);
+        this.fogCache = this.scene.fog as Fog;
       }
-      return
+      return;
     }
-     
-    if (config.type === 'FogExp2') {
+
+    if (config.type === "FogExp2") {
       if (this.fogCache instanceof FogExp2) {
-        const fog = this.fogCache
-        fog.color = new Color(config.color)
-        fog.density = config.density
+        const fog = this.fogCache;
+        fog.color = new Color(config.color);
+        fog.density = config.density;
       } else {
-        this.scene.fog = new FogExp2(config.color, config.density)
-        this.fogCache = this.scene.fog as FogExp2
+        this.scene.fog = new FogExp2(config.color, config.density);
+        this.fogCache = this.scene.fog as FogExp2;
       }
-      return
+      return;
     }
 
-    console.warn(`scene compiler can not support this type fog:'${config.type}'`)
+    console.warn(
+      `scene compiler can not support this type fog:'${config.type}'`
+    );
   }
 
-  linkTextureMap (map: Map<SymbolConfig['type'], Texture>): this {
-    this.textureMap = map
-    return this
+  linkTextureMap(map: Map<SymbolConfig["type"], Texture>): this {
+    this.textureMap = map;
+    return this;
   }
 
-  set (path: string[], key: string, value: any): this {
-    const sceneType = path.shift()!
+  set(path: string[], key: string, value: any): this {
+    const sceneType = path.shift()!;
 
     if (sceneType === CONFIGTYPE.SCENE) {
       const actionMap = {
         background: () => this.background(value),
         environment: () => this.environment(value),
-        fog: () => this.fog(this.target[CONFIGTYPE.SCENE].fog)
-      }
+        fog: () => this.fog(this.target[CONFIGTYPE.SCENE].fog),
+      };
 
       if (path.length) {
-        key = path.pop()!
+        key = path.pop()!;
       }
 
-      actionMap[key] && actionMap[key]()
-      return this
+      actionMap[key] && actionMap[key]();
+      return this;
     } else {
-      console.warn(`scene compiler can not support this type: ${sceneType}`)
-      return this
+      console.warn(`scene compiler can not support this type: ${sceneType}`);
+      return this;
     }
   }
 
-  setTarget (target: SceneCompilerTarget): this {
-    this.target = target
-    return this
+  setTarget(target: SceneCompilerTarget): this {
+    this.target = target;
+    return this;
   }
 
-  compileAll (): this {
-    const sceneTarget = this.target[CONFIGTYPE.SCENE]
-    this.background(sceneTarget.background)
-    this.environment(sceneTarget.environment)
-    this.fog(sceneTarget.fog)
-    return this
+  compileAll(): this {
+    const sceneTarget = this.target[CONFIGTYPE.SCENE];
+    this.background(sceneTarget.background);
+    this.environment(sceneTarget.environment);
+    this.fog(sceneTarget.fog);
+    return this;
   }
 
-  dispose (): this {
-    return this
+  dispose(): this {
+    return this;
   }
 }

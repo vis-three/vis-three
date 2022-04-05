@@ -1,5 +1,5 @@
 import { Engine, ENGINEPLUGIN } from "./engine/Engine";
-import { DisplayEngine } from './engine/DisplayEngine';
+import { DisplayEngine } from "./engine/DisplayEngine";
 import { ModelingEngine } from "./engine/ModelingEngine";
 
 import { LightDataSupport } from "./middleware/light/LightDataSupport";
@@ -22,20 +22,23 @@ import { RendererDataSupport } from "./middleware/renderer/RendererDataSupport";
 import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
 import { EVENTTYPE } from "./middleware/constants/EVENTTYPE";
 import { TextureDisplayer } from "./displayer/TextureDisplayer";
-import { SceneDataSupport } from './middleware/scene/SceneDataSupport';
-import { CanvasGenerator, CanvasTextureGenerator } from './convenient/CanvasGenerator';
-import { SpriteDataSupport } from './middleware/sprite/SpriteDataSupport';
-import { ModelingEngineSupport } from './engine/ModelingEngineSupport';
-import { DisplayEngineSupport } from './engine/DisplayEngineSupport';
-import { LineDataSupport } from './middleware/line/LineDataSupport';
-import { MeshDataSupport } from './middleware/mesh/MeshDataSupport';
-import { PointsDataSupport } from './middleware/points/PointsDataSupport';
-import * as BasicEventLibrary from './convenient/BasicEventLibrary/configure'
-import * as RealTimeAnimateLibrary from './convenient/RealTimeAnimateLibrary/configure'
-import * as ActionLibrary from './convenient/ActionLibrary/Action'
-import { GroupHelper } from './extends/helper/object/GroupHelper';
-import { EngineSupport } from './engine/EngineSupport';
-import * as JSONHandler from './convenient/JSONHandler'
+import { SceneDataSupport } from "./middleware/scene/SceneDataSupport";
+import {
+  CanvasGenerator,
+  CanvasTextureGenerator,
+} from "./convenient/CanvasGenerator";
+import { SpriteDataSupport } from "./middleware/sprite/SpriteDataSupport";
+import { ModelingEngineSupport } from "./engine/ModelingEngineSupport";
+import { DisplayEngineSupport } from "./engine/DisplayEngineSupport";
+import { LineDataSupport } from "./middleware/line/LineDataSupport";
+import { MeshDataSupport } from "./middleware/mesh/MeshDataSupport";
+import { PointsDataSupport } from "./middleware/points/PointsDataSupport";
+import * as BasicEventLibrary from "./convenient/BasicEventLibrary/configure";
+import * as RealTimeAnimateLibrary from "./convenient/RealTimeAnimateLibrary/configure";
+import * as ActionLibrary from "./convenient/ActionLibrary/Action";
+import { GroupHelper } from "./extends/helper/object/GroupHelper";
+import { EngineSupport } from "./engine/EngineSupport";
+import * as JSONHandler from "./convenient/JSONHandler";
 
 import { BooleanModifier } from "./modifier/BooleanModifier";
 import { VIEWPOINT } from "./plugins/ViewpointPlugin";
@@ -46,9 +49,10 @@ import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightH
 import { VideoLoader } from "./extends/loader/VideoLoader";
 
 if (!window.__THREE__) {
-  console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`)
+  console.error(
+    `vis-three dependent on three.js module, pleace run 'npm i three' first.`
+  );
 }
-
 
 export {
   // menu
@@ -60,12 +64,10 @@ export {
   DISPLAYMODE,
   ENGINEPLUGIN,
   VIEWPOINT,
-
   // manager
   LoaderManager,
   ResourceManager,
   DataSupportManager,
-
   // engine
   Engine,
   ModelingEngine,
@@ -73,7 +75,6 @@ export {
   EngineSupport,
   ModelingEngineSupport,
   DisplayEngineSupport,
-
   // engine connector
 
   // data support
@@ -89,14 +90,12 @@ export {
   SpriteDataSupport,
   LineDataSupport,
   PointsDataSupport,
-
   // helper
   PointLightHelper,
   CameraHelper,
   GroupHelper,
   SpotLightHelper,
   DirectionalLightHelper,
-
   // convenient
   generateConfig,
   SupportDataGenerator,
@@ -107,14 +106,11 @@ export {
   BasicEventLibrary,
   RealTimeAnimateLibrary,
   JSONHandler,
-
   // displayer
   MaterialDisplayer,
   TextureDisplayer,
-
   // loader
   VideoLoader,
-
   // modifier
-  BooleanModifier
-}
+  BooleanModifier,
+};

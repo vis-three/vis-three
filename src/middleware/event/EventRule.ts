@@ -5,79 +5,81 @@ import { EVENTNAME } from "../../manager/EventManager";
 import { isValidEnum, isValidKey } from "../../utils/utils";
 import { EventCompiler } from "./EventCompiler";
 
-export const EventRule: Rule<EventCompiler> = function (notice: ProxyNotice, compiler: EventCompiler) {
+export const EventRule: Rule<EventCompiler> = function (
+  notice: ProxyNotice,
+  compiler: EventCompiler
+) {
+  const { operate, key, path, value } = notice;
 
-  const {operate, key, path, value} = notice
-
-  if (operate === 'add') {
+  if (operate === "add") {
     // 新增配置
     if (validate(key) && !path.length) {
-      compiler.add(key, value)
+      compiler.add(key, value);
     } else {
       if (Number.isInteger(Number(key)) && path.length === 2) {
-        const [vid, eventName] = path
+        const [vid, eventName] = path;
 
         if (!validate(vid)) {
-          console.warn(`EventRule: vid is illeage: ${vid}`)
-          return
+          console.warn(`EventRule: vid is illeage: ${vid}`);
+          return;
         }
 
         if (!isValidEnum(EVENTNAME, eventName)) {
-          console.warn(`EventRule: eventName is not support: ${eventName}`)
-          return
+          console.warn(`EventRule: eventName is not support: ${eventName}`);
+          return;
         }
         // 增加事件
-        compiler.addEvent(vid, eventName as EVENTNAME, value)
+        compiler.addEvent(vid, eventName as EVENTNAME, value);
       }
     }
-    return
+    return;
   }
 
-  if (operate === 'set') {
+  if (operate === "set") {
     if (!path.length) {
-      return
+      return;
     }
-    const [vid, eventName, index] = path
+    const [vid, eventName, index] = path;
     if (!validate(vid)) {
-      console.warn(`EventRule: vid is illeage: ${vid}`)
-      return
+      console.warn(`EventRule: vid is illeage: ${vid}`);
+      return;
     }
 
     if (!isValidEnum(EVENTNAME, eventName)) {
-      console.warn(`EventRule: eventName is not support: ${eventName}`)
-      return
+      console.warn(`EventRule: eventName is not support: ${eventName}`);
+      return;
     }
 
     if (!Number.isInteger(Number(index))) {
-      console.warn(`EventRule: this index is not integer: ${index}`)
-      return
+      console.warn(`EventRule: this index is not integer: ${index}`);
+      return;
     }
 
-    compiler.updateEvent(vid, eventName as EVENTNAME, Number(index))
+    compiler.updateEvent(vid, eventName as EVENTNAME, Number(index));
 
-    return
+    return;
   }
 
-  if (operate === 'delete') {
+  if (operate === "delete") {
     if (validate(key) && !path.length) {
-      compiler.remove(key)
+      compiler.remove(key);
     } else {
       if (Number.isInteger(Number(key)) && path.length === 2) {
-        const [vid, eventName] = path
+        const [vid, eventName] = path;
 
         if (!validate(vid)) {
-          console.warn(`EventRule: vid is illeage: ${vid}`)
-          return
+          console.warn(`EventRule: vid is illeage: ${vid}`);
+          return;
         }
 
         if (!isValidEnum(EVENTNAME, eventName)) {
-          console.warn(`EventRule: eventName is not support: ${eventName}`)
-          return
+          console.warn(`EventRule: eventName is not support: ${eventName}`);
+          return;
         }
         // 增加事件
-        compiler.removeEvent(vid, eventName as EVENTNAME, Number(key))
+        compiler.removeEvent(vid, eventName as EVENTNAME, Number(key));
       }
     }
-    return
+    return;
   }
-}
+};

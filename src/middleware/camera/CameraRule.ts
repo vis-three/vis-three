@@ -6,36 +6,39 @@ import { CameraCompiler, CameraCompilerTarget } from "./CameraCompiler";
 import { CameraConfigAllType } from "./CameraConfig";
 
 export type CameraRule = ObjectRule<
-CameraCompiler,
-CameraConfigAllType,
-CameraCompilerTarget,
-Camera
->
-export const CameraRule: CameraRule = function (notice: ProxyNotice, compiler: CameraCompiler) {
-  const {operate, key, path, value} = notice
+  CameraCompiler,
+  CameraConfigAllType,
+  CameraCompilerTarget,
+  Camera
+>;
+export const CameraRule: CameraRule = function (
+  notice: ProxyNotice,
+  compiler: CameraCompiler
+) {
+  const { operate, key, path, value } = notice;
 
-  if (operate === 'add') {
+  if (operate === "add") {
     if (validate(key)) {
-      compiler.add(key, value)
+      compiler.add(key, value);
     }
-    return
+    return;
   }
 
-  if (operate === 'set') {
-    const tempPath = path.concat([])
-    const vid = tempPath.shift()
+  if (operate === "set") {
+    const tempPath = path.concat([]);
+    const vid = tempPath.shift();
     if (vid && validate(vid)) {
-      compiler.set(vid, tempPath, key, value)
+      compiler.set(vid, tempPath, key, value);
     } else {
-      console.warn(`camera rule vid is illeage: '${vid}'`)
+      console.warn(`camera rule vid is illeage: '${vid}'`);
     }
-    return
+    return;
   }
 
-  if (operate === 'delete') {
+  if (operate === "delete") {
     if (validate(key)) {
-      compiler.remove(key)
+      compiler.remove(key);
     }
-    return
+    return;
   }
-}
+};

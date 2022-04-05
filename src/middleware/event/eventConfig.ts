@@ -3,22 +3,22 @@ import { CONFIGTYPE } from "../constants/configType";
 import { BasicEventConfig } from "./EventCompiler";
 
 export interface EventConfig extends SymbolConfig {
-  target: string,
-  pointerdown: BasicEventConfig[]
-  pointermove: BasicEventConfig[]
-  pointerup: BasicEventConfig[]
-  pointerenter: BasicEventConfig[]
-  pointerleave: BasicEventConfig[]
-  click: BasicEventConfig[]
-  dblclick: BasicEventConfig[]
-  contextmenu: BasicEventConfig[]
+  target: string;
+  pointerdown: BasicEventConfig[];
+  pointermove: BasicEventConfig[];
+  pointerup: BasicEventConfig[];
+  pointerenter: BasicEventConfig[];
+  pointerleave: BasicEventConfig[];
+  click: BasicEventConfig[];
+  dblclick: BasicEventConfig[];
+  contextmenu: BasicEventConfig[];
 }
 
 export const getEventConfig = function (): EventConfig {
   return {
-    vid: '',
+    vid: "",
     type: CONFIGTYPE.EVENT,
-    target: '',
+    target: "",
     pointerdown: [],
     pointermove: [],
     pointerup: [],
@@ -26,6 +26,6 @@ export const getEventConfig = function (): EventConfig {
     pointerleave: [],
     click: [],
     dblclick: [],
-    contextmenu: []
-  }
-}
+    contextmenu: [],
+  };
+};

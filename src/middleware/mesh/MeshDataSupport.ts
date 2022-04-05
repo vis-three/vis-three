@@ -9,14 +9,13 @@ export class MeshDataSupport extends ObjectDataSupport<
   MeshRule,
   MeshCompiler,
   MeshConfig,
-  MeshCompilerTarget, 
+  MeshCompilerTarget,
   Mesh
 > {
+  MODULE: MODULETYPE = MODULETYPE.MESH;
 
-  MODULE: MODULETYPE = MODULETYPE.MESH
-
-  constructor (data?: MeshCompilerTarget) {
-    !data && (data = {})
-    super(MeshRule, data)
+  constructor(data?: MeshCompilerTarget) {
+    !data && (data = {});
+    super(MeshRule, data);
   }
 }

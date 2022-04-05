@@ -11,11 +11,10 @@ export class CameraDataSupport extends ObjectDataSupport<
   CameraCompilerTarget,
   Camera
 > {
+  MODULE: MODULETYPE = MODULETYPE.CAMERA;
 
-  MODULE: MODULETYPE = MODULETYPE.CAMERA
-
-  constructor (data?: CameraCompilerTarget) {
-    !data && (data = {})
-    super(CameraRule, data)
+  constructor(data?: CameraCompilerTarget) {
+    !data && (data = {});
+    super(CameraRule, data);
   }
 }

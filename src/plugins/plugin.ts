@@ -1,3 +1,3 @@
 export interface Plugin<O extends Object> {
-  (params: O): boolean
+  (params: O): boolean;
 }

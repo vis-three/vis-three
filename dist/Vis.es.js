@@ -543,21 +543,21 @@ class PointerManager extends EventDispatcher {
   }
   pointerDown(event) {
     const eventObject = { mouse: this.mouse };
-    for (let key in event) {
+    for (const key in event) {
       eventObject[key] = event[key];
     }
     this.dispatchEvent(eventObject);
   }
   pointerMove(event) {
     const eventObject = { mouse: this.mouse };
-    for (let key in event) {
+    for (const key in event) {
       eventObject[key] = event[key];
     }
     this.dispatchEvent(eventObject);
   }
   pointerUp(event) {
     const eventObject = { mouse: this.mouse };
-    for (let key in event) {
+    for (const key in event) {
       eventObject[key] = event[key];
     }
     this.dispatchEvent(eventObject);
@@ -620,7 +620,7 @@ class EventManager extends EventDispatcher {
       if (intersections.length) {
         if (this.penetrate) {
           if (event.button === 0) {
-            for (let intersection of intersections) {
+            for (const intersection of intersections) {
               intersection.object.dispatchEvent(mergeEvent(event, {
                 type: "pointerdown",
                 intersection
@@ -675,7 +675,7 @@ class EventManager extends EventDispatcher {
           cacheObjectMap.clear();
           return;
         }
-        for (let intersection of intersections) {
+        for (const intersection of intersections) {
           if (cacheObjectMap.has(intersection.object)) {
             intersection.object.dispatchEvent(mergeEvent(event, {
               type: "pointermove",
@@ -697,7 +697,7 @@ class EventManager extends EventDispatcher {
             }));
           }
         }
-        for (let intersection of cacheObjectMap.values()) {
+        for (const intersection of cacheObjectMap.values()) {
           intersection.object.dispatchEvent(mergeEvent(event, {
             type: "pointerleave",
             intersection
@@ -708,7 +708,7 @@ class EventManager extends EventDispatcher {
           }));
         }
         cacheObjectMap.clear();
-        for (let intersection of intersections) {
+        for (const intersection of intersections) {
           cacheObjectMap.set(intersection.object, intersection);
         }
       } else {
@@ -785,7 +785,7 @@ class EventManager extends EventDispatcher {
       const intersections = this.intersectObject(event.mouse);
       if (intersections.length) {
         if (this.penetrate) {
-          for (let intersection of intersections) {
+          for (const intersection of intersections) {
             if (event.button === 0) {
               intersection.object.dispatchEvent(mergeEvent(event, {
                 type: "pointerup",
@@ -863,7 +863,7 @@ class EventManager extends EventDispatcher {
           }));
         } else {
           if (intersections.length) {
-            for (let intersection of intersections) {
+            for (const intersection of intersections) {
               cacheClickObject.set(intersection.object, true);
             }
           }
@@ -929,14 +929,14 @@ class VisTransformControls extends TransformControls {
     this.target = new Object3D();
     this.transObjectSet = new Set();
     let mode = "";
-    let target = this.target;
-    let transObjectSet = this.transObjectSet;
-    let cachaTargetTrans = {
+    const target = this.target;
+    const transObjectSet = this.transObjectSet;
+    const cachaTargetTrans = {
       x: 0,
       y: 0,
       z: 0
     };
-    let objectMatrixAutoMap = new WeakMap();
+    const objectMatrixAutoMap = new WeakMap();
     this.addEventListener("mouseDown", (event) => {
       mode = event.target.mode;
       mode === "translate" && (mode = "position");
@@ -1085,7 +1085,7 @@ const TransformControlsPlugin = function(params) {
         if (!symbol) {
           return null;
         }
-        return this.dataSupportManager.getObjectConfig(symbol);
+        return this.dataSupportManager.getConfigBySymbol(symbol);
       };
       let config = null;
       let mode;
@@ -1994,14 +1994,14 @@ class LoaderManager extends EventDispatcher {
     const imageLoader = new ImageLoader();
     const videoLoader = new VideoLoader();
     this.loaderMap = {
-      "jpg": imageLoader,
-      "png": imageLoader,
-      "jpeg": imageLoader,
-      "obj": new OBJLoader(),
-      "mtl": new MTLLoader(),
-      "mp4": videoLoader,
-      "webm": videoLoader,
-      "ogg": videoLoader
+      jpg: imageLoader,
+      png: imageLoader,
+      jpeg: imageLoader,
+      obj: new OBJLoader(),
+      mtl: new MTLLoader(),
+      mp4: videoLoader,
+      webm: videoLoader,
+      ogg: videoLoader
     };
     if (parameters) {
       this.loaderMap = Object.assign(this.loaderMap, parameters.loaderExtends);
@@ -2051,7 +2051,7 @@ class LoaderManager extends EventDispatcher {
     const resourceMap = this.resourceMap;
     const loaderMap = this.loaderMap;
     const loadDetailMap = this.loadDetailMap;
-    for (let url of urlList) {
+    for (const url of urlList) {
       const detail = {
         url,
         progress: 0,
@@ -3362,7 +3362,6 @@ class ObjectDataSupport extends DataSupport {
     !data && (data = Object.create(Object.prototype));
     super(rule, data);
     __publicField(this, "MODULE", MODULETYPE.MESH);
-    __publicField(this, "IS_OBJECTDATASUPPORT", true);
   }
 }
 const LightRule = function(input, compiler) {
@@ -3737,68 +3736,44 @@ class GroupDataSupport extends ObjectDataSupport {
     __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
-const _DataSupportManager = class {
+class DataSupportManager {
   constructor(parameters) {
-    __publicField(this, "cameraDataSupport");
-    __publicField(this, "lightDataSupport");
-    __publicField(this, "geometryDataSupport");
-    __publicField(this, "textureDataSupport");
-    __publicField(this, "materialDataSupport");
-    __publicField(this, "rendererDataSupport");
-    __publicField(this, "sceneDataSupport");
-    __publicField(this, "controlsDataSupport");
-    __publicField(this, "spriteDataSupport");
-    __publicField(this, "eventDataSupport");
-    __publicField(this, "lineDataSupport");
-    __publicField(this, "meshDataSupport");
-    __publicField(this, "pointsDataSupport");
-    __publicField(this, "groupDataSupport");
+    __publicField(this, "cameraDataSupport", new CameraDataSupport());
+    __publicField(this, "lightDataSupport", new LightDataSupport());
+    __publicField(this, "geometryDataSupport", new GeometryDataSupport());
+    __publicField(this, "textureDataSupport", new TextureDataSupport());
+    __publicField(this, "materialDataSupport", new MaterialDataSupport());
+    __publicField(this, "rendererDataSupport", new RendererDataSupport());
+    __publicField(this, "sceneDataSupport", new SceneDataSupport());
+    __publicField(this, "controlsDataSupport", new ControlsDataSupport());
+    __publicField(this, "spriteDataSupport", new SpriteDataSupport());
+    __publicField(this, "eventDataSupport", new EventDataSupport());
+    __publicField(this, "lineDataSupport", new LineDataSupport());
+    __publicField(this, "meshDataSupport", new MeshDataSupport());
+    __publicField(this, "pointsDataSupport", new PointsDataSupport());
+    __publicField(this, "groupDataSupport", new GroupDataSupport());
     __publicField(this, "dataSupportMap");
-    __publicField(this, "objectDataSupportList");
-    this.cameraDataSupport = new CameraDataSupport();
-    this.lightDataSupport = new LightDataSupport();
-    this.geometryDataSupport = new GeometryDataSupport();
-    this.textureDataSupport = new TextureDataSupport();
-    this.materialDataSupport = new MaterialDataSupport();
-    this.rendererDataSupport = new RendererDataSupport();
-    this.sceneDataSupport = new SceneDataSupport();
-    this.controlsDataSupport = new ControlsDataSupport();
-    this.spriteDataSupport = new SpriteDataSupport();
-    this.eventDataSupport = new EventDataSupport();
-    this.lineDataSupport = new LineDataSupport();
-    this.meshDataSupport = new MeshDataSupport();
-    this.pointsDataSupport = new PointsDataSupport();
-    this.groupDataSupport = new GroupDataSupport();
-    this.objectDataSupportList = [];
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
         if (this[key] !== void 0) {
           this[key] = parameters[key];
         }
       });
-    } else {
-      Object.keys(this).forEach((key) => {
-        if (typeof this[key] === "object" && this[key].IS_OBJECTDATASUPPORT) {
-          this.objectDataSupportList.push(this[key]);
-        }
-      });
     }
     const dataSupportMap = new Map();
-    for (let module in MODULETYPE) {
-      const dataSupport = this[`${MODULETYPE[module]}DataSupport`];
-      if (dataSupport) {
-        dataSupportMap.set(MODULETYPE[module], dataSupport);
-        if (dataSupport.IS_OBJECTDATASUPPORT) {
-          this.objectDataSupportList.push(dataSupport);
-        }
-      } else {
-        console.warn(`dataSupportManager can not support this module dataSupport: ${module}`);
+    Object.keys(this).forEach((key) => {
+      const dataSupport = this[key];
+      if (dataSupport instanceof DataSupport) {
+        dataSupportMap.set(dataSupport.MODULE, dataSupport);
       }
-    }
+    });
     this.dataSupportMap = dataSupportMap;
   }
   getObjectDataSupportList() {
-    return this.objectDataSupportList;
+    return [];
+  }
+  getObjectConfig(vid) {
+    return null;
   }
   getDataSupport(type) {
     if (this.dataSupportMap.has(type)) {
@@ -3824,22 +3799,9 @@ const _DataSupportManager = class {
     }
     return this;
   }
-  getObjectConfig(vid) {
-    if (!validate(vid)) {
-      console.warn(`vid is illeage: ${vid}`);
-      return null;
-    }
-    for (let objectDataSupport of this.objectDataSupportList) {
-      const config = objectDataSupport.getConfig(vid);
-      if (config) {
-        return config;
-      }
-    }
-    return null;
-  }
   getConfigBySymbol(vid) {
     const dataSupportList = this.dataSupportMap.values();
-    for (let dataSupport of dataSupportList) {
+    for (const dataSupport of dataSupportList) {
       const config = dataSupport.getConfig(vid);
       if (config) {
         return config;
@@ -3849,7 +3811,7 @@ const _DataSupportManager = class {
   }
   removeConfigBySymbol(vid) {
     const dataSupportList = this.dataSupportMap.values();
-    for (let dataSupport of dataSupportList) {
+    for (const dataSupport of dataSupportList) {
       if (dataSupport.existSymbol(vid)) {
         dataSupport.removeConfig(vid);
         return;
@@ -3858,7 +3820,7 @@ const _DataSupportManager = class {
   }
   getModuleBySymbol(vid) {
     const dataSupportList = this.dataSupportMap.values();
-    for (let dataSupport of dataSupportList) {
+    for (const dataSupport of dataSupportList) {
       if (dataSupport.existSymbol(vid)) {
         return dataSupport.MODULE;
       }
@@ -3887,11 +3849,7 @@ const _DataSupportManager = class {
     });
     return JSON.stringify(jsonObject, stringify);
   }
-};
-let DataSupportManager = _DataSupportManager;
-__publicField(DataSupportManager, "register", function(module, dataSupport) {
-  return _DataSupportManager;
-});
+}
 const DataSupportManagerPlugin = function(params) {
   if (this.dataSupportManager) {
     console.warn("engine has installed dataSupportManager plugin.");
@@ -4041,7 +3999,7 @@ class ObjectCompiler extends Compiler {
       cacheData.updateMatrixWorldFun = null;
       return this;
     }
-    let lookAtTarget = this.getObject(target);
+    const lookAtTarget = this.getObject(target);
     if (!lookAtTarget) {
       console.warn(`${this.COMPILER_NAME}Compiler: can not found this vid mapping object: '${vid}'`);
       return this;
@@ -4064,7 +4022,7 @@ class ObjectCompiler extends Compiler {
     return this;
   }
   linkObjectMap(...map) {
-    for (let objectMap of map) {
+    for (const objectMap of map) {
       if (!this.objectMapSet.has(objectMap)) {
         this.objectMapSet.add(objectMap);
       }
@@ -4241,7 +4199,7 @@ class CameraCompiler extends ObjectCompiler {
       return this.setAdaptiveWindow(vid, value);
     }
     let object = this.map.get(vid);
-    for (let key2 of path) {
+    for (const key2 of path) {
       if (this.filterAttribute[key2]) {
         return this;
       }
@@ -4291,7 +4249,7 @@ class OrbitControlsProcessor {
     }
     const control = this.control;
     const config = this.config;
-    for (let key of Object.keys(config)) {
+    for (const key of Object.keys(config)) {
       control[key] !== void 0 && (control[key] = config[key]);
     }
     return this;
@@ -4345,7 +4303,7 @@ class TransformControlsProcessor {
       return this;
     }
     const config = this.config;
-    for (let key of Object.keys(config)) {
+    for (const key of Object.keys(config)) {
       this.process({
         path: [],
         key,
@@ -4456,7 +4414,7 @@ class ControlsCompiler extends Compiler {
     return this;
   }
   compileAll() {
-    for (let vid of Object.keys(this.target)) {
+    for (const vid of Object.keys(this.target)) {
       const assembly = this.getAssembly(vid);
       if (!assembly) {
         continue;
@@ -5155,14 +5113,14 @@ TWEEN.remove.bind(TWEEN);
 TWEEN.update.bind(TWEEN);
 const moveTo$1 = function(compiler, config) {
   const params = config.params;
-  let object = compiler.getObject(params.target);
+  const object = compiler.getObject(params.target);
   if (!object) {
     console.error(`can not found vid object: ${params.target}`);
     return () => {
     };
   }
-  let renderManager = compiler.engine.renderManager;
-  const supportData = compiler.engine.dataSupportManager.getObjectConfig(params.target);
+  const renderManager = compiler.engine.renderManager;
+  const supportData = compiler.engine.dataSupportManager.getConfigBySymbol(params.target);
   if (!config) {
     console.error(`can not found object config: ${params.target}`);
     return () => {
@@ -5184,16 +5142,16 @@ const moveTo$1 = function(compiler, config) {
 };
 const moveSpacing$1 = function(compiler, config) {
   const params = config.params;
-  let object = compiler.getObject(params.target);
+  const object = compiler.getObject(params.target);
   if (!object) {
     console.error(`can not found vid object: ${params.target}`);
     return () => {
     };
   }
-  let renderManager = compiler.engine.renderManager;
-  const supportData = compiler.engine.dataSupportManager.getObjectConfig(params.target);
+  const renderManager = compiler.engine.renderManager;
+  const supportData = compiler.engine.dataSupportManager.getConfigBySymbol(params.target);
   return () => {
-    let position = {
+    const position = {
       x: object.position.x + params.spacing.x,
       y: object.position.y + params.spacing.y,
       z: object.position.z + params.spacing.z
@@ -5251,7 +5209,7 @@ const _EventCompiler = class extends Compiler {
     return this.getObject(structure.target);
   }
   linkObjectMap(...map) {
-    for (let objectMap of map) {
+    for (const objectMap of map) {
       if (!this.objectMapSet.has(objectMap)) {
         this.objectMapSet.add(objectMap);
       }
@@ -5271,10 +5229,10 @@ const _EventCompiler = class extends Compiler {
       [EVENTNAME.CONTEXTMENU]: []
     };
     this.map.set(vid, structure);
-    for (let key in config) {
-      let value = config[key];
+    for (const key in config) {
+      const value = config[key];
       if (Array.isArray(value) && isValidEnum(EVENTNAME, key) && value.length) {
-        for (let configure2 of value) {
+        for (const configure2 of value) {
           this.addEvent(vid, key, configure2);
         }
       }
@@ -5341,10 +5299,10 @@ const _EventCompiler = class extends Compiler {
       return this;
     }
     const structure = this.map.get(vid);
-    for (let key in structure) {
-      let funSymbolList = structure[key];
+    for (const key in structure) {
+      const funSymbolList = structure[key];
       if (Array.isArray(funSymbolList) && isValidEnum(EVENTNAME, key) && funSymbolList.length) {
-        for (let funSymbol of funSymbolList) {
+        for (const funSymbol of funSymbolList) {
           this.removeEvent(vid, key, funSymbol);
         }
       }
@@ -5542,7 +5500,7 @@ class GroupCompiler extends ObjectCompiler {
     this.map.set(vid, group);
     this.weakMap.set(group, vid);
     this.scene.add(group);
-    for (let target of config.children) {
+    for (const target of config.children) {
       this.addChildren(vid, target);
     }
     this.setLookAt(vid, config.lookAt);
@@ -5558,7 +5516,7 @@ class GroupCompiler extends ObjectCompiler {
       return this;
     }
     let object = this.map.get(vid);
-    for (let key2 of path) {
+    for (const key2 of path) {
       if (this.filterAttribute[key2]) {
         return this;
       }
@@ -5658,7 +5616,7 @@ class LightCompiler extends ObjectCompiler {
       object.color = new Color(value);
       return this;
     }
-    for (let key2 of path) {
+    for (const key2 of path) {
       if (this.filterAttribute[key2]) {
         return this;
       }
@@ -5678,7 +5636,9 @@ class LineCompiler extends ObjectCompiler {
   constructor(parameters) {
     super(parameters);
     __publicField(this, "COMPILER_NAME", MODULETYPE.LINE);
-    __publicField(this, "replaceMaterial", new LineBasicMaterial({ color: "rgb(150, 150, 150)" }));
+    __publicField(this, "replaceMaterial", new LineBasicMaterial({
+      color: "rgb(150, 150, 150)"
+    }));
     __publicField(this, "replaceGeometry", new BoxBufferGeometry(10, 10, 10));
   }
   getReplaceMaterial() {
@@ -5713,7 +5673,7 @@ class LineCompiler extends ObjectCompiler {
       mesh.material = this.getMaterial(value);
       return this;
     }
-    for (let key2 of path) {
+    for (const key2 of path) {
       mesh = mesh[key2];
     }
     mesh[key] = value;
@@ -5754,22 +5714,22 @@ class MaterialCompiler extends Compiler {
     constructMap.set(CONFIGTYPE.POINTSMATERIAL, () => new PointsMaterial());
     this.constructMap = constructMap;
     this.colorAttribute = {
-      "color": true,
-      "emissive": true
+      color: true,
+      emissive: true
     };
     this.mapAttribute = {
-      "roughnessMap": true,
-      "normalMap": true,
-      "metalnessMap": true,
-      "map": true,
-      "lightMap": true,
-      "envMap": true,
-      "emissiveMap": true,
-      "displacementMap": true,
-      "bumpMap": true,
-      "alphaMap": true,
-      "aoMap": true,
-      "specularMap": true
+      roughnessMap: true,
+      normalMap: true,
+      metalnessMap: true,
+      map: true,
+      lightMap: true,
+      envMap: true,
+      emissiveMap: true,
+      displacementMap: true,
+      bumpMap: true,
+      alphaMap: true,
+      aoMap: true,
+      specularMap: true
     };
   }
   getTexture(vid) {
@@ -5876,7 +5836,9 @@ class MeshCompiler extends ObjectCompiler {
   constructor(parameters) {
     super(parameters);
     __publicField(this, "COMPILER_NAME", MODULETYPE.MESH);
-    __publicField(this, "replaceMaterial", new MeshBasicMaterial({ color: "rgb(150, 150, 150)" }));
+    __publicField(this, "replaceMaterial", new MeshBasicMaterial({
+      color: "rgb(150, 150, 150)"
+    }));
     __publicField(this, "replaceGeometry", new BoxBufferGeometry(10, 10, 10));
   }
   getReplaceMaterial() {
@@ -5911,7 +5873,7 @@ class MeshCompiler extends ObjectCompiler {
       mesh.material = this.getMaterial(value);
       return this;
     }
-    for (let key2 of path) {
+    for (const key2 of path) {
       mesh = mesh[key2];
     }
     mesh[key] = value;
@@ -5963,7 +5925,7 @@ class PointsCompiler extends ObjectCompiler {
       mesh.material = this.getMaterial(value);
       return this;
     }
-    for (let key2 of path) {
+    for (const key2 of path) {
       mesh = mesh[key2];
     }
     mesh[key] = value;
@@ -6362,7 +6324,7 @@ class SpriteCompiler extends ObjectCompiler {
     if (key === "lookAt") {
       return this.setLookAt(vid, value);
     }
-    for (let key2 of path) {
+    for (const key2 of path) {
       sprite = sprite[key2];
     }
     sprite[key] = value;
@@ -6452,7 +6414,11 @@ class TextureCompiler extends Compiler {
         const tempConfig = JSON.parse(JSON.stringify(config));
         delete tempConfig.type;
         delete tempConfig.vid;
-        if ([CONFIGTYPE.IMAGETEXTURE, CONFIGTYPE.CANVASTEXTURE, CONFIGTYPE.VIDEOTEXTURE].includes(config.type)) {
+        if ([
+          CONFIGTYPE.IMAGETEXTURE,
+          CONFIGTYPE.CANVASTEXTURE,
+          CONFIGTYPE.VIDEOTEXTURE
+        ].includes(config.type)) {
           texture.image = this.getResource(tempConfig.url);
           delete tempConfig.url;
         } else if (config.type === CONFIGTYPE.CUBETEXTURE) {
@@ -6644,7 +6610,7 @@ class CompilerManager {
     sceneCompiler.linkTextureMap(textureCompiler.getMap());
     materialCompiler.linkTextureMap(textureCompiler.getMap());
     const objectMapList = this.objectCompilerList.map((elem) => elem.getMap());
-    for (let objectCompiler of this.objectCompilerList) {
+    for (const objectCompiler of this.objectCompilerList) {
       objectCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(...objectMapList);
     }
     eventCompiler.linkObjectMap(...objectMapList);
@@ -6668,7 +6634,7 @@ class CompilerManager {
   }
   getObjectSymbol(object) {
     const objectCompilerList = this.objectCompilerList;
-    for (let compiler of objectCompilerList) {
+    for (const compiler of objectCompilerList) {
       const vid = compiler.getObjectSymbol(object);
       if (vid) {
         return vid;
@@ -6678,7 +6644,7 @@ class CompilerManager {
   }
   getObjectBySymbol(vid) {
     const objectCompilerList = this.objectCompilerList;
-    for (let compiler of objectCompilerList) {
+    for (const compiler of objectCompilerList) {
       const object = compiler.getMap().get(vid);
       if (object) {
         return object;
@@ -7975,10 +7941,20 @@ const DisplayModelPlugin = function(params = {}) {
   defaultDirectionalLight.matrixAutoUpdate = false;
   !params.mode && (params.mode = DISPLAYMODE.ENV);
   this.displayMode = params.mode;
-  const meshOverrideMaterial = new MeshLambertMaterial({ color: params.overrideColor });
-  const lineOverrideMaterial = new LineBasicMaterial({ color: params.overrideColor });
-  const pointsOverrideMaterial = new PointsMaterial({ color: params.overrideColor, size: 5, sizeAttenuation: false });
-  const spriteOverrideMaterial = new SpriteMaterial({ color: params.overrideColor });
+  const meshOverrideMaterial = new MeshLambertMaterial({
+    color: params.overrideColor
+  });
+  const lineOverrideMaterial = new LineBasicMaterial({
+    color: params.overrideColor
+  });
+  const pointsOverrideMaterial = new PointsMaterial({
+    color: params.overrideColor,
+    size: 5,
+    sizeAttenuation: false
+  });
+  const spriteOverrideMaterial = new SpriteMaterial({
+    color: params.overrideColor
+  });
   const materialCacheMap = new WeakMap();
   const lightSet = new Set();
   const meshSet = new Set();
@@ -7995,7 +7971,7 @@ const DisplayModelPlugin = function(params = {}) {
   this.scene.addEventListener("afterAdd", (event) => {
     const displayMode = this.displayMode;
     const objects = event.objects;
-    for (let elem of objects) {
+    for (const elem of objects) {
       if (filterTypeMap[elem.type]) {
         continue;
       }
@@ -8039,7 +8015,7 @@ const DisplayModelPlugin = function(params = {}) {
   });
   this.scene.addEventListener("afterRemove", (event) => {
     const objects = event.objects;
-    for (let elem of objects) {
+    for (const elem of objects) {
       if (filterTypeMap[elem.type]) {
         continue;
       }
@@ -8068,28 +8044,28 @@ const DisplayModelPlugin = function(params = {}) {
   this.setDisplayMode = function(mode) {
     this.displayMode = mode || DISPLAYMODE.ENV;
     const filterMaterial = () => {
-      for (let mesh of meshSet) {
+      for (const mesh of meshSet) {
         if (mesh.material === meshOverrideMaterial) {
           continue;
         }
         materialCacheMap.set(mesh, mesh.material);
         mesh.material = meshOverrideMaterial;
       }
-      for (let line of lineSet) {
+      for (const line of lineSet) {
         if (line.material === lineOverrideMaterial) {
           continue;
         }
         materialCacheMap.set(line, line.material);
         line.material = lineOverrideMaterial;
       }
-      for (let points of pointsSet) {
+      for (const points of pointsSet) {
         if (points.material === pointsOverrideMaterial) {
           continue;
         }
         materialCacheMap.set(points, points.material);
         points.material = pointsOverrideMaterial;
       }
-      for (let sprite of spriteSet) {
+      for (const sprite of spriteSet) {
         if (sprite.material === spriteOverrideMaterial) {
           continue;
         }
@@ -8710,7 +8686,7 @@ class SpotLightHelper extends LineSegments {
         shapeUpdate = true;
       }
       if (shapeUpdate) {
-        let range = light.distance * Math.tan(light.angle);
+        const range = light.distance * Math.tan(light.angle);
         shape2.scale.set(range, range, light.distance);
       }
       if (light.color.getHex() !== this.cacheColor) {
@@ -8871,9 +8847,9 @@ const ObjectHelperPlugin = function(params = {}) {
     [CONFIGTYPE.GROUP]: GroupHelper
   };
   const filterHelperMap = {
-    "AmbientLight": true,
-    "Object3D": true,
-    "TransformControls": true
+    AmbientLight: true,
+    Object3D: true,
+    TransformControls: true
   };
   const helperMap = new Map();
   const pointerenterFunMap = new Map();
@@ -8890,7 +8866,7 @@ const ObjectHelperPlugin = function(params = {}) {
   const selectedColorHex = new Color(params.selectedColor).getHex();
   scene.addEventListener("afterAdd", (event) => {
     const objects = event.objects;
-    for (let object of objects) {
+    for (const object of objects) {
       if (filterHelperMap[object.type] || object.type.includes("Helper")) {
         continue;
       }
@@ -8947,7 +8923,7 @@ const ObjectHelperPlugin = function(params = {}) {
   });
   scene.addEventListener("afterRemove", (event) => {
     const objects = event.objects;
-    for (let object of objects) {
+    for (const object of objects) {
       if (filterHelperMap[object.type] || object.type.includes("Helper")) {
         continue;
       }
@@ -8998,7 +8974,7 @@ const ObjectHelperPlugin = function(params = {}) {
           helper.material.color.setHex(defaultColorHex);
         });
         cacheObjectsHelper.clear();
-        for (let object of event.objects) {
+        for (const object of event.objects) {
           if (helperMap.has(object)) {
             const helper = helperMap.get(object);
             helper.material.color.setHex(selectedColorHex);
@@ -9017,10 +8993,10 @@ const SelectionPlugin = function(params = {}) {
   }
   this.selectionBox = new Set();
   const dispatchEvent = () => {
-    let objectSymbols = [];
+    const objectSymbols = [];
     if (this.IS_ENGINESUPPORT) {
       this.selectionBox.forEach((object) => {
-        let objectSymbol = this.compilerManager.getObjectSymbol(object);
+        const objectSymbol = this.compilerManager.getObjectSymbol(object);
         if (objectSymbol) {
           objectSymbols.push(objectSymbol);
         } else {
@@ -9036,7 +9012,7 @@ const SelectionPlugin = function(params = {}) {
   };
   this.setSelectionBox = function(params2) {
     this.selectionBox.clear();
-    for (let object of params2.objects) {
+    for (const object of params2.objects) {
       this.selectionBox.add(object);
     }
     dispatchEvent();
@@ -9053,7 +9029,7 @@ const SelectionPlugin = function(params = {}) {
       this.selectionBox.clear();
     }
     if (this.eventManager.penetrate) {
-      for (let intersection of intersections) {
+      for (const intersection of intersections) {
         if (event.ctrlKey) {
           if ((_a = this.selectionBox) == null ? void 0 : _a.has(intersection.object)) {
             this.selectionBox.delete(intersection.object);
@@ -9294,7 +9270,10 @@ const _MaterialDisplayer = class {
     __publicField(this, "scene");
     __publicField(this, "camera");
     __publicField(this, "object");
-    const renderer = new WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    const renderer = new WebGLRenderer({
+      antialias: true,
+      preserveDrawingBuffer: true
+    });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setClearColor("rgb(150, 150, 150)");
     renderer.shadowMap.enabled = true;
@@ -9382,7 +9361,10 @@ const _TextureDisplayer = class {
     __publicField(this, "renderer");
     __publicField(this, "scene");
     __publicField(this, "camera");
-    const renderer = new WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    const renderer = new WebGLRenderer({
+      antialias: true,
+      preserveDrawingBuffer: true
+    });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setClearColor("rgb(150, 150, 150)");
     renderer.shadowMap.enabled = true;

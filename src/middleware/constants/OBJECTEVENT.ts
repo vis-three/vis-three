@@ -1,4 +1,4 @@
 export enum OBJECTEVENT {
-  ACTIVE = 'active',
-  HOVER = 'hover'
+  ACTIVE = "active",
+  HOVER = "hover",
 }

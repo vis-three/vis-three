@@ -6,16 +6,16 @@ import { LightConfigAllType } from "./LightConfig";
 import { LightRule } from "./LightRule";
 
 export class LightDataSupport extends ObjectDataSupport<
-LightRule,
-LightCompiler,
-LightConfigAllType,
-LightCompilerTarget,
-Light>{
+  LightRule,
+  LightCompiler,
+  LightConfigAllType,
+  LightCompilerTarget,
+  Light
+> {
+  MODULE: MODULETYPE = MODULETYPE.LIGHT;
 
-  MODULE: MODULETYPE = MODULETYPE.LIGHT
-
-  constructor (data?: LightCompilerTarget) {
-    !data && (data = {})
-    super(LightRule, data)
+  constructor(data?: LightCompilerTarget) {
+    !data && (data = {});
+    super(LightRule, data);
   }
 }

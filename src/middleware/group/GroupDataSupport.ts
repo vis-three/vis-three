@@ -6,17 +6,16 @@ import { GroupConfig } from "./GroupConfig";
 import { GroupRule } from "./GroupRule";
 
 export class GroupDataSupport extends ObjectDataSupport<
-GroupRule,
-GroupCompiler,
-GroupConfig,
-GroupCompilerTarget,
-Group
->{
+  GroupRule,
+  GroupCompiler,
+  GroupConfig,
+  GroupCompilerTarget,
+  Group
+> {
+  MODULE: MODULETYPE = MODULETYPE.GROUP;
 
-  MODULE: MODULETYPE = MODULETYPE.GROUP
-
-  constructor (data?: GroupCompilerTarget) {
-    !data && (data = {})
-    super(GroupRule, data)
+  constructor(data?: GroupCompilerTarget) {
+    !data && (data = {});
+    super(GroupRule, data);
   }
 }

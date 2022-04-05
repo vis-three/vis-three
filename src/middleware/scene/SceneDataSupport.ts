@@ -6,14 +6,17 @@ import { SceneCompiler, SceneCompilerTarget } from "./SceneCompiler";
 import { getSceneConfig } from "./SceneConfig";
 import { SceneRule } from "./SceneRule";
 
-export class SceneDataSupport extends DataSupport<SceneCompilerTarget, SceneCompiler> {
+export class SceneDataSupport extends DataSupport<
+  SceneCompilerTarget,
+  SceneCompiler
+> {
+  MODULE: MODULETYPE = MODULETYPE.SCENE;
 
-  MODULE: MODULETYPE = MODULETYPE.SCENE
-
-  constructor (data?: SceneCompilerTarget) {
-    !data && (data = {
-      [CONFIGTYPE.SCENE]: getSceneConfig()
-    })
-    super(SceneRule, data)
+  constructor(data?: SceneCompilerTarget) {
+    !data &&
+      (data = {
+        [CONFIGTYPE.SCENE]: getSceneConfig(),
+      });
+    super(SceneRule, data);
   }
 }

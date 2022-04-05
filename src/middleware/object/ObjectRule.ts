@@ -5,6 +5,7 @@ import { ObjectConfig } from "./ObjectConfig";
 
 export type ObjectRule<
   E extends ObjectCompiler<C, T, O>,
-  C extends ObjectConfig, 
+  C extends ObjectConfig,
   T extends ObjectCompilerTarget<C>,
-  O extends Object3D> = Rule<E>
+  O extends Object3D
+> = Rule<E>;

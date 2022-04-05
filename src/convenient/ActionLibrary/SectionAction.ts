@@ -3,45 +3,43 @@ import { Engine } from "../../engine/Engine";
 import { BasicAction } from "./Action";
 
 export interface SectionActionParameters {
-  oldObjects: Object3D[]
-  newObjects: Object3D[]
-  engine: Engine
+  oldObjects: Object3D[];
+  newObjects: Object3D[];
+  engine: Engine;
 }
 
 export class SectionAction implements BasicAction {
+  private oldObjects: Object3D[];
+  private newObjects: Object3D[];
+  private engine: Engine;
 
-  private oldObjects: Object3D[]
-  private newObjects: Object3D[]
-  private engine: Engine
+  private impact: boolean;
 
-  private impact: boolean
-
-  constructor (parameters: SectionActionParameters) {
-    this.oldObjects = parameters.oldObjects
-    this.newObjects = parameters.newObjects
-    this.engine = parameters.engine
-    this.impact = true
+  constructor(parameters: SectionActionParameters) {
+    this.oldObjects = parameters.oldObjects;
+    this.newObjects = parameters.newObjects;
+    this.engine = parameters.engine;
+    this.impact = true;
 
     if (!this.engine.selectionBox) {
-      console.warn(`section action can not make any impact.`)
-      this.impact = false
+      console.warn(`section action can not make any impact.`);
+      this.impact = false;
     }
   }
-  next () {
+  next() {
     if (!this.impact) {
       return;
     }
     this.engine.setSelectionBox!({
-      objects: this.newObjects
-    })
+      objects: this.newObjects,
+    });
   }
-  prev () {
+  prev() {
     if (!this.impact) {
       return;
     }
     this.engine.setSelectionBox!({
-      objects: this.oldObjects
-    })
+      objects: this.oldObjects,
+    });
   }
-  
 }

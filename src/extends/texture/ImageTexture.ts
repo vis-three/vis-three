@@ -1,7 +1,15 @@
-import { Mapping, PixelFormat, Texture, TextureDataType, TextureEncoding, TextureFilter, Wrapping } from "three";
+import {
+  Mapping,
+  PixelFormat,
+  Texture,
+  TextureDataType,
+  TextureEncoding,
+  TextureFilter,
+  Wrapping,
+} from "three";
 
 export class ImageTexture extends Texture {
-  constructor (
+  constructor(
     image?: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
     mapping?: Mapping,
     wrapS?: Wrapping,
@@ -11,9 +19,9 @@ export class ImageTexture extends Texture {
     format?: PixelFormat,
     type?: TextureDataType,
     anisotropy?: number,
-    encoding?: TextureEncoding,
+    encoding?: TextureEncoding
   ) {
-    super( 
+    super(
       image,
       mapping,
       wrapS,
@@ -24,6 +32,6 @@ export class ImageTexture extends Texture {
       type,
       anisotropy,
       encoding
-    )
+    );
   }
 }

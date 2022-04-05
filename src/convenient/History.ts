@@ -1,24 +1,23 @@
 export interface Action {
-  next: () => void
-  prev: () => void
+  next: () => void;
+  prev: () => void;
 }
 
-
 export class History {
-  private actionList: Action[] = []
-  private index = -1
-  private step = 50
+  private actionList: Action[] = [];
+  private index = -1;
+  private step = 50;
 
-  constructor (step?: number) {
-    this.step = step || 50
+  constructor(step?: number) {
+    this.step = step || 50;
   }
 
-  private do (command: 'next' | 'prev') {
+  private do(command: "next" | "prev") {
     this.actionList[this.index][command]();
   }
 
-  apply (action: Action, exec: boolean = false) {
-    const actionList = this.actionList
+  apply(action: Action, exec = false) {
+    const actionList = this.actionList;
     // 动作超过50情空前面缓存
     if (
       this.index === actionList.length - 1 &&
@@ -37,7 +36,7 @@ export class History {
     this.actionList.push(action);
 
     if (exec) {
-      this.redo()
+      this.redo();
     } else {
       this.index += 1;
     }

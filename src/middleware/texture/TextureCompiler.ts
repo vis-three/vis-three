@@ -8,77 +8,96 @@ import { CONFIGTYPE } from "../constants/configType";
 import { VideoTexture } from "../../optimize/VideoTexture";
 
 export interface TextureCompilerTarget extends CompilerTarget {
-  [key: string]: TextureAllType
+  [key: string]: TextureAllType;
 }
 
 export interface TextureCompilerParameters {
-  target: TextureCompilerTarget
+  target: TextureCompilerTarget;
 }
 
 export class TextureCompiler extends Compiler {
+  private target!: TextureCompilerTarget;
+  private map: Map<SymbolConfig["type"], Texture>;
+  private constructMap: Map<string, Function>;
+  private resourceMap: Map<string, unknown>;
 
-  private target!: TextureCompilerTarget
-  private map: Map<SymbolConfig['type'], Texture>
-  private constructMap: Map<string, Function>
-  private resourceMap: Map<string, unknown>
-  
-  constructor (parameters?: TextureCompilerParameters) {
-    super()
+  constructor(parameters?: TextureCompilerParameters) {
+    super();
     if (parameters) {
-      parameters.target && (this.target = parameters.target)
+      parameters.target && (this.target = parameters.target);
     } else {
-      this.target = {}
+      this.target = {};
     }
 
-    this.map = new Map()
-    this.resourceMap = new Map()
+    this.map = new Map();
+    this.resourceMap = new Map();
 
-    const constructMap = new Map()
-    constructMap.set(CONFIGTYPE.IMAGETEXTURE, () => new ImageTexture())
-    constructMap.set(CONFIGTYPE.CUBETEXTURE, () => new CubeTexture())
-    constructMap.set(CONFIGTYPE.CANVASTEXTURE, () => new CanvasTexture(document.createElement('canvas')))
-    constructMap.set(CONFIGTYPE.VIDEOTEXTURE, () => new VideoTexture(document.createElement('video')))
+    const constructMap = new Map();
+    constructMap.set(CONFIGTYPE.IMAGETEXTURE, () => new ImageTexture());
+    constructMap.set(CONFIGTYPE.CUBETEXTURE, () => new CubeTexture());
+    constructMap.set(
+      CONFIGTYPE.CANVASTEXTURE,
+      () => new CanvasTexture(document.createElement("canvas"))
+    );
+    constructMap.set(
+      CONFIGTYPE.VIDEOTEXTURE,
+      () => new VideoTexture(document.createElement("video"))
+    );
 
-    this.constructMap = constructMap
+    this.constructMap = constructMap;
   }
 
-  private getResource (url: string): HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | null {
-    const resourceMap = this.resourceMap 
+  private getResource(
+    url: string
+  ): HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | null {
+    const resourceMap = this.resourceMap;
     if (resourceMap.has(url)) {
-      const resource = resourceMap.get(url)!
-      if (resource instanceof HTMLImageElement || resource instanceof HTMLCanvasElement || resource instanceof HTMLVideoElement) {
-        return resource
+      const resource = resourceMap.get(url)!;
+      if (
+        resource instanceof HTMLImageElement ||
+        resource instanceof HTMLCanvasElement ||
+        resource instanceof HTMLVideoElement
+      ) {
+        return resource;
       } else {
-        console.error(`this url mapping resource is not a texture image class: ${url}`)
-        return null
+        console.error(
+          `this url mapping resource is not a texture image class: ${url}`
+        );
+        return null;
       }
     } else {
-      console.warn(`resource can not font url: ${url}`)
-      return null
+      console.warn(`resource can not font url: ${url}`);
+      return null;
     }
   }
 
-  linkRescourceMap (map: Map<string, unknown>): this {
-    this.resourceMap = map
-    return this
+  linkRescourceMap(map: Map<string, unknown>): this {
+    this.resourceMap = map;
+    return this;
   }
 
-  add (vid: string, config: TextureAllType): this {
+  add(vid: string, config: TextureAllType): this {
     if (validate(vid)) {
       if (config.type && this.constructMap.has(config.type)) {
-        const texture = this.constructMap.get(config.type)!()
-        const tempConfig = JSON.parse(JSON.stringify(config))
-        delete tempConfig.type
-        delete tempConfig.vid
+        const texture = this.constructMap.get(config.type)!();
+        const tempConfig = JSON.parse(JSON.stringify(config));
+        delete tempConfig.type;
+        delete tempConfig.vid;
 
         // 应用资源
         // 区分不同的texture类型
-        
-        if ([CONFIGTYPE.IMAGETEXTURE, CONFIGTYPE.CANVASTEXTURE, CONFIGTYPE.VIDEOTEXTURE].includes(config.type as CONFIGTYPE)) {
-          texture.image = this.getResource(tempConfig.url)
-          delete tempConfig.url
+
+        if (
+          [
+            CONFIGTYPE.IMAGETEXTURE,
+            CONFIGTYPE.CANVASTEXTURE,
+            CONFIGTYPE.VIDEOTEXTURE,
+          ].includes(config.type as CONFIGTYPE)
+        ) {
+          texture.image = this.getResource(tempConfig.url);
+          delete tempConfig.url;
         } else if (config.type === CONFIGTYPE.CUBETEXTURE) {
-          const cube = (config as CubeTextureConfig).cube
+          const cube = (config as CubeTextureConfig).cube;
           const images = [
             this.getResource(cube.px),
             this.getResource(cube.nx),
@@ -88,76 +107,80 @@ export class TextureCompiler extends Compiler {
 
             this.getResource(cube.pz),
             this.getResource(cube.nz),
-          ]
-          texture.image = images
-          delete tempConfig.cube
+          ];
+          texture.image = images;
+          delete tempConfig.cube;
         }
 
-        Compiler.applyConfig(tempConfig, texture)
+        Compiler.applyConfig(tempConfig, texture);
 
-        texture.needsUpdate = true
+        texture.needsUpdate = true;
 
-        this.map.set(vid, texture)
+        this.map.set(vid, texture);
       } else {
-        console.warn(`texture compiler can not support this type: ${config.type}`)
+        console.warn(
+          `texture compiler can not support this type: ${config.type}`
+        );
       }
     } else {
-      console.error(`texture vid parameter is illegal: ${vid}`)
+      console.error(`texture vid parameter is illegal: ${vid}`);
     }
-    return this
+    return this;
   }
 
-  set (vid: string, path: string[], key: string, value: any): this {
+  set(vid: string, path: string[], key: string, value: any): this {
     if (!validate(vid)) {
-      console.warn(`texture compiler set function: vid is illeage: '${vid}'`)
-      return this
+      console.warn(`texture compiler set function: vid is illeage: '${vid}'`);
+      return this;
     }
 
     if (!this.map.has(vid)) {
-      console.warn(`texture compiler set function: can not found texture which vid is: '${vid}'`)
-      return this
+      console.warn(
+        `texture compiler set function: can not found texture which vid is: '${vid}'`
+      );
+      return this;
     }
 
-    const texture = this.map.get(vid)!
+    const texture = this.map.get(vid)!;
 
-    if (key === 'needsUpdate') {
+    if (key === "needsUpdate") {
       if (value) {
-        texture.needsUpdate = true
-        const config = this.target[vid]
-        config.needsUpdate = false
+        texture.needsUpdate = true;
+        const config = this.target[vid];
+        config.needsUpdate = false;
       }
-      return this
+      return this;
     }
 
-    let config = texture
+    let config = texture;
     path.forEach((key, i, arr) => {
-      config = config[key]
-    })
-    config[key] = value
+      config = config[key];
+    });
+    config[key] = value;
 
-    texture.needsUpdate = true
+    texture.needsUpdate = true;
 
-    return this
+    return this;
   }
 
-  getMap (): Map<SymbolConfig['type'], Texture> {
-    return this.map
+  getMap(): Map<SymbolConfig["type"], Texture> {
+    return this.map;
   }
 
-  setTarget (target: TextureCompilerTarget): this {
-    this.target = target
-    return this
+  setTarget(target: TextureCompilerTarget): this {
+    this.target = target;
+    return this;
   }
 
   compileAll(): this {
-    const target = this.target
+    const target = this.target;
     for (const key in target) {
-      this.add(key, target[key])
+      this.add(key, target[key]);
     }
-    return this
+    return this;
   }
 
   dispose(): this {
-    return this
+    return this;
   }
 }
