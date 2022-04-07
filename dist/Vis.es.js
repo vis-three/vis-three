@@ -3468,11 +3468,29 @@ class CameraDataSupport extends ObjectDataSupport {
 const RendererRule = function(input, compiler) {
   const { operate, key, path, value } = input;
   if (operate === "add") {
-    compiler.add(key, value);
+    compiler.add(value);
     return;
   }
   if (operate === "set") {
-    compiler.set(path.concat([]), key, value);
+    if (key === CONFIGTYPE.WEBGLRENDERER) {
+      compiler.add(value);
+      return;
+    }
+    let vid = key;
+    if (path.length) {
+      vid = path[0];
+    }
+    if (validate(vid) || vid === CONFIGTYPE.WEBGLRENDERER) {
+      compiler.assembly(vid, (processer) => {
+        processer.process({
+          path: path.concat([]),
+          key,
+          value
+        });
+      });
+    } else {
+      console.warn(`renderer rule can not support this vid: ${vid}`);
+    }
     return;
   }
 };
@@ -5959,31 +5977,74 @@ class PointsCompiler extends ObjectCompiler {
     return this;
   }
 }
-class WebGLRendererCompiler extends Compiler {
-  constructor(parameters) {
-    super();
+class WebGLRendererProcessor {
+  constructor() {
     __publicField(this, "renderer");
+    __publicField(this, "config");
     __publicField(this, "engine");
-    __publicField(this, "target");
+    __publicField(this, "assembly", false);
     __publicField(this, "rendererCacheData");
-    this.engine = parameters.engine;
-    this.target = parameters.target;
-    this.renderer = this.engine.webGLRenderer;
     this.rendererCacheData = {};
   }
-  setClearColor(value) {
+  assemble(params) {
+    this.renderer = params.renderer;
+    this.config = params.config;
+    this.engine = params.engine;
+    this.assembly = true;
+    return this;
+  }
+  process(params) {
+    if (!this.assembly) {
+      console.warn(`webGLRenderer Processor unassembled`);
+      return this;
+    }
+    if (this[params.key]) {
+      this[params.key](params.value);
+      return this;
+    }
+    if (params.path.length) {
+      this[params.path[0]] && this[params.path[0]](params.value);
+      return this;
+    }
+    this.merge(params.key, params.value);
+    return this;
+  }
+  processAll() {
+    if (!this.assembly) {
+      console.warn(`webGLRenderer Processor unassembled`);
+      return this;
+    }
+    const config = this.config;
+    for (const key of Object.keys(config)) {
+      this.process({
+        path: [],
+        key,
+        value: config[key]
+      });
+    }
+    return this;
+  }
+  dispose() {
+    this.renderer = void 0;
+    this.config = void 0;
+    this.engine = void 0;
+    this.assembly = false;
+    return this;
+  }
+  clearColor(value) {
     const alpha = Number(value.slice(0, -1).split(",").pop().trim());
     this.renderer.setClearColor(value, alpha);
     this.renderer.clear();
     return this;
   }
-  setPixelRatio(value) {
+  pixelRatio(value) {
     this.renderer.setPixelRatio(value);
     this.renderer.clear();
     return this;
   }
-  setSize(vector2) {
+  size() {
     const renderer = this.renderer;
+    const vector2 = this.config.size;
     if (vector2) {
       renderer.setSize(vector2.x, vector2.y);
     } else {
@@ -5992,8 +6053,9 @@ class WebGLRendererCompiler extends Compiler {
     }
     return this;
   }
-  setViewpoint(config) {
+  viewport() {
     const renderer = this.renderer;
+    const config = this.config.viewport;
     if (config) {
       renderer.setViewport(config.x, config.y, config.width, config.height);
     } else {
@@ -6002,8 +6064,9 @@ class WebGLRendererCompiler extends Compiler {
     }
     return this;
   }
-  setScissor(config) {
+  scissor() {
     const renderer = this.renderer;
+    const config = this.config.scissor;
     if (config) {
       renderer.setScissorTest(true);
       renderer.setScissor(config.x, config.y, config.width, config.height);
@@ -6014,7 +6077,7 @@ class WebGLRendererCompiler extends Compiler {
     }
     return this;
   }
-  setAdaptiveCamera(value) {
+  adaptiveCamera(value) {
     if (!this.engine) {
       console.warn(`renderer compiler is not set engine.`);
       return this;
@@ -6074,55 +6137,9 @@ class WebGLRendererCompiler extends Compiler {
     }
     return this;
   }
-  set(path, key, value) {
-    const actionMap = {
-      clearColor: () => this.setClearColor(value),
-      pixelRatio: () => this.setPixelRatio(value),
-      size: () => this.setSize(this.target.size),
-      viewport: () => this.setViewpoint(this.target.viewport),
-      scissor: () => this.setScissor(this.target.scissor),
-      adaptiveCamera: () => this.setAdaptiveCamera(value)
-    };
-    if (actionMap[path[0] || key]) {
-      actionMap[path[0] || key]();
-      return this;
-    }
-    let config = this.renderer;
-    path.forEach((key2, i, arr) => {
-      config = config[key2];
-    });
-    config[key] = value;
-    this.renderer.clear();
-    return this;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  compileAll() {
-    const target = this.target;
-    this.setClearColor(target.clearColor);
-    this.setPixelRatio(target.pixelRatio);
-    this.setSize(target.size);
-    this.setViewpoint(target.viewport);
-    this.setScissor(target.scissor);
-    this.setAdaptiveCamera(target.adaptiveCamera);
-    const otherConfig = JSON.parse(JSON.stringify(target));
-    delete otherConfig.vid;
-    delete otherConfig.type;
-    delete otherConfig.clearColor;
-    delete otherConfig.pixelRatio;
-    delete otherConfig.size;
-    delete otherConfig.viewport;
-    delete otherConfig.scissor;
-    delete otherConfig.adaptiveCamera;
-    Compiler.applyConfig(otherConfig, this.renderer);
-    this.renderer.clear();
-    return this;
-  }
-  dispose() {
-    this.renderer.dispose();
-    return this;
+  merge(key, value) {
+    this.renderer[key] = value;
+    return true;
   }
 }
 class RendererCompiler extends Compiler {
@@ -6131,6 +6148,10 @@ class RendererCompiler extends Compiler {
     __publicField(this, "target");
     __publicField(this, "engine");
     __publicField(this, "map");
+    __publicField(this, "processorMap", {
+      [CONFIGTYPE.WEBGLRENDERER]: new WebGLRendererProcessor()
+    });
+    __publicField(this, "rendererMap", new Map());
     if (parameters) {
       parameters.target && (this.target = parameters.target);
       parameters.engine && (this.engine = parameters.engine);
@@ -6140,29 +6161,37 @@ class RendererCompiler extends Compiler {
     }
     this.map = {};
   }
-  add(type, config) {
-    if (type === "WebGLRenderer") {
-      const rendererCompiler = new WebGLRendererCompiler({
-        engine: this.engine,
-        target: config
-      });
-      rendererCompiler.compileAll();
-      this.map[type] = rendererCompiler;
+  assembly(vid, callback) {
+    const config = this.target[vid];
+    if (!config) {
+      console.warn(`controls compiler can not found this config: '${vid}'`);
+      return;
     }
+    const processer = this.processorMap[config.type];
+    if (!processer) {
+      console.warn(`controls compiler can not support this controls: '${vid}'`);
+      return;
+    }
+    const renderer = this.rendererMap.get(vid);
+    if (!renderer) {
+      console.warn(`renderer compiler can not found type of control: '${config.type}'`);
+      return;
+    }
+    processer.dispose().assemble({
+      config,
+      renderer,
+      processer,
+      engine: this.engine
+    });
+    callback(processer);
   }
-  set(path, key, value) {
-    const rendererType = path.shift();
-    if (!rendererType) {
-      this.map[key].setTarget(value).compileAll();
-      return this;
+  add(config) {
+    if (config.type === CONFIGTYPE.WEBGLRENDERER) {
+      this.rendererMap.set(config.vid, this.engine.webGLRenderer);
     }
-    if (this.map[rendererType]) {
-      this.map[rendererType].set(path, key, value);
-      return this;
-    } else {
-      console.warn(`renderer compiler can not support this type: ${rendererType}`);
-      return this;
-    }
+    this.assembly(config.vid, (processer) => {
+      processer.processAll().dispose();
+    });
   }
   setTarget(target) {
     this.target = target;
@@ -6170,9 +6199,9 @@ class RendererCompiler extends Compiler {
   }
   compileAll() {
     const target = this.target;
-    Object.keys(target).forEach((type) => {
-      this.add(type, target[type]);
-    });
+    for (const config of Object.values(target)) {
+      this.add(config);
+    }
     return this;
   }
   dispose() {
