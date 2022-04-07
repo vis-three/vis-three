@@ -12,7 +12,7 @@ import { PointsCompilerTarget } from "../middleware/points/PointsCompiler";
 import { RendererCompilerTarget } from "../middleware/renderer/RendererCompiler";
 import { SpriteCompilerTarget } from "../middleware/sprite/SpriteCompiler";
 import { TextureCompilerTarget } from "../middleware/texture/TextureCompiler";
-import { getConfigModelMap } from "../utils/utils";
+import { getConfigModuleMap } from "../utils/utils";
 import { generateConfig } from "./generateConfig";
 
 export type SupportDataAllType =
@@ -29,7 +29,7 @@ export type SupportDataAllType =
   | LineCompilerTarget;
 
 export class SupportDataGenerator {
-  private static configModelMap = getConfigModelMap();
+  private static configModelMap = getConfigModuleMap();
 
   private supportData?: SupportDataAllType;
   private supportDataType?: MODULETYPE;

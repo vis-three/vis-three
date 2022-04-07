@@ -85,8 +85,6 @@ export class EngineSupport extends Engine {
     this.renderManager!.stop();
     // 导入外部资源
     if (config.assets && config.assets.length) {
-      this.loaderManager.reset().load(config.assets);
-
       const mappedFun = (event: MappedEvent) => {
         delete config.assets;
         this.loadLifeCycle(config);
@@ -97,6 +95,7 @@ export class EngineSupport extends Engine {
       };
 
       this.resourceManager.addEventListener<MappedEvent>("mapped", mappedFun);
+      this.loaderManager.reset().load(config.assets);
     } else {
       this.loadLifeCycle(config);
       callback && callback();
@@ -113,8 +112,6 @@ export class EngineSupport extends Engine {
       this.renderManager!.stop();
       // 导入外部资源
       if (config.assets && config.assets.length) {
-        this.loaderManager.reset().load(config.assets);
-
         const mappedFun = (event: MappedEvent) => {
           delete config.assets;
           this.loadLifeCycle(config);
@@ -125,6 +122,7 @@ export class EngineSupport extends Engine {
         };
 
         this.resourceManager.addEventListener<MappedEvent>("mapped", mappedFun);
+        this.loaderManager.reset().load(config.assets);
       } else {
         this.loadLifeCycle(config);
         this.renderManager!.play();

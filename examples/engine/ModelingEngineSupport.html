@@ -54,10 +54,10 @@
       material: meshStandardMaterial.vid
     })
 
-    engine.dataSupportManager.lightDataSupport.getData()[pointLight.vid] = pointLight
-    engine.dataSupportManager.materialDataSupport.getData()[meshStandardMaterial.vid] = meshStandardMaterial
-    engine.dataSupportManager.geometryDataSupport.getData()[boxGeometry.vid] = boxGeometry
-    engine.dataSupportManager.meshDataSupport.getData()[mesh.vid] = mesh
+    engine.dataSupportManager.applyConfig(pointLight) 
+    engine.dataSupportManager.applyConfig(meshStandardMaterial)
+    engine.dataSupportManager.applyConfig(boxGeometry)
+    engine.dataSupportManager.applyConfig(mesh)
   </script>
   
 </body>

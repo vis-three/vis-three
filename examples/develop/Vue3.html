@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
   <link rel="stylesheet" href="../css/common.css">
-  <title>Vue3-support</title>
+  <title>Vue3</title>
 </head>
 
 <style>
@@ -52,27 +52,26 @@
 </style>
 
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <div
+      class="operate-box"
+      v-for="(item, index) in lightObservable"
+      :key="index">
+      <h1  v-text="item.position.y"></h1>
+      <button @click="addPositionY(item)">light position y add 5</button>
+    </div>
+  </div>
 
   <script type="module">
-    import * as Vue from '/examples/public/plugins/vue.esm-browser.prod.js'
+    import * as Vue from '/examples/public/plugins/vue3/vue.esm-browser.prod.js'
     import { v4 as getUUid} from 'uuid'
     import * as Vis from '../../dist/Vis.es.js' 
-    import * as THREE from 'three'
 
-    import configList from '/examples/public/assetsConfig/vue3Support.json'
+    import config from '/examples/public/assetsConfig/vue3Support.json'
 
+    const visConfig = JSON.parse(JSON.stringify(config), Vis.JSONHandler.parse)
 
     Vue.createApp({
-      template: `
-      <div
-        class="operate-box"
-        v-for="(item, index) in configMap"
-        :key="index">
-        <h1  v-text="item.position.y"></h1>
-        <button @click="addPositionY(item)">light position y add 5</button>
-      </div>
-      `,
       setup () {
 
         const loadingDom = document.createElement('div')
@@ -80,11 +79,18 @@
         loadingDom.className = 'loadingDom'
         document.body.appendChild(loadingDom)
 
-        const engine = new Vis.ModelingEngineSupport()
+        const lightDataSupport = new Vis.LightDataSupport()
+        const lightObservable = Vue.reactive(lightDataSupport.getData())
+        lightDataSupport.setData(lightObservable)
+
+
+        const engine = new Vis.ModelingEngineSupport({
+          lightDataSupport
+        })
         .setDom(document.getElementById('app'))
         .setSize()
         .play()
-        engine.loadConfigAsync(configList).then(res => {
+        engine.loadConfigAsync(visConfig).then(res => {
           document.body.removeChild(loadingDom)
         })
 
@@ -92,15 +98,8 @@
           item.position.y += 5
         }
 
-        const lightDataSupport = engine.dataSupportManager.lightDataSupport
-        const lightData = lightDataSupport.getData()
-
-        const configMap = Vue.reactive(lightData)
-
-        lightDataSupport.setData(configMap)
-
         return {
-          configMap,
+          lightObservable,
           addPositionY
         }
       }

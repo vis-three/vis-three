@@ -86,7 +86,7 @@ export function generateConfigFunction<T extends object>(config: T) {
   };
 }
 
-export function getConfigModelMap(): { [key: string]: string } {
+export function getConfigModuleMap(): { [key: string]: string } {
   return {
     [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
     [CONFIGTYPE.CUBETEXTURE]: MODULETYPE.TEXTURE,
@@ -127,6 +127,7 @@ export function getConfigModelMap(): { [key: string]: string } {
     [CONFIGTYPE.SCENE]: MODULETYPE.SCENE,
 
     [CONFIGTYPE.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS,
+    [CONFIGTYPE.ORBITCONTROLS]: MODULETYPE.CONTROLS,
 
     [CONFIGTYPE.EVENT]: MODULETYPE.EVENT,
   };

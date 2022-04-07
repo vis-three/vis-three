@@ -42,6 +42,7 @@ import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { GroupCompilerTarget } from "../middleware/group/GroupCompiler";
 import { GroupDataSupport } from "../middleware/group/GroupDataSupport";
 import { stringify } from "../convenient/JSONHandler";
+import { getConfigModuleMap } from "../utils/utils";
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget;
@@ -80,6 +81,9 @@ export interface DataSupportManagerParameters {
 }
 
 export class DataSupportManager {
+
+  static configModuleMap = getConfigModuleMap()
+
   cameraDataSupport: CameraDataSupport = new CameraDataSupport();
   lightDataSupport: LightDataSupport = new LightDataSupport();
   geometryDataSupport: GeometryDataSupport = new GeometryDataSupport();
@@ -123,7 +127,7 @@ export class DataSupportManager {
 
   /**
    *
-   * @deprecated - 下版本废弃
+   * @deprecated - 下版本废弃 不在单独区分object dataSupport
    *
    */
   getObjectDataSupportList(): BasicObjectDataSupport[] {
@@ -132,7 +136,7 @@ export class DataSupportManager {
 
   /**
    *
-   * @deprecated - 下版本废弃
+   * @deprecated - 下版本废弃 -> getConfigBySymbol
    *
    */
   getObjectConfig<T extends SymbolConfig>(vid: string): T | null {
@@ -205,6 +209,18 @@ export class DataSupportManager {
     }
 
     return null;
+  }
+
+  applyConfig<T extends SymbolConfig>(config: T): this {
+    const module = DataSupportManager.configModuleMap[config.type]
+
+    if (module) {
+      this.dataSupportMap.get(module as MODULETYPE)!.getData()[config.vid] = config
+    } else {
+      console.warn(`dataSupportManager can not found this config module: ${config.type}`)
+    }
+    
+    return this
   }
 
   load(config: LoadOptions): this {

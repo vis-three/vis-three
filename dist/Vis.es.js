@@ -2850,7 +2850,7 @@ function generateConfigFunction(config) {
     return config;
   };
 }
-function getConfigModelMap() {
+function getConfigModuleMap() {
   return {
     [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
     [CONFIGTYPE.CUBETEXTURE]: MODULETYPE.TEXTURE,
@@ -2883,6 +2883,7 @@ function getConfigModelMap() {
     [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER,
     [CONFIGTYPE.SCENE]: MODULETYPE.SCENE,
     [CONFIGTYPE.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS,
+    [CONFIGTYPE.ORBITCONTROLS]: MODULETYPE.CONTROLS,
     [CONFIGTYPE.EVENT]: MODULETYPE.EVENT
   };
 }
@@ -3736,7 +3737,7 @@ class GroupDataSupport extends ObjectDataSupport {
     __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
-class DataSupportManager {
+const _DataSupportManager = class {
   constructor(parameters) {
     __publicField(this, "cameraDataSupport", new CameraDataSupport());
     __publicField(this, "lightDataSupport", new LightDataSupport());
@@ -3827,6 +3828,15 @@ class DataSupportManager {
     }
     return null;
   }
+  applyConfig(config) {
+    const module = _DataSupportManager.configModuleMap[config.type];
+    if (module) {
+      this.dataSupportMap.get(module).getData()[config.vid] = config;
+    } else {
+      console.warn(`dataSupportManager can not found this config module: ${config.type}`);
+    }
+    return this;
+  }
   load(config) {
     const dataSupportMap = this.dataSupportMap;
     dataSupportMap.forEach((dataSupport, module) => {
@@ -3849,7 +3859,9 @@ class DataSupportManager {
     });
     return JSON.stringify(jsonObject, stringify);
   }
-}
+};
+let DataSupportManager = _DataSupportManager;
+__publicField(DataSupportManager, "configModuleMap", getConfigModuleMap());
 const DataSupportManagerPlugin = function(params) {
   if (this.dataSupportManager) {
     console.warn("engine has installed dataSupportManager plugin.");
@@ -9247,7 +9259,7 @@ const _SupportDataGenerator = class {
   }
 };
 let SupportDataGenerator = _SupportDataGenerator;
-__publicField(SupportDataGenerator, "configModelMap", getConfigModelMap());
+__publicField(SupportDataGenerator, "configModelMap", getConfigModuleMap());
 var OBJECTEVENT;
 (function(OBJECTEVENT2) {
   OBJECTEVENT2["ACTIVE"] = "active";
@@ -9522,7 +9534,6 @@ class EngineSupport extends Engine {
   loadConfig(config, callback) {
     this.renderManager.stop();
     if (config.assets && config.assets.length) {
-      this.loaderManager.reset().load(config.assets);
       const mappedFun = (event) => {
         delete config.assets;
         this.loadLifeCycle(config);
@@ -9531,6 +9542,7 @@ class EngineSupport extends Engine {
         this.renderManager.play();
       };
       this.resourceManager.addEventListener("mapped", mappedFun);
+      this.loaderManager.reset().load(config.assets);
     } else {
       this.loadLifeCycle(config);
       callback && callback();
@@ -9542,7 +9554,6 @@ class EngineSupport extends Engine {
     return new Promise((resolve, reject) => {
       this.renderManager.stop();
       if (config.assets && config.assets.length) {
-        this.loaderManager.reset().load(config.assets);
         const mappedFun = (event) => {
           delete config.assets;
           this.loadLifeCycle(config);
@@ -9551,6 +9562,7 @@ class EngineSupport extends Engine {
           resolve(event);
         };
         this.resourceManager.addEventListener("mapped", mappedFun);
+        this.loaderManager.reset().load(config.assets);
       } else {
         this.loadLifeCycle(config);
         this.renderManager.play();

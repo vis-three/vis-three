@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
+  <link rel="stylesheet" href="../css/common.css">
+  <title>Vue2</title>
+</head>
+
+<style>
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+
+  .operate-box {
+    position: fixed;
+    color: rgb(255, 255, 255);
+    top: 20%;
+    left: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .loadingDom {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 36px;
+    z-index: 10;
+  }
+
+  button {
+    padding: 10px;
+    background:rgb(126, 255, 255);
+    color: rgb(0, 0, 0);
+    border: 0;
+    border-radius: 5px;
+    box-shadow: 2px 2px 6px rgb(53, 170, 160);
+    cursor: pointer;
+  }
+</style>
+
+<body>
+  <div id="app">
+    <div
+      class="operate-box"
+      v-for="(item, index) in lightMap"
+      :key="index">
+      <h1  v-text="item.position.y"></h1>
+      <button @click="addPositionY(item)">light position y add 5</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import Vue from '/examples/public/plugins/vue2/vue.esm.browser.min.js'
+    import * as Vis from '../../dist/Vis.es.js' 
+
+    import config from '/examples/public/assetsConfig/vue3Support.json'
+
+    const visConfig = Vue.observable(JSON.parse(JSON.stringify(config), Vis.JSONHandler.parse))
+    const lightDataSupport = new Vis.LightDataSupport(Vue.observable({}))
+
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          lightMap: lightDataSupport.getData(),
+        }
+      },
+      methods: {
+        addPositionY(item)  {
+          item.position.y += 5
+        }
+      },
+      mounted() {
+
+        const loadingDom = document.createElement('div')
+        loadingDom.innerText = '正在加载...'
+        loadingDom.className = 'loadingDom'
+        document.body.appendChild(loadingDom)
+
+        const engine = new Vis.ModelingEngineSupport({
+          lightDataSupport
+        })
+        .setDom(document.getElementById('app'))
+        .setSize()
+        .play()
+        engine.loadConfigAsync(visConfig).then(res => {
+          document.body.removeChild(loadingDom)
+          this.$forceUpdate()
+        })
+
+      }
+    })
+
+  </script>
+</body>
+</html>

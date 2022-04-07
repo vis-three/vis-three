@@ -11,17 +11,25 @@
 
 <style>
 
+  #app, #module-main {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
  body a, h3{
    color: white;
  }
 
- body {
-   display: flex;
-   flex-wrap: wrap;
- }
-
  body a::visited {
   color: white;
+ }
+
+ #module-main {
+  display: flex;
+  flex-wrap: wrap;
  }
 
  .module-box {
@@ -46,7 +54,61 @@
 </style>
 
 <body>
-  <script>
+  <div id="app"></div>
+  <div id="module-main"></div>
+  
+  <script type="module">
+    import * as Vis from '../dist/Vis.es.js'
+    const engine = new Vis.DisplayEngineSupport()
+    .install('OrbitControls')
+    .complete()
+    .setDom(document.getElementById('app'))
+    .setSize()
+    .play()
+
+    window.addEventListener('resize', () => {
+      engine.setSize()
+    })
+
+    const ambientLight = Vis.generateConfig('AmbientLight')
+
+    const spotLight = Vis.generateConfig('SpotLight', {
+      position: {
+        y: 15,
+        x: 50,
+        z: 50
+      },
+      intensity: 2,
+      distance: 120
+    })
+
+    const meshStandardMaterial = Vis.generateConfig('MeshStandardMaterial', {
+      color: 'rgb(45, 0, 50)',
+      roughness: 0.8
+    })
+    
+    const boxGeometry = Vis.generateConfig('BoxGeometry', {
+      width: 100,
+      height: 5,
+      depth: 40
+    })
+    
+    const mesh = Vis.generateConfig('Mesh', {
+      geometry: boxGeometry.vid,
+      material: meshStandardMaterial.vid
+    })
+
+    const orbitControls = Vis.generateConfig('OrbitControls', {
+      autoRotate: true
+    })
+
+    engine.dataSupportManager.applyConfig(ambientLight)
+    engine.dataSupportManager.applyConfig(spotLight) 
+    engine.dataSupportManager.applyConfig(meshStandardMaterial)
+    engine.dataSupportManager.applyConfig(boxGeometry)
+    engine.dataSupportManager.applyConfig(mesh)
+    engine.dataSupportManager.applyConfig(orbitControls)
+
 
     const tree = [
       {
@@ -135,10 +197,12 @@
         children: [
           '/configure.html',
           '/Vue3.html',
+          '/Vue2.html',
         ]
       },
     ]
 
+    const moduleMain = document.getElementById('module-main')
     tree.forEach(module => {
 
       let childrenDom = ''
@@ -157,7 +221,7 @@
         </div>
       `
 
-      document.body.appendChild(moduleDom)
+      moduleMain.appendChild(moduleDom)
     })
   </script>
 </body>
