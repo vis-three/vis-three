@@ -1,4 +1,5 @@
 import { stringify } from "../convenient/JSONHandler";
+import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { Compiler, CompilerTarget } from "./Compiler";
 import { ProxyBroadcast, ProxyEvent } from "./ProxyBroadcast";
@@ -47,8 +48,8 @@ export abstract class DataSupport<
     return this;
   }
 
-  getConfig(vid: string) {
-    return this.data[vid];
+  getConfig<T extends SymbolConfig>(vid: string) {
+    return this.data[vid] as T;
   }
 
   removeConfig(vid: string) {

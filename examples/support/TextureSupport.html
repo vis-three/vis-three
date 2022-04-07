@@ -63,11 +63,9 @@
       '/examples/public/texture/skyBox/snowVillage/pz.jpg',
     ]).then(() => {
 
-       const ambientLight = Vis.generateConfig('AmbientLight')
-      engine.dataSupportManager.lightDataSupport.getData()[ambientLight.vid] = ambientLight
+      const ambientLight = Vis.generateConfig('AmbientLight')
+      engine.dataSupportManager.applyConfig(ambientLight)
 
-
-      const textureSupportDate = engine.dataSupportManager.textureDataSupport.getData()
 
       const canvasTexture = Vis.generateConfig('CanvasTexture', {
         url: 'example.canvas',
@@ -86,14 +84,13 @@
         }
       })
 
-      textureSupportDate[canvasTexture.vid] = canvasTexture
-      textureSupportDate[videoTexture.vid] = videoTexture
-      textureSupportDate[cubeTexture.vid] = cubeTexture
+      engine.dataSupportManager
+      .applyConfig(canvasTexture)
+      .applyConfig(videoTexture)
+      .applyConfig(cubeTexture)
 
       engine.dataSupportManager.sceneDataSupport.getData()['Scene'].background = cubeTexture.vid
       engine.dataSupportManager.sceneDataSupport.getData()['Scene'].environment = cubeTexture.vid
-
-      const materialSupportData = engine.dataSupportManager.materialDataSupport.getData()
 
       const spriteMaterial = Vis.generateConfig('SpriteMaterial', {
         map: canvasTexture.vid
@@ -108,9 +105,11 @@
         metalness: 1,
       })
 
-      materialSupportData[spriteMaterial.vid] = spriteMaterial
-      materialSupportData[box1Material.vid] = box1Material
-      materialSupportData[box2Material.vid] = box2Material
+
+      engine.dataSupportManager
+      .applyConfig(spriteMaterial)
+      .applyConfig(box1Material)
+      .applyConfig(box2Material)
 
 
       const sprite = Vis.generateConfig('Sprite', {
@@ -123,16 +122,16 @@
           y: 5
         }
       })
-      engine.dataSupportManager.spriteDataSupport.getData()[sprite.vid] = sprite
+
+      engine.dataSupportManager.applyConfig(sprite)
 
       const boxGeometry = Vis.generateConfig('BoxGeometry', {
         width: 20,
         height: 20,
         depth: 20,
       })
-      engine.dataSupportManager.geometryDataSupport.getData()[boxGeometry.vid] = boxGeometry
 
-
+      engine.dataSupportManager.applyConfig(boxGeometry)
 
       const box1 = Vis.generateConfig('Mesh', {
         geometry: boxGeometry.vid,
@@ -149,8 +148,8 @@
           x: 15
         },
       })
-      engine.dataSupportManager.meshDataSupport.getData()[box1.vid] = box1
-      engine.dataSupportManager.meshDataSupport.getData()[box2.vid] = box2
+
+      engine.dataSupportManager.applyConfig(box1).applyConfig(box2)
 
       console.log(engine)
     }) 

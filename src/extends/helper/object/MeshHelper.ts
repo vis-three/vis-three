@@ -25,6 +25,7 @@ export class MeshHelper extends LineSegments implements VisHelper {
     this.matrix = mesh.matrix;
     this.matrixWorld = mesh.matrixWorld;
 
+    // TODO: event dispatcher update
     this.onBeforeRender = () => {
       const target = this.target;
       if (target.geometry.uuid !== this.cachaGeometryUUid) {

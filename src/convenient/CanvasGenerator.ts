@@ -41,8 +41,9 @@ export class CanvasTextureGenerator {
 
   draw(fun: (ctx: CanvasRenderingContext2D) => void): this {
     const ctx = this.canvas.getContext("2d");
-    ctx?.scale(window.devicePixelRatio, window.devicePixelRatio);
+
     if (ctx) {
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
       fun(ctx);
       return this;
     } else {
@@ -80,10 +81,25 @@ export class CanvasGenerator {
     return this.canvas;
   }
 
+  clear(x = 0, y = 0, width?: number, height?: number): this {
+    !width && (width = this.canvas.width);
+    !height && (height = this.canvas.height);
+    const ctx = this.canvas.getContext("2d");
+
+    if (ctx) {
+      ctx.clearRect(x, y, width, height);
+      return this;
+    } else {
+      console.warn(`you browser can not support canvas 2d`);
+      return this;
+    }
+  }
+
   draw(fun: (ctx: CanvasRenderingContext2D) => void): this {
     const ctx = this.canvas.getContext("2d");
-    ctx?.scale(window.devicePixelRatio, window.devicePixelRatio);
+
     if (ctx) {
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
       fun(ctx);
       return this;
     } else {

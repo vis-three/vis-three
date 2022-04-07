@@ -30,14 +30,6 @@ import {
   BasicObjectDataSupport,
   ObjectDataSupport,
 } from "../middleware/object/ObjectDataSupport";
-import { Rule } from "../core/Rule";
-import {
-  ObjectCompiler,
-  ObjectCompilerTarget,
-} from "../middleware/object/ObjectCompiler";
-import { ObjectConfig } from "../middleware/object/ObjectConfig";
-import { Object3D } from "three";
-import { validate } from "uuid";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { GroupCompilerTarget } from "../middleware/group/GroupCompiler";
 import { GroupDataSupport } from "../middleware/group/GroupDataSupport";
@@ -81,8 +73,7 @@ export interface DataSupportManagerParameters {
 }
 
 export class DataSupportManager {
-
-  static configModuleMap = getConfigModuleMap()
+  static configModuleMap = getConfigModuleMap();
 
   cameraDataSupport: CameraDataSupport = new CameraDataSupport();
   lightDataSupport: LightDataSupport = new LightDataSupport();
@@ -212,15 +203,32 @@ export class DataSupportManager {
   }
 
   applyConfig<T extends SymbolConfig>(config: T): this {
-    const module = DataSupportManager.configModuleMap[config.type]
+    const module = DataSupportManager.configModuleMap[config.type];
 
     if (module) {
-      this.dataSupportMap.get(module as MODULETYPE)!.getData()[config.vid] = config
+      this.dataSupportMap.get(module as MODULETYPE)!.addConfig(config);
     } else {
-      console.warn(`dataSupportManager can not found this config module: ${config.type}`)
+      console.warn(
+        `dataSupportManager can not found this config module: ${config.type}`
+      );
     }
-    
-    return this
+
+    return this;
+  }
+
+  reactiveConfig<T extends SymbolConfig>(config: T): T {
+    const module = DataSupportManager.configModuleMap[config.type];
+    if (module) {
+      return this.dataSupportMap
+        .get(module as MODULETYPE)!
+        .addConfig(config)
+        .getConfig<T>(config.vid);
+    } else {
+      console.warn(
+        `dataSupportManager can not found this config module: ${config.type}`
+      );
+      return config;
+    }
   }
 
   load(config: LoadOptions): this {

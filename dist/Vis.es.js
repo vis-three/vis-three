@@ -3831,11 +3831,20 @@ const _DataSupportManager = class {
   applyConfig(config) {
     const module = _DataSupportManager.configModuleMap[config.type];
     if (module) {
-      this.dataSupportMap.get(module).getData()[config.vid] = config;
+      this.dataSupportMap.get(module).addConfig(config);
     } else {
       console.warn(`dataSupportManager can not found this config module: ${config.type}`);
     }
     return this;
+  }
+  reactiveConfig(config) {
+    const module = _DataSupportManager.configModuleMap[config.type];
+    if (module) {
+      return this.dataSupportMap.get(module).addConfig(config).getConfig(config.vid);
+    } else {
+      console.warn(`dataSupportManager can not found this config module: ${config.type}`);
+      return config;
+    }
   }
   load(config) {
     const dataSupportMap = this.dataSupportMap;
@@ -9445,8 +9454,8 @@ class CanvasTextureGenerator {
   }
   draw(fun) {
     const ctx = this.canvas.getContext("2d");
-    ctx == null ? void 0 : ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     if (ctx) {
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
       fun(ctx);
       return this;
     } else {
@@ -9477,10 +9486,22 @@ class CanvasGenerator {
   get() {
     return this.canvas;
   }
+  clear(x = 0, y = 0, width, height) {
+    !width && (width = this.canvas.width);
+    !height && (height = this.canvas.height);
+    const ctx = this.canvas.getContext("2d");
+    if (ctx) {
+      ctx.clearRect(x, y, width, height);
+      return this;
+    } else {
+      console.warn(`you browser can not support canvas 2d`);
+      return this;
+    }
+  }
   draw(fun) {
     const ctx = this.canvas.getContext("2d");
-    ctx == null ? void 0 : ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     if (ctx) {
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
       fun(ctx);
       return this;
     } else {
