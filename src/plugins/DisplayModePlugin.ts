@@ -351,5 +351,10 @@ export const DisplayModelPlugin: Plugin<DisplayModeParameters> = function (
     return this;
   };
 
+  this.completeSet.add(() => {
+    if (this.objectHelperManager) {
+      this.objectHelperManager.addFilteredObject(defaultDirectionalLight);
+    }
+  });
   return true;
 };

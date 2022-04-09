@@ -77,6 +77,7 @@ import {
   SelectionParameters,
   SelectionPlugin,
 } from "../plugins/SelectionPlugin";
+import { ObjectHelperManager } from "../manager/ObjectHelperManager";
 
 // 存在的插件接口
 export enum ENGINEPLUGIN {
@@ -140,6 +141,7 @@ export class Engine extends EventDispatcher {
   dataSupportManager?: DataSupportManager;
   compilerManager?: CompilerManager;
   keyboardManager?: KeyboardManager;
+  objectHelperManager?: ObjectHelperManager;
   stats?: Stats;
   transing?: boolean;
   displayMode?: DISPLAYMODE;

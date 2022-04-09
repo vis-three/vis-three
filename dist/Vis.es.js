@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Scene, PerspectiveCamera, Clock, MOUSE, OrthographicCamera, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Vector3, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PlaneBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, OctahedronBufferGeometry, Sphere, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Scene, PerspectiveCamera, Clock, MOUSE, OrthographicCamera, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Vector3, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PlaneBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -336,6 +336,9 @@ const ViewpointPlugin = function(params = {}) {
       this.setCamera(perspectiveCamera);
     } else {
       this.setCamera(orthograpbicCamera);
+    }
+    if (this.objectHelperManager) {
+      this.objectHelperManager.addFilteredObject(perspectiveCamera, orthograpbicCamera);
     }
   });
   return true;
@@ -8206,6 +8209,11 @@ const DisplayModelPlugin = function(params = {}) {
     }
     return this;
   };
+  this.completeSet.add(() => {
+    if (this.objectHelperManager) {
+      this.objectHelperManager.addFilteredObject(defaultDirectionalLight);
+    }
+  });
   return true;
 };
 const HELPERCOLOR = "rgb(255, 255, 255)";
@@ -8424,6 +8432,118 @@ class CameraHelper extends LineSegments {
     }
   }
 }
+class DirectionalLightHelper extends LineSegments {
+  constructor(directionalLight) {
+    super();
+    __publicField(this, "sphere");
+    __publicField(this, "target");
+    __publicField(this, "shape");
+    __publicField(this, "type", "VisDirectionalLightHelper");
+    __publicField(this, "cacheColor");
+    __publicField(this, "cacheVector3");
+    this.geometry = new BufferGeometry();
+    const points = [
+      -1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      1,
+      -0.707,
+      -0.707,
+      0,
+      0.707,
+      0.707,
+      0,
+      0.707,
+      -0.707,
+      0,
+      -0.707,
+      0.707,
+      0,
+      0,
+      -0.707,
+      -0.707,
+      0,
+      0.707,
+      0.707,
+      0,
+      0.707,
+      -0.707,
+      0,
+      -0.707,
+      0.707,
+      -0.707,
+      0,
+      -0.707,
+      0.707,
+      0,
+      0.707,
+      0.707,
+      0,
+      -0.707,
+      -0.707,
+      0,
+      0.707
+    ];
+    this.geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
+    this.material = getHelperLineMaterial();
+    this.geometry.boundingSphere;
+    const color = new Color().copy(directionalLight.color).multiplyScalar(directionalLight.intensity);
+    const planeGemetry = new PlaneBufferGeometry(20, 20);
+    planeGemetry.dispose();
+    const shape = new LineSegments(new EdgesGeometry(planeGemetry), new LineBasicMaterial({
+      color
+    }));
+    shape.raycast = () => {
+    };
+    this.shape = shape;
+    this.target = directionalLight;
+    this.sphere = new Sphere(new Vector3(0, 0, 0), 1);
+    this.cacheColor = directionalLight.color.getHex();
+    this.cacheVector3 = new Vector3();
+    this.add(this.shape);
+    this.matrixAutoUpdate = false;
+    this.matrix = directionalLight.matrix;
+    this.matrixWorldNeedsUpdate = false;
+    this.matrixWorld = directionalLight.matrixWorld;
+    this.onBeforeRender = () => {
+      const light = this.target;
+      const shape2 = this.shape;
+      if (light.color.getHex() !== this.cacheColor) {
+        shape2.material.color.copy(light.color).multiplyScalar(light.intensity);
+        this.cacheColor = light.color.getHex();
+      }
+      shape2.lookAt(light.target.position);
+    };
+  }
+  raycast(raycaster, intersects) {
+    const target = this.target;
+    const matrixWorld = target.matrixWorld;
+    const sphere = this.sphere;
+    sphere.set(this.cacheVector3.set(0, 0, 0), 1);
+    sphere.applyMatrix4(matrixWorld);
+    if (raycaster.ray.intersectsSphere(sphere)) {
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(target.position),
+        object: target,
+        point: target.position
+      });
+    }
+  }
+}
 class PointLightHelper extends LineSegments {
   constructor(pointLight2) {
     super();
@@ -8540,62 +8660,6 @@ class PointLightHelper extends LineSegments {
         point: target.position
       });
     }
-  }
-}
-class GroupHelper extends LineSegments {
-  constructor(group) {
-    super();
-    __publicField(this, "target");
-    __publicField(this, "type", "VisGroupHelper");
-    this.target = group;
-    const geometry = new EdgesGeometry(new BoxBufferGeometry(1, 1, 1));
-    geometry.computeBoundingBox();
-    this.geometry = geometry;
-    this.material = getHelperLineMaterial();
-    this.material.depthTest = false;
-    this.material.depthWrite = false;
-    this.matrixAutoUpdate = false;
-    this.matrix = group.matrix;
-  }
-  raycast(raycaster, intersects) {
-    const matrixWorld = this.matrixWorld;
-    const box = this.geometry.boundingBox.clone();
-    box.applyMatrix4(matrixWorld);
-    if (raycaster.ray.intersectsBox(box)) {
-      const target = this.target;
-      intersects.push({
-        distance: raycaster.ray.origin.distanceTo(target.position),
-        object: target,
-        point: target.position
-      });
-    }
-  }
-}
-class MeshHelper extends LineSegments {
-  constructor(mesh) {
-    super();
-    __publicField(this, "target");
-    __publicField(this, "type", "VisMeshHelper");
-    __publicField(this, "cachaGeometryUUid");
-    const thresholdAngle = 1;
-    this.target = mesh;
-    this.geometry = new EdgesGeometry(mesh.geometry, thresholdAngle);
-    this.cachaGeometryUUid = mesh.geometry.uuid;
-    this.material = getHelperLineMaterial();
-    this.raycast = () => {
-    };
-    this.matrixAutoUpdate = false;
-    this.matrixWorldNeedsUpdate = false;
-    this.matrix = mesh.matrix;
-    this.matrixWorld = mesh.matrixWorld;
-    this.onBeforeRender = () => {
-      const target = this.target;
-      if (target.geometry.uuid !== this.cachaGeometryUUid) {
-        this.geometry.dispose();
-        this.geometry = new EdgesGeometry(target.geometry, thresholdAngle);
-        this.cachaGeometryUUid = target.geometry.uuid;
-      }
-    };
   }
 }
 class SpotLightHelper extends LineSegments {
@@ -8761,116 +8825,124 @@ class SpotLightHelper extends LineSegments {
     }
   }
 }
-class DirectionalLightHelper extends LineSegments {
-  constructor(directionalLight) {
+class GroupHelper extends LineSegments {
+  constructor(group) {
     super();
-    __publicField(this, "sphere");
     __publicField(this, "target");
-    __publicField(this, "shape");
-    __publicField(this, "type", "VisDirectionalLightHelper");
-    __publicField(this, "cacheColor");
-    __publicField(this, "cacheVector3");
-    this.geometry = new BufferGeometry();
-    const points = [
-      -1,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      -1,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      -1,
-      0,
-      0,
-      1,
-      -0.707,
-      -0.707,
-      0,
-      0.707,
-      0.707,
-      0,
-      0.707,
-      -0.707,
-      0,
-      -0.707,
-      0.707,
-      0,
-      0,
-      -0.707,
-      -0.707,
-      0,
-      0.707,
-      0.707,
-      0,
-      0.707,
-      -0.707,
-      0,
-      -0.707,
-      0.707,
-      -0.707,
-      0,
-      -0.707,
-      0.707,
-      0,
-      0.707,
-      0.707,
-      0,
-      -0.707,
-      -0.707,
-      0,
-      0.707
-    ];
-    this.geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
+    __publicField(this, "type", "VisGroupHelper");
+    this.target = group;
+    const geometry = new EdgesGeometry(new BoxBufferGeometry(1, 1, 1));
+    geometry.computeBoundingBox();
+    this.geometry = geometry;
     this.material = getHelperLineMaterial();
-    this.geometry.boundingSphere;
-    const color = new Color().copy(directionalLight.color).multiplyScalar(directionalLight.intensity);
-    const planeGemetry = new PlaneBufferGeometry(20, 20);
-    planeGemetry.dispose();
-    const shape = new LineSegments(new EdgesGeometry(planeGemetry), new LineBasicMaterial({
-      color
-    }));
-    shape.raycast = () => {
-    };
-    this.shape = shape;
-    this.target = directionalLight;
-    this.sphere = new Sphere(new Vector3(0, 0, 0), 1);
-    this.cacheColor = directionalLight.color.getHex();
-    this.cacheVector3 = new Vector3();
-    this.add(this.shape);
+    this.material.depthTest = false;
+    this.material.depthWrite = false;
     this.matrixAutoUpdate = false;
-    this.matrix = directionalLight.matrix;
-    this.matrixWorldNeedsUpdate = false;
-    this.matrixWorld = directionalLight.matrixWorld;
-    this.onBeforeRender = () => {
-      const light = this.target;
-      const shape2 = this.shape;
-      if (light.color.getHex() !== this.cacheColor) {
-        shape2.material.color.copy(light.color).multiplyScalar(light.intensity);
-        this.cacheColor = light.color.getHex();
-      }
-      shape2.lookAt(light.target.position);
-    };
+    this.matrix = group.matrix;
   }
   raycast(raycaster, intersects) {
-    const target = this.target;
-    const matrixWorld = target.matrixWorld;
-    const sphere = this.sphere;
-    sphere.set(this.cacheVector3.set(0, 0, 0), 1);
-    sphere.applyMatrix4(matrixWorld);
-    if (raycaster.ray.intersectsSphere(sphere)) {
+    const matrixWorld = this.matrixWorld;
+    const box = this.geometry.boundingBox.clone();
+    box.applyMatrix4(matrixWorld);
+    if (raycaster.ray.intersectsBox(box)) {
+      const target = this.target;
       intersects.push({
         distance: raycaster.ray.origin.distanceTo(target.position),
         object: target,
         point: target.position
       });
     }
+  }
+}
+class MeshHelper extends LineSegments {
+  constructor(mesh) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "type", "VisMeshHelper");
+    __publicField(this, "cachaGeometryUUid");
+    const thresholdAngle = 1;
+    this.target = mesh;
+    this.geometry = new EdgesGeometry(mesh.geometry, thresholdAngle);
+    this.cachaGeometryUUid = mesh.geometry.uuid;
+    this.material = getHelperLineMaterial();
+    this.raycast = () => {
+    };
+    this.matrixAutoUpdate = false;
+    this.matrixWorldNeedsUpdate = false;
+    this.matrix = mesh.matrix;
+    this.matrixWorld = mesh.matrixWorld;
+    this.onBeforeRender = () => {
+      const target = this.target;
+      if (target.geometry.uuid !== this.cachaGeometryUUid) {
+        this.geometry.dispose();
+        this.geometry = new EdgesGeometry(target.geometry, thresholdAngle);
+        this.cachaGeometryUUid = target.geometry.uuid;
+      }
+    };
+  }
+}
+class ObjectHelperManager extends EventDispatcher {
+  constructor(params = {}) {
+    super();
+    __publicField(this, "helperGenerator", {
+      [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
+      [CONFIGTYPE.SPOTLIGHT]: SpotLightHelper,
+      [CONFIGTYPE.DIRECTIONALLIGHT]: DirectionalLightHelper,
+      [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
+      [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
+      [CONFIGTYPE.MESH]: MeshHelper,
+      [CONFIGTYPE.GROUP]: GroupHelper
+    });
+    __publicField(this, "helperFilter", {
+      AmbientLight: true,
+      Object3D: true,
+      TransformControls: true
+    });
+    __publicField(this, "objectFilter", new Set());
+    __publicField(this, "helperMap", new Map());
+    params.helperGenerator && (this.helperGenerator = Object.assign(this.helperGenerator, params.helperGenerator));
+    params.helperFilter && (this.helperFilter = Object.assign(this.helperFilter, params.helperFilter));
+    params.objectFilter && (this.objectFilter = new Set(params.objectFilter.concat(Array.from(this.objectFilter))));
+  }
+  addFilteredObject(...objects) {
+    for (const object of objects) {
+      this.objectFilter.add(object);
+    }
+    return this;
+  }
+  addObjectHelper(object) {
+    if (this.objectFilter.has(object) || this.helperFilter[object.type] || object.type.toLocaleLowerCase().includes("helper")) {
+      return null;
+    }
+    if (!this.helperGenerator[object.type]) {
+      console.warn(`object helper can not support this type object: '${object.type}'`);
+      return null;
+    }
+    const helper = new this.helperGenerator[object.type](object);
+    this.helperMap.set(object, helper);
+    return helper;
+  }
+  disposeObjectHelper(object) {
+    if (this.objectFilter.has(object) || this.helperFilter[object.type] || object.type.toLocaleLowerCase().includes("helper")) {
+      return null;
+    }
+    if (!this.helperMap.has(object)) {
+      console.warn(`object helper manager can not found this object\`s helper: `, object);
+      return null;
+    }
+    const helper = this.helperMap.get(object);
+    helper.geometry && helper.geometry.dispose();
+    if (helper.material) {
+      if (helper.material instanceof Material) {
+        helper.material.dispose();
+      } else {
+        helper.material.forEach((material) => {
+          material.dispose();
+        });
+      }
+    }
+    this.helperMap.delete(object);
+    return helper;
   }
 }
 const ObjectHelperPlugin = function(params = {}) {
@@ -8887,24 +8959,12 @@ const ObjectHelperPlugin = function(params = {}) {
       params.interact = false;
     }
   }
-  const typeHelperMap = {
-    [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
-    [CONFIGTYPE.SPOTLIGHT]: SpotLightHelper,
-    [CONFIGTYPE.DIRECTIONALLIGHT]: DirectionalLightHelper,
-    [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
-    [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
-    [CONFIGTYPE.MESH]: MeshHelper,
-    [CONFIGTYPE.GROUP]: GroupHelper
-  };
-  const filterHelperMap = {
-    AmbientLight: true,
-    Object3D: true,
-    TransformControls: true
-  };
-  const helperMap = new Map();
+  const helperManager = new ObjectHelperManager();
   const pointerenterFunMap = new Map();
   const pointerleaveFunMap = new Map();
   const clickFunMap = new Map();
+  const helperMap = helperManager.helperMap;
+  this.objectHelperManager = helperManager;
   const scene = this.scene;
   !params.activeColor && (params.activeColor = "rgb(230, 20, 240)");
   !params.hoverColor && (params.hoverColor = "rgb(255, 158, 240)");
@@ -8917,71 +8977,62 @@ const ObjectHelperPlugin = function(params = {}) {
   scene.addEventListener("afterAdd", (event) => {
     const objects = event.objects;
     for (const object of objects) {
-      if (filterHelperMap[object.type] || object.type.includes("Helper")) {
+      const helper = helperManager.addObjectHelper(object);
+      if (!helper) {
         continue;
       }
-      if (typeHelperMap[object.type]) {
-        const helper = new typeHelperMap[object.type](object);
-        helper.material.color.setHex(defaultColorHex);
-        helperMap.set(object, helper);
-        scene.add(helper);
-        if (params.interact) {
-          const pointerenterFun = () => {
-            if (this.transing) {
+      helper.material.color.setHex(defaultColorHex);
+      scene.add(helper);
+      if (params.interact) {
+        const pointerenterFun = () => {
+          if (this.transing) {
+            return;
+          }
+          if (this.selectionBox) {
+            if (this.selectionBox.has(object)) {
               return;
             }
-            if (this.selectionBox) {
-              if (this.selectionBox.has(object)) {
-                return;
-              }
-            }
-            helper.material.color.setHex(hoverColorHex);
-          };
-          const pointerleaveFun = () => {
-            if (this.transing) {
+          }
+          helper.material.color.setHex(hoverColorHex);
+        };
+        const pointerleaveFun = () => {
+          if (this.transing) {
+            return;
+          }
+          if (this.selectionBox) {
+            if (this.selectionBox.has(object)) {
               return;
             }
-            if (this.selectionBox) {
-              if (this.selectionBox.has(object)) {
-                return;
-              }
-            }
-            helper.material.color.setHex(defaultColorHex);
-          };
-          const clickFun = () => {
-            if (this.transing) {
+          }
+          helper.material.color.setHex(defaultColorHex);
+        };
+        const clickFun = () => {
+          if (this.transing) {
+            return;
+          }
+          if (this.selectionBox) {
+            if (this.selectionBox.has(object)) {
               return;
             }
-            if (this.selectionBox) {
-              if (this.selectionBox.has(object)) {
-                return;
-              }
-            }
-            helper.material.color.setHex(activeColorHex);
-          };
-          object.addEventListener("pointerenter", pointerenterFun);
-          object.addEventListener("pointerleave", pointerleaveFun);
-          object.addEventListener("click", clickFun);
-          pointerenterFunMap.set(object, pointerenterFun);
-          pointerleaveFunMap.set(object, pointerleaveFun);
-          clickFunMap.set(object, clickFun);
-        }
-      } else {
-        console.warn(`object helper can not support this type object: '${object.type}'`);
+          }
+          helper.material.color.setHex(activeColorHex);
+        };
+        object.addEventListener("pointerenter", pointerenterFun);
+        object.addEventListener("pointerleave", pointerleaveFun);
+        object.addEventListener("click", clickFun);
+        pointerenterFunMap.set(object, pointerenterFun);
+        pointerleaveFunMap.set(object, pointerleaveFun);
+        clickFunMap.set(object, clickFun);
       }
     }
   });
   scene.addEventListener("afterRemove", (event) => {
     const objects = event.objects;
     for (const object of objects) {
-      if (filterHelperMap[object.type] || object.type.includes("Helper")) {
+      const helper = helperManager.disposeObjectHelper(object);
+      if (!helper) {
         continue;
       }
-      if (!helperMap.has(object)) {
-        console.warn(`Object helper plugin can not found this object\`s helper: ${object}`);
-        continue;
-      }
-      const helper = helperMap.get(object);
       scene.remove(helper);
       if (params.interact) {
         object.removeEventListener("pointerenter", pointerenterFunMap.get(object));
@@ -8991,17 +9042,6 @@ const ObjectHelperPlugin = function(params = {}) {
         pointerleaveFunMap.delete(object);
         clickFunMap.delete(object);
       }
-      helper.geometry && helper.geometry.dispose();
-      if (helper.material) {
-        if (helper.material instanceof Material) {
-          helper.material.dispose();
-        } else {
-          helper.material.forEach((material) => {
-            material.dispose();
-          });
-        }
-      }
-      helperMap.delete(object);
     }
   });
   this.setObjectHelper = function(params2) {
@@ -9148,6 +9188,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "dataSupportManager");
     __publicField(this, "compilerManager");
     __publicField(this, "keyboardManager");
+    __publicField(this, "objectHelperManager");
     __publicField(this, "stats");
     __publicField(this, "transing");
     __publicField(this, "displayMode");

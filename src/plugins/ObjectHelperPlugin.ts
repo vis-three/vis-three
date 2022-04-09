@@ -1,23 +1,8 @@
-import {
-  BaseEvent,
-  Color,
-  Material,
-  Mesh,
-  MeshStandardMaterial,
-  Object3D,
-  Scene,
-  Sprite,
-} from "three";
+import { Color, Object3D, Sprite } from "three";
 import { Engine } from "../engine/Engine";
-import { CameraHelper } from "../extends/helper/camera/CameraHelper";
-import { PointLightHelper } from "../extends/helper/light/PointLightHelper";
-import { GroupHelper } from "../extends/helper/object/GroupHelper";
-import { MeshHelper } from "../extends/helper/object/MeshHelper";
-import { SpotLightHelper } from "../extends/helper/light/SpotLightHelper";
-import { CONFIGTYPE } from "../middleware/constants/configType";
 import { Plugin } from "./plugin";
 import { SelectedEvent } from "./SelectionPlugin";
-import { DirectionalLightHelper } from "../extends/helper/light/DirectionalLightHelper";
+import { ObjectHelperManager } from "../manager/ObjectHelperManager";
 
 export interface ObjectHelperParameters {
   interact?: boolean;
@@ -49,27 +34,13 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
     }
   }
 
-  const typeHelperMap = {
-    [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
-    [CONFIGTYPE.SPOTLIGHT]: SpotLightHelper,
-    [CONFIGTYPE.DIRECTIONALLIGHT]: DirectionalLightHelper,
-    [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
-    [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
-    [CONFIGTYPE.MESH]: MeshHelper,
-    [CONFIGTYPE.GROUP]: GroupHelper,
-  };
-
-  const filterHelperMap = {
-    AmbientLight: true,
-    Object3D: true,
-    TransformControls: true,
-  };
-
-  const helperMap = new Map<Object3D, Object3D>();
+  const helperManager = new ObjectHelperManager();
   const pointerenterFunMap = new Map<Object3D, Function>();
   const pointerleaveFunMap = new Map<Object3D, Function>();
   const clickFunMap = new Map<Object3D, Function>();
+  const helperMap = helperManager.helperMap;
 
+  this.objectHelperManager = helperManager;
   const scene = this.scene!;
 
   !params.activeColor && (params.activeColor = "rgb(230, 20, 240)");
@@ -86,66 +57,59 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
     const objects = event.objects;
 
     for (const object of objects) {
-      if (filterHelperMap[object.type] || object.type.includes("Helper")) {
+      const helper = helperManager.addObjectHelper(object) as Sprite;
+
+      if (!helper) {
         continue;
       }
+      helper.material.color.setHex(defaultColorHex);
+      scene.add(helper);
 
-      if (typeHelperMap[object.type]) {
-        const helper = new typeHelperMap[object.type](object);
-        helper.material.color.setHex(defaultColorHex);
-
-        helperMap.set(object, helper);
-        scene.add(helper);
-
-        if (params.interact) {
-          const pointerenterFun = () => {
-            if (this.transing) {
+      if (params.interact) {
+        const pointerenterFun = () => {
+          if (this.transing) {
+            return;
+          }
+          if (this.selectionBox) {
+            if (this.selectionBox.has(object)) {
               return;
             }
-            if (this.selectionBox) {
-              if (this.selectionBox.has(object)) {
-                return;
-              }
-            }
-            helper.material.color.setHex(hoverColorHex);
-          };
-          const pointerleaveFun = () => {
-            if (this.transing) {
+          }
+          helper.material.color.setHex(hoverColorHex);
+        };
+
+        const pointerleaveFun = () => {
+          if (this.transing) {
+            return;
+          }
+          if (this.selectionBox) {
+            if (this.selectionBox.has(object)) {
               return;
             }
-            if (this.selectionBox) {
-              if (this.selectionBox.has(object)) {
-                return;
-              }
-            }
+          }
 
-            helper.material.color.setHex(defaultColorHex);
-          };
+          helper.material.color.setHex(defaultColorHex);
+        };
 
-          const clickFun = () => {
-            if (this.transing) {
+        const clickFun = () => {
+          if (this.transing) {
+            return;
+          }
+          if (this.selectionBox) {
+            if (this.selectionBox.has(object)) {
               return;
             }
-            if (this.selectionBox) {
-              if (this.selectionBox.has(object)) {
-                return;
-              }
-            }
-            helper.material.color.setHex(activeColorHex);
-          };
+          }
+          helper.material.color.setHex(activeColorHex);
+        };
 
-          object.addEventListener("pointerenter", pointerenterFun);
-          object.addEventListener("pointerleave", pointerleaveFun);
-          object.addEventListener("click", clickFun);
+        object.addEventListener("pointerenter", pointerenterFun);
+        object.addEventListener("pointerleave", pointerleaveFun);
+        object.addEventListener("click", clickFun);
 
-          pointerenterFunMap.set(object, pointerenterFun);
-          pointerleaveFunMap.set(object, pointerleaveFun);
-          clickFunMap.set(object, clickFun);
-        }
-      } else {
-        console.warn(
-          `object helper can not support this type object: '${object.type}'`
-        );
+        pointerenterFunMap.set(object, pointerenterFun);
+        pointerleaveFunMap.set(object, pointerleaveFun);
+        clickFunMap.set(object, clickFun);
       }
     }
   });
@@ -154,18 +118,12 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
     const objects = event.objects;
 
     for (const object of objects) {
-      if (filterHelperMap[object.type] || object.type.includes("Helper")) {
+      const helper = helperManager.disposeObjectHelper(object);
+
+      if (!helper) {
         continue;
       }
 
-      if (!helperMap.has(object)) {
-        console.warn(
-          `Object helper plugin can not found this object\`s helper: ${object}`
-        );
-        continue;
-      }
-
-      const helper = helperMap.get(object)! as Mesh;
       scene.remove(helper);
 
       if (params.interact) {
@@ -183,20 +141,6 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
         pointerleaveFunMap.delete(object);
         clickFunMap.delete(object);
       }
-
-      helper.geometry && helper.geometry.dispose();
-
-      if (helper.material) {
-        if (helper.material instanceof Material) {
-          helper.material.dispose();
-        } else {
-          helper.material.forEach((material) => {
-            material.dispose();
-          });
-        }
-      }
-
-      helperMap.delete(object);
     }
   });
 

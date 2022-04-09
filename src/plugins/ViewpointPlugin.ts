@@ -166,6 +166,13 @@ export const ViewpointPlugin: Plugin<ViewpointParameters> = function (
     } else {
       this.setCamera!(orthograpbicCamera);
     }
+
+    if (this.objectHelperManager) {
+      this.objectHelperManager.addFilteredObject(
+        perspectiveCamera,
+        orthograpbicCamera
+      );
+    }
   });
   return true;
 };
