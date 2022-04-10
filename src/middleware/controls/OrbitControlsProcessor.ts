@@ -7,16 +7,17 @@ export interface ProcessAssemble {
   config: OrbitControlsConfig;
 }
 
-export class OrbitControlsProcessor implements Processor {
-  private config?: OrbitControlsConfig;
-  private control?: OrbitControls;
-  private assembly = false;
+export class OrbitControlsProcessor extends Processor {
+  config?: OrbitControlsConfig;
+  target?: OrbitControls;
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   assemble(params: ProcessAssemble): this {
     this.config = params.config;
-    this.control = params.control;
+    this.target = params.control;
     this.assembly = true;
     return this;
   }
@@ -26,33 +27,14 @@ export class OrbitControlsProcessor implements Processor {
       console.warn(`OrbitControls Processor unassembled`);
       return this;
     }
-    this.merge(params.key, params.value);
-    return this;
-  }
-
-  processAll(): this {
-    if (!this.assembly) {
-      console.warn(`OrbitControls Processor unassembled`);
-      return this;
-    }
-    const control = this.control!;
-    const config = this.config!;
-    for (const key of Object.keys(config)) {
-      control[key] !== undefined && (control[key] = config[key]);
-    }
-
+    this.mergeAttribute([], params.key, params.value);
     return this;
   }
 
   dispose(): this {
     this.config = undefined;
-    this.control = undefined;
+    this.target = undefined;
     this.assembly = false;
     return this;
-  }
-
-  private merge(key: string, value: any): boolean {
-    this.control![key] = value;
-    return true;
   }
 }

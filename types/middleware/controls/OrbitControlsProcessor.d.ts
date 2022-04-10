@@ -5,14 +5,11 @@ export interface ProcessAssemble {
     control: OrbitControls;
     config: OrbitControlsConfig;
 }
-export declare class OrbitControlsProcessor implements Processor {
-    private config?;
-    private control?;
-    private assembly;
+export declare class OrbitControlsProcessor extends Processor {
+    config?: OrbitControlsConfig;
+    target?: OrbitControls;
     constructor();
     assemble(params: ProcessAssemble): this;
     process(params: Process): this;
-    processAll(): this;
     dispose(): this;
-    private merge;
 }

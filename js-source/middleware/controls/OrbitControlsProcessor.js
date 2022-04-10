@@ -1,11 +1,13 @@
-export class OrbitControlsProcessor {
+import { Processor } from "../../core/Processor";
+export class OrbitControlsProcessor extends Processor {
     config;
-    control;
-    assembly = false;
-    constructor() { }
+    target;
+    constructor() {
+        super();
+    }
     assemble(params) {
         this.config = params.config;
-        this.control = params.control;
+        this.target = params.control;
         this.assembly = true;
         return this;
     }
@@ -14,30 +16,14 @@ export class OrbitControlsProcessor {
             console.warn(`OrbitControls Processor unassembled`);
             return this;
         }
-        this.merge(params.key, params.value);
-        return this;
-    }
-    processAll() {
-        if (!this.assembly) {
-            console.warn(`OrbitControls Processor unassembled`);
-            return this;
-        }
-        const control = this.control;
-        const config = this.config;
-        for (const key of Object.keys(config)) {
-            control[key] !== undefined && (control[key] = config[key]);
-        }
+        this.mergeAttribute([], params.key, params.value);
         return this;
     }
     dispose() {
         this.config = undefined;
-        this.control = undefined;
+        this.target = undefined;
         this.assembly = false;
         return this;
-    }
-    merge(key, value) {
-        this.control[key] = value;
-        return true;
     }
 }
 //# sourceMappingURL=OrbitControlsProcessor.js.map

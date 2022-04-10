@@ -11,16 +11,14 @@ export interface WebGLRendererProcessAssemble {
 export interface GLRendererCacheData {
     adaptiveCameraFun?: (event: RenderEvent) => void;
 }
-export declare class WebGLRendererProcessor implements Processor {
-    private renderer?;
-    private config?;
+export declare class WebGLRendererProcessor extends Processor {
+    target?: WebGLRenderer;
+    config?: WebGLRendererConfig;
     private engine?;
-    private assembly;
     private rendererCacheData;
     constructor();
     assemble(params: WebGLRendererProcessAssemble): this;
     process(params: Process): this;
-    processAll(): this;
     dispose(): this;
     private clearColor;
     private pixelRatio;
@@ -28,5 +26,4 @@ export declare class WebGLRendererProcessor implements Processor {
     private viewport;
     private scissor;
     private adaptiveCamera;
-    private merge;
 }

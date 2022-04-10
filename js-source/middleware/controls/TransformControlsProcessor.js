@@ -1,16 +1,18 @@
-export class TransformControlsProcessor {
+import { Processor } from "../../core/Processor";
+export class TransformControlsProcessor extends Processor {
     config;
-    control;
-    assembly = false;
+    target;
     filterMap = {
         translationSnap: true,
         rotationSnap: true,
         scaleSnap: true,
     };
-    constructor() { }
+    constructor() {
+        super();
+    }
     assemble(params) {
         this.config = params.config;
-        this.control = params.control;
+        this.target = params.control;
         this.assembly = true;
         return this;
     }
@@ -26,32 +28,17 @@ export class TransformControlsProcessor {
             this[params.key](params.value);
             return this;
         }
-        this.merge(params.key, params.value);
-        return this;
-    }
-    processAll() {
-        if (!this.assembly) {
-            console.warn(`transformControls Processor unassembled`);
-            return this;
-        }
-        const config = this.config;
-        for (const key of Object.keys(config)) {
-            this.process({
-                path: [],
-                key,
-                value: config[key],
-            });
-        }
+        this.mergeAttribute([], params.key, params.value);
         return this;
     }
     dispose() {
         this.config = undefined;
-        this.control = undefined;
+        this.target = undefined;
         return this;
     }
     snapAllow(value) {
         const config = this.config;
-        const control = this.control;
+        const control = this.target;
         if (value) {
             control.translationSnap = config.translationSnap;
             control.rotationSnap = config.rotationSnap;
@@ -64,10 +51,6 @@ export class TransformControlsProcessor {
             // @ts-ignore types 没写 源码有这个属性
             control.scaleSnap = null;
         }
-        return true;
-    }
-    merge(key, value) {
-        this.control[key] = value;
         return true;
     }
 }

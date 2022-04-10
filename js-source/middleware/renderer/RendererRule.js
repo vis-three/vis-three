@@ -1,19 +1,20 @@
 import { validate } from "uuid";
 import { CONFIGTYPE } from "../constants/configType";
 export const RendererRule = function (input, compiler) {
-    const { operate, key, path, value } = input;
+    const { operate, key, value } = input;
+    const path = input.path.concat([]);
     if (operate === "add") {
         compiler.add(value);
         return;
     }
     if (operate === "set") {
-        if (key === CONFIGTYPE.WEBGLRENDERER) {
+        if (validate(key) || key === CONFIGTYPE.WEBGLRENDERER) {
             compiler.add(value);
             return;
         }
         let vid = key;
         if (path.length) {
-            vid = path[0];
+            vid = path.shift();
         }
         if (validate(vid) || vid === CONFIGTYPE.WEBGLRENDERER) {
             compiler.assembly(vid, (processer) => {

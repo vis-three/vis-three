@@ -12,5 +12,7 @@
 
 - ObjectHelperPlugin
 - code lint
+- processer
+- webGLRenderer shadowMap
 
 #### deprecated

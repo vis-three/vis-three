@@ -73,7 +73,6 @@ export const DisplayModelPlugin = function (params = {}) {
         Object3D: true,
         Group: true,
     };
-    const modeSymbol = Symbol.for("light");
     this.scene.addEventListener("afterAdd", (event) => {
         const displayMode = this.displayMode;
         const objects = event.objects;
@@ -103,7 +102,6 @@ export const DisplayModelPlugin = function (params = {}) {
                 if (!lightSet.has(elem)) {
                     lightSet.add(elem);
                 }
-                elem[modeSymbol] = true;
                 if (displayMode !== DISPLAYMODE.ENV &&
                     displayMode !== DISPLAYMODE.LIGHT) {
                     this.scene.remove(elem);
@@ -144,9 +142,7 @@ export const DisplayModelPlugin = function (params = {}) {
                 if (elem === defaultAmbientLight || elem === defaultDirectionalLight) {
                     continue;
                 }
-                if (!elem[modeSymbol]) {
-                    lightSet.delete(elem);
-                }
+                lightSet.delete(elem);
             }
             else if (elem instanceof Points && elem.type === "Points") {
                 pointsSet.delete(elem);
@@ -219,10 +215,10 @@ export const DisplayModelPlugin = function (params = {}) {
             });
         };
         // 过滤灯光
+        // TODO: 监听记录light.visible的值
         const filterLight = () => {
             lightSet.forEach((light) => {
-                light[modeSymbol] = true;
-                this.scene.remove(light);
+                light.visible = false;
             });
             this.scene.add(defaultAmbientLight);
             this.scene.add(defaultDirectionalLight);
@@ -230,8 +226,7 @@ export const DisplayModelPlugin = function (params = {}) {
         // 还原灯光
         const reduceLight = () => {
             lightSet.forEach((light) => {
-                light[modeSymbol] = false;
-                this.scene.add(light);
+                light.visible = true;
             });
             this.scene.remove(defaultAmbientLight);
             this.scene.remove(defaultDirectionalLight);

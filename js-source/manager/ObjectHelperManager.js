@@ -51,6 +51,7 @@ export class ObjectHelperManager extends EventDispatcher {
      */
     addObjectHelper(object) {
         if (this.objectFilter.has(object) ||
+            this.helperMap.has(object) ||
             this.helperFilter[object.type] ||
             object.type.toLocaleLowerCase().includes("helper")) {
             return null;

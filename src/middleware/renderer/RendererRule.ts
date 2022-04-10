@@ -8,7 +8,9 @@ export const RendererRule: Rule<RendererCompiler> = function (
   input: ProxyNotice,
   compiler: RendererCompiler
 ) {
-  const { operate, key, path, value } = input;
+  const { operate, key, value } = input;
+
+  const path = input.path.concat([]);
 
   if (operate === "add") {
     compiler.add(value);
@@ -16,14 +18,14 @@ export const RendererRule: Rule<RendererCompiler> = function (
   }
 
   if (operate === "set") {
-    if (key === CONFIGTYPE.WEBGLRENDERER) {
+    if (validate(key) || key === CONFIGTYPE.WEBGLRENDERER) {
       compiler.add(value);
       return;
     }
 
     let vid = key;
     if (path.length) {
-      vid = path[0];
+      vid = path.shift()!;
     }
 
     if (validate(vid) || vid === CONFIGTYPE.WEBGLRENDERER) {

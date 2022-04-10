@@ -3473,19 +3473,20 @@ class CameraDataSupport extends ObjectDataSupport {
   }
 }
 const RendererRule = function(input, compiler) {
-  const { operate, key, path, value } = input;
+  const { operate, key, value } = input;
+  const path = input.path.concat([]);
   if (operate === "add") {
     compiler.add(value);
     return;
   }
   if (operate === "set") {
-    if (key === CONFIGTYPE.WEBGLRENDERER) {
+    if (validate(key) || key === CONFIGTYPE.WEBGLRENDERER) {
       compiler.add(value);
       return;
     }
     let vid = key;
     if (path.length) {
-      vid = path[0];
+      vid = path.shift();
     }
     if (validate(vid) || vid === CONFIGTYPE.WEBGLRENDERER) {
       compiler.assembly(vid, (processer) => {
@@ -4268,15 +4269,69 @@ class CameraCompiler extends ObjectCompiler {
     return this;
   }
 }
-class OrbitControlsProcessor {
+class Processor {
   constructor() {
-    __publicField(this, "config");
-    __publicField(this, "control");
+    __publicField(this, "filterMap", {});
     __publicField(this, "assembly", false);
+    this.filterMap = Object.assign({
+      vid: true,
+      type: true
+    }, this.filterMap);
+  }
+  mergeAttribute(path, key, value) {
+    if (this.filterMap[path.concat([key]).join(".")]) {
+      return;
+    }
+    let object = this.target;
+    if (path.length) {
+      for (const key2 of path) {
+        object = object[key2];
+      }
+    }
+    object[key] = value;
+  }
+  mergeObject(callBack) {
+    const recursiveConfig = (config, object) => {
+      for (const key in config) {
+        if (this.filterMap[key]) {
+          continue;
+        }
+        if (typeof config[key] === "object" && typeof config[key] !== null) {
+          recursiveConfig(config[key], object[key]);
+          continue;
+        }
+        object[key] = config[key];
+      }
+    };
+    recursiveConfig(this.config, this.target);
+    callBack && callBack();
+  }
+  processAll() {
+    const recursiveConfig = (config, path) => {
+      for (const key in config) {
+        if (this.filterMap[path.concat([key]).join(".")]) {
+          continue;
+        }
+        if (typeof config[key] === "object" && typeof config[key] !== null) {
+          recursiveConfig(config[key], path.concat([key]));
+          continue;
+        }
+        this.process({ path, key, value: config[key] });
+      }
+    };
+    recursiveConfig(this.config, []);
+    return this;
+  }
+}
+class OrbitControlsProcessor extends Processor {
+  constructor() {
+    super();
+    __publicField(this, "config");
+    __publicField(this, "target");
   }
   assemble(params) {
     this.config = params.config;
-    this.control = params.control;
+    this.target = params.control;
     this.assembly = true;
     return this;
   }
@@ -4285,37 +4340,21 @@ class OrbitControlsProcessor {
       console.warn(`OrbitControls Processor unassembled`);
       return this;
     }
-    this.merge(params.key, params.value);
-    return this;
-  }
-  processAll() {
-    if (!this.assembly) {
-      console.warn(`OrbitControls Processor unassembled`);
-      return this;
-    }
-    const control = this.control;
-    const config = this.config;
-    for (const key of Object.keys(config)) {
-      control[key] !== void 0 && (control[key] = config[key]);
-    }
+    this.mergeAttribute([], params.key, params.value);
     return this;
   }
   dispose() {
     this.config = void 0;
-    this.control = void 0;
+    this.target = void 0;
     this.assembly = false;
     return this;
   }
-  merge(key, value) {
-    this.control[key] = value;
-    return true;
-  }
 }
-class TransformControlsProcessor {
+class TransformControlsProcessor extends Processor {
   constructor() {
+    super();
     __publicField(this, "config");
-    __publicField(this, "control");
-    __publicField(this, "assembly", false);
+    __publicField(this, "target");
     __publicField(this, "filterMap", {
       translationSnap: true,
       rotationSnap: true,
@@ -4324,7 +4363,7 @@ class TransformControlsProcessor {
   }
   assemble(params) {
     this.config = params.config;
-    this.control = params.control;
+    this.target = params.control;
     this.assembly = true;
     return this;
   }
@@ -4340,32 +4379,17 @@ class TransformControlsProcessor {
       this[params.key](params.value);
       return this;
     }
-    this.merge(params.key, params.value);
-    return this;
-  }
-  processAll() {
-    if (!this.assembly) {
-      console.warn(`transformControls Processor unassembled`);
-      return this;
-    }
-    const config = this.config;
-    for (const key of Object.keys(config)) {
-      this.process({
-        path: [],
-        key,
-        value: config[key]
-      });
-    }
+    this.mergeAttribute([], params.key, params.value);
     return this;
   }
   dispose() {
     this.config = void 0;
-    this.control = void 0;
+    this.target = void 0;
     return this;
   }
   snapAllow(value) {
     const config = this.config;
-    const control = this.control;
+    const control = this.target;
     if (value) {
       control.translationSnap = config.translationSnap;
       control.rotationSnap = config.rotationSnap;
@@ -4375,10 +4399,6 @@ class TransformControlsProcessor {
       control.rotationSnap = null;
       control.scaleSnap = null;
     }
-    return true;
-  }
-  merge(key, value) {
-    this.control[key] = value;
     return true;
   }
 }
@@ -5984,17 +6004,17 @@ class PointsCompiler extends ObjectCompiler {
     return this;
   }
 }
-class WebGLRendererProcessor {
+class WebGLRendererProcessor extends Processor {
   constructor() {
-    __publicField(this, "renderer");
+    super();
+    __publicField(this, "target");
     __publicField(this, "config");
     __publicField(this, "engine");
-    __publicField(this, "assembly", false);
     __publicField(this, "rendererCacheData");
     this.rendererCacheData = {};
   }
   assemble(params) {
-    this.renderer = params.renderer;
+    this.target = params.renderer;
     this.config = params.config;
     this.engine = params.engine;
     this.assembly = true;
@@ -6009,30 +6029,15 @@ class WebGLRendererProcessor {
       this[params.key](params.value);
       return this;
     }
-    if (params.path.length) {
-      this[params.path[0]] && this[params.path[0]](params.value);
+    if (params.path.length && this[params.path[0]]) {
+      this[params.path[0]](params.value);
       return this;
     }
-    this.merge(params.key, params.value);
-    return this;
-  }
-  processAll() {
-    if (!this.assembly) {
-      console.warn(`webGLRenderer Processor unassembled`);
-      return this;
-    }
-    const config = this.config;
-    for (const key of Object.keys(config)) {
-      this.process({
-        path: [],
-        key,
-        value: config[key]
-      });
-    }
+    this.mergeAttribute(params.path, params.key, params.value);
     return this;
   }
   dispose() {
-    this.renderer = void 0;
+    this.target = void 0;
     this.config = void 0;
     this.engine = void 0;
     this.assembly = false;
@@ -6040,17 +6045,17 @@ class WebGLRendererProcessor {
   }
   clearColor(value) {
     const alpha = Number(value.slice(0, -1).split(",").pop().trim());
-    this.renderer.setClearColor(value, alpha);
-    this.renderer.clear();
+    this.target.setClearColor(value, alpha);
+    this.target.clear();
     return this;
   }
   pixelRatio(value) {
-    this.renderer.setPixelRatio(value);
-    this.renderer.clear();
+    this.target.setPixelRatio(value);
+    this.target.clear();
     return this;
   }
   size() {
-    const renderer = this.renderer;
+    const renderer = this.target;
     const vector2 = this.config.size;
     if (vector2) {
       renderer.setSize(vector2.x, vector2.y);
@@ -6061,7 +6066,7 @@ class WebGLRendererProcessor {
     return this;
   }
   viewport() {
-    const renderer = this.renderer;
+    const renderer = this.target;
     const config = this.config.viewport;
     if (config) {
       renderer.setViewport(config.x, config.y, config.width, config.height);
@@ -6072,7 +6077,7 @@ class WebGLRendererProcessor {
     return this;
   }
   scissor() {
-    const renderer = this.renderer;
+    const renderer = this.target;
     const config = this.config.scissor;
     if (config) {
       renderer.setScissorTest(true);
@@ -6089,7 +6094,7 @@ class WebGLRendererProcessor {
       console.warn(`renderer compiler is not set engine.`);
       return this;
     }
-    const renderer = this.renderer;
+    const renderer = this.target;
     const engine = this.engine;
     const renderManager = engine.renderManager;
     if (!value) {
@@ -6143,10 +6148,6 @@ class WebGLRendererProcessor {
       renderManager.addEventListener("render", this.rendererCacheData.adaptiveCameraFun);
     }
     return this;
-  }
-  merge(key, value) {
-    this.renderer[key] = value;
-    return true;
   }
 }
 class RendererCompiler extends Compiler {

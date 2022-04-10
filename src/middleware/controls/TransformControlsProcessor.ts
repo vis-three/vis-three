@@ -7,22 +7,23 @@ export interface ProcessAssemble {
   config: TransformControlsConfig;
 }
 
-export class TransformControlsProcessor implements Processor {
-  private config?: TransformControlsConfig;
-  private control?: TransformControls;
-  private assembly = false;
+export class TransformControlsProcessor extends Processor {
+  config?: TransformControlsConfig;
+  target?: TransformControls;
 
-  private filterMap = {
+  filterMap = {
     translationSnap: true,
     rotationSnap: true,
     scaleSnap: true,
   };
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   assemble(params: ProcessAssemble): this {
     this.config = params.config;
-    this.control = params.control;
+    this.target = params.control;
     this.assembly = true;
     return this;
   }
@@ -42,37 +43,19 @@ export class TransformControlsProcessor implements Processor {
       return this;
     }
 
-    this.merge(params.key, params.value);
-    return this;
-  }
-
-  processAll(): this {
-    if (!this.assembly) {
-      console.warn(`transformControls Processor unassembled`);
-      return this;
-    }
-
-    const config = this.config!;
-    for (const key of Object.keys(config)) {
-      this.process({
-        path: [],
-        key,
-        value: config[key],
-      });
-    }
-
+    this.mergeAttribute([], params.key, params.value);
     return this;
   }
 
   dispose(): this {
     this.config = undefined;
-    this.control = undefined;
+    this.target = undefined;
     return this;
   }
 
   private snapAllow(value: boolean): boolean {
     const config = this.config!;
-    const control = this.control!;
+    const control = this.target!;
     if (value) {
       control.translationSnap = config.translationSnap;
       control.rotationSnap = config.rotationSnap;
@@ -85,11 +68,6 @@ export class TransformControlsProcessor implements Processor {
       control.scaleSnap = null;
     }
 
-    return true;
-  }
-
-  private merge(key: string, value: any): boolean {
-    this.control![key] = value;
     return true;
   }
 }

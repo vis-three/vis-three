@@ -18,19 +18,19 @@ export interface WebGLRendererProcessAssemble {
 export interface GLRendererCacheData {
   adaptiveCameraFun?: (event: RenderEvent) => void;
 }
-export class WebGLRendererProcessor implements Processor {
-  private renderer?: WebGLRenderer;
-  private config?: WebGLRendererConfig;
+export class WebGLRendererProcessor extends Processor {
+  target?: WebGLRenderer;
+  config?: WebGLRendererConfig;
   private engine?: Engine;
-  private assembly = false;
   private rendererCacheData: GLRendererCacheData;
 
   constructor() {
+    super();
     this.rendererCacheData = {};
   }
 
   assemble(params: WebGLRendererProcessAssemble): this {
-    this.renderer = params.renderer;
+    this.target = params.renderer;
     this.config = params.config;
     this.engine = params.engine;
     this.assembly = true;
@@ -49,35 +49,17 @@ export class WebGLRendererProcessor implements Processor {
       return this;
     }
 
-    if (params.path.length) {
-      this[params.path[0]] && this[params.path[0]](params.value);
+    if (params.path.length && this[params.path[0]]) {
+      this[params.path[0]](params.value);
       return this;
     }
 
-    this.merge(params.key, params.value);
-    return this;
-  }
-
-  processAll(): this {
-    if (!this.assembly) {
-      console.warn(`webGLRenderer Processor unassembled`);
-      return this;
-    }
-
-    const config = this.config!;
-    for (const key of Object.keys(config)) {
-      this.process({
-        path: [],
-        key,
-        value: config[key],
-      });
-    }
-
+    this.mergeAttribute(params.path, params.key, params.value);
     return this;
   }
 
   dispose(): this {
-    this.renderer = undefined;
+    this.target = undefined;
     this.config = undefined;
     this.engine = undefined;
     this.assembly = false;
@@ -87,19 +69,19 @@ export class WebGLRendererProcessor implements Processor {
   private clearColor(value): this {
     // 取出alpha的值
     const alpha = Number(value.slice(0, -1).split(",").pop().trim());
-    this.renderer!.setClearColor(value, alpha);
-    this.renderer!.clear();
+    this.target!.setClearColor(value, alpha);
+    this.target!.clear();
     return this;
   }
 
   private pixelRatio(value): this {
-    this.renderer!.setPixelRatio(value);
-    this.renderer!.clear();
+    this.target!.setPixelRatio(value);
+    this.target!.clear();
     return this;
   }
 
   private size(): this {
-    const renderer = this.renderer!;
+    const renderer = this.target!;
     const vector2 = this.config!.size;
     if (vector2) {
       renderer.setSize(vector2.x, vector2.y);
@@ -112,7 +94,7 @@ export class WebGLRendererProcessor implements Processor {
   }
 
   private viewport(): this {
-    const renderer = this.renderer!;
+    const renderer = this.target!;
     const config = this.config!.viewport;
     if (config) {
       renderer.setViewport(config.x, config.y, config.width, config.height);
@@ -129,7 +111,7 @@ export class WebGLRendererProcessor implements Processor {
   }
 
   private scissor(): this {
-    const renderer = this.renderer!;
+    const renderer = this.target!;
     const config = this.config!.scissor;
     if (config) {
       renderer.setScissorTest(true);
@@ -153,7 +135,7 @@ export class WebGLRendererProcessor implements Processor {
       return this;
     }
 
-    const renderer = this.renderer!;
+    const renderer = this.target!;
     const engine = this.engine!;
     const renderManager = engine.renderManager!;
 
@@ -224,10 +206,5 @@ export class WebGLRendererProcessor implements Processor {
     }
 
     return this;
-  }
-
-  private merge(key: string, value: any): boolean {
-    this.renderer![key] = value;
-    return true;
   }
 }
