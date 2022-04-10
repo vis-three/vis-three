@@ -1,10 +1,10 @@
-import { PlaneBufferGeometry, Sprite, SpriteMaterial } from "three";
+import { PlaneBufferGeometry, Sprite, SpriteMaterial, } from "three";
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ObjectCompiler } from "../object/ObjectCompiler";
+import { ObjectCompiler, } from "../object/ObjectCompiler";
 export class SpriteCompiler extends ObjectCompiler {
     COMPILER_NAME = MODULETYPE.SPRITE;
-    replaceMaterial = new SpriteMaterial({ color: 'rgb(150, 150, 150)' });
+    replaceMaterial = new SpriteMaterial({ color: "rgb(150, 150, 150)" });
     replaceGeometry = new PlaneBufferGeometry(10, 10, 10);
     constructor(parametes) {
         super(parametes);
@@ -34,7 +34,7 @@ export class SpriteCompiler extends ObjectCompiler {
         sprite.center.set(config.center.x, config.center.y);
         Compiler.applyConfig(config, sprite, {
             center: true,
-            material: true
+            material: true,
         });
         this.scene.add(sprite);
         return this;
@@ -45,14 +45,14 @@ export class SpriteCompiler extends ObjectCompiler {
             return this;
         }
         let sprite = this.map.get(vid);
-        if (key === 'material') {
+        if (key === "material") {
             sprite.material = this.getSpriteMaterial(value);
             return this;
         }
-        if (key === 'lookAt') {
+        if (key === "lookAt") {
             return this.setLookAt(vid, value);
         }
-        for (let key of path) {
+        for (const key of path) {
             sprite = sprite[key];
         }
         sprite[key] = value;

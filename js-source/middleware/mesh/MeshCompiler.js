@@ -1,10 +1,12 @@
-import { BoxBufferGeometry, Mesh, MeshBasicMaterial } from "three";
+import { BoxBufferGeometry, Mesh, MeshBasicMaterial, } from "three";
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ObjectCompiler } from "../object/ObjectCompiler";
+import { ObjectCompiler, } from "../object/ObjectCompiler";
 export class MeshCompiler extends ObjectCompiler {
     COMPILER_NAME = MODULETYPE.MESH;
-    replaceMaterial = new MeshBasicMaterial({ color: 'rgb(150, 150, 150)' });
+    replaceMaterial = new MeshBasicMaterial({
+        color: "rgb(150, 150, 150)",
+    });
     replaceGeometry = new BoxBufferGeometry(10, 10, 10);
     constructor(parameters) {
         super(parameters);
@@ -20,7 +22,7 @@ export class MeshCompiler extends ObjectCompiler {
         Compiler.applyConfig(config, object, {
             geometry: true,
             material: true,
-            lookAt: true
+            lookAt: true,
         });
         this.map.set(vid, object);
         this.weakMap.set(object, vid);
@@ -34,14 +36,14 @@ export class MeshCompiler extends ObjectCompiler {
             return this;
         }
         let mesh = this.map.get(vid);
-        if (key === 'lookAt') {
+        if (key === "lookAt") {
             return this.setLookAt(vid, value);
         }
-        if (key === 'material') {
+        if (key === "material") {
             mesh.material = this.getMaterial(value);
             return this;
         }
-        for (let key of path) {
+        for (const key of path) {
             mesh = mesh[key];
         }
         mesh[key] = value;

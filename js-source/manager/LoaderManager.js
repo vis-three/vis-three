@@ -1,8 +1,8 @@
-import { EventDispatcher } from './../core/EventDispatcher';
+import { EventDispatcher } from "./../core/EventDispatcher";
 import { ImageLoader } from "three";
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
-import { VideoLoader } from '../extends/loader/VideoLoader';
+import { VideoLoader } from "../extends/loader/VideoLoader";
 export var LOADERMANAGER;
 (function (LOADERMANAGER) {
     LOADERMANAGER["BEFORELOAD"] = "beforeLoad";
@@ -21,7 +21,7 @@ export class LoaderManager extends EventDispatcher {
     isLoading;
     isLoaded;
     loadDetailMap;
-    path = '';
+    path = "";
     constructor(parameters) {
         super();
         this.resourceMap = new Map();
@@ -35,14 +35,14 @@ export class LoaderManager extends EventDispatcher {
         const imageLoader = new ImageLoader();
         const videoLoader = new VideoLoader();
         this.loaderMap = {
-            'jpg': imageLoader,
-            'png': imageLoader,
-            'jpeg': imageLoader,
-            'obj': new OBJLoader(),
-            'mtl': new MTLLoader(),
-            'mp4': videoLoader,
-            'webm': videoLoader,
-            'ogg': videoLoader,
+            jpg: imageLoader,
+            png: imageLoader,
+            jpeg: imageLoader,
+            obj: new OBJLoader(),
+            mtl: new MTLLoader(),
+            mp4: videoLoader,
+            webm: videoLoader,
+            ogg: videoLoader,
         };
         if (parameters) {
             this.loaderMap = Object.assign(this.loaderMap, parameters.loaderExtends);
@@ -54,7 +54,7 @@ export class LoaderManager extends EventDispatcher {
             loadTotal: this.loadTotal,
             loadSuccess: this.loadSuccess,
             loadError: this.loadError,
-            resourceMap: this.resourceMap
+            resourceMap: this.resourceMap,
         });
         return this;
     }
@@ -69,7 +69,7 @@ export class LoaderManager extends EventDispatcher {
     }
     setPath(path) {
         const map = this.loaderMap;
-        Object.keys(map).forEach(ext => {
+        Object.keys(map).forEach((ext) => {
             map[ext].setPath(path);
         });
         this.path = path;
@@ -80,7 +80,7 @@ export class LoaderManager extends EventDispatcher {
         this.isLoading = true;
         this.dispatchEvent({
             type: LOADERMANAGER.BEFORELOAD,
-            urlList: [...urlList]
+            urlList: [...urlList],
         });
         if (urlList.length <= 0) {
             this.checkLoaded();
@@ -91,12 +91,12 @@ export class LoaderManager extends EventDispatcher {
         const resourceMap = this.resourceMap;
         const loaderMap = this.loaderMap;
         const loadDetailMap = this.loadDetailMap;
-        for (let url of urlList) {
+        for (const url of urlList) {
             const detail = {
                 url,
                 progress: 0,
                 error: false,
-                message: url
+                message: url,
             };
             loadDetailMap[url] = detail;
             // 判断有无缓存
@@ -105,18 +105,18 @@ export class LoaderManager extends EventDispatcher {
                 this.loadSuccess += 1;
                 this.dispatchEvent({
                     type: LOADERMANAGER.DETAILLOADED,
-                    detail
+                    detail,
                 });
                 this.dispatchEvent({
                     type: LOADERMANAGER.LOADING,
                     loadTotal: this.loadTotal,
                     loadSuccess: this.loadSuccess,
-                    loadError: this.loadError
+                    loadError: this.loadError,
                 });
                 this.checkLoaded();
                 continue;
             }
-            const ext = url.split('.').pop()?.toLocaleLowerCase();
+            const ext = url.split(".").pop()?.toLocaleLowerCase();
             if (!ext) {
                 detail.message = `url: ${url} 地址有误，无法获取文件格式。`;
                 console.warn(detail.message);
@@ -125,13 +125,13 @@ export class LoaderManager extends EventDispatcher {
                 this.loadError += 1;
                 this.dispatchEvent({
                     type: LOADERMANAGER.DETAILLOADED,
-                    detail
+                    detail,
                 });
                 this.dispatchEvent({
                     type: LOADERMANAGER.LOADING,
                     loadTotal: this.loadTotal,
                     loadSuccess: this.loadSuccess,
-                    loadError: this.loadError
+                    loadError: this.loadError,
                 });
                 continue;
             }
@@ -144,50 +144,53 @@ export class LoaderManager extends EventDispatcher {
                 this.loadError += 1;
                 this.dispatchEvent({
                     type: LOADERMANAGER.DETAILLOADED,
-                    detail
+                    detail,
                 });
                 this.dispatchEvent({
                     type: LOADERMANAGER.LOADING,
                     loadTotal: this.loadTotal,
                     loadSuccess: this.loadSuccess,
-                    loadError: this.loadError
+                    loadError: this.loadError,
                 });
                 continue;
             }
-            loader.loadAsync(url, (event) => {
+            loader
+                .loadAsync(url, (event) => {
                 detail.progress = Number((event.loaded / event.total).toFixed(2));
                 this.dispatchEvent({
                     type: LOADERMANAGER.DETAILLOADING,
-                    detail
+                    detail,
                 });
-            }).then(res => {
+            })
+                .then((res) => {
                 detail.progress = 1;
                 this.loadSuccess += 1;
                 this.resourceMap.set(url, res);
                 this.dispatchEvent({
                     type: LOADERMANAGER.DETAILLOADED,
-                    detail
+                    detail,
                 });
                 this.dispatchEvent({
                     type: LOADERMANAGER.LOADING,
                     loadTotal: this.loadTotal,
                     loadSuccess: this.loadSuccess,
-                    loadError: this.loadError
+                    loadError: this.loadError,
                 });
                 this.checkLoaded();
-            }).catch(err => {
+            })
+                .catch((err) => {
                 detail.error = true;
                 detail.message = JSON.stringify(err);
                 this.loadError += 1;
                 this.dispatchEvent({
                     type: LOADERMANAGER.DETAILLOADED,
-                    detail
+                    detail,
                 });
                 this.dispatchEvent({
                     type: LOADERMANAGER.LOADING,
                     loadTotal: this.loadTotal,
                     loadSuccess: this.loadSuccess,
-                    loadError: this.loadError
+                    loadError: this.loadError,
                 });
                 this.checkLoaded();
             });

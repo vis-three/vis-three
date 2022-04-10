@@ -19,7 +19,7 @@ export declare class SceneCompiler extends Compiler {
     private background;
     private environment;
     private fog;
-    linkTextureMap(map: Map<SymbolConfig['type'], Texture>): this;
+    linkTextureMap(map: Map<SymbolConfig["type"], Texture>): this;
     set(path: string[], key: string, value: any): this;
     setTarget(target: SceneCompilerTarget): this;
     compileAll(): this;

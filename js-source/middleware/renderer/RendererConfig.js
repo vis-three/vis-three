@@ -1,15 +1,15 @@
 import { LinearEncoding, NoToneMapping, PCFShadowMap } from "three";
 export const getWebGLRendererConfig = function () {
     return {
-        vid: 'WebGLRenderer',
-        type: 'WebGLRenderer',
-        clearColor: 'rgba(0, 0, 0, 0)',
+        vid: "WebGLRenderer",
+        type: "WebGLRenderer",
+        clearColor: "rgba(0, 0, 0, 0)",
         outputEncoding: LinearEncoding,
         physicallyCorrectLights: false,
         shadowMap: {
             enabled: false,
             autoUpdate: true,
-            type: PCFShadowMap
+            type: PCFShadowMap,
         },
         toneMapping: NoToneMapping,
         toneMappingExposure: 1,

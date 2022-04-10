@@ -16,7 +16,7 @@ export class SceneCompiler extends Compiler {
         }
         else {
             this.target = {
-                [CONFIGTYPE.SCENE]: getSceneConfig()
+                [CONFIGTYPE.SCENE]: getSceneConfig(),
             };
             this.scene = new Scene();
         }
@@ -58,12 +58,12 @@ export class SceneCompiler extends Compiler {
         }
     }
     fog(config) {
-        if (config.type === '') {
+        if (config.type === "") {
             this.fogCache = null;
             this.scene.fog = null;
             return;
         }
-        if (config.type === 'Fog') {
+        if (config.type === "Fog") {
             if (this.fogCache instanceof Fog) {
                 const fog = this.fogCache;
                 fog.color = new Color(config.color);
@@ -76,7 +76,7 @@ export class SceneCompiler extends Compiler {
             }
             return;
         }
-        if (config.type === 'FogExp2') {
+        if (config.type === "FogExp2") {
             if (this.fogCache instanceof FogExp2) {
                 const fog = this.fogCache;
                 fog.color = new Color(config.color);
@@ -100,7 +100,7 @@ export class SceneCompiler extends Compiler {
             const actionMap = {
                 background: () => this.background(value),
                 environment: () => this.environment(value),
-                fog: () => this.fog(this.target[CONFIGTYPE.SCENE].fog)
+                fog: () => this.fog(this.target[CONFIGTYPE.SCENE].fog),
             };
             if (path.length) {
                 key = path.pop();

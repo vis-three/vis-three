@@ -1,10 +1,10 @@
-import { BaseEvent, Camera, Object3D } from 'three';
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
+import { BaseEvent, Camera, Object3D } from "three";
+import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 export declare enum TRANSFORMEVENT {
     OBJECTCHANGED = "objectChanged"
 }
 export interface ObjectChangedEvent extends BaseEvent {
-    type: 'objectChanged';
+    type: "objectChanged";
     transObjectSet: Set<Object3D>;
     mode: string;
     target: Object3D;

@@ -12,36 +12,40 @@ export var VIEWPOINT;
 export const ViewpointPlugin = function (params = {}) {
     // 前置条件
     if (!this.webGLRenderer) {
-        console.error('must install some renderer before BasicViewpoint plugin.');
+        console.error("must install some renderer before BasicViewpoint plugin.");
         return false;
     }
     if (!this.scene) {
-        console.error('must install some scene before BasicViewpoint plugin.');
+        console.error("must install some scene before BasicViewpoint plugin.");
         return false;
     }
     !params.viewpoint && (params.viewpoint = VIEWPOINT.DEFAULT);
     !params.perspective && (params.perspective = {});
-    !params.perspective.position && (params.perspective.position = {
-        x: 60,
-        y: 60,
-        z: 60
-    });
-    !params.perspective.lookAt && (params.perspective.lookAt = {
-        x: 0,
-        y: 0,
-        z: 0
-    });
-    !params.perspective.up && (params.perspective.up = {
-        x: 0,
-        y: 1,
-        z: 0
-    });
+    !params.perspective.position &&
+        (params.perspective.position = {
+            x: 60,
+            y: 60,
+            z: 60,
+        });
+    !params.perspective.lookAt &&
+        (params.perspective.lookAt = {
+            x: 0,
+            y: 0,
+            z: 0,
+        });
+    !params.perspective.up &&
+        (params.perspective.up = {
+            x: 0,
+            y: 1,
+            z: 0,
+        });
     !params.orthograpbic && (params.orthograpbic = {});
-    !params.orthograpbic.up && (params.orthograpbic.up = {
-        x: 0,
-        y: 1,
-        z: 0
-    });
+    !params.orthograpbic.up &&
+        (params.orthograpbic.up = {
+            x: 0,
+            y: 1,
+            z: 0,
+        });
     const perspectiveCamera = new PerspectiveCamera();
     perspectiveCamera.position.set(params.perspective.position.x, params.perspective.position.y, params.perspective.position.z);
     perspectiveCamera.lookAt(params.perspective.lookAt.x, params.perspective.lookAt.y, params.perspective.lookAt.z);
@@ -50,12 +54,12 @@ export const ViewpointPlugin = function (params = {}) {
     orthograpbicCamera.up.set(params.perspective.up.x, params.perspective.up.y, params.perspective.up.z);
     this.setViewpoint = function (viewpoint) {
         this.dispatchEvent({
-            type: 'setViewpoint',
-            viewpoint
+            type: "setViewpoint",
+            viewpoint,
         });
         return this;
     };
-    this.addEventListener('setSize', event => {
+    this.addEventListener("setSize", (event) => {
         const width = event.width;
         const height = event.height;
         perspectiveCamera.aspect = width / height;
@@ -67,7 +71,7 @@ export const ViewpointPlugin = function (params = {}) {
         orthograpbicCamera.updateProjectionMatrix();
     });
     const distance = params.orthograpbic.distance || 60;
-    this.addEventListener('setViewpoint', event => {
+    this.addEventListener("setViewpoint", (event) => {
         const viewpoint = event.viewpoint;
         if (viewpoint === VIEWPOINT.DEFAULT) {
             this.setCamera(perspectiveCamera);
@@ -99,6 +103,9 @@ export const ViewpointPlugin = function (params = {}) {
         }
         else {
             this.setCamera(orthograpbicCamera);
+        }
+        if (this.objectHelperManager) {
+            this.objectHelperManager.addFilteredObject(perspectiveCamera, orthograpbicCamera);
         }
     });
     return true;

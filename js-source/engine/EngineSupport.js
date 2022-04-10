@@ -37,7 +37,7 @@ export class EngineSupport extends Engine {
         // 再清空外部资源缓存
         const resourceManager = this.resourceManager;
         const loaderManager = this.loaderManager;
-        assets.forEach(url => {
+        assets.forEach((url) => {
             resourceManager.remove(url);
             loaderManager.remove(url);
         });
@@ -46,15 +46,15 @@ export class EngineSupport extends Engine {
         this.renderManager.stop();
         // 导入外部资源
         if (config.assets && config.assets.length) {
-            this.loaderManager.reset().load(config.assets);
             const mappedFun = (event) => {
                 delete config.assets;
                 this.loadLifeCycle(config);
-                this.resourceManager.removeEventListener('mapped', mappedFun);
+                this.resourceManager.removeEventListener("mapped", mappedFun);
                 callback && callback(event);
                 this.renderManager.play();
             };
-            this.resourceManager.addEventListener('mapped', mappedFun);
+            this.resourceManager.addEventListener("mapped", mappedFun);
+            this.loaderManager.reset().load(config.assets);
         }
         else {
             this.loadLifeCycle(config);
@@ -68,15 +68,15 @@ export class EngineSupport extends Engine {
             this.renderManager.stop();
             // 导入外部资源
             if (config.assets && config.assets.length) {
-                this.loaderManager.reset().load(config.assets);
                 const mappedFun = (event) => {
                     delete config.assets;
                     this.loadLifeCycle(config);
-                    this.resourceManager.removeEventListener('mapped', mappedFun);
+                    this.resourceManager.removeEventListener("mapped", mappedFun);
                     this.renderManager.play();
                     resolve(event);
                 };
-                this.resourceManager.addEventListener('mapped', mappedFun);
+                this.resourceManager.addEventListener("mapped", mappedFun);
+                this.loaderManager.reset().load(config.assets);
             }
             else {
                 this.loadLifeCycle(config);

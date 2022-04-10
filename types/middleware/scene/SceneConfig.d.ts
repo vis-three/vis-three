@@ -1,6 +1,6 @@
 import { SymbolConfig } from "../common/CommonConfig";
 export interface SceneFogConfig {
-    type: 'Fog' | 'FogExp2' | '';
+    type: "Fog" | "FogExp2" | "";
     color: string;
     near: number;
     far: number;

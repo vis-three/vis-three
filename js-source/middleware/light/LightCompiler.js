@@ -1,6 +1,6 @@
-import { AmbientLight, BufferGeometry, Color, DirectionalLight, Material, PointLight, SpotLight } from "three";
+import { AmbientLight, BufferGeometry, Color, DirectionalLight, Material, PointLight, SpotLight, } from "three";
 import { Compiler } from "../../core/Compiler";
-import { ObjectCompiler } from "../object/ObjectCompiler";
+import { ObjectCompiler, } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { CONFIGTYPE } from "../constants/configType";
 export class LightCompiler extends ObjectCompiler {
@@ -22,7 +22,7 @@ export class LightCompiler extends ObjectCompiler {
         this.filterAttribute = {
             scale: true,
             rotation: true,
-            lookAt: true
+            lookAt: true,
         };
     }
     getReplaceMaterial() {
@@ -56,11 +56,11 @@ export class LightCompiler extends ObjectCompiler {
             return this;
         }
         let object = this.map.get(vid);
-        if (key === 'color') {
+        if (key === "color") {
             object.color = new Color(value);
             return this;
         }
-        for (let key of path) {
+        for (const key of path) {
             if (this.filterAttribute[key]) {
                 return this;
             }

@@ -3,8 +3,8 @@ import { getObjectConfig } from "../object/ObjectConfig";
 export const getPointsConfig = function () {
     return Object.assign(getObjectConfig(), {
         type: CONFIGTYPE.POINTS,
-        geometry: '',
-        material: ''
+        geometry: "",
+        material: "",
     });
 };
 //# sourceMappingURL=PointsConfig.js.map

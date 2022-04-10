@@ -10,10 +10,10 @@ export class ProxyBroadcast extends EventDispatcher {
         if (!path) {
             path = [];
         }
-        if (ProxyBroadcast.proxyWeakSet.has(object) || (typeof object !== 'object' && object !== null)) {
+        if (ProxyBroadcast.proxyWeakSet.has(object) ||
+            (typeof object !== "object" && object !== null)) {
             return object;
         }
-        const self = this;
         const handler = {
             get: (target, key) => {
                 return Reflect.get(target, key);
@@ -24,31 +24,35 @@ export class ProxyBroadcast extends EventDispatcher {
                 // 新增
                 if (target[key] === undefined) {
                     // 如果是对象就递归
-                    if (typeof value === 'object' && value !== null && !ProxyBroadcast.proxyWeakSet.has(value)) {
+                    if (typeof value === "object" &&
+                        value !== null &&
+                        !ProxyBroadcast.proxyWeakSet.has(value)) {
                         const newPath = path.concat([key]);
                         value = this.proxyExtends(value, newPath);
                     }
                     result = Reflect.set(target, key, value);
                     this.broadcast({
-                        operate: 'add',
+                        operate: "add",
                         path: path.concat([]),
                         key,
-                        value
+                        value,
                     });
                     // 设置值
                 }
                 else {
                     // 如果是对象就递归
-                    if (typeof value === 'object' && value !== null && !ProxyBroadcast.proxyWeakSet.has(value)) {
+                    if (typeof value === "object" &&
+                        value !== null &&
+                        !ProxyBroadcast.proxyWeakSet.has(value)) {
                         const newPath = path.concat([key]);
                         value = this.proxyExtends(value, newPath);
                     }
                     result = Reflect.set(target, key, value);
                     this.broadcast({
-                        operate: 'set',
+                        operate: "set",
                         path: path.concat([]),
                         key,
-                        value: value
+                        value: value,
                     });
                 }
                 return result;
@@ -57,19 +61,21 @@ export class ProxyBroadcast extends EventDispatcher {
                 // 先执行反射
                 const result = Reflect.deleteProperty(target, key);
                 this.broadcast({
-                    operate: 'delete',
+                    operate: "delete",
                     path: path.concat([]),
                     key,
-                    value: ''
+                    value: "",
                 });
                 return result;
-            }
+            },
         };
         // 递归整个对象进行代理拓展
-        if (typeof object === 'object' && object !== null) {
+        if (typeof object === "object" && object !== null) {
             for (const key in object) {
                 const tempPath = path.concat([key]);
-                if (isValidKey(key, object) && typeof object[key] === 'object' && object[key] !== null) {
+                if (isValidKey(key, object) &&
+                    typeof object[key] === "object" &&
+                    object[key] !== null) {
                     object[key] = this.proxyExtends(object[key], tempPath);
                 }
             }
@@ -83,14 +89,14 @@ export class ProxyBroadcast extends EventDispatcher {
         // 过滤
         const filterMap = {
             __poto__: true,
-            length: true
+            length: true,
         };
         if (isValidKey(key, filterMap) && filterMap[key]) {
             return this;
         }
         this.dispatchEvent({
-            type: 'broadcast',
-            notice: { operate, path, key, value }
+            type: "broadcast",
+            notice: { operate, path, key, value },
         });
         return this;
     }

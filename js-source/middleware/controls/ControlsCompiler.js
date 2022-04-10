@@ -1,6 +1,6 @@
 import { Compiler } from "../../core/Compiler";
 import { CONFIGTYPE } from "../constants/configType";
-import { getOrbitControlsConfig, getTransformControlsConfig } from "./ControlsConfig";
+import { getOrbitControlsConfig, getTransformControlsConfig, } from "./ControlsConfig";
 import { OrbitControlsProcessor } from "./OrbitControlsProcessor";
 import { TransformControlsProcessor } from "./TransformControlsProcessor";
 export class ControlsCompiler extends Compiler {
@@ -10,23 +10,26 @@ export class ControlsCompiler extends Compiler {
     orbitControls;
     processorMap = {
         [CONFIGTYPE.TRNASFORMCONTROLS]: new TransformControlsProcessor(),
-        [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor()
+        [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor(),
     };
     controlMap = {
         [CONFIGTYPE.TRNASFORMCONTROLS]: undefined,
-        [CONFIGTYPE.ORBITCONTROLS]: undefined
+        [CONFIGTYPE.ORBITCONTROLS]: undefined,
     };
     constructor(parameters) {
         super();
         if (parameters) {
             parameters.target && (this.target = parameters.target);
-            parameters.transformControls && (this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] = parameters.transformControls);
-            parameters.orbitControls && (this.controlMap[CONFIGTYPE.ORBITCONTROLS] = parameters.orbitControls);
+            parameters.transformControls &&
+                (this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] =
+                    parameters.transformControls);
+            parameters.orbitControls &&
+                (this.controlMap[CONFIGTYPE.ORBITCONTROLS] = parameters.orbitControls);
         }
         else {
             this.target = {
                 [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig(),
-                [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig()
+                [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig(),
             };
         }
     }
@@ -49,7 +52,7 @@ export class ControlsCompiler extends Compiler {
         return {
             config,
             processer,
-            control
+            control,
         };
     }
     set(vid, path, key, value) {
@@ -57,13 +60,15 @@ export class ControlsCompiler extends Compiler {
         if (!assembly) {
             return this;
         }
-        assembly.processer.assemble({
+        assembly.processer
+            .assemble({
             config: assembly.config,
-            control: assembly.control
-        }).process({
+            control: assembly.control,
+        })
+            .process({
             key,
             path,
-            value
+            value,
         });
         return this;
     }
@@ -72,10 +77,13 @@ export class ControlsCompiler extends Compiler {
         if (!assembly) {
             return this;
         }
-        assembly.processer.assemble({
+        assembly.processer
+            .assemble({
             config: assembly.config,
-            control: assembly.control
-        }).processAll().dispose();
+            control: assembly.control,
+        })
+            .processAll()
+            .dispose();
         return this;
     }
     setTarget(target) {
@@ -83,15 +91,18 @@ export class ControlsCompiler extends Compiler {
         return this;
     }
     compileAll() {
-        for (let vid of Object.keys(this.target)) {
+        for (const vid of Object.keys(this.target)) {
             const assembly = this.getAssembly(vid);
             if (!assembly) {
                 continue;
             }
-            assembly.processer.assemble({
+            assembly.processer
+                .assemble({
                 config: assembly.config,
-                control: assembly.control
-            }).processAll().dispose();
+                control: assembly.control,
+            })
+                .processAll()
+                .dispose();
         }
         return this;
     }

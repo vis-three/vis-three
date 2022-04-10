@@ -1,10 +1,10 @@
-import { DataSupportManager } from "../manager/DataSupportManager";
+import { DataSupportManager, } from "../manager/DataSupportManager";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { generateConfig } from "../convenient/generateConfig";
 export const DataSupportManagerPlugin = function (params) {
     if (this.dataSupportManager) {
-        console.warn('engine has installed dataSupportManager plugin.');
+        console.warn("engine has installed dataSupportManager plugin.");
         return false;
     }
     const dataSupportManager = new DataSupportManager(params);
@@ -12,7 +12,7 @@ export const DataSupportManagerPlugin = function (params) {
     this.toJSON = function () {
         if (this.loaderManager) {
             const assets = {
-                assets: JSON.parse(this.loaderManager.toJSON())
+                assets: JSON.parse(this.loaderManager.toJSON()),
             };
             return this.dataSupportManager.toJSON(assets);
         }

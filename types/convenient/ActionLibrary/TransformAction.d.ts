@@ -8,7 +8,7 @@ export declare class TransformAction implements BasicAction {
     private nextState;
     private prevState;
     constructor(params: TransformActionParameters);
-    generate(status: 'next' | 'prev'): void;
+    generate(status: "next" | "prev"): void;
     next(): void;
     prev(): void;
 }

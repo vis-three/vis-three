@@ -3,7 +3,7 @@ import { EVENTNAME } from "../../manager/EventManager";
 import { isValidEnum } from "../../utils/utils";
 export const EventRule = function (notice, compiler) {
     const { operate, key, path, value } = notice;
-    if (operate === 'add') {
+    if (operate === "add") {
         // 新增配置
         if (validate(key) && !path.length) {
             compiler.add(key, value);
@@ -25,7 +25,7 @@ export const EventRule = function (notice, compiler) {
         }
         return;
     }
-    if (operate === 'set') {
+    if (operate === "set") {
         if (!path.length) {
             return;
         }
@@ -45,7 +45,7 @@ export const EventRule = function (notice, compiler) {
         compiler.updateEvent(vid, eventName, Number(index));
         return;
     }
-    if (operate === 'delete') {
+    if (operate === "delete") {
         if (validate(key) && !path.length) {
             compiler.remove(key);
         }

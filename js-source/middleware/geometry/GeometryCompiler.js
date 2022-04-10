@@ -1,4 +1,4 @@
-import { BoxBufferGeometry, BufferGeometry, Euler, Matrix4, PlaneBufferGeometry, Quaternion, SphereBufferGeometry, Vector3 } from "three";
+import { BoxBufferGeometry, BufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, Euler, Matrix4, PlaneBufferGeometry, Quaternion, SphereBufferGeometry, Vector3, } from "three";
 import { validate } from "uuid";
 import { LoadGeometry } from "../../extends/geometry/LoadGeometry";
 import { Compiler } from "../../core/Compiler";
@@ -13,8 +13,8 @@ export class GeometryCompiler extends Compiler {
         const rotation = config.rotation;
         const scale = config.scale;
         const materix = new Matrix4();
-        const vPostion = new Vector3((box.max.x - box.min.x) / 2 * position.x, (box.max.y - box.min.y) / 2 * position.y, (box.max.z - box.min.z) / 2 * position.z);
-        const quaternion = new Quaternion().setFromEuler(new Euler(rotation.x, rotation.y, rotation.z, 'XYZ'));
+        const vPostion = new Vector3(((box.max.x - box.min.x) / 2) * position.x, ((box.max.y - box.min.y) / 2) * position.y, ((box.max.z - box.min.z) / 2) * position.z);
+        const quaternion = new Quaternion().setFromEuler(new Euler(rotation.x, rotation.y, rotation.z, "XYZ"));
         const vScale = new Vector3(scale.x, scale.y, scale.z);
         materix.compose(vPostion, quaternion, vScale);
         geometry.applyMatrix4(materix);
@@ -40,11 +40,23 @@ export class GeometryCompiler extends Compiler {
             return GeometryCompiler.transfromAnchor(new PlaneBufferGeometry(config.width, config.height, config.widthSegments, config.heightSegments), config);
         });
         constructMap.set(CONFIGTYPE.LOADGEOMETRY, (config) => {
-            return GeometryCompiler.transfromAnchor(new LoadGeometry(this.getRescource(config.url)), config);
+            return GeometryCompiler.transfromAnchor(new LoadGeometry(this.getGeometry(config.url)), config);
+        });
+        constructMap.set(CONFIGTYPE.CIRCLEGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(new CircleBufferGeometry(config.radius, config.segments, config.thetaStart, config.thetaLength), config);
+        });
+        constructMap.set(CONFIGTYPE.CONEGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(new ConeBufferGeometry(config.radius, config.height, config.radialSegments, config.heightSegments, config.openEnded, config.thetaStart, config.thetaLength), config);
+        });
+        constructMap.set(CONFIGTYPE.CYLINDERGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(new CylinderBufferGeometry(config.radiusTop, config.radiusBottom, config.height, config.radialSegments, config.heightSegments, config.openEnded, config.thetaStart, config.thetaLength), config);
+        });
+        constructMap.set(CONFIGTYPE.EDGESGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(new EdgesGeometry(this.map.get(config.url), config.thresholdAngle), config);
         });
         this.constructMap = constructMap;
         this.resourceMap = new Map();
-        this.replaceGeometry = new BoxBufferGeometry(10, 10, 10);
+        this.replaceGeometry = new BoxBufferGeometry(5, 5, 5);
     }
     linkRescourceMap(map) {
         this.resourceMap = map;
@@ -55,7 +67,8 @@ export class GeometryCompiler extends Compiler {
             console.error(`rescoure can not found url: ${url}`);
             return this.replaceGeometry.clone();
         }
-        if (this.resourceMap.has(url) && this.resourceMap.get(url) instanceof BufferGeometry) {
+        if (this.resourceMap.has(url) &&
+            this.resourceMap.get(url) instanceof BufferGeometry) {
             const geometry = this.resourceMap.get(url);
             return geometry.clone();
         }
@@ -63,6 +76,12 @@ export class GeometryCompiler extends Compiler {
             console.error(`url mapping rescource is not class with BufferGeometry: ${url}`);
             return this.replaceGeometry.clone();
         }
+    }
+    getGeometry(url) {
+        if (this.map.has(url)) {
+            return this.map.get(url);
+        }
+        return this.getRescource(url);
     }
     getMap() {
         return this.map;

@@ -15,6 +15,7 @@ import { CompilerManager } from "../manager/CompilerManager";
 import { KeyboardManager } from "../manager/KeyboardManager";
 import { VIEWPOINT } from "../plugins/ViewpointPlugin";
 import { DISPLAYMODE } from "../plugins/DisplayModePlugin";
+import { ObjectHelperManager } from "../manager/ObjectHelperManager";
 export declare enum ENGINEPLUGIN {
     WEBGLRENDERER = "WebGLRenderer",
     SCENE = "Scene",
@@ -59,6 +60,7 @@ export declare class Engine extends EventDispatcher {
     dataSupportManager?: DataSupportManager;
     compilerManager?: CompilerManager;
     keyboardManager?: KeyboardManager;
+    objectHelperManager?: ObjectHelperManager;
     stats?: Stats;
     transing?: boolean;
     displayMode?: DISPLAYMODE;

@@ -20,10 +20,10 @@ export declare class MaterialCompiler extends Compiler {
     constructor(parameters?: MaterialCompilerParameters);
     private getTexture;
     linkRescourceMap(map: Map<string, unknown>): this;
-    linkTextureMap(textureMap: Map<SymbolConfig['vid'], Texture>): this;
+    linkTextureMap(textureMap: Map<SymbolConfig["vid"], Texture>): this;
     add(vid: string, config: MaterialAllType): this;
     set(vid: string, path: string[], key: string, value: any): this;
-    getMap(): Map<SymbolConfig['vid'], Material>;
+    getMap(): Map<SymbolConfig["vid"], Material>;
     setTarget(target: MaterialCompilerTarget): this;
     compileAll(): this;
     dispose(): this;

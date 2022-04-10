@@ -1,12 +1,12 @@
-import { CompilerManager } from "../manager/CompilerManager";
+import { CompilerManager, } from "../manager/CompilerManager";
 export const CompilerManagerPlugin = function (params) {
     if (this.compilerManager) {
-        console.warn('engine has installed compilerManager plugin.');
+        console.warn("engine has installed compilerManager plugin.");
         return false;
     }
     const compilerManager = new CompilerManager();
     this.compilerManager = compilerManager;
-    this.addEventListener('dispose', () => {
+    this.addEventListener("dispose", () => {
         this.compilerManager.dispose();
     });
     this.completeSet.add(() => {
@@ -23,7 +23,7 @@ export const CompilerManagerPlugin = function (params) {
             return;
         }
         if (!this.dataSupportManager) {
-            console.warn('must install dataSupportManager before compilerManager plugin.');
+            console.warn("must install dataSupportManager before compilerManager plugin.");
             return;
         }
         // if (this instanceof EngineSupport) {

@@ -4,13 +4,13 @@ export class ModelingEngine extends Engine {
         super();
         this.install(ENGINEPLUGIN.WEBGLRENDERER, {
             antialias: true,
-            alpha: true
+            alpha: true,
         })
             .install(ENGINEPLUGIN.SCENE)
             .install(ENGINEPLUGIN.POINTERMANAGER)
             .install(ENGINEPLUGIN.EVENTMANAGER)
             .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
-            WebGLMultisampleRenderTarget: true
+            WebGLMultisampleRenderTarget: true,
         })
             .install(ENGINEPLUGIN.SELECTION)
             .install(ENGINEPLUGIN.AXESHELPER)

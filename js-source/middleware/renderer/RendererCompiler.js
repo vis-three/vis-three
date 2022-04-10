@@ -1,10 +1,15 @@
 import { Engine } from "../../engine/Engine";
 import { Compiler } from "../../core/Compiler";
-import { WebGLRendererCompiler } from "./WebGLRendererCompiler";
+import { CONFIGTYPE } from "../constants/configType";
+import { WebGLRendererProcessor } from "./WebGLRendererProcessor";
 export class RendererCompiler extends Compiler {
     target;
     engine;
     map;
+    processorMap = {
+        [CONFIGTYPE.WEBGLRENDERER]: new WebGLRendererProcessor(),
+    };
+    rendererMap = new Map();
     constructor(parameters) {
         super();
         if (parameters) {
@@ -17,31 +22,37 @@ export class RendererCompiler extends Compiler {
         }
         this.map = {};
     }
-    add(type, config) {
-        if (type === 'WebGLRenderer') {
-            const rendererCompiler = new WebGLRendererCompiler({
-                engine: this.engine,
-                target: config
-            });
-            rendererCompiler.compileAll();
-            this.map[type] = rendererCompiler;
+    assembly(vid, callback) {
+        const config = this.target[vid];
+        if (!config) {
+            console.warn(`controls compiler can not found this config: '${vid}'`);
+            return;
         }
+        const processer = this.processorMap[config.type];
+        if (!processer) {
+            console.warn(`controls compiler can not support this controls: '${vid}'`);
+            return;
+        }
+        const renderer = this.rendererMap.get(vid);
+        if (!renderer) {
+            console.warn(`renderer compiler can not found type of control: '${config.type}'`);
+            return;
+        }
+        processer.dispose().assemble({
+            config,
+            renderer,
+            processer,
+            engine: this.engine,
+        });
+        callback(processer);
     }
-    set(path, key, value) {
-        const rendererType = path.shift();
-        // 整体替换
-        if (!rendererType) {
-            this.map[key].setTarget(value).compileAll();
-            return this;
+    add(config) {
+        if (config.type === CONFIGTYPE.WEBGLRENDERER) {
+            this.rendererMap.set(config.vid, this.engine.webGLRenderer);
         }
-        if (this.map[rendererType]) {
-            this.map[rendererType].set(path, key, value);
-            return this;
-        }
-        else {
-            console.warn(`renderer compiler can not support this type: ${rendererType}`);
-            return this;
-        }
+        this.assembly(config.vid, (processer) => {
+            processer.processAll().dispose();
+        });
     }
     setTarget(target) {
         this.target = target;
@@ -49,9 +60,9 @@ export class RendererCompiler extends Compiler {
     }
     compileAll() {
         const target = this.target;
-        Object.keys(target).forEach(type => {
-            this.add(type, target[type]);
-        });
+        for (const config of Object.values(target)) {
+            this.add(config);
+        }
         return this;
     }
     dispose() {

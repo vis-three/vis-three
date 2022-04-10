@@ -33,9 +33,10 @@ export class CompilerManager {
     constructor(parameters) {
         this.objectCompilerList = [];
         if (parameters) {
-            Object.keys(parameters).forEach(key => {
+            Object.keys(parameters).forEach((key) => {
                 this[key] = parameters[key];
-                parameters[key].IS_OBJECTCOMPILER && this.objectCompilerList.push(parameters[key]);
+                parameters[key].IS_OBJECTCOMPILER &&
+                    this.objectCompilerList.push(parameters[key]);
             });
         }
     }
@@ -56,87 +57,87 @@ export class CompilerManager {
         const pointsDataSupport = dataSupportManager.pointsDataSupport;
         const groupDataSupport = dataSupportManager.groupDataSupport;
         const textureCompiler = new TextureCompiler({
-            target: textureDataSupport.getData()
+            target: textureDataSupport.getData(),
         });
         this.textureCompiler = textureCompiler;
         const materialCompiler = new MaterialCompiler({
-            target: materialDataSupport.getData()
+            target: materialDataSupport.getData(),
         });
         this.materialCompiler = materialCompiler;
         const geometryCompiler = new GeometryCompiler({
-            target: geometryDataSupport.getData()
+            target: geometryDataSupport.getData(),
         });
         this.geometryCompiler = geometryCompiler;
         const cameraCompiler = new CameraCompiler({
             target: cameraDataSupport.getData(),
             scene: engine.scene,
-            engine: engine
+            engine: engine,
         });
         this.cameraCompiler = cameraCompiler;
         this.objectCompilerList.push(cameraCompiler);
         const lightCompiler = new LightCompiler({
             scene: engine.scene,
-            target: lightDataSupport.getData()
+            target: lightDataSupport.getData(),
         });
         this.lightCompiler = lightCompiler;
         this.objectCompilerList.push(lightCompiler);
         const spriteCompiler = new SpriteCompiler({
             target: spriteDataSupport.getData(),
-            scene: engine.scene
+            scene: engine.scene,
         });
         this.spriteCompiler = spriteCompiler;
         this.objectCompilerList.push(spriteCompiler);
         const lineCompiler = new LineCompiler({
             target: lineDataSupport.getData(),
-            scene: engine.scene
+            scene: engine.scene,
         });
         this.lineCompiler = lineCompiler;
         this.objectCompilerList.push(lineCompiler);
         const meshCompiler = new MeshCompiler({
             target: meshDataSupport.getData(),
-            scene: engine.scene
+            scene: engine.scene,
         });
         this.meshCompiler = meshCompiler;
         this.objectCompilerList.push(meshCompiler);
         const pointsCompiler = new PointsCompiler({
             target: pointsDataSupport.getData(),
-            scene: engine.scene
+            scene: engine.scene,
         });
         this.pointsCompiler = pointsCompiler;
         this.objectCompilerList.push(pointsCompiler);
         const groupCompiler = new GroupCompiler({
             target: groupDataSupport.getData(),
-            scene: engine.scene
+            scene: engine.scene,
         });
         this.groupCompiler = groupCompiler;
         this.objectCompilerList.push(groupCompiler);
         const rendererCompiler = new RendererCompiler({
             target: rendererDataSupport.getData(),
-            engine: engine
+            engine: engine,
         });
         this.rendererCompiler = rendererCompiler;
         const sceneCompiler = new SceneCompiler({
             target: sceneDataSupport.getData(),
-            scene: engine.scene
+            scene: engine.scene,
         });
         this.sceneCompiler = sceneCompiler;
         const controlsCompiler = new ControlsCompiler({
             target: controlsDataSupport.getData(),
             transformControls: engine.transformControls,
-            orbitControls: engine.orbitControls
+            orbitControls: engine.orbitControls,
         });
         this.controlsCompiler = controlsCompiler;
         const eventCompiler = new EventCompiler({
             target: eventDataSupport.getData(),
-            engine: engine
+            engine: engine,
         });
         this.eventCompiler = eventCompiler;
         const resourceManager = engine.resourceManager;
         // 建立编译器链接
         sceneCompiler.linkTextureMap(textureCompiler.getMap());
         materialCompiler.linkTextureMap(textureCompiler.getMap());
-        const objectMapList = this.objectCompilerList.map(elem => elem.getMap());
-        for (let objectCompiler of this.objectCompilerList) {
+        const objectMapList = this.objectCompilerList.map((elem) => elem.getMap());
+        for (const objectCompiler of this.objectCompilerList) {
             objectCompiler
                 .linkGeometryMap(geometryCompiler.getMap())
                 .linkMaterialMap(materialCompiler.getMap())
@@ -164,7 +165,7 @@ export class CompilerManager {
     }
     getObjectSymbol(object) {
         const objectCompilerList = this.objectCompilerList;
-        for (let compiler of objectCompilerList) {
+        for (const compiler of objectCompilerList) {
             const vid = compiler.getObjectSymbol(object);
             if (vid) {
                 return vid;
@@ -174,7 +175,7 @@ export class CompilerManager {
     }
     getObjectBySymbol(vid) {
         const objectCompilerList = this.objectCompilerList;
-        for (let compiler of objectCompilerList) {
+        for (const compiler of objectCompilerList) {
             const object = compiler.getMap().get(vid);
             if (object) {
                 return object;
@@ -202,7 +203,7 @@ export class CompilerManager {
         return this.objectCompilerList;
     }
     dispose() {
-        Object.keys(this).forEach(key => {
+        Object.keys(this).forEach((key) => {
             if (this[key] instanceof Compiler) {
                 this[key].dispose();
             }

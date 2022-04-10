@@ -3,14 +3,16 @@ export class Compiler {
     static applyConfig(config, object, filter = {}, callBack) {
         const filterMap = Object.assign({
             vid: true,
-            type: true
+            type: true,
         }, filter);
         const recursiveConfig = (config, object) => {
             for (const key in config) {
                 if (filterMap[key]) {
                     continue;
                 }
-                if (typeof config[key] === 'object' && typeof config[key] !== null && isValidKey(key, object)) {
+                if (typeof config[key] === "object" &&
+                    typeof config[key] !== null &&
+                    isValidKey(key, object)) {
                     recursiveConfig(config[key], object[key]);
                     continue;
                 }
@@ -22,7 +24,6 @@ export class Compiler {
         recursiveConfig(config, object);
         callBack && callBack();
     }
-    constructor() {
-    }
+    constructor() { }
 }
 //# sourceMappingURL=Compiler.js.map

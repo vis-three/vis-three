@@ -3,8 +3,8 @@ import { getObjectConfig } from "../object/ObjectConfig";
 export const getLineConfig = function () {
     return Object.assign(getObjectConfig(), {
         type: CONFIGTYPE.LINE,
-        geometry: '',
-        material: '',
+        geometry: "",
+        material: "",
     });
 };
 //# sourceMappingURL=LineConfig.js.map

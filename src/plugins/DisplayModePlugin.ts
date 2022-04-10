@@ -136,8 +136,6 @@ export const DisplayModelPlugin: Plugin<DisplayModeParameters> = function (
     Group: true,
   };
 
-  const modeSymbol = Symbol.for("light");
-
   this.scene.addEventListener("afterAdd", (event) => {
     const displayMode = this.displayMode!;
     const objects = event.objects;
@@ -167,7 +165,6 @@ export const DisplayModelPlugin: Plugin<DisplayModeParameters> = function (
         if (!lightSet.has(elem)) {
           lightSet.add(elem);
         }
-        elem[modeSymbol] = true;
         if (
           displayMode !== DISPLAYMODE.ENV &&
           displayMode !== DISPLAYMODE.LIGHT
@@ -210,9 +207,7 @@ export const DisplayModelPlugin: Plugin<DisplayModeParameters> = function (
           continue;
         }
 
-        if (!elem[modeSymbol]) {
-          lightSet.delete(elem);
-        }
+        lightSet.delete(elem);
       } else if (elem instanceof Points && elem.type === "Points") {
         pointsSet.delete(elem);
         materialCacheMap.has(elem) && materialCacheMap.delete(elem);
@@ -287,10 +282,10 @@ export const DisplayModelPlugin: Plugin<DisplayModeParameters> = function (
       });
     };
     // 过滤灯光
+    // TODO: 监听记录light.visible的值
     const filterLight = (): void => {
       lightSet.forEach((light) => {
-        light[modeSymbol] = true;
-        this.scene!.remove(light);
+        light.visible = false;
       });
       this.scene!.add(defaultAmbientLight!);
       this.scene!.add(defaultDirectionalLight!);
@@ -298,8 +293,7 @@ export const DisplayModelPlugin: Plugin<DisplayModeParameters> = function (
     // 还原灯光
     const reduceLight = (): void => {
       lightSet.forEach((light) => {
-        light[modeSymbol] = false;
-        this.scene!.add(light);
+        light.visible = true;
       });
       this.scene!.remove(defaultAmbientLight!);
       this.scene!.remove(defaultDirectionalLight!);

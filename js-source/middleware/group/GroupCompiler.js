@@ -1,7 +1,7 @@
 import { BufferGeometry, Group, Material } from "three";
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ObjectCompiler } from "../object/ObjectCompiler";
+import { ObjectCompiler, } from "../object/ObjectCompiler";
 export class GroupCompiler extends ObjectCompiler {
     COMPILER_NAME = MODULETYPE.GROUP;
     replaceMaterial = new Material();
@@ -11,7 +11,7 @@ export class GroupCompiler extends ObjectCompiler {
         super(parameters);
         this.filterAttribute = {
             lookAt: true,
-            children: true
+            children: true,
         };
     }
     getReplaceMaterial() {
@@ -28,7 +28,7 @@ export class GroupCompiler extends ObjectCompiler {
         this.map.set(vid, group);
         this.weakMap.set(group, vid);
         this.scene.add(group);
-        for (let target of config.children) {
+        for (const target of config.children) {
             this.addChildren(vid, target);
         }
         this.setLookAt(vid, config.lookAt);
@@ -39,12 +39,12 @@ export class GroupCompiler extends ObjectCompiler {
             console.warn(`GroupCompiler: can not found this vid mapping object: '${vid}'`);
             return this;
         }
-        if (key === 'lookAt') {
+        if (key === "lookAt") {
             this.setLookAt(vid, value);
             return this;
         }
         let object = this.map.get(vid);
-        for (let key of path) {
+        for (const key of path) {
             if (this.filterAttribute[key]) {
                 return this;
             }

@@ -8,6 +8,9 @@ export interface ObjectConfig extends SymbolConfig {
     position: Vector3Config;
     rotation: Vector3Config;
     scale: Vector3Config;
+    up: Vector3Config;
     visible: boolean;
+    matrixAutoUpdate: boolean;
+    renderOrder: number;
 }
 export declare const getObjectConfig: () => ObjectConfig;

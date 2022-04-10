@@ -1,9 +1,9 @@
 import { generateConfigFunction } from "../../utils/utils";
 export const openWindow = generateConfigFunction({
-    name: 'openWindow',
-    desp: '打开url浏览窗口',
+    name: "openWindow",
+    desp: "打开url浏览窗口",
     params: {
-        url: ''
-    }
+        url: "",
+    },
 });
 //# sourceMappingURL=configure.js.map

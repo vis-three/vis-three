@@ -4,12 +4,12 @@ export class DisplayEngine extends Engine {
         super();
         this.install(ENGINEPLUGIN.WEBGLRENDERER, {
             antialias: true,
-            alpha: true
+            alpha: true,
         })
             .install(ENGINEPLUGIN.SCENE)
             .install(ENGINEPLUGIN.RENDERMANAGER)
             .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
-            WebGLMultisampleRenderTarget: true
+            WebGLMultisampleRenderTarget: true,
         })
             .install(ENGINEPLUGIN.ORBITCONTROLS)
             .install(ENGINEPLUGIN.POINTERMANAGER)

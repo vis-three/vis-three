@@ -1,6 +1,6 @@
 import { BaseEvent, EventDispatcher } from "./EventDispatcher";
 export interface ProxyNotice {
-    operate: 'add' | 'set' | 'delete';
+    operate: "add" | "set" | "delete";
     path: Array<string>;
     key: string;
     value: any;

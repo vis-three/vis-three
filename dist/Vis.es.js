@@ -3129,11 +3129,15 @@ const parse = (key, value) => {
   }
   return value;
 };
+const clone = (object) => {
+  return JSON.parse(JSON.stringify(object, stringify), parse);
+};
 var JSONHandler = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
   stringify,
-  parse
+  parse,
+  clone
 });
 const _ProxyBroadcast = class extends EventDispatcher {
   constructor() {
@@ -8020,7 +8024,6 @@ const DisplayModelPlugin = function(params = {}) {
     Object3D: true,
     Group: true
   };
-  const modeSymbol = Symbol.for("light");
   this.scene.addEventListener("afterAdd", (event) => {
     const displayMode = this.displayMode;
     const objects = event.objects;
@@ -8047,7 +8050,6 @@ const DisplayModelPlugin = function(params = {}) {
         if (!lightSet.has(elem)) {
           lightSet.add(elem);
         }
-        elem[modeSymbol] = true;
         if (displayMode !== DISPLAYMODE.ENV && displayMode !== DISPLAYMODE.LIGHT) {
           this.scene.remove(elem);
         }
@@ -8082,9 +8084,7 @@ const DisplayModelPlugin = function(params = {}) {
         if (elem === defaultAmbientLight || elem === defaultDirectionalLight) {
           continue;
         }
-        if (!elem[modeSymbol]) {
-          lightSet.delete(elem);
-        }
+        lightSet.delete(elem);
       } else if (elem instanceof Points && elem.type === "Points") {
         pointsSet.delete(elem);
         materialCacheMap.has(elem) && materialCacheMap.delete(elem);
@@ -8154,16 +8154,14 @@ const DisplayModelPlugin = function(params = {}) {
     };
     const filterLight = () => {
       lightSet.forEach((light) => {
-        light[modeSymbol] = true;
-        this.scene.remove(light);
+        light.visible = false;
       });
       this.scene.add(defaultAmbientLight);
       this.scene.add(defaultDirectionalLight);
     };
     const reduceLight = () => {
       lightSet.forEach((light) => {
-        light[modeSymbol] = false;
-        this.scene.add(light);
+        light.visible = true;
       });
       this.scene.remove(defaultAmbientLight);
       this.scene.remove(defaultDirectionalLight);
@@ -8911,7 +8909,7 @@ class ObjectHelperManager extends EventDispatcher {
     return this;
   }
   addObjectHelper(object) {
-    if (this.objectFilter.has(object) || this.helperFilter[object.type] || object.type.toLocaleLowerCase().includes("helper")) {
+    if (this.objectFilter.has(object) || this.helperMap.has(object) || this.helperFilter[object.type] || object.type.toLocaleLowerCase().includes("helper")) {
       return null;
     }
     if (!this.helperGenerator[object.type]) {

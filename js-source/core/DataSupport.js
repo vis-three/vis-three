@@ -9,7 +9,7 @@ export class DataSupport {
         this.translater = new Translater().setRule(rule);
         this.broadcast = new ProxyBroadcast();
         this.data = this.broadcast.proxyExtends(data);
-        this.broadcast.addEventListener('broadcast', (event) => {
+        this.broadcast.addEventListener("broadcast", (event) => {
             this.translater.translate(event.notice);
         });
     }
@@ -27,12 +27,16 @@ export class DataSupport {
     existSymbol(vid) {
         return Boolean(this.data[vid]);
     }
+    addConfig(config) {
+        this.data[config.vid] = config;
+        return this;
+    }
     getConfig(vid) {
         return this.data[vid];
     }
     removeConfig(vid) {
         const data = this.data;
-        data[vid] !== undefined && (delete data[vid]);
+        data[vid] !== undefined && delete data[vid];
     }
     addCompiler(compiler) {
         compiler.setTarget(this.data);
@@ -53,7 +57,7 @@ export class DataSupport {
     remove(config) {
         const data = this.data;
         for (const key in config) {
-            data[key] !== undefined && (delete data[key]);
+            data[key] !== undefined && delete data[key];
         }
         return this;
     }

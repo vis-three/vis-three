@@ -5,8 +5,7 @@ import { LineConfig } from "./LineConfig";
 export interface LineCompilerTarget extends ObjectCompilerTarget<LineConfig> {
     [key: string]: MeshConfig;
 }
-export interface LineCompilerParameters extends ObjectCompilerParameters<LineConfig, LineCompilerTarget> {
-}
+export declare type LineCompilerParameters = ObjectCompilerParameters<LineConfig, LineCompilerTarget>;
 export declare class LineCompiler extends ObjectCompiler<LineConfig, LineCompilerTarget, Line> {
     COMPILER_NAME: string;
     private replaceMaterial;

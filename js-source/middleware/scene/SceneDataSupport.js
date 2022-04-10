@@ -6,9 +6,10 @@ import { SceneRule } from "./SceneRule";
 export class SceneDataSupport extends DataSupport {
     MODULE = MODULETYPE.SCENE;
     constructor(data) {
-        !data && (data = {
-            [CONFIGTYPE.SCENE]: getSceneConfig()
-        });
+        !data &&
+            (data = {
+                [CONFIGTYPE.SCENE]: getSceneConfig(),
+            });
         super(SceneRule, data);
     }
 }

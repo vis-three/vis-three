@@ -1,3 +1,4 @@
+import { DataSupport } from "./../core/DataSupport";
 import { TextureDataSupport } from "../middleware/texture/TextureDataSupport";
 import { MaterialDataSupport } from "../middleware/material/MaterialDataSupport";
 import { LightDataSupport } from "../middleware/light/LightDataSupport";
@@ -7,81 +8,63 @@ import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { RendererDataSupport } from "../middleware/renderer/RendererDataSupport";
 import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
-import { SpriteDataSupport } from '../middleware/sprite/SpriteDataSupport';
-import { EventDataSupport } from '../middleware/event/EventDataSupport';
-import { LineDataSupport } from '../middleware/line/LineDataSupport';
-import { MeshDataSupport } from '../middleware/mesh/MeshDataSupport';
-import { PointsDataSupport } from '../middleware/points/PointsDataSupport';
-import { validate } from 'uuid';
-import { GroupDataSupport } from '../middleware/group/GroupDataSupport';
-import { stringify } from '../convenient/JSONHandler';
+import { SpriteDataSupport } from "../middleware/sprite/SpriteDataSupport";
+import { EventDataSupport } from "../middleware/event/EventDataSupport";
+import { LineDataSupport } from "../middleware/line/LineDataSupport";
+import { MeshDataSupport } from "../middleware/mesh/MeshDataSupport";
+import { PointsDataSupport } from "../middleware/points/PointsDataSupport";
+import { GroupDataSupport } from "../middleware/group/GroupDataSupport";
+import { stringify } from "../convenient/JSONHandler";
+import { getConfigModuleMap } from "../utils/utils";
 export class DataSupportManager {
-    static register = function (module, dataSupport) {
-        return DataSupportManager;
-    };
-    cameraDataSupport;
-    lightDataSupport;
-    geometryDataSupport;
-    textureDataSupport;
-    materialDataSupport;
-    rendererDataSupport;
-    sceneDataSupport;
-    controlsDataSupport;
-    spriteDataSupport;
-    eventDataSupport;
-    lineDataSupport;
-    meshDataSupport;
-    pointsDataSupport;
-    groupDataSupport;
+    static configModuleMap = getConfigModuleMap();
+    cameraDataSupport = new CameraDataSupport();
+    lightDataSupport = new LightDataSupport();
+    geometryDataSupport = new GeometryDataSupport();
+    textureDataSupport = new TextureDataSupport();
+    materialDataSupport = new MaterialDataSupport();
+    rendererDataSupport = new RendererDataSupport();
+    sceneDataSupport = new SceneDataSupport();
+    controlsDataSupport = new ControlsDataSupport();
+    spriteDataSupport = new SpriteDataSupport();
+    eventDataSupport = new EventDataSupport();
+    lineDataSupport = new LineDataSupport();
+    meshDataSupport = new MeshDataSupport();
+    pointsDataSupport = new PointsDataSupport();
+    groupDataSupport = new GroupDataSupport();
     dataSupportMap;
-    objectDataSupportList;
     constructor(parameters) {
-        this.cameraDataSupport = new CameraDataSupport();
-        this.lightDataSupport = new LightDataSupport();
-        this.geometryDataSupport = new GeometryDataSupport();
-        this.textureDataSupport = new TextureDataSupport();
-        this.materialDataSupport = new MaterialDataSupport();
-        this.rendererDataSupport = new RendererDataSupport();
-        this.sceneDataSupport = new SceneDataSupport();
-        this.controlsDataSupport = new ControlsDataSupport();
-        this.spriteDataSupport = new SpriteDataSupport();
-        this.eventDataSupport = new EventDataSupport();
-        this.lineDataSupport = new LineDataSupport();
-        this.meshDataSupport = new MeshDataSupport();
-        this.pointsDataSupport = new PointsDataSupport();
-        this.groupDataSupport = new GroupDataSupport();
-        this.objectDataSupportList = [];
         if (parameters) {
-            Object.keys(parameters).forEach(key => {
+            Object.keys(parameters).forEach((key) => {
                 if (this[key] !== undefined) {
                     this[key] = parameters[key];
                 }
             });
         }
-        else {
-            Object.keys(this).forEach(key => {
-                if (typeof this[key] === 'object' && this[key].IS_OBJECTDATASUPPORT) {
-                    this.objectDataSupportList.push(this[key]);
-                }
-            });
-        }
         const dataSupportMap = new Map();
-        for (let module in MODULETYPE) {
-            const dataSupport = this[`${MODULETYPE[module]}DataSupport`];
-            if (dataSupport) {
-                dataSupportMap.set(MODULETYPE[module], dataSupport);
-                if (dataSupport.IS_OBJECTDATASUPPORT) {
-                    this.objectDataSupportList.push(dataSupport);
-                }
+        Object.keys(this).forEach((key) => {
+            const dataSupport = this[key];
+            if (dataSupport instanceof DataSupport) {
+                dataSupportMap.set(dataSupport.MODULE, dataSupport);
             }
-            else {
-                console.warn(`dataSupportManager can not support this module dataSupport: ${module}`);
-            }
-        }
+        });
         this.dataSupportMap = dataSupportMap;
     }
+    /**
+     *
+     * @deprecated - 下版本废弃 不在单独区分object dataSupport
+     *
+     */
     getObjectDataSupportList() {
-        return this.objectDataSupportList;
+        return [];
+    }
+    /**
+     *
+     * @deprecated - 下版本废弃 -> getConfigBySymbol
+     *
+     */
+    getObjectConfig(vid) {
+        return null;
     }
     getDataSupport(type) {
         if (this.dataSupportMap.has(type)) {
@@ -110,23 +93,9 @@ export class DataSupportManager {
         }
         return this;
     }
-    // TODO:去掉
-    getObjectConfig(vid) {
-        if (!validate(vid)) {
-            console.warn(`vid is illeage: ${vid}`);
-            return null;
-        }
-        for (let objectDataSupport of this.objectDataSupportList) {
-            const config = objectDataSupport.getConfig(vid);
-            if (config) {
-                return config;
-            }
-        }
-        return null;
-    }
     getConfigBySymbol(vid) {
         const dataSupportList = this.dataSupportMap.values();
-        for (let dataSupport of dataSupportList) {
+        for (const dataSupport of dataSupportList) {
             const config = dataSupport.getConfig(vid);
             if (config) {
                 return config;
@@ -136,7 +105,7 @@ export class DataSupportManager {
     }
     removeConfigBySymbol(vid) {
         const dataSupportList = this.dataSupportMap.values();
-        for (let dataSupport of dataSupportList) {
+        for (const dataSupport of dataSupportList) {
             if (dataSupport.existSymbol(vid)) {
                 dataSupport.removeConfig(vid);
                 return;
@@ -145,12 +114,35 @@ export class DataSupportManager {
     }
     getModuleBySymbol(vid) {
         const dataSupportList = this.dataSupportMap.values();
-        for (let dataSupport of dataSupportList) {
+        for (const dataSupport of dataSupportList) {
             if (dataSupport.existSymbol(vid)) {
                 return dataSupport.MODULE;
             }
         }
         return null;
+    }
+    applyConfig(config) {
+        const module = DataSupportManager.configModuleMap[config.type];
+        if (module) {
+            this.dataSupportMap.get(module).addConfig(config);
+        }
+        else {
+            console.warn(`dataSupportManager can not found this config module: ${config.type}`);
+        }
+        return this;
+    }
+    reactiveConfig(config) {
+        const module = DataSupportManager.configModuleMap[config.type];
+        if (module) {
+            return this.dataSupportMap
+                .get(module)
+                .addConfig(config)
+                .getConfig(config.vid);
+        }
+        else {
+            console.warn(`dataSupportManager can not found this config module: ${config.type}`);
+            return config;
+        }
     }
     load(config) {
         const dataSupportMap = this.dataSupportMap;

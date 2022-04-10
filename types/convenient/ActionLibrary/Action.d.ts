@@ -1,5 +1,4 @@
 import { Action } from "../History";
-export interface BasicAction extends Action {
-}
+export declare type BasicAction = Action;
 export { SectionAction } from "./SectionAction";
 export { TransformAction } from "./TransformAction";

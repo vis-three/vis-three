@@ -22,15 +22,17 @@ export class TextureCompiler extends Compiler {
         const constructMap = new Map();
         constructMap.set(CONFIGTYPE.IMAGETEXTURE, () => new ImageTexture());
         constructMap.set(CONFIGTYPE.CUBETEXTURE, () => new CubeTexture());
-        constructMap.set(CONFIGTYPE.CANVASTEXTURE, () => new CanvasTexture(document.createElement('canvas')));
-        constructMap.set(CONFIGTYPE.VIDEOTEXTURE, () => new VideoTexture(document.createElement('video')));
+        constructMap.set(CONFIGTYPE.CANVASTEXTURE, () => new CanvasTexture(document.createElement("canvas")));
+        constructMap.set(CONFIGTYPE.VIDEOTEXTURE, () => new VideoTexture(document.createElement("video")));
         this.constructMap = constructMap;
     }
     getResource(url) {
         const resourceMap = this.resourceMap;
         if (resourceMap.has(url)) {
             const resource = resourceMap.get(url);
-            if (resource instanceof HTMLImageElement || resource instanceof HTMLCanvasElement || resource instanceof HTMLVideoElement) {
+            if (resource instanceof HTMLImageElement ||
+                resource instanceof HTMLCanvasElement ||
+                resource instanceof HTMLVideoElement) {
                 return resource;
             }
             else {
@@ -56,7 +58,11 @@ export class TextureCompiler extends Compiler {
                 delete tempConfig.vid;
                 // 应用资源
                 // 区分不同的texture类型
-                if ([CONFIGTYPE.IMAGETEXTURE, CONFIGTYPE.CANVASTEXTURE, CONFIGTYPE.VIDEOTEXTURE].includes(config.type)) {
+                if ([
+                    CONFIGTYPE.IMAGETEXTURE,
+                    CONFIGTYPE.CANVASTEXTURE,
+                    CONFIGTYPE.VIDEOTEXTURE,
+                ].includes(config.type)) {
                     texture.image = this.getResource(tempConfig.url);
                     delete tempConfig.url;
                 }
@@ -96,7 +102,7 @@ export class TextureCompiler extends Compiler {
             return this;
         }
         const texture = this.map.get(vid);
-        if (key === 'needsUpdate') {
+        if (key === "needsUpdate") {
             if (value) {
                 texture.needsUpdate = true;
                 const config = this.target[vid];

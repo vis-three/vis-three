@@ -5,8 +5,7 @@ import { PointsConfig } from "./PointsConfig";
 export interface PointsCompilerTarget extends ObjectCompilerTarget<PointsConfig> {
     [key: string]: PointsConfig;
 }
-export interface PointsCompilerParameters extends ObjectCompilerParameters<PointsConfig, PointsCompilerTarget> {
-}
+export declare type PointsCompilerParameters = ObjectCompilerParameters<PointsConfig, PointsCompilerTarget>;
 export declare class PointsCompiler extends ObjectCompiler<PointsConfig, PointsCompilerTarget, Points> {
     COMPILER_NAME: MODULETYPE;
     private replaceMaterial;

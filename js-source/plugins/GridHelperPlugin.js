@@ -2,10 +2,10 @@ import { GridHelper } from "three";
 import { VIEWPOINT } from "./ViewpointPlugin";
 export const GridHelperPlugin = function (params = {}) {
     if (!this.scene) {
-        console.error('must install some scene before BasicViewpoint plugin.');
+        console.error("must install some scene before BasicViewpoint plugin.");
         return false;
     }
-    const gridHelper = new GridHelper(params.range || 500, params.spacing || 50, params.axesColor || 'rgb(130, 130, 130)', params.cellColor || 'rgb(70, 70, 70)');
+    const gridHelper = new GridHelper(params.range || 500, params.spacing || 50, params.axesColor || "rgb(130, 130, 130)", params.cellColor || "rgb(70, 70, 70)");
     if (params.opacity !== 1) {
         const material = gridHelper.material;
         material.transparent = true;
@@ -26,7 +26,7 @@ export const GridHelperPlugin = function (params = {}) {
     };
     this.completeSet.add(() => {
         if (this.setViewpoint) {
-            this.addEventListener('setViewpoint', event => {
+            this.addEventListener("setViewpoint", (event) => {
                 const viewpoint = event.viewpoint;
                 if (viewpoint === VIEWPOINT.DEFAULT) {
                     gridHelper.rotation.set(0, 0, 0);

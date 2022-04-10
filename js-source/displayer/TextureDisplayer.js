@@ -1,15 +1,18 @@
-import { AmbientLight, PCFSoftShadowMap, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three";
+import { AmbientLight, PCFSoftShadowMap, PerspectiveCamera, Scene, Vector3, WebGLRenderer, } from "three";
 export class TextureDisplayer {
-    static ambientLight = new AmbientLight('rgb(255, 255, 255)', 1); // 环境光
+    static ambientLight = new AmbientLight("rgb(255, 255, 255)", 1); // 环境光
     dom;
     texture;
     renderer;
     scene;
     camera;
     constructor(parameters) {
-        const renderer = new WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+        const renderer = new WebGLRenderer({
+            antialias: true,
+            preserveDrawingBuffer: true,
+        });
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setClearColor('rgb(150, 150, 150)');
+        renderer.setClearColor("rgb(150, 150, 150)");
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = PCFSoftShadowMap;
         const scene = new Scene();

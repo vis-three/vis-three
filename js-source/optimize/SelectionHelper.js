@@ -7,11 +7,11 @@ export class SelectionHelper {
     pointBottomRight;
     isDown;
     constructor() {
-        const element = document.createElement('div');
-        element.style.pointerEvents = 'none';
+        const element = document.createElement("div");
+        element.style.pointerEvents = "none";
         element.style.border = `1px solid ${SELECTCOLOR}`;
-        element.style.position = 'fixed';
-        element.style.zIndex = '100';
+        element.style.position = "fixed";
+        element.style.zIndex = "100";
         element.style.backgroundColor = SELECTBGCOLOR;
         this.element = element;
         this.startPoint = new Vector2();
@@ -22,10 +22,10 @@ export class SelectionHelper {
     onSelectStart(event) {
         this.isDown = true;
         document.body.appendChild(this.element);
-        this.element.style.left = event.clientX + 'px';
-        this.element.style.top = event.clientY + 'px';
-        this.element.style.width = '0px';
-        this.element.style.height = '0px';
+        this.element.style.left = event.clientX + "px";
+        this.element.style.top = event.clientY + "px";
+        this.element.style.width = "0px";
+        this.element.style.height = "0px";
         this.startPoint.x = event.clientX;
         this.startPoint.y = event.clientY;
     }
@@ -37,10 +37,12 @@ export class SelectionHelper {
         this.pointBottomRight.y = Math.max(this.startPoint.y, event.clientY);
         this.pointTopLeft.x = Math.min(this.startPoint.x, event.clientX);
         this.pointTopLeft.y = Math.min(this.startPoint.y, event.clientY);
-        this.element.style.left = this.pointTopLeft.x + 'px';
-        this.element.style.top = this.pointTopLeft.y + 'px';
-        this.element.style.width = (this.pointBottomRight.x - this.pointTopLeft.x) + 'px';
-        this.element.style.height = (this.pointBottomRight.y - this.pointTopLeft.y) + 'px';
+        this.element.style.left = this.pointTopLeft.x + "px";
+        this.element.style.top = this.pointTopLeft.y + "px";
+        this.element.style.width =
+            this.pointBottomRight.x - this.pointTopLeft.x + "px";
+        this.element.style.height =
+            this.pointBottomRight.y - this.pointTopLeft.y + "px";
     }
     onSelectOver(event) {
         if (!this.isDown) {

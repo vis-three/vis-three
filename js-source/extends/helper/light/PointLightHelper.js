@@ -1,10 +1,10 @@
-import { BufferGeometry, Color, Float32BufferAttribute, LineSegments, Mesh, MeshBasicMaterial, OctahedronBufferGeometry, Sphere, Vector3 } from "three";
+import { BufferGeometry, Color, Float32BufferAttribute, LineSegments, Mesh, MeshBasicMaterial, OctahedronBufferGeometry, Sphere, Vector3, } from "three";
 import { getHelperLineMaterial } from "../common";
 export class PointLightHelper extends LineSegments {
     sphere;
     target;
     shape;
-    type = 'VisPointLightHelper';
+    type = "VisPointLightHelper";
     cacheColor;
     cacheDistance;
     cacheVector3;
@@ -14,33 +14,21 @@ export class PointLightHelper extends LineSegments {
         // 光源
         this.geometry = new BufferGeometry();
         const points = [
-            -1, 0, 0,
-            1, 0, 0,
-            0, -1, 0,
-            0, 1, 0,
-            0, 0, -1,
-            0, 0, 1,
-            -0.707, -0.707, 0,
-            0.707, 0.707, 0,
-            0.707, -0.707, 0,
-            -0.707, 0.707, 0,
-            0, -0.707, -0.707,
-            0, 0.707, 0.707,
-            0, 0.707, -0.707,
-            0, -0.707, 0.707,
-            -0.707, 0, -0.707,
-            0.707, 0, 0.707,
-            0.707, 0, -0.707,
-            -0.707, 0, 0.707,
+            -1, 0, 0, 1, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, -1, 0, 0, 1, -0.707, -0.707,
+            0, 0.707, 0.707, 0, 0.707, -0.707, 0, -0.707, 0.707, 0, 0, -0.707, -0.707,
+            0, 0.707, 0.707, 0, 0.707, -0.707, 0, -0.707, 0.707, -0.707, 0, -0.707,
+            0.707, 0, 0.707, 0.707, 0, -0.707, -0.707, 0, 0.707,
         ];
-        this.geometry.setAttribute('position', new Float32BufferAttribute(points, 3));
+        this.geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
         this.material = getHelperLineMaterial();
         this.geometry.boundingSphere;
         // 形状
-        const color = new Color().copy(pointLight.color).multiplyScalar(pointLight.intensity);
+        const color = new Color()
+            .copy(pointLight.color)
+            .multiplyScalar(pointLight.intensity);
         const shape = new Mesh(new OctahedronBufferGeometry(pointLight.distance, 0), new MeshBasicMaterial({
             color,
-            wireframe: true
+            wireframe: true,
         }));
         shape.raycast = () => { };
         shape.matrixAutoUpdate = false;
@@ -65,7 +53,9 @@ export class PointLightHelper extends LineSegments {
                 this.cacheDistance = light.distance;
             }
             if (light.color.getHex() !== this.cacheColor) {
-                shape.material.color.copy(light.color).multiplyScalar(light.intensity);
+                shape.material.color
+                    .copy(light.color)
+                    .multiplyScalar(light.intensity);
                 this.cacheColor = light.color.getHex();
             }
         };
@@ -80,7 +70,7 @@ export class PointLightHelper extends LineSegments {
             intersects.push({
                 distance: raycaster.ray.origin.distanceTo(target.position),
                 object: target,
-                point: target.position
+                point: target.position,
             });
         }
     }

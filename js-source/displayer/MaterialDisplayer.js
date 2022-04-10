@@ -1,15 +1,15 @@
-import { AmbientLight, BoxBufferGeometry, Line, Mesh, MeshStandardMaterial, Object3D, PCFSoftShadowMap, PerspectiveCamera, PointLight, Points, Scene, SphereBufferGeometry, Sprite, Vector3, WebGLRenderer } from "three";
-const pointLight = new PointLight('rgb(255, 255, 255)', 0.5, 200, 1);
+import { AmbientLight, BoxBufferGeometry, Line, Mesh, MeshStandardMaterial, Object3D, PCFSoftShadowMap, PerspectiveCamera, PointLight, Points, Scene, SphereBufferGeometry, Sprite, Vector3, WebGLRenderer, } from "three";
+const pointLight = new PointLight("rgb(255, 255, 255)", 0.5, 200, 1);
 pointLight.position.set(-30, 5, 20);
 pointLight.castShadow = true;
 const plane = new Mesh(new BoxBufferGeometry(80, 2, 80), new MeshStandardMaterial({
-    color: 'rgb(255, 255, 255)'
+    color: "rgb(255, 255, 255)",
 }));
 plane.position.set(0, -11, 0);
 plane.receiveShadow = true;
 plane.castShadow = true;
 export class MaterialDisplayer {
-    static ambientLight = new AmbientLight('rgb(255, 255, 255)', 0.7);
+    static ambientLight = new AmbientLight("rgb(255, 255, 255)", 0.7);
     static pointLight = pointLight;
     static geometry = new SphereBufferGeometry(10, 12, 12);
     static plane = plane;
@@ -24,9 +24,12 @@ export class MaterialDisplayer {
     camera;
     object;
     constructor(parameters) {
-        const renderer = new WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+        const renderer = new WebGLRenderer({
+            antialias: true,
+            preserveDrawingBuffer: true,
+        });
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setClearColor('rgb(150, 150, 150)');
+        renderer.setClearColor("rgb(150, 150, 150)");
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = PCFSoftShadowMap;
         const scene = new Scene();
@@ -50,16 +53,16 @@ export class MaterialDisplayer {
     setMaterial(material) {
         this.scene.remove(this.object);
         this.material = material;
-        if (material.type.includes('Mesh')) {
+        if (material.type.includes("Mesh")) {
             this.object = new Mesh(MaterialDisplayer.geometry, material);
         }
-        else if (material.type.includes('Line')) {
+        else if (material.type.includes("Line")) {
             this.object = new Line(MaterialDisplayer.geometry, material);
         }
-        else if (material.type.includes('Ponits')) {
+        else if (material.type.includes("Ponits")) {
             this.object = new Points(MaterialDisplayer.geometry, material);
         }
-        else if (material.type.includes('Sprite')) {
+        else if (material.type.includes("Sprite")) {
             this.object = new Sprite(material);
         }
         else {

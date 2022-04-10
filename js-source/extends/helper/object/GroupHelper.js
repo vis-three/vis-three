@@ -1,8 +1,8 @@
-import { BoxBufferGeometry, EdgesGeometry, LineSegments } from "three";
+import { BoxBufferGeometry, EdgesGeometry, LineSegments, } from "three";
 import { getHelperLineMaterial } from "../common";
 export class GroupHelper extends LineSegments {
     target;
-    type = 'VisGroupHelper';
+    type = "VisGroupHelper";
     constructor(group) {
         super();
         this.target = group;
@@ -24,7 +24,7 @@ export class GroupHelper extends LineSegments {
             intersects.push({
                 distance: raycaster.ray.origin.distanceTo(target.position),
                 object: target,
-                point: target.position
+                point: target.position,
             });
         }
     }

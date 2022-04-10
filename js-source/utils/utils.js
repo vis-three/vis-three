@@ -1,13 +1,13 @@
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
-import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig, getDirectionalLightConfig } from "../middleware/light/LightConfig";
-import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig, getPlaneGeometryConfig } from "../middleware/geometry/GeometryConfig";
-import { getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig, getVideoTextureConfig } from "../middleware/texture/TextureConfig";
-import { getLineBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getSpriteMaterialConfig } from "../middleware/material/MaterialConfig";
-import { getOrthographicCameraConfig, getPerspectiveCameraConfig } from "../middleware/camera/CameraConfig";
+import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig, getDirectionalLightConfig, } from "../middleware/light/LightConfig";
+import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig, getPlaneGeometryConfig, getCircleGeometryConfig, getConeGeometryConfig, getCylinderGeometryConfig, getEdgesGeometryConfig, } from "../middleware/geometry/GeometryConfig";
+import { getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig, getVideoTextureConfig, } from "../middleware/texture/TextureConfig";
+import { getLineBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getSpriteMaterialConfig, } from "../middleware/material/MaterialConfig";
+import { getOrthographicCameraConfig, getPerspectiveCameraConfig, } from "../middleware/camera/CameraConfig";
 import { getWebGLRendererConfig } from "../middleware/renderer/RendererConfig";
 import { getSceneConfig } from "../middleware/scene/SceneConfig";
-import { getOrbitControlsConfig, getTransformControlsConfig } from "../middleware/controls/ControlsConfig";
+import { getOrbitControlsConfig, getTransformControlsConfig, } from "../middleware/controls/ControlsConfig";
 import { getSpriteConfig } from "../middleware/sprite/SpriteConfig";
 import { getEventConfig } from "../middleware/event/eventConfig";
 import { getMeshConfig } from "../middleware/mesh/MeshConfig";
@@ -28,7 +28,9 @@ export function generateConfigFunction(config) {
                     console.warn(` config can not set key: ${key}`);
                     continue;
                 }
-                if (typeof merge[key] === 'object' && merge[key] !== null && !Array.isArray(merge[key])) {
+                if (typeof merge[key] === "object" &&
+                    merge[key] !== null &&
+                    !Array.isArray(merge[key])) {
                     recursion(config[key], merge[key]);
                 }
                 else {
@@ -42,7 +44,7 @@ export function generateConfigFunction(config) {
         return config;
     };
 }
-export function getConfigModelMap() {
+export function getConfigModuleMap() {
     return {
         [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
         [CONFIGTYPE.CUBETEXTURE]: MODULETYPE.TEXTURE,
@@ -61,6 +63,10 @@ export function getConfigModelMap() {
         [CONFIGTYPE.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
         [CONFIGTYPE.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
         [CONFIGTYPE.PLANEGEOMETRY]: MODULETYPE.GEOMETRY,
+        [CONFIGTYPE.CIRCLEGEOMETRY]: MODULETYPE.GEOMETRY,
+        [CONFIGTYPE.CONEGEOMETRY]: MODULETYPE.GEOMETRY,
+        [CONFIGTYPE.CIRCLEGEOMETRY]: MODULETYPE.GEOMETRY,
+        [CONFIGTYPE.EDGESGEOMETRY]: MODULETYPE.GEOMETRY,
         [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
         [CONFIGTYPE.LINE]: MODULETYPE.LINE,
         [CONFIGTYPE.MESH]: MODULETYPE.MESH,
@@ -71,7 +77,8 @@ export function getConfigModelMap() {
         [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER,
         [CONFIGTYPE.SCENE]: MODULETYPE.SCENE,
         [CONFIGTYPE.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS,
-        [CONFIGTYPE.EVENT]: MODULETYPE.EVENT
+        [CONFIGTYPE.ORBITCONTROLS]: MODULETYPE.CONTROLS,
+        [CONFIGTYPE.EVENT]: MODULETYPE.EVENT,
     };
 }
 export function getConfigFunctionMap() {
@@ -93,6 +100,10 @@ export function getConfigFunctionMap() {
         [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
         [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
         [CONFIGTYPE.PLANEGEOMETRY]: getPlaneGeometryConfig,
+        [CONFIGTYPE.CIRCLEGEOMETRY]: getCircleGeometryConfig,
+        [CONFIGTYPE.CONEGEOMETRY]: getConeGeometryConfig,
+        [CONFIGTYPE.CYLINDERGEOMETRY]: getCylinderGeometryConfig,
+        [CONFIGTYPE.EDGESGEOMETRY]: getEdgesGeometryConfig,
         [CONFIGTYPE.SPRITE]: getSpriteConfig,
         [CONFIGTYPE.LINE]: getLineConfig,
         [CONFIGTYPE.MESH]: getMeshConfig,
@@ -104,7 +115,7 @@ export function getConfigFunctionMap() {
         [CONFIGTYPE.SCENE]: getSceneConfig,
         [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig,
         [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig,
-        [CONFIGTYPE.EVENT]: getEventConfig
+        [CONFIGTYPE.EVENT]: getEventConfig,
     };
 }
 //# sourceMappingURL=utils.js.map

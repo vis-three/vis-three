@@ -95,7 +95,7 @@ export class ObjectCompiler extends Compiler {
             cacheData.updateMatrixWorldFun = null;
             return this;
         }
-        let lookAtTarget = this.getObject(target);
+        const lookAtTarget = this.getObject(target);
         if (!lookAtTarget) {
             console.warn(`${this.COMPILER_NAME}Compiler: can not found this vid mapping object: '${vid}'`);
             return this;
@@ -118,7 +118,7 @@ export class ObjectCompiler extends Compiler {
         return this;
     }
     linkObjectMap(...map) {
-        for (let objectMap of map) {
+        for (const objectMap of map) {
             if (!this.objectMapSet.has(objectMap)) {
                 this.objectMapSet.add(objectMap);
             }

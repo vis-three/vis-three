@@ -3,22 +3,22 @@ import { ScenePlugin } from "../plugins/ScenePlugin";
 import { RenderManagerPlugin } from "../plugins/RenderManagerPlugin";
 import { OrbitControlsPlugin } from "../plugins/OrbitControlsPlugin";
 import { StatsPlugin } from "../plugins/StatsPlugin";
-import { EffectComposerPlugin } from "../plugins/EffectComposerPlugin";
+import { EffectComposerPlugin, } from "../plugins/EffectComposerPlugin";
 import { PointerManagerPlugin } from "../plugins/PointerManagerPlugin";
 import { EventManagerPlugin } from "../plugins/EventManagerPlugin";
 import { TransformControlsPlugin } from "../plugins/TransformControlsPlugin";
-import { WebGLRendererPlugin } from "../plugins/WebGLRendererPlugin";
+import { WebGLRendererPlugin, } from "../plugins/WebGLRendererPlugin";
 import { LoaderManagerPlugin } from "../plugins/LoaderManagerPlugin";
 import { ResourceManagerPlugin } from "../plugins/ResourceManagerPlugin";
 import { DataSupportManagerPlugin } from "../plugins/DataSupportManagerPlugin";
 import { CompilerManagerPlugin } from "../plugins/CompilerManagerPlugin";
 import { KeyboardManagerPlugin } from "../plugins/KeyboardManagerPlugin";
-import { ViewpointPlugin } from "../plugins/ViewpointPlugin";
-import { AxesHelperPlugin } from "../plugins/AxesHelperPlugin";
-import { GridHelperPlugin } from "../plugins/GridHelperPlugin";
-import { DisplayModelPlugin } from "../plugins/DisplayModePlugin";
-import { ObjectHelperPlugin } from "../plugins/ObjectHelperPlugin";
-import { SelectionPlugin } from "../plugins/SelectionPlugin";
+import { ViewpointPlugin, } from "../plugins/ViewpointPlugin";
+import { AxesHelperPlugin, } from "../plugins/AxesHelperPlugin";
+import { GridHelperPlugin, } from "../plugins/GridHelperPlugin";
+import { DisplayModelPlugin, } from "../plugins/DisplayModePlugin";
+import { ObjectHelperPlugin, } from "../plugins/ObjectHelperPlugin";
+import { SelectionPlugin, } from "../plugins/SelectionPlugin";
 // 存在的插件接口
 export var ENGINEPLUGIN;
 (function (ENGINEPLUGIN) {
@@ -73,6 +73,7 @@ export class Engine extends EventDispatcher {
     dataSupportManager;
     compilerManager;
     keyboardManager;
+    objectHelperManager;
     stats;
     transing;
     displayMode;
@@ -100,12 +101,12 @@ export class Engine extends EventDispatcher {
         super();
         this.completeSet = new Set();
         this.render = function () {
-            console.warn('can not install some plugin');
+            console.warn("can not install some plugin");
             return this;
         };
     }
     optimizeMemory() {
-        Object.keys(this).forEach(key => {
+        Object.keys(this).forEach((key) => {
             if (this[key] === undefined) {
                 delete this[key];
             }
@@ -123,7 +124,7 @@ export class Engine extends EventDispatcher {
     }
     // 完成
     complete() {
-        this.completeSet.forEach(fun => {
+        this.completeSet.forEach((fun) => {
             fun(this);
         });
         this.completeSet.clear();
@@ -132,7 +133,7 @@ export class Engine extends EventDispatcher {
     // 清除缓存
     dispose() {
         this.dispatchEvent({
-            type: 'dispose'
+            type: "dispose",
         });
         return this;
     }

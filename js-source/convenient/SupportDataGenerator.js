@@ -1,13 +1,13 @@
-import { getConfigModelMap } from "../utils/utils";
+import { getConfigModuleMap } from "../utils/utils";
 import { generateConfig } from "./generateConfig";
 export class SupportDataGenerator {
-    static configModelMap = getConfigModelMap();
+    static configModelMap = getConfigModuleMap();
     supportData;
     supportDataType;
     constructor() { }
     create(type) {
         if (!type) {
-            console.warn('you must give a module type in create params');
+            console.warn("you must give a module type in create params");
             return this;
         }
         this.supportData = {};

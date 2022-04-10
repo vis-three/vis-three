@@ -18,7 +18,7 @@ export declare class TextureCompiler extends Compiler {
     linkRescourceMap(map: Map<string, unknown>): this;
     add(vid: string, config: TextureAllType): this;
     set(vid: string, path: string[], key: string, value: any): this;
-    getMap(): Map<SymbolConfig['type'], Texture>;
+    getMap(): Map<SymbolConfig["type"], Texture>;
     setTarget(target: TextureCompilerTarget): this;
     compileAll(): this;
     dispose(): this;

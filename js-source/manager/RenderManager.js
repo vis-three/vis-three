@@ -1,4 +1,4 @@
-import { Clock, } from "three";
+import { Clock } from "three";
 import { EventDispatcher } from "../core/EventDispatcher";
 import { RENDERERMANAGER } from "../middleware/constants/EVENTTYPE";
 export class RenderManager extends EventDispatcher {
@@ -13,7 +13,7 @@ export class RenderManager extends EventDispatcher {
         this.dispatchEvent({
             type: RENDERERMANAGER.RENDER,
             delta,
-            total
+            total,
         });
     };
     // 播放
@@ -23,7 +23,7 @@ export class RenderManager extends EventDispatcher {
             return;
         }
         this.dispatchEvent({
-            type: RENDERERMANAGER.PLAY
+            type: RENDERERMANAGER.PLAY,
         });
         const playFun = () => {
             this.render();
@@ -36,7 +36,7 @@ export class RenderManager extends EventDispatcher {
         cancelAnimationFrame(this.animationFrame);
         this.animationFrame = -1;
         this.dispatchEvent({
-            type: RENDERERMANAGER.STOP
+            type: RENDERERMANAGER.STOP,
         });
     };
     // 是否处于渲染当中

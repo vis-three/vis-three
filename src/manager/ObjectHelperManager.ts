@@ -77,6 +77,7 @@ export class ObjectHelperManager extends EventDispatcher {
   addObjectHelper(object: Object3D): Object3D | null {
     if (
       this.objectFilter.has(object) ||
+      this.helperMap.has(object) ||
       this.helperFilter[object.type] ||
       object.type.toLocaleLowerCase().includes("helper")
     ) {

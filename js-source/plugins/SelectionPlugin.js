@@ -1,38 +1,38 @@
 export const SelectionPlugin = function (params = {}) {
     if (!this.eventManager) {
-        console.warn('must install eventManager plugin before Selection plugin.');
+        console.warn("must install eventManager plugin before Selection plugin.");
         return false;
     }
     this.selectionBox = new Set();
     const dispatchEvent = () => {
-        let objectSymbols = [];
+        const objectSymbols = [];
         if (this.IS_ENGINESUPPORT) {
-            this.selectionBox.forEach(object => {
-                let objectSymbol = this.compilerManager.getObjectSymbol(object);
+            this.selectionBox.forEach((object) => {
+                const objectSymbol = this.compilerManager.getObjectSymbol(object);
                 if (objectSymbol) {
                     objectSymbols.push(objectSymbol);
                 }
                 else {
-                    console.warn('selection plugin can not font vid in compilerManager.', object);
+                    console.warn("selection plugin can not font vid in compilerManager.", object);
                 }
             });
         }
         this.dispatchEvent({
-            type: 'selected',
+            type: "selected",
             objects: [...this.selectionBox],
-            objectSymbols
+            objectSymbols,
         });
     };
     this.setSelectionBox = function (params) {
         this.selectionBox.clear();
-        for (let object of params.objects) {
+        for (const object of params.objects) {
             this.selectionBox.add(object);
         }
         dispatchEvent();
         return this;
     };
     // 单选
-    this.eventManager.addEventListener('click', (event) => {
+    this.eventManager.addEventListener("click", (event) => {
         // 兼容transformControls事件
         if (this.transing) {
             this.transing = false;
@@ -44,7 +44,7 @@ export const SelectionPlugin = function (params = {}) {
             this.selectionBox.clear();
         }
         if (this.eventManager.penetrate) {
-            for (let intersection of intersections) {
+            for (const intersection of intersections) {
                 // 反选
                 if (event.ctrlKey) {
                     if (this.selectionBox?.has(intersection.object)) {

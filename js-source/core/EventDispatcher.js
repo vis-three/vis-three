@@ -29,7 +29,7 @@ export class EventDispatcher {
         const listeners = this.listeners;
         if (listeners.has(type)) {
             try {
-                listeners.get(type)?.forEach(listener => {
+                listeners.get(type)?.forEach((listener) => {
                     listener.call(this, event);
                 });
             }

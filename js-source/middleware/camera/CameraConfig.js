@@ -7,7 +7,7 @@ export const getPerspectiveCameraConfig = function () {
         fov: 45,
         aspect: 1920 / 1080,
         near: 5,
-        far: 50
+        far: 50,
     });
 };
 export const getOrthographicCameraConfig = function () {
@@ -19,7 +19,7 @@ export const getOrthographicCameraConfig = function () {
         top: 1080 / 16,
         bottom: 1080 / 16,
         near: 5,
-        far: 50
+        far: 50,
     });
 };
 //# sourceMappingURL=CameraConfig.js.map

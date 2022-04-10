@@ -4,8 +4,7 @@ import { GroupConfig } from "./GroupConfig";
 export interface GroupCompilerTarget extends ObjectCompilerTarget<GroupConfig> {
     [key: string]: GroupConfig;
 }
-export interface GroupCompilerParameters extends ObjectCompilerParameters<GroupConfig, GroupCompilerTarget> {
-}
+export declare type GroupCompilerParameters = ObjectCompilerParameters<GroupConfig, GroupCompilerTarget>;
 export declare class GroupCompiler extends ObjectCompiler<GroupConfig, GroupCompilerTarget, Group> {
     COMPILER_NAME: string;
     private replaceMaterial;

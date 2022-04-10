@@ -3,8 +3,7 @@ export interface LightConifg extends ObjectConfig {
     color: string;
     intensity: number;
 }
-export interface AmbientLightConfig extends LightConifg {
-}
+export declare type AmbientLightConfig = LightConifg;
 export interface PointLightConfig extends LightConifg {
     distance: number;
     decay: number;

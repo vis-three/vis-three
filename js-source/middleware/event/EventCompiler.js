@@ -1,9 +1,9 @@
 import { Compiler } from "../../core/Compiler";
 import { EVENTNAME } from "../../manager/EventManager";
 import { isValidEnum } from "../../utils/utils";
-import { v4 as getUuid } from 'uuid';
-import * as BasicEventLbirary from '../../convenient/BasicEventLibrary/handler';
-import * as RealTimeAnimateLibrary from '../../convenient/RealTimeAnimateLibrary/handler';
+import { v4 as getUuid } from "uuid";
+import * as BasicEventLbirary from "../../convenient/BasicEventLibrary/handler";
+import * as RealTimeAnimateLibrary from "../../convenient/RealTimeAnimateLibrary/handler";
 export class EventCompiler extends Compiler {
     static eventLibrary = {};
     static registerEvent = function (map) {
@@ -47,7 +47,7 @@ export class EventCompiler extends Compiler {
         return this.getObject(structure.target);
     }
     linkObjectMap(...map) {
-        for (let objectMap of map) {
+        for (const objectMap of map) {
             if (!this.objectMapSet.has(objectMap)) {
                 this.objectMapSet.add(objectMap);
             }
@@ -64,13 +64,13 @@ export class EventCompiler extends Compiler {
             [EVENTNAME.POINTERLEAVE]: [],
             [EVENTNAME.CLICK]: [],
             [EVENTNAME.DBLCLICK]: [],
-            [EVENTNAME.CONTEXTMENU]: []
+            [EVENTNAME.CONTEXTMENU]: [],
         };
         this.map.set(vid, structure);
-        for (let key in config) {
-            let value = config[key];
+        for (const key in config) {
+            const value = config[key];
             if (Array.isArray(value) && isValidEnum(EVENTNAME, key) && value.length) {
-                for (let configure of value) {
+                for (const configure of value) {
                     this.addEvent(vid, key, configure);
                 }
             }
@@ -141,10 +141,12 @@ export class EventCompiler extends Compiler {
             return this;
         }
         const structure = this.map.get(vid);
-        for (let key in structure) {
-            let funSymbolList = structure[key];
-            if (Array.isArray(funSymbolList) && isValidEnum(EVENTNAME, key) && funSymbolList.length) {
-                for (let funSymbol of funSymbolList) {
+        for (const key in structure) {
+            const funSymbolList = structure[key];
+            if (Array.isArray(funSymbolList) &&
+                isValidEnum(EVENTNAME, key) &&
+                funSymbolList.length) {
+                for (const funSymbol of funSymbolList) {
                     this.removeEvent(vid, key, funSymbol);
                 }
             }

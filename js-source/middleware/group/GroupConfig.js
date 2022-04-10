@@ -3,7 +3,7 @@ import { getObjectConfig } from "../object/ObjectConfig";
 export const getGroupConfig = function () {
     return Object.assign(getObjectConfig(), {
         type: CONFIGTYPE.GROUP,
-        children: []
+        children: [],
     });
 };
 //# sourceMappingURL=GroupConfig.js.map

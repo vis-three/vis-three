@@ -1,7 +1,7 @@
 //TODO: rule 直接调用compiler.process
 export const ControlsRule = function (input, compiler) {
     const { operate, key, path, value } = input;
-    if (operate === 'set') {
+    if (operate === "set") {
         const tempPath = path.concat([]);
         const vid = tempPath.shift();
         if (vid) {

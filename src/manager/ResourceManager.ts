@@ -2,10 +2,6 @@ import { BaseEvent, Mesh, Object3D, Vector3 } from "three";
 import { generateConfig } from "../convenient/generateConfig";
 import { EventDispatcher } from "../core/EventDispatcher";
 import { CONFIGTYPE } from "../middleware/constants/configType";
-import { MODULETYPE } from "../middleware/constants/MODULETYPE";
-import { SymbolConfig } from "../middleware/common/CommonConfig";
-import { getConfigModelMap } from "../utils/utils";
-import { LoadGeometryConfig } from "../middleware/geometry/GeometryConfig";
 
 export interface ObjectMappingStructure {
   type: string;

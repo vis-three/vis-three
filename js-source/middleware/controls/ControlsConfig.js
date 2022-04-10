@@ -3,18 +3,18 @@ export const getTransformControlsConfig = function () {
     return {
         vid: CONFIGTYPE.TRNASFORMCONTROLS,
         type: CONFIGTYPE.TRNASFORMCONTROLS,
-        axis: 'XYZ',
+        axis: "XYZ",
         enabled: true,
-        mode: 'translate',
+        mode: "translate",
         snapAllow: false,
-        rotationSnap: Math.PI / 180 * 10,
+        rotationSnap: (Math.PI / 180) * 10,
         translationSnap: 5,
         scaleSnap: 0.1,
         showX: true,
         showY: true,
         showZ: true,
         size: 1,
-        space: 'world'
+        space: "world",
     };
 };
 export const getOrbitControlsConfig = function () {
@@ -40,7 +40,7 @@ export const getOrbitControlsConfig = function () {
         panSpeed: 1,
         rotateSpeed: 1,
         zoomSpeed: 1,
-        screenSpacePanning: true
+        screenSpacePanning: true,
     };
 };
 //# sourceMappingURL=ControlsConfig.js.map

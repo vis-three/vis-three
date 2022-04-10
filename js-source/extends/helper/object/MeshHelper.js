@@ -2,7 +2,7 @@ import { EdgesGeometry, LineSegments } from "three";
 import { getHelperLineMaterial } from "../common";
 export class MeshHelper extends LineSegments {
     target;
-    type = 'VisMeshHelper';
+    type = "VisMeshHelper";
     cachaGeometryUUid; // 存uuid防止内存泄漏
     constructor(mesh) {
         super();
@@ -16,6 +16,7 @@ export class MeshHelper extends LineSegments {
         this.matrixWorldNeedsUpdate = false;
         this.matrix = mesh.matrix;
         this.matrixWorld = mesh.matrixWorld;
+        // TODO: event dispatcher update
         this.onBeforeRender = () => {
             const target = this.target;
             if (target.geometry.uuid !== this.cachaGeometryUUid) {

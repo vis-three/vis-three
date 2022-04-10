@@ -5,7 +5,7 @@ export class TransformControlsProcessor {
     filterMap = {
         translationSnap: true,
         rotationSnap: true,
-        scaleSnap: true
+        scaleSnap: true,
     };
     constructor() { }
     assemble(params) {
@@ -35,11 +35,11 @@ export class TransformControlsProcessor {
             return this;
         }
         const config = this.config;
-        for (let key of Object.keys(config)) {
+        for (const key of Object.keys(config)) {
             this.process({
                 path: [],
                 key,
-                value: config[key]
+                value: config[key],
             });
         }
         return this;

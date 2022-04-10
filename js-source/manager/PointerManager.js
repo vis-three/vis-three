@@ -14,10 +14,10 @@ export class PointerManager extends EventDispatcher {
         this.canMouseMove = true;
         this.mouseEventTimer = null;
         this.throttleTime = parameters.throttleTime || 1000 / 60;
-        dom.addEventListener('pointerdown', (event) => {
+        dom.addEventListener("pointerdown", (event) => {
             this.pointerDown(event);
         });
-        dom.addEventListener('pointermove', (event) => {
+        dom.addEventListener("pointermove", (event) => {
             if (!this.canMouseMove) {
                 return;
             }
@@ -31,7 +31,7 @@ export class PointerManager extends EventDispatcher {
                 this.pointerMove(event);
             }, this.throttleTime);
         });
-        dom.addEventListener('pointerup', (event) => {
+        dom.addEventListener("pointerup", (event) => {
             this.pointerUp(event);
         });
     }
@@ -42,7 +42,7 @@ export class PointerManager extends EventDispatcher {
     // 鼠标指针按下
     pointerDown(event) {
         const eventObject = { mouse: this.mouse };
-        for (let key in event) {
+        for (const key in event) {
             eventObject[key] = event[key];
         }
         this.dispatchEvent(eventObject);
@@ -50,7 +50,7 @@ export class PointerManager extends EventDispatcher {
     // 鼠标指针移动
     pointerMove(event) {
         const eventObject = { mouse: this.mouse };
-        for (let key in event) {
+        for (const key in event) {
             eventObject[key] = event[key];
         }
         this.dispatchEvent(eventObject);
@@ -58,7 +58,7 @@ export class PointerManager extends EventDispatcher {
     // 鼠标指针抬起
     pointerUp(event) {
         const eventObject = { mouse: this.mouse };
-        for (let key in event) {
+        for (const key in event) {
             eventObject[key] = event[key];
         }
         this.dispatchEvent(eventObject);

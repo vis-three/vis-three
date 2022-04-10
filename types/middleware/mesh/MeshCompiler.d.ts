@@ -4,8 +4,7 @@ import { MeshConfig } from "./MeshConfig";
 export interface MeshCompilerTarget extends ObjectCompilerTarget<MeshConfig> {
     [key: string]: MeshConfig;
 }
-export interface MeshCompilerParameters extends ObjectCompilerParameters<MeshConfig, MeshCompilerTarget> {
-}
+export declare type MeshCompilerParameters = ObjectCompilerParameters<MeshConfig, MeshCompilerTarget>;
 export declare class MeshCompiler extends ObjectCompiler<MeshConfig, MeshCompilerTarget, Mesh> {
     COMPILER_NAME: string;
     private replaceMaterial;

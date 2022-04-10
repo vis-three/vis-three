@@ -1,10 +1,10 @@
-import { BufferGeometry, Float32BufferAttribute, LineSegments, Sphere, Vector3 } from "three";
+import { BufferGeometry, Float32BufferAttribute, LineSegments, Sphere, Vector3, } from "three";
 import { getHelperLineMaterial } from "../common";
 export class SpotLightHelper extends LineSegments {
     sphere;
     target;
     shape;
-    type = 'VisSpotLightHelper';
+    type = "VisSpotLightHelper";
     cacheVector3;
     cacheColor;
     cacheAngle;
@@ -15,45 +15,30 @@ export class SpotLightHelper extends LineSegments {
         // 光源
         this.geometry = new BufferGeometry();
         const points = [
-            -1, 0, 0,
-            1, 0, 0,
-            0, -1, 0,
-            0, 1, 0,
-            0, 0, -1,
-            0, 0, 1,
-            -0.707, -0.707, 0,
-            0.707, 0.707, 0,
-            0.707, -0.707, 0,
-            -0.707, 0.707, 0,
-            0, -0.707, -0.707,
-            0, 0.707, 0.707,
-            0, 0.707, -0.707,
-            0, -0.707, 0.707,
-            -0.707, 0, -0.707,
-            0.707, 0, 0.707,
-            0.707, 0, -0.707,
-            -0.707, 0, 0.707,
+            -1, 0, 0, 1, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, -1, 0, 0, 1, -0.707, -0.707,
+            0, 0.707, 0.707, 0, 0.707, -0.707, 0, -0.707, 0.707, 0, 0, -0.707, -0.707,
+            0, 0.707, 0.707, 0, 0.707, -0.707, 0, -0.707, 0.707, -0.707, 0, -0.707,
+            0.707, 0, 0.707, 0.707, 0, -0.707, -0.707, 0, 0.707,
         ];
-        this.geometry.setAttribute('position', new Float32BufferAttribute(points, 3));
+        this.geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
         this.material = getHelperLineMaterial();
         this.geometry.boundingSphere;
         // 形状辅助
         const shapeGeometry = new BufferGeometry();
         const positions = [
-            0, 0, 0, 1, 0, 1,
-            0, 0, 0, -1, 0, 1,
-            0, 0, 0, 0, 1, 1,
-            0, 0, 0, 0, -1, 1
+            0, 0, 0, 1, 0, 1, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, -1, 1,
         ];
         for (let i = 0, j = 1, l = 32; i < l; i++, j++) {
             const p1 = (i / l) * Math.PI * 2;
             const p2 = (j / l) * Math.PI * 2;
             positions.push(Math.cos(p1), Math.sin(p1), 1, Math.cos(p2), Math.sin(p2), 1);
         }
-        shapeGeometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+        shapeGeometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
         const material = getHelperLineMaterial();
         const shape = new LineSegments(shapeGeometry, material);
-        shape.material.color.copy(spotLight.color).multiplyScalar(spotLight.intensity);
+        shape.material.color
+            .copy(spotLight.color)
+            .multiplyScalar(spotLight.intensity);
         const coneLength = spotLight.distance ? spotLight.distance : 1000;
         const coneWidth = coneLength * Math.tan(spotLight.angle);
         shape.scale.set(coneWidth, coneWidth, coneLength);
@@ -85,11 +70,13 @@ export class SpotLightHelper extends LineSegments {
                 shapeUpdate = true;
             }
             if (shapeUpdate) {
-                let range = light.distance * Math.tan(light.angle);
+                const range = light.distance * Math.tan(light.angle);
                 shape.scale.set(range, range, light.distance);
             }
             if (light.color.getHex() !== this.cacheColor) {
-                shape.material.color.copy(light.color).multiplyScalar(light.intensity);
+                shape.material.color
+                    .copy(light.color)
+                    .multiplyScalar(light.intensity);
                 this.cacheColor = light.color.getHex();
             }
             shape.lookAt(light.target.position);
@@ -105,7 +92,7 @@ export class SpotLightHelper extends LineSegments {
             intersects.push({
                 distance: raycaster.ray.origin.distanceTo(target.position),
                 object: target,
-                point: target.position
+                point: target.position,
             });
         }
     }

@@ -3,7 +3,7 @@ import { Modifier, ModifierParameters } from "./Modifier";
 export interface BooleanModifierParameters extends ModifierParameters {
     source: Mesh;
     target: Mesh;
-    mode?: 'subtract' | 'union' | 'intersect';
+    mode?: "subtract" | "union" | "intersect";
 }
 export declare class BooleanModifier extends Modifier {
     private source;

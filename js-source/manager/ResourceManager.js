@@ -23,9 +23,9 @@ export class ResourceManager extends EventDispatcher {
         const recursionMappingObject = function (url, object) {
             // TODO: 区分灯光相机等物体
             const config = {
-                type: `${object.type}`
+                type: `${object.type}`,
             };
-            let mappingUrl = '';
+            let mappingUrl = "";
             // 映射几何配置
             if (object.geometry) {
                 const geometry = object.geometry;
@@ -36,13 +36,13 @@ export class ResourceManager extends EventDispatcher {
                 mappingUrl = `${url}.geometry`;
                 // 存资源
                 resourceMap.set(mappingUrl, geometry);
-                // 生成配置单        
+                // 生成配置单
                 configMap.set(mappingUrl, generateConfig(CONFIGTYPE.LOADGEOMETRY, {
                     url: mappingUrl,
                     position: {
-                        x: center.x / (box.max.x - box.min.x) * 2,
-                        y: center.y / (box.max.y - box.min.y) * 2,
-                        z: center.z / (box.max.z - box.min.z) * 2,
+                        x: (center.x / (box.max.x - box.min.x)) * 2,
+                        y: (center.y / (box.max.y - box.min.y)) * 2,
+                        z: (center.z / (box.max.z - box.min.z)) * 2,
                     },
                 }));
                 // 载入结构
@@ -88,15 +88,16 @@ export class ResourceManager extends EventDispatcher {
             if (resource instanceof HTMLImageElement) {
                 resourceMap.set(url, resource);
                 configMap.set(url, generateConfig(CONFIGTYPE.IMAGETEXTURE, {
-                    url: url
+                    url: url,
                 }));
                 structureMap.set(url, url);
                 // canvas贴图  video
             }
-            else if (resource instanceof HTMLCanvasElement || resource instanceof HTMLVideoElement) {
+            else if (resource instanceof HTMLCanvasElement ||
+                resource instanceof HTMLVideoElement) {
                 resourceMap.set(url, resource);
                 structureMap.set(url, url);
-                // 物体  
+                // 物体
             }
             else if (resource instanceof Object3D) {
                 structureMap.set(url, recursionMappingObject(url, resource));
@@ -107,10 +108,10 @@ export class ResourceManager extends EventDispatcher {
             }
         });
         this.dispatchEvent({
-            type: 'mapped',
+            type: "mapped",
             structureMap,
             configMap,
-            resourceMap
+            resourceMap,
         });
         return this;
     }

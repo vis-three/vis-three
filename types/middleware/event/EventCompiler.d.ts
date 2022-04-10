@@ -29,7 +29,7 @@ export declare class EventCompiler extends Compiler {
     constructor(parameters?: EventCompilerParameters);
     getObject(vid: string): Object3D | null;
     private getTargetObject;
-    linkObjectMap(...map: Map<SymbolConfig['vid'], Object3D>[]): this;
+    linkObjectMap(...map: Map<SymbolConfig["vid"], Object3D>[]): this;
     add(vid: string, config: EventConfig): this;
     addEvent(vid: string, eventName: EVENTNAME, config: BasicEventConfig): this;
     removeEvent(vid: string, eventName: EVENTNAME, index: number): this;

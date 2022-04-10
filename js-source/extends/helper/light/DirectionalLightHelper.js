@@ -1,10 +1,10 @@
-import { BufferGeometry, Color, EdgesGeometry, Float32BufferAttribute, LineBasicMaterial, LineSegments, PlaneBufferGeometry, Sphere, Vector3 } from "three";
+import { BufferGeometry, Color, EdgesGeometry, Float32BufferAttribute, LineBasicMaterial, LineSegments, PlaneBufferGeometry, Sphere, Vector3, } from "three";
 import { getHelperLineMaterial } from "../common";
 export class DirectionalLightHelper extends LineSegments {
     sphere;
     target;
     shape;
-    type = 'VisDirectionalLightHelper';
+    type = "VisDirectionalLightHelper";
     cacheColor;
     cacheVector3;
     constructor(directionalLight) {
@@ -12,34 +12,22 @@ export class DirectionalLightHelper extends LineSegments {
         // 光源
         this.geometry = new BufferGeometry();
         const points = [
-            -1, 0, 0,
-            1, 0, 0,
-            0, -1, 0,
-            0, 1, 0,
-            0, 0, -1,
-            0, 0, 1,
-            -0.707, -0.707, 0,
-            0.707, 0.707, 0,
-            0.707, -0.707, 0,
-            -0.707, 0.707, 0,
-            0, -0.707, -0.707,
-            0, 0.707, 0.707,
-            0, 0.707, -0.707,
-            0, -0.707, 0.707,
-            -0.707, 0, -0.707,
-            0.707, 0, 0.707,
-            0.707, 0, -0.707,
-            -0.707, 0, 0.707,
+            -1, 0, 0, 1, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, -1, 0, 0, 1, -0.707, -0.707,
+            0, 0.707, 0.707, 0, 0.707, -0.707, 0, -0.707, 0.707, 0, 0, -0.707, -0.707,
+            0, 0.707, 0.707, 0, 0.707, -0.707, 0, -0.707, 0.707, -0.707, 0, -0.707,
+            0.707, 0, 0.707, 0.707, 0, -0.707, -0.707, 0, 0.707,
         ];
-        this.geometry.setAttribute('position', new Float32BufferAttribute(points, 3));
+        this.geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
         this.material = getHelperLineMaterial();
         this.geometry.boundingSphere;
         // 形状
-        const color = new Color().copy(directionalLight.color).multiplyScalar(directionalLight.intensity);
+        const color = new Color()
+            .copy(directionalLight.color)
+            .multiplyScalar(directionalLight.intensity);
         const planeGemetry = new PlaneBufferGeometry(20, 20);
         planeGemetry.dispose();
         const shape = new LineSegments(new EdgesGeometry(planeGemetry), new LineBasicMaterial({
-            color
+            color,
         }));
         shape.raycast = () => { };
         this.shape = shape;
@@ -57,7 +45,9 @@ export class DirectionalLightHelper extends LineSegments {
             const light = this.target;
             const shape = this.shape;
             if (light.color.getHex() !== this.cacheColor) {
-                shape.material.color.copy(light.color).multiplyScalar(light.intensity);
+                shape.material.color
+                    .copy(light.color)
+                    .multiplyScalar(light.intensity);
                 this.cacheColor = light.color.getHex();
             }
             shape.lookAt(light.target.position);
@@ -73,7 +63,7 @@ export class DirectionalLightHelper extends LineSegments {
             intersects.push({
                 distance: raycaster.ray.origin.distanceTo(target.position),
                 object: target,
-                point: target.position
+                point: target.position,
             });
         }
     }

@@ -4,8 +4,7 @@ import { SpriteConfig } from "./SpriteConfig";
 export interface SpriteCompilerTarget extends ObjectCompilerTarget<SpriteConfig> {
     [key: string]: SpriteConfig;
 }
-export interface SpriteCompilerParameters extends ObjectCompilerParameters<SpriteConfig, SpriteCompilerTarget> {
-}
+export declare type SpriteCompilerParameters = ObjectCompilerParameters<SpriteConfig, SpriteCompilerTarget>;
 export declare class SpriteCompiler extends ObjectCompiler<SpriteConfig, SpriteCompilerTarget, Sprite> {
     COMPILER_NAME: string;
     private replaceMaterial;

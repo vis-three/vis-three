@@ -1,4 +1,4 @@
-import { EventDispatcher, BaseEvent } from './../core/EventDispatcher';
+import { EventDispatcher, BaseEvent } from "./../core/EventDispatcher";
 import { Loader } from "three";
 export declare enum LOADERMANAGER {
     BEFORELOAD = "beforeLoad",

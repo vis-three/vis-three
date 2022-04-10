@@ -18,7 +18,7 @@ export class SectionAction {
             return;
         }
         this.engine.setSelectionBox({
-            objects: this.newObjects
+            objects: this.newObjects,
         });
     }
     prev() {
@@ -26,7 +26,7 @@ export class SectionAction {
             return;
         }
         this.engine.setSelectionBox({
-            objects: this.oldObjects
+            objects: this.oldObjects,
         });
     }
 }

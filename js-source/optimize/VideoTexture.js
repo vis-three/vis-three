@@ -1,4 +1,4 @@
-import { LinearFilter, RGBFormat, Texture } from "three";
+import { LinearFilter, RGBFormat, Texture, } from "three";
 export class VideoTexture extends Texture {
     isVideoTexture = true;
     constructor(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
@@ -14,11 +14,12 @@ export class VideoTexture extends Texture {
     }
     update() {
         const video = this.image;
-        const hasVideoFrameCallback = 'requestVideoFrameCallback' in video;
+        const hasVideoFrameCallback = "requestVideoFrameCallback" in video;
         if (hasVideoFrameCallback) {
             this.needsUpdate = true;
         }
-        else if (hasVideoFrameCallback === false && video.readyState >= video.HAVE_CURRENT_DATA) {
+        else if (hasVideoFrameCallback === false &&
+            video.readyState >= video.HAVE_CURRENT_DATA) {
             this.needsUpdate = true;
         }
     }

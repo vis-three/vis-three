@@ -1,3 +1,4 @@
+import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { Compiler, CompilerTarget } from "./Compiler";
 import { Rule } from "./Rule";
@@ -11,7 +12,8 @@ export declare abstract class DataSupport<D extends CompilerTarget, C extends Co
     setData(data: D): this;
     proxyData(data: D): D;
     existSymbol(vid: string): boolean;
-    getConfig(vid: string): import("../middleware/common/CommonConfig").SymbolConfig;
+    addConfig(config: valueOf<D>): this;
+    getConfig<T extends SymbolConfig>(vid: string): T;
     removeConfig(vid: string): void;
     addCompiler(compiler: C): this;
     toJSON(): string;

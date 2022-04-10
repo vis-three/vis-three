@@ -24,7 +24,7 @@ export class OrbitControlsProcessor {
         }
         const control = this.control;
         const config = this.config;
-        for (let key of Object.keys(config)) {
+        for (const key of Object.keys(config)) {
             control[key] !== undefined && (control[key] = config[key]);
         }
         return this;

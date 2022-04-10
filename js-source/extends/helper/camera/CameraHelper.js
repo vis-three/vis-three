@@ -1,42 +1,28 @@
-import { BufferGeometry, CameraHelper as TCameraHelper, Float32BufferAttribute, LineSegments, Matrix4, OrthographicCamera, PerspectiveCamera } from "three";
+import { BufferGeometry, CameraHelper as TCameraHelper, Float32BufferAttribute, LineSegments, Matrix4, OrthographicCamera, PerspectiveCamera, } from "three";
 import { getHelperLineMaterial } from "../common";
 export class CameraHelper extends LineSegments {
     shape;
     target;
-    type = 'CameraHelper';
+    type = "CameraHelper";
     cachaData;
     constructor(camera) {
         super();
         const geometry = new BufferGeometry();
         // TODO:用顶点索引
         const positions = [
-            0, 0, 0, -1, 1, -1,
-            0, 0, 0, -1, 1, 1,
-            0, 0, 0, -1, -1, -1,
-            0, 0, 0, -1, -1, 1,
-            -1, -1, 1, -1, -1, -1,
-            -1, -1, -1, -1, 1, -1,
-            -1, 1, -1, -1, 1, 1,
+            0, 0, 0, -1, 1, -1, 0, 0, 0, -1, 1, 1, 0, 0, 0, -1, -1, -1, 0, 0, 0, -1,
+            -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, 1, -1, -1, 1, 1,
             -1, 1, 1, -1, -1, 1,
-            0, 0, 0, 0, 1, 1,
-            0, 0, 0, 0, 1, -1,
-            0, 0, 0, 0, -1, -1,
-            0, 0, 0, 0, -1, 1,
-            0, 1, 1, 0, 1, -1,
-            0, 1, -1, 0, -1, -1,
-            0, -1, -1, 0, -1, 1,
-            0, -1, 1, 0, 1, 1,
-            0, -1, 1, 2, -1, 1,
-            0, 1, -1, 2, 1, -1,
-            0, -1, -1, 2, -1, -1,
-            0, 1, 1, 2, 1, 1,
-            2, 1, 1, 2, -1, 1,
-            2, -1, 1, 2, -1, -1,
-            2, -1, -1, 2, 1, -1,
-            2, 1, -1, 2, 1, 1
+            0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, -1, 0, 0, 0, 0, -1, -1, 0, 0, 0, 0, -1,
+            1,
+            0, 1, 1, 0, 1, -1, 0, 1, -1, 0, -1, -1, 0, -1, -1, 0, -1, 1, 0, -1, 1, 0,
+            1, 1,
+            0, -1, 1, 2, -1, 1, 0, 1, -1, 2, 1, -1, 0, -1, -1, 2, -1, -1, 0, 1, 1, 2,
+            1, 1, 2, 1, 1, 2, -1, 1, 2, -1, 1, 2, -1, -1, 2, -1, -1, 2, 1, -1, 2, 1,
+            -1, 2, 1, 1,
         ];
-        geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
-        geometry.rotateY(-90 * Math.PI / 180);
+        geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
+        geometry.rotateY((-90 * Math.PI) / 180);
         geometry.computeBoundingBox();
         const shape = new TCameraHelper(camera);
         shape.matrix = new Matrix4();
@@ -55,7 +41,7 @@ export class CameraHelper extends LineSegments {
                 fov: camera.fov,
                 aspect: camera.aspect,
                 near: camera.near,
-                far: camera.far
+                far: camera.far,
             };
         }
         else if (camera instanceof OrthographicCamera) {
@@ -65,7 +51,7 @@ export class CameraHelper extends LineSegments {
                 top: camera.top,
                 bottom: camera.bottom,
                 near: camera.near,
-                far: camera.far
+                far: camera.far,
             };
         }
         else {
@@ -75,7 +61,7 @@ export class CameraHelper extends LineSegments {
             // 循环对比有没有值更新
             let needsUpdate = false;
             const cachaData = this.cachaData;
-            Object.keys(cachaData).forEach(key => {
+            Object.keys(cachaData).forEach((key) => {
                 if (cachaData[key] !== camera[key]) {
                     cachaData[key] = camera[key];
                     needsUpdate = true;
@@ -93,7 +79,7 @@ export class CameraHelper extends LineSegments {
             intersects.push({
                 distance: raycaster.ray.origin.distanceTo(target.position),
                 object: target,
-                point: target.position
+                point: target.position,
             });
         }
     }

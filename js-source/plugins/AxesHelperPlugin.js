@@ -1,7 +1,7 @@
 import { AxesHelper } from "three";
 export const AxesHelperPlugin = function (params = {}) {
     if (!this.scene) {
-        console.error('must install some scene plugin before BasicViewpoint plugin.');
+        console.error("must install some scene plugin before BasicViewpoint plugin.");
         return false;
     }
     const axesHelper = new AxesHelper(params.length || 500);

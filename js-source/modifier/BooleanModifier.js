@@ -1,5 +1,5 @@
 import { BufferGeometry } from "three";
-import { CSG } from 'three-csg-ts';
+import { CSG } from "three-csg-ts";
 import { Modifier } from "./Modifier";
 export class BooleanModifier extends Modifier {
     source;
@@ -15,7 +15,7 @@ export class BooleanModifier extends Modifier {
         super(parameters);
         this.source = parameters.source;
         this.target = parameters.target;
-        this.mode = parameters.mode || 'subtract';
+        this.mode = parameters.mode || "subtract";
         this.cacheSourceMatrix = this.source.matrix.clone();
         this.cacheTargetMatrix = this.target.matrix.clone();
         this.cacheSoruceGeometryUuid = this.source.geometry.uuid;
@@ -29,7 +29,7 @@ export class BooleanModifier extends Modifier {
         const source = this.source;
         const likeMesh = {
             geometry: this.originalGeometry,
-            matrix: this.source.matrix
+            matrix: this.source.matrix,
         };
         const csgSource = CSG.fromMesh(likeMesh);
         const csgTarget = CSG.fromMesh(this.target);

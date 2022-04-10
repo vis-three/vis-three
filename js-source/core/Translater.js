@@ -19,7 +19,7 @@ export class Translater {
     }
     translate(notice) {
         const rule = this.rule;
-        this.memberSet.forEach(compiler => {
+        this.memberSet.forEach((compiler) => {
             rule(notice, compiler);
         });
         return this;

@@ -14,7 +14,7 @@ export class WebGLRendererCompiler extends Compiler {
     }
     setClearColor(value) {
         // 取出alpha的值
-        const alpha = Number(value.slice(0, -1).split(',').pop().trim());
+        const alpha = Number(value.slice(0, -1).split(",").pop().trim());
         this.renderer.setClearColor(value, alpha);
         this.renderer.clear();
         return this;
@@ -72,14 +72,14 @@ export class WebGLRendererCompiler extends Compiler {
                 return this;
             }
             if (this.rendererCacheData.adaptiveCameraFun) {
-                renderManager.removeEventListener('render', this.rendererCacheData.adaptiveCameraFun);
+                renderManager.removeEventListener("render", this.rendererCacheData.adaptiveCameraFun);
                 this.rendererCacheData.adaptiveCameraFun = undefined;
                 return this;
             }
         }
         if (value) {
             if (this.rendererCacheData.adaptiveCameraFun) {
-                renderManager.addEventListener('render', this.rendererCacheData.adaptiveCameraFun);
+                renderManager.addEventListener("render", this.rendererCacheData.adaptiveCameraFun);
                 return this;
             }
             const adaptiveCameraFun = (event) => {
@@ -119,7 +119,7 @@ export class WebGLRendererCompiler extends Compiler {
                 renderer.setScissorTest(true);
             };
             this.rendererCacheData.adaptiveCameraFun = adaptiveCameraFun;
-            renderManager.addEventListener('render', this.rendererCacheData.adaptiveCameraFun);
+            renderManager.addEventListener("render", this.rendererCacheData.adaptiveCameraFun);
         }
         return this;
     }
@@ -130,7 +130,7 @@ export class WebGLRendererCompiler extends Compiler {
             size: () => this.setSize(this.target.size),
             viewport: () => this.setViewpoint(this.target.viewport),
             scissor: () => this.setScissor(this.target.scissor),
-            adaptiveCamera: () => this.setAdaptiveCamera(value)
+            adaptiveCamera: () => this.setAdaptiveCamera(value),
         };
         if (actionMap[path[0] || key]) {
             actionMap[path[0] || key]();

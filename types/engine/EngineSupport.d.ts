@@ -3,8 +3,7 @@ import { DataSupportManager, DataSupportManagerParameters, LoadOptions } from ".
 import { LoaderManager } from "../manager/LoaderManager";
 import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
 import { Engine } from "./Engine";
-export interface EngineSupportParameters extends DataSupportManagerParameters {
-}
+export declare type EngineSupportParameters = DataSupportManagerParameters;
 export interface EngineSupportLoadOptions extends LoadOptions {
     assets?: string[];
 }

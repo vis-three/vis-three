@@ -1,7 +1,7 @@
 import { ImageLoader, Loader, Cache } from "three";
 export class VideoLoader extends Loader {
     static autoplay = true;
-    static preload = 'auto';
+    static preload = "auto";
     static muted = true;
     static loop = true;
     constructor(manager) {
@@ -22,16 +22,16 @@ export class VideoLoader extends Loader {
             }, 0);
             return cached;
         }
-        const video = document.createElement('video');
+        const video = document.createElement("video");
         video.preload = VideoLoader.preload;
         video.autoplay = VideoLoader.autoplay;
         video.loop = VideoLoader.loop;
         video.muted = VideoLoader.muted;
         video.src = url;
-        video.style.position = 'fixed';
-        video.style.top = '0';
-        video.style.left = '0';
-        video.style.zIndex = '-1';
+        video.style.position = "fixed";
+        video.style.top = "0";
+        video.style.left = "0";
+        video.style.zIndex = "-1";
         document.body.appendChild(video);
         video.oncanplay = () => {
             Cache.add(url, video);

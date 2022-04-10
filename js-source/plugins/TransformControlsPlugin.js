@@ -1,26 +1,26 @@
-import { TRANSFORMEVENT, VisTransformControls } from "../optimize/VisTransformControls";
+import { TRANSFORMEVENT, VisTransformControls, } from "../optimize/VisTransformControls";
 export const TransformControlsPlugin = function (params) {
     if (this.transformControls) {
-        console.warn('this has installed transformControls plugin.');
+        console.warn("this has installed transformControls plugin.");
         return false;
     }
     if (!this.webGLRenderer) {
-        console.warn('this must install renderer before install transformControls plugin.');
+        console.warn("this must install renderer before install transformControls plugin.");
         return false;
     }
     if (!this.pointerManager) {
-        console.warn('this must install pointerManager before install transformControls plugin.');
+        console.warn("this must install pointerManager before install transformControls plugin.");
         return false;
     }
     if (!this.eventManager) {
-        console.warn('this must install eventManager before install transformControls plugin.');
+        console.warn("this must install eventManager before install transformControls plugin.");
         return false;
     }
     const transformControls = new VisTransformControls(this.currentCamera, this.dom);
     transformControls.detach();
     this.transformControls = transformControls;
     this.transing = false;
-    transformControls.addEventListener('mouseDown', () => {
+    transformControls.addEventListener("mouseDown", () => {
         this.transing = true;
     });
     this.scene.add(this.transformControls);
@@ -34,17 +34,17 @@ export const TransformControlsPlugin = function (params) {
         }
         return this;
     };
-    this.addEventListener('setCamera', event => {
+    this.addEventListener("setCamera", (event) => {
         transformControls.setCamera(event.camera);
     });
     // 与selection联调
     if (this.selectionBox) {
-        this.addEventListener('selected', (event) => {
+        this.addEventListener("selected", (event) => {
             transformControls.setAttach(...event.objects);
         });
     }
     else {
-        this.eventManager.addEventListener('pointerup', (event) => {
+        this.eventManager.addEventListener("pointerup", (event) => {
             if (this.transing) {
                 return;
             }
@@ -61,13 +61,13 @@ export const TransformControlsPlugin = function (params) {
                 if (!symbol) {
                     return null;
                 }
-                return this.dataSupportManager.getObjectConfig(symbol);
+                return this.dataSupportManager.getConfigBySymbol(symbol);
             };
             let config = null;
             let mode;
             transformControls.addEventListener(TRANSFORMEVENT.OBJECTCHANGED, (event) => {
                 const e = event;
-                e.transObjectSet.forEach(object => {
+                e.transObjectSet.forEach((object) => {
                     config = objectToConfig(object);
                     mode = e.mode;
                     if (config) {

@@ -1,6 +1,5 @@
 import { SymbolConfig } from "../common/CommonConfig";
-export interface ControlsConfig extends SymbolConfig {
-}
+export declare type ControlsConfig = SymbolConfig;
 export interface TransformControlsConfig extends ControlsConfig {
     axis: string;
     enabled: boolean;

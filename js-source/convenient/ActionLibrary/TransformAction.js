@@ -1,16 +1,16 @@
 export class TransformAction {
     transfromControls;
     nextState = {
-        mode: 'translate',
-        space: 'world',
-        tranform: '',
-        objectMap: new Map()
+        mode: "translate",
+        space: "world",
+        tranform: "",
+        objectMap: new Map(),
     };
     prevState = {
-        mode: 'translate',
-        space: 'world',
-        tranform: '',
-        objectMap: new Map()
+        mode: "translate",
+        space: "world",
+        tranform: "",
+        objectMap: new Map(),
     };
     constructor(params) {
         this.transfromControls = params.transformControls;
@@ -18,18 +18,18 @@ export class TransformAction {
     generate(status) {
         const transformControls = this.transfromControls;
         const mode = transformControls.mode;
-        const tranform = mode === 'rotate' ? 'rotation' : mode === 'translate' ? 'position' : mode;
+        const tranform = mode === "rotate" ? "rotation" : mode === "translate" ? "position" : mode;
         const objectSet = transformControls.getTransObjectSet();
         const state = this[`${status}State`];
         state.mode = mode;
         state.tranform = tranform;
         state.space = transformControls.space;
         const cacheMap = state.objectMap;
-        objectSet.forEach(object => {
+        objectSet.forEach((object) => {
             cacheMap.set(object, {
                 x: object[tranform].x,
                 y: object[tranform].y,
-                z: object[tranform].z
+                z: object[tranform].z,
             });
         });
         this[status] = function () {

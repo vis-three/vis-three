@@ -1,4 +1,4 @@
-import Stats from 'three/examples/jsm/libs/stats.module';
+import Stats from "three/examples/jsm/libs/stats.module";
 export class VisStats {
     REVISION;
     dom;
@@ -21,9 +21,9 @@ export class VisStats {
         this.showPanel = stats.showPanel.bind(stats);
         this.setMode = stats.setMode.bind(stats);
         const dom = this.domElement;
-        dom.style.position = 'absolute';
-        dom.style.top = '0';
-        dom.style.left = '35px';
+        dom.style.position = "absolute";
+        dom.style.top = "0";
+        dom.style.left = "35px";
         if (parameters) {
             dom.style.top = `${parameters.top}px`;
             dom.style.left = `${parameters.left}px`;

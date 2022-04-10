@@ -4,8 +4,7 @@ import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "
 export interface LightCompilerTarget extends ObjectCompilerTarget<LightConfigAllType> {
     [key: string]: LightConfigAllType;
 }
-export interface LightCompilerParameters extends ObjectCompilerParameters<LightConfigAllType, LightCompilerTarget> {
-}
+export declare type LightCompilerParameters = ObjectCompilerParameters<LightConfigAllType, LightCompilerTarget>;
 export declare class LightCompiler extends ObjectCompiler<LightConfigAllType, LightCompilerTarget, Light> {
     COMPILER_NAME: string;
     private constructMap;

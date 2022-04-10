@@ -1,4 +1,4 @@
-import { Color, LineBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, PointsMaterial, SpriteMaterial, Texture } from "three";
+import { Color, LineBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, PointsMaterial, SpriteMaterial, Texture, } from "three";
 import { validate } from "uuid";
 import { Compiler } from "../../core/Compiler";
 import { CONFIGTYPE } from "../constants/configType";
@@ -31,22 +31,22 @@ export class MaterialCompiler extends Compiler {
         constructMap.set(CONFIGTYPE.POINTSMATERIAL, () => new PointsMaterial());
         this.constructMap = constructMap;
         this.colorAttribute = {
-            'color': true,
-            'emissive': true
+            color: true,
+            emissive: true,
         };
         this.mapAttribute = {
-            'roughnessMap': true,
-            'normalMap': true,
-            'metalnessMap': true,
-            'map': true,
-            'lightMap': true,
-            'envMap': true,
-            'emissiveMap': true,
-            'displacementMap': true,
-            'bumpMap': true,
-            'alphaMap': true,
-            'aoMap': true,
-            'specularMap': true
+            roughnessMap: true,
+            normalMap: true,
+            metalnessMap: true,
+            map: true,
+            lightMap: true,
+            envMap: true,
+            emissiveMap: true,
+            displacementMap: true,
+            bumpMap: true,
+            alphaMap: true,
+            aoMap: true,
+            specularMap: true,
         };
     }
     getTexture(vid) {

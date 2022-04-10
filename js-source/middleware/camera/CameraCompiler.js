@@ -1,7 +1,7 @@
-import { BufferGeometry, Material, OrthographicCamera, PerspectiveCamera } from "three";
+import { BufferGeometry, Material, OrthographicCamera, PerspectiveCamera, } from "three";
 import { Compiler } from "../../core/Compiler";
 import { Engine, ENGINEPLUGIN } from "../../engine/Engine";
-import { ObjectCompiler } from "../object/ObjectCompiler";
+import { ObjectCompiler, } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 export class CameraCompiler extends ObjectCompiler {
     COMPILER_NAME = MODULETYPE.CAMERA;
@@ -20,11 +20,11 @@ export class CameraCompiler extends ObjectCompiler {
             this.engine = new Engine().install(ENGINEPLUGIN.WEBGLRENDERER);
         }
         const constructMap = new Map();
-        constructMap.set('PerspectiveCamera', () => new PerspectiveCamera());
-        constructMap.set('OrthographicCamera', () => new OrthographicCamera(0, 0, 0, 0));
+        constructMap.set("PerspectiveCamera", () => new PerspectiveCamera());
+        constructMap.set("OrthographicCamera", () => new OrthographicCamera(0, 0, 0, 0));
         this.constructMap = constructMap;
         this.filterAttribute = {
-            scale: true
+            scale: true,
         };
         this.cacheCameraMap = new WeakMap();
     }
@@ -49,22 +49,26 @@ export class CameraCompiler extends ObjectCompiler {
             this.cacheCameraMap.set(camera, cacheData);
         }
         if (!value) {
-            if (cacheData.setSizeFun && this.engine.hasEventListener('setSize', cacheData.setSizeFun)) {
-                this.engine.removeEventListener('setSize', cacheData.setSizeFun);
+            if (cacheData.setSizeFun &&
+                this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
+                this.engine.removeEventListener("setSize", cacheData.setSizeFun);
                 cacheData.setSizeFun = undefined;
                 return this;
             }
-            if (cacheData.setSizeFun && !this.engine.hasEventListener('setSize', cacheData.setSizeFun)) {
+            if (cacheData.setSizeFun &&
+                !this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
                 cacheData.setSizeFun = undefined;
                 return this;
             }
         }
         if (value) {
-            if (cacheData.setSizeFun && this.engine.hasEventListener('setSize', cacheData.setSizeFun)) {
+            if (cacheData.setSizeFun &&
+                this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
                 return this;
             }
-            if (cacheData.setSizeFun && !this.engine.hasEventListener('setSize', cacheData.setSizeFun)) {
-                this.engine.addEventListener('setSize', cacheData.setSizeFun);
+            if (cacheData.setSizeFun &&
+                !this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
+                this.engine.addEventListener("setSize", cacheData.setSizeFun);
                 return this;
             }
             let setSizeFun = (event) => { };
@@ -87,14 +91,14 @@ export class CameraCompiler extends ObjectCompiler {
             else {
                 console.warn(`camera compiler can not support this class camera:`, camera);
             }
-            this.engine.addEventListener('setSize', setSizeFun);
+            this.engine.addEventListener("setSize", setSizeFun);
             cacheData.setSizeFun = setSizeFun;
             // 执行一次
             const domElement = this.engine.webGLRenderer.domElement;
             setSizeFun({
-                type: 'setSize',
+                type: "setSize",
                 width: domElement.offsetWidth,
-                height: domElement.offsetHeight
+                height: domElement.offsetHeight,
             });
         }
         return this;
@@ -104,9 +108,10 @@ export class CameraCompiler extends ObjectCompiler {
             const camera = this.constructMap.get(config.type)();
             Compiler.applyConfig(config, camera, Object.assign({
                 lookAt: true,
-                adaptiveWindow: true
+                adaptiveWindow: true,
             }, this.filterAttribute));
-            if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
+            if (camera instanceof PerspectiveCamera ||
+                camera instanceof OrthographicCamera) {
                 camera.updateProjectionMatrix();
             }
             this.map.set(vid, camera);
@@ -128,21 +133,22 @@ export class CameraCompiler extends ObjectCompiler {
         if (this.filterAttribute[key]) {
             return this;
         }
-        if (key === 'lookAt') {
+        if (key === "lookAt") {
             return this.setLookAt(vid, value);
         }
-        if (key === 'adaptiveWindow') {
+        if (key === "adaptiveWindow") {
             return this.setAdaptiveWindow(vid, value);
         }
         let object = this.map.get(vid);
-        for (let key of path) {
+        for (const key of path) {
             if (this.filterAttribute[key]) {
                 return this;
             }
             object = object[key];
         }
         object[key] = value;
-        if (object instanceof PerspectiveCamera || object instanceof OrthographicCamera) {
+        if (object instanceof PerspectiveCamera ||
+            object instanceof OrthographicCamera) {
             object.updateProjectionMatrix();
         }
         return this;
