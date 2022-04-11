@@ -41,10 +41,10 @@ export const getOrthographicCameraConfig =
     return Object.assign(getObjectConfig(), {
       type: CONFIGTYPE.ORTHOGRAPHICCAMERA,
       adaptiveWindow: false,
-      left: 1920 / 16,
-      right: 1920 / 16,
-      top: 1080 / 16,
-      bottom: 1080 / 16,
+      left: -1920 / 32,
+      right: 1920 / 32,
+      top: 1080 / 32,
+      bottom: -1080 / 32,
       near: 5,
       far: 50,
     });

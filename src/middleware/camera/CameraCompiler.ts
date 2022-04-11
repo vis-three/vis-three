@@ -60,7 +60,7 @@ export class CameraCompiler extends ObjectCompiler<
     constructMap.set("PerspectiveCamera", () => new PerspectiveCamera());
     constructMap.set(
       "OrthographicCamera",
-      () => new OrthographicCamera(0, 0, 0, 0)
+      () => new OrthographicCamera(-50, 50, 50, -50)
     );
 
     this.constructMap = constructMap;

@@ -8,11 +8,14 @@
 
 #### fix
 
+- OrthographicCamera support
+
 #### perf
 
 - ObjectHelperPlugin
 - code lint
 - processer
 - webGLRenderer shadowMap
+- camera examples
 
 #### deprecated

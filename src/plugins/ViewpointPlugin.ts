@@ -29,6 +29,7 @@ export interface ViewpointParameters {
   orthograpbic?: {
     distance?: number;
     up?: Vector3Config;
+    allowRotate?: boolean;
   };
 }
 
@@ -135,6 +136,7 @@ export const ViewpointPlugin: Plugin<ViewpointParameters> = function (
   });
 
   const distance = params.orthograpbic.distance || 60;
+  const allowRotate = params.orthograpbic.allowRotate ?? false;
   this.addEventListener<ViewpointEvent>("setViewpoint", (event) => {
     const viewpoint = event.viewpoint;
 
