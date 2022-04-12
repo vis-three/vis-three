@@ -81,6 +81,14 @@ export class CanvasGenerator {
     return this.canvas;
   }
 
+  /**
+   * 清空画布
+   * @param x position x px
+   * @param y  position z px
+   * @param width width px
+   * @param height height px
+   * @returns this
+   */
   clear(x = 0, y = 0, width?: number, height?: number): this {
     !width && (width = this.canvas.width);
     !height && (height = this.canvas.height);

@@ -4194,10 +4194,11 @@ class CameraCompiler extends ObjectCompiler {
         setSizeFun = (event) => {
           const width = event.width;
           const height = event.height;
-          camera.left = -width / 16;
-          camera.right = width / 16;
-          camera.top = height / 16;
-          camera.bottom = -height / 16;
+          camera.left = -width / 2;
+          camera.right = width / 2;
+          camera.top = height / 2;
+          camera.bottom = -height / 2;
+          camera.updateProjectionMatrix();
         };
       } else {
         console.warn(`camera compiler can not support this class camera:`, camera);
@@ -6524,9 +6525,13 @@ class TextureCompiler extends Compiler {
       return this;
     }
     let config = texture;
-    path.forEach((key2, i, arr) => {
+    for (const key2 of path) {
+      if (config[key2] === void 0) {
+        console.warn(`texture compiler set function: can not found key:${key2} in object.`);
+        return this;
+      }
       config = config[key2];
-    });
+    }
     config[key] = value;
     texture.needsUpdate = true;
     return this;

@@ -143,10 +143,11 @@ export class CameraCompiler extends ObjectCompiler<
         setSizeFun = (event: SetSizeEvent) => {
           const width = event.width;
           const height = event.height;
-          camera.left = -width / 16;
-          camera.right = width / 16;
-          camera.top = height / 16;
-          camera.bottom = -height / 16;
+          camera.left = -width / 2;
+          camera.right = width / 2;
+          camera.top = height / 2;
+          camera.bottom = -height / 2;
+          camera.updateProjectionMatrix();
         };
       } else {
         console.warn(
