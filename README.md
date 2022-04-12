@@ -470,11 +470,61 @@ const engine = new Vis.Engine().install(Vis.ENGINEPLUGIN.COMPILERMANAGER);
 
 视角切换插件
 
+```js
+const engine = new Vis.Engine().install(Vis.ENGINEPLUGIN.VIEWPOINT, {
+  viewpoint: Vis.VIEWPOINT.DEFAULT, // default top bottom left right front back
+  perspective: { // 初始的透视相机设置
+    position: Vector3Config,
+    lookAt: Vector3Config,
+    up: Vector3Config,
+  };
+  orthograpbic: { //  初始的正交相机设置
+    distance: number,
+    up: Vector3Config,
+    allowRotate: boolean,
+  };
+});
+
+// event
+```
+
 #### DisplayMode
 
 渲染模式插件
 
+```js
+const engine = new Vis.Engine().install(Vis.ENGINEPLUGIN.DISPLAYMODE, {
+  mode: Vis.DISPLAYMODE.ENV, // 'geometry', 'material', 'light', 'env'
+  overrideColor: "rgb(250, 250, 250)", // geometry模式下被替换的颜色
+  defaultAmbientLightSetting: { // 默认环境光设置
+    color: "rgb(255, 255, 255)",
+    intensity: 0.5
+  };
+  defaultDirectionalLightSetting: { // 默认平行光设置
+    color: "rgb(255, 255, 255)",
+    intensity: 0.5,
+    position: {
+      x: -100,
+      y: 100,
+      z: 100,
+    };
+  };
+});
+
+// event
+```
+
 #### Selection
+
+```js
+const engine = new Vis.Engine().install(Vis.ENGINEPLUGIN.SELECTION);
+
+// event
+engine.addEventListener("selected", (event) => {
+  // event.objects
+  // event.objectSymbols
+});
+```
 
 物体选择插件
 
