@@ -516,6 +516,8 @@ const engine = new Vis.Engine().install(Vis.ENGINEPLUGIN.DISPLAYMODE, {
 
 #### Selection
 
+物体选择插件
+
 ```js
 const engine = new Vis.Engine().install(Vis.ENGINEPLUGIN.SELECTION);
 
@@ -526,7 +528,6 @@ engine.addEventListener("selected", (event) => {
 });
 ```
 
-物体选择插件
 
 ### 自定义插件
 

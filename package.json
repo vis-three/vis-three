@@ -5,6 +5,7 @@
   "module": "dist/Vis.es.js",
   "types": "types/main.d.ts",
   "license": "MIT",
+  "author": "Shiotsuki_",
   "scripts": {
     "dev": "vite build --watch -c ./utils/build/vite.config.js",
     "build": "tsc && vite build -c ./utils/build/vite.config.js",

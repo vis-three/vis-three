@@ -3008,22 +3008,28 @@ class ResourceManager extends EventDispatcher {
     __publicField(this, "structureMap", new Map());
     __publicField(this, "configMap", new Map());
     __publicField(this, "resourceMap", new Map());
+    __publicField(this, "mappingHandler", new Map());
+    const mappingHandler = this.mappingHandler;
+    mappingHandler.set(HTMLImageElement, this.HTMLImageElementHandler);
+    mappingHandler.set(HTMLCanvasElement, this.HTMLCanvasElementHanlder);
+    mappingHandler.set(HTMLVideoElement, this.HTMLVideoElementHander);
+    mappingHandler.set(Object3D, this.Object3DHandler);
   }
-  mappingResource(loadResourceMap) {
+  Object3DHandler(url, object) {
     const structureMap = this.structureMap;
     const configMap = this.configMap;
     const resourceMap = this.resourceMap;
-    const recursionMappingObject = function(url, object) {
+    const recursionMappingObject = function(url2, object2) {
       const config = {
-        type: `${object.type}`
+        type: `${object2.type}`
       };
       let mappingUrl = "";
-      if (object.geometry) {
-        const geometry = object.geometry;
+      if (object2.geometry) {
+        const geometry = object2.geometry;
         geometry.computeBoundingBox();
         const box = geometry.boundingBox;
         const center = box.getCenter(new Vector3());
-        mappingUrl = `${url}.geometry`;
+        mappingUrl = `${url2}.geometry`;
         resourceMap.set(mappingUrl, geometry);
         configMap.set(mappingUrl, generateConfig(CONFIGTYPE.LOADGEOMETRY, {
           url: mappingUrl,
@@ -3035,47 +3041,79 @@ class ResourceManager extends EventDispatcher {
         }));
         config.geometry = mappingUrl;
       }
-      if (object.material) {
-        const material = object.material;
+      if (object2.material) {
+        const material = object2.material;
         if (material instanceof Array) {
           config.material = [];
           material.forEach((materialChild, i, arr) => {
-            mappingUrl = `${url}.material.${i}`;
+            mappingUrl = `${url2}.material.${i}`;
             resourceMap.set(mappingUrl, materialChild);
             configMap.set(mappingUrl, generateConfig(materialChild.type, materialChild, true, false));
             config.material[i] = mappingUrl;
           });
         } else {
-          mappingUrl = `${url}.material`;
+          mappingUrl = `${url2}.material`;
           resourceMap.set(mappingUrl, material);
           configMap.set(mappingUrl, generateConfig(material.type, material, true, false));
           config.material = mappingUrl;
         }
       }
-      if (object.children.length) {
+      if (object2.children.length) {
         config.children = [];
-        object.children.forEach((child, i, arr) => {
-          mappingUrl = `${url}.children.${i}`;
+        object2.children.forEach((child, i, arr) => {
+          mappingUrl = `${url2}.children.${i}`;
           config.children[i] = recursionMappingObject(mappingUrl, child);
         });
       }
       return config;
     };
-    loadResourceMap.forEach((resource, url) => {
-      if (resource instanceof HTMLImageElement) {
-        resourceMap.set(url, resource);
-        configMap.set(url, generateConfig(CONFIGTYPE.IMAGETEXTURE, {
-          url
-        }));
-        structureMap.set(url, url);
-      } else if (resource instanceof HTMLCanvasElement || resource instanceof HTMLVideoElement) {
-        resourceMap.set(url, resource);
-        structureMap.set(url, url);
-      } else if (resource instanceof Object3D) {
-        structureMap.set(url, recursionMappingObject(url, resource));
+    structureMap.set(url, recursionMappingObject(url, object));
+    return this;
+  }
+  HTMLImageElementHandler(url, element) {
+    this.resourceMap.set(url, element);
+    this.configMap.set(url, generateConfig(CONFIGTYPE.IMAGETEXTURE, {
+      url
+    }));
+    this.structureMap.set(url, url);
+    return this;
+  }
+  HTMLCanvasElementHanlder(url, element) {
+    this.resourceMap.set(url, element);
+    this.configMap.set(url, generateConfig(CONFIGTYPE.CANVASTEXTURE, {
+      url
+    }));
+    this.structureMap.set(url, url);
+    return this;
+  }
+  HTMLVideoElementHander(url, element) {
+    this.resourceMap.set(url, element);
+    this.configMap.set(url, generateConfig(CONFIGTYPE.VIDEOTEXTURE, {
+      url
+    }));
+    this.structureMap.set(url, url);
+    return this;
+  }
+  mappingResource(loadResourceMap) {
+    const structureMap = this.structureMap;
+    const configMap = this.configMap;
+    const resourceMap = this.resourceMap;
+    const mappingHandler = this.mappingHandler;
+    const resourceHanlder = (url, object, prototype) => {
+      if (!Object.getPrototypeOf(prototype)) {
+        return false;
+      } else if (mappingHandler.has(Object.getPrototypeOf(prototype).constructor)) {
+        mappingHandler.get(Object.getPrototypeOf(prototype).constructor).call(this, url, object);
+        return true;
       } else {
+        return resourceHanlder(url, object, Object.getPrototypeOf(prototype));
+      }
+    };
+    loadResourceMap.forEach((resource, url) => {
+      if (!resourceHanlder(url, resource, resource)) {
         resourceMap.set(url, resource);
         structureMap.set(url, url);
+        console.warn(`resource manager can not support this resource to generate config`, resource);
       }
     });
     this.dispatchEvent({
@@ -3085,6 +3123,9 @@ class ResourceManager extends EventDispatcher {
       resourceMap
     });
     return this;
+  }
+  getResourceConfig(url) {
+    return {};
   }
   remove(url) {
   }
@@ -9083,6 +9124,10 @@ const ObjectHelperPlugin = function(params = {}) {
   return true;
 };
 const SelectionPlugin = function(params = {}) {
+  if (this.selectionBox) {
+    console.warn("engine has installed selection plugin.");
+    return false;
+  }
   if (!this.eventManager) {
     console.warn("must install eventManager plugin before Selection plugin.");
     return false;
