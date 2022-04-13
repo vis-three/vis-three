@@ -21,7 +21,7 @@ export class CameraCompiler extends ObjectCompiler {
         }
         const constructMap = new Map();
         constructMap.set("PerspectiveCamera", () => new PerspectiveCamera());
-        constructMap.set("OrthographicCamera", () => new OrthographicCamera(0, 0, 0, 0));
+        constructMap.set("OrthographicCamera", () => new OrthographicCamera(-50, 50, 50, -50));
         this.constructMap = constructMap;
         this.filterAttribute = {
             scale: true,
@@ -82,10 +82,11 @@ export class CameraCompiler extends ObjectCompiler {
                 setSizeFun = (event) => {
                     const width = event.width;
                     const height = event.height;
-                    camera.left = -width / 16;
-                    camera.right = width / 16;
-                    camera.top = height / 16;
-                    camera.bottom = -height / 16;
+                    camera.left = -width / 2;
+                    camera.right = width / 2;
+                    camera.top = height / 2;
+                    camera.bottom = -height / 2;
+                    camera.updateProjectionMatrix();
                 };
             }
             else {

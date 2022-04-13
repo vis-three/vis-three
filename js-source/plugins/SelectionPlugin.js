@@ -1,4 +1,8 @@
 export const SelectionPlugin = function (params = {}) {
+    if (this.selectionBox) {
+        console.warn("engine has installed selection plugin.");
+        return false;
+    }
     if (!this.eventManager) {
         console.warn("must install eventManager plugin before Selection plugin.");
         return false;

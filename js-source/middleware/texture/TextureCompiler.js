@@ -111,9 +111,13 @@ export class TextureCompiler extends Compiler {
             return this;
         }
         let config = texture;
-        path.forEach((key, i, arr) => {
+        for (const key of path) {
+            if (config[key] === undefined) {
+                console.warn(`texture compiler set function: can not found key:${key} in object.`);
+                return this;
+            }
             config = config[key];
-        });
+        }
         config[key] = value;
         texture.needsUpdate = true;
         return this;

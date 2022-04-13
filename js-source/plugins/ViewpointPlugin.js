@@ -71,6 +71,7 @@ export const ViewpointPlugin = function (params = {}) {
         orthograpbicCamera.updateProjectionMatrix();
     });
     const distance = params.orthograpbic.distance || 60;
+    const allowRotate = params.orthograpbic.allowRotate ?? false;
     this.addEventListener("setViewpoint", (event) => {
         const viewpoint = event.viewpoint;
         if (viewpoint === VIEWPOINT.DEFAULT) {

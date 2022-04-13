@@ -23,6 +23,7 @@ export interface ViewpointParameters {
     orthograpbic?: {
         distance?: number;
         up?: Vector3Config;
+        allowRotate?: boolean;
     };
 }
 export declare const ViewpointPlugin: Plugin<ViewpointParameters>;

@@ -3008,6 +3008,7 @@ class ResourceManager extends EventDispatcher {
     __publicField(this, "structureMap", new Map());
     __publicField(this, "configMap", new Map());
     __publicField(this, "resourceMap", new Map());
+    __publicField(this, "configModuleMap", getConfigModuleMap());
     __publicField(this, "mappingHandler", new Map());
     const mappingHandler = this.mappingHandler;
     mappingHandler.set(HTMLImageElement, this.HTMLImageElementHandler);
@@ -3020,10 +3021,13 @@ class ResourceManager extends EventDispatcher {
     const configMap = this.configMap;
     const resourceMap = this.resourceMap;
     const recursionMappingObject = function(url2, object2) {
+      let mappingUrl = url2;
+      resourceMap.set(mappingUrl, object2);
+      configMap.set(mappingUrl, generateConfig(object2.type, object2, true, false));
       const config = {
-        type: `${object2.type}`
+        type: `${object2.type}`,
+        url: mappingUrl
       };
-      let mappingUrl = "";
       if (object2.geometry) {
         const geometry = object2.geometry;
         geometry.computeBoundingBox();
@@ -3058,12 +3062,24 @@ class ResourceManager extends EventDispatcher {
           config.material = mappingUrl;
         }
       }
+      if ([CONFIGTYPE.GROUP, CONFIGTYPE.SCENE].includes(object2.type)) {
+        configMap.get(config.url).children = [];
+      }
       if (object2.children.length) {
         config.children = [];
-        object2.children.forEach((child, i, arr) => {
-          mappingUrl = `${url2}.children.${i}`;
-          config.children[i] = recursionMappingObject(mappingUrl, child);
-        });
+        if ([CONFIGTYPE.GROUP, CONFIGTYPE.SCENE].includes(object2.type)) {
+          const group = configMap.get(config.url);
+          object2.children.forEach((child, i, arr) => {
+            mappingUrl = `${url2}.children.${i}`;
+            group.children.push(mappingUrl);
+            config.children[i] = recursionMappingObject(mappingUrl, child);
+          });
+        } else {
+          object2.children.forEach((child, i, arr) => {
+            mappingUrl = `${url2}.children.${i}`;
+            config.children[i] = recursionMappingObject(mappingUrl, child);
+          });
+        }
       }
       return config;
     };
@@ -3125,6 +3141,23 @@ class ResourceManager extends EventDispatcher {
     return this;
   }
   getResourceConfig(url) {
+    if (!this.structureMap.has(url)) {
+      console.warn(`resource manager can not found this url resource: ${url}`);
+      return {};
+    } else if (this.structureMap.get(url) === url) {
+      const config = this.configMap.get(url);
+      if (!config) {
+        return {};
+      } else {
+        return {
+          [this.configModuleMap[config.type]]: {
+            [config.vid]: config
+          }
+        };
+      }
+    } else {
+      this.structureMap.get(url);
+    }
     return {};
   }
   remove(url) {
