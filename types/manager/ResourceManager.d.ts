@@ -1,5 +1,6 @@
 import { BaseEvent } from "three";
 import { EventDispatcher } from "../core/EventDispatcher";
+import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { LoadOptions } from "./DataSupportManager";
 export interface ObjectMappingStructure {
     type: string;
@@ -10,7 +11,7 @@ export interface ObjectMappingStructure {
 }
 export interface MappedEvent extends BaseEvent {
     structureMap: Map<string, unknown>;
-    configMap: Map<string, unknown>;
+    configMap: Map<string, SymbolConfig>;
     resourceMap: Map<string, unknown>;
 }
 export declare enum RESOURCEEVENTTYPE {
@@ -18,7 +19,7 @@ export declare enum RESOURCEEVENTTYPE {
 }
 export declare class ResourceManager extends EventDispatcher {
     structureMap: Map<string, unknown>;
-    configMap: Map<string, unknown>;
+    configMap: Map<string, SymbolConfig>;
     resourceMap: Map<string, unknown>;
     private configModuleMap;
     private mappingHandler;

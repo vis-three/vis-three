@@ -1,9 +1,8 @@
 import { BufferGeometry, Line, Material } from "three";
-import { MeshConfig } from "../mesh/MeshConfig";
 import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { LineConfig } from "./LineConfig";
 export interface LineCompilerTarget extends ObjectCompilerTarget<LineConfig> {
-    [key: string]: MeshConfig;
+    [key: string]: LineConfig;
 }
 export declare type LineCompilerParameters = ObjectCompilerParameters<LineConfig, LineCompilerTarget>;
 export declare class LineCompiler extends ObjectCompiler<LineConfig, LineCompilerTarget, Line> {
@@ -13,7 +12,7 @@ export declare class LineCompiler extends ObjectCompiler<LineConfig, LineCompile
     constructor(parameters?: LineCompilerParameters);
     getReplaceMaterial(): Material;
     getReplaceGeometry(): BufferGeometry;
-    add(vid: string, config: MeshConfig): this;
+    add(vid: string, config: LineConfig): this;
     set(vid: string, path: string[], key: string, value: any): this;
     dispose(): this;
 }

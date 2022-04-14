@@ -2998,6 +2998,34 @@ const generateConfig = function(type, merge, strict = true, warn = true) {
     return null;
   }
 };
+const stringify = (key, value) => {
+  if (value === Infinity) {
+    return "Infinity";
+  }
+  if (value === -Infinity) {
+    return "-Infinity";
+  }
+  return value;
+};
+const parse = (key, value) => {
+  if (value === "Infinity") {
+    return Infinity;
+  }
+  if (value === "-Infinity") {
+    return -Infinity;
+  }
+  return value;
+};
+const clone = (object) => {
+  return JSON.parse(JSON.stringify(object, stringify), parse);
+};
+var JSONHandler = /* @__PURE__ */ Object.freeze({
+  __proto__: null,
+  [Symbol.toStringTag]: "Module",
+  stringify,
+  parse,
+  clone
+});
 var RESOURCEEVENTTYPE;
 (function(RESOURCEEVENTTYPE2) {
   RESOURCEEVENTTYPE2["MAPPED"] = "mapped";
@@ -3023,7 +3051,8 @@ class ResourceManager extends EventDispatcher {
     const recursionMappingObject = function(url2, object2) {
       let mappingUrl = url2;
       resourceMap.set(mappingUrl, object2);
-      configMap.set(mappingUrl, generateConfig(object2.type, object2, true, false));
+      const objectConfig = generateConfig(object2.type, object2, true, false);
+      configMap.set(mappingUrl, objectConfig);
       const config = {
         type: `${object2.type}`,
         url: mappingUrl
@@ -3035,31 +3064,38 @@ class ResourceManager extends EventDispatcher {
         const center = box.getCenter(new Vector3());
         mappingUrl = `${url2}.geometry`;
         resourceMap.set(mappingUrl, geometry);
-        configMap.set(mappingUrl, generateConfig(CONFIGTYPE.LOADGEOMETRY, {
+        const geometryConfig = generateConfig(CONFIGTYPE.LOADGEOMETRY, {
           url: mappingUrl,
           position: {
             x: center.x / (box.max.x - box.min.x) * 2,
             y: center.y / (box.max.y - box.min.y) * 2,
             z: center.z / (box.max.z - box.min.z) * 2
           }
-        }));
+        });
+        configMap.set(mappingUrl, geometryConfig);
         config.geometry = mappingUrl;
+        objectConfig.geometry = geometryConfig.vid;
       }
       if (object2.material) {
         const material = object2.material;
         if (material instanceof Array) {
           config.material = [];
+          objectConfig.material = [];
           material.forEach((materialChild, i, arr) => {
             mappingUrl = `${url2}.material.${i}`;
             resourceMap.set(mappingUrl, materialChild);
-            configMap.set(mappingUrl, generateConfig(materialChild.type, materialChild, true, false));
+            const materialConfig = generateConfig(materialChild.type, materialChild, true, false);
+            configMap.set(mappingUrl, materialConfig);
             config.material[i] = mappingUrl;
+            objectConfig.material.push(materialConfig.vid);
           });
         } else {
           mappingUrl = `${url2}.material`;
           resourceMap.set(mappingUrl, material);
-          configMap.set(mappingUrl, generateConfig(material.type, material, true, false));
+          const materialConfig = generateConfig(material.type, material, true, false);
+          configMap.set(mappingUrl, materialConfig);
           config.material = mappingUrl;
+          objectConfig.material = materialConfig.vid;
         }
       }
       if ([CONFIGTYPE.GROUP, CONFIGTYPE.SCENE].includes(object2.type)) {
@@ -3151,14 +3187,47 @@ class ResourceManager extends EventDispatcher {
       } else {
         return {
           [this.configModuleMap[config.type]]: {
-            [config.vid]: config
+            [config.vid]: clone(config)
           }
         };
       }
     } else {
-      this.structureMap.get(url);
+      const configure2 = {};
+      const configMap = this.configMap;
+      const configModuleMap = this.configModuleMap;
+      const structure = this.structureMap.get(url);
+      const recursionStructure = (structure2) => {
+        let config = configMap.get(structure2.url);
+        let module = configModuleMap[config.type];
+        if (!configure2[module]) {
+          configure2[module] = {};
+        }
+        configure2[module][config.vid] = clone(config);
+        if (structure2.geometry) {
+          config = configMap.get(structure2.geometry);
+          module = configModuleMap[config.type];
+          if (!configure2[module]) {
+            configure2[module] = {};
+          }
+          configure2[module][config.vid] = clone(config);
+        }
+        if (structure2.material) {
+          config = configMap.get(structure2.material);
+          module = configModuleMap[config.type];
+          if (!configure2[module]) {
+            configure2[module] = {};
+          }
+          configure2[module][config.vid] = clone(config);
+        }
+        if (structure2.children && structure2.children.length) {
+          for (const objectStructure of structure2.children) {
+            recursionStructure(objectStructure);
+          }
+        }
+      };
+      recursionStructure(structure);
+      return configure2;
     }
-    return {};
   }
   remove(url) {
   }
@@ -3187,34 +3256,6 @@ const ResourceManagerPlugin = function(params) {
   };
   return true;
 };
-const stringify = (key, value) => {
-  if (value === Infinity) {
-    return "Infinity";
-  }
-  if (value === -Infinity) {
-    return "-Infinity";
-  }
-  return value;
-};
-const parse = (key, value) => {
-  if (value === "Infinity") {
-    return Infinity;
-  }
-  if (value === "-Infinity") {
-    return -Infinity;
-  }
-  return value;
-};
-const clone = (object) => {
-  return JSON.parse(JSON.stringify(object, stringify), parse);
-};
-var JSONHandler = /* @__PURE__ */ Object.freeze({
-  __proto__: null,
-  [Symbol.toStringTag]: "Module",
-  stringify,
-  parse,
-  clone
-});
 const _ProxyBroadcast = class extends EventDispatcher {
   constructor() {
     super();
@@ -5991,7 +6032,13 @@ class MeshCompiler extends ObjectCompiler {
     return this.replaceGeometry;
   }
   add(vid, config) {
-    const object = new Mesh(this.getGeometry(config.geometry), this.getMaterial(config.material));
+    let material;
+    if (typeof config.material === "string") {
+      material = this.getMaterial(config.material);
+    } else {
+      material = config.material.map((vid2) => this.getMaterial(vid2));
+    }
+    const object = new Mesh(this.getGeometry(config.geometry), material);
     Compiler.applyConfig(config, object, {
       geometry: true,
       material: true,

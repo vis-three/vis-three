@@ -1,12 +1,13 @@
 import { BaseEvent, Mesh, Object3D, Vector3 } from "three";
 import { generateConfig } from "../convenient/generateConfig";
 import { EventDispatcher } from "../core/EventDispatcher";
-import { MODULETYPE } from "../main";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { LoadOptions } from "./DataSupportManager";
 import { getConfigModuleMap } from "../utils/utils";
 import { GroupConfig } from "../middleware/group/GroupConfig";
+import * as JSONHandler from "../convenient/JSONHandler";
+import { MeshConfig } from "../middleware/mesh/MeshConfig";
 
 export interface ObjectMappingStructure {
   type: string;
@@ -18,7 +19,7 @@ export interface ObjectMappingStructure {
 
 export interface MappedEvent extends BaseEvent {
   structureMap: Map<string, unknown>;
-  configMap: Map<string, unknown>;
+  configMap: Map<string, SymbolConfig>;
   resourceMap: Map<string, unknown>;
 }
 
@@ -28,7 +29,7 @@ export enum RESOURCEEVENTTYPE {
 
 export class ResourceManager extends EventDispatcher {
   structureMap: Map<string, unknown> = new Map(); // 外部资源结构映射 url -> structure mappingUrl
-  configMap: Map<string, unknown> = new Map(); // 配置映射 mappingUrl -> config
+  configMap: Map<string, SymbolConfig> = new Map(); // 配置映射 mappingUrl -> config
   resourceMap: Map<string, unknown> = new Map(); // 资源映射 mappingUrl -> resource
 
   private configModuleMap = getConfigModuleMap();
@@ -57,10 +58,13 @@ export class ResourceManager extends EventDispatcher {
       let mappingUrl = url;
 
       resourceMap.set(mappingUrl, object);
-      configMap.set(
-        mappingUrl,
-        generateConfig(object.type, object, true, false)
-      );
+      const objectConfig = generateConfig(
+        object.type,
+        object,
+        true,
+        false
+      )! as MeshConfig;
+      configMap.set(mappingUrl, objectConfig);
 
       const config: ObjectMappingStructure = {
         type: `${object.type}`,
@@ -72,24 +76,22 @@ export class ResourceManager extends EventDispatcher {
         geometry.computeBoundingBox();
         const box = geometry.boundingBox!;
         const center = box.getCenter(new Vector3());
-        // TODO: 获取锚点位置
         mappingUrl = `${url}.geometry`;
         // 存资源
         resourceMap.set(mappingUrl, geometry);
         // 生成配置单
-        configMap.set(
-          mappingUrl,
-          generateConfig(CONFIGTYPE.LOADGEOMETRY, {
-            url: mappingUrl,
-            position: {
-              x: (center.x / (box.max.x - box.min.x)) * 2,
-              y: (center.y / (box.max.y - box.min.y)) * 2,
-              z: (center.z / (box.max.z - box.min.z)) * 2,
-            },
-          })
-        );
+        const geometryConfig = generateConfig(CONFIGTYPE.LOADGEOMETRY, {
+          url: mappingUrl,
+          position: {
+            x: (center.x / (box.max.x - box.min.x)) * 2,
+            y: (center.y / (box.max.y - box.min.y)) * 2,
+            z: (center.z / (box.max.z - box.min.z)) * 2,
+          },
+        })!;
+        configMap.set(mappingUrl, geometryConfig);
         // 载入结构
         config.geometry = mappingUrl;
+        objectConfig.geometry = geometryConfig.vid;
       }
 
       // 映射材质配置 TODO: 映射贴图配置
@@ -98,29 +100,38 @@ export class ResourceManager extends EventDispatcher {
 
         if (material instanceof Array) {
           config.material = [] as string[];
+          objectConfig.material = [];
           material.forEach((materialChild, i, arr) => {
             mappingUrl = `${url}.material.${i}`;
             // 存资源
             resourceMap.set(mappingUrl, materialChild);
             // 生成配置单
-            configMap.set(
-              mappingUrl,
-              generateConfig(materialChild.type, materialChild, true, false)
-            );
+            const materialConfig = generateConfig(
+              materialChild.type,
+              materialChild,
+              true,
+              false
+            )!;
+            configMap.set(mappingUrl, materialConfig);
             // 载入结构
             (config.material as string[])[i] = mappingUrl;
+            (objectConfig.material as string[]).push(materialConfig.vid);
           });
         } else {
           mappingUrl = `${url}.material`;
           // 存资源
           resourceMap.set(mappingUrl, material);
           // 生成配置单
-          configMap.set(
-            mappingUrl,
-            generateConfig(material.type, material, true, false)
-          );
+          const materialConfig = generateConfig(
+            material.type,
+            material,
+            true,
+            false
+          )!;
+          configMap.set(mappingUrl, materialConfig);
           // 载入结构
           (config.material as string) = mappingUrl;
+          (objectConfig.material as string) = materialConfig.vid;
         }
       }
 
@@ -169,7 +180,7 @@ export class ResourceManager extends EventDispatcher {
       url,
       generateConfig(CONFIGTYPE.IMAGETEXTURE, {
         url: url,
-      })
+      })!
     );
     this.structureMap.set(url, url);
     return this;
@@ -184,7 +195,7 @@ export class ResourceManager extends EventDispatcher {
       url,
       generateConfig(CONFIGTYPE.CANVASTEXTURE, {
         url: url,
-      })
+      })!
     );
     this.structureMap.set(url, url);
     return this;
@@ -196,7 +207,7 @@ export class ResourceManager extends EventDispatcher {
       url,
       generateConfig(CONFIGTYPE.VIDEOTEXTURE, {
         url: url,
-      })
+      })!
     );
     this.structureMap.set(url, url);
     return this;
@@ -271,14 +282,53 @@ export class ResourceManager extends EventDispatcher {
       } else {
         return {
           [this.configModuleMap[config.type]]: {
-            [config.vid]: config,
+            [config.vid]: JSONHandler.clone(config),
           },
         };
       }
     } else {
-      const structure = this.structureMap.get(url)!;
+      const configure = {};
+      const configMap = this.configMap;
+      const configModuleMap = this.configModuleMap;
+      const structure = this.structureMap.get(url)! as ObjectMappingStructure;
+
+      const recursionStructure = (structure) => {
+        let config = configMap.get(structure.url)!;
+        let module = configModuleMap[config.type];
+        if (!configure[module]) {
+          configure[module] = {};
+        }
+        configure[module][config.vid] = JSONHandler.clone(config);
+
+        if (structure.geometry) {
+          config = configMap.get(structure.geometry)!;
+          module = configModuleMap[config.type];
+          if (!configure[module]) {
+            configure[module] = {};
+          }
+          configure[module][config.vid] = JSONHandler.clone(config);
+        }
+
+        if (structure.material) {
+          config = configMap.get(structure.material)!;
+          module = configModuleMap[config.type];
+          if (!configure[module]) {
+            configure[module] = {};
+          }
+          configure[module][config.vid] = JSONHandler.clone(config);
+        }
+
+        if (structure.children && structure.children.length) {
+          for (const objectStructure of structure.children) {
+            recursionStructure(objectStructure);
+          }
+        }
+      };
+
+      recursionStructure(structure);
+
+      return configure;
     }
-    return {};
   }
 
   // TODO: 根据strictureMap去清空configMap和resourceMap

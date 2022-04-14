@@ -7,7 +7,6 @@ import {
 } from "three";
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { MeshConfig } from "../mesh/MeshConfig";
 import {
   ObjectCompiler,
   ObjectCompilerParameters,
@@ -16,7 +15,7 @@ import {
 import { LineConfig } from "./LineConfig";
 
 export interface LineCompilerTarget extends ObjectCompilerTarget<LineConfig> {
-  [key: string]: MeshConfig;
+  [key: string]: LineConfig;
 }
 
 export type LineCompilerParameters = ObjectCompilerParameters<
@@ -48,7 +47,7 @@ export class LineCompiler extends ObjectCompiler<
     return this.replaceGeometry;
   }
 
-  add(vid: string, config: MeshConfig): this {
+  add(vid: string, config: LineConfig): this {
     const object = new Line(
       this.getGeometry(config.geometry),
       this.getMaterial(config.material)

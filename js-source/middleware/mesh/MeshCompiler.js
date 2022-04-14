@@ -18,7 +18,14 @@ export class MeshCompiler extends ObjectCompiler {
         return this.replaceGeometry;
     }
     add(vid, config) {
-        const object = new Mesh(this.getGeometry(config.geometry), this.getMaterial(config.material));
+        let material;
+        if (typeof config.material === "string") {
+            material = this.getMaterial(config.material);
+        }
+        else {
+            material = config.material.map((vid) => this.getMaterial(vid));
+        }
+        const object = new Mesh(this.getGeometry(config.geometry), material);
         Compiler.applyConfig(config, object, {
             geometry: true,
             material: true,

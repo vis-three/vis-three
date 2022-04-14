@@ -3,7 +3,7 @@ import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
 
 export interface MeshConfig extends ObjectConfig {
   geometry: string;
-  material: string;
+  material: string | string[];
 }
 
 export const getMeshConfig = function (): MeshConfig {

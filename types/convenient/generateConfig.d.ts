@@ -1,3 +1,4 @@
+import { SymbolConfig } from "../middleware/common/CommonConfig";
 /**
  * 生成相关对象配置单
  * @param type 对象类型 CONFIGTYPE
@@ -6,4 +7,4 @@
  * @param warn 是否输出warn
  * @returns config object
  */
-export declare const generateConfig: <C extends object>(type: string, merge?: object | undefined, strict?: boolean, warn?: boolean) => C | null;
+export declare const generateConfig: <C extends SymbolConfig>(type: string, merge?: object | undefined, strict?: boolean, warn?: boolean) => C | null;

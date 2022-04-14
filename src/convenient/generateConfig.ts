@@ -1,5 +1,6 @@
 import { getConfigFunctionMap } from "../utils/utils";
 import { v4 as getUuid } from "uuid";
+import { SymbolConfig } from "../middleware/common/CommonConfig";
 
 const typeMap: { [key: string]: Function } = getConfigFunctionMap();
 
@@ -11,7 +12,7 @@ const typeMap: { [key: string]: Function } = getConfigFunctionMap();
  * @param warn 是否输出warn
  * @returns config object
  */
-export const generateConfig = function <C extends object>(
+export const generateConfig = function <C extends SymbolConfig>(
   type: string,
   merge?: object,
   strict = true,
