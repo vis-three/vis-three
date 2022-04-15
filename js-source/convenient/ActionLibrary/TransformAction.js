@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export class TransformAction {
     transfromControls;
     nextState = {

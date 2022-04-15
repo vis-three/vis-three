@@ -1,3 +1,7 @@
+/**
+ * @experimental  PASS, EVENT
+ * @TODO STRUCTURE
+ */
 export declare enum MODULETYPE {
     CAMERA = "camera",
     LIGHT = "light",
@@ -8,10 +12,12 @@ export declare enum MODULETYPE {
     SCENE = "scene",
     SPRITE = "sprite",
     CONTROLS = "controls",
-    EVENT = "event",
     LINE = "line",
     MESH = "mesh",
     POINTS = "points",
     GROUP = "group",
+    PASS = "pass",
+    STRUCTURE = "structure",
+    EVENT = "event",
     MODIFIER = "modifier"
 }

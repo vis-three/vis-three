@@ -102,6 +102,9 @@ export {
   CanvasTextureGenerator,
   CanvasGenerator,
   History,
+  /**
+   * @deprecated
+   */
   ActionLibrary,
   BasicEventLibrary,
   RealTimeAnimateLibrary,

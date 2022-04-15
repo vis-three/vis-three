@@ -1,3 +1,6 @@
+/**
+ * @experimental  PASS, EVENT
+ */
 export var CONFIGTYPE;
 (function (CONFIGTYPE) {
     CONFIGTYPE["BOXGEOMETRY"] = "BoxGeometry";
@@ -34,6 +37,8 @@ export var CONFIGTYPE;
     CONFIGTYPE["SCENE"] = "Scene";
     CONFIGTYPE["TRNASFORMCONTROLS"] = "TransformControls";
     CONFIGTYPE["ORBITCONTROLS"] = "OrbitControls";
+    CONFIGTYPE["SMAAPASS"] = "SMAAPass";
+    CONFIGTYPE["UNREALBLOOMPASS"] = "UnrealBloomPass";
     CONFIGTYPE["EVENT"] = "Event";
 })(CONFIGTYPE || (CONFIGTYPE = {}));
 //# sourceMappingURL=configType.js.map

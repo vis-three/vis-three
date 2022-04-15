@@ -58,7 +58,11 @@ TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, 
 // helper
 PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, 
 // convenient
-generateConfig, SupportDataGenerator, CanvasTextureGenerator, CanvasGenerator, History, ActionLibrary, BasicEventLibrary, RealTimeAnimateLibrary, JSONHandler, 
+generateConfig, SupportDataGenerator, CanvasTextureGenerator, CanvasGenerator, History, 
+/**
+ * @deprecated
+ */
+ActionLibrary, BasicEventLibrary, RealTimeAnimateLibrary, JSONHandler, 
 // displayer
 MaterialDisplayer, TextureDisplayer, 
 // loader

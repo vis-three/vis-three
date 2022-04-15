@@ -30,6 +30,10 @@ export interface LoadedEvent extends BaseEvent {
     loadError: number;
     resourceMap: Map<string, unknown>;
 }
+export interface LoadUnit {
+    url: string;
+    ext: string;
+}
 export interface LoaderManagerParameters {
     loaderExtends: {
         [key: string]: Loader;
@@ -50,7 +54,7 @@ export declare class LoaderManager extends EventDispatcher {
     private loaded;
     private checkLoaded;
     setPath(path: string): this;
-    load(urlList: Array<string>): this;
+    load(urlList: Array<string | LoadUnit>): this;
     reset(): this;
     register(ext: string, loader: Loader): this;
     hasLoaded(url: string): boolean;

@@ -23,7 +23,7 @@ export class RenderManager extends EventDispatcher {
      */
     play = () => {
         if (this.hasRendering()) {
-            console.warn(`render manager has rendering.`);
+            console.warn(`render manager is rendering.`);
             return;
         }
         this.dispatchEvent({

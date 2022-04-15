@@ -15,11 +15,12 @@ export interface EffectComposerParameters {
   WebGLMultisampleRenderTarget?: boolean;
   samples?: number;
   format?: number;
+  MSAA?: boolean;
 }
 
 export const EffectComposerPlugin: Plugin<EffectComposerParameters> = function (
   this: Engine,
-  params: EffectComposerParameters
+  params: EffectComposerParameters = {}
 ): boolean {
   if (this.effectComposer) {
     console.warn("this has installed effect composer plugin.");
@@ -33,7 +34,7 @@ export const EffectComposerPlugin: Plugin<EffectComposerParameters> = function (
 
   let composer: EffectComposer;
 
-  if (params?.WebGLMultisampleRenderTarget) {
+  if (params.WebGLMultisampleRenderTarget || params.MSAA) {
     const renderer = this.webGLRenderer!;
     const pixelRatio = renderer.getPixelRatio();
     const size = renderer.getDrawingBufferSize(new Vector2());

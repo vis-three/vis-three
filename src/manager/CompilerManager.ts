@@ -13,6 +13,7 @@ import { LineCompiler } from "../middleware/line/LineCompiler";
 import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { MeshCompiler } from "../middleware/mesh/MeshCompiler";
 import { BasicObjectCompiler } from "../middleware/object/ObjectCompiler";
+import { PassCompiler } from "../middleware/pass/PassCompiler";
 import { PointsCompiler } from "../middleware/points/PointsCompiler";
 import { RendererCompiler } from "../middleware/renderer/RendererCompiler";
 import { SceneCompiler } from "../middleware/scene/SceneCompiler";
@@ -33,6 +34,7 @@ export interface CompilerManagerParameters {
   meshCompiler: MeshCompiler;
   pointsCompiler: PointsCompiler;
   groupCompiler: GroupCompiler;
+  passCompiler: PassCompiler;
 }
 
 export class CompilerManager {
@@ -50,6 +52,7 @@ export class CompilerManager {
   private meshCompiler!: MeshCompiler;
   private pointsCompiler!: PointsCompiler;
   private groupCompiler!: GroupCompiler;
+  private passCompiler!: PassCompiler;
 
   private objectCompilerList: Array<BasicObjectCompiler>;
 
@@ -65,6 +68,12 @@ export class CompilerManager {
     }
   }
 
+  /**
+   * @todo 是否将组装规则重新整理或者拆分个各个compiler执行
+   * 例如提供执行生命周期，然后compiler注册进各个周期里面统一执行
+   * @param engine
+   * @returns
+   */
   support(engine: EngineSupport): this {
     const dataSupportManager = engine.dataSupportManager!;
 
@@ -82,6 +91,7 @@ export class CompilerManager {
     const meshDataSupport = dataSupportManager.meshDataSupport;
     const pointsDataSupport = dataSupportManager.pointsDataSupport;
     const groupDataSupport = dataSupportManager.groupDataSupport;
+    const passDataSupport = dataSupportManager.passDataSupport;
 
     const textureCompiler = new TextureCompiler({
       target: textureDataSupport.getData(),
@@ -174,6 +184,15 @@ export class CompilerManager {
     });
     this.eventCompiler = eventCompiler;
 
+    if (engine.effectComposer) {
+      const passCompiler = new PassCompiler({
+        target: passDataSupport.getData(),
+        composer: engine.effectComposer,
+      });
+      passDataSupport.addCompiler(passCompiler);
+      this.passCompiler = passCompiler;
+    }
+
     const resourceManager = engine.resourceManager!;
 
     // 建立编译器链接
@@ -212,6 +231,11 @@ export class CompilerManager {
     return this;
   }
 
+  /**
+   * 获取该three物体的vid标识
+   * @param object three object
+   * @returns vid or null
+   */
   getObjectSymbol<O extends Object3D>(object: O): SymbolConfig["vid"] | null {
     const objectCompilerList = this.objectCompilerList;
 
@@ -225,6 +249,11 @@ export class CompilerManager {
     return null;
   }
 
+  /**
+   * 通过vid标识获取相应的three对象
+   * @param vid vid标识
+   * @returns object3D || null
+   */
   getObjectBySymbol(vid: string): Object3D | null {
     const objectCompilerList = this.objectCompilerList;
 

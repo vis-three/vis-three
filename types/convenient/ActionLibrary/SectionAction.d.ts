@@ -6,6 +6,9 @@ export interface SectionActionParameters {
     newObjects: Object3D[];
     engine: Engine;
 }
+/**
+ * @deprecated
+ */
 export declare class SectionAction implements BasicAction {
     private oldObjects;
     private newObjects;

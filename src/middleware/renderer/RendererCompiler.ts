@@ -1,15 +1,6 @@
-import {
-  BaseEvent,
-  Camera,
-  OrthographicCamera,
-  PerspectiveCamera,
-  WebGLRenderer,
-} from "three";
+import { WebGLRenderer } from "three";
 import { Engine } from "../../engine/Engine";
-import { RenderEvent, RenderManager } from "../../manager/RenderManager";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
-import { SymbolConfig, Vector2Config } from "../common/CommonConfig";
-import { RENDERERMANAGER } from "../constants/EVENTTYPE";
 import {
   getWebGLRendererConfig,
   RendererAllType,
@@ -17,17 +8,12 @@ import {
   WebGLRendererScissor,
   WebGLRendererViewPort,
 } from "./RendererConfig";
-import { WebGLRendererCompiler } from "./WebGLRendererCompiler";
 import { CONFIGTYPE } from "../constants/configType";
 import { WebGLRendererProcessor } from "./WebGLRendererProcessor";
 import { Processor } from "../../core/Processor";
 
 export interface RendererCompilerTarget extends CompilerTarget {
   [key: string]: WebGLRendererConfig;
-}
-
-export interface RendererComilerMap {
-  WebGLRenderer?: WebGLRendererCompiler;
 }
 
 export interface RendererCompilerParameters {
@@ -38,7 +24,6 @@ export interface RendererCompilerParameters {
 export class RendererCompiler extends Compiler {
   private target!: RendererCompilerTarget;
   private engine!: Engine;
-  private map: RendererComilerMap;
 
   private processorMap = {
     [CONFIGTYPE.WEBGLRENDERER]: new WebGLRendererProcessor(),
@@ -55,8 +40,6 @@ export class RendererCompiler extends Compiler {
       this.target = {};
       this.engine = new Engine();
     }
-
-    this.map = {};
   }
 
   assembly(vid: string, callback: (params: Processor) => void) {
@@ -94,6 +77,7 @@ export class RendererCompiler extends Compiler {
 
   add(config: RendererAllType) {
     if (config.type === CONFIGTYPE.WEBGLRENDERER) {
+      // TODO: 支持多renderer?
       this.rendererMap.set(config.vid, this.engine.webGLRenderer!);
     }
 

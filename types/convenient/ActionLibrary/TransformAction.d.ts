@@ -3,6 +3,9 @@ import { BasicAction } from "./Action";
 export interface TransformActionParameters {
     transformControls: VisTransformControls;
 }
+/**
+ * @deprecated
+ */
 export declare class TransformAction implements BasicAction {
     private transfromControls;
     private nextState;

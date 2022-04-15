@@ -1,7 +1,7 @@
 import { RGBAFormat, Vector2, WebGLMultisampleRenderTarget, WebGLRenderTarget, } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-export const EffectComposerPlugin = function (params) {
+export const EffectComposerPlugin = function (params = {}) {
     if (this.effectComposer) {
         console.warn("this has installed effect composer plugin.");
         return false;
@@ -11,7 +11,7 @@ export const EffectComposerPlugin = function (params) {
         return false;
     }
     let composer;
-    if (params?.WebGLMultisampleRenderTarget) {
+    if (params.WebGLMultisampleRenderTarget || params.MSAA) {
         const renderer = this.webGLRenderer;
         const pixelRatio = renderer.getPixelRatio();
         const size = renderer.getDrawingBufferSize(new Vector2());

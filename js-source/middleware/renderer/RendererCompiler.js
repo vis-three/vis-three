@@ -5,7 +5,6 @@ import { WebGLRendererProcessor } from "./WebGLRendererProcessor";
 export class RendererCompiler extends Compiler {
     target;
     engine;
-    map;
     processorMap = {
         [CONFIGTYPE.WEBGLRENDERER]: new WebGLRendererProcessor(),
     };
@@ -20,7 +19,6 @@ export class RendererCompiler extends Compiler {
             this.target = {};
             this.engine = new Engine();
         }
-        this.map = {};
     }
     assembly(vid, callback) {
         const config = this.target[vid];
@@ -48,6 +46,7 @@ export class RendererCompiler extends Compiler {
     }
     add(config) {
         if (config.type === CONFIGTYPE.WEBGLRENDERER) {
+            // TODO: 支持多renderer?
             this.rendererMap.set(config.vid, this.engine.webGLRenderer);
         }
         this.assembly(config.vid, (processer) => {

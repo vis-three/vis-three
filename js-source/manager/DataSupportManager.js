@@ -16,6 +16,7 @@ import { PointsDataSupport } from "../middleware/points/PointsDataSupport";
 import { GroupDataSupport } from "../middleware/group/GroupDataSupport";
 import { stringify } from "../convenient/JSONHandler";
 import { getConfigModuleMap } from "../utils/utils";
+import { PassDataSupport } from "../middleware/pass/PassDataSupport";
 export class DataSupportManager {
     static configModuleMap = getConfigModuleMap();
     cameraDataSupport = new CameraDataSupport();
@@ -32,6 +33,7 @@ export class DataSupportManager {
     meshDataSupport = new MeshDataSupport();
     pointsDataSupport = new PointsDataSupport();
     groupDataSupport = new GroupDataSupport();
+    passDataSupport = new PassDataSupport();
     dataSupportMap;
     constructor(parameters) {
         if (parameters) {
@@ -66,6 +68,11 @@ export class DataSupportManager {
     getObjectConfig(vid) {
         return null;
     }
+    /**
+     * 获取该模块下的支持插件
+     * @param type MODULETYPE
+     * @returns DataSupport
+     */
     getDataSupport(type) {
         if (this.dataSupportMap.has(type)) {
             return this.dataSupportMap.get(type);
@@ -75,6 +82,9 @@ export class DataSupportManager {
             return null;
         }
     }
+    /**
+     * @experimental 获取该模块下的响应式数据对象
+     */
     getSupportData(type) {
         if (this.dataSupportMap.has(type)) {
             return this.dataSupportMap.get(type).getData();
@@ -84,6 +94,9 @@ export class DataSupportManager {
             return null;
         }
     }
+    /**
+     * @experimental 设置该模块下的响应式数据对象
+     */
     setSupportData(type, data) {
         if (this.dataSupportMap.has(type)) {
             this.dataSupportMap.get(type).setData(data);
@@ -93,6 +106,11 @@ export class DataSupportManager {
         }
         return this;
     }
+    /**
+     * 通过vid标识获取相应配置对象
+     * @param vid vid标识
+     * @returns config || null
+     */
     getConfigBySymbol(vid) {
         const dataSupportList = this.dataSupportMap.values();
         for (const dataSupport of dataSupportList) {
@@ -103,6 +121,11 @@ export class DataSupportManager {
         }
         return null;
     }
+    /**
+     * 通过vid标识移除相关配置对象
+     * @param vid vid标识
+     * @returns void
+     */
     removeConfigBySymbol(vid) {
         const dataSupportList = this.dataSupportMap.values();
         for (const dataSupport of dataSupportList) {
@@ -112,6 +135,11 @@ export class DataSupportManager {
             }
         }
     }
+    /**
+     * 通过vid标识获取该标识所处的模块
+     * @param vid vid标识
+     * @returns MODULETYPE || null
+     */
     getModuleBySymbol(vid) {
         const dataSupportList = this.dataSupportMap.values();
         for (const dataSupport of dataSupportList) {
@@ -121,6 +149,11 @@ export class DataSupportManager {
         }
         return null;
     }
+    /**
+     * 应用配置对象
+     * @param config vis相关配置对象
+     * @returns this
+     */
     applyConfig(config) {
         const module = DataSupportManager.configModuleMap[config.type];
         if (module) {
@@ -131,6 +164,11 @@ export class DataSupportManager {
         }
         return this;
     }
+    /**
+     * 获取响应式配置对象
+     * @param config vis相关配置对象
+     * @returns config
+     */
     reactiveConfig(config) {
         const module = DataSupportManager.configModuleMap[config.type];
         if (module) {
@@ -144,6 +182,11 @@ export class DataSupportManager {
             return config;
         }
     }
+    /**
+     * 根据配置单加载对象
+     * @param config 符合vis配置选项的配置单对象
+     * @returns this
+     */
     load(config) {
         const dataSupportMap = this.dataSupportMap;
         dataSupportMap.forEach((dataSupport, module) => {
@@ -151,6 +194,11 @@ export class DataSupportManager {
         });
         return this;
     }
+    /**
+     * 根据配置单移除相关对象
+     * @param config  符合vis配置选项的配置单对象
+     * @returns this
+     */
     remove(config) {
         const dataSupportMap = this.dataSupportMap;
         dataSupportMap.forEach((dataSupport, module) => {
@@ -158,6 +206,11 @@ export class DataSupportManager {
         });
         return this;
     }
+    /**
+     * 获取JSON化的配置单
+     * @param extendsConfig 需要额外JSON化的配置对象，会被dataSupport的对象覆盖
+     * @returns JSON string
+     */
     toJSON(extendsConfig) {
         const jsonObject = extendsConfig || {};
         const dataSupportMap = this.dataSupportMap;

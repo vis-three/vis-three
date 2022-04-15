@@ -14,6 +14,9 @@ interface CacheState {
   objectMap: Map<Object3D, Vector3Config>;
 }
 
+/**
+ * @deprecated
+ */
 export class TransformAction implements BasicAction {
   private transfromControls: VisTransformControls;
   private nextState: CacheState = {

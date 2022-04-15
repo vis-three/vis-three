@@ -91,7 +91,17 @@ export class LoaderManager extends EventDispatcher {
         const resourceMap = this.resourceMap;
         const loaderMap = this.loaderMap;
         const loadDetailMap = this.loadDetailMap;
-        for (const url of urlList) {
+        for (const unit of urlList) {
+            let url;
+            let ext;
+            if (typeof unit === "string") {
+                url = unit;
+                ext = url.split(".").pop()?.toLocaleLowerCase() || "";
+            }
+            else {
+                url = unit.url;
+                ext = unit.ext.toLocaleLowerCase();
+            }
             const detail = {
                 url,
                 progress: 0,
@@ -116,7 +126,6 @@ export class LoaderManager extends EventDispatcher {
                 this.checkLoaded();
                 continue;
             }
-            const ext = url.split(".").pop()?.toLocaleLowerCase();
             if (!ext) {
                 detail.message = `url: ${url} 地址有误，无法获取文件格式。`;
                 console.warn(detail.message);

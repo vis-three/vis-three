@@ -1,228 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
-  <title>Document</title>
-  <link rel="stylesheet" href="./css/common.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/examples/public/favicon.ico"
+    />
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/common.css" />
+  </head>
 
-<style>
+  <style>
+    #app,
+    #module-main {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
 
-  #app, #module-main {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-  }
+    body a,
+    h3 {
+      color: white;
+    }
 
- body a, h3{
-   color: white;
- }
+    body a::visited {
+      color: white;
+    }
 
- body a::visited {
-  color: white;
- }
+    #module-main {
+      display: flex;
+      flex-wrap: wrap;
+    }
 
- #module-main {
-  display: flex;
-  flex-wrap: wrap;
- }
+    .module-box {
+      display: flex;
+      flex-direction: column;
+      margin: 12px;
+      margin-bottom: 24px;
+    }
 
- .module-box {
-  display: flex;
-  flex-direction: column;
-  margin: 12px;
-  margin-bottom: 24px;
- }
+    .module-box h3 {
+      margin-bottom: 12px;
+    }
 
- .module-box h3 {
-   margin-bottom: 12px;
- }
+    .module-box .children-box {
+      display: flex;
+      flex-direction: column;
+    }
 
- .module-box .children-box {
-   display: flex;
-   flex-direction: column;
-  }
+    .children-box a {
+      margin: 4px 0;
+    }
+  </style>
 
-  .children-box a {
-    margin: 4px 0;
-  }
-</style>
+  <body>
+    <div id="app"></div>
+    <div id="module-main"></div>
 
-<body>
-  <div id="app"></div>
-  <div id="module-main"></div>
-  
-  <script type="module">
-    import * as Vis from '../dist/Vis.es.js'
-    const engine = new Vis.DisplayEngineSupport()
-    .setDom(document.getElementById('app'))
-    .setSize()
-    .play()
+    <script type="module">
+      import * as Vis from "../dist/Vis.es.js";
+      const engine = new Vis.DisplayEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
 
-    window.addEventListener('resize', () => {
-      engine.setSize()
-    })
+      window.addEventListener("resize", () => {
+        engine.setSize();
+      });
 
-    const ambientLight = Vis.generateConfig('AmbientLight')
+      const ambientLight = Vis.generateConfig("AmbientLight");
 
-    const spotLight = Vis.generateConfig('SpotLight', {
-      position: {
-        y: 15,
-        x: 50,
-        z: 50
-      },
-      intensity: 2,
-      distance: 120
-    })
+      const spotLight = Vis.generateConfig("SpotLight", {
+        position: {
+          y: 15,
+          x: 50,
+          z: 50,
+        },
+        intensity: 2,
+        distance: 120,
+      });
 
-    const meshStandardMaterial = Vis.generateConfig('MeshStandardMaterial', {
-      color: 'rgb(45, 0, 50)',
-      roughness: 0.8
-    })
-    
-    const boxGeometry = Vis.generateConfig('BoxGeometry', {
-      width: 100,
-      height: 5,
-      depth: 40
-    })
-    
-    const mesh = Vis.generateConfig('Mesh', {
-      geometry: boxGeometry.vid,
-      material: meshStandardMaterial.vid
-    })
+      const meshStandardMaterial = Vis.generateConfig("MeshStandardMaterial", {
+        color: "rgb(45, 0, 50)",
+        roughness: 0.8,
+      });
 
-    const orbitControls = Vis.generateConfig('OrbitControls', {
-      autoRotate: true
-    })
+      const boxGeometry = Vis.generateConfig("BoxGeometry", {
+        width: 100,
+        height: 5,
+        depth: 40,
+      });
 
-    engine.dataSupportManager.applyConfig(ambientLight)
-    engine.dataSupportManager.applyConfig(spotLight) 
-    engine.dataSupportManager.applyConfig(meshStandardMaterial)
-    engine.dataSupportManager.applyConfig(boxGeometry)
-    engine.dataSupportManager.applyConfig(mesh)
-    engine.dataSupportManager.applyConfig(orbitControls)
+      const mesh = Vis.generateConfig("Mesh", {
+        geometry: boxGeometry.vid,
+        material: meshStandardMaterial.vid,
+      });
 
+      const orbitControls = Vis.generateConfig("OrbitControls", {
+        autoRotate: true,
+      });
 
-    const tree = [
-      {
-        router: 'engine',
-        children: [
-          '/Engine.html',
-          '/ModelingEngine.html',
-          '/DisplayEngine.html',
-          '/ModelingEngineSupport.html',
-          '/DisplayEngineSupport.html'
-        ]
-      },
-      {
-        router: 'plugin',
-        children: [
-          '/WebGLRendererPlugin.html',
-          '/AxesHelperPlugin.html',
-          '/GridHelperPlugin.html',
-          '/ObjectHelperPlugin.html',
-          '/ViewpointPlugin.html',
-          '/DisplayModePlugin.html',
-          '/SelectionPlugin.html',
-          '/StatsPlugin.html'
-        ]
-      },
-      {
-        router: 'support',
-        children: [
-          '/GeometrySupport.html',
-          '/CameraSupport.html',
-          '/MeshSupport.html',
-          '/SpriteSupport.html',
-          '/LineSupport.html',
-          '/PointsSupport.html',
-          '/LightSupport.html',
-          '/GroupSupport.html',
-          '/TextureSupport.html',
-          '/EventSupport.html'
-        ]
-      },
-      {
-        router: 'manager',
-        children: [
-          '/EventManager.html',
-          '/LoaderManager.html',
-          '/ResourceManager.html',
-        ]
-      },
-      {
-        router: 'modifier',
-        children: [
-          '/BooleanModifier.html',
-        ]
-      },
-      {
-        router: 'helper',
-        children: [
-          '/PointLightHelper.html',
-          '/SpotLightHelper.html',
-          '/directionalLight.html',
-          '/CameraHelper.html',
-          '/GroupHelper.html',
-        ]
-      },
-      {
-        router: 'loader',
-        children: [
-          '/VideoLoader.html',
-        ]
-      },
-      {
-        router: 'displayer',
-        children: [
-          '/TextureDisplayer.html',
-          '/MaterialDisplayer.html',
-        ]
-      },
-      {
-        router: 'convenient',
-        children: [
-          '/History.html',
-        ]
-      },
-      {
-        router: 'develop',
-        children: [
-          '/configure.html',
-          '/Vue3.html',
-          '/Vue2.html',
-          '/CanvasExtends.html',
-          '/Vue2-ConfigExtends.html'
-        ]
-      },
-    ]
+      engine.dataSupportManager.applyConfig(ambientLight);
+      engine.dataSupportManager.applyConfig(spotLight);
+      engine.dataSupportManager.applyConfig(meshStandardMaterial);
+      engine.dataSupportManager.applyConfig(boxGeometry);
+      engine.dataSupportManager.applyConfig(mesh);
+      engine.dataSupportManager.applyConfig(orbitControls);
 
-    const moduleMain = document.getElementById('module-main')
-    tree.forEach(module => {
+      const tree = [
+        {
+          router: "engine",
+          children: [
+            "/Engine.html",
+            "/ModelingEngine.html",
+            "/DisplayEngine.html",
+            "/ModelingEngineSupport.html",
+            "/DisplayEngineSupport.html",
+          ],
+        },
+        {
+          router: "plugin",
+          children: [
+            "/WebGLRendererPlugin.html",
+            "/AxesHelperPlugin.html",
+            "/GridHelperPlugin.html",
+            "/ObjectHelperPlugin.html",
+            "/ViewpointPlugin.html",
+            "/DisplayModePlugin.html",
+            "/SelectionPlugin.html",
+            "/StatsPlugin.html",
+          ],
+        },
+        {
+          router: "support",
+          children: [
+            "/GeometrySupport.html",
+            "/CameraSupport.html",
+            "/MeshSupport.html",
+            "/SpriteSupport.html",
+            "/LineSupport.html",
+            "/PointsSupport.html",
+            "/LightSupport.html",
+            "/GroupSupport.html",
+            "/TextureSupport.html",
+            "/EventSupport.html",
+            "/PassSupport.html",
+          ],
+        },
+        {
+          router: "manager",
+          children: [
+            "/EventManager.html",
+            "/LoaderManager.html",
+            "/ResourceManager.html",
+          ],
+        },
+        {
+          router: "modifier",
+          children: ["/BooleanModifier.html"],
+        },
+        {
+          router: "helper",
+          children: [
+            "/PointLightHelper.html",
+            "/SpotLightHelper.html",
+            "/directionalLight.html",
+            "/CameraHelper.html",
+            "/GroupHelper.html",
+          ],
+        },
+        {
+          router: "loader",
+          children: ["/VideoLoader.html"],
+        },
+        {
+          router: "displayer",
+          children: ["/TextureDisplayer.html", "/MaterialDisplayer.html"],
+        },
+        {
+          router: "convenient",
+          children: ["/History.html"],
+        },
+        {
+          router: "develop",
+          children: [
+            "/configure.html",
+            "/Vue3.html",
+            "/Vue2.html",
+            "/CanvasExtends.html",
+            "/Vue2-ConfigExtends.html",
+          ],
+        },
+      ];
 
-      let childrenDom = ''
+      const moduleMain = document.getElementById("module-main");
+      tree.forEach((module) => {
+        let childrenDom = "";
 
-      if (module.children && module.children.length) {
-        for (let url of module.children) {
-          childrenDom += `<a href="${module.router}${url}">${url.split('/').pop()}</a>`
+        if (module.children && module.children.length) {
+          for (let url of module.children) {
+            childrenDom += `<a href="${module.router}${url}">${url
+              .split("/")
+              .pop()}</a>`;
+          }
         }
-      }
-      const moduleDom = document.createElement('div')
-      moduleDom.className = 'module-box'
-      moduleDom.innerHTML = `
+        const moduleDom = document.createElement("div");
+        moduleDom.className = "module-box";
+        moduleDom.innerHTML = `
         <h3>${module.router.toLocaleUpperCase()}</h3>
         <div class="children-box">
           ${childrenDom}
         </div>
-      `
+      `;
 
-      moduleMain.appendChild(moduleDom)
-    })
-  </script>
-</body>
+        moduleMain.appendChild(moduleDom);
+      });
+    </script>
+  </body>
 </html>

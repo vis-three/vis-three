@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export var OBJECTEVENT;
 (function (OBJECTEVENT) {
     OBJECTEVENT["ACTIVE"] = "active";

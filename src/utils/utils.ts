@@ -45,6 +45,10 @@ import { getMeshConfig } from "../middleware/mesh/MeshConfig";
 import { getPointsConfig } from "../middleware/points/PointsConfig";
 import { getLineConfig } from "../middleware/line/LineConfig";
 import { getGroupConfig } from "../middleware/group/GroupConfig";
+import {
+  getSMAAPassConfig,
+  getUnrealBloomPassConfig,
+} from "../middleware/pass/PassConfig";
 
 export function isValidKey(
   key: string | number | symbol,
@@ -129,6 +133,9 @@ export function getConfigModuleMap(): { [key: string]: string } {
     [CONFIGTYPE.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS,
     [CONFIGTYPE.ORBITCONTROLS]: MODULETYPE.CONTROLS,
 
+    [CONFIGTYPE.SMAAPASS]: MODULETYPE.PASS,
+    [CONFIGTYPE.UNREALBLOOMPASS]: MODULETYPE.PASS,
+
     [CONFIGTYPE.EVENT]: MODULETYPE.EVENT,
   };
 }
@@ -175,6 +182,9 @@ export function getConfigFunctionMap(): { [key: string]: Function } {
 
     [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig,
     [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig,
+
+    [CONFIGTYPE.SMAAPASS]: getSMAAPassConfig,
+    [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig,
 
     [CONFIGTYPE.EVENT]: getEventConfig,
   };

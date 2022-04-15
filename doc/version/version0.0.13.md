@@ -5,6 +5,8 @@
 - ObjectHelperManager
 - JSONHandler.clone()
 - sone geometry config
+- pass module
+- structure module \*
 
 #### fix
 
@@ -17,5 +19,7 @@
 - processer
 - webGLRenderer shadowMap
 - camera examples
+- resourceManager
+- loaderManager.load
 
 #### deprecated

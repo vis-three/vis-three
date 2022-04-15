@@ -40,6 +40,11 @@ export interface LoadedEvent extends BaseEvent {
   resourceMap: Map<string, unknown>;
 }
 
+export interface LoadUnit {
+  url: string;
+  ext: string;
+}
+
 export interface LoaderManagerParameters {
   loaderExtends: { [key: string]: Loader };
 }
@@ -117,13 +122,15 @@ export class LoaderManager extends EventDispatcher {
     return this;
   }
 
-  load(urlList: Array<string>): this {
+  load(urlList: Array<string | LoadUnit>): this {
     this.reset();
     this.isLoading = true;
+
     this.dispatchEvent({
       type: LOADERMANAGER.BEFORELOAD,
       urlList: [...urlList],
     });
+
     if (urlList.length <= 0) {
       this.checkLoaded();
       console.warn(`url list is empty.`);
@@ -136,7 +143,16 @@ export class LoaderManager extends EventDispatcher {
     const loaderMap = this.loaderMap;
     const loadDetailMap = this.loadDetailMap;
 
-    for (const url of urlList) {
+    for (const unit of urlList) {
+      let url: string;
+      let ext: string;
+      if (typeof unit === "string") {
+        url = unit;
+        ext = url.split(".").pop()?.toLocaleLowerCase() || "";
+      } else {
+        url = unit.url;
+        ext = unit.ext.toLocaleLowerCase();
+      }
       const detail: LoadDetail = {
         url,
         progress: 0,
@@ -164,7 +180,6 @@ export class LoaderManager extends EventDispatcher {
         continue;
       }
 
-      const ext = url.split(".").pop()?.toLocaleLowerCase();
       if (!ext) {
         detail.message = `url: ${url} 地址有误，无法获取文件格式。`;
         console.warn(detail.message);

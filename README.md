@@ -203,12 +203,9 @@ engine.addEventListener("afterRemove", (event) => {
 ```js
 const engine = new Vis.Engine()
 .install(Vis.ENGINEPLUGIN.EFFECTCOMPOSER ,{
- WebGLMultisampleRenderTarget: true // 137版本以下MSAA
  samples: 4 // 采样程度
  format: THREE.RGBAFormat // 后期编码
- MSAA: boolean // 预设
- FXAA: boolean // 预设
- SMAA: boolean // 预设
+ MSAA: true
 })
 
 // event
@@ -527,7 +524,6 @@ engine.addEventListener("selected", (event) => {
   // event.objectSymbols
 });
 ```
-
 
 ### 自定义插件
 

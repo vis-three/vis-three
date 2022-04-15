@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export class SectionAction {
     oldObjects;
     newObjects;
