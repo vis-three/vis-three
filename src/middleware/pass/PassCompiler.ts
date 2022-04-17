@@ -10,6 +10,7 @@ import { PassConfigAllType, UnrealBloomPassConfig } from "./PassConfig";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { Vector2 } from "three";
+import { EngineSupport } from "../../main";
 
 export interface PassCompilerTarget extends CompilerTarget {
   [key: string]: PassConfigAllType;
@@ -27,6 +28,9 @@ export class PassCompiler extends Compiler {
 
   private composer!: EffectComposer;
 
+  private width: number = window.innerWidth * window.devicePixelRatio;
+  private height: number = window.innerHeight * window.devicePixelRatio;
+
   constructor(parameters?: PassCompilerParameters) {
     super();
     if (parameters) {
@@ -37,22 +41,15 @@ export class PassCompiler extends Compiler {
     this.map = new Map();
 
     const constructMap = new Map();
-
-    const pixelRatio = this.composer.renderer.getPixelRatio();
-    const width =
-      Number(this.composer.renderer.domElement.getAttribute("width")) *
-      pixelRatio;
-
-    const height =
-      Number(this.composer.renderer.domElement.getAttribute("height")) *
-      pixelRatio;
-
-    constructMap.set(CONFIGTYPE.SMAAPASS, () => new SMAAPass(width, height));
+    constructMap.set(
+      CONFIGTYPE.SMAAPASS,
+      () => new SMAAPass(this.width, this.height)
+    );
     constructMap.set(
       CONFIGTYPE.UNREALBLOOMPASS,
       (config: UnrealBloomPassConfig) =>
         new UnrealBloomPass(
-          new Vector2(width, height),
+          new Vector2(this.width, this.height),
           config.strength,
           config.radius,
           config.threshold
@@ -64,6 +61,26 @@ export class PassCompiler extends Compiler {
 
   setTarget(target: PassCompilerTarget): this {
     this.target = target;
+    return this;
+  }
+
+  useEngine(engine: EngineSupport): this {
+    if (!engine.effectComposer) {
+      console.warn(
+        `engine need install effectComposer plugin that can use pass compiler.`
+      );
+      return this;
+    }
+    this.composer = engine.effectComposer;
+
+    const pixelRatio = this.composer.renderer.getPixelRatio();
+    this.width =
+      Number(this.composer.renderer.domElement.getAttribute("width")) *
+      pixelRatio;
+
+    this.height =
+      Number(this.composer.renderer.domElement.getAttribute("height")) *
+      pixelRatio;
     return this;
   }
 

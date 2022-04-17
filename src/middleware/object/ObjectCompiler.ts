@@ -1,6 +1,7 @@
 import { BufferGeometry, Material, Object3D, Scene, Vector3 } from "three";
 import { validate } from "uuid";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
+import { EngineSupport } from "../../main";
 import { SymbolConfig } from "../common/CommonConfig";
 import { ObjectConfig } from "./ObjectConfig";
 
@@ -188,8 +189,21 @@ export abstract class ObjectCompiler<
     return this;
   }
 
+  /**
+   * @deprecated - replace by useEngine
+   */
   setScene(scene: Scene): this {
     this.scene = scene;
+    return this;
+  }
+
+  useEngine(engine: EngineSupport): this {
+    if (!engine.scene) {
+      console.warn(`engine muset install scene plugin.`);
+      return this;
+    }
+
+    this.scene = engine.scene;
     return this;
   }
 

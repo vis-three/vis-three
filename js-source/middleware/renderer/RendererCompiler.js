@@ -57,6 +57,12 @@ export class RendererCompiler extends Compiler {
         this.target = target;
         return this;
     }
+    useEngine(engine) {
+        if (engine.webGLRenderer) {
+            this.rendererMap[CONFIGTYPE.WEBGLRENDERER] = engine.webGLRenderer;
+        }
+        return this;
+    }
     compileAll() {
         const target = this.target;
         for (const config of Object.values(target)) {

@@ -154,9 +154,16 @@ export class CameraCompiler extends ObjectCompiler {
         }
         return this;
     }
+    /**
+     * @deprecated replace by useEngine
+     */
     setEngine(engine) {
         this.engine = engine;
         return this;
+    }
+    useEngine(engine) {
+        this.engine = engine;
+        return super.useEngine(engine);
     }
     dispose() {
         super.dispose();

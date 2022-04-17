@@ -1,6 +1,7 @@
 import { Color, Fog, FogExp2, Scene, Texture } from "three";
 import { validate } from "uuid";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
+import { EngineSupport } from "../../main";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
 import { getSceneConfig, SceneConfig, SceneFogConfig } from "./SceneConfig";
@@ -140,6 +141,13 @@ export class SceneCompiler extends Compiler {
 
   setTarget(target: SceneCompilerTarget): this {
     this.target = target;
+    return this;
+  }
+
+  useEngine(engine: EngineSupport): this {
+    if (engine.scene) {
+      this.scene = engine.scene;
+    }
     return this;
   }
 

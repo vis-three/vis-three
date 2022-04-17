@@ -6,6 +6,7 @@ import { SymbolConfig } from "../common/CommonConfig";
 import { CubeTextureConfig, TextureAllType } from "./TextureConfig";
 import { CONFIGTYPE } from "../constants/configType";
 import { VideoTexture } from "../../optimize/VideoTexture";
+import { EngineSupport } from "../../main";
 
 export interface TextureCompilerTarget extends CompilerTarget {
   [key: string]: TextureAllType;
@@ -177,6 +178,10 @@ export class TextureCompiler extends Compiler {
 
   setTarget(target: TextureCompilerTarget): this {
     this.target = target;
+    return this;
+  }
+
+  useEngine(engine: EngineSupport): this {
     return this;
   }
 

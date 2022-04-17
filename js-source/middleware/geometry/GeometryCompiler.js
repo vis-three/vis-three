@@ -27,7 +27,7 @@ export class GeometryCompiler extends Compiler {
     replaceGeometry;
     constructor(parameters) {
         super();
-        this.target = parameters.target;
+        parameters?.target && (this.target = parameters.target);
         this.map = new Map();
         const constructMap = new Map();
         constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config) => {
@@ -86,7 +86,11 @@ export class GeometryCompiler extends Compiler {
     getMap() {
         return this.map;
     }
-    setTarget() {
+    useEngine(engine) {
+        return this;
+    }
+    setTarget(target) {
+        this.target = target;
         return this;
     }
     add(vid, config) {

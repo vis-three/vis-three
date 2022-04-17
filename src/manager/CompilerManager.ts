@@ -12,7 +12,10 @@ import { LightCompiler } from "../middleware/light/LightCompiler";
 import { LineCompiler } from "../middleware/line/LineCompiler";
 import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { MeshCompiler } from "../middleware/mesh/MeshCompiler";
-import { BasicObjectCompiler } from "../middleware/object/ObjectCompiler";
+import {
+  BasicObjectCompiler,
+  ObjectCompiler,
+} from "../middleware/object/ObjectCompiler";
 import { PassCompiler } from "../middleware/pass/PassCompiler";
 import { PointsCompiler } from "../middleware/points/PointsCompiler";
 import { RendererCompiler } from "../middleware/renderer/RendererCompiler";
@@ -38,21 +41,21 @@ export interface CompilerManagerParameters {
 }
 
 export class CompilerManager {
-  private cameraCompiler!: CameraCompiler;
-  private lightCompiler!: LightCompiler;
-  private geometryCompiler!: GeometryCompiler;
-  private textureCompiler!: TextureCompiler;
-  private materialCompiler!: MaterialCompiler;
-  private rendererCompiler!: RendererCompiler;
-  private sceneCompiler!: SceneCompiler;
-  private controlsCompiler!: ControlsCompiler;
-  private spriteCompiler!: SpriteCompiler;
-  private eventCompiler!: EventCompiler;
-  private lineCompiler!: LineCompiler;
-  private meshCompiler!: MeshCompiler;
-  private pointsCompiler!: PointsCompiler;
-  private groupCompiler!: GroupCompiler;
-  private passCompiler!: PassCompiler;
+  private cameraCompiler = new CameraCompiler();
+  private lightCompiler = new LightCompiler();
+  private geometryCompiler = new GeometryCompiler();
+  private textureCompiler = new TextureCompiler();
+  private materialCompiler = new MaterialCompiler();
+  private rendererCompiler = new RendererCompiler();
+  private sceneCompiler = new SceneCompiler();
+  private controlsCompiler = new ControlsCompiler();
+  private spriteCompiler = new SpriteCompiler();
+  private eventCompiler = new EventCompiler();
+  private lineCompiler = new LineCompiler();
+  private meshCompiler = new MeshCompiler();
+  private pointsCompiler = new PointsCompiler();
+  private groupCompiler = new GroupCompiler();
+  private passCompiler = new PassCompiler();
 
   private objectCompilerList: Array<BasicObjectCompiler>;
 
@@ -62,10 +65,32 @@ export class CompilerManager {
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
         this[key] = parameters[key];
-        parameters[key].IS_OBJECTCOMPILER &&
-          this.objectCompilerList.push(parameters[key]);
       });
     }
+    // 建立编译器链接
+    const textureMap = this.textureCompiler.getMap();
+    // 贴图连接
+    this.sceneCompiler.linkTextureMap(textureMap);
+    this.materialCompiler.linkTextureMap(textureMap);
+    // 物体几何连接，材质连接，物体连接
+    const geometryMap = this.geometryCompiler.getMap();
+    const materialMap = this.materialCompiler.getMap();
+
+    this.objectCompilerList = Object.values(this).filter(
+      (object) => object instanceof ObjectCompiler
+    );
+    const objectMapList = this.objectCompilerList.map((compiler) =>
+      compiler.getMap()
+    );
+
+    for (const objectCompiler of this.objectCompilerList) {
+      objectCompiler
+        .linkGeometryMap(geometryMap)
+        .linkMaterialMap(materialMap)
+        .linkObjectMap(...objectMapList);
+    }
+    // 物体事件连接
+    this.eventCompiler.linkObjectMap(...objectMapList);
   }
 
   /**
@@ -75,159 +100,41 @@ export class CompilerManager {
    * @returns
    */
   support(engine: EngineSupport): this {
-    const dataSupportManager = engine.dataSupportManager!;
-
-    const textureDataSupport = dataSupportManager.textureDataSupport;
-    const materialDataSupport = dataSupportManager.materialDataSupport;
-    const cameraDataSupport = dataSupportManager.cameraDataSupport;
-    const lightDataSupport = dataSupportManager.lightDataSupport;
-    const geometryDataSupport = dataSupportManager.geometryDataSupport;
-    const rendererDataSupport = dataSupportManager.rendererDataSupport;
-    const sceneDataSupport = dataSupportManager.sceneDataSupport;
-    const controlsDataSupport = dataSupportManager.controlsDataSupport;
-    const spriteDataSupport = dataSupportManager.spriteDataSupport;
-    const eventDataSupport = dataSupportManager.eventDataSupport;
-    const lineDataSupport = dataSupportManager.lineDataSupport;
-    const meshDataSupport = dataSupportManager.meshDataSupport;
-    const pointsDataSupport = dataSupportManager.pointsDataSupport;
-    const groupDataSupport = dataSupportManager.groupDataSupport;
-    const passDataSupport = dataSupportManager.passDataSupport;
-
-    const textureCompiler = new TextureCompiler({
-      target: textureDataSupport.getData(),
-    });
-
-    this.textureCompiler = textureCompiler;
-
-    const materialCompiler = new MaterialCompiler({
-      target: materialDataSupport.getData(),
-    });
-    this.materialCompiler = materialCompiler;
-
-    const geometryCompiler = new GeometryCompiler({
-      target: geometryDataSupport.getData(),
-    });
-    this.geometryCompiler = geometryCompiler;
-
-    const cameraCompiler = new CameraCompiler({
-      target: cameraDataSupport.getData(),
-      scene: engine.scene!,
-      engine: engine,
-    });
-    this.cameraCompiler = cameraCompiler;
-    this.objectCompilerList.push(cameraCompiler);
-
-    const lightCompiler = new LightCompiler({
-      scene: engine.scene!,
-      target: lightDataSupport.getData(),
-    });
-    this.lightCompiler = lightCompiler;
-    this.objectCompilerList.push(lightCompiler);
-
-    const spriteCompiler = new SpriteCompiler({
-      target: spriteDataSupport.getData(),
-      scene: engine.scene!,
-    });
-    this.spriteCompiler = spriteCompiler;
-    this.objectCompilerList.push(spriteCompiler);
-
-    const lineCompiler = new LineCompiler({
-      target: lineDataSupport.getData(),
-      scene: engine.scene!,
-    });
-    this.lineCompiler = lineCompiler;
-    this.objectCompilerList.push(lineCompiler);
-
-    const meshCompiler = new MeshCompiler({
-      target: meshDataSupport.getData(),
-      scene: engine.scene!,
-    });
-    this.meshCompiler = meshCompiler;
-    this.objectCompilerList.push(meshCompiler);
-
-    const pointsCompiler = new PointsCompiler({
-      target: pointsDataSupport.getData(),
-      scene: engine.scene!,
-    });
-    this.pointsCompiler = pointsCompiler;
-    this.objectCompilerList.push(pointsCompiler);
-
-    const groupCompiler = new GroupCompiler({
-      target: groupDataSupport.getData(),
-      scene: engine.scene!,
-    });
-    this.groupCompiler = groupCompiler;
-    this.objectCompilerList.push(groupCompiler);
-
-    const rendererCompiler = new RendererCompiler({
-      target: rendererDataSupport.getData(),
-      engine: engine,
-    });
-    this.rendererCompiler = rendererCompiler;
-
-    const sceneCompiler = new SceneCompiler({
-      target: sceneDataSupport.getData(),
-      scene: engine.scene,
-    });
-    this.sceneCompiler = sceneCompiler;
-
-    const controlsCompiler = new ControlsCompiler({
-      target: controlsDataSupport.getData(),
-      transformControls: engine.transformControls,
-      orbitControls: engine.orbitControls,
-    });
-    this.controlsCompiler = controlsCompiler;
-
-    const eventCompiler = new EventCompiler({
-      target: eventDataSupport.getData(),
-      engine: engine,
-    });
-    this.eventCompiler = eventCompiler;
-
-    if (engine.effectComposer) {
-      const passCompiler = new PassCompiler({
-        target: passDataSupport.getData(),
-        composer: engine.effectComposer,
+    // 根据engine设置
+    Object.values(this)
+      .filter((object) => object instanceof Compiler)
+      .forEach((compiler) => {
+        compiler.useEngine(engine);
       });
-      passDataSupport.addCompiler(passCompiler);
-      this.passCompiler = passCompiler;
+
+    // 动态资源连接
+    if (engine.resourceManager) {
+      const resourceMap = engine.resourceManager!.resourceMap;
+
+      this.textureCompiler.linkRescourceMap(resourceMap);
+      this.geometryCompiler.linkRescourceMap(resourceMap);
     }
 
-    const resourceManager = engine.resourceManager!;
-
-    // 建立编译器链接
-    sceneCompiler.linkTextureMap(textureCompiler.getMap());
-    materialCompiler.linkTextureMap(textureCompiler.getMap());
-
-    const objectMapList = this.objectCompilerList.map((elem) => elem.getMap());
-
-    for (const objectCompiler of this.objectCompilerList) {
-      objectCompiler
-        .linkGeometryMap(geometryCompiler.getMap())
-        .linkMaterialMap(materialCompiler.getMap())
-        .linkObjectMap(...objectMapList);
-    }
-
-    eventCompiler.linkObjectMap(...objectMapList);
-
-    textureCompiler.linkRescourceMap(resourceManager.resourceMap);
-    geometryCompiler.linkRescourceMap(resourceManager.resourceMap);
-
+    const dataSupportManager = engine.dataSupportManager!;
     // 添加通知 TODO: 注意生命周期 lookAt group等
-    textureDataSupport.addCompiler(textureCompiler);
-    materialDataSupport.addCompiler(materialCompiler);
-    cameraDataSupport.addCompiler(cameraCompiler);
-    lightDataSupport.addCompiler(lightCompiler);
-    geometryDataSupport.addCompiler(geometryCompiler);
-    rendererDataSupport.addCompiler(rendererCompiler);
-    sceneDataSupport.addCompiler(sceneCompiler);
-    controlsDataSupport.addCompiler(controlsCompiler);
-    spriteDataSupport.addCompiler(spriteCompiler);
-    lineDataSupport.addCompiler(lineCompiler);
-    meshDataSupport.addCompiler(meshCompiler);
-    pointsDataSupport.addCompiler(pointsCompiler);
-    groupDataSupport.addCompiler(groupCompiler);
-    eventDataSupport.addCompiler(eventCompiler);
+    dataSupportManager.textureDataSupport.addCompiler(this.textureCompiler);
+    dataSupportManager.materialDataSupport.addCompiler(this.materialCompiler);
+    dataSupportManager.geometryDataSupport.addCompiler(this.geometryCompiler);
+    dataSupportManager.rendererDataSupport.addCompiler(this.rendererCompiler);
+    dataSupportManager.sceneDataSupport.addCompiler(this.sceneCompiler);
+    dataSupportManager.controlsDataSupport.addCompiler(this.controlsCompiler);
+    dataSupportManager.passDataSupport.addCompiler(this.passCompiler);
+
+    dataSupportManager.cameraDataSupport.addCompiler(this.cameraCompiler);
+    dataSupportManager.lightDataSupport.addCompiler(this.lightCompiler);
+    dataSupportManager.spriteDataSupport.addCompiler(this.spriteCompiler);
+    dataSupportManager.lineDataSupport.addCompiler(this.lineCompiler);
+    dataSupportManager.meshDataSupport.addCompiler(this.meshCompiler);
+    dataSupportManager.pointsDataSupport.addCompiler(this.pointsCompiler);
+    dataSupportManager.groupDataSupport.addCompiler(this.groupCompiler);
+
+    dataSupportManager.eventDataSupport.addCompiler(this.eventCompiler);
+
     return this;
   }
 
@@ -286,6 +193,10 @@ export class CompilerManager {
     return textureCompiler.getMap().get(vid);
   }
 
+  /**
+   * @deprecated
+   * @returns
+   */
   getObjectCompilerList(): BasicObjectCompiler[] {
     return this.objectCompilerList;
   }

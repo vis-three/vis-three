@@ -1,5 +1,6 @@
 import { Scene, Texture } from "three";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
+import { EngineSupport } from "../../main";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
 import { SceneConfig } from "./SceneConfig";
@@ -22,6 +23,7 @@ export declare class SceneCompiler extends Compiler {
     linkTextureMap(map: Map<SymbolConfig["type"], Texture>): this;
     set(path: string[], key: string, value: any): this;
     setTarget(target: SceneCompilerTarget): this;
+    useEngine(engine: EngineSupport): this;
     compileAll(): this;
     dispose(): this;
 }

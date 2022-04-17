@@ -125,8 +125,19 @@ export class ObjectCompiler extends Compiler {
         }
         return this;
     }
+    /**
+     * @deprecated - replace by useEngine
+     */
     setScene(scene) {
         this.scene = scene;
+        return this;
+    }
+    useEngine(engine) {
+        if (!engine.scene) {
+            console.warn(`engine muset install scene plugin.`);
+            return this;
+        }
+        this.scene = engine.scene;
         return this;
     }
     setTarget(target) {

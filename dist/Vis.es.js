@@ -4250,6 +4250,14 @@ class ObjectCompiler extends Compiler {
     this.scene = scene;
     return this;
   }
+  useEngine(engine) {
+    if (!engine.scene) {
+      console.warn(`engine muset install scene plugin.`);
+      return this;
+    }
+    this.scene = engine.scene;
+    return this;
+  }
   setTarget(target) {
     this.target = target;
     return this;
@@ -4433,6 +4441,10 @@ class CameraCompiler extends ObjectCompiler {
     this.engine = engine;
     return this;
   }
+  useEngine(engine) {
+    this.engine = engine;
+    return super.useEngine(engine);
+  }
   dispose() {
     super.dispose();
     this.replaceGeometry.dispose();
@@ -4577,8 +4589,6 @@ class ControlsCompiler extends Compiler {
   constructor(parameters) {
     super();
     __publicField(this, "target");
-    __publicField(this, "transformControls");
-    __publicField(this, "orbitControls");
     __publicField(this, "processorMap", {
       [CONFIGTYPE.TRNASFORMCONTROLS]: new TransformControlsProcessor(),
       [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor()
@@ -4648,6 +4658,15 @@ class ControlsCompiler extends Compiler {
   }
   setTarget(target) {
     this.target = target;
+    return this;
+  }
+  useEngine(engine) {
+    if (engine.transformControls) {
+      this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] = engine.transformControls;
+    }
+    if (engine.orbitControls) {
+      this.controlMap[CONFIGTYPE.ORBITCONTROLS] = engine.orbitControls;
+    }
     return this;
   }
   compileAll() {
@@ -5551,6 +5570,10 @@ const _EventCompiler = class extends Compiler {
     this.target = target;
     return this;
   }
+  useEngine(engine) {
+    this.engine = engine;
+    return this;
+  }
   compileAll() {
     const target = this.target;
     for (const key in target) {
@@ -5587,7 +5610,7 @@ const _GeometryCompiler = class extends Compiler {
     __publicField(this, "constructMap");
     __publicField(this, "resourceMap");
     __publicField(this, "replaceGeometry");
-    this.target = parameters.target;
+    (parameters == null ? void 0 : parameters.target) && (this.target = parameters.target);
     this.map = new Map();
     const constructMap = new Map();
     constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config) => {
@@ -5644,7 +5667,11 @@ const _GeometryCompiler = class extends Compiler {
   getMap() {
     return this.map;
   }
-  setTarget() {
+  useEngine(engine) {
+    return this;
+  }
+  setTarget(target) {
+    this.target = target;
     return this;
   }
   add(vid, config) {
@@ -6053,6 +6080,9 @@ class MaterialCompiler extends Compiler {
   }
   setTarget(target) {
     this.target = target;
+    return this;
+  }
+  useEngine(engine) {
     return this;
   }
   compileAll() {
@@ -7039,21 +7069,31 @@ class PassCompiler extends Compiler {
     __publicField(this, "map");
     __publicField(this, "constructMap");
     __publicField(this, "composer");
+    __publicField(this, "width", window.innerWidth * window.devicePixelRatio);
+    __publicField(this, "height", window.innerHeight * window.devicePixelRatio);
     if (parameters) {
       parameters.target && (this.target = parameters.target);
       parameters.composer && (this.composer = parameters.composer);
     }
     this.map = new Map();
     const constructMap = new Map();
-    const pixelRatio = this.composer.renderer.getPixelRatio();
-    const width = Number(this.composer.renderer.domElement.getAttribute("width")) * pixelRatio;
-    const height = Number(this.composer.renderer.domElement.getAttribute("height")) * pixelRatio;
-    constructMap.set(CONFIGTYPE.SMAAPASS, () => new SMAAPass(width, height));
-    constructMap.set(CONFIGTYPE.UNREALBLOOMPASS, (config) => new UnrealBloomPass(new Vector2(width, height), config.strength, config.radius, config.threshold));
+    constructMap.set(CONFIGTYPE.SMAAPASS, () => new SMAAPass(this.width, this.height));
+    constructMap.set(CONFIGTYPE.UNREALBLOOMPASS, (config) => new UnrealBloomPass(new Vector2(this.width, this.height), config.strength, config.radius, config.threshold));
     this.constructMap = constructMap;
   }
   setTarget(target) {
     this.target = target;
+    return this;
+  }
+  useEngine(engine) {
+    if (!engine.effectComposer) {
+      console.warn(`engine need install effectComposer plugin that can use pass compiler.`);
+      return this;
+    }
+    this.composer = engine.effectComposer;
+    const pixelRatio = this.composer.renderer.getPixelRatio();
+    this.width = Number(this.composer.renderer.domElement.getAttribute("width")) * pixelRatio;
+    this.height = Number(this.composer.renderer.domElement.getAttribute("height")) * pixelRatio;
     return this;
   }
   add(config) {
@@ -7294,7 +7334,7 @@ class RendererCompiler extends Compiler {
     __publicField(this, "processorMap", {
       [CONFIGTYPE.WEBGLRENDERER]: new WebGLRendererProcessor()
     });
-    __publicField(this, "rendererMap", new Map());
+    __publicField(this, "map", new Map());
     if (parameters) {
       parameters.target && (this.target = parameters.target);
       parameters.engine && (this.engine = parameters.engine);
@@ -7311,12 +7351,12 @@ class RendererCompiler extends Compiler {
     }
     const processer = this.processorMap[config.type];
     if (!processer) {
-      console.warn(`controls compiler can not support this controls: '${vid}'`);
+      console.warn(`renderer compiler can not support this renderer: '${vid}'`);
       return;
     }
-    const renderer = this.rendererMap.get(vid);
+    const renderer = this.map.get(vid);
     if (!renderer) {
-      console.warn(`renderer compiler can not found type of control: '${config.type}'`);
+      console.warn(`renderer compiler can not found type of renderer: '${config.type}'`);
       return;
     }
     processer.dispose().assemble({
@@ -7329,7 +7369,7 @@ class RendererCompiler extends Compiler {
   }
   add(config) {
     if (config.type === CONFIGTYPE.WEBGLRENDERER) {
-      this.rendererMap.set(config.vid, this.engine.webGLRenderer);
+      this.map.set(config.vid, this.engine.webGLRenderer);
     }
     this.assembly(config.vid, (processer) => {
       processer.processAll().dispose();
@@ -7337,6 +7377,13 @@ class RendererCompiler extends Compiler {
   }
   setTarget(target) {
     this.target = target;
+    return this;
+  }
+  useEngine(engine) {
+    if (engine.webGLRenderer) {
+      this.map.set(CONFIGTYPE.WEBGLRENDERER, engine.webGLRenderer);
+    }
+    this.engine = engine;
     return this;
   }
   compileAll() {
@@ -7454,6 +7501,12 @@ class SceneCompiler extends Compiler {
   }
   setTarget(target) {
     this.target = target;
+    return this;
+  }
+  useEngine(engine) {
+    if (engine.scene) {
+      this.scene = engine.scene;
+    }
     return this;
   }
   compileAll() {
@@ -7674,6 +7727,9 @@ class TextureCompiler extends Compiler {
     this.target = target;
     return this;
   }
+  useEngine(engine) {
+    return this;
+  }
   compileAll() {
     const target = this.target;
     for (const key in target) {
@@ -7687,155 +7743,65 @@ class TextureCompiler extends Compiler {
 }
 class CompilerManager {
   constructor(parameters) {
-    __publicField(this, "cameraCompiler");
-    __publicField(this, "lightCompiler");
-    __publicField(this, "geometryCompiler");
-    __publicField(this, "textureCompiler");
-    __publicField(this, "materialCompiler");
-    __publicField(this, "rendererCompiler");
-    __publicField(this, "sceneCompiler");
-    __publicField(this, "controlsCompiler");
-    __publicField(this, "spriteCompiler");
-    __publicField(this, "eventCompiler");
-    __publicField(this, "lineCompiler");
-    __publicField(this, "meshCompiler");
-    __publicField(this, "pointsCompiler");
-    __publicField(this, "groupCompiler");
-    __publicField(this, "passCompiler");
+    __publicField(this, "cameraCompiler", new CameraCompiler());
+    __publicField(this, "lightCompiler", new LightCompiler());
+    __publicField(this, "geometryCompiler", new GeometryCompiler());
+    __publicField(this, "textureCompiler", new TextureCompiler());
+    __publicField(this, "materialCompiler", new MaterialCompiler());
+    __publicField(this, "rendererCompiler", new RendererCompiler());
+    __publicField(this, "sceneCompiler", new SceneCompiler());
+    __publicField(this, "controlsCompiler", new ControlsCompiler());
+    __publicField(this, "spriteCompiler", new SpriteCompiler());
+    __publicField(this, "eventCompiler", new EventCompiler());
+    __publicField(this, "lineCompiler", new LineCompiler());
+    __publicField(this, "meshCompiler", new MeshCompiler());
+    __publicField(this, "pointsCompiler", new PointsCompiler());
+    __publicField(this, "groupCompiler", new GroupCompiler());
+    __publicField(this, "passCompiler", new PassCompiler());
     __publicField(this, "objectCompilerList");
     this.objectCompilerList = [];
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
         this[key] = parameters[key];
-        parameters[key].IS_OBJECTCOMPILER && this.objectCompilerList.push(parameters[key]);
       });
     }
+    const textureMap = this.textureCompiler.getMap();
+    this.sceneCompiler.linkTextureMap(textureMap);
+    this.materialCompiler.linkTextureMap(textureMap);
+    const geometryMap = this.geometryCompiler.getMap();
+    const materialMap = this.materialCompiler.getMap();
+    this.objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
+    const objectMapList = this.objectCompilerList.map((compiler) => compiler.getMap());
+    for (const objectCompiler of this.objectCompilerList) {
+      objectCompiler.linkGeometryMap(geometryMap).linkMaterialMap(materialMap).linkObjectMap(...objectMapList);
+    }
+    this.eventCompiler.linkObjectMap(...objectMapList);
   }
   support(engine) {
+    Object.values(this).filter((object) => object instanceof Compiler).forEach((compiler) => {
+      compiler.useEngine(engine);
+    });
+    if (engine.resourceManager) {
+      const resourceMap = engine.resourceManager.resourceMap;
+      this.textureCompiler.linkRescourceMap(resourceMap);
+      this.geometryCompiler.linkRescourceMap(resourceMap);
+    }
     const dataSupportManager = engine.dataSupportManager;
-    const textureDataSupport = dataSupportManager.textureDataSupport;
-    const materialDataSupport = dataSupportManager.materialDataSupport;
-    const cameraDataSupport = dataSupportManager.cameraDataSupport;
-    const lightDataSupport = dataSupportManager.lightDataSupport;
-    const geometryDataSupport = dataSupportManager.geometryDataSupport;
-    const rendererDataSupport = dataSupportManager.rendererDataSupport;
-    const sceneDataSupport = dataSupportManager.sceneDataSupport;
-    const controlsDataSupport = dataSupportManager.controlsDataSupport;
-    const spriteDataSupport = dataSupportManager.spriteDataSupport;
-    const eventDataSupport = dataSupportManager.eventDataSupport;
-    const lineDataSupport = dataSupportManager.lineDataSupport;
-    const meshDataSupport = dataSupportManager.meshDataSupport;
-    const pointsDataSupport = dataSupportManager.pointsDataSupport;
-    const groupDataSupport = dataSupportManager.groupDataSupport;
-    const passDataSupport = dataSupportManager.passDataSupport;
-    const textureCompiler = new TextureCompiler({
-      target: textureDataSupport.getData()
-    });
-    this.textureCompiler = textureCompiler;
-    const materialCompiler = new MaterialCompiler({
-      target: materialDataSupport.getData()
-    });
-    this.materialCompiler = materialCompiler;
-    const geometryCompiler = new GeometryCompiler({
-      target: geometryDataSupport.getData()
-    });
-    this.geometryCompiler = geometryCompiler;
-    const cameraCompiler = new CameraCompiler({
-      target: cameraDataSupport.getData(),
-      scene: engine.scene,
-      engine
-    });
-    this.cameraCompiler = cameraCompiler;
-    this.objectCompilerList.push(cameraCompiler);
-    const lightCompiler = new LightCompiler({
-      scene: engine.scene,
-      target: lightDataSupport.getData()
-    });
-    this.lightCompiler = lightCompiler;
-    this.objectCompilerList.push(lightCompiler);
-    const spriteCompiler = new SpriteCompiler({
-      target: spriteDataSupport.getData(),
-      scene: engine.scene
-    });
-    this.spriteCompiler = spriteCompiler;
-    this.objectCompilerList.push(spriteCompiler);
-    const lineCompiler = new LineCompiler({
-      target: lineDataSupport.getData(),
-      scene: engine.scene
-    });
-    this.lineCompiler = lineCompiler;
-    this.objectCompilerList.push(lineCompiler);
-    const meshCompiler = new MeshCompiler({
-      target: meshDataSupport.getData(),
-      scene: engine.scene
-    });
-    this.meshCompiler = meshCompiler;
-    this.objectCompilerList.push(meshCompiler);
-    const pointsCompiler = new PointsCompiler({
-      target: pointsDataSupport.getData(),
-      scene: engine.scene
-    });
-    this.pointsCompiler = pointsCompiler;
-    this.objectCompilerList.push(pointsCompiler);
-    const groupCompiler = new GroupCompiler({
-      target: groupDataSupport.getData(),
-      scene: engine.scene
-    });
-    this.groupCompiler = groupCompiler;
-    this.objectCompilerList.push(groupCompiler);
-    const rendererCompiler = new RendererCompiler({
-      target: rendererDataSupport.getData(),
-      engine
-    });
-    this.rendererCompiler = rendererCompiler;
-    const sceneCompiler = new SceneCompiler({
-      target: sceneDataSupport.getData(),
-      scene: engine.scene
-    });
-    this.sceneCompiler = sceneCompiler;
-    const controlsCompiler = new ControlsCompiler({
-      target: controlsDataSupport.getData(),
-      transformControls: engine.transformControls,
-      orbitControls: engine.orbitControls
-    });
-    this.controlsCompiler = controlsCompiler;
-    const eventCompiler = new EventCompiler({
-      target: eventDataSupport.getData(),
-      engine
-    });
-    this.eventCompiler = eventCompiler;
-    if (engine.effectComposer) {
-      const passCompiler = new PassCompiler({
-        target: passDataSupport.getData(),
-        composer: engine.effectComposer
-      });
-      passDataSupport.addCompiler(passCompiler);
-      this.passCompiler = passCompiler;
-    }
-    const resourceManager = engine.resourceManager;
-    sceneCompiler.linkTextureMap(textureCompiler.getMap());
-    materialCompiler.linkTextureMap(textureCompiler.getMap());
-    const objectMapList = this.objectCompilerList.map((elem) => elem.getMap());
-    for (const objectCompiler of this.objectCompilerList) {
-      objectCompiler.linkGeometryMap(geometryCompiler.getMap()).linkMaterialMap(materialCompiler.getMap()).linkObjectMap(...objectMapList);
-    }
-    eventCompiler.linkObjectMap(...objectMapList);
-    textureCompiler.linkRescourceMap(resourceManager.resourceMap);
-    geometryCompiler.linkRescourceMap(resourceManager.resourceMap);
-    textureDataSupport.addCompiler(textureCompiler);
-    materialDataSupport.addCompiler(materialCompiler);
-    cameraDataSupport.addCompiler(cameraCompiler);
-    lightDataSupport.addCompiler(lightCompiler);
-    geometryDataSupport.addCompiler(geometryCompiler);
-    rendererDataSupport.addCompiler(rendererCompiler);
-    sceneDataSupport.addCompiler(sceneCompiler);
-    controlsDataSupport.addCompiler(controlsCompiler);
-    spriteDataSupport.addCompiler(spriteCompiler);
-    lineDataSupport.addCompiler(lineCompiler);
-    meshDataSupport.addCompiler(meshCompiler);
-    pointsDataSupport.addCompiler(pointsCompiler);
-    groupDataSupport.addCompiler(groupCompiler);
-    eventDataSupport.addCompiler(eventCompiler);
+    dataSupportManager.textureDataSupport.addCompiler(this.textureCompiler);
+    dataSupportManager.materialDataSupport.addCompiler(this.materialCompiler);
+    dataSupportManager.geometryDataSupport.addCompiler(this.geometryCompiler);
+    dataSupportManager.rendererDataSupport.addCompiler(this.rendererCompiler);
+    dataSupportManager.sceneDataSupport.addCompiler(this.sceneCompiler);
+    dataSupportManager.controlsDataSupport.addCompiler(this.controlsCompiler);
+    dataSupportManager.passDataSupport.addCompiler(this.passCompiler);
+    dataSupportManager.cameraDataSupport.addCompiler(this.cameraCompiler);
+    dataSupportManager.lightDataSupport.addCompiler(this.lightCompiler);
+    dataSupportManager.spriteDataSupport.addCompiler(this.spriteCompiler);
+    dataSupportManager.lineDataSupport.addCompiler(this.lineCompiler);
+    dataSupportManager.meshDataSupport.addCompiler(this.meshCompiler);
+    dataSupportManager.pointsDataSupport.addCompiler(this.pointsCompiler);
+    dataSupportManager.groupDataSupport.addCompiler(this.groupCompiler);
+    dataSupportManager.eventDataSupport.addCompiler(this.eventCompiler);
     return this;
   }
   getObjectSymbol(object) {

@@ -5,13 +5,11 @@ import { OrbitControlsProcessor } from "./OrbitControlsProcessor";
 import { TransformControlsProcessor } from "./TransformControlsProcessor";
 export class ControlsCompiler extends Compiler {
     target;
-    // TODO: 需要支持不止一个控件
-    transformControls;
-    orbitControls;
     processorMap = {
         [CONFIGTYPE.TRNASFORMCONTROLS]: new TransformControlsProcessor(),
         [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor(),
     };
+    // TODO: 需要支持不止一个控件
     controlMap = {
         [CONFIGTYPE.TRNASFORMCONTROLS]: undefined,
         [CONFIGTYPE.ORBITCONTROLS]: undefined,
@@ -88,6 +86,15 @@ export class ControlsCompiler extends Compiler {
     }
     setTarget(target) {
         this.target = target;
+        return this;
+    }
+    useEngine(engine) {
+        if (engine.transformControls) {
+            this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] = engine.transformControls;
+        }
+        if (engine.orbitControls) {
+            this.controlMap[CONFIGTYPE.ORBITCONTROLS] = engine.orbitControls;
+        }
         return this;
     }
     compileAll() {

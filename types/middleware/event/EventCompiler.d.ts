@@ -36,6 +36,7 @@ export declare class EventCompiler extends Compiler {
     updateEvent(vid: string, eventName: EVENTNAME, index: number): void;
     remove(vid: string): this;
     setTarget(target: EventCompilerTarget): this;
+    useEngine(engine: EngineSupport): this;
     compileAll(): this;
     dispose(): this;
 }

@@ -117,6 +117,12 @@ export class SceneCompiler extends Compiler {
         this.target = target;
         return this;
     }
+    useEngine(engine) {
+        if (engine.scene) {
+            this.scene = engine.scene;
+        }
+        return this;
+    }
     compileAll() {
         const sceneTarget = this.target[CONFIGTYPE.SCENE];
         this.background(sceneTarget.background);

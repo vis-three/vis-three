@@ -10,6 +10,7 @@ import {
 } from "three";
 import { validate } from "uuid";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
+import { EngineSupport } from "../../main";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
 import { MaterialAllType } from "./MaterialConfig";
@@ -196,6 +197,10 @@ export class MaterialCompiler extends Compiler {
 
   setTarget(target: MaterialCompilerTarget): this {
     this.target = target;
+    return this;
+  }
+
+  useEngine(engine: EngineSupport): this {
     return this;
   }
 

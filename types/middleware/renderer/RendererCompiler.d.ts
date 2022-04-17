@@ -2,6 +2,7 @@ import { Engine } from "../../engine/Engine";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { RendererAllType, WebGLRendererConfig } from "./RendererConfig";
 import { Processor } from "../../core/Processor";
+import { EngineSupport } from "../../main";
 export interface RendererCompilerTarget extends CompilerTarget {
     [key: string]: WebGLRendererConfig;
 }
@@ -18,6 +19,7 @@ export declare class RendererCompiler extends Compiler {
     assembly(vid: string, callback: (params: Processor) => void): void;
     add(config: RendererAllType): void;
     setTarget(target: RendererCompilerTarget): this;
+    useEngine(engine: EngineSupport): this;
     compileAll(): this;
     dispose(): this;
 }

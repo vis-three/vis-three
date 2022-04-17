@@ -17,6 +17,7 @@ import {
   ObjectCompilerTarget,
 } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
+import { EngineSupport } from "../../main";
 
 export interface CameraCompilerTarget
   extends ObjectCompilerTarget<CameraConfigAllType> {
@@ -252,9 +253,17 @@ export class CameraCompiler extends ObjectCompiler<
     return this;
   }
 
+  /**
+   * @deprecated replace by useEngine
+   */
   setEngine(engine: Engine): this {
     this.engine = engine;
     return this;
+  }
+
+  useEngine(engine: EngineSupport): this {
+    this.engine = engine;
+    return super.useEngine(engine);
   }
 
   dispose(): this {

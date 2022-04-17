@@ -1,5 +1,6 @@
 import { BufferGeometry, Material, Object3D, Scene, Vector3 } from "three";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
+import { EngineSupport } from "../../main";
 import { SymbolConfig } from "../common/CommonConfig";
 import { ObjectConfig } from "./ObjectConfig";
 export declare type BasicObjectCompiler = ObjectCompiler<ObjectConfig, ObjectCompilerTarget<ObjectConfig>, Object3D>;
@@ -33,7 +34,11 @@ export declare abstract class ObjectCompiler<C extends ObjectConfig, T extends O
     linkGeometryMap(map: Map<SymbolConfig["vid"], BufferGeometry>): this;
     linkMaterialMap(materialMap: Map<string, Material>): this;
     linkObjectMap(...map: Map<SymbolConfig["vid"], Object3D>[]): this;
+    /**
+     * @deprecated - replace by useEngine
+     */
     setScene(scene: Scene): this;
+    useEngine(engine: EngineSupport): this;
     setTarget(target: T): this;
     getMap(): Map<SymbolConfig["type"], Object3D>;
     getObjectSymbol(object: O): SymbolConfig["vid"] | null;

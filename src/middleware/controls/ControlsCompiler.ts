@@ -2,6 +2,7 @@ import { Camera } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
+import { EngineSupport } from "../../main";
 import { CONFIGTYPE } from "../constants/configType";
 import {
   getOrbitControlsConfig,
@@ -24,15 +25,12 @@ export interface ControlsCompilerParameters {
 export class ControlsCompiler extends Compiler {
   private target!: ControlsCompilerTarget;
 
-  // TODO: 需要支持不止一个控件
-  private transformControls?: TransformControls;
-  private orbitControls?: OrbitControls;
-
   private processorMap = {
     [CONFIGTYPE.TRNASFORMCONTROLS]: new TransformControlsProcessor(),
     [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor(),
   };
 
+  // TODO: 需要支持不止一个控件
   private controlMap: {
     [CONFIGTYPE.TRNASFORMCONTROLS]: undefined | TransformControls;
     [CONFIGTYPE.ORBITCONTROLS]: undefined | OrbitControls;
@@ -131,6 +129,17 @@ export class ControlsCompiler extends Compiler {
 
   setTarget(target: ControlsCompilerTarget): this {
     this.target = target;
+    return this;
+  }
+
+  useEngine(engine: EngineSupport): this {
+    if (engine.transformControls) {
+      this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] = engine.transformControls;
+    }
+
+    if (engine.orbitControls) {
+      this.controlMap[CONFIGTYPE.ORBITCONTROLS] = engine.orbitControls;
+    }
     return this;
   }
 

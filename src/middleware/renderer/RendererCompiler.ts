@@ -11,6 +11,7 @@ import {
 import { CONFIGTYPE } from "../constants/configType";
 import { WebGLRendererProcessor } from "./WebGLRendererProcessor";
 import { Processor } from "../../core/Processor";
+import { EngineSupport } from "../../main";
 
 export interface RendererCompilerTarget extends CompilerTarget {
   [key: string]: WebGLRendererConfig;
@@ -29,7 +30,7 @@ export class RendererCompiler extends Compiler {
     [CONFIGTYPE.WEBGLRENDERER]: new WebGLRendererProcessor(),
   };
 
-  private rendererMap = new Map<string, WebGLRenderer>();
+  private map = new Map<string, WebGLRenderer>();
 
   constructor(parameters?: RendererCompilerParameters) {
     super();
@@ -52,15 +53,15 @@ export class RendererCompiler extends Compiler {
     const processer = this.processorMap[config.type];
 
     if (!processer) {
-      console.warn(`controls compiler can not support this controls: '${vid}'`);
+      console.warn(`renderer compiler can not support this renderer: '${vid}'`);
       return;
     }
 
-    const renderer = this.rendererMap.get(vid);
+    const renderer = this.map.get(vid);
 
     if (!renderer) {
       console.warn(
-        `renderer compiler can not found type of control: '${config.type}'`
+        `renderer compiler can not found type of renderer: '${config.type}'`
       );
       return;
     }
@@ -78,7 +79,7 @@ export class RendererCompiler extends Compiler {
   add(config: RendererAllType) {
     if (config.type === CONFIGTYPE.WEBGLRENDERER) {
       // TODO: 支持多renderer?
-      this.rendererMap.set(config.vid, this.engine.webGLRenderer!);
+      this.map.set(config.vid, this.engine.webGLRenderer!);
     }
 
     this.assembly(config.vid, (processer) => {
@@ -88,6 +89,14 @@ export class RendererCompiler extends Compiler {
 
   setTarget(target: RendererCompilerTarget): this {
     this.target = target;
+    return this;
+  }
+
+  useEngine(engine: EngineSupport): this {
+    if (engine.webGLRenderer) {
+      this.map.set(CONFIGTYPE.WEBGLRENDERER, engine.webGLRenderer);
+    }
+    this.engine = engine;
     return this;
   }
 

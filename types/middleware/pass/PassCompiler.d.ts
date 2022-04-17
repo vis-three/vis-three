@@ -1,6 +1,7 @@
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { PassConfigAllType } from "./PassConfig";
+import { EngineSupport } from "../../main";
 export interface PassCompilerTarget extends CompilerTarget {
     [key: string]: PassConfigAllType;
 }
@@ -15,6 +16,7 @@ export declare class PassCompiler extends Compiler {
     private composer;
     constructor(parameters?: PassCompilerParameters);
     setTarget(target: PassCompilerTarget): this;
+    useEngine(engine: EngineSupport): this;
     add(config: PassConfigAllType): void;
     /**
      * @todo

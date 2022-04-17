@@ -29,13 +29,14 @@ import {
   SphereGeometryConfig,
 } from "./GeometryConfig";
 import { CONFIGTYPE } from "../constants/configType";
+import { EngineSupport } from "../../main";
 
 export interface GeometryCompilerTarget extends CompilerTarget {
   [key: string]: GeometryAllType;
 }
 
 export interface GeometryCompilerParameters {
-  target: GeometryCompilerTarget;
+  target?: GeometryCompilerTarget;
 }
 
 export class GeometryCompiler extends Compiler {
@@ -66,15 +67,15 @@ export class GeometryCompiler extends Compiler {
     return geometry;
   };
 
-  private target: GeometryCompilerTarget;
+  private target!: GeometryCompilerTarget;
   private map: Map<SymbolConfig["vid"], BufferGeometry>;
   private constructMap: Map<string, (config: unknown) => BufferGeometry>;
   private resourceMap: Map<string, unknown>;
   private replaceGeometry: BufferGeometry;
 
-  constructor(parameters: GeometryCompilerParameters) {
+  constructor(parameters?: GeometryCompilerParameters) {
     super();
-    this.target = parameters.target;
+    parameters?.target && (this.target = parameters.target);
     this.map = new Map();
 
     const constructMap = new Map();
@@ -235,7 +236,12 @@ export class GeometryCompiler extends Compiler {
     return this.map;
   }
 
-  setTarget(): this {
+  useEngine(engine: EngineSupport): this {
+    return this;
+  }
+
+  setTarget(target: GeometryCompilerTarget): this {
+    this.target = target;
     return this;
   }
 

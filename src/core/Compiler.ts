@@ -1,5 +1,6 @@
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { isValidKey } from "../utils/utils";
+import { EngineSupport } from "../engine/EngineSupport";
 
 export interface CompilerTarget {
   [key: string]: SymbolConfig;
@@ -48,6 +49,7 @@ export abstract class Compiler {
   constructor() {}
 
   abstract setTarget(parameter: unknown): this;
+  abstract useEngine(engine: EngineSupport): this;
   abstract compileAll(): this;
   abstract dispose(parameter: unknown): this;
 }

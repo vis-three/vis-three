@@ -29,6 +29,14 @@ export class PassCompiler extends Compiler {
         this.target = target;
         return this;
     }
+    useEngine(engine) {
+        if (!engine.effectComposer) {
+            console.warn(`engine need install effectComposer plugin that can use pass compiler.`);
+            return this;
+        }
+        this.composer = engine.effectComposer;
+        return this;
+    }
     add(config) {
         if (this.constructMap.has(config.type)) {
             const pass = this.constructMap.get(config.type)(config);

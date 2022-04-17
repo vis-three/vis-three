@@ -21,5 +21,6 @@
 - camera examples
 - resourceManager
 - loaderManager.load
+- compilerManager
 
 #### deprecated

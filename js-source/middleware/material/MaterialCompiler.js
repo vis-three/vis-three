@@ -144,6 +144,9 @@ export class MaterialCompiler extends Compiler {
         this.target = target;
         return this;
     }
+    useEngine(engine) {
+        return this;
+    }
     compileAll() {
         const target = this.target;
         for (const key in target) {

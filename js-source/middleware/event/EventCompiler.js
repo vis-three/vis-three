@@ -22,8 +22,6 @@ export class EventCompiler extends Compiler {
         }
         else {
             this.target = {};
-            // TSC: Uncaught ReferenceError: Cannot access 'Engine' before initialization
-            // this.engine = new EngineSupport()
         }
         this.map = new Map();
         this.funMap = new Map();
@@ -156,6 +154,10 @@ export class EventCompiler extends Compiler {
     }
     setTarget(target) {
         this.target = target;
+        return this;
+    }
+    useEngine(engine) {
+        this.engine = engine;
         return this;
     }
     compileAll() {
