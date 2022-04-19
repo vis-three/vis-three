@@ -5,6 +5,14 @@ export interface StructureConfig extends SymbolConfig {
   type: CONFIGTYPE.STRUCTURE;
   vid: string; // scene vid
   structure: {
-    [key: SymbolConfig["vid"]]: { [key: SymbolConfig["vid"]]: boolean };
+    [key: SymbolConfig["vid"]]: [SymbolConfig["vid"]];
   };
 }
+
+export const getStructureConfig = function (): StructureConfig {
+  return {
+    vid: "",
+    type: CONFIGTYPE.STRUCTURE,
+    structure: {},
+  };
+};
