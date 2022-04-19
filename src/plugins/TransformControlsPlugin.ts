@@ -79,14 +79,23 @@ export const TransformControlsPlugin: Plugin<Object> = function (
   } else {
     this.eventManager.addEventListener<GlobalEvent>("pointerup", (event) => {
       if (this.transing) {
+        this.transing = false;
         return;
       }
       if (event.button === 0) {
         const objectList = event.intersections.map((elem) => elem.object);
-        transformControls.setAttach(objectList[0]);
+        const object = objectList[0] || null;
+        if (object) {
+          transformControls.setAttach(object);
+        } else {
+          transformControls.detach();
+        }
       }
     });
   }
+
+  // 与eventManager作用
+  this.eventManager!.addFilterObject(transformControls);
 
   this.completeSet.add(() => {
     if (this.IS_ENGINESUPPORT) {
@@ -105,6 +114,7 @@ export const TransformControlsPlugin: Plugin<Object> = function (
         TRANSFORMEVENT.OBJECTCHANGED,
         (event) => {
           const e = event as unknown as ObjectChangedEvent;
+          //TODO: update config.children
           e.transObjectSet.forEach((object) => {
             config = objectToConfig(object);
             mode = e.mode;

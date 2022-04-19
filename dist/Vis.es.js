@@ -600,7 +600,8 @@ class EventManager extends EventDispatcher {
     __publicField(this, "raycaster");
     __publicField(this, "scene");
     __publicField(this, "camera");
-    __publicField(this, "recursive", false);
+    __publicField(this, "filter", new Set());
+    __publicField(this, "recursive", true);
     __publicField(this, "penetrate", false);
     this.raycaster = new Raycaster();
     this.camera = parameters.camera;
@@ -612,9 +613,19 @@ class EventManager extends EventDispatcher {
     this.camera = camera;
     return this;
   }
+  addFilterObject(object) {
+    this.filter.add(object);
+    return this;
+  }
+  removeFilterObject(object) {
+    this.filter.delete(object);
+    return this;
+  }
   intersectObject(mouse) {
     this.raycaster.setFromCamera(mouse, this.camera);
-    return this.raycaster.intersectObjects(this.scene.children, this.recursive);
+    const filter = this.filter;
+    const filterScene = this.scene.children.filter((object) => !filter.has(object));
+    return this.raycaster.intersectObjects(filterScene, this.recursive);
   }
   use(pointerManager) {
     const mergeEvent = function(event, object) {
@@ -1002,9 +1013,7 @@ class VisTransformControls extends TransformControls {
     const target = this.target;
     if (object.length === 1) {
       const currentObject = object[0];
-      target.scale.copy(currentObject.scale);
-      target.rotation.copy(currentObject.rotation);
-      target.position.copy(currentObject.position);
+      currentObject.matrixWorld.decompose(target.position, target.quaternion, target.scale);
       target.updateMatrix();
       target.updateMatrixWorld();
       this.transObjectSet.add(currentObject);
@@ -1014,9 +1023,9 @@ class VisTransformControls extends TransformControls {
     const yList = [];
     const zList = [];
     object.forEach((elem) => {
-      xList.push(elem.position.x);
-      yList.push(elem.position.y);
-      zList.push(elem.position.z);
+      xList.push(elem.matrixWorld.elements[12]);
+      yList.push(elem.matrixWorld.elements[13]);
+      zList.push(elem.matrixWorld.elements[14]);
     });
     target.rotation.set(0, 0, 0);
     target.scale.set(0, 0, 0);
@@ -1075,14 +1084,21 @@ const TransformControlsPlugin = function(params) {
   } else {
     this.eventManager.addEventListener("pointerup", (event) => {
       if (this.transing) {
+        this.transing = false;
         return;
       }
       if (event.button === 0) {
         const objectList = event.intersections.map((elem) => elem.object);
-        transformControls.setAttach(objectList[0]);
+        const object = objectList[0] || null;
+        if (object) {
+          transformControls.setAttach(object);
+        } else {
+          transformControls.detach();
+        }
       }
     });
   }
+  this.eventManager.addFilterObject(transformControls);
   this.completeSet.add(() => {
     if (this.IS_ENGINESUPPORT) {
       const objectToConfig = (object) => {
@@ -2306,6 +2322,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["SMAAPASS"] = "SMAAPass";
   CONFIGTYPE2["UNREALBLOOMPASS"] = "UnrealBloomPass";
   CONFIGTYPE2["EVENT"] = "Event";
+  CONFIGTYPE2["STRUCTURE"] = "Structure";
 })(CONFIGTYPE || (CONFIGTYPE = {}));
 var MODULETYPE;
 (function(MODULETYPE2) {
@@ -2357,7 +2374,8 @@ const getObjectConfig = () => {
       x: 0,
       y: 1,
       z: 0
-    }
+    },
+    children: []
   };
 };
 const getLightConfig = function() {
@@ -9938,20 +9956,108 @@ class SpotLightHelper extends LineSegments {
     }
   }
 }
-class GroupHelper extends LineSegments {
+class CanvasTextureGenerator {
+  constructor(parameters) {
+    __publicField(this, "canvas");
+    this.canvas = document.createElement("canvas");
+    const devicePixelRatio = window.devicePixelRatio;
+    this.canvas.width = ((parameters == null ? void 0 : parameters.width) || 512) * devicePixelRatio;
+    this.canvas.height = ((parameters == null ? void 0 : parameters.height) || 512) * devicePixelRatio;
+    this.canvas.style.backgroundColor = (parameters == null ? void 0 : parameters.bgColor) || "rgb(255, 255, 255)";
+  }
+  get() {
+    return this.canvas;
+  }
+  draw(fun) {
+    const ctx = this.canvas.getContext("2d");
+    if (ctx) {
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      fun(ctx);
+      return this;
+    } else {
+      console.warn(`you browser can not support canvas 2d`);
+      return this;
+    }
+  }
+  preview(parameters) {
+    const canvas = this.canvas;
+    canvas.style.position = "fixed";
+    canvas.style.top = (parameters == null ? void 0 : parameters.top) || "5%";
+    canvas.style.left = (parameters == null ? void 0 : parameters.left) || "5%";
+    canvas.style.right = (parameters == null ? void 0 : parameters.right) || "unset";
+    canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
+    document.body.appendChild(this.canvas);
+    return this;
+  }
+}
+class CanvasGenerator {
+  constructor(parameters) {
+    __publicField(this, "canvas");
+    this.canvas = document.createElement("canvas");
+    const devicePixelRatio = window.devicePixelRatio;
+    this.canvas.width = ((parameters == null ? void 0 : parameters.width) || 512) * devicePixelRatio;
+    this.canvas.height = ((parameters == null ? void 0 : parameters.height) || 512) * devicePixelRatio;
+    this.canvas.style.backgroundColor = (parameters == null ? void 0 : parameters.bgColor) || "rgb(255, 255, 255)";
+  }
+  get() {
+    return this.canvas;
+  }
+  clear(x = 0, y = 0, width, height) {
+    !width && (width = this.canvas.width);
+    !height && (height = this.canvas.height);
+    const ctx = this.canvas.getContext("2d");
+    if (ctx) {
+      ctx.clearRect(x, y, width, height);
+      return this;
+    } else {
+      console.warn(`you browser can not support canvas 2d`);
+      return this;
+    }
+  }
+  draw(fun) {
+    const ctx = this.canvas.getContext("2d");
+    if (ctx) {
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      fun(ctx);
+      return this;
+    } else {
+      console.warn(`you browser can not support canvas 2d`);
+      return this;
+    }
+  }
+  preview(parameters) {
+    const canvas = this.canvas;
+    canvas.style.position = "fixed";
+    canvas.style.top = (parameters == null ? void 0 : parameters.top) || "5%";
+    canvas.style.left = (parameters == null ? void 0 : parameters.left) || "5%";
+    canvas.style.right = (parameters == null ? void 0 : parameters.right) || "unset";
+    canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
+    document.body.appendChild(this.canvas);
+    return this;
+  }
+}
+const _GroupHelper = class extends Sprite {
   constructor(group) {
     super();
     __publicField(this, "target");
     __publicField(this, "type", "VisGroupHelper");
     this.target = group;
-    const geometry = new EdgesGeometry(new BoxBufferGeometry(1, 1, 1));
-    geometry.computeBoundingBox();
-    this.geometry = geometry;
-    this.material = getHelperLineMaterial();
+    this.geometry.computeBoundingBox();
+    this.material = new SpriteMaterial({
+      map: _GroupHelper.canvas
+    });
     this.material.depthTest = false;
     this.material.depthWrite = false;
-    this.matrixAutoUpdate = false;
-    this.matrix = group.matrix;
+    this.scale.set(5, 5, 5);
+    const updateMatrixWorldFun = this.updateMatrixWorld.bind(this);
+    this.updateMatrixWorld = (focus) => {
+      const position = this.position;
+      const groupPosition = this.target.position;
+      position.x = groupPosition.x;
+      position.y = groupPosition.y;
+      position.z = groupPosition.z;
+      updateMatrixWorldFun(focus);
+    };
   }
   raycast(raycaster, intersects) {
     const matrixWorld = this.matrixWorld;
@@ -9966,7 +10072,23 @@ class GroupHelper extends LineSegments {
       });
     }
   }
-}
+};
+let GroupHelper = _GroupHelper;
+__publicField(GroupHelper, "canvas", new CanvasTexture(new CanvasGenerator({ width: 512, height: 512 }).draw((ctx) => {
+  ctx.beginPath();
+  ctx.fillStyle = "rgba(0, 0, 0, 0)";
+  ctx.fillRect(0, 0, 512, 512);
+  ctx.closePath();
+  ctx.translate(256, 200);
+  ctx.beginPath();
+  ctx.fillStyle = "yellow";
+  ctx.fillRect(-200, 0, 400, 200);
+  ctx.closePath();
+  ctx.beginPath();
+  ctx.fillStyle = "yellow";
+  ctx.fillRect(-200, -70, 200, 70);
+  ctx.closePath();
+}).get()));
 class MeshHelper extends LineSegments {
   constructor(mesh) {
     super();
@@ -10627,86 +10749,6 @@ const _TextureDisplayer = class {
 };
 let TextureDisplayer = _TextureDisplayer;
 __publicField(TextureDisplayer, "ambientLight", new AmbientLight("rgb(255, 255, 255)", 1));
-class CanvasTextureGenerator {
-  constructor(parameters) {
-    __publicField(this, "canvas");
-    this.canvas = document.createElement("canvas");
-    const devicePixelRatio = window.devicePixelRatio;
-    this.canvas.width = ((parameters == null ? void 0 : parameters.width) || 512) * devicePixelRatio;
-    this.canvas.height = ((parameters == null ? void 0 : parameters.height) || 512) * devicePixelRatio;
-    this.canvas.style.backgroundColor = (parameters == null ? void 0 : parameters.bgColor) || "rgb(255, 255, 255)";
-  }
-  get() {
-    return this.canvas;
-  }
-  draw(fun) {
-    const ctx = this.canvas.getContext("2d");
-    if (ctx) {
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-      fun(ctx);
-      return this;
-    } else {
-      console.warn(`you browser can not support canvas 2d`);
-      return this;
-    }
-  }
-  preview(parameters) {
-    const canvas = this.canvas;
-    canvas.style.position = "fixed";
-    canvas.style.top = (parameters == null ? void 0 : parameters.top) || "5%";
-    canvas.style.left = (parameters == null ? void 0 : parameters.left) || "5%";
-    canvas.style.right = (parameters == null ? void 0 : parameters.right) || "unset";
-    canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
-    document.body.appendChild(this.canvas);
-    return this;
-  }
-}
-class CanvasGenerator {
-  constructor(parameters) {
-    __publicField(this, "canvas");
-    this.canvas = document.createElement("canvas");
-    const devicePixelRatio = window.devicePixelRatio;
-    this.canvas.width = ((parameters == null ? void 0 : parameters.width) || 512) * devicePixelRatio;
-    this.canvas.height = ((parameters == null ? void 0 : parameters.height) || 512) * devicePixelRatio;
-    this.canvas.style.backgroundColor = (parameters == null ? void 0 : parameters.bgColor) || "rgb(255, 255, 255)";
-  }
-  get() {
-    return this.canvas;
-  }
-  clear(x = 0, y = 0, width, height) {
-    !width && (width = this.canvas.width);
-    !height && (height = this.canvas.height);
-    const ctx = this.canvas.getContext("2d");
-    if (ctx) {
-      ctx.clearRect(x, y, width, height);
-      return this;
-    } else {
-      console.warn(`you browser can not support canvas 2d`);
-      return this;
-    }
-  }
-  draw(fun) {
-    const ctx = this.canvas.getContext("2d");
-    if (ctx) {
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-      fun(ctx);
-      return this;
-    } else {
-      console.warn(`you browser can not support canvas 2d`);
-      return this;
-    }
-  }
-  preview(parameters) {
-    const canvas = this.canvas;
-    canvas.style.position = "fixed";
-    canvas.style.top = (parameters == null ? void 0 : parameters.top) || "5%";
-    canvas.style.left = (parameters == null ? void 0 : parameters.left) || "5%";
-    canvas.style.right = (parameters == null ? void 0 : parameters.right) || "unset";
-    canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
-    document.body.appendChild(this.canvas);
-    return this;
-  }
-}
 class EngineSupport extends Engine {
   constructor(parameters) {
     super();

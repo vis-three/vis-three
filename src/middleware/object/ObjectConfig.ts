@@ -13,6 +13,7 @@ export interface ObjectConfig extends SymbolConfig {
   visible: boolean;
   matrixAutoUpdate: boolean;
   renderOrder: number;
+  children: string[];
 }
 
 export const getObjectConfig = (): ObjectConfig => {
@@ -46,5 +47,6 @@ export const getObjectConfig = (): ObjectConfig => {
       y: 1,
       z: 0,
     },
+    children: [],
   };
 };

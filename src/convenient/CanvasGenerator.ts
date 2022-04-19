@@ -14,10 +14,10 @@ export interface CanvasGeneratorParameters {
 }
 
 interface PreviewParameters {
-  top: string;
-  left: string;
-  bottom: string;
-  right: string;
+  top?: string;
+  left?: string;
+  bottom?: string;
+  right?: string;
 }
 
 /**
@@ -77,6 +77,10 @@ export class CanvasGenerator {
       parameters?.bgColor || "rgb(255, 255, 255)";
   }
 
+  /**
+   * 获取canvas dom
+   * @returns HTMLCanvasElement
+   */
   get(): HTMLCanvasElement {
     return this.canvas;
   }
@@ -103,6 +107,11 @@ export class CanvasGenerator {
     }
   }
 
+  /**
+   * canvas绘制
+   * @param fun callback(ctx)
+   * @returns this
+   */
   draw(fun: (ctx: CanvasRenderingContext2D) => void): this {
     const ctx = this.canvas.getContext("2d");
 
@@ -116,6 +125,11 @@ export class CanvasGenerator {
     }
   }
 
+  /**
+   * canvas预览
+   * @param parameters style position
+   * @returns this
+   */
   preview(parameters?: PreviewParameters): this {
     const canvas = this.canvas;
     canvas.style.position = "fixed";
