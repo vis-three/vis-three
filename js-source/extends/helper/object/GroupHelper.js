@@ -1,19 +1,48 @@
-import { BoxBufferGeometry, EdgesGeometry, LineSegments, } from "three";
-import { getHelperLineMaterial } from "../common";
-export class GroupHelper extends LineSegments {
+import { CanvasTexture, Sprite, SpriteMaterial, } from "three";
+import { CanvasGenerator } from "../../../convenient/CanvasGenerator";
+export class GroupHelper extends Sprite {
+    static canvas = new CanvasTexture(new CanvasGenerator({ width: 512, height: 512 })
+        .draw((ctx) => {
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(0, 0, 0, 0)";
+        ctx.fillRect(0, 0, 512, 512);
+        ctx.closePath();
+        ctx.translate(256, 200);
+        ctx.beginPath();
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(-200, 0, 400, 200);
+        ctx.closePath();
+        ctx.beginPath();
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(-200, -70, 200, 70);
+        ctx.closePath();
+    })
+        // .preview({
+        //   left: "50%",
+        // })
+        .get());
     target;
+    // @ts-ignore
     type = "VisGroupHelper";
     constructor(group) {
         super();
         this.target = group;
-        const geometry = new EdgesGeometry(new BoxBufferGeometry(1, 1, 1));
-        geometry.computeBoundingBox();
-        this.geometry = geometry;
-        this.material = getHelperLineMaterial();
+        this.geometry.computeBoundingBox();
+        this.material = new SpriteMaterial({
+            map: GroupHelper.canvas,
+        });
         this.material.depthTest = false;
         this.material.depthWrite = false;
-        this.matrixAutoUpdate = false;
-        this.matrix = group.matrix;
+        this.scale.set(5, 5, 5);
+        const updateMatrixWorldFun = this.updateMatrixWorld.bind(this);
+        this.updateMatrixWorld = (focus) => {
+            const position = this.position;
+            const groupPosition = this.target.position;
+            position.x = groupPosition.x;
+            position.y = groupPosition.y;
+            position.z = groupPosition.z;
+            updateMatrixWorldFun(focus);
+        };
     }
     raycast(raycaster, intersects) {
         const matrixWorld = this.matrixWorld;

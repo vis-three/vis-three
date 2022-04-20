@@ -8,7 +8,7 @@ export class RendererCompiler extends Compiler {
     processorMap = {
         [CONFIGTYPE.WEBGLRENDERER]: new WebGLRendererProcessor(),
     };
-    rendererMap = new Map();
+    map = new Map();
     constructor(parameters) {
         super();
         if (parameters) {
@@ -28,12 +28,12 @@ export class RendererCompiler extends Compiler {
         }
         const processer = this.processorMap[config.type];
         if (!processer) {
-            console.warn(`controls compiler can not support this controls: '${vid}'`);
+            console.warn(`renderer compiler can not support this renderer: '${vid}'`);
             return;
         }
-        const renderer = this.rendererMap.get(vid);
+        const renderer = this.map.get(vid);
         if (!renderer) {
-            console.warn(`renderer compiler can not found type of control: '${config.type}'`);
+            console.warn(`renderer compiler can not found type of renderer: '${config.type}'`);
             return;
         }
         processer.dispose().assemble({
@@ -47,7 +47,7 @@ export class RendererCompiler extends Compiler {
     add(config) {
         if (config.type === CONFIGTYPE.WEBGLRENDERER) {
             // TODO: 支持多renderer?
-            this.rendererMap.set(config.vid, this.engine.webGLRenderer);
+            this.map.set(config.vid, this.engine.webGLRenderer);
         }
         this.assembly(config.vid, (processer) => {
             processer.processAll().dispose();
@@ -59,8 +59,9 @@ export class RendererCompiler extends Compiler {
     }
     useEngine(engine) {
         if (engine.webGLRenderer) {
-            this.rendererMap[CONFIGTYPE.WEBGLRENDERER] = engine.webGLRenderer;
+            this.map.set(CONFIGTYPE.WEBGLRENDERER, engine.webGLRenderer);
         }
+        this.engine = engine;
         return this;
     }
     compileAll() {

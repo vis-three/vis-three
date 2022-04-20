@@ -14,6 +14,8 @@ export declare class PassCompiler extends Compiler {
     private map;
     private constructMap;
     private composer;
+    private width;
+    private height;
     constructor(parameters?: PassCompilerParameters);
     setTarget(target: PassCompilerTarget): this;
     useEngine(engine: EngineSupport): this;

@@ -1,0 +1,1 @@
+{"version":3,"file":"StructureConfig.js","sourceRoot":"","sources":["../../../src/middleware/structure/StructureConfig.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,UAAU,EAAE,MAAM,yBAAyB,CAAC;AAUrD,MAAM,CAAC,MAAM,kBAAkB,GAAG;IAChC,OAAO;QACL,GAAG,EAAE,EAAE;QACP,IAAI,EAAE,UAAU,CAAC,SAAS;QAC1B,SAAS,EAAE,EAAE;KACd,CAAC;AACJ,CAAC,CAAC"}

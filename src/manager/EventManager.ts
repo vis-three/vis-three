@@ -42,7 +42,7 @@ export class EventManager extends EventDispatcher {
   private scene: Scene;
   private camera: Camera;
   private filter = new Set<Object3D>();
-  recursive = true; // 递归子物体
+  recursive = false; // 递归子物体
   penetrate = false; // 事件穿透
 
   constructor(parameters: EventManagerParameters) {

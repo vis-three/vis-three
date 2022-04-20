@@ -29,6 +29,15 @@ export const getObjectConfig = () => {
             y: 1,
             z: 0,
         },
+        children: [],
+        pointerdown: [],
+        pointermove: [],
+        pointerup: [],
+        pointerenter: [],
+        pointerleave: [],
+        click: [],
+        dblclick: [],
+        contextmenu: [],
     };
 };
 //# sourceMappingURL=ObjectConfig.js.map

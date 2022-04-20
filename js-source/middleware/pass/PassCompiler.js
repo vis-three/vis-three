@@ -8,6 +8,8 @@ export class PassCompiler extends Compiler {
     map;
     constructMap;
     composer;
+    width = window.innerWidth * window.devicePixelRatio;
+    height = window.innerHeight * window.devicePixelRatio;
     constructor(parameters) {
         super();
         if (parameters) {
@@ -16,13 +18,8 @@ export class PassCompiler extends Compiler {
         }
         this.map = new Map();
         const constructMap = new Map();
-        const pixelRatio = this.composer.renderer.getPixelRatio();
-        const width = Number(this.composer.renderer.domElement.getAttribute("width")) *
-            pixelRatio;
-        const height = Number(this.composer.renderer.domElement.getAttribute("height")) *
-            pixelRatio;
-        constructMap.set(CONFIGTYPE.SMAAPASS, () => new SMAAPass(width, height));
-        constructMap.set(CONFIGTYPE.UNREALBLOOMPASS, (config) => new UnrealBloomPass(new Vector2(width, height), config.strength, config.radius, config.threshold));
+        constructMap.set(CONFIGTYPE.SMAAPASS, () => new SMAAPass(this.width, this.height));
+        constructMap.set(CONFIGTYPE.UNREALBLOOMPASS, (config) => new UnrealBloomPass(new Vector2(this.width, this.height), config.strength, config.radius, config.threshold));
         this.constructMap = constructMap;
     }
     setTarget(target) {
@@ -35,6 +32,13 @@ export class PassCompiler extends Compiler {
             return this;
         }
         this.composer = engine.effectComposer;
+        const pixelRatio = this.composer.renderer.getPixelRatio();
+        this.width =
+            Number(this.composer.renderer.domElement.getAttribute("width")) *
+                pixelRatio;
+        this.height =
+            Number(this.composer.renderer.domElement.getAttribute("height")) *
+                pixelRatio;
         return this;
     }
     add(config) {

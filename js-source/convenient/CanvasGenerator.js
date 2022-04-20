@@ -47,6 +47,10 @@ export class CanvasGenerator {
         this.canvas.style.backgroundColor =
             parameters?.bgColor || "rgb(255, 255, 255)";
     }
+    /**
+     * 获取canvas dom
+     * @returns HTMLCanvasElement
+     */
     get() {
         return this.canvas;
     }
@@ -71,6 +75,11 @@ export class CanvasGenerator {
             return this;
         }
     }
+    /**
+     * canvas绘制
+     * @param fun callback(ctx)
+     * @returns this
+     */
     draw(fun) {
         const ctx = this.canvas.getContext("2d");
         if (ctx) {
@@ -83,6 +92,11 @@ export class CanvasGenerator {
             return this;
         }
     }
+    /**
+     * canvas预览
+     * @param parameters style position
+     * @returns this
+     */
     preview(parameters) {
         const canvas = this.canvas;
         canvas.style.position = "fixed";

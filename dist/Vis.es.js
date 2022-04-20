@@ -601,7 +601,7 @@ class EventManager extends EventDispatcher {
     __publicField(this, "scene");
     __publicField(this, "camera");
     __publicField(this, "filter", new Set());
-    __publicField(this, "recursive", true);
+    __publicField(this, "recursive", false);
     __publicField(this, "penetrate", false);
     this.raycaster = new Raycaster();
     this.camera = parameters.camera;
@@ -2375,7 +2375,15 @@ const getObjectConfig = () => {
       y: 1,
       z: 0
     },
-    children: []
+    children: [],
+    pointerdown: [],
+    pointermove: [],
+    pointerup: [],
+    pointerenter: [],
+    pointerleave: [],
+    click: [],
+    dblclick: [],
+    contextmenu: []
   };
 };
 const getLightConfig = function() {

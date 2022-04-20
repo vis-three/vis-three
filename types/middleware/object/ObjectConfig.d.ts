@@ -1,4 +1,5 @@
 import { Vector3Config, SymbolConfig } from "../common/CommonConfig";
+import { BasicEventConfig } from "../event/EventCompiler";
 export interface ObjectConfig extends SymbolConfig {
     type: string;
     name: string;
@@ -12,5 +13,14 @@ export interface ObjectConfig extends SymbolConfig {
     visible: boolean;
     matrixAutoUpdate: boolean;
     renderOrder: number;
+    children: string[];
+    pointerdown: BasicEventConfig[];
+    pointermove: BasicEventConfig[];
+    pointerup: BasicEventConfig[];
+    pointerenter: BasicEventConfig[];
+    pointerleave: BasicEventConfig[];
+    click: BasicEventConfig[];
+    dblclick: BasicEventConfig[];
+    contextmenu: BasicEventConfig[];
 }
 export declare const getObjectConfig: () => ObjectConfig;

@@ -15,6 +15,7 @@ export class EventManager extends EventDispatcher {
     raycaster;
     scene;
     camera;
+    filter = new Set();
     recursive = false; // 递归子物体
     penetrate = false; // 事件穿透
     constructor(parameters) {
@@ -29,9 +30,29 @@ export class EventManager extends EventDispatcher {
         this.camera = camera;
         return this;
     }
+    /**
+     * 添加不会触发事件的场景中的物体
+     * @param object Object3D
+     * @returns this
+     */
+    addFilterObject(object) {
+        this.filter.add(object);
+        return this;
+    }
+    /**
+     * 移除过滤器中的物体
+     * @param object Object3D
+     * @returns this
+     */
+    removeFilterObject(object) {
+        this.filter.delete(object);
+        return this;
+    }
     intersectObject(mouse) {
         this.raycaster.setFromCamera(mouse, this.camera);
-        return this.raycaster.intersectObjects(this.scene.children, this.recursive);
+        const filter = this.filter;
+        const filterScene = this.scene.children.filter((object) => !filter.has(object));
+        return this.raycaster.intersectObjects(filterScene, this.recursive);
     }
     use(pointerManager) {
         const mergeEvent = function (event, object) {

@@ -1,4 +1,4 @@
-import { Camera, Event, Intersection, Object3D, Scene, Vector2 } from "three";
+import { Camera, Event, Intersection, Object3D, Scene } from "three";
 import { EventDispatcher } from "../core/EventDispatcher";
 import { PointerManager, VisPointerEvent } from "./PointerManager";
 export interface ObjectEvent extends VisPointerEvent {
@@ -28,10 +28,23 @@ export declare class EventManager extends EventDispatcher {
     private raycaster;
     private scene;
     private camera;
+    private filter;
     recursive: boolean;
     penetrate: boolean;
     constructor(parameters: EventManagerParameters);
     setCamera(camera: Camera): this;
-    intersectObject(mouse: Vector2): Intersection<Object3D<Event>>[];
+    /**
+     * 添加不会触发事件的场景中的物体
+     * @param object Object3D
+     * @returns this
+     */
+    addFilterObject(object: Object3D): this;
+    /**
+     * 移除过滤器中的物体
+     * @param object Object3D
+     * @returns this
+     */
+    removeFilterObject(object: Object3D): this;
+    private intersectObject;
     use(pointerManager: PointerManager): this;
 }

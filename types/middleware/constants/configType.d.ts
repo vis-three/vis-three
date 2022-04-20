@@ -1,5 +1,5 @@
 /**
- * @experimental  PASS, EVENT
+ * @experimental  PASS, EVENT, STRUCTURE
  */
 export declare enum CONFIGTYPE {
     BOXGEOMETRY = "BoxGeometry",
@@ -38,5 +38,6 @@ export declare enum CONFIGTYPE {
     ORBITCONTROLS = "OrbitControls",
     SMAAPASS = "SMAAPass",
     UNREALBLOOMPASS = "UnrealBloomPass",
-    EVENT = "Event"
+    EVENT = "Event",
+    STRUCTURE = "Structure"
 }

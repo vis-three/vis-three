@@ -143,6 +143,10 @@ export class CompilerManager {
         const textureCompiler = this.textureCompiler;
         return textureCompiler.getMap().get(vid);
     }
+    /**
+     * @deprecated
+     * @returns
+     */
     getObjectCompilerList() {
         return this.objectCompilerList;
     }

@@ -1,6 +1,7 @@
-import { Group, Intersection, LineSegments, Raycaster } from "three";
+import { CanvasTexture, Group, Intersection, Raycaster, Sprite } from "three";
 import { VisHelper } from "../common";
-export declare class GroupHelper extends LineSegments implements VisHelper {
+export declare class GroupHelper extends Sprite implements VisHelper {
+    static canvas: CanvasTexture;
     target: Group;
     type: string;
     constructor(group: Group);

@@ -106,9 +106,7 @@ export class VisTransformControls extends TransformControls {
         const target = this.target;
         if (object.length === 1) {
             const currentObject = object[0];
-            target.scale.copy(currentObject.scale);
-            target.rotation.copy(currentObject.rotation);
-            target.position.copy(currentObject.position);
+            currentObject.matrixWorld.decompose(target.position, target.quaternion, target.scale);
             target.updateMatrix();
             target.updateMatrixWorld();
             this.transObjectSet.add(currentObject);
@@ -118,9 +116,9 @@ export class VisTransformControls extends TransformControls {
         const yList = [];
         const zList = [];
         object.forEach((elem) => {
-            xList.push(elem.position.x);
-            yList.push(elem.position.y);
-            zList.push(elem.position.z);
+            xList.push(elem.matrixWorld.elements[12]);
+            yList.push(elem.matrixWorld.elements[13]);
+            zList.push(elem.matrixWorld.elements[14]);
         });
         target.rotation.set(0, 0, 0);
         target.scale.set(0, 0, 0);

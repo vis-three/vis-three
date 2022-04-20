@@ -14,7 +14,7 @@ export declare class RendererCompiler extends Compiler {
     private target;
     private engine;
     private processorMap;
-    private rendererMap;
+    private map;
     constructor(parameters?: RendererCompilerParameters);
     assembly(vid: string, callback: (params: Processor) => void): void;
     add(config: RendererAllType): void;

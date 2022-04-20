@@ -71,6 +71,10 @@ export declare class CompilerManager {
     getObjectBySymbol(vid: string): Object3D | null;
     getMaterial(vid: string): Material | undefined;
     getTexture(vid: string): Texture | undefined;
+    /**
+     * @deprecated
+     * @returns
+     */
     getObjectCompilerList(): BasicObjectCompiler[];
     dispose(): this;
 }
