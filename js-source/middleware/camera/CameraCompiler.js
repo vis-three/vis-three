@@ -1,4 +1,4 @@
-import { BufferGeometry, Material, OrthographicCamera, PerspectiveCamera, } from "three";
+import { OrthographicCamera, PerspectiveCamera, } from "three";
 import { Compiler } from "../../core/Compiler";
 import { Engine, ENGINEPLUGIN } from "../../engine/Engine";
 import { ObjectCompiler, } from "../object/ObjectCompiler";
@@ -9,8 +9,6 @@ export class CameraCompiler extends ObjectCompiler {
     constructMap;
     filterAttribute;
     cacheCameraMap;
-    replaceMaterial = new Material();
-    replaceGeometry = new BufferGeometry();
     constructor(parameters) {
         super(parameters);
         if (parameters) {
@@ -27,14 +25,6 @@ export class CameraCompiler extends ObjectCompiler {
             scale: true,
         };
         this.cacheCameraMap = new WeakMap();
-    }
-    getReplaceMaterial() {
-        console.warn(`CameraCompiler: can not use material in CameraCompiler.`);
-        return this.replaceMaterial;
-    }
-    getReplaceGeometry() {
-        console.warn(`CameraCompiler: can not use geometry in CameraCompiler.`);
-        return this.replaceGeometry;
     }
     // 自适应窗口大小
     setAdaptiveWindow(vid, value) {
@@ -167,8 +157,6 @@ export class CameraCompiler extends ObjectCompiler {
     }
     dispose() {
         super.dispose();
-        this.replaceGeometry.dispose();
-        this.replaceMaterial.dispose();
         return this;
     }
 }

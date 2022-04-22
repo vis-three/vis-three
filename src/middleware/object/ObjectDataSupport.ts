@@ -22,7 +22,7 @@ export class ObjectDataSupport<
   T extends ObjectCompilerTarget<C>,
   O extends Object3D
 > extends DataSupport<T, E> {
-  MODULE: MODULETYPE = MODULETYPE.MESH;
+  MODULE: MODULETYPE = MODULETYPE.GROUP;
 
   constructor(rule: R, data?: T) {
     !data && (data = Object.create(Object.prototype));

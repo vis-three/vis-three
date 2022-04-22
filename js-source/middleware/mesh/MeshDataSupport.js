@@ -1,7 +1,7 @@
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ObjectDataSupport } from "../object/ObjectDataSupport";
+import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { MeshRule } from "./MeshRule";
-export class MeshDataSupport extends ObjectDataSupport {
+export class MeshDataSupport extends SolidObjectDataSupport {
     MODULE = MODULETYPE.MESH;
     constructor(data) {
         !data && (data = {});

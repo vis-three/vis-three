@@ -1,4 +1,4 @@
-import { AmbientLight, BufferGeometry, Color, DirectionalLight, Material, PointLight, SpotLight, } from "three";
+import { AmbientLight, Color, DirectionalLight, PointLight, SpotLight, } from "three";
 import { Compiler } from "../../core/Compiler";
 import { ObjectCompiler, } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
@@ -7,8 +7,6 @@ export class LightCompiler extends ObjectCompiler {
     COMPILER_NAME = MODULETYPE.LIGHT;
     constructMap;
     filterAttribute;
-    replaceMaterial = new Material();
-    replaceGeometry = new BufferGeometry();
     constructor(parameters) {
         super(parameters);
         this.constructMap = new Map();
@@ -24,14 +22,6 @@ export class LightCompiler extends ObjectCompiler {
             rotation: true,
             lookAt: true,
         };
-    }
-    getReplaceMaterial() {
-        console.warn(`LightCompiler: can not use material in LightCompiler.`);
-        return this.replaceMaterial;
-    }
-    getReplaceGeometry() {
-        console.warn(`LightCompiler: can not use geometry in LightCompiler.`);
-        return this.replaceGeometry;
     }
     add(vid, config) {
         if (config.type && this.constructMap.has(config.type)) {
@@ -71,8 +61,6 @@ export class LightCompiler extends ObjectCompiler {
     }
     dispose() {
         super.dispose();
-        this.replaceGeometry.dispose();
-        this.replaceMaterial.dispose();
         return this;
     }
 }

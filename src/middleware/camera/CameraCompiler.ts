@@ -47,9 +47,6 @@ export class CameraCompiler extends ObjectCompiler<
   private filterAttribute: { [key: string]: boolean };
   private cacheCameraMap: WeakMap<Camera, CacheCameraData>;
 
-  private replaceMaterial = new Material();
-  private replaceGeometry = new BufferGeometry();
-
   constructor(parameters?: CameraCompilerParameters) {
     super(parameters);
     if (parameters) {
@@ -71,16 +68,6 @@ export class CameraCompiler extends ObjectCompiler<
     };
 
     this.cacheCameraMap = new WeakMap();
-  }
-
-  getReplaceMaterial(): Material {
-    console.warn(`CameraCompiler: can not use material in CameraCompiler.`);
-    return this.replaceMaterial;
-  }
-
-  getReplaceGeometry(): BufferGeometry {
-    console.warn(`CameraCompiler: can not use geometry in CameraCompiler.`);
-    return this.replaceGeometry;
   }
 
   // 自适应窗口大小
@@ -268,8 +255,6 @@ export class CameraCompiler extends ObjectCompiler<
 
   dispose(): this {
     super.dispose();
-    this.replaceGeometry.dispose();
-    this.replaceMaterial.dispose();
     return this;
   }
 }

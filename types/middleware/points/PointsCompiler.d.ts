@@ -1,12 +1,12 @@
 import { BufferGeometry, Material, Points } from "three";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { SolidObjectCompiler, SolidObjectCompilerParameters, SolidObjectCompilerTarget } from "../solidObject/SolidObjectCompiler";
 import { PointsConfig } from "./PointsConfig";
-export interface PointsCompilerTarget extends ObjectCompilerTarget<PointsConfig> {
+export interface PointsCompilerTarget extends SolidObjectCompilerTarget<PointsConfig> {
     [key: string]: PointsConfig;
 }
-export declare type PointsCompilerParameters = ObjectCompilerParameters<PointsConfig, PointsCompilerTarget>;
-export declare class PointsCompiler extends ObjectCompiler<PointsConfig, PointsCompilerTarget, Points> {
+export declare type PointsCompilerParameters = SolidObjectCompilerParameters<PointsConfig, PointsCompilerTarget>;
+export declare class PointsCompiler extends SolidObjectCompiler<PointsConfig, PointsCompilerTarget, Points> {
     COMPILER_NAME: MODULETYPE;
     private replaceMaterial;
     private replaceGeometry;

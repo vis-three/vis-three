@@ -1,10 +1,10 @@
 import { Mesh } from "three";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ObjectDataSupport } from "../object/ObjectDataSupport";
+import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { MeshCompiler, MeshCompilerTarget } from "./MeshCompiler";
 import { MeshConfig } from "./MeshConfig";
 import { MeshRule } from "./MeshRule";
-export declare class MeshDataSupport extends ObjectDataSupport<MeshRule, MeshCompiler, MeshConfig, MeshCompilerTarget, Mesh> {
+export declare class MeshDataSupport extends SolidObjectDataSupport<MeshRule, MeshCompiler, MeshConfig, MeshCompilerTarget, Mesh> {
     MODULE: MODULETYPE;
     constructor(data?: MeshCompilerTarget);
 }

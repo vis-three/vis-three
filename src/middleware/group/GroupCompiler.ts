@@ -24,9 +24,6 @@ export class GroupCompiler extends ObjectCompiler<
 > {
   COMPILER_NAME: string = MODULETYPE.GROUP;
 
-  private replaceMaterial = new Material();
-  private replaceGeometry = new BufferGeometry();
-
   private filterAttribute: { [key: string]: boolean };
 
   constructor(parameters?: GroupCompilerParameters) {
@@ -38,15 +35,6 @@ export class GroupCompiler extends ObjectCompiler<
     };
   }
 
-  getReplaceMaterial(): Material {
-    console.warn(`GroupCompiler: can not use material in GroupCompiler.`);
-    return this.replaceMaterial;
-  }
-
-  getReplaceGeometry(): BufferGeometry {
-    console.warn(`GroupCompiler: can not use geometry in GroupCompiler.`);
-    return this.replaceGeometry;
-  }
 
   add(vid: string, config: GroupConfig): this {
     const group = new Group();
@@ -140,8 +128,6 @@ export class GroupCompiler extends ObjectCompiler<
 
   dispose(): this {
     super.dispose();
-    this.replaceGeometry.dispose();
-    this.replaceMaterial.dispose();
     return this;
   }
 }

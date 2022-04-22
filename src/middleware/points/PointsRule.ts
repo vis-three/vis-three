@@ -1,12 +1,11 @@
 import { Points } from "three";
 import { validate } from "uuid";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
-import { Rule } from "../../core/Rule";
-import { ObjectRule } from "../object/ObjectRule";
+import { SolidObjectRule } from "../solidObject/SolidObjectRule";
 import { PointsCompiler, PointsCompilerTarget } from "./PointsCompiler";
 import { PointsConfig } from "./PointsConfig";
 
-export type PointsRule = ObjectRule<
+export type PointsRule = SolidObjectRule<
   PointsCompiler,
   PointsConfig,
   PointsCompilerTarget,

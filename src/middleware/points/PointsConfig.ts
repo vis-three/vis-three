@@ -1,13 +1,16 @@
 import { CONFIGTYPE } from "../constants/configType";
-import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
+import {
+  getSolidObjectConfig,
+  SolidObjectConfig,
+} from "../solidObject/SolidObjectConfig";
 
-export interface PointsConfig extends ObjectConfig {
+export interface PointsConfig extends SolidObjectConfig {
   geometry: string;
   material: string;
 }
 
 export const getPointsConfig = function (): PointsConfig {
-  return Object.assign(getObjectConfig(), {
+  return Object.assign(getSolidObjectConfig(), {
     type: CONFIGTYPE.POINTS,
     geometry: "",
     material: "",

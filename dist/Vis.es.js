@@ -2814,8 +2814,14 @@ const getOrbitControlsConfig = function() {
     screenSpacePanning: true
   };
 };
-const getSpriteConfig = function() {
+const getSolidObjectConfig = function() {
   return Object.assign(getObjectConfig(), {
+    material: "",
+    geometry: ""
+  });
+};
+const getSpriteConfig = function() {
+  return Object.assign(getSolidObjectConfig(), {
     type: "Sprite",
     material: "",
     center: {
@@ -2840,21 +2846,21 @@ const getEventConfig = function() {
   };
 };
 const getMeshConfig = function() {
-  return Object.assign(getObjectConfig(), {
+  return Object.assign(getSolidObjectConfig(), {
     type: CONFIGTYPE.MESH,
     geometry: "",
     material: ""
   });
 };
 const getPointsConfig = function() {
-  return Object.assign(getObjectConfig(), {
+  return Object.assign(getSolidObjectConfig(), {
     type: CONFIGTYPE.POINTS,
     geometry: "",
     material: ""
   });
 };
 const getLineConfig = function() {
-  return Object.assign(getObjectConfig(), {
+  return Object.assign(getSolidObjectConfig(), {
     type: CONFIGTYPE.LINE,
     geometry: "",
     material: ""
@@ -3547,7 +3553,7 @@ class ObjectDataSupport extends DataSupport {
   constructor(rule, data) {
     !data && (data = Object.create(Object.prototype));
     super(rule, data);
-    __publicField(this, "MODULE", MODULETYPE.MESH);
+    __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
 const LightRule = function(input, compiler) {
@@ -3723,6 +3729,13 @@ class ControlsDataSupport extends DataSupport {
     __publicField(this, "MODULE", MODULETYPE.CONTROLS);
   }
 }
+class SolidObjectDataSupport extends DataSupport {
+  constructor(rule, data) {
+    !data && (data = Object.create(Object.prototype));
+    super(rule, data);
+    __publicField(this, "MODULE", MODULETYPE.MESH);
+  }
+}
 const SpriteRule = function(notice, compiler) {
   const { operate, key, path, value } = notice;
   if (operate === "add") {
@@ -3743,7 +3756,7 @@ const SpriteRule = function(notice, compiler) {
     return;
   }
 };
-class SpriteDataSupport extends ObjectDataSupport {
+class SpriteDataSupport extends SolidObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(SpriteRule, data);
@@ -3837,7 +3850,7 @@ const LineRule = function(input, compiler) {
     return;
   }
 };
-class LineDataSupport extends DataSupport {
+class LineDataSupport extends SolidObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(LineRule, data);
@@ -3869,7 +3882,7 @@ const MeshRule = function(notice, compiler) {
     return;
   }
 };
-class MeshDataSupport extends ObjectDataSupport {
+class MeshDataSupport extends SolidObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(MeshRule, data);
@@ -3901,7 +3914,7 @@ const PointsRule = function(notice, compiler) {
     return;
   }
 };
-class PointsDataSupport extends ObjectDataSupport {
+class PointsDataSupport extends SolidObjectDataSupport {
   constructor(data) {
     !data && (data = {});
     super(PointsRule, data);
@@ -4167,8 +4180,6 @@ class ObjectCompiler extends Compiler {
     __publicField(this, "map");
     __publicField(this, "weakMap");
     __publicField(this, "cacheObjectMap");
-    __publicField(this, "geometryMap");
-    __publicField(this, "materialMap");
     __publicField(this, "objectMapSet");
     if (parameters) {
       parameters.scene && (this.scene = parameters.scene);
@@ -4177,38 +4188,10 @@ class ObjectCompiler extends Compiler {
       this.scene = new Scene();
       this.target = {};
     }
-    this.geometryMap = new Map();
-    this.materialMap = new Map();
     this.map = new Map();
     this.weakMap = new WeakMap();
     this.objectMapSet = new Set();
     this.cacheObjectMap = new WeakMap();
-  }
-  getMaterial(vid) {
-    if (validate(vid)) {
-      if (this.materialMap.has(vid)) {
-        return this.materialMap.get(vid);
-      } else {
-        console.warn(`${this.COMPILER_NAME}Compiler: can not found material which vid: ${vid}`);
-        return this.getReplaceMaterial();
-      }
-    } else {
-      console.warn(`${this.COMPILER_NAME}Compiler: material vid parameter is illegal: ${vid}`);
-      return this.getReplaceMaterial();
-    }
-  }
-  getGeometry(vid) {
-    if (validate(vid)) {
-      if (this.geometryMap.has(vid)) {
-        return this.geometryMap.get(vid);
-      } else {
-        console.warn(`${this.COMPILER_NAME}Compiler: can not found geometry which vid: ${vid}`);
-        return this.getReplaceGeometry();
-      }
-    } else {
-      console.warn(`${this.COMPILER_NAME}Compiler: geometry vid parameter is illegal: ${vid}`);
-      return this.getReplaceGeometry();
-    }
   }
   getObject(vid) {
     for (const map of this.objectMapSet) {
@@ -4254,14 +4237,6 @@ class ObjectCompiler extends Compiler {
       updateMatrixWorldFun.bind(model)(focus);
       model.lookAt(cacheData.lookAtTarget);
     };
-    return this;
-  }
-  linkGeometryMap(map) {
-    this.geometryMap = map;
-    return this;
-  }
-  linkMaterialMap(materialMap) {
-    this.materialMap = materialMap;
     return this;
   }
   linkObjectMap(...map) {
@@ -4331,8 +4306,6 @@ class CameraCompiler extends ObjectCompiler {
     __publicField(this, "constructMap");
     __publicField(this, "filterAttribute");
     __publicField(this, "cacheCameraMap");
-    __publicField(this, "replaceMaterial", new Material());
-    __publicField(this, "replaceGeometry", new BufferGeometry());
     if (parameters) {
       parameters.engine && (this.engine = parameters.engine);
     } else {
@@ -4346,14 +4319,6 @@ class CameraCompiler extends ObjectCompiler {
       scale: true
     };
     this.cacheCameraMap = new WeakMap();
-  }
-  getReplaceMaterial() {
-    console.warn(`CameraCompiler: can not use material in CameraCompiler.`);
-    return this.replaceMaterial;
-  }
-  getReplaceGeometry() {
-    console.warn(`CameraCompiler: can not use geometry in CameraCompiler.`);
-    return this.replaceGeometry;
   }
   setAdaptiveWindow(vid, value) {
     if (!this.map.has(vid)) {
@@ -4473,8 +4438,6 @@ class CameraCompiler extends ObjectCompiler {
   }
   dispose() {
     super.dispose();
-    this.replaceGeometry.dispose();
-    this.replaceMaterial.dispose();
     return this;
   }
 }
@@ -5768,21 +5731,11 @@ class GroupCompiler extends ObjectCompiler {
   constructor(parameters) {
     super(parameters);
     __publicField(this, "COMPILER_NAME", MODULETYPE.GROUP);
-    __publicField(this, "replaceMaterial", new Material());
-    __publicField(this, "replaceGeometry", new BufferGeometry());
     __publicField(this, "filterAttribute");
     this.filterAttribute = {
       lookAt: true,
       children: true
     };
-  }
-  getReplaceMaterial() {
-    console.warn(`GroupCompiler: can not use material in GroupCompiler.`);
-    return this.replaceMaterial;
-  }
-  getReplaceGeometry() {
-    console.warn(`GroupCompiler: can not use geometry in GroupCompiler.`);
-    return this.replaceGeometry;
   }
   add(vid, config) {
     const group = new Group$1();
@@ -5845,8 +5798,6 @@ class GroupCompiler extends ObjectCompiler {
   }
   dispose() {
     super.dispose();
-    this.replaceGeometry.dispose();
-    this.replaceMaterial.dispose();
     return this;
   }
 }
@@ -5856,8 +5807,6 @@ class LightCompiler extends ObjectCompiler {
     __publicField(this, "COMPILER_NAME", MODULETYPE.LIGHT);
     __publicField(this, "constructMap");
     __publicField(this, "filterAttribute");
-    __publicField(this, "replaceMaterial", new Material());
-    __publicField(this, "replaceGeometry", new BufferGeometry());
     this.constructMap = new Map();
     this.constructMap.set(CONFIGTYPE.POINTLIGHT, () => new PointLight());
     this.constructMap.set(CONFIGTYPE.SPOTLIGHT, () => new SpotLight());
@@ -5871,14 +5820,6 @@ class LightCompiler extends ObjectCompiler {
       rotation: true,
       lookAt: true
     };
-  }
-  getReplaceMaterial() {
-    console.warn(`LightCompiler: can not use material in LightCompiler.`);
-    return this.replaceMaterial;
-  }
-  getReplaceGeometry() {
-    console.warn(`LightCompiler: can not use geometry in LightCompiler.`);
-    return this.replaceGeometry;
   }
   add(vid, config) {
     if (config.type && this.constructMap.has(config.type)) {
@@ -5917,12 +5858,54 @@ class LightCompiler extends ObjectCompiler {
   }
   dispose() {
     super.dispose();
-    this.replaceGeometry.dispose();
-    this.replaceMaterial.dispose();
     return this;
   }
 }
-class LineCompiler extends ObjectCompiler {
+class SolidObjectCompiler extends ObjectCompiler {
+  constructor(parameters) {
+    super(parameters);
+    __publicField(this, "IS_SOLIDOBJECTCOMPILER", true);
+    __publicField(this, "geometryMap");
+    __publicField(this, "materialMap");
+    this.geometryMap = new Map();
+    this.materialMap = new Map();
+  }
+  getMaterial(vid) {
+    if (validate(vid)) {
+      if (this.materialMap.has(vid)) {
+        return this.materialMap.get(vid);
+      } else {
+        console.warn(`${this.COMPILER_NAME}Compiler: can not found material which vid: ${vid}`);
+        return this.getReplaceMaterial();
+      }
+    } else {
+      console.warn(`${this.COMPILER_NAME}Compiler: material vid parameter is illegal: ${vid}`);
+      return this.getReplaceMaterial();
+    }
+  }
+  getGeometry(vid) {
+    if (validate(vid)) {
+      if (this.geometryMap.has(vid)) {
+        return this.geometryMap.get(vid);
+      } else {
+        console.warn(`${this.COMPILER_NAME}Compiler: can not found geometry which vid: ${vid}`);
+        return this.getReplaceGeometry();
+      }
+    } else {
+      console.warn(`${this.COMPILER_NAME}Compiler: geometry vid parameter is illegal: ${vid}`);
+      return this.getReplaceGeometry();
+    }
+  }
+  linkGeometryMap(map) {
+    this.geometryMap = map;
+    return this;
+  }
+  linkMaterialMap(materialMap) {
+    this.materialMap = materialMap;
+    return this;
+  }
+}
+class LineCompiler extends SolidObjectCompiler {
   constructor(parameters) {
     super(parameters);
     __publicField(this, "COMPILER_NAME", MODULETYPE.LINE);
@@ -6125,7 +6108,7 @@ class MaterialCompiler extends Compiler {
     return this;
   }
 }
-class MeshCompiler extends ObjectCompiler {
+class MeshCompiler extends SolidObjectCompiler {
   constructor(parameters) {
     super(parameters);
     __publicField(this, "COMPILER_NAME", MODULETYPE.MESH);
@@ -7154,7 +7137,7 @@ class PassCompiler extends Compiler {
     return this;
   }
 }
-class PointsCompiler extends ObjectCompiler {
+class PointsCompiler extends SolidObjectCompiler {
   constructor(parameters) {
     super(parameters);
     __publicField(this, "COMPILER_NAME", MODULETYPE.POINTS);
@@ -7546,7 +7529,7 @@ class SceneCompiler extends Compiler {
     return this;
   }
 }
-class SpriteCompiler extends ObjectCompiler {
+class SpriteCompiler extends SolidObjectCompiler {
   constructor(parametes) {
     super(parametes);
     __publicField(this, "COMPILER_NAME", MODULETYPE.SPRITE);
@@ -7577,7 +7560,8 @@ class SpriteCompiler extends ObjectCompiler {
     sprite.center.set(config.center.x, config.center.y);
     Compiler.applyConfig(config, sprite, {
       center: true,
-      material: true
+      material: true,
+      geometry: true
     });
     this.scene.add(sprite);
     return this;
@@ -7588,6 +7572,9 @@ class SpriteCompiler extends ObjectCompiler {
       return this;
     }
     let sprite = this.map.get(vid);
+    if (key === "geometry") {
+      return this;
+    }
     if (key === "material") {
       sprite.material = this.getSpriteMaterial(value);
       return this;
@@ -7799,7 +7786,10 @@ class CompilerManager {
     this.objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
     const objectMapList = this.objectCompilerList.map((compiler) => compiler.getMap());
     for (const objectCompiler of this.objectCompilerList) {
-      objectCompiler.linkGeometryMap(geometryMap).linkMaterialMap(materialMap).linkObjectMap(...objectMapList);
+      if (isValidKey("IS_SOLIDOBJECTCOMPILER", objectCompiler)) {
+        objectCompiler.linkGeometryMap(geometryMap).linkMaterialMap(materialMap);
+      }
+      objectCompiler.linkObjectMap(...objectMapList);
     }
     this.eventCompiler.linkObjectMap(...objectMapList);
   }

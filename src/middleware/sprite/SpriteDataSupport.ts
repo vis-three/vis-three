@@ -1,12 +1,11 @@
 import { Sprite } from "three";
-import { DataSupport } from "../../core/DataSupport";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ObjectDataSupport } from "../object/ObjectDataSupport";
+import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { SpriteCompiler, SpriteCompilerTarget } from "./SpriteCompiler";
 import { SpriteConfig } from "./SpriteConfig";
 import { SpriteRule } from "./SpriteRule";
 
-export class SpriteDataSupport extends ObjectDataSupport<
+export class SpriteDataSupport extends SolidObjectDataSupport<
   SpriteRule,
   SpriteCompiler,
   SpriteConfig,

@@ -1,5 +1,5 @@
-import { ObjectConfig } from "../object/ObjectConfig";
-export interface PointsConfig extends ObjectConfig {
+import { SolidObjectConfig } from "../solidObject/SolidObjectConfig";
+export interface PointsConfig extends SolidObjectConfig {
     geometry: string;
     material: string;
 }

@@ -51,10 +51,9 @@ export declare class CompilerManager {
     private objectCompilerList;
     constructor(parameters?: CompilerManagerParameters);
     /**
-     * @todo 是否将组装规则重新整理或者拆分个各个compiler执行
-     * 例如提供执行生命周期，然后compiler注册进各个周期里面统一执行
-     * @param engine
-     * @returns
+     * engine进行编译器链接
+     * @param engine EngineSupport
+     * @returns this
      */
     support(engine: EngineSupport): this;
     /**

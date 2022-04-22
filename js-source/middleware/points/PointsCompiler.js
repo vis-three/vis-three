@@ -1,8 +1,8 @@
 import { DodecahedronBufferGeometry, Points, PointsMaterial, } from "three";
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ObjectCompiler, } from "../object/ObjectCompiler";
-export class PointsCompiler extends ObjectCompiler {
+import { SolidObjectCompiler, } from "../solidObject/SolidObjectCompiler";
+export class PointsCompiler extends SolidObjectCompiler {
     COMPILER_NAME = MODULETYPE.POINTS;
     replaceMaterial = new PointsMaterial({ color: "rgb(150, 150, 150)" });
     replaceGeometry = new DodecahedronBufferGeometry(5);

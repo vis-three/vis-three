@@ -41,9 +41,6 @@ export class LightCompiler extends ObjectCompiler<
 
   private filterAttribute: { [key: string]: boolean };
 
-  private replaceMaterial = new Material();
-  private replaceGeometry = new BufferGeometry();
-
   constructor(parameters?: LightCompilerParameters) {
     super(parameters);
     this.constructMap = new Map();
@@ -64,16 +61,6 @@ export class LightCompiler extends ObjectCompiler<
       rotation: true,
       lookAt: true,
     };
-  }
-
-  getReplaceMaterial(): Material {
-    console.warn(`LightCompiler: can not use material in LightCompiler.`);
-    return this.replaceMaterial;
-  }
-
-  getReplaceGeometry(): BufferGeometry {
-    console.warn(`LightCompiler: can not use geometry in LightCompiler.`);
-    return this.replaceGeometry;
   }
 
   add(vid: string, config: LightConfigAllType): this {
@@ -129,8 +116,6 @@ export class LightCompiler extends ObjectCompiler<
 
   dispose(): this {
     super.dispose();
-    this.replaceGeometry.dispose();
-    this.replaceMaterial.dispose();
     return this;
   }
 }

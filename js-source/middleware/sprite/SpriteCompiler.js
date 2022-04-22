@@ -1,8 +1,8 @@
 import { PlaneBufferGeometry, Sprite, SpriteMaterial, } from "three";
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ObjectCompiler, } from "../object/ObjectCompiler";
-export class SpriteCompiler extends ObjectCompiler {
+import { SolidObjectCompiler, } from "../solidObject/SolidObjectCompiler";
+export class SpriteCompiler extends SolidObjectCompiler {
     COMPILER_NAME = MODULETYPE.SPRITE;
     replaceMaterial = new SpriteMaterial({ color: "rgb(150, 150, 150)" });
     replaceGeometry = new PlaneBufferGeometry(10, 10, 10);

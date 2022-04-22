@@ -1,12 +1,11 @@
 import { Sprite } from "three";
 import { validate } from "uuid";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
-import { Rule } from "../../core/Rule";
-import { ObjectRule } from "../object/ObjectRule";
+import { SolidObjectRule } from "../solidObject/SolidObjectRule";
 import { SpriteCompiler, SpriteCompilerTarget } from "./SpriteCompiler";
 import { SpriteConfig } from "./SpriteConfig";
 
-export type SpriteRule = ObjectRule<
+export type SpriteRule = SolidObjectRule<
   SpriteCompiler,
   SpriteConfig,
   SpriteCompilerTarget,

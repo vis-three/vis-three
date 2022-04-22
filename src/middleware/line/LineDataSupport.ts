@@ -1,11 +1,16 @@
-import { DataSupport } from "../../core/DataSupport";
+import { Line } from "three";
 import { MODULETYPE } from "../constants/MODULETYPE";
+import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { LineCompiler, LineCompilerTarget } from "./LineCompiler";
+import { LineConfig } from "./LineConfig";
 import { LineRule } from "./LineRule";
 
-export class LineDataSupport extends DataSupport<
+export class LineDataSupport extends SolidObjectDataSupport<
+  LineRule,
+  LineCompiler,
+  LineConfig,
   LineCompilerTarget,
-  LineCompiler
+  Line
 > {
   MODULE: MODULETYPE = MODULETYPE.LINE;
 

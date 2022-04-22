@@ -1,11 +1,11 @@
 import { BufferGeometry, Line, Material } from "three";
-import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { SolidObjectCompiler, SolidObjectCompilerParameters, SolidObjectCompilerTarget } from "../solidObject/SolidObjectCompiler";
 import { LineConfig } from "./LineConfig";
-export interface LineCompilerTarget extends ObjectCompilerTarget<LineConfig> {
+export interface LineCompilerTarget extends SolidObjectCompilerTarget<LineConfig> {
     [key: string]: LineConfig;
 }
-export declare type LineCompilerParameters = ObjectCompilerParameters<LineConfig, LineCompilerTarget>;
-export declare class LineCompiler extends ObjectCompiler<LineConfig, LineCompilerTarget, Line> {
+export declare type LineCompilerParameters = SolidObjectCompilerParameters<LineConfig, LineCompilerTarget>;
+export declare class LineCompiler extends SolidObjectCompiler<LineConfig, LineCompilerTarget, Line> {
     COMPILER_NAME: string;
     private replaceMaterial;
     private replaceGeometry;

@@ -1,7 +1,7 @@
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ObjectDataSupport } from "../object/ObjectDataSupport";
+import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { SpriteRule } from "./SpriteRule";
-export class SpriteDataSupport extends ObjectDataSupport {
+export class SpriteDataSupport extends SolidObjectDataSupport {
     MODULE = MODULETYPE.SPRITE;
     constructor(data) {
         !data && (data = {});

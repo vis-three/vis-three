@@ -1,4 +1,4 @@
-import { BufferGeometry, Camera, Material, Vector3 } from "three";
+import { Camera, Vector3 } from "three";
 import { SetSizeEvent } from "../../plugins/WebGLRendererPlugin";
 import { CameraConfigAllType } from "./CameraConfig";
 import { Engine } from "../../engine/Engine";
@@ -21,11 +21,7 @@ export declare class CameraCompiler extends ObjectCompiler<CameraConfigAllType, 
     private constructMap;
     private filterAttribute;
     private cacheCameraMap;
-    private replaceMaterial;
-    private replaceGeometry;
     constructor(parameters?: CameraCompilerParameters);
-    getReplaceMaterial(): Material;
-    getReplaceGeometry(): BufferGeometry;
     private setAdaptiveWindow;
     add(vid: string, config: CameraConfigAllType): this;
     set(vid: string, path: string[], key: string, value: any): this;

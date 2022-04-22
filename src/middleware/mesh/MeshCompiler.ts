@@ -8,22 +8,23 @@ import {
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import {
-  ObjectCompiler,
-  ObjectCompilerParameters,
-  ObjectCompilerTarget,
-} from "../object/ObjectCompiler";
+  SolidObjectCompiler,
+  SolidObjectCompilerParameters,
+  SolidObjectCompilerTarget,
+} from "../solidObject/SolidObjectCompiler";
 import { MeshConfig } from "./MeshConfig";
 
-export interface MeshCompilerTarget extends ObjectCompilerTarget<MeshConfig> {
+export interface MeshCompilerTarget
+  extends SolidObjectCompilerTarget<MeshConfig> {
   [key: string]: MeshConfig;
 }
 
-export type MeshCompilerParameters = ObjectCompilerParameters<
+export type MeshCompilerParameters = SolidObjectCompilerParameters<
   MeshConfig,
   MeshCompilerTarget
 >;
 
-export class MeshCompiler extends ObjectCompiler<
+export class MeshCompiler extends SolidObjectCompiler<
   MeshConfig,
   MeshCompilerTarget,
   Mesh

@@ -44,8 +44,6 @@ export abstract class ObjectCompiler<
 
   protected cacheObjectMap: WeakMap<O, CacheObjectData>;
 
-  protected geometryMap: Map<SymbolConfig["vid"], BufferGeometry>;
-  protected materialMap: Map<SymbolConfig["vid"], Material>;
   protected objectMapSet: Set<Map<SymbolConfig["vid"], Object3D>>;
 
   constructor(parameters?: ObjectCompilerParameters<C, T>) {
@@ -58,50 +56,10 @@ export abstract class ObjectCompiler<
       this.target = {} as T;
     }
 
-    this.geometryMap = new Map();
-    this.materialMap = new Map();
     this.map = new Map();
     this.weakMap = new WeakMap();
     this.objectMapSet = new Set();
     this.cacheObjectMap = new WeakMap();
-  }
-
-  // 获取材质
-  protected getMaterial(vid: string): Material {
-    if (validate(vid)) {
-      if (this.materialMap.has(vid)) {
-        return this.materialMap.get(vid)!;
-      } else {
-        console.warn(
-          `${this.COMPILER_NAME}Compiler: can not found material which vid: ${vid}`
-        );
-        return this.getReplaceMaterial();
-      }
-    } else {
-      console.warn(
-        `${this.COMPILER_NAME}Compiler: material vid parameter is illegal: ${vid}`
-      );
-      return this.getReplaceMaterial();
-    }
-  }
-
-  // 获取几何
-  protected getGeometry(vid: string): BufferGeometry {
-    if (validate(vid)) {
-      if (this.geometryMap.has(vid)) {
-        return this.geometryMap.get(vid)!;
-      } else {
-        console.warn(
-          `${this.COMPILER_NAME}Compiler: can not found geometry which vid: ${vid}`
-        );
-        return this.getReplaceGeometry();
-      }
-    } else {
-      console.warn(
-        `${this.COMPILER_NAME}Compiler: geometry vid parameter is illegal: ${vid}`
-      );
-      return this.getReplaceGeometry();
-    }
   }
 
   // 获取物体
@@ -167,16 +125,6 @@ export abstract class ObjectCompiler<
       model.lookAt(cacheData!.lookAtTarget!);
     };
 
-    return this;
-  }
-
-  linkGeometryMap(map: Map<SymbolConfig["vid"], BufferGeometry>): this {
-    this.geometryMap = map;
-    return this;
-  }
-
-  linkMaterialMap(materialMap: Map<string, Material>): this {
-    this.materialMap = materialMap;
     return this;
   }
 
@@ -255,8 +203,6 @@ export abstract class ObjectCompiler<
     return this;
   }
 
-  abstract getReplaceMaterial(): Material;
-  abstract getReplaceGeometry(): BufferGeometry;
   abstract add(vid: string, config: T[string]): this;
   abstract set(vid: string, path: string[], key: string, value: any): this;
 }

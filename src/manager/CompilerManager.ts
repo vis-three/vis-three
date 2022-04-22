@@ -20,8 +20,13 @@ import { PassCompiler } from "../middleware/pass/PassCompiler";
 import { PointsCompiler } from "../middleware/points/PointsCompiler";
 import { RendererCompiler } from "../middleware/renderer/RendererCompiler";
 import { SceneCompiler } from "../middleware/scene/SceneCompiler";
+import {
+  BasicSolidObjectCompiler,
+  SolidObjectCompiler,
+} from "../middleware/solidObject/SolidObjectCompiler";
 import { SpriteCompiler } from "../middleware/sprite/SpriteCompiler";
 import { TextureCompiler } from "../middleware/texture/TextureCompiler";
+import { isValidKey } from "../utils/utils";
 
 export interface CompilerManagerParameters {
   cameraCompiler: CameraCompiler;
@@ -57,7 +62,9 @@ export class CompilerManager {
   private groupCompiler = new GroupCompiler();
   private passCompiler = new PassCompiler();
 
-  private objectCompilerList: Array<BasicObjectCompiler>;
+  private objectCompilerList: Array<
+    BasicObjectCompiler | BasicSolidObjectCompiler
+  >;
 
   constructor(parameters?: CompilerManagerParameters) {
     this.objectCompilerList = [];
@@ -84,20 +91,21 @@ export class CompilerManager {
     );
 
     for (const objectCompiler of this.objectCompilerList) {
-      objectCompiler
-        .linkGeometryMap(geometryMap)
-        .linkMaterialMap(materialMap)
-        .linkObjectMap(...objectMapList);
+      if (isValidKey("IS_SOLIDOBJECTCOMPILER", objectCompiler)) {
+        (objectCompiler as BasicSolidObjectCompiler)
+          .linkGeometryMap(geometryMap)
+          .linkMaterialMap(materialMap);
+      }
+      objectCompiler.linkObjectMap(...objectMapList);
     }
     // 物体事件连接
     this.eventCompiler.linkObjectMap(...objectMapList);
   }
 
   /**
-   * @todo 是否将组装规则重新整理或者拆分个各个compiler执行
-   * 例如提供执行生命周期，然后compiler注册进各个周期里面统一执行
-   * @param engine
-   * @returns
+   * engine进行编译器链接
+   * @param engine EngineSupport
+   * @returns this
    */
   support(engine: EngineSupport): this {
     // 根据engine设置

@@ -1,11 +1,9 @@
-import { BufferGeometry, Group, Material } from "three";
+import { Group } from "three";
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectCompiler, } from "../object/ObjectCompiler";
 export class GroupCompiler extends ObjectCompiler {
     COMPILER_NAME = MODULETYPE.GROUP;
-    replaceMaterial = new Material();
-    replaceGeometry = new BufferGeometry();
     filterAttribute;
     constructor(parameters) {
         super(parameters);
@@ -13,14 +11,6 @@ export class GroupCompiler extends ObjectCompiler {
             lookAt: true,
             children: true,
         };
-    }
-    getReplaceMaterial() {
-        console.warn(`GroupCompiler: can not use material in GroupCompiler.`);
-        return this.replaceMaterial;
-    }
-    getReplaceGeometry() {
-        console.warn(`GroupCompiler: can not use geometry in GroupCompiler.`);
-        return this.replaceGeometry;
     }
     add(vid, config) {
         const group = new Group();
@@ -83,8 +73,6 @@ export class GroupCompiler extends ObjectCompiler {
     }
     dispose() {
         super.dispose();
-        this.replaceGeometry.dispose();
-        this.replaceMaterial.dispose();
         return this;
     }
 }

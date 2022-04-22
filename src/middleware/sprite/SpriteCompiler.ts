@@ -5,27 +5,26 @@ import {
   Sprite,
   SpriteMaterial,
 } from "three";
-import { validate } from "uuid";
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import {
-  ObjectCompiler,
-  ObjectCompilerParameters,
-  ObjectCompilerTarget,
-} from "../object/ObjectCompiler";
+  SolidObjectCompiler,
+  SolidObjectCompilerParameters,
+  SolidObjectCompilerTarget,
+} from "../solidObject/SolidObjectCompiler";
 import { SpriteConfig } from "./SpriteConfig";
 
 export interface SpriteCompilerTarget
-  extends ObjectCompilerTarget<SpriteConfig> {
+  extends SolidObjectCompilerTarget<SpriteConfig> {
   [key: string]: SpriteConfig;
 }
 
-export type SpriteCompilerParameters = ObjectCompilerParameters<
+export type SpriteCompilerParameters = SolidObjectCompilerParameters<
   SpriteConfig,
   SpriteCompilerTarget
 >;
 
-export class SpriteCompiler extends ObjectCompiler<
+export class SpriteCompiler extends SolidObjectCompiler<
   SpriteConfig,
   SpriteCompilerTarget,
   Sprite
@@ -74,6 +73,7 @@ export class SpriteCompiler extends ObjectCompiler<
     Compiler.applyConfig(config, sprite, {
       center: true,
       material: true,
+      geometry: true,
     });
 
     this.scene.add(sprite);
@@ -89,6 +89,10 @@ export class SpriteCompiler extends ObjectCompiler<
     }
 
     let sprite = this.map.get(vid)!;
+
+    if (key === "geometry") {
+      return this;
+    }
 
     if (key === "material") {
       sprite.material = this.getSpriteMaterial(value);

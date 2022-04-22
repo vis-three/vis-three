@@ -8,22 +8,23 @@ import {
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import {
-  ObjectCompiler,
-  ObjectCompilerParameters,
-  ObjectCompilerTarget,
-} from "../object/ObjectCompiler";
+  SolidObjectCompiler,
+  SolidObjectCompilerParameters,
+  SolidObjectCompilerTarget,
+} from "../solidObject/SolidObjectCompiler";
 import { LineConfig } from "./LineConfig";
 
-export interface LineCompilerTarget extends ObjectCompilerTarget<LineConfig> {
+export interface LineCompilerTarget
+  extends SolidObjectCompilerTarget<LineConfig> {
   [key: string]: LineConfig;
 }
 
-export type LineCompilerParameters = ObjectCompilerParameters<
+export type LineCompilerParameters = SolidObjectCompilerParameters<
   LineConfig,
   LineCompilerTarget
 >;
 
-export class LineCompiler extends ObjectCompiler<
+export class LineCompiler extends SolidObjectCompiler<
   LineConfig,
   LineCompilerTarget,
   Line

@@ -1,11 +1,11 @@
 import { BufferGeometry, Material, Mesh } from "three";
-import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { SolidObjectCompiler, SolidObjectCompilerParameters, SolidObjectCompilerTarget } from "../solidObject/SolidObjectCompiler";
 import { MeshConfig } from "./MeshConfig";
-export interface MeshCompilerTarget extends ObjectCompilerTarget<MeshConfig> {
+export interface MeshCompilerTarget extends SolidObjectCompilerTarget<MeshConfig> {
     [key: string]: MeshConfig;
 }
-export declare type MeshCompilerParameters = ObjectCompilerParameters<MeshConfig, MeshCompilerTarget>;
-export declare class MeshCompiler extends ObjectCompiler<MeshConfig, MeshCompilerTarget, Mesh> {
+export declare type MeshCompilerParameters = SolidObjectCompilerParameters<MeshConfig, MeshCompilerTarget>;
+export declare class MeshCompiler extends SolidObjectCompiler<MeshConfig, MeshCompilerTarget, Mesh> {
     COMPILER_NAME: string;
     private replaceMaterial;
     private replaceGeometry;

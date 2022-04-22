@@ -8,23 +8,23 @@ import {
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import {
-  ObjectCompiler,
-  ObjectCompilerParameters,
-  ObjectCompilerTarget,
-} from "../object/ObjectCompiler";
+  SolidObjectCompiler,
+  SolidObjectCompilerParameters,
+  SolidObjectCompilerTarget,
+} from "../solidObject/SolidObjectCompiler";
 import { PointsConfig } from "./PointsConfig";
 
 export interface PointsCompilerTarget
-  extends ObjectCompilerTarget<PointsConfig> {
+  extends SolidObjectCompilerTarget<PointsConfig> {
   [key: string]: PointsConfig;
 }
 
-export type PointsCompilerParameters = ObjectCompilerParameters<
+export type PointsCompilerParameters = SolidObjectCompilerParameters<
   PointsConfig,
   PointsCompilerTarget
 >;
 
-export class PointsCompiler extends ObjectCompiler<
+export class PointsCompiler extends SolidObjectCompiler<
   PointsConfig,
   PointsCompilerTarget,
   Points

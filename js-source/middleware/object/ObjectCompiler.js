@@ -1,5 +1,4 @@
 import { Scene } from "three";
-import { validate } from "uuid";
 import { Compiler } from "../../core/Compiler";
 export class ObjectCompiler extends Compiler {
     IS_OBJECTCOMPILER = true;
@@ -8,8 +7,6 @@ export class ObjectCompiler extends Compiler {
     map;
     weakMap;
     cacheObjectMap;
-    geometryMap;
-    materialMap;
     objectMapSet;
     constructor(parameters) {
         super();
@@ -21,44 +18,10 @@ export class ObjectCompiler extends Compiler {
             this.scene = new Scene();
             this.target = {};
         }
-        this.geometryMap = new Map();
-        this.materialMap = new Map();
         this.map = new Map();
         this.weakMap = new WeakMap();
         this.objectMapSet = new Set();
         this.cacheObjectMap = new WeakMap();
-    }
-    // 获取材质
-    getMaterial(vid) {
-        if (validate(vid)) {
-            if (this.materialMap.has(vid)) {
-                return this.materialMap.get(vid);
-            }
-            else {
-                console.warn(`${this.COMPILER_NAME}Compiler: can not found material which vid: ${vid}`);
-                return this.getReplaceMaterial();
-            }
-        }
-        else {
-            console.warn(`${this.COMPILER_NAME}Compiler: material vid parameter is illegal: ${vid}`);
-            return this.getReplaceMaterial();
-        }
-    }
-    // 获取几何
-    getGeometry(vid) {
-        if (validate(vid)) {
-            if (this.geometryMap.has(vid)) {
-                return this.geometryMap.get(vid);
-            }
-            else {
-                console.warn(`${this.COMPILER_NAME}Compiler: can not found geometry which vid: ${vid}`);
-                return this.getReplaceGeometry();
-            }
-        }
-        else {
-            console.warn(`${this.COMPILER_NAME}Compiler: geometry vid parameter is illegal: ${vid}`);
-            return this.getReplaceGeometry();
-        }
     }
     // 获取物体
     getObject(vid) {
@@ -107,14 +70,6 @@ export class ObjectCompiler extends Compiler {
             updateMatrixWorldFun.bind(model)(focus);
             model.lookAt(cacheData.lookAtTarget);
         };
-        return this;
-    }
-    linkGeometryMap(map) {
-        this.geometryMap = map;
-        return this;
-    }
-    linkMaterialMap(materialMap) {
-        this.materialMap = materialMap;
         return this;
     }
     linkObjectMap(...map) {

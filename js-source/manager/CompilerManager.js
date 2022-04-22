@@ -16,6 +16,7 @@ import { RendererCompiler } from "../middleware/renderer/RendererCompiler";
 import { SceneCompiler } from "../middleware/scene/SceneCompiler";
 import { SpriteCompiler } from "../middleware/sprite/SpriteCompiler";
 import { TextureCompiler } from "../middleware/texture/TextureCompiler";
+import { isValidKey } from "../utils/utils";
 export class CompilerManager {
     cameraCompiler = new CameraCompiler();
     lightCompiler = new LightCompiler();
@@ -51,19 +52,20 @@ export class CompilerManager {
         this.objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
         const objectMapList = this.objectCompilerList.map((compiler) => compiler.getMap());
         for (const objectCompiler of this.objectCompilerList) {
-            objectCompiler
-                .linkGeometryMap(geometryMap)
-                .linkMaterialMap(materialMap)
-                .linkObjectMap(...objectMapList);
+            if (isValidKey("IS_SOLIDOBJECTCOMPILER", objectCompiler)) {
+                objectCompiler
+                    .linkGeometryMap(geometryMap)
+                    .linkMaterialMap(materialMap);
+            }
+            objectCompiler.linkObjectMap(...objectMapList);
         }
         // 物体事件连接
         this.eventCompiler.linkObjectMap(...objectMapList);
     }
     /**
-     * @todo 是否将组装规则重新整理或者拆分个各个compiler执行
-     * 例如提供执行生命周期，然后compiler注册进各个周期里面统一执行
-     * @param engine
-     * @returns
+     * engine进行编译器链接
+     * @param engine EngineSupport
+     * @returns this
      */
     support(engine) {
         // 根据engine设置
