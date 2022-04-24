@@ -46,6 +46,7 @@ github 地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github
 ### 生成配置
 
 ```js
+// 基础配置单
 const pointLight = Vis.generateConfig("PointLight", {
   position: {
     x: 10,
@@ -53,21 +54,80 @@ const pointLight = Vis.generateConfig("PointLight", {
     z: 20,
   },
 });
+
+// vis响应式
+const engine = new Vis.ModelingEngineSupport();
+const pointLight = engine.dataSupportManager.reactiveConfig(
+  Vis.generateConfig("PointLight", {
+    position: {
+      x: 10,
+      y: 20,
+      z: 20,
+    },
+  })
+);
+
+// vue2 + vis响应式
+const engine = new Vis.ModelingEngineSupport();
+const pointLight = engine.dataSupportManager.reactiveConfig(
+  Vue.observable(
+    Vis.generateConfig("PointLight", {
+      position: {
+        x: 10,
+        y: 20,
+        z: 20,
+      },
+    })
+  )
+);
+
+// vue3 + vis响应式
+const engine = new Vis.ModelingEngineSupport();
+const pointLight = reactive(
+  engine.dataSupportManager.reactiveConfig(
+    Vis.generateConfig("PointLight", {
+      position: {
+        x: 10,
+        y: 20,
+        z: 20,
+      },
+    })
+  )
+);
+engine.dataSupportManager.applyConfig(pointLight);
 ```
 
-### 生成配置模块
+### 配置使用
 
 ```js
-const lightMap = new Vis.SupportDataGenerator()
-  .create(Vis.MODULETYPE.LIGHT)
-  .add(pointLight)
-  .get();
+// 动态载入
+const engine = new Vis.ModelingEngineSupport();
+engine.dataSupportManager.applyConfig(pointLight);
+
+// 预设加入
+const lightDataSupport = new Vis.LightDataSupport({
+  [pointLight.vid]: pointLight,
+});
+
+const engine = new Vis.ModelingEngineSupport({
+  lightDataSupport: lightDataSupport,
+});
 ```
 
-### 使用支持插件
+### 使用配置支持模块插件
 
 ```js
-const lightDataSupport = new Vis.LightDataSupport(lightMap);
+const lightDataSupport = new Vis.LightDataSupport({
+  [pointLight.vid]: pointLight,
+});
+const cameraDataSupport = new Vis.CameraDataSupport({
+  // ...
+});
+
+const engine = new Vis.ModelingEngineSupport({
+  lightDataSupport,
+  cameraDataSupport,
+});
 ```
 
 ### 使用支持建模引擎
@@ -83,20 +143,33 @@ const engine = new Vis.ModelingEngineSupport({
 
 ### 快速编辑场景物体
 
+```html
+<input type="number" v-model="pointLight.position.x" />
+```
+
 ```js
-const lightSupportData = lightDataSupport.getData();
-const pointLight = lightSupportData[pointLight.vid];
-pointLight.position.x = 10;
-pointLight.position.y = 20;
+data() {
+  return {
+    pointLight
+  }
+},
+
+method: {
+  movePointLight () {
+    this.pointLight.position.x = 10;
+    this.pointLight.position.y = 20;
+  }
+}
+
 ```
 
 ### 导出配置
 
 ```js
-console.log(engine.toJSON());
+console.log(engineSupport.toJSON());
 ```
 
-### 导入配置生成场景
+### 导入配置
 
 ```js
 import config from "/examples/config.json";
@@ -655,7 +728,7 @@ resourceManager.addEventListener("mapped", (e) => {
 });
 ```
 
-## 支持原生 THREE 应用
+## 原生 THREE 应用
 
 ```js
 const engine = new Vis.ModelingEngine()
