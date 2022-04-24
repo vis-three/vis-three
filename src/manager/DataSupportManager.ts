@@ -19,8 +19,6 @@ import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport"
 import { Compiler, CompilerTarget } from "../core/Compiler";
 import { SpriteCompilerTarget } from "../middleware/sprite/SpriteCompiler";
 import { SpriteDataSupport } from "../middleware/sprite/SpriteDataSupport";
-import { EventCompilerTarget } from "../middleware/event/EventCompiler";
-import { EventDataSupport } from "../middleware/event/EventDataSupport";
 import { LineDataSupport } from "../middleware/line/LineDataSupport";
 import { MeshCompilerTarget } from "../middleware/mesh/MeshCompiler";
 import { MeshDataSupport } from "../middleware/mesh/MeshDataSupport";
@@ -55,7 +53,6 @@ export interface LoadOptions {
   [MODULETYPE.SCENE]?: SceneCompilerTarget;
   [MODULETYPE.PASS]?: PassCompilerTarget;
   [MODULETYPE.CONTROLS]?: ControlsCompilerTarget;
-  [MODULETYPE.EVENT]?: EventCompilerTarget;
 }
 
 export interface DataSupportManagerParameters {
@@ -68,7 +65,6 @@ export interface DataSupportManagerParameters {
   sceneDataSupport?: SceneDataSupport;
   controlsDataSupport?: ControlsDataSupport;
   spriteDataSupport?: SpriteDataSupport;
-  eventDataSupport?: EventDataSupport;
   lineDataSupport?: LineDataSupport;
   meshDataSupport?: MeshDataSupport;
   pointsDataSupport?: PointsDataSupport;
@@ -88,7 +84,6 @@ export class DataSupportManager {
   sceneDataSupport: SceneDataSupport = new SceneDataSupport();
   controlsDataSupport: ControlsDataSupport = new ControlsDataSupport();
   spriteDataSupport: SpriteDataSupport = new SpriteDataSupport();
-  eventDataSupport: EventDataSupport = new EventDataSupport();
   lineDataSupport: LineDataSupport = new LineDataSupport();
   meshDataSupport: MeshDataSupport = new MeshDataSupport();
   pointsDataSupport: PointsDataSupport = new PointsDataSupport();
@@ -119,24 +114,6 @@ export class DataSupportManager {
     });
 
     this.dataSupportMap = dataSupportMap;
-  }
-
-  /**
-   *
-   * @deprecated - 下版本废弃 不在单独区分object dataSupport
-   *
-   */
-  getObjectDataSupportList(): BasicObjectDataSupport[] {
-    return [];
-  }
-
-  /**
-   *
-   * @deprecated - 下版本废弃 -> getConfigBySymbol
-   *
-   */
-  getObjectConfig<T extends SymbolConfig>(vid: string): T | null {
-    return null;
   }
 
   /**

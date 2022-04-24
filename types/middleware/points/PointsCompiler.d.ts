@@ -14,6 +14,5 @@ export declare class PointsCompiler extends SolidObjectCompiler<PointsConfig, Po
     getReplaceMaterial(): Material;
     getReplaceGeometry(): BufferGeometry;
     add(vid: string, config: PointsConfig): this;
-    set(vid: string, path: string[], key: string, value: any): this;
     dispose(): this;
 }

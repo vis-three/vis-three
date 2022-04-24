@@ -1,5 +1,5 @@
 /**
- * @experimental  PASS, EVENT, STRUCTURE
+ * @experimental  PASS
  */
 export declare enum CONFIGTYPE {
     BOXGEOMETRY = "BoxGeometry",
@@ -33,11 +33,10 @@ export declare enum CONFIGTYPE {
     PERSPECTIVECAMERA = "PerspectiveCamera",
     ORTHOGRAPHICCAMERA = "OrthographicCamera",
     WEBGLRENDERER = "WebGLRenderer",
+    CSS3DRENDERER = "CSS3DRenderer",
     SCENE = "Scene",
     TRNASFORMCONTROLS = "TransformControls",
     ORBITCONTROLS = "OrbitControls",
     SMAAPASS = "SMAAPass",
-    UNREALBLOOMPASS = "UnrealBloomPass",
-    EVENT = "Event",
-    STRUCTURE = "Structure"
+    UNREALBLOOMPASS = "UnrealBloomPass"
 }

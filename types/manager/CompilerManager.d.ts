@@ -42,7 +42,6 @@ export declare class CompilerManager {
     private sceneCompiler;
     private controlsCompiler;
     private spriteCompiler;
-    private eventCompiler;
     private lineCompiler;
     private meshCompiler;
     private pointsCompiler;
@@ -68,7 +67,13 @@ export declare class CompilerManager {
      * @returns object3D || null
      */
     getObjectBySymbol(vid: string): Object3D | null;
+    /**
+     * @deprecated
+     */
     getMaterial(vid: string): Material | undefined;
+    /**
+     * @deprecated
+     */
     getTexture(vid: string): Texture | undefined;
     /**
      * @deprecated

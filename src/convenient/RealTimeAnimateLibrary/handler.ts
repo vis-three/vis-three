@@ -2,14 +2,14 @@ import { Tween } from "@tweenjs/tween.js";
 import { ObjectEvent } from "../../manager/EventManager";
 import { RenderEvent } from "../../manager/RenderManager";
 import {
-  EventCompiler,
   EventHandler,
-} from "../../middleware/event/EventCompiler";
+  BasicObjectCompiler,
+} from "../../middleware/object/ObjectCompiler";
 import { ObjectConfig } from "../../middleware/object/ObjectConfig";
 import { MoveSpacing, MoveTo } from "./configure";
 
 export const moveTo: EventHandler<MoveTo> = function (
-  compiler: EventCompiler,
+  compiler: BasicObjectCompiler,
   config: MoveTo
 ): (event?: ObjectEvent) => void {
   const params = config.params;
@@ -56,7 +56,7 @@ export const moveTo: EventHandler<MoveTo> = function (
 };
 
 export const moveSpacing: EventHandler<MoveSpacing> = function (
-  compiler: EventCompiler,
+  compiler: BasicObjectCompiler,
   config: MoveSpacing
 ): (event?: ObjectEvent) => void {
   const params = config.params;

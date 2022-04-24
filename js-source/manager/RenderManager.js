@@ -1,6 +1,5 @@
 import { Clock } from "three";
 import { EventDispatcher } from "../core/EventDispatcher";
-import { RENDERERMANAGER } from "../middleware/constants/EVENTTYPE";
 export class RenderManager extends EventDispatcher {
     clock = new Clock(); // 引擎时钟
     animationFrame = -1; // 渲染定时器
@@ -13,7 +12,7 @@ export class RenderManager extends EventDispatcher {
         const delta = clock.getDelta();
         const total = clock.getElapsedTime();
         this.dispatchEvent({
-            type: RENDERERMANAGER.RENDER,
+            type: "render",
             delta,
             total,
         });
@@ -27,7 +26,7 @@ export class RenderManager extends EventDispatcher {
             return;
         }
         this.dispatchEvent({
-            type: RENDERERMANAGER.PLAY,
+            type: "play",
         });
         const playFun = () => {
             this.render();
@@ -42,7 +41,7 @@ export class RenderManager extends EventDispatcher {
         cancelAnimationFrame(this.animationFrame);
         this.animationFrame = -1;
         this.dispatchEvent({
-            type: RENDERERMANAGER.STOP,
+            type: "stop",
         });
     };
     /**
@@ -59,5 +58,14 @@ export class RenderManager extends EventDispatcher {
     hasVaildRender = () => {
         return this.useful();
     };
+    /**
+     * 销毁内存
+     */
+    dispose() {
+        if (this.hasRendering()) {
+            this.stop();
+        }
+        this.clear();
+    }
 }
 //# sourceMappingURL=RenderManager.js.map

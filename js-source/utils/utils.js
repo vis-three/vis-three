@@ -9,7 +9,6 @@ import { getWebGLRendererConfig } from "../middleware/renderer/RendererConfig";
 import { getSceneConfig } from "../middleware/scene/SceneConfig";
 import { getOrbitControlsConfig, getTransformControlsConfig, } from "../middleware/controls/ControlsConfig";
 import { getSpriteConfig } from "../middleware/sprite/SpriteConfig";
-import { getEventConfig } from "../middleware/event/eventConfig";
 import { getMeshConfig } from "../middleware/mesh/MeshConfig";
 import { getPointsConfig } from "../middleware/points/PointsConfig";
 import { getLineConfig } from "../middleware/line/LineConfig";
@@ -81,7 +80,6 @@ export function getConfigModuleMap() {
         [CONFIGTYPE.ORBITCONTROLS]: MODULETYPE.CONTROLS,
         [CONFIGTYPE.SMAAPASS]: MODULETYPE.PASS,
         [CONFIGTYPE.UNREALBLOOMPASS]: MODULETYPE.PASS,
-        [CONFIGTYPE.EVENT]: MODULETYPE.EVENT,
     };
 }
 export function getConfigFunctionMap() {
@@ -120,7 +118,6 @@ export function getConfigFunctionMap() {
         [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig,
         [CONFIGTYPE.SMAAPASS]: getSMAAPassConfig,
         [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig,
-        [CONFIGTYPE.EVENT]: getEventConfig,
     };
 }
 //# sourceMappingURL=utils.js.map

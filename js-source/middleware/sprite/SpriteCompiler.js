@@ -1,11 +1,10 @@
 import { PlaneBufferGeometry, Sprite, SpriteMaterial, } from "three";
-import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { SolidObjectCompiler, } from "../solidObject/SolidObjectCompiler";
 export class SpriteCompiler extends SolidObjectCompiler {
     COMPILER_NAME = MODULETYPE.SPRITE;
     replaceMaterial = new SpriteMaterial({ color: "rgb(150, 150, 150)" });
-    replaceGeometry = new PlaneBufferGeometry(10, 10, 10);
+    replaceGeometry = new PlaneBufferGeometry(1, 1);
     constructor(parametes) {
         super(parametes);
     }
@@ -16,8 +15,17 @@ export class SpriteCompiler extends SolidObjectCompiler {
         console.warn(`SpriteCompiler: can not use geometry in SpriteCompiler.`);
         return this.replaceGeometry;
     }
-    getSpriteMaterial(vid) {
-        const tempMaterial = this.getMaterial(vid);
+    /**
+     * @override
+     */
+    setLookAt(vid, target) {
+        return this;
+    }
+    /**
+     * @override
+     */
+    getMaterial(vid) {
+        const tempMaterial = super.getMaterial(vid);
         if (tempMaterial instanceof SpriteMaterial) {
             return tempMaterial;
         }
@@ -30,32 +38,7 @@ export class SpriteCompiler extends SolidObjectCompiler {
         const sprite = new Sprite();
         this.map.set(vid, sprite);
         this.weakMap.set(sprite, vid);
-        sprite.material = this.getSpriteMaterial(config.material);
-        sprite.center.set(config.center.x, config.center.y);
-        Compiler.applyConfig(config, sprite, {
-            center: true,
-            material: true,
-        });
-        this.scene.add(sprite);
-        return this;
-    }
-    set(vid, path, key, value) {
-        if (!this.map.has(vid)) {
-            console.warn(`SpriteCompiler: can not found this vid mapping object: '${vid}'`);
-            return this;
-        }
-        let sprite = this.map.get(vid);
-        if (key === "material") {
-            sprite.material = this.getSpriteMaterial(value);
-            return this;
-        }
-        if (key === "lookAt") {
-            return this.setLookAt(vid, value);
-        }
-        for (const key of path) {
-            sprite = sprite[key];
-        }
-        sprite[key] = value;
+        super.add(vid, config);
         return this;
     }
     dispose() {

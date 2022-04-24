@@ -19,14 +19,11 @@ import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport"
 import { Compiler, CompilerTarget } from "../core/Compiler";
 import { SpriteCompilerTarget } from "../middleware/sprite/SpriteCompiler";
 import { SpriteDataSupport } from "../middleware/sprite/SpriteDataSupport";
-import { EventCompilerTarget } from "../middleware/event/EventCompiler";
-import { EventDataSupport } from "../middleware/event/EventDataSupport";
 import { LineDataSupport } from "../middleware/line/LineDataSupport";
 import { MeshCompilerTarget } from "../middleware/mesh/MeshCompiler";
 import { MeshDataSupport } from "../middleware/mesh/MeshDataSupport";
 import { PointsCompilerTarget } from "../middleware/points/PointsCompiler";
 import { PointsDataSupport } from "../middleware/points/PointsDataSupport";
-import { BasicObjectDataSupport } from "../middleware/object/ObjectDataSupport";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { GroupCompilerTarget } from "../middleware/group/GroupCompiler";
 import { GroupDataSupport } from "../middleware/group/GroupDataSupport";
@@ -47,7 +44,6 @@ export interface LoadOptions {
     [MODULETYPE.SCENE]?: SceneCompilerTarget;
     [MODULETYPE.PASS]?: PassCompilerTarget;
     [MODULETYPE.CONTROLS]?: ControlsCompilerTarget;
-    [MODULETYPE.EVENT]?: EventCompilerTarget;
 }
 export interface DataSupportManagerParameters {
     cameraDataSupport?: CameraDataSupport;
@@ -59,7 +55,6 @@ export interface DataSupportManagerParameters {
     sceneDataSupport?: SceneDataSupport;
     controlsDataSupport?: ControlsDataSupport;
     spriteDataSupport?: SpriteDataSupport;
-    eventDataSupport?: EventDataSupport;
     lineDataSupport?: LineDataSupport;
     meshDataSupport?: MeshDataSupport;
     pointsDataSupport?: PointsDataSupport;
@@ -79,7 +74,6 @@ export declare class DataSupportManager {
     sceneDataSupport: SceneDataSupport;
     controlsDataSupport: ControlsDataSupport;
     spriteDataSupport: SpriteDataSupport;
-    eventDataSupport: EventDataSupport;
     lineDataSupport: LineDataSupport;
     meshDataSupport: MeshDataSupport;
     pointsDataSupport: PointsDataSupport;
@@ -87,18 +81,6 @@ export declare class DataSupportManager {
     passDataSupport: PassDataSupport;
     private dataSupportMap;
     constructor(parameters?: DataSupportManagerParameters);
-    /**
-     *
-     * @deprecated - 下版本废弃 不在单独区分object dataSupport
-     *
-     */
-    getObjectDataSupportList(): BasicObjectDataSupport[];
-    /**
-     *
-     * @deprecated - 下版本废弃 -> getConfigBySymbol
-     *
-     */
-    getObjectConfig<T extends SymbolConfig>(vid: string): T | null;
     /**
      * 获取该模块下的支持插件
      * @param type MODULETYPE

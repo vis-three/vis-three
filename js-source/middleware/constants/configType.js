@@ -1,5 +1,5 @@
 /**
- * @experimental  PASS, EVENT, STRUCTURE
+ * @experimental  PASS
  */
 export var CONFIGTYPE;
 (function (CONFIGTYPE) {
@@ -34,12 +34,11 @@ export var CONFIGTYPE;
     CONFIGTYPE["PERSPECTIVECAMERA"] = "PerspectiveCamera";
     CONFIGTYPE["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
     CONFIGTYPE["WEBGLRENDERER"] = "WebGLRenderer";
+    CONFIGTYPE["CSS3DRENDERER"] = "CSS3DRenderer";
     CONFIGTYPE["SCENE"] = "Scene";
     CONFIGTYPE["TRNASFORMCONTROLS"] = "TransformControls";
     CONFIGTYPE["ORBITCONTROLS"] = "OrbitControls";
     CONFIGTYPE["SMAAPASS"] = "SMAAPass";
     CONFIGTYPE["UNREALBLOOMPASS"] = "UnrealBloomPass";
-    CONFIGTYPE["EVENT"] = "Event";
-    CONFIGTYPE["STRUCTURE"] = "Structure";
 })(CONFIGTYPE || (CONFIGTYPE = {}));
 //# sourceMappingURL=configType.js.map

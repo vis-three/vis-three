@@ -29,4 +29,8 @@ export declare class RenderManager extends EventDispatcher {
      * @returns boolean
      */
     hasVaildRender: () => boolean;
+    /**
+     * 销毁内存
+     */
+    dispose(): void;
 }

@@ -1,16 +1,11 @@
 import {
   AmbientLight,
-  BufferGeometry,
   Color,
   DirectionalLight,
   Light,
-  Material,
   PointLight,
-  Scene,
   SpotLight,
 } from "three";
-import { Compiler } from "../../core/Compiler";
-import { SymbolConfig } from "../common/CommonConfig";
 import { LightConfigAllType } from "./LightConfig";
 import {
   ObjectCompiler,
@@ -39,8 +34,6 @@ export class LightCompiler extends ObjectCompiler<
 
   private constructMap: Map<string, () => Light>;
 
-  private filterAttribute: { [key: string]: boolean };
-
   constructor(parameters?: LightCompilerParameters) {
     super(parameters);
     this.constructMap = new Map();
@@ -52,29 +45,27 @@ export class LightCompiler extends ObjectCompiler<
       () => new DirectionalLight()
     );
 
-    this.setLookAt = function (vid: string, target: string) {
-      return this;
-    };
-
-    this.filterAttribute = {
+    this.mergeFilterAttribute({
+      color: true,
       scale: true,
       rotation: true,
-      lookAt: true,
-    };
+    });
+  }
+
+  protected setLookAt(vid: string, target: string): this {
+    return this;
   }
 
   add(vid: string, config: LightConfigAllType): this {
     if (config.type && this.constructMap.has(config.type)) {
       const light = this.constructMap.get(config.type)!();
 
-      Compiler.applyConfig(config, light, this.filterAttribute);
-
       light.color = new Color(config.color);
 
       this.map.set(vid, light);
       this.weakMap.set(light, vid);
 
-      this.scene.add(light);
+      super.add(vid, config);
     } else {
       console.warn(
         `LightCompiler: can not support Light type: ${config.type}.`
@@ -91,25 +82,14 @@ export class LightCompiler extends ObjectCompiler<
       return this;
     }
 
-    if (this.filterAttribute[key]) {
-      return this;
-    }
-
-    let object = this.map.get(vid)!;
+    const object = this.map.get(vid)!;
 
     if (key === "color") {
       object.color = new Color(value);
       return this;
     }
 
-    for (const key of path) {
-      if (this.filterAttribute[key]) {
-        return this;
-      }
-      object = object[key];
-    }
-
-    object[key] = value;
+    super.set(vid, path, key, value);
 
     return this;
   }

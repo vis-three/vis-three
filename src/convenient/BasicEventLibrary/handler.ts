@@ -1,12 +1,12 @@
 import { ObjectEvent } from "../../manager/EventManager";
 import {
-  EventCompiler,
+  BasicObjectCompiler,
   EventHandler,
-} from "../../middleware/event/EventCompiler";
+} from "../../middleware/object/ObjectCompiler";
 import { OpenWindow } from "./configure";
 
 export const openWindow: EventHandler<OpenWindow> = function (
-  compiler: EventCompiler,
+  compiler: BasicObjectCompiler,
   config: OpenWindow
 ): (event?: ObjectEvent) => void {
   return () => {

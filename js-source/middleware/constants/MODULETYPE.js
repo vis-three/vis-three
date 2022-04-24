@@ -1,6 +1,5 @@
 /**
- * @experimental  PASS, EVENT
- * @TODO STRUCTURE
+ * @experimental  PASS
  */
 export var MODULETYPE;
 (function (MODULETYPE) {
@@ -18,8 +17,6 @@ export var MODULETYPE;
     MODULETYPE["POINTS"] = "points";
     MODULETYPE["GROUP"] = "group";
     MODULETYPE["PASS"] = "pass";
-    MODULETYPE["STRUCTURE"] = "structure";
-    MODULETYPE["EVENT"] = "event";
     MODULETYPE["MODIFIER"] = "modifier";
 })(MODULETYPE || (MODULETYPE = {}));
 //# sourceMappingURL=MODULETYPE.js.map

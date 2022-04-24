@@ -40,7 +40,6 @@ import {
   getTransformControlsConfig,
 } from "../middleware/controls/ControlsConfig";
 import { getSpriteConfig } from "../middleware/sprite/SpriteConfig";
-import { getEventConfig } from "../middleware/event/eventConfig";
 import { getMeshConfig } from "../middleware/mesh/MeshConfig";
 import { getPointsConfig } from "../middleware/points/PointsConfig";
 import { getLineConfig } from "../middleware/line/LineConfig";
@@ -135,8 +134,6 @@ export function getConfigModuleMap(): { [key: string]: string } {
 
     [CONFIGTYPE.SMAAPASS]: MODULETYPE.PASS,
     [CONFIGTYPE.UNREALBLOOMPASS]: MODULETYPE.PASS,
-
-    [CONFIGTYPE.EVENT]: MODULETYPE.EVENT,
   };
 }
 
@@ -185,7 +182,5 @@ export function getConfigFunctionMap(): { [key: string]: Function } {
 
     [CONFIGTYPE.SMAAPASS]: getSMAAPassConfig,
     [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig,
-
-    [CONFIGTYPE.EVENT]: getEventConfig,
   };
 }

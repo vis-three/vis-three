@@ -49,54 +49,12 @@ export class MeshCompiler extends SolidObjectCompiler<
   }
 
   add(vid: string, config: MeshConfig): this {
-    let material: Material | Material[];
-    if (typeof config.material === "string") {
-      material = this.getMaterial(config.material);
-    } else {
-      material = config.material.map((vid) => this.getMaterial(vid));
-    }
-    const object = new Mesh(this.getGeometry(config.geometry), material);
-
-    Compiler.applyConfig(config, object, {
-      geometry: true,
-      material: true,
-      lookAt: true,
-    });
+    const object = new Mesh();
 
     this.map.set(vid, object);
     this.weakMap.set(object, vid);
 
-    this.setLookAt(vid, config.lookAt);
-
-    this.scene.add(object);
-    return this;
-  }
-
-  set(vid: string, path: string[], key: string, value: any): this {
-    if (!this.map.has(vid)) {
-      console.warn(
-        `model compiler can not found this vid mapping object: '${vid}'`
-      );
-      return this;
-    }
-
-    let mesh = this.map.get(vid)!;
-
-    if (key === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-
-    if (key === "material") {
-      mesh.material = this.getMaterial(value);
-      return this;
-    }
-
-    for (const key of path) {
-      mesh = mesh[key];
-    }
-
-    mesh[key] = value;
-
+    super.add(vid, config);
     return this;
   }
 

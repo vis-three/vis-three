@@ -1,11 +1,9 @@
 import {
   BufferGeometry,
-  Material,
   PlaneBufferGeometry,
   Sprite,
   SpriteMaterial,
 } from "three";
-import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import {
   SolidObjectCompiler,
@@ -32,7 +30,7 @@ export class SpriteCompiler extends SolidObjectCompiler<
   COMPILER_NAME: string = MODULETYPE.SPRITE;
 
   private replaceMaterial = new SpriteMaterial({ color: "rgb(150, 150, 150)" });
-  private replaceGeometry = new PlaneBufferGeometry(10, 10, 10);
+  private replaceGeometry = new PlaneBufferGeometry(1, 1);
 
   constructor(parametes?: SpriteCompilerParameters) {
     super(parametes);
@@ -47,8 +45,18 @@ export class SpriteCompiler extends SolidObjectCompiler<
     return this.replaceGeometry;
   }
 
-  private getSpriteMaterial(vid: string): SpriteMaterial {
-    const tempMaterial = this.getMaterial(vid);
+  /**
+   * @override
+   */
+  protected setLookAt(vid: string, target: string): this {
+    return this;
+  }
+
+  /**
+   * @override
+   */
+  protected getMaterial(vid: string): SpriteMaterial {
+    const tempMaterial = super.getMaterial(vid);
 
     if (tempMaterial instanceof SpriteMaterial) {
       return tempMaterial;
@@ -66,49 +74,7 @@ export class SpriteCompiler extends SolidObjectCompiler<
     this.map.set(vid, sprite);
     this.weakMap.set(sprite, vid);
 
-    sprite.material = this.getSpriteMaterial(config.material);
-
-    sprite.center.set(config.center.x, config.center.y);
-
-    Compiler.applyConfig(config, sprite, {
-      center: true,
-      material: true,
-      geometry: true,
-    });
-
-    this.scene.add(sprite);
-    return this;
-  }
-
-  set(vid: string, path: string[], key: string, value: any): this {
-    if (!this.map.has(vid)) {
-      console.warn(
-        `SpriteCompiler: can not found this vid mapping object: '${vid}'`
-      );
-      return this;
-    }
-
-    let sprite = this.map.get(vid)!;
-
-    if (key === "geometry") {
-      return this;
-    }
-
-    if (key === "material") {
-      sprite.material = this.getSpriteMaterial(value);
-      return this;
-    }
-
-    if (key === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-
-    for (const key of path) {
-      sprite = sprite[key];
-    }
-
-    sprite[key] = value;
-
+    super.add(vid, config);
     return this;
   }
 

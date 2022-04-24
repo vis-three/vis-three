@@ -1,4 +1,4 @@
-import { BasicEventConfig } from "../../middleware/event/EventCompiler";
+import { BasicEventConfig } from "../../middleware/object/ObjectCompiler";
 import { generateConfigFunction } from "../../utils/utils";
 
 export interface OpenWindow extends BasicEventConfig {

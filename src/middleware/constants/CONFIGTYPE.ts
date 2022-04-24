@@ -1,5 +1,5 @@
 /**
- * @experimental  PASS, EVENT, STRUCTURE
+ * @experimental  PASS
  */
 export enum CONFIGTYPE {
   BOXGEOMETRY = "BoxGeometry",
@@ -39,6 +39,7 @@ export enum CONFIGTYPE {
   ORTHOGRAPHICCAMERA = "OrthographicCamera",
 
   WEBGLRENDERER = "WebGLRenderer",
+  CSS3DRENDERER = "CSS3DRenderer",
 
   SCENE = "Scene",
 
@@ -47,8 +48,4 @@ export enum CONFIGTYPE {
 
   SMAAPASS = "SMAAPass",
   UNREALBLOOMPASS = "UnrealBloomPass",
-
-  EVENT = "Event",
-
-  STRUCTURE = "Structure",
 }

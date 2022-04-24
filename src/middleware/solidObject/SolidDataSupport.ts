@@ -1,19 +1,20 @@
 import { Object3D } from "three";
 import { DataSupport } from "../../core/DataSupport";
-import { Rule } from "../../core/Rule";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import {
+  SolidObject3D,
   SolidObjectCompiler,
   SolidObjectCompilerTarget,
 } from "./SolidObjectCompiler";
 import { SolidObjectConfig } from "./SolidObjectConfig";
+import { SolidObjectRule } from "./SolidObjectRule";
 
 export class SolidObjectDataSupport<
-  R extends Rule<E>,
+  R extends SolidObjectRule<E, C, T, O>,
   E extends SolidObjectCompiler<C, T, O>,
   C extends SolidObjectConfig,
   T extends SolidObjectCompilerTarget<C>,
-  O extends Object3D
+  O extends SolidObject3D
 > extends DataSupport<T, E> {
   MODULE: MODULETYPE = MODULETYPE.MESH;
 

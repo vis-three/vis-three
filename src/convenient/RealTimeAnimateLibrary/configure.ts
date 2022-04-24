@@ -1,7 +1,7 @@
 import { Vector3Config } from "../../middleware/common/CommonConfig";
-import { BasicEventConfig } from "../../middleware/event/EventCompiler";
 import { generateConfigFunction } from "../../utils/utils";
 import { Easing, EasingFunction } from "@tweenjs/tween.js";
+import { BasicEventConfig } from "../../middleware/object/ObjectCompiler";
 
 // TODO: const timingFunction => string
 export interface MoveTo extends BasicEventConfig {

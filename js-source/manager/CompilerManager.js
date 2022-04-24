@@ -2,7 +2,6 @@ import { validate } from "uuid";
 import { Compiler } from "../core/Compiler";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
-import { EventCompiler } from "../middleware/event/EventCompiler";
 import { GeometryCompiler } from "../middleware/geometry/GeometryCompiler";
 import { GroupCompiler } from "../middleware/group/GroupCompiler";
 import { LightCompiler } from "../middleware/light/LightCompiler";
@@ -27,7 +26,6 @@ export class CompilerManager {
     sceneCompiler = new SceneCompiler();
     controlsCompiler = new ControlsCompiler();
     spriteCompiler = new SpriteCompiler();
-    eventCompiler = new EventCompiler();
     lineCompiler = new LineCompiler();
     meshCompiler = new MeshCompiler();
     pointsCompiler = new PointsCompiler();
@@ -59,8 +57,6 @@ export class CompilerManager {
             }
             objectCompiler.linkObjectMap(...objectMapList);
         }
-        // 物体事件连接
-        this.eventCompiler.linkObjectMap(...objectMapList);
     }
     /**
      * engine进行编译器链接
@@ -96,7 +92,6 @@ export class CompilerManager {
         dataSupportManager.meshDataSupport.addCompiler(this.meshCompiler);
         dataSupportManager.pointsDataSupport.addCompiler(this.pointsCompiler);
         dataSupportManager.groupDataSupport.addCompiler(this.groupCompiler);
-        dataSupportManager.eventDataSupport.addCompiler(this.eventCompiler);
         return this;
     }
     /**
@@ -129,6 +124,9 @@ export class CompilerManager {
         }
         return null;
     }
+    /**
+     * @deprecated
+     */
     getMaterial(vid) {
         if (!validate(vid)) {
             console.warn(`compiler manager vid is illeage: ${vid}`);
@@ -137,6 +135,9 @@ export class CompilerManager {
         const materialCompiler = this.materialCompiler;
         return materialCompiler.getMap().get(vid);
     }
+    /**
+     * @deprecated
+     */
     getTexture(vid) {
         if (!validate(vid)) {
             console.warn(`compiler manager vid is illeage: ${vid}`);

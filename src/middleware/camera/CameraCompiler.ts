@@ -1,32 +1,12 @@
-import {
-  BufferGeometry,
-  Camera,
-  Material,
-  OrthographicCamera,
-  PerspectiveCamera,
-  Scene,
-  Vector3,
-} from "three";
-import { Compiler } from "../../core/Compiler";
+import { Camera, OrthographicCamera, PerspectiveCamera, Vector3 } from "three";
 import { SetSizeEvent } from "../../plugins/WebGLRendererPlugin";
 import { CameraConfigAllType } from "./CameraConfig";
-import { Engine, ENGINEPLUGIN } from "../../engine/Engine";
-import {
-  ObjectCompiler,
-  ObjectCompilerParameters,
-  ObjectCompilerTarget,
-} from "../object/ObjectCompiler";
+import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { EngineSupport } from "../../main";
 
 export interface CameraCompilerTarget
   extends ObjectCompilerTarget<CameraConfigAllType> {
   [key: string]: CameraConfigAllType;
-}
-
-export interface CameraCompilerParameters
-  extends ObjectCompilerParameters<CameraConfigAllType, CameraCompilerTarget> {
-  engine: Engine;
 }
 
 export interface CacheCameraData {
@@ -42,18 +22,11 @@ export class CameraCompiler extends ObjectCompiler<
 > {
   COMPILER_NAME: string = MODULETYPE.CAMERA;
 
-  private engine!: Engine;
   private constructMap: Map<string, () => Camera>;
-  private filterAttribute: { [key: string]: boolean };
   private cacheCameraMap: WeakMap<Camera, CacheCameraData>;
 
-  constructor(parameters?: CameraCompilerParameters) {
-    super(parameters);
-    if (parameters) {
-      parameters.engine && (this.engine = parameters.engine);
-    } else {
-      this.engine = new Engine().install(ENGINEPLUGIN.WEBGLRENDERER);
-    }
+  constructor() {
+    super();
     const constructMap = new Map();
     constructMap.set("PerspectiveCamera", () => new PerspectiveCamera());
     constructMap.set(
@@ -63,9 +36,10 @@ export class CameraCompiler extends ObjectCompiler<
 
     this.constructMap = constructMap;
 
-    this.filterAttribute = {
+    this.mergeFilterAttribute({
       scale: true,
-    };
+      adaptiveWindow: true,
+    });
 
     this.cacheCameraMap = new WeakMap();
   }
@@ -164,17 +138,13 @@ export class CameraCompiler extends ObjectCompiler<
     if (config.type && this.constructMap.has(config.type)) {
       const camera = this.constructMap.get(config.type)!();
 
-      Compiler.applyConfig(
-        config,
-        camera,
-        Object.assign(
-          {
-            lookAt: true,
-            adaptiveWindow: true,
-          },
-          this.filterAttribute
-        )
-      );
+      this.map.set(vid, camera);
+      this.weakMap.set(camera, vid);
+
+      this.setLookAt(config.vid, config.lookAt);
+      this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
+
+      super.add(vid, config);
 
       if (
         camera instanceof PerspectiveCamera ||
@@ -182,14 +152,6 @@ export class CameraCompiler extends ObjectCompiler<
       ) {
         (camera as PerspectiveCamera).updateProjectionMatrix();
       }
-
-      this.map.set(vid, camera);
-      this.weakMap.set(camera, vid);
-
-      this.setLookAt(config.vid, config.lookAt);
-      this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
-
-      this.scene.add(camera);
     } else {
       console.warn(
         `CameraCompiler: can not support this config type: ${config.type}`
@@ -200,57 +162,23 @@ export class CameraCompiler extends ObjectCompiler<
   }
 
   set(vid: string, path: string[], key: string, value: any): this {
-    if (!this.map.has(vid)) {
-      console.warn(
-        `geometry compiler set function can not found vid geometry: '${vid}'`
-      );
-      return this;
-    }
-
-    if (this.filterAttribute[key]) {
-      return this;
-    }
-
-    if (key === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-
     if (key === "adaptiveWindow") {
       return this.setAdaptiveWindow(vid, value);
     }
 
-    let object = this.map.get(vid)!;
+    super.set(vid, path, key, value);
 
-    for (const key of path) {
-      if (this.filterAttribute[key]) {
-        return this;
-      }
-      object = object[key];
-    }
-
-    object[key] = value;
+    const object = this.map.get(vid);
 
     if (
-      object instanceof PerspectiveCamera ||
-      object instanceof OrthographicCamera
+      object &&
+      (object instanceof PerspectiveCamera ||
+        object instanceof OrthographicCamera)
     ) {
       (object as PerspectiveCamera).updateProjectionMatrix();
     }
 
     return this;
-  }
-
-  /**
-   * @deprecated replace by useEngine
-   */
-  setEngine(engine: Engine): this {
-    this.engine = engine;
-    return this;
-  }
-
-  useEngine(engine: EngineSupport): this {
-    this.engine = engine;
-    return super.useEngine(engine);
   }
 
   dispose(): this {

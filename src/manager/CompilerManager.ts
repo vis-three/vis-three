@@ -5,7 +5,6 @@ import { EngineSupport } from "../engine/EngineSupport";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
-import { EventCompiler } from "../middleware/event/EventCompiler";
 import { GeometryCompiler } from "../middleware/geometry/GeometryCompiler";
 import { GroupCompiler } from "../middleware/group/GroupCompiler";
 import { LightCompiler } from "../middleware/light/LightCompiler";
@@ -20,10 +19,7 @@ import { PassCompiler } from "../middleware/pass/PassCompiler";
 import { PointsCompiler } from "../middleware/points/PointsCompiler";
 import { RendererCompiler } from "../middleware/renderer/RendererCompiler";
 import { SceneCompiler } from "../middleware/scene/SceneCompiler";
-import {
-  BasicSolidObjectCompiler,
-  SolidObjectCompiler,
-} from "../middleware/solidObject/SolidObjectCompiler";
+import { BasicSolidObjectCompiler } from "../middleware/solidObject/SolidObjectCompiler";
 import { SpriteCompiler } from "../middleware/sprite/SpriteCompiler";
 import { TextureCompiler } from "../middleware/texture/TextureCompiler";
 import { isValidKey } from "../utils/utils";
@@ -55,16 +51,13 @@ export class CompilerManager {
   private sceneCompiler = new SceneCompiler();
   private controlsCompiler = new ControlsCompiler();
   private spriteCompiler = new SpriteCompiler();
-  private eventCompiler = new EventCompiler();
   private lineCompiler = new LineCompiler();
   private meshCompiler = new MeshCompiler();
   private pointsCompiler = new PointsCompiler();
   private groupCompiler = new GroupCompiler();
   private passCompiler = new PassCompiler();
 
-  private objectCompilerList: Array<
-    BasicObjectCompiler | BasicSolidObjectCompiler
-  >;
+  private objectCompilerList: Array<BasicObjectCompiler>;
 
   constructor(parameters?: CompilerManagerParameters) {
     this.objectCompilerList = [];
@@ -76,9 +69,11 @@ export class CompilerManager {
     }
     // 建立编译器链接
     const textureMap = this.textureCompiler.getMap();
+
     // 贴图连接
     this.sceneCompiler.linkTextureMap(textureMap);
     this.materialCompiler.linkTextureMap(textureMap);
+
     // 物体几何连接，材质连接，物体连接
     const geometryMap = this.geometryCompiler.getMap();
     const materialMap = this.materialCompiler.getMap();
@@ -98,8 +93,6 @@ export class CompilerManager {
       }
       objectCompiler.linkObjectMap(...objectMapList);
     }
-    // 物体事件连接
-    this.eventCompiler.linkObjectMap(...objectMapList);
   }
 
   /**
@@ -141,8 +134,6 @@ export class CompilerManager {
     dataSupportManager.pointsDataSupport.addCompiler(this.pointsCompiler);
     dataSupportManager.groupDataSupport.addCompiler(this.groupCompiler);
 
-    dataSupportManager.eventDataSupport.addCompiler(this.eventCompiler);
-
     return this;
   }
 
@@ -181,6 +172,9 @@ export class CompilerManager {
     return null;
   }
 
+  /**
+   * @deprecated
+   */
   getMaterial(vid: string): Material | undefined {
     if (!validate(vid)) {
       console.warn(`compiler manager vid is illeage: ${vid}`);
@@ -191,6 +185,9 @@ export class CompilerManager {
     return materialCompiler.getMap().get(vid);
   }
 
+  /**
+   * @deprecated
+   */
   getTexture(vid: string): Texture | undefined {
     if (!validate(vid)) {
       console.warn(`compiler manager vid is illeage: ${vid}`);

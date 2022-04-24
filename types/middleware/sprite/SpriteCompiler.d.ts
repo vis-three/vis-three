@@ -12,8 +12,14 @@ export declare class SpriteCompiler extends SolidObjectCompiler<SpriteConfig, Sp
     constructor(parametes?: SpriteCompilerParameters);
     getReplaceMaterial(): SpriteMaterial;
     getReplaceGeometry(): BufferGeometry;
-    private getSpriteMaterial;
+    /**
+     * @override
+     */
+    protected setLookAt(vid: string, target: string): this;
+    /**
+     * @override
+     */
+    protected getMaterial(vid: string): SpriteMaterial;
     add(vid: string, config: SpriteConfig): this;
-    set(vid: string, path: string[], key: string, value: any): this;
     dispose(): this;
 }

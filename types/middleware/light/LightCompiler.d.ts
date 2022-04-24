@@ -8,8 +8,8 @@ export declare type LightCompilerParameters = ObjectCompilerParameters<LightConf
 export declare class LightCompiler extends ObjectCompiler<LightConfigAllType, LightCompilerTarget, Light> {
     COMPILER_NAME: string;
     private constructMap;
-    private filterAttribute;
     constructor(parameters?: LightCompilerParameters);
+    protected setLookAt(vid: string, target: string): this;
     add(vid: string, config: LightConfigAllType): this;
     set(vid: string, path: string[], key: string, value: any): this;
     dispose(): this;

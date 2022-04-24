@@ -1,29 +1,20 @@
-import { OrthographicCamera, PerspectiveCamera, } from "three";
-import { Compiler } from "../../core/Compiler";
-import { Engine, ENGINEPLUGIN } from "../../engine/Engine";
-import { ObjectCompiler, } from "../object/ObjectCompiler";
+import { OrthographicCamera, PerspectiveCamera } from "three";
+import { ObjectCompiler } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 export class CameraCompiler extends ObjectCompiler {
     COMPILER_NAME = MODULETYPE.CAMERA;
-    engine;
     constructMap;
-    filterAttribute;
     cacheCameraMap;
-    constructor(parameters) {
-        super(parameters);
-        if (parameters) {
-            parameters.engine && (this.engine = parameters.engine);
-        }
-        else {
-            this.engine = new Engine().install(ENGINEPLUGIN.WEBGLRENDERER);
-        }
+    constructor() {
+        super();
         const constructMap = new Map();
         constructMap.set("PerspectiveCamera", () => new PerspectiveCamera());
         constructMap.set("OrthographicCamera", () => new OrthographicCamera(-50, 50, 50, -50));
         this.constructMap = constructMap;
-        this.filterAttribute = {
+        this.mergeFilterAttribute({
             scale: true,
-        };
+            adaptiveWindow: true,
+        });
         this.cacheCameraMap = new WeakMap();
     }
     // 自适应窗口大小
@@ -97,19 +88,15 @@ export class CameraCompiler extends ObjectCompiler {
     add(vid, config) {
         if (config.type && this.constructMap.has(config.type)) {
             const camera = this.constructMap.get(config.type)();
-            Compiler.applyConfig(config, camera, Object.assign({
-                lookAt: true,
-                adaptiveWindow: true,
-            }, this.filterAttribute));
-            if (camera instanceof PerspectiveCamera ||
-                camera instanceof OrthographicCamera) {
-                camera.updateProjectionMatrix();
-            }
             this.map.set(vid, camera);
             this.weakMap.set(camera, vid);
             this.setLookAt(config.vid, config.lookAt);
             this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
-            this.scene.add(camera);
+            super.add(vid, config);
+            if (camera instanceof PerspectiveCamera ||
+                camera instanceof OrthographicCamera) {
+                camera.updateProjectionMatrix();
+            }
         }
         else {
             console.warn(`CameraCompiler: can not support this config type: ${config.type}`);
@@ -117,43 +104,17 @@ export class CameraCompiler extends ObjectCompiler {
         return this;
     }
     set(vid, path, key, value) {
-        if (!this.map.has(vid)) {
-            console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
-            return this;
-        }
-        if (this.filterAttribute[key]) {
-            return this;
-        }
-        if (key === "lookAt") {
-            return this.setLookAt(vid, value);
-        }
         if (key === "adaptiveWindow") {
             return this.setAdaptiveWindow(vid, value);
         }
-        let object = this.map.get(vid);
-        for (const key of path) {
-            if (this.filterAttribute[key]) {
-                return this;
-            }
-            object = object[key];
-        }
-        object[key] = value;
-        if (object instanceof PerspectiveCamera ||
-            object instanceof OrthographicCamera) {
+        super.set(vid, path, key, value);
+        const object = this.map.get(vid);
+        if (object &&
+            (object instanceof PerspectiveCamera ||
+                object instanceof OrthographicCamera)) {
             object.updateProjectionMatrix();
         }
         return this;
-    }
-    /**
-     * @deprecated replace by useEngine
-     */
-    setEngine(engine) {
-        this.engine = engine;
-        return this;
-    }
-    useEngine(engine) {
-        this.engine = engine;
-        return super.useEngine(engine);
     }
     dispose() {
         super.dispose();

@@ -18,6 +18,9 @@ export const RenderManagerPlugin = function () {
         this.renderManager.stop();
         return this;
     };
+    this.addEventListener("dispose", () => {
+        this.renderManager.dispose();
+    });
     return true;
 };
 //# sourceMappingURL=RenderManagerPlugin.js.map

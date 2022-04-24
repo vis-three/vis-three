@@ -13,6 +13,5 @@ export declare class MeshCompiler extends SolidObjectCompiler<MeshConfig, MeshCo
     getReplaceMaterial(): Material;
     getReplaceGeometry(): BufferGeometry;
     add(vid: string, config: MeshConfig): this;
-    set(vid: string, path: string[], key: string, value: any): this;
     dispose(): this;
 }

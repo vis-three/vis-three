@@ -135,33 +135,6 @@ const ScenePlugin = function(params) {
   });
   return true;
 };
-var RENDERERMANAGER;
-(function(RENDERERMANAGER2) {
-  RENDERERMANAGER2["RENDER"] = "render";
-  RENDERERMANAGER2["PLAY"] = "play";
-  RENDERERMANAGER2["STOP"] = "stop";
-})(RENDERERMANAGER || (RENDERERMANAGER = {}));
-var SCENESTATUSMANAGER;
-(function(SCENESTATUSMANAGER2) {
-  SCENESTATUSMANAGER2["HOVERCHANGE"] = "hover-change";
-  SCENESTATUSMANAGER2["ACTIVECHANGE"] = "active-change";
-})(SCENESTATUSMANAGER || (SCENESTATUSMANAGER = {}));
-var POINTERMANAGER;
-(function(POINTERMANAGER2) {
-  POINTERMANAGER2["POINTERDOWN"] = "pointerdown";
-  POINTERMANAGER2["POINTERMOVE"] = "pointermove";
-  POINTERMANAGER2["POINTERUP"] = "pointerup";
-})(POINTERMANAGER || (POINTERMANAGER = {}));
-var MODELCOMPILER;
-(function(MODELCOMPILER2) {
-  MODELCOMPILER2["SETMATERIAL"] = "setMaterial";
-})(MODELCOMPILER || (MODELCOMPILER = {}));
-const EVENTTYPE = {
-  RENDERERMANAGER,
-  SCENESTATUSMANAGER,
-  POINTERMANAGER,
-  MODELCOMPILER
-};
 class RenderManager extends EventDispatcher {
   constructor() {
     super(...arguments);
@@ -173,7 +146,7 @@ class RenderManager extends EventDispatcher {
       const delta = clock.getDelta();
       const total = clock.getElapsedTime();
       this.dispatchEvent({
-        type: RENDERERMANAGER.RENDER,
+        type: "render",
         delta,
         total
       });
@@ -184,7 +157,7 @@ class RenderManager extends EventDispatcher {
         return;
       }
       this.dispatchEvent({
-        type: RENDERERMANAGER.PLAY
+        type: "play"
       });
       const playFun = () => {
         this.render();
@@ -196,7 +169,7 @@ class RenderManager extends EventDispatcher {
       cancelAnimationFrame(this.animationFrame);
       this.animationFrame = -1;
       this.dispatchEvent({
-        type: RENDERERMANAGER.STOP
+        type: "stop"
       });
     });
     __publicField(this, "hasRendering", () => {
@@ -205,6 +178,12 @@ class RenderManager extends EventDispatcher {
     __publicField(this, "hasVaildRender", () => {
       return this.useful();
     });
+  }
+  dispose() {
+    if (this.hasRendering()) {
+      this.stop();
+    }
+    this.clear();
   }
 }
 const RenderManagerPlugin = function() {
@@ -226,6 +205,9 @@ const RenderManagerPlugin = function() {
     this.renderManager.stop();
     return this;
   };
+  this.addEventListener("dispose", () => {
+    this.renderManager.dispose();
+  });
   return true;
 };
 class VisOrbitControls extends OrbitControls {
@@ -2316,13 +2298,12 @@ var CONFIGTYPE;
   CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
   CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
   CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
+  CONFIGTYPE2["CSS3DRENDERER"] = "CSS3DRenderer";
   CONFIGTYPE2["SCENE"] = "Scene";
   CONFIGTYPE2["TRNASFORMCONTROLS"] = "TransformControls";
   CONFIGTYPE2["ORBITCONTROLS"] = "OrbitControls";
   CONFIGTYPE2["SMAAPASS"] = "SMAAPass";
   CONFIGTYPE2["UNREALBLOOMPASS"] = "UnrealBloomPass";
-  CONFIGTYPE2["EVENT"] = "Event";
-  CONFIGTYPE2["STRUCTURE"] = "Structure";
 })(CONFIGTYPE || (CONFIGTYPE = {}));
 var MODULETYPE;
 (function(MODULETYPE2) {
@@ -2340,8 +2321,6 @@ var MODULETYPE;
   MODULETYPE2["POINTS"] = "points";
   MODULETYPE2["GROUP"] = "group";
   MODULETYPE2["PASS"] = "pass";
-  MODULETYPE2["STRUCTURE"] = "structure";
-  MODULETYPE2["EVENT"] = "event";
   MODULETYPE2["MODIFIER"] = "modifier";
 })(MODULETYPE || (MODULETYPE = {}));
 const getObjectConfig = () => {
@@ -2734,10 +2713,17 @@ const getOrthographicCameraConfig = function() {
     far: 50
   });
 };
-const getWebGLRendererConfig = function() {
+const getRendererConfig = function() {
   return {
-    vid: "WebGLRenderer",
-    type: "WebGLRenderer",
+    vid: "",
+    type: "Renderer",
+    size: null
+  };
+};
+const getWebGLRendererConfig = function() {
+  return Object.assign(getRendererConfig(), {
+    vid: CONFIGTYPE.WEBGLRENDERER,
+    type: CONFIGTYPE.WEBGLRENDERER,
     clearColor: "rgba(0, 0, 0, 0)",
     outputEncoding: LinearEncoding,
     physicallyCorrectLights: false,
@@ -2751,9 +2737,8 @@ const getWebGLRendererConfig = function() {
     pixelRatio: window.devicePixelRatio,
     adaptiveCamera: false,
     viewport: null,
-    scissor: null,
-    size: null
-  };
+    scissor: null
+  });
 };
 const getSceneConfig = function() {
   return {
@@ -2830,21 +2815,6 @@ const getSpriteConfig = function() {
     }
   });
 };
-const getEventConfig = function() {
-  return {
-    vid: "",
-    type: CONFIGTYPE.EVENT,
-    target: "",
-    pointerdown: [],
-    pointermove: [],
-    pointerup: [],
-    pointerenter: [],
-    pointerleave: [],
-    click: [],
-    dblclick: [],
-    contextmenu: []
-  };
-};
 const getMeshConfig = function() {
   return Object.assign(getSolidObjectConfig(), {
     type: CONFIGTYPE.MESH,
@@ -2893,9 +2863,6 @@ const getUnrealBloomPassConfig = function() {
 };
 function isValidKey(key, object) {
   return key in object;
-}
-function isValidEnum(enumeration, value) {
-  return Object.values(enumeration).includes(value);
 }
 function generateConfigFunction(config) {
   return (merge) => {
@@ -2953,8 +2920,7 @@ function getConfigModuleMap() {
     [CONFIGTYPE.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS,
     [CONFIGTYPE.ORBITCONTROLS]: MODULETYPE.CONTROLS,
     [CONFIGTYPE.SMAAPASS]: MODULETYPE.PASS,
-    [CONFIGTYPE.UNREALBLOOMPASS]: MODULETYPE.PASS,
-    [CONFIGTYPE.EVENT]: MODULETYPE.EVENT
+    [CONFIGTYPE.UNREALBLOOMPASS]: MODULETYPE.PASS
   };
 }
 function getConfigFunctionMap() {
@@ -2992,8 +2958,7 @@ function getConfigFunctionMap() {
     [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig,
     [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig,
     [CONFIGTYPE.SMAAPASS]: getSMAAPassConfig,
-    [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig,
-    [CONFIGTYPE.EVENT]: getEventConfig
+    [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig
   };
 }
 var getRandomValues;
@@ -3763,74 +3728,6 @@ class SpriteDataSupport extends SolidObjectDataSupport {
     __publicField(this, "MODULE", MODULETYPE.SPRITE);
   }
 }
-const EventRule = function(notice, compiler) {
-  const { operate, key, path, value } = notice;
-  if (operate === "add") {
-    if (validate(key) && !path.length) {
-      compiler.add(key, value);
-    } else {
-      if (Number.isInteger(Number(key)) && path.length === 2) {
-        const [vid, eventName] = path;
-        if (!validate(vid)) {
-          console.warn(`EventRule: vid is illeage: ${vid}`);
-          return;
-        }
-        if (!isValidEnum(EVENTNAME, eventName)) {
-          console.warn(`EventRule: eventName is not support: ${eventName}`);
-          return;
-        }
-        compiler.addEvent(vid, eventName, value);
-      }
-    }
-    return;
-  }
-  if (operate === "set") {
-    if (!path.length) {
-      return;
-    }
-    const [vid, eventName, index] = path;
-    if (!validate(vid)) {
-      console.warn(`EventRule: vid is illeage: ${vid}`);
-      return;
-    }
-    if (!isValidEnum(EVENTNAME, eventName)) {
-      console.warn(`EventRule: eventName is not support: ${eventName}`);
-      return;
-    }
-    if (!Number.isInteger(Number(index))) {
-      console.warn(`EventRule: this index is not integer: ${index}`);
-      return;
-    }
-    compiler.updateEvent(vid, eventName, Number(index));
-    return;
-  }
-  if (operate === "delete") {
-    if (validate(key) && !path.length) {
-      compiler.remove(key);
-    } else {
-      if (Number.isInteger(Number(key)) && path.length === 2) {
-        const [vid, eventName] = path;
-        if (!validate(vid)) {
-          console.warn(`EventRule: vid is illeage: ${vid}`);
-          return;
-        }
-        if (!isValidEnum(EVENTNAME, eventName)) {
-          console.warn(`EventRule: eventName is not support: ${eventName}`);
-          return;
-        }
-        compiler.removeEvent(vid, eventName, Number(key));
-      }
-    }
-    return;
-  }
-};
-class EventDataSupport extends DataSupport {
-  constructor(data) {
-    !data && (data = {});
-    super(EventRule, data);
-    __publicField(this, "MODULE", MODULETYPE.EVENT);
-  }
-}
 const LineRule = function(input, compiler) {
   const { operate, key, path, value } = input;
   if (operate === "add") {
@@ -3982,7 +3879,6 @@ const _DataSupportManager = class {
     __publicField(this, "sceneDataSupport", new SceneDataSupport());
     __publicField(this, "controlsDataSupport", new ControlsDataSupport());
     __publicField(this, "spriteDataSupport", new SpriteDataSupport());
-    __publicField(this, "eventDataSupport", new EventDataSupport());
     __publicField(this, "lineDataSupport", new LineDataSupport());
     __publicField(this, "meshDataSupport", new MeshDataSupport());
     __publicField(this, "pointsDataSupport", new PointsDataSupport());
@@ -4004,12 +3900,6 @@ const _DataSupportManager = class {
       }
     });
     this.dataSupportMap = dataSupportMap;
-  }
-  getObjectDataSupportList() {
-    return [];
-  }
-  getObjectConfig(vid) {
-    return null;
   }
   getDataSupport(type) {
     if (this.dataSupportMap.has(type)) {
@@ -4169,510 +4059,6 @@ class Compiler {
     callBack && callBack();
   }
   constructor() {
-  }
-}
-class ObjectCompiler extends Compiler {
-  constructor(parameters) {
-    super();
-    __publicField(this, "IS_OBJECTCOMPILER", true);
-    __publicField(this, "scene");
-    __publicField(this, "target");
-    __publicField(this, "map");
-    __publicField(this, "weakMap");
-    __publicField(this, "cacheObjectMap");
-    __publicField(this, "objectMapSet");
-    if (parameters) {
-      parameters.scene && (this.scene = parameters.scene);
-      parameters.target && (this.target = parameters.target);
-    } else {
-      this.scene = new Scene();
-      this.target = {};
-    }
-    this.map = new Map();
-    this.weakMap = new WeakMap();
-    this.objectMapSet = new Set();
-    this.cacheObjectMap = new WeakMap();
-  }
-  getObject(vid) {
-    for (const map of this.objectMapSet) {
-      if (map.has(vid)) {
-        return map.get(vid);
-      }
-    }
-    return null;
-  }
-  setLookAt(vid, target) {
-    if (vid === target) {
-      console.error(`can not set object lookAt itself.`);
-      return this;
-    }
-    if (!this.map.has(vid)) {
-      console.error(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
-      return this;
-    }
-    const model = this.map.get(vid);
-    let cacheData = this.cacheObjectMap.get(model);
-    if (!cacheData) {
-      cacheData = { lookAtTarget: null, updateMatrixWorldFun: null };
-      this.cacheObjectMap.set(model, cacheData);
-    }
-    if (!target) {
-      if (!cacheData.updateMatrixWorldFun) {
-        return this;
-      }
-      model.updateMatrixWorld = cacheData.updateMatrixWorldFun;
-      cacheData.lookAtTarget = null;
-      cacheData.updateMatrixWorldFun = null;
-      return this;
-    }
-    const lookAtTarget = this.getObject(target);
-    if (!lookAtTarget) {
-      console.warn(`${this.COMPILER_NAME}Compiler: can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    const updateMatrixWorldFun = model.updateMatrixWorld;
-    cacheData.updateMatrixWorldFun = updateMatrixWorldFun;
-    cacheData.lookAtTarget = lookAtTarget.position;
-    model.updateMatrixWorld = (focus) => {
-      updateMatrixWorldFun.bind(model)(focus);
-      model.lookAt(cacheData.lookAtTarget);
-    };
-    return this;
-  }
-  linkObjectMap(...map) {
-    for (const objectMap of map) {
-      if (!this.objectMapSet.has(objectMap)) {
-        this.objectMapSet.add(objectMap);
-      }
-    }
-    return this;
-  }
-  setScene(scene) {
-    this.scene = scene;
-    return this;
-  }
-  useEngine(engine) {
-    if (!engine.scene) {
-      console.warn(`engine muset install scene plugin.`);
-      return this;
-    }
-    this.scene = engine.scene;
-    return this;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  getMap() {
-    return this.map;
-  }
-  getObjectSymbol(object) {
-    if (this.weakMap.has(object)) {
-      return this.weakMap.get(object);
-    } else {
-      return null;
-    }
-  }
-  compileAll() {
-    const target = this.target;
-    for (const key in target) {
-      this.add(key, target[key]);
-    }
-    return this;
-  }
-  remove(vid) {
-    if (!this.map.has(vid)) {
-      console.warn(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
-      return this;
-    }
-    const object = this.map.get(vid);
-    this.scene.remove(object);
-    this.weakMap.delete(object);
-    this.cacheObjectMap.delete(this.map.get(vid));
-    this.map.delete(vid);
-    return this;
-  }
-  dispose() {
-    this.map.clear();
-    this.objectMapSet.clear();
-    return this;
-  }
-}
-class CameraCompiler extends ObjectCompiler {
-  constructor(parameters) {
-    super(parameters);
-    __publicField(this, "COMPILER_NAME", MODULETYPE.CAMERA);
-    __publicField(this, "engine");
-    __publicField(this, "constructMap");
-    __publicField(this, "filterAttribute");
-    __publicField(this, "cacheCameraMap");
-    if (parameters) {
-      parameters.engine && (this.engine = parameters.engine);
-    } else {
-      this.engine = new Engine().install(ENGINEPLUGIN.WEBGLRENDERER);
-    }
-    const constructMap = new Map();
-    constructMap.set("PerspectiveCamera", () => new PerspectiveCamera());
-    constructMap.set("OrthographicCamera", () => new OrthographicCamera(-50, 50, 50, -50));
-    this.constructMap = constructMap;
-    this.filterAttribute = {
-      scale: true
-    };
-    this.cacheCameraMap = new WeakMap();
-  }
-  setAdaptiveWindow(vid, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`camera compiler can not found this vid camera: '${vid}'`);
-      return this;
-    }
-    const camera = this.map.get(vid);
-    let cacheData = this.cacheCameraMap.get(camera);
-    if (!cacheData) {
-      cacheData = {};
-      this.cacheCameraMap.set(camera, cacheData);
-    }
-    if (!value) {
-      if (cacheData.setSizeFun && this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
-        this.engine.removeEventListener("setSize", cacheData.setSizeFun);
-        cacheData.setSizeFun = void 0;
-        return this;
-      }
-      if (cacheData.setSizeFun && !this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
-        cacheData.setSizeFun = void 0;
-        return this;
-      }
-    }
-    if (value) {
-      if (cacheData.setSizeFun && this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
-        return this;
-      }
-      if (cacheData.setSizeFun && !this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
-        this.engine.addEventListener("setSize", cacheData.setSizeFun);
-        return this;
-      }
-      let setSizeFun = (event) => {
-      };
-      if (camera instanceof PerspectiveCamera) {
-        setSizeFun = (event) => {
-          camera.aspect = event.width / event.height;
-          camera.updateProjectionMatrix();
-        };
-      } else if (camera instanceof OrthographicCamera) {
-        setSizeFun = (event) => {
-          const width = event.width;
-          const height = event.height;
-          camera.left = -width / 2;
-          camera.right = width / 2;
-          camera.top = height / 2;
-          camera.bottom = -height / 2;
-          camera.updateProjectionMatrix();
-        };
-      } else {
-        console.warn(`camera compiler can not support this class camera:`, camera);
-      }
-      this.engine.addEventListener("setSize", setSizeFun);
-      cacheData.setSizeFun = setSizeFun;
-      const domElement = this.engine.webGLRenderer.domElement;
-      setSizeFun({
-        type: "setSize",
-        width: domElement.offsetWidth,
-        height: domElement.offsetHeight
-      });
-    }
-    return this;
-  }
-  add(vid, config) {
-    if (config.type && this.constructMap.has(config.type)) {
-      const camera = this.constructMap.get(config.type)();
-      Compiler.applyConfig(config, camera, Object.assign({
-        lookAt: true,
-        adaptiveWindow: true
-      }, this.filterAttribute));
-      if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
-        camera.updateProjectionMatrix();
-      }
-      this.map.set(vid, camera);
-      this.weakMap.set(camera, vid);
-      this.setLookAt(config.vid, config.lookAt);
-      this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
-      this.scene.add(camera);
-    } else {
-      console.warn(`CameraCompiler: can not support this config type: ${config.type}`);
-    }
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
-      return this;
-    }
-    if (this.filterAttribute[key]) {
-      return this;
-    }
-    if (key === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-    if (key === "adaptiveWindow") {
-      return this.setAdaptiveWindow(vid, value);
-    }
-    let object = this.map.get(vid);
-    for (const key2 of path) {
-      if (this.filterAttribute[key2]) {
-        return this;
-      }
-      object = object[key2];
-    }
-    object[key] = value;
-    if (object instanceof PerspectiveCamera || object instanceof OrthographicCamera) {
-      object.updateProjectionMatrix();
-    }
-    return this;
-  }
-  setEngine(engine) {
-    this.engine = engine;
-    return this;
-  }
-  useEngine(engine) {
-    this.engine = engine;
-    return super.useEngine(engine);
-  }
-  dispose() {
-    super.dispose();
-    return this;
-  }
-}
-class Processor {
-  constructor() {
-    __publicField(this, "filterMap", {});
-    __publicField(this, "assembly", false);
-    this.filterMap = Object.assign({
-      vid: true,
-      type: true
-    }, this.filterMap);
-  }
-  mergeAttribute(path, key, value) {
-    if (this.filterMap[path.concat([key]).join(".")]) {
-      return;
-    }
-    let object = this.target;
-    if (path.length) {
-      for (const key2 of path) {
-        object = object[key2];
-      }
-    }
-    object[key] = value;
-  }
-  mergeObject(callBack) {
-    const recursiveConfig = (config, object) => {
-      for (const key in config) {
-        if (this.filterMap[key]) {
-          continue;
-        }
-        if (typeof config[key] === "object" && typeof config[key] !== null) {
-          recursiveConfig(config[key], object[key]);
-          continue;
-        }
-        object[key] = config[key];
-      }
-    };
-    recursiveConfig(this.config, this.target);
-    callBack && callBack();
-  }
-  processAll() {
-    const recursiveConfig = (config, path) => {
-      for (const key in config) {
-        if (this.filterMap[path.concat([key]).join(".")]) {
-          continue;
-        }
-        if (typeof config[key] === "object" && typeof config[key] !== null) {
-          recursiveConfig(config[key], path.concat([key]));
-          continue;
-        }
-        this.process({ path, key, value: config[key] });
-      }
-    };
-    recursiveConfig(this.config, []);
-    return this;
-  }
-}
-class OrbitControlsProcessor extends Processor {
-  constructor() {
-    super();
-    __publicField(this, "config");
-    __publicField(this, "target");
-  }
-  assemble(params) {
-    this.config = params.config;
-    this.target = params.control;
-    this.assembly = true;
-    return this;
-  }
-  process(params) {
-    if (!this.assembly) {
-      console.warn(`OrbitControls Processor unassembled`);
-      return this;
-    }
-    this.mergeAttribute([], params.key, params.value);
-    return this;
-  }
-  dispose() {
-    this.config = void 0;
-    this.target = void 0;
-    this.assembly = false;
-    return this;
-  }
-}
-class TransformControlsProcessor extends Processor {
-  constructor() {
-    super();
-    __publicField(this, "config");
-    __publicField(this, "target");
-    __publicField(this, "filterMap", {
-      translationSnap: true,
-      rotationSnap: true,
-      scaleSnap: true
-    });
-  }
-  assemble(params) {
-    this.config = params.config;
-    this.target = params.control;
-    this.assembly = true;
-    return this;
-  }
-  process(params) {
-    if (!this.assembly) {
-      console.warn(`transformControls Processor unassembled`);
-      return this;
-    }
-    if (this.filterMap[params.key]) {
-      return this;
-    }
-    if (this[params.key]) {
-      this[params.key](params.value);
-      return this;
-    }
-    this.mergeAttribute([], params.key, params.value);
-    return this;
-  }
-  dispose() {
-    this.config = void 0;
-    this.target = void 0;
-    return this;
-  }
-  snapAllow(value) {
-    const config = this.config;
-    const control = this.target;
-    if (value) {
-      control.translationSnap = config.translationSnap;
-      control.rotationSnap = config.rotationSnap;
-      control.scaleSnap = config.scaleSnap;
-    } else {
-      control.translationSnap = null;
-      control.rotationSnap = null;
-      control.scaleSnap = null;
-    }
-    return true;
-  }
-}
-class ControlsCompiler extends Compiler {
-  constructor(parameters) {
-    super();
-    __publicField(this, "target");
-    __publicField(this, "processorMap", {
-      [CONFIGTYPE.TRNASFORMCONTROLS]: new TransformControlsProcessor(),
-      [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor()
-    });
-    __publicField(this, "controlMap", {
-      [CONFIGTYPE.TRNASFORMCONTROLS]: void 0,
-      [CONFIGTYPE.ORBITCONTROLS]: void 0
-    });
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-      parameters.transformControls && (this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] = parameters.transformControls);
-      parameters.orbitControls && (this.controlMap[CONFIGTYPE.ORBITCONTROLS] = parameters.orbitControls);
-    } else {
-      this.target = {
-        [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig(),
-        [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig()
-      };
-    }
-  }
-  getAssembly(vid) {
-    const config = this.target[vid];
-    if (!config) {
-      console.warn(`controls compiler can not found this config: '${vid}'`);
-      return null;
-    }
-    const processer = this.processorMap[config.type];
-    if (!processer) {
-      console.warn(`controls compiler can not support this controls: '${vid}'`);
-      return null;
-    }
-    const control = this.controlMap[config.type];
-    if (!control) {
-      console.warn(`controls compiler can not found type of control: '${config.type}'`);
-      return null;
-    }
-    return {
-      config,
-      processer,
-      control
-    };
-  }
-  set(vid, path, key, value) {
-    const assembly = this.getAssembly(vid);
-    if (!assembly) {
-      return this;
-    }
-    assembly.processer.assemble({
-      config: assembly.config,
-      control: assembly.control
-    }).process({
-      key,
-      path,
-      value
-    });
-    return this;
-  }
-  setAll(vid) {
-    const assembly = this.getAssembly(vid);
-    if (!assembly) {
-      return this;
-    }
-    assembly.processer.assemble({
-      config: assembly.config,
-      control: assembly.control
-    }).processAll().dispose();
-    return this;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  useEngine(engine) {
-    if (engine.transformControls) {
-      this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] = engine.transformControls;
-    }
-    if (engine.orbitControls) {
-      this.controlMap[CONFIGTYPE.ORBITCONTROLS] = engine.orbitControls;
-    }
-    return this;
-  }
-  compileAll() {
-    for (const vid of Object.keys(this.target)) {
-      const assembly = this.getAssembly(vid);
-      if (!assembly) {
-        continue;
-      }
-      assembly.processer.assemble({
-        config: assembly.config,
-        control: assembly.control
-      }).processAll().dispose();
-    }
-    return this;
-  }
-  dispose() {
-    return this;
   }
 }
 const openWindow$1 = function(compiler, config) {
@@ -5420,23 +4806,40 @@ var RealTimeAnimateLibrary = /* @__PURE__ */ Object.freeze({
   moveTo: moveTo$1,
   moveSpacing: moveSpacing$1
 });
-const _EventCompiler = class extends Compiler {
+const _ObjectCompiler = class extends Compiler {
   constructor(parameters) {
     super();
-    __publicField(this, "engine");
+    __publicField(this, "IS_OBJECTCOMPILER", true);
+    __publicField(this, "scene");
     __publicField(this, "target");
     __publicField(this, "map");
-    __publicField(this, "funMap");
+    __publicField(this, "weakMap");
+    __publicField(this, "objectCacheMap");
     __publicField(this, "objectMapSet");
+    __publicField(this, "filterAttribute", {
+      lookAt: true,
+      children: true,
+      pointerdown: true,
+      pointermove: true,
+      pointerup: true,
+      pointerenter: true,
+      pointerleave: true,
+      click: true,
+      dblclick: true,
+      contextmenu: true
+    });
+    __publicField(this, "engine");
     if (parameters) {
-      this.target = parameters.target;
-      this.engine = parameters.engine;
+      parameters.scene && (this.scene = parameters.scene);
+      parameters.target && (this.target = parameters.target);
     } else {
+      this.scene = new Scene();
       this.target = {};
     }
     this.map = new Map();
-    this.funMap = new Map();
+    this.weakMap = new WeakMap();
     this.objectMapSet = new Set();
+    this.objectCacheMap = new WeakMap();
   }
   getObject(vid) {
     for (const map of this.objectMapSet) {
@@ -5446,12 +4849,111 @@ const _EventCompiler = class extends Compiler {
     }
     return null;
   }
-  getTargetObject(vid) {
-    if (!this.map.has(vid)) {
-      return null;
+  mergeFilterAttribute(object) {
+    const recursion = (config, merge) => {
+      for (const key in merge) {
+        if (config[key] === void 0) {
+          config[key] = merge[key];
+          continue;
+        }
+        if (typeof merge[key] === "object") {
+          recursion(config[key], merge[key]);
+        } else {
+          config[key] = merge[key];
+        }
+      }
+    };
+    recursion(this.filterAttribute, object);
+    return this;
+  }
+  setLookAt(vid, target) {
+    if (vid === target) {
+      console.error(`can not set object lookAt itself.`);
+      return this;
     }
-    const structure = this.map.get(vid);
-    return this.getObject(structure.target);
+    if (!this.map.has(vid)) {
+      console.error(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
+      return this;
+    }
+    const model = this.map.get(vid);
+    let cacheData = this.objectCacheMap.get(model);
+    if (!cacheData) {
+      cacheData = { lookAtTarget: null, updateMatrixWorldFun: null };
+      this.objectCacheMap.set(model, cacheData);
+    }
+    if (!target) {
+      if (!cacheData.updateMatrixWorldFun) {
+        return this;
+      }
+      model.updateMatrixWorld = cacheData.updateMatrixWorldFun;
+      cacheData.lookAtTarget = null;
+      cacheData.updateMatrixWorldFun = null;
+      return this;
+    }
+    const lookAtTarget = this.getObject(target);
+    if (!lookAtTarget) {
+      console.warn(`${this.COMPILER_NAME}Compiler: can not found this vid mapping object: '${vid}'`);
+      return this;
+    }
+    const updateMatrixWorldFun = model.updateMatrixWorld;
+    cacheData.updateMatrixWorldFun = updateMatrixWorldFun;
+    cacheData.lookAtTarget = lookAtTarget.position;
+    model.updateMatrixWorld = (focus) => {
+      updateMatrixWorldFun.bind(model)(focus);
+      model.lookAt(cacheData.lookAtTarget);
+    };
+    return this;
+  }
+  addEvent(vid, eventName, config) {
+    if (!this.map.has(vid)) {
+      console.warn(`${this.COMPILER_NAME} compiler : No matching vid found: ${vid}`);
+      return this;
+    }
+    if (!_ObjectCompiler.eventLibrary[config.name]) {
+      console.warn(`${this.COMPILER_NAME} compiler: can not support this event: ${config.name}`);
+      return this;
+    }
+    const object = this.map.get(vid);
+    const fun = _ObjectCompiler.eventLibrary[config.name](this, config);
+    const symbol = Symbol.for(_ObjectCompiler.eventSymbol);
+    config[symbol] = fun;
+    object.addEventListener(eventName, fun);
+    return this;
+  }
+  removeEvent(vid, eventName, index) {
+    if (!this.map.has(vid)) {
+      console.warn(`${this.COMPILER_NAME} compiler: No matching vid found: ${vid}`);
+      return this;
+    }
+    const object = this.map.get(vid);
+    const config = this.target[vid][eventName][index];
+    const fun = config[Symbol.for(_ObjectCompiler.eventSymbol)];
+    if (!fun) {
+      console.warn(`${this.COMPILER_NAME} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`);
+      return this;
+    }
+    object.removeEventListener(eventName, fun);
+    delete config[Symbol.for(_ObjectCompiler.eventSymbol)];
+    return this;
+  }
+  updateEvent(vid, eventName, index) {
+    if (!this.map.has(vid)) {
+      console.warn(`${this.COMPILER_NAME} compiler: No matching vid found: ${vid}`);
+      return this;
+    }
+    const object = this.map.get(vid);
+    const symbol = Symbol.for(_ObjectCompiler.eventSymbol);
+    const config = this.target[vid][eventName][index];
+    const fun = config[symbol];
+    if (!fun) {
+      console.warn(`${this.COMPILER_NAME} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`);
+      return this;
+    }
+    object.removeEventListener(eventName, fun);
+    const newFun = _ObjectCompiler.eventLibrary[config.name](this, config);
+    config[symbol] = fun;
+    object.addEventListener(eventName, newFun);
+    return this;
   }
   linkObjectMap(...map) {
     for (const objectMap of map) {
@@ -5461,107 +4963,28 @@ const _EventCompiler = class extends Compiler {
     }
     return this;
   }
-  add(vid, config) {
-    const structure = {
-      target: config.target,
-      [EVENTNAME.POINTERDOWN]: [],
-      [EVENTNAME.POINTERUP]: [],
-      [EVENTNAME.POINTERMOVE]: [],
-      [EVENTNAME.POINTERENTER]: [],
-      [EVENTNAME.POINTERLEAVE]: [],
-      [EVENTNAME.CLICK]: [],
-      [EVENTNAME.DBLCLICK]: [],
-      [EVENTNAME.CONTEXTMENU]: []
-    };
-    this.map.set(vid, structure);
-    for (const key in config) {
-      const value = config[key];
-      if (Array.isArray(value) && isValidEnum(EVENTNAME, key) && value.length) {
-        for (const configure2 of value) {
-          this.addEvent(vid, key, configure2);
-        }
-      }
-    }
-    return this;
-  }
-  addEvent(vid, eventName, config) {
-    if (!this.map.has(vid)) {
-      console.warn(`EventCompiler: No matching vid found: ${vid}`);
+  useEngine(engine) {
+    if (!engine.scene) {
+      console.warn(`engine muset install scene plugin.`);
       return this;
     }
-    if (!_EventCompiler.eventLibrary[config.name]) {
-      console.warn(`EventCompiler: can not support this event: ${config.name}`);
-      return this;
-    }
-    const targetObject = this.getTargetObject(vid);
-    if (!targetObject) {
-      console.warn(`EventCompiler: no object with matching vid found: ${vid}`);
-      return this;
-    }
-    const fun = _EventCompiler.eventLibrary[config.name](this, config);
-    const funSymbol = v4();
-    this.funMap.set(funSymbol, fun);
-    const structure = this.map.get(vid);
-    structure[eventName].push(funSymbol);
-    targetObject.addEventListener(eventName, fun);
-    return this;
-  }
-  removeEvent(vid, eventName, index) {
-    if (!this.map.has(vid)) {
-      console.warn(`EventCompiler: No matching vid found: ${vid}`);
-      return this;
-    }
-    const targetObject = this.getTargetObject(vid);
-    if (!targetObject) {
-      console.warn(`EventCompiler: no object with matching vid found: ${vid}`);
-      return this;
-    }
-    const structure = this.map.get(vid);
-    const funSymbol = structure[eventName][index];
-    const fun = this.funMap.get(funSymbol);
-    if (!fun) {
-      console.warn(`EventCompiler: No matching fun found: ${vid}, ${eventName}, ${index}`);
-      return this;
-    }
-    targetObject.removeEventListener(eventName, fun);
-    this.funMap.delete(funSymbol);
-    structure[eventName].splice(index, 1);
-    return this;
-  }
-  updateEvent(vid, eventName, index) {
-    this.removeEvent(vid, eventName, index);
-    const config = this.target[vid][eventName][index];
-    this.addEvent(vid, eventName, config);
-  }
-  remove(vid) {
-    if (!this.map.has(vid)) {
-      console.warn(`EventCompiler: No matching vid found: ${vid}`);
-      return this;
-    }
-    const targetObject = this.getTargetObject(vid);
-    if (!targetObject) {
-      console.warn(`EventCompiler: no object with matching vid found: ${vid}`);
-      return this;
-    }
-    const structure = this.map.get(vid);
-    for (const key in structure) {
-      const funSymbolList = structure[key];
-      if (Array.isArray(funSymbolList) && isValidEnum(EVENTNAME, key) && funSymbolList.length) {
-        for (const funSymbol of funSymbolList) {
-          this.removeEvent(vid, key, funSymbol);
-        }
-      }
-    }
-    this.map.delete(vid);
+    this.scene = engine.scene;
+    this.engine = engine;
     return this;
   }
   setTarget(target) {
     this.target = target;
     return this;
   }
-  useEngine(engine) {
-    this.engine = engine;
-    return this;
+  getMap() {
+    return this.map;
+  }
+  getObjectSymbol(object) {
+    if (this.weakMap.has(object)) {
+      return this.weakMap.get(object);
+    } else {
+      return null;
+    }
   }
   compileAll() {
     const target = this.target;
@@ -5570,20 +4993,420 @@ const _EventCompiler = class extends Compiler {
     }
     return this;
   }
+  remove(vid) {
+    if (!this.map.has(vid)) {
+      console.warn(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
+      return this;
+    }
+    const object = this.map.get(vid);
+    this.scene.remove(object);
+    this.weakMap.delete(object);
+    this.objectCacheMap.delete(this.map.get(vid));
+    this.map.delete(vid);
+    return this;
+  }
   dispose() {
     this.map.clear();
-    this.funMap.clear();
     this.objectMapSet.clear();
     return this;
   }
+  add(vid, config) {
+    const object = this.map.get(vid);
+    if (!object) {
+      console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
+    }
+    this.setLookAt(vid, config.lookAt);
+    for (const eventName of Object.values(EVENTNAME)) {
+      const eventList = config[eventName];
+      if (eventList.length) {
+        for (const event of eventList) {
+          this.addEvent(vid, eventName, event);
+        }
+      }
+    }
+    Compiler.applyConfig(config, object, this.filterAttribute);
+    this.scene.add(object);
+    return this;
+  }
+  set(vid, path, key, value) {
+    if (!this.map.has(vid)) {
+      console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+      return this;
+    }
+    const attribute = path.length ? path[0] : key;
+    if (attribute === "lookAt") {
+      return this.setLookAt(vid, value);
+    }
+    if (attribute.toLocaleUpperCase() in EVENTNAME) {
+      return this.updateEvent(vid, key, Number(path[1]));
+    }
+    let object = this.map.get(vid);
+    let filter = this.filterAttribute;
+    for (const key2 of path) {
+      if (filter[key2]) {
+        if (filter[key2] === true) {
+          return this;
+        } else {
+          filter = filter[key2];
+        }
+      }
+      object = object[key2];
+    }
+    object[key] = value;
+    return this;
+  }
 };
-let EventCompiler = _EventCompiler;
-__publicField(EventCompiler, "eventLibrary", {});
-__publicField(EventCompiler, "registerEvent", function(map) {
-  _EventCompiler.eventLibrary = Object.assign(_EventCompiler.eventLibrary, map);
+let ObjectCompiler = _ObjectCompiler;
+__publicField(ObjectCompiler, "eventLibrary", {});
+__publicField(ObjectCompiler, "eventSymbol", "vis.event");
+__publicField(ObjectCompiler, "registerEvent", function(map) {
+  _ObjectCompiler.eventLibrary = Object.assign(_ObjectCompiler.eventLibrary, map);
 });
-EventCompiler.registerEvent(BasicEventLbirary);
-EventCompiler.registerEvent(RealTimeAnimateLibrary);
+ObjectCompiler.registerEvent(BasicEventLbirary);
+ObjectCompiler.registerEvent(RealTimeAnimateLibrary);
+class CameraCompiler extends ObjectCompiler {
+  constructor() {
+    super();
+    __publicField(this, "COMPILER_NAME", MODULETYPE.CAMERA);
+    __publicField(this, "constructMap");
+    __publicField(this, "cacheCameraMap");
+    const constructMap = new Map();
+    constructMap.set("PerspectiveCamera", () => new PerspectiveCamera());
+    constructMap.set("OrthographicCamera", () => new OrthographicCamera(-50, 50, 50, -50));
+    this.constructMap = constructMap;
+    this.mergeFilterAttribute({
+      scale: true,
+      adaptiveWindow: true
+    });
+    this.cacheCameraMap = new WeakMap();
+  }
+  setAdaptiveWindow(vid, value) {
+    if (!this.map.has(vid)) {
+      console.warn(`camera compiler can not found this vid camera: '${vid}'`);
+      return this;
+    }
+    const camera = this.map.get(vid);
+    let cacheData = this.cacheCameraMap.get(camera);
+    if (!cacheData) {
+      cacheData = {};
+      this.cacheCameraMap.set(camera, cacheData);
+    }
+    if (!value) {
+      if (cacheData.setSizeFun && this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
+        this.engine.removeEventListener("setSize", cacheData.setSizeFun);
+        cacheData.setSizeFun = void 0;
+        return this;
+      }
+      if (cacheData.setSizeFun && !this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
+        cacheData.setSizeFun = void 0;
+        return this;
+      }
+    }
+    if (value) {
+      if (cacheData.setSizeFun && this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
+        return this;
+      }
+      if (cacheData.setSizeFun && !this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
+        this.engine.addEventListener("setSize", cacheData.setSizeFun);
+        return this;
+      }
+      let setSizeFun = (event) => {
+      };
+      if (camera instanceof PerspectiveCamera) {
+        setSizeFun = (event) => {
+          camera.aspect = event.width / event.height;
+          camera.updateProjectionMatrix();
+        };
+      } else if (camera instanceof OrthographicCamera) {
+        setSizeFun = (event) => {
+          const width = event.width;
+          const height = event.height;
+          camera.left = -width / 2;
+          camera.right = width / 2;
+          camera.top = height / 2;
+          camera.bottom = -height / 2;
+          camera.updateProjectionMatrix();
+        };
+      } else {
+        console.warn(`camera compiler can not support this class camera:`, camera);
+      }
+      this.engine.addEventListener("setSize", setSizeFun);
+      cacheData.setSizeFun = setSizeFun;
+      const domElement = this.engine.webGLRenderer.domElement;
+      setSizeFun({
+        type: "setSize",
+        width: domElement.offsetWidth,
+        height: domElement.offsetHeight
+      });
+    }
+    return this;
+  }
+  add(vid, config) {
+    if (config.type && this.constructMap.has(config.type)) {
+      const camera = this.constructMap.get(config.type)();
+      this.map.set(vid, camera);
+      this.weakMap.set(camera, vid);
+      this.setLookAt(config.vid, config.lookAt);
+      this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
+      super.add(vid, config);
+      if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
+        camera.updateProjectionMatrix();
+      }
+    } else {
+      console.warn(`CameraCompiler: can not support this config type: ${config.type}`);
+    }
+    return this;
+  }
+  set(vid, path, key, value) {
+    if (key === "adaptiveWindow") {
+      return this.setAdaptiveWindow(vid, value);
+    }
+    super.set(vid, path, key, value);
+    const object = this.map.get(vid);
+    if (object && (object instanceof PerspectiveCamera || object instanceof OrthographicCamera)) {
+      object.updateProjectionMatrix();
+    }
+    return this;
+  }
+  dispose() {
+    super.dispose();
+    return this;
+  }
+}
+class Processor {
+  constructor() {
+    __publicField(this, "filterMap", {});
+    __publicField(this, "assembly", false);
+    this.filterMap = Object.assign({
+      vid: true,
+      type: true
+    }, this.filterMap);
+  }
+  mergeAttribute(path, key, value) {
+    if (this.filterMap[path.concat([key]).join(".")]) {
+      return;
+    }
+    let object = this.target;
+    if (path.length) {
+      for (const key2 of path) {
+        object = object[key2];
+      }
+    }
+    object[key] = value;
+  }
+  mergeObject(callBack) {
+    const recursiveConfig = (config, object) => {
+      for (const key in config) {
+        if (this.filterMap[key]) {
+          continue;
+        }
+        if (typeof config[key] === "object" && typeof config[key] !== null) {
+          recursiveConfig(config[key], object[key]);
+          continue;
+        }
+        object[key] = config[key];
+      }
+    };
+    recursiveConfig(this.config, this.target);
+    callBack && callBack();
+  }
+  processAll() {
+    const recursiveConfig = (config, path) => {
+      for (const key in config) {
+        if (this.filterMap[path.concat([key]).join(".")]) {
+          continue;
+        }
+        if (typeof config[key] === "object" && typeof config[key] !== null) {
+          recursiveConfig(config[key], path.concat([key]));
+          continue;
+        }
+        this.process({ path, key, value: config[key] });
+      }
+    };
+    recursiveConfig(this.config, []);
+    return this;
+  }
+}
+class OrbitControlsProcessor extends Processor {
+  constructor() {
+    super();
+    __publicField(this, "config");
+    __publicField(this, "target");
+  }
+  assemble(params) {
+    this.config = params.config;
+    this.target = params.control;
+    this.assembly = true;
+    return this;
+  }
+  process(params) {
+    if (!this.assembly) {
+      console.warn(`OrbitControls Processor unassembled`);
+      return this;
+    }
+    this.mergeAttribute([], params.key, params.value);
+    return this;
+  }
+  dispose() {
+    this.config = void 0;
+    this.target = void 0;
+    this.assembly = false;
+    return this;
+  }
+}
+class TransformControlsProcessor extends Processor {
+  constructor() {
+    super();
+    __publicField(this, "config");
+    __publicField(this, "target");
+    __publicField(this, "filterMap", {
+      translationSnap: true,
+      rotationSnap: true,
+      scaleSnap: true
+    });
+  }
+  assemble(params) {
+    this.config = params.config;
+    this.target = params.control;
+    this.assembly = true;
+    return this;
+  }
+  process(params) {
+    if (!this.assembly) {
+      console.warn(`transformControls Processor unassembled`);
+      return this;
+    }
+    if (this.filterMap[params.key]) {
+      return this;
+    }
+    if (this[params.key]) {
+      this[params.key](params.value);
+      return this;
+    }
+    this.mergeAttribute([], params.key, params.value);
+    return this;
+  }
+  dispose() {
+    this.config = void 0;
+    this.target = void 0;
+    return this;
+  }
+  snapAllow(value) {
+    const config = this.config;
+    const control = this.target;
+    if (value) {
+      control.translationSnap = config.translationSnap;
+      control.rotationSnap = config.rotationSnap;
+      control.scaleSnap = config.scaleSnap;
+    } else {
+      control.translationSnap = null;
+      control.rotationSnap = null;
+      control.scaleSnap = null;
+    }
+    return true;
+  }
+}
+class ControlsCompiler extends Compiler {
+  constructor(parameters) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "processorMap", {
+      [CONFIGTYPE.TRNASFORMCONTROLS]: new TransformControlsProcessor(),
+      [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor()
+    });
+    __publicField(this, "controlMap", {
+      [CONFIGTYPE.TRNASFORMCONTROLS]: void 0,
+      [CONFIGTYPE.ORBITCONTROLS]: void 0
+    });
+    if (parameters) {
+      parameters.target && (this.target = parameters.target);
+      parameters.transformControls && (this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] = parameters.transformControls);
+      parameters.orbitControls && (this.controlMap[CONFIGTYPE.ORBITCONTROLS] = parameters.orbitControls);
+    } else {
+      this.target = {
+        [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig(),
+        [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig()
+      };
+    }
+  }
+  getAssembly(vid) {
+    const config = this.target[vid];
+    if (!config) {
+      console.warn(`controls compiler can not found this config: '${vid}'`);
+      return null;
+    }
+    const processer = this.processorMap[config.type];
+    if (!processer) {
+      console.warn(`controls compiler can not support this controls: '${vid}'`);
+      return null;
+    }
+    const control = this.controlMap[config.type];
+    if (!control) {
+      console.warn(`controls compiler can not found type of control: '${config.type}'`);
+      return null;
+    }
+    return {
+      config,
+      processer,
+      control
+    };
+  }
+  set(vid, path, key, value) {
+    const assembly = this.getAssembly(vid);
+    if (!assembly) {
+      return this;
+    }
+    assembly.processer.assemble({
+      config: assembly.config,
+      control: assembly.control
+    }).process({
+      key,
+      path,
+      value
+    });
+    return this;
+  }
+  setAll(vid) {
+    const assembly = this.getAssembly(vid);
+    if (!assembly) {
+      return this;
+    }
+    assembly.processer.assemble({
+      config: assembly.config,
+      control: assembly.control
+    }).processAll().dispose();
+    return this;
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  useEngine(engine) {
+    if (engine.transformControls) {
+      this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] = engine.transformControls;
+    }
+    if (engine.orbitControls) {
+      this.controlMap[CONFIGTYPE.ORBITCONTROLS] = engine.orbitControls;
+    }
+    return this;
+  }
+  compileAll() {
+    for (const vid of Object.keys(this.target)) {
+      const assembly = this.getAssembly(vid);
+      if (!assembly) {
+        continue;
+      }
+      assembly.processer.assemble({
+        config: assembly.config,
+        control: assembly.control
+      }).processAll().dispose();
+    }
+    return this;
+  }
+  dispose() {
+    return this;
+  }
+}
 class LoadGeometry extends BufferGeometry {
   constructor(geometry) {
     super();
@@ -5728,44 +5551,18 @@ __publicField(GeometryCompiler, "transfromAnchor", function(geometry, config) {
   return geometry;
 });
 class GroupCompiler extends ObjectCompiler {
-  constructor(parameters) {
-    super(parameters);
+  constructor() {
+    super();
     __publicField(this, "COMPILER_NAME", MODULETYPE.GROUP);
-    __publicField(this, "filterAttribute");
-    this.filterAttribute = {
-      lookAt: true,
-      children: true
-    };
   }
   add(vid, config) {
     const group = new Group$1();
-    Compiler.applyConfig(config, group, this.filterAttribute);
     this.map.set(vid, group);
     this.weakMap.set(group, vid);
-    this.scene.add(group);
     for (const target of config.children) {
       this.addChildren(vid, target);
     }
-    this.setLookAt(vid, config.lookAt);
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`GroupCompiler: can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    if (key === "lookAt") {
-      this.setLookAt(vid, value);
-      return this;
-    }
-    let object = this.map.get(vid);
-    for (const key2 of path) {
-      if (this.filterAttribute[key2]) {
-        return this;
-      }
-      object = object[key2];
-    }
-    object[key] = value;
+    super.add(vid, config);
     return this;
   }
   addChildren(vid, target) {
@@ -5779,7 +5576,7 @@ class GroupCompiler extends ObjectCompiler {
       console.warn(`GroupCompiler: can not found this vid in compiler: ${target}.`);
       return this;
     }
-    group.attach(targetObject);
+    group.add(targetObject);
     return this;
   }
   removeChildren(vid, target) {
@@ -5806,29 +5603,27 @@ class LightCompiler extends ObjectCompiler {
     super(parameters);
     __publicField(this, "COMPILER_NAME", MODULETYPE.LIGHT);
     __publicField(this, "constructMap");
-    __publicField(this, "filterAttribute");
     this.constructMap = new Map();
     this.constructMap.set(CONFIGTYPE.POINTLIGHT, () => new PointLight());
     this.constructMap.set(CONFIGTYPE.SPOTLIGHT, () => new SpotLight());
     this.constructMap.set(CONFIGTYPE.AMBIENTLIGHT, () => new AmbientLight());
     this.constructMap.set(CONFIGTYPE.DIRECTIONALLIGHT, () => new DirectionalLight());
-    this.setLookAt = function(vid, target) {
-      return this;
-    };
-    this.filterAttribute = {
+    this.mergeFilterAttribute({
+      color: true,
       scale: true,
-      rotation: true,
-      lookAt: true
-    };
+      rotation: true
+    });
+  }
+  setLookAt(vid, target) {
+    return this;
   }
   add(vid, config) {
     if (config.type && this.constructMap.has(config.type)) {
       const light = this.constructMap.get(config.type)();
-      Compiler.applyConfig(config, light, this.filterAttribute);
       light.color = new Color(config.color);
       this.map.set(vid, light);
       this.weakMap.set(light, vid);
-      this.scene.add(light);
+      super.add(vid, config);
     } else {
       console.warn(`LightCompiler: can not support Light type: ${config.type}.`);
     }
@@ -5839,21 +5634,12 @@ class LightCompiler extends ObjectCompiler {
       console.warn(`LightCompiler: can not found this vid mapping object: '${vid}'`);
       return this;
     }
-    if (this.filterAttribute[key]) {
-      return this;
-    }
-    let object = this.map.get(vid);
+    const object = this.map.get(vid);
     if (key === "color") {
       object.color = new Color(value);
       return this;
     }
-    for (const key2 of path) {
-      if (this.filterAttribute[key2]) {
-        return this;
-      }
-      object = object[key2];
-    }
-    object[key] = value;
+    super.set(vid, path, key, value);
     return this;
   }
   dispose() {
@@ -5869,6 +5655,10 @@ class SolidObjectCompiler extends ObjectCompiler {
     __publicField(this, "materialMap");
     this.geometryMap = new Map();
     this.materialMap = new Map();
+    this.mergeFilterAttribute({
+      geometry: true,
+      material: true
+    });
   }
   getMaterial(vid) {
     if (validate(vid)) {
@@ -5904,10 +5694,51 @@ class SolidObjectCompiler extends ObjectCompiler {
     this.materialMap = materialMap;
     return this;
   }
+  add(vid, config) {
+    const object = this.map.get(vid);
+    if (!object) {
+      console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
+    }
+    object.geometry.dispose();
+    if (Array.isArray(object.material)) {
+      for (const material2 of object.material) {
+        material2.dispose();
+      }
+    } else {
+      object.material.dispose();
+    }
+    object.geometry = this.getGeometry(config.geometry);
+    let material;
+    if (typeof config.material === "string") {
+      material = this.getMaterial(config.material);
+    } else {
+      material = config.material.map((vid2) => this.getMaterial(vid2));
+    }
+    object.material = material;
+    super.add(vid, config);
+    return this;
+  }
+  set(vid, path, key, value) {
+    if (!this.map.has(vid)) {
+      console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+      return this;
+    }
+    const object = this.map.get(vid);
+    if (key === "geometry") {
+      object.geometry = this.getGeometry(value);
+      return this;
+    }
+    if (key === "material") {
+      object.material = this.getMaterial(value);
+      return this;
+    }
+    super.set(vid, path, key, value);
+    return this;
+  }
 }
 class LineCompiler extends SolidObjectCompiler {
-  constructor(parameters) {
-    super(parameters);
+  constructor() {
+    super();
     __publicField(this, "COMPILER_NAME", MODULETYPE.LINE);
     __publicField(this, "replaceMaterial", new LineBasicMaterial({
       color: "rgb(150, 150, 150)"
@@ -5921,35 +5752,10 @@ class LineCompiler extends SolidObjectCompiler {
     return this.replaceGeometry;
   }
   add(vid, config) {
-    const object = new Line(this.getGeometry(config.geometry), this.getMaterial(config.material));
-    Compiler.applyConfig(config, object, {
-      geometry: true,
-      material: true,
-      lookAt: true
-    });
+    const object = new Line();
     this.map.set(vid, object);
     this.weakMap.set(object, vid);
-    this.setLookAt(vid, config.lookAt);
-    this.scene.add(object);
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`model compiler can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    let mesh = this.map.get(vid);
-    if (key === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-    if (key === "material") {
-      mesh.material = this.getMaterial(value);
-      return this;
-    }
-    for (const key2 of path) {
-      mesh = mesh[key2];
-    }
-    mesh[key] = value;
+    super.add(vid, config);
     return this;
   }
   dispose() {
@@ -6124,41 +5930,10 @@ class MeshCompiler extends SolidObjectCompiler {
     return this.replaceGeometry;
   }
   add(vid, config) {
-    let material;
-    if (typeof config.material === "string") {
-      material = this.getMaterial(config.material);
-    } else {
-      material = config.material.map((vid2) => this.getMaterial(vid2));
-    }
-    const object = new Mesh(this.getGeometry(config.geometry), material);
-    Compiler.applyConfig(config, object, {
-      geometry: true,
-      material: true,
-      lookAt: true
-    });
+    const object = new Mesh();
     this.map.set(vid, object);
     this.weakMap.set(object, vid);
-    this.setLookAt(vid, config.lookAt);
-    this.scene.add(object);
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`model compiler can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    let mesh = this.map.get(vid);
-    if (key === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-    if (key === "material") {
-      mesh.material = this.getMaterial(value);
-      return this;
-    }
-    for (const key2 of path) {
-      mesh = mesh[key2];
-    }
-    mesh[key] = value;
+    super.add(vid, config);
     return this;
   }
   dispose() {
@@ -7151,35 +6926,10 @@ class PointsCompiler extends SolidObjectCompiler {
     return this.replaceGeometry;
   }
   add(vid, config) {
-    const object = new Points(this.getGeometry(config.geometry), this.getMaterial(config.material));
-    Compiler.applyConfig(config, object, {
-      geometry: true,
-      material: true,
-      lookAt: true
-    });
+    const object = new Points();
     this.map.set(vid, object);
     this.weakMap.set(object, vid);
-    this.setLookAt(vid, config.lookAt);
-    this.scene.add(object);
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`PointsCompiler: can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    let mesh = this.map.get(vid);
-    if (key === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-    if (key === "material") {
-      mesh.material = this.getMaterial(value);
-      return this;
-    }
-    for (const key2 of path) {
-      mesh = mesh[key2];
-    }
-    mesh[key] = value;
+    super.add(vid, config);
     return this;
   }
   dispose() {
@@ -7534,7 +7284,7 @@ class SpriteCompiler extends SolidObjectCompiler {
     super(parametes);
     __publicField(this, "COMPILER_NAME", MODULETYPE.SPRITE);
     __publicField(this, "replaceMaterial", new SpriteMaterial({ color: "rgb(150, 150, 150)" }));
-    __publicField(this, "replaceGeometry", new PlaneBufferGeometry(10, 10, 10));
+    __publicField(this, "replaceGeometry", new PlaneBufferGeometry(1, 1));
   }
   getReplaceMaterial() {
     return this.replaceMaterial;
@@ -7543,8 +7293,11 @@ class SpriteCompiler extends SolidObjectCompiler {
     console.warn(`SpriteCompiler: can not use geometry in SpriteCompiler.`);
     return this.replaceGeometry;
   }
-  getSpriteMaterial(vid) {
-    const tempMaterial = this.getMaterial(vid);
+  setLookAt(vid, target) {
+    return this;
+  }
+  getMaterial(vid) {
+    const tempMaterial = super.getMaterial(vid);
     if (tempMaterial instanceof SpriteMaterial) {
       return tempMaterial;
     } else {
@@ -7556,36 +7309,7 @@ class SpriteCompiler extends SolidObjectCompiler {
     const sprite = new Sprite();
     this.map.set(vid, sprite);
     this.weakMap.set(sprite, vid);
-    sprite.material = this.getSpriteMaterial(config.material);
-    sprite.center.set(config.center.x, config.center.y);
-    Compiler.applyConfig(config, sprite, {
-      center: true,
-      material: true,
-      geometry: true
-    });
-    this.scene.add(sprite);
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`SpriteCompiler: can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    let sprite = this.map.get(vid);
-    if (key === "geometry") {
-      return this;
-    }
-    if (key === "material") {
-      sprite.material = this.getSpriteMaterial(value);
-      return this;
-    }
-    if (key === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-    for (const key2 of path) {
-      sprite = sprite[key2];
-    }
-    sprite[key] = value;
+    super.add(vid, config);
     return this;
   }
   dispose() {
@@ -7765,7 +7489,6 @@ class CompilerManager {
     __publicField(this, "sceneCompiler", new SceneCompiler());
     __publicField(this, "controlsCompiler", new ControlsCompiler());
     __publicField(this, "spriteCompiler", new SpriteCompiler());
-    __publicField(this, "eventCompiler", new EventCompiler());
     __publicField(this, "lineCompiler", new LineCompiler());
     __publicField(this, "meshCompiler", new MeshCompiler());
     __publicField(this, "pointsCompiler", new PointsCompiler());
@@ -7791,7 +7514,6 @@ class CompilerManager {
       }
       objectCompiler.linkObjectMap(...objectMapList);
     }
-    this.eventCompiler.linkObjectMap(...objectMapList);
   }
   support(engine) {
     Object.values(this).filter((object) => object instanceof Compiler).forEach((compiler) => {
@@ -7817,7 +7539,6 @@ class CompilerManager {
     dataSupportManager.meshDataSupport.addCompiler(this.meshCompiler);
     dataSupportManager.pointsDataSupport.addCompiler(this.pointsCompiler);
     dataSupportManager.groupDataSupport.addCompiler(this.groupCompiler);
-    dataSupportManager.eventDataSupport.addCompiler(this.eventCompiler);
     return this;
   }
   getObjectSymbol(object) {
@@ -10682,6 +10403,33 @@ __publicField(MaterialDisplayer, "dispose", () => {
   _MaterialDisplayer.geometry.dispose();
   _MaterialDisplayer.plane.geometry.dispose();
 });
+var RENDERERMANAGER;
+(function(RENDERERMANAGER2) {
+  RENDERERMANAGER2["RENDER"] = "render";
+  RENDERERMANAGER2["PLAY"] = "play";
+  RENDERERMANAGER2["STOP"] = "stop";
+})(RENDERERMANAGER || (RENDERERMANAGER = {}));
+var SCENESTATUSMANAGER;
+(function(SCENESTATUSMANAGER2) {
+  SCENESTATUSMANAGER2["HOVERCHANGE"] = "hover-change";
+  SCENESTATUSMANAGER2["ACTIVECHANGE"] = "active-change";
+})(SCENESTATUSMANAGER || (SCENESTATUSMANAGER = {}));
+var POINTERMANAGER;
+(function(POINTERMANAGER2) {
+  POINTERMANAGER2["POINTERDOWN"] = "pointerdown";
+  POINTERMANAGER2["POINTERMOVE"] = "pointermove";
+  POINTERMANAGER2["POINTERUP"] = "pointerup";
+})(POINTERMANAGER || (POINTERMANAGER = {}));
+var MODELCOMPILER;
+(function(MODELCOMPILER2) {
+  MODELCOMPILER2["SETMATERIAL"] = "setMaterial";
+})(MODELCOMPILER || (MODELCOMPILER = {}));
+const EVENTTYPE = {
+  RENDERERMANAGER,
+  SCENESTATUSMANAGER,
+  POINTERMANAGER,
+  MODELCOMPILER
+};
 const _TextureDisplayer = class {
   constructor(parameters) {
     __publicField(this, "dom");

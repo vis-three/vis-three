@@ -1,4 +1,4 @@
-import { BufferGeometry, Material, Object3D } from "three";
+import { BufferGeometry, Material, Mesh, Object3D } from "three";
 import { validate } from "uuid";
 import { SymbolConfig } from "../common/CommonConfig";
 import {
@@ -8,10 +8,15 @@ import {
 } from "../object/ObjectCompiler";
 import { SolidObjectConfig } from "./SolidObjectConfig";
 
+export interface SolidObject3D extends Object3D {
+  material: Mesh["material"];
+  geometry: Mesh["geometry"];
+}
+
 export type BasicSolidObjectCompiler = SolidObjectCompiler<
   SolidObjectConfig,
   SolidObjectCompilerTarget<SolidObjectConfig>,
-  Object3D
+  SolidObject3D
 >;
 
 export interface SolidObjectCompilerTarget<C extends SolidObjectConfig>
@@ -29,7 +34,7 @@ export interface SolidObjectCompilerParameters<
 export abstract class SolidObjectCompiler<
   C extends SolidObjectConfig,
   T extends SolidObjectCompilerTarget<C>,
-  O extends Object3D
+  O extends SolidObject3D
 > extends ObjectCompiler<C, T, O> {
   IS_SOLIDOBJECTCOMPILER = true;
 
@@ -41,6 +46,11 @@ export abstract class SolidObjectCompiler<
 
     this.geometryMap = new Map();
     this.materialMap = new Map();
+
+    this.mergeFilterAttribute({
+      geometry: true,
+      material: true,
+    });
   }
 
   // 获取材质
@@ -88,6 +98,64 @@ export abstract class SolidObjectCompiler<
 
   linkMaterialMap(materialMap: Map<string, Material>): this {
     this.materialMap = materialMap;
+    return this;
+  }
+
+  add(vid: string, config: T[string]): this {
+    const object = this.map.get(vid)!;
+
+    if (!object) {
+      console.error(
+        `${this.COMPILER_NAME} compiler can not finish add method.`
+      );
+    }
+
+    object.geometry.dispose();
+
+    if (Array.isArray(object.material)) {
+      for (const material of object.material) {
+        material.dispose();
+      }
+    } else {
+      object.material.dispose();
+    }
+
+    object.geometry = this.getGeometry(config.geometry);
+
+    let material: Material | Material[];
+    if (typeof config.material === "string") {
+      material = this.getMaterial(config.material);
+    } else {
+      material = config.material.map((vid) => this.getMaterial(vid));
+    }
+
+    object.material = material;
+
+    super.add(vid, config);
+    return this;
+  }
+
+  set(vid: string, path: string[], key: string, value: any): this {
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`
+      );
+      return this;
+    }
+
+    const object = this.map.get(vid)!;
+
+    if (key === "geometry") {
+      object.geometry = this.getGeometry(value);
+      return this;
+    }
+
+    if (key === "material") {
+      object.material = this.getMaterial(value);
+      return this;
+    }
+
+    super.set(vid, path, key, value);
     return this;
   }
 

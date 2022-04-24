@@ -1,4 +1,4 @@
-import { BasicEventConfig } from "../../middleware/event/EventCompiler";
+import { BasicEventConfig } from "../../middleware/object/ObjectCompiler";
 export interface OpenWindow extends BasicEventConfig {
     params: {
         url: string;

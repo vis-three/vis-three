@@ -1,8 +1,17 @@
 import { LinearEncoding, NoToneMapping, PCFShadowMap } from "three";
-export const getWebGLRendererConfig = function () {
+import { CONFIGTYPE } from "../constants/configType";
+export const getRendererConfig = function () {
     return {
-        vid: "WebGLRenderer",
-        type: "WebGLRenderer",
+        vid: "",
+        type: "Renderer",
+        // scene: "",
+        size: null,
+    };
+};
+export const getWebGLRendererConfig = function () {
+    return Object.assign(getRendererConfig(), {
+        vid: CONFIGTYPE.WEBGLRENDERER,
+        type: CONFIGTYPE.WEBGLRENDERER,
         clearColor: "rgba(0, 0, 0, 0)",
         outputEncoding: LinearEncoding,
         physicallyCorrectLights: false,
@@ -17,7 +26,12 @@ export const getWebGLRendererConfig = function () {
         adaptiveCamera: false,
         viewport: null,
         scissor: null,
-        size: null,
-    };
+    });
+};
+export const getCSS3DRenderereConfig = function () {
+    return Object.assign(getRendererConfig(), {
+        vid: CONFIGTYPE.CSS3DRENDERER,
+        type: CONFIGTYPE.CSS3DRENDERER,
+    });
 };
 //# sourceMappingURL=RendererConfig.js.map

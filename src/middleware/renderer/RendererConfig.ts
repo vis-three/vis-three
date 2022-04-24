@@ -1,7 +1,12 @@
 import { LinearEncoding, NoToneMapping, PCFShadowMap } from "three";
 import { SymbolConfig, Vector2Config } from "../common/CommonConfig";
+import { CONFIGTYPE } from "../constants/configType";
 
-export type RenderConfig = SymbolConfig;
+// TODO: scene
+export interface RendererConfig extends SymbolConfig {
+  // scene: string;
+  size: Vector2Config | null; // 为null 默认跟随canves
+}
 
 export interface ShadowMapConfig {
   enabled: boolean;
@@ -18,8 +23,8 @@ export interface WebGLRendererViewPort {
 
 export type WebGLRendererScissor = WebGLRendererViewPort;
 
-export interface WebGLRendererConfig extends RenderConfig {
-  readonly vid: string;
+export interface WebGLRendererConfig extends RendererConfig {
+  vid: string;
   clearColor: string;
   pixelRatio: number;
   outputEncoding: number;
@@ -30,20 +35,25 @@ export interface WebGLRendererConfig extends RenderConfig {
   adaptiveCamera: boolean; // 适应相机
   viewport: WebGLRendererViewPort | null; // 为null 默认跟随canves
   scissor: WebGLRendererScissor | null; // 为null 默认跟随canves
-  size: Vector2Config | null; // 为null 默认跟随canves
 }
+
+export interface CSS3DRendererConfig extends RendererConfig {}
 
 export type RendererAllType = WebGLRendererConfig | CSS3DRendererConfig;
-export interface CSS3DRendererConfig extends RenderConfig {
-  vid: "CSS3DRenderer"; // unique
-  type: "CSS3DRenderer";
-  size: null;
-}
+
+export const getRendererConfig = function (): RendererConfig {
+  return {
+    vid: "",
+    type: "Renderer",
+    // scene: "",
+    size: null,
+  };
+};
 
 export const getWebGLRendererConfig = function (): WebGLRendererConfig {
-  return {
-    vid: "WebGLRenderer", // unique
-    type: "WebGLRenderer",
+  return Object.assign(getRendererConfig(), {
+    vid: CONFIGTYPE.WEBGLRENDERER, // WebGLRenderer or vid
+    type: CONFIGTYPE.WEBGLRENDERER,
     clearColor: "rgba(0, 0, 0, 0)",
     outputEncoding: LinearEncoding,
     physicallyCorrectLights: false,
@@ -58,6 +68,12 @@ export const getWebGLRendererConfig = function (): WebGLRendererConfig {
     adaptiveCamera: false,
     viewport: null,
     scissor: null,
-    size: null,
-  };
+  });
+};
+
+export const getCSS3DRenderereConfig = function (): CSS3DRendererConfig {
+  return Object.assign(getRendererConfig(), {
+    vid: CONFIGTYPE.CSS3DRENDERER, // WebGLRenderer or vid
+    type: CONFIGTYPE.CSS3DRENDERER,
+  });
 };

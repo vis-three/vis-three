@@ -9,7 +9,6 @@ import { RendererDataSupport } from "../middleware/renderer/RendererDataSupport"
 import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
 import { SpriteDataSupport } from "../middleware/sprite/SpriteDataSupport";
-import { EventDataSupport } from "../middleware/event/EventDataSupport";
 import { LineDataSupport } from "../middleware/line/LineDataSupport";
 import { MeshDataSupport } from "../middleware/mesh/MeshDataSupport";
 import { PointsDataSupport } from "../middleware/points/PointsDataSupport";
@@ -28,7 +27,6 @@ export class DataSupportManager {
     sceneDataSupport = new SceneDataSupport();
     controlsDataSupport = new ControlsDataSupport();
     spriteDataSupport = new SpriteDataSupport();
-    eventDataSupport = new EventDataSupport();
     lineDataSupport = new LineDataSupport();
     meshDataSupport = new MeshDataSupport();
     pointsDataSupport = new PointsDataSupport();
@@ -51,22 +49,6 @@ export class DataSupportManager {
             }
         });
         this.dataSupportMap = dataSupportMap;
-    }
-    /**
-     *
-     * @deprecated - 下版本废弃 不在单独区分object dataSupport
-     *
-     */
-    getObjectDataSupportList() {
-        return [];
-    }
-    /**
-     *
-     * @deprecated - 下版本废弃 -> getConfigBySymbol
-     *
-     */
-    getObjectConfig(vid) {
-        return null;
     }
     /**
      * 获取该模块下的支持插件

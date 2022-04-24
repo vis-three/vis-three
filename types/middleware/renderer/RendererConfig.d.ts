@@ -1,5 +1,7 @@
 import { SymbolConfig, Vector2Config } from "../common/CommonConfig";
-export declare type RenderConfig = SymbolConfig;
+export interface RendererConfig extends SymbolConfig {
+    size: Vector2Config | null;
+}
 export interface ShadowMapConfig {
     enabled: boolean;
     autoUpdate: boolean;
@@ -12,8 +14,8 @@ export interface WebGLRendererViewPort {
     height: number;
 }
 export declare type WebGLRendererScissor = WebGLRendererViewPort;
-export interface WebGLRendererConfig extends RenderConfig {
-    readonly vid: string;
+export interface WebGLRendererConfig extends RendererConfig {
+    vid: string;
     clearColor: string;
     pixelRatio: number;
     outputEncoding: number;
@@ -24,12 +26,10 @@ export interface WebGLRendererConfig extends RenderConfig {
     adaptiveCamera: boolean;
     viewport: WebGLRendererViewPort | null;
     scissor: WebGLRendererScissor | null;
-    size: Vector2Config | null;
+}
+export interface CSS3DRendererConfig extends RendererConfig {
 }
 export declare type RendererAllType = WebGLRendererConfig | CSS3DRendererConfig;
-export interface CSS3DRendererConfig extends RenderConfig {
-    vid: "CSS3DRenderer";
-    type: "CSS3DRenderer";
-    size: null;
-}
+export declare const getRendererConfig: () => RendererConfig;
 export declare const getWebGLRendererConfig: () => WebGLRendererConfig;
+export declare const getCSS3DRenderereConfig: () => CSS3DRendererConfig;

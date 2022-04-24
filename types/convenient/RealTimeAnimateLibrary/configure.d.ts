@@ -1,6 +1,6 @@
 import { Vector3Config } from "../../middleware/common/CommonConfig";
-import { BasicEventConfig } from "../../middleware/event/EventCompiler";
 import { EasingFunction } from "@tweenjs/tween.js";
+import { BasicEventConfig } from "../../middleware/object/ObjectCompiler";
 export interface MoveTo extends BasicEventConfig {
     params: {
         target: string;

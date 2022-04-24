@@ -1,5 +1,4 @@
 import { DodecahedronBufferGeometry, Points, PointsMaterial, } from "three";
-import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { SolidObjectCompiler, } from "../solidObject/SolidObjectCompiler";
 export class PointsCompiler extends SolidObjectCompiler {
@@ -16,35 +15,10 @@ export class PointsCompiler extends SolidObjectCompiler {
         return this.replaceGeometry;
     }
     add(vid, config) {
-        const object = new Points(this.getGeometry(config.geometry), this.getMaterial(config.material));
-        Compiler.applyConfig(config, object, {
-            geometry: true,
-            material: true,
-            lookAt: true,
-        });
+        const object = new Points();
         this.map.set(vid, object);
         this.weakMap.set(object, vid);
-        this.setLookAt(vid, config.lookAt);
-        this.scene.add(object);
-        return this;
-    }
-    set(vid, path, key, value) {
-        if (!this.map.has(vid)) {
-            console.warn(`PointsCompiler: can not found this vid mapping object: '${vid}'`);
-            return this;
-        }
-        let mesh = this.map.get(vid);
-        if (key === "lookAt") {
-            return this.setLookAt(vid, value);
-        }
-        if (key === "material") {
-            mesh.material = this.getMaterial(value);
-            return this;
-        }
-        for (const key of path) {
-            mesh = mesh[key];
-        }
-        mesh[key] = value;
+        super.add(vid, config);
         return this;
     }
     dispose() {

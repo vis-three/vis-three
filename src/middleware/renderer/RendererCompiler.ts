@@ -1,13 +1,7 @@
 import { WebGLRenderer } from "three";
 import { Engine } from "../../engine/Engine";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
-import {
-  getWebGLRendererConfig,
-  RendererAllType,
-  WebGLRendererConfig,
-  WebGLRendererScissor,
-  WebGLRendererViewPort,
-} from "./RendererConfig";
+import { RendererAllType, WebGLRendererConfig } from "./RendererConfig";
 import { CONFIGTYPE } from "../constants/configType";
 import { WebGLRendererProcessor } from "./WebGLRendererProcessor";
 import { Processor } from "../../core/Processor";
