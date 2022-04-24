@@ -27,5 +27,9 @@ export const RenderManagerPlugin: Plugin<Object> = function (
     return this;
   };
 
+  this.addEventListener("dispose", () => {
+    this.renderManager!.dispose();
+  });
+
   return true;
 };

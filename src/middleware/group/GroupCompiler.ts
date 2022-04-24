@@ -35,7 +35,6 @@ export class GroupCompiler extends ObjectCompiler<
     };
   }
 
-
   add(vid: string, config: GroupConfig): this {
     const group = new Group();
     Compiler.applyConfig(config, group, this.filterAttribute);

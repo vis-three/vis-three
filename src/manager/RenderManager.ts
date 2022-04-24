@@ -22,7 +22,7 @@ export class RenderManager extends EventDispatcher {
     const total: number = clock.getElapsedTime();
 
     this.dispatchEvent({
-      type: RENDERERMANAGER.RENDER,
+      type: "render",
       delta,
       total,
     });
@@ -38,7 +38,7 @@ export class RenderManager extends EventDispatcher {
     }
 
     this.dispatchEvent({
-      type: RENDERERMANAGER.PLAY,
+      type: "play",
     });
 
     const playFun = () => {
@@ -55,7 +55,7 @@ export class RenderManager extends EventDispatcher {
     cancelAnimationFrame(this.animationFrame);
     this.animationFrame = -1;
     this.dispatchEvent({
-      type: RENDERERMANAGER.STOP,
+      type: "stop",
     });
   };
 
@@ -74,4 +74,14 @@ export class RenderManager extends EventDispatcher {
   hasVaildRender = (): boolean => {
     return this.useful();
   };
+
+  /**
+   * 销毁内存
+   */
+  dispose() {
+    if (this.hasRendering()) {
+      this.stop();
+    }
+    this.clear();
+  }
 }
