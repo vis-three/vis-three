@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "vite build --watch -c ./utils/build/vite.config.js",
     "build": "tsc && vite build -c ./utils/build/vite.config.js",
-    "lint": "npx eslint *.js src/**/*.ts --fix",
+    "lint": "npx eslint *.js src/**/*.ts cypress/**/*.js --fix",
+    "e2e:open": "cypress open",
     "examples": "vite -c ./utils/build/vite-examples.config.js"
   },
   "devDependencies": {
