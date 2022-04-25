@@ -29,6 +29,7 @@ export declare abstract class ObjectCompiler<C extends ObjectConfig, T extends O
         [key: string]: EventHandler<BasicEventConfig>;
     };
     static eventSymbol: string;
+    static registerEvent: (map: unknown) => void;
     IS_OBJECTCOMPILER: boolean;
     abstract COMPILER_NAME: string;
     protected scene: Scene;
@@ -43,17 +44,19 @@ export declare abstract class ObjectCompiler<C extends ObjectConfig, T extends O
     getObject(vid: string): Object3D | null;
     protected mergeFilterAttribute(object: FilterAttribute): this;
     protected setLookAt(vid: string, target: string): this;
-    protected addEvent(vid: string, eventName: EVENTNAME, config: BasicEventConfig): this;
-    protected removeEvent(vid: string, eventName: EVENTNAME, index: number): this;
-    protected updateEvent(vid: string, eventName: EVENTNAME, index: number): this;
+    addEvent(vid: string, eventName: EVENTNAME, config: BasicEventConfig): this;
+    removeEvent(vid: string, eventName: EVENTNAME, index: number): this;
+    updateEvent(vid: string, eventName: EVENTNAME, index: number): this;
+    addChildren(vid: string, target: string): this;
+    removeChildren(vid: string, target: string): this;
     linkObjectMap(...map: Map<SymbolConfig["vid"], Object3D>[]): this;
     useEngine(engine: EngineSupport): this;
     setTarget(target: T): this;
     getMap(): Map<SymbolConfig["type"], Object3D>;
     getObjectSymbol(object: O): SymbolConfig["vid"] | null;
     compileAll(): this;
-    remove(vid: string): this;
-    dispose(): this;
     add(vid: string, config: T[string]): this;
     set(vid: string, path: string[], key: string, value: any): this;
+    remove(vid: string): this;
+    dispose(): this;
 }

@@ -42,7 +42,9 @@ import { History } from "./convenient/History";
 import { SpotLightHelper } from "./extends/helper/light/SpotLightHelper";
 import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightHelper";
 import { VideoLoader } from "./extends/loader/VideoLoader";
-export { RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, OBJECTEVENT, EVENTTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasTextureGenerator, CanvasGenerator, History, 
+import { ProxyBroadcast } from "./core/ProxyBroadcast";
+import { Translater } from "./core/Translater";
+export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, OBJECTEVENT, EVENTTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasTextureGenerator, CanvasGenerator, History, 
 /**
  * @deprecated
  */

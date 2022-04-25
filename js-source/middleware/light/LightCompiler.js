@@ -13,6 +13,7 @@ export class LightCompiler extends ObjectCompiler {
         this.constructMap.set(CONFIGTYPE.AMBIENTLIGHT, () => new AmbientLight());
         this.constructMap.set(CONFIGTYPE.DIRECTIONALLIGHT, () => new DirectionalLight());
         this.mergeFilterAttribute({
+            color: true,
             scale: true,
             rotation: true,
         });

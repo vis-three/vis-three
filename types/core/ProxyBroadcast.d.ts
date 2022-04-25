@@ -10,6 +10,7 @@ export interface ProxyEvent extends BaseEvent {
 }
 export declare class ProxyBroadcast extends EventDispatcher {
     static proxyWeakSet: WeakSet<object>;
+    private arraySymobl;
     constructor();
     proxyExtends<T extends object>(object: T, path?: Array<string>): T;
     broadcast({ operate, path, key, value }: ProxyNotice): this;

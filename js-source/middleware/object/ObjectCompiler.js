@@ -1,9 +1,14 @@
 import { Scene } from "three";
 import { Compiler } from "../../core/Compiler";
 import { EVENTNAME } from "../../manager/EventManager";
+import * as BasicEventLbirary from "../../convenient/BasicEventLibrary/handler";
+import * as RealTimeAnimateLibrary from "../../convenient/RealTimeAnimateLibrary/handler";
 export class ObjectCompiler extends Compiler {
     static eventLibrary = {};
     static eventSymbol = "vis.event";
+    static registerEvent = function (map) {
+        ObjectCompiler.eventLibrary = Object.assign(ObjectCompiler.eventLibrary, map);
+    };
     IS_OBJECTCOMPILER = true;
     scene;
     target;
@@ -11,7 +16,7 @@ export class ObjectCompiler extends Compiler {
     weakMap;
     objectCacheMap;
     objectMapSet;
-    // merge 属性的时候会直接被过滤的属性
+    // merge属性的时候会直接被过滤的属性
     filterAttribute = {
         lookAt: true,
         children: true,
@@ -167,6 +172,36 @@ export class ObjectCompiler extends Compiler {
         object.addEventListener(eventName, newFun);
         return this;
     }
+    // 添加子项
+    addChildren(vid, target) {
+        if (!this.map.has(vid)) {
+            console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${vid}.`);
+            return this;
+        }
+        const object = this.map.get(vid);
+        const targetObject = this.getObject(target);
+        if (!targetObject) {
+            console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${target}.`);
+            return this;
+        }
+        object.add(targetObject);
+        return this;
+    }
+    // 移除子项
+    removeChildren(vid, target) {
+        if (!this.map.has(vid)) {
+            console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${vid}.`);
+            return this;
+        }
+        const object = this.map.get(vid);
+        const targetObject = this.getObject(target);
+        if (!targetObject) {
+            console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${target}.`);
+            return this;
+        }
+        object.remove(targetObject);
+        return this;
+    }
     linkObjectMap(...map) {
         for (const objectMap of map) {
             if (!this.objectMapSet.has(objectMap)) {
@@ -206,40 +241,32 @@ export class ObjectCompiler extends Compiler {
         }
         return this;
     }
-    remove(vid) {
-        if (!this.map.has(vid)) {
-            console.warn(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
-            return this;
-        }
-        const object = this.map.get(vid);
-        this.scene.remove(object);
-        this.weakMap.delete(object);
-        this.objectCacheMap.delete(this.map.get(vid));
-        this.map.delete(vid);
-        return this;
-    }
-    dispose() {
-        this.map.clear();
-        this.objectMapSet.clear();
-        return this;
-    }
     add(vid, config) {
         const object = this.map.get(vid);
         if (!object) {
             console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
         }
-        // lookAt
-        this.setLookAt(vid, config.lookAt);
-        // children
-        // event
-        for (const eventName of Object.values(EVENTNAME)) {
-            const eventList = config[eventName];
-            if (eventList.length) {
-                for (const event of eventList) {
-                    this.addEvent(vid, eventName, event);
+        const asyncFun = Promise.resolve();
+        // 兼容生命周期
+        asyncFun.then(() => {
+            // lookAt
+            this.setLookAt(vid, config.lookAt);
+            // children
+            if (config.children.length) {
+                for (const target of config.children) {
+                    this.addChildren(vid, target);
                 }
             }
-        }
+            // event
+            for (const eventName of Object.values(EVENTNAME)) {
+                const eventList = config[eventName];
+                if (eventList.length) {
+                    for (const event of eventList) {
+                        this.addEvent(vid, eventName, event);
+                    }
+                }
+            }
+        });
         Compiler.applyConfig(config, object, this.filterAttribute);
         this.scene.add(object);
         return this;
@@ -249,17 +276,9 @@ export class ObjectCompiler extends Compiler {
             console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
             return this;
         }
-        const attribute = path.length ? path[0] : key;
         // lookAt
-        if (attribute === "lookAt") {
+        if (key === "lookAt") {
             return this.setLookAt(vid, value);
-        }
-        // children
-        if (attribute === "children") {
-        }
-        // event
-        if (attribute.toLocaleUpperCase() in EVENTNAME) {
-            return this.updateEvent(vid, key, Number(path[1]));
         }
         // merge
         let object = this.map.get(vid);
@@ -278,5 +297,24 @@ export class ObjectCompiler extends Compiler {
         object[key] = value;
         return this;
     }
+    remove(vid) {
+        if (!this.map.has(vid)) {
+            console.warn(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
+            return this;
+        }
+        const object = this.map.get(vid);
+        this.scene.remove(object);
+        this.weakMap.delete(object);
+        this.objectCacheMap.delete(this.map.get(vid));
+        this.map.delete(vid);
+        return this;
+    }
+    dispose() {
+        this.map.clear();
+        this.objectMapSet.clear();
+        return this;
+    }
 }
+ObjectCompiler.registerEvent(BasicEventLbirary);
+ObjectCompiler.registerEvent(RealTimeAnimateLibrary);
 //# sourceMappingURL=ObjectCompiler.js.map

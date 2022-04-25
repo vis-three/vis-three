@@ -8,7 +8,5 @@ export declare class GroupCompiler extends ObjectCompiler<GroupConfig, GroupComp
     COMPILER_NAME: string;
     constructor();
     add(vid: string, config: GroupConfig): this;
-    addChildren(vid: string, target: string): this;
-    removeChildren(vid: string, target: string): this;
     dispose(): this;
 }

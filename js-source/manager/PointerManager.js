@@ -22,7 +22,7 @@ export class PointerManager extends EventDispatcher {
                 return;
             }
             this.canMouseMove = false;
-            this.mouseEventTimer = setTimeout(() => {
+            this.mouseEventTimer = window.setTimeout(() => {
                 const mouse = this.mouse;
                 const dom = this.dom;
                 mouse.x = (event.offsetX / dom.offsetWidth) * 2 - 1;

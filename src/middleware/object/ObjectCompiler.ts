@@ -71,7 +71,7 @@ export abstract class ObjectCompiler<
 
   protected objectMapSet: Set<Map<SymbolConfig["vid"], Object3D>>;
 
-  // merge 属性的时候会直接被过滤的属性
+  // merge属性的时候会直接被过滤的属性
   private filterAttribute: FilterAttribute = {
     lookAt: true,
     children: true,
@@ -191,11 +191,7 @@ export abstract class ObjectCompiler<
   }
 
   // 添加物体事件
-  protected addEvent(
-    vid: string,
-    eventName: EVENTNAME,
-    config: BasicEventConfig
-  ): this {
+  addEvent(vid: string, eventName: EVENTNAME, config: BasicEventConfig): this {
     if (!this.map.has(vid)) {
       console.warn(
         `${this.COMPILER_NAME} compiler : No matching vid found: ${vid}`
@@ -224,11 +220,7 @@ export abstract class ObjectCompiler<
   }
 
   // 移除事件
-  protected removeEvent(
-    vid: string,
-    eventName: EVENTNAME,
-    index: number
-  ): this {
+  removeEvent(vid: string, eventName: EVENTNAME, index: number): this {
     if (!this.map.has(vid)) {
       console.warn(
         `${this.COMPILER_NAME} compiler: No matching vid found: ${vid}`
@@ -256,11 +248,7 @@ export abstract class ObjectCompiler<
   }
 
   // 更新事件
-  protected updateEvent(
-    vid: string,
-    eventName: EVENTNAME,
-    index: number
-  ): this {
+  updateEvent(vid: string, eventName: EVENTNAME, index: number): this {
     if (!this.map.has(vid)) {
       console.warn(
         `${this.COMPILER_NAME} compiler: No matching vid found: ${vid}`
@@ -292,6 +280,55 @@ export abstract class ObjectCompiler<
 
     // 绑定事件
     object.addEventListener(eventName, newFun);
+    return this;
+  }
+
+  // 添加子项
+  addChildren(vid: string, target: string): this {
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${vid}.`
+      );
+      return this;
+    }
+
+    const object = this.map.get(vid)!;
+
+    const targetObject = this.getObject(target);
+
+    if (!targetObject) {
+      console.warn(
+        `${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${target}.`
+      );
+      return this;
+    }
+
+    object.add(targetObject);
+
+    return this;
+  }
+
+  // 移除子项
+  removeChildren(vid: string, target: string): this {
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${vid}.`
+      );
+      return this;
+    }
+
+    const object = this.map.get(vid)!;
+
+    const targetObject = this.getObject(target);
+
+    if (!targetObject) {
+      console.warn(
+        `${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${target}.`
+      );
+      return this;
+    }
+
+    object.remove(targetObject);
     return this;
   }
 
@@ -340,6 +377,79 @@ export abstract class ObjectCompiler<
     return this;
   }
 
+  add(vid: string, config: T[string]): this {
+    const object = this.map.get(vid);
+
+    if (!object) {
+      console.error(
+        `${this.COMPILER_NAME} compiler can not finish add method.`
+      );
+    }
+
+    const asyncFun = Promise.resolve();
+
+    // 兼容生命周期
+    asyncFun.then(() => {
+      // lookAt
+      this.setLookAt(vid, config.lookAt);
+
+      // children
+      if (config.children.length) {
+        for (const target of config.children) {
+          this.addChildren(vid, target);
+        }
+      }
+
+      // event
+      for (const eventName of Object.values(EVENTNAME)) {
+        const eventList = config[eventName];
+        if (eventList.length) {
+          for (const event of eventList) {
+            this.addEvent(vid, eventName, event);
+          }
+        }
+      }
+    });
+
+    Compiler.applyConfig(config, object, this.filterAttribute);
+    this.scene.add(object!);
+
+    return this;
+  }
+
+  set(vid: string, path: string[], key: string, value: any): this {
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`
+      );
+      return this;
+    }
+
+    // lookAt
+    if (key === "lookAt") {
+      return this.setLookAt(vid, value);
+    }
+
+    // merge
+    let object = this.map.get(vid)!;
+    let filter = this.filterAttribute;
+
+    for (const key of path) {
+      if (filter[key]) {
+        if (filter[key] === true) {
+          return this;
+        } else {
+          filter = filter[key] as FilterAttribute;
+        }
+      }
+      object = object[key];
+    }
+
+    object[key] = value;
+
+    return this;
+  }
+
   remove(vid: string): this {
     if (!this.map.has(vid)) {
       console.warn(
@@ -360,80 +470,6 @@ export abstract class ObjectCompiler<
   dispose(): this {
     this.map.clear();
     this.objectMapSet.clear();
-    return this;
-  }
-
-  add(vid: string, config: T[string]): this {
-    const object = this.map.get(vid);
-
-    if (!object) {
-      console.error(
-        `${this.COMPILER_NAME} compiler can not finish add method.`
-      );
-    }
-
-    // lookAt
-    this.setLookAt(vid, config.lookAt);
-
-    // children
-
-    // event
-    for (const eventName of Object.values(EVENTNAME)) {
-      const eventList = config[eventName];
-      if (eventList.length) {
-        for (const event of eventList) {
-          this.addEvent(vid, eventName, event);
-        }
-      }
-    }
-
-    Compiler.applyConfig(config, object, this.filterAttribute);
-    this.scene.add(object!);
-
-    return this;
-  }
-
-  set(vid: string, path: string[], key: string, value: any): this {
-    if (!this.map.has(vid)) {
-      console.warn(
-        `${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`
-      );
-      return this;
-    }
-
-    const attribute = path.length ? path[0]! : key;
-
-    // lookAt
-    if (attribute === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-
-    // children
-    if (attribute === "children") {
-    }
-
-    // event
-    if (attribute.toLocaleUpperCase() in EVENTNAME) {
-      return this.updateEvent(vid, key as EVENTNAME, Number(path[1]));
-    }
-
-    // merge
-    let object = this.map.get(vid)!;
-    let filter = this.filterAttribute;
-
-    for (const key of path) {
-      if (filter[key]) {
-        if (filter[key] === true) {
-          return this;
-        } else {
-          filter = filter[key] as FilterAttribute;
-        }
-      }
-      object = object[key];
-    }
-
-    object[key] = value;
-
     return this;
   }
 }

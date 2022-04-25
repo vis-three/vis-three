@@ -47,6 +47,8 @@ import { History } from "./convenient/History";
 import { SpotLightHelper } from "./extends/helper/light/SpotLightHelper";
 import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightHelper";
 import { VideoLoader } from "./extends/loader/VideoLoader";
+import { ProxyBroadcast } from "./core/ProxyBroadcast";
+import { Translater } from "./core/Translater";
 
 if (!window.__THREE__) {
   console.error(
@@ -55,6 +57,9 @@ if (!window.__THREE__) {
 }
 
 export {
+  // core
+  ProxyBroadcast,
+  Translater,
   // menu
   RESOURCEEVENTTYPE,
   MODULETYPE,

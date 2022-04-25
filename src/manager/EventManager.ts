@@ -472,7 +472,7 @@ export class EventManager extends EventDispatcher {
               cacheClickObject.set(intersection.object, true);
             }
           }
-          cacheClickTimer = setTimeout(() => {
+          cacheClickTimer = window.setTimeout(() => {
             cacheClickTimer = null;
             cacheClickObject.clear();
           }, 300);

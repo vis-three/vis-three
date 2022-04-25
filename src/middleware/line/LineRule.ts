@@ -2,6 +2,7 @@ import { Line } from "three";
 import { validate } from "uuid";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
 import { Rule } from "../../core/Rule";
+import { ObjectRule } from "../object/ObjectRule";
 import { SolidObjectRule } from "../solidObject/SolidObjectRule";
 import { LineCompiler, LineCompilerTarget } from "./LineCompiler";
 import { LineConfig } from "./LineConfig";
@@ -14,26 +15,8 @@ export type LineRule = SolidObjectRule<
 >;
 
 export const LineRule: Rule<LineCompiler> = function (
-  input: ProxyNotice,
+  notice: ProxyNotice,
   compiler: LineCompiler
 ) {
-  const { operate, key, path, value } = input;
-
-  if (operate === "add") {
-    if (validate(key)) {
-      compiler.add(key, value);
-    }
-    return;
-  }
-
-  if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift();
-    if (vid && validate(vid)) {
-      compiler.set(vid, tempPath, key, value);
-    } else {
-      console.warn(`model rule vid is illeage: '${vid}'`);
-    }
-    return;
-  }
+  ObjectRule(notice, compiler);
 };

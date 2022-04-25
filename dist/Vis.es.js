@@ -512,7 +512,7 @@ class PointerManager extends EventDispatcher {
         return;
       }
       this.canMouseMove = false;
-      this.mouseEventTimer = setTimeout(() => {
+      this.mouseEventTimer = window.setTimeout(() => {
         const mouse = this.mouse;
         const dom2 = this.dom;
         mouse.x = event.offsetX / dom2.offsetWidth * 2 - 1;
@@ -865,7 +865,7 @@ class EventManager extends EventDispatcher {
               cacheClickObject.set(intersection.object, true);
             }
           }
-          cacheClickTimer = setTimeout(() => {
+          cacheClickTimer = window.setTimeout(() => {
             cacheClickTimer = null;
             cacheClickObject.clear();
           }, 300);
@@ -3291,12 +3291,13 @@ const ResourceManagerPlugin = function(params) {
 const _ProxyBroadcast = class extends EventDispatcher {
   constructor() {
     super();
+    __publicField(this, "arraySymobl", "vis.array");
   }
   proxyExtends(object, path) {
     if (!path) {
       path = [];
     }
-    if (_ProxyBroadcast.proxyWeakSet.has(object) || typeof object !== "object" && object !== null) {
+    if (_ProxyBroadcast.proxyWeakSet.has(object) || typeof object !== "object") {
       return object;
     }
     const handler = {
@@ -3323,6 +3324,31 @@ const _ProxyBroadcast = class extends EventDispatcher {
             value = this.proxyExtends(value, newPath);
           }
           result = Reflect.set(target, key, value);
+          if (Array.isArray(target) && key === "length") {
+            const oldValue = target[Symbol.for(this.arraySymobl)];
+            const num = oldValue.length - target.length;
+            if (num > 0) {
+              let execNum = 0;
+              let index = 0;
+              for (const value2 of oldValue) {
+                if (!target.includes(value2)) {
+                  this.broadcast({
+                    operate: "delete",
+                    path: path.concat([]),
+                    key: index.toString(),
+                    value: value2
+                  });
+                  execNum += 1;
+                  index += 1;
+                  if (execNum === num) {
+                    break;
+                  }
+                }
+              }
+            }
+            target[Symbol.for(this.arraySymobl)] = target.concat([]);
+            return result;
+          }
           this.broadcast({
             operate: "set",
             path: path.concat([]),
@@ -3333,12 +3359,16 @@ const _ProxyBroadcast = class extends EventDispatcher {
         return result;
       },
       deleteProperty: (target, key) => {
+        const value = target[key];
         const result = Reflect.deleteProperty(target, key);
+        if (Array.isArray(target)) {
+          return result;
+        }
         this.broadcast({
           operate: "delete",
           path: path.concat([]),
           key,
-          value: ""
+          value
         });
         return result;
       }
@@ -3347,6 +3377,9 @@ const _ProxyBroadcast = class extends EventDispatcher {
       for (const key in object) {
         const tempPath = path.concat([key]);
         if (isValidKey(key, object) && typeof object[key] === "object" && object[key] !== null) {
+          if (Array.isArray(object[key])) {
+            object[key][Symbol.for(this.arraySymobl)] = object[key].concat([]);
+          }
           object[key] = this.proxyExtends(object[key], tempPath);
         }
       }
@@ -3360,7 +3393,7 @@ const _ProxyBroadcast = class extends EventDispatcher {
       __poto__: true,
       length: true
     };
-    if (isValidKey(key, filterMap) && filterMap[key]) {
+    if (filterMap[key]) {
       return this;
     }
     this.dispatchEvent({
@@ -3521,30 +3554,56 @@ class ObjectDataSupport extends DataSupport {
     __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
-const LightRule = function(input, compiler) {
+const ObjectRule = function(input, compiler) {
   const { operate, key, path, value } = input;
+  const tempPath = path.concat([]);
+  const vid = tempPath.shift() || key;
+  const attribute = tempPath.length ? path[0] : key;
   if (operate === "add") {
+    if (attribute === "children") {
+      compiler.addChildren(vid, value);
+      return;
+    }
+    if (attribute.toLocaleUpperCase() in EVENTNAME) {
+      if (Number.isInteger(Number(key)) && !path.length) {
+        compiler.addEvent(vid, attribute, value);
+        return;
+      } else {
+        const index = Number(path.length ? path[0] : key);
+        if (!Number.isInteger(index)) {
+          console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
+          return;
+        }
+        compiler.updateEvent(vid, attribute, index);
+        return;
+      }
+    }
     if (validate(key)) {
       compiler.add(key, value);
     }
     return;
   }
   if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift();
     if (vid && validate(vid)) {
       compiler.set(vid, tempPath, key, value);
     } else {
-      console.warn(`model rule vid is illeage: '${vid}'`);
+      console.warn(`${compiler.COMPILER_NAME} rule vid is illeage: '${vid}'`);
     }
     return;
   }
   if (operate === "delete") {
+    if (attribute === "children") {
+      compiler.removeChildren(vid, value);
+      return;
+    }
     if (validate(key)) {
-      compiler.remove(key);
+      compiler.add(key, value);
     }
     return;
   }
+};
+const LightRule = function(notice, compiler) {
+  ObjectRule(notice, compiler);
 };
 class LightDataSupport extends ObjectDataSupport {
   constructor(data) {
@@ -3590,29 +3649,7 @@ class GeometryDataSupport extends DataSupport {
   }
 }
 const CameraRule = function(notice, compiler) {
-  const { operate, key, path, value } = notice;
-  if (operate === "add") {
-    if (validate(key)) {
-      compiler.add(key, value);
-    }
-    return;
-  }
-  if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift();
-    if (vid && validate(vid)) {
-      compiler.set(vid, tempPath, key, value);
-    } else {
-      console.warn(`camera rule vid is illeage: '${vid}'`);
-    }
-    return;
-  }
-  if (operate === "delete") {
-    if (validate(key)) {
-      compiler.remove(key);
-    }
-    return;
-  }
+  ObjectRule(notice, compiler);
 };
 class CameraDataSupport extends ObjectDataSupport {
   constructor(data) {
@@ -3702,24 +3739,7 @@ class SolidObjectDataSupport extends DataSupport {
   }
 }
 const SpriteRule = function(notice, compiler) {
-  const { operate, key, path, value } = notice;
-  if (operate === "add") {
-    if (validate(key)) {
-      compiler.add(key, value);
-    }
-    return;
-  }
-  if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift();
-    compiler.set(vid, tempPath, key, value);
-  }
-  if (operate === "delete") {
-    if (validate(key)) {
-      compiler.remove(key);
-    }
-    return;
-  }
+  ObjectRule(notice, compiler);
 };
 class SpriteDataSupport extends SolidObjectDataSupport {
   constructor(data) {
@@ -3728,24 +3748,8 @@ class SpriteDataSupport extends SolidObjectDataSupport {
     __publicField(this, "MODULE", MODULETYPE.SPRITE);
   }
 }
-const LineRule = function(input, compiler) {
-  const { operate, key, path, value } = input;
-  if (operate === "add") {
-    if (validate(key)) {
-      compiler.add(key, value);
-    }
-    return;
-  }
-  if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift();
-    if (vid && validate(vid)) {
-      compiler.set(vid, tempPath, key, value);
-    } else {
-      console.warn(`model rule vid is illeage: '${vid}'`);
-    }
-    return;
-  }
+const LineRule = function(notice, compiler) {
+  ObjectRule(notice, compiler);
 };
 class LineDataSupport extends SolidObjectDataSupport {
   constructor(data) {
@@ -3755,29 +3759,7 @@ class LineDataSupport extends SolidObjectDataSupport {
   }
 }
 const MeshRule = function(notice, compiler) {
-  const { operate, key, path, value } = notice;
-  if (operate === "add") {
-    if (validate(key)) {
-      compiler.add(key, value);
-    }
-    return;
-  }
-  if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift();
-    if (vid && validate(vid)) {
-      compiler.set(vid, tempPath, key, value);
-    } else {
-      console.warn(`Mesh rule vid is illeage: '${vid}'`);
-    }
-    return;
-  }
-  if (operate === "delete") {
-    if (validate(key)) {
-      compiler.remove(key);
-    }
-    return;
-  }
+  ObjectRule(notice, compiler);
 };
 class MeshDataSupport extends SolidObjectDataSupport {
   constructor(data) {
@@ -3787,29 +3769,7 @@ class MeshDataSupport extends SolidObjectDataSupport {
   }
 }
 const PointsRule = function(notice, compiler) {
-  const { operate, key, path, value } = notice;
-  if (operate === "add") {
-    if (validate(key)) {
-      compiler.add(key, value);
-    }
-    return;
-  }
-  if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift();
-    if (vid && validate(vid)) {
-      compiler.set(vid, tempPath, key, value);
-    } else {
-      console.warn(`model rule vid is illeage: '${vid}'`);
-    }
-    return;
-  }
-  if (operate === "delete") {
-    if (validate(key)) {
-      compiler.remove(key);
-    }
-    return;
-  }
+  ObjectRule(notice, compiler);
 };
 class PointsDataSupport extends SolidObjectDataSupport {
   constructor(data) {
@@ -3818,31 +3778,8 @@ class PointsDataSupport extends SolidObjectDataSupport {
     __publicField(this, "MODULE", MODULETYPE.POINTS);
   }
 }
-const GroupRule = function(input, compiler) {
-  const { operate, key, path, value } = input;
-  console.log(input);
-  if (operate === "add") {
-    if (validate(key)) {
-      compiler.add(key, value);
-    }
-    return;
-  }
-  if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift();
-    if (vid && validate(vid)) {
-      compiler.set(vid, tempPath, key, value);
-    } else {
-      console.warn(`model rule vid is illeage: '${vid}'`);
-    }
-    return;
-  }
-  if (operate === "delete") {
-    if (validate(key)) {
-      compiler.remove(key);
-    }
-    return;
-  }
+const GroupRule = function(notice, compiler) {
+  ObjectRule(notice, compiler);
 };
 class GroupDataSupport extends ObjectDataSupport {
   constructor(data) {
@@ -4955,6 +4892,34 @@ const _ObjectCompiler = class extends Compiler {
     object.addEventListener(eventName, newFun);
     return this;
   }
+  addChildren(vid, target) {
+    if (!this.map.has(vid)) {
+      console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${vid}.`);
+      return this;
+    }
+    const object = this.map.get(vid);
+    const targetObject = this.getObject(target);
+    if (!targetObject) {
+      console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${target}.`);
+      return this;
+    }
+    object.add(targetObject);
+    return this;
+  }
+  removeChildren(vid, target) {
+    if (!this.map.has(vid)) {
+      console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${vid}.`);
+      return this;
+    }
+    const object = this.map.get(vid);
+    const targetObject = this.getObject(target);
+    if (!targetObject) {
+      console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${target}.`);
+      return this;
+    }
+    object.remove(targetObject);
+    return this;
+  }
   linkObjectMap(...map) {
     for (const objectMap of map) {
       if (!this.objectMapSet.has(objectMap)) {
@@ -4993,6 +4958,55 @@ const _ObjectCompiler = class extends Compiler {
     }
     return this;
   }
+  add(vid, config) {
+    const object = this.map.get(vid);
+    if (!object) {
+      console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
+    }
+    const asyncFun = Promise.resolve();
+    asyncFun.then(() => {
+      this.setLookAt(vid, config.lookAt);
+      if (config.children.length) {
+        for (const target of config.children) {
+          this.addChildren(vid, target);
+        }
+      }
+      for (const eventName of Object.values(EVENTNAME)) {
+        const eventList = config[eventName];
+        if (eventList.length) {
+          for (const event of eventList) {
+            this.addEvent(vid, eventName, event);
+          }
+        }
+      }
+    });
+    Compiler.applyConfig(config, object, this.filterAttribute);
+    this.scene.add(object);
+    return this;
+  }
+  set(vid, path, key, value) {
+    if (!this.map.has(vid)) {
+      console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+      return this;
+    }
+    if (key === "lookAt") {
+      return this.setLookAt(vid, value);
+    }
+    let object = this.map.get(vid);
+    let filter = this.filterAttribute;
+    for (const key2 of path) {
+      if (filter[key2]) {
+        if (filter[key2] === true) {
+          return this;
+        } else {
+          filter = filter[key2];
+        }
+      }
+      object = object[key2];
+    }
+    object[key] = value;
+    return this;
+  }
   remove(vid) {
     if (!this.map.has(vid)) {
       console.warn(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
@@ -5008,51 +5022,6 @@ const _ObjectCompiler = class extends Compiler {
   dispose() {
     this.map.clear();
     this.objectMapSet.clear();
-    return this;
-  }
-  add(vid, config) {
-    const object = this.map.get(vid);
-    if (!object) {
-      console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
-    }
-    this.setLookAt(vid, config.lookAt);
-    for (const eventName of Object.values(EVENTNAME)) {
-      const eventList = config[eventName];
-      if (eventList.length) {
-        for (const event of eventList) {
-          this.addEvent(vid, eventName, event);
-        }
-      }
-    }
-    Compiler.applyConfig(config, object, this.filterAttribute);
-    this.scene.add(object);
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    const attribute = path.length ? path[0] : key;
-    if (attribute === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-    if (attribute.toLocaleUpperCase() in EVENTNAME) {
-      return this.updateEvent(vid, key, Number(path[1]));
-    }
-    let object = this.map.get(vid);
-    let filter = this.filterAttribute;
-    for (const key2 of path) {
-      if (filter[key2]) {
-        if (filter[key2] === true) {
-          return this;
-        } else {
-          filter = filter[key2];
-        }
-      }
-      object = object[key2];
-    }
-    object[key] = value;
     return this;
   }
 };
@@ -5559,38 +5528,7 @@ class GroupCompiler extends ObjectCompiler {
     const group = new Group$1();
     this.map.set(vid, group);
     this.weakMap.set(group, vid);
-    for (const target of config.children) {
-      this.addChildren(vid, target);
-    }
     super.add(vid, config);
-    return this;
-  }
-  addChildren(vid, target) {
-    if (!this.map.has(vid)) {
-      console.warn(`GroupCompiler: can not found this vid in compiler: ${vid}.`);
-      return this;
-    }
-    const group = this.map.get(vid);
-    const targetObject = this.getObject(target);
-    if (!targetObject) {
-      console.warn(`GroupCompiler: can not found this vid in compiler: ${target}.`);
-      return this;
-    }
-    group.add(targetObject);
-    return this;
-  }
-  removeChildren(vid, target) {
-    if (!this.map.has(vid)) {
-      console.warn(`GroupCompiler: can not found this vid in compiler: ${vid}.`);
-      return this;
-    }
-    const group = this.map.get(vid);
-    const targetObject = this.getObject(target);
-    if (!targetObject) {
-      console.warn(`GroupCompiler: can not found this vid in compiler: ${target}.`);
-      return this;
-    }
-    group.remove(targetObject);
     return this;
   }
   dispose() {
@@ -11360,4 +11298,4 @@ class History {
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
-export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, VIEWPOINT, VideoLoader, generateConfig };
+export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };

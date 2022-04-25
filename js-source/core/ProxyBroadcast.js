@@ -2,6 +2,7 @@ import { EventDispatcher } from "./EventDispatcher";
 import { isValidKey } from "../utils/utils";
 export class ProxyBroadcast extends EventDispatcher {
     static proxyWeakSet = new WeakSet();
+    arraySymobl = "vis.array";
     constructor() {
         super();
     }
@@ -10,8 +11,7 @@ export class ProxyBroadcast extends EventDispatcher {
         if (!path) {
             path = [];
         }
-        if (ProxyBroadcast.proxyWeakSet.has(object) ||
-            (typeof object !== "object" && object !== null)) {
+        if (ProxyBroadcast.proxyWeakSet.has(object) || typeof object !== "object") {
             return object;
         }
         const handler = {
@@ -48,6 +48,33 @@ export class ProxyBroadcast extends EventDispatcher {
                         value = this.proxyExtends(value, newPath);
                     }
                     result = Reflect.set(target, key, value);
+                    // array的length变更需要重新比对数组，找出真正的操作对象，并且更新缓存
+                    if (Array.isArray(target) && key === "length") {
+                        const oldValue = target[Symbol.for(this.arraySymobl)];
+                        // 只用还原length减少的现场
+                        const num = oldValue.length - target.length;
+                        if (num > 0) {
+                            let execNum = 0;
+                            let index = 0;
+                            for (const value of oldValue) {
+                                if (!target.includes(value)) {
+                                    this.broadcast({
+                                        operate: "delete",
+                                        path: path.concat([]),
+                                        key: index.toString(),
+                                        value: value,
+                                    });
+                                    execNum += 1;
+                                    index += 1;
+                                    if (execNum === num) {
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        target[Symbol.for(this.arraySymobl)] = target.concat([]);
+                        return result;
+                    }
                     this.broadcast({
                         operate: "set",
                         path: path.concat([]),
@@ -58,13 +85,18 @@ export class ProxyBroadcast extends EventDispatcher {
                 return result;
             },
             deleteProperty: (target, key) => {
+                const value = target[key];
                 // 先执行反射
                 const result = Reflect.deleteProperty(target, key);
+                // array的delete是不可信的，需要从length判断
+                if (Array.isArray(target)) {
+                    return result;
+                }
                 this.broadcast({
                     operate: "delete",
                     path: path.concat([]),
                     key,
-                    value: "",
+                    value,
                 });
                 return result;
             },
@@ -76,6 +108,11 @@ export class ProxyBroadcast extends EventDispatcher {
                 if (isValidKey(key, object) &&
                     typeof object[key] === "object" &&
                     object[key] !== null) {
+                    // 给array增加symbol与缓存
+                    if (Array.isArray(object[key])) {
+                        // 引用值保持为引用
+                        object[key][Symbol.for(this.arraySymobl)] = object[key].concat([]);
+                    }
                     object[key] = this.proxyExtends(object[key], tempPath);
                 }
             }
@@ -91,7 +128,7 @@ export class ProxyBroadcast extends EventDispatcher {
             __poto__: true,
             length: true,
         };
-        if (isValidKey(key, filterMap) && filterMap[key]) {
+        if (filterMap[key]) {
             return this;
         }
         this.dispatchEvent({
