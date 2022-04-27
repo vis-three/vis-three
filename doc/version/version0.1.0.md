@@ -5,6 +5,7 @@
 - solidObject module
 - object event
 - object structure
+- 配置压缩与配置兼容
 
 #### fix
 

@@ -1,7 +1,7 @@
-import { getConfigModuleMap } from "../utils/utils";
+import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
 import { generateConfig } from "./generateConfig";
 export class SupportDataGenerator {
-    static configModelMap = getConfigModuleMap();
+    static configModelMap = CONFIGMODULE;
     supportData;
     supportDataType;
     constructor() { }

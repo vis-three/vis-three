@@ -1,4 +1,5 @@
-import { stringify } from "../convenient/JSONHandler";
+import { parse, stringify } from "../convenient/JSONHandler";
+import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
 import { ProxyBroadcast } from "./ProxyBroadcast";
 import { Translater } from "./Translater";
 export class DataSupport {
@@ -44,13 +45,100 @@ export class DataSupport {
         this.translater.apply(compiler);
         return this;
     }
-    toJSON() {
-        return JSON.stringify(this.data, stringify);
+    /**
+     * 导出json化配置单
+     * @returns json config
+     */
+    toJSON(compress = true) {
+        if (!compress) {
+            return JSON.stringify(this.data, stringify);
+        }
+        else {
+            return JSON.stringify(this.exportConfig(), stringify);
+        }
     }
-    load(config) {
+    /**
+     * 导出配置单
+     * @param compress 是否压缩配置单 default true
+     * @returns config
+     */
+    exportConfig(compress = true) {
+        if (!compress) {
+            return JSON.parse(JSON.stringify(this.data, stringify), parse);
+        }
+        else {
+            const data = this.data;
+            const target = {};
+            const cacheConfigTemplate = {};
+            const recursion = (config, template, result = {}) => {
+                for (const key in template) {
+                    if (["vid", "type"].includes(key)) {
+                        result[key] = config[key];
+                        continue;
+                    }
+                    if (typeof template[key] === "object" && template[key] !== null) {
+                        if (config[key] === null) {
+                            continue;
+                        }
+                        result[key] = {};
+                        recursion(config[key], template[key], result[key]);
+                        if (Object.keys(result[key]).length === 0) {
+                            delete result[key];
+                        }
+                    }
+                    else {
+                        if (template[key] !== config[key]) {
+                            result[key] = config[key];
+                        }
+                    }
+                }
+            };
+            for (const config of Object.values(data)) {
+                if (!cacheConfigTemplate[config.type]) {
+                    if (!CONFIGFACTORY[config.type]) {
+                        console.error(`can not font some config with: ${config.type}`);
+                        continue;
+                    }
+                    cacheConfigTemplate[config.type] = CONFIGFACTORY[config.type]();
+                }
+                target[config.vid] = {};
+                recursion(config, cacheConfigTemplate[config.type], target[config.vid]);
+            }
+            return target;
+        }
+    }
+    /**
+     * 加载配置
+     * @param configMap this module configMap
+     * @returns true
+     */
+    load(configMap) {
         const data = this.data;
-        for (const key in config) {
-            data[key] = config[key];
+        const cacheConfigTemplate = {};
+        const restore = (config, template) => {
+            for (const key in template) {
+                if (typeof config[key] === "object" &&
+                    config[key] !== null &&
+                    typeof template[key] === "object" &&
+                    template[key] !== null) {
+                    restore(config[key], template[key]);
+                }
+                else if (config[key] === undefined) {
+                    config[key] = template[key];
+                }
+            }
+        };
+        for (const key in configMap) {
+            const config = configMap[key];
+            if (!cacheConfigTemplate[config.type]) {
+                if (!CONFIGFACTORY[config.type]) {
+                    console.error(`can not font some config with: ${config.type}`);
+                    continue;
+                }
+                cacheConfigTemplate[config.type] = CONFIGFACTORY[config.type]();
+            }
+            restore(config, cacheConfigTemplate[config.type]);
+            data[key] = config;
         }
         return this;
     }

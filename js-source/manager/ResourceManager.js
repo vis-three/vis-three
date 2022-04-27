@@ -2,8 +2,8 @@ import { Object3D, Vector3 } from "three";
 import { generateConfig } from "../convenient/generateConfig";
 import { EventDispatcher } from "../core/EventDispatcher";
 import { CONFIGTYPE } from "../middleware/constants/configType";
-import { getConfigModuleMap } from "../utils/utils";
 import * as JSONHandler from "../convenient/JSONHandler";
+import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
 export var RESOURCEEVENTTYPE;
 (function (RESOURCEEVENTTYPE) {
     RESOURCEEVENTTYPE["MAPPED"] = "mapped";
@@ -12,7 +12,7 @@ export class ResourceManager extends EventDispatcher {
     structureMap = new Map(); // 外部资源结构映射 url -> structure mappingUrl
     configMap = new Map(); // 配置映射 mappingUrl -> config
     resourceMap = new Map(); // 资源映射 mappingUrl -> resource
-    configModuleMap = getConfigModuleMap();
+    configModuleMap = CONFIGMODULE;
     mappingHandler = new Map();
     constructor() {
         super();

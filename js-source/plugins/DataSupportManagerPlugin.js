@@ -18,6 +18,15 @@ export const DataSupportManagerPlugin = function (params) {
         }
         return this.dataSupportManager.toJSON();
     };
+    this.exportConfig = function () {
+        let extendConfig = {};
+        if (this.loaderManager) {
+            extendConfig = {
+                assets: this.loaderManager.exportConfig(),
+            };
+        }
+        return this.dataSupportManager.exportConfig(extendConfig);
+    };
     this.completeSet.add(() => {
         // 帮助其他插件进行support初始化
         const rendererData = this.dataSupportManager.getDataSupport(MODULETYPE.RENDERER).getData();

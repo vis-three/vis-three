@@ -1,6 +1,5 @@
-import { getConfigFunctionMap } from "../utils/utils";
 import { v4 as getUuid } from "uuid";
-const typeMap = getConfigFunctionMap();
+import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
 /**
  * 生成相关对象配置单
  * @param type 对象类型 CONFIGTYPE
@@ -10,7 +9,7 @@ const typeMap = getConfigFunctionMap();
  * @returns config object
  */
 export const generateConfig = function (type, merge, strict = true, warn = true) {
-    if (typeMap[type]) {
+    if (CONFIGFACTORY[type]) {
         const recursion = (config, merge) => {
             for (const key in merge) {
                 if (config[key] === undefined) {
@@ -30,7 +29,7 @@ export const generateConfig = function (type, merge, strict = true, warn = true)
                 }
             }
         };
-        const initConfig = typeMap[type]();
+        const initConfig = CONFIGFACTORY[type]();
         // 自动生成uuid
         if (initConfig.vid === "") {
             initConfig.vid = getUuid();

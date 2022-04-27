@@ -1,8 +1,6 @@
-import { getConfigFunctionMap } from "../utils/utils";
 import { v4 as getUuid } from "uuid";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
-
-const typeMap: { [key: string]: Function } = getConfigFunctionMap();
+import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
 
 /**
  * 生成相关对象配置单
@@ -18,7 +16,7 @@ export const generateConfig = function <C extends SymbolConfig>(
   strict = true,
   warn = true
 ): C | null {
-  if (typeMap[type]) {
+  if (CONFIGFACTORY[type]) {
     const recursion = (config: C, merge: object) => {
       for (const key in merge) {
         if (config[key] === undefined) {
@@ -39,7 +37,7 @@ export const generateConfig = function <C extends SymbolConfig>(
         }
       }
     };
-    const initConfig = typeMap[type]();
+    const initConfig = CONFIGFACTORY[type]();
     // 自动生成uuid
     if (initConfig.vid === "") {
       initConfig.vid = getUuid();

@@ -63,7 +63,39 @@ export interface DataSupportManagerParameters {
 }
 export declare class DataSupportManager {
     static configModuleMap: {
-        [key: string]: string;
+        ImageTexture: MODULETYPE;
+        CubeTexture: MODULETYPE;
+        CanvasTexture: MODULETYPE;
+        VideoTexture: MODULETYPE;
+        MeshStandardMaterial: MODULETYPE;
+        MeshPhongMaterial: MODULETYPE;
+        SpriteMaterial: MODULETYPE;
+        LineBasicMaterial: MODULETYPE;
+        PointsMaterial: MODULETYPE;
+        AmbientLight: MODULETYPE;
+        SpotLight: MODULETYPE;
+        PointLight: MODULETYPE;
+        DirectionalLight: MODULETYPE;
+        BoxGeometry: MODULETYPE;
+        SphereGeometry: MODULETYPE;
+        LoadGeometry: MODULETYPE;
+        PlaneGeometry: MODULETYPE;
+        CircleGeometry: MODULETYPE;
+        ConeGeometry: MODULETYPE;
+        EdgesGeometry: MODULETYPE;
+        Sprite: MODULETYPE;
+        Line: MODULETYPE;
+        Mesh: MODULETYPE;
+        Points: MODULETYPE;
+        Group: MODULETYPE;
+        PerspectiveCamera: MODULETYPE;
+        OrthographicCamera: MODULETYPE;
+        WebGLRenderer: MODULETYPE;
+        Scene: MODULETYPE;
+        TransformControls: MODULETYPE;
+        OrbitControls: MODULETYPE;
+        SMAAPass: MODULETYPE;
+        UnrealBloomPass: MODULETYPE;
     };
     cameraDataSupport: CameraDataSupport;
     lightDataSupport: LightDataSupport;
@@ -140,7 +172,15 @@ export declare class DataSupportManager {
     /**
      * 获取JSON化的配置单
      * @param extendsConfig 需要额外JSON化的配置对象，会被dataSupport的对象覆盖
+     * @param compress 是否压缩配置单 default true
      * @returns JSON string
      */
-    toJSON(extendsConfig?: object): string;
+    toJSON(extendsConfig?: object, compress?: boolean): string;
+    /**
+     * 导出配置单
+     * @param extendsConfig 拓展配置对象
+     * @param compress 是否压缩配置单 default true
+     * @returns LoadOptions
+     */
+    exportConfig(extendsConfig?: object, compress?: boolean): LoadOptions;
 }

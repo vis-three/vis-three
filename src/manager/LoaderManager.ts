@@ -122,6 +122,11 @@ export class LoaderManager extends EventDispatcher {
     return this;
   }
 
+  /**
+   * 加载资源
+   * @param urlList string[] | [{ext: string, url: string}]
+   * @returns this
+   */
   load(urlList: Array<string | LoadUnit>): this {
     this.reset();
     this.isLoading = true;
@@ -276,7 +281,12 @@ export class LoaderManager extends EventDispatcher {
     return this;
   }
 
-  // 注册自定loader
+  /**
+   * 注册loader
+   * @param ext 文件格式: jpg
+   * @param loader extend THREE.Loader
+   * @returns this
+   */
   register(ext: string, loader: Loader): this {
     this.loaderMap[ext] = loader;
     return this;
@@ -313,6 +323,20 @@ export class LoaderManager extends EventDispatcher {
     });
 
     return JSON.stringify(assets);
+  }
+
+  /**
+   * 导出配置单
+   * @returns
+   * @todo 对比缓存
+   */
+  exportConfig(): string[] {
+    const assets: string[] = [];
+    this.resourceMap.forEach((value, url) => {
+      assets.push(url);
+    });
+
+    return assets;
   }
 
   dispose(): this {

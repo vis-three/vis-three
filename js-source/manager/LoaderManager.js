@@ -75,6 +75,11 @@ export class LoaderManager extends EventDispatcher {
         this.path = path;
         return this;
     }
+    /**
+     * 加载资源
+     * @param urlList string[] | [{ext: string, url: string}]
+     * @returns this
+     */
     load(urlList) {
         this.reset();
         this.isLoading = true;
@@ -216,7 +221,12 @@ export class LoaderManager extends EventDispatcher {
         this.loadDetailMap = {};
         return this;
     }
-    // 注册自定loader
+    /**
+     * 注册loader
+     * @param ext 文件格式: jpg
+     * @param loader extend THREE.Loader
+     * @returns this
+     */
     register(ext, loader) {
         this.loaderMap[ext] = loader;
         return this;
@@ -246,6 +256,18 @@ export class LoaderManager extends EventDispatcher {
             assets.push(url);
         });
         return JSON.stringify(assets);
+    }
+    /**
+     * 导出配置单
+     * @returns
+     * @todo 对比缓存
+     */
+    exportConfig() {
+        const assets = [];
+        this.resourceMap.forEach((value, url) => {
+            assets.push(url);
+        });
+        return assets;
     }
     dispose() {
         this.resourceMap.clear();

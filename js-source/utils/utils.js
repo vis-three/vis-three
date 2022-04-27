@@ -44,6 +44,10 @@ export function generateConfigFunction(config) {
         return config;
     };
 }
+/**
+ * @deprecated - replace CONFIGMODULE
+ * @returns
+ */
 export function getConfigModuleMap() {
     return {
         [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
@@ -82,6 +86,10 @@ export function getConfigModuleMap() {
         [CONFIGTYPE.UNREALBLOOMPASS]: MODULETYPE.PASS,
     };
 }
+/**
+ * @deprecated - CONFIGFACTORY
+ * @returns
+ */
 export function getConfigFunctionMap() {
     return {
         [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,

@@ -1,5 +1,3 @@
-import { Object3D } from "three";
-import { MODULETYPE } from "../main";
 import { CompilerManager } from "../manager/CompilerManager";
 import {
   DataSupportManager,
@@ -8,7 +6,7 @@ import {
 } from "../manager/DataSupportManager";
 import { LoaderManager } from "../manager/LoaderManager";
 import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
-import { SymbolConfig } from "../middleware/common/CommonConfig";
+import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { Engine, ENGINEPLUGIN } from "./Engine";
 
 export type EngineSupportParameters = DataSupportManagerParameters;

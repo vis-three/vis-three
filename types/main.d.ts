@@ -15,14 +15,12 @@ import { DataSupportManager } from "./manager/DataSupportManager";
 import { SupportDataGenerator } from "./convenient/SupportDataGenerator";
 import { MODULETYPE } from "./middleware/constants/MODULETYPE";
 import { CONFIGTYPE } from "./middleware/constants/configType";
-import { OBJECTEVENT } from "./middleware/constants/OBJECTEVENT";
 import { ControlsDataSupport } from "./middleware/controls/ControlsDataSupport";
 import { RendererDataSupport } from "./middleware/renderer/RendererDataSupport";
 import { MaterialDisplayer } from "./displayer/MaterialDisplayer";
-import { EVENTTYPE } from "./middleware/constants/EVENTTYPE";
 import { TextureDisplayer } from "./displayer/TextureDisplayer";
 import { SceneDataSupport } from "./middleware/scene/SceneDataSupport";
-import { CanvasGenerator, CanvasTextureGenerator } from "./convenient/CanvasGenerator";
+import { CanvasGenerator } from "./convenient/CanvasGenerator";
 import { SpriteDataSupport } from "./middleware/sprite/SpriteDataSupport";
 import { ModelingEngineSupport } from "./engine/ModelingEngineSupport";
 import { DisplayEngineSupport } from "./engine/DisplayEngineSupport";
@@ -44,7 +42,7 @@ import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightH
 import { VideoLoader } from "./extends/loader/VideoLoader";
 import { ProxyBroadcast } from "./core/ProxyBroadcast";
 import { Translater } from "./core/Translater";
-export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, OBJECTEVENT, EVENTTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasTextureGenerator, CanvasGenerator, History, 
+export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasGenerator, History, 
 /**
  * @deprecated
  */

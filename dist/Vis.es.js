@@ -2200,6 +2200,13 @@ class LoaderManager extends EventDispatcher {
     });
     return JSON.stringify(assets);
   }
+  exportConfig() {
+    const assets = [];
+    this.resourceMap.forEach((value, url) => {
+      assets.push(url);
+    });
+    return assets;
+  }
   dispose() {
     this.resourceMap.clear();
     return this;
@@ -2265,6 +2272,47 @@ const LoaderManagerPlugin = function(params) {
   };
   return true;
 };
+var getRandomValues;
+var rnds8 = new Uint8Array(16);
+function rng() {
+  if (!getRandomValues) {
+    getRandomValues = typeof crypto !== "undefined" && crypto.getRandomValues && crypto.getRandomValues.bind(crypto) || typeof msCrypto !== "undefined" && typeof msCrypto.getRandomValues === "function" && msCrypto.getRandomValues.bind(msCrypto);
+    if (!getRandomValues) {
+      throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
+    }
+  }
+  return getRandomValues(rnds8);
+}
+var REGEX = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
+function validate(uuid) {
+  return typeof uuid === "string" && REGEX.test(uuid);
+}
+var byteToHex = [];
+for (var i = 0; i < 256; ++i) {
+  byteToHex.push((i + 256).toString(16).substr(1));
+}
+function stringify$1(arr) {
+  var offset = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
+  var uuid = (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase();
+  if (!validate(uuid)) {
+    throw TypeError("Stringified UUID is invalid");
+  }
+  return uuid;
+}
+function v4(options, buf, offset) {
+  options = options || {};
+  var rnds = options.random || (options.rng || rng)();
+  rnds[6] = rnds[6] & 15 | 64;
+  rnds[8] = rnds[8] & 63 | 128;
+  if (buf) {
+    offset = offset || 0;
+    for (var i = 0; i < 16; ++i) {
+      buf[offset + i] = rnds[i];
+    }
+    return buf;
+  }
+  return stringify$1(rnds);
+}
 var CONFIGTYPE;
 (function(CONFIGTYPE2) {
   CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
@@ -2305,24 +2353,6 @@ var CONFIGTYPE;
   CONFIGTYPE2["SMAAPASS"] = "SMAAPass";
   CONFIGTYPE2["UNREALBLOOMPASS"] = "UnrealBloomPass";
 })(CONFIGTYPE || (CONFIGTYPE = {}));
-var MODULETYPE;
-(function(MODULETYPE2) {
-  MODULETYPE2["CAMERA"] = "camera";
-  MODULETYPE2["LIGHT"] = "light";
-  MODULETYPE2["GEOMETRY"] = "geometry";
-  MODULETYPE2["TEXTURE"] = "texture";
-  MODULETYPE2["MATERIAL"] = "material";
-  MODULETYPE2["RENDERER"] = "renderer";
-  MODULETYPE2["SCENE"] = "scene";
-  MODULETYPE2["SPRITE"] = "sprite";
-  MODULETYPE2["CONTROLS"] = "controls";
-  MODULETYPE2["LINE"] = "line";
-  MODULETYPE2["MESH"] = "mesh";
-  MODULETYPE2["POINTS"] = "points";
-  MODULETYPE2["GROUP"] = "group";
-  MODULETYPE2["PASS"] = "pass";
-  MODULETYPE2["MODIFIER"] = "modifier";
-})(MODULETYPE || (MODULETYPE = {}));
 const getObjectConfig = () => {
   return {
     vid: "",
@@ -2861,150 +2891,44 @@ const getUnrealBloomPassConfig = function() {
     radius: 0
   });
 };
-function isValidKey(key, object) {
-  return key in object;
-}
-function generateConfigFunction(config) {
-  return (merge) => {
-    const recursion = (config2, merge2) => {
-      for (const key in merge2) {
-        if (config2[key] === void 0) {
-          console.warn(` config can not set key: ${key}`);
-          continue;
-        }
-        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
-          recursion(config2[key], merge2[key]);
-        } else {
-          config2[key] = merge2[key];
-        }
-      }
-    };
-    if (merge) {
-      recursion(config, merge);
-    }
-    return config;
-  };
-}
-function getConfigModuleMap() {
-  return {
-    [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
-    [CONFIGTYPE.CUBETEXTURE]: MODULETYPE.TEXTURE,
-    [CONFIGTYPE.CANVASTEXTURE]: MODULETYPE.TEXTURE,
-    [CONFIGTYPE.VIDEOTEXTURE]: MODULETYPE.TEXTURE,
-    [CONFIGTYPE.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
-    [CONFIGTYPE.MESHPHONGMATERIAL]: MODULETYPE.MATERIAL,
-    [CONFIGTYPE.SPRITEMATERIAL]: MODULETYPE.MATERIAL,
-    [CONFIGTYPE.LINEBASICMATERIAL]: MODULETYPE.MATERIAL,
-    [CONFIGTYPE.POINTSMATERIAL]: MODULETYPE.MATERIAL,
-    [CONFIGTYPE.AMBIENTLIGHT]: MODULETYPE.LIGHT,
-    [CONFIGTYPE.SPOTLIGHT]: MODULETYPE.LIGHT,
-    [CONFIGTYPE.POINTLIGHT]: MODULETYPE.LIGHT,
-    [CONFIGTYPE.DIRECTIONALLIGHT]: MODULETYPE.LIGHT,
-    [CONFIGTYPE.BOXGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE.PLANEGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE.CIRCLEGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE.CONEGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE.CIRCLEGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE.EDGESGEOMETRY]: MODULETYPE.GEOMETRY,
-    [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
-    [CONFIGTYPE.LINE]: MODULETYPE.LINE,
-    [CONFIGTYPE.MESH]: MODULETYPE.MESH,
-    [CONFIGTYPE.POINTS]: MODULETYPE.POINTS,
-    [CONFIGTYPE.GROUP]: MODULETYPE.GROUP,
-    [CONFIGTYPE.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
-    [CONFIGTYPE.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
-    [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER,
-    [CONFIGTYPE.SCENE]: MODULETYPE.SCENE,
-    [CONFIGTYPE.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS,
-    [CONFIGTYPE.ORBITCONTROLS]: MODULETYPE.CONTROLS,
-    [CONFIGTYPE.SMAAPASS]: MODULETYPE.PASS,
-    [CONFIGTYPE.UNREALBLOOMPASS]: MODULETYPE.PASS
-  };
-}
-function getConfigFunctionMap() {
-  return {
-    [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
-    [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
-    [CONFIGTYPE.CANVASTEXTURE]: getCanvasTextureConfig,
-    [CONFIGTYPE.VIDEOTEXTURE]: getVideoTextureConfig,
-    [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
-    [CONFIGTYPE.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
-    [CONFIGTYPE.SPRITEMATERIAL]: getSpriteMaterialConfig,
-    [CONFIGTYPE.LINEBASICMATERIAL]: getLineBasicMaterialConfig,
-    [CONFIGTYPE.POINTSMATERIAL]: getPointsMaterialConfig,
-    [CONFIGTYPE.AMBIENTLIGHT]: getAmbientLightConfig,
-    [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,
-    [CONFIGTYPE.POINTLIGHT]: getPointLightConfig,
-    [CONFIGTYPE.DIRECTIONALLIGHT]: getDirectionalLightConfig,
-    [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
-    [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
-    [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
-    [CONFIGTYPE.PLANEGEOMETRY]: getPlaneGeometryConfig,
-    [CONFIGTYPE.CIRCLEGEOMETRY]: getCircleGeometryConfig,
-    [CONFIGTYPE.CONEGEOMETRY]: getConeGeometryConfig,
-    [CONFIGTYPE.CYLINDERGEOMETRY]: getCylinderGeometryConfig,
-    [CONFIGTYPE.EDGESGEOMETRY]: getEdgesGeometryConfig,
-    [CONFIGTYPE.SPRITE]: getSpriteConfig,
-    [CONFIGTYPE.LINE]: getLineConfig,
-    [CONFIGTYPE.MESH]: getMeshConfig,
-    [CONFIGTYPE.POINTS]: getPointsConfig,
-    [CONFIGTYPE.GROUP]: getGroupConfig,
-    [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
-    [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
-    [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,
-    [CONFIGTYPE.SCENE]: getSceneConfig,
-    [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig,
-    [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig,
-    [CONFIGTYPE.SMAAPASS]: getSMAAPassConfig,
-    [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig
-  };
-}
-var getRandomValues;
-var rnds8 = new Uint8Array(16);
-function rng() {
-  if (!getRandomValues) {
-    getRandomValues = typeof crypto !== "undefined" && crypto.getRandomValues && crypto.getRandomValues.bind(crypto) || typeof msCrypto !== "undefined" && typeof msCrypto.getRandomValues === "function" && msCrypto.getRandomValues.bind(msCrypto);
-    if (!getRandomValues) {
-      throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
-    }
-  }
-  return getRandomValues(rnds8);
-}
-var REGEX = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
-function validate(uuid) {
-  return typeof uuid === "string" && REGEX.test(uuid);
-}
-var byteToHex = [];
-for (var i = 0; i < 256; ++i) {
-  byteToHex.push((i + 256).toString(16).substr(1));
-}
-function stringify$1(arr) {
-  var offset = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
-  var uuid = (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase();
-  if (!validate(uuid)) {
-    throw TypeError("Stringified UUID is invalid");
-  }
-  return uuid;
-}
-function v4(options, buf, offset) {
-  options = options || {};
-  var rnds = options.random || (options.rng || rng)();
-  rnds[6] = rnds[6] & 15 | 64;
-  rnds[8] = rnds[8] & 63 | 128;
-  if (buf) {
-    offset = offset || 0;
-    for (var i = 0; i < 16; ++i) {
-      buf[offset + i] = rnds[i];
-    }
-    return buf;
-  }
-  return stringify$1(rnds);
-}
-const typeMap = getConfigFunctionMap();
+const CONFIGFACTORY = {
+  [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
+  [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
+  [CONFIGTYPE.CANVASTEXTURE]: getCanvasTextureConfig,
+  [CONFIGTYPE.VIDEOTEXTURE]: getVideoTextureConfig,
+  [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
+  [CONFIGTYPE.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
+  [CONFIGTYPE.SPRITEMATERIAL]: getSpriteMaterialConfig,
+  [CONFIGTYPE.LINEBASICMATERIAL]: getLineBasicMaterialConfig,
+  [CONFIGTYPE.POINTSMATERIAL]: getPointsMaterialConfig,
+  [CONFIGTYPE.AMBIENTLIGHT]: getAmbientLightConfig,
+  [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,
+  [CONFIGTYPE.POINTLIGHT]: getPointLightConfig,
+  [CONFIGTYPE.DIRECTIONALLIGHT]: getDirectionalLightConfig,
+  [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
+  [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
+  [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
+  [CONFIGTYPE.PLANEGEOMETRY]: getPlaneGeometryConfig,
+  [CONFIGTYPE.CIRCLEGEOMETRY]: getCircleGeometryConfig,
+  [CONFIGTYPE.CONEGEOMETRY]: getConeGeometryConfig,
+  [CONFIGTYPE.CYLINDERGEOMETRY]: getCylinderGeometryConfig,
+  [CONFIGTYPE.EDGESGEOMETRY]: getEdgesGeometryConfig,
+  [CONFIGTYPE.SPRITE]: getSpriteConfig,
+  [CONFIGTYPE.LINE]: getLineConfig,
+  [CONFIGTYPE.MESH]: getMeshConfig,
+  [CONFIGTYPE.POINTS]: getPointsConfig,
+  [CONFIGTYPE.GROUP]: getGroupConfig,
+  [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
+  [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
+  [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,
+  [CONFIGTYPE.SCENE]: getSceneConfig,
+  [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig,
+  [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig,
+  [CONFIGTYPE.SMAAPASS]: getSMAAPassConfig,
+  [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig
+};
 const generateConfig = function(type, merge, strict = true, warn = true) {
-  if (typeMap[type]) {
+  if (CONFIGFACTORY[type]) {
     const recursion = (config, merge2) => {
       for (const key in merge2) {
         if (config[key] === void 0) {
@@ -3019,7 +2943,7 @@ const generateConfig = function(type, merge, strict = true, warn = true) {
         }
       }
     };
-    const initConfig = typeMap[type]();
+    const initConfig = CONFIGFACTORY[type]();
     if (initConfig.vid === "") {
       initConfig.vid = v4();
     }
@@ -3058,6 +2982,60 @@ var JSONHandler = /* @__PURE__ */ Object.freeze({
   parse,
   clone
 });
+var MODULETYPE;
+(function(MODULETYPE2) {
+  MODULETYPE2["CAMERA"] = "camera";
+  MODULETYPE2["LIGHT"] = "light";
+  MODULETYPE2["GEOMETRY"] = "geometry";
+  MODULETYPE2["TEXTURE"] = "texture";
+  MODULETYPE2["MATERIAL"] = "material";
+  MODULETYPE2["RENDERER"] = "renderer";
+  MODULETYPE2["SCENE"] = "scene";
+  MODULETYPE2["SPRITE"] = "sprite";
+  MODULETYPE2["CONTROLS"] = "controls";
+  MODULETYPE2["LINE"] = "line";
+  MODULETYPE2["MESH"] = "mesh";
+  MODULETYPE2["POINTS"] = "points";
+  MODULETYPE2["GROUP"] = "group";
+  MODULETYPE2["PASS"] = "pass";
+  MODULETYPE2["MODIFIER"] = "modifier";
+})(MODULETYPE || (MODULETYPE = {}));
+const CONFIGMODULE = {
+  [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
+  [CONFIGTYPE.CUBETEXTURE]: MODULETYPE.TEXTURE,
+  [CONFIGTYPE.CANVASTEXTURE]: MODULETYPE.TEXTURE,
+  [CONFIGTYPE.VIDEOTEXTURE]: MODULETYPE.TEXTURE,
+  [CONFIGTYPE.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
+  [CONFIGTYPE.MESHPHONGMATERIAL]: MODULETYPE.MATERIAL,
+  [CONFIGTYPE.SPRITEMATERIAL]: MODULETYPE.MATERIAL,
+  [CONFIGTYPE.LINEBASICMATERIAL]: MODULETYPE.MATERIAL,
+  [CONFIGTYPE.POINTSMATERIAL]: MODULETYPE.MATERIAL,
+  [CONFIGTYPE.AMBIENTLIGHT]: MODULETYPE.LIGHT,
+  [CONFIGTYPE.SPOTLIGHT]: MODULETYPE.LIGHT,
+  [CONFIGTYPE.POINTLIGHT]: MODULETYPE.LIGHT,
+  [CONFIGTYPE.DIRECTIONALLIGHT]: MODULETYPE.LIGHT,
+  [CONFIGTYPE.BOXGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.PLANEGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.CIRCLEGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.CONEGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.CIRCLEGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.EDGESGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
+  [CONFIGTYPE.LINE]: MODULETYPE.LINE,
+  [CONFIGTYPE.MESH]: MODULETYPE.MESH,
+  [CONFIGTYPE.POINTS]: MODULETYPE.POINTS,
+  [CONFIGTYPE.GROUP]: MODULETYPE.GROUP,
+  [CONFIGTYPE.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
+  [CONFIGTYPE.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
+  [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER,
+  [CONFIGTYPE.SCENE]: MODULETYPE.SCENE,
+  [CONFIGTYPE.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS,
+  [CONFIGTYPE.ORBITCONTROLS]: MODULETYPE.CONTROLS,
+  [CONFIGTYPE.SMAAPASS]: MODULETYPE.PASS,
+  [CONFIGTYPE.UNREALBLOOMPASS]: MODULETYPE.PASS
+};
 var RESOURCEEVENTTYPE;
 (function(RESOURCEEVENTTYPE2) {
   RESOURCEEVENTTYPE2["MAPPED"] = "mapped";
@@ -3068,7 +3046,7 @@ class ResourceManager extends EventDispatcher {
     __publicField(this, "structureMap", new Map());
     __publicField(this, "configMap", new Map());
     __publicField(this, "resourceMap", new Map());
-    __publicField(this, "configModuleMap", getConfigModuleMap());
+    __publicField(this, "configModuleMap", CONFIGMODULE);
     __publicField(this, "mappingHandler", new Map());
     const mappingHandler = this.mappingHandler;
     mappingHandler.set(HTMLImageElement, this.HTMLImageElementHandler);
@@ -3288,6 +3266,30 @@ const ResourceManagerPlugin = function(params) {
   };
   return true;
 };
+function isValidKey(key, object) {
+  return key in object;
+}
+function generateConfigFunction(config) {
+  return (merge) => {
+    const recursion = (config2, merge2) => {
+      for (const key in merge2) {
+        if (config2[key] === void 0) {
+          console.warn(` config can not set key: ${key}`);
+          continue;
+        }
+        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
+          recursion(config2[key], merge2[key]);
+        } else {
+          config2[key] = merge2[key];
+        }
+      }
+    };
+    if (merge) {
+      recursion(config, merge);
+    }
+    return config;
+  };
+}
 const _ProxyBroadcast = class extends EventDispatcher {
   constructor() {
     super();
@@ -3476,13 +3478,79 @@ class DataSupport {
     this.translater.apply(compiler);
     return this;
   }
-  toJSON() {
-    return JSON.stringify(this.data, stringify);
+  toJSON(compress = true) {
+    if (!compress) {
+      return JSON.stringify(this.data, stringify);
+    } else {
+      return JSON.stringify(this.exportConfig(), stringify);
+    }
   }
-  load(config) {
+  exportConfig(compress = true) {
+    if (!compress) {
+      return JSON.parse(JSON.stringify(this.data, stringify), parse);
+    } else {
+      const data = this.data;
+      const target = {};
+      const cacheConfigTemplate = {};
+      const recursion = (config, template, result = {}) => {
+        for (const key in template) {
+          if (["vid", "type"].includes(key)) {
+            result[key] = config[key];
+            continue;
+          }
+          if (typeof template[key] === "object" && template[key] !== null) {
+            if (config[key] === null) {
+              continue;
+            }
+            result[key] = {};
+            recursion(config[key], template[key], result[key]);
+            if (Object.keys(result[key]).length === 0) {
+              delete result[key];
+            }
+          } else {
+            if (template[key] !== config[key]) {
+              result[key] = config[key];
+            }
+          }
+        }
+      };
+      for (const config of Object.values(data)) {
+        if (!cacheConfigTemplate[config.type]) {
+          if (!CONFIGFACTORY[config.type]) {
+            console.error(`can not font some config with: ${config.type}`);
+            continue;
+          }
+          cacheConfigTemplate[config.type] = CONFIGFACTORY[config.type]();
+        }
+        target[config.vid] = {};
+        recursion(config, cacheConfigTemplate[config.type], target[config.vid]);
+      }
+      return target;
+    }
+  }
+  load(configMap) {
     const data = this.data;
-    for (const key in config) {
-      data[key] = config[key];
+    const cacheConfigTemplate = {};
+    const restore = (config, template) => {
+      for (const key in template) {
+        if (typeof config[key] === "object" && config[key] !== null && typeof template[key] === "object" && template[key] !== null) {
+          restore(config[key], template[key]);
+        } else if (config[key] === void 0) {
+          config[key] = template[key];
+        }
+      }
+    };
+    for (const key in configMap) {
+      const config = configMap[key];
+      if (!cacheConfigTemplate[config.type]) {
+        if (!CONFIGFACTORY[config.type]) {
+          console.error(`can not font some config with: ${config.type}`);
+          continue;
+        }
+        cacheConfigTemplate[config.type] = CONFIGFACTORY[config.type]();
+      }
+      restore(config, cacheConfigTemplate[config.type]);
+      data[key] = config;
     }
     return this;
   }
@@ -3922,17 +3990,19 @@ const _DataSupportManager = class {
     });
     return this;
   }
-  toJSON(extendsConfig) {
-    const jsonObject = extendsConfig || {};
+  toJSON(extendsConfig = {}, compress = true) {
+    return JSON.stringify(this.exportConfig(extendsConfig, compress), stringify);
+  }
+  exportConfig(extendsConfig = {}, compress = true) {
     const dataSupportMap = this.dataSupportMap;
     dataSupportMap.forEach((dataSupport, module) => {
-      jsonObject[module] = dataSupport.getData();
+      extendsConfig[module] = dataSupport.exportConfig(compress);
     });
-    return JSON.stringify(jsonObject, stringify);
+    return extendsConfig;
   }
 };
 let DataSupportManager = _DataSupportManager;
-__publicField(DataSupportManager, "configModuleMap", getConfigModuleMap());
+__publicField(DataSupportManager, "configModuleMap", CONFIGMODULE);
 const DataSupportManagerPlugin = function(params) {
   if (this.dataSupportManager) {
     console.warn("engine has installed dataSupportManager plugin.");
@@ -3948,6 +4018,15 @@ const DataSupportManagerPlugin = function(params) {
       return this.dataSupportManager.toJSON(assets);
     }
     return this.dataSupportManager.toJSON();
+  };
+  this.exportConfig = function() {
+    let extendConfig = {};
+    if (this.loaderManager) {
+      extendConfig = {
+        assets: this.loaderManager.exportConfig()
+      };
+    }
+    return this.dataSupportManager.exportConfig(extendConfig);
   };
   this.completeSet.add(() => {
     const rendererData = this.dataSupportManager.getDataSupport(MODULETYPE.RENDERER).getData();
@@ -9613,40 +9692,6 @@ class SpotLightHelper extends LineSegments {
     }
   }
 }
-class CanvasTextureGenerator {
-  constructor(parameters) {
-    __publicField(this, "canvas");
-    this.canvas = document.createElement("canvas");
-    const devicePixelRatio = window.devicePixelRatio;
-    this.canvas.width = ((parameters == null ? void 0 : parameters.width) || 512) * devicePixelRatio;
-    this.canvas.height = ((parameters == null ? void 0 : parameters.height) || 512) * devicePixelRatio;
-    this.canvas.style.backgroundColor = (parameters == null ? void 0 : parameters.bgColor) || "rgb(255, 255, 255)";
-  }
-  get() {
-    return this.canvas;
-  }
-  draw(fun) {
-    const ctx = this.canvas.getContext("2d");
-    if (ctx) {
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-      fun(ctx);
-      return this;
-    } else {
-      console.warn(`you browser can not support canvas 2d`);
-      return this;
-    }
-  }
-  preview(parameters) {
-    const canvas = this.canvas;
-    canvas.style.position = "fixed";
-    canvas.style.top = (parameters == null ? void 0 : parameters.top) || "5%";
-    canvas.style.left = (parameters == null ? void 0 : parameters.left) || "5%";
-    canvas.style.right = (parameters == null ? void 0 : parameters.right) || "unset";
-    canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
-    document.body.appendChild(this.canvas);
-    return this;
-  }
-}
 class CanvasGenerator {
   constructor(parameters) {
     __publicField(this, "canvas");
@@ -10105,6 +10150,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "loadResourcesAsync");
     __publicField(this, "registerResources");
     __publicField(this, "toJSON");
+    __publicField(this, "exportConfig");
     __publicField(this, "play");
     __publicField(this, "stop");
     __publicField(this, "render");
@@ -10234,12 +10280,7 @@ const _SupportDataGenerator = class {
   }
 };
 let SupportDataGenerator = _SupportDataGenerator;
-__publicField(SupportDataGenerator, "configModelMap", getConfigModuleMap());
-var OBJECTEVENT;
-(function(OBJECTEVENT2) {
-  OBJECTEVENT2["ACTIVE"] = "active";
-  OBJECTEVENT2["HOVER"] = "hover";
-})(OBJECTEVENT || (OBJECTEVENT = {}));
+__publicField(SupportDataGenerator, "configModelMap", CONFIGMODULE);
 const pointLight = new PointLight("rgb(255, 255, 255)", 0.5, 200, 1);
 pointLight.position.set(-30, 5, 20);
 pointLight.castShadow = true;
@@ -10341,33 +10382,6 @@ __publicField(MaterialDisplayer, "dispose", () => {
   _MaterialDisplayer.geometry.dispose();
   _MaterialDisplayer.plane.geometry.dispose();
 });
-var RENDERERMANAGER;
-(function(RENDERERMANAGER2) {
-  RENDERERMANAGER2["RENDER"] = "render";
-  RENDERERMANAGER2["PLAY"] = "play";
-  RENDERERMANAGER2["STOP"] = "stop";
-})(RENDERERMANAGER || (RENDERERMANAGER = {}));
-var SCENESTATUSMANAGER;
-(function(SCENESTATUSMANAGER2) {
-  SCENESTATUSMANAGER2["HOVERCHANGE"] = "hover-change";
-  SCENESTATUSMANAGER2["ACTIVECHANGE"] = "active-change";
-})(SCENESTATUSMANAGER || (SCENESTATUSMANAGER = {}));
-var POINTERMANAGER;
-(function(POINTERMANAGER2) {
-  POINTERMANAGER2["POINTERDOWN"] = "pointerdown";
-  POINTERMANAGER2["POINTERMOVE"] = "pointermove";
-  POINTERMANAGER2["POINTERUP"] = "pointerup";
-})(POINTERMANAGER || (POINTERMANAGER = {}));
-var MODELCOMPILER;
-(function(MODELCOMPILER2) {
-  MODELCOMPILER2["SETMATERIAL"] = "setMaterial";
-})(MODELCOMPILER || (MODELCOMPILER = {}));
-const EVENTTYPE = {
-  RENDERERMANAGER,
-  SCENESTATUSMANAGER,
-  POINTERMANAGER,
-  MODELCOMPILER
-};
 const _TextureDisplayer = class {
   constructor(parameters) {
     __publicField(this, "dom");
@@ -11298,4 +11312,4 @@ class History {
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
-export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, CanvasTextureGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTTYPE, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTEVENT, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };
+export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };

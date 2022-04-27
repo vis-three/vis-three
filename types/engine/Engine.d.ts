@@ -10,7 +10,7 @@ import { TransformControls } from "three/examples/jsm/controls/TransformControls
 import { Screenshot } from "../plugins/WebGLRendererPlugin";
 import { LoadedEvent, LoaderManager } from "../manager/LoaderManager";
 import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
-import { DataSupportManager } from "../manager/DataSupportManager";
+import { DataSupportManager, LoadOptions } from "../manager/DataSupportManager";
 import { CompilerManager } from "../manager/CompilerManager";
 import { KeyboardManager } from "../manager/KeyboardManager";
 import { VIEWPOINT } from "../plugins/ViewpointPlugin";
@@ -91,6 +91,7 @@ export declare class Engine extends EventDispatcher {
         [key: string]: unknown;
     }) => this;
     toJSON?: () => string;
+    exportConfig?: (compress: boolean) => LoadOptions;
     play?: () => this;
     stop?: () => this;
     render?: () => this;

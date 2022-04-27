@@ -1,90 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
-  <link rel="stylesheet" href="../css/common.css">
-  <title>config-development</title>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/examples/public/favicon.ico"
+    />
+    <link rel="stylesheet" href="../css/common.css" />
+    <title>config-development</title>
+  </head>
 
-<style>
-  #app {
-    width: 100%;
-    height: 100%;
-  }
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
 
-  #exportConfig {
-    position: fixed;
-    color: white;
-    top: 0%;
-    left: 0%;
-    background: black;
-    max-width: 100%;
-    max-height: 100%;
-    overflow: auto;
-  }
+    #exportConfig {
+      position: fixed;
+      color: white;
+      top: 0%;
+      left: 0%;
+      background: black;
+      max-width: 100%;
+      max-height: 100%;
+      overflow: auto;
+    }
 
-  .loadingDom {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 36px;
-    z-index: 10;
-  }
-</style>
+    .loadingDom {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 36px;
+      z-index: 10;
+    }
+  </style>
 
-<body>
-  <div class="exportconfig" id="exportConfig"></div>
-  <div id="app"></div>
+  <body>
+    <div class="exportconfig" id="exportConfig"></div>
+    <div id="app"></div>
 
-  <script type="module">
-    import { v4 as getUUid} from 'uuid'
-    import * as Vis from '../../dist/Vis.es.js' 
-    import * as THREE from 'three'
-    import config from '/examples/public/assetsConfig/configDevelopment.json'
+    <script type="module">
+      import { v4 as getUUid } from "uuid";
+      import * as Vis from "../../dist/Vis.es.js";
+      import * as THREE from "three";
+      // import config from "/examples/public/assetsConfig/configDevelopment.json";
+      import config from "/examples/public/assetsConfig/compressConfigDevelopment.json";
 
-    const visConfig = JSON.parse(JSON.stringify(config), Vis.JSONHandler.parse)
+      const visConfig = JSON.parse(
+        JSON.stringify(config),
+        Vis.JSONHandler.parse
+      );
 
-    const loadingDom = document.createElement('div')
-    loadingDom.innerText = '正在加载...'
-    loadingDom.className = 'loadingDom'
-    document.body.appendChild(loadingDom)
+      const loadingDom = document.createElement("div");
+      loadingDom.innerText = "正在加载...";
+      loadingDom.className = "loadingDom";
+      document.body.appendChild(loadingDom);
 
-    const engine = new Vis.ModelingEngineSupport()
-    .setDom(document.getElementById('app'))
-    .setSize()
-    .play()
-    .loadConfig(visConfig, () => {
-      const lightDataSupport = engine.dataSupportManager.getDataSupport(Vis.MODULETYPE.LIGHT)
-      const lightData = lightDataSupport.getData()
+      const engine = new Vis.ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play()
+        .loadConfig(visConfig, () => {
+          const lightDataSupport = engine.dataSupportManager.getDataSupport(
+            Vis.MODULETYPE.LIGHT
+          );
+          const lightData = lightDataSupport.getData();
 
-      for (const key in lightData) {
-        lightData[key].position.y = -10
-        lightData[key].distance = 100
-      }
+          for (const key in lightData) {
+            lightData[key].position.y = -10;
+            lightData[key].distance = 100;
+          }
 
-      const configLight = lightDataSupport.toJSON()
+          document.getElementById("exportConfig").innerText = engine
+            .toJSON()
+            .replace(/",/g, '",\n')
+            .replace(/"},/g, '"},\n')
+            .replace(/{"/g, '{"\n')
+            .replace(/,"/g, ',"\n')
+            .replace(/},"/g, '\n},"');
+          document.body.removeChild(loadingDom);
 
-      document.getElementById('exportConfig').innerText = configLight
-      .replace(/",/g, '",\n')
-      .replace(/"},/g, '"},\n')
-      .replace(/{"/g, '{"\n')
-      .replace(/,"/g, ',"\n')
-      .replace(/},"/g, '\n},"')
-      document.body.removeChild(loadingDom)
-
-      console.log(engine.toJSON())
-    })
-
-  </script>
-</body>
+          console.log(engine.toJSON());
+        });
+    </script>
+  </body>
 </html>

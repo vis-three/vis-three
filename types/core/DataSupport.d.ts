@@ -16,8 +16,23 @@ export declare abstract class DataSupport<D extends CompilerTarget, C extends Co
     getConfig<T extends SymbolConfig>(vid: string): T;
     removeConfig(vid: string): void;
     addCompiler(compiler: C): this;
-    toJSON(): string;
-    load(config: D): this;
+    /**
+     * 导出json化配置单
+     * @returns json config
+     */
+    toJSON(compress?: boolean): string;
+    /**
+     * 导出配置单
+     * @param compress 是否压缩配置单 default true
+     * @returns config
+     */
+    exportConfig(compress?: boolean): D;
+    /**
+     * 加载配置
+     * @param configMap this module configMap
+     * @returns true
+     */
+    load(configMap: D): this;
     remove(config: D): this;
     getModule(): MODULETYPE;
 }

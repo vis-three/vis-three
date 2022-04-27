@@ -94,6 +94,7 @@ export class Engine extends EventDispatcher {
     loadResourcesAsync;
     registerResources;
     toJSON;
+    exportConfig;
     play;
     stop;
     render;

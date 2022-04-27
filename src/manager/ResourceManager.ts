@@ -4,10 +4,10 @@ import { EventDispatcher } from "../core/EventDispatcher";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { LoadOptions } from "./DataSupportManager";
-import { getConfigModuleMap } from "../utils/utils";
 import { GroupConfig } from "../middleware/group/GroupConfig";
 import * as JSONHandler from "../convenient/JSONHandler";
 import { MeshConfig } from "../middleware/mesh/MeshConfig";
+import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
 
 export interface ObjectMappingStructure {
   type: string;
@@ -32,7 +32,7 @@ export class ResourceManager extends EventDispatcher {
   configMap: Map<string, SymbolConfig> = new Map(); // 配置映射 mappingUrl -> config
   resourceMap: Map<string, unknown> = new Map(); // 资源映射 mappingUrl -> resource
 
-  private configModuleMap = getConfigModuleMap();
+  private configModuleMap = CONFIGMODULE;
   private mappingHandler = new Map();
 
   constructor() {

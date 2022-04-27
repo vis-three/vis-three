@@ -89,6 +89,10 @@ export function generateConfigFunction<T extends object>(config: T) {
   };
 }
 
+/**
+ * @deprecated - replace CONFIGMODULE
+ * @returns
+ */
 export function getConfigModuleMap(): { [key: string]: string } {
   return {
     [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
@@ -137,6 +141,10 @@ export function getConfigModuleMap(): { [key: string]: string } {
   };
 }
 
+/**
+ * @deprecated - CONFIGFACTORY
+ * @returns
+ */
 export function getConfigFunctionMap(): { [key: string]: Function } {
   return {
     [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,

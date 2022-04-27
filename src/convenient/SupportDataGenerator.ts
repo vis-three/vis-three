@@ -1,5 +1,6 @@
 import { CameraCompilerTarget } from "../middleware/camera/CameraCompiler";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
+import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { GeometryCompilerTarget } from "../middleware/geometry/GeometryCompiler";
@@ -12,7 +13,6 @@ import { PointsCompilerTarget } from "../middleware/points/PointsCompiler";
 import { RendererCompilerTarget } from "../middleware/renderer/RendererCompiler";
 import { SpriteCompilerTarget } from "../middleware/sprite/SpriteCompiler";
 import { TextureCompilerTarget } from "../middleware/texture/TextureCompiler";
-import { getConfigModuleMap } from "../utils/utils";
 import { generateConfig } from "./generateConfig";
 
 export type SupportDataAllType =
@@ -29,7 +29,7 @@ export type SupportDataAllType =
   | LineCompilerTarget;
 
 export class SupportDataGenerator {
-  private static configModelMap = getConfigModuleMap();
+  private static configModelMap = CONFIGMODULE;
 
   private supportData?: SupportDataAllType;
   private supportDataType?: MODULETYPE;

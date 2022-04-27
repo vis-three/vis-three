@@ -1,4 +1,4 @@
-import { MODULETYPE } from "../main";
+import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { Engine, ENGINEPLUGIN } from "./Engine";
 export class EngineSupport extends Engine {
     IS_ENGINESUPPORT = true;

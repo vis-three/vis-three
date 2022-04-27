@@ -14,10 +14,10 @@ import { MeshDataSupport } from "../middleware/mesh/MeshDataSupport";
 import { PointsDataSupport } from "../middleware/points/PointsDataSupport";
 import { GroupDataSupport } from "../middleware/group/GroupDataSupport";
 import { stringify } from "../convenient/JSONHandler";
-import { getConfigModuleMap } from "../utils/utils";
 import { PassDataSupport } from "../middleware/pass/PassDataSupport";
+import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
 export class DataSupportManager {
-    static configModuleMap = getConfigModuleMap();
+    static configModuleMap = CONFIGMODULE;
     cameraDataSupport = new CameraDataSupport();
     lightDataSupport = new LightDataSupport();
     geometryDataSupport = new GeometryDataSupport();
@@ -191,15 +191,24 @@ export class DataSupportManager {
     /**
      * 获取JSON化的配置单
      * @param extendsConfig 需要额外JSON化的配置对象，会被dataSupport的对象覆盖
+     * @param compress 是否压缩配置单 default true
      * @returns JSON string
      */
-    toJSON(extendsConfig) {
-        const jsonObject = extendsConfig || {};
+    toJSON(extendsConfig = {}, compress = true) {
+        return JSON.stringify(this.exportConfig(extendsConfig, compress), stringify);
+    }
+    /**
+     * 导出配置单
+     * @param extendsConfig 拓展配置对象
+     * @param compress 是否压缩配置单 default true
+     * @returns LoadOptions
+     */
+    exportConfig(extendsConfig = {}, compress = true) {
         const dataSupportMap = this.dataSupportMap;
         dataSupportMap.forEach((dataSupport, module) => {
-            jsonObject[module] = dataSupport.getData();
+            extendsConfig[module] = dataSupport.exportConfig(compress);
         });
-        return JSON.stringify(jsonObject, stringify);
+        return extendsConfig;
     }
 }
 //# sourceMappingURL=DataSupportManager.js.map

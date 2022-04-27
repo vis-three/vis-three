@@ -42,6 +42,7 @@ import { ResourceManagerPlugin } from "../plugins/ResourceManagerPlugin";
 import {
   DataSupportManager,
   DataSupportManagerParameters,
+  LoadOptions,
 } from "../manager/DataSupportManager";
 import { DataSupportManagerPlugin } from "../plugins/DataSupportManagerPlugin";
 import {
@@ -174,6 +175,7 @@ export class Engine extends EventDispatcher {
 
   registerResources?: (resourceMap: { [key: string]: unknown }) => this;
   toJSON?: () => string;
+  exportConfig?: (compress: boolean) => LoadOptions;
 
   play?: () => this;
   stop?: () => this;

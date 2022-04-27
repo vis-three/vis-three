@@ -54,8 +54,19 @@ export declare class LoaderManager extends EventDispatcher {
     private loaded;
     private checkLoaded;
     setPath(path: string): this;
+    /**
+     * 加载资源
+     * @param urlList string[] | [{ext: string, url: string}]
+     * @returns this
+     */
     load(urlList: Array<string | LoadUnit>): this;
     reset(): this;
+    /**
+     * 注册loader
+     * @param ext 文件格式: jpg
+     * @param loader extend THREE.Loader
+     * @returns this
+     */
     register(ext: string, loader: Loader): this;
     hasLoaded(url: string): boolean;
     getResource(url: string): unknown;
@@ -67,5 +78,11 @@ export declare class LoaderManager extends EventDispatcher {
     }): this;
     remove(url: string): void;
     toJSON(): string;
+    /**
+     * 导出配置单
+     * @returns
+     * @todo 对比缓存
+     */
+    exportConfig(): string[];
     dispose(): this;
 }

@@ -757,6 +757,7 @@ engine.scene.add(new THREE.PointLight("white", 1));
 - 开发：`npm run dev`
 - 构建： `npm run build`
 - 代码格式化： `npm run lint`
+- e2e 测试： `npm run e2e:open`
 - 查看例子： `npm run examples`
 
 ## 提示

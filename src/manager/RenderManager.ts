@@ -1,6 +1,5 @@
 import { Clock } from "three";
 import { BaseEvent, EventDispatcher } from "../core/EventDispatcher";
-import { RENDERERMANAGER } from "../middleware/constants/EVENTTYPE";
 
 // 渲染事件
 export interface RenderEvent extends BaseEvent {
