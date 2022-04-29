@@ -3357,7 +3357,8 @@ const getOrthographicCameraConfig = function() {
     top: 1080 / 32,
     bottom: -1080 / 32,
     near: 5,
-    far: 50
+    far: 50,
+    zoom: 1
   });
 };
 const getRendererConfig = function() {
@@ -5781,7 +5782,7 @@ class CameraCompiler extends ObjectCompiler {
       }
       this.engine.addEventListener("setSize", setSizeFun);
       cacheData.setSizeFun = setSizeFun;
-      const domElement = this.engine.webGLRenderer.domElement;
+      const domElement = this.engine.dom;
       setSizeFun({
         type: "setSize",
         width: domElement.offsetWidth,

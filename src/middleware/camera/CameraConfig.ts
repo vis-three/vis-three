@@ -19,6 +19,7 @@ export interface OrthographicCameraConfig extends CameraConfig {
   bottom: number;
   near: number;
   far: number;
+  zoom: number;
 }
 
 export type CameraConfigAllType =
@@ -47,5 +48,6 @@ export const getOrthographicCameraConfig =
       bottom: -1080 / 32,
       near: 5,
       far: 50,
+      zoom: 1,
     });
   };
