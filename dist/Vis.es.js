@@ -10405,6 +10405,38 @@ __publicField(GroupHelper, "colorTexture", new CanvasTexture(new CanvasGenerator
   ctx.fillRect(-200, -70, 200, 70);
   ctx.closePath();
 }).get()));
+const _LineHelper = class extends Points {
+  constructor(line) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "type", "VisLineHelper");
+    this.target = line;
+    this.geometry.dispose();
+    this.geometry.copy(line.geometry);
+    this.material = new PointsMaterial({
+      color: "rgb(255, 255, 255)",
+      alphaMap: _LineHelper.alphaTexture,
+      transparent: true,
+      size: 5,
+      sizeAttenuation: false
+    });
+    this.matrixAutoUpdate = false;
+    this.matrixWorldNeedsUpdate = false;
+    this.matrix = line.matrix;
+    this.matrixWorld = line.matrixWorld;
+    this.renderOrder = -1;
+    this.raycast = () => {
+    };
+  }
+};
+let LineHelper = _LineHelper;
+__publicField(LineHelper, "alphaTexture", new CanvasTexture(new CanvasGenerator({ width: 512, height: 512, bgColor: "rgb(0, 0, 0)" }).draw((ctx) => {
+  ctx.beginPath();
+  ctx.fillStyle = "rgb(255, 255, 255)";
+  ctx.arc(256, 256, 200, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.closePath();
+}).get()));
 class MeshHelper extends LineSegments {
   constructor(mesh) {
     super();
@@ -10432,6 +10464,41 @@ class MeshHelper extends LineSegments {
     };
   }
 }
+const _PointsHelper = class extends Points {
+  constructor(points) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "type", "VisPointsHelper");
+    this.target = points;
+    this.geometry.dispose();
+    this.geometry.copy(points.geometry);
+    this.material.dispose();
+    this.material = new PointsMaterial({
+      color: "rgb(255, 255, 255)",
+      alphaMap: _PointsHelper.alphaTexture,
+      transparent: true
+    });
+    const material = Array.isArray(points.material) ? points.material[0] : points.material;
+    if (material instanceof PointsMaterial) {
+      this.material.size = material.size;
+      this.material.sizeAttenuation = material.sizeAttenuation;
+    }
+    this.matrixAutoUpdate = false;
+    this.matrixWorldNeedsUpdate = false;
+    this.matrix = points.matrix;
+    this.matrixWorld = points.matrixWorld;
+    this.raycast = () => {
+    };
+  }
+};
+let PointsHelper = _PointsHelper;
+__publicField(PointsHelper, "alphaTexture", new CanvasTexture(new CanvasGenerator({ width: 512, height: 512, bgColor: "rgb(0, 0, 0)" }).draw((ctx) => {
+  ctx.beginPath();
+  ctx.strokeStyle = "rgb(255, 255, 255)";
+  ctx.lineWidth = 4;
+  ctx.strokeRect(0, 0, 512, 512);
+  ctx.closePath();
+}).get()));
 const _SpriteHelper = class extends Sprite {
   constructor(sprite) {
     super();
@@ -10473,7 +10540,10 @@ class ObjectHelperManager extends EventDispatcher {
       [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
       [CONFIGTYPE.MESH]: MeshHelper,
       [CONFIGTYPE.GROUP]: GroupHelper,
-      [CONFIGTYPE.SPRITE]: SpriteHelper
+      [CONFIGTYPE.SPRITE]: SpriteHelper,
+      [CONFIGTYPE.POINTS]: PointsHelper,
+      [CONFIGTYPE.LINE]: LineHelper,
+      [CONFIGTYPE.LINESEGMENTS]: LineHelper
     });
     __publicField(this, "helperFilter", {
       AmbientLight: true,

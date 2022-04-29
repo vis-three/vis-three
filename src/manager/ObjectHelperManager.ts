@@ -5,7 +5,9 @@ import { DirectionalLightHelper } from "../extends/helper/light/DirectionalLight
 import { PointLightHelper } from "../extends/helper/light/PointLightHelper";
 import { SpotLightHelper } from "../extends/helper/light/SpotLightHelper";
 import { GroupHelper } from "../extends/helper/object/GroupHelper";
+import { LineHelper } from "../extends/helper/object/LineHelper";
 import { MeshHelper } from "../extends/helper/object/MeshHelper";
+import { PointsHelper } from "../extends/helper/object/PointsHelper";
 import { SpriteHelper } from "../extends/helper/object/SpriteHelper";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 
@@ -25,6 +27,9 @@ export class ObjectHelperManager extends EventDispatcher {
     [CONFIGTYPE.MESH]: MeshHelper,
     [CONFIGTYPE.GROUP]: GroupHelper,
     [CONFIGTYPE.SPRITE]: SpriteHelper,
+    [CONFIGTYPE.POINTS]: PointsHelper,
+    [CONFIGTYPE.LINE]: LineHelper,
+    [CONFIGTYPE.LINESEGMENTS]: LineHelper,
   };
 
   private helperFilter = {

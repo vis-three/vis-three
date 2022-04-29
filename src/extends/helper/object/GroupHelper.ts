@@ -1,14 +1,12 @@
 import {
-  BoxBufferGeometry,
   CanvasTexture,
-  EdgesGeometry,
   Group,
   Intersection,
   Raycaster,
   Sprite,
   SpriteMaterial,
 } from "three";
-import { getHelperLineMaterial, VisHelper } from "../common";
+import { VisHelper } from "../common";
 import { CanvasGenerator } from "../../../convenient/CanvasGenerator";
 
 export class GroupHelper extends Sprite implements VisHelper {
