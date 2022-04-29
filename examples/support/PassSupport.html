@@ -46,8 +46,7 @@
       const engine = new Vis.ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
-        .setStats(true)
-        .play();
+        .setStats(true);
 
       const pointLight = Vis.generateConfig("PointLight", {
         position: {
@@ -78,14 +77,21 @@
         strength: 1,
       });
 
-      engine.dataSupportManager
-        .applyConfig(pointLight)
-        .applyConfig(material)
-        .applyConfig(geometry)
-        .applyConfig(mesh)
-        .applyConfig(smaa)
-        .applyConfig(unrealBloom);
+      const scene = Vis.generateConfig("Scene", {
+        children: [pointLight.vid, mesh.vid],
+      });
 
+      engine.dataSupportManager.applyConfig(
+        pointLight,
+        material,
+        geometry,
+        mesh,
+        smaa,
+        unrealBloom,
+        scene
+      );
+
+      engine.setScene(scene.vid).play();
       console.log(engine);
     </script>
   </body>

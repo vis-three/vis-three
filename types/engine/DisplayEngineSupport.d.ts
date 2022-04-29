@@ -8,17 +8,13 @@ import { EngineSupport, EngineSupportParameters } from "./EngineSupport";
 export declare class DisplayEngineSupport extends EngineSupport {
     dom: HTMLElement;
     webGLRenderer: WebGLRenderer;
-    currentCamera: Camera;
+    camera: Camera;
     scene: Scene;
     orbitControls: OrbitControls;
     effectComposer: EffectComposer;
     renderManager: RenderManager;
     pointerManager: PointerManager;
     eventManager: EventManager;
-    transing: boolean;
-    setSize: (width: number, height: number) => this;
-    setCamera: (camera: Camera) => this;
-    setDom: (dom: HTMLElement) => this;
     play: () => this;
     stop: () => this;
     render: () => this;

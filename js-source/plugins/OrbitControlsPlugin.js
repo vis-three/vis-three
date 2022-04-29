@@ -13,7 +13,7 @@ export const OrbitControlsPlugin = function (params) {
         console.warn("this must install renderManager before install orbitControls plugin.");
         return false;
     }
-    this.orbitControls = new VisOrbitControls(this.currentCamera, this.dom);
+    this.orbitControls = new VisOrbitControls(this.camera, this.dom);
     this.addEventListener("setCamera", (event) => {
         this.orbitControls.setCamera(event.camera);
     });

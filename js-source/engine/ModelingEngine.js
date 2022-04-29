@@ -2,7 +2,8 @@ import { Engine, ENGINEPLUGIN } from "./Engine";
 export class ModelingEngine extends Engine {
     constructor() {
         super();
-        this.install(ENGINEPLUGIN.WEBGLRENDERER, {
+        this.install(ENGINEPLUGIN.RENDERMANAGER)
+            .install(ENGINEPLUGIN.WEBGLRENDERER, {
             antialias: true,
             alpha: true,
         })
@@ -18,7 +19,6 @@ export class ModelingEngine extends Engine {
             .install(ENGINEPLUGIN.OBJECTHELPER)
             .install(ENGINEPLUGIN.VIEWPOINT)
             .install(ENGINEPLUGIN.DISPLAYMODE)
-            .install(ENGINEPLUGIN.RENDERMANAGER)
             .install(ENGINEPLUGIN.STATS)
             .install(ENGINEPLUGIN.ORBITCONTROLS)
             .install(ENGINEPLUGIN.KEYBOARDMANAGER)

@@ -1,5 +1,5 @@
 import { GridHelper, Material } from "three";
-import { Engine, ENGINEPLUGIN } from "../engine/Engine";
+import { Engine, ENGINEPLUGIN, SetSceneEvent } from "../engine/Engine";
 import { VIEWPOINT, ViewpointEvent } from "./ViewpointPlugin";
 import { Plugin } from "./plugin";
 
@@ -47,6 +47,10 @@ export const GridHelperPlugin: Plugin<GridHelperParameters> = function (
     }
     return this;
   };
+
+  this.addEventListener<SetSceneEvent>("setScene", (event) => {
+    event.scene.add(gridHelper);
+  });
 
   this.completeSet.add(() => {
     if (this.setViewpoint) {

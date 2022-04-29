@@ -14,7 +14,7 @@ export declare class ModelingEngineSupport extends EngineSupport {
     IS_ENGINESUPPORT: boolean;
     dom: HTMLElement;
     webGLRenderer: WebGLRenderer;
-    currentCamera: Camera;
+    camera: Camera;
     scene: Scene;
     orbitControls: OrbitControls;
     transformControls: TransformControls;
@@ -24,12 +24,8 @@ export declare class ModelingEngineSupport extends EngineSupport {
     eventManager: EventManager;
     keyboardManager: KeyboardManager;
     stats: Stats;
-    transing: boolean;
     displayMode: DISPLAYMODE;
     selectionBox: Set<Object3D>;
-    setSize: (width: number, height: number) => this;
-    setCamera: (camera: Camera) => this;
-    setDom: (dom: HTMLElement) => this;
     setStats: (show: boolean) => this;
     setTransformControls: (show: boolean) => this;
     setViewpoint: (viewpoint: VIEWPOINT) => this;

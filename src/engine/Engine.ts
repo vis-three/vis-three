@@ -1,15 +1,15 @@
 import {
   Camera,
   Object3D,
+  PerspectiveCamera,
   Scene,
   WebGLRenderer,
   WebGLRendererParameters,
 } from "three";
-import { EventDispatcher } from "../core/EventDispatcher";
+import { BaseEvent, EventDispatcher } from "../core/EventDispatcher";
 
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { SceneParameters, ScenePlugin } from "../plugins/ScenePlugin";
 import { RenderManager } from "../manager/RenderManager";
 import { RenderManagerPlugin } from "../plugins/RenderManagerPlugin";
 import { OrbitControlsPlugin } from "../plugins/OrbitControlsPlugin";
@@ -79,6 +79,7 @@ import {
   SelectionPlugin,
 } from "../plugins/SelectionPlugin";
 import { ObjectHelperManager } from "../manager/ObjectHelperManager";
+import { VisOrbitControls } from "../optimize/VisOrbitControls";
 
 // 存在的插件接口
 export enum ENGINEPLUGIN {
@@ -105,6 +106,32 @@ export enum ENGINEPLUGIN {
   SELECTION = "Selection",
 }
 
+// 引擎事件
+
+// 设置dom
+export interface SetDomEvent extends BaseEvent {
+  type: "setDom";
+  dom: HTMLElement;
+}
+// 设置相机
+export interface SetCameraEvent extends BaseEvent {
+  type: "setCamera";
+  camera: Camera;
+}
+
+// 设置场景
+export interface SetSceneEvent extends BaseEvent {
+  type: "setScene";
+  scene: Scene;
+}
+
+// 设置尺寸
+export interface SetSizeEvent extends BaseEvent {
+  type: "setSize";
+  width: number;
+  height: number;
+}
+
 // 引擎槽
 export class Engine extends EventDispatcher {
   static pluginHandler: Map<string, Function> | undefined = new Map();
@@ -125,13 +152,15 @@ export class Engine extends EventDispatcher {
 
   completeSet: Set<(engine: Engine) => void>;
 
+  camera: Camera = new PerspectiveCamera();
+  scene: Scene = new Scene();
+
   IS_ENGINESUPPORT = false;
 
   dom?: HTMLElement;
   webGLRenderer?: WebGLRenderer;
-  currentCamera?: Camera;
-  scene?: Scene;
-  orbitControls?: OrbitControls;
+
+  orbitControls?: VisOrbitControls;
   transformControls?: TransformControls;
   effectComposer?: EffectComposer;
   renderManager?: RenderManager;
@@ -144,15 +173,11 @@ export class Engine extends EventDispatcher {
   keyboardManager?: KeyboardManager;
   objectHelperManager?: ObjectHelperManager;
   stats?: Stats;
-  transing?: boolean;
   displayMode?: DISPLAYMODE;
   selectionBox?: Set<Object3D>;
 
   getScreenshot?: (params: Screenshot) => HTMLImageElement;
 
-  setSize?: (width: number, height: number) => this;
-  setCamera?: (camera: Camera) => this;
-  setDom?: (dom: HTMLElement) => this;
   setStats?: (show: boolean) => this;
   setTransformControls?: (show: boolean) => this;
   setViewpoint?: (viewpoint: VIEWPOINT) => this;
@@ -189,8 +214,18 @@ export class Engine extends EventDispatcher {
       console.warn("can not install some plugin");
       return this;
     };
+
+    this.camera.position.set(50, 50, 50);
+
+    this.addEventListener<SetSizeEvent>("setSize", (event) => {
+      (this.camera as PerspectiveCamera).aspect = event.width / event.height;
+      (this.camera as PerspectiveCamera).updateProjectionMatrix();
+    });
   }
 
+  /**
+   * 优化内存
+   */
   protected optimizeMemory() {
     Object.keys(this).forEach((key) => {
       if (this[key] === undefined) {
@@ -218,11 +253,134 @@ export class Engine extends EventDispatcher {
     return this;
   }
 
-  // 清除缓存
+  /**
+   * 清除引擎缓存
+   * @returns this
+   */
   dispose(): this {
     this.dispatchEvent({
       type: "dispose",
     });
+    return this;
+  }
+
+  /**
+   * 设置输出的dom
+   * @param dom HTMLElement
+   * @returns this
+   */
+  setDom(dom: HTMLElement): this {
+    this.dom = dom;
+    this.dispatchEvent({
+      type: "setDom",
+      dom: dom,
+    });
+    return this;
+  }
+
+  /**
+   * 设置引擎整体尺寸
+   * @param width number
+   * @param height number
+   * @returns this
+   */
+  setSize(width?: number, height?: number): this {
+    if ((width && width <= 0) || (height && height <= 0)) {
+      console.warn(
+        `you must be input width and height bigger then zero, width: ${width}, height: ${height}`
+      );
+      return this;
+    }
+    !width && (width = this.dom?.offsetWidth || window.innerWidth);
+    !height && (height = this.dom?.offsetHeight || window.innerHeight);
+
+    this.dispatchEvent({ type: "setSize", width, height });
+    return this;
+  }
+
+  /**
+   * 设置相机
+   * @param vid 相机标识
+   * @returns this
+   */
+  setCamera(vid: string): this;
+  /**
+   * 设置相机
+   * @param camera 相机对象
+   * @returns this
+   */
+  setCamera(camera: Camera): this;
+  setCamera(camera: Camera | string): this {
+    if (typeof camera === "object" && camera instanceof Camera) {
+      this.camera = camera;
+      this.dispatchEvent({
+        type: "setCamera",
+        camera,
+      });
+    } else {
+      if (this.IS_ENGINESUPPORT) {
+        const target = this.compilerManager!.getObjectBySymbol(
+          camera as string
+        ) as Camera;
+
+        if (target) {
+          this.camera = target;
+          this.dispatchEvent({
+            type: "setCamera",
+            camera: target,
+          });
+        } else {
+          console.warn(`can not found camera in compilerManager: ${camera}`);
+        }
+      } else {
+        console.warn(
+          `engine is not a Engine support but use symbol to found camera.`
+        );
+      }
+    }
+    return this;
+  }
+
+  /**
+   * 设置场景
+   * @param vid 场景标识
+   * @returns this
+   */
+  setScene(vid: string): this;
+  /**
+   * 设置场景
+   * @param scene 场景对象
+   * @returns this
+   */
+  setScene(scene: Scene): this;
+  setScene(scene: Scene | string): this {
+    if (typeof scene === "object" && scene instanceof Scene) {
+      this.scene = scene;
+      this.dispatchEvent({
+        type: "setScene",
+        scene,
+      });
+    } else {
+      if (this.IS_ENGINESUPPORT) {
+        const target = this.compilerManager!.getObjectBySymbol(
+          scene as string
+        ) as Scene;
+
+        if (target) {
+          this.scene = target;
+          this.dispatchEvent({
+            type: "setScene",
+            scene: target,
+          });
+        } else {
+          console.warn(`can not found camera in compilerManager: ${scene}`);
+        }
+      } else {
+        console.warn(
+          `engine is not a Engine support but use symbol to found camera.`
+        );
+      }
+    }
     return this;
   }
 }
@@ -236,7 +394,6 @@ Engine.register<EffectComposerParameters>(
   ENGINEPLUGIN.EFFECTCOMPOSER,
   EffectComposerPlugin
 );
-Engine.register<SceneParameters>(ENGINEPLUGIN.SCENE, ScenePlugin);
 
 Engine.register<object>(ENGINEPLUGIN.RENDERMANAGER, RenderManagerPlugin);
 Engine.register<PointerManagerParameters>(

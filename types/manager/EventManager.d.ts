@@ -32,6 +32,7 @@ export declare class EventManager extends EventDispatcher {
     recursive: boolean;
     penetrate: boolean;
     constructor(parameters: EventManagerParameters);
+    setScene(scene: Scene): this;
     setCamera(camera: Camera): this;
     /**
      * 添加不会触发事件的场景中的物体

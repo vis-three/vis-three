@@ -1,5 +1,4 @@
 import { Camera, Object3D, Scene, WebGLRenderer } from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -7,6 +6,7 @@ import { EventManager } from "../manager/EventManager";
 import { KeyboardManager } from "../manager/KeyboardManager";
 import { PointerManager } from "../manager/PointerManager";
 import { RenderManager } from "../manager/RenderManager";
+import { VisOrbitControls } from "../optimize/VisOrbitControls";
 import { DISPLAYMODE } from "../plugins/DisplayModePlugin";
 import { VIEWPOINT } from "../plugins/ViewpointPlugin";
 import { Engine, ENGINEPLUGIN } from "./Engine";
@@ -14,9 +14,9 @@ import { Engine, ENGINEPLUGIN } from "./Engine";
 export class ModelingEngine extends Engine {
   declare dom: HTMLElement;
   declare webGLRenderer: WebGLRenderer;
-  declare currentCamera: Camera;
+  declare camera: Camera;
   declare scene: Scene;
-  declare orbitControls: OrbitControls;
+  declare orbitControls: VisOrbitControls;
   declare transformControls: TransformControls;
   declare effectComposer: EffectComposer;
   declare renderManager: RenderManager;
@@ -24,13 +24,9 @@ export class ModelingEngine extends Engine {
   declare eventManager: EventManager;
   declare keyboardManager: KeyboardManager;
   declare stats: Stats;
-  declare transing: boolean;
   declare displayMode: DISPLAYMODE;
   declare selectionBox: Set<Object3D>;
 
-  declare setSize: (width: number, height: number) => this;
-  declare setCamera: (camera: Camera) => this;
-  declare setDom: (dom: HTMLElement) => this;
   declare setStats: (show: boolean) => this;
   declare setTransformControls: (show: boolean) => this;
   declare setViewpoint: (viewpoint: VIEWPOINT) => this;
@@ -45,11 +41,11 @@ export class ModelingEngine extends Engine {
 
   constructor() {
     super();
-    this.install(ENGINEPLUGIN.WEBGLRENDERER, {
-      antialias: true,
-      alpha: true,
-    })
-      .install(ENGINEPLUGIN.SCENE)
+    this.install(ENGINEPLUGIN.RENDERMANAGER)
+      .install(ENGINEPLUGIN.WEBGLRENDERER, {
+        antialias: true,
+        alpha: true,
+      })
       .install(ENGINEPLUGIN.POINTERMANAGER)
       .install(ENGINEPLUGIN.EVENTMANAGER)
       .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
@@ -61,7 +57,6 @@ export class ModelingEngine extends Engine {
       .install(ENGINEPLUGIN.OBJECTHELPER)
       .install(ENGINEPLUGIN.VIEWPOINT)
       .install(ENGINEPLUGIN.DISPLAYMODE)
-      .install(ENGINEPLUGIN.RENDERMANAGER)
       .install(ENGINEPLUGIN.STATS)
       .install(ENGINEPLUGIN.ORBITCONTROLS)
       .install(ENGINEPLUGIN.KEYBOARDMANAGER)

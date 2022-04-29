@@ -29,6 +29,7 @@ export class ObjectHelperManager extends EventDispatcher {
     AmbientLight: true,
     Object3D: true,
     TransformControls: true,
+    Scene: true,
   };
 
   private objectFilter = new Set<Object3D>();
@@ -92,7 +93,6 @@ export class ObjectHelperManager extends EventDispatcher {
     }
 
     const helper = new this.helperGenerator[object.type](object);
-
     this.helperMap.set(object, helper);
 
     return helper;

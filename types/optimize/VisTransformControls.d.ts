@@ -12,9 +12,10 @@ export interface ObjectChangedEvent extends BaseEvent {
 export declare class VisTransformControls extends TransformControls {
     target: Object3D;
     private transObjectSet;
-    constructor(camera: Camera, dom: HTMLElement);
+    constructor(camera?: Camera, dom?: HTMLElement);
+    setDom(dom: HTMLElement): this;
+    setCamera(camera: Camera): this;
     getTarget(): Object3D;
     getTransObjectSet(): Set<Object3D>;
-    setCamera(camera: Camera): this;
     setAttach(...object: Object3D[]): this;
 }

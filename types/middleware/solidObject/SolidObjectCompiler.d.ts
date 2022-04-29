@@ -1,6 +1,6 @@
 import { BufferGeometry, Material, Mesh, Object3D } from "three";
 import { SymbolConfig } from "../common/CommonConfig";
-import { ObjectCompiler, ObjectCompilerParameters, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { SolidObjectConfig } from "./SolidObjectConfig";
 export interface SolidObject3D extends Object3D {
     material: Mesh["material"];
@@ -10,14 +10,11 @@ export declare type BasicSolidObjectCompiler = SolidObjectCompiler<SolidObjectCo
 export interface SolidObjectCompilerTarget<C extends SolidObjectConfig> extends ObjectCompilerTarget<C> {
     [key: string]: C;
 }
-export interface SolidObjectCompilerParameters<C extends SolidObjectConfig, T extends SolidObjectCompilerTarget<C>> extends ObjectCompilerParameters<C, T> {
-    target?: T;
-}
 export declare abstract class SolidObjectCompiler<C extends SolidObjectConfig, T extends SolidObjectCompilerTarget<C>, O extends SolidObject3D> extends ObjectCompiler<C, T, O> {
     IS_SOLIDOBJECTCOMPILER: boolean;
     protected geometryMap: Map<SymbolConfig["vid"], BufferGeometry>;
     protected materialMap: Map<SymbolConfig["vid"], Material>;
-    constructor(parameters?: SolidObjectCompilerParameters<C, T>);
+    constructor();
     protected getMaterial(vid: string): Material;
     protected getGeometry(vid: string): BufferGeometry;
     linkGeometryMap(map: Map<SymbolConfig["vid"], BufferGeometry>): this;

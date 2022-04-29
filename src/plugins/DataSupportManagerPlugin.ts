@@ -59,14 +59,6 @@ export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> =
         rendererData.WebGLRenderer = generateConfig(CONFIGTYPE.WEBGLRENDERER)!;
       }
 
-      const sceneData =
-        this.dataSupportManager!.getDataSupport<SceneDataSupport>(
-          MODULETYPE.SCENE
-        )!.getData();
-      if (!sceneData[CONFIGTYPE.SCENE]) {
-        sceneData[CONFIGTYPE.SCENE] = generateConfig(CONFIGTYPE.SCENE)!;
-      }
-
       const controlsData =
         this.dataSupportManager!.getDataSupport<ControlsDataSupport>(
           MODULETYPE.CONTROLS

@@ -154,105 +154,105 @@ export const DisplayModelPlugin = function (params = {}) {
             }
         }
     });
+    // 过滤材质
+    const filterMaterial = () => {
+        for (const mesh of meshSet) {
+            if (mesh.material === meshOverrideMaterial) {
+                continue;
+            }
+            materialCacheMap.set(mesh, mesh.material);
+            mesh.material = meshOverrideMaterial;
+        }
+        for (const line of lineSet) {
+            if (line.material === lineOverrideMaterial) {
+                continue;
+            }
+            materialCacheMap.set(line, line.material);
+            line.material = lineOverrideMaterial;
+        }
+        for (const points of pointsSet) {
+            if (points.material === pointsOverrideMaterial) {
+                continue;
+            }
+            materialCacheMap.set(points, points.material);
+            points.material = pointsOverrideMaterial;
+        }
+        for (const sprite of spriteSet) {
+            if (sprite.material === spriteOverrideMaterial) {
+                continue;
+            }
+            materialCacheMap.set(sprite, sprite.material);
+            sprite.material = spriteOverrideMaterial;
+        }
+    };
+    // 还原材质
+    const reduceMaterial = () => {
+        meshSet.forEach((mesh) => {
+            if (materialCacheMap.has(mesh)) {
+                mesh.material = materialCacheMap.get(mesh);
+                materialCacheMap.delete(mesh);
+            }
+        });
+        lineSet.forEach((line) => {
+            if (materialCacheMap.has(line)) {
+                line.material = materialCacheMap.get(line);
+                materialCacheMap.delete(line);
+            }
+        });
+        pointsSet.forEach((points) => {
+            if (materialCacheMap.has(points)) {
+                points.material = materialCacheMap.get(points);
+                materialCacheMap.delete(points);
+            }
+        });
+        spriteSet.forEach((sprite) => {
+            if (materialCacheMap.has(sprite)) {
+                sprite.material = materialCacheMap.get(sprite);
+                materialCacheMap.delete(sprite);
+            }
+        });
+    };
+    // 过滤灯光
+    // TODO: 监听记录light.visible的值
+    const filterLight = () => {
+        lightSet.forEach((light) => {
+            light.visible = false;
+        });
+        this.scene.add(defaultAmbientLight);
+        this.scene.add(defaultDirectionalLight);
+    };
+    // 还原灯光
+    const reduceLight = () => {
+        lightSet.forEach((light) => {
+            light.visible = true;
+        });
+        this.scene.remove(defaultAmbientLight);
+        this.scene.remove(defaultDirectionalLight);
+    };
+    // 过滤场景设置
+    const filterScene = () => {
+        if (this.scene.background instanceof Texture) {
+            backgroundCache = this.scene.background;
+            this.scene.background = null;
+        }
+        if (this.scene.environment instanceof Texture) {
+            environmentCache = this.scene.environment;
+            this.scene.environment = null;
+        }
+    };
+    // 还原场景
+    const reduceScene = () => {
+        if (backgroundCache) {
+            this.scene.background = backgroundCache;
+            backgroundCache = undefined;
+        }
+        if (environmentCache) {
+            this.scene.environment = environmentCache;
+            environmentCache = undefined;
+        }
+    };
     this.setDisplayMode = function (mode) {
         this.displayMode = mode || DISPLAYMODE.ENV;
-        // 过滤材质
-        const filterMaterial = () => {
-            for (const mesh of meshSet) {
-                if (mesh.material === meshOverrideMaterial) {
-                    continue;
-                }
-                materialCacheMap.set(mesh, mesh.material);
-                mesh.material = meshOverrideMaterial;
-            }
-            for (const line of lineSet) {
-                if (line.material === lineOverrideMaterial) {
-                    continue;
-                }
-                materialCacheMap.set(line, line.material);
-                line.material = lineOverrideMaterial;
-            }
-            for (const points of pointsSet) {
-                if (points.material === pointsOverrideMaterial) {
-                    continue;
-                }
-                materialCacheMap.set(points, points.material);
-                points.material = pointsOverrideMaterial;
-            }
-            for (const sprite of spriteSet) {
-                if (sprite.material === spriteOverrideMaterial) {
-                    continue;
-                }
-                materialCacheMap.set(sprite, sprite.material);
-                sprite.material = spriteOverrideMaterial;
-            }
-        };
-        // 还原材质
-        const reduceMaterial = () => {
-            meshSet.forEach((mesh) => {
-                if (materialCacheMap.has(mesh)) {
-                    mesh.material = materialCacheMap.get(mesh);
-                    materialCacheMap.delete(mesh);
-                }
-            });
-            lineSet.forEach((line) => {
-                if (materialCacheMap.has(line)) {
-                    line.material = materialCacheMap.get(line);
-                    materialCacheMap.delete(line);
-                }
-            });
-            pointsSet.forEach((points) => {
-                if (materialCacheMap.has(points)) {
-                    points.material = materialCacheMap.get(points);
-                    materialCacheMap.delete(points);
-                }
-            });
-            spriteSet.forEach((sprite) => {
-                if (materialCacheMap.has(sprite)) {
-                    sprite.material = materialCacheMap.get(sprite);
-                    materialCacheMap.delete(sprite);
-                }
-            });
-        };
-        // 过滤灯光
-        // TODO: 监听记录light.visible的值
-        const filterLight = () => {
-            lightSet.forEach((light) => {
-                light.visible = false;
-            });
-            this.scene.add(defaultAmbientLight);
-            this.scene.add(defaultDirectionalLight);
-        };
-        // 还原灯光
-        const reduceLight = () => {
-            lightSet.forEach((light) => {
-                light.visible = true;
-            });
-            this.scene.remove(defaultAmbientLight);
-            this.scene.remove(defaultDirectionalLight);
-        };
-        // 过滤场景设置
-        const filterScene = () => {
-            if (this.scene.background instanceof Texture) {
-                backgroundCache = this.scene.background;
-                this.scene.background = null;
-            }
-            if (this.scene.environment instanceof Texture) {
-                environmentCache = this.scene.environment;
-                this.scene.environment = null;
-            }
-        };
-        // 还原场景
-        const reduceScene = () => {
-            if (backgroundCache) {
-                this.scene.background = backgroundCache;
-                backgroundCache = undefined;
-            }
-            if (environmentCache) {
-                this.scene.environment = environmentCache;
-                environmentCache = undefined;
-            }
-        };
         if (mode === DISPLAYMODE.GEOMETRY) {
             filterMaterial();
             filterScene();

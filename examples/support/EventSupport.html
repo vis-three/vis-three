@@ -46,8 +46,7 @@
       const engine = new Vis.ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
-        .setStats(true)
-        .play();
+        .setStats(true);
 
       const pointLight = Vis.generateConfig("PointLight", {
         position: {
@@ -56,20 +55,14 @@
         },
         distance: 100,
       });
-      engine.dataSupportManager.lightDataSupport.getData()[pointLight.vid] =
-        pointLight;
 
       const material = Vis.generateConfig("MeshStandardMaterial");
-      engine.dataSupportManager.materialDataSupport.getData()[material.vid] =
-        material;
 
       const geometry = Vis.generateConfig("BoxGeometry", {
         width: 5,
         height: 5,
         depth: 5,
       });
-      engine.dataSupportManager.geometryDataSupport.getData()[geometry.vid] =
-        geometry;
 
       const meshSymbol = getUUid();
       const mesh = Vis.generateConfig("Mesh", {
@@ -133,10 +126,20 @@
         ],
       });
 
-      engine.dataSupportManager
-        .applyConfig(mesh)
-        .applyConfig(mesh2)
-        .applyConfig(mesh3);
+      const scene = Vis.generateConfig("Scene", {
+        children: [pointLight.vid, mesh.vid, mesh2.vid, mesh3.vid],
+      });
+      engine.dataSupportManager.applyConfig(
+        pointLight,
+        material,
+        geometry,
+        mesh,
+        mesh2,
+        mesh3,
+        scene
+      );
+
+      engine.setScene(scene.vid).play();
     </script>
   </body>
 </html>

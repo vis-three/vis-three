@@ -1,18 +1,6 @@
-import { Camera, WebGLRenderer, WebGLRendererParameters } from "three";
-import { Engine } from "../engine/Engine";
-import { BaseEvent } from "../core/EventDispatcher";
+import { WebGLRenderer, WebGLRendererParameters } from "three";
+import { Engine, SetDomEvent, SetSizeEvent } from "../engine/Engine";
 import { Plugin } from "./plugin";
-
-export interface SetSizeEvent extends BaseEvent {
-  type: "setSize";
-  width: number;
-  height: number;
-}
-
-export interface SetCameraEvent extends BaseEvent {
-  type: "setCamera";
-  camera: Camera;
-}
 
 export interface Screenshot {
   width?: number;
@@ -30,33 +18,6 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererParameters> = function (
   }
 
   this.webGLRenderer = new WebGLRenderer(params);
-
-  this.dom = this.webGLRenderer.domElement;
-
-  // 设置尺寸
-  this.setSize = function (width?: number, height?: number): Engine {
-    if ((width && width <= 0) || (height && height <= 0)) {
-      console.warn(
-        `you must be input width and height bigger then zero, width: ${width}, height: ${height}`
-      );
-      return this;
-    }
-    !width && (width = this.dom?.offsetWidth);
-    !height && (height = this.dom?.offsetHeight);
-
-    this.dispatchEvent({ type: "setSize", width, height });
-    return this;
-  };
-
-  // 设置相机
-  this.setCamera = function (camera: Camera): Engine {
-    this.currentCamera = camera;
-    this.dispatchEvent({
-      type: "setCamera",
-      camera,
-    });
-    return this;
-  };
 
   // 截图
   this.getScreenshot = function (params: Screenshot = {}) {
@@ -92,11 +53,9 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererParameters> = function (
   };
 
   // 设置渲染的dom
-  this.setDom = function (dom: HTMLElement): Engine {
-    this.dom = dom;
-    dom.appendChild(this.webGLRenderer!.domElement);
-    return this;
-  };
+  this.addEventListener<SetDomEvent>("setDom", (event) => {
+    event.dom.appendChild(this.webGLRenderer!.domElement);
+  });
 
   this.addEventListener<SetSizeEvent>("setSize", (event) => {
     const width = event.width;
@@ -108,5 +67,16 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererParameters> = function (
     this.webGLRenderer!.dispose();
   });
 
+  if (this.renderManager) {
+    this.renderManager.removeEventListener("render", this.render!);
+    this.renderManager.addEventListener("render", (event) => {
+      this.webGLRenderer!.render(this.scene!, this.camera!);
+    });
+  } else {
+    this.render = function (): Engine {
+      this.webGLRenderer!.render(this.scene!, this.camera!);
+      return this;
+    };
+  }
   return true;
 };

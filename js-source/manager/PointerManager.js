@@ -6,18 +6,24 @@ export class PointerManager extends EventDispatcher {
     canMouseMove;
     mouseEventTimer;
     throttleTime;
+    pointerDownFun;
+    pointerMoveFun;
+    pointerUpFun;
     constructor(parameters) {
         super();
-        const dom = parameters.dom;
-        this.dom = dom;
+        this.dom = parameters.dom;
         this.mouse = new Vector2();
         this.canMouseMove = true;
         this.mouseEventTimer = null;
         this.throttleTime = parameters.throttleTime || 1000 / 60;
-        dom.addEventListener("pointerdown", (event) => {
-            this.pointerDown(event);
-        });
-        dom.addEventListener("pointermove", (event) => {
+        this.pointerDownFun = (event) => {
+            const eventObject = { mouse: this.mouse };
+            for (const key in event) {
+                eventObject[key] = event[key];
+            }
+            this.dispatchEvent(eventObject);
+        };
+        this.pointerMoveFun = (event) => {
             if (!this.canMouseMove) {
                 return;
             }
@@ -28,40 +34,44 @@ export class PointerManager extends EventDispatcher {
                 mouse.x = (event.offsetX / dom.offsetWidth) * 2 - 1;
                 mouse.y = -(event.offsetY / dom.offsetHeight) * 2 + 1;
                 this.canMouseMove = true;
-                this.pointerMove(event);
+                const eventObject = { mouse: this.mouse };
+                for (const key in event) {
+                    eventObject[key] = event[key];
+                }
+                this.dispatchEvent(eventObject);
             }, this.throttleTime);
-        });
-        dom.addEventListener("pointerup", (event) => {
-            this.pointerUp(event);
-        });
+        };
+        this.pointerUpFun = (event) => {
+            const eventObject = { mouse: this.mouse };
+            for (const key in event) {
+                eventObject[key] = event[key];
+            }
+            this.dispatchEvent(eventObject);
+        };
     }
-    // 获取鼠标指针
-    getMousePoint() {
+    /**
+     * 设置当前作用的dom
+     * @param dom
+     * @returns
+     */
+    setDom(dom) {
+        if (this.dom) {
+            this.dom.removeEventListener("pointerdown", this.pointerDownFun);
+            this.dom.removeEventListener("pointermove", this.pointerMoveFun);
+            this.dom.removeEventListener("pointerup", this.pointerUpFun);
+        }
+        dom.addEventListener("pointerdown", this.pointerDownFun);
+        dom.addEventListener("pointerdown", this.pointerMoveFun);
+        dom.addEventListener("pointerdown", this.pointerUpFun);
+        this.dom = dom;
+        return this;
+    }
+    /**
+     * 获取归一化的鼠标指针
+     * @returns mouse
+     */
+    getNormalMouse() {
         return this.mouse;
-    }
-    // 鼠标指针按下
-    pointerDown(event) {
-        const eventObject = { mouse: this.mouse };
-        for (const key in event) {
-            eventObject[key] = event[key];
-        }
-        this.dispatchEvent(eventObject);
-    }
-    // 鼠标指针移动
-    pointerMove(event) {
-        const eventObject = { mouse: this.mouse };
-        for (const key in event) {
-            eventObject[key] = event[key];
-        }
-        this.dispatchEvent(eventObject);
-    }
-    // 鼠标指针抬起
-    pointerUp(event) {
-        const eventObject = { mouse: this.mouse };
-        for (const key in event) {
-            eventObject[key] = event[key];
-        }
-        this.dispatchEvent(eventObject);
     }
 }
 //# sourceMappingURL=PointerManager.js.map

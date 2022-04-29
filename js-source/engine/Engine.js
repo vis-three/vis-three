@@ -1,3 +1,4 @@
+import { Camera, Scene, } from "three";
 import { EventDispatcher } from "../core/EventDispatcher";
 import { ScenePlugin } from "../plugins/ScenePlugin";
 import { RenderManagerPlugin } from "../plugins/RenderManagerPlugin";
@@ -60,7 +61,7 @@ export class Engine extends EventDispatcher {
     IS_ENGINESUPPORT = false;
     dom;
     webGLRenderer;
-    currentCamera;
+    camera;
     scene;
     orbitControls;
     transformControls;
@@ -75,13 +76,9 @@ export class Engine extends EventDispatcher {
     keyboardManager;
     objectHelperManager;
     stats;
-    transing;
     displayMode;
     selectionBox;
     getScreenshot;
-    setSize;
-    setCamera;
-    setDom;
     setStats;
     setTransformControls;
     setViewpoint;
@@ -106,6 +103,9 @@ export class Engine extends EventDispatcher {
             return this;
         };
     }
+    /**
+     * 优化内存
+     */
     optimizeMemory() {
         Object.keys(this).forEach((key) => {
             if (this[key] === undefined) {
@@ -131,11 +131,100 @@ export class Engine extends EventDispatcher {
         this.completeSet.clear();
         return this;
     }
-    // 清除缓存
+    /**
+     * 清除引擎缓存
+     * @returns this
+     */
     dispose() {
         this.dispatchEvent({
             type: "dispose",
         });
+        return this;
+    }
+    /**
+     * 设置输出的dom
+     * @param dom HTMLElement
+     * @returns this
+     */
+    setDom(dom) {
+        this.dom = dom;
+        this.dispatchEvent({
+            type: "setDom",
+            dom: dom,
+        });
+        return this;
+    }
+    /**
+     * 设置引擎整体尺寸
+     * @param width number
+     * @param height number
+     * @returns this
+     */
+    setSize(width, height) {
+        if ((width && width <= 0) || (height && height <= 0)) {
+            console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
+            return this;
+        }
+        !width && (width = this.dom?.offsetWidth || window.innerWidth);
+        !height && (height = this.dom?.offsetHeight || window.innerHeight);
+        this.dispatchEvent({ type: "setSize", width, height });
+        return this;
+    }
+    setCamera(camera) {
+        if (typeof camera === "object" && camera instanceof Camera) {
+            this.camera = camera;
+            this.dispatchEvent({
+                type: "setCamera",
+                camera,
+            });
+        }
+        else {
+            if (this.IS_ENGINESUPPORT) {
+                const target = this.compilerManager.getObjectBySymbol(camera);
+                if (target) {
+                    this.camera = target;
+                    this.dispatchEvent({
+                        type: "setCamera",
+                        camera: target,
+                    });
+                }
+                else {
+                    console.warn(`can not found camera in compilerManager: ${camera}`);
+                }
+            }
+            else {
+                console.warn(`engine is not a Engine support but use symbol to found camera.`);
+            }
+        }
+        return this;
+    }
+    setScene(scene) {
+        if (typeof scene === "object" && scene instanceof Scene) {
+            this.scene = scene;
+            this.dispatchEvent({
+                type: "setScene",
+                scene,
+            });
+        }
+        else {
+            if (this.IS_ENGINESUPPORT) {
+                const target = this.compilerManager.getObjectBySymbol(scene);
+                if (target) {
+                    this.scene = target;
+                    this.dispatchEvent({
+                        type: "setScene",
+                        scene: target,
+                    });
+                }
+                else {
+                    console.warn(`can not found camera in compilerManager: ${scene}`);
+                }
+            }
+            else {
+                console.warn(`engine is not a Engine support but use symbol to found camera.`);
+            }
+        }
+        return this;
         return this;
     }
 }

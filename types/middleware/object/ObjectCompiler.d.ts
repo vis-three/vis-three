@@ -1,4 +1,4 @@
-import { Object3D, Scene, Vector3 } from "three";
+import { Object3D, Vector3 } from "three";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { EngineSupport } from "../../main";
 import { EVENTNAME, ObjectEvent } from "../../manager/EventManager";
@@ -7,10 +7,6 @@ import { ObjectConfig } from "./ObjectConfig";
 export declare type BasicObjectCompiler = ObjectCompiler<ObjectConfig, ObjectCompilerTarget<ObjectConfig>, Object3D>;
 export interface ObjectCompilerTarget<C extends ObjectConfig> extends CompilerTarget {
     [key: string]: C;
-}
-export interface ObjectCompilerParameters<C extends ObjectConfig, T extends ObjectCompilerTarget<C>> {
-    scene?: Scene;
-    target?: T;
 }
 export interface CacheObjectData {
     lookAtTarget: Vector3 | null;
@@ -32,7 +28,6 @@ export declare abstract class ObjectCompiler<C extends ObjectConfig, T extends O
     static registerEvent: (map: unknown) => void;
     IS_OBJECTCOMPILER: boolean;
     abstract COMPILER_NAME: string;
-    protected scene: Scene;
     protected target: T;
     protected map: Map<SymbolConfig["vid"], O>;
     protected weakMap: WeakMap<O, SymbolConfig["vid"]>;
@@ -40,7 +35,7 @@ export declare abstract class ObjectCompiler<C extends ObjectConfig, T extends O
     protected objectMapSet: Set<Map<SymbolConfig["vid"], Object3D>>;
     private filterAttribute;
     engine: EngineSupport;
-    constructor(parameters?: ObjectCompilerParameters<C, T>);
+    constructor();
     getObject(vid: string): Object3D | null;
     protected mergeFilterAttribute(object: FilterAttribute): this;
     protected setLookAt(vid: string, target: string): this;

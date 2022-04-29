@@ -1,11 +1,11 @@
 import { validate } from "uuid";
-import { ObjectCompiler, } from "../object/ObjectCompiler";
+import { ObjectCompiler } from "../object/ObjectCompiler";
 export class SolidObjectCompiler extends ObjectCompiler {
     IS_SOLIDOBJECTCOMPILER = true;
     geometryMap;
     materialMap;
-    constructor(parameters) {
-        super(parameters);
+    constructor() {
+        super();
         this.geometryMap = new Map();
         this.materialMap = new Map();
         this.mergeFilterAttribute({

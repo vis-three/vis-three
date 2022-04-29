@@ -1,8 +1,8 @@
 import { Camera, OrthographicCamera, PerspectiveCamera, Vector3 } from "three";
-import { SetSizeEvent } from "../../plugins/WebGLRendererPlugin";
 import { CameraConfigAllType } from "./CameraConfig";
 import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
+import { SetSizeEvent } from "../../engine/Engine";
 
 export interface CameraCompilerTarget
   extends ObjectCompilerTarget<CameraConfigAllType> {

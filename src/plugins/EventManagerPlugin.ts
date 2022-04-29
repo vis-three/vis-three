@@ -1,4 +1,4 @@
-import { Engine } from "../engine/Engine";
+import { Engine, SetCameraEvent, SetSceneEvent } from "../engine/Engine";
 import {
   EventManager,
   EventManagerParameters,
@@ -6,7 +6,6 @@ import {
   ObjectEvent,
 } from "../manager/EventManager";
 import { Plugin } from "./plugin";
-import { SetCameraEvent } from "./WebGLRendererPlugin";
 
 export const EventManagerPlugin: Plugin<EventManagerParameters> = function (
   this: Engine,
@@ -14,11 +13,6 @@ export const EventManagerPlugin: Plugin<EventManagerParameters> = function (
 ): boolean {
   if (this.eventManager) {
     console.warn("engine has installed eventManager plugin.");
-    return false;
-  }
-
-  if (!this.webGLRenderer) {
-    console.error("must install some renderer before this plugin.");
     return false;
   }
 
@@ -31,7 +25,7 @@ export const EventManagerPlugin: Plugin<EventManagerParameters> = function (
     Object.assign(
       {
         scene: this.scene,
-        camera: this.currentCamera,
+        camera: this.camera,
       },
       params
     )
@@ -44,5 +38,8 @@ export const EventManagerPlugin: Plugin<EventManagerParameters> = function (
     this.eventManager!.setCamera(event.camera);
   });
 
+  this.addEventListener<SetSceneEvent>("setScene", (event) => {
+    this.eventManager!.setScene(event.scene);
+  });
   return true;
 };

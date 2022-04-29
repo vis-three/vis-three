@@ -12,8 +12,6 @@ export const RenderManagerPlugin: Plugin<Object> = function (
 
   this.renderManager = new RenderManager();
 
-  this.render && this.renderManager!.addEventListener("render", this.render);
-
   this.render = function () {
     this.renderManager!.render();
     return this;
@@ -30,6 +28,5 @@ export const RenderManagerPlugin: Plugin<Object> = function (
   this.addEventListener("dispose", () => {
     this.renderManager!.dispose();
   });
-
   return true;
 };

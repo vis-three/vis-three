@@ -1,9 +1,8 @@
 import { OrthographicCamera, PerspectiveCamera } from "three";
 import { BaseEvent } from "../core/EventDispatcher";
-import { Engine } from "../engine/Engine";
+import { Engine, SetSizeEvent } from "../engine/Engine";
 import { Vector3Config } from "../middleware/common/CommonConfig";
 import { Plugin } from "./plugin";
-import { SetSizeEvent } from "./WebGLRendererPlugin";
 
 export enum VIEWPOINT {
   DEFAULT = "default",
@@ -40,11 +39,6 @@ export const ViewpointPlugin: Plugin<ViewpointParameters> = function (
   // 前置条件
   if (!this.webGLRenderer) {
     console.error("must install some renderer before BasicViewpoint plugin.");
-    return false;
-  }
-
-  if (!this.scene) {
-    console.error("must install some scene before BasicViewpoint plugin.");
     return false;
   }
 

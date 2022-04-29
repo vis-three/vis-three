@@ -1,22 +1,22 @@
 import { Scene } from "three";
-import { DataSupport } from "../../core/DataSupport";
 import { CONFIGTYPE } from "../constants/configType";
 import { MODULETYPE } from "../constants/MODULETYPE";
+import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { SceneCompiler, SceneCompilerTarget } from "./SceneCompiler";
-import { getSceneConfig } from "./SceneConfig";
+import { getSceneConfig, SceneConfig } from "./SceneConfig";
 import { SceneRule } from "./SceneRule";
 
-export class SceneDataSupport extends DataSupport<
+export class SceneDataSupport extends ObjectDataSupport<
+  SceneRule,
+  SceneCompiler,
+  SceneConfig,
   SceneCompilerTarget,
-  SceneCompiler
+  Scene
 > {
   MODULE: MODULETYPE = MODULETYPE.SCENE;
 
   constructor(data?: SceneCompilerTarget) {
-    !data &&
-      (data = {
-        [CONFIGTYPE.SCENE]: getSceneConfig(),
-      });
+    !data && (data = {});
     super(SceneRule, data);
   }
 }

@@ -6,6 +6,9 @@ export class EngineSupport extends Engine {
         super();
         this.install(ENGINEPLUGIN.LOADERMANAGER)
             .install(ENGINEPLUGIN.RESOURCEMANAGER)
+            .install(ENGINEPLUGIN.POINTERMANAGER)
+            .install(ENGINEPLUGIN.EVENTMANAGER)
+            .install(ENGINEPLUGIN.RENDERMANAGER)
             .install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters)
             .install(ENGINEPLUGIN.COMPILERMANAGER);
     }

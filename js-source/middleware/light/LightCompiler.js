@@ -1,12 +1,12 @@
 import { AmbientLight, Color, DirectionalLight, PointLight, SpotLight, } from "three";
-import { ObjectCompiler, } from "../object/ObjectCompiler";
+import { ObjectCompiler } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { CONFIGTYPE } from "../constants/configType";
 export class LightCompiler extends ObjectCompiler {
     COMPILER_NAME = MODULETYPE.LIGHT;
     constructMap;
-    constructor(parameters) {
-        super(parameters);
+    constructor() {
+        super();
         this.constructMap = new Map();
         this.constructMap.set(CONFIGTYPE.POINTLIGHT, () => new PointLight());
         this.constructMap.set(CONFIGTYPE.SPOTLIGHT, () => new SpotLight());

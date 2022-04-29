@@ -9,8 +9,6 @@ export class ModelingEngineSupport extends EngineSupport {
             alpha: true,
         })
             .install(ENGINEPLUGIN.SCENE)
-            .install(ENGINEPLUGIN.POINTERMANAGER)
-            .install(ENGINEPLUGIN.EVENTMANAGER)
             .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
             WebGLMultisampleRenderTarget: true,
         })
@@ -20,7 +18,6 @@ export class ModelingEngineSupport extends EngineSupport {
             .install(ENGINEPLUGIN.OBJECTHELPER)
             .install(ENGINEPLUGIN.VIEWPOINT)
             .install(ENGINEPLUGIN.DISPLAYMODE)
-            .install(ENGINEPLUGIN.RENDERMANAGER)
             .install(ENGINEPLUGIN.STATS)
             .install(ENGINEPLUGIN.ORBITCONTROLS)
             .install(ENGINEPLUGIN.KEYBOARDMANAGER)

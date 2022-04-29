@@ -210,19 +210,22 @@ export class DataSupportManager {
    * @param config vis相关配置对象
    * @returns this
    */
-  applyConfig<T extends SymbolConfig>(config: T): this {
-    const module = DataSupportManager.configModuleMap[config.type];
+  applyConfig<T extends SymbolConfig>(...configs: T[]): this {
+    for (const config of configs) {
+      const module = DataSupportManager.configModuleMap[config.type];
 
-    if (module) {
-      this.dataSupportMap.get(module as MODULETYPE)!.addConfig(config);
-    } else {
-      console.warn(
-        `dataSupportManager can not found this config module: ${config.type}`
-      );
+      if (module) {
+        this.dataSupportMap.get(module as MODULETYPE)!.addConfig(config);
+      } else {
+        console.warn(
+          `dataSupportManager can not found this config module: ${config.type}`
+        );
+      }
     }
 
     return this;
   }
+
   /**
    * 获取响应式配置对象
    * @param config vis相关配置对象

@@ -6,26 +6,6 @@ export const WebGLRendererPlugin = function (params = {}) {
     }
     this.webGLRenderer = new WebGLRenderer(params);
     this.dom = this.webGLRenderer.domElement;
-    // 设置尺寸
-    this.setSize = function (width, height) {
-        if ((width && width <= 0) || (height && height <= 0)) {
-            console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
-            return this;
-        }
-        !width && (width = this.dom?.offsetWidth);
-        !height && (height = this.dom?.offsetHeight);
-        this.dispatchEvent({ type: "setSize", width, height });
-        return this;
-    };
-    // 设置相机
-    this.setCamera = function (camera) {
-        this.currentCamera = camera;
-        this.dispatchEvent({
-            type: "setCamera",
-            camera,
-        });
-        return this;
-    };
     // 截图
     this.getScreenshot = function (params = {}) {
         const cacheSize = {
@@ -52,11 +32,14 @@ export const WebGLRendererPlugin = function (params = {}) {
         return element;
     };
     // 设置渲染的dom
-    this.setDom = function (dom) {
-        this.dom = dom;
-        dom.appendChild(this.webGLRenderer.domElement);
-        return this;
-    };
+    this.addEventListener("setDom", (event) => {
+        if (this.dom) {
+            this.dom.appendChild(this.webGLRenderer.domElement);
+        }
+        else {
+            console.warn(`There are no dom set for the engine`);
+        }
+    });
     this.addEventListener("setSize", (event) => {
         const width = event.width;
         const height = event.height;
@@ -65,6 +48,18 @@ export const WebGLRendererPlugin = function (params = {}) {
     this.addEventListener("dispose", () => {
         this.webGLRenderer.dispose();
     });
+    if (this.renderManager) {
+        this.renderManager.removeEventListener("render", this.render);
+        this.renderManager.addEventListener("render", (event) => {
+            this.webGLRenderer.render(this.scene, this.camera);
+        });
+    }
+    else {
+        this.render = function () {
+            this.webGLRenderer.render(this.scene, this.camera);
+            return this;
+        };
+    }
     return true;
 };
 //# sourceMappingURL=WebGLRendererPlugin.js.map

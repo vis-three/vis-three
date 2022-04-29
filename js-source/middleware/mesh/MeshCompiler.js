@@ -7,8 +7,8 @@ export class MeshCompiler extends SolidObjectCompiler {
         color: "rgb(150, 150, 150)",
     });
     replaceGeometry = new BoxBufferGeometry(10, 10, 10);
-    constructor(parameters) {
-        super(parameters);
+    constructor() {
+        super();
     }
     getReplaceMaterial() {
         return this.replaceMaterial;

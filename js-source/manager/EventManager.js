@@ -26,6 +26,10 @@ export class EventManager extends EventDispatcher {
         parameters.recursive && (this.recursive = parameters.recursive);
         parameters.penetrate && (this.penetrate = parameters.penetrate);
     }
+    setScene(scene) {
+        this.scene = scene;
+        return this;
+    }
     setCamera(camera) {
         this.camera = camera;
         return this;

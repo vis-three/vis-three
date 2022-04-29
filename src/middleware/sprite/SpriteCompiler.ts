@@ -7,7 +7,6 @@ import {
 import { MODULETYPE } from "../constants/MODULETYPE";
 import {
   SolidObjectCompiler,
-  SolidObjectCompilerParameters,
   SolidObjectCompilerTarget,
 } from "../solidObject/SolidObjectCompiler";
 import { SpriteConfig } from "./SpriteConfig";
@@ -16,11 +15,6 @@ export interface SpriteCompilerTarget
   extends SolidObjectCompilerTarget<SpriteConfig> {
   [key: string]: SpriteConfig;
 }
-
-export type SpriteCompilerParameters = SolidObjectCompilerParameters<
-  SpriteConfig,
-  SpriteCompilerTarget
->;
 
 export class SpriteCompiler extends SolidObjectCompiler<
   SpriteConfig,
@@ -32,8 +26,11 @@ export class SpriteCompiler extends SolidObjectCompiler<
   private replaceMaterial = new SpriteMaterial({ color: "rgb(150, 150, 150)" });
   private replaceGeometry = new PlaneBufferGeometry(1, 1);
 
-  constructor(parametes?: SpriteCompilerParameters) {
-    super(parametes);
+  constructor() {
+    super();
+    this.mergeFilterAttribute({
+      geometry: true,
+    });
   }
 
   getReplaceMaterial(): SpriteMaterial {

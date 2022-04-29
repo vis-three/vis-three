@@ -3,6 +3,7 @@ import { validate } from "uuid";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
 import { Rule } from "../../core/Rule";
 import { EVENTNAME } from "../../manager/EventManager";
+import { UNIQUESYMBOL } from "../constants/UNIQUESYMBOL";
 import { ObjectCompiler, ObjectCompilerTarget } from "./ObjectCompiler";
 import { ObjectConfig } from "./ObjectConfig";
 
@@ -51,14 +52,14 @@ export const ObjectRule = function <
       }
     }
 
-    if (validate(key)) {
+    if (validate(key) || UNIQUESYMBOL[key]) {
       compiler.add(key, value);
     }
     return;
   }
 
   if (operate === "set") {
-    if (vid && validate(vid)) {
+    if ((vid && validate(vid)) || UNIQUESYMBOL[vid]) {
       compiler.set(vid, tempPath, key, value);
     } else {
       console.warn(`${compiler.COMPILER_NAME} rule vid is illeage: '${vid}'`);
@@ -72,7 +73,7 @@ export const ObjectRule = function <
       return;
     }
 
-    if (validate(key)) {
+    if (validate(key) || UNIQUESYMBOL[key]) {
       compiler.add(key, value);
     }
     return;

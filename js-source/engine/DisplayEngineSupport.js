@@ -8,13 +8,10 @@ export class DisplayEngineSupport extends EngineSupport {
             alpha: true,
         });
         this.install(ENGINEPLUGIN.SCENE);
-        this.install(ENGINEPLUGIN.RENDERMANAGER);
         this.install(ENGINEPLUGIN.EFFECTCOMPOSER, {
             WebGLMultisampleRenderTarget: true,
         });
-        this.install(ENGINEPLUGIN.ORBITCONTROLS);
-        this.install(ENGINEPLUGIN.POINTERMANAGER);
-        this.install(ENGINEPLUGIN.EVENTMANAGER).complete();
+        this.install(ENGINEPLUGIN.ORBITCONTROLS).complete();
     }
 }
 //# sourceMappingURL=DisplayEngineSupport.js.map

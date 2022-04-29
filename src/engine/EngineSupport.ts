@@ -31,6 +31,9 @@ export class EngineSupport extends Engine {
     super();
     this.install(ENGINEPLUGIN.LOADERMANAGER)
       .install(ENGINEPLUGIN.RESOURCEMANAGER)
+      .install(ENGINEPLUGIN.POINTERMANAGER)
+      .install(ENGINEPLUGIN.EVENTMANAGER)
+      .install(ENGINEPLUGIN.RENDERMANAGER)
       .install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters)
       .install(ENGINEPLUGIN.COMPILERMANAGER);
   }
@@ -80,7 +83,12 @@ export class EngineSupport extends Engine {
     config: EngineSupportLoadOptions,
     callback?: (event?: MappedEvent) => void
   ): this {
-    this.renderManager!.stop();
+    const renderFlag = this.renderManager!.hasRendering();
+
+    if (renderFlag) {
+      this.renderManager!.stop();
+    }
+
     // 导入外部资源
     if (config.assets && config.assets.length) {
       const mappedFun = (event: MappedEvent) => {
@@ -89,7 +97,11 @@ export class EngineSupport extends Engine {
 
         this.resourceManager.removeEventListener("mapped", mappedFun);
         callback && callback(event);
-        this.renderManager!.play();
+        if (renderFlag) {
+          this.renderManager!.play();
+        } else {
+          this.renderManager!.render();
+        }
       };
 
       this.resourceManager.addEventListener<MappedEvent>("mapped", mappedFun);
@@ -97,7 +109,12 @@ export class EngineSupport extends Engine {
     } else {
       this.loadLifeCycle(config);
       callback && callback();
-      this.renderManager!.play();
+
+      if (renderFlag) {
+        this.renderManager!.play();
+      } else {
+        this.renderManager!.render();
+      }
     }
 
     return this;
@@ -107,7 +124,11 @@ export class EngineSupport extends Engine {
     config: EngineSupportLoadOptions
   ): Promise<MappedEvent | undefined> {
     return new Promise((resolve, reject) => {
-      this.renderManager!.stop();
+      const renderFlag = this.renderManager!.hasRendering();
+
+      if (renderFlag) {
+        this.renderManager!.stop();
+      }
       // 导入外部资源
       if (config.assets && config.assets.length) {
         const mappedFun = (event: MappedEvent) => {
@@ -115,7 +136,11 @@ export class EngineSupport extends Engine {
           this.loadLifeCycle(config);
 
           this.resourceManager.removeEventListener("mapped", mappedFun);
-          this.renderManager!.play();
+          if (renderFlag) {
+            this.renderManager!.play();
+          } else {
+            this.renderManager!.render();
+          }
           resolve(event);
         };
 
@@ -123,7 +148,11 @@ export class EngineSupport extends Engine {
         this.loaderManager.reset().load(config.assets);
       } else {
         this.loadLifeCycle(config);
-        this.renderManager!.play();
+        if (renderFlag) {
+          this.renderManager!.play();
+        } else {
+          this.renderManager!.render();
+        }
         resolve(undefined);
       }
     });

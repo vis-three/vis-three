@@ -57,11 +57,19 @@
         material: meshStandardMaterial.vid,
       });
 
-      engine.dataSupportManager.applyConfig(pointLight);
-      engine.dataSupportManager.applyConfig(meshStandardMaterial);
-      engine.dataSupportManager.applyConfig(boxGeometry);
-      engine.dataSupportManager.applyConfig(mesh);
+      const scene = Vis.generateConfig("Scene", {
+        children: [pointLight.vid, mesh.vid],
+      });
 
+      engine.dataSupportManager.applyConfig(
+        pointLight,
+        meshStandardMaterial,
+        boxGeometry,
+        mesh,
+        scene
+      );
+
+      engine.setScene(scene.vid).play();
       console.log(engine);
     </script>
   </body>

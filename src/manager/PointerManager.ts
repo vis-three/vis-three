@@ -6,34 +6,40 @@ export interface VisPointerEvent extends Omit<PointerEvent, "type">, BaseEvent {
 }
 
 export interface PointerManagerParameters {
-  dom: HTMLCanvasElement;
+  dom?: HTMLElement;
   throttleTime?: number;
 }
 
 export class PointerManager extends EventDispatcher {
-  private dom: HTMLCanvasElement;
+  private dom: HTMLElement | undefined;
   private mouse: Vector2;
 
   private canMouseMove: boolean;
   private mouseEventTimer: number | null;
   private throttleTime: number;
 
+  private pointerDownFun: (event: PointerEvent) => void;
+  private pointerMoveFun: (event: PointerEvent) => void;
+  private pointerUpFun: (event: PointerEvent) => void;
+
   constructor(parameters: PointerManagerParameters) {
     super();
-    const dom = parameters.dom;
-
-    this.dom = dom;
+    this.dom = parameters.dom;
     this.mouse = new Vector2();
 
     this.canMouseMove = true;
     this.mouseEventTimer = null;
     this.throttleTime = parameters.throttleTime || 1000 / 60;
 
-    dom.addEventListener("pointerdown", (event: PointerEvent) => {
-      this.pointerDown(event);
-    });
+    this.pointerDownFun = (event: PointerEvent) => {
+      const eventObject = { mouse: this.mouse };
+      for (const key in event) {
+        eventObject[key] = event[key];
+      }
+      this.dispatchEvent(eventObject as VisPointerEvent);
+    };
 
-    dom.addEventListener("pointermove", (event: PointerEvent) => {
+    this.pointerMoveFun = (event: PointerEvent) => {
       if (!this.canMouseMove) {
         return;
       }
@@ -42,49 +48,52 @@ export class PointerManager extends EventDispatcher {
         const mouse = this.mouse;
         const dom = this.dom;
 
-        mouse.x = (event.offsetX / dom.offsetWidth) * 2 - 1;
-        mouse.y = -(event.offsetY / dom.offsetHeight) * 2 + 1;
+        mouse.x = (event.offsetX / dom!.offsetWidth) * 2 - 1;
+        mouse.y = -(event.offsetY / dom!.offsetHeight) * 2 + 1;
 
         this.canMouseMove = true;
 
-        this.pointerMove(event);
+        const eventObject = { mouse: this.mouse };
+        for (const key in event) {
+          eventObject[key] = event[key];
+        }
+        this.dispatchEvent(eventObject as VisPointerEvent);
       }, this.throttleTime);
-    });
+    };
 
-    dom.addEventListener("pointerup", (event: PointerEvent) => {
-      this.pointerUp(event);
-    });
+    this.pointerUpFun = (event: PointerEvent) => {
+      const eventObject = { mouse: this.mouse };
+      for (const key in event) {
+        eventObject[key] = event[key];
+      }
+      this.dispatchEvent(eventObject as VisPointerEvent);
+    };
   }
 
-  // 获取鼠标指针
-  getMousePoint(): Vector2 {
+  /**
+   * 设置当前作用的dom
+   * @param dom
+   * @returns
+   */
+  setDom(dom: HTMLElement): this {
+    if (this.dom) {
+      this.dom.removeEventListener("pointerdown", this.pointerDownFun);
+      this.dom.removeEventListener("pointermove", this.pointerMoveFun);
+      this.dom.removeEventListener("pointerup", this.pointerUpFun);
+    }
+    dom.addEventListener("pointerdown", this.pointerDownFun);
+    dom.addEventListener("pointermove", this.pointerMoveFun);
+    dom.addEventListener("pointerup", this.pointerUpFun);
+
+    this.dom = dom;
+    return this;
+  }
+
+  /**
+   * 获取归一化的鼠标指针
+   * @returns mouse
+   */
+  getNormalMouse(): Vector2 {
     return this.mouse;
-  }
-
-  // 鼠标指针按下
-  pointerDown(event: PointerEvent) {
-    const eventObject = { mouse: this.mouse };
-    for (const key in event) {
-      eventObject[key] = event[key];
-    }
-    this.dispatchEvent(eventObject as VisPointerEvent);
-  }
-
-  // 鼠标指针移动
-  pointerMove(event: PointerEvent) {
-    const eventObject = { mouse: this.mouse };
-    for (const key in event) {
-      eventObject[key] = event[key];
-    }
-    this.dispatchEvent(eventObject as VisPointerEvent);
-  }
-
-  // 鼠标指针抬起
-  pointerUp(event: PointerEvent) {
-    const eventObject = { mouse: this.mouse };
-    for (const key in event) {
-      eventObject[key] = event[key];
-    }
-    this.dispatchEvent(eventObject as VisPointerEvent);
   }
 }

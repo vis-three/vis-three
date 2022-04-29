@@ -1,12 +1,12 @@
-import { SymbolConfig } from "../common/CommonConfig";
+import { ObjectConfig } from "../object/ObjectConfig";
 export interface SceneFogConfig {
-    type: "Fog" | "FogExp2" | "";
+    type: string;
     color: string;
     near: number;
     far: number;
     density: number;
 }
-export interface SceneConfig extends SymbolConfig {
+export interface SceneConfig extends ObjectConfig {
     background: string | null;
     environment: string | null;
     fog: SceneFogConfig;

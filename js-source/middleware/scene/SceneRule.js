@@ -1,7 +1,5 @@
-export const SceneRule = function (input, compiler) {
-    const { operate, key, path, value } = input;
-    if (operate === "set") {
-        compiler.set(path.concat([]), key, value);
-    }
+import { ObjectRule } from "../object/ObjectRule";
+export const SceneRule = function (notice, compiler) {
+    ObjectRule(notice, compiler);
 };
 //# sourceMappingURL=SceneRule.js.map

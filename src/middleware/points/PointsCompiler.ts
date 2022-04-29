@@ -8,7 +8,6 @@ import {
 import { MODULETYPE } from "../constants/MODULETYPE";
 import {
   SolidObjectCompiler,
-  SolidObjectCompilerParameters,
   SolidObjectCompilerTarget,
 } from "../solidObject/SolidObjectCompiler";
 import { PointsConfig } from "./PointsConfig";
@@ -17,11 +16,6 @@ export interface PointsCompilerTarget
   extends SolidObjectCompilerTarget<PointsConfig> {
   [key: string]: PointsConfig;
 }
-
-export type PointsCompilerParameters = SolidObjectCompilerParameters<
-  PointsConfig,
-  PointsCompilerTarget
->;
 
 export class PointsCompiler extends SolidObjectCompiler<
   PointsConfig,
@@ -33,8 +27,8 @@ export class PointsCompiler extends SolidObjectCompiler<
   private replaceMaterial = new PointsMaterial({ color: "rgb(150, 150, 150)" });
   private replaceGeometry = new DodecahedronBufferGeometry(5);
 
-  constructor(parameters?: PointsCompilerParameters) {
-    super(parameters);
+  constructor() {
+    super();
   }
 
   getReplaceMaterial(): Material {

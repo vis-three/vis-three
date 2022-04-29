@@ -7,11 +7,7 @@ import {
   SpotLight,
 } from "three";
 import { LightConfigAllType } from "./LightConfig";
-import {
-  ObjectCompiler,
-  ObjectCompilerParameters,
-  ObjectCompilerTarget,
-} from "../object/ObjectCompiler";
+import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { CONFIGTYPE } from "../constants/configType";
 
@@ -19,11 +15,6 @@ export interface LightCompilerTarget
   extends ObjectCompilerTarget<LightConfigAllType> {
   [key: string]: LightConfigAllType;
 }
-
-export type LightCompilerParameters = ObjectCompilerParameters<
-  LightConfigAllType,
-  LightCompilerTarget
->;
 
 export class LightCompiler extends ObjectCompiler<
   LightConfigAllType,
@@ -34,8 +25,8 @@ export class LightCompiler extends ObjectCompiler<
 
   private constructMap: Map<string, () => Light>;
 
-  constructor(parameters?: LightCompilerParameters) {
-    super(parameters);
+  constructor() {
+    super();
     this.constructMap = new Map();
     this.constructMap.set(CONFIGTYPE.POINTLIGHT, () => new PointLight());
     this.constructMap.set(CONFIGTYPE.SPOTLIGHT, () => new SpotLight());

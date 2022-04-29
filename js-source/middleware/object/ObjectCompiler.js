@@ -1,4 +1,3 @@
-import { Scene } from "three";
 import { Compiler } from "../../core/Compiler";
 import { EVENTNAME } from "../../manager/EventManager";
 import * as BasicEventLbirary from "../../convenient/BasicEventLibrary/handler";
@@ -10,7 +9,6 @@ export class ObjectCompiler extends Compiler {
         ObjectCompiler.eventLibrary = Object.assign(ObjectCompiler.eventLibrary, map);
     };
     IS_OBJECTCOMPILER = true;
-    scene;
     target;
     map;
     weakMap;
@@ -30,16 +28,8 @@ export class ObjectCompiler extends Compiler {
         contextmenu: true,
     };
     engine;
-    constructor(parameters) {
+    constructor() {
         super();
-        if (parameters) {
-            parameters.scene && (this.scene = parameters.scene);
-            parameters.target && (this.target = parameters.target);
-        }
-        else {
-            this.scene = new Scene();
-            this.target = {};
-        }
         this.map = new Map();
         this.weakMap = new WeakMap();
         this.objectMapSet = new Set();
@@ -211,11 +201,6 @@ export class ObjectCompiler extends Compiler {
         return this;
     }
     useEngine(engine) {
-        if (!engine.scene) {
-            console.warn(`engine muset install scene plugin.`);
-            return this;
-        }
-        this.scene = engine.scene;
         this.engine = engine;
         return this;
     }
@@ -268,7 +253,6 @@ export class ObjectCompiler extends Compiler {
             }
         });
         Compiler.applyConfig(config, object, this.filterAttribute);
-        this.scene.add(object);
         return this;
     }
     set(vid, path, key, value) {
@@ -303,7 +287,6 @@ export class ObjectCompiler extends Compiler {
             return this;
         }
         const object = this.map.get(vid);
-        this.scene.remove(object);
         this.weakMap.delete(object);
         this.objectCacheMap.delete(this.map.get(vid));
         this.map.delete(vid);

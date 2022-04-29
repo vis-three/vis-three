@@ -1,4 +1,4 @@
-import { Engine } from "../engine/Engine";
+import { Engine, SetDomEvent } from "../engine/Engine";
 import {
   PointerManager,
   PointerManagerParameters,
@@ -14,16 +14,14 @@ export const PointerManagerPlugin: Plugin<PointerManagerParameters> = function (
     return false;
   }
 
-  if (!this.webGLRenderer) {
-    console.error("must install some renderer before this plugin.");
-    return false;
-  }
-
   const pointerManager = new PointerManager(
     Object.assign(params || {}, {
-      dom: this.dom!,
+      dom: this.dom,
     })
   );
+  this.addEventListener<SetDomEvent>("setDom", (event) => {
+    pointerManager.setDom(event.dom);
+  });
 
   this.pointerManager = pointerManager;
 

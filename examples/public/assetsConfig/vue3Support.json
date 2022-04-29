@@ -10,9 +10,15 @@
     "Scene": {
       "vid": "Scene",
       "type": "Scene",
-      "background": "",
-      "environment": "",
-      "fog": null
+      "children": [
+        "67b4de22-3e2e-44d3-9fd2-236c73daca00",
+        "8f2dcc15-c9b9-4600-b6a9-1f01c7d3e03f",
+        "559aa946-aaca-444f-b6cd-d885352e91c3",
+        "92153ffa-7efd-4ea9-bfa0-605de175c4e9",
+        "cd088c02-0270-4efe-bfc6-16b617bac074",
+        "616dd956-a5d9-4479-b5e5-e7fbea1bc572",
+        "f0fa42dd-44dc-424c-9226-1ab733d444cc"
+      ]
     }
   },
   "renderer": {

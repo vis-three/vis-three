@@ -1,5 +1,5 @@
 import { AxesHelper } from "three";
-import { Engine, ENGINEPLUGIN } from "../engine/Engine";
+import { Engine, ENGINEPLUGIN, SetSceneEvent } from "../engine/Engine";
 import { Plugin } from "./plugin";
 
 export interface AxesHelperParameters {
@@ -32,5 +32,8 @@ export const AxesHelperPlugin: Plugin<AxesHelperParameters> = function (
     return this;
   };
 
+  this.addEventListener<SetSceneEvent>("setScene", (event) => {
+    event.scene.add(axesHelper);
+  });
   return true;
 };

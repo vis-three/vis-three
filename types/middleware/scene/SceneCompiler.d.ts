@@ -1,29 +1,25 @@
 import { Scene, Texture } from "three";
-import { Compiler, CompilerTarget } from "../../core/Compiler";
-import { EngineSupport } from "../../main";
 import { SymbolConfig } from "../common/CommonConfig";
-import { CONFIGTYPE } from "../constants/configType";
+import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { SceneConfig } from "./SceneConfig";
-export interface SceneCompilerTarget extends CompilerTarget {
-    [CONFIGTYPE.SCENE]: SceneConfig;
+export interface SceneCompilerTarget extends ObjectCompilerTarget<SceneConfig> {
+    [key: string]: SceneConfig;
 }
-export interface SceneCompilerParameters {
-    target?: SceneCompilerTarget;
-    scene?: Scene;
-}
-export declare class SceneCompiler extends Compiler {
+export declare class SceneCompiler extends ObjectCompiler<SceneConfig, SceneCompilerTarget, Scene> {
+    COMPILER_NAME: string;
     private textureMap;
-    private target;
-    private scene;
     private fogCache;
-    constructor(parameters?: SceneCompilerParameters);
+    constructor();
+    /**
+     * @override
+     */
+    protected setLookAt(vid: string, target: string): this;
     private background;
     private environment;
     private fog;
     linkTextureMap(map: Map<SymbolConfig["type"], Texture>): this;
-    set(path: string[], key: string, value: any): this;
+    add(vid: string, config: SceneConfig): this;
+    set(vid: string, path: string[], key: string, value: any): this;
     setTarget(target: SceneCompilerTarget): this;
-    useEngine(engine: EngineSupport): this;
-    compileAll(): this;
     dispose(): this;
 }

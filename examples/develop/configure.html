@@ -69,30 +69,31 @@
 
       const engine = new Vis.ModelingEngineSupport()
         .setDom(document.getElementById("app"))
-        .setSize()
-        .play()
-        .loadConfig(visConfig, () => {
-          const lightDataSupport = engine.dataSupportManager.getDataSupport(
-            Vis.MODULETYPE.LIGHT
-          );
-          const lightData = lightDataSupport.getData();
+        .setSize();
 
-          for (const key in lightData) {
-            lightData[key].position.y = -10;
-            lightData[key].distance = 100;
-          }
+      engine.loadConfigAsync(visConfig).then(() => {
+        const lightDataSupport = engine.dataSupportManager.getDataSupport(
+          Vis.MODULETYPE.LIGHT
+        );
+        const lightData = lightDataSupport.getData();
 
-          document.getElementById("exportConfig").innerText = engine
-            .toJSON()
-            .replace(/",/g, '",\n')
-            .replace(/"},/g, '"},\n')
-            .replace(/{"/g, '{"\n')
-            .replace(/,"/g, ',"\n')
-            .replace(/},"/g, '\n},"');
-          document.body.removeChild(loadingDom);
+        for (const key in lightData) {
+          lightData[key].position.y = -10;
+          lightData[key].distance = 100;
+        }
 
-          console.log(engine.toJSON());
-        });
+        document.getElementById("exportConfig").innerText = engine
+          .toJSON()
+          .replace(/",/g, '",\n')
+          .replace(/"},/g, '"},\n')
+          .replace(/{"/g, '{"\n')
+          .replace(/,"/g, ',"\n')
+          .replace(/},"/g, '\n},"');
+        document.body.removeChild(loadingDom);
+
+        engine.setScene(visConfig.scene.Scene.vid).play();
+        console.log(engine.toJSON());
+      });
     </script>
   </body>
 </html>

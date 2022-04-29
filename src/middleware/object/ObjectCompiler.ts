@@ -17,14 +17,6 @@ export interface ObjectCompilerTarget<C extends ObjectConfig>
   [key: string]: C;
 }
 
-export interface ObjectCompilerParameters<
-  C extends ObjectConfig,
-  T extends ObjectCompilerTarget<C>
-> {
-  scene?: Scene;
-  target?: T;
-}
-
 export interface CacheObjectData {
   lookAtTarget: Vector3 | null;
   updateMatrixWorldFun: ((focus: boolean) => void) | null;
@@ -62,7 +54,6 @@ export abstract class ObjectCompiler<
 
   abstract COMPILER_NAME: string;
 
-  protected scene!: Scene;
   protected target!: T;
   protected map: Map<SymbolConfig["vid"], O>;
   protected weakMap: WeakMap<O, SymbolConfig["vid"]>;
@@ -72,7 +63,7 @@ export abstract class ObjectCompiler<
   protected objectMapSet: Set<Map<SymbolConfig["vid"], Object3D>>;
 
   // merge属性的时候会直接被过滤的属性
-  private filterAttribute: FilterAttribute = {
+  protected filterAttribute: FilterAttribute = {
     lookAt: true,
     children: true,
     pointerdown: true,
@@ -87,15 +78,8 @@ export abstract class ObjectCompiler<
 
   engine!: EngineSupport;
 
-  constructor(parameters?: ObjectCompilerParameters<C, T>) {
+  constructor() {
     super();
-    if (parameters) {
-      parameters.scene && (this.scene = parameters.scene);
-      parameters.target && (this.target = parameters.target);
-    } else {
-      this.scene = new Scene();
-      this.target = {} as T;
-    }
 
     this.map = new Map();
     this.weakMap = new WeakMap();
@@ -342,12 +326,6 @@ export abstract class ObjectCompiler<
   }
 
   useEngine(engine: EngineSupport): this {
-    if (!engine.scene) {
-      console.warn(`engine muset install scene plugin.`);
-      return this;
-    }
-
-    this.scene = engine.scene;
     this.engine = engine;
     return this;
   }
@@ -412,8 +390,6 @@ export abstract class ObjectCompiler<
     });
 
     Compiler.applyConfig(config, object, this.filterAttribute);
-    this.scene.add(object!);
-
     return this;
   }
 
@@ -460,7 +436,6 @@ export abstract class ObjectCompiler<
 
     const object = this.map.get(vid)!;
 
-    this.scene.remove(object);
     this.weakMap.delete(object);
     this.objectCacheMap.delete(this.map.get(vid)!);
     this.map.delete(vid);

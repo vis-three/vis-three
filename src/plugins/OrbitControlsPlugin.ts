@@ -1,7 +1,6 @@
-import { Engine } from "../engine/Engine";
+import { Engine, SetCameraEvent, SetDomEvent } from "../engine/Engine";
 import { VisOrbitControls } from "../optimize/VisOrbitControls";
 import { Plugin } from "./plugin";
-import { SetCameraEvent } from "./WebGLRendererPlugin";
 import { VIEWPOINT, ViewpointEvent } from "./ViewpointPlugin";
 
 export const OrbitControlsPlugin: Plugin<Object> = function (
@@ -13,13 +12,6 @@ export const OrbitControlsPlugin: Plugin<Object> = function (
     return false;
   }
 
-  if (!this.webGLRenderer) {
-    console.warn(
-      "this must install renderer before install orbitControls plugin."
-    );
-    return false;
-  }
-
   if (!this.renderManager) {
     console.warn(
       "this must install renderManager before install orbitControls plugin."
@@ -27,10 +19,14 @@ export const OrbitControlsPlugin: Plugin<Object> = function (
     return false;
   }
 
-  this.orbitControls = new VisOrbitControls(this.currentCamera!, this.dom!);
+  this.orbitControls = new VisOrbitControls(this.camera, this.dom);
 
   this.addEventListener<SetCameraEvent>("setCamera", (event) => {
-    (this.orbitControls as VisOrbitControls).setCamera(event.camera);
+    this.orbitControls!.setCamera(event.camera);
+  });
+
+  this.addEventListener<SetDomEvent>("setDom", (event) => {
+    this.orbitControls!.setDom(event.dom);
   });
 
   this.renderManager!.addEventListener("render", () => {

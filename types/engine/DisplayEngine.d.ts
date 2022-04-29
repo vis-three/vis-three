@@ -15,9 +15,6 @@ export declare class DisplayEngine extends Engine {
     renderManager: RenderManager;
     pointerManager: PointerManager;
     eventManager: EventManager;
-    setSize: (width: number, height: number) => this;
-    setCamera: (camera: Camera) => this;
-    setDom: (dom: HTMLElement) => this;
     play: () => this;
     stop: () => this;
     render: () => this;

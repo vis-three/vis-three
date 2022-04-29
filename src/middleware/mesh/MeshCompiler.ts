@@ -5,11 +5,9 @@ import {
   Mesh,
   MeshBasicMaterial,
 } from "three";
-import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import {
   SolidObjectCompiler,
-  SolidObjectCompilerParameters,
   SolidObjectCompilerTarget,
 } from "../solidObject/SolidObjectCompiler";
 import { MeshConfig } from "./MeshConfig";
@@ -18,11 +16,6 @@ export interface MeshCompilerTarget
   extends SolidObjectCompilerTarget<MeshConfig> {
   [key: string]: MeshConfig;
 }
-
-export type MeshCompilerParameters = SolidObjectCompilerParameters<
-  MeshConfig,
-  MeshCompilerTarget
->;
 
 export class MeshCompiler extends SolidObjectCompiler<
   MeshConfig,
@@ -36,8 +29,8 @@ export class MeshCompiler extends SolidObjectCompiler<
   });
   private replaceGeometry = new BoxBufferGeometry(10, 10, 10);
 
-  constructor(parameters?: MeshCompilerParameters) {
-    super(parameters);
+  constructor() {
+    super();
   }
 
   getReplaceMaterial(): Material {

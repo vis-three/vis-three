@@ -1,15 +1,10 @@
-import { DataSupport } from "../../core/DataSupport";
-import { CONFIGTYPE } from "../constants/configType";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { getSceneConfig } from "./SceneConfig";
+import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { SceneRule } from "./SceneRule";
-export class SceneDataSupport extends DataSupport {
+export class SceneDataSupport extends ObjectDataSupport {
     MODULE = MODULETYPE.SCENE;
     constructor(data) {
-        !data &&
-            (data = {
-                [CONFIGTYPE.SCENE]: getSceneConfig(),
-            });
+        !data && (data = {});
         super(SceneRule, data);
     }
 }

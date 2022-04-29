@@ -1,5 +1,4 @@
 import { ENGINEPLUGIN } from "./Engine";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -11,15 +10,16 @@ import { EngineSupport, EngineSupportParameters } from "./EngineSupport";
 import { KeyboardManager } from "../manager/KeyboardManager";
 import { DISPLAYMODE } from "../plugins/DisplayModePlugin";
 import { VIEWPOINT } from "../plugins/ViewpointPlugin";
+import { VisOrbitControls } from "../optimize/VisOrbitControls";
 
 export class ModelingEngineSupport extends EngineSupport {
   IS_ENGINESUPPORT = true;
 
   declare dom: HTMLElement;
   declare webGLRenderer: WebGLRenderer;
-  declare currentCamera: Camera;
+  declare camera: Camera;
   declare scene: Scene;
-  declare orbitControls: OrbitControls;
+  declare orbitControls: VisOrbitControls;
   declare transformControls: TransformControls;
   declare effectComposer: EffectComposer;
   declare renderManager: RenderManager;
@@ -27,13 +27,9 @@ export class ModelingEngineSupport extends EngineSupport {
   declare eventManager: EventManager;
   declare keyboardManager: KeyboardManager;
   declare stats: Stats;
-  declare transing: boolean;
   declare displayMode: DISPLAYMODE;
   declare selectionBox: Set<Object3D>;
 
-  declare setSize: (width: number, height: number) => this;
-  declare setCamera: (camera: Camera) => this;
-  declare setDom: (dom: HTMLElement) => this;
   declare setStats: (show: boolean) => this;
   declare setTransformControls: (show: boolean) => this;
   declare setViewpoint: (viewpoint: VIEWPOINT) => this;
@@ -52,9 +48,6 @@ export class ModelingEngineSupport extends EngineSupport {
       antialias: true,
       alpha: true,
     })
-      .install(ENGINEPLUGIN.SCENE)
-      .install(ENGINEPLUGIN.POINTERMANAGER)
-      .install(ENGINEPLUGIN.EVENTMANAGER)
       .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
         WebGLMultisampleRenderTarget: true,
       })
@@ -64,7 +57,6 @@ export class ModelingEngineSupport extends EngineSupport {
       .install(ENGINEPLUGIN.OBJECTHELPER)
       .install(ENGINEPLUGIN.VIEWPOINT)
       .install(ENGINEPLUGIN.DISPLAYMODE)
-      .install(ENGINEPLUGIN.RENDERMANAGER)
       .install(ENGINEPLUGIN.STATS)
       .install(ENGINEPLUGIN.ORBITCONTROLS)
       .install(ENGINEPLUGIN.KEYBOARDMANAGER)

@@ -61,8 +61,7 @@ export const SelectionPlugin: Plugin<SelectionParameters> = function (
   // 单选
   this.eventManager.addEventListener<GlobalEvent>("click", (event) => {
     // 兼容transformControls事件
-    if (this.transing) {
-      this.transing = false;
+    if (this.transformControls?.dragging) {
       return;
     }
     const intersections = event.intersections;

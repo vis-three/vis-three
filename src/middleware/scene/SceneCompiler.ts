@@ -1,70 +1,89 @@
 import { Color, Fog, FogExp2, Scene, Texture } from "three";
 import { validate } from "uuid";
-import { Compiler, CompilerTarget } from "../../core/Compiler";
-import { EngineSupport } from "../../main";
 import { SymbolConfig } from "../common/CommonConfig";
-import { CONFIGTYPE } from "../constants/configType";
-import { getSceneConfig, SceneConfig, SceneFogConfig } from "./SceneConfig";
+import { MODULETYPE } from "../constants/MODULETYPE";
+import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { SceneConfig, SceneFogConfig } from "./SceneConfig";
 
-export interface SceneCompilerTarget extends CompilerTarget {
-  [CONFIGTYPE.SCENE]: SceneConfig;
+export interface SceneCompilerTarget extends ObjectCompilerTarget<SceneConfig> {
+  [key: string]: SceneConfig;
 }
 
-export interface SceneCompilerParameters {
-  target?: SceneCompilerTarget;
-  scene?: Scene;
-}
+export class SceneCompiler extends ObjectCompiler<
+  SceneConfig,
+  SceneCompilerTarget,
+  Scene
+> {
+  COMPILER_NAME: string = MODULETYPE.SCENE;
 
-export class SceneCompiler extends Compiler {
   private textureMap: Map<SymbolConfig["type"], Texture>;
-  private target!: SceneCompilerTarget;
-  private scene!: Scene;
 
   private fogCache: Fog | FogExp2 | null;
 
-  constructor(parameters?: SceneCompilerParameters) {
+  constructor() {
     super();
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-      parameters.scene && (this.scene = parameters.scene);
-    } else {
-      this.target = {
-        [CONFIGTYPE.SCENE]: getSceneConfig(),
-      };
-      this.scene = new Scene();
-    }
     this.textureMap = new Map();
     this.fogCache = null;
+
+    this.mergeFilterAttribute({
+      background: true,
+      environment: true,
+      fog: true,
+    });
   }
 
-  private background(value: string | null) {
+  /**
+   * @override
+   */
+  protected setLookAt(vid: string, target: string): this {
+    return this;
+  }
+
+  private background(vid: string, value: string | null) {
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`
+      );
+      return;
+    }
+
+    const scene = this.map.get(vid)!;
     if (!value) {
-      this.scene.background = null;
+      scene.background = null;
       return;
     }
 
     if (validate(value)) {
       if (this.textureMap.has(value)) {
-        this.scene.background = this.textureMap.get(value)!;
+        scene.background = this.textureMap.get(value)!;
       } else {
         console.warn(
           `scene compiler can not found this vid texture : '${value}'`
         );
       }
     } else {
-      this.scene.background = new Color(value);
+      scene.background = new Color(value);
     }
   }
 
-  private environment(value: string | null) {
+  private environment(vid: string, value: string | null) {
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`
+      );
+      return;
+    }
+
+    const scene = this.map.get(vid)!;
+
     if (!value) {
-      this.scene.environment = null;
+      scene.environment = null;
       return;
     }
 
     if (validate(value)) {
       if (this.textureMap.has(value)) {
-        this.scene.environment = this.textureMap.get(value)!;
+        scene.environment = this.textureMap.get(value)!;
       } else {
         console.warn(
           `scene compiler can not found this vid texture : '${value}'`
@@ -75,10 +94,19 @@ export class SceneCompiler extends Compiler {
     }
   }
 
-  private fog(config: SceneFogConfig) {
+  private fog(vid: string, config: SceneFogConfig) {
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`
+      );
+      return;
+    }
+
+    const scene = this.map.get(vid)!;
+
     if (config.type === "") {
       this.fogCache = null;
-      this.scene.fog = null;
+      scene.fog = null;
       return;
     }
 
@@ -89,8 +117,8 @@ export class SceneCompiler extends Compiler {
         fog.near = config.near;
         fog.far = config.far;
       } else {
-        this.scene.fog = new Fog(config.color, config.near, config.far);
-        this.fogCache = this.scene.fog as Fog;
+        scene.fog = new Fog(config.color, config.near, config.far);
+        this.fogCache = scene.fog as Fog;
       }
       return;
     }
@@ -101,8 +129,8 @@ export class SceneCompiler extends Compiler {
         fog.color = new Color(config.color);
         fog.density = config.density;
       } else {
-        this.scene.fog = new FogExp2(config.color, config.density);
-        this.fogCache = this.scene.fog as FogExp2;
+        scene.fog = new FogExp2(config.color, config.density);
+        this.fogCache = scene.fog as FogExp2;
       }
       return;
     }
@@ -117,26 +145,43 @@ export class SceneCompiler extends Compiler {
     return this;
   }
 
-  set(path: string[], key: string, value: any): this {
-    const sceneType = path.shift()!;
+  add(vid: string, config: SceneConfig): this {
+    const scene = new Scene();
 
-    if (sceneType === CONFIGTYPE.SCENE) {
-      const actionMap = {
-        background: () => this.background(value),
-        environment: () => this.environment(value),
-        fog: () => this.fog(this.target[CONFIGTYPE.SCENE].fog),
-      };
+    this.map.set(vid, scene);
+    this.weakMap.set(scene, vid);
 
-      if (path.length) {
-        key = path.pop()!;
-      }
+    this.background(vid, config.background);
+    this.environment(vid, config.environment);
+    this.fog(vid, config.fog);
 
-      actionMap[key] && actionMap[key]();
-      return this;
-    } else {
-      console.warn(`scene compiler can not support this type: ${sceneType}`);
+    super.add(vid, config);
+    return this;
+  }
+
+  set(vid: string, path: string[], key: string, value: any): this {
+    if (!this.map.has(vid)) {
+      console.warn(
+        `sceneCompiler: can not found this vid mapping object: '${vid}'`
+      );
       return this;
     }
+
+    const attribute = path.length ? path[0] : key;
+
+    const actionMap = {
+      background: () => this.background(vid, value),
+      environment: () => this.environment(vid, value),
+      fog: () => this.fog(vid, this.target[vid].fog),
+    };
+
+    if (actionMap[attribute]) {
+      actionMap[attribute]();
+      return this;
+    }
+
+    super.set(vid, path, key, value);
+    return this;
   }
 
   setTarget(target: SceneCompilerTarget): this {
@@ -144,22 +189,8 @@ export class SceneCompiler extends Compiler {
     return this;
   }
 
-  useEngine(engine: EngineSupport): this {
-    if (engine.scene) {
-      this.scene = engine.scene;
-    }
-    return this;
-  }
-
-  compileAll(): this {
-    const sceneTarget = this.target[CONFIGTYPE.SCENE];
-    this.background(sceneTarget.background);
-    this.environment(sceneTarget.environment);
-    this.fog(sceneTarget.fog);
-    return this;
-  }
-
   dispose(): this {
+    super.dispose();
     return this;
   }
 }

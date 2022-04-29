@@ -4,8 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Scene, PerspectiveCamera, Clock, MOUSE, OrthographicCamera, Vector2, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Vector3, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Quaternion, Euler, BoxBufferGeometry, SphereBufferGeometry, PlaneBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, RGBFormat, NearestFilter, UniformsUtils, ShaderMaterial, AdditiveBlending, DodecahedronBufferGeometry, Fog, FogExp2, Sprite, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, PlaneBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, RGBFormat, NearestFilter, UniformsUtils, ShaderMaterial, AdditiveBlending, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -59,82 +58,6 @@ class EventDispatcher {
     return Boolean([...this.listeners.keys()].length);
   }
 }
-const ScenePlugin = function(params) {
-  if (this.scene) {
-    console.warn("this has installed scene plugin.");
-    return false;
-  }
-  if (!this.webGLRenderer) {
-    console.error("must install some renderer before this plugin.");
-    return false;
-  }
-  Scene.prototype.add = function(...object) {
-    if (!arguments.length) {
-      return this;
-    }
-    if (arguments.length > 1) {
-      for (let i = 0; i < arguments.length; i++) {
-        this.add(arguments[i]);
-      }
-      return this;
-    }
-    const currentObject = object[0];
-    if (currentObject === this) {
-      console.error("THREE.Object3D.add: object can't be added as a child of itself.", object);
-      return this;
-    }
-    if (currentObject && currentObject.isObject3D) {
-      if (currentObject.parent !== null) {
-        const index = this.children.indexOf(currentObject);
-        if (index !== -1) {
-          currentObject.parent = null;
-          this.children.splice(index, 1);
-          currentObject.dispatchEvent({ type: "removed" });
-        }
-      }
-      currentObject.parent = this;
-      this.children.push(currentObject);
-      currentObject.dispatchEvent({ type: "added" });
-    } else {
-      console.error("THREE.Object3D.add: object not an instance of THREE.Object3D.", object);
-    }
-    return this;
-  };
-  this.scene = new Scene();
-  const sceneAdd = this.scene.add.bind(this.scene);
-  this.scene.add = function(...object) {
-    sceneAdd(...object);
-    this.dispatchEvent({
-      type: "afterAdd",
-      objects: object
-    });
-    return this;
-  };
-  const sceneRemove = this.scene.remove.bind(this.scene);
-  this.scene.remove = function(...object) {
-    sceneRemove(...object);
-    this.dispatchEvent({
-      type: "afterRemove",
-      objects: object
-    });
-    return this;
-  };
-  this.render = () => {
-    this.webGLRenderer.render(this.scene, this.currentCamera);
-    return this;
-  };
-  const defalutCamera = new PerspectiveCamera();
-  defalutCamera.position.set(50, 50, 50);
-  defalutCamera.lookAt(0, 0, 0);
-  this.currentCamera = defalutCamera;
-  this.addEventListener("setSize", (event) => {
-    const width = event.width;
-    const height = event.height;
-    defalutCamera.aspect = width / height;
-    defalutCamera.updateProjectionMatrix();
-  });
-  return true;
-};
 class RenderManager extends EventDispatcher {
   constructor() {
     super(...arguments);
@@ -192,7 +115,6 @@ const RenderManagerPlugin = function() {
     return false;
   }
   this.renderManager = new RenderManager();
-  this.render && this.renderManager.addEventListener("render", this.render);
   this.render = function() {
     this.renderManager.render();
     return this;
@@ -210,19 +132,700 @@ const RenderManagerPlugin = function() {
   });
   return true;
 };
-class VisOrbitControls extends OrbitControls {
-  constructor(camera, domElement) {
-    super(camera, domElement);
-    this.mouseButtons = {
+class VisOrbitControls extends EventDispatcher {
+  constructor(object, domElement) {
+    super();
+    __publicField(this, "object");
+    __publicField(this, "domElement");
+    __publicField(this, "enabled", true);
+    __publicField(this, "target", new Vector3());
+    __publicField(this, "minDistance", 0);
+    __publicField(this, "maxDistance", Infinity);
+    __publicField(this, "minZoom", 0);
+    __publicField(this, "maxZoom", Infinity);
+    __publicField(this, "minPolarAngle", 0);
+    __publicField(this, "maxPolarAngle", Math.PI);
+    __publicField(this, "minAzimuthAngle", -Infinity);
+    __publicField(this, "maxAzimuthAngle", Infinity);
+    __publicField(this, "enableDamping", false);
+    __publicField(this, "dampingFactor", 0.05);
+    __publicField(this, "enableZoom", true);
+    __publicField(this, "zoomSpeed", 1);
+    __publicField(this, "enableRotate", true);
+    __publicField(this, "rotateSpeed", 1);
+    __publicField(this, "enablePan", true);
+    __publicField(this, "panSpeed", 1);
+    __publicField(this, "screenSpacePanning", true);
+    __publicField(this, "keyPanSpeed", 7);
+    __publicField(this, "autoRotate", false);
+    __publicField(this, "autoRotateSpeed", 2);
+    __publicField(this, "keys", {
+      LEFT: "ArrowLeft",
+      UP: "ArrowUp",
+      RIGHT: "ArrowRight",
+      BOTTOM: "ArrowDown"
+    });
+    __publicField(this, "mouseButtons", {
       LEFT: null,
       MIDDLE: MOUSE.DOLLY,
       RIGHT: MOUSE.ROTATE
+    });
+    __publicField(this, "touches", { ONE: TOUCH.ROTATE, TWO: TOUCH.DOLLY_PAN });
+    __publicField(this, "target0");
+    __publicField(this, "position0");
+    __publicField(this, "zoom0");
+    __publicField(this, "_domElementKeyEvents", null);
+    __publicField(this, "spherical");
+    __publicField(this, "reset");
+    __publicField(this, "update");
+    __publicField(this, "onContextMenu");
+    __publicField(this, "onPointerDown");
+    __publicField(this, "onPointerCancel");
+    __publicField(this, "onMouseWheel");
+    __publicField(this, "onPointerMove");
+    __publicField(this, "onPointerUp");
+    __publicField(this, "onKeyDown");
+    this.object = object || new PerspectiveCamera();
+    this.domElement = domElement || document.createElement("div");
+    this.domElement.style.touchAction = "none";
+    this.target0 = this.target.clone();
+    this.position0 = this.object.position.clone();
+    this.zoom0 = this.object.zoom;
+    this.update = (() => {
+      const offset = new Vector3();
+      const quat = new Quaternion().setFromUnitVectors(this.object.up, new Vector3(0, 1, 0));
+      const quatInverse = quat.clone().invert();
+      const lastPosition = new Vector3();
+      const lastQuaternion = new Quaternion();
+      const twoPI = 2 * Math.PI;
+      return () => {
+        const position = this.object.position;
+        offset.copy(position).sub(this.target);
+        offset.applyQuaternion(quat);
+        spherical.setFromVector3(offset);
+        if (this.autoRotate && state === STATE.NONE) {
+          rotateLeft(getAutoRotationAngle());
+        }
+        if (this.enableDamping) {
+          spherical.theta += sphericalDelta.theta * this.dampingFactor;
+          spherical.phi += sphericalDelta.phi * this.dampingFactor;
+        } else {
+          spherical.theta += sphericalDelta.theta;
+          spherical.phi += sphericalDelta.phi;
+        }
+        let min = this.minAzimuthAngle;
+        let max = this.maxAzimuthAngle;
+        if (isFinite(min) && isFinite(max)) {
+          if (min < -Math.PI)
+            min += twoPI;
+          else if (min > Math.PI)
+            min -= twoPI;
+          if (max < -Math.PI)
+            max += twoPI;
+          else if (max > Math.PI)
+            max -= twoPI;
+          if (min <= max) {
+            spherical.theta = Math.max(min, Math.min(max, spherical.theta));
+          } else {
+            spherical.theta = spherical.theta > (min + max) / 2 ? Math.max(min, spherical.theta) : Math.min(max, spherical.theta);
+          }
+        }
+        spherical.phi = Math.max(this.minPolarAngle, Math.min(this.maxPolarAngle, spherical.phi));
+        spherical.makeSafe();
+        spherical.radius *= scale;
+        spherical.radius = Math.max(this.minDistance, Math.min(this.maxDistance, spherical.radius));
+        if (this.enableDamping === true) {
+          this.target.addScaledVector(panOffset, this.dampingFactor);
+        } else {
+          this.target.add(panOffset);
+        }
+        offset.setFromSpherical(spherical);
+        offset.applyQuaternion(quatInverse);
+        position.copy(this.target).add(offset);
+        this.object.lookAt(this.target);
+        if (this.enableDamping === true) {
+          sphericalDelta.theta *= 1 - this.dampingFactor;
+          sphericalDelta.phi *= 1 - this.dampingFactor;
+          panOffset.multiplyScalar(1 - this.dampingFactor);
+        } else {
+          sphericalDelta.set(0, 0, 0);
+          panOffset.set(0, 0, 0);
+        }
+        scale = 1;
+        if (zoomChanged || lastPosition.distanceToSquared(this.object.position) > EPS || 8 * (1 - lastQuaternion.dot(this.object.quaternion)) > EPS) {
+          this.dispatchEvent({ type: "change" });
+          lastPosition.copy(this.object.position);
+          lastQuaternion.copy(this.object.quaternion);
+          zoomChanged = false;
+          return true;
+        }
+        return false;
+      };
+    })();
+    const STATE = {
+      NONE: -1,
+      ROTATE: 0,
+      DOLLY: 1,
+      PAN: 2,
+      TOUCH_ROTATE: 3,
+      TOUCH_PAN: 4,
+      TOUCH_DOLLY_PAN: 5,
+      TOUCH_DOLLY_ROTATE: 6
     };
+    let state = STATE.NONE;
+    const EPS = 1e-6;
+    const spherical = new Spherical();
+    const sphericalDelta = new Spherical();
+    let scale = 1;
+    const panOffset = new Vector3();
+    let zoomChanged = false;
+    const rotateStart = new Vector2();
+    const rotateEnd = new Vector2();
+    const rotateDelta = new Vector2();
+    const panStart = new Vector2();
+    const panEnd = new Vector2();
+    const panDelta = new Vector2();
+    const dollyStart = new Vector2();
+    const dollyEnd = new Vector2();
+    const dollyDelta = new Vector2();
+    const pointers = [];
+    const pointerPositions = {};
+    const getAutoRotationAngle = () => {
+      return 2 * Math.PI / 60 / 60 * this.autoRotateSpeed;
+    };
+    const getZoomScale = () => {
+      return Math.pow(0.95, this.zoomSpeed);
+    };
+    const rotateLeft = (angle) => {
+      sphericalDelta.theta -= angle;
+    };
+    const rotateUp = (angle) => {
+      sphericalDelta.phi -= angle;
+    };
+    const panLeft = function() {
+      const v = new Vector3();
+      return function panLeft2(distance, objectMatrix) {
+        v.setFromMatrixColumn(objectMatrix, 0);
+        v.multiplyScalar(-distance);
+        panOffset.add(v);
+      };
+    }();
+    const panUp = (() => {
+      const v = new Vector3();
+      return (distance, objectMatrix) => {
+        if (this.screenSpacePanning === true) {
+          v.setFromMatrixColumn(objectMatrix, 1);
+        } else {
+          v.setFromMatrixColumn(objectMatrix, 0);
+          v.crossVectors(this.object.up, v);
+        }
+        v.multiplyScalar(distance);
+        panOffset.add(v);
+      };
+    })();
+    const pan = (() => {
+      const offset = new Vector3();
+      return (deltaX, deltaY) => {
+        const element = this.domElement;
+        if (this.object instanceof PerspectiveCamera) {
+          const position = this.object.position;
+          offset.copy(position).sub(this.target);
+          let targetDistance = offset.length();
+          targetDistance *= Math.tan(this.object.fov / 2 * Math.PI / 180);
+          panLeft(2 * deltaX * targetDistance / element.clientHeight, this.object.matrix);
+          panUp(2 * deltaY * targetDistance / element.clientHeight, this.object.matrix);
+        } else if (this.object instanceof OrthographicCamera) {
+          panLeft(deltaX * (this.object.right - this.object.left) / this.object.zoom / element.clientWidth, this.object.matrix);
+          panUp(deltaY * (this.object.top - this.object.bottom) / this.object.zoom / element.clientHeight, this.object.matrix);
+        } else {
+          console.warn("WARNING: OrbitControls.js encountered an unknown camera type - pan disabled.");
+          this.enablePan = false;
+        }
+      };
+    })();
+    const dollyOut = (dollyScale) => {
+      if (this.object instanceof PerspectiveCamera) {
+        scale /= dollyScale;
+      } else if (this.object instanceof OrthographicCamera) {
+        this.object.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, this.object.zoom * dollyScale));
+        this.object.updateProjectionMatrix();
+        zoomChanged = true;
+      } else {
+        console.warn("WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.");
+        this.enableZoom = false;
+      }
+    };
+    const dollyIn = (dollyScale) => {
+      if (this.object instanceof PerspectiveCamera) {
+        scale *= dollyScale;
+      } else if (this.object instanceof OrthographicCamera) {
+        this.object.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, this.object.zoom / dollyScale));
+        this.object.updateProjectionMatrix();
+        zoomChanged = true;
+      } else {
+        console.warn("WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.");
+        this.enableZoom = false;
+      }
+    };
+    function handleMouseDownRotate(event) {
+      rotateStart.set(event.clientX, event.clientY);
+    }
+    function handleMouseDownDolly(event) {
+      dollyStart.set(event.clientX, event.clientY);
+    }
+    function handleMouseDownPan(event) {
+      panStart.set(event.clientX, event.clientY);
+    }
+    const handleMouseMoveRotate = (event) => {
+      rotateEnd.set(event.clientX, event.clientY);
+      rotateDelta.subVectors(rotateEnd, rotateStart).multiplyScalar(this.rotateSpeed);
+      const element = this.domElement;
+      rotateLeft(2 * Math.PI * rotateDelta.x / element.clientHeight);
+      rotateUp(2 * Math.PI * rotateDelta.y / element.clientHeight);
+      rotateStart.copy(rotateEnd);
+      this.update();
+    };
+    const handleMouseMoveDolly = (event) => {
+      dollyEnd.set(event.clientX, event.clientY);
+      dollyDelta.subVectors(dollyEnd, dollyStart);
+      if (dollyDelta.y > 0) {
+        dollyOut(getZoomScale());
+      } else if (dollyDelta.y < 0) {
+        dollyIn(getZoomScale());
+      }
+      dollyStart.copy(dollyEnd);
+      this.update();
+    };
+    const handleMouseMovePan = (event) => {
+      panEnd.set(event.clientX, event.clientY);
+      panDelta.subVectors(panEnd, panStart).multiplyScalar(this.panSpeed);
+      pan(panDelta.x, panDelta.y);
+      panStart.copy(panEnd);
+      this.update();
+    };
+    const handleMouseWheel = (event) => {
+      if (event.deltaY < 0) {
+        dollyIn(getZoomScale());
+      } else if (event.deltaY > 0) {
+        dollyOut(getZoomScale());
+      }
+      this.update();
+    };
+    const handleKeyDown = (event) => {
+      let needsUpdate = false;
+      switch (event.code) {
+        case this.keys.UP:
+          pan(0, this.keyPanSpeed);
+          needsUpdate = true;
+          break;
+        case this.keys.BOTTOM:
+          pan(0, -this.keyPanSpeed);
+          needsUpdate = true;
+          break;
+        case this.keys.LEFT:
+          pan(this.keyPanSpeed, 0);
+          needsUpdate = true;
+          break;
+        case this.keys.RIGHT:
+          pan(-this.keyPanSpeed, 0);
+          needsUpdate = true;
+          break;
+      }
+      if (needsUpdate) {
+        event.preventDefault();
+        this.update();
+      }
+    };
+    function handleTouchStartRotate() {
+      if (pointers.length === 1) {
+        rotateStart.set(pointers[0].pageX, pointers[0].pageY);
+      } else {
+        const x = 0.5 * (pointers[0].pageX + pointers[1].pageX);
+        const y = 0.5 * (pointers[0].pageY + pointers[1].pageY);
+        rotateStart.set(x, y);
+      }
+    }
+    function handleTouchStartPan() {
+      if (pointers.length === 1) {
+        panStart.set(pointers[0].pageX, pointers[0].pageY);
+      } else {
+        const x = 0.5 * (pointers[0].pageX + pointers[1].pageX);
+        const y = 0.5 * (pointers[0].pageY + pointers[1].pageY);
+        panStart.set(x, y);
+      }
+    }
+    function handleTouchStartDolly() {
+      const dx = pointers[0].pageX - pointers[1].pageX;
+      const dy = pointers[0].pageY - pointers[1].pageY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      dollyStart.set(0, distance);
+    }
+    const handleTouchStartDollyPan = () => {
+      if (this.enableZoom)
+        handleTouchStartDolly();
+      if (this.enablePan)
+        handleTouchStartPan();
+    };
+    const handleTouchStartDollyRotate = () => {
+      if (this.enableZoom)
+        handleTouchStartDolly();
+      if (this.enableRotate)
+        handleTouchStartRotate();
+    };
+    const handleTouchMoveRotate = (event) => {
+      if (pointers.length == 1) {
+        rotateEnd.set(event.pageX, event.pageY);
+      } else {
+        const position = getSecondPointerPosition(event);
+        const x = 0.5 * (event.pageX + position.x);
+        const y = 0.5 * (event.pageY + position.y);
+        rotateEnd.set(x, y);
+      }
+      rotateDelta.subVectors(rotateEnd, rotateStart).multiplyScalar(this.rotateSpeed);
+      const element = this.domElement;
+      rotateLeft(2 * Math.PI * rotateDelta.x / element.clientHeight);
+      rotateUp(2 * Math.PI * rotateDelta.y / element.clientHeight);
+      rotateStart.copy(rotateEnd);
+    };
+    const handleTouchMovePan = (event) => {
+      if (pointers.length === 1) {
+        panEnd.set(event.pageX, event.pageY);
+      } else {
+        const position = getSecondPointerPosition(event);
+        const x = 0.5 * (event.pageX + position.x);
+        const y = 0.5 * (event.pageY + position.y);
+        panEnd.set(x, y);
+      }
+      panDelta.subVectors(panEnd, panStart).multiplyScalar(this.panSpeed);
+      pan(panDelta.x, panDelta.y);
+      panStart.copy(panEnd);
+    };
+    const handleTouchMoveDolly = (event) => {
+      const position = getSecondPointerPosition(event);
+      const dx = event.pageX - position.x;
+      const dy = event.pageY - position.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      dollyEnd.set(0, distance);
+      dollyDelta.set(0, Math.pow(dollyEnd.y / dollyStart.y, this.zoomSpeed));
+      dollyOut(dollyDelta.y);
+      dollyStart.copy(dollyEnd);
+    };
+    const handleTouchMoveDollyPan = (event) => {
+      if (this.enableZoom)
+        handleTouchMoveDolly(event);
+      if (this.enablePan)
+        handleTouchMovePan(event);
+    };
+    const handleTouchMoveDollyRotate = (event) => {
+      if (this.enableZoom)
+        handleTouchMoveDolly(event);
+      if (this.enableRotate)
+        handleTouchMoveRotate(event);
+    };
+    this.onPointerDown = (event) => {
+      if (this.enabled === false)
+        return;
+      if (pointers.length === 0) {
+        this.domElement.setPointerCapture(event.pointerId);
+        this.domElement.addEventListener("pointermove", this.onPointerMove);
+        this.domElement.addEventListener("pointerup", this.onPointerUp);
+      }
+      addPointer(event);
+      if (event.pointerType === "touch") {
+        onTouchStart(event);
+      } else {
+        onMouseDown(event);
+      }
+    };
+    this.onPointerMove = (event) => {
+      if (this.enabled === false)
+        return;
+      if (event.pointerType === "touch") {
+        onTouchMove(event);
+      } else {
+        onMouseMove(event);
+      }
+    };
+    this.onPointerUp = (event) => {
+      if (this.enabled === false)
+        return;
+      if (event.pointerType === "touch") {
+        onTouchEnd();
+      } else {
+        onMouseUp(event);
+      }
+      removePointer(event);
+      if (pointers.length === 0) {
+        this.domElement.releasePointerCapture(event.pointerId);
+        this.domElement.removeEventListener("pointermove", this.onPointerMove);
+        this.domElement.removeEventListener("pointerup", this.onPointerUp);
+      }
+    };
+    this.onPointerCancel = (event) => {
+      removePointer(event);
+    };
+    const onMouseDown = (event) => {
+      let mouseAction;
+      switch (event.button) {
+        case 0:
+          mouseAction = this.mouseButtons.LEFT;
+          break;
+        case 1:
+          mouseAction = this.mouseButtons.MIDDLE;
+          break;
+        case 2:
+          mouseAction = this.mouseButtons.RIGHT;
+          break;
+        default:
+          mouseAction = -1;
+      }
+      switch (mouseAction) {
+        case MOUSE.DOLLY:
+          if (this.enableZoom === false)
+            return;
+          handleMouseDownDolly(event);
+          state = STATE.DOLLY;
+          break;
+        case MOUSE.ROTATE:
+          if (event.ctrlKey || event.metaKey || event.shiftKey) {
+            if (this.enablePan === false)
+              return;
+            handleMouseDownPan(event);
+            state = STATE.PAN;
+          } else {
+            if (this.enableRotate === false)
+              return;
+            handleMouseDownRotate(event);
+            state = STATE.ROTATE;
+          }
+          break;
+        case MOUSE.PAN:
+          if (event.ctrlKey || event.metaKey || event.shiftKey) {
+            if (this.enableRotate === false)
+              return;
+            handleMouseDownRotate(event);
+            state = STATE.ROTATE;
+          } else {
+            if (this.enablePan === false)
+              return;
+            handleMouseDownPan(event);
+            state = STATE.PAN;
+          }
+          break;
+        default:
+          state = STATE.NONE;
+      }
+      if (state !== STATE.NONE) {
+        this.dispatchEvent({ type: "start" });
+      }
+    };
+    const onMouseMove = (event) => {
+      if (this.enabled === false)
+        return;
+      switch (state) {
+        case STATE.ROTATE:
+          if (this.enableRotate === false)
+            return;
+          handleMouseMoveRotate(event);
+          break;
+        case STATE.DOLLY:
+          if (this.enableZoom === false)
+            return;
+          handleMouseMoveDolly(event);
+          break;
+        case STATE.PAN:
+          if (this.enablePan === false)
+            return;
+          handleMouseMovePan(event);
+          break;
+      }
+    };
+    const onMouseUp = (event) => {
+      this.dispatchEvent({ type: "end" });
+      state = STATE.NONE;
+    };
+    this.onMouseWheel = (event) => {
+      if (this.enabled === false || this.enableZoom === false || state !== STATE.NONE)
+        return;
+      event.preventDefault();
+      this.dispatchEvent({ type: "start" });
+      handleMouseWheel(event);
+      this.dispatchEvent({ type: "end" });
+    };
+    this.onKeyDown = (event) => {
+      if (this.enabled === false || this.enablePan === false)
+        return;
+      handleKeyDown(event);
+    };
+    const onTouchStart = (event) => {
+      trackPointer(event);
+      switch (pointers.length) {
+        case 1:
+          switch (this.touches.ONE) {
+            case TOUCH.ROTATE:
+              if (this.enableRotate === false)
+                return;
+              handleTouchStartRotate();
+              state = STATE.TOUCH_ROTATE;
+              break;
+            case TOUCH.PAN:
+              if (this.enablePan === false)
+                return;
+              handleTouchStartPan();
+              state = STATE.TOUCH_PAN;
+              break;
+            default:
+              state = STATE.NONE;
+          }
+          break;
+        case 2:
+          switch (this.touches.TWO) {
+            case TOUCH.DOLLY_PAN:
+              if (this.enableZoom === false && this.enablePan === false)
+                return;
+              handleTouchStartDollyPan();
+              state = STATE.TOUCH_DOLLY_PAN;
+              break;
+            case TOUCH.DOLLY_ROTATE:
+              if (this.enableZoom === false && this.enableRotate === false)
+                return;
+              handleTouchStartDollyRotate();
+              state = STATE.TOUCH_DOLLY_ROTATE;
+              break;
+            default:
+              state = STATE.NONE;
+          }
+          break;
+        default:
+          state = STATE.NONE;
+      }
+      if (state !== STATE.NONE) {
+        this.dispatchEvent({ type: "start" });
+      }
+    };
+    const onTouchMove = (event) => {
+      trackPointer(event);
+      switch (state) {
+        case STATE.TOUCH_ROTATE:
+          if (this.enableRotate === false)
+            return;
+          handleTouchMoveRotate(event);
+          this.update();
+          break;
+        case STATE.TOUCH_PAN:
+          if (this.enablePan === false)
+            return;
+          handleTouchMovePan(event);
+          this.update();
+          break;
+        case STATE.TOUCH_DOLLY_PAN:
+          if (this.enableZoom === false && this.enablePan === false)
+            return;
+          handleTouchMoveDollyPan(event);
+          this.update();
+          break;
+        case STATE.TOUCH_DOLLY_ROTATE:
+          if (this.enableZoom === false && this.enableRotate === false)
+            return;
+          handleTouchMoveDollyRotate(event);
+          this.update();
+          break;
+        default:
+          state = STATE.NONE;
+      }
+    };
+    const onTouchEnd = (event) => {
+      this.dispatchEvent({ type: "end" });
+      state = STATE.NONE;
+    };
+    this.onContextMenu = (event) => {
+      if (this.enabled === false)
+        return;
+      event.preventDefault();
+    };
+    function addPointer(event) {
+      pointers.push(event);
+    }
+    const removePointer = (event) => {
+      delete pointerPositions[event.pointerId];
+      for (let i = 0; i < pointers.length; i++) {
+        if (pointers[i].pointerId == event.pointerId) {
+          pointers.splice(i, 1);
+          return;
+        }
+      }
+    };
+    function trackPointer(event) {
+      let position = pointerPositions[event.pointerId];
+      if (position === void 0) {
+        position = new Vector2();
+        pointerPositions[event.pointerId] = position;
+      }
+      position.set(event.pageX, event.pageY);
+    }
+    function getSecondPointerPosition(event) {
+      const pointer = event.pointerId === pointers[0].pointerId ? pointers[1] : pointers[0];
+      return pointerPositions[pointer.pointerId];
+    }
+    this.spherical = spherical;
+    this.domElement.addEventListener("contextmenu", this.onContextMenu);
+    this.domElement.addEventListener("pointerdown", this.onPointerDown);
+    this.domElement.addEventListener("pointercancel", this.onPointerCancel);
+    this.domElement.addEventListener("wheel", this.onMouseWheel, {
+      passive: false
+    });
+    this.reset = () => {
+      this.target.copy(this.target0);
+      this.object.position.copy(this.position0);
+      this.object.zoom = this.zoom0;
+      this.object.updateProjectionMatrix();
+      this.dispatchEvent({ type: "change" });
+      this.update();
+      state = STATE.NONE;
+    };
+    this.update();
+  }
+  getPolarAngle() {
+    return this.spherical.phi;
+  }
+  getAzimuthalAngle() {
+    return this.spherical.theta;
+  }
+  getDistance() {
+    return this.object.position.distanceTo(this.target);
+  }
+  listenToKeyEvents(domElement) {
+    domElement.addEventListener("keydown", this.onKeyDown);
+    this._domElementKeyEvents = domElement;
+  }
+  saveState() {
+    this.target0.copy(this.target);
+    this.position0.copy(this.object.position);
+    this.zoom0 = this.object.zoom;
   }
   setCamera(camera) {
     this.object = camera;
-    this.update();
-    return this;
+  }
+  setDom(dom) {
+    this.dispose();
+    this.domElement = dom;
+    this.domElement.addEventListener("contextmenu", this.onContextMenu);
+    this.domElement.addEventListener("pointerdown", this.onPointerDown);
+    this.domElement.addEventListener("pointercancel", this.onPointerCancel);
+    this.domElement.addEventListener("wheel", this.onMouseWheel, {
+      passive: false
+    });
+  }
+  dispose() {
+    this.domElement.removeEventListener("contextmenu", this.onContextMenu);
+    this.domElement.removeEventListener("pointerdown", this.onPointerDown);
+    this.domElement.removeEventListener("pointercancel", this.onPointerCancel);
+    this.domElement.removeEventListener("wheel", this.onMouseWheel);
+    this.domElement.removeEventListener("pointermove", this.onPointerMove);
+    this.domElement.removeEventListener("pointerup", this.onPointerUp);
+    if (this._domElementKeyEvents !== null) {
+      this._domElementKeyEvents.removeEventListener("keydown", this.onKeyDown);
+    }
   }
 }
 var VIEWPOINT;
@@ -239,10 +842,6 @@ const ViewpointPlugin = function(params = {}) {
   var _a;
   if (!this.webGLRenderer) {
     console.error("must install some renderer before BasicViewpoint plugin.");
-    return false;
-  }
-  if (!this.scene) {
-    console.error("must install some scene before BasicViewpoint plugin.");
     return false;
   }
   !params.viewpoint && (params.viewpoint = VIEWPOINT.DEFAULT);
@@ -332,17 +931,16 @@ const OrbitControlsPlugin = function(params) {
     console.warn("this has installed orbitControls plugin.");
     return false;
   }
-  if (!this.webGLRenderer) {
-    console.warn("this must install renderer before install orbitControls plugin.");
-    return false;
-  }
   if (!this.renderManager) {
     console.warn("this must install renderManager before install orbitControls plugin.");
     return false;
   }
-  this.orbitControls = new VisOrbitControls(this.currentCamera, this.dom);
+  this.orbitControls = new VisOrbitControls(this.camera, this.dom);
   this.addEventListener("setCamera", (event) => {
     this.orbitControls.setCamera(event.camera);
+  });
+  this.addEventListener("setDom", (event) => {
+    this.orbitControls.setDom(event.dom);
   });
   this.renderManager.addEventListener("render", () => {
     this.orbitControls.update();
@@ -463,30 +1061,41 @@ const EffectComposerPlugin = function(params = {}) {
   }
   this.effectComposer = composer;
   let renderPass;
-  if (this.scene) {
-    renderPass = new RenderPass(this.scene, this.currentCamera);
-  } else {
-    console.error(`composer con not found support scene plugin.`);
-    return false;
+  if (this.scene && this.camera) {
+    renderPass = new RenderPass(this.scene, this.camera);
+    composer.addPass(renderPass);
   }
-  composer.addPass(renderPass);
   this.addEventListener("setCamera", (event) => {
-    renderPass.camera = event.camera;
+    if (!renderPass && this.scene) {
+      renderPass = new RenderPass(this.scene, event.camera);
+      composer.addPass(renderPass);
+      return;
+    } else if (renderPass) {
+      renderPass.camera = event.camera;
+    }
+  });
+  this.addEventListener("setScene", (event) => {
+    if (!renderPass && this.camera) {
+      renderPass = new RenderPass(event.scene, this.camera);
+      composer.addPass(renderPass);
+      return;
+    } else if (renderPass) {
+      renderPass.scene = event.scene;
+    }
   });
   this.addEventListener("setSize", (event) => {
     composer.setSize(event.width, event.height);
   });
   if (this.renderManager) {
     this.renderManager.removeEventListener("render", this.render);
-  }
-  this.render = () => {
-    this.effectComposer.render();
-    return this;
-  };
-  if (this.renderManager) {
     this.renderManager.addEventListener("render", (event) => {
       this.effectComposer.render(event.delta);
     });
+  } else {
+    this.render = function() {
+      this.effectComposer.render();
+      return this;
+    };
   }
   return true;
 };
@@ -498,56 +1107,61 @@ class PointerManager extends EventDispatcher {
     __publicField(this, "canMouseMove");
     __publicField(this, "mouseEventTimer");
     __publicField(this, "throttleTime");
-    const dom = parameters.dom;
-    this.dom = dom;
+    __publicField(this, "pointerDownFun");
+    __publicField(this, "pointerMoveFun");
+    __publicField(this, "pointerUpFun");
+    this.dom = parameters.dom;
     this.mouse = new Vector2();
     this.canMouseMove = true;
     this.mouseEventTimer = null;
     this.throttleTime = parameters.throttleTime || 1e3 / 60;
-    dom.addEventListener("pointerdown", (event) => {
-      this.pointerDown(event);
-    });
-    dom.addEventListener("pointermove", (event) => {
+    this.pointerDownFun = (event) => {
+      const eventObject = { mouse: this.mouse };
+      for (const key in event) {
+        eventObject[key] = event[key];
+      }
+      this.dispatchEvent(eventObject);
+    };
+    this.pointerMoveFun = (event) => {
       if (!this.canMouseMove) {
         return;
       }
       this.canMouseMove = false;
       this.mouseEventTimer = window.setTimeout(() => {
         const mouse = this.mouse;
-        const dom2 = this.dom;
-        mouse.x = event.offsetX / dom2.offsetWidth * 2 - 1;
-        mouse.y = -(event.offsetY / dom2.offsetHeight) * 2 + 1;
+        const dom = this.dom;
+        mouse.x = event.offsetX / dom.offsetWidth * 2 - 1;
+        mouse.y = -(event.offsetY / dom.offsetHeight) * 2 + 1;
         this.canMouseMove = true;
-        this.pointerMove(event);
+        const eventObject = { mouse: this.mouse };
+        for (const key in event) {
+          eventObject[key] = event[key];
+        }
+        this.dispatchEvent(eventObject);
       }, this.throttleTime);
-    });
-    dom.addEventListener("pointerup", (event) => {
-      this.pointerUp(event);
-    });
+    };
+    this.pointerUpFun = (event) => {
+      const eventObject = { mouse: this.mouse };
+      for (const key in event) {
+        eventObject[key] = event[key];
+      }
+      this.dispatchEvent(eventObject);
+    };
   }
-  getMousePoint() {
+  setDom(dom) {
+    if (this.dom) {
+      this.dom.removeEventListener("pointerdown", this.pointerDownFun);
+      this.dom.removeEventListener("pointermove", this.pointerMoveFun);
+      this.dom.removeEventListener("pointerup", this.pointerUpFun);
+    }
+    dom.addEventListener("pointerdown", this.pointerDownFun);
+    dom.addEventListener("pointermove", this.pointerMoveFun);
+    dom.addEventListener("pointerup", this.pointerUpFun);
+    this.dom = dom;
+    return this;
+  }
+  getNormalMouse() {
     return this.mouse;
-  }
-  pointerDown(event) {
-    const eventObject = { mouse: this.mouse };
-    for (const key in event) {
-      eventObject[key] = event[key];
-    }
-    this.dispatchEvent(eventObject);
-  }
-  pointerMove(event) {
-    const eventObject = { mouse: this.mouse };
-    for (const key in event) {
-      eventObject[key] = event[key];
-    }
-    this.dispatchEvent(eventObject);
-  }
-  pointerUp(event) {
-    const eventObject = { mouse: this.mouse };
-    for (const key in event) {
-      eventObject[key] = event[key];
-    }
-    this.dispatchEvent(eventObject);
   }
 }
 const PointerManagerPlugin = function(params) {
@@ -555,13 +1169,12 @@ const PointerManagerPlugin = function(params) {
     console.warn("this has installed pointerManager plugin.");
     return false;
   }
-  if (!this.webGLRenderer) {
-    console.error("must install some renderer before this plugin.");
-    return false;
-  }
   const pointerManager = new PointerManager(Object.assign(params || {}, {
     dom: this.dom
   }));
+  this.addEventListener("setDom", (event) => {
+    pointerManager.setDom(event.dom);
+  });
   this.pointerManager = pointerManager;
   return true;
 };
@@ -590,6 +1203,10 @@ class EventManager extends EventDispatcher {
     this.scene = parameters.scene;
     parameters.recursive && (this.recursive = parameters.recursive);
     parameters.penetrate && (this.penetrate = parameters.penetrate);
+  }
+  setScene(scene) {
+    this.scene = scene;
+    return this;
   }
   setCamera(camera) {
     this.camera = camera;
@@ -885,22 +1502,21 @@ const EventManagerPlugin = function(params) {
     console.warn("engine has installed eventManager plugin.");
     return false;
   }
-  if (!this.webGLRenderer) {
-    console.error("must install some renderer before this plugin.");
-    return false;
-  }
   if (!this.pointerManager) {
     console.error("must install pointerManager before this plugin.");
     return false;
   }
   const eventManager = new EventManager(Object.assign({
     scene: this.scene,
-    camera: this.currentCamera
+    camera: this.camera
   }, params));
   eventManager.use(this.pointerManager);
   this.eventManager = eventManager;
   this.addEventListener("setCamera", (event) => {
     this.eventManager.setCamera(event.camera);
+  });
+  this.addEventListener("setScene", (event) => {
+    this.eventManager.setScene(event.scene);
   });
   return true;
 };
@@ -910,6 +1526,8 @@ var TRANSFORMEVENT;
 })(TRANSFORMEVENT || (TRANSFORMEVENT = {}));
 class VisTransformControls extends TransformControls {
   constructor(camera, dom) {
+    !camera && (camera = new PerspectiveCamera());
+    !dom && (dom = document.body);
     super(camera, dom);
     __publicField(this, "target");
     __publicField(this, "transObjectSet");
@@ -975,15 +1593,26 @@ class VisTransformControls extends TransformControls {
       });
     });
   }
+  setDom(dom) {
+    this.domElement.removeEventListener("pointerdown", this._onPointerDown);
+    this.domElement.removeEventListener("pointermove", this._onPointerHover);
+    this.domElement.removeEventListener("pointermove", this._onPointerMove);
+    this.domElement.removeEventListener("pointerup", this._onPointerUp);
+    dom.addEventListener("pointerdown", this._onPointerDown);
+    dom.addEventListener("pointermove", this._onPointerHover);
+    dom.addEventListener("pointerup", this._onPointerUp);
+    this.domElement = dom;
+    return this;
+  }
+  setCamera(camera) {
+    this.camera = camera;
+    return this;
+  }
   getTarget() {
     return this.target;
   }
   getTransObjectSet() {
     return this.transObjectSet;
-  }
-  setCamera(camera) {
-    this.camera = camera;
-    return this;
   }
   setAttach(...object) {
     this.transObjectSet.clear();
@@ -1027,10 +1656,6 @@ const TransformControlsPlugin = function(params) {
     console.warn("this has installed transformControls plugin.");
     return false;
   }
-  if (!this.webGLRenderer) {
-    console.warn("this must install renderer before install transformControls plugin.");
-    return false;
-  }
   if (!this.pointerManager) {
     console.warn("this must install pointerManager before install transformControls plugin.");
     return false;
@@ -1039,13 +1664,9 @@ const TransformControlsPlugin = function(params) {
     console.warn("this must install eventManager before install transformControls plugin.");
     return false;
   }
-  const transformControls = new VisTransformControls(this.currentCamera, this.dom);
+  const transformControls = new VisTransformControls(this.camera, this.dom);
   transformControls.detach();
   this.transformControls = transformControls;
-  this.transing = false;
-  transformControls.addEventListener("mouseDown", () => {
-    this.transing = true;
-  });
   this.scene.add(this.transformControls);
   this.scene.add(this.transformControls.target);
   this.setTransformControls = function(show) {
@@ -1059,14 +1680,21 @@ const TransformControlsPlugin = function(params) {
   this.addEventListener("setCamera", (event) => {
     transformControls.setCamera(event.camera);
   });
+  this.addEventListener("setDom", (event) => {
+    transformControls.setDom(event.dom);
+  });
+  this.addEventListener("setScene", (event) => {
+    const scene = event.scene;
+    scene.add(this.transformControls.target);
+    scene.add(this.transformControls);
+  });
   if (this.selectionBox) {
     this.addEventListener("selected", (event) => {
       transformControls.setAttach(...event.objects);
     });
   } else {
     this.eventManager.addEventListener("pointerup", (event) => {
-      if (this.transing) {
-        this.transing = false;
+      if (this.transformControls.dragging) {
         return;
       }
       if (event.button === 0) {
@@ -1114,26 +1742,6 @@ const WebGLRendererPlugin = function(params = {}) {
     return false;
   }
   this.webGLRenderer = new WebGLRenderer(params);
-  this.dom = this.webGLRenderer.domElement;
-  this.setSize = function(width, height) {
-    var _a, _b;
-    if (width && width <= 0 || height && height <= 0) {
-      console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
-      return this;
-    }
-    !width && (width = (_a = this.dom) == null ? void 0 : _a.offsetWidth);
-    !height && (height = (_b = this.dom) == null ? void 0 : _b.offsetHeight);
-    this.dispatchEvent({ type: "setSize", width, height });
-    return this;
-  };
-  this.setCamera = function(camera) {
-    this.currentCamera = camera;
-    this.dispatchEvent({
-      type: "setCamera",
-      camera
-    });
-    return this;
-  };
   this.getScreenshot = function(params2 = {}) {
     const cacheSize = {
       width: this.dom.offsetWidth,
@@ -1158,11 +1766,9 @@ const WebGLRendererPlugin = function(params = {}) {
     }
     return element;
   };
-  this.setDom = function(dom) {
-    this.dom = dom;
-    dom.appendChild(this.webGLRenderer.domElement);
-    return this;
-  };
+  this.addEventListener("setDom", (event) => {
+    event.dom.appendChild(this.webGLRenderer.domElement);
+  });
   this.addEventListener("setSize", (event) => {
     const width = event.width;
     const height = event.height;
@@ -1171,6 +1777,17 @@ const WebGLRendererPlugin = function(params = {}) {
   this.addEventListener("dispose", () => {
     this.webGLRenderer.dispose();
   });
+  if (this.renderManager) {
+    this.renderManager.removeEventListener("render", this.render);
+    this.renderManager.addEventListener("render", (event) => {
+      this.webGLRenderer.render(this.scene, this.camera);
+    });
+  } else {
+    this.render = function() {
+      this.webGLRenderer.render(this.scene, this.camera);
+      return this;
+    };
+  }
   return true;
 };
 const _object_pattern = /^[og]\s*(.+)?/;
@@ -2771,9 +3388,9 @@ const getWebGLRendererConfig = function() {
   });
 };
 const getSceneConfig = function() {
-  return {
-    vid: "Scene",
-    type: "Scene",
+  return Object.assign(getObjectConfig(), {
+    vid: CONFIGTYPE.SCENE,
+    type: CONFIGTYPE.SCENE,
     background: "",
     environment: "",
     fog: {
@@ -2783,7 +3400,7 @@ const getSceneConfig = function() {
       far: 200,
       density: 3e-3
     }
-  };
+  });
 };
 const getTransformControlsConfig = function() {
   return {
@@ -3022,6 +3639,7 @@ const CONFIGMODULE = {
   [CONFIGTYPE.CONEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.CIRCLEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.EDGESGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.CYLINDERGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
   [CONFIGTYPE.LINE]: MODULETYPE.LINE,
   [CONFIGTYPE.MESH]: MODULETYPE.MESH,
@@ -3622,6 +4240,11 @@ class ObjectDataSupport extends DataSupport {
     __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
+const UNIQUESYMBOL = {
+  [CONFIGTYPE.WEBGLRENDERER]: true,
+  [CONFIGTYPE.CSS3DRENDERER]: true,
+  [CONFIGTYPE.SCENE]: true
+};
 const ObjectRule = function(input, compiler) {
   const { operate, key, path, value } = input;
   const tempPath = path.concat([]);
@@ -3646,13 +4269,13 @@ const ObjectRule = function(input, compiler) {
         return;
       }
     }
-    if (validate(key)) {
+    if (validate(key) || UNIQUESYMBOL[key]) {
       compiler.add(key, value);
     }
     return;
   }
   if (operate === "set") {
-    if (vid && validate(vid)) {
+    if (vid && validate(vid) || UNIQUESYMBOL[vid]) {
       compiler.set(vid, tempPath, key, value);
     } else {
       console.warn(`${compiler.COMPILER_NAME} rule vid is illeage: '${vid}'`);
@@ -3664,7 +4287,7 @@ const ObjectRule = function(input, compiler) {
       compiler.removeChildren(vid, value);
       return;
     }
-    if (validate(key)) {
+    if (validate(key) || UNIQUESYMBOL[key]) {
       compiler.add(key, value);
     }
     return;
@@ -3763,17 +4386,12 @@ class RendererDataSupport extends DataSupport {
     __publicField(this, "MODULE", MODULETYPE.RENDERER);
   }
 }
-const SceneRule = function(input, compiler) {
-  const { operate, key, path, value } = input;
-  if (operate === "set") {
-    compiler.set(path.concat([]), key, value);
-  }
+const SceneRule = function(notice, compiler) {
+  ObjectRule(notice, compiler);
 };
-class SceneDataSupport extends DataSupport {
+class SceneDataSupport extends ObjectDataSupport {
   constructor(data) {
-    !data && (data = {
-      [CONFIGTYPE.SCENE]: getSceneConfig()
-    });
+    !data && (data = {});
     super(SceneRule, data);
     __publicField(this, "MODULE", MODULETYPE.SCENE);
   }
@@ -3958,12 +4576,14 @@ const _DataSupportManager = class {
     }
     return null;
   }
-  applyConfig(config) {
-    const module = _DataSupportManager.configModuleMap[config.type];
-    if (module) {
-      this.dataSupportMap.get(module).addConfig(config);
-    } else {
-      console.warn(`dataSupportManager can not found this config module: ${config.type}`);
+  applyConfig(...configs) {
+    for (const config of configs) {
+      const module = _DataSupportManager.configModuleMap[config.type];
+      if (module) {
+        this.dataSupportMap.get(module).addConfig(config);
+      } else {
+        console.warn(`dataSupportManager can not found this config module: ${config.type}`);
+      }
     }
     return this;
   }
@@ -4032,10 +4652,6 @@ const DataSupportManagerPlugin = function(params) {
     const rendererData = this.dataSupportManager.getDataSupport(MODULETYPE.RENDERER).getData();
     if (!rendererData.WebGLRenderer) {
       rendererData.WebGLRenderer = generateConfig(CONFIGTYPE.WEBGLRENDERER);
-    }
-    const sceneData = this.dataSupportManager.getDataSupport(MODULETYPE.SCENE).getData();
-    if (!sceneData[CONFIGTYPE.SCENE]) {
-      sceneData[CONFIGTYPE.SCENE] = generateConfig(CONFIGTYPE.SCENE);
     }
     const controlsData = this.dataSupportManager.getDataSupport(MODULETYPE.CONTROLS).getData();
     if (this.transformControls) {
@@ -4823,10 +5439,9 @@ var RealTimeAnimateLibrary = /* @__PURE__ */ Object.freeze({
   moveSpacing: moveSpacing$1
 });
 const _ObjectCompiler = class extends Compiler {
-  constructor(parameters) {
+  constructor() {
     super();
     __publicField(this, "IS_OBJECTCOMPILER", true);
-    __publicField(this, "scene");
     __publicField(this, "target");
     __publicField(this, "map");
     __publicField(this, "weakMap");
@@ -4845,13 +5460,6 @@ const _ObjectCompiler = class extends Compiler {
       contextmenu: true
     });
     __publicField(this, "engine");
-    if (parameters) {
-      parameters.scene && (this.scene = parameters.scene);
-      parameters.target && (this.target = parameters.target);
-    } else {
-      this.scene = new Scene();
-      this.target = {};
-    }
     this.map = new Map();
     this.weakMap = new WeakMap();
     this.objectMapSet = new Set();
@@ -5008,11 +5616,6 @@ const _ObjectCompiler = class extends Compiler {
     return this;
   }
   useEngine(engine) {
-    if (!engine.scene) {
-      console.warn(`engine muset install scene plugin.`);
-      return this;
-    }
-    this.scene = engine.scene;
     this.engine = engine;
     return this;
   }
@@ -5060,7 +5663,6 @@ const _ObjectCompiler = class extends Compiler {
       }
     });
     Compiler.applyConfig(config, object, this.filterAttribute);
-    this.scene.add(object);
     return this;
   }
   set(vid, path, key, value) {
@@ -5092,7 +5694,6 @@ const _ObjectCompiler = class extends Compiler {
       return this;
     }
     const object = this.map.get(vid);
-    this.scene.remove(object);
     this.weakMap.delete(object);
     this.objectCacheMap.delete(this.map.get(vid));
     this.map.delete(vid);
@@ -5616,8 +6217,8 @@ class GroupCompiler extends ObjectCompiler {
   }
 }
 class LightCompiler extends ObjectCompiler {
-  constructor(parameters) {
-    super(parameters);
+  constructor() {
+    super();
     __publicField(this, "COMPILER_NAME", MODULETYPE.LIGHT);
     __publicField(this, "constructMap");
     this.constructMap = new Map();
@@ -5665,8 +6266,8 @@ class LightCompiler extends ObjectCompiler {
   }
 }
 class SolidObjectCompiler extends ObjectCompiler {
-  constructor(parameters) {
-    super(parameters);
+  constructor() {
+    super();
     __publicField(this, "IS_SOLIDOBJECTCOMPILER", true);
     __publicField(this, "geometryMap");
     __publicField(this, "materialMap");
@@ -5932,8 +6533,8 @@ class MaterialCompiler extends Compiler {
   }
 }
 class MeshCompiler extends SolidObjectCompiler {
-  constructor(parameters) {
-    super(parameters);
+  constructor() {
+    super();
     __publicField(this, "COMPILER_NAME", MODULETYPE.MESH);
     __publicField(this, "replaceMaterial", new MeshBasicMaterial({
       color: "rgb(150, 150, 150)"
@@ -6930,8 +7531,8 @@ class PassCompiler extends Compiler {
   }
 }
 class PointsCompiler extends SolidObjectCompiler {
-  constructor(parameters) {
-    super(parameters);
+  constructor() {
+    super();
     __publicField(this, "COMPILER_NAME", MODULETYPE.POINTS);
     __publicField(this, "replaceMaterial", new PointsMaterial({ color: "rgb(150, 150, 150)" }));
     __publicField(this, "replaceGeometry", new DodecahedronBufferGeometry(5));
@@ -7065,7 +7666,7 @@ class WebGLRendererProcessor extends Processor {
         return this;
       }
       const adaptiveCameraFun = (event) => {
-        const camera = engine.currentCamera;
+        const camera = engine.camera;
         const domWidth = renderer.domElement.offsetWidth;
         const domHeight = renderer.domElement.offsetHeight;
         let width = 0;
@@ -7173,48 +7774,56 @@ class RendererCompiler extends Compiler {
     return this;
   }
 }
-class SceneCompiler extends Compiler {
-  constructor(parameters) {
+class SceneCompiler extends ObjectCompiler {
+  constructor() {
     super();
+    __publicField(this, "COMPILER_NAME", MODULETYPE.SCENE);
     __publicField(this, "textureMap");
-    __publicField(this, "target");
-    __publicField(this, "scene");
     __publicField(this, "fogCache");
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-      parameters.scene && (this.scene = parameters.scene);
-    } else {
-      this.target = {
-        [CONFIGTYPE.SCENE]: getSceneConfig()
-      };
-      this.scene = new Scene();
-    }
     this.textureMap = new Map();
     this.fogCache = null;
+    this.mergeFilterAttribute({
+      background: true,
+      environment: true,
+      fog: true
+    });
   }
-  background(value) {
+  setLookAt(vid, target) {
+    return this;
+  }
+  background(vid, value) {
+    if (!this.map.has(vid)) {
+      console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+      return;
+    }
+    const scene = this.map.get(vid);
     if (!value) {
-      this.scene.background = null;
+      scene.background = null;
       return;
     }
     if (validate(value)) {
       if (this.textureMap.has(value)) {
-        this.scene.background = this.textureMap.get(value);
+        scene.background = this.textureMap.get(value);
       } else {
         console.warn(`scene compiler can not found this vid texture : '${value}'`);
       }
     } else {
-      this.scene.background = new Color(value);
+      scene.background = new Color(value);
     }
   }
-  environment(value) {
+  environment(vid, value) {
+    if (!this.map.has(vid)) {
+      console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+      return;
+    }
+    const scene = this.map.get(vid);
     if (!value) {
-      this.scene.environment = null;
+      scene.environment = null;
       return;
     }
     if (validate(value)) {
       if (this.textureMap.has(value)) {
-        this.scene.environment = this.textureMap.get(value);
+        scene.environment = this.textureMap.get(value);
       } else {
         console.warn(`scene compiler can not found this vid texture : '${value}'`);
       }
@@ -7222,10 +7831,15 @@ class SceneCompiler extends Compiler {
       console.warn(`this vid is illegal: '${value}'`);
     }
   }
-  fog(config) {
+  fog(vid, config) {
+    if (!this.map.has(vid)) {
+      console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+      return;
+    }
+    const scene = this.map.get(vid);
     if (config.type === "") {
       this.fogCache = null;
-      this.scene.fog = null;
+      scene.fog = null;
       return;
     }
     if (config.type === "Fog") {
@@ -7235,8 +7849,8 @@ class SceneCompiler extends Compiler {
         fog.near = config.near;
         fog.far = config.far;
       } else {
-        this.scene.fog = new Fog(config.color, config.near, config.far);
-        this.fogCache = this.scene.fog;
+        scene.fog = new Fog(config.color, config.near, config.far);
+        this.fogCache = scene.fog;
       }
       return;
     }
@@ -7246,8 +7860,8 @@ class SceneCompiler extends Compiler {
         fog.color = new Color(config.color);
         fog.density = config.density;
       } else {
-        this.scene.fog = new FogExp2(config.color, config.density);
-        this.fogCache = this.scene.fog;
+        scene.fog = new FogExp2(config.color, config.density);
+        this.fogCache = scene.fog;
       }
       return;
     }
@@ -7257,51 +7871,52 @@ class SceneCompiler extends Compiler {
     this.textureMap = map;
     return this;
   }
-  set(path, key, value) {
-    const sceneType = path.shift();
-    if (sceneType === CONFIGTYPE.SCENE) {
-      const actionMap = {
-        background: () => this.background(value),
-        environment: () => this.environment(value),
-        fog: () => this.fog(this.target[CONFIGTYPE.SCENE].fog)
-      };
-      if (path.length) {
-        key = path.pop();
-      }
-      actionMap[key] && actionMap[key]();
-      return this;
-    } else {
-      console.warn(`scene compiler can not support this type: ${sceneType}`);
+  add(vid, config) {
+    const scene = new Scene();
+    this.map.set(vid, scene);
+    this.weakMap.set(scene, vid);
+    this.background(vid, config.background);
+    this.environment(vid, config.environment);
+    this.fog(vid, config.fog);
+    super.add(vid, config);
+    return this;
+  }
+  set(vid, path, key, value) {
+    if (!this.map.has(vid)) {
+      console.warn(`sceneCompiler: can not found this vid mapping object: '${vid}'`);
       return this;
     }
+    const attribute = path.length ? path[0] : key;
+    const actionMap = {
+      background: () => this.background(vid, value),
+      environment: () => this.environment(vid, value),
+      fog: () => this.fog(vid, this.target[vid].fog)
+    };
+    if (actionMap[attribute]) {
+      actionMap[attribute]();
+      return this;
+    }
+    super.set(vid, path, key, value);
+    return this;
   }
   setTarget(target) {
     this.target = target;
     return this;
   }
-  useEngine(engine) {
-    if (engine.scene) {
-      this.scene = engine.scene;
-    }
-    return this;
-  }
-  compileAll() {
-    const sceneTarget = this.target[CONFIGTYPE.SCENE];
-    this.background(sceneTarget.background);
-    this.environment(sceneTarget.environment);
-    this.fog(sceneTarget.fog);
-    return this;
-  }
   dispose() {
+    super.dispose();
     return this;
   }
 }
 class SpriteCompiler extends SolidObjectCompiler {
-  constructor(parametes) {
-    super(parametes);
+  constructor() {
+    super();
     __publicField(this, "COMPILER_NAME", MODULETYPE.SPRITE);
     __publicField(this, "replaceMaterial", new SpriteMaterial({ color: "rgb(150, 150, 150)" }));
     __publicField(this, "replaceGeometry", new PlaneBufferGeometry(1, 1));
+    this.mergeFilterAttribute({
+      geometry: true
+    });
   }
   getReplaceMaterial() {
     return this.replaceMaterial;
@@ -7612,28 +8227,20 @@ const CompilerManagerPlugin = function(params) {
     console.warn("engine has installed compilerManager plugin.");
     return false;
   }
+  if (!this.dataSupportManager) {
+    console.warn("must install dataSupportManager before compilerManager plugin.");
+    return false;
+  }
+  if (!this.renderManager) {
+    console.warn(`must install renderManager before compilerManager plugin.`);
+    return false;
+  }
   const compilerManager = new CompilerManager();
   this.compilerManager = compilerManager;
   this.addEventListener("dispose", () => {
     this.compilerManager.dispose();
   });
   this.completeSet.add(() => {
-    if (!this.webGLRenderer) {
-      console.warn(`must install webGLRenderer before compilerManager plugin.`);
-      return;
-    }
-    if (!this.scene) {
-      console.warn(`must install scene before compilerManager plugin.`);
-      return;
-    }
-    if (!this.renderManager) {
-      console.warn(`must install renderManager before compilerManager plugin.`);
-      return;
-    }
-    if (!this.dataSupportManager) {
-      console.warn("must install dataSupportManager before compilerManager plugin.");
-      return;
-    }
     this.compilerManager.support(this);
   });
   return true;
@@ -8777,6 +9384,9 @@ const AxesHelperPlugin = function(params = {}) {
     }
     return this;
   };
+  this.addEventListener("setScene", (event) => {
+    event.scene.add(axesHelper);
+  });
   return true;
 };
 const GridHelperPlugin = function(params = {}) {
@@ -8803,6 +9413,9 @@ const GridHelperPlugin = function(params = {}) {
     }
     return this;
   };
+  this.addEventListener("setScene", (event) => {
+    event.scene.add(gridHelper);
+  });
   this.completeSet.add(() => {
     if (this.setViewpoint) {
       this.addEventListener("setViewpoint", (event) => {
@@ -8963,98 +9576,98 @@ const DisplayModelPlugin = function(params = {}) {
       }
     }
   });
+  const filterMaterial = () => {
+    for (const mesh of meshSet) {
+      if (mesh.material === meshOverrideMaterial) {
+        continue;
+      }
+      materialCacheMap.set(mesh, mesh.material);
+      mesh.material = meshOverrideMaterial;
+    }
+    for (const line of lineSet) {
+      if (line.material === lineOverrideMaterial) {
+        continue;
+      }
+      materialCacheMap.set(line, line.material);
+      line.material = lineOverrideMaterial;
+    }
+    for (const points of pointsSet) {
+      if (points.material === pointsOverrideMaterial) {
+        continue;
+      }
+      materialCacheMap.set(points, points.material);
+      points.material = pointsOverrideMaterial;
+    }
+    for (const sprite of spriteSet) {
+      if (sprite.material === spriteOverrideMaterial) {
+        continue;
+      }
+      materialCacheMap.set(sprite, sprite.material);
+      sprite.material = spriteOverrideMaterial;
+    }
+  };
+  const reduceMaterial = () => {
+    meshSet.forEach((mesh) => {
+      if (materialCacheMap.has(mesh)) {
+        mesh.material = materialCacheMap.get(mesh);
+        materialCacheMap.delete(mesh);
+      }
+    });
+    lineSet.forEach((line) => {
+      if (materialCacheMap.has(line)) {
+        line.material = materialCacheMap.get(line);
+        materialCacheMap.delete(line);
+      }
+    });
+    pointsSet.forEach((points) => {
+      if (materialCacheMap.has(points)) {
+        points.material = materialCacheMap.get(points);
+        materialCacheMap.delete(points);
+      }
+    });
+    spriteSet.forEach((sprite) => {
+      if (materialCacheMap.has(sprite)) {
+        sprite.material = materialCacheMap.get(sprite);
+        materialCacheMap.delete(sprite);
+      }
+    });
+  };
+  const filterLight = () => {
+    lightSet.forEach((light) => {
+      light.visible = false;
+    });
+    this.scene.add(defaultAmbientLight);
+    this.scene.add(defaultDirectionalLight);
+  };
+  const reduceLight = () => {
+    lightSet.forEach((light) => {
+      light.visible = true;
+    });
+    this.scene.remove(defaultAmbientLight);
+    this.scene.remove(defaultDirectionalLight);
+  };
+  const filterScene = () => {
+    if (this.scene.background instanceof Texture) {
+      backgroundCache = this.scene.background;
+      this.scene.background = null;
+    }
+    if (this.scene.environment instanceof Texture) {
+      environmentCache = this.scene.environment;
+      this.scene.environment = null;
+    }
+  };
+  const reduceScene = () => {
+    if (backgroundCache) {
+      this.scene.background = backgroundCache;
+      backgroundCache = void 0;
+    }
+    if (environmentCache) {
+      this.scene.environment = environmentCache;
+      environmentCache = void 0;
+    }
+  };
   this.setDisplayMode = function(mode) {
     this.displayMode = mode || DISPLAYMODE.ENV;
-    const filterMaterial = () => {
-      for (const mesh of meshSet) {
-        if (mesh.material === meshOverrideMaterial) {
-          continue;
-        }
-        materialCacheMap.set(mesh, mesh.material);
-        mesh.material = meshOverrideMaterial;
-      }
-      for (const line of lineSet) {
-        if (line.material === lineOverrideMaterial) {
-          continue;
-        }
-        materialCacheMap.set(line, line.material);
-        line.material = lineOverrideMaterial;
-      }
-      for (const points of pointsSet) {
-        if (points.material === pointsOverrideMaterial) {
-          continue;
-        }
-        materialCacheMap.set(points, points.material);
-        points.material = pointsOverrideMaterial;
-      }
-      for (const sprite of spriteSet) {
-        if (sprite.material === spriteOverrideMaterial) {
-          continue;
-        }
-        materialCacheMap.set(sprite, sprite.material);
-        sprite.material = spriteOverrideMaterial;
-      }
-    };
-    const reduceMaterial = () => {
-      meshSet.forEach((mesh) => {
-        if (materialCacheMap.has(mesh)) {
-          mesh.material = materialCacheMap.get(mesh);
-          materialCacheMap.delete(mesh);
-        }
-      });
-      lineSet.forEach((line) => {
-        if (materialCacheMap.has(line)) {
-          line.material = materialCacheMap.get(line);
-          materialCacheMap.delete(line);
-        }
-      });
-      pointsSet.forEach((points) => {
-        if (materialCacheMap.has(points)) {
-          points.material = materialCacheMap.get(points);
-          materialCacheMap.delete(points);
-        }
-      });
-      spriteSet.forEach((sprite) => {
-        if (materialCacheMap.has(sprite)) {
-          sprite.material = materialCacheMap.get(sprite);
-          materialCacheMap.delete(sprite);
-        }
-      });
-    };
-    const filterLight = () => {
-      lightSet.forEach((light) => {
-        light.visible = false;
-      });
-      this.scene.add(defaultAmbientLight);
-      this.scene.add(defaultDirectionalLight);
-    };
-    const reduceLight = () => {
-      lightSet.forEach((light) => {
-        light.visible = true;
-      });
-      this.scene.remove(defaultAmbientLight);
-      this.scene.remove(defaultDirectionalLight);
-    };
-    const filterScene = () => {
-      if (this.scene.background instanceof Texture) {
-        backgroundCache = this.scene.background;
-        this.scene.background = null;
-      }
-      if (this.scene.environment instanceof Texture) {
-        environmentCache = this.scene.environment;
-        this.scene.environment = null;
-      }
-    };
-    const reduceScene = () => {
-      if (backgroundCache) {
-        this.scene.background = backgroundCache;
-        backgroundCache = void 0;
-      }
-      if (environmentCache) {
-        this.scene.environment = environmentCache;
-        environmentCache = void 0;
-      }
-    };
     if (mode === DISPLAYMODE.GEOMETRY) {
       filterMaterial();
       filterScene();
@@ -9833,7 +10446,8 @@ class ObjectHelperManager extends EventDispatcher {
     __publicField(this, "helperFilter", {
       AmbientLight: true,
       Object3D: true,
-      TransformControls: true
+      TransformControls: true,
+      Scene: true
     });
     __publicField(this, "objectFilter", new Set());
     __publicField(this, "helperMap", new Map());
@@ -9902,7 +10516,6 @@ const ObjectHelperPlugin = function(params = {}) {
   const clickFunMap = new Map();
   const helperMap = helperManager.helperMap;
   this.objectHelperManager = helperManager;
-  const scene = this.scene;
   !params.activeColor && (params.activeColor = "rgb(230, 20, 240)");
   !params.hoverColor && (params.hoverColor = "rgb(255, 158, 240)");
   !params.defaultColor && (params.defaultColor = "rgb(255, 255, 255)");
@@ -9911,7 +10524,8 @@ const ObjectHelperPlugin = function(params = {}) {
   const activeColorHex = new Color(params.activeColor).getHex();
   const hoverColorHex = new Color(params.hoverColor).getHex();
   const selectedColorHex = new Color(params.selectedColor).getHex();
-  scene.addEventListener("afterAdd", (event) => {
+  const cacheSceneSet = new WeakSet();
+  const afterAddFun = (event) => {
     const objects = event.objects;
     for (const object of objects) {
       const helper = helperManager.addObjectHelper(object);
@@ -9919,10 +10533,11 @@ const ObjectHelperPlugin = function(params = {}) {
         continue;
       }
       helper.material.color.setHex(defaultColorHex);
-      scene.add(helper);
+      this.scene.add(helper);
       if (params.interact) {
         const pointerenterFun = () => {
-          if (this.transing) {
+          var _a;
+          if ((_a = this.transformControls) == null ? void 0 : _a.dragging) {
             return;
           }
           if (this.selectionBox) {
@@ -9933,7 +10548,8 @@ const ObjectHelperPlugin = function(params = {}) {
           helper.material.color.setHex(hoverColorHex);
         };
         const pointerleaveFun = () => {
-          if (this.transing) {
+          var _a;
+          if ((_a = this.transformControls) == null ? void 0 : _a.dragging) {
             return;
           }
           if (this.selectionBox) {
@@ -9944,7 +10560,8 @@ const ObjectHelperPlugin = function(params = {}) {
           helper.material.color.setHex(defaultColorHex);
         };
         const clickFun = () => {
-          if (this.transing) {
+          var _a;
+          if ((_a = this.transformControls) == null ? void 0 : _a.dragging) {
             return;
           }
           if (this.selectionBox) {
@@ -9962,15 +10579,15 @@ const ObjectHelperPlugin = function(params = {}) {
         clickFunMap.set(object, clickFun);
       }
     }
-  });
-  scene.addEventListener("afterRemove", (event) => {
+  };
+  const afterRemoveFun = (event) => {
     const objects = event.objects;
     for (const object of objects) {
       const helper = helperManager.disposeObjectHelper(object);
       if (!helper) {
         continue;
       }
-      scene.remove(helper);
+      this.scene.remove(helper);
       if (params.interact) {
         object.removeEventListener("pointerenter", pointerenterFunMap.get(object));
         object.removeEventListener("pointerleave", pointerleaveFunMap.get(object));
@@ -9980,19 +10597,41 @@ const ObjectHelperPlugin = function(params = {}) {
         clickFunMap.delete(object);
       }
     }
-  });
+  };
+  const initSceneHelper = (scene) => {
+    if (cacheSceneSet.has(scene)) {
+      return;
+    }
+    scene.traverse((object) => {
+      const helper = helperManager.addObjectHelper(object);
+      helper && scene.add(helper);
+    });
+    cacheSceneSet.add(scene);
+  };
+  this.scene.addEventListener("afterAdd", afterAddFun);
+  this.scene.addEventListener("afterRemove", afterRemoveFun);
   this.setObjectHelper = function(params2) {
     if (params2.show) {
       helperMap.forEach((helper) => {
-        scene.add(helper);
+        this.scene.add(helper);
       });
     } else {
       helperMap.forEach((helper) => {
-        scene.remove(helper);
+        this.scene.remove(helper);
       });
     }
     return this;
   };
+  this.addEventListener("setScene", (event) => {
+    const scene = event.scene;
+    !cacheSceneSet.has(scene) && initSceneHelper(scene);
+    if (!scene.hasEventListener("afterAdd", afterAddFun)) {
+      scene.addEventListener("afterAdd", afterAddFun);
+    }
+    if (!scene.hasEventListener("afterRemove", afterRemoveFun)) {
+      scene.addEventListener("afterRemove", afterRemoveFun);
+    }
+  });
   const cacheObjectsHelper = new Set();
   this.completeSet.add(() => {
     if (this.selectionBox) {
@@ -10050,9 +10689,8 @@ const SelectionPlugin = function(params = {}) {
     return this;
   };
   this.eventManager.addEventListener("click", (event) => {
-    var _a, _b, _c;
-    if (this.transing) {
-      this.transing = false;
+    var _a, _b, _c, _d;
+    if ((_a = this.transformControls) == null ? void 0 : _a.dragging) {
       return;
     }
     const intersections = event.intersections;
@@ -10062,7 +10700,7 @@ const SelectionPlugin = function(params = {}) {
     if (this.eventManager.penetrate) {
       for (const intersection of intersections) {
         if (event.ctrlKey) {
-          if ((_a = this.selectionBox) == null ? void 0 : _a.has(intersection.object)) {
+          if ((_b = this.selectionBox) == null ? void 0 : _b.has(intersection.object)) {
             this.selectionBox.delete(intersection.object);
             continue;
           }
@@ -10073,12 +10711,12 @@ const SelectionPlugin = function(params = {}) {
       if (intersections.length) {
         const object = intersections[0].object;
         if (event.ctrlKey) {
-          if ((_b = this.selectionBox) == null ? void 0 : _b.has(object)) {
+          if ((_c = this.selectionBox) == null ? void 0 : _c.has(object)) {
             this.selectionBox.delete(object);
             return;
           }
         }
-        (_c = this.selectionBox) == null ? void 0 : _c.add(object);
+        (_d = this.selectionBox) == null ? void 0 : _d.add(object);
       }
     }
     dispatchEvent();
@@ -10113,11 +10751,11 @@ const _Engine = class extends EventDispatcher {
   constructor() {
     super();
     __publicField(this, "completeSet");
+    __publicField(this, "camera", new PerspectiveCamera());
+    __publicField(this, "scene", new Scene());
     __publicField(this, "IS_ENGINESUPPORT", false);
     __publicField(this, "dom");
     __publicField(this, "webGLRenderer");
-    __publicField(this, "currentCamera");
-    __publicField(this, "scene");
     __publicField(this, "orbitControls");
     __publicField(this, "transformControls");
     __publicField(this, "effectComposer");
@@ -10131,13 +10769,9 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "keyboardManager");
     __publicField(this, "objectHelperManager");
     __publicField(this, "stats");
-    __publicField(this, "transing");
     __publicField(this, "displayMode");
     __publicField(this, "selectionBox");
     __publicField(this, "getScreenshot");
-    __publicField(this, "setSize");
-    __publicField(this, "setCamera");
-    __publicField(this, "setDom");
     __publicField(this, "setStats");
     __publicField(this, "setTransformControls");
     __publicField(this, "setViewpoint");
@@ -10159,6 +10793,11 @@ const _Engine = class extends EventDispatcher {
       console.warn("can not install some plugin");
       return this;
     };
+    this.camera.position.set(50, 50, 50);
+    this.addEventListener("setSize", (event) => {
+      this.camera.aspect = event.width / event.height;
+      this.camera.updateProjectionMatrix();
+    });
   }
   optimizeMemory() {
     Object.keys(this).forEach((key) => {
@@ -10188,6 +10827,75 @@ const _Engine = class extends EventDispatcher {
     });
     return this;
   }
+  setDom(dom) {
+    this.dom = dom;
+    this.dispatchEvent({
+      type: "setDom",
+      dom
+    });
+    return this;
+  }
+  setSize(width, height) {
+    var _a, _b;
+    if (width && width <= 0 || height && height <= 0) {
+      console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
+      return this;
+    }
+    !width && (width = ((_a = this.dom) == null ? void 0 : _a.offsetWidth) || window.innerWidth);
+    !height && (height = ((_b = this.dom) == null ? void 0 : _b.offsetHeight) || window.innerHeight);
+    this.dispatchEvent({ type: "setSize", width, height });
+    return this;
+  }
+  setCamera(camera) {
+    if (typeof camera === "object" && camera instanceof Camera) {
+      this.camera = camera;
+      this.dispatchEvent({
+        type: "setCamera",
+        camera
+      });
+    } else {
+      if (this.IS_ENGINESUPPORT) {
+        const target = this.compilerManager.getObjectBySymbol(camera);
+        if (target) {
+          this.camera = target;
+          this.dispatchEvent({
+            type: "setCamera",
+            camera: target
+          });
+        } else {
+          console.warn(`can not found camera in compilerManager: ${camera}`);
+        }
+      } else {
+        console.warn(`engine is not a Engine support but use symbol to found camera.`);
+      }
+    }
+    return this;
+  }
+  setScene(scene) {
+    if (typeof scene === "object" && scene instanceof Scene) {
+      this.scene = scene;
+      this.dispatchEvent({
+        type: "setScene",
+        scene
+      });
+    } else {
+      if (this.IS_ENGINESUPPORT) {
+        const target = this.compilerManager.getObjectBySymbol(scene);
+        if (target) {
+          this.scene = target;
+          this.dispatchEvent({
+            type: "setScene",
+            scene: target
+          });
+        } else {
+          console.warn(`can not found camera in compilerManager: ${scene}`);
+        }
+      } else {
+        console.warn(`engine is not a Engine support but use symbol to found camera.`);
+      }
+    }
+    return this;
+  }
 };
 let Engine = _Engine;
 __publicField(Engine, "pluginHandler", new Map());
@@ -10200,7 +10908,6 @@ __publicField(Engine, "dispose", function() {
 });
 Engine.register(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin);
 Engine.register(ENGINEPLUGIN.EFFECTCOMPOSER, EffectComposerPlugin);
-Engine.register(ENGINEPLUGIN.SCENE, ScenePlugin);
 Engine.register(ENGINEPLUGIN.RENDERMANAGER, RenderManagerPlugin);
 Engine.register(ENGINEPLUGIN.POINTERMANAGER, PointerManagerPlugin);
 Engine.register(ENGINEPLUGIN.EVENTMANAGER, EventManagerPlugin);
@@ -10224,7 +10931,7 @@ class DisplayEngine extends Engine {
     this.install(ENGINEPLUGIN.WEBGLRENDERER, {
       antialias: true,
       alpha: true
-    }).install(ENGINEPLUGIN.SCENE).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
+    }).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
       WebGLMultisampleRenderTarget: true
     }).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).complete();
   }
@@ -10232,12 +10939,12 @@ class DisplayEngine extends Engine {
 class ModelingEngine extends Engine {
   constructor() {
     super();
-    this.install(ENGINEPLUGIN.WEBGLRENDERER, {
+    this.install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.WEBGLRENDERER, {
       antialias: true,
       alpha: true
-    }).install(ENGINEPLUGIN.SCENE).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
+    }).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
       WebGLMultisampleRenderTarget: true
-    }).install(ENGINEPLUGIN.SELECTION).install(ENGINEPLUGIN.AXESHELPER).install(ENGINEPLUGIN.GRIDHELPER).install(ENGINEPLUGIN.OBJECTHELPER).install(ENGINEPLUGIN.VIEWPOINT).install(ENGINEPLUGIN.DISPLAYMODE).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.STATS).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.KEYBOARDMANAGER).install(ENGINEPLUGIN.TRANSFORMCONTROLS).complete();
+    }).install(ENGINEPLUGIN.SELECTION).install(ENGINEPLUGIN.AXESHELPER).install(ENGINEPLUGIN.GRIDHELPER).install(ENGINEPLUGIN.OBJECTHELPER).install(ENGINEPLUGIN.VIEWPOINT).install(ENGINEPLUGIN.DISPLAYMODE).install(ENGINEPLUGIN.STATS).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.KEYBOARDMANAGER).install(ENGINEPLUGIN.TRANSFORMCONTROLS).complete();
   }
 }
 const _SupportDataGenerator = class {
@@ -10451,7 +11158,7 @@ class EngineSupport extends Engine {
   constructor(parameters) {
     super();
     __publicField(this, "IS_ENGINESUPPORT", true);
-    this.install(ENGINEPLUGIN.LOADERMANAGER).install(ENGINEPLUGIN.RESOURCEMANAGER).install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters).install(ENGINEPLUGIN.COMPILERMANAGER);
+    this.install(ENGINEPLUGIN.LOADERMANAGER).install(ENGINEPLUGIN.RESOURCEMANAGER).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters).install(ENGINEPLUGIN.COMPILERMANAGER);
   }
   loadLifeCycle(config) {
     const dataSupportManager = this.dataSupportManager;
@@ -10480,40 +11187,62 @@ class EngineSupport extends Engine {
     });
   }
   loadConfig(config, callback) {
-    this.renderManager.stop();
+    const renderFlag = this.renderManager.hasRendering();
+    if (renderFlag) {
+      this.renderManager.stop();
+    }
     if (config.assets && config.assets.length) {
       const mappedFun = (event) => {
         delete config.assets;
         this.loadLifeCycle(config);
         this.resourceManager.removeEventListener("mapped", mappedFun);
         callback && callback(event);
-        this.renderManager.play();
+        if (renderFlag) {
+          this.renderManager.play();
+        } else {
+          this.renderManager.render();
+        }
       };
       this.resourceManager.addEventListener("mapped", mappedFun);
       this.loaderManager.reset().load(config.assets);
     } else {
       this.loadLifeCycle(config);
       callback && callback();
-      this.renderManager.play();
+      if (renderFlag) {
+        this.renderManager.play();
+      } else {
+        this.renderManager.render();
+      }
     }
     return this;
   }
   loadConfigAsync(config) {
     return new Promise((resolve, reject) => {
-      this.renderManager.stop();
+      const renderFlag = this.renderManager.hasRendering();
+      if (renderFlag) {
+        this.renderManager.stop();
+      }
       if (config.assets && config.assets.length) {
         const mappedFun = (event) => {
           delete config.assets;
           this.loadLifeCycle(config);
           this.resourceManager.removeEventListener("mapped", mappedFun);
-          this.renderManager.play();
+          if (renderFlag) {
+            this.renderManager.play();
+          } else {
+            this.renderManager.render();
+          }
           resolve(event);
         };
         this.resourceManager.addEventListener("mapped", mappedFun);
         this.loaderManager.reset().load(config.assets);
       } else {
         this.loadLifeCycle(config);
-        this.renderManager.play();
+        if (renderFlag) {
+          this.renderManager.play();
+        } else {
+          this.renderManager.render();
+        }
         resolve(void 0);
       }
     });
@@ -10529,9 +11258,9 @@ class ModelingEngineSupport extends EngineSupport {
     this.install(ENGINEPLUGIN.WEBGLRENDERER, {
       antialias: true,
       alpha: true
-    }).install(ENGINEPLUGIN.SCENE).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
+    }).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
       WebGLMultisampleRenderTarget: true
-    }).install(ENGINEPLUGIN.SELECTION).install(ENGINEPLUGIN.AXESHELPER).install(ENGINEPLUGIN.GRIDHELPER).install(ENGINEPLUGIN.OBJECTHELPER).install(ENGINEPLUGIN.VIEWPOINT).install(ENGINEPLUGIN.DISPLAYMODE).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.STATS).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.KEYBOARDMANAGER).install(ENGINEPLUGIN.TRANSFORMCONTROLS).complete();
+    }).install(ENGINEPLUGIN.SELECTION).install(ENGINEPLUGIN.AXESHELPER).install(ENGINEPLUGIN.GRIDHELPER).install(ENGINEPLUGIN.OBJECTHELPER).install(ENGINEPLUGIN.VIEWPOINT).install(ENGINEPLUGIN.DISPLAYMODE).install(ENGINEPLUGIN.STATS).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.KEYBOARDMANAGER).install(ENGINEPLUGIN.TRANSFORMCONTROLS).complete();
   }
 }
 class DisplayEngineSupport extends EngineSupport {
@@ -10540,15 +11269,9 @@ class DisplayEngineSupport extends EngineSupport {
     this.install(ENGINEPLUGIN.WEBGLRENDERER, {
       antialias: true,
       alpha: true
-    });
-    this.install(ENGINEPLUGIN.SCENE);
-    this.install(ENGINEPLUGIN.RENDERMANAGER);
-    this.install(ENGINEPLUGIN.EFFECTCOMPOSER, {
+    }).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
       WebGLMultisampleRenderTarget: true
-    });
-    this.install(ENGINEPLUGIN.ORBITCONTROLS);
-    this.install(ENGINEPLUGIN.POINTERMANAGER);
-    this.install(ENGINEPLUGIN.EVENTMANAGER).complete();
+    }).install(ENGINEPLUGIN.ORBITCONTROLS).complete();
   }
 }
 const openWindow = generateConfigFunction({
@@ -11312,4 +12035,54 @@ class History {
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
+Scene.prototype.add = function(...object) {
+  if (!arguments.length) {
+    return this;
+  }
+  if (arguments.length > 1) {
+    for (let i = 0; i < arguments.length; i++) {
+      this.add(arguments[i]);
+    }
+    return this;
+  }
+  const currentObject = object[0];
+  if (currentObject === this) {
+    console.error("THREE.Object3D.add: object can't be added as a child of itself.", object);
+    return this;
+  }
+  if (currentObject && currentObject.isObject3D) {
+    if (currentObject.parent !== null) {
+      const index = this.children.indexOf(currentObject);
+      if (index !== -1) {
+        currentObject.parent = null;
+        this.children.splice(index, 1);
+        currentObject.dispatchEvent({ type: "removed" });
+      }
+    }
+    currentObject.parent = this;
+    this.children.push(currentObject);
+    currentObject.dispatchEvent({ type: "added" });
+  } else {
+    console.error("THREE.Object3D.add: object not an instance of THREE.Object3D.", object);
+  }
+  return this;
+};
+const sceneAdd = Scene.prototype.add;
+const sceneRemove = Scene.prototype.remove;
+Scene.prototype.add = function(...object) {
+  sceneAdd.call(this, ...object);
+  this.dispatchEvent({
+    type: "afterAdd",
+    objects: object
+  });
+  return this;
+};
+Scene.prototype.remove = function(...object) {
+  sceneRemove.call(this, ...object);
+  this.dispatchEvent({
+    type: "afterRemove",
+    objects: object
+  });
+  return this;
+};
 export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };

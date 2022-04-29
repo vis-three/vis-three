@@ -114,7 +114,7 @@ export class WebGLRendererProcessor extends Processor {
                 return this;
             }
             const adaptiveCameraFun = (event) => {
-                const camera = engine.currentCamera;
+                const camera = engine.camera;
                 const domWidth = renderer.domElement.offsetWidth;
                 const domHeight = renderer.domElement.offsetHeight;
                 let width = 0;

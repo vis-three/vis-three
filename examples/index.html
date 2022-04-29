@@ -66,8 +66,7 @@
       import * as Vis from "../dist/Vis.es.js";
       const engine = new Vis.DisplayEngineSupport()
         .setDom(document.getElementById("app"))
-        .setSize()
-        .play();
+        .setSize();
 
       window.addEventListener("resize", () => {
         engine.setSize();
@@ -105,12 +104,31 @@
         autoRotate: true,
       });
 
-      engine.dataSupportManager.applyConfig(ambientLight);
-      engine.dataSupportManager.applyConfig(spotLight);
-      engine.dataSupportManager.applyConfig(meshStandardMaterial);
-      engine.dataSupportManager.applyConfig(boxGeometry);
-      engine.dataSupportManager.applyConfig(mesh);
-      engine.dataSupportManager.applyConfig(orbitControls);
+      const scene = Vis.generateConfig("Scene", {
+        children: [ambientLight.vid, spotLight.vid, mesh.vid],
+      });
+
+      const camera = Vis.generateConfig("PerspectiveCamera", {
+        far: 500,
+        position: {
+          x: 60,
+          y: 30,
+          z: 60,
+        },
+      });
+
+      engine.dataSupportManager.applyConfig(
+        ambientLight,
+        spotLight,
+        meshStandardMaterial,
+        boxGeometry,
+        mesh,
+        orbitControls,
+        scene,
+        camera
+      );
+
+      engine.setScene(scene.vid).setCamera(camera.vid).play();
 
       const tree = [
         {

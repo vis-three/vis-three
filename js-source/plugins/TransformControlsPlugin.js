@@ -4,10 +4,6 @@ export const TransformControlsPlugin = function (params) {
         console.warn("this has installed transformControls plugin.");
         return false;
     }
-    if (!this.webGLRenderer) {
-        console.warn("this must install renderer before install transformControls plugin.");
-        return false;
-    }
     if (!this.pointerManager) {
         console.warn("this must install pointerManager before install transformControls plugin.");
         return false;
@@ -16,13 +12,9 @@ export const TransformControlsPlugin = function (params) {
         console.warn("this must install eventManager before install transformControls plugin.");
         return false;
     }
-    const transformControls = new VisTransformControls(this.currentCamera, this.dom);
+    const transformControls = new VisTransformControls(this.camera, this.dom);
     transformControls.detach();
     this.transformControls = transformControls;
-    this.transing = false;
-    transformControls.addEventListener("mouseDown", () => {
-        this.transing = true;
-    });
     this.scene.add(this.transformControls);
     this.scene.add(this.transformControls.target);
     this.setTransformControls = function (show) {
@@ -37,6 +29,14 @@ export const TransformControlsPlugin = function (params) {
     this.addEventListener("setCamera", (event) => {
         transformControls.setCamera(event.camera);
     });
+    this.addEventListener("setDom", (event) => {
+        transformControls.setDom(event.dom);
+    });
+    this.addEventListener("setScene", (event) => {
+        const scene = event.scene;
+        scene.add(this.transformControls.target);
+        scene.add(this.transformControls);
+    });
     // 与selection联调
     if (this.selectionBox) {
         this.addEventListener("selected", (event) => {
@@ -45,8 +45,7 @@ export const TransformControlsPlugin = function (params) {
     }
     else {
         this.eventManager.addEventListener("pointerup", (event) => {
-            if (this.transing) {
-                this.transing = false;
+            if (this.transformControls.dragging) {
                 return;
             }
             if (event.button === 0) {
@@ -76,7 +75,6 @@ export const TransformControlsPlugin = function (params) {
             let mode;
             transformControls.addEventListener(TRANSFORMEVENT.OBJECTCHANGED, (event) => {
                 const e = event;
-                //TODO: update config.children
                 e.transObjectSet.forEach((object) => {
                     config = objectToConfig(object);
                     mode = e.mode;

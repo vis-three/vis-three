@@ -1,5 +1,5 @@
 import { Camera, Object3D, Scene, WebGLRenderer } from "three";
-import { EventDispatcher } from "../core/EventDispatcher";
+import { BaseEvent, EventDispatcher } from "../core/EventDispatcher";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderManager } from "../manager/RenderManager";
@@ -39,6 +39,23 @@ export declare enum ENGINEPLUGIN {
     OBJECTHELPER = "ObjectHelper",
     SELECTION = "Selection"
 }
+export interface SetDomEvent extends BaseEvent {
+    type: "setDom";
+    dom: HTMLElement;
+}
+export interface SetCameraEvent extends BaseEvent {
+    type: "setCamera";
+    camera: Camera;
+}
+export interface SetSceneEvent extends BaseEvent {
+    type: "setScene";
+    scene: Scene;
+}
+export interface SetSizeEvent extends BaseEvent {
+    type: "setSize";
+    width: number;
+    height: number;
+}
 export declare class Engine extends EventDispatcher {
     static pluginHandler: Map<string, Function> | undefined;
     static register: <T extends object>(name: string, handler: (this: Engine, params: T) => void) => typeof Engine;
@@ -47,7 +64,7 @@ export declare class Engine extends EventDispatcher {
     IS_ENGINESUPPORT: boolean;
     dom?: HTMLElement;
     webGLRenderer?: WebGLRenderer;
-    currentCamera?: Camera;
+    camera?: Camera;
     scene?: Scene;
     orbitControls?: OrbitControls;
     transformControls?: TransformControls;
@@ -62,13 +79,9 @@ export declare class Engine extends EventDispatcher {
     keyboardManager?: KeyboardManager;
     objectHelperManager?: ObjectHelperManager;
     stats?: Stats;
-    transing?: boolean;
     displayMode?: DISPLAYMODE;
     selectionBox?: Set<Object3D>;
     getScreenshot?: (params: Screenshot) => HTMLImageElement;
-    setSize?: (width: number, height: number) => this;
-    setCamera?: (camera: Camera) => this;
-    setDom?: (dom: HTMLElement) => this;
     setStats?: (show: boolean) => this;
     setTransformControls?: (show: boolean) => this;
     setViewpoint?: (viewpoint: VIEWPOINT) => this;
@@ -96,8 +109,52 @@ export declare class Engine extends EventDispatcher {
     stop?: () => this;
     render?: () => this;
     constructor();
+    /**
+     * 优化内存
+     */
     protected optimizeMemory(): void;
     install<T extends object>(plugin: ENGINEPLUGIN, params?: T): this;
     complete(): this;
+    /**
+     * 清除引擎缓存
+     * @returns this
+     */
     dispose(): this;
+    /**
+     * 设置输出的dom
+     * @param dom HTMLElement
+     * @returns this
+     */
+    setDom(dom: HTMLElement): this;
+    /**
+     * 设置引擎整体尺寸
+     * @param width number
+     * @param height number
+     * @returns this
+     */
+    setSize(width?: number, height?: number): this;
+    /**
+     * 设置相机
+     * @param vid 相机标识
+     * @returns this
+     */
+    setCamera(vid: string): this;
+    /**
+     * 设置相机
+     * @param camera 相机对象
+     * @returns this
+     */
+    setCamera(camera: Camera): this;
+    /**
+     * 设置场景
+     * @param vid 场景标识
+     * @returns this
+     */
+    setScene(vid: string): this;
+    /**
+     * 设置场景
+     * @param scene 场景对象
+     * @returns this
+     */
+    setScene(scene: Scene): this;
 }

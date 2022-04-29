@@ -45,11 +45,7 @@ import { VideoLoader } from "./extends/loader/VideoLoader";
 import { ProxyBroadcast } from "./core/ProxyBroadcast";
 import { Translater } from "./core/Translater";
 
-if (!window.__THREE__) {
-  console.error(
-    `vis-three dependent on three.js module, pleace run 'npm i three' first.`
-  );
-}
+import "./optimize/optimizeScirpt";
 
 export {
   // core

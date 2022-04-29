@@ -1,7 +1,9 @@
+import { CONFIGTYPE } from "../constants/configType";
+import { getObjectConfig } from "../object/ObjectConfig";
 export const getSceneConfig = function () {
-    return {
-        vid: "Scene",
-        type: "Scene",
+    return Object.assign(getObjectConfig(), {
+        vid: CONFIGTYPE.SCENE,
+        type: CONFIGTYPE.SCENE,
         background: "",
         environment: "",
         fog: {
@@ -11,6 +13,6 @@ export const getSceneConfig = function () {
             far: 200,
             density: 0.003,
         },
-    };
+    });
 };
 //# sourceMappingURL=SceneConfig.js.map

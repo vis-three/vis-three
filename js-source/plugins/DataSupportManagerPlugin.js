@@ -33,10 +33,6 @@ export const DataSupportManagerPlugin = function (params) {
         if (!rendererData.WebGLRenderer) {
             rendererData.WebGLRenderer = generateConfig(CONFIGTYPE.WEBGLRENDERER);
         }
-        const sceneData = this.dataSupportManager.getDataSupport(MODULETYPE.SCENE).getData();
-        if (!sceneData[CONFIGTYPE.SCENE]) {
-            sceneData[CONFIGTYPE.SCENE] = generateConfig(CONFIGTYPE.SCENE);
-        }
         const controlsData = this.dataSupportManager.getDataSupport(MODULETYPE.CONTROLS).getData();
         if (this.transformControls) {
             if (!controlsData[CONFIGTYPE.TRNASFORMCONTROLS]) {

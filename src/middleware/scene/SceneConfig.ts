@@ -1,23 +1,24 @@
-import { SymbolConfig } from "../common/CommonConfig";
+import { CONFIGTYPE } from "../constants/configType";
+import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
 
 export interface SceneFogConfig {
-  type: "Fog" | "FogExp2" | "";
+  type: string; //"Fog" | "FogExp2" | "";
   color: string;
   near: number;
   far: number;
   density: number;
 }
 
-export interface SceneConfig extends SymbolConfig {
+export interface SceneConfig extends ObjectConfig {
   background: string | null; // color or vid
   environment: string | null;
   fog: SceneFogConfig;
 }
 
 export const getSceneConfig = function (): SceneConfig {
-  return {
-    vid: "Scene",
-    type: "Scene",
+  return Object.assign(getObjectConfig(), {
+    vid: CONFIGTYPE.SCENE,
+    type: CONFIGTYPE.SCENE,
     background: "",
     environment: "",
     fog: {
@@ -27,5 +28,5 @@ export const getSceneConfig = function (): SceneConfig {
       far: 200,
       density: 0.003,
     },
-  };
+  });
 };

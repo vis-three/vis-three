@@ -1,5 +1,5 @@
-import { Color, Object3D, Sprite } from "three";
-import { Engine } from "../engine/Engine";
+import { Color, Object3D, Scene, Sprite } from "three";
+import { Engine, SetSceneEvent } from "../engine/Engine";
 import { Plugin } from "./plugin";
 import { SelectedEvent } from "./SelectionPlugin";
 import { ObjectHelperManager } from "../manager/ObjectHelperManager";
@@ -41,7 +41,6 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
   const helperMap = helperManager.helperMap;
 
   this.objectHelperManager = helperManager;
-  const scene = this.scene!;
 
   !params.activeColor && (params.activeColor = "rgb(230, 20, 240)");
   !params.hoverColor && (params.hoverColor = "rgb(255, 158, 240)");
@@ -53,7 +52,9 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
   const hoverColorHex = new Color(params.hoverColor).getHex();
   const selectedColorHex = new Color(params.selectedColor).getHex();
 
-  scene.addEventListener("afterAdd", (event) => {
+  const cacheSceneSet = new WeakSet<Scene>();
+
+  const afterAddFun = (event) => {
     const objects = event.objects;
 
     for (const object of objects) {
@@ -63,11 +64,12 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
         continue;
       }
       helper.material.color.setHex(defaultColorHex);
-      scene.add(helper);
+
+      this.scene.add(helper);
 
       if (params.interact) {
         const pointerenterFun = () => {
-          if (this.transing) {
+          if (this.transformControls?.dragging) {
             return;
           }
           if (this.selectionBox) {
@@ -79,7 +81,7 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
         };
 
         const pointerleaveFun = () => {
-          if (this.transing) {
+          if (this.transformControls?.dragging) {
             return;
           }
           if (this.selectionBox) {
@@ -92,7 +94,7 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
         };
 
         const clickFun = () => {
-          if (this.transing) {
+          if (this.transformControls?.dragging) {
             return;
           }
           if (this.selectionBox) {
@@ -112,9 +114,9 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
         clickFunMap.set(object, clickFun);
       }
     }
-  });
+  };
 
-  scene.addEventListener("afterRemove", (event) => {
+  const afterRemoveFun = (event) => {
     const objects = event.objects;
 
     for (const object of objects) {
@@ -124,7 +126,7 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
         continue;
       }
 
-      scene.remove(helper);
+      this.scene.remove(helper);
 
       if (params.interact) {
         object.removeEventListener(
@@ -142,20 +144,51 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
         clickFunMap.delete(object);
       }
     }
-  });
+  };
+
+  const initSceneHelper = (scene) => {
+    if (cacheSceneSet.has(scene)) {
+      return;
+    }
+
+    scene.traverse((object) => {
+      const helper = helperManager.addObjectHelper(object);
+      helper && scene.add(helper);
+    });
+    cacheSceneSet.add(scene);
+  };
+
+  this.scene.addEventListener("afterAdd", afterAddFun);
+
+  this.scene.addEventListener("afterRemove", afterRemoveFun);
 
   this.setObjectHelper = function (params: { show: boolean }): Engine {
+    // TODO: 分开scene
     if (params.show) {
       helperMap.forEach((helper) => {
-        scene.add(helper);
+        this.scene.add(helper);
       });
     } else {
       helperMap.forEach((helper) => {
-        scene.remove(helper);
+        this.scene.remove(helper);
       });
     }
     return this;
   };
+
+  this.addEventListener<SetSceneEvent>("setScene", (event) => {
+    const scene = event.scene;
+    // 初始化场景辅助
+    !cacheSceneSet.has(scene) && initSceneHelper(scene);
+
+    if (!scene.hasEventListener("afterAdd", afterAddFun)) {
+      scene.addEventListener("afterAdd", afterAddFun);
+    }
+
+    if (!scene.hasEventListener("afterRemove", afterRemoveFun)) {
+      scene.addEventListener("afterRemove", afterRemoveFun);
+    }
+  });
 
   const cacheObjectsHelper = new Set<Object3D>();
 

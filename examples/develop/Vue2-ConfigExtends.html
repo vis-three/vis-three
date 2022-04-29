@@ -76,6 +76,7 @@
         "example.canvas": canvasGenerator.get(),
       });
 
+      const ambientLight = Vis.generateConfig("AmbientLight");
       const canvasTexture = engine.dataSupportManager.reactiveConfig(
         Vue.observable(
           Vis.generateConfig(
@@ -96,22 +97,28 @@
         map: canvasTexture.vid,
       });
 
-      engine.dataSupportManager
-        .applyConfig(Vis.generateConfig("AmbientLight"))
-        .applyConfig(canvasTexture)
-        .applyConfig(spriteMaterial)
-        .applyConfig(
-          Vis.generateConfig("Sprite", {
-            material: spriteMaterial.vid,
-            position: {
-              y: 15,
-            },
-            scale: {
-              x: 25,
-              y: 5,
-            },
-          })
-        );
+      const sprite = Vis.generateConfig("Sprite", {
+        material: spriteMaterial.vid,
+        position: {
+          y: 15,
+        },
+        scale: {
+          x: 25,
+          y: 5,
+        },
+      });
+
+      const scene = Vis.generateConfig("Scene", {
+        children: [ambientLight.vid, sprite.vid],
+      });
+
+      engine.dataSupportManager.applyConfig(
+        ambientLight,
+        canvasTexture,
+        spriteMaterial,
+        sprite,
+        scene
+      );
 
       new Vue({
         el: "#app",
@@ -140,7 +147,11 @@
         },
         mounted() {
           this.updateCanvas();
-          engine.setDom(document.getElementById("app")).setSize().play();
+          engine
+            .setDom(document.getElementById("app"))
+            .setSize()
+            .setScene(scene.vid)
+            .play();
         },
       });
     </script>

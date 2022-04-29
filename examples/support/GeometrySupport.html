@@ -56,10 +56,13 @@
         distance: 150,
       });
 
-      engine.dataSupportManager.applyConfig(pointLight);
-
       const material = Vis.generateConfig("MeshStandardMaterial");
-      engine.dataSupportManager.applyConfig(material);
+
+      const scene = Vis.generateConfig("Scene", {
+        children: [pointLight.vid],
+      });
+
+      engine.dataSupportManager.applyConfig(pointLight, material);
 
       const geometryTypeList = [
         Vis.CONFIGTYPE.BOXGEOMETRY,
@@ -93,8 +96,13 @@
           },
         });
 
-        engine.dataSupportManager.applyConfig(geometry).applyConfig(mesh);
+        engine.dataSupportManager.applyConfig(geometry, mesh);
+        scene.children.push(mesh.vid);
       });
+
+      engine.dataSupportManager.applyConfig(scene);
+
+      engine.setScene(scene.vid);
     </script>
   </body>
 </html>

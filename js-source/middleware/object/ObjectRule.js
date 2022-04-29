@@ -1,5 +1,6 @@
 import { validate } from "uuid";
 import { EVENTNAME } from "../../manager/EventManager";
+import { UNIQUESYMBOL } from "../constants/UNIQUESYMBOL";
 export const ObjectRule = function (input, compiler) {
     const { operate, key, path, value } = input;
     const tempPath = path.concat([]);
@@ -25,13 +26,13 @@ export const ObjectRule = function (input, compiler) {
                 return;
             }
         }
-        if (validate(key)) {
+        if (validate(key) || UNIQUESYMBOL[key]) {
             compiler.add(key, value);
         }
         return;
     }
     if (operate === "set") {
-        if (vid && validate(vid)) {
+        if ((vid && validate(vid)) || UNIQUESYMBOL[vid]) {
             compiler.set(vid, tempPath, key, value);
         }
         else {
@@ -44,7 +45,7 @@ export const ObjectRule = function (input, compiler) {
             compiler.removeChildren(vid, value);
             return;
         }
-        if (validate(key)) {
+        if (validate(key) || UNIQUESYMBOL[key]) {
             compiler.add(key, value);
         }
         return;

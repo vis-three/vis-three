@@ -5,7 +5,6 @@ export const RenderManagerPlugin = function () {
         return false;
     }
     this.renderManager = new RenderManager();
-    this.render && this.renderManager.addEventListener("render", this.render);
     this.render = function () {
         this.renderManager.render();
         return this;

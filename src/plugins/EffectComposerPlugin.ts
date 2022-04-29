@@ -6,10 +6,14 @@ import {
 } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { Engine } from "../engine/Engine";
+import {
+  Engine,
+  SetCameraEvent,
+  SetSceneEvent,
+  SetSizeEvent,
+} from "../engine/Engine";
 import { RenderEvent } from "../manager/RenderManager";
 import { Plugin } from "./plugin";
-import { SetCameraEvent, SetSizeEvent } from "./WebGLRendererPlugin";
 
 export interface EffectComposerParameters {
   WebGLMultisampleRenderTarget?: boolean;
@@ -72,17 +76,29 @@ export const EffectComposerPlugin: Plugin<EffectComposerParameters> = function (
 
   let renderPass!: RenderPass;
 
-  if (this.scene) {
-    renderPass = new RenderPass(this.scene, this.currentCamera!);
-  } else {
-    console.error(`composer con not found support scene plugin.`);
-    return false;
+  if (this.scene && this.camera) {
+    renderPass = new RenderPass(this.scene, this.camera);
+    composer.addPass(renderPass);
   }
 
-  composer.addPass(renderPass);
-
   this.addEventListener<SetCameraEvent>("setCamera", (event) => {
-    renderPass.camera = event.camera;
+    if (!renderPass && this.scene) {
+      renderPass = new RenderPass(this.scene, event.camera);
+      composer.addPass(renderPass);
+      return;
+    } else if (renderPass) {
+      renderPass.camera = event.camera;
+    }
+  });
+
+  this.addEventListener<SetSceneEvent>("setScene", (event) => {
+    if (!renderPass && this.camera) {
+      renderPass = new RenderPass(event.scene, this.camera);
+      composer.addPass(renderPass);
+      return;
+    } else if (renderPass) {
+      renderPass.scene = event.scene;
+    }
   });
 
   this.addEventListener<SetSizeEvent>("setSize", (event) => {
@@ -91,17 +107,14 @@ export const EffectComposerPlugin: Plugin<EffectComposerParameters> = function (
 
   if (this.renderManager) {
     this.renderManager.removeEventListener("render", this.render!);
-  }
-
-  this.render = () => {
-    this.effectComposer!.render();
-    return this;
-  };
-
-  if (this.renderManager) {
     this.renderManager.addEventListener("render", (event) => {
       this.effectComposer!.render((event as RenderEvent).delta);
     });
+  } else {
+    this.render = function (): Engine {
+      this.effectComposer!.render();
+      return this;
+    };
   }
 
   return true;

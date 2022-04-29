@@ -1,64 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DisplayEngine</title>
-  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
-  <link rel="stylesheet" href="../css/common.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DisplayEngine</title>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/examples/public/favicon.ico"
+    />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
 
-<style>
-  #app {
-    width: 100%;
-    height: 100%;
-  }
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
 
-</style>
+  <body>
+    <div id="app"></div>
+    <script type="module">
+      import * as THREE from "three";
+      import * as Vis from "../../dist/Vis.es.js";
+      import { v4 as getUUid } from "uuid";
 
-<body>
-  <div id="app"></div>
-  <script type="module">
-    import * as THREE from 'three'
-    import * as Vis from '../../dist/Vis.es.js'
-    import { v4 as getUUid } from 'uuid'
+      const engine = new Vis.DisplayEngineSupport()
+        .install("GridHelper")
+        .complete();
 
-    const engine = new Vis.DisplayEngineSupport()
-    .setDom(document.getElementById('app'))
-    .setSize()
-    .play()
+      const pointLight = Vis.generateConfig("PointLight", {
+        position: {
+          x: 30,
+          y: 50,
+        },
+        distance: 100,
+      });
 
+      const meshStandardMaterial = Vis.generateConfig("MeshStandardMaterial", {
+        color: "rgb(255, 0, 0)",
+      });
 
-    const pointLight = Vis.generateConfig('PointLight', {
-      position: {
-        x: 30,
-        y: 50
-      },
-      distance: 100
-    })
+      const boxGeometry = Vis.generateConfig("BoxGeometry", {
+        width: 20,
+        height: 40,
+        depth: 60,
+      });
 
-    const meshStandardMaterial = Vis.generateConfig('MeshStandardMaterial', {
-      color: 'rgb(255, 0, 0)'
-    })
-    
-    const boxGeometry = Vis.generateConfig('BoxGeometry', {
-      width: 20,
-      height: 40,
-      depth: 60
-    })
-    
-    const mesh = Vis.generateConfig('Mesh', {
-      geometry: boxGeometry.vid,
-      material: meshStandardMaterial.vid
-    })
+      const mesh = Vis.generateConfig("Mesh", {
+        geometry: boxGeometry.vid,
+        material: meshStandardMaterial.vid,
+      });
 
-    engine.dataSupportManager.applyConfig(pointLight) 
-    engine.dataSupportManager.applyConfig(meshStandardMaterial)
-    engine.dataSupportManager.applyConfig(boxGeometry)
-    engine.dataSupportManager.applyConfig(mesh)
+      const scene = Vis.generateConfig("Scene", {
+        children: [pointLight.vid, mesh.vid],
+      });
 
-  </script>
-  
-</body>
+      const camera = Vis.generateConfig("PerspectiveCamera", {
+        far: 1000,
+        adaptiveWindow: true,
+        position: {
+          x: 60,
+          y: 60,
+          z: 60,
+        },
+      });
+
+      engine.dataSupportManager.applyConfig(
+        pointLight,
+        meshStandardMaterial,
+        boxGeometry,
+        mesh,
+        scene,
+        camera
+      );
+
+      engine
+        .setDom(document.getElementById("app"))
+        .setCamera(camera.vid)
+        .setScene(scene.vid)
+        .setSize()
+        .play();
+    </script>
+  </body>
 </html>

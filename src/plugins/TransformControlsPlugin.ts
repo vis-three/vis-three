@@ -1,5 +1,10 @@
 import { Object3D } from "three";
-import { Engine } from "../engine/Engine";
+import {
+  Engine,
+  SetCameraEvent,
+  SetDomEvent,
+  SetSceneEvent,
+} from "../engine/Engine";
 import { GlobalEvent } from "../manager/EventManager";
 import {
   ObjectChangedEvent,
@@ -7,7 +12,6 @@ import {
   VisTransformControls,
 } from "../optimize/VisTransformControls";
 import { Plugin } from "./plugin";
-import { SetCameraEvent } from "./WebGLRendererPlugin";
 import { ObjectConfig } from "../middleware/object/ObjectConfig";
 import { SelectedEvent } from "./SelectionPlugin";
 
@@ -17,13 +21,6 @@ export const TransformControlsPlugin: Plugin<Object> = function (
 ): boolean {
   if (this.transformControls) {
     console.warn("this has installed transformControls plugin.");
-    return false;
-  }
-
-  if (!this.webGLRenderer) {
-    console.warn(
-      "this must install renderer before install transformControls plugin."
-    );
     return false;
   }
 
@@ -41,19 +38,10 @@ export const TransformControlsPlugin: Plugin<Object> = function (
     return false;
   }
 
-  const transformControls = new VisTransformControls(
-    this.currentCamera!,
-    this.dom!
-  );
+  const transformControls = new VisTransformControls(this.camera!, this.dom!);
   transformControls.detach();
 
   this.transformControls = transformControls;
-
-  this.transing = false;
-
-  transformControls.addEventListener("mouseDown", () => {
-    this.transing = true;
-  });
 
   this.scene!.add(this.transformControls);
   this.scene!.add((this.transformControls as VisTransformControls).target);
@@ -71,6 +59,16 @@ export const TransformControlsPlugin: Plugin<Object> = function (
     transformControls.setCamera(event.camera);
   });
 
+  this.addEventListener<SetDomEvent>("setDom", (event) => {
+    transformControls.setDom(event.dom);
+  });
+
+  this.addEventListener<SetSceneEvent>("setScene", (event) => {
+    const scene = event.scene;
+    scene.add((this.transformControls as VisTransformControls).target);
+    scene.add(this.transformControls!);
+  });
+
   // 与selection联调
   if (this.selectionBox) {
     this.addEventListener<SelectedEvent>("selected", (event) => {
@@ -78,8 +76,7 @@ export const TransformControlsPlugin: Plugin<Object> = function (
     });
   } else {
     this.eventManager.addEventListener<GlobalEvent>("pointerup", (event) => {
-      if (this.transing) {
-        this.transing = false;
+      if (this.transformControls!.dragging) {
         return;
       }
       if (event.button === 0) {
@@ -114,7 +111,7 @@ export const TransformControlsPlugin: Plugin<Object> = function (
         TRANSFORMEVENT.OBJECTCHANGED,
         (event) => {
           const e = event as unknown as ObjectChangedEvent;
-          //TODO: update config.children
+
           e.transObjectSet.forEach((object) => {
             config = objectToConfig(object);
             mode = e.mode;

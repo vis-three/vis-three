@@ -56,6 +56,11 @@ export class EventManager extends EventDispatcher {
     parameters.penetrate && (this.penetrate = parameters.penetrate);
   }
 
+  setScene(scene: Scene): this {
+    this.scene = scene;
+    return this;
+  }
+
   setCamera(camera: Camera): this {
     this.camera = camera;
     return this;

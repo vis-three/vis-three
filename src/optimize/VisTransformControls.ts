@@ -1,4 +1,4 @@
-import { BaseEvent, Camera, Object3D } from "three";
+import { BaseEvent, Camera, Object3D, PerspectiveCamera } from "three";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 
 export enum TRANSFORMEVENT {
@@ -17,7 +17,10 @@ export class VisTransformControls extends TransformControls {
   target: Object3D; // 控制器的内部控制目标
   private transObjectSet: Set<Object3D>; // 影响的变换物体列表
 
-  constructor(camera: Camera, dom: HTMLElement) {
+  constructor(camera?: Camera, dom?: HTMLElement) {
+    !camera && (camera = new PerspectiveCamera());
+    !dom && (dom = document.body);
+
     super(camera, dom);
 
     // 重写pointerDown types的transformControl没写全这里直接忽略
@@ -108,17 +111,37 @@ export class VisTransformControls extends TransformControls {
     });
   }
 
+  setDom(dom: HTMLElement): this {
+    // @ts-ignore
+    this.domElement.removeEventListener("pointerdown", this._onPointerDown);
+    // @ts-ignore
+    this.domElement.removeEventListener("pointermove", this._onPointerHover);
+    // @ts-ignore
+    this.domElement.removeEventListener("pointermove", this._onPointerMove);
+    // @ts-ignore
+    this.domElement.removeEventListener("pointerup", this._onPointerUp);
+
+    // @ts-ignore
+    dom.addEventListener("pointerdown", this._onPointerDown);
+    // @ts-ignore
+    dom.addEventListener("pointermove", this._onPointerHover);
+    // @ts-ignore
+    dom.addEventListener("pointerup", this._onPointerUp);
+    this.domElement = dom;
+    return this;
+  }
+
+  setCamera(camera: Camera): this {
+    this.camera = camera;
+    return this;
+  }
+
   getTarget(): Object3D {
     return this.target;
   }
 
   getTransObjectSet(): Set<Object3D> {
     return this.transObjectSet;
-  }
-
-  setCamera(camera: Camera): this {
-    this.camera = camera;
-    return this;
   }
 
   setAttach(...object: Object3D[]): this {
