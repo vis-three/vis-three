@@ -12,7 +12,7 @@ import { getHelperLineMaterial, VisHelper } from "../common";
 import { CanvasGenerator } from "../../../convenient/CanvasGenerator";
 
 export class GroupHelper extends Sprite implements VisHelper {
-  static canvas = new CanvasTexture(
+  static colorTexture = new CanvasTexture(
     new CanvasGenerator({ width: 512, height: 512 })
       .draw((ctx) => {
         ctx.beginPath();
@@ -47,7 +47,7 @@ export class GroupHelper extends Sprite implements VisHelper {
 
     this.geometry.computeBoundingBox();
     this.material = new SpriteMaterial({
-      map: GroupHelper.canvas,
+      map: GroupHelper.colorTexture,
     });
     this.material.depthTest = false;
     this.material.depthWrite = false;

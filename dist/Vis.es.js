@@ -10360,7 +10360,7 @@ const _GroupHelper = class extends Sprite {
     this.target = group;
     this.geometry.computeBoundingBox();
     this.material = new SpriteMaterial({
-      map: _GroupHelper.canvas
+      map: _GroupHelper.colorTexture
     });
     this.material.depthTest = false;
     this.material.depthWrite = false;
@@ -10390,7 +10390,7 @@ const _GroupHelper = class extends Sprite {
   }
 };
 let GroupHelper = _GroupHelper;
-__publicField(GroupHelper, "canvas", new CanvasTexture(new CanvasGenerator({ width: 512, height: 512 }).draw((ctx) => {
+__publicField(GroupHelper, "colorTexture", new CanvasTexture(new CanvasGenerator({ width: 512, height: 512 }).draw((ctx) => {
   ctx.beginPath();
   ctx.fillStyle = "rgba(0, 0, 0, 0)";
   ctx.fillRect(0, 0, 512, 512);
@@ -10432,6 +10432,36 @@ class MeshHelper extends LineSegments {
     };
   }
 }
+const _SpriteHelper = class extends Sprite {
+  constructor(sprite) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "type", "VisSpriteHelper");
+    this.target = sprite;
+    this.geometry.dispose();
+    this.geometry.copy(sprite.geometry);
+    this.material.dispose();
+    this.material = new SpriteMaterial({
+      color: "rgb(255, 255, 255)",
+      alphaMap: _SpriteHelper.alphaTexture,
+      transparent: true
+    });
+    this.matrixAutoUpdate = false;
+    this.matrixWorldNeedsUpdate = false;
+    this.matrix = sprite.matrix;
+    this.matrixWorld = sprite.matrixWorld;
+    this.raycast = () => {
+    };
+  }
+};
+let SpriteHelper = _SpriteHelper;
+__publicField(SpriteHelper, "alphaTexture", new CanvasTexture(new CanvasGenerator({ width: 512, height: 512, bgColor: "rgb(0, 0, 0)" }).draw((ctx) => {
+  ctx.beginPath();
+  ctx.strokeStyle = "rgb(255, 255, 255)";
+  ctx.lineWidth = 4;
+  ctx.strokeRect(0, 0, 512, 512);
+  ctx.closePath();
+}).get()));
 class ObjectHelperManager extends EventDispatcher {
   constructor(params = {}) {
     super();
@@ -10442,7 +10472,8 @@ class ObjectHelperManager extends EventDispatcher {
       [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
       [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
       [CONFIGTYPE.MESH]: MeshHelper,
-      [CONFIGTYPE.GROUP]: GroupHelper
+      [CONFIGTYPE.GROUP]: GroupHelper,
+      [CONFIGTYPE.SPRITE]: SpriteHelper
     });
     __publicField(this, "helperFilter", {
       AmbientLight: true,

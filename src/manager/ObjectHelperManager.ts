@@ -6,6 +6,7 @@ import { PointLightHelper } from "../extends/helper/light/PointLightHelper";
 import { SpotLightHelper } from "../extends/helper/light/SpotLightHelper";
 import { GroupHelper } from "../extends/helper/object/GroupHelper";
 import { MeshHelper } from "../extends/helper/object/MeshHelper";
+import { SpriteHelper } from "../extends/helper/object/SpriteHelper";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 
 export interface ObjectHelperManagerParameters {
@@ -23,6 +24,7 @@ export class ObjectHelperManager extends EventDispatcher {
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
     [CONFIGTYPE.MESH]: MeshHelper,
     [CONFIGTYPE.GROUP]: GroupHelper,
+    [CONFIGTYPE.SPRITE]: SpriteHelper,
   };
 
   private helperFilter = {
