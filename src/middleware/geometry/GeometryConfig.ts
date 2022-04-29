@@ -1,10 +1,17 @@
 import { SymbolConfig, Vector3Config } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
+
+export interface GeometryGroup {
+  start: number;
+  count: number;
+  materialIndex?: number | undefined;
+}
 export interface GeometryConfig extends SymbolConfig {
   type: string;
   position: Vector3Config;
   rotation: Vector3Config;
   scale: Vector3Config;
+  groups: GeometryGroup[];
 }
 
 export interface BoxGeometryConfig extends GeometryConfig {
@@ -94,6 +101,7 @@ export const getGeometryConfig = function (): GeometryConfig {
       y: 1,
       z: 1,
     },
+    groups: [],
   };
 };
 

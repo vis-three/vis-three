@@ -275,6 +275,9 @@ export class GeometryCompiler extends Compiler {
     currentGeometry.copy(newGeometry);
     // 辅助的更新根据uuid的更新而更新，直接copy无法判断是否更新
     // TODO: 使用dispatch通知更新
+    currentGeometry.dispatchEvent({
+      type: "update",
+    });
     currentGeometry.uuid = newGeometry.uuid;
     newGeometry.dispose();
 

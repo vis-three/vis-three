@@ -3075,7 +3075,8 @@ const getGeometryConfig = function() {
       x: 1,
       y: 1,
       z: 1
-    }
+    },
+    groups: []
   };
 };
 const getBoxGeometryConfig = function() {
@@ -6156,6 +6157,9 @@ const _GeometryCompiler = class extends Compiler {
     const config = this.target[vid];
     const newGeometry = this.constructMap.get(config.type)(config);
     currentGeometry.copy(newGeometry);
+    currentGeometry.dispatchEvent({
+      type: "update"
+    });
     currentGeometry.uuid = newGeometry.uuid;
     newGeometry.dispose();
     return this;

@@ -29,7 +29,8 @@
 
       const engine = new Vis.DisplayEngineSupport()
         .install("GridHelper")
-        .complete();
+        .complete()
+        .setDom(document.getElementById("app"));
 
       const pointLight = Vis.generateConfig("PointLight", {
         position: {
@@ -77,12 +78,7 @@
         camera
       );
 
-      engine
-        .setDom(document.getElementById("app"))
-        .setCamera(camera.vid)
-        .setScene(scene.vid)
-        .setSize()
-        .play();
+      engine.setCamera(camera.vid).setScene(scene.vid).setSize().play();
     </script>
   </body>
 </html>

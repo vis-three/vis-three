@@ -110,6 +110,10 @@ export interface PointsMaterialConfig extends MaterialConfig {
   sizeAttenuation: boolean;
 }
 
+export interface ShaderMaterialConfig extends MaterialConfig {
+  uniforms: any;
+}
+
 export type MaterialAllType =
   | MeshStandardMaterialConfig
   | MeshPhongMaterialConfig
