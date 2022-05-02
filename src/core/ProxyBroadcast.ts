@@ -39,6 +39,11 @@ export class ProxyBroadcast extends EventDispatcher {
       set: (target: object, key: any, value: any) => {
         // 先执行反射
         let result: boolean;
+        // 剔除symbol
+        if (typeof key === "symbol") {
+          result = Reflect.set(target, key, value);
+          return result;
+        }
 
         // 新增
         if (target[key as never] === undefined) {

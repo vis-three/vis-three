@@ -129,7 +129,7 @@
       const scene = Vis.generateConfig("Scene", {
         children: [pointLight.vid, mesh.vid, mesh2.vid, mesh3.vid],
       });
-      engine.dataSupportManager.applyConfig(
+      engine.applyConfig(
         pointLight,
         material,
         geometry,

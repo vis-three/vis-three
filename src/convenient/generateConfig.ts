@@ -1,6 +1,9 @@
 import { v4 as getUuid } from "uuid";
+import { ShaderLibrary } from "../library/shader/ShaderLibrary";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
+import { CONFIGTYPE } from "../middleware/constants/configType";
+import { ShaderMaterialConfig } from "../middleware/material/MaterialConfig";
 
 /**
  * 生成相关对象配置单
@@ -37,7 +40,19 @@ export const generateConfig = function <C extends SymbolConfig>(
         }
       }
     };
-    const initConfig = CONFIGFACTORY[type]();
+    let initConfig = CONFIGFACTORY[type]();
+
+    // shader配置
+    if (
+      [CONFIGTYPE.SHADERMATERIAL, CONFIGTYPE.RAWSHADERMATERIAL].includes(
+        type as CONFIGTYPE
+      )
+    ) {
+      initConfig = ShaderLibrary.generateConfig(
+        (merge as ShaderMaterialConfig)?.name || "defaultShader"
+      );
+    }
+
     // 自动生成uuid
     if (initConfig.vid === "") {
       initConfig.vid = getUuid();

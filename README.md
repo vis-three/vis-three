@@ -57,7 +57,7 @@ const pointLight = Vis.generateConfig("PointLight", {
 
 // vis响应式
 const engine = new Vis.ModelingEngineSupport();
-const pointLight = engine.dataSupportManager.reactiveConfig(
+const pointLight = engine.reactiveConfig(
   Vis.generateConfig("PointLight", {
     position: {
       x: 10,
@@ -69,7 +69,7 @@ const pointLight = engine.dataSupportManager.reactiveConfig(
 
 // vue2 + vis响应式
 const engine = new Vis.ModelingEngineSupport();
-const pointLight = engine.dataSupportManager.reactiveConfig(
+const pointLight = engine.reactiveConfig(
   Vue.observable(
     Vis.generateConfig("PointLight", {
       position: {
@@ -84,7 +84,7 @@ const pointLight = engine.dataSupportManager.reactiveConfig(
 // vue3 + vis响应式
 const engine = new Vis.ModelingEngineSupport();
 const pointLight = reactive(
-  engine.dataSupportManager.reactiveConfig(
+  engine.reactiveConfig(
     Vis.generateConfig("PointLight", {
       position: {
         x: 10,
@@ -94,7 +94,7 @@ const pointLight = reactive(
     })
   )
 );
-engine.dataSupportManager.applyConfig(pointLight);
+engine.applyConfig(pointLight);
 ```
 
 ### 配置使用
@@ -102,7 +102,7 @@ engine.dataSupportManager.applyConfig(pointLight);
 ```js
 // 动态载入
 const engine = new Vis.ModelingEngineSupport();
-engine.dataSupportManager.applyConfig(pointLight);
+engine.applyConfig(pointLight);
 
 // 预设加入
 const lightDataSupport = new Vis.LightDataSupport({
@@ -130,15 +130,36 @@ const engine = new Vis.ModelingEngineSupport({
 });
 ```
 
-### 使用支持建模引擎
+### 使用支持相关引擎
 
 ```js
 const engine = new Vis.ModelingEngineSupport({
   lightDataSupport: lightDataSupport,
-})
-  .setDom(document.getElementById("app"))
-  .setSize()
-  .play();
+}).setDom(document.getElementById("app"));
+```
+
+### 指定渲染场景
+
+```js
+const scene = Vis.generateConfig("Scene", {
+  children: [pointLight.vid],
+});
+engine.applyConfig(scene).setScene(scene.vid);
+```
+
+### 指定渲染相机
+
+```js
+const camera = Vis.generateConfig("PerspectiveCamera", {
+  position: {
+    x: 50,
+    y: 50,
+    z: 50,
+  },
+  far: 5000,
+});
+
+engine.applyConfig(camera).setCamera(camera.vid);
 ```
 
 ### 快速编辑场景物体

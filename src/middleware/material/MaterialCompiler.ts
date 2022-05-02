@@ -5,12 +5,12 @@ import {
   MeshPhongMaterial,
   MeshStandardMaterial,
   PointsMaterial,
+  ShaderMaterial,
   SpriteMaterial,
   Texture,
 } from "three";
-import { validate } from "uuid";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
-import { EngineSupport } from "../../main";
+import { EngineSupport, ShaderLibrary } from "../../main";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
 import { MaterialAllType } from "./MaterialConfig";
@@ -26,7 +26,10 @@ export interface MaterialCompilerParameters {
 export class MaterialCompiler extends Compiler {
   private target!: MaterialCompilerTarget;
   private map: Map<SymbolConfig["vid"], Material>;
-  private constructMap: Map<SymbolConfig["type"], () => Material>;
+  private constructMap: Map<
+    SymbolConfig["type"],
+    (config: MaterialAllType) => Material
+  >;
 
   private mapAttribute: { [key: string]: boolean };
   private colorAttribute: { [key: string]: boolean };
@@ -63,6 +66,16 @@ export class MaterialCompiler extends Compiler {
       () => new LineBasicMaterial()
     );
     constructMap.set(CONFIGTYPE.POINTSMATERIAL, () => new PointsMaterial());
+    constructMap.set(CONFIGTYPE.SHADERMATERIAL, (config) => {
+      const shader = ShaderLibrary.getShader(config.name);
+      const material = new ShaderMaterial();
+      shader?.vertexShader && (material.vertexShader = shader.vertexShader);
+      shader?.FragmentShader &&
+        (material.fragmentShader = shader.FragmentShader);
+      shader?.uniforms && (material.uniforms = shader.uniforms);
+
+      return material;
+    });
 
     this.constructMap = constructMap;
 
@@ -143,7 +156,7 @@ export class MaterialCompiler extends Compiler {
 
   add(vid: string, config: MaterialAllType): this {
     if (config.type && this.constructMap.has(config.type)) {
-      const material = this.constructMap.get(config.type)!();
+      const material = this.constructMap.get(config.type)!(config);
       this.mergeMaterial(material, config);
       this.map.set(vid, material);
     } else {

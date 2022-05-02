@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GroupSupport</title>
+    <title>MaterialSupport</title>
     <link
       rel="shortcut icon"
       type="image/x-icon"
@@ -39,14 +39,17 @@
           ctx.fillStyle = "rgb(206, 42, 230)";
 
           ctx.font = " bold 72px 微软雅黑";
-          ctx.fillText("GROUP", 128, 128);
+          ctx.fillText("MESH", 128, 128);
         })
         .preview();
 
       const engine = new Vis.ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
-        .setStats(true);
+        .setStats(true)
+        .registerResources({
+          "example.canvas": canvasGenerator.get(),
+        });
 
       const pointLight = Vis.generateConfig("PointLight", {
         position: {
@@ -56,65 +59,39 @@
         distance: 100,
       });
 
-      const material = Vis.generateConfig("MeshStandardMaterial");
+      const canvasTexture = Vis.generateConfig("CanvasTexture", {
+        url: "example.canvas",
+      });
+
+      const material = Vis.generateConfig("MeshStandardMaterial", {
+        map: canvasTexture.vid,
+      });
 
       const geometry = Vis.generateConfig("BoxGeometry", {
         width: 20,
-        height: 20,
+        height: 10,
         depth: 20,
       });
 
-      const mesh1 = Vis.generateConfig("Mesh", {
+      const mesh = Vis.generateConfig("Mesh", {
         material: material.vid,
         geometry: geometry.vid,
-        position: {
-          z: -20,
-        },
-      });
-
-      const mesh2 = Vis.generateConfig("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
-        position: {
-          z: 20,
-          x: 20,
-        },
-      });
-
-      const mesh3 = Vis.generateConfig("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
-        position: {
-          z: 20,
-          x: -20,
-        },
-      });
-
-      const group = Vis.generateConfig("Group", {
-        children: [mesh1.vid, mesh2.vid, mesh3.vid],
-        position: {
-          y: 20,
-        },
       });
 
       const scene = Vis.generateConfig("Scene", {
-        children: [group.vid, pointLight.vid],
+        children: [pointLight.vid, mesh.vid],
       });
 
       engine.applyConfig(
+        pointLight,
+        canvasTexture,
         material,
         geometry,
-        pointLight,
-        mesh1,
-        mesh2,
-        mesh3,
-        group,
+        mesh,
         scene
       );
 
       engine.setScene(scene.vid).play();
-
-      window.engine = engine;
     </script>
   </body>
 </html>

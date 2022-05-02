@@ -111,7 +111,8 @@ export interface PointsMaterialConfig extends MaterialConfig {
 }
 
 export interface ShaderMaterialConfig extends MaterialConfig {
-  uniforms: any;
+  shader: string;
+  uniforms: { [key: string]: any };
 }
 
 export type MaterialAllType =
@@ -119,7 +120,8 @@ export type MaterialAllType =
   | MeshPhongMaterialConfig
   | LineBasicMaterialConfig
   | SpriteMaterialConfig
-  | PointsMaterialConfig;
+  | PointsMaterialConfig
+  | ShaderMaterialConfig;
 
 export const getMaterialConfig = function (): MaterialConfig {
   return {
@@ -243,5 +245,13 @@ export const getPointsMaterialConfig = function (): PointsMaterialConfig {
     color: "rgb(255, 255, 255)",
     sizeAttenuation: true,
     size: 1,
+  });
+};
+
+export const getShaderMaterialConfig = function (): ShaderMaterialConfig {
+  return Object.assign(getMaterialConfig(), {
+    type: CONFIGTYPE.SHADERMATERIAL,
+    shader: "",
+    uniforms: {},
   });
 };

@@ -80,12 +80,7 @@
         material: meshStandardMaterial.vid,
       });
 
-      engine.dataSupportManager.applyConfig(
-        pointLight,
-        meshStandardMaterial,
-        boxGeometry,
-        model
-      );
+      engine.applyConfig(pointLight, meshStandardMaterial, boxGeometry, model);
     </script>
   </body>
 </html>

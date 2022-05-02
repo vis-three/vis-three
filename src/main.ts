@@ -44,6 +44,7 @@ import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightH
 import { VideoLoader } from "./extends/loader/VideoLoader";
 import { ProxyBroadcast } from "./core/ProxyBroadcast";
 import { Translater } from "./core/Translater";
+import { ShaderLibrary } from "./library/shader/ShaderLibrary";
 
 import "./optimize/optimizeScirpt";
 
@@ -95,13 +96,15 @@ export {
   SupportDataGenerator,
   CanvasGenerator,
   History,
+  JSONHandler,
   /**
    * @deprecated
    */
   ActionLibrary,
+  // library
   BasicEventLibrary,
   RealTimeAnimateLibrary,
-  JSONHandler,
+  ShaderLibrary,
   // displayer
   MaterialDisplayer,
   TextureDisplayer,

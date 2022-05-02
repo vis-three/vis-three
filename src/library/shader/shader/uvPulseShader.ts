@@ -1,13 +1,26 @@
-import { Color, Vector2 } from "three";
+import { Shader } from "../shader";
+import { ShaderLibrary } from "../ShaderLibrary";
 
-export default {
+const shader: Shader = {
+  name: "uvPulseShader",
   uniforms: {
     uTime: { value: 0.0 },
     uWidth: { value: 0.5 },
-    uColor: { value: new Color("rgb(255, 0, 0)") },
-    uCenter: { value: new Vector2(0.5, 0.5) },
+    uColor: {
+      value: {
+        r: 1,
+        g: 0,
+        b: 0,
+      },
+    },
+    uCenter: {
+      value: {
+        x: 0.5,
+        y: 0.5,
+      },
+    },
   },
-  vertexFhader: `
+  vertexShader: `
     uniform float uWidth;
     uniform float uTime;
     
@@ -55,3 +68,7 @@ export default {
       gl_FragColor = vec4(uColor, opacity);
     }`,
 };
+
+export default shader;
+
+ShaderLibrary.reigster(shader);

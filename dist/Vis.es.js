@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, PlaneBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, Texture, MeshBasicMaterial, RGBFormat, NearestFilter, UniformsUtils, ShaderMaterial, AdditiveBlending, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, PlaneBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, MeshBasicMaterial, RGBFormat, NearestFilter, UniformsUtils, AdditiveBlending, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -2932,6 +2932,45 @@ function v4(options, buf, offset) {
   }
   return stringify$1(rnds);
 }
+const _ShaderLibrary = class {
+  static getShader(name) {
+    if (!_ShaderLibrary.library.has(name)) {
+      console.warn(`con not found shader in shader library: ${name}`);
+      return null;
+    }
+    return _ShaderLibrary.cloneShader(_ShaderLibrary.library.get(name));
+  }
+  static generateConfig(name) {
+    if (!_ShaderLibrary.library.has(name)) {
+      console.warn(`con not found shader in shader library: ${name}`);
+      return {};
+    }
+    const shader = _ShaderLibrary.library.get(name);
+    const config = {
+      shader: name,
+      uniforms: {}
+    };
+    shader.uniforms && (config.uniforms = JSON.parse(JSON.stringify(shader.uniforms)));
+    return config;
+  }
+  static cloneShader(shader) {
+    const newShader = {
+      name: shader.name
+    };
+    shader.vertexShader && (newShader.vertexShader = shader.vertexShader);
+    shader.FragmentShader && (newShader.FragmentShader = shader.FragmentShader);
+    shader.uniforms && (newShader.uniforms = JSON.parse(JSON.stringify(shader.uniforms)));
+    return newShader;
+  }
+};
+let ShaderLibrary = _ShaderLibrary;
+__publicField(ShaderLibrary, "library", new Map());
+__publicField(ShaderLibrary, "reigster", function(shader) {
+  if (_ShaderLibrary.library.has(shader.name)) {
+    console.warn(`shader library has exist shader: ${shader.name} that will be cover.`);
+  }
+  _ShaderLibrary.library.set(shader.name, shader);
+});
 var CONFIGTYPE;
 (function(CONFIGTYPE2) {
   CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
@@ -2958,6 +2997,8 @@ var CONFIGTYPE;
   CONFIGTYPE2["SPRITEMATERIAL"] = "SpriteMaterial";
   CONFIGTYPE2["LINEBASICMATERIAL"] = "LineBasicMaterial";
   CONFIGTYPE2["POINTSMATERIAL"] = "PointsMaterial";
+  CONFIGTYPE2["SHADERMATERIAL"] = "ShaderMaterial";
+  CONFIGTYPE2["RAWSHADERMATERIAL"] = "RawShaderMaterial";
   CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
   CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
   CONFIGTYPE2["POINTLIGHT"] = "PointLight";
@@ -3341,6 +3382,13 @@ const getPointsMaterialConfig = function() {
     size: 1
   });
 };
+const getShaderMaterialConfig = function() {
+  return Object.assign(getMaterialConfig(), {
+    type: CONFIGTYPE.SHADERMATERIAL,
+    shader: "",
+    uniforms: {}
+  });
+};
 const getPerspectiveCameraConfig = function() {
   return Object.assign(getObjectConfig(), {
     type: CONFIGTYPE.PERSPECTIVECAMERA,
@@ -3522,6 +3570,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.SPRITEMATERIAL]: getSpriteMaterialConfig,
   [CONFIGTYPE.LINEBASICMATERIAL]: getLineBasicMaterialConfig,
   [CONFIGTYPE.POINTSMATERIAL]: getPointsMaterialConfig,
+  [CONFIGTYPE.SHADERMATERIAL]: getShaderMaterialConfig,
   [CONFIGTYPE.AMBIENTLIGHT]: getAmbientLightConfig,
   [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,
   [CONFIGTYPE.POINTLIGHT]: getPointLightConfig,
@@ -3564,7 +3613,10 @@ const generateConfig = function(type, merge, strict = true, warn = true) {
         }
       }
     };
-    const initConfig = CONFIGFACTORY[type]();
+    let initConfig = CONFIGFACTORY[type]();
+    if ([CONFIGTYPE.SHADERMATERIAL, CONFIGTYPE.RAWSHADERMATERIAL].includes(type)) {
+      initConfig = ShaderLibrary.generateConfig((merge == null ? void 0 : merge.name) || "defaultShader");
+    }
     if (initConfig.vid === "") {
       initConfig.vid = v4();
     }
@@ -3631,6 +3683,7 @@ const CONFIGMODULE = {
   [CONFIGTYPE.SPRITEMATERIAL]: MODULETYPE.MATERIAL,
   [CONFIGTYPE.LINEBASICMATERIAL]: MODULETYPE.MATERIAL,
   [CONFIGTYPE.POINTSMATERIAL]: MODULETYPE.MATERIAL,
+  [CONFIGTYPE.SHADERMATERIAL]: MODULETYPE.MATERIAL,
   [CONFIGTYPE.AMBIENTLIGHT]: MODULETYPE.LIGHT,
   [CONFIGTYPE.SPOTLIGHT]: MODULETYPE.LIGHT,
   [CONFIGTYPE.POINTLIGHT]: MODULETYPE.LIGHT,
@@ -3793,18 +3846,22 @@ class ResourceManager extends EventDispatcher {
         return resourceHanlder(url, object, Object.getPrototypeOf(prototype));
       }
     };
+    const resourceConfig = {};
     loadResourceMap.forEach((resource, url) => {
       if (!resourceHanlder(url, resource, resource)) {
         resourceMap.set(url, resource);
         structureMap.set(url, url);
         console.warn(`resource manager can not support this resource to generate config`, resource);
+      } else {
+        resourceConfig[url] = this.getResourceConfig(url);
       }
     });
     this.dispatchEvent({
       type: "mapped",
       structureMap,
       configMap,
-      resourceMap
+      resourceMap,
+      resourceConfig
     });
     return this;
   }
@@ -3930,6 +3987,10 @@ const _ProxyBroadcast = class extends EventDispatcher {
       },
       set: (target, key, value) => {
         let result;
+        if (typeof key === "symbol") {
+          result = Reflect.set(target, key, value);
+          return result;
+        }
         if (target[key] === void 0) {
           if (typeof value === "object" && value !== null && !_ProxyBroadcast.proxyWeakSet.has(value)) {
             const newPath = path.concat([key]);
@@ -6496,6 +6557,14 @@ class MaterialCompiler extends Compiler {
     constructMap.set(CONFIGTYPE.SPRITEMATERIAL, () => new SpriteMaterial());
     constructMap.set(CONFIGTYPE.LINEBASICMATERIAL, () => new LineBasicMaterial());
     constructMap.set(CONFIGTYPE.POINTSMATERIAL, () => new PointsMaterial());
+    constructMap.set(CONFIGTYPE.SHADERMATERIAL, (config) => {
+      const shader = ShaderLibrary.getShader(config.name);
+      const material = new ShaderMaterial();
+      (shader == null ? void 0 : shader.vertexShader) && (material.vertexShader = shader.vertexShader);
+      (shader == null ? void 0 : shader.FragmentShader) && (material.fragmentShader = shader.FragmentShader);
+      (shader == null ? void 0 : shader.uniforms) && (material.uniforms = shader.uniforms);
+      return material;
+    });
     this.constructMap = constructMap;
     this.colorAttribute = {
       color: true,
@@ -6561,7 +6630,7 @@ class MaterialCompiler extends Compiler {
   }
   add(vid, config) {
     if (config.type && this.constructMap.has(config.type)) {
-      const material = this.constructMap.get(config.type)();
+      const material = this.constructMap.get(config.type)(config);
       this.mergeMaterial(material, config);
       this.map.set(vid, material);
     } else {
@@ -12303,4 +12372,4 @@ Scene.prototype.remove = function(...object) {
   });
   return this;
 };
-export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };
+export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };

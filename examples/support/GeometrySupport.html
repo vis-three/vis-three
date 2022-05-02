@@ -62,7 +62,7 @@
         children: [pointLight.vid],
       });
 
-      engine.dataSupportManager.applyConfig(pointLight, material);
+      engine.applyConfig(pointLight, material);
 
       const geometryTypeList = [
         Vis.CONFIGTYPE.BOXGEOMETRY,
@@ -96,11 +96,11 @@
           },
         });
 
-        engine.dataSupportManager.applyConfig(geometry, mesh);
+        engine.applyConfig(geometry, mesh);
         scene.children.push(mesh.vid);
       });
 
-      engine.dataSupportManager.applyConfig(scene);
+      engine.applyConfig(scene);
 
       engine.setScene(scene.vid);
     </script>

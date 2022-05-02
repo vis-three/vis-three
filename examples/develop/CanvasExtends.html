@@ -83,12 +83,7 @@
         children: [ambientLight.vid, sprite.vid],
       });
 
-      engine.dataSupportManager.applyConfig(
-        ambientLight,
-        spriteMaterial,
-        sprite,
-        scene
-      );
+      engine.applyConfig(ambientLight, spriteMaterial, sprite, scene);
 
       engine.setScene(scene.vid).play();
 

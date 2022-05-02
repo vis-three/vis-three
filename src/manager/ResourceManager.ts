@@ -21,6 +21,7 @@ export interface MappedEvent extends BaseEvent {
   structureMap: Map<string, unknown>;
   configMap: Map<string, SymbolConfig>;
   resourceMap: Map<string, unknown>;
+  resourceConfig: { [key: string]: LoadOptions };
 }
 
 export enum RESOURCEEVENTTYPE {
@@ -244,6 +245,7 @@ export class ResourceManager extends EventDispatcher {
       }
     };
 
+    const resourceConfig: { [key: string]: LoadOptions } = {};
     loadResourceMap.forEach((resource, url) => {
       // 图片贴图
       if (!resourceHanlder(url, resource as object, resource as object)) {
@@ -253,6 +255,8 @@ export class ResourceManager extends EventDispatcher {
           `resource manager can not support this resource to generate config`,
           resource
         );
+      } else {
+        resourceConfig[url] = this.getResourceConfig(url);
       }
     });
 
@@ -261,6 +265,7 @@ export class ResourceManager extends EventDispatcher {
       structureMap,
       configMap,
       resourceMap,
+      resourceConfig,
     });
     return this;
   }

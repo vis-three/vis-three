@@ -25,6 +25,7 @@ import {
   getMeshPhongMaterialConfig,
   getMeshStandardMaterialConfig,
   getPointsMaterialConfig,
+  getShaderMaterialConfig,
   getSpriteMaterialConfig,
 } from "../material/MaterialConfig";
 import {
@@ -59,6 +60,7 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.SPRITEMATERIAL]: getSpriteMaterialConfig,
   [CONFIGTYPE.LINEBASICMATERIAL]: getLineBasicMaterialConfig,
   [CONFIGTYPE.POINTSMATERIAL]: getPointsMaterialConfig,
+  [CONFIGTYPE.SHADERMATERIAL]: getShaderMaterialConfig,
 
   [CONFIGTYPE.AMBIENTLIGHT]: getAmbientLightConfig,
   [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,

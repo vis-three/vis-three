@@ -79,13 +79,7 @@
         children: [pointLight.vid, sprite.vid],
       });
 
-      engine.dataSupportManager.applyConfig(
-        pointLight,
-        canvasTexture,
-        material,
-        sprite,
-        scene
-      );
+      engine.applyConfig(pointLight, canvasTexture, material, sprite, scene);
 
       engine.setScene(scene.vid).play();
 

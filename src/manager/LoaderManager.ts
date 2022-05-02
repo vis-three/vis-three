@@ -49,6 +49,7 @@ export interface LoaderManagerParameters {
   loaderExtends: { [key: string]: Loader };
 }
 
+//TODO: sync three cache
 export class LoaderManager extends EventDispatcher {
   private resourceMap: Map<string, unknown>;
   private loaderMap: { [key: string]: Loader };
