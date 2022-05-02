@@ -46,7 +46,10 @@ export class EngineSupport extends Engine {
         });
     }
     loadConfig(config, callback) {
-        this.renderManager.stop();
+        const renderFlag = this.renderManager.hasRendering();
+        if (renderFlag) {
+            this.renderManager.stop();
+        }
         // 导入外部资源
         if (config.assets && config.assets.length) {
             const mappedFun = (event) => {
@@ -54,7 +57,12 @@ export class EngineSupport extends Engine {
                 this.loadLifeCycle(config);
                 this.resourceManager.removeEventListener("mapped", mappedFun);
                 callback && callback(event);
-                this.renderManager.play();
+                if (renderFlag) {
+                    this.renderManager.play();
+                }
+                else {
+                    this.renderManager.render();
+                }
             };
             this.resourceManager.addEventListener("mapped", mappedFun);
             this.loaderManager.reset().load(config.assets);
@@ -62,20 +70,33 @@ export class EngineSupport extends Engine {
         else {
             this.loadLifeCycle(config);
             callback && callback();
-            this.renderManager.play();
+            if (renderFlag) {
+                this.renderManager.play();
+            }
+            else {
+                this.renderManager.render();
+            }
         }
         return this;
     }
     loadConfigAsync(config) {
         return new Promise((resolve, reject) => {
-            this.renderManager.stop();
+            const renderFlag = this.renderManager.hasRendering();
+            if (renderFlag) {
+                this.renderManager.stop();
+            }
             // 导入外部资源
             if (config.assets && config.assets.length) {
                 const mappedFun = (event) => {
                     delete config.assets;
                     this.loadLifeCycle(config);
                     this.resourceManager.removeEventListener("mapped", mappedFun);
-                    this.renderManager.play();
+                    if (renderFlag) {
+                        this.renderManager.play();
+                    }
+                    else {
+                        this.renderManager.render();
+                    }
                     resolve(event);
                 };
                 this.resourceManager.addEventListener("mapped", mappedFun);
@@ -83,7 +104,12 @@ export class EngineSupport extends Engine {
             }
             else {
                 this.loadLifeCycle(config);
-                this.renderManager.play();
+                if (renderFlag) {
+                    this.renderManager.play();
+                }
+                else {
+                    this.renderManager.render();
+                }
                 resolve(undefined);
             }
         });

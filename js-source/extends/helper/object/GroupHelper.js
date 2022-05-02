@@ -1,7 +1,7 @@
 import { CanvasTexture, Sprite, SpriteMaterial, } from "three";
 import { CanvasGenerator } from "../../../convenient/CanvasGenerator";
 export class GroupHelper extends Sprite {
-    static canvas = new CanvasTexture(new CanvasGenerator({ width: 512, height: 512 })
+    static colorTexture = new CanvasTexture(new CanvasGenerator({ width: 512, height: 512 })
         .draw((ctx) => {
         ctx.beginPath();
         ctx.fillStyle = "rgba(0, 0, 0, 0)";
@@ -29,7 +29,7 @@ export class GroupHelper extends Sprite {
         this.target = group;
         this.geometry.computeBoundingBox();
         this.material = new SpriteMaterial({
-            map: GroupHelper.canvas,
+            map: GroupHelper.colorTexture,
         });
         this.material.depthTest = false;
         this.material.depthWrite = false;

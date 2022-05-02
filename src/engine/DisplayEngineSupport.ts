@@ -23,7 +23,7 @@ export class DisplayEngineSupport extends EngineSupport {
   declare render: () => this;
 
   constructor(parameters?: EngineSupportParameters) {
-    super();
+    super(parameters);
     this.install(ENGINEPLUGIN.WEBGLRENDERER, {
       antialias: true,
       alpha: true,

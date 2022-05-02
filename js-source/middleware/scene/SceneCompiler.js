@@ -1,4 +1,4 @@
-import { Color, Fog, FogExp2 } from "three";
+import { Color, Fog, FogExp2, Scene } from "three";
 import { validate } from "uuid";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectCompiler } from "../object/ObjectCompiler";
@@ -109,7 +109,7 @@ export class SceneCompiler extends ObjectCompiler {
         return this;
     }
     add(vid, config) {
-        const scene = this.engine.scene;
+        const scene = new Scene();
         this.map.set(vid, scene);
         this.weakMap.set(scene, vid);
         this.background(vid, config.background);

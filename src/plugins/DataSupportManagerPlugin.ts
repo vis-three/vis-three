@@ -28,6 +28,24 @@ export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> =
 
     this.dataSupportManager = dataSupportManager;
 
+    this.applyConfig = function (...config) {
+      this.dataSupportManager.applyConfig(...config);
+      return this;
+    };
+
+    this.reactiveConfig = function (config) {
+      return this.dataSupportManager.reactiveConfig(config);
+    };
+
+    this.getConfigBySymbol = function (vid) {
+      return this.dataSupportManager.getConfigBySymbol(vid);
+    };
+
+    this.removeConfigBySymbol = function (vid) {
+      this.dataSupportManager.removeConfigBySymbol(vid);
+      return this;
+    };
+
     this.toJSON = function () {
       if (this.loaderManager) {
         const assets = {

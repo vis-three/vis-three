@@ -15,10 +15,6 @@ export const ViewpointPlugin = function (params = {}) {
         console.error("must install some renderer before BasicViewpoint plugin.");
         return false;
     }
-    if (!this.scene) {
-        console.error("must install some scene before BasicViewpoint plugin.");
-        return false;
-    }
     !params.viewpoint && (params.viewpoint = VIEWPOINT.DEFAULT);
     !params.perspective && (params.perspective = {});
     !params.perspective.position &&

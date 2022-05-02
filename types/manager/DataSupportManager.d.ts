@@ -83,6 +83,7 @@ export declare class DataSupportManager {
         CircleGeometry: MODULETYPE;
         ConeGeometry: MODULETYPE;
         EdgesGeometry: MODULETYPE;
+        CylinderGeometry: MODULETYPE;
         Sprite: MODULETYPE;
         Line: MODULETYPE;
         Mesh: MODULETYPE;
@@ -150,7 +151,7 @@ export declare class DataSupportManager {
      * @param config vis相关配置对象
      * @returns this
      */
-    applyConfig<T extends SymbolConfig>(config: T): this;
+    applyConfig<T extends SymbolConfig>(...configs: T[]): this;
     /**
      * 获取响应式配置对象
      * @param config vis相关配置对象

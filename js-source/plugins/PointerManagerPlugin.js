@@ -7,7 +7,7 @@ export const PointerManagerPlugin = function (params) {
     const pointerManager = new PointerManager(Object.assign(params || {}, {
         dom: this.dom,
     }));
-    pointerManager.addEventListener("setDom", (event) => {
+    this.addEventListener("setDom", (event) => {
         pointerManager.setDom(event.dom);
     });
     this.pointerManager = pointerManager;

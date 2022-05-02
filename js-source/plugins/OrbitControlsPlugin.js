@@ -5,10 +5,6 @@ export const OrbitControlsPlugin = function (params) {
         console.warn("this has installed orbitControls plugin.");
         return false;
     }
-    if (!this.webGLRenderer) {
-        console.warn("this must install renderer before install orbitControls plugin.");
-        return false;
-    }
     if (!this.renderManager) {
         console.warn("this must install renderManager before install orbitControls plugin.");
         return false;
@@ -16,6 +12,9 @@ export const OrbitControlsPlugin = function (params) {
     this.orbitControls = new VisOrbitControls(this.camera, this.dom);
     this.addEventListener("setCamera", (event) => {
         this.orbitControls.setCamera(event.camera);
+    });
+    this.addEventListener("setDom", (event) => {
+        this.orbitControls.setDom(event.dom);
     });
     this.renderManager.addEventListener("render", () => {
         this.orbitControls.update();

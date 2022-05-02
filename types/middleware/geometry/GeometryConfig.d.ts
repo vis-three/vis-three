@@ -1,9 +1,15 @@
 import { SymbolConfig, Vector3Config } from "../common/CommonConfig";
+export interface GeometryGroup {
+    start: number;
+    count: number;
+    materialIndex?: number | undefined;
+}
 export interface GeometryConfig extends SymbolConfig {
     type: string;
     position: Vector3Config;
     rotation: Vector3Config;
     scale: Vector3Config;
+    groups: GeometryGroup[];
 }
 export interface BoxGeometryConfig extends GeometryConfig {
     width: number;

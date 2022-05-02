@@ -5,7 +5,6 @@ export const WebGLRendererPlugin = function (params = {}) {
         return false;
     }
     this.webGLRenderer = new WebGLRenderer(params);
-    this.dom = this.webGLRenderer.domElement;
     // 截图
     this.getScreenshot = function (params = {}) {
         const cacheSize = {
@@ -33,12 +32,7 @@ export const WebGLRendererPlugin = function (params = {}) {
     };
     // 设置渲染的dom
     this.addEventListener("setDom", (event) => {
-        if (this.dom) {
-            this.dom.appendChild(this.webGLRenderer.domElement);
-        }
-        else {
-            console.warn(`There are no dom set for the engine`);
-        }
+        event.dom.appendChild(this.webGLRenderer.domElement);
     });
     this.addEventListener("setSize", (event) => {
         const width = event.width;

@@ -10,7 +10,7 @@ export class VisTransformControls extends TransformControls {
     constructor(camera, dom) {
         !camera && (camera = new PerspectiveCamera());
         !dom && (dom = document.body);
-        super(camera);
+        super(camera, dom);
         // 重写pointerDown types的transformControl没写全这里直接忽略
         // @ts-ignore
         this.domElement.removeEventListener("pointerdown", this._onPointerDown);

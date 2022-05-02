@@ -17,6 +17,9 @@ export const EventManagerPlugin = function (params) {
     this.addEventListener("setCamera", (event) => {
         this.eventManager.setCamera(event.camera);
     });
+    this.addEventListener("setScene", (event) => {
+        this.eventManager.setScene(event.scene);
+    });
     return true;
 };
 //# sourceMappingURL=EventManagerPlugin.js.map

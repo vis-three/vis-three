@@ -20,6 +20,7 @@ export declare const CONFIGMODULE: {
     CircleGeometry: MODULETYPE;
     ConeGeometry: MODULETYPE;
     EdgesGeometry: MODULETYPE;
+    CylinderGeometry: MODULETYPE;
     Sprite: MODULETYPE;
     Line: MODULETYPE;
     Mesh: MODULETYPE;

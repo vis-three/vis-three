@@ -1,4 +1,3 @@
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -10,13 +9,14 @@ import { EngineSupport, EngineSupportParameters } from "./EngineSupport";
 import { KeyboardManager } from "../manager/KeyboardManager";
 import { DISPLAYMODE } from "../plugins/DisplayModePlugin";
 import { VIEWPOINT } from "../plugins/ViewpointPlugin";
+import { VisOrbitControls } from "../optimize/VisOrbitControls";
 export declare class ModelingEngineSupport extends EngineSupport {
     IS_ENGINESUPPORT: boolean;
     dom: HTMLElement;
     webGLRenderer: WebGLRenderer;
     camera: Camera;
     scene: Scene;
-    orbitControls: OrbitControls;
+    orbitControls: VisOrbitControls;
     transformControls: TransformControls;
     effectComposer: EffectComposer;
     renderManager: RenderManager;

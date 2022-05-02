@@ -16,6 +16,11 @@ export const MaterialRule: Rule<MaterialCompiler> = function (
     return;
   }
   if (operate === "set") {
+    if (validate(key) && !path.length && typeof value === "object") {
+      compiler.cover(key, value);
+      return;
+    }
+
     const tempPath = path.concat([]);
     const vid = tempPath.shift();
     if (vid && validate(vid)) {

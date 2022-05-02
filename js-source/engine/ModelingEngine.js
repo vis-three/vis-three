@@ -7,7 +7,6 @@ export class ModelingEngine extends Engine {
             antialias: true,
             alpha: true,
         })
-            .install(ENGINEPLUGIN.SCENE)
             .install(ENGINEPLUGIN.POINTERMANAGER)
             .install(ENGINEPLUGIN.EVENTMANAGER)
             .install(ENGINEPLUGIN.EFFECTCOMPOSER, {

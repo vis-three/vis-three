@@ -76,7 +76,7 @@ export class CameraCompiler extends ObjectCompiler {
             this.engine.addEventListener("setSize", setSizeFun);
             cacheData.setSizeFun = setSizeFun;
             // 执行一次
-            const domElement = this.engine.webGLRenderer.domElement;
+            const domElement = this.engine.dom;
             setSizeFun({
                 type: "setSize",
                 width: domElement.offsetWidth,

@@ -159,6 +159,13 @@ export class SceneCompiler extends ObjectCompiler<
     return this;
   }
 
+  cover(vid: string, config: SceneConfig): this {
+    this.background(vid, config.background);
+    this.environment(vid, config.environment);
+    this.fog(vid, config.fog);
+    return super.cover(vid, config);
+  }
+
   set(vid: string, path: string[], key: string, value: any): this {
     if (!this.map.has(vid)) {
       console.warn(

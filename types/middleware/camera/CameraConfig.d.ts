@@ -15,6 +15,7 @@ export interface OrthographicCameraConfig extends CameraConfig {
     bottom: number;
     near: number;
     far: number;
+    zoom: number;
 }
 export declare type CameraConfigAllType = PerspectiveCameraConfig | OrthographicCameraConfig;
 export declare const getPerspectiveCameraConfig: () => PerspectiveCameraConfig;

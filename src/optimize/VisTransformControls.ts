@@ -159,11 +159,9 @@ export class VisTransformControls extends TransformControls {
     if (object.length === 1) {
       const currentObject = object[0];
 
-      currentObject.matrixWorld.decompose(
-        target.position,
-        target.quaternion,
-        target.scale
-      );
+      target.position.copy(currentObject.position);
+      target.quaternion.copy(currentObject.quaternion);
+      target.scale.copy(currentObject.scale);
 
       target.updateMatrix();
       target.updateMatrixWorld();

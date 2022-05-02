@@ -6,7 +6,6 @@ export class DisplayEngine extends Engine {
             antialias: true,
             alpha: true,
         })
-            .install(ENGINEPLUGIN.SCENE)
             .install(ENGINEPLUGIN.RENDERMANAGER)
             .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
             WebGLMultisampleRenderTarget: true,

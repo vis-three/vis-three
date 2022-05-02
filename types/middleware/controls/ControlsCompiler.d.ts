@@ -1,7 +1,7 @@
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { EngineSupport } from "../../main";
+import { VisOrbitControls } from "../../optimize/VisOrbitControls";
 import { ControlsAllConfig } from "./ControlsConfig";
 export interface ControlsCompilerTarget extends CompilerTarget {
     [key: string]: ControlsAllConfig;
@@ -9,7 +9,7 @@ export interface ControlsCompilerTarget extends CompilerTarget {
 export interface ControlsCompilerParameters {
     target?: ControlsCompilerTarget;
     transformControls?: TransformControls;
-    orbitControls?: OrbitControls;
+    orbitControls?: VisOrbitControls;
 }
 export declare class ControlsCompiler extends Compiler {
     private target;

@@ -33,16 +33,29 @@ export const EffectComposerPlugin = function (params = {}) {
     }
     this.effectComposer = composer;
     let renderPass;
-    if (this.scene) {
+    if (this.scene && this.camera) {
         renderPass = new RenderPass(this.scene, this.camera);
+        composer.addPass(renderPass);
     }
-    else {
-        console.error(`composer con not found support scene plugin.`);
-        return false;
-    }
-    composer.addPass(renderPass);
     this.addEventListener("setCamera", (event) => {
-        renderPass.camera = event.camera;
+        if (!renderPass && this.scene) {
+            renderPass = new RenderPass(this.scene, event.camera);
+            composer.addPass(renderPass);
+            return;
+        }
+        else if (renderPass) {
+            renderPass.camera = event.camera;
+        }
+    });
+    this.addEventListener("setScene", (event) => {
+        if (!renderPass && this.camera) {
+            renderPass = new RenderPass(event.scene, this.camera);
+            composer.addPass(renderPass);
+            return;
+        }
+        else if (renderPass) {
+            renderPass.scene = event.scene;
+        }
     });
     this.addEventListener("setSize", (event) => {
         composer.setSize(event.width, event.height);

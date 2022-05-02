@@ -20,6 +20,7 @@ export const getOrthographicCameraConfig = function () {
         bottom: -1080 / 32,
         near: 5,
         far: 50,
+        zoom: 1,
     });
 };
 //# sourceMappingURL=CameraConfig.js.map

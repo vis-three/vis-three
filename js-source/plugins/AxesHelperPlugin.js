@@ -17,6 +17,9 @@ export const AxesHelperPlugin = function (params = {}) {
         }
         return this;
     };
+    this.addEventListener("setScene", (event) => {
+        event.scene.add(axesHelper);
+    });
     return true;
 };
 //# sourceMappingURL=AxesHelperPlugin.js.map

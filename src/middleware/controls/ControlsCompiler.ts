@@ -1,8 +1,7 @@
-import { Camera } from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { EngineSupport } from "../../main";
+import { VisOrbitControls } from "../../optimize/VisOrbitControls";
 import { CONFIGTYPE } from "../constants/configType";
 import {
   getOrbitControlsConfig,
@@ -19,7 +18,7 @@ export interface ControlsCompilerTarget extends CompilerTarget {
 export interface ControlsCompilerParameters {
   target?: ControlsCompilerTarget;
   transformControls?: TransformControls;
-  orbitControls?: OrbitControls;
+  orbitControls?: VisOrbitControls;
 }
 
 export class ControlsCompiler extends Compiler {
@@ -33,7 +32,7 @@ export class ControlsCompiler extends Compiler {
   // TODO: 需要支持不止一个控件
   private controlMap: {
     [CONFIGTYPE.TRNASFORMCONTROLS]: undefined | TransformControls;
-    [CONFIGTYPE.ORBITCONTROLS]: undefined | OrbitControls;
+    [CONFIGTYPE.ORBITCONTROLS]: undefined | VisOrbitControls;
   } = {
     [CONFIGTYPE.TRNASFORMCONTROLS]: undefined,
     [CONFIGTYPE.ORBITCONTROLS]: undefined,

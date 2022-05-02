@@ -33,7 +33,7 @@ export declare abstract class ObjectCompiler<C extends ObjectConfig, T extends O
     protected weakMap: WeakMap<O, SymbolConfig["vid"]>;
     protected objectCacheMap: WeakMap<O, CacheObjectData>;
     protected objectMapSet: Set<Map<SymbolConfig["vid"], Object3D>>;
-    private filterAttribute;
+    protected filterAttribute: FilterAttribute;
     engine: EngineSupport;
     constructor();
     getObject(vid: string): Object3D | null;

@@ -1,6 +1,5 @@
-import { Camera, Scene, } from "three";
+import { Camera, PerspectiveCamera, Scene, } from "three";
 import { EventDispatcher } from "../core/EventDispatcher";
-import { ScenePlugin } from "../plugins/ScenePlugin";
 import { RenderManagerPlugin } from "../plugins/RenderManagerPlugin";
 import { OrbitControlsPlugin } from "../plugins/OrbitControlsPlugin";
 import { StatsPlugin } from "../plugins/StatsPlugin";
@@ -58,11 +57,11 @@ export class Engine extends EventDispatcher {
         Engine.pluginHandler = undefined;
     };
     completeSet;
+    camera = new PerspectiveCamera();
+    scene = new Scene();
     IS_ENGINESUPPORT = false;
     dom;
     webGLRenderer;
-    camera;
-    scene;
     orbitControls;
     transformControls;
     effectComposer;
@@ -102,6 +101,11 @@ export class Engine extends EventDispatcher {
             console.warn("can not install some plugin");
             return this;
         };
+        this.camera.position.set(50, 50, 50);
+        this.addEventListener("setSize", (event) => {
+            this.camera.aspect = event.width / event.height;
+            this.camera.updateProjectionMatrix();
+        });
     }
     /**
      * 优化内存
@@ -225,12 +229,10 @@ export class Engine extends EventDispatcher {
             }
         }
         return this;
-        return this;
     }
 }
 Engine.register(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin);
 Engine.register(ENGINEPLUGIN.EFFECTCOMPOSER, EffectComposerPlugin);
-Engine.register(ENGINEPLUGIN.SCENE, ScenePlugin);
 Engine.register(ENGINEPLUGIN.RENDERMANAGER, RenderManagerPlugin);
 Engine.register(ENGINEPLUGIN.POINTERMANAGER, PointerManagerPlugin);
 Engine.register(ENGINEPLUGIN.EVENTMANAGER, EventManagerPlugin);

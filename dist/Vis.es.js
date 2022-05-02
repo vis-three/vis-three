@@ -1624,7 +1624,9 @@ class VisTransformControls extends TransformControls {
     const target = this.target;
     if (object.length === 1) {
       const currentObject = object[0];
-      currentObject.matrixWorld.decompose(target.position, target.quaternion, target.scale);
+      target.position.copy(currentObject.position);
+      target.quaternion.copy(currentObject.quaternion);
+      target.scale.copy(currentObject.scale);
       target.updateMatrix();
       target.updateMatrixWorld();
       this.transObjectSet.add(currentObject);
@@ -4122,6 +4124,19 @@ class DataSupport {
             if (config[key] === null) {
               continue;
             }
+            if (Array.isArray(template[key])) {
+              if (!config[key].length) {
+                continue;
+              }
+              result[key] = config[key].map((elem) => {
+                if (typeof elem === "object" && elem !== null) {
+                  return JSON.parse(JSON.stringify(elem));
+                } else {
+                  return elem;
+                }
+              });
+              continue;
+            }
             result[key] = {};
             recursion(config[key], template[key], result[key]);
             if (Object.keys(result[key]).length === 0) {
@@ -4218,6 +4233,10 @@ const MaterialRule = function(notice, compiler) {
     return;
   }
   if (operate === "set") {
+    if (validate(key) && !path.length && typeof value === "object") {
+      compiler.cover(key, value);
+      return;
+    }
     const tempPath = path.concat([]);
     const vid = tempPath.shift();
     if (vid && validate(vid)) {
@@ -4251,7 +4270,7 @@ const ObjectRule = function(input, compiler) {
   const { operate, key, path, value } = input;
   const tempPath = path.concat([]);
   const vid = tempPath.shift() || key;
-  const attribute = tempPath.length ? path[0] : key;
+  const attribute = tempPath.length ? tempPath[0] : key;
   if (operate === "add") {
     if (attribute === "children") {
       compiler.addChildren(vid, value);
@@ -4277,6 +4296,10 @@ const ObjectRule = function(input, compiler) {
     return;
   }
   if (operate === "set") {
+    if ((vid && validate(key) || UNIQUESYMBOL[vid]) && !path.length && typeof value === "object") {
+      compiler.cover(vid, value);
+      return;
+    }
     if (vid && validate(vid) || UNIQUESYMBOL[vid]) {
       compiler.set(vid, tempPath, key, value);
     } else {
@@ -4565,9 +4588,10 @@ const _DataSupportManager = class {
     for (const dataSupport of dataSupportList) {
       if (dataSupport.existSymbol(vid)) {
         dataSupport.removeConfig(vid);
-        return;
+        return this;
       }
     }
+    return this;
   }
   getModuleBySymbol(vid) {
     const dataSupportList = this.dataSupportMap.values();
@@ -4632,6 +4656,20 @@ const DataSupportManagerPlugin = function(params) {
   }
   const dataSupportManager = new DataSupportManager(params);
   this.dataSupportManager = dataSupportManager;
+  this.applyConfig = function(...config) {
+    this.dataSupportManager.applyConfig(...config);
+    return this;
+  };
+  this.reactiveConfig = function(config) {
+    return this.dataSupportManager.reactiveConfig(config);
+  };
+  this.getConfigBySymbol = function(vid) {
+    return this.dataSupportManager.getConfigBySymbol(vid);
+  };
+  this.removeConfigBySymbol = function(vid) {
+    this.dataSupportManager.removeConfigBySymbol(vid);
+    return this;
+  };
   this.toJSON = function() {
     if (this.loaderManager) {
       const assets = {
@@ -5646,6 +5684,7 @@ const _ObjectCompiler = class extends Compiler {
     const object = this.map.get(vid);
     if (!object) {
       console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
+      return this;
     }
     const asyncFun = Promise.resolve();
     asyncFun.then(() => {
@@ -5688,6 +5727,35 @@ const _ObjectCompiler = class extends Compiler {
       object = object[key2];
     }
     object[key] = value;
+    return this;
+  }
+  cover(vid, config) {
+    const object = this.map.get(vid);
+    if (!object) {
+      console.error(`${this.COMPILER_NAME} compiler can not found object: ${vid}.`);
+      return this;
+    }
+    const asyncFun = Promise.resolve();
+    asyncFun.then(() => {
+      this.setLookAt(vid, config.lookAt);
+      if (config.children.length) {
+        for (const target of config.children) {
+          this.addChildren(vid, target);
+        }
+      }
+      for (const eventName of Object.values(EVENTNAME)) {
+        if (object._listeners && object._listeners[eventName]) {
+          object._listeners[eventName] = [];
+        }
+        const eventList = config[eventName];
+        if (eventList.length) {
+          for (const event of eventList) {
+            this.addEvent(vid, eventName, event);
+          }
+        }
+      }
+    });
+    Compiler.applyConfig(config, object, this.filterAttribute);
     return this;
   }
   remove(vid) {
@@ -5807,6 +5875,11 @@ class CameraCompiler extends ObjectCompiler {
       console.warn(`CameraCompiler: can not support this config type: ${config.type}`);
     }
     return this;
+  }
+  cover(vid, config) {
+    this.setLookAt(config.vid, config.lookAt);
+    this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
+    return super.cover(vid, config);
   }
   set(vid, path, key, value) {
     if (key === "adaptiveWindow") {
@@ -6252,6 +6325,15 @@ class LightCompiler extends ObjectCompiler {
     }
     return this;
   }
+  cover(vid, config) {
+    const light = this.map.get(vid);
+    if (!light) {
+      console.warn(`light compiler can not found light: ${vid}`);
+      return this;
+    }
+    light.color = new Color(config.color);
+    return super.cover(vid, config);
+  }
   set(vid, path, key, value) {
     if (!this.map.has(vid)) {
       console.warn(`LightCompiler: can not found this vid mapping object: '${vid}'`);
@@ -6434,6 +6516,27 @@ class MaterialCompiler extends Compiler {
       specularMap: true
     };
   }
+  mergeMaterial(material, config) {
+    const tempConfig = JSON.parse(JSON.stringify(config));
+    const filterMap = {};
+    const colorAttribute = this.colorAttribute;
+    for (const key in colorAttribute) {
+      if (tempConfig[key]) {
+        material[key] = new Color(tempConfig[key]);
+        filterMap[key] = true;
+      }
+    }
+    const mapAttribute = this.mapAttribute;
+    for (const key in mapAttribute) {
+      if (tempConfig[key]) {
+        material[key] = this.getTexture(tempConfig[key]);
+        filterMap[key] = true;
+      }
+    }
+    Compiler.applyConfig(config, material, filterMap);
+    material.needsUpdate = true;
+    return this;
+  }
   getTexture(vid) {
     if (this.texturelMap.has(vid)) {
       const texture = this.texturelMap.get(vid);
@@ -6457,41 +6560,16 @@ class MaterialCompiler extends Compiler {
     return this;
   }
   add(vid, config) {
-    if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const material = this.constructMap.get(config.type)();
-        const tempConfig = JSON.parse(JSON.stringify(config));
-        const filterMap = {};
-        const colorAttribute = this.colorAttribute;
-        for (const key in colorAttribute) {
-          if (tempConfig[key]) {
-            material[key] = new Color(tempConfig[key]);
-            filterMap[key] = true;
-          }
-        }
-        const mapAttribute = this.mapAttribute;
-        for (const key in mapAttribute) {
-          if (tempConfig[key]) {
-            material[key] = this.getTexture(tempConfig[key]);
-            filterMap[key] = true;
-          }
-        }
-        Compiler.applyConfig(config, material, filterMap);
-        material.needsUpdate = true;
-        this.map.set(vid, material);
-      } else {
-        console.warn(`material compiler can not support this type: ${config.type}`);
-      }
+    if (config.type && this.constructMap.has(config.type)) {
+      const material = this.constructMap.get(config.type)();
+      this.mergeMaterial(material, config);
+      this.map.set(vid, material);
     } else {
-      console.error(`material vid parameter is illegal: ${vid}`);
+      console.warn(`material compiler can not support this type: ${config.type}`);
     }
     return this;
   }
   set(vid, path, key, value) {
-    if (!validate(vid)) {
-      console.warn(`material compiler set function: vid is illeage: '${vid}'`);
-      return this;
-    }
     if (!this.map.has(vid)) {
       console.warn(`material compiler set function: can not found material which vid is: '${vid}'`);
       return this;
@@ -6511,6 +6589,23 @@ class MaterialCompiler extends Compiler {
       config = config[key2];
     });
     config[key] = value;
+    return this;
+  }
+  cover(vid, config) {
+    if (!this.map.has(vid)) {
+      console.warn(`material compiler set function: can not found material which vid is: '${vid}'`);
+      return this;
+    }
+    return this.mergeMaterial(this.map.get(vid), config);
+  }
+  remove(vid) {
+    if (!this.map.has(vid)) {
+      console.warn(`material compiler set function: can not found material which vid is: '${vid}'`);
+      return this;
+    }
+    const material = this.map.get(vid);
+    material.dispose();
+    this.map.delete(vid);
     return this;
   }
   getMap() {
@@ -7886,6 +7981,12 @@ class SceneCompiler extends ObjectCompiler {
     super.add(vid, config);
     return this;
   }
+  cover(vid, config) {
+    this.background(vid, config.background);
+    this.environment(vid, config.environment);
+    this.fog(vid, config.fog);
+    return super.cover(vid, config);
+  }
   set(vid, path, key, value) {
     if (!this.map.has(vid)) {
       console.warn(`sceneCompiler: can not found this vid mapping object: '${vid}'`);
@@ -8166,7 +8267,6 @@ class CompilerManager {
     dataSupportManager.materialDataSupport.addCompiler(this.materialCompiler);
     dataSupportManager.geometryDataSupport.addCompiler(this.geometryCompiler);
     dataSupportManager.rendererDataSupport.addCompiler(this.rendererCompiler);
-    dataSupportManager.sceneDataSupport.addCompiler(this.sceneCompiler);
     dataSupportManager.controlsDataSupport.addCompiler(this.controlsCompiler);
     dataSupportManager.passDataSupport.addCompiler(this.passCompiler);
     dataSupportManager.cameraDataSupport.addCompiler(this.cameraCompiler);
@@ -8176,6 +8276,7 @@ class CompilerManager {
     dataSupportManager.meshDataSupport.addCompiler(this.meshCompiler);
     dataSupportManager.pointsDataSupport.addCompiler(this.pointsCompiler);
     dataSupportManager.groupDataSupport.addCompiler(this.groupCompiler);
+    dataSupportManager.sceneDataSupport.addCompiler(this.sceneCompiler);
     return this;
   }
   getObjectSymbol(object) {
@@ -8242,6 +8343,12 @@ const CompilerManagerPlugin = function(params) {
   }
   const compilerManager = new CompilerManager();
   this.compilerManager = compilerManager;
+  this.getObjectSymbol = function(object) {
+    return this.compilerManager.getObjectSymbol(object);
+  };
+  this.getObjectBySymbol = function(vid) {
+    return this.compilerManager.getObjectBySymbol(vid);
+  };
   this.addEventListener("dispose", () => {
     this.compilerManager.dispose();
   });
@@ -9701,8 +9808,7 @@ const DisplayModelPlugin = function(params = {}) {
   });
   return true;
 };
-const HELPERCOLOR = "rgb(255, 255, 255)";
-const getHelperLineMaterial = () => new LineBasicMaterial({ color: HELPERCOLOR });
+const getHelperLineMaterial = () => new LineBasicMaterial({ color: "rgb(255, 255, 255)" });
 class CameraHelper extends LineSegments {
   constructor(camera) {
     super();
@@ -10891,6 +10997,12 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "registerResources");
     __publicField(this, "toJSON");
     __publicField(this, "exportConfig");
+    __publicField(this, "applyConfig");
+    __publicField(this, "reactiveConfig");
+    __publicField(this, "getConfigBySymbol");
+    __publicField(this, "removeConfigBySymbol");
+    __publicField(this, "getObjectSymbol");
+    __publicField(this, "getObjectBySymbol");
     __publicField(this, "play");
     __publicField(this, "stop");
     __publicField(this, "render");
@@ -11371,7 +11483,7 @@ class ModelingEngineSupport extends EngineSupport {
 }
 class DisplayEngineSupport extends EngineSupport {
   constructor(parameters) {
-    super();
+    super(parameters);
     this.install(ENGINEPLUGIN.WEBGLRENDERER, {
       antialias: true,
       alpha: true

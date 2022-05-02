@@ -1,5 +1,4 @@
 import { Camera, Object3D, Scene, WebGLRenderer } from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -7,6 +6,7 @@ import { EventManager } from "../manager/EventManager";
 import { KeyboardManager } from "../manager/KeyboardManager";
 import { PointerManager } from "../manager/PointerManager";
 import { RenderManager } from "../manager/RenderManager";
+import { VisOrbitControls } from "../optimize/VisOrbitControls";
 import { DISPLAYMODE } from "../plugins/DisplayModePlugin";
 import { VIEWPOINT } from "../plugins/ViewpointPlugin";
 import { Engine } from "./Engine";
@@ -15,7 +15,7 @@ export declare class ModelingEngine extends Engine {
     webGLRenderer: WebGLRenderer;
     camera: Camera;
     scene: Scene;
-    orbitControls: OrbitControls;
+    orbitControls: VisOrbitControls;
     transformControls: TransformControls;
     effectComposer: EffectComposer;
     renderManager: RenderManager;

@@ -7,6 +7,9 @@ export class SpriteCompiler extends SolidObjectCompiler {
     replaceGeometry = new PlaneBufferGeometry(1, 1);
     constructor() {
         super();
+        this.mergeFilterAttribute({
+            geometry: true,
+        });
     }
     getReplaceMaterial() {
         return this.replaceMaterial;

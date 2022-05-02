@@ -24,6 +24,9 @@ export const GridHelperPlugin = function (params = {}) {
         }
         return this;
     };
+    this.addEventListener("setScene", (event) => {
+        event.scene.add(gridHelper);
+    });
     this.completeSet.add(() => {
         if (this.setViewpoint) {
             this.addEventListener("setViewpoint", (event) => {

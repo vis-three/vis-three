@@ -9,7 +9,6 @@ import {
 import { BaseEvent, EventDispatcher } from "../core/EventDispatcher";
 
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderManager } from "../manager/RenderManager";
 import { RenderManagerPlugin } from "../plugins/RenderManagerPlugin";
 import { OrbitControlsPlugin } from "../plugins/OrbitControlsPlugin";
@@ -80,6 +79,7 @@ import {
 } from "../plugins/SelectionPlugin";
 import { ObjectHelperManager } from "../manager/ObjectHelperManager";
 import { VisOrbitControls } from "../optimize/VisOrbitControls";
+import { SymbolConfig } from "../middleware/common/CommonConfig";
 
 // 存在的插件接口
 export enum ENGINEPLUGIN {
@@ -199,8 +199,19 @@ export class Engine extends EventDispatcher {
   ) => Promise<LoadedEvent | MappedEvent>;
 
   registerResources?: (resourceMap: { [key: string]: unknown }) => this;
+
   toJSON?: () => string;
   exportConfig?: (compress: boolean) => LoadOptions;
+
+  applyConfig?: <T extends SymbolConfig>(...configs: T[]) => this;
+  reactiveConfig?: <T extends SymbolConfig>(config: T) => T;
+  getConfigBySymbol?: <T extends SymbolConfig>(vid: string) => T | null;
+  removeConfigBySymbol?: (vid: string) => this;
+
+  getObjectSymbol?: <O extends Object3D>(
+    object: O
+  ) => SymbolConfig["vid"] | null;
+  getObjectBySymbol?: (vid: string) => Object3D | null;
 
   play?: () => this;
   stop?: () => this;

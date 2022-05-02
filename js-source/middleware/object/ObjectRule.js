@@ -5,7 +5,7 @@ export const ObjectRule = function (input, compiler) {
     const { operate, key, path, value } = input;
     const tempPath = path.concat([]);
     const vid = tempPath.shift() || key;
-    const attribute = tempPath.length ? path[0] : key;
+    const attribute = tempPath.length ? tempPath[0] : key;
     if (operate === "add") {
         if (attribute === "children") {
             compiler.addChildren(vid, value);

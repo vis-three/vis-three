@@ -362,6 +362,7 @@ export abstract class ObjectCompiler<
       console.error(
         `${this.COMPILER_NAME} compiler can not finish add method.`
       );
+      return this;
     }
 
     const asyncFun = Promise.resolve();
@@ -423,6 +424,50 @@ export abstract class ObjectCompiler<
 
     object[key] = value;
 
+    return this;
+  }
+
+  cover(vid: string, config: T[string]): this {
+    const object = this.map.get(vid);
+
+    if (!object) {
+      console.error(
+        `${this.COMPILER_NAME} compiler can not found object: ${vid}.`
+      );
+      return this;
+    }
+
+    const asyncFun = Promise.resolve();
+    asyncFun.then(() => {
+      // lookAt
+      this.setLookAt(vid, config.lookAt);
+
+      // children
+      if (config.children.length) {
+        for (const target of config.children) {
+          this.addChildren(vid, target);
+        }
+      }
+
+      // event
+      for (const eventName of Object.values(EVENTNAME)) {
+        // 情空object eventName
+        // @ts-ignore
+        if (object._listeners && object._listeners[eventName]) {
+          // @ts-ignore
+          object._listeners[eventName] = [];
+        }
+
+        const eventList = config[eventName];
+        if (eventList.length) {
+          for (const event of eventList) {
+            this.addEvent(vid, eventName, event);
+          }
+        }
+      }
+    });
+
+    Compiler.applyConfig(config, object, this.filterAttribute);
     return this;
   }
 

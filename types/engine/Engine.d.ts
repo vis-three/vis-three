@@ -1,7 +1,6 @@
 import { Camera, Object3D, Scene, WebGLRenderer } from "three";
 import { BaseEvent, EventDispatcher } from "../core/EventDispatcher";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderManager } from "../manager/RenderManager";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { PointerManager } from "../manager/PointerManager";
@@ -16,6 +15,7 @@ import { KeyboardManager } from "../manager/KeyboardManager";
 import { VIEWPOINT } from "../plugins/ViewpointPlugin";
 import { DISPLAYMODE } from "../plugins/DisplayModePlugin";
 import { ObjectHelperManager } from "../manager/ObjectHelperManager";
+import { VisOrbitControls } from "../optimize/VisOrbitControls";
 export declare enum ENGINEPLUGIN {
     WEBGLRENDERER = "WebGLRenderer",
     SCENE = "Scene",
@@ -61,12 +61,12 @@ export declare class Engine extends EventDispatcher {
     static register: <T extends object>(name: string, handler: (this: Engine, params: T) => void) => typeof Engine;
     static dispose: () => void;
     completeSet: Set<(engine: Engine) => void>;
+    camera: Camera;
+    scene: Scene;
     IS_ENGINESUPPORT: boolean;
     dom?: HTMLElement;
     webGLRenderer?: WebGLRenderer;
-    camera?: Camera;
-    scene?: Scene;
-    orbitControls?: OrbitControls;
+    orbitControls?: VisOrbitControls;
     transformControls?: TransformControls;
     effectComposer?: EffectComposer;
     renderManager?: RenderManager;

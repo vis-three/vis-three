@@ -8,7 +8,6 @@ export class ModelingEngineSupport extends EngineSupport {
             antialias: true,
             alpha: true,
         })
-            .install(ENGINEPLUGIN.SCENE)
             .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
             WebGLMultisampleRenderTarget: true,
         })

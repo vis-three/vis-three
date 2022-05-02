@@ -5,7 +5,10 @@ import { DirectionalLightHelper } from "../extends/helper/light/DirectionalLight
 import { PointLightHelper } from "../extends/helper/light/PointLightHelper";
 import { SpotLightHelper } from "../extends/helper/light/SpotLightHelper";
 import { GroupHelper } from "../extends/helper/object/GroupHelper";
+import { LineHelper } from "../extends/helper/object/LineHelper";
 import { MeshHelper } from "../extends/helper/object/MeshHelper";
+import { PointsHelper } from "../extends/helper/object/PointsHelper";
+import { SpriteHelper } from "../extends/helper/object/SpriteHelper";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 export class ObjectHelperManager extends EventDispatcher {
     helperGenerator = {
@@ -16,11 +19,16 @@ export class ObjectHelperManager extends EventDispatcher {
         [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
         [CONFIGTYPE.MESH]: MeshHelper,
         [CONFIGTYPE.GROUP]: GroupHelper,
+        [CONFIGTYPE.SPRITE]: SpriteHelper,
+        [CONFIGTYPE.POINTS]: PointsHelper,
+        [CONFIGTYPE.LINE]: LineHelper,
+        [CONFIGTYPE.LINESEGMENTS]: LineHelper,
     };
     helperFilter = {
         AmbientLight: true,
         Object3D: true,
         TransformControls: true,
+        Scene: true,
     };
     objectFilter = new Set();
     helperMap = new Map();

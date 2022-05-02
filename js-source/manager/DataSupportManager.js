@@ -136,13 +136,15 @@ export class DataSupportManager {
      * @param config vis相关配置对象
      * @returns this
      */
-    applyConfig(config) {
-        const module = DataSupportManager.configModuleMap[config.type];
-        if (module) {
-            this.dataSupportMap.get(module).addConfig(config);
-        }
-        else {
-            console.warn(`dataSupportManager can not found this config module: ${config.type}`);
+    applyConfig(...configs) {
+        for (const config of configs) {
+            const module = DataSupportManager.configModuleMap[config.type];
+            if (module) {
+                this.dataSupportMap.get(module).addConfig(config);
+            }
+            else {
+                console.warn(`dataSupportManager can not found this config module: ${config.type}`);
+            }
         }
         return this;
     }

@@ -2,16 +2,16 @@ import { ENGINEPLUGIN } from "./Engine";
 import { EngineSupport } from "./EngineSupport";
 export class DisplayEngineSupport extends EngineSupport {
     constructor(parameters) {
-        super();
+        super(parameters);
         this.install(ENGINEPLUGIN.WEBGLRENDERER, {
             antialias: true,
             alpha: true,
-        });
-        this.install(ENGINEPLUGIN.SCENE);
-        this.install(ENGINEPLUGIN.EFFECTCOMPOSER, {
+        })
+            .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
             WebGLMultisampleRenderTarget: true,
-        });
-        this.install(ENGINEPLUGIN.ORBITCONTROLS).complete();
+        })
+            .install(ENGINEPLUGIN.ORBITCONTROLS)
+            .complete();
     }
 }
 //# sourceMappingURL=DisplayEngineSupport.js.map

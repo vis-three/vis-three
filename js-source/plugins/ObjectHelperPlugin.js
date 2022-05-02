@@ -20,7 +20,6 @@ export const ObjectHelperPlugin = function (params = {}) {
     const clickFunMap = new Map();
     const helperMap = helperManager.helperMap;
     this.objectHelperManager = helperManager;
-    const scene = this.scene;
     !params.activeColor && (params.activeColor = "rgb(230, 20, 240)");
     !params.hoverColor && (params.hoverColor = "rgb(255, 158, 240)");
     !params.defaultColor && (params.defaultColor = "rgb(255, 255, 255)");
@@ -29,7 +28,8 @@ export const ObjectHelperPlugin = function (params = {}) {
     const activeColorHex = new Color(params.activeColor).getHex();
     const hoverColorHex = new Color(params.hoverColor).getHex();
     const selectedColorHex = new Color(params.selectedColor).getHex();
-    scene.addEventListener("afterAdd", (event) => {
+    const cacheSceneSet = new WeakSet();
+    const afterAddFun = (event) => {
         const objects = event.objects;
         for (const object of objects) {
             const helper = helperManager.addObjectHelper(object);
@@ -37,7 +37,7 @@ export const ObjectHelperPlugin = function (params = {}) {
                 continue;
             }
             helper.material.color.setHex(defaultColorHex);
-            scene.add(helper);
+            this.scene.add(helper);
             if (params.interact) {
                 const pointerenterFun = () => {
                     if (this.transformControls?.dragging) {
@@ -80,15 +80,15 @@ export const ObjectHelperPlugin = function (params = {}) {
                 clickFunMap.set(object, clickFun);
             }
         }
-    });
-    scene.addEventListener("afterRemove", (event) => {
+    };
+    const afterRemoveFun = (event) => {
         const objects = event.objects;
         for (const object of objects) {
             const helper = helperManager.disposeObjectHelper(object);
             if (!helper) {
                 continue;
             }
-            scene.remove(helper);
+            this.scene.remove(helper);
             if (params.interact) {
                 object.removeEventListener("pointerenter", pointerenterFunMap.get(object));
                 object.removeEventListener("pointerleave", pointerleaveFunMap.get(object));
@@ -98,20 +98,44 @@ export const ObjectHelperPlugin = function (params = {}) {
                 clickFunMap.delete(object);
             }
         }
-    });
+    };
+    const initSceneHelper = (scene) => {
+        if (cacheSceneSet.has(scene)) {
+            return;
+        }
+        scene.traverse((object) => {
+            const helper = helperManager.addObjectHelper(object);
+            helper && scene.add(helper);
+        });
+        cacheSceneSet.add(scene);
+    };
+    this.scene.addEventListener("afterAdd", afterAddFun);
+    this.scene.addEventListener("afterRemove", afterRemoveFun);
     this.setObjectHelper = function (params) {
+        // TODO: 分开scene
         if (params.show) {
             helperMap.forEach((helper) => {
-                scene.add(helper);
+                this.scene.add(helper);
             });
         }
         else {
             helperMap.forEach((helper) => {
-                scene.remove(helper);
+                this.scene.remove(helper);
             });
         }
         return this;
     };
+    this.addEventListener("setScene", (event) => {
+        const scene = event.scene;
+        // 初始化场景辅助
+        !cacheSceneSet.has(scene) && initSceneHelper(scene);
+        if (!scene.hasEventListener("afterAdd", afterAddFun)) {
+            scene.addEventListener("afterAdd", afterAddFun);
+        }
+        if (!scene.hasEventListener("afterRemove", afterRemoveFun)) {
+            scene.addEventListener("afterRemove", afterRemoveFun);
+        }
+    });
     const cacheObjectsHelper = new Set();
     this.completeSet.add(() => {
         if (this.selectionBox) {

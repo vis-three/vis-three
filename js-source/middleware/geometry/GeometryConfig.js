@@ -18,6 +18,7 @@ export const getGeometryConfig = function () {
             y: 1,
             z: 1,
         },
+        groups: [],
     };
 };
 export const getBoxGeometryConfig = function () {

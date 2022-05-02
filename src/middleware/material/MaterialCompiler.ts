@@ -87,6 +87,33 @@ export class MaterialCompiler extends Compiler {
     };
   }
 
+  private mergeMaterial(material: Material, config: MaterialAllType): this {
+    const tempConfig = JSON.parse(JSON.stringify(config));
+
+    const filterMap = {};
+    // 转化颜色
+    const colorAttribute = this.colorAttribute;
+    for (const key in colorAttribute) {
+      if (tempConfig[key]) {
+        material[key] = new Color(tempConfig[key]);
+        filterMap[key] = true;
+      }
+    }
+    // 应用贴图
+    const mapAttribute = this.mapAttribute;
+    for (const key in mapAttribute) {
+      if (tempConfig[key]) {
+        material[key] = this.getTexture(tempConfig[key]);
+        filterMap[key] = true;
+      }
+    }
+    // 应用属性
+    Compiler.applyConfig(config, material, filterMap);
+
+    material.needsUpdate = true;
+    return this;
+  }
+
   private getTexture(vid: string): Texture | null {
     if (this.texturelMap.has(vid)) {
       const texture = this.texturelMap.get(vid)!;
@@ -115,51 +142,19 @@ export class MaterialCompiler extends Compiler {
   }
 
   add(vid: string, config: MaterialAllType): this {
-    if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const material = this.constructMap.get(config.type)!();
-        const tempConfig = JSON.parse(JSON.stringify(config));
-
-        const filterMap = {};
-        // 转化颜色
-        const colorAttribute = this.colorAttribute;
-        for (const key in colorAttribute) {
-          if (tempConfig[key]) {
-            material[key] = new Color(tempConfig[key]);
-            filterMap[key] = true;
-          }
-        }
-        // 应用贴图
-        const mapAttribute = this.mapAttribute;
-        for (const key in mapAttribute) {
-          if (tempConfig[key]) {
-            material[key] = this.getTexture(tempConfig[key]);
-            filterMap[key] = true;
-          }
-        }
-        // 应用属性
-        Compiler.applyConfig(config, material, filterMap);
-
-        material.needsUpdate = true;
-
-        this.map.set(vid, material);
-      } else {
-        console.warn(
-          `material compiler can not support this type: ${config.type}`
-        );
-      }
+    if (config.type && this.constructMap.has(config.type)) {
+      const material = this.constructMap.get(config.type)!();
+      this.mergeMaterial(material, config);
+      this.map.set(vid, material);
     } else {
-      console.error(`material vid parameter is illegal: ${vid}`);
+      console.warn(
+        `material compiler can not support this type: ${config.type}`
+      );
     }
     return this;
   }
 
   set(vid: string, path: string[], key: string, value: any): this {
-    if (!validate(vid)) {
-      console.warn(`material compiler set function: vid is illeage: '${vid}'`);
-      return this;
-    }
-
     if (!this.map.has(vid)) {
       console.warn(
         `material compiler set function: can not found material which vid is: '${vid}'`
@@ -188,6 +183,32 @@ export class MaterialCompiler extends Compiler {
     });
     config[key] = value;
 
+    return this;
+  }
+
+  cover(vid: string, config: MaterialAllType): this {
+    if (!this.map.has(vid)) {
+      console.warn(
+        `material compiler set function: can not found material which vid is: '${vid}'`
+      );
+      return this;
+    }
+
+    return this.mergeMaterial(this.map.get(vid)!, config);
+  }
+
+  remove(vid: string) {
+    if (!this.map.has(vid)) {
+      console.warn(
+        `material compiler set function: can not found material which vid is: '${vid}'`
+      );
+      return this;
+    }
+
+    const material = this.map.get(vid)!;
+
+    material.dispose();
+    this.map.delete(vid);
     return this;
   }
 

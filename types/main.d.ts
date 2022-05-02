@@ -42,6 +42,7 @@ import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightH
 import { VideoLoader } from "./extends/loader/VideoLoader";
 import { ProxyBroadcast } from "./core/ProxyBroadcast";
 import { Translater } from "./core/Translater";
+import "./optimize/optimizeScirpt";
 export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasGenerator, History, 
 /**
  * @deprecated

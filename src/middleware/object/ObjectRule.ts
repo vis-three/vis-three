@@ -25,7 +25,7 @@ export const ObjectRule = function <
   const tempPath = path.concat([]);
 
   const vid = tempPath.shift() || key;
-  const attribute = tempPath.length ? path[0] : key;
+  const attribute = tempPath.length ? tempPath[0] : key;
 
   if (operate === "add") {
     if (attribute === "children") {
@@ -59,6 +59,15 @@ export const ObjectRule = function <
   }
 
   if (operate === "set") {
+    if (
+      ((vid && validate(key)) || UNIQUESYMBOL[vid]) &&
+      !path.length &&
+      typeof value === "object"
+    ) {
+      compiler.cover(vid, value);
+      return;
+    }
+
     if ((vid && validate(vid)) || UNIQUESYMBOL[vid]) {
       compiler.set(vid, tempPath, key, value);
     } else {

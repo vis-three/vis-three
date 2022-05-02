@@ -61,8 +61,8 @@ export class PointerManager extends EventDispatcher {
             this.dom.removeEventListener("pointerup", this.pointerUpFun);
         }
         dom.addEventListener("pointerdown", this.pointerDownFun);
-        dom.addEventListener("pointerdown", this.pointerMoveFun);
-        dom.addEventListener("pointerdown", this.pointerUpFun);
+        dom.addEventListener("pointermove", this.pointerMoveFun);
+        dom.addEventListener("pointerup", this.pointerUpFun);
         this.dom = dom;
         return this;
     }
