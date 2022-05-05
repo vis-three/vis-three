@@ -164,6 +164,7 @@ export class ResourceManager extends EventDispatcher {
                 return resourceHanlder(url, object, Object.getPrototypeOf(prototype));
             }
         };
+        const resourceConfig = {};
         loadResourceMap.forEach((resource, url) => {
             // 图片贴图
             if (!resourceHanlder(url, resource, resource)) {
@@ -171,12 +172,16 @@ export class ResourceManager extends EventDispatcher {
                 structureMap.set(url, url);
                 console.warn(`resource manager can not support this resource to generate config`, resource);
             }
+            else {
+                resourceConfig[url] = this.getResourceConfig(url);
+            }
         });
         this.dispatchEvent({
             type: "mapped",
             structureMap,
             configMap,
             resourceMap,
+            resourceConfig,
         });
         return this;
     }

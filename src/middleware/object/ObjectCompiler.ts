@@ -1,11 +1,13 @@
 import { Object3D, Scene, Vector3 } from "three";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
-import { EngineSupport } from "../../main";
+import { EngineSupport } from "../../engine/EngineSupport";
+import {
+  BasicEventConfig,
+  EventLibrary,
+} from "../../library/event/EventLibrary";
 import { EVENTNAME, ObjectEvent } from "../../manager/EventManager";
 import { SymbolConfig } from "../common/CommonConfig";
 import { ObjectConfig } from "./ObjectConfig";
-import * as BasicEventLbirary from "../../convenient/BasicEventLibrary/handler";
-import * as RealTimeAnimateLibrary from "../../convenient/RealTimeAnimateLibrary/handler";
 
 export type BasicObjectCompiler = ObjectCompiler<
   ObjectConfig,
@@ -22,33 +24,16 @@ export interface CacheObjectData {
   updateMatrixWorldFun: ((focus: boolean) => void) | null;
 }
 
-export interface BasicEventConfig {
-  name: string;
-  desp: string;
-}
-
 export interface FilterAttribute {
   [key: string]: FilterAttribute | boolean;
 }
-
-export type EventHandler<C extends BasicEventConfig> = (
-  compiler: BasicObjectCompiler,
-  config: C
-) => (event?: ObjectEvent) => void;
 
 export abstract class ObjectCompiler<
   C extends ObjectConfig,
   T extends ObjectCompilerTarget<C>,
   O extends Object3D
 > extends Compiler {
-  static eventLibrary: { [key: string]: EventHandler<BasicEventConfig> } = {};
   static eventSymbol = "vis.event";
-  static registerEvent = function (map: unknown) {
-    ObjectCompiler.eventLibrary = Object.assign(
-      ObjectCompiler.eventLibrary,
-      map
-    );
-  };
 
   IS_OBJECTCOMPILER = true;
 
@@ -182,7 +167,7 @@ export abstract class ObjectCompiler<
       );
       return this;
     }
-    if (!ObjectCompiler.eventLibrary[config.name]) {
+    if (!EventLibrary.has(config.name)) {
       console.warn(
         `${this.COMPILER_NAME} compiler: can not support this event: ${config.name}`
       );
@@ -192,7 +177,7 @@ export abstract class ObjectCompiler<
     const object = this.map.get(vid)! as unknown as Object3D<ObjectEvent>;
 
     // 生成函数
-    const fun = ObjectCompiler.eventLibrary[config.name](this, config);
+    const fun = EventLibrary.generateEvent(config, this.engine);
 
     // 映射缓存
     const symbol = Symbol.for(ObjectCompiler.eventSymbol);
@@ -257,7 +242,7 @@ export abstract class ObjectCompiler<
     object.removeEventListener(eventName, fun!);
 
     // 生成函数
-    const newFun = ObjectCompiler.eventLibrary[config.name](this, config);
+    const newFun = EventLibrary.generateEvent(config, this.engine);
 
     // 映射缓存
     config[symbol] = fun;
@@ -493,6 +478,3 @@ export abstract class ObjectCompiler<
     return this;
   }
 }
-
-ObjectCompiler.registerEvent(BasicEventLbirary);
-ObjectCompiler.registerEvent(RealTimeAnimateLibrary);

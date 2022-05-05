@@ -72,8 +72,8 @@ export class MaterialCompiler extends Compiler {
       const shader = ShaderLibrary.getShader(config.shader);
       const material = new ShaderMaterial();
       shader?.vertexShader && (material.vertexShader = shader.vertexShader);
-      shader?.FragmentShader &&
-        (material.fragmentShader = shader.FragmentShader);
+      shader?.fragmentShader &&
+        (material.fragmentShader = shader.fragmentShader);
       shader?.uniforms && (material.uniforms = shader.uniforms);
 
       return material;

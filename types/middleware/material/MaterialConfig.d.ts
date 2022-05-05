@@ -96,12 +96,16 @@ export interface PointsMaterialConfig extends MaterialConfig {
     sizeAttenuation: boolean;
 }
 export interface ShaderMaterialConfig extends MaterialConfig {
-    uniforms: any;
+    shader: string;
+    uniforms: {
+        [key: string]: any;
+    };
 }
-export declare type MaterialAllType = MeshStandardMaterialConfig | MeshPhongMaterialConfig | LineBasicMaterialConfig | SpriteMaterialConfig | PointsMaterialConfig;
+export declare type MaterialAllType = MeshStandardMaterialConfig | MeshPhongMaterialConfig | LineBasicMaterialConfig | SpriteMaterialConfig | PointsMaterialConfig | ShaderMaterialConfig;
 export declare const getMaterialConfig: () => MaterialConfig;
 export declare const getMeshStandardMaterialConfig: () => MeshStandardMaterialConfig;
 export declare const getMeshPhongMaterialConfig: () => MeshPhongMaterialConfig;
 export declare const getSpriteMaterialConfig: () => SpriteMaterialConfig;
 export declare const getLineBasicMaterialConfig: () => LineBasicMaterialConfig;
 export declare const getPointsMaterialConfig: () => PointsMaterialConfig;
+export declare const getShaderMaterialConfig: () => ShaderMaterialConfig;

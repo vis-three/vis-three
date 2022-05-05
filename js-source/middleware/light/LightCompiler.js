@@ -34,6 +34,15 @@ export class LightCompiler extends ObjectCompiler {
         }
         return this;
     }
+    cover(vid, config) {
+        const light = this.map.get(vid);
+        if (!light) {
+            console.warn(`light compiler can not found light: ${vid}`);
+            return this;
+        }
+        light.color = new Color(config.color);
+        return super.cover(vid, config);
+    }
     set(vid, path, key, value) {
         if (!this.map.has(vid)) {
             console.warn(`LightCompiler: can not found this vid mapping object: '${vid}'`);

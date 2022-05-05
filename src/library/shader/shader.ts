@@ -3,5 +3,5 @@ export interface Shader {
   name: string;
   uniforms?: { [uniform: string]: IUniform };
   vertexShader?: string;
-  FragmentShader?: string;
+  fragmentShader?: string;
 }

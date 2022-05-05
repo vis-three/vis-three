@@ -1,6 +1,6 @@
-import { Color, LineBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, PointsMaterial, SpriteMaterial, Texture, } from "three";
-import { validate } from "uuid";
+import { Color, LineBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, PointsMaterial, ShaderMaterial, SpriteMaterial, Texture, } from "three";
 import { Compiler } from "../../core/Compiler";
+import { ShaderLibrary } from "../../main";
 import { CONFIGTYPE } from "../constants/configType";
 export class MaterialCompiler extends Compiler {
     target;
@@ -8,6 +8,7 @@ export class MaterialCompiler extends Compiler {
     constructMap;
     mapAttribute;
     colorAttribute;
+    shaderAttribute;
     texturelMap;
     resourceMap;
     cachaColor;
@@ -29,10 +30,20 @@ export class MaterialCompiler extends Compiler {
         constructMap.set(CONFIGTYPE.SPRITEMATERIAL, () => new SpriteMaterial());
         constructMap.set(CONFIGTYPE.LINEBASICMATERIAL, () => new LineBasicMaterial());
         constructMap.set(CONFIGTYPE.POINTSMATERIAL, () => new PointsMaterial());
+        constructMap.set(CONFIGTYPE.SHADERMATERIAL, (config) => {
+            const shader = ShaderLibrary.getShader(config.shader);
+            const material = new ShaderMaterial();
+            shader?.vertexShader && (material.vertexShader = shader.vertexShader);
+            shader?.fragmentShader &&
+                (material.fragmentShader = shader.fragmentShader);
+            shader?.uniforms && (material.uniforms = shader.uniforms);
+            return material;
+        });
         this.constructMap = constructMap;
         this.colorAttribute = {
             color: true,
             emissive: true,
+            specular: true,
         };
         this.mapAttribute = {
             roughnessMap: true,
@@ -48,6 +59,33 @@ export class MaterialCompiler extends Compiler {
             aoMap: true,
             specularMap: true,
         };
+        this.shaderAttribute = {
+            shader: true,
+        };
+    }
+    mergeMaterial(material, config) {
+        const tempConfig = JSON.parse(JSON.stringify(config));
+        const filterMap = {};
+        // 转化颜色
+        const colorAttribute = this.colorAttribute;
+        for (const key in colorAttribute) {
+            if (tempConfig[key]) {
+                material[key] = new Color(tempConfig[key]);
+                filterMap[key] = true;
+            }
+        }
+        // 应用贴图
+        const mapAttribute = this.mapAttribute;
+        for (const key in mapAttribute) {
+            if (tempConfig[key]) {
+                material[key] = this.getTexture(tempConfig[key]);
+                filterMap[key] = true;
+            }
+        }
+        // 应用属性
+        Compiler.applyConfig(config, material, Object.assign(filterMap, this.shaderAttribute));
+        material.needsUpdate = true;
+        return this;
     }
     getTexture(vid) {
         if (this.texturelMap.has(vid)) {
@@ -74,46 +112,17 @@ export class MaterialCompiler extends Compiler {
         return this;
     }
     add(vid, config) {
-        if (validate(vid)) {
-            if (config.type && this.constructMap.has(config.type)) {
-                const material = this.constructMap.get(config.type)();
-                const tempConfig = JSON.parse(JSON.stringify(config));
-                const filterMap = {};
-                // 转化颜色
-                const colorAttribute = this.colorAttribute;
-                for (const key in colorAttribute) {
-                    if (tempConfig[key]) {
-                        material[key] = new Color(tempConfig[key]);
-                        filterMap[key] = true;
-                    }
-                }
-                // 应用贴图
-                const mapAttribute = this.mapAttribute;
-                for (const key in mapAttribute) {
-                    if (tempConfig[key]) {
-                        material[key] = this.getTexture(tempConfig[key]);
-                        filterMap[key] = true;
-                    }
-                }
-                // 应用属性
-                Compiler.applyConfig(config, material, filterMap);
-                material.needsUpdate = true;
-                this.map.set(vid, material);
-            }
-            else {
-                console.warn(`material compiler can not support this type: ${config.type}`);
-            }
+        if (config.type && this.constructMap.has(config.type)) {
+            const material = this.constructMap.get(config.type)(config);
+            this.mergeMaterial(material, config);
+            this.map.set(vid, material);
         }
         else {
-            console.error(`material vid parameter is illegal: ${vid}`);
+            console.warn(`material compiler can not support this type: ${config.type}`);
         }
         return this;
     }
     set(vid, path, key, value) {
-        if (!validate(vid)) {
-            console.warn(`material compiler set function: vid is illeage: '${vid}'`);
-            return this;
-        }
         if (!this.map.has(vid)) {
             console.warn(`material compiler set function: can not found material which vid is: '${vid}'`);
             return this;
@@ -135,6 +144,23 @@ export class MaterialCompiler extends Compiler {
             config = config[key];
         });
         config[key] = value;
+        return this;
+    }
+    cover(vid, config) {
+        if (!this.map.has(vid)) {
+            console.warn(`material compiler set function: can not found material which vid is: '${vid}'`);
+            return this;
+        }
+        return this.mergeMaterial(this.map.get(vid), config);
+    }
+    remove(vid) {
+        if (!this.map.has(vid)) {
+            console.warn(`material compiler set function: can not found material which vid is: '${vid}'`);
+            return this;
+        }
+        const material = this.map.get(vid);
+        material.dispose();
+        this.map.delete(vid);
         return this;
     }
     getMap() {

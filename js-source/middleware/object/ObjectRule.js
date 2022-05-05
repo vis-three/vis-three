@@ -32,6 +32,12 @@ export const ObjectRule = function (input, compiler) {
         return;
     }
     if (operate === "set") {
+        if (((vid && validate(key)) || UNIQUESYMBOL[vid]) &&
+            !path.length &&
+            typeof value === "object") {
+            compiler.cover(vid, value);
+            return;
+        }
         if ((vid && validate(vid)) || UNIQUESYMBOL[vid]) {
             compiler.set(vid, tempPath, key, value);
         }

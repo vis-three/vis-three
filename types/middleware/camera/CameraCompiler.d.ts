@@ -17,6 +17,7 @@ export declare class CameraCompiler extends ObjectCompiler<CameraConfigAllType, 
     constructor();
     private setAdaptiveWindow;
     add(vid: string, config: CameraConfigAllType): this;
+    cover(vid: string, config: CameraConfigAllType): this;
     set(vid: string, path: string[], key: string, value: any): this;
     dispose(): this;
 }

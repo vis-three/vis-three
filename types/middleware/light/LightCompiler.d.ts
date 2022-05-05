@@ -10,6 +10,7 @@ export declare class LightCompiler extends ObjectCompiler<LightConfigAllType, Li
     constructor();
     protected setLookAt(vid: string, target: string): this;
     add(vid: string, config: LightConfigAllType): this;
+    cover(vid: string, config: LightConfigAllType): this;
     set(vid: string, path: string[], key: string, value: any): this;
     dispose(): this;
 }

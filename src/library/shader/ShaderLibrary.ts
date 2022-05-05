@@ -67,7 +67,7 @@ export class ShaderLibrary {
     };
 
     shader.vertexShader && (newShader.vertexShader = shader.vertexShader);
-    shader.FragmentShader && (newShader.FragmentShader = shader.FragmentShader);
+    shader.fragmentShader && (newShader.fragmentShader = shader.fragmentShader);
     shader.uniforms &&
       (newShader.uniforms = JSON.parse(JSON.stringify(shader.uniforms)));
 

@@ -1,13 +1,8 @@
 import { Compiler } from "../../core/Compiler";
+import { EventLibrary, } from "../../library/event/EventLibrary";
 import { EVENTNAME } from "../../manager/EventManager";
-import * as BasicEventLbirary from "../../convenient/BasicEventLibrary/handler";
-import * as RealTimeAnimateLibrary from "../../convenient/RealTimeAnimateLibrary/handler";
 export class ObjectCompiler extends Compiler {
-    static eventLibrary = {};
     static eventSymbol = "vis.event";
-    static registerEvent = function (map) {
-        ObjectCompiler.eventLibrary = Object.assign(ObjectCompiler.eventLibrary, map);
-    };
     IS_OBJECTCOMPILER = true;
     target;
     map;
@@ -108,13 +103,13 @@ export class ObjectCompiler extends Compiler {
             console.warn(`${this.COMPILER_NAME} compiler : No matching vid found: ${vid}`);
             return this;
         }
-        if (!ObjectCompiler.eventLibrary[config.name]) {
+        if (!EventLibrary.has(config.name)) {
             console.warn(`${this.COMPILER_NAME} compiler: can not support this event: ${config.name}`);
             return this;
         }
         const object = this.map.get(vid);
         // 生成函数
-        const fun = ObjectCompiler.eventLibrary[config.name](this, config);
+        const fun = EventLibrary.generateEvent(config, this.engine);
         // 映射缓存
         const symbol = Symbol.for(ObjectCompiler.eventSymbol);
         config[symbol] = fun;
@@ -155,7 +150,7 @@ export class ObjectCompiler extends Compiler {
         }
         object.removeEventListener(eventName, fun);
         // 生成函数
-        const newFun = ObjectCompiler.eventLibrary[config.name](this, config);
+        const newFun = EventLibrary.generateEvent(config, this.engine);
         // 映射缓存
         config[symbol] = fun;
         // 绑定事件
@@ -230,6 +225,7 @@ export class ObjectCompiler extends Compiler {
         const object = this.map.get(vid);
         if (!object) {
             console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
+            return this;
         }
         const asyncFun = Promise.resolve();
         // 兼容生命周期
@@ -281,6 +277,41 @@ export class ObjectCompiler extends Compiler {
         object[key] = value;
         return this;
     }
+    cover(vid, config) {
+        const object = this.map.get(vid);
+        if (!object) {
+            console.error(`${this.COMPILER_NAME} compiler can not found object: ${vid}.`);
+            return this;
+        }
+        const asyncFun = Promise.resolve();
+        asyncFun.then(() => {
+            // lookAt
+            this.setLookAt(vid, config.lookAt);
+            // children
+            if (config.children.length) {
+                for (const target of config.children) {
+                    this.addChildren(vid, target);
+                }
+            }
+            // event
+            for (const eventName of Object.values(EVENTNAME)) {
+                // 情空object eventName
+                // @ts-ignore
+                if (object._listeners && object._listeners[eventName]) {
+                    // @ts-ignore
+                    object._listeners[eventName] = [];
+                }
+                const eventList = config[eventName];
+                if (eventList.length) {
+                    for (const event of eventList) {
+                        this.addEvent(vid, eventName, event);
+                    }
+                }
+            }
+        });
+        Compiler.applyConfig(config, object, this.filterAttribute);
+        return this;
+    }
     remove(vid) {
         if (!this.map.has(vid)) {
             console.warn(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
@@ -298,6 +329,4 @@ export class ObjectCompiler extends Compiler {
         return this;
     }
 }
-ObjectCompiler.registerEvent(BasicEventLbirary);
-ObjectCompiler.registerEvent(RealTimeAnimateLibrary);
 //# sourceMappingURL=ObjectCompiler.js.map

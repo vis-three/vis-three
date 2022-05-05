@@ -1,7 +1,8 @@
 import { Object3D, Vector3 } from "three";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
-import { EngineSupport } from "../../main";
-import { EVENTNAME, ObjectEvent } from "../../manager/EventManager";
+import { EngineSupport } from "../../engine/EngineSupport";
+import { BasicEventConfig } from "../../library/event/EventLibrary";
+import { EVENTNAME } from "../../manager/EventManager";
 import { SymbolConfig } from "../common/CommonConfig";
 import { ObjectConfig } from "./ObjectConfig";
 export declare type BasicObjectCompiler = ObjectCompiler<ObjectConfig, ObjectCompilerTarget<ObjectConfig>, Object3D>;
@@ -12,20 +13,11 @@ export interface CacheObjectData {
     lookAtTarget: Vector3 | null;
     updateMatrixWorldFun: ((focus: boolean) => void) | null;
 }
-export interface BasicEventConfig {
-    name: string;
-    desp: string;
-}
 export interface FilterAttribute {
     [key: string]: FilterAttribute | boolean;
 }
-export declare type EventHandler<C extends BasicEventConfig> = (compiler: BasicObjectCompiler, config: C) => (event?: ObjectEvent) => void;
 export declare abstract class ObjectCompiler<C extends ObjectConfig, T extends ObjectCompilerTarget<C>, O extends Object3D> extends Compiler {
-    static eventLibrary: {
-        [key: string]: EventHandler<BasicEventConfig>;
-    };
     static eventSymbol: string;
-    static registerEvent: (map: unknown) => void;
     IS_OBJECTCOMPILER: boolean;
     abstract COMPILER_NAME: string;
     protected target: T;
@@ -52,6 +44,7 @@ export declare abstract class ObjectCompiler<C extends ObjectConfig, T extends O
     compileAll(): this;
     add(vid: string, config: T[string]): this;
     set(vid: string, path: string[], key: string, value: any): this;
+    cover(vid: string, config: T[string]): this;
     remove(vid: string): this;
     dispose(): this;
 }

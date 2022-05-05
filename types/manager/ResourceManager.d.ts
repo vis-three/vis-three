@@ -13,6 +13,9 @@ export interface MappedEvent extends BaseEvent {
     structureMap: Map<string, unknown>;
     configMap: Map<string, SymbolConfig>;
     resourceMap: Map<string, unknown>;
+    resourceConfig: {
+        [key: string]: LoadOptions;
+    };
 }
 export declare enum RESOURCEEVENTTYPE {
     MAPPED = "mapped"

@@ -26,6 +26,8 @@ export declare enum CONFIGTYPE {
     SPRITEMATERIAL = "SpriteMaterial",
     LINEBASICMATERIAL = "LineBasicMaterial",
     POINTSMATERIAL = "PointsMaterial",
+    SHADERMATERIAL = "ShaderMaterial",
+    RAWSHADERMATERIAL = "RawShaderMaterial",
     AMBIENTLIGHT = "AmbientLight",
     SPOTLIGHT = "SpotLight",
     POINTLIGHT = "PointLight",

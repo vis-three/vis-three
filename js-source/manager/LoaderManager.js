@@ -11,6 +11,7 @@ export var LOADERMANAGER;
     LOADERMANAGER["DETAILLOADED"] = "detailLoaded";
     LOADERMANAGER["LOADED"] = "loaded";
 })(LOADERMANAGER || (LOADERMANAGER = {}));
+//TODO: sync three cache
 export class LoaderManager extends EventDispatcher {
     resourceMap;
     loaderMap;

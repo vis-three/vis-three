@@ -27,8 +27,6 @@ import { DisplayEngineSupport } from "./engine/DisplayEngineSupport";
 import { LineDataSupport } from "./middleware/line/LineDataSupport";
 import { MeshDataSupport } from "./middleware/mesh/MeshDataSupport";
 import { PointsDataSupport } from "./middleware/points/PointsDataSupport";
-import * as BasicEventLibrary from "./convenient/BasicEventLibrary/configure";
-import * as RealTimeAnimateLibrary from "./convenient/RealTimeAnimateLibrary/configure";
 import * as ActionLibrary from "./convenient/ActionLibrary/Action";
 import { GroupHelper } from "./extends/helper/object/GroupHelper";
 import { EngineSupport } from "./engine/EngineSupport";
@@ -42,9 +40,11 @@ import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightH
 import { VideoLoader } from "./extends/loader/VideoLoader";
 import { ProxyBroadcast } from "./core/ProxyBroadcast";
 import { Translater } from "./core/Translater";
+import { ShaderLibrary } from "./library/shader/ShaderLibrary";
+import { EventLibrary } from "./library/event/EventLibrary";
 import "./optimize/optimizeScirpt";
-export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasGenerator, History, 
+export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasGenerator, History, JSONHandler, 
 /**
  * @deprecated
  */
-ActionLibrary, BasicEventLibrary, RealTimeAnimateLibrary, JSONHandler, MaterialDisplayer, TextureDisplayer, VideoLoader, BooleanModifier, };
+ActionLibrary, EventLibrary, ShaderLibrary, MaterialDisplayer, TextureDisplayer, VideoLoader, BooleanModifier, };

@@ -8,6 +8,7 @@ export declare const CONFIGFACTORY: {
     SpriteMaterial: () => import("../material/MaterialConfig").SpriteMaterialConfig;
     LineBasicMaterial: () => import("../material/MaterialConfig").LineBasicMaterialConfig;
     PointsMaterial: () => import("../material/MaterialConfig").PointsMaterialConfig;
+    ShaderMaterial: () => import("../material/MaterialConfig").ShaderMaterialConfig;
     AmbientLight: () => import("../light/LightConfig").LightConifg;
     SpotLight: () => import("../light/LightConfig").SpotLightConfig;
     PointLight: () => import("../light/LightConfig").PointLightConfig;

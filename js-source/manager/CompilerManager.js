@@ -82,7 +82,6 @@ export class CompilerManager {
         dataSupportManager.materialDataSupport.addCompiler(this.materialCompiler);
         dataSupportManager.geometryDataSupport.addCompiler(this.geometryCompiler);
         dataSupportManager.rendererDataSupport.addCompiler(this.rendererCompiler);
-        dataSupportManager.sceneDataSupport.addCompiler(this.sceneCompiler);
         dataSupportManager.controlsDataSupport.addCompiler(this.controlsCompiler);
         dataSupportManager.passDataSupport.addCompiler(this.passCompiler);
         dataSupportManager.cameraDataSupport.addCompiler(this.cameraCompiler);
@@ -92,6 +91,7 @@ export class CompilerManager {
         dataSupportManager.meshDataSupport.addCompiler(this.meshCompiler);
         dataSupportManager.pointsDataSupport.addCompiler(this.pointsCompiler);
         dataSupportManager.groupDataSupport.addCompiler(this.groupCompiler);
+        dataSupportManager.sceneDataSupport.addCompiler(this.sceneCompiler);
         return this;
     }
     /**

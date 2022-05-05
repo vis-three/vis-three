@@ -70,7 +70,7 @@
         material: material.vid,
         geometry: geometry.vid,
         pointerup: [
-          Vis.BasicEventLibrary.openWindow({
+          Vis.EventLibrary.generateConfig("openWindow", {
             params: {
               url: "https://gitee.com/Shiotsukikaedesari/vis-three",
             },
@@ -89,7 +89,7 @@
           z: 0,
         },
         pointerup: [
-          Vis.RealTimeAnimateLibrary.moveTo({
+          Vis.EventLibrary.generateConfig("moveTo", {
             params: {
               target: meshSymbol,
               position: {
@@ -113,7 +113,7 @@
           z: 0,
         },
         pointerenter: [
-          Vis.RealTimeAnimateLibrary.moveSpacing({
+          Vis.EventLibrary.generateConfig("moveSpacing", {
             params: {
               target: mesh3Symbol,
               spacing: {

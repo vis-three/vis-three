@@ -1,5 +1,7 @@
 import { v4 as getUuid } from "uuid";
+import { ShaderLibrary } from "../library/shader/ShaderLibrary";
 import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
+import { CONFIGTYPE } from "../middleware/constants/configType";
 /**
  * 生成相关对象配置单
  * @param type 对象类型 CONFIGTYPE
@@ -30,6 +32,14 @@ export const generateConfig = function (type, merge, strict = true, warn = true)
             }
         };
         const initConfig = CONFIGFACTORY[type]();
+        // shader配置
+        if ([CONFIGTYPE.SHADERMATERIAL, CONFIGTYPE.RAWSHADERMATERIAL].includes(type)) {
+            const shaderConfig = ShaderLibrary.generateConfig(merge?.shader || "defaultShader");
+            const cacheStrict = strict;
+            strict = false;
+            recursion(initConfig, shaderConfig);
+            strict = cacheStrict;
+        }
         // 自动生成uuid
         if (initConfig.vid === "") {
             initConfig.vid = getUuid();

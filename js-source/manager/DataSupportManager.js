@@ -106,16 +106,17 @@ export class DataSupportManager {
     /**
      * 通过vid标识移除相关配置对象
      * @param vid vid标识
-     * @returns void
+     * @returns this
      */
     removeConfigBySymbol(vid) {
         const dataSupportList = this.dataSupportMap.values();
         for (const dataSupport of dataSupportList) {
             if (dataSupport.existSymbol(vid)) {
                 dataSupport.removeConfig(vid);
-                return;
+                return this;
             }
         }
+        return this;
     }
     /**
      * 通过vid标识获取该标识所处的模块

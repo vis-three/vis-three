@@ -1,4 +1,4 @@
 import { LineBasicMaterial } from "three";
-import { HELPERCOLOR } from "../../middleware/constants/COLOR";
-export const getHelperLineMaterial = () => new LineBasicMaterial({ color: HELPERCOLOR });
+export const getHelperLineMaterial = () => new LineBasicMaterial({ color: "rgb(255, 255, 255)" });
+export const getTransformAxes = () => { };
 //# sourceMappingURL=common.js.map

@@ -28,8 +28,6 @@ import { DisplayEngineSupport } from "./engine/DisplayEngineSupport";
 import { LineDataSupport } from "./middleware/line/LineDataSupport";
 import { MeshDataSupport } from "./middleware/mesh/MeshDataSupport";
 import { PointsDataSupport } from "./middleware/points/PointsDataSupport";
-import * as BasicEventLibrary from "./convenient/BasicEventLibrary/configure";
-import * as RealTimeAnimateLibrary from "./convenient/RealTimeAnimateLibrary/configure";
 import * as ActionLibrary from "./convenient/ActionLibrary/Action";
 import { GroupHelper } from "./extends/helper/object/GroupHelper";
 import { EngineSupport } from "./engine/EngineSupport";
@@ -45,6 +43,7 @@ import { VideoLoader } from "./extends/loader/VideoLoader";
 import { ProxyBroadcast } from "./core/ProxyBroadcast";
 import { Translater } from "./core/Translater";
 import { ShaderLibrary } from "./library/shader/ShaderLibrary";
+import { EventLibrary } from "./library/event/EventLibrary";
 
 import "./optimize/optimizeScirpt";
 
@@ -102,8 +101,7 @@ export {
    */
   ActionLibrary,
   // library
-  BasicEventLibrary,
-  RealTimeAnimateLibrary,
+  EventLibrary,
   ShaderLibrary,
   // displayer
   MaterialDisplayer,

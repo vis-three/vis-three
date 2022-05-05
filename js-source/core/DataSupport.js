@@ -80,6 +80,20 @@ export class DataSupport {
                         if (config[key] === null) {
                             continue;
                         }
+                        if (Array.isArray(template[key])) {
+                            if (!config[key].length) {
+                                continue;
+                            }
+                            result[key] = config[key].map((elem) => {
+                                if (typeof elem === "object" && elem !== null) {
+                                    return JSON.parse(JSON.stringify(elem));
+                                }
+                                else {
+                                    return elem;
+                                }
+                            });
+                            continue;
+                        }
                         result[key] = {};
                         recursion(config[key], template[key], result[key]);
                         if (Object.keys(result[key]).length === 0) {

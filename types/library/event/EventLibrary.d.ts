@@ -5,6 +5,10 @@ export interface BasicEventConfig {
 }
 export declare type EventGenerator<C extends BasicEventConfig> = (engine: EngineSupport, config: C) => (event?: ObjectEvent) => void;
 export declare class EventLibrary {
-    getConfig(name: string): void;
-    generateEvent(config: object): void;
+    private static configLibrary;
+    private static generatorLibrary;
+    static register: <C extends BasicEventConfig>(config: C, generator: EventGenerator<C>) => void;
+    static generateConfig(name: string, merge: object): BasicEventConfig;
+    static generateEvent(config: BasicEventConfig, engine: EngineSupport): (event?: ObjectEvent) => void;
+    static has(name: string): boolean;
 }

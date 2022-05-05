@@ -2,7 +2,7 @@ import { Texture } from "three";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { TextureAllType } from "./TextureConfig";
-import { EngineSupport } from "../../main";
+import { EngineSupport } from "../../engine/EngineSupport";
 export interface TextureCompilerTarget extends CompilerTarget {
     [key: string]: TextureAllType;
 }

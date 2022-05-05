@@ -27,6 +27,8 @@ export var CONFIGTYPE;
     CONFIGTYPE["SPRITEMATERIAL"] = "SpriteMaterial";
     CONFIGTYPE["LINEBASICMATERIAL"] = "LineBasicMaterial";
     CONFIGTYPE["POINTSMATERIAL"] = "PointsMaterial";
+    CONFIGTYPE["SHADERMATERIAL"] = "ShaderMaterial";
+    CONFIGTYPE["RAWSHADERMATERIAL"] = "RawShaderMaterial";
     CONFIGTYPE["AMBIENTLIGHT"] = "AmbientLight";
     CONFIGTYPE["SPOTLIGHT"] = "SpotLight";
     CONFIGTYPE["POINTLIGHT"] = "PointLight";

@@ -14,6 +14,12 @@ export const CompilerManagerPlugin = function (params) {
     }
     const compilerManager = new CompilerManager();
     this.compilerManager = compilerManager;
+    this.getObjectSymbol = function (object) {
+        return this.compilerManager.getObjectSymbol(object);
+    };
+    this.getObjectBySymbol = function (vid) {
+        return this.compilerManager.getObjectBySymbol(vid);
+    };
     this.addEventListener("dispose", () => {
         this.compilerManager.dispose();
     });

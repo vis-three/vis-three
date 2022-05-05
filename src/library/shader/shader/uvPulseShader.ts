@@ -31,7 +31,7 @@ const shader: Shader = {
 
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }`,
-  FragmentShader: `
+  fragmentShader: `
     uniform float uWidth;
     uniform float uTime;
     uniform vec3 uColor;

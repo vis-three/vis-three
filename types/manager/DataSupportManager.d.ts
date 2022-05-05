@@ -72,6 +72,7 @@ export declare class DataSupportManager {
         SpriteMaterial: MODULETYPE;
         LineBasicMaterial: MODULETYPE;
         PointsMaterial: MODULETYPE;
+        ShaderMaterial: MODULETYPE;
         AmbientLight: MODULETYPE;
         SpotLight: MODULETYPE;
         PointLight: MODULETYPE;
@@ -137,9 +138,9 @@ export declare class DataSupportManager {
     /**
      * 通过vid标识移除相关配置对象
      * @param vid vid标识
-     * @returns void
+     * @returns this
      */
-    removeConfigBySymbol(vid: string): void;
+    removeConfigBySymbol(vid: string): this;
     /**
      * 通过vid标识获取该标识所处的模块
      * @param vid vid标识

@@ -1,7 +1,7 @@
 import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig, getDirectionalLightConfig, } from "../light/LightConfig";
 import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig, getPlaneGeometryConfig, getCircleGeometryConfig, getConeGeometryConfig, getCylinderGeometryConfig, getEdgesGeometryConfig, } from "../geometry/GeometryConfig";
 import { getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig, getVideoTextureConfig, } from "../texture/TextureConfig";
-import { getLineBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getSpriteMaterialConfig, } from "../material/MaterialConfig";
+import { getLineBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getShaderMaterialConfig, getSpriteMaterialConfig, } from "../material/MaterialConfig";
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig, } from "../camera/CameraConfig";
 import { getWebGLRendererConfig } from "../renderer/RendererConfig";
 import { getSceneConfig } from "../scene/SceneConfig";
@@ -23,6 +23,7 @@ export const CONFIGFACTORY = {
     [CONFIGTYPE.SPRITEMATERIAL]: getSpriteMaterialConfig,
     [CONFIGTYPE.LINEBASICMATERIAL]: getLineBasicMaterialConfig,
     [CONFIGTYPE.POINTSMATERIAL]: getPointsMaterialConfig,
+    [CONFIGTYPE.SHADERMATERIAL]: getShaderMaterialConfig,
     [CONFIGTYPE.AMBIENTLIGHT]: getAmbientLightConfig,
     [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,
     [CONFIGTYPE.POINTLIGHT]: getPointLightConfig,

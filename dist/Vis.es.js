@@ -1720,17 +1720,17 @@ const TransformControlsPlugin = function(params) {
         }
         return this.dataSupportManager.getConfigBySymbol(symbol);
       };
-      let config = null;
+      let config2 = null;
       let mode;
       transformControls.addEventListener(TRANSFORMEVENT.OBJECTCHANGED, (event) => {
         const e = event;
         e.transObjectSet.forEach((object) => {
-          config = objectToConfig(object);
+          config2 = objectToConfig(object);
           mode = e.mode;
-          if (config) {
-            config[mode].x = object[mode].x;
-            config[mode].y = object[mode].y;
-            config[mode].z = object[mode].z;
+          if (config2) {
+            config2[mode].x = object[mode].x;
+            config2[mode].y = object[mode].y;
+            config2[mode].z = object[mode].z;
           }
         });
       });
@@ -2963,7 +2963,7 @@ const shader = {
 
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }`,
-  FragmentShader: `
+  fragmentShader: `
     uniform float uWidth;
     uniform float uTime;
     uniform vec3 uColor;
@@ -3013,19 +3013,19 @@ const _ShaderLibrary = class {
       return {};
     }
     const shader2 = _ShaderLibrary.library.get(name);
-    const config = {
+    const config2 = {
       shader: name,
       uniforms: {}
     };
-    shader2.uniforms && (config.uniforms = JSON.parse(JSON.stringify(shader2.uniforms)));
-    return config;
+    shader2.uniforms && (config2.uniforms = JSON.parse(JSON.stringify(shader2.uniforms)));
+    return config2;
   }
   static cloneShader(shader2) {
     const newShader = {
       name: shader2.name
     };
     shader2.vertexShader && (newShader.vertexShader = shader2.vertexShader);
-    shader2.FragmentShader && (newShader.FragmentShader = shader2.FragmentShader);
+    shader2.fragmentShader && (newShader.fragmentShader = shader2.fragmentShader);
     shader2.uniforms && (newShader.uniforms = JSON.parse(JSON.stringify(shader2.uniforms)));
     return newShader;
   }
@@ -3671,17 +3671,17 @@ const CONFIGFACTORY = {
 };
 const generateConfig = function(type, merge, strict = true, warn = true) {
   if (CONFIGFACTORY[type]) {
-    const recursion = (config, merge2) => {
+    const recursion = (config2, merge2) => {
       for (const key in merge2) {
-        if (config[key] === void 0) {
-          !strict && (config[key] = merge2[key]);
+        if (config2[key] === void 0) {
+          !strict && (config2[key] = merge2[key]);
           strict && warn && console.warn(`'${type}' config can not set key: ${key}`);
           continue;
         }
         if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
-          recursion(config[key], merge2[key]);
+          recursion(config2[key], merge2[key]);
         } else {
-          config[key] = merge2[key];
+          config2[key] = merge2[key];
         }
       }
     };
@@ -3814,7 +3814,7 @@ class ResourceManager extends EventDispatcher {
       resourceMap.set(mappingUrl, object2);
       const objectConfig = generateConfig(object2.type, object2, true, false);
       configMap.set(mappingUrl, objectConfig);
-      const config = {
+      const config2 = {
         type: `${object2.type}`,
         url: mappingUrl
       };
@@ -3834,20 +3834,20 @@ class ResourceManager extends EventDispatcher {
           }
         });
         configMap.set(mappingUrl, geometryConfig);
-        config.geometry = mappingUrl;
+        config2.geometry = mappingUrl;
         objectConfig.geometry = geometryConfig.vid;
       }
       if (object2.material) {
         const material = object2.material;
         if (material instanceof Array) {
-          config.material = [];
+          config2.material = [];
           objectConfig.material = [];
           material.forEach((materialChild, i, arr) => {
             mappingUrl = `${url2}.material.${i}`;
             resourceMap.set(mappingUrl, materialChild);
             const materialConfig = generateConfig(materialChild.type, materialChild, true, false);
             configMap.set(mappingUrl, materialConfig);
-            config.material[i] = mappingUrl;
+            config2.material[i] = mappingUrl;
             objectConfig.material.push(materialConfig.vid);
           });
         } else {
@@ -3855,30 +3855,30 @@ class ResourceManager extends EventDispatcher {
           resourceMap.set(mappingUrl, material);
           const materialConfig = generateConfig(material.type, material, true, false);
           configMap.set(mappingUrl, materialConfig);
-          config.material = mappingUrl;
+          config2.material = mappingUrl;
           objectConfig.material = materialConfig.vid;
         }
       }
       if ([CONFIGTYPE.GROUP, CONFIGTYPE.SCENE].includes(object2.type)) {
-        configMap.get(config.url).children = [];
+        configMap.get(config2.url).children = [];
       }
       if (object2.children.length) {
-        config.children = [];
+        config2.children = [];
         if ([CONFIGTYPE.GROUP, CONFIGTYPE.SCENE].includes(object2.type)) {
-          const group = configMap.get(config.url);
+          const group = configMap.get(config2.url);
           object2.children.forEach((child, i, arr) => {
             mappingUrl = `${url2}.children.${i}`;
             group.children.push(mappingUrl);
-            config.children[i] = recursionMappingObject(mappingUrl, child);
+            config2.children[i] = recursionMappingObject(mappingUrl, child);
           });
         } else {
           object2.children.forEach((child, i, arr) => {
             mappingUrl = `${url2}.children.${i}`;
-            config.children[i] = recursionMappingObject(mappingUrl, child);
+            config2.children[i] = recursionMappingObject(mappingUrl, child);
           });
         }
       }
-      return config;
+      return config2;
     };
     structureMap.set(url, recursionMappingObject(url, object));
     return this;
@@ -3946,43 +3946,43 @@ class ResourceManager extends EventDispatcher {
       console.warn(`resource manager can not found this url resource: ${url}`);
       return {};
     } else if (this.structureMap.get(url) === url) {
-      const config = this.configMap.get(url);
-      if (!config) {
+      const config2 = this.configMap.get(url);
+      if (!config2) {
         return {};
       } else {
         return {
-          [this.configModuleMap[config.type]]: {
-            [config.vid]: clone(config)
+          [this.configModuleMap[config2.type]]: {
+            [config2.vid]: clone(config2)
           }
         };
       }
     } else {
-      const configure2 = {};
+      const configure = {};
       const configMap = this.configMap;
       const configModuleMap = this.configModuleMap;
       const structure = this.structureMap.get(url);
       const recursionStructure = (structure2) => {
-        let config = configMap.get(structure2.url);
-        let module = configModuleMap[config.type];
-        if (!configure2[module]) {
-          configure2[module] = {};
+        let config2 = configMap.get(structure2.url);
+        let module = configModuleMap[config2.type];
+        if (!configure[module]) {
+          configure[module] = {};
         }
-        configure2[module][config.vid] = clone(config);
+        configure[module][config2.vid] = clone(config2);
         if (structure2.geometry) {
-          config = configMap.get(structure2.geometry);
-          module = configModuleMap[config.type];
-          if (!configure2[module]) {
-            configure2[module] = {};
+          config2 = configMap.get(structure2.geometry);
+          module = configModuleMap[config2.type];
+          if (!configure[module]) {
+            configure[module] = {};
           }
-          configure2[module][config.vid] = clone(config);
+          configure[module][config2.vid] = clone(config2);
         }
         if (structure2.material) {
-          config = configMap.get(structure2.material);
-          module = configModuleMap[config.type];
-          if (!configure2[module]) {
-            configure2[module] = {};
+          config2 = configMap.get(structure2.material);
+          module = configModuleMap[config2.type];
+          if (!configure[module]) {
+            configure[module] = {};
           }
-          configure2[module][config.vid] = clone(config);
+          configure[module][config2.vid] = clone(config2);
         }
         if (structure2.children && structure2.children.length) {
           for (const objectStructure of structure2.children) {
@@ -3991,7 +3991,7 @@ class ResourceManager extends EventDispatcher {
         }
       };
       recursionStructure(structure);
-      return configure2;
+      return configure;
     }
   }
   remove(url) {
@@ -4023,27 +4023,6 @@ const ResourceManagerPlugin = function(params) {
 };
 function isValidKey(key, object) {
   return key in object;
-}
-function generateConfigFunction(config) {
-  return (merge) => {
-    const recursion = (config2, merge2) => {
-      for (const key in merge2) {
-        if (config2[key] === void 0) {
-          console.warn(` config can not set key: ${key}`);
-          continue;
-        }
-        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
-          recursion(config2[key], merge2[key]);
-        } else {
-          config2[key] = merge2[key];
-        }
-      }
-    };
-    if (merge) {
-      recursion(config, merge);
-    }
-    return config;
-  };
 }
 const _ProxyBroadcast = class extends EventDispatcher {
   constructor() {
@@ -4220,8 +4199,8 @@ class DataSupport {
   existSymbol(vid) {
     return Boolean(this.data[vid]);
   }
-  addConfig(config) {
-    this.data[config.vid] = config;
+  addConfig(config2) {
+    this.data[config2.vid] = config2;
     return this;
   }
   getConfig(vid) {
@@ -4251,21 +4230,21 @@ class DataSupport {
       const data = this.data;
       const target = {};
       const cacheConfigTemplate = {};
-      const recursion = (config, template, result = {}) => {
+      const recursion = (config2, template, result = {}) => {
         for (const key in template) {
           if (["vid", "type"].includes(key)) {
-            result[key] = config[key];
+            result[key] = config2[key];
             continue;
           }
           if (typeof template[key] === "object" && template[key] !== null) {
-            if (config[key] === null) {
+            if (config2[key] === null) {
               continue;
             }
             if (Array.isArray(template[key])) {
-              if (!config[key].length) {
+              if (!config2[key].length) {
                 continue;
               }
-              result[key] = config[key].map((elem) => {
+              result[key] = config2[key].map((elem) => {
                 if (typeof elem === "object" && elem !== null) {
                   return JSON.parse(JSON.stringify(elem));
                 } else {
@@ -4275,27 +4254,27 @@ class DataSupport {
               continue;
             }
             result[key] = {};
-            recursion(config[key], template[key], result[key]);
+            recursion(config2[key], template[key], result[key]);
             if (Object.keys(result[key]).length === 0) {
               delete result[key];
             }
           } else {
-            if (template[key] !== config[key]) {
-              result[key] = config[key];
+            if (template[key] !== config2[key]) {
+              result[key] = config2[key];
             }
           }
         }
       };
-      for (const config of Object.values(data)) {
-        if (!cacheConfigTemplate[config.type]) {
-          if (!CONFIGFACTORY[config.type]) {
-            console.error(`can not font some config with: ${config.type}`);
+      for (const config2 of Object.values(data)) {
+        if (!cacheConfigTemplate[config2.type]) {
+          if (!CONFIGFACTORY[config2.type]) {
+            console.error(`can not font some config with: ${config2.type}`);
             continue;
           }
-          cacheConfigTemplate[config.type] = CONFIGFACTORY[config.type]();
+          cacheConfigTemplate[config2.type] = CONFIGFACTORY[config2.type]();
         }
-        target[config.vid] = {};
-        recursion(config, cacheConfigTemplate[config.type], target[config.vid]);
+        target[config2.vid] = {};
+        recursion(config2, cacheConfigTemplate[config2.type], target[config2.vid]);
       }
       return target;
     }
@@ -4303,32 +4282,32 @@ class DataSupport {
   load(configMap) {
     const data = this.data;
     const cacheConfigTemplate = {};
-    const restore = (config, template) => {
+    const restore = (config2, template) => {
       for (const key in template) {
-        if (typeof config[key] === "object" && config[key] !== null && typeof template[key] === "object" && template[key] !== null) {
-          restore(config[key], template[key]);
-        } else if (config[key] === void 0) {
-          config[key] = template[key];
+        if (typeof config2[key] === "object" && config2[key] !== null && typeof template[key] === "object" && template[key] !== null) {
+          restore(config2[key], template[key]);
+        } else if (config2[key] === void 0) {
+          config2[key] = template[key];
         }
       }
     };
     for (const key in configMap) {
-      const config = configMap[key];
-      if (!cacheConfigTemplate[config.type]) {
-        if (!CONFIGFACTORY[config.type]) {
-          console.error(`can not font some config with: ${config.type}`);
+      const config2 = configMap[key];
+      if (!cacheConfigTemplate[config2.type]) {
+        if (!CONFIGFACTORY[config2.type]) {
+          console.error(`can not font some config with: ${config2.type}`);
           continue;
         }
-        cacheConfigTemplate[config.type] = CONFIGFACTORY[config.type]();
+        cacheConfigTemplate[config2.type] = CONFIGFACTORY[config2.type]();
       }
-      restore(config, cacheConfigTemplate[config.type]);
-      data[key] = config;
+      restore(config2, cacheConfigTemplate[config2.type]);
+      data[key] = config2;
     }
     return this;
   }
-  remove(config) {
+  remove(config2) {
     const data = this.data;
-    for (const key in config) {
+    for (const key in config2) {
       data[key] !== void 0 && delete data[key];
     }
     return this;
@@ -4713,9 +4692,9 @@ const _DataSupportManager = class {
   getConfigBySymbol(vid) {
     const dataSupportList = this.dataSupportMap.values();
     for (const dataSupport of dataSupportList) {
-      const config = dataSupport.getConfig(vid);
-      if (config) {
-        return config;
+      const config2 = dataSupport.getConfig(vid);
+      if (config2) {
+        return config2;
       }
     }
     return null;
@@ -4740,36 +4719,36 @@ const _DataSupportManager = class {
     return null;
   }
   applyConfig(...configs) {
-    for (const config of configs) {
-      const module = _DataSupportManager.configModuleMap[config.type];
+    for (const config2 of configs) {
+      const module = _DataSupportManager.configModuleMap[config2.type];
       if (module) {
-        this.dataSupportMap.get(module).addConfig(config);
+        this.dataSupportMap.get(module).addConfig(config2);
       } else {
-        console.warn(`dataSupportManager can not found this config module: ${config.type}`);
+        console.warn(`dataSupportManager can not found this config module: ${config2.type}`);
       }
     }
     return this;
   }
-  reactiveConfig(config) {
-    const module = _DataSupportManager.configModuleMap[config.type];
+  reactiveConfig(config2) {
+    const module = _DataSupportManager.configModuleMap[config2.type];
     if (module) {
-      return this.dataSupportMap.get(module).addConfig(config).getConfig(config.vid);
+      return this.dataSupportMap.get(module).addConfig(config2).getConfig(config2.vid);
     } else {
-      console.warn(`dataSupportManager can not found this config module: ${config.type}`);
-      return config;
+      console.warn(`dataSupportManager can not found this config module: ${config2.type}`);
+      return config2;
     }
   }
-  load(config) {
+  load(config2) {
     const dataSupportMap = this.dataSupportMap;
     dataSupportMap.forEach((dataSupport, module) => {
-      config[module] && dataSupport.load(config[module]);
+      config2[module] && dataSupport.load(config2[module]);
     });
     return this;
   }
-  remove(config) {
+  remove(config2) {
     const dataSupportMap = this.dataSupportMap;
     dataSupportMap.forEach((dataSupport, module) => {
-      config[module] && dataSupport.remove(config[module]);
+      config2[module] && dataSupport.remove(config2[module]);
     });
     return this;
   }
@@ -4793,12 +4772,12 @@ const DataSupportManagerPlugin = function(params) {
   }
   const dataSupportManager = new DataSupportManager(params);
   this.dataSupportManager = dataSupportManager;
-  this.applyConfig = function(...config) {
-    this.dataSupportManager.applyConfig(...config);
+  this.applyConfig = function(...config2) {
+    this.dataSupportManager.applyConfig(...config2);
     return this;
   };
-  this.reactiveConfig = function(config) {
-    return this.dataSupportManager.reactiveConfig(config);
+  this.reactiveConfig = function(config2) {
+    return this.dataSupportManager.reactiveConfig(config2);
   };
   this.getConfigBySymbol = function(vid) {
     return this.dataSupportManager.getConfigBySymbol(vid);
@@ -4845,41 +4824,42 @@ const DataSupportManagerPlugin = function(params) {
   return true;
 };
 class Compiler {
-  static applyConfig(config, object, filter = {}, callBack) {
+  static applyConfig(config2, object, filter = {}, callBack) {
     const filterMap = Object.assign({
       vid: true,
       type: true
     }, filter);
-    const recursiveConfig = (config2, object2) => {
-      for (const key in config2) {
+    const recursiveConfig = (config22, object2) => {
+      for (const key in config22) {
         if (filterMap[key]) {
           continue;
         }
-        if (typeof config2[key] === "object" && typeof config2[key] !== null && isValidKey(key, object2)) {
-          recursiveConfig(config2[key], object2[key]);
+        if (typeof config22[key] === "object" && typeof config22[key] !== null && isValidKey(key, object2)) {
+          recursiveConfig(config22[key], object2[key]);
           continue;
         }
         if (isValidKey(key, object2)) {
-          object2[key] = config2[key];
+          object2[key] = config22[key];
         }
       }
     };
-    recursiveConfig(config, object);
+    recursiveConfig(config2, object);
     callBack && callBack();
   }
   constructor() {
   }
 }
-const openWindow$1 = function(compiler, config) {
+const config$2 = {
+  name: "openWindow",
+  params: {
+    url: ""
+  }
+};
+const generator$2 = function(engine, config2) {
   return () => {
-    window.open(config.params.url);
+    window.open(config2.params.url);
   };
 };
-var BasicEventLbirary = /* @__PURE__ */ Object.freeze({
-  __proto__: null,
-  [Symbol.toStringTag]: "Module",
-  openWindow: openWindow$1
-});
 var Easing = {
   Linear: {
     None: function(amount) {
@@ -5551,23 +5531,47 @@ TWEEN.removeAll.bind(TWEEN);
 TWEEN.add.bind(TWEEN);
 TWEEN.remove.bind(TWEEN);
 TWEEN.update.bind(TWEEN);
-const moveTo$1 = function(compiler, config) {
-  const params = config.params;
-  const object = compiler.getObject(params.target);
+var TIMEINGFUNCTION;
+(function(TIMEINGFUNCTION2) {
+  TIMEINGFUNCTION2["ELN"] = "ELN";
+  TIMEINGFUNCTION2["EQI"] = "EQI";
+})(TIMEINGFUNCTION || (TIMEINGFUNCTION = {}));
+const timeingFunction = {
+  ELN: Easing.Linear.None,
+  EQI: Easing.Quadratic.InOut
+};
+const config$1 = {
+  name: "moveTo",
+  params: {
+    target: "",
+    position: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMEINGFUNCTION.EQI
+  }
+};
+const generator$1 = function(engine, config2) {
+  const params = config2.params;
+  const compiler = engine.compilerManager;
+  const object = compiler.getObjectBySymbol(params.target);
   if (!object) {
     console.error(`can not found vid object: ${params.target}`);
     return () => {
     };
   }
-  const renderManager = compiler.engine.renderManager;
-  const supportData = compiler.engine.dataSupportManager.getConfigBySymbol(params.target);
-  if (!config) {
+  const renderManager = engine.renderManager;
+  const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
+  if (!config2) {
     console.error(`can not found object config: ${params.target}`);
     return () => {
     };
   }
   return () => {
-    const tween = new Tween(object.position).to(params.position).duration(params.duration).delay(params.delay).easing(params.timingFunction).start();
+    const tween = new Tween(object.position).to(params.position).duration(params.duration).delay(params.delay).easing(timeingFunction[params.timingFunction]).start();
     const renderFun = (event) => {
       tween.update();
     };
@@ -5580,23 +5584,37 @@ const moveTo$1 = function(compiler, config) {
     });
   };
 };
-const moveSpacing$1 = function(compiler, config) {
-  const params = config.params;
-  const object = compiler.getObject(params.target);
+const config = {
+  name: "moveSpacing",
+  params: {
+    target: "",
+    spacing: {
+      x: 10,
+      y: 10,
+      z: 10
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMEINGFUNCTION.EQI
+  }
+};
+const generator = function(engine, config2) {
+  const params = config2.params;
+  const object = engine.compilerManager.getObjectBySymbol(params.target);
   if (!object) {
     console.error(`can not found vid object: ${params.target}`);
     return () => {
     };
   }
-  const renderManager = compiler.engine.renderManager;
-  const supportData = compiler.engine.dataSupportManager.getConfigBySymbol(params.target);
+  const renderManager = engine.renderManager;
+  const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
   return () => {
     const position = {
       x: object.position.x + params.spacing.x,
       y: object.position.y + params.spacing.y,
       z: object.position.z + params.spacing.z
     };
-    const tween = new Tween(object.position).to(position).duration(params.duration).delay(params.delay).easing(params.timingFunction).start();
+    const tween = new Tween(object.position).to(position).duration(params.duration).delay(params.delay).easing(timeingFunction[params.timingFunction]).start();
     const renderFun = (event) => {
       tween.update();
     };
@@ -5609,12 +5627,55 @@ const moveSpacing$1 = function(compiler, config) {
     });
   };
 };
-var RealTimeAnimateLibrary = /* @__PURE__ */ Object.freeze({
-  __proto__: null,
-  [Symbol.toStringTag]: "Module",
-  moveTo: moveTo$1,
-  moveSpacing: moveSpacing$1
+const _EventLibrary = class {
+  static generateConfig(name, merge) {
+    if (!_EventLibrary.configLibrary.has(name)) {
+      console.warn(`event library can not found config by name: ${name}`);
+      return {
+        name: ""
+      };
+    }
+    const recursion = (config2, merge2) => {
+      for (const key in merge2) {
+        if (config2[key] === void 0) {
+          continue;
+        }
+        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
+          recursion(config2[key], merge2[key]);
+        } else {
+          config2[key] = merge2[key];
+        }
+      }
+    };
+    const template = JSON.parse(JSON.stringify(_EventLibrary.configLibrary.get(name)));
+    recursion(template, merge);
+    return template;
+  }
+  static generateEvent(config2, engine) {
+    if (!_EventLibrary.generatorLibrary.has(config2.name)) {
+      console.error(`event library can not found generator by name: ${config2.name}`);
+      return () => {
+      };
+    }
+    return _EventLibrary.generatorLibrary.get(config2.name)(engine, config2);
+  }
+  static has(name) {
+    return _EventLibrary.configLibrary.has(name);
+  }
+};
+let EventLibrary = _EventLibrary;
+__publicField(EventLibrary, "configLibrary", new Map());
+__publicField(EventLibrary, "generatorLibrary", new Map());
+__publicField(EventLibrary, "register", function(config2, generator2) {
+  if (_EventLibrary.configLibrary.has(config2.name)) {
+    console.warn(`EventLibrary has already exist this event generator: ${config2.name}, that will be cover.`);
+  }
+  _EventLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
+  _EventLibrary.generatorLibrary.set(config2.name, generator2);
 });
+EventLibrary.register(config$2, generator$2);
+EventLibrary.register(config$1, generator$1);
+EventLibrary.register(config, generator);
 const _ObjectCompiler = class extends Compiler {
   constructor() {
     super();
@@ -5651,16 +5712,16 @@ const _ObjectCompiler = class extends Compiler {
     return null;
   }
   mergeFilterAttribute(object) {
-    const recursion = (config, merge) => {
+    const recursion = (config2, merge) => {
       for (const key in merge) {
-        if (config[key] === void 0) {
-          config[key] = merge[key];
+        if (config2[key] === void 0) {
+          config2[key] = merge[key];
           continue;
         }
         if (typeof merge[key] === "object") {
-          recursion(config[key], merge[key]);
+          recursion(config2[key], merge[key]);
         } else {
-          config[key] = merge[key];
+          config2[key] = merge[key];
         }
       }
     };
@@ -5705,19 +5766,19 @@ const _ObjectCompiler = class extends Compiler {
     };
     return this;
   }
-  addEvent(vid, eventName, config) {
+  addEvent(vid, eventName, config2) {
     if (!this.map.has(vid)) {
       console.warn(`${this.COMPILER_NAME} compiler : No matching vid found: ${vid}`);
       return this;
     }
-    if (!_ObjectCompiler.eventLibrary[config.name]) {
-      console.warn(`${this.COMPILER_NAME} compiler: can not support this event: ${config.name}`);
+    if (!EventLibrary.has(config2.name)) {
+      console.warn(`${this.COMPILER_NAME} compiler: can not support this event: ${config2.name}`);
       return this;
     }
     const object = this.map.get(vid);
-    const fun = _ObjectCompiler.eventLibrary[config.name](this, config);
+    const fun = EventLibrary.generateEvent(config2, this.engine);
     const symbol = Symbol.for(_ObjectCompiler.eventSymbol);
-    config[symbol] = fun;
+    config2[symbol] = fun;
     object.addEventListener(eventName, fun);
     return this;
   }
@@ -5727,14 +5788,14 @@ const _ObjectCompiler = class extends Compiler {
       return this;
     }
     const object = this.map.get(vid);
-    const config = this.target[vid][eventName][index];
-    const fun = config[Symbol.for(_ObjectCompiler.eventSymbol)];
+    const config2 = this.target[vid][eventName][index];
+    const fun = config2[Symbol.for(_ObjectCompiler.eventSymbol)];
     if (!fun) {
       console.warn(`${this.COMPILER_NAME} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`);
       return this;
     }
     object.removeEventListener(eventName, fun);
-    delete config[Symbol.for(_ObjectCompiler.eventSymbol)];
+    delete config2[Symbol.for(_ObjectCompiler.eventSymbol)];
     return this;
   }
   updateEvent(vid, eventName, index) {
@@ -5744,15 +5805,15 @@ const _ObjectCompiler = class extends Compiler {
     }
     const object = this.map.get(vid);
     const symbol = Symbol.for(_ObjectCompiler.eventSymbol);
-    const config = this.target[vid][eventName][index];
-    const fun = config[symbol];
+    const config2 = this.target[vid][eventName][index];
+    const fun = config2[symbol];
     if (!fun) {
       console.warn(`${this.COMPILER_NAME} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`);
       return this;
     }
     object.removeEventListener(eventName, fun);
-    const newFun = _ObjectCompiler.eventLibrary[config.name](this, config);
-    config[symbol] = fun;
+    const newFun = EventLibrary.generateEvent(config2, this.engine);
+    config2[symbol] = fun;
     object.addEventListener(eventName, newFun);
     return this;
   }
@@ -5817,7 +5878,7 @@ const _ObjectCompiler = class extends Compiler {
     }
     return this;
   }
-  add(vid, config) {
+  add(vid, config2) {
     const object = this.map.get(vid);
     if (!object) {
       console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
@@ -5825,14 +5886,14 @@ const _ObjectCompiler = class extends Compiler {
     }
     const asyncFun = Promise.resolve();
     asyncFun.then(() => {
-      this.setLookAt(vid, config.lookAt);
-      if (config.children.length) {
-        for (const target of config.children) {
+      this.setLookAt(vid, config2.lookAt);
+      if (config2.children.length) {
+        for (const target of config2.children) {
           this.addChildren(vid, target);
         }
       }
       for (const eventName of Object.values(EVENTNAME)) {
-        const eventList = config[eventName];
+        const eventList = config2[eventName];
         if (eventList.length) {
           for (const event of eventList) {
             this.addEvent(vid, eventName, event);
@@ -5840,7 +5901,7 @@ const _ObjectCompiler = class extends Compiler {
         }
       }
     });
-    Compiler.applyConfig(config, object, this.filterAttribute);
+    Compiler.applyConfig(config2, object, this.filterAttribute);
     return this;
   }
   set(vid, path, key, value) {
@@ -5866,7 +5927,7 @@ const _ObjectCompiler = class extends Compiler {
     object[key] = value;
     return this;
   }
-  cover(vid, config) {
+  cover(vid, config2) {
     const object = this.map.get(vid);
     if (!object) {
       console.error(`${this.COMPILER_NAME} compiler can not found object: ${vid}.`);
@@ -5874,9 +5935,9 @@ const _ObjectCompiler = class extends Compiler {
     }
     const asyncFun = Promise.resolve();
     asyncFun.then(() => {
-      this.setLookAt(vid, config.lookAt);
-      if (config.children.length) {
-        for (const target of config.children) {
+      this.setLookAt(vid, config2.lookAt);
+      if (config2.children.length) {
+        for (const target of config2.children) {
           this.addChildren(vid, target);
         }
       }
@@ -5884,7 +5945,7 @@ const _ObjectCompiler = class extends Compiler {
         if (object._listeners && object._listeners[eventName]) {
           object._listeners[eventName] = [];
         }
-        const eventList = config[eventName];
+        const eventList = config2[eventName];
         if (eventList.length) {
           for (const event of eventList) {
             this.addEvent(vid, eventName, event);
@@ -5892,7 +5953,7 @@ const _ObjectCompiler = class extends Compiler {
         }
       }
     });
-    Compiler.applyConfig(config, object, this.filterAttribute);
+    Compiler.applyConfig(config2, object, this.filterAttribute);
     return this;
   }
   remove(vid) {
@@ -5913,13 +5974,7 @@ const _ObjectCompiler = class extends Compiler {
   }
 };
 let ObjectCompiler = _ObjectCompiler;
-__publicField(ObjectCompiler, "eventLibrary", {});
 __publicField(ObjectCompiler, "eventSymbol", "vis.event");
-__publicField(ObjectCompiler, "registerEvent", function(map) {
-  _ObjectCompiler.eventLibrary = Object.assign(_ObjectCompiler.eventLibrary, map);
-});
-ObjectCompiler.registerEvent(BasicEventLbirary);
-ObjectCompiler.registerEvent(RealTimeAnimateLibrary);
 class CameraCompiler extends ObjectCompiler {
   constructor() {
     super();
@@ -5997,26 +6052,26 @@ class CameraCompiler extends ObjectCompiler {
     }
     return this;
   }
-  add(vid, config) {
-    if (config.type && this.constructMap.has(config.type)) {
-      const camera = this.constructMap.get(config.type)();
+  add(vid, config2) {
+    if (config2.type && this.constructMap.has(config2.type)) {
+      const camera = this.constructMap.get(config2.type)();
       this.map.set(vid, camera);
       this.weakMap.set(camera, vid);
-      this.setLookAt(config.vid, config.lookAt);
-      this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
-      super.add(vid, config);
+      this.setLookAt(config2.vid, config2.lookAt);
+      this.setAdaptiveWindow(config2.vid, config2.adaptiveWindow);
+      super.add(vid, config2);
       if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
         camera.updateProjectionMatrix();
       }
     } else {
-      console.warn(`CameraCompiler: can not support this config type: ${config.type}`);
+      console.warn(`CameraCompiler: can not support this config type: ${config2.type}`);
     }
     return this;
   }
-  cover(vid, config) {
-    this.setLookAt(config.vid, config.lookAt);
-    this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
-    return super.cover(vid, config);
+  cover(vid, config2) {
+    this.setLookAt(config2.vid, config2.lookAt);
+    this.setAdaptiveWindow(config2.vid, config2.adaptiveWindow);
+    return super.cover(vid, config2);
   }
   set(vid, path, key, value) {
     if (key === "adaptiveWindow") {
@@ -6056,32 +6111,32 @@ class Processor {
     object[key] = value;
   }
   mergeObject(callBack) {
-    const recursiveConfig = (config, object) => {
-      for (const key in config) {
+    const recursiveConfig = (config2, object) => {
+      for (const key in config2) {
         if (this.filterMap[key]) {
           continue;
         }
-        if (typeof config[key] === "object" && typeof config[key] !== null) {
-          recursiveConfig(config[key], object[key]);
+        if (typeof config2[key] === "object" && typeof config2[key] !== null) {
+          recursiveConfig(config2[key], object[key]);
           continue;
         }
-        object[key] = config[key];
+        object[key] = config2[key];
       }
     };
     recursiveConfig(this.config, this.target);
     callBack && callBack();
   }
   processAll() {
-    const recursiveConfig = (config, path) => {
-      for (const key in config) {
+    const recursiveConfig = (config2, path) => {
+      for (const key in config2) {
         if (this.filterMap[path.concat([key]).join(".")]) {
           continue;
         }
-        if (typeof config[key] === "object" && typeof config[key] !== null) {
-          recursiveConfig(config[key], path.concat([key]));
+        if (typeof config2[key] === "object" && typeof config2[key] !== null) {
+          recursiveConfig(config2[key], path.concat([key]));
           continue;
         }
-        this.process({ path, key, value: config[key] });
+        this.process({ path, key, value: config2[key] });
       }
     };
     recursiveConfig(this.config, []);
@@ -6153,12 +6208,12 @@ class TransformControlsProcessor extends Processor {
     return this;
   }
   snapAllow(value) {
-    const config = this.config;
+    const config2 = this.config;
     const control = this.target;
     if (value) {
-      control.translationSnap = config.translationSnap;
-      control.rotationSnap = config.rotationSnap;
-      control.scaleSnap = config.scaleSnap;
+      control.translationSnap = config2.translationSnap;
+      control.rotationSnap = config2.rotationSnap;
+      control.scaleSnap = config2.scaleSnap;
     } else {
       control.translationSnap = null;
       control.rotationSnap = null;
@@ -6191,23 +6246,23 @@ class ControlsCompiler extends Compiler {
     }
   }
   getAssembly(vid) {
-    const config = this.target[vid];
-    if (!config) {
+    const config2 = this.target[vid];
+    if (!config2) {
       console.warn(`controls compiler can not found this config: '${vid}'`);
       return null;
     }
-    const processer = this.processorMap[config.type];
+    const processer = this.processorMap[config2.type];
     if (!processer) {
       console.warn(`controls compiler can not support this controls: '${vid}'`);
       return null;
     }
-    const control = this.controlMap[config.type];
+    const control = this.controlMap[config2.type];
     if (!control) {
-      console.warn(`controls compiler can not found type of control: '${config.type}'`);
+      console.warn(`controls compiler can not found type of control: '${config2.type}'`);
       return null;
     }
     return {
-      config,
+      config: config2,
       processer,
       control
     };
@@ -6286,29 +6341,29 @@ const _GeometryCompiler = class extends Compiler {
     (parameters == null ? void 0 : parameters.target) && (this.target = parameters.target);
     this.map = new Map();
     const constructMap = new Map();
-    constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config) => {
-      return _GeometryCompiler.transfromAnchor(new BoxBufferGeometry(config.width, config.height, config.depth, config.widthSegments, config.heightSegments, config.depthSegments), config);
+    constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new BoxBufferGeometry(config2.width, config2.height, config2.depth, config2.widthSegments, config2.heightSegments, config2.depthSegments), config2);
     });
-    constructMap.set(CONFIGTYPE.SPHEREGEOMETRY, (config) => {
-      return _GeometryCompiler.transfromAnchor(new SphereBufferGeometry(config.radius, config.widthSegments, config.heightSegments, config.phiStart, config.phiLength, config.thetaStart, config.thetaLength), config);
+    constructMap.set(CONFIGTYPE.SPHEREGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new SphereBufferGeometry(config2.radius, config2.widthSegments, config2.heightSegments, config2.phiStart, config2.phiLength, config2.thetaStart, config2.thetaLength), config2);
     });
-    constructMap.set(CONFIGTYPE.PLANEGEOMETRY, (config) => {
-      return _GeometryCompiler.transfromAnchor(new PlaneBufferGeometry(config.width, config.height, config.widthSegments, config.heightSegments), config);
+    constructMap.set(CONFIGTYPE.PLANEGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new PlaneBufferGeometry(config2.width, config2.height, config2.widthSegments, config2.heightSegments), config2);
     });
-    constructMap.set(CONFIGTYPE.LOADGEOMETRY, (config) => {
-      return _GeometryCompiler.transfromAnchor(new LoadGeometry(this.getGeometry(config.url)), config);
+    constructMap.set(CONFIGTYPE.LOADGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new LoadGeometry(this.getGeometry(config2.url)), config2);
     });
-    constructMap.set(CONFIGTYPE.CIRCLEGEOMETRY, (config) => {
-      return _GeometryCompiler.transfromAnchor(new CircleBufferGeometry(config.radius, config.segments, config.thetaStart, config.thetaLength), config);
+    constructMap.set(CONFIGTYPE.CIRCLEGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new CircleBufferGeometry(config2.radius, config2.segments, config2.thetaStart, config2.thetaLength), config2);
     });
-    constructMap.set(CONFIGTYPE.CONEGEOMETRY, (config) => {
-      return _GeometryCompiler.transfromAnchor(new ConeBufferGeometry(config.radius, config.height, config.radialSegments, config.heightSegments, config.openEnded, config.thetaStart, config.thetaLength), config);
+    constructMap.set(CONFIGTYPE.CONEGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new ConeBufferGeometry(config2.radius, config2.height, config2.radialSegments, config2.heightSegments, config2.openEnded, config2.thetaStart, config2.thetaLength), config2);
     });
-    constructMap.set(CONFIGTYPE.CYLINDERGEOMETRY, (config) => {
-      return _GeometryCompiler.transfromAnchor(new CylinderBufferGeometry(config.radiusTop, config.radiusBottom, config.height, config.radialSegments, config.heightSegments, config.openEnded, config.thetaStart, config.thetaLength), config);
+    constructMap.set(CONFIGTYPE.CYLINDERGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new CylinderBufferGeometry(config2.radiusTop, config2.radiusBottom, config2.height, config2.radialSegments, config2.heightSegments, config2.openEnded, config2.thetaStart, config2.thetaLength), config2);
     });
-    constructMap.set(CONFIGTYPE.EDGESGEOMETRY, (config) => {
-      return _GeometryCompiler.transfromAnchor(new EdgesGeometry(this.map.get(config.url), config.thresholdAngle), config);
+    constructMap.set(CONFIGTYPE.EDGESGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new EdgesGeometry(this.map.get(config2.url), config2.thresholdAngle), config2);
     });
     this.constructMap = constructMap;
     this.resourceMap = new Map();
@@ -6347,9 +6402,9 @@ const _GeometryCompiler = class extends Compiler {
     this.target = target;
     return this;
   }
-  add(vid, config) {
-    if (config.type && this.constructMap.has(config.type)) {
-      const geometry = this.constructMap.get(config.type)(config);
+  add(vid, config2) {
+    if (config2.type && this.constructMap.has(config2.type)) {
+      const geometry = this.constructMap.get(config2.type)(config2);
       this.map.set(vid, geometry);
     }
     return this;
@@ -6364,8 +6419,8 @@ const _GeometryCompiler = class extends Compiler {
       return this;
     }
     const currentGeometry = this.map.get(vid);
-    const config = this.target[vid];
-    const newGeometry = this.constructMap.get(config.type)(config);
+    const config2 = this.target[vid];
+    const newGeometry = this.constructMap.get(config2.type)(config2);
     currentGeometry.copy(newGeometry);
     currentGeometry.dispatchEvent({
       type: "update"
@@ -6399,13 +6454,13 @@ const _GeometryCompiler = class extends Compiler {
   }
 };
 let GeometryCompiler = _GeometryCompiler;
-__publicField(GeometryCompiler, "transfromAnchor", function(geometry, config) {
+__publicField(GeometryCompiler, "transfromAnchor", function(geometry, config2) {
   geometry.center();
   !geometry.boundingBox && geometry.computeBoundingBox();
   const box = geometry.boundingBox;
-  const position = config.position;
-  const rotation = config.rotation;
-  const scale = config.scale;
+  const position = config2.position;
+  const rotation = config2.rotation;
+  const scale = config2.scale;
   const materix = new Matrix4();
   const vPostion = new Vector3((box.max.x - box.min.x) / 2 * position.x, (box.max.y - box.min.y) / 2 * position.y, (box.max.z - box.min.z) / 2 * position.z);
   const quaternion = new Quaternion().setFromEuler(new Euler(rotation.x, rotation.y, rotation.z, "XYZ"));
@@ -6419,11 +6474,11 @@ class GroupCompiler extends ObjectCompiler {
     super();
     __publicField(this, "COMPILER_NAME", MODULETYPE.GROUP);
   }
-  add(vid, config) {
+  add(vid, config2) {
     const group = new Group$1();
     this.map.set(vid, group);
     this.weakMap.set(group, vid);
-    super.add(vid, config);
+    super.add(vid, config2);
     return this;
   }
   dispose() {
@@ -6450,26 +6505,26 @@ class LightCompiler extends ObjectCompiler {
   setLookAt(vid, target) {
     return this;
   }
-  add(vid, config) {
-    if (config.type && this.constructMap.has(config.type)) {
-      const light = this.constructMap.get(config.type)();
-      light.color = new Color(config.color);
+  add(vid, config2) {
+    if (config2.type && this.constructMap.has(config2.type)) {
+      const light = this.constructMap.get(config2.type)();
+      light.color = new Color(config2.color);
       this.map.set(vid, light);
       this.weakMap.set(light, vid);
-      super.add(vid, config);
+      super.add(vid, config2);
     } else {
-      console.warn(`LightCompiler: can not support Light type: ${config.type}.`);
+      console.warn(`LightCompiler: can not support Light type: ${config2.type}.`);
     }
     return this;
   }
-  cover(vid, config) {
+  cover(vid, config2) {
     const light = this.map.get(vid);
     if (!light) {
       console.warn(`light compiler can not found light: ${vid}`);
       return this;
     }
-    light.color = new Color(config.color);
-    return super.cover(vid, config);
+    light.color = new Color(config2.color);
+    return super.cover(vid, config2);
   }
   set(vid, path, key, value) {
     if (!this.map.has(vid)) {
@@ -6536,7 +6591,7 @@ class SolidObjectCompiler extends ObjectCompiler {
     this.materialMap = materialMap;
     return this;
   }
-  add(vid, config) {
+  add(vid, config2) {
     const object = this.map.get(vid);
     if (!object) {
       console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
@@ -6549,15 +6604,15 @@ class SolidObjectCompiler extends ObjectCompiler {
     } else {
       object.material.dispose();
     }
-    object.geometry = this.getGeometry(config.geometry);
+    object.geometry = this.getGeometry(config2.geometry);
     let material;
-    if (typeof config.material === "string") {
-      material = this.getMaterial(config.material);
+    if (typeof config2.material === "string") {
+      material = this.getMaterial(config2.material);
     } else {
-      material = config.material.map((vid2) => this.getMaterial(vid2));
+      material = config2.material.map((vid2) => this.getMaterial(vid2));
     }
     object.material = material;
-    super.add(vid, config);
+    super.add(vid, config2);
     return this;
   }
   set(vid, path, key, value) {
@@ -6593,11 +6648,11 @@ class LineCompiler extends SolidObjectCompiler {
   getReplaceGeometry() {
     return this.replaceGeometry;
   }
-  add(vid, config) {
+  add(vid, config2) {
     const object = new Line();
     this.map.set(vid, object);
     this.weakMap.set(object, vid);
-    super.add(vid, config);
+    super.add(vid, config2);
     return this;
   }
   dispose() {
@@ -6634,11 +6689,11 @@ class MaterialCompiler extends Compiler {
     constructMap.set(CONFIGTYPE.SPRITEMATERIAL, () => new SpriteMaterial());
     constructMap.set(CONFIGTYPE.LINEBASICMATERIAL, () => new LineBasicMaterial());
     constructMap.set(CONFIGTYPE.POINTSMATERIAL, () => new PointsMaterial());
-    constructMap.set(CONFIGTYPE.SHADERMATERIAL, (config) => {
-      const shader2 = ShaderLibrary.getShader(config.shader);
+    constructMap.set(CONFIGTYPE.SHADERMATERIAL, (config2) => {
+      const shader2 = ShaderLibrary.getShader(config2.shader);
       const material = new ShaderMaterial();
       (shader2 == null ? void 0 : shader2.vertexShader) && (material.vertexShader = shader2.vertexShader);
-      (shader2 == null ? void 0 : shader2.FragmentShader) && (material.fragmentShader = shader2.FragmentShader);
+      (shader2 == null ? void 0 : shader2.fragmentShader) && (material.fragmentShader = shader2.fragmentShader);
       (shader2 == null ? void 0 : shader2.uniforms) && (material.uniforms = shader2.uniforms);
       return material;
     });
@@ -6666,8 +6721,8 @@ class MaterialCompiler extends Compiler {
       shader: true
     };
   }
-  mergeMaterial(material, config) {
-    const tempConfig = JSON.parse(JSON.stringify(config));
+  mergeMaterial(material, config2) {
+    const tempConfig = JSON.parse(JSON.stringify(config2));
     const filterMap = {};
     const colorAttribute = this.colorAttribute;
     for (const key in colorAttribute) {
@@ -6683,7 +6738,7 @@ class MaterialCompiler extends Compiler {
         filterMap[key] = true;
       }
     }
-    Compiler.applyConfig(config, material, Object.assign(filterMap, this.shaderAttribute));
+    Compiler.applyConfig(config2, material, Object.assign(filterMap, this.shaderAttribute));
     material.needsUpdate = true;
     return this;
   }
@@ -6709,13 +6764,13 @@ class MaterialCompiler extends Compiler {
     this.texturelMap = textureMap;
     return this;
   }
-  add(vid, config) {
-    if (config.type && this.constructMap.has(config.type)) {
-      const material = this.constructMap.get(config.type)(config);
-      this.mergeMaterial(material, config);
+  add(vid, config2) {
+    if (config2.type && this.constructMap.has(config2.type)) {
+      const material = this.constructMap.get(config2.type)(config2);
+      this.mergeMaterial(material, config2);
       this.map.set(vid, material);
     } else {
-      console.warn(`material compiler can not support this type: ${config.type}`);
+      console.warn(`material compiler can not support this type: ${config2.type}`);
     }
     return this;
   }
@@ -6734,19 +6789,19 @@ class MaterialCompiler extends Compiler {
       material.needsUpdate = true;
       return this;
     }
-    let config = material;
+    let config2 = material;
     path.forEach((key2, i, arr) => {
-      config = config[key2];
+      config2 = config2[key2];
     });
-    config[key] = value;
+    config2[key] = value;
     return this;
   }
-  cover(vid, config) {
+  cover(vid, config2) {
     if (!this.map.has(vid)) {
       console.warn(`material compiler set function: can not found material which vid is: '${vid}'`);
       return this;
     }
-    return this.mergeMaterial(this.map.get(vid), config);
+    return this.mergeMaterial(this.map.get(vid), config2);
   }
   remove(vid) {
     if (!this.map.has(vid)) {
@@ -6797,11 +6852,11 @@ class MeshCompiler extends SolidObjectCompiler {
   getReplaceGeometry() {
     return this.replaceGeometry;
   }
-  add(vid, config) {
+  add(vid, config2) {
     const object = new Mesh();
     this.map.set(vid, object);
     this.weakMap.set(object, vid);
-    super.add(vid, config);
+    super.add(vid, config2);
     return this;
   }
   dispose() {
@@ -7730,7 +7785,7 @@ class PassCompiler extends Compiler {
     this.map = new Map();
     const constructMap = new Map();
     constructMap.set(CONFIGTYPE.SMAAPASS, () => new SMAAPass(this.width, this.height));
-    constructMap.set(CONFIGTYPE.UNREALBLOOMPASS, (config) => new UnrealBloomPass(new Vector2(this.width, this.height), config.strength, config.radius, config.threshold));
+    constructMap.set(CONFIGTYPE.UNREALBLOOMPASS, (config2) => new UnrealBloomPass(new Vector2(this.width, this.height), config2.strength, config2.radius, config2.threshold));
     this.constructMap = constructMap;
   }
   setTarget(target) {
@@ -7748,13 +7803,13 @@ class PassCompiler extends Compiler {
     this.height = Number(this.composer.renderer.domElement.getAttribute("height")) * pixelRatio;
     return this;
   }
-  add(config) {
-    if (this.constructMap.has(config.type)) {
-      const pass = this.constructMap.get(config.type)(config);
+  add(config2) {
+    if (this.constructMap.has(config2.type)) {
+      const pass = this.constructMap.get(config2.type)(config2);
       this.composer.addPass(pass);
-      this.map.set(config.vid, pass);
+      this.map.set(config2.vid, pass);
     } else {
-      console.warn(`pass compiler can not support this type pass: ${config.type}.`);
+      console.warn(`pass compiler can not support this type pass: ${config2.type}.`);
     }
   }
   set() {
@@ -7771,8 +7826,8 @@ class PassCompiler extends Compiler {
   }
   compileAll() {
     const target = this.target;
-    for (const config of Object.values(target)) {
-      this.add(config);
+    for (const config2 of Object.values(target)) {
+      this.add(config2);
     }
     return this;
   }
@@ -7793,11 +7848,11 @@ class PointsCompiler extends SolidObjectCompiler {
   getReplaceGeometry() {
     return this.replaceGeometry;
   }
-  add(vid, config) {
+  add(vid, config2) {
     const object = new Points();
     this.map.set(vid, object);
     this.weakMap.set(object, vid);
-    super.add(vid, config);
+    super.add(vid, config2);
     return this;
   }
   dispose() {
@@ -7870,9 +7925,9 @@ class WebGLRendererProcessor extends Processor {
   }
   viewport() {
     const renderer = this.target;
-    const config = this.config.viewport;
-    if (config) {
-      renderer.setViewport(config.x, config.y, config.width, config.height);
+    const config2 = this.config.viewport;
+    if (config2) {
+      renderer.setViewport(config2.x, config2.y, config2.width, config2.height);
     } else {
       const domElement = renderer.domElement;
       renderer.setViewport(0, 0, domElement.offsetWidth, domElement.offsetHeight);
@@ -7881,10 +7936,10 @@ class WebGLRendererProcessor extends Processor {
   }
   scissor() {
     const renderer = this.target;
-    const config = this.config.scissor;
-    if (config) {
+    const config2 = this.config.scissor;
+    if (config2) {
       renderer.setScissorTest(true);
-      renderer.setScissor(config.x, config.y, config.width, config.height);
+      renderer.setScissor(config2.x, config2.y, config2.width, config2.height);
     } else {
       renderer.setScissorTest(false);
       const domElement = renderer.domElement;
@@ -7971,34 +8026,34 @@ class RendererCompiler extends Compiler {
     }
   }
   assembly(vid, callback) {
-    const config = this.target[vid];
-    if (!config) {
+    const config2 = this.target[vid];
+    if (!config2) {
       console.warn(`controls compiler can not found this config: '${vid}'`);
       return;
     }
-    const processer = this.processorMap[config.type];
+    const processer = this.processorMap[config2.type];
     if (!processer) {
       console.warn(`renderer compiler can not support this renderer: '${vid}'`);
       return;
     }
     const renderer = this.map.get(vid);
     if (!renderer) {
-      console.warn(`renderer compiler can not found type of renderer: '${config.type}'`);
+      console.warn(`renderer compiler can not found type of renderer: '${config2.type}'`);
       return;
     }
     processer.dispose().assemble({
-      config,
+      config: config2,
       renderer,
       processer,
       engine: this.engine
     });
     callback(processer);
   }
-  add(config) {
-    if (config.type === CONFIGTYPE.WEBGLRENDERER) {
-      this.map.set(config.vid, this.engine.webGLRenderer);
+  add(config2) {
+    if (config2.type === CONFIGTYPE.WEBGLRENDERER) {
+      this.map.set(config2.vid, this.engine.webGLRenderer);
     }
-    this.assembly(config.vid, (processer) => {
+    this.assembly(config2.vid, (processer) => {
       processer.processAll().dispose();
     });
   }
@@ -8015,8 +8070,8 @@ class RendererCompiler extends Compiler {
   }
   compileAll() {
     const target = this.target;
-    for (const config of Object.values(target)) {
-      this.add(config);
+    for (const config2 of Object.values(target)) {
+      this.add(config2);
     }
     return this;
   }
@@ -8081,61 +8136,61 @@ class SceneCompiler extends ObjectCompiler {
       console.warn(`this vid is illegal: '${value}'`);
     }
   }
-  fog(vid, config) {
+  fog(vid, config2) {
     if (!this.map.has(vid)) {
       console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
       return;
     }
     const scene = this.map.get(vid);
-    if (config.type === "") {
+    if (config2.type === "") {
       this.fogCache = null;
       scene.fog = null;
       return;
     }
-    if (config.type === "Fog") {
+    if (config2.type === "Fog") {
       if (this.fogCache instanceof Fog) {
         const fog = this.fogCache;
-        fog.color = new Color(config.color);
-        fog.near = config.near;
-        fog.far = config.far;
+        fog.color = new Color(config2.color);
+        fog.near = config2.near;
+        fog.far = config2.far;
       } else {
-        scene.fog = new Fog(config.color, config.near, config.far);
+        scene.fog = new Fog(config2.color, config2.near, config2.far);
         this.fogCache = scene.fog;
       }
       return;
     }
-    if (config.type === "FogExp2") {
+    if (config2.type === "FogExp2") {
       if (this.fogCache instanceof FogExp2) {
         const fog = this.fogCache;
-        fog.color = new Color(config.color);
-        fog.density = config.density;
+        fog.color = new Color(config2.color);
+        fog.density = config2.density;
       } else {
-        scene.fog = new FogExp2(config.color, config.density);
+        scene.fog = new FogExp2(config2.color, config2.density);
         this.fogCache = scene.fog;
       }
       return;
     }
-    console.warn(`scene compiler can not support this type fog:'${config.type}'`);
+    console.warn(`scene compiler can not support this type fog:'${config2.type}'`);
   }
   linkTextureMap(map) {
     this.textureMap = map;
     return this;
   }
-  add(vid, config) {
+  add(vid, config2) {
     const scene = new Scene();
     this.map.set(vid, scene);
     this.weakMap.set(scene, vid);
-    this.background(vid, config.background);
-    this.environment(vid, config.environment);
-    this.fog(vid, config.fog);
-    super.add(vid, config);
+    this.background(vid, config2.background);
+    this.environment(vid, config2.environment);
+    this.fog(vid, config2.fog);
+    super.add(vid, config2);
     return this;
   }
-  cover(vid, config) {
-    this.background(vid, config.background);
-    this.environment(vid, config.environment);
-    this.fog(vid, config.fog);
-    return super.cover(vid, config);
+  cover(vid, config2) {
+    this.background(vid, config2.background);
+    this.environment(vid, config2.environment);
+    this.fog(vid, config2.fog);
+    return super.cover(vid, config2);
   }
   set(vid, path, key, value) {
     if (!this.map.has(vid)) {
@@ -8193,11 +8248,11 @@ class SpriteCompiler extends SolidObjectCompiler {
       return this.getReplaceMaterial();
     }
   }
-  add(vid, config) {
+  add(vid, config2) {
     const sprite = new Sprite();
     this.map.set(vid, sprite);
     this.weakMap.set(sprite, vid);
-    super.add(vid, config);
+    super.add(vid, config2);
     return this;
   }
   dispose() {
@@ -8277,22 +8332,22 @@ class TextureCompiler extends Compiler {
     this.resourceMap = map;
     return this;
   }
-  add(vid, config) {
+  add(vid, config2) {
     if (validate(vid)) {
-      if (config.type && this.constructMap.has(config.type)) {
-        const texture = this.constructMap.get(config.type)();
-        const tempConfig = JSON.parse(JSON.stringify(config));
+      if (config2.type && this.constructMap.has(config2.type)) {
+        const texture = this.constructMap.get(config2.type)();
+        const tempConfig = JSON.parse(JSON.stringify(config2));
         delete tempConfig.type;
         delete tempConfig.vid;
         if ([
           CONFIGTYPE.IMAGETEXTURE,
           CONFIGTYPE.CANVASTEXTURE,
           CONFIGTYPE.VIDEOTEXTURE
-        ].includes(config.type)) {
+        ].includes(config2.type)) {
           texture.image = this.getResource(tempConfig.url);
           delete tempConfig.url;
-        } else if (config.type === CONFIGTYPE.CUBETEXTURE) {
-          const cube = config.cube;
+        } else if (config2.type === CONFIGTYPE.CUBETEXTURE) {
+          const cube = config2.cube;
           const images = [
             this.getResource(cube.px),
             this.getResource(cube.nx),
@@ -8308,7 +8363,7 @@ class TextureCompiler extends Compiler {
         texture.needsUpdate = true;
         this.map.set(vid, texture);
       } else {
-        console.warn(`texture compiler can not support this type: ${config.type}`);
+        console.warn(`texture compiler can not support this type: ${config2.type}`);
       }
     } else {
       console.error(`texture vid parameter is illegal: ${vid}`);
@@ -8328,20 +8383,20 @@ class TextureCompiler extends Compiler {
     if (key === "needsUpdate") {
       if (value) {
         texture.needsUpdate = true;
-        const config2 = this.target[vid];
-        config2.needsUpdate = false;
+        const config22 = this.target[vid];
+        config22.needsUpdate = false;
       }
       return this;
     }
-    let config = texture;
+    let config2 = texture;
     for (const key2 of path) {
-      if (config[key2] === void 0) {
+      if (config2[key2] === void 0) {
         console.warn(`texture compiler set function: can not found key:${key2} in object.`);
         return this;
       }
-      config = config[key2];
+      config2 = config2[key2];
     }
-    config[key] = value;
+    config2[key] = value;
     texture.needsUpdate = true;
     return this;
   }
@@ -11329,20 +11384,20 @@ const _SupportDataGenerator = class {
     this.supportDataType = type;
     return this;
   }
-  add(config) {
+  add(config2) {
     if (!this.supportData || !this.supportDataType) {
       console.warn(`you must call 'create' method before the 'add' method`);
       return this;
     }
-    if (!config.type) {
+    if (!config2.type) {
       console.warn(`config can not found attribute 'type'`);
       return this;
     }
-    if (_SupportDataGenerator.configModelMap[config.type] !== this.supportDataType) {
-      console.warn(`current generator create config which module is in: ${this.supportDataType}, but you provide type is '${config.type}'`);
+    if (_SupportDataGenerator.configModelMap[config2.type] !== this.supportDataType) {
+      console.warn(`current generator create config which module is in: ${this.supportDataType}, but you provide type is '${config2.type}'`);
       return this;
     }
-    this.supportData[config.vid] = generateConfig(config.type, config);
+    this.supportData[config2.vid] = generateConfig(config2.type, config2);
     return this;
   }
   get() {
@@ -11528,23 +11583,23 @@ class EngineSupport extends Engine {
     __publicField(this, "IS_ENGINESUPPORT", true);
     this.install(ENGINEPLUGIN.LOADERMANAGER).install(ENGINEPLUGIN.RESOURCEMANAGER).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters).install(ENGINEPLUGIN.COMPILERMANAGER);
   }
-  loadLifeCycle(config) {
+  loadLifeCycle(config2) {
     const dataSupportManager = this.dataSupportManager;
-    config.texture && dataSupportManager.load({ texture: config.texture });
-    config.material && dataSupportManager.load({ material: config.material });
-    delete config.texture;
-    delete config.material;
-    dataSupportManager.load(config);
+    config2.texture && dataSupportManager.load({ texture: config2.texture });
+    config2.material && dataSupportManager.load({ material: config2.material });
+    delete config2.texture;
+    delete config2.material;
+    dataSupportManager.load(config2);
   }
-  removeLifeCycle(config) {
+  removeLifeCycle(config2) {
     const dataSupportManager = this.dataSupportManager;
-    const texture = config[MODULETYPE.TEXTURE] || {};
-    const material = config[MODULETYPE.MATERIAL] || {};
-    const assets = config.assets || [];
-    delete config.texture;
-    delete config.material;
-    delete config.assets;
-    dataSupportManager.remove(config);
+    const texture = config2[MODULETYPE.TEXTURE] || {};
+    const material = config2[MODULETYPE.MATERIAL] || {};
+    const assets = config2.assets || [];
+    delete config2.texture;
+    delete config2.material;
+    delete config2.assets;
+    dataSupportManager.remove(config2);
     dataSupportManager.remove({ [MODULETYPE.MATERIAL]: material });
     dataSupportManager.remove({ [MODULETYPE.TEXTURE]: texture });
     const resourceManager = this.resourceManager;
@@ -11554,15 +11609,15 @@ class EngineSupport extends Engine {
       loaderManager.remove(url);
     });
   }
-  loadConfig(config, callback) {
+  loadConfig(config2, callback) {
     const renderFlag = this.renderManager.hasRendering();
     if (renderFlag) {
       this.renderManager.stop();
     }
-    if (config.assets && config.assets.length) {
+    if (config2.assets && config2.assets.length) {
       const mappedFun = (event) => {
-        delete config.assets;
-        this.loadLifeCycle(config);
+        delete config2.assets;
+        this.loadLifeCycle(config2);
         this.resourceManager.removeEventListener("mapped", mappedFun);
         callback && callback(event);
         if (renderFlag) {
@@ -11572,9 +11627,9 @@ class EngineSupport extends Engine {
         }
       };
       this.resourceManager.addEventListener("mapped", mappedFun);
-      this.loaderManager.reset().load(config.assets);
+      this.loaderManager.reset().load(config2.assets);
     } else {
-      this.loadLifeCycle(config);
+      this.loadLifeCycle(config2);
       callback && callback();
       if (renderFlag) {
         this.renderManager.play();
@@ -11584,16 +11639,16 @@ class EngineSupport extends Engine {
     }
     return this;
   }
-  loadConfigAsync(config) {
+  loadConfigAsync(config2) {
     return new Promise((resolve, reject) => {
       const renderFlag = this.renderManager.hasRendering();
       if (renderFlag) {
         this.renderManager.stop();
       }
-      if (config.assets && config.assets.length) {
+      if (config2.assets && config2.assets.length) {
         const mappedFun = (event) => {
-          delete config.assets;
-          this.loadLifeCycle(config);
+          delete config2.assets;
+          this.loadLifeCycle(config2);
           this.resourceManager.removeEventListener("mapped", mappedFun);
           if (renderFlag) {
             this.renderManager.play();
@@ -11603,9 +11658,9 @@ class EngineSupport extends Engine {
           resolve(event);
         };
         this.resourceManager.addEventListener("mapped", mappedFun);
-        this.loaderManager.reset().load(config.assets);
+        this.loaderManager.reset().load(config2.assets);
       } else {
-        this.loadLifeCycle(config);
+        this.loadLifeCycle(config2);
         if (renderFlag) {
           this.renderManager.play();
         } else {
@@ -11615,8 +11670,8 @@ class EngineSupport extends Engine {
       }
     });
   }
-  removeConfig(config) {
-    this.removeLifeCycle(config);
+  removeConfig(config2) {
+    this.removeLifeCycle(config2);
   }
 }
 class ModelingEngineSupport extends EngineSupport {
@@ -11642,54 +11697,6 @@ class DisplayEngineSupport extends EngineSupport {
     }).install(ENGINEPLUGIN.ORBITCONTROLS).complete();
   }
 }
-const openWindow = generateConfigFunction({
-  name: "openWindow",
-  desp: "\u6253\u5F00url\u6D4F\u89C8\u7A97\u53E3",
-  params: {
-    url: ""
-  }
-});
-var configure$1 = /* @__PURE__ */ Object.freeze({
-  __proto__: null,
-  [Symbol.toStringTag]: "Module",
-  openWindow
-});
-const moveTo = generateConfigFunction({
-  name: "moveTo",
-  desp: "\u7269\u4F53\u79FB\u52A8\u5230",
-  params: {
-    target: "",
-    position: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    delay: 0,
-    duration: 1e3,
-    timingFunction: Easing.Quadratic.InOut
-  }
-});
-const moveSpacing = generateConfigFunction({
-  name: "moveSpacing",
-  desp: "\u7269\u4F53\u79FB\u52A8\u95F4\u8DDD",
-  params: {
-    target: "",
-    spacing: {
-      x: 10,
-      y: 10,
-      z: 10
-    },
-    delay: 0,
-    duration: 1e3,
-    timingFunction: Easing.Quadratic.InOut
-  }
-});
-var configure = /* @__PURE__ */ Object.freeze({
-  __proto__: null,
-  [Symbol.toStringTag]: "Module",
-  moveTo,
-  moveSpacing
-});
 class SectionAction {
   constructor(parameters) {
     __publicField(this, "oldObjects");
@@ -12453,4 +12460,4 @@ Scene.prototype.remove = function(...object) {
   });
   return this;
 };
-export { Action as ActionLibrary, configure$1 as BasicEventLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, Engine, EngineSupport, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, configure as RealTimeAnimateLibrary, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };
+export { Action as ActionLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };

@@ -118,6 +118,12 @@ export class SceneCompiler extends ObjectCompiler {
         super.add(vid, config);
         return this;
     }
+    cover(vid, config) {
+        this.background(vid, config.background);
+        this.environment(vid, config.environment);
+        this.fog(vid, config.fog);
+        return super.cover(vid, config);
+    }
     set(vid, path, key, value) {
         if (!this.map.has(vid)) {
             console.warn(`sceneCompiler: can not found this vid mapping object: '${vid}'`);

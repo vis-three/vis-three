@@ -103,6 +103,11 @@ export class CameraCompiler extends ObjectCompiler {
         }
         return this;
     }
+    cover(vid, config) {
+        this.setLookAt(config.vid, config.lookAt);
+        this.setAdaptiveWindow(config.vid, config.adaptiveWindow);
+        return super.cover(vid, config);
+    }
     set(vid, path, key, value) {
         if (key === "adaptiveWindow") {
             return this.setAdaptiveWindow(vid, value);

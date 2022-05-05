@@ -9,6 +9,7 @@ export declare const CONFIGMODULE: {
     SpriteMaterial: MODULETYPE;
     LineBasicMaterial: MODULETYPE;
     PointsMaterial: MODULETYPE;
+    ShaderMaterial: MODULETYPE;
     AmbientLight: MODULETYPE;
     SpotLight: MODULETYPE;
     PointLight: MODULETYPE;

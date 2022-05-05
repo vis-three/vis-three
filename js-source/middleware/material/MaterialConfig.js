@@ -116,4 +116,11 @@ export const getPointsMaterialConfig = function () {
         size: 1,
     });
 };
+export const getShaderMaterialConfig = function () {
+    return Object.assign(getMaterialConfig(), {
+        type: CONFIGTYPE.SHADERMATERIAL,
+        shader: "defaultShader",
+        uniforms: {},
+    });
+};
 //# sourceMappingURL=MaterialConfig.js.map

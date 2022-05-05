@@ -91,6 +91,12 @@ export class Engine extends EventDispatcher {
     registerResources;
     toJSON;
     exportConfig;
+    applyConfig;
+    reactiveConfig;
+    getConfigBySymbol;
+    removeConfigBySymbol;
+    getObjectSymbol;
+    getObjectBySymbol;
     play;
     stop;
     render;
