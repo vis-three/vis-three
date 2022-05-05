@@ -1,5 +1,4 @@
 import { Shader } from "../shader";
-import { ShaderLibrary } from "../ShaderLibrary";
 
 const shader: Shader = {
   name: "uvPulseShader",
@@ -70,5 +69,3 @@ const shader: Shader = {
 };
 
 export default shader;
-
-ShaderLibrary.reigster(shader);

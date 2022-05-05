@@ -33,6 +33,8 @@ export class MaterialCompiler extends Compiler {
 
   private mapAttribute: { [key: string]: boolean };
   private colorAttribute: { [key: string]: boolean };
+  private shaderAttribute: { [key: string]: boolean };
+
   private texturelMap: Map<string, Texture>;
   private resourceMap: Map<string, unknown>;
 
@@ -67,7 +69,7 @@ export class MaterialCompiler extends Compiler {
     );
     constructMap.set(CONFIGTYPE.POINTSMATERIAL, () => new PointsMaterial());
     constructMap.set(CONFIGTYPE.SHADERMATERIAL, (config) => {
-      const shader = ShaderLibrary.getShader(config.name);
+      const shader = ShaderLibrary.getShader(config.shader);
       const material = new ShaderMaterial();
       shader?.vertexShader && (material.vertexShader = shader.vertexShader);
       shader?.FragmentShader &&
@@ -82,6 +84,7 @@ export class MaterialCompiler extends Compiler {
     this.colorAttribute = {
       color: true,
       emissive: true,
+      specular: true,
     };
 
     this.mapAttribute = {
@@ -97,6 +100,10 @@ export class MaterialCompiler extends Compiler {
       alphaMap: true,
       aoMap: true,
       specularMap: true,
+    };
+
+    this.shaderAttribute = {
+      shader: true,
     };
   }
 
@@ -121,7 +128,11 @@ export class MaterialCompiler extends Compiler {
       }
     }
     // 应用属性
-    Compiler.applyConfig(config, material, filterMap);
+    Compiler.applyConfig(
+      config,
+      material,
+      Object.assign(filterMap, this.shaderAttribute)
+    );
 
     material.needsUpdate = true;
     return this;

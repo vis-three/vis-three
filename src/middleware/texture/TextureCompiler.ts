@@ -6,7 +6,7 @@ import { SymbolConfig } from "../common/CommonConfig";
 import { CubeTextureConfig, TextureAllType } from "./TextureConfig";
 import { CONFIGTYPE } from "../constants/configType";
 import { VideoTexture } from "../../optimize/VideoTexture";
-import { EngineSupport } from "../../main";
+import { EngineSupport } from "../../engine/EngineSupport";
 
 export interface TextureCompilerTarget extends CompilerTarget {
   [key: string]: TextureAllType;

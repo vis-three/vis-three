@@ -1,4 +1,5 @@
 import { Shader } from "./shader";
+import uvPulseShader from "./shader/uvPulseShader";
 
 export class ShaderLibrary {
   private static library = new Map<string, Shader>();
@@ -73,3 +74,10 @@ export class ShaderLibrary {
     return newShader;
   }
 }
+
+export const defaultShader = {
+  name: "defaultShader",
+};
+
+ShaderLibrary.reigster(defaultShader);
+ShaderLibrary.reigster(uvPulseShader);

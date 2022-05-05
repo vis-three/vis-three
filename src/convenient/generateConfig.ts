@@ -1,4 +1,5 @@
 import { v4 as getUuid } from "uuid";
+import { Shader } from "../library/shader/shader";
 import { ShaderLibrary } from "../library/shader/ShaderLibrary";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
@@ -40,7 +41,7 @@ export const generateConfig = function <C extends SymbolConfig>(
         }
       }
     };
-    let initConfig = CONFIGFACTORY[type]();
+    const initConfig = CONFIGFACTORY[type]();
 
     // shader配置
     if (
@@ -48,9 +49,14 @@ export const generateConfig = function <C extends SymbolConfig>(
         type as CONFIGTYPE
       )
     ) {
-      initConfig = ShaderLibrary.generateConfig(
-        (merge as ShaderMaterialConfig)?.name || "defaultShader"
+      const shaderConfig = ShaderLibrary.generateConfig(
+        (merge as ShaderMaterialConfig)?.shader || "defaultShader"
       );
+
+      const cacheStrict = strict;
+      strict = false;
+      recursion(initConfig, shaderConfig);
+      strict = cacheStrict;
     }
 
     // 自动生成uuid

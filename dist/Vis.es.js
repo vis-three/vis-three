@@ -2932,6 +2932,73 @@ function v4(options, buf, offset) {
   }
   return stringify$1(rnds);
 }
+const shader = {
+  name: "uvPulseShader",
+  uniforms: {
+    uTime: { value: 0 },
+    uWidth: { value: 0.5 },
+    uColor: {
+      value: {
+        r: 1,
+        g: 0,
+        b: 0
+      }
+    },
+    uCenter: {
+      value: {
+        x: 0.5,
+        y: 0.5
+      }
+    }
+  },
+  vertexShader: `
+    uniform float uWidth;
+    uniform float uTime;
+    
+    varying vec2 vUv;
+
+    void main () {
+
+      vUv = uv;
+
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }`,
+  FragmentShader: `
+    uniform float uWidth;
+    uniform float uTime;
+    uniform vec3 uColor;
+    uniform vec2 uCenter;
+
+    varying vec2 vUv;
+
+    void main () {
+      // \u6839\u636EuTime\u6C42\u51FA\u767E\u5206\u6BD4
+      float deg = mod(degrees(uTime), 360.0);
+      if (deg > 0.0 && deg < 90.0) {
+        discard;
+      }
+
+      float percent = sin(uTime);
+      float distancePercent = distance(uCenter, vUv);
+
+      // \u4ECE\u5916\u5411\u91CC
+      if (distancePercent > 0.5) {
+        discard;
+      }
+      if (distancePercent < percent) {
+        discard;
+      }
+
+      if (distancePercent - percent > uWidth) {
+        discard;
+      }
+
+      float opacity =  (uWidth - (distancePercent - percent)) / uWidth;
+
+      // float opacity = distancePercent;
+      gl_FragColor = vec4(uColor, opacity);
+    }`
+};
 const _ShaderLibrary = class {
   static getShader(name) {
     if (!_ShaderLibrary.library.has(name)) {
@@ -2945,32 +3012,37 @@ const _ShaderLibrary = class {
       console.warn(`con not found shader in shader library: ${name}`);
       return {};
     }
-    const shader = _ShaderLibrary.library.get(name);
+    const shader2 = _ShaderLibrary.library.get(name);
     const config = {
       shader: name,
       uniforms: {}
     };
-    shader.uniforms && (config.uniforms = JSON.parse(JSON.stringify(shader.uniforms)));
+    shader2.uniforms && (config.uniforms = JSON.parse(JSON.stringify(shader2.uniforms)));
     return config;
   }
-  static cloneShader(shader) {
+  static cloneShader(shader2) {
     const newShader = {
-      name: shader.name
+      name: shader2.name
     };
-    shader.vertexShader && (newShader.vertexShader = shader.vertexShader);
-    shader.FragmentShader && (newShader.FragmentShader = shader.FragmentShader);
-    shader.uniforms && (newShader.uniforms = JSON.parse(JSON.stringify(shader.uniforms)));
+    shader2.vertexShader && (newShader.vertexShader = shader2.vertexShader);
+    shader2.FragmentShader && (newShader.FragmentShader = shader2.FragmentShader);
+    shader2.uniforms && (newShader.uniforms = JSON.parse(JSON.stringify(shader2.uniforms)));
     return newShader;
   }
 };
 let ShaderLibrary = _ShaderLibrary;
 __publicField(ShaderLibrary, "library", new Map());
-__publicField(ShaderLibrary, "reigster", function(shader) {
-  if (_ShaderLibrary.library.has(shader.name)) {
-    console.warn(`shader library has exist shader: ${shader.name} that will be cover.`);
+__publicField(ShaderLibrary, "reigster", function(shader2) {
+  if (_ShaderLibrary.library.has(shader2.name)) {
+    console.warn(`shader library has exist shader: ${shader2.name} that will be cover.`);
   }
-  _ShaderLibrary.library.set(shader.name, shader);
+  _ShaderLibrary.library.set(shader2.name, shader2);
 });
+const defaultShader = {
+  name: "defaultShader"
+};
+ShaderLibrary.reigster(defaultShader);
+ShaderLibrary.reigster(shader);
 var CONFIGTYPE;
 (function(CONFIGTYPE2) {
   CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
@@ -3385,7 +3457,7 @@ const getPointsMaterialConfig = function() {
 const getShaderMaterialConfig = function() {
   return Object.assign(getMaterialConfig(), {
     type: CONFIGTYPE.SHADERMATERIAL,
-    shader: "",
+    shader: "defaultShader",
     uniforms: {}
   });
 };
@@ -3613,9 +3685,13 @@ const generateConfig = function(type, merge, strict = true, warn = true) {
         }
       }
     };
-    let initConfig = CONFIGFACTORY[type]();
+    const initConfig = CONFIGFACTORY[type]();
     if ([CONFIGTYPE.SHADERMATERIAL, CONFIGTYPE.RAWSHADERMATERIAL].includes(type)) {
-      initConfig = ShaderLibrary.generateConfig((merge == null ? void 0 : merge.name) || "defaultShader");
+      const shaderConfig = ShaderLibrary.generateConfig((merge == null ? void 0 : merge.shader) || "defaultShader");
+      const cacheStrict = strict;
+      strict = false;
+      recursion(initConfig, shaderConfig);
+      strict = cacheStrict;
     }
     if (initConfig.vid === "") {
       initConfig.vid = v4();
@@ -6539,6 +6615,7 @@ class MaterialCompiler extends Compiler {
     __publicField(this, "constructMap");
     __publicField(this, "mapAttribute");
     __publicField(this, "colorAttribute");
+    __publicField(this, "shaderAttribute");
     __publicField(this, "texturelMap");
     __publicField(this, "resourceMap");
     __publicField(this, "cachaColor");
@@ -6558,17 +6635,18 @@ class MaterialCompiler extends Compiler {
     constructMap.set(CONFIGTYPE.LINEBASICMATERIAL, () => new LineBasicMaterial());
     constructMap.set(CONFIGTYPE.POINTSMATERIAL, () => new PointsMaterial());
     constructMap.set(CONFIGTYPE.SHADERMATERIAL, (config) => {
-      const shader = ShaderLibrary.getShader(config.name);
+      const shader2 = ShaderLibrary.getShader(config.shader);
       const material = new ShaderMaterial();
-      (shader == null ? void 0 : shader.vertexShader) && (material.vertexShader = shader.vertexShader);
-      (shader == null ? void 0 : shader.FragmentShader) && (material.fragmentShader = shader.FragmentShader);
-      (shader == null ? void 0 : shader.uniforms) && (material.uniforms = shader.uniforms);
+      (shader2 == null ? void 0 : shader2.vertexShader) && (material.vertexShader = shader2.vertexShader);
+      (shader2 == null ? void 0 : shader2.FragmentShader) && (material.fragmentShader = shader2.FragmentShader);
+      (shader2 == null ? void 0 : shader2.uniforms) && (material.uniforms = shader2.uniforms);
       return material;
     });
     this.constructMap = constructMap;
     this.colorAttribute = {
       color: true,
-      emissive: true
+      emissive: true,
+      specular: true
     };
     this.mapAttribute = {
       roughnessMap: true,
@@ -6583,6 +6661,9 @@ class MaterialCompiler extends Compiler {
       alphaMap: true,
       aoMap: true,
       specularMap: true
+    };
+    this.shaderAttribute = {
+      shader: true
     };
   }
   mergeMaterial(material, config) {
@@ -6602,7 +6683,7 @@ class MaterialCompiler extends Compiler {
         filterMap[key] = true;
       }
     }
-    Compiler.applyConfig(config, material, filterMap);
+    Compiler.applyConfig(config, material, Object.assign(filterMap, this.shaderAttribute));
     material.needsUpdate = true;
     return this;
   }

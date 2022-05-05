@@ -251,7 +251,7 @@ export const getPointsMaterialConfig = function (): PointsMaterialConfig {
 export const getShaderMaterialConfig = function (): ShaderMaterialConfig {
   return Object.assign(getMaterialConfig(), {
     type: CONFIGTYPE.SHADERMATERIAL,
-    shader: "",
+    shader: "defaultShader",
     uniforms: {},
   });
 };

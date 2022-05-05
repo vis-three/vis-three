@@ -38,8 +38,8 @@
 
           ctx.fillStyle = "rgb(206, 42, 230)";
 
-          ctx.font = " bold 72px 微软雅黑";
-          ctx.fillText("MESH", 128, 128);
+          ctx.font = " bold 48px 微软雅黑";
+          ctx.fillText("MATERIAL", 128, 128);
         })
         .preview();
 
@@ -51,6 +51,8 @@
           "example.canvas": canvasGenerator.get(),
         });
 
+      window.engine = engine;
+
       const pointLight = Vis.generateConfig("PointLight", {
         position: {
           x: 30,
@@ -59,39 +61,124 @@
         distance: 100,
       });
 
+      const geometry = Vis.generateConfig("BoxGeometry", {
+        width: 10,
+        height: 10,
+        depth: 10,
+      });
+
       const canvasTexture = Vis.generateConfig("CanvasTexture", {
         url: "example.canvas",
       });
 
-      const material = Vis.generateConfig("MeshStandardMaterial", {
+      const meshStandardMaterial = Vis.generateConfig("MeshStandardMaterial");
+
+      const meshPhongMaterial = Vis.generateConfig("MeshPhongMaterial");
+
+      const spriteMaterial = Vis.generateConfig("SpriteMaterial", {
         map: canvasTexture.vid,
       });
 
-      const geometry = Vis.generateConfig("BoxGeometry", {
-        width: 20,
-        height: 10,
-        depth: 20,
-      });
+      const lineBasicMaterial = Vis.generateConfig("LineBasicMaterial");
 
-      const mesh = Vis.generateConfig("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
-      });
+      const pointsMaterial = Vis.generateConfig("PointsMaterial");
 
-      const scene = Vis.generateConfig("Scene", {
-        children: [pointLight.vid, mesh.vid],
+      const shaderMaterial = Vis.generateConfig("ShaderMaterial", {
+        shader: "uvPulseShader",
       });
-
       engine.applyConfig(
         pointLight,
-        canvasTexture,
-        material,
         geometry,
-        mesh,
+        canvasTexture,
+
+        meshStandardMaterial,
+        meshPhongMaterial,
+        spriteMaterial,
+        lineBasicMaterial,
+        pointsMaterial,
+        shaderMaterial
+      );
+
+      const scene = Vis.generateConfig("Scene", {
+        children: [pointLight.vid],
+      });
+
+      const standardMesh = Vis.generateConfig("Mesh", {
+        material: meshStandardMaterial.vid,
+        geometry: geometry.vid,
+        position: {
+          x: -10,
+        },
+      });
+
+      const phongMesh = Vis.generateConfig("Mesh", {
+        material: meshPhongMaterial.vid,
+        geometry: geometry.vid,
+        position: {
+          x: 10,
+        },
+      });
+
+      const sprite = Vis.generateConfig("Sprite", {
+        material: spriteMaterial.vid,
+        scale: {
+          x: 10,
+          y: 10,
+        },
+        position: {
+          y: 15,
+        },
+      });
+
+      const line = Vis.generateConfig("Line", {
+        material: lineBasicMaterial.vid,
+        geometry: geometry.vid,
+        position: {
+          z: 10,
+        },
+      });
+
+      const points = Vis.generateConfig("Points", {
+        material: pointsMaterial.vid,
+        geometry: geometry.vid,
+        position: {
+          z: -10,
+        },
+      });
+
+      const shaderMesh = Vis.generateConfig("Mesh", {
+        material: shaderMaterial.vid,
+        geometry: geometry.vid,
+        position: {
+          x: 10,
+          z: 10,
+        },
+      });
+
+      scene.children.push(
+        standardMesh.vid,
+        phongMesh.vid,
+        sprite.vid,
+        line.vid,
+        points.vid,
+        shaderMesh.vid
+      );
+
+      engine.applyConfig(
+        standardMesh,
+        phongMesh,
+        sprite,
+        line,
+        points,
+        shaderMesh,
         scene
       );
 
       engine.setScene(scene.vid).play();
+
+      engine.renderManager.addEventListener("render", (event) => {
+        shaderMaterial.uniforms.uTime.value += event.delta * 5;
+      });
     </script>
   </body>
 </html>
