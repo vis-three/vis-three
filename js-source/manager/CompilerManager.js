@@ -1,5 +1,6 @@
 import { validate } from "uuid";
 import { Compiler } from "../core/Compiler";
+import { AnimationCompiler } from "../middleware/animation/AnimationCompiler";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
 import { GeometryCompiler } from "../middleware/geometry/GeometryCompiler";
@@ -31,6 +32,7 @@ export class CompilerManager {
     pointsCompiler = new PointsCompiler();
     groupCompiler = new GroupCompiler();
     passCompiler = new PassCompiler();
+    animationCompiler = new AnimationCompiler();
     objectCompilerList;
     constructor(parameters) {
         this.objectCompilerList = [];
@@ -44,6 +46,7 @@ export class CompilerManager {
         // 贴图连接
         this.sceneCompiler.linkTextureMap(textureMap);
         this.materialCompiler.linkTextureMap(textureMap);
+        this.animationCompiler.linkTextureMap(textureMap);
         // 物体几何连接，材质连接，物体连接
         const geometryMap = this.geometryCompiler.getMap();
         const materialMap = this.materialCompiler.getMap();
@@ -57,6 +60,9 @@ export class CompilerManager {
             }
             objectCompiler.linkObjectMap(...objectMapList);
         }
+        this.animationCompiler
+            .linkObjectMap(...objectMapList)
+            .linkMaterialMap(materialMap);
     }
     /**
      * engine进行编译器链接
@@ -92,6 +98,7 @@ export class CompilerManager {
         dataSupportManager.pointsDataSupport.addCompiler(this.pointsCompiler);
         dataSupportManager.groupDataSupport.addCompiler(this.groupCompiler);
         dataSupportManager.sceneDataSupport.addCompiler(this.sceneCompiler);
+        dataSupportManager.animationDataSupport.addCompiler(this.animationCompiler);
         return this;
     }
     /**

@@ -42,9 +42,11 @@ import { ProxyBroadcast } from "./core/ProxyBroadcast";
 import { Translater } from "./core/Translater";
 import { ShaderLibrary } from "./library/shader/ShaderLibrary";
 import { EventLibrary } from "./library/event/EventLibrary";
+import { AniScriptLibrary } from "./library/aniScript/AniScriptLibrary";
+import { AnimationDataSupport } from "./middleware/animation/AnimationDataSupport";
 import "./optimize/optimizeScirpt";
-export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasGenerator, History, JSONHandler, 
+export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, AnimationDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasGenerator, History, JSONHandler, 
 /**
  * @deprecated
  */
-ActionLibrary, EventLibrary, ShaderLibrary, MaterialDisplayer, TextureDisplayer, VideoLoader, BooleanModifier, };
+ActionLibrary, EventLibrary, ShaderLibrary, AniScriptLibrary, MaterialDisplayer, TextureDisplayer, VideoLoader, BooleanModifier, };

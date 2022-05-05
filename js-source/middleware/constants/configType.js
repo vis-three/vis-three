@@ -42,5 +42,7 @@ export var CONFIGTYPE;
     CONFIGTYPE["ORBITCONTROLS"] = "OrbitControls";
     CONFIGTYPE["SMAAPASS"] = "SMAAPass";
     CONFIGTYPE["UNREALBLOOMPASS"] = "UnrealBloomPass";
+    CONFIGTYPE["SCRIPTANIMATION"] = "ScriptAnimation";
+    CONFIGTYPE["KEYFRAMEANIMATION"] = "KeyframeAnimation";
 })(CONFIGTYPE || (CONFIGTYPE = {}));
 //# sourceMappingURL=configType.js.map

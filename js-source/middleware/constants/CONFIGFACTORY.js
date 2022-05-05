@@ -13,6 +13,7 @@ import { getLineConfig } from "../line/LineConfig";
 import { getGroupConfig } from "../group/GroupConfig";
 import { getSMAAPassConfig, getUnrealBloomPassConfig, } from "../pass/PassConfig";
 import { CONFIGTYPE } from "./configType";
+import { getKeyframeAnimationConfig, getScriptAnimationConfig, } from "../animation/AnimationConfig";
 export const CONFIGFACTORY = {
     [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
     [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
@@ -49,5 +50,7 @@ export const CONFIGFACTORY = {
     [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig,
     [CONFIGTYPE.SMAAPASS]: getSMAAPassConfig,
     [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig,
+    [CONFIGTYPE.SCRIPTANIMATION]: getScriptAnimationConfig,
+    [CONFIGTYPE.KEYFRAMEANIMATION]: getKeyframeAnimationConfig,
 };
 //# sourceMappingURL=CONFIGFACTORY.js.map

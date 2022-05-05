@@ -12,23 +12,14 @@ export interface TextureCompilerTarget extends CompilerTarget {
   [key: string]: TextureAllType;
 }
 
-export interface TextureCompilerParameters {
-  target: TextureCompilerTarget;
-}
-
 export class TextureCompiler extends Compiler {
-  private target!: TextureCompilerTarget;
+  private target: TextureCompilerTarget = {};
   private map: Map<SymbolConfig["type"], Texture>;
   private constructMap: Map<string, Function>;
   private resourceMap: Map<string, unknown>;
 
-  constructor(parameters?: TextureCompilerParameters) {
+  constructor() {
     super();
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-    } else {
-      this.target = {};
-    }
 
     this.map = new Map();
     this.resourceMap = new Map();

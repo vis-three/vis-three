@@ -32,13 +32,17 @@ export const generateConfig = function (type, merge, strict = true, warn = true)
             }
         };
         const initConfig = CONFIGFACTORY[type]();
-        // shader配置
+        // shader
         if ([CONFIGTYPE.SHADERMATERIAL, CONFIGTYPE.RAWSHADERMATERIAL].includes(type)) {
             const shaderConfig = ShaderLibrary.generateConfig(merge?.shader || "defaultShader");
             const cacheStrict = strict;
             strict = false;
             recursion(initConfig, shaderConfig);
             strict = cacheStrict;
+        }
+        // animation
+        if ([CONFIGTYPE.SCRIPTANIMATION, CONFIGTYPE.KEYFRAMEANIMATION].includes(type)) {
+            strict = false;
         }
         // 自动生成uuid
         if (initConfig.vid === "") {

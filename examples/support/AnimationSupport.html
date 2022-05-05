@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AnimationSupport</title>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/examples/public/favicon.ico"
+    />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as Vis from "../../dist/Vis.es.js";
+      import { v4 as getUUid } from "uuid";
+
+      const canvasGenerator = new Vis.CanvasGenerator({
+        width: 256,
+        height: 256,
+      })
+        .draw((ctx) => {
+          ctx.textBaseline = "middle";
+          ctx.textAlign = "center";
+
+          ctx.fillStyle = "rgb(206, 42, 230)";
+
+          ctx.font = " bold 40px 微软雅黑";
+          ctx.fillText("ANIMATION", 128, 128);
+        })
+        .preview();
+
+      const engine = new Vis.ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true)
+        .registerResources({
+          "example.canvas": canvasGenerator.get(),
+        });
+
+      const pointLight = Vis.generateConfig("PointLight", {
+        position: {
+          x: 30,
+          y: 50,
+        },
+        distance: 100,
+      });
+
+      const canvasTexture = Vis.generateConfig("CanvasTexture", {
+        url: "example.canvas",
+      });
+
+      const material = Vis.generateConfig("ShaderMaterial", {
+        shader: "uvPulseShader",
+      });
+
+      const geometry = Vis.generateConfig("BoxGeometry", {
+        width: 20,
+        height: 20,
+        depth: 20,
+      });
+
+      const mesh = Vis.generateConfig("Mesh", {
+        material: material.vid,
+        geometry: geometry.vid,
+      });
+
+      const animation = Vis.generateConfig("ScriptAnimation", {
+        target: material.vid,
+        attribute: ".uniforms.uTime.value",
+        script: Vis.AniScriptLibrary.generateConfig("linearTime", {
+          multiply: 7,
+        }),
+      });
+
+      const animation2 = Vis.generateConfig("ScriptAnimation", {
+        target: mesh.vid,
+        attribute: ".rotation.y",
+        script: Vis.AniScriptLibrary.generateConfig("linearTime", {
+          multiply: 1,
+        }),
+      });
+
+      const scene = Vis.generateConfig("Scene", {
+        children: [pointLight.vid, mesh.vid],
+      });
+
+      engine.applyConfig(
+        pointLight,
+        material,
+        geometry,
+        mesh,
+        scene,
+        animation,
+        animation2
+      );
+
+      engine.setScene(scene.vid).play();
+    </script>
+  </body>
+</html>

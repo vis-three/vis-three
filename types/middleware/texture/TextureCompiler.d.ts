@@ -6,15 +6,12 @@ import { EngineSupport } from "../../engine/EngineSupport";
 export interface TextureCompilerTarget extends CompilerTarget {
     [key: string]: TextureAllType;
 }
-export interface TextureCompilerParameters {
-    target: TextureCompilerTarget;
-}
 export declare class TextureCompiler extends Compiler {
     private target;
     private map;
     private constructMap;
     private resourceMap;
-    constructor(parameters?: TextureCompilerParameters);
+    constructor();
     private getResource;
     linkRescourceMap(map: Map<string, unknown>): this;
     add(vid: string, config: TextureAllType): this;

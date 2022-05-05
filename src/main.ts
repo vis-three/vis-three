@@ -44,6 +44,8 @@ import { ProxyBroadcast } from "./core/ProxyBroadcast";
 import { Translater } from "./core/Translater";
 import { ShaderLibrary } from "./library/shader/ShaderLibrary";
 import { EventLibrary } from "./library/event/EventLibrary";
+import { AniScriptLibrary } from "./library/aniScript/AniScriptLibrary";
+import { AnimationDataSupport } from "./middleware/animation/AnimationDataSupport";
 
 import "./optimize/optimizeScirpt";
 
@@ -84,6 +86,7 @@ export {
   SpriteDataSupport,
   LineDataSupport,
   PointsDataSupport,
+  AnimationDataSupport,
   // helper
   PointLightHelper,
   CameraHelper,
@@ -103,6 +106,7 @@ export {
   // library
   EventLibrary,
   ShaderLibrary,
+  AniScriptLibrary,
   // displayer
   MaterialDisplayer,
   TextureDisplayer,

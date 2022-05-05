@@ -70,6 +70,14 @@ export interface EdgesGeometryConfig extends GeometryConfig {
     url: string;
     thresholdAngle: number;
 }
+export interface CustomGeometryConfig extends GeometryConfig {
+    attribute: {
+        position: number[];
+        index: number[];
+        uv: number[];
+        normal: number[];
+    };
+}
 export declare const getGeometryConfig: () => GeometryConfig;
 export declare const getBoxGeometryConfig: () => BoxGeometryConfig;
 export declare const getSphereGeometryConfig: () => SphereGeometryConfig;

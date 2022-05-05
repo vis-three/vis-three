@@ -31,6 +31,8 @@ import { stringify } from "../convenient/JSONHandler";
 import { PassCompilerTarget } from "../middleware/pass/PassCompiler";
 import { PassDataSupport } from "../middleware/pass/PassDataSupport";
 import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
+import { AnimationCompilerTarget } from "../middleware/animation/AnimationCompiler";
+import { AnimationDataSupport } from "../middleware/animation/AnimationDataSupport";
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget;
@@ -49,6 +51,7 @@ export interface LoadOptions {
   [MODULETYPE.SCENE]?: SceneCompilerTarget;
   [MODULETYPE.PASS]?: PassCompilerTarget;
   [MODULETYPE.CONTROLS]?: ControlsCompilerTarget;
+  [MODULETYPE.ANIMATION]?: AnimationCompilerTarget;
 }
 
 export interface DataSupportManagerParameters {
@@ -66,6 +69,7 @@ export interface DataSupportManagerParameters {
   pointsDataSupport?: PointsDataSupport;
   groupDataSupport?: GroupDataSupport;
   passDataSupport?: PassDataSupport;
+  animationDataSupport?: AnimationDataSupport;
 }
 
 export class DataSupportManager {
@@ -85,6 +89,7 @@ export class DataSupportManager {
   pointsDataSupport: PointsDataSupport = new PointsDataSupport();
   groupDataSupport: GroupDataSupport = new GroupDataSupport();
   passDataSupport: PassDataSupport = new PassDataSupport();
+  animationDataSupport: AnimationDataSupport = new AnimationDataSupport();
 
   private dataSupportMap: Map<
     MODULETYPE,

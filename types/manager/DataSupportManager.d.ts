@@ -29,6 +29,8 @@ import { GroupCompilerTarget } from "../middleware/group/GroupCompiler";
 import { GroupDataSupport } from "../middleware/group/GroupDataSupport";
 import { PassCompilerTarget } from "../middleware/pass/PassCompiler";
 import { PassDataSupport } from "../middleware/pass/PassDataSupport";
+import { AnimationCompilerTarget } from "../middleware/animation/AnimationCompiler";
+import { AnimationDataSupport } from "../middleware/animation/AnimationDataSupport";
 export interface LoadOptions {
     [MODULETYPE.TEXTURE]?: TextureCompilerTarget;
     [MODULETYPE.MATERIAL]?: MaterialCompilerTarget;
@@ -44,6 +46,7 @@ export interface LoadOptions {
     [MODULETYPE.SCENE]?: SceneCompilerTarget;
     [MODULETYPE.PASS]?: PassCompilerTarget;
     [MODULETYPE.CONTROLS]?: ControlsCompilerTarget;
+    [MODULETYPE.ANIMATION]?: AnimationCompilerTarget;
 }
 export interface DataSupportManagerParameters {
     cameraDataSupport?: CameraDataSupport;
@@ -60,6 +63,7 @@ export interface DataSupportManagerParameters {
     pointsDataSupport?: PointsDataSupport;
     groupDataSupport?: GroupDataSupport;
     passDataSupport?: PassDataSupport;
+    animationDataSupport?: AnimationDataSupport;
 }
 export declare class DataSupportManager {
     static configModuleMap: {
@@ -98,6 +102,8 @@ export declare class DataSupportManager {
         OrbitControls: MODULETYPE;
         SMAAPass: MODULETYPE;
         UnrealBloomPass: MODULETYPE;
+        ScriptAnimation: MODULETYPE;
+        KeyframeAnimation: MODULETYPE;
     };
     cameraDataSupport: CameraDataSupport;
     lightDataSupport: LightDataSupport;
@@ -113,6 +119,7 @@ export declare class DataSupportManager {
     pointsDataSupport: PointsDataSupport;
     groupDataSupport: GroupDataSupport;
     passDataSupport: PassDataSupport;
+    animationDataSupport: AnimationDataSupport;
     private dataSupportMap;
     constructor(parameters?: DataSupportManagerParameters);
     /**

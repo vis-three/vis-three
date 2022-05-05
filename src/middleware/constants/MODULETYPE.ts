@@ -1,5 +1,5 @@
 /**
- * @experimental  PASS
+ * @experimental  PASS ANIMATION
  */
 export enum MODULETYPE {
   CAMERA = "camera",
@@ -17,4 +17,6 @@ export enum MODULETYPE {
   GROUP = "group",
   PASS = "pass",
   MODIFIER = "modifier",
+
+  ANIMATION = "animation",
 }

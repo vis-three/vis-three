@@ -1,5 +1,6 @@
 import { Material, Object3D, Texture } from "three";
 import { EngineSupport } from "../engine/EngineSupport";
+import { AnimationCompiler } from "../middleware/animation/AnimationCompiler";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
@@ -31,6 +32,7 @@ export interface CompilerManagerParameters {
     pointsCompiler: PointsCompiler;
     groupCompiler: GroupCompiler;
     passCompiler: PassCompiler;
+    animationCompiler: AnimationCompiler;
 }
 export declare class CompilerManager {
     private cameraCompiler;
@@ -47,6 +49,7 @@ export declare class CompilerManager {
     private pointsCompiler;
     private groupCompiler;
     private passCompiler;
+    private animationCompiler;
     private objectCompilerList;
     constructor(parameters?: CompilerManagerParameters);
     /**

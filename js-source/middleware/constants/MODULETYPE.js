@@ -1,5 +1,5 @@
 /**
- * @experimental  PASS
+ * @experimental  PASS ANIMATION
  */
 export var MODULETYPE;
 (function (MODULETYPE) {
@@ -18,5 +18,6 @@ export var MODULETYPE;
     MODULETYPE["GROUP"] = "group";
     MODULETYPE["PASS"] = "pass";
     MODULETYPE["MODIFIER"] = "modifier";
+    MODULETYPE["ANIMATION"] = "animation";
 })(MODULETYPE || (MODULETYPE = {}));
 //# sourceMappingURL=MODULETYPE.js.map

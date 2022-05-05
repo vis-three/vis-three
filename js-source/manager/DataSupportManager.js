@@ -16,6 +16,7 @@ import { GroupDataSupport } from "../middleware/group/GroupDataSupport";
 import { stringify } from "../convenient/JSONHandler";
 import { PassDataSupport } from "../middleware/pass/PassDataSupport";
 import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
+import { AnimationDataSupport } from "../middleware/animation/AnimationDataSupport";
 export class DataSupportManager {
     static configModuleMap = CONFIGMODULE;
     cameraDataSupport = new CameraDataSupport();
@@ -32,6 +33,7 @@ export class DataSupportManager {
     pointsDataSupport = new PointsDataSupport();
     groupDataSupport = new GroupDataSupport();
     passDataSupport = new PassDataSupport();
+    animationDataSupport = new AnimationDataSupport();
     dataSupportMap;
     constructor(parameters) {
         if (parameters) {

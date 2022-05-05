@@ -3084,6 +3084,8 @@ var CONFIGTYPE;
   CONFIGTYPE2["ORBITCONTROLS"] = "OrbitControls";
   CONFIGTYPE2["SMAAPASS"] = "SMAAPass";
   CONFIGTYPE2["UNREALBLOOMPASS"] = "UnrealBloomPass";
+  CONFIGTYPE2["SCRIPTANIMATION"] = "ScriptAnimation";
+  CONFIGTYPE2["KEYFRAMEANIMATION"] = "KeyframeAnimation";
 })(CONFIGTYPE || (CONFIGTYPE = {}));
 const getObjectConfig = () => {
   return {
@@ -3632,6 +3634,25 @@ const getUnrealBloomPassConfig = function() {
     radius: 0
   });
 };
+const getScriptAnimationConfig = function() {
+  return {
+    vid: "",
+    type: CONFIGTYPE.SCRIPTANIMATION,
+    target: "",
+    attribute: "",
+    script: {
+      name: ""
+    }
+  };
+};
+const getKeyframeAnimationConfig = function() {
+  return {
+    vid: "",
+    type: CONFIGTYPE.KEYFRAMEANIMATION,
+    target: "",
+    attribute: ""
+  };
+};
 const CONFIGFACTORY = {
   [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
   [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
@@ -3667,7 +3688,9 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig,
   [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig,
   [CONFIGTYPE.SMAAPASS]: getSMAAPassConfig,
-  [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig
+  [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig,
+  [CONFIGTYPE.SCRIPTANIMATION]: getScriptAnimationConfig,
+  [CONFIGTYPE.KEYFRAMEANIMATION]: getKeyframeAnimationConfig
 };
 const generateConfig = function(type, merge, strict = true, warn = true) {
   if (CONFIGFACTORY[type]) {
@@ -3692,6 +3715,9 @@ const generateConfig = function(type, merge, strict = true, warn = true) {
       strict = false;
       recursion(initConfig, shaderConfig);
       strict = cacheStrict;
+    }
+    if ([CONFIGTYPE.SCRIPTANIMATION, CONFIGTYPE.KEYFRAMEANIMATION].includes(type)) {
+      strict = false;
     }
     if (initConfig.vid === "") {
       initConfig.vid = v4();
@@ -3748,6 +3774,7 @@ var MODULETYPE;
   MODULETYPE2["GROUP"] = "group";
   MODULETYPE2["PASS"] = "pass";
   MODULETYPE2["MODIFIER"] = "modifier";
+  MODULETYPE2["ANIMATION"] = "animation";
 })(MODULETYPE || (MODULETYPE = {}));
 const CONFIGMODULE = {
   [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
@@ -3785,7 +3812,9 @@ const CONFIGMODULE = {
   [CONFIGTYPE.TRNASFORMCONTROLS]: MODULETYPE.CONTROLS,
   [CONFIGTYPE.ORBITCONTROLS]: MODULETYPE.CONTROLS,
   [CONFIGTYPE.SMAAPASS]: MODULETYPE.PASS,
-  [CONFIGTYPE.UNREALBLOOMPASS]: MODULETYPE.PASS
+  [CONFIGTYPE.UNREALBLOOMPASS]: MODULETYPE.PASS,
+  [CONFIGTYPE.SCRIPTANIMATION]: MODULETYPE.ANIMATION,
+  [CONFIGTYPE.KEYFRAMEANIMATION]: MODULETYPE.ANIMATION
 };
 var RESOURCEEVENTTYPE;
 (function(RESOURCEEVENTTYPE2) {
@@ -4632,6 +4661,42 @@ class PassDataSupport extends DataSupport {
     __publicField(this, "MODULE", MODULETYPE.PASS);
   }
 }
+const AnimationRule = function(notice, compiler) {
+  const { operate, key, path, value } = notice;
+  if (operate === "add") {
+    if (validate(key)) {
+      compiler.add(key, value);
+    } else {
+      console.warn(`animation rule vid is illeage: '${key}'`);
+    }
+    return;
+  }
+  if (operate === "set") {
+    const tempPath = path.concat([]);
+    const vid = tempPath.shift();
+    if (vid && validate(vid)) {
+      compiler.update(vid);
+    } else {
+      console.warn(`animation rule vid is illeage: '${vid}'`);
+    }
+    return;
+  }
+  if (operate === "delete") {
+    if (validate(key)) {
+      compiler.remove(key);
+    } else {
+      console.warn(`animation rule vid is illeage: '${key}'`);
+    }
+    return;
+  }
+};
+class AnimationDataSupport extends DataSupport {
+  constructor(data) {
+    !data && (data = {});
+    super(AnimationRule, data);
+    __publicField(this, "MODULE", MODULETYPE.ANIMATION);
+  }
+}
 const _DataSupportManager = class {
   constructor(parameters) {
     __publicField(this, "cameraDataSupport", new CameraDataSupport());
@@ -4648,6 +4713,7 @@ const _DataSupportManager = class {
     __publicField(this, "pointsDataSupport", new PointsDataSupport());
     __publicField(this, "groupDataSupport", new GroupDataSupport());
     __publicField(this, "passDataSupport", new PassDataSupport());
+    __publicField(this, "animationDataSupport", new AnimationDataSupport());
     __publicField(this, "dataSupportMap");
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
@@ -4849,13 +4915,103 @@ class Compiler {
   constructor() {
   }
 }
-const config$2 = {
+class AnimationCompiler extends Compiler {
+  constructor() {
+    super();
+    __publicField(this, "target", {});
+    __publicField(this, "engine");
+    __publicField(this, "objectMapSet", new Set());
+    __publicField(this, "scriptAniSymbol", "vis.scriptAni");
+  }
+  linkObjectMap(...map) {
+    for (const objectMap of map) {
+      if (!this.objectMapSet.has(objectMap)) {
+        this.objectMapSet.add(objectMap);
+      }
+    }
+    return this;
+  }
+  linkTextureMap(textureMap) {
+    this.objectMapSet.add(textureMap);
+    return this;
+  }
+  linkMaterialMap(materialMap) {
+    this.objectMapSet.add(materialMap);
+    return this;
+  }
+  getObject(vid) {
+    for (const map of this.objectMapSet) {
+      if (map.has(vid)) {
+        return map.get(vid);
+      }
+    }
+    console.error(`animation compiler can not found object which vid: ${vid}`);
+    return {};
+  }
+  add(vid, config2) {
+    const renderManager = this.engine.renderManager;
+    let object = this.getObject(config2.target);
+    const attributeList = config2.attribute.split(".");
+    attributeList.shift();
+    const attribute = attributeList.pop();
+    for (const key of attributeList) {
+      if (object[key] === void 0) {
+        console.error(`animaton compiler: target object can not found key: ${key}`, object);
+        break;
+      }
+      object = object[key];
+    }
+    if (config2.type === CONFIGTYPE.SCRIPTANIMATION) {
+      const fun = AniScriptLibrary.generateScript(this.engine, object, attribute, config2.script);
+      config2[Symbol.for(this.scriptAniSymbol)] = fun;
+      renderManager.addEventListener("render", fun);
+    } else {
+      console.warn(`animation compiler can not support this type config: ${config2.type}`);
+    }
+    return this;
+  }
+  update(vid) {
+    return this.remove(vid).add(vid, this.target[vid]);
+  }
+  remove(vid) {
+    const config2 = this.target[vid];
+    if (!config2) {
+      console.warn(`animation compiler can not found config with vid: ${vid}`);
+      return this;
+    }
+    if (config2.type === CONFIGTYPE.SCRIPTANIMATION) {
+      this.engine.renderManager.removeEventListener("render", config2[Symbol.for(this.scriptAniSymbol)]);
+    }
+    return this;
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  useEngine(engine) {
+    this.engine = engine;
+    return this;
+  }
+  compileAll() {
+    for (const config2 of Object.values(this.target)) {
+      this.add(config2.vid, config2);
+    }
+    return this;
+  }
+  dispose(parameter) {
+    for (const config2 of Object.values(this.target)) {
+      this.remove(config2.vid);
+    }
+    return this;
+  }
+}
+const config$3 = {
   name: "openWindow",
   params: {
     url: ""
   }
 };
-const generator$2 = function(engine, config2) {
+const generator$3 = function(engine, config2) {
   return () => {
     window.open(config2.params.url);
   };
@@ -5540,7 +5696,7 @@ const timeingFunction = {
   ELN: Easing.Linear.None,
   EQI: Easing.Quadratic.InOut
 };
-const config$1 = {
+const config$2 = {
   name: "moveTo",
   params: {
     target: "",
@@ -5554,7 +5710,7 @@ const config$1 = {
     timingFunction: TIMEINGFUNCTION.EQI
   }
 };
-const generator$1 = function(engine, config2) {
+const generator$2 = function(engine, config2) {
   const params = config2.params;
   const compiler = engine.compilerManager;
   const object = compiler.getObjectBySymbol(params.target);
@@ -5584,7 +5740,7 @@ const generator$1 = function(engine, config2) {
     });
   };
 };
-const config = {
+const config$1 = {
   name: "moveSpacing",
   params: {
     target: "",
@@ -5598,7 +5754,7 @@ const config = {
     timingFunction: TIMEINGFUNCTION.EQI
   }
 };
-const generator = function(engine, config2) {
+const generator$1 = function(engine, config2) {
   const params = config2.params;
   const object = engine.compilerManager.getObjectBySymbol(params.target);
   if (!object) {
@@ -5673,9 +5829,9 @@ __publicField(EventLibrary, "register", function(config2, generator2) {
   _EventLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _EventLibrary.generatorLibrary.set(config2.name, generator2);
 });
+EventLibrary.register(config$3, generator$3);
 EventLibrary.register(config$2, generator$2);
 EventLibrary.register(config$1, generator$1);
-EventLibrary.register(config, generator);
 const _ObjectCompiler = class extends Compiler {
   constructor() {
     super();
@@ -8293,17 +8449,12 @@ class VideoTexture extends Texture {
   }
 }
 class TextureCompiler extends Compiler {
-  constructor(parameters) {
+  constructor() {
     super();
-    __publicField(this, "target");
+    __publicField(this, "target", {});
     __publicField(this, "map");
     __publicField(this, "constructMap");
     __publicField(this, "resourceMap");
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-    } else {
-      this.target = {};
-    }
     this.map = new Map();
     this.resourceMap = new Map();
     const constructMap = new Map();
@@ -8437,6 +8588,7 @@ class CompilerManager {
     __publicField(this, "pointsCompiler", new PointsCompiler());
     __publicField(this, "groupCompiler", new GroupCompiler());
     __publicField(this, "passCompiler", new PassCompiler());
+    __publicField(this, "animationCompiler", new AnimationCompiler());
     __publicField(this, "objectCompilerList");
     this.objectCompilerList = [];
     if (parameters) {
@@ -8447,6 +8599,7 @@ class CompilerManager {
     const textureMap = this.textureCompiler.getMap();
     this.sceneCompiler.linkTextureMap(textureMap);
     this.materialCompiler.linkTextureMap(textureMap);
+    this.animationCompiler.linkTextureMap(textureMap);
     const geometryMap = this.geometryCompiler.getMap();
     const materialMap = this.materialCompiler.getMap();
     this.objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
@@ -8457,6 +8610,7 @@ class CompilerManager {
       }
       objectCompiler.linkObjectMap(...objectMapList);
     }
+    this.animationCompiler.linkObjectMap(...objectMapList).linkMaterialMap(materialMap);
   }
   support(engine) {
     Object.values(this).filter((object) => object instanceof Compiler).forEach((compiler) => {
@@ -8482,6 +8636,7 @@ class CompilerManager {
     dataSupportManager.pointsDataSupport.addCompiler(this.pointsCompiler);
     dataSupportManager.groupDataSupport.addCompiler(this.groupCompiler);
     dataSupportManager.sceneDataSupport.addCompiler(this.sceneCompiler);
+    dataSupportManager.animationDataSupport.addCompiler(this.animationCompiler);
     return this;
   }
   getObjectSymbol(object) {
@@ -12407,6 +12562,70 @@ class History {
     this.actionList = [];
   }
 }
+const config = {
+  name: "linearTime",
+  multiply: 1
+};
+const generator = function(engine, target, attribute, config2) {
+  if (target[attribute] === void 0) {
+    console.error(`object not exist attribute: ${attribute}`, target);
+  }
+  if (typeof target[attribute] !== "number") {
+    console.error(`object attribute is not typeof number.`, target, attribute);
+    return (event) => {
+    };
+  }
+  return (event) => {
+    target[attribute] += event.delta * config2.multiply;
+  };
+};
+const _AniScriptLibrary = class {
+  static generateConfig(name, merge) {
+    if (!_AniScriptLibrary.configLibrary.has(name)) {
+      console.warn(`event library can not found config by name: ${name}`);
+      return {
+        name: ""
+      };
+    }
+    const recursion = (config2, merge2) => {
+      for (const key in merge2) {
+        if (config2[key] === void 0) {
+          continue;
+        }
+        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
+          recursion(config2[key], merge2[key]);
+        } else {
+          config2[key] = merge2[key];
+        }
+      }
+    };
+    const template = JSON.parse(JSON.stringify(_AniScriptLibrary.configLibrary.get(name)));
+    recursion(template, merge);
+    return template;
+  }
+  static generateScript(engine, target, attribute, config2) {
+    if (!_AniScriptLibrary.generatorLibrary.has(config2.name)) {
+      console.error(`event library can not found generator by name: ${config2.name}`);
+      return () => {
+      };
+    }
+    return _AniScriptLibrary.generatorLibrary.get(config2.name)(engine, target, attribute, config2);
+  }
+  static has(name) {
+    return _AniScriptLibrary.configLibrary.has(name);
+  }
+};
+let AniScriptLibrary = _AniScriptLibrary;
+__publicField(AniScriptLibrary, "configLibrary", new Map());
+__publicField(AniScriptLibrary, "generatorLibrary", new Map());
+__publicField(AniScriptLibrary, "register", function(config2, generator2) {
+  if (_AniScriptLibrary.configLibrary.has(config2.name)) {
+    console.warn(`EventLibrary has already exist this event generator: ${config2.name}, that will be cover.`);
+  }
+  _AniScriptLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
+  _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
+});
+AniScriptLibrary.register(config, generator);
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
@@ -12460,4 +12679,4 @@ Scene.prototype.remove = function(...object) {
   });
   return this;
 };
-export { Action as ActionLibrary, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };
+export { Action as ActionLibrary, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };

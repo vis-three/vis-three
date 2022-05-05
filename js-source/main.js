@@ -42,6 +42,8 @@ import { ProxyBroadcast } from "./core/ProxyBroadcast";
 import { Translater } from "./core/Translater";
 import { ShaderLibrary } from "./library/shader/ShaderLibrary";
 import { EventLibrary } from "./library/event/EventLibrary";
+import { AniScriptLibrary } from "./library/aniScript/AniScriptLibrary";
+import { AnimationDataSupport } from "./middleware/animation/AnimationDataSupport";
 import "./optimize/optimizeScirpt";
 export { 
 // core
@@ -54,7 +56,7 @@ LoaderManager, ResourceManager, DataSupportManager,
 Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, 
 // engine connector
 // data support
-TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, 
+TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, AnimationDataSupport, 
 // helper
 PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, 
 // convenient
@@ -64,7 +66,7 @@ generateConfig, SupportDataGenerator, CanvasGenerator, History, JSONHandler,
  */
 ActionLibrary, 
 // library
-EventLibrary, ShaderLibrary, 
+EventLibrary, ShaderLibrary, AniScriptLibrary, 
 // displayer
 MaterialDisplayer, TextureDisplayer, 
 // loader

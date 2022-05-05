@@ -43,7 +43,7 @@ export const generateConfig = function <C extends SymbolConfig>(
     };
     const initConfig = CONFIGFACTORY[type]();
 
-    // shader配置
+    // shader
     if (
       [CONFIGTYPE.SHADERMATERIAL, CONFIGTYPE.RAWSHADERMATERIAL].includes(
         type as CONFIGTYPE
@@ -57,6 +57,15 @@ export const generateConfig = function <C extends SymbolConfig>(
       strict = false;
       recursion(initConfig, shaderConfig);
       strict = cacheStrict;
+    }
+
+    // animation
+    if (
+      [CONFIGTYPE.SCRIPTANIMATION, CONFIGTYPE.KEYFRAMEANIMATION].includes(
+        type as CONFIGTYPE
+      )
+    ) {
+      strict = false;
     }
 
     // 自动生成uuid

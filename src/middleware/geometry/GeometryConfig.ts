@@ -82,6 +82,16 @@ export interface EdgesGeometryConfig extends GeometryConfig {
   thresholdAngle: number;
 }
 
+// TODO:
+export interface CustomGeometryConfig extends GeometryConfig {
+  attribute: {
+    position: number[];
+    index: number[];
+    uv: number[];
+    normal: number[];
+  };
+}
+
 export const getGeometryConfig = function (): GeometryConfig {
   return {
     vid: "",

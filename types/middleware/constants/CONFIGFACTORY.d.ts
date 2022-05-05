@@ -34,4 +34,6 @@ export declare const CONFIGFACTORY: {
     OrbitControls: () => import("../controls/ControlsConfig").OrbitControlsConfig;
     SMAAPass: () => import("../pass/PassConfig").SMAAPassConfig;
     UnrealBloomPass: () => import("../pass/PassConfig").UnrealBloomPassConfig;
+    ScriptAnimation: () => import("../animation/AnimationConfig").ScriptAnimationConfig;
+    KeyframeAnimation: () => import("../animation/AnimationConfig").KeyframeAnimationConfig;
 };

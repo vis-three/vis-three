@@ -48,6 +48,10 @@ import {
   getUnrealBloomPassConfig,
 } from "../pass/PassConfig";
 import { CONFIGTYPE } from "./configType";
+import {
+  getKeyframeAnimationConfig,
+  getScriptAnimationConfig,
+} from "../animation/AnimationConfig";
 
 export const CONFIGFACTORY = {
   [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
@@ -94,4 +98,7 @@ export const CONFIGFACTORY = {
 
   [CONFIGTYPE.SMAAPASS]: getSMAAPassConfig,
   [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig,
+
+  [CONFIGTYPE.SCRIPTANIMATION]: getScriptAnimationConfig,
+  [CONFIGTYPE.KEYFRAMEANIMATION]: getKeyframeAnimationConfig,
 };

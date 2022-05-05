@@ -35,4 +35,6 @@ export declare const CONFIGMODULE: {
     OrbitControls: MODULETYPE;
     SMAAPass: MODULETYPE;
     UnrealBloomPass: MODULETYPE;
+    ScriptAnimation: MODULETYPE;
+    KeyframeAnimation: MODULETYPE;
 };

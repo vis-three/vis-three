@@ -2,6 +2,7 @@ import { Material, Object3D, Texture } from "three";
 import { validate } from "uuid";
 import { Compiler } from "../core/Compiler";
 import { EngineSupport } from "../engine/EngineSupport";
+import { AnimationCompiler } from "../middleware/animation/AnimationCompiler";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
@@ -39,6 +40,7 @@ export interface CompilerManagerParameters {
   pointsCompiler: PointsCompiler;
   groupCompiler: GroupCompiler;
   passCompiler: PassCompiler;
+  animationCompiler: AnimationCompiler;
 }
 
 export class CompilerManager {
@@ -56,6 +58,7 @@ export class CompilerManager {
   private pointsCompiler = new PointsCompiler();
   private groupCompiler = new GroupCompiler();
   private passCompiler = new PassCompiler();
+  private animationCompiler = new AnimationCompiler();
 
   private objectCompilerList: Array<BasicObjectCompiler>;
 
@@ -73,6 +76,7 @@ export class CompilerManager {
     // 贴图连接
     this.sceneCompiler.linkTextureMap(textureMap);
     this.materialCompiler.linkTextureMap(textureMap);
+    this.animationCompiler.linkTextureMap(textureMap);
 
     // 物体几何连接，材质连接，物体连接
     const geometryMap = this.geometryCompiler.getMap();
@@ -93,6 +97,10 @@ export class CompilerManager {
       }
       objectCompiler.linkObjectMap(...objectMapList);
     }
+
+    this.animationCompiler
+      .linkObjectMap(...objectMapList)
+      .linkMaterialMap(materialMap);
   }
 
   /**
@@ -133,7 +141,7 @@ export class CompilerManager {
     dataSupportManager.pointsDataSupport.addCompiler(this.pointsCompiler);
     dataSupportManager.groupDataSupport.addCompiler(this.groupCompiler);
     dataSupportManager.sceneDataSupport.addCompiler(this.sceneCompiler);
-
+    dataSupportManager.animationDataSupport.addCompiler(this.animationCompiler);
     return this;
   }
 
