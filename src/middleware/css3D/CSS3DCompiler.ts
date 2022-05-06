@@ -39,6 +39,7 @@ export class CSS3DCompiler extends ObjectCompiler<
 
     this.mergeFilterAttribute({
       element: true,
+      interactive: true,
     });
   }
 
@@ -72,6 +73,7 @@ export class CSS3DCompiler extends ObjectCompiler<
   add(vid: string, config: CSS3DAllType): this {
     if (config.type && this.constructMap.has(config.type)) {
       const css3d = this.constructMap.get(config.type)!(config);
+      css3d.type = config.type;
 
       this.map.set(vid, css3d);
       this.weakMap.set(css3d, vid);

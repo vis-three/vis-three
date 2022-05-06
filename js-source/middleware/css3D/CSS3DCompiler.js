@@ -14,6 +14,7 @@ export class CSS3DCompiler extends ObjectCompiler {
         this.constructMap.set(CONFIGTYPE.CSS3DSPRITE, (config) => new CSS3DSprite(this.getElement(config.element)));
         this.mergeFilterAttribute({
             element: true,
+            interactive: true,
         });
     }
     getElement(element) {
@@ -37,6 +38,7 @@ export class CSS3DCompiler extends ObjectCompiler {
     add(vid, config) {
         if (config.type && this.constructMap.has(config.type)) {
             const css3d = this.constructMap.get(config.type)(config);
+            css3d.type = config.type;
             this.map.set(vid, css3d);
             this.weakMap.set(css3d, vid);
             super.add(vid, config);

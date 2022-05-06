@@ -5,6 +5,12 @@ export const CSS3DRendererPlugin = function (params = {}) {
         return false;
     }
     this.css3DRenderer = new CSS3DRenderer();
+    const domElement = this.css3DRenderer.domElement;
+    domElement.style.position = "absolute";
+    domElement.style.top = "0";
+    domElement.style.left = "0";
+    // domElement.style.width = "0";
+    // domElement.style.height = "0";
     this.addEventListener("setDom", (event) => {
         event.dom.appendChild(this.css3DRenderer.domElement);
     });

@@ -4,6 +4,7 @@ import { CameraHelper } from "../extends/helper/camera/CameraHelper";
 import { DirectionalLightHelper } from "../extends/helper/light/DirectionalLightHelper";
 import { PointLightHelper } from "../extends/helper/light/PointLightHelper";
 import { SpotLightHelper } from "../extends/helper/light/SpotLightHelper";
+import { CSS3DObjectHelper } from "../extends/helper/object/CSS3DObjectHelper";
 import { GroupHelper } from "../extends/helper/object/GroupHelper";
 import { LineHelper } from "../extends/helper/object/LineHelper";
 import { MeshHelper } from "../extends/helper/object/MeshHelper";
@@ -30,6 +31,7 @@ export class ObjectHelperManager extends EventDispatcher {
     [CONFIGTYPE.POINTS]: PointsHelper,
     [CONFIGTYPE.LINE]: LineHelper,
     [CONFIGTYPE.LINESEGMENTS]: LineHelper,
+    [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper,
   };
 
   private helperFilter = {

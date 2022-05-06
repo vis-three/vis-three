@@ -1,4 +1,4 @@
-import { BaseEvent, Event, Object3D, Scene } from "three";
+import { Object3D, Scene } from "three";
 
 if (!window.__THREE__) {
   console.error(

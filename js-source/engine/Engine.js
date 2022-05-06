@@ -19,10 +19,12 @@ import { GridHelperPlugin, } from "../plugins/GridHelperPlugin";
 import { DisplayModelPlugin, } from "../plugins/DisplayModePlugin";
 import { ObjectHelperPlugin, } from "../plugins/ObjectHelperPlugin";
 import { SelectionPlugin, } from "../plugins/SelectionPlugin";
+import { CSS3DRendererPlugin, } from "../plugins/CSS3DRendererPlugin";
 // 存在的插件接口
 export var ENGINEPLUGIN;
 (function (ENGINEPLUGIN) {
     ENGINEPLUGIN["WEBGLRENDERER"] = "WebGLRenderer";
+    ENGINEPLUGIN["CSS3DRENDERER"] = "CSS3DRenderer";
     ENGINEPLUGIN["SCENE"] = "Scene";
     ENGINEPLUGIN["MODELINGSCENE"] = "ModelingScene";
     ENGINEPLUGIN["RENDERMANAGER"] = "RenderManager";
@@ -239,6 +241,7 @@ export class Engine extends EventDispatcher {
     }
 }
 Engine.register(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin);
+Engine.register(ENGINEPLUGIN.CSS3DRENDERER, CSS3DRendererPlugin);
 Engine.register(ENGINEPLUGIN.EFFECTCOMPOSER, EffectComposerPlugin);
 Engine.register(ENGINEPLUGIN.RENDERMANAGER, RenderManagerPlugin);
 Engine.register(ENGINEPLUGIN.POINTERMANAGER, PointerManagerPlugin);

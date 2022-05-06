@@ -1,11 +1,3 @@
-/**
- * @deprecated CanvasTextureGeneratorParameters rename to CanvasGeneratorParameters
- */
-export interface CanvasTextureGeneratorParameters {
-    width?: number;
-    height?: number;
-    bgColor?: string;
-}
 export interface CanvasGeneratorParameters {
     width?: number;
     height?: number;
@@ -16,16 +8,6 @@ interface PreviewParameters {
     left?: string;
     bottom?: string;
     right?: string;
-}
-/**
- * @deprecated CanvasTextureGenerator rename to CanvasGenerator
- */
-export declare class CanvasTextureGenerator {
-    canvas: HTMLCanvasElement;
-    constructor(parameters?: CanvasTextureGeneratorParameters);
-    get(): HTMLCanvasElement;
-    draw(fun: (ctx: CanvasRenderingContext2D) => void): this;
-    preview(parameters?: PreviewParameters): this;
 }
 export declare class CanvasGenerator {
     canvas: HTMLCanvasElement;

@@ -26,6 +26,8 @@ export declare const CONFIGFACTORY: {
     Mesh: () => import("../mesh/MeshConfig").MeshConfig;
     Points: () => import("../points/PointsConfig").PointsConfig;
     Group: () => import("../group/GroupConfig").GroupConfig;
+    CSS3DObject: () => import("../css3D/CSS3DConfig").CSS3DObjectConfig;
+    CSS3DSprite: () => import("../css3D/CSS3DConfig").CSS3DSpriteConfig;
     PerspectiveCamera: () => import("../camera/CameraConfig").PerspectiveCameraConfig;
     OrthographicCamera: () => import("../camera/CameraConfig").OrthographicCameraConfig;
     WebGLRenderer: () => import("../renderer/RendererConfig").WebGLRendererConfig;

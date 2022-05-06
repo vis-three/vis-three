@@ -14,6 +14,7 @@ import { getGroupConfig } from "../group/GroupConfig";
 import { getSMAAPassConfig, getUnrealBloomPassConfig, } from "../pass/PassConfig";
 import { CONFIGTYPE } from "./configType";
 import { getKeyframeAnimationConfig, getScriptAnimationConfig, } from "../animation/AnimationConfig";
+import { getCSS3DObjectConfig, getCSS3DSpriteConfig, } from "../css3D/CSS3DConfig";
 export const CONFIGFACTORY = {
     [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
     [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
@@ -42,6 +43,8 @@ export const CONFIGFACTORY = {
     [CONFIGTYPE.MESH]: getMeshConfig,
     [CONFIGTYPE.POINTS]: getPointsConfig,
     [CONFIGTYPE.GROUP]: getGroupConfig,
+    [CONFIGTYPE.CSS3DOBJECT]: getCSS3DObjectConfig,
+    [CONFIGTYPE.CSS3DSPRITE]: getCSS3DSpriteConfig,
     [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
     [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,

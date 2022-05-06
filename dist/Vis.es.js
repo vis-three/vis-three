@@ -1133,8 +1133,9 @@ class PointerManager extends EventDispatcher {
       this.mouseEventTimer = window.setTimeout(() => {
         const mouse = this.mouse;
         const dom = this.dom;
-        mouse.x = event.offsetX / dom.offsetWidth * 2 - 1;
-        mouse.y = -(event.offsetY / dom.offsetHeight) * 2 + 1;
+        const boundingBox = dom.getBoundingClientRect();
+        mouse.x = (event.clientX - boundingBox.left) / dom.offsetWidth * 2 - 1;
+        mouse.y = -((event.clientY - boundingBox.top) / dom.offsetHeight) * 2 + 1;
         this.canMouseMove = true;
         const eventObject = { mouse: this.mouse };
         for (const key in event) {
@@ -6537,7 +6538,8 @@ class CSS3DCompiler extends ObjectCompiler {
     this.constructMap.set(CONFIGTYPE.CSS3DOBJECT, (config2) => new CSS3DObject(this.getElement(config2.element)));
     this.constructMap.set(CONFIGTYPE.CSS3DSPRITE, (config2) => new CSS3DSprite(this.getElement(config2.element)));
     this.mergeFilterAttribute({
-      element: true
+      element: true,
+      interactive: true
     });
   }
   getElement(element) {
@@ -6560,6 +6562,7 @@ class CSS3DCompiler extends ObjectCompiler {
   add(vid, config2) {
     if (config2.type && this.constructMap.has(config2.type)) {
       const css3d = this.constructMap.get(config2.type)(config2);
+      css3d.type = config2.type;
       this.map.set(vid, css3d);
       this.weakMap.set(css3d, vid);
       super.add(vid, config2);
@@ -9979,6 +9982,38 @@ class SpotLightHelper extends LineSegments {
     }
   }
 }
+class CSS3DObjectHelper extends LineSegments {
+  constructor(target) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "type", "VisCSS3DHelper");
+    const element = target.element;
+    const boundingBox = element.getBoundingClientRect();
+    const width = boundingBox.width;
+    const height = boundingBox.height;
+    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(width, height));
+    this.geometry.computeBoundingBox();
+    this.material = getHelperLineMaterial();
+    this.matrixAutoUpdate = false;
+    this.matrix = target.matrix;
+    this.matrixWorldNeedsUpdate = false;
+    this.matrixWorld = target.matrixWorld;
+    this.target = target;
+  }
+  raycast(raycaster, intersects) {
+    const target = this.target;
+    const matrixWorld = target.matrixWorld;
+    const box = this.geometry.boundingBox.clone();
+    box.applyMatrix4(matrixWorld);
+    if (raycaster.ray.intersectsBox(box)) {
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(target.position),
+        object: target,
+        point: target.position
+      });
+    }
+  }
+}
 class CanvasGenerator {
   constructor(parameters) {
     __publicField(this, "canvas");
@@ -10216,7 +10251,8 @@ class ObjectHelperManager extends EventDispatcher {
       [CONFIGTYPE.SPRITE]: SpriteHelper,
       [CONFIGTYPE.POINTS]: PointsHelper,
       [CONFIGTYPE.LINE]: LineHelper,
-      [CONFIGTYPE.LINESEGMENTS]: LineHelper
+      [CONFIGTYPE.LINESEGMENTS]: LineHelper,
+      [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper
     });
     __publicField(this, "helperFilter", {
       AmbientLight: true,

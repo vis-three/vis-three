@@ -20,6 +20,7 @@ import { VisOrbitControls } from "../optimize/VisOrbitControls";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 export declare enum ENGINEPLUGIN {
     WEBGLRENDERER = "WebGLRenderer",
+    CSS3DRENDERER = "CSS3DRenderer",
     SCENE = "Scene",
     MODELINGSCENE = "ModelingScene",
     RENDERMANAGER = "RenderManager",
