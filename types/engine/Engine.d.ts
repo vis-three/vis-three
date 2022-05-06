@@ -1,4 +1,5 @@
 import { Camera, Object3D, Scene, WebGLRenderer } from "three";
+import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { BaseEvent, EventDispatcher } from "../core/EventDispatcher";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderManager } from "../manager/RenderManager";
@@ -67,6 +68,7 @@ export declare class Engine extends EventDispatcher {
     IS_ENGINESUPPORT: boolean;
     dom?: HTMLElement;
     webGLRenderer?: WebGLRenderer;
+    css3DRenderer?: CSS3DRenderer;
     orbitControls?: VisOrbitControls;
     transformControls?: TransformControls;
     effectComposer?: EffectComposer;
@@ -82,7 +84,7 @@ export declare class Engine extends EventDispatcher {
     stats?: Stats;
     displayMode?: DISPLAYMODE;
     selectionBox?: Set<Object3D>;
-    getScreenshot?: (params: Screenshot) => HTMLImageElement;
+    getScreenshot?: (params: Screenshot) => string;
     setStats?: (show: boolean) => this;
     setTransformControls?: (show: boolean) => this;
     setViewpoint?: (viewpoint: VIEWPOINT) => this;

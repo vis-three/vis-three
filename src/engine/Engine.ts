@@ -6,6 +6,8 @@ import {
   WebGLRenderer,
   WebGLRendererParameters,
 } from "three";
+import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+
 import { BaseEvent, EventDispatcher } from "../core/EventDispatcher";
 
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -80,10 +82,15 @@ import {
 import { ObjectHelperManager } from "../manager/ObjectHelperManager";
 import { VisOrbitControls } from "../optimize/VisOrbitControls";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
+import {
+  CSS3DRendererParameters,
+  CSS3DRendererPlugin,
+} from "../plugins/CSS3DRendererPlugin";
 
 // 存在的插件接口
 export enum ENGINEPLUGIN {
   WEBGLRENDERER = "WebGLRenderer",
+  CSS3DRENDERER = "CSS3DRenderer",
   SCENE = "Scene",
   MODELINGSCENE = "ModelingScene",
   RENDERMANAGER = "RenderManager",
@@ -159,6 +166,7 @@ export class Engine extends EventDispatcher {
 
   dom?: HTMLElement;
   webGLRenderer?: WebGLRenderer;
+  css3DRenderer?: CSS3DRenderer;
 
   orbitControls?: VisOrbitControls;
   transformControls?: TransformControls;
@@ -176,7 +184,7 @@ export class Engine extends EventDispatcher {
   displayMode?: DISPLAYMODE;
   selectionBox?: Set<Object3D>;
 
-  getScreenshot?: (params: Screenshot) => HTMLImageElement;
+  getScreenshot?: (params: Screenshot) => string;
 
   setStats?: (show: boolean) => this;
   setTransformControls?: (show: boolean) => this;
@@ -399,6 +407,11 @@ export class Engine extends EventDispatcher {
 Engine.register<WebGLRendererParameters>(
   ENGINEPLUGIN.WEBGLRENDERER,
   WebGLRendererPlugin
+);
+
+Engine.register<CSS3DRendererParameters>(
+  ENGINEPLUGIN.CSS3DRENDERER,
+  CSS3DRendererPlugin
 );
 
 Engine.register<EffectComposerParameters>(

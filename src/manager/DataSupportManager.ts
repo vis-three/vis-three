@@ -33,6 +33,8 @@ import { PassDataSupport } from "../middleware/pass/PassDataSupport";
 import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
 import { AnimationCompilerTarget } from "../middleware/animation/AnimationCompiler";
 import { AnimationDataSupport } from "../middleware/animation/AnimationDataSupport";
+import { CSS3DCompilerTarget } from "../middleware/css3D/CSS3DCompiler";
+import { CSS3DDataSupport } from "../middleware/css3D/CSS3DDataSupport";
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget;
@@ -46,6 +48,7 @@ export interface LoadOptions {
   [MODULETYPE.MESH]?: MeshCompilerTarget;
   [MODULETYPE.POINTS]?: PointsCompilerTarget;
   [MODULETYPE.GROUP]?: GroupCompilerTarget;
+  [MODULETYPE.CSS3D]?: CSS3DCompilerTarget;
 
   [MODULETYPE.RENDERER]?: RendererCompilerTarget;
   [MODULETYPE.SCENE]?: SceneCompilerTarget;
@@ -68,6 +71,7 @@ export interface DataSupportManagerParameters {
   meshDataSupport?: MeshDataSupport;
   pointsDataSupport?: PointsDataSupport;
   groupDataSupport?: GroupDataSupport;
+  css3DDataSupport?: CSS3DDataSupport;
   passDataSupport?: PassDataSupport;
   animationDataSupport?: AnimationDataSupport;
 }
@@ -88,6 +92,7 @@ export class DataSupportManager {
   meshDataSupport: MeshDataSupport = new MeshDataSupport();
   pointsDataSupport: PointsDataSupport = new PointsDataSupport();
   groupDataSupport: GroupDataSupport = new GroupDataSupport();
+  css3DDataSupport: CSS3DDataSupport = new CSS3DDataSupport();
   passDataSupport: PassDataSupport = new PassDataSupport();
   animationDataSupport: AnimationDataSupport = new AnimationDataSupport();
 

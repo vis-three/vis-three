@@ -18,6 +18,8 @@ export var CONFIGTYPE;
     CONFIGTYPE["POINTS"] = "Points";
     CONFIGTYPE["SPRITE"] = "Sprite";
     CONFIGTYPE["GROUP"] = "Group";
+    CONFIGTYPE["CSS3DOBJECT"] = "CSS3DObject";
+    CONFIGTYPE["CSS3DSPRITE"] = "CSS3DSprite";
     CONFIGTYPE["IMAGETEXTURE"] = "ImageTexture";
     CONFIGTYPE["CUBETEXTURE"] = "CubeTexture";
     CONFIGTYPE["CANVASTEXTURE"] = "CanvasTexture";

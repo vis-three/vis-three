@@ -21,23 +21,19 @@ export const WebGLRendererPlugin = function (params = {}) {
         }
         this.setSize(params.width, params.height);
         this.renderManager.render();
-        const element = document.createElement("img");
         const DataURI = this.webGLRenderer.domElement.toDataURL(params.mine);
-        element.src = DataURI;
         this.setSize(cacheSize.width, cacheSize.height);
         if (renderFlag) {
             this.renderManager.play();
         }
-        return element;
+        return DataURI;
     };
     // 设置渲染的dom
     this.addEventListener("setDom", (event) => {
         event.dom.appendChild(this.webGLRenderer.domElement);
     });
     this.addEventListener("setSize", (event) => {
-        const width = event.width;
-        const height = event.height;
-        this.webGLRenderer.setSize(width, height, true);
+        this.webGLRenderer.setSize(event.width, event.height, true);
     });
     this.addEventListener("dispose", () => {
         this.webGLRenderer.dispose();

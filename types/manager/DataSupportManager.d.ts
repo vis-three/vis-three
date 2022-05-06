@@ -31,6 +31,8 @@ import { PassCompilerTarget } from "../middleware/pass/PassCompiler";
 import { PassDataSupport } from "../middleware/pass/PassDataSupport";
 import { AnimationCompilerTarget } from "../middleware/animation/AnimationCompiler";
 import { AnimationDataSupport } from "../middleware/animation/AnimationDataSupport";
+import { CSS3DCompilerTarget } from "../middleware/css3D/CSS3DCompiler";
+import { CSS3DDataSupport } from "../middleware/css3D/CSS3DDataSupport";
 export interface LoadOptions {
     [MODULETYPE.TEXTURE]?: TextureCompilerTarget;
     [MODULETYPE.MATERIAL]?: MaterialCompilerTarget;
@@ -42,6 +44,7 @@ export interface LoadOptions {
     [MODULETYPE.MESH]?: MeshCompilerTarget;
     [MODULETYPE.POINTS]?: PointsCompilerTarget;
     [MODULETYPE.GROUP]?: GroupCompilerTarget;
+    [MODULETYPE.CSS3D]?: CSS3DCompilerTarget;
     [MODULETYPE.RENDERER]?: RendererCompilerTarget;
     [MODULETYPE.SCENE]?: SceneCompilerTarget;
     [MODULETYPE.PASS]?: PassCompilerTarget;
@@ -62,6 +65,7 @@ export interface DataSupportManagerParameters {
     meshDataSupport?: MeshDataSupport;
     pointsDataSupport?: PointsDataSupport;
     groupDataSupport?: GroupDataSupport;
+    css3DDataSupport?: CSS3DDataSupport;
     passDataSupport?: PassDataSupport;
     animationDataSupport?: AnimationDataSupport;
 }
@@ -94,6 +98,8 @@ export declare class DataSupportManager {
         Mesh: MODULETYPE;
         Points: MODULETYPE;
         Group: MODULETYPE;
+        CSS3DObject: MODULETYPE;
+        CSS3DSprite: MODULETYPE;
         PerspectiveCamera: MODULETYPE;
         OrthographicCamera: MODULETYPE;
         WebGLRenderer: MODULETYPE;
@@ -118,6 +124,7 @@ export declare class DataSupportManager {
     meshDataSupport: MeshDataSupport;
     pointsDataSupport: PointsDataSupport;
     groupDataSupport: GroupDataSupport;
+    css3DDataSupport: CSS3DDataSupport;
     passDataSupport: PassDataSupport;
     animationDataSupport: AnimationDataSupport;
     private dataSupportMap;

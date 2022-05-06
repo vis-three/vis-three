@@ -15,6 +15,7 @@ export enum MODULETYPE {
   MESH = "mesh",
   POINTS = "points",
   GROUP = "group",
+  CSS3D = "css3D",
   PASS = "pass",
   MODIFIER = "modifier",
 

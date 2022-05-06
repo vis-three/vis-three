@@ -115,6 +115,11 @@ export interface ShaderMaterialConfig extends MaterialConfig {
   uniforms: { [key: string]: any };
 }
 
+// TODO:
+export interface LoadMaterialConfig extends MaterialConfig {
+  url: string;
+}
+
 export type MaterialAllType =
   | MeshStandardMaterialConfig
   | MeshPhongMaterialConfig

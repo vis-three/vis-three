@@ -27,6 +27,8 @@ export declare const CONFIGMODULE: {
     Mesh: MODULETYPE;
     Points: MODULETYPE;
     Group: MODULETYPE;
+    CSS3DObject: MODULETYPE;
+    CSS3DSprite: MODULETYPE;
     PerspectiveCamera: MODULETYPE;
     OrthographicCamera: MODULETYPE;
     WebGLRenderer: MODULETYPE;

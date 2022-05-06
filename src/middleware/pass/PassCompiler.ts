@@ -10,7 +10,7 @@ import { PassConfigAllType, UnrealBloomPassConfig } from "./PassConfig";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { Vector2 } from "three";
-import { EngineSupport } from "../../main";
+import { EngineSupport } from "../../engine/EngineSupport";
 
 export interface PassCompilerTarget extends CompilerTarget {
   [key: string]: PassConfigAllType;

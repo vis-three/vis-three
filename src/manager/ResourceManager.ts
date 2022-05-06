@@ -41,9 +41,11 @@ export class ResourceManager extends EventDispatcher {
     const mappingHandler = this.mappingHandler;
 
     mappingHandler.set(HTMLImageElement, this.HTMLImageElementHandler);
-    mappingHandler.set(HTMLCanvasElement, this.HTMLCanvasElementHanlder);
-    mappingHandler.set(HTMLVideoElement, this.HTMLVideoElementHander);
+    mappingHandler.set(HTMLCanvasElement, this.HTMLCanvasElementHandler);
+    mappingHandler.set(HTMLVideoElement, this.HTMLVideoElementHandler);
     mappingHandler.set(Object3D, this.Object3DHandler);
+    mappingHandler.set(HTMLDivElement, this.HTMLDivElementHandler);
+    mappingHandler.set(HTMLSpanElement, this.HTMLSpanElementHandler);
   }
 
   private Object3DHandler(url: string, object: Object3D): this {
@@ -187,7 +189,7 @@ export class ResourceManager extends EventDispatcher {
     return this;
   }
 
-  private HTMLCanvasElementHanlder(
+  private HTMLCanvasElementHandler(
     url: string,
     element: HTMLCanvasElement
   ): this {
@@ -202,7 +204,10 @@ export class ResourceManager extends EventDispatcher {
     return this;
   }
 
-  private HTMLVideoElementHander(url: string, element: HTMLVideoElement): this {
+  private HTMLVideoElementHandler(
+    url: string,
+    element: HTMLVideoElement
+  ): this {
     this.resourceMap.set(url, element);
     this.configMap.set(
       url,
@@ -210,6 +215,32 @@ export class ResourceManager extends EventDispatcher {
         url: url,
       })!
     );
+    this.structureMap.set(url, url);
+    return this;
+  }
+
+  private HTMLDivElementHandler(url: string, element: HTMLDivElement): this {
+    this.resourceMap.set(url, element);
+    this.configMap.set(
+      url,
+      generateConfig(CONFIGTYPE.CSS3DOBJECT, {
+        element: url,
+      })!
+    );
+
+    this.structureMap.set(url, url);
+    return this;
+  }
+
+  private HTMLSpanElementHandler(url: string, element: HTMLSpanElement): this {
+    this.resourceMap.set(url, element);
+    this.configMap.set(
+      url,
+      generateConfig(CONFIGTYPE.CSS3DSPRITE, {
+        element: url,
+      })!
+    );
+
     this.structureMap.set(url, url);
     return this;
   }

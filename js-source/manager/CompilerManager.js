@@ -3,6 +3,7 @@ import { Compiler } from "../core/Compiler";
 import { AnimationCompiler } from "../middleware/animation/AnimationCompiler";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
+import { CSS3DCompiler } from "../middleware/css3D/CSS3DCompiler";
 import { GeometryCompiler } from "../middleware/geometry/GeometryCompiler";
 import { GroupCompiler } from "../middleware/group/GroupCompiler";
 import { LightCompiler } from "../middleware/light/LightCompiler";
@@ -31,6 +32,7 @@ export class CompilerManager {
     meshCompiler = new MeshCompiler();
     pointsCompiler = new PointsCompiler();
     groupCompiler = new GroupCompiler();
+    css3DCompiler = new CSS3DCompiler();
     passCompiler = new PassCompiler();
     animationCompiler = new AnimationCompiler();
     objectCompilerList;
@@ -81,6 +83,7 @@ export class CompilerManager {
             const resourceMap = engine.resourceManager.resourceMap;
             this.textureCompiler.linkRescourceMap(resourceMap);
             this.geometryCompiler.linkRescourceMap(resourceMap);
+            this.css3DCompiler.linkRescourceMap(resourceMap);
         }
         const dataSupportManager = engine.dataSupportManager;
         // 添加通知 TODO: 注意生命周期 lookAt group等
@@ -96,6 +99,7 @@ export class CompilerManager {
         dataSupportManager.lineDataSupport.addCompiler(this.lineCompiler);
         dataSupportManager.meshDataSupport.addCompiler(this.meshCompiler);
         dataSupportManager.pointsDataSupport.addCompiler(this.pointsCompiler);
+        dataSupportManager.css3DDataSupport.addCompiler(this.css3DCompiler);
         dataSupportManager.groupDataSupport.addCompiler(this.groupCompiler);
         dataSupportManager.sceneDataSupport.addCompiler(this.sceneCompiler);
         dataSupportManager.animationDataSupport.addCompiler(this.animationCompiler);

@@ -29,8 +29,10 @@ export declare class ResourceManager extends EventDispatcher {
     constructor();
     private Object3DHandler;
     private HTMLImageElementHandler;
-    private HTMLCanvasElementHanlder;
-    private HTMLVideoElementHander;
+    private HTMLCanvasElementHandler;
+    private HTMLVideoElementHandler;
+    private HTMLDivElementHandler;
+    private HTMLSpanElementHandler;
     /**
      *  根据加载好的资源拆解映射为最小资源单位与形成相应的配置与结构
      * @param loadResourceMap loaderManager的resourceMap

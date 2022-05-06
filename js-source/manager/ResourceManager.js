@@ -18,9 +18,11 @@ export class ResourceManager extends EventDispatcher {
         super();
         const mappingHandler = this.mappingHandler;
         mappingHandler.set(HTMLImageElement, this.HTMLImageElementHandler);
-        mappingHandler.set(HTMLCanvasElement, this.HTMLCanvasElementHanlder);
-        mappingHandler.set(HTMLVideoElement, this.HTMLVideoElementHander);
+        mappingHandler.set(HTMLCanvasElement, this.HTMLCanvasElementHandler);
+        mappingHandler.set(HTMLVideoElement, this.HTMLVideoElementHandler);
         mappingHandler.set(Object3D, this.Object3DHandler);
+        mappingHandler.set(HTMLDivElement, this.HTMLDivElementHandler);
+        mappingHandler.set(HTMLSpanElement, this.HTMLSpanElementHandler);
     }
     Object3DHandler(url, object) {
         const structureMap = this.structureMap;
@@ -124,7 +126,7 @@ export class ResourceManager extends EventDispatcher {
         this.structureMap.set(url, url);
         return this;
     }
-    HTMLCanvasElementHanlder(url, element) {
+    HTMLCanvasElementHandler(url, element) {
         this.resourceMap.set(url, element);
         this.configMap.set(url, generateConfig(CONFIGTYPE.CANVASTEXTURE, {
             url: url,
@@ -132,10 +134,26 @@ export class ResourceManager extends EventDispatcher {
         this.structureMap.set(url, url);
         return this;
     }
-    HTMLVideoElementHander(url, element) {
+    HTMLVideoElementHandler(url, element) {
         this.resourceMap.set(url, element);
         this.configMap.set(url, generateConfig(CONFIGTYPE.VIDEOTEXTURE, {
             url: url,
+        }));
+        this.structureMap.set(url, url);
+        return this;
+    }
+    HTMLDivElementHandler(url, element) {
+        this.resourceMap.set(url, element);
+        this.configMap.set(url, generateConfig(CONFIGTYPE.CSS3DOBJECT, {
+            element: url,
+        }));
+        this.structureMap.set(url, url);
+        return this;
+    }
+    HTMLSpanElementHandler(url, element) {
+        this.resourceMap.set(url, element);
+        this.configMap.set(url, generateConfig(CONFIGTYPE.CSS3DSPRITE, {
+            element: url,
         }));
         this.structureMap.set(url, url);
         return this;

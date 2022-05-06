@@ -101,6 +101,9 @@ export interface ShaderMaterialConfig extends MaterialConfig {
         [key: string]: any;
     };
 }
+export interface LoadMaterialConfig extends MaterialConfig {
+    url: string;
+}
 export declare type MaterialAllType = MeshStandardMaterialConfig | MeshPhongMaterialConfig | LineBasicMaterialConfig | SpriteMaterialConfig | PointsMaterialConfig | ShaderMaterialConfig;
 export declare const getMaterialConfig: () => MaterialConfig;
 export declare const getMeshStandardMaterialConfig: () => MeshStandardMaterialConfig;

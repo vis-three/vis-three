@@ -16,6 +16,7 @@ export var MODULETYPE;
     MODULETYPE["MESH"] = "mesh";
     MODULETYPE["POINTS"] = "points";
     MODULETYPE["GROUP"] = "group";
+    MODULETYPE["CSS3D"] = "css3D";
     MODULETYPE["PASS"] = "pass";
     MODULETYPE["MODIFIER"] = "modifier";
     MODULETYPE["ANIMATION"] = "animation";

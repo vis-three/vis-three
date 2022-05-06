@@ -17,6 +17,8 @@ export declare enum CONFIGTYPE {
     POINTS = "Points",
     SPRITE = "Sprite",
     GROUP = "Group",
+    CSS3DOBJECT = "CSS3DObject",
+    CSS3DSPRITE = "CSS3DSprite",
     IMAGETEXTURE = "ImageTexture",
     CUBETEXTURE = "CubeTexture",
     CANVASTEXTURE = "CanvasTexture",

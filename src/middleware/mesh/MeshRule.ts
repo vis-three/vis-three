@@ -1,5 +1,4 @@
 import { Mesh } from "three";
-import { validate } from "uuid";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
 import { ObjectRule } from "../object/ObjectRule";
 import { SolidObjectRule } from "../solidObject/SolidObjectRule";

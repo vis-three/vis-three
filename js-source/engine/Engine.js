@@ -62,6 +62,7 @@ export class Engine extends EventDispatcher {
     IS_ENGINESUPPORT = false;
     dom;
     webGLRenderer;
+    css3DRenderer;
     orbitControls;
     transformControls;
     effectComposer;

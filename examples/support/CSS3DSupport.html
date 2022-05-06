@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSS3DSupport</title>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/examples/public/favicon.ico"
+    />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    #element1 {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 4px rgb(170, 150, 241);
+    }
+
+    label {
+      color: white;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <div id="element1">
+      <label for="element1-text">测试div</label>
+      <input id="element1-text" type="text" />
+    </div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as Vis from "../../dist/Vis.es.js";
+      import { v4 as getUUid } from "uuid";
+
+      const canvasGenerator = new Vis.CanvasGenerator({
+        width: 256,
+        height: 256,
+      })
+        .draw((ctx) => {
+          ctx.textBaseline = "middle";
+          ctx.textAlign = "center";
+
+          ctx.fillStyle = "rgb(206, 42, 230)";
+
+          ctx.font = " bold 54px 微软雅黑";
+          ctx.fillText("CSS3D", 128, 128);
+        })
+        .preview();
+
+      const engine = new Vis.ModelingEngineSupport()
+        .install("CSS3DRenderer")
+        .complete()
+        .setDom(document.getElementById("app"))
+
+        .setStats(true)
+        .registerResources({
+          "examples.css3DObject": document.getElementById("element1"),
+        });
+
+      const pointLight = Vis.generateConfig("PointLight", {
+        position: {
+          x: 30,
+          y: 50,
+        },
+        distance: 100,
+      });
+
+      const css3DObject = Vis.generateConfig("CSS3DObject", {
+        element: "examples.css3DObject",
+        position: {
+          x: 10,
+          y: 10,
+        },
+      });
+
+      const scene = Vis.generateConfig("Scene", {
+        children: [pointLight.vid, css3DObject.vid],
+      });
+
+      engine.applyConfig(pointLight, css3DObject, scene);
+
+      engine.setScene(scene.vid).play();
+
+      setTimeout(() => {
+        engine.setSize();
+      }, 0);
+      console.log(engine);
+    </script>
+  </body>
+</html>

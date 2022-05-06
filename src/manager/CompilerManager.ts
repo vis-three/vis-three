@@ -6,6 +6,7 @@ import { AnimationCompiler } from "../middleware/animation/AnimationCompiler";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
+import { CSS3DCompiler } from "../middleware/css3D/CSS3DCompiler";
 import { GeometryCompiler } from "../middleware/geometry/GeometryCompiler";
 import { GroupCompiler } from "../middleware/group/GroupCompiler";
 import { LightCompiler } from "../middleware/light/LightCompiler";
@@ -41,6 +42,7 @@ export interface CompilerManagerParameters {
   groupCompiler: GroupCompiler;
   passCompiler: PassCompiler;
   animationCompiler: AnimationCompiler;
+  css3DCompiler: CSS3DCompiler;
 }
 
 export class CompilerManager {
@@ -57,6 +59,7 @@ export class CompilerManager {
   private meshCompiler = new MeshCompiler();
   private pointsCompiler = new PointsCompiler();
   private groupCompiler = new GroupCompiler();
+  private css3DCompiler = new CSS3DCompiler();
   private passCompiler = new PassCompiler();
   private animationCompiler = new AnimationCompiler();
 
@@ -122,6 +125,7 @@ export class CompilerManager {
 
       this.textureCompiler.linkRescourceMap(resourceMap);
       this.geometryCompiler.linkRescourceMap(resourceMap);
+      this.css3DCompiler.linkRescourceMap(resourceMap);
     }
 
     const dataSupportManager = engine.dataSupportManager!;
@@ -139,6 +143,7 @@ export class CompilerManager {
     dataSupportManager.lineDataSupport.addCompiler(this.lineCompiler);
     dataSupportManager.meshDataSupport.addCompiler(this.meshCompiler);
     dataSupportManager.pointsDataSupport.addCompiler(this.pointsCompiler);
+    dataSupportManager.css3DDataSupport.addCompiler(this.css3DCompiler);
     dataSupportManager.groupDataSupport.addCompiler(this.groupCompiler);
     dataSupportManager.sceneDataSupport.addCompiler(this.sceneCompiler);
     dataSupportManager.animationDataSupport.addCompiler(this.animationCompiler);

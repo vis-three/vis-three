@@ -4,6 +4,7 @@ import { AnimationCompiler } from "../middleware/animation/AnimationCompiler";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { ControlsCompiler } from "../middleware/controls/ControlsCompiler";
+import { CSS3DCompiler } from "../middleware/css3D/CSS3DCompiler";
 import { GeometryCompiler } from "../middleware/geometry/GeometryCompiler";
 import { GroupCompiler } from "../middleware/group/GroupCompiler";
 import { LightCompiler } from "../middleware/light/LightCompiler";
@@ -33,6 +34,7 @@ export interface CompilerManagerParameters {
     groupCompiler: GroupCompiler;
     passCompiler: PassCompiler;
     animationCompiler: AnimationCompiler;
+    css3DCompiler: CSS3DCompiler;
 }
 export declare class CompilerManager {
     private cameraCompiler;
@@ -48,6 +50,7 @@ export declare class CompilerManager {
     private meshCompiler;
     private pointsCompiler;
     private groupCompiler;
+    private css3DCompiler;
     private passCompiler;
     private animationCompiler;
     private objectCompilerList;

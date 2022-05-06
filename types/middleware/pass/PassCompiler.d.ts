@@ -1,7 +1,7 @@
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { PassConfigAllType } from "./PassConfig";
-import { EngineSupport } from "../../main";
+import { EngineSupport } from "../../engine/EngineSupport";
 export interface PassCompilerTarget extends CompilerTarget {
     [key: string]: PassConfigAllType;
 }
