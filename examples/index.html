@@ -28,8 +28,16 @@
       color: white;
     }
 
+    body a {
+      transition: all ease 300ms;
+    }
+
     body a::visited {
       color: white;
+    }
+
+    body a:hover {
+      color: rgb(247, 176, 255);
     }
 
     #module-main {
@@ -42,6 +50,9 @@
       flex-direction: column;
       margin: 12px;
       margin-bottom: 24px;
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 10px;
+      box-shadow: 0 0 4px white;
     }
 
     .module-box h3 {
@@ -60,11 +71,12 @@
 
   <body>
     <div id="app"></div>
-    <div id="module-main"></div>
 
     <script type="module">
       import * as Vis from "../dist/Vis.es.js";
       const engine = new Vis.DisplayEngineSupport()
+        .install("CSS3DRenderer")
+        .complete()
         .setDom(document.getElementById("app"))
         .setSize();
 
@@ -100,10 +112,6 @@
         material: meshStandardMaterial.vid,
       });
 
-      const orbitControls = Vis.generateConfig("OrbitControls", {
-        autoRotate: true,
-      });
-
       const scene = Vis.generateConfig("Scene", {
         children: [ambientLight.vid, spotLight.vid, mesh.vid],
       });
@@ -111,10 +119,25 @@
       const camera = Vis.generateConfig("PerspectiveCamera", {
         far: 500,
         position: {
-          x: 60,
-          y: 30,
-          z: 60,
+          y: 20,
+          z: 120,
         },
+      });
+
+      const animation = Vis.generateConfig("ScriptAnimation", {
+        target: mesh.vid,
+        attribute: ".rotation.y",
+        script: Vis.AniScriptLibrary.generateConfig("linearTime", {
+          multiply: 1,
+        }),
+      });
+
+      const animation2 = Vis.generateConfig("ScriptAnimation", {
+        target: mesh.vid,
+        attribute: ".rotation.x",
+        script: Vis.AniScriptLibrary.generateConfig("linearTime", {
+          multiply: 0.5,
+        }),
       });
 
       engine.applyConfig(
@@ -123,9 +146,10 @@
         meshStandardMaterial,
         boxGeometry,
         mesh,
-        orbitControls,
+        camera,
         scene,
-        camera
+        animation,
+        animation2
       );
 
       engine.setScene(scene.vid).setCamera(camera.vid).play();
@@ -140,11 +164,20 @@
             "/ModelingEngineSupport.html",
             "/DisplayEngineSupport.html",
           ],
+          position: {
+            x: -80,
+            y: 20,
+            z: -30,
+          },
+          rotation: {
+            y: (Math.PI / 180) * 35,
+          },
         },
         {
           router: "plugin",
           children: [
             "/WebGLRendererPlugin.html",
+            "/CSS3DRendererPlugin.html",
             "/AxesHelperPlugin.html",
             "/GridHelperPlugin.html",
             "/ObjectHelperPlugin.html",
@@ -154,6 +187,14 @@
             "/StatsPlugin.html",
             "/TransformControlsPlugin.html",
           ],
+          position: {
+            x: -70,
+            y: -20,
+            z: -20,
+          },
+          rotation: {
+            y: (Math.PI / 180) * 25,
+          },
         },
         {
           router: "support",
@@ -174,6 +215,37 @@
             "/CSS3DSupport.html",
             "/AnimationSupport.html",
           ],
+          position: {
+            x: -35,
+            y: 0,
+            z: 10,
+          },
+          rotation: {
+            y: (Math.PI / 180) * 25,
+          },
+        },
+        {
+          router: "displayer",
+          children: ["/TextureDisplayer.html", "/MaterialDisplayer.html"],
+          position: {
+            x: -80,
+            y: -30,
+            z: 10,
+          },
+          rotation: {
+            y: (Math.PI / 180) * 35,
+          },
+        },
+        {
+          router: "convenient",
+          children: ["/History.html"],
+          position: {
+            x: -90,
+            y: 10,
+          },
+          rotation: {
+            y: (Math.PI / 180) * 25,
+          },
         },
         {
           router: "manager",
@@ -182,10 +254,26 @@
             "/LoaderManager.html",
             "/ResourceManager.html",
           ],
+          position: {
+            x: 25,
+            z: 5,
+            y: -10,
+          },
+          rotation: {
+            y: (Math.PI / 180) * -15,
+          },
         },
         {
           router: "modifier",
           children: ["/BooleanModifier.html"],
+          position: {
+            x: 30,
+            z: -10,
+            y: 20,
+          },
+          rotation: {
+            y: (Math.PI / 180) * -25,
+          },
         },
         {
           router: "helper",
@@ -196,19 +284,27 @@
             "/CameraHelper.html",
             "/GroupHelper.html",
           ],
+          position: {
+            x: 5,
+            z: -15,
+          },
+          rotation: {
+            y: (Math.PI / 180) * -25,
+          },
         },
         {
           router: "loader",
           children: ["/VideoLoader.html"],
+          position: {
+            x: 5,
+            y: 20,
+            z: 10,
+          },
+          rotation: {
+            y: (Math.PI / 180) * -25,
+          },
         },
-        {
-          router: "displayer",
-          children: ["/TextureDisplayer.html", "/MaterialDisplayer.html"],
-        },
-        {
-          router: "convenient",
-          children: ["/History.html"],
-        },
+
         {
           router: "develop",
           children: [
@@ -218,14 +314,29 @@
             "/CanvasExtends.html",
             "/Vue2-ConfigExtends.html",
           ],
+          position: {
+            x: 50,
+            y: -10,
+          },
+          rotation: {
+            y: (Math.PI / 180) * -30,
+          },
         },
         {
           router: "core",
           children: ["/ProxyBroadcast.html"],
+          position: {
+            x: 10,
+            y: -30,
+            z: 20,
+          },
+          rotation: {
+            y: (Math.PI / 180) * -25,
+          },
         },
       ];
 
-      const moduleMain = document.getElementById("module-main");
+      const domList = [];
       tree.forEach((module) => {
         let childrenDom = "";
 
@@ -237,6 +348,7 @@
           }
         }
         const moduleDom = document.createElement("div");
+        moduleDom.id = module.router;
         moduleDom.className = "module-box";
         moduleDom.innerHTML = `
         <h3>${module.router.toLocaleUpperCase()}</h3>
@@ -245,7 +357,30 @@
         </div>
       `;
 
-        moduleMain.appendChild(moduleDom);
+        const css3DObject = Vis.generateConfig("CSS3DObject", {
+          element: `index.${module.router}`,
+          scale: {
+            x: 0.1,
+            y: 0.1,
+            z: 0.1,
+          },
+          position: {
+            x: module.position?.x || 0,
+            y: module.position?.y || 0,
+            z: module.position?.z || 0,
+          },
+          rotation: {
+            y: module.rotation?.y || 0,
+          },
+        });
+
+        engine
+          .registerResources({
+            [`index.${module.router}`]: moduleDom,
+          })
+          .applyConfig(css3DObject);
+
+        scene.children.push(css3DObject.vid);
       });
     </script>
   </body>

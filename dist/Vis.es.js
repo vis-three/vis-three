@@ -529,7 +529,6 @@ class VisOrbitControls extends EventDispatcher {
       if (this.enabled === false)
         return;
       if (pointers.length === 0) {
-        this.domElement.setPointerCapture(event.pointerId);
         this.domElement.addEventListener("pointermove", this.onPointerMove);
         this.domElement.addEventListener("pointerup", this.onPointerUp);
       }
