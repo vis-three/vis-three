@@ -791,9 +791,8 @@ engine.scene.add(new THREE.PointLight("white", 1));
 
 ### 预设
 
-- [ ] css3Renderer
-- [ ] css3 相关物体模块
 - [ ] 物体约束器
+- [ ] 几何修改器
 
 ## 项目案例
 
