@@ -19,13 +19,13 @@ export const generator = function (engine, config) {
     const compiler = engine.compilerManager;
     const object = compiler.getObjectBySymbol(params.target);
     if (!object) {
-        console.error(`can not found vid object: ${params.target}`);
+        console.error(`real time animation moveTO: can not found vid object: ${params.target}`);
         return () => { };
     }
     const renderManager = engine.renderManager;
     // 同步配置
     const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
-    if (!config) {
+    if (!supportData) {
         console.error(`can not found object config: ${params.target}`);
         return () => { };
     }

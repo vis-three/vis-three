@@ -28,6 +28,7 @@ export declare const CONFIGFACTORY: {
     Group: () => import("../group/GroupConfig").GroupConfig;
     CSS3DObject: () => import("../css3D/CSS3DConfig").CSS3DObjectConfig;
     CSS3DSprite: () => import("../css3D/CSS3DConfig").CSS3DSpriteConfig;
+    CSS3DPlane: () => import("../css3D/CSS3DConfig").CSS3DPlaneConfig;
     PerspectiveCamera: () => import("../camera/CameraConfig").PerspectiveCameraConfig;
     OrthographicCamera: () => import("../camera/CameraConfig").OrthographicCameraConfig;
     WebGLRenderer: () => import("../renderer/RendererConfig").WebGLRendererConfig;

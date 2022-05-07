@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, PlaneBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, PlaneBufferGeometry, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -3061,6 +3061,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["GROUP"] = "Group";
   CONFIGTYPE2["CSS3DOBJECT"] = "CSS3DObject";
   CONFIGTYPE2["CSS3DSPRITE"] = "CSS3DSprite";
+  CONFIGTYPE2["CSS3DPLANE"] = "CSS3DPlane";
   CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
   CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
   CONFIGTYPE2["CANVASTEXTURE"] = "CanvasTexture";
@@ -3660,6 +3661,11 @@ const getCSS3DObjectConfig = function() {
     element: ""
   });
 };
+const getCSS3DPlaneConfig = function() {
+  return Object.assign(getCSS3DObjectConfig(), {
+    type: CONFIGTYPE.CSS3DPLANE
+  });
+};
 const getCSS3DSpriteConfig = function() {
   return Object.assign(getCSS3DObjectConfig(), {
     type: CONFIGTYPE.CSS3DSPRITE,
@@ -3696,6 +3702,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.GROUP]: getGroupConfig,
   [CONFIGTYPE.CSS3DOBJECT]: getCSS3DObjectConfig,
   [CONFIGTYPE.CSS3DSPRITE]: getCSS3DSpriteConfig,
+  [CONFIGTYPE.CSS3DPLANE]: getCSS3DPlaneConfig,
   [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
   [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
   [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,
@@ -3823,6 +3830,7 @@ const CONFIGMODULE = {
   [CONFIGTYPE.GROUP]: MODULETYPE.GROUP,
   [CONFIGTYPE.CSS3DOBJECT]: MODULETYPE.CSS3D,
   [CONFIGTYPE.CSS3DSPRITE]: MODULETYPE.CSS3D,
+  [CONFIGTYPE.CSS3DPLANE]: MODULETYPE.CSS3D,
   [CONFIGTYPE.PERSPECTIVECAMERA]: MODULETYPE.CAMERA,
   [CONFIGTYPE.ORTHOGRAPHICCAMERA]: MODULETYPE.CAMERA,
   [CONFIGTYPE.WEBGLRENDERER]: MODULETYPE.RENDERER,
@@ -5079,13 +5087,13 @@ class AnimationCompiler extends Compiler {
     return this;
   }
 }
-const config$3 = {
+const config$4 = {
   name: "openWindow",
   params: {
     url: ""
   }
 };
-const generator$3 = function(engine, config2) {
+const generator$4 = function(engine, config2) {
   return () => {
     window.open(config2.params.url);
   };
@@ -5770,7 +5778,7 @@ const timeingFunction = {
   ELN: Easing.Linear.None,
   EQI: Easing.Quadratic.InOut
 };
-const config$2 = {
+const config$3 = {
   name: "moveTo",
   params: {
     target: "",
@@ -5784,18 +5792,18 @@ const config$2 = {
     timingFunction: TIMEINGFUNCTION.EQI
   }
 };
-const generator$2 = function(engine, config2) {
+const generator$3 = function(engine, config2) {
   const params = config2.params;
   const compiler = engine.compilerManager;
   const object = compiler.getObjectBySymbol(params.target);
   if (!object) {
-    console.error(`can not found vid object: ${params.target}`);
+    console.error(`real time animation moveTO: can not found vid object: ${params.target}`);
     return () => {
     };
   }
   const renderManager = engine.renderManager;
   const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
-  if (!config2) {
+  if (!supportData) {
     console.error(`can not found object config: ${params.target}`);
     return () => {
     };
@@ -5814,7 +5822,7 @@ const generator$2 = function(engine, config2) {
     });
   };
 };
-const config$1 = {
+const config$2 = {
   name: "moveSpacing",
   params: {
     target: "",
@@ -5828,7 +5836,7 @@ const config$1 = {
     timingFunction: TIMEINGFUNCTION.EQI
   }
 };
-const generator$1 = function(engine, config2) {
+const generator$2 = function(engine, config2) {
   const params = config2.params;
   const object = engine.compilerManager.getObjectBySymbol(params.target);
   if (!object) {
@@ -5857,6 +5865,80 @@ const generator$1 = function(engine, config2) {
     });
   };
 };
+const config$1 = {
+  name: "vector3To",
+  params: {
+    target: "",
+    attribute: ".position",
+    props: {
+      x: "x",
+      y: "y",
+      z: "z"
+    },
+    delay: 0,
+    duration: 500,
+    to: {},
+    timingFunction: TIMEINGFUNCTION.EQI
+  }
+};
+const generator$1 = function(engine, config2) {
+  var _a, _b, _c;
+  const params = config2.params;
+  const object = engine.compilerManager.getObjectBySymbol(params.target);
+  if (!object) {
+    console.error(`real time animation vector3To: can not found vid object: ${params.target}`);
+    return () => {
+    };
+  }
+  const renderManager = engine.renderManager;
+  let supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
+  if (!supportData) {
+    console.error(`real time animation vector3To: can not found object config: ${params.target}`);
+    return () => {
+    };
+  }
+  const attributeList = params.attribute.split(".");
+  attributeList.shift();
+  let targetObject = object;
+  for (const key of attributeList) {
+    if (targetObject[key] === void 0) {
+      console.error(`real time animation vector3To: object can not support key: ${key}`, object);
+      return () => {
+      };
+    }
+    targetObject = targetObject[key];
+    supportData = supportData[key];
+  }
+  const props = params.props;
+  if (!(props.x in targetObject) || !(props.y in targetObject) || !(props.z in targetObject)) {
+    console.error(`real time animation vector3To: object can not support props:`, targetObject, props);
+    return () => {
+    };
+  }
+  if (!(props.x in supportData) || !(props.y in supportData) || !(props.z in supportData)) {
+    console.error(`real time animation vector3To: config can not support props:`, supportData, props);
+    return () => {
+    };
+  }
+  const toObject = {
+    x: (_a = params.to.x) != null ? _a : targetObject[props.x],
+    y: (_b = params.to.y) != null ? _b : targetObject[props.y],
+    z: (_c = params.to.z) != null ? _c : targetObject[props.z]
+  };
+  return () => {
+    const tween = new Tween(targetObject).to(toObject).duration(params.duration).delay(params.delay).easing(timeingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      supportData[props.x] = toObject.x;
+      supportData[props.y] = toObject.y;
+      supportData[props.z] = toObject.z;
+    });
+  };
+};
 const _EventLibrary = class {
   static generateConfig(name, merge) {
     if (!_EventLibrary.configLibrary.has(name)) {
@@ -5867,9 +5949,6 @@ const _EventLibrary = class {
     }
     const recursion = (config2, merge2) => {
       for (const key in merge2) {
-        if (config2[key] === void 0) {
-          continue;
-        }
         if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
           recursion(config2[key], merge2[key]);
         } else {
@@ -5903,6 +5982,7 @@ __publicField(EventLibrary, "register", function(config2, generator2) {
   _EventLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _EventLibrary.generatorLibrary.set(config2.name, generator2);
 });
+EventLibrary.register(config$4, generator$4);
 EventLibrary.register(config$3, generator$3);
 EventLibrary.register(config$2, generator$2);
 EventLibrary.register(config$1, generator$1);
@@ -6553,6 +6633,27 @@ class ControlsCompiler extends Compiler {
     return this;
   }
 }
+class CSS3DPlane extends CSS3DObject {
+  constructor(element = document.createElement("div")) {
+    super(element);
+    __publicField(this, "geometry");
+    const boundingBox = element.getBoundingClientRect();
+    this.geometry = new PlaneBufferGeometry(boundingBox.width, boundingBox.height);
+    this.geometry.computeBoundingBox();
+  }
+  raycast(raycaster, intersects) {
+    const matrixWorld = this.matrixWorld;
+    const box = this.geometry.boundingBox.clone();
+    box.applyMatrix4(matrixWorld);
+    if (raycaster.ray.intersectsBox(box)) {
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(this.position),
+        object: this,
+        point: this.position
+      });
+    }
+  }
+}
 class CSS3DCompiler extends ObjectCompiler {
   constructor() {
     super();
@@ -6562,6 +6663,7 @@ class CSS3DCompiler extends ObjectCompiler {
     this.constructMap = new Map();
     this.resourceMap = new Map();
     this.constructMap.set(CONFIGTYPE.CSS3DOBJECT, (config2) => new CSS3DObject(this.getElement(config2.element)));
+    this.constructMap.set(CONFIGTYPE.CSS3DPLANE, (config2) => new CSS3DPlane(this.getElement(config2.element)));
     this.constructMap.set(CONFIGTYPE.CSS3DSPRITE, (config2) => new CSS3DSprite(this.getElement(config2.element)));
     this.mergeFilterAttribute({
       element: true,
@@ -10065,6 +10167,25 @@ class CSS3DObjectHelper extends LineSegments {
     }
   }
 }
+class CSS3DPlaneHelper extends LineSegments {
+  constructor(target) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "type", "VisCSS3DPlaneHelper");
+    const element = target.element;
+    const boundingBox = element.getBoundingClientRect();
+    const width = boundingBox.width;
+    const height = boundingBox.height;
+    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(width, height));
+    this.geometry.computeBoundingBox();
+    this.material = getHelperLineMaterial();
+    this.matrixAutoUpdate = false;
+    this.matrix = target.matrix;
+    this.matrixWorldNeedsUpdate = false;
+    this.matrixWorld = target.matrixWorld;
+    this.target = target;
+  }
+}
 class CanvasGenerator {
   constructor(parameters) {
     __publicField(this, "canvas");
@@ -10303,7 +10424,8 @@ class ObjectHelperManager extends EventDispatcher {
       [CONFIGTYPE.POINTS]: PointsHelper,
       [CONFIGTYPE.LINE]: LineHelper,
       [CONFIGTYPE.LINESEGMENTS]: LineHelper,
-      [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper
+      [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper,
+      [CONFIGTYPE.CSS3DPLANE]: CSS3DPlaneHelper
     });
     __publicField(this, "helperFilter", {
       AmbientLight: true,

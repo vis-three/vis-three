@@ -1,6 +1,7 @@
 import * as OpenWindow from "./BasicEventLibrary/openWindow";
 import * as MoveTo from "./RealTimeAnimateLibrary/moveTo";
 import * as MoveSpacing from "./RealTimeAnimateLibrary/moveSpacing";
+import * as Vecter3To from "./RealTimeAnimateLibrary/vector3To";
 export class EventLibrary {
     static configLibrary = new Map();
     static generatorLibrary = new Map();
@@ -20,9 +21,6 @@ export class EventLibrary {
         }
         const recursion = (config, merge) => {
             for (const key in merge) {
-                if (config[key] === undefined) {
-                    continue;
-                }
                 if (typeof merge[key] === "object" &&
                     merge[key] !== null &&
                     !Array.isArray(merge[key])) {
@@ -51,4 +49,5 @@ export class EventLibrary {
 EventLibrary.register(OpenWindow.config, OpenWindow.generator);
 EventLibrary.register(MoveTo.config, MoveTo.generator);
 EventLibrary.register(MoveSpacing.config, MoveSpacing.generator);
+EventLibrary.register(Vecter3To.config, Vecter3To.generator);
 //# sourceMappingURL=EventLibrary.js.map

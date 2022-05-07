@@ -2,7 +2,7 @@ import { SymbolConfig, Vector3Config } from "../common/CommonConfig";
 export interface GeometryGroup {
     start: number;
     count: number;
-    materialIndex?: number | undefined;
+    materialIndex: number;
 }
 export interface GeometryConfig extends SymbolConfig {
     type: string;

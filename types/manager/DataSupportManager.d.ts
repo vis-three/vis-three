@@ -100,6 +100,7 @@ export declare class DataSupportManager {
         Group: MODULETYPE;
         CSS3DObject: MODULETYPE;
         CSS3DSprite: MODULETYPE;
+        CSS3DPlane: MODULETYPE;
         PerspectiveCamera: MODULETYPE;
         OrthographicCamera: MODULETYPE;
         WebGLRenderer: MODULETYPE;

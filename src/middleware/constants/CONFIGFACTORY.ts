@@ -54,6 +54,7 @@ import {
 } from "../animation/AnimationConfig";
 import {
   getCSS3DObjectConfig,
+  getCSS3DPlaneConfig,
   getCSS3DSpriteConfig,
 } from "../css3D/CSS3DConfig";
 
@@ -91,6 +92,7 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.GROUP]: getGroupConfig,
   [CONFIGTYPE.CSS3DOBJECT]: getCSS3DObjectConfig,
   [CONFIGTYPE.CSS3DSPRITE]: getCSS3DSpriteConfig,
+  [CONFIGTYPE.CSS3DPLANE]: getCSS3DPlaneConfig,
 
   [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
   [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,

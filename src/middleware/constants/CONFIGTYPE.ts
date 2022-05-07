@@ -20,6 +20,7 @@ export enum CONFIGTYPE {
   GROUP = "Group",
   CSS3DOBJECT = "CSS3DObject",
   CSS3DSPRITE = "CSS3DSprite",
+  CSS3DPLANE = "CSS3DPlane",
 
   IMAGETEXTURE = "ImageTexture",
   CUBETEXTURE = "CubeTexture",

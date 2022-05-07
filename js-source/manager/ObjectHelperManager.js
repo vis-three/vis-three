@@ -5,6 +5,7 @@ import { DirectionalLightHelper } from "../extends/helper/light/DirectionalLight
 import { PointLightHelper } from "../extends/helper/light/PointLightHelper";
 import { SpotLightHelper } from "../extends/helper/light/SpotLightHelper";
 import { CSS3DObjectHelper } from "../extends/helper/object/CSS3DObjectHelper";
+import { CSS3DPlaneHelper } from "../extends/helper/object/CSS3DPlaneHelper";
 import { GroupHelper } from "../extends/helper/object/GroupHelper";
 import { LineHelper } from "../extends/helper/object/LineHelper";
 import { MeshHelper } from "../extends/helper/object/MeshHelper";
@@ -25,6 +26,7 @@ export class ObjectHelperManager extends EventDispatcher {
         [CONFIGTYPE.LINE]: LineHelper,
         [CONFIGTYPE.LINESEGMENTS]: LineHelper,
         [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper,
+        [CONFIGTYPE.CSS3DPLANE]: CSS3DPlaneHelper,
     };
     helperFilter = {
         AmbientLight: true,

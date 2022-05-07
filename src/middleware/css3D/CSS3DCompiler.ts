@@ -2,6 +2,7 @@ import {
   CSS3DObject,
   CSS3DSprite,
 } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS3DPlane } from "../../optimize/CSS3DPlane";
 import { CONFIGTYPE } from "../constants/configType";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
@@ -31,6 +32,10 @@ export class CSS3DCompiler extends ObjectCompiler<
     this.constructMap.set(
       CONFIGTYPE.CSS3DOBJECT,
       (config: CSS3DAllType) => new CSS3DObject(this.getElement(config.element))
+    );
+    this.constructMap.set(
+      CONFIGTYPE.CSS3DPLANE,
+      (config: CSS3DAllType) => new CSS3DPlane(this.getElement(config.element))
     );
     this.constructMap.set(
       CONFIGTYPE.CSS3DSPRITE,

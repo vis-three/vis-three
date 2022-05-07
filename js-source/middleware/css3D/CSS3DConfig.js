@@ -6,6 +6,11 @@ export const getCSS3DObjectConfig = function () {
         element: "",
     });
 };
+export const getCSS3DPlaneConfig = function () {
+    return Object.assign(getCSS3DObjectConfig(), {
+        type: CONFIGTYPE.CSS3DPLANE,
+    });
+};
 export const getCSS3DSpriteConfig = function () {
     return Object.assign(getCSS3DObjectConfig(), {
         type: CONFIGTYPE.CSS3DSPRITE,

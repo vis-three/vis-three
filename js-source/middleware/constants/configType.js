@@ -20,6 +20,7 @@ export var CONFIGTYPE;
     CONFIGTYPE["GROUP"] = "Group";
     CONFIGTYPE["CSS3DOBJECT"] = "CSS3DObject";
     CONFIGTYPE["CSS3DSPRITE"] = "CSS3DSprite";
+    CONFIGTYPE["CSS3DPLANE"] = "CSS3DPlane";
     CONFIGTYPE["IMAGETEXTURE"] = "ImageTexture";
     CONFIGTYPE["CUBETEXTURE"] = "CubeTexture";
     CONFIGTYPE["CANVASTEXTURE"] = "CanvasTexture";

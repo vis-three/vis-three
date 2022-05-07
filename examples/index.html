@@ -40,16 +40,9 @@
       color: rgb(247, 176, 255);
     }
 
-    #module-main {
-      display: flex;
-      flex-wrap: wrap;
-    }
-
     .module-box {
       display: flex;
       flex-direction: column;
-      margin: 12px;
-      margin-bottom: 24px;
       background-color: rgba(0, 0, 0, 0.2);
       padding: 10px;
       box-shadow: 0 0 4px white;
@@ -74,6 +67,8 @@
 
     <script type="module">
       import * as Vis from "../dist/Vis.es.js";
+      import { v4 as getUUid } from "uuid";
+
       const engine = new Vis.DisplayEngineSupport()
         .install("CSS3DRenderer")
         .complete()
@@ -119,7 +114,7 @@
       const camera = Vis.generateConfig("PerspectiveCamera", {
         far: 500,
         position: {
-          y: 20,
+          y: 10,
           z: 120,
         },
       });
@@ -165,7 +160,7 @@
             "/DisplayEngineSupport.html",
           ],
           position: {
-            x: -80,
+            x: -70,
             y: 20,
             z: -30,
           },
@@ -188,7 +183,7 @@
             "/TransformControlsPlugin.html",
           ],
           position: {
-            x: -70,
+            x: -60,
             y: -20,
             z: -20,
           },
@@ -216,9 +211,9 @@
             "/AnimationSupport.html",
           ],
           position: {
-            x: -35,
+            x: -15,
             y: 0,
-            z: 10,
+            z: 15,
           },
           rotation: {
             y: (Math.PI / 180) * 25,
@@ -228,7 +223,7 @@
           router: "displayer",
           children: ["/TextureDisplayer.html", "/MaterialDisplayer.html"],
           position: {
-            x: -80,
+            x: -70,
             y: -30,
             z: 10,
           },
@@ -240,7 +235,7 @@
           router: "convenient",
           children: ["/History.html"],
           position: {
-            x: -90,
+            x: -80,
             y: 10,
           },
           rotation: {
@@ -255,9 +250,9 @@
             "/ResourceManager.html",
           ],
           position: {
-            x: 25,
+            x: 45,
             z: 5,
-            y: -10,
+            y: -30,
           },
           rotation: {
             y: (Math.PI / 180) * -15,
@@ -267,7 +262,7 @@
           router: "modifier",
           children: ["/BooleanModifier.html"],
           position: {
-            x: 30,
+            x: 45,
             z: -10,
             y: 20,
           },
@@ -285,8 +280,8 @@
             "/GroupHelper.html",
           ],
           position: {
-            x: 5,
-            z: -15,
+            x: 20,
+            z: 15,
           },
           rotation: {
             y: (Math.PI / 180) * -25,
@@ -296,7 +291,7 @@
           router: "loader",
           children: ["/VideoLoader.html"],
           position: {
-            x: 5,
+            x: 15,
             y: 20,
             z: 10,
           },
@@ -315,7 +310,7 @@
             "/Vue2-ConfigExtends.html",
           ],
           position: {
-            x: 50,
+            x: 60,
             y: -10,
           },
           rotation: {
@@ -326,7 +321,7 @@
           router: "core",
           children: ["/ProxyBroadcast.html"],
           position: {
-            x: 10,
+            x: 20,
             y: -30,
             z: 20,
           },
@@ -348,6 +343,7 @@
           }
         }
         const moduleDom = document.createElement("div");
+        moduleDom.style.position = "absoulte";
         moduleDom.id = module.router;
         moduleDom.className = "module-box";
         moduleDom.innerHTML = `
@@ -356,8 +352,11 @@
           ${childrenDom}
         </div>
       `;
+        document.body.appendChild(moduleDom);
 
-        const css3DObject = Vis.generateConfig("CSS3DObject", {
+        const vid = getUUid();
+        const css3DObject = Vis.generateConfig("CSS3DPlane", {
+          vid,
           element: `index.${module.router}`,
           scale: {
             x: 0.1,
@@ -372,6 +371,28 @@
           rotation: {
             y: module.rotation?.y || 0,
           },
+          pointerenter: [
+            Vis.EventLibrary.generateConfig("vector3To", {
+              params: {
+                target: vid,
+                attribute: ".rotation",
+                to: {
+                  y: 0,
+                },
+              },
+            }),
+          ],
+          pointerleave: [
+            Vis.EventLibrary.generateConfig("vector3To", {
+              params: {
+                target: vid,
+                attribute: ".rotation",
+                to: {
+                  y: module.rotation?.y || 0,
+                },
+              },
+            }),
+          ],
         });
 
         engine
@@ -381,6 +402,10 @@
           .applyConfig(css3DObject);
 
         scene.children.push(css3DObject.vid);
+
+        setTimeout(() => {
+          engine.setSize();
+        }, 0);
       });
     </script>
   </body>

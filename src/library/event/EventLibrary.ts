@@ -4,6 +4,7 @@ import * as OpenWindow from "./BasicEventLibrary/openWindow";
 
 import * as MoveTo from "./RealTimeAnimateLibrary/moveTo";
 import * as MoveSpacing from "./RealTimeAnimateLibrary/moveSpacing";
+import * as Vecter3To from "./RealTimeAnimateLibrary/vector3To";
 
 export interface BasicEventConfig {
   name: string;
@@ -46,9 +47,6 @@ export class EventLibrary {
 
     const recursion = (config: BasicEventConfig, merge: object) => {
       for (const key in merge) {
-        if (config[key] === undefined) {
-          continue;
-        }
         if (
           typeof merge[key] === "object" &&
           merge[key] !== null &&
@@ -93,3 +91,4 @@ EventLibrary.register(OpenWindow.config, OpenWindow.generator);
 
 EventLibrary.register(MoveTo.config, MoveTo.generator);
 EventLibrary.register(MoveSpacing.config, MoveSpacing.generator);
+EventLibrary.register(Vecter3To.config, Vecter3To.generator);
