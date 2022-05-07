@@ -3,9 +3,9 @@ import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { PointsRule } from "./PointsRule";
 export class PointsDataSupport extends SolidObjectDataSupport {
     MODULE = MODULETYPE.POINTS;
-    constructor(data) {
+    constructor(data, ignore) {
         !data && (data = {});
-        super(PointsRule, data);
+        super(PointsRule, data, ignore);
     }
 }
 //# sourceMappingURL=PointsDataSupport.js.map

@@ -3,9 +3,9 @@ import { MODULETYPE } from "../constants/MODULETYPE";
 import { TextureRule } from "./TextureRule";
 export class TextureDataSupport extends DataSupport {
     MODULE = MODULETYPE.TEXTURE;
-    constructor(data) {
+    constructor(data, ignore) {
         !data && (data = {});
-        super(TextureRule, data);
+        super(TextureRule, data, ignore);
     }
 }
 //# sourceMappingURL=TextureDataSupport.js.map

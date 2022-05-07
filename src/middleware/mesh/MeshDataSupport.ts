@@ -1,4 +1,5 @@
 import { Mesh } from "three";
+import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { MeshCompiler, MeshCompilerTarget } from "./MeshCompiler";
@@ -14,8 +15,8 @@ export class MeshDataSupport extends SolidObjectDataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.MESH;
 
-  constructor(data?: MeshCompilerTarget) {
+  constructor(data?: MeshCompilerTarget, ignore?: IgnoreAttribute) {
     !data && (data = {});
-    super(MeshRule, data);
+    super(MeshRule, data, ignore);
   }
 }

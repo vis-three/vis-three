@@ -1,4 +1,5 @@
 import { DataSupport } from "../../core/DataSupport";
+import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { RendererCompiler, RendererCompilerTarget } from "./RendererCompiler";
 import { getWebGLRendererConfig } from "./RendererConfig";
@@ -10,8 +11,8 @@ export class RendererDataSupport extends DataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.RENDERER;
 
-  constructor(data?: RendererCompilerTarget) {
+  constructor(data?: RendererCompilerTarget, ignore?: IgnoreAttribute) {
     !data && (data = {});
-    super(RendererRule, data);
+    super(RendererRule, data, ignore);
   }
 }

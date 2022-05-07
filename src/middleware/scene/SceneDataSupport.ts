@@ -1,4 +1,5 @@
 import { Scene } from "three";
+import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { CONFIGTYPE } from "../constants/configType";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectDataSupport } from "../object/ObjectDataSupport";
@@ -15,8 +16,8 @@ export class SceneDataSupport extends ObjectDataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.SCENE;
 
-  constructor(data?: SceneCompilerTarget) {
+  constructor(data?: SceneCompilerTarget, ignore?: IgnoreAttribute) {
     !data && (data = {});
-    super(SceneRule, data);
+    super(SceneRule, data, ignore);
   }
 }

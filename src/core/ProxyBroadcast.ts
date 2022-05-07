@@ -12,13 +12,20 @@ export interface ProxyEvent extends BaseEvent {
   notice: ProxyNotice;
 }
 
+export interface IgnoreAttribute {
+  [key: string]: IgnoreAttribute | boolean;
+}
+
 export class ProxyBroadcast extends EventDispatcher {
   static proxyWeakSet = new WeakSet();
 
+  private ignoreAttribute: IgnoreAttribute;
   private arraySymobl = "vis.array";
 
-  constructor() {
+  constructor(ignore?: IgnoreAttribute) {
     super();
+
+    this.ignoreAttribute = ignore || {};
   }
 
   // 代理拓展
@@ -37,13 +44,13 @@ export class ProxyBroadcast extends EventDispatcher {
       },
 
       set: (target: object, key: any, value: any) => {
-        // 先执行反射
-        let result: boolean;
         // 剔除symbol
         if (typeof key === "symbol") {
-          result = Reflect.set(target, key, value);
-          return result;
+          return Reflect.set(target, key, value);
         }
+
+        // 先执行反射
+        let result: boolean;
 
         // 新增
         if (target[key as never] === undefined) {
@@ -144,6 +151,23 @@ export class ProxyBroadcast extends EventDispatcher {
     if (typeof object === "object" && object !== null) {
       for (const key in object) {
         const tempPath = path!.concat([key]);
+
+        // 判断是否需要忽略 第一个为对象id所以忽略
+        let ignoreAttribute = this.ignoreAttribute;
+        let ignore = false;
+        for (const tempKey of tempPath.slice(1)) {
+          if (ignoreAttribute[tempKey] === true) {
+            ignore = true;
+            break;
+          }
+          ignoreAttribute[tempKey] &&
+            (ignoreAttribute = ignoreAttribute[tempKey] as IgnoreAttribute);
+        }
+
+        if (ignore) {
+          continue;
+        }
+
         if (
           isValidKey(key, object) &&
           typeof object[key] === "object" &&

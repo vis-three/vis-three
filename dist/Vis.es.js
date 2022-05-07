@@ -4098,9 +4098,11 @@ function isValidKey(key, object) {
   return key in object;
 }
 const _ProxyBroadcast = class extends EventDispatcher {
-  constructor() {
+  constructor(ignore) {
     super();
+    __publicField(this, "ignoreAttribute");
     __publicField(this, "arraySymobl", "vis.array");
+    this.ignoreAttribute = ignore || {};
   }
   proxyExtends(object, path) {
     if (!path) {
@@ -4114,11 +4116,10 @@ const _ProxyBroadcast = class extends EventDispatcher {
         return Reflect.get(target, key);
       },
       set: (target, key, value) => {
-        let result;
         if (typeof key === "symbol") {
-          result = Reflect.set(target, key, value);
-          return result;
+          return Reflect.set(target, key, value);
         }
+        let result;
         if (target[key] === void 0) {
           if (typeof value === "object" && value !== null && !_ProxyBroadcast.proxyWeakSet.has(value)) {
             const newPath = path.concat([key]);
@@ -4189,6 +4190,18 @@ const _ProxyBroadcast = class extends EventDispatcher {
     if (typeof object === "object" && object !== null) {
       for (const key in object) {
         const tempPath = path.concat([key]);
+        let ignoreAttribute = this.ignoreAttribute;
+        let ignore = false;
+        for (const tempKey of tempPath.slice(1)) {
+          if (ignoreAttribute[tempKey] === true) {
+            ignore = true;
+            break;
+          }
+          ignoreAttribute[tempKey] && (ignoreAttribute = ignoreAttribute[tempKey]);
+        }
+        if (ignore) {
+          continue;
+        }
         if (isValidKey(key, object) && typeof object[key] === "object" && object[key] !== null) {
           if (Array.isArray(object[key])) {
             object[key][Symbol.for(this.arraySymobl)] = object[key].concat([]);
@@ -4247,12 +4260,12 @@ class Translater {
   }
 }
 class DataSupport {
-  constructor(rule, data) {
+  constructor(rule, data, ignore) {
     __publicField(this, "data");
     __publicField(this, "broadcast");
     __publicField(this, "translater");
     this.translater = new Translater().setRule(rule);
-    this.broadcast = new ProxyBroadcast();
+    this.broadcast = new ProxyBroadcast(ignore);
     this.data = this.broadcast.proxyExtends(data);
     this.broadcast.addEventListener("broadcast", (event) => {
       this.translater.translate(event.notice);
@@ -4407,9 +4420,9 @@ const TextureRule = function(notice, compiler) {
   }
 };
 class TextureDataSupport extends DataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(TextureRule, data);
+    super(TextureRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.TEXTURE);
   }
 }
@@ -4437,16 +4450,16 @@ const MaterialRule = function(notice, compiler) {
   }
 };
 class MaterialDataSupport extends DataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(MaterialRule, data);
+    super(MaterialRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.MATERIAL);
   }
 }
 class ObjectDataSupport extends DataSupport {
-  constructor(rule, data) {
+  constructor(rule, data, ignore) {
     !data && (data = Object.create(Object.prototype));
-    super(rule, data);
+    super(rule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
@@ -4511,9 +4524,9 @@ const LightRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class LightDataSupport extends ObjectDataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(LightRule, data);
+    super(LightRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.LIGHT);
   }
 }
@@ -4574,9 +4587,9 @@ const GeometryRule = function(notice, compiler) {
   }
 };
 class GeometryDataSupport extends DataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(GeometryRule, data);
+    super(GeometryRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.GEOMETRY);
   }
 }
@@ -4584,9 +4597,9 @@ const CameraRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class CameraDataSupport extends ObjectDataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(CameraRule, data);
+    super(CameraRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.CAMERA);
   }
 }
@@ -4621,9 +4634,9 @@ const RendererRule = function(input, compiler) {
   }
 };
 class RendererDataSupport extends DataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(RendererRule, data);
+    super(RendererRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.RENDERER);
   }
 }
@@ -4631,9 +4644,9 @@ const SceneRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class SceneDataSupport extends ObjectDataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(SceneRule, data);
+    super(SceneRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.SCENE);
   }
 }
@@ -4652,16 +4665,16 @@ const ControlsRule = function(input, compiler) {
   }
 };
 class ControlsDataSupport extends DataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(ControlsRule, data);
+    super(ControlsRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.CONTROLS);
   }
 }
 class SolidObjectDataSupport extends DataSupport {
-  constructor(rule, data) {
+  constructor(rule, data, ignore) {
     !data && (data = Object.create(Object.prototype));
-    super(rule, data);
+    super(rule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.MESH);
   }
 }
@@ -4669,9 +4682,9 @@ const SpriteRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class SpriteDataSupport extends SolidObjectDataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(SpriteRule, data);
+    super(SpriteRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.SPRITE);
   }
 }
@@ -4679,9 +4692,9 @@ const LineRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class LineDataSupport extends SolidObjectDataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(LineRule, data);
+    super(LineRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.LINE);
   }
 }
@@ -4689,9 +4702,9 @@ const MeshRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class MeshDataSupport extends SolidObjectDataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(MeshRule, data);
+    super(MeshRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.MESH);
   }
 }
@@ -4699,9 +4712,9 @@ const PointsRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class PointsDataSupport extends SolidObjectDataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(PointsRule, data);
+    super(PointsRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.POINTS);
   }
 }
@@ -4709,9 +4722,9 @@ const GroupRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class GroupDataSupport extends ObjectDataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(GroupRule, data);
+    super(GroupRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
@@ -4726,9 +4739,9 @@ const PassRule = function(input, compiler) {
   }
 };
 class PassDataSupport extends DataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(PassRule, data);
+    super(PassRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.PASS);
   }
 }
@@ -4762,9 +4775,9 @@ const AnimationRule = function(notice, compiler) {
   }
 };
 class AnimationDataSupport extends DataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(AnimationRule, data);
+    super(AnimationRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.ANIMATION);
   }
 }
@@ -4772,9 +4785,9 @@ const CSS3DRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class CSS3DDataSupport extends ObjectDataSupport {
-  constructor(data) {
+  constructor(data, ignore) {
     !data && (data = {});
-    super(CSS3DRule, data);
+    super(CSS3DRule, data, ignore);
     __publicField(this, "MODULE", MODULETYPE.CSS3D);
   }
 }

@@ -1,4 +1,5 @@
 import { Camera } from "three";
+import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { CameraCompiler, CameraCompilerTarget } from "./CameraCompiler";
@@ -13,8 +14,8 @@ export class CameraDataSupport extends ObjectDataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.CAMERA;
 
-  constructor(data?: CameraCompilerTarget) {
+  constructor(data?: CameraCompilerTarget, ignore?: IgnoreAttribute) {
     !data && (data = {});
-    super(CameraRule, data);
+    super(CameraRule, data, ignore);
   }
 }

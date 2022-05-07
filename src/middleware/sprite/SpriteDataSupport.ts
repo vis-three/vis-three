@@ -1,4 +1,5 @@
 import { Sprite } from "three";
+import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { SpriteCompiler, SpriteCompilerTarget } from "./SpriteCompiler";
@@ -14,8 +15,8 @@ export class SpriteDataSupport extends SolidObjectDataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.SPRITE;
 
-  constructor(data?: SpriteCompilerTarget) {
+  constructor(data?: SpriteCompilerTarget, ignore?: IgnoreAttribute) {
     !data && (data = {});
-    super(SpriteRule, data);
+    super(SpriteRule, data, ignore);
   }
 }

@@ -1,4 +1,5 @@
 import { DataSupport } from "../../core/DataSupport";
+import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ControlsCompiler, ControlsCompilerTarget } from "./ControlsCompiler";
 import { getTransformControlsConfig } from "./ControlsConfig";
@@ -10,8 +11,8 @@ export class ControlsDataSupport extends DataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.CONTROLS;
 
-  constructor(data?: ControlsCompilerTarget) {
+  constructor(data?: ControlsCompilerTarget, ignore?: IgnoreAttribute) {
     !data && (data = {});
-    super(ControlsRule, data);
+    super(ControlsRule, data, ignore);
   }
 }

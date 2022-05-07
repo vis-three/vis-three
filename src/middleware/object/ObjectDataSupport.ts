@@ -1,5 +1,6 @@
 import { Object3D } from "three";
 import { DataSupport } from "../../core/DataSupport";
+import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { Rule } from "../../core/Rule";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectCompiler, ObjectCompilerTarget } from "./ObjectCompiler";
@@ -24,8 +25,8 @@ export class ObjectDataSupport<
 > extends DataSupport<T, E> {
   MODULE: MODULETYPE = MODULETYPE.GROUP;
 
-  constructor(rule: R, data?: T) {
+  constructor(rule: R, data?: T, ignore?: IgnoreAttribute) {
     !data && (data = Object.create(Object.prototype));
-    super(rule, data!);
+    super(rule, data!, ignore);
   }
 }

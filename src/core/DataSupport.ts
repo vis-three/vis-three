@@ -4,7 +4,7 @@ import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { Compiler, CompilerTarget } from "./Compiler";
-import { ProxyBroadcast, ProxyEvent } from "./ProxyBroadcast";
+import { IgnoreAttribute, ProxyBroadcast, ProxyEvent } from "./ProxyBroadcast";
 import { Rule } from "./Rule";
 import { Translater } from "./Translater";
 
@@ -17,9 +17,9 @@ export abstract class DataSupport<
   private data: D;
   private broadcast: ProxyBroadcast;
   private translater: Translater<C>;
-  constructor(rule: Rule<C>, data: D) {
+  constructor(rule: Rule<C>, data: D, ignore?: IgnoreAttribute) {
     this.translater = new Translater<C>().setRule(rule);
-    this.broadcast = new ProxyBroadcast();
+    this.broadcast = new ProxyBroadcast(ignore);
     this.data = this.broadcast.proxyExtends<D>(data);
 
     this.broadcast.addEventListener("broadcast", (event: ProxyEvent) => {

@@ -3,9 +3,9 @@ import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { LightRule } from "./LightRule";
 export class LightDataSupport extends ObjectDataSupport {
     MODULE = MODULETYPE.LIGHT;
-    constructor(data) {
+    constructor(data, ignore) {
         !data && (data = {});
-        super(LightRule, data);
+        super(LightRule, data, ignore);
     }
 }
 //# sourceMappingURL=LightDataSupport.js.map

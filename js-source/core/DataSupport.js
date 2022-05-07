@@ -6,9 +6,9 @@ export class DataSupport {
     data;
     broadcast;
     translater;
-    constructor(rule, data) {
+    constructor(rule, data, ignore) {
         this.translater = new Translater().setRule(rule);
-        this.broadcast = new ProxyBroadcast();
+        this.broadcast = new ProxyBroadcast(ignore);
         this.data = this.broadcast.proxyExtends(data);
         this.broadcast.addEventListener("broadcast", (event) => {
             this.translater.translate(event.notice);

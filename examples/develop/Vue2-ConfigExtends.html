@@ -72,12 +72,19 @@
         left: "5%",
       });
 
-      const engine = new Vis.ModelingEngineSupport().registerResources({
+      const textureDataSupport = new Vis.TextureDataSupport(
+        {},
+        { canvasExtends: true }
+      );
+
+      const engine = new Vis.ModelingEngineSupport({
+        textureDataSupport,
+      }).registerResources({
         "example.canvas": canvasGenerator.get(),
       });
 
       const ambientLight = Vis.generateConfig("AmbientLight");
-      const canvasTexture = engine.dataSupportManager.reactiveConfig(
+      const canvasTexture = engine.reactiveConfig(
         Vue.observable(
           Vis.generateConfig(
             "CanvasTexture",

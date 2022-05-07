@@ -3,9 +3,9 @@ import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { LineRule } from "./LineRule";
 export class LineDataSupport extends SolidObjectDataSupport {
     MODULE = MODULETYPE.LINE;
-    constructor(data) {
+    constructor(data, ignore) {
         !data && (data = {});
-        super(LineRule, data);
+        super(LineRule, data, ignore);
     }
 }
 //# sourceMappingURL=LineDataSupport.js.map

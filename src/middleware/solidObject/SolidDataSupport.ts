@@ -1,5 +1,6 @@
 import { Object3D } from "three";
 import { DataSupport } from "../../core/DataSupport";
+import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import {
   SolidObject3D,
@@ -18,8 +19,8 @@ export class SolidObjectDataSupport<
 > extends DataSupport<T, E> {
   MODULE: MODULETYPE = MODULETYPE.MESH;
 
-  constructor(rule: R, data?: T) {
+  constructor(rule: R, data?: T, ignore?: IgnoreAttribute) {
     !data && (data = Object.create(Object.prototype));
-    super(rule, data!);
+    super(rule, data!, ignore);
   }
 }

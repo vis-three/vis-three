@@ -2,9 +2,11 @@ import { EventDispatcher } from "./EventDispatcher";
 import { isValidKey } from "../utils/utils";
 export class ProxyBroadcast extends EventDispatcher {
     static proxyWeakSet = new WeakSet();
+    ignoreAttribute;
     arraySymobl = "vis.array";
-    constructor() {
+    constructor(ignore) {
         super();
+        this.ignoreAttribute = ignore || {};
     }
     // 代理拓展
     proxyExtends(object, path) {
@@ -19,13 +21,12 @@ export class ProxyBroadcast extends EventDispatcher {
                 return Reflect.get(target, key);
             },
             set: (target, key, value) => {
-                // 先执行反射
-                let result;
                 // 剔除symbol
                 if (typeof key === "symbol") {
-                    result = Reflect.set(target, key, value);
-                    return result;
+                    return Reflect.set(target, key, value);
                 }
+                // 先执行反射
+                let result;
                 // 新增
                 if (target[key] === undefined) {
                     // 如果是对象就递归
@@ -110,6 +111,20 @@ export class ProxyBroadcast extends EventDispatcher {
         if (typeof object === "object" && object !== null) {
             for (const key in object) {
                 const tempPath = path.concat([key]);
+                // 判断是否需要忽略 第一个为对象id所以忽略
+                let ignoreAttribute = this.ignoreAttribute;
+                let ignore = false;
+                for (const tempKey of tempPath.slice(1)) {
+                    if (ignoreAttribute[tempKey] === true) {
+                        ignore = true;
+                        break;
+                    }
+                    ignoreAttribute[tempKey] &&
+                        (ignoreAttribute = ignoreAttribute[tempKey]);
+                }
+                if (ignore) {
+                    continue;
+                }
                 if (isValidKey(key, object) &&
                     typeof object[key] === "object" &&
                     object[key] !== null) {

@@ -1,4 +1,5 @@
 import { Light } from "three";
+import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { LightCompiler, LightCompilerTarget } from "./LightCompiler";
@@ -14,8 +15,8 @@ export class LightDataSupport extends ObjectDataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.LIGHT;
 
-  constructor(data?: LightCompilerTarget) {
+  constructor(data?: LightCompilerTarget, ignore?: IgnoreAttribute) {
     !data && (data = {});
-    super(LightRule, data);
+    super(LightRule, data, ignore);
   }
 }

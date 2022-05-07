@@ -1,4 +1,5 @@
 import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { CSS3DCompiler, CSS3DCompilerTarget } from "./CSS3DCompiler";
@@ -14,8 +15,8 @@ export class CSS3DDataSupport extends ObjectDataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.CSS3D;
 
-  constructor(data?: CSS3DCompilerTarget) {
+  constructor(data?: CSS3DCompilerTarget, ignore?: IgnoreAttribute) {
     !data && (data = {});
-    super(CSS3DRule, data);
+    super(CSS3DRule, data, ignore);
   }
 }
