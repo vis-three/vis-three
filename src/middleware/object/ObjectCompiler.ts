@@ -376,6 +376,9 @@ export abstract class ObjectCompiler<
     });
 
     Compiler.applyConfig(config, object, this.filterAttribute);
+
+    object.updateMatrix();
+    object.updateMatrixWorld();
     return this;
   }
 

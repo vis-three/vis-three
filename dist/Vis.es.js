@@ -6225,6 +6225,8 @@ const _ObjectCompiler = class extends Compiler {
       }
     });
     Compiler.applyConfig(config2, object, this.filterAttribute);
+    object.updateMatrix();
+    object.updateMatrixWorld();
     return this;
   }
   set(vid, path, key, value) {
