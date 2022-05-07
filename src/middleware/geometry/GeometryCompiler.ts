@@ -24,6 +24,7 @@ import {
   CylinderGeometryConfig,
   EdgesGeometryConfig,
   GeometryAllType,
+  GeometryGroup,
   LoadGeometryConfig,
   PlaneGeometryConfig,
   SphereGeometryConfig,
@@ -248,8 +249,42 @@ export class GeometryCompiler extends Compiler {
   add(vid: string, config: GeometryAllType): this {
     if (config.type && this.constructMap.has(config.type)) {
       const geometry = this.constructMap.get(config.type)!(config);
+      geometry.clearGroups();
+      for (const group of config.groups) {
+        geometry.addGroup(group.start, group.count, group.materialIndex);
+      }
+
       this.map.set(vid, geometry);
     }
+    return this;
+  }
+
+  addGroup(vid: string, group: GeometryGroup): this {
+    if (!this.map.has(vid)) {
+      console.warn(`geometry compiler can not found object with vid: ${vid}`);
+      return this;
+    }
+
+    const geometry = this.map.get(vid)!;
+    geometry.addGroup(group.start, group.count, group.materialIndex);
+    return this;
+  }
+
+  updateGroup(vid: string, index: number) {
+    return this.removeGroup(vid, index).addGroup(
+      vid,
+      this.target[vid].groups[index]
+    );
+  }
+
+  removeGroup(vid: string, index: number): this {
+    if (!this.map.has(vid)) {
+      console.warn(`geometry compiler can not found object with vid: ${vid}`);
+      return this;
+    }
+
+    const geometry = this.map.get(vid)!;
+    geometry.groups.splice(index, 1);
     return this;
   }
 

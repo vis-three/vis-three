@@ -4,7 +4,7 @@ import { CONFIGTYPE } from "../constants/configType";
 export interface GeometryGroup {
   start: number;
   count: number;
-  materialIndex?: number | undefined;
+  materialIndex: number;
 }
 export interface GeometryConfig extends SymbolConfig {
   type: string;

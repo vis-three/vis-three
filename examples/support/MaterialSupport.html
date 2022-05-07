@@ -65,15 +65,25 @@
         width: 10,
         height: 10,
         depth: 10,
+        groups: [
+          { start: 0, count: Infinity, materialIndex: 0 },
+          { start: 0, count: Infinity, materialIndex: 1 },
+        ],
       });
 
       const canvasTexture = Vis.generateConfig("CanvasTexture", {
         url: "example.canvas",
       });
 
-      const meshStandardMaterial = Vis.generateConfig("MeshStandardMaterial");
+      const meshStandardMaterial = Vis.generateConfig("MeshStandardMaterial", {
+        metalness: 0.5,
+        roughness: 0.5,
+        color: "rgb(100, 200, 100)",
+      });
 
-      const meshPhongMaterial = Vis.generateConfig("MeshPhongMaterial");
+      const meshPhongMaterial = Vis.generateConfig("MeshPhongMaterial", {
+        color: "rgb(100, 100, 200)",
+      });
 
       const spriteMaterial = Vis.generateConfig("SpriteMaterial", {
         map: canvasTexture.vid,
@@ -156,13 +166,23 @@
         },
       });
 
+      const multMaterialMesh = Vis.generateConfig("Mesh", {
+        material: [meshStandardMaterial.vid, shaderMaterial.vid],
+        geometry: geometry.vid,
+        position: {
+          x: -10,
+          z: 10,
+        },
+      });
+
       scene.children.push(
         standardMesh.vid,
         phongMesh.vid,
         sprite.vid,
         line.vid,
         points.vid,
-        shaderMesh.vid
+        shaderMesh.vid,
+        multMaterialMesh.vid
       );
 
       engine.applyConfig(
@@ -172,6 +192,7 @@
         line,
         points,
         shaderMesh,
+        multMaterialMesh,
         scene
       );
 
