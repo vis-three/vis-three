@@ -45,6 +45,6 @@ export declare abstract class ObjectCompiler<C extends ObjectConfig, T extends O
     add(vid: string, config: T[string]): this;
     set(vid: string, path: string[], key: string, value: any): this;
     cover(vid: string, config: T[string]): this;
-    remove(vid: string): this;
+    remove(vid: string, config: T[string]): this;
     dispose(): this;
 }

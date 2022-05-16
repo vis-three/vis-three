@@ -1,3 +1,4 @@
+import { Object3D } from "three";
 import { CompilerManager } from "../manager/CompilerManager";
 import {
   DataSupportManager,
@@ -6,6 +7,7 @@ import {
 } from "../manager/DataSupportManager";
 import { LoaderManager } from "../manager/LoaderManager";
 import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
+import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { Engine, ENGINEPLUGIN } from "./Engine";
 
@@ -26,6 +28,18 @@ export class EngineSupport extends Engine {
   declare loadResources: (urlList: Array<string>) => this;
   declare registerResources: (resourceMap: { [key: string]: unknown }) => this;
   declare toJSON: () => string;
+
+  declare exportConfig: (compress: boolean) => LoadOptions;
+
+  declare applyConfig: <T extends SymbolConfig>(...configs: T[]) => this;
+  declare reactiveConfig: <T extends SymbolConfig>(config: T) => T;
+  declare getConfigBySymbol: <T extends SymbolConfig>(vid: string) => T | null;
+  declare removeConfigBySymbol: (vid: string) => this;
+
+  declare getObjectSymbol: <O extends Object3D>(
+    object: O
+  ) => SymbolConfig["vid"] | null;
+  declare getObjectBySymbol: (vid: string) => Object3D | null;
 
   constructor(parameters?: EngineSupportParameters) {
     super();

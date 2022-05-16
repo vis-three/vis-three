@@ -57,8 +57,8 @@ export class SolidObjectCompiler extends ObjectCompiler {
         const object = this.map.get(vid);
         if (!object) {
             console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
+            return this;
         }
-        object.geometry.dispose();
         if (Array.isArray(object.material)) {
             for (const material of object.material) {
                 material.dispose();
@@ -67,7 +67,6 @@ export class SolidObjectCompiler extends ObjectCompiler {
         else {
             object.material.dispose();
         }
-        object.geometry = this.getGeometry(config.geometry);
         let material;
         if (typeof config.material === "string") {
             material = this.getMaterial(config.material);
@@ -76,6 +75,10 @@ export class SolidObjectCompiler extends ObjectCompiler {
             material = config.material.map((vid) => this.getMaterial(vid));
         }
         object.material = material;
+        if (!object.isSprite) {
+            object.geometry.dispose();
+            object.geometry = this.getGeometry(config.geometry);
+        }
         super.add(vid, config);
         return this;
     }
@@ -85,7 +88,7 @@ export class SolidObjectCompiler extends ObjectCompiler {
             return this;
         }
         const object = this.map.get(vid);
-        if (key === "geometry") {
+        if (key === "geometry" && !object.isSprite) {
             object.geometry = this.getGeometry(value);
             return this;
         }

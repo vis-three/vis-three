@@ -13,7 +13,7 @@ import { CameraDataSupport } from "./middleware/camera/CameraDataSupport";
 import { CameraHelper } from "./extends/helper/camera/CameraHelper";
 import { DataSupportManager } from "./manager/DataSupportManager";
 import { SupportDataGenerator } from "./convenient/SupportDataGenerator";
-import { MODULETYPE } from "./middleware/constants/MODULETYPE";
+import { MODULETYPE, OBJECTMODULE } from "./middleware/constants/MODULETYPE";
 import { CONFIGTYPE } from "./middleware/constants/configType";
 import { ControlsDataSupport } from "./middleware/controls/ControlsDataSupport";
 import { RendererDataSupport } from "./middleware/renderer/RendererDataSupport";
@@ -45,7 +45,7 @@ import { EventLibrary } from "./library/event/EventLibrary";
 import { AniScriptLibrary } from "./library/aniScript/AniScriptLibrary";
 import { AnimationDataSupport } from "./middleware/animation/AnimationDataSupport";
 import "./optimize/optimizeScirpt";
-export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, CONFIGTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, AnimationDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasGenerator, History, JSONHandler, 
+export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, OBJECTMODULE, CONFIGTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, LoaderManager, ResourceManager, DataSupportManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, AnimationDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasGenerator, History, JSONHandler, 
 /**
  * @deprecated
  */

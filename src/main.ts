@@ -14,7 +14,7 @@ import { CameraDataSupport } from "./middleware/camera/CameraDataSupport";
 import { CameraHelper } from "./extends/helper/camera/CameraHelper";
 import { DataSupportManager } from "./manager/DataSupportManager";
 import { SupportDataGenerator } from "./convenient/SupportDataGenerator";
-import { MODULETYPE } from "./middleware/constants/MODULETYPE";
+import { MODULETYPE, OBJECTMODULE } from "./middleware/constants/MODULETYPE";
 import { CONFIGTYPE } from "./middleware/constants/configType";
 import { ControlsDataSupport } from "./middleware/controls/ControlsDataSupport";
 import { RendererDataSupport } from "./middleware/renderer/RendererDataSupport";
@@ -46,6 +46,7 @@ import { ShaderLibrary } from "./library/shader/ShaderLibrary";
 import { EventLibrary } from "./library/event/EventLibrary";
 import { AniScriptLibrary } from "./library/aniScript/AniScriptLibrary";
 import { AnimationDataSupport } from "./middleware/animation/AnimationDataSupport";
+import { EVENTNAME } from "./manager/EventManager";
 
 import "./optimize/optimizeScirpt";
 
@@ -56,10 +57,12 @@ export {
   // menu
   RESOURCEEVENTTYPE,
   MODULETYPE,
+  OBJECTMODULE,
   CONFIGTYPE,
   DISPLAYMODE,
   ENGINEPLUGIN,
   VIEWPOINT,
+  EVENTNAME,
   // manager
   LoaderManager,
   ResourceManager,

@@ -19,8 +19,6 @@ export class SpriteHelper extends Sprite {
     constructor(sprite) {
         super();
         this.target = sprite;
-        this.geometry.dispose();
-        this.geometry.copy(sprite.geometry);
         this.material.dispose();
         this.material = new SpriteMaterial({
             color: "rgb(255, 255, 255)",

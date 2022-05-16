@@ -13,6 +13,7 @@ export interface ObjectConfig extends SymbolConfig {
     visible: boolean;
     matrixAutoUpdate: boolean;
     renderOrder: number;
+    parent: string;
     children: string[];
     pointerdown: BasicEventConfig[];
     pointermove: BasicEventConfig[];

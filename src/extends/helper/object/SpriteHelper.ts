@@ -25,9 +25,6 @@ export class SpriteHelper extends Sprite implements VisHelper {
 
     this.target = sprite;
 
-    this.geometry.dispose();
-    this.geometry.copy(sprite.geometry);
-
     (this.material as Material).dispose();
 
     this.material = new SpriteMaterial({

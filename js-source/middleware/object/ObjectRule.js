@@ -3,6 +3,9 @@ import { EVENTNAME } from "../../manager/EventManager";
 import { UNIQUESYMBOL } from "../constants/UNIQUESYMBOL";
 export const ObjectRule = function (input, compiler) {
     const { operate, key, path, value } = input;
+    if (key === "parent") {
+        return;
+    }
     const tempPath = path.concat([]);
     const vid = tempPath.shift() || key;
     const attribute = tempPath.length ? tempPath[0] : key;
@@ -52,7 +55,7 @@ export const ObjectRule = function (input, compiler) {
             return;
         }
         if (validate(key) || UNIQUESYMBOL[key]) {
-            compiler.add(key, value);
+            compiler.remove(key, value);
         }
         return;
     }

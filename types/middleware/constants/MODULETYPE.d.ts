@@ -20,3 +20,14 @@ export declare enum MODULETYPE {
     MODIFIER = "modifier",
     ANIMATION = "animation"
 }
+export declare enum OBJECTMODULE {
+    CAMERA = "camera",
+    LIGHT = "light",
+    SCENE = "scene",
+    SPRITE = "sprite",
+    LINE = "line",
+    MESH = "mesh",
+    POINTS = "points",
+    GROUP = "group",
+    CSS3D = "css3D"
+}

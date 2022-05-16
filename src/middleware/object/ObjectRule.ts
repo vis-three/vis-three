@@ -22,6 +22,10 @@ export const ObjectRule = function <
 >(input: ProxyNotice, compiler: E) {
   const { operate, key, path, value } = input;
 
+  if (key === "parent") {
+    return;
+  }
+
   const tempPath = path.concat([]);
 
   const vid = tempPath.shift() || key;
@@ -83,7 +87,7 @@ export const ObjectRule = function <
     }
 
     if (validate(key) || UNIQUESYMBOL[key]) {
-      compiler.add(key, value);
+      compiler.remove(key, value);
     }
     return;
   }

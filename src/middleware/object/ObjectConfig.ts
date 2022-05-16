@@ -14,6 +14,7 @@ export interface ObjectConfig extends SymbolConfig {
   visible: boolean;
   matrixAutoUpdate: boolean;
   renderOrder: number;
+  parent: string;
   children: string[];
   pointerdown: BasicEventConfig[];
   pointermove: BasicEventConfig[];
@@ -56,6 +57,7 @@ export const getObjectConfig = (): ObjectConfig => {
       y: 1,
       z: 0,
     },
+    parent: "",
     children: [],
     pointerdown: [],
     pointermove: [],

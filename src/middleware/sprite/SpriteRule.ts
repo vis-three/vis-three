@@ -16,5 +16,9 @@ export const SpriteRule: SpriteRule = function (
   notice: ProxyNotice,
   compiler: SpriteCompiler
 ) {
+  if (notice.key === "geometry") {
+    return;
+  }
+
   ObjectRule(notice, compiler);
 };

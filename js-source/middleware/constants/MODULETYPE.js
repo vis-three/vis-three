@@ -21,4 +21,17 @@ export var MODULETYPE;
     MODULETYPE["MODIFIER"] = "modifier";
     MODULETYPE["ANIMATION"] = "animation";
 })(MODULETYPE || (MODULETYPE = {}));
+// 物体模块
+export var OBJECTMODULE;
+(function (OBJECTMODULE) {
+    OBJECTMODULE["CAMERA"] = "camera";
+    OBJECTMODULE["LIGHT"] = "light";
+    OBJECTMODULE["SCENE"] = "scene";
+    OBJECTMODULE["SPRITE"] = "sprite";
+    OBJECTMODULE["LINE"] = "line";
+    OBJECTMODULE["MESH"] = "mesh";
+    OBJECTMODULE["POINTS"] = "points";
+    OBJECTMODULE["GROUP"] = "group";
+    OBJECTMODULE["CSS3D"] = "css3D";
+})(OBJECTMODULE || (OBJECTMODULE = {}));
 //# sourceMappingURL=MODULETYPE.js.map

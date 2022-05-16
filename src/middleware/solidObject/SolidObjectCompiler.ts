@@ -1,4 +1,4 @@
-import { BufferGeometry, Material, Mesh, Object3D } from "three";
+import { BufferGeometry, Material, Mesh, Object3D, Sprite } from "three";
 import { validate } from "uuid";
 import { SymbolConfig } from "../common/CommonConfig";
 import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
@@ -92,14 +92,12 @@ export abstract class SolidObjectCompiler<
 
   add(vid: string, config: T[string]): this {
     const object = this.map.get(vid)!;
-
     if (!object) {
       console.error(
         `${this.COMPILER_NAME} compiler can not finish add method.`
       );
+      return this;
     }
-
-    object.geometry.dispose();
 
     if (Array.isArray(object.material)) {
       for (const material of object.material) {
@@ -109,8 +107,6 @@ export abstract class SolidObjectCompiler<
       object.material.dispose();
     }
 
-    object.geometry = this.getGeometry(config.geometry);
-
     let material: Material | Material[];
     if (typeof config.material === "string") {
       material = this.getMaterial(config.material);
@@ -119,6 +115,11 @@ export abstract class SolidObjectCompiler<
     }
 
     object.material = material;
+
+    if (!(object as unknown as Sprite).isSprite) {
+      object.geometry.dispose();
+      object.geometry = this.getGeometry(config.geometry);
+    }
 
     super.add(vid, config);
     return this;
@@ -134,7 +135,7 @@ export abstract class SolidObjectCompiler<
 
     const object = this.map.get(vid)!;
 
-    if (key === "geometry") {
+    if (key === "geometry" && !(object as unknown as Sprite).isSprite) {
       object.geometry = this.getGeometry(value);
       return this;
     }

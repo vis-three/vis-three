@@ -3120,6 +3120,7 @@ const getObjectConfig = () => {
       y: 1,
       z: 0
     },
+    parent: "",
     children: [],
     pointerdown: [],
     pointermove: [],
@@ -3799,6 +3800,18 @@ var MODULETYPE;
   MODULETYPE2["MODIFIER"] = "modifier";
   MODULETYPE2["ANIMATION"] = "animation";
 })(MODULETYPE || (MODULETYPE = {}));
+var OBJECTMODULE;
+(function(OBJECTMODULE2) {
+  OBJECTMODULE2[OBJECTMODULE2["CAMERA"] = MODULETYPE.CAMERA] = "CAMERA";
+  OBJECTMODULE2[OBJECTMODULE2["LIGHT"] = MODULETYPE.LIGHT] = "LIGHT";
+  OBJECTMODULE2[OBJECTMODULE2["SCENE"] = MODULETYPE.SCENE] = "SCENE";
+  OBJECTMODULE2[OBJECTMODULE2["SPRITE"] = MODULETYPE.SPRITE] = "SPRITE";
+  OBJECTMODULE2[OBJECTMODULE2["LINE"] = MODULETYPE.LINE] = "LINE";
+  OBJECTMODULE2[OBJECTMODULE2["MESH"] = MODULETYPE.MESH] = "MESH";
+  OBJECTMODULE2[OBJECTMODULE2["POINTS"] = MODULETYPE.POINTS] = "POINTS";
+  OBJECTMODULE2[OBJECTMODULE2["GROUP"] = MODULETYPE.GROUP] = "GROUP";
+  OBJECTMODULE2[OBJECTMODULE2["CSS3D"] = MODULETYPE.CSS3D] = "CSS3D";
+})(OBJECTMODULE || (OBJECTMODULE = {}));
 const CONFIGMODULE = {
   [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
   [CONFIGTYPE.CUBETEXTURE]: MODULETYPE.TEXTURE,
@@ -4470,6 +4483,9 @@ const UNIQUESYMBOL = {
 };
 const ObjectRule = function(input, compiler) {
   const { operate, key, path, value } = input;
+  if (key === "parent") {
+    return;
+  }
   const tempPath = path.concat([]);
   const vid = tempPath.shift() || key;
   const attribute = tempPath.length ? tempPath[0] : key;
@@ -4515,7 +4531,7 @@ const ObjectRule = function(input, compiler) {
       return;
     }
     if (validate(key) || UNIQUESYMBOL[key]) {
-      compiler.add(key, value);
+      compiler.remove(key, value);
     }
     return;
   }
@@ -4679,6 +4695,9 @@ class SolidObjectDataSupport extends DataSupport {
   }
 }
 const SpriteRule = function(notice, compiler) {
+  if (notice.key === "geometry") {
+    return;
+  }
   ObjectRule(notice, compiler);
 };
 class SpriteDataSupport extends SolidObjectDataSupport {
@@ -6010,6 +6029,7 @@ const _ObjectCompiler = class extends Compiler {
     __publicField(this, "objectMapSet");
     __publicField(this, "filterAttribute", {
       lookAt: true,
+      parent: true,
       children: true,
       pointerdown: true,
       pointermove: true,
@@ -6152,6 +6172,12 @@ const _ObjectCompiler = class extends Compiler {
       return this;
     }
     object.add(targetObject);
+    const targetConfig = this.engine.getConfigBySymbol(target);
+    if (!targetConfig) {
+      console.warn(`${this.COMPILER_NAME} compiler: can not foud object config: ${target}`);
+      return this;
+    }
+    targetConfig.parent = vid;
     return this;
   }
   removeChildren(vid, target) {
@@ -6166,6 +6192,12 @@ const _ObjectCompiler = class extends Compiler {
       return this;
     }
     object.remove(targetObject);
+    const targetConfig = this.engine.getConfigBySymbol(target);
+    if (!targetConfig) {
+      console.warn(`${this.COMPILER_NAME} compiler: remove children function can not foud object config: ${target}`);
+      return this;
+    }
+    targetConfig.parent = "";
     return this;
   }
   linkObjectMap(...map) {
@@ -6281,10 +6313,22 @@ const _ObjectCompiler = class extends Compiler {
     Compiler.applyConfig(config2, object, this.filterAttribute);
     return this;
   }
-  remove(vid) {
+  remove(vid, config2) {
     if (!this.map.has(vid)) {
       console.warn(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
       return this;
+    }
+    if (config2.parent) {
+      const parentConfig = this.engine.getConfigBySymbol(config2.parent);
+      if (!parentConfig) {
+        console.warn(`${this.COMPILER_NAME} compiler: can not found parent object config: ${config2.parent}`);
+      } else {
+        if (parentConfig.children.includes(vid)) {
+          parentConfig.children.splice(parentConfig.children.indexOf(vid), 1);
+        } else {
+          console.warn(`${this.COMPILER_NAME} compiler: can not found vid in its parent config: ${vid}`);
+        }
+      }
     }
     const object = this.map.get(vid);
     this.weakMap.delete(object);
@@ -7025,8 +7069,8 @@ class SolidObjectCompiler extends ObjectCompiler {
     const object = this.map.get(vid);
     if (!object) {
       console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
+      return this;
     }
-    object.geometry.dispose();
     if (Array.isArray(object.material)) {
       for (const material2 of object.material) {
         material2.dispose();
@@ -7034,7 +7078,6 @@ class SolidObjectCompiler extends ObjectCompiler {
     } else {
       object.material.dispose();
     }
-    object.geometry = this.getGeometry(config2.geometry);
     let material;
     if (typeof config2.material === "string") {
       material = this.getMaterial(config2.material);
@@ -7042,6 +7085,10 @@ class SolidObjectCompiler extends ObjectCompiler {
       material = config2.material.map((vid2) => this.getMaterial(vid2));
     }
     object.material = material;
+    if (!object.isSprite) {
+      object.geometry.dispose();
+      object.geometry = this.getGeometry(config2.geometry);
+    }
     super.add(vid, config2);
     return this;
   }
@@ -7051,7 +7098,7 @@ class SolidObjectCompiler extends ObjectCompiler {
       return this;
     }
     const object = this.map.get(vid);
-    if (key === "geometry") {
+    if (key === "geometry" && !object.isSprite) {
       object.geometry = this.getGeometry(value);
       return this;
     }
@@ -10400,8 +10447,6 @@ const _SpriteHelper = class extends Sprite {
     __publicField(this, "target");
     __publicField(this, "type", "VisSpriteHelper");
     this.target = sprite;
-    this.geometry.dispose();
-    this.geometry.copy(sprite.geometry);
     this.material.dispose();
     this.material = new SpriteMaterial({
       color: "rgb(255, 255, 255)",
@@ -12147,4 +12192,4 @@ Scene.prototype.remove = function(...object) {
   });
   return this;
 };
-export { Action as ActionLibrary, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };
+export { Action as ActionLibrary, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };

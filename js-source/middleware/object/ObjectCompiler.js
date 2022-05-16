@@ -12,6 +12,7 @@ export class ObjectCompiler extends Compiler {
     // merge属性的时候会直接被过滤的属性
     filterAttribute = {
         lookAt: true,
+        parent: true,
         children: true,
         pointerdown: true,
         pointermove: true,
@@ -170,6 +171,13 @@ export class ObjectCompiler extends Compiler {
             return this;
         }
         object.add(targetObject);
+        // 更新target对象的parent
+        const targetConfig = this.engine.getConfigBySymbol(target);
+        if (!targetConfig) {
+            console.warn(`${this.COMPILER_NAME} compiler: can not foud object config: ${target}`);
+            return this;
+        }
+        targetConfig.parent = vid;
         return this;
     }
     // 移除子项
@@ -185,6 +193,13 @@ export class ObjectCompiler extends Compiler {
             return this;
         }
         object.remove(targetObject);
+        // 更新target对象的parent
+        const targetConfig = this.engine.getConfigBySymbol(target);
+        if (!targetConfig) {
+            console.warn(`${this.COMPILER_NAME} compiler: remove children function can not foud object config: ${target}`);
+            return this;
+        }
+        targetConfig.parent = "";
         return this;
     }
     linkObjectMap(...map) {
@@ -249,6 +264,8 @@ export class ObjectCompiler extends Compiler {
             }
         });
         Compiler.applyConfig(config, object, this.filterAttribute);
+        object.updateMatrix();
+        object.updateMatrixWorld();
         return this;
     }
     set(vid, path, key, value) {
@@ -312,10 +329,25 @@ export class ObjectCompiler extends Compiler {
         Compiler.applyConfig(config, object, this.filterAttribute);
         return this;
     }
-    remove(vid) {
+    remove(vid, config) {
         if (!this.map.has(vid)) {
             console.warn(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
             return this;
+        }
+        // 从parent 配置中移除
+        if (config.parent) {
+            const parentConfig = this.engine.getConfigBySymbol(config.parent);
+            if (!parentConfig) {
+                console.warn(`${this.COMPILER_NAME} compiler: can not found parent object config: ${config.parent}`);
+            }
+            else {
+                if (parentConfig.children.includes(vid)) {
+                    parentConfig.children.splice(parentConfig.children.indexOf(vid), 1);
+                }
+                else {
+                    console.warn(`${this.COMPILER_NAME} compiler: can not found vid in its parent config: ${vid}`);
+                }
+            }
         }
         const object = this.map.get(vid);
         this.weakMap.delete(object);

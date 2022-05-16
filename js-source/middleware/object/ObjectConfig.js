@@ -29,6 +29,7 @@ export const getObjectConfig = () => {
             y: 1,
             z: 0,
         },
+        parent: "",
         children: [],
         pointerdown: [],
         pointermove: [],

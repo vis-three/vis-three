@@ -1,9 +1,16 @@
 import { Object3D, Scene } from "three";
+import { version } from "../../package.json";
 
 if (!window.__THREE__) {
   console.error(
     `vis-three dependent on three.js module, pleace run 'npm i three' first.`
   );
+}
+
+if (window.__VIS__) {
+  console.warn(`Duplicate vis-three frames are introduced`);
+} else {
+  window.__VIS__ = version;
 }
 
 // 重写一下scene的add方法，由于其内部add会调用remove方法，存在藕合性

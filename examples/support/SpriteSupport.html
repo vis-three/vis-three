@@ -51,6 +51,8 @@
           "example.canvas": canvasGenerator.get(),
         });
 
+      window.engine = engine;
+
       const pointLight = Vis.generateConfig("PointLight", {
         position: {
           x: 30,
