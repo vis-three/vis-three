@@ -1,7 +1,7 @@
 import { Vector3Config } from "../../../middleware/common/CommonConfig";
 import { BasicEventConfig, EventGenerator } from "../EventLibrary";
 import { Tween } from "@tweenjs/tween.js";
-import { timeingFunction, TIMEINGFUNCTION } from "./common";
+import { timingFunction, TIMINGFUNCTION } from "./common";
 import { EngineSupport } from "../../../engine/EngineSupport";
 import { ObjectEvent } from "../../../manager/EventManager";
 import { ObjectConfig } from "../../../middleware/object/ObjectConfig";
@@ -13,7 +13,7 @@ export interface MoveTo extends BasicEventConfig {
     position: Vector3Config;
     delay: number;
     duration: number;
-    timingFunction: TIMEINGFUNCTION;
+    timingFunction: TIMINGFUNCTION;
   };
 }
 
@@ -28,7 +28,7 @@ export const config: MoveTo = {
     },
     delay: 0,
     duration: 1000,
-    timingFunction: TIMEINGFUNCTION.EQI,
+    timingFunction: TIMINGFUNCTION.EQI,
   },
 };
 
@@ -63,7 +63,7 @@ export const generator: EventGenerator<MoveTo> = function (
       .to(params.position)
       .duration(params.duration)
       .delay(params.delay)
-      .easing(timeingFunction[params.timingFunction])
+      .easing(timingFunction[params.timingFunction])
       .start();
 
     const renderFun = (event: RenderEvent) => {

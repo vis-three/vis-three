@@ -5,7 +5,7 @@ import { RenderEvent } from "../../../manager/RenderManager";
 import { Vector3Config } from "../../../middleware/common/CommonConfig";
 import { ObjectConfig } from "../../../middleware/object/ObjectConfig";
 import { BasicEventConfig, EventGenerator } from "../EventLibrary";
-import { timeingFunction, TIMEINGFUNCTION } from "./common";
+import { timingFunction, TIMINGFUNCTION } from "./common";
 
 export interface MoveSpacing extends BasicEventConfig {
   params: {
@@ -13,7 +13,7 @@ export interface MoveSpacing extends BasicEventConfig {
     spacing: Vector3Config;
     delay: number;
     duration: number;
-    timingFunction: TIMEINGFUNCTION;
+    timingFunction: TIMINGFUNCTION;
   };
 }
 
@@ -28,7 +28,7 @@ export const config: MoveSpacing = {
     },
     delay: 0,
     duration: 1000,
-    timingFunction: TIMEINGFUNCTION.EQI,
+    timingFunction: TIMINGFUNCTION.EQI,
   },
 };
 
@@ -60,7 +60,7 @@ export const generator: EventGenerator<MoveSpacing> = function (
       .to(position)
       .duration(params.duration)
       .delay(params.delay)
-      .easing(timeingFunction[params.timingFunction])
+      .easing(timingFunction[params.timingFunction])
       .start();
 
     const renderFun = (event: RenderEvent) => {

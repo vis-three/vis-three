@@ -1539,7 +1539,6 @@ class VisTransformControls extends TransformControls {
       var _a;
       if (!this.enabled || !((_a = this.object) == null ? void 0 : _a.parent))
         return;
-      this.domElement.setPointerCapture(event.pointerId);
       this.domElement.addEventListener("pointermove", this._onPointerMove);
       this.pointerHover(this._getPointer(event));
       this.pointerDown(this._getPointer(event));
@@ -4488,18 +4487,18 @@ const ObjectRule = function(input, compiler) {
   }
   const tempPath = path.concat([]);
   const vid = tempPath.shift() || key;
-  const attribute = tempPath.length ? tempPath[0] : key;
+  const attribute = tempPath.shift() || key;
   if (operate === "add") {
     if (attribute === "children") {
       compiler.addChildren(vid, value);
       return;
     }
     if (attribute.toLocaleUpperCase() in EVENTNAME) {
-      if (Number.isInteger(Number(key)) && !path.length) {
+      if (Number.isInteger(Number(key)) && !tempPath.length) {
         compiler.addEvent(vid, attribute, value);
         return;
       } else {
-        const index = Number(path.length ? path[0] : key);
+        const index = Number(tempPath.length ? tempPath[0] : key);
         if (!Number.isInteger(index)) {
           console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
           return;
@@ -4519,6 +4518,15 @@ const ObjectRule = function(input, compiler) {
       return;
     }
     if (vid && validate(vid) || UNIQUESYMBOL[vid]) {
+      if (attribute.toLocaleUpperCase() in EVENTNAME) {
+        const index = Number(tempPath.length ? tempPath[0] : key);
+        if (!Number.isInteger(index)) {
+          console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
+          return;
+        }
+        compiler.updateEvent(vid, attribute, index);
+        return;
+      }
       compiler.set(vid, tempPath, key, value);
     } else {
       console.warn(`${compiler.COMPILER_NAME} rule vid is illeage: '${vid}'`);
@@ -4528,6 +4536,15 @@ const ObjectRule = function(input, compiler) {
   if (operate === "delete") {
     if (attribute === "children") {
       compiler.removeChildren(vid, value);
+      return;
+    }
+    if (attribute.toLocaleUpperCase() in EVENTNAME) {
+      const index = Number(tempPath.length ? tempPath[0] : key);
+      if (!Number.isInteger(index)) {
+        console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
+        return;
+      }
+      compiler.removeEvent(vid, attribute, index);
       return;
     }
     if (validate(key) || UNIQUESYMBOL[key]) {
@@ -5801,12 +5818,12 @@ TWEEN.removeAll.bind(TWEEN);
 TWEEN.add.bind(TWEEN);
 TWEEN.remove.bind(TWEEN);
 TWEEN.update.bind(TWEEN);
-var TIMEINGFUNCTION;
-(function(TIMEINGFUNCTION2) {
-  TIMEINGFUNCTION2["ELN"] = "ELN";
-  TIMEINGFUNCTION2["EQI"] = "EQI";
-})(TIMEINGFUNCTION || (TIMEINGFUNCTION = {}));
-const timeingFunction = {
+var TIMINGFUNCTION;
+(function(TIMINGFUNCTION2) {
+  TIMINGFUNCTION2["ELN"] = "ELN";
+  TIMINGFUNCTION2["EQI"] = "EQI";
+})(TIMINGFUNCTION || (TIMINGFUNCTION = {}));
+const timingFunction = {
   ELN: Easing.Linear.None,
   EQI: Easing.Quadratic.InOut
 };
@@ -5821,7 +5838,7 @@ const config$3 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMEINGFUNCTION.EQI
+    timingFunction: TIMINGFUNCTION.EQI
   }
 };
 const generator$3 = function(engine, config2) {
@@ -5841,7 +5858,7 @@ const generator$3 = function(engine, config2) {
     };
   }
   return () => {
-    const tween = new Tween(object.position).to(params.position).duration(params.duration).delay(params.delay).easing(timeingFunction[params.timingFunction]).start();
+    const tween = new Tween(object.position).to(params.position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
     const renderFun = (event) => {
       tween.update();
     };
@@ -5865,7 +5882,7 @@ const config$2 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMEINGFUNCTION.EQI
+    timingFunction: TIMINGFUNCTION.EQI
   }
 };
 const generator$2 = function(engine, config2) {
@@ -5884,7 +5901,7 @@ const generator$2 = function(engine, config2) {
       y: object.position.y + params.spacing.y,
       z: object.position.z + params.spacing.z
     };
-    const tween = new Tween(object.position).to(position).duration(params.duration).delay(params.delay).easing(timeingFunction[params.timingFunction]).start();
+    const tween = new Tween(object.position).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
     const renderFun = (event) => {
       tween.update();
     };
@@ -5910,7 +5927,7 @@ const config$1 = {
     delay: 0,
     duration: 500,
     to: {},
-    timingFunction: TIMEINGFUNCTION.EQI
+    timingFunction: TIMINGFUNCTION.EQI
   }
 };
 const generator$1 = function(engine, config2) {
@@ -5958,7 +5975,7 @@ const generator$1 = function(engine, config2) {
     z: (_c = params.to.z) != null ? _c : targetObject[props.z]
   };
   return () => {
-    const tween = new Tween(targetObject).to(toObject).duration(params.duration).delay(params.delay).easing(timeingFunction[params.timingFunction]).start();
+    const tween = new Tween(targetObject).to(toObject).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
     const renderFun = (event) => {
       tween.update();
     };
@@ -12139,8 +12156,14 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
   _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
 });
 AniScriptLibrary.register(config, generator);
+const version = "0.1.1";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
+}
+if (window.__VIS__) {
+  console.warn(`Duplicate vis-three frames are introduced`);
+} else {
+  window.__VIS__ = version;
 }
 Scene.prototype.add = function(...object) {
   if (!arguments.length) {
@@ -12192,4 +12215,4 @@ Scene.prototype.remove = function(...object) {
   });
   return this;
 };
-export { Action as ActionLibrary, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };
+export { Action as ActionLibrary, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGTYPE, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };

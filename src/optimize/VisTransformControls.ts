@@ -29,7 +29,7 @@ export class VisTransformControls extends TransformControls {
     // @ts-ignore
     this._onPointerDown = (event) => {
       if (!this.enabled || !this.object?.parent) return;
-      this.domElement.setPointerCapture(event.pointerId);
+      // this.domElement.setPointerCapture(event.pointerId);
       // @ts-ignore
       this.domElement.addEventListener("pointermove", this._onPointerMove);
       // @ts-ignore

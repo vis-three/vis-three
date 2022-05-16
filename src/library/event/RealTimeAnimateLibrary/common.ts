@@ -1,12 +1,12 @@
 import { Easing } from "@tweenjs/tween.js";
 
-export enum TIMEINGFUNCTION {
+export enum TIMINGFUNCTION {
   ELN = "ELN",
   EQI = "EQI",
 }
 
-export const timeingFunction: {
-  [key in TIMEINGFUNCTION]: (amount: number) => number;
+export const timingFunction: {
+  [key in TIMINGFUNCTION]: (amount: number) => number;
 } = {
   ELN: Easing.Linear.None,
   EQI: Easing.Quadratic.InOut,

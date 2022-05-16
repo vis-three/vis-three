@@ -4,7 +4,7 @@ import { ObjectEvent } from "../../../manager/EventManager";
 import { RenderEvent } from "../../../manager/RenderManager";
 import { Vector3Config } from "../../../middleware/common/CommonConfig";
 import { BasicEventConfig, EventGenerator } from "../EventLibrary";
-import { timeingFunction, TIMEINGFUNCTION } from "./common";
+import { timingFunction, TIMINGFUNCTION } from "./common";
 
 export interface Vector3To extends BasicEventConfig {
   params: {
@@ -18,7 +18,7 @@ export interface Vector3To extends BasicEventConfig {
     delay: number;
     duration: number;
     to: Partial<Vector3Config>;
-    timingFunction: TIMEINGFUNCTION;
+    timingFunction: TIMINGFUNCTION;
   };
 }
 
@@ -35,7 +35,7 @@ export const config: Vector3To = {
     delay: 0,
     duration: 500,
     to: {},
-    timingFunction: TIMEINGFUNCTION.EQI,
+    timingFunction: TIMINGFUNCTION.EQI,
   },
 };
 
@@ -120,7 +120,7 @@ export const generator: EventGenerator<Vector3To> = function (
       .to(toObject)
       .duration(params.duration)
       .delay(params.delay)
-      .easing(timeingFunction[params.timingFunction])
+      .easing(timingFunction[params.timingFunction])
       .start();
 
     const renderFun = (event: RenderEvent) => {

@@ -47,6 +47,7 @@ import { EventLibrary } from "./library/event/EventLibrary";
 import { AniScriptLibrary } from "./library/aniScript/AniScriptLibrary";
 import { AnimationDataSupport } from "./middleware/animation/AnimationDataSupport";
 import { EVENTNAME } from "./manager/EventManager";
+import { TIMINGFUNCTION } from "./library/event/RealTimeAnimateLibrary/common";
 
 import "./optimize/optimizeScirpt";
 
@@ -63,6 +64,7 @@ export {
   ENGINEPLUGIN,
   VIEWPOINT,
   EVENTNAME,
+  TIMINGFUNCTION,
   // manager
   LoaderManager,
   ResourceManager,

@@ -29,7 +29,7 @@ export const ObjectRule = function <
   const tempPath = path.concat([]);
 
   const vid = tempPath.shift() || key;
-  const attribute = tempPath.length ? tempPath[0] : key;
+  const attribute = tempPath.shift() || key;
 
   if (operate === "add") {
     if (attribute === "children") {
@@ -38,11 +38,11 @@ export const ObjectRule = function <
     }
 
     if (attribute.toLocaleUpperCase() in EVENTNAME) {
-      if (Number.isInteger(Number(key)) && !path.length) {
+      if (Number.isInteger(Number(key)) && !tempPath.length) {
         compiler.addEvent(vid, attribute as EVENTNAME, value);
         return;
       } else {
-        const index = Number(path.length ? path[0] : key);
+        const index = Number(tempPath.length ? tempPath[0] : key);
 
         if (!Number.isInteger(index)) {
           console.error(
@@ -73,6 +73,21 @@ export const ObjectRule = function <
     }
 
     if ((vid && validate(vid)) || UNIQUESYMBOL[vid]) {
+      // event
+      if (attribute.toLocaleUpperCase() in EVENTNAME) {
+        const index = Number(tempPath.length ? tempPath[0] : key);
+
+        if (!Number.isInteger(index)) {
+          console.error(
+            `${compiler.COMPILER_NAME} rule: event analysis error.`,
+            input
+          );
+          return;
+        }
+        compiler.updateEvent(vid, attribute as EVENTNAME, index);
+        return;
+      }
+
       compiler.set(vid, tempPath, key, value);
     } else {
       console.warn(`${compiler.COMPILER_NAME} rule vid is illeage: '${vid}'`);
@@ -81,8 +96,24 @@ export const ObjectRule = function <
   }
 
   if (operate === "delete") {
+    // children
     if (attribute === "children") {
       compiler.removeChildren(vid, value);
+      return;
+    }
+
+    // event
+    if (attribute.toLocaleUpperCase() in EVENTNAME) {
+      const index = Number(tempPath.length ? tempPath[0] : key);
+
+      if (!Number.isInteger(index)) {
+        console.error(
+          `${compiler.COMPILER_NAME} rule: event analysis error.`,
+          input
+        );
+        return;
+      }
+      compiler.removeEvent(vid, attribute as EVENTNAME, index);
       return;
     }
 
