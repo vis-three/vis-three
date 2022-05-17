@@ -7,32 +7,63 @@ export const ObjectRule = function (input, compiler) {
         return;
     }
     const tempPath = path.concat([]);
-    const vid = tempPath.shift() || key;
-    const attribute = tempPath.shift() || key;
-    if (operate === "add") {
-        if (attribute === "children") {
+    let vid = key;
+    let attribute = key;
+    if (tempPath.length) {
+        vid = tempPath.shift();
+        if (tempPath.length) {
+            attribute = tempPath[0];
+        }
+    }
+    // children
+    if (attribute === "children") {
+        if (operate === "add") {
             compiler.addChildren(vid, value);
             return;
         }
-        if (attribute.toLocaleUpperCase() in EVENTNAME) {
-            if (Number.isInteger(Number(key)) && !tempPath.length) {
+        if (operate === "delete") {
+            compiler.removeChildren(vid, value);
+            return;
+        }
+    }
+    // event
+    if (attribute.toLocaleUpperCase() in EVENTNAME) {
+        const index = Number(tempPath.length > 2 ? tempPath[1] : key);
+        if (operate === "add") {
+            if (Number.isInteger(Number(key)) && tempPath.length === 1) {
                 compiler.addEvent(vid, attribute, value);
                 return;
             }
-            else {
-                const index = Number(tempPath.length ? tempPath[0] : key);
-                if (!Number.isInteger(index)) {
-                    console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
-                    return;
-                }
-                compiler.updateEvent(vid, attribute, index);
+            if (!Number.isInteger(index)) {
+                console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
                 return;
             }
+            compiler.updateEvent(vid, attribute, index);
+            return;
         }
+        if (operate === "set") {
+            if (!Number.isInteger(index)) {
+                console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
+                return;
+            }
+            compiler.updateEvent(vid, attribute, index);
+            return;
+        }
+        if (operate === "delete") {
+            if (!Number.isInteger(index)) {
+                console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
+                return;
+            }
+            compiler.removeEvent(vid, attribute, index);
+            return;
+        }
+    }
+    // other attribute
+    if (operate === "add") {
         if (validate(key) || UNIQUESYMBOL[key]) {
             compiler.add(key, value);
+            return;
         }
-        return;
     }
     if (operate === "set") {
         if (((vid && validate(key)) || UNIQUESYMBOL[vid]) &&
@@ -42,16 +73,6 @@ export const ObjectRule = function (input, compiler) {
             return;
         }
         if ((vid && validate(vid)) || UNIQUESYMBOL[vid]) {
-            // event
-            if (attribute.toLocaleUpperCase() in EVENTNAME) {
-                const index = Number(tempPath.length ? tempPath[0] : key);
-                if (!Number.isInteger(index)) {
-                    console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
-                    return;
-                }
-                compiler.updateEvent(vid, attribute, index);
-                return;
-            }
             compiler.set(vid, tempPath, key, value);
         }
         else {
@@ -60,21 +81,6 @@ export const ObjectRule = function (input, compiler) {
         return;
     }
     if (operate === "delete") {
-        // children
-        if (attribute === "children") {
-            compiler.removeChildren(vid, value);
-            return;
-        }
-        // event
-        if (attribute.toLocaleUpperCase() in EVENTNAME) {
-            const index = Number(tempPath.length ? tempPath[0] : key);
-            if (!Number.isInteger(index)) {
-                console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
-                return;
-            }
-            compiler.removeEvent(vid, attribute, index);
-            return;
-        }
         if (validate(key) || UNIQUESYMBOL[key]) {
             compiler.remove(key, value);
         }

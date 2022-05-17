@@ -4486,60 +4486,47 @@ const ObjectRule = function(input, compiler) {
     return;
   }
   const tempPath = path.concat([]);
-  const vid = tempPath.shift() || key;
-  const attribute = tempPath.shift() || key;
-  if (operate === "add") {
-    if (attribute === "children") {
+  let vid = key;
+  let attribute = key;
+  if (tempPath.length) {
+    vid = tempPath.shift();
+    if (tempPath.length) {
+      attribute = tempPath[0];
+    }
+  }
+  if (attribute === "children") {
+    if (operate === "add") {
       compiler.addChildren(vid, value);
       return;
     }
-    if (attribute.toLocaleUpperCase() in EVENTNAME) {
-      if (Number.isInteger(Number(key)) && !tempPath.length) {
-        compiler.addEvent(vid, attribute, value);
-        return;
-      } else {
-        const index = Number(tempPath.length ? tempPath[0] : key);
-        if (!Number.isInteger(index)) {
-          console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
-          return;
-        }
-        compiler.updateEvent(vid, attribute, index);
-        return;
-      }
-    }
-    if (validate(key) || UNIQUESYMBOL[key]) {
-      compiler.add(key, value);
-    }
-    return;
-  }
-  if (operate === "set") {
-    if ((vid && validate(key) || UNIQUESYMBOL[vid]) && !path.length && typeof value === "object") {
-      compiler.cover(vid, value);
-      return;
-    }
-    if (vid && validate(vid) || UNIQUESYMBOL[vid]) {
-      if (attribute.toLocaleUpperCase() in EVENTNAME) {
-        const index = Number(tempPath.length ? tempPath[0] : key);
-        if (!Number.isInteger(index)) {
-          console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
-          return;
-        }
-        compiler.updateEvent(vid, attribute, index);
-        return;
-      }
-      compiler.set(vid, tempPath, key, value);
-    } else {
-      console.warn(`${compiler.COMPILER_NAME} rule vid is illeage: '${vid}'`);
-    }
-    return;
-  }
-  if (operate === "delete") {
-    if (attribute === "children") {
+    if (operate === "delete") {
       compiler.removeChildren(vid, value);
       return;
     }
-    if (attribute.toLocaleUpperCase() in EVENTNAME) {
-      const index = Number(tempPath.length ? tempPath[0] : key);
+  }
+  if (attribute.toLocaleUpperCase() in EVENTNAME) {
+    const index = Number(tempPath.length > 2 ? tempPath[1] : key);
+    if (operate === "add") {
+      if (Number.isInteger(Number(key)) && tempPath.length === 1) {
+        compiler.addEvent(vid, attribute, value);
+        return;
+      }
+      if (!Number.isInteger(index)) {
+        console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
+        return;
+      }
+      compiler.updateEvent(vid, attribute, index);
+      return;
+    }
+    if (operate === "set") {
+      if (!Number.isInteger(index)) {
+        console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
+        return;
+      }
+      compiler.updateEvent(vid, attribute, index);
+      return;
+    }
+    if (operate === "delete") {
       if (!Number.isInteger(index)) {
         console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
         return;
@@ -4547,6 +4534,26 @@ const ObjectRule = function(input, compiler) {
       compiler.removeEvent(vid, attribute, index);
       return;
     }
+  }
+  if (operate === "add") {
+    if (validate(key) || UNIQUESYMBOL[key]) {
+      compiler.add(key, value);
+      return;
+    }
+  }
+  if (operate === "set") {
+    if ((vid && validate(key) || UNIQUESYMBOL[vid]) && !path.length && typeof value === "object") {
+      compiler.cover(vid, value);
+      return;
+    }
+    if (vid && validate(vid) || UNIQUESYMBOL[vid]) {
+      compiler.set(vid, tempPath, key, value);
+    } else {
+      console.warn(`${compiler.COMPILER_NAME} rule vid is illeage: '${vid}'`);
+    }
+    return;
+  }
+  if (operate === "delete") {
     if (validate(key) || UNIQUESYMBOL[key]) {
       compiler.remove(key, value);
     }
@@ -12156,7 +12163,7 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
   _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
 });
 AniScriptLibrary.register(config, generator);
-const version = "0.1.1";
+const version = "0.1.2";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
