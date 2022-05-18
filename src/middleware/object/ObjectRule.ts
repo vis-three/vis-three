@@ -91,7 +91,7 @@ export const ObjectRule = function <
         );
         return;
       }
-      compiler.removeEvent(vid, attribute as EVENTNAME, index);
+      compiler.removeEvent(vid, attribute as EVENTNAME, value);
       return;
     }
   }

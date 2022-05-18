@@ -19,7 +19,9 @@ export const generator: AniScriptGenerator<LinearTime> = function (
 ) {
   if (target[attribute] === undefined) {
     console.error(`object not exist attribute: ${attribute}`, target);
+    return (event: RenderEvent) => {};
   }
+
   if (typeof target[attribute] !== "number") {
     console.error(`object attribute is not typeof number.`, target, attribute);
     return (event: RenderEvent) => {};

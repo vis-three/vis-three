@@ -190,7 +190,11 @@ export abstract class ObjectCompiler<
   }
 
   // 移除事件
-  removeEvent(vid: string, eventName: EVENTNAME, index: number): this {
+  removeEvent(
+    vid: string,
+    eventName: EVENTNAME,
+    config: BasicEventConfig
+  ): this {
     if (!this.map.has(vid)) {
       console.warn(
         `${this.COMPILER_NAME} compiler: No matching vid found: ${vid}`
@@ -200,13 +204,12 @@ export abstract class ObjectCompiler<
 
     const object = this.map.get(vid)! as unknown as Object3D<ObjectEvent>;
 
-    const config = this.target[vid][eventName][index];
-
     const fun = config[Symbol.for(ObjectCompiler.eventSymbol)];
 
     if (!fun) {
       console.warn(
-        `${this.COMPILER_NAME} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`
+        `${this.COMPILER_NAME} compiler: event remove can not fun found event in config`,
+        config
       );
       return this;
     }

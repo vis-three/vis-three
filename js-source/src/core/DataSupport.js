@@ -71,16 +71,13 @@ export class DataSupport {
             const target = {};
             const cacheConfigTemplate = {};
             const recursion = (config, template, result = {}) => {
-                for (const key in template) {
+                for (const key in config) {
                     if (["vid", "type"].includes(key)) {
                         result[key] = config[key];
                         continue;
                     }
-                    if (typeof template[key] === "object" && template[key] !== null) {
-                        if (config[key] === null) {
-                            continue;
-                        }
-                        if (Array.isArray(template[key])) {
+                    if (typeof config[key] === "object" && config[key] !== null) {
+                        if (Array.isArray(config[key])) {
                             if (!config[key].length) {
                                 continue;
                             }

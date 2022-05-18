@@ -119,16 +119,15 @@ export class ObjectCompiler extends Compiler {
         return this;
     }
     // 移除事件
-    removeEvent(vid, eventName, index) {
+    removeEvent(vid, eventName, config) {
         if (!this.map.has(vid)) {
             console.warn(`${this.COMPILER_NAME} compiler: No matching vid found: ${vid}`);
             return this;
         }
         const object = this.map.get(vid);
-        const config = this.target[vid][eventName][index];
         const fun = config[Symbol.for(ObjectCompiler.eventSymbol)];
         if (!fun) {
-            console.warn(`${this.COMPILER_NAME} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`);
+            console.warn(`${this.COMPILER_NAME} compiler: event remove can not fun found event in config`, config);
             return this;
         }
         object.removeEventListener(eventName, fun);

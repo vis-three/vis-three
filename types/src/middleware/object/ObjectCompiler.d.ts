@@ -32,7 +32,7 @@ export declare abstract class ObjectCompiler<C extends ObjectConfig, T extends O
     protected mergeFilterAttribute(object: FilterAttribute): this;
     protected setLookAt(vid: string, target: string): this;
     addEvent(vid: string, eventName: EVENTNAME, config: BasicEventConfig): this;
-    removeEvent(vid: string, eventName: EVENTNAME, index: number): this;
+    removeEvent(vid: string, eventName: EVENTNAME, config: BasicEventConfig): this;
     updateEvent(vid: string, eventName: EVENTNAME, index: number): this;
     addChildren(vid: string, target: string): this;
     removeChildren(vid: string, target: string): this;

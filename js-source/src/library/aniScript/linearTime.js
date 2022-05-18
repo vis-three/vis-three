@@ -5,6 +5,7 @@ export const config = {
 export const generator = function (engine, target, attribute, config) {
     if (target[attribute] === undefined) {
         console.error(`object not exist attribute: ${attribute}`, target);
+        return (event) => { };
     }
     if (typeof target[attribute] !== "number") {
         console.error(`object attribute is not typeof number.`, target, attribute);

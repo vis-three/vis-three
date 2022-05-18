@@ -58,14 +58,9 @@ export class AnimationCompiler extends Compiler {
         return this;
     }
     update(vid) {
-        return this.remove(vid).add(vid, this.target[vid]);
+        return this.remove(this.target[vid]).add(vid, this.target[vid]);
     }
-    remove(vid) {
-        const config = this.target[vid];
-        if (!config) {
-            console.warn(`animation compiler can not found config with vid: ${vid}`);
-            return this;
-        }
+    remove(config) {
         if (config.type === CONFIGTYPE.SCRIPTANIMATION) {
             this.engine.renderManager.removeEventListener("render", config[Symbol.for(this.scriptAniSymbol)]);
         }
@@ -87,7 +82,7 @@ export class AnimationCompiler extends Compiler {
     }
     dispose(parameter) {
         for (const config of Object.values(this.target)) {
-            this.remove(config.vid);
+            this.remove(config);
         }
         return this;
     }

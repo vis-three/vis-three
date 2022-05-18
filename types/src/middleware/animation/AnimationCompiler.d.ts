@@ -18,7 +18,7 @@ export declare class AnimationCompiler extends Compiler {
     private getObject;
     add(vid: string, config: AnimationAllType): this;
     update(vid: string): this;
-    remove(vid: string): this;
+    remove(config: AnimationAllType): this;
     setTarget(target: AnimationCompilerTarget): this;
     useEngine(engine: EngineSupport): this;
     compileAll(): this;

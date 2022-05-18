@@ -4329,16 +4329,13 @@ class DataSupport {
       const target = {};
       const cacheConfigTemplate = {};
       const recursion = (config2, template, result = {}) => {
-        for (const key in template) {
+        for (const key in config2) {
           if (["vid", "type"].includes(key)) {
             result[key] = config2[key];
             continue;
           }
-          if (typeof template[key] === "object" && template[key] !== null) {
-            if (config2[key] === null) {
-              continue;
-            }
-            if (Array.isArray(template[key])) {
+          if (typeof config2[key] === "object" && config2[key] !== null) {
+            if (Array.isArray(config2[key])) {
               if (!config2[key].length) {
                 continue;
               }
@@ -4531,7 +4528,7 @@ const ObjectRule = function(input, compiler) {
         console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
         return;
       }
-      compiler.removeEvent(vid, attribute, index);
+      compiler.removeEvent(vid, attribute, value);
       return;
     }
   }
@@ -4810,7 +4807,7 @@ const AnimationRule = function(notice, compiler) {
   }
   if (operate === "delete") {
     if (validate(key)) {
-      compiler.remove(key);
+      compiler.remove(value);
     } else {
       console.warn(`animation rule vid is illeage: '${key}'`);
     }
@@ -5109,14 +5106,9 @@ class AnimationCompiler extends Compiler {
     return this;
   }
   update(vid) {
-    return this.remove(vid).add(vid, this.target[vid]);
+    return this.remove(this.target[vid]).add(vid, this.target[vid]);
   }
-  remove(vid) {
-    const config2 = this.target[vid];
-    if (!config2) {
-      console.warn(`animation compiler can not found config with vid: ${vid}`);
-      return this;
-    }
+  remove(config2) {
     if (config2.type === CONFIGTYPE.SCRIPTANIMATION) {
       this.engine.renderManager.removeEventListener("render", config2[Symbol.for(this.scriptAniSymbol)]);
     }
@@ -5138,7 +5130,7 @@ class AnimationCompiler extends Compiler {
   }
   dispose(parameter) {
     for (const config2 of Object.values(this.target)) {
-      this.remove(config2.vid);
+      this.remove(config2);
     }
     return this;
   }
@@ -6149,16 +6141,15 @@ const _ObjectCompiler = class extends Compiler {
     object.addEventListener(eventName, fun);
     return this;
   }
-  removeEvent(vid, eventName, index) {
+  removeEvent(vid, eventName, config2) {
     if (!this.map.has(vid)) {
       console.warn(`${this.COMPILER_NAME} compiler: No matching vid found: ${vid}`);
       return this;
     }
     const object = this.map.get(vid);
-    const config2 = this.target[vid][eventName][index];
     const fun = config2[Symbol.for(_ObjectCompiler.eventSymbol)];
     if (!fun) {
-      console.warn(`${this.COMPILER_NAME} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`);
+      console.warn(`${this.COMPILER_NAME} compiler: event remove can not fun found event in config`, config2);
       return this;
     }
     object.removeEventListener(eventName, fun);
@@ -12106,6 +12097,8 @@ const config = {
 const generator = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
     console.error(`object not exist attribute: ${attribute}`, target);
+    return (event) => {
+    };
   }
   if (typeof target[attribute] !== "number") {
     console.error(`object attribute is not typeof number.`, target, attribute);
@@ -12163,7 +12156,7 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
   _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
 });
 AniScriptLibrary.register(config, generator);
-const version = "0.1.2";
+const version = "0.1.3";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }

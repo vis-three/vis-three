@@ -23,7 +23,7 @@ export const AnimationRule = function (notice, compiler) {
     }
     if (operate === "delete") {
         if (validate(key)) {
-            compiler.remove(key);
+            compiler.remove(value);
         }
         else {
             console.warn(`animation rule vid is illeage: '${key}'`);

@@ -54,7 +54,7 @@ export const ObjectRule = function (input, compiler) {
                 console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
                 return;
             }
-            compiler.removeEvent(vid, attribute, index);
+            compiler.removeEvent(vid, attribute, value);
             return;
         }
     }
