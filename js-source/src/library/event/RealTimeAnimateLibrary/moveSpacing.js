@@ -16,14 +16,14 @@ export const config = {
 };
 export const generator = function (engine, config) {
     const params = config.params;
-    const object = engine.compilerManager.getObjectBySymbol(params.target);
+    const object = engine.getObjectBySymbol(params.target);
     if (!object) {
-        console.error(`can not found vid object: ${params.target}`);
+        console.warn(`can not found vid object: ${params.target}`);
         return () => { };
     }
     const renderManager = engine.renderManager;
     // 同步配置
-    const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
+    const supportData = engine.getConfigBySymbol(params.target);
     return () => {
         const position = {
             x: object.position.x + params.spacing.x,

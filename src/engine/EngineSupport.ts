@@ -175,4 +175,14 @@ export class EngineSupport extends Engine {
   removeConfig(config: EngineSupportLoadOptions) {
     this.removeLifeCycle(config);
   }
+
+  getObjectConfig(object: any): SymbolConfig | null {
+    const symbol = this.getObjectSymbol(object);
+
+    if (symbol) {
+      return this.getConfigBySymbol(symbol);
+    } else {
+      return null;
+    }
+  }
 }

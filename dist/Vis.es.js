@@ -1201,6 +1201,7 @@ class EventManager extends EventDispatcher {
     __publicField(this, "filter", new Set());
     __publicField(this, "recursive", false);
     __publicField(this, "penetrate", false);
+    __publicField(this, "propagation", false);
     this.raycaster = new Raycaster();
     this.camera = parameters.camera;
     this.scene = parameters.scene;
@@ -1269,6 +1270,14 @@ class EventManager extends EventDispatcher {
           intersections
         }));
         this.dispatchEvent(mergeEvent(event, {
+          type: "mousedown",
+          intersections
+        }));
+        this.scene.dispatchEvent(mergeEvent(event, {
+          type: "pointerdown",
+          intersections
+        }));
+        this.scene.dispatchEvent(mergeEvent(event, {
           type: "mousedown",
           intersections
         }));
@@ -1396,6 +1405,14 @@ class EventManager extends EventDispatcher {
         type: "mousemove",
         intersections
       }));
+      this.scene.dispatchEvent(mergeEvent(event, {
+        type: "pointermove",
+        intersections
+      }));
+      this.scene.dispatchEvent(mergeEvent(event, {
+        type: "mousemove",
+        intersections
+      }));
     });
     const cacheClickObject = new Map();
     let cacheClickTimer = null;
@@ -1472,10 +1489,26 @@ class EventManager extends EventDispatcher {
           type: "click",
           intersections
         }));
+        this.scene.dispatchEvent(mergeEvent(event, {
+          type: "pointerup",
+          intersections
+        }));
+        this.scene.dispatchEvent(mergeEvent(event, {
+          type: "mouseup",
+          intersections
+        }));
+        this.scene.dispatchEvent(mergeEvent(event, {
+          type: "click",
+          intersections
+        }));
         if (cacheClickTimer) {
           clearTimeout(cacheClickTimer);
           cacheClickTimer = null;
           this.dispatchEvent(mergeEvent(event, {
+            type: "dblclick",
+            intersections
+          }));
+          this.scene.dispatchEvent(mergeEvent(event, {
             type: "dblclick",
             intersections
           }));
@@ -1492,6 +1525,10 @@ class EventManager extends EventDispatcher {
         }
       } else if (event.button === 2) {
         this.dispatchEvent(mergeEvent(event, {
+          type: "contextmenu",
+          intersections
+        }));
+        this.scene.dispatchEvent(mergeEvent(event, {
           type: "contextmenu",
           intersections
         }));
@@ -4079,6 +4116,9 @@ class ResourceManager extends EventDispatcher {
       return configure;
     }
   }
+  hasResuorce(url) {
+    return this.resourceMap.has(url);
+  }
   remove(url) {
   }
   dispose() {
@@ -5135,13 +5175,13 @@ class AnimationCompiler extends Compiler {
     return this;
   }
 }
-const config$4 = {
+const config$5 = {
   name: "openWindow",
   params: {
     url: ""
   }
 };
-const generator$4 = function(engine, config2) {
+const generator$5 = function(engine, config2) {
   return () => {
     window.open(config2.params.url);
   };
@@ -5826,7 +5866,7 @@ const timingFunction = {
   ELN: Easing.Linear.None,
   EQI: Easing.Quadratic.InOut
 };
-const config$3 = {
+const config$4 = {
   name: "moveTo",
   params: {
     target: "",
@@ -5840,19 +5880,19 @@ const config$3 = {
     timingFunction: TIMINGFUNCTION.EQI
   }
 };
-const generator$3 = function(engine, config2) {
+const generator$4 = function(engine, config2) {
   const params = config2.params;
   const compiler = engine.compilerManager;
   const object = compiler.getObjectBySymbol(params.target);
   if (!object) {
-    console.error(`real time animation moveTO: can not found vid object: ${params.target}`);
+    console.warn(`real time animation moveTO: can not found vid object: ${params.target}`);
     return () => {
     };
   }
   const renderManager = engine.renderManager;
   const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
   if (!supportData) {
-    console.error(`can not found object config: ${params.target}`);
+    console.warn(`can not found object config: ${params.target}`);
     return () => {
     };
   }
@@ -5870,7 +5910,7 @@ const generator$3 = function(engine, config2) {
     });
   };
 };
-const config$2 = {
+const config$3 = {
   name: "moveSpacing",
   params: {
     target: "",
@@ -5884,16 +5924,16 @@ const config$2 = {
     timingFunction: TIMINGFUNCTION.EQI
   }
 };
-const generator$2 = function(engine, config2) {
+const generator$3 = function(engine, config2) {
   const params = config2.params;
-  const object = engine.compilerManager.getObjectBySymbol(params.target);
+  const object = engine.getObjectBySymbol(params.target);
   if (!object) {
-    console.error(`can not found vid object: ${params.target}`);
+    console.warn(`can not found vid object: ${params.target}`);
     return () => {
     };
   }
   const renderManager = engine.renderManager;
-  const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
+  const supportData = engine.getConfigBySymbol(params.target);
   return () => {
     const position = {
       x: object.position.x + params.spacing.x,
@@ -5913,7 +5953,7 @@ const generator$2 = function(engine, config2) {
     });
   };
 };
-const config$1 = {
+const config$2 = {
   name: "vector3To",
   params: {
     target: "",
@@ -5929,19 +5969,19 @@ const config$1 = {
     timingFunction: TIMINGFUNCTION.EQI
   }
 };
-const generator$1 = function(engine, config2) {
+const generator$2 = function(engine, config2) {
   var _a, _b, _c;
   const params = config2.params;
   const object = engine.compilerManager.getObjectBySymbol(params.target);
   if (!object) {
-    console.error(`real time animation vector3To: can not found vid object: ${params.target}`);
+    console.warn(`real time animation vector3To: can not found vid object: ${params.target}`);
     return () => {
     };
   }
   const renderManager = engine.renderManager;
   let supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
   if (!supportData) {
-    console.error(`real time animation vector3To: can not found object config: ${params.target}`);
+    console.warn(`real time animation vector3To: can not found object config: ${params.target}`);
     return () => {
     };
   }
@@ -5984,6 +6024,98 @@ const generator$1 = function(engine, config2) {
       supportData[props.x] = toObject.x;
       supportData[props.y] = toObject.y;
       supportData[props.z] = toObject.z;
+    });
+  };
+};
+const config$1 = {
+  name: "foucsObject",
+  params: {
+    target: "",
+    space: "world",
+    offset: {
+      x: 0,
+      y: 0,
+      z: 20
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EQI
+  }
+};
+const generator$1 = function(engine, config2) {
+  const params = config2.params;
+  const target = engine.getObjectBySymbol(params.target);
+  const camera = engine.camera;
+  const cameraConfig = engine.getObjectConfig(camera);
+  const orb = engine.orbitControls && engine.orbitControls.object === camera;
+  const orbTarget = engine.orbitControls.target;
+  if (!target) {
+    console.warn(`real time animation focusObject: can not found vid object: ${params.target}`);
+    return () => {
+    };
+  }
+  if (!cameraConfig) {
+    console.warn(`engine current camera can not found config.`);
+  }
+  return () => {
+    const renderManager = engine.renderManager;
+    let position = {
+      x: target.position.x + params.offset.x,
+      y: target.position.y + params.offset.y,
+      z: target.position.z + params.offset.z
+    };
+    if (params.space === "local") {
+      const vector3 = new Vector3(params.offset.x, params.offset.y, params.offset.z).applyEuler(target.rotation);
+      position = {
+        x: target.position.x + vector3.x,
+        y: target.position.y + vector3.y,
+        z: target.position.z + vector3.z
+      };
+    }
+    const positionTween = new Tween(camera.position).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    let rotationTween;
+    if (params.space === "local") {
+      const upVector3 = new Vector3(0, 1, 0).applyEuler(target.rotation);
+      rotationTween = new Tween(camera.up).to({
+        x: upVector3.x,
+        y: upVector3.y,
+        z: upVector3.z
+      }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    }
+    let tween2;
+    if (orb) {
+      tween2 = new Tween(orbTarget).to(target.position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    }
+    let renderFun;
+    if (orb && params.space === "local") {
+      renderFun = (event) => {
+        positionTween.update();
+        rotationTween.update();
+        tween2.update();
+      };
+    } else if (orb) {
+      renderFun = (event) => {
+        positionTween.update();
+        tween2.update();
+      };
+    } else if (params.space === "local") {
+      renderFun = (event) => {
+        positionTween.update();
+        rotationTween.update();
+      };
+    } else {
+      renderFun = (event) => {
+        positionTween.update();
+      };
+    }
+    renderManager.addEventListener("render", renderFun);
+    positionTween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      if (cameraConfig) {
+        cameraConfig.position.x = position.x;
+        cameraConfig.position.y = position.y;
+        cameraConfig.position.z = position.z;
+      }
     });
   };
 };
@@ -6030,6 +6162,7 @@ __publicField(EventLibrary, "register", function(config2, generator2) {
   _EventLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _EventLibrary.generatorLibrary.set(config2.name, generator2);
 });
+EventLibrary.register(config$5, generator$5);
 EventLibrary.register(config$4, generator$4);
 EventLibrary.register(config$3, generator$3);
 EventLibrary.register(config$2, generator$2);
@@ -10305,6 +10438,9 @@ class CanvasGenerator {
     canvas.style.left = (parameters == null ? void 0 : parameters.left) || "5%";
     canvas.style.right = (parameters == null ? void 0 : parameters.right) || "unset";
     canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
+    if (parameters == null ? void 0 : parameters.scale) {
+      canvas.style.transform = `scale(${parameters.scale})`;
+    }
     document.body.appendChild(this.canvas);
     return this;
   }
@@ -11356,6 +11492,14 @@ class EngineSupport extends Engine {
   removeConfig(config2) {
     this.removeLifeCycle(config2);
   }
+  getObjectConfig(object) {
+    const symbol = this.getObjectSymbol(object);
+    if (symbol) {
+      return this.getConfigBySymbol(symbol);
+    } else {
+      return null;
+    }
+  }
 }
 class ModelingEngineSupport extends EngineSupport {
   constructor(parameters) {
@@ -12156,7 +12300,7 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
   _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
 });
 AniScriptLibrary.register(config, generator);
-const version = "0.1.3";
+const version = "0.1.3-1";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }

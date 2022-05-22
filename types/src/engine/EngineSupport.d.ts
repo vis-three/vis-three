@@ -33,4 +33,5 @@ export declare class EngineSupport extends Engine {
     loadConfig(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
     loadConfigAsync(config: EngineSupportLoadOptions): Promise<MappedEvent | undefined>;
     removeConfig(config: EngineSupportLoadOptions): void;
+    getObjectConfig(object: any): SymbolConfig | null;
 }

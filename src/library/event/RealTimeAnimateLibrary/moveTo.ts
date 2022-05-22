@@ -41,7 +41,7 @@ export const generator: EventGenerator<MoveTo> = function (
   const object = compiler.getObjectBySymbol(params.target);
 
   if (!object) {
-    console.error(
+    console.warn(
       `real time animation moveTO: can not found vid object: ${params.target}`
     );
     return () => {};
@@ -54,7 +54,7 @@ export const generator: EventGenerator<MoveTo> = function (
   );
 
   if (!supportData) {
-    console.error(`can not found object config: ${params.target}`);
+    console.warn(`can not found object config: ${params.target}`);
     return () => {};
   }
 

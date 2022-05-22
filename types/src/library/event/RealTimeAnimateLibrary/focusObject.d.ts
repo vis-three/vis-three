@@ -1,0 +1,18 @@
+import { Vector3Config } from "../../../middleware/common/CommonConfig";
+import { BasicEventConfig, EventGenerator } from "../EventLibrary";
+import { TIMINGFUNCTION } from "./common";
+export interface FocusObject extends BasicEventConfig {
+    params: {
+        target: string;
+        space: "local" | "world";
+        offset: Vector3Config;
+        delay: number;
+        duration: number;
+        timingFunction: TIMINGFUNCTION;
+    };
+    finall: {
+        camera: string | null;
+    };
+}
+export declare const config: FocusObject;
+export declare const generator: EventGenerator<FocusObject>;

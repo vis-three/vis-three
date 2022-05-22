@@ -46,7 +46,7 @@ export const generator: EventGenerator<Vector3To> = function (
   const params = config.params;
   const object = engine.compilerManager.getObjectBySymbol(params.target);
   if (!object) {
-    console.error(
+    console.warn(
       `real time animation vector3To: can not found vid object: ${params.target}`
     );
     return () => {};
@@ -57,7 +57,7 @@ export const generator: EventGenerator<Vector3To> = function (
   let supportData = engine.dataSupportManager.getConfigBySymbol(params.target)!;
 
   if (!supportData) {
-    console.error(
+    console.warn(
       `real time animation vector3To: can not found object config: ${params.target}`
     );
     return () => {};

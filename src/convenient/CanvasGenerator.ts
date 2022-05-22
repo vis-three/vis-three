@@ -9,6 +9,7 @@ interface PreviewParameters {
   left?: string;
   bottom?: string;
   right?: string;
+  scale?: string;
 }
 export class CanvasGenerator {
   canvas: HTMLCanvasElement;
@@ -82,6 +83,10 @@ export class CanvasGenerator {
     canvas.style.left = parameters?.left || "5%";
     canvas.style.right = parameters?.right || "unset";
     canvas.style.bottom = parameters?.bottom || "unset";
+
+    if (parameters?.scale) {
+      canvas.style.transform = `scale(${parameters.scale})`;
+    }
 
     document.body.appendChild(this.canvas);
     return this;
