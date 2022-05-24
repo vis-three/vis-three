@@ -4153,90 +4153,93 @@ const _ProxyBroadcast = class extends EventDispatcher {
   constructor(ignore) {
     super();
     __publicField(this, "ignoreAttribute");
-    __publicField(this, "arraySymobl", "vis.array");
     this.ignoreAttribute = ignore || {};
   }
-  proxyExtends(object, path) {
-    if (!path) {
-      path = [];
+  static proxyGetter(target, key, receiver) {
+    return Reflect.get(target, key, receiver);
+  }
+  static proxySetter(target, key, value, receiver, broadcast, path) {
+    if (typeof key === "symbol") {
+      return Reflect.set(target, key, value, receiver);
     }
+    let result;
+    if (target[key] === void 0) {
+      if (typeof value === "object" && value !== null && !_ProxyBroadcast.proxyWeakSet.has(value) && !broadcast.ignoreAttribute[key]) {
+        const newPath = path.concat([key]);
+        value = broadcast.proxyExtends(value, newPath);
+      }
+      result = Reflect.set(target, key, value);
+      broadcast.broadcast({
+        operate: "add",
+        path: path.concat([]),
+        key,
+        value
+      });
+    } else {
+      if (typeof value === "object" && value !== null && !_ProxyBroadcast.proxyWeakSet.has(value) && !broadcast.ignoreAttribute[key]) {
+        const newPath = path.concat([key]);
+        value = broadcast.proxyExtends(value, newPath);
+      }
+      result = Reflect.set(target, key, value);
+      if (Array.isArray(target) && key === "length") {
+        const oldValue = target[Symbol.for(_ProxyBroadcast.arraySymobl)];
+        const num = oldValue.length - target.length;
+        if (num > 0) {
+          let execNum = 0;
+          let index = 0;
+          for (const value2 of oldValue) {
+            if (!target.includes(value2)) {
+              broadcast.broadcast({
+                operate: "delete",
+                path: path.concat([]),
+                key: index.toString(),
+                value: value2
+              });
+              execNum += 1;
+              index += 1;
+              if (execNum === num) {
+                break;
+              }
+            }
+          }
+        }
+        target[Symbol.for(this.arraySymobl)] = target.concat([]);
+        return result;
+      }
+      broadcast.broadcast({
+        operate: "set",
+        path: path.concat([]),
+        key,
+        value
+      });
+    }
+    return result;
+  }
+  static proxyDeleter(target, key, broadcast, path) {
+    const value = target[key];
+    const result = Reflect.deleteProperty(target, key);
+    if (Array.isArray(target) || typeof key === "symbol") {
+      return result;
+    }
+    broadcast.broadcast({
+      operate: "delete",
+      path: path.concat([]),
+      key,
+      value
+    });
+    return result;
+  }
+  proxyExtends(object, path = []) {
     if (_ProxyBroadcast.proxyWeakSet.has(object) || typeof object !== "object") {
       return object;
     }
     const handler = {
-      get: (target, key) => {
-        return Reflect.get(target, key);
-      },
-      set: (target, key, value) => {
-        if (typeof key === "symbol") {
-          return Reflect.set(target, key, value);
-        }
-        let result;
-        if (target[key] === void 0) {
-          if (typeof value === "object" && value !== null && !_ProxyBroadcast.proxyWeakSet.has(value)) {
-            const newPath = path.concat([key]);
-            value = this.proxyExtends(value, newPath);
-          }
-          result = Reflect.set(target, key, value);
-          this.broadcast({
-            operate: "add",
-            path: path.concat([]),
-            key,
-            value
-          });
-        } else {
-          if (typeof value === "object" && value !== null && !_ProxyBroadcast.proxyWeakSet.has(value)) {
-            const newPath = path.concat([key]);
-            value = this.proxyExtends(value, newPath);
-          }
-          result = Reflect.set(target, key, value);
-          if (Array.isArray(target) && key === "length") {
-            const oldValue = target[Symbol.for(this.arraySymobl)];
-            const num = oldValue.length - target.length;
-            if (num > 0) {
-              let execNum = 0;
-              let index = 0;
-              for (const value2 of oldValue) {
-                if (!target.includes(value2)) {
-                  this.broadcast({
-                    operate: "delete",
-                    path: path.concat([]),
-                    key: index.toString(),
-                    value: value2
-                  });
-                  execNum += 1;
-                  index += 1;
-                  if (execNum === num) {
-                    break;
-                  }
-                }
-              }
-            }
-            target[Symbol.for(this.arraySymobl)] = target.concat([]);
-            return result;
-          }
-          this.broadcast({
-            operate: "set",
-            path: path.concat([]),
-            key,
-            value
-          });
-        }
-        return result;
+      get: _ProxyBroadcast.proxyGetter,
+      set: (target, key, value, receiver) => {
+        return _ProxyBroadcast.proxySetter(target, key, value, receiver, this, path);
       },
       deleteProperty: (target, key) => {
-        const value = target[key];
-        const result = Reflect.deleteProperty(target, key);
-        if (Array.isArray(target)) {
-          return result;
-        }
-        this.broadcast({
-          operate: "delete",
-          path: path.concat([]),
-          key,
-          value
-        });
-        return result;
+        return _ProxyBroadcast.proxyDeleter(target, key, this, path);
       }
     };
     if (typeof object === "object" && object !== null) {
@@ -4256,7 +4259,7 @@ const _ProxyBroadcast = class extends EventDispatcher {
         }
         if (isValidKey(key, object) && typeof object[key] === "object" && object[key] !== null) {
           if (Array.isArray(object[key])) {
-            object[key][Symbol.for(this.arraySymobl)] = object[key].concat([]);
+            object[key][Symbol.for(_ProxyBroadcast.arraySymobl)] = object[key].concat([]);
           }
           object[key] = this.proxyExtends(object[key], tempPath);
         }
@@ -4283,6 +4286,7 @@ const _ProxyBroadcast = class extends EventDispatcher {
 };
 let ProxyBroadcast = _ProxyBroadcast;
 __publicField(ProxyBroadcast, "proxyWeakSet", new WeakSet());
+__publicField(ProxyBroadcast, "arraySymobl", "vis.array");
 class Translater {
   constructor() {
     __publicField(this, "rule");
@@ -4389,9 +4393,13 @@ class DataSupport {
               continue;
             }
             result[key] = {};
-            recursion(config2[key], template[key], result[key]);
-            if (Object.keys(result[key]).length === 0) {
-              delete result[key];
+            if (!template[key]) {
+              result[key] = JSON.parse(JSON.stringify(config2[key]));
+            } else {
+              recursion(config2[key], template[key], result[key]);
+              if (Object.keys(result[key]).length === 0) {
+                delete result[key];
+              }
             }
           } else {
             if (template[key] !== config2[key]) {
@@ -8014,7 +8022,56 @@ class VideoTexture extends Texture {
     }
   }
 }
-class TextureCompiler extends Compiler {
+class CanvasGenerator {
+  constructor(parameters) {
+    __publicField(this, "canvas");
+    this.canvas = document.createElement("canvas");
+    const devicePixelRatio = window.devicePixelRatio;
+    this.canvas.width = ((parameters == null ? void 0 : parameters.width) || 512) * devicePixelRatio;
+    this.canvas.height = ((parameters == null ? void 0 : parameters.height) || 512) * devicePixelRatio;
+    this.canvas.style.backgroundColor = (parameters == null ? void 0 : parameters.bgColor) || "rgb(255, 255, 255)";
+  }
+  get() {
+    return this.canvas;
+  }
+  clear(x = 0, y = 0, width, height) {
+    !width && (width = this.canvas.width);
+    !height && (height = this.canvas.height);
+    const ctx = this.canvas.getContext("2d");
+    if (ctx) {
+      ctx.clearRect(x, y, width, height);
+      return this;
+    } else {
+      console.warn(`you browser can not support canvas 2d`);
+      return this;
+    }
+  }
+  draw(fun) {
+    const ctx = this.canvas.getContext("2d");
+    if (ctx) {
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      fun(ctx);
+      return this;
+    } else {
+      console.warn(`you browser can not support canvas 2d`);
+      return this;
+    }
+  }
+  preview(parameters) {
+    const canvas = this.canvas;
+    canvas.style.position = "fixed";
+    canvas.style.top = (parameters == null ? void 0 : parameters.top) || "5%";
+    canvas.style.left = (parameters == null ? void 0 : parameters.left) || "5%";
+    canvas.style.right = (parameters == null ? void 0 : parameters.right) || "unset";
+    canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
+    if (parameters == null ? void 0 : parameters.scale) {
+      canvas.style.transform = `scale(${parameters.scale})`;
+    }
+    document.body.appendChild(this.canvas);
+    return this;
+  }
+}
+const _TextureCompiler = class extends Compiler {
   constructor() {
     super();
     __publicField(this, "target", {});
@@ -8031,6 +8088,9 @@ class TextureCompiler extends Compiler {
     this.constructMap = constructMap;
   }
   getResource(url) {
+    if (!url) {
+      return _TextureCompiler.replaceImage;
+    }
     const resourceMap = this.resourceMap;
     if (resourceMap.has(url)) {
       const resource = resourceMap.get(url);
@@ -8038,11 +8098,11 @@ class TextureCompiler extends Compiler {
         return resource;
       } else {
         console.error(`this url mapping resource is not a texture image class: ${url}`);
-        return null;
+        return _TextureCompiler.replaceImage;
       }
     } else {
       console.warn(`resource can not font url: ${url}`);
-      return null;
+      return _TextureCompiler.replaceImage;
     }
   }
   linkRescourceMap(map) {
@@ -8097,6 +8157,19 @@ class TextureCompiler extends Compiler {
       return this;
     }
     const texture = this.map.get(vid);
+    if (!path.length && key === "url") {
+      const config22 = this.target[vid];
+      if ([
+        CONFIGTYPE.IMAGETEXTURE,
+        CONFIGTYPE.CANVASTEXTURE,
+        CONFIGTYPE.VIDEOTEXTURE
+      ].includes(config22.type)) {
+        texture.image = this.getResource(value);
+      } else {
+        console.warn(`texture compiler can not support this type config set url: ${config22.type}`);
+      }
+      return this;
+    }
     if (key === "needsUpdate") {
       if (value) {
         texture.needsUpdate = true;
@@ -8137,7 +8210,17 @@ class TextureCompiler extends Compiler {
   dispose() {
     return this;
   }
-}
+};
+let TextureCompiler = _TextureCompiler;
+__publicField(TextureCompiler, "replaceImage", new CanvasGenerator({
+  width: 512,
+  height: 512
+}).draw((ctx) => {
+  ctx.translate(256, 256);
+  ctx.font = "32px";
+  ctx.fillStyle = "white";
+  ctx.fillText("\u6682\u65E0\u56FE\u7247", 0, 0);
+}).get());
 class CompilerManager {
   constructor(parameters) {
     __publicField(this, "cameraCompiler", new CameraCompiler());
@@ -10396,55 +10479,6 @@ class CSS3DPlaneHelper extends LineSegments {
     this.target = target;
   }
 }
-class CanvasGenerator {
-  constructor(parameters) {
-    __publicField(this, "canvas");
-    this.canvas = document.createElement("canvas");
-    const devicePixelRatio = window.devicePixelRatio;
-    this.canvas.width = ((parameters == null ? void 0 : parameters.width) || 512) * devicePixelRatio;
-    this.canvas.height = ((parameters == null ? void 0 : parameters.height) || 512) * devicePixelRatio;
-    this.canvas.style.backgroundColor = (parameters == null ? void 0 : parameters.bgColor) || "rgb(255, 255, 255)";
-  }
-  get() {
-    return this.canvas;
-  }
-  clear(x = 0, y = 0, width, height) {
-    !width && (width = this.canvas.width);
-    !height && (height = this.canvas.height);
-    const ctx = this.canvas.getContext("2d");
-    if (ctx) {
-      ctx.clearRect(x, y, width, height);
-      return this;
-    } else {
-      console.warn(`you browser can not support canvas 2d`);
-      return this;
-    }
-  }
-  draw(fun) {
-    const ctx = this.canvas.getContext("2d");
-    if (ctx) {
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-      fun(ctx);
-      return this;
-    } else {
-      console.warn(`you browser can not support canvas 2d`);
-      return this;
-    }
-  }
-  preview(parameters) {
-    const canvas = this.canvas;
-    canvas.style.position = "fixed";
-    canvas.style.top = (parameters == null ? void 0 : parameters.top) || "5%";
-    canvas.style.left = (parameters == null ? void 0 : parameters.left) || "5%";
-    canvas.style.right = (parameters == null ? void 0 : parameters.right) || "unset";
-    canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
-    if (parameters == null ? void 0 : parameters.scale) {
-      canvas.style.transform = `scale(${parameters.scale})`;
-    }
-    document.body.appendChild(this.canvas);
-    return this;
-  }
-}
 const _GroupHelper = class extends Sprite {
   constructor(group) {
     super();
@@ -10602,7 +10636,8 @@ const _SpriteHelper = class extends Sprite {
     this.material = new SpriteMaterial({
       color: "rgb(255, 255, 255)",
       alphaMap: _SpriteHelper.alphaTexture,
-      transparent: true
+      transparent: true,
+      depthWrite: false
     });
     this.matrixAutoUpdate = false;
     this.matrixWorldNeedsUpdate = false;

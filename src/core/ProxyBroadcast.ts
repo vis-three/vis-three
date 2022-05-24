@@ -17,10 +17,133 @@ export interface IgnoreAttribute {
 }
 
 export class ProxyBroadcast extends EventDispatcher {
-  static proxyWeakSet = new WeakSet();
+  private static proxyWeakSet = new WeakSet();
+
+  private static arraySymobl = "vis.array";
+
+  private static proxyGetter(target: any, key: string | symbol, receiver: any) {
+    return Reflect.get(target, key, receiver);
+  }
+
+  private static proxySetter(
+    target: any,
+    key: string | symbol,
+    value: any,
+    receiver: any,
+    broadcast: ProxyBroadcast,
+    path: string[]
+  ): boolean {
+    // 剔除symbol
+    if (typeof key === "symbol") {
+      return Reflect.set(target, key, value, receiver);
+    }
+
+    // 先执行反射
+    let result: boolean;
+
+    // 新增
+    if (target[key] === undefined) {
+      // 如果是对象就递归
+      if (
+        typeof value === "object" &&
+        value !== null &&
+        !ProxyBroadcast.proxyWeakSet.has(value) &&
+        !broadcast.ignoreAttribute[key]
+      ) {
+        const newPath = path!.concat([key]);
+        value = broadcast.proxyExtends(value, newPath);
+      }
+
+      result = Reflect.set(target, key, value);
+
+      broadcast.broadcast({
+        operate: "add",
+        path: path!.concat([]),
+        key,
+        value,
+      });
+      // 设置值
+    } else {
+      // 如果是对象就递归
+      if (
+        typeof value === "object" &&
+        value !== null &&
+        !ProxyBroadcast.proxyWeakSet.has(value) &&
+        !broadcast.ignoreAttribute[key]
+      ) {
+        const newPath = path!.concat([key]);
+        value = broadcast.proxyExtends(value, newPath);
+      }
+
+      result = Reflect.set(target, key, value);
+
+      // array的length变更需要重新比对数组，找出真正的操作对象，并且更新缓存
+      if (Array.isArray(target) && key === "length") {
+        const oldValue = target[Symbol.for(ProxyBroadcast.arraySymobl)];
+
+        // 只用还原length减少的现场
+        const num = oldValue.length - target.length;
+        if (num > 0) {
+          let execNum = 0;
+          let index = 0;
+          for (const value of oldValue) {
+            if (!target.includes(value)) {
+              broadcast.broadcast({
+                operate: "delete",
+                path: path!.concat([]),
+                key: index.toString(),
+                value: value,
+              });
+
+              execNum += 1;
+              index += 1;
+              if (execNum === num) {
+                break;
+              }
+            }
+          }
+        }
+        target[Symbol.for(this.arraySymobl)] = target.concat([]);
+        return result;
+      }
+
+      broadcast.broadcast({
+        operate: "set",
+        path: path!.concat([]),
+        key,
+        value: value,
+      });
+    }
+
+    return result;
+  }
+
+  private static proxyDeleter(
+    target: any,
+    key: string | symbol,
+    broadcast: ProxyBroadcast,
+    path: string[]
+  ): boolean {
+    const value = target[key];
+    // 先执行反射
+    const result = Reflect.deleteProperty(target, key);
+
+    // array的delete是不可信的，需要从length判断
+    if (Array.isArray(target) || typeof key === "symbol") {
+      return result;
+    }
+
+    broadcast.broadcast({
+      operate: "delete",
+      path: path!.concat([]),
+      key,
+      value,
+    });
+
+    return result;
+  }
 
   private ignoreAttribute: IgnoreAttribute;
-  private arraySymobl = "vis.array";
 
   constructor(ignore?: IgnoreAttribute) {
     super();
@@ -29,121 +152,31 @@ export class ProxyBroadcast extends EventDispatcher {
   }
 
   // 代理拓展
-  proxyExtends<T extends object>(object: T, path?: Array<string>): T {
-    if (!path) {
-      path = [];
-    }
-
+  proxyExtends<T extends object>(object: T, path: Array<string> = []): T {
     if (ProxyBroadcast.proxyWeakSet.has(object) || typeof object !== "object") {
       return object;
     }
 
     const handler: ProxyHandler<object> = {
-      get: (target: object, key: any) => {
-        return Reflect.get(target, key);
-      },
-
-      set: (target: object, key: any, value: any) => {
-        // 剔除symbol
-        if (typeof key === "symbol") {
-          return Reflect.set(target, key, value);
-        }
-
-        // 先执行反射
-        let result: boolean;
-
-        // 新增
-        if (target[key as never] === undefined) {
-          // 如果是对象就递归
-          if (
-            typeof value === "object" &&
-            value !== null &&
-            !ProxyBroadcast.proxyWeakSet.has(value)
-          ) {
-            const newPath = path!.concat([key]);
-            value = this.proxyExtends(value, newPath);
-          }
-
-          result = Reflect.set(target, key, value);
-
-          this.broadcast({
-            operate: "add",
-            path: path!.concat([]),
-            key,
-            value,
-          });
-          // 设置值
-        } else {
-          // 如果是对象就递归
-          if (
-            typeof value === "object" &&
-            value !== null &&
-            !ProxyBroadcast.proxyWeakSet.has(value)
-          ) {
-            const newPath = path!.concat([key]);
-            value = this.proxyExtends(value, newPath);
-          }
-
-          result = Reflect.set(target, key, value);
-
-          // array的length变更需要重新比对数组，找出真正的操作对象，并且更新缓存
-          if (Array.isArray(target) && key === "length") {
-            const oldValue = target[Symbol.for(this.arraySymobl)];
-
-            // 只用还原length减少的现场
-            const num = oldValue.length - target.length;
-            if (num > 0) {
-              let execNum = 0;
-              let index = 0;
-              for (const value of oldValue) {
-                if (!target.includes(value)) {
-                  this.broadcast({
-                    operate: "delete",
-                    path: path!.concat([]),
-                    key: index.toString(),
-                    value: value,
-                  });
-
-                  execNum += 1;
-                  index += 1;
-                  if (execNum === num) {
-                    break;
-                  }
-                }
-              }
-            }
-            target[Symbol.for(this.arraySymobl)] = target.concat([]);
-            return result;
-          }
-
-          this.broadcast({
-            operate: "set",
-            path: path!.concat([]),
-            key,
-            value: value,
-          });
-        }
-
-        return result;
-      },
-
-      deleteProperty: (target: object, key: any) => {
-        const value = target[key];
-        // 先执行反射
-        const result = Reflect.deleteProperty(target, key);
-
-        // array的delete是不可信的，需要从length判断
-        if (Array.isArray(target)) {
-          return result;
-        }
-
-        this.broadcast({
-          operate: "delete",
-          path: path!.concat([]),
+      get: ProxyBroadcast.proxyGetter,
+      set: (
+        target: object,
+        key: string | symbol,
+        value: any,
+        receiver: any
+      ) => {
+        return ProxyBroadcast.proxySetter(
+          target,
           key,
           value,
-        });
-        return result;
+          receiver,
+          this,
+          path
+        );
+      },
+
+      deleteProperty: (target: object, key: string | symbol) => {
+        return ProxyBroadcast.proxyDeleter(target, key, this, path);
       },
     };
 
@@ -176,7 +209,7 @@ export class ProxyBroadcast extends EventDispatcher {
           // 给array增加symbol与缓存
           if (Array.isArray(object[key])) {
             // 引用值保持为引用
-            object[key][Symbol.for(this.arraySymobl)] = (
+            object[key][Symbol.for(ProxyBroadcast.arraySymobl)] = (
               object[key] as Array<any>
             ).concat([]) as never;
           }
