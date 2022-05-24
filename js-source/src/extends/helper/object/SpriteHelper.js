@@ -24,6 +24,7 @@ export class SpriteHelper extends Sprite {
             color: "rgb(255, 255, 255)",
             alphaMap: SpriteHelper.alphaTexture,
             transparent: true,
+            depthWrite: false,
         });
         this.matrixAutoUpdate = false;
         this.matrixWorldNeedsUpdate = false;
