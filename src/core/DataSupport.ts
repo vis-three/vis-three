@@ -103,6 +103,7 @@ export abstract class DataSupport<
           }
 
           if (typeof config[key] === "object" && config[key] !== null) {
+            // 数组处理
             if (Array.isArray(config[key])) {
               if (!config[key].length) {
                 continue;
@@ -117,10 +118,16 @@ export abstract class DataSupport<
               });
               continue;
             }
+            // 对象处理
             result[key] = {};
-            recursion(config[key], template[key], result[key]);
-            if (Object.keys(result[key]).length === 0) {
-              delete result[key];
+            // 扩展对象
+            if (!template[key]) {
+              result[key] = JSON.parse(JSON.stringify(config[key]));
+            } else {
+              recursion(config[key], template[key], result[key]);
+              if (Object.keys(result[key]).length === 0) {
+                delete result[key];
+              }
             }
           } else {
             if (template[key] !== config[key]) {
