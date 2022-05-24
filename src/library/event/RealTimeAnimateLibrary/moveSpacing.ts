@@ -37,18 +37,16 @@ export const generator: EventGenerator<MoveSpacing> = function (
   config: MoveSpacing
 ): (event?: ObjectEvent) => void {
   const params = config.params;
-  const object = engine.compilerManager.getObjectBySymbol(params.target);
+  const object = engine.getObjectBySymbol(params.target);
 
   if (!object) {
-    console.error(`can not found vid object: ${params.target}`);
+    console.warn(`can not found vid object: ${params.target}`);
     return () => {};
   }
 
   const renderManager = engine.renderManager!;
   // 同步配置
-  const supportData = engine.dataSupportManager.getConfigBySymbol<ObjectConfig>(
-    params.target
-  );
+  const supportData = engine.getConfigBySymbol<ObjectConfig>(params.target);
 
   return () => {
     const position = {

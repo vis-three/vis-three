@@ -117,5 +117,14 @@ export class EngineSupport extends Engine {
     removeConfig(config) {
         this.removeLifeCycle(config);
     }
+    getObjectConfig(object) {
+        const symbol = this.getObjectSymbol(object);
+        if (symbol) {
+            return this.getConfigBySymbol(symbol);
+        }
+        else {
+            return null;
+        }
+    }
 }
 //# sourceMappingURL=EngineSupport.js.map

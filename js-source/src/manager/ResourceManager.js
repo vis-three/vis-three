@@ -265,6 +265,14 @@ export class ResourceManager extends EventDispatcher {
             return configure;
         }
     }
+    /**
+     * 是否有此资源
+     * @param url 资源 url
+     * @returns boolean
+     */
+    hasResuorce(url) {
+        return this.resourceMap.has(url);
+    }
     // TODO: 根据strictureMap去清空configMap和resourceMap
     remove(url) { }
     // TODO: dispose

@@ -8,6 +8,7 @@ interface PreviewParameters {
     left?: string;
     bottom?: string;
     right?: string;
+    scale?: string;
 }
 export declare class CanvasGenerator {
     canvas: HTMLCanvasElement;

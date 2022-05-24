@@ -5,6 +5,7 @@ import * as OpenWindow from "./BasicEventLibrary/openWindow";
 import * as MoveTo from "./RealTimeAnimateLibrary/moveTo";
 import * as MoveSpacing from "./RealTimeAnimateLibrary/moveSpacing";
 import * as Vecter3To from "./RealTimeAnimateLibrary/vector3To";
+import * as FocusObject from "./RealTimeAnimateLibrary/focusObject";
 
 export interface BasicEventConfig {
   name: string;
@@ -92,3 +93,4 @@ EventLibrary.register(OpenWindow.config, OpenWindow.generator);
 EventLibrary.register(MoveTo.config, MoveTo.generator);
 EventLibrary.register(MoveSpacing.config, MoveSpacing.generator);
 EventLibrary.register(Vecter3To.config, Vecter3To.generator);
+EventLibrary.register(FocusObject.config, FocusObject.generator);

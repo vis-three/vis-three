@@ -20,13 +20,13 @@ export const generator = function (engine, config) {
     const params = config.params;
     const object = engine.compilerManager.getObjectBySymbol(params.target);
     if (!object) {
-        console.error(`real time animation vector3To: can not found vid object: ${params.target}`);
+        console.warn(`real time animation vector3To: can not found vid object: ${params.target}`);
         return () => { };
     }
     const renderManager = engine.renderManager;
     let supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
     if (!supportData) {
-        console.error(`real time animation vector3To: can not found object config: ${params.target}`);
+        console.warn(`real time animation vector3To: can not found object config: ${params.target}`);
         return () => { };
     }
     const attributeList = params.attribute.split(".");

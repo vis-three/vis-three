@@ -45,6 +45,12 @@ export declare class ResourceManager extends EventDispatcher {
      * @returns LoadOptions
      */
     getResourceConfig(url: string): LoadOptions;
+    /**
+     * 是否有此资源
+     * @param url 资源 url
+     * @returns boolean
+     */
+    hasResuorce(url: string): boolean;
     remove(url: string): void;
     dispose(): void;
 }
