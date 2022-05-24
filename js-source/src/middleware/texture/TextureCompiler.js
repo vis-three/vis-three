@@ -4,7 +4,19 @@ import { ImageTexture } from "../../extends/texture/ImageTexture";
 import { Compiler } from "../../core/Compiler";
 import { CONFIGTYPE } from "../constants/configType";
 import { VideoTexture } from "../../optimize/VideoTexture";
+import { CanvasGenerator } from "../../convenient/CanvasGenerator";
 export class TextureCompiler extends Compiler {
+    static replaceImage = new CanvasGenerator({
+        width: 512,
+        height: 512,
+    })
+        .draw((ctx) => {
+        ctx.translate(256, 256);
+        ctx.font = "32px";
+        ctx.fillStyle = "white";
+        ctx.fillText("暂无图片", 0, 0);
+    })
+        .get();
     target = {};
     map;
     constructMap;
@@ -21,6 +33,9 @@ export class TextureCompiler extends Compiler {
         this.constructMap = constructMap;
     }
     getResource(url) {
+        if (!url) {
+            return TextureCompiler.replaceImage;
+        }
         const resourceMap = this.resourceMap;
         if (resourceMap.has(url)) {
             const resource = resourceMap.get(url);
@@ -31,12 +46,12 @@ export class TextureCompiler extends Compiler {
             }
             else {
                 console.error(`this url mapping resource is not a texture image class: ${url}`);
-                return null;
+                return TextureCompiler.replaceImage;
             }
         }
         else {
             console.warn(`resource can not font url: ${url}`);
-            return null;
+            return TextureCompiler.replaceImage;
         }
     }
     linkRescourceMap(map) {
@@ -96,6 +111,20 @@ export class TextureCompiler extends Compiler {
             return this;
         }
         const texture = this.map.get(vid);
+        if (!path.length && key === "url") {
+            const config = this.target[vid];
+            if ([
+                CONFIGTYPE.IMAGETEXTURE,
+                CONFIGTYPE.CANVASTEXTURE,
+                CONFIGTYPE.VIDEOTEXTURE,
+            ].includes(config.type)) {
+                texture.image = this.getResource(value);
+            }
+            else {
+                console.warn(`texture compiler can not support this type config set url: ${config.type}`);
+            }
+            return this;
+        }
         if (key === "needsUpdate") {
             if (value) {
                 texture.needsUpdate = true;

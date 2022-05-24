@@ -7,6 +7,7 @@ export interface TextureCompilerTarget extends CompilerTarget {
     [key: string]: TextureAllType;
 }
 export declare class TextureCompiler extends Compiler {
+    private static replaceImage;
     private target;
     private map;
     private constructMap;
