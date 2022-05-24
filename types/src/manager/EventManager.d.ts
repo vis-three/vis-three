@@ -31,6 +31,7 @@ export declare class EventManager extends EventDispatcher {
     private filter;
     recursive: boolean;
     penetrate: boolean;
+    propagation: boolean;
     constructor(parameters: EventManagerParameters);
     setScene(scene: Scene): this;
     setCamera(camera: Camera): this;

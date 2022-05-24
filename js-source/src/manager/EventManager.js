@@ -18,6 +18,7 @@ export class EventManager extends EventDispatcher {
     filter = new Set();
     recursive = false; // 递归子物体
     penetrate = false; // 事件穿透
+    propagation = false; // 冒泡
     constructor(parameters) {
         super();
         this.raycaster = new Raycaster();
@@ -102,6 +103,15 @@ export class EventManager extends EventDispatcher {
                     intersections,
                 }));
                 this.dispatchEvent(mergeEvent(event, {
+                    type: "mousedown",
+                    intersections,
+                }));
+                // scene事件代理
+                this.scene.dispatchEvent(mergeEvent(event, {
+                    type: "pointerdown",
+                    intersections,
+                }));
+                this.scene.dispatchEvent(mergeEvent(event, {
                     type: "mousedown",
                     intersections,
                 }));
@@ -242,6 +252,14 @@ export class EventManager extends EventDispatcher {
                 type: "mousemove",
                 intersections,
             }));
+            this.scene.dispatchEvent(mergeEvent(event, {
+                type: "pointermove",
+                intersections,
+            }));
+            this.scene.dispatchEvent(mergeEvent(event, {
+                type: "mousemove",
+                intersections,
+            }));
         });
         const cacheClickObject = new Map();
         let cacheClickTimer = null;
@@ -324,10 +342,26 @@ export class EventManager extends EventDispatcher {
                     type: "click",
                     intersections,
                 }));
+                this.scene.dispatchEvent(mergeEvent(event, {
+                    type: "pointerup",
+                    intersections,
+                }));
+                this.scene.dispatchEvent(mergeEvent(event, {
+                    type: "mouseup",
+                    intersections,
+                }));
+                this.scene.dispatchEvent(mergeEvent(event, {
+                    type: "click",
+                    intersections,
+                }));
                 if (cacheClickTimer) {
                     clearTimeout(cacheClickTimer);
                     cacheClickTimer = null;
                     this.dispatchEvent(mergeEvent(event, {
+                        type: "dblclick",
+                        intersections,
+                    }));
+                    this.scene.dispatchEvent(mergeEvent(event, {
                         type: "dblclick",
                         intersections,
                     }));
@@ -346,6 +380,10 @@ export class EventManager extends EventDispatcher {
             }
             else if (event.button === 2) {
                 this.dispatchEvent(mergeEvent(event, {
+                    type: "contextmenu",
+                    intersections,
+                }));
+                this.scene.dispatchEvent(mergeEvent(event, {
                     type: "contextmenu",
                     intersections,
                 }));

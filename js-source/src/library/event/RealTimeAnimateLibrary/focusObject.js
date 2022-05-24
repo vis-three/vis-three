@@ -15,9 +15,6 @@ export const config = {
         duration: 1000,
         timingFunction: TIMINGFUNCTION.EQI,
     },
-    finall: {
-        camera: null,
-    },
 };
 export const generator = function (engine, config) {
     const params = config.params;
@@ -27,7 +24,7 @@ export const generator = function (engine, config) {
     const orb = engine.orbitControls && engine.orbitControls.object === camera;
     const orbTarget = engine.orbitControls.target;
     if (!target) {
-        console.warn(`real time animation moveTO: can not found vid object: ${params.target}`);
+        console.warn(`real time animation focusObject: can not found vid object: ${params.target}`);
         return () => { };
     }
     if (!cameraConfig) {
@@ -35,7 +32,7 @@ export const generator = function (engine, config) {
     }
     return () => {
         const renderManager = engine.renderManager;
-        // 根据face计算position
+        // 根据space计算position
         let position = {
             x: target.position.x + params.offset.x,
             y: target.position.y + params.offset.y,
@@ -49,12 +46,27 @@ export const generator = function (engine, config) {
                 z: target.position.z + vector3.z,
             };
         }
-        const tween = new Tween(camera.position)
+        const positionTween = new Tween(camera.position)
             .to(position)
             .duration(params.duration)
             .delay(params.delay)
             .easing(timingFunction[params.timingFunction])
             .start();
+        let rotationTween;
+        if (params.space === "local") {
+            // scene up
+            const upVector3 = new Vector3(0, 1, 0).applyEuler(target.rotation);
+            rotationTween = new Tween(camera.up)
+                .to({
+                x: upVector3.x,
+                y: upVector3.y,
+                z: upVector3.z,
+            })
+                .duration(params.duration)
+                .delay(params.delay)
+                .easing(timingFunction[params.timingFunction])
+                .start();
+        }
         let tween2;
         if (orb) {
             tween2 = new Tween(orbTarget)
@@ -65,19 +77,32 @@ export const generator = function (engine, config) {
                 .start();
         }
         let renderFun;
-        if (orb) {
+        if (orb && params.space === "local") {
             renderFun = (event) => {
-                tween.update();
+                positionTween.update();
+                rotationTween.update();
                 tween2.update();
+            };
+        }
+        else if (orb) {
+            renderFun = (event) => {
+                positionTween.update();
+                tween2.update();
+            };
+        }
+        else if (params.space === "local") {
+            renderFun = (event) => {
+                positionTween.update();
+                rotationTween.update();
             };
         }
         else {
             renderFun = (event) => {
-                tween.update();
+                positionTween.update();
             };
         }
         renderManager.addEventListener("render", renderFun);
-        tween.onComplete(() => {
+        positionTween.onComplete(() => {
             renderManager.removeEventListener("render", renderFun);
             if (cameraConfig) {
                 cameraConfig.position.x = position.x;

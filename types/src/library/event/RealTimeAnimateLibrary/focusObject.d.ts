@@ -10,9 +10,6 @@ export interface FocusObject extends BasicEventConfig {
         duration: number;
         timingFunction: TIMINGFUNCTION;
     };
-    finall: {
-        camera: string | null;
-    };
 }
 export declare const config: FocusObject;
 export declare const generator: EventGenerator<FocusObject>;
