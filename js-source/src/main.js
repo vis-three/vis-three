@@ -46,6 +46,8 @@ import { AniScriptLibrary } from "./library/aniScript/AniScriptLibrary";
 import { AnimationDataSupport } from "./middleware/animation/AnimationDataSupport";
 import { EVENTNAME } from "./manager/EventManager";
 import { TIMINGFUNCTION } from "./library/event/RealTimeAnimateLibrary/common";
+import { PassDataSupport } from "./middleware/pass/PassDataSupport";
+import { CSS3DDataSupport } from "./middleware/css3D/CSS3DDataSupport";
 import "./optimize/optimizeScirpt";
 export { 
 // core
@@ -58,7 +60,7 @@ LoaderManager, ResourceManager, DataSupportManager,
 Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, 
 // engine connector
 // data support
-TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, AnimationDataSupport, 
+TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, AnimationDataSupport, PassDataSupport, CSS3DDataSupport, 
 // helper
 PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, 
 // convenient
