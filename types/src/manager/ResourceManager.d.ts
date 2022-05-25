@@ -26,7 +26,9 @@ export declare class ResourceManager extends EventDispatcher {
     resourceMap: Map<string, unknown>;
     private configModuleMap;
     private mappingHandler;
-    constructor();
+    constructor(resources?: {
+        [key: string]: any;
+    });
     private Object3DHandler;
     private HTMLImageElementHandler;
     private HTMLCanvasElementHandler;

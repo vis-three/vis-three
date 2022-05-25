@@ -36,7 +36,7 @@ export class ResourceManager extends EventDispatcher {
   private configModuleMap = CONFIGMODULE;
   private mappingHandler = new Map();
 
-  constructor() {
+  constructor(resources: { [key: string]: any } = {}) {
     super();
     const mappingHandler = this.mappingHandler;
 
@@ -46,6 +46,19 @@ export class ResourceManager extends EventDispatcher {
     mappingHandler.set(Object3D, this.Object3DHandler);
     mappingHandler.set(HTMLDivElement, this.HTMLDivElementHandler);
     mappingHandler.set(HTMLSpanElement, this.HTMLSpanElementHandler);
+
+    const map = new Map<string, unknown>();
+    for (const key in resources) {
+      if (map.has(key)) {
+        console.warn(
+          `resourceManager construct params rescource already exist: ${key}, that will be cover.`
+        );
+      }
+
+      map.set(key, resources[key]);
+    }
+
+    this.mappingResource(map);
   }
 
   private Object3DHandler(url: string, object: Object3D): this {

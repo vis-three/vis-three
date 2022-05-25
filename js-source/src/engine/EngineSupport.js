@@ -2,10 +2,10 @@ import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { Engine, ENGINEPLUGIN } from "./Engine";
 export class EngineSupport extends Engine {
     IS_ENGINESUPPORT = true;
-    constructor(parameters) {
+    constructor(parameters = {}, resources = {}) {
         super();
         this.install(ENGINEPLUGIN.LOADERMANAGER)
-            .install(ENGINEPLUGIN.RESOURCEMANAGER)
+            .install(ENGINEPLUGIN.RESOURCEMANAGER, { resources })
             .install(ENGINEPLUGIN.POINTERMANAGER)
             .install(ENGINEPLUGIN.EVENTMANAGER)
             .install(ENGINEPLUGIN.RENDERMANAGER)

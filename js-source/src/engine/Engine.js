@@ -9,7 +9,7 @@ import { EventManagerPlugin } from "../plugins/EventManagerPlugin";
 import { TransformControlsPlugin } from "../plugins/TransformControlsPlugin";
 import { WebGLRendererPlugin, } from "../plugins/WebGLRendererPlugin";
 import { LoaderManagerPlugin } from "../plugins/LoaderManagerPlugin";
-import { ResourceManagerPlugin } from "../plugins/ResourceManagerPlugin";
+import { ResourceManagerPlugin, } from "../plugins/ResourceManagerPlugin";
 import { DataSupportManagerPlugin } from "../plugins/DataSupportManagerPlugin";
 import { CompilerManagerPlugin } from "../plugins/CompilerManagerPlugin";
 import { KeyboardManagerPlugin } from "../plugins/KeyboardManagerPlugin";

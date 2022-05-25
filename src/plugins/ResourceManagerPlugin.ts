@@ -3,35 +3,37 @@ import { LoadedEvent } from "../manager/LoaderManager";
 import { ResourceManager } from "../manager/ResourceManager";
 import { Plugin } from "./plugin";
 
-export const ResourceManagerPlugin: Plugin<Object> = function (
-  this: Engine,
-  params: Object
-): boolean {
-  if (this.resourceManager) {
-    console.warn("engine has installed resourceManager plugin.");
-    return false;
-  }
+export interface ResourceManagerPluginParameters {
+  resources: { [key: string]: any };
+}
 
-  const resourceManager = new ResourceManager();
+export const ResourceManagerPlugin: Plugin<ResourceManagerPluginParameters> =
+  function (this: Engine, params: ResourceManagerPluginParameters): boolean {
+    if (this.resourceManager) {
+      console.warn("engine has installed resourceManager plugin.");
+      return false;
+    }
 
-  this.resourceManager = resourceManager;
+    const resourceManager = new ResourceManager(params.resources);
 
-  if (this.loaderManager) {
-    this.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
-      this.resourceManager!.mappingResource(event.resourceMap);
-    });
-  }
+    this.resourceManager = resourceManager;
 
-  this.registerResources = (resourceMap: {
-    [key: string]: unknown;
-  }): Engine => {
-    const map = new Map();
-    Object.keys(resourceMap).forEach((key) => {
-      map.set(key, resourceMap[key]);
-    });
-    this.resourceManager!.mappingResource(map);
-    return this;
+    if (this.loaderManager) {
+      this.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
+        this.resourceManager!.mappingResource(event.resourceMap);
+      });
+    }
+
+    this.registerResources = (resourceMap: {
+      [key: string]: unknown;
+    }): Engine => {
+      const map = new Map();
+      Object.keys(resourceMap).forEach((key) => {
+        map.set(key, resourceMap[key]);
+      });
+      this.resourceManager!.mappingResource(map);
+      return this;
+    };
+
+    return true;
   };
-
-  return true;
-};

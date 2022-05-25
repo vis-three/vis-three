@@ -3896,7 +3896,7 @@ var RESOURCEEVENTTYPE;
   RESOURCEEVENTTYPE2["MAPPED"] = "mapped";
 })(RESOURCEEVENTTYPE || (RESOURCEEVENTTYPE = {}));
 class ResourceManager extends EventDispatcher {
-  constructor() {
+  constructor(resources = {}) {
     super();
     __publicField(this, "structureMap", new Map());
     __publicField(this, "configMap", new Map());
@@ -3910,6 +3910,14 @@ class ResourceManager extends EventDispatcher {
     mappingHandler.set(Object3D, this.Object3DHandler);
     mappingHandler.set(HTMLDivElement, this.HTMLDivElementHandler);
     mappingHandler.set(HTMLSpanElement, this.HTMLSpanElementHandler);
+    const map = new Map();
+    for (const key in resources) {
+      if (map.has(key)) {
+        console.warn(`resourceManager construct params rescource already exist: ${key}, that will be cover.`);
+      }
+      map.set(key, resources[key]);
+    }
+    this.mappingResource(map);
   }
   Object3DHandler(url, object) {
     const structureMap = this.structureMap;
@@ -4129,7 +4137,7 @@ const ResourceManagerPlugin = function(params) {
     console.warn("engine has installed resourceManager plugin.");
     return false;
   }
-  const resourceManager = new ResourceManager();
+  const resourceManager = new ResourceManager(params.resources);
   this.resourceManager = resourceManager;
   if (this.loaderManager) {
     this.loaderManager.addEventListener("loaded", (event) => {
@@ -11432,10 +11440,10 @@ const _TextureDisplayer = class {
 let TextureDisplayer = _TextureDisplayer;
 __publicField(TextureDisplayer, "ambientLight", new AmbientLight("rgb(255, 255, 255)", 1));
 class EngineSupport extends Engine {
-  constructor(parameters) {
+  constructor(parameters = {}, resources = {}) {
     super();
     __publicField(this, "IS_ENGINESUPPORT", true);
-    this.install(ENGINEPLUGIN.LOADERMANAGER).install(ENGINEPLUGIN.RESOURCEMANAGER).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters).install(ENGINEPLUGIN.COMPILERMANAGER);
+    this.install(ENGINEPLUGIN.LOADERMANAGER).install(ENGINEPLUGIN.RESOURCEMANAGER, { resources }).install(ENGINEPLUGIN.POINTERMANAGER).install(ENGINEPLUGIN.EVENTMANAGER).install(ENGINEPLUGIN.RENDERMANAGER).install(ENGINEPLUGIN.DATASUPPORTMANAGER, parameters).install(ENGINEPLUGIN.COMPILERMANAGER);
   }
   loadLifeCycle(config2) {
     const dataSupportManager = this.dataSupportManager;

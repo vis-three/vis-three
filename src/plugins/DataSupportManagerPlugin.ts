@@ -1,4 +1,3 @@
-import { Engine } from "../engine/Engine";
 import {
   DataSupportManager,
   DataSupportManagerParameters,
@@ -7,12 +6,9 @@ import { CONFIGTYPE } from "../middleware/constants/configType";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
 import { RendererDataSupport } from "../middleware/renderer/RendererDataSupport";
-import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { generateConfig } from "../convenient/generateConfig";
 import { Plugin } from "./plugin";
-import { ObjectCompilerTarget } from "../middleware/object/ObjectCompiler";
-import { ObjectConfig } from "../middleware/object/ObjectConfig";
-import { EngineSupport } from "../main";
+import { EngineSupport } from "../engine/EngineSupport";
 
 export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> =
   function (

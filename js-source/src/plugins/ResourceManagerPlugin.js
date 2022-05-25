@@ -4,7 +4,7 @@ export const ResourceManagerPlugin = function (params) {
         console.warn("engine has installed resourceManager plugin.");
         return false;
     }
-    const resourceManager = new ResourceManager();
+    const resourceManager = new ResourceManager(params.resources);
     this.resourceManager = resourceManager;
     if (this.loaderManager) {
         this.loaderManager.addEventListener("loaded", (event) => {

@@ -41,10 +41,13 @@ export class EngineSupport extends Engine {
   ) => SymbolConfig["vid"] | null;
   declare getObjectBySymbol: (vid: string) => Object3D | null;
 
-  constructor(parameters?: EngineSupportParameters) {
+  constructor(
+    parameters: EngineSupportParameters = {},
+    resources: { [key: string]: any } = {}
+  ) {
     super();
     this.install(ENGINEPLUGIN.LOADERMANAGER)
-      .install(ENGINEPLUGIN.RESOURCEMANAGER)
+      .install(ENGINEPLUGIN.RESOURCEMANAGER, { resources })
       .install(ENGINEPLUGIN.POINTERMANAGER)
       .install(ENGINEPLUGIN.EVENTMANAGER)
       .install(ENGINEPLUGIN.RENDERMANAGER)

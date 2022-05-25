@@ -39,7 +39,10 @@ import {
 } from "../manager/LoaderManager";
 import { LoaderManagerPlugin } from "../plugins/LoaderManagerPlugin";
 import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
-import { ResourceManagerPlugin } from "../plugins/ResourceManagerPlugin";
+import {
+  ResourceManagerPlugin,
+  ResourceManagerPluginParameters,
+} from "../plugins/ResourceManagerPlugin";
 import {
   DataSupportManager,
   DataSupportManagerParameters,
@@ -432,7 +435,10 @@ Engine.register<LoaderManagerParameters>(
   ENGINEPLUGIN.LOADERMANAGER,
   LoaderManagerPlugin
 );
-Engine.register<object>(ENGINEPLUGIN.RESOURCEMANAGER, ResourceManagerPlugin);
+Engine.register<ResourceManagerPluginParameters>(
+  ENGINEPLUGIN.RESOURCEMANAGER,
+  ResourceManagerPlugin
+);
 Engine.register<DataSupportManagerParameters>(
   ENGINEPLUGIN.DATASUPPORTMANAGER,
   DataSupportManagerPlugin

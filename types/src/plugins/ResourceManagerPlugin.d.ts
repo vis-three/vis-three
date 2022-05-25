@@ -1,2 +1,7 @@
 import { Plugin } from "./plugin";
-export declare const ResourceManagerPlugin: Plugin<Object>;
+export interface ResourceManagerPluginParameters {
+    resources: {
+        [key: string]: any;
+    };
+}
+export declare const ResourceManagerPlugin: Plugin<ResourceManagerPluginParameters>;

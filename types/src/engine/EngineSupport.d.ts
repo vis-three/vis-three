@@ -27,7 +27,9 @@ export declare class EngineSupport extends Engine {
     removeConfigBySymbol: (vid: string) => this;
     getObjectSymbol: <O extends Object3D>(object: O) => SymbolConfig["vid"] | null;
     getObjectBySymbol: (vid: string) => Object3D | null;
-    constructor(parameters?: EngineSupportParameters);
+    constructor(parameters?: EngineSupportParameters, resources?: {
+        [key: string]: any;
+    });
     private loadLifeCycle;
     private removeLifeCycle;
     loadConfig(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
