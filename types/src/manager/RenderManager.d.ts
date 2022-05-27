@@ -8,6 +8,12 @@ export declare class RenderManager extends EventDispatcher {
     private animationFrame;
     private fps;
     /**
+     * 设置fps
+     * @param fps 帧率
+     * @returns
+     */
+    setFPS(fps: number): this;
+    /**
      * 渲染一帧
      */
     render: () => void;

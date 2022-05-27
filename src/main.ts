@@ -50,6 +50,7 @@ import { EVENTNAME } from "./manager/EventManager";
 import { TIMINGFUNCTION } from "./library/event/RealTimeAnimateLibrary/common";
 import { PassDataSupport } from "./middleware/pass/PassDataSupport";
 import { CSS3DDataSupport } from "./middleware/css3D/CSS3DDataSupport";
+import { RenderManager } from "./manager/RenderManager";
 
 import "./optimize/optimizeScirpt";
 
@@ -71,6 +72,7 @@ export {
   LoaderManager,
   ResourceManager,
   DataSupportManager,
+  RenderManager,
   // engine
   Engine,
   ModelingEngine,

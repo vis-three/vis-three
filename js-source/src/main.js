@@ -48,6 +48,7 @@ import { EVENTNAME } from "./manager/EventManager";
 import { TIMINGFUNCTION } from "./library/event/RealTimeAnimateLibrary/common";
 import { PassDataSupport } from "./middleware/pass/PassDataSupport";
 import { CSS3DDataSupport } from "./middleware/css3D/CSS3DDataSupport";
+import { RenderManager } from "./manager/RenderManager";
 import "./optimize/optimizeScirpt";
 export { 
 // core
@@ -55,7 +56,7 @@ ProxyBroadcast, Translater,
 // menu
 RESOURCEEVENTTYPE, MODULETYPE, OBJECTMODULE, CONFIGTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, EVENTNAME, TIMINGFUNCTION, 
 // manager
-LoaderManager, ResourceManager, DataSupportManager, 
+LoaderManager, ResourceManager, DataSupportManager, RenderManager, 
 // engine
 Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, 
 // engine connector

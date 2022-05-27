@@ -5,6 +5,14 @@ export class RenderManager extends EventDispatcher {
     animationFrame = -1; // 渲染定时器
     fps = 0; // 帧率 0 跟随系统
     /**
+     * 设置fps
+     * @param fps 帧率
+     * @returns
+     */
+    setFPS(fps) {
+        return this;
+    }
+    /**
      * 渲染一帧
      */
     render = () => {

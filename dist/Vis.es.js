@@ -62,19 +62,19 @@ class EventDispatcher {
   }
 }
 class RenderManager extends EventDispatcher {
-  constructor() {
-    super(...arguments);
+  constructor(fps = 0) {
+    super();
     __publicField(this, "clock", new Clock());
     __publicField(this, "animationFrame", -1);
     __publicField(this, "fps", 0);
+    __publicField(this, "timer");
+    __publicField(this, "playFun", () => {
+    });
     __publicField(this, "render", () => {
-      const clock = this.clock;
-      const delta = clock.getDelta();
-      const total = clock.getElapsedTime();
       this.dispatchEvent({
         type: "render",
-        delta,
-        total
+        delta: this.clock.getDelta(),
+        total: this.clock.getElapsedTime()
       });
     });
     __publicField(this, "play", () => {
@@ -85,25 +85,53 @@ class RenderManager extends EventDispatcher {
       this.dispatchEvent({
         type: "play"
       });
-      const playFun = () => {
-        this.render();
-        this.animationFrame = requestAnimationFrame(playFun);
-      };
-      playFun();
+      this.playFun();
     });
     __publicField(this, "stop", () => {
-      cancelAnimationFrame(this.animationFrame);
-      this.animationFrame = -1;
+      if (this.animationFrame !== -1) {
+        cancelAnimationFrame(this.animationFrame);
+        this.animationFrame = -1;
+      }
+      if (this.timer) {
+        clearTimeout(this.timer);
+        this.timer = null;
+      }
       this.dispatchEvent({
         type: "stop"
       });
     });
     __publicField(this, "hasRendering", () => {
-      return this.animationFrame !== -1;
+      return this.animationFrame !== -1 || this.timer;
     });
     __publicField(this, "hasVaildRender", () => {
       return this.useful();
     });
+    this.setFPS(fps);
+  }
+  setFPS(fps) {
+    if (this.animationFrame !== -1) {
+      cancelAnimationFrame(this.animationFrame);
+    }
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
+    this.fps = fps;
+    if (fps <= 0) {
+      this.fps = 0;
+      this.playFun = () => {
+        this.render();
+        this.animationFrame = requestAnimationFrame(this.playFun);
+      };
+    } else {
+      this.playFun = () => {
+        this.timer = setTimeout(() => {
+          this.playFun();
+        }, fps);
+        this.render();
+      };
+    }
+    this.playFun();
+    return this;
   }
   dispose() {
     if (this.hasRendering()) {
@@ -12402,4 +12430,4 @@ Scene.prototype.remove = function(...object) {
   });
   return this;
 };
-export { Action as ActionLibrary, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGTYPE, CSS3DDataSupport, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };
+export { Action as ActionLibrary, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGTYPE, CSS3DDataSupport, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };
