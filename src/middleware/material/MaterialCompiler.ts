@@ -2,6 +2,7 @@ import {
   Color,
   LineBasicMaterial,
   Material,
+  MeshBasicMaterial,
   MeshPhongMaterial,
   MeshStandardMaterial,
   PointsMaterial,
@@ -54,6 +55,10 @@ export class MaterialCompiler extends Compiler {
 
     const constructMap = new Map();
 
+    constructMap.set(
+      CONFIGTYPE.MESHBASICMATERIAL,
+      () => new MeshBasicMaterial()
+    );
     constructMap.set(
       CONFIGTYPE.MESHSTANDARDMATERIAL,
       () => new MeshStandardMaterial()

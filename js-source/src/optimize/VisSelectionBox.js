@@ -1,2 +1,3 @@
-"use strict";
+export class VisSelectionBox {
+}
 //# sourceMappingURL=VisSelectionBox.js.map

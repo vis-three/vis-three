@@ -75,6 +75,7 @@ export declare class DataSupportManager {
         CubeTexture: MODULETYPE;
         CanvasTexture: MODULETYPE;
         VideoTexture: MODULETYPE;
+        MeshBasicMaterial: MODULETYPE;
         MeshStandardMaterial: MODULETYPE;
         MeshPhongMaterial: MODULETYPE;
         SpriteMaterial: MODULETYPE;

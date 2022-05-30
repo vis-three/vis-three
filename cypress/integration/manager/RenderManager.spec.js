@@ -1,4 +1,3 @@
-import { isExportDeclaration } from "typescript";
 import { RenderManager } from "../../../dist/Vis.es";
 
 const getFPSList = (fps, err) => {

@@ -1,3 +1,4 @@
+import { Blending } from "three";
 import { SymbolConfig } from "../common/CommonConfig";
 export interface MaterialConfig extends SymbolConfig {
     alphaTest: number;
@@ -15,6 +16,32 @@ export interface MaterialConfig extends SymbolConfig {
     toneMapped: boolean;
     transparent: boolean;
     visible: boolean;
+    blendDst: number;
+    blendDstAlpha: number | null;
+    blendEquation: number;
+    blendEquationAlpha: number | null;
+    blending: Blending;
+    blendSrc: number;
+    blendSrcAlpha: number | null;
+}
+export interface MeshBasicMaterial extends MaterialConfig {
+    color: string;
+    combine: number;
+    aoMapIntensity: number;
+    fog: boolean;
+    lightMapIntensity: number;
+    reflectivity: number;
+    refractionRatio: number;
+    wireframe: boolean;
+    wireframeLinecap: string;
+    wireframeLinejoin: string;
+    wireframeLinewidth: number;
+    map: string;
+    envMap: string;
+    alphaMap: string;
+    aoMap: string;
+    lightMap: string;
+    specularMap: string;
 }
 export interface MeshStandardMaterialConfig extends MaterialConfig {
     aoMapIntensity: number;
@@ -104,8 +131,9 @@ export interface ShaderMaterialConfig extends MaterialConfig {
 export interface LoadMaterialConfig extends MaterialConfig {
     url: string;
 }
-export declare type MaterialAllType = MeshStandardMaterialConfig | MeshPhongMaterialConfig | LineBasicMaterialConfig | SpriteMaterialConfig | PointsMaterialConfig | ShaderMaterialConfig;
+export declare type MaterialAllType = MeshBasicMaterial | MeshStandardMaterialConfig | MeshPhongMaterialConfig | LineBasicMaterialConfig | SpriteMaterialConfig | PointsMaterialConfig | ShaderMaterialConfig;
 export declare const getMaterialConfig: () => MaterialConfig;
+export declare const getMeshBasicMaterialConfig: () => MeshBasicMaterial;
 export declare const getMeshStandardMaterialConfig: () => MeshStandardMaterialConfig;
 export declare const getMeshPhongMaterialConfig: () => MeshPhongMaterialConfig;
 export declare const getSpriteMaterialConfig: () => SpriteMaterialConfig;

@@ -11,7 +11,7 @@ export class RenderManager extends EventDispatcher {
   private clock: Clock = new Clock(); // 引擎时钟
   private animationFrame = -1; // 渲染定时器
   private fps = 0; // 帧率 0 跟随系统
-  private timer;
+  private timer: NodeJS.Timeout | null = null;
 
   private playFun = () => {};
 
@@ -107,7 +107,7 @@ export class RenderManager extends EventDispatcher {
    * @returns boolean
    */
   hasRendering = (): boolean => {
-    return this.animationFrame !== -1 || this.timer;
+    return Boolean(this.animationFrame !== -1 || this.timer);
   };
 
   /**

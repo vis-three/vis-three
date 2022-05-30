@@ -1,4 +1,4 @@
-import { Color, LineBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, PointsMaterial, ShaderMaterial, SpriteMaterial, Texture, } from "three";
+import { Color, LineBasicMaterial, MeshBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, PointsMaterial, ShaderMaterial, SpriteMaterial, Texture, } from "three";
 import { Compiler } from "../../core/Compiler";
 import { ShaderLibrary } from "../../main";
 import { CONFIGTYPE } from "../constants/configType";
@@ -25,6 +25,7 @@ export class MaterialCompiler extends Compiler {
         this.resourceMap = new Map();
         this.cachaColor = new Color();
         const constructMap = new Map();
+        constructMap.set(CONFIGTYPE.MESHBASICMATERIAL, () => new MeshBasicMaterial());
         constructMap.set(CONFIGTYPE.MESHSTANDARDMATERIAL, () => new MeshStandardMaterial());
         constructMap.set(CONFIGTYPE.MESHPHONGMATERIAL, () => new MeshPhongMaterial());
         constructMap.set(CONFIGTYPE.SPRITEMATERIAL, () => new SpriteMaterial());

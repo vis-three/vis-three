@@ -4,6 +4,7 @@ export declare const CONFIGMODULE: {
     CubeTexture: MODULETYPE;
     CanvasTexture: MODULETYPE;
     VideoTexture: MODULETYPE;
+    MeshBasicMaterial: MODULETYPE;
     MeshStandardMaterial: MODULETYPE;
     MeshPhongMaterial: MODULETYPE;
     SpriteMaterial: MODULETYPE;

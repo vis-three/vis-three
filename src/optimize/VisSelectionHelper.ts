@@ -1,21 +1,23 @@
 import { Vector2 } from "three";
-import { SELECTBGCOLOR, SELECTCOLOR } from "../middleware/constants/COLOR";
 
-export class SelectionHelper {
+export class VisSelectionHelper {
   private element: HTMLElement;
   private startPoint: Vector2;
   private pointTopLeft: Vector2;
   private pointBottomRight: Vector2;
   private isDown: boolean;
 
-  constructor() {
+  constructor(
+    selectColor = "rgb(230, 20, 240)",
+    selectBgColor = "rgba(230, 20, 240, 0.15)"
+  ) {
     const element = document.createElement("div");
 
     element.style.pointerEvents = "none";
-    element.style.border = `1px solid ${SELECTCOLOR}`;
+    element.style.border = `1px solid ${selectColor}`;
     element.style.position = "fixed";
     element.style.zIndex = "100";
-    element.style.backgroundColor = SELECTBGCOLOR;
+    element.style.backgroundColor = selectBgColor;
 
     this.element = element;
 

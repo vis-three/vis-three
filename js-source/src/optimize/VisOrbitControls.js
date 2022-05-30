@@ -499,9 +499,14 @@ export class VisOrbitControls extends EventDispatcher {
                 onMouseDown(event);
             }
         };
+        let pointerLock = false;
         this.onPointerMove = (event) => {
             if (this.enabled === false)
                 return;
+            if (!pointerLock && pointers.length === 0) {
+                this.domElement.setPointerCapture(event.pointerId);
+                pointerLock = true;
+            }
             if (event.pointerType === "touch") {
                 onTouchMove(event);
             }

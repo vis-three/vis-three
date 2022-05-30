@@ -7,6 +7,9 @@ export declare class RenderManager extends EventDispatcher {
     private clock;
     private animationFrame;
     private fps;
+    private timer;
+    private playFun;
+    constructor(fps?: number);
     /**
      * 设置fps
      * @param fps 帧率

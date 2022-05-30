@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, TangentSpaceNormalMap, MultiplyOperation, PCFShadowMap, NoToneMapping, PlaneBufferGeometry, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, MeshBasicMaterial, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, PlaneBufferGeometry, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -67,7 +67,7 @@ class RenderManager extends EventDispatcher {
     __publicField(this, "clock", new Clock());
     __publicField(this, "animationFrame", -1);
     __publicField(this, "fps", 0);
-    __publicField(this, "timer");
+    __publicField(this, "timer", null);
     __publicField(this, "playFun", () => {
     });
     __publicField(this, "render", () => {
@@ -101,7 +101,7 @@ class RenderManager extends EventDispatcher {
       });
     });
     __publicField(this, "hasRendering", () => {
-      return this.animationFrame !== -1 || this.timer;
+      return Boolean(this.animationFrame !== -1 || this.timer);
     });
     __publicField(this, "hasVaildRender", () => {
       return this.useful();
@@ -567,9 +567,14 @@ class VisOrbitControls extends EventDispatcher {
         onMouseDown(event);
       }
     };
+    let pointerLock = false;
     this.onPointerMove = (event) => {
       if (this.enabled === false)
         return;
+      if (!pointerLock) {
+        this.domElement.setPointerCapture(event.pointerId);
+        pointerLock = true;
+      }
       if (event.pointerType === "touch") {
         onTouchMove(event);
       } else {
@@ -579,6 +584,7 @@ class VisOrbitControls extends EventDispatcher {
     this.onPointerUp = (event) => {
       if (this.enabled === false)
         return;
+      pointerLock = false;
       if (event.pointerType === "touch") {
         onTouchEnd();
       } else {
@@ -3130,6 +3136,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
   CONFIGTYPE2["CANVASTEXTURE"] = "CanvasTexture";
   CONFIGTYPE2["VIDEOTEXTURE"] = "VideoTexture";
+  CONFIGTYPE2["MESHBASICMATERIAL"] = "MeshBasicMaterial";
   CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
   CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
   CONFIGTYPE2["SPRITEMATERIAL"] = "SpriteMaterial";
@@ -3425,8 +3432,37 @@ const getMaterialConfig = function() {
     side: FrontSide,
     toneMapped: true,
     transparent: false,
-    visible: true
+    visible: true,
+    blendDst: OneMinusSrcAlphaFactor,
+    blendDstAlpha: null,
+    blendEquation: AddEquation,
+    blendEquationAlpha: null,
+    blending: NormalBlending,
+    blendSrc: SrcAlphaFactor,
+    blendSrcAlpha: null
   };
+};
+const getMeshBasicMaterialConfig = function() {
+  return Object.assign(getMaterialConfig(), {
+    type: CONFIGTYPE.MESHBASICMATERIAL,
+    color: "rgb(255, 255, 255)",
+    combine: MultiplyOperation,
+    aoMapIntensity: 1,
+    fog: true,
+    lightMapIntensity: 1,
+    reflectivity: 1,
+    refractionRatio: 0.98,
+    wireframe: false,
+    wireframeLinecap: "round",
+    wireframeLinejoin: "round",
+    wireframeLinewidth: 1,
+    map: "",
+    envMap: "",
+    alphaMap: "",
+    aoMap: "",
+    lightMap: "",
+    specularMap: ""
+  });
 };
 const getMeshStandardMaterialConfig = function() {
   return Object.assign(getMaterialConfig(), {
@@ -3742,6 +3778,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
   [CONFIGTYPE.CANVASTEXTURE]: getCanvasTextureConfig,
   [CONFIGTYPE.VIDEOTEXTURE]: getVideoTextureConfig,
+  [CONFIGTYPE.MESHBASICMATERIAL]: getMeshBasicMaterialConfig,
   [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
   [CONFIGTYPE.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
   [CONFIGTYPE.SPRITEMATERIAL]: getSpriteMaterialConfig,
@@ -3881,6 +3918,7 @@ const CONFIGMODULE = {
   [CONFIGTYPE.CUBETEXTURE]: MODULETYPE.TEXTURE,
   [CONFIGTYPE.CANVASTEXTURE]: MODULETYPE.TEXTURE,
   [CONFIGTYPE.VIDEOTEXTURE]: MODULETYPE.TEXTURE,
+  [CONFIGTYPE.MESHBASICMATERIAL]: MODULETYPE.MATERIAL,
   [CONFIGTYPE.MESHSTANDARDMATERIAL]: MODULETYPE.MATERIAL,
   [CONFIGTYPE.MESHPHONGMATERIAL]: MODULETYPE.MATERIAL,
   [CONFIGTYPE.SPRITEMATERIAL]: MODULETYPE.MATERIAL,
@@ -7353,6 +7391,7 @@ class MaterialCompiler extends Compiler {
     this.resourceMap = new Map();
     this.cachaColor = new Color();
     const constructMap = new Map();
+    constructMap.set(CONFIGTYPE.MESHBASICMATERIAL, () => new MeshBasicMaterial());
     constructMap.set(CONFIGTYPE.MESHSTANDARDMATERIAL, () => new MeshStandardMaterial());
     constructMap.set(CONFIGTYPE.MESHPHONGMATERIAL, () => new MeshPhongMaterial());
     constructMap.set(CONFIGTYPE.SPRITEMATERIAL, () => new SpriteMaterial());

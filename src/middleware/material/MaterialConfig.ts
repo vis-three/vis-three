@@ -1,7 +1,12 @@
 import {
+  AddEquation,
+  Blending,
   FrontSide,
   MultiplyOperation,
+  NormalBlending,
+  OneMinusSrcAlphaFactor,
   RGBAFormat,
+  SrcAlphaFactor,
   TangentSpaceNormalMap,
 } from "three";
 import { SymbolConfig } from "../common/CommonConfig";
@@ -22,6 +27,34 @@ export interface MaterialConfig extends SymbolConfig {
   toneMapped: boolean;
   transparent: boolean;
   visible: boolean;
+  blendDst: number;
+  blendDstAlpha: number | null;
+  blendEquation: number;
+  blendEquationAlpha: number | null;
+  blending: Blending;
+  blendSrc: number;
+  blendSrcAlpha: number | null;
+}
+
+export interface MeshBasicMaterial extends MaterialConfig {
+  color: string;
+  combine: number;
+  aoMapIntensity: number;
+  fog: boolean;
+  lightMapIntensity: number;
+  reflectivity: number;
+  refractionRatio: number;
+  wireframe: boolean;
+  wireframeLinecap: string;
+  wireframeLinejoin: string;
+  wireframeLinewidth: number;
+
+  map: string;
+  envMap: string;
+  alphaMap: string;
+  aoMap: string;
+  lightMap: string;
+  specularMap: string;
 }
 
 export interface MeshStandardMaterialConfig extends MaterialConfig {
@@ -121,6 +154,7 @@ export interface LoadMaterialConfig extends MaterialConfig {
 }
 
 export type MaterialAllType =
+  | MeshBasicMaterial
   | MeshStandardMaterialConfig
   | MeshPhongMaterialConfig
   | LineBasicMaterialConfig
@@ -147,7 +181,38 @@ export const getMaterialConfig = function (): MaterialConfig {
     toneMapped: true,
     transparent: false,
     visible: true,
+    blendDst: OneMinusSrcAlphaFactor,
+    blendDstAlpha: null,
+    blendEquation: AddEquation,
+    blendEquationAlpha: null,
+    blending: NormalBlending,
+    blendSrc: SrcAlphaFactor,
+    blendSrcAlpha: null,
   };
+};
+
+export const getMeshBasicMaterialConfig = function (): MeshBasicMaterial {
+  return Object.assign(getMaterialConfig(), {
+    type: CONFIGTYPE.MESHBASICMATERIAL,
+    color: "rgb(255, 255, 255)",
+    combine: MultiplyOperation,
+    aoMapIntensity: 1,
+    fog: true,
+    lightMapIntensity: 1,
+    reflectivity: 1,
+    refractionRatio: 0.98,
+    wireframe: false,
+    wireframeLinecap: "round",
+    wireframeLinejoin: "round",
+    wireframeLinewidth: 1,
+
+    map: "",
+    envMap: "",
+    alphaMap: "",
+    aoMap: "",
+    lightMap: "",
+    specularMap: "",
+  });
 };
 
 export const getMeshStandardMaterialConfig =

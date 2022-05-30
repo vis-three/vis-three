@@ -25,6 +25,7 @@ export var CONFIGTYPE;
     CONFIGTYPE["CUBETEXTURE"] = "CubeTexture";
     CONFIGTYPE["CANVASTEXTURE"] = "CanvasTexture";
     CONFIGTYPE["VIDEOTEXTURE"] = "VideoTexture";
+    CONFIGTYPE["MESHBASICMATERIAL"] = "MeshBasicMaterial";
     CONFIGTYPE["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
     CONFIGTYPE["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
     CONFIGTYPE["SPRITEMATERIAL"] = "SpriteMaterial";

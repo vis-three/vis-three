@@ -22,6 +22,7 @@ import {
 } from "../texture/TextureConfig";
 import {
   getLineBasicMaterialConfig,
+  getMeshBasicMaterialConfig,
   getMeshPhongMaterialConfig,
   getMeshStandardMaterialConfig,
   getPointsMaterialConfig,
@@ -64,6 +65,7 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.CANVASTEXTURE]: getCanvasTextureConfig,
   [CONFIGTYPE.VIDEOTEXTURE]: getVideoTextureConfig,
 
+  [CONFIGTYPE.MESHBASICMATERIAL]: getMeshBasicMaterialConfig,
   [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
   [CONFIGTYPE.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
   [CONFIGTYPE.SPRITEMATERIAL]: getSpriteMaterialConfig,

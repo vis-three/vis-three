@@ -1,4 +1,4 @@
-import { FrontSide, MultiplyOperation, RGBAFormat, TangentSpaceNormalMap, } from "three";
+import { AddEquation, FrontSide, MultiplyOperation, NormalBlending, OneMinusSrcAlphaFactor, RGBAFormat, SrcAlphaFactor, TangentSpaceNormalMap, } from "three";
 import { CONFIGTYPE } from "../constants/configType";
 export const getMaterialConfig = function () {
     return {
@@ -19,7 +19,36 @@ export const getMaterialConfig = function () {
         toneMapped: true,
         transparent: false,
         visible: true,
+        blendDst: OneMinusSrcAlphaFactor,
+        blendDstAlpha: null,
+        blendEquation: AddEquation,
+        blendEquationAlpha: null,
+        blending: NormalBlending,
+        blendSrc: SrcAlphaFactor,
+        blendSrcAlpha: null,
     };
+};
+export const getMeshBasicMaterialConfig = function () {
+    return Object.assign(getMaterialConfig(), {
+        type: CONFIGTYPE.MESHBASICMATERIAL,
+        color: "rgb(255, 255, 255)",
+        combine: MultiplyOperation,
+        aoMapIntensity: 1,
+        fog: true,
+        lightMapIntensity: 1,
+        reflectivity: 1,
+        refractionRatio: 0.98,
+        wireframe: false,
+        wireframeLinecap: "round",
+        wireframeLinejoin: "round",
+        wireframeLinewidth: 1,
+        map: "",
+        envMap: "",
+        alphaMap: "",
+        aoMap: "",
+        lightMap: "",
+        specularMap: "",
+    });
 };
 export const getMeshStandardMaterialConfig = function () {
     return Object.assign(getMaterialConfig(), {
