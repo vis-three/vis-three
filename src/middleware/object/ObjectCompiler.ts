@@ -37,8 +37,6 @@ export abstract class ObjectCompiler<
 
   IS_OBJECTCOMPILER = true;
 
-  abstract COMPILER_NAME: string;
-
   protected target!: T;
   protected map: Map<SymbolConfig["vid"], O>;
   protected weakMap: WeakMap<O, SymbolConfig["vid"]>;
@@ -114,7 +112,7 @@ export abstract class ObjectCompiler<
 
     if (!this.map.has(vid)) {
       console.error(
-        `${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`
+        `${this.MODULE}Compiler: can not found object which vid: ${vid}.`
       );
       return this;
     }
@@ -142,7 +140,7 @@ export abstract class ObjectCompiler<
 
     if (!lookAtTarget) {
       console.warn(
-        `${this.COMPILER_NAME}Compiler: can not found this vid mapping object: '${vid}'`
+        `${this.MODULE}Compiler: can not found this vid mapping object: '${vid}'`
       );
       return this;
     }
@@ -163,14 +161,12 @@ export abstract class ObjectCompiler<
   // 添加物体事件
   addEvent(vid: string, eventName: EVENTNAME, config: BasicEventConfig): this {
     if (!this.map.has(vid)) {
-      console.warn(
-        `${this.COMPILER_NAME} compiler : No matching vid found: ${vid}`
-      );
+      console.warn(`${this.MODULE} compiler : No matching vid found: ${vid}`);
       return this;
     }
     if (!EventLibrary.has(config.name)) {
       console.warn(
-        `${this.COMPILER_NAME} compiler: can not support this event: ${config.name}`
+        `${this.MODULE} compiler: can not support this event: ${config.name}`
       );
       return this;
     }
@@ -196,9 +192,7 @@ export abstract class ObjectCompiler<
     config: BasicEventConfig
   ): this {
     if (!this.map.has(vid)) {
-      console.warn(
-        `${this.COMPILER_NAME} compiler: No matching vid found: ${vid}`
-      );
+      console.warn(`${this.MODULE} compiler: No matching vid found: ${vid}`);
       return this;
     }
 
@@ -208,7 +202,7 @@ export abstract class ObjectCompiler<
 
     if (!fun) {
       console.warn(
-        `${this.COMPILER_NAME} compiler: event remove can not fun found event in config`,
+        `${this.MODULE} compiler: event remove can not fun found event in config`,
         config
       );
       return this;
@@ -223,9 +217,7 @@ export abstract class ObjectCompiler<
   // 更新事件
   updateEvent(vid: string, eventName: EVENTNAME, index: number): this {
     if (!this.map.has(vid)) {
-      console.warn(
-        `${this.COMPILER_NAME} compiler: No matching vid found: ${vid}`
-      );
+      console.warn(`${this.MODULE} compiler: No matching vid found: ${vid}`);
       return this;
     }
 
@@ -238,7 +230,7 @@ export abstract class ObjectCompiler<
 
     if (!fun) {
       console.warn(
-        `${this.COMPILER_NAME} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`
+        `${this.MODULE} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`
       );
       return this;
     }
@@ -260,7 +252,7 @@ export abstract class ObjectCompiler<
   addChildren(vid: string, target: string): this {
     if (!this.map.has(vid)) {
       console.warn(
-        `${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${vid}.`
+        `${this.MODULE} compiler: can not found this vid in compiler: ${vid}.`
       );
       return this;
     }
@@ -271,7 +263,7 @@ export abstract class ObjectCompiler<
 
     if (!targetObject) {
       console.warn(
-        `${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${target}.`
+        `${this.MODULE} compiler: can not found this vid in compiler: ${target}.`
       );
       return this;
     }
@@ -282,7 +274,7 @@ export abstract class ObjectCompiler<
     const targetConfig = this.engine.getConfigBySymbol<ObjectConfig>(target);
     if (!targetConfig) {
       console.warn(
-        `${this.COMPILER_NAME} compiler: can not foud object config: ${target}`
+        `${this.MODULE} compiler: can not foud object config: ${target}`
       );
       return this;
     }
@@ -295,7 +287,7 @@ export abstract class ObjectCompiler<
   removeChildren(vid: string, target: string): this {
     if (!this.map.has(vid)) {
       console.warn(
-        `${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${vid}.`
+        `${this.MODULE} compiler: can not found this vid in compiler: ${vid}.`
       );
       return this;
     }
@@ -306,7 +298,7 @@ export abstract class ObjectCompiler<
 
     if (!targetObject) {
       console.warn(
-        `${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${target}.`
+        `${this.MODULE} compiler: can not found this vid in compiler: ${target}.`
       );
       return this;
     }
@@ -317,7 +309,7 @@ export abstract class ObjectCompiler<
     const targetConfig = this.engine.getConfigBySymbol<ObjectConfig>(target);
     if (!targetConfig) {
       console.warn(
-        `${this.COMPILER_NAME} compiler: remove children function can not foud object config: ${target}`
+        `${this.MODULE} compiler: remove children function can not foud object config: ${target}`
       );
       return this;
     }
@@ -350,11 +342,11 @@ export abstract class ObjectCompiler<
   }
 
   getObjectSymbol(object: O): SymbolConfig["vid"] | null {
-    if (this.weakMap.has(object)) {
-      return this.weakMap.get(object)!;
-    } else {
-      return null;
-    }
+    return this.weakMap.get(object) || null;
+  }
+
+  getObjectBySymbol(vid: string): O | null {
+    return this.map.get(vid) || null;
   }
 
   compileAll(): this {
@@ -369,9 +361,7 @@ export abstract class ObjectCompiler<
     const object = this.map.get(vid);
 
     if (!object) {
-      console.error(
-        `${this.COMPILER_NAME} compiler can not finish add method.`
-      );
+      console.error(`${this.MODULE} compiler can not finish add method.`);
       return this;
     }
 
@@ -410,7 +400,7 @@ export abstract class ObjectCompiler<
   set(vid: string, path: string[], key: string, value: any): this {
     if (!this.map.has(vid)) {
       console.warn(
-        `${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`
+        `${this.MODULE} compiler can not found this vid mapping object: '${vid}'`
       );
       return this;
     }
@@ -444,9 +434,7 @@ export abstract class ObjectCompiler<
     const object = this.map.get(vid);
 
     if (!object) {
-      console.error(
-        `${this.COMPILER_NAME} compiler can not found object: ${vid}.`
-      );
+      console.error(`${this.MODULE} compiler can not found object: ${vid}.`);
       return this;
     }
 
@@ -487,7 +475,7 @@ export abstract class ObjectCompiler<
   remove(vid: string, config: T[string]): this {
     if (!this.map.has(vid)) {
       console.warn(
-        `${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`
+        `${this.MODULE}Compiler: can not found object which vid: ${vid}.`
       );
       return this;
     }
@@ -500,14 +488,14 @@ export abstract class ObjectCompiler<
 
       if (!parentConfig) {
         console.warn(
-          `${this.COMPILER_NAME} compiler: can not found parent object config: ${config.parent}`
+          `${this.MODULE} compiler: can not found parent object config: ${config.parent}`
         );
       } else {
         if (parentConfig.children.includes(vid)) {
           parentConfig.children.splice(parentConfig.children.indexOf(vid), 1);
         } else {
           console.warn(
-            `${this.COMPILER_NAME} compiler: can not found vid in its parent config: ${vid}`
+            `${this.MODULE} compiler: can not found vid in its parent config: ${vid}`
           );
         }
       }

@@ -6,6 +6,8 @@ import { CONFIGTYPE } from "../constants/configType";
 import { WebGLRendererProcessor } from "./WebGLRendererProcessor";
 import { Processor } from "../../core/Processor";
 import { EngineSupport } from "../../main";
+import { MODULETYPE } from "../constants/MODULETYPE";
+import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 
 export interface RendererCompilerTarget extends CompilerTarget {
   [key: string]: WebGLRendererConfig;
@@ -17,6 +19,8 @@ export interface RendererCompilerParameters {
 }
 
 export class RendererCompiler extends Compiler {
+  MODULE: MODULETYPE = MODULETYPE.RENDERER;
+
   private target!: RendererCompilerTarget;
   private engine!: Engine;
 
@@ -103,6 +107,24 @@ export class RendererCompiler extends Compiler {
   }
 
   dispose(): this {
+    this.map.forEach((renderer, vid) => {
+      renderer.dispose && renderer.dispose();
+    });
     return this;
+  }
+
+  getObjectSymbol(renderer: WebGLRenderer | CSS3DRenderer): string | null {
+    let result: string | null = null;
+
+    this.map.forEach((rend, vid) => {
+      if (rend === renderer) {
+        result = vid;
+      }
+    });
+
+    return result;
+  }
+  getObjectBySymbol(vid: string): any | null {
+    return this.map.get(vid) || null;
   }
 }

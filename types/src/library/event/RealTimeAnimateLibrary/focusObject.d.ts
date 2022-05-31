@@ -9,6 +9,7 @@ export interface FocusObject extends BasicEventConfig {
         delay: number;
         duration: number;
         timingFunction: TIMINGFUNCTION;
+        back: boolean;
     };
 }
 export declare const config: FocusObject;

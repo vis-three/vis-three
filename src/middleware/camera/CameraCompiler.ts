@@ -20,7 +20,7 @@ export class CameraCompiler extends ObjectCompiler<
   CameraCompilerTarget,
   Camera
 > {
-  COMPILER_NAME: string = MODULETYPE.CAMERA;
+  MODULE: MODULETYPE = MODULETYPE.CAMERA;
 
   private constructMap: Map<string, () => Camera>;
   private cacheCameraMap: WeakMap<Camera, CacheCameraData>;

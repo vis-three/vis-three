@@ -1,4 +1,3 @@
-import { validate } from "uuid";
 import { Compiler } from "../core/Compiler";
 import { AnimationCompiler } from "../middleware/animation/AnimationCompiler";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
@@ -35,9 +34,8 @@ export class CompilerManager {
     css3DCompiler = new CSS3DCompiler();
     passCompiler = new PassCompiler();
     animationCompiler = new AnimationCompiler();
-    objectCompilerList;
+    compilerMap;
     constructor(parameters) {
-        this.objectCompilerList = [];
         if (parameters) {
             Object.keys(parameters).forEach((key) => {
                 this[key] = parameters[key];
@@ -52,9 +50,9 @@ export class CompilerManager {
         // 物体几何连接，材质连接，物体连接
         const geometryMap = this.geometryCompiler.getMap();
         const materialMap = this.materialCompiler.getMap();
-        this.objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
-        const objectMapList = this.objectCompilerList.map((compiler) => compiler.getMap());
-        for (const objectCompiler of this.objectCompilerList) {
+        const objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
+        const objectMapList = objectCompilerList.map((compiler) => compiler.getMap());
+        for (const objectCompiler of objectCompilerList) {
             if (isValidKey("IS_SOLIDOBJECTCOMPILER", objectCompiler)) {
                 objectCompiler
                     .linkGeometryMap(geometryMap)
@@ -65,6 +63,14 @@ export class CompilerManager {
         this.animationCompiler
             .linkObjectMap(...objectMapList)
             .linkMaterialMap(materialMap);
+        const compilerMap = new Map();
+        Object.keys(this).forEach((key) => {
+            const compiler = this[key];
+            if (compiler instanceof Compiler) {
+                compilerMap.set(compiler.MODULE, compiler);
+            }
+        });
+        this.compilerMap = compilerMap;
     }
     /**
      * engine进行编译器链接
@@ -73,9 +79,7 @@ export class CompilerManager {
      */
     support(engine) {
         // 根据engine设置
-        Object.values(this)
-            .filter((object) => object instanceof Compiler)
-            .forEach((compiler) => {
+        this.compilerMap.forEach((compiler) => {
             compiler.useEngine(engine);
         });
         // 动态资源连接
@@ -111,8 +115,7 @@ export class CompilerManager {
      * @returns vid or null
      */
     getObjectSymbol(object) {
-        const objectCompilerList = this.objectCompilerList;
-        for (const compiler of objectCompilerList) {
+        for (const compiler of this.compilerMap.values()) {
             const vid = compiler.getObjectSymbol(object);
             if (vid) {
                 return vid;
@@ -123,54 +126,22 @@ export class CompilerManager {
     /**
      * 通过vid标识获取相应的three对象
      * @param vid vid标识
-     * @returns object3D || null
+     * @returns three object || null
      */
     getObjectBySymbol(vid) {
-        const objectCompilerList = this.objectCompilerList;
-        for (const compiler of objectCompilerList) {
-            const object = compiler.getMap().get(vid);
+        for (const compiler of this.compilerMap.values()) {
+            const object = compiler.getObjectBySymbol(vid);
             if (object) {
                 return object;
             }
         }
         return null;
     }
-    /**
-     * @deprecated
-     */
-    getMaterial(vid) {
-        if (!validate(vid)) {
-            console.warn(`compiler manager vid is illeage: ${vid}`);
-            return undefined;
-        }
-        const materialCompiler = this.materialCompiler;
-        return materialCompiler.getMap().get(vid);
-    }
-    /**
-     * @deprecated
-     */
-    getTexture(vid) {
-        if (!validate(vid)) {
-            console.warn(`compiler manager vid is illeage: ${vid}`);
-            return undefined;
-        }
-        const textureCompiler = this.textureCompiler;
-        return textureCompiler.getMap().get(vid);
-    }
-    /**
-     * @deprecated
-     * @returns
-     */
-    getObjectCompilerList() {
-        return this.objectCompilerList;
-    }
     dispose() {
-        Object.keys(this).forEach((key) => {
-            if (this[key] instanceof Compiler) {
-                this[key].dispose();
-            }
-        });
-        this.objectCompilerList = [];
+        for (const compiler of this.compilerMap.values()) {
+            compiler.dispose({});
+        }
+        this.compilerMap.clear();
         return this;
     }
 }

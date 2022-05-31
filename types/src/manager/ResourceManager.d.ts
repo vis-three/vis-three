@@ -52,7 +52,7 @@ export declare class ResourceManager extends EventDispatcher {
      * @param url 资源 url
      * @returns boolean
      */
-    hasResuorce(url: string): boolean;
-    remove(url: string): void;
+    hasResource(url: string): boolean;
+    remove(url: string): this;
     dispose(): void;
 }

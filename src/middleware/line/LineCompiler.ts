@@ -22,7 +22,7 @@ export class LineCompiler extends SolidObjectCompiler<
   LineCompilerTarget,
   Line
 > {
-  COMPILER_NAME: string = MODULETYPE.LINE;
+  MODULE: MODULETYPE = MODULETYPE.LINE;
 
   private replaceMaterial = new LineBasicMaterial({
     color: "rgb(150, 150, 150)",

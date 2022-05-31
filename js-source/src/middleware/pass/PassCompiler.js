@@ -3,20 +3,20 @@ import { CONFIGTYPE } from "../constants/configType";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { Vector2 } from "three";
+import { MODULETYPE } from "../constants/MODULETYPE";
 export class PassCompiler extends Compiler {
+    MODULE = MODULETYPE.PASS;
     target;
     map;
+    weakMap;
     constructMap;
     composer;
     width = window.innerWidth * window.devicePixelRatio;
     height = window.innerHeight * window.devicePixelRatio;
-    constructor(parameters) {
+    constructor() {
         super();
-        if (parameters) {
-            parameters.target && (this.target = parameters.target);
-            parameters.composer && (this.composer = parameters.composer);
-        }
         this.map = new Map();
+        this.weakMap = new WeakMap();
         const constructMap = new Map();
         constructMap.set(CONFIGTYPE.SMAAPASS, () => new SMAAPass(this.width, this.height));
         constructMap.set(CONFIGTYPE.UNREALBLOOMPASS, (config) => new UnrealBloomPass(new Vector2(this.width, this.height), config.strength, config.radius, config.threshold));
@@ -46,6 +46,7 @@ export class PassCompiler extends Compiler {
             const pass = this.constructMap.get(config.type)(config);
             this.composer.addPass(pass);
             this.map.set(config.vid, pass);
+            this.weakMap.set(pass, config.vid);
         }
         else {
             console.warn(`pass compiler can not support this type pass: ${config.type}.`);
@@ -63,6 +64,7 @@ export class PassCompiler extends Compiler {
         const pass = this.map.get(vid);
         this.composer.removePass(pass);
         this.map.delete(vid);
+        this.weakMap.delete(pass);
         return this;
     }
     compileAll() {
@@ -73,7 +75,14 @@ export class PassCompiler extends Compiler {
         return this;
     }
     dispose() {
+        this.map.clear();
         return this;
+    }
+    getObjectSymbol(object) {
+        return this.weakMap.get(object) || null;
+    }
+    getObjectBySymbol(vid) {
+        return this.map.get(vid) || null;
     }
 }
 //# sourceMappingURL=PassCompiler.js.map

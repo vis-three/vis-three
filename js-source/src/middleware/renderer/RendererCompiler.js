@@ -2,7 +2,9 @@ import { Engine } from "../../engine/Engine";
 import { Compiler } from "../../core/Compiler";
 import { CONFIGTYPE } from "../constants/configType";
 import { WebGLRendererProcessor } from "./WebGLRendererProcessor";
+import { MODULETYPE } from "../constants/MODULETYPE";
 export class RendererCompiler extends Compiler {
+    MODULE = MODULETYPE.RENDERER;
     target;
     engine;
     processorMap = {
@@ -72,7 +74,22 @@ export class RendererCompiler extends Compiler {
         return this;
     }
     dispose() {
+        this.map.forEach((renderer, vid) => {
+            renderer.dispose && renderer.dispose();
+        });
         return this;
+    }
+    getObjectSymbol(renderer) {
+        let result = null;
+        this.map.forEach((rend, vid) => {
+            if (rend === renderer) {
+                result = vid;
+            }
+        });
+        return result;
+    }
+    getObjectBySymbol(vid) {
+        return this.map.get(vid) || null;
     }
 }
 //# sourceMappingURL=RendererCompiler.js.map

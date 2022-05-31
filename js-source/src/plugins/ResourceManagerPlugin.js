@@ -19,6 +19,9 @@ export const ResourceManagerPlugin = function (params) {
         this.resourceManager.mappingResource(map);
         return this;
     };
+    this.addEventListener("dispose", () => {
+        this.resourceManager.dispose();
+    });
     return true;
 };
 //# sourceMappingURL=ResourceManagerPlugin.js.map

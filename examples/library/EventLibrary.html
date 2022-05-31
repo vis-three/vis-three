@@ -36,44 +36,71 @@
       const ambientLight = Vis.generateConfig("AmbientLight");
 
       const material = Vis.generateConfig("MeshStandardMaterial");
+      const material2 = Vis.generateConfig("MeshStandardMaterial");
 
       const geometry = Vis.generateConfig("PlaneGeometry", {
         width: 20,
         height: 20,
       });
 
-      const meshSymbol = getUUid();
-      const mesh = Vis.generateConfig("Mesh", {
-        vid: meshSymbol,
+      const meshSymbol1 = getUUid();
+      const mesh1 = Vis.generateConfig("Mesh", {
+        vid: meshSymbol1,
         material: material.vid,
         geometry: geometry.vid,
-        dblclick: [
+        click: [
           Vis.EventLibrary.generateConfig("foucsObject", {
             params: {
-              target: meshSymbol,
+              target: meshSymbol1,
               space: "local",
             },
           }),
         ],
-        contextmenu: [
-          Vis.EventLibrary.generateConfig("foucsObject", {
+        rotation: {
+          z: Math.PI / 3,
+        },
+        position: {
+          x: -15,
+        },
+      });
+
+      const meshSymbol2 = getUUid();
+      const mesh2 = Vis.generateConfig("Mesh", {
+        vid: meshSymbol2,
+        material: material2.vid,
+        geometry: geometry.vid,
+        position: {
+          x: 15,
+        },
+        pointerenter: [
+          Vis.EventLibrary.generateConfig("fadeObject", {
             params: {
-              target: "Scene",
-              space: "local",
-              offset: {
-                x: 20,
-                y: 20,
-                z: 20,
-              },
+              target: meshSymbol2,
+            },
+          }),
+        ],
+        pointerleave: [
+          Vis.EventLibrary.generateConfig("fadeObject", {
+            params: {
+              target: meshSymbol2,
+              direction: "in",
             },
           }),
         ],
       });
 
       const scene = Vis.generateConfig("Scene", {
-        children: [ambientLight.vid, mesh.vid],
+        children: [ambientLight.vid, mesh1.vid, mesh2.vid],
       });
-      engine.applyConfig(ambientLight, material, geometry, mesh, scene);
+      engine.applyConfig(
+        ambientLight,
+        material,
+        material2,
+        geometry,
+        mesh1,
+        mesh2,
+        scene
+      );
 
       engine.setScene(scene.vid).play();
 

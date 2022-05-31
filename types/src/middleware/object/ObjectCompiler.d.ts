@@ -19,7 +19,6 @@ export interface FilterAttribute {
 export declare abstract class ObjectCompiler<C extends ObjectConfig, T extends ObjectCompilerTarget<C>, O extends Object3D> extends Compiler {
     static eventSymbol: string;
     IS_OBJECTCOMPILER: boolean;
-    abstract COMPILER_NAME: string;
     protected target: T;
     protected map: Map<SymbolConfig["vid"], O>;
     protected weakMap: WeakMap<O, SymbolConfig["vid"]>;
@@ -41,6 +40,7 @@ export declare abstract class ObjectCompiler<C extends ObjectConfig, T extends O
     setTarget(target: T): this;
     getMap(): Map<SymbolConfig["type"], Object3D>;
     getObjectSymbol(object: O): SymbolConfig["vid"] | null;
+    getObjectBySymbol(vid: string): O | null;
     compileAll(): this;
     add(vid: string, config: T[string]): this;
     set(vid: string, path: string[], key: string, value: any): this;

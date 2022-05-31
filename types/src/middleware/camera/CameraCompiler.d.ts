@@ -1,6 +1,7 @@
 import { Camera, Vector3 } from "three";
 import { CameraConfigAllType } from "./CameraConfig";
 import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { MODULETYPE } from "../constants/MODULETYPE";
 import { SetSizeEvent } from "../../engine/Engine";
 export interface CameraCompilerTarget extends ObjectCompilerTarget<CameraConfigAllType> {
     [key: string]: CameraConfigAllType;
@@ -11,7 +12,7 @@ export interface CacheCameraData {
     setSizeFun?: (event: SetSizeEvent) => void;
 }
 export declare class CameraCompiler extends ObjectCompiler<CameraConfigAllType, CameraCompilerTarget, Camera> {
-    COMPILER_NAME: string;
+    MODULE: MODULETYPE;
     private constructMap;
     private cacheCameraMap;
     constructor();

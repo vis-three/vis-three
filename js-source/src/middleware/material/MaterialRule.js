@@ -22,5 +22,15 @@ export const MaterialRule = function (notice, compiler) {
         }
         return;
     }
+    if (operate === "delete") {
+        const vid = path[0] || key;
+        if (validate(vid)) {
+            compiler.remove(vid);
+        }
+        else {
+            console.warn(`texture rule vid is illeage: '${vid}'`);
+        }
+        return;
+    }
 };
 //# sourceMappingURL=MaterialRule.js.map

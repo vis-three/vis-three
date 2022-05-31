@@ -2,7 +2,7 @@ import { BoxBufferGeometry, Line, LineBasicMaterial, } from "three";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { SolidObjectCompiler, } from "../solidObject/SolidObjectCompiler";
 export class LineCompiler extends SolidObjectCompiler {
-    COMPILER_NAME = MODULETYPE.LINE;
+    MODULE = MODULETYPE.LINE;
     replaceMaterial = new LineBasicMaterial({
         color: "rgb(150, 150, 150)",
     });

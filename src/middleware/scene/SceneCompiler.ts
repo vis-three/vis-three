@@ -14,7 +14,7 @@ export class SceneCompiler extends ObjectCompiler<
   SceneCompilerTarget,
   Scene
 > {
-  COMPILER_NAME: string = MODULETYPE.SCENE;
+  MODULE: MODULETYPE = MODULETYPE.SCENE;
 
   private textureMap: Map<SymbolConfig["type"], Texture>;
 
@@ -42,7 +42,7 @@ export class SceneCompiler extends ObjectCompiler<
   private background(vid: string, value: string | null) {
     if (!this.map.has(vid)) {
       console.warn(
-        `${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`
+        `${this.MODULE} compiler can not found this vid mapping object: '${vid}'`
       );
       return;
     }
@@ -69,7 +69,7 @@ export class SceneCompiler extends ObjectCompiler<
   private environment(vid: string, value: string | null) {
     if (!this.map.has(vid)) {
       console.warn(
-        `${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`
+        `${this.MODULE} compiler can not found this vid mapping object: '${vid}'`
       );
       return;
     }
@@ -97,7 +97,7 @@ export class SceneCompiler extends ObjectCompiler<
   private fog(vid: string, config: SceneFogConfig) {
     if (!this.map.has(vid)) {
       console.warn(
-        `${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`
+        `${this.MODULE} compiler can not found this vid mapping object: '${vid}'`
       );
       return;
     }

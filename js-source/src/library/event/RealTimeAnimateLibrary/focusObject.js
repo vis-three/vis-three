@@ -14,6 +14,7 @@ export const config = {
         delay: 0,
         duration: 1000,
         timingFunction: TIMINGFUNCTION.EQI,
+        back: true,
     },
 };
 export const generator = function (engine, config) {
@@ -38,6 +39,11 @@ export const generator = function (engine, config) {
             y: target.position.y + params.offset.y,
             z: target.position.z + params.offset.z,
         };
+        const backPosition = {
+            x: camera.position.x,
+            y: camera.position.y,
+            z: camera.position.z,
+        };
         if (params.space === "local") {
             const vector3 = new Vector3(params.offset.x, params.offset.y, params.offset.z).applyEuler(target.rotation);
             position = {
@@ -52,11 +58,16 @@ export const generator = function (engine, config) {
             .delay(params.delay)
             .easing(timingFunction[params.timingFunction])
             .start();
-        let rotationTween;
+        let upTween;
+        const backUp = {
+            x: camera.up.x,
+            y: camera.up.y,
+            z: camera.up.z,
+        };
         if (params.space === "local") {
             // scene up
             const upVector3 = new Vector3(0, 1, 0).applyEuler(target.rotation);
-            rotationTween = new Tween(camera.up)
+            upTween = new Tween(camera.up)
                 .to({
                 x: upVector3.x,
                 y: upVector3.y,
@@ -67,9 +78,14 @@ export const generator = function (engine, config) {
                 .easing(timingFunction[params.timingFunction])
                 .start();
         }
-        let tween2;
+        let orbTween;
+        const backOrb = {
+            x: orbTarget.x,
+            y: orbTarget.y,
+            z: orbTarget.z,
+        };
         if (orb) {
-            tween2 = new Tween(orbTarget)
+            orbTween = new Tween(orbTarget)
                 .to(target.position)
                 .duration(params.duration)
                 .delay(params.delay)
@@ -80,20 +96,20 @@ export const generator = function (engine, config) {
         if (orb && params.space === "local") {
             renderFun = (event) => {
                 positionTween.update();
-                rotationTween.update();
-                tween2.update();
+                upTween.update();
+                orbTween.update();
             };
         }
         else if (orb) {
             renderFun = (event) => {
                 positionTween.update();
-                tween2.update();
+                orbTween.update();
             };
         }
         else if (params.space === "local") {
             renderFun = (event) => {
                 positionTween.update();
-                rotationTween.update();
+                upTween.update();
             };
         }
         else {
@@ -108,6 +124,45 @@ export const generator = function (engine, config) {
                 cameraConfig.position.x = position.x;
                 cameraConfig.position.y = position.y;
                 cameraConfig.position.z = position.z;
+            }
+            if (params.back) {
+                const backFun = () => {
+                    const positionTween = new Tween(camera.position)
+                        .to(backPosition)
+                        .duration(params.duration)
+                        .delay(params.delay)
+                        .easing(timingFunction[params.timingFunction])
+                        .start();
+                    let upTween;
+                    if (params.space === "local") {
+                        upTween = new Tween(camera.up)
+                            .to(backUp)
+                            .duration(params.duration)
+                            .delay(params.delay)
+                            .easing(timingFunction[params.timingFunction])
+                            .start();
+                    }
+                    let orbTween;
+                    if (orb) {
+                        orbTween = new Tween(orbTarget)
+                            .to(backOrb)
+                            .duration(params.duration)
+                            .delay(params.delay)
+                            .easing(timingFunction[params.timingFunction])
+                            .start();
+                    }
+                    const renderFun = (event) => {
+                        positionTween.update();
+                        upTween && upTween.update();
+                        orbTween && orbTween.update();
+                    };
+                    positionTween.onComplete(() => {
+                        renderManager.removeEventListener("render", renderFun);
+                    });
+                    renderManager.addEventListener("render", renderFun);
+                    document.removeEventListener("dblclick", backFun);
+                };
+                document.addEventListener("dblclick", backFun);
             }
         });
     };

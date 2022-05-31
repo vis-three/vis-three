@@ -61,10 +61,7 @@ export const ObjectRule = function <
       }
 
       if (!Number.isInteger(index)) {
-        console.error(
-          `${compiler.COMPILER_NAME} rule: event analysis error.`,
-          input
-        );
+        console.error(`${compiler.MODULE} rule: event analysis error.`, input);
         return;
       }
       compiler.updateEvent(vid, attribute as EVENTNAME, index);
@@ -73,10 +70,7 @@ export const ObjectRule = function <
 
     if (operate === "set") {
       if (!Number.isInteger(index)) {
-        console.error(
-          `${compiler.COMPILER_NAME} rule: event analysis error.`,
-          input
-        );
+        console.error(`${compiler.MODULE} rule: event analysis error.`, input);
         return;
       }
       compiler.updateEvent(vid, attribute as EVENTNAME, index);
@@ -85,10 +79,7 @@ export const ObjectRule = function <
 
     if (operate === "delete") {
       if (!Number.isInteger(index)) {
-        console.error(
-          `${compiler.COMPILER_NAME} rule: event analysis error.`,
-          input
-        );
+        console.error(`${compiler.MODULE} rule: event analysis error.`, input);
         return;
       }
       compiler.removeEvent(vid, attribute as EVENTNAME, value);
@@ -117,7 +108,7 @@ export const ObjectRule = function <
     if ((vid && validate(vid)) || UNIQUESYMBOL[vid]) {
       compiler.set(vid, tempPath, key, value);
     } else {
-      console.warn(`${compiler.COMPILER_NAME} rule vid is illeage: '${vid}'`);
+      console.warn(`${compiler.MODULE} rule vid is illeage: '${vid}'`);
     }
     return;
   }

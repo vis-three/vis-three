@@ -2,7 +2,7 @@ import { BoxBufferGeometry, Mesh, MeshBasicMaterial, } from "three";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { SolidObjectCompiler, } from "../solidObject/SolidObjectCompiler";
 export class MeshCompiler extends SolidObjectCompiler {
-    COMPILER_NAME = MODULETYPE.MESH;
+    MODULE = MODULETYPE.MESH;
     replaceMaterial = new MeshBasicMaterial({
         color: "rgb(150, 150, 150)",
     });

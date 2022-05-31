@@ -14,44 +14,59 @@ import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { EngineSupport, ShaderLibrary } from "../../main";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
+import { MODULETYPE } from "../constants/MODULETYPE";
 import { MaterialAllType } from "./MaterialConfig";
 
 export interface MaterialCompilerTarget extends CompilerTarget {
   [key: string]: MaterialAllType;
 }
 
-export interface MaterialCompilerParameters {
-  target: MaterialCompilerTarget;
-}
-
 export class MaterialCompiler extends Compiler {
-  private target!: MaterialCompilerTarget;
-  private map: Map<SymbolConfig["vid"], Material>;
-  private constructMap: Map<
+  MODULE: MODULETYPE = MODULETYPE.MATERIAL;
+
+  private target: MaterialCompilerTarget = {};
+
+  private map = new Map<SymbolConfig["vid"], Material>();
+
+  private weakMap = new WeakMap<Material, SymbolConfig["vid"]>();
+
+  private constructMap = new Map<
     SymbolConfig["type"],
     (config: MaterialAllType) => Material
-  >;
+  >();
 
-  private mapAttribute: { [key: string]: boolean };
-  private colorAttribute: { [key: string]: boolean };
-  private shaderAttribute: { [key: string]: boolean };
+  private mapAttribute: { [key: string]: boolean } = {
+    roughnessMap: true,
+    normalMap: true,
+    metalnessMap: true,
+    map: true,
+    lightMap: true,
+    envMap: true,
+    emissiveMap: true,
+    displacementMap: true,
+    bumpMap: true,
+    alphaMap: true,
+    aoMap: true,
+    specularMap: true,
+  };
 
-  private texturelMap: Map<string, Texture>;
-  private resourceMap: Map<string, unknown>;
+  private colorAttribute: { [key: string]: boolean } = {
+    color: true,
+    emissive: true,
+    specular: true,
+  };
 
-  private cachaColor: Color;
+  private shaderAttribute: { [key: string]: boolean } = {
+    shader: true,
+  };
 
-  constructor(parameters?: MaterialCompilerParameters) {
+  private texturelMap = new Map<string, Texture>();
+  private resourceMap = new Map<string, unknown>();
+
+  private cachaColor = new Color();
+
+  constructor() {
     super();
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-    } else {
-      this.target = {};
-    }
-    this.map = new Map();
-    this.texturelMap = new Map();
-    this.resourceMap = new Map();
-    this.cachaColor = new Color();
 
     const constructMap = new Map();
 
@@ -85,31 +100,6 @@ export class MaterialCompiler extends Compiler {
     });
 
     this.constructMap = constructMap;
-
-    this.colorAttribute = {
-      color: true,
-      emissive: true,
-      specular: true,
-    };
-
-    this.mapAttribute = {
-      roughnessMap: true,
-      normalMap: true,
-      metalnessMap: true,
-      map: true,
-      lightMap: true,
-      envMap: true,
-      emissiveMap: true,
-      displacementMap: true,
-      bumpMap: true,
-      alphaMap: true,
-      aoMap: true,
-      specularMap: true,
-    };
-
-    this.shaderAttribute = {
-      shader: true,
-    };
   }
 
   private mergeMaterial(material: Material, config: MaterialAllType): this {
@@ -175,6 +165,7 @@ export class MaterialCompiler extends Compiler {
       const material = this.constructMap.get(config.type)!(config);
       this.mergeMaterial(material, config);
       this.map.set(vid, material);
+      this.weakMap.set(material, vid);
     } else {
       console.warn(
         `material compiler can not support this type: ${config.type}`
@@ -238,6 +229,7 @@ export class MaterialCompiler extends Compiler {
 
     material.dispose();
     this.map.delete(vid);
+    this.weakMap.delete(material);
     return this;
   }
 
@@ -267,5 +259,13 @@ export class MaterialCompiler extends Compiler {
       material.dispose();
     });
     return this;
+  }
+
+  getObjectSymbol(object: Material): string | null {
+    return this.weakMap.get(object) || null;
+  }
+
+  getObjectBySymbol(vid: string): any | null {
+    return this.map.get(vid) || null;
   }
 }

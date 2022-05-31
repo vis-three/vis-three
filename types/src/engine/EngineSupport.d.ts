@@ -1,4 +1,3 @@
-import { Object3D } from "three";
 import { CompilerManager } from "../manager/CompilerManager";
 import { DataSupportManager, DataSupportManagerParameters, LoadOptions } from "../manager/DataSupportManager";
 import { LoaderManager } from "../manager/LoaderManager";
@@ -25,8 +24,8 @@ export declare class EngineSupport extends Engine {
     reactiveConfig: <T extends SymbolConfig>(config: T) => T;
     getConfigBySymbol: <T extends SymbolConfig>(vid: string) => T | null;
     removeConfigBySymbol: (vid: string) => this;
-    getObjectSymbol: <O extends Object3D>(object: O) => SymbolConfig["vid"] | null;
-    getObjectBySymbol: (vid: string) => Object3D | null;
+    getObjectSymbol: (object: any) => SymbolConfig["vid"] | null;
+    getObjectBySymbol: (vid: string) => any | null;
     constructor(parameters?: EngineSupportParameters, resources?: {
         [key: string]: any;
     });

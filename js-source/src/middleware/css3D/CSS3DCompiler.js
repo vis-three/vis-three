@@ -4,7 +4,7 @@ import { CONFIGTYPE } from "../constants/configType";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectCompiler } from "../object/ObjectCompiler";
 export class CSS3DCompiler extends ObjectCompiler {
-    COMPILER_NAME = MODULETYPE.CSS3D;
+    MODULE = MODULETYPE.CSS3D;
     resourceMap;
     constructMap;
     constructor() {

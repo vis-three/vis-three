@@ -1,10 +1,11 @@
 import { Material, Object3D, Texture } from "three";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { EngineSupport } from "../../engine/EngineSupport";
-import { AniScriptLibrary } from "../../main";
+import { AniScriptLibrary } from "../../library/aniScript/AniScriptLibrary";
 import { RenderManager } from "../../manager/RenderManager";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
+import { MODULETYPE } from "../constants/MODULETYPE";
 import { AnimationAllType, ScriptAnimationConfig } from "./AnimationConfig";
 
 export interface AnimationCompilerTarget extends CompilerTarget {
@@ -12,6 +13,8 @@ export interface AnimationCompilerTarget extends CompilerTarget {
 }
 
 export class AnimationCompiler extends Compiler {
+  MODULE: MODULETYPE = MODULETYPE.ANIMATION;
+
   private target: AnimationCompilerTarget = {};
   private engine!: EngineSupport;
 
@@ -124,5 +127,13 @@ export class AnimationCompiler extends Compiler {
       this.remove(config);
     }
     return this;
+  }
+
+  getObjectSymbol(animation: any): string | null {
+    return null;
+  }
+
+  getObjectBySymbol(vid: string): any | null {
+    return null;
   }
 }

@@ -2,11 +2,13 @@ import { Material, Object3D, Texture } from "three";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { EngineSupport } from "../../engine/EngineSupport";
 import { SymbolConfig } from "../common/CommonConfig";
+import { MODULETYPE } from "../constants/MODULETYPE";
 import { AnimationAllType } from "./AnimationConfig";
 export interface AnimationCompilerTarget extends CompilerTarget {
     [key: string]: AnimationAllType;
 }
 export declare class AnimationCompiler extends Compiler {
+    MODULE: MODULETYPE;
     private target;
     private engine;
     private objectMapSet;
@@ -23,4 +25,6 @@ export declare class AnimationCompiler extends Compiler {
     useEngine(engine: EngineSupport): this;
     compileAll(): this;
     dispose(parameter: unknown): this;
+    getObjectSymbol(animation: any): string | null;
+    getObjectBySymbol(vid: string): any | null;
 }

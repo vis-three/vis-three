@@ -35,5 +35,9 @@ export const ResourceManagerPlugin: Plugin<ResourceManagerPluginParameters> =
       return this;
     };
 
+    this.addEventListener("dispose", () => {
+      this.resourceManager!.dispose();
+    });
+
     return true;
   };

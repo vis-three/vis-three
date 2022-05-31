@@ -21,7 +21,7 @@ export class SpriteCompiler extends SolidObjectCompiler<
   SpriteCompilerTarget,
   Sprite
 > {
-  COMPILER_NAME: string = MODULETYPE.SPRITE;
+  MODULE: MODULETYPE = MODULETYPE.SPRITE;
 
   private replaceMaterial = new SpriteMaterial({ color: "rgb(150, 150, 150)" });
   private replaceGeometry = new PlaneBufferGeometry(1, 1);

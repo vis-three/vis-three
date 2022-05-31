@@ -11,19 +11,18 @@ import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { Vector2 } from "three";
 import { EngineSupport } from "../../engine/EngineSupport";
+import { MODULETYPE } from "../constants/MODULETYPE";
 
 export interface PassCompilerTarget extends CompilerTarget {
   [key: string]: PassConfigAllType;
 }
 
-export interface PassCompilerParameters {
-  target?: PassCompilerTarget;
-  composer?: EffectComposer;
-}
-
 export class PassCompiler extends Compiler {
+  MODULE: MODULETYPE = MODULETYPE.PASS;
+
   private target!: PassCompilerTarget;
-  private map!: Map<SymbolConfig["type"], Pass>;
+  private map: Map<SymbolConfig["vid"], Pass>;
+  private weakMap: WeakMap<Pass, SymbolConfig["vid"]>;
   private constructMap: Map<string, (config: PassConfigAllType) => Pass>;
 
   private composer!: EffectComposer;
@@ -31,14 +30,11 @@ export class PassCompiler extends Compiler {
   private width: number = window.innerWidth * window.devicePixelRatio;
   private height: number = window.innerHeight * window.devicePixelRatio;
 
-  constructor(parameters?: PassCompilerParameters) {
+  constructor() {
     super();
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-      parameters.composer && (this.composer = parameters.composer);
-    }
 
     this.map = new Map();
+    this.weakMap = new WeakMap();
 
     const constructMap = new Map();
     constructMap.set(
@@ -89,6 +85,7 @@ export class PassCompiler extends Compiler {
       const pass = this.constructMap.get(config.type)!(config);
       this.composer.addPass(pass);
       this.map.set(config.vid, pass);
+      this.weakMap.set(pass, config.vid);
     } else {
       console.warn(
         `pass compiler can not support this type pass: ${config.type}.`
@@ -110,6 +107,7 @@ export class PassCompiler extends Compiler {
     const pass = this.map.get(vid)!;
     this.composer.removePass(pass);
     this.map.delete(vid);
+    this.weakMap.delete(pass);
     return this;
   }
 
@@ -122,6 +120,14 @@ export class PassCompiler extends Compiler {
   }
 
   dispose(): this {
+    this.map.clear();
     return this;
+  }
+
+  getObjectSymbol(object: Pass): string | null {
+    return this.weakMap.get(object) || null;
+  }
+  getObjectBySymbol(vid: string): Pass | null {
+    return this.map.get(vid) || null;
   }
 }

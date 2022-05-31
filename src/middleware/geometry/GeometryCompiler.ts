@@ -31,13 +31,10 @@ import {
 } from "./GeometryConfig";
 import { CONFIGTYPE } from "../constants/configType";
 import { EngineSupport } from "../../main";
+import { MODULETYPE } from "../constants/MODULETYPE";
 
 export interface GeometryCompilerTarget extends CompilerTarget {
   [key: string]: GeometryAllType;
-}
-
-export interface GeometryCompilerParameters {
-  target?: GeometryCompilerTarget;
 }
 
 export class GeometryCompiler extends Compiler {
@@ -68,16 +65,17 @@ export class GeometryCompiler extends Compiler {
     return geometry;
   };
 
-  private target!: GeometryCompilerTarget;
-  private map: Map<SymbolConfig["vid"], BufferGeometry>;
-  private constructMap: Map<string, (config: unknown) => BufferGeometry>;
-  private resourceMap: Map<string, unknown>;
-  private replaceGeometry: BufferGeometry;
+  MODULE: MODULETYPE = MODULETYPE.GEOMETRY;
 
-  constructor(parameters?: GeometryCompilerParameters) {
+  private target: GeometryCompilerTarget = {};
+  private map = new Map<SymbolConfig["vid"], BufferGeometry>();
+  private weakMap = new WeakMap<BufferGeometry, SymbolConfig["vid"]>();
+  private constructMap: Map<string, (config: unknown) => BufferGeometry>;
+  private resourceMap = new Map<string, unknown>();
+  private replaceGeometry: BufferGeometry = new BoxBufferGeometry(5, 5, 5);
+
+  constructor() {
     super();
-    parameters?.target && (this.target = parameters.target);
-    this.map = new Map();
 
     const constructMap = new Map();
 
@@ -195,9 +193,6 @@ export class GeometryCompiler extends Compiler {
     );
 
     this.constructMap = constructMap;
-    this.resourceMap = new Map();
-
-    this.replaceGeometry = new BoxBufferGeometry(5, 5, 5);
   }
 
   linkRescourceMap(map: Map<string, unknown>): this {
@@ -255,6 +250,7 @@ export class GeometryCompiler extends Compiler {
       }
 
       this.map.set(vid, geometry);
+      this.weakMap.set(geometry, vid);
     }
     return this;
   }
@@ -330,6 +326,7 @@ export class GeometryCompiler extends Compiler {
     geometry.dispose();
 
     this.map.delete(vid);
+    this.weakMap.delete(geometry);
     return this;
   }
 
@@ -346,5 +343,13 @@ export class GeometryCompiler extends Compiler {
       geometry.dispose();
     });
     return this;
+  }
+
+  getObjectSymbol(texture: BufferGeometry): string | null {
+    return this.weakMap.get(texture) || null;
+  }
+
+  getObjectBySymbol(vid: string): BufferGeometry | null {
+    return this.map.get(vid) || null;
   }
 }

@@ -18,7 +18,7 @@ export class CSS3DCompiler extends ObjectCompiler<
   CSS3DCompilerTarget,
   CSS3DObject
 > {
-  COMPILER_NAME: string = MODULETYPE.CSS3D;
+  MODULE: MODULETYPE = MODULETYPE.CSS3D;
 
   private resourceMap: Map<string, unknown>;
   private constructMap: Map<string, (config: CSS3DAllType) => CSS3DObject>;

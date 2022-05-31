@@ -278,12 +278,56 @@ export class ResourceManager extends EventDispatcher {
      * @param url 资源 url
      * @returns boolean
      */
-    hasResuorce(url) {
+    hasResource(url) {
         return this.resourceMap.has(url);
     }
     // TODO: 根据strictureMap去清空configMap和resourceMap
-    remove(url) { }
+    remove(url) {
+        if (!this.structureMap.has(url)) {
+            console.warn(`resource manager can not found this url resource: ${url}`);
+            return this;
+        }
+        else if (this.structureMap.get(url) === url) {
+            this.structureMap.delete(url);
+            this.configMap.delete(url);
+            const resouce = this.resourceMap.get(url);
+            resouce?.dispose && resouce.dispose();
+            this.resourceMap.delete(url);
+            return this;
+        }
+        else {
+            const configMap = this.configMap;
+            const resourceMap = this.resourceMap;
+            const structure = this.structureMap.get(url);
+            const recursionStructure = (structure) => {
+                configMap.delete(structure.url);
+                resourceMap.delete(structure.url);
+                if (structure.geometry) {
+                    configMap.delete(structure.geometry);
+                    resourceMap.delete(structure.geometry);
+                }
+                if (structure.material) {
+                    configMap.delete(structure.material);
+                    resourceMap.delete(structure.material);
+                }
+                if (structure.children && structure.children.length) {
+                    for (const objectStructure of structure.children) {
+                        recursionStructure(objectStructure);
+                    }
+                }
+            };
+            recursionStructure(structure);
+            return this;
+        }
+    }
     // TODO: dispose
-    dispose() { }
+    dispose() {
+        this.resourceMap.forEach((object, url) => {
+            object.dispose && object.dispose();
+        });
+        this.resourceMap.clear();
+        this.configMap.clear();
+        this.structureMap.clear();
+    }
 }
 //# sourceMappingURL=ResourceManager.js.map

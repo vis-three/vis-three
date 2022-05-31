@@ -49,13 +49,13 @@ export abstract class SolidObjectCompiler<
         return this.materialMap.get(vid)!;
       } else {
         console.warn(
-          `${this.COMPILER_NAME}Compiler: can not found material which vid: ${vid}`
+          `${this.MODULE}Compiler: can not found material which vid: ${vid}`
         );
         return this.getReplaceMaterial();
       }
     } else {
       console.warn(
-        `${this.COMPILER_NAME}Compiler: material vid parameter is illegal: ${vid}`
+        `${this.MODULE}Compiler: material vid parameter is illegal: ${vid}`
       );
       return this.getReplaceMaterial();
     }
@@ -68,13 +68,13 @@ export abstract class SolidObjectCompiler<
         return this.geometryMap.get(vid)!;
       } else {
         console.warn(
-          `${this.COMPILER_NAME}Compiler: can not found geometry which vid: ${vid}`
+          `${this.MODULE}Compiler: can not found geometry which vid: ${vid}`
         );
         return this.getReplaceGeometry();
       }
     } else {
       console.warn(
-        `${this.COMPILER_NAME}Compiler: geometry vid parameter is illegal: ${vid}`
+        `${this.MODULE}Compiler: geometry vid parameter is illegal: ${vid}`
       );
       return this.getReplaceGeometry();
     }
@@ -93,9 +93,7 @@ export abstract class SolidObjectCompiler<
   add(vid: string, config: T[string]): this {
     const object = this.map.get(vid)!;
     if (!object) {
-      console.error(
-        `${this.COMPILER_NAME} compiler can not finish add method.`
-      );
+      console.error(`${this.MODULE} compiler can not finish add method.`);
       return this;
     }
 
@@ -128,7 +126,7 @@ export abstract class SolidObjectCompiler<
   set(vid: string, path: string[], key: string, value: any): this {
     if (!this.map.has(vid)) {
       console.warn(
-        `${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`
+        `${this.MODULE} compiler can not found this vid mapping object: '${vid}'`
       );
       return this;
     }

@@ -2,7 +2,7 @@ import { OrthographicCamera, PerspectiveCamera } from "three";
 import { ObjectCompiler } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 export class CameraCompiler extends ObjectCompiler {
-    COMPILER_NAME = MODULETYPE.CAMERA;
+    MODULE = MODULETYPE.CAMERA;
     constructMap;
     cacheCameraMap;
     constructor() {

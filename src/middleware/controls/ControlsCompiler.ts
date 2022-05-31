@@ -2,7 +2,9 @@ import { TransformControls } from "three/examples/jsm/controls/TransformControls
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { EngineSupport } from "../../main";
 import { VisOrbitControls } from "../../optimize/VisOrbitControls";
+import { SymbolConfig } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
+import { MODULETYPE } from "../constants/MODULETYPE";
 import {
   getOrbitControlsConfig,
   getTransformControlsConfig,
@@ -11,48 +13,26 @@ import {
 import { OrbitControlsProcessor } from "./OrbitControlsProcessor";
 import { TransformControlsProcessor } from "./TransformControlsProcessor";
 
+export type ControlsAllType = TransformControls | VisOrbitControls;
+
 export interface ControlsCompilerTarget extends CompilerTarget {
   [key: string]: ControlsAllConfig;
 }
 
-export interface ControlsCompilerParameters {
-  target?: ControlsCompilerTarget;
-  transformControls?: TransformControls;
-  orbitControls?: VisOrbitControls;
-}
-
 export class ControlsCompiler extends Compiler {
-  private target!: ControlsCompilerTarget;
+  MODULE: MODULETYPE = MODULETYPE.CONTROLS;
+
+  private target: ControlsCompilerTarget = {};
+  private map = new Map<SymbolConfig["vid"], ControlsAllType>();
+  private weakMap = new Map<ControlsAllType, SymbolConfig["vid"]>();
 
   private processorMap = {
     [CONFIGTYPE.TRNASFORMCONTROLS]: new TransformControlsProcessor(),
     [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor(),
   };
 
-  // TODO: 需要支持不止一个控件
-  private controlMap: {
-    [CONFIGTYPE.TRNASFORMCONTROLS]: undefined | TransformControls;
-    [CONFIGTYPE.ORBITCONTROLS]: undefined | VisOrbitControls;
-  } = {
-    [CONFIGTYPE.TRNASFORMCONTROLS]: undefined,
-    [CONFIGTYPE.ORBITCONTROLS]: undefined,
-  };
-
-  constructor(parameters?: ControlsCompilerParameters) {
+  constructor() {
     super();
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-      parameters.transformControls &&
-        (this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] =
-          parameters.transformControls);
-      parameters.orbitControls &&
-        (this.controlMap[CONFIGTYPE.ORBITCONTROLS] = parameters.orbitControls);
-    } else {
-      this.target = {
-        [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig(),
-        [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig(),
-      };
-    }
   }
 
   private getAssembly(
@@ -71,7 +51,7 @@ export class ControlsCompiler extends Compiler {
       return null;
     }
 
-    const control = this.controlMap[config.type];
+    const control = this.map.get(config.type)!;
 
     if (!control) {
       console.warn(
@@ -133,11 +113,13 @@ export class ControlsCompiler extends Compiler {
 
   useEngine(engine: EngineSupport): this {
     if (engine.transformControls) {
-      this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] = engine.transformControls;
+      this.map.set(CONFIGTYPE.TRNASFORMCONTROLS, engine.transformControls);
+      this.weakMap.set(engine.transformControls, CONFIGTYPE.TRNASFORMCONTROLS);
     }
 
     if (engine.orbitControls) {
-      this.controlMap[CONFIGTYPE.ORBITCONTROLS] = engine.orbitControls;
+      this.map.set(CONFIGTYPE.ORBITCONTROLS, engine.orbitControls);
+      this.weakMap.set(engine.orbitControls, CONFIGTYPE.ORBITCONTROLS);
     }
     return this;
   }
@@ -162,6 +144,19 @@ export class ControlsCompiler extends Compiler {
   }
 
   dispose(): this {
+    this.map.forEach((controls) => {
+      controls.dispose && controls.dispose();
+    });
+
+    this.map.clear();
     return this;
+  }
+
+  getObjectSymbol(texture: ControlsAllType): string | null {
+    return this.weakMap.get(texture) || null;
+  }
+
+  getObjectBySymbol(vid: string): ControlsAllType | null {
+    return this.map.get(vid) || null;
   }
 }

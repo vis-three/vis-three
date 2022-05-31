@@ -16,6 +16,7 @@ export interface FocusObject extends BasicEventConfig {
     delay: number;
     duration: number;
     timingFunction: TIMINGFUNCTION;
+    back: boolean;
   };
 }
 
@@ -32,6 +33,7 @@ export const config: FocusObject = {
     delay: 0,
     duration: 1000,
     timingFunction: TIMINGFUNCTION.EQI,
+    back: true,
   },
 };
 
@@ -66,6 +68,12 @@ export const generator: EventGenerator<FocusObject> = function (
       z: target.position.z + params.offset.z,
     };
 
+    const backPosition = {
+      x: camera.position.x,
+      y: camera.position.y,
+      z: camera.position.z,
+    };
+
     if (params.space === "local") {
       const vector3 = new Vector3(
         params.offset.x,
@@ -87,12 +95,19 @@ export const generator: EventGenerator<FocusObject> = function (
       .easing(timingFunction[params.timingFunction])
       .start();
 
-    let rotationTween: Tween<Vector3>;
+    let upTween: Tween<Vector3>;
+
+    const backUp = {
+      x: camera.up.x,
+      y: camera.up.y,
+      z: camera.up.z,
+    };
+
     if (params.space === "local") {
       // scene up
       const upVector3 = new Vector3(0, 1, 0).applyEuler(target.rotation);
 
-      rotationTween = new Tween(camera.up)
+      upTween = new Tween(camera.up)
         .to({
           x: upVector3.x,
           y: upVector3.y,
@@ -104,9 +119,14 @@ export const generator: EventGenerator<FocusObject> = function (
         .start();
     }
 
-    let tween2: Tween<Vector3>;
+    let orbTween: Tween<Vector3>;
+    const backOrb = {
+      x: orbTarget.x,
+      y: orbTarget.y,
+      z: orbTarget.z,
+    };
     if (orb) {
-      tween2 = new Tween(orbTarget)
+      orbTween = new Tween(orbTarget)
         .to(target.position)
         .duration(params.duration)
         .delay(params.delay)
@@ -119,18 +139,18 @@ export const generator: EventGenerator<FocusObject> = function (
     if (orb && params.space === "local") {
       renderFun = (event: RenderEvent) => {
         positionTween.update();
-        rotationTween.update();
-        tween2.update();
+        upTween.update();
+        orbTween.update();
       };
     } else if (orb) {
       renderFun = (event: RenderEvent) => {
         positionTween.update();
-        tween2.update();
+        orbTween.update();
       };
     } else if (params.space === "local") {
       renderFun = (event: RenderEvent) => {
         positionTween.update();
-        rotationTween.update();
+        upTween.update();
       };
     } else {
       renderFun = (event: RenderEvent) => {
@@ -146,6 +166,52 @@ export const generator: EventGenerator<FocusObject> = function (
         cameraConfig.position.x = position.x;
         cameraConfig.position.y = position.y;
         cameraConfig.position.z = position.z;
+      }
+
+      if (params.back) {
+        const backFun = () => {
+          const positionTween = new Tween(camera.position)
+            .to(backPosition)
+            .duration(params.duration)
+            .delay(params.delay)
+            .easing(timingFunction[params.timingFunction])
+            .start();
+
+          let upTween;
+          if (params.space === "local") {
+            upTween = new Tween(camera.up)
+              .to(backUp)
+              .duration(params.duration)
+              .delay(params.delay)
+              .easing(timingFunction[params.timingFunction])
+              .start();
+          }
+
+          let orbTween;
+          if (orb) {
+            orbTween = new Tween(orbTarget)
+              .to(backOrb)
+              .duration(params.duration)
+              .delay(params.delay)
+              .easing(timingFunction[params.timingFunction])
+              .start();
+          }
+
+          const renderFun = (event: RenderEvent) => {
+            positionTween.update();
+            upTween && upTween.update();
+            orbTween && orbTween.update();
+          };
+
+          positionTween.onComplete(() => {
+            renderManager.removeEventListener<RenderEvent>("render", renderFun);
+          });
+
+          renderManager.addEventListener<RenderEvent>("render", renderFun);
+          document.removeEventListener("dblclick", backFun);
+        };
+
+        document.addEventListener("dblclick", backFun);
       }
     });
   };

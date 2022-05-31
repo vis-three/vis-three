@@ -8,6 +8,7 @@ import { CONFIGTYPE } from "../constants/configType";
 import { VideoTexture } from "../../optimize/VideoTexture";
 import { EngineSupport } from "../../engine/EngineSupport";
 import { CanvasGenerator } from "../../convenient/CanvasGenerator";
+import { MODULETYPE } from "../constants/MODULETYPE";
 
 export interface TextureCompilerTarget extends CompilerTarget {
   [key: string]: TextureAllType;
@@ -20,14 +21,17 @@ export class TextureCompiler extends Compiler {
   })
     .draw((ctx) => {
       ctx.translate(256, 256);
-      ctx.font = "32px";
+      ctx.font = "52px";
       ctx.fillStyle = "white";
       ctx.fillText("暂无图片", 0, 0);
     })
     .get();
 
+  MODULE: MODULETYPE = MODULETYPE.TEXTURE;
+
   private target: TextureCompilerTarget = {};
-  private map: Map<SymbolConfig["type"], Texture>;
+  private map: Map<SymbolConfig["vid"], Texture>;
+  private weakMap: WeakMap<Texture, SymbolConfig["vid"]>;
   private constructMap: Map<string, Function>;
   private resourceMap: Map<string, unknown>;
 
@@ -35,6 +39,7 @@ export class TextureCompiler extends Compiler {
     super();
 
     this.map = new Map();
+    this.weakMap = new WeakMap();
     this.resourceMap = new Map();
 
     const constructMap = new Map();
@@ -125,6 +130,7 @@ export class TextureCompiler extends Compiler {
         texture.needsUpdate = true;
 
         this.map.set(vid, texture);
+        this.weakMap.set(texture, vid);
       } else {
         console.warn(
           `texture compiler can not support this type: ${config.type}`
@@ -197,7 +203,20 @@ export class TextureCompiler extends Compiler {
     return this;
   }
 
-  getMap(): Map<SymbolConfig["type"], Texture> {
+  remove(vid: string): this {
+    if (!this.map.has(vid)) {
+      console.warn(`texture compiler can not found vid match object: ${vid}`);
+      return this;
+    }
+
+    const texture = this.map.get(vid)!;
+    texture.dispose();
+    this.map.delete(vid);
+    this.weakMap.delete(texture);
+    return this;
+  }
+
+  getMap(): Map<SymbolConfig["vid"], Texture> {
     return this.map;
   }
 
@@ -219,6 +238,18 @@ export class TextureCompiler extends Compiler {
   }
 
   dispose(): this {
+    this.map.forEach((texture, vid) => {
+      texture.dispose();
+    });
+    this.map.clear();
     return this;
+  }
+
+  getObjectSymbol(texture: Texture): string | null {
+    return this.weakMap.get(texture) || null;
+  }
+
+  getObjectBySymbol(vid: string): Texture | null {
+    return this.map.get(vid) || null;
   }
 }

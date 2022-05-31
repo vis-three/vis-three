@@ -2,28 +2,40 @@ import { Color, LineBasicMaterial, MeshBasicMaterial, MeshPhongMaterial, MeshSta
 import { Compiler } from "../../core/Compiler";
 import { ShaderLibrary } from "../../main";
 import { CONFIGTYPE } from "../constants/configType";
+import { MODULETYPE } from "../constants/MODULETYPE";
 export class MaterialCompiler extends Compiler {
-    target;
-    map;
-    constructMap;
-    mapAttribute;
-    colorAttribute;
-    shaderAttribute;
-    texturelMap;
-    resourceMap;
-    cachaColor;
-    constructor(parameters) {
+    MODULE = MODULETYPE.MATERIAL;
+    target = {};
+    map = new Map();
+    weakMap = new WeakMap();
+    constructMap = new Map();
+    mapAttribute = {
+        roughnessMap: true,
+        normalMap: true,
+        metalnessMap: true,
+        map: true,
+        lightMap: true,
+        envMap: true,
+        emissiveMap: true,
+        displacementMap: true,
+        bumpMap: true,
+        alphaMap: true,
+        aoMap: true,
+        specularMap: true,
+    };
+    colorAttribute = {
+        color: true,
+        emissive: true,
+        specular: true,
+    };
+    shaderAttribute = {
+        shader: true,
+    };
+    texturelMap = new Map();
+    resourceMap = new Map();
+    cachaColor = new Color();
+    constructor() {
         super();
-        if (parameters) {
-            parameters.target && (this.target = parameters.target);
-        }
-        else {
-            this.target = {};
-        }
-        this.map = new Map();
-        this.texturelMap = new Map();
-        this.resourceMap = new Map();
-        this.cachaColor = new Color();
         const constructMap = new Map();
         constructMap.set(CONFIGTYPE.MESHBASICMATERIAL, () => new MeshBasicMaterial());
         constructMap.set(CONFIGTYPE.MESHSTANDARDMATERIAL, () => new MeshStandardMaterial());
@@ -41,28 +53,6 @@ export class MaterialCompiler extends Compiler {
             return material;
         });
         this.constructMap = constructMap;
-        this.colorAttribute = {
-            color: true,
-            emissive: true,
-            specular: true,
-        };
-        this.mapAttribute = {
-            roughnessMap: true,
-            normalMap: true,
-            metalnessMap: true,
-            map: true,
-            lightMap: true,
-            envMap: true,
-            emissiveMap: true,
-            displacementMap: true,
-            bumpMap: true,
-            alphaMap: true,
-            aoMap: true,
-            specularMap: true,
-        };
-        this.shaderAttribute = {
-            shader: true,
-        };
     }
     mergeMaterial(material, config) {
         const tempConfig = JSON.parse(JSON.stringify(config));
@@ -117,6 +107,7 @@ export class MaterialCompiler extends Compiler {
             const material = this.constructMap.get(config.type)(config);
             this.mergeMaterial(material, config);
             this.map.set(vid, material);
+            this.weakMap.set(material, vid);
         }
         else {
             console.warn(`material compiler can not support this type: ${config.type}`);
@@ -162,6 +153,7 @@ export class MaterialCompiler extends Compiler {
         const material = this.map.get(vid);
         material.dispose();
         this.map.delete(vid);
+        this.weakMap.delete(material);
         return this;
     }
     getMap() {
@@ -186,6 +178,12 @@ export class MaterialCompiler extends Compiler {
             material.dispose();
         });
         return this;
+    }
+    getObjectSymbol(object) {
+        return this.weakMap.get(object) || null;
+    }
+    getObjectBySymbol(vid) {
+        return this.map.get(vid) || null;
     }
 }
 //# sourceMappingURL=MaterialCompiler.js.map

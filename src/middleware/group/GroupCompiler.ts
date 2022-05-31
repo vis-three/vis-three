@@ -12,7 +12,7 @@ export class GroupCompiler extends ObjectCompiler<
   GroupCompilerTarget,
   Group
 > {
-  COMPILER_NAME: string = MODULETYPE.GROUP;
+  MODULE: MODULETYPE = MODULETYPE.GROUP;
 
   constructor() {
     super();

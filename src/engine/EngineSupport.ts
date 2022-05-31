@@ -36,10 +36,8 @@ export class EngineSupport extends Engine {
   declare getConfigBySymbol: <T extends SymbolConfig>(vid: string) => T | null;
   declare removeConfigBySymbol: (vid: string) => this;
 
-  declare getObjectSymbol: <O extends Object3D>(
-    object: O
-  ) => SymbolConfig["vid"] | null;
-  declare getObjectBySymbol: (vid: string) => Object3D | null;
+  declare getObjectSymbol: (object: any) => SymbolConfig["vid"] | null;
+  declare getObjectBySymbol: (vid: string) => any | null;
 
   constructor(
     parameters: EngineSupportParameters = {},

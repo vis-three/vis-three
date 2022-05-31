@@ -1,7 +1,9 @@
 import { Compiler } from "../../core/Compiler";
-import { AniScriptLibrary } from "../../main";
+import { AniScriptLibrary } from "../../library/aniScript/AniScriptLibrary";
 import { CONFIGTYPE } from "../constants/configType";
+import { MODULETYPE } from "../constants/MODULETYPE";
 export class AnimationCompiler extends Compiler {
+    MODULE = MODULETYPE.ANIMATION;
     target = {};
     engine;
     objectMapSet = new Set();
@@ -85,6 +87,12 @@ export class AnimationCompiler extends Compiler {
             this.remove(config);
         }
         return this;
+    }
+    getObjectSymbol(animation) {
+        return null;
+    }
+    getObjectBySymbol(vid) {
+        return null;
     }
 }
 //# sourceMappingURL=AnimationCompiler.js.map

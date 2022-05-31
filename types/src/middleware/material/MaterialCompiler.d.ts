@@ -2,16 +2,16 @@ import { Material, Texture } from "three";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { EngineSupport } from "../../main";
 import { SymbolConfig } from "../common/CommonConfig";
+import { MODULETYPE } from "../constants/MODULETYPE";
 import { MaterialAllType } from "./MaterialConfig";
 export interface MaterialCompilerTarget extends CompilerTarget {
     [key: string]: MaterialAllType;
 }
-export interface MaterialCompilerParameters {
-    target: MaterialCompilerTarget;
-}
 export declare class MaterialCompiler extends Compiler {
+    MODULE: MODULETYPE;
     private target;
     private map;
+    private weakMap;
     private constructMap;
     private mapAttribute;
     private colorAttribute;
@@ -19,7 +19,7 @@ export declare class MaterialCompiler extends Compiler {
     private texturelMap;
     private resourceMap;
     private cachaColor;
-    constructor(parameters?: MaterialCompilerParameters);
+    constructor();
     private mergeMaterial;
     private getTexture;
     linkRescourceMap(map: Map<string, unknown>): this;
@@ -33,4 +33,6 @@ export declare class MaterialCompiler extends Compiler {
     useEngine(engine: EngineSupport): this;
     compileAll(): this;
     dispose(): this;
+    getObjectSymbol(object: Material): string | null;
+    getObjectBySymbol(vid: string): any | null;
 }

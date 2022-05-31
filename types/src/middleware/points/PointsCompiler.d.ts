@@ -6,7 +6,7 @@ export interface PointsCompilerTarget extends SolidObjectCompilerTarget<PointsCo
     [key: string]: PointsConfig;
 }
 export declare class PointsCompiler extends SolidObjectCompiler<PointsConfig, PointsCompilerTarget, Points> {
-    COMPILER_NAME: MODULETYPE;
+    MODULE: MODULETYPE;
     private replaceMaterial;
     private replaceGeometry;
     constructor();

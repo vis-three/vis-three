@@ -503,7 +503,7 @@ export class VisOrbitControls extends EventDispatcher {
         this.onPointerMove = (event) => {
             if (this.enabled === false)
                 return;
-            if (!pointerLock && pointers.length === 0) {
+            if (!pointerLock) {
                 this.domElement.setPointerCapture(event.pointerId);
                 pointerLock = true;
             }
@@ -517,6 +517,7 @@ export class VisOrbitControls extends EventDispatcher {
         this.onPointerUp = (event) => {
             if (this.enabled === false)
                 return;
+            pointerLock = false;
             if (event.pointerType === "touch") {
                 onTouchEnd();
             }
@@ -524,7 +525,6 @@ export class VisOrbitControls extends EventDispatcher {
                 onMouseUp(event);
             }
             removePointer(event);
-            //
             if (pointers.length === 0) {
                 this.domElement.releasePointerCapture(event.pointerId);
                 this.domElement.removeEventListener("pointermove", this.onPointerMove);

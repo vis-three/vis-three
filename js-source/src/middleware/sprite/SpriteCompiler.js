@@ -2,7 +2,7 @@ import { PlaneBufferGeometry, Sprite, SpriteMaterial, } from "three";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { SolidObjectCompiler, } from "../solidObject/SolidObjectCompiler";
 export class SpriteCompiler extends SolidObjectCompiler {
-    COMPILER_NAME = MODULETYPE.SPRITE;
+    MODULE = MODULETYPE.SPRITE;
     replaceMaterial = new SpriteMaterial({ color: "rgb(150, 150, 150)" });
     replaceGeometry = new PlaneBufferGeometry(1, 1);
     constructor() {

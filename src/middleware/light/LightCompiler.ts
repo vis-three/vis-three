@@ -21,7 +21,7 @@ export class LightCompiler extends ObjectCompiler<
   LightCompilerTarget,
   Light
 > {
-  COMPILER_NAME: string = MODULETYPE.LIGHT;
+  MODULE: MODULETYPE = MODULETYPE.LIGHT;
 
   private constructMap: Map<string, () => Light>;
 

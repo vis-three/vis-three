@@ -5,6 +5,7 @@ import { Compiler } from "../../core/Compiler";
 import { CONFIGTYPE } from "../constants/configType";
 import { VideoTexture } from "../../optimize/VideoTexture";
 import { CanvasGenerator } from "../../convenient/CanvasGenerator";
+import { MODULETYPE } from "../constants/MODULETYPE";
 export class TextureCompiler extends Compiler {
     static replaceImage = new CanvasGenerator({
         width: 512,
@@ -12,18 +13,21 @@ export class TextureCompiler extends Compiler {
     })
         .draw((ctx) => {
         ctx.translate(256, 256);
-        ctx.font = "32px";
+        ctx.font = "52px";
         ctx.fillStyle = "white";
         ctx.fillText("暂无图片", 0, 0);
     })
         .get();
+    MODULE = MODULETYPE.TEXTURE;
     target = {};
     map;
+    weakMap;
     constructMap;
     resourceMap;
     constructor() {
         super();
         this.map = new Map();
+        this.weakMap = new WeakMap();
         this.resourceMap = new Map();
         const constructMap = new Map();
         constructMap.set(CONFIGTYPE.IMAGETEXTURE, () => new ImageTexture());
@@ -91,6 +95,7 @@ export class TextureCompiler extends Compiler {
                 Compiler.applyConfig(tempConfig, texture);
                 texture.needsUpdate = true;
                 this.map.set(vid, texture);
+                this.weakMap.set(texture, vid);
             }
             else {
                 console.warn(`texture compiler can not support this type: ${config.type}`);
@@ -145,6 +150,17 @@ export class TextureCompiler extends Compiler {
         texture.needsUpdate = true;
         return this;
     }
+    remove(vid) {
+        if (!this.map.has(vid)) {
+            console.warn(`texture compiler can not found vid match object: ${vid}`);
+            return this;
+        }
+        const texture = this.map.get(vid);
+        texture.dispose();
+        this.map.delete(vid);
+        this.weakMap.delete(texture);
+        return this;
+    }
     getMap() {
         return this.map;
     }
@@ -163,7 +179,17 @@ export class TextureCompiler extends Compiler {
         return this;
     }
     dispose() {
+        this.map.forEach((texture, vid) => {
+            texture.dispose();
+        });
+        this.map.clear();
         return this;
+    }
+    getObjectSymbol(texture) {
+        return this.weakMap.get(texture) || null;
+    }
+    getObjectBySymbol(vid) {
+        return this.map.get(vid) || null;
     }
 }
 //# sourceMappingURL=TextureCompiler.js.map

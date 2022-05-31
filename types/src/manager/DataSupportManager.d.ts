@@ -153,10 +153,10 @@ export declare class DataSupportManager {
     getConfigBySymbol<T extends SymbolConfig>(vid: string): T | null;
     /**
      * 通过vid标识移除相关配置对象
-     * @param vid vid标识
+     * @param vid ...vid标识
      * @returns this
      */
-    removeConfigBySymbol(vid: string): this;
+    removeConfigBySymbol(...vids: string[]): this;
     /**
      * 通过vid标识获取该标识所处的模块
      * @param vid vid标识

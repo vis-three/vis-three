@@ -22,7 +22,7 @@ export class PointsCompiler extends SolidObjectCompiler<
   PointsCompilerTarget,
   Points
 > {
-  COMPILER_NAME = MODULETYPE.POINTS;
+  MODULE: MODULETYPE = MODULETYPE.POINTS;
 
   private replaceMaterial = new PointsMaterial({ color: "rgb(150, 150, 150)" });
   private replaceGeometry = new DodecahedronBufferGeometry(5);

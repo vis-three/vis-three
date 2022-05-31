@@ -3,7 +3,7 @@ import { validate } from "uuid";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectCompiler } from "../object/ObjectCompiler";
 export class SceneCompiler extends ObjectCompiler {
-    COMPILER_NAME = MODULETYPE.SCENE;
+    MODULE = MODULETYPE.SCENE;
     textureMap;
     fogCache;
     constructor() {
@@ -24,7 +24,7 @@ export class SceneCompiler extends ObjectCompiler {
     }
     background(vid, value) {
         if (!this.map.has(vid)) {
-            console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+            console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
             return;
         }
         const scene = this.map.get(vid);
@@ -46,7 +46,7 @@ export class SceneCompiler extends ObjectCompiler {
     }
     environment(vid, value) {
         if (!this.map.has(vid)) {
-            console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+            console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
             return;
         }
         const scene = this.map.get(vid);
@@ -68,7 +68,7 @@ export class SceneCompiler extends ObjectCompiler {
     }
     fog(vid, config) {
         if (!this.map.has(vid)) {
-            console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+            console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
             return;
         }
         const scene = this.map.get(vid);

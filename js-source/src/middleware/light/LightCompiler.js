@@ -3,7 +3,7 @@ import { ObjectCompiler } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { CONFIGTYPE } from "../constants/configType";
 export class LightCompiler extends ObjectCompiler {
-    COMPILER_NAME = MODULETYPE.LIGHT;
+    MODULE = MODULETYPE.LIGHT;
     constructMap;
     constructor() {
         super();

@@ -1,4 +1,4 @@
-import { Material, Object3D, Texture } from "three";
+import { Object3D } from "three";
 import { EngineSupport } from "../engine/EngineSupport";
 import { AnimationCompiler } from "../middleware/animation/AnimationCompiler";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
@@ -11,7 +11,6 @@ import { LightCompiler } from "../middleware/light/LightCompiler";
 import { LineCompiler } from "../middleware/line/LineCompiler";
 import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { MeshCompiler } from "../middleware/mesh/MeshCompiler";
-import { BasicObjectCompiler } from "../middleware/object/ObjectCompiler";
 import { PassCompiler } from "../middleware/pass/PassCompiler";
 import { PointsCompiler } from "../middleware/points/PointsCompiler";
 import { RendererCompiler } from "../middleware/renderer/RendererCompiler";
@@ -53,7 +52,7 @@ export declare class CompilerManager {
     private css3DCompiler;
     private passCompiler;
     private animationCompiler;
-    private objectCompilerList;
+    private compilerMap;
     constructor(parameters?: CompilerManagerParameters);
     /**
      * engine进行编译器链接
@@ -70,21 +69,8 @@ export declare class CompilerManager {
     /**
      * 通过vid标识获取相应的three对象
      * @param vid vid标识
-     * @returns object3D || null
+     * @returns three object || null
      */
-    getObjectBySymbol(vid: string): Object3D | null;
-    /**
-     * @deprecated
-     */
-    getMaterial(vid: string): Material | undefined;
-    /**
-     * @deprecated
-     */
-    getTexture(vid: string): Texture | undefined;
-    /**
-     * @deprecated
-     * @returns
-     */
-    getObjectCompilerList(): BasicObjectCompiler[];
+    getObjectBySymbol(vid: string): any | null;
     dispose(): this;
 }

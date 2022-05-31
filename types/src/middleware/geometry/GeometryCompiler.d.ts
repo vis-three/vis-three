@@ -3,20 +3,20 @@ import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import { GeometryAllType, GeometryGroup } from "./GeometryConfig";
 import { EngineSupport } from "../../main";
+import { MODULETYPE } from "../constants/MODULETYPE";
 export interface GeometryCompilerTarget extends CompilerTarget {
     [key: string]: GeometryAllType;
 }
-export interface GeometryCompilerParameters {
-    target?: GeometryCompilerTarget;
-}
 export declare class GeometryCompiler extends Compiler {
     static transfromAnchor: (geometry: BufferGeometry, config: GeometryAllType) => BufferGeometry;
+    MODULE: MODULETYPE;
     private target;
     private map;
+    private weakMap;
     private constructMap;
     private resourceMap;
     private replaceGeometry;
-    constructor(parameters?: GeometryCompilerParameters);
+    constructor();
     linkRescourceMap(map: Map<string, unknown>): this;
     private getRescource;
     private getGeometry;
@@ -31,4 +31,6 @@ export declare class GeometryCompiler extends Compiler {
     remove(vid: string): this;
     compileAll(): this;
     dispose(): this;
+    getObjectSymbol(texture: BufferGeometry): string | null;
+    getObjectBySymbol(vid: string): BufferGeometry | null;
 }

@@ -3,6 +3,7 @@ import { validate } from "uuid";
 import { LoadGeometry } from "../../extends/geometry/LoadGeometry";
 import { Compiler } from "../../core/Compiler";
 import { CONFIGTYPE } from "../constants/configType";
+import { MODULETYPE } from "../constants/MODULETYPE";
 export class GeometryCompiler extends Compiler {
     // 变换锚点
     static transfromAnchor = function (geometry, config) {
@@ -20,15 +21,15 @@ export class GeometryCompiler extends Compiler {
         geometry.applyMatrix4(materix);
         return geometry;
     };
-    target;
-    map;
+    MODULE = MODULETYPE.GEOMETRY;
+    target = {};
+    map = new Map();
+    weakMap = new WeakMap();
     constructMap;
-    resourceMap;
-    replaceGeometry;
-    constructor(parameters) {
+    resourceMap = new Map();
+    replaceGeometry = new BoxBufferGeometry(5, 5, 5);
+    constructor() {
         super();
-        parameters?.target && (this.target = parameters.target);
-        this.map = new Map();
         const constructMap = new Map();
         constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config) => {
             return GeometryCompiler.transfromAnchor(new BoxBufferGeometry(config.width, config.height, config.depth, config.widthSegments, config.heightSegments, config.depthSegments), config);
@@ -55,8 +56,6 @@ export class GeometryCompiler extends Compiler {
             return GeometryCompiler.transfromAnchor(new EdgesGeometry(this.map.get(config.url), config.thresholdAngle), config);
         });
         this.constructMap = constructMap;
-        this.resourceMap = new Map();
-        this.replaceGeometry = new BoxBufferGeometry(5, 5, 5);
     }
     linkRescourceMap(map) {
         this.resourceMap = map;
@@ -101,6 +100,7 @@ export class GeometryCompiler extends Compiler {
                 geometry.addGroup(group.start, group.count, group.materialIndex);
             }
             this.map.set(vid, geometry);
+            this.weakMap.set(geometry, vid);
         }
         return this;
     }
@@ -156,6 +156,7 @@ export class GeometryCompiler extends Compiler {
         const geometry = this.map.get(vid);
         geometry.dispose();
         this.map.delete(vid);
+        this.weakMap.delete(geometry);
         return this;
     }
     compileAll() {
@@ -170,6 +171,12 @@ export class GeometryCompiler extends Compiler {
             geometry.dispose();
         });
         return this;
+    }
+    getObjectSymbol(texture) {
+        return this.weakMap.get(texture) || null;
+    }
+    getObjectBySymbol(vid) {
+        return this.map.get(vid) || null;
     }
 }
 //# sourceMappingURL=GeometryCompiler.js.map

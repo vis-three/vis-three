@@ -30,4 +30,14 @@ export const MaterialRule: Rule<MaterialCompiler> = function (
     }
     return;
   }
+
+  if (operate === "delete") {
+    const vid = path[0] || key;
+    if (validate(vid)) {
+      compiler.remove(vid);
+    } else {
+      console.warn(`texture rule vid is illeage: '${vid}'`);
+    }
+    return;
+  }
 };

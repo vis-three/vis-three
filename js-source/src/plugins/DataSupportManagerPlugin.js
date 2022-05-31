@@ -19,8 +19,8 @@ export const DataSupportManagerPlugin = function (params) {
     this.getConfigBySymbol = function (vid) {
         return this.dataSupportManager.getConfigBySymbol(vid);
     };
-    this.removeConfigBySymbol = function (vid) {
-        this.dataSupportManager.removeConfigBySymbol(vid);
+    this.removeConfigBySymbol = function (...vids) {
+        this.dataSupportManager.removeConfigBySymbol(...vids);
         return this;
     };
     this.toJSON = function () {

@@ -20,12 +20,12 @@ export class SolidObjectCompiler extends ObjectCompiler {
                 return this.materialMap.get(vid);
             }
             else {
-                console.warn(`${this.COMPILER_NAME}Compiler: can not found material which vid: ${vid}`);
+                console.warn(`${this.MODULE}Compiler: can not found material which vid: ${vid}`);
                 return this.getReplaceMaterial();
             }
         }
         else {
-            console.warn(`${this.COMPILER_NAME}Compiler: material vid parameter is illegal: ${vid}`);
+            console.warn(`${this.MODULE}Compiler: material vid parameter is illegal: ${vid}`);
             return this.getReplaceMaterial();
         }
     }
@@ -36,12 +36,12 @@ export class SolidObjectCompiler extends ObjectCompiler {
                 return this.geometryMap.get(vid);
             }
             else {
-                console.warn(`${this.COMPILER_NAME}Compiler: can not found geometry which vid: ${vid}`);
+                console.warn(`${this.MODULE}Compiler: can not found geometry which vid: ${vid}`);
                 return this.getReplaceGeometry();
             }
         }
         else {
-            console.warn(`${this.COMPILER_NAME}Compiler: geometry vid parameter is illegal: ${vid}`);
+            console.warn(`${this.MODULE}Compiler: geometry vid parameter is illegal: ${vid}`);
             return this.getReplaceGeometry();
         }
     }
@@ -56,7 +56,7 @@ export class SolidObjectCompiler extends ObjectCompiler {
     add(vid, config) {
         const object = this.map.get(vid);
         if (!object) {
-            console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
+            console.error(`${this.MODULE} compiler can not finish add method.`);
             return this;
         }
         if (Array.isArray(object.material)) {
@@ -84,7 +84,7 @@ export class SolidObjectCompiler extends ObjectCompiler {
     }
     set(vid, path, key, value) {
         if (!this.map.has(vid)) {
-            console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+            console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
             return this;
         }
         const object = this.map.get(vid);

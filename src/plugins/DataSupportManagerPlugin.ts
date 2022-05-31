@@ -37,8 +37,8 @@ export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> =
       return this.dataSupportManager.getConfigBySymbol(vid);
     };
 
-    this.removeConfigBySymbol = function (vid) {
-      this.dataSupportManager.removeConfigBySymbol(vid);
+    this.removeConfigBySymbol = function (...vids) {
+      this.dataSupportManager.removeConfigBySymbol(...vids);
       return this;
     };
 

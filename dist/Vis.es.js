@@ -4190,12 +4190,52 @@ class ResourceManager extends EventDispatcher {
       return configure;
     }
   }
-  hasResuorce(url) {
+  hasResource(url) {
     return this.resourceMap.has(url);
   }
   remove(url) {
+    if (!this.structureMap.has(url)) {
+      console.warn(`resource manager can not found this url resource: ${url}`);
+      return this;
+    } else if (this.structureMap.get(url) === url) {
+      this.structureMap.delete(url);
+      this.configMap.delete(url);
+      const resouce = this.resourceMap.get(url);
+      (resouce == null ? void 0 : resouce.dispose) && resouce.dispose();
+      this.resourceMap.delete(url);
+      return this;
+    } else {
+      const configMap = this.configMap;
+      const resourceMap = this.resourceMap;
+      const structure = this.structureMap.get(url);
+      const recursionStructure = (structure2) => {
+        configMap.delete(structure2.url);
+        resourceMap.delete(structure2.url);
+        if (structure2.geometry) {
+          configMap.delete(structure2.geometry);
+          resourceMap.delete(structure2.geometry);
+        }
+        if (structure2.material) {
+          configMap.delete(structure2.material);
+          resourceMap.delete(structure2.material);
+        }
+        if (structure2.children && structure2.children.length) {
+          for (const objectStructure of structure2.children) {
+            recursionStructure(objectStructure);
+          }
+        }
+      };
+      recursionStructure(structure);
+      return this;
+    }
   }
   dispose() {
+    this.resourceMap.forEach((object, url) => {
+      object.dispose && object.dispose();
+    });
+    this.resourceMap.clear();
+    this.configMap.clear();
+    this.structureMap.clear();
   }
 }
 const ResourceManagerPlugin = function(params) {
@@ -4218,6 +4258,9 @@ const ResourceManagerPlugin = function(params) {
     this.resourceManager.mappingResource(map);
     return this;
   };
+  this.addEventListener("dispose", () => {
+    this.resourceManager.dispose();
+  });
   return true;
 };
 function isValidKey(key, object) {
@@ -4539,15 +4582,26 @@ const TextureRule = function(notice, compiler) {
     if (validate(key)) {
       compiler.add(key, value);
     }
-  } else if (operate === "set") {
+    return;
+  }
+  if (operate === "set") {
     const tempPath = path.concat([]);
-    const vid = tempPath.shift();
+    const vid = tempPath.shift() || key;
     if (vid && validate(vid)) {
       compiler.set(vid, tempPath, key, value);
     } else {
       console.warn(`texture rule vid is illeage: '${vid}'`);
-      return;
     }
+    return;
+  }
+  if (operate === "delete") {
+    const vid = path[0] || key;
+    if (validate(vid)) {
+      compiler.remove(vid);
+    } else {
+      console.warn(`texture rule vid is illeage: '${vid}'`);
+    }
+    return;
   }
 };
 class TextureDataSupport extends DataSupport {
@@ -4576,6 +4630,15 @@ const MaterialRule = function(notice, compiler) {
       compiler.set(vid, tempPath, key, value);
     } else {
       console.warn(`material rule vid is illeage: '${vid}'`);
+    }
+    return;
+  }
+  if (operate === "delete") {
+    const vid = path[0] || key;
+    if (validate(vid)) {
+      compiler.remove(vid);
+    } else {
+      console.warn(`texture rule vid is illeage: '${vid}'`);
     }
     return;
   }
@@ -4631,7 +4694,7 @@ const ObjectRule = function(input, compiler) {
         return;
       }
       if (!Number.isInteger(index)) {
-        console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
+        console.error(`${compiler.MODULE} rule: event analysis error.`, input);
         return;
       }
       compiler.updateEvent(vid, attribute, index);
@@ -4639,7 +4702,7 @@ const ObjectRule = function(input, compiler) {
     }
     if (operate === "set") {
       if (!Number.isInteger(index)) {
-        console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
+        console.error(`${compiler.MODULE} rule: event analysis error.`, input);
         return;
       }
       compiler.updateEvent(vid, attribute, index);
@@ -4647,7 +4710,7 @@ const ObjectRule = function(input, compiler) {
     }
     if (operate === "delete") {
       if (!Number.isInteger(index)) {
-        console.error(`${compiler.COMPILER_NAME} rule: event analysis error.`, input);
+        console.error(`${compiler.MODULE} rule: event analysis error.`, input);
         return;
       }
       compiler.removeEvent(vid, attribute, value);
@@ -4668,7 +4731,7 @@ const ObjectRule = function(input, compiler) {
     if (vid && validate(vid) || UNIQUESYMBOL[vid]) {
       compiler.set(vid, tempPath, key, value);
     } else {
-      console.warn(`${compiler.COMPILER_NAME} rule vid is illeage: '${vid}'`);
+      console.warn(`${compiler.MODULE} rule vid is illeage: '${vid}'`);
     }
     return;
   }
@@ -5022,12 +5085,14 @@ const _DataSupportManager = class {
     }
     return null;
   }
-  removeConfigBySymbol(vid) {
+  removeConfigBySymbol(...vids) {
     const dataSupportList = this.dataSupportMap.values();
-    for (const dataSupport of dataSupportList) {
-      if (dataSupport.existSymbol(vid)) {
-        dataSupport.removeConfig(vid);
-        return this;
+    for (const vid of vids) {
+      for (const dataSupport of dataSupportList) {
+        if (dataSupport.existSymbol(vid)) {
+          dataSupport.removeConfig(vid);
+          break;
+        }
       }
     }
     return this;
@@ -5105,8 +5170,8 @@ const DataSupportManagerPlugin = function(params) {
   this.getConfigBySymbol = function(vid) {
     return this.dataSupportManager.getConfigBySymbol(vid);
   };
-  this.removeConfigBySymbol = function(vid) {
-    this.dataSupportManager.removeConfigBySymbol(vid);
+  this.removeConfigBySymbol = function(...vids) {
+    this.dataSupportManager.removeConfigBySymbol(...vids);
     return this;
   };
   this.toJSON = function() {
@@ -5172,9 +5237,76 @@ class Compiler {
   constructor() {
   }
 }
+const config$6 = {
+  name: "linearTime",
+  multiply: 1
+};
+const generator$6 = function(engine, target, attribute, config2) {
+  if (target[attribute] === void 0) {
+    console.error(`object not exist attribute: ${attribute}`, target);
+    return (event) => {
+    };
+  }
+  if (typeof target[attribute] !== "number") {
+    console.error(`object attribute is not typeof number.`, target, attribute);
+    return (event) => {
+    };
+  }
+  return (event) => {
+    target[attribute] += event.delta * config2.multiply;
+  };
+};
+const _AniScriptLibrary = class {
+  static generateConfig(name, merge) {
+    if (!_AniScriptLibrary.configLibrary.has(name)) {
+      console.warn(`event library can not found config by name: ${name}`);
+      return {
+        name: ""
+      };
+    }
+    const recursion = (config2, merge2) => {
+      for (const key in merge2) {
+        if (config2[key] === void 0) {
+          continue;
+        }
+        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
+          recursion(config2[key], merge2[key]);
+        } else {
+          config2[key] = merge2[key];
+        }
+      }
+    };
+    const template = JSON.parse(JSON.stringify(_AniScriptLibrary.configLibrary.get(name)));
+    recursion(template, merge);
+    return template;
+  }
+  static generateScript(engine, target, attribute, config2) {
+    if (!_AniScriptLibrary.generatorLibrary.has(config2.name)) {
+      console.error(`event library can not found generator by name: ${config2.name}`);
+      return () => {
+      };
+    }
+    return _AniScriptLibrary.generatorLibrary.get(config2.name)(engine, target, attribute, config2);
+  }
+  static has(name) {
+    return _AniScriptLibrary.configLibrary.has(name);
+  }
+};
+let AniScriptLibrary = _AniScriptLibrary;
+__publicField(AniScriptLibrary, "configLibrary", new Map());
+__publicField(AniScriptLibrary, "generatorLibrary", new Map());
+__publicField(AniScriptLibrary, "register", function(config2, generator2) {
+  if (_AniScriptLibrary.configLibrary.has(config2.name)) {
+    console.warn(`EventLibrary has already exist this event generator: ${config2.name}, that will be cover.`);
+  }
+  _AniScriptLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
+  _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
+});
+AniScriptLibrary.register(config$6, generator$6);
 class AnimationCompiler extends Compiler {
   constructor() {
     super();
+    __publicField(this, "MODULE", MODULETYPE.ANIMATION);
     __publicField(this, "target", {});
     __publicField(this, "engine");
     __publicField(this, "objectMapSet", new Set());
@@ -5255,6 +5387,12 @@ class AnimationCompiler extends Compiler {
       this.remove(config2);
     }
     return this;
+  }
+  getObjectSymbol(animation) {
+    return null;
+  }
+  getObjectBySymbol(vid) {
+    return null;
   }
 }
 const config$5 = {
@@ -6121,7 +6259,8 @@ const config$1 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EQI
+    timingFunction: TIMINGFUNCTION.EQI,
+    back: true
   }
 };
 const generator$1 = function(engine, config2) {
@@ -6146,6 +6285,11 @@ const generator$1 = function(engine, config2) {
       y: target.position.y + params.offset.y,
       z: target.position.z + params.offset.z
     };
+    const backPosition = {
+      x: camera.position.x,
+      y: camera.position.y,
+      z: camera.position.z
+    };
     if (params.space === "local") {
       const vector3 = new Vector3(params.offset.x, params.offset.y, params.offset.z).applyEuler(target.rotation);
       position = {
@@ -6155,35 +6299,45 @@ const generator$1 = function(engine, config2) {
       };
     }
     const positionTween = new Tween(camera.position).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    let rotationTween;
+    let upTween;
+    const backUp = {
+      x: camera.up.x,
+      y: camera.up.y,
+      z: camera.up.z
+    };
     if (params.space === "local") {
       const upVector3 = new Vector3(0, 1, 0).applyEuler(target.rotation);
-      rotationTween = new Tween(camera.up).to({
+      upTween = new Tween(camera.up).to({
         x: upVector3.x,
         y: upVector3.y,
         z: upVector3.z
       }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
     }
-    let tween2;
+    let orbTween;
+    const backOrb = {
+      x: orbTarget.x,
+      y: orbTarget.y,
+      z: orbTarget.z
+    };
     if (orb) {
-      tween2 = new Tween(orbTarget).to(target.position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+      orbTween = new Tween(orbTarget).to(target.position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
     }
     let renderFun;
     if (orb && params.space === "local") {
       renderFun = (event) => {
         positionTween.update();
-        rotationTween.update();
-        tween2.update();
+        upTween.update();
+        orbTween.update();
       };
     } else if (orb) {
       renderFun = (event) => {
         positionTween.update();
-        tween2.update();
+        orbTween.update();
       };
     } else if (params.space === "local") {
       renderFun = (event) => {
         positionTween.update();
-        rotationTween.update();
+        upTween.update();
       };
     } else {
       renderFun = (event) => {
@@ -6198,6 +6352,97 @@ const generator$1 = function(engine, config2) {
         cameraConfig.position.y = position.y;
         cameraConfig.position.z = position.z;
       }
+      if (params.back) {
+        const backFun = () => {
+          const positionTween2 = new Tween(camera.position).to(backPosition).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+          let upTween2;
+          if (params.space === "local") {
+            upTween2 = new Tween(camera.up).to(backUp).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+          }
+          let orbTween2;
+          if (orb) {
+            orbTween2 = new Tween(orbTarget).to(backOrb).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+          }
+          const renderFun2 = (event) => {
+            positionTween2.update();
+            upTween2 && upTween2.update();
+            orbTween2 && orbTween2.update();
+          };
+          positionTween2.onComplete(() => {
+            renderManager.removeEventListener("render", renderFun2);
+          });
+          renderManager.addEventListener("render", renderFun2);
+          document.removeEventListener("dblclick", backFun);
+        };
+        document.addEventListener("dblclick", backFun);
+      }
+    });
+  };
+};
+const config = {
+  name: "fadeObject",
+  params: {
+    target: "",
+    direction: "out",
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EQI,
+    visible: false
+  }
+};
+const generator = function(engine, config2) {
+  const params = config2.params;
+  const target = engine.getObjectBySymbol(params.target);
+  if (!target) {
+    console.warn(`real time animation fadeObject: can not found vid object: ${params.target}`);
+    return () => {
+    };
+  }
+  const objectConfig = engine.getObjectConfig(target);
+  if (!objectConfig.material) {
+    console.warn(`real time animation fadeObject: target can not support fade: ${params.target}`);
+    return () => {
+    };
+  }
+  const materialList = [];
+  const materialConfigList = [];
+  const materialSymbolList = Array.isArray(objectConfig.material) ? [].concat(objectConfig.material) : [objectConfig.material];
+  for (const vid of materialSymbolList) {
+    const material = engine.getObjectBySymbol(vid);
+    const materialConfig = engine.getConfigBySymbol(vid);
+    if (!(material instanceof Material)) {
+      console.error(`real time animation fadeObject: object config material is not instanceof Material: ${vid}`);
+      continue;
+    }
+    if (!materialConfig) {
+      console.error(`real time animation fadeObject: object config material can not found config: ${vid}`);
+      continue;
+    }
+    materialList.push(material);
+    materialConfigList.push(materialConfig);
+  }
+  return () => {
+    const renderManager = engine.renderManager;
+    materialList.forEach((material, i, arr) => {
+      material.transparent = true;
+      material.opacity = params.direction === "in" ? 0 : 1;
+      material.needsUpdate = true;
+      const tween = new Tween(material).to({
+        opacity: params.direction === "in" ? 1 : 0
+      }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+      const renderFun = (event) => {
+        tween.update();
+      };
+      renderManager.addEventListener("render", renderFun);
+      tween.onComplete(() => {
+        renderManager.removeEventListener("render", renderFun);
+        if (params.direction === "out" && params.visible) {
+          materialConfigList[i].visible = false;
+        } else if (params.direction === "in" && params.visible) {
+          materialConfigList[i].visible = true;
+        }
+        materialConfigList[i].opacity = params.direction === "in" ? 1 : 0;
+      });
     });
   };
 };
@@ -6249,6 +6494,7 @@ EventLibrary.register(config$4, generator$4);
 EventLibrary.register(config$3, generator$3);
 EventLibrary.register(config$2, generator$2);
 EventLibrary.register(config$1, generator$1);
+EventLibrary.register(config, generator);
 const _ObjectCompiler = class extends Compiler {
   constructor() {
     super();
@@ -6308,7 +6554,7 @@ const _ObjectCompiler = class extends Compiler {
       return this;
     }
     if (!this.map.has(vid)) {
-      console.error(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
+      console.error(`${this.MODULE}Compiler: can not found object which vid: ${vid}.`);
       return this;
     }
     const model = this.map.get(vid);
@@ -6328,7 +6574,7 @@ const _ObjectCompiler = class extends Compiler {
     }
     const lookAtTarget = this.getObject(target);
     if (!lookAtTarget) {
-      console.warn(`${this.COMPILER_NAME}Compiler: can not found this vid mapping object: '${vid}'`);
+      console.warn(`${this.MODULE}Compiler: can not found this vid mapping object: '${vid}'`);
       return this;
     }
     const updateMatrixWorldFun = model.updateMatrixWorld;
@@ -6342,11 +6588,11 @@ const _ObjectCompiler = class extends Compiler {
   }
   addEvent(vid, eventName, config2) {
     if (!this.map.has(vid)) {
-      console.warn(`${this.COMPILER_NAME} compiler : No matching vid found: ${vid}`);
+      console.warn(`${this.MODULE} compiler : No matching vid found: ${vid}`);
       return this;
     }
     if (!EventLibrary.has(config2.name)) {
-      console.warn(`${this.COMPILER_NAME} compiler: can not support this event: ${config2.name}`);
+      console.warn(`${this.MODULE} compiler: can not support this event: ${config2.name}`);
       return this;
     }
     const object = this.map.get(vid);
@@ -6358,13 +6604,13 @@ const _ObjectCompiler = class extends Compiler {
   }
   removeEvent(vid, eventName, config2) {
     if (!this.map.has(vid)) {
-      console.warn(`${this.COMPILER_NAME} compiler: No matching vid found: ${vid}`);
+      console.warn(`${this.MODULE} compiler: No matching vid found: ${vid}`);
       return this;
     }
     const object = this.map.get(vid);
     const fun = config2[Symbol.for(_ObjectCompiler.eventSymbol)];
     if (!fun) {
-      console.warn(`${this.COMPILER_NAME} compiler: event remove can not fun found event in config`, config2);
+      console.warn(`${this.MODULE} compiler: event remove can not fun found event in config`, config2);
       return this;
     }
     object.removeEventListener(eventName, fun);
@@ -6373,7 +6619,7 @@ const _ObjectCompiler = class extends Compiler {
   }
   updateEvent(vid, eventName, index) {
     if (!this.map.has(vid)) {
-      console.warn(`${this.COMPILER_NAME} compiler: No matching vid found: ${vid}`);
+      console.warn(`${this.MODULE} compiler: No matching vid found: ${vid}`);
       return this;
     }
     const object = this.map.get(vid);
@@ -6381,7 +6627,7 @@ const _ObjectCompiler = class extends Compiler {
     const config2 = this.target[vid][eventName][index];
     const fun = config2[symbol];
     if (!fun) {
-      console.warn(`${this.COMPILER_NAME} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`);
+      console.warn(`${this.MODULE} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`);
       return this;
     }
     object.removeEventListener(eventName, fun);
@@ -6392,19 +6638,19 @@ const _ObjectCompiler = class extends Compiler {
   }
   addChildren(vid, target) {
     if (!this.map.has(vid)) {
-      console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${vid}.`);
+      console.warn(`${this.MODULE} compiler: can not found this vid in compiler: ${vid}.`);
       return this;
     }
     const object = this.map.get(vid);
     const targetObject = this.getObject(target);
     if (!targetObject) {
-      console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${target}.`);
+      console.warn(`${this.MODULE} compiler: can not found this vid in compiler: ${target}.`);
       return this;
     }
     object.add(targetObject);
     const targetConfig = this.engine.getConfigBySymbol(target);
     if (!targetConfig) {
-      console.warn(`${this.COMPILER_NAME} compiler: can not foud object config: ${target}`);
+      console.warn(`${this.MODULE} compiler: can not foud object config: ${target}`);
       return this;
     }
     targetConfig.parent = vid;
@@ -6412,19 +6658,19 @@ const _ObjectCompiler = class extends Compiler {
   }
   removeChildren(vid, target) {
     if (!this.map.has(vid)) {
-      console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${vid}.`);
+      console.warn(`${this.MODULE} compiler: can not found this vid in compiler: ${vid}.`);
       return this;
     }
     const object = this.map.get(vid);
     const targetObject = this.getObject(target);
     if (!targetObject) {
-      console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${target}.`);
+      console.warn(`${this.MODULE} compiler: can not found this vid in compiler: ${target}.`);
       return this;
     }
     object.remove(targetObject);
     const targetConfig = this.engine.getConfigBySymbol(target);
     if (!targetConfig) {
-      console.warn(`${this.COMPILER_NAME} compiler: remove children function can not foud object config: ${target}`);
+      console.warn(`${this.MODULE} compiler: remove children function can not foud object config: ${target}`);
       return this;
     }
     targetConfig.parent = "";
@@ -6450,11 +6696,10 @@ const _ObjectCompiler = class extends Compiler {
     return this.map;
   }
   getObjectSymbol(object) {
-    if (this.weakMap.has(object)) {
-      return this.weakMap.get(object);
-    } else {
-      return null;
-    }
+    return this.weakMap.get(object) || null;
+  }
+  getObjectBySymbol(vid) {
+    return this.map.get(vid) || null;
   }
   compileAll() {
     const target = this.target;
@@ -6466,7 +6711,7 @@ const _ObjectCompiler = class extends Compiler {
   add(vid, config2) {
     const object = this.map.get(vid);
     if (!object) {
-      console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
+      console.error(`${this.MODULE} compiler can not finish add method.`);
       return this;
     }
     const asyncFun = Promise.resolve();
@@ -6493,7 +6738,7 @@ const _ObjectCompiler = class extends Compiler {
   }
   set(vid, path, key, value) {
     if (!this.map.has(vid)) {
-      console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+      console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
       return this;
     }
     if (key === "lookAt") {
@@ -6517,7 +6762,7 @@ const _ObjectCompiler = class extends Compiler {
   cover(vid, config2) {
     const object = this.map.get(vid);
     if (!object) {
-      console.error(`${this.COMPILER_NAME} compiler can not found object: ${vid}.`);
+      console.error(`${this.MODULE} compiler can not found object: ${vid}.`);
       return this;
     }
     const asyncFun = Promise.resolve();
@@ -6545,18 +6790,18 @@ const _ObjectCompiler = class extends Compiler {
   }
   remove(vid, config2) {
     if (!this.map.has(vid)) {
-      console.warn(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
+      console.warn(`${this.MODULE}Compiler: can not found object which vid: ${vid}.`);
       return this;
     }
     if (config2.parent) {
       const parentConfig = this.engine.getConfigBySymbol(config2.parent);
       if (!parentConfig) {
-        console.warn(`${this.COMPILER_NAME} compiler: can not found parent object config: ${config2.parent}`);
+        console.warn(`${this.MODULE} compiler: can not found parent object config: ${config2.parent}`);
       } else {
         if (parentConfig.children.includes(vid)) {
           parentConfig.children.splice(parentConfig.children.indexOf(vid), 1);
         } else {
-          console.warn(`${this.COMPILER_NAME} compiler: can not found vid in its parent config: ${vid}`);
+          console.warn(`${this.MODULE} compiler: can not found vid in its parent config: ${vid}`);
         }
       }
     }
@@ -6577,7 +6822,7 @@ __publicField(ObjectCompiler, "eventSymbol", "vis.event");
 class CameraCompiler extends ObjectCompiler {
   constructor() {
     super();
-    __publicField(this, "COMPILER_NAME", MODULETYPE.CAMERA);
+    __publicField(this, "MODULE", MODULETYPE.CAMERA);
     __publicField(this, "constructMap");
     __publicField(this, "cacheCameraMap");
     const constructMap = new Map();
@@ -6822,27 +7067,16 @@ class TransformControlsProcessor extends Processor {
   }
 }
 class ControlsCompiler extends Compiler {
-  constructor(parameters) {
+  constructor() {
     super();
-    __publicField(this, "target");
+    __publicField(this, "MODULE", MODULETYPE.CONTROLS);
+    __publicField(this, "target", {});
+    __publicField(this, "map", new Map());
+    __publicField(this, "weakMap", new Map());
     __publicField(this, "processorMap", {
       [CONFIGTYPE.TRNASFORMCONTROLS]: new TransformControlsProcessor(),
       [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor()
     });
-    __publicField(this, "controlMap", {
-      [CONFIGTYPE.TRNASFORMCONTROLS]: void 0,
-      [CONFIGTYPE.ORBITCONTROLS]: void 0
-    });
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-      parameters.transformControls && (this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] = parameters.transformControls);
-      parameters.orbitControls && (this.controlMap[CONFIGTYPE.ORBITCONTROLS] = parameters.orbitControls);
-    } else {
-      this.target = {
-        [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig(),
-        [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig()
-      };
-    }
   }
   getAssembly(vid) {
     const config2 = this.target[vid];
@@ -6855,7 +7089,7 @@ class ControlsCompiler extends Compiler {
       console.warn(`controls compiler can not support this controls: '${vid}'`);
       return null;
     }
-    const control = this.controlMap[config2.type];
+    const control = this.map.get(config2.type);
     if (!control) {
       console.warn(`controls compiler can not found type of control: '${config2.type}'`);
       return null;
@@ -6898,10 +7132,12 @@ class ControlsCompiler extends Compiler {
   }
   useEngine(engine) {
     if (engine.transformControls) {
-      this.controlMap[CONFIGTYPE.TRNASFORMCONTROLS] = engine.transformControls;
+      this.map.set(CONFIGTYPE.TRNASFORMCONTROLS, engine.transformControls);
+      this.weakMap.set(engine.transformControls, CONFIGTYPE.TRNASFORMCONTROLS);
     }
     if (engine.orbitControls) {
-      this.controlMap[CONFIGTYPE.ORBITCONTROLS] = engine.orbitControls;
+      this.map.set(CONFIGTYPE.ORBITCONTROLS, engine.orbitControls);
+      this.weakMap.set(engine.orbitControls, CONFIGTYPE.ORBITCONTROLS);
     }
     return this;
   }
@@ -6919,7 +7155,17 @@ class ControlsCompiler extends Compiler {
     return this;
   }
   dispose() {
+    this.map.forEach((controls) => {
+      controls.dispose && controls.dispose();
+    });
+    this.map.clear();
     return this;
+  }
+  getObjectSymbol(texture) {
+    return this.weakMap.get(texture) || null;
+  }
+  getObjectBySymbol(vid) {
+    return this.map.get(vid) || null;
   }
 }
 class CSS3DPlane extends CSS3DObject {
@@ -6946,7 +7192,7 @@ class CSS3DPlane extends CSS3DObject {
 class CSS3DCompiler extends ObjectCompiler {
   constructor() {
     super();
-    __publicField(this, "COMPILER_NAME", MODULETYPE.CSS3D);
+    __publicField(this, "MODULE", MODULETYPE.CSS3D);
     __publicField(this, "resourceMap");
     __publicField(this, "constructMap");
     this.constructMap = new Map();
@@ -7010,15 +7256,15 @@ class LoadGeometry extends BufferGeometry {
   }
 }
 const _GeometryCompiler = class extends Compiler {
-  constructor(parameters) {
+  constructor() {
     super();
-    __publicField(this, "target");
-    __publicField(this, "map");
+    __publicField(this, "MODULE", MODULETYPE.GEOMETRY);
+    __publicField(this, "target", {});
+    __publicField(this, "map", new Map());
+    __publicField(this, "weakMap", new WeakMap());
     __publicField(this, "constructMap");
-    __publicField(this, "resourceMap");
-    __publicField(this, "replaceGeometry");
-    (parameters == null ? void 0 : parameters.target) && (this.target = parameters.target);
-    this.map = new Map();
+    __publicField(this, "resourceMap", new Map());
+    __publicField(this, "replaceGeometry", new BoxBufferGeometry(5, 5, 5));
     const constructMap = new Map();
     constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config2) => {
       return _GeometryCompiler.transfromAnchor(new BoxBufferGeometry(config2.width, config2.height, config2.depth, config2.widthSegments, config2.heightSegments, config2.depthSegments), config2);
@@ -7045,8 +7291,6 @@ const _GeometryCompiler = class extends Compiler {
       return _GeometryCompiler.transfromAnchor(new EdgesGeometry(this.map.get(config2.url), config2.thresholdAngle), config2);
     });
     this.constructMap = constructMap;
-    this.resourceMap = new Map();
-    this.replaceGeometry = new BoxBufferGeometry(5, 5, 5);
   }
   linkRescourceMap(map) {
     this.resourceMap = map;
@@ -7089,6 +7333,7 @@ const _GeometryCompiler = class extends Compiler {
         geometry.addGroup(group.start, group.count, group.materialIndex);
       }
       this.map.set(vid, geometry);
+      this.weakMap.set(geometry, vid);
     }
     return this;
   }
@@ -7141,6 +7386,7 @@ const _GeometryCompiler = class extends Compiler {
     const geometry = this.map.get(vid);
     geometry.dispose();
     this.map.delete(vid);
+    this.weakMap.delete(geometry);
     return this;
   }
   compileAll() {
@@ -7155,6 +7401,12 @@ const _GeometryCompiler = class extends Compiler {
       geometry.dispose();
     });
     return this;
+  }
+  getObjectSymbol(texture) {
+    return this.weakMap.get(texture) || null;
+  }
+  getObjectBySymbol(vid) {
+    return this.map.get(vid) || null;
   }
 };
 let GeometryCompiler = _GeometryCompiler;
@@ -7176,7 +7428,7 @@ __publicField(GeometryCompiler, "transfromAnchor", function(geometry, config2) {
 class GroupCompiler extends ObjectCompiler {
   constructor() {
     super();
-    __publicField(this, "COMPILER_NAME", MODULETYPE.GROUP);
+    __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
   add(vid, config2) {
     const group = new Group$1();
@@ -7193,7 +7445,7 @@ class GroupCompiler extends ObjectCompiler {
 class LightCompiler extends ObjectCompiler {
   constructor() {
     super();
-    __publicField(this, "COMPILER_NAME", MODULETYPE.LIGHT);
+    __publicField(this, "MODULE", MODULETYPE.LIGHT);
     __publicField(this, "constructMap");
     this.constructMap = new Map();
     this.constructMap.set(CONFIGTYPE.POINTLIGHT, () => new PointLight());
@@ -7266,11 +7518,11 @@ class SolidObjectCompiler extends ObjectCompiler {
       if (this.materialMap.has(vid)) {
         return this.materialMap.get(vid);
       } else {
-        console.warn(`${this.COMPILER_NAME}Compiler: can not found material which vid: ${vid}`);
+        console.warn(`${this.MODULE}Compiler: can not found material which vid: ${vid}`);
         return this.getReplaceMaterial();
       }
     } else {
-      console.warn(`${this.COMPILER_NAME}Compiler: material vid parameter is illegal: ${vid}`);
+      console.warn(`${this.MODULE}Compiler: material vid parameter is illegal: ${vid}`);
       return this.getReplaceMaterial();
     }
   }
@@ -7279,11 +7531,11 @@ class SolidObjectCompiler extends ObjectCompiler {
       if (this.geometryMap.has(vid)) {
         return this.geometryMap.get(vid);
       } else {
-        console.warn(`${this.COMPILER_NAME}Compiler: can not found geometry which vid: ${vid}`);
+        console.warn(`${this.MODULE}Compiler: can not found geometry which vid: ${vid}`);
         return this.getReplaceGeometry();
       }
     } else {
-      console.warn(`${this.COMPILER_NAME}Compiler: geometry vid parameter is illegal: ${vid}`);
+      console.warn(`${this.MODULE}Compiler: geometry vid parameter is illegal: ${vid}`);
       return this.getReplaceGeometry();
     }
   }
@@ -7298,7 +7550,7 @@ class SolidObjectCompiler extends ObjectCompiler {
   add(vid, config2) {
     const object = this.map.get(vid);
     if (!object) {
-      console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
+      console.error(`${this.MODULE} compiler can not finish add method.`);
       return this;
     }
     if (Array.isArray(object.material)) {
@@ -7324,7 +7576,7 @@ class SolidObjectCompiler extends ObjectCompiler {
   }
   set(vid, path, key, value) {
     if (!this.map.has(vid)) {
-      console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+      console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
       return this;
     }
     const object = this.map.get(vid);
@@ -7343,7 +7595,7 @@ class SolidObjectCompiler extends ObjectCompiler {
 class LineCompiler extends SolidObjectCompiler {
   constructor() {
     super();
-    __publicField(this, "COMPILER_NAME", MODULETYPE.LINE);
+    __publicField(this, "MODULE", MODULETYPE.LINE);
     __publicField(this, "replaceMaterial", new LineBasicMaterial({
       color: "rgb(150, 150, 150)"
     }));
@@ -7370,26 +7622,38 @@ class LineCompiler extends SolidObjectCompiler {
   }
 }
 class MaterialCompiler extends Compiler {
-  constructor(parameters) {
+  constructor() {
     super();
-    __publicField(this, "target");
-    __publicField(this, "map");
-    __publicField(this, "constructMap");
-    __publicField(this, "mapAttribute");
-    __publicField(this, "colorAttribute");
-    __publicField(this, "shaderAttribute");
-    __publicField(this, "texturelMap");
-    __publicField(this, "resourceMap");
-    __publicField(this, "cachaColor");
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-    } else {
-      this.target = {};
-    }
-    this.map = new Map();
-    this.texturelMap = new Map();
-    this.resourceMap = new Map();
-    this.cachaColor = new Color();
+    __publicField(this, "MODULE", MODULETYPE.MATERIAL);
+    __publicField(this, "target", {});
+    __publicField(this, "map", new Map());
+    __publicField(this, "weakMap", new WeakMap());
+    __publicField(this, "constructMap", new Map());
+    __publicField(this, "mapAttribute", {
+      roughnessMap: true,
+      normalMap: true,
+      metalnessMap: true,
+      map: true,
+      lightMap: true,
+      envMap: true,
+      emissiveMap: true,
+      displacementMap: true,
+      bumpMap: true,
+      alphaMap: true,
+      aoMap: true,
+      specularMap: true
+    });
+    __publicField(this, "colorAttribute", {
+      color: true,
+      emissive: true,
+      specular: true
+    });
+    __publicField(this, "shaderAttribute", {
+      shader: true
+    });
+    __publicField(this, "texturelMap", new Map());
+    __publicField(this, "resourceMap", new Map());
+    __publicField(this, "cachaColor", new Color());
     const constructMap = new Map();
     constructMap.set(CONFIGTYPE.MESHBASICMATERIAL, () => new MeshBasicMaterial());
     constructMap.set(CONFIGTYPE.MESHSTANDARDMATERIAL, () => new MeshStandardMaterial());
@@ -7406,28 +7670,6 @@ class MaterialCompiler extends Compiler {
       return material;
     });
     this.constructMap = constructMap;
-    this.colorAttribute = {
-      color: true,
-      emissive: true,
-      specular: true
-    };
-    this.mapAttribute = {
-      roughnessMap: true,
-      normalMap: true,
-      metalnessMap: true,
-      map: true,
-      lightMap: true,
-      envMap: true,
-      emissiveMap: true,
-      displacementMap: true,
-      bumpMap: true,
-      alphaMap: true,
-      aoMap: true,
-      specularMap: true
-    };
-    this.shaderAttribute = {
-      shader: true
-    };
   }
   mergeMaterial(material, config2) {
     const tempConfig = JSON.parse(JSON.stringify(config2));
@@ -7477,6 +7719,7 @@ class MaterialCompiler extends Compiler {
       const material = this.constructMap.get(config2.type)(config2);
       this.mergeMaterial(material, config2);
       this.map.set(vid, material);
+      this.weakMap.set(material, vid);
     } else {
       console.warn(`material compiler can not support this type: ${config2.type}`);
     }
@@ -7519,6 +7762,7 @@ class MaterialCompiler extends Compiler {
     const material = this.map.get(vid);
     material.dispose();
     this.map.delete(vid);
+    this.weakMap.delete(material);
     return this;
   }
   getMap() {
@@ -7544,11 +7788,17 @@ class MaterialCompiler extends Compiler {
     });
     return this;
   }
+  getObjectSymbol(object) {
+    return this.weakMap.get(object) || null;
+  }
+  getObjectBySymbol(vid) {
+    return this.map.get(vid) || null;
+  }
 }
 class MeshCompiler extends SolidObjectCompiler {
   constructor() {
     super();
-    __publicField(this, "COMPILER_NAME", MODULETYPE.MESH);
+    __publicField(this, "MODULE", MODULETYPE.MESH);
     __publicField(this, "replaceMaterial", new MeshBasicMaterial({
       color: "rgb(150, 150, 150)"
     }));
@@ -7575,19 +7825,18 @@ class MeshCompiler extends SolidObjectCompiler {
   }
 }
 class PassCompiler extends Compiler {
-  constructor(parameters) {
+  constructor() {
     super();
+    __publicField(this, "MODULE", MODULETYPE.PASS);
     __publicField(this, "target");
     __publicField(this, "map");
+    __publicField(this, "weakMap");
     __publicField(this, "constructMap");
     __publicField(this, "composer");
     __publicField(this, "width", window.innerWidth * window.devicePixelRatio);
     __publicField(this, "height", window.innerHeight * window.devicePixelRatio);
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-      parameters.composer && (this.composer = parameters.composer);
-    }
     this.map = new Map();
+    this.weakMap = new WeakMap();
     const constructMap = new Map();
     constructMap.set(CONFIGTYPE.SMAAPASS, () => new SMAAPass(this.width, this.height));
     constructMap.set(CONFIGTYPE.UNREALBLOOMPASS, (config2) => new UnrealBloomPass(new Vector2(this.width, this.height), config2.strength, config2.radius, config2.threshold));
@@ -7613,6 +7862,7 @@ class PassCompiler extends Compiler {
       const pass = this.constructMap.get(config2.type)(config2);
       this.composer.addPass(pass);
       this.map.set(config2.vid, pass);
+      this.weakMap.set(pass, config2.vid);
     } else {
       console.warn(`pass compiler can not support this type pass: ${config2.type}.`);
     }
@@ -7627,6 +7877,7 @@ class PassCompiler extends Compiler {
     const pass = this.map.get(vid);
     this.composer.removePass(pass);
     this.map.delete(vid);
+    this.weakMap.delete(pass);
     return this;
   }
   compileAll() {
@@ -7637,13 +7888,20 @@ class PassCompiler extends Compiler {
     return this;
   }
   dispose() {
+    this.map.clear();
     return this;
+  }
+  getObjectSymbol(object) {
+    return this.weakMap.get(object) || null;
+  }
+  getObjectBySymbol(vid) {
+    return this.map.get(vid) || null;
   }
 }
 class PointsCompiler extends SolidObjectCompiler {
   constructor() {
     super();
-    __publicField(this, "COMPILER_NAME", MODULETYPE.POINTS);
+    __publicField(this, "MODULE", MODULETYPE.POINTS);
     __publicField(this, "replaceMaterial", new PointsMaterial({ color: "rgb(150, 150, 150)" }));
     __publicField(this, "replaceGeometry", new DodecahedronBufferGeometry(5));
   }
@@ -7816,6 +8074,7 @@ class WebGLRendererProcessor extends Processor {
 class RendererCompiler extends Compiler {
   constructor(parameters) {
     super();
+    __publicField(this, "MODULE", MODULETYPE.RENDERER);
     __publicField(this, "target");
     __publicField(this, "engine");
     __publicField(this, "processorMap", {
@@ -7881,13 +8140,28 @@ class RendererCompiler extends Compiler {
     return this;
   }
   dispose() {
+    this.map.forEach((renderer, vid) => {
+      renderer.dispose && renderer.dispose();
+    });
     return this;
+  }
+  getObjectSymbol(renderer) {
+    let result = null;
+    this.map.forEach((rend, vid) => {
+      if (rend === renderer) {
+        result = vid;
+      }
+    });
+    return result;
+  }
+  getObjectBySymbol(vid) {
+    return this.map.get(vid) || null;
   }
 }
 class SceneCompiler extends ObjectCompiler {
   constructor() {
     super();
-    __publicField(this, "COMPILER_NAME", MODULETYPE.SCENE);
+    __publicField(this, "MODULE", MODULETYPE.SCENE);
     __publicField(this, "textureMap");
     __publicField(this, "fogCache");
     this.textureMap = new Map();
@@ -7903,7 +8177,7 @@ class SceneCompiler extends ObjectCompiler {
   }
   background(vid, value) {
     if (!this.map.has(vid)) {
-      console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+      console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
       return;
     }
     const scene = this.map.get(vid);
@@ -7923,7 +8197,7 @@ class SceneCompiler extends ObjectCompiler {
   }
   environment(vid, value) {
     if (!this.map.has(vid)) {
-      console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+      console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
       return;
     }
     const scene = this.map.get(vid);
@@ -7943,7 +8217,7 @@ class SceneCompiler extends ObjectCompiler {
   }
   fog(vid, config2) {
     if (!this.map.has(vid)) {
-      console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+      console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
       return;
     }
     const scene = this.map.get(vid);
@@ -8027,7 +8301,7 @@ class SceneCompiler extends ObjectCompiler {
 class SpriteCompiler extends SolidObjectCompiler {
   constructor() {
     super();
-    __publicField(this, "COMPILER_NAME", MODULETYPE.SPRITE);
+    __publicField(this, "MODULE", MODULETYPE.SPRITE);
     __publicField(this, "replaceMaterial", new SpriteMaterial({ color: "rgb(150, 150, 150)" }));
     __publicField(this, "replaceGeometry", new PlaneBufferGeometry(1, 1));
     this.mergeFilterAttribute({
@@ -8149,11 +8423,14 @@ class CanvasGenerator {
 const _TextureCompiler = class extends Compiler {
   constructor() {
     super();
+    __publicField(this, "MODULE", MODULETYPE.TEXTURE);
     __publicField(this, "target", {});
     __publicField(this, "map");
+    __publicField(this, "weakMap");
     __publicField(this, "constructMap");
     __publicField(this, "resourceMap");
     this.map = new Map();
+    this.weakMap = new WeakMap();
     this.resourceMap = new Map();
     const constructMap = new Map();
     constructMap.set(CONFIGTYPE.IMAGETEXTURE, () => new ImageTexture());
@@ -8214,6 +8491,7 @@ const _TextureCompiler = class extends Compiler {
         Compiler.applyConfig(tempConfig, texture);
         texture.needsUpdate = true;
         this.map.set(vid, texture);
+        this.weakMap.set(texture, vid);
       } else {
         console.warn(`texture compiler can not support this type: ${config2.type}`);
       }
@@ -8265,6 +8543,17 @@ const _TextureCompiler = class extends Compiler {
     texture.needsUpdate = true;
     return this;
   }
+  remove(vid) {
+    if (!this.map.has(vid)) {
+      console.warn(`texture compiler can not found vid match object: ${vid}`);
+      return this;
+    }
+    const texture = this.map.get(vid);
+    texture.dispose();
+    this.map.delete(vid);
+    this.weakMap.delete(texture);
+    return this;
+  }
   getMap() {
     return this.map;
   }
@@ -8283,7 +8572,17 @@ const _TextureCompiler = class extends Compiler {
     return this;
   }
   dispose() {
+    this.map.forEach((texture, vid) => {
+      texture.dispose();
+    });
+    this.map.clear();
     return this;
+  }
+  getObjectSymbol(texture) {
+    return this.weakMap.get(texture) || null;
+  }
+  getObjectBySymbol(vid) {
+    return this.map.get(vid) || null;
   }
 };
 let TextureCompiler = _TextureCompiler;
@@ -8292,7 +8591,7 @@ __publicField(TextureCompiler, "replaceImage", new CanvasGenerator({
   height: 512
 }).draw((ctx) => {
   ctx.translate(256, 256);
-  ctx.font = "32px";
+  ctx.font = "52px";
   ctx.fillStyle = "white";
   ctx.fillText("\u6682\u65E0\u56FE\u7247", 0, 0);
 }).get());
@@ -8314,8 +8613,7 @@ class CompilerManager {
     __publicField(this, "css3DCompiler", new CSS3DCompiler());
     __publicField(this, "passCompiler", new PassCompiler());
     __publicField(this, "animationCompiler", new AnimationCompiler());
-    __publicField(this, "objectCompilerList");
-    this.objectCompilerList = [];
+    __publicField(this, "compilerMap");
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
         this[key] = parameters[key];
@@ -8327,18 +8625,26 @@ class CompilerManager {
     this.animationCompiler.linkTextureMap(textureMap);
     const geometryMap = this.geometryCompiler.getMap();
     const materialMap = this.materialCompiler.getMap();
-    this.objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
-    const objectMapList = this.objectCompilerList.map((compiler) => compiler.getMap());
-    for (const objectCompiler of this.objectCompilerList) {
+    const objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
+    const objectMapList = objectCompilerList.map((compiler) => compiler.getMap());
+    for (const objectCompiler of objectCompilerList) {
       if (isValidKey("IS_SOLIDOBJECTCOMPILER", objectCompiler)) {
         objectCompiler.linkGeometryMap(geometryMap).linkMaterialMap(materialMap);
       }
       objectCompiler.linkObjectMap(...objectMapList);
     }
     this.animationCompiler.linkObjectMap(...objectMapList).linkMaterialMap(materialMap);
+    const compilerMap = new Map();
+    Object.keys(this).forEach((key) => {
+      const compiler = this[key];
+      if (compiler instanceof Compiler) {
+        compilerMap.set(compiler.MODULE, compiler);
+      }
+    });
+    this.compilerMap = compilerMap;
   }
   support(engine) {
-    Object.values(this).filter((object) => object instanceof Compiler).forEach((compiler) => {
+    this.compilerMap.forEach((compiler) => {
       compiler.useEngine(engine);
     });
     if (engine.resourceManager) {
@@ -8367,8 +8673,7 @@ class CompilerManager {
     return this;
   }
   getObjectSymbol(object) {
-    const objectCompilerList = this.objectCompilerList;
-    for (const compiler of objectCompilerList) {
+    for (const compiler of this.compilerMap.values()) {
       const vid = compiler.getObjectSymbol(object);
       if (vid) {
         return vid;
@@ -8377,41 +8682,19 @@ class CompilerManager {
     return null;
   }
   getObjectBySymbol(vid) {
-    const objectCompilerList = this.objectCompilerList;
-    for (const compiler of objectCompilerList) {
-      const object = compiler.getMap().get(vid);
+    for (const compiler of this.compilerMap.values()) {
+      const object = compiler.getObjectBySymbol(vid);
       if (object) {
         return object;
       }
     }
     return null;
   }
-  getMaterial(vid) {
-    if (!validate(vid)) {
-      console.warn(`compiler manager vid is illeage: ${vid}`);
-      return void 0;
-    }
-    const materialCompiler = this.materialCompiler;
-    return materialCompiler.getMap().get(vid);
-  }
-  getTexture(vid) {
-    if (!validate(vid)) {
-      console.warn(`compiler manager vid is illeage: ${vid}`);
-      return void 0;
-    }
-    const textureCompiler = this.textureCompiler;
-    return textureCompiler.getMap().get(vid);
-  }
-  getObjectCompilerList() {
-    return this.objectCompilerList;
-  }
   dispose() {
-    Object.keys(this).forEach((key) => {
-      if (this[key] instanceof Compiler) {
-        this[key].dispose();
-      }
-    });
-    this.objectCompilerList = [];
+    for (const compiler of this.compilerMap.values()) {
+      compiler.dispose({});
+    }
+    this.compilerMap.clear();
     return this;
   }
 }
@@ -12344,73 +12627,7 @@ class History {
     this.actionList = [];
   }
 }
-const config = {
-  name: "linearTime",
-  multiply: 1
-};
-const generator = function(engine, target, attribute, config2) {
-  if (target[attribute] === void 0) {
-    console.error(`object not exist attribute: ${attribute}`, target);
-    return (event) => {
-    };
-  }
-  if (typeof target[attribute] !== "number") {
-    console.error(`object attribute is not typeof number.`, target, attribute);
-    return (event) => {
-    };
-  }
-  return (event) => {
-    target[attribute] += event.delta * config2.multiply;
-  };
-};
-const _AniScriptLibrary = class {
-  static generateConfig(name, merge) {
-    if (!_AniScriptLibrary.configLibrary.has(name)) {
-      console.warn(`event library can not found config by name: ${name}`);
-      return {
-        name: ""
-      };
-    }
-    const recursion = (config2, merge2) => {
-      for (const key in merge2) {
-        if (config2[key] === void 0) {
-          continue;
-        }
-        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
-          recursion(config2[key], merge2[key]);
-        } else {
-          config2[key] = merge2[key];
-        }
-      }
-    };
-    const template = JSON.parse(JSON.stringify(_AniScriptLibrary.configLibrary.get(name)));
-    recursion(template, merge);
-    return template;
-  }
-  static generateScript(engine, target, attribute, config2) {
-    if (!_AniScriptLibrary.generatorLibrary.has(config2.name)) {
-      console.error(`event library can not found generator by name: ${config2.name}`);
-      return () => {
-      };
-    }
-    return _AniScriptLibrary.generatorLibrary.get(config2.name)(engine, target, attribute, config2);
-  }
-  static has(name) {
-    return _AniScriptLibrary.configLibrary.has(name);
-  }
-};
-let AniScriptLibrary = _AniScriptLibrary;
-__publicField(AniScriptLibrary, "configLibrary", new Map());
-__publicField(AniScriptLibrary, "generatorLibrary", new Map());
-__publicField(AniScriptLibrary, "register", function(config2, generator2) {
-  if (_AniScriptLibrary.configLibrary.has(config2.name)) {
-    console.warn(`EventLibrary has already exist this event generator: ${config2.name}, that will be cover.`);
-  }
-  _AniScriptLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
-  _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
-});
-AniScriptLibrary.register(config, generator);
-const version = "0.1.3-1";
+const version = "0.1.3-2";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }

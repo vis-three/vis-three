@@ -22,7 +22,7 @@ export class MeshCompiler extends SolidObjectCompiler<
   MeshCompilerTarget,
   Mesh
 > {
-  COMPILER_NAME: string = MODULETYPE.MESH;
+  MODULE: MODULETYPE = MODULETYPE.MESH;
 
   private replaceMaterial = new MeshBasicMaterial({
     color: "rgb(150, 150, 150)",

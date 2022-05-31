@@ -217,12 +217,10 @@ export class Engine extends EventDispatcher {
   applyConfig?: <T extends SymbolConfig>(...configs: T[]) => this;
   reactiveConfig?: <T extends SymbolConfig>(config: T) => T;
   getConfigBySymbol?: <T extends SymbolConfig>(vid: string) => T | null;
-  removeConfigBySymbol?: (vid: string) => this;
+  removeConfigBySymbol?: (...vids: string[]) => this;
 
-  getObjectSymbol?: <O extends Object3D>(
-    object: O
-  ) => SymbolConfig["vid"] | null;
-  getObjectBySymbol?: (vid: string) => Object3D | null;
+  getObjectSymbol?: (object: any) => SymbolConfig["vid"] | null;
+  getObjectBySymbol?: (vid: string) => any | null;
 
   play?: () => this;
   stop?: () => this;

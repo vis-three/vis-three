@@ -66,7 +66,7 @@ export class ObjectCompiler extends Compiler {
             return this;
         }
         if (!this.map.has(vid)) {
-            console.error(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
+            console.error(`${this.MODULE}Compiler: can not found object which vid: ${vid}.`);
             return this;
         }
         const model = this.map.get(vid);
@@ -86,7 +86,7 @@ export class ObjectCompiler extends Compiler {
         }
         const lookAtTarget = this.getObject(target);
         if (!lookAtTarget) {
-            console.warn(`${this.COMPILER_NAME}Compiler: can not found this vid mapping object: '${vid}'`);
+            console.warn(`${this.MODULE}Compiler: can not found this vid mapping object: '${vid}'`);
             return this;
         }
         const updateMatrixWorldFun = model.updateMatrixWorld;
@@ -101,11 +101,11 @@ export class ObjectCompiler extends Compiler {
     // 添加物体事件
     addEvent(vid, eventName, config) {
         if (!this.map.has(vid)) {
-            console.warn(`${this.COMPILER_NAME} compiler : No matching vid found: ${vid}`);
+            console.warn(`${this.MODULE} compiler : No matching vid found: ${vid}`);
             return this;
         }
         if (!EventLibrary.has(config.name)) {
-            console.warn(`${this.COMPILER_NAME} compiler: can not support this event: ${config.name}`);
+            console.warn(`${this.MODULE} compiler: can not support this event: ${config.name}`);
             return this;
         }
         const object = this.map.get(vid);
@@ -121,13 +121,13 @@ export class ObjectCompiler extends Compiler {
     // 移除事件
     removeEvent(vid, eventName, config) {
         if (!this.map.has(vid)) {
-            console.warn(`${this.COMPILER_NAME} compiler: No matching vid found: ${vid}`);
+            console.warn(`${this.MODULE} compiler: No matching vid found: ${vid}`);
             return this;
         }
         const object = this.map.get(vid);
         const fun = config[Symbol.for(ObjectCompiler.eventSymbol)];
         if (!fun) {
-            console.warn(`${this.COMPILER_NAME} compiler: event remove can not fun found event in config`, config);
+            console.warn(`${this.MODULE} compiler: event remove can not fun found event in config`, config);
             return this;
         }
         object.removeEventListener(eventName, fun);
@@ -137,7 +137,7 @@ export class ObjectCompiler extends Compiler {
     // 更新事件
     updateEvent(vid, eventName, index) {
         if (!this.map.has(vid)) {
-            console.warn(`${this.COMPILER_NAME} compiler: No matching vid found: ${vid}`);
+            console.warn(`${this.MODULE} compiler: No matching vid found: ${vid}`);
             return this;
         }
         const object = this.map.get(vid);
@@ -145,7 +145,7 @@ export class ObjectCompiler extends Compiler {
         const config = this.target[vid][eventName][index];
         const fun = config[symbol];
         if (!fun) {
-            console.warn(`${this.COMPILER_NAME} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`);
+            console.warn(`${this.MODULE} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`);
             return this;
         }
         object.removeEventListener(eventName, fun);
@@ -160,20 +160,20 @@ export class ObjectCompiler extends Compiler {
     // 添加子项
     addChildren(vid, target) {
         if (!this.map.has(vid)) {
-            console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${vid}.`);
+            console.warn(`${this.MODULE} compiler: can not found this vid in compiler: ${vid}.`);
             return this;
         }
         const object = this.map.get(vid);
         const targetObject = this.getObject(target);
         if (!targetObject) {
-            console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${target}.`);
+            console.warn(`${this.MODULE} compiler: can not found this vid in compiler: ${target}.`);
             return this;
         }
         object.add(targetObject);
         // 更新target对象的parent
         const targetConfig = this.engine.getConfigBySymbol(target);
         if (!targetConfig) {
-            console.warn(`${this.COMPILER_NAME} compiler: can not foud object config: ${target}`);
+            console.warn(`${this.MODULE} compiler: can not foud object config: ${target}`);
             return this;
         }
         targetConfig.parent = vid;
@@ -182,20 +182,20 @@ export class ObjectCompiler extends Compiler {
     // 移除子项
     removeChildren(vid, target) {
         if (!this.map.has(vid)) {
-            console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${vid}.`);
+            console.warn(`${this.MODULE} compiler: can not found this vid in compiler: ${vid}.`);
             return this;
         }
         const object = this.map.get(vid);
         const targetObject = this.getObject(target);
         if (!targetObject) {
-            console.warn(`${this.COMPILER_NAME} compiler: can not found this vid in compiler: ${target}.`);
+            console.warn(`${this.MODULE} compiler: can not found this vid in compiler: ${target}.`);
             return this;
         }
         object.remove(targetObject);
         // 更新target对象的parent
         const targetConfig = this.engine.getConfigBySymbol(target);
         if (!targetConfig) {
-            console.warn(`${this.COMPILER_NAME} compiler: remove children function can not foud object config: ${target}`);
+            console.warn(`${this.MODULE} compiler: remove children function can not foud object config: ${target}`);
             return this;
         }
         targetConfig.parent = "";
@@ -221,12 +221,10 @@ export class ObjectCompiler extends Compiler {
         return this.map;
     }
     getObjectSymbol(object) {
-        if (this.weakMap.has(object)) {
-            return this.weakMap.get(object);
-        }
-        else {
-            return null;
-        }
+        return this.weakMap.get(object) || null;
+    }
+    getObjectBySymbol(vid) {
+        return this.map.get(vid) || null;
     }
     compileAll() {
         const target = this.target;
@@ -238,7 +236,7 @@ export class ObjectCompiler extends Compiler {
     add(vid, config) {
         const object = this.map.get(vid);
         if (!object) {
-            console.error(`${this.COMPILER_NAME} compiler can not finish add method.`);
+            console.error(`${this.MODULE} compiler can not finish add method.`);
             return this;
         }
         const asyncFun = Promise.resolve();
@@ -269,7 +267,7 @@ export class ObjectCompiler extends Compiler {
     }
     set(vid, path, key, value) {
         if (!this.map.has(vid)) {
-            console.warn(`${this.COMPILER_NAME} compiler can not found this vid mapping object: '${vid}'`);
+            console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
             return this;
         }
         // lookAt
@@ -296,7 +294,7 @@ export class ObjectCompiler extends Compiler {
     cover(vid, config) {
         const object = this.map.get(vid);
         if (!object) {
-            console.error(`${this.COMPILER_NAME} compiler can not found object: ${vid}.`);
+            console.error(`${this.MODULE} compiler can not found object: ${vid}.`);
             return this;
         }
         const asyncFun = Promise.resolve();
@@ -330,21 +328,21 @@ export class ObjectCompiler extends Compiler {
     }
     remove(vid, config) {
         if (!this.map.has(vid)) {
-            console.warn(`${this.COMPILER_NAME}Compiler: can not found object which vid: ${vid}.`);
+            console.warn(`${this.MODULE}Compiler: can not found object which vid: ${vid}.`);
             return this;
         }
         // 从parent 配置中移除
         if (config.parent) {
             const parentConfig = this.engine.getConfigBySymbol(config.parent);
             if (!parentConfig) {
-                console.warn(`${this.COMPILER_NAME} compiler: can not found parent object config: ${config.parent}`);
+                console.warn(`${this.MODULE} compiler: can not found parent object config: ${config.parent}`);
             }
             else {
                 if (parentConfig.children.includes(vid)) {
                     parentConfig.children.splice(parentConfig.children.indexOf(vid), 1);
                 }
                 else {
-                    console.warn(`${this.COMPILER_NAME} compiler: can not found vid in its parent config: ${vid}`);
+                    console.warn(`${this.MODULE} compiler: can not found vid in its parent config: ${vid}`);
                 }
             }
         }

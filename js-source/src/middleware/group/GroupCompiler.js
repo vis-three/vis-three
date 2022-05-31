@@ -2,7 +2,7 @@ import { Group } from "three";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectCompiler } from "../object/ObjectCompiler";
 export class GroupCompiler extends ObjectCompiler {
-    COMPILER_NAME = MODULETYPE.GROUP;
+    MODULE = MODULETYPE.GROUP;
     constructor() {
         super();
     }
