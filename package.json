@@ -11,7 +11,10 @@
     "build": "tsc && vite build -c ./utils/build/vite.config.js",
     "lint": "npx eslint *.js src/**/*.ts cypress/**/*.js --fix",
     "e2e:open": "cypress open",
-    "examples": "vite -c ./utils/build/vite-examples.config.js"
+    "examples": "vite -c ./utils/build/vite-examples.config.js",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs"
   },
   "devDependencies": {
     "@tweenjs/tween.js": "^18.6.4",
@@ -31,6 +34,7 @@
     "typescript": "^4.3.2",
     "uuid": "^8.3.2",
     "vite": "^2.6.4",
+    "vitepress": "^0.22.4",
     "vue": "^3.2.21",
     "vue2": "npm:vue@^2.6.11"
   },
