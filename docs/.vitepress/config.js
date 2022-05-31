@@ -6,12 +6,19 @@ export default {
   themeConfig: {
     nav: [
       { text: "首页", link: "/" },
-      { text: "关于", link: "/about/" },
+      { text: "开始", link: "/start/index" },
+      { text: "API", link: "/api/" },
+      { text: "版本", link: "/version/" },
       {
         text: "github",
         link: "https://github.com/Shiotsukikaedesari/vis-three",
       },
     ],
-    sidebar: [{ text: "我的", link: "/mine/" }],
+    sidebar: {
+      "/start/": [
+        { text: "开始", link: "/start/index" },
+        { text: "简介", link: "/start/intro" },
+      ],
+    },
   },
 };
