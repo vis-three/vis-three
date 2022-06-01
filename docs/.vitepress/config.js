@@ -1,4 +1,6 @@
 export default {
+  base: "/vis-three/",
+  lang: "zh-cn",
   title: "VIS-THREE",
   description: "more convenient development for three.js",
   dest: "./dist",
