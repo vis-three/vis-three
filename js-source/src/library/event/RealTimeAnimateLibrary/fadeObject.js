@@ -9,6 +9,7 @@ export const config = {
         delay: 0,
         duration: 1000,
         timingFunction: TIMINGFUNCTION.EQI,
+        visible: false,
     },
 };
 export const generator = function (engine, config) {
@@ -45,7 +46,6 @@ export const generator = function (engine, config) {
     return () => {
         const renderManager = engine.renderManager;
         materialList.forEach((material, i, arr) => {
-            material.visible = true;
             material.transparent = true;
             material.opacity = params.direction === "in" ? 0 : 1;
             material.needsUpdate = true;
@@ -63,8 +63,11 @@ export const generator = function (engine, config) {
             renderManager.addEventListener("render", renderFun);
             tween.onComplete(() => {
                 renderManager.removeEventListener("render", renderFun);
-                if (params.direction === "out") {
+                if (params.direction === "out" && params.visible) {
                     materialConfigList[i].visible = false;
+                }
+                else if (params.direction === "in" && params.visible) {
+                    materialConfigList[i].visible = true;
                 }
                 materialConfigList[i].opacity = params.direction === "in" ? 1 : 0;
             });

@@ -7,6 +7,7 @@ export interface FadeObject extends BasicEventConfig {
         delay: number;
         duration: number;
         timingFunction: TIMINGFUNCTION;
+        visible: boolean;
     };
 }
 export declare const config: FadeObject;
