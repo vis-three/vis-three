@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BrokenPath</title>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/examples/public/favicon.ico"
+    />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style></style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as Vis from "../../dist/Vis.es.js";
+      const engine = new Vis.ModelingEngine()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true)
+        .play();
+
+      const scene = engine.scene;
+
+      const brokenPath = new Vis.BrokenPath([
+        new THREE.Vector3(0, -1, 0),
+        new THREE.Vector3(0, 1, 0),
+      ]);
+
+      scene.add(brokenPath);
+      console.log(engine);
+      engine.eventManager.recursive = true;
+    </script>
+  </body>
+</html>

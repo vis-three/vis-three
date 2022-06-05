@@ -29,6 +29,12 @@ export default {
         { text: "脚本动画库", link: "/api/aniScriptLibrary" },
         { text: "shader库", link: "/api/shaderLibrary" },
         { text: "便利工具", link: "/api/convenient" },
+        { text: "展示器", link: "/api/displayer" },
+        { text: "管理器", link: "/api/manager" },
+        { text: "修改器", link: "/api/modifier" },
+        { text: "物体辅助", link: "/api/helper" },
+        { text: "加载器", link: "/api/loader" },
+        { text: "核心", link: "/api/core" },
       ],
       "/version/": [
         { text: "version0.0.3", link: "/version/version0-0-3" },

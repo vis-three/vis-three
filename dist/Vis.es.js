@@ -12627,6 +12627,35 @@ class History {
     this.actionList = [];
   }
 }
+class Path extends Line {
+  constructor(anchors, material) {
+    super(void 0, material);
+    __publicField(this, "type", "Path");
+    __publicField(this, "anchors");
+    this.anchors = [];
+  }
+  addAnchor() {
+  }
+  removeAnchor() {
+  }
+}
+__publicField(Path, "anchorMaterial", new PointsMaterial({
+  sizeAttenuation: false,
+  size: 5
+}));
+class BrokenPath extends Path {
+  constructor(anchors, material) {
+    super(void 0, material);
+    if (anchors && anchors.length) {
+      for (const vector3 of anchors) {
+        const points = new Points(new BufferGeometry().setFromPoints([new Vector3(0, 0, 0)]), Path.anchorMaterial);
+        points.position.set(vector3.x, vector3.y, vector3.z);
+        this.attach(points);
+      }
+      this.geometry.setFromPoints(anchors);
+    }
+  }
+}
 const version = "0.1.3-2";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
@@ -12686,4 +12715,4 @@ Scene.prototype.remove = function(...object) {
   });
   return this;
 };
-export { Action as ActionLibrary, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGTYPE, CSS3DDataSupport, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };
+export { Action as ActionLibrary, AniScriptLibrary, AnimationDataSupport, BooleanModifier, BrokenPath, CONFIGTYPE, CSS3DDataSupport, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };

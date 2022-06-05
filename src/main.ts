@@ -51,6 +51,7 @@ import { TIMINGFUNCTION } from "./library/event/RealTimeAnimateLibrary/common";
 import { PassDataSupport } from "./middleware/pass/PassDataSupport";
 import { CSS3DDataSupport } from "./middleware/css3D/CSS3DDataSupport";
 import { RenderManager } from "./manager/RenderManager";
+import { BrokenPath } from "./extends/object/BrokenPath";
 
 import "./optimize/optimizeScirpt";
 
@@ -104,6 +105,8 @@ export {
   GroupHelper,
   SpotLightHelper,
   DirectionalLightHelper,
+  // object
+  BrokenPath,
   // convenient
   generateConfig,
   SupportDataGenerator,

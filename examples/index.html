@@ -69,6 +69,21 @@
       import * as Vis from "../dist/Vis.es.js";
       import { v4 as getUUid } from "uuid";
 
+      import engineRouter from "./engine";
+      import pluginRouter from "./plugin";
+      import supportRouter from "./support";
+      import displayerRouter from "./displayer";
+      import convenientRouter from "./convenient";
+      import managerRouter from "./manager";
+      import modifierRouter from "./modifier";
+      import helperRouter from "./helper";
+      import loaderRouter from "./loader";
+      import developRouter from "./develop";
+      import coreRouter from "./core";
+      import testRouter from "./test";
+      import libraryRouter from "./library";
+      import extendsRouter from "./extends";
+
       const engine = new Vis.DisplayEngineSupport()
         .install("CSS3DRenderer")
         .complete()
@@ -150,209 +165,20 @@
       engine.setScene(scene.vid).setCamera(camera.vid).play();
 
       const tree = [
-        {
-          router: "engine",
-          children: [
-            "/Engine.html",
-            "/ModelingEngine.html",
-            "/DisplayEngine.html",
-            "/ModelingEngineSupport.html",
-            "/DisplayEngineSupport.html",
-          ],
-          position: {
-            x: -70,
-            y: 20,
-            z: -30,
-          },
-          rotation: {
-            y: (Math.PI / 180) * 35,
-          },
-        },
-        {
-          router: "plugin",
-          children: [
-            "/WebGLRendererPlugin.html",
-            "/CSS3DRendererPlugin.html",
-            "/AxesHelperPlugin.html",
-            "/GridHelperPlugin.html",
-            "/ObjectHelperPlugin.html",
-            "/ViewpointPlugin.html",
-            "/DisplayModePlugin.html",
-            "/SelectionPlugin.html",
-            "/StatsPlugin.html",
-            "/TransformControlsPlugin.html",
-          ],
-          position: {
-            x: -60,
-            y: -20,
-            z: -20,
-          },
-          rotation: {
-            y: (Math.PI / 180) * 25,
-          },
-        },
-        {
-          router: "support",
-          children: [
-            "/GeometrySupport.html",
-            "/MaterialSupport.html",
-            "/CameraSupport.html",
-            "/MeshSupport.html",
-            "/SpriteSupport.html",
-            "/LineSupport.html",
-            "/PointsSupport.html",
-            "/LightSupport.html",
-            "/GroupSupport.html",
-            "/TextureSupport.html",
-            "/EventSupport.html",
-            "/PassSupport.html",
-            "/SceneSupport.html",
-            "/CSS3DSupport.html",
-            "/AnimationSupport.html",
-          ],
-          position: {
-            x: -15,
-            y: 0,
-            z: 15,
-          },
-          rotation: {
-            y: (Math.PI / 180) * 25,
-          },
-        },
-        {
-          router: "displayer",
-          children: ["/TextureDisplayer.html", "/MaterialDisplayer.html"],
-          position: {
-            x: -70,
-            y: -30,
-            z: 10,
-          },
-          rotation: {
-            y: (Math.PI / 180) * 35,
-          },
-        },
-        {
-          router: "convenient",
-          children: ["/History.html"],
-          position: {
-            x: -80,
-            y: 10,
-          },
-          rotation: {
-            y: (Math.PI / 180) * 25,
-          },
-        },
-        {
-          router: "manager",
-          children: [
-            "/EventManager.html",
-            "/LoaderManager.html",
-            "/ResourceManager.html",
-          ],
-          position: {
-            x: 45,
-            z: 5,
-            y: -30,
-          },
-          rotation: {
-            y: (Math.PI / 180) * -15,
-          },
-        },
-        {
-          router: "modifier",
-          children: ["/BooleanModifier.html"],
-          position: {
-            x: 45,
-            z: -10,
-            y: 20,
-          },
-          rotation: {
-            y: (Math.PI / 180) * -25,
-          },
-        },
-        {
-          router: "helper",
-          children: [
-            "/PointLightHelper.html",
-            "/SpotLightHelper.html",
-            "/directionalLight.html",
-            "/CameraHelper.html",
-            "/GroupHelper.html",
-          ],
-          position: {
-            x: 20,
-            z: 15,
-          },
-          rotation: {
-            y: (Math.PI / 180) * -25,
-          },
-        },
-        {
-          router: "loader",
-          children: ["/VideoLoader.html"],
-          position: {
-            x: 15,
-            y: 20,
-            z: 10,
-          },
-          rotation: {
-            y: (Math.PI / 180) * -25,
-          },
-        },
-
-        {
-          router: "develop",
-          children: [
-            "/configure.html",
-            "/Vue3.html",
-            "/Vue2.html",
-            "/CanvasExtends.html",
-            "/Vue2-ConfigExtends.html",
-          ],
-          position: {
-            x: 60,
-            y: -10,
-          },
-          rotation: {
-            y: (Math.PI / 180) * -30,
-          },
-        },
-        {
-          router: "core",
-          children: ["/ProxyBroadcast.html"],
-          position: {
-            x: 20,
-            y: -30,
-            z: 20,
-          },
-          rotation: {
-            y: (Math.PI / 180) * -25,
-          },
-        },
-        {
-          router: "test",
-          children: ["/Pressure-canvas.html", "/Pressure-css3D.html"],
-          position: {
-            x: 60,
-            y: 10,
-            z: 20,
-          },
-          rotation: {
-            y: (Math.PI / 180) * -30,
-          },
-        },
-        {
-          router: "library",
-          children: ["/EventLibrary.html"],
-          position: {
-            x: 60,
-            y: 30,
-            z: 20,
-          },
-          rotation: {
-            y: (Math.PI / 180) * -30,
-          },
-        },
+        engineRouter,
+        pluginRouter,
+        supportRouter,
+        displayerRouter,
+        convenientRouter,
+        managerRouter,
+        modifierRouter,
+        helperRouter,
+        loaderRouter,
+        developRouter,
+        coreRouter,
+        testRouter,
+        libraryRouter,
+        extendsRouter,
       ];
 
       const domList = [];
