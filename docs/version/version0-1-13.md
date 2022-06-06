@@ -5,6 +5,7 @@
 - docs-vitepress
 - eventLibrary-fadeObject
 - eventLibrary-focusObject
+- path-object
 
 #### fix
 
