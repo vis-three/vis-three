@@ -5,7 +5,7 @@ heroAlt: Logo image
 heroText: VIS-THREE
 tagline: more convenient development for three.js
 actionText: 开始
-actionLink: /version/
+actionLink: /start/start
 features:
   - title: three.js开发拓展
     details: vis-three是基于three.js之上的开发拓展框架，旨在继承three.js的能力，优化其中的细节与统一场景应用开发流程。

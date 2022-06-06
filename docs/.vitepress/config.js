@@ -11,10 +11,6 @@ export default {
       { text: "开始", link: "/start/start" },
       { text: "API", link: "/api/engine" },
       { text: "版本", link: "/version/version0-1-13" },
-      {
-        text: "github",
-        link: "https://github.com/Shiotsukikaedesari/vis-three",
-      },
     ],
     sidebar: {
       "/start/": [
@@ -46,5 +42,13 @@ export default {
         { text: "version0.1.13", link: "/version/version0-1-13" },
       ],
     },
+    repo: "https://github.com/Shiotsukikaedesari/vis-three",
+    repoLabel: "github",
+
+    docsDir: "docs",
+    editLinkText: "编辑此页面",
+    editLinks: true,
+
+    lastUpdated: "上次更新",
   },
 };
