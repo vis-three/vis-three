@@ -14,6 +14,7 @@ import {
   getCylinderGeometryConfig,
   getEdgesGeometryConfig,
   getLineCurveGeometryConfig,
+  getSplineCurveGeometryConfig,
 } from "../geometry/GeometryConfig";
 import {
   getCanvasTextureConfig,
@@ -88,6 +89,7 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.CYLINDERGEOMETRY]: getCylinderGeometryConfig,
   [CONFIGTYPE.EDGESGEOMETRY]: getEdgesGeometryConfig,
   [CONFIGTYPE.LINECURVEGEOMETRY]: getLineCurveGeometryConfig,
+  [CONFIGTYPE.SPLINECURVEGEOMETRY]: getSplineCurveGeometryConfig,
 
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,

@@ -116,14 +116,38 @@
         ],
       });
 
+      const splineCurveGeometry = Vis.generateConfig("SplineCurveGeometry", {
+        path: [
+          { x: 0, y: 0, z: -5 },
+          { x: 0, y: 0, z: 5 },
+          { x: 0, y: 5, z: 5 },
+          { x: 0, y: 5, z: 10 },
+          { x: 10, y: 5, z: 10 },
+        ],
+      });
+
       const lineCurveLine = Vis.generateConfig("Line", {
         geometry: lineCurveGeometry.vid,
         material: lineMaterial.vid,
       });
 
-      engine.applyConfig(lineMaterial, lineCurveGeometry, lineCurveLine);
+      const splineCurveLine = Vis.generateConfig("Line", {
+        geometry: splineCurveGeometry.vid,
+        material: lineMaterial.vid,
+        position: {
+          y: 10,
+        },
+      });
 
-      scene.children.push(lineCurveLine.vid);
+      engine.applyConfig(
+        splineCurveGeometry,
+        lineMaterial,
+        lineCurveGeometry,
+        lineCurveLine,
+        splineCurveLine
+      );
+
+      scene.children.push(lineCurveLine.vid, splineCurveLine.vid);
 
       engine.setScene(scene.vid);
     </script>

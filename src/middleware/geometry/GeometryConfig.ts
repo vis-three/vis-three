@@ -92,11 +92,15 @@ export interface CustomGeometryConfig extends GeometryConfig {
   };
 }
 
-export interface LineCurveGeometryConfig extends GeometryConfig {
+export interface CurveGeometryConfig extends GeometryConfig {
   path: Vector3Config[];
   divisions: number;
-  space: string;
+  space: boolean;
 }
+
+export interface LineCurveGeometryConfig extends CurveGeometryConfig {}
+
+export interface SplineCurveGeometryConfig extends CurveGeometryConfig {}
 
 export const getGeometryConfig = function (): GeometryConfig {
   return {
@@ -217,14 +221,26 @@ export const getEdgesGeometryConfig = function (): EdgesGeometryConfig {
   });
 };
 
-export const getLineCurveGeometryConfig = function (): LineCurveGeometryConfig {
+const getCurveGeometryConfig = function (): CurveGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: CONFIGTYPE.LINECURVEGEOMETRY,
     path: [],
     divisions: 36,
-    space: "u",
+    space: true,
   });
 };
+
+export const getLineCurveGeometryConfig = function (): LineCurveGeometryConfig {
+  return Object.assign(getCurveGeometryConfig(), {
+    type: CONFIGTYPE.LINECURVEGEOMETRY,
+  });
+};
+
+export const getSplineCurveGeometryConfig =
+  function (): SplineCurveGeometryConfig {
+    return Object.assign(getCurveGeometryConfig(), {
+      type: CONFIGTYPE.SPLINECURVEGEOMETRY,
+    });
+  };
 
 export type GeometryAllType =
   | BoxGeometryConfig
@@ -236,4 +252,5 @@ export type GeometryAllType =
   | CylinderGeometryConfig
   | DodecahedronGeometryConfig
   | EdgesGeometryConfig
-  | LineCurveGeometryConfig;
+  | LineCurveGeometryConfig
+  | SplineCurveGeometryConfig;

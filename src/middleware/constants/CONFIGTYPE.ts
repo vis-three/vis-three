@@ -12,6 +12,7 @@ export enum CONFIGTYPE {
   DODECAHEDRONGEOMETRY = "DodecahedronGeometry",
   EDGESGEOMETRY = "EdgesGeometry",
   LINECURVEGEOMETRY = "LineCurveGeometry",
+  SPLINECURVEGEOMETRY = "SplineCurveGeometry",
 
   MESH = "Mesh",
   LINE = "Line",

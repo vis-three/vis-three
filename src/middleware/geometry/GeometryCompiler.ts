@@ -29,11 +29,13 @@ import {
   LoadGeometryConfig,
   PlaneGeometryConfig,
   SphereGeometryConfig,
+  SplineCurveGeometryConfig,
 } from "./GeometryConfig";
 import { CONFIGTYPE } from "../constants/configType";
 import { EngineSupport } from "../../main";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { LineCurveGeometry } from "../../extends/geometry/LineCurveGeometry";
+import { SplineCurveGeometry } from "../../extends/geometry/SplineCurveGeometry";
 
 export interface GeometryCompilerTarget extends CompilerTarget {
   [key: string]: GeometryAllType;
@@ -203,7 +205,23 @@ export class GeometryCompiler extends Compiler {
               (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
             ),
             config.divisions,
-            config.space as "t" | "u"
+            config.space
+          ),
+          config
+        );
+      }
+    );
+
+    constructMap.set(
+      CONFIGTYPE.SPLINECURVEGEOMETRY,
+      (config: SplineCurveGeometryConfig) => {
+        return GeometryCompiler.transfromAnchor(
+          new SplineCurveGeometry(
+            config.path.map(
+              (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
+            ),
+            config.divisions,
+            config.space
           ),
           config
         );

@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, PlaneBufferGeometry, CurvePath, LineCurve3, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -3124,6 +3124,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["DODECAHEDRONGEOMETRY"] = "DodecahedronGeometry";
   CONFIGTYPE2["EDGESGEOMETRY"] = "EdgesGeometry";
   CONFIGTYPE2["LINECURVEGEOMETRY"] = "LineCurveGeometry";
+  CONFIGTYPE2["SPLINECURVEGEOMETRY"] = "SplineCurveGeometry";
   CONFIGTYPE2["MESH"] = "Mesh";
   CONFIGTYPE2["LINE"] = "Line";
   CONFIGTYPE2["LINESEGMENTS"] = "LineSegments";
@@ -3350,12 +3351,21 @@ const getEdgesGeometryConfig = function() {
     thresholdAngle: 1
   });
 };
-const getLineCurveGeometryConfig = function() {
+const getCurveGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
-    type: CONFIGTYPE.LINECURVEGEOMETRY,
     path: [],
     divisions: 36,
-    space: "u"
+    space: true
+  });
+};
+const getLineCurveGeometryConfig = function() {
+  return Object.assign(getCurveGeometryConfig(), {
+    type: CONFIGTYPE.LINECURVEGEOMETRY
+  });
+};
+const getSplineCurveGeometryConfig = function() {
+  return Object.assign(getCurveGeometryConfig(), {
+    type: CONFIGTYPE.SPLINECURVEGEOMETRY
   });
 };
 const getTextureConfig = function() {
@@ -3807,6 +3817,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.CYLINDERGEOMETRY]: getCylinderGeometryConfig,
   [CONFIGTYPE.EDGESGEOMETRY]: getEdgesGeometryConfig,
   [CONFIGTYPE.LINECURVEGEOMETRY]: getLineCurveGeometryConfig,
+  [CONFIGTYPE.SPLINECURVEGEOMETRY]: getSplineCurveGeometryConfig,
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,
   [CONFIGTYPE.MESH]: getMeshConfig,
@@ -3949,6 +3960,7 @@ const CONFIGMODULE = {
   [CONFIGTYPE.EDGESGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.CYLINDERGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.LINECURVEGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.SPLINECURVEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
   [CONFIGTYPE.LINE]: MODULETYPE.LINE,
   [CONFIGTYPE.MESH]: MODULETYPE.MESH,
@@ -7267,7 +7279,7 @@ class LoadGeometry extends BufferGeometry {
   }
 }
 class CurveGeometry extends BufferGeometry {
-  constructor(path, divisions = 36, space = "u") {
+  constructor(path, divisions = 36, space = true) {
     super();
     __publicField(this, "parameters");
     this.type = "CurveGeometry";
@@ -7279,20 +7291,22 @@ class CurveGeometry extends BufferGeometry {
   }
 }
 class LineCurveGeometry extends CurveGeometry {
-  constructor(path, divisions = 36, space = "u") {
+  constructor(path, divisions = 36, space = true) {
     super(path, divisions, space);
     this.type = "LineCurveGeometry";
     const curvePath = new CurvePath();
     for (let i = 1; i < path.length; i += 1) {
       curvePath.add(new LineCurve3(path[i - 1], path[i]));
     }
-    let points = [];
-    if (space === "t") {
-      points = curvePath.getPoints(divisions);
-    } else if (space === "u") {
-      points = curvePath.getSpacedPoints(divisions);
-    }
-    this.setFromPoints(points);
+    this.setFromPoints(space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions));
+  }
+}
+class SplineCurveGeometry extends CurveGeometry {
+  constructor(path, divisions = 36, space = true) {
+    super(path, divisions, space);
+    this.type = "SplineCurveGeometry";
+    const splineCurve = new CatmullRomCurve3(path);
+    this.setFromPoints(space ? splineCurve.getSpacedPoints(divisions) : splineCurve.getPoints(divisions));
   }
 }
 const _GeometryCompiler = class extends Compiler {
@@ -7332,6 +7346,9 @@ const _GeometryCompiler = class extends Compiler {
     });
     constructMap.set(CONFIGTYPE.LINECURVEGEOMETRY, (config2) => {
       return _GeometryCompiler.transfromAnchor(new LineCurveGeometry(config2.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
+    });
+    constructMap.set(CONFIGTYPE.SPLINECURVEGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new SplineCurveGeometry(config2.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
     });
     this.constructMap = constructMap;
   }
