@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, PlaneBufferGeometry, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, PlaneBufferGeometry, CurvePath, LineCurve3, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -3123,6 +3123,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["CYLINDERGEOMETRY"] = "CylinderGeometry";
   CONFIGTYPE2["DODECAHEDRONGEOMETRY"] = "DodecahedronGeometry";
   CONFIGTYPE2["EDGESGEOMETRY"] = "EdgesGeometry";
+  CONFIGTYPE2["LINECURVEGEOMETRY"] = "LineCurveGeometry";
   CONFIGTYPE2["MESH"] = "Mesh";
   CONFIGTYPE2["LINE"] = "Line";
   CONFIGTYPE2["LINESEGMENTS"] = "LineSegments";
@@ -3347,6 +3348,14 @@ const getEdgesGeometryConfig = function() {
     type: CONFIGTYPE.LOADGEOMETRY,
     url: "",
     thresholdAngle: 1
+  });
+};
+const getLineCurveGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.LINECURVEGEOMETRY,
+    path: [],
+    divisions: 36,
+    space: "u"
   });
 };
 const getTextureConfig = function() {
@@ -3797,6 +3806,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.CONEGEOMETRY]: getConeGeometryConfig,
   [CONFIGTYPE.CYLINDERGEOMETRY]: getCylinderGeometryConfig,
   [CONFIGTYPE.EDGESGEOMETRY]: getEdgesGeometryConfig,
+  [CONFIGTYPE.LINECURVEGEOMETRY]: getLineCurveGeometryConfig,
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,
   [CONFIGTYPE.MESH]: getMeshConfig,
@@ -3938,6 +3948,7 @@ const CONFIGMODULE = {
   [CONFIGTYPE.CIRCLEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.EDGESGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.CYLINDERGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.LINECURVEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
   [CONFIGTYPE.LINE]: MODULETYPE.LINE,
   [CONFIGTYPE.MESH]: MODULETYPE.MESH,
@@ -7255,6 +7266,35 @@ class LoadGeometry extends BufferGeometry {
     geometry && this.copy(geometry);
   }
 }
+class CurveGeometry extends BufferGeometry {
+  constructor(path, divisions = 36, space = "u") {
+    super();
+    __publicField(this, "parameters");
+    this.type = "CurveGeometry";
+    this.parameters = {
+      path: path.map((vector3) => vector3.clone()),
+      space,
+      divisions
+    };
+  }
+}
+class LineCurveGeometry extends CurveGeometry {
+  constructor(path, divisions = 36, space = "u") {
+    super(path, divisions, space);
+    this.type = "LineCurveGeometry";
+    const curvePath = new CurvePath();
+    for (let i = 1; i < path.length; i += 1) {
+      curvePath.add(new LineCurve3(path[i - 1], path[i]));
+    }
+    let points = [];
+    if (space === "t") {
+      points = curvePath.getPoints(divisions);
+    } else if (space === "u") {
+      points = curvePath.getSpacedPoints(divisions);
+    }
+    this.setFromPoints(points);
+  }
+}
 const _GeometryCompiler = class extends Compiler {
   constructor() {
     super();
@@ -7289,6 +7329,9 @@ const _GeometryCompiler = class extends Compiler {
     });
     constructMap.set(CONFIGTYPE.EDGESGEOMETRY, (config2) => {
       return _GeometryCompiler.transfromAnchor(new EdgesGeometry(this.map.get(config2.url), config2.thresholdAngle), config2);
+    });
+    constructMap.set(CONFIGTYPE.LINECURVEGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new LineCurveGeometry(config2.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
     });
     this.constructMap = constructMap;
   }
@@ -12627,35 +12670,6 @@ class History {
     this.actionList = [];
   }
 }
-class Path extends Line {
-  constructor(anchors, material) {
-    super(void 0, material);
-    __publicField(this, "type", "Path");
-    __publicField(this, "anchors");
-    this.anchors = [];
-  }
-  addAnchor() {
-  }
-  removeAnchor() {
-  }
-}
-__publicField(Path, "anchorMaterial", new PointsMaterial({
-  sizeAttenuation: false,
-  size: 5
-}));
-class BrokenPath extends Path {
-  constructor(anchors, material) {
-    super(void 0, material);
-    if (anchors && anchors.length) {
-      for (const vector3 of anchors) {
-        const points = new Points(new BufferGeometry().setFromPoints([new Vector3(0, 0, 0)]), Path.anchorMaterial);
-        points.position.set(vector3.x, vector3.y, vector3.z);
-        this.attach(points);
-      }
-      this.geometry.setFromPoints(anchors);
-    }
-  }
-}
 const version = "0.1.3-2";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
@@ -12715,4 +12729,4 @@ Scene.prototype.remove = function(...object) {
   });
   return this;
 };
-export { Action as ActionLibrary, AniScriptLibrary, AnimationDataSupport, BooleanModifier, BrokenPath, CONFIGTYPE, CSS3DDataSupport, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };
+export { Action as ActionLibrary, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGTYPE, CSS3DDataSupport, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupHelper, History, JSONHandler, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };

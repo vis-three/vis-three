@@ -11,6 +11,7 @@ export enum CONFIGTYPE {
   CYLINDERGEOMETRY = "CylinderGeometry",
   DODECAHEDRONGEOMETRY = "DodecahedronGeometry",
   EDGESGEOMETRY = "EdgesGeometry",
+  LINECURVEGEOMETRY = "LineCurveGeometry",
 
   MESH = "Mesh",
   LINE = "Line",

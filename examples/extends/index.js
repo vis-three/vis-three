@@ -1,6 +1,6 @@
 export default {
   router: "extends",
-  children: ["/BrokenPath.html"],
+  children: [],
   position: {
     x: 20,
     y: 35,

@@ -25,6 +25,7 @@ import {
   EdgesGeometryConfig,
   GeometryAllType,
   GeometryGroup,
+  LineCurveGeometryConfig,
   LoadGeometryConfig,
   PlaneGeometryConfig,
   SphereGeometryConfig,
@@ -32,6 +33,7 @@ import {
 import { CONFIGTYPE } from "../constants/configType";
 import { EngineSupport } from "../../main";
 import { MODULETYPE } from "../constants/MODULETYPE";
+import { LineCurveGeometry } from "../../extends/geometry/LineCurveGeometry";
 
 export interface GeometryCompilerTarget extends CompilerTarget {
   [key: string]: GeometryAllType;
@@ -187,6 +189,22 @@ export class GeometryCompiler extends Compiler {
       (config: EdgesGeometryConfig) => {
         return GeometryCompiler.transfromAnchor(
           new EdgesGeometry(this.map.get(config.url), config.thresholdAngle),
+          config
+        );
+      }
+    );
+
+    constructMap.set(
+      CONFIGTYPE.LINECURVEGEOMETRY,
+      (config: LineCurveGeometryConfig) => {
+        return GeometryCompiler.transfromAnchor(
+          new LineCurveGeometry(
+            config.path.map(
+              (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
+            ),
+            config.divisions,
+            config.space as "t" | "u"
+          ),
           config
         );
       }

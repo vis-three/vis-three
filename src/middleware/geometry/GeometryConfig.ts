@@ -92,6 +92,12 @@ export interface CustomGeometryConfig extends GeometryConfig {
   };
 }
 
+export interface LineCurveGeometryConfig extends GeometryConfig {
+  path: Vector3Config[];
+  divisions: number;
+  space: string;
+}
+
 export const getGeometryConfig = function (): GeometryConfig {
   return {
     vid: "",
@@ -211,6 +217,15 @@ export const getEdgesGeometryConfig = function (): EdgesGeometryConfig {
   });
 };
 
+export const getLineCurveGeometryConfig = function (): LineCurveGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.LINECURVEGEOMETRY,
+    path: [],
+    divisions: 36,
+    space: "u",
+  });
+};
+
 export type GeometryAllType =
   | BoxGeometryConfig
   | SphereGeometryConfig
@@ -220,4 +235,5 @@ export type GeometryAllType =
   | ConeGeometryConfig
   | CylinderGeometryConfig
   | DodecahedronGeometryConfig
-  | EdgesGeometryConfig;
+  | EdgesGeometryConfig
+  | LineCurveGeometryConfig;
