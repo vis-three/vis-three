@@ -1,0 +1,1 @@
+import{_ as e,c as a,o as r,a as i}from"./app.a500acd4.js";const p='{"title":"version 0.1.13","description":"","frontmatter":{},"headers":[{"level":2,"title":"version 0.1.13","slug":"version-0-1-13"}],"relativePath":"version/version0-1-13.md"}',t={},d=i("",6),n=[d];function s(o,c,h,l,_,f){return r(),a("div",null,n)}var u=e(t,[["render",s]]);export{p as __pageData,u as default};

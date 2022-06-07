@@ -15,7 +15,7 @@ export default {
     sidebar: {
       "/start/": [
         { text: "开始", link: "/start/start" },
-        { text: "简介", link: "/start/intro" },
+        { text: "TODO", link: "/start/todo" },
       ],
       "/api/": [
         { text: "引擎", link: "/api/engine" },
