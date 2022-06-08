@@ -26,7 +26,7 @@ export const config: FadeObject = {
     direction: "out",
     delay: 0,
     duration: 1000,
-    timingFunction: TIMINGFUNCTION.EQI,
+    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN,
     visible: false,
   },
 };

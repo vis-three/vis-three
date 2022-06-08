@@ -28,7 +28,7 @@ export const config: MoveSpacing = {
     },
     delay: 0,
     duration: 1000,
-    timingFunction: TIMINGFUNCTION.EQI,
+    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN,
   },
 };
 

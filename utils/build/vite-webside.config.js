@@ -12,4 +12,9 @@ export default defineConfig({
     outDir: path.resolve(__dirname, "../../dist-website"),
   },
   plugins: [vue()],
+  resolve: {
+    alias: {
+      "@vis-three": path.resolve(__dirname, "../../dist/Vis.es.js"),
+    },
+  },
 });

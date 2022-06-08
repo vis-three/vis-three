@@ -16,7 +16,10 @@
     "noImplicitReturns": true,
     "noImplicitAny": false,
     "declaration": true,
-    "declarationDir": "./types"
+    "declarationDir": "./types",
+    "paths": {
+      "@vis-three": ["./dist/Vis.es.js"]
+    }
   },
-  "include": ["./src"]
+  "include": ["./src", "./website"]
 }

@@ -66,24 +66,15 @@ const config = {
 
 ## 事件动画库
 
-### 前置变量
-
-具体请查看 vis-three\src\library\event\RealTimeAnimateLibrary\common.ts
+### 动画插值函数
 
 ```ts
-import { Easing } from "@tweenjs/tween.js";
-
 export enum TIMINGFUNCTION {
-  ELN = "ELN",
-  EQI = "EQI",
+  EASING_LINEAR_NONE = "EASING_LINEAR_NONE", // 线性
+  EASING_QUARTIC_IN = "EASING_QUARTIC_IN",
+  EASING_QUARTIC_OUT = "EASING_QUARTIC_OUT",
+  EASING_QUARTIC_INOUT = "EASING_QUARTIC_INOUT",
 }
-
-export const timingFunction: {
-  [key in TIMINGFUNCTION]: (amount: number) => number;
-} = {
-  ELN: Easing.Linear.None,
-  EQI: Easing.Quadratic.InOut,
-};
 ```
 
 ### moveSpacing
@@ -103,7 +94,7 @@ const config = {
     },
     delay: 0, // 延迟时间
     duration: 1000, // 动画时长
-    timingFunction: TIMINGFUNCTION.EQI, // 动画插值函数
+    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN, // 动画插值函数
   },
 };
 ```
@@ -125,7 +116,51 @@ const config = {
     },
     delay: 0, // 延迟时间
     duration: 1000, // 动画时长
-    timingFunction: TIMINGFUNCTION.EQI, // 动画插值函数
+    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN, // 动画插值函数
+  },
+};
+```
+
+### fadeObject
+
+淡入淡出物体
+
+```js
+const config = {
+  name: "fadeObject",
+  params: {
+    target: "", // 目标物体vid
+    direction: "out", // out 淡出， in 淡入
+    delay: 0, // 延迟时间
+    duration: 1000, // 动画时长
+    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN, // 动画插值函数
+    visible: false, // 是否会影响物体的visible属性 direction为out时
+  },
+};
+```
+
+### focusObject
+
+聚焦物体
+
+> 会让当前的场景相机聚焦到目标物体
+
+```js
+const config = {
+  name: "foucsObject",
+  params: {
+    target: "", // 目标物体vid
+    space: "world", // 聚焦基于的物体空间 world: 基于世界矩阵聚焦， local: 基于本地矩阵聚焦
+    // 相对偏移量
+    offset: {
+      x: 0,
+      y: 0,
+      z: 20,
+    },
+    delay: 0, // 延迟时间
+    duration: 1000, // 动画时长
+    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN, // 动画插值函数
+    back: true, // 是否能返回到聚焦前状态 双击触发
   },
 };
 ```
