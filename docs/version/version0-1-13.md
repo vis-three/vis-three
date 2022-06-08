@@ -7,6 +7,9 @@
 - eventLibrary-focusObject
 - curveGeometry
 - LineCurveGeometry
+- QuadraticBezierCurveGeometry
+- SplineCurveGeometry
+- CubicBezierCurveGeometry
 
 #### fix
 
