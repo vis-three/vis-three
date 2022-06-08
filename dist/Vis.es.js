@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -3125,6 +3125,8 @@ var CONFIGTYPE;
   CONFIGTYPE2["EDGESGEOMETRY"] = "EdgesGeometry";
   CONFIGTYPE2["LINECURVEGEOMETRY"] = "LineCurveGeometry";
   CONFIGTYPE2["SPLINECURVEGEOMETRY"] = "SplineCurveGeometry";
+  CONFIGTYPE2["CUBICBEZIERCURVEGEOMETRY"] = "CubicBezierCurveGeometry";
+  CONFIGTYPE2["QUADRATICBEZIERCURVEGEOMETRY"] = "QuadraticBezierCurveGeometry";
   CONFIGTYPE2["MESH"] = "Mesh";
   CONFIGTYPE2["LINE"] = "Line";
   CONFIGTYPE2["LINESEGMENTS"] = "LineSegments";
@@ -3366,6 +3368,16 @@ const getLineCurveGeometryConfig = function() {
 const getSplineCurveGeometryConfig = function() {
   return Object.assign(getCurveGeometryConfig(), {
     type: CONFIGTYPE.SPLINECURVEGEOMETRY
+  });
+};
+const getCubicBezierCurveGeometryConfig = function() {
+  return Object.assign(getCurveGeometryConfig(), {
+    type: CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY
+  });
+};
+const getQuadraticBezierCurveGeometryConfig = function() {
+  return Object.assign(getCurveGeometryConfig(), {
+    type: CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY
   });
 };
 const getTextureConfig = function() {
@@ -3818,6 +3830,8 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.EDGESGEOMETRY]: getEdgesGeometryConfig,
   [CONFIGTYPE.LINECURVEGEOMETRY]: getLineCurveGeometryConfig,
   [CONFIGTYPE.SPLINECURVEGEOMETRY]: getSplineCurveGeometryConfig,
+  [CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY]: getCubicBezierCurveGeometryConfig,
+  [CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY]: getQuadraticBezierCurveGeometryConfig,
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,
   [CONFIGTYPE.MESH]: getMeshConfig,
@@ -3961,6 +3975,8 @@ const CONFIGMODULE = {
   [CONFIGTYPE.CYLINDERGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.LINECURVEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.SPLINECURVEGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
   [CONFIGTYPE.LINE]: MODULETYPE.LINE,
   [CONFIGTYPE.MESH]: MODULETYPE.MESH,
@@ -4779,6 +4795,7 @@ const GeometryRule = function(notice, compiler) {
   const { operate, key, path, value } = notice;
   const vid = path.length ? path[0] : key;
   const attribute = path.length >= 2 ? path[1] : key;
+  const tempPath = path.length ? path.concat([]).slice(1) : [];
   if (operate === "add") {
     if (validate(vid)) {
       if (attribute === "groups") {
@@ -4790,14 +4807,17 @@ const GeometryRule = function(notice, compiler) {
           return;
         }
       }
-      compiler.add(vid, value);
+      if (tempPath.length > 0) {
+        compiler.set(vid, tempPath, value);
+      } else {
+        compiler.add(vid, value);
+      }
     } else {
       console.warn(`geometry rule vid is illeage: '${key}'`);
     }
     return;
   }
   if (operate === "set") {
-    const tempPath = path.length ? path.concat([]).slice(1) : [];
     if (vid && validate(vid)) {
       if (attribute === "groups") {
         const index = Number(path[2] || key);
@@ -7298,6 +7318,16 @@ class LineCurveGeometry extends CurveGeometry {
     for (let i = 1; i < path.length; i += 1) {
       curvePath.add(new LineCurve3(path[i - 1], path[i]));
     }
+    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
+      return sum += curve.arcLengthDivisions;
+    }, 0);
+    if (divisions > totalArcLengthDivisions) {
+      const mutily = Math.ceil((divisions - totalArcLengthDivisions) / curvePath.curves.length);
+      curvePath.curves.forEach((curve) => {
+        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
+        curve.updateArcLengths();
+      });
+    }
     this.setFromPoints(space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions));
   }
 }
@@ -7307,6 +7337,56 @@ class SplineCurveGeometry extends CurveGeometry {
     this.type = "SplineCurveGeometry";
     const splineCurve = new CatmullRomCurve3(path);
     this.setFromPoints(space ? splineCurve.getSpacedPoints(divisions) : splineCurve.getPoints(divisions));
+  }
+}
+class CubicBezierCurveGeometry extends CurveGeometry {
+  constructor(path, divisions = 36, space = true) {
+    super(path, divisions, space);
+    this.type = "CubicBezierCurveGeometry";
+    const curvePath = new CurvePath();
+    if (path.length < 4) {
+      console.error(`CubicBezierCurveGeometry path length at least 4.`);
+    }
+    const length = 4 + (path.length - 4) - (path.length - 4) % 3;
+    for (let i = 2; i < length; i += 3) {
+      curvePath.add(new CubicBezierCurve3(path[i - 2], path[i - 1], path[i], path[i + 1]));
+    }
+    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
+      return sum += curve.arcLengthDivisions;
+    }, 0);
+    if (divisions > totalArcLengthDivisions) {
+      const mutily = Math.ceil((divisions - totalArcLengthDivisions) / curvePath.curves.length);
+      curvePath.curves.forEach((curve) => {
+        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
+        curve.updateArcLengths();
+      });
+    }
+    this.setFromPoints(space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions));
+  }
+}
+class QuadraticBezierCurveGeometry extends CurveGeometry {
+  constructor(path, divisions = 36, space = true) {
+    super(path, divisions, space);
+    this.type = "QuadraticBezierCurveGeometry";
+    const curvePath = new CurvePath();
+    if (path.length < 3) {
+      console.error(`QuadraticBezierCurveGeometry path length at least 3.`);
+    }
+    const length = 3 + (path.length - 3) - (path.length - 3) % 2;
+    for (let i = 1; i < length; i += 2) {
+      curvePath.add(new QuadraticBezierCurve3(path[i - 1], path[i], path[i + 1]));
+    }
+    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
+      return sum += curve.arcLengthDivisions;
+    }, 0);
+    if (divisions > totalArcLengthDivisions) {
+      const mutily = Math.ceil((divisions - totalArcLengthDivisions) / curvePath.curves.length);
+      curvePath.curves.forEach((curve) => {
+        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
+        curve.updateArcLengths();
+      });
+    }
+    this.setFromPoints(space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions));
   }
 }
 const _GeometryCompiler = class extends Compiler {
@@ -7349,6 +7429,12 @@ const _GeometryCompiler = class extends Compiler {
     });
     constructMap.set(CONFIGTYPE.SPLINECURVEGEOMETRY, (config2) => {
       return _GeometryCompiler.transfromAnchor(new SplineCurveGeometry(config2.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
+    });
+    constructMap.set(CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new CubicBezierCurveGeometry(config2.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
+    });
+    constructMap.set(CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new QuadraticBezierCurveGeometry(config2.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
     });
     this.constructMap = constructMap;
   }

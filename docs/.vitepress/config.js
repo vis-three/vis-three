@@ -31,6 +31,7 @@ export default {
         { text: "物体辅助", link: "/api/helper" },
         { text: "加载器", link: "/api/loader" },
         { text: "核心", link: "/api/core" },
+        { text: "拓展", link: "/api/extends" },
       ],
       "/version/": [
         { text: "version0.0.3", link: "/version/version0-0-3" },

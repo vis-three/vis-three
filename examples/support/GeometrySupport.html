@@ -106,6 +106,7 @@
       const lineMaterial = Vis.generateConfig("LineBasicMaterial", {
         color: "white",
       });
+
       const lineCurveGeometry = Vis.generateConfig("LineCurveGeometry", {
         path: [
           { x: 0, y: 0, z: -5 },
@@ -126,6 +127,35 @@
         ],
       });
 
+      const CubicBezierCureGeometry = Vis.generateConfig(
+        "CubicBezierCurveGeometry",
+        {
+          path: [
+            { x: 0, y: 0, z: -5 },
+            { x: 0, y: 20, z: 5 },
+            { x: 0, y: -15, z: 5 },
+            { x: 0, y: 5, z: 10 },
+            { x: 10, y: 5, z: 10 },
+            { x: 10, y: 0, z: 10 },
+            { x: 0, y: 0, z: 20 },
+            { x: 10, y: 0, z: 10 },
+          ],
+        }
+      );
+
+      const quadraticBezierCurveGeometry = Vis.generateConfig(
+        "QuadraticBezierCurveGeometry",
+        {
+          path: [
+            { x: 0, y: 0, z: -5 },
+            { x: 0, y: 0, z: 5 },
+            { x: 0, y: 5, z: 5 },
+            { x: 0, y: 5, z: 10 },
+            { x: 10, y: 5, z: 10 },
+          ],
+        }
+      );
+
       const lineCurveLine = Vis.generateConfig("Line", {
         geometry: lineCurveGeometry.vid,
         material: lineMaterial.vid,
@@ -139,17 +169,45 @@
         },
       });
 
+      const CubicBezierCurveLine = Vis.generateConfig("Line", {
+        geometry: CubicBezierCureGeometry.vid,
+        material: lineMaterial.vid,
+        position: {
+          y: 20,
+        },
+      });
+
+      const quadraticBezierCurveLine = Vis.generateConfig("Line", {
+        geometry: quadraticBezierCurveGeometry.vid,
+        material: lineMaterial.vid,
+        position: {
+          y: 30,
+        },
+      });
+
       engine.applyConfig(
-        splineCurveGeometry,
         lineMaterial,
+        splineCurveGeometry,
         lineCurveGeometry,
+        CubicBezierCureGeometry,
+        quadraticBezierCurveGeometry,
         lineCurveLine,
-        splineCurveLine
+        splineCurveLine,
+        CubicBezierCurveLine,
+        quadraticBezierCurveLine
       );
 
-      scene.children.push(lineCurveLine.vid, splineCurveLine.vid);
+      scene.children.push(
+        lineCurveLine.vid,
+        splineCurveLine.vid,
+        CubicBezierCurveLine.vid,
+        quadraticBezierCurveLine.vid
+      );
 
       engine.setScene(scene.vid);
+
+      const reactData = engine.getConfigBySymbol(splineCurveGeometry.vid);
+      window.reactData = reactData;
     </script>
   </body>
 </html>

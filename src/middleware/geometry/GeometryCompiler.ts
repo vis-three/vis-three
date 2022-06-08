@@ -21,6 +21,7 @@ import {
   BoxGeometryConfig,
   CircleGeometryConfig,
   ConeGeometryConfig,
+  CubicBezierCurveGeometryConfig,
   CylinderGeometryConfig,
   EdgesGeometryConfig,
   GeometryAllType,
@@ -28,6 +29,7 @@ import {
   LineCurveGeometryConfig,
   LoadGeometryConfig,
   PlaneGeometryConfig,
+  QuadraticBezierCurveGeometryConfig,
   SphereGeometryConfig,
   SplineCurveGeometryConfig,
 } from "./GeometryConfig";
@@ -36,6 +38,8 @@ import { EngineSupport } from "../../main";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { LineCurveGeometry } from "../../extends/geometry/LineCurveGeometry";
 import { SplineCurveGeometry } from "../../extends/geometry/SplineCurveGeometry";
+import { CubicBezierCurveGeometry } from "../../extends/geometry/CubicBezierCurveGeometry";
+import { QuadraticBezierCurveGeometry } from "../../extends/geometry/QuadraticBezierCurveGeometry";
 
 export interface GeometryCompilerTarget extends CompilerTarget {
   [key: string]: GeometryAllType;
@@ -228,6 +232,37 @@ export class GeometryCompiler extends Compiler {
       }
     );
 
+    constructMap.set(
+      CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY,
+      (config: CubicBezierCurveGeometryConfig) => {
+        return GeometryCompiler.transfromAnchor(
+          new CubicBezierCurveGeometry(
+            config.path.map(
+              (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
+            ),
+            config.divisions,
+            config.space
+          ),
+          config
+        );
+      }
+    );
+
+    constructMap.set(
+      CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY,
+      (config: QuadraticBezierCurveGeometryConfig) => {
+        return GeometryCompiler.transfromAnchor(
+          new QuadraticBezierCurveGeometry(
+            config.path.map(
+              (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
+            ),
+            config.divisions,
+            config.space
+          ),
+          config
+        );
+      }
+    );
     this.constructMap = constructMap;
   }
 
@@ -280,7 +315,9 @@ export class GeometryCompiler extends Compiler {
   add(vid: string, config: GeometryAllType): this {
     if (config.type && this.constructMap.has(config.type)) {
       const geometry = this.constructMap.get(config.type)!(config);
+
       geometry.clearGroups();
+
       for (const group of config.groups) {
         geometry.addGroup(group.start, group.count, group.materialIndex);
       }

@@ -15,6 +15,8 @@ import {
   getEdgesGeometryConfig,
   getLineCurveGeometryConfig,
   getSplineCurveGeometryConfig,
+  getCubicBezierCurveGeometryConfig,
+  getQuadraticBezierCurveGeometryConfig,
 } from "../geometry/GeometryConfig";
 import {
   getCanvasTextureConfig,
@@ -90,6 +92,9 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.EDGESGEOMETRY]: getEdgesGeometryConfig,
   [CONFIGTYPE.LINECURVEGEOMETRY]: getLineCurveGeometryConfig,
   [CONFIGTYPE.SPLINECURVEGEOMETRY]: getSplineCurveGeometryConfig,
+  [CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY]: getCubicBezierCurveGeometryConfig,
+  [CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY]:
+    getQuadraticBezierCurveGeometryConfig,
 
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,

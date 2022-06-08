@@ -102,6 +102,28 @@ export interface LineCurveGeometryConfig extends CurveGeometryConfig {}
 
 export interface SplineCurveGeometryConfig extends CurveGeometryConfig {}
 
+export interface CubicBezierCurveGeometryConfig extends CurveGeometryConfig {}
+
+export interface QuadraticBezierCurveGeometryConfig
+  extends CurveGeometryConfig {}
+
+export type GeometryAllType =
+  | BoxGeometryConfig
+  | SphereGeometryConfig
+  | PlaneGeometryConfig
+  | LoadGeometryConfig
+  | CircleGeometryConfig
+  | ConeGeometryConfig
+  | CylinderGeometryConfig
+  | DodecahedronGeometryConfig
+  | EdgesGeometryConfig
+  | LineCurveGeometryConfig
+  | SplineCurveGeometryConfig
+  | CubicBezierCurveGeometryConfig
+  | QuadraticBezierCurveGeometryConfig;
+
+// config function
+
 export const getGeometryConfig = function (): GeometryConfig {
   return {
     vid: "",
@@ -242,15 +264,16 @@ export const getSplineCurveGeometryConfig =
     });
   };
 
-export type GeometryAllType =
-  | BoxGeometryConfig
-  | SphereGeometryConfig
-  | PlaneGeometryConfig
-  | LoadGeometryConfig
-  | CircleGeometryConfig
-  | ConeGeometryConfig
-  | CylinderGeometryConfig
-  | DodecahedronGeometryConfig
-  | EdgesGeometryConfig
-  | LineCurveGeometryConfig
-  | SplineCurveGeometryConfig;
+export const getCubicBezierCurveGeometryConfig =
+  function (): CubicBezierCurveGeometryConfig {
+    return Object.assign(getCurveGeometryConfig(), {
+      type: CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY,
+    });
+  };
+
+export const getQuadraticBezierCurveGeometryConfig =
+  function (): QuadraticBezierCurveGeometryConfig {
+    return Object.assign(getCurveGeometryConfig(), {
+      type: CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY,
+    });
+  };

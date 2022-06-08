@@ -11,6 +11,7 @@ export const GeometryRule: Rule<GeometryCompiler> = function (
 
   const vid = path.length ? path[0] : key;
   const attribute = path.length >= 2 ? path[1] : key;
+  const tempPath = path.length ? path.concat([]).slice(1) : [];
 
   if (operate === "add") {
     if (validate(vid)) {
@@ -23,7 +24,12 @@ export const GeometryRule: Rule<GeometryCompiler> = function (
           return;
         }
       }
-      compiler.add(vid, value);
+
+      if (tempPath.length > 0) {
+        compiler.set(vid, tempPath, value);
+      } else {
+        compiler.add(vid, value);
+      }
     } else {
       console.warn(`geometry rule vid is illeage: '${key}'`);
     }
@@ -31,7 +37,6 @@ export const GeometryRule: Rule<GeometryCompiler> = function (
   }
 
   if (operate === "set") {
-    const tempPath = path.length ? path.concat([]).slice(1) : [];
     if (vid && validate(vid)) {
       if (attribute === "groups") {
         const index = Number(path[2] || key);
