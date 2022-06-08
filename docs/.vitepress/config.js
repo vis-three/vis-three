@@ -1,9 +1,13 @@
-export default {
-  base: "/vis-three/",
+import pkg from "../../package.json";
+import { defineConfig } from "vitepress";
+import path from "path";
+
+export default defineConfig({
+  base: "/vis-three/docs",
   lang: "zh-cn",
   title: "VIS-THREE",
   description: "more convenient development for three.js",
-  dest: "./dist",
+  outDir: path.resolve(__dirname, "../../website/public/docs"),
   head: [["link", { rel: "icon", href: "/favicon.ico" }]],
   themeConfig: {
     nav: [
@@ -49,13 +53,11 @@ export default {
         { text: "version0.1.13", link: "/version/version0-1-13" },
       ],
     },
-    repo: "https://github.com/Shiotsukikaedesari/vis-three",
+    repo: pkg.repository,
     repoLabel: "github",
 
     docsDir: "docs",
     editLinkText: "编辑此页面",
     editLinks: true,
-
-    lastUpdated: "上次更新",
   },
-};
+});
