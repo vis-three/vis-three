@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, Matrix4, Euler, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, Euler, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Matrix4, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -3129,7 +3129,6 @@ var CONFIGTYPE;
   CONFIGTYPE2["QUADRATICBEZIERCURVEGEOMETRY"] = "QuadraticBezierCurveGeometry";
   CONFIGTYPE2["MESH"] = "Mesh";
   CONFIGTYPE2["LINE"] = "Line";
-  CONFIGTYPE2["LINESEGMENTS"] = "LineSegments";
   CONFIGTYPE2["POINTS"] = "Points";
   CONFIGTYPE2["SPRITE"] = "Sprite";
   CONFIGTYPE2["GROUP"] = "Group";
@@ -3147,7 +3146,6 @@ var CONFIGTYPE;
   CONFIGTYPE2["LINEBASICMATERIAL"] = "LineBasicMaterial";
   CONFIGTYPE2["POINTSMATERIAL"] = "PointsMaterial";
   CONFIGTYPE2["SHADERMATERIAL"] = "ShaderMaterial";
-  CONFIGTYPE2["RAWSHADERMATERIAL"] = "RawShaderMaterial";
   CONFIGTYPE2["AMBIENTLIGHT"] = "AmbientLight";
   CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
   CONFIGTYPE2["POINTLIGHT"] = "PointLight";
@@ -3344,6 +3342,13 @@ const getCylinderGeometryConfig = function() {
     openEnded: false,
     thetaStart: 0,
     thetaLength: Math.PI * 2
+  });
+};
+const getDodecahedronGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: "",
+    radius: 3,
+    detail: 0
   });
 };
 const getEdgesGeometryConfig = function() {
@@ -3647,6 +3652,12 @@ const getWebGLRendererConfig = function() {
     scissor: null
   });
 };
+const getCSS3DRenderereConfig = function() {
+  return Object.assign(getRendererConfig(), {
+    vid: CONFIGTYPE.CSS3DRENDERER,
+    type: CONFIGTYPE.CSS3DRENDERER
+  });
+};
 const getSceneConfig = function() {
   return Object.assign(getObjectConfig(), {
     vid: CONFIGTYPE.SCENE,
@@ -3703,7 +3714,8 @@ const getOrbitControlsConfig = function() {
     panSpeed: 1,
     rotateSpeed: 1,
     zoomSpeed: 1,
-    screenSpacePanning: true
+    screenSpacePanning: true,
+    target: void 0
   };
 };
 const getSolidObjectConfig = function() {
@@ -3832,6 +3844,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.SPLINECURVEGEOMETRY]: getSplineCurveGeometryConfig,
   [CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY]: getCubicBezierCurveGeometryConfig,
   [CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY]: getQuadraticBezierCurveGeometryConfig,
+  [CONFIGTYPE.DODECAHEDRONGEOMETRY]: getDodecahedronGeometryConfig,
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,
   [CONFIGTYPE.MESH]: getMeshConfig,
@@ -3843,6 +3856,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
   [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
   [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,
+  [CONFIGTYPE.CSS3DRENDERER]: getCSS3DRenderereConfig,
   [CONFIGTYPE.SCENE]: getSceneConfig,
   [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig,
   [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig,
@@ -3851,71 +3865,6 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.SCRIPTANIMATION]: getScriptAnimationConfig,
   [CONFIGTYPE.KEYFRAMEANIMATION]: getKeyframeAnimationConfig
 };
-const generateConfig = function(type, merge, strict = true, warn = true) {
-  if (CONFIGFACTORY[type]) {
-    const recursion = (config2, merge2) => {
-      for (const key in merge2) {
-        if (config2[key] === void 0) {
-          !strict && (config2[key] = merge2[key]);
-          strict && warn && console.warn(`'${type}' config can not set key: ${key}`);
-          continue;
-        }
-        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
-          recursion(config2[key], merge2[key]);
-        } else {
-          config2[key] = merge2[key];
-        }
-      }
-    };
-    const initConfig = CONFIGFACTORY[type]();
-    if ([CONFIGTYPE.SHADERMATERIAL, CONFIGTYPE.RAWSHADERMATERIAL].includes(type)) {
-      const shaderConfig = ShaderLibrary.generateConfig((merge == null ? void 0 : merge.shader) || "defaultShader");
-      const cacheStrict = strict;
-      strict = false;
-      recursion(initConfig, shaderConfig);
-      strict = cacheStrict;
-    }
-    if ([CONFIGTYPE.SCRIPTANIMATION, CONFIGTYPE.KEYFRAMEANIMATION].includes(type)) {
-      strict = false;
-    }
-    if (initConfig.vid === "") {
-      initConfig.vid = v4();
-    }
-    merge && recursion(initConfig, merge);
-    return initConfig;
-  } else {
-    console.error(`type: ${type} can not be found in configList.`);
-    return null;
-  }
-};
-const stringify = (key, value) => {
-  if (value === Infinity) {
-    return "Infinity";
-  }
-  if (value === -Infinity) {
-    return "-Infinity";
-  }
-  return value;
-};
-const parse = (key, value) => {
-  if (value === "Infinity") {
-    return Infinity;
-  }
-  if (value === "-Infinity") {
-    return -Infinity;
-  }
-  return value;
-};
-const clone = (object) => {
-  return JSON.parse(JSON.stringify(object, stringify), parse);
-};
-var JSONHandler = /* @__PURE__ */ Object.freeze({
-  __proto__: null,
-  [Symbol.toStringTag]: "Module",
-  stringify,
-  parse,
-  clone
-});
 var MODULETYPE;
 (function(MODULETYPE2) {
   MODULETYPE2["CAMERA"] = "camera";
@@ -3996,6 +3945,97 @@ const CONFIGMODULE = {
   [CONFIGTYPE.SCRIPTANIMATION]: MODULETYPE.ANIMATION,
   [CONFIGTYPE.KEYFRAMEANIMATION]: MODULETYPE.ANIMATION
 };
+const generateConfig = function(type, merge, strict = true, warn = true) {
+  if (!CONFIGFACTORY[type]) {
+    console.error(`type: ${type} can not be found in configList.`);
+    return {
+      vid: "",
+      type
+    };
+  }
+  const recursion = (config2, merge2) => {
+    for (const key in merge2) {
+      if (config2[key] === void 0) {
+        !strict && (config2[key] = merge2[key]);
+        strict && warn && console.warn(`'${type}' config can not set key: ${key}`);
+        continue;
+      }
+      if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
+        recursion(config2[key], merge2[key]);
+      } else {
+        config2[key] = merge2[key];
+      }
+    }
+  };
+  const initConfig = CONFIGFACTORY[type]();
+  if ([
+    CONFIGTYPE.SHADERMATERIAL
+  ].includes(type)) {
+    const shaderConfig = ShaderLibrary.generateConfig((merge == null ? void 0 : merge.shader) || "defaultShader");
+    const cacheStrict = strict;
+    strict = false;
+    recursion(initConfig, shaderConfig);
+    strict = cacheStrict;
+  }
+  if ([CONFIGTYPE.SCRIPTANIMATION, CONFIGTYPE.KEYFRAMEANIMATION].includes(type)) {
+    strict = false;
+  }
+  if (initConfig.vid === "") {
+    initConfig.vid = v4();
+  }
+  merge && recursion(initConfig, merge);
+  if (generateConfig.autoInject && generateConfig.injectEngine) {
+    const engine = generateConfig.injectEngine;
+    engine.applyConfig(initConfig);
+    if (generateConfig.injectScene) {
+      if (CONFIGMODULE[initConfig.type] in OBJECTMODULE && initConfig.type !== CONFIGTYPE.SCENE) {
+        let sceneConfig = null;
+        if (typeof generateConfig.injectScene === "boolean") {
+          sceneConfig = engine.getObjectConfig(engine.scene);
+        } else if (typeof generateConfig.injectScene === "string") {
+          sceneConfig = engine.getConfigBySymbol(generateConfig.injectScene);
+        }
+        if (!sceneConfig) {
+          console.warn(`current engine scene can not found it config`, engine, engine.scene);
+        } else {
+          sceneConfig.children.push(initConfig.vid);
+        }
+      }
+    }
+  }
+  return initConfig;
+};
+generateConfig.autoInject = true;
+generateConfig.injectScene = false;
+generateConfig.injectEngine = null;
+const stringify = (key, value) => {
+  if (value === Infinity) {
+    return "Infinity";
+  }
+  if (value === -Infinity) {
+    return "-Infinity";
+  }
+  return value;
+};
+const parse = (key, value) => {
+  if (value === "Infinity") {
+    return Infinity;
+  }
+  if (value === "-Infinity") {
+    return -Infinity;
+  }
+  return value;
+};
+const clone = (object) => {
+  return JSON.parse(JSON.stringify(object, stringify), parse);
+};
+var JSONHandler = /* @__PURE__ */ Object.freeze({
+  __proto__: null,
+  [Symbol.toStringTag]: "Module",
+  stringify,
+  parse,
+  clone
+});
 var RESOURCEEVENTTYPE;
 (function(RESOURCEEVENTTYPE2) {
   RESOURCEEVENTTYPE2["MAPPED"] = "mapped";
@@ -4157,6 +4197,8 @@ class ResourceManager extends EventDispatcher {
         return resourceHanlder(url, object, Object.getPrototypeOf(prototype));
       }
     };
+    const cacheAutoInject = generateConfig.autoInject;
+    generateConfig.autoInject = false;
     const resourceConfig = {};
     loadResourceMap.forEach((resource, url) => {
       if (!resourceHanlder(url, resource, resource)) {
@@ -4167,6 +4209,7 @@ class ResourceManager extends EventDispatcher {
         resourceConfig[url] = this.getResourceConfig(url);
       }
     });
+    generateConfig.autoInject = cacheAutoInject;
     this.dispatchEvent({
       type: "mapped",
       structureMap,
@@ -6124,10 +6167,20 @@ var TIMINGFUNCTION;
 (function(TIMINGFUNCTION2) {
   TIMINGFUNCTION2["ELN"] = "ELN";
   TIMINGFUNCTION2["EQI"] = "EQI";
+  TIMINGFUNCTION2["EQO"] = "EQO";
+  TIMINGFUNCTION2["EASING_LINEAR_NONE"] = "EASING_LINEAR_NONE";
+  TIMINGFUNCTION2["EASING_QUARTIC_IN"] = "EASING_QUARTIC_IN";
+  TIMINGFUNCTION2["EASING_QUARTIC_OUT"] = "EASING_QUARTIC_OUT";
+  TIMINGFUNCTION2["EASING_QUARTIC_INOUT"] = "EASING_QUARTIC_INOUT";
 })(TIMINGFUNCTION || (TIMINGFUNCTION = {}));
 const timingFunction = {
   ELN: Easing.Linear.None,
-  EQI: Easing.Quadratic.InOut
+  EQI: Easing.Quartic.In,
+  EQO: Easing.Quartic.Out,
+  EASING_LINEAR_NONE: Easing.Linear.None,
+  EASING_QUARTIC_IN: Easing.Quartic.In,
+  EASING_QUARTIC_OUT: Easing.Quartic.Out,
+  EASING_QUARTIC_INOUT: Easing.Quartic.InOut
 };
 const config$4 = {
   name: "moveTo",
@@ -6140,7 +6193,7 @@ const config$4 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EQI
+    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN
   }
 };
 const generator$4 = function(engine, config2) {
@@ -6184,7 +6237,7 @@ const config$3 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EQI
+    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN
   }
 };
 const generator$3 = function(engine, config2) {
@@ -6229,7 +6282,7 @@ const config$2 = {
     delay: 0,
     duration: 500,
     to: {},
-    timingFunction: TIMINGFUNCTION.EQI
+    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN
   }
 };
 const generator$2 = function(engine, config2) {
@@ -6302,7 +6355,7 @@ const config$1 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EQI,
+    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN,
     back: true
   }
 };
@@ -6429,7 +6482,7 @@ const config = {
     direction: "out",
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EQI,
+    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN,
     visible: false
   }
 };
@@ -7035,10 +7088,12 @@ class OrbitControlsProcessor extends Processor {
     super();
     __publicField(this, "config");
     __publicField(this, "target");
+    __publicField(this, "engine");
   }
   assemble(params) {
     this.config = params.config;
     this.target = params.control;
+    this.engine = params.engine;
     this.assembly = true;
     return this;
   }
@@ -7047,8 +7102,15 @@ class OrbitControlsProcessor extends Processor {
       console.warn(`OrbitControls Processor unassembled`);
       return this;
     }
+    if (params.key === "target" || params.path.length && params.path[0] === "target") {
+      this.setTarget(this.config.target);
+      return this;
+    }
     this.mergeAttribute([], params.key, params.value);
     return this;
+  }
+  setTarget(target) {
+    console.log(target);
   }
   dispose() {
     this.config = void 0;
@@ -7116,6 +7178,7 @@ class ControlsCompiler extends Compiler {
     __publicField(this, "target", {});
     __publicField(this, "map", new Map());
     __publicField(this, "weakMap", new Map());
+    __publicField(this, "engine");
     __publicField(this, "processorMap", {
       [CONFIGTYPE.TRNASFORMCONTROLS]: new TransformControlsProcessor(),
       [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor()
@@ -7150,7 +7213,8 @@ class ControlsCompiler extends Compiler {
     }
     assembly.processer.assemble({
       config: assembly.config,
-      control: assembly.control
+      control: assembly.control,
+      engine: this.engine
     }).process({
       key,
       path,
@@ -7165,7 +7229,8 @@ class ControlsCompiler extends Compiler {
     }
     assembly.processer.assemble({
       config: assembly.config,
-      control: assembly.control
+      control: assembly.control,
+      engine: this.engine
     }).processAll().dispose();
     return this;
   }
@@ -7182,6 +7247,7 @@ class ControlsCompiler extends Compiler {
       this.map.set(CONFIGTYPE.ORBITCONTROLS, engine.orbitControls);
       this.weakMap.set(engine.orbitControls, CONFIGTYPE.ORBITCONTROLS);
     }
+    this.engine = engine;
     return this;
   }
   compileAll() {
@@ -7192,7 +7258,8 @@ class ControlsCompiler extends Compiler {
       }
       assembly.processer.assemble({
         config: assembly.config,
-        control: assembly.control
+        control: assembly.control,
+        engine: this.engine
       }).processAll().dispose();
     }
     return this;
@@ -7558,17 +7625,17 @@ const _GeometryCompiler = class extends Compiler {
 let GeometryCompiler = _GeometryCompiler;
 __publicField(GeometryCompiler, "transfromAnchor", function(geometry, config2) {
   geometry.center();
-  !geometry.boundingBox && geometry.computeBoundingBox();
+  geometry.computeBoundingBox();
   const box = geometry.boundingBox;
   const position = config2.position;
   const rotation = config2.rotation;
   const scale = config2.scale;
-  const materix = new Matrix4();
-  const vPostion = new Vector3((box.max.x - box.min.x) / 2 * position.x, (box.max.y - box.min.y) / 2 * position.y, (box.max.z - box.min.z) / 2 * position.z);
   const quaternion = new Quaternion().setFromEuler(new Euler(rotation.x, rotation.y, rotation.z, "XYZ"));
-  const vScale = new Vector3(scale.x, scale.y, scale.z);
-  materix.compose(vPostion, quaternion, vScale);
-  geometry.applyMatrix4(materix);
+  geometry.applyQuaternion(quaternion);
+  geometry.scale(scale.x, scale.y, scale.z);
+  geometry.center();
+  geometry.computeBoundingBox();
+  geometry.translate((box.max.x - box.min.x) / 2 * position.x, (box.max.y - box.min.y) / 2 * position.y, (box.max.z - box.min.z) / 2 * position.z);
   return geometry;
 });
 class GroupCompiler extends ObjectCompiler {

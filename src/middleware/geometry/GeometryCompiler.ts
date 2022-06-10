@@ -52,24 +52,32 @@ export class GeometryCompiler extends Compiler {
     config: GeometryAllType
   ): BufferGeometry {
     geometry.center();
-    !geometry.boundingBox && geometry.computeBoundingBox();
+    geometry.computeBoundingBox();
+
     const box: Box3 = geometry.boundingBox!;
     const position = config.position;
     const rotation = config.rotation;
     const scale = config.scale;
-    const materix = new Matrix4();
-    const vPostion = new Vector3(
+
+    // 先应用旋转缩放
+    const quaternion = new Quaternion().setFromEuler(
+      new Euler(rotation.x, rotation.y, rotation.z, "XYZ")
+    );
+
+    // 再应用缩放
+    geometry.applyQuaternion(quaternion);
+    geometry.scale(scale.x, scale.y, scale.z);
+
+    // 计算位置
+    geometry.center();
+    geometry.computeBoundingBox();
+
+    // 根据旋转缩放运算位置
+    geometry.translate(
       ((box.max.x - box.min.x) / 2) * position.x,
       ((box.max.y - box.min.y) / 2) * position.y,
       ((box.max.z - box.min.z) / 2) * position.z
     );
-    const quaternion = new Quaternion().setFromEuler(
-      new Euler(rotation.x, rotation.y, rotation.z, "XYZ")
-    );
-    const vScale = new Vector3(scale.x, scale.y, scale.z);
-
-    materix.compose(vPostion, quaternion, vScale);
-    geometry.applyMatrix4(materix);
     return geometry;
   };
 

@@ -17,6 +17,7 @@ import {
   getSplineCurveGeometryConfig,
   getCubicBezierCurveGeometryConfig,
   getQuadraticBezierCurveGeometryConfig,
+  getDodecahedronGeometryConfig,
 } from "../geometry/GeometryConfig";
 import {
   getCanvasTextureConfig,
@@ -37,7 +38,10 @@ import {
   getOrthographicCameraConfig,
   getPerspectiveCameraConfig,
 } from "../camera/CameraConfig";
-import { getWebGLRendererConfig } from "../renderer/RendererConfig";
+import {
+  getCSS3DRenderereConfig,
+  getWebGLRendererConfig,
+} from "../renderer/RendererConfig";
 import { getSceneConfig } from "../scene/SceneConfig";
 import {
   getOrbitControlsConfig,
@@ -95,6 +99,7 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY]: getCubicBezierCurveGeometryConfig,
   [CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY]:
     getQuadraticBezierCurveGeometryConfig,
+  [CONFIGTYPE.DODECAHEDRONGEOMETRY]: getDodecahedronGeometryConfig,
 
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,
@@ -109,6 +114,7 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
 
   [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,
+  [CONFIGTYPE.CSS3DRENDERER]: getCSS3DRenderereConfig,
 
   [CONFIGTYPE.SCENE]: getSceneConfig,
 

@@ -1,4 +1,4 @@
-import { SymbolConfig } from "../common/CommonConfig";
+import { SymbolConfig, Vector3Config } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
 
 export type ControlsConfig = SymbolConfig;
@@ -43,6 +43,7 @@ export interface OrbitControlsConfig extends ControlsConfig {
   rotateSpeed: number;
   zoomSpeed: number;
   screenSpacePanning: boolean;
+  target: string | Vector3Config | undefined;
 }
 
 export type ControlsAllConfig = TransformControlsConfig | OrbitControlsConfig;
@@ -94,5 +95,6 @@ export const getOrbitControlsConfig = function (): OrbitControlsConfig {
     rotateSpeed: 1,
     zoomSpeed: 1,
     screenSpacePanning: true,
+    target: undefined,
   };
 };

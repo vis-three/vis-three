@@ -5,7 +5,7 @@ import {
   DataSupportManagerParameters,
   LoadOptions,
 } from "../manager/DataSupportManager";
-import { LoaderManager } from "../manager/LoaderManager";
+import { LoadedEvent, LoaderManager } from "../manager/LoaderManager";
 import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
@@ -27,6 +27,7 @@ export class EngineSupport extends Engine {
 
   declare loadResources: (urlList: Array<string>) => this;
   declare registerResources: (resourceMap: { [key: string]: unknown }) => this;
+  declare loadResourcesAsync: (urlList: Array<string>) => Promise<MappedEvent>;
   declare toJSON: () => string;
 
   declare exportConfig: (compress: boolean) => LoadOptions;
@@ -177,7 +178,7 @@ export class EngineSupport extends Engine {
     this.removeLifeCycle(config);
   }
 
-  getObjectConfig(object: any): SymbolConfig | null {
+  getObjectConfig<O, C extends SymbolConfig>(object: O): C | null {
     const symbol = this.getObjectSymbol(object);
 
     if (symbol) {

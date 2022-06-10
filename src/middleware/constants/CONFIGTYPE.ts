@@ -18,7 +18,7 @@ export enum CONFIGTYPE {
 
   MESH = "Mesh",
   LINE = "Line",
-  LINESEGMENTS = "LineSegments",
+  // LINESEGMENTS = "LineSegments",
   POINTS = "Points",
   SPRITE = "Sprite",
   GROUP = "Group",
@@ -38,7 +38,7 @@ export enum CONFIGTYPE {
   LINEBASICMATERIAL = "LineBasicMaterial",
   POINTSMATERIAL = "PointsMaterial",
   SHADERMATERIAL = "ShaderMaterial",
-  RAWSHADERMATERIAL = "RawShaderMaterial",
+  // RAWSHADERMATERIAL = "RawShaderMaterial",
 
   AMBIENTLIGHT = "AmbientLight",
   SPOTLIGHT = "SpotLight",

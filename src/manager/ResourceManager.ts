@@ -75,7 +75,7 @@ export class ResourceManager extends EventDispatcher {
 
       resourceMap.set(mappingUrl, object);
       const objectConfig = generateConfig(
-        object.type,
+        object.type as CONFIGTYPE,
         object,
         true,
         false
@@ -123,7 +123,7 @@ export class ResourceManager extends EventDispatcher {
             resourceMap.set(mappingUrl, materialChild);
             // 生成配置单
             const materialConfig = generateConfig(
-              materialChild.type,
+              materialChild.type as CONFIGTYPE,
               materialChild,
               true,
               false
@@ -139,7 +139,7 @@ export class ResourceManager extends EventDispatcher {
           resourceMap.set(mappingUrl, material);
           // 生成配置单
           const materialConfig = generateConfig(
-            material.type,
+            material.type as CONFIGTYPE,
             material,
             true,
             false
@@ -289,6 +289,11 @@ export class ResourceManager extends EventDispatcher {
       }
     };
 
+    // 关闭自动注入先，因为resource需要通过generateConfig生成一般配置
+    const cacheAutoInject = generateConfig.autoInject;
+
+    generateConfig.autoInject = false;
+
     const resourceConfig: { [key: string]: LoadOptions } = {};
     loadResourceMap.forEach((resource, url) => {
       // 图片贴图
@@ -303,6 +308,8 @@ export class ResourceManager extends EventDispatcher {
         resourceConfig[url] = this.getResourceConfig(url);
       }
     });
+
+    generateConfig.autoInject = cacheAutoInject;
 
     this.dispatchEvent({
       type: "mapped",
