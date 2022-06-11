@@ -6,6 +6,7 @@ import {
   DisplayEngineSupport,
 } from "@vis-three";
 import { ReinhardToneMapping } from "three";
+import np from "nprogress";
 
 const dev = false;
 
@@ -201,4 +202,6 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
   engine.setScene(scene.vid);
   engine.setCamera(camera.vid);
   console.log(engine);
+
+  np.done();
 })();
