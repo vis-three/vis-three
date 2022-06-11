@@ -2,9 +2,7 @@ import { LinearEncoding, NoToneMapping, PCFShadowMap } from "three";
 import { SymbolConfig, Vector2Config } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
 
-// TODO: scene
 export interface RendererConfig extends SymbolConfig {
-  // scene: string;
   size: Vector2Config | null; // 为null 默认跟随canves
 }
 
@@ -45,7 +43,6 @@ export const getRendererConfig = function (): RendererConfig {
   return {
     vid: "",
     type: "Renderer",
-    // scene: "",
     size: null,
   };
 };

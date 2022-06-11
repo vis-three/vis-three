@@ -167,6 +167,7 @@ export class VisTransformControls extends TransformControls {
       target.updateMatrixWorld();
 
       this.transObjectSet.add(currentObject);
+
       return this;
     }
 

@@ -9,11 +9,14 @@ import { CONFIGTYPE } from "../middleware/constants/configType";
 import { OBJECTMODULE } from "../middleware/constants/MODULETYPE";
 import { ShaderMaterialConfig } from "../middleware/material/MaterialConfig";
 import { SceneConfig } from "../middleware/scene/SceneConfig";
+import { DeepPartial } from "../utils/utils";
 
 export interface GenerateConfig {
   (
     type: CONFIGTYPE,
-    merge?: Partial<ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>> | undefined,
+    merge?:
+      | DeepPartial<ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>>
+      | undefined,
     strict?: boolean,
     warn?: boolean
   ): ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>;
@@ -56,6 +59,9 @@ export const generateConfig = <GenerateConfig>(
           merge[key] !== null &&
           !Array.isArray(merge[key])
         ) {
+          if (config[key] === null) {
+            config[key] = { ...merge[key] };
+          }
           recursion(config[key], merge[key]);
         } else {
           config[key] = merge[key];

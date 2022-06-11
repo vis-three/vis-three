@@ -1,3 +1,4 @@
+import { Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Process, Processor } from "../../core/Processor";
 import { EngineSupport } from "../../engine/EngineSupport";
@@ -44,8 +45,10 @@ export class OrbitControlsProcessor extends Processor {
     return this;
   }
 
-  setTarget(target: Vector3Config | string | undefined) {
-    console.log(target);
+  setTarget(target: Vector3Config | string | null) {
+    if (typeof target === "object" && target !== null) {
+      this.target!.target = new Vector3(target.x, target.y, target.z);
+    }
   }
 
   dispose(): this {

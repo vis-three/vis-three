@@ -43,7 +43,7 @@ export interface OrbitControlsConfig extends ControlsConfig {
   rotateSpeed: number;
   zoomSpeed: number;
   screenSpacePanning: boolean;
-  target: string | Vector3Config | undefined;
+  target: string | Vector3Config | null;
 }
 
 export type ControlsAllConfig = TransformControlsConfig | OrbitControlsConfig;
@@ -95,6 +95,6 @@ export const getOrbitControlsConfig = function (): OrbitControlsConfig {
     rotateSpeed: 1,
     zoomSpeed: 1,
     screenSpacePanning: true,
-    target: undefined,
+    target: null,
   };
 };

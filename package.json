@@ -4,7 +4,7 @@
   "main": "dist/Vis.umd.js",
   "module": "dist/Vis.es.js",
   "types": "types/main.d.ts",
-  "license": "MIT",
+  "license": "MPL-2.0",
   "author": "Shiotsuki_",
   "repository": "https://github.com/Shiotsukikaedesari/vis-three",
   "scripts": {
@@ -17,7 +17,7 @@
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs",
     "website:dev": "vite serve ./website -c ./utils/build/vite-webside.config.js",
-    "website:build": "vue-tsc --noEmit && vite build -c ./utils/build/vite-webside.config.js",
+    "website:build": "vite build -c ./utils/build/vite-webside.config.js",
     "website:lint": "npx eslint ./website/src/**/*.vue --fix"
   },
   "devDependencies": {
@@ -33,6 +33,7 @@
     "eslint-plugin-vue": "^9.1.0",
     "less": "^4.1.2",
     "prettier": "^2.6.2",
+    "rollup-plugin-visualizer": "^5.6.0",
     "three": "^0.134.0",
     "typescript": "^4.3.2",
     "vite": "^2.6.4",

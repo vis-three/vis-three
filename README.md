@@ -4,7 +4,7 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 <p>
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Version-0.1.3-{}" alt="Version"></a>
-  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MIT-{}" alt="License"></a>
+  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MPL2.0-{}" alt="License"></a>
 </p>
 
 ## 安装

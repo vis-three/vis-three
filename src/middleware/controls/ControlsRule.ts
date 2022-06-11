@@ -8,6 +8,7 @@ export const ControlsRule: Rule<ControlsCompiler> = function (
   compiler: ControlsCompiler
 ) {
   const { operate, key, path, value } = input;
+
   if (operate === "set") {
     const tempPath = path.concat([]);
     const vid = tempPath.shift();
