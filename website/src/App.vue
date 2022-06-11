@@ -29,6 +29,8 @@ export default defineComponent({
     onMounted(() => {
       engine.setDom(renderWindow.value!).setSize().play();
 
+      engine.setSize();
+
       window.addEventListener("resize", () => {
         engine.setSize();
       });
@@ -106,5 +108,15 @@ export default defineComponent({
 .three {
   width: 100%;
   height: 100%;
+}
+
+@media screen and (max-width: 768px) and (min-width: 0px) {
+  .title {
+    font-size: 52px;
+  }
+
+  .split-line {
+    width: 80vw;
+  }
 }
 </style>
