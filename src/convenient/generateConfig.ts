@@ -13,7 +13,7 @@ import { DeepPartial } from "../utils/utils";
 
 export interface GenerateConfig {
   (
-    type: CONFIGTYPE,
+    type: CONFIGTYPE | string,
     merge?:
       | DeepPartial<ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>>
       | undefined,
@@ -36,7 +36,7 @@ export interface C extends SymbolConfig {}
  * @returns config object
  */
 export const generateConfig = <GenerateConfig>(
-  function (type: CONFIGTYPE, merge?, strict = true, warn = true): C {
+  function (type: CONFIGTYPE | string, merge?, strict = true, warn = true): C {
     if (!CONFIGFACTORY[type]) {
       console.error(`type: ${type} can not be found in configList.`);
       return {

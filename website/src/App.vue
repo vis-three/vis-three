@@ -11,6 +11,13 @@
         <a-button type="link" size="large" @click="jump(docs)">
           示例（demo）
         </a-button>
+        <a-button type="link" size="large" @click="jump(github)">
+          <template #icon>
+            <github-outlined></github-outlined>
+          </template>
+          github
+        </a-button>
+        <a-button type="link" size="large" @click="jump(gitee)">gitee</a-button>
       </div>
     </div>
 
@@ -28,7 +35,7 @@ export default defineComponent({
     const renderWindow = ref<HTMLDivElement>();
 
     const jump = (url: string) => {
-      window.open(url);
+      window.location.href = url;
     };
 
     onMounted(() => {
@@ -46,6 +53,8 @@ export default defineComponent({
     return {
       jump,
       docs: "/vis-three/docs/index.html",
+      github: "https://github.com/Shiotsukikaedesari/vis-three",
+      gitee: "https://gitee.com/Shiotsukikaedesari/vis-three",
       renderWindow,
     };
   },

@@ -16,6 +16,10 @@
   display: none;
 }
 
+tr:nth-child(2n) {
+  background-color: #1c1f24;
+}
+
 :root {
   --c-brand: rgb(230, 20, 240);
   --c-brand-light: rgba(230, 20, 240, 0.5);

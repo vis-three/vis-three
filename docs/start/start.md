@@ -8,7 +8,7 @@ npm i vis-three
 
 ```js
 // 整体导入
-import * as Vis from "vis-three";
+import * as VIS from "vis-three";
 
 // 按需导入
 import {
@@ -22,9 +22,33 @@ import {
 
 ### 生成配置
 
+VIS 支持的对象都有相应的基础配置，可以通过统一的 API 获取，并且 VIS 中已经提供了所有支持配置的枚举对象，可以配合编辑器快速查询需要的对象，也可以通过传入对应的`string`进行获取。
+
+```js
+const pointLight = VIS.generateConfig(VIS.CONFIGTYPE.POINTLIGHT, {
+  position: {
+    x: 10,
+    y: 20,
+    z: 20,
+  },
+});
+
+const pointLight = VIS.generateConfig("PointLight", {
+  position: {
+    x: 10,
+    y: 20,
+    z: 20,
+  },
+});
+```
+
+::: info
+
+:::
+
 ```js
 // 基础配置单
-const pointLight = Vis.generateConfig("PointLight", {
+const pointLight = VIS.generateConfig("PointLight", {
   position: {
     x: 10,
     y: 20,
@@ -33,9 +57,9 @@ const pointLight = Vis.generateConfig("PointLight", {
 });
 
 // vis响应式
-const engine = new Vis.ModelingEngineSupport();
+const engine = new VIS.ModelingEngineSupport();
 const pointLight = engine.reactiveConfig(
-  Vis.generateConfig("PointLight", {
+  VIS.generateConfig("PointLight", {
     position: {
       x: 10,
       y: 20,
@@ -45,10 +69,10 @@ const pointLight = engine.reactiveConfig(
 );
 
 // vue2 + vis响应式
-const engine = new Vis.ModelingEngineSupport();
+const engine = new VIS.ModelingEngineSupport();
 const pointLight = engine.reactiveConfig(
   Vue.observable(
-    Vis.generateConfig("PointLight", {
+    VIS.generateConfig("PointLight", {
       position: {
         x: 10,
         y: 20,
@@ -59,10 +83,10 @@ const pointLight = engine.reactiveConfig(
 );
 
 // vue3 + vis响应式
-const engine = new Vis.ModelingEngineSupport();
+const engine = new VIS.ModelingEngineSupport();
 const pointLight = reactive(
   engine.reactiveConfig(
-    Vis.generateConfig("PointLight", {
+    VIS.generateConfig("PointLight", {
       position: {
         x: 10,
         y: 20,
@@ -78,15 +102,15 @@ engine.applyConfig(pointLight);
 
 ```js
 // 动态载入
-const engine = new Vis.ModelingEngineSupport();
+const engine = new VIS.ModelingEngineSupport();
 engine.applyConfig(pointLight);
 
 // 预设加入
-const lightDataSupport = new Vis.LightDataSupport({
+const lightDataSupport = new VIS.LightDataSupport({
   [pointLight.vid]: pointLight,
 });
 
-const engine = new Vis.ModelingEngineSupport({
+const engine = new VIS.ModelingEngineSupport({
   lightDataSupport: lightDataSupport,
 });
 ```
@@ -94,14 +118,14 @@ const engine = new Vis.ModelingEngineSupport({
 ### 使用配置支持模块插件
 
 ```js
-const lightDataSupport = new Vis.LightDataSupport({
+const lightDataSupport = new VIS.LightDataSupport({
   [pointLight.vid]: pointLight,
 });
-const cameraDataSupport = new Vis.CameraDataSupport({
+const cameraDataSupport = new VIS.CameraDataSupport({
   // ...
 });
 
-const engine = new Vis.ModelingEngineSupport({
+const engine = new VIS.ModelingEngineSupport({
   lightDataSupport,
   cameraDataSupport,
 });
@@ -110,7 +134,7 @@ const engine = new Vis.ModelingEngineSupport({
 ### 使用支持相关引擎
 
 ```js
-const engine = new Vis.ModelingEngineSupport({
+const engine = new VIS.ModelingEngineSupport({
   lightDataSupport: lightDataSupport,
 }).setDom(document.getElementById("app"));
 ```
@@ -118,7 +142,7 @@ const engine = new Vis.ModelingEngineSupport({
 ### 指定渲染场景
 
 ```js
-const scene = Vis.generateConfig("Scene", {
+const scene = VIS.generateConfig("Scene", {
   children: [pointLight.vid],
 });
 engine.applyConfig(scene).setScene(scene.vid);
@@ -127,7 +151,7 @@ engine.applyConfig(scene).setScene(scene.vid);
 ### 指定渲染相机
 
 ```js
-const camera = Vis.generateConfig("PerspectiveCamera", {
+const camera = VIS.generateConfig("PerspectiveCamera", {
   position: {
     x: 50,
     y: 50,
@@ -172,9 +196,9 @@ console.log(engineSupport.toJSON());
 ```js
 import config from "/examples/config.json";
 
-const handlerConfig = JSON.parse(JSON.stringify(config), Vis.JSONHandler.parse);
+const handlerConfig = JSON.parse(JSON.stringify(config), VIS.JSONHandler.parse);
 
-const engine = new Vis.ModelingEngineSupport()
+const engine = new VIS.ModelingEngineSupport()
   .setDom(document.getElementById("app"))
   .setSize()
   .play()

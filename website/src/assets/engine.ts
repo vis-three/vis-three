@@ -38,6 +38,7 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
   console.log(loadeMessage);
 
   generateConfig.injectEngine = engine;
+  generateConfig.injectScene = true;
 
   // 引擎配置
   generateConfig(CONFIGTYPE.WEBGLRENDERER, {
@@ -78,7 +79,7 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
     background: envTexture.vid,
   });
 
-  generateConfig.injectScene = scene.vid;
+  engine.setScene(scene.vid);
 
   // 相机
   const camera = generateConfig(CONFIGTYPE.PERSPECTIVECAMERA, {
@@ -207,7 +208,6 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
     }),
   });
 
-  engine.setScene(scene.vid);
   engine.setCamera(camera.vid);
   console.log(engine);
 

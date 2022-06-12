@@ -15,6 +15,10 @@ export default defineConfig({
       { text: "开始", link: "/start/start" },
       { text: "API", link: "/api/engine" },
       { text: "版本", link: "/version/version0-1-13" },
+      {
+        text: "website",
+        link: "https://shiotsukikaedesari.gitee.io/vis-three/",
+      },
     ],
     sidebar: {
       "/start/": [

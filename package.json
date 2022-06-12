@@ -7,6 +7,10 @@
   "license": "MPL-2.0",
   "author": "Shiotsuki_",
   "repository": "https://github.com/Shiotsukikaedesari/vis-three",
+  "homepage": "https://shiotsukikaedesari.gitee.io/vis-three",
+  "bugs": {
+    "url": "https://github.com/Shiotsukikaedesari/vis-three/issues"
+  },
   "scripts": {
     "dev": "vite build --watch -c ./utils/build/vite.config.js",
     "build": "tsc && vite build -c ./utils/build/vite.config.js",
@@ -21,6 +25,7 @@
     "website:lint": "npx eslint ./website/src/**/*.vue --fix"
   },
   "devDependencies": {
+    "@ant-design/icons-vue": "^6.1.0",
     "@types/three": "^0.133.1",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
@@ -57,5 +62,8 @@
     "examples",
     "package.json",
     "LICENSE"
-  ]
+  ],
+  "engines": {
+    "node": ">=14.15.0"
+  }
 }
