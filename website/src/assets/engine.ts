@@ -7,6 +7,7 @@ import {
 } from "@vis-three";
 import { ReinhardToneMapping } from "three";
 import np from "nprogress";
+import { GeometryConfig } from "../../../src/middleware/geometry/GeometryConfig";
 
 const dev = false;
 
@@ -50,9 +51,12 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
   generateConfig(CONFIGTYPE.ORBITCONTROLS, {
     autoRotate: true,
     rotateSpeed: 0.01,
+    enableDamping: true,
+    maxDistance: 200,
+    minDistance: 100,
     enablePan: false,
-    enableZoom: false,
-    enableRotate: false,
+    // enableZoom: false,
+    // enableRotate: false,
   });
 
   // 场景
@@ -78,7 +82,7 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
 
   // 相机
   const camera = generateConfig(CONFIGTYPE.PERSPECTIVECAMERA, {
-    far: 500,
+    far: 10000,
     near: 0.01,
     position: {
       x: 90,
@@ -99,7 +103,7 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
       y: 40,
       z: 20,
     },
-    intensity: 800 * 4 * Math.PI,
+    intensity: 1000 * 4 * Math.PI,
   });
 
   generateConfig(CONFIGTYPE.DIRECTIONALLIGHT, {
@@ -109,7 +113,7 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
       y: 40,
       z: -20,
     },
-    intensity: 800 * 4 * Math.PI,
+    intensity: 1000 * 4 * Math.PI,
   });
 
   // 自定义装配
@@ -119,7 +123,9 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
   const geometry = generateConfig(
     CONFIGTYPE.LOADGEOMETRY,
     Object.assign(
-      Object.values(resourceConfig["/model/three.obj"].geometry!)[0],
+      Object.values(
+        resourceConfig["/model/three.obj"].geometry!
+      )[0] as GeometryConfig,
       {
         rotation: {
           x: Math.PI / 2,
@@ -154,7 +160,9 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
   const visGeometry = generateConfig(
     CONFIGTYPE.LOADGEOMETRY,
     Object.assign(
-      Object.values(resourceConfig["/model/vis.obj"].geometry!)[0],
+      Object.values(
+        resourceConfig["/model/vis.obj"].geometry!
+      )[0] as GeometryConfig,
       {
         scale: {
           x: 6,

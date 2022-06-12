@@ -2,14 +2,19 @@
   <div class="App-container">
     <div class="ui">
       <div class="title">VIS-THREE</div>
+      <div class="intro">more convenient development for three.js</div>
       <div class="split-line"></div>
       <div class="operation">
-        <a-button type="link" @click="jump(docs)" size="large"
-          >文档（docs）</a-button
-        >
+        <a-button type="link" size="large" @click="jump(docs)">
+          文档（docs）
+        </a-button>
+        <a-button type="link" size="large" @click="jump(docs)">
+          示例（demo）
+        </a-button>
       </div>
     </div>
 
+    <div class="mask"></div>
     <div ref="renderWindow" class="three"></div>
   </div>
 </template>
@@ -29,7 +34,9 @@ export default defineComponent({
     onMounted(() => {
       engine.setDom(renderWindow.value!).setSize().play();
 
-      engine.setSize();
+      window.onload = () => {
+        engine.setSize();
+      };
 
       window.addEventListener("resize", () => {
         engine.setSize();
@@ -60,10 +67,11 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 10;
 }
 
 .title {
-  font-size: 120px;
+  font-size: 110px;
   background: linear-gradient(
     45deg,
     red,
@@ -76,8 +84,8 @@ export default defineComponent({
   );
   -webkit-background-clip: text;
   color: transparent;
-  text-shadow: 1px 1px 20px rgb(246, 208, 255);
-  animation: hueColor 3s ease infinite;
+  text-shadow: 1px 1px 20px rgb(255, 255, 255);
+  animation: hueColor 2s ease infinite;
 }
 
 @keyframes hueColor {
@@ -89,11 +97,19 @@ export default defineComponent({
   }
 }
 
+.intro {
+  font-size: 28px;
+  color: white;
+  margin: 12px;
+  text-shadow: 1px 1px 12px rgb(255, 255, 255);
+}
+
 .split-line {
-  width: 580px;
-  height: 5px;
+  width: 50vw;
+  height: 3px;
   background: white;
   box-shadow: 1px 1px 6px rgb(255, 166, 251);
+  margin: 20px;
 }
 
 .operation {
@@ -102,7 +118,17 @@ export default defineComponent({
 
 .ant-btn {
   color: rgb(235, 20, 255);
-  text-shadow: 0px 0px 4px rgb(199, 253, 255);
+  text-shadow: 0px 0px 4px rgb(255, 56, 245);
+}
+
+.mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(rgba(0, 0, 0, 0.45) 70%, rgba(0, 0, 0, 0.8) 100%);
 }
 
 .three {
@@ -112,7 +138,11 @@ export default defineComponent({
 
 @media screen and (max-width: 768px) and (min-width: 0px) {
   .title {
-    font-size: 52px;
+    font-size: 54px;
+  }
+
+  .intro {
+    font-size: 14px;
   }
 
   .split-line {
