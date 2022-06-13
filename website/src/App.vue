@@ -119,6 +119,9 @@ export default defineComponent({
 
 .operation {
   margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .ant-btn {

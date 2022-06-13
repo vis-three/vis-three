@@ -59,7 +59,7 @@ engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
   // 控制器
   generateConfig(CONFIGTYPE.ORBITCONTROLS, {
     autoRotate: true,
-    rotateSpeed: 0.01,
+    autoRotateSpeed: 0.5,
     enableDamping: true,
     maxDistance: 200,
     minDistance: 100,
@@ -80,8 +80,6 @@ engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
     "/skyBox/lightblue/ny.png",
     "/skyBox/lightblue/nz.png",
   ]);
-
-  console.log(loadeMessage);
 
   // 场景
 
