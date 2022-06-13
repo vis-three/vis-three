@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, onUnmounted, ref } from "vue";
 import { engine } from "./assets/engine";
 
 export default defineComponent({
@@ -39,11 +39,15 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      engine.setDom(renderWindow.value!).play();
+      engine.setDom(renderWindow.value!).setSize().play();
 
       window.addEventListener("resize", () => {
         engine.setSize();
       });
+    });
+
+    onUnmounted(() => {
+      engine.dispose();
     });
 
     return {
