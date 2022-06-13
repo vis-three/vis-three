@@ -35,7 +35,7 @@ export const config: Vector3To = {
     delay: 0,
     duration: 500,
     to: {},
-    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
   },
 };
 

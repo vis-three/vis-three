@@ -7,7 +7,7 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MPL2.0-{}" alt="License"></a>
 </p>
 
-## 主页及文档在线地址
+## 主页、demo、文档在线地址
 
 [https://shiotsukikaedesari.gitee.io/vis-three](https://shiotsukikaedesari.gitee.io/vis-three)
 
@@ -31,21 +31,14 @@ import {
 } from "vis-three";
 ```
 
-## 查看 demo 示例
-
-1. 下载或者克隆 main 分支代码
-2. 执行`npm i` 安装依赖
-3. 执行`npm run examples`
-4. 打开浏览器访问: [http://localhost:3000/examples/index.html](http://localhost:3000/examples/index.html)
-
-5. demo 源码位于：`examples`文件夹下
-
 ## 备注
 
 gitee 仓库为 github 的同步备份仓库
 github 地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github.com/Shiotsukikaedesari/vis-three)
 
 ## 项目命令
+
+website 的最终展现是使用的其他模块的 build 版本，如需要更新请先执行相应的：`bulid`构建。
 
 ### 库
 
@@ -55,7 +48,8 @@ github 地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github
 
 ### 测试
 
-- 查看例子： `npm run examples`
+- 例子开发： `npm run examples:dev`
+- 例子构建： `npm run examples:build`
 - e2e 测试： `npm run e2e:open`
 
 ### 文档
