@@ -4,39 +4,47 @@ import {
   CONFIGTYPE,
   AniScriptLibrary,
   DisplayEngineSupport,
+  EngineSupport,
 } from "@vis-three";
 import { ReinhardToneMapping } from "three";
 import np from "nprogress";
 import { GeometryConfig } from "../../../src/middleware/geometry/GeometryConfig";
+import {
+  BeforeLoadEvent,
+  LoadedEvent,
+  LoadingEvent,
+} from "../../../src/manager/LoaderManager";
+import { ref } from "vue";
+import message, { MessageType } from "ant-design-vue/lib/message";
 
-const dev = false;
-
-export let engine;
-
-if (dev) {
-  engine = new ModelingEngineSupport();
-} else {
-  engine = new DisplayEngineSupport();
-}
+// export const engine = new ModelingEngineSupport();
+export const engine = new DisplayEngineSupport();
 
 engine.loaderManager.setPath(import.meta.env.BASE_URL);
 
+const content = ref<string>(`正在加载3D资源：0%`);
+let openMessage: MessageType;
+engine.loaderManager.addEventListener<BeforeLoadEvent>("beforeLoad", () => {
+  content.value = `正在加载3D资源：0%`;
+  openMessage = message.loading({
+    content: () => content.value,
+    duration: 0,
+  });
+});
+
+engine.loaderManager.addEventListener<LoadingEvent>("loading", (event) => {
+  content.value = `正在加载3D资源：${parseInt(
+    ((event.loadSuccess / event.loadTotal) * 100).toString()
+  )}
+    %`;
+});
+
+engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
+  openMessage && openMessage();
+  content.value = `正在加载3D资源：0%`;
+});
+
 (async () => {
-  // 外部模型
-  const loadeMessage = await engine.loadResourcesAsync([
-    "/model/three.obj",
-    "/model/vis.obj",
-    "/texture/vis/colorMap.png",
-    "/skyBox/lightblue/px.png",
-    "/skyBox/lightblue/py.png",
-    "/skyBox/lightblue/pz.png",
-    "/skyBox/lightblue/nx.png",
-    "/skyBox/lightblue/ny.png",
-    "/skyBox/lightblue/nz.png",
-  ]);
-
-  console.log(loadeMessage);
-
   generateConfig.injectEngine = engine;
   generateConfig.injectScene = true;
 
@@ -59,6 +67,21 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
     // enableZoom: false,
     // enableRotate: false,
   });
+
+  // 外部资源
+  const loadeMessage = await engine.loadResourcesAsync([
+    "/model/three.obj",
+    "/model/vis.obj",
+    "/texture/vis/colorMap.png",
+    "/skyBox/lightblue/px.png",
+    "/skyBox/lightblue/py.png",
+    "/skyBox/lightblue/pz.png",
+    "/skyBox/lightblue/nx.png",
+    "/skyBox/lightblue/ny.png",
+    "/skyBox/lightblue/nz.png",
+  ]);
+
+  console.log(loadeMessage);
 
   // 场景
 
@@ -91,6 +114,8 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
       z: 100,
     },
   });
+
+  engine.setCamera(camera.vid).setSize();
 
   // 光源
   generateConfig(CONFIGTYPE.AMBIENTLIGHT, {
@@ -208,7 +233,6 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
     }),
   });
 
-  engine.setCamera(camera.vid);
   console.log(engine);
 
   np.done();

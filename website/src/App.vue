@@ -39,11 +39,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      engine.setDom(renderWindow.value!).setSize().play();
-
-      window.onload = () => {
-        engine.setSize();
-      };
+      engine.setDom(renderWindow.value!).play();
 
       window.addEventListener("resize", () => {
         engine.setSize();
