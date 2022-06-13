@@ -62,7 +62,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped="less">
+<style scoped lang="less">
 .App-container {
   width: 100%;
   height: 100%;

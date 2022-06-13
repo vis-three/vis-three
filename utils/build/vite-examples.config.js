@@ -4,16 +4,23 @@ import visualizer from "rollup-plugin-visualizer";
 import vue from "@vitejs/plugin-vue";
 import fs from "fs";
 
-// 遍历examples文件夹形成input
+// 遍历examples文件夹形成input, 顺便写一份json配置进vis-three/website/examples/assets/menus.json
 const input = {};
+const menusJson = [];
 const examplesDir = path.resolve(__dirname, "../../examples");
 
 const recursion = (parentDir) => {
   fs.readdirSync(parentDir).forEach((filename) => {
-    console.log(filename);
     if (path.extname(filename) === ".html") {
-      input[`${filename.split(".")[0]}-${parseInt(Math.random() * 100)}`] =
-        path.resolve(parentDir, `./${filename}`);
+      const name = `${parentDir.replace(/\\/g, "/").split("/").pop()}/${
+        filename.split(".")[0]
+      }`;
+      input[name] = path.resolve(parentDir, `./${filename}`);
+
+      menusJson.push({
+        name,
+        url: `${name}.html`,
+      });
     } else if (!path.extname(filename)) {
       recursion(path.resolve(parentDir, `./${filename}`));
     }
@@ -22,6 +29,14 @@ const recursion = (parentDir) => {
 
 recursion(examplesDir);
 console.log(input);
+console.log(menusJson);
+
+const menusPath = path.resolve(
+  __dirname,
+  "../../website/examples/assets/menus.json"
+);
+
+fs.writeFileSync(menusPath, JSON.stringify(menusJson));
 
 export default defineConfig({
   root: path.resolve(__dirname, "../../examples"),
