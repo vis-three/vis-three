@@ -76,11 +76,11 @@
     </div>
 
     <script type="module">
-      import * as Vue from "/examples/public/plugins/vue3/vue.esm-browser.prod.js";
+      import * as Vue from "vue/dist/vue.esm-browser.prod.js";
       import { v4 as getUUid } from "uuid";
-      import * as Vis from "../../dist/Vis.es.js";
+      import * as Vis from "vis-three";
 
-      import config from "/examples/public/assetsConfig/vue3Support.json";
+      import config from "../public/assetsConfig/vue3Support.json";
 
       const visConfig = JSON.parse(
         JSON.stringify(config),

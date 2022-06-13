@@ -4003,7 +4003,7 @@ const generateConfig = function(type, merge, strict = true, warn = true) {
   merge && recursion(initConfig, merge);
   if (generateConfig.autoInject && generateConfig.injectEngine) {
     const engine = generateConfig.injectEngine;
-    engine.applyConfig(initConfig);
+    const reactive = engine.reactiveConfig(initConfig);
     if (generateConfig.injectScene) {
       if (CONFIGMODULE[initConfig.type] in OBJECTMODULE && initConfig.type !== CONFIGTYPE.SCENE) {
         let sceneConfig = null;
@@ -4019,6 +4019,7 @@ const generateConfig = function(type, merge, strict = true, warn = true) {
         }
       }
     }
+    return reactive;
   }
   return initConfig;
 };

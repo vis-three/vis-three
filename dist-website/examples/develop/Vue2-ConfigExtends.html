@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/examples/public/favicon.ico"
+    />
+    
+    <title>Vue2-ConfigExtends</title>
+    <script type="module" crossorigin src="/vis-three/examples/assets/Vue2-ConfigExtends-82.d58be730.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.b90fa353.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.78ccfae1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.5d3b4fb7.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vue.esm.browser.min.816a6d7c.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/Vis.es.b093b5dd.css">
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+
+    .operate-box {
+      position: fixed;
+      color: rgb(255, 255, 255);
+      top: 30%;
+      left: unset;
+      right: 10%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .operate-box > * {
+      margin-bottom: 5px;
+    }
+  </style>
+
+  <body>
+    <div id="app">
+      <div class="operate-box">
+        <div class="controller-box">
+          <span class="box-label">文本：</span>
+          <input
+            type="text"
+            v-model="canvasTexture.canvasExtends.text"
+            name=""
+            id=""
+            @input="updateCanvas"
+          />
+        </div>
+        <div class="controller-box">
+          <span class="box-label">数字：</span>
+          <input
+            type="range"
+            step="1"
+            v-model="canvasTexture.canvasExtends.number"
+            @input="updateCanvas"
+          />
+        </div>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

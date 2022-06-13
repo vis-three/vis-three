@@ -3,3 +3,5 @@ node_modules
 dist-ssr
 *.local
 *.tgz
+website/public/examples/texture/katana/katana_Normal.png
+dist-website/examples/texture/katana/katana_Normal.png

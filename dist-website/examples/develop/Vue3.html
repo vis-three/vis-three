@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/examples/public/favicon.ico"
+    />
+    
+    <title>Vue3</title>
+    <script type="module" crossorigin src="/vis-three/examples/assets/Vue3-71.6827f86e.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.b90fa353.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.78ccfae1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.5d3b4fb7.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vue3Support.63e236d1.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/Vis.es.b093b5dd.css">
+  </head>
+
+  <style>
+    #app,
+    #three {
+      width: 100%;
+      height: 100%;
+    }
+
+    #three {
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    .operate-box {
+      position: fixed;
+      color: rgb(255, 255, 255);
+      top: 20%;
+      left: 40%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .loadingDom {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 36px;
+      z-index: 10;
+    }
+
+    button {
+      padding: 10px;
+      background: rgb(126, 255, 255);
+      color: rgb(0, 0, 0);
+      border: 0;
+      border-radius: 5px;
+      box-shadow: 2px 2px 6px rgb(53, 170, 160);
+      cursor: pointer;
+    }
+  </style>
+
+  <body>
+    <div id="three"></div>
+    <div id="app">
+      <div
+        class="operate-box"
+        v-for="(item, index) in lightObservable"
+        :key="index"
+      >
+        <h1 v-text="item.position.y"></h1>
+        <button @click="addPositionY(item)">light position y add 5</button>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

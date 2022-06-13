@@ -18,8 +18,9 @@
     "declaration": true,
     "declarationDir": "./types",
     "paths": {
-      "@vis-three": ["./src/main.ts"]
-    }
+      "vis-three": ["./src/main.ts"]
+    },
+    "jsx": "preserve"
   },
   "include": ["./src", "./website"]
 }

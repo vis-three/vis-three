@@ -1,1 +1,0 @@
-import{_ as e,c as t,o as a}from"./app.cbcba369.js";const f='{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"api/convenient.md"}',n={};function o(r,c,s,i,p,_){return a(),t("div")}var l=e(n,[["render",o]]);export{f as __pageData,l as default};

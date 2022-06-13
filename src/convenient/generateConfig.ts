@@ -107,7 +107,7 @@ export const generateConfig = <GenerateConfig>(
     if (generateConfig.autoInject && generateConfig.injectEngine) {
       const engine = generateConfig.injectEngine;
 
-      engine.applyConfig(initConfig);
+      const reactive = engine.reactiveConfig(initConfig);
 
       // 自动注入场景
       if (generateConfig.injectScene) {
@@ -136,6 +136,9 @@ export const generateConfig = <GenerateConfig>(
           }
         }
       }
+
+      // return a reactive config object
+      return reactive as C;
     }
 
     return initConfig;

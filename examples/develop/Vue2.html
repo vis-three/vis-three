@@ -72,10 +72,10 @@
     </div>
 
     <script type="module">
-      import Vue from "/examples/public/plugins/vue2/vue.esm.browser.min.js";
-      import * as Vis from "../../dist/Vis.es.js";
+      import Vue from "vue2/dist/vue.esm.browser.min.js";
+      import * as Vis from "vis-three";
 
-      import config from "/examples/public/assetsConfig/vue3Support.json";
+      import config from "/public/assetsConfig/vue3Support.json";
 
       const visConfig = Vue.observable(
         JSON.parse(JSON.stringify(config), Vis.JSONHandler.parse)

@@ -12,9 +12,14 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "../../dist-website"),
     rollupOptions: {
+      input: {
+        index: path.resolve(__dirname, "../../website/index.html"),
+        examples: path.resolve(__dirname, "../../website/examples.html"),
+      },
       output: {
         manualChunks: {
           three: ["three"],
+          "vis-three": ["dist/Vis.es.js"],
           Antd: ["ant-design-vue"],
         },
       },
@@ -28,7 +33,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@vis-three": path.resolve(__dirname, "../../dist/Vis.es.js"),
+      "vis-three": path.resolve(__dirname, "../../dist/Vis.es.js"),
     },
   },
 });

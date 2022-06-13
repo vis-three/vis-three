@@ -39,8 +39,8 @@
     <div id="app">
       <div class="operate-box">
         <div class="controller-box">
-          <span class="box-label">文本：</span
-          ><input
+          <span class="box-label">文本：</span>
+          <input
             type="text"
             v-model="canvasTexture.canvasExtends.text"
             name=""
@@ -49,8 +49,8 @@
           />
         </div>
         <div class="controller-box">
-          <span class="box-label">数字：</span
-          ><input
+          <span class="box-label">数字：</span>
+          <input
             type="range"
             step="1"
             v-model="canvasTexture.canvasExtends.number"
@@ -61,8 +61,8 @@
     </div>
 
     <script type="module">
-      import Vue from "/examples/public/plugins/vue2/vue.esm.browser.min.js";
-      import * as Vis from "../../dist/Vis.es.js";
+      import Vue from "vue2/dist/vue.esm.browser.min.js";
+      import * as Vis from "vis-three";
 
       const canvasGenerator = new Vis.CanvasGenerator({
         width: 800,
