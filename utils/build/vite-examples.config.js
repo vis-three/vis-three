@@ -20,6 +20,7 @@ const recursion = (parentDir) => {
       menusJson.push({
         name,
         url: `${name}.html`,
+        poster: `poster/${name}.jpg`,
       });
     } else if (!path.extname(filename)) {
       recursion(path.resolve(parentDir, `./${filename}`));

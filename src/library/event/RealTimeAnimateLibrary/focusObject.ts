@@ -1,5 +1,5 @@
 import { Tween } from "@tweenjs/tween.js";
-import { Vector3 } from "three";
+import { Object3D, Vector3 } from "three";
 import { EngineSupport } from "../../../engine/EngineSupport";
 import { ObjectEvent } from "../../../manager/EventManager";
 import { RenderEvent } from "../../../manager/RenderManager";
@@ -21,7 +21,7 @@ export interface FocusObject extends BasicEventConfig {
 }
 
 export const config: FocusObject = {
-  name: "foucsObject",
+  name: "focusObject",
   params: {
     target: "",
     space: "world",
@@ -51,6 +51,13 @@ export const generator: EventGenerator<FocusObject> = function (
   if (!target) {
     console.warn(
       `real time animation focusObject: can not found vid object: ${params.target}`
+    );
+    return () => {};
+  }
+
+  if (!(target instanceof Object3D)) {
+    console.warn(
+      `real time animation focusObject: vid object is not a class of THREE.Object3D: ${params.target}`
     );
     return () => {};
   }

@@ -25,31 +25,39 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import * as VIS from "vis-three";
       import { v4 as getUUid } from "uuid";
 
-      const engine = new Vis.ModelingEngineSupport()
+      const engine = new VIS.ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true);
 
-      const ambientLight = Vis.generateConfig("AmbientLight");
+      VIS.generateConfig.injectEngine = engine;
 
-      const material = Vis.generateConfig("MeshStandardMaterial");
-      const material2 = Vis.generateConfig("MeshStandardMaterial");
+      const scene = VIS.generateConfig("Scene");
 
-      const geometry = Vis.generateConfig("PlaneGeometry", {
+      engine.setScene(scene.vid);
+
+      VIS.generateConfig.injectScene = true;
+
+      const ambientLight = VIS.generateConfig("AmbientLight");
+
+      const material = VIS.generateConfig("MeshStandardMaterial");
+      const material2 = VIS.generateConfig("MeshStandardMaterial");
+
+      const geometry = VIS.generateConfig("PlaneGeometry", {
         width: 20,
         height: 20,
       });
 
       const meshSymbol1 = getUUid();
-      const mesh1 = Vis.generateConfig("Mesh", {
+      const mesh1 = VIS.generateConfig("Mesh", {
         vid: meshSymbol1,
         material: material.vid,
         geometry: geometry.vid,
         click: [
-          Vis.EventLibrary.generateConfig("foucsObject", {
+          VIS.EventLibrary.generateConfig("focusObject", {
             params: {
               target: meshSymbol1,
               space: "local",
@@ -65,7 +73,7 @@
       });
 
       const meshSymbol2 = getUUid();
-      const mesh2 = Vis.generateConfig("Mesh", {
+      const mesh2 = VIS.generateConfig("Mesh", {
         vid: meshSymbol2,
         material: material2.vid,
         geometry: geometry.vid,
@@ -73,14 +81,14 @@
           x: 15,
         },
         pointerenter: [
-          Vis.EventLibrary.generateConfig("fadeObject", {
+          VIS.EventLibrary.generateConfig("fadeObject", {
             params: {
               target: meshSymbol2,
             },
           }),
         ],
         pointerleave: [
-          Vis.EventLibrary.generateConfig("fadeObject", {
+          VIS.EventLibrary.generateConfig("fadeObject", {
             params: {
               target: meshSymbol2,
               direction: "in",
@@ -89,22 +97,28 @@
         ],
       });
 
-      const scene = Vis.generateConfig("Scene", {
-        children: [ambientLight.vid, mesh1.vid, mesh2.vid],
+      const meshSymbol3 = getUUid();
+      const mesh3 = VIS.generateConfig("Mesh", {
+        vid: meshSymbol3,
+        material: material.vid,
+        geometry: geometry.vid,
+        position: {
+          x: -15,
+          y: 30,
+        },
+        click: [
+          VIS.EventLibrary.generateConfig("showToCamera", {
+            params: {
+              target: meshSymbol3,
+            },
+          }),
+        ],
       });
-      engine.applyConfig(
-        ambientLight,
-        material,
-        material2,
-        geometry,
-        mesh1,
-        mesh2,
-        scene
-      );
 
-      engine.setScene(scene.vid).play();
+      engine.play();
 
       window.engine = engine;
+      window.mesh1 = mesh1;
     </script>
   </body>
 </html>

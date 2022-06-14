@@ -241,7 +241,7 @@ export abstract class ObjectCompiler<
     const newFun = EventLibrary.generateEvent(config, this.engine);
 
     // 映射缓存
-    config[symbol] = fun;
+    config[symbol] = newFun;
 
     // 绑定事件
     object.addEventListener(eventName, newFun);

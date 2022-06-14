@@ -42,10 +42,6 @@ const pointLight = VIS.generateConfig("PointLight", {
 });
 ```
 
-::: info
-
-:::
-
 ```js
 // 基础配置单
 const pointLight = VIS.generateConfig("PointLight", {

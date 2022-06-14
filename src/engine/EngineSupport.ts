@@ -1,4 +1,4 @@
-import { Object3D } from "three";
+import { Material, Object3D, Texture } from "three";
 import { CompilerManager } from "../manager/CompilerManager";
 import {
   DataSupportManager,
@@ -38,7 +38,9 @@ export class EngineSupport extends Engine {
   declare removeConfigBySymbol: (vid: string) => this;
 
   declare getObjectSymbol: (object: any) => SymbolConfig["vid"] | null;
-  declare getObjectBySymbol: (vid: string) => any | null;
+  declare getObjectBySymbol: (
+    vid: string
+  ) => Object3D | Texture | Material | null;
 
   constructor(
     parameters: EngineSupportParameters = {},

@@ -5,3 +5,4 @@ dist-ssr
 *.tgz
 website/public/examples/texture/katana/katana_Normal.png
 dist-website/examples/texture/katana/katana_Normal.png
+stats.html

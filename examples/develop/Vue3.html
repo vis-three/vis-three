@@ -78,13 +78,13 @@
     <script type="module">
       import * as Vue from "vue/dist/vue.esm-browser.prod.js";
       import { v4 as getUUid } from "uuid";
-      import * as Vis from "vis-three";
+      import * as VIS from "vis-three";
 
       import config from "../public/assetsConfig/vue3Support.json";
 
       const visConfig = JSON.parse(
         JSON.stringify(config),
-        Vis.JSONHandler.parse
+        VIS.JSONHandler.parse
       );
 
       Vue.createApp({
@@ -94,12 +94,12 @@
           loadingDom.className = "loadingDom";
           document.body.appendChild(loadingDom);
 
-          const lightDataSupport = new Vis.LightDataSupport();
+          const lightDataSupport = new VIS.LightDataSupport();
           const lightObservable = Vue.reactive(lightDataSupport.getData());
 
           lightDataSupport.setData(lightObservable);
 
-          const engine = new Vis.ModelingEngineSupport({
+          const engine = new VIS.ModelingEngineSupport({
             lightDataSupport,
           })
             .setDom(document.getElementById("three"))

@@ -16,8 +16,14 @@
   display: none;
 }
 
+p > code,
+td > code {
+  background: var(--code-bg-color);
+  color: var(--c-text);
+}
+
 tr:nth-child(2n) {
-  background-color: #1c1f24;
+  background-color: unset;
 }
 
 :root {

@@ -18,7 +18,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, Euler, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Matrix4, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Matrix4, Euler, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -5341,11 +5341,11 @@ class Compiler {
   constructor() {
   }
 }
-const config$6 = {
+const config$7 = {
   name: "linearTime",
   multiply: 1
 };
-const generator$6 = function(engine, target, attribute, config2) {
+const generator$7 = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
     console.error(`object not exist attribute: ${attribute}`, target);
     return (event) => {
@@ -5406,7 +5406,7 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
   _AniScriptLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
 });
-AniScriptLibrary.register(config$6, generator$6);
+AniScriptLibrary.register(config$7, generator$7);
 class AnimationCompiler extends Compiler {
   constructor() {
     super();
@@ -5499,13 +5499,13 @@ class AnimationCompiler extends Compiler {
     return null;
   }
 }
-const config$5 = {
+const config$6 = {
   name: "openWindow",
   params: {
     url: ""
   }
 };
-const generator$5 = function(engine, config2) {
+const generator$6 = function(engine, config2) {
   return () => {
     window.open(config2.params.url);
   };
@@ -6190,6 +6190,9 @@ var TIMINGFUNCTION;
   TIMINGFUNCTION2["EASING_QUARTIC_IN"] = "EASING_QUARTIC_IN";
   TIMINGFUNCTION2["EASING_QUARTIC_OUT"] = "EASING_QUARTIC_OUT";
   TIMINGFUNCTION2["EASING_QUARTIC_INOUT"] = "EASING_QUARTIC_INOUT";
+  TIMINGFUNCTION2["EASING_QUADRATIC_IN"] = "EASING_QUADRATIC_IN";
+  TIMINGFUNCTION2["EASING_QUADRATIC_OUT"] = "EASING_QUADRATIC_OUT";
+  TIMINGFUNCTION2["EASING_QUADRATIC_INOUT"] = "EASING_QUADRATIC_INOUT";
 })(TIMINGFUNCTION || (TIMINGFUNCTION = {}));
 const timingFunction = {
   ELN: Easing.Linear.None,
@@ -6198,9 +6201,12 @@ const timingFunction = {
   EASING_LINEAR_NONE: Easing.Linear.None,
   EASING_QUARTIC_IN: Easing.Quartic.In,
   EASING_QUARTIC_OUT: Easing.Quartic.Out,
-  EASING_QUARTIC_INOUT: Easing.Quartic.InOut
+  EASING_QUARTIC_INOUT: Easing.Quartic.InOut,
+  EASING_QUADRATIC_IN: Easing.Quadratic.In,
+  EASING_QUADRATIC_OUT: Easing.Quadratic.Out,
+  EASING_QUADRATIC_INOUT: Easing.Quadratic.InOut
 };
-const config$4 = {
+const config$5 = {
   name: "moveTo",
   params: {
     target: "",
@@ -6211,10 +6217,10 @@ const config$4 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$4 = function(engine, config2) {
+const generator$5 = function(engine, config2) {
   const params = config2.params;
   const compiler = engine.compilerManager;
   const object = compiler.getObjectBySymbol(params.target);
@@ -6244,7 +6250,7 @@ const generator$4 = function(engine, config2) {
     });
   };
 };
-const config$3 = {
+const config$4 = {
   name: "moveSpacing",
   params: {
     target: "",
@@ -6255,10 +6261,10 @@ const config$3 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$3 = function(engine, config2) {
+const generator$4 = function(engine, config2) {
   const params = config2.params;
   const object = engine.getObjectBySymbol(params.target);
   if (!object) {
@@ -6287,7 +6293,7 @@ const generator$3 = function(engine, config2) {
     });
   };
 };
-const config$2 = {
+const config$3 = {
   name: "vector3To",
   params: {
     target: "",
@@ -6300,10 +6306,10 @@ const config$2 = {
     delay: 0,
     duration: 500,
     to: {},
-    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$2 = function(engine, config2) {
+const generator$3 = function(engine, config2) {
   var _a, _b, _c;
   const params = config2.params;
   const object = engine.compilerManager.getObjectBySymbol(params.target);
@@ -6361,8 +6367,8 @@ const generator$2 = function(engine, config2) {
     });
   };
 };
-const config$1 = {
-  name: "foucsObject",
+const config$2 = {
+  name: "focusObject",
   params: {
     target: "",
     space: "world",
@@ -6373,11 +6379,11 @@ const config$1 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
     back: true
   }
 };
-const generator$1 = function(engine, config2) {
+const generator$2 = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   const camera = engine.camera;
@@ -6386,6 +6392,11 @@ const generator$1 = function(engine, config2) {
   const orbTarget = engine.orbitControls.target;
   if (!target) {
     console.warn(`real time animation focusObject: can not found vid object: ${params.target}`);
+    return () => {
+    };
+  }
+  if (!(target instanceof Object3D)) {
+    console.warn(`real time animation focusObject: vid object is not a class of THREE.Object3D: ${params.target}`);
     return () => {
     };
   }
@@ -6493,18 +6504,18 @@ const generator$1 = function(engine, config2) {
     });
   };
 };
-const config = {
+const config$1 = {
   name: "fadeObject",
   params: {
     target: "",
     direction: "out",
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUARTIC_IN,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
     visible: false
   }
 };
-const generator = function(engine, config2) {
+const generator$1 = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   if (!target) {
@@ -6560,6 +6571,108 @@ const generator = function(engine, config2) {
     });
   };
 };
+const config = {
+  name: "showToCamera",
+  params: {
+    target: "",
+    offset: {
+      x: 0,
+      y: 0,
+      z: -30
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
+    back: true
+  }
+};
+const generator = function(engine, config2) {
+  const params = config2.params;
+  const target = engine.getObjectBySymbol(params.target);
+  const targetConfig = engine.getConfigBySymbol(params.target);
+  const camera = engine.camera;
+  if (!target) {
+    console.warn(`real time animation showToCamera: can not found vid object: ${params.target}`);
+    return () => {
+    };
+  }
+  if (!target) {
+    console.warn(`real time animation showToCamera: can not found vid config: ${params.target}`);
+    return () => {
+    };
+  }
+  if (!(target instanceof Object3D)) {
+    console.warn(`real time animation showToCamera: vid object is not a class of THREE.Object3D: ${params.target}`);
+    return () => {
+    };
+  }
+  const matrix4 = new Matrix4();
+  const euler = new Euler();
+  const vector3 = new Vector3();
+  return () => {
+    const renderManager = engine.renderManager;
+    vector3.set(params.offset.x, params.offset.y, params.offset.z).applyEuler(camera.rotation);
+    vector3.set(camera.position.x + vector3.x, camera.position.y + vector3.y, camera.position.z + vector3.z);
+    matrix4.lookAt(camera.position, vector3, camera.up);
+    euler.setFromRotationMatrix(matrix4);
+    const cachePosition = {
+      x: target.position.x,
+      y: target.position.y,
+      z: target.position.z
+    };
+    const cacheRotation = {
+      x: target.rotation.x,
+      y: target.rotation.y,
+      z: target.rotation.z
+    };
+    const positionTween = new Tween(target.position).to({
+      x: vector3.x,
+      y: vector3.y,
+      z: vector3.z
+    }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const rotationTween = new Tween(target.rotation).to({
+      x: euler.x,
+      y: euler.y,
+      z: euler.z
+    }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      positionTween.update();
+      rotationTween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    positionTween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      targetConfig.position.x = vector3.x;
+      targetConfig.position.y = vector3.y;
+      targetConfig.position.z = vector3.z;
+      targetConfig.rotation.x = euler.x;
+      targetConfig.rotation.y = euler.y;
+      targetConfig.rotation.z = euler.z;
+      if (params.back) {
+        const backFun = () => {
+          const positionTween2 = new Tween(target.position).to(cachePosition).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+          const rotationTween2 = new Tween(target.rotation).to(cacheRotation).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+          const renderFun2 = (event) => {
+            positionTween2.update();
+            rotationTween2.update();
+          };
+          positionTween2.onComplete(() => {
+            renderManager.removeEventListener("render", renderFun2);
+            targetConfig.position.x = cachePosition.x;
+            targetConfig.position.y = cachePosition.y;
+            targetConfig.position.z = cachePosition.z;
+            targetConfig.rotation.x = cacheRotation.x;
+            targetConfig.rotation.y = cacheRotation.y;
+            targetConfig.rotation.z = cacheRotation.z;
+          });
+          renderManager.addEventListener("render", renderFun2);
+          document.removeEventListener("dblclick", backFun);
+        };
+        document.addEventListener("dblclick", backFun);
+      }
+    });
+  };
+};
 const _EventLibrary = class {
   static generateConfig(name, merge) {
     if (!_EventLibrary.configLibrary.has(name)) {
@@ -6603,6 +6716,7 @@ __publicField(EventLibrary, "register", function(config2, generator2) {
   _EventLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _EventLibrary.generatorLibrary.set(config2.name, generator2);
 });
+EventLibrary.register(config$6, generator$6);
 EventLibrary.register(config$5, generator$5);
 EventLibrary.register(config$4, generator$4);
 EventLibrary.register(config$3, generator$3);
@@ -6746,7 +6860,7 @@ const _ObjectCompiler = class extends Compiler {
     }
     object.removeEventListener(eventName, fun);
     const newFun = EventLibrary.generateEvent(config2, this.engine);
-    config2[symbol] = fun;
+    config2[symbol] = newFun;
     object.addEventListener(eventName, newFun);
     return this;
   }

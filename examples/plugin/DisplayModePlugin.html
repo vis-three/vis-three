@@ -5,11 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DisplayModePlugin</title>
-    <link
-      rel="shortcut icon"
-      type="image/x-icon"
-      href="/examples/public/favicon.ico"
-    />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="../css/common.css" />
   </head>
 
@@ -53,9 +49,9 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import * as VIS from "vis-three";
 
-      const engine = new Vis.DisplayEngine()
+      const engine = new VIS.DisplayEngine()
         .install("DisplayMode")
         .complete()
         .setDom(document.getElementById("app"))
@@ -65,7 +61,7 @@
       const scene = engine.scene;
 
       const background = new THREE.CubeTextureLoader()
-        .setPath("/examples/public/texture/skyBox/snowVillage/")
+        .setPath("/texture/skyBox/snowVillage/")
         .load(["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]);
 
       scene.background = background;
@@ -96,11 +92,11 @@
       scene.add(points);
 
       const buttonGroup = document.getElementById("button-group");
-      Object.keys(Vis.DISPLAYMODE).forEach((key) => {
+      Object.keys(VIS.DISPLAYMODE).forEach((key) => {
         const buttonDom = document.createElement("button");
-        buttonDom.innerText = Vis.DISPLAYMODE[key];
+        buttonDom.innerText = VIS.DISPLAYMODE[key];
         buttonDom.onclick = () => {
-          engine.setDisplayMode(Vis.DISPLAYMODE[key]);
+          engine.setDisplayMode(VIS.DISPLAYMODE[key]);
         };
 
         buttonGroup.appendChild(buttonDom);

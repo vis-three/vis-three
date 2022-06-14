@@ -13,6 +13,8 @@
 
 #### fix
 
+- object-updateEvent
+
 #### perf
 
 #### deprecated

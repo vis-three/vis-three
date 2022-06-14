@@ -5,11 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GeometrySupport</title>
-    <link
-      rel="shortcut icon"
-      type="image/x-icon"
-      href="/examples/public/favicon.ico"
-    />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="../css/common.css" />
   </head>
 
@@ -25,10 +21,10 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import * as VIS from "vis-three";
       import { v4 as getUUid } from "uuid";
 
-      const canvasGenerator = new Vis.CanvasGenerator({
+      const canvasGenerator = new VIS.CanvasGenerator({
         width: 256,
         height: 256,
       })
@@ -43,44 +39,44 @@
         })
         .preview();
 
-      const engine = new Vis.ModelingEngineSupport()
+      const engine = new VIS.ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true)
         .play();
 
-      const pointLight = Vis.generateConfig("PointLight", {
+      const pointLight = VIS.generateConfig("PointLight", {
         position: {
           y: 50,
         },
         distance: 150,
       });
 
-      const material = Vis.generateConfig("MeshStandardMaterial");
+      const material = VIS.generateConfig("MeshStandardMaterial");
 
-      const scene = Vis.generateConfig("Scene", {
+      const scene = VIS.generateConfig("Scene", {
         children: [pointLight.vid],
       });
 
       engine.applyConfig(pointLight, material);
 
       const geometryTypeList = [
-        Vis.CONFIGTYPE.BOXGEOMETRY,
-        Vis.CONFIGTYPE.SPHEREGEOMETRY,
-        Vis.CONFIGTYPE.PLANEGEOMETRY,
-        Vis.CONFIGTYPE.CIRCLEGEOMETRY,
-        Vis.CONFIGTYPE.CONEGEOMETRY,
-        Vis.CONFIGTYPE.CYLINDERGEOMETRY,
-        // Vis.CONFIGTYPE.LOADGEOMETRY,
-        // Vis.CONFIGTYPE.EDGESGEOMETRY,
+        VIS.CONFIGTYPE.BOXGEOMETRY,
+        VIS.CONFIGTYPE.SPHEREGEOMETRY,
+        VIS.CONFIGTYPE.PLANEGEOMETRY,
+        VIS.CONFIGTYPE.CIRCLEGEOMETRY,
+        VIS.CONFIGTYPE.CONEGEOMETRY,
+        VIS.CONFIGTYPE.CYLINDERGEOMETRY,
+        // VIS.CONFIGTYPE.LOADGEOMETRY,
+        // VIS.CONFIGTYPE.EDGESGEOMETRY,
       ];
 
       const size = 15;
 
       geometryTypeList.forEach((cofigType, i) => {
-        const geometry = Vis.generateConfig(cofigType);
+        const geometry = VIS.generateConfig(cofigType);
         const number = i + 1;
-        const mesh = Vis.generateConfig("Mesh", {
+        const mesh = VIS.generateConfig("Mesh", {
           material: material.vid,
           geometry: geometry.vid,
           position: {
@@ -103,11 +99,11 @@
       engine.applyConfig(scene);
 
       // line
-      const lineMaterial = Vis.generateConfig("LineBasicMaterial", {
+      const lineMaterial = VIS.generateConfig("LineBasicMaterial", {
         color: "white",
       });
 
-      const lineCurveGeometry = Vis.generateConfig("LineCurveGeometry", {
+      const lineCurveGeometry = VIS.generateConfig("LineCurveGeometry", {
         path: [
           { x: 0, y: 0, z: -5 },
           { x: 0, y: 0, z: 5 },
@@ -117,7 +113,7 @@
         ],
       });
 
-      const splineCurveGeometry = Vis.generateConfig("SplineCurveGeometry", {
+      const splineCurveGeometry = VIS.generateConfig("SplineCurveGeometry", {
         path: [
           { x: 0, y: 0, z: -5 },
           { x: 0, y: 0, z: 5 },
@@ -127,7 +123,7 @@
         ],
       });
 
-      const CubicBezierCureGeometry = Vis.generateConfig(
+      const CubicBezierCureGeometry = VIS.generateConfig(
         "CubicBezierCurveGeometry",
         {
           path: [
@@ -143,7 +139,7 @@
         }
       );
 
-      const quadraticBezierCurveGeometry = Vis.generateConfig(
+      const quadraticBezierCurveGeometry = VIS.generateConfig(
         "QuadraticBezierCurveGeometry",
         {
           path: [
@@ -156,12 +152,12 @@
         }
       );
 
-      const lineCurveLine = Vis.generateConfig("Line", {
+      const lineCurveLine = VIS.generateConfig("Line", {
         geometry: lineCurveGeometry.vid,
         material: lineMaterial.vid,
       });
 
-      const splineCurveLine = Vis.generateConfig("Line", {
+      const splineCurveLine = VIS.generateConfig("Line", {
         geometry: splineCurveGeometry.vid,
         material: lineMaterial.vid,
         position: {
@@ -169,7 +165,7 @@
         },
       });
 
-      const CubicBezierCurveLine = Vis.generateConfig("Line", {
+      const CubicBezierCurveLine = VIS.generateConfig("Line", {
         geometry: CubicBezierCureGeometry.vid,
         material: lineMaterial.vid,
         position: {
@@ -177,7 +173,7 @@
         },
       });
 
-      const quadraticBezierCurveLine = Vis.generateConfig("Line", {
+      const quadraticBezierCurveLine = VIS.generateConfig("Line", {
         geometry: quadraticBezierCurveGeometry.vid,
         material: lineMaterial.vid,
         position: {

@@ -5,11 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CSS3DRendererPlugin</title>
-    <link
-      rel="shortcut icon"
-      type="image/x-icon"
-      href="/examples/public/favicon.ico"
-    />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="../css/common.css" />
   </head>
 
@@ -38,7 +34,7 @@
     <div id="element1">
       <p>canvas P</p>
       <img
-        src="/examples/public/texture/Bricks_Color.jpg"
+        src="/texture/Bricks_Color.jpg"
         style="width: 50px; height: 50px"
         alt=""
       />
@@ -65,7 +61,7 @@
 
     <div id="element3">
       <video
-        src="/examples/public/video/1.mp4"
+        src="/video/1.mp4"
         style="width: 192px; height: 108"
         controls
       ></video>
@@ -73,10 +69,9 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
-      import { v4 as getUUid } from "uuid";
+      import * as VIS from "vis-three";
 
-      const engine = new Vis.DisplayEngineSupport()
+      const engine = new VIS.DisplayEngineSupport()
         .install("CSS3DRenderer")
         .complete()
         .setDom(document.getElementById("app"))
@@ -86,7 +81,7 @@
           "examples.css3DObject3": document.getElementById("element3"),
         });
 
-      const css3DObject = Vis.generateConfig("CSS3DObject", {
+      const css3DObject = VIS.generateConfig("CSS3DObject", {
         element: "examples.css3DObject",
         position: {
           x: -50,
@@ -102,7 +97,7 @@
         },
       });
 
-      const css3DObject2 = Vis.generateConfig("CSS3DObject", {
+      const css3DObject2 = VIS.generateConfig("CSS3DObject", {
         element: "examples.css3DObject2",
         position: {
           x: 50,
@@ -118,7 +113,7 @@
         },
       });
 
-      const css3DObject3 = Vis.generateConfig("CSS3DObject", {
+      const css3DObject3 = VIS.generateConfig("CSS3DObject", {
         element: "examples.css3DObject3",
         position: {
           z: -30,
@@ -131,7 +126,7 @@
         },
       });
 
-      const scene = Vis.generateConfig("Scene", {
+      const scene = VIS.generateConfig("Scene", {
         children: [css3DObject.vid, css3DObject2.vid, css3DObject3.vid],
       });
 

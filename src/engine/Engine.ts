@@ -1,8 +1,10 @@
 import {
   Camera,
+  Material,
   Object3D,
   PerspectiveCamera,
   Scene,
+  Texture,
   WebGLRenderer,
   WebGLRendererParameters,
 } from "three";
@@ -220,7 +222,7 @@ export class Engine extends EventDispatcher {
   removeConfigBySymbol?: (...vids: string[]) => this;
 
   getObjectSymbol?: (object: any) => SymbolConfig["vid"] | null;
-  getObjectBySymbol?: (vid: string) => any | null;
+  getObjectBySymbol?: (vid: string) => Object3D | Texture | Material | null;
 
   play?: () => this;
   stop?: () => this;

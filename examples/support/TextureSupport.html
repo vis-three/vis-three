@@ -5,11 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TextureSupport</title>
-    <link
-      rel="shortcut icon"
-      type="image/x-icon"
-      href="/examples/public/favicon.ico"
-    />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="../css/common.css" />
   </head>
 
@@ -27,10 +23,10 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import * as VIS from "vis-three";
       import { v4 as getUUid } from "uuid";
 
-      const canvasGenerator = new Vis.CanvasGenerator({
+      const canvasGenerator = new VIS.CanvasGenerator({
         width: 800,
         height: 160,
       })
@@ -48,7 +44,7 @@
           left: "10%",
         });
 
-      const engine = new Vis.ModelingEngineSupport()
+      const engine = new VIS.ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true)
@@ -56,50 +52,52 @@
           "example.canvas": canvasGenerator.get(),
         });
 
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
       engine
         .loadResourcesAsync([
-          "/examples/public/video/1.mp4",
-          "/examples/public/texture/skyBox/snowVillage/nx.jpg",
-          "/examples/public/texture/skyBox/snowVillage/ny.jpg",
-          "/examples/public/texture/skyBox/snowVillage/nz.jpg",
-          "/examples/public/texture/skyBox/snowVillage/px.jpg",
-          "/examples/public/texture/skyBox/snowVillage/py.jpg",
-          "/examples/public/texture/skyBox/snowVillage/pz.jpg",
+          "/video/1.mp4",
+          "/texture/skyBox/snowVillage/nx.jpg",
+          "/texture/skyBox/snowVillage/ny.jpg",
+          "/texture/skyBox/snowVillage/nz.jpg",
+          "/texture/skyBox/snowVillage/px.jpg",
+          "/texture/skyBox/snowVillage/py.jpg",
+          "/texture/skyBox/snowVillage/pz.jpg",
         ])
         .then(() => {
-          const ambientLight = Vis.generateConfig("AmbientLight");
+          const ambientLight = VIS.generateConfig("AmbientLight");
 
-          const canvasTexture = Vis.generateConfig("CanvasTexture", {
+          const canvasTexture = VIS.generateConfig("CanvasTexture", {
             url: "example.canvas",
           });
-          const videoTexture = Vis.generateConfig("VideoTexture", {
-            url: "/examples/public/video/1.mp4",
+          const videoTexture = VIS.generateConfig("VideoTexture", {
+            url: "/video/1.mp4",
           });
-          const cubeTexture = Vis.generateConfig("CubeTexture", {
+          const cubeTexture = VIS.generateConfig("CubeTexture", {
             cube: {
-              nx: "/examples/public/texture/skyBox/snowVillage/nx.jpg",
-              ny: "/examples/public/texture/skyBox/snowVillage/ny.jpg",
-              nz: "/examples/public/texture/skyBox/snowVillage/nz.jpg",
-              px: "/examples/public/texture/skyBox/snowVillage/px.jpg",
-              py: "/examples/public/texture/skyBox/snowVillage/py.jpg",
-              pz: "/examples/public/texture/skyBox/snowVillage/pz.jpg",
+              nx: "/texture/skyBox/snowVillage/nx.jpg",
+              ny: "/texture/skyBox/snowVillage/ny.jpg",
+              nz: "/texture/skyBox/snowVillage/nz.jpg",
+              px: "/texture/skyBox/snowVillage/px.jpg",
+              py: "/texture/skyBox/snowVillage/py.jpg",
+              pz: "/texture/skyBox/snowVillage/pz.jpg",
             },
           });
 
-          const spriteMaterial = Vis.generateConfig("SpriteMaterial", {
+          const spriteMaterial = VIS.generateConfig("SpriteMaterial", {
             map: canvasTexture.vid,
           });
 
-          const box1Material = Vis.generateConfig("MeshStandardMaterial", {
+          const box1Material = VIS.generateConfig("MeshStandardMaterial", {
             map: videoTexture.vid,
           });
 
-          const box2Material = Vis.generateConfig("MeshStandardMaterial", {
+          const box2Material = VIS.generateConfig("MeshStandardMaterial", {
             roughness: 0,
             metalness: 1,
           });
 
-          const sprite = Vis.generateConfig("Sprite", {
+          const sprite = VIS.generateConfig("Sprite", {
             material: spriteMaterial.vid,
             position: {
               y: 15,
@@ -110,13 +108,13 @@
             },
           });
 
-          const boxGeometry = Vis.generateConfig("BoxGeometry", {
+          const boxGeometry = VIS.generateConfig("BoxGeometry", {
             width: 20,
             height: 20,
             depth: 20,
           });
 
-          const box1 = Vis.generateConfig("Mesh", {
+          const box1 = VIS.generateConfig("Mesh", {
             geometry: boxGeometry.vid,
             material: box1Material.vid,
             position: {
@@ -124,7 +122,7 @@
             },
           });
 
-          const box2 = Vis.generateConfig("Mesh", {
+          const box2 = VIS.generateConfig("Mesh", {
             geometry: boxGeometry.vid,
             material: box2Material.vid,
             position: {
@@ -132,7 +130,7 @@
             },
           });
 
-          const scene = Vis.generateConfig("Scene", {
+          const scene = VIS.generateConfig("Scene", {
             background: cubeTexture.vid,
             environment: cubeTexture.vid,
             children: [ambientLight.vid, box1.vid, box2.vid],
