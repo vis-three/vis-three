@@ -5,20 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/common.css" />
-    <link
-      rel="shortcut icon"
-      type="image/x-icon"
-      href="/examples/public/favicon.ico"
-    />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <title>LoaderManager</title>
   </head>
 
   <style>
-    #app {
-      width: 100%;
-      height: 100%;
-    }
-
     #totalProgress {
       position: fixed;
       color: white;
@@ -85,9 +76,9 @@
 
       loaderManager.addEventListener("loaded", (e) => {
         e.resourceMap.forEach((resource, url) => {
-          if (url === "/examples/public/model/Lowpoly/Lowpoly.obj") {
+          if (url === "/model/Lowpoly/Lowpoly.obj") {
             resource.scale.set(0.2, 0.2, 0.2);
-          } else if (url === "/examples/public/model/katana/katana.obj") {
+          } else if (url === "/model/katana/katana.obj") {
             resource.scale.set(10, 10, 10);
           }
           resource.position.set(Math.random() * 30, 0, Math.random() * 30);
