@@ -15,6 +15,7 @@
     <div id="app"></div>
 
     <script type="module">
+      import { message } from "ant-design-vue";
       import { ReinhardToneMapping } from "three";
       import {
         CONFIGTYPE,
@@ -28,6 +29,22 @@
       );
 
       engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
+      const loading = message.loading({
+        content: "正在加载3D资源：0%",
+        duration: 0,
+      });
+
+      engine.loaderManager.addEventListener("loading", (event) => {
+        loading.content = `正在加载3D资源：${parseInt(
+          ((event.loadSuccess / event.loadTotal) * 100).toString()
+        )}
+    %`;
+      });
+
+      engine.loaderManager.addEventListener("loaded", (event) => {
+        loading();
+      });
 
       (async () => {
         generateConfig.injectEngine = engine;
@@ -210,8 +227,6 @@
             multiply: 0.7,
           }),
         });
-
-        console.log(engine);
       })();
     </script>
   </body>

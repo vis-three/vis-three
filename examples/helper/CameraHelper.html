@@ -5,11 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PointLightHelper</title>
-    <link
-      rel="shortcut icon"
-      type="image/x-icon"
-      href="/examples/public/favicon.ico"
-    />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="../css/common.css" />
   </head>
 
@@ -24,11 +20,11 @@
     <div id="app"></div>
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import * as VIS from "vis-three";
 
       const dom = document.getElementById("app");
 
-      const engine = new Vis.ModelingEngine()
+      const engine = new VIS.ModelingEngine()
         .setDom(dom)
         .setSize()
         .setStats(true)
@@ -56,7 +52,7 @@
       camera.position.set(-40, 20, 0);
       camera.lookAt(0, 0, 0);
 
-      const cameraHelper = new Vis.CameraHelper(camera);
+      const cameraHelper = new VIS.CameraHelper(camera);
       scene.add(cameraHelper);
 
       const orthographic = new THREE.OrthographicCamera(
@@ -72,7 +68,7 @@
       orthographic.position.set(40, 20, 0);
       orthographic.lookAt(0, 0, 0);
 
-      const orthographicHelper = new Vis.CameraHelper(orthographic);
+      const orthographicHelper = new VIS.CameraHelper(orthographic);
       scene.add(orthographicHelper);
     </script>
   </body>

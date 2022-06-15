@@ -4,7 +4,7 @@
       <div class="sidebar-header">
         <div class="header-title">
           <a-image
-            src="/favicon.ico"
+            :src="basePath + '/favicon.ico'"
             :preview="false"
             @click="toHome"
           ></a-image>
@@ -24,7 +24,7 @@
           :key="item.name"
           class="sidebar-item"
           :class="{ 'sidebar-item-active': item.url === currentExample }"
-          @click="currentExample = item.url"
+          @click="changeExample(item.url)"
         >
           <a-image
             :preview="false"
@@ -43,7 +43,7 @@
         shape="circle"
         title="打开源码"
         class="code-open"
-        @click="jump(prefix + currentExample)"
+        @click="jump(repoPrefix + currentExample)"
       >
         <template #icon><CodeOutlined /></template>
       </a-button>
@@ -54,12 +54,15 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
 import menus from "./assets/menus.json";
+import URLParse from "url-parse";
 
 export default defineComponent({
   setup() {
+    const query = new URLParse(window.location.href, true).query;
+
     // data
-    const currentExample = ref<string>(menus[0].url);
-    const filterText = ref<string>("");
+    const currentExample = ref<string>(query.example || menus[0].url);
+    const filterText = ref<string>(query.search || "");
 
     // computed
     const filterMenus = computed(() => {
@@ -69,20 +72,34 @@ export default defineComponent({
     });
 
     // methods
-    const jump = (url) => {
+    const jump = (url: string) => {
       window.open(url);
     };
 
-    const getExampleUrl = (url) => {
+    const getExampleUrl = (url: string) => {
       return `${import.meta.env.BASE_URL}examples/${url}`;
     };
 
-    const getExamplePoster = (poster) => {
+    const getExamplePoster = (poster: string) => {
       return `${import.meta.env.BASE_URL}examples/${poster}`;
     };
 
+    const changeExample = (url: string) => {
+      currentExample.value = url;
+
+      let urlState = `${window.location.origin}${
+        import.meta.env.BASE_URL
+      }examples.html?example=${url}`;
+
+      if (filterText.value) {
+        urlState += `&search=${filterText.value}`;
+      }
+
+      history.replaceState(null, "", urlState);
+    };
+
     const toHome = () => {
-      window.location.href = "https://shiotsukikaedesari.gitee.io/vis-three/";
+      window.location.href = window.location.origin + "/vis-three/";
     };
 
     return {
@@ -92,7 +109,9 @@ export default defineComponent({
       getExampleUrl,
       getExamplePoster,
       toHome,
-      prefix:
+      changeExample,
+      basePath: import.meta.env.BASE_URL,
+      repoPrefix:
         "https://github.com/Shiotsukikaedesari/vis-three/tree/main/examples/",
       filterMenus,
     };

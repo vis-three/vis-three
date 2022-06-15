@@ -1,137 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>History</title>
-  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
-  <link rel="stylesheet" href="../css/common.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>History</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
 
-<style>
-  #app {
-    width: 100%;
-    height: 100%;
-  }
-
-  .tips {
-    position: fixed;
-    top:30px;
-    left: 50%;
-    transform: translate(-50%, 0);
-    color: white;
-  }
-</style>
-
-<body>
-  <div id="app"></div>
-  <div class="tips">撤销：ctrl + z,  恢复：ctrl + y</div>
-
-
-  <script type="module">
-    import * as THREE from 'three'
-    import * as Vis from '../../dist/Vis.es.js'
-    const engine = new Vis.ModelingEngine()
-    .setDom(document.getElementById('app'))
-    .setSize()
-    .setStats(true)
-    .play()
-
-    const scene = engine.scene
-
-    const box = new THREE.Mesh(
-      new THREE.BoxBufferGeometry(10, 10, 10),
-      new THREE.MeshStandardMaterial({ color: 'rgb(255, 105, 100)' })
-    )
-    box.position.x = 10
-    scene.add(box)
-
-    const pointLight = new THREE.PointLight('rgb(255, 255, 255)', 1, 300, 0)
-    pointLight.position.y = 30
-    scene.add(pointLight)
-
-    const history = new Vis.History(50)
-    
-
-    const SectionAction = Vis.ActionLibrary.SectionAction
-
-    class ModelingSectionAction extends SectionAction {
-      static status = false
-      static cacheSection = []
-
-      constructor ({objects, engine}) {
-
-        const params = {
-          oldObjects: [].concat(ModelingSectionAction.cacheSection),
-          newObjects: [].concat(objects),
-          engine
-        }
-
-        super(params)
-
-        ModelingSectionAction.cacheSection = [].concat(objects)
-      }
-
-      next () {
-        ModelingSectionAction.status = true
-        super.next()
-      }
-
-      prev () {
-        ModelingSectionAction.status = true
-        super.prev()
-      }
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
     }
 
-    engine.addEventListener('selected', (event) => {
-      if (ModelingSectionAction.status) {
-        ModelingSectionAction.status = false
-        return
+    .tips {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translate(-50%, 0);
+      color: white;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+    <div class="tips">撤销：ctrl + z, 恢复：ctrl + y</div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as Vis from "vis-three";
+      const engine = new Vis.ModelingEngine()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true)
+        .play();
+
+      const scene = engine.scene;
+
+      const box = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(10, 10, 10),
+        new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
+      );
+      box.position.x = 10;
+      scene.add(box);
+
+      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
+      pointLight.position.y = 30;
+      scene.add(pointLight);
+
+      const history = new Vis.History(50);
+
+      const SectionAction = Vis.ActionLibrary.SectionAction;
+
+      class ModelingSectionAction extends SectionAction {
+        static status = false;
+        static cacheSection = [];
+
+        constructor({ objects, engine }) {
+          const params = {
+            oldObjects: [].concat(ModelingSectionAction.cacheSection),
+            newObjects: [].concat(objects),
+            engine,
+          };
+
+          super(params);
+
+          ModelingSectionAction.cacheSection = [].concat(objects);
+        }
+
+        next() {
+          ModelingSectionAction.status = true;
+          super.next();
+        }
+
+        prev() {
+          ModelingSectionAction.status = true;
+          super.prev();
+        }
       }
 
-      history.apply(new ModelingSectionAction({
-        objects: event.objects,
-        engine: engine
-      }))
-    })
+      engine.addEventListener("selected", (event) => {
+        if (ModelingSectionAction.status) {
+          ModelingSectionAction.status = false;
+          return;
+        }
 
+        history.apply(
+          new ModelingSectionAction({
+            objects: event.objects,
+            engine: engine,
+          })
+        );
+      });
 
+      const transformControls = engine.transformControls;
+      const TransformAction = Vis.ActionLibrary.TransformAction;
 
-    const transformControls = engine.transformControls
-    const TransformAction = Vis.ActionLibrary.TransformAction
+      let action = "";
+      transformControls.addEventListener("mouseDown", (event) => {
+        action = new TransformAction({ transformControls });
+        action.generate("prev");
+      });
 
-    let action  = ''
-    transformControls.addEventListener('mouseDown', (event) => {
+      transformControls.addEventListener("mouseUp", (event) => {
+        action.generate("next");
+        history.apply(action);
+        action = "";
+      });
 
-      action = new TransformAction({transformControls})
-      action.generate('prev')
-    })
-
-
-    transformControls.addEventListener('mouseUp', (event) => {
-      action.generate('next')
-      history.apply(action)
-      action = ''
-    })
-
-
-    engine.keyboardManager.register({
-      shortcutKey: ['ctrl', 'z'],
-      desp: 'undo',
-      keyup: (event) => {
-        event?.preventDefault()
-        history.undo()
-      }
-    }).register({
-      shortcutKey: ['ctrl', 'y'],
-      desp: 'redo',
-      keyup: (event) => {
-        event?.preventDefault()
-        history.redo()
-      }
-    })
-  </script>
-  
-</body>
+      engine.keyboardManager
+        .register({
+          shortcutKey: ["ctrl", "z"],
+          desp: "undo",
+          keyup: (event) => {
+            event?.preventDefault();
+            history.undo();
+          },
+        })
+        .register({
+          shortcutKey: ["ctrl", "y"],
+          desp: "redo",
+          keyup: (event) => {
+            event?.preventDefault();
+            history.redo();
+          },
+        });
+    </script>
+  </body>
 </html>

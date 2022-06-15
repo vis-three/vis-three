@@ -61,7 +61,7 @@
       const scene = engine.scene;
 
       const background = new THREE.CubeTextureLoader()
-        .setPath("/texture/skyBox/snowVillage/")
+        .setPath(import.meta.env.BASE_URL + "/texture/skyBox/snowVillage/")
         .load(["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]);
 
       scene.background = background;

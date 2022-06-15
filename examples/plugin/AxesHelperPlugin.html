@@ -1,59 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AxesHelperPlugin</title>
-  <link rel="shortcut icon" type="image/x-icon" href="/examples/public/favicon.ico" >
-  <link rel="stylesheet" href="../css/common.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AxesHelperPlugin</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
 
-<style>
-  #app {
-    width: 100%;
-    height: 100%;
-  }
-
-  button {
-    position: fixed;
-    top: 50px;
-    left: 50%;
-    transform: translate(-50%);
-    margin: 0 5px;
-    font-size: 16px;
-    padding: 8px 10px;
-    background: rgb(237, 75, 243);
-    border-radius: 3px;
-    box-shadow: 0 0 6px rgb(236, 182, 238);
-  }
-
-</style>
-
-<body>
-  <div id="app"></div>
-  <button id="operate">tirggle</button>
-
-  <script type="module">
-    import * as THREE from 'three'
-    import * as Vis from '../../dist/Vis.es.js'
-
-    const engine = new Vis.DisplayEngine()
-    .install('AxesHelper', {
-      length: 200,
-    })
-    .complete()
-    .setDom(document.getElementById('app'))
-    .setSize()
-    .play()
-
-    let show = true
-    document.getElementById('operate').onclick = event => {
-
-      show = !show
-      engine.setAxesHelper({show})
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
     }
-  </script>
-  
-</body>
+
+    button {
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      transform: translate(-50%);
+      margin: 0 5px;
+      font-size: 16px;
+      padding: 8px 10px;
+      background: rgb(237, 75, 243);
+      border-radius: 3px;
+      box-shadow: 0 0 6px rgb(236, 182, 238);
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+    <button id="operate">tirggle</button>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as Vis from "vis-three";
+
+      const engine = new Vis.DisplayEngine()
+        .install("AxesHelper", {
+          length: 200,
+        })
+        .complete()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      let show = true;
+      document.getElementById("operate").onclick = (event) => {
+        show = !show;
+        engine.setAxesHelper({ show });
+      };
+    </script>
+  </body>
 </html>
