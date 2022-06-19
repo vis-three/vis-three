@@ -1,1 +1,0 @@
-import{D as t}from"../Vis.es.1ff11d31.js";import"../three.5dc0577a.js";import"../vis-three.a3d50446.js";const o=new t().install("GridHelper",{range:200,spacing:50,axesColor:"red",cellColor:"yellow",opacity:1}).complete().setDom(document.getElementById("app")).setSize().play();let e=!0;document.getElementById("operate").onclick=l=>{e=!e,o.setGridHelper({show:e})};

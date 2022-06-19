@@ -23,10 +23,10 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import * as VIS from "vis-three";
       import { v4 as getUUid } from "uuid";
 
-      const canvasGenerator = new Vis.CanvasGenerator({
+      const canvasGenerator = new VIS.CanvasGenerator({
         width: 800,
         height: 160,
       })
@@ -44,7 +44,7 @@
           left: "10%",
         });
 
-      const engine = new Vis.ModelingEngineSupport()
+      const engine = new VIS.ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true)
@@ -52,19 +52,27 @@
           "example.canvas": canvasGenerator.get(),
         });
 
-      const ambientLight = Vis.generateConfig("AmbientLight");
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid).play();
+
+      VIS.generateConfig.injectScene = true;
+
+      const ambientLight = VIS.generateConfig("AmbientLight");
 
       const canvasTexture = engine.dataSupportManager.reactiveConfig(
-        Vis.generateConfig("CanvasTexture", {
+        VIS.generateConfig("CanvasTexture", {
           url: "example.canvas",
         })
       );
 
-      const spriteMaterial = Vis.generateConfig("SpriteMaterial", {
+      const spriteMaterial = VIS.generateConfig("SpriteMaterial", {
         map: canvasTexture.vid,
       });
 
-      const sprite = Vis.generateConfig("Sprite", {
+      const sprite = VIS.generateConfig("Sprite", {
         material: spriteMaterial.vid,
         position: {
           y: 15,
@@ -75,24 +83,10 @@
         },
       });
 
-      const scene = Vis.generateConfig("Scene", {
-        children: [ambientLight.vid, sprite.vid],
-      });
-
-      engine.applyConfig(ambientLight, spriteMaterial, sprite, scene);
-
-      engine.setScene(scene.vid).play();
-
       let number = 0;
 
       setInterval(() => {
         canvasGenerator.clear().draw((ctx) => {
-          ctx.textBaseline = "middle";
-          ctx.textAlign = "center";
-
-          ctx.fillStyle = "rgb(206, 42, 230)";
-
-          ctx.font = " bold 72px 微软雅黑";
           ctx.fillText(`Hello World! ${number}`, 400, 80);
         });
         number += 1;

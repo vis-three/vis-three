@@ -22,6 +22,9 @@ export class CanvasGenerator {
     this.canvas.height = (parameters?.height || 512) * devicePixelRatio;
     this.canvas.style.backgroundColor =
       parameters?.bgColor || "rgb(255, 255, 255)";
+
+    const ctx = this.canvas.getContext("2d");
+    ctx && ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
   }
 
   /**
@@ -63,7 +66,6 @@ export class CanvasGenerator {
     const ctx = this.canvas.getContext("2d");
 
     if (ctx) {
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
       fun(ctx);
       return this;
     } else {

@@ -33,8 +33,10 @@ import {
 
 ## 备注
 
-gitee 仓库为 github 的同步备份仓库
-github 地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github.com/Shiotsukikaedesari/vis-three)
+- gitee 仓库为 github 的同步备份仓库
+  github 地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github.com/Shiotsukikaedesari/vis-three)
+
+- 例子或者网页需要添加额外依赖的，请添加到`devDependencies`中：`npm i xxxx -D`
 
 ## 项目命令
 

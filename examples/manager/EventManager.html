@@ -48,72 +48,35 @@
       pointLight.position.y = 30;
       scene.add(pointLight);
 
+      // pointer or mouse but support use pointer follow three
       const global = engine.eventManager;
 
-      // pointer or mouse but support use pointer follow three
+      const genericEvents = [
+        "pointerdown",
+        "pointerup",
+        "mousedown",
+        "mouseup",
+        // "pointermove",
+        "pointerenter",
+        "pointerleave",
+        "click",
+        "dblclick",
+        "contextmenu",
+      ];
 
-      // global.addEventListener('click', (e) => {
-      //   console.log('global click')
-      // })
-      // global.addEventListener('contextmenu', (e) => {
-      //   console.log('global contextmenu')
-      // })
-      // global.addEventListener('dblclick', (e) => {
-      //   console.log('global dblclick')
-      // })
-      // global.addEventListener('pointermove', (e) => {
-      //   console.log('global pointermove')
-      // })
+      for (const name of genericEvents) {
+        box.addEventListener(name, (event) => {
+          console.log(`box ${name}`);
+        });
 
-      box.addEventListener("pointerdown", (e) => {
-        console.log("box pointerdown");
-      });
-      box.addEventListener("pointerup", (e) => {
-        console.log("box pointerup");
-      });
-      box.addEventListener("pointerenter", (e) => {
-        console.log("box pointerenter");
-      });
-      box.addEventListener("pointermove", (e) => {
-        console.log("box pointermove");
-      });
-      box.addEventListener("pointerleave", (e) => {
-        console.log("box pointerleave");
-      });
-      box.addEventListener("click", (e) => {
-        console.log("box click");
-      });
-      box.addEventListener("contextmenu", (e) => {
-        console.log("box contextmenu");
-      });
-      box.addEventListener("dblclick", (e) => {
-        console.log("box dblclick");
-      });
+        box2.addEventListener(name, (event) => {
+          console.log(`box2 ${name}`);
+        });
 
-      box2.addEventListener("pointerdown", (e) => {
-        console.log("box2 pointerdown");
-      });
-      box2.addEventListener("pointerup", (e) => {
-        console.log("box2 pointerup");
-      });
-      box2.addEventListener("pointerenter", (e) => {
-        console.log("box2 pointerenter");
-      });
-      box2.addEventListener("pointermove", (e) => {
-        console.log("box2 pointermove");
-      });
-      box2.addEventListener("pointerleave", (e) => {
-        console.log("box2 pointerleave");
-      });
-      box2.addEventListener("click", (e) => {
-        console.log("box2 click");
-      });
-      box2.addEventListener("contextmenu", (e) => {
-        console.log("box2 contextmenu");
-      });
-      box2.addEventListener("dblclick", (e) => {
-        console.log("box2 dblclick");
-      });
+        global.addEventListener(name, (event) => {
+          console.log(`global ${name}`);
+        });
+      }
     </script>
   </body>
 </html>

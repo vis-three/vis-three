@@ -14,7 +14,11 @@
 #### fix
 
 - object-updateEvent
+- canvasGenerator
 
 #### perf
+
+- eventManager
+- pointerManager
 
 #### deprecated

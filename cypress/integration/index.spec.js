@@ -1,6 +1,6 @@
 describe("index test", () => {
   it("Visits the examples website", () => {
-    cy.visit("http://localhost:3000/examples/index.html")
+    cy.visit("http://localhost:3000/vis-three/examples/index.html")
       .window()
       .then(() => {
         cy.get(".children-box > a").then(($el) => {
