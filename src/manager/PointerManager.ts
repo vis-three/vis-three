@@ -18,9 +18,14 @@ export class PointerManager extends EventDispatcher {
   private mouseEventTimer: number | null;
   private throttleTime: number;
 
-  private pointerDownFun: (event: PointerEvent) => void;
-  private pointerMoveFun: (event: PointerEvent) => void;
-  private pointerUpFun: (event: PointerEvent) => void;
+  private pointerDownHandler: (event: PointerEvent) => void;
+  private pointerMoveHandler: (event: PointerEvent) => void;
+  private pointerUpHandler: (event: PointerEvent) => void;
+  private mouseDownHandler: (event: MouseEvent) => void;
+  private mouseUpHandler: (event: MouseEvent) => void;
+  private clickHandler: (event: MouseEvent) => void;
+  private dblclickHandler: (event: MouseEvent) => void;
+  private contextmenuHandler: (event: MouseEvent) => void;
 
   constructor(parameters: PointerManagerParameters) {
     super();
@@ -31,23 +36,32 @@ export class PointerManager extends EventDispatcher {
     this.mouseEventTimer = null;
     this.throttleTime = parameters.throttleTime || 1000 / 60;
 
-    this.pointerDownFun = (event: PointerEvent) => {
-      const eventObject = { mouse: this.mouse };
+    const mergeEvent = (event: MouseEvent) => {
+      const eventObject = {
+        mouse: {
+          x: this.mouse.x,
+          y: this.mouse.y,
+        },
+      };
       for (const key in event) {
         eventObject[key] = event[key];
       }
-      this.dispatchEvent(eventObject as VisPointerEvent);
+      return eventObject as VisPointerEvent;
     };
 
-    this.pointerMoveFun = (event: PointerEvent) => {
+    const extendEventHanlder = (event: PointerEvent | MouseEvent) => {
+      this.dispatchEvent(mergeEvent(event));
+    };
+
+    this.pointerMoveHandler = (event: PointerEvent) => {
       if (!this.canMouseMove) {
         return;
       }
       this.canMouseMove = false;
       this.mouseEventTimer = window.setTimeout(() => {
         const mouse = this.mouse;
-        const dom = this.dom;
-        const boundingBox = dom!.getBoundingClientRect();
+        const dom = this.dom!;
+        const boundingBox = dom.getBoundingClientRect();
         // 兼容css3 dom
         mouse.x =
           ((event.clientX - boundingBox.left) / dom!.offsetWidth) * 2 - 1;
@@ -56,21 +70,23 @@ export class PointerManager extends EventDispatcher {
 
         this.canMouseMove = true;
 
-        const eventObject = { mouse: this.mouse };
-        for (const key in event) {
-          eventObject[key] = event[key];
-        }
-        this.dispatchEvent(eventObject as VisPointerEvent);
+        this.dispatchEvent(mergeEvent(event));
       }, this.throttleTime);
     };
 
-    this.pointerUpFun = (event: PointerEvent) => {
-      const eventObject = { mouse: this.mouse };
-      for (const key in event) {
-        eventObject[key] = event[key];
-      }
-      this.dispatchEvent(eventObject as VisPointerEvent);
-    };
+    this.mouseDownHandler = extendEventHanlder;
+
+    this.mouseUpHandler = extendEventHanlder;
+
+    this.pointerDownHandler = extendEventHanlder;
+
+    this.pointerUpHandler = extendEventHanlder;
+
+    this.clickHandler = extendEventHanlder;
+
+    this.dblclickHandler = extendEventHanlder;
+
+    this.contextmenuHandler = extendEventHanlder;
   }
 
   /**
@@ -80,13 +96,24 @@ export class PointerManager extends EventDispatcher {
    */
   setDom(dom: HTMLElement): this {
     if (this.dom) {
-      this.dom.removeEventListener("pointerdown", this.pointerDownFun);
-      this.dom.removeEventListener("pointermove", this.pointerMoveFun);
-      this.dom.removeEventListener("pointerup", this.pointerUpFun);
+      const dom = this.dom;
+      dom.removeEventListener("mousedown", this.mouseDownHandler);
+      dom.removeEventListener("mouseup", this.mouseUpHandler);
+      dom.removeEventListener("pointerdown", this.pointerDownHandler);
+      dom.removeEventListener("pointermove", this.pointerMoveHandler);
+      dom.removeEventListener("pointerup", this.pointerUpHandler);
+      dom.removeEventListener("click", this.clickHandler);
+      dom.removeEventListener("dblclick", this.dblclickHandler);
+      dom.removeEventListener("contextmenu", this.contextmenuHandler);
     }
-    dom.addEventListener("pointerdown", this.pointerDownFun);
-    dom.addEventListener("pointermove", this.pointerMoveFun);
-    dom.addEventListener("pointerup", this.pointerUpFun);
+    dom.addEventListener("mousedown", this.mouseDownHandler);
+    dom.addEventListener("mouseup", this.mouseUpHandler);
+    dom.addEventListener("pointerdown", this.pointerDownHandler);
+    dom.addEventListener("pointermove", this.pointerMoveHandler);
+    dom.addEventListener("pointerup", this.pointerUpHandler);
+    dom.addEventListener("click", this.clickHandler);
+    dom.addEventListener("dblclick", this.dblclickHandler);
+    dom.addEventListener("contextmenu", this.contextmenuHandler);
 
     this.dom = dom;
     return this;

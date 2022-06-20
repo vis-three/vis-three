@@ -1157,22 +1157,35 @@ class PointerManager extends EventDispatcher {
     __publicField(this, "canMouseMove");
     __publicField(this, "mouseEventTimer");
     __publicField(this, "throttleTime");
-    __publicField(this, "pointerDownFun");
-    __publicField(this, "pointerMoveFun");
-    __publicField(this, "pointerUpFun");
+    __publicField(this, "pointerDownHandler");
+    __publicField(this, "pointerMoveHandler");
+    __publicField(this, "pointerUpHandler");
+    __publicField(this, "mouseDownHandler");
+    __publicField(this, "mouseUpHandler");
+    __publicField(this, "clickHandler");
+    __publicField(this, "dblclickHandler");
+    __publicField(this, "contextmenuHandler");
     this.dom = parameters.dom;
     this.mouse = new Vector2();
     this.canMouseMove = true;
     this.mouseEventTimer = null;
     this.throttleTime = parameters.throttleTime || 1e3 / 60;
-    this.pointerDownFun = (event) => {
-      const eventObject = { mouse: this.mouse };
+    const mergeEvent = (event) => {
+      const eventObject = {
+        mouse: {
+          x: this.mouse.x,
+          y: this.mouse.y
+        }
+      };
       for (const key in event) {
         eventObject[key] = event[key];
       }
-      this.dispatchEvent(eventObject);
+      return eventObject;
     };
-    this.pointerMoveFun = (event) => {
+    const extendEventHanlder = (event) => {
+      this.dispatchEvent(mergeEvent(event));
+    };
+    this.pointerMoveHandler = (event) => {
       if (!this.canMouseMove) {
         return;
       }
@@ -1184,30 +1197,37 @@ class PointerManager extends EventDispatcher {
         mouse.x = (event.clientX - boundingBox.left) / dom.offsetWidth * 2 - 1;
         mouse.y = -((event.clientY - boundingBox.top) / dom.offsetHeight) * 2 + 1;
         this.canMouseMove = true;
-        const eventObject = { mouse: this.mouse };
-        for (const key in event) {
-          eventObject[key] = event[key];
-        }
-        this.dispatchEvent(eventObject);
+        this.dispatchEvent(mergeEvent(event));
       }, this.throttleTime);
     };
-    this.pointerUpFun = (event) => {
-      const eventObject = { mouse: this.mouse };
-      for (const key in event) {
-        eventObject[key] = event[key];
-      }
-      this.dispatchEvent(eventObject);
-    };
+    this.mouseDownHandler = extendEventHanlder;
+    this.mouseUpHandler = extendEventHanlder;
+    this.pointerDownHandler = extendEventHanlder;
+    this.pointerUpHandler = extendEventHanlder;
+    this.clickHandler = extendEventHanlder;
+    this.dblclickHandler = extendEventHanlder;
+    this.contextmenuHandler = extendEventHanlder;
   }
   setDom(dom) {
     if (this.dom) {
-      this.dom.removeEventListener("pointerdown", this.pointerDownFun);
-      this.dom.removeEventListener("pointermove", this.pointerMoveFun);
-      this.dom.removeEventListener("pointerup", this.pointerUpFun);
+      const dom2 = this.dom;
+      dom2.removeEventListener("mousedown", this.mouseDownHandler);
+      dom2.removeEventListener("mouseup", this.mouseUpHandler);
+      dom2.removeEventListener("pointerdown", this.pointerDownHandler);
+      dom2.removeEventListener("pointermove", this.pointerMoveHandler);
+      dom2.removeEventListener("pointerup", this.pointerUpHandler);
+      dom2.removeEventListener("click", this.clickHandler);
+      dom2.removeEventListener("dblclick", this.dblclickHandler);
+      dom2.removeEventListener("contextmenu", this.contextmenuHandler);
     }
-    dom.addEventListener("pointerdown", this.pointerDownFun);
-    dom.addEventListener("pointermove", this.pointerMoveFun);
-    dom.addEventListener("pointerup", this.pointerUpFun);
+    dom.addEventListener("mousedown", this.mouseDownHandler);
+    dom.addEventListener("mouseup", this.mouseUpHandler);
+    dom.addEventListener("pointerdown", this.pointerDownHandler);
+    dom.addEventListener("pointermove", this.pointerMoveHandler);
+    dom.addEventListener("pointerup", this.pointerUpHandler);
+    dom.addEventListener("click", this.clickHandler);
+    dom.addEventListener("dblclick", this.dblclickHandler);
+    dom.addEventListener("contextmenu", this.contextmenuHandler);
     this.dom = dom;
     return this;
   }
@@ -1250,6 +1270,7 @@ class EventManager extends EventDispatcher {
     __publicField(this, "recursive", false);
     __publicField(this, "penetrate", false);
     __publicField(this, "propagation", false);
+    __publicField(this, "delegation", false);
     this.raycaster = new Raycaster();
     this.camera = parameters.camera;
     this.scene = parameters.scene;
@@ -1282,55 +1303,44 @@ class EventManager extends EventDispatcher {
     const mergeEvent = function(event, object) {
       return Object.assign({}, event, object);
     };
-    pointerManager.addEventListener("pointerdown", (event) => {
+    const genericEventHanlder = (event, eventName) => {
       const intersections = this.intersectObject(event.mouse);
       if (intersections.length) {
         if (this.penetrate) {
-          if (event.button === 0) {
-            for (const intersection of intersections) {
-              intersection.object.dispatchEvent(mergeEvent(event, {
-                type: "pointerdown",
-                intersection
-              }));
-              intersection.object.dispatchEvent(mergeEvent(event, {
-                type: "mousedown",
-                intersection
-              }));
-            }
+          for (const intersection of intersections) {
+            intersection.object.dispatchEvent(mergeEvent(event, {
+              type: eventName,
+              intersection
+            }));
           }
         } else {
           const intersection = intersections[0];
-          if (event.button === 0) {
-            intersection.object.dispatchEvent(mergeEvent(event, {
-              type: "pointerdown",
-              intersection
-            }));
-            intersection.object.dispatchEvent(mergeEvent(event, {
-              type: "mousedown",
-              intersection
-            }));
-          }
+          intersection.object.dispatchEvent(mergeEvent(event, {
+            type: eventName,
+            intersection
+          }));
         }
       }
-      if (event.button === 0) {
-        this.dispatchEvent(mergeEvent(event, {
-          type: "pointerdown",
-          intersections
-        }));
-        this.dispatchEvent(mergeEvent(event, {
-          type: "mousedown",
-          intersections
-        }));
-        this.scene.dispatchEvent(mergeEvent(event, {
-          type: "pointerdown",
-          intersections
-        }));
-        this.scene.dispatchEvent(mergeEvent(event, {
-          type: "mousedown",
-          intersections
-        }));
-      }
-    });
+      this.dispatchEvent(mergeEvent(event, {
+        type: eventName,
+        intersections
+      }));
+    };
+    const genericEvents = [
+      "pointerdown",
+      "pointerup",
+      "mousedown",
+      "mouseup",
+      "pointermove",
+      "click",
+      "dblclick",
+      "contextmenu"
+    ];
+    for (const name of genericEvents) {
+      pointerManager.addEventListener(name, (event) => {
+        genericEventHanlder(event, name);
+      });
+    }
     const cacheObjectMap = new Map();
     let topCacheIntersection = null;
     pointerManager.addEventListener("pointermove", (event) => {
@@ -1453,134 +1463,6 @@ class EventManager extends EventDispatcher {
         type: "mousemove",
         intersections
       }));
-      this.scene.dispatchEvent(mergeEvent(event, {
-        type: "pointermove",
-        intersections
-      }));
-      this.scene.dispatchEvent(mergeEvent(event, {
-        type: "mousemove",
-        intersections
-      }));
-    });
-    const cacheClickObject = new Map();
-    let cacheClickTimer = null;
-    pointerManager.addEventListener("pointerup", (event) => {
-      const intersections = this.intersectObject(event.mouse);
-      if (intersections.length) {
-        if (this.penetrate) {
-          for (const intersection of intersections) {
-            if (event.button === 0) {
-              intersection.object.dispatchEvent(mergeEvent(event, {
-                type: "pointerup",
-                intersection
-              }));
-              intersection.object.dispatchEvent(mergeEvent(event, {
-                type: "mouseup",
-                intersection
-              }));
-              intersection.object.dispatchEvent(mergeEvent(event, {
-                type: "click",
-                intersection
-              }));
-              if (cacheClickObject.has(intersection.object)) {
-                intersection.object.dispatchEvent(mergeEvent(event, {
-                  type: "dblclick",
-                  intersection
-                }));
-              }
-            } else if (event.button === 2) {
-              intersection.object.dispatchEvent(mergeEvent(event, {
-                type: "contextmenu",
-                intersection
-              }));
-            }
-          }
-        } else {
-          const intersection = intersections[0];
-          if (event.button === 0) {
-            intersection.object.dispatchEvent(mergeEvent(event, {
-              type: "pointerup",
-              intersection
-            }));
-            intersection.object.dispatchEvent(mergeEvent(event, {
-              type: "mouseup",
-              intersection
-            }));
-            intersection.object.dispatchEvent(mergeEvent(event, {
-              type: "click",
-              intersection
-            }));
-            if (cacheClickObject.has(intersection.object)) {
-              intersection.object.dispatchEvent(mergeEvent(event, {
-                type: "dblclick",
-                intersection
-              }));
-            }
-          } else if (event.button === 2) {
-            intersection.object.dispatchEvent(mergeEvent(event, {
-              type: "contextmenu",
-              intersection
-            }));
-          }
-        }
-      }
-      if (event.button === 0) {
-        this.dispatchEvent(mergeEvent(event, {
-          type: "pointerup",
-          intersections
-        }));
-        this.dispatchEvent(mergeEvent(event, {
-          type: "mouseup",
-          intersections
-        }));
-        this.dispatchEvent(mergeEvent(event, {
-          type: "click",
-          intersections
-        }));
-        this.scene.dispatchEvent(mergeEvent(event, {
-          type: "pointerup",
-          intersections
-        }));
-        this.scene.dispatchEvent(mergeEvent(event, {
-          type: "mouseup",
-          intersections
-        }));
-        this.scene.dispatchEvent(mergeEvent(event, {
-          type: "click",
-          intersections
-        }));
-        if (cacheClickTimer) {
-          clearTimeout(cacheClickTimer);
-          cacheClickTimer = null;
-          this.dispatchEvent(mergeEvent(event, {
-            type: "dblclick",
-            intersections
-          }));
-          this.scene.dispatchEvent(mergeEvent(event, {
-            type: "dblclick",
-            intersections
-          }));
-        } else {
-          if (intersections.length) {
-            for (const intersection of intersections) {
-              cacheClickObject.set(intersection.object, true);
-            }
-          }
-          cacheClickTimer = window.setTimeout(() => {
-            cacheClickTimer = null;
-            cacheClickObject.clear();
-          }, 300);
-        }
-      } else if (event.button === 2) {
-        this.dispatchEvent(mergeEvent(event, {
-          type: "contextmenu",
-          intersections
-        }));
-        this.scene.dispatchEvent(mergeEvent(event, {
-          type: "contextmenu",
-          intersections
-        }));
-      }
     });
     return this;
   }
@@ -8726,6 +8608,8 @@ class CanvasGenerator {
     this.canvas.width = ((parameters == null ? void 0 : parameters.width) || 512) * devicePixelRatio;
     this.canvas.height = ((parameters == null ? void 0 : parameters.height) || 512) * devicePixelRatio;
     this.canvas.style.backgroundColor = (parameters == null ? void 0 : parameters.bgColor) || "rgb(255, 255, 255)";
+    const ctx = this.canvas.getContext("2d");
+    ctx && ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
   }
   get() {
     return this.canvas;
@@ -8745,7 +8629,6 @@ class CanvasGenerator {
   draw(fun) {
     const ctx = this.canvas.getContext("2d");
     if (ctx) {
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
       fun(ctx);
       return this;
     } else {
