@@ -12,8 +12,77 @@
     <div id="app"></div>
 
     <script type="module">
-      import * as Echarts from "echarts";
+      import * as echarts from "echarts";
       import * as VIS from "vis-three";
+
+      import stackedAreaOption from "./stackedAreaOption.js";
+
+      const stackedAreaCanvas = document.createElement("canvas");
+      stackedAreaCanvas.setAttribute("width", 512);
+      stackedAreaCanvas.setAttribute("height", 512);
+
+      const stackedAreaChart = echarts.init(stackedAreaCanvas);
+      stackedAreaChart.setOption(stackedAreaOption);
+
+      const engine = new VIS.ModelingEngineSupport()
+        .install("CSS3DRenderer")
+        .complete()
+        .setDom(document.getElementById("app"))
+        .setSize();
+
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid);
+
+      VIS.generateConfig.injectScene = true;
+
+      VIS.generateConfig("AmbientLight");
+
+      engine.registerResources({
+        stackedArea: stackedAreaCanvas,
+      });
+
+      const planeGeometry = VIS.generateConfig("PlaneGeometry", {
+        width: 40,
+        height: 40,
+      });
+
+      const imageTexture = VIS.generateConfig("ImageTexture", {
+        url: "stackedArea",
+      });
+
+      stackedAreaChart.on("rendered", () => {
+        imageTexture.needsUpdate = true;
+      });
+      stackedAreaChart.on("finished", () => {
+        imageTexture.needsUpdate = true;
+      });
+
+      const material = VIS.generateConfig("MeshStandardMaterial", {
+        map: imageTexture.vid,
+      });
+
+      const spriteMaterial = VIS.generateConfig("SpriteMaterial", {
+        map: imageTexture.vid,
+      });
+
+      const plane = VIS.generateConfig("Mesh", {
+        geometry: planeGeometry.vid,
+        material: material.vid,
+        position: {
+          x: -50,
+        },
+      });
+
+      const sprite = VIS.generateConfig("Sprite", {
+        material: spriteMaterial.vid,
+        scale: {
+          x: 40,
+          y: 40,
+        },
+      });
     </script>
   </body>
 </html>
