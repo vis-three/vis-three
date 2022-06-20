@@ -62,7 +62,7 @@
     <div id="app"></div>
 
     <script type="module">
-      import * as Vis from "vis-three";
+      import * as VIS from "vis-three";
       import { v4 as getUUid } from "uuid";
 
       import engineRouter from "./engine";
@@ -79,8 +79,10 @@
       import testRouter from "./test";
       import libraryRouter from "./library";
       import extendsRouter from "./extends";
+      import homepageRouter from "./homepage";
+      import dataviewRouter from "./dataview";
 
-      const engine = new Vis.DisplayEngineSupport()
+      const engine = new VIS.DisplayEngineSupport()
         .install("CSS3DRenderer")
         .complete()
         .setDom(document.getElementById("app"))
@@ -90,9 +92,27 @@
         engine.setSize();
       });
 
-      const ambientLight = Vis.generateConfig("AmbientLight");
+      VIS.generateConfig.injectEngine = engine;
 
-      const spotLight = Vis.generateConfig("SpotLight", {
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid);
+
+      VIS.generateConfig.injectScene = true;
+
+      const camera = VIS.generateConfig("PerspectiveCamera", {
+        far: 500,
+        position: {
+          y: 10,
+          z: 120,
+        },
+      });
+
+      engine.setCamera(camera.vid);
+
+      const ambientLight = VIS.generateConfig("AmbientLight");
+
+      const spotLight = VIS.generateConfig("SpotLight", {
         position: {
           y: 15,
           x: 50,
@@ -102,63 +122,39 @@
         distance: 120,
       });
 
-      const meshStandardMaterial = Vis.generateConfig("MeshStandardMaterial", {
+      const meshStandardMaterial = VIS.generateConfig("MeshStandardMaterial", {
         color: "rgb(45, 0, 50)",
         roughness: 0.8,
       });
 
-      const boxGeometry = Vis.generateConfig("BoxGeometry", {
+      const boxGeometry = VIS.generateConfig("BoxGeometry", {
         width: 100,
         height: 5,
         depth: 40,
       });
 
-      const mesh = Vis.generateConfig("Mesh", {
+      const mesh = VIS.generateConfig("Mesh", {
         geometry: boxGeometry.vid,
         material: meshStandardMaterial.vid,
       });
 
-      const scene = Vis.generateConfig("Scene", {
-        children: [ambientLight.vid, spotLight.vid, mesh.vid],
-      });
-
-      const camera = Vis.generateConfig("PerspectiveCamera", {
-        far: 500,
-        position: {
-          y: 10,
-          z: 120,
-        },
-      });
-
-      const animation = Vis.generateConfig("ScriptAnimation", {
+      const animation = VIS.generateConfig("ScriptAnimation", {
         target: mesh.vid,
         attribute: ".rotation.y",
-        script: Vis.AniScriptLibrary.generateConfig("linearTime", {
+        script: VIS.AniScriptLibrary.generateConfig("linearTime", {
           multiply: 1,
         }),
       });
 
-      const animation2 = Vis.generateConfig("ScriptAnimation", {
+      const animation2 = VIS.generateConfig("ScriptAnimation", {
         target: mesh.vid,
         attribute: ".rotation.x",
-        script: Vis.AniScriptLibrary.generateConfig("linearTime", {
+        script: VIS.AniScriptLibrary.generateConfig("linearTime", {
           multiply: 0.5,
         }),
       });
 
-      engine.applyConfig(
-        ambientLight,
-        spotLight,
-        meshStandardMaterial,
-        boxGeometry,
-        mesh,
-        camera,
-        scene,
-        animation,
-        animation2
-      );
-
-      engine.setScene(scene.vid).setCamera(camera.vid).play();
+      engine.play();
 
       const tree = [
         engineRouter,
@@ -175,6 +171,8 @@
         testRouter,
         libraryRouter,
         extendsRouter,
+        homepageRouter,
+        dataviewRouter,
       ];
 
       const domList = [];
@@ -200,8 +198,12 @@
       `;
         document.body.appendChild(moduleDom);
 
+        engine.registerResources({
+          [`index.${module.router}`]: moduleDom,
+        });
+
         const vid = getUUid();
-        const css3DObject = Vis.generateConfig("CSS3DPlane", {
+        const css3DObject = VIS.generateConfig("CSS3DPlane", {
           vid,
           element: `index.${module.router}`,
           scale: {
@@ -218,7 +220,7 @@
             y: module.rotation?.y || 0,
           },
           pointerenter: [
-            Vis.EventLibrary.generateConfig("vector3To", {
+            VIS.EventLibrary.generateConfig("vector3To", {
               params: {
                 target: vid,
                 attribute: ".rotation",
@@ -229,7 +231,7 @@
             }),
           ],
           pointerleave: [
-            Vis.EventLibrary.generateConfig("vector3To", {
+            VIS.EventLibrary.generateConfig("vector3To", {
               params: {
                 target: vid,
                 attribute: ".rotation",
@@ -240,14 +242,6 @@
             }),
           ],
         });
-
-        engine
-          .registerResources({
-            [`index.${module.router}`]: moduleDom,
-          })
-          .applyConfig(css3DObject);
-
-        scene.children.push(css3DObject.vid);
 
         setTimeout(() => {
           engine.setSize();
