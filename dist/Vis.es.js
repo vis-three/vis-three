@@ -1640,6 +1640,9 @@ const TransformControlsPlugin = function(params) {
   this.transformControls = transformControls;
   this.scene.add(this.transformControls);
   this.scene.add(this.transformControls.target);
+  this.transformControls.addEventListener("mouseDown", () => {
+    this.transing = true;
+  });
   this.setTransformControls = function(show) {
     if (show) {
       this.scene.add(this.transformControls);
@@ -1664,7 +1667,7 @@ const TransformControlsPlugin = function(params) {
       transformControls.setAttach(...event.objects);
     });
   } else {
-    this.eventManager.addEventListener("pointerup", (event) => {
+    this.eventManager.addEventListener("click", (event) => {
       if (this.transformControls.dragging) {
         return;
       }
@@ -3028,6 +3031,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["SPLINECURVEGEOMETRY"] = "SplineCurveGeometry";
   CONFIGTYPE2["CUBICBEZIERCURVEGEOMETRY"] = "CubicBezierCurveGeometry";
   CONFIGTYPE2["QUADRATICBEZIERCURVEGEOMETRY"] = "QuadraticBezierCurveGeometry";
+  CONFIGTYPE2["CUSTOMGEOMETRY"] = "CustomGeometry";
   CONFIGTYPE2["MESH"] = "Mesh";
   CONFIGTYPE2["LINE"] = "Line";
   CONFIGTYPE2["POINTS"] = "Points";
@@ -3230,6 +3234,19 @@ const getLoadGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
     type: CONFIGTYPE.LOADGEOMETRY,
     url: ""
+  });
+};
+const getCustomGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.CUSTOMGEOMETRY,
+    attribute: {
+      position: [],
+      color: [],
+      index: [],
+      normal: [],
+      uv: [],
+      uv2: []
+    }
   });
 };
 const getCylinderGeometryConfig = function() {
@@ -3736,6 +3753,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
   [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
   [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
+  [CONFIGTYPE.CUSTOMGEOMETRY]: getCustomGeometryConfig,
   [CONFIGTYPE.PLANEGEOMETRY]: getPlaneGeometryConfig,
   [CONFIGTYPE.CIRCLEGEOMETRY]: getCircleGeometryConfig,
   [CONFIGTYPE.CONEGEOMETRY]: getConeGeometryConfig,
@@ -3817,6 +3835,7 @@ const CONFIGMODULE = {
   [CONFIGTYPE.BOXGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.SPHEREGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.LOADGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.CUSTOMGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.PLANEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.CIRCLEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.CONEGEOMETRY]: MODULETYPE.GEOMETRY,
@@ -5228,11 +5247,11 @@ class Compiler {
   constructor() {
   }
 }
-const config$7 = {
+const config$8 = {
   name: "linearTime",
   multiply: 1
 };
-const generator$7 = function(engine, target, attribute, config2) {
+const generator$8 = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
     console.error(`object not exist attribute: ${attribute}`, target);
     return (event) => {
@@ -5293,7 +5312,7 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
   _AniScriptLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
 });
-AniScriptLibrary.register(config$7, generator$7);
+AniScriptLibrary.register(config$8, generator$8);
 class AnimationCompiler extends Compiler {
   constructor() {
     super();
@@ -5386,13 +5405,13 @@ class AnimationCompiler extends Compiler {
     return null;
   }
 }
-const config$6 = {
+const config$7 = {
   name: "openWindow",
   params: {
     url: ""
   }
 };
-const generator$6 = function(engine, config2) {
+const generator$7 = function(engine, config2) {
   return () => {
     window.open(config2.params.url);
   };
@@ -6093,7 +6112,7 @@ const timingFunction = {
   EASING_QUADRATIC_OUT: Easing.Quadratic.Out,
   EASING_QUADRATIC_INOUT: Easing.Quadratic.InOut
 };
-const config$5 = {
+const config$6 = {
   name: "moveTo",
   params: {
     target: "",
@@ -6107,7 +6126,7 @@ const config$5 = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$5 = function(engine, config2) {
+const generator$6 = function(engine, config2) {
   const params = config2.params;
   const compiler = engine.compilerManager;
   const object = compiler.getObjectBySymbol(params.target);
@@ -6134,6 +6153,58 @@ const generator$5 = function(engine, config2) {
       supportData.position.x = params.position.x;
       supportData.position.y = params.position.y;
       supportData.position.z = params.position.z;
+    });
+  };
+};
+const config$5 = {
+  name: "moveFromTo",
+  params: {
+    target: "",
+    from: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    to: {
+      x: 10,
+      y: 10,
+      z: 10
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator$5 = function(engine, config2) {
+  const params = config2.params;
+  const compiler = engine.compilerManager;
+  const object = compiler.getObjectBySymbol(params.target);
+  if (!object) {
+    console.warn(`real time animation moveTO: can not found vid object: ${params.target}`);
+    return () => {
+    };
+  }
+  const renderManager = engine.renderManager;
+  const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
+  if (!supportData) {
+    console.warn(`can not found object config: ${params.target}`);
+    return () => {
+    };
+  }
+  return () => {
+    object.position.set(params.from.x, params.from.y, params.from.z);
+    object.updateMatrix();
+    object.updateMatrixWorld();
+    const tween = new Tween(object.position).to(params.to).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      supportData.position.x = params.to.x;
+      supportData.position.y = params.to.y;
+      supportData.position.z = params.to.z;
     });
   };
 };
@@ -6603,6 +6674,7 @@ __publicField(EventLibrary, "register", function(config2, generator2) {
   _EventLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _EventLibrary.generatorLibrary.set(config2.name, generator2);
 });
+EventLibrary.register(config$7, generator$7);
 EventLibrary.register(config$6, generator$6);
 EventLibrary.register(config$5, generator$5);
 EventLibrary.register(config$4, generator$4);
@@ -7500,6 +7572,9 @@ const _GeometryCompiler = class extends Compiler {
     constructMap.set(CONFIGTYPE.LOADGEOMETRY, (config2) => {
       return _GeometryCompiler.transfromAnchor(new LoadGeometry(this.getGeometry(config2.url)), config2);
     });
+    constructMap.set(CONFIGTYPE.CUSTOMGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(this.generateGeometry(config2.attribute), config2);
+    });
     constructMap.set(CONFIGTYPE.CIRCLEGEOMETRY, (config2) => {
       return _GeometryCompiler.transfromAnchor(new CircleBufferGeometry(config2.radius, config2.segments, config2.thetaStart, config2.thetaLength), config2);
     });
@@ -7548,6 +7623,16 @@ const _GeometryCompiler = class extends Compiler {
       return this.map.get(url);
     }
     return this.getRescource(url);
+  }
+  generateGeometry(attribute) {
+    const geometry = new BufferGeometry();
+    attribute.position.length && geometry.setAttribute("position", new Float32BufferAttribute(attribute.position, 3));
+    attribute.color.length && geometry.setAttribute("color", new Float32BufferAttribute(attribute.color, 3));
+    attribute.normal.length && geometry.setAttribute("normal", new Float32BufferAttribute(attribute.normal, 3));
+    attribute.uv.length && geometry.setAttribute("uv", new Float32BufferAttribute(attribute.uv, 2));
+    attribute.uv2.length && geometry.setAttribute("uv2", new Float32BufferAttribute(attribute.uv2, 2));
+    attribute.index.length && geometry.setIndex(attribute.index);
+    return geometry;
   }
   getMap() {
     return this.map;
@@ -11515,8 +11600,9 @@ const SelectionPlugin = function(params = {}) {
     return this;
   };
   this.eventManager.addEventListener("click", (event) => {
-    var _a, _b, _c, _d;
-    if ((_a = this.transformControls) == null ? void 0 : _a.dragging) {
+    var _a, _b, _c;
+    if (this.transing) {
+      this.transing = false;
       return;
     }
     const intersections = event.intersections;
@@ -11526,7 +11612,7 @@ const SelectionPlugin = function(params = {}) {
     if (this.eventManager.penetrate) {
       for (const intersection of intersections) {
         if (event.ctrlKey) {
-          if ((_b = this.selectionBox) == null ? void 0 : _b.has(intersection.object)) {
+          if ((_a = this.selectionBox) == null ? void 0 : _a.has(intersection.object)) {
             this.selectionBox.delete(intersection.object);
             continue;
           }
@@ -11537,12 +11623,12 @@ const SelectionPlugin = function(params = {}) {
       if (intersections.length) {
         const object = intersections[0].object;
         if (event.ctrlKey) {
-          if ((_c = this.selectionBox) == null ? void 0 : _c.has(object)) {
+          if ((_b = this.selectionBox) == null ? void 0 : _b.has(object)) {
             this.selectionBox.delete(object);
             return;
           }
         }
-        (_d = this.selectionBox) == null ? void 0 : _d.add(object);
+        (_c = this.selectionBox) == null ? void 0 : _c.add(object);
       }
     }
     dispatchEvent();
@@ -11635,6 +11721,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "compilerManager");
     __publicField(this, "keyboardManager");
     __publicField(this, "objectHelperManager");
+    __publicField(this, "transing");
     __publicField(this, "stats");
     __publicField(this, "displayMode");
     __publicField(this, "selectionBox");

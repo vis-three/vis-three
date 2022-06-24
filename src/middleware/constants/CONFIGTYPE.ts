@@ -15,6 +15,7 @@ export enum CONFIGTYPE {
   SPLINECURVEGEOMETRY = "SplineCurveGeometry",
   CUBICBEZIERCURVEGEOMETRY = "CubicBezierCurveGeometry",
   QUADRATICBEZIERCURVEGEOMETRY = "QuadraticBezierCurveGeometry",
+  CUSTOMGEOMETRY = "CustomGeometry",
 
   MESH = "Mesh",
   LINE = "Line",

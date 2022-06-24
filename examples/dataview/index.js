@@ -1,6 +1,6 @@
 export default {
   router: "dataview",
-  children: ["/Echarts.html"],
+  children: ["/Echarts.html", "/AntdV-G6-Framework.html"],
   position: {
     x: -30,
     y: -40,

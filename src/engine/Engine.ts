@@ -185,6 +185,7 @@ export class Engine extends EventDispatcher {
   compilerManager?: CompilerManager;
   keyboardManager?: KeyboardManager;
   objectHelperManager?: ObjectHelperManager;
+  transing?: boolean;
   stats?: Stats;
   displayMode?: DISPLAYMODE;
   selectionBox?: Set<Object3D>;

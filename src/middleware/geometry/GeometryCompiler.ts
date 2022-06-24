@@ -7,6 +7,7 @@ import {
   CylinderBufferGeometry,
   EdgesGeometry,
   Euler,
+  Float32BufferAttribute,
   Matrix4,
   PlaneBufferGeometry,
   Quaternion,
@@ -22,6 +23,7 @@ import {
   CircleGeometryConfig,
   ConeGeometryConfig,
   CubicBezierCurveGeometryConfig,
+  CustomGeometryConfig,
   CylinderGeometryConfig,
   EdgesGeometryConfig,
   GeometryAllType,
@@ -148,6 +150,16 @@ export class GeometryCompiler extends Compiler {
         config
       );
     });
+
+    constructMap.set(
+      CONFIGTYPE.CUSTOMGEOMETRY,
+      (config: CustomGeometryConfig) => {
+        return GeometryCompiler.transfromAnchor(
+          this.generateGeometry(config.attribute),
+          config
+        );
+      }
+    );
 
     constructMap.set(
       CONFIGTYPE.CIRCLEGEOMETRY,
@@ -305,6 +317,39 @@ export class GeometryCompiler extends Compiler {
     }
 
     return this.getRescource(url);
+  }
+
+  private generateGeometry(
+    attribute: CustomGeometryConfig["attribute"]
+  ): BufferGeometry {
+    const geometry = new BufferGeometry();
+    attribute.position.length &&
+      geometry.setAttribute(
+        "position",
+        new Float32BufferAttribute(attribute.position, 3)
+      );
+
+    attribute.color.length &&
+      geometry.setAttribute(
+        "color",
+        new Float32BufferAttribute(attribute.color, 3)
+      );
+    attribute.normal.length &&
+      geometry.setAttribute(
+        "normal",
+        new Float32BufferAttribute(attribute.normal, 3)
+      );
+    attribute.uv.length &&
+      geometry.setAttribute("uv", new Float32BufferAttribute(attribute.uv, 2));
+
+    attribute.uv2.length &&
+      geometry.setAttribute(
+        "uv2",
+        new Float32BufferAttribute(attribute.uv2, 2)
+      );
+
+    attribute.index.length && geometry.setIndex(attribute.index);
+    return geometry;
   }
 
   getMap(): Map<SymbolConfig["vid"], BufferGeometry> {

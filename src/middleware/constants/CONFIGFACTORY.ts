@@ -18,6 +18,7 @@ import {
   getCubicBezierCurveGeometryConfig,
   getQuadraticBezierCurveGeometryConfig,
   getDodecahedronGeometryConfig,
+  getCustomGeometryConfig,
 } from "../geometry/GeometryConfig";
 import {
   getCanvasTextureConfig,
@@ -89,6 +90,7 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
   [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
   [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
+  [CONFIGTYPE.CUSTOMGEOMETRY]: getCustomGeometryConfig,
   [CONFIGTYPE.PLANEGEOMETRY]: getPlaneGeometryConfig,
   [CONFIGTYPE.CIRCLEGEOMETRY]: getCircleGeometryConfig,
   [CONFIGTYPE.CONEGEOMETRY]: getConeGeometryConfig,

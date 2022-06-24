@@ -46,6 +46,10 @@ export const TransformControlsPlugin: Plugin<Object> = function (
   this.scene!.add(this.transformControls);
   this.scene!.add((this.transformControls as VisTransformControls).target);
 
+  this.transformControls.addEventListener("mouseDown", () => {
+    this.transing = true;
+  });
+
   this.setTransformControls = function (show: boolean): Engine {
     if (show) {
       this.scene!.add(this.transformControls!);
@@ -75,7 +79,7 @@ export const TransformControlsPlugin: Plugin<Object> = function (
       transformControls.setAttach(...event.objects);
     });
   } else {
-    this.eventManager.addEventListener<GlobalEvent>("pointerup", (event) => {
+    this.eventManager.addEventListener<GlobalEvent>("click", (event) => {
       if (this.transformControls!.dragging) {
         return;
       }

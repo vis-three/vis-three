@@ -1,5 +1,10 @@
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
-import { Engine, SetDomEvent, SetSizeEvent } from "../engine/Engine";
+import {
+  Engine,
+  SetCameraEvent,
+  SetDomEvent,
+  SetSizeEvent,
+} from "../engine/Engine";
 import { Plugin } from "./plugin";
 
 export interface CSS3DRendererParameters {}

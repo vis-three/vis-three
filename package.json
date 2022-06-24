@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@ant-design/icons-vue": "^6.1.0",
+    "@antv/g6": "^4.6.8",
     "@rollup/plugin-alias": "^3.1.9",
     "@types/three": "^0.133.1",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
@@ -58,8 +59,8 @@
     "@types/keyboardjs": "^2.5.0",
     "@types/uuid": "^8.3.1",
     "keyboardjs": "^2.6.4",
-    "uuid": "^8.3.2",
-    "three-csg-ts": "^3.1.10"
+    "three-csg-ts": "^3.1.10",
+    "uuid": "^8.3.2"
   },
   "files": [
     "dist",

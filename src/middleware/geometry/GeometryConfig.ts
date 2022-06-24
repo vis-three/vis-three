@@ -86,9 +86,11 @@ export interface EdgesGeometryConfig extends GeometryConfig {
 export interface CustomGeometryConfig extends GeometryConfig {
   attribute: {
     position: number[];
+    color: number[];
     index: number[];
-    uv: number[];
     normal: number[];
+    uv: number[];
+    uv2: number[];
   };
 }
 
@@ -120,7 +122,8 @@ export type GeometryAllType =
   | LineCurveGeometryConfig
   | SplineCurveGeometryConfig
   | CubicBezierCurveGeometryConfig
-  | QuadraticBezierCurveGeometryConfig;
+  | QuadraticBezierCurveGeometryConfig
+  | CustomGeometryConfig;
 
 // config function
 
@@ -209,6 +212,20 @@ export const getLoadGeometryConfig = function (): LoadGeometryConfig {
   return Object.assign(getGeometryConfig(), {
     type: CONFIGTYPE.LOADGEOMETRY,
     url: "",
+  });
+};
+
+export const getCustomGeometryConfig = function (): CustomGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.CUSTOMGEOMETRY,
+    attribute: {
+      position: [],
+      color: [],
+      index: [],
+      normal: [],
+      uv: [],
+      uv2: [],
+    },
   });
 };
 
