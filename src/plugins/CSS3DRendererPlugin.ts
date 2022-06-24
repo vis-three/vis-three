@@ -16,6 +16,7 @@ export const CSS3DRendererPlugin: Plugin<CSS3DRendererParameters> = function (
   this.css3DRenderer = new CSS3DRenderer();
   const domElement = this.css3DRenderer.domElement;
 
+  domElement.classList.add("vis-css3D");
   domElement.style.position = "absolute";
   domElement.style.top = "0";
   domElement.style.left = "0";

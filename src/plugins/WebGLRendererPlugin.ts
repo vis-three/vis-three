@@ -18,6 +18,11 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererParameters> = function (
   }
 
   this.webGLRenderer = new WebGLRenderer(params);
+  const domElement = this.webGLRenderer.domElement;
+  domElement.style.position = "absolute";
+  domElement.style.top = "0";
+  domElement.style.left = "0";
+  domElement.classList.add("vis-webgl");
 
   // 截图
   this.getScreenshot = function (params: Screenshot = {}) {

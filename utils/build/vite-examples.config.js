@@ -56,6 +56,8 @@ export default defineConfig({
           three: ["three"],
           "vis-three": ["dist/Vis.es.js"],
           Antd: ["ant-design-vue"],
+          echarts: ["echarts"],
+          zrender: ["zrender"],
         },
       },
     },

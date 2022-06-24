@@ -141,6 +141,7 @@ export default defineComponent({
   pointer-events: none;
   width: 100%;
   height: 100%;
+  z-index: 1;
   background: radial-gradient(rgba(0, 0, 0, 0.45) 70%, rgba(0, 0, 0, 0.8) 100%);
 }
 

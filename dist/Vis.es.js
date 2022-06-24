@@ -1713,6 +1713,11 @@ const WebGLRendererPlugin = function(params = {}) {
     return false;
   }
   this.webGLRenderer = new WebGLRenderer(params);
+  const domElement = this.webGLRenderer.domElement;
+  domElement.style.position = "absolute";
+  domElement.style.top = "0";
+  domElement.style.left = "0";
+  domElement.classList.add("vis-webgl");
   this.getScreenshot = function(params2 = {}) {
     const cacheSize = {
       width: this.dom.offsetWidth,
@@ -8614,6 +8619,9 @@ class CanvasGenerator {
   get() {
     return this.canvas;
   }
+  getDom() {
+    return this.canvas;
+  }
   clear(x = 0, y = 0, width, height) {
     !width && (width = this.canvas.width);
     !height && (height = this.canvas.height);
@@ -11548,6 +11556,7 @@ const CSS3DRendererPlugin = function(params = {}) {
   }
   this.css3DRenderer = new CSS3DRenderer();
   const domElement = this.css3DRenderer.domElement;
+  domElement.classList.add("vis-css3D");
   domElement.style.position = "absolute";
   domElement.style.top = "0";
   domElement.style.left = "0";

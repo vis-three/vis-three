@@ -28,10 +28,17 @@ export class CanvasGenerator {
   }
 
   /**
+   * @deprecated use getDom
+   */
+  get(): HTMLCanvasElement {
+    return this.canvas;
+  }
+
+  /**
    * 获取canvas dom
    * @returns HTMLCanvasElement
    */
-  get(): HTMLCanvasElement {
+  getDom(): HTMLCanvasElement {
     return this.canvas;
   }
 
