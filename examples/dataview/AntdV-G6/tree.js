@@ -1,4 +1,4 @@
-import G6 from "@antv/g6";
+import { registerNode, registerEdge, Graph } from "@antv/g6";
 import { isObject } from "@antv/util";
 
 /**
@@ -99,7 +99,7 @@ const data = {
   ],
 };
 
-G6.registerNode(
+registerNode(
   "round-rect",
   {
     drawShape: function drawShape(cfg, group) {
@@ -163,7 +163,7 @@ G6.registerNode(
   "single-node"
 );
 
-G6.registerEdge("fund-polyline", {
+registerEdge("fund-polyline", {
   itemType: "edge",
   draw: function draw(cfg, group) {
     const startPoint = cfg.startPoint;
@@ -281,7 +281,7 @@ dom.style.opacity = 0;
 dom.className = "g6-tree";
 document.body.appendChild(dom);
 
-export const treeGraph = new G6.Graph({
+export const treeGraph = new Graph({
   container: dom,
   layout: {
     type: "dagre",

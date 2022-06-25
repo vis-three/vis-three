@@ -79,6 +79,8 @@
         "example.canvas": canvasGenerator.get(),
       });
 
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
       const ambientLight = Vis.generateConfig("AmbientLight");
       const canvasTexture = engine.reactiveConfig(
         Vue.observable(

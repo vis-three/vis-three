@@ -58,6 +58,7 @@ export default defineConfig({
           Antd: ["ant-design-vue"],
           echarts: ["echarts"],
           zrender: ["zrender"],
+          G6: ["@antv/g6"],
         },
       },
     },

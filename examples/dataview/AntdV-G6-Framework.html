@@ -10,9 +10,9 @@
   </head>
 
   <style>
-    .vis-webgl {
+    /* .vis-webgl {
       z-index: 1;
-    }
+    } */
 
     .app-brick {
       width: 70px;
@@ -24,7 +24,16 @@
       align-items: center;
       border-radius: 3px;
       cursor: pointer;
-      transition: box-shadow ease 800ms;
+      transition: all ease 500ms;
+      cursor: pointer;
+    }
+
+    .app-brick-focus {
+      opacity: 1 !important;
+    }
+
+    .app-brick-fade {
+      opacity: 0.2;
     }
 
     .app-brick:hover {
@@ -42,7 +51,8 @@
     }
 
     canvas:not(.vis-css3d):not(.vis-webgl) {
-      background: rgba(13, 56, 175, 0.863);
+      background: rgba(13, 56, 175, 0.3) !important;
+      opacity: 1 !important;
     }
   </style>
 
@@ -70,7 +80,7 @@
         const linearGrad = ctx.createLinearGradient(0, 0, 0, 256);
 
         linearGrad.addColorStop(0.0, "rgb(0, 0, 255)");
-        linearGrad.addColorStop(1.0, "rgb(0, 200, 0)");
+        linearGrad.addColorStop(1.0, "rgb(0, 100, 0)");
 
         ctx.fillStyle = linearGrad;
 
@@ -97,9 +107,9 @@
       const camera = VIS.generateConfig("PerspectiveCamera", {
         far: 10000,
         position: {
-          x: 100,
-          y: 100,
-          z: 100,
+          x: 500,
+          y: -300,
+          z: 500,
         },
       });
 
@@ -173,7 +183,7 @@
         url: "hookAlpha",
       });
       const hoodMaterial = VIS.generateConfig("MeshBasicMaterial", {
-        color: "rgb(53, 213, 221)",
+        color: "rgb(53, 193, 221)",
         side: DoubleSide,
         alphaMap: hoodColorTexture.vid,
         transparent: true,
@@ -182,8 +192,8 @@
       const hood = VIS.generateConfig("Mesh", {
         geometry: hoodGeometry.vid,
         material: hoodMaterial.vid,
+        visible: false,
       });
-      console.log(engine);
 
       // 面板
       const tipsGeometry = VIS.generateConfig("PlaneGeometry", {
@@ -211,6 +221,7 @@
           y: -harfWidth * spread + 20,
           x: harfWidth * spread - 50,
         },
+        visible: false,
       });
 
       const treeGraphPlane = VIS.generateConfig("CSS3DPlane", {
@@ -223,6 +234,7 @@
         position: {
           z: deep + 10,
         },
+        visible: false,
       });
 
       const arcTipsTexture = VIS.generateConfig("CanvasTexture", {
@@ -242,6 +254,7 @@
           y: -harfWidth * spread + 20,
           x: harfWidth * spread - 50,
         },
+        visible: false,
       });
       const arcGraphPlane = VIS.generateConfig("CSS3DPlane", {
         element: "arcGraph",
@@ -253,6 +266,7 @@
         position: {
           z: deep + 120,
         },
+        visible: false,
       });
 
       // 发光键组
@@ -298,12 +312,12 @@
           element: `dom${i}`,
           position,
           click: [
-            VIS.EventLibrary.generateConfig("moveTo", {
+            VIS.EventLibrary.generateConfig("focusObject", {
               params: {
-                target: camera.vid,
-                position: {
-                  x: 0,
-                  y: -900,
+                target: c3Id,
+                space: "local",
+                offset: {
+                  y: -850,
                   z: 500,
                 },
               },
@@ -327,56 +341,94 @@
                   y: 0,
                   z: deep + 120,
                 },
+                delay: 500,
               },
             }),
             VIS.EventLibrary.generateConfig("moveFromTo", {
               params: {
                 target: treeTipsPlane.vid,
                 to: JSON.parse(JSON.stringify(treeTipsPlane.position)),
-                delay: 300,
+                delay: 500,
               },
             }),
             VIS.EventLibrary.generateConfig("moveFromTo", {
               params: {
                 target: treeGraphPlane.vid,
                 to: JSON.parse(JSON.stringify(treeGraphPlane.position)),
-                delay: 300,
+                delay: 500,
               },
             }),
             VIS.EventLibrary.generateConfig("moveFromTo", {
               params: {
                 target: arcTipsPlane.vid,
                 to: JSON.parse(JSON.stringify(arcTipsPlane.position)),
+                delay: 500,
               },
             }),
             VIS.EventLibrary.generateConfig("moveFromTo", {
               params: {
                 target: arcGraphPlane.vid,
                 to: JSON.parse(JSON.stringify(arcGraphPlane.position)),
+                delay: 500,
+              },
+            }),
+            VIS.EventLibrary.generateConfig("fadeObject", {
+              params: {
+                target: hood.vid,
+                direction: "in",
+                delay: 500,
               },
             }),
             VIS.EventLibrary.generateConfig("fadeObject", {
               params: {
                 target: arcTipsPlane.vid,
                 direction: "in",
+                delay: 500,
+              },
+            }),
+            VIS.EventLibrary.generateConfig("visibleObject", {
+              params: {
+                target: arcGraphPlane.vid,
+                visible: false,
+              },
+            }),
+            VIS.EventLibrary.generateConfig("visibleObject", {
+              params: {
+                target: arcGraphPlane.vid,
+                visible: true,
+                delay: 500,
               },
             }),
             VIS.EventLibrary.generateConfig("fadeObject", {
               params: {
-                target: arcGraphPlane.vid,
+                target: treeTipsPlane.vid,
                 direction: "in",
+                delay: 500,
               },
             }),
-            VIS.EventLibrary.generateConfig("fadeObject", {
-              params: {
-                target: arcGraphPlane.vid,
-                direction: "in",
-              },
-            }),
-            VIS.EventLibrary.generateConfig("fadeObject", {
+            VIS.EventLibrary.generateConfig("visibleObject", {
               params: {
                 target: treeGraphPlane.vid,
-                direction: "in",
+                visible: false,
+              },
+            }),
+            VIS.EventLibrary.generateConfig("visibleObject", {
+              params: {
+                target: treeGraphPlane.vid,
+                visible: true,
+                delay: 500,
+              },
+            }),
+            VIS.EventLibrary.generateConfig("addClass", {
+              params: {
+                target: c3Id,
+                className: "app-brick-focus",
+              },
+            }),
+            VIS.EventLibrary.generateConfig("addClass", {
+              params: {
+                target: "all",
+                className: "app-brick-fade",
               },
             }),
           ],

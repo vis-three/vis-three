@@ -27,7 +27,7 @@ export const config: FadeObject = {
     delay: 0,
     duration: 1000,
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
-    visible: false,
+    visible: true,
   },
 };
 
@@ -38,6 +38,7 @@ export const generator: EventGenerator<FadeObject> = function (
   const params = config.params;
   const target = engine.getObjectBySymbol(params.target)!;
 
+  // TODO: css3D
   if (!target) {
     console.warn(
       `real time animation fadeObject: can not found vid object: ${params.target}`
@@ -85,6 +86,8 @@ export const generator: EventGenerator<FadeObject> = function (
 
   return () => {
     const renderManager = engine.renderManager!;
+
+    objectConfig.visible = true;
 
     materialList.forEach((material, i, arr) => {
       material.transparent = true;
