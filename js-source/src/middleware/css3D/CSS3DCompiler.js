@@ -57,7 +57,8 @@ export class CSS3DCompiler extends ObjectCompiler {
         }
         const object = this.map.get(vid);
         if (key === "element") {
-            object.element = this.getElement(value);
+            object.element.innerHTML = "";
+            object.element.appendChild(this.getElement(value));
             return this;
         }
         super.set(vid, path, key, value);

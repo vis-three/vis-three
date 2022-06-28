@@ -9,12 +9,13 @@ export const config = {
         delay: 0,
         duration: 1000,
         timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
-        visible: false,
+        visible: true,
     },
 };
 export const generator = function (engine, config) {
     const params = config.params;
     const target = engine.getObjectBySymbol(params.target);
+    // TODO: css3D
     if (!target) {
         console.warn(`real time animation fadeObject: can not found vid object: ${params.target}`);
         return () => { };
@@ -45,6 +46,7 @@ export const generator = function (engine, config) {
     }
     return () => {
         const renderManager = engine.renderManager;
+        objectConfig.visible = true;
         materialList.forEach((material, i, arr) => {
             material.transparent = true;
             material.opacity = params.direction === "in" ? 0 : 1;

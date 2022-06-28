@@ -4,13 +4,10 @@ export class CSS3DPlaneHelper extends LineSegments {
     target;
     // @ts-ignore
     type = "VisCSS3DPlaneHelper";
+    observer;
     constructor(target) {
         super();
-        const element = target.element;
-        const boundingBox = element.getBoundingClientRect();
-        const width = boundingBox.width;
-        const height = boundingBox.height;
-        this.geometry = new EdgesGeometry(new PlaneBufferGeometry(width, height));
+        this.geometry = new EdgesGeometry(new PlaneBufferGeometry(target.width, target.height));
         this.geometry.computeBoundingBox();
         this.material = getHelperLineMaterial();
         this.matrixAutoUpdate = false;
@@ -18,6 +15,18 @@ export class CSS3DPlaneHelper extends LineSegments {
         this.matrixWorldNeedsUpdate = false;
         this.matrixWorld = target.matrixWorld;
         this.target = target;
+        const observer = new MutationObserver(() => {
+            this.geometry.dispose();
+            this.geometry = new EdgesGeometry(new PlaneBufferGeometry(target.width, target.height));
+            this.geometry.computeBoundingBox();
+        });
+        observer.observe(target.element, {
+            attributeFilter: ["style"],
+        });
+        this.observer = observer;
+    }
+    dispose() {
+        this.observer.disconnect();
     }
 }
 //# sourceMappingURL=CSS3DPlaneHelper.js.map

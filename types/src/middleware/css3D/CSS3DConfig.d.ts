@@ -1,6 +1,8 @@
 import { ObjectConfig } from "../object/ObjectConfig";
 export interface CSS3DObjectConfig extends ObjectConfig {
     element: string;
+    width: number;
+    height: number;
 }
 export interface CSS3DPlaneConfig extends CSS3DObjectConfig {
 }

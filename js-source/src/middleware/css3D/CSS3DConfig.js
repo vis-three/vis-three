@@ -4,6 +4,8 @@ export const getCSS3DObjectConfig = function () {
     return Object.assign(getObjectConfig(), {
         type: CONFIGTYPE.CSS3DOBJECT,
         element: "",
+        width: 50,
+        height: 50,
     });
 };
 export const getCSS3DPlaneConfig = function () {

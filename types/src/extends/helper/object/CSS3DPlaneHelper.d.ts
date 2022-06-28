@@ -1,8 +1,10 @@
 import { LineSegments } from "three";
-import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS3DPlane } from "../../../optimize/CSS3DPlane";
 import { VisHelper } from "../common";
 export declare class CSS3DPlaneHelper extends LineSegments implements VisHelper {
-    target: CSS3DObject;
+    target: CSS3DPlane;
     type: string;
-    constructor(target: CSS3DObject);
+    private observer;
+    constructor(target: CSS3DPlane);
+    dispose(): void;
 }

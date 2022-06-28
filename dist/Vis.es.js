@@ -7498,6 +7498,7 @@ class VisCSS3DObject extends CSS3DObject {
 class CSS3DPlane extends VisCSS3DObject {
   constructor(element = document.createElement("div")) {
     super(element);
+    this.element.classList.add("vis-css3d-plane");
   }
   raycast(raycaster, intersects) {
     const box = this.cacheBox.copy(this.geometry.boundingBox);
