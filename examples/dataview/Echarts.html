@@ -161,16 +161,18 @@
 
       const css3DPlane = VIS.generateConfig("CSS3DPlane", {
         element: "treemapSunburst",
+        width: 512,
+        height: 512,
         position: {
           x: 50,
         },
         scale: {
-          x: 0.08,
-          y: 0.08,
-          z: 0.08,
+          x: 40 / 512,
+          y: 40 / 512,
+          z: 40 / 512,
         },
       });
-
+      console.log(css3DPlane);
       console.log(engine);
     </script>
   </body>
