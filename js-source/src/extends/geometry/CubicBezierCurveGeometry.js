@@ -6,7 +6,8 @@ export class CubicBezierCurveGeometry extends CurveGeometry {
         this.type = "CubicBezierCurveGeometry";
         const curvePath = new CurvePath();
         if (path.length < 4) {
-            console.error(`CubicBezierCurveGeometry path length at least 4.`);
+            console.warn(`CubicBezierCurveGeometry path length at least 4.`);
+            return;
         }
         const length = 4 + (path.length - 4) - ((path.length - 4) % 3);
         for (let i = 2; i < length; i += 3) {

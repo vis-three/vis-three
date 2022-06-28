@@ -4,6 +4,10 @@ export class LineCurveGeometry extends CurveGeometry {
     constructor(path, divisions = 36, space = true) {
         super(path, divisions, space);
         this.type = "LineCurveGeometry";
+        if (!path.length) {
+            console.warn(`LineCurveGeometry path length at least 1.`);
+            return;
+        }
         const curvePath = new CurvePath();
         for (let i = 1; i < path.length; i += 1) {
             curvePath.add(new LineCurve3(path[i - 1], path[i]));

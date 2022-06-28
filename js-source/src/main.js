@@ -49,12 +49,13 @@ import { TIMINGFUNCTION } from "./library/event/RealTimeAnimateLibrary/common";
 import { PassDataSupport } from "./middleware/pass/PassDataSupport";
 import { CSS3DDataSupport } from "./middleware/css3D/CSS3DDataSupport";
 import { RenderManager } from "./manager/RenderManager";
+import { CONFIGMODULE } from "./middleware/constants/CONFIGMODULE";
 import "./optimize/optimizeScirpt";
 export { 
 // core
 ProxyBroadcast, Translater, 
 // menu
-RESOURCEEVENTTYPE, MODULETYPE, OBJECTMODULE, CONFIGTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, EVENTNAME, TIMINGFUNCTION, 
+RESOURCEEVENTTYPE, MODULETYPE, OBJECTMODULE, CONFIGTYPE, CONFIGMODULE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, EVENTNAME, TIMINGFUNCTION, 
 // manager
 LoaderManager, ResourceManager, DataSupportManager, RenderManager, 
 // engine

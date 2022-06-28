@@ -6,7 +6,8 @@ export class QuadraticBezierCurveGeometry extends CurveGeometry {
         this.type = "QuadraticBezierCurveGeometry";
         const curvePath = new CurvePath();
         if (path.length < 3) {
-            console.error(`QuadraticBezierCurveGeometry path length at least 3.`);
+            console.warn(`QuadraticBezierCurveGeometry path length at least 3.`);
+            return;
         }
         const length = 3 + (path.length - 3) - ((path.length - 3) % 2);
         for (let i = 1; i < length; i += 2) {

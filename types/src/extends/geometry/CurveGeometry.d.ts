@@ -1,5 +1,5 @@
 import { BufferGeometry, Vector3 } from "three";
-export declare class CurveGeometry extends BufferGeometry {
+export declare abstract class CurveGeometry extends BufferGeometry {
     parameters: {
         path: Vector3[];
         space: boolean;

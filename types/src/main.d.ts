@@ -49,8 +49,9 @@ import { TIMINGFUNCTION } from "./library/event/RealTimeAnimateLibrary/common";
 import { PassDataSupport } from "./middleware/pass/PassDataSupport";
 import { CSS3DDataSupport } from "./middleware/css3D/CSS3DDataSupport";
 import { RenderManager } from "./manager/RenderManager";
+import { CONFIGMODULE } from "./middleware/constants/CONFIGMODULE";
 import "./optimize/optimizeScirpt";
-export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, OBJECTMODULE, CONFIGTYPE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, EVENTNAME, TIMINGFUNCTION, LoaderManager, ResourceManager, DataSupportManager, RenderManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, AnimationDataSupport, PassDataSupport, CSS3DDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasGenerator, History, JSONHandler, 
+export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, OBJECTMODULE, CONFIGTYPE, CONFIGMODULE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, EVENTNAME, TIMINGFUNCTION, LoaderManager, ResourceManager, DataSupportManager, RenderManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, AnimationDataSupport, PassDataSupport, CSS3DDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasGenerator, History, JSONHandler, 
 /**
  * @deprecated
  */
