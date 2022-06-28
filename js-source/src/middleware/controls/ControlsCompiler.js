@@ -8,6 +8,7 @@ export class ControlsCompiler extends Compiler {
     target = {};
     map = new Map();
     weakMap = new Map();
+    engine;
     processorMap = {
         [CONFIGTYPE.TRNASFORMCONTROLS]: new TransformControlsProcessor(),
         [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor(),
@@ -46,6 +47,7 @@ export class ControlsCompiler extends Compiler {
             .assemble({
             config: assembly.config,
             control: assembly.control,
+            engine: this.engine,
         })
             .process({
             key,
@@ -63,6 +65,7 @@ export class ControlsCompiler extends Compiler {
             .assemble({
             config: assembly.config,
             control: assembly.control,
+            engine: this.engine,
         })
             .processAll()
             .dispose();
@@ -81,6 +84,7 @@ export class ControlsCompiler extends Compiler {
             this.map.set(CONFIGTYPE.ORBITCONTROLS, engine.orbitControls);
             this.weakMap.set(engine.orbitControls, CONFIGTYPE.ORBITCONTROLS);
         }
+        this.engine = engine;
         return this;
     }
     compileAll() {
@@ -93,6 +97,7 @@ export class ControlsCompiler extends Compiler {
                 .assemble({
                 config: assembly.config,
                 control: assembly.control,
+                engine: this.engine,
             })
                 .processAll()
                 .dispose();

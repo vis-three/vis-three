@@ -14,10 +14,14 @@ export declare class CanvasGenerator {
     canvas: HTMLCanvasElement;
     constructor(parameters?: CanvasGeneratorParameters);
     /**
+     * @deprecated use getDom
+     */
+    get(): HTMLCanvasElement;
+    /**
      * 获取canvas dom
      * @returns HTMLCanvasElement
      */
-    get(): HTMLCanvasElement;
+    getDom(): HTMLCanvasElement;
     /**
      * 清空画布
      * @param x position x px

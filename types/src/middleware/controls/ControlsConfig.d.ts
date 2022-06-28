@@ -1,4 +1,4 @@
-import { SymbolConfig } from "../common/CommonConfig";
+import { SymbolConfig, Vector3Config } from "../common/CommonConfig";
 export declare type ControlsConfig = SymbolConfig;
 export interface TransformControlsConfig extends ControlsConfig {
     axis: string;
@@ -35,6 +35,7 @@ export interface OrbitControlsConfig extends ControlsConfig {
     rotateSpeed: number;
     zoomSpeed: number;
     screenSpacePanning: boolean;
+    target: string | Vector3Config | null;
 }
 export declare type ControlsAllConfig = TransformControlsConfig | OrbitControlsConfig;
 export declare const getTransformControlsConfig: () => TransformControlsConfig;

@@ -73,11 +73,27 @@ export interface EdgesGeometryConfig extends GeometryConfig {
 export interface CustomGeometryConfig extends GeometryConfig {
     attribute: {
         position: number[];
+        color: number[];
         index: number[];
-        uv: number[];
         normal: number[];
+        uv: number[];
+        uv2: number[];
     };
 }
+export interface CurveGeometryConfig extends GeometryConfig {
+    path: Vector3Config[];
+    divisions: number;
+    space: boolean;
+}
+export interface LineCurveGeometryConfig extends CurveGeometryConfig {
+}
+export interface SplineCurveGeometryConfig extends CurveGeometryConfig {
+}
+export interface CubicBezierCurveGeometryConfig extends CurveGeometryConfig {
+}
+export interface QuadraticBezierCurveGeometryConfig extends CurveGeometryConfig {
+}
+export declare type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig | LineCurveGeometryConfig | SplineCurveGeometryConfig | CubicBezierCurveGeometryConfig | QuadraticBezierCurveGeometryConfig | CustomGeometryConfig;
 export declare const getGeometryConfig: () => GeometryConfig;
 export declare const getBoxGeometryConfig: () => BoxGeometryConfig;
 export declare const getSphereGeometryConfig: () => SphereGeometryConfig;
@@ -85,7 +101,11 @@ export declare const getPlaneGeometryConfig: () => PlaneGeometryConfig;
 export declare const getCircleGeometryConfig: () => CircleGeometryConfig;
 export declare const getConeGeometryConfig: () => ConeGeometryConfig;
 export declare const getLoadGeometryConfig: () => LoadGeometryConfig;
+export declare const getCustomGeometryConfig: () => CustomGeometryConfig;
 export declare const getCylinderGeometryConfig: () => CylinderGeometryConfig;
 export declare const getDodecahedronGeometryConfig: () => DodecahedronGeometryConfig;
 export declare const getEdgesGeometryConfig: () => EdgesGeometryConfig;
-export declare type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig;
+export declare const getLineCurveGeometryConfig: () => LineCurveGeometryConfig;
+export declare const getSplineCurveGeometryConfig: () => SplineCurveGeometryConfig;
+export declare const getCubicBezierCurveGeometryConfig: () => CubicBezierCurveGeometryConfig;
+export declare const getQuadraticBezierCurveGeometryConfig: () => QuadraticBezierCurveGeometryConfig;

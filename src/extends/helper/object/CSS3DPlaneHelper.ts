@@ -5,22 +5,21 @@ import {
   PlaneBufferGeometry,
   Raycaster,
 } from "three";
-import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS3DPlane } from "../../../optimize/CSS3DPlane";
 import { getHelperLineMaterial, VisHelper } from "../common";
 
 export class CSS3DPlaneHelper extends LineSegments implements VisHelper {
-  target: CSS3DObject;
+  target: CSS3DPlane;
   // @ts-ignore
   type = "VisCSS3DPlaneHelper";
 
-  constructor(target: CSS3DObject) {
-    super();
-    const element = target.element;
-    const boundingBox = element.getBoundingClientRect();
-    const width = boundingBox.width;
-    const height = boundingBox.height;
+  private observer: MutationObserver;
 
-    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(width, height));
+  constructor(target: CSS3DPlane) {
+    super();
+    this.geometry = new EdgesGeometry(
+      new PlaneBufferGeometry(target.width, target.height)
+    );
     this.geometry.computeBoundingBox();
 
     this.material = getHelperLineMaterial();
@@ -31,5 +30,23 @@ export class CSS3DPlaneHelper extends LineSegments implements VisHelper {
     this.matrixWorld = target.matrixWorld;
 
     this.target = target;
+
+    const observer = new MutationObserver(() => {
+      this.geometry.dispose();
+      this.geometry = new EdgesGeometry(
+        new PlaneBufferGeometry(target.width, target.height)
+      );
+      this.geometry.computeBoundingBox();
+    });
+
+    observer.observe(target.element, {
+      attributeFilter: ["style"],
+    });
+
+    this.observer = observer;
+  }
+
+  dispose() {
+    this.observer.disconnect();
   }
 }

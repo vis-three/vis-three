@@ -17,6 +17,9 @@ export const TransformControlsPlugin = function (params) {
     this.transformControls = transformControls;
     this.scene.add(this.transformControls);
     this.scene.add(this.transformControls.target);
+    this.transformControls.addEventListener("mouseDown", () => {
+        this.transing = true;
+    });
     this.setTransformControls = function (show) {
         if (show) {
             this.scene.add(this.transformControls);
@@ -44,7 +47,7 @@ export const TransformControlsPlugin = function (params) {
         });
     }
     else {
-        this.eventManager.addEventListener("pointerup", (event) => {
+        this.eventManager.addEventListener("click", (event) => {
             if (this.transformControls.dragging) {
                 return;
             }

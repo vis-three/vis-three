@@ -1,8 +1,8 @@
 import { Tween } from "@tweenjs/tween.js";
-import { Vector3 } from "three";
+import { Object3D, Vector3 } from "three";
 import { timingFunction, TIMINGFUNCTION } from "./common";
 export const config = {
-    name: "foucsObject",
+    name: "focusObject",
     params: {
         target: "",
         space: "world",
@@ -13,7 +13,7 @@ export const config = {
         },
         delay: 0,
         duration: 1000,
-        timingFunction: TIMINGFUNCTION.EQI,
+        timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
         back: true,
     },
 };
@@ -26,6 +26,10 @@ export const generator = function (engine, config) {
     const orbTarget = engine.orbitControls.target;
     if (!target) {
         console.warn(`real time animation focusObject: can not found vid object: ${params.target}`);
+        return () => { };
+    }
+    if (!(target instanceof Object3D)) {
+        console.warn(`real time animation focusObject: vid object is not a class of THREE.Object3D: ${params.target}`);
         return () => { };
     }
     if (!cameraConfig) {

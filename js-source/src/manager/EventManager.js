@@ -19,6 +19,7 @@ export class EventManager extends EventDispatcher {
     recursive = false; // 递归子物体
     penetrate = false; // 事件穿透
     propagation = false; // 冒泡
+    delegation = false; // 委托
     constructor(parameters) {
         super();
         this.raycaster = new Raycaster();
@@ -63,60 +64,48 @@ export class EventManager extends EventDispatcher {
         const mergeEvent = function (event, object) {
             return Object.assign({}, event, object);
         };
-        pointerManager.addEventListener("pointerdown", (event) => {
+        const genericEventHanlder = (event, eventName) => {
             const intersections = this.intersectObject(event.mouse);
             if (intersections.length) {
                 // 穿透事件
                 if (this.penetrate) {
-                    if (event.button === 0) {
-                        for (const intersection of intersections) {
-                            intersection.object.dispatchEvent(mergeEvent(event, {
-                                type: "pointerdown",
-                                intersection,
-                            }));
-                            intersection.object.dispatchEvent(mergeEvent(event, {
-                                type: "mousedown",
-                                intersection,
-                            }));
-                        }
+                    for (const intersection of intersections) {
+                        intersection.object.dispatchEvent(mergeEvent(event, {
+                            type: eventName,
+                            intersection,
+                        }));
                     }
                     // 单层事件
                 }
                 else {
                     const intersection = intersections[0];
-                    if (event.button === 0) {
-                        intersection.object.dispatchEvent(mergeEvent(event, {
-                            type: "pointerdown",
-                            intersection,
-                        }));
-                        intersection.object.dispatchEvent(mergeEvent(event, {
-                            type: "mousedown",
-                            intersection,
-                        }));
-                    }
+                    intersection.object.dispatchEvent(mergeEvent(event, {
+                        type: eventName,
+                        intersection,
+                    }));
                 }
             }
-            if (event.button === 0) {
-                // 全局事件代理
-                this.dispatchEvent(mergeEvent(event, {
-                    type: "pointerdown",
-                    intersections,
-                }));
-                this.dispatchEvent(mergeEvent(event, {
-                    type: "mousedown",
-                    intersections,
-                }));
-                // scene事件代理
-                this.scene.dispatchEvent(mergeEvent(event, {
-                    type: "pointerdown",
-                    intersections,
-                }));
-                this.scene.dispatchEvent(mergeEvent(event, {
-                    type: "mousedown",
-                    intersections,
-                }));
-            }
-        });
+            // 全局事件代理
+            this.dispatchEvent(mergeEvent(event, {
+                type: eventName,
+                intersections,
+            }));
+        };
+        const genericEvents = [
+            "pointerdown",
+            "pointerup",
+            "mousedown",
+            "mouseup",
+            "pointermove",
+            "click",
+            "dblclick",
+            "contextmenu",
+        ];
+        for (const name of genericEvents) {
+            pointerManager.addEventListener(name, (event) => {
+                genericEventHanlder(event, name);
+            });
+        }
         const cacheObjectMap = new Map();
         let topCacheIntersection = null;
         pointerManager.addEventListener("pointermove", (event) => {
@@ -252,142 +241,6 @@ export class EventManager extends EventDispatcher {
                 type: "mousemove",
                 intersections,
             }));
-            this.scene.dispatchEvent(mergeEvent(event, {
-                type: "pointermove",
-                intersections,
-            }));
-            this.scene.dispatchEvent(mergeEvent(event, {
-                type: "mousemove",
-                intersections,
-            }));
-        });
-        const cacheClickObject = new Map();
-        let cacheClickTimer = null;
-        pointerManager.addEventListener("pointerup", (event) => {
-            const intersections = this.intersectObject(event.mouse);
-            if (intersections.length) {
-                // 穿透事件
-                if (this.penetrate) {
-                    for (const intersection of intersections) {
-                        if (event.button === 0) {
-                            intersection.object.dispatchEvent(mergeEvent(event, {
-                                type: "pointerup",
-                                intersection,
-                            }));
-                            intersection.object.dispatchEvent(mergeEvent(event, {
-                                type: "mouseup",
-                                intersection,
-                            }));
-                            intersection.object.dispatchEvent(mergeEvent(event, {
-                                type: "click",
-                                intersection,
-                            }));
-                            if (cacheClickObject.has(intersection.object)) {
-                                intersection.object.dispatchEvent(mergeEvent(event, {
-                                    type: "dblclick",
-                                    intersection,
-                                }));
-                            }
-                        }
-                        else if (event.button === 2) {
-                            intersection.object.dispatchEvent(mergeEvent(event, {
-                                type: "contextmenu",
-                                intersection,
-                            }));
-                        }
-                    }
-                    // 单层事件
-                }
-                else {
-                    const intersection = intersections[0];
-                    if (event.button === 0) {
-                        intersection.object.dispatchEvent(mergeEvent(event, {
-                            type: "pointerup",
-                            intersection,
-                        }));
-                        intersection.object.dispatchEvent(mergeEvent(event, {
-                            type: "mouseup",
-                            intersection,
-                        }));
-                        intersection.object.dispatchEvent(mergeEvent(event, {
-                            type: "click",
-                            intersection,
-                        }));
-                        if (cacheClickObject.has(intersection.object)) {
-                            intersection.object.dispatchEvent(mergeEvent(event, {
-                                type: "dblclick",
-                                intersection,
-                            }));
-                        }
-                    }
-                    else if (event.button === 2) {
-                        intersection.object.dispatchEvent(mergeEvent(event, {
-                            type: "contextmenu",
-                            intersection,
-                        }));
-                    }
-                }
-            }
-            if (event.button === 0) {
-                // 全局事件代理
-                this.dispatchEvent(mergeEvent(event, {
-                    type: "pointerup",
-                    intersections,
-                }));
-                this.dispatchEvent(mergeEvent(event, {
-                    type: "mouseup",
-                    intersections,
-                }));
-                this.dispatchEvent(mergeEvent(event, {
-                    type: "click",
-                    intersections,
-                }));
-                this.scene.dispatchEvent(mergeEvent(event, {
-                    type: "pointerup",
-                    intersections,
-                }));
-                this.scene.dispatchEvent(mergeEvent(event, {
-                    type: "mouseup",
-                    intersections,
-                }));
-                this.scene.dispatchEvent(mergeEvent(event, {
-                    type: "click",
-                    intersections,
-                }));
-                if (cacheClickTimer) {
-                    clearTimeout(cacheClickTimer);
-                    cacheClickTimer = null;
-                    this.dispatchEvent(mergeEvent(event, {
-                        type: "dblclick",
-                        intersections,
-                    }));
-                    this.scene.dispatchEvent(mergeEvent(event, {
-                        type: "dblclick",
-                        intersections,
-                    }));
-                }
-                else {
-                    if (intersections.length) {
-                        for (const intersection of intersections) {
-                            cacheClickObject.set(intersection.object, true);
-                        }
-                    }
-                    cacheClickTimer = window.setTimeout(() => {
-                        cacheClickTimer = null;
-                        cacheClickObject.clear();
-                    }, 300);
-                }
-            }
-            else if (event.button === 2) {
-                this.dispatchEvent(mergeEvent(event, {
-                    type: "contextmenu",
-                    intersections,
-                }));
-                this.scene.dispatchEvent(mergeEvent(event, {
-                    type: "contextmenu",
-                    intersections,
-                }));
-            }
         });
         return this;
     }

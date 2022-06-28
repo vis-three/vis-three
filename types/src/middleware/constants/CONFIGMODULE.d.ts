@@ -18,11 +18,16 @@ export declare const CONFIGMODULE: {
     BoxGeometry: MODULETYPE;
     SphereGeometry: MODULETYPE;
     LoadGeometry: MODULETYPE;
+    CustomGeometry: MODULETYPE;
     PlaneGeometry: MODULETYPE;
     CircleGeometry: MODULETYPE;
     ConeGeometry: MODULETYPE;
     EdgesGeometry: MODULETYPE;
     CylinderGeometry: MODULETYPE;
+    LineCurveGeometry: MODULETYPE;
+    SplineCurveGeometry: MODULETYPE;
+    CubicBezierCurveGeometry: MODULETYPE;
+    QuadraticBezierCurveGeometry: MODULETYPE;
     Sprite: MODULETYPE;
     Line: MODULETYPE;
     Mesh: MODULETYPE;

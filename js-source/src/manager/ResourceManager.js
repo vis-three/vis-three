@@ -190,6 +190,9 @@ export class ResourceManager extends EventDispatcher {
                 return resourceHanlder(url, object, Object.getPrototypeOf(prototype));
             }
         };
+        // 关闭自动注入先，因为resource需要通过generateConfig生成一般配置
+        const cacheAutoInject = generateConfig.autoInject;
+        generateConfig.autoInject = false;
         const resourceConfig = {};
         loadResourceMap.forEach((resource, url) => {
             // 图片贴图
@@ -202,6 +205,7 @@ export class ResourceManager extends EventDispatcher {
                 resourceConfig[url] = this.getResourceConfig(url);
             }
         });
+        generateConfig.autoInject = cacheAutoInject;
         this.dispatchEvent({
             type: "mapped",
             structureMap,

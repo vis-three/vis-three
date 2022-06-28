@@ -4,7 +4,6 @@ export const getRendererConfig = function () {
     return {
         vid: "",
         type: "Renderer",
-        // scene: "",
         size: null,
     };
 };

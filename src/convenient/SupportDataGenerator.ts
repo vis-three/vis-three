@@ -67,7 +67,7 @@ export class SupportDataGenerator {
       return this;
     }
 
-    this.supportData[config.vid] = generateConfig(config.type, config)!;
+    this.supportData[config.vid] = generateConfig(config.type, config)! as any;
     return this;
   }
 

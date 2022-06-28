@@ -11,7 +11,7 @@ export const config = {
         },
         delay: 0,
         duration: 1000,
-        timingFunction: TIMINGFUNCTION.EQI,
+        timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
     },
 };
 export const generator = function (engine, config) {

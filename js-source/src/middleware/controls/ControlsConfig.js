@@ -41,6 +41,7 @@ export const getOrbitControlsConfig = function () {
         rotateSpeed: 1,
         zoomSpeed: 1,
         screenSpacePanning: true,
+        target: null,
     };
 };
 //# sourceMappingURL=ControlsConfig.js.map

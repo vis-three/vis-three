@@ -8,7 +8,7 @@ export const config = {
         direction: "out",
         delay: 0,
         duration: 1000,
-        timingFunction: TIMINGFUNCTION.EQI,
+        timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
         visible: false,
     },
 };

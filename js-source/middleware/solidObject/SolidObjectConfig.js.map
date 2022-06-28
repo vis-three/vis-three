@@ -1,1 +1,0 @@
-{"version":3,"file":"SolidObjectConfig.js","sourceRoot":"","sources":["../../../src/middleware/solidObject/SolidObjectConfig.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAgB,MAAM,wBAAwB,CAAC;AAOvE,MAAM,CAAC,MAAM,oBAAoB,GAAG;IAClC,OAAO,MAAM,CAAC,MAAM,CAAC,eAAe,EAAE,EAAE;QACtC,QAAQ,EAAE,EAAE;QACZ,QAAQ,EAAE,EAAE;KACb,CAAC,CAAC;AACL,CAAC,CAAC"}

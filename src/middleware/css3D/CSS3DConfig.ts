@@ -3,6 +3,8 @@ import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
 
 export interface CSS3DObjectConfig extends ObjectConfig {
   element: string; // 外部资源
+  width: number;
+  height: number;
 }
 
 export interface CSS3DPlaneConfig extends CSS3DObjectConfig {}
@@ -20,6 +22,8 @@ export const getCSS3DObjectConfig = function (): CSS3DObjectConfig {
   return Object.assign(getObjectConfig(), {
     type: CONFIGTYPE.CSS3DOBJECT,
     element: "",
+    width: 50,
+    height: 50,
   });
 };
 

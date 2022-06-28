@@ -215,6 +215,8 @@
 
       const treeGraphPlane = VIS.generateConfig("CSS3DPlane", {
         element: "treeGraph",
+        width: 1024,
+        height: 1024,
         scale: {
           x: 0.7,
           y: 0.7,
@@ -245,6 +247,8 @@
       });
       const arcGraphPlane = VIS.generateConfig("CSS3DPlane", {
         element: "arcGraph",
+        width: 1024,
+        height: 1024,
         scale: {
           x: 0.7,
           y: 0.7,
@@ -296,6 +300,8 @@
         const css3DPlane = VIS.generateConfig("CSS3DPlane", {
           vid: c3Id,
           element: `dom${i}`,
+          width,
+          height,
           position,
           click: [
             VIS.EventLibrary.generateConfig("moveTo", {

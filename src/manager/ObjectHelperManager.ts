@@ -31,7 +31,6 @@ export class ObjectHelperManager extends EventDispatcher {
     [CONFIGTYPE.SPRITE]: SpriteHelper,
     [CONFIGTYPE.POINTS]: PointsHelper,
     [CONFIGTYPE.LINE]: LineHelper,
-    [CONFIGTYPE.LINESEGMENTS]: LineHelper,
     [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper,
     [CONFIGTYPE.CSS3DPLANE]: CSS3DPlaneHelper,
   };

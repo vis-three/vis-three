@@ -1,4 +1,4 @@
-import { Camera, Object3D, Scene, WebGLRenderer } from "three";
+import { Camera, Material, Object3D, Scene, Texture, WebGLRenderer } from "three";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { BaseEvent, EventDispatcher } from "../core/EventDispatcher";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -82,6 +82,7 @@ export declare class Engine extends EventDispatcher {
     compilerManager?: CompilerManager;
     keyboardManager?: KeyboardManager;
     objectHelperManager?: ObjectHelperManager;
+    transing?: boolean;
     stats?: Stats;
     displayMode?: DISPLAYMODE;
     selectionBox?: Set<Object3D>;
@@ -114,7 +115,7 @@ export declare class Engine extends EventDispatcher {
     getConfigBySymbol?: <T extends SymbolConfig>(vid: string) => T | null;
     removeConfigBySymbol?: (...vids: string[]) => this;
     getObjectSymbol?: (object: any) => SymbolConfig["vid"] | null;
-    getObjectBySymbol?: (vid: string) => any | null;
+    getObjectBySymbol?: (vid: string) => Object3D | Texture | Material | null;
     play?: () => this;
     stop?: () => this;
     render?: () => this;

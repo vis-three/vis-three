@@ -1,9 +1,9 @@
 import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig, getDirectionalLightConfig, } from "../light/LightConfig";
-import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig, getPlaneGeometryConfig, getCircleGeometryConfig, getConeGeometryConfig, getCylinderGeometryConfig, getEdgesGeometryConfig, } from "../geometry/GeometryConfig";
+import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig, getPlaneGeometryConfig, getCircleGeometryConfig, getConeGeometryConfig, getCylinderGeometryConfig, getEdgesGeometryConfig, getLineCurveGeometryConfig, getSplineCurveGeometryConfig, getCubicBezierCurveGeometryConfig, getQuadraticBezierCurveGeometryConfig, getDodecahedronGeometryConfig, getCustomGeometryConfig, } from "../geometry/GeometryConfig";
 import { getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig, getVideoTextureConfig, } from "../texture/TextureConfig";
 import { getLineBasicMaterialConfig, getMeshBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getShaderMaterialConfig, getSpriteMaterialConfig, } from "../material/MaterialConfig";
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig, } from "../camera/CameraConfig";
-import { getWebGLRendererConfig } from "../renderer/RendererConfig";
+import { getCSS3DRenderereConfig, getWebGLRendererConfig, } from "../renderer/RendererConfig";
 import { getSceneConfig } from "../scene/SceneConfig";
 import { getOrbitControlsConfig, getTransformControlsConfig, } from "../controls/ControlsConfig";
 import { getSpriteConfig } from "../sprite/SpriteConfig";
@@ -34,11 +34,17 @@ export const CONFIGFACTORY = {
     [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
     [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
     [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
+    [CONFIGTYPE.CUSTOMGEOMETRY]: getCustomGeometryConfig,
     [CONFIGTYPE.PLANEGEOMETRY]: getPlaneGeometryConfig,
     [CONFIGTYPE.CIRCLEGEOMETRY]: getCircleGeometryConfig,
     [CONFIGTYPE.CONEGEOMETRY]: getConeGeometryConfig,
     [CONFIGTYPE.CYLINDERGEOMETRY]: getCylinderGeometryConfig,
     [CONFIGTYPE.EDGESGEOMETRY]: getEdgesGeometryConfig,
+    [CONFIGTYPE.LINECURVEGEOMETRY]: getLineCurveGeometryConfig,
+    [CONFIGTYPE.SPLINECURVEGEOMETRY]: getSplineCurveGeometryConfig,
+    [CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY]: getCubicBezierCurveGeometryConfig,
+    [CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY]: getQuadraticBezierCurveGeometryConfig,
+    [CONFIGTYPE.DODECAHEDRONGEOMETRY]: getDodecahedronGeometryConfig,
     [CONFIGTYPE.SPRITE]: getSpriteConfig,
     [CONFIGTYPE.LINE]: getLineConfig,
     [CONFIGTYPE.MESH]: getMeshConfig,
@@ -50,6 +56,7 @@ export const CONFIGFACTORY = {
     [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
     [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,
+    [CONFIGTYPE.CSS3DRENDERER]: getCSS3DRenderereConfig,
     [CONFIGTYPE.SCENE]: getSceneConfig,
     [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig,
     [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig,

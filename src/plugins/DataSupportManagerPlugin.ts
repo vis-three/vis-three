@@ -9,6 +9,11 @@ import { RendererDataSupport } from "../middleware/renderer/RendererDataSupport"
 import { generateConfig } from "../convenient/generateConfig";
 import { Plugin } from "./plugin";
 import { EngineSupport } from "../engine/EngineSupport";
+import { WebGLRendererConfig } from "../middleware/renderer/RendererConfig";
+import {
+  OrbitControlsConfig,
+  TransformControlsConfig,
+} from "../middleware/controls/ControlsConfig";
 
 export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> =
   function (
@@ -70,7 +75,9 @@ export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> =
           MODULETYPE.RENDERER
         )!.getData();
       if (!rendererData.WebGLRenderer) {
-        rendererData.WebGLRenderer = generateConfig(CONFIGTYPE.WEBGLRENDERER)!;
+        rendererData.WebGLRenderer = generateConfig(
+          CONFIGTYPE.WEBGLRENDERER
+        ) as WebGLRendererConfig;
       }
 
       const controlsData =
@@ -82,14 +89,14 @@ export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> =
         if (!controlsData[CONFIGTYPE.TRNASFORMCONTROLS]) {
           controlsData[CONFIGTYPE.TRNASFORMCONTROLS] = generateConfig(
             CONFIGTYPE.TRNASFORMCONTROLS
-          )!;
+          ) as TransformControlsConfig;
         }
       }
       if (this.orbitControls) {
         if (!controlsData[CONFIGTYPE.ORBITCONTROLS]) {
           controlsData[CONFIGTYPE.ORBITCONTROLS] = generateConfig(
             CONFIGTYPE.ORBITCONTROLS
-          )!;
+          ) as OrbitControlsConfig;
         }
       }
     });

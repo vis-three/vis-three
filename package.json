@@ -1,9 +1,9 @@
 {
   "name": "vis-three",
-  "version": "0.1.3-2",
+  "version": "0.1.3-3",
   "main": "dist/Vis.umd.js",
   "module": "dist/Vis.es.js",
-  "types": "types/main.d.ts",
+  "types": "types/src/main.d.ts",
   "license": "MPL-2.0",
   "author": "Shiotsuki_",
   "repository": "https://github.com/Shiotsukikaedesari/vis-three",
@@ -13,7 +13,7 @@
   },
   "scripts": {
     "dev": "vite build --watch -c ./utils/build/vite.config.js",
-    "build": "tsc && vite build -c ./utils/build/vite.config.js",
+    "build": "tsc -p ./utils/build/tsconfig.json  && vite build -c ./utils/build/vite.config.js",
     "lint": "npx eslint *.js src/**/*.ts cypress/**/*.js --fix",
     "e2e:open": "cypress open",
     "examples:dev": "vite -c ./utils/build/vite-examples.config.js",

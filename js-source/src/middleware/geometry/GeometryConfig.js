@@ -1,4 +1,5 @@
 import { CONFIGTYPE } from "../constants/configType";
+// config function
 export const getGeometryConfig = function () {
     return {
         vid: "",
@@ -80,6 +81,19 @@ export const getLoadGeometryConfig = function () {
         url: "",
     });
 };
+export const getCustomGeometryConfig = function () {
+    return Object.assign(getGeometryConfig(), {
+        type: CONFIGTYPE.CUSTOMGEOMETRY,
+        attribute: {
+            position: [],
+            color: [],
+            index: [],
+            normal: [],
+            uv: [],
+            uv2: [],
+        },
+    });
+};
 export const getCylinderGeometryConfig = function () {
     return Object.assign(getGeometryConfig(), {
         type: CONFIGTYPE.CYLINDERGEOMETRY,
@@ -105,6 +119,33 @@ export const getEdgesGeometryConfig = function () {
         type: CONFIGTYPE.LOADGEOMETRY,
         url: "",
         thresholdAngle: 1,
+    });
+};
+const getCurveGeometryConfig = function () {
+    return Object.assign(getGeometryConfig(), {
+        path: [],
+        divisions: 36,
+        space: true,
+    });
+};
+export const getLineCurveGeometryConfig = function () {
+    return Object.assign(getCurveGeometryConfig(), {
+        type: CONFIGTYPE.LINECURVEGEOMETRY,
+    });
+};
+export const getSplineCurveGeometryConfig = function () {
+    return Object.assign(getCurveGeometryConfig(), {
+        type: CONFIGTYPE.SPLINECURVEGEOMETRY,
+    });
+};
+export const getCubicBezierCurveGeometryConfig = function () {
+    return Object.assign(getCurveGeometryConfig(), {
+        type: CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY,
+    });
+};
+export const getQuadraticBezierCurveGeometryConfig = function () {
+    return Object.assign(getCurveGeometryConfig(), {
+        type: CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY,
     });
 };
 //# sourceMappingURL=GeometryConfig.js.map

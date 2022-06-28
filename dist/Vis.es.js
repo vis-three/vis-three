@@ -18,7 +18,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Matrix4, Euler, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, Color, DefaultLoadingManager, TextureLoader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Matrix4, Euler, Box3, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -3720,7 +3720,9 @@ const getKeyframeAnimationConfig = function() {
 const getCSS3DObjectConfig = function() {
   return Object.assign(getObjectConfig(), {
     type: CONFIGTYPE.CSS3DOBJECT,
-    element: ""
+    element: "",
+    width: 50,
+    height: 50
   });
 };
 const getCSS3DPlaneConfig = function() {
@@ -6230,6 +6232,11 @@ const generator$4 = function(engine, config2) {
     return () => {
     };
   }
+  if (!(object instanceof Object3D)) {
+    console.warn(`object is not instanceof Object3D: ${params.target}`);
+    return () => {
+    };
+  }
   const renderManager = engine.renderManager;
   const supportData = engine.getConfigBySymbol(params.target);
   return () => {
@@ -7371,18 +7378,52 @@ class ControlsCompiler extends Compiler {
     return this.map.get(vid) || null;
   }
 }
-class CSS3DPlane extends CSS3DObject {
+class VisCSS3DObject extends CSS3DObject {
+  constructor(element = document.createElement("div")) {
+    const root = document.createElement("div");
+    const width = 50;
+    const height = 50;
+    root.style.width = `${width}px`;
+    root.style.height = `${height}px`;
+    root.appendChild(element);
+    super(root);
+    __publicField(this, "geometry");
+    __publicField(this, "_width");
+    __publicField(this, "_height");
+    __publicField(this, "cacheBox", new Box3());
+    this.geometry = new PlaneBufferGeometry(width, height);
+    this.geometry.computeBoundingBox();
+    this._width = width;
+    this._height = height;
+  }
+  get width() {
+    return this._width;
+  }
+  set width(value) {
+    this.geometry.dispose();
+    this.geometry = new PlaneBufferGeometry(value, this._height);
+    this.geometry.computeBoundingBox();
+    this.element.style.width = `${value}px`;
+    this._width = value;
+  }
+  get height() {
+    return this._height;
+  }
+  set height(value) {
+    this.geometry.dispose();
+    this.geometry = new PlaneBufferGeometry(this._width, value);
+    this.geometry.computeBoundingBox();
+    this.element.style.height = `${value}px`;
+    this._height = value;
+  }
+}
+class CSS3DPlane extends VisCSS3DObject {
   constructor(element = document.createElement("div")) {
     super(element);
-    __publicField(this, "geometry");
-    const boundingBox = element.getBoundingClientRect();
-    this.geometry = new PlaneBufferGeometry(boundingBox.width, boundingBox.height);
-    this.geometry.computeBoundingBox();
   }
   raycast(raycaster, intersects) {
-    const matrixWorld = this.matrixWorld;
-    const box = this.geometry.boundingBox.clone();
-    box.applyMatrix4(matrixWorld);
+    const box = this.cacheBox.copy(this.geometry.boundingBox);
+    box.applyMatrix4(this.matrixWorld);
     if (raycaster.ray.intersectsBox(box)) {
       intersects.push({
         distance: raycaster.ray.origin.distanceTo(this.position),
@@ -7444,7 +7485,8 @@ class CSS3DCompiler extends ObjectCompiler {
     }
     const object = this.map.get(vid);
     if (key === "element") {
-      object.element = this.getElement(value);
+      object.element.innerHTML = "";
+      object.element.appendChild(this.getElement(value));
       return this;
     }
     super.set(vid, path, key, value);
@@ -11146,11 +11188,8 @@ class CSS3DPlaneHelper extends LineSegments {
     super();
     __publicField(this, "target");
     __publicField(this, "type", "VisCSS3DPlaneHelper");
-    const element = target.element;
-    const boundingBox = element.getBoundingClientRect();
-    const width = boundingBox.width;
-    const height = boundingBox.height;
-    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(width, height));
+    __publicField(this, "observer");
+    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(target.width, target.height));
     this.geometry.computeBoundingBox();
     this.material = getHelperLineMaterial();
     this.matrixAutoUpdate = false;
@@ -11158,6 +11197,18 @@ class CSS3DPlaneHelper extends LineSegments {
     this.matrixWorldNeedsUpdate = false;
     this.matrixWorld = target.matrixWorld;
     this.target = target;
+    const observer = new MutationObserver(() => {
+      this.geometry.dispose();
+      this.geometry = new EdgesGeometry(new PlaneBufferGeometry(target.width, target.height));
+      this.geometry.computeBoundingBox();
+    });
+    observer.observe(target.element, {
+      attributeFilter: ["style"]
+    });
+    this.observer = observer;
+  }
+  dispose() {
+    this.observer.disconnect();
   }
 }
 const _GroupHelper = class extends Sprite {
@@ -11350,7 +11401,6 @@ class ObjectHelperManager extends EventDispatcher {
       [CONFIGTYPE.SPRITE]: SpriteHelper,
       [CONFIGTYPE.POINTS]: PointsHelper,
       [CONFIGTYPE.LINE]: LineHelper,
-      [CONFIGTYPE.LINESEGMENTS]: LineHelper,
       [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper,
       [CONFIGTYPE.CSS3DPLANE]: CSS3DPlaneHelper
     });
@@ -12953,7 +13003,7 @@ class History {
     this.actionList = [];
   }
 }
-const version = "0.1.3-2";
+const version = "0.1.3-3";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }

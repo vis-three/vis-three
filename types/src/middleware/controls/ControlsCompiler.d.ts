@@ -13,6 +13,7 @@ export declare class ControlsCompiler extends Compiler {
     private target;
     private map;
     private weakMap;
+    private engine;
     private processorMap;
     constructor();
     private getAssembly;

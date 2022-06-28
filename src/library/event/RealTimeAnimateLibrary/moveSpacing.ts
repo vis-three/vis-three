@@ -1,4 +1,5 @@
 import { Tween } from "@tweenjs/tween.js";
+import { Object3D } from "three";
 import { EngineSupport } from "../../../engine/EngineSupport";
 import { ObjectEvent } from "../../../manager/EventManager";
 import { RenderEvent } from "../../../manager/RenderManager";
@@ -41,6 +42,11 @@ export const generator: EventGenerator<MoveSpacing> = function (
 
   if (!object) {
     console.warn(`can not found vid object: ${params.target}`);
+    return () => {};
+  }
+
+  if (!(object instanceof Object3D)) {
+    console.warn(`object is not instanceof Object3D: ${params.target}`);
     return () => {};
   }
 

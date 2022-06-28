@@ -1,4 +1,5 @@
 import { Tween } from "@tweenjs/tween.js";
+import { Object3D } from "three";
 import { timingFunction, TIMINGFUNCTION } from "./common";
 export const config = {
     name: "moveSpacing",
@@ -11,7 +12,7 @@ export const config = {
         },
         delay: 0,
         duration: 1000,
-        timingFunction: TIMINGFUNCTION.EQI,
+        timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
     },
 };
 export const generator = function (engine, config) {
@@ -19,6 +20,10 @@ export const generator = function (engine, config) {
     const object = engine.getObjectBySymbol(params.target);
     if (!object) {
         console.warn(`can not found vid object: ${params.target}`);
+        return () => { };
+    }
+    if (!(object instanceof Object3D)) {
+        console.warn(`object is not instanceof Object3D: ${params.target}`);
         return () => { };
     }
     const renderManager = engine.renderManager;

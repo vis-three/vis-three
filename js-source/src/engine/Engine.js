@@ -77,6 +77,7 @@ export class Engine extends EventDispatcher {
     compilerManager;
     keyboardManager;
     objectHelperManager;
+    transing;
     stats;
     displayMode;
     selectionBox;

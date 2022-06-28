@@ -82,6 +82,7 @@
       import homepageRouter from "./homepage";
       import dataviewRouter from "./dataview";
 
+      // const engine = new VIS.ModelingEngineSupport()
       const engine = new VIS.DisplayEngineSupport()
         .install("CSS3DRenderer")
         .complete()
@@ -187,7 +188,8 @@
           }
         }
         const moduleDom = document.createElement("div");
-        moduleDom.style.position = "absoulte";
+        moduleDom.style.display = "flex";
+        moduleDom.style.position = "absolute";
         moduleDom.id = module.router;
         moduleDom.className = "module-box";
         moduleDom.innerHTML = `
@@ -206,6 +208,8 @@
         const css3DObject = VIS.generateConfig("CSS3DPlane", {
           vid,
           element: `index.${module.router}`,
+          width: moduleDom.offsetWidth,
+          height: moduleDom.offsetHeight,
           scale: {
             x: 0.1,
             y: 0.1,

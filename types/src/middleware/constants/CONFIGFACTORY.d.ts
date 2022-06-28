@@ -17,11 +17,17 @@ export declare const CONFIGFACTORY: {
     BoxGeometry: () => import("../geometry/GeometryConfig").BoxGeometryConfig;
     SphereGeometry: () => import("../geometry/GeometryConfig").SphereGeometryConfig;
     LoadGeometry: () => import("../geometry/GeometryConfig").LoadGeometryConfig;
+    CustomGeometry: () => import("../geometry/GeometryConfig").CustomGeometryConfig;
     PlaneGeometry: () => import("../geometry/GeometryConfig").PlaneGeometryConfig;
     CircleGeometry: () => import("../geometry/GeometryConfig").CircleGeometryConfig;
     ConeGeometry: () => import("../geometry/GeometryConfig").ConeGeometryConfig;
     CylinderGeometry: () => import("../geometry/GeometryConfig").CylinderGeometryConfig;
     EdgesGeometry: () => import("../geometry/GeometryConfig").EdgesGeometryConfig;
+    LineCurveGeometry: () => import("../geometry/GeometryConfig").LineCurveGeometryConfig;
+    SplineCurveGeometry: () => import("../geometry/GeometryConfig").SplineCurveGeometryConfig;
+    CubicBezierCurveGeometry: () => import("../geometry/GeometryConfig").CubicBezierCurveGeometryConfig;
+    QuadraticBezierCurveGeometry: () => import("../geometry/GeometryConfig").QuadraticBezierCurveGeometryConfig;
+    DodecahedronGeometry: () => import("../geometry/GeometryConfig").DodecahedronGeometryConfig;
     Sprite: () => import("../sprite/SpriteConfig").SpriteConfig;
     Line: () => import("../line/LineConfig").LineConfig;
     Mesh: () => import("../mesh/MeshConfig").MeshConfig;
@@ -33,6 +39,7 @@ export declare const CONFIGFACTORY: {
     PerspectiveCamera: () => import("../camera/CameraConfig").PerspectiveCameraConfig;
     OrthographicCamera: () => import("../camera/CameraConfig").OrthographicCameraConfig;
     WebGLRenderer: () => import("../renderer/RendererConfig").WebGLRendererConfig;
+    CSS3DRenderer: () => import("../renderer/RendererConfig").CSS3DRendererConfig;
     Scene: () => import("../scene/SceneConfig").SceneConfig;
     TransformControls: () => import("../controls/ControlsConfig").TransformControlsConfig;
     OrbitControls: () => import("../controls/ControlsConfig").OrbitControlsConfig;

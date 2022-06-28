@@ -12,9 +12,14 @@ export var CONFIGTYPE;
     CONFIGTYPE["CYLINDERGEOMETRY"] = "CylinderGeometry";
     CONFIGTYPE["DODECAHEDRONGEOMETRY"] = "DodecahedronGeometry";
     CONFIGTYPE["EDGESGEOMETRY"] = "EdgesGeometry";
+    CONFIGTYPE["LINECURVEGEOMETRY"] = "LineCurveGeometry";
+    CONFIGTYPE["SPLINECURVEGEOMETRY"] = "SplineCurveGeometry";
+    CONFIGTYPE["CUBICBEZIERCURVEGEOMETRY"] = "CubicBezierCurveGeometry";
+    CONFIGTYPE["QUADRATICBEZIERCURVEGEOMETRY"] = "QuadraticBezierCurveGeometry";
+    CONFIGTYPE["CUSTOMGEOMETRY"] = "CustomGeometry";
     CONFIGTYPE["MESH"] = "Mesh";
     CONFIGTYPE["LINE"] = "Line";
-    CONFIGTYPE["LINESEGMENTS"] = "LineSegments";
+    // LINESEGMENTS = "LineSegments",
     CONFIGTYPE["POINTS"] = "Points";
     CONFIGTYPE["SPRITE"] = "Sprite";
     CONFIGTYPE["GROUP"] = "Group";
@@ -32,7 +37,7 @@ export var CONFIGTYPE;
     CONFIGTYPE["LINEBASICMATERIAL"] = "LineBasicMaterial";
     CONFIGTYPE["POINTSMATERIAL"] = "PointsMaterial";
     CONFIGTYPE["SHADERMATERIAL"] = "ShaderMaterial";
-    CONFIGTYPE["RAWSHADERMATERIAL"] = "RawShaderMaterial";
+    // RAWSHADERMATERIAL = "RawShaderMaterial",
     CONFIGTYPE["AMBIENTLIGHT"] = "AmbientLight";
     CONFIGTYPE["SPOTLIGHT"] = "SpotLight";
     CONFIGTYPE["POINTLIGHT"] = "PointLight";

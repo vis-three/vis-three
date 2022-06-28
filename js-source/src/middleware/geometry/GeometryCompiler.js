@@ -1,24 +1,32 @@
-import { BoxBufferGeometry, BufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, Euler, Matrix4, PlaneBufferGeometry, Quaternion, SphereBufferGeometry, Vector3, } from "three";
+import { BoxBufferGeometry, BufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, Euler, Float32BufferAttribute, PlaneBufferGeometry, Quaternion, SphereBufferGeometry, Vector3, } from "three";
 import { validate } from "uuid";
 import { LoadGeometry } from "../../extends/geometry/LoadGeometry";
 import { Compiler } from "../../core/Compiler";
 import { CONFIGTYPE } from "../constants/configType";
 import { MODULETYPE } from "../constants/MODULETYPE";
+import { LineCurveGeometry } from "../../extends/geometry/LineCurveGeometry";
+import { SplineCurveGeometry } from "../../extends/geometry/SplineCurveGeometry";
+import { CubicBezierCurveGeometry } from "../../extends/geometry/CubicBezierCurveGeometry";
+import { QuadraticBezierCurveGeometry } from "../../extends/geometry/QuadraticBezierCurveGeometry";
 export class GeometryCompiler extends Compiler {
     // 变换锚点
     static transfromAnchor = function (geometry, config) {
         geometry.center();
-        !geometry.boundingBox && geometry.computeBoundingBox();
+        geometry.computeBoundingBox();
         const box = geometry.boundingBox;
         const position = config.position;
         const rotation = config.rotation;
         const scale = config.scale;
-        const materix = new Matrix4();
-        const vPostion = new Vector3(((box.max.x - box.min.x) / 2) * position.x, ((box.max.y - box.min.y) / 2) * position.y, ((box.max.z - box.min.z) / 2) * position.z);
+        // 先应用旋转缩放
         const quaternion = new Quaternion().setFromEuler(new Euler(rotation.x, rotation.y, rotation.z, "XYZ"));
-        const vScale = new Vector3(scale.x, scale.y, scale.z);
-        materix.compose(vPostion, quaternion, vScale);
-        geometry.applyMatrix4(materix);
+        // 再应用缩放
+        geometry.applyQuaternion(quaternion);
+        geometry.scale(scale.x, scale.y, scale.z);
+        // 计算位置
+        geometry.center();
+        geometry.computeBoundingBox();
+        // 根据旋转缩放运算位置
+        geometry.translate(((box.max.x - box.min.x) / 2) * position.x, ((box.max.y - box.min.y) / 2) * position.y, ((box.max.z - box.min.z) / 2) * position.z);
         return geometry;
     };
     MODULE = MODULETYPE.GEOMETRY;
@@ -43,6 +51,9 @@ export class GeometryCompiler extends Compiler {
         constructMap.set(CONFIGTYPE.LOADGEOMETRY, (config) => {
             return GeometryCompiler.transfromAnchor(new LoadGeometry(this.getGeometry(config.url)), config);
         });
+        constructMap.set(CONFIGTYPE.CUSTOMGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(this.generateGeometry(config.attribute), config);
+        });
         constructMap.set(CONFIGTYPE.CIRCLEGEOMETRY, (config) => {
             return GeometryCompiler.transfromAnchor(new CircleBufferGeometry(config.radius, config.segments, config.thetaStart, config.thetaLength), config);
         });
@@ -54,6 +65,18 @@ export class GeometryCompiler extends Compiler {
         });
         constructMap.set(CONFIGTYPE.EDGESGEOMETRY, (config) => {
             return GeometryCompiler.transfromAnchor(new EdgesGeometry(this.map.get(config.url), config.thresholdAngle), config);
+        });
+        constructMap.set(CONFIGTYPE.LINECURVEGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(new LineCurveGeometry(config.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config.divisions, config.space), config);
+        });
+        constructMap.set(CONFIGTYPE.SPLINECURVEGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(new SplineCurveGeometry(config.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config.divisions, config.space), config);
+        });
+        constructMap.set(CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(new CubicBezierCurveGeometry(config.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config.divisions, config.space), config);
+        });
+        constructMap.set(CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(new QuadraticBezierCurveGeometry(config.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config.divisions, config.space), config);
         });
         this.constructMap = constructMap;
     }
@@ -81,6 +104,21 @@ export class GeometryCompiler extends Compiler {
             return this.map.get(url);
         }
         return this.getRescource(url);
+    }
+    generateGeometry(attribute) {
+        const geometry = new BufferGeometry();
+        attribute.position.length &&
+            geometry.setAttribute("position", new Float32BufferAttribute(attribute.position, 3));
+        attribute.color.length &&
+            geometry.setAttribute("color", new Float32BufferAttribute(attribute.color, 3));
+        attribute.normal.length &&
+            geometry.setAttribute("normal", new Float32BufferAttribute(attribute.normal, 3));
+        attribute.uv.length &&
+            geometry.setAttribute("uv", new Float32BufferAttribute(attribute.uv, 2));
+        attribute.uv2.length &&
+            geometry.setAttribute("uv2", new Float32BufferAttribute(attribute.uv2, 2));
+        attribute.index.length && geometry.setIndex(attribute.index);
+        return geometry;
     }
     getMap() {
         return this.map;

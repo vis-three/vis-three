@@ -13,9 +13,14 @@ export declare class PointerManager extends EventDispatcher {
     private canMouseMove;
     private mouseEventTimer;
     private throttleTime;
-    private pointerDownFun;
-    private pointerMoveFun;
-    private pointerUpFun;
+    private pointerDownHandler;
+    private pointerMoveHandler;
+    private pointerUpHandler;
+    private mouseDownHandler;
+    private mouseUpHandler;
+    private clickHandler;
+    private dblclickHandler;
+    private contextmenuHandler;
     constructor(parameters: PointerManagerParameters);
     /**
      * 设置当前作用的dom

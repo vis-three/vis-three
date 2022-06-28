@@ -1,3 +1,4 @@
+import { Material, Object3D, Texture } from "three";
 import { CompilerManager } from "../manager/CompilerManager";
 import { DataSupportManager, DataSupportManagerParameters, LoadOptions } from "../manager/DataSupportManager";
 import { LoaderManager } from "../manager/LoaderManager";
@@ -18,6 +19,7 @@ export declare class EngineSupport extends Engine {
     registerResources: (resourceMap: {
         [key: string]: unknown;
     }) => this;
+    loadResourcesAsync: (urlList: Array<string>) => Promise<MappedEvent>;
     toJSON: () => string;
     exportConfig: (compress: boolean) => LoadOptions;
     applyConfig: <T extends SymbolConfig>(...configs: T[]) => this;
@@ -25,7 +27,7 @@ export declare class EngineSupport extends Engine {
     getConfigBySymbol: <T extends SymbolConfig>(vid: string) => T | null;
     removeConfigBySymbol: (vid: string) => this;
     getObjectSymbol: (object: any) => SymbolConfig["vid"] | null;
-    getObjectBySymbol: (vid: string) => any | null;
+    getObjectBySymbol: (vid: string) => Object3D | Texture | Material | null;
     constructor(parameters?: EngineSupportParameters, resources?: {
         [key: string]: any;
     });
@@ -34,5 +36,5 @@ export declare class EngineSupport extends Engine {
     loadConfig(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
     loadConfigAsync(config: EngineSupportLoadOptions): Promise<MappedEvent | undefined>;
     removeConfig(config: EngineSupportLoadOptions): void;
-    getObjectConfig(object: any): SymbolConfig | null;
+    getObjectConfig<O, C extends SymbolConfig>(object: O): C | null;
 }

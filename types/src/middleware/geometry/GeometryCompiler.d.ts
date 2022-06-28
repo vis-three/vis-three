@@ -20,6 +20,7 @@ export declare class GeometryCompiler extends Compiler {
     linkRescourceMap(map: Map<string, unknown>): this;
     private getRescource;
     private getGeometry;
+    private generateGeometry;
     getMap(): Map<SymbolConfig["vid"], BufferGeometry>;
     useEngine(engine: EngineSupport): this;
     setTarget(target: GeometryCompilerTarget): this;
