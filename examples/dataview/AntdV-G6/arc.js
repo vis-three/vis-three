@@ -1,4 +1,4 @@
-import G6 from "@antv/g6";
+import { Graph } from "@antv/g6";
 
 const colors = [
   "rgb(91, 143, 249)",
@@ -21,7 +21,7 @@ dom.style.opacity = 0;
 dom.className = "g6-tree";
 document.body.appendChild(dom);
 
-export const arcGraph = new G6.Graph({
+export const arcGraph = new Graph({
   container: dom,
   linkCenter: true,
   fitView: true,

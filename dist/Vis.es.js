@@ -5249,11 +5249,11 @@ class Compiler {
   constructor() {
   }
 }
-const config$8 = {
+const config$a = {
   name: "linearTime",
   multiply: 1
 };
-const generator$8 = function(engine, target, attribute, config2) {
+const generator$a = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
     console.error(`object not exist attribute: ${attribute}`, target);
     return (event) => {
@@ -5314,7 +5314,7 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
   _AniScriptLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
 });
-AniScriptLibrary.register(config$8, generator$8);
+AniScriptLibrary.register(config$a, generator$a);
 class AnimationCompiler extends Compiler {
   constructor() {
     super();
@@ -5407,15 +5407,90 @@ class AnimationCompiler extends Compiler {
     return null;
   }
 }
-const config$7 = {
+const config$9 = {
   name: "openWindow",
   params: {
     url: ""
   }
 };
-const generator$7 = function(engine, config2) {
+const generator$9 = function(engine, config2) {
   return () => {
     window.open(config2.params.url);
+  };
+};
+const config$8 = {
+  name: "visibleObject",
+  params: {
+    target: "",
+    visible: true,
+    delay: 0
+  }
+};
+const generator$8 = function(engine, config2) {
+  const params = config2.params;
+  const target = engine.getObjectBySymbol(params.target);
+  if (!target) {
+    console.warn(`basic event visibleObject: can not found vid object: ${params.target}`);
+    return () => {
+    };
+  }
+  return () => {
+    setTimeout(() => {
+      target.visible = params.visible;
+    }, params.delay);
+  };
+};
+const config$7 = {
+  name: "addClass",
+  params: {
+    target: "",
+    className: "",
+    delay: 0
+  }
+};
+const generator$7 = function(engine, config2) {
+  const params = config2.params;
+  const targets = [];
+  if (params.target === "all") {
+    engine.scene.traverse((object) => {
+      if (object instanceof CSS3DObject) {
+        targets.push(object);
+      }
+    });
+  } else if (Array.isArray(params.target)) {
+    params.target.forEach((symbol) => {
+      const target = engine.getObjectBySymbol(symbol);
+      if (!target) {
+        console.warn(`basic event AddClass: can not found vid object: ${params.target}`);
+      } else {
+        targets.push(target);
+      }
+    });
+  } else {
+    const target = engine.getObjectBySymbol(params.target);
+    if (!target) {
+      console.warn(`basic event AddClass: can not found vid object: ${params.target}`);
+      return () => {
+      };
+    }
+    if (!(target instanceof CSS3DObject)) {
+      console.warn(`basic event AddClass: object is not a CSS3DObject.`);
+      return () => {
+      };
+    }
+    targets.push(target);
+  }
+  if (!targets.length) {
+    console.warn(`basic event AddClass: can not found vid object: ${params.target}`);
+    return () => {
+    };
+  }
+  return () => {
+    setTimeout(() => {
+      targets.forEach((target) => {
+        target.element.classList.add(params.className);
+      });
+    }, params.delay);
   };
 };
 var Easing = {
@@ -6477,7 +6552,7 @@ const config$1 = {
     delay: 0,
     duration: 1e3,
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
-    visible: false
+    visible: true
   }
 };
 const generator$1 = function(engine, config2) {
@@ -6513,6 +6588,7 @@ const generator$1 = function(engine, config2) {
   }
   return () => {
     const renderManager = engine.renderManager;
+    objectConfig.visible = true;
     materialList.forEach((material, i, arr) => {
       material.transparent = true;
       material.opacity = params.direction === "in" ? 0 : 1;
@@ -6681,6 +6757,8 @@ __publicField(EventLibrary, "register", function(config2, generator2) {
   _EventLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _EventLibrary.generatorLibrary.set(config2.name, generator2);
 });
+EventLibrary.register(config$9, generator$9);
+EventLibrary.register(config$8, generator$8);
 EventLibrary.register(config$7, generator$7);
 EventLibrary.register(config$6, generator$6);
 EventLibrary.register(config$5, generator$5);

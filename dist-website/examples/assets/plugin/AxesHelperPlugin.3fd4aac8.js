@@ -1,0 +1,1 @@
+import{f as t}from"../Vis.es.321d2553.js";import"../three.5dc0577a.js";import"../vis-three.a3d50446.js";const s=new t().install("AxesHelper",{length:200}).complete().setDom(document.getElementById("app")).setSize().play();let e=!0;document.getElementById("operate").onclick=n=>{e=!e,s.setAxesHelper({show:e})};

@@ -102,6 +102,8 @@
             .setStats(true)
             .setSize();
 
+          engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
           engine.loadConfigAsync(visConfig).then((res) => {
             document.body.removeChild(loadingDom);
             engine.setScene(visConfig.scene.Scene.vid).play();
