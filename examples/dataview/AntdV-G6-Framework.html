@@ -289,6 +289,9 @@
       const column = 10;
       const space = 5;
 
+      const symbolList = [];
+      const configList = [];
+
       for (let i = 0; i <= row * column - 1; i += 1) {
         const dom = document.createElement("div");
         dom.className = "app-brick";
@@ -301,6 +304,9 @@
         });
 
         const c3Id = v4();
+
+        symbolList.push(c3Id);
+
         const position = {
           x:
             column * (height + space) * ((i % column) / column) -
@@ -431,15 +437,22 @@
                 className: "app-brick-focus",
               },
             }),
-            VIS.EventLibrary.generateConfig("addClass", {
-              params: {
-                target: "all",
-                className: "app-brick-fade",
-              },
-            }),
           ],
         });
+
+        configList.push(css3DPlane);
       }
+
+      configList.forEach((config) => {
+        const event = VIS.EventLibrary.generateConfig("addClass", {
+          params: {
+            target: symbolList.filter((id) => id !== config.vid),
+            className: "app-brick-fade",
+          },
+        });
+
+        config.click.push(event);
+      });
     </script>
   </body>
 </html>
