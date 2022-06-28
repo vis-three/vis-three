@@ -7,6 +7,11 @@ export class SplineCurveGeometry extends CurveGeometry {
 
     this.type = "SplineCurveGeometry";
 
+    if (!path.length) {
+      console.warn(`SplineCurveGeometry path length at least 1.`);
+      return;
+    }
+
     const splineCurve = new CatmullRomCurve3(path);
 
     this.setFromPoints(

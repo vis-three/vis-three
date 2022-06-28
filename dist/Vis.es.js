@@ -7595,6 +7595,10 @@ class LineCurveGeometry extends CurveGeometry {
   constructor(path, divisions = 36, space = true) {
     super(path, divisions, space);
     this.type = "LineCurveGeometry";
+    if (!path.length) {
+      console.warn(`LineCurveGeometry path length at least 1.`);
+      return;
+    }
     const curvePath = new CurvePath();
     for (let i = 1; i < path.length; i += 1) {
       curvePath.add(new LineCurve3(path[i - 1], path[i]));
@@ -7616,6 +7620,10 @@ class SplineCurveGeometry extends CurveGeometry {
   constructor(path, divisions = 36, space = true) {
     super(path, divisions, space);
     this.type = "SplineCurveGeometry";
+    if (!path.length) {
+      console.warn(`SplineCurveGeometry path length at least 1.`);
+      return;
+    }
     const splineCurve = new CatmullRomCurve3(path);
     this.setFromPoints(space ? splineCurve.getSpacedPoints(divisions) : splineCurve.getPoints(divisions));
   }
@@ -7626,7 +7634,8 @@ class CubicBezierCurveGeometry extends CurveGeometry {
     this.type = "CubicBezierCurveGeometry";
     const curvePath = new CurvePath();
     if (path.length < 4) {
-      console.error(`CubicBezierCurveGeometry path length at least 4.`);
+      console.warn(`CubicBezierCurveGeometry path length at least 4.`);
+      return;
     }
     const length = 4 + (path.length - 4) - (path.length - 4) % 3;
     for (let i = 2; i < length; i += 3) {
@@ -7651,7 +7660,8 @@ class QuadraticBezierCurveGeometry extends CurveGeometry {
     this.type = "QuadraticBezierCurveGeometry";
     const curvePath = new CurvePath();
     if (path.length < 3) {
-      console.error(`QuadraticBezierCurveGeometry path length at least 3.`);
+      console.warn(`QuadraticBezierCurveGeometry path length at least 3.`);
+      return;
     }
     const length = 3 + (path.length - 3) - (path.length - 3) % 2;
     for (let i = 1; i < length; i += 2) {

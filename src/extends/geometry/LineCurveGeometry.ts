@@ -7,6 +7,11 @@ export class LineCurveGeometry extends CurveGeometry {
 
     this.type = "LineCurveGeometry";
 
+    if (!path.length) {
+      console.warn(`LineCurveGeometry path length at least 1.`);
+      return;
+    }
+
     const curvePath = new CurvePath<Vector3>();
 
     for (let i = 1; i < path.length; i += 1) {

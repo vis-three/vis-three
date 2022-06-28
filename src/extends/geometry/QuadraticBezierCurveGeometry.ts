@@ -10,7 +10,8 @@ export class QuadraticBezierCurveGeometry extends CurveGeometry {
     const curvePath = new CurvePath<Vector3>();
 
     if (path.length < 3) {
-      console.error(`QuadraticBezierCurveGeometry path length at least 3.`);
+      console.warn(`QuadraticBezierCurveGeometry path length at least 3.`);
+      return;
     }
 
     const length = 3 + (path.length - 3) - ((path.length - 3) % 2);
