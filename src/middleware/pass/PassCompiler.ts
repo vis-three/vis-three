@@ -93,10 +93,23 @@ export class PassCompiler extends Compiler {
     }
   }
 
-  /**
-   * @todo
-   */
-  set() {}
+  set(vid: string, path: string[], key: string, value: any): this {
+    if (!this.map.has(vid)) {
+      console.warn(
+        `pass compiler set function: can not found material which vid is: '${vid}'`
+      );
+      return this;
+    }
+
+    const pass = this.map.get(vid)!;
+
+    let config = pass;
+    path.forEach((key, i, arr) => {
+      config = config[key];
+    });
+    config[key] = value;
+    return this;
+  }
 
   remove(vid: string): this {
     if (!this.map.has(vid)) {

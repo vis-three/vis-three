@@ -16,7 +16,6 @@ export interface MaterialConfig extends SymbolConfig {
   colorWrite: boolean;
   depthTest: boolean;
   depthWrite: boolean;
-  format: number;
   fog: boolean;
   name: string;
   needsUpdate: boolean;
@@ -170,7 +169,6 @@ export const getMaterialConfig = function (): MaterialConfig {
     colorWrite: true,
     depthTest: true,
     depthWrite: true,
-    format: RGBAFormat,
     fog: true,
     name: "",
     needsUpdate: false,

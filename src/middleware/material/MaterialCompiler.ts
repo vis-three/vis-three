@@ -60,6 +60,10 @@ export class MaterialCompiler extends Compiler {
     shader: true,
   };
 
+  private needsUpdateAttribute: { [key: string]: boolean } = {
+    transparent: true,
+  };
+
   private texturelMap = new Map<string, Texture>();
   private resourceMap = new Map<string, unknown>();
 
@@ -202,6 +206,10 @@ export class MaterialCompiler extends Compiler {
       config = config[key];
     });
     config[key] = value;
+
+    if (this.needsUpdateAttribute[key]) {
+      material.needsUpdate = true;
+    }
 
     return this;
   }

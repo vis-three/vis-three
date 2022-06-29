@@ -1,6 +1,7 @@
 export default {
   router: "support",
   children: [
+    "/RendererSupport.html",
     "/GeometrySupport.html",
     "/MaterialSupport.html",
     "/CameraSupport.html",

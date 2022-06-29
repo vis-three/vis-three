@@ -9,6 +9,7 @@ export interface RendererConfig extends SymbolConfig {
 export interface ShadowMapConfig {
   enabled: boolean;
   autoUpdate: boolean;
+  needsUpdate: boolean;
   type: number;
 }
 
@@ -57,6 +58,7 @@ export const getWebGLRendererConfig = function (): WebGLRendererConfig {
     shadowMap: {
       enabled: false,
       autoUpdate: true,
+      needsUpdate: false,
       type: PCFShadowMap,
     },
     toneMapping: NoToneMapping,

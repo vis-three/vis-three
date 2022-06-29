@@ -55,6 +55,7 @@ export class WebGLRendererProcessor extends Processor {
     }
 
     this.mergeAttribute(params.path, params.key, params.value);
+
     return this;
   }
 

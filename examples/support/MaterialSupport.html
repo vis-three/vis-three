@@ -75,6 +75,9 @@
         metalness: 0.5,
         roughness: 0.5,
         color: "rgb(100, 200, 100)",
+        transparent: true,
+        opacity: 0.5,
+        alphaTest: 0.0,
       });
 
       const meshPhongMaterial = Vis.generateConfig("MeshPhongMaterial", {
@@ -197,6 +200,8 @@
       engine.renderManager.addEventListener("render", (event) => {
         shaderMaterial.uniforms.uTime.value += event.delta * 5;
       });
+
+      window.engine = engine;
     </script>
   </body>
 </html>

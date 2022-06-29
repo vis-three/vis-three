@@ -1,4 +1,13 @@
-import { Object3D, Scene } from "three";
+import {
+  AmbientLight,
+  Object3D,
+  OrthographicCamera,
+  PointLightShadow,
+  Scene,
+} from "three";
+
+import { LightShadow } from "three/src/lights/LightShadow";
+
 import { version } from "../../package.json";
 
 if (!window.__THREE__) {
@@ -81,3 +90,13 @@ Scene.prototype.remove = function (...object: Object3D[]): Scene {
   });
   return this;
 };
+
+// AmbientLight 增加无用shadow，不然WebGLShadowMap会一直warning
+
+const lightShadow = new LightShadow(
+  new OrthographicCamera(-256, 256, 256, -256)
+);
+lightShadow.autoUpdate = false;
+lightShadow.needsUpdate = false;
+
+AmbientLight.prototype.shadow = lightShadow;

@@ -21,10 +21,11 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import * as VIS from "vis-three";
       import { v4 as getUUid } from "uuid";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-      const canvasGenerator = new Vis.CanvasGenerator({
+      const canvasGenerator = new VIS.CanvasGenerator({
         width: 256,
         height: 256,
       })
@@ -39,12 +40,20 @@
         })
         .preview();
 
-      const engine = new Vis.ModelingEngineSupport()
+      const engine = new VIS.ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true);
 
-      const pointLight = Vis.generateConfig("PointLight", {
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid);
+
+      VIS.generateConfig.injectScene = true;
+
+      const pointLight = VIS.generateConfig("PointLight", {
         position: {
           x: 30,
           y: 50,
@@ -52,43 +61,35 @@
         distance: 100,
       });
 
-      const material = Vis.generateConfig(Vis.CONFIGTYPE.MESHSTANDARDMATERIAL, {
+      const material = VIS.generateConfig(VIS.CONFIGTYPE.MESHSTANDARDMATERIAL, {
         color: "red",
       });
 
-      const geometry = Vis.generateConfig(Vis.CONFIGTYPE.SPHEREGEOMETRY, {
+      const geometry = VIS.generateConfig(VIS.CONFIGTYPE.SPHEREGEOMETRY, {
         radius: 10,
         widthSegments: 64,
         heightSegments: 64,
       });
 
-      const mesh = Vis.generateConfig(Vis.CONFIGTYPE.MESH, {
+      const mesh = VIS.generateConfig(VIS.CONFIGTYPE.MESH, {
         material: material.vid,
         geometry: geometry.vid,
       });
 
-      const smaa = Vis.generateConfig(Vis.CONFIGTYPE.SMAAPASS);
+      const smaa = VIS.generateConfig(VIS.CONFIGTYPE.SMAAPASS);
 
-      const unrealBloom = Vis.generateConfig(Vis.CONFIGTYPE.UNREALBLOOMPASS, {
+      const unrealBloom = VIS.generateConfig(VIS.CONFIGTYPE.UNREALBLOOMPASS, {
         strength: 1,
       });
 
-      const scene = Vis.generateConfig("Scene", {
-        children: [pointLight.vid, mesh.vid],
-      });
-
-      engine.applyConfig(
-        pointLight,
-        material,
-        geometry,
-        mesh,
-        smaa,
-        unrealBloom,
-        scene
-      );
-
-      engine.setScene(scene.vid).play();
+      engine.play();
       console.log(engine);
+
+      const gui = new GUI();
+
+      gui.add(unrealBloom, "strength", 0, 5, 0.1);
+      gui.add(unrealBloom, "threshold", 0, 1, 0.01);
+      gui.add(unrealBloom, "radius", 0, 5, 0.1);
     </script>
   </body>
 </html>
