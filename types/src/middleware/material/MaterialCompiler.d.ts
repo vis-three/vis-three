@@ -16,6 +16,7 @@ export declare class MaterialCompiler extends Compiler {
     private mapAttribute;
     private colorAttribute;
     private shaderAttribute;
+    private needsUpdateAttribute;
     private texturelMap;
     private resourceMap;
     private cachaColor;

@@ -17,6 +17,7 @@ export const getWebGLRendererConfig = function () {
         shadowMap: {
             enabled: false,
             autoUpdate: true,
+            needsUpdate: false,
             type: PCFShadowMap,
         },
         toneMapping: NoToneMapping,

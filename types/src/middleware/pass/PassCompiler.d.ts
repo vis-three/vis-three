@@ -19,10 +19,7 @@ export declare class PassCompiler extends Compiler {
     setTarget(target: PassCompilerTarget): this;
     useEngine(engine: EngineSupport): this;
     add(config: PassConfigAllType): void;
-    /**
-     * @todo
-     */
-    set(): void;
+    set(vid: string, path: string[], key: string, value: any): this;
     remove(vid: string): this;
     compileAll(): this;
     dispose(): this;

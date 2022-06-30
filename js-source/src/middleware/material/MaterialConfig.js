@@ -1,4 +1,4 @@
-import { AddEquation, FrontSide, MultiplyOperation, NormalBlending, OneMinusSrcAlphaFactor, RGBAFormat, SrcAlphaFactor, TangentSpaceNormalMap, } from "three";
+import { AddEquation, FrontSide, MultiplyOperation, NormalBlending, OneMinusSrcAlphaFactor, SrcAlphaFactor, TangentSpaceNormalMap, } from "three";
 import { CONFIGTYPE } from "../constants/configType";
 export const getMaterialConfig = function () {
     return {
@@ -8,7 +8,6 @@ export const getMaterialConfig = function () {
         colorWrite: true,
         depthTest: true,
         depthWrite: true,
-        format: RGBAFormat,
         fog: true,
         name: "",
         needsUpdate: false,

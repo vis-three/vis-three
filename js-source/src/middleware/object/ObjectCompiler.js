@@ -163,6 +163,21 @@ export class ObjectCompiler extends Compiler {
             console.warn(`${this.MODULE} compiler: can not found this vid in compiler: ${vid}.`);
             return this;
         }
+        // target如果有parent先从parent移除
+        const targetConfig = this.engine.getConfigBySymbol(target);
+        if (!targetConfig) {
+            console.warn(`${this.MODULE} compiler: can not foud object config: ${target}`);
+            return this;
+        }
+        if (targetConfig.parent && targetConfig.parent !== vid) {
+            const parentConfig = this.engine.getConfigBySymbol(targetConfig.parent);
+            if (!parentConfig) {
+                console.warn(`${this.MODULE} compiler: can not foud object config: ${target}`);
+                return this;
+            }
+            parentConfig.children.splice(parentConfig.children.indexOf(target), 1);
+        }
+        targetConfig.parent = vid;
         const object = this.map.get(vid);
         const targetObject = this.getObject(target);
         if (!targetObject) {
@@ -170,13 +185,6 @@ export class ObjectCompiler extends Compiler {
             return this;
         }
         object.add(targetObject);
-        // 更新target对象的parent
-        const targetConfig = this.engine.getConfigBySymbol(target);
-        if (!targetConfig) {
-            console.warn(`${this.MODULE} compiler: can not foud object config: ${target}`);
-            return this;
-        }
-        targetConfig.parent = vid;
         return this;
     }
     // 移除子项

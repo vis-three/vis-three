@@ -17,6 +17,8 @@
 - object-updateEvent
 - canvasGenerator
 - material transparent runtime compile
+- object addChildren
+- transformControls recursive
 
 #### perf
 

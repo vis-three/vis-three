@@ -5,6 +5,7 @@ export interface RendererConfig extends SymbolConfig {
 export interface ShadowMapConfig {
     enabled: boolean;
     autoUpdate: boolean;
+    needsUpdate: boolean;
     type: number;
 }
 export interface WebGLRendererViewPort {

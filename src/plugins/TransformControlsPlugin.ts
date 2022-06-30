@@ -80,7 +80,8 @@ export const TransformControlsPlugin: Plugin<Object> = function (
     });
   } else {
     this.eventManager.addEventListener<GlobalEvent>("click", (event) => {
-      if (this.transformControls!.dragging) {
+      if (this.transing) {
+        this.transing = false;
         return;
       }
       if (event.button === 0) {

@@ -1,4 +1,5 @@
-import { Scene } from "three";
+import { AmbientLight, OrthographicCamera, Scene, } from "three";
+import { LightShadow } from "three/src/lights/LightShadow";
 import { version } from "../../package.json";
 if (!window.__THREE__) {
     console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
@@ -62,4 +63,9 @@ Scene.prototype.remove = function (...object) {
     });
     return this;
 };
+// AmbientLight 增加无用shadow，不然WebGLShadowMap会一直warning
+const lightShadow = new LightShadow(new OrthographicCamera(-256, 256, 256, -256));
+lightShadow.autoUpdate = false;
+lightShadow.needsUpdate = false;
+AmbientLight.prototype.shadow = lightShadow;
 //# sourceMappingURL=optimizeScirpt.js.map

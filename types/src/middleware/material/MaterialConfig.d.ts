@@ -5,7 +5,6 @@ export interface MaterialConfig extends SymbolConfig {
     colorWrite: boolean;
     depthTest: boolean;
     depthWrite: boolean;
-    format: number;
     fog: boolean;
     name: string;
     needsUpdate: boolean;

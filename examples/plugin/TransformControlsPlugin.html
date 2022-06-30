@@ -56,6 +56,7 @@
         .setSize()
         .play();
 
+      engine.eventManager.recursive = true;
       const scene = engine.scene;
 
       const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);

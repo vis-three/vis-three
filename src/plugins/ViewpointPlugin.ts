@@ -98,7 +98,9 @@ export const ViewpointPlugin: Plugin<ViewpointParameters> = function (
     -window.innerWidth / 8,
     window.innerWidth / 8,
     -window.innerHeight / 8,
-    window.innerHeight / 8
+    window.innerHeight / 8,
+    0.1,
+    10000
   );
 
   orthograpbicCamera.up.set(

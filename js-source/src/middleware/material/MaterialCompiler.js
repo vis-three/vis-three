@@ -31,6 +31,9 @@ export class MaterialCompiler extends Compiler {
     shaderAttribute = {
         shader: true,
     };
+    needsUpdateAttribute = {
+        transparent: true,
+    };
     texturelMap = new Map();
     resourceMap = new Map();
     cachaColor = new Color();
@@ -136,6 +139,9 @@ export class MaterialCompiler extends Compiler {
             config = config[key];
         });
         config[key] = value;
+        if (this.needsUpdateAttribute[key]) {
+            material.needsUpdate = true;
+        }
         return this;
     }
     cover(vid, config) {

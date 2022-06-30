@@ -52,10 +52,19 @@ export class PassCompiler extends Compiler {
             console.warn(`pass compiler can not support this type pass: ${config.type}.`);
         }
     }
-    /**
-     * @todo
-     */
-    set() { }
+    set(vid, path, key, value) {
+        if (!this.map.has(vid)) {
+            console.warn(`pass compiler set function: can not found material which vid is: '${vid}'`);
+            return this;
+        }
+        const pass = this.map.get(vid);
+        let config = pass;
+        path.forEach((key, i, arr) => {
+            config = config[key];
+        });
+        config[key] = value;
+        return this;
+    }
     remove(vid) {
         if (!this.map.has(vid)) {
             console.warn(`pass compiler can not found this vid pass: ${vid}.`);
