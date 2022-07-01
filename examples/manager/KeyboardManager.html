@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KeyboardManager</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .box {
+      width: 100%;
+      height: 100%;
+      display: flex;
+    }
+
+    #app1,
+    #app2,
+    #app3 {
+      height: 100%;
+      width: 50%;
+      background: rgba(255, 0, 0, 0.486);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    #app2 {
+      background: rgba(4, 0, 255, 0.486);
+    }
+
+    #app3 {
+      background: rgba(0, 255, 42, 0.486);
+      height: 30%;
+      width: 100%;
+    }
+
+    .keyboard-message {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      background: black;
+      padding: 20px;
+    }
+  </style>
+
+  <body>
+    <div class="box">
+      <div id="app1" tabindex="1">点击此处替换Keyboard空间。</div>
+      <div id="app2" tabindex="1">点击此处替换Keyboard空间。</div>
+    </div>
+    <div id="app3" tabindex="1"></div>
+
+    <div class="keyboard-message">按键盘触发</div>
+
+    <script type="module">
+      import * as VIS from "vis-three";
+
+      const manager = new VIS.KeyboardManager();
+
+      const keyboardList = [];
+
+      // 0-9
+      for (let key = 0; key <= 9; key += 1) {
+        keyboardList.push(String.fromCharCode(key));
+      }
+
+      // 97-122 a-z
+      for (let key = 97; key <= 122; key += 1) {
+        keyboardList.push(String.fromCharCode(key));
+      }
+
+      const dom = document.querySelector(".keyboard-message");
+
+      let currentArea = "window";
+
+      keyboardList.forEach((key) => {
+        manager.register({
+          shortcutKey: [key],
+          desp: `key ${key}`,
+          keyup: (event) => {
+            dom.innerHTML = `${currentArea} touch '${key}'`;
+          },
+        });
+      });
+
+      document.getElementById("app1").onclick = (event) => {
+        currentArea = "app1";
+        console.log(currentArea);
+        manager.watch(document.getElementById("app1"));
+      };
+
+      document.getElementById("app2").onclick = (event) => {
+        currentArea = "app2";
+        manager.watch(document.getElementById("app2"));
+      };
+    </script>
+  </body>
+</html>

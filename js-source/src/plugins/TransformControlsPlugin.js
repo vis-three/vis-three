@@ -48,7 +48,8 @@ export const TransformControlsPlugin = function (params) {
     }
     else {
         this.eventManager.addEventListener("click", (event) => {
-            if (this.transformControls.dragging) {
+            if (this.transing) {
+                this.transing = false;
                 return;
             }
             if (event.button === 0) {

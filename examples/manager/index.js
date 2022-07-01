@@ -4,6 +4,7 @@ export default {
     "/EventManager.html",
     "/LoaderManager.html",
     "/ResourceManager.html",
+    "/KeyboardManager.html",
   ],
   position: {
     x: 45,

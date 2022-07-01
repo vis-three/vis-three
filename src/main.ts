@@ -53,9 +53,9 @@ import { CSS3DDataSupport } from "./middleware/css3D/CSS3DDataSupport";
 import { RenderManager } from "./manager/RenderManager";
 import { CONFIGMODULE } from "./middleware/constants/CONFIGMODULE";
 import { GroupDataSupport } from "./middleware/group/GroupDataSupport";
+import { KeyboardManager } from "./manager/KeyboardManager";
 
 import "./optimize/optimizeScirpt";
-
 export {
   // core
   ProxyBroadcast,
@@ -76,6 +76,7 @@ export {
   ResourceManager,
   DataSupportManager,
   RenderManager,
+  KeyboardManager,
   // engine
   Engine,
   ModelingEngine,

@@ -46,7 +46,7 @@ export const ViewpointPlugin = function (params = {}) {
     perspectiveCamera.position.set(params.perspective.position.x, params.perspective.position.y, params.perspective.position.z);
     perspectiveCamera.lookAt(params.perspective.lookAt.x, params.perspective.lookAt.y, params.perspective.lookAt.z);
     perspectiveCamera.up.set(params.perspective.up.x, params.perspective.up.y, params.perspective.up.z);
-    const orthograpbicCamera = new OrthographicCamera(-window.innerWidth / 8, window.innerWidth / 8, -window.innerHeight / 8, window.innerHeight / 8);
+    const orthograpbicCamera = new OrthographicCamera(-window.innerWidth / 8, window.innerWidth / 8, -window.innerHeight / 8, window.innerHeight / 8, 0.1, 10000);
     orthograpbicCamera.up.set(params.perspective.up.x, params.perspective.up.y, params.perspective.up.z);
     this.setViewpoint = function (viewpoint) {
         this.dispatchEvent({
