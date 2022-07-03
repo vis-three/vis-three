@@ -2,7 +2,7 @@ import { CurvePath, QuadraticBezierCurve3, Vector3 } from "three";
 import { CurveGeometry } from "./CurveGeometry";
 
 export class QuadraticBezierCurveGeometry extends CurveGeometry {
-  constructor(path: Vector3[], divisions = 36, space = true) {
+  constructor(path: Vector3[] = [], divisions = 36, space = true) {
     super(path, divisions, space);
 
     this.type = "QuadraticBezierCurveGeometry";

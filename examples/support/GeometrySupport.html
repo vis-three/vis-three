@@ -45,6 +45,14 @@
         .setStats(true)
         .play();
 
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid);
+
+      VIS.generateConfig.injectScene = true;
+
       const pointLight = VIS.generateConfig("PointLight", {
         position: {
           y: 50,
@@ -53,12 +61,6 @@
       });
 
       const material = VIS.generateConfig("MeshStandardMaterial");
-
-      const scene = VIS.generateConfig("Scene", {
-        children: [pointLight.vid],
-      });
-
-      engine.applyConfig(pointLight, material);
 
       const geometryTypeList = [
         VIS.CONFIGTYPE.BOXGEOMETRY,
@@ -95,8 +97,6 @@
         engine.applyConfig(geometry, mesh);
         scene.children.push(mesh.vid);
       });
-
-      engine.applyConfig(scene);
 
       // line
       const lineMaterial = VIS.generateConfig("LineBasicMaterial", {
@@ -181,29 +181,7 @@
         },
       });
 
-      engine.applyConfig(
-        lineMaterial,
-        splineCurveGeometry,
-        lineCurveGeometry,
-        CubicBezierCureGeometry,
-        quadraticBezierCurveGeometry,
-        lineCurveLine,
-        splineCurveLine,
-        CubicBezierCurveLine,
-        quadraticBezierCurveLine
-      );
-
-      scene.children.push(
-        lineCurveLine.vid,
-        splineCurveLine.vid,
-        CubicBezierCurveLine.vid,
-        quadraticBezierCurveLine.vid
-      );
-
-      engine.setScene(scene.vid);
-
-      const reactData = engine.getConfigBySymbol(splineCurveGeometry.vid);
-      window.reactData = reactData;
+      window.reactData = lineCurveGeometry;
     </script>
   </body>
 </html>

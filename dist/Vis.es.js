@@ -7658,7 +7658,7 @@ class LoadGeometry extends BufferGeometry {
   }
 }
 class CurveGeometry extends BufferGeometry {
-  constructor(path, divisions = 36, space = true) {
+  constructor(path = [], divisions = 36, space = true) {
     super();
     __publicField(this, "parameters");
     this.type = "CurveGeometry";
@@ -7670,7 +7670,7 @@ class CurveGeometry extends BufferGeometry {
   }
 }
 class LineCurveGeometry extends CurveGeometry {
-  constructor(path, divisions = 36, space = true) {
+  constructor(path = [], divisions = 36, space = true) {
     super(path, divisions, space);
     this.type = "LineCurveGeometry";
     if (!path.length) {
@@ -7695,7 +7695,7 @@ class LineCurveGeometry extends CurveGeometry {
   }
 }
 class SplineCurveGeometry extends CurveGeometry {
-  constructor(path, divisions = 36, space = true) {
+  constructor(path = [], divisions = 36, space = true) {
     super(path, divisions, space);
     this.type = "SplineCurveGeometry";
     if (!path.length) {
@@ -7707,7 +7707,7 @@ class SplineCurveGeometry extends CurveGeometry {
   }
 }
 class CubicBezierCurveGeometry extends CurveGeometry {
-  constructor(path, divisions = 36, space = true) {
+  constructor(path = [], divisions = 36, space = true) {
     super(path, divisions, space);
     this.type = "CubicBezierCurveGeometry";
     const curvePath = new CurvePath();
@@ -7733,7 +7733,7 @@ class CubicBezierCurveGeometry extends CurveGeometry {
   }
 }
 class QuadraticBezierCurveGeometry extends CurveGeometry {
-  constructor(path, divisions = 36, space = true) {
+  constructor(path = [], divisions = 36, space = true) {
     super(path, divisions, space);
     this.type = "QuadraticBezierCurveGeometry";
     const curvePath = new CurvePath();
@@ -11460,10 +11460,12 @@ const _LineHelper = class extends Points {
   constructor(line) {
     super();
     __publicField(this, "target");
+    __publicField(this, "cachaGeometryUUid");
     __publicField(this, "type", "VisLineHelper");
     this.target = line;
     this.geometry.dispose();
     this.geometry.copy(line.geometry);
+    this.cachaGeometryUUid = line.geometry.uuid;
     this.material = new PointsMaterial({
       color: "rgb(255, 255, 255)",
       alphaMap: _LineHelper.alphaTexture,
@@ -11478,6 +11480,14 @@ const _LineHelper = class extends Points {
     this.renderOrder = -1;
     this.raycast = () => {
     };
+    this.onBeforeRender = () => {
+      const target = this.target;
+      if (target.geometry.uuid !== this.cachaGeometryUUid) {
+        this.geometry.dispose();
+        this.geometry = target.geometry.clone();
+        this.cachaGeometryUUid = target.geometry.uuid;
+      }
+    };
   }
 };
 let LineHelper = _LineHelper;
@@ -11487,7 +11497,7 @@ __publicField(LineHelper, "alphaTexture", new CanvasTexture(new CanvasGenerator(
   ctx.arc(256, 256, 200, 0, Math.PI * 2);
   ctx.fill();
   ctx.closePath();
-}).get()));
+}).getDom()));
 class MeshHelper extends LineSegments {
   constructor(mesh) {
     super();
@@ -11603,7 +11613,7 @@ class ObjectHelperManager extends EventDispatcher {
       Scene: true
     });
     __publicField(this, "objectFilter", new Set());
-    __publicField(this, "helperMap", new Map());
+    __publicField(this, "objectHelperMap", new Map());
     params.helperGenerator && (this.helperGenerator = Object.assign(this.helperGenerator, params.helperGenerator));
     params.helperFilter && (this.helperFilter = Object.assign(this.helperFilter, params.helperFilter));
     params.objectFilter && (this.objectFilter = new Set(params.objectFilter.concat(Array.from(this.objectFilter))));
@@ -11615,7 +11625,7 @@ class ObjectHelperManager extends EventDispatcher {
     return this;
   }
   addObjectHelper(object) {
-    if (this.objectFilter.has(object) || this.helperMap.has(object) || this.helperFilter[object.type] || object.type.toLocaleLowerCase().includes("helper")) {
+    if (this.objectFilter.has(object) || this.objectHelperMap.has(object) || this.helperFilter[object.type] || object.type.toLocaleLowerCase().includes("helper")) {
       return null;
     }
     if (!this.helperGenerator[object.type]) {
@@ -11623,18 +11633,18 @@ class ObjectHelperManager extends EventDispatcher {
       return null;
     }
     const helper = new this.helperGenerator[object.type](object);
-    this.helperMap.set(object, helper);
+    this.objectHelperMap.set(object, helper);
     return helper;
   }
   disposeObjectHelper(object) {
     if (this.objectFilter.has(object) || this.helperFilter[object.type] || object.type.toLocaleLowerCase().includes("helper")) {
       return null;
     }
-    if (!this.helperMap.has(object)) {
+    if (!this.objectHelperMap.has(object)) {
       console.warn(`object helper manager can not found this object\`s helper: `, object);
       return null;
     }
-    const helper = this.helperMap.get(object);
+    const helper = this.objectHelperMap.get(object);
     helper.geometry && helper.geometry.dispose();
     if (helper.material) {
       if (helper.material instanceof Material) {
@@ -11645,7 +11655,7 @@ class ObjectHelperManager extends EventDispatcher {
         });
       }
     }
-    this.helperMap.delete(object);
+    this.objectHelperMap.delete(object);
     return helper;
   }
 }
@@ -11667,7 +11677,7 @@ const ObjectHelperPlugin = function(params = {}) {
   const pointerenterFunMap = new Map();
   const pointerleaveFunMap = new Map();
   const clickFunMap = new Map();
-  const helperMap = helperManager.helperMap;
+  const helperMap = helperManager.objectHelperMap;
   this.objectHelperManager = helperManager;
   !params.activeColor && (params.activeColor = "rgb(230, 20, 240)");
   !params.hoverColor && (params.hoverColor = "rgb(255, 158, 240)");

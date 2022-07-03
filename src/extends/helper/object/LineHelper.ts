@@ -4,6 +4,7 @@ import {
   Line,
   LineLoop,
   LineSegments,
+  Material,
   Object3D,
   Points,
   PointsMaterial,
@@ -24,10 +25,13 @@ export class LineHelper extends Points implements VisHelper {
       // .preview({
       //   left: "50%",
       // })
-      .get()
+      .getDom()
   );
 
   target: Line | LineSegments | LineLoop;
+
+  private cachaGeometryUUid: string; // 存uuid防止内存泄漏
+
   // @ts-ignore
   type = "VisLineHelper";
   constructor(line: Line | LineSegments | LineLoop) {
@@ -37,6 +41,7 @@ export class LineHelper extends Points implements VisHelper {
 
     this.geometry.dispose();
     this.geometry.copy(line.geometry);
+    this.cachaGeometryUUid = line.geometry.uuid;
 
     this.material = new PointsMaterial({
       color: "rgb(255, 255, 255)",
@@ -52,8 +57,17 @@ export class LineHelper extends Points implements VisHelper {
     this.matrixWorld = line.matrixWorld;
 
     this.renderOrder = -1;
-    // TODO:update
 
     this.raycast = () => {};
+
+    // TODO:update pref
+    this.onBeforeRender = () => {
+      const target = this.target;
+      if (target.geometry.uuid !== this.cachaGeometryUUid) {
+        this.geometry.dispose();
+        this.geometry = target.geometry.clone();
+        this.cachaGeometryUUid = target.geometry.uuid;
+      }
+    };
   }
 }
