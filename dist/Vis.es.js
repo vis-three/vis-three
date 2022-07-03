@@ -7944,7 +7944,9 @@ const _GeometryCompiler = class extends Compiler {
 };
 let GeometryCompiler = _GeometryCompiler;
 __publicField(GeometryCompiler, "transfromAnchor", function(geometry, config2) {
-  geometry.center();
+  if (!(geometry instanceof CurveGeometry)) {
+    geometry.center();
+  }
   geometry.computeBoundingBox();
   const box = geometry.boundingBox;
   const position = config2.position;
@@ -7953,7 +7955,9 @@ __publicField(GeometryCompiler, "transfromAnchor", function(geometry, config2) {
   const quaternion = new Quaternion$1().setFromEuler(new Euler(rotation.x, rotation.y, rotation.z, "XYZ"));
   geometry.applyQuaternion(quaternion);
   geometry.scale(scale.x, scale.y, scale.z);
-  geometry.center();
+  if (!(geometry instanceof CurveGeometry)) {
+    geometry.center();
+  }
   geometry.computeBoundingBox();
   geometry.translate((box.max.x - box.min.x) / 2 * position.x, (box.max.y - box.min.y) / 2 * position.y, (box.max.z - box.min.z) / 2 * position.z);
   return geometry;
@@ -11979,6 +11983,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "keyboardManager");
     __publicField(this, "objectHelperManager");
     __publicField(this, "transing");
+    __publicField(this, "enableSelect");
     __publicField(this, "stats");
     __publicField(this, "displayMode");
     __publicField(this, "selectionBox");
