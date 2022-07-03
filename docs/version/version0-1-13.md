@@ -19,6 +19,7 @@
 - material transparent runtime compile
 - object addChildren
 - transformControls recursive
+- geometry path edit
 
 #### perf
 
