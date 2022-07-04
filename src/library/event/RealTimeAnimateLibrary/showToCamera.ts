@@ -69,7 +69,17 @@ export const generator: EventGenerator<ShowToCamera> = function (
   const matrix4 = new Matrix4();
   const euler = new Euler();
   const vector3 = new Vector3();
+
+  // 防止重复触发
+  let animating = false;
+
   return () => {
+    if (animating) {
+      return;
+    }
+
+    animating = true;
+
     const renderManager = engine.renderManager!;
 
     vector3
@@ -135,6 +145,8 @@ export const generator: EventGenerator<ShowToCamera> = function (
       targetConfig.rotation.x = euler.x;
       targetConfig.rotation.y = euler.y;
       targetConfig.rotation.z = euler.z;
+
+      animating = false;
 
       if (params.back) {
         const backFun = () => {

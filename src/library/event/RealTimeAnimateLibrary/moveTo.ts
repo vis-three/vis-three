@@ -58,7 +58,16 @@ export const generator: EventGenerator<MoveTo> = function (
     return () => {};
   }
 
+  // 防止重复触发
+  let animating = false;
+
   return () => {
+    if (animating) {
+      return;
+    }
+
+    animating = true;
+
     const tween = new Tween(object!.position)
       .to(params.position)
       .duration(params.duration)
@@ -77,6 +86,7 @@ export const generator: EventGenerator<MoveTo> = function (
       supportData!.position.x = params.position.x;
       supportData!.position.y = params.position.y;
       supportData!.position.z = params.position.z;
+      animating = false;
     });
   };
 };

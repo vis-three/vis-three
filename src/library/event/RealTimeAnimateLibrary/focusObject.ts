@@ -66,7 +66,16 @@ export const generator: EventGenerator<FocusObject> = function (
     console.warn(`engine current camera can not found config.`);
   }
 
+  // 防止重复触发
+  let animating = false;
+
   return () => {
+    if (animating) {
+      return;
+    }
+
+    animating = true;
+
     const renderManager = engine.renderManager!;
     // 根据space计算position
     let position = {
@@ -174,6 +183,8 @@ export const generator: EventGenerator<FocusObject> = function (
         cameraConfig.position.y = position.y;
         cameraConfig.position.z = position.z;
       }
+
+      animating = false;
 
       if (params.back) {
         const backFun = () => {

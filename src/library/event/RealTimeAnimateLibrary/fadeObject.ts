@@ -84,12 +84,24 @@ export const generator: EventGenerator<FadeObject> = function (
     materialConfigList.push(materialConfig);
   }
 
+  // 防止重复触发
+  let animating = false;
+
   return () => {
+    console.log(animating);
+    if (animating) {
+      console.log(animating);
+      return;
+    }
+
+    animating = true;
+
     const renderManager = engine.renderManager!;
 
     objectConfig.visible = true;
 
     materialList.forEach((material, i, arr) => {
+      material.visible = true;
       material.transparent = true;
       material.opacity = params.direction === "in" ? 0 : 1;
       material.needsUpdate = true;
@@ -113,11 +125,15 @@ export const generator: EventGenerator<FadeObject> = function (
         renderManager.removeEventListener<RenderEvent>("render", renderFun);
         if (params.direction === "out" && params.visible) {
           materialConfigList[i].visible = false;
+          objectConfig.visible = false;
         } else if (params.direction === "in" && params.visible) {
           materialConfigList[i].visible = true;
+          objectConfig.visible = true;
         }
 
         materialConfigList[i].opacity = params.direction === "in" ? 1 : 0;
+
+        animating = false;
       });
     });
   };

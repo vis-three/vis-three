@@ -64,7 +64,16 @@ export const generator: EventGenerator<moveFromTo> = function (
     return () => {};
   }
 
+  // 防止重复触发
+  let animating = false;
+
   return () => {
+    if (animating) {
+      return;
+    }
+
+    animating = true;
+
     object.position.set(params.from.x, params.from.y, params.from.z);
     object.updateMatrix();
     object.updateMatrixWorld();
@@ -87,6 +96,7 @@ export const generator: EventGenerator<moveFromTo> = function (
       supportData!.position.x = params.to.x;
       supportData!.position.y = params.to.y;
       supportData!.position.z = params.to.z;
+      animating = false;
     });
   };
 };

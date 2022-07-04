@@ -115,7 +115,16 @@ export const generator: EventGenerator<Vector3To> = function (
     z: params.to.z ?? targetObject[props.z],
   };
 
+  // 防止重复触发
+  let animating = false;
+
   return () => {
+    if (animating) {
+      return;
+    }
+
+    animating = true;
+
     const tween = new Tween(targetObject)
       .to(toObject)
       .duration(params.duration)
@@ -134,6 +143,7 @@ export const generator: EventGenerator<Vector3To> = function (
       supportData[props.x] = toObject.x;
       supportData[props.y] = toObject.y;
       supportData[props.z] = toObject.z;
+      animating = false;
     });
   };
 };

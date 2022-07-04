@@ -6232,7 +6232,12 @@ const generator$7 = function(engine, config2) {
     return () => {
     };
   }
+  let animating = false;
   return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
     const tween = new Tween(object.position).to(params.position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
     const renderFun = (event) => {
       tween.update();
@@ -6243,6 +6248,7 @@ const generator$7 = function(engine, config2) {
       supportData.position.x = params.position.x;
       supportData.position.y = params.position.y;
       supportData.position.z = params.position.z;
+      animating = false;
     });
   };
 };
@@ -6281,7 +6287,12 @@ const generator$6 = function(engine, config2) {
     return () => {
     };
   }
+  let animating = false;
   return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
     object.position.set(params.from.x, params.from.y, params.from.z);
     object.updateMatrix();
     object.updateMatrixWorld();
@@ -6295,6 +6306,7 @@ const generator$6 = function(engine, config2) {
       supportData.position.x = params.to.x;
       supportData.position.y = params.to.y;
       supportData.position.z = params.to.z;
+      animating = false;
     });
   };
 };
@@ -6327,7 +6339,12 @@ const generator$5 = function(engine, config2) {
   }
   const renderManager = engine.renderManager;
   const supportData = engine.getConfigBySymbol(params.target);
+  let animating = false;
   return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
     const position = {
       x: object.position.x + params.spacing.x,
       y: object.position.y + params.spacing.y,
@@ -6343,6 +6360,7 @@ const generator$5 = function(engine, config2) {
       supportData.position.x = position.x;
       supportData.position.y = position.y;
       supportData.position.z = position.z;
+      animating = false;
     });
   };
 };
@@ -6383,7 +6401,12 @@ const generator$4 = function(engine, config2) {
     return () => {
     };
   }
+  let animating = false;
   return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
     const position = {
       x: toObject.position.x + params.offset.x,
       y: toObject.position.y + params.offset.y,
@@ -6399,6 +6422,7 @@ const generator$4 = function(engine, config2) {
       supportData.position.x = position.x;
       supportData.position.y = position.y;
       supportData.position.z = position.z;
+      animating = false;
     });
   };
 };
@@ -6462,7 +6486,12 @@ const generator$3 = function(engine, config2) {
     y: (_b = params.to.y) != null ? _b : targetObject[props.y],
     z: (_c = params.to.z) != null ? _c : targetObject[props.z]
   };
+  let animating = false;
   return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
     const tween = new Tween(targetObject).to(toObject).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
     const renderFun = (event) => {
       tween.update();
@@ -6473,6 +6502,7 @@ const generator$3 = function(engine, config2) {
       supportData[props.x] = toObject.x;
       supportData[props.y] = toObject.y;
       supportData[props.z] = toObject.z;
+      animating = false;
     });
   };
 };
@@ -6512,7 +6542,12 @@ const generator$2 = function(engine, config2) {
   if (!cameraConfig) {
     console.warn(`engine current camera can not found config.`);
   }
+  let animating = false;
   return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
     const renderManager = engine.renderManager;
     let position = {
       x: target.position.x + params.offset.x,
@@ -6586,6 +6621,7 @@ const generator$2 = function(engine, config2) {
         cameraConfig.position.y = position.y;
         cameraConfig.position.z = position.z;
       }
+      animating = false;
       if (params.back) {
         const backFun = () => {
           const positionTween2 = new Tween(camera.position).to(backPosition).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
@@ -6655,10 +6691,18 @@ const generator$1 = function(engine, config2) {
     materialList.push(material);
     materialConfigList.push(materialConfig);
   }
+  let animating = false;
   return () => {
+    console.log(animating);
+    if (animating) {
+      console.log(animating);
+      return;
+    }
+    animating = true;
     const renderManager = engine.renderManager;
     objectConfig.visible = true;
     materialList.forEach((material, i, arr) => {
+      material.visible = true;
       material.transparent = true;
       material.opacity = params.direction === "in" ? 0 : 1;
       material.needsUpdate = true;
@@ -6673,10 +6717,13 @@ const generator$1 = function(engine, config2) {
         renderManager.removeEventListener("render", renderFun);
         if (params.direction === "out" && params.visible) {
           materialConfigList[i].visible = false;
+          objectConfig.visible = false;
         } else if (params.direction === "in" && params.visible) {
           materialConfigList[i].visible = true;
+          objectConfig.visible = true;
         }
         materialConfigList[i].opacity = params.direction === "in" ? 1 : 0;
+        animating = false;
       });
     });
   };
@@ -6719,7 +6766,12 @@ const generator = function(engine, config2) {
   const matrix4 = new Matrix4$1();
   const euler = new Euler();
   const vector3 = new Vector3$1();
+  let animating = false;
   return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
     const renderManager = engine.renderManager;
     vector3.set(params.offset.x, params.offset.y, params.offset.z).applyEuler(camera.rotation);
     vector3.set(camera.position.x + vector3.x, camera.position.y + vector3.y, camera.position.z + vector3.z);
@@ -6758,6 +6810,7 @@ const generator = function(engine, config2) {
       targetConfig.rotation.x = euler.x;
       targetConfig.rotation.y = euler.y;
       targetConfig.rotation.z = euler.z;
+      animating = false;
       if (params.back) {
         const backFun = () => {
           const positionTween2 = new Tween(target.position).to(cachePosition).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
