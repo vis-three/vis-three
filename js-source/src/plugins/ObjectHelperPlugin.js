@@ -18,7 +18,7 @@ export const ObjectHelperPlugin = function (params = {}) {
     const pointerenterFunMap = new Map();
     const pointerleaveFunMap = new Map();
     const clickFunMap = new Map();
-    const helperMap = helperManager.helperMap;
+    const helperMap = helperManager.objectHelperMap;
     this.objectHelperManager = helperManager;
     !params.activeColor && (params.activeColor = "rgb(230, 20, 240)");
     !params.hoverColor && (params.hoverColor = "rgb(255, 158, 240)");

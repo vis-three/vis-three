@@ -35,7 +35,13 @@ export const generator = function (engine, config) {
         console.warn(`can not found object config: ${params.target}`);
         return () => { };
     }
+    // 防止重复触发
+    let animating = false;
     return () => {
+        if (animating) {
+            return;
+        }
+        animating = true;
         const position = {
             x: toObject.position.x + params.offset.x,
             y: toObject.position.y + params.offset.y,
@@ -56,6 +62,7 @@ export const generator = function (engine, config) {
             supportData.position.x = position.x;
             supportData.position.y = position.y;
             supportData.position.z = position.z;
+            animating = false;
         });
     };
 };

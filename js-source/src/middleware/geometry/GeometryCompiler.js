@@ -8,10 +8,14 @@ import { LineCurveGeometry } from "../../extends/geometry/LineCurveGeometry";
 import { SplineCurveGeometry } from "../../extends/geometry/SplineCurveGeometry";
 import { CubicBezierCurveGeometry } from "../../extends/geometry/CubicBezierCurveGeometry";
 import { QuadraticBezierCurveGeometry } from "../../extends/geometry/QuadraticBezierCurveGeometry";
+import { CurveGeometry } from "../../extends/geometry/CurveGeometry";
 export class GeometryCompiler extends Compiler {
     // 变换锚点
     static transfromAnchor = function (geometry, config) {
-        geometry.center();
+        // 曲线几何和形状几何不期望先center
+        if (!(geometry instanceof CurveGeometry)) {
+            geometry.center();
+        }
         geometry.computeBoundingBox();
         const box = geometry.boundingBox;
         const position = config.position;
@@ -23,7 +27,9 @@ export class GeometryCompiler extends Compiler {
         geometry.applyQuaternion(quaternion);
         geometry.scale(scale.x, scale.y, scale.z);
         // 计算位置
-        geometry.center();
+        if (!(geometry instanceof CurveGeometry)) {
+            geometry.center();
+        }
         geometry.computeBoundingBox();
         // 根据旋转缩放运算位置
         geometry.translate(((box.max.x - box.min.x) / 2) * position.x, ((box.max.y - box.min.y) / 2) * position.y, ((box.max.z - box.min.z) / 2) * position.z);

@@ -12,8 +12,9 @@ export class LineHelper extends Points {
         // .preview({
         //   left: "50%",
         // })
-        .get());
+        .getDom());
     target;
+    cachaGeometryUUid; // 存uuid防止内存泄漏
     // @ts-ignore
     type = "VisLineHelper";
     constructor(line) {
@@ -21,6 +22,7 @@ export class LineHelper extends Points {
         this.target = line;
         this.geometry.dispose();
         this.geometry.copy(line.geometry);
+        this.cachaGeometryUUid = line.geometry.uuid;
         this.material = new PointsMaterial({
             color: "rgb(255, 255, 255)",
             alphaMap: LineHelper.alphaTexture,
@@ -33,8 +35,16 @@ export class LineHelper extends Points {
         this.matrix = line.matrix;
         this.matrixWorld = line.matrixWorld;
         this.renderOrder = -1;
-        // TODO:update
         this.raycast = () => { };
+        // TODO:update pref
+        this.onBeforeRender = () => {
+            const target = this.target;
+            if (target.geometry.uuid !== this.cachaGeometryUUid) {
+                this.geometry.dispose();
+                this.geometry = target.geometry.clone();
+                this.cachaGeometryUUid = target.geometry.uuid;
+            }
+        };
     }
 }
 //# sourceMappingURL=LineHelper.js.map

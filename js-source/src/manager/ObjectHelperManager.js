@@ -34,7 +34,7 @@ export class ObjectHelperManager extends EventDispatcher {
         Scene: true,
     };
     objectFilter = new Set();
-    helperMap = new Map();
+    objectHelperMap = new Map();
     constructor(params = {}) {
         super();
         params.helperGenerator &&
@@ -62,7 +62,7 @@ export class ObjectHelperManager extends EventDispatcher {
      */
     addObjectHelper(object) {
         if (this.objectFilter.has(object) ||
-            this.helperMap.has(object) ||
+            this.objectHelperMap.has(object) ||
             this.helperFilter[object.type] ||
             object.type.toLocaleLowerCase().includes("helper")) {
             return null;
@@ -72,7 +72,7 @@ export class ObjectHelperManager extends EventDispatcher {
             return null;
         }
         const helper = new this.helperGenerator[object.type](object);
-        this.helperMap.set(object, helper);
+        this.objectHelperMap.set(object, helper);
         return helper;
     }
     /**
@@ -86,11 +86,11 @@ export class ObjectHelperManager extends EventDispatcher {
             object.type.toLocaleLowerCase().includes("helper")) {
             return null;
         }
-        if (!this.helperMap.has(object)) {
+        if (!this.objectHelperMap.has(object)) {
             console.warn(`object helper manager can not found this object\`s helper: `, object);
             return null;
         }
-        const helper = this.helperMap.get(object);
+        const helper = this.objectHelperMap.get(object);
         helper.geometry && helper.geometry.dispose();
         if (helper.material) {
             if (helper.material instanceof Material) {
@@ -102,7 +102,7 @@ export class ObjectHelperManager extends EventDispatcher {
                 });
             }
         }
-        this.helperMap.delete(object);
+        this.objectHelperMap.delete(object);
         return helper;
     }
 }

@@ -1,7 +1,7 @@
 import { CubicBezierCurve3, CurvePath } from "three";
 import { CurveGeometry } from "./CurveGeometry";
 export class CubicBezierCurveGeometry extends CurveGeometry {
-    constructor(path, divisions = 36, space = true) {
+    constructor(path = [], divisions = 36, space = true) {
         super(path, divisions, space);
         this.type = "CubicBezierCurveGeometry";
         const curvePath = new CurvePath();

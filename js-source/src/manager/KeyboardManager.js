@@ -11,6 +11,15 @@ export class KeyboardManager extends EventDispatcher {
         }
         return entity.shortcutKey.join(" + ");
     }
+    watch(dom) {
+        if (!dom) {
+            keyboardjs.watch();
+        }
+        else {
+            keyboardjs.watch(undefined, dom);
+        }
+        return this;
+    }
     register(entity) {
         const symbol = this.generateSymbol(entity);
         if (this.map.has(symbol)) {

@@ -51,8 +51,9 @@ import { CSS3DDataSupport } from "./middleware/css3D/CSS3DDataSupport";
 import { RenderManager } from "./manager/RenderManager";
 import { CONFIGMODULE } from "./middleware/constants/CONFIGMODULE";
 import { GroupDataSupport } from "./middleware/group/GroupDataSupport";
+import { KeyboardManager } from "./manager/KeyboardManager";
 import "./optimize/optimizeScirpt";
-export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, OBJECTMODULE, CONFIGTYPE, CONFIGMODULE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, EVENTNAME, TIMINGFUNCTION, LoaderManager, ResourceManager, DataSupportManager, RenderManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, AnimationDataSupport, PassDataSupport, CSS3DDataSupport, GroupDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasGenerator, History, JSONHandler, 
+export { ProxyBroadcast, Translater, RESOURCEEVENTTYPE, MODULETYPE, OBJECTMODULE, CONFIGTYPE, CONFIGMODULE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, EVENTNAME, TIMINGFUNCTION, LoaderManager, ResourceManager, DataSupportManager, RenderManager, KeyboardManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, AnimationDataSupport, PassDataSupport, CSS3DDataSupport, GroupDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasGenerator, History, JSONHandler, 
 /**
  * @deprecated
  */

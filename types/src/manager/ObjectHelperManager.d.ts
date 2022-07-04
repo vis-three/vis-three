@@ -13,7 +13,7 @@ export declare class ObjectHelperManager extends EventDispatcher {
     private helperGenerator;
     private helperFilter;
     private objectFilter;
-    helperMap: Map<Object3D<import("three").Event>, Object3D<import("three").Event>>;
+    objectHelperMap: Map<Object3D<import("three").Event>, Object3D<import("three").Event>>;
     constructor(params?: ObjectHelperManagerParameters);
     /**
      * @description: 添加过滤的物体

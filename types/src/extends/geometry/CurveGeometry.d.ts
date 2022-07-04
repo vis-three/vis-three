@@ -5,5 +5,5 @@ export declare abstract class CurveGeometry extends BufferGeometry {
         space: boolean;
         divisions: number;
     };
-    constructor(path: Vector3[], divisions?: number, space?: boolean);
+    constructor(path?: Vector3[], divisions?: number, space?: boolean);
 }

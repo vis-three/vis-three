@@ -59,7 +59,13 @@ export const generator = function (engine, config) {
         y: params.to.y ?? targetObject[props.y],
         z: params.to.z ?? targetObject[props.z],
     };
+    // 防止重复触发
+    let animating = false;
     return () => {
+        if (animating) {
+            return;
+        }
+        animating = true;
         const tween = new Tween(targetObject)
             .to(toObject)
             .duration(params.duration)
@@ -75,6 +81,7 @@ export const generator = function (engine, config) {
             supportData[props.x] = toObject.x;
             supportData[props.y] = toObject.y;
             supportData[props.z] = toObject.z;
+            animating = false;
         });
     };
 };

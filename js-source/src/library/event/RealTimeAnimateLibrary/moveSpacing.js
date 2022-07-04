@@ -29,7 +29,13 @@ export const generator = function (engine, config) {
     const renderManager = engine.renderManager;
     // 同步配置
     const supportData = engine.getConfigBySymbol(params.target);
+    // 防止重复触发
+    let animating = false;
     return () => {
+        if (animating) {
+            return;
+        }
+        animating = true;
         const position = {
             x: object.position.x + params.spacing.x,
             y: object.position.y + params.spacing.y,
@@ -50,6 +56,7 @@ export const generator = function (engine, config) {
             supportData.position.x = position.x;
             supportData.position.y = position.y;
             supportData.position.z = position.z;
+            animating = false;
         });
     };
 };

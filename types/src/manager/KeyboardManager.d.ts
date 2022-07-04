@@ -10,6 +10,7 @@ export declare class KeyboardManager extends EventDispatcher {
     private map;
     constructor();
     private generateSymbol;
+    watch(dom: HTMLElement | undefined): this;
     register(entity: KeyboardEntity): this;
     update(entity: KeyboardEntity): this;
     cancel(keyArray: string[]): this;

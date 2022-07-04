@@ -1,7 +1,7 @@
 import { BufferGeometry } from "three";
 export class CurveGeometry extends BufferGeometry {
     parameters;
-    constructor(path, divisions = 36, space = true) {
+    constructor(path = [], divisions = 36, space = true) {
         super();
         this.type = "CurveGeometry";
         this.parameters = {

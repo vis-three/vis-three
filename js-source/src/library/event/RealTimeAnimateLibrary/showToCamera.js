@@ -36,7 +36,13 @@ export const generator = function (engine, config) {
     const matrix4 = new Matrix4();
     const euler = new Euler();
     const vector3 = new Vector3();
+    // 防止重复触发
+    let animating = false;
     return () => {
+        if (animating) {
+            return;
+        }
+        animating = true;
         const renderManager = engine.renderManager;
         vector3
             .set(params.offset.x, params.offset.y, params.offset.z)
@@ -88,6 +94,7 @@ export const generator = function (engine, config) {
             targetConfig.rotation.x = euler.x;
             targetConfig.rotation.y = euler.y;
             targetConfig.rotation.z = euler.z;
+            animating = false;
             if (params.back) {
                 const backFun = () => {
                     const positionTween = new Tween(target.position)

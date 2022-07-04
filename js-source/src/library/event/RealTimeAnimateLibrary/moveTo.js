@@ -29,7 +29,13 @@ export const generator = function (engine, config) {
         console.warn(`can not found object config: ${params.target}`);
         return () => { };
     }
+    // 防止重复触发
+    let animating = false;
     return () => {
+        if (animating) {
+            return;
+        }
+        animating = true;
         const tween = new Tween(object.position)
             .to(params.position)
             .duration(params.duration)
@@ -45,6 +51,7 @@ export const generator = function (engine, config) {
             supportData.position.x = params.position.x;
             supportData.position.y = params.position.y;
             supportData.position.z = params.position.z;
+            animating = false;
         });
     };
 };

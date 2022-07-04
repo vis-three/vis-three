@@ -55,6 +55,11 @@ export const GeometryRule = function (notice, compiler) {
                     return;
                 }
                 compiler.removeGroup(vid, index);
+                return;
+            }
+            if (path.length && path[1] === "path") {
+                compiler.set(vid, tempPath, value);
+                return;
             }
             compiler.remove(vid);
         }

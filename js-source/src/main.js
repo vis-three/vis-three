@@ -51,6 +51,7 @@ import { CSS3DDataSupport } from "./middleware/css3D/CSS3DDataSupport";
 import { RenderManager } from "./manager/RenderManager";
 import { CONFIGMODULE } from "./middleware/constants/CONFIGMODULE";
 import { GroupDataSupport } from "./middleware/group/GroupDataSupport";
+import { KeyboardManager } from "./manager/KeyboardManager";
 import "./optimize/optimizeScirpt";
 export { 
 // core
@@ -58,7 +59,7 @@ ProxyBroadcast, Translater,
 // menu
 RESOURCEEVENTTYPE, MODULETYPE, OBJECTMODULE, CONFIGTYPE, CONFIGMODULE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, EVENTNAME, TIMINGFUNCTION, 
 // manager
-LoaderManager, ResourceManager, DataSupportManager, RenderManager, 
+LoaderManager, ResourceManager, DataSupportManager, RenderManager, KeyboardManager, 
 // engine
 Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, 
 // engine connector
