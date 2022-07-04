@@ -921,7 +921,8 @@ const ViewpointPlugin = function(params = {}) {
   perspectiveCamera.position.set(params.perspective.position.x, params.perspective.position.y, params.perspective.position.z);
   perspectiveCamera.lookAt(params.perspective.lookAt.x, params.perspective.lookAt.y, params.perspective.lookAt.z);
   perspectiveCamera.up.set(params.perspective.up.x, params.perspective.up.y, params.perspective.up.z);
-  const orthograpbicCamera = new OrthographicCamera(-window.innerWidth / 8, window.innerWidth / 8, -window.innerHeight / 8, window.innerHeight / 8, 0.1, 1e4);
+  const distance = params.orthograpbic.distance || 1e4;
+  const orthograpbicCamera = new OrthographicCamera(-window.innerWidth / 8, window.innerWidth / 8, -window.innerHeight / 8, window.innerHeight / 8, 0, distance);
   orthograpbicCamera.up.set(params.perspective.up.x, params.perspective.up.y, params.perspective.up.z);
   this.setViewpoint = function(viewpoint) {
     this.dispatchEvent({
@@ -933,15 +934,16 @@ const ViewpointPlugin = function(params = {}) {
   this.addEventListener("setSize", (event) => {
     const width = event.width;
     const height = event.height;
-    perspectiveCamera.aspect = width / height;
+    const aspect = width / height;
+    perspectiveCamera.aspect = aspect;
     perspectiveCamera.updateProjectionMatrix();
-    orthograpbicCamera.left = -width / 16;
-    orthograpbicCamera.right = width / 16;
-    orthograpbicCamera.top = height / 16;
-    orthograpbicCamera.bottom = -height / 16;
+    orthograpbicCamera.left = -distance * aspect;
+    orthograpbicCamera.right = distance * aspect;
+    orthograpbicCamera.top = distance;
+    orthograpbicCamera.bottom = -distance;
+    orthograpbicCamera.zoom = distance / height * 5;
     orthograpbicCamera.updateProjectionMatrix();
   });
-  const distance = params.orthograpbic.distance || 60;
   (_a = params.orthograpbic.allowRotate) != null ? _a : false;
   this.addEventListener("setViewpoint", (event) => {
     const viewpoint = event.viewpoint;
@@ -950,17 +952,17 @@ const ViewpointPlugin = function(params = {}) {
       return;
     }
     if (viewpoint === VIEWPOINT.TOP) {
-      orthograpbicCamera.position.set(0, distance, 0);
+      orthograpbicCamera.position.set(0, distance / 2, 0);
     } else if (viewpoint === VIEWPOINT.BOTTOM) {
-      orthograpbicCamera.position.set(0, -distance, 0);
+      orthograpbicCamera.position.set(0, -distance / 2, 0);
     } else if (viewpoint === VIEWPOINT.RIGHT) {
-      orthograpbicCamera.position.set(distance, 0, 0);
+      orthograpbicCamera.position.set(distance / 2, 0, 0);
     } else if (viewpoint === VIEWPOINT.LEFT) {
-      orthograpbicCamera.position.set(-distance, 0, 0);
+      orthograpbicCamera.position.set(-distance / 2, 0, 0);
     } else if (viewpoint === VIEWPOINT.FRONT) {
-      orthograpbicCamera.position.set(0, 0, distance);
+      orthograpbicCamera.position.set(0, 0, distance / 2);
     } else if (viewpoint === VIEWPOINT.BACK) {
-      orthograpbicCamera.position.set(0, 0, -distance);
+      orthograpbicCamera.position.set(0, 0, -distance / 2);
     }
     this.setCamera(orthograpbicCamera);
   });

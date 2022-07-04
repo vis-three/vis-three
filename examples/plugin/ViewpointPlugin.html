@@ -66,6 +66,10 @@
         .setSize()
         .play();
 
+      const model = new THREE.Mesh(new THREE.BoxBufferGeometry(20, 30, 40));
+      model.position.set(0, 40, 0);
+      engine.scene.add(model);
+
       const buttonGroup = document.getElementById("button-group");
       Object.keys(VIS.VIEWPOINT).forEach((key) => {
         const buttonDom = document.createElement("button");

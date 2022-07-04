@@ -26,6 +26,8 @@
 - eventManager
 - pointerManager
 - css3DPlane
+- viewpointPlugin-orthograpbicCamera
+- realTime animation event repeat event
 
 #### deprecated
 

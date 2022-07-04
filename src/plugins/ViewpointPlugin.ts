@@ -94,13 +94,15 @@ export const ViewpointPlugin: Plugin<ViewpointParameters> = function (
     params.perspective.up.z
   );
 
+  const distance = params.orthograpbic.distance || 10000;
+
   const orthograpbicCamera = new OrthographicCamera(
     -window.innerWidth / 8,
     window.innerWidth / 8,
     -window.innerHeight / 8,
     window.innerHeight / 8,
-    0.1,
-    10000
+    0,
+    distance
   );
 
   orthograpbicCamera.up.set(
@@ -120,18 +122,19 @@ export const ViewpointPlugin: Plugin<ViewpointParameters> = function (
   this.addEventListener<SetSizeEvent>("setSize", (event) => {
     const width = event.width;
     const height = event.height;
+    const aspect = width / height;
 
-    perspectiveCamera.aspect = width / height;
+    perspectiveCamera.aspect = aspect;
     perspectiveCamera.updateProjectionMatrix();
 
-    orthograpbicCamera.left = -width / 16;
-    orthograpbicCamera.right = width / 16;
-    orthograpbicCamera.top = height / 16;
-    orthograpbicCamera.bottom = -height / 16;
+    orthograpbicCamera.left = -distance * aspect;
+    orthograpbicCamera.right = distance * aspect;
+    orthograpbicCamera.top = distance;
+    orthograpbicCamera.bottom = -distance;
+    orthograpbicCamera.zoom = (distance / height) * 5;
     orthograpbicCamera.updateProjectionMatrix();
   });
 
-  const distance = params.orthograpbic.distance || 60;
   const allowRotate = params.orthograpbic.allowRotate ?? false;
   this.addEventListener<ViewpointEvent>("setViewpoint", (event) => {
     const viewpoint = event.viewpoint;
@@ -142,17 +145,17 @@ export const ViewpointPlugin: Plugin<ViewpointParameters> = function (
     }
 
     if (viewpoint === VIEWPOINT.TOP) {
-      orthograpbicCamera.position.set(0, distance, 0);
+      orthograpbicCamera.position.set(0, distance / 2, 0);
     } else if (viewpoint === VIEWPOINT.BOTTOM) {
-      orthograpbicCamera.position.set(0, -distance, 0);
+      orthograpbicCamera.position.set(0, -distance / 2, 0);
     } else if (viewpoint === VIEWPOINT.RIGHT) {
-      orthograpbicCamera.position.set(distance, 0, 0);
+      orthograpbicCamera.position.set(distance / 2, 0, 0);
     } else if (viewpoint === VIEWPOINT.LEFT) {
-      orthograpbicCamera.position.set(-distance, 0, 0);
+      orthograpbicCamera.position.set(-distance / 2, 0, 0);
     } else if (viewpoint === VIEWPOINT.FRONT) {
-      orthograpbicCamera.position.set(0, 0, distance);
+      orthograpbicCamera.position.set(0, 0, distance / 2);
     } else if (viewpoint === VIEWPOINT.BACK) {
-      orthograpbicCamera.position.set(0, 0, -distance);
+      orthograpbicCamera.position.set(0, 0, -distance / 2);
     }
 
     this.setCamera!(orthograpbicCamera);
