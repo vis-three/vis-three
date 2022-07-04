@@ -38,7 +38,7 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
   const pointerenterFunMap = new Map<Object3D, Function>();
   const pointerleaveFunMap = new Map<Object3D, Function>();
   const clickFunMap = new Map<Object3D, Function>();
-  const helperMap = helperManager.helperMap;
+  const helperMap = helperManager.objectHelperMap;
 
   this.objectHelperManager = helperManager;
 

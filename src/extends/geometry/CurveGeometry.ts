@@ -7,7 +7,7 @@ export abstract class CurveGeometry extends BufferGeometry {
     divisions: number;
   };
 
-  constructor(path: Vector3[], divisions = 36, space = true) {
+  constructor(path: Vector3[] = [], divisions = 36, space = true) {
     super();
 
     this.type = "CurveGeometry";

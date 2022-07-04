@@ -44,7 +44,7 @@ export class ObjectHelperManager extends EventDispatcher {
 
   private objectFilter = new Set<Object3D>();
 
-  helperMap = new Map<Object3D, Object3D>();
+  objectHelperMap = new Map<Object3D, Object3D>();
 
   constructor(params: ObjectHelperManagerParameters = {}) {
     super();
@@ -88,7 +88,7 @@ export class ObjectHelperManager extends EventDispatcher {
   addObjectHelper(object: Object3D): Object3D | null {
     if (
       this.objectFilter.has(object) ||
-      this.helperMap.has(object) ||
+      this.objectHelperMap.has(object) ||
       this.helperFilter[object.type] ||
       object.type.toLocaleLowerCase().includes("helper")
     ) {
@@ -103,7 +103,7 @@ export class ObjectHelperManager extends EventDispatcher {
     }
 
     const helper = new this.helperGenerator[object.type](object);
-    this.helperMap.set(object, helper);
+    this.objectHelperMap.set(object, helper);
 
     return helper;
   }
@@ -122,7 +122,7 @@ export class ObjectHelperManager extends EventDispatcher {
       return null;
     }
 
-    if (!this.helperMap.has(object)) {
+    if (!this.objectHelperMap.has(object)) {
       console.warn(
         `object helper manager can not found this object\`s helper: `,
         object
@@ -130,7 +130,7 @@ export class ObjectHelperManager extends EventDispatcher {
       return null;
     }
 
-    const helper = this.helperMap.get(object)! as Mesh;
+    const helper = this.objectHelperMap.get(object)! as Mesh;
 
     helper.geometry && helper.geometry.dispose();
 
@@ -144,7 +144,7 @@ export class ObjectHelperManager extends EventDispatcher {
       }
     }
 
-    this.helperMap.delete(object);
+    this.objectHelperMap.delete(object);
 
     return helper;
   }
