@@ -1,3 +1,4 @@
+import { Vector3 } from "three";
 import { SymbolConfig, Vector3Config } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
 
@@ -82,7 +83,6 @@ export interface EdgesGeometryConfig extends GeometryConfig {
   thresholdAngle: number;
 }
 
-// TODO:
 export interface CustomGeometryConfig extends GeometryConfig {
   attribute: {
     position: number[];
@@ -109,6 +109,18 @@ export interface CubicBezierCurveGeometryConfig extends CurveGeometryConfig {}
 export interface QuadraticBezierCurveGeometryConfig
   extends CurveGeometryConfig {}
 
+export interface TubeGeometryConfig extends GeometryConfig {
+  path: Vector3[];
+  tubularSegments: number;
+  radius: number;
+  radialSegments: number;
+  closed: boolean;
+}
+
+export interface LineTubeGeometryConfig extends TubeGeometryConfig {}
+
+export interface SplineTubeGeometryConfig extends TubeGeometryConfig {}
+
 export type GeometryAllType =
   | BoxGeometryConfig
   | SphereGeometryConfig
@@ -123,7 +135,9 @@ export type GeometryAllType =
   | SplineCurveGeometryConfig
   | CubicBezierCurveGeometryConfig
   | QuadraticBezierCurveGeometryConfig
-  | CustomGeometryConfig;
+  | CustomGeometryConfig
+  | LineTubeGeometryConfig
+  | SplineTubeGeometryConfig;
 
 // config function
 
@@ -292,5 +306,29 @@ export const getQuadraticBezierCurveGeometryConfig =
   function (): QuadraticBezierCurveGeometryConfig {
     return Object.assign(getCurveGeometryConfig(), {
       type: CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY,
+    });
+  };
+
+export const getTubeGeometryConfig = function (): TubeGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    type: "TubeGeometry",
+    path: [],
+    tubularSegments: 64,
+    radius: 1,
+    radialSegments: 1,
+    closed: false,
+  });
+};
+
+export const getLineTubeGeometryConfig = function (): LineTubeGeometryConfig {
+  return Object.assign(getTubeGeometryConfig(), {
+    type: CONFIGTYPE.LINETUBEGEOMETRY,
+  });
+};
+
+export const getSplineTubeGeometryConfig =
+  function (): SplineTubeGeometryConfig {
+    return Object.assign(getTubeGeometryConfig(), {
+      type: CONFIGTYPE.SPLINETUBEGEOMETRY,
     });
   };

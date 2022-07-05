@@ -29,11 +29,13 @@ import {
   GeometryAllType,
   GeometryGroup,
   LineCurveGeometryConfig,
+  LineTubeGeometryConfig,
   LoadGeometryConfig,
   PlaneGeometryConfig,
   QuadraticBezierCurveGeometryConfig,
   SphereGeometryConfig,
   SplineCurveGeometryConfig,
+  SplineTubeGeometryConfig,
 } from "./GeometryConfig";
 import { CONFIGTYPE } from "../constants/configType";
 import { EngineSupport } from "../../main";
@@ -43,6 +45,8 @@ import { SplineCurveGeometry } from "../../extends/geometry/SplineCurveGeometry"
 import { CubicBezierCurveGeometry } from "../../extends/geometry/CubicBezierCurveGeometry";
 import { QuadraticBezierCurveGeometry } from "../../extends/geometry/QuadraticBezierCurveGeometry";
 import { CurveGeometry } from "../../extends/geometry/CurveGeometry";
+import { LineTubeGeometry } from "../../extends/geometry/LineTubeGeometry";
+import { SplineTubeGeometry } from "../../extends/geometry/SplineTubeGeometry";
 
 export interface GeometryCompilerTarget extends CompilerTarget {
   [key: string]: GeometryAllType;
@@ -291,6 +295,43 @@ export class GeometryCompiler extends Compiler {
         );
       }
     );
+
+    constructMap.set(
+      CONFIGTYPE.LINETUBEGEOMETRY,
+      (config: LineTubeGeometryConfig) => {
+        return GeometryCompiler.transfromAnchor(
+          new LineTubeGeometry(
+            config.path.map(
+              (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
+            ),
+            config.tubularSegments,
+            config.radius,
+            config.radialSegments,
+            config.closed
+          ),
+          config
+        );
+      }
+    );
+
+    constructMap.set(
+      CONFIGTYPE.SPLINETUBEGEOMETRY,
+      (config: SplineTubeGeometryConfig) => {
+        return GeometryCompiler.transfromAnchor(
+          new SplineTubeGeometry(
+            config.path.map(
+              (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
+            ),
+            config.tubularSegments,
+            config.radius,
+            config.radialSegments,
+            config.closed
+          ),
+          config
+        );
+      }
+    );
+
     this.constructMap = constructMap;
   }
 
