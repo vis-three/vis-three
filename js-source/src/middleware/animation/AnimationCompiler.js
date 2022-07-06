@@ -88,6 +88,23 @@ export class AnimationCompiler extends Compiler {
     remove(config) {
         if (config.type === CONFIGTYPE.SCRIPTANIMATION) {
             this.engine.renderManager.removeEventListener("render", config[Symbol.for(this.scriptAniSymbol)]);
+            // remove之后把当前的属性归位
+            let objectConfig = this.engine.getConfigBySymbol(config.target);
+            if (!objectConfig) {
+                console.warn(`AnimationCompiler can not found vid object: ${config.target}`);
+                return this;
+            }
+            const attributeList = config.attribute.split(".");
+            attributeList.shift();
+            const attribute = attributeList.pop();
+            for (const key of attributeList) {
+                if (objectConfig[key] === undefined) {
+                    console.warn(`animaton compiler: target object can not found key: ${key}`, objectConfig);
+                    return this;
+                }
+                objectConfig = objectConfig[key];
+            }
+            objectConfig[attribute] = objectConfig[attribute];
         }
         return this;
     }

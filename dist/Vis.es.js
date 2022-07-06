@@ -5476,6 +5476,22 @@ class AnimationCompiler extends Compiler {
   remove(config2) {
     if (config2.type === CONFIGTYPE.SCRIPTANIMATION) {
       this.engine.renderManager.removeEventListener("render", config2[Symbol.for(this.scriptAniSymbol)]);
+      let objectConfig = this.engine.getConfigBySymbol(config2.target);
+      if (!objectConfig) {
+        console.warn(`AnimationCompiler can not found vid object: ${config2.target}`);
+        return this;
+      }
+      const attributeList = config2.attribute.split(".");
+      attributeList.shift();
+      const attribute = attributeList.pop();
+      for (const key of attributeList) {
+        if (objectConfig[key] === void 0) {
+          console.warn(`animaton compiler: target object can not found key: ${key}`, objectConfig);
+          return this;
+        }
+        objectConfig = objectConfig[key];
+      }
+      objectConfig[attribute] = objectConfig[attribute];
     }
     return this;
   }
