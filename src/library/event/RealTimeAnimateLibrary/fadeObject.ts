@@ -25,7 +25,7 @@ export const config: FadeObject = {
     target: "",
     direction: "out",
     delay: 0,
-    duration: 1000,
+    duration: 300,
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
     visible: true,
   },
@@ -88,9 +88,7 @@ export const generator: EventGenerator<FadeObject> = function (
   let animating = false;
 
   return () => {
-    console.log(animating);
     if (animating) {
-      console.log(animating);
       return;
     }
 

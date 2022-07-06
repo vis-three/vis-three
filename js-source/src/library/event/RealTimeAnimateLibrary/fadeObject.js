@@ -7,7 +7,7 @@ export const config = {
         target: "",
         direction: "out",
         delay: 0,
-        duration: 1000,
+        duration: 300,
         timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
         visible: true,
     },
@@ -47,9 +47,7 @@ export const generator = function (engine, config) {
     // 防止重复触发
     let animating = false;
     return () => {
-        console.log(animating);
         if (animating) {
-            console.log(animating);
             return;
         }
         animating = true;

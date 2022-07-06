@@ -3,6 +3,7 @@ import { SymbolConfig } from "../common/CommonConfig";
 export interface AnimationConfig extends SymbolConfig {
     target: string;
     attribute: string;
+    play: boolean;
 }
 export interface ScriptAnimationConfig extends AnimationConfig {
     script: BasicAniScriptConfig;

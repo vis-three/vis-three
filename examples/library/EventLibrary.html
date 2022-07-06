@@ -109,6 +109,22 @@
             },
           }),
         ],
+        pointerenter: [
+          VIS.EventLibrary.generateConfig("colorChange", {
+            params: {
+              target: material.vid,
+              color: "red",
+            },
+          }),
+        ],
+        pointerleave: [
+          VIS.EventLibrary.generateConfig("colorChange", {
+            params: {
+              target: material.vid,
+              color: "white",
+            },
+          }),
+        ],
       });
 
       engine.play();

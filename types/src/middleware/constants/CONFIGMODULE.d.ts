@@ -28,6 +28,8 @@ export declare const CONFIGMODULE: {
     SplineCurveGeometry: MODULETYPE;
     CubicBezierCurveGeometry: MODULETYPE;
     QuadraticBezierCurveGeometry: MODULETYPE;
+    LineTubeGeometry: MODULETYPE;
+    SplineTubeGeometry: MODULETYPE;
     Sprite: MODULETYPE;
     Line: MODULETYPE;
     Mesh: MODULETYPE;

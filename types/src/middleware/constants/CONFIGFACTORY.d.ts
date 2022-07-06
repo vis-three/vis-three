@@ -28,6 +28,8 @@ export declare const CONFIGFACTORY: {
     CubicBezierCurveGeometry: () => import("../geometry/GeometryConfig").CubicBezierCurveGeometryConfig;
     QuadraticBezierCurveGeometry: () => import("../geometry/GeometryConfig").QuadraticBezierCurveGeometryConfig;
     DodecahedronGeometry: () => import("../geometry/GeometryConfig").DodecahedronGeometryConfig;
+    SplineTubeGeometry: () => import("../geometry/GeometryConfig").SplineTubeGeometryConfig;
+    LineTubeGeometry: () => import("../geometry/GeometryConfig").LineTubeGeometryConfig;
     Sprite: () => import("../sprite/SpriteConfig").SpriteConfig;
     Line: () => import("../line/LineConfig").LineConfig;
     Mesh: () => import("../mesh/MeshConfig").MeshConfig;

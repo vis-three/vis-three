@@ -52,14 +52,37 @@ export class AnimationCompiler extends Compiler {
         if (config.type === CONFIGTYPE.SCRIPTANIMATION) {
             const fun = AniScriptLibrary.generateScript(this.engine, object, attribute, config.script);
             config[Symbol.for(this.scriptAniSymbol)] = fun;
-            renderManager.addEventListener("render", fun);
+            config.play && renderManager.addEventListener("render", fun);
         }
         else {
             console.warn(`animation compiler can not support this type config: ${config.type}`);
         }
         return this;
     }
-    update(vid) {
+    update(vid, path, key, value) {
+        if (!this.target[vid]) {
+            console.warn(`AnimationCompiler can not found vid config: ${vid}`);
+            return this;
+        }
+        const config = this.target[vid];
+        if (config.type === CONFIGTYPE.SCRIPTANIMATION) {
+            const renderManager = this.engine.renderManager;
+            const fun = config[Symbol.for(this.scriptAniSymbol)];
+            if (fun === undefined) {
+                console.warn(`AnimationCompiler can not found function in update fun: ${vid}`);
+                return this;
+            }
+            if (key === "play" && value) {
+                if (!renderManager.hasEventListener("render", fun)) {
+                    renderManager.addEventListener("render", fun);
+                }
+                return this;
+            }
+            if (key === "play" && !value) {
+                renderManager.removeEventListener("render", fun);
+                return this;
+            }
+        }
         return this.remove(this.target[vid]).add(vid, this.target[vid]);
     }
     remove(config) {

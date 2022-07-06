@@ -9,6 +9,7 @@ import * as Vecter3To from "./RealTimeAnimateLibrary/vector3To";
 import * as FocusObject from "./RealTimeAnimateLibrary/focusObject";
 import * as FadeObject from "./RealTimeAnimateLibrary/fadeObject";
 import * as ShowToCamera from "./RealTimeAnimateLibrary/showToCamera";
+import * as ColorChange from "./RealTimeAnimateLibrary/colorChange";
 export class EventLibrary {
     static configLibrary = new Map();
     static generatorLibrary = new Map();
@@ -64,4 +65,5 @@ EventLibrary.register(Vecter3To.config, Vecter3To.generator);
 EventLibrary.register(FocusObject.config, FocusObject.generator);
 EventLibrary.register(FadeObject.config, FadeObject.generator);
 EventLibrary.register(ShowToCamera.config, ShowToCamera.generator);
+EventLibrary.register(ColorChange.config, ColorChange.generator);
 //# sourceMappingURL=EventLibrary.js.map

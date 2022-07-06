@@ -17,6 +17,8 @@ export var CONFIGTYPE;
     CONFIGTYPE["CUBICBEZIERCURVEGEOMETRY"] = "CubicBezierCurveGeometry";
     CONFIGTYPE["QUADRATICBEZIERCURVEGEOMETRY"] = "QuadraticBezierCurveGeometry";
     CONFIGTYPE["CUSTOMGEOMETRY"] = "CustomGeometry";
+    CONFIGTYPE["LINETUBEGEOMETRY"] = "LineTubeGeometry";
+    CONFIGTYPE["SPLINETUBEGEOMETRY"] = "SplineTubeGeometry";
     CONFIGTYPE["MESH"] = "Mesh";
     CONFIGTYPE["LINE"] = "Line";
     // LINESEGMENTS = "LineSegments",

@@ -37,7 +37,6 @@ export class BooleanModifier extends Modifier {
         this.modifiedGeometry.copy(csgGeometry);
         this.modifiedGeometry.uuid = csgGeometry.uuid;
     }
-    //TODO: 性能优化，通过object.eventDispatcher更新render
     render() {
         if (this.visible) {
             // 判断物体位置更新以及几何更新

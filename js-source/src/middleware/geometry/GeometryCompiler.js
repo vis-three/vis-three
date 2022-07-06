@@ -1,4 +1,4 @@
-import { BoxBufferGeometry, BufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, Euler, Float32BufferAttribute, PlaneBufferGeometry, Quaternion, SphereBufferGeometry, Vector3, } from "three";
+import { BoxBufferGeometry, BufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, Euler, Float32BufferAttribute, PlaneBufferGeometry, Quaternion, SphereBufferGeometry, TubeGeometry, Vector3, } from "three";
 import { validate } from "uuid";
 import { LoadGeometry } from "../../extends/geometry/LoadGeometry";
 import { Compiler } from "../../core/Compiler";
@@ -9,11 +9,14 @@ import { SplineCurveGeometry } from "../../extends/geometry/SplineCurveGeometry"
 import { CubicBezierCurveGeometry } from "../../extends/geometry/CubicBezierCurveGeometry";
 import { QuadraticBezierCurveGeometry } from "../../extends/geometry/QuadraticBezierCurveGeometry";
 import { CurveGeometry } from "../../extends/geometry/CurveGeometry";
+import { LineTubeGeometry } from "../../extends/geometry/LineTubeGeometry";
+import { SplineTubeGeometry } from "../../extends/geometry/SplineTubeGeometry";
 export class GeometryCompiler extends Compiler {
     // 变换锚点
     static transfromAnchor = function (geometry, config) {
         // 曲线几何和形状几何不期望先center
-        if (!(geometry instanceof CurveGeometry)) {
+        if (!(geometry instanceof CurveGeometry) &&
+            !(geometry instanceof TubeGeometry)) {
             geometry.center();
         }
         geometry.computeBoundingBox();
@@ -27,7 +30,8 @@ export class GeometryCompiler extends Compiler {
         geometry.applyQuaternion(quaternion);
         geometry.scale(scale.x, scale.y, scale.z);
         // 计算位置
-        if (!(geometry instanceof CurveGeometry)) {
+        if (!(geometry instanceof CurveGeometry) &&
+            !(geometry instanceof TubeGeometry)) {
             geometry.center();
         }
         geometry.computeBoundingBox();
@@ -83,6 +87,12 @@ export class GeometryCompiler extends Compiler {
         });
         constructMap.set(CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY, (config) => {
             return GeometryCompiler.transfromAnchor(new QuadraticBezierCurveGeometry(config.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config.divisions, config.space), config);
+        });
+        constructMap.set(CONFIGTYPE.LINETUBEGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(new LineTubeGeometry(config.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config.tubularSegments, config.radius, config.radialSegments, config.closed), config);
+        });
+        constructMap.set(CONFIGTYPE.SPLINETUBEGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(new SplineTubeGeometry(config.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config.tubularSegments, config.radius, config.radialSegments, config.closed), config);
         });
         this.constructMap = constructMap;
     }

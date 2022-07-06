@@ -148,4 +148,24 @@ export const getQuadraticBezierCurveGeometryConfig = function () {
         type: CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY,
     });
 };
+export const getTubeGeometryConfig = function () {
+    return Object.assign(getGeometryConfig(), {
+        type: "TubeGeometry",
+        path: [],
+        tubularSegments: 64,
+        radius: 1,
+        radialSegments: 8,
+        closed: false,
+    });
+};
+export const getLineTubeGeometryConfig = function () {
+    return Object.assign(getTubeGeometryConfig(), {
+        type: CONFIGTYPE.LINETUBEGEOMETRY,
+    });
+};
+export const getSplineTubeGeometryConfig = function () {
+    return Object.assign(getTubeGeometryConfig(), {
+        type: CONFIGTYPE.SPLINETUBEGEOMETRY,
+    });
+};
 //# sourceMappingURL=GeometryConfig.js.map

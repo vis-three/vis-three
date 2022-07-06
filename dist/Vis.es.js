@@ -3726,24 +3726,30 @@ const getUnrealBloomPassConfig = function() {
     radius: 0
   });
 };
-const getScriptAnimationConfig = function() {
+const getAnimationConfig = function() {
   return {
     vid: "",
-    type: CONFIGTYPE.SCRIPTANIMATION,
+    type: "",
     target: "",
     attribute: "",
+    play: true
+  };
+};
+const getScriptAnimationConfig = function() {
+  return Object.assign(getAnimationConfig(), {
+    type: CONFIGTYPE.SCRIPTANIMATION,
     script: {
       name: ""
     }
-  };
+  });
 };
 const getKeyframeAnimationConfig = function() {
-  return {
-    vid: "",
+  return Object.assign(getAnimationConfig(), {
     type: CONFIGTYPE.KEYFRAMEANIMATION,
-    target: "",
-    attribute: ""
-  };
+    script: {
+      name: ""
+    }
+  });
 };
 const getCSS3DObjectConfig = function() {
   return Object.assign(getObjectConfig(), {
@@ -5042,13 +5048,13 @@ const AnimationRule = function(notice, compiler) {
     const tempPath = path.concat([]);
     const vid = tempPath.shift();
     if (vid && validate(vid)) {
-      compiler.update(vid);
+      compiler.update(vid, tempPath, key, value);
     } else {
       console.warn(`animation rule vid is illeage: '${vid}'`);
     }
     return;
   }
-  if (operate === "delete") {
+  if (operate === "delete" || operate === "set" && key === "play" && value === "false") {
     if (validate(key)) {
       compiler.remove(value);
     } else {
@@ -5295,11 +5301,11 @@ class Compiler {
   constructor() {
   }
 }
-const config$b = {
+const config$c = {
   name: "linearTime",
   multiply: 1
 };
-const generator$b = function(engine, target, attribute, config2) {
+const generator$c = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
     console.error(`object not exist attribute: ${attribute}`, target);
     return (event) => {
@@ -5360,7 +5366,7 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
   _AniScriptLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
 });
-AniScriptLibrary.register(config$b, generator$b);
+AniScriptLibrary.register(config$c, generator$c);
 class AnimationCompiler extends Compiler {
   constructor() {
     super();
@@ -5411,13 +5417,36 @@ class AnimationCompiler extends Compiler {
     if (config2.type === CONFIGTYPE.SCRIPTANIMATION) {
       const fun = AniScriptLibrary.generateScript(this.engine, object, attribute, config2.script);
       config2[Symbol.for(this.scriptAniSymbol)] = fun;
-      renderManager.addEventListener("render", fun);
+      config2.play && renderManager.addEventListener("render", fun);
     } else {
       console.warn(`animation compiler can not support this type config: ${config2.type}`);
     }
     return this;
   }
-  update(vid) {
+  update(vid, path, key, value) {
+    if (!this.target[vid]) {
+      console.warn(`AnimationCompiler can not found vid config: ${vid}`);
+      return this;
+    }
+    const config2 = this.target[vid];
+    if (config2.type === CONFIGTYPE.SCRIPTANIMATION) {
+      const renderManager = this.engine.renderManager;
+      const fun = config2[Symbol.for(this.scriptAniSymbol)];
+      if (fun === void 0) {
+        console.warn(`AnimationCompiler can not found function in update fun: ${vid}`);
+        return this;
+      }
+      if (key === "play" && value) {
+        if (!renderManager.hasEventListener("render", fun)) {
+          renderManager.addEventListener("render", fun);
+        }
+        return this;
+      }
+      if (key === "play" && !value) {
+        renderManager.removeEventListener("render", fun);
+        return this;
+      }
+    }
     return this.remove(this.target[vid]).add(vid, this.target[vid]);
   }
   remove(config2) {
@@ -5453,18 +5482,18 @@ class AnimationCompiler extends Compiler {
     return null;
   }
 }
-const config$a = {
+const config$b = {
   name: "openWindow",
   params: {
     url: ""
   }
 };
-const generator$a = function(engine, config2) {
+const generator$b = function(engine, config2) {
   return () => {
     window.open(config2.params.url);
   };
 };
-const config$9 = {
+const config$a = {
   name: "visibleObject",
   params: {
     target: "",
@@ -5472,7 +5501,7 @@ const config$9 = {
     delay: 0
   }
 };
-const generator$9 = function(engine, config2) {
+const generator$a = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   if (!target) {
@@ -5486,7 +5515,7 @@ const generator$9 = function(engine, config2) {
     }, params.delay);
   };
 };
-const config$8 = {
+const config$9 = {
   name: "addClass",
   params: {
     target: "",
@@ -5494,7 +5523,7 @@ const config$8 = {
     delay: 0
   }
 };
-const generator$8 = function(engine, config2) {
+const generator$9 = function(engine, config2) {
   const params = config2.params;
   const targets = [];
   if (params.target === "all") {
@@ -6235,7 +6264,7 @@ const timingFunction = {
   EASING_QUADRATIC_OUT: Easing.Quadratic.Out,
   EASING_QUADRATIC_INOUT: Easing.Quadratic.InOut
 };
-const config$7 = {
+const config$8 = {
   name: "moveTo",
   params: {
     target: "",
@@ -6249,7 +6278,7 @@ const config$7 = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$7 = function(engine, config2) {
+const generator$8 = function(engine, config2) {
   const params = config2.params;
   const compiler = engine.compilerManager;
   const object = compiler.getObjectBySymbol(params.target);
@@ -6285,7 +6314,7 @@ const generator$7 = function(engine, config2) {
     });
   };
 };
-const config$6 = {
+const config$7 = {
   name: "moveFromTo",
   params: {
     target: "",
@@ -6304,7 +6333,7 @@ const config$6 = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$6 = function(engine, config2) {
+const generator$7 = function(engine, config2) {
   const params = config2.params;
   const compiler = engine.compilerManager;
   const object = compiler.getObjectBySymbol(params.target);
@@ -6343,7 +6372,7 @@ const generator$6 = function(engine, config2) {
     });
   };
 };
-const config$5 = {
+const config$6 = {
   name: "moveSpacing",
   params: {
     target: "",
@@ -6357,7 +6386,7 @@ const config$5 = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$5 = function(engine, config2) {
+const generator$6 = function(engine, config2) {
   const params = config2.params;
   const object = engine.getObjectBySymbol(params.target);
   if (!object) {
@@ -6397,7 +6426,7 @@ const generator$5 = function(engine, config2) {
     });
   };
 };
-const config$4 = {
+const config$5 = {
   name: "moveToObject",
   params: {
     target: "",
@@ -6412,7 +6441,7 @@ const config$4 = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$4 = function(engine, config2) {
+const generator$5 = function(engine, config2) {
   const params = config2.params;
   const compiler = engine.compilerManager;
   const object = compiler.getObjectBySymbol(params.target);
@@ -6459,7 +6488,7 @@ const generator$4 = function(engine, config2) {
     });
   };
 };
-const config$3 = {
+const config$4 = {
   name: "vector3To",
   params: {
     target: "",
@@ -6475,7 +6504,7 @@ const config$3 = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$3 = function(engine, config2) {
+const generator$4 = function(engine, config2) {
   var _a, _b, _c;
   const params = config2.params;
   const object = engine.compilerManager.getObjectBySymbol(params.target);
@@ -6539,7 +6568,7 @@ const generator$3 = function(engine, config2) {
     });
   };
 };
-const config$2 = {
+const config$3 = {
   name: "focusObject",
   params: {
     target: "",
@@ -6555,7 +6584,7 @@ const config$2 = {
     back: true
   }
 };
-const generator$2 = function(engine, config2) {
+const generator$3 = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   const camera = engine.camera;
@@ -6682,18 +6711,18 @@ const generator$2 = function(engine, config2) {
     });
   };
 };
-const config$1 = {
+const config$2 = {
   name: "fadeObject",
   params: {
     target: "",
     direction: "out",
     delay: 0,
-    duration: 1e3,
+    duration: 300,
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
     visible: true
   }
 };
-const generator$1 = function(engine, config2) {
+const generator$2 = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   if (!target) {
@@ -6726,9 +6755,7 @@ const generator$1 = function(engine, config2) {
   }
   let animating = false;
   return () => {
-    console.log(animating);
     if (animating) {
-      console.log(animating);
       return;
     }
     animating = true;
@@ -6761,7 +6788,7 @@ const generator$1 = function(engine, config2) {
     });
   };
 };
-const config = {
+const config$1 = {
   name: "showToCamera",
   params: {
     target: "",
@@ -6776,7 +6803,7 @@ const config = {
     back: true
   }
 };
-const generator = function(engine, config2) {
+const generator$1 = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   const targetConfig = engine.getConfigBySymbol(params.target);
@@ -6869,6 +6896,60 @@ const generator = function(engine, config2) {
     });
   };
 };
+const config = {
+  name: "colorChange",
+  params: {
+    target: "",
+    attribute: "color",
+    color: "rgb(255, 255, 255)",
+    delay: 0,
+    duration: 500,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator = function(engine, config2) {
+  const params = config2.params;
+  const material = engine.getObjectBySymbol(params.target);
+  if (!material) {
+    console.warn(`real time animation ColorChange: can not found vid material: ${params.target}`);
+    return () => {
+    };
+  }
+  if (!material[params.attribute] || !(material[params.attribute] instanceof Color)) {
+    console.warn(`real time animation ColorChange: material attribute is illeage: ${params.attribute}`);
+    return () => {
+    };
+  }
+  const supportData = engine.getConfigBySymbol(params.target);
+  if (!supportData) {
+    console.warn(`real time animation ColorChange: can not found material config: ${params.target}`);
+    return () => {
+    };
+  }
+  const color = new Color(params.color);
+  const renderManager = engine.renderManager;
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    const tween = new Tween(material[params.attribute]).to({
+      r: color.r,
+      g: color.g,
+      b: color.b
+    }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      supportData[params.attribute] = params.color;
+      animating = false;
+    });
+  };
+};
 const _EventLibrary = class {
   static generateConfig(name, merge) {
     if (!_EventLibrary.configLibrary.has(name)) {
@@ -6912,6 +6993,7 @@ __publicField(EventLibrary, "register", function(config2, generator2) {
   _EventLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _EventLibrary.generatorLibrary.set(config2.name, generator2);
 });
+EventLibrary.register(config$b, generator$b);
 EventLibrary.register(config$a, generator$a);
 EventLibrary.register(config$9, generator$9);
 EventLibrary.register(config$8, generator$8);
@@ -16329,7 +16411,7 @@ class LightShadow {
     return object;
   }
 }
-const version = "0.1.3-4";
+const version = "0.1.3-5";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }

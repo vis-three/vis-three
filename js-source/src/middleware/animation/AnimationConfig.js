@@ -1,21 +1,27 @@
 import { CONFIGTYPE } from "../constants/configType";
-export const getScriptAnimationConfig = function () {
+const getAnimationConfig = function () {
     return {
         vid: "",
-        type: CONFIGTYPE.SCRIPTANIMATION,
+        type: "",
         target: "",
         attribute: "",
+        play: true,
+    };
+};
+export const getScriptAnimationConfig = function () {
+    return Object.assign(getAnimationConfig(), {
+        type: CONFIGTYPE.SCRIPTANIMATION,
         script: {
             name: "",
         },
-    };
+    });
 };
 export const getKeyframeAnimationConfig = function () {
-    return {
-        vid: "",
+    return Object.assign(getAnimationConfig(), {
         type: CONFIGTYPE.KEYFRAMEANIMATION,
-        target: "",
-        attribute: "",
-    };
+        script: {
+            name: "",
+        },
+    });
 };
 //# sourceMappingURL=AnimationConfig.js.map

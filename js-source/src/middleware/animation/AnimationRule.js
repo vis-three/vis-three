@@ -14,14 +14,15 @@ export const AnimationRule = function (notice, compiler) {
         const tempPath = path.concat([]);
         const vid = tempPath.shift();
         if (vid && validate(vid)) {
-            compiler.update(vid);
+            compiler.update(vid, tempPath, key, value);
         }
         else {
             console.warn(`animation rule vid is illeage: '${vid}'`);
         }
         return;
     }
-    if (operate === "delete") {
+    if (operate === "delete" ||
+        (operate === "set" && key === "play" && value === "false")) {
         if (validate(key)) {
             compiler.remove(value);
         }

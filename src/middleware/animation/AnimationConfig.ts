@@ -5,6 +5,7 @@ import { CONFIGTYPE } from "../constants/configType";
 export interface AnimationConfig extends SymbolConfig {
   target: string;
   attribute: string;
+  play: boolean;
 }
 
 export interface ScriptAnimationConfig extends AnimationConfig {
@@ -15,23 +16,30 @@ export interface KeyframeAnimationConfig extends AnimationConfig {}
 
 export type AnimationAllType = ScriptAnimationConfig | KeyframeAnimationConfig;
 
-export const getScriptAnimationConfig = function (): ScriptAnimationConfig {
+const getAnimationConfig = function (): AnimationConfig {
   return {
     vid: "",
-    type: CONFIGTYPE.SCRIPTANIMATION,
+    type: "",
     target: "",
     attribute: "",
-    script: {
-      name: "",
-    },
+    play: true,
   };
 };
 
+export const getScriptAnimationConfig = function (): ScriptAnimationConfig {
+  return Object.assign(getAnimationConfig(), {
+    type: CONFIGTYPE.SCRIPTANIMATION,
+    script: {
+      name: "",
+    },
+  });
+};
+
 export const getKeyframeAnimationConfig = function (): KeyframeAnimationConfig {
-  return {
-    vid: "",
+  return Object.assign(getAnimationConfig(), {
     type: CONFIGTYPE.KEYFRAMEANIMATION,
-    target: "",
-    attribute: "",
-  };
+    script: {
+      name: "",
+    },
+  });
 };

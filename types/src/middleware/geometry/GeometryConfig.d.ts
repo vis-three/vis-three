@@ -1,3 +1,4 @@
+import { Vector3 } from "three";
 import { SymbolConfig, Vector3Config } from "../common/CommonConfig";
 export interface GeometryGroup {
     start: number;
@@ -93,7 +94,18 @@ export interface CubicBezierCurveGeometryConfig extends CurveGeometryConfig {
 }
 export interface QuadraticBezierCurveGeometryConfig extends CurveGeometryConfig {
 }
-export declare type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig | LineCurveGeometryConfig | SplineCurveGeometryConfig | CubicBezierCurveGeometryConfig | QuadraticBezierCurveGeometryConfig | CustomGeometryConfig;
+export interface TubeGeometryConfig extends GeometryConfig {
+    path: Vector3[];
+    tubularSegments: number;
+    radius: number;
+    radialSegments: number;
+    closed: boolean;
+}
+export interface LineTubeGeometryConfig extends TubeGeometryConfig {
+}
+export interface SplineTubeGeometryConfig extends TubeGeometryConfig {
+}
+export declare type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig | LineCurveGeometryConfig | SplineCurveGeometryConfig | CubicBezierCurveGeometryConfig | QuadraticBezierCurveGeometryConfig | CustomGeometryConfig | LineTubeGeometryConfig | SplineTubeGeometryConfig;
 export declare const getGeometryConfig: () => GeometryConfig;
 export declare const getBoxGeometryConfig: () => BoxGeometryConfig;
 export declare const getSphereGeometryConfig: () => SphereGeometryConfig;
@@ -109,3 +121,6 @@ export declare const getLineCurveGeometryConfig: () => LineCurveGeometryConfig;
 export declare const getSplineCurveGeometryConfig: () => SplineCurveGeometryConfig;
 export declare const getCubicBezierCurveGeometryConfig: () => CubicBezierCurveGeometryConfig;
 export declare const getQuadraticBezierCurveGeometryConfig: () => QuadraticBezierCurveGeometryConfig;
+export declare const getTubeGeometryConfig: () => TubeGeometryConfig;
+export declare const getLineTubeGeometryConfig: () => LineTubeGeometryConfig;
+export declare const getSplineTubeGeometryConfig: () => SplineTubeGeometryConfig;
