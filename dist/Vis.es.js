@@ -18,7 +18,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Matrix4 as Matrix4$1, Euler, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
+import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Matrix4 as Matrix4$1, Euler, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, TubeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -3038,6 +3038,8 @@ var CONFIGTYPE;
   CONFIGTYPE2["CUBICBEZIERCURVEGEOMETRY"] = "CubicBezierCurveGeometry";
   CONFIGTYPE2["QUADRATICBEZIERCURVEGEOMETRY"] = "QuadraticBezierCurveGeometry";
   CONFIGTYPE2["CUSTOMGEOMETRY"] = "CustomGeometry";
+  CONFIGTYPE2["LINETUBEGEOMETRY"] = "LineTubeGeometry";
+  CONFIGTYPE2["SPLINETUBEGEOMETRY"] = "SplineTubeGeometry";
   CONFIGTYPE2["MESH"] = "Mesh";
   CONFIGTYPE2["LINE"] = "Line";
   CONFIGTYPE2["POINTS"] = "Points";
@@ -3307,6 +3309,26 @@ const getCubicBezierCurveGeometryConfig = function() {
 const getQuadraticBezierCurveGeometryConfig = function() {
   return Object.assign(getCurveGeometryConfig(), {
     type: CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY
+  });
+};
+const getTubeGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: "TubeGeometry",
+    path: [],
+    tubularSegments: 64,
+    radius: 1,
+    radialSegments: 8,
+    closed: false
+  });
+};
+const getLineTubeGeometryConfig = function() {
+  return Object.assign(getTubeGeometryConfig(), {
+    type: CONFIGTYPE.LINETUBEGEOMETRY
+  });
+};
+const getSplineTubeGeometryConfig = function() {
+  return Object.assign(getTubeGeometryConfig(), {
+    type: CONFIGTYPE.SPLINETUBEGEOMETRY
   });
 };
 const getTextureConfig = function() {
@@ -3772,6 +3794,8 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY]: getCubicBezierCurveGeometryConfig,
   [CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY]: getQuadraticBezierCurveGeometryConfig,
   [CONFIGTYPE.DODECAHEDRONGEOMETRY]: getDodecahedronGeometryConfig,
+  [CONFIGTYPE.SPLINETUBEGEOMETRY]: getSplineTubeGeometryConfig,
+  [CONFIGTYPE.LINETUBEGEOMETRY]: getLineTubeGeometryConfig,
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,
   [CONFIGTYPE.MESH]: getMeshConfig,
@@ -3854,6 +3878,8 @@ const CONFIGMODULE = {
   [CONFIGTYPE.SPLINECURVEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.LINETUBEGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.SPLINETUBEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
   [CONFIGTYPE.LINE]: MODULETYPE.LINE,
   [CONFIGTYPE.MESH]: MODULETYPE.MESH,
@@ -7818,6 +7844,31 @@ class QuadraticBezierCurveGeometry extends CurveGeometry {
     this.setFromPoints(space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions));
   }
 }
+class LineTubeGeometry extends TubeGeometry {
+  constructor(path = [], tubularSegments = 64, radius = 1, radialSegments = 8, closed = false) {
+    if (!path.length) {
+      console.warn(`LineTubeGeometry path length at least 1.`);
+      return;
+    }
+    const curvePath = new CurvePath();
+    for (let i = 1; i < path.length; i += 1) {
+      curvePath.add(new LineCurve3(path[i - 1], path[i]));
+    }
+    super(curvePath, tubularSegments, radius, radialSegments, closed);
+    this.type = "LineTubeGeometry";
+  }
+}
+class SplineTubeGeometry extends TubeGeometry {
+  constructor(path = [], tubularSegments = 64, radius = 1, radialSegments = 8, closed = false) {
+    if (!path.length) {
+      console.warn(`SplineTubeGeometry path length at least 1.`);
+      return;
+    }
+    const splineCurve = new CatmullRomCurve3(path);
+    super(splineCurve, tubularSegments, radius, radialSegments, closed);
+    this.type = "SplineTubeGeometry";
+  }
+}
 const _GeometryCompiler = class extends Compiler {
   constructor() {
     super();
@@ -7867,6 +7918,12 @@ const _GeometryCompiler = class extends Compiler {
     });
     constructMap.set(CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY, (config2) => {
       return _GeometryCompiler.transfromAnchor(new QuadraticBezierCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
+    });
+    constructMap.set(CONFIGTYPE.LINETUBEGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new LineTubeGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.tubularSegments, config2.radius, config2.radialSegments, config2.closed), config2);
+    });
+    constructMap.set(CONFIGTYPE.SPLINETUBEGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new SplineTubeGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.tubularSegments, config2.radius, config2.radialSegments, config2.closed), config2);
     });
     this.constructMap = constructMap;
   }
@@ -7999,7 +8056,7 @@ const _GeometryCompiler = class extends Compiler {
 };
 let GeometryCompiler = _GeometryCompiler;
 __publicField(GeometryCompiler, "transfromAnchor", function(geometry, config2) {
-  if (!(geometry instanceof CurveGeometry)) {
+  if (!(geometry instanceof CurveGeometry) && !(geometry instanceof TubeGeometry)) {
     geometry.center();
   }
   geometry.computeBoundingBox();
@@ -8010,7 +8067,7 @@ __publicField(GeometryCompiler, "transfromAnchor", function(geometry, config2) {
   const quaternion = new Quaternion$1().setFromEuler(new Euler(rotation.x, rotation.y, rotation.z, "XYZ"));
   geometry.applyQuaternion(quaternion);
   geometry.scale(scale.x, scale.y, scale.z);
-  if (!(geometry instanceof CurveGeometry)) {
+  if (!(geometry instanceof CurveGeometry) && !(geometry instanceof TubeGeometry)) {
     geometry.center();
   }
   geometry.computeBoundingBox();

@@ -60,7 +60,7 @@
         distance: 150,
       });
 
-      const material = VIS.generateConfig("MeshStandardMaterial");
+      const meshMaterial = VIS.generateConfig("MeshStandardMaterial");
 
       const geometryTypeList = [
         VIS.CONFIGTYPE.BOXGEOMETRY,
@@ -79,7 +79,7 @@
         const geometry = VIS.generateConfig(cofigType);
         const number = i + 1;
         const mesh = VIS.generateConfig("Mesh", {
-          material: material.vid,
+          material: meshMaterial.vid,
           geometry: geometry.vid,
           position: {
             x:
@@ -152,6 +152,28 @@
         }
       );
 
+      const splineTubeGeometry = VIS.generateConfig("SplineTubeGeometry", {
+        path: [
+          { x: 0, y: 0, z: -5 },
+          { x: 0, y: 0, z: 5 },
+          { x: 0, y: 5, z: 5 },
+          { x: 0, y: 5, z: 10 },
+          { x: 10, y: 5, z: 10 },
+        ],
+        radialSegments: 8,
+      });
+
+      const lineTubeGeometry = VIS.generateConfig("LineTubeGeometry", {
+        path: [
+          { x: 0, y: 0, z: -5 },
+          { x: 0, y: 0, z: 5 },
+          { x: 0, y: 5, z: 5 },
+          { x: 0, y: 5, z: 10 },
+          { x: 10, y: 5, z: 10 },
+        ],
+        radialSegments: 8,
+      });
+
       const lineCurveLine = VIS.generateConfig("Line", {
         geometry: lineCurveGeometry.vid,
         material: lineMaterial.vid,
@@ -181,7 +203,24 @@
         },
       });
 
+      const splineTubeMesh = VIS.generateConfig("Mesh", {
+        geometry: splineTubeGeometry.vid,
+        material: meshMaterial.vid,
+        position: {
+          y: -10,
+        },
+      });
+
+      const lineTubeMesh = VIS.generateConfig("Mesh", {
+        geometry: lineTubeGeometry.vid,
+        material: meshMaterial.vid,
+        position: {
+          y: -20,
+        },
+      });
+
       window.reactData = lineCurveGeometry;
+      console.log(engine);
     </script>
   </body>
 </html>

@@ -315,7 +315,7 @@ export const getTubeGeometryConfig = function (): TubeGeometryConfig {
     path: [],
     tubularSegments: 64,
     radius: 1,
-    radialSegments: 1,
+    radialSegments: 8,
     closed: false,
   });
 };

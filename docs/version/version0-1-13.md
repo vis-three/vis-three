@@ -11,6 +11,8 @@
 - SplineCurveGeometry
 - CubicBezierCurveGeometry
 - passCompiler set
+- LineTubeGeometry
+- SplineTubeGeometry;
 
 #### fix
 

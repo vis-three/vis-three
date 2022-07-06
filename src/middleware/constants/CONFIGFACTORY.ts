@@ -19,6 +19,8 @@ import {
   getQuadraticBezierCurveGeometryConfig,
   getDodecahedronGeometryConfig,
   getCustomGeometryConfig,
+  getSplineTubeGeometryConfig,
+  getLineTubeGeometryConfig,
 } from "../geometry/GeometryConfig";
 import {
   getCanvasTextureConfig,
@@ -102,6 +104,8 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY]:
     getQuadraticBezierCurveGeometryConfig,
   [CONFIGTYPE.DODECAHEDRONGEOMETRY]: getDodecahedronGeometryConfig,
+  [CONFIGTYPE.SPLINETUBEGEOMETRY]: getSplineTubeGeometryConfig,
+  [CONFIGTYPE.LINETUBEGEOMETRY]: getLineTubeGeometryConfig,
 
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,

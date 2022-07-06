@@ -5,7 +5,7 @@ export class SplineTubeGeometry extends TubeGeometry {
     path: Vector3[] = [],
     tubularSegments = 64,
     radius = 1,
-    radialSegments = 1,
+    radialSegments = 8,
     closed = false
   ) {
     if (!path.length) {

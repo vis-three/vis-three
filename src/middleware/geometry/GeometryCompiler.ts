@@ -12,6 +12,7 @@ import {
   PlaneBufferGeometry,
   Quaternion,
   SphereBufferGeometry,
+  TubeGeometry,
   Vector3,
 } from "three";
 import { validate } from "uuid";
@@ -59,7 +60,10 @@ export class GeometryCompiler extends Compiler {
     config: GeometryAllType
   ): BufferGeometry {
     // 曲线几何和形状几何不期望先center
-    if (!(geometry instanceof CurveGeometry)) {
+    if (
+      !(geometry instanceof CurveGeometry) &&
+      !(geometry instanceof TubeGeometry)
+    ) {
       geometry.center();
     }
 
@@ -80,7 +84,10 @@ export class GeometryCompiler extends Compiler {
     geometry.scale(scale.x, scale.y, scale.z);
 
     // 计算位置
-    if (!(geometry instanceof CurveGeometry)) {
+    if (
+      !(geometry instanceof CurveGeometry) &&
+      !(geometry instanceof TubeGeometry)
+    ) {
       geometry.center();
     }
 
