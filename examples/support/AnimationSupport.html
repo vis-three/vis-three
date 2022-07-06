@@ -92,6 +92,15 @@
         }),
       });
 
+      const animation3 = VIS.generateConfig("ScriptAnimation", {
+        target: mesh.vid,
+        attribute: ".position.y",
+        script: VIS.AniScriptLibrary.generateConfig("sinWave", {
+          amplitude: 10,
+          wavelength: 0.5,
+        }),
+      });
+
       const scene = VIS.generateConfig("Scene", {
         children: [pointLight.vid, mesh.vid],
       });
@@ -100,6 +109,7 @@
 
       window.animation = animation;
       window.animation2 = animation2;
+      window.animation3 = animation3;
     </script>
   </body>
 </html>

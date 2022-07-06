@@ -1,4 +1,5 @@
 import * as LinearTime from "./linearTime";
+import * as SinWave from "./sinWave";
 export class AniScriptLibrary {
     static configLibrary = new Map();
     static generatorLibrary = new Map();
@@ -47,4 +48,5 @@ export class AniScriptLibrary {
     }
 }
 AniScriptLibrary.register(LinearTime.config, LinearTime.generator);
+AniScriptLibrary.register(SinWave.config, SinWave.generator);
 //# sourceMappingURL=AniScriptLibrary.js.map

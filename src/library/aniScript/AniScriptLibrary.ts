@@ -2,6 +2,7 @@ import { EngineSupport } from "../../engine/EngineSupport";
 import { RenderEvent } from "../../manager/RenderManager";
 
 import * as LinearTime from "./linearTime";
+import * as SinWave from "./sinWave";
 
 export interface BasicAniScriptConfig {
   name: string;
@@ -97,3 +98,4 @@ export class AniScriptLibrary {
 }
 
 AniScriptLibrary.register(LinearTime.config, LinearTime.generator);
+AniScriptLibrary.register(SinWave.config, SinWave.generator);

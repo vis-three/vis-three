@@ -5301,23 +5301,46 @@ class Compiler {
   constructor() {
   }
 }
-const config$c = {
+const config$d = {
   name: "linearTime",
   multiply: 1
 };
-const generator$c = function(engine, target, attribute, config2) {
+const generator$d = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
-    console.error(`object not exist attribute: ${attribute}`, target);
+    console.warn(`object not exist attribute: ${attribute}`, target);
     return (event) => {
     };
   }
   if (typeof target[attribute] !== "number") {
-    console.error(`object attribute is not typeof number.`, target, attribute);
+    console.warn(`object attribute is not typeof number.`, target, attribute);
     return (event) => {
     };
   }
   return (event) => {
     target[attribute] += event.delta * config2.multiply;
+  };
+};
+const config$c = {
+  name: "sinWave",
+  wavelength: 1,
+  offset: 0,
+  amplitude: 1,
+  speed: 1
+};
+const generator$c = function(engine, target, attribute, config2) {
+  if (target[attribute] === void 0) {
+    console.warn(`object not exist attribute: ${attribute}`, target);
+    return (event) => {
+    };
+  }
+  if (typeof target[attribute] !== "number") {
+    console.warn(`object attribute is not typeof number.`, target, attribute);
+    return (event) => {
+    };
+  }
+  const origin = target[attribute];
+  return (event) => {
+    target[attribute] = origin + config2.amplitude * Math.sin(event.total * config2.speed / config2.wavelength) + config2.offset;
   };
 };
 const _AniScriptLibrary = class {
@@ -5366,6 +5389,7 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
   _AniScriptLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
 });
+AniScriptLibrary.register(config$d, generator$d);
 AniScriptLibrary.register(config$c, generator$c);
 class AnimationCompiler extends Compiler {
   constructor() {
