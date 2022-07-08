@@ -79,9 +79,9 @@ export const generator: EventGenerator<FocusObject> = function (
     const renderManager = engine.renderManager!;
     // 根据space计算position
     let position = {
-      x: target.position.x + params.offset.x,
-      y: target.position.y + params.offset.y,
-      z: target.position.z + params.offset.z,
+      x: target.matrixWorld[12] + params.offset.x,
+      y: target.matrixWorld[13] + params.offset.y,
+      z: target.matrixWorld[14] + params.offset.z,
     };
 
     const backPosition = {

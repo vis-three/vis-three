@@ -3753,6 +3753,7 @@ const getAnimationConfig = function() {
   return {
     vid: "",
     type: "",
+    name: "",
     target: "",
     attribute: "",
     play: true
@@ -5328,11 +5329,11 @@ class Compiler {
   constructor() {
   }
 }
-const config$e = {
+const config$f = {
   name: "linearTime",
   multiply: 1
 };
-const generator$e = function(engine, target, attribute, config2) {
+const generator$f = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
     console.warn(`object not exist attribute: ${attribute}`, target);
     return (event) => {
@@ -5347,14 +5348,14 @@ const generator$e = function(engine, target, attribute, config2) {
     target[attribute] += event.delta * config2.multiply;
   };
 };
-const config$d = {
+const config$e = {
   name: "sinWave",
   wavelength: 1,
   offset: 0,
   amplitude: 1,
   speed: 1
 };
-const generator$d = function(engine, target, attribute, config2) {
+const generator$e = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
     console.warn(`object not exist attribute: ${attribute}`, target);
     return (event) => {
@@ -5416,8 +5417,8 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
   _AniScriptLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
 });
+AniScriptLibrary.register(config$f, generator$f);
 AniScriptLibrary.register(config$e, generator$e);
-AniScriptLibrary.register(config$d, generator$d);
 class AnimationCompiler extends Compiler {
   constructor() {
     super();
@@ -5549,18 +5550,18 @@ class AnimationCompiler extends Compiler {
     return null;
   }
 }
-const config$c = {
+const config$d = {
   name: "openWindow",
   params: {
     url: ""
   }
 };
-const generator$c = function(engine, config2) {
+const generator$d = function(engine, config2) {
   return () => {
     window.open(config2.params.url);
   };
 };
-const config$b = {
+const config$c = {
   name: "visibleObject",
   params: {
     target: "",
@@ -5568,7 +5569,7 @@ const config$b = {
     delay: 0
   }
 };
-const generator$b = function(engine, config2) {
+const generator$c = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   if (!target) {
@@ -5582,7 +5583,7 @@ const generator$b = function(engine, config2) {
     }, params.delay);
   };
 };
-const config$a = {
+const config$b = {
   name: "addClass",
   params: {
     target: "",
@@ -5590,7 +5591,7 @@ const config$a = {
     delay: 0
   }
 };
-const generator$a = function(engine, config2) {
+const generator$b = function(engine, config2) {
   const params = config2.params;
   const targets = [];
   if (params.target === "all") {
@@ -5635,18 +5636,51 @@ const generator$a = function(engine, config2) {
     }, params.delay);
   };
 };
-const config$9 = {
+const config$a = {
   name: "changeScene",
   params: {
     scene: "Scene",
     delay: 0
   }
 };
-const generator$9 = function(engine, config2) {
+const generator$a = function(engine, config2) {
   const params = config2.params;
   return () => {
     setTimeout(() => {
       engine.setScene(params.scene);
+    }, params.delay);
+  };
+};
+const config$9 = {
+  name: "switchAnimate",
+  params: {
+    target: "",
+    toggle: "auto",
+    delay: 0
+  }
+};
+const generator$9 = function(engine, config2) {
+  const params = config2.params;
+  const target = engine.getConfigBySymbol(params.target);
+  if (!target) {
+    console.warn(`basic event switchAnimate: can not found vid config: ${params.target}`);
+    return () => {
+    };
+  }
+  return () => {
+    setTimeout(() => {
+      if (params.toggle === "auto") {
+        target.play != target.play;
+        return;
+      }
+      if (params.toggle === "off") {
+        target.play = false;
+        return;
+      }
+      if (params.toggle === "on") {
+        target.play = true;
+        return;
+      }
     }, params.delay);
   };
 };
@@ -6694,9 +6728,9 @@ const generator$3 = function(engine, config2) {
     animating = true;
     const renderManager = engine.renderManager;
     let position = {
-      x: target.position.x + params.offset.x,
-      y: target.position.y + params.offset.y,
-      z: target.position.z + params.offset.z
+      x: target.matrixWorld[12] + params.offset.x,
+      y: target.matrixWorld[13] + params.offset.y,
+      z: target.matrixWorld[14] + params.offset.z
     };
     const backPosition = {
       x: camera.position.x,
@@ -7075,6 +7109,7 @@ __publicField(EventLibrary, "register", function(config2, generator2) {
   _EventLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _EventLibrary.generatorLibrary.set(config2.name, generator2);
 });
+EventLibrary.register(config$d, generator$d);
 EventLibrary.register(config$c, generator$c);
 EventLibrary.register(config$b, generator$b);
 EventLibrary.register(config$a, generator$a);

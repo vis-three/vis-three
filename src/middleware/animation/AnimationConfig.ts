@@ -3,6 +3,7 @@ import { SymbolConfig } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
 
 export interface AnimationConfig extends SymbolConfig {
+  name: string;
   target: string;
   attribute: string;
   play: boolean;
@@ -20,6 +21,7 @@ const getAnimationConfig = function (): AnimationConfig {
   return {
     vid: "",
     type: "",
+    name: "",
     target: "",
     attribute: "",
     play: true,
