@@ -4,6 +4,7 @@ import { ObjectEvent } from "../../manager/EventManager";
 import * as OpenWindow from "./BasicEventLibrary/openWindow";
 import * as VisibleObject from "./BasicEventLibrary/visibleObject";
 import * as AddClass from "./BasicEventLibrary/addClass";
+import * as ChangeScene from "./BasicEventLibrary/changeScene";
 
 import * as MoveTo from "./RealTimeAnimateLibrary/moveTo";
 import * as MoveFromTo from "./RealTimeAnimateLibrary/moveFromTo";
@@ -99,6 +100,7 @@ export class EventLibrary {
 EventLibrary.register(OpenWindow.config, OpenWindow.generator);
 EventLibrary.register(VisibleObject.config, VisibleObject.generator);
 EventLibrary.register(AddClass.config, AddClass.generator);
+EventLibrary.register(ChangeScene.config, ChangeScene.generator);
 
 EventLibrary.register(MoveTo.config, MoveTo.generator);
 EventLibrary.register(MoveFromTo.config, MoveFromTo.generator);

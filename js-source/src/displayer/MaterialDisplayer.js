@@ -104,6 +104,14 @@ export class MaterialDisplayer {
     render() {
         this.renderer.render(this.scene, this.camera);
     }
+    /**
+     * 导出图片dataURL
+     * @param mine 图片格式
+     * @returns DataURL
+     */
+    getDataURL(mine) {
+        return this.renderer.domElement.toDataURL(mine || "image/png");
+    }
     // 内存销毁
     dispose() {
         this.renderer.dispose();

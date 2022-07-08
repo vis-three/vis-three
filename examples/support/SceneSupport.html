@@ -23,10 +23,10 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import * as VIS from "vis-three";
       import { v4 as getUUid } from "uuid";
 
-      const canvasGenerator = new Vis.CanvasGenerator({
+      const canvasGenerator = new VIS.CanvasGenerator({
         width: 256,
         height: 256,
       })
@@ -41,36 +41,45 @@
         })
         .preview();
 
-      const engine = new Vis.ModelingEngineSupport()
+      const engine = new VIS.ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true);
-      const ambientLight1 = Vis.generateConfig("AmbientLight", {
+      const ambientLight1 = VIS.generateConfig("AmbientLight", {
         intensity: 0.5,
       });
 
-      const ambientLight2 = Vis.generateConfig("AmbientLight", {
+      const ambientLight2 = VIS.generateConfig("AmbientLight", {
         intensity: 1,
       });
 
-      const material = Vis.generateConfig("MeshStandardMaterial");
+      const material = VIS.generateConfig("MeshStandardMaterial");
 
-      const geometry = Vis.generateConfig("BoxGeometry", {
+      const geometry = VIS.generateConfig("BoxGeometry", {
         width: 20,
         height: 20,
         depth: 20,
       });
 
-      const mesh1 = Vis.generateConfig("Mesh", {
+      const scene2Symbol = getUUid();
+
+      const mesh1 = VIS.generateConfig("Mesh", {
         material: material.vid,
         geometry: geometry.vid,
+        dblclick: [
+          VIS.EventLibrary.generateConfig("changeScene", {
+            params: {
+              scene: scene2Symbol,
+            },
+          }),
+        ],
       });
 
-      const scene1 = Vis.generateConfig("Scene", {
+      const scene1 = VIS.generateConfig("Scene", {
         children: [ambientLight1.vid, mesh1.vid],
       });
 
-      const mesh2 = Vis.generateConfig("Mesh", {
+      const mesh2 = VIS.generateConfig("Mesh", {
         material: material.vid,
         geometry: geometry.vid,
         position: {
@@ -83,8 +92,8 @@
         },
       });
 
-      const scene2 = Vis.generateConfig("Scene", {
-        vid: getUUid(),
+      const scene2 = VIS.generateConfig("Scene", {
+        vid: scene2Symbol,
         children: [ambientLight2.vid, mesh2.vid],
       });
 

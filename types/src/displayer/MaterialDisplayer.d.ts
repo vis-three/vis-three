@@ -20,5 +20,11 @@ export declare class MaterialDisplayer {
     setDom(dom: HTMLElement): this;
     setSize(width?: number, height?: number): this;
     render(): void;
+    /**
+     * 导出图片dataURL
+     * @param mine 图片格式
+     * @returns DataURL
+     */
+    getDataURL(mine: string): string;
     dispose(): void;
 }

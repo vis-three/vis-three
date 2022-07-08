@@ -3,8 +3,11 @@
 #### feat
 
 - docs-vitepress
+
 - eventLibrary-fadeObject
 - eventLibrary-focusObject
+- eventLibrary-changeScene
+
 - curveGeometry
 - LineCurveGeometry
 - QuadraticBezierCurveGeometry
@@ -12,7 +15,9 @@
 - CubicBezierCurveGeometry
 - passCompiler set
 - LineTubeGeometry
-- SplineTubeGeometry;
+- SplineTubeGeometry
+- TorusGeometry
+- RingGeometry
 
 #### fix
 
@@ -30,6 +35,7 @@
 - css3DPlane
 - viewpointPlugin-orthograpbicCamera
 - realTime animation event repeat event
+- displayer- toDataURL
 
 #### deprecated
 

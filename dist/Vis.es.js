@@ -18,7 +18,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Matrix4 as Matrix4$1, Euler, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, TubeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
+import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Matrix4 as Matrix4$1, Euler, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, TubeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, TorusGeometry, RingBufferGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -3032,6 +3032,8 @@ var CONFIGTYPE;
   CONFIGTYPE2["CONEGEOMETRY"] = "ConeGeometry";
   CONFIGTYPE2["CYLINDERGEOMETRY"] = "CylinderGeometry";
   CONFIGTYPE2["DODECAHEDRONGEOMETRY"] = "DodecahedronGeometry";
+  CONFIGTYPE2["TORUSGEOMETRY"] = "TorusGeometry";
+  CONFIGTYPE2["RINGGEOMETRY"] = "RingGeometry";
   CONFIGTYPE2["EDGESGEOMETRY"] = "EdgesGeometry";
   CONFIGTYPE2["LINECURVEGEOMETRY"] = "LineCurveGeometry";
   CONFIGTYPE2["SPLINECURVEGEOMETRY"] = "SplineCurveGeometry";
@@ -3234,6 +3236,27 @@ const getConeGeometryConfig = function() {
     radialSegments: 8,
     heightSegments: 1,
     openEnded: false,
+    thetaStart: 0,
+    thetaLength: Math.PI * 2
+  });
+};
+const getTorusGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.TORUSGEOMETRY,
+    radius: 3,
+    tube: 0.4,
+    radialSegments: 8,
+    tubularSegments: 6,
+    arc: Math.PI * 2
+  });
+};
+const getRingGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.RINGGEOMETRY,
+    innerRadius: 2,
+    outerRadius: 3,
+    thetaSegments: 8,
+    phiSegments: 8,
     thetaStart: 0,
     thetaLength: Math.PI * 2
   });
@@ -3802,6 +3825,8 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.DODECAHEDRONGEOMETRY]: getDodecahedronGeometryConfig,
   [CONFIGTYPE.SPLINETUBEGEOMETRY]: getSplineTubeGeometryConfig,
   [CONFIGTYPE.LINETUBEGEOMETRY]: getLineTubeGeometryConfig,
+  [CONFIGTYPE.TORUSGEOMETRY]: getTorusGeometryConfig,
+  [CONFIGTYPE.RINGGEOMETRY]: getRingGeometryConfig,
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,
   [CONFIGTYPE.MESH]: getMeshConfig,
@@ -3886,6 +3911,8 @@ const CONFIGMODULE = {
   [CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.LINETUBEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.SPLINETUBEGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.TORUSGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.RINGGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
   [CONFIGTYPE.LINE]: MODULETYPE.LINE,
   [CONFIGTYPE.MESH]: MODULETYPE.MESH,
@@ -5301,11 +5328,11 @@ class Compiler {
   constructor() {
   }
 }
-const config$d = {
+const config$e = {
   name: "linearTime",
   multiply: 1
 };
-const generator$d = function(engine, target, attribute, config2) {
+const generator$e = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
     console.warn(`object not exist attribute: ${attribute}`, target);
     return (event) => {
@@ -5320,14 +5347,14 @@ const generator$d = function(engine, target, attribute, config2) {
     target[attribute] += event.delta * config2.multiply;
   };
 };
-const config$c = {
+const config$d = {
   name: "sinWave",
   wavelength: 1,
   offset: 0,
   amplitude: 1,
   speed: 1
 };
-const generator$c = function(engine, target, attribute, config2) {
+const generator$d = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
     console.warn(`object not exist attribute: ${attribute}`, target);
     return (event) => {
@@ -5389,8 +5416,8 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
   _AniScriptLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
 });
+AniScriptLibrary.register(config$e, generator$e);
 AniScriptLibrary.register(config$d, generator$d);
-AniScriptLibrary.register(config$c, generator$c);
 class AnimationCompiler extends Compiler {
   constructor() {
     super();
@@ -5522,18 +5549,18 @@ class AnimationCompiler extends Compiler {
     return null;
   }
 }
-const config$b = {
+const config$c = {
   name: "openWindow",
   params: {
     url: ""
   }
 };
-const generator$b = function(engine, config2) {
+const generator$c = function(engine, config2) {
   return () => {
     window.open(config2.params.url);
   };
 };
-const config$a = {
+const config$b = {
   name: "visibleObject",
   params: {
     target: "",
@@ -5541,7 +5568,7 @@ const config$a = {
     delay: 0
   }
 };
-const generator$a = function(engine, config2) {
+const generator$b = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   if (!target) {
@@ -5555,7 +5582,7 @@ const generator$a = function(engine, config2) {
     }, params.delay);
   };
 };
-const config$9 = {
+const config$a = {
   name: "addClass",
   params: {
     target: "",
@@ -5563,7 +5590,7 @@ const config$9 = {
     delay: 0
   }
 };
-const generator$9 = function(engine, config2) {
+const generator$a = function(engine, config2) {
   const params = config2.params;
   const targets = [];
   if (params.target === "all") {
@@ -5605,6 +5632,21 @@ const generator$9 = function(engine, config2) {
       targets.forEach((target) => {
         target.element.classList.add(params.className);
       });
+    }, params.delay);
+  };
+};
+const config$9 = {
+  name: "changeScene",
+  params: {
+    scene: "Scene",
+    delay: 0
+  }
+};
+const generator$9 = function(engine, config2) {
+  const params = config2.params;
+  return () => {
+    setTimeout(() => {
+      engine.setScene(params.scene);
     }, params.delay);
   };
 };
@@ -7033,6 +7075,7 @@ __publicField(EventLibrary, "register", function(config2, generator2) {
   _EventLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _EventLibrary.generatorLibrary.set(config2.name, generator2);
 });
+EventLibrary.register(config$c, generator$c);
 EventLibrary.register(config$b, generator$b);
 EventLibrary.register(config$a, generator$a);
 EventLibrary.register(config$9, generator$9);
@@ -8046,6 +8089,12 @@ const _GeometryCompiler = class extends Compiler {
     });
     constructMap.set(CONFIGTYPE.SPLINETUBEGEOMETRY, (config2) => {
       return _GeometryCompiler.transfromAnchor(new SplineTubeGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.tubularSegments, config2.radius, config2.radialSegments, config2.closed), config2);
+    });
+    constructMap.set(CONFIGTYPE.TORUSGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new TorusGeometry(config2.radius, config2.tube, config2.radialSegments, config2.tubularSegments, config2.arc), config2);
+    });
+    constructMap.set(CONFIGTYPE.RINGGEOMETRY, (config2) => {
+      return _GeometryCompiler.transfromAnchor(new RingBufferGeometry(config2.innerRadius, config2.outerRadius, config2.thetaSegments, config2.phiSegments, config2.thetaStart, config2.thetaLength), config2);
     });
     this.constructMap = constructMap;
   }
@@ -12532,6 +12581,9 @@ const _MaterialDisplayer = class {
   render() {
     this.renderer.render(this.scene, this.camera);
   }
+  getDataURL(mine) {
+    return this.renderer.domElement.toDataURL(mine || "image/png");
+  }
   dispose() {
     this.renderer.dispose();
   }
@@ -12603,6 +12655,9 @@ const _TextureDisplayer = class {
   }
   render() {
     this.renderer.render(this.scene, this.camera);
+  }
+  getDataURL(mine) {
+    return this.renderer.domElement.toDataURL(mine || "image/png");
   }
   dispose() {
     this.renderer.dispose();

@@ -64,6 +64,14 @@ export class TextureDisplayer {
     render() {
         this.renderer.render(this.scene, this.camera);
     }
+    /**
+     * 导出图片dataURL
+     * @param mine 图片格式
+     * @returns DataURL
+     */
+    getDataURL(mine) {
+        return this.renderer.domElement.toDataURL(mine || "image/png");
+    }
     // 销毁内存
     dispose() {
         this.renderer.dispose();
