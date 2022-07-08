@@ -71,6 +71,21 @@ export interface EdgesGeometryConfig extends GeometryConfig {
     url: string;
     thresholdAngle: number;
 }
+export interface TorusGeometryConfig extends GeometryConfig {
+    radius: number;
+    tube: number;
+    radialSegments: number;
+    tubularSegments: number;
+    arc: number;
+}
+export interface RingGeometryConfig extends GeometryConfig {
+    innerRadius: number;
+    outerRadius: number;
+    thetaSegments: number;
+    phiSegments: number;
+    thetaStart: number;
+    thetaLength: number;
+}
 export interface CustomGeometryConfig extends GeometryConfig {
     attribute: {
         position: number[];
@@ -105,13 +120,15 @@ export interface LineTubeGeometryConfig extends TubeGeometryConfig {
 }
 export interface SplineTubeGeometryConfig extends TubeGeometryConfig {
 }
-export declare type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig | LineCurveGeometryConfig | SplineCurveGeometryConfig | CubicBezierCurveGeometryConfig | QuadraticBezierCurveGeometryConfig | CustomGeometryConfig | LineTubeGeometryConfig | SplineTubeGeometryConfig;
+export declare type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig | LineCurveGeometryConfig | SplineCurveGeometryConfig | CubicBezierCurveGeometryConfig | QuadraticBezierCurveGeometryConfig | CustomGeometryConfig | LineTubeGeometryConfig | SplineTubeGeometryConfig | TorusGeometryConfig | RingGeometryConfig;
 export declare const getGeometryConfig: () => GeometryConfig;
 export declare const getBoxGeometryConfig: () => BoxGeometryConfig;
 export declare const getSphereGeometryConfig: () => SphereGeometryConfig;
 export declare const getPlaneGeometryConfig: () => PlaneGeometryConfig;
 export declare const getCircleGeometryConfig: () => CircleGeometryConfig;
 export declare const getConeGeometryConfig: () => ConeGeometryConfig;
+export declare const getTorusGeometryConfig: () => TorusGeometryConfig;
+export declare const getRingGeometryConfig: () => RingGeometryConfig;
 export declare const getLoadGeometryConfig: () => LoadGeometryConfig;
 export declare const getCustomGeometryConfig: () => CustomGeometryConfig;
 export declare const getCylinderGeometryConfig: () => CylinderGeometryConfig;

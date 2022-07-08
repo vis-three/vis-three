@@ -30,6 +30,8 @@ export declare const CONFIGMODULE: {
     QuadraticBezierCurveGeometry: MODULETYPE;
     LineTubeGeometry: MODULETYPE;
     SplineTubeGeometry: MODULETYPE;
+    TorusGeometry: MODULETYPE;
+    RingGeometry: MODULETYPE;
     Sprite: MODULETYPE;
     Line: MODULETYPE;
     Mesh: MODULETYPE;

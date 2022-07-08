@@ -11,6 +11,8 @@ export var CONFIGTYPE;
     CONFIGTYPE["CONEGEOMETRY"] = "ConeGeometry";
     CONFIGTYPE["CYLINDERGEOMETRY"] = "CylinderGeometry";
     CONFIGTYPE["DODECAHEDRONGEOMETRY"] = "DodecahedronGeometry";
+    CONFIGTYPE["TORUSGEOMETRY"] = "TorusGeometry";
+    CONFIGTYPE["RINGGEOMETRY"] = "RingGeometry";
     CONFIGTYPE["EDGESGEOMETRY"] = "EdgesGeometry";
     CONFIGTYPE["LINECURVEGEOMETRY"] = "LineCurveGeometry";
     CONFIGTYPE["SPLINECURVEGEOMETRY"] = "SplineCurveGeometry";

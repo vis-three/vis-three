@@ -10,6 +10,8 @@ export enum CONFIGTYPE {
   CONEGEOMETRY = "ConeGeometry",
   CYLINDERGEOMETRY = "CylinderGeometry",
   DODECAHEDRONGEOMETRY = "DodecahedronGeometry",
+  TORUSGEOMETRY = "TorusGeometry",
+  RINGGEOMETRY = "RingGeometry",
   EDGESGEOMETRY = "EdgesGeometry",
   LINECURVEGEOMETRY = "LineCurveGeometry",
   SPLINECURVEGEOMETRY = "SplineCurveGeometry",

@@ -11,7 +11,9 @@ import {
   Matrix4,
   PlaneBufferGeometry,
   Quaternion,
+  RingBufferGeometry,
   SphereBufferGeometry,
+  TorusGeometry,
   TubeGeometry,
   Vector3,
 } from "three";
@@ -34,9 +36,11 @@ import {
   LoadGeometryConfig,
   PlaneGeometryConfig,
   QuadraticBezierCurveGeometryConfig,
+  RingGeometryConfig,
   SphereGeometryConfig,
   SplineCurveGeometryConfig,
   SplineTubeGeometryConfig,
+  TorusGeometryConfig,
 } from "./GeometryConfig";
 import { CONFIGTYPE } from "../constants/configType";
 import { EngineSupport } from "../../main";
@@ -338,6 +342,36 @@ export class GeometryCompiler extends Compiler {
         );
       }
     );
+
+    constructMap.set(
+      CONFIGTYPE.TORUSGEOMETRY,
+      (config: TorusGeometryConfig) => {
+        return GeometryCompiler.transfromAnchor(
+          new TorusGeometry(
+            config.radius,
+            config.tube,
+            config.radialSegments,
+            config.tubularSegments,
+            config.arc
+          ),
+          config
+        );
+      }
+    );
+
+    constructMap.set(CONFIGTYPE.RINGGEOMETRY, (config: RingGeometryConfig) => {
+      return GeometryCompiler.transfromAnchor(
+        new RingBufferGeometry(
+          config.innerRadius,
+          config.outerRadius,
+          config.thetaSegments,
+          config.phiSegments,
+          config.thetaStart,
+          config.thetaLength
+        ),
+        config
+      );
+    });
 
     this.constructMap = constructMap;
   }

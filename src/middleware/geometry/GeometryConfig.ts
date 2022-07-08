@@ -83,6 +83,23 @@ export interface EdgesGeometryConfig extends GeometryConfig {
   thresholdAngle: number;
 }
 
+export interface TorusGeometryConfig extends GeometryConfig {
+  radius: number;
+  tube: number;
+  radialSegments: number;
+  tubularSegments: number;
+  arc: number;
+}
+
+export interface RingGeometryConfig extends GeometryConfig {
+  innerRadius: number;
+  outerRadius: number;
+  thetaSegments: number;
+  phiSegments: number;
+  thetaStart: number;
+  thetaLength: number;
+}
+
 export interface CustomGeometryConfig extends GeometryConfig {
   attribute: {
     position: number[];
@@ -137,7 +154,9 @@ export type GeometryAllType =
   | QuadraticBezierCurveGeometryConfig
   | CustomGeometryConfig
   | LineTubeGeometryConfig
-  | SplineTubeGeometryConfig;
+  | SplineTubeGeometryConfig
+  | TorusGeometryConfig
+  | RingGeometryConfig;
 
 // config function
 
@@ -217,6 +236,29 @@ export const getConeGeometryConfig = function (): ConeGeometryConfig {
     radialSegments: 8,
     heightSegments: 1,
     openEnded: false,
+    thetaStart: 0,
+    thetaLength: Math.PI * 2,
+  });
+};
+
+export const getTorusGeometryConfig = function (): TorusGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.TORUSGEOMETRY,
+    radius: 3,
+    tube: 0.4,
+    radialSegments: 8,
+    tubularSegments: 6,
+    arc: Math.PI * 2,
+  });
+};
+
+export const getRingGeometryConfig = function (): RingGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    type: CONFIGTYPE.RINGGEOMETRY,
+    innerRadius: 2,
+    outerRadius: 3,
+    thetaSegments: 8,
+    phiSegments: 8,
     thetaStart: 0,
     thetaLength: Math.PI * 2,
   });

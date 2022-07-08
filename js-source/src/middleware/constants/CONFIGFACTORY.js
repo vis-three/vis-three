@@ -1,5 +1,5 @@
 import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig, getDirectionalLightConfig, } from "../light/LightConfig";
-import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig, getPlaneGeometryConfig, getCircleGeometryConfig, getConeGeometryConfig, getCylinderGeometryConfig, getEdgesGeometryConfig, getLineCurveGeometryConfig, getSplineCurveGeometryConfig, getCubicBezierCurveGeometryConfig, getQuadraticBezierCurveGeometryConfig, getDodecahedronGeometryConfig, getCustomGeometryConfig, getSplineTubeGeometryConfig, getLineTubeGeometryConfig, } from "../geometry/GeometryConfig";
+import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig, getPlaneGeometryConfig, getCircleGeometryConfig, getConeGeometryConfig, getCylinderGeometryConfig, getEdgesGeometryConfig, getLineCurveGeometryConfig, getSplineCurveGeometryConfig, getCubicBezierCurveGeometryConfig, getQuadraticBezierCurveGeometryConfig, getDodecahedronGeometryConfig, getCustomGeometryConfig, getSplineTubeGeometryConfig, getLineTubeGeometryConfig, getTorusGeometryConfig, getRingGeometryConfig, } from "../geometry/GeometryConfig";
 import { getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig, getVideoTextureConfig, } from "../texture/TextureConfig";
 import { getLineBasicMaterialConfig, getMeshBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getShaderMaterialConfig, getSpriteMaterialConfig, } from "../material/MaterialConfig";
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig, } from "../camera/CameraConfig";
@@ -47,6 +47,8 @@ export const CONFIGFACTORY = {
     [CONFIGTYPE.DODECAHEDRONGEOMETRY]: getDodecahedronGeometryConfig,
     [CONFIGTYPE.SPLINETUBEGEOMETRY]: getSplineTubeGeometryConfig,
     [CONFIGTYPE.LINETUBEGEOMETRY]: getLineTubeGeometryConfig,
+    [CONFIGTYPE.TORUSGEOMETRY]: getTorusGeometryConfig,
+    [CONFIGTYPE.RINGGEOMETRY]: getRingGeometryConfig,
     [CONFIGTYPE.SPRITE]: getSpriteConfig,
     [CONFIGTYPE.LINE]: getLineConfig,
     [CONFIGTYPE.MESH]: getMeshConfig,

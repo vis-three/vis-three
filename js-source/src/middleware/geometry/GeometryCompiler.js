@@ -1,4 +1,4 @@
-import { BoxBufferGeometry, BufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, Euler, Float32BufferAttribute, PlaneBufferGeometry, Quaternion, SphereBufferGeometry, TubeGeometry, Vector3, } from "three";
+import { BoxBufferGeometry, BufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, Euler, Float32BufferAttribute, PlaneBufferGeometry, Quaternion, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, TubeGeometry, Vector3, } from "three";
 import { validate } from "uuid";
 import { LoadGeometry } from "../../extends/geometry/LoadGeometry";
 import { Compiler } from "../../core/Compiler";
@@ -93,6 +93,12 @@ export class GeometryCompiler extends Compiler {
         });
         constructMap.set(CONFIGTYPE.SPLINETUBEGEOMETRY, (config) => {
             return GeometryCompiler.transfromAnchor(new SplineTubeGeometry(config.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config.tubularSegments, config.radius, config.radialSegments, config.closed), config);
+        });
+        constructMap.set(CONFIGTYPE.TORUSGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(new TorusGeometry(config.radius, config.tube, config.radialSegments, config.tubularSegments, config.arc), config);
+        });
+        constructMap.set(CONFIGTYPE.RINGGEOMETRY, (config) => {
+            return GeometryCompiler.transfromAnchor(new RingBufferGeometry(config.innerRadius, config.outerRadius, config.thetaSegments, config.phiSegments, config.thetaStart, config.thetaLength), config);
         });
         this.constructMap = constructMap;
     }

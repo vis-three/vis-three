@@ -75,6 +75,27 @@ export const getConeGeometryConfig = function () {
         thetaLength: Math.PI * 2,
     });
 };
+export const getTorusGeometryConfig = function () {
+    return Object.assign(getGeometryConfig(), {
+        type: CONFIGTYPE.TORUSGEOMETRY,
+        radius: 3,
+        tube: 0.4,
+        radialSegments: 8,
+        tubularSegments: 6,
+        arc: Math.PI * 2,
+    });
+};
+export const getRingGeometryConfig = function () {
+    return Object.assign(getGeometryConfig(), {
+        type: CONFIGTYPE.RINGGEOMETRY,
+        innerRadius: 2,
+        outerRadius: 3,
+        thetaSegments: 8,
+        phiSegments: 8,
+        thetaStart: 0,
+        thetaLength: Math.PI * 2,
+    });
+};
 export const getLoadGeometryConfig = function () {
     return Object.assign(getGeometryConfig(), {
         type: CONFIGTYPE.LOADGEOMETRY,

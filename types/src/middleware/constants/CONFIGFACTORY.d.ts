@@ -30,6 +30,8 @@ export declare const CONFIGFACTORY: {
     DodecahedronGeometry: () => import("../geometry/GeometryConfig").DodecahedronGeometryConfig;
     SplineTubeGeometry: () => import("../geometry/GeometryConfig").SplineTubeGeometryConfig;
     LineTubeGeometry: () => import("../geometry/GeometryConfig").LineTubeGeometryConfig;
+    TorusGeometry: () => import("../geometry/GeometryConfig").TorusGeometryConfig;
+    RingGeometry: () => import("../geometry/GeometryConfig").RingGeometryConfig;
     Sprite: () => import("../sprite/SpriteConfig").SpriteConfig;
     Line: () => import("../line/LineConfig").LineConfig;
     Mesh: () => import("../mesh/MeshConfig").MeshConfig;
