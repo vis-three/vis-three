@@ -18,7 +18,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Matrix4 as Matrix4$1, Euler, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, TubeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, TorusGeometry, RingBufferGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
+import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Matrix4 as Matrix4$1, Euler, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, TubeGeometry, ShapeBufferGeometry, Shape, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, TorusGeometry, RingBufferGeometry, ShapeGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -2406,15 +2406,15 @@ class MaterialCreator {
       if (params[mapType])
         return;
       const texParams = scope.getTextureParams(value, params);
-      const map = scope.loadTexture(resolveURL(scope.baseUrl, texParams.url));
-      map.repeat.copy(texParams.scale);
-      map.offset.copy(texParams.offset);
-      map.wrapS = scope.wrap;
-      map.wrapT = scope.wrap;
+      const map2 = scope.loadTexture(resolveURL(scope.baseUrl, texParams.url));
+      map2.repeat.copy(texParams.scale);
+      map2.offset.copy(texParams.offset);
+      map2.wrapS = scope.wrap;
+      map2.wrapT = scope.wrap;
       if (mapType === "map" || mapType === "emissiveMap") {
-        map.encoding = sRGBEncoding;
+        map2.encoding = sRGBEncoding;
       }
-      params[mapType] = map;
+      params[mapType] = map2;
     }
     for (const prop in mat) {
       const value = mat[prop];
@@ -2628,9 +2628,9 @@ class LoaderManager extends EventDispatcher {
     return this;
   }
   setPath(path) {
-    const map = this.loaderMap;
-    Object.keys(map).forEach((ext) => {
-      map[ext].setPath(path);
+    const map2 = this.loaderMap;
+    Object.keys(map2).forEach((ext) => {
+      map2[ext].setPath(path);
     });
     this.path = path;
     return this;
@@ -2785,8 +2785,8 @@ class LoaderManager extends EventDispatcher {
   getLoadDetailMap() {
     return this.loadDetailMap;
   }
-  setLoadDetailMap(map) {
-    this.loadDetailMap = map;
+  setLoadDetailMap(map2) {
+    this.loadDetailMap = map2;
     return this;
   }
   remove(url) {
@@ -3042,6 +3042,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["CUSTOMGEOMETRY"] = "CustomGeometry";
   CONFIGTYPE2["LINETUBEGEOMETRY"] = "LineTubeGeometry";
   CONFIGTYPE2["SPLINETUBEGEOMETRY"] = "SplineTubeGeometry";
+  CONFIGTYPE2["LINESHAPEGEOMETRY"] = "LineShapeGeometry";
   CONFIGTYPE2["MESH"] = "Mesh";
   CONFIGTYPE2["LINE"] = "Line";
   CONFIGTYPE2["POINTS"] = "Points";
@@ -3352,6 +3353,17 @@ const getLineTubeGeometryConfig = function() {
 const getSplineTubeGeometryConfig = function() {
   return Object.assign(getTubeGeometryConfig(), {
     type: CONFIGTYPE.SPLINETUBEGEOMETRY
+  });
+};
+const getShapeGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    path: [],
+    curveSegments: 12
+  });
+};
+const getLineShapeGeometryConfig = function() {
+  return Object.assign(getShapeGeometryConfig(), {
+    type: CONFIGTYPE.LINESHAPEGEOMETRY
   });
 };
 const getTextureConfig = function() {
@@ -3828,6 +3840,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.LINETUBEGEOMETRY]: getLineTubeGeometryConfig,
   [CONFIGTYPE.TORUSGEOMETRY]: getTorusGeometryConfig,
   [CONFIGTYPE.RINGGEOMETRY]: getRingGeometryConfig,
+  [CONFIGTYPE.LINESHAPEGEOMETRY]: getLineShapeGeometryConfig,
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,
   [CONFIGTYPE.MESH]: getMeshConfig,
@@ -3914,6 +3927,7 @@ const CONFIGMODULE = {
   [CONFIGTYPE.SPLINETUBEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.TORUSGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.RINGGEOMETRY]: MODULETYPE.GEOMETRY,
+  [CONFIGTYPE.LINESHAPEGEOMETRY]: MODULETYPE.GEOMETRY,
   [CONFIGTYPE.SPRITE]: MODULETYPE.SPRITE,
   [CONFIGTYPE.LINE]: MODULETYPE.LINE,
   [CONFIGTYPE.MESH]: MODULETYPE.MESH,
@@ -4047,14 +4061,14 @@ class ResourceManager extends EventDispatcher {
     mappingHandler.set(Object3D, this.Object3DHandler);
     mappingHandler.set(HTMLDivElement, this.HTMLDivElementHandler);
     mappingHandler.set(HTMLSpanElement, this.HTMLSpanElementHandler);
-    const map = new Map();
+    const map2 = new Map();
     for (const key in resources) {
-      if (map.has(key)) {
+      if (map2.has(key)) {
         console.warn(`resourceManager construct params rescource already exist: ${key}, that will be cover.`);
       }
-      map.set(key, resources[key]);
+      map2.set(key, resources[key]);
     }
-    this.mappingResource(map);
+    this.mappingResource(map2);
   }
   Object3DHandler(url, object) {
     const structureMap = this.structureMap;
@@ -4325,11 +4339,11 @@ const ResourceManagerPlugin = function(params) {
     });
   }
   this.registerResources = (resourceMap) => {
-    const map = new Map();
+    const map2 = new Map();
     Object.keys(resourceMap).forEach((key) => {
-      map.set(key, resourceMap[key]);
+      map2.set(key, resourceMap[key]);
     });
-    this.resourceManager.mappingResource(map);
+    this.resourceManager.mappingResource(map2);
     return this;
   };
   this.addEventListener("dispose", () => {
@@ -5428,8 +5442,8 @@ class AnimationCompiler extends Compiler {
     __publicField(this, "objectMapSet", new Set());
     __publicField(this, "scriptAniSymbol", "vis.scriptAni");
   }
-  linkObjectMap(...map) {
-    for (const objectMap of map) {
+  linkObjectMap(...map2) {
+    for (const objectMap of map2) {
       if (!this.objectMapSet.has(objectMap)) {
         this.objectMapSet.add(objectMap);
       }
@@ -5445,9 +5459,9 @@ class AnimationCompiler extends Compiler {
     return this;
   }
   getObject(vid) {
-    for (const map of this.objectMapSet) {
-      if (map.has(vid)) {
-        return map.get(vid);
+    for (const map2 of this.objectMapSet) {
+      if (map2.has(vid)) {
+        return map2.get(vid);
       }
     }
     console.error(`animation compiler can not found object which vid: ${vid}`);
@@ -7152,9 +7166,9 @@ const _ObjectCompiler = class extends Compiler {
     this.objectCacheMap = new WeakMap();
   }
   getObject(vid) {
-    for (const map of this.objectMapSet) {
-      if (map.has(vid)) {
-        return map.get(vid);
+    for (const map2 of this.objectMapSet) {
+      if (map2.has(vid)) {
+        return map2.get(vid);
       }
     }
     return null;
@@ -7312,8 +7326,8 @@ const _ObjectCompiler = class extends Compiler {
     targetConfig.parent = "";
     return this;
   }
-  linkObjectMap(...map) {
-    for (const objectMap of map) {
+  linkObjectMap(...map2) {
+    for (const objectMap of map2) {
       if (!this.objectMapSet.has(objectMap)) {
         this.objectMapSet.add(objectMap);
       }
@@ -7905,8 +7919,8 @@ class CSS3DCompiler extends ObjectCompiler {
       return document.createElement("div");
     }
   }
-  linkRescourceMap(map) {
-    this.resourceMap = map;
+  linkRescourceMap(map2) {
+    this.resourceMap = map2;
     return this;
   }
   add(vid, config2) {
@@ -7934,13 +7948,6 @@ class CSS3DCompiler extends ObjectCompiler {
     }
     super.set(vid, path, key, value);
     return this;
-  }
-}
-class LoadGeometry extends BufferGeometry {
-  constructor(geometry) {
-    super();
-    __publicField(this, "type", "LoadBufferGeometry");
-    geometry && this.copy(geometry);
   }
 }
 class CurveGeometry extends BufferGeometry {
@@ -8069,72 +8076,94 @@ class SplineTubeGeometry extends TubeGeometry {
     this.type = "SplineTubeGeometry";
   }
 }
-const _GeometryCompiler = class extends Compiler {
+class LoadGeometry extends BufferGeometry {
+  constructor(geometry) {
+    super();
+    __publicField(this, "type", "LoadBufferGeometry");
+    geometry && this.copy(geometry);
+  }
+}
+class LineShapeGeometry extends ShapeBufferGeometry {
+  constructor(path = [new Vector2$1(0, 0)], curveSegments = 12) {
+    const lineShape = new Shape();
+    const move = path[0];
+    if (move) {
+      lineShape.moveTo(move.x, move.y);
+      for (let i = 1; i < path.length; i += 1) {
+        lineShape.lineTo(path[i].x, path[i].y);
+      }
+    }
+    super(lineShape, curveSegments);
+  }
+}
+const map = new Map();
+map.set(CONFIGTYPE.BOXGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new BoxBufferGeometry(config2.width, config2.height, config2.depth, config2.widthSegments, config2.heightSegments, config2.depthSegments), config2);
+});
+map.set(CONFIGTYPE.SPHEREGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new SphereBufferGeometry(config2.radius, config2.widthSegments, config2.heightSegments, config2.phiStart, config2.phiLength, config2.thetaStart, config2.thetaLength), config2);
+});
+map.set(CONFIGTYPE.PLANEGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new PlaneBufferGeometry(config2.width, config2.height, config2.widthSegments, config2.heightSegments), config2);
+});
+map.set(CONFIGTYPE.LOADGEOMETRY, (config2, compiler) => {
+  return GeometryCompiler.transfromAnchor(new LoadGeometry(compiler.getGeometry(config2.url)), config2);
+});
+map.set(CONFIGTYPE.CUSTOMGEOMETRY, (config2, compiler) => {
+  return GeometryCompiler.transfromAnchor(compiler.generateGeometry(config2.attribute), config2);
+});
+map.set(CONFIGTYPE.CIRCLEGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new CircleBufferGeometry(config2.radius, config2.segments, config2.thetaStart, config2.thetaLength), config2);
+});
+map.set(CONFIGTYPE.CONEGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new ConeBufferGeometry(config2.radius, config2.height, config2.radialSegments, config2.heightSegments, config2.openEnded, config2.thetaStart, config2.thetaLength), config2);
+});
+map.set(CONFIGTYPE.CYLINDERGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new CylinderBufferGeometry(config2.radiusTop, config2.radiusBottom, config2.height, config2.radialSegments, config2.heightSegments, config2.openEnded, config2.thetaStart, config2.thetaLength), config2);
+});
+map.set(CONFIGTYPE.EDGESGEOMETRY, (config2, compiler) => {
+  return GeometryCompiler.transfromAnchor(new EdgesGeometry(compiler.getGeometry(config2.url), config2.thresholdAngle), config2);
+});
+map.set(CONFIGTYPE.LINECURVEGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new LineCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
+});
+map.set(CONFIGTYPE.SPLINECURVEGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new SplineCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
+});
+map.set(CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new CubicBezierCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
+});
+map.set(CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new QuadraticBezierCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
+});
+map.set(CONFIGTYPE.LINETUBEGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new LineTubeGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.tubularSegments, config2.radius, config2.radialSegments, config2.closed), config2);
+});
+map.set(CONFIGTYPE.SPLINETUBEGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new SplineTubeGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.tubularSegments, config2.radius, config2.radialSegments, config2.closed), config2);
+});
+map.set(CONFIGTYPE.TORUSGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new TorusGeometry(config2.radius, config2.tube, config2.radialSegments, config2.tubularSegments, config2.arc), config2);
+});
+map.set(CONFIGTYPE.RINGGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new RingBufferGeometry(config2.innerRadius, config2.outerRadius, config2.thetaSegments, config2.phiSegments, config2.thetaStart, config2.thetaLength), config2);
+});
+map.set(CONFIGTYPE.LINESHAPEGEOMETRY, (config2) => {
+  return GeometryCompiler.transfromAnchor(new LineShapeGeometry(config2.path.map((vector2) => new Vector2$1(vector2.x, vector2.y)), config2.curveSegments), config2);
+});
+class GeometryCompiler extends Compiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.GEOMETRY);
     __publicField(this, "target", {});
     __publicField(this, "map", new Map());
     __publicField(this, "weakMap", new WeakMap());
-    __publicField(this, "constructMap");
+    __publicField(this, "constructMap", map);
     __publicField(this, "resourceMap", new Map());
     __publicField(this, "replaceGeometry", new BoxBufferGeometry(5, 5, 5));
-    const constructMap = new Map();
-    constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new BoxBufferGeometry(config2.width, config2.height, config2.depth, config2.widthSegments, config2.heightSegments, config2.depthSegments), config2);
-    });
-    constructMap.set(CONFIGTYPE.SPHEREGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new SphereBufferGeometry(config2.radius, config2.widthSegments, config2.heightSegments, config2.phiStart, config2.phiLength, config2.thetaStart, config2.thetaLength), config2);
-    });
-    constructMap.set(CONFIGTYPE.PLANEGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new PlaneBufferGeometry(config2.width, config2.height, config2.widthSegments, config2.heightSegments), config2);
-    });
-    constructMap.set(CONFIGTYPE.LOADGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new LoadGeometry(this.getGeometry(config2.url)), config2);
-    });
-    constructMap.set(CONFIGTYPE.CUSTOMGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(this.generateGeometry(config2.attribute), config2);
-    });
-    constructMap.set(CONFIGTYPE.CIRCLEGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new CircleBufferGeometry(config2.radius, config2.segments, config2.thetaStart, config2.thetaLength), config2);
-    });
-    constructMap.set(CONFIGTYPE.CONEGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new ConeBufferGeometry(config2.radius, config2.height, config2.radialSegments, config2.heightSegments, config2.openEnded, config2.thetaStart, config2.thetaLength), config2);
-    });
-    constructMap.set(CONFIGTYPE.CYLINDERGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new CylinderBufferGeometry(config2.radiusTop, config2.radiusBottom, config2.height, config2.radialSegments, config2.heightSegments, config2.openEnded, config2.thetaStart, config2.thetaLength), config2);
-    });
-    constructMap.set(CONFIGTYPE.EDGESGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new EdgesGeometry(this.map.get(config2.url), config2.thresholdAngle), config2);
-    });
-    constructMap.set(CONFIGTYPE.LINECURVEGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new LineCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
-    });
-    constructMap.set(CONFIGTYPE.SPLINECURVEGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new SplineCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
-    });
-    constructMap.set(CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new CubicBezierCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
-    });
-    constructMap.set(CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new QuadraticBezierCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
-    });
-    constructMap.set(CONFIGTYPE.LINETUBEGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new LineTubeGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.tubularSegments, config2.radius, config2.radialSegments, config2.closed), config2);
-    });
-    constructMap.set(CONFIGTYPE.SPLINETUBEGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new SplineTubeGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.tubularSegments, config2.radius, config2.radialSegments, config2.closed), config2);
-    });
-    constructMap.set(CONFIGTYPE.TORUSGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new TorusGeometry(config2.radius, config2.tube, config2.radialSegments, config2.tubularSegments, config2.arc), config2);
-    });
-    constructMap.set(CONFIGTYPE.RINGGEOMETRY, (config2) => {
-      return _GeometryCompiler.transfromAnchor(new RingBufferGeometry(config2.innerRadius, config2.outerRadius, config2.thetaSegments, config2.phiSegments, config2.thetaStart, config2.thetaLength), config2);
-    });
-    this.constructMap = constructMap;
   }
-  linkRescourceMap(map) {
-    this.resourceMap = map;
+  linkRescourceMap(map2) {
+    this.resourceMap = map2;
     return this;
   }
   getRescource(url) {
@@ -8178,7 +8207,7 @@ const _GeometryCompiler = class extends Compiler {
   }
   add(vid, config2) {
     if (config2.type && this.constructMap.has(config2.type)) {
-      const geometry = this.constructMap.get(config2.type)(config2);
+      const geometry = this.constructMap.get(config2.type)(config2, this);
       geometry.clearGroups();
       for (const group of config2.groups) {
         geometry.addGroup(group.start, group.count, group.materialIndex);
@@ -8220,7 +8249,7 @@ const _GeometryCompiler = class extends Compiler {
     }
     const currentGeometry = this.map.get(vid);
     const config2 = this.target[vid];
-    const newGeometry = this.constructMap.get(config2.type)(config2);
+    const newGeometry = this.constructMap.get(config2.type)(config2, this);
     currentGeometry.copy(newGeometry);
     currentGeometry.dispatchEvent({
       type: "update"
@@ -8259,10 +8288,9 @@ const _GeometryCompiler = class extends Compiler {
   getObjectBySymbol(vid) {
     return this.map.get(vid) || null;
   }
-};
-let GeometryCompiler = _GeometryCompiler;
+}
 __publicField(GeometryCompiler, "transfromAnchor", function(geometry, config2) {
-  if (!(geometry instanceof CurveGeometry) && !(geometry instanceof TubeGeometry)) {
+  if (!(geometry instanceof CurveGeometry) && !(geometry instanceof TubeGeometry) && !(geometry instanceof ShapeGeometry)) {
     geometry.center();
   }
   geometry.computeBoundingBox();
@@ -8273,7 +8301,7 @@ __publicField(GeometryCompiler, "transfromAnchor", function(geometry, config2) {
   const quaternion = new Quaternion$1().setFromEuler(new Euler(rotation.x, rotation.y, rotation.z, "XYZ"));
   geometry.applyQuaternion(quaternion);
   geometry.scale(scale.x, scale.y, scale.z);
-  if (!(geometry instanceof CurveGeometry) && !(geometry instanceof TubeGeometry)) {
+  if (!(geometry instanceof CurveGeometry) && !(geometry instanceof TubeGeometry) && !(geometry instanceof ShapeGeometry)) {
     geometry.center();
   }
   geometry.computeBoundingBox();
@@ -8394,8 +8422,8 @@ class SolidObjectCompiler extends ObjectCompiler {
       return this.getReplaceGeometry();
     }
   }
-  linkGeometryMap(map) {
-    this.geometryMap = map;
+  linkGeometryMap(map2) {
+    this.geometryMap = map2;
     return this;
   }
   linkMaterialMap(materialMap) {
@@ -8564,8 +8592,8 @@ class MaterialCompiler extends Compiler {
       return null;
     }
   }
-  linkRescourceMap(map) {
-    this.resourceMap = map;
+  linkRescourceMap(map2) {
+    this.resourceMap = map2;
     return this;
   }
   linkTextureMap(textureMap) {
@@ -9123,8 +9151,8 @@ class SceneCompiler extends ObjectCompiler {
     }
     console.warn(`scene compiler can not support this type fog:'${config2.type}'`);
   }
-  linkTextureMap(map) {
-    this.textureMap = map;
+  linkTextureMap(map2) {
+    this.textureMap = map2;
     return this;
   }
   add(vid, config2) {
@@ -9333,8 +9361,8 @@ const _TextureCompiler = class extends Compiler {
       return _TextureCompiler.replaceImage;
     }
   }
-  linkRescourceMap(map) {
-    this.resourceMap = map;
+  linkRescourceMap(map2) {
+    this.resourceMap = map2;
     return this;
   }
   add(vid, config2) {
@@ -13417,7 +13445,7 @@ class CSG {
 class Modifier {
   constructor(parameters) {
     __publicField(this, "visible", true);
-    this.visible = parameters.visible !== void 0 ? parameters.visible : true;
+    parameters.visible && (this.visible = parameters.visible);
   }
 }
 class BooleanModifier extends Modifier {
@@ -13482,7 +13510,7 @@ class BooleanModifier extends Modifier {
       this.modifiedGeometry.copy(this.originalGeometry);
     }
   }
-  use() {
+  apply() {
     this.originalGeometry.copy(this.modifiedGeometry);
     this.originalGeometry.uuid = this.modifiedGeometry.uuid;
     this.source.geometry = this.originalGeometry;

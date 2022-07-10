@@ -1,6 +1,5 @@
 import { v4 as getUuid } from "uuid";
 import { EngineSupport } from "../engine/EngineSupport";
-import { Shader } from "../library/shader/shader";
 import { ShaderLibrary } from "../library/shader/ShaderLibrary";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";

@@ -9,9 +9,9 @@ export interface BooleanModifierParameters extends ModifierParameters {
 }
 
 export class BooleanModifier extends Modifier {
-  private source: Mesh;
-  private target: Mesh;
-  private mode: "subtract" | "union" | "intersect";
+  source: Mesh;
+  target: Mesh;
+  mode: "subtract" | "union" | "intersect";
 
   private cacheSourceMatrix: Matrix4;
   private cacheTargetMatrix: Matrix4;
@@ -26,6 +26,7 @@ export class BooleanModifier extends Modifier {
     super(parameters);
     this.source = parameters.source;
     this.target = parameters.target;
+
     this.mode = parameters.mode || "subtract";
 
     this.cacheSourceMatrix = this.source.matrix.clone();
@@ -89,7 +90,7 @@ export class BooleanModifier extends Modifier {
     }
   }
 
-  use() {
+  apply() {
     this.originalGeometry.copy(this.modifiedGeometry);
     this.originalGeometry.uuid = this.modifiedGeometry.uuid;
     this.source.geometry = this.originalGeometry;

@@ -20,6 +20,7 @@ export enum CONFIGTYPE {
   CUSTOMGEOMETRY = "CustomGeometry",
   LINETUBEGEOMETRY = "LineTubeGeometry",
   SPLINETUBEGEOMETRY = "SplineTubeGeometry",
+  LINESHAPEGEOMETRY = "LineShapeGeometry",
 
   MESH = "Mesh",
   LINE = "Line",

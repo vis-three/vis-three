@@ -2,56 +2,25 @@ import {
   Box3,
   BoxBufferGeometry,
   BufferGeometry,
-  CircleBufferGeometry,
-  ConeBufferGeometry,
-  CylinderBufferGeometry,
-  EdgesGeometry,
   Euler,
   Float32BufferAttribute,
-  Matrix4,
-  PlaneBufferGeometry,
   Quaternion,
-  RingBufferGeometry,
-  SphereBufferGeometry,
-  TorusGeometry,
+  ShapeGeometry,
   TubeGeometry,
-  Vector3,
 } from "three";
 import { validate } from "uuid";
-import { LoadGeometry } from "../../extends/geometry/LoadGeometry";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
 import {
-  BoxGeometryConfig,
-  CircleGeometryConfig,
-  ConeGeometryConfig,
-  CubicBezierCurveGeometryConfig,
   CustomGeometryConfig,
-  CylinderGeometryConfig,
-  EdgesGeometryConfig,
   GeometryAllType,
   GeometryGroup,
-  LineCurveGeometryConfig,
-  LineTubeGeometryConfig,
-  LoadGeometryConfig,
-  PlaneGeometryConfig,
-  QuadraticBezierCurveGeometryConfig,
-  RingGeometryConfig,
-  SphereGeometryConfig,
-  SplineCurveGeometryConfig,
-  SplineTubeGeometryConfig,
-  TorusGeometryConfig,
-} from "./GeometryConfig";
+} from "./GeometryInterface";
 import { CONFIGTYPE } from "../constants/configType";
 import { EngineSupport } from "../../main";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { LineCurveGeometry } from "../../extends/geometry/LineCurveGeometry";
-import { SplineCurveGeometry } from "../../extends/geometry/SplineCurveGeometry";
-import { CubicBezierCurveGeometry } from "../../extends/geometry/CubicBezierCurveGeometry";
-import { QuadraticBezierCurveGeometry } from "../../extends/geometry/QuadraticBezierCurveGeometry";
-import { CurveGeometry } from "../../extends/geometry/CurveGeometry";
-import { LineTubeGeometry } from "../../extends/geometry/LineTubeGeometry";
-import { SplineTubeGeometry } from "../../extends/geometry/SplineTubeGeometry";
+import { CurveGeometry } from "../../extends/geometry/CurveGeometry/CurveGeometry";
+import constructMap from "./constructMap";
 
 export interface GeometryCompilerTarget extends CompilerTarget {
   [key: string]: GeometryAllType;
@@ -64,9 +33,11 @@ export class GeometryCompiler extends Compiler {
     config: GeometryAllType
   ): BufferGeometry {
     // 曲线几何和形状几何不期望先center
+    // TODO:不再自动居中几何
     if (
       !(geometry instanceof CurveGeometry) &&
-      !(geometry instanceof TubeGeometry)
+      !(geometry instanceof TubeGeometry) &&
+      !(geometry instanceof ShapeGeometry)
     ) {
       geometry.center();
     }
@@ -90,7 +61,8 @@ export class GeometryCompiler extends Compiler {
     // 计算位置
     if (
       !(geometry instanceof CurveGeometry) &&
-      !(geometry instanceof TubeGeometry)
+      !(geometry instanceof TubeGeometry) &&
+      !(geometry instanceof ShapeGeometry)
     ) {
       geometry.center();
     }
@@ -111,269 +83,15 @@ export class GeometryCompiler extends Compiler {
   private target: GeometryCompilerTarget = {};
   private map = new Map<SymbolConfig["vid"], BufferGeometry>();
   private weakMap = new WeakMap<BufferGeometry, SymbolConfig["vid"]>();
-  private constructMap: Map<string, (config: unknown) => BufferGeometry>;
+  private constructMap: Map<
+    CONFIGTYPE,
+    (config: any, compiler: GeometryCompiler) => BufferGeometry
+  > = constructMap;
   private resourceMap = new Map<string, unknown>();
   private replaceGeometry: BufferGeometry = new BoxBufferGeometry(5, 5, 5);
 
   constructor() {
     super();
-
-    const constructMap = new Map();
-
-    constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config: BoxGeometryConfig) => {
-      return GeometryCompiler.transfromAnchor(
-        new BoxBufferGeometry(
-          config.width,
-          config.height,
-          config.depth,
-          config.widthSegments,
-          config.heightSegments,
-          config.depthSegments
-        ),
-        config
-      );
-    });
-
-    constructMap.set(
-      CONFIGTYPE.SPHEREGEOMETRY,
-      (config: SphereGeometryConfig) => {
-        return GeometryCompiler.transfromAnchor(
-          new SphereBufferGeometry(
-            config.radius,
-            config.widthSegments,
-            config.heightSegments,
-            config.phiStart,
-            config.phiLength,
-            config.thetaStart,
-            config.thetaLength
-          ),
-          config
-        );
-      }
-    );
-
-    constructMap.set(
-      CONFIGTYPE.PLANEGEOMETRY,
-      (config: PlaneGeometryConfig) => {
-        return GeometryCompiler.transfromAnchor(
-          new PlaneBufferGeometry(
-            config.width,
-            config.height,
-            config.widthSegments,
-            config.heightSegments
-          ),
-          config
-        );
-      }
-    );
-
-    constructMap.set(CONFIGTYPE.LOADGEOMETRY, (config: LoadGeometryConfig) => {
-      return GeometryCompiler.transfromAnchor(
-        new LoadGeometry(this.getGeometry(config.url)),
-        config
-      );
-    });
-
-    constructMap.set(
-      CONFIGTYPE.CUSTOMGEOMETRY,
-      (config: CustomGeometryConfig) => {
-        return GeometryCompiler.transfromAnchor(
-          this.generateGeometry(config.attribute),
-          config
-        );
-      }
-    );
-
-    constructMap.set(
-      CONFIGTYPE.CIRCLEGEOMETRY,
-      (config: CircleGeometryConfig) => {
-        return GeometryCompiler.transfromAnchor(
-          new CircleBufferGeometry(
-            config.radius,
-            config.segments,
-            config.thetaStart,
-            config.thetaLength
-          ),
-          config
-        );
-      }
-    );
-
-    constructMap.set(CONFIGTYPE.CONEGEOMETRY, (config: ConeGeometryConfig) => {
-      return GeometryCompiler.transfromAnchor(
-        new ConeBufferGeometry(
-          config.radius,
-          config.height,
-          config.radialSegments,
-          config.heightSegments,
-          config.openEnded,
-          config.thetaStart,
-          config.thetaLength
-        ),
-        config
-      );
-    });
-
-    constructMap.set(
-      CONFIGTYPE.CYLINDERGEOMETRY,
-      (config: CylinderGeometryConfig) => {
-        return GeometryCompiler.transfromAnchor(
-          new CylinderBufferGeometry(
-            config.radiusTop,
-            config.radiusBottom,
-            config.height,
-            config.radialSegments,
-            config.heightSegments,
-            config.openEnded,
-            config.thetaStart,
-            config.thetaLength
-          ),
-          config
-        );
-      }
-    );
-
-    constructMap.set(
-      CONFIGTYPE.EDGESGEOMETRY,
-      (config: EdgesGeometryConfig) => {
-        return GeometryCompiler.transfromAnchor(
-          new EdgesGeometry(this.map.get(config.url), config.thresholdAngle),
-          config
-        );
-      }
-    );
-
-    constructMap.set(
-      CONFIGTYPE.LINECURVEGEOMETRY,
-      (config: LineCurveGeometryConfig) => {
-        return GeometryCompiler.transfromAnchor(
-          new LineCurveGeometry(
-            config.path.map(
-              (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
-            ),
-            config.divisions,
-            config.space
-          ),
-          config
-        );
-      }
-    );
-
-    constructMap.set(
-      CONFIGTYPE.SPLINECURVEGEOMETRY,
-      (config: SplineCurveGeometryConfig) => {
-        return GeometryCompiler.transfromAnchor(
-          new SplineCurveGeometry(
-            config.path.map(
-              (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
-            ),
-            config.divisions,
-            config.space
-          ),
-          config
-        );
-      }
-    );
-
-    constructMap.set(
-      CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY,
-      (config: CubicBezierCurveGeometryConfig) => {
-        return GeometryCompiler.transfromAnchor(
-          new CubicBezierCurveGeometry(
-            config.path.map(
-              (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
-            ),
-            config.divisions,
-            config.space
-          ),
-          config
-        );
-      }
-    );
-
-    constructMap.set(
-      CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY,
-      (config: QuadraticBezierCurveGeometryConfig) => {
-        return GeometryCompiler.transfromAnchor(
-          new QuadraticBezierCurveGeometry(
-            config.path.map(
-              (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
-            ),
-            config.divisions,
-            config.space
-          ),
-          config
-        );
-      }
-    );
-
-    constructMap.set(
-      CONFIGTYPE.LINETUBEGEOMETRY,
-      (config: LineTubeGeometryConfig) => {
-        return GeometryCompiler.transfromAnchor(
-          new LineTubeGeometry(
-            config.path.map(
-              (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
-            ),
-            config.tubularSegments,
-            config.radius,
-            config.radialSegments,
-            config.closed
-          ),
-          config
-        );
-      }
-    );
-
-    constructMap.set(
-      CONFIGTYPE.SPLINETUBEGEOMETRY,
-      (config: SplineTubeGeometryConfig) => {
-        return GeometryCompiler.transfromAnchor(
-          new SplineTubeGeometry(
-            config.path.map(
-              (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
-            ),
-            config.tubularSegments,
-            config.radius,
-            config.radialSegments,
-            config.closed
-          ),
-          config
-        );
-      }
-    );
-
-    constructMap.set(
-      CONFIGTYPE.TORUSGEOMETRY,
-      (config: TorusGeometryConfig) => {
-        return GeometryCompiler.transfromAnchor(
-          new TorusGeometry(
-            config.radius,
-            config.tube,
-            config.radialSegments,
-            config.tubularSegments,
-            config.arc
-          ),
-          config
-        );
-      }
-    );
-
-    constructMap.set(CONFIGTYPE.RINGGEOMETRY, (config: RingGeometryConfig) => {
-      return GeometryCompiler.transfromAnchor(
-        new RingBufferGeometry(
-          config.innerRadius,
-          config.outerRadius,
-          config.thetaSegments,
-          config.phiSegments,
-          config.thetaStart,
-          config.thetaLength
-        ),
-        config
-      );
-    });
-
-    this.constructMap = constructMap;
   }
 
   linkRescourceMap(map: Map<string, unknown>): this {
@@ -401,7 +119,7 @@ export class GeometryCompiler extends Compiler {
     }
   }
 
-  private getGeometry(url: string): BufferGeometry {
+  getGeometry(url: string): BufferGeometry {
     if (this.map.has(url)) {
       return this.map.get(url)!;
     }
@@ -409,7 +127,7 @@ export class GeometryCompiler extends Compiler {
     return this.getRescource(url);
   }
 
-  private generateGeometry(
+  generateGeometry(
     attribute: CustomGeometryConfig["attribute"]
   ): BufferGeometry {
     const geometry = new BufferGeometry();
@@ -456,8 +174,11 @@ export class GeometryCompiler extends Compiler {
   }
 
   add(vid: string, config: GeometryAllType): this {
-    if (config.type && this.constructMap.has(config.type)) {
-      const geometry = this.constructMap.get(config.type)!(config);
+    if (config.type && this.constructMap.has(config.type as CONFIGTYPE)) {
+      const geometry = this.constructMap.get(config.type as CONFIGTYPE)!(
+        config,
+        this
+      );
 
       geometry.clearGroups();
 
@@ -518,7 +239,10 @@ export class GeometryCompiler extends Compiler {
 
     const currentGeometry = this.map.get(vid)!;
     const config = this.target[vid];
-    const newGeometry = this.constructMap.get(config.type)!(config);
+    const newGeometry = this.constructMap.get(config.type as CONFIGTYPE)!(
+      config,
+      this
+    );
     currentGeometry.copy(newGeometry);
     // 辅助的更新根据uuid的更新而更新，直接copy无法判断是否更新
     // TODO: 使用dispatch通知更新
