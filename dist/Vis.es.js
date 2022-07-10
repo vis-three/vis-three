@@ -8094,6 +8094,7 @@ class LineShapeGeometry extends ShapeBufferGeometry {
       }
     }
     super(lineShape, curveSegments);
+    this.type = "LineShapeGeometry";
   }
 }
 const map = new Map();

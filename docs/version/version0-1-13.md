@@ -18,6 +18,7 @@
 - SplineTubeGeometry
 - TorusGeometry
 - RingGeometry
+- LineShapeGeometry
 
 #### fix
 
