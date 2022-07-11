@@ -1,7 +1,7 @@
 export class Modifier {
     visible = true;
     constructor(parameters) {
-        this.visible = parameters.visible !== undefined ? parameters.visible : true;
+        parameters.visible && (this.visible = parameters.visible);
     }
 }
 //# sourceMappingURL=Modifier.js.map

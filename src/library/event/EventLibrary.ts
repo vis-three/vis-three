@@ -8,6 +8,7 @@ import * as ChangeScene from "./BasicEventLibrary/changeScene";
 import * as SwitchAnimate from "./BasicEventLibrary/switchAnimate";
 
 import * as MoveTo from "./RealTimeAnimateLibrary/moveTo";
+import * as RotationTo from "./RealTimeAnimateLibrary/rotationTo";
 import * as MoveFromTo from "./RealTimeAnimateLibrary/moveFromTo";
 import * as MoveSpacing from "./RealTimeAnimateLibrary/moveSpacing";
 import * as MoveToObject from "./RealTimeAnimateLibrary/moveToObject";
@@ -105,6 +106,7 @@ EventLibrary.register(ChangeScene.config, ChangeScene.generator);
 EventLibrary.register(SwitchAnimate.config, SwitchAnimate.generator);
 
 EventLibrary.register(MoveTo.config, MoveTo.generator);
+EventLibrary.register(RotationTo.config, RotationTo.generator);
 EventLibrary.register(MoveFromTo.config, MoveFromTo.generator);
 EventLibrary.register(MoveSpacing.config, MoveSpacing.generator);
 EventLibrary.register(MoveToObject.config, MoveToObject.generator);

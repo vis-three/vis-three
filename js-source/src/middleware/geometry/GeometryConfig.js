@@ -1,5 +1,4 @@
 import { CONFIGTYPE } from "../constants/configType";
-// config function
 export const getGeometryConfig = function () {
     return {
         vid: "",
@@ -187,6 +186,17 @@ export const getLineTubeGeometryConfig = function () {
 export const getSplineTubeGeometryConfig = function () {
     return Object.assign(getTubeGeometryConfig(), {
         type: CONFIGTYPE.SPLINETUBEGEOMETRY,
+    });
+};
+export const getShapeGeometryConfig = function () {
+    return Object.assign(getGeometryConfig(), {
+        path: [],
+        curveSegments: 12,
+    });
+};
+export const getLineShapeGeometryConfig = function () {
+    return Object.assign(getShapeGeometryConfig(), {
+        type: CONFIGTYPE.LINESHAPEGEOMETRY,
     });
 };
 //# sourceMappingURL=GeometryConfig.js.map

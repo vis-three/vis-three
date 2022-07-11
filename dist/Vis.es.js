@@ -18,7 +18,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Matrix4 as Matrix4$1, Euler, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, TubeGeometry, ShapeBufferGeometry, Shape, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, TorusGeometry, RingBufferGeometry, ShapeGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
+import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Euler, Matrix4 as Matrix4$1, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, TubeGeometry, ShapeBufferGeometry, Shape, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, TorusGeometry, RingBufferGeometry, ShapeGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -5078,6 +5078,9 @@ class PassDataSupport extends DataSupport {
 }
 const AnimationRule = function(notice, compiler) {
   const { operate, key, path, value } = notice;
+  if (key === "name" && !path.length) {
+    return;
+  }
   if (operate === "add") {
     if (validate(key)) {
       compiler.add(key, value);
@@ -5343,11 +5346,11 @@ class Compiler {
   constructor() {
   }
 }
-const config$f = {
+const config$g = {
   name: "linearTime",
   multiply: 1
 };
-const generator$f = function(engine, target, attribute, config2) {
+const generator$g = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
     console.warn(`object not exist attribute: ${attribute}`, target);
     return (event) => {
@@ -5362,14 +5365,14 @@ const generator$f = function(engine, target, attribute, config2) {
     target[attribute] += event.delta * config2.multiply;
   };
 };
-const config$e = {
+const config$f = {
   name: "sinWave",
   wavelength: 1,
   offset: 0,
   amplitude: 1,
   speed: 1
 };
-const generator$e = function(engine, target, attribute, config2) {
+const generator$f = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
     console.warn(`object not exist attribute: ${attribute}`, target);
     return (event) => {
@@ -5431,8 +5434,8 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
   _AniScriptLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
 });
+AniScriptLibrary.register(config$g, generator$g);
 AniScriptLibrary.register(config$f, generator$f);
-AniScriptLibrary.register(config$e, generator$e);
 class AnimationCompiler extends Compiler {
   constructor() {
     super();
@@ -5564,18 +5567,18 @@ class AnimationCompiler extends Compiler {
     return null;
   }
 }
-const config$d = {
+const config$e = {
   name: "openWindow",
   params: {
     url: ""
   }
 };
-const generator$d = function(engine, config2) {
+const generator$e = function(engine, config2) {
   return () => {
     window.open(config2.params.url);
   };
 };
-const config$c = {
+const config$d = {
   name: "visibleObject",
   params: {
     target: "",
@@ -5583,7 +5586,7 @@ const config$c = {
     delay: 0
   }
 };
-const generator$c = function(engine, config2) {
+const generator$d = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   if (!target) {
@@ -5597,7 +5600,7 @@ const generator$c = function(engine, config2) {
     }, params.delay);
   };
 };
-const config$b = {
+const config$c = {
   name: "addClass",
   params: {
     target: "",
@@ -5605,7 +5608,7 @@ const config$b = {
     delay: 0
   }
 };
-const generator$b = function(engine, config2) {
+const generator$c = function(engine, config2) {
   const params = config2.params;
   const targets = [];
   if (params.target === "all") {
@@ -5650,14 +5653,14 @@ const generator$b = function(engine, config2) {
     }, params.delay);
   };
 };
-const config$a = {
+const config$b = {
   name: "changeScene",
   params: {
     scene: "Scene",
     delay: 0
   }
 };
-const generator$a = function(engine, config2) {
+const generator$b = function(engine, config2) {
   const params = config2.params;
   return () => {
     setTimeout(() => {
@@ -5665,7 +5668,7 @@ const generator$a = function(engine, config2) {
     }, params.delay);
   };
 };
-const config$9 = {
+const config$a = {
   name: "switchAnimate",
   params: {
     target: "",
@@ -5673,7 +5676,7 @@ const config$9 = {
     delay: 0
   }
 };
-const generator$9 = function(engine, config2) {
+const generator$a = function(engine, config2) {
   const params = config2.params;
   const target = engine.getConfigBySymbol(params.target);
   if (!target) {
@@ -6394,7 +6397,7 @@ const timingFunction = {
   EASING_QUADRATIC_OUT: Easing.Quadratic.Out,
   EASING_QUADRATIC_INOUT: Easing.Quadratic.InOut
 };
-const config$8 = {
+const config$9 = {
   name: "moveTo",
   params: {
     target: "",
@@ -6408,7 +6411,7 @@ const config$8 = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$8 = function(engine, config2) {
+const generator$9 = function(engine, config2) {
   const params = config2.params;
   const compiler = engine.compilerManager;
   const object = compiler.getObjectBySymbol(params.target);
@@ -6440,6 +6443,56 @@ const generator$8 = function(engine, config2) {
       supportData.position.x = params.position.x;
       supportData.position.y = params.position.y;
       supportData.position.z = params.position.z;
+      animating = false;
+    });
+  };
+};
+const config$8 = {
+  name: "rotationTo",
+  params: {
+    target: "",
+    rotation: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator$8 = function(engine, config2) {
+  const params = config2.params;
+  const compiler = engine.compilerManager;
+  const object = compiler.getObjectBySymbol(params.target);
+  if (!object) {
+    console.warn(`real time animation moveTO: can not found vid object: ${params.target}`);
+    return () => {
+    };
+  }
+  const renderManager = engine.renderManager;
+  const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
+  if (!supportData) {
+    console.warn(`can not found object config: ${params.target}`);
+    return () => {
+    };
+  }
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    const tween = new Tween(object.rotation).to(params.rotation).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      supportData.rotation.x = params.rotation.x;
+      supportData.rotation.y = params.rotation.y;
+      supportData.rotation.z = params.rotation.z;
       animating = false;
     });
   };
@@ -6717,9 +6770,6 @@ const config$3 = {
 const generator$3 = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
-  const camera = engine.camera;
-  const cameraConfig = engine.getObjectConfig(camera);
-  const orb = engine.orbitControls && engine.orbitControls.object === camera;
   const orbTarget = engine.orbitControls.target;
   if (!target) {
     console.warn(`real time animation focusObject: can not found vid object: ${params.target}`);
@@ -6731,20 +6781,24 @@ const generator$3 = function(engine, config2) {
     return () => {
     };
   }
-  if (!cameraConfig) {
-    console.warn(`engine current camera can not found config.`);
-  }
   let animating = false;
+  const cacheEuler = new Euler();
   return () => {
     if (animating) {
       return;
     }
     animating = true;
+    const camera = engine.camera;
+    const cameraConfig = engine.getObjectConfig(camera);
+    const orb = engine.orbitControls && engine.orbitControls.object === camera;
+    if (!cameraConfig) {
+      console.warn(`engine current camera can not found config.`);
+    }
     const renderManager = engine.renderManager;
     let position = {
-      x: target.matrixWorld[12] + params.offset.x,
-      y: target.matrixWorld[13] + params.offset.y,
-      z: target.matrixWorld[14] + params.offset.z
+      x: target.matrixWorld.elements[12] + params.offset.x,
+      y: target.matrixWorld.elements[13] + params.offset.y,
+      z: target.matrixWorld.elements[14] + params.offset.z
     };
     const backPosition = {
       x: camera.position.x,
@@ -6752,11 +6806,11 @@ const generator$3 = function(engine, config2) {
       z: camera.position.z
     };
     if (params.space === "local") {
-      const vector3 = new Vector3$1(params.offset.x, params.offset.y, params.offset.z).applyEuler(target.rotation);
+      const vector3 = new Vector3$1(params.offset.x, params.offset.y, params.offset.z).applyEuler(cacheEuler.setFromRotationMatrix(target.matrixWorld));
       position = {
-        x: target.position.x + vector3.x,
-        y: target.position.y + vector3.y,
-        z: target.position.z + vector3.z
+        x: target.matrixWorld.elements[12] + vector3.x,
+        y: target.matrixWorld.elements[13] + vector3.y,
+        z: target.matrixWorld.elements[14] + vector3.z
       };
     }
     const positionTween = new Tween(camera.position).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
@@ -6767,7 +6821,7 @@ const generator$3 = function(engine, config2) {
       z: camera.up.z
     };
     if (params.space === "local") {
-      const upVector3 = new Vector3$1(0, 1, 0).applyEuler(target.rotation);
+      const upVector3 = new Vector3$1(0, 1, 0).applyEuler(cacheEuler.setFromRotationMatrix(target.matrixWorld));
       upTween = new Tween(camera.up).to({
         x: upVector3.x,
         y: upVector3.y,
@@ -6781,7 +6835,11 @@ const generator$3 = function(engine, config2) {
       z: orbTarget.z
     };
     if (orb) {
-      orbTween = new Tween(orbTarget).to(target.position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+      orbTween = new Tween(orbTarget).to({
+        x: target.matrixWorld.elements[12],
+        y: target.matrixWorld.elements[13],
+        z: target.matrixWorld.elements[14]
+      }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
     }
     let renderFun;
     if (orb && params.space === "local") {
@@ -7123,6 +7181,7 @@ __publicField(EventLibrary, "register", function(config2, generator2) {
   _EventLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _EventLibrary.generatorLibrary.set(config2.name, generator2);
 });
+EventLibrary.register(config$e, generator$e);
 EventLibrary.register(config$d, generator$d);
 EventLibrary.register(config$c, generator$c);
 EventLibrary.register(config$b, generator$b);
@@ -12260,6 +12319,14 @@ const CSS3DRendererPlugin = function(params = {}) {
   this.addEventListener("setSize", (event) => {
     this.css3DRenderer.setSize(event.width, event.height);
   });
+  this.addEventListener("setScene", (event) => {
+    const oldScene = event.oldScene;
+    oldScene.traverse((object) => {
+      if (object instanceof CSS3DObject) {
+        object.element.style.display = "none";
+      }
+    });
+  });
   if (this.renderManager) {
     this.renderManager.removeEventListener("render", this.render);
     this.renderManager.addEventListener("render", (event) => {
@@ -12441,20 +12508,22 @@ const _Engine = class extends EventDispatcher {
   }
   setScene(scene) {
     if (typeof scene === "object" && scene instanceof Scene) {
-      this.scene = scene;
       this.dispatchEvent({
         type: "setScene",
-        scene
+        scene,
+        oldScene: this.scene
       });
+      this.scene = scene;
     } else {
       if (this.IS_ENGINESUPPORT) {
         const target = this.compilerManager.getObjectBySymbol(scene);
         if (target) {
-          this.scene = target;
           this.dispatchEvent({
             type: "setScene",
-            scene: target
+            scene: target,
+            oldScene: this.scene
           });
+          this.scene = target;
         } else {
           console.warn(`can not found camera in compilerManager: ${scene}`);
         }

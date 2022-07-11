@@ -6,9 +6,9 @@ export interface BooleanModifierParameters extends ModifierParameters {
     mode?: "subtract" | "union" | "intersect";
 }
 export declare class BooleanModifier extends Modifier {
-    private source;
-    private target;
-    private mode;
+    source: Mesh;
+    target: Mesh;
+    mode: "subtract" | "union" | "intersect";
     private cacheSourceMatrix;
     private cacheTargetMatrix;
     private cacheSoruceGeometryUuid;
@@ -18,6 +18,6 @@ export declare class BooleanModifier extends Modifier {
     constructor(parameters: BooleanModifierParameters);
     private modify;
     render(): void;
-    use(): void;
+    apply(): void;
     dispose(): void;
 }

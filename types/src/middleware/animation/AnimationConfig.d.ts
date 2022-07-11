@@ -1,6 +1,7 @@
 import { BasicAniScriptConfig } from "../../library/aniScript/AniScriptLibrary";
 import { SymbolConfig } from "../common/CommonConfig";
 export interface AnimationConfig extends SymbolConfig {
+    name: string;
     target: string;
     attribute: string;
     play: boolean;

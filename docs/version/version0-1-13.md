@@ -37,6 +37,7 @@
 - viewpointPlugin-orthograpbicCamera
 - realTime animation event repeat event
 - displayer- toDataURL
+- change scene can change css3D object
 
 #### deprecated
 

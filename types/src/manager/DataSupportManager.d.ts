@@ -103,6 +103,7 @@ export declare class DataSupportManager {
         SplineTubeGeometry: MODULETYPE;
         TorusGeometry: MODULETYPE;
         RingGeometry: MODULETYPE;
+        LineShapeGeometry: MODULETYPE;
         Sprite: MODULETYPE;
         Line: MODULETYPE;
         Mesh: MODULETYPE;

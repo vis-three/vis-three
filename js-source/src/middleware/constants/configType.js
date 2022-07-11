@@ -21,6 +21,7 @@ export var CONFIGTYPE;
     CONFIGTYPE["CUSTOMGEOMETRY"] = "CustomGeometry";
     CONFIGTYPE["LINETUBEGEOMETRY"] = "LineTubeGeometry";
     CONFIGTYPE["SPLINETUBEGEOMETRY"] = "SplineTubeGeometry";
+    CONFIGTYPE["LINESHAPEGEOMETRY"] = "LineShapeGeometry";
     CONFIGTYPE["MESH"] = "Mesh";
     CONFIGTYPE["LINE"] = "Line";
     // LINESEGMENTS = "LineSegments",

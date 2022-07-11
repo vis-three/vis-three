@@ -9,10 +9,31 @@
     <link rel="stylesheet" href="../css/common.css" />
   </head>
 
-  <style></style>
+  <style>
+    #element1 {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 4px rgb(170, 150, 241);
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
 
   <body>
     <div id="app"></div>
+    <div id="element1">
+      <p>canvas P</p>
+      <img
+        src="/texture/Bricks_Color.jpg"
+        style="width: 50px; height: 50px"
+        alt=""
+      />
+
+      <div class="form">
+        <label for="element1-range">range</label>
+        <input id="element1-range" type="range" />
+      </div>
+    </div>
     <div id="button-position">
       <div id="button-group">
         <p>change scene:</p>
@@ -42,9 +63,14 @@
         .preview();
 
       const engine = new VIS.ModelingEngineSupport()
+        .install("CSS3DRenderer")
+        .complete()
         .setDom(document.getElementById("app"))
         .setSize()
-        .setStats(true);
+        .setStats(true)
+        .registerResources({
+          "examples.css3DObject": document.getElementById("element1"),
+        });
       const ambientLight1 = VIS.generateConfig("AmbientLight", {
         intensity: 0.5,
       });
@@ -75,8 +101,24 @@
         ],
       });
 
+      const css3DObject = VIS.generateConfig("CSS3DObject", {
+        element: "examples.css3DObject",
+        position: {
+          x: -50,
+          y: 10,
+        },
+        rotation: {
+          y: (Math.PI / 180) * 20,
+        },
+        scale: {
+          x: 0.1,
+          y: 0.1,
+          z: 0.1,
+        },
+      });
+
       const scene1 = VIS.generateConfig("Scene", {
-        children: [ambientLight1.vid, mesh1.vid],
+        children: [ambientLight1.vid, mesh1.vid, css3DObject.vid],
       });
 
       const mesh2 = VIS.generateConfig("Mesh", {
@@ -103,6 +145,7 @@
         material,
         geometry,
         mesh1,
+        css3DObject,
         scene1,
         mesh2,
         scene2

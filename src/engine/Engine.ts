@@ -135,6 +135,7 @@ export interface SetCameraEvent extends BaseEvent {
 export interface SetSceneEvent extends BaseEvent {
   type: "setScene";
   scene: Scene;
+  oldScene: Scene;
 }
 
 // 设置尺寸
@@ -378,11 +379,12 @@ export class Engine extends EventDispatcher {
   setScene(scene: Scene): this;
   setScene(scene: Scene | string): this {
     if (typeof scene === "object" && scene instanceof Scene) {
-      this.scene = scene;
       this.dispatchEvent({
         type: "setScene",
         scene,
+        oldScene: this.scene,
       });
+      this.scene = scene;
     } else {
       if (this.IS_ENGINESUPPORT) {
         const target = this.compilerManager!.getObjectBySymbol(
@@ -390,11 +392,12 @@ export class Engine extends EventDispatcher {
         ) as Scene;
 
         if (target) {
-          this.scene = target;
           this.dispatchEvent({
             type: "setScene",
             scene: target,
+            oldScene: this.scene,
           });
+          this.scene = target;
         } else {
           console.warn(`can not found camera in compilerManager: ${scene}`);
         }
