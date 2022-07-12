@@ -1,126 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RendererSupport</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RendererSupport</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="../css/common.css" />
+</head>
 
-  <style>
+<style>
     #app {
-      width: 100%;
-      height: 100%;
+        width: 100%;
+        height: 100%;
     }
-  </style>
+</style>
 
-  <body>
-    <div id="app"></div>
+<body>
+<div id="app"></div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as VIS from "vis-three";
-      import { v4 as getUUid } from "uuid";
-      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+<script type="module">
+  import * as THREE from "three";
+  import * as VIS from "vis-three";
+  import { v4 as getUUid } from "uuid";
+  import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-      const engine = new VIS.ModelingEngineSupport()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true);
+  const engine = new VIS.ModelingEngineSupport()
+    .setDom(document.getElementById("app"))
+    .setSize()
+    .setStats(true);
 
-      VIS.generateConfig.injectEngine = engine;
+  VIS.generateConfig.injectEngine = engine;
 
-      const renderer = VIS.generateConfig("WebGLRenderer", {
-        physicallyCorrectLights: true,
-        shadowMap: {
-          enabled: true,
-        },
-      });
+  const renderer = VIS.generateConfig("WebGLRenderer", {
+    physicallyCorrectLights: true,
+    shadowMap: {
+      enabled: true,
+    },
+  });
 
-      const scene = VIS.generateConfig("Scene");
+  const scene = VIS.generateConfig("Scene");
 
-      engine.setScene(scene.vid);
+  engine.setScene(scene.vid);
 
-      VIS.generateConfig.injectScene = true;
+  VIS.generateConfig.injectScene = true;
 
-      const ambientLight = VIS.generateConfig("AmbientLight");
+  const ambientLight = VIS.generateConfig("AmbientLight");
 
-      const pointLight = VIS.generateConfig("PointLight", {
-        position: {
-          x: 30,
-          y: 50,
-        },
-        distance: 200,
-        intensity: 5,
-      });
+  const pointLight = VIS.generateConfig("PointLight", {
+    position: {
+      x: 30,
+      y: 50,
+    },
+    distance: 200,
+    intensity: 5,
+  });
 
-      const material = VIS.generateConfig("MeshStandardMaterial");
+  const hemisphereLight = VIS.generateConfig("HemisphereLight");
 
-      const geometry = VIS.generateConfig("BoxGeometry", {
-        width: 20,
-        height: 60,
-        depth: 20,
-      });
+  const material = VIS.generateConfig("MeshStandardMaterial");
 
-      const mesh = VIS.generateConfig("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
-        position: {
-          y: 30,
-        },
-      });
+  const geometry = VIS.generateConfig("BoxGeometry", {
+    width: 20,
+    height: 60,
+    depth: 20,
+  });
 
-      const stageGeometry = VIS.generateConfig("BoxGeometry", {
-        width: 500,
-        height: 10,
-        depth: 500,
-      });
+  const mesh = VIS.generateConfig("Mesh", {
+    material: material.vid,
+    geometry: geometry.vid,
+    position: {
+      y: 30,
+    },
+  });
 
-      const stageMaterial = VIS.generateConfig("MeshStandardMaterial", {
-        color: "rgb(100, 100, 100)",
-      });
+  const stageGeometry = VIS.generateConfig("BoxGeometry", {
+    width: 500,
+    height: 10,
+    depth: 500,
+  });
 
-      const stage = VIS.generateConfig("Mesh", {
-        material: stageMaterial.vid,
-        geometry: stageGeometry.vid,
-        position: {
-          y: -5,
-        },
-      });
+  const stageMaterial = VIS.generateConfig("MeshStandardMaterial", {
+    color: "rgb(100, 100, 100)",
+  });
 
-      engine.play();
+  const stage = VIS.generateConfig("Mesh", {
+    material: stageMaterial.vid,
+    geometry: stageGeometry.vid,
+    position: {
+      y: -5,
+    },
+  });
 
-      const gui = new GUI();
+  engine.play();
 
-      gui.add(renderer, "physicallyCorrectLights");
+  const gui = new GUI();
 
-      gui.add(renderer, "outputEncoding", {
-        LinearEncoding: THREE.LinearEncoding,
-        sRGBEncoding: THREE.sRGBEncoding,
-      });
+  gui.add(renderer, "physicallyCorrectLights");
 
-      let shadowMap = gui.addFolder("shadowMap setting");
-      shadowMap.add(renderer.shadowMap, "enabled");
-      shadowMap.add(renderer.shadowMap, "type", {
-        "THREE.BasicShadowMap": THREE.BasicShadowMap,
-        "THREE.PCFShadowMap": THREE.PCFShadowMap,
-        "THREE.PCFSoftShadowMap": THREE.PCFSoftShadowMap,
-        "THREE.VSMShadowMap": THREE.VSMShadowMap,
-      });
+  gui.add(renderer, "outputEncoding", {
+    LinearEncoding: THREE.LinearEncoding,
+    sRGBEncoding: THREE.sRGBEncoding,
+  });
 
-      let toneMapping = gui.addFolder("toneMapping setting");
-      toneMapping.add(renderer, "toneMapping", {
-        "THREE.NoToneMapping": THREE.NoToneMapping,
-        "THREE.LinearToneMapping": THREE.LinearToneMapping,
-        "THREE.ReinhardToneMapping": THREE.ReinhardToneMapping,
-        "THREE.CineonToneMapping": THREE.CineonToneMapping,
-        "THREE.ACESFilmicToneMapping": THREE.ACESFilmicToneMapping,
-      });
-      toneMapping.add(renderer, "toneMappingExposure", 0, 20, 1);
+  let shadowMap = gui.addFolder("shadowMap setting");
+  shadowMap.add(renderer.shadowMap, "enabled");
+  shadowMap.add(renderer.shadowMap, "type", {
+    "THREE.BasicShadowMap": THREE.BasicShadowMap,
+    "THREE.PCFShadowMap": THREE.PCFShadowMap,
+    "THREE.PCFSoftShadowMap": THREE.PCFSoftShadowMap,
+    "THREE.VSMShadowMap": THREE.VSMShadowMap,
+  });
 
-      console.log(engine);
-    </script>
-  </body>
+  let toneMapping = gui.addFolder("toneMapping setting");
+  toneMapping.add(renderer, "toneMapping", {
+    "THREE.NoToneMapping": THREE.NoToneMapping,
+    "THREE.LinearToneMapping": THREE.LinearToneMapping,
+    "THREE.ReinhardToneMapping": THREE.ReinhardToneMapping,
+    "THREE.CineonToneMapping": THREE.CineonToneMapping,
+    "THREE.ACESFilmicToneMapping": THREE.ACESFilmicToneMapping,
+  });
+  toneMapping.add(renderer, "toneMappingExposure", 0, 20, 1);
+
+</script>
+</body>
 </html>

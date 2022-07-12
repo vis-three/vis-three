@@ -20,7 +20,6 @@ export enum CONFIGTYPE {
   CUSTOMGEOMETRY = "CustomGeometry",
   LINETUBEGEOMETRY = "LineTubeGeometry",
   SPLINETUBEGEOMETRY = "SplineTubeGeometry",
-  LINESHAPEGEOMETRY = "LineShapeGeometry",
 
   MESH = "Mesh",
   LINE = "Line",
@@ -50,6 +49,7 @@ export enum CONFIGTYPE {
   SPOTLIGHT = "SpotLight",
   POINTLIGHT = "PointLight",
   DIRECTIONALLIGHT = "DirectionalLight",
+  HEMISPHERELIGHT = "HemisphereLight",
 
   PERSPECTIVECAMERA = "PerspectiveCamera",
   ORTHOGRAPHICCAMERA = "OrthographicCamera",

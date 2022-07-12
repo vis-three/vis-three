@@ -3,6 +3,7 @@ import {
   getSpotLightConfig,
   getPointLightConfig,
   getDirectionalLightConfig,
+  getHemisphereLightConfig,
 } from "../light/LightConfig";
 import {
   getBoxGeometryConfig,
@@ -23,7 +24,6 @@ import {
   getLineTubeGeometryConfig,
   getTorusGeometryConfig,
   getRingGeometryConfig,
-  getLineShapeGeometryConfig,
 } from "../geometry/GeometryConfig";
 import {
   getCanvasTextureConfig,
@@ -91,6 +91,7 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,
   [CONFIGTYPE.POINTLIGHT]: getPointLightConfig,
   [CONFIGTYPE.DIRECTIONALLIGHT]: getDirectionalLightConfig,
+  [CONFIGTYPE.HEMISPHERELIGHT]: getHemisphereLightConfig,
 
   [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
   [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
@@ -105,13 +106,12 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.SPLINECURVEGEOMETRY]: getSplineCurveGeometryConfig,
   [CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY]: getCubicBezierCurveGeometryConfig,
   [CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY]:
-    getQuadraticBezierCurveGeometryConfig,
+  getQuadraticBezierCurveGeometryConfig,
   [CONFIGTYPE.DODECAHEDRONGEOMETRY]: getDodecahedronGeometryConfig,
   [CONFIGTYPE.SPLINETUBEGEOMETRY]: getSplineTubeGeometryConfig,
   [CONFIGTYPE.LINETUBEGEOMETRY]: getLineTubeGeometryConfig,
   [CONFIGTYPE.TORUSGEOMETRY]: getTorusGeometryConfig,
   [CONFIGTYPE.RINGGEOMETRY]: getRingGeometryConfig,
-  [CONFIGTYPE.LINESHAPEGEOMETRY]: getLineShapeGeometryConfig,
 
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,

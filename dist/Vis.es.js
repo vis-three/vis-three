@@ -3042,7 +3042,6 @@ var CONFIGTYPE;
   CONFIGTYPE2["CUSTOMGEOMETRY"] = "CustomGeometry";
   CONFIGTYPE2["LINETUBEGEOMETRY"] = "LineTubeGeometry";
   CONFIGTYPE2["SPLINETUBEGEOMETRY"] = "SplineTubeGeometry";
-  CONFIGTYPE2["LINESHAPEGEOMETRY"] = "LineShapeGeometry";
   CONFIGTYPE2["MESH"] = "Mesh";
   CONFIGTYPE2["LINE"] = "Line";
   CONFIGTYPE2["POINTS"] = "Points";
@@ -3066,6 +3065,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
   CONFIGTYPE2["POINTLIGHT"] = "PointLight";
   CONFIGTYPE2["DIRECTIONALLIGHT"] = "DirectionalLight";
+  CONFIGTYPE2["HEMISPHERELIGHT"] = "HemisphereLight";
   CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
   CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
   CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
@@ -3164,6 +3164,14 @@ const getDirectionalLightConfig = function() {
         far: 500
       }
     }
+  });
+};
+const getHemisphereLightConfig = function() {
+  return Object.assign(getLightConfig(), {
+    type: CONFIGTYPE.DIRECTIONALLIGHT,
+    color: 11989247,
+    groundColor: 16777215,
+    position: new Vector3$1(0, 1, 0)
   });
 };
 const getGeometryConfig = function() {
@@ -3353,17 +3361,6 @@ const getLineTubeGeometryConfig = function() {
 const getSplineTubeGeometryConfig = function() {
   return Object.assign(getTubeGeometryConfig(), {
     type: CONFIGTYPE.SPLINETUBEGEOMETRY
-  });
-};
-const getShapeGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    path: [],
-    curveSegments: 12
-  });
-};
-const getLineShapeGeometryConfig = function() {
-  return Object.assign(getShapeGeometryConfig(), {
-    type: CONFIGTYPE.LINESHAPEGEOMETRY
   });
 };
 const getTextureConfig = function() {
@@ -3822,6 +3819,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,
   [CONFIGTYPE.POINTLIGHT]: getPointLightConfig,
   [CONFIGTYPE.DIRECTIONALLIGHT]: getDirectionalLightConfig,
+  [CONFIGTYPE.HEMISPHERELIGHT]: getHemisphereLightConfig,
   [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
   [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
   [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
@@ -3840,7 +3838,6 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.LINETUBEGEOMETRY]: getLineTubeGeometryConfig,
   [CONFIGTYPE.TORUSGEOMETRY]: getTorusGeometryConfig,
   [CONFIGTYPE.RINGGEOMETRY]: getRingGeometryConfig,
-  [CONFIGTYPE.LINESHAPEGEOMETRY]: getLineShapeGeometryConfig,
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,
   [CONFIGTYPE.MESH]: getMeshConfig,
