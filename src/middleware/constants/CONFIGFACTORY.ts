@@ -24,6 +24,7 @@ import {
   getLineTubeGeometryConfig,
   getTorusGeometryConfig,
   getRingGeometryConfig,
+  getLineShapeGeometryConfig,
 } from "../geometry/GeometryConfig";
 import {
   getCanvasTextureConfig,
@@ -106,12 +107,13 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.SPLINECURVEGEOMETRY]: getSplineCurveGeometryConfig,
   [CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY]: getCubicBezierCurveGeometryConfig,
   [CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY]:
-  getQuadraticBezierCurveGeometryConfig,
+    getQuadraticBezierCurveGeometryConfig,
   [CONFIGTYPE.DODECAHEDRONGEOMETRY]: getDodecahedronGeometryConfig,
   [CONFIGTYPE.SPLINETUBEGEOMETRY]: getSplineTubeGeometryConfig,
   [CONFIGTYPE.LINETUBEGEOMETRY]: getLineTubeGeometryConfig,
   [CONFIGTYPE.TORUSGEOMETRY]: getTorusGeometryConfig,
   [CONFIGTYPE.RINGGEOMETRY]: getRingGeometryConfig,
+  [CONFIGTYPE.LINESHAPEGEOMETRY]: getLineShapeGeometryConfig,
 
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,

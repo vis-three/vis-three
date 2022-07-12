@@ -3042,6 +3042,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["CUSTOMGEOMETRY"] = "CustomGeometry";
   CONFIGTYPE2["LINETUBEGEOMETRY"] = "LineTubeGeometry";
   CONFIGTYPE2["SPLINETUBEGEOMETRY"] = "SplineTubeGeometry";
+  CONFIGTYPE2["LINESHAPEGEOMETRY"] = "LineShapeGeometry";
   CONFIGTYPE2["MESH"] = "Mesh";
   CONFIGTYPE2["LINE"] = "Line";
   CONFIGTYPE2["POINTS"] = "Points";
@@ -3361,6 +3362,17 @@ const getLineTubeGeometryConfig = function() {
 const getSplineTubeGeometryConfig = function() {
   return Object.assign(getTubeGeometryConfig(), {
     type: CONFIGTYPE.SPLINETUBEGEOMETRY
+  });
+};
+const getShapeGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    path: [],
+    curveSegments: 12
+  });
+};
+const getLineShapeGeometryConfig = function() {
+  return Object.assign(getShapeGeometryConfig(), {
+    type: CONFIGTYPE.LINESHAPEGEOMETRY
   });
 };
 const getTextureConfig = function() {
@@ -3838,6 +3850,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.LINETUBEGEOMETRY]: getLineTubeGeometryConfig,
   [CONFIGTYPE.TORUSGEOMETRY]: getTorusGeometryConfig,
   [CONFIGTYPE.RINGGEOMETRY]: getRingGeometryConfig,
+  [CONFIGTYPE.LINESHAPEGEOMETRY]: getLineShapeGeometryConfig,
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,
   [CONFIGTYPE.MESH]: getMeshConfig,
@@ -16636,7 +16649,7 @@ class LightShadow {
     return object;
   }
 }
-const version = "0.1.3-5";
+const version = "0.1.3-6";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
