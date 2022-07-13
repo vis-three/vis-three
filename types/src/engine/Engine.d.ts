@@ -53,6 +53,7 @@ export interface SetCameraEvent extends BaseEvent {
 export interface SetSceneEvent extends BaseEvent {
     type: "setScene";
     scene: Scene;
+    oldScene: Scene;
 }
 export interface SetSizeEvent extends BaseEvent {
     type: "setSize";

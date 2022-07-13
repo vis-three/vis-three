@@ -1,5 +1,5 @@
 import { Tween } from "@tweenjs/tween.js";
-import { Euler, Object3D, Vector3 } from "three";
+import { Camera, Euler, Object3D, Vector3 } from "three";
 import { EngineSupport } from "../../../engine/EngineSupport";
 import { ObjectEvent } from "../../../manager/EventManager";
 import { RenderEvent } from "../../../manager/RenderManager";
@@ -11,6 +11,7 @@ import { timingFunction, TIMINGFUNCTION } from "./common";
 export interface FocusObject extends BasicEventConfig {
   params: {
     target: string;
+    camera: string;
     space: "local" | "world";
     offset: Vector3Config;
     delay: number;
@@ -24,6 +25,7 @@ export const config: FocusObject = {
   name: "focusObject",
   params: {
     target: "",
+    camera: "",
     space: "world",
     offset: {
       x: 0,
@@ -71,7 +73,18 @@ export const generator: EventGenerator<FocusObject> = function (
 
     animating = true;
 
-    const camera = engine.camera;
+    let camera = engine.camera;
+
+    if (params.camera) {
+      camera = engine.getObjectBySymbol(params.camera) as Camera;
+      if (!camera) {
+        camera = engine.camera;
+        console.warn(
+          `real time animation focusObject: can not found camera config: ${params.camera}`
+        );
+      }
+    }
+
     const cameraConfig = engine.getObjectConfig(camera) as CameraConfig;
     const orb = engine.orbitControls && engine.orbitControls.object === camera;
 

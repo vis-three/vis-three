@@ -214,21 +214,23 @@ export class Engine extends EventDispatcher {
     }
     setScene(scene) {
         if (typeof scene === "object" && scene instanceof Scene) {
-            this.scene = scene;
             this.dispatchEvent({
                 type: "setScene",
                 scene,
+                oldScene: this.scene,
             });
+            this.scene = scene;
         }
         else {
             if (this.IS_ENGINESUPPORT) {
                 const target = this.compilerManager.getObjectBySymbol(scene);
                 if (target) {
-                    this.scene = target;
                     this.dispatchEvent({
                         type: "setScene",
                         scene: target,
+                        oldScene: this.scene,
                     });
+                    this.scene = target;
                 }
                 else {
                     console.warn(`can not found camera in compilerManager: ${scene}`);

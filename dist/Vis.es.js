@@ -4808,8 +4808,10 @@ const ObjectRule = function(input, compiler) {
   if (operate === "add") {
     if (validate(key) || UNIQUESYMBOL[key]) {
       compiler.add(key, value);
-      return;
+    } else {
+      console.warn(`Object Rule: key is illeage: ${key}`);
     }
+    return;
   }
   if (operate === "set") {
     if ((vid && validate(key) || UNIQUESYMBOL[vid]) && !path.length && typeof value === "object") {
@@ -5346,11 +5348,11 @@ class Compiler {
   constructor() {
   }
 }
-const config$g = {
+const config$j = {
   name: "linearTime",
   multiply: 1
 };
-const generator$g = function(engine, target, attribute, config2) {
+const generator$j = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
     console.warn(`object not exist attribute: ${attribute}`, target);
     return (event) => {
@@ -5365,14 +5367,14 @@ const generator$g = function(engine, target, attribute, config2) {
     target[attribute] += event.delta * config2.multiply;
   };
 };
-const config$f = {
+const config$i = {
   name: "sinWave",
   wavelength: 1,
   offset: 0,
   amplitude: 1,
   speed: 1
 };
-const generator$f = function(engine, target, attribute, config2) {
+const generator$i = function(engine, target, attribute, config2) {
   if (target[attribute] === void 0) {
     console.warn(`object not exist attribute: ${attribute}`, target);
     return (event) => {
@@ -5434,8 +5436,8 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
   _AniScriptLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
 });
-AniScriptLibrary.register(config$g, generator$g);
-AniScriptLibrary.register(config$f, generator$f);
+AniScriptLibrary.register(config$j, generator$j);
+AniScriptLibrary.register(config$i, generator$i);
 class AnimationCompiler extends Compiler {
   constructor() {
     super();
@@ -5567,18 +5569,18 @@ class AnimationCompiler extends Compiler {
     return null;
   }
 }
-const config$e = {
+const config$h = {
   name: "openWindow",
   params: {
     url: ""
   }
 };
-const generator$e = function(engine, config2) {
+const generator$h = function(engine, config2) {
   return () => {
     window.open(config2.params.url);
   };
 };
-const config$d = {
+const config$g = {
   name: "visibleObject",
   params: {
     target: "",
@@ -5586,7 +5588,7 @@ const config$d = {
     delay: 0
   }
 };
-const generator$d = function(engine, config2) {
+const generator$g = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   if (!target) {
@@ -5600,7 +5602,7 @@ const generator$d = function(engine, config2) {
     }, params.delay);
   };
 };
-const config$c = {
+const config$f = {
   name: "addClass",
   params: {
     target: "",
@@ -5608,7 +5610,7 @@ const config$c = {
     delay: 0
   }
 };
-const generator$c = function(engine, config2) {
+const generator$f = function(engine, config2) {
   const params = config2.params;
   const targets = [];
   if (params.target === "all") {
@@ -5653,14 +5655,14 @@ const generator$c = function(engine, config2) {
     }, params.delay);
   };
 };
-const config$b = {
+const config$e = {
   name: "changeScene",
   params: {
     scene: "Scene",
     delay: 0
   }
 };
-const generator$b = function(engine, config2) {
+const generator$e = function(engine, config2) {
   const params = config2.params;
   return () => {
     setTimeout(() => {
@@ -5668,7 +5670,22 @@ const generator$b = function(engine, config2) {
     }, params.delay);
   };
 };
-const config$a = {
+const config$d = {
+  name: "changeCamera",
+  params: {
+    camera: "",
+    delay: 0
+  }
+};
+const generator$d = function(engine, config2) {
+  const params = config2.params;
+  return () => {
+    setTimeout(() => {
+      engine.setCamera(params.camera);
+    }, params.delay);
+  };
+};
+const config$c = {
   name: "switchAnimate",
   params: {
     target: "",
@@ -5676,7 +5693,7 @@ const config$a = {
     delay: 0
   }
 };
-const generator$a = function(engine, config2) {
+const generator$c = function(engine, config2) {
   const params = config2.params;
   const target = engine.getConfigBySymbol(params.target);
   if (!target) {
@@ -6397,7 +6414,7 @@ const timingFunction = {
   EASING_QUADRATIC_OUT: Easing.Quadratic.Out,
   EASING_QUADRATIC_INOUT: Easing.Quadratic.InOut
 };
-const config$9 = {
+const config$b = {
   name: "moveTo",
   params: {
     target: "",
@@ -6411,7 +6428,7 @@ const config$9 = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$9 = function(engine, config2) {
+const generator$b = function(engine, config2) {
   const params = config2.params;
   const compiler = engine.compilerManager;
   const object = compiler.getObjectBySymbol(params.target);
@@ -6447,7 +6464,7 @@ const generator$9 = function(engine, config2) {
     });
   };
 };
-const config$8 = {
+const config$a = {
   name: "rotationTo",
   params: {
     target: "",
@@ -6461,7 +6478,7 @@ const config$8 = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$8 = function(engine, config2) {
+const generator$a = function(engine, config2) {
   const params = config2.params;
   const compiler = engine.compilerManager;
   const object = compiler.getObjectBySymbol(params.target);
@@ -6497,7 +6514,57 @@ const generator$8 = function(engine, config2) {
     });
   };
 };
-const config$7 = {
+const config$9 = {
+  name: "upTo",
+  params: {
+    target: "",
+    up: {
+      x: 0,
+      y: 1,
+      z: 0
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator$9 = function(engine, config2) {
+  const params = config2.params;
+  const compiler = engine.compilerManager;
+  const object = compiler.getObjectBySymbol(params.target);
+  if (!object) {
+    console.warn(`real time animation upTo: can not found vid object: ${params.target}`);
+    return () => {
+    };
+  }
+  const renderManager = engine.renderManager;
+  const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
+  if (!supportData) {
+    console.warn(`can not found object config: ${params.target}`);
+    return () => {
+    };
+  }
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    const tween = new Tween(object.up).to(params.up).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      supportData.up.x = params.up.x;
+      supportData.up.y = params.up.y;
+      supportData.up.z = params.up.z;
+      animating = false;
+    });
+  };
+};
+const config$8 = {
   name: "moveFromTo",
   params: {
     target: "",
@@ -6516,7 +6583,7 @@ const config$7 = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$7 = function(engine, config2) {
+const generator$8 = function(engine, config2) {
   const params = config2.params;
   const compiler = engine.compilerManager;
   const object = compiler.getObjectBySymbol(params.target);
@@ -6555,7 +6622,7 @@ const generator$7 = function(engine, config2) {
     });
   };
 };
-const config$6 = {
+const config$7 = {
   name: "moveSpacing",
   params: {
     target: "",
@@ -6569,7 +6636,7 @@ const config$6 = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$6 = function(engine, config2) {
+const generator$7 = function(engine, config2) {
   const params = config2.params;
   const object = engine.getObjectBySymbol(params.target);
   if (!object) {
@@ -6609,7 +6676,7 @@ const generator$6 = function(engine, config2) {
     });
   };
 };
-const config$5 = {
+const config$6 = {
   name: "moveToObject",
   params: {
     target: "",
@@ -6624,7 +6691,7 @@ const config$5 = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$5 = function(engine, config2) {
+const generator$6 = function(engine, config2) {
   const params = config2.params;
   const compiler = engine.compilerManager;
   const object = compiler.getObjectBySymbol(params.target);
@@ -6671,7 +6738,7 @@ const generator$5 = function(engine, config2) {
     });
   };
 };
-const config$4 = {
+const config$5 = {
   name: "vector3To",
   params: {
     target: "",
@@ -6687,7 +6754,7 @@ const config$4 = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator$4 = function(engine, config2) {
+const generator$5 = function(engine, config2) {
   var _a, _b, _c;
   const params = config2.params;
   const object = engine.compilerManager.getObjectBySymbol(params.target);
@@ -6751,10 +6818,11 @@ const generator$4 = function(engine, config2) {
     });
   };
 };
-const config$3 = {
+const config$4 = {
   name: "focusObject",
   params: {
     target: "",
+    camera: "",
     space: "world",
     offset: {
       x: 0,
@@ -6767,7 +6835,7 @@ const config$3 = {
     back: true
   }
 };
-const generator$3 = function(engine, config2) {
+const generator$4 = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   const orbTarget = engine.orbitControls.target;
@@ -6788,7 +6856,14 @@ const generator$3 = function(engine, config2) {
       return;
     }
     animating = true;
-    const camera = engine.camera;
+    let camera = engine.camera;
+    if (params.camera) {
+      camera = engine.getObjectBySymbol(params.camera);
+      if (!camera) {
+        camera = engine.camera;
+        console.warn(`real time animation focusObject: can not found camera config: ${params.camera}`);
+      }
+    }
     const cameraConfig = engine.getObjectConfig(camera);
     const orb = engine.orbitControls && engine.orbitControls.object === camera;
     if (!cameraConfig) {
@@ -6899,7 +6974,7 @@ const generator$3 = function(engine, config2) {
     });
   };
 };
-const config$2 = {
+const config$3 = {
   name: "fadeObject",
   params: {
     target: "",
@@ -6910,7 +6985,7 @@ const config$2 = {
     visible: true
   }
 };
-const generator$2 = function(engine, config2) {
+const generator$3 = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   if (!target) {
@@ -6976,7 +7051,7 @@ const generator$2 = function(engine, config2) {
     });
   };
 };
-const config$1 = {
+const config$2 = {
   name: "showToCamera",
   params: {
     target: "",
@@ -6991,7 +7066,7 @@ const config$1 = {
     back: true
   }
 };
-const generator$1 = function(engine, config2) {
+const generator$2 = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   const targetConfig = engine.getConfigBySymbol(params.target);
@@ -7084,7 +7159,7 @@ const generator$1 = function(engine, config2) {
     });
   };
 };
-const config = {
+const config$1 = {
   name: "colorChange",
   params: {
     target: "",
@@ -7095,7 +7170,7 @@ const config = {
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
-const generator = function(engine, config2) {
+const generator$1 = function(engine, config2) {
   const params = config2.params;
   const material = engine.getObjectBySymbol(params.target);
   if (!material) {
@@ -7134,6 +7209,59 @@ const generator = function(engine, config2) {
     tween.onComplete(() => {
       renderManager.removeEventListener("render", renderFun);
       supportData[params.attribute] = params.color;
+      animating = false;
+    });
+  };
+};
+const config = {
+  name: "orbitTargetMove",
+  params: {
+    target: "",
+    offset: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator = function(engine, config2) {
+  const params = config2.params;
+  engine.compilerManager;
+  if (!engine.orbitControls) {
+    console.warn(`real time animation orbitTargetMove: engine can not install orbitControls.`);
+    return () => {
+    };
+  }
+  const renderManager = engine.renderManager;
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    let position = params.offset;
+    if (params.target) {
+      const object = engine.getObjectBySymbol(params.target);
+      if (!object) {
+        console.warn(`real time animation orbitTargetMove: can not found vid object: ${params.target}`);
+      } else {
+        position = {
+          x: object.matrixWorld.elements[12] + position.x,
+          y: object.matrixWorld.elements[13] + position.y,
+          z: object.matrixWorld.elements[14] + position.z
+        };
+      }
+    }
+    const tween = new Tween(engine.orbitControls.target).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
       animating = false;
     });
   };
@@ -7181,6 +7309,9 @@ __publicField(EventLibrary, "register", function(config2, generator2) {
   _EventLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
   _EventLibrary.generatorLibrary.set(config2.name, generator2);
 });
+EventLibrary.register(config$h, generator$h);
+EventLibrary.register(config$g, generator$g);
+EventLibrary.register(config$f, generator$f);
 EventLibrary.register(config$e, generator$e);
 EventLibrary.register(config$d, generator$d);
 EventLibrary.register(config$c, generator$c);
@@ -12190,12 +12321,16 @@ const ObjectHelperPlugin = function(params = {}) {
   this.scene.addEventListener("afterRemove", afterRemoveFun);
   this.setObjectHelper = function(params2) {
     if (params2.show) {
-      helperMap.forEach((helper) => {
-        this.scene.add(helper);
+      this.scene.traverse((object) => {
+        if (helperMap.has(object)) {
+          this.scene.add(helperMap.get(object));
+        }
       });
     } else {
-      helperMap.forEach((helper) => {
-        this.scene.remove(helper);
+      this.scene.traverse((object) => {
+        if (helperMap.has(object)) {
+          this.scene.remove(helperMap.get(object));
+        }
       });
     }
     return this;

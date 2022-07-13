@@ -112,15 +112,18 @@ export const ObjectHelperPlugin = function (params = {}) {
     this.scene.addEventListener("afterAdd", afterAddFun);
     this.scene.addEventListener("afterRemove", afterRemoveFun);
     this.setObjectHelper = function (params) {
-        // TODO: 分开scene
         if (params.show) {
-            helperMap.forEach((helper) => {
-                this.scene.add(helper);
+            this.scene.traverse((object) => {
+                if (helperMap.has(object)) {
+                    this.scene.add(helperMap.get(object));
+                }
             });
         }
         else {
-            helperMap.forEach((helper) => {
-                this.scene.remove(helper);
+            this.scene.traverse((object) => {
+                if (helperMap.has(object)) {
+                    this.scene.remove(helperMap.get(object));
+                }
             });
         }
         return this;

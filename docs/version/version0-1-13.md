@@ -7,6 +7,10 @@
 - eventLibrary-fadeObject
 - eventLibrary-focusObject
 - eventLibrary-changeScene
+- eventLibrary-changeCamera
+- eventLibrary-upTo
+- eventLibrary-rotationTo
+- eventLibrary-orbitTargetMove
 
 - curveGeometry
 - LineCurveGeometry
@@ -38,6 +42,7 @@
 - realTime animation event repeat event
 - displayer- toDataURL
 - change scene can change css3D object
+- change scene can change helper object
 
 #### deprecated
 
