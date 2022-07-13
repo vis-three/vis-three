@@ -10,7 +10,7 @@ export const AnimationRule: Rule<AnimationCompiler> = function (
   const { operate, key, path, value } = notice;
 
   // 命名跳过
-  if (key === "name" && !path.length) {
+  if (key === "name" && path.length === 1) {
     return;
   }
 
