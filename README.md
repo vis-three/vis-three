@@ -36,6 +36,19 @@ import {
 - gitee 仓库为 github 的同步备份仓库
   github 地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github.com/Shiotsukikaedesari/vis-three)
 
+## 项目结构说明
+- `src`vis-three库源码
+- `website`主页源码
+- `docs`文档源码
+- `examples`例子库源码
+- `arts`美术资源
+- `cypress`e2e测试用例源码
+- `dist`vis-three库build
+- `dist-website`主页build
+- `js-source` tsc编译js版本
+- `types`vis-three的声明文件地址
+- `uitls`项目级别工具库
+
 ## 开发说明
 
 - 例子或者网页需要添加额外依赖的，请添加到`devDependencies`中：`npm i xxxx -D`
