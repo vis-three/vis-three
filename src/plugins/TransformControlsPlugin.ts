@@ -60,7 +60,8 @@ export const TransformControlsPlugin: Plugin<Object> = function (
   };
 
   this.addEventListener<SetCameraEvent>("setCamera", (event) => {
-    transformControls.setCamera(event.camera);
+    event.options.transformControls &&
+      transformControls.setCamera(event.camera);
   });
 
   this.addEventListener<SetDomEvent>("setDom", (event) => {

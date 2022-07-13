@@ -126,9 +126,15 @@ export interface SetDomEvent extends BaseEvent {
   dom: HTMLElement;
 }
 // 设置相机
+
+export interface SetCameraOptions {
+  orbitControls?: boolean;
+  transformControls?: boolean;
+}
 export interface SetCameraEvent extends BaseEvent {
   type: "setCamera";
   camera: Camera;
+  options: SetCameraOptions;
 }
 
 // 设置场景
@@ -325,21 +331,30 @@ export class Engine extends EventDispatcher {
   /**
    * 设置相机
    * @param vid 相机标识
+   * @param options 设置相机的参数
    * @returns this
    */
-  setCamera(vid: string): this;
+  setCamera(vid: string, options?: SetCameraOptions): this;
   /**
    * 设置相机
    * @param camera 相机对象
+   * @param options 设置相机的参数
    * @returns this
    */
-  setCamera(camera: Camera): this;
-  setCamera(camera: Camera | string): this {
+  setCamera(camera: Camera, options?: SetCameraOptions): this;
+  setCamera(camera: Camera | string, options?: SetCameraOptions): this {
     if (typeof camera === "object" && camera instanceof Camera) {
       this.camera = camera;
       this.dispatchEvent({
         type: "setCamera",
         camera,
+        options: Object.assign(
+          {
+            orbitControls: true,
+            transformControls: true,
+          },
+          options || {}
+        ),
       });
     } else {
       if (this.IS_ENGINESUPPORT) {
@@ -352,6 +367,13 @@ export class Engine extends EventDispatcher {
           this.dispatchEvent({
             type: "setCamera",
             camera: target,
+            options: Object.assign(
+              {
+                orbitControls: true,
+                transformControls: true,
+              },
+              options || {}
+            ),
           });
         } else {
           console.warn(`can not found camera in compilerManager: ${camera}`);
@@ -399,11 +421,11 @@ export class Engine extends EventDispatcher {
           });
           this.scene = target;
         } else {
-          console.warn(`can not found camera in compilerManager: ${scene}`);
+          console.warn(`can not found scene in compilerManager: ${scene}`);
         }
       } else {
         console.warn(
-          `engine is not a Engine support but use symbol to found camera.`
+          `engine is not a Engine support but use symbol to found scene.`
         );
       }
     }
