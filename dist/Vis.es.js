@@ -3169,10 +3169,9 @@ const getDirectionalLightConfig = function() {
 };
 const getHemisphereLightConfig = function() {
   return Object.assign(getLightConfig(), {
-    type: CONFIGTYPE.DIRECTIONALLIGHT,
-    color: 11989247,
-    groundColor: 16777215,
-    position: new Vector3$1(0, 1, 0)
+    type: CONFIGTYPE.HEMISPHERELIGHT,
+    color: "rgb(255, 255, 255)",
+    groundColor: "rgb(0, 0, 0)"
   });
 };
 const getGeometryConfig = function() {
@@ -16784,7 +16783,7 @@ class LightShadow {
     return object;
   }
 }
-const version = "0.1.3-6";
+const version = "0.1.3-5";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
