@@ -14,6 +14,7 @@ export declare const CONFIGFACTORY: {
     SpotLight: () => import("../light/LightConfig").SpotLightConfig;
     PointLight: () => import("../light/LightConfig").PointLightConfig;
     DirectionalLight: () => import("../light/LightConfig").DirectionalLightConfig;
+    HemisphereLight: () => import("../light/LightConfig").HemisphereLightConfig;
     BoxGeometry: () => import("../geometry/GeometryInterface").BoxGeometryConfig;
     SphereGeometry: () => import("../geometry/GeometryInterface").SphereGeometryConfig;
     LoadGeometry: () => import("../geometry/GeometryInterface").LoadGeometryConfig;

@@ -26,8 +26,12 @@ export interface DirectionalLightConfig extends LightConifg {
         };
     };
 }
+export interface HemisphereLightConfig extends LightConifg {
+    groundColor: number;
+}
 export declare type LightConfigAllType = AmbientLightConfig | PointLightConfig | SpotLightConfig | DirectionalLightConfig;
 export declare const getAmbientLightConfig: () => AmbientLightConfig;
 export declare const getPointLightConfig: () => PointLightConfig;
 export declare const getSpotLightConfig: () => SpotLightConfig;
 export declare const getDirectionalLightConfig: () => DirectionalLightConfig;
+export declare const getHemisphereLightConfig: () => HemisphereLightConfig;

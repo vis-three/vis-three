@@ -3066,6 +3066,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["SPOTLIGHT"] = "SpotLight";
   CONFIGTYPE2["POINTLIGHT"] = "PointLight";
   CONFIGTYPE2["DIRECTIONALLIGHT"] = "DirectionalLight";
+  CONFIGTYPE2["HEMISPHERELIGHT"] = "HemisphereLight";
   CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
   CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
   CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
@@ -3164,6 +3165,14 @@ const getDirectionalLightConfig = function() {
         far: 500
       }
     }
+  });
+};
+const getHemisphereLightConfig = function() {
+  return Object.assign(getLightConfig(), {
+    type: CONFIGTYPE.DIRECTIONALLIGHT,
+    color: 11989247,
+    groundColor: 16777215,
+    position: new Vector3$1(0, 1, 0)
   });
 };
 const getGeometryConfig = function() {
@@ -3822,6 +3831,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,
   [CONFIGTYPE.POINTLIGHT]: getPointLightConfig,
   [CONFIGTYPE.DIRECTIONALLIGHT]: getDirectionalLightConfig,
+  [CONFIGTYPE.HEMISPHERELIGHT]: getHemisphereLightConfig,
   [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
   [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
   [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
@@ -16774,7 +16784,7 @@ class LightShadow {
     return object;
   }
 }
-const version = "0.1.3-5";
+const version = "0.1.3-6";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }

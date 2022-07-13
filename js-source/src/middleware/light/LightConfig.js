@@ -1,3 +1,4 @@
+import { Vector3 } from "three";
 import { CONFIGTYPE } from "../constants/configType";
 import { getObjectConfig } from "../object/ObjectConfig";
 const getLightConfig = function () {
@@ -43,6 +44,14 @@ export const getDirectionalLightConfig = function () {
                 far: 500,
             },
         },
+    });
+};
+export const getHemisphereLightConfig = function () {
+    return Object.assign(getLightConfig(), {
+        type: CONFIGTYPE.DIRECTIONALLIGHT,
+        color: 0xb6f0ff,
+        groundColor: 0xffffff,
+        position: new Vector3(0, 1, 0)
     });
 };
 //# sourceMappingURL=LightConfig.js.map

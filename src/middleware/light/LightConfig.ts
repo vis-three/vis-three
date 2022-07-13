@@ -1,4 +1,4 @@
-import { PointLight, SpotLight } from "three";
+import { PointLight, SpotLight ,Vector3} from "three";
 import { CONFIGTYPE } from "../constants/configType";
 import { ObjectConfig, getObjectConfig } from "../object/ObjectConfig";
 
@@ -32,6 +32,9 @@ export interface DirectionalLightConfig extends LightConifg {
       far: number;
     };
   };
+}
+export interface HemisphereLightConfig extends LightConifg {
+  groundColor:number
 }
 
 export type LightConfigAllType =
@@ -87,5 +90,14 @@ export const getDirectionalLightConfig = function (): DirectionalLightConfig {
         far: 500,
       },
     },
+  });
+};
+
+export const getHemisphereLightConfig = function (): HemisphereLightConfig {
+  return Object.assign(getLightConfig(), {
+    type: CONFIGTYPE.DIRECTIONALLIGHT,
+    color:0xb6f0ff,
+    groundColor:0xffffff,
+    position:new Vector3(0,1,0)
   });
 };

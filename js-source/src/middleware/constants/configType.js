@@ -47,6 +47,7 @@ export var CONFIGTYPE;
     CONFIGTYPE["SPOTLIGHT"] = "SpotLight";
     CONFIGTYPE["POINTLIGHT"] = "PointLight";
     CONFIGTYPE["DIRECTIONALLIGHT"] = "DirectionalLight";
+    CONFIGTYPE["HEMISPHERELIGHT"] = "HemisphereLight";
     CONFIGTYPE["PERSPECTIVECAMERA"] = "PerspectiveCamera";
     CONFIGTYPE["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
     CONFIGTYPE["WEBGLRENDERER"] = "WebGLRenderer";

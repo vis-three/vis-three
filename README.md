@@ -40,6 +40,7 @@ import {
 
 - 例子或者网页需要添加额外依赖的，请添加到`devDependencies`中：`npm i xxxx -D`
 - 提交更新之后请到`/docs/version`下简写更新功能
+- 开发期请使用`jsdoc`进行注释辅助
 
 ## 项目命令
 
