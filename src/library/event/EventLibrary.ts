@@ -5,9 +5,12 @@ import * as OpenWindow from "./BasicEventLibrary/openWindow";
 import * as VisibleObject from "./BasicEventLibrary/visibleObject";
 import * as AddClass from "./BasicEventLibrary/addClass";
 import * as ChangeScene from "./BasicEventLibrary/changeScene";
+import * as ChangeCamera from "./BasicEventLibrary/changeCamera";
 import * as SwitchAnimate from "./BasicEventLibrary/switchAnimate";
 
 import * as MoveTo from "./RealTimeAnimateLibrary/moveTo";
+import * as RotationTo from "./RealTimeAnimateLibrary/rotationTo";
+import * as UpTo from "./RealTimeAnimateLibrary/upTo";
 import * as MoveFromTo from "./RealTimeAnimateLibrary/moveFromTo";
 import * as MoveSpacing from "./RealTimeAnimateLibrary/moveSpacing";
 import * as MoveToObject from "./RealTimeAnimateLibrary/moveToObject";
@@ -16,6 +19,7 @@ import * as FocusObject from "./RealTimeAnimateLibrary/focusObject";
 import * as FadeObject from "./RealTimeAnimateLibrary/fadeObject";
 import * as ShowToCamera from "./RealTimeAnimateLibrary/showToCamera";
 import * as ColorChange from "./RealTimeAnimateLibrary/colorChange";
+import * as OrbitTargetMove from "./RealTimeAnimateLibrary/orbitTargetMove";
 
 export interface BasicEventConfig {
   name: string;
@@ -102,9 +106,12 @@ EventLibrary.register(OpenWindow.config, OpenWindow.generator);
 EventLibrary.register(VisibleObject.config, VisibleObject.generator);
 EventLibrary.register(AddClass.config, AddClass.generator);
 EventLibrary.register(ChangeScene.config, ChangeScene.generator);
+EventLibrary.register(ChangeCamera.config, ChangeCamera.generator);
 EventLibrary.register(SwitchAnimate.config, SwitchAnimate.generator);
 
 EventLibrary.register(MoveTo.config, MoveTo.generator);
+EventLibrary.register(RotationTo.config, RotationTo.generator);
+EventLibrary.register(UpTo.config, UpTo.generator);
 EventLibrary.register(MoveFromTo.config, MoveFromTo.generator);
 EventLibrary.register(MoveSpacing.config, MoveSpacing.generator);
 EventLibrary.register(MoveToObject.config, MoveToObject.generator);
@@ -113,3 +120,4 @@ EventLibrary.register(FocusObject.config, FocusObject.generator);
 EventLibrary.register(FadeObject.config, FadeObject.generator);
 EventLibrary.register(ShowToCamera.config, ShowToCamera.generator);
 EventLibrary.register(ColorChange.config, ColorChange.generator);
+EventLibrary.register(OrbitTargetMove.config, OrbitTargetMove.generator);

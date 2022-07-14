@@ -45,4 +45,11 @@ export const getDirectionalLightConfig = function () {
         },
     });
 };
+export const getHemisphereLightConfig = function () {
+    return Object.assign(getLightConfig(), {
+        type: CONFIGTYPE.HEMISPHERELIGHT,
+        color: "rgb(255, 255, 255)",
+        groundColor: "rgb(0, 0, 0)",
+    });
+};
 //# sourceMappingURL=LightConfig.js.map

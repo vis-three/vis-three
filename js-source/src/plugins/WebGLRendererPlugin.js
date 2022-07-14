@@ -1,4 +1,4 @@
-import { WebGLRenderer } from "three";
+import { WebGLRenderer, } from "three";
 export const WebGLRendererPlugin = function (params = {}) {
     if (this.webGLRenderer) {
         console.warn("this has installed webglRenderer plugin.");
@@ -11,7 +11,7 @@ export const WebGLRendererPlugin = function (params = {}) {
     domElement.style.left = "0";
     domElement.classList.add("vis-webgl");
     // 截图
-    this.getScreenshot = function (params = {}) {
+    this.getScreenshot = async function (params = {}) {
         const cacheSize = {
             width: this.dom.offsetWidth,
             height: this.dom.offsetHeight,
@@ -24,10 +24,62 @@ export const WebGLRendererPlugin = function (params = {}) {
             this.renderManager.stop();
             renderFlag = true;
         }
-        this.setSize(params.width, params.height);
-        this.renderManager.render();
-        const DataURI = this.webGLRenderer.domElement.toDataURL(params.mine);
-        this.setSize(cacheSize.width, cacheSize.height);
+        let DataURI = "";
+        // 获取当前机器支持的最大buffer
+        const gl = this.webGLRenderer.getContext();
+        const maxRenderBufferSize = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
+        const maxSize = maxRenderBufferSize / 4;
+        if (params.width > maxSize || params.height > maxSize) {
+            // 判断宽高形成裁剪渲染队列
+            const renderList = [];
+            const rowNum = Math.ceil(params.width / maxSize);
+            const columnNum = Math.ceil(params.height / maxSize);
+            const partWidth = params.width / rowNum;
+            const partHeight = params.height / columnNum;
+            const tempCanvas = document.createElement("canvas");
+            tempCanvas.setAttribute("width", params.width.toString());
+            tempCanvas.setAttribute("height", params.height.toString());
+            const ctx = tempCanvas.getContext("2d");
+            if (!ctx) {
+                console.warn(`can not support canvas 2d;`);
+                return DataURI;
+            }
+            this.setSize(partWidth, partHeight);
+            for (let rowIndex = 0; rowIndex < rowNum; rowIndex += 1) {
+                for (let columnIndex = 0; columnIndex < columnNum; columnIndex += 1) {
+                    renderList.push({
+                        x: partWidth * rowIndex,
+                        y: partHeight * columnIndex,
+                    });
+                }
+            }
+            const drawList = [];
+            renderList.forEach((elem) => {
+                this.camera.setViewOffset(params.width, params.height, elem.x, elem.y, partWidth, partHeight);
+                this.renderManager.render();
+                const DataURI = this.webGLRenderer.domElement.toDataURL(params.mine);
+                drawList.push(new Promise((resolve, reject) => {
+                    const image = new Image();
+                    image.src = DataURI;
+                    image.onload = () => {
+                        ctx.drawImage(image, elem.x, elem.y, partWidth, partHeight);
+                        resolve(null);
+                    };
+                }));
+            });
+            this.setSize(cacheSize.width, cacheSize.height);
+            await Promise.all(drawList).catch((err) => {
+                console.warn(err);
+            });
+            DataURI = tempCanvas.toDataURL(params.mine);
+            this.camera.clearViewOffset();
+        }
+        else {
+            this.setSize(params.width, params.height);
+            this.renderManager.render();
+            DataURI = this.webGLRenderer.domElement.toDataURL(params.mine);
+            this.setSize(cacheSize.width, cacheSize.height);
+        }
         if (renderFlag) {
             this.renderManager.play();
         }

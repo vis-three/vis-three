@@ -1,4 +1,4 @@
-import { RenderManager } from "../../../dist/Vis.es";
+import { RenderManager } from "../../../../dist/Vis.es";
 
 const getFPSList = (fps, err) => {
   fps = Math.floor(fps);

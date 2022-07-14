@@ -11,7 +11,7 @@ export const OrbitControlsPlugin = function (params) {
     }
     this.orbitControls = new VisOrbitControls(this.camera, this.dom);
     this.addEventListener("setCamera", (event) => {
-        this.orbitControls.setCamera(event.camera);
+        event.options.orbitControls && this.orbitControls.setCamera(event.camera);
     });
     this.addEventListener("setDom", (event) => {
         this.orbitControls.setDom(event.dom);

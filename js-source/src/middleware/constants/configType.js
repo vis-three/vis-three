@@ -21,6 +21,7 @@ export var CONFIGTYPE;
     CONFIGTYPE["CUSTOMGEOMETRY"] = "CustomGeometry";
     CONFIGTYPE["LINETUBEGEOMETRY"] = "LineTubeGeometry";
     CONFIGTYPE["SPLINETUBEGEOMETRY"] = "SplineTubeGeometry";
+    CONFIGTYPE["LINESHAPEGEOMETRY"] = "LineShapeGeometry";
     CONFIGTYPE["MESH"] = "Mesh";
     CONFIGTYPE["LINE"] = "Line";
     // LINESEGMENTS = "LineSegments",
@@ -46,6 +47,7 @@ export var CONFIGTYPE;
     CONFIGTYPE["SPOTLIGHT"] = "SpotLight";
     CONFIGTYPE["POINTLIGHT"] = "PointLight";
     CONFIGTYPE["DIRECTIONALLIGHT"] = "DirectionalLight";
+    CONFIGTYPE["HEMISPHERELIGHT"] = "HemisphereLight";
     CONFIGTYPE["PERSPECTIVECAMERA"] = "PerspectiveCamera";
     CONFIGTYPE["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
     CONFIGTYPE["WEBGLRENDERER"] = "WebGLRenderer";

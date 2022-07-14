@@ -3,6 +3,7 @@ const getAnimationConfig = function () {
     return {
         vid: "",
         type: "",
+        name: "",
         target: "",
         attribute: "",
         play: true,

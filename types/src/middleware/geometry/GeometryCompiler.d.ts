@@ -1,7 +1,7 @@
 import { BufferGeometry } from "three";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { SymbolConfig } from "../common/CommonConfig";
-import { GeometryAllType, GeometryGroup } from "./GeometryConfig";
+import { CustomGeometryConfig, GeometryAllType, GeometryGroup } from "./GeometryInterface";
 import { EngineSupport } from "../../main";
 import { MODULETYPE } from "../constants/MODULETYPE";
 export interface GeometryCompilerTarget extends CompilerTarget {
@@ -19,8 +19,8 @@ export declare class GeometryCompiler extends Compiler {
     constructor();
     linkRescourceMap(map: Map<string, unknown>): this;
     private getRescource;
-    private getGeometry;
-    private generateGeometry;
+    getGeometry(url: string): BufferGeometry;
+    generateGeometry(attribute: CustomGeometryConfig["attribute"]): BufferGeometry;
     getMap(): Map<SymbolConfig["vid"], BufferGeometry>;
     useEngine(engine: EngineSupport): this;
     setTarget(target: GeometryCompilerTarget): this;

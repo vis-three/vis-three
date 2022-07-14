@@ -46,13 +46,19 @@ export interface SetDomEvent extends BaseEvent {
     type: "setDom";
     dom: HTMLElement;
 }
+export interface SetCameraOptions {
+    orbitControls?: boolean;
+    transformControls?: boolean;
+}
 export interface SetCameraEvent extends BaseEvent {
     type: "setCamera";
     camera: Camera;
+    options: SetCameraOptions;
 }
 export interface SetSceneEvent extends BaseEvent {
     type: "setScene";
     scene: Scene;
+    oldScene: Scene;
 }
 export interface SetSizeEvent extends BaseEvent {
     type: "setSize";
@@ -86,7 +92,7 @@ export declare class Engine extends EventDispatcher {
     stats?: Stats;
     displayMode?: DISPLAYMODE;
     selectionBox?: Set<Object3D>;
-    getScreenshot?: (params: Screenshot) => string;
+    getScreenshot?: (params: Screenshot) => Promise<string>;
     setStats?: (show: boolean) => this;
     setTransformControls?: (show: boolean) => this;
     setViewpoint?: (viewpoint: VIEWPOINT) => this;
@@ -147,15 +153,17 @@ export declare class Engine extends EventDispatcher {
     /**
      * 设置相机
      * @param vid 相机标识
+     * @param options 设置相机的参数
      * @returns this
      */
-    setCamera(vid: string): this;
+    setCamera(vid: string, options?: SetCameraOptions): this;
     /**
      * 设置相机
      * @param camera 相机对象
+     * @param options 设置相机的参数
      * @returns this
      */
-    setCamera(camera: Camera): this;
+    setCamera(camera: Camera, options?: SetCameraOptions): this;
     /**
      * 设置场景
      * @param vid 场景标识

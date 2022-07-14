@@ -1,5 +1,5 @@
 import { Tween } from "@tweenjs/tween.js";
-import { Object3D, Vector3 } from "three";
+import { Camera, Euler, Object3D, Vector3 } from "three";
 import { EngineSupport } from "../../../engine/EngineSupport";
 import { ObjectEvent } from "../../../manager/EventManager";
 import { RenderEvent } from "../../../manager/RenderManager";
@@ -11,6 +11,7 @@ import { timingFunction, TIMINGFUNCTION } from "./common";
 export interface FocusObject extends BasicEventConfig {
   params: {
     target: string;
+    camera: string;
     space: "local" | "world";
     offset: Vector3Config;
     delay: number;
@@ -24,6 +25,7 @@ export const config: FocusObject = {
   name: "focusObject",
   params: {
     target: "",
+    camera: "",
     space: "world",
     offset: {
       x: 0,
@@ -43,9 +45,6 @@ export const generator: EventGenerator<FocusObject> = function (
 ): (event?: ObjectEvent) => void {
   const params = config.params;
   const target = engine.getObjectBySymbol(params.target)!;
-  const camera = engine.camera;
-  const cameraConfig = engine.getObjectConfig(camera) as CameraConfig;
-  const orb = engine.orbitControls && engine.orbitControls.object === camera;
   const orbTarget = engine.orbitControls!.target;
 
   if (!target) {
@@ -62,12 +61,10 @@ export const generator: EventGenerator<FocusObject> = function (
     return () => {};
   }
 
-  if (!cameraConfig) {
-    console.warn(`engine current camera can not found config.`);
-  }
-
   // 防止重复触发
   let animating = false;
+
+  const cacheEuler = new Euler();
 
   return () => {
     if (animating) {
@@ -76,12 +73,31 @@ export const generator: EventGenerator<FocusObject> = function (
 
     animating = true;
 
+    let camera = engine.camera;
+
+    if (params.camera) {
+      camera = engine.getObjectBySymbol(params.camera) as Camera;
+      if (!camera) {
+        camera = engine.camera;
+        console.warn(
+          `real time animation focusObject: can not found camera config: ${params.camera}`
+        );
+      }
+    }
+
+    const cameraConfig = engine.getObjectConfig(camera) as CameraConfig;
+    const orb = engine.orbitControls && engine.orbitControls.object === camera;
+
+    if (!cameraConfig) {
+      console.warn(`engine current camera can not found config.`);
+    }
+
     const renderManager = engine.renderManager!;
     // 根据space计算position
     let position = {
-      x: target.matrixWorld[12] + params.offset.x,
-      y: target.matrixWorld[13] + params.offset.y,
-      z: target.matrixWorld[14] + params.offset.z,
+      x: target.matrixWorld.elements[12] + params.offset.x,
+      y: target.matrixWorld.elements[13] + params.offset.y,
+      z: target.matrixWorld.elements[14] + params.offset.z,
     };
 
     const backPosition = {
@@ -95,12 +111,12 @@ export const generator: EventGenerator<FocusObject> = function (
         params.offset.x,
         params.offset.y,
         params.offset.z
-      ).applyEuler(target.rotation);
+      ).applyEuler(cacheEuler.setFromRotationMatrix(target.matrixWorld));
 
       position = {
-        x: target.position.x + vector3.x,
-        y: target.position.y + vector3.y,
-        z: target.position.z + vector3.z,
+        x: target.matrixWorld.elements[12] + vector3.x,
+        y: target.matrixWorld.elements[13] + vector3.y,
+        z: target.matrixWorld.elements[14] + vector3.z,
       };
     }
 
@@ -121,7 +137,9 @@ export const generator: EventGenerator<FocusObject> = function (
 
     if (params.space === "local") {
       // scene up
-      const upVector3 = new Vector3(0, 1, 0).applyEuler(target.rotation);
+      const upVector3 = new Vector3(0, 1, 0).applyEuler(
+        cacheEuler.setFromRotationMatrix(target.matrixWorld)
+      );
 
       upTween = new Tween(camera.up)
         .to({
@@ -143,7 +161,11 @@ export const generator: EventGenerator<FocusObject> = function (
     };
     if (orb) {
       orbTween = new Tween(orbTarget)
-        .to(target.position)
+        .to({
+          x: target.matrixWorld.elements[12],
+          y: target.matrixWorld.elements[13],
+          z: target.matrixWorld.elements[14],
+        })
         .duration(params.duration)
         .delay(params.delay)
         .easing(timingFunction[params.timingFunction])

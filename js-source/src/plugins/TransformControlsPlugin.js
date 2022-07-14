@@ -30,7 +30,8 @@ export const TransformControlsPlugin = function (params) {
         return this;
     };
     this.addEventListener("setCamera", (event) => {
-        transformControls.setCamera(event.camera);
+        event.options.transformControls &&
+            transformControls.setCamera(event.camera);
     });
     this.addEventListener("setDom", (event) => {
         transformControls.setDom(event.dom);

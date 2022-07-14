@@ -62,8 +62,11 @@ export const ObjectRule = function (input, compiler) {
     if (operate === "add") {
         if (validate(key) || UNIQUESYMBOL[key]) {
             compiler.add(key, value);
-            return;
         }
+        else {
+            console.warn(`Object Rule: key is illeage: ${key}`);
+        }
+        return;
     }
     if (operate === "set") {
         if (((vid && validate(key)) || UNIQUESYMBOL[vid]) &&

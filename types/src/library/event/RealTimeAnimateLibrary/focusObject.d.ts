@@ -4,6 +4,7 @@ import { TIMINGFUNCTION } from "./common";
 export interface FocusObject extends BasicEventConfig {
     params: {
         target: string;
+        camera: string;
         space: "local" | "world";
         offset: Vector3Config;
         delay: number;

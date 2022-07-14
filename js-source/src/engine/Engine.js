@@ -184,12 +184,16 @@ export class Engine extends EventDispatcher {
         this.dispatchEvent({ type: "setSize", width, height });
         return this;
     }
-    setCamera(camera) {
+    setCamera(camera, options) {
         if (typeof camera === "object" && camera instanceof Camera) {
             this.camera = camera;
             this.dispatchEvent({
                 type: "setCamera",
                 camera,
+                options: Object.assign({
+                    orbitControls: true,
+                    transformControls: true,
+                }, options || {}),
             });
         }
         else {
@@ -200,6 +204,10 @@ export class Engine extends EventDispatcher {
                     this.dispatchEvent({
                         type: "setCamera",
                         camera: target,
+                        options: Object.assign({
+                            orbitControls: true,
+                            transformControls: true,
+                        }, options || {}),
                     });
                 }
                 else {
@@ -214,28 +222,30 @@ export class Engine extends EventDispatcher {
     }
     setScene(scene) {
         if (typeof scene === "object" && scene instanceof Scene) {
-            this.scene = scene;
             this.dispatchEvent({
                 type: "setScene",
                 scene,
+                oldScene: this.scene,
             });
+            this.scene = scene;
         }
         else {
             if (this.IS_ENGINESUPPORT) {
                 const target = this.compilerManager.getObjectBySymbol(scene);
                 if (target) {
-                    this.scene = target;
                     this.dispatchEvent({
                         type: "setScene",
                         scene: target,
+                        oldScene: this.scene,
                     });
+                    this.scene = target;
                 }
                 else {
-                    console.warn(`can not found camera in compilerManager: ${scene}`);
+                    console.warn(`can not found scene in compilerManager: ${scene}`);
                 }
             }
             else {
-                console.warn(`engine is not a Engine support but use symbol to found camera.`);
+                console.warn(`engine is not a Engine support but use symbol to found scene.`);
             }
         }
         return this;

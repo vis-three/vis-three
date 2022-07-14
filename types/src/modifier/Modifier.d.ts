@@ -1,10 +1,12 @@
 export interface ModifierParameters {
-    visible: boolean;
+    visible?: boolean;
+    source: any;
 }
 export declare abstract class Modifier {
     visible: boolean;
+    abstract source: any;
     constructor(parameters: ModifierParameters);
-    abstract use(): any;
+    abstract apply(): any;
     abstract render(): any;
     abstract dispose(): any;
 }

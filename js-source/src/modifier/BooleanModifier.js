@@ -65,7 +65,7 @@ export class BooleanModifier extends Modifier {
             this.modifiedGeometry.copy(this.originalGeometry);
         }
     }
-    use() {
+    apply() {
         this.originalGeometry.copy(this.modifiedGeometry);
         this.originalGeometry.uuid = this.modifiedGeometry.uuid;
         this.source.geometry = this.originalGeometry;

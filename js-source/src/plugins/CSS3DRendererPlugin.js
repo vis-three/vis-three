@@ -1,4 +1,4 @@
-import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS3DObject, CSS3DRenderer, } from "three/examples/jsm/renderers/CSS3DRenderer";
 export const CSS3DRendererPlugin = function (params = {}) {
     if (this.css3DRenderer) {
         console.warn("this has installed css3DRenderer plugin.");
@@ -17,6 +17,14 @@ export const CSS3DRendererPlugin = function (params = {}) {
     });
     this.addEventListener("setSize", (event) => {
         this.css3DRenderer.setSize(event.width, event.height);
+    });
+    this.addEventListener("setScene", (event) => {
+        const oldScene = event.oldScene;
+        oldScene.traverse((object) => {
+            if (object instanceof CSS3DObject) {
+                object.element.style.display = "none";
+            }
+        });
     });
     if (this.renderManager) {
         this.renderManager.removeEventListener("render", this.render);
