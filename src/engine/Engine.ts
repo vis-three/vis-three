@@ -190,7 +190,7 @@ export class Engine extends EventDispatcher {
   displayMode?: DISPLAYMODE;
   selectionBox?: Set<Object3D>;
 
-  getScreenshot?: (params: Screenshot) => string;
+  getScreenshot?: (params: Screenshot) => Promise<string>;
 
   setStats?: (show: boolean) => this;
   setTransformControls?: (show: boolean) => this;

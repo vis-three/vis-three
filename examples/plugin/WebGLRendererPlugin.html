@@ -43,19 +43,25 @@
         <button id="screenShot">getScreenshot</button>
 
         <button id="screenShot4k">getScreenshot 4k</button>
+
+        <button id="screenShot8k">getScreenshot 8k</button>
+
+        <button id="screenShot12k">getScreenshot 12k</button>
       </div>
     </div>
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
-      const engine = new Vis.ModelingEngine()
+      import * as VIS from "vis-three";
+      const engine = new VIS.ModelingEngine()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true)
         .play();
 
       const scene = engine.scene;
+
+      scene.background = new THREE.Color("black");
 
       const box = new THREE.Mesh(
         new THREE.BoxBufferGeometry(10, 10, 10),
@@ -78,23 +84,32 @@
 
       console.log(engine);
 
-      document.getElementById("screenShot").onclick = () => {
-        const uri = engine.getScreenshot();
+      async function downLoadScreenshot(name, width, height) {
+        const uri = await engine.getScreenshot({
+          width,
+          height,
+        });
+
         const a = document.createElement("a");
-        a.download = "vis-three" + new Date().getTime();
+        a.download = name + new Date().getTime();
         a.href = uri;
         a.click();
+      }
+
+      document.getElementById("screenShot").onclick = () => {
+        downLoadScreenshot("vis-three");
       };
 
-      document.getElementById("screenShot4k").onclick = () => {
-        const uri = engine.getScreenshot({
-          width: 4096,
-          height: 2160,
-        });
-        const a = document.createElement("a");
-        a.download = "vis-three-4k" + new Date().getTime();
-        a.href = uri;
-        a.click();
+      document.getElementById("screenShot4k").onclick = async () => {
+        downLoadScreenshot("vis-three-4k", 4096, 2160);
+      };
+
+      document.getElementById("screenShot8k").onclick = async () => {
+        downLoadScreenshot("vis-three-8k", 7680, 4320);
+      };
+
+      document.getElementById("screenShot12k").onclick = async () => {
+        downLoadScreenshot("vis-three-12k", 12288, 6480);
       };
 
       window.addEventListener("resize", () => {

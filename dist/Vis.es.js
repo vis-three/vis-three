@@ -1722,7 +1722,7 @@ const WebGLRendererPlugin = function(params = {}) {
   domElement.style.top = "0";
   domElement.style.left = "0";
   domElement.classList.add("vis-webgl");
-  this.getScreenshot = function(params2 = {}) {
+  this.getScreenshot = async function(params2 = {}) {
     const cacheSize = {
       width: this.dom.offsetWidth,
       height: this.dom.offsetHeight
@@ -1735,10 +1735,59 @@ const WebGLRendererPlugin = function(params = {}) {
       this.renderManager.stop();
       renderFlag = true;
     }
-    this.setSize(params2.width, params2.height);
-    this.renderManager.render();
-    const DataURI = this.webGLRenderer.domElement.toDataURL(params2.mine);
-    this.setSize(cacheSize.width, cacheSize.height);
+    let DataURI = "";
+    const gl = this.webGLRenderer.getContext();
+    const maxRenderBufferSize = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
+    const maxSize = maxRenderBufferSize / 4;
+    if (params2.width > maxSize || params2.height > maxSize) {
+      const renderList = [];
+      const rowNum = Math.ceil(params2.width / maxSize);
+      const columnNum = Math.ceil(params2.height / maxSize);
+      const partWidth = params2.width / rowNum;
+      const partHeight = params2.height / columnNum;
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.setAttribute("width", params2.width.toString());
+      tempCanvas.setAttribute("height", params2.height.toString());
+      const ctx = tempCanvas.getContext("2d");
+      if (!ctx) {
+        console.warn(`can not support canvas 2d;`);
+        return DataURI;
+      }
+      this.setSize(partWidth, partHeight);
+      for (let rowIndex = 0; rowIndex < rowNum; rowIndex += 1) {
+        for (let columnIndex = 0; columnIndex < columnNum; columnIndex += 1) {
+          renderList.push({
+            x: partWidth * rowIndex,
+            y: partHeight * columnIndex
+          });
+        }
+      }
+      const drawList = [];
+      renderList.forEach((elem) => {
+        this.camera.setViewOffset(params2.width, params2.height, elem.x, elem.y, partWidth, partHeight);
+        this.renderManager.render();
+        const DataURI2 = this.webGLRenderer.domElement.toDataURL(params2.mine);
+        drawList.push(new Promise((resolve, reject) => {
+          const image = new Image();
+          image.src = DataURI2;
+          image.onload = () => {
+            ctx.drawImage(image, elem.x, elem.y, partWidth, partHeight);
+            resolve(null);
+          };
+        }));
+      });
+      this.setSize(cacheSize.width, cacheSize.height);
+      await Promise.all(drawList).catch((err) => {
+        console.warn(err);
+      });
+      DataURI = tempCanvas.toDataURL(params2.mine);
+      this.camera.clearViewOffset();
+    } else {
+      this.setSize(params2.width, params2.height);
+      this.renderManager.render();
+      DataURI = this.webGLRenderer.domElement.toDataURL(params2.mine);
+      this.setSize(cacheSize.width, cacheSize.height);
+    }
     if (renderFlag) {
       this.renderManager.play();
     }
