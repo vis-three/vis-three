@@ -8784,7 +8784,8 @@ class MaterialCompiler extends Compiler {
       shader: true
     });
     __publicField(this, "needsUpdateAttribute", {
-      transparent: true
+      transparent: true,
+      sizeAttenuation: true
     });
     __publicField(this, "texturelMap", new Map());
     __publicField(this, "resourceMap", new Map());
