@@ -62,6 +62,7 @@ export class MaterialCompiler extends Compiler {
 
   private needsUpdateAttribute: { [key: string]: boolean } = {
     transparent: true,
+    sizeAttenuation: true,
   };
 
   private texturelMap = new Map<string, Texture>();

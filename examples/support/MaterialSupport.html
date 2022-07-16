@@ -21,25 +21,23 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import * as VIS from "vis-three";
       import { v4 as getUUid } from "uuid";
 
-      const canvasGenerator = new Vis.CanvasGenerator({
+      const canvasGenerator = new VIS.CanvasGenerator({
         width: 256,
         height: 256,
-      })
-        .draw((ctx) => {
-          ctx.textBaseline = "middle";
-          ctx.textAlign = "center";
+      }).draw((ctx) => {
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
 
-          ctx.fillStyle = "rgb(206, 42, 230)";
+        ctx.fillStyle = "rgb(206, 42, 230)";
 
-          ctx.font = " bold 48px 微软雅黑";
-          ctx.fillText("MATERIAL", 128, 128);
-        })
-        .preview();
+        ctx.font = " bold 48px 微软雅黑";
+        ctx.fillText("MATERIAL", 128, 128);
+      });
 
-      const engine = new Vis.ModelingEngineSupport()
+      const engine = new VIS.ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true)
@@ -49,7 +47,13 @@
 
       window.engine = engine;
 
-      const pointLight = Vis.generateConfig("PointLight", {
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      VIS.generateConfig.injectScene = scene.vid;
+
+      const pointLight = VIS.generateConfig("PointLight", {
         position: {
           x: 30,
           y: 50,
@@ -57,7 +61,7 @@
         distance: 100,
       });
 
-      const geometry = Vis.generateConfig("BoxGeometry", {
+      const geometry = VIS.generateConfig("BoxGeometry", {
         width: 10,
         height: 10,
         depth: 10,
@@ -67,11 +71,11 @@
         ],
       });
 
-      const canvasTexture = Vis.generateConfig("CanvasTexture", {
+      const canvasTexture = VIS.generateConfig("CanvasTexture", {
         url: "example.canvas",
       });
 
-      const meshStandardMaterial = Vis.generateConfig("MeshStandardMaterial", {
+      const meshStandardMaterial = VIS.generateConfig("MeshStandardMaterial", {
         metalness: 0.5,
         roughness: 0.5,
         color: "rgb(100, 200, 100)",
@@ -80,40 +84,25 @@
         alphaTest: 0.0,
       });
 
-      const meshPhongMaterial = Vis.generateConfig("MeshPhongMaterial", {
+      const meshPhongMaterial = VIS.generateConfig("MeshPhongMaterial", {
         color: "rgb(100, 100, 200)",
       });
 
-      const spriteMaterial = Vis.generateConfig("SpriteMaterial", {
+      const spriteMaterial = VIS.generateConfig("SpriteMaterial", {
         map: canvasTexture.vid,
       });
 
-      const lineBasicMaterial = Vis.generateConfig("LineBasicMaterial");
+      window.spriteMaterial = spriteMaterial;
 
-      const pointsMaterial = Vis.generateConfig("PointsMaterial");
+      const lineBasicMaterial = VIS.generateConfig("LineBasicMaterial");
 
-      const shaderMaterial = Vis.generateConfig("ShaderMaterial", {
+      const pointsMaterial = VIS.generateConfig("PointsMaterial");
+
+      const shaderMaterial = VIS.generateConfig("ShaderMaterial", {
         shader: "uvPulseShader",
       });
 
-      engine.applyConfig(
-        pointLight,
-        geometry,
-        canvasTexture,
-
-        meshStandardMaterial,
-        meshPhongMaterial,
-        spriteMaterial,
-        lineBasicMaterial,
-        pointsMaterial,
-        shaderMaterial
-      );
-
-      const scene = Vis.generateConfig("Scene", {
-        children: [pointLight.vid],
-      });
-
-      const standardMesh = Vis.generateConfig("Mesh", {
+      const standardMesh = VIS.generateConfig("Mesh", {
         material: meshStandardMaterial.vid,
         geometry: geometry.vid,
         position: {
@@ -121,7 +110,7 @@
         },
       });
 
-      const phongMesh = Vis.generateConfig("Mesh", {
+      const phongMesh = VIS.generateConfig("Mesh", {
         material: meshPhongMaterial.vid,
         geometry: geometry.vid,
         position: {
@@ -129,7 +118,7 @@
         },
       });
 
-      const sprite = Vis.generateConfig("Sprite", {
+      const sprite = VIS.generateConfig("Sprite", {
         material: spriteMaterial.vid,
         scale: {
           x: 10,
@@ -140,7 +129,7 @@
         },
       });
 
-      const line = Vis.generateConfig("Line", {
+      const line = VIS.generateConfig("Line", {
         material: lineBasicMaterial.vid,
         geometry: geometry.vid,
         position: {
@@ -148,7 +137,7 @@
         },
       });
 
-      const points = Vis.generateConfig("Points", {
+      const points = VIS.generateConfig("Points", {
         material: pointsMaterial.vid,
         geometry: geometry.vid,
         position: {
@@ -156,7 +145,7 @@
         },
       });
 
-      const shaderMesh = Vis.generateConfig("Mesh", {
+      const shaderMesh = VIS.generateConfig("Mesh", {
         material: shaderMaterial.vid,
         geometry: geometry.vid,
         position: {
@@ -165,7 +154,7 @@
         },
       });
 
-      const multMaterialMesh = Vis.generateConfig("Mesh", {
+      const multMaterialMesh = VIS.generateConfig("Mesh", {
         material: [meshStandardMaterial.vid, shaderMaterial.vid],
         geometry: geometry.vid,
         position: {
@@ -173,27 +162,6 @@
           z: 10,
         },
       });
-
-      scene.children.push(
-        standardMesh.vid,
-        phongMesh.vid,
-        sprite.vid,
-        line.vid,
-        points.vid,
-        shaderMesh.vid,
-        multMaterialMesh.vid
-      );
-
-      engine.applyConfig(
-        standardMesh,
-        phongMesh,
-        sprite,
-        line,
-        points,
-        shaderMesh,
-        multMaterialMesh,
-        scene
-      );
 
       engine.setScene(scene.vid).play();
 

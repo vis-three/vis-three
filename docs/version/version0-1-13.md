@@ -32,6 +32,7 @@
 - object addChildren
 - transformControls recursive
 - geometry path edit
+- spriteMaterial sizeAttenuation auto update
 
 #### perf
 
@@ -43,6 +44,7 @@
 - displayer- toDataURL
 - change scene can change css3D object
 - change scene can change helper object
+- WebGLRendererPlugin screentshot support large picture
 
 #### deprecated
 
