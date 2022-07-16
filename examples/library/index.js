@@ -1,6 +1,6 @@
 export default {
   router: "library",
-  children: ["/EventLibrary.html"],
+  children: ["/EventLibrary.html", "/ShaderLibrary.html"],
   position: {
     x: 60,
     y: 30,

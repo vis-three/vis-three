@@ -31,8 +31,8 @@ const recursion = (parentDir) => {
 };
 
 recursion(examplesDir);
-console.log(input);
-console.log(menusJson);
+// console.log(input);
+// console.log(menusJson);
 
 const menusPath = path.resolve(
   __dirname,
