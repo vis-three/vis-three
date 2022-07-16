@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>uvPulseShader</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as VIS from "vis-three";
+      import { v4 as getUUid } from "uuid";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      const engine = new VIS.ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true);
+
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid);
+
+      VIS.generateConfig.injectScene = true;
+
+      const ambientLight = VIS.generateConfig("AmbientLight");
+
+      const material = VIS.generateConfig("ShaderMaterial", {
+        shader: "uvPulseShader",
+        side: THREE.DoubleSide,
+        uniforms: {
+          time: {
+            value: 4.5,
+          },
+        },
+      });
+
+      const material2 = VIS.generateConfig("MeshStandardMaterial");
+
+      const geometry = VIS.generateConfig("PlaneGeometry", {
+        width: 20,
+        height: 20,
+      });
+
+      const mesh = VIS.generateConfig("Mesh", {
+        material: material.vid,
+        geometry: geometry.vid,
+      });
+
+      const shpereGeometry = VIS.generateConfig("SphereGeometry", {
+        radius: 10,
+      });
+
+      const mesh2 = VIS.generateConfig("Mesh", {
+        material: material.vid,
+        geometry: shpereGeometry.vid,
+        position: {
+          x: 25,
+        },
+      });
+
+      const boxGeometry = VIS.generateConfig("BoxGeometry", {
+        width: 20,
+        height: 20,
+        depth: 20,
+      });
+
+      const mesh3 = VIS.generateConfig("Mesh", {
+        material: material.vid,
+        geometry: boxGeometry.vid,
+        position: {
+          x: -25,
+        },
+      });
+
+      const ringGeometry = VIS.generateConfig("RingGeometry", {
+        innerRadius: 5,
+        outerRadius: 10,
+        thetaSegments: 32,
+      });
+
+      const mesh4 = VIS.generateConfig("Mesh", {
+        material: material.vid,
+        geometry: ringGeometry.vid,
+        position: {
+          z: -25,
+        },
+      });
+
+      const coneGeometry = VIS.generateConfig("ConeGeometry", {
+        radius: 10,
+        height: 10,
+        radialSegments: 32,
+      });
+
+      const mesh5 = VIS.generateConfig("Mesh", {
+        material: material.vid,
+        geometry: coneGeometry.vid,
+        position: {
+          z: 25,
+        },
+      });
+
+      engine.play();
+
+      window.engine = engine;
+      window.material = material;
+
+      const gui = new GUI();
+
+      const guiParams = {
+        time: material.uniforms.time.value,
+        width: material.uniforms.width.value,
+        color: material.uniforms.color.value,
+        centerX: material.uniforms.center.value.x,
+        centerY: material.uniforms.center.value.y,
+      };
+
+      gui.add(guiParams, "time", 4, 6, 0.01).onChange((value) => {
+        material.uniforms.time.value = value;
+      });
+
+      gui.add(guiParams, "width", 0, 0.5, 0.01).onChange((value) => {
+        material.uniforms.width.value = value;
+      });
+
+      gui.addColor(guiParams, "color");
+
+      gui.add(guiParams, "centerX", 0, 1, 0.01).onChange((value) => {
+        material.uniforms.center.value.x = value;
+      });
+
+      gui.add(guiParams, "centerY", 0, 1, 0.01).onChange((value) => {
+        material.uniforms.center.value.y = value;
+      });
+    </script>
+  </body>
+</html>

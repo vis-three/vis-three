@@ -7,18 +7,40 @@
     <title>SceneSupport</title>
     <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
     
-    <script type="module" crossorigin src="/vis-three/examples/assets/support/SceneSupport.6bcc22bb.js"></script>
+    <script type="module" crossorigin src="/vis-three/examples/assets/support/SceneSupport.31760085.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
     <link rel="modulepreload" href="/vis-three/examples/assets/three.b54e9ae7.js">
     <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.36482fbe.js">
-    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.7c5541b7.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.74edd40b.js">
     <link rel="modulepreload" href="/vis-three/examples/assets/v4.90f1a8cc.js">
-    <link rel="stylesheet" href="/vis-three/examples/assets/Vis.es.3f4fcb3b.css">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
-  <style></style>
+  <style>
+    #element1 {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 4px rgb(170, 150, 241);
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
 
   <body>
     <div id="app"></div>
+    <div id="element1">
+      <p>canvas P</p>
+      <img
+        src="/vis-three/examples/texture/Bricks_Color.jpg"
+        style="width: 50px; height: 50px"
+        alt=""
+      />
+
+      <div class="form">
+        <label for="element1-range">range</label>
+        <input id="element1-range" type="range" />
+      </div>
+    </div>
     <div id="button-position">
       <div id="button-group">
         <p>change scene:</p>

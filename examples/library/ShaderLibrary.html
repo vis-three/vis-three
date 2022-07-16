@@ -16,6 +16,7 @@
     }
 
     a {
+      display: block;
       color: white;
     }
 
@@ -28,7 +29,10 @@
     <div id="app"></div>
 
     <script type="module">
-      const list = ["./shaderLibrary/uvPulseShader.html"];
+      const list = [
+        "../shaderLibrary/uvPulseShader.html",
+        "../shaderLibrary/fragCoordTestingShader.html",
+      ];
 
       const app = document.getElementById("app");
       list.forEach((url) => {

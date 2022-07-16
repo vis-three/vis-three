@@ -1,5 +1,6 @@
 import { Shader } from "./shader";
 import uvPulseShader from "./shader/uvPulseShader";
+import fragCoordTestingShader from "./shader/fragCoordTestingShader";
 
 export class ShaderLibrary {
   private static library = new Map<string, Shader>();
@@ -81,3 +82,4 @@ export const defaultShader = {
 
 ShaderLibrary.reigster(defaultShader);
 ShaderLibrary.reigster(uvPulseShader);
+ShaderLibrary.reigster(fragCoordTestingShader);

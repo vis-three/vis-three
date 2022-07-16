@@ -11,14 +11,14 @@
           <span>VIS-THREE-EXAMPLES</span>
         </div>
         <div class="header-operation">
-          <a-input v-model:value="filterText">
+          <a-input v-model:value="filterText" @change="change">
             <template #suffix>
               <search-outlined></search-outlined>
             </template>
           </a-input>
         </div>
       </div>
-      <div class="sidebar-box">
+      <div class="sidebar-box" @scroll="scroll" ref="sidebarBox">
         <div
           v-for="item in filterMenus"
           :key="item.name"
@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, nextTick, ref } from "vue";
 import menus from "./assets/menus.json";
 import URLParse from "url-parse";
 
@@ -63,12 +63,18 @@ export default defineComponent({
     // data
     const currentExample = ref<string>(query.example || menus[0].url);
     const filterText = ref<string>(query.search || "");
+    const pageNum = 10;
+    const pageIndex = ref<number>(0);
+    const total = menus.length;
+    const sidebarBox = ref<HTMLElement | null>(null);
 
     // computed
     const filterMenus = computed(() => {
-      return menus.filter((elem) =>
-        elem.url.toLocaleLowerCase().includes(filterText.value)
-      );
+      return menus
+        .filter((elem) =>
+          elem.url.toLocaleLowerCase().includes(filterText.value)
+        )
+        .slice(0, (pageIndex.value + 1) * pageNum);
     });
 
     // methods
@@ -102,6 +108,28 @@ export default defineComponent({
       window.location.href = window.location.origin + "/vis-three/";
     };
 
+    // 懒加载
+    const scroll = (event: UIEvent) => {
+      const target = event.target! as HTMLElement;
+      if (
+        target.scrollHeight - 50 <=
+        Math.ceil(target.scrollTop + target.clientHeight)
+      ) {
+        if ((pageIndex.value + 1) * pageNum < total) {
+          pageIndex.value += 1;
+        }
+      }
+    };
+
+    // 重置
+    const change = () => {
+      // scroll top 0
+      sidebarBox.value && (sidebarBox.value.scrollTop = 0);
+      nextTick(() => {
+        pageIndex.value = 0;
+      });
+    };
+
     return {
       filterText,
       currentExample,
@@ -110,10 +138,14 @@ export default defineComponent({
       getExamplePoster,
       toHome,
       changeExample,
+      scroll,
       basePath: import.meta.env.BASE_URL,
       repoPrefix:
         "https://github.com/Shiotsukikaedesari/vis-three/tree/main/examples/",
       filterMenus,
+      pageIndex,
+      change,
+      sidebarBox,
     };
   },
 });
