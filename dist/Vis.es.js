@@ -2960,7 +2960,7 @@ function v4(options, buf, offset) {
   }
   return stringify$1(rnds);
 }
-const shader$1 = {
+const shader$2 = {
   name: "uvPulseShader",
   uniforms: {
     time: { value: 0 },
@@ -3025,7 +3025,7 @@ const shader$1 = {
       gl_FragColor = vec4(color, opacity);
     }`
 };
-const shader = {
+const shader$1 = {
   name: "fragCoordTestingShader",
   uniforms: {
     resolution: {
@@ -3045,6 +3045,40 @@ const shader = {
     void main () {
       vec2 st = gl_FragCoord.xy / resolution;
       gl_FragColor = vec4(st.x,st.y,0.0,1.0);
+    }`
+};
+const shader = {
+  name: "colorMixShader",
+  uniforms: {
+    colorA: {
+      value: {
+        r: 1,
+        g: 0,
+        b: 0
+      }
+    },
+    colorB: {
+      value: {
+        r: 0,
+        g: 1,
+        b: 0
+      }
+    },
+    percent: {
+      value: 0.5
+    }
+  },
+  vertexShader: `
+  void main () {
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }`,
+  fragmentShader: `
+    uniform vec3 colorA;
+    uniform vec3 colorB;
+    uniform float percent;
+
+    void main () {
+      gl_FragColor = vec4(mix(colorA, colorB, percent), 1.0);
     }`
 };
 const _ShaderLibrary = class {
@@ -3090,6 +3124,7 @@ const defaultShader = {
   name: "defaultShader"
 };
 ShaderLibrary.reigster(defaultShader);
+ShaderLibrary.reigster(shader$2);
 ShaderLibrary.reigster(shader$1);
 ShaderLibrary.reigster(shader);
 var CONFIGTYPE;
