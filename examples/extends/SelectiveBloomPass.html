@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SelectiveBloomPass</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+    <script type="module">
+      import * as THREE from "three";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+      import * as VIS from "vis-three";
+
+      const engine = new VIS.DisplayEngine()
+        .complete()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      const scene = engine.scene;
+
+      const box = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(10, 10, 10),
+        new THREE.MeshStandardMaterial({
+          color: "rgb(255, 105, 100)",
+          transparent: true,
+          opacity: 0.5,
+        })
+      );
+      scene.add(box);
+
+      const box2 = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(10, 10, 10),
+        new THREE.MeshStandardMaterial({ color: "rgb(200, 150, 200)" })
+      );
+
+      box2.position.set(20, 0, 0);
+      scene.add(box2);
+
+      const sphere = new THREE.Mesh(
+        new THREE.SphereBufferGeometry(5),
+        new THREE.MeshStandardMaterial({ color: "rgb(100, 150, 120)" })
+      );
+
+      sphere.position.set(0, 0, -20);
+      scene.add(sphere);
+
+      scene.add(new THREE.AmbientLight());
+
+      window.engine = engine;
+
+      const pass = new VIS.SelectiveBloomPass(
+        new THREE.Vector2(
+          window.innerWidth * window.devicePixelRatio,
+          window.innerHeight * window.devicePixelRatio
+        ),
+        2,
+        1,
+        0.4,
+        engine.scene,
+        engine.camera,
+        [box, sphere]
+      );
+
+      console.log(pass);
+      engine.effectComposer.addPass(pass);
+    </script>
+  </body>
+</html>

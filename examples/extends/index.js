@@ -1,6 +1,6 @@
 export default {
   router: "extends",
-  children: [],
+  children: ["/SelectiveBloomPass.html"],
   position: {
     x: 20,
     y: 35,

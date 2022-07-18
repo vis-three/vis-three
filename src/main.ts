@@ -54,8 +54,10 @@ import { RenderManager } from "./manager/RenderManager";
 import { CONFIGMODULE } from "./middleware/constants/CONFIGMODULE";
 import { GroupDataSupport } from "./middleware/group/GroupDataSupport";
 import { KeyboardManager } from "./manager/KeyboardManager";
+import { SelectiveBloomPass } from "./extends/pass/SelectiveBloomPass";
 
 import "./optimize/optimizeScirpt";
+
 export {
   // core
   ProxyBroadcast,
@@ -130,4 +132,6 @@ export {
   VideoLoader,
   // modifier
   BooleanModifier,
+  // pass
+  SelectiveBloomPass,
 };

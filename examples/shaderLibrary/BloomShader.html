@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BloomShader</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as VIS from "vis-three";
+      import { v4 as getUUid } from "uuid";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      const engine = new VIS.ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true);
+
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid);
+
+      VIS.generateConfig.injectScene = true;
+
+      const material = VIS.generateConfig("MeshBasicMaterial", {
+        side: THREE.DoubleSide,
+        transparent: true,
+        color: "rgb(200, 100, 200)",
+      });
+      const material2 = VIS.generateConfig("ShaderMaterial", {
+        shader: "BloomShader",
+        side: THREE.DoubleSide,
+        transparent: true,
+      });
+
+      const geometry = VIS.generateConfig("SphereGeometry", {
+        radius: 10,
+        groups: [
+          { start: 0, count: Infinity, materialIndex: 0 },
+          { start: 0, count: Infinity, materialIndex: 1 },
+        ],
+      });
+
+      const mesh = VIS.generateConfig("Mesh", {
+        material: [material.vid, material2.vid],
+        geometry: geometry.vid,
+      });
+
+      engine.play();
+
+      window.engine = engine;
+      window.material = material;
+
+      const gui = new GUI();
+
+      const guiParams = {
+        color: material2.uniforms.color.value,
+        brightness: material2.uniforms.brightness.value,
+      };
+
+      gui.addColor(guiParams, "color");
+
+      gui.add(guiParams, "brightness", 0, 1, 0.01).onChange((value) => {
+        material2.uniforms.brightness.value = value;
+      });
+    </script>
+  </body>
+</html>

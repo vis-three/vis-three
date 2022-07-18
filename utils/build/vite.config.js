@@ -22,6 +22,8 @@ export default {
         "three/examples/jsm/libs/stats.module",
         "three/examples/jsm/postprocessing/Pass.js",
         "three/examples/jsm/renderers/CSS3DRenderer",
+        "three/examples/jsm/shaders/LuminosityHighPassShader",
+        "three/examples/jsm/shaders/CopyShader",
       ],
       plugins: [],
     },

@@ -33,6 +33,10 @@ export interface MaterialConfig extends SymbolConfig {
   blending: Blending;
   blendSrc: number;
   blendSrcAlpha: number | null;
+
+  polygonOffset: boolean;
+  polygonOffsetFactor: number;
+  polygonOffsetUnits: number;
 }
 
 export interface MeshBasicMaterial extends MaterialConfig {
@@ -186,6 +190,10 @@ export const getMaterialConfig = function (): MaterialConfig {
     blending: NormalBlending,
     blendSrc: SrcAlphaFactor,
     blendSrcAlpha: null,
+
+    polygonOffset: false,
+    polygonOffsetFactor: 0,
+    polygonOffsetUnits: 0,
   };
 };
 
