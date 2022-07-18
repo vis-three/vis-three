@@ -24,6 +24,8 @@
 - RingGeometry
 - LineShapeGeometry
 
+- SelectiveBloomPass
+
 #### fix
 
 - object-updateEvent

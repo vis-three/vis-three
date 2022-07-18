@@ -2,11 +2,14 @@ import {
   AdditiveBlending,
   Camera,
   Color,
+  Mesh,
   MeshBasicMaterial,
+  MeshStandardMaterial,
   Object3D,
   PerspectiveCamera,
   Scene,
   ShaderMaterial,
+  Texture,
   UniformsUtils,
   Vector2,
   Vector3,
@@ -47,7 +50,11 @@ export class SelectiveBloomPass extends Pass {
   private oldClearAlpha = 1;
   private basic = new MeshBasicMaterial();
   private fsQuad = new FullScreenQuad();
-  private _visibilityCache = new WeakMap();
+  private materialCache = new WeakMap();
+  private sceneBackgroundCache: Texture | Color | null = null;
+  private overrideMaterial = new MeshStandardMaterial({
+    color: "black",
+  });
 
   constructor(
     resolution: Vector2 = new Vector2(256, 256),
@@ -213,7 +220,12 @@ export class SelectiveBloomPass extends Pass {
       selectedObjectsMap.set(object, true);
     }
 
-    const _visibilityCache = this._visibilityCache;
+    const materialCache = this.materialCache;
+
+    if (this.renderScene.background) {
+      this.sceneBackgroundCache = this.renderScene.background;
+      this.renderScene.background = null;
+    }
 
     this.renderScene.traverse((object) => {
       if (
@@ -221,8 +233,8 @@ export class SelectiveBloomPass extends Pass {
         object.type === "Mesh" &&
         object.visible
       ) {
-        _visibilityCache.set(object, true);
-        object.visible = false;
+        materialCache.set(object, (object as Mesh).material);
+        (object as Mesh).material = this.overrideMaterial;
       }
     });
 
@@ -296,8 +308,7 @@ export class SelectiveBloomPass extends Pass {
     // Blend it additively over the input texture
 
     this.fsQuad.material = this.mixMaterial;
-    // this.copyUniforms["tDiffuse"].value =
-    //   this.renderTargetsHorizontal[0].texture;
+
     this.mixMaterial.uniforms["bloom"].value =
       this.renderTargetsHorizontal[0].texture;
     this.mixMaterial.uniforms["origin"].value = readBuffer.texture;
@@ -319,8 +330,8 @@ export class SelectiveBloomPass extends Pass {
 
     // back visible
     this.renderScene.traverse((object) => {
-      if (_visibilityCache.has(object)) {
-        object.visible = true;
+      if (materialCache.has(object)) {
+        (object as Mesh).material = materialCache.get(object);
       }
     });
   }

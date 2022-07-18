@@ -13997,7 +13997,11 @@ const _SelectiveBloomPass = class extends Pass {
     __publicField(this, "oldClearAlpha", 1);
     __publicField(this, "basic", new MeshBasicMaterial());
     __publicField(this, "fsQuad", new FullScreenQuad());
-    __publicField(this, "_visibilityCache", new WeakMap());
+    __publicField(this, "materialCache", new WeakMap());
+    __publicField(this, "sceneBackgroundCache", null);
+    __publicField(this, "overrideMaterial", new MeshStandardMaterial({
+      color: "black"
+    }));
     this.resolution = resolution;
     this.strength = strength;
     this.radius = radius;
@@ -14100,11 +14104,15 @@ const _SelectiveBloomPass = class extends Pass {
     for (const object of this.selectedObjects) {
       selectedObjectsMap.set(object, true);
     }
-    const _visibilityCache = this._visibilityCache;
+    const materialCache = this.materialCache;
+    if (this.renderScene.background) {
+      this.sceneBackgroundCache = this.renderScene.background;
+      this.renderScene.background = null;
+    }
     this.renderScene.traverse((object) => {
       if (!selectedObjectsMap.has(object) && object.type === "Mesh" && object.visible) {
-        _visibilityCache.set(object, true);
-        object.visible = false;
+        materialCache.set(object, object.material);
+        object.material = this.overrideMaterial;
       }
     });
     renderer.setRenderTarget(this.selectRenderTarget);
@@ -14160,8 +14168,8 @@ const _SelectiveBloomPass = class extends Pass {
     renderer.setClearColor(this._oldClearColor, this.oldClearAlpha);
     renderer.autoClear = oldAutoClear;
     this.renderScene.traverse((object) => {
-      if (_visibilityCache.has(object)) {
-        object.visible = true;
+      if (materialCache.has(object)) {
+        object.material = materialCache.get(object);
       }
     });
   }
