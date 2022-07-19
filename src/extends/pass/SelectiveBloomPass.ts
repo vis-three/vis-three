@@ -2,17 +2,26 @@ import {
   AdditiveBlending,
   Camera,
   Color,
+  Light,
+  Line,
+  LineBasicMaterial,
+  Material,
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
   Object3D,
   PerspectiveCamera,
+  Points,
+  PointsMaterial,
   Scene,
   ShaderMaterial,
+  Sprite,
+  SpriteMaterial,
   Texture,
   UniformsUtils,
   Vector2,
   Vector3,
+  WebGLRenderer,
   WebGLRenderTarget,
 } from "three";
 import { FullScreenQuad, Pass } from "three/examples/jsm/postprocessing/Pass";
@@ -50,11 +59,16 @@ export class SelectiveBloomPass extends Pass {
   private oldClearAlpha = 1;
   private basic = new MeshBasicMaterial();
   private fsQuad = new FullScreenQuad();
-  private materialCache = new WeakMap();
+  private materialCache = new Map<Object3D, Material | Material[]>();
   private sceneBackgroundCache: Texture | Color | null = null;
-  private overrideMaterial = new MeshStandardMaterial({
+
+  private overrideBackground = new Color("black");
+  private overrideMeshMaterial = new MeshStandardMaterial({
     color: "black",
   });
+  private overrideLineMaterial = new LineBasicMaterial({ color: "black" });
+  private overridePointsMaterial = new PointsMaterial({ color: "black" });
+  private overrideSpriteMaterial = new SpriteMaterial({ color: "black" });
 
   constructor(
     resolution: Vector2 = new Vector2(256, 256),
@@ -188,6 +202,7 @@ export class SelectiveBloomPass extends Pass {
     let resx = Math.round(width / 2);
     let resy = Math.round(height / 2);
 
+    this.selectRenderTarget.setSize(resx, resy);
     this.renderTargetBright.setSize(resx, resy);
 
     for (let i = 0; i < this.nMips; i++) {
@@ -204,7 +219,13 @@ export class SelectiveBloomPass extends Pass {
     }
   }
 
-  render(renderer, writeBuffer, readBuffer, deltaTime, maskActive) {
+  render(
+    renderer: WebGLRenderer,
+    writeBuffer: WebGLRenderTarget,
+    readBuffer: WebGLRenderTarget,
+    deltaTime: number,
+    maskActive: boolean
+  ) {
     renderer.getClearColor(this._oldClearColor);
     this.oldClearAlpha = renderer.getClearAlpha();
     const oldAutoClear = renderer.autoClear;
@@ -224,17 +245,25 @@ export class SelectiveBloomPass extends Pass {
 
     if (this.renderScene.background) {
       this.sceneBackgroundCache = this.renderScene.background;
-      this.renderScene.background = null;
+      this.renderScene.background = this.overrideBackground;
     }
 
     this.renderScene.traverse((object) => {
       if (
         !selectedObjectsMap.has(object) &&
-        object.type === "Mesh" &&
+        !(object as Light).isLight &&
         object.visible
       ) {
         materialCache.set(object, (object as Mesh).material);
-        (object as Mesh).material = this.overrideMaterial;
+        if (object instanceof Mesh) {
+          object.material = this.overrideMeshMaterial;
+        } else if (object instanceof Line) {
+          object.material = this.overrideLineMaterial;
+        } else if (object instanceof Points) {
+          object.material = this.overridePointsMaterial;
+        } else if (object instanceof Sprite) {
+          object.material = this.overrideSpriteMaterial;
+        }
       }
     });
 
@@ -329,11 +358,16 @@ export class SelectiveBloomPass extends Pass {
     renderer.autoClear = oldAutoClear;
 
     // back visible
-    this.renderScene.traverse((object) => {
-      if (materialCache.has(object)) {
-        (object as Mesh).material = materialCache.get(object);
-      }
-    });
+    for (const entry of materialCache.entries()) {
+      (entry[0] as Mesh).material = entry[1];
+    }
+
+    materialCache.clear();
+
+    if (this.sceneBackgroundCache) {
+      this.renderScene.background = this.sceneBackgroundCache;
+      this.sceneBackgroundCache = null;
+    }
   }
 
   getMixMaterial(): ShaderMaterial {

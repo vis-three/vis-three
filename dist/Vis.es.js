@@ -13997,11 +13997,15 @@ const _SelectiveBloomPass = class extends Pass {
     __publicField(this, "oldClearAlpha", 1);
     __publicField(this, "basic", new MeshBasicMaterial());
     __publicField(this, "fsQuad", new FullScreenQuad());
-    __publicField(this, "materialCache", new WeakMap());
+    __publicField(this, "materialCache", new Map());
     __publicField(this, "sceneBackgroundCache", null);
-    __publicField(this, "overrideMaterial", new MeshStandardMaterial({
+    __publicField(this, "overrideBackground", new Color("black"));
+    __publicField(this, "overrideMeshMaterial", new MeshStandardMaterial({
       color: "black"
     }));
+    __publicField(this, "overrideLineMaterial", new LineBasicMaterial({ color: "black" }));
+    __publicField(this, "overridePointsMaterial", new PointsMaterial({ color: "black" }));
+    __publicField(this, "overrideSpriteMaterial", new SpriteMaterial({ color: "black" }));
     this.resolution = resolution;
     this.strength = strength;
     this.radius = radius;
@@ -14083,6 +14087,7 @@ const _SelectiveBloomPass = class extends Pass {
   setSize(width, height) {
     let resx = Math.round(width / 2);
     let resy = Math.round(height / 2);
+    this.selectRenderTarget.setSize(resx, resy);
     this.renderTargetBright.setSize(resx, resy);
     for (let i = 0; i < this.nMips; i++) {
       this.renderTargetsHorizontal[i].setSize(resx, resy);
@@ -14107,12 +14112,20 @@ const _SelectiveBloomPass = class extends Pass {
     const materialCache = this.materialCache;
     if (this.renderScene.background) {
       this.sceneBackgroundCache = this.renderScene.background;
-      this.renderScene.background = null;
+      this.renderScene.background = this.overrideBackground;
     }
     this.renderScene.traverse((object) => {
-      if (!selectedObjectsMap.has(object) && object.type === "Mesh" && object.visible) {
+      if (!selectedObjectsMap.has(object) && !object.isLight && object.visible) {
         materialCache.set(object, object.material);
-        object.material = this.overrideMaterial;
+        if (object instanceof Mesh) {
+          object.material = this.overrideMeshMaterial;
+        } else if (object instanceof Line) {
+          object.material = this.overrideLineMaterial;
+        } else if (object instanceof Points) {
+          object.material = this.overridePointsMaterial;
+        } else if (object instanceof Sprite) {
+          object.material = this.overrideSpriteMaterial;
+        }
       }
     });
     renderer.setRenderTarget(this.selectRenderTarget);
@@ -14167,11 +14180,14 @@ const _SelectiveBloomPass = class extends Pass {
     }
     renderer.setClearColor(this._oldClearColor, this.oldClearAlpha);
     renderer.autoClear = oldAutoClear;
-    this.renderScene.traverse((object) => {
-      if (materialCache.has(object)) {
-        object.material = materialCache.get(object);
-      }
-    });
+    for (const entry of materialCache.entries()) {
+      entry[0].material = entry[1];
+    }
+    materialCache.clear();
+    if (this.sceneBackgroundCache) {
+      this.renderScene.background = this.sceneBackgroundCache;
+      this.sceneBackgroundCache = null;
+    }
   }
   getMixMaterial() {
     return new ShaderMaterial({
