@@ -6,6 +6,7 @@ import {
   EventLibrary,
 } from "../../library/event/EventLibrary";
 import { EVENTNAME, ObjectEvent } from "../../manager/EventManager";
+import { syncObject } from "../../utils/utils";
 import { SymbolConfig } from "../common/CommonConfig";
 import { ObjectConfig } from "./ObjectConfig";
 
@@ -404,7 +405,7 @@ export abstract class ObjectCompiler<
       }
     });
 
-    Compiler.applyConfig(config, object, this.filterAttribute);
+    syncObject(config, object, this.filterAttribute);
 
     object.updateMatrix();
     object.updateMatrixWorld();
@@ -482,7 +483,7 @@ export abstract class ObjectCompiler<
       }
     });
 
-    Compiler.applyConfig(config, object, this.filterAttribute);
+    syncObject(config, object, this.filterAttribute);
     return this;
   }
 

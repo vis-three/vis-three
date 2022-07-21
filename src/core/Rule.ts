@@ -1,15 +1,22 @@
 import { validate } from "uuid";
+import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { Compiler, CompilerTarget } from "./Compiler";
 import { ProxyNotice } from "./ProxyBroadcast";
 
-export type Rule<C extends Compiler<CompilerTarget, object>> = (
+type BasicCompiler = Compiler<
+  SymbolConfig,
+  CompilerTarget<SymbolConfig>,
+  object
+>;
+
+export type Rule<C extends BasicCompiler> = (
   input: ProxyNotice,
   output: C
 ) => void;
 
-export const Rule: Rule<Compiler<CompilerTarget, object>> = (
+export const Rule: Rule<BasicCompiler> = (
   input: ProxyNotice,
-  compiler: Compiler<CompilerTarget, object>
+  compiler: BasicCompiler
 ) => {
   const { operate, key, path, value } = input;
 

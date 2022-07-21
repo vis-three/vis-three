@@ -12,6 +12,7 @@ import {
 } from "three";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
 import { EngineSupport, ShaderLibrary } from "../../main";
+import { syncObject } from "../../utils/utils";
 import { SymbolConfig } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
 import { MODULETYPE } from "../constants/MODULETYPE";
@@ -128,7 +129,7 @@ export class MaterialCompiler extends Compiler {
       }
     }
     // 应用属性
-    Compiler.applyConfig(
+    syncObject(
       config,
       material,
       Object.assign(filterMap, this.shaderAttribute)

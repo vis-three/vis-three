@@ -4541,6 +4541,26 @@ const ResourceManagerPlugin = function(params) {
 function isValidKey(key, object) {
   return key in object;
 }
+function syncObject(config2, target, filter, callBack) {
+  const recursiveConfig = (config22, target2, filter2) => {
+    for (const key in config22) {
+      if (filter2 && filter2[key]) {
+        continue;
+      }
+      if (typeof config22[key] === "object" && typeof config22[key] !== null) {
+        if (filter2 && typeof filter2[key] === "object" && typeof filter2[key] !== null) {
+          recursiveConfig(config22[key], target2[key], filter2[key]);
+        } else {
+          recursiveConfig(config22[key], target2[key]);
+        }
+        continue;
+      }
+      target2[key] = config22[key];
+    }
+  };
+  recursiveConfig(config2, target, filter);
+  callBack && callBack();
+}
 const _ProxyBroadcast = class extends EventDispatcher {
   constructor(ignore) {
     super();
@@ -5521,40 +5541,98 @@ const _Compiler = class {
     __publicField(this, "target", {});
     __publicField(this, "map", new Map());
     __publicField(this, "weakMap", new WeakMap());
+    __publicField(this, "engine");
   }
-  static applyConfig(config2, object2, filter = {}, callBack) {
-    const filterMap = Object.assign({
-      vid: true,
-      type: true
-    }, filter);
-    const recursiveConfig = (config22, object3) => {
-      for (const key in config22) {
-        if (filterMap[key]) {
-          continue;
-        }
-        if (typeof config22[key] === "object" && typeof config22[key] !== null && isValidKey(key, object3)) {
-          recursiveConfig(config22[key], object3[key]);
-          continue;
-        }
-        if (isValidKey(key, object3)) {
-          object3[key] = config22[key];
-        }
-      }
-    };
-    recursiveConfig(config2, object2);
-    callBack && callBack();
+  useEngine(engine) {
+    this.engine = engine;
+    return this;
   }
-  compile(vid, input) {
+  setTarget(target) {
+    this.target = target;
     return this;
   }
   add(config2) {
-    return this;
+    if (!_Compiler.processors.has(config2.type)) {
+      console.warn(`PassCompiler can not support this type: ${config2.type}`);
+      return null;
+    }
+    const processor = _Compiler.processors.get(config2.type);
+    const pass = processor.create(config2, this.engine);
+    this.map.set(config2.vid, pass);
+    this.weakMap.set(pass, config2.vid);
+    return pass;
   }
   remove(config2) {
+    const vid = config2.vid;
+    if (!this.map.has(vid)) {
+      console.warn(`${this.MODULE} compiler can not found this vid pass: ${vid}.`);
+      return this;
+    }
+    if (!_Compiler.processors.has(config2.type)) {
+      console.warn(`${this.MODULE} compiler can not support this type: ${config2.type}`);
+      return this;
+    }
+    const pass = this.map.get(vid);
+    _Compiler.processors.get(config2.type).dispose(pass);
+    this.map.delete(vid);
+    this.weakMap.delete(pass);
     return this;
   }
   cover(config2) {
     return this;
+  }
+  compile(vid, notice) {
+    if (!this.map.has(vid)) {
+      console.warn(`pass compiler set function: can not found object which vid is: '${vid}'`);
+      return this;
+    }
+    if (!this.target[vid]) {
+      console.warn(`pass compiler set function: can not found config which vid is: '${vid}'`);
+      return this;
+    }
+    const pass = this.map.get(vid);
+    const config2 = this.target[vid];
+    if (!_Compiler.processors.has(config2.type)) {
+      console.warn(`PassCompiler can not support this type: ${config2.type}`);
+      return this;
+    }
+    const processor = _Compiler.processors.get(config2.type);
+    processor.process(__spreadValues({
+      config: config2,
+      target: pass,
+      engine: this.engine
+    }, notice));
+    return this;
+  }
+  compileAll() {
+    const target = this.target;
+    for (const config2 of Object.values(target)) {
+      this.add(config2);
+    }
+    return this;
+  }
+  dispose() {
+    for (const config2 of Object.values(this.target)) {
+      if (!this.map.has(config2.vid)) {
+        console.warn(`${this.MODULE} compiler set function: can not found object which vid is: '${config2.vid}'`);
+        continue;
+      }
+      const pass = this.map.get(config2.vid);
+      if (!_Compiler.processors.has(config2.type)) {
+        console.warn(`${this.MODULE}  can not support this type: ${config2.type}`);
+        continue;
+      }
+      _Compiler.processors.get(config2.type).dispose(pass);
+    }
+    this.map.clear();
+    this.target = {};
+    return this;
+  }
+  getObjectSymbol(object) {
+    return this.weakMap.get(object) || null;
+  }
+  getObjectBySymbol(vid) {
+    return this.map.get(vid) || null;
   }
 };
 let Compiler = _Compiler;
@@ -7785,7 +7863,7 @@ const _ObjectCompiler = class extends Compiler {
         }
       }
     });
-    Compiler.applyConfig(config2, object, this.filterAttribute);
+    syncObject(config2, object, this.filterAttribute);
     object.updateMatrix();
     object.updateMatrixWorld();
     return this;
@@ -7839,7 +7917,7 @@ const _ObjectCompiler = class extends Compiler {
         }
       }
     });
-    Compiler.applyConfig(config2, object, this.filterAttribute);
+    syncObject(config2, object, this.filterAttribute);
     return this;
   }
   remove(vid, config2) {
@@ -9055,7 +9133,7 @@ class MaterialCompiler extends Compiler {
         filterMap[key] = true;
       }
     }
-    Compiler.applyConfig(config2, material, Object.assign(filterMap, this.shaderAttribute));
+    syncObject(config2, material, Object.assign(filterMap, this.shaderAttribute));
     material.needsUpdate = true;
     return this;
   }
@@ -9660,102 +9738,31 @@ class PassCompiler extends Compiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.PASS);
-    __publicField(this, "compilerManager");
     __publicField(this, "composer");
-    __publicField(this, "engine");
-    __publicField(this, "width", window.innerWidth * window.devicePixelRatio);
-    __publicField(this, "height", window.innerHeight * window.devicePixelRatio);
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
   }
   useEngine(engine) {
-    var _a, _b;
+    super.useEngine(engine);
     if (!engine.effectComposer) {
       console.warn(`engine need install effectComposer plugin that can use pass compiler.`);
       return this;
     }
-    this.engine = engine;
     this.composer = engine.effectComposer;
-    this.compilerManager = engine.compilerManager;
-    const pixelRatio = this.composer.renderer.getPixelRatio();
-    this.width = (((_a = engine.dom) == null ? void 0 : _a.offsetWidth) || window.innerWidth) * pixelRatio;
-    this.height = (((_b = engine.dom) == null ? void 0 : _b.offsetHeight) || window.innerHeight) * pixelRatio;
-    engine.addEventListener("setSize", (event) => {
-      this.width = event.width * pixelRatio;
-      this.height = event.height * pixelRatio;
-    });
     return this;
   }
   add(config2) {
-    if (!Compiler.processors.has(config2.type)) {
-      console.warn(`PassCompiler can not support this type: ${config2.type}`);
-      return this;
-    }
-    const processor = Compiler.processors.get(config2.type);
-    const pass = processor.create(config2, this.engine);
-    this.composer.addPass(pass);
-    this.map.set(config2.vid, pass);
-    this.weakMap.set(pass, config2.vid);
-    return this;
-  }
-  compile(vid, notice) {
-    if (!this.map.has(vid)) {
-      console.warn(`pass compiler set function: can not found object which vid is: '${vid}'`);
-      return this;
-    }
-    if (!this.target[vid]) {
-      console.warn(`pass compiler set function: can not found config which vid is: '${vid}'`);
-      return this;
-    }
-    const pass = this.map.get(vid);
-    const config2 = this.target[vid];
-    if (!Compiler.processors.has(config2.type)) {
-      console.warn(`PassCompiler can not support this type: ${config2.type}`);
-      return this;
-    }
-    const processor = Compiler.processors.get(config2.type);
-    processor.process(__spreadValues({
-      config: config2,
-      target: pass,
-      engine: this.engine
-    }, notice));
-    return this;
+    const pass = super.add(config2);
+    pass && this.composer.addPass(pass);
+    return pass;
   }
   remove(config2) {
-    const vid = config2.vid;
-    if (!this.map.has(vid)) {
-      console.warn(`PassCompiler can not found this vid pass: ${vid}.`);
+    if (!this.map.has(config2.vid)) {
+      console.warn(`PassCompiler can not found this vid pass: ${config2.vid}.`);
       return this;
     }
-    if (!Compiler.processors.has(config2.type)) {
-      console.warn(`PassCompiler can not support this type: ${config2.type}`);
-      return this;
-    }
-    const pass = this.map.get(vid);
-    Compiler.processors.get(config2.type).dispose(pass);
+    const pass = this.map.get(config2.vid);
     this.composer.removePass(pass);
-    this.map.delete(vid);
-    this.weakMap.delete(pass);
+    super.remove(config2);
     return this;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const config2 of Object.values(target)) {
-      this.add(config2);
-    }
-    return this;
-  }
-  dispose() {
-    this.map.clear();
-    return this;
-  }
-  getObjectSymbol(object) {
-    return this.weakMap.get(object) || null;
-  }
-  getObjectBySymbol(vid) {
-    return this.map.get(vid) || null;
   }
 }
 Compiler.processor(SMAAPassProcessor);
@@ -10355,7 +10362,7 @@ const _TextureCompiler = class extends Compiler {
           texture.image = images;
           delete tempConfig.cube;
         }
-        Compiler.applyConfig(tempConfig, texture);
+        syncObject(tempConfig, texture);
         texture.needsUpdate = true;
         this.map.set(vid, texture);
         this.weakMap.set(texture, vid);

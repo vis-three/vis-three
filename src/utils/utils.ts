@@ -58,7 +58,7 @@ export function generateConfigFunction<T extends object>(config: T) {
 export function syncObject<C extends object, T extends object>(
   config: C,
   target: T,
-  filter: IgnoreAttribute,
+  filter?: IgnoreAttribute,
   callBack?: Function
 ) {
   const recursiveConfig = (

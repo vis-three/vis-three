@@ -9,6 +9,7 @@ import { VideoTexture } from "../../optimize/VideoTexture";
 import { EngineSupport } from "../../engine/EngineSupport";
 import { CanvasGenerator } from "../../convenient/CanvasGenerator";
 import { MODULETYPE } from "../constants/MODULETYPE";
+import { syncObject } from "../../utils/utils";
 
 export interface TextureCompilerTarget extends CompilerTarget {
   [key: string]: TextureAllType;
@@ -125,7 +126,7 @@ export class TextureCompiler extends Compiler {
           delete tempConfig.cube;
         }
 
-        Compiler.applyConfig(tempConfig, texture);
+        syncObject(tempConfig, texture);
 
         texture.needsUpdate = true;
 
