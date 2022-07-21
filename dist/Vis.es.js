@@ -17567,7 +17567,7 @@ class LightShadow {
     return object;
   }
 }
-const version = "0.1.3-6";
+const version = "0.2.0";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }

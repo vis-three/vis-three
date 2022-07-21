@@ -3,7 +3,7 @@
 three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 <p>
-  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Version-0.1.3-{}" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Version-0.2.0-{}" alt="Version"></a>
   <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MPL2.0-{}" alt="License"></a>
 </p>
 
@@ -37,16 +37,17 @@ import {
   github 地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github.com/Shiotsukikaedesari/vis-three)
 
 ## 项目结构说明
-- `src`vis-three库源码
+
+- `src`vis-three 库源码
 - `website`主页源码
 - `docs`文档源码
 - `examples`例子库源码
 - `arts`美术资源
-- `cypress`e2e测试用例源码
-- `dist`vis-three库build
-- `dist-website`主页build
-- `js-source` tsc编译js版本
-- `types`vis-three的声明文件地址
+- `cypress`e2e 测试用例源码
+- `dist`vis-three 库 build
+- `dist-website`主页 build
+- `js-source` tsc 编译 js 版本
+- `types`vis-three 的声明文件地址
 - `uitls`项目级别工具库
 
 ## 开发说明
