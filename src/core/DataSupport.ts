@@ -10,7 +10,7 @@ import { Translater } from "./Translater";
 
 export abstract class DataSupport<
   D extends CompilerTarget,
-  C extends Compiler
+  C extends Compiler<D, object>
 > {
   abstract MODULE: MODULETYPE;
 

@@ -76,8 +76,8 @@ export class SelectiveBloomPass extends Pass {
     radius = 0,
     threshold = 0,
     renderScene = new Scene(),
-    renderCamera = new PerspectiveCamera(),
-    selectedObjects: []
+    renderCamera: Camera = new PerspectiveCamera(),
+    selectedObjects: Object3D[]
   ) {
     super();
 
@@ -226,6 +226,18 @@ export class SelectiveBloomPass extends Pass {
     deltaTime: number,
     maskActive: boolean
   ) {
+    if (!this.selectedObjects.length) {
+      if (this.renderToScreen) {
+        this.fsQuad.material = this.basic;
+        this.basic.map = readBuffer.texture;
+
+        renderer.setRenderTarget(null);
+        renderer.clear();
+        this.fsQuad.render(renderer);
+      }
+      return;
+    }
+
     renderer.getClearColor(this._oldClearColor);
     this.oldClearAlpha = renderer.getClearAlpha();
     const oldAutoClear = renderer.autoClear;

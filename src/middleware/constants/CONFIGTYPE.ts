@@ -65,6 +65,7 @@ export enum CONFIGTYPE {
 
   SMAAPASS = "SMAAPass",
   UNREALBLOOMPASS = "UnrealBloomPass",
+  SELECTIVEBLOOMPASS = "SelectiveBloomPass",
 
   SCRIPTANIMATION = "ScriptAnimation",
   KEYFRAMEANIMATION = "KeyframeAnimation",

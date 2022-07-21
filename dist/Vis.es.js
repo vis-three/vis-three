@@ -18,7 +18,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Euler, Matrix4 as Matrix4$1, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, TubeGeometry, ShapeBufferGeometry, Shape, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, TorusGeometry, RingBufferGeometry, ShapeGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, DodecahedronBufferGeometry, Fog, FogExp2, Scene, Sprite, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, Camera, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1, UniformsUtils, AdditiveBlending } from "three";
+import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Euler, Matrix4 as Matrix4$1, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, TubeGeometry, ShapeBufferGeometry, Shape, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, TorusGeometry, RingBufferGeometry, ShapeGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, Scene, UniformsUtils, Sprite, AdditiveBlending, Camera, DodecahedronBufferGeometry, Fog, FogExp2, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -3219,6 +3219,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["ORBITCONTROLS"] = "OrbitControls";
   CONFIGTYPE2["SMAAPASS"] = "SMAAPass";
   CONFIGTYPE2["UNREALBLOOMPASS"] = "UnrealBloomPass";
+  CONFIGTYPE2["SELECTIVEBLOOMPASS"] = "SelectiveBloomPass";
   CONFIGTYPE2["SCRIPTANIMATION"] = "ScriptAnimation";
   CONFIGTYPE2["KEYFRAMEANIMATION"] = "KeyframeAnimation";
 })(CONFIGTYPE || (CONFIGTYPE = {}));
@@ -3910,9 +3911,28 @@ const getSMAAPassConfig = function() {
 const getUnrealBloomPassConfig = function() {
   return Object.assign(getPassConfig(), {
     type: CONFIGTYPE.UNREALBLOOMPASS,
+    resolution: {
+      x: window.innerWidth,
+      y: window.innerHeight
+    },
     strength: 1.5,
     threshold: 0,
     radius: 0
+  });
+};
+const getSelectiveBloomPassConfig = function() {
+  return Object.assign(getPassConfig(), {
+    type: CONFIGTYPE.SELECTIVEBLOOMPASS,
+    resolution: {
+      x: window.innerWidth,
+      y: window.innerHeight
+    },
+    strength: 1,
+    threshold: 0,
+    radius: 0,
+    renderScene: "",
+    renderCamera: "",
+    selectedObjects: []
   });
 };
 const getAnimationConfig = function() {
@@ -4013,6 +4033,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig,
   [CONFIGTYPE.SMAAPASS]: getSMAAPassConfig,
   [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig,
+  [CONFIGTYPE.SELECTIVEBLOOMPASS]: getSelectiveBloomPassConfig,
   [CONFIGTYPE.SCRIPTANIMATION]: getScriptAnimationConfig,
   [CONFIGTYPE.KEYFRAMEANIMATION]: getKeyframeAnimationConfig
 };
@@ -4102,6 +4123,17 @@ const CONFIGMODULE = {
   [CONFIGTYPE.SCRIPTANIMATION]: MODULETYPE.ANIMATION,
   [CONFIGTYPE.KEYFRAMEANIMATION]: MODULETYPE.ANIMATION
 };
+const getModule = (type) => {
+  const matchModule = (module) => {
+    return type.toLocaleLowerCase().includes(module.toLocaleLowerCase());
+  };
+  for (const module of Object.values(MODULETYPE)) {
+    if (matchModule(module)) {
+      return module;
+    }
+  }
+  return null;
+};
 const generateConfig = function(type, merge, strict = true, warn = true) {
   if (!CONFIGFACTORY[type]) {
     console.error(`type: ${type} can not be found in configList.`);
@@ -4148,7 +4180,7 @@ const generateConfig = function(type, merge, strict = true, warn = true) {
     const engine = generateConfig.injectEngine;
     const reactive = engine.reactiveConfig(initConfig);
     if (generateConfig.injectScene) {
-      if (CONFIGMODULE[initConfig.type] in OBJECTMODULE && initConfig.type !== CONFIGTYPE.SCENE) {
+      if (getModule(initConfig.type) in OBJECTMODULE && initConfig.type !== CONFIGTYPE.SCENE) {
         let sceneConfig = null;
         if (typeof generateConfig.injectScene === "boolean") {
           sceneConfig = engine.getObjectConfig(engine.scene);
@@ -5207,24 +5239,33 @@ class GroupDataSupport extends ObjectDataSupport {
     __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
-const PassRule = function(input, compiler) {
+const Rule = (input, compiler) => {
   const { operate, key, path, value } = input;
-  const tempPath = path.concat([]);
   let vid = key;
-  if (tempPath.length) {
+  const tempPath = [].concat(path);
+  if (path.length) {
     vid = tempPath.shift();
   }
-  if (operate === "add") {
+  if (!validate(vid)) {
+    console.warn(`${compiler.MODULE} Rule: vid is illeage: ${vid}`);
+    return;
+  }
+  if (operate === "add" && !tempPath.length) {
     compiler.add(value);
     return;
   }
-  if (operate === "set") {
-    compiler.set(vid, tempPath, key, value);
-  }
-  if (operate === "delete") {
-    compiler.remove(value.vid);
+  if (input.operate === "delete" && !tempPath.length) {
+    compiler.remove(value);
     return;
   }
+  if (input.operate === "set" && !tempPath.length && !key) {
+    compiler.cover(value);
+    return;
+  }
+  compiler.compile(vid, { operate, key, path: tempPath, value });
+};
+const PassRule = function(input, compiler) {
+  Rule(input, compiler);
 };
 class PassDataSupport extends DataSupport {
   constructor(data, ignore) {
@@ -5282,7 +5323,7 @@ class CSS3DDataSupport extends ObjectDataSupport {
     __publicField(this, "MODULE", MODULETYPE.CSS3D);
   }
 }
-const _DataSupportManager = class {
+class DataSupportManager {
   constructor(parameters) {
     __publicField(this, "cameraDataSupport", new CameraDataSupport());
     __publicField(this, "lightDataSupport", new LightDataSupport());
@@ -5374,7 +5415,7 @@ const _DataSupportManager = class {
   }
   applyConfig(...configs) {
     for (const config2 of configs) {
-      const module = _DataSupportManager.configModuleMap[config2.type];
+      const module = getModule(config2.type);
       if (module) {
         this.dataSupportMap.get(module).addConfig(config2);
       } else {
@@ -5384,7 +5425,7 @@ const _DataSupportManager = class {
     return this;
   }
   reactiveConfig(config2) {
-    const module = _DataSupportManager.configModuleMap[config2.type];
+    const module = getModule(config2.type);
     if (module) {
       return this.dataSupportMap.get(module).addConfig(config2).getConfig(config2.vid);
     } else {
@@ -5416,9 +5457,7 @@ const _DataSupportManager = class {
     });
     return extendsConfig;
   }
-};
-let DataSupportManager = _DataSupportManager;
-__publicField(DataSupportManager, "configModuleMap", CONFIGMODULE);
+}
 const DataSupportManagerPlugin = function(params) {
   if (this.dataSupportManager) {
     console.warn("engine has installed dataSupportManager plugin.");
@@ -5477,32 +5516,52 @@ const DataSupportManagerPlugin = function(params) {
   });
   return true;
 };
-class Compiler {
-  static applyConfig(config2, object, filter = {}, callBack) {
+const _Compiler = class {
+  constructor() {
+    __publicField(this, "target", {});
+    __publicField(this, "map", new Map());
+    __publicField(this, "weakMap", new WeakMap());
+  }
+  static applyConfig(config2, object2, filter = {}, callBack) {
     const filterMap = Object.assign({
       vid: true,
       type: true
     }, filter);
-    const recursiveConfig = (config22, object2) => {
+    const recursiveConfig = (config22, object3) => {
       for (const key in config22) {
         if (filterMap[key]) {
           continue;
         }
-        if (typeof config22[key] === "object" && typeof config22[key] !== null && isValidKey(key, object2)) {
-          recursiveConfig(config22[key], object2[key]);
+        if (typeof config22[key] === "object" && typeof config22[key] !== null && isValidKey(key, object3)) {
+          recursiveConfig(config22[key], object3[key]);
           continue;
         }
-        if (isValidKey(key, object2)) {
-          object2[key] = config22[key];
+        if (isValidKey(key, object3)) {
+          object3[key] = config22[key];
         }
       }
     };
-    recursiveConfig(config2, object);
+    recursiveConfig(config2, object2);
     callBack && callBack();
   }
-  constructor() {
+  compile(vid, input) {
+    return this;
   }
-}
+  add(config2) {
+    return this;
+  }
+  remove(config2) {
+    return this;
+  }
+  cover(config2) {
+    return this;
+  }
+};
+let Compiler = _Compiler;
+__publicField(Compiler, "processors", new Map());
+__publicField(Compiler, "processor", function(processor) {
+  _Compiler.processors.set(processor.configType, processor);
+});
 const config$j = {
   name: "linearTime",
   multiply: 1
@@ -7982,6 +8041,81 @@ class Processor {
     return this;
   }
 }
+class Processor2 {
+  constructor(options) {
+    __publicField(this, "configType");
+    __publicField(this, "commands");
+    __publicField(this, "create");
+    __publicField(this, "dispose");
+    this.configType = options.configType;
+    this.commands = options.commands;
+    this.create = options.create;
+    this.dispose = options.dispose;
+  }
+  process(params) {
+    if (!this.commands || !this.commands[params.operate]) {
+      this[params.operate](params);
+      return;
+    }
+    let commands = this.commands[params.operate];
+    for (const key of [].concat(params.path, params.key)) {
+      if (!commands[key]) {
+        this[params.operate](params);
+        return;
+      } else {
+        if (typeof commands[key] === "function") {
+          commands[key](params);
+          return;
+        } else {
+          commands = commands[key];
+        }
+      }
+    }
+    this[params.operate](params);
+  }
+  add(params) {
+    let target = params.target;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default add operate.`, params);
+        return;
+      }
+    }
+    target[params.key] = params.value;
+  }
+  set(params) {
+    let target = params.target;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default set operate.`, params);
+        return;
+      }
+    }
+    target[params.key] = params.value;
+  }
+  delete(params) {
+    let target = params.target;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default delete operate.`, params);
+        return;
+      }
+    }
+    delete target[params.key];
+  }
+}
+const defineProcessor = (options) => {
+  return new Processor2(options);
+};
 class OrbitControlsProcessor extends Processor {
   constructor() {
     super();
@@ -9060,68 +9194,547 @@ class MeshCompiler extends SolidObjectCompiler {
     return this;
   }
 }
+var SMAAPassProcessor = defineProcessor({
+  configType: CONFIGTYPE.SMAAPASS,
+  create(config2, engine) {
+    const pass = new SMAAPass(engine.dom.offsetWidth, engine.dom.offsetHeight);
+    return pass;
+  },
+  dispose(pass) {
+  }
+});
+var UnrealBloomPassProcessor = defineProcessor({
+  configType: CONFIGTYPE.UNREALBLOOMPASS,
+  create(config2) {
+    const pass = new UnrealBloomPass(new Vector2$1(config2.resolution.x, config2.resolution.y), config2.strength, config2.radius, config2.threshold);
+    return pass;
+  },
+  dispose(pass) {
+    pass.dispose();
+  }
+});
+class Pass {
+  constructor() {
+    this.enabled = true;
+    this.needsSwap = true;
+    this.clear = false;
+    this.renderToScreen = false;
+  }
+  setSize() {
+  }
+  render() {
+    console.error("THREE.Pass: .render() must be implemented in derived pass.");
+  }
+}
+const _camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
+const _geometry = new BufferGeometry();
+_geometry.setAttribute("position", new Float32BufferAttribute([-1, 3, 0, -1, -1, 0, 3, -1, 0], 3));
+_geometry.setAttribute("uv", new Float32BufferAttribute([0, 2, 0, 0, 2, 0], 2));
+class FullScreenQuad {
+  constructor(material) {
+    this._mesh = new Mesh(_geometry, material);
+  }
+  dispose() {
+    this._mesh.geometry.dispose();
+  }
+  render(renderer) {
+    renderer.render(this._mesh, _camera);
+  }
+  get material() {
+    return this._mesh.material;
+  }
+  set material(value) {
+    this._mesh.material = value;
+  }
+}
+const _SelectiveBloomPass = class extends Pass {
+  constructor(resolution = new Vector2$1(256, 256), strength = 1, radius = 0, threshold = 0, renderScene = new Scene(), renderCamera = new PerspectiveCamera(), selectedObjects) {
+    super();
+    __publicField(this, "resolution");
+    __publicField(this, "strength");
+    __publicField(this, "radius");
+    __publicField(this, "threshold");
+    __publicField(this, "selectedObjects", []);
+    __publicField(this, "renderScene");
+    __publicField(this, "renderCamera");
+    __publicField(this, "clearColor", new Color(0, 0, 0));
+    __publicField(this, "renderTargetsHorizontal", []);
+    __publicField(this, "renderTargetsVertical", []);
+    __publicField(this, "nMips", 5);
+    __publicField(this, "selectRenderTarget");
+    __publicField(this, "renderTargetBright");
+    __publicField(this, "highPassUniforms");
+    __publicField(this, "materialHighPassFilter");
+    __publicField(this, "separableBlurMaterials", []);
+    __publicField(this, "compositeMaterial");
+    __publicField(this, "bloomTintColors");
+    __publicField(this, "mixMaterial");
+    __publicField(this, "enabled", true);
+    __publicField(this, "needsSwap", false);
+    __publicField(this, "_oldClearColor", new Color());
+    __publicField(this, "oldClearAlpha", 1);
+    __publicField(this, "basic", new MeshBasicMaterial());
+    __publicField(this, "fsQuad", new FullScreenQuad());
+    __publicField(this, "materialCache", new Map());
+    __publicField(this, "sceneBackgroundCache", null);
+    __publicField(this, "overrideBackground", new Color("black"));
+    __publicField(this, "overrideMeshMaterial", new MeshStandardMaterial({
+      color: "black"
+    }));
+    __publicField(this, "overrideLineMaterial", new LineBasicMaterial({ color: "black" }));
+    __publicField(this, "overridePointsMaterial", new PointsMaterial({ color: "black" }));
+    __publicField(this, "overrideSpriteMaterial", new SpriteMaterial({ color: "black" }));
+    this.resolution = resolution;
+    this.strength = strength;
+    this.radius = radius;
+    this.threshold = threshold;
+    this.renderScene = renderScene;
+    this.renderCamera = renderCamera;
+    this.selectedObjects = selectedObjects;
+    let resx = Math.round(this.resolution.x / 2);
+    let resy = Math.round(this.resolution.y / 2);
+    this.selectRenderTarget = new WebGLRenderTarget(resx, resy);
+    this.selectRenderTarget.texture.name = "UnrealBloomPass.selected";
+    this.selectRenderTarget.texture.generateMipmaps = false;
+    this.renderTargetBright = new WebGLRenderTarget(resx, resy);
+    this.renderTargetBright.texture.name = "UnrealBloomPass.bright";
+    this.renderTargetBright.texture.generateMipmaps = false;
+    for (let i = 0; i < this.nMips; i++) {
+      const renderTargetHorizonal = new WebGLRenderTarget(resx, resy);
+      renderTargetHorizonal.texture.name = "UnrealBloomPass.h" + i;
+      renderTargetHorizonal.texture.generateMipmaps = false;
+      this.renderTargetsHorizontal.push(renderTargetHorizonal);
+      const renderTargetVertical = new WebGLRenderTarget(resx, resy);
+      renderTargetVertical.texture.name = "UnrealBloomPass.v" + i;
+      renderTargetVertical.texture.generateMipmaps = false;
+      this.renderTargetsVertical.push(renderTargetVertical);
+      resx = Math.round(resx / 2);
+      resy = Math.round(resy / 2);
+    }
+    if (LuminosityHighPassShader === void 0)
+      console.error("THREE.UnrealBloomPass relies on LuminosityHighPassShader");
+    const highPassShader = LuminosityHighPassShader;
+    this.highPassUniforms = UniformsUtils.clone(highPassShader.uniforms);
+    this.highPassUniforms["luminosityThreshold"].value = threshold;
+    this.highPassUniforms["smoothWidth"].value = 0.01;
+    this.materialHighPassFilter = new ShaderMaterial({
+      uniforms: this.highPassUniforms,
+      vertexShader: highPassShader.vertexShader,
+      fragmentShader: highPassShader.fragmentShader,
+      defines: {}
+    });
+    const kernelSizeArray = [3, 5, 7, 9, 11];
+    resx = Math.round(this.resolution.x / 2);
+    resy = Math.round(this.resolution.y / 2);
+    for (let i = 0; i < this.nMips; i++) {
+      this.separableBlurMaterials.push(this.getSeperableBlurMaterial(kernelSizeArray[i]));
+      this.separableBlurMaterials[i].uniforms["texSize"].value = new Vector2$1(resx, resy);
+      resx = Math.round(resx / 2);
+      resy = Math.round(resy / 2);
+    }
+    this.compositeMaterial = this.getCompositeMaterial(this.nMips);
+    this.compositeMaterial.uniforms["blurTexture1"].value = this.renderTargetsVertical[0].texture;
+    this.compositeMaterial.uniforms["blurTexture2"].value = this.renderTargetsVertical[1].texture;
+    this.compositeMaterial.uniforms["blurTexture3"].value = this.renderTargetsVertical[2].texture;
+    this.compositeMaterial.uniforms["blurTexture4"].value = this.renderTargetsVertical[3].texture;
+    this.compositeMaterial.uniforms["blurTexture5"].value = this.renderTargetsVertical[4].texture;
+    this.compositeMaterial.uniforms["bloomStrength"].value = strength;
+    this.compositeMaterial.uniforms["bloomRadius"].value = 0.1;
+    this.compositeMaterial.needsUpdate = true;
+    const bloomFactors = [1, 0.8, 0.6, 0.4, 0.2];
+    this.compositeMaterial.uniforms["bloomFactors"].value = bloomFactors;
+    this.bloomTintColors = [
+      new Vector3$1(1, 1, 1),
+      new Vector3$1(1, 1, 1),
+      new Vector3$1(1, 1, 1),
+      new Vector3$1(1, 1, 1),
+      new Vector3$1(1, 1, 1)
+    ];
+    this.compositeMaterial.uniforms["bloomTintColors"].value = this.bloomTintColors;
+    this.mixMaterial = this.getMixMaterial();
+  }
+  dispose() {
+    for (let i = 0; i < this.renderTargetsHorizontal.length; i++) {
+      this.renderTargetsHorizontal[i].dispose();
+    }
+    for (let i = 0; i < this.renderTargetsVertical.length; i++) {
+      this.renderTargetsVertical[i].dispose();
+    }
+    this.renderTargetBright.dispose();
+  }
+  setSize(width, height) {
+    let resx = Math.round(width / 2);
+    let resy = Math.round(height / 2);
+    this.selectRenderTarget.setSize(resx, resy);
+    this.renderTargetBright.setSize(resx, resy);
+    for (let i = 0; i < this.nMips; i++) {
+      this.renderTargetsHorizontal[i].setSize(resx, resy);
+      this.renderTargetsVertical[i].setSize(resx, resy);
+      this.separableBlurMaterials[i].uniforms["texSize"].value = new Vector2$1(resx, resy);
+      resx = Math.round(resx / 2);
+      resy = Math.round(resy / 2);
+    }
+  }
+  render(renderer, writeBuffer, readBuffer, deltaTime, maskActive) {
+    if (!this.selectedObjects.length) {
+      if (this.renderToScreen) {
+        this.fsQuad.material = this.basic;
+        this.basic.map = readBuffer.texture;
+        renderer.setRenderTarget(null);
+        renderer.clear();
+        this.fsQuad.render(renderer);
+      }
+      return;
+    }
+    renderer.getClearColor(this._oldClearColor);
+    this.oldClearAlpha = renderer.getClearAlpha();
+    const oldAutoClear = renderer.autoClear;
+    renderer.autoClear = false;
+    renderer.setClearColor(this.clearColor, 0);
+    if (maskActive)
+      renderer.state.buffers.stencil.setTest(false);
+    const selectedObjectsMap = new Map();
+    for (const object of this.selectedObjects) {
+      selectedObjectsMap.set(object, true);
+    }
+    const materialCache = this.materialCache;
+    if (this.renderScene.background) {
+      this.sceneBackgroundCache = this.renderScene.background;
+      this.renderScene.background = this.overrideBackground;
+    }
+    this.renderScene.traverse((object) => {
+      if (!selectedObjectsMap.has(object) && !object.isLight && object.visible) {
+        materialCache.set(object, object.material);
+        if (object instanceof Mesh) {
+          object.material = this.overrideMeshMaterial;
+        } else if (object instanceof Line) {
+          object.material = this.overrideLineMaterial;
+        } else if (object instanceof Points) {
+          object.material = this.overridePointsMaterial;
+        } else if (object instanceof Sprite) {
+          object.material = this.overrideSpriteMaterial;
+        }
+      }
+    });
+    renderer.setRenderTarget(this.selectRenderTarget);
+    renderer.clear();
+    renderer.render(this.renderScene, this.renderCamera);
+    if (this.renderToScreen) {
+      this.fsQuad.material = this.basic;
+      this.basic.map = this.selectRenderTarget.texture;
+      renderer.setRenderTarget(null);
+      renderer.clear();
+      this.fsQuad.render(renderer);
+    }
+    this.highPassUniforms["tDiffuse"].value = this.selectRenderTarget.texture;
+    this.highPassUniforms["luminosityThreshold"].value = this.threshold;
+    this.fsQuad.material = this.materialHighPassFilter;
+    renderer.setRenderTarget(this.renderTargetBright);
+    renderer.clear();
+    this.fsQuad.render(renderer);
+    let inputRenderTarget = this.renderTargetBright;
+    for (let i = 0; i < this.nMips; i++) {
+      this.fsQuad.material = this.separableBlurMaterials[i];
+      this.separableBlurMaterials[i].uniforms["colorTexture"].value = inputRenderTarget.texture;
+      this.separableBlurMaterials[i].uniforms["direction"].value = _SelectiveBloomPass.BlurDirectionX;
+      renderer.setRenderTarget(this.renderTargetsHorizontal[i]);
+      renderer.clear();
+      this.fsQuad.render(renderer);
+      this.separableBlurMaterials[i].uniforms["colorTexture"].value = this.renderTargetsHorizontal[i].texture;
+      this.separableBlurMaterials[i].uniforms["direction"].value = _SelectiveBloomPass.BlurDirectionY;
+      renderer.setRenderTarget(this.renderTargetsVertical[i]);
+      renderer.clear();
+      this.fsQuad.render(renderer);
+      inputRenderTarget = this.renderTargetsVertical[i];
+    }
+    this.fsQuad.material = this.compositeMaterial;
+    this.compositeMaterial.uniforms["bloomStrength"].value = this.strength;
+    this.compositeMaterial.uniforms["bloomRadius"].value = this.radius;
+    this.compositeMaterial.uniforms["bloomTintColors"].value = this.bloomTintColors;
+    renderer.setRenderTarget(this.renderTargetsHorizontal[0]);
+    renderer.clear();
+    this.fsQuad.render(renderer);
+    this.fsQuad.material = this.mixMaterial;
+    this.mixMaterial.uniforms["bloom"].value = this.renderTargetsHorizontal[0].texture;
+    this.mixMaterial.uniforms["origin"].value = readBuffer.texture;
+    if (maskActive)
+      renderer.state.buffers.stencil.setTest(true);
+    if (this.renderToScreen) {
+      renderer.setRenderTarget(null);
+      this.fsQuad.render(renderer);
+    } else {
+      renderer.setRenderTarget(readBuffer);
+      this.fsQuad.render(renderer);
+    }
+    renderer.setClearColor(this._oldClearColor, this.oldClearAlpha);
+    renderer.autoClear = oldAutoClear;
+    for (const entry of materialCache.entries()) {
+      entry[0].material = entry[1];
+    }
+    materialCache.clear();
+    if (this.sceneBackgroundCache) {
+      this.renderScene.background = this.sceneBackgroundCache;
+      this.sceneBackgroundCache = null;
+    }
+  }
+  getMixMaterial() {
+    return new ShaderMaterial({
+      blending: AdditiveBlending,
+      depthTest: false,
+      depthWrite: false,
+      transparent: true,
+      uniforms: {
+        bloom: { value: null },
+        origin: { value: null }
+      },
+      vertexShader: `
+    
+        varying vec2 vUv;
+    
+        void main() {
+    
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    
+        }`,
+      fragmentShader: `
+        uniform sampler2D bloom;
+        uniform sampler2D origin;
+    
+        varying vec2 vUv;
+    
+        void main() {
+          vec3 bloomColor = texture2D(bloom, vUv).rgb;
+          vec3 originColor = texture2D(origin, vUv).rgb;
+          gl_FragColor = vec4(originColor + bloomColor, 1.0);
+        }`
+    });
+  }
+  getSeperableBlurMaterial(kernelRadius) {
+    return new ShaderMaterial({
+      defines: {
+        KERNEL_RADIUS: kernelRadius,
+        SIGMA: kernelRadius
+      },
+      uniforms: {
+        colorTexture: { value: null },
+        texSize: { value: new Vector2$1(0.5, 0.5) },
+        direction: { value: new Vector2$1(0.5, 0.5) }
+      },
+      vertexShader: `varying vec2 vUv;
+				void main() {
+					vUv = uv;
+					gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+				}`,
+      fragmentShader: `#include <common>
+				varying vec2 vUv;
+				uniform sampler2D colorTexture;
+				uniform vec2 texSize;
+				uniform vec2 direction;
+
+				float gaussianPdf(in float x, in float sigma) {
+					return 0.39894 * exp( -0.5 * x * x/( sigma * sigma))/sigma;
+				}
+				void main() {
+					vec2 invSize = 1.0 / texSize;
+					float fSigma = float(SIGMA);
+					float weightSum = gaussianPdf(0.0, fSigma);
+					vec3 diffuseSum = texture2D( colorTexture, vUv).rgb * weightSum;
+					for( int i = 1; i < KERNEL_RADIUS; i ++ ) {
+						float x = float(i);
+						float w = gaussianPdf(x, fSigma);
+						vec2 uvOffset = direction * invSize * x;
+						vec3 sample1 = texture2D( colorTexture, vUv + uvOffset).rgb;
+						vec3 sample2 = texture2D( colorTexture, vUv - uvOffset).rgb;
+						diffuseSum += (sample1 + sample2) * w;
+						weightSum += 2.0 * w;
+					}
+					gl_FragColor = vec4(diffuseSum/weightSum, 1.0);
+				}`
+    });
+  }
+  getCompositeMaterial(nMips) {
+    return new ShaderMaterial({
+      defines: {
+        NUM_MIPS: nMips
+      },
+      uniforms: {
+        blurTexture1: { value: null },
+        blurTexture2: { value: null },
+        blurTexture3: { value: null },
+        blurTexture4: { value: null },
+        blurTexture5: { value: null },
+        bloomStrength: { value: 1 },
+        bloomFactors: { value: null },
+        bloomTintColors: { value: null },
+        bloomRadius: { value: 0 }
+      },
+      vertexShader: `varying vec2 vUv;
+				void main() {
+					vUv = uv;
+					gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+				}`,
+      fragmentShader: `varying vec2 vUv;
+				uniform sampler2D blurTexture1;
+				uniform sampler2D blurTexture2;
+				uniform sampler2D blurTexture3;
+				uniform sampler2D blurTexture4;
+				uniform sampler2D blurTexture5;
+				uniform float bloomStrength;
+				uniform float bloomRadius;
+				uniform float bloomFactors[NUM_MIPS];
+				uniform vec3 bloomTintColors[NUM_MIPS];
+
+				float lerpBloomFactor(const in float factor) {
+					float mirrorFactor = 1.2 - factor;
+					return mix(factor, mirrorFactor, bloomRadius);
+				}
+
+				void main() {
+					gl_FragColor = bloomStrength * ( lerpBloomFactor(bloomFactors[0]) * vec4(bloomTintColors[0], 1.0) * texture2D(blurTexture1, vUv) +
+						lerpBloomFactor(bloomFactors[1]) * vec4(bloomTintColors[1], 1.0) * texture2D(blurTexture2, vUv) +
+						lerpBloomFactor(bloomFactors[2]) * vec4(bloomTintColors[2], 1.0) * texture2D(blurTexture3, vUv) +
+						lerpBloomFactor(bloomFactors[3]) * vec4(bloomTintColors[3], 1.0) * texture2D(blurTexture4, vUv) +
+						lerpBloomFactor(bloomFactors[4]) * vec4(bloomTintColors[4], 1.0) * texture2D(blurTexture5, vUv) );
+				}`
+    });
+  }
+};
+let SelectiveBloomPass = _SelectiveBloomPass;
+__publicField(SelectiveBloomPass, "BlurDirectionX", new Vector2$1(1, 0));
+__publicField(SelectiveBloomPass, "BlurDirectionY", new Vector2$1(0, 1));
+var SelectiveBloomPassProcessor = defineProcessor({
+  configType: CONFIGTYPE.SELECTIVEBLOOMPASS,
+  commands: {
+    add: {
+      selectedObjects({ target, engine, value }) {
+        const object = engine.compilerManager.getObject3D(value);
+        if (object) {
+          target.selectedObjects.push(object);
+        } else {
+          console.warn(`selectiveBloomPassProcessor: can not found vid in engine: ${value}`);
+        }
+      }
+    },
+    set: {
+      renderScene({ target, engine, value }) {
+        const object = engine.compilerManager.getObject3D(value);
+        if (object instanceof Scene) {
+          target.renderScene = object;
+        }
+      },
+      renderCamera({ target, engine, value }) {
+        const object = engine.compilerManager.getObject3D(value);
+        if (object instanceof Camera) {
+          target.renderCamera = object;
+        }
+      }
+    },
+    delete: {
+      selectedObjects({ target, engine, value }) {
+        const object = engine.compilerManager.getObject3D(value);
+        if (object) {
+          if (target.selectedObjects.includes(object)) {
+            target.selectedObjects.splice(target.selectedObjects.indexOf(object), 1);
+          }
+        } else {
+          console.warn(`selectiveBloomPassProcessor: can not found vid in engine: ${value}`);
+        }
+      }
+    }
+  },
+  create(config2, engine) {
+    const objects = [];
+    for (const vid of config2.selectedObjects) {
+      const object = engine.compilerManager.getObject3D(vid);
+      object && objects.push(object);
+    }
+    const pass = new SelectiveBloomPass(new Vector2$1(config2.resolution.x, config2.resolution.y), config2.strength, config2.radius, config2.threshold, config2.renderScene && engine.compilerManager.getObject3D(config2.renderScene) || void 0, config2.renderCamera && engine.compilerManager.getObject3D(config2.renderCamera) || void 0, objects);
+    return pass;
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
 class PassCompiler extends Compiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.PASS);
-    __publicField(this, "target");
-    __publicField(this, "map");
-    __publicField(this, "weakMap");
-    __publicField(this, "constructMap");
+    __publicField(this, "compilerManager");
     __publicField(this, "composer");
+    __publicField(this, "engine");
     __publicField(this, "width", window.innerWidth * window.devicePixelRatio);
     __publicField(this, "height", window.innerHeight * window.devicePixelRatio);
-    this.map = new Map();
-    this.weakMap = new WeakMap();
-    const constructMap = new Map();
-    constructMap.set(CONFIGTYPE.SMAAPASS, () => new SMAAPass(this.width, this.height));
-    constructMap.set(CONFIGTYPE.UNREALBLOOMPASS, (config2) => new UnrealBloomPass(new Vector2$1(this.width, this.height), config2.strength, config2.radius, config2.threshold));
-    this.constructMap = constructMap;
   }
   setTarget(target) {
     this.target = target;
     return this;
   }
   useEngine(engine) {
+    var _a, _b;
     if (!engine.effectComposer) {
       console.warn(`engine need install effectComposer plugin that can use pass compiler.`);
       return this;
     }
+    this.engine = engine;
     this.composer = engine.effectComposer;
+    this.compilerManager = engine.compilerManager;
     const pixelRatio = this.composer.renderer.getPixelRatio();
-    this.width = Number(this.composer.renderer.domElement.getAttribute("width")) * pixelRatio;
-    this.height = Number(this.composer.renderer.domElement.getAttribute("height")) * pixelRatio;
+    this.width = (((_a = engine.dom) == null ? void 0 : _a.offsetWidth) || window.innerWidth) * pixelRatio;
+    this.height = (((_b = engine.dom) == null ? void 0 : _b.offsetHeight) || window.innerHeight) * pixelRatio;
+    engine.addEventListener("setSize", (event) => {
+      this.width = event.width * pixelRatio;
+      this.height = event.height * pixelRatio;
+    });
     return this;
   }
   add(config2) {
-    if (this.constructMap.has(config2.type)) {
-      const pass = this.constructMap.get(config2.type)(config2);
-      this.composer.addPass(pass);
-      this.map.set(config2.vid, pass);
-      this.weakMap.set(pass, config2.vid);
-    } else {
-      console.warn(`pass compiler can not support this type pass: ${config2.type}.`);
-    }
-  }
-  set(vid, path, key, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`pass compiler set function: can not found material which vid is: '${vid}'`);
+    if (!Compiler.processors.has(config2.type)) {
+      console.warn(`PassCompiler can not support this type: ${config2.type}`);
       return this;
     }
-    const pass = this.map.get(vid);
-    let config2 = pass;
-    path.forEach((key2, i, arr) => {
-      config2 = config2[key2];
-    });
-    config2[key] = value;
+    const processor = Compiler.processors.get(config2.type);
+    const pass = processor.create(config2, this.engine);
+    this.composer.addPass(pass);
+    this.map.set(config2.vid, pass);
+    this.weakMap.set(pass, config2.vid);
     return this;
   }
-  remove(vid) {
+  compile(vid, notice) {
     if (!this.map.has(vid)) {
-      console.warn(`pass compiler can not found this vid pass: ${vid}.`);
+      console.warn(`pass compiler set function: can not found object which vid is: '${vid}'`);
+      return this;
+    }
+    if (!this.target[vid]) {
+      console.warn(`pass compiler set function: can not found config which vid is: '${vid}'`);
       return this;
     }
     const pass = this.map.get(vid);
+    const config2 = this.target[vid];
+    if (!Compiler.processors.has(config2.type)) {
+      console.warn(`PassCompiler can not support this type: ${config2.type}`);
+      return this;
+    }
+    const processor = Compiler.processors.get(config2.type);
+    processor.process(__spreadValues({
+      config: config2,
+      target: pass,
+      engine: this.engine
+    }, notice));
+    return this;
+  }
+  remove(config2) {
+    const vid = config2.vid;
+    if (!this.map.has(vid)) {
+      console.warn(`PassCompiler can not found this vid pass: ${vid}.`);
+      return this;
+    }
+    if (!Compiler.processors.has(config2.type)) {
+      console.warn(`PassCompiler can not support this type: ${config2.type}`);
+      return this;
+    }
+    const pass = this.map.get(vid);
+    Compiler.processors.get(config2.type).dispose(pass);
     this.composer.removePass(pass);
     this.map.delete(vid);
     this.weakMap.delete(pass);
@@ -9145,6 +9758,9 @@ class PassCompiler extends Compiler {
     return this.map.get(vid) || null;
   }
 }
+Compiler.processor(SMAAPassProcessor);
+Compiler.processor(UnrealBloomPassProcessor);
+Compiler.processor(SelectiveBloomPassProcessor);
 class PointsCompiler extends SolidObjectCompiler {
   constructor() {
     super();
@@ -9865,6 +10481,7 @@ class CompilerManager {
     __publicField(this, "passCompiler", new PassCompiler());
     __publicField(this, "animationCompiler", new AnimationCompiler());
     __publicField(this, "compilerMap");
+    __publicField(this, "object3DMapSet", new Set());
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
         this[key] = parameters[key];
@@ -9877,7 +10494,11 @@ class CompilerManager {
     const geometryMap = this.geometryCompiler.getMap();
     const materialMap = this.materialCompiler.getMap();
     const objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
-    const objectMapList = objectCompilerList.map((compiler) => compiler.getMap());
+    const objectMapList = objectCompilerList.map((compiler) => {
+      const map2 = compiler.getMap();
+      this.object3DMapSet.add(map2);
+      return map2;
+    });
     for (const objectCompiler of objectCompilerList) {
       if (isValidKey("IS_SOLIDOBJECTCOMPILER", objectCompiler)) {
         objectCompiler.linkGeometryMap(geometryMap).linkMaterialMap(materialMap);
@@ -9937,6 +10558,14 @@ class CompilerManager {
       const object = compiler.getObjectBySymbol(vid);
       if (object) {
         return object;
+      }
+    }
+    return null;
+  }
+  getObject3D(vid) {
+    for (const map2 of this.object3DMapSet) {
+      if (map2.has(vid)) {
+        return map2.get(vid);
       }
     }
     return null;
@@ -13935,386 +14564,6 @@ class History {
     this.actionList = [];
   }
 }
-class Pass {
-  constructor() {
-    this.enabled = true;
-    this.needsSwap = true;
-    this.clear = false;
-    this.renderToScreen = false;
-  }
-  setSize() {
-  }
-  render() {
-    console.error("THREE.Pass: .render() must be implemented in derived pass.");
-  }
-}
-const _camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
-const _geometry = new BufferGeometry();
-_geometry.setAttribute("position", new Float32BufferAttribute([-1, 3, 0, -1, -1, 0, 3, -1, 0], 3));
-_geometry.setAttribute("uv", new Float32BufferAttribute([0, 2, 0, 0, 2, 0], 2));
-class FullScreenQuad {
-  constructor(material) {
-    this._mesh = new Mesh(_geometry, material);
-  }
-  dispose() {
-    this._mesh.geometry.dispose();
-  }
-  render(renderer) {
-    renderer.render(this._mesh, _camera);
-  }
-  get material() {
-    return this._mesh.material;
-  }
-  set material(value) {
-    this._mesh.material = value;
-  }
-}
-const _SelectiveBloomPass = class extends Pass {
-  constructor(resolution = new Vector2$1(256, 256), strength = 1, radius = 0, threshold = 0, renderScene = new Scene(), renderCamera = new PerspectiveCamera(), selectedObjects) {
-    super();
-    __publicField(this, "resolution");
-    __publicField(this, "strength");
-    __publicField(this, "radius");
-    __publicField(this, "threshold");
-    __publicField(this, "selectedObjects", []);
-    __publicField(this, "renderScene");
-    __publicField(this, "renderCamera");
-    __publicField(this, "clearColor", new Color(0, 0, 0));
-    __publicField(this, "renderTargetsHorizontal", []);
-    __publicField(this, "renderTargetsVertical", []);
-    __publicField(this, "nMips", 5);
-    __publicField(this, "selectRenderTarget");
-    __publicField(this, "renderTargetBright");
-    __publicField(this, "highPassUniforms");
-    __publicField(this, "materialHighPassFilter");
-    __publicField(this, "separableBlurMaterials", []);
-    __publicField(this, "compositeMaterial");
-    __publicField(this, "bloomTintColors");
-    __publicField(this, "mixMaterial");
-    __publicField(this, "enabled", true);
-    __publicField(this, "needsSwap", false);
-    __publicField(this, "_oldClearColor", new Color());
-    __publicField(this, "oldClearAlpha", 1);
-    __publicField(this, "basic", new MeshBasicMaterial());
-    __publicField(this, "fsQuad", new FullScreenQuad());
-    __publicField(this, "materialCache", new Map());
-    __publicField(this, "sceneBackgroundCache", null);
-    __publicField(this, "overrideBackground", new Color("black"));
-    __publicField(this, "overrideMeshMaterial", new MeshStandardMaterial({
-      color: "black"
-    }));
-    __publicField(this, "overrideLineMaterial", new LineBasicMaterial({ color: "black" }));
-    __publicField(this, "overridePointsMaterial", new PointsMaterial({ color: "black" }));
-    __publicField(this, "overrideSpriteMaterial", new SpriteMaterial({ color: "black" }));
-    this.resolution = resolution;
-    this.strength = strength;
-    this.radius = radius;
-    this.threshold = threshold;
-    this.renderScene = renderScene;
-    this.renderCamera = renderCamera;
-    this.selectedObjects = selectedObjects;
-    let resx = Math.round(this.resolution.x / 2);
-    let resy = Math.round(this.resolution.y / 2);
-    this.selectRenderTarget = new WebGLRenderTarget(resx, resy);
-    this.selectRenderTarget.texture.name = "UnrealBloomPass.selected";
-    this.selectRenderTarget.texture.generateMipmaps = false;
-    this.renderTargetBright = new WebGLRenderTarget(resx, resy);
-    this.renderTargetBright.texture.name = "UnrealBloomPass.bright";
-    this.renderTargetBright.texture.generateMipmaps = false;
-    for (let i = 0; i < this.nMips; i++) {
-      const renderTargetHorizonal = new WebGLRenderTarget(resx, resy);
-      renderTargetHorizonal.texture.name = "UnrealBloomPass.h" + i;
-      renderTargetHorizonal.texture.generateMipmaps = false;
-      this.renderTargetsHorizontal.push(renderTargetHorizonal);
-      const renderTargetVertical = new WebGLRenderTarget(resx, resy);
-      renderTargetVertical.texture.name = "UnrealBloomPass.v" + i;
-      renderTargetVertical.texture.generateMipmaps = false;
-      this.renderTargetsVertical.push(renderTargetVertical);
-      resx = Math.round(resx / 2);
-      resy = Math.round(resy / 2);
-    }
-    if (LuminosityHighPassShader === void 0)
-      console.error("THREE.UnrealBloomPass relies on LuminosityHighPassShader");
-    const highPassShader = LuminosityHighPassShader;
-    this.highPassUniforms = UniformsUtils.clone(highPassShader.uniforms);
-    this.highPassUniforms["luminosityThreshold"].value = threshold;
-    this.highPassUniforms["smoothWidth"].value = 0.01;
-    this.materialHighPassFilter = new ShaderMaterial({
-      uniforms: this.highPassUniforms,
-      vertexShader: highPassShader.vertexShader,
-      fragmentShader: highPassShader.fragmentShader,
-      defines: {}
-    });
-    const kernelSizeArray = [3, 5, 7, 9, 11];
-    resx = Math.round(this.resolution.x / 2);
-    resy = Math.round(this.resolution.y / 2);
-    for (let i = 0; i < this.nMips; i++) {
-      this.separableBlurMaterials.push(this.getSeperableBlurMaterial(kernelSizeArray[i]));
-      this.separableBlurMaterials[i].uniforms["texSize"].value = new Vector2$1(resx, resy);
-      resx = Math.round(resx / 2);
-      resy = Math.round(resy / 2);
-    }
-    this.compositeMaterial = this.getCompositeMaterial(this.nMips);
-    this.compositeMaterial.uniforms["blurTexture1"].value = this.renderTargetsVertical[0].texture;
-    this.compositeMaterial.uniforms["blurTexture2"].value = this.renderTargetsVertical[1].texture;
-    this.compositeMaterial.uniforms["blurTexture3"].value = this.renderTargetsVertical[2].texture;
-    this.compositeMaterial.uniforms["blurTexture4"].value = this.renderTargetsVertical[3].texture;
-    this.compositeMaterial.uniforms["blurTexture5"].value = this.renderTargetsVertical[4].texture;
-    this.compositeMaterial.uniforms["bloomStrength"].value = strength;
-    this.compositeMaterial.uniforms["bloomRadius"].value = 0.1;
-    this.compositeMaterial.needsUpdate = true;
-    const bloomFactors = [1, 0.8, 0.6, 0.4, 0.2];
-    this.compositeMaterial.uniforms["bloomFactors"].value = bloomFactors;
-    this.bloomTintColors = [
-      new Vector3$1(1, 1, 1),
-      new Vector3$1(1, 1, 1),
-      new Vector3$1(1, 1, 1),
-      new Vector3$1(1, 1, 1),
-      new Vector3$1(1, 1, 1)
-    ];
-    this.compositeMaterial.uniforms["bloomTintColors"].value = this.bloomTintColors;
-    this.mixMaterial = this.getMixMaterial();
-  }
-  dispose() {
-    for (let i = 0; i < this.renderTargetsHorizontal.length; i++) {
-      this.renderTargetsHorizontal[i].dispose();
-    }
-    for (let i = 0; i < this.renderTargetsVertical.length; i++) {
-      this.renderTargetsVertical[i].dispose();
-    }
-    this.renderTargetBright.dispose();
-  }
-  setSize(width, height) {
-    let resx = Math.round(width / 2);
-    let resy = Math.round(height / 2);
-    this.selectRenderTarget.setSize(resx, resy);
-    this.renderTargetBright.setSize(resx, resy);
-    for (let i = 0; i < this.nMips; i++) {
-      this.renderTargetsHorizontal[i].setSize(resx, resy);
-      this.renderTargetsVertical[i].setSize(resx, resy);
-      this.separableBlurMaterials[i].uniforms["texSize"].value = new Vector2$1(resx, resy);
-      resx = Math.round(resx / 2);
-      resy = Math.round(resy / 2);
-    }
-  }
-  render(renderer, writeBuffer, readBuffer, deltaTime, maskActive) {
-    renderer.getClearColor(this._oldClearColor);
-    this.oldClearAlpha = renderer.getClearAlpha();
-    const oldAutoClear = renderer.autoClear;
-    renderer.autoClear = false;
-    renderer.setClearColor(this.clearColor, 0);
-    if (maskActive)
-      renderer.state.buffers.stencil.setTest(false);
-    const selectedObjectsMap = new Map();
-    for (const object of this.selectedObjects) {
-      selectedObjectsMap.set(object, true);
-    }
-    const materialCache = this.materialCache;
-    if (this.renderScene.background) {
-      this.sceneBackgroundCache = this.renderScene.background;
-      this.renderScene.background = this.overrideBackground;
-    }
-    this.renderScene.traverse((object) => {
-      if (!selectedObjectsMap.has(object) && !object.isLight && object.visible) {
-        materialCache.set(object, object.material);
-        if (object instanceof Mesh) {
-          object.material = this.overrideMeshMaterial;
-        } else if (object instanceof Line) {
-          object.material = this.overrideLineMaterial;
-        } else if (object instanceof Points) {
-          object.material = this.overridePointsMaterial;
-        } else if (object instanceof Sprite) {
-          object.material = this.overrideSpriteMaterial;
-        }
-      }
-    });
-    renderer.setRenderTarget(this.selectRenderTarget);
-    renderer.clear();
-    renderer.render(this.renderScene, this.renderCamera);
-    if (this.renderToScreen) {
-      this.fsQuad.material = this.basic;
-      this.basic.map = this.selectRenderTarget.texture;
-      renderer.setRenderTarget(null);
-      renderer.clear();
-      this.fsQuad.render(renderer);
-    }
-    this.highPassUniforms["tDiffuse"].value = this.selectRenderTarget.texture;
-    this.highPassUniforms["luminosityThreshold"].value = this.threshold;
-    this.fsQuad.material = this.materialHighPassFilter;
-    renderer.setRenderTarget(this.renderTargetBright);
-    renderer.clear();
-    this.fsQuad.render(renderer);
-    let inputRenderTarget = this.renderTargetBright;
-    for (let i = 0; i < this.nMips; i++) {
-      this.fsQuad.material = this.separableBlurMaterials[i];
-      this.separableBlurMaterials[i].uniforms["colorTexture"].value = inputRenderTarget.texture;
-      this.separableBlurMaterials[i].uniforms["direction"].value = _SelectiveBloomPass.BlurDirectionX;
-      renderer.setRenderTarget(this.renderTargetsHorizontal[i]);
-      renderer.clear();
-      this.fsQuad.render(renderer);
-      this.separableBlurMaterials[i].uniforms["colorTexture"].value = this.renderTargetsHorizontal[i].texture;
-      this.separableBlurMaterials[i].uniforms["direction"].value = _SelectiveBloomPass.BlurDirectionY;
-      renderer.setRenderTarget(this.renderTargetsVertical[i]);
-      renderer.clear();
-      this.fsQuad.render(renderer);
-      inputRenderTarget = this.renderTargetsVertical[i];
-    }
-    this.fsQuad.material = this.compositeMaterial;
-    this.compositeMaterial.uniforms["bloomStrength"].value = this.strength;
-    this.compositeMaterial.uniforms["bloomRadius"].value = this.radius;
-    this.compositeMaterial.uniforms["bloomTintColors"].value = this.bloomTintColors;
-    renderer.setRenderTarget(this.renderTargetsHorizontal[0]);
-    renderer.clear();
-    this.fsQuad.render(renderer);
-    this.fsQuad.material = this.mixMaterial;
-    this.mixMaterial.uniforms["bloom"].value = this.renderTargetsHorizontal[0].texture;
-    this.mixMaterial.uniforms["origin"].value = readBuffer.texture;
-    if (maskActive)
-      renderer.state.buffers.stencil.setTest(true);
-    if (this.renderToScreen) {
-      renderer.setRenderTarget(null);
-      this.fsQuad.render(renderer);
-    } else {
-      renderer.setRenderTarget(readBuffer);
-      this.fsQuad.render(renderer);
-    }
-    renderer.setClearColor(this._oldClearColor, this.oldClearAlpha);
-    renderer.autoClear = oldAutoClear;
-    for (const entry of materialCache.entries()) {
-      entry[0].material = entry[1];
-    }
-    materialCache.clear();
-    if (this.sceneBackgroundCache) {
-      this.renderScene.background = this.sceneBackgroundCache;
-      this.sceneBackgroundCache = null;
-    }
-  }
-  getMixMaterial() {
-    return new ShaderMaterial({
-      blending: AdditiveBlending,
-      depthTest: false,
-      depthWrite: false,
-      transparent: true,
-      uniforms: {
-        bloom: { value: null },
-        origin: { value: null }
-      },
-      vertexShader: `
-    
-        varying vec2 vUv;
-    
-        void main() {
-    
-          vUv = uv;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-    
-        }`,
-      fragmentShader: `
-        uniform sampler2D bloom;
-        uniform sampler2D origin;
-    
-        varying vec2 vUv;
-    
-        void main() {
-          vec3 bloomColor = texture2D(bloom, vUv).rgb;
-          vec3 originColor = texture2D(origin, vUv).rgb;
-          gl_FragColor = vec4(originColor + bloomColor, 1.0);
-        }`
-    });
-  }
-  getSeperableBlurMaterial(kernelRadius) {
-    return new ShaderMaterial({
-      defines: {
-        KERNEL_RADIUS: kernelRadius,
-        SIGMA: kernelRadius
-      },
-      uniforms: {
-        colorTexture: { value: null },
-        texSize: { value: new Vector2$1(0.5, 0.5) },
-        direction: { value: new Vector2$1(0.5, 0.5) }
-      },
-      vertexShader: `varying vec2 vUv;
-				void main() {
-					vUv = uv;
-					gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-				}`,
-      fragmentShader: `#include <common>
-				varying vec2 vUv;
-				uniform sampler2D colorTexture;
-				uniform vec2 texSize;
-				uniform vec2 direction;
-
-				float gaussianPdf(in float x, in float sigma) {
-					return 0.39894 * exp( -0.5 * x * x/( sigma * sigma))/sigma;
-				}
-				void main() {
-					vec2 invSize = 1.0 / texSize;
-					float fSigma = float(SIGMA);
-					float weightSum = gaussianPdf(0.0, fSigma);
-					vec3 diffuseSum = texture2D( colorTexture, vUv).rgb * weightSum;
-					for( int i = 1; i < KERNEL_RADIUS; i ++ ) {
-						float x = float(i);
-						float w = gaussianPdf(x, fSigma);
-						vec2 uvOffset = direction * invSize * x;
-						vec3 sample1 = texture2D( colorTexture, vUv + uvOffset).rgb;
-						vec3 sample2 = texture2D( colorTexture, vUv - uvOffset).rgb;
-						diffuseSum += (sample1 + sample2) * w;
-						weightSum += 2.0 * w;
-					}
-					gl_FragColor = vec4(diffuseSum/weightSum, 1.0);
-				}`
-    });
-  }
-  getCompositeMaterial(nMips) {
-    return new ShaderMaterial({
-      defines: {
-        NUM_MIPS: nMips
-      },
-      uniforms: {
-        blurTexture1: { value: null },
-        blurTexture2: { value: null },
-        blurTexture3: { value: null },
-        blurTexture4: { value: null },
-        blurTexture5: { value: null },
-        bloomStrength: { value: 1 },
-        bloomFactors: { value: null },
-        bloomTintColors: { value: null },
-        bloomRadius: { value: 0 }
-      },
-      vertexShader: `varying vec2 vUv;
-				void main() {
-					vUv = uv;
-					gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-				}`,
-      fragmentShader: `varying vec2 vUv;
-				uniform sampler2D blurTexture1;
-				uniform sampler2D blurTexture2;
-				uniform sampler2D blurTexture3;
-				uniform sampler2D blurTexture4;
-				uniform sampler2D blurTexture5;
-				uniform float bloomStrength;
-				uniform float bloomRadius;
-				uniform float bloomFactors[NUM_MIPS];
-				uniform vec3 bloomTintColors[NUM_MIPS];
-
-				float lerpBloomFactor(const in float factor) {
-					float mirrorFactor = 1.2 - factor;
-					return mix(factor, mirrorFactor, bloomRadius);
-				}
-
-				void main() {
-					gl_FragColor = bloomStrength * ( lerpBloomFactor(bloomFactors[0]) * vec4(bloomTintColors[0], 1.0) * texture2D(blurTexture1, vUv) +
-						lerpBloomFactor(bloomFactors[1]) * vec4(bloomTintColors[1], 1.0) * texture2D(blurTexture2, vUv) +
-						lerpBloomFactor(bloomFactors[2]) * vec4(bloomTintColors[2], 1.0) * texture2D(blurTexture3, vUv) +
-						lerpBloomFactor(bloomFactors[3]) * vec4(bloomTintColors[3], 1.0) * texture2D(blurTexture4, vUv) +
-						lerpBloomFactor(bloomFactors[4]) * vec4(bloomTintColors[4], 1.0) * texture2D(blurTexture5, vUv) );
-				}`
-    });
-  }
-};
-let SelectiveBloomPass = _SelectiveBloomPass;
-__publicField(SelectiveBloomPass, "BlurDirectionX", new Vector2$1(1, 0));
-__publicField(SelectiveBloomPass, "BlurDirectionY", new Vector2$1(0, 1));
 const _lut = [];
 for (let i = 0; i < 256; i++) {
   _lut[i] = (i < 16 ? "0" : "") + i.toString(16);

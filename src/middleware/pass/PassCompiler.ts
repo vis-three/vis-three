@@ -3,56 +3,33 @@ import {
   Pass,
 } from "three/examples/jsm/postprocessing/EffectComposer";
 import { Compiler, CompilerTarget } from "../../core/Compiler";
-import { SymbolConfig } from "../common/CommonConfig";
-import { CONFIGTYPE } from "../constants/configType";
-import { PassConfigAllType, UnrealBloomPassConfig } from "./PassConfig";
-
-import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
-import { Vector2 } from "three";
+import { PassConfigAllType } from "./PassConfig";
 import { EngineSupport } from "../../engine/EngineSupport";
 import { MODULETYPE } from "../constants/MODULETYPE";
+import { SetSizeEvent } from "../../engine/Engine";
+import { CompilerManager } from "../../manager/CompilerManager";
+import { ProxyNotice } from "../../core/ProxyBroadcast";
+import { Processor2 } from "../../core/Processor";
+import SMAAPassProcessor from "./processor/SMAAPassProcessor";
+import UnrealBloomPassProcessor from "./processor/UnrealBloomPassProcessor";
+import SelectiveBloomPassProcessor from "./processor/SelectiveBloomPassProcessor";
 
 export interface PassCompilerTarget extends CompilerTarget {
   [key: string]: PassConfigAllType;
 }
 
-export class PassCompiler extends Compiler {
+export class PassCompiler extends Compiler<PassCompilerTarget, Pass> {
   MODULE: MODULETYPE = MODULETYPE.PASS;
 
-  private target!: PassCompilerTarget;
-  private map: Map<SymbolConfig["vid"], Pass>;
-  private weakMap: WeakMap<Pass, SymbolConfig["vid"]>;
-  private constructMap: Map<string, (config: PassConfigAllType) => Pass>;
-
+  compilerManager!: CompilerManager;
   private composer!: EffectComposer;
+  private engine!: EngineSupport;
 
   private width: number = window.innerWidth * window.devicePixelRatio;
   private height: number = window.innerHeight * window.devicePixelRatio;
 
   constructor() {
     super();
-
-    this.map = new Map();
-    this.weakMap = new WeakMap();
-
-    const constructMap = new Map();
-    constructMap.set(
-      CONFIGTYPE.SMAAPASS,
-      () => new SMAAPass(this.width, this.height)
-    );
-    constructMap.set(
-      CONFIGTYPE.UNREALBLOOMPASS,
-      (config: UnrealBloomPassConfig) =>
-        new UnrealBloomPass(
-          new Vector2(this.width, this.height),
-          config.strength,
-          config.radius,
-          config.threshold
-        )
-    );
-
-    this.constructMap = constructMap;
   }
 
   setTarget(target: PassCompilerTarget): this {
@@ -67,60 +44,101 @@ export class PassCompiler extends Compiler {
       );
       return this;
     }
+    this.engine = engine;
     this.composer = engine.effectComposer;
+    this.compilerManager = engine.compilerManager;
 
     const pixelRatio = this.composer.renderer.getPixelRatio();
-    this.width =
-      Number(this.composer.renderer.domElement.getAttribute("width")) *
-      pixelRatio;
 
-    this.height =
-      Number(this.composer.renderer.domElement.getAttribute("height")) *
-      pixelRatio;
-    return this;
-  }
+    this.width = (engine.dom?.offsetWidth || window.innerWidth) * pixelRatio;
 
-  add(config: PassConfigAllType) {
-    if (this.constructMap.has(config.type)) {
-      const pass = this.constructMap.get(config.type)!(config);
-      this.composer.addPass(pass);
-      this.map.set(config.vid, pass);
-      this.weakMap.set(pass, config.vid);
-    } else {
-      console.warn(
-        `pass compiler can not support this type pass: ${config.type}.`
-      );
-    }
-  }
+    this.height = (engine.dom?.offsetHeight || window.innerHeight) * pixelRatio;
 
-  set(vid: string, path: string[], key: string, value: any): this {
-    if (!this.map.has(vid)) {
-      console.warn(
-        `pass compiler set function: can not found material which vid is: '${vid}'`
-      );
-      return this;
-    }
-
-    const pass = this.map.get(vid)!;
-
-    let config = pass;
-    path.forEach((key, i, arr) => {
-      config = config[key];
+    engine.addEventListener<SetSizeEvent>("setSize", (event) => {
+      this.width = event.width * pixelRatio;
+      this.height = event.height * pixelRatio;
     });
-    config[key] = value;
+
     return this;
   }
 
-  remove(vid: string): this {
+  add(config: PassConfigAllType): this {
+    if (!Compiler.processors.has(config.type)) {
+      console.warn(`PassCompiler can not support this type: ${config.type}`);
+      return this;
+    }
+
+    const processor = Compiler.processors.get(config.type)! as Processor2<
+      PassConfigAllType,
+      Pass
+    >;
+
+    const pass = processor.create(config, this.engine);
+    this.composer.addPass(pass);
+    this.map.set(config.vid, pass);
+    this.weakMap.set(pass, config.vid);
+
+    return this;
+  }
+
+  compile(vid: string, notice: ProxyNotice): this {
     if (!this.map.has(vid)) {
-      console.warn(`pass compiler can not found this vid pass: ${vid}.`);
+      console.warn(
+        `pass compiler set function: can not found object which vid is: '${vid}'`
+      );
+      return this;
+    }
+
+    if (!this.target[vid]) {
+      console.warn(
+        `pass compiler set function: can not found config which vid is: '${vid}'`
+      );
       return this;
     }
 
     const pass = this.map.get(vid)!;
+    const config = this.target[vid]!;
+
+    if (!Compiler.processors.has(config.type)) {
+      console.warn(`PassCompiler can not support this type: ${config.type}`);
+      return this;
+    }
+
+    const processor = Compiler.processors.get(config.type)! as Processor2<
+      PassConfigAllType,
+      Pass
+    >;
+
+    processor.process({
+      config,
+      target: pass,
+      engine: this.engine,
+      ...notice,
+    });
+
+    return this;
+  }
+
+  remove(config: PassConfigAllType): this {
+    const vid = config.vid;
+
+    if (!this.map.has(vid)) {
+      console.warn(`PassCompiler can not found this vid pass: ${vid}.`);
+      return this;
+    }
+
+    if (!Compiler.processors.has(config.type)) {
+      console.warn(`PassCompiler can not support this type: ${config.type}`);
+      return this;
+    }
+
+    const pass = this.map.get(vid)!;
+    Compiler.processors.get(config.type)!.dispose(pass);
+
     this.composer.removePass(pass);
     this.map.delete(vid);
     this.weakMap.delete(pass);
+
     return this;
   }
 
@@ -144,3 +162,7 @@ export class PassCompiler extends Compiler {
     return this.map.get(vid) || null;
   }
 }
+
+Compiler.processor(SMAAPassProcessor);
+Compiler.processor(UnrealBloomPassProcessor);
+Compiler.processor(SelectiveBloomPassProcessor);

@@ -60,6 +60,7 @@ import { getPointsConfig } from "../points/PointsConfig";
 import { getLineConfig } from "../line/LineConfig";
 import { getGroupConfig } from "../group/GroupConfig";
 import {
+  getSelectiveBloomPassConfig,
   getSMAAPassConfig,
   getUnrealBloomPassConfig,
 } from "../pass/PassConfig";
@@ -137,6 +138,7 @@ export const CONFIGFACTORY = {
 
   [CONFIGTYPE.SMAAPASS]: getSMAAPassConfig,
   [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig,
+  [CONFIGTYPE.SELECTIVEBLOOMPASS]: getSelectiveBloomPassConfig,
 
   [CONFIGTYPE.SCRIPTANIMATION]: getScriptAnimationConfig,
   [CONFIGTYPE.KEYFRAMEANIMATION]: getKeyframeAnimationConfig,

@@ -66,6 +66,8 @@ export class CompilerManager {
 
   private compilerMap: Map<MODULETYPE, Compiler>;
 
+  private object3DMapSet: Set<Map<SymbolConfig["vid"], Object3D>> = new Set();
+
   constructor(parameters?: CompilerManagerParameters) {
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
@@ -87,9 +89,12 @@ export class CompilerManager {
     const objectCompilerList = Object.values(this).filter(
       (object) => object instanceof ObjectCompiler
     );
-    const objectMapList = objectCompilerList.map((compiler) =>
-      compiler.getMap()
-    );
+    // TODO: 编译器内部物体全部从compilerManager里面获取
+    const objectMapList = objectCompilerList.map((compiler) => {
+      const map = compiler.getMap();
+      this.object3DMapSet.add(map);
+      return map;
+    });
 
     for (const objectCompiler of objectCompilerList) {
       if (isValidKey("IS_SOLIDOBJECTCOMPILER", objectCompiler)) {
@@ -184,6 +189,20 @@ export class CompilerManager {
       const object = compiler.getObjectBySymbol(vid);
       if (object) {
         return object;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * 通过vid获取object3D对象
+   * @param vid 物体vid标识
+   * @returns Object3D | null
+   */
+  getObject3D<O extends Object3D>(vid: string): O | null {
+    for (const map of this.object3DMapSet) {
+      if (map.has(vid)) {
+        return map.get(vid)! as O;
       }
     }
     return null;

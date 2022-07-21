@@ -32,7 +32,7 @@ export abstract class ObjectCompiler<
   C extends ObjectConfig,
   T extends ObjectCompilerTarget<C>,
   O extends Object3D
-> extends Compiler {
+> extends Compiler<T, O> {
   static eventSymbol = "vis.event";
 
   IS_OBJECTCOMPILER = true;

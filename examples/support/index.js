@@ -13,7 +13,6 @@ export default {
     "/GroupSupport.html",
     "/TextureSupport.html",
     "/EventSupport.html",
-    "/PassSupport.html",
     "/SceneSupport.html",
     "/CSS3DSupport.html",
     "/AnimationSupport.html",

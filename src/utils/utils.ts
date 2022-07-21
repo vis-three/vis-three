@@ -1,3 +1,13 @@
+export type DeepPartial<T> = T extends Function
+  ? T
+  : T extends object
+  ? { [P in keyof T]?: DeepPartial<T[P]> }
+  : T;
+
+export interface IgnoreAttribute {
+  [key: string]: IgnoreAttribute | boolean;
+}
+
 export function isValidKey(
   key: string | number | symbol,
   object: object
@@ -38,8 +48,50 @@ export function generateConfigFunction<T extends object>(config: T) {
   };
 }
 
-export type DeepPartial<T> = T extends Function
-  ? T
-  : T extends object
-  ? { [P in keyof T]?: DeepPartial<T[P]> }
-  : T;
+/**
+ * 同步对象
+ * @param config 配置对象
+ * @param target 目标对象
+ * @param filter 过滤属性
+ * @param callBack 回调
+ */
+export function syncObject<C extends object, T extends object>(
+  config: C,
+  target: T,
+  filter: IgnoreAttribute,
+  callBack?: Function
+) {
+  const recursiveConfig = (
+    config: object,
+    target: object,
+    filter?: IgnoreAttribute
+  ) => {
+    for (const key in config) {
+      if (filter && filter[key]) {
+        continue;
+      }
+
+      if (typeof config[key] === "object" && typeof config[key] !== null) {
+        if (
+          filter &&
+          typeof filter[key] === "object" &&
+          typeof filter[key] !== null
+        ) {
+          recursiveConfig(
+            config[key],
+            target[key],
+            filter[key] as IgnoreAttribute
+          );
+        } else {
+          recursiveConfig(config[key], target[key]);
+        }
+        continue;
+      }
+
+      target[key] = config[key];
+    }
+  };
+
+  recursiveConfig(config, target, filter);
+  callBack && callBack();
+}

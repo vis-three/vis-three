@@ -30,11 +30,12 @@ import { GroupDataSupport } from "../middleware/group/GroupDataSupport";
 import { stringify } from "../convenient/JSONHandler";
 import { PassCompilerTarget } from "../middleware/pass/PassCompiler";
 import { PassDataSupport } from "../middleware/pass/PassDataSupport";
-import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
+import { getModule } from "../middleware/constants/CONFIGMODULE";
 import { AnimationCompilerTarget } from "../middleware/animation/AnimationCompiler";
 import { AnimationDataSupport } from "../middleware/animation/AnimationDataSupport";
 import { CSS3DCompilerTarget } from "../middleware/css3D/CSS3DCompiler";
 import { CSS3DDataSupport } from "../middleware/css3D/CSS3DDataSupport";
+import { CONFIGTYPE } from "../middleware/constants/configType";
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: TextureCompilerTarget;
@@ -77,8 +78,6 @@ export interface DataSupportManagerParameters {
 }
 
 export class DataSupportManager {
-  static configModuleMap = CONFIGMODULE;
-
   cameraDataSupport: CameraDataSupport = new CameraDataSupport();
   lightDataSupport: LightDataSupport = new LightDataSupport();
   geometryDataSupport: GeometryDataSupport = new GeometryDataSupport();
@@ -226,7 +225,7 @@ export class DataSupportManager {
    */
   applyConfig<T extends SymbolConfig>(...configs: T[]): this {
     for (const config of configs) {
-      const module = DataSupportManager.configModuleMap[config.type];
+      const module = getModule(config.type as CONFIGTYPE);
 
       if (module) {
         this.dataSupportMap.get(module as MODULETYPE)!.addConfig(config);
@@ -246,7 +245,7 @@ export class DataSupportManager {
    * @returns config
    */
   reactiveConfig<T extends SymbolConfig>(config: T): T {
-    const module = DataSupportManager.configModuleMap[config.type];
+    const module = getModule(config.type as CONFIGTYPE);
     if (module) {
       return this.dataSupportMap
         .get(module as MODULETYPE)!

@@ -3,7 +3,7 @@ import { EngineSupport } from "../engine/EngineSupport";
 import { ShaderLibrary } from "../library/shader/ShaderLibrary";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
-import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
+import { getModule } from "../middleware/constants/CONFIGMODULE";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { OBJECTMODULE } from "../middleware/constants/MODULETYPE";
 import { ShaderMaterialConfig } from "../middleware/material/MaterialConfig";
@@ -111,7 +111,7 @@ export const generateConfig = <GenerateConfig>(
       // 自动注入场景
       if (generateConfig.injectScene) {
         if (
-          CONFIGMODULE[initConfig.type] in OBJECTMODULE &&
+          getModule(initConfig.type)! in OBJECTMODULE &&
           initConfig.type !== CONFIGTYPE.SCENE
         ) {
           let sceneConfig: SceneConfig | null = null;
