@@ -135,8 +135,6 @@ export class CompilerManager {
     // 动态资源连接
     if (engine.resourceManager) {
       const resourceMap = engine.resourceManager!.resourceMap;
-
-      this.textureCompiler.linkRescourceMap(resourceMap);
       this.css3DCompiler.linkRescourceMap(resourceMap);
     }
 

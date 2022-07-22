@@ -18,7 +18,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Euler, Matrix4 as Matrix4$1, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, Scene, UniformsUtils, Sprite, AdditiveBlending, Camera, DodecahedronBufferGeometry, Fog, FogExp2, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
+import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Euler, Matrix4 as Matrix4$1, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, Scene, UniformsUtils, Sprite, AdditiveBlending, Camera, DodecahedronBufferGeometry, Fog, FogExp2, CanvasTexture, CubeTexture, VideoTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -4871,33 +4871,33 @@ class DataSupport {
     return this.MODULE;
   }
 }
+const Rule = (input, compiler) => {
+  const { operate, key, path, value } = input;
+  let vid = key;
+  const tempPath = [].concat(path);
+  if (path.length) {
+    vid = tempPath.shift();
+  }
+  if (!validate(vid)) {
+    console.warn(`${compiler.MODULE} Rule: vid is illeage: ${vid}`);
+    return;
+  }
+  if (operate === "add" && !tempPath.length) {
+    compiler.add(value);
+    return;
+  }
+  if (input.operate === "delete" && !tempPath.length) {
+    compiler.remove(value);
+    return;
+  }
+  if (input.operate === "set" && !tempPath.length && !key) {
+    compiler.cover(value);
+    return;
+  }
+  compiler.compile(vid, { operate, key, path: tempPath, value });
+};
 const TextureRule = function(notice, compiler) {
-  const { operate, key, path, value } = notice;
-  if (operate === "add") {
-    if (validate(key)) {
-      compiler.add(key, value);
-    }
-    return;
-  }
-  if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift() || key;
-    if (vid && validate(vid)) {
-      compiler.set(vid, tempPath, key, value);
-    } else {
-      console.warn(`texture rule vid is illeage: '${vid}'`);
-    }
-    return;
-  }
-  if (operate === "delete") {
-    const vid = path[0] || key;
-    if (validate(vid)) {
-      compiler.remove(vid);
-    } else {
-      console.warn(`texture rule vid is illeage: '${vid}'`);
-    }
-    return;
-  }
+  Rule(notice, compiler);
 };
 class TextureDataSupport extends DataSupport {
   constructor(data, ignore) {
@@ -5049,31 +5049,6 @@ class LightDataSupport extends ObjectDataSupport {
     __publicField(this, "MODULE", MODULETYPE.LIGHT);
   }
 }
-const Rule = (input, compiler) => {
-  const { operate, key, path, value } = input;
-  let vid = key;
-  const tempPath = [].concat(path);
-  if (path.length) {
-    vid = tempPath.shift();
-  }
-  if (!validate(vid)) {
-    console.warn(`${compiler.MODULE} Rule: vid is illeage: ${vid}`);
-    return;
-  }
-  if (operate === "add" && !tempPath.length) {
-    compiler.add(value);
-    return;
-  }
-  if (input.operate === "delete" && !tempPath.length) {
-    compiler.remove(value);
-    return;
-  }
-  if (input.operate === "set" && !tempPath.length && !key) {
-    compiler.cover(value);
-    return;
-  }
-  compiler.compile(vid, { operate, key, path: tempPath, value });
-};
 const GeometryRule = function(notice, compiler) {
   Rule(notice, compiler);
 };
@@ -10165,28 +10140,6 @@ class ImageTexture extends Texture {
     super(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding);
   }
 }
-class VideoTexture extends Texture {
-  constructor(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
-    super(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
-    __publicField(this, "isVideoTexture", true);
-    this.format = format !== void 0 ? format : RGBFormat;
-    this.minFilter = minFilter !== void 0 ? minFilter : LinearFilter;
-    this.magFilter = magFilter !== void 0 ? magFilter : LinearFilter;
-    this.generateMipmaps = false;
-  }
-  clone() {
-    return new this.constructor(this.image).copy(this);
-  }
-  update() {
-    const video = this.image;
-    const hasVideoFrameCallback = "requestVideoFrameCallback" in video;
-    if (hasVideoFrameCallback) {
-      this.needsUpdate = true;
-    } else if (hasVideoFrameCallback === false && video.readyState >= video.HAVE_CURRENT_DATA) {
-      this.needsUpdate = true;
-    }
-  }
-}
 class CanvasGenerator {
   constructor(parameters) {
     __publicField(this, "canvas");
@@ -10240,181 +10193,210 @@ class CanvasGenerator {
     return this;
   }
 }
-const _TextureCompiler = class extends Compiler {
-  constructor() {
-    super();
-    __publicField(this, "MODULE", MODULETYPE.TEXTURE);
-    __publicField(this, "target", {});
-    __publicField(this, "map");
-    __publicField(this, "weakMap");
-    __publicField(this, "constructMap");
-    __publicField(this, "resourceMap");
-    this.map = new Map();
-    this.weakMap = new WeakMap();
-    this.resourceMap = new Map();
-    const constructMap2 = new Map();
-    constructMap2.set(CONFIGTYPE.IMAGETEXTURE, () => new ImageTexture());
-    constructMap2.set(CONFIGTYPE.CUBETEXTURE, () => new CubeTexture());
-    constructMap2.set(CONFIGTYPE.CANVASTEXTURE, () => new CanvasTexture(document.createElement("canvas")));
-    constructMap2.set(CONFIGTYPE.VIDEOTEXTURE, () => new VideoTexture(document.createElement("video")));
-    this.constructMap = constructMap2;
-  }
-  getResource(url) {
-    if (!url) {
-      return _TextureCompiler.replaceImage;
-    }
-    const resourceMap = this.resourceMap;
-    if (resourceMap.has(url)) {
-      const resource = resourceMap.get(url);
-      if (resource instanceof HTMLImageElement || resource instanceof HTMLCanvasElement || resource instanceof HTMLVideoElement) {
-        return resource;
-      } else {
-        console.error(`this url mapping resource is not a texture image class: ${url}`);
-        return _TextureCompiler.replaceImage;
-      }
-    } else {
-      console.warn(`resource can not font url: ${url}`);
-      return _TextureCompiler.replaceImage;
-    }
-  }
-  linkRescourceMap(map) {
-    this.resourceMap = map;
-    return this;
-  }
-  add(vid, config2) {
-    if (validate(vid)) {
-      if (config2.type && this.constructMap.has(config2.type)) {
-        const texture = this.constructMap.get(config2.type)();
-        const tempConfig = JSON.parse(JSON.stringify(config2));
-        delete tempConfig.type;
-        delete tempConfig.vid;
-        if ([
-          CONFIGTYPE.IMAGETEXTURE,
-          CONFIGTYPE.CANVASTEXTURE,
-          CONFIGTYPE.VIDEOTEXTURE
-        ].includes(config2.type)) {
-          texture.image = this.getResource(tempConfig.url);
-          delete tempConfig.url;
-        } else if (config2.type === CONFIGTYPE.CUBETEXTURE) {
-          const cube = config2.cube;
-          const images = [
-            this.getResource(cube.px),
-            this.getResource(cube.nx),
-            this.getResource(cube.py),
-            this.getResource(cube.ny),
-            this.getResource(cube.pz),
-            this.getResource(cube.nz)
-          ];
-          texture.image = images;
-          delete tempConfig.cube;
-        }
-        syncObject(tempConfig, texture);
-        texture.needsUpdate = true;
-        this.map.set(vid, texture);
-        this.weakMap.set(texture, vid);
-      } else {
-        console.warn(`texture compiler can not support this type: ${config2.type}`);
-      }
-    } else {
-      console.error(`texture vid parameter is illegal: ${vid}`);
-    }
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!validate(vid)) {
-      console.warn(`texture compiler set function: vid is illeage: '${vid}'`);
-      return this;
-    }
-    if (!this.map.has(vid)) {
-      console.warn(`texture compiler set function: can not found texture which vid is: '${vid}'`);
-      return this;
-    }
-    const texture = this.map.get(vid);
-    if (!path.length && key === "url") {
-      const config22 = this.target[vid];
-      if ([
-        CONFIGTYPE.IMAGETEXTURE,
-        CONFIGTYPE.CANVASTEXTURE,
-        CONFIGTYPE.VIDEOTEXTURE
-      ].includes(config22.type)) {
-        texture.image = this.getResource(value);
-      } else {
-        console.warn(`texture compiler can not support this type config set url: ${config22.type}`);
-      }
-      return this;
-    }
-    if (key === "needsUpdate") {
-      if (value) {
-        texture.needsUpdate = true;
-        const config22 = this.target[vid];
-        config22.needsUpdate = false;
-      }
-      return this;
-    }
-    let config2 = texture;
-    for (const key2 of path) {
-      if (config2[key2] === void 0) {
-        console.warn(`texture compiler set function: can not found key:${key2} in object.`);
-        return this;
-      }
-      config2 = config2[key2];
-    }
-    config2[key] = value;
-    texture.needsUpdate = true;
-    return this;
-  }
-  remove(vid) {
-    if (!this.map.has(vid)) {
-      console.warn(`texture compiler can not found vid match object: ${vid}`);
-      return this;
-    }
-    const texture = this.map.get(vid);
-    texture.dispose();
-    this.map.delete(vid);
-    this.weakMap.delete(texture);
-    return this;
-  }
-  getMap() {
-    return this.map;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  useEngine(engine) {
-    return this;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const key in target) {
-      this.add(key, target[key]);
-    }
-    return this;
-  }
-  dispose() {
-    this.map.forEach((texture, vid) => {
-      texture.dispose();
-    });
-    this.map.clear();
-    return this;
-  }
-  getObjectSymbol(texture) {
-    return this.weakMap.get(texture) || null;
-  }
-  getObjectBySymbol(vid) {
-    return this.map.get(vid) || null;
-  }
-};
-let TextureCompiler = _TextureCompiler;
-__publicField(TextureCompiler, "replaceImage", new CanvasGenerator({
+const replaceImage = new CanvasGenerator({
   width: 512,
   height: 512
 }).draw((ctx) => {
   ctx.translate(256, 256);
-  ctx.font = "52px";
+  ctx.font = "72px";
   ctx.fillStyle = "white";
   ctx.fillText("\u6682\u65E0\u56FE\u7247", 0, 0);
-}).get());
+}).getDom();
+const getResource = function(url, engine, instanceClasses2) {
+  const resourceMap = engine.resourceManager.resourceMap;
+  if (!resourceMap.has(url)) {
+    console.warn(`engine resourceManager can not found this url: ${url}`);
+    return replaceImage;
+  }
+  const resource = resourceMap.get(url);
+  if (Array.isArray(instanceClasses2)) {
+    for (const instanceClass of instanceClasses2) {
+      if (resource instanceof instanceClass) {
+        return resource;
+      }
+    }
+    console.warn(`this url mapping resource is not a texture image class: ${url}`, resource);
+    return replaceImage;
+  } else {
+    if (resource instanceof instanceClasses2) {
+      return resource;
+    } else {
+      console.warn(`this url mapping resource is not a texture image class: ${url}`, resource);
+      return replaceImage;
+    }
+  }
+};
+const needUpdateRegCommand = {
+  reg: new RegExp("wrapS|wrapT|format|encoding|anisotropy|magFilter|minFilter"),
+  handler({ target, key, value }) {
+    target[key] = value;
+    target.needsUpdate = true;
+  }
+};
+var ImageTextureProcessor = defineProcessor({
+  configType: CONFIGTYPE.IMAGETEXTURE,
+  commands: {
+    set: {
+      url({ target, value, engine }) {
+        target.image = getResource(value, engine, HTMLImageElement);
+      },
+      $reg: [needUpdateRegCommand]
+    }
+  },
+  create(config2, engine) {
+    const texture = new ImageTexture();
+    if (config2.url) {
+      texture.image = getResource(config2.url, engine, HTMLImageElement);
+    }
+    syncObject(config2, texture, {
+      type: true,
+      url: true
+    });
+    texture.needsUpdate = true;
+    return texture;
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
+var CanvasTextureProcessor = defineProcessor({
+  configType: CONFIGTYPE.CANVASTEXTURE,
+  commands: {
+    set: {
+      url({ target, value, engine }) {
+        target.image = getResource(value, engine, HTMLCanvasElement);
+      }
+    }
+  },
+  create(config2, engine) {
+    const texture = new CanvasTexture(replaceImage);
+    if (config2.url) {
+      texture.image = getResource(config2.url, engine, HTMLCanvasElement);
+    }
+    syncObject(config2, texture, {
+      url: true
+    });
+    return texture;
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
+const instanceClasses = [HTMLImageElement, HTMLVideoElement, HTMLCanvasElement];
+const imageHanlder = function({ target, index, value, engine }) {
+  target.images[index] = getResource(value, engine, instanceClasses);
+  target.needsUpdate = true;
+};
+var CubeTextureProcessor = defineProcessor({
+  configType: CONFIGTYPE.CUBETEXTURE,
+  commands: {
+    set: {
+      cube: {
+        px({ target, value, engine }) {
+          imageHanlder({
+            target,
+            value,
+            engine,
+            index: 0
+          });
+        },
+        nx({ target, value, engine }) {
+          imageHanlder({
+            target,
+            value,
+            engine,
+            index: 1
+          });
+        },
+        py({ target, value, engine }) {
+          imageHanlder({
+            target,
+            value,
+            engine,
+            index: 2
+          });
+        },
+        ny({ target, value, engine }) {
+          imageHanlder({
+            target,
+            value,
+            engine,
+            index: 3
+          });
+        },
+        pz({ target, value, engine }) {
+          imageHanlder({
+            target,
+            value,
+            engine,
+            index: 4
+          });
+        },
+        nz({ target, value, engine }) {
+          imageHanlder({
+            target,
+            value,
+            engine,
+            index: 5
+          });
+        }
+      }
+    }
+  },
+  create(config2, engine) {
+    const texture = new CubeTexture();
+    const cube = config2.cube;
+    const images = [
+      getResource(cube.px, engine, instanceClasses),
+      getResource(cube.nx, engine, instanceClasses),
+      getResource(cube.py, engine, instanceClasses),
+      getResource(cube.ny, engine, instanceClasses),
+      getResource(cube.pz, engine, instanceClasses),
+      getResource(cube.nz, engine, instanceClasses)
+    ];
+    texture.image = images;
+    syncObject(config2, texture, {
+      cube: true
+    });
+    return texture;
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
+var VideoTextureProcessor = defineProcessor({
+  configType: CONFIGTYPE.CANVASTEXTURE,
+  commands: {
+    set: {
+      url({ target, value, engine }) {
+        target.image = getResource(value, engine, HTMLVideoElement);
+      }
+    }
+  },
+  create(config2, engine) {
+    const texture = new VideoTexture(document.createElement("video"));
+    if (config2.url) {
+      texture.image = getResource(config2.url, engine, HTMLVideoElement);
+    }
+    syncObject(config2, texture, {
+      url: true
+    });
+    return texture;
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
+class TextureCompiler extends Compiler {
+  constructor() {
+    super();
+    __publicField(this, "MODULE", MODULETYPE.TEXTURE);
+  }
+}
+Compiler.processor(ImageTextureProcessor);
+Compiler.processor(CanvasTextureProcessor);
+Compiler.processor(CubeTextureProcessor);
+Compiler.processor(VideoTextureProcessor);
 class CompilerManager {
   constructor(parameters) {
     __publicField(this, "cameraCompiler", new CameraCompiler());
@@ -10474,7 +10456,6 @@ class CompilerManager {
     });
     if (engine.resourceManager) {
       const resourceMap = engine.resourceManager.resourceMap;
-      this.textureCompiler.linkRescourceMap(resourceMap);
       this.css3DCompiler.linkRescourceMap(resourceMap);
     }
     const dataSupportManager = engine.dataSupportManager;
