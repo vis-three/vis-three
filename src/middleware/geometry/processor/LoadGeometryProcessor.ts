@@ -4,7 +4,7 @@ import { EngineSupport } from "../../../engine/EngineSupport";
 import { LoadGeometry } from "../../../extends/geometry/LoadGeometry";
 import { CONFIGTYPE } from "../../constants/configType";
 import { LoadGeometryConfig } from "../GeometryInterface";
-import { commands, transfromAnchor, create } from "./common";
+import { commands, create } from "./common";
 
 export default defineProcessor<LoadGeometryConfig, LoadGeometry>({
   configType: CONFIGTYPE.LOADGEOMETRY,

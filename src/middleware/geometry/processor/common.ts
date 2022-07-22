@@ -1,12 +1,13 @@
 import {
   Box3,
   BufferGeometry,
+  EdgesGeometry,
   Euler,
   Quaternion,
   ShapeGeometry,
   TubeGeometry,
 } from "three";
-import { ProcessorCommands } from "../../../core/Processor";
+import { ProcessorCommands, ProcessParams } from "../../../core/Processor";
 import { CurveGeometry } from "../../../extends/geometry/CurveGeometry/CurveGeometry";
 import { GeometryAllType, GeometryConfig } from "../GeometryInterface";
 
@@ -60,11 +61,27 @@ export const transfromAnchor = function <
   return geometry;
 };
 
-export const commands: ProcessorCommands<GeometryConfig, BufferGeometry> = {
+const commonRegCommand = {
+  reg: new RegExp(".*"),
+  handler({ config, target, processor, engine }: ProcessParams<any, any>) {
+    const newGeometry = processor.create(config, engine);
+    target.copy(newGeometry);
+    target // TODO: 使用dispatch通知更新 // 辅助的更新根据uuid的更新而更新，直接copy无法判断是否更新
+      .dispatchEvent({
+        type: "update",
+      });
+    target.uuid = newGeometry.uuid;
+
+    newGeometry.dispose();
+  },
+};
+
+export const commands: ProcessorCommands<any, any> = {
   add: {
     groups({ target, value }) {
       target.addGroup(value.start, value.count, value.materialIndex);
     },
+    $reg: [commonRegCommand],
   },
   set: {
     groups(params) {
@@ -77,11 +94,13 @@ export const commands: ProcessorCommands<GeometryConfig, BufferGeometry> = {
         console.warn(`geometry processor can not set group`, params);
       }
     },
+    $reg: [commonRegCommand],
   },
   delete: {
     groups({ target, key }) {
       target.groups.splice(Number(key), 1);
     },
+    $reg: [commonRegCommand],
   },
 };
 

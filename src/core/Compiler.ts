@@ -57,7 +57,9 @@ export abstract class Compiler<
 
   add(config: C): O | null {
     if (!Compiler.processors.has(config.type)) {
-      console.warn(`PassCompiler can not support this type: ${config.type}`);
+      console.warn(
+        `${this.MODULE} compiler can not support this type: ${config.type}`
+      );
       return null;
     }
 
@@ -130,6 +132,7 @@ export abstract class Compiler<
       config,
       target: pass,
       engine: this.engine,
+      processor,
       ...notice,
     });
     return this;

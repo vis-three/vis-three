@@ -93,11 +93,22 @@ export interface ProcessParams<C extends SymbolConfig, T extends object>
   extends ProxyNotice {
   config: C;
   target: T;
+  processor: Processor2<C, T>;
   engine: EngineSupport;
 }
 
+export type RegCommands<C extends SymbolConfig, T extends object> = {
+  reg: RegExp;
+  handler: (params: ProcessParams<C, T>) => void;
+}[];
+
 export interface CommandStructure<C extends SymbolConfig, T extends object> {
-  [key: string]: (params: ProcessParams<C, T>) => void | CommandStructure<C, T>;
+  [key: string]:
+    | ((params: ProcessParams<C, T>) => void)
+    | CommandStructure<C, T>
+    | RegCommands<C, T>
+    | undefined;
+  $reg?: RegCommands<C, T>;
 }
 
 export interface ProcessorCommands<C extends SymbolConfig, T extends object> {
@@ -138,15 +149,22 @@ export class Processor2<C extends SymbolConfig, T extends object> {
     let commands = this.commands[params.operate]!;
 
     for (const key of ([] as string[]).concat(params.path, params.key)) {
-      if (!commands[key]) {
+      if (!commands[key] && !commands.$reg) {
         this[params.operate](params);
         return;
-      } else {
+      } else if (commands[key]) {
         if (typeof commands[key] === "function") {
-          commands[key](params);
+          (commands[key] as Function)(params);
           return;
         } else {
           commands = commands[key] as unknown as CommandStructure<C, T>;
+        }
+      } else if (commands.$reg) {
+        for (const item of commands.$reg) {
+          if (item.reg.test(key)) {
+            item.handler(params);
+            return;
+          }
         }
       }
     }

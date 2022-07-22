@@ -5494,7 +5494,7 @@ const _Compiler = class {
   }
   add(config2) {
     if (!_Compiler.processors.has(config2.type)) {
-      console.warn(`PassCompiler can not support this type: ${config2.type}`);
+      console.warn(`${this.MODULE} compiler can not support this type: ${config2.type}`);
       return null;
     }
     const processor = _Compiler.processors.get(config2.type);
@@ -5541,7 +5541,8 @@ const _Compiler = class {
     processor.process(__spreadValues({
       config: config2,
       target: pass,
-      engine: this.engine
+      engine: this.engine,
+      processor
     }, notice));
     return this;
   }
@@ -8078,15 +8079,22 @@ class Processor2 {
     }
     let commands2 = this.commands[params.operate];
     for (const key of [].concat(params.path, params.key)) {
-      if (!commands2[key]) {
+      if (!commands2[key] && !commands2.$reg) {
         this[params.operate](params);
         return;
-      } else {
+      } else if (commands2[key]) {
         if (typeof commands2[key] === "function") {
           commands2[key](params);
           return;
         } else {
           commands2 = commands2[key];
+        }
+      } else if (commands2.$reg) {
+        for (const item of commands2.$reg) {
+          if (item.reg.test(key)) {
+            item.handler(params);
+            return;
+          }
         }
       }
     }
@@ -8607,11 +8615,24 @@ const transfromAnchor = function(geometry, config2) {
   geometry.translate((box.max.x - box.min.x) / 2 * position.x, (box.max.y - box.min.y) / 2 * position.y, (box.max.z - box.min.z) / 2 * position.z);
   return geometry;
 };
+const commonRegCommand = {
+  reg: new RegExp(".*"),
+  handler({ config: config2, target, processor, engine }) {
+    const newGeometry = processor.create(config2, engine);
+    target.copy(newGeometry);
+    target.dispatchEvent({
+      type: "update"
+    });
+    target.uuid = newGeometry.uuid;
+    newGeometry.dispose();
+  }
+};
 const commands = {
   add: {
     groups({ target, value }) {
       target.addGroup(value.start, value.count, value.materialIndex);
-    }
+    },
+    $reg: [commonRegCommand]
   },
   set: {
     groups(params) {
@@ -8623,12 +8644,14 @@ const commands = {
       } else {
         console.warn(`geometry processor can not set group`, params);
       }
-    }
+    },
+    $reg: [commonRegCommand]
   },
   delete: {
     groups({ target, key }) {
       target.groups.splice(Number(key), 1);
-    }
+    },
+    $reg: [commonRegCommand]
   }
 };
 const create$1 = function(target, config2) {
@@ -8781,29 +8804,6 @@ class GeometryCompiler extends Compiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.GEOMETRY);
-  }
-  add(config2) {
-    const geometry = super.add(config2);
-    if (geometry) {
-      geometry.clearGroups();
-      for (const group of config2.groups) {
-        geometry.addGroup(group.start, group.count, group.materialIndex);
-      }
-    }
-    return geometry;
-  }
-  set(vid, path, value) {
-    if (!validate(vid)) {
-      console.warn(`geometry compiler set function vid parameters is illeage: '${vid}'`);
-      return this;
-    }
-    if (!this.map.has(vid)) {
-      console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
-      return this;
-    }
-    this.map.get(vid);
-    this.target[vid];
-    return this;
   }
 }
 ParametricGeometryProcessors.forEach((processor) => {
