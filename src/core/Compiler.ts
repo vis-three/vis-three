@@ -8,6 +8,12 @@ export interface CompilerTarget<C extends SymbolConfig> {
   [key: string]: C;
 }
 
+export type BasicCompiler = Compiler<
+  SymbolConfig,
+  CompilerTarget<SymbolConfig>,
+  object
+>;
+
 export abstract class Compiler<
   C extends SymbolConfig,
   T extends CompilerTarget<C>,
@@ -34,6 +40,10 @@ export abstract class Compiler<
   engine!: EngineSupport;
 
   constructor() {}
+
+  getMap(): Map<SymbolConfig["vid"], O> {
+    return this.map;
+  }
 
   useEngine(engine: EngineSupport): this {
     this.engine = engine;

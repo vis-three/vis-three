@@ -18,7 +18,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Euler, Matrix4 as Matrix4$1, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, LineCurve3, CatmullRomCurve3, CubicBezierCurve3, QuadraticBezierCurve3, TubeGeometry, ShapeBufferGeometry, Shape, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, EdgesGeometry, TorusGeometry, RingBufferGeometry, ShapeGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, Scene, UniformsUtils, Sprite, AdditiveBlending, Camera, DodecahedronBufferGeometry, Fog, FogExp2, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
+import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Euler, Matrix4 as Matrix4$1, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, Scene, UniformsUtils, Sprite, AdditiveBlending, Camera, DodecahedronBufferGeometry, Fog, FogExp2, RGBFormat, CubeTexture, CanvasTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -2456,15 +2456,15 @@ class MaterialCreator {
       if (params[mapType])
         return;
       const texParams = scope.getTextureParams(value, params);
-      const map2 = scope.loadTexture(resolveURL(scope.baseUrl, texParams.url));
-      map2.repeat.copy(texParams.scale);
-      map2.offset.copy(texParams.offset);
-      map2.wrapS = scope.wrap;
-      map2.wrapT = scope.wrap;
+      const map = scope.loadTexture(resolveURL(scope.baseUrl, texParams.url));
+      map.repeat.copy(texParams.scale);
+      map.offset.copy(texParams.offset);
+      map.wrapS = scope.wrap;
+      map.wrapT = scope.wrap;
       if (mapType === "map" || mapType === "emissiveMap") {
-        map2.encoding = sRGBEncoding;
+        map.encoding = sRGBEncoding;
       }
-      params[mapType] = map2;
+      params[mapType] = map;
     }
     for (const prop in mat) {
       const value = mat[prop];
@@ -2678,9 +2678,9 @@ class LoaderManager extends EventDispatcher {
     return this;
   }
   setPath(path) {
-    const map2 = this.loaderMap;
-    Object.keys(map2).forEach((ext) => {
-      map2[ext].setPath(path);
+    const map = this.loaderMap;
+    Object.keys(map).forEach((ext) => {
+      map[ext].setPath(path);
     });
     this.path = path;
     return this;
@@ -2835,8 +2835,8 @@ class LoaderManager extends EventDispatcher {
   getLoadDetailMap() {
     return this.loadDetailMap;
   }
-  setLoadDetailMap(map2) {
-    this.loadDetailMap = map2;
+  setLoadDetailMap(map) {
+    this.loadDetailMap = map;
     return this;
   }
   remove(url) {
@@ -4248,14 +4248,14 @@ class ResourceManager extends EventDispatcher {
     mappingHandler.set(Object3D, this.Object3DHandler);
     mappingHandler.set(HTMLDivElement, this.HTMLDivElementHandler);
     mappingHandler.set(HTMLSpanElement, this.HTMLSpanElementHandler);
-    const map2 = new Map();
+    const map = new Map();
     for (const key in resources) {
-      if (map2.has(key)) {
+      if (map.has(key)) {
         console.warn(`resourceManager construct params rescource already exist: ${key}, that will be cover.`);
       }
-      map2.set(key, resources[key]);
+      map.set(key, resources[key]);
     }
-    this.mappingResource(map2);
+    this.mappingResource(map);
   }
   Object3DHandler(url, object) {
     const structureMap = this.structureMap;
@@ -4526,11 +4526,11 @@ const ResourceManagerPlugin = function(params) {
     });
   }
   this.registerResources = (resourceMap) => {
-    const map2 = new Map();
+    const map = new Map();
     Object.keys(resourceMap).forEach((key) => {
-      map2.set(key, resourceMap[key]);
+      map.set(key, resourceMap[key]);
     });
-    this.resourceManager.mappingResource(map2);
+    this.resourceManager.mappingResource(map);
     return this;
   };
   this.addEventListener("dispose", () => {
@@ -5049,70 +5049,33 @@ class LightDataSupport extends ObjectDataSupport {
     __publicField(this, "MODULE", MODULETYPE.LIGHT);
   }
 }
+const Rule = (input, compiler) => {
+  const { operate, key, path, value } = input;
+  let vid = key;
+  const tempPath = [].concat(path);
+  if (path.length) {
+    vid = tempPath.shift();
+  }
+  if (!validate(vid)) {
+    console.warn(`${compiler.MODULE} Rule: vid is illeage: ${vid}`);
+    return;
+  }
+  if (operate === "add" && !tempPath.length) {
+    compiler.add(value);
+    return;
+  }
+  if (input.operate === "delete" && !tempPath.length) {
+    compiler.remove(value);
+    return;
+  }
+  if (input.operate === "set" && !tempPath.length && !key) {
+    compiler.cover(value);
+    return;
+  }
+  compiler.compile(vid, { operate, key, path: tempPath, value });
+};
 const GeometryRule = function(notice, compiler) {
-  const { operate, key, path, value } = notice;
-  const vid = path.length ? path[0] : key;
-  const attribute = path.length >= 2 ? path[1] : key;
-  const tempPath = path.length ? path.concat([]).slice(1) : [];
-  if (operate === "add") {
-    if (validate(vid)) {
-      if (attribute === "groups") {
-        if (Number.isInteger(Number(key))) {
-          compiler.addGroup(vid, value);
-          return;
-        } else {
-          console.warn(`geometry rule illeage groups index: ${key}`);
-          return;
-        }
-      }
-      if (tempPath.length > 0) {
-        compiler.set(vid, tempPath, value);
-      } else {
-        compiler.add(vid, value);
-      }
-    } else {
-      console.warn(`geometry rule vid is illeage: '${key}'`);
-    }
-    return;
-  }
-  if (operate === "set") {
-    if (vid && validate(vid)) {
-      if (attribute === "groups") {
-        const index = Number(path[2] || key);
-        if (!Number.isInteger(index)) {
-          console.warn(`geometry rule illeage groups index: ${index}`);
-          return;
-        }
-        compiler.updateGroup(vid, index);
-        return;
-      }
-      compiler.set(vid, tempPath, value);
-    } else {
-      console.warn(`geometry rule vid is illeage: '${vid}'`);
-    }
-    return;
-  }
-  if (operate === "delete") {
-    if (validate(vid)) {
-      if (attribute === "groups") {
-        const index = Number(path[2] || key);
-        if (!Number.isInteger(index)) {
-          console.warn(`geometry rule illeage groups index: ${index}`);
-          return;
-        }
-        compiler.removeGroup(vid, index);
-        return;
-      }
-      if (path.length && path[1] === "path") {
-        compiler.set(vid, tempPath, value);
-        return;
-      }
-      compiler.remove(vid);
-    } else {
-      console.warn(`geometry rule vid is illeage: '${vid}'`);
-    }
-    return;
-  }
+  Rule(notice, compiler);
 };
 class GeometryDataSupport extends DataSupport {
   constructor(data, ignore) {
@@ -5259,31 +5222,6 @@ class GroupDataSupport extends ObjectDataSupport {
     __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
-const Rule = (input, compiler) => {
-  const { operate, key, path, value } = input;
-  let vid = key;
-  const tempPath = [].concat(path);
-  if (path.length) {
-    vid = tempPath.shift();
-  }
-  if (!validate(vid)) {
-    console.warn(`${compiler.MODULE} Rule: vid is illeage: ${vid}`);
-    return;
-  }
-  if (operate === "add" && !tempPath.length) {
-    compiler.add(value);
-    return;
-  }
-  if (input.operate === "delete" && !tempPath.length) {
-    compiler.remove(value);
-    return;
-  }
-  if (input.operate === "set" && !tempPath.length && !key) {
-    compiler.cover(value);
-    return;
-  }
-  compiler.compile(vid, { operate, key, path: tempPath, value });
-};
 const PassRule = function(input, compiler) {
   Rule(input, compiler);
 };
@@ -5543,6 +5481,9 @@ const _Compiler = class {
     __publicField(this, "weakMap", new WeakMap());
     __publicField(this, "engine");
   }
+  getMap() {
+    return this.map;
+  }
   useEngine(engine) {
     this.engine = engine;
     return this;
@@ -5739,8 +5680,8 @@ class AnimationCompiler extends Compiler {
     __publicField(this, "objectMapSet", new Set());
     __publicField(this, "scriptAniSymbol", "vis.scriptAni");
   }
-  linkObjectMap(...map2) {
-    for (const objectMap of map2) {
+  linkObjectMap(...map) {
+    for (const objectMap of map) {
       if (!this.objectMapSet.has(objectMap)) {
         this.objectMapSet.add(objectMap);
       }
@@ -5756,9 +5697,9 @@ class AnimationCompiler extends Compiler {
     return this;
   }
   getObject(vid) {
-    for (const map2 of this.objectMapSet) {
-      if (map2.has(vid)) {
-        return map2.get(vid);
+    for (const map of this.objectMapSet) {
+      if (map.has(vid)) {
+        return map.get(vid);
       }
     }
     console.error(`animation compiler can not found object which vid: ${vid}`);
@@ -7648,9 +7589,9 @@ const _ObjectCompiler = class extends Compiler {
     this.objectCacheMap = new WeakMap();
   }
   getObject(vid) {
-    for (const map2 of this.objectMapSet) {
-      if (map2.has(vid)) {
-        return map2.get(vid);
+    for (const map of this.objectMapSet) {
+      if (map.has(vid)) {
+        return map.get(vid);
       }
     }
     return null;
@@ -7808,8 +7749,8 @@ const _ObjectCompiler = class extends Compiler {
     targetConfig.parent = "";
     return this;
   }
-  linkObjectMap(...map2) {
-    for (const objectMap of map2) {
+  linkObjectMap(...map) {
+    for (const objectMap of map) {
       if (!this.objectMapSet.has(objectMap)) {
         this.objectMapSet.add(objectMap);
       }
@@ -7957,10 +7898,10 @@ class CameraCompiler extends ObjectCompiler {
     __publicField(this, "MODULE", MODULETYPE.CAMERA);
     __publicField(this, "constructMap");
     __publicField(this, "cacheCameraMap");
-    const constructMap = new Map();
-    constructMap.set("PerspectiveCamera", () => new PerspectiveCamera());
-    constructMap.set("OrthographicCamera", () => new OrthographicCamera(-50, 50, 50, -50));
-    this.constructMap = constructMap;
+    const constructMap2 = new Map();
+    constructMap2.set("PerspectiveCamera", () => new PerspectiveCamera());
+    constructMap2.set("OrthographicCamera", () => new OrthographicCamera(-50, 50, 50, -50));
+    this.constructMap = constructMap2;
     this.mergeFilterAttribute({
       scale: true,
       adaptiveWindow: true
@@ -8135,17 +8076,17 @@ class Processor2 {
       this[params.operate](params);
       return;
     }
-    let commands = this.commands[params.operate];
+    let commands2 = this.commands[params.operate];
     for (const key of [].concat(params.path, params.key)) {
-      if (!commands[key]) {
+      if (!commands2[key]) {
         this[params.operate](params);
         return;
       } else {
-        if (typeof commands[key] === "function") {
-          commands[key](params);
+        if (typeof commands2[key] === "function") {
+          commands2[key](params);
           return;
         } else {
-          commands = commands[key];
+          commands2 = commands2[key];
         }
       }
     }
@@ -8476,8 +8417,8 @@ class CSS3DCompiler extends ObjectCompiler {
       return document.createElement("div");
     }
   }
-  linkRescourceMap(map2) {
-    this.resourceMap = map2;
+  linkRescourceMap(map) {
+    this.resourceMap = map;
     return this;
   }
   add(vid, config2) {
@@ -8519,6 +8460,58 @@ class CurveGeometry extends BufferGeometry {
     };
   }
 }
+class QuadraticBezierCurveGeometry extends CurveGeometry {
+  constructor(path = [], divisions = 36, space = true) {
+    super(path, divisions, space);
+    this.type = "QuadraticBezierCurveGeometry";
+    const curvePath = new CurvePath();
+    if (path.length < 3) {
+      console.warn(`QuadraticBezierCurveGeometry path length at least 3.`);
+      return;
+    }
+    const length = 3 + (path.length - 3) - (path.length - 3) % 2;
+    for (let i = 1; i < length; i += 2) {
+      curvePath.add(new QuadraticBezierCurve3(path[i - 1], path[i], path[i + 1]));
+    }
+    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
+      return sum += curve.arcLengthDivisions;
+    }, 0);
+    if (divisions > totalArcLengthDivisions) {
+      const mutily = Math.ceil((divisions - totalArcLengthDivisions) / curvePath.curves.length);
+      curvePath.curves.forEach((curve) => {
+        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
+        curve.updateArcLengths();
+      });
+    }
+    this.setFromPoints(space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions));
+  }
+}
+class CubicBezierCurveGeometry extends CurveGeometry {
+  constructor(path = [], divisions = 36, space = true) {
+    super(path, divisions, space);
+    this.type = "CubicBezierCurveGeometry";
+    const curvePath = new CurvePath();
+    if (path.length < 4) {
+      console.warn(`CubicBezierCurveGeometry path length at least 4.`);
+      return;
+    }
+    const length = 4 + (path.length - 4) - (path.length - 4) % 3;
+    for (let i = 2; i < length; i += 3) {
+      curvePath.add(new CubicBezierCurve3(path[i - 2], path[i - 1], path[i], path[i + 1]));
+    }
+    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
+      return sum += curve.arcLengthDivisions;
+    }, 0);
+    if (divisions > totalArcLengthDivisions) {
+      const mutily = Math.ceil((divisions - totalArcLengthDivisions) / curvePath.curves.length);
+      curvePath.curves.forEach((curve) => {
+        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
+        curve.updateArcLengths();
+      });
+    }
+    this.setFromPoints(space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions));
+  }
+}
 class LineCurveGeometry extends CurveGeometry {
   constructor(path = [], divisions = 36, space = true) {
     super(path, divisions, space);
@@ -8556,58 +8549,6 @@ class SplineCurveGeometry extends CurveGeometry {
     this.setFromPoints(space ? splineCurve.getSpacedPoints(divisions) : splineCurve.getPoints(divisions));
   }
 }
-class CubicBezierCurveGeometry extends CurveGeometry {
-  constructor(path = [], divisions = 36, space = true) {
-    super(path, divisions, space);
-    this.type = "CubicBezierCurveGeometry";
-    const curvePath = new CurvePath();
-    if (path.length < 4) {
-      console.warn(`CubicBezierCurveGeometry path length at least 4.`);
-      return;
-    }
-    const length = 4 + (path.length - 4) - (path.length - 4) % 3;
-    for (let i = 2; i < length; i += 3) {
-      curvePath.add(new CubicBezierCurve3(path[i - 2], path[i - 1], path[i], path[i + 1]));
-    }
-    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
-      return sum += curve.arcLengthDivisions;
-    }, 0);
-    if (divisions > totalArcLengthDivisions) {
-      const mutily = Math.ceil((divisions - totalArcLengthDivisions) / curvePath.curves.length);
-      curvePath.curves.forEach((curve) => {
-        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
-        curve.updateArcLengths();
-      });
-    }
-    this.setFromPoints(space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions));
-  }
-}
-class QuadraticBezierCurveGeometry extends CurveGeometry {
-  constructor(path = [], divisions = 36, space = true) {
-    super(path, divisions, space);
-    this.type = "QuadraticBezierCurveGeometry";
-    const curvePath = new CurvePath();
-    if (path.length < 3) {
-      console.warn(`QuadraticBezierCurveGeometry path length at least 3.`);
-      return;
-    }
-    const length = 3 + (path.length - 3) - (path.length - 3) % 2;
-    for (let i = 1; i < length; i += 2) {
-      curvePath.add(new QuadraticBezierCurve3(path[i - 1], path[i], path[i + 1]));
-    }
-    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
-      return sum += curve.arcLengthDivisions;
-    }, 0);
-    if (divisions > totalArcLengthDivisions) {
-      const mutily = Math.ceil((divisions - totalArcLengthDivisions) / curvePath.curves.length);
-      curvePath.curves.forEach((curve) => {
-        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
-        curve.updateArcLengths();
-      });
-    }
-    this.setFromPoints(space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions));
-  }
-}
 class LineTubeGeometry extends TubeGeometry {
   constructor(path = [], tubularSegments = 64, radius = 1, radialSegments = 8, closed = false) {
     if (!path.length) {
@@ -8633,13 +8574,6 @@ class SplineTubeGeometry extends TubeGeometry {
     this.type = "SplineTubeGeometry";
   }
 }
-class LoadGeometry extends BufferGeometry {
-  constructor(geometry) {
-    super();
-    __publicField(this, "type", "LoadBufferGeometry");
-    geometry && this.copy(geometry);
-  }
-}
 class LineShapeGeometry extends ShapeBufferGeometry {
   constructor(path = [new Vector2$1(0, 0)], curveSegments = 12) {
     const lineShape = new Shape();
@@ -8654,200 +8588,7 @@ class LineShapeGeometry extends ShapeBufferGeometry {
     this.type = "LineShapeGeometry";
   }
 }
-const map = new Map();
-map.set(CONFIGTYPE.BOXGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new BoxBufferGeometry(config2.width, config2.height, config2.depth, config2.widthSegments, config2.heightSegments, config2.depthSegments), config2);
-});
-map.set(CONFIGTYPE.SPHEREGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new SphereBufferGeometry(config2.radius, config2.widthSegments, config2.heightSegments, config2.phiStart, config2.phiLength, config2.thetaStart, config2.thetaLength), config2);
-});
-map.set(CONFIGTYPE.PLANEGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new PlaneBufferGeometry(config2.width, config2.height, config2.widthSegments, config2.heightSegments), config2);
-});
-map.set(CONFIGTYPE.LOADGEOMETRY, (config2, compiler) => {
-  return GeometryCompiler.transfromAnchor(new LoadGeometry(compiler.getGeometry(config2.url)), config2);
-});
-map.set(CONFIGTYPE.CUSTOMGEOMETRY, (config2, compiler) => {
-  return GeometryCompiler.transfromAnchor(compiler.generateGeometry(config2.attribute), config2);
-});
-map.set(CONFIGTYPE.CIRCLEGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new CircleBufferGeometry(config2.radius, config2.segments, config2.thetaStart, config2.thetaLength), config2);
-});
-map.set(CONFIGTYPE.CONEGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new ConeBufferGeometry(config2.radius, config2.height, config2.radialSegments, config2.heightSegments, config2.openEnded, config2.thetaStart, config2.thetaLength), config2);
-});
-map.set(CONFIGTYPE.CYLINDERGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new CylinderBufferGeometry(config2.radiusTop, config2.radiusBottom, config2.height, config2.radialSegments, config2.heightSegments, config2.openEnded, config2.thetaStart, config2.thetaLength), config2);
-});
-map.set(CONFIGTYPE.EDGESGEOMETRY, (config2, compiler) => {
-  return GeometryCompiler.transfromAnchor(new EdgesGeometry(compiler.getGeometry(config2.url), config2.thresholdAngle), config2);
-});
-map.set(CONFIGTYPE.LINECURVEGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new LineCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
-});
-map.set(CONFIGTYPE.SPLINECURVEGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new SplineCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
-});
-map.set(CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new CubicBezierCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
-});
-map.set(CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new QuadraticBezierCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space), config2);
-});
-map.set(CONFIGTYPE.LINETUBEGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new LineTubeGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.tubularSegments, config2.radius, config2.radialSegments, config2.closed), config2);
-});
-map.set(CONFIGTYPE.SPLINETUBEGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new SplineTubeGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.tubularSegments, config2.radius, config2.radialSegments, config2.closed), config2);
-});
-map.set(CONFIGTYPE.TORUSGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new TorusGeometry(config2.radius, config2.tube, config2.radialSegments, config2.tubularSegments, config2.arc), config2);
-});
-map.set(CONFIGTYPE.RINGGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new RingBufferGeometry(config2.innerRadius, config2.outerRadius, config2.thetaSegments, config2.phiSegments, config2.thetaStart, config2.thetaLength), config2);
-});
-map.set(CONFIGTYPE.LINESHAPEGEOMETRY, (config2) => {
-  return GeometryCompiler.transfromAnchor(new LineShapeGeometry(config2.path.map((vector2) => new Vector2$1(vector2.x, vector2.y)), config2.curveSegments), config2);
-});
-class GeometryCompiler extends Compiler {
-  constructor() {
-    super();
-    __publicField(this, "MODULE", MODULETYPE.GEOMETRY);
-    __publicField(this, "target", {});
-    __publicField(this, "map", new Map());
-    __publicField(this, "weakMap", new WeakMap());
-    __publicField(this, "constructMap", map);
-    __publicField(this, "resourceMap", new Map());
-    __publicField(this, "replaceGeometry", new BoxBufferGeometry(5, 5, 5));
-  }
-  linkRescourceMap(map2) {
-    this.resourceMap = map2;
-    return this;
-  }
-  getRescource(url) {
-    if (!this.resourceMap.has(url)) {
-      console.error(`rescoure can not found url: ${url}`);
-      return this.replaceGeometry.clone();
-    }
-    if (this.resourceMap.has(url) && this.resourceMap.get(url) instanceof BufferGeometry) {
-      const geometry = this.resourceMap.get(url);
-      return geometry.clone();
-    } else {
-      console.error(`url mapping rescource is not class with BufferGeometry: ${url}`);
-      return this.replaceGeometry.clone();
-    }
-  }
-  getGeometry(url) {
-    if (this.map.has(url)) {
-      return this.map.get(url);
-    }
-    return this.getRescource(url);
-  }
-  generateGeometry(attribute) {
-    const geometry = new BufferGeometry();
-    attribute.position.length && geometry.setAttribute("position", new Float32BufferAttribute(attribute.position, 3));
-    attribute.color.length && geometry.setAttribute("color", new Float32BufferAttribute(attribute.color, 3));
-    attribute.normal.length && geometry.setAttribute("normal", new Float32BufferAttribute(attribute.normal, 3));
-    attribute.uv.length && geometry.setAttribute("uv", new Float32BufferAttribute(attribute.uv, 2));
-    attribute.uv2.length && geometry.setAttribute("uv2", new Float32BufferAttribute(attribute.uv2, 2));
-    attribute.index.length && geometry.setIndex(attribute.index);
-    return geometry;
-  }
-  getMap() {
-    return this.map;
-  }
-  useEngine(engine) {
-    return this;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  add(vid, config2) {
-    if (config2.type && this.constructMap.has(config2.type)) {
-      const geometry = this.constructMap.get(config2.type)(config2, this);
-      geometry.clearGroups();
-      for (const group of config2.groups) {
-        geometry.addGroup(group.start, group.count, group.materialIndex);
-      }
-      this.map.set(vid, geometry);
-      this.weakMap.set(geometry, vid);
-    }
-    return this;
-  }
-  addGroup(vid, group) {
-    if (!this.map.has(vid)) {
-      console.warn(`geometry compiler can not found object with vid: ${vid}`);
-      return this;
-    }
-    const geometry = this.map.get(vid);
-    geometry.addGroup(group.start, group.count, group.materialIndex);
-    return this;
-  }
-  updateGroup(vid, index) {
-    return this.removeGroup(vid, index).addGroup(vid, this.target[vid].groups[index]);
-  }
-  removeGroup(vid, index) {
-    if (!this.map.has(vid)) {
-      console.warn(`geometry compiler can not found object with vid: ${vid}`);
-      return this;
-    }
-    const geometry = this.map.get(vid);
-    geometry.groups.splice(index, 1);
-    return this;
-  }
-  set(vid, path, value) {
-    if (!validate(vid)) {
-      console.warn(`geometry compiler set function vid parameters is illeage: '${vid}'`);
-      return this;
-    }
-    if (!this.map.has(vid)) {
-      console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
-      return this;
-    }
-    const currentGeometry = this.map.get(vid);
-    const config2 = this.target[vid];
-    const newGeometry = this.constructMap.get(config2.type)(config2, this);
-    currentGeometry.copy(newGeometry);
-    currentGeometry.dispatchEvent({
-      type: "update"
-    });
-    currentGeometry.uuid = newGeometry.uuid;
-    newGeometry.dispose();
-    return this;
-  }
-  remove(vid) {
-    if (!this.map.has(vid)) {
-      console.warn(`Geometry Compiler: can not found vid in compiler: ${vid}`);
-      return this;
-    }
-    const geometry = this.map.get(vid);
-    geometry.dispose();
-    this.map.delete(vid);
-    this.weakMap.delete(geometry);
-    return this;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const key in target) {
-      this.add(key, target[key]);
-    }
-    return this;
-  }
-  dispose() {
-    this.map.forEach((geometry, vid) => {
-      geometry.dispose();
-    });
-    return this;
-  }
-  getObjectSymbol(texture) {
-    return this.weakMap.get(texture) || null;
-  }
-  getObjectBySymbol(vid) {
-    return this.map.get(vid) || null;
-  }
-}
-__publicField(GeometryCompiler, "transfromAnchor", function(geometry, config2) {
+const transfromAnchor = function(geometry, config2) {
   if (!(geometry instanceof CurveGeometry) && !(geometry instanceof TubeGeometry) && !(geometry instanceof ShapeGeometry)) {
     geometry.center();
   }
@@ -8865,7 +8606,212 @@ __publicField(GeometryCompiler, "transfromAnchor", function(geometry, config2) {
   geometry.computeBoundingBox();
   geometry.translate((box.max.x - box.min.x) / 2 * position.x, (box.max.y - box.min.y) / 2 * position.y, (box.max.z - box.min.z) / 2 * position.z);
   return geometry;
+};
+const commands = {
+  add: {
+    groups({ target, value }) {
+      target.addGroup(value.start, value.count, value.materialIndex);
+    }
+  },
+  set: {
+    groups(params) {
+      const { path, target, config: config2 } = params;
+      if (path[1] !== void 0) {
+        target.groups.splice(Number(params.path[1]), 1);
+        const group = config2.groups[path[1]];
+        target.addGroup(group.start, group.count, group.materialIndex);
+      } else {
+        console.warn(`geometry processor can not set group`, params);
+      }
+    }
+  },
+  delete: {
+    groups({ target, key }) {
+      target.groups.splice(Number(key), 1);
+    }
+  }
+};
+const create$1 = function(target, config2) {
+  target.clearGroups();
+  for (const group of config2.groups) {
+    target.addGroup(group.start, group.count, group.materialIndex);
+  }
+  return transfromAnchor(target, config2);
+};
+const constructMap = new Map();
+constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config2) => {
+  return new BoxBufferGeometry(config2.width, config2.height, config2.depth, config2.widthSegments, config2.heightSegments, config2.depthSegments);
 });
+constructMap.set(CONFIGTYPE.SPHEREGEOMETRY, (config2) => {
+  return new SphereBufferGeometry(config2.radius, config2.widthSegments, config2.heightSegments, config2.phiStart, config2.phiLength, config2.thetaStart, config2.thetaLength);
+});
+constructMap.set(CONFIGTYPE.PLANEGEOMETRY, (config2) => {
+  return new PlaneBufferGeometry(config2.width, config2.height, config2.widthSegments, config2.heightSegments);
+});
+constructMap.set(CONFIGTYPE.CIRCLEGEOMETRY, (config2) => {
+  return new CircleBufferGeometry(config2.radius, config2.segments, config2.thetaStart, config2.thetaLength);
+});
+constructMap.set(CONFIGTYPE.CONEGEOMETRY, (config2) => {
+  return new ConeBufferGeometry(config2.radius, config2.height, config2.radialSegments, config2.heightSegments, config2.openEnded, config2.thetaStart, config2.thetaLength);
+});
+constructMap.set(CONFIGTYPE.CYLINDERGEOMETRY, (config2) => {
+  return new CylinderBufferGeometry(config2.radiusTop, config2.radiusBottom, config2.height, config2.radialSegments, config2.heightSegments, config2.openEnded, config2.thetaStart, config2.thetaLength);
+});
+constructMap.set(CONFIGTYPE.LINECURVEGEOMETRY, (config2) => {
+  return new LineCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space);
+});
+constructMap.set(CONFIGTYPE.SPLINECURVEGEOMETRY, (config2) => {
+  return new SplineCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space);
+});
+constructMap.set(CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY, (config2) => {
+  return new CubicBezierCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space);
+});
+constructMap.set(CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY, (config2) => {
+  return new QuadraticBezierCurveGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space);
+});
+constructMap.set(CONFIGTYPE.LINETUBEGEOMETRY, (config2) => {
+  return new LineTubeGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.tubularSegments, config2.radius, config2.radialSegments, config2.closed);
+});
+constructMap.set(CONFIGTYPE.SPLINETUBEGEOMETRY, (config2) => {
+  return new SplineTubeGeometry(config2.path.map((vector3) => new Vector3$1(vector3.x, vector3.y, vector3.z)), config2.tubularSegments, config2.radius, config2.radialSegments, config2.closed);
+});
+constructMap.set(CONFIGTYPE.TORUSGEOMETRY, (config2) => {
+  return new TorusGeometry(config2.radius, config2.tube, config2.radialSegments, config2.tubularSegments, config2.arc);
+});
+constructMap.set(CONFIGTYPE.RINGGEOMETRY, (config2) => {
+  return new RingBufferGeometry(config2.innerRadius, config2.outerRadius, config2.thetaSegments, config2.phiSegments, config2.thetaStart, config2.thetaLength);
+});
+constructMap.set(CONFIGTYPE.LINESHAPEGEOMETRY, (config2) => {
+  return new LineShapeGeometry(config2.path.map((vector2) => new Vector2$1(vector2.x, vector2.y)), config2.curveSegments);
+});
+const create = function(config2) {
+  if (!constructMap.has(config2.type)) {
+    console.error(`parametric geometry can not support this type config: ${config2.type}`);
+    return new BufferGeometry();
+  }
+  return create$1(constructMap.get(config2.type)(config2), config2);
+};
+const dispose = function(target) {
+  target.dispose();
+};
+const parametricProcessorFactory = function(configType) {
+  return defineProcessor({
+    configType,
+    commands,
+    create,
+    dispose
+  });
+};
+const ParametricGeometryList = [
+  CONFIGTYPE.BOXGEOMETRY,
+  CONFIGTYPE.SPHEREGEOMETRY,
+  CONFIGTYPE.PLANEGEOMETRY,
+  CONFIGTYPE.CIRCLEGEOMETRY,
+  CONFIGTYPE.CONEGEOMETRY,
+  CONFIGTYPE.CYLINDERGEOMETRY,
+  CONFIGTYPE.LINECURVEGEOMETRY,
+  CONFIGTYPE.SPLINECURVEGEOMETRY,
+  CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY,
+  CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY,
+  CONFIGTYPE.LINETUBEGEOMETRY,
+  CONFIGTYPE.SPLINETUBEGEOMETRY,
+  CONFIGTYPE.TORUSGEOMETRY,
+  CONFIGTYPE.RINGGEOMETRY,
+  CONFIGTYPE.LINESHAPEGEOMETRY
+];
+const ParametricGeometryProcessors = ParametricGeometryList.map((type) => parametricProcessorFactory(type));
+class LoadGeometry extends BufferGeometry {
+  constructor(geometry) {
+    super();
+    __publicField(this, "type", "LoadBufferGeometry");
+    geometry && this.copy(geometry);
+  }
+}
+var LoadGeometryProcessor = defineProcessor({
+  configType: CONFIGTYPE.LOADGEOMETRY,
+  commands,
+  create(config2, engine) {
+    const originGeometry = engine.resourceManager.resourceMap.get(config2.url);
+    if (!originGeometry && !(originGeometry instanceof BufferGeometry)) {
+      console.error(`engine rescoure can not found url: ${config2.url}`);
+      return new BoxBufferGeometry(5, 5, 5);
+    }
+    return create$1(new LoadGeometry(originGeometry), config2);
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
+const generateGeometry = function(attribute) {
+  const geometry = new BufferGeometry();
+  attribute.position.length && geometry.setAttribute("position", new Float32BufferAttribute(attribute.position, 3));
+  attribute.color.length && geometry.setAttribute("color", new Float32BufferAttribute(attribute.color, 3));
+  attribute.normal.length && geometry.setAttribute("normal", new Float32BufferAttribute(attribute.normal, 3));
+  attribute.uv.length && geometry.setAttribute("uv", new Float32BufferAttribute(attribute.uv, 2));
+  attribute.uv2.length && geometry.setAttribute("uv2", new Float32BufferAttribute(attribute.uv2, 2));
+  attribute.index.length && geometry.setIndex(attribute.index);
+  return geometry;
+};
+var CustomGeometryProcessor = defineProcessor({
+  configType: CONFIGTYPE.CUSTOMGEOMETRY,
+  commands,
+  create(config2) {
+    return create$1(generateGeometry(config2.attribute), config2);
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
+var EdgesGeometryProcessor = defineProcessor({
+  configType: CONFIGTYPE.EDGESGEOMETRY,
+  commands,
+  create(config2, engine) {
+    const geometry = engine.compilerManager.getObjectBySymbol(config2.url);
+    if (!geometry || !(geometry instanceof BufferGeometry)) {
+      console.error(`engine rescoure can not found url: ${config2.url}`);
+      return new EdgesGeometry(new BoxBufferGeometry(5, 5, 5));
+    }
+    return create$1(new EdgesGeometry(geometry), config2);
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
+class GeometryCompiler extends Compiler {
+  constructor() {
+    super();
+    __publicField(this, "MODULE", MODULETYPE.GEOMETRY);
+  }
+  add(config2) {
+    const geometry = super.add(config2);
+    if (geometry) {
+      geometry.clearGroups();
+      for (const group of config2.groups) {
+        geometry.addGroup(group.start, group.count, group.materialIndex);
+      }
+    }
+    return geometry;
+  }
+  set(vid, path, value) {
+    if (!validate(vid)) {
+      console.warn(`geometry compiler set function vid parameters is illeage: '${vid}'`);
+      return this;
+    }
+    if (!this.map.has(vid)) {
+      console.warn(`geometry compiler set function can not found vid geometry: '${vid}'`);
+      return this;
+    }
+    this.map.get(vid);
+    this.target[vid];
+    return this;
+  }
+}
+ParametricGeometryProcessors.forEach((processor) => {
+  Compiler.processor(processor);
+});
+Compiler.processor(LoadGeometryProcessor);
+Compiler.processor(CustomGeometryProcessor);
+Compiler.processor(EdgesGeometryProcessor);
 class GroupCompiler extends ObjectCompiler {
   constructor() {
     super();
@@ -8980,8 +8926,8 @@ class SolidObjectCompiler extends ObjectCompiler {
       return this.getReplaceGeometry();
     }
   }
-  linkGeometryMap(map2) {
-    this.geometryMap = map2;
+  linkGeometryMap(map) {
+    this.geometryMap = map;
     return this;
   }
   linkMaterialMap(materialMap) {
@@ -9099,14 +9045,14 @@ class MaterialCompiler extends Compiler {
     __publicField(this, "texturelMap", new Map());
     __publicField(this, "resourceMap", new Map());
     __publicField(this, "cachaColor", new Color());
-    const constructMap = new Map();
-    constructMap.set(CONFIGTYPE.MESHBASICMATERIAL, () => new MeshBasicMaterial());
-    constructMap.set(CONFIGTYPE.MESHSTANDARDMATERIAL, () => new MeshStandardMaterial());
-    constructMap.set(CONFIGTYPE.MESHPHONGMATERIAL, () => new MeshPhongMaterial());
-    constructMap.set(CONFIGTYPE.SPRITEMATERIAL, () => new SpriteMaterial());
-    constructMap.set(CONFIGTYPE.LINEBASICMATERIAL, () => new LineBasicMaterial());
-    constructMap.set(CONFIGTYPE.POINTSMATERIAL, () => new PointsMaterial());
-    constructMap.set(CONFIGTYPE.SHADERMATERIAL, (config2) => {
+    const constructMap2 = new Map();
+    constructMap2.set(CONFIGTYPE.MESHBASICMATERIAL, () => new MeshBasicMaterial());
+    constructMap2.set(CONFIGTYPE.MESHSTANDARDMATERIAL, () => new MeshStandardMaterial());
+    constructMap2.set(CONFIGTYPE.MESHPHONGMATERIAL, () => new MeshPhongMaterial());
+    constructMap2.set(CONFIGTYPE.SPRITEMATERIAL, () => new SpriteMaterial());
+    constructMap2.set(CONFIGTYPE.LINEBASICMATERIAL, () => new LineBasicMaterial());
+    constructMap2.set(CONFIGTYPE.POINTSMATERIAL, () => new PointsMaterial());
+    constructMap2.set(CONFIGTYPE.SHADERMATERIAL, (config2) => {
       const shader2 = ShaderLibrary.getShader(config2.shader);
       const material = new ShaderMaterial();
       (shader2 == null ? void 0 : shader2.vertexShader) && (material.vertexShader = shader2.vertexShader);
@@ -9114,7 +9060,7 @@ class MaterialCompiler extends Compiler {
       (shader2 == null ? void 0 : shader2.uniforms) && (material.uniforms = shader2.uniforms);
       return material;
     });
-    this.constructMap = constructMap;
+    this.constructMap = constructMap2;
   }
   mergeMaterial(material, config2) {
     const tempConfig = JSON.parse(JSON.stringify(config2));
@@ -9151,8 +9097,8 @@ class MaterialCompiler extends Compiler {
       return null;
     }
   }
-  linkRescourceMap(map2) {
-    this.resourceMap = map2;
+  linkRescourceMap(map) {
+    this.resourceMap = map;
     return this;
   }
   linkTextureMap(textureMap) {
@@ -10121,8 +10067,8 @@ class SceneCompiler extends ObjectCompiler {
     }
     console.warn(`scene compiler can not support this type fog:'${config2.type}'`);
   }
-  linkTextureMap(map2) {
-    this.textureMap = map2;
+  linkTextureMap(map) {
+    this.textureMap = map;
     return this;
   }
   add(vid, config2) {
@@ -10306,12 +10252,12 @@ const _TextureCompiler = class extends Compiler {
     this.map = new Map();
     this.weakMap = new WeakMap();
     this.resourceMap = new Map();
-    const constructMap = new Map();
-    constructMap.set(CONFIGTYPE.IMAGETEXTURE, () => new ImageTexture());
-    constructMap.set(CONFIGTYPE.CUBETEXTURE, () => new CubeTexture());
-    constructMap.set(CONFIGTYPE.CANVASTEXTURE, () => new CanvasTexture(document.createElement("canvas")));
-    constructMap.set(CONFIGTYPE.VIDEOTEXTURE, () => new VideoTexture(document.createElement("video")));
-    this.constructMap = constructMap;
+    const constructMap2 = new Map();
+    constructMap2.set(CONFIGTYPE.IMAGETEXTURE, () => new ImageTexture());
+    constructMap2.set(CONFIGTYPE.CUBETEXTURE, () => new CubeTexture());
+    constructMap2.set(CONFIGTYPE.CANVASTEXTURE, () => new CanvasTexture(document.createElement("canvas")));
+    constructMap2.set(CONFIGTYPE.VIDEOTEXTURE, () => new VideoTexture(document.createElement("video")));
+    this.constructMap = constructMap2;
   }
   getResource(url) {
     if (!url) {
@@ -10331,8 +10277,8 @@ const _TextureCompiler = class extends Compiler {
       return _TextureCompiler.replaceImage;
     }
   }
-  linkRescourceMap(map2) {
-    this.resourceMap = map2;
+  linkRescourceMap(map) {
+    this.resourceMap = map;
     return this;
   }
   add(vid, config2) {
@@ -10502,9 +10448,9 @@ class CompilerManager {
     const materialMap = this.materialCompiler.getMap();
     const objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
     const objectMapList = objectCompilerList.map((compiler) => {
-      const map2 = compiler.getMap();
-      this.object3DMapSet.add(map2);
-      return map2;
+      const map = compiler.getMap();
+      this.object3DMapSet.add(map);
+      return map;
     });
     for (const objectCompiler of objectCompilerList) {
       if (isValidKey("IS_SOLIDOBJECTCOMPILER", objectCompiler)) {
@@ -10529,7 +10475,6 @@ class CompilerManager {
     if (engine.resourceManager) {
       const resourceMap = engine.resourceManager.resourceMap;
       this.textureCompiler.linkRescourceMap(resourceMap);
-      this.geometryCompiler.linkRescourceMap(resourceMap);
       this.css3DCompiler.linkRescourceMap(resourceMap);
     }
     const dataSupportManager = engine.dataSupportManager;
@@ -10570,16 +10515,16 @@ class CompilerManager {
     return null;
   }
   getObject3D(vid) {
-    for (const map2 of this.object3DMapSet) {
-      if (map2.has(vid)) {
-        return map2.get(vid);
+    for (const map of this.object3DMapSet) {
+      if (map.has(vid)) {
+        return map.get(vid);
       }
     }
     return null;
   }
   dispose() {
     for (const compiler of this.compilerMap.values()) {
-      compiler.dispose({});
+      compiler.dispose();
     }
     this.compilerMap.clear();
     return this;

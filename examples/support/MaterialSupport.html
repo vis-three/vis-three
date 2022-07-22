@@ -166,7 +166,7 @@
       engine.setScene(scene.vid).play();
 
       engine.renderManager.addEventListener("render", (event) => {
-        shaderMaterial.uniforms.uTime.value += event.delta * 5;
+        shaderMaterial.uniforms.time.value += event.delta * 5;
       });
 
       window.engine = engine;

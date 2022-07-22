@@ -1,3 +1,4 @@
+import { C } from "../convenient/generateConfig";
 import { EngineSupport } from "../engine/EngineSupport";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { CONFIGTYPE } from "../middleware/constants/configType";
@@ -99,24 +100,26 @@ export interface CommandStructure<C extends SymbolConfig, T extends object> {
   [key: string]: (params: ProcessParams<C, T>) => void | CommandStructure<C, T>;
 }
 
+export interface ProcessorCommands<C extends SymbolConfig, T extends object> {
+  add?: CommandStructure<C, T>;
+  set?: CommandStructure<C, T>;
+  delete?: CommandStructure<C, T>;
+}
+
 export interface ProcessorOptions<C extends SymbolConfig, T extends object> {
   configType: CONFIGTYPE | string;
-  commands?: {
-    add?: CommandStructure<C, T>;
-    set?: CommandStructure<C, T>;
-    delete?: CommandStructure<C, T>;
-  };
+  commands?: ProcessorCommands<C, T>;
   create: (config: C, engine: EngineSupport) => T;
   dispose: (target: T) => void;
 }
 
+export type DefineProcessor = <C extends SymbolConfig, T extends object>(
+  options: ProcessorOptions<C, T>
+) => Processor2<C, T>;
+
 export class Processor2<C extends SymbolConfig, T extends object> {
   configType: CONFIGTYPE | string;
-  commands?: {
-    add?: CommandStructure<C, T>;
-    set?: CommandStructure<C, T>;
-    delete?: CommandStructure<C, T>;
-  };
+  commands?: ProcessorCommands<C, T>;
   create: (config: C, engine: EngineSupport) => T;
   dispose: (target: T) => void;
 
@@ -200,7 +203,10 @@ export class Processor2<C extends SymbolConfig, T extends object> {
   }
 }
 
-export const defineProcessor = <C extends SymbolConfig, T extends object>(
+export const defineProcessor: DefineProcessor = <
+  C extends SymbolConfig,
+  T extends object
+>(
   options: ProcessorOptions<C, T>
 ) => {
   return new Processor2<C, T>(options);

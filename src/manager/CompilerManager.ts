@@ -1,6 +1,6 @@
-import { Material, Object3D, Texture } from "three";
+import { BufferGeometry, Material, Object3D, Texture } from "three";
 import { validate } from "uuid";
-import { Compiler } from "../core/Compiler";
+import { BasicCompiler, Compiler } from "../core/Compiler";
 import { EngineSupport } from "../engine/EngineSupport";
 import { MODULETYPE } from "../main";
 import { AnimationCompiler } from "../middleware/animation/AnimationCompiler";
@@ -64,7 +64,7 @@ export class CompilerManager {
   private passCompiler = new PassCompiler();
   private animationCompiler = new AnimationCompiler();
 
-  private compilerMap: Map<MODULETYPE, Compiler>;
+  private compilerMap: Map<MODULETYPE, BasicCompiler>;
 
   private object3DMapSet: Set<Map<SymbolConfig["vid"], Object3D>> = new Set();
 
@@ -137,7 +137,6 @@ export class CompilerManager {
       const resourceMap = engine.resourceManager!.resourceMap;
 
       this.textureCompiler.linkRescourceMap(resourceMap);
-      this.geometryCompiler.linkRescourceMap(resourceMap);
       this.css3DCompiler.linkRescourceMap(resourceMap);
     }
 
@@ -210,7 +209,7 @@ export class CompilerManager {
 
   dispose(): this {
     for (const compiler of this.compilerMap.values()) {
-      compiler.dispose({});
+      compiler.dispose();
     }
     this.compilerMap.clear();
     return this;

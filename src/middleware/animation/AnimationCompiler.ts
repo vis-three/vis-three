@@ -8,11 +8,14 @@ import { CONFIGTYPE } from "../constants/configType";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { AnimationAllType, ScriptAnimationConfig } from "./AnimationConfig";
 
-export interface AnimationCompilerTarget extends CompilerTarget {
-  [key: string]: AnimationAllType;
-}
+export interface AnimationCompilerTarget
+  extends CompilerTarget<AnimationAllType> {}
 
-export class AnimationCompiler extends Compiler {
+export class AnimationCompiler extends Compiler<
+  AnimationAllType,
+  AnimationCompilerTarget,
+  Function
+> {
   MODULE: MODULETYPE = MODULETYPE.ANIMATION;
 
   private target: AnimationCompilerTarget = {};

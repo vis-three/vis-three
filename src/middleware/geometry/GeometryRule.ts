@@ -7,6 +7,13 @@ export const GeometryRule: Rule<GeometryCompiler> = function (
   notice: ProxyNotice,
   compiler: GeometryCompiler
 ) {
+  Rule(notice, compiler);
+};
+
+export const GeometryRule1: Rule<GeometryCompiler> = function (
+  notice: ProxyNotice,
+  compiler: GeometryCompiler
+) {
   const { operate, key, path, value } = notice;
 
   const vid = path.length ? path[0] : key;
