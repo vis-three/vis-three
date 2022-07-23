@@ -30,85 +30,107 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
-      const engine = new Vis.ModelingEngine()
+      import * as VIS from "vis-three";
+
+      class SectionAction extends VIS.Action {
+        static status = false;
+        static cacheSection = [];
+
+        constructor({ objects, engine }) {
+          super();
+          this.oldObjects = [].concat(SectionAction.cacheSection);
+          this.newObjects = [].concat(objects);
+          this.engine = engine;
+
+          SectionAction.cacheSection = [].concat(objects);
+        }
+
+        next() {
+          this.engine.setSelectionBox({
+            objects: this.newObjects,
+          });
+          SectionAction.status = true;
+        }
+
+        prev() {
+          this.engine.setSelectionBox({
+            objects: this.oldObjects,
+          });
+          SectionAction.status = true;
+        }
+      }
+
+      class TransformAction extends VIS.Action {
+        constructor({ transformControls }) {
+          super();
+          this.nextState = {
+            mode: "translate",
+            space: "world",
+            tranform: "",
+            objectMap: new Map(),
+          };
+
+          this.prevState = {
+            mode: "translate",
+            space: "world",
+            tranform: "",
+            objectMap: new Map(),
+          };
+
+          this.transfromControls = transformControls;
+        }
+
+        generate(status) {
+          const transformControls = this.transfromControls;
+          const mode = transformControls.mode;
+          const tranform =
+            mode === "rotate"
+              ? "rotation"
+              : mode === "translate"
+              ? "position"
+              : mode;
+          const objectSet = transformControls.getTransObjectSet();
+          const state = this[`${status}State`];
+
+          state.mode = mode;
+          state.tranform = tranform;
+          state.space = transformControls.space;
+
+          const cacheMap = state.objectMap;
+          objectSet.forEach((object) => {
+            cacheMap.set(object, {
+              x: object[tranform].x,
+              y: object[tranform].y,
+              z: object[tranform].z,
+            });
+          });
+
+          this[status] = function () {
+            const transformControls = this.transfromControls;
+            const state = this[`${status}State`];
+            transformControls.mode = state.mode;
+            transformControls.space = state.space;
+            const tranform = state.tranform;
+            const objects = [];
+            state.objectMap.forEach((vector3, object) => {
+              object[tranform].x = vector3.x;
+              object[tranform].y = vector3.y;
+              object[tranform].z = vector3.z;
+              object.updateMatrixWorld();
+              objects.push(object);
+            });
+            transformControls.setAttach(...objects);
+          };
+        }
+      }
+
+      const engine = new VIS.ModelingEngine()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true)
         .play();
 
-      const scene = engine.scene;
-
-      const box = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(10, 10, 10),
-        new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
-      );
-      box.position.x = 10;
-      scene.add(box);
-
-      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
-      pointLight.position.y = 30;
-      scene.add(pointLight);
-
-      const history = new Vis.History(50);
-
-      const SectionAction = Vis.ActionLibrary.SectionAction;
-
-      class ModelingSectionAction extends SectionAction {
-        static status = false;
-        static cacheSection = [];
-
-        constructor({ objects, engine }) {
-          const params = {
-            oldObjects: [].concat(ModelingSectionAction.cacheSection),
-            newObjects: [].concat(objects),
-            engine,
-          };
-
-          super(params);
-
-          ModelingSectionAction.cacheSection = [].concat(objects);
-        }
-
-        next() {
-          ModelingSectionAction.status = true;
-          super.next();
-        }
-
-        prev() {
-          ModelingSectionAction.status = true;
-          super.prev();
-        }
-      }
-
-      engine.addEventListener("selected", (event) => {
-        if (ModelingSectionAction.status) {
-          ModelingSectionAction.status = false;
-          return;
-        }
-
-        history.apply(
-          new ModelingSectionAction({
-            objects: event.objects,
-            engine: engine,
-          })
-        );
-      });
-
-      const transformControls = engine.transformControls;
-      const TransformAction = Vis.ActionLibrary.TransformAction;
-
-      let action = "";
-      transformControls.addEventListener("mouseDown", (event) => {
-        action = new TransformAction({ transformControls });
-        action.generate("prev");
-      });
-
-      transformControls.addEventListener("mouseUp", (event) => {
-        action.generate("next");
-        history.apply(action);
-        action = "";
-      });
+      const history = new VIS.History(50);
 
       engine.keyboardManager
         .register({
@@ -127,6 +149,59 @@
             history.redo();
           },
         });
+
+      const scene = engine.scene;
+
+      const box = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(10, 10, 10),
+        new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
+      );
+      box.position.x = 10;
+      scene.add(box);
+
+      const sphere = new THREE.Mesh(
+        new THREE.SphereBufferGeometry(5, 32, 32),
+        new THREE.MeshStandardMaterial({ color: "rgb(255, 205, 100)" })
+      );
+      sphere.position.x = -10;
+      scene.add(sphere);
+
+      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
+      pointLight.position.y = 30;
+      scene.add(pointLight);
+
+      // selection action
+      engine.addEventListener("selected", (event) => {
+        if (SectionAction.status) {
+          SectionAction.status = false;
+          return;
+        }
+
+        if (!SectionAction.cacheSection.length && !event.objects.length) {
+          return;
+        }
+
+        history.apply(
+          new SectionAction({
+            objects: event.objects,
+            engine: engine,
+          })
+        );
+      });
+
+      // transform action
+      const transformControls = engine.transformControls;
+      let action = "";
+      transformControls.addEventListener("mouseDown", (event) => {
+        action = new TransformAction({ transformControls });
+        action.generate("prev");
+      });
+
+      transformControls.addEventListener("mouseUp", (event) => {
+        action.generate("next");
+        history.apply(action);
+        action = "";
+      });
     </script>
   </body>
 </html>

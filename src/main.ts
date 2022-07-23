@@ -28,7 +28,6 @@ import { DisplayEngineSupport } from "./engine/DisplayEngineSupport";
 import { LineDataSupport } from "./middleware/line/LineDataSupport";
 import { MeshDataSupport } from "./middleware/mesh/MeshDataSupport";
 import { PointsDataSupport } from "./middleware/points/PointsDataSupport";
-import * as ActionLibrary from "./convenient/ActionLibrary/Action";
 import { GroupHelper } from "./extends/helper/object/GroupHelper";
 import { EngineSupport } from "./engine/EngineSupport";
 import * as JSONHandler from "./convenient/JSONHandler";
@@ -36,7 +35,7 @@ import * as JSONHandler from "./convenient/JSONHandler";
 import { BooleanModifier } from "./modifier/BooleanModifier";
 import { VIEWPOINT } from "./plugins/ViewpointPlugin";
 import { DISPLAYMODE } from "./plugins/DisplayModePlugin";
-import { History } from "./convenient/History";
+import { Action, History } from "./convenient/History";
 import { SpotLightHelper } from "./extends/helper/light/SpotLightHelper";
 import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightHelper";
 import { VideoLoader } from "./extends/loader/VideoLoader";
@@ -116,11 +115,8 @@ export {
   SupportDataGenerator,
   CanvasGenerator,
   History,
+  Action,
   JSONHandler,
-  /**
-   * @deprecated
-   */
-  ActionLibrary,
   // library
   EventLibrary,
   ShaderLibrary,
