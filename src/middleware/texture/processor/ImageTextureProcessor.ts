@@ -12,6 +12,7 @@ export default defineProcessor<ImageTextureConfig, ImageTexture>({
     set: {
       url({ target, value, engine }) {
         target.image = getResource(value, engine, HTMLImageElement);
+        target.needsUpdate = true;
       },
       $reg: [needUpdateRegCommand],
     },

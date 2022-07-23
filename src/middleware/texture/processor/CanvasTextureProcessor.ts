@@ -13,6 +13,7 @@ export default defineProcessor<CanvasTextureConfig, CanvasTexture>({
     set: {
       url({ target, value, engine }) {
         target.image = getResource(value, engine, HTMLCanvasElement);
+        target.needsUpdate = true;
       },
     },
   },

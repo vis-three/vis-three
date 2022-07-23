@@ -10239,6 +10239,7 @@ var ImageTextureProcessor = defineProcessor({
     set: {
       url({ target, value, engine }) {
         target.image = getResource(value, engine, HTMLImageElement);
+        target.needsUpdate = true;
       },
       $reg: [needUpdateRegCommand]
     }
@@ -10265,6 +10266,7 @@ var CanvasTextureProcessor = defineProcessor({
     set: {
       url({ target, value, engine }) {
         target.image = getResource(value, engine, HTMLCanvasElement);
+        target.needsUpdate = true;
       }
     }
   },
@@ -10374,6 +10376,7 @@ var VideoTextureProcessor = defineProcessor({
     set: {
       url({ target, value, engine }) {
         target.image = getResource(value, engine, HTMLVideoElement);
+        target.needsUpdate = true;
       }
     }
   },

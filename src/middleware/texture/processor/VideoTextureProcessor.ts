@@ -13,6 +13,7 @@ export default defineProcessor<VideoTextureConfig, VideoTexture>({
     set: {
       url({ target, value, engine }) {
         target.image = getResource(value, engine, HTMLVideoElement);
+        target.needsUpdate = true;
       },
     },
   },

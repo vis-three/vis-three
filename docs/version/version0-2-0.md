@@ -10,7 +10,9 @@
 
 - processor
 - compiler
+- History Action
 
 #### deprecated
 
 - CONFIGMODULE
+- ActionLibrary
