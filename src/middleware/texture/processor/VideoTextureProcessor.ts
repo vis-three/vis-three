@@ -28,6 +28,8 @@ export default defineProcessor<VideoTextureConfig, VideoTexture>({
       url: true,
     });
 
+    texture.needsUpdate = true;
+
     return texture;
   },
 

@@ -91,6 +91,8 @@ export default defineProcessor<CubeTextureConfig, CubeTexture>({
       cube: true,
     });
 
+    texture.needsUpdate = true;
+
     return texture;
   },
 

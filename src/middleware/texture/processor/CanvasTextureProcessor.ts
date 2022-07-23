@@ -28,6 +28,8 @@ export default defineProcessor<CanvasTextureConfig, CanvasTexture>({
       url: true,
     });
 
+    texture.needsUpdate = true;
+
     return texture;
   },
 

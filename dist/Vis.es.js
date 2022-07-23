@@ -10277,6 +10277,7 @@ var CanvasTextureProcessor = defineProcessor({
       type: true,
       url: true
     });
+    texture.needsUpdate = true;
     return texture;
   },
   dispose(target) {
@@ -10360,6 +10361,7 @@ var CubeTextureProcessor = defineProcessor({
       type: true,
       cube: true
     });
+    texture.needsUpdate = true;
     return texture;
   },
   dispose(target) {
@@ -10384,6 +10386,7 @@ var VideoTextureProcessor = defineProcessor({
       type: true,
       url: true
     });
+    texture.needsUpdate = true;
     return texture;
   },
   dispose(target) {
