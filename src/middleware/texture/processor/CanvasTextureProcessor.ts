@@ -24,6 +24,7 @@ export default defineProcessor<CanvasTextureConfig, CanvasTexture>({
     }
 
     syncObject(config, texture, {
+      type: true,
       url: true,
     });
 

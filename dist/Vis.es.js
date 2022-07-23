@@ -10274,6 +10274,7 @@ var CanvasTextureProcessor = defineProcessor({
       texture.image = getResource(config2.url, engine, HTMLCanvasElement);
     }
     syncObject(config2, texture, {
+      type: true,
       url: true
     });
     return texture;
@@ -10356,6 +10357,7 @@ var CubeTextureProcessor = defineProcessor({
     ];
     texture.image = images;
     syncObject(config2, texture, {
+      type: true,
       cube: true
     });
     return texture;
@@ -10365,7 +10367,7 @@ var CubeTextureProcessor = defineProcessor({
   }
 });
 var VideoTextureProcessor = defineProcessor({
-  configType: CONFIGTYPE.CANVASTEXTURE,
+  configType: CONFIGTYPE.VIDEOTEXTURE,
   commands: {
     set: {
       url({ target, value, engine }) {
@@ -10379,6 +10381,7 @@ var VideoTextureProcessor = defineProcessor({
       texture.image = getResource(config2.url, engine, HTMLVideoElement);
     }
     syncObject(config2, texture, {
+      type: true,
       url: true
     });
     return texture;
@@ -13787,99 +13790,6 @@ class DisplayEngineSupport extends EngineSupport {
     }).install(ENGINEPLUGIN.ORBITCONTROLS).complete();
   }
 }
-class SectionAction {
-  constructor(parameters) {
-    __publicField(this, "oldObjects");
-    __publicField(this, "newObjects");
-    __publicField(this, "engine");
-    __publicField(this, "impact");
-    this.oldObjects = parameters.oldObjects;
-    this.newObjects = parameters.newObjects;
-    this.engine = parameters.engine;
-    this.impact = true;
-    if (!this.engine.selectionBox) {
-      console.warn(`section action can not make any impact.`);
-      this.impact = false;
-    }
-  }
-  next() {
-    if (!this.impact) {
-      return;
-    }
-    this.engine.setSelectionBox({
-      objects: this.newObjects
-    });
-  }
-  prev() {
-    if (!this.impact) {
-      return;
-    }
-    this.engine.setSelectionBox({
-      objects: this.oldObjects
-    });
-  }
-}
-class TransformAction {
-  constructor(params) {
-    __publicField(this, "transfromControls");
-    __publicField(this, "nextState", {
-      mode: "translate",
-      space: "world",
-      tranform: "",
-      objectMap: new Map()
-    });
-    __publicField(this, "prevState", {
-      mode: "translate",
-      space: "world",
-      tranform: "",
-      objectMap: new Map()
-    });
-    this.transfromControls = params.transformControls;
-  }
-  generate(status) {
-    const transformControls = this.transfromControls;
-    const mode = transformControls.mode;
-    const tranform = mode === "rotate" ? "rotation" : mode === "translate" ? "position" : mode;
-    const objectSet = transformControls.getTransObjectSet();
-    const state = this[`${status}State`];
-    state.mode = mode;
-    state.tranform = tranform;
-    state.space = transformControls.space;
-    const cacheMap = state.objectMap;
-    objectSet.forEach((object) => {
-      cacheMap.set(object, {
-        x: object[tranform].x,
-        y: object[tranform].y,
-        z: object[tranform].z
-      });
-    });
-    this[status] = function() {
-      const transformControls2 = this.transfromControls;
-      const state2 = this[`${status}State`];
-      transformControls2.mode = state2.mode;
-      transformControls2.space = state2.space;
-      const tranform2 = state2.tranform;
-      const objects = [];
-      state2.objectMap.forEach((vector3, object) => {
-        object[tranform2].x = vector3.x;
-        object[tranform2].y = vector3.y;
-        object[tranform2].z = vector3.z;
-        objects.push(object);
-      });
-      transformControls2.setAttach(...objects);
-    };
-  }
-  next() {
-  }
-  prev() {
-  }
-}
-var Action = /* @__PURE__ */ Object.freeze({
-  __proto__: null,
-  [Symbol.toStringTag]: "Module",
-  SectionAction,
-  TransformAction
-});
 class NBuf3 {
   constructor(ct) {
     this.top = 0;
@@ -14449,6 +14359,14 @@ class BooleanModifier extends Modifier {
   dispose() {
     this.source.geometry = this.originalGeometry;
     this.modifiedGeometry.dispose();
+  }
+}
+class Action {
+  next() {
+    console.warn(`this action can not set next function: ${this.constructor.name}`);
+  }
+  prev() {
+    console.warn(`this action can not set prev function: ${this.constructor.name}`);
   }
 }
 class History {
@@ -17563,4 +17481,4 @@ const lightShadow = new LightShadow(new OrthographicCamera(-256, 256, 256, -256)
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
-export { Action as ActionLibrary, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };
+export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };

@@ -87,6 +87,7 @@ export default defineProcessor<CubeTextureConfig, CubeTexture>({
     texture.image = images;
 
     syncObject(config, texture, {
+      type: true,
       cube: true,
     });
 

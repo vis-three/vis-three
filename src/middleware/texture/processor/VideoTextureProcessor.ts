@@ -8,7 +8,7 @@ import { VideoTextureConfig } from "../TextureConfig";
 import { getResource } from "./common";
 
 export default defineProcessor<VideoTextureConfig, VideoTexture>({
-  configType: CONFIGTYPE.CANVASTEXTURE,
+  configType: CONFIGTYPE.VIDEOTEXTURE,
   commands: {
     set: {
       url({ target, value, engine }) {
@@ -24,6 +24,7 @@ export default defineProcessor<VideoTextureConfig, VideoTexture>({
     }
 
     syncObject(config, texture, {
+      type: true,
       url: true,
     });
 
