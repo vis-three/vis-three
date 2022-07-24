@@ -1,6 +1,10 @@
 export default {
   router: "textureSupport",
-  children: ["/ImageTextureSupport.html", "/VideoTextureSupport.html"],
+  children: [
+    "/ImageTextureSupport.html",
+    "/VideoTextureSupport.html",
+    "/CubeTextureSupport.html",
+  ],
   position: {
     x: 75,
     y: -45,
