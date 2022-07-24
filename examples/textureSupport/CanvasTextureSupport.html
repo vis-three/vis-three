@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CanvasTextureSupport</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background-color: black;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as VIS from "vis-three";
+      import { v4 as getUUid } from "uuid";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      const canvasGenerator = new VIS.CanvasGenerator({
+        width: 800,
+        height: 160,
+      })
+        .draw((ctx) => {
+          ctx.textBaseline = "middle";
+          ctx.textAlign = "center";
+
+          ctx.fillStyle = "rgb(206, 42, 230)";
+
+          ctx.font = " bold 72px 微软雅黑";
+          ctx.fillText("Hello World! 0", 400, 80);
+        })
+        .preview({
+          top: "10%",
+          left: "10%",
+        });
+
+      const engine = new VIS.ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true)
+        .registerResources({
+          "example.canvas": canvasGenerator.getDom(),
+        });
+
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid).play();
+
+      VIS.generateConfig.injectScene = true;
+
+      const ambientLight = VIS.generateConfig("AmbientLight");
+
+      const texture = engine.reactiveConfig(
+        VIS.generateConfig("CanvasTexture", {
+          url: "example.canvas",
+        })
+      );
+      const material = VIS.generateConfig("MeshBasicMaterial", {
+        map: texture.vid,
+      });
+
+      const geometry = VIS.generateConfig("BoxGeometry", {
+        width: 20,
+        height: 20,
+        depth: 20,
+      });
+
+      const box = VIS.generateConfig("Mesh", {
+        geometry: geometry.vid,
+        material: material.vid,
+      });
+
+      scene.background = texture.vid;
+
+      const gui = new GUI();
+
+      gui.add(texture, "wrapS", {
+        "THREE.RepeatWrapping": THREE.RepeatWrapping,
+        "THREE.ClampToEdgeWrapping": THREE.ClampToEdgeWrapping,
+        "THREE.MirroredRepeatWrapping": THREE.MirroredRepeatWrapping,
+      });
+
+      gui.add(texture, "wrapT", {
+        "THREE.RepeatWrapping": THREE.RepeatWrapping,
+        "THREE.ClampToEdgeWrapping": THREE.ClampToEdgeWrapping,
+        "THREE.MirroredRepeatWrapping": THREE.MirroredRepeatWrapping,
+      });
+
+      gui.add(texture, "format", {
+        AlphaFormat: THREE.AlphaFormat,
+        RedFormat: THREE.RedFormat,
+        RedIntegerFormat: THREE.RedIntegerFormat,
+        RGFormat: THREE.RGFormat,
+        RGIntegerFormat: THREE.RGIntegerFormat,
+        RGBAFormat: THREE.RGBAFormat,
+        RGBAIntegerFormat: THREE.RGBAIntegerFormat,
+        LuminanceFormat: THREE.LuminanceFormat,
+        LuminanceAlphaFormat: THREE.LuminanceAlphaFormat,
+        DepthFormat: THREE.DepthFormat,
+        DepthStencilFormat: THREE.DepthStencilFormat,
+      });
+
+      gui.add(texture, "encoding", {
+        LinearEncoding: THREE.LinearEncoding,
+        sRGBEncoding: THREE.sRGBEncoding,
+      });
+
+      gui.add(texture, "magFilter", {
+        Nearest: THREE.NearestFilter,
+        Linear: THREE.LinearFilter,
+      });
+
+      gui.add(texture, "minFilter", {
+        Nearest: THREE.NearestFilter,
+        Linear: THREE.LinearFilter,
+        NearestMipmapNearest: THREE.NearestMipmapNearestFilter,
+        NearestMipmapLinear: THREE.NearestMipmapLinearFilter,
+        LinearMipmapNearest: THREE.LinearMipmapNearestFilter,
+        LinearMipmapLinear: THREE.LinearMipmapLinearFilter,
+      });
+
+      gui.add(texture, "rotation", -Math.PI, Math.PI, 0.01);
+
+      gui
+        .add({ anisotropy: texture.anisotropy }, "anisotropy", 1, 5, 1)
+        .onChange((data) => {
+          texture.anisotropy = 2 ** data;
+        });
+
+      const repeat = gui.addFolder("repeat");
+
+      repeat.add(texture.repeat, "x", 1, 5, 1);
+      repeat.add(texture.repeat, "y", 1, 5, 1);
+
+      const offset = gui.addFolder("offset");
+
+      offset.add(texture.offset, "x", -1, 1, 0.1);
+      offset.add(texture.offset, "y", -1, 1, 0.1);
+
+      const center = gui.addFolder("center");
+
+      center.add(texture.center, "x", -1, 1, 0.1);
+      center.add(texture.center, "y", -1, 1, 0.1);
+
+      let number = 0;
+
+      setInterval(() => {
+        canvasGenerator.clear().draw((ctx) => {
+          ctx.fillText(`Hello World! ${number}`, 400, 80);
+        });
+        number += 1;
+        texture.needsUpdate = true;
+      }, 1000);
+    </script>
+  </body>
+</html>
