@@ -1,7 +1,7 @@
-import { VideoTexture } from "three";
 import { defineProcessor } from "../../../core/Processor";
 import { EngineSupport } from "../../../engine/EngineSupport";
 import { ImageTexture } from "../../../extends/texture/ImageTexture";
+import { VideoTexture } from "../../../optimize/VideoTexture";
 import { syncObject } from "../../../utils/utils";
 import { CONFIGTYPE } from "../../constants/configType";
 import { VideoTextureConfig } from "../TextureConfig";

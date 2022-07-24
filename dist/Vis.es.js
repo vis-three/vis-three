@@ -18,7 +18,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Euler, Matrix4 as Matrix4$1, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, Scene, UniformsUtils, Sprite, AdditiveBlending, Camera, DodecahedronBufferGeometry, Fog, FogExp2, CanvasTexture, CubeTexture, VideoTexture, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
+import { Clock, Vector3 as Vector3$1, MOUSE, TOUCH, PerspectiveCamera, Quaternion as Quaternion$1, Spherical, Vector2 as Vector2$1, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Color, Loader, FileLoader, Group as Group$1, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, Material, PointsMaterial, MeshPhongMaterial, LineSegments, Points, Mesh, LoaderUtils, FrontSide, RepeatWrapping, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Euler, Matrix4 as Matrix4$1, Box3 as Box3$1, PlaneBufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, EdgesGeometry, PointLight, SpotLight, AmbientLight, DirectionalLight, Line, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial, ShaderMaterial, Texture, Scene, UniformsUtils, Sprite, AdditiveBlending, Camera, DodecahedronBufferGeometry, Fog, FogExp2, CanvasTexture, CubeTexture, RGBFormat, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, Sphere as Sphere$1, OctahedronBufferGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 as Matrix3$1 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -10370,6 +10370,28 @@ var CubeTextureProcessor = defineProcessor({
     target.dispose();
   }
 });
+class VideoTexture extends Texture {
+  constructor(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
+    super(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
+    __publicField(this, "isVideoTexture", true);
+    this.format = format !== void 0 ? format : RGBFormat;
+    this.minFilter = minFilter !== void 0 ? minFilter : LinearFilter;
+    this.magFilter = magFilter !== void 0 ? magFilter : LinearFilter;
+    this.generateMipmaps = false;
+  }
+  clone() {
+    return new this.constructor(this.image).copy(this);
+  }
+  update() {
+    const video = this.image;
+    const hasVideoFrameCallback = "requestVideoFrameCallback" in video;
+    if (hasVideoFrameCallback) {
+      this.needsUpdate = true;
+    } else if (hasVideoFrameCallback === false && video.readyState >= video.HAVE_CURRENT_DATA) {
+      this.needsUpdate = true;
+    }
+  }
+}
 var VideoTextureProcessor = defineProcessor({
   configType: CONFIGTYPE.VIDEOTEXTURE,
   commands: {
