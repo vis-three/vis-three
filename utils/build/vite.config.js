@@ -13,6 +13,7 @@ export default {
       },
       external: [
         "three",
+        "three/src/lights/LightShadow",
         "three/examples/jsm/postprocessing/EffectComposer",
         "three/examples/jsm/postprocessing/RenderPass",
         "three/examples/jsm/postprocessing/SMAAPass",
@@ -24,6 +25,8 @@ export default {
         "three/examples/jsm/renderers/CSS3DRenderer",
         "three/examples/jsm/shaders/LuminosityHighPassShader",
         "three/examples/jsm/shaders/CopyShader",
+        "three/examples/jsm/loaders/OBJLoader",
+        "three/examples/jsm/loaders/MTLLoader",
       ],
       plugins: [],
     },

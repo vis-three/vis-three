@@ -4,6 +4,7 @@ import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { ProxyNotice } from "./ProxyBroadcast";
 import { Processor2 } from "./Processor";
+import { syncObject } from "../utils/utils";
 export interface CompilerTarget<C extends SymbolConfig> {
   [key: string]: C;
 }
@@ -34,10 +35,18 @@ export abstract class Compiler<
   };
 
   abstract MODULE: MODULETYPE;
+
   target: T = {} as T;
   map: Map<SymbolConfig["vid"], O> = new Map();
   weakMap: WeakMap<O, SymbolConfig["vid"]> = new WeakMap();
   engine!: EngineSupport;
+
+  private cacheCompile?: {
+    target: O;
+    config: C;
+    processor: Processor2<SymbolConfig, object>;
+    vid: string;
+  };
 
   constructor() {}
 
@@ -67,10 +76,10 @@ export abstract class Compiler<
       config.type
     )! as unknown as Processor2<C, O>;
 
-    const pass = processor.create(config, this.engine);
-    this.map.set(config.vid, pass);
-    this.weakMap.set(pass, config.vid);
-    return pass;
+    const object = processor.create(config, this.engine);
+    this.map.set(config.vid, object);
+    this.weakMap.set(object, config.vid);
+    return object;
   }
 
   remove(config: C): this {
@@ -78,7 +87,7 @@ export abstract class Compiler<
 
     if (!this.map.has(vid)) {
       console.warn(
-        `${this.MODULE} compiler can not found this vid pass: ${vid}.`
+        `${this.MODULE} compiler can not found this vid object: ${vid}.`
       );
       return this;
     }
@@ -90,47 +99,79 @@ export abstract class Compiler<
       return this;
     }
 
-    const pass = this.map.get(vid)!;
-    Compiler.processors.get(config.type)!.dispose(pass);
+    const object = this.map.get(vid)!;
+    Compiler.processors.get(config.type)!.dispose(object);
     this.map.delete(vid);
-    this.weakMap.delete(pass);
+    this.weakMap.delete(object);
     return this;
   }
 
   cover(config: C): this {
+    const vid = config.vid;
+
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.MODULE} compiler can not found this vid object: ${vid}.`
+      );
+      return this;
+    }
+
+    const object = this.map.get(vid)!;
+
+    syncObject(config, object, {
+      vid: true,
+      type: true,
+    });
+
     return this;
   }
 
   compile(vid: SymbolConfig["vid"], notice: ProxyNotice): this {
-    if (!this.map.has(vid)) {
-      console.warn(
-        `pass compiler set function: can not found object which vid is: '${vid}'`
-      );
-      return this;
+    const cacheCompile = this.cacheCompile;
+
+    let object: O;
+    let config: C;
+    let processor: Processor2<SymbolConfig, object>;
+
+    if (cacheCompile && cacheCompile.vid === vid) {
+      object = cacheCompile.target;
+      config = cacheCompile.config;
+      processor = cacheCompile.processor;
+    } else {
+      if (!this.map.has(vid)) {
+        console.warn(
+          `${this.MODULE} compiler set function: can not found object which vid is: '${vid}'`
+        );
+        return this;
+      }
+
+      if (!this.target[vid]) {
+        console.warn(
+          `${this.MODULE} compiler set function: can not found config which vid is: '${vid}'`
+        );
+        return this;
+      }
+      object = this.map.get(vid)!;
+      config = this.target[vid]!;
+
+      if (!Compiler.processors.has(config.type)) {
+        console.warn(`PassCompiler can not support this type: ${config.type}`);
+        return this;
+      }
+
+      processor = Compiler.processors.get(config.type)!;
+
+      this.cacheCompile = {
+        target: object,
+        config,
+        processor,
+        vid,
+      };
     }
-
-    if (!this.target[vid]) {
-      console.warn(
-        `pass compiler set function: can not found config which vid is: '${vid}'`
-      );
-      return this;
-    }
-
-    const pass = this.map.get(vid)!;
-    const config = this.target[vid]!;
-
-    if (!Compiler.processors.has(config.type)) {
-      console.warn(`PassCompiler can not support this type: ${config.type}`);
-      return this;
-    }
-
-    const processor = Compiler.processors.get(
-      config.type
-    )! as unknown as Processor2<C, O>;
 
     processor.process({
       config,
-      target: pass,
+      target: object,
       engine: this.engine,
       processor,
       ...notice,
@@ -147,6 +188,10 @@ export abstract class Compiler<
   }
 
   dispose(): this {
+    if (this.cacheCompile) {
+      this.cacheCompile = undefined;
+    }
+
     for (const config of Object.values(this.target)) {
       if (!this.map.has(config.vid)) {
         console.warn(

@@ -23,7 +23,6 @@ import {
   LineCurveGeometryConfig,
   LineShapeGeometryConfig,
   LineTubeGeometryConfig,
-  LoadGeometryConfig,
   PlaneGeometryConfig,
   QuadraticBezierCurveGeometryConfig,
   RingGeometryConfig,
@@ -39,7 +38,7 @@ import { SplineCurveGeometry } from "../../../extends/geometry/CurveGeometry/Spl
 import { LineTubeGeometry } from "../../../extends/geometry/TubeGeometry/LineTubeGeometry";
 import { SplineTubeGeometry } from "../../../extends/geometry/TubeGeometry/SplineTubeGeometry";
 import { LineShapeGeometry } from "../../../extends/geometry/ShapeGeometry/LineShapeGeometry";
-import { commands, transfromAnchor, create as commonCreate } from "./common";
+import { commands, create as commonCreate } from "./common";
 
 const constructMap = new Map<CONFIGTYPE, (config: any) => BufferGeometry>();
 

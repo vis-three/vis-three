@@ -1,10 +1,4 @@
-import {
-  AmbientLight,
-  Object3D,
-  OrthographicCamera,
-  PointLightShadow,
-  Scene,
-} from "three";
+import { AmbientLight, Object3D, OrthographicCamera, Scene } from "three";
 
 import { LightShadow } from "three/src/lights/LightShadow";
 

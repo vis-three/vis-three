@@ -11,6 +11,7 @@
 - processor
 - compiler
 - History Action
+- lib build
 
 #### deprecated
 

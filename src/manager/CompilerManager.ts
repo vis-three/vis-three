@@ -79,7 +79,6 @@ export class CompilerManager {
 
     // 贴图连接
     this.sceneCompiler.linkTextureMap(textureMap);
-    this.materialCompiler.linkTextureMap(textureMap);
     this.animationCompiler.linkTextureMap(textureMap);
 
     // 物体几何连接，材质连接，物体连接

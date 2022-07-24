@@ -39,7 +39,7 @@ export interface MaterialConfig extends SymbolConfig {
   polygonOffsetUnits: number;
 }
 
-export interface MeshBasicMaterial extends MaterialConfig {
+export interface MeshBasicMaterialConfig extends MaterialConfig {
   color: string;
   combine: number;
   aoMapIntensity: number;
@@ -157,7 +157,7 @@ export interface LoadMaterialConfig extends MaterialConfig {
 }
 
 export type MaterialAllType =
-  | MeshBasicMaterial
+  | MeshBasicMaterialConfig
   | MeshStandardMaterialConfig
   | MeshPhongMaterialConfig
   | LineBasicMaterialConfig
@@ -197,7 +197,7 @@ export const getMaterialConfig = function (): MaterialConfig {
   };
 };
 
-export const getMeshBasicMaterialConfig = function (): MeshBasicMaterial {
+export const getMeshBasicMaterialConfig = function (): MeshBasicMaterialConfig {
   return Object.assign(getMaterialConfig(), {
     type: CONFIGTYPE.MESHBASICMATERIAL,
     color: "rgb(255, 255, 255)",
