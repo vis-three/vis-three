@@ -1,4 +1,6 @@
 var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
@@ -14,6 +16,7 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
@@ -2970,10 +2973,10 @@ const getOrthographicCameraConfig = function() {
   return Object.assign(getObjectConfig(), {
     type: CONFIGTYPE.ORTHOGRAPHICCAMERA,
     adaptiveWindow: false,
-    left: -1920 / 32,
-    right: 1920 / 32,
-    top: 1080 / 32,
-    bottom: -1080 / 32,
+    left: -window.innerWidth,
+    right: window.innerWidth,
+    top: window.innerHeight,
+    bottom: -window.innerHeight,
     near: 5,
     far: 50,
     zoom: 1
@@ -6362,7 +6365,7 @@ var PerspectiveCameraProcessor = defineProcessor({
       scale() {
       }
     }, objectCommands.add),
-    set: __spreadValues({
+    set: __spreadProps(__spreadValues({
       scale() {
       },
       adaptiveWindow({ target, value, engine }) {
@@ -6374,6 +6377,11 @@ var PerspectiveCameraProcessor = defineProcessor({
             };
             cacheCameraMap.set(target, fun);
             engine.addEventListener("setSize", fun);
+            fun({
+              type: "setSize",
+              width: engine.dom.offsetWidth,
+              height: engine.dom.offsetHeight
+            });
           }
         } else {
           const fun = cacheCameraMap.get(target);
@@ -6383,7 +6391,17 @@ var PerspectiveCameraProcessor = defineProcessor({
           }
         }
       }
-    }, objectCommands.set),
+    }, objectCommands.set), {
+      $reg: [
+        {
+          reg: new RegExp("fov|aspect|near|far"),
+          handler({ target, key, value }) {
+            target[key] = value;
+            target.updateProjectionMatrix();
+          }
+        }
+      ]
+    }),
     delete: __spreadValues({
       scale() {
       }
@@ -6391,6 +6409,11 @@ var PerspectiveCameraProcessor = defineProcessor({
   },
   create(config2, engine) {
     const camera = new PerspectiveCamera();
+    objectCreate(camera, config2, {
+      scale: true,
+      adaptiveWindow: true
+    }, engine);
+    camera.updateProjectionMatrix();
     if (config2.adaptiveWindow) {
       const fun = (event) => {
         camera.aspect = event.width / event.height;
@@ -6398,12 +6421,12 @@ var PerspectiveCameraProcessor = defineProcessor({
       };
       cacheCameraMap.set(camera, fun);
       engine.addEventListener("setSize", fun);
+      fun({
+        type: "setSize",
+        width: engine.dom.offsetWidth,
+        height: engine.dom.offsetHeight
+      });
     }
-    objectCreate(camera, config2, {
-      scale: true,
-      adaptiveWindow: true
-    }, engine);
-    camera.updateProjectionMatrix();
     return camera;
   },
   dispose(camera) {
@@ -6418,7 +6441,7 @@ var OrthographicCameraProcessor = defineProcessor({
       scale() {
       }
     }, objectCommands.add),
-    set: __spreadValues({
+    set: __spreadProps(__spreadValues({
       scale() {
       },
       adaptiveWindow({ target, value, engine }) {
@@ -6435,6 +6458,11 @@ var OrthographicCameraProcessor = defineProcessor({
             };
             cacheCameraMap.set(target, fun);
             engine.addEventListener("setSize", fun);
+            fun({
+              type: "setSize",
+              width: engine.dom.offsetWidth,
+              height: engine.dom.offsetHeight
+            });
           }
         } else {
           const fun = cacheCameraMap.get(target);
@@ -6444,7 +6472,17 @@ var OrthographicCameraProcessor = defineProcessor({
           }
         }
       }
-    }, objectCommands.set),
+    }, objectCommands.set), {
+      $reg: [
+        {
+          reg: new RegExp("left|right|top|bottom|near|far|zoom"),
+          handler({ target, key, value }) {
+            target[key] = value;
+            target.updateProjectionMatrix();
+          }
+        }
+      ]
+    }),
     delete: __spreadValues({
       scale() {
       }
@@ -6452,6 +6490,11 @@ var OrthographicCameraProcessor = defineProcessor({
   },
   create(config2, engine) {
     const camera = new OrthographicCamera(-50, 50, 50, -50);
+    objectCreate(camera, config2, {
+      scale: true,
+      adaptiveWindow: true
+    }, engine);
+    camera.updateProjectionMatrix();
     if (config2.adaptiveWindow) {
       const fun = (event) => {
         const width = event.width;
@@ -6464,12 +6507,12 @@ var OrthographicCameraProcessor = defineProcessor({
       };
       cacheCameraMap.set(camera, fun);
       engine.addEventListener("setSize", fun);
+      fun({
+        type: "setSize",
+        width: engine.dom.offsetWidth,
+        height: engine.dom.offsetHeight
+      });
     }
-    objectCreate(camera, config2, {
-      scale: true,
-      adaptiveWindow: true
-    }, engine);
-    camera.updateProjectionMatrix();
     return camera;
   },
   dispose(camera) {

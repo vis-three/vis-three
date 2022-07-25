@@ -39,6 +39,12 @@ export default defineProcessor<OrthographicCameraConfig, OrthographicCamera>({
 
             cacheCameraMap.set(target, fun);
             engine.addEventListener("setSize", fun);
+
+            fun({
+              type: "setSize",
+              width: engine.dom!.offsetWidth,
+              height: engine.dom!.offsetHeight,
+            });
           }
         } else {
           const fun = cacheCameraMap.get(target);
@@ -51,6 +57,15 @@ export default defineProcessor<OrthographicCameraConfig, OrthographicCamera>({
       ...(<ObjectCommands<OrthographicCameraConfig, OrthographicCamera>>(
         objectCommands.set
       )),
+      $reg: [
+        {
+          reg: new RegExp("left|right|top|bottom|near|far|zoom"),
+          handler({ target, key, value }) {
+            target[key] = value;
+            target.updateProjectionMatrix();
+          },
+        },
+      ],
     },
     delete: {
       scale() {},
@@ -65,6 +80,18 @@ export default defineProcessor<OrthographicCameraConfig, OrthographicCamera>({
   ): OrthographicCamera {
     const camera = new OrthographicCamera(-50, 50, 50, -50);
 
+    objectCreate(
+      camera,
+      config,
+      {
+        scale: true,
+        adaptiveWindow: true,
+      },
+      engine
+    );
+
+    camera.updateProjectionMatrix();
+
     if (config.adaptiveWindow) {
       const fun = (event: SetSizeEvent) => {
         const width = event.width;
@@ -78,19 +105,13 @@ export default defineProcessor<OrthographicCameraConfig, OrthographicCamera>({
 
       cacheCameraMap.set(camera, fun);
       engine.addEventListener("setSize", fun);
+
+      fun({
+        type: "setSize",
+        width: engine.dom!.offsetWidth,
+        height: engine.dom!.offsetHeight,
+      });
     }
-
-    objectCreate(
-      camera,
-      config,
-      {
-        scale: true,
-        adaptiveWindow: true,
-      },
-      engine
-    );
-
-    camera.updateProjectionMatrix();
 
     return camera;
   },

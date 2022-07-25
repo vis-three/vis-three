@@ -19,6 +19,11 @@
       left: 0;
     }
 
+    #module-main {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
     body a,
     h3 {
       color: white;
@@ -42,6 +47,7 @@
       background-color: rgba(0, 0, 0, 0.2);
       padding: 10px;
       box-shadow: 0 0 4px white;
+      flex: 1;
     }
 
     .module-box h3 {
@@ -60,6 +66,7 @@
 
   <body>
     <div id="app"></div>
+    <div id="module-main"></div>
 
     <script type="module">
       import * as VIS from "vis-three";
@@ -84,10 +91,9 @@
       import passSupportRouter from "./passSupport";
       import GeometrySupportRouter from "./geometrySupport";
       import textureSupportRouter from "./textureSupport";
+      import CameraSupportRouter from "./CameraSupport";
 
-      // const engine = new VIS.ModelingEngineSupport()
       const engine = new VIS.DisplayEngineSupport()
-        .install("CSS3DRenderer")
         .complete()
         .setDom(document.getElementById("app"))
         .setSize();
@@ -150,14 +156,6 @@
         }),
       });
 
-      const animation2 = VIS.generateConfig("ScriptAnimation", {
-        target: mesh.vid,
-        attribute: ".rotation.x",
-        script: VIS.AniScriptLibrary.generateConfig("linearTime", {
-          multiply: 0.5,
-        }),
-      });
-
       engine.play();
 
       const tree = [
@@ -180,9 +178,11 @@
         passSupportRouter,
         GeometrySupportRouter,
         textureSupportRouter,
+        CameraSupportRouter,
       ];
 
       const domList = [];
+      const moduleMain = document.getElementById("module-main");
       tree.forEach((module) => {
         let childrenDom = "";
 
@@ -194,9 +194,6 @@
           }
         }
         const moduleDom = document.createElement("div");
-        moduleDom.style.display = "flex";
-        moduleDom.style.position = "absolute";
-        moduleDom.id = module.router;
         moduleDom.className = "module-box";
         moduleDom.innerHTML = `
         <h3>${module.router.toLocaleUpperCase()}</h3>
@@ -204,59 +201,12 @@
           ${childrenDom}
         </div>
       `;
-        document.body.appendChild(moduleDom);
-
-        engine.registerResources({
-          [`index.${module.router}`]: moduleDom,
-        });
-
-        const vid = getUUid();
-        const css3DObject = VIS.generateConfig("CSS3DPlane", {
-          vid,
-          element: `index.${module.router}`,
-          width: moduleDom.offsetWidth,
-          height: moduleDom.offsetHeight,
-          scale: {
-            x: 0.1,
-            y: 0.1,
-            z: 0.1,
-          },
-          position: {
-            x: module.position?.x || 0,
-            y: module.position?.y || 0,
-            z: module.position?.z || 0,
-          },
-          rotation: {
-            y: module.rotation?.y || 0,
-          },
-          pointerenter: [
-            VIS.EventLibrary.generateConfig("vector3To", {
-              params: {
-                target: vid,
-                attribute: ".rotation",
-                to: {
-                  y: 0,
-                },
-              },
-            }),
-          ],
-          pointerleave: [
-            VIS.EventLibrary.generateConfig("vector3To", {
-              params: {
-                target: vid,
-                attribute: ".rotation",
-                to: {
-                  y: module.rotation?.y || 0,
-                },
-              },
-            }),
-          ],
-        });
-
-        setTimeout(() => {
-          engine.setSize();
-        }, 0);
+        moduleMain.appendChild(moduleDom);
       });
+
+      setTimeout(() => {
+        engine.setSize();
+      }, 0);
     </script>
   </body>
 </html>

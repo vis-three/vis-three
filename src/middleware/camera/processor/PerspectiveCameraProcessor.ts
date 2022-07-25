@@ -33,6 +33,12 @@ export default defineProcessor<PerspectiveCameraConfig, PerspectiveCamera>({
 
             cacheCameraMap.set(target, fun);
             engine.addEventListener("setSize", fun);
+
+            fun({
+              type: "setSize",
+              width: engine.dom!.offsetWidth,
+              height: engine.dom!.offsetHeight,
+            });
           }
         } else {
           const fun = cacheCameraMap.get(target);
@@ -45,6 +51,15 @@ export default defineProcessor<PerspectiveCameraConfig, PerspectiveCamera>({
       ...(<ObjectCommands<PerspectiveCameraConfig, PerspectiveCamera>>(
         objectCommands.set
       )),
+      $reg: [
+        {
+          reg: new RegExp("fov|aspect|near|far"),
+          handler({ target, key, value }) {
+            target[key] = value;
+            target.updateProjectionMatrix();
+          },
+        },
+      ],
     },
     delete: {
       scale() {},
@@ -59,16 +74,6 @@ export default defineProcessor<PerspectiveCameraConfig, PerspectiveCamera>({
   ): PerspectiveCamera {
     const camera = new PerspectiveCamera();
 
-    if (config.adaptiveWindow) {
-      const fun = (event: SetSizeEvent) => {
-        camera.aspect = event.width / event.height;
-        camera.updateProjectionMatrix();
-      };
-
-      cacheCameraMap.set(camera, fun);
-      engine.addEventListener("setSize", fun);
-    }
-
     objectCreate(
       camera,
       config,
@@ -80,6 +85,22 @@ export default defineProcessor<PerspectiveCameraConfig, PerspectiveCamera>({
     );
 
     camera.updateProjectionMatrix();
+
+    if (config.adaptiveWindow) {
+      const fun = (event: SetSizeEvent) => {
+        camera.aspect = event.width / event.height;
+        camera.updateProjectionMatrix();
+      };
+
+      cacheCameraMap.set(camera, fun);
+      engine.addEventListener("setSize", fun);
+
+      fun({
+        type: "setSize",
+        width: engine.dom!.offsetWidth,
+        height: engine.dom!.offsetHeight,
+      });
+    }
 
     return camera;
   },

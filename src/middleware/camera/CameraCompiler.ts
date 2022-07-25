@@ -3,8 +3,8 @@ import { CameraConfigAllType } from "./CameraConfig";
 import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { Compiler } from "../../core/Compiler";
-import PerspectiveCameraProcessor from "./processor.ts/PerspectiveCameraProcessor";
-import OrthographicCameraProcessor from "./processor.ts/OrthographicCameraProcessor";
+import PerspectiveCameraProcessor from "./processor/PerspectiveCameraProcessor";
+import OrthographicCameraProcessor from "./processor/OrthographicCameraProcessor";
 
 export interface CameraCompilerTarget
   extends ObjectCompilerTarget<CameraConfigAllType> {

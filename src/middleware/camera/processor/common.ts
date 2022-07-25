@@ -5,3 +5,4 @@ export const cacheCameraMap = new WeakMap<
   Camera,
   (event: SetSizeEvent) => void
 >();
+
