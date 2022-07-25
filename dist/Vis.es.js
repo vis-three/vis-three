@@ -7291,7 +7291,7 @@ const materialHandler = function({ target, config: config2, engine }) {
   target.material = material;
 };
 const solidObjectCreate = function(object, config2, filter = {}, engine) {
-  if (!object.isSprite) {
+  if (!filter.geometry) {
     let geometry = engine.getObjectBySymbol(config2.geometry);
     if (!(geometry instanceof BufferGeometry)) {
       console.warn(`geometry vid in engine is not instance of BufferGeometry: ${config2.geometry}`, geometry);
@@ -7300,13 +7300,15 @@ const solidObjectCreate = function(object, config2, filter = {}, engine) {
     object.geometry.dispose();
     object.geometry = geometry;
   }
-  let material;
-  if (typeof config2.material === "string") {
-    material = engine.compilerManager.getMaterial(config2.material) || replaceMaterial;
-  } else {
-    material = config2.material.map((vid) => engine.compilerManager.getMaterial(vid) || replaceMaterial);
+  if (!filter.material) {
+    let material;
+    if (typeof config2.material === "string") {
+      material = engine.compilerManager.getMaterial(config2.material) || replaceMaterial;
+    } else {
+      material = config2.material.map((vid) => engine.compilerManager.getMaterial(vid) || replaceMaterial);
+    }
+    object.material = material;
   }
-  object.material = material;
   return objectCreate(object, config2, __spreadValues({
     geometry: true,
     material: true
@@ -8311,6 +8313,12 @@ var SceneProcessor = defineProcessor({
             }
           }
         }
+      },
+      background({ target, value, engine }) {
+        setBackground(target, value, engine);
+      },
+      environment({ target, value, engine }) {
+        setEnvironment(target, value, engine);
       }
     }, objectCommands.set),
     delete: objectCommands.delete
@@ -8345,19 +8353,39 @@ class SceneCompiler extends ObjectCompiler {
   }
 }
 Compiler.processor(SceneProcessor);
+const spriteReplaceMaterial = new SpriteMaterial({
+  color: "rgb(123, 123, 123)"
+});
 var SpriteProcessor = defineProcessor({
-  configType: CONFIGTYPE.LINE,
+  configType: CONFIGTYPE.SPRITE,
   commands: {
     add: solidObjectCommands.add,
-    set: __spreadValues({
+    set: __spreadProps(__spreadValues({
       lookAt() {
       }
-    }, solidObjectCommands.set),
+    }, solidObjectCommands.set), {
+      material({ target, engine, value }) {
+        const material = engine.compilerManager.getMaterial(value);
+        if (material && material instanceof SpriteMaterial) {
+          target.material = material;
+        } else {
+          target.material = spriteReplaceMaterial;
+        }
+      }
+    }),
     delete: solidObjectCommands.add
   },
   create(config2, engine) {
-    return solidObjectCreate(new Sprite(), config2, {
+    const sprite = new Sprite();
+    const material = engine.compilerManager.getMaterial(config2.material);
+    if (material && material instanceof SpriteMaterial) {
+      sprite.material = material;
+    } else {
+      sprite.material = spriteReplaceMaterial;
+    }
+    return solidObjectCreate(sprite, config2, {
       geometry: true,
+      material: true,
       lookAt: true
     }, engine);
   },
@@ -8462,7 +8490,7 @@ const getResource = function(url, engine, instanceClasses2) {
   }
 };
 const needUpdateRegCommand = {
-  reg: new RegExp("wrapS|wrapT|format|encoding|anisotropy|magFilter|minFilter"),
+  reg: new RegExp("wrapS|wrapT|format|encoding|anisotropy|magFilter|minFilter|mapping"),
   handler({ target, key, value }) {
     target[key] = value;
     target.needsUpdate = true;
@@ -8756,6 +8784,9 @@ class CompilerManager {
       }
     }
     return null;
+  }
+  getGeometry(vid) {
+    return this.geometryCompiler.map.get(vid) || null;
   }
   getMaterial(vid) {
     return this.materialCompiler.map.get(vid) || null;

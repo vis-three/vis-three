@@ -61,7 +61,7 @@ export const solidObjectCreate = function <
   C extends SolidObjectConfig,
   O extends SolidObject3D
 >(object: O, config: C, filter: IgnoreAttribute = {}, engine: EngineSupport) {
-  if (!(object as unknown as Sprite).isSprite) {
+  if (!filter.geometry) {
     let geometry = engine.getObjectBySymbol(
       config.geometry
     ) as unknown as BufferGeometry;
@@ -77,17 +77,19 @@ export const solidObjectCreate = function <
     object.geometry = geometry;
   }
 
-  let material: Material | Material[];
-  if (typeof config.material === "string") {
-    material =
-      engine.compilerManager.getMaterial(config.material) || replaceMaterial;
-  } else {
-    material = config.material.map(
-      (vid) => engine.compilerManager.getMaterial(vid) || replaceMaterial
-    );
-  }
+  if (!filter.material) {
+    let material: Material | Material[];
+    if (typeof config.material === "string") {
+      material =
+        engine.compilerManager.getMaterial(config.material) || replaceMaterial;
+    } else {
+      material = config.material.map(
+        (vid) => engine.compilerManager.getMaterial(vid) || replaceMaterial
+      );
+    }
 
-  object.material = material;
+    object.material = material;
+  }
 
   return objectCreate(
     object,

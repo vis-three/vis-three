@@ -1,4 +1,4 @@
-import { Sprite } from "three";
+import { Material, Sprite, SpriteMaterial } from "three";
 import { defineProcessor } from "../../core/Processor";
 import { EngineSupport } from "../../engine/EngineSupport";
 import { CONFIGTYPE } from "../constants/configType";
@@ -10,8 +10,12 @@ import {
 } from "../solidObject/SolidObjectProcessor";
 import { SpriteConfig } from "./SpriteConfig";
 
+const spriteReplaceMaterial = new SpriteMaterial({
+  color: "rgb(123, 123, 123)",
+});
+
 export default defineProcessor<SpriteConfig, Sprite>({
-  configType: CONFIGTYPE.LINE,
+  configType: CONFIGTYPE.SPRITE,
   commands: {
     add: (
       solidObjectCommands as unknown as SolidObjectCommands<
@@ -27,6 +31,15 @@ export default defineProcessor<SpriteConfig, Sprite>({
           Sprite
         >
       ).set,
+      material({ target, engine, value }) {
+        const material = engine.compilerManager.getMaterial(value);
+
+        if (material && material instanceof SpriteMaterial) {
+          target.material = material;
+        } else {
+          target.material = spriteReplaceMaterial;
+        }
+      },
     },
     delete: (
       solidObjectCommands as unknown as SolidObjectCommands<
@@ -36,11 +49,22 @@ export default defineProcessor<SpriteConfig, Sprite>({
     ).add,
   },
   create(config: SpriteConfig, engine: EngineSupport): Sprite {
+    const sprite = new Sprite();
+
+    const material = engine.compilerManager.getMaterial(config.material);
+
+    if (material && material instanceof SpriteMaterial) {
+      sprite.material = material;
+    } else {
+      sprite.material = spriteReplaceMaterial;
+    }
+
     return solidObjectCreate(
-      new Sprite(),
+      sprite,
       config,
       {
         geometry: true,
+        material: true,
         lookAt: true,
       },
       engine

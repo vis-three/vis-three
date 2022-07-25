@@ -188,6 +188,10 @@ export class CompilerManager {
     return null;
   }
 
+  getGeometry<G extends BufferGeometry>(vid: string): G | null {
+    return (this.geometryCompiler.map.get(vid) as G) || null;
+  }
+
   getMaterial<M extends Material>(vid: string): M | null {
     return (this.materialCompiler.map.get(vid) as M) || null;
   }

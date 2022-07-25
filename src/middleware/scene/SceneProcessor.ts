@@ -87,6 +87,12 @@ export default defineProcessor<SceneConfig, Scene>({
           }
         }
       },
+      background({ target, value, engine }) {
+        setBackground(target, value, engine);
+      },
+      environment({ target, value, engine }) {
+        setEnvironment(target, value, engine);
+      },
       ...(<ObjectCommands<SceneConfig, Scene>>(<unknown>objectCommands)).set,
     },
     delete: (<ObjectCommands<SceneConfig, Scene>>(<unknown>objectCommands))

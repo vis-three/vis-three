@@ -46,7 +46,7 @@
           content: `正在加载资源：${parseInt(
             ((event.loadSuccess / event.loadTotal) * 100).toString()
           )}
-      %`,
+            %`,
           key: "loading",
           duration: 0,
         });
@@ -96,9 +96,24 @@
             depth: 20,
           });
 
+          const sphereGeometry = VIS.generateConfig("SphereGeometry", {
+            radius: 10,
+          });
+
           const box = VIS.generateConfig("Mesh", {
             geometry: geometry.vid,
             material: material.vid,
+            position: {
+              x: -25,
+            },
+          });
+
+          const sphere = VIS.generateConfig("Mesh", {
+            geometry: sphereGeometry.vid,
+            material: material.vid,
+            position: {
+              x: 25,
+            },
           });
 
           scene.background = texture.vid;
@@ -113,6 +128,17 @@
             "/texture/skyBox/snowVillage/py.jpg",
             "/texture/skyBox/snowVillage/pz.jpg",
           ]);
+
+          gui.add(texture, "mapping", {
+            UVMapping: THREE.UVMapping,
+            CubeReflectionMapping: THREE.CubeReflectionMapping,
+            CubeRefractionMapping: THREE.CubeRefractionMapping,
+            EquirectangularReflectionMapping:
+              THREE.EquirectangularReflectionMapping,
+            EquirectangularRefractionMapping:
+              THREE.EquirectangularRefractionMapping,
+            CubeUVReflectionMapping: THREE.CubeUVReflectionMapping,
+          });
 
           gui.add(texture, "wrapS", {
             "THREE.RepeatWrapping": THREE.RepeatWrapping,
