@@ -18,17 +18,22 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Euler, Material, Matrix4, Color, Box3, PlaneBufferGeometry, BufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, Float32BufferAttribute, EdgesGeometry, Group as Group$1, PointLight, SpotLight, AmbientLight, DirectionalLight, LineBasicMaterial, Line, Texture, MeshBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, PointsMaterial, ShaderMaterial, SpriteMaterial, Mesh, Scene, UniformsUtils, Points, Sprite, AdditiveBlending, Camera, DodecahedronBufferGeometry, Fog, FogExp2, CanvasTexture, CubeTexture, RGBFormat, AxesHelper, GridHelper, MeshLambertMaterial, Light, LineSegments, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, PCFSoftShadowMap, BufferAttribute, Matrix3 } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Euler, Material, Matrix4, Color, Box3, PlaneBufferGeometry, BufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, Float32BufferAttribute, EdgesGeometry, Group, AmbientLight, DirectionalLight, PointLight, SpotLight, ShaderMaterial, Line, Texture, LineBasicMaterial, MeshBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, PointsMaterial, SpriteMaterial, Mesh, Scene, UniformsUtils, Points, Sprite, AdditiveBlending, Camera, Fog, FogExp2, CanvasTexture, CubeTexture, RGBFormat, AxesHelper, GridHelper, MeshLambertMaterial, Light, LineSegments, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, PCFSoftShadowMap } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
-import { CSS3DObject, CSS3DSprite, CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { v4, validate } from "uuid";
+import { CSS3DObject, CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { Easing, Tween } from "@tweenjs/tween.js";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
+import { Pass, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass";
 import { LuminosityHighPassShader } from "three/examples/jsm/shaders/LuminosityHighPassShader";
+import keyboardjs from "keyboardjs";
+import { CSG } from "three-csg-ts";
 import { LightShadow } from "three/src/lights/LightShadow";
 class EventDispatcher {
   constructor() {
@@ -2175,47 +2180,6 @@ const LoaderManagerPlugin = function(params) {
   };
   return true;
 };
-var getRandomValues;
-var rnds8 = new Uint8Array(16);
-function rng() {
-  if (!getRandomValues) {
-    getRandomValues = typeof crypto !== "undefined" && crypto.getRandomValues && crypto.getRandomValues.bind(crypto) || typeof msCrypto !== "undefined" && typeof msCrypto.getRandomValues === "function" && msCrypto.getRandomValues.bind(msCrypto);
-    if (!getRandomValues) {
-      throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
-    }
-  }
-  return getRandomValues(rnds8);
-}
-var REGEX = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
-function validate(uuid) {
-  return typeof uuid === "string" && REGEX.test(uuid);
-}
-var byteToHex = [];
-for (var i = 0; i < 256; ++i) {
-  byteToHex.push((i + 256).toString(16).substr(1));
-}
-function stringify$1(arr) {
-  var offset = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
-  var uuid = (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase();
-  if (!validate(uuid)) {
-    throw TypeError("Stringified UUID is invalid");
-  }
-  return uuid;
-}
-function v4(options, buf, offset) {
-  options = options || {};
-  var rnds = options.random || (options.rng || rng)();
-  rnds[6] = rnds[6] & 15 | 64;
-  rnds[8] = rnds[8] & 63 | 128;
-  if (buf) {
-    offset = offset || 0;
-    for (var i = 0; i < 16; ++i) {
-      buf[offset + i] = rnds[i];
-    }
-    return buf;
-  }
-  return stringify$1(rnds);
-}
 const shader$3 = {
   name: "uvPulseShader",
   uniforms: {
@@ -4178,92 +4142,11 @@ class ObjectDataSupport extends DataSupport {
     __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
-const UNIQUESYMBOL = {
-  [CONFIGTYPE.WEBGLRENDERER]: true,
-  [CONFIGTYPE.CSS3DRENDERER]: true,
-  [CONFIGTYPE.SCENE]: true
-};
 const ObjectRule = function(input, compiler) {
-  const { operate, key, path, value } = input;
-  if (key === "parent") {
+  if (input.key === "parent") {
     return;
   }
-  const tempPath = path.concat([]);
-  let vid = key;
-  let attribute = key;
-  if (tempPath.length) {
-    vid = tempPath.shift();
-    if (tempPath.length) {
-      attribute = tempPath[0];
-    }
-  }
-  if (attribute === "children") {
-    if (operate === "add") {
-      compiler.addChildren(vid, value);
-      return;
-    }
-    if (operate === "delete") {
-      compiler.removeChildren(vid, value);
-      return;
-    }
-  }
-  if (attribute.toLocaleUpperCase() in EVENTNAME) {
-    const index = Number(tempPath.length > 2 ? tempPath[1] : key);
-    if (operate === "add") {
-      if (Number.isInteger(Number(key)) && tempPath.length === 1) {
-        compiler.addEvent(vid, attribute, value);
-        return;
-      }
-      if (!Number.isInteger(index)) {
-        console.error(`${compiler.MODULE} rule: event analysis error.`, input);
-        return;
-      }
-      compiler.updateEvent(vid, attribute, index);
-      return;
-    }
-    if (operate === "set") {
-      if (!Number.isInteger(index)) {
-        console.error(`${compiler.MODULE} rule: event analysis error.`, input);
-        return;
-      }
-      compiler.updateEvent(vid, attribute, index);
-      return;
-    }
-    if (operate === "delete") {
-      if (!Number.isInteger(index)) {
-        console.error(`${compiler.MODULE} rule: event analysis error.`, input);
-        return;
-      }
-      compiler.removeEvent(vid, attribute, value);
-      return;
-    }
-  }
-  if (operate === "add") {
-    if (validate(key) || UNIQUESYMBOL[key]) {
-      compiler.add(key, value);
-    } else {
-      console.warn(`Object Rule: key is illeage: ${key}`);
-    }
-    return;
-  }
-  if (operate === "set") {
-    if ((vid && validate(key) || UNIQUESYMBOL[vid]) && !path.length && typeof value === "object") {
-      compiler.cover(vid, value);
-      return;
-    }
-    if (vid && validate(vid) || UNIQUESYMBOL[vid]) {
-      compiler.set(vid, tempPath, key, value);
-    } else {
-      console.warn(`${compiler.MODULE} rule vid is illeage: '${vid}'`);
-    }
-    return;
-  }
-  if (operate === "delete") {
-    if (validate(key) || UNIQUESYMBOL[key]) {
-      compiler.remove(key, value);
-    }
-    return;
-  }
+  Rule(input, compiler);
 };
 const LightRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
@@ -4332,8 +4215,30 @@ class RendererDataSupport extends DataSupport {
     __publicField(this, "MODULE", MODULETYPE.RENDERER);
   }
 }
-const SceneRule = function(notice, compiler) {
-  ObjectRule(notice, compiler);
+const SceneRule = function(input, compiler) {
+  const { operate, key, path, value } = input;
+  let vid = key;
+  const tempPath = [].concat(path);
+  if (path.length) {
+    vid = tempPath.shift();
+  }
+  if (!validate(vid) && vid !== CONFIGTYPE.SCENE) {
+    console.warn(`${compiler.MODULE} Rule: vid is illeage: ${vid}`);
+    return;
+  }
+  if (operate === "add" && !tempPath.length) {
+    compiler.add(value);
+    return;
+  }
+  if (input.operate === "delete" && !tempPath.length) {
+    compiler.remove(value);
+    return;
+  }
+  if (input.operate === "set" && !tempPath.length && !key) {
+    compiler.cover(value);
+    return;
+  }
+  compiler.compile(vid, { operate, key, path: tempPath, value });
 };
 class SceneDataSupport extends ObjectDataSupport {
   constructor(data, ignore) {
@@ -4790,12 +4695,12 @@ const _Compiler = class {
         console.warn(`${this.MODULE} compiler set function: can not found object which vid is: '${config2.vid}'`);
         continue;
       }
-      const pass = this.map.get(config2.vid);
+      const object = this.map.get(config2.vid);
       if (!_Compiler.processors.has(config2.type)) {
         console.warn(`${this.MODULE}  can not support this type: ${config2.type}`);
         continue;
       }
-      _Compiler.processors.get(config2.type).dispose(pass);
+      _Compiler.processors.get(config2.type).dispose(object);
     }
     this.map.clear();
     this.target = {};
@@ -5034,6 +4939,148 @@ class AnimationCompiler extends Compiler {
     return null;
   }
 }
+class ObjectCompiler extends Compiler {
+  constructor() {
+    super();
+    __publicField(this, "IS_OBJECTCOMPILER", true);
+  }
+}
+class Processor {
+  constructor() {
+    __publicField(this, "filterMap", {});
+    __publicField(this, "assembly", false);
+    this.filterMap = Object.assign({
+      vid: true,
+      type: true
+    }, this.filterMap);
+  }
+  mergeAttribute(path, key, value) {
+    if (this.filterMap[path.concat([key]).join(".")]) {
+      return;
+    }
+    let object = this.target;
+    if (path.length) {
+      for (const key2 of path) {
+        object = object[key2];
+      }
+    }
+    object[key] = value;
+  }
+  mergeObject(callBack) {
+    const recursiveConfig = (config2, object) => {
+      for (const key in config2) {
+        if (this.filterMap[key]) {
+          continue;
+        }
+        if (typeof config2[key] === "object" && typeof config2[key] !== null) {
+          recursiveConfig(config2[key], object[key]);
+          continue;
+        }
+        object[key] = config2[key];
+      }
+    };
+    recursiveConfig(this.config, this.target);
+    callBack && callBack();
+  }
+  processAll() {
+    const recursiveConfig = (config2, path) => {
+      for (const key in config2) {
+        if (this.filterMap[path.concat([key]).join(".")]) {
+          continue;
+        }
+        if (typeof config2[key] === "object" && typeof config2[key] !== null) {
+          recursiveConfig(config2[key], path.concat([key]));
+          continue;
+        }
+        this.process({ path, key, value: config2[key] });
+      }
+    };
+    recursiveConfig(this.config, []);
+    return this;
+  }
+}
+class Processor2 {
+  constructor(options) {
+    __publicField(this, "configType");
+    __publicField(this, "commands");
+    __publicField(this, "create");
+    __publicField(this, "dispose");
+    this.configType = options.configType;
+    this.commands = options.commands;
+    this.create = options.create;
+    this.dispose = options.dispose;
+  }
+  process(params) {
+    if (!this.commands || !this.commands[params.operate]) {
+      this[params.operate](params);
+      return;
+    }
+    let commands2 = this.commands[params.operate];
+    for (const key of [].concat(params.path, params.key)) {
+      if (!commands2[key] && !commands2.$reg) {
+        this[params.operate](params);
+        return;
+      } else if (commands2[key]) {
+        if (typeof commands2[key] === "function") {
+          commands2[key](params);
+          return;
+        } else {
+          commands2 = commands2[key];
+        }
+      } else if (commands2.$reg) {
+        for (const item of commands2.$reg) {
+          if (item.reg.test(key)) {
+            item.handler(params);
+            return;
+          }
+        }
+      }
+    }
+    this[params.operate](params);
+  }
+  add(params) {
+    let target = params.target;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default add operate.`, params);
+        return;
+      }
+    }
+    target[params.key] = params.value;
+  }
+  set(params) {
+    let target = params.target;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default set operate.`, params);
+        return;
+      }
+    }
+    target[params.key] = params.value;
+  }
+  delete(params) {
+    let target = params.target;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default delete operate.`, params);
+        return;
+      }
+    }
+    delete target[params.key];
+  }
+}
+const defineProcessor = (options) => {
+  return new Processor2(options);
+};
 const config$h = {
   name: "openWindow",
   params: {
@@ -5183,677 +5230,6 @@ const generator$c = function(engine, config2) {
     }, params.delay);
   };
 };
-var Easing = {
-  Linear: {
-    None: function(amount) {
-      return amount;
-    }
-  },
-  Quadratic: {
-    In: function(amount) {
-      return amount * amount;
-    },
-    Out: function(amount) {
-      return amount * (2 - amount);
-    },
-    InOut: function(amount) {
-      if ((amount *= 2) < 1) {
-        return 0.5 * amount * amount;
-      }
-      return -0.5 * (--amount * (amount - 2) - 1);
-    }
-  },
-  Cubic: {
-    In: function(amount) {
-      return amount * amount * amount;
-    },
-    Out: function(amount) {
-      return --amount * amount * amount + 1;
-    },
-    InOut: function(amount) {
-      if ((amount *= 2) < 1) {
-        return 0.5 * amount * amount * amount;
-      }
-      return 0.5 * ((amount -= 2) * amount * amount + 2);
-    }
-  },
-  Quartic: {
-    In: function(amount) {
-      return amount * amount * amount * amount;
-    },
-    Out: function(amount) {
-      return 1 - --amount * amount * amount * amount;
-    },
-    InOut: function(amount) {
-      if ((amount *= 2) < 1) {
-        return 0.5 * amount * amount * amount * amount;
-      }
-      return -0.5 * ((amount -= 2) * amount * amount * amount - 2);
-    }
-  },
-  Quintic: {
-    In: function(amount) {
-      return amount * amount * amount * amount * amount;
-    },
-    Out: function(amount) {
-      return --amount * amount * amount * amount * amount + 1;
-    },
-    InOut: function(amount) {
-      if ((amount *= 2) < 1) {
-        return 0.5 * amount * amount * amount * amount * amount;
-      }
-      return 0.5 * ((amount -= 2) * amount * amount * amount * amount + 2);
-    }
-  },
-  Sinusoidal: {
-    In: function(amount) {
-      return 1 - Math.cos(amount * Math.PI / 2);
-    },
-    Out: function(amount) {
-      return Math.sin(amount * Math.PI / 2);
-    },
-    InOut: function(amount) {
-      return 0.5 * (1 - Math.cos(Math.PI * amount));
-    }
-  },
-  Exponential: {
-    In: function(amount) {
-      return amount === 0 ? 0 : Math.pow(1024, amount - 1);
-    },
-    Out: function(amount) {
-      return amount === 1 ? 1 : 1 - Math.pow(2, -10 * amount);
-    },
-    InOut: function(amount) {
-      if (amount === 0) {
-        return 0;
-      }
-      if (amount === 1) {
-        return 1;
-      }
-      if ((amount *= 2) < 1) {
-        return 0.5 * Math.pow(1024, amount - 1);
-      }
-      return 0.5 * (-Math.pow(2, -10 * (amount - 1)) + 2);
-    }
-  },
-  Circular: {
-    In: function(amount) {
-      return 1 - Math.sqrt(1 - amount * amount);
-    },
-    Out: function(amount) {
-      return Math.sqrt(1 - --amount * amount);
-    },
-    InOut: function(amount) {
-      if ((amount *= 2) < 1) {
-        return -0.5 * (Math.sqrt(1 - amount * amount) - 1);
-      }
-      return 0.5 * (Math.sqrt(1 - (amount -= 2) * amount) + 1);
-    }
-  },
-  Elastic: {
-    In: function(amount) {
-      if (amount === 0) {
-        return 0;
-      }
-      if (amount === 1) {
-        return 1;
-      }
-      return -Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
-    },
-    Out: function(amount) {
-      if (amount === 0) {
-        return 0;
-      }
-      if (amount === 1) {
-        return 1;
-      }
-      return Math.pow(2, -10 * amount) * Math.sin((amount - 0.1) * 5 * Math.PI) + 1;
-    },
-    InOut: function(amount) {
-      if (amount === 0) {
-        return 0;
-      }
-      if (amount === 1) {
-        return 1;
-      }
-      amount *= 2;
-      if (amount < 1) {
-        return -0.5 * Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
-      }
-      return 0.5 * Math.pow(2, -10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI) + 1;
-    }
-  },
-  Back: {
-    In: function(amount) {
-      var s = 1.70158;
-      return amount * amount * ((s + 1) * amount - s);
-    },
-    Out: function(amount) {
-      var s = 1.70158;
-      return --amount * amount * ((s + 1) * amount + s) + 1;
-    },
-    InOut: function(amount) {
-      var s = 1.70158 * 1.525;
-      if ((amount *= 2) < 1) {
-        return 0.5 * (amount * amount * ((s + 1) * amount - s));
-      }
-      return 0.5 * ((amount -= 2) * amount * ((s + 1) * amount + s) + 2);
-    }
-  },
-  Bounce: {
-    In: function(amount) {
-      return 1 - Easing.Bounce.Out(1 - amount);
-    },
-    Out: function(amount) {
-      if (amount < 1 / 2.75) {
-        return 7.5625 * amount * amount;
-      } else if (amount < 2 / 2.75) {
-        return 7.5625 * (amount -= 1.5 / 2.75) * amount + 0.75;
-      } else if (amount < 2.5 / 2.75) {
-        return 7.5625 * (amount -= 2.25 / 2.75) * amount + 0.9375;
-      } else {
-        return 7.5625 * (amount -= 2.625 / 2.75) * amount + 0.984375;
-      }
-    },
-    InOut: function(amount) {
-      if (amount < 0.5) {
-        return Easing.Bounce.In(amount * 2) * 0.5;
-      }
-      return Easing.Bounce.Out(amount * 2 - 1) * 0.5 + 0.5;
-    }
-  }
-};
-var now;
-if (typeof self === "undefined" && typeof process !== "undefined" && process.hrtime) {
-  now = function() {
-    var time = process.hrtime();
-    return time[0] * 1e3 + time[1] / 1e6;
-  };
-} else if (typeof self !== "undefined" && self.performance !== void 0 && self.performance.now !== void 0) {
-  now = self.performance.now.bind(self.performance);
-} else if (Date.now !== void 0) {
-  now = Date.now;
-} else {
-  now = function() {
-    return new Date().getTime();
-  };
-}
-var now$1 = now;
-var Group = function() {
-  function Group2() {
-    this._tweens = {};
-    this._tweensAddedDuringUpdate = {};
-  }
-  Group2.prototype.getAll = function() {
-    var _this = this;
-    return Object.keys(this._tweens).map(function(tweenId) {
-      return _this._tweens[tweenId];
-    });
-  };
-  Group2.prototype.removeAll = function() {
-    this._tweens = {};
-  };
-  Group2.prototype.add = function(tween) {
-    this._tweens[tween.getId()] = tween;
-    this._tweensAddedDuringUpdate[tween.getId()] = tween;
-  };
-  Group2.prototype.remove = function(tween) {
-    delete this._tweens[tween.getId()];
-    delete this._tweensAddedDuringUpdate[tween.getId()];
-  };
-  Group2.prototype.update = function(time, preserve) {
-    if (time === void 0) {
-      time = now$1();
-    }
-    if (preserve === void 0) {
-      preserve = false;
-    }
-    var tweenIds = Object.keys(this._tweens);
-    if (tweenIds.length === 0) {
-      return false;
-    }
-    while (tweenIds.length > 0) {
-      this._tweensAddedDuringUpdate = {};
-      for (var i = 0; i < tweenIds.length; i++) {
-        var tween = this._tweens[tweenIds[i]];
-        var autoStart = !preserve;
-        if (tween && tween.update(time, autoStart) === false && !preserve) {
-          delete this._tweens[tweenIds[i]];
-        }
-      }
-      tweenIds = Object.keys(this._tweensAddedDuringUpdate);
-    }
-    return true;
-  };
-  return Group2;
-}();
-var Interpolation = {
-  Linear: function(v, k) {
-    var m = v.length - 1;
-    var f = m * k;
-    var i = Math.floor(f);
-    var fn = Interpolation.Utils.Linear;
-    if (k < 0) {
-      return fn(v[0], v[1], f);
-    }
-    if (k > 1) {
-      return fn(v[m], v[m - 1], m - f);
-    }
-    return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
-  },
-  Bezier: function(v, k) {
-    var b = 0;
-    var n = v.length - 1;
-    var pw = Math.pow;
-    var bn = Interpolation.Utils.Bernstein;
-    for (var i = 0; i <= n; i++) {
-      b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
-    }
-    return b;
-  },
-  CatmullRom: function(v, k) {
-    var m = v.length - 1;
-    var f = m * k;
-    var i = Math.floor(f);
-    var fn = Interpolation.Utils.CatmullRom;
-    if (v[0] === v[m]) {
-      if (k < 0) {
-        i = Math.floor(f = m * (1 + k));
-      }
-      return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
-    } else {
-      if (k < 0) {
-        return v[0] - (fn(v[0], v[0], v[1], v[1], -f) - v[0]);
-      }
-      if (k > 1) {
-        return v[m] - (fn(v[m], v[m], v[m - 1], v[m - 1], f - m) - v[m]);
-      }
-      return fn(v[i ? i - 1 : 0], v[i], v[m < i + 1 ? m : i + 1], v[m < i + 2 ? m : i + 2], f - i);
-    }
-  },
-  Utils: {
-    Linear: function(p0, p1, t) {
-      return (p1 - p0) * t + p0;
-    },
-    Bernstein: function(n, i) {
-      var fc = Interpolation.Utils.Factorial;
-      return fc(n) / fc(i) / fc(n - i);
-    },
-    Factorial: function() {
-      var a = [1];
-      return function(n) {
-        var s = 1;
-        if (a[n]) {
-          return a[n];
-        }
-        for (var i = n; i > 1; i--) {
-          s *= i;
-        }
-        a[n] = s;
-        return s;
-      };
-    }(),
-    CatmullRom: function(p0, p1, p2, p3, t) {
-      var v0 = (p2 - p0) * 0.5;
-      var v1 = (p3 - p1) * 0.5;
-      var t2 = t * t;
-      var t3 = t * t2;
-      return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
-    }
-  }
-};
-var Sequence = function() {
-  function Sequence2() {
-  }
-  Sequence2.nextId = function() {
-    return Sequence2._nextId++;
-  };
-  Sequence2._nextId = 0;
-  return Sequence2;
-}();
-var mainGroup = new Group();
-var Tween = function() {
-  function Tween2(_object, _group) {
-    if (_group === void 0) {
-      _group = mainGroup;
-    }
-    this._object = _object;
-    this._group = _group;
-    this._isPaused = false;
-    this._pauseStart = 0;
-    this._valuesStart = {};
-    this._valuesEnd = {};
-    this._valuesStartRepeat = {};
-    this._duration = 1e3;
-    this._initialRepeat = 0;
-    this._repeat = 0;
-    this._yoyo = false;
-    this._isPlaying = false;
-    this._reversed = false;
-    this._delayTime = 0;
-    this._startTime = 0;
-    this._easingFunction = Easing.Linear.None;
-    this._interpolationFunction = Interpolation.Linear;
-    this._chainedTweens = [];
-    this._onStartCallbackFired = false;
-    this._id = Sequence.nextId();
-    this._isChainStopped = false;
-    this._goToEnd = false;
-  }
-  Tween2.prototype.getId = function() {
-    return this._id;
-  };
-  Tween2.prototype.isPlaying = function() {
-    return this._isPlaying;
-  };
-  Tween2.prototype.isPaused = function() {
-    return this._isPaused;
-  };
-  Tween2.prototype.to = function(properties, duration) {
-    this._valuesEnd = Object.create(properties);
-    if (duration !== void 0) {
-      this._duration = duration;
-    }
-    return this;
-  };
-  Tween2.prototype.duration = function(d) {
-    this._duration = d;
-    return this;
-  };
-  Tween2.prototype.start = function(time) {
-    if (this._isPlaying) {
-      return this;
-    }
-    this._group && this._group.add(this);
-    this._repeat = this._initialRepeat;
-    if (this._reversed) {
-      this._reversed = false;
-      for (var property in this._valuesStartRepeat) {
-        this._swapEndStartRepeatValues(property);
-        this._valuesStart[property] = this._valuesStartRepeat[property];
-      }
-    }
-    this._isPlaying = true;
-    this._isPaused = false;
-    this._onStartCallbackFired = false;
-    this._isChainStopped = false;
-    this._startTime = time !== void 0 ? typeof time === "string" ? now$1() + parseFloat(time) : time : now$1();
-    this._startTime += this._delayTime;
-    this._setupProperties(this._object, this._valuesStart, this._valuesEnd, this._valuesStartRepeat);
-    return this;
-  };
-  Tween2.prototype._setupProperties = function(_object, _valuesStart, _valuesEnd, _valuesStartRepeat) {
-    for (var property in _valuesEnd) {
-      var startValue = _object[property];
-      var startValueIsArray = Array.isArray(startValue);
-      var propType = startValueIsArray ? "array" : typeof startValue;
-      var isInterpolationList = !startValueIsArray && Array.isArray(_valuesEnd[property]);
-      if (propType === "undefined" || propType === "function") {
-        continue;
-      }
-      if (isInterpolationList) {
-        var endValues = _valuesEnd[property];
-        if (endValues.length === 0) {
-          continue;
-        }
-        endValues = endValues.map(this._handleRelativeValue.bind(this, startValue));
-        _valuesEnd[property] = [startValue].concat(endValues);
-      }
-      if ((propType === "object" || startValueIsArray) && startValue && !isInterpolationList) {
-        _valuesStart[property] = startValueIsArray ? [] : {};
-        for (var prop in startValue) {
-          _valuesStart[property][prop] = startValue[prop];
-        }
-        _valuesStartRepeat[property] = startValueIsArray ? [] : {};
-        this._setupProperties(startValue, _valuesStart[property], _valuesEnd[property], _valuesStartRepeat[property]);
-      } else {
-        if (typeof _valuesStart[property] === "undefined") {
-          _valuesStart[property] = startValue;
-        }
-        if (!startValueIsArray) {
-          _valuesStart[property] *= 1;
-        }
-        if (isInterpolationList) {
-          _valuesStartRepeat[property] = _valuesEnd[property].slice().reverse();
-        } else {
-          _valuesStartRepeat[property] = _valuesStart[property] || 0;
-        }
-      }
-    }
-  };
-  Tween2.prototype.stop = function() {
-    if (!this._isChainStopped) {
-      this._isChainStopped = true;
-      this.stopChainedTweens();
-    }
-    if (!this._isPlaying) {
-      return this;
-    }
-    this._group && this._group.remove(this);
-    this._isPlaying = false;
-    this._isPaused = false;
-    if (this._onStopCallback) {
-      this._onStopCallback(this._object);
-    }
-    return this;
-  };
-  Tween2.prototype.end = function() {
-    this._goToEnd = true;
-    this.update(Infinity);
-    return this;
-  };
-  Tween2.prototype.pause = function(time) {
-    if (time === void 0) {
-      time = now$1();
-    }
-    if (this._isPaused || !this._isPlaying) {
-      return this;
-    }
-    this._isPaused = true;
-    this._pauseStart = time;
-    this._group && this._group.remove(this);
-    return this;
-  };
-  Tween2.prototype.resume = function(time) {
-    if (time === void 0) {
-      time = now$1();
-    }
-    if (!this._isPaused || !this._isPlaying) {
-      return this;
-    }
-    this._isPaused = false;
-    this._startTime += time - this._pauseStart;
-    this._pauseStart = 0;
-    this._group && this._group.add(this);
-    return this;
-  };
-  Tween2.prototype.stopChainedTweens = function() {
-    for (var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++) {
-      this._chainedTweens[i].stop();
-    }
-    return this;
-  };
-  Tween2.prototype.group = function(group) {
-    this._group = group;
-    return this;
-  };
-  Tween2.prototype.delay = function(amount) {
-    this._delayTime = amount;
-    return this;
-  };
-  Tween2.prototype.repeat = function(times) {
-    this._initialRepeat = times;
-    this._repeat = times;
-    return this;
-  };
-  Tween2.prototype.repeatDelay = function(amount) {
-    this._repeatDelayTime = amount;
-    return this;
-  };
-  Tween2.prototype.yoyo = function(yoyo) {
-    this._yoyo = yoyo;
-    return this;
-  };
-  Tween2.prototype.easing = function(easingFunction) {
-    this._easingFunction = easingFunction;
-    return this;
-  };
-  Tween2.prototype.interpolation = function(interpolationFunction) {
-    this._interpolationFunction = interpolationFunction;
-    return this;
-  };
-  Tween2.prototype.chain = function() {
-    var tweens = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-      tweens[_i] = arguments[_i];
-    }
-    this._chainedTweens = tweens;
-    return this;
-  };
-  Tween2.prototype.onStart = function(callback) {
-    this._onStartCallback = callback;
-    return this;
-  };
-  Tween2.prototype.onUpdate = function(callback) {
-    this._onUpdateCallback = callback;
-    return this;
-  };
-  Tween2.prototype.onRepeat = function(callback) {
-    this._onRepeatCallback = callback;
-    return this;
-  };
-  Tween2.prototype.onComplete = function(callback) {
-    this._onCompleteCallback = callback;
-    return this;
-  };
-  Tween2.prototype.onStop = function(callback) {
-    this._onStopCallback = callback;
-    return this;
-  };
-  Tween2.prototype.update = function(time, autoStart) {
-    if (time === void 0) {
-      time = now$1();
-    }
-    if (autoStart === void 0) {
-      autoStart = true;
-    }
-    if (this._isPaused)
-      return true;
-    var property;
-    var elapsed;
-    var endTime = this._startTime + this._duration;
-    if (!this._goToEnd && !this._isPlaying) {
-      if (time > endTime)
-        return false;
-      if (autoStart)
-        this.start(time);
-    }
-    this._goToEnd = false;
-    if (time < this._startTime) {
-      return true;
-    }
-    if (this._onStartCallbackFired === false) {
-      if (this._onStartCallback) {
-        this._onStartCallback(this._object);
-      }
-      this._onStartCallbackFired = true;
-    }
-    elapsed = (time - this._startTime) / this._duration;
-    elapsed = this._duration === 0 || elapsed > 1 ? 1 : elapsed;
-    var value = this._easingFunction(elapsed);
-    this._updateProperties(this._object, this._valuesStart, this._valuesEnd, value);
-    if (this._onUpdateCallback) {
-      this._onUpdateCallback(this._object, elapsed);
-    }
-    if (elapsed === 1) {
-      if (this._repeat > 0) {
-        if (isFinite(this._repeat)) {
-          this._repeat--;
-        }
-        for (property in this._valuesStartRepeat) {
-          if (!this._yoyo && typeof this._valuesEnd[property] === "string") {
-            this._valuesStartRepeat[property] = this._valuesStartRepeat[property] + parseFloat(this._valuesEnd[property]);
-          }
-          if (this._yoyo) {
-            this._swapEndStartRepeatValues(property);
-          }
-          this._valuesStart[property] = this._valuesStartRepeat[property];
-        }
-        if (this._yoyo) {
-          this._reversed = !this._reversed;
-        }
-        if (this._repeatDelayTime !== void 0) {
-          this._startTime = time + this._repeatDelayTime;
-        } else {
-          this._startTime = time + this._delayTime;
-        }
-        if (this._onRepeatCallback) {
-          this._onRepeatCallback(this._object);
-        }
-        return true;
-      } else {
-        if (this._onCompleteCallback) {
-          this._onCompleteCallback(this._object);
-        }
-        for (var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++) {
-          this._chainedTweens[i].start(this._startTime + this._duration);
-        }
-        this._isPlaying = false;
-        return false;
-      }
-    }
-    return true;
-  };
-  Tween2.prototype._updateProperties = function(_object, _valuesStart, _valuesEnd, value) {
-    for (var property in _valuesEnd) {
-      if (_valuesStart[property] === void 0) {
-        continue;
-      }
-      var start = _valuesStart[property] || 0;
-      var end = _valuesEnd[property];
-      var startIsArray = Array.isArray(_object[property]);
-      var endIsArray = Array.isArray(end);
-      var isInterpolationList = !startIsArray && endIsArray;
-      if (isInterpolationList) {
-        _object[property] = this._interpolationFunction(end, value);
-      } else if (typeof end === "object" && end) {
-        this._updateProperties(_object[property], start, end, value);
-      } else {
-        end = this._handleRelativeValue(start, end);
-        if (typeof end === "number") {
-          _object[property] = start + (end - start) * value;
-        }
-      }
-    }
-  };
-  Tween2.prototype._handleRelativeValue = function(start, end) {
-    if (typeof end !== "string") {
-      return end;
-    }
-    if (end.charAt(0) === "+" || end.charAt(0) === "-") {
-      return start + parseFloat(end);
-    } else {
-      return parseFloat(end);
-    }
-  };
-  Tween2.prototype._swapEndStartRepeatValues = function(property) {
-    var tmp = this._valuesStartRepeat[property];
-    var endValue = this._valuesEnd[property];
-    if (typeof endValue === "string") {
-      this._valuesStartRepeat[property] = this._valuesStartRepeat[property] + parseFloat(endValue);
-    } else {
-      this._valuesStartRepeat[property] = this._valuesEnd[property];
-    }
-    this._valuesEnd[property] = tmp;
-  };
-  return Tween2;
-}();
-var TWEEN = mainGroup;
-TWEEN.getAll.bind(TWEEN);
-TWEEN.removeAll.bind(TWEEN);
-TWEEN.add.bind(TWEEN);
-TWEEN.remove.bind(TWEEN);
-TWEEN.update.bind(TWEEN);
 var TIMINGFUNCTION;
 (function(TIMINGFUNCTION2) {
   TIMINGFUNCTION2["ELN"] = "ELN";
@@ -6792,588 +6168,323 @@ EventLibrary.register(config$3, generator$3);
 EventLibrary.register(config$2, generator$2);
 EventLibrary.register(config$1, generator$1);
 EventLibrary.register(config, generator);
-const _ObjectCompiler = class extends Compiler {
-  constructor() {
-    super();
-    __publicField(this, "IS_OBJECTCOMPILER", true);
-    __publicField(this, "target");
-    __publicField(this, "map");
-    __publicField(this, "weakMap");
-    __publicField(this, "objectCacheMap");
-    __publicField(this, "objectMapSet");
-    __publicField(this, "filterAttribute", {
-      lookAt: true,
-      parent: true,
-      children: true,
-      pointerdown: true,
-      pointermove: true,
-      pointerup: true,
-      pointerenter: true,
-      pointerleave: true,
-      click: true,
-      dblclick: true,
-      contextmenu: true
+const objectCacheMap = new WeakMap();
+const lookAtHandler = function({ target, config: config2, value, engine }) {
+  if (config2.vid === value) {
+    console.warn(`can not set object lookAt itself.`);
+    return;
+  }
+  let cacheData = objectCacheMap.get(target);
+  if (!cacheData) {
+    cacheData = { lookAtTarget: null, updateMatrixWorldFun: null };
+    objectCacheMap.set(target, cacheData);
+  }
+  if (!value) {
+    if (!cacheData.updateMatrixWorldFun) {
+      return;
+    }
+    target.updateMatrixWorld = cacheData.updateMatrixWorldFun;
+    cacheData.lookAtTarget = null;
+    cacheData.updateMatrixWorldFun = null;
+    return;
+  }
+  const lookAtTarget = engine.compilerManager.getObject3D(value);
+  if (!lookAtTarget) {
+    console.warn(`lookAt handler can not found this vid mapping object: '${value}'`);
+    return;
+  }
+  const updateMatrixWorldFun = target.updateMatrixWorld;
+  cacheData.updateMatrixWorldFun = updateMatrixWorldFun;
+  cacheData.lookAtTarget = lookAtTarget.position;
+  target.updateMatrixWorld = (focus) => {
+    updateMatrixWorldFun.call(target, focus);
+    target.lookAt(cacheData.lookAtTarget);
+  };
+};
+const eventSymbol = "vis.event";
+const addEventHanlder = function({ target, path, value, engine }) {
+  const eventName = path[0];
+  if (!EventLibrary.has(value.name)) {
+    console.warn(`EventLibrary: can not support this event: ${value.name}`);
+    return;
+  }
+  const fun = EventLibrary.generateEvent(value, engine);
+  const symbol = Symbol.for(eventSymbol);
+  value[symbol] = fun;
+  target.addEventListener(eventName, fun);
+};
+const removeEventHandler = function({ target, path, value }) {
+  const eventName = path[0];
+  const fun = value[Symbol.for(eventSymbol)];
+  if (!fun) {
+    console.warn(`event remove can not fun found event in config`, value);
+    return;
+  }
+  target.removeEventListener(eventName, fun);
+  delete value[Symbol.for(eventSymbol)];
+};
+const updateEventHandler = function({ target, config: config2, path, engine }) {
+  const eventName = path[0];
+  const eventConfig = config2[path[0]][path[1]];
+  const fun = eventConfig[Symbol.for(eventSymbol)];
+  if (!fun) {
+    console.warn(`event remove can not fun found event in config`, eventConfig);
+    return;
+  }
+  target.removeEventListener(eventName, fun);
+  const newFun = EventLibrary.generateEvent(config2, engine);
+  eventConfig[eventSymbol] = newFun;
+  target.addEventListener(eventName, newFun);
+};
+const addChildrenHanlder = function({ target, config: config2, value, engine }) {
+  const childrenConfig = engine.getConfigBySymbol(value);
+  if (!childrenConfig) {
+    console.warn(` can not foud object parent config in engine: ${value}`);
+    return;
+  }
+  if (childrenConfig.parent && childrenConfig.parent !== config2.vid) {
+    const parentConfig = engine.getConfigBySymbol(childrenConfig.parent);
+    if (!parentConfig) {
+      console.warn(` can not foud object parent config in engine: ${childrenConfig.parent}`);
+      return;
+    }
+    parentConfig.children.splice(parentConfig.children.indexOf(value), 1);
+  }
+  childrenConfig.parent = config2.vid;
+  const childrenObject = engine.compilerManager.getObject3D(value);
+  if (!childrenObject) {
+    console.warn(`can not found this vid in engine: ${value}.`);
+    return;
+  }
+  target.add(childrenObject);
+};
+const removeChildrenHandler = function({ target, config: config2, value, engine }) {
+  const childrenObject = engine.compilerManager.getObject3D(value);
+  if (!childrenObject) {
+    console.warn(`can not found this vid in engine: ${value}.`);
+    return;
+  }
+  target.remove(childrenObject);
+  const childrenConfig = engine.getConfigBySymbol(value);
+  if (!childrenConfig) {
+    console.warn(`can not found this vid in engine: ${value}.`);
+    return;
+  }
+  childrenConfig.parent = "";
+};
+const objectCreate = function(object, config2, filter = {}, engine) {
+  const asyncFun = Promise.resolve();
+  asyncFun.then(() => {
+    !filter.lookAt && lookAtHandler({
+      target: object,
+      config: config2,
+      engine,
+      value: config2.lookAt
     });
-    __publicField(this, "engine");
-    this.map = new Map();
-    this.weakMap = new WeakMap();
-    this.objectMapSet = new Set();
-    this.objectCacheMap = new WeakMap();
-  }
-  getObject(vid) {
-    for (const map of this.objectMapSet) {
-      if (map.has(vid)) {
-        return map.get(vid);
-      }
-    }
-    return null;
-  }
-  mergeFilterAttribute(object) {
-    const recursion = (config2, merge) => {
-      for (const key in merge) {
-        if (config2[key] === void 0) {
-          config2[key] = merge[key];
-          continue;
-        }
-        if (typeof merge[key] === "object") {
-          recursion(config2[key], merge[key]);
-        } else {
-          config2[key] = merge[key];
-        }
-      }
-    };
-    recursion(this.filterAttribute, object);
-    return this;
-  }
-  setLookAt(vid, target) {
-    if (vid === target) {
-      console.error(`can not set object lookAt itself.`);
-      return this;
-    }
-    if (!this.map.has(vid)) {
-      console.error(`${this.MODULE}Compiler: can not found object which vid: ${vid}.`);
-      return this;
-    }
-    const model = this.map.get(vid);
-    let cacheData = this.objectCacheMap.get(model);
-    if (!cacheData) {
-      cacheData = { lookAtTarget: null, updateMatrixWorldFun: null };
-      this.objectCacheMap.set(model, cacheData);
-    }
-    if (!target) {
-      if (!cacheData.updateMatrixWorldFun) {
-        return this;
-      }
-      model.updateMatrixWorld = cacheData.updateMatrixWorldFun;
-      cacheData.lookAtTarget = null;
-      cacheData.updateMatrixWorldFun = null;
-      return this;
-    }
-    const lookAtTarget = this.getObject(target);
-    if (!lookAtTarget) {
-      console.warn(`${this.MODULE}Compiler: can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    const updateMatrixWorldFun = model.updateMatrixWorld;
-    cacheData.updateMatrixWorldFun = updateMatrixWorldFun;
-    cacheData.lookAtTarget = lookAtTarget.position;
-    model.updateMatrixWorld = (focus) => {
-      updateMatrixWorldFun.bind(model)(focus);
-      model.lookAt(cacheData.lookAtTarget);
-    };
-    return this;
-  }
-  addEvent(vid, eventName, config2) {
-    if (!this.map.has(vid)) {
-      console.warn(`${this.MODULE} compiler : No matching vid found: ${vid}`);
-      return this;
-    }
-    if (!EventLibrary.has(config2.name)) {
-      console.warn(`${this.MODULE} compiler: can not support this event: ${config2.name}`);
-      return this;
-    }
-    const object = this.map.get(vid);
-    const fun = EventLibrary.generateEvent(config2, this.engine);
-    const symbol = Symbol.for(_ObjectCompiler.eventSymbol);
-    config2[symbol] = fun;
-    object.addEventListener(eventName, fun);
-    return this;
-  }
-  removeEvent(vid, eventName, config2) {
-    if (!this.map.has(vid)) {
-      console.warn(`${this.MODULE} compiler: No matching vid found: ${vid}`);
-      return this;
-    }
-    const object = this.map.get(vid);
-    const fun = config2[Symbol.for(_ObjectCompiler.eventSymbol)];
-    if (!fun) {
-      console.warn(`${this.MODULE} compiler: event remove can not fun found event in config`, config2);
-      return this;
-    }
-    object.removeEventListener(eventName, fun);
-    delete config2[Symbol.for(_ObjectCompiler.eventSymbol)];
-    return this;
-  }
-  updateEvent(vid, eventName, index) {
-    if (!this.map.has(vid)) {
-      console.warn(`${this.MODULE} compiler: No matching vid found: ${vid}`);
-      return this;
-    }
-    const object = this.map.get(vid);
-    const symbol = Symbol.for(_ObjectCompiler.eventSymbol);
-    const config2 = this.target[vid][eventName][index];
-    const fun = config2[symbol];
-    if (!fun) {
-      console.warn(`${this.MODULE} compiler: can not fun found event: ${vid}, ${eventName}, ${index}`);
-      return this;
-    }
-    object.removeEventListener(eventName, fun);
-    const newFun = EventLibrary.generateEvent(config2, this.engine);
-    config2[symbol] = newFun;
-    object.addEventListener(eventName, newFun);
-    return this;
-  }
-  addChildren(vid, target) {
-    if (!this.map.has(vid)) {
-      console.warn(`${this.MODULE} compiler: can not found this vid in compiler: ${vid}.`);
-      return this;
-    }
-    const targetConfig = this.engine.getConfigBySymbol(target);
-    if (!targetConfig) {
-      console.warn(`${this.MODULE} compiler: can not foud object config: ${target}`);
-      return this;
-    }
-    if (targetConfig.parent && targetConfig.parent !== vid) {
-      const parentConfig = this.engine.getConfigBySymbol(targetConfig.parent);
-      if (!parentConfig) {
-        console.warn(`${this.MODULE} compiler: can not foud object config: ${target}`);
-        return this;
-      }
-      parentConfig.children.splice(parentConfig.children.indexOf(target), 1);
-    }
-    targetConfig.parent = vid;
-    const object = this.map.get(vid);
-    const targetObject = this.getObject(target);
-    if (!targetObject) {
-      console.warn(`${this.MODULE} compiler: can not found this vid in compiler: ${target}.`);
-      return this;
-    }
-    object.add(targetObject);
-    return this;
-  }
-  removeChildren(vid, target) {
-    if (!this.map.has(vid)) {
-      console.warn(`${this.MODULE} compiler: can not found this vid in compiler: ${vid}.`);
-      return this;
-    }
-    const object = this.map.get(vid);
-    const targetObject = this.getObject(target);
-    if (!targetObject) {
-      console.warn(`${this.MODULE} compiler: can not found this vid in compiler: ${target}.`);
-      return this;
-    }
-    object.remove(targetObject);
-    const targetConfig = this.engine.getConfigBySymbol(target);
-    if (!targetConfig) {
-      console.warn(`${this.MODULE} compiler: remove children function can not foud object config: ${target}`);
-      return this;
-    }
-    targetConfig.parent = "";
-    return this;
-  }
-  linkObjectMap(...map) {
-    for (const objectMap of map) {
-      if (!this.objectMapSet.has(objectMap)) {
-        this.objectMapSet.add(objectMap);
-      }
-    }
-    return this;
-  }
-  useEngine(engine) {
-    this.engine = engine;
-    return this;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  getMap() {
-    return this.map;
-  }
-  getObjectSymbol(object) {
-    return this.weakMap.get(object) || null;
-  }
-  getObjectBySymbol(vid) {
-    return this.map.get(vid) || null;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const key in target) {
-      this.add(key, target[key]);
-    }
-    return this;
-  }
-  add(vid, config2) {
-    const object = this.map.get(vid);
-    if (!object) {
-      console.error(`${this.MODULE} compiler can not finish add method.`);
-      return this;
-    }
-    const asyncFun = Promise.resolve();
-    asyncFun.then(() => {
-      this.setLookAt(vid, config2.lookAt);
-      if (config2.children.length) {
-        for (const target of config2.children) {
-          this.addChildren(vid, target);
-        }
-      }
-      for (const eventName of Object.values(EVENTNAME)) {
-        const eventList = config2[eventName];
-        if (eventList.length) {
-          for (const event of eventList) {
-            this.addEvent(vid, eventName, event);
-          }
-        }
-      }
+    config2.children.forEach((vid) => {
+      addChildrenHanlder({
+        target: object,
+        config: config2,
+        value: vid,
+        engine
+      });
     });
-    syncObject(config2, object, this.filterAttribute);
-    object.updateMatrix();
-    object.updateMatrixWorld();
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
-      return this;
+    for (const eventName of Object.values(EVENTNAME)) {
+      config2[eventName].forEach((event, i) => {
+        addEventHanlder({
+          target: object,
+          path: [eventName, i.toString()],
+          value: event,
+          engine
+        });
+      });
     }
-    if (key === "lookAt") {
-      return this.setLookAt(vid, value);
-    }
-    let object = this.map.get(vid);
-    let filter = this.filterAttribute;
-    for (const key2 of path) {
-      if (filter[key2]) {
-        if (filter[key2] === true) {
-          return this;
-        } else {
-          filter = filter[key2];
-        }
-      }
-      object = object[key2];
-    }
-    object[key] = value;
-    return this;
-  }
-  cover(vid, config2) {
-    const object = this.map.get(vid);
-    if (!object) {
-      console.error(`${this.MODULE} compiler can not found object: ${vid}.`);
-      return this;
-    }
-    const asyncFun = Promise.resolve();
-    asyncFun.then(() => {
-      this.setLookAt(vid, config2.lookAt);
-      if (config2.children.length) {
-        for (const target of config2.children) {
-          this.addChildren(vid, target);
-        }
-      }
-      for (const eventName of Object.values(EVENTNAME)) {
-        if (object._listeners && object._listeners[eventName]) {
-          object._listeners[eventName] = [];
-        }
-        const eventList = config2[eventName];
-        if (eventList.length) {
-          for (const event of eventList) {
-            this.addEvent(vid, eventName, event);
-          }
-        }
-      }
-    });
-    syncObject(config2, object, this.filterAttribute);
-    return this;
-  }
-  remove(vid, config2) {
-    if (!this.map.has(vid)) {
-      console.warn(`${this.MODULE}Compiler: can not found object which vid: ${vid}.`);
-      return this;
-    }
-    if (config2.parent) {
-      const parentConfig = this.engine.getConfigBySymbol(config2.parent);
-      if (!parentConfig) {
-        console.warn(`${this.MODULE} compiler: can not found parent object config: ${config2.parent}`);
-      } else {
-        if (parentConfig.children.includes(vid)) {
-          parentConfig.children.splice(parentConfig.children.indexOf(vid), 1);
-        } else {
-          console.warn(`${this.MODULE} compiler: can not found vid in its parent config: ${vid}`);
-        }
-      }
-    }
-    const object = this.map.get(vid);
-    this.weakMap.delete(object);
-    this.objectCacheMap.delete(this.map.get(vid));
-    this.map.delete(vid);
-    return this;
-  }
-  dispose() {
-    this.map.clear();
-    this.objectMapSet.clear();
-    return this;
+  });
+  syncObject(config2, object, __spreadValues({
+    type: true,
+    lookAt: true,
+    parent: true,
+    children: true,
+    pointerdown: true,
+    pointermove: true,
+    pointerup: true,
+    pointerenter: true,
+    pointerleave: true,
+    click: true,
+    dblclick: true,
+    contextmenu: true
+  }, filter));
+  return object;
+};
+const objectDispose = function(target) {
+  target._listener = {};
+};
+const objectCommands = {
+  add: {
+    pointerdown: addEventHanlder,
+    pointerup: addEventHanlder,
+    pointermove: addEventHanlder,
+    pointerenter: addEventHanlder,
+    pointerleave: addEventHanlder,
+    click: addEventHanlder,
+    dblclick: addEventHanlder,
+    contextmenu: addEventHanlder,
+    children: addChildrenHanlder
+  },
+  set: {
+    lookAt: lookAtHandler,
+    pointerdown: updateEventHandler,
+    pointerup: updateEventHandler,
+    pointermove: updateEventHandler,
+    pointerenter: updateEventHandler,
+    pointerleave: updateEventHandler,
+    click: updateEventHandler,
+    dblclick: updateEventHandler,
+    contextmenu: updateEventHandler
+  },
+  delete: {
+    pointerdown: removeEventHandler,
+    pointerup: removeEventHandler,
+    pointermove: removeEventHandler,
+    pointerenter: removeEventHandler,
+    pointerleave: removeEventHandler,
+    click: removeEventHandler,
+    dblclick: removeEventHandler,
+    contextmenu: removeEventHandler,
+    children: removeChildrenHandler
   }
 };
-let ObjectCompiler = _ObjectCompiler;
-__publicField(ObjectCompiler, "eventSymbol", "vis.event");
+const cacheCameraMap = new WeakMap();
+var PerspectiveCameraProcessor = defineProcessor({
+  configType: CONFIGTYPE.PERSPECTIVECAMERA,
+  commands: {
+    add: __spreadValues({
+      scale() {
+      }
+    }, objectCommands.add),
+    set: __spreadValues({
+      scale() {
+      },
+      adaptiveWindow({ target, value, engine }) {
+        if (value) {
+          if (!cacheCameraMap.has(value)) {
+            const fun = (event) => {
+              target.aspect = event.width / event.height;
+              target.updateProjectionMatrix();
+            };
+            cacheCameraMap.set(target, fun);
+            engine.addEventListener("setSize", fun);
+          }
+        } else {
+          const fun = cacheCameraMap.get(target);
+          if (fun) {
+            engine.removeEventListener("setSize", fun);
+            cacheCameraMap.delete(target);
+          }
+        }
+      }
+    }, objectCommands.set),
+    delete: __spreadValues({
+      scale() {
+      }
+    }, objectCommands.delete)
+  },
+  create(config2, engine) {
+    const camera = new PerspectiveCamera();
+    if (config2.adaptiveWindow) {
+      const fun = (event) => {
+        camera.aspect = event.width / event.height;
+        camera.updateProjectionMatrix();
+      };
+      cacheCameraMap.set(camera, fun);
+      engine.addEventListener("setSize", fun);
+    }
+    objectCreate(camera, config2, {
+      scale: true,
+      adaptiveWindow: true
+    }, engine);
+    camera.updateProjectionMatrix();
+    return camera;
+  },
+  dispose(camera) {
+    cacheCameraMap.delete(camera);
+    objectDispose(camera);
+  }
+});
+var OrthographicCameraProcessor = defineProcessor({
+  configType: CONFIGTYPE.ORTHOGRAPHICCAMERA,
+  commands: {
+    add: __spreadValues({
+      scale() {
+      }
+    }, objectCommands.add),
+    set: __spreadValues({
+      scale() {
+      },
+      adaptiveWindow({ target, value, engine }) {
+        if (value) {
+          if (!cacheCameraMap.has(value)) {
+            const fun = (event) => {
+              const width = event.width;
+              const height = event.height;
+              target.left = -width;
+              target.right = width;
+              target.top = height;
+              target.bottom = -height;
+              target.updateProjectionMatrix();
+            };
+            cacheCameraMap.set(target, fun);
+            engine.addEventListener("setSize", fun);
+          }
+        } else {
+          const fun = cacheCameraMap.get(target);
+          if (fun) {
+            engine.removeEventListener("setSize", fun);
+            cacheCameraMap.delete(target);
+          }
+        }
+      }
+    }, objectCommands.set),
+    delete: __spreadValues({
+      scale() {
+      }
+    }, objectCommands.delete)
+  },
+  create(config2, engine) {
+    const camera = new OrthographicCamera(-50, 50, 50, -50);
+    if (config2.adaptiveWindow) {
+      const fun = (event) => {
+        const width = event.width;
+        const height = event.height;
+        camera.left = -width;
+        camera.right = width;
+        camera.top = height;
+        camera.bottom = -height;
+        camera.updateProjectionMatrix();
+      };
+      cacheCameraMap.set(camera, fun);
+      engine.addEventListener("setSize", fun);
+    }
+    objectCreate(camera, config2, {
+      scale: true,
+      adaptiveWindow: true
+    }, engine);
+    camera.updateProjectionMatrix();
+    return camera;
+  },
+  dispose(camera) {
+    cacheCameraMap.delete(camera);
+    objectDispose(camera);
+  }
+});
 class CameraCompiler extends ObjectCompiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.CAMERA);
-    __publicField(this, "constructMap");
-    __publicField(this, "cacheCameraMap");
-    const constructMap2 = new Map();
-    constructMap2.set("PerspectiveCamera", () => new PerspectiveCamera());
-    constructMap2.set("OrthographicCamera", () => new OrthographicCamera(-50, 50, 50, -50));
-    this.constructMap = constructMap2;
-    this.mergeFilterAttribute({
-      scale: true,
-      adaptiveWindow: true
-    });
-    this.cacheCameraMap = new WeakMap();
-  }
-  setAdaptiveWindow(vid, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`camera compiler can not found this vid camera: '${vid}'`);
-      return this;
-    }
-    const camera = this.map.get(vid);
-    let cacheData = this.cacheCameraMap.get(camera);
-    if (!cacheData) {
-      cacheData = {};
-      this.cacheCameraMap.set(camera, cacheData);
-    }
-    if (!value) {
-      if (cacheData.setSizeFun && this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
-        this.engine.removeEventListener("setSize", cacheData.setSizeFun);
-        cacheData.setSizeFun = void 0;
-        return this;
-      }
-      if (cacheData.setSizeFun && !this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
-        cacheData.setSizeFun = void 0;
-        return this;
-      }
-    }
-    if (value) {
-      if (cacheData.setSizeFun && this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
-        return this;
-      }
-      if (cacheData.setSizeFun && !this.engine.hasEventListener("setSize", cacheData.setSizeFun)) {
-        this.engine.addEventListener("setSize", cacheData.setSizeFun);
-        return this;
-      }
-      let setSizeFun = (event) => {
-      };
-      if (camera instanceof PerspectiveCamera) {
-        setSizeFun = (event) => {
-          camera.aspect = event.width / event.height;
-          camera.updateProjectionMatrix();
-        };
-      } else if (camera instanceof OrthographicCamera) {
-        setSizeFun = (event) => {
-          const width = event.width;
-          const height = event.height;
-          camera.left = -width / 2;
-          camera.right = width / 2;
-          camera.top = height / 2;
-          camera.bottom = -height / 2;
-          camera.updateProjectionMatrix();
-        };
-      } else {
-        console.warn(`camera compiler can not support this class camera:`, camera);
-      }
-      this.engine.addEventListener("setSize", setSizeFun);
-      cacheData.setSizeFun = setSizeFun;
-      const domElement = this.engine.dom;
-      setSizeFun({
-        type: "setSize",
-        width: domElement.offsetWidth,
-        height: domElement.offsetHeight
-      });
-    }
-    return this;
-  }
-  add(vid, config2) {
-    if (config2.type && this.constructMap.has(config2.type)) {
-      const camera = this.constructMap.get(config2.type)();
-      this.map.set(vid, camera);
-      this.weakMap.set(camera, vid);
-      this.setLookAt(config2.vid, config2.lookAt);
-      this.setAdaptiveWindow(config2.vid, config2.adaptiveWindow);
-      super.add(vid, config2);
-      if (camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
-        camera.updateProjectionMatrix();
-      }
-    } else {
-      console.warn(`CameraCompiler: can not support this config type: ${config2.type}`);
-    }
-    return this;
-  }
-  cover(vid, config2) {
-    this.setLookAt(config2.vid, config2.lookAt);
-    this.setAdaptiveWindow(config2.vid, config2.adaptiveWindow);
-    return super.cover(vid, config2);
-  }
-  set(vid, path, key, value) {
-    if (key === "adaptiveWindow") {
-      return this.setAdaptiveWindow(vid, value);
-    }
-    super.set(vid, path, key, value);
-    const object = this.map.get(vid);
-    if (object && (object instanceof PerspectiveCamera || object instanceof OrthographicCamera)) {
-      object.updateProjectionMatrix();
-    }
-    return this;
-  }
-  dispose() {
-    super.dispose();
-    return this;
   }
 }
-class Processor {
-  constructor() {
-    __publicField(this, "filterMap", {});
-    __publicField(this, "assembly", false);
-    this.filterMap = Object.assign({
-      vid: true,
-      type: true
-    }, this.filterMap);
-  }
-  mergeAttribute(path, key, value) {
-    if (this.filterMap[path.concat([key]).join(".")]) {
-      return;
-    }
-    let object = this.target;
-    if (path.length) {
-      for (const key2 of path) {
-        object = object[key2];
-      }
-    }
-    object[key] = value;
-  }
-  mergeObject(callBack) {
-    const recursiveConfig = (config2, object) => {
-      for (const key in config2) {
-        if (this.filterMap[key]) {
-          continue;
-        }
-        if (typeof config2[key] === "object" && typeof config2[key] !== null) {
-          recursiveConfig(config2[key], object[key]);
-          continue;
-        }
-        object[key] = config2[key];
-      }
-    };
-    recursiveConfig(this.config, this.target);
-    callBack && callBack();
-  }
-  processAll() {
-    const recursiveConfig = (config2, path) => {
-      for (const key in config2) {
-        if (this.filterMap[path.concat([key]).join(".")]) {
-          continue;
-        }
-        if (typeof config2[key] === "object" && typeof config2[key] !== null) {
-          recursiveConfig(config2[key], path.concat([key]));
-          continue;
-        }
-        this.process({ path, key, value: config2[key] });
-      }
-    };
-    recursiveConfig(this.config, []);
-    return this;
-  }
-}
-class Processor2 {
-  constructor(options) {
-    __publicField(this, "configType");
-    __publicField(this, "commands");
-    __publicField(this, "create");
-    __publicField(this, "dispose");
-    this.configType = options.configType;
-    this.commands = options.commands;
-    this.create = options.create;
-    this.dispose = options.dispose;
-  }
-  process(params) {
-    if (!this.commands || !this.commands[params.operate]) {
-      this[params.operate](params);
-      return;
-    }
-    let commands2 = this.commands[params.operate];
-    for (const key of [].concat(params.path, params.key)) {
-      if (!commands2[key] && !commands2.$reg) {
-        this[params.operate](params);
-        return;
-      } else if (commands2[key]) {
-        if (typeof commands2[key] === "function") {
-          commands2[key](params);
-          return;
-        } else {
-          commands2 = commands2[key];
-        }
-      } else if (commands2.$reg) {
-        for (const item of commands2.$reg) {
-          if (item.reg.test(key)) {
-            item.handler(params);
-            return;
-          }
-        }
-      }
-    }
-    this[params.operate](params);
-  }
-  add(params) {
-    let target = params.target;
-    const path = params.path;
-    for (const key of path) {
-      if (typeof target[key] !== void 0) {
-        target = target[key];
-      } else {
-        console.warn(`processor can not exec default add operate.`, params);
-        return;
-      }
-    }
-    target[params.key] = params.value;
-  }
-  set(params) {
-    let target = params.target;
-    const path = params.path;
-    for (const key of path) {
-      if (typeof target[key] !== void 0) {
-        target = target[key];
-      } else {
-        console.warn(`processor can not exec default set operate.`, params);
-        return;
-      }
-    }
-    target[params.key] = params.value;
-  }
-  delete(params) {
-    let target = params.target;
-    const path = params.path;
-    for (const key of path) {
-      if (typeof target[key] !== void 0) {
-        target = target[key];
-      } else {
-        console.warn(`processor can not exec default delete operate.`, params);
-        return;
-      }
-    }
-    delete target[params.key];
-  }
-}
-const defineProcessor = (options) => {
-  return new Processor2(options);
-};
+Compiler.processor(PerspectiveCameraProcessor);
+Compiler.processor(OrthographicCameraProcessor);
 class OrbitControlsProcessor extends Processor {
   constructor() {
     super();
@@ -7627,66 +6738,45 @@ class CSS3DPlane extends VisCSS3DObject {
     }
   }
 }
+const getElement = function(element, engine) {
+  const resourceMap = engine.resourceManager.resourceMap;
+  if (!resourceMap.has(element)) {
+    console.warn(`css3D compiler: can not found resource element: ${element}`);
+    return document.createElement("div");
+  }
+  const resource = resourceMap.get(element);
+  if (resource instanceof HTMLElement) {
+    return resource;
+  } else {
+    console.warn(`css3D compiler can not suport render this resource type.`, resource.constructor, element);
+    return document.createElement("div");
+  }
+};
+var CSS3DPlaneProcessor = defineProcessor({
+  configType: CONFIGTYPE.CSS3DPLANE,
+  commands: {
+    add: objectCommands.add,
+    set: __spreadValues({
+      element({ target, value, engine }) {
+        target.element = getElement(value, engine);
+      }
+    }, objectCommands.set),
+    delete: objectCommands.delete
+  },
+  create(config2, engine) {
+    return objectCreate(new CSS3DPlane(getElement(config2.element, engine)), config2, {
+      element: true
+    }, engine);
+  },
+  dispose: objectDispose
+});
 class CSS3DCompiler extends ObjectCompiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.CSS3D);
-    __publicField(this, "resourceMap");
-    __publicField(this, "constructMap");
-    this.constructMap = new Map();
-    this.resourceMap = new Map();
-    this.constructMap.set(CONFIGTYPE.CSS3DOBJECT, (config2) => new CSS3DObject(this.getElement(config2.element)));
-    this.constructMap.set(CONFIGTYPE.CSS3DPLANE, (config2) => new CSS3DPlane(this.getElement(config2.element)));
-    this.constructMap.set(CONFIGTYPE.CSS3DSPRITE, (config2) => new CSS3DSprite(this.getElement(config2.element)));
-    this.mergeFilterAttribute({
-      element: true,
-      interactive: true
-    });
-  }
-  getElement(element) {
-    if (!this.resourceMap.has(element)) {
-      console.warn(`css3D compiler: can not found resource element: ${element}`);
-      return document.createElement("div");
-    }
-    const resource = this.resourceMap.get(element);
-    if (resource instanceof HTMLElement) {
-      return resource;
-    } else {
-      console.warn(`css3D compiler can not suport render this resource type.`, resource.constructor, element);
-      return document.createElement("div");
-    }
-  }
-  linkRescourceMap(map) {
-    this.resourceMap = map;
-    return this;
-  }
-  add(vid, config2) {
-    if (config2.type && this.constructMap.has(config2.type)) {
-      const css3d = this.constructMap.get(config2.type)(config2);
-      css3d.type = config2.type;
-      this.map.set(vid, css3d);
-      this.weakMap.set(css3d, vid);
-      super.add(vid, config2);
-    } else {
-      console.warn(`css3D compiler can not support this type: ${config2.type}`);
-    }
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`css3D compiler: can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    const object = this.map.get(vid);
-    if (key === "element") {
-      object.element.innerHTML = "";
-      object.element.appendChild(this.getElement(value));
-      return this;
-    }
-    super.set(vid, path, key, value);
-    return this;
   }
 }
+Compiler.processor(CSS3DPlaneProcessor);
 class CurveGeometry extends BufferGeometry {
   constructor(path = [], divisions = 36, space = true) {
     super();
@@ -8043,202 +7133,172 @@ ParametricGeometryProcessors.forEach((processor) => {
 Compiler.processor(LoadGeometryProcessor);
 Compiler.processor(CustomGeometryProcessor);
 Compiler.processor(EdgesGeometryProcessor);
+var GroupProcessor = defineProcessor({
+  configType: CONFIGTYPE.GROUP,
+  commands: objectCommands,
+  create(config2, engine) {
+    return objectCreate(new Group(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
 class GroupCompiler extends ObjectCompiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
-  add(vid, config2) {
-    const group = new Group$1();
-    this.map.set(vid, group);
-    this.weakMap.set(group, vid);
-    super.add(vid, config2);
-    return this;
-  }
-  dispose() {
-    super.dispose();
-    return this;
-  }
 }
+Compiler.processor(GroupProcessor);
+const colorHandler = function({
+  target,
+  value
+}) {
+  target.color.copy(new Color(value));
+};
+const emptyHandler = function({}) {
+};
+const lightCreate = function(light, config2, filter = {}, engine) {
+  light.color.copy(new Color(config2.color));
+  return objectCreate(light, config2, __spreadValues({
+    color: true,
+    scale: true,
+    rotation: true,
+    lookAt: true
+  }, filter), engine);
+};
+const lightCommands = Object.assign({}, objectCommands, {
+  set: {
+    color: colorHandler,
+    scale: emptyHandler,
+    rotation: emptyHandler,
+    lookAt: emptyHandler
+  }
+});
+var AmbientLightProcessor = defineProcessor({
+  configType: CONFIGTYPE.AMBIENTLIGHT,
+  commands: lightCommands,
+  create(config2, engine) {
+    return lightCreate(new AmbientLight(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
+var DirectionalLightProcessor = defineProcessor({
+  configType: CONFIGTYPE.DIRECTIONALLIGHT,
+  commands: lightCommands,
+  create(config2, engine) {
+    return lightCreate(new DirectionalLight(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
+var PointLightProcessor = defineProcessor({
+  configType: CONFIGTYPE.POINTLIGHT,
+  commands: lightCommands,
+  create(config2, engine) {
+    return lightCreate(new PointLight(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
+var SpotLightProcessor = defineProcessor({
+  configType: CONFIGTYPE.SPOTLIGHT,
+  commands: lightCommands,
+  create(config2, engine) {
+    return lightCreate(new SpotLight(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
 class LightCompiler extends ObjectCompiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.LIGHT);
-    __publicField(this, "constructMap");
-    this.constructMap = new Map();
-    this.constructMap.set(CONFIGTYPE.POINTLIGHT, () => new PointLight());
-    this.constructMap.set(CONFIGTYPE.SPOTLIGHT, () => new SpotLight());
-    this.constructMap.set(CONFIGTYPE.AMBIENTLIGHT, () => new AmbientLight());
-    this.constructMap.set(CONFIGTYPE.DIRECTIONALLIGHT, () => new DirectionalLight());
-    this.mergeFilterAttribute({
-      color: true,
-      scale: true,
-      rotation: true
-    });
-  }
-  setLookAt(vid, target) {
-    return this;
-  }
-  add(vid, config2) {
-    if (config2.type && this.constructMap.has(config2.type)) {
-      const light = this.constructMap.get(config2.type)();
-      light.color = new Color(config2.color);
-      this.map.set(vid, light);
-      this.weakMap.set(light, vid);
-      super.add(vid, config2);
-    } else {
-      console.warn(`LightCompiler: can not support Light type: ${config2.type}.`);
-    }
-    return this;
-  }
-  cover(vid, config2) {
-    const light = this.map.get(vid);
-    if (!light) {
-      console.warn(`light compiler can not found light: ${vid}`);
-      return this;
-    }
-    light.color = new Color(config2.color);
-    return super.cover(vid, config2);
-  }
-  set(vid, path, key, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`LightCompiler: can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    const object = this.map.get(vid);
-    if (key === "color") {
-      object.color = new Color(value);
-      return this;
-    }
-    super.set(vid, path, key, value);
-    return this;
-  }
-  dispose() {
-    super.dispose();
-    return this;
   }
 }
+Compiler.processor(AmbientLightProcessor);
+Compiler.processor(DirectionalLightProcessor);
+Compiler.processor(PointLightProcessor);
+Compiler.processor(SpotLightProcessor);
 class SolidObjectCompiler extends ObjectCompiler {
   constructor() {
     super();
     __publicField(this, "IS_SOLIDOBJECTCOMPILER", true);
-    __publicField(this, "geometryMap");
-    __publicField(this, "materialMap");
-    this.geometryMap = new Map();
-    this.materialMap = new Map();
-    this.mergeFilterAttribute({
-      geometry: true,
-      material: true
-    });
-  }
-  getMaterial(vid) {
-    if (validate(vid)) {
-      if (this.materialMap.has(vid)) {
-        return this.materialMap.get(vid);
-      } else {
-        console.warn(`${this.MODULE}Compiler: can not found material which vid: ${vid}`);
-        return this.getReplaceMaterial();
-      }
-    } else {
-      console.warn(`${this.MODULE}Compiler: material vid parameter is illegal: ${vid}`);
-      return this.getReplaceMaterial();
-    }
-  }
-  getGeometry(vid) {
-    if (validate(vid)) {
-      if (this.geometryMap.has(vid)) {
-        return this.geometryMap.get(vid);
-      } else {
-        console.warn(`${this.MODULE}Compiler: can not found geometry which vid: ${vid}`);
-        return this.getReplaceGeometry();
-      }
-    } else {
-      console.warn(`${this.MODULE}Compiler: geometry vid parameter is illegal: ${vid}`);
-      return this.getReplaceGeometry();
-    }
-  }
-  linkGeometryMap(map) {
-    this.geometryMap = map;
-    return this;
-  }
-  linkMaterialMap(materialMap) {
-    this.materialMap = materialMap;
-    return this;
-  }
-  add(vid, config2) {
-    const object = this.map.get(vid);
-    if (!object) {
-      console.error(`${this.MODULE} compiler can not finish add method.`);
-      return this;
-    }
-    if (Array.isArray(object.material)) {
-      for (const material2 of object.material) {
-        material2.dispose();
-      }
-    } else {
-      object.material.dispose();
-    }
-    let material;
-    if (typeof config2.material === "string") {
-      material = this.getMaterial(config2.material);
-    } else {
-      material = config2.material.map((vid2) => this.getMaterial(vid2));
-    }
-    object.material = material;
-    if (!object.isSprite) {
-      object.geometry.dispose();
-      object.geometry = this.getGeometry(config2.geometry);
-    }
-    super.add(vid, config2);
-    return this;
-  }
-  set(vid, path, key, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    const object = this.map.get(vid);
-    if (key === "geometry" && !object.isSprite) {
-      object.geometry = this.getGeometry(value);
-      return this;
-    }
-    if (key === "material") {
-      object.material = this.getMaterial(value);
-      return this;
-    }
-    super.set(vid, path, key, value);
-    return this;
   }
 }
+const replaceMaterial = new ShaderMaterial({
+  fragmentShader: `
+  void main () {
+    gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
+  }
+  `
+});
+const replaceGeometry = new BoxBufferGeometry(10, 10, 10);
+const geometryHandler = function({ target, value, engine }) {
+  const geometry = engine.compilerManager.getGeometry(value);
+  if (!geometry) {
+    console.warn(`can not found geometry by vid in engine: ${value}`);
+    target.geometry = replaceGeometry;
+    return;
+  }
+  target.geometry = geometry;
+};
+const materialHandler = function({ target, config: config2, engine }) {
+  let material;
+  if (typeof config2.material === "string") {
+    material = engine.compilerManager.getMaterial(config2.material) || replaceMaterial;
+  } else {
+    material = config2.material.map((vid) => engine.compilerManager.getMaterial(vid) || replaceMaterial);
+  }
+  target.material = material;
+};
+const solidObjectCreate = function(object, config2, filter = {}, engine) {
+  if (!object.isSprite) {
+    let geometry = engine.getObjectBySymbol(config2.geometry);
+    if (!(geometry instanceof BufferGeometry)) {
+      console.warn(`geometry vid in engine is not instance of BufferGeometry: ${config2.geometry}`, geometry);
+      geometry = replaceGeometry;
+    }
+    object.geometry.dispose();
+    object.geometry = geometry;
+  }
+  let material;
+  if (typeof config2.material === "string") {
+    material = engine.compilerManager.getMaterial(config2.material) || replaceMaterial;
+  } else {
+    material = config2.material.map((vid) => engine.compilerManager.getMaterial(vid) || replaceMaterial);
+  }
+  object.material = material;
+  return objectCreate(object, config2, __spreadValues({
+    geometry: true,
+    material: true
+  }, filter), engine);
+};
+const solidObjectDispose = function(target) {
+  objectDispose(target);
+};
+const solidObjectCommands = {
+  add: __spreadValues({
+    material: materialHandler
+  }, objectCommands.add),
+  set: __spreadValues({
+    geometry: geometryHandler,
+    material: materialHandler
+  }, objectCommands.set),
+  delete: __spreadValues({
+    material: materialHandler
+  }, objectCommands.delete)
+};
+var LineProcessor = defineProcessor({
+  configType: CONFIGTYPE.LINE,
+  commands: solidObjectCommands,
+  create(config2, engine) {
+    return solidObjectCreate(new Line(), config2, {}, engine);
+  },
+  dispose: solidObjectDispose
+});
 class LineCompiler extends SolidObjectCompiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.LINE);
-    __publicField(this, "replaceMaterial", new LineBasicMaterial({
-      color: "rgb(150, 150, 150)"
-    }));
-    __publicField(this, "replaceGeometry", new BoxBufferGeometry(10, 10, 10));
-  }
-  getReplaceMaterial() {
-    return this.replaceMaterial;
-  }
-  getReplaceGeometry() {
-    return this.replaceGeometry;
-  }
-  add(vid, config2) {
-    const object = new Line();
-    this.map.set(vid, object);
-    this.weakMap.set(object, vid);
-    super.add(vid, config2);
-    return this;
-  }
-  dispose() {
-    super.dispose();
-    this.replaceGeometry.dispose();
-    this.replaceMaterial.dispose();
-    return this;
   }
 }
+Compiler.processor(LineProcessor);
 const commonNeedUpdatesRegCommand = {
   reg: new RegExp("transparent|sizeAttenuation"),
   handler({
@@ -8419,35 +7479,21 @@ Compiler.processor(PointsMaterialProcessor);
 Compiler.processor(SpriteMaterialProcessor);
 Compiler.processor(LineBasicMaterialProcessor);
 Compiler.processor(ShaderMaterialProcessor);
+var MeshProcessor = defineProcessor({
+  configType: CONFIGTYPE.MESH,
+  commands: solidObjectCommands,
+  create(config2, engine) {
+    return solidObjectCreate(new Mesh(), config2, {}, engine);
+  },
+  dispose: solidObjectDispose
+});
 class MeshCompiler extends SolidObjectCompiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.MESH);
-    __publicField(this, "replaceMaterial", new MeshBasicMaterial({
-      color: "rgb(150, 150, 150)"
-    }));
-    __publicField(this, "replaceGeometry", new BoxBufferGeometry(10, 10, 10));
-  }
-  getReplaceMaterial() {
-    return this.replaceMaterial;
-  }
-  getReplaceGeometry() {
-    return this.replaceGeometry;
-  }
-  add(vid, config2) {
-    const object = new Mesh();
-    this.map.set(vid, object);
-    this.weakMap.set(object, vid);
-    super.add(vid, config2);
-    return this;
-  }
-  dispose() {
-    super.dispose();
-    this.replaceGeometry.dispose();
-    this.replaceMaterial.dispose();
-    return this;
   }
 }
+Compiler.processor(MeshProcessor);
 var SMAAPassProcessor = defineProcessor({
   configType: CONFIGTYPE.SMAAPASS,
   create(config2, engine) {
@@ -8467,40 +7513,6 @@ var UnrealBloomPassProcessor = defineProcessor({
     pass.dispose();
   }
 });
-class Pass {
-  constructor() {
-    this.enabled = true;
-    this.needsSwap = true;
-    this.clear = false;
-    this.renderToScreen = false;
-  }
-  setSize() {
-  }
-  render() {
-    console.error("THREE.Pass: .render() must be implemented in derived pass.");
-  }
-}
-const _camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
-const _geometry = new BufferGeometry();
-_geometry.setAttribute("position", new Float32BufferAttribute([-1, 3, 0, -1, -1, 0, 3, -1, 0], 3));
-_geometry.setAttribute("uv", new Float32BufferAttribute([0, 2, 0, 0, 2, 0], 2));
-class FullScreenQuad {
-  constructor(material) {
-    this._mesh = new Mesh(_geometry, material);
-  }
-  dispose() {
-    this._mesh.geometry.dispose();
-  }
-  render(renderer) {
-    renderer.render(this._mesh, _camera);
-  }
-  get material() {
-    return this._mesh.material;
-  }
-  set material(value) {
-    this._mesh.material = value;
-  }
-}
 const _SelectiveBloomPass = class extends Pass {
   constructor(resolution = new Vector2(256, 256), strength = 1, radius = 0, threshold = 0, renderScene = new Scene(), renderCamera = new PerspectiveCamera(), selectedObjects) {
     super();
@@ -8944,33 +7956,21 @@ class PassCompiler extends Compiler {
 Compiler.processor(SMAAPassProcessor);
 Compiler.processor(UnrealBloomPassProcessor);
 Compiler.processor(SelectiveBloomPassProcessor);
+var PointsProcessor = defineProcessor({
+  configType: CONFIGTYPE.POINTS,
+  commands: solidObjectCommands,
+  create(config2, engine) {
+    return solidObjectCreate(new Points(), config2, {}, engine);
+  },
+  dispose: solidObjectDispose
+});
 class PointsCompiler extends SolidObjectCompiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.POINTS);
-    __publicField(this, "replaceMaterial", new PointsMaterial({ color: "rgb(150, 150, 150)" }));
-    __publicField(this, "replaceGeometry", new DodecahedronBufferGeometry(5));
-  }
-  getReplaceMaterial() {
-    return this.replaceMaterial;
-  }
-  getReplaceGeometry() {
-    return this.replaceGeometry;
-  }
-  add(vid, config2) {
-    const object = new Points();
-    this.map.set(vid, object);
-    this.weakMap.set(object, vid);
-    super.add(vid, config2);
-    return this;
-  }
-  dispose() {
-    super.dispose();
-    this.replaceGeometry.dispose();
-    this.replaceMaterial.dispose();
-    return this;
   }
 }
+Compiler.processor(PointsProcessor);
 class WebGLRendererProcessor extends Processor {
   constructor() {
     super();
@@ -9204,192 +8204,129 @@ class RendererCompiler extends Compiler {
     return this.map.get(vid) || null;
   }
 }
+const setBackground = function(scene, value, engine) {
+  if (!value) {
+    scene.background = null;
+    return;
+  }
+  if (validate(value)) {
+    const texture = engine.compilerManager.getTexture(value);
+    if (texture) {
+      scene.background = texture;
+    } else {
+      console.warn(`engine can not found this vid texture : '${value}'`);
+    }
+  } else {
+    scene.background = new Color(value);
+  }
+};
+const setEnvironment = function(scene, value, engine) {
+  if (!value) {
+    scene.environment = null;
+    return;
+  }
+  if (validate(value)) {
+    const texture = engine.compilerManager.getTexture(value);
+    if (texture) {
+      scene.environment = texture;
+    } else {
+      console.warn(`engine can not found this vid texture : '${value}'`);
+    }
+  } else {
+    console.warn(`scene environment is illeage: ${value}`);
+  }
+};
+var SceneProcessor = defineProcessor({
+  configType: CONFIGTYPE.SCENE,
+  commands: {
+    add: objectCommands.add,
+    set: __spreadValues({
+      lookAt() {
+      },
+      fog({ target, config: config2, key, value }) {
+        const fog = config2.fog;
+        if (!fog.type) {
+          target.fog = null;
+        } else if (fog.type === "Fog") {
+          if (!target.fog || !(target.fog instanceof Fog)) {
+            target.fog = new Fog(fog.color, fog.near, fog.far);
+          } else {
+            if (key === "color") {
+              target.fog.color.copy(new Color(fog.color));
+            } else {
+              target.fog[key] && (target.fog[key] = value);
+            }
+          }
+        } else if (fog.type === "FogExp2") {
+          if (!target.fog || !(target.fog instanceof FogExp2)) {
+            target.fog = new FogExp2(fog.color, fog.density);
+          } else {
+            if (key === "color") {
+              target.fog.color.copy(new Color(fog.color));
+            } else {
+              target.fog[key] && (target.fog[key] = value);
+            }
+          }
+        }
+      }
+    }, objectCommands.set),
+    delete: objectCommands.delete
+  },
+  create(config2, engine) {
+    const scene = new Scene();
+    setBackground(scene, config2.background, engine);
+    setEnvironment(scene, config2.environment, engine);
+    if (config2.fog.type) {
+      const fog = config2.fog;
+      if (fog.type === "Fog") {
+        scene.fog = new Fog(fog.color, fog.near, fog.far);
+      } else if (fog.type === "FogExp2") {
+        scene.fog = new FogExp2(fog.color, fog.density);
+      } else {
+        console.warn(`scene processor can not support this type fog:'${config2.type}'`);
+      }
+    }
+    return objectCreate(new Scene(), config2, {
+      lookAt: true,
+      background: true,
+      environment: true,
+      fog: true
+    }, engine);
+  },
+  dispose: objectDispose
+});
 class SceneCompiler extends ObjectCompiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.SCENE);
-    __publicField(this, "textureMap");
-    __publicField(this, "fogCache");
-    this.textureMap = new Map();
-    this.fogCache = null;
-    this.mergeFilterAttribute({
-      background: true,
-      environment: true,
-      fog: true
-    });
-  }
-  setLookAt(vid, target) {
-    return this;
-  }
-  background(vid, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
-      return;
-    }
-    const scene = this.map.get(vid);
-    if (!value) {
-      scene.background = null;
-      return;
-    }
-    if (validate(value)) {
-      if (this.textureMap.has(value)) {
-        scene.background = this.textureMap.get(value);
-      } else {
-        console.warn(`scene compiler can not found this vid texture : '${value}'`);
-      }
-    } else {
-      scene.background = new Color(value);
-    }
-  }
-  environment(vid, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
-      return;
-    }
-    const scene = this.map.get(vid);
-    if (!value) {
-      scene.environment = null;
-      return;
-    }
-    if (validate(value)) {
-      if (this.textureMap.has(value)) {
-        scene.environment = this.textureMap.get(value);
-      } else {
-        console.warn(`scene compiler can not found this vid texture : '${value}'`);
-      }
-    } else {
-      console.warn(`this vid is illegal: '${value}'`);
-    }
-  }
-  fog(vid, config2) {
-    if (!this.map.has(vid)) {
-      console.warn(`${this.MODULE} compiler can not found this vid mapping object: '${vid}'`);
-      return;
-    }
-    const scene = this.map.get(vid);
-    if (config2.type === "") {
-      this.fogCache = null;
-      scene.fog = null;
-      return;
-    }
-    if (config2.type === "Fog") {
-      if (this.fogCache instanceof Fog) {
-        const fog = this.fogCache;
-        fog.color = new Color(config2.color);
-        fog.near = config2.near;
-        fog.far = config2.far;
-      } else {
-        scene.fog = new Fog(config2.color, config2.near, config2.far);
-        this.fogCache = scene.fog;
-      }
-      return;
-    }
-    if (config2.type === "FogExp2") {
-      if (this.fogCache instanceof FogExp2) {
-        const fog = this.fogCache;
-        fog.color = new Color(config2.color);
-        fog.density = config2.density;
-      } else {
-        scene.fog = new FogExp2(config2.color, config2.density);
-        this.fogCache = scene.fog;
-      }
-      return;
-    }
-    console.warn(`scene compiler can not support this type fog:'${config2.type}'`);
-  }
-  linkTextureMap(map) {
-    this.textureMap = map;
-    return this;
-  }
-  add(vid, config2) {
-    const scene = new Scene();
-    this.map.set(vid, scene);
-    this.weakMap.set(scene, vid);
-    this.background(vid, config2.background);
-    this.environment(vid, config2.environment);
-    this.fog(vid, config2.fog);
-    super.add(vid, config2);
-    return this;
-  }
-  cover(vid, config2) {
-    this.background(vid, config2.background);
-    this.environment(vid, config2.environment);
-    this.fog(vid, config2.fog);
-    return super.cover(vid, config2);
-  }
-  set(vid, path, key, value) {
-    if (!this.map.has(vid)) {
-      console.warn(`sceneCompiler: can not found this vid mapping object: '${vid}'`);
-      return this;
-    }
-    const attribute = path.length ? path[0] : key;
-    const actionMap = {
-      background: () => this.background(vid, value),
-      environment: () => this.environment(vid, value),
-      fog: () => this.fog(vid, this.target[vid].fog)
-    };
-    if (actionMap[attribute]) {
-      actionMap[attribute]();
-      return this;
-    }
-    super.set(vid, path, key, value);
-    return this;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  dispose() {
-    super.dispose();
-    return this;
   }
 }
+Compiler.processor(SceneProcessor);
+var SpriteProcessor = defineProcessor({
+  configType: CONFIGTYPE.LINE,
+  commands: {
+    add: solidObjectCommands.add,
+    set: __spreadValues({
+      lookAt() {
+      }
+    }, solidObjectCommands.set),
+    delete: solidObjectCommands.add
+  },
+  create(config2, engine) {
+    return solidObjectCreate(new Sprite(), config2, {
+      geometry: true,
+      lookAt: true
+    }, engine);
+  },
+  dispose: solidObjectDispose
+});
 class SpriteCompiler extends SolidObjectCompiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.SPRITE);
-    __publicField(this, "replaceMaterial", new SpriteMaterial({ color: "rgb(150, 150, 150)" }));
-    __publicField(this, "replaceGeometry", new PlaneBufferGeometry(1, 1));
-    this.mergeFilterAttribute({
-      geometry: true
-    });
-  }
-  getReplaceMaterial() {
-    return this.replaceMaterial;
-  }
-  getReplaceGeometry() {
-    console.warn(`SpriteCompiler: can not use geometry in SpriteCompiler.`);
-    return this.replaceGeometry;
-  }
-  setLookAt(vid, target) {
-    return this;
-  }
-  getMaterial(vid) {
-    const tempMaterial = super.getMaterial(vid);
-    if (tempMaterial instanceof SpriteMaterial) {
-      return tempMaterial;
-    } else {
-      console.warn(`SpriteCompiler: sprite object can not support this type material: ${tempMaterial.type}, vid: ${vid}.`);
-      return this.getReplaceMaterial();
-    }
-  }
-  add(vid, config2) {
-    const sprite = new Sprite();
-    this.map.set(vid, sprite);
-    this.weakMap.set(sprite, vid);
-    super.add(vid, config2);
-    return this;
-  }
-  dispose() {
-    this.map.forEach((sprite, vid) => {
-      sprite.geometry.dispose();
-    });
-    super.dispose();
-    this.replaceGeometry.dispose();
-    this.replaceMaterial.dispose();
-    return this;
   }
 }
+Compiler.processor(SpriteProcessor);
 class ImageTexture extends Texture {
   constructor(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding) {
     super(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding);
@@ -9709,9 +8646,8 @@ class CompilerManager {
       });
     }
     const textureMap = this.textureCompiler.getMap();
-    this.sceneCompiler.linkTextureMap(textureMap);
     this.animationCompiler.linkTextureMap(textureMap);
-    const geometryMap = this.geometryCompiler.getMap();
+    this.geometryCompiler.getMap();
     const materialMap = this.materialCompiler.getMap();
     const objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
     const objectMapList = objectCompilerList.map((compiler) => {
@@ -9719,12 +8655,6 @@ class CompilerManager {
       this.object3DMapSet.add(map);
       return map;
     });
-    for (const objectCompiler of objectCompilerList) {
-      if (isValidKey("IS_SOLIDOBJECTCOMPILER", objectCompiler)) {
-        objectCompiler.linkGeometryMap(geometryMap).linkMaterialMap(materialMap);
-      }
-      objectCompiler.linkObjectMap(...objectMapList);
-    }
     this.animationCompiler.linkObjectMap(...objectMapList).linkMaterialMap(materialMap);
     const compilerMap = new Map();
     Object.keys(this).forEach((key) => {
@@ -9739,10 +8669,6 @@ class CompilerManager {
     this.compilerMap.forEach((compiler) => {
       compiler.useEngine(engine);
     });
-    if (engine.resourceManager) {
-      const resourceMap = engine.resourceManager.resourceMap;
-      this.css3DCompiler.linkRescourceMap(resourceMap);
-    }
     const dataSupportManager = engine.dataSupportManager;
     dataSupportManager.textureDataSupport.addCompiler(this.textureCompiler);
     dataSupportManager.materialDataSupport.addCompiler(this.materialCompiler);
@@ -9788,6 +8714,12 @@ class CompilerManager {
     }
     return null;
   }
+  getMaterial(vid) {
+    return this.materialCompiler.map.get(vid) || null;
+  }
+  getTexture(vid) {
+    return this.textureCompiler.map.get(vid) || null;
+  }
   dispose() {
     for (const compiler of this.compilerMap.values()) {
       compiler.dispose();
@@ -9825,923 +8757,6 @@ const CompilerManagerPlugin = function(params) {
   });
   return true;
 };
-var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
-var keyboard = { exports: {} };
-(function(module, exports) {
-  (function(global2, factory) {
-    module.exports = factory();
-  })(commonjsGlobal, function() {
-    function _typeof(obj) {
-      "@babel/helpers - typeof";
-      if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-        _typeof = function(obj2) {
-          return typeof obj2;
-        };
-      } else {
-        _typeof = function(obj2) {
-          return obj2 && typeof Symbol === "function" && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
-        };
-      }
-      return _typeof(obj);
-    }
-    function _classCallCheck(instance, Constructor) {
-      if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-      }
-    }
-    function _defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor)
-          descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-    function _createClass(Constructor, protoProps, staticProps) {
-      if (protoProps)
-        _defineProperties(Constructor.prototype, protoProps);
-      if (staticProps)
-        _defineProperties(Constructor, staticProps);
-      return Constructor;
-    }
-    function _toConsumableArray(arr) {
-      return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-    }
-    function _arrayWithoutHoles(arr) {
-      if (Array.isArray(arr))
-        return _arrayLikeToArray(arr);
-    }
-    function _iterableToArray(iter) {
-      if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter))
-        return Array.from(iter);
-    }
-    function _unsupportedIterableToArray(o, minLen) {
-      if (!o)
-        return;
-      if (typeof o === "string")
-        return _arrayLikeToArray(o, minLen);
-      var n = Object.prototype.toString.call(o).slice(8, -1);
-      if (n === "Object" && o.constructor)
-        n = o.constructor.name;
-      if (n === "Map" || n === "Set")
-        return Array.from(o);
-      if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
-        return _arrayLikeToArray(o, minLen);
-    }
-    function _arrayLikeToArray(arr, len) {
-      if (len == null || len > arr.length)
-        len = arr.length;
-      for (var i = 0, arr2 = new Array(len); i < len; i++)
-        arr2[i] = arr[i];
-      return arr2;
-    }
-    function _nonIterableSpread() {
-      throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-    }
-    var KeyCombo = /* @__PURE__ */ function() {
-      function KeyCombo2(keyComboStr) {
-        _classCallCheck(this, KeyCombo2);
-        this.sourceStr = keyComboStr;
-        this.subCombos = KeyCombo2.parseComboStr(keyComboStr);
-        this.keyNames = this.subCombos.reduce(function(memo, nextSubCombo) {
-          return memo.concat(nextSubCombo);
-        }, []);
-      }
-      _createClass(KeyCombo2, [{
-        key: "check",
-        value: function check(pressedKeyNames) {
-          var startingKeyNameIndex = 0;
-          for (var i = 0; i < this.subCombos.length; i += 1) {
-            startingKeyNameIndex = this._checkSubCombo(this.subCombos[i], startingKeyNameIndex, pressedKeyNames);
-            if (startingKeyNameIndex === -1) {
-              return false;
-            }
-          }
-          return true;
-        }
-      }, {
-        key: "isEqual",
-        value: function isEqual(otherKeyCombo) {
-          if (!otherKeyCombo || typeof otherKeyCombo !== "string" && _typeof(otherKeyCombo) !== "object") {
-            return false;
-          }
-          if (typeof otherKeyCombo === "string") {
-            otherKeyCombo = new KeyCombo2(otherKeyCombo);
-          }
-          if (this.subCombos.length !== otherKeyCombo.subCombos.length) {
-            return false;
-          }
-          for (var i = 0; i < this.subCombos.length; i += 1) {
-            if (this.subCombos[i].length !== otherKeyCombo.subCombos[i].length) {
-              return false;
-            }
-          }
-          for (var _i = 0; _i < this.subCombos.length; _i += 1) {
-            var subCombo = this.subCombos[_i];
-            var otherSubCombo = otherKeyCombo.subCombos[_i].slice(0);
-            for (var j = 0; j < subCombo.length; j += 1) {
-              var keyName = subCombo[j];
-              var index = otherSubCombo.indexOf(keyName);
-              if (index > -1) {
-                otherSubCombo.splice(index, 1);
-              }
-            }
-            if (otherSubCombo.length !== 0) {
-              return false;
-            }
-          }
-          return true;
-        }
-      }, {
-        key: "_checkSubCombo",
-        value: function _checkSubCombo(subCombo, startingKeyNameIndex, pressedKeyNames) {
-          subCombo = subCombo.slice(0);
-          pressedKeyNames = pressedKeyNames.slice(startingKeyNameIndex);
-          var endIndex = startingKeyNameIndex;
-          for (var i = 0; i < subCombo.length; i += 1) {
-            var keyName = subCombo[i];
-            if (keyName[0] === "\\") {
-              var escapedKeyName = keyName.slice(1);
-              if (escapedKeyName === KeyCombo2.comboDeliminator || escapedKeyName === KeyCombo2.keyDeliminator) {
-                keyName = escapedKeyName;
-              }
-            }
-            var index = pressedKeyNames.indexOf(keyName);
-            if (index > -1) {
-              subCombo.splice(i, 1);
-              i -= 1;
-              if (index > endIndex) {
-                endIndex = index;
-              }
-              if (subCombo.length === 0) {
-                return endIndex;
-              }
-            }
-          }
-          return -1;
-        }
-      }]);
-      return KeyCombo2;
-    }();
-    KeyCombo.comboDeliminator = ">";
-    KeyCombo.keyDeliminator = "+";
-    KeyCombo.parseComboStr = function(keyComboStr) {
-      var subComboStrs = KeyCombo._splitStr(keyComboStr, KeyCombo.comboDeliminator);
-      var combo = [];
-      for (var i = 0; i < subComboStrs.length; i += 1) {
-        combo.push(KeyCombo._splitStr(subComboStrs[i], KeyCombo.keyDeliminator));
-      }
-      return combo;
-    };
-    KeyCombo._splitStr = function(str, deliminator) {
-      var s = str;
-      var d = deliminator;
-      var c = "";
-      var ca = [];
-      for (var ci = 0; ci < s.length; ci += 1) {
-        if (ci > 0 && s[ci] === d && s[ci - 1] !== "\\") {
-          ca.push(c.trim());
-          c = "";
-          ci += 1;
-        }
-        c += s[ci];
-      }
-      if (c) {
-        ca.push(c.trim());
-      }
-      return ca;
-    };
-    var Locale = /* @__PURE__ */ function() {
-      function Locale2(name) {
-        _classCallCheck(this, Locale2);
-        this.localeName = name;
-        this.activeTargetKeys = [];
-        this.pressedKeys = [];
-        this._appliedMacros = [];
-        this._keyMap = {};
-        this._killKeyCodes = [];
-        this._macros = [];
-      }
-      _createClass(Locale2, [{
-        key: "bindKeyCode",
-        value: function bindKeyCode(keyCode, keyNames) {
-          if (typeof keyNames === "string") {
-            keyNames = [keyNames];
-          }
-          this._keyMap[keyCode] = keyNames;
-        }
-      }, {
-        key: "bindMacro",
-        value: function bindMacro(keyComboStr, keyNames) {
-          if (typeof keyNames === "string") {
-            keyNames = [keyNames];
-          }
-          var handler = null;
-          if (typeof keyNames === "function") {
-            handler = keyNames;
-            keyNames = null;
-          }
-          var macro = {
-            keyCombo: new KeyCombo(keyComboStr),
-            keyNames,
-            handler
-          };
-          this._macros.push(macro);
-        }
-      }, {
-        key: "getKeyCodes",
-        value: function getKeyCodes(keyName) {
-          var keyCodes = [];
-          for (var keyCode in this._keyMap) {
-            var index = this._keyMap[keyCode].indexOf(keyName);
-            if (index > -1) {
-              keyCodes.push(keyCode | 0);
-            }
-          }
-          return keyCodes;
-        }
-      }, {
-        key: "getKeyNames",
-        value: function getKeyNames(keyCode) {
-          return this._keyMap[keyCode] || [];
-        }
-      }, {
-        key: "setKillKey",
-        value: function setKillKey(keyCode) {
-          if (typeof keyCode === "string") {
-            var keyCodes = this.getKeyCodes(keyCode);
-            for (var i = 0; i < keyCodes.length; i += 1) {
-              this.setKillKey(keyCodes[i]);
-            }
-            return;
-          }
-          this._killKeyCodes.push(keyCode);
-        }
-      }, {
-        key: "pressKey",
-        value: function pressKey(keyCode) {
-          if (typeof keyCode === "string") {
-            var keyCodes = this.getKeyCodes(keyCode);
-            for (var i = 0; i < keyCodes.length; i += 1) {
-              this.pressKey(keyCodes[i]);
-            }
-            return;
-          }
-          this.activeTargetKeys.length = 0;
-          var keyNames = this.getKeyNames(keyCode);
-          for (var _i = 0; _i < keyNames.length; _i += 1) {
-            this.activeTargetKeys.push(keyNames[_i]);
-            if (this.pressedKeys.indexOf(keyNames[_i]) === -1) {
-              this.pressedKeys.push(keyNames[_i]);
-            }
-          }
-          this._applyMacros();
-        }
-      }, {
-        key: "releaseKey",
-        value: function releaseKey(keyCode) {
-          if (typeof keyCode === "string") {
-            var keyCodes = this.getKeyCodes(keyCode);
-            for (var i = 0; i < keyCodes.length; i += 1) {
-              this.releaseKey(keyCodes[i]);
-            }
-          } else {
-            var keyNames = this.getKeyNames(keyCode);
-            var killKeyCodeIndex = this._killKeyCodes.indexOf(keyCode);
-            if (killKeyCodeIndex !== -1) {
-              this.pressedKeys.length = 0;
-            } else {
-              for (var _i2 = 0; _i2 < keyNames.length; _i2 += 1) {
-                var index = this.pressedKeys.indexOf(keyNames[_i2]);
-                if (index > -1) {
-                  this.pressedKeys.splice(index, 1);
-                }
-              }
-            }
-            this.activeTargetKeys.length = 0;
-            this._clearMacros();
-          }
-        }
-      }, {
-        key: "_applyMacros",
-        value: function _applyMacros() {
-          var macros = this._macros.slice(0);
-          for (var i = 0; i < macros.length; i += 1) {
-            var macro = macros[i];
-            if (macro.keyCombo.check(this.pressedKeys)) {
-              if (macro.handler) {
-                macro.keyNames = macro.handler(this.pressedKeys);
-              }
-              for (var j = 0; j < macro.keyNames.length; j += 1) {
-                if (this.pressedKeys.indexOf(macro.keyNames[j]) === -1) {
-                  this.pressedKeys.push(macro.keyNames[j]);
-                }
-              }
-              this._appliedMacros.push(macro);
-            }
-          }
-        }
-      }, {
-        key: "_clearMacros",
-        value: function _clearMacros() {
-          for (var i = 0; i < this._appliedMacros.length; i += 1) {
-            var macro = this._appliedMacros[i];
-            if (!macro.keyCombo.check(this.pressedKeys)) {
-              for (var j = 0; j < macro.keyNames.length; j += 1) {
-                var index = this.pressedKeys.indexOf(macro.keyNames[j]);
-                if (index > -1) {
-                  this.pressedKeys.splice(index, 1);
-                }
-              }
-              if (macro.handler) {
-                macro.keyNames = null;
-              }
-              this._appliedMacros.splice(i, 1);
-              i -= 1;
-            }
-          }
-        }
-      }]);
-      return Locale2;
-    }();
-    var Keyboard = /* @__PURE__ */ function() {
-      function Keyboard2(targetWindow, targetElement, targetPlatform, targetUserAgent) {
-        _classCallCheck(this, Keyboard2);
-        this._locale = null;
-        this._currentContext = "";
-        this._contexts = {};
-        this._listeners = [];
-        this._appliedListeners = [];
-        this._locales = {};
-        this._targetElement = null;
-        this._targetWindow = null;
-        this._targetPlatform = "";
-        this._targetUserAgent = "";
-        this._isModernBrowser = false;
-        this._targetKeyDownBinding = null;
-        this._targetKeyUpBinding = null;
-        this._targetResetBinding = null;
-        this._paused = false;
-        this._contexts.global = {
-          listeners: this._listeners,
-          targetWindow,
-          targetElement,
-          targetPlatform,
-          targetUserAgent
-        };
-        this.setContext("global");
-      }
-      _createClass(Keyboard2, [{
-        key: "setLocale",
-        value: function setLocale(localeName, localeBuilder) {
-          var locale = null;
-          if (typeof localeName === "string") {
-            if (localeBuilder) {
-              locale = new Locale(localeName);
-              localeBuilder(locale, this._targetPlatform, this._targetUserAgent);
-            } else {
-              locale = this._locales[localeName] || null;
-            }
-          } else {
-            locale = localeName;
-            localeName = locale._localeName;
-          }
-          this._locale = locale;
-          this._locales[localeName] = locale;
-          if (locale) {
-            this._locale.pressedKeys = locale.pressedKeys;
-          }
-          return this;
-        }
-      }, {
-        key: "getLocale",
-        value: function getLocale(localName) {
-          localName || (localName = this._locale.localeName);
-          return this._locales[localName] || null;
-        }
-      }, {
-        key: "bind",
-        value: function bind(keyComboStr, pressHandler, releaseHandler, preventRepeatByDefault2) {
-          if (keyComboStr === null || typeof keyComboStr === "function") {
-            preventRepeatByDefault2 = releaseHandler;
-            releaseHandler = pressHandler;
-            pressHandler = keyComboStr;
-            keyComboStr = null;
-          }
-          if (keyComboStr && _typeof(keyComboStr) === "object" && typeof keyComboStr.length === "number") {
-            for (var i = 0; i < keyComboStr.length; i += 1) {
-              this.bind(keyComboStr[i], pressHandler, releaseHandler);
-            }
-            return this;
-          }
-          this._listeners.push({
-            keyCombo: keyComboStr ? new KeyCombo(keyComboStr) : null,
-            pressHandler: pressHandler || null,
-            releaseHandler: releaseHandler || null,
-            preventRepeat: preventRepeatByDefault2 || false,
-            preventRepeatByDefault: preventRepeatByDefault2 || false,
-            executingHandler: false
-          });
-          return this;
-        }
-      }, {
-        key: "addListener",
-        value: function addListener(keyComboStr, pressHandler, releaseHandler, preventRepeatByDefault2) {
-          return this.bind(keyComboStr, pressHandler, releaseHandler, preventRepeatByDefault2);
-        }
-      }, {
-        key: "on",
-        value: function on(keyComboStr, pressHandler, releaseHandler, preventRepeatByDefault2) {
-          return this.bind(keyComboStr, pressHandler, releaseHandler, preventRepeatByDefault2);
-        }
-      }, {
-        key: "bindPress",
-        value: function bindPress(keyComboStr, pressHandler, preventRepeatByDefault2) {
-          return this.bind(keyComboStr, pressHandler, null, preventRepeatByDefault2);
-        }
-      }, {
-        key: "bindRelease",
-        value: function bindRelease(keyComboStr, releaseHandler) {
-          return this.bind(keyComboStr, null, releaseHandler, preventRepeatByDefault);
-        }
-      }, {
-        key: "unbind",
-        value: function unbind(keyComboStr, pressHandler, releaseHandler) {
-          if (keyComboStr === null || typeof keyComboStr === "function") {
-            releaseHandler = pressHandler;
-            pressHandler = keyComboStr;
-            keyComboStr = null;
-          }
-          if (keyComboStr && _typeof(keyComboStr) === "object" && typeof keyComboStr.length === "number") {
-            for (var i = 0; i < keyComboStr.length; i += 1) {
-              this.unbind(keyComboStr[i], pressHandler, releaseHandler);
-            }
-            return this;
-          }
-          for (var _i = 0; _i < this._listeners.length; _i += 1) {
-            var listener = this._listeners[_i];
-            var comboMatches = !keyComboStr && !listener.keyCombo || listener.keyCombo && listener.keyCombo.isEqual(keyComboStr);
-            var pressHandlerMatches = !pressHandler && !releaseHandler || !pressHandler && !listener.pressHandler || pressHandler === listener.pressHandler;
-            var releaseHandlerMatches = !pressHandler && !releaseHandler || !releaseHandler && !listener.releaseHandler || releaseHandler === listener.releaseHandler;
-            if (comboMatches && pressHandlerMatches && releaseHandlerMatches) {
-              this._listeners.splice(_i, 1);
-              _i -= 1;
-            }
-          }
-          return this;
-        }
-      }, {
-        key: "removeListener",
-        value: function removeListener(keyComboStr, pressHandler, releaseHandler) {
-          return this.unbind(keyComboStr, pressHandler, releaseHandler);
-        }
-      }, {
-        key: "off",
-        value: function off(keyComboStr, pressHandler, releaseHandler) {
-          return this.unbind(keyComboStr, pressHandler, releaseHandler);
-        }
-      }, {
-        key: "setContext",
-        value: function setContext(contextName) {
-          if (this._locale) {
-            this.releaseAllKeys();
-          }
-          if (!this._contexts[contextName]) {
-            var globalContext = this._contexts.global;
-            this._contexts[contextName] = {
-              listeners: [],
-              targetWindow: globalContext.targetWindow,
-              targetElement: globalContext.targetElement,
-              targetPlatform: globalContext.targetPlatform,
-              targetUserAgent: globalContext.targetUserAgent
-            };
-          }
-          var context = this._contexts[contextName];
-          this._currentContext = contextName;
-          this._listeners = context.listeners;
-          this.stop();
-          this.watch(context.targetWindow, context.targetElement, context.targetPlatform, context.targetUserAgent);
-          return this;
-        }
-      }, {
-        key: "getContext",
-        value: function getContext() {
-          return this._currentContext;
-        }
-      }, {
-        key: "withContext",
-        value: function withContext(contextName, callback) {
-          var previousContextName = this.getContext();
-          this.setContext(contextName);
-          callback();
-          this.setContext(previousContextName);
-          return this;
-        }
-      }, {
-        key: "watch",
-        value: function watch(targetWindow, targetElement, targetPlatform, targetUserAgent) {
-          var _this = this;
-          this.stop();
-          var win = typeof globalThis !== "undefined" ? globalThis : typeof commonjsGlobal !== "undefined" ? commonjsGlobal : typeof window !== "undefined" ? window : {};
-          if (!targetWindow) {
-            if (!win.addEventListener && !win.attachEvent) {
-              throw new Error("Cannot find window functions addEventListener or attachEvent.");
-            }
-            targetWindow = win;
-          }
-          if (typeof targetWindow.nodeType === "number") {
-            targetUserAgent = targetPlatform;
-            targetPlatform = targetElement;
-            targetElement = targetWindow;
-            targetWindow = win;
-          }
-          if (!targetWindow.addEventListener && !targetWindow.attachEvent) {
-            throw new Error("Cannot find addEventListener or attachEvent methods on targetWindow.");
-          }
-          this._isModernBrowser = !!targetWindow.addEventListener;
-          var userAgent = targetWindow.navigator && targetWindow.navigator.userAgent || "";
-          var platform = targetWindow.navigator && targetWindow.navigator.platform || "";
-          targetElement && targetElement !== null || (targetElement = targetWindow.document);
-          targetPlatform && targetPlatform !== null || (targetPlatform = platform);
-          targetUserAgent && targetUserAgent !== null || (targetUserAgent = userAgent);
-          this._targetKeyDownBinding = function(event) {
-            _this.pressKey(event.keyCode, event);
-            _this._handleCommandBug(event, platform);
-          };
-          this._targetKeyUpBinding = function(event) {
-            _this.releaseKey(event.keyCode, event);
-          };
-          this._targetResetBinding = function(event) {
-            _this.releaseAllKeys(event);
-          };
-          this._bindEvent(targetElement, "keydown", this._targetKeyDownBinding);
-          this._bindEvent(targetElement, "keyup", this._targetKeyUpBinding);
-          this._bindEvent(targetWindow, "focus", this._targetResetBinding);
-          this._bindEvent(targetWindow, "blur", this._targetResetBinding);
-          this._targetElement = targetElement;
-          this._targetWindow = targetWindow;
-          this._targetPlatform = targetPlatform;
-          this._targetUserAgent = targetUserAgent;
-          var currentContext = this._contexts[this._currentContext];
-          currentContext.targetWindow = this._targetWindow;
-          currentContext.targetElement = this._targetElement;
-          currentContext.targetPlatform = this._targetPlatform;
-          currentContext.targetUserAgent = this._targetUserAgent;
-          return this;
-        }
-      }, {
-        key: "stop",
-        value: function stop() {
-          if (!this._targetElement || !this._targetWindow) {
-            return;
-          }
-          this._unbindEvent(this._targetElement, "keydown", this._targetKeyDownBinding);
-          this._unbindEvent(this._targetElement, "keyup", this._targetKeyUpBinding);
-          this._unbindEvent(this._targetWindow, "focus", this._targetResetBinding);
-          this._unbindEvent(this._targetWindow, "blur", this._targetResetBinding);
-          this._targetWindow = null;
-          this._targetElement = null;
-          return this;
-        }
-      }, {
-        key: "pressKey",
-        value: function pressKey(keyCode, event) {
-          if (this._paused) {
-            return this;
-          }
-          if (!this._locale) {
-            throw new Error("Locale not set");
-          }
-          this._locale.pressKey(keyCode);
-          this._applyBindings(event);
-          return this;
-        }
-      }, {
-        key: "releaseKey",
-        value: function releaseKey(keyCode, event) {
-          if (this._paused) {
-            return this;
-          }
-          if (!this._locale) {
-            throw new Error("Locale not set");
-          }
-          this._locale.releaseKey(keyCode);
-          this._clearBindings(event);
-          return this;
-        }
-      }, {
-        key: "releaseAllKeys",
-        value: function releaseAllKeys(event) {
-          if (this._paused) {
-            return this;
-          }
-          if (!this._locale) {
-            throw new Error("Locale not set");
-          }
-          this._locale.pressedKeys.length = 0;
-          this._clearBindings(event);
-          return this;
-        }
-      }, {
-        key: "pause",
-        value: function pause() {
-          if (this._paused) {
-            return this;
-          }
-          if (this._locale) {
-            this.releaseAllKeys();
-          }
-          this._paused = true;
-          return this;
-        }
-      }, {
-        key: "resume",
-        value: function resume() {
-          this._paused = false;
-          return this;
-        }
-      }, {
-        key: "reset",
-        value: function reset() {
-          this.releaseAllKeys();
-          this._listeners.length = 0;
-          return this;
-        }
-      }, {
-        key: "_bindEvent",
-        value: function _bindEvent(targetElement, eventName, handler) {
-          return this._isModernBrowser ? targetElement.addEventListener(eventName, handler, false) : targetElement.attachEvent("on" + eventName, handler);
-        }
-      }, {
-        key: "_unbindEvent",
-        value: function _unbindEvent(targetElement, eventName, handler) {
-          return this._isModernBrowser ? targetElement.removeEventListener(eventName, handler, false) : targetElement.detachEvent("on" + eventName, handler);
-        }
-      }, {
-        key: "_getGroupedListeners",
-        value: function _getGroupedListeners() {
-          var listenerGroups = [];
-          var listenerGroupMap = [];
-          var listeners = this._listeners;
-          if (this._currentContext !== "global") {
-            listeners = [].concat(_toConsumableArray(listeners), _toConsumableArray(this._contexts.global.listeners));
-          }
-          listeners.sort(function(a, b) {
-            return (b.keyCombo ? b.keyCombo.keyNames.length : 0) - (a.keyCombo ? a.keyCombo.keyNames.length : 0);
-          }).forEach(function(l) {
-            var mapIndex = -1;
-            for (var i = 0; i < listenerGroupMap.length; i += 1) {
-              if (listenerGroupMap[i] === null && l.keyCombo === null || listenerGroupMap[i] !== null && listenerGroupMap[i].isEqual(l.keyCombo)) {
-                mapIndex = i;
-              }
-            }
-            if (mapIndex === -1) {
-              mapIndex = listenerGroupMap.length;
-              listenerGroupMap.push(l.keyCombo);
-            }
-            if (!listenerGroups[mapIndex]) {
-              listenerGroups[mapIndex] = [];
-            }
-            listenerGroups[mapIndex].push(l);
-          });
-          return listenerGroups;
-        }
-      }, {
-        key: "_applyBindings",
-        value: function _applyBindings(event) {
-          var _this2 = this;
-          var preventRepeat = false;
-          event || (event = {});
-          event.preventRepeat = function() {
-            preventRepeat = true;
-          };
-          event.pressedKeys = this._locale.pressedKeys.slice(0);
-          var activeTargetKeys = this._locale.activeTargetKeys;
-          var pressedKeys = this._locale.pressedKeys.slice(0);
-          var listenerGroups = this._getGroupedListeners();
-          var _loop = function _loop2(i2) {
-            var listeners = listenerGroups[i2];
-            var keyCombo = listeners[0].keyCombo;
-            if (keyCombo === null || keyCombo.check(pressedKeys) && activeTargetKeys.some(function(k) {
-              return keyCombo.keyNames.includes(k);
-            })) {
-              for (var j = 0; j < listeners.length; j += 1) {
-                var listener = listeners[j];
-                if (!listener.executingHandler && listener.pressHandler && !listener.preventRepeat) {
-                  listener.executingHandler = true;
-                  listener.pressHandler.call(_this2, event);
-                  listener.executingHandler = false;
-                  if (preventRepeat || listener.preventRepeatByDefault) {
-                    listener.preventRepeat = true;
-                    preventRepeat = false;
-                  }
-                }
-                if (_this2._appliedListeners.indexOf(listener) === -1) {
-                  _this2._appliedListeners.push(listener);
-                }
-              }
-              if (keyCombo) {
-                for (var _j = 0; _j < keyCombo.keyNames.length; _j += 1) {
-                  var index = pressedKeys.indexOf(keyCombo.keyNames[_j]);
-                  if (index !== -1) {
-                    pressedKeys.splice(index, 1);
-                    _j -= 1;
-                  }
-                }
-              }
-            }
-          };
-          for (var i = 0; i < listenerGroups.length; i += 1) {
-            _loop(i);
-          }
-        }
-      }, {
-        key: "_clearBindings",
-        value: function _clearBindings(event) {
-          event || (event = {});
-          event.pressedKeys = this._locale.pressedKeys.slice(0);
-          for (var i = 0; i < this._appliedListeners.length; i += 1) {
-            var listener = this._appliedListeners[i];
-            var keyCombo = listener.keyCombo;
-            if (keyCombo === null || !keyCombo.check(this._locale.pressedKeys)) {
-              listener.preventRepeat = false;
-              if (keyCombo !== null || event.pressedKeys.length === 0) {
-                this._appliedListeners.splice(i, 1);
-                i -= 1;
-              }
-              if (!listener.executingHandler && listener.releaseHandler) {
-                listener.executingHandler = true;
-                listener.releaseHandler.call(this, event);
-                listener.executingHandler = false;
-              }
-            }
-          }
-        }
-      }, {
-        key: "_handleCommandBug",
-        value: function _handleCommandBug(event, platform) {
-          var modifierKeys = ["shift", "ctrl", "alt", "capslock", "tab", "command"];
-          if (platform.match("Mac") && this._locale.pressedKeys.includes("command") && !modifierKeys.includes(this._locale.getKeyNames(event.keyCode)[0])) {
-            this._targetKeyUpBinding(event);
-          }
-        }
-      }]);
-      return Keyboard2;
-    }();
-    function us(locale, platform, userAgent) {
-      locale.bindKeyCode(3, ["cancel"]);
-      locale.bindKeyCode(8, ["backspace"]);
-      locale.bindKeyCode(9, ["tab"]);
-      locale.bindKeyCode(12, ["clear"]);
-      locale.bindKeyCode(13, ["enter"]);
-      locale.bindKeyCode(16, ["shift"]);
-      locale.bindKeyCode(17, ["ctrl"]);
-      locale.bindKeyCode(18, ["alt", "menu"]);
-      locale.bindKeyCode(19, ["pause", "break"]);
-      locale.bindKeyCode(20, ["capslock"]);
-      locale.bindKeyCode(27, ["escape", "esc"]);
-      locale.bindKeyCode(32, ["space", "spacebar"]);
-      locale.bindKeyCode(33, ["pageup"]);
-      locale.bindKeyCode(34, ["pagedown"]);
-      locale.bindKeyCode(35, ["end"]);
-      locale.bindKeyCode(36, ["home"]);
-      locale.bindKeyCode(37, ["left"]);
-      locale.bindKeyCode(38, ["up"]);
-      locale.bindKeyCode(39, ["right"]);
-      locale.bindKeyCode(40, ["down"]);
-      locale.bindKeyCode(41, ["select"]);
-      locale.bindKeyCode(42, ["printscreen"]);
-      locale.bindKeyCode(43, ["execute"]);
-      locale.bindKeyCode(44, ["snapshot"]);
-      locale.bindKeyCode(45, ["insert", "ins"]);
-      locale.bindKeyCode(46, ["delete", "del"]);
-      locale.bindKeyCode(47, ["help"]);
-      locale.bindKeyCode(145, ["scrolllock", "scroll"]);
-      locale.bindKeyCode(188, ["comma", ","]);
-      locale.bindKeyCode(190, ["period", "."]);
-      locale.bindKeyCode(191, ["slash", "forwardslash", "/"]);
-      locale.bindKeyCode(192, ["graveaccent", "`"]);
-      locale.bindKeyCode(219, ["openbracket", "["]);
-      locale.bindKeyCode(220, ["backslash", "\\"]);
-      locale.bindKeyCode(221, ["closebracket", "]"]);
-      locale.bindKeyCode(222, ["apostrophe", "'"]);
-      locale.bindKeyCode(48, ["zero", "0"]);
-      locale.bindKeyCode(49, ["one", "1"]);
-      locale.bindKeyCode(50, ["two", "2"]);
-      locale.bindKeyCode(51, ["three", "3"]);
-      locale.bindKeyCode(52, ["four", "4"]);
-      locale.bindKeyCode(53, ["five", "5"]);
-      locale.bindKeyCode(54, ["six", "6"]);
-      locale.bindKeyCode(55, ["seven", "7"]);
-      locale.bindKeyCode(56, ["eight", "8"]);
-      locale.bindKeyCode(57, ["nine", "9"]);
-      locale.bindKeyCode(96, ["numzero", "num0"]);
-      locale.bindKeyCode(97, ["numone", "num1"]);
-      locale.bindKeyCode(98, ["numtwo", "num2"]);
-      locale.bindKeyCode(99, ["numthree", "num3"]);
-      locale.bindKeyCode(100, ["numfour", "num4"]);
-      locale.bindKeyCode(101, ["numfive", "num5"]);
-      locale.bindKeyCode(102, ["numsix", "num6"]);
-      locale.bindKeyCode(103, ["numseven", "num7"]);
-      locale.bindKeyCode(104, ["numeight", "num8"]);
-      locale.bindKeyCode(105, ["numnine", "num9"]);
-      locale.bindKeyCode(106, ["nummultiply", "num*"]);
-      locale.bindKeyCode(107, ["numadd", "num+"]);
-      locale.bindKeyCode(108, ["numenter"]);
-      locale.bindKeyCode(109, ["numsubtract", "num-"]);
-      locale.bindKeyCode(110, ["numdecimal", "num."]);
-      locale.bindKeyCode(111, ["numdivide", "num/"]);
-      locale.bindKeyCode(144, ["numlock", "num"]);
-      locale.bindKeyCode(112, ["f1"]);
-      locale.bindKeyCode(113, ["f2"]);
-      locale.bindKeyCode(114, ["f3"]);
-      locale.bindKeyCode(115, ["f4"]);
-      locale.bindKeyCode(116, ["f5"]);
-      locale.bindKeyCode(117, ["f6"]);
-      locale.bindKeyCode(118, ["f7"]);
-      locale.bindKeyCode(119, ["f8"]);
-      locale.bindKeyCode(120, ["f9"]);
-      locale.bindKeyCode(121, ["f10"]);
-      locale.bindKeyCode(122, ["f11"]);
-      locale.bindKeyCode(123, ["f12"]);
-      locale.bindKeyCode(124, ["f13"]);
-      locale.bindKeyCode(125, ["f14"]);
-      locale.bindKeyCode(126, ["f15"]);
-      locale.bindKeyCode(127, ["f16"]);
-      locale.bindKeyCode(128, ["f17"]);
-      locale.bindKeyCode(129, ["f18"]);
-      locale.bindKeyCode(130, ["f19"]);
-      locale.bindKeyCode(131, ["f20"]);
-      locale.bindKeyCode(132, ["f21"]);
-      locale.bindKeyCode(133, ["f22"]);
-      locale.bindKeyCode(134, ["f23"]);
-      locale.bindKeyCode(135, ["f24"]);
-      locale.bindMacro("shift + `", ["tilde", "~"]);
-      locale.bindMacro("shift + 1", ["exclamation", "exclamationpoint", "!"]);
-      locale.bindMacro("shift + 2", ["at", "@"]);
-      locale.bindMacro("shift + 3", ["number", "#"]);
-      locale.bindMacro("shift + 4", ["dollar", "dollars", "dollarsign", "$"]);
-      locale.bindMacro("shift + 5", ["percent", "%"]);
-      locale.bindMacro("shift + 6", ["caret", "^"]);
-      locale.bindMacro("shift + 7", ["ampersand", "and", "&"]);
-      locale.bindMacro("shift + 8", ["asterisk", "*"]);
-      locale.bindMacro("shift + 9", ["openparen", "("]);
-      locale.bindMacro("shift + 0", ["closeparen", ")"]);
-      locale.bindMacro("shift + -", ["underscore", "_"]);
-      locale.bindMacro("shift + =", ["plus", "+"]);
-      locale.bindMacro("shift + [", ["opencurlybrace", "opencurlybracket", "{"]);
-      locale.bindMacro("shift + ]", ["closecurlybrace", "closecurlybracket", "}"]);
-      locale.bindMacro("shift + \\", ["verticalbar", "|"]);
-      locale.bindMacro("shift + ;", ["colon", ":"]);
-      locale.bindMacro("shift + '", ["quotationmark", "'"]);
-      locale.bindMacro("shift + !,", ["openanglebracket", "<"]);
-      locale.bindMacro("shift + .", ["closeanglebracket", ">"]);
-      locale.bindMacro("shift + /", ["questionmark", "?"]);
-      if (platform.match("Mac")) {
-        locale.bindMacro("command", ["mod", "modifier"]);
-      } else {
-        locale.bindMacro("ctrl", ["mod", "modifier"]);
-      }
-      for (var keyCode = 65; keyCode <= 90; keyCode += 1) {
-        var keyName = String.fromCharCode(keyCode + 32);
-        var capitalKeyName = String.fromCharCode(keyCode);
-        locale.bindKeyCode(keyCode, keyName);
-        locale.bindMacro("shift + " + keyName, capitalKeyName);
-        locale.bindMacro("capslock + " + keyName, capitalKeyName);
-      }
-      var semicolonKeyCode = userAgent.match("Firefox") ? 59 : 186;
-      var dashKeyCode = userAgent.match("Firefox") ? 173 : 189;
-      var equalKeyCode = userAgent.match("Firefox") ? 61 : 187;
-      var leftCommandKeyCode;
-      var rightCommandKeyCode;
-      if (platform.match("Mac") && (userAgent.match("Safari") || userAgent.match("Chrome"))) {
-        leftCommandKeyCode = 91;
-        rightCommandKeyCode = 93;
-      } else if (platform.match("Mac") && userAgent.match("Opera")) {
-        leftCommandKeyCode = 17;
-        rightCommandKeyCode = 17;
-      } else if (platform.match("Mac") && userAgent.match("Firefox")) {
-        leftCommandKeyCode = 224;
-        rightCommandKeyCode = 224;
-      }
-      locale.bindKeyCode(semicolonKeyCode, ["semicolon", ";"]);
-      locale.bindKeyCode(dashKeyCode, ["dash", "-"]);
-      locale.bindKeyCode(equalKeyCode, ["equal", "equalsign", "="]);
-      locale.bindKeyCode(leftCommandKeyCode, ["command", "windows", "win", "super", "leftcommand", "leftwindows", "leftwin", "leftsuper"]);
-      locale.bindKeyCode(rightCommandKeyCode, ["command", "windows", "win", "super", "rightcommand", "rightwindows", "rightwin", "rightsuper"]);
-      locale.setKillKey("command");
-    }
-    var keyboard2 = new Keyboard();
-    keyboard2.setLocale("us", us);
-    keyboard2.Keyboard = Keyboard;
-    keyboard2.Locale = Locale;
-    keyboard2.KeyCombo = KeyCombo;
-    return keyboard2;
-  });
-})(keyboard);
-var keyboardjs = keyboard.exports;
 class KeyboardManager extends EventDispatcher {
   constructor() {
     super();
@@ -13070,499 +11085,6 @@ class DisplayEngineSupport extends EngineSupport {
     }).install(ENGINEPLUGIN.EFFECTCOMPOSER, {
       WebGLMultisampleRenderTarget: true
     }).install(ENGINEPLUGIN.ORBITCONTROLS).complete();
-  }
-}
-class NBuf3 {
-  constructor(ct) {
-    this.top = 0;
-    this.array = new Float32Array(ct);
-  }
-  write(v) {
-    this.array[this.top++] = v.x;
-    this.array[this.top++] = v.y;
-    this.array[this.top++] = v.z;
-  }
-}
-class NBuf2 {
-  constructor(ct) {
-    this.top = 0;
-    this.array = new Float32Array(ct);
-  }
-  write(v) {
-    this.array[this.top++] = v.x;
-    this.array[this.top++] = v.y;
-  }
-}
-class Node {
-  constructor(polygons) {
-    this.plane = null;
-    this.front = null;
-    this.back = null;
-    this.polygons = [];
-    if (polygons)
-      this.build(polygons);
-  }
-  clone() {
-    const node = new Node();
-    node.plane = this.plane && this.plane.clone();
-    node.front = this.front && this.front.clone();
-    node.back = this.back && this.back.clone();
-    node.polygons = this.polygons.map((p) => p.clone());
-    return node;
-  }
-  invert() {
-    for (let i = 0; i < this.polygons.length; i++)
-      this.polygons[i].flip();
-    this.plane && this.plane.flip();
-    this.front && this.front.invert();
-    this.back && this.back.invert();
-    const temp = this.front;
-    this.front = this.back;
-    this.back = temp;
-  }
-  clipPolygons(polygons) {
-    if (!this.plane)
-      return polygons.slice();
-    let front = new Array(), back = new Array();
-    for (let i = 0; i < polygons.length; i++) {
-      this.plane.splitPolygon(polygons[i], front, back, front, back);
-    }
-    if (this.front)
-      front = this.front.clipPolygons(front);
-    this.back ? back = this.back.clipPolygons(back) : back = [];
-    return front.concat(back);
-  }
-  clipTo(bsp) {
-    this.polygons = bsp.clipPolygons(this.polygons);
-    if (this.front)
-      this.front.clipTo(bsp);
-    if (this.back)
-      this.back.clipTo(bsp);
-  }
-  allPolygons() {
-    let polygons = this.polygons.slice();
-    if (this.front)
-      polygons = polygons.concat(this.front.allPolygons());
-    if (this.back)
-      polygons = polygons.concat(this.back.allPolygons());
-    return polygons;
-  }
-  build(polygons) {
-    if (!polygons.length)
-      return;
-    if (!this.plane)
-      this.plane = polygons[0].plane.clone();
-    const front = [], back = [];
-    for (let i = 0; i < polygons.length; i++) {
-      this.plane.splitPolygon(polygons[i], this.polygons, this.polygons, front, back);
-    }
-    if (front.length) {
-      if (!this.front)
-        this.front = new Node();
-      this.front.build(front);
-    }
-    if (back.length) {
-      if (!this.back)
-        this.back = new Node();
-      this.back.build(back);
-    }
-  }
-}
-class Vector {
-  constructor(x = 0, y = 0, z = 0) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
-  copy(v) {
-    this.x = v.x;
-    this.y = v.y;
-    this.z = v.z;
-    return this;
-  }
-  clone() {
-    return new Vector(this.x, this.y, this.z);
-  }
-  negate() {
-    this.x *= -1;
-    this.y *= -1;
-    this.z *= -1;
-    return this;
-  }
-  add(a) {
-    this.x += a.x;
-    this.y += a.y;
-    this.z += a.z;
-    return this;
-  }
-  sub(a) {
-    this.x -= a.x;
-    this.y -= a.y;
-    this.z -= a.z;
-    return this;
-  }
-  times(a) {
-    this.x *= a;
-    this.y *= a;
-    this.z *= a;
-    return this;
-  }
-  dividedBy(a) {
-    this.x /= a;
-    this.y /= a;
-    this.z /= a;
-    return this;
-  }
-  lerp(a, t) {
-    return this.add(new Vector().copy(a).sub(this).times(t));
-  }
-  unit() {
-    return this.dividedBy(this.length());
-  }
-  length() {
-    return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
-  }
-  normalize() {
-    return this.unit();
-  }
-  cross(b) {
-    const a = this.clone();
-    const ax = a.x, ay = a.y, az = a.z;
-    const bx = b.x, by = b.y, bz = b.z;
-    this.x = ay * bz - az * by;
-    this.y = az * bx - ax * bz;
-    this.z = ax * by - ay * bx;
-    return this;
-  }
-  dot(b) {
-    return this.x * b.x + this.y * b.y + this.z * b.z;
-  }
-  toVector3() {
-    return new Vector3(this.x, this.y, this.z);
-  }
-}
-class Plane {
-  constructor(normal, w) {
-    this.normal = normal;
-    this.w = w;
-    this.normal = normal;
-    this.w = w;
-  }
-  clone() {
-    return new Plane(this.normal.clone(), this.w);
-  }
-  flip() {
-    this.normal.negate();
-    this.w = -this.w;
-  }
-  splitPolygon(polygon, coplanarFront, coplanarBack, front, back) {
-    const COPLANAR = 0;
-    const FRONT = 1;
-    const BACK = 2;
-    const SPANNING = 3;
-    let polygonType = 0;
-    const types = [];
-    for (let i = 0; i < polygon.vertices.length; i++) {
-      const t = this.normal.dot(polygon.vertices[i].pos) - this.w;
-      const type = t < -Plane.EPSILON ? BACK : t > Plane.EPSILON ? FRONT : COPLANAR;
-      polygonType |= type;
-      types.push(type);
-    }
-    switch (polygonType) {
-      case COPLANAR:
-        (this.normal.dot(polygon.plane.normal) > 0 ? coplanarFront : coplanarBack).push(polygon);
-        break;
-      case FRONT:
-        front.push(polygon);
-        break;
-      case BACK:
-        back.push(polygon);
-        break;
-      case SPANNING: {
-        const f = [], b = [];
-        for (let i = 0; i < polygon.vertices.length; i++) {
-          const j = (i + 1) % polygon.vertices.length;
-          const ti = types[i], tj = types[j];
-          const vi = polygon.vertices[i], vj = polygon.vertices[j];
-          if (ti != BACK)
-            f.push(vi);
-          if (ti != FRONT)
-            b.push(ti != BACK ? vi.clone() : vi);
-          if ((ti | tj) == SPANNING) {
-            const t = (this.w - this.normal.dot(vi.pos)) / this.normal.dot(new Vector().copy(vj.pos).sub(vi.pos));
-            const v = vi.interpolate(vj, t);
-            f.push(v);
-            b.push(v.clone());
-          }
-        }
-        if (f.length >= 3)
-          front.push(new Polygon(f, polygon.shared));
-        if (b.length >= 3)
-          back.push(new Polygon(b, polygon.shared));
-        break;
-      }
-    }
-  }
-  static fromPoints(a, b, c) {
-    const n = new Vector().copy(b).sub(a).cross(new Vector().copy(c).sub(a)).normalize();
-    return new Plane(n.clone(), n.dot(a));
-  }
-}
-Plane.EPSILON = 1e-5;
-class Polygon {
-  constructor(vertices, shared) {
-    this.vertices = vertices;
-    this.shared = shared;
-    this.plane = Plane.fromPoints(vertices[0].pos, vertices[1].pos, vertices[2].pos);
-  }
-  clone() {
-    return new Polygon(this.vertices.map((v) => v.clone()), this.shared);
-  }
-  flip() {
-    this.vertices.reverse().map((v) => v.flip());
-    this.plane.flip();
-  }
-}
-class Vertex {
-  constructor(pos, normal, uv, color) {
-    this.pos = new Vector().copy(pos);
-    this.normal = new Vector().copy(normal);
-    this.uv = new Vector().copy(uv);
-    this.uv.z = 0;
-    color && (this.color = new Vector().copy(color));
-  }
-  clone() {
-    return new Vertex(this.pos, this.normal, this.uv, this.color);
-  }
-  flip() {
-    this.normal.negate();
-  }
-  interpolate(other, t) {
-    return new Vertex(this.pos.clone().lerp(other.pos, t), this.normal.clone().lerp(other.normal, t), this.uv.clone().lerp(other.uv, t), this.color && other.color && this.color.clone().lerp(other.color, t));
-  }
-}
-class CSG {
-  constructor() {
-    this.polygons = new Array();
-  }
-  static fromPolygons(polygons) {
-    const csg = new CSG();
-    csg.polygons = polygons;
-    return csg;
-  }
-  static fromGeometry(geom, objectIndex) {
-    let polys = [];
-    const posattr = geom.attributes.position;
-    const normalattr = geom.attributes.normal;
-    const uvattr = geom.attributes.uv;
-    const colorattr = geom.attributes.color;
-    const grps = geom.groups;
-    let index;
-    if (geom.index) {
-      index = geom.index.array;
-    } else {
-      index = new Array(posattr.array.length / posattr.itemSize | 0);
-      for (let i = 0; i < index.length; i++)
-        index[i] = i;
-    }
-    const triCount = index.length / 3 | 0;
-    polys = new Array(triCount);
-    for (let i = 0, pli = 0, l = index.length; i < l; i += 3, pli++) {
-      const vertices = new Array(3);
-      for (let j = 0; j < 3; j++) {
-        const vi = index[i + j];
-        const vp = vi * 3;
-        const vt = vi * 2;
-        const x = posattr.array[vp];
-        const y = posattr.array[vp + 1];
-        const z = posattr.array[vp + 2];
-        const nx = normalattr.array[vp];
-        const ny = normalattr.array[vp + 1];
-        const nz = normalattr.array[vp + 2];
-        const u = uvattr === null || uvattr === void 0 ? void 0 : uvattr.array[vt];
-        const v = uvattr === null || uvattr === void 0 ? void 0 : uvattr.array[vt + 1];
-        vertices[j] = new Vertex(new Vector(x, y, z), new Vector(nx, ny, nz), new Vector(u, v, 0), colorattr && new Vector(colorattr.array[vt], colorattr.array[vt + 1], colorattr.array[vt + 2]));
-      }
-      if (objectIndex === void 0 && grps && grps.length > 0) {
-        for (const grp of grps) {
-          if (index[i] >= grp.start && index[i] < grp.start + grp.count) {
-            polys[pli] = new Polygon(vertices, grp.materialIndex);
-          }
-        }
-      } else {
-        polys[pli] = new Polygon(vertices, objectIndex);
-      }
-    }
-    return CSG.fromPolygons(polys.filter((p) => !isNaN(p.plane.normal.x)));
-  }
-  static toGeometry(csg, toMatrix) {
-    let triCount = 0;
-    const ps = csg.polygons;
-    for (const p of ps) {
-      triCount += p.vertices.length - 2;
-    }
-    const geom = new BufferGeometry();
-    const vertices = new NBuf3(triCount * 3 * 3);
-    const normals = new NBuf3(triCount * 3 * 3);
-    const uvs = new NBuf2(triCount * 2 * 3);
-    let colors;
-    const grps = [];
-    const dgrp = [];
-    for (const p of ps) {
-      const pvs = p.vertices;
-      const pvlen = pvs.length;
-      if (p.shared !== void 0) {
-        if (!grps[p.shared])
-          grps[p.shared] = [];
-      }
-      if (pvlen && pvs[0].color !== void 0) {
-        if (!colors)
-          colors = new NBuf3(triCount * 3 * 3);
-      }
-      for (let j = 3; j <= pvlen; j++) {
-        const grp = p.shared === void 0 ? dgrp : grps[p.shared];
-        grp.push(vertices.top / 3, vertices.top / 3 + 1, vertices.top / 3 + 2);
-        vertices.write(pvs[0].pos);
-        vertices.write(pvs[j - 2].pos);
-        vertices.write(pvs[j - 1].pos);
-        normals.write(pvs[0].normal);
-        normals.write(pvs[j - 2].normal);
-        normals.write(pvs[j - 1].normal);
-        if (uvs) {
-          uvs.write(pvs[0].uv);
-          uvs.write(pvs[j - 2].uv);
-          uvs.write(pvs[j - 1].uv);
-        }
-        if (colors) {
-          colors.write(pvs[0].color);
-          colors.write(pvs[j - 2].color);
-          colors.write(pvs[j - 1].color);
-        }
-      }
-    }
-    geom.setAttribute("position", new BufferAttribute(vertices.array, 3));
-    geom.setAttribute("normal", new BufferAttribute(normals.array, 3));
-    uvs && geom.setAttribute("uv", new BufferAttribute(uvs.array, 2));
-    colors && geom.setAttribute("color", new BufferAttribute(colors.array, 3));
-    for (let gi = 0; gi < grps.length; gi++) {
-      if (grps[gi] === void 0) {
-        grps[gi] = [];
-      }
-    }
-    if (grps.length) {
-      let index = [];
-      let gbase = 0;
-      for (let gi = 0; gi < grps.length; gi++) {
-        geom.addGroup(gbase, grps[gi].length, gi);
-        gbase += grps[gi].length;
-        index = index.concat(grps[gi]);
-      }
-      geom.addGroup(gbase, dgrp.length, grps.length);
-      index = index.concat(dgrp);
-      geom.setIndex(index);
-    }
-    const inv = new Matrix4().copy(toMatrix).invert();
-    geom.applyMatrix4(inv);
-    geom.computeBoundingSphere();
-    geom.computeBoundingBox();
-    return geom;
-  }
-  static fromMesh(mesh, objectIndex) {
-    const csg = CSG.fromGeometry(mesh.geometry, objectIndex);
-    const ttvv0 = new Vector3();
-    const tmpm3 = new Matrix3();
-    tmpm3.getNormalMatrix(mesh.matrix);
-    for (let i = 0; i < csg.polygons.length; i++) {
-      const p = csg.polygons[i];
-      for (let j = 0; j < p.vertices.length; j++) {
-        const v = p.vertices[j];
-        v.pos.copy(ttvv0.copy(v.pos.toVector3()).applyMatrix4(mesh.matrix));
-        v.normal.copy(ttvv0.copy(v.normal.toVector3()).applyMatrix3(tmpm3));
-      }
-    }
-    return csg;
-  }
-  static toMesh(csg, toMatrix, toMaterial) {
-    const geom = CSG.toGeometry(csg, toMatrix);
-    const m = new Mesh(geom, toMaterial);
-    m.matrix.copy(toMatrix);
-    m.matrix.decompose(m.position, m.quaternion, m.scale);
-    m.rotation.setFromQuaternion(m.quaternion);
-    m.updateMatrixWorld();
-    m.castShadow = m.receiveShadow = true;
-    return m;
-  }
-  static union(meshA, meshB) {
-    const csgA = CSG.fromMesh(meshA);
-    const csgB = CSG.fromMesh(meshB);
-    return CSG.toMesh(csgA.union(csgB), meshA.matrix, meshA.material);
-  }
-  static subtract(meshA, meshB) {
-    const csgA = CSG.fromMesh(meshA);
-    const csgB = CSG.fromMesh(meshB);
-    return CSG.toMesh(csgA.subtract(csgB), meshA.matrix, meshA.material);
-  }
-  static intersect(meshA, meshB) {
-    const csgA = CSG.fromMesh(meshA);
-    const csgB = CSG.fromMesh(meshB);
-    return CSG.toMesh(csgA.intersect(csgB), meshA.matrix, meshA.material);
-  }
-  clone() {
-    const csg = new CSG();
-    csg.polygons = this.polygons.map((p) => p.clone()).filter((p) => Number.isFinite(p.plane.w));
-    return csg;
-  }
-  toPolygons() {
-    return this.polygons;
-  }
-  union(csg) {
-    const a = new Node(this.clone().polygons);
-    const b = new Node(csg.clone().polygons);
-    a.clipTo(b);
-    b.clipTo(a);
-    b.invert();
-    b.clipTo(a);
-    b.invert();
-    a.build(b.allPolygons());
-    return CSG.fromPolygons(a.allPolygons());
-  }
-  subtract(csg) {
-    const a = new Node(this.clone().polygons);
-    const b = new Node(csg.clone().polygons);
-    a.invert();
-    a.clipTo(b);
-    b.clipTo(a);
-    b.invert();
-    b.clipTo(a);
-    b.invert();
-    a.build(b.allPolygons());
-    a.invert();
-    return CSG.fromPolygons(a.allPolygons());
-  }
-  intersect(csg) {
-    const a = new Node(this.clone().polygons);
-    const b = new Node(csg.clone().polygons);
-    a.invert();
-    b.clipTo(a);
-    b.invert();
-    a.clipTo(b);
-    b.clipTo(a);
-    a.build(b.allPolygons());
-    a.invert();
-    return CSG.fromPolygons(a.allPolygons());
-  }
-  inverse() {
-    const csg = this.clone();
-    for (const p of csg.polygons) {
-      p.flip();
-    }
-    return csg;
-  }
-  toMesh(toMatrix, toMaterial) {
-    return CSG.toMesh(this, toMatrix, toMaterial);
-  }
-  toGeometry(toMatrix) {
-    return CSG.toGeometry(this, toMatrix);
   }
 }
 class Modifier {

@@ -1,11 +1,12 @@
 import { Group } from "three";
+import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { GroupConfig } from "./GroupConfig";
+import GroupProcessor from "./GroupProcessor";
 
-export interface GroupCompilerTarget extends ObjectCompilerTarget<GroupConfig> {
-  [key: string]: GroupConfig;
-}
+export interface GroupCompilerTarget
+  extends ObjectCompilerTarget<GroupConfig> {}
 
 export class GroupCompiler extends ObjectCompiler<
   GroupConfig,
@@ -17,19 +18,6 @@ export class GroupCompiler extends ObjectCompiler<
   constructor() {
     super();
   }
-
-  add(vid: string, config: GroupConfig): this {
-    const group = new Group();
-
-    this.map.set(vid, group);
-    this.weakMap.set(group, vid);
-
-    super.add(vid, config);
-    return this;
-  }
-
-  dispose(): this {
-    super.dispose();
-    return this;
-  }
 }
+
+Compiler.processor(GroupProcessor);

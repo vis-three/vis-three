@@ -1,4 +1,3 @@
-import { Object3D } from "three";
 import { Rule } from "../../core/Rule";
 import {
   SolidObject3D,

@@ -1,4 +1,5 @@
 import {
+  BufferGeometry,
   Camera,
   Material,
   Object3D,
@@ -230,7 +231,9 @@ export class Engine extends EventDispatcher {
   removeConfigBySymbol?: (...vids: string[]) => this;
 
   getObjectSymbol?: (object: any) => SymbolConfig["vid"] | null;
-  getObjectBySymbol?: (vid: string) => Object3D | Texture | Material | null;
+  getObjectBySymbol?: (
+    vid: string
+  ) => Object3D | Texture | Material | BufferGeometry | null;
 
   play?: () => this;
   stop?: () => this;

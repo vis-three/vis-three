@@ -78,7 +78,6 @@ export class CompilerManager {
     const textureMap = this.textureCompiler.getMap();
 
     // 贴图连接
-    this.sceneCompiler.linkTextureMap(textureMap);
     this.animationCompiler.linkTextureMap(textureMap);
 
     // 物体几何连接，材质连接，物体连接
@@ -94,15 +93,6 @@ export class CompilerManager {
       this.object3DMapSet.add(map);
       return map;
     });
-
-    for (const objectCompiler of objectCompilerList) {
-      if (isValidKey("IS_SOLIDOBJECTCOMPILER", objectCompiler)) {
-        (objectCompiler as BasicSolidObjectCompiler)
-          .linkGeometryMap(geometryMap)
-          .linkMaterialMap(materialMap);
-      }
-      objectCompiler.linkObjectMap(...objectMapList);
-    }
 
     this.animationCompiler
       .linkObjectMap(...objectMapList)
@@ -130,12 +120,6 @@ export class CompilerManager {
     this.compilerMap.forEach((compiler) => {
       compiler.useEngine(engine);
     });
-
-    // 动态资源连接
-    if (engine.resourceManager) {
-      const resourceMap = engine.resourceManager!.resourceMap;
-      this.css3DCompiler.linkRescourceMap(resourceMap);
-    }
 
     const dataSupportManager = engine.dataSupportManager!;
     // 添加通知 TODO: 注意生命周期 lookAt group等
@@ -202,6 +186,14 @@ export class CompilerManager {
       }
     }
     return null;
+  }
+
+  getMaterial<M extends Material>(vid: string): M | null {
+    return (this.materialCompiler.map.get(vid) as M) || null;
+  }
+
+  getTexture<T extends Texture>(vid: string): T | null {
+    return (this.textureCompiler.map.get(vid) as T) || null;
   }
 
   dispose(): this {

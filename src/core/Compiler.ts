@@ -200,7 +200,7 @@ export abstract class Compiler<
         continue;
       }
 
-      const pass = this.map.get(config.vid)!;
+      const object = this.map.get(config.vid)!;
 
       if (!Compiler.processors.has(config.type)) {
         console.warn(
@@ -209,7 +209,7 @@ export abstract class Compiler<
         continue;
       }
 
-      Compiler.processors.get(config.type)!.dispose(pass);
+      Compiler.processors.get(config.type)!.dispose(object);
     }
 
     this.map.clear();
