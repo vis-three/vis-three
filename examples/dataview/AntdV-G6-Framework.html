@@ -195,7 +195,7 @@
         visible: false,
       });
 
-      // 面板
+      // // 面板
       const tipsGeometry = VIS.generateConfig("PlaneGeometry", {
         width: 100,
         height: 50,
@@ -273,7 +273,7 @@
         visible: false,
       });
 
-      // 发光键组
+      // // 发光键组
       const detailGroup = VIS.generateConfig("Group", {
         children: [
           hood.vid,
@@ -284,7 +284,7 @@
         ],
       });
 
-      // 生成dom 10 * 6
+      // // 生成dom 10 * 6
       const row = 6;
       const column = 10;
       const space = 5;
@@ -333,6 +333,7 @@
                   z: 500,
                 },
               },
+              back: false,
             }),
             VIS.EventLibrary.generateConfig("moveTo", {
               params: {
@@ -453,6 +454,8 @@
 
         config.click.push(event);
       });
+
+      console.log(engine);
     </script>
   </body>
 </html>

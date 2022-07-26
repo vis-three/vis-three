@@ -6343,7 +6343,9 @@ const objectCommands = {
     pointerleave: updateEventHandler,
     click: updateEventHandler,
     dblclick: updateEventHandler,
-    contextmenu: updateEventHandler
+    contextmenu: updateEventHandler,
+    children() {
+    }
   },
   delete: {
     pointerdown: removeEventHandler,

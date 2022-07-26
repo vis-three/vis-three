@@ -1,9 +1,6 @@
 import { Object3D } from "three";
-import { validate } from "uuid";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
 import { Rule } from "../../core/Rule";
-import { EVENTNAME } from "../../manager/EventManager";
-import { UNIQUESYMBOL } from "../constants/UNIQUESYMBOL";
 import { ObjectCompiler, ObjectCompilerTarget } from "./ObjectCompiler";
 import { ObjectConfig } from "./ObjectConfig";
 
