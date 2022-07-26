@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrbitControlsSupport</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style></style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as VIS from "vis-three";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      const engine = new VIS.ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setStats(true)
+        .setSize()
+        .play();
+
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid);
+
+      VIS.generateConfig.injectScene = scene.vid;
+
+      const pointLight = VIS.generateConfig("PointLight", {
+        position: {
+          x: 30,
+          y: 50,
+        },
+        distance: 100,
+      });
+
+      const material = VIS.generateConfig("MeshStandardMaterial");
+
+      const geometry = VIS.generateConfig("BoxGeometry", {
+        width: 20,
+        height: 10,
+        depth: 20,
+      });
+
+      const mesh = VIS.generateConfig("Mesh", {
+        material: material.vid,
+        geometry: geometry.vid,
+      });
+
+      const perspectiveCamera = VIS.generateConfig("PerspectiveCamera", {
+        far: 200,
+        adaptiveWindow: true,
+        position: {
+          x: 60,
+          y: 50,
+          z: 20,
+        },
+        lookAt: mesh.vid,
+      });
+
+      const orbitControls = VIS.generateConfig("OrbitControls");
+
+      const gui = new GUI();
+
+      gui.add(orbitControls, "enabled");
+      gui.add(orbitControls, "autoRotate");
+      gui.add(orbitControls, "autoRotateSpeed", -5, 5, 0.1);
+      gui.add(orbitControls, "enableDamping");
+      gui.add(orbitControls, "dampingFactor", -5, 5, 0.1);
+      gui.add(orbitControls, "enablePan");
+      gui.add(orbitControls, "panSpeed", -5, 5, 0.1);
+      gui.add(orbitControls, "enableRotate");
+      gui.add(orbitControls, "rotateSpeed", -5, 5, 0.1);
+      gui.add(orbitControls, "enableZoom");
+      gui.add(orbitControls, "zoomSpeed", -5, 5, 0.1);
+      gui.add(orbitControls, "maxAzimuthAngle", -2 * Math.PI, 2 * Math.PI, 0.1);
+      gui.add(orbitControls, "maxDistance", 0, 200, 1);
+      gui.add(orbitControls, "maxPolarAngle", 0, Math.PI, 0.1);
+      gui.add(orbitControls, "maxZoom", 0, 100, 1);
+      gui.add(orbitControls, "minAzimuthAngle", -2 * Math.PI, 2 * Math.PI, 0.1);
+      gui.add(orbitControls, "minDistance", 0, 200, 1);
+      gui.add(orbitControls, "minPolarAngle", 0, Math.PI, 0.1);
+      gui.add(orbitControls, "minZoom", 0, 100, 1);
+
+      window.addEventListener("resize", () => {
+        engine.setSize();
+      });
+    </script>
+  </body>
+</html>

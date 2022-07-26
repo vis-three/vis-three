@@ -4252,17 +4252,28 @@ class SceneDataSupport extends ObjectDataSupport {
 }
 const ControlsRule = function(input, compiler) {
   const { operate, key, path, value } = input;
-  if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift();
-    if (vid) {
-      compiler.set(vid, tempPath, key, value);
-    } else if (key) {
-      compiler.setAll(key);
-    } else {
-      console.warn(`controls rule can not found controls type in set operate: ${vid}`);
-    }
+  let vid = key;
+  const tempPath = [].concat(path);
+  if (path.length) {
+    vid = tempPath.shift();
   }
+  if (!validate(vid) && ![CONFIGTYPE.ORBITCONTROLS, CONFIGTYPE.TRNASFORMCONTROLS].includes(vid)) {
+    console.warn(`${compiler.MODULE} Rule: vid is illeage: ${vid}`);
+    return;
+  }
+  if (operate === "add" && !tempPath.length) {
+    compiler.add(value);
+    return;
+  }
+  if (input.operate === "delete" && !tempPath.length) {
+    compiler.remove(value);
+    return;
+  }
+  if (input.operate === "set" && !tempPath.length && !key) {
+    compiler.cover(value);
+    return;
+  }
+  compiler.compile(vid, { operate, key, path: tempPath, value });
 };
 class ControlsDataSupport extends DataSupport {
   constructor(data, ignore) {
@@ -6530,162 +6541,94 @@ class CameraCompiler extends ObjectCompiler {
 }
 Compiler.processor(PerspectiveCameraProcessor);
 Compiler.processor(OrthographicCameraProcessor);
-class OrbitControlsProcessor extends Processor {
-  constructor() {
-    super();
-    __publicField(this, "config");
-    __publicField(this, "target");
-    __publicField(this, "engine");
-  }
-  assemble(params) {
-    this.config = params.config;
-    this.target = params.control;
-    this.engine = params.engine;
-    this.assembly = true;
-    return this;
-  }
-  process(params) {
-    if (!this.assembly) {
-      console.warn(`OrbitControls Processor unassembled`);
-      return this;
+var OrbitControlsProcessor = defineProcessor({
+  configType: CONFIGTYPE.ORBITCONTROLS,
+  commands: {
+    set: {
+      target({ target, config: config2, path, key, value }) {
+        const targetConfig = config2.target;
+        if (!config2.type) {
+          config2.target = new Vector3(0, 0, 0);
+          return;
+        }
+        if (typeof config2.target === "string")
+          ;
+        else {
+          if (path.length > 1) {
+            target.target[key] = value;
+          } else {
+            target.target = new Vector3(targetConfig.x, targetConfig.y, targetConfig.z);
+          }
+        }
+      }
     }
-    if (params.key === "target" || params.path.length && params.path[0] === "target") {
-      this.setTarget(this.config.target);
-      return this;
+  },
+  create(config2, engine) {
+    let controls;
+    if (engine.orbitControls) {
+      controls = engine.orbitControls;
+    } else {
+      controls = new VisOrbitControls();
+      controls.setCamera(engine.camera);
+      controls.setDom(engine.dom);
     }
-    this.mergeAttribute([], params.key, params.value);
-    return this;
-  }
-  setTarget(target) {
-    if (typeof target === "object" && target !== null) {
-      this.target.target = new Vector3(target.x, target.y, target.z);
+    if (config2.target) {
+      if (typeof config2.target === "string")
+        ;
+      else {
+        controls.target = new Vector3(config2.target.x, config2.target.y, config2.target.z);
+      }
     }
-  }
-  dispose() {
-    this.config = void 0;
-    this.target = void 0;
-    this.assembly = false;
-    return this;
-  }
-}
-class TransformControlsProcessor extends Processor {
-  constructor() {
-    super();
-    __publicField(this, "config");
-    __publicField(this, "target");
-    __publicField(this, "filterMap", {
-      translationSnap: true,
-      rotationSnap: true,
-      scaleSnap: true
+    syncObject(config2, controls, {
+      target: true
     });
+    return controls;
+  },
+  dispose(target) {
+    target.dispose();
   }
-  assemble(params) {
-    this.config = params.config;
-    this.target = params.control;
-    this.assembly = true;
-    return this;
-  }
-  process(params) {
-    if (!this.assembly) {
-      console.warn(`transformControls Processor unassembled`);
-      return this;
+});
+var TransformControlsProcessor = defineProcessor({
+  configType: CONFIGTYPE.TRNASFORMCONTROLS,
+  commands: {
+    set: {
+      snapAllow({ target, config: config2, value }) {
+        if (value) {
+          target.translationSnap = config2.translationSnap;
+          target.rotationSnap = config2.rotationSnap;
+          target.scaleSnap = config2.scaleSnap;
+        } else {
+          target.translationSnap = null;
+          target.rotationSnap = null;
+          target.scaleSnap = null;
+        }
+      }
     }
-    if (this.filterMap[params.key]) {
-      return this;
+  },
+  create(config2, engine) {
+    let control;
+    if (engine.transformControls) {
+      control = engine.transformControls;
+    } else {
+      control = new VisTransformControls();
+      control.setCamera(engine.camera);
+      control.setDom(engine.dom);
     }
-    if (this[params.key]) {
-      this[params.key](params.value);
-      return this;
-    }
-    this.mergeAttribute([], params.key, params.value);
-    return this;
-  }
-  dispose() {
-    this.config = void 0;
-    this.target = void 0;
-    return this;
-  }
-  snapAllow(value) {
-    const config2 = this.config;
-    const control = this.target;
-    if (value) {
+    if (config2.snapAllow) {
       control.translationSnap = config2.translationSnap;
       control.rotationSnap = config2.rotationSnap;
       control.scaleSnap = config2.scaleSnap;
-    } else {
-      control.translationSnap = null;
-      control.rotationSnap = null;
-      control.scaleSnap = null;
     }
-    return true;
+    return control;
+  },
+  dispose(target) {
+    target.dispose();
   }
-}
+});
 class ControlsCompiler extends Compiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.CONTROLS);
-    __publicField(this, "target", {});
-    __publicField(this, "map", new Map());
-    __publicField(this, "weakMap", new Map());
-    __publicField(this, "engine");
-    __publicField(this, "processorMap", {
-      [CONFIGTYPE.TRNASFORMCONTROLS]: new TransformControlsProcessor(),
-      [CONFIGTYPE.ORBITCONTROLS]: new OrbitControlsProcessor()
-    });
-  }
-  getAssembly(vid) {
-    const config2 = this.target[vid];
-    if (!config2) {
-      console.warn(`controls compiler can not found this config: '${vid}'`);
-      return null;
-    }
-    const processer = this.processorMap[config2.type];
-    if (!processer) {
-      console.warn(`controls compiler can not support this controls: '${vid}'`);
-      return null;
-    }
-    const control = this.map.get(config2.type);
-    if (!control) {
-      console.warn(`controls compiler can not found type of control: '${config2.type}'`);
-      return null;
-    }
-    return {
-      config: config2,
-      processer,
-      control
-    };
-  }
-  set(vid, path, key, value) {
-    const assembly = this.getAssembly(vid);
-    if (!assembly) {
-      return this;
-    }
-    assembly.processer.assemble({
-      config: assembly.config,
-      control: assembly.control,
-      engine: this.engine
-    }).process({
-      key,
-      path,
-      value
-    });
-    return this;
-  }
-  setAll(vid) {
-    const assembly = this.getAssembly(vid);
-    if (!assembly) {
-      return this;
-    }
-    assembly.processer.assemble({
-      config: assembly.config,
-      control: assembly.control,
-      engine: this.engine
-    }).processAll().dispose();
-    return this;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
   }
   useEngine(engine) {
     if (engine.transformControls) {
@@ -6696,37 +6639,11 @@ class ControlsCompiler extends Compiler {
       this.map.set(CONFIGTYPE.ORBITCONTROLS, engine.orbitControls);
       this.weakMap.set(engine.orbitControls, CONFIGTYPE.ORBITCONTROLS);
     }
-    this.engine = engine;
-    return this;
-  }
-  compileAll() {
-    for (const vid of Object.keys(this.target)) {
-      const assembly = this.getAssembly(vid);
-      if (!assembly) {
-        continue;
-      }
-      assembly.processer.assemble({
-        config: assembly.config,
-        control: assembly.control,
-        engine: this.engine
-      }).processAll().dispose();
-    }
-    return this;
-  }
-  dispose() {
-    this.map.forEach((controls) => {
-      controls.dispose && controls.dispose();
-    });
-    this.map.clear();
-    return this;
-  }
-  getObjectSymbol(texture) {
-    return this.weakMap.get(texture) || null;
-  }
-  getObjectBySymbol(vid) {
-    return this.map.get(vid) || null;
+    return super.useEngine(engine);
   }
 }
+Compiler.processor(OrbitControlsProcessor);
+Compiler.processor(TransformControlsProcessor);
 const getElement = function(element, engine) {
   const resourceMap = engine.resourceManager.resourceMap;
   if (!resourceMap.has(element)) {

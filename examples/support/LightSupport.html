@@ -27,17 +27,15 @@
       const canvasGenerator = new Vis.CanvasGenerator({
         width: 256,
         height: 256,
-      })
-        .draw((ctx) => {
-          ctx.textBaseline = "middle";
-          ctx.textAlign = "center";
+      }).draw((ctx) => {
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
 
-          ctx.fillStyle = "rgb(206, 42, 230)";
+        ctx.fillStyle = "rgb(206, 42, 230)";
 
-          ctx.font = " bold 68px 微软雅黑";
-          ctx.fillText("LIGHT", 128, 128);
-        })
-        .preview();
+        ctx.font = " bold 68px 微软雅黑";
+        ctx.fillText("LIGHT", 128, 128);
+      });
 
       const engine = new Vis.ModelingEngineSupport()
         .setDom(document.getElementById("app"))

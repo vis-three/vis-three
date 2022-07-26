@@ -4,6 +4,24 @@ export type DeepPartial<T> = T extends Function
   ? { [P in keyof T]?: DeepPartial<T[P]> }
   : T;
 
+export type DeepRecord<T, K> = T extends Function
+  ? K
+  : T extends object
+  ? { [P in keyof T]: DeepRecord<T[P], K> }
+  : K;
+
+export type DeepUnion<T, K> = T extends Function
+  ? T
+  : T extends object
+  ? { [P in keyof T]: DeepUnion<T[P], K> | K }
+  : T;
+
+export type DeepIntersection<T, I> = T extends Function
+  ? T
+  : T extends object
+  ? { [P in keyof T]: DeepIntersection<T[P], I> } & I
+  : T;
+
 export interface IgnoreAttribute {
   [key: string]: IgnoreAttribute | boolean;
 }

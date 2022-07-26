@@ -92,6 +92,7 @@
       import GeometrySupportRouter from "./geometrySupport";
       import textureSupportRouter from "./textureSupport";
       import CameraSupportRouter from "./CameraSupport";
+      import ControlsSupportRouter from "./ControlsSupport";
 
       const engine = new VIS.DisplayEngineSupport()
         .complete()
@@ -179,6 +180,7 @@
         GeometrySupportRouter,
         textureSupportRouter,
         CameraSupportRouter,
+        ControlsSupportRouter,
       ];
 
       const domList = [];
@@ -203,10 +205,6 @@
       `;
         moduleMain.appendChild(moduleDom);
       });
-
-      setTimeout(() => {
-        engine.setSize();
-      }, 0);
     </script>
   </body>
 </html>

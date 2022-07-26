@@ -1,8 +1,12 @@
-import { C } from "../convenient/generateConfig";
 import { EngineSupport } from "../engine/EngineSupport";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { CONFIGTYPE } from "../middleware/constants/configType";
-import { Compiler } from "./Compiler";
+import {
+  DeepIntersection,
+  DeepPartial,
+  DeepRecord,
+  DeepUnion,
+} from "../utils/utils";
 import { ProxyNotice } from "./ProxyBroadcast";
 
 export interface Process {
@@ -97,19 +101,22 @@ export interface ProcessParams<C extends SymbolConfig, T extends object>
   engine: EngineSupport;
 }
 
-export type RegCommands<C extends SymbolConfig, T extends object> = {
+export type RegCommand<C extends SymbolConfig, T extends object> = {
   reg: RegExp;
   handler: (params: ProcessParams<C, T>) => void;
-}[];
+};
 
-export interface CommandStructure<C extends SymbolConfig, T extends object> {
-  [key: string]:
-    | ((params: ProcessParams<C, T>) => void)
-    | CommandStructure<C, T>
-    | RegCommands<C, T>
-    | undefined;
-  $reg?: RegCommands<C, T>;
-}
+export type KeyCommand<C extends SymbolConfig, T extends object> = (
+  params: ProcessParams<C, T>
+) => void;
+
+export type CommandStructure<
+  C extends SymbolConfig,
+  T extends object
+> = DeepIntersection<
+  DeepPartial<DeepRecord<DeepUnion<C, KeyCommand<C, T>>, KeyCommand<C, T>>>,
+  { $reg?: RegCommand<C, T>[] }
+>;
 
 export interface ProcessorCommands<C extends SymbolConfig, T extends object> {
   add?: CommandStructure<C, T>;
@@ -157,7 +164,7 @@ export class Processor2<C extends SymbolConfig, T extends object> {
           (commands[key] as Function)(params);
           return;
         } else {
-          commands = commands[key] as unknown as CommandStructure<C, T>;
+          commands = commands[key];
         }
       } else if (commands.$reg) {
         for (const item of commands.$reg) {
