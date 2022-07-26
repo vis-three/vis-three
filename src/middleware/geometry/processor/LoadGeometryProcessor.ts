@@ -1,5 +1,5 @@
 import { BoxBufferGeometry, BufferGeometry } from "three";
-import { defineProcessor } from "../../../core/Processor";
+import { defineProcessor, ProcessorCommands } from "../../../core/Processor";
 import { EngineSupport } from "../../../engine/EngineSupport";
 import { LoadGeometry } from "../../../extends/geometry/LoadGeometry";
 import { CONFIGTYPE } from "../../constants/configType";
@@ -8,7 +8,9 @@ import { commands, create } from "./common";
 
 export default defineProcessor<LoadGeometryConfig, LoadGeometry>({
   configType: CONFIGTYPE.LOADGEOMETRY,
-  commands,
+  commands: <ProcessorCommands<LoadGeometryConfig, LoadGeometry>>(
+    (<unknown>commands)
+  ),
   create(config: LoadGeometryConfig, engine: EngineSupport) {
     const originGeometry = engine.resourceManager.resourceMap.get(config.url)!;
 

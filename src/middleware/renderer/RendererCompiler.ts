@@ -8,12 +8,8 @@ import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import WebGLRendererProcessor from "./processor/WebGLRendererProcessor";
 import CSS3DRendererProcessor from "./processor/CSS3DRendererProcessor";
 
-export interface RendererCompilerTarget
-  extends CompilerTarget<RendererAllType> {}
-
 export class RendererCompiler extends Compiler<
   RendererAllType,
-  RendererCompilerTarget,
   WebGLRenderer | CSS3DRenderer
 > {
   MODULE: MODULETYPE = MODULETYPE.RENDERER;

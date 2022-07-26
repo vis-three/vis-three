@@ -15,11 +15,10 @@ import { PointsDataSupport } from "../middleware/points/PointsDataSupport";
 import { GroupDataSupport } from "../middleware/group/GroupDataSupport";
 import { stringify } from "../convenient/JSONHandler";
 import { PassDataSupport } from "../middleware/pass/PassDataSupport";
-import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
+import { getModule } from "../middleware/constants/CONFIGMODULE";
 import { AnimationDataSupport } from "../middleware/animation/AnimationDataSupport";
 import { CSS3DDataSupport } from "../middleware/css3D/CSS3DDataSupport";
 export class DataSupportManager {
-    static configModuleMap = CONFIGMODULE;
     cameraDataSupport = new CameraDataSupport();
     lightDataSupport = new LightDataSupport();
     geometryDataSupport = new GeometryDataSupport();
@@ -145,7 +144,7 @@ export class DataSupportManager {
      */
     applyConfig(...configs) {
         for (const config of configs) {
-            const module = DataSupportManager.configModuleMap[config.type];
+            const module = getModule(config.type);
             if (module) {
                 this.dataSupportMap.get(module).addConfig(config);
             }
@@ -161,7 +160,7 @@ export class DataSupportManager {
      * @returns config
      */
     reactiveConfig(config) {
-        const module = DataSupportManager.configModuleMap[config.type];
+        const module = getModule(config.type);
         if (module) {
             return this.dataSupportMap
                 .get(module)

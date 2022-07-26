@@ -6,14 +6,7 @@ import { CSS3DAllType } from "./CSS3DConfig";
 import CSS3DObjectProcessor from "./processor/CSS3DObjectProcessor";
 import CSS3DPlaneProcessor from "./processor/CSS3DPlaneProcessor";
 
-export interface CSS3DCompilerTarget
-  extends ObjectCompilerTarget<CSS3DAllType> {}
-
-export class CSS3DCompiler extends ObjectCompiler<
-  CSS3DAllType,
-  CSS3DCompilerTarget,
-  CSS3DObject
-> {
+export class CSS3DCompiler extends ObjectCompiler<CSS3DAllType, CSS3DObject> {
   MODULE: MODULETYPE = MODULETYPE.CSS3D;
 
   constructor() {

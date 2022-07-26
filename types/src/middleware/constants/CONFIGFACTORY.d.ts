@@ -3,7 +3,7 @@ export declare const CONFIGFACTORY: {
     CubeTexture: () => import("../texture/TextureConfig").CubeTextureConfig;
     CanvasTexture: () => import("../texture/TextureConfig").CanvasTextureConfig;
     VideoTexture: () => import("../texture/TextureConfig").ImageTextureConfig;
-    MeshBasicMaterial: () => import("../material/MaterialConfig").MeshBasicMaterial;
+    MeshBasicMaterial: () => import("../material/MaterialConfig").MeshBasicMaterialConfig;
     MeshStandardMaterial: () => import("../material/MaterialConfig").MeshStandardMaterialConfig;
     MeshPhongMaterial: () => import("../material/MaterialConfig").MeshPhongMaterialConfig;
     SpriteMaterial: () => import("../material/MaterialConfig").SpriteMaterialConfig;
@@ -51,6 +51,7 @@ export declare const CONFIGFACTORY: {
     OrbitControls: () => import("../controls/ControlsConfig").OrbitControlsConfig;
     SMAAPass: () => import("../pass/PassConfig").SMAAPassConfig;
     UnrealBloomPass: () => import("../pass/PassConfig").UnrealBloomPassConfig;
+    SelectiveBloomPass: () => import("../pass/PassConfig").SelectiveBloomPassConfig;
     ScriptAnimation: () => import("../animation/AnimationConfig").ScriptAnimationConfig;
     KeyframeAnimation: () => import("../animation/AnimationConfig").KeyframeAnimationConfig;
 };

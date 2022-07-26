@@ -20,7 +20,7 @@ export const emptyHandler = function <
 export const lightCreate = function <C extends LightConifg, O extends Light>(
   light: O,
   config: C,
-  filter: IgnoreAttribute = {},
+  filter: IgnoreAttribute<C>,
   engine: EngineSupport
 ) {
   light.color.copy(new Color(config.color));

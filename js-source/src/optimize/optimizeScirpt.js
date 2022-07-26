@@ -1,4 +1,4 @@
-import { AmbientLight, OrthographicCamera, Scene, } from "three";
+import { AmbientLight, OrthographicCamera, Scene } from "three";
 import { LightShadow } from "three/src/lights/LightShadow";
 import { version } from "../../package.json";
 if (!window.__THREE__) {

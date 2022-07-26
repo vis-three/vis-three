@@ -3,7 +3,7 @@ import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { Compiler, CompilerTarget } from "./Compiler";
 import { IgnoreAttribute } from "./ProxyBroadcast";
 import { Rule } from "./Rule";
-export declare abstract class DataSupport<D extends CompilerTarget, C extends Compiler> {
+export declare abstract class DataSupport<D extends CompilerTarget, C extends Compiler<D, object>> {
     abstract MODULE: MODULETYPE;
     private data;
     private broadcast;

@@ -6,6 +6,7 @@ import {
   LoadOptions,
 } from "../manager/DataSupportManager";
 import { LoadedEvent, LoaderManager } from "../manager/LoaderManager";
+import { RenderManager } from "../manager/RenderManager";
 import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
@@ -24,6 +25,7 @@ export class EngineSupport extends Engine {
   declare resourceManager: ResourceManager;
   declare dataSupportManager: DataSupportManager;
   declare compilerManager: CompilerManager;
+  declare renderManager: RenderManager;
 
   declare loadResources: (urlList: Array<string>) => this;
   declare registerResources: (resourceMap: { [key: string]: unknown }) => this;

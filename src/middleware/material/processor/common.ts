@@ -1,7 +1,7 @@
 import { Color, Material, Texture } from "three";
 import { ProcessParams } from "../../../core/Processor";
 import { EngineSupport } from "../../../engine/EngineSupport";
-import { syncObject } from "../../../utils/utils";
+import { IgnoreAttribute, syncObject } from "../../../utils/utils";
 import { MaterialConfig } from "../MaterialConfig";
 
 export const commonNeedUpdatesRegCommand = {
@@ -50,7 +50,7 @@ export const create = function <T extends Material, C extends MaterialConfig>(
   config: C,
   engine: EngineSupport
 ): T {
-  const filter: Record<string, boolean> = {};
+  const filter: IgnoreAttribute<C> = {} as IgnoreAttribute<C>;
 
   for (const key of Object.keys(config)) {
     if (key.toLocaleLowerCase().endsWith("map") && config[key]) {

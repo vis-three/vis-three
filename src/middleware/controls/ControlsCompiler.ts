@@ -1,5 +1,5 @@
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
-import { Compiler, CompilerTarget } from "../../core/Compiler";
+import { Compiler } from "../../core/Compiler";
 import { EngineSupport } from "../../main";
 import { VisOrbitControls } from "../../optimize/VisOrbitControls";
 import { CONFIGTYPE } from "../constants/configType";
@@ -10,12 +10,8 @@ import TransformControlsProcessor from "./processor/TransformControlsProcessor";
 
 export type ControlsAllType = TransformControls | VisOrbitControls;
 
-export interface ControlsCompilerTarget
-  extends CompilerTarget<ControlsAllConfig> {}
-
 export class ControlsCompiler extends Compiler<
   ControlsAllConfig,
-  ControlsCompilerTarget,
   ControlsAllType
 > {
   MODULE: MODULETYPE = MODULETYPE.CONTROLS;

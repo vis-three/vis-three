@@ -74,15 +74,6 @@ export class CompilerManager {
         this[key] = parameters[key];
       });
     }
-    // 建立编译器链接
-    const textureMap = this.textureCompiler.getMap();
-
-    // 贴图连接
-    this.animationCompiler.linkTextureMap(textureMap);
-
-    // 物体几何连接，材质连接，物体连接
-    const geometryMap = this.geometryCompiler.getMap();
-    const materialMap = this.materialCompiler.getMap();
 
     const objectCompilerList = Object.values(this).filter(
       (object) => object instanceof ObjectCompiler
@@ -93,10 +84,6 @@ export class CompilerManager {
       this.object3DMapSet.add(map);
       return map;
     });
-
-    this.animationCompiler
-      .linkObjectMap(...objectMapList)
-      .linkMaterialMap(materialMap);
 
     const compilerMap = new Map();
 

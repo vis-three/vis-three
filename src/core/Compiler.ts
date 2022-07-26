@@ -5,21 +5,12 @@ import { CONFIGTYPE } from "../middleware/constants/configType";
 import { ProxyNotice } from "./ProxyBroadcast";
 import { Processor2 } from "./Processor";
 import { syncObject } from "../utils/utils";
-export interface CompilerTarget<C extends SymbolConfig> {
-  [key: string]: C;
-}
 
-export type BasicCompiler = Compiler<
-  SymbolConfig,
-  CompilerTarget<SymbolConfig>,
-  object
->;
+export type CompilerTarget<C extends SymbolConfig> = Record<string, C>;
 
-export abstract class Compiler<
-  C extends SymbolConfig,
-  T extends CompilerTarget<C>,
-  O extends object
-> {
+export type BasicCompiler = Compiler<SymbolConfig, object>;
+
+export abstract class Compiler<C extends SymbolConfig, O extends object> {
   static processors = new Map<
     CONFIGTYPE | string,
     Processor2<SymbolConfig, object>
@@ -36,7 +27,7 @@ export abstract class Compiler<
 
   abstract MODULE: MODULETYPE;
 
-  target: T = {} as T;
+  target: CompilerTarget<C> = {} as CompilerTarget<C>;
   map: Map<SymbolConfig["vid"], O> = new Map();
   weakMap: WeakMap<O, SymbolConfig["vid"]> = new WeakMap();
   engine!: EngineSupport;
@@ -59,7 +50,7 @@ export abstract class Compiler<
     return this;
   }
 
-  setTarget(target: T): this {
+  setTarget(target: CompilerTarget<C>): this {
     this.target = target;
     return this;
   }
@@ -213,7 +204,7 @@ export abstract class Compiler<
     }
 
     this.map.clear();
-    this.target = {} as T;
+    this.target = {} as CompilerTarget<C>;
     return this;
   }
 

@@ -1,8 +1,8 @@
 import { BufferGeometry, Float32BufferAttribute } from "three";
-import { defineProcessor } from "../../../core/Processor";
+import { defineProcessor, ProcessorCommands } from "../../../core/Processor";
 import { CONFIGTYPE } from "../../constants/configType";
 import { CustomGeometryConfig } from "../GeometryInterface";
-import { commands, create, transfromAnchor } from "./common";
+import { commands, create } from "./common";
 
 const generateGeometry = function (
   attribute: CustomGeometryConfig["attribute"]
@@ -36,7 +36,9 @@ const generateGeometry = function (
 
 export default defineProcessor<CustomGeometryConfig, BufferGeometry>({
   configType: CONFIGTYPE.CUSTOMGEOMETRY,
-  commands,
+  commands: <ProcessorCommands<CustomGeometryConfig, BufferGeometry>>(
+    (<unknown>commands)
+  ),
   create(config: CustomGeometryConfig): BufferGeometry {
     return create(generateGeometry(config.attribute), config);
   },

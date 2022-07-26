@@ -57,6 +57,7 @@ export var CONFIGTYPE;
     CONFIGTYPE["ORBITCONTROLS"] = "OrbitControls";
     CONFIGTYPE["SMAAPASS"] = "SMAAPass";
     CONFIGTYPE["UNREALBLOOMPASS"] = "UnrealBloomPass";
+    CONFIGTYPE["SELECTIVEBLOOMPASS"] = "SelectiveBloomPass";
     CONFIGTYPE["SCRIPTANIMATION"] = "ScriptAnimation";
     CONFIGTYPE["KEYFRAMEANIMATION"] = "KeyframeAnimation";
 })(CONFIGTYPE || (CONFIGTYPE = {}));

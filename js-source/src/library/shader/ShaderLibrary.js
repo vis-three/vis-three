@@ -1,4 +1,7 @@
 import uvPulseShader from "./shader/uvPulseShader";
+import fragCoordTestingShader from "./shader/fragCoordTestingShader";
+import colorMixShader from "./shader/colorMixShader";
+import BloomShader from "./shader/BloomShader";
 export class ShaderLibrary {
     static library = new Map();
     /**
@@ -63,4 +66,7 @@ export const defaultShader = {
 };
 ShaderLibrary.reigster(defaultShader);
 ShaderLibrary.reigster(uvPulseShader);
+ShaderLibrary.reigster(fragCoordTestingShader);
+ShaderLibrary.reigster(colorMixShader);
+ShaderLibrary.reigster(BloomShader);
 //# sourceMappingURL=ShaderLibrary.js.map

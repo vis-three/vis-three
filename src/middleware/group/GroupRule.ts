@@ -1,15 +1,10 @@
 import { Group } from "three";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
 import { ObjectRule } from "../object/ObjectRule";
-import { GroupCompiler, GroupCompilerTarget } from "./GroupCompiler";
+import { GroupCompiler } from "./GroupCompiler";
 import { GroupConfig } from "./GroupConfig";
 
-export type GroupRule = ObjectRule<
-  GroupCompiler,
-  GroupConfig,
-  GroupCompilerTarget,
-  Group
->;
+export type GroupRule = ObjectRule<GroupCompiler, GroupConfig, Group>;
 
 export const GroupRule: GroupRule = function (
   notice: ProxyNotice,

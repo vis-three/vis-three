@@ -5,14 +5,7 @@ import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { GroupConfig } from "./GroupConfig";
 import GroupProcessor from "./GroupProcessor";
 
-export interface GroupCompilerTarget
-  extends ObjectCompilerTarget<GroupConfig> {}
-
-export class GroupCompiler extends ObjectCompiler<
-  GroupConfig,
-  GroupCompilerTarget,
-  Group
-> {
+export class GroupCompiler extends ObjectCompiler<GroupConfig, Group> {
   MODULE: MODULETYPE = MODULETYPE.GROUP;
 
   constructor() {

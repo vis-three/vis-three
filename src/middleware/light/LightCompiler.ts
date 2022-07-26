@@ -8,14 +8,7 @@ import DirectionalLightProcessor from "./processor/DirectionalLightProcessor";
 import PointLightProcessor from "./processor/PointLightProcessor";
 import SpotLightProcessor from "./processor/SpotLightProcessor";
 
-export interface LightCompilerTarget
-  extends ObjectCompilerTarget<LightConfigAllType> {}
-
-export class LightCompiler extends ObjectCompiler<
-  LightConfigAllType,
-  LightCompilerTarget,
-  Light
-> {
+export class LightCompiler extends ObjectCompiler<LightConfigAllType, Light> {
   MODULE: MODULETYPE = MODULETYPE.LIGHT;
 
   constructor() {

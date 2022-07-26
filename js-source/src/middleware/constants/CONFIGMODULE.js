@@ -1,5 +1,8 @@
 import { CONFIGTYPE } from "./configType";
 import { MODULETYPE } from "./MODULETYPE";
+/**
+ * @deprecated - use getModule
+ */
 export const CONFIGMODULE = {
     [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
     [CONFIGTYPE.CUBETEXTURE]: MODULETYPE.TEXTURE,
@@ -53,5 +56,16 @@ export const CONFIGMODULE = {
     [CONFIGTYPE.UNREALBLOOMPASS]: MODULETYPE.PASS,
     [CONFIGTYPE.SCRIPTANIMATION]: MODULETYPE.ANIMATION,
     [CONFIGTYPE.KEYFRAMEANIMATION]: MODULETYPE.ANIMATION,
+};
+export const getModule = (type) => {
+    const matchModule = (module) => {
+        return type.toLocaleLowerCase().includes(module.toLocaleLowerCase());
+    };
+    for (const module of Object.values(MODULETYPE)) {
+        if (matchModule(module)) {
+            return module;
+        }
+    }
+    return null;
 };
 //# sourceMappingURL=CONFIGMODULE.js.map

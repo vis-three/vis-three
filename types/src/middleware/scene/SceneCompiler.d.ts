@@ -1,5 +1,4 @@
-import { Scene, Texture } from "three";
-import { SymbolConfig } from "../common/CommonConfig";
+import { Scene } from "three";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { SceneConfig } from "./SceneConfig";
@@ -8,20 +7,5 @@ export interface SceneCompilerTarget extends ObjectCompilerTarget<SceneConfig> {
 }
 export declare class SceneCompiler extends ObjectCompiler<SceneConfig, SceneCompilerTarget, Scene> {
     MODULE: MODULETYPE;
-    private textureMap;
-    private fogCache;
     constructor();
-    /**
-     * @override
-     */
-    protected setLookAt(vid: string, target: string): this;
-    private background;
-    private environment;
-    private fog;
-    linkTextureMap(map: Map<SymbolConfig["type"], Texture>): this;
-    add(vid: string, config: SceneConfig): this;
-    cover(vid: string, config: SceneConfig): this;
-    set(vid: string, path: string[], key: string, value: any): this;
-    setTarget(target: SceneCompilerTarget): this;
-    dispose(): this;
 }

@@ -9,35 +9,40 @@ import { Rule } from "./Rule";
 import { Translater } from "./Translater";
 
 export abstract class DataSupport<
-  D extends CompilerTarget,
-  C extends Compiler<D, object>
+  C extends SymbolConfig,
+  O extends object,
+  P extends Compiler<C, O>
 > {
   abstract MODULE: MODULETYPE;
 
-  private data: D;
+  private data: CompilerTarget<C>;
   private broadcast: ProxyBroadcast;
-  private translater: Translater<C>;
-  constructor(rule: Rule<C>, data: D, ignore?: IgnoreAttribute) {
-    this.translater = new Translater<C>().setRule(rule);
+  private translater: Translater<C, O, P>;
+  constructor(
+    rule: Rule<P>,
+    data: CompilerTarget<C>,
+    ignore?: IgnoreAttribute
+  ) {
+    this.translater = new Translater<C, O, P>().setRule(rule);
     this.broadcast = new ProxyBroadcast(ignore);
-    this.data = this.broadcast.proxyExtends<D>(data);
+    this.data = this.broadcast.proxyExtends<CompilerTarget<C>>(data);
 
     this.broadcast.addEventListener("broadcast", (event: ProxyEvent) => {
       this.translater.translate(event.notice);
     });
   }
 
-  getData(): D {
+  getData(): CompilerTarget<C> {
     return this.data;
   }
 
-  setData(data: D): this {
+  setData(data: CompilerTarget<C>): this {
     this.data = data;
     return this;
   }
 
-  proxyData(data: D): D {
-    this.data = this.broadcast.proxyExtends<D>(data);
+  proxyData(data: CompilerTarget<C>): CompilerTarget<C> {
+    this.data = this.broadcast.proxyExtends<CompilerTarget<C>>(data);
     return this.data;
   }
 
@@ -45,13 +50,13 @@ export abstract class DataSupport<
     return Boolean(this.data[vid]);
   }
 
-  addConfig(config: valueOf<D>): this {
-    this.data[config.vid as keyof D] = config;
+  addConfig(config: valueOf<CompilerTarget<C>>): this {
+    this.data[config.vid as keyof CompilerTarget<C>] = config;
     return this;
   }
 
-  getConfig<T extends SymbolConfig>(vid: string) {
-    return this.data[vid] as T;
+  getConfig(vid: string) {
+    return this.data[vid];
   }
 
   removeConfig(vid: string) {
@@ -59,7 +64,7 @@ export abstract class DataSupport<
     data[vid] !== undefined && delete data[vid];
   }
 
-  addCompiler(compiler: C): this {
+  addCompiler(compiler: P): this {
     compiler.setTarget(this.data);
     compiler.compileAll();
     this.translater.apply(compiler);
@@ -83,7 +88,7 @@ export abstract class DataSupport<
    * @param compress 是否压缩配置单 default true
    * @returns config
    */
-  exportConfig(compress = true): D {
+  exportConfig(compress = true): CompilerTarget<C> {
     if (!compress) {
       return JSON.parse(JSON.stringify(this.data, stringify), parse);
     } else {
@@ -148,7 +153,7 @@ export abstract class DataSupport<
         target[config.vid] = {};
         recursion(config, cacheConfigTemplate[config.type], target[config.vid]);
       }
-      return target as D;
+      return target as CompilerTarget<C>;
     }
   }
 
@@ -157,7 +162,7 @@ export abstract class DataSupport<
    * @param configMap this module configMap
    * @returns true
    */
-  load(configMap: D): this {
+  load(configMap: CompilerTarget<C>): this {
     const data = this.data;
 
     const cacheConfigTemplate: { [key: string]: SymbolConfig } = {};
@@ -192,7 +197,7 @@ export abstract class DataSupport<
     return this;
   }
 
-  remove(config: D): this {
+  remove(config: CompilerTarget<C>): this {
     const data = this.data;
     for (const key in config) {
       data[key] !== undefined && delete data[key];

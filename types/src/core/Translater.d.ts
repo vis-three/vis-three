@@ -1,7 +1,7 @@
-import { Compiler } from "./Compiler";
+import { BasicCompiler } from "./Compiler";
 import { ProxyNotice } from "./ProxyBroadcast";
 import { Rule } from "./Rule";
-export declare class Translater<C extends Compiler> {
+export declare class Translater<C extends BasicCompiler> {
     private rule;
     private memberSet;
     constructor();

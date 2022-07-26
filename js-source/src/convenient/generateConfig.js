@@ -1,7 +1,7 @@
 import { v4 as getUuid } from "uuid";
 import { ShaderLibrary } from "../library/shader/ShaderLibrary";
 import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
-import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
+import { getModule } from "../middleware/constants/CONFIGMODULE";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { OBJECTMODULE } from "../middleware/constants/MODULETYPE";
 /**
@@ -69,7 +69,7 @@ export const generateConfig = (function (type, merge, strict = true, warn = true
         const reactive = engine.reactiveConfig(initConfig);
         // 自动注入场景
         if (generateConfig.injectScene) {
-            if (CONFIGMODULE[initConfig.type] in OBJECTMODULE &&
+            if (getModule(initConfig.type) in OBJECTMODULE &&
                 initConfig.type !== CONFIGTYPE.SCENE) {
                 let sceneConfig = null;
                 if (typeof generateConfig.injectScene === "boolean") {

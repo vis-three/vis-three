@@ -5,16 +5,14 @@ import { ObjectCompiler, ObjectCompilerTarget } from "./ObjectCompiler";
 import { ObjectConfig } from "./ObjectConfig";
 
 export type ObjectRule<
-  E extends ObjectCompiler<C, T, O>,
+  E extends ObjectCompiler<C, O>,
   C extends ObjectConfig,
-  T extends ObjectCompilerTarget<C>,
   O extends Object3D
 > = Rule<E>;
 
 export const ObjectRule = function <
-  E extends ObjectCompiler<C, T, O>,
+  E extends ObjectCompiler<C, O>,
   C extends ObjectConfig,
-  T extends ObjectCompilerTarget<C>,
   O extends Object3D
 >(input: ProxyNotice, compiler: E) {
   if (input.key === "parent") {

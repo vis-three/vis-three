@@ -10,14 +10,7 @@ import PointsMaterialProcessor from "./processor/PointsMaterialProcessor";
 import ShaderMaterialProcessor from "./processor/ShaderMaterialProcessor";
 import SpriteMaterialProcessor from "./processor/SpriteMaterialProcessor";
 
-export interface MaterialCompilerTarget
-  extends CompilerTarget<MaterialAllType> {}
-
-export class MaterialCompiler extends Compiler<
-  MaterialAllType,
-  MaterialCompilerTarget,
-  Material
-> {
+export class MaterialCompiler extends Compiler<MaterialAllType, Material> {
   MODULE: MODULETYPE = MODULETYPE.MATERIAL;
 
   constructor() {

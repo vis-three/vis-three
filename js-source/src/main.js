@@ -27,14 +27,13 @@ import { DisplayEngineSupport } from "./engine/DisplayEngineSupport";
 import { LineDataSupport } from "./middleware/line/LineDataSupport";
 import { MeshDataSupport } from "./middleware/mesh/MeshDataSupport";
 import { PointsDataSupport } from "./middleware/points/PointsDataSupport";
-import * as ActionLibrary from "./convenient/ActionLibrary/Action";
 import { GroupHelper } from "./extends/helper/object/GroupHelper";
 import { EngineSupport } from "./engine/EngineSupport";
 import * as JSONHandler from "./convenient/JSONHandler";
 import { BooleanModifier } from "./modifier/BooleanModifier";
 import { VIEWPOINT } from "./plugins/ViewpointPlugin";
 import { DISPLAYMODE } from "./plugins/DisplayModePlugin";
-import { History } from "./convenient/History";
+import { Action, History } from "./convenient/History";
 import { SpotLightHelper } from "./extends/helper/light/SpotLightHelper";
 import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightHelper";
 import { VideoLoader } from "./extends/loader/VideoLoader";
@@ -52,6 +51,7 @@ import { RenderManager } from "./manager/RenderManager";
 import { CONFIGMODULE } from "./middleware/constants/CONFIGMODULE";
 import { GroupDataSupport } from "./middleware/group/GroupDataSupport";
 import { KeyboardManager } from "./manager/KeyboardManager";
+import { SelectiveBloomPass } from "./extends/pass/SelectiveBloomPass";
 import "./optimize/optimizeScirpt";
 export { 
 // core
@@ -68,11 +68,7 @@ TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, 
 // helper
 PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, 
 // convenient
-generateConfig, SupportDataGenerator, CanvasGenerator, History, JSONHandler, 
-/**
- * @deprecated
- */
-ActionLibrary, 
+generateConfig, SupportDataGenerator, CanvasGenerator, History, Action, JSONHandler, 
 // library
 EventLibrary, ShaderLibrary, AniScriptLibrary, 
 // displayer
@@ -80,5 +76,7 @@ MaterialDisplayer, TextureDisplayer,
 // loader
 VideoLoader, 
 // modifier
-BooleanModifier, };
+BooleanModifier, 
+// pass
+SelectiveBloomPass, };
 //# sourceMappingURL=main.js.map

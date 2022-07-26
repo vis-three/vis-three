@@ -11,7 +11,7 @@ import { getMeshConfig } from "../mesh/MeshConfig";
 import { getPointsConfig } from "../points/PointsConfig";
 import { getLineConfig } from "../line/LineConfig";
 import { getGroupConfig } from "../group/GroupConfig";
-import { getSMAAPassConfig, getUnrealBloomPassConfig, } from "../pass/PassConfig";
+import { getSelectiveBloomPassConfig, getSMAAPassConfig, getUnrealBloomPassConfig, } from "../pass/PassConfig";
 import { CONFIGTYPE } from "./configType";
 import { getKeyframeAnimationConfig, getScriptAnimationConfig, } from "../animation/AnimationConfig";
 import { getCSS3DObjectConfig, getCSS3DPlaneConfig, getCSS3DSpriteConfig, } from "../css3D/CSS3DConfig";
@@ -68,6 +68,7 @@ export const CONFIGFACTORY = {
     [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig,
     [CONFIGTYPE.SMAAPASS]: getSMAAPassConfig,
     [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig,
+    [CONFIGTYPE.SELECTIVEBLOOMPASS]: getSelectiveBloomPassConfig,
     [CONFIGTYPE.SCRIPTANIMATION]: getScriptAnimationConfig,
     [CONFIGTYPE.KEYFRAMEANIMATION]: getKeyframeAnimationConfig,
 };

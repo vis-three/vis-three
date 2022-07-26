@@ -76,7 +76,7 @@ const commonRegCommand = {
   },
 };
 
-export const commands: ProcessorCommands<any, any> = {
+export const commands: ProcessorCommands<GeometryConfig, BufferGeometry> = {
   add: {
     groups({ target, value }) {
       target.addGroup(value.start, value.count, value.materialIndex);

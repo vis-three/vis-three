@@ -25,6 +25,9 @@ export const getMaterialConfig = function () {
         blending: NormalBlending,
         blendSrc: SrcAlphaFactor,
         blendSrcAlpha: null,
+        polygonOffset: false,
+        polygonOffsetFactor: 0,
+        polygonOffsetUnits: 0,
     };
 };
 export const getMeshBasicMaterialConfig = function () {

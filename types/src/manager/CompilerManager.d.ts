@@ -1,4 +1,4 @@
-import { Object3D } from "three";
+import { BufferGeometry, Material, Object3D, Texture } from "three";
 import { EngineSupport } from "../engine/EngineSupport";
 import { AnimationCompiler } from "../middleware/animation/AnimationCompiler";
 import { CameraCompiler } from "../middleware/camera/CameraCompiler";
@@ -53,6 +53,7 @@ export declare class CompilerManager {
     private passCompiler;
     private animationCompiler;
     private compilerMap;
+    private object3DMapSet;
     constructor(parameters?: CompilerManagerParameters);
     /**
      * engine进行编译器链接
@@ -72,5 +73,14 @@ export declare class CompilerManager {
      * @returns three object || null
      */
     getObjectBySymbol(vid: string): any | null;
+    /**
+     * 通过vid获取object3D对象
+     * @param vid 物体vid标识
+     * @returns Object3D | null
+     */
+    getObject3D<O extends Object3D>(vid: string): O | null;
+    getGeometry<G extends BufferGeometry>(vid: string): G | null;
+    getMaterial<M extends Material>(vid: string): M | null;
+    getTexture<T extends Texture>(vid: string): T | null;
     dispose(): this;
 }

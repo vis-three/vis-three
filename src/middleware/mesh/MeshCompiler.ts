@@ -7,21 +7,11 @@ import {
 } from "three";
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import {
-  SolidObjectCompiler,
-  SolidObjectCompilerTarget,
-} from "../solidObject/SolidObjectCompiler";
+import { SolidObjectCompiler } from "../solidObject/SolidObjectCompiler";
 import { MeshConfig } from "./MeshConfig";
 import MeshProcessor from "./MeshProcessor";
 
-export interface MeshCompilerTarget
-  extends SolidObjectCompilerTarget<MeshConfig> {}
-
-export class MeshCompiler extends SolidObjectCompiler<
-  MeshConfig,
-  MeshCompilerTarget,
-  Mesh
-> {
+export class MeshCompiler extends SolidObjectCompiler<MeshConfig, Mesh> {
   MODULE: MODULETYPE = MODULETYPE.MESH;
 
   constructor() {

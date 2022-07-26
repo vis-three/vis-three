@@ -5,7 +5,7 @@ import { ProxyNotice } from "./ProxyBroadcast";
 export type Rule<C extends BasicCompiler> = (
   input: ProxyNotice,
   output: C,
-  validateFun: (key: string) => boolean
+  validateFun?: (key: string) => boolean
 ) => void;
 
 export const Rule: Rule<BasicCompiler> = (

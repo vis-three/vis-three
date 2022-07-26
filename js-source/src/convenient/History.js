@@ -1,3 +1,11 @@
+export class Action {
+    next() {
+        console.warn(`this action can not set next function: ${this.constructor.name}`);
+    }
+    prev() {
+        console.warn(`this action can not set prev function: ${this.constructor.name}`);
+    }
+}
 export class History {
     actionList = [];
     index = -1;
@@ -8,9 +16,14 @@ export class History {
     do(command) {
         this.actionList[this.index][command]();
     }
+    /**
+     * 注册动作
+     * @param action new class extends BasicAction
+     * @param exec 是否立即执行动作的next
+     */
     apply(action, exec = false) {
         const actionList = this.actionList;
-        // 动作超过50情空前面缓存
+        // 动作超过step情空前面缓存
         if (this.index === actionList.length - 1 &&
             actionList.length >= this.step) {
             actionList.shift();

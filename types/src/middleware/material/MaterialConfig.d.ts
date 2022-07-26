@@ -22,8 +22,11 @@ export interface MaterialConfig extends SymbolConfig {
     blending: Blending;
     blendSrc: number;
     blendSrcAlpha: number | null;
+    polygonOffset: boolean;
+    polygonOffsetFactor: number;
+    polygonOffsetUnits: number;
 }
-export interface MeshBasicMaterial extends MaterialConfig {
+export interface MeshBasicMaterialConfig extends MaterialConfig {
     color: string;
     combine: number;
     aoMapIntensity: number;
@@ -130,9 +133,9 @@ export interface ShaderMaterialConfig extends MaterialConfig {
 export interface LoadMaterialConfig extends MaterialConfig {
     url: string;
 }
-export declare type MaterialAllType = MeshBasicMaterial | MeshStandardMaterialConfig | MeshPhongMaterialConfig | LineBasicMaterialConfig | SpriteMaterialConfig | PointsMaterialConfig | ShaderMaterialConfig;
+export declare type MaterialAllType = MeshBasicMaterialConfig | MeshStandardMaterialConfig | MeshPhongMaterialConfig | LineBasicMaterialConfig | SpriteMaterialConfig | PointsMaterialConfig | ShaderMaterialConfig;
 export declare const getMaterialConfig: () => MaterialConfig;
-export declare const getMeshBasicMaterialConfig: () => MeshBasicMaterial;
+export declare const getMeshBasicMaterialConfig: () => MeshBasicMaterialConfig;
 export declare const getMeshStandardMaterialConfig: () => MeshStandardMaterialConfig;
 export declare const getMeshPhongMaterialConfig: () => MeshPhongMaterialConfig;
 export declare const getSpriteMaterialConfig: () => SpriteMaterialConfig;

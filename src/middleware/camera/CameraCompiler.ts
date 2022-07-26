@@ -6,14 +6,8 @@ import { Compiler } from "../../core/Compiler";
 import PerspectiveCameraProcessor from "./processor/PerspectiveCameraProcessor";
 import OrthographicCameraProcessor from "./processor/OrthographicCameraProcessor";
 
-export interface CameraCompilerTarget
-  extends ObjectCompilerTarget<CameraConfigAllType> {
-  [key: string]: CameraConfigAllType;
-}
-
 export class CameraCompiler extends ObjectCompiler<
   CameraConfigAllType,
-  CameraCompilerTarget,
   Camera
 > {
   MODULE: MODULETYPE = MODULETYPE.CAMERA;

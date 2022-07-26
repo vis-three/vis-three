@@ -1,13 +1,15 @@
 import { BoxBufferGeometry, BufferGeometry, EdgesGeometry } from "three";
-import { defineProcessor } from "../../../core/Processor";
+import { defineProcessor, ProcessorCommands } from "../../../core/Processor";
 import { EngineSupport } from "../../../engine/EngineSupport";
 import { CONFIGTYPE } from "../../constants/configType";
 import { EdgesGeometryConfig } from "../GeometryInterface";
-import { commands, create, transfromAnchor } from "./common";
+import { commands, create } from "./common";
 
 export default defineProcessor<EdgesGeometryConfig, EdgesGeometry>({
   configType: CONFIGTYPE.EDGESGEOMETRY,
-  commands,
+  commands: <ProcessorCommands<EdgesGeometryConfig, EdgesGeometry>>(
+    (<unknown>commands)
+  ),
   create(config: EdgesGeometryConfig, engine: EngineSupport): EdgesGeometry {
     const geometry = engine.compilerManager.getObjectBySymbol(config.url);
     if (!geometry || !(geometry instanceof BufferGeometry)) {

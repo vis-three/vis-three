@@ -60,7 +60,7 @@ export const materialHandler = function <
 export const solidObjectCreate = function <
   C extends SolidObjectConfig,
   O extends SolidObject3D
->(object: O, config: C, filter: IgnoreAttribute = {}, engine: EngineSupport) {
+>(object: O, config: C, filter: IgnoreAttribute<C>, engine: EngineSupport) {
   if (!filter.geometry) {
     let geometry = engine.getObjectBySymbol(
       config.geometry

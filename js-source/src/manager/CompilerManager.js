@@ -16,7 +16,6 @@ import { RendererCompiler } from "../middleware/renderer/RendererCompiler";
 import { SceneCompiler } from "../middleware/scene/SceneCompiler";
 import { SpriteCompiler } from "../middleware/sprite/SpriteCompiler";
 import { TextureCompiler } from "../middleware/texture/TextureCompiler";
-import { isValidKey } from "../utils/utils";
 export class CompilerManager {
     cameraCompiler = new CameraCompiler();
     lightCompiler = new LightCompiler();
@@ -35,6 +34,7 @@ export class CompilerManager {
     passCompiler = new PassCompiler();
     animationCompiler = new AnimationCompiler();
     compilerMap;
+    object3DMapSet = new Set();
     constructor(parameters) {
         if (parameters) {
             Object.keys(parameters).forEach((key) => {
@@ -44,22 +44,17 @@ export class CompilerManager {
         // 建立编译器链接
         const textureMap = this.textureCompiler.getMap();
         // 贴图连接
-        this.sceneCompiler.linkTextureMap(textureMap);
-        this.materialCompiler.linkTextureMap(textureMap);
         this.animationCompiler.linkTextureMap(textureMap);
         // 物体几何连接，材质连接，物体连接
         const geometryMap = this.geometryCompiler.getMap();
         const materialMap = this.materialCompiler.getMap();
         const objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
-        const objectMapList = objectCompilerList.map((compiler) => compiler.getMap());
-        for (const objectCompiler of objectCompilerList) {
-            if (isValidKey("IS_SOLIDOBJECTCOMPILER", objectCompiler)) {
-                objectCompiler
-                    .linkGeometryMap(geometryMap)
-                    .linkMaterialMap(materialMap);
-            }
-            objectCompiler.linkObjectMap(...objectMapList);
-        }
+        // TODO: 编译器内部物体全部从compilerManager里面获取
+        const objectMapList = objectCompilerList.map((compiler) => {
+            const map = compiler.getMap();
+            this.object3DMapSet.add(map);
+            return map;
+        });
         this.animationCompiler
             .linkObjectMap(...objectMapList)
             .linkMaterialMap(materialMap);
@@ -82,13 +77,6 @@ export class CompilerManager {
         this.compilerMap.forEach((compiler) => {
             compiler.useEngine(engine);
         });
-        // 动态资源连接
-        if (engine.resourceManager) {
-            const resourceMap = engine.resourceManager.resourceMap;
-            this.textureCompiler.linkRescourceMap(resourceMap);
-            this.geometryCompiler.linkRescourceMap(resourceMap);
-            this.css3DCompiler.linkRescourceMap(resourceMap);
-        }
         const dataSupportManager = engine.dataSupportManager;
         // 添加通知 TODO: 注意生命周期 lookAt group等
         dataSupportManager.textureDataSupport.addCompiler(this.textureCompiler);
@@ -137,9 +125,31 @@ export class CompilerManager {
         }
         return null;
     }
+    /**
+     * 通过vid获取object3D对象
+     * @param vid 物体vid标识
+     * @returns Object3D | null
+     */
+    getObject3D(vid) {
+        for (const map of this.object3DMapSet) {
+            if (map.has(vid)) {
+                return map.get(vid);
+            }
+        }
+        return null;
+    }
+    getGeometry(vid) {
+        return this.geometryCompiler.map.get(vid) || null;
+    }
+    getMaterial(vid) {
+        return this.materialCompiler.map.get(vid) || null;
+    }
+    getTexture(vid) {
+        return this.textureCompiler.map.get(vid) || null;
+    }
     dispose() {
         for (const compiler of this.compilerMap.values()) {
-            compiler.dispose({});
+            compiler.dispose();
         }
         this.compilerMap.clear();
         return this;

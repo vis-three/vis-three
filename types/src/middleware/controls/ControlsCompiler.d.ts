@@ -5,24 +5,10 @@ import { VisOrbitControls } from "../../optimize/VisOrbitControls";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ControlsAllConfig } from "./ControlsConfig";
 export declare type ControlsAllType = TransformControls | VisOrbitControls;
-export interface ControlsCompilerTarget extends CompilerTarget {
-    [key: string]: ControlsAllConfig;
+export interface ControlsCompilerTarget extends CompilerTarget<ControlsAllConfig> {
 }
-export declare class ControlsCompiler extends Compiler {
+export declare class ControlsCompiler extends Compiler<ControlsAllConfig, ControlsCompilerTarget, ControlsAllType> {
     MODULE: MODULETYPE;
-    private target;
-    private map;
-    private weakMap;
-    private engine;
-    private processorMap;
     constructor();
-    private getAssembly;
-    set(vid: string, path: string[], key: string, value: any): this;
-    setAll(vid: string): this;
-    setTarget(target: ControlsCompilerTarget): this;
     useEngine(engine: EngineSupport): this;
-    compileAll(): this;
-    dispose(): this;
-    getObjectSymbol(texture: ControlsAllType): string | null;
-    getObjectBySymbol(vid: string): ControlsAllType | null;
 }

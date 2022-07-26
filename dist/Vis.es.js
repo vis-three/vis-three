@@ -4288,36 +4288,10 @@ class PassDataSupport extends DataSupport {
   }
 }
 const AnimationRule = function(notice, compiler) {
-  const { operate, key, path, value } = notice;
-  if (key === "name" && path.length === 1) {
+  if (notice.key === "name" && notice.path.length === 1) {
     return;
   }
-  if (operate === "add") {
-    if (validate(key)) {
-      compiler.add(key, value);
-    } else {
-      console.warn(`animation rule vid is illeage: '${key}'`);
-    }
-    return;
-  }
-  if (operate === "set") {
-    const tempPath = path.concat([]);
-    const vid = tempPath.shift();
-    if (vid && validate(vid)) {
-      compiler.update(vid, tempPath, key, value);
-    } else {
-      console.warn(`animation rule vid is illeage: '${vid}'`);
-    }
-    return;
-  }
-  if (operate === "delete" || operate === "set" && key === "play" && value === "false") {
-    if (validate(key)) {
-      compiler.remove(value);
-    } else {
-      console.warn(`animation rule vid is illeage: '${key}'`);
-    }
-    return;
-  }
+  Rule(notice, compiler);
 };
 class AnimationDataSupport extends DataSupport {
   constructor(data, ignore) {
@@ -4667,6 +4641,89 @@ __publicField(Compiler, "processors", new Map());
 __publicField(Compiler, "processor", function(processor) {
   _Compiler.processors.set(processor.configType, processor);
 });
+const scriptAniSymbol = "vis.scriptAni";
+class Processor2 {
+  constructor(options) {
+    __publicField(this, "configType");
+    __publicField(this, "commands");
+    __publicField(this, "create");
+    __publicField(this, "dispose");
+    this.configType = options.configType;
+    this.commands = options.commands;
+    this.create = options.create;
+    this.dispose = options.dispose;
+  }
+  process(params) {
+    if (!this.commands || !this.commands[params.operate]) {
+      this[params.operate](params);
+      return;
+    }
+    let commands2 = this.commands[params.operate];
+    for (const key of [].concat(params.path, params.key)) {
+      if (!commands2[key] && !commands2.$reg) {
+        this[params.operate](params);
+        return;
+      } else if (commands2[key]) {
+        if (typeof commands2[key] === "function") {
+          commands2[key](params);
+          return;
+        } else {
+          commands2 = commands2[key];
+        }
+      } else if (commands2.$reg) {
+        for (const item of commands2.$reg) {
+          if (item.reg.test(key)) {
+            item.handler(params);
+            return;
+          }
+        }
+      }
+    }
+    this[params.operate](params);
+  }
+  add(params) {
+    let target = params.target;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default add operate.`, params);
+        return;
+      }
+    }
+    target[params.key] = params.value;
+  }
+  set(params) {
+    let target = params.target;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default set operate.`, params);
+        return;
+      }
+    }
+    target[params.key] = params.value;
+  }
+  delete(params) {
+    let target = params.target;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default delete operate.`, params);
+        return;
+      }
+    }
+    delete target[params.key];
+  }
+}
+const defineProcessor = (options) => {
+  return new Processor2(options);
+};
 const config$j = {
   name: "linearTime",
   multiply: 1
@@ -4757,225 +4814,89 @@ __publicField(AniScriptLibrary, "register", function(config2, generator2) {
 });
 AniScriptLibrary.register(config$j, generator$j);
 AniScriptLibrary.register(config$i, generator$i);
+const createFunction = function(config2, engine) {
+  let object = engine.compilerManager.getObjectBySymbol(config2.target);
+  if (!object) {
+    console.error(`can not found object in enigne: ${config2.target}`);
+  }
+  const attributeList = config2.attribute.split(".");
+  attributeList.shift();
+  const attribute = attributeList.pop();
+  for (const key of attributeList) {
+    if (object[key] === void 0) {
+      console.error(`animaton processor: target object can not found key: ${key}`, object);
+      return () => {
+      };
+    }
+    object = object[key];
+  }
+  return AniScriptLibrary.generateScript(engine, object, attribute, config2.script);
+};
+var ScriptAnimationProcessor = defineProcessor({
+  configType: CONFIGTYPE.SCRIPTANIMATION,
+  commands: {
+    set: {
+      play({ target, engine, value }) {
+        if (value) {
+          engine.renderManager.addEventListener("render", target);
+        } else {
+          engine.renderManager.removeEventListener("render", target);
+        }
+      },
+      $reg: [
+        {
+          reg: new RegExp(".*"),
+          handler({ config: config2, engine }) {
+            const fun = config2[Symbol.for(scriptAniSymbol)];
+            engine.renderManager.removeEventListener("render", fun);
+            const newFun = createFunction(config2, engine);
+            config2[Symbol.for(scriptAniSymbol)] = newFun;
+            config2.play && engine.renderManager.addEventListener("render", fun);
+          }
+        }
+      ]
+    }
+  },
+  create(config2, engine) {
+    const fun = createFunction(config2, engine);
+    config2.play && engine.renderManager.addEventListener("render", fun);
+    config2[Symbol.for(scriptAniSymbol)] = fun;
+    return fun;
+  },
+  dispose() {
+  }
+});
 class AnimationCompiler extends Compiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.ANIMATION);
-    __publicField(this, "target", {});
-    __publicField(this, "engine");
-    __publicField(this, "objectMapSet", new Set());
-    __publicField(this, "scriptAniSymbol", "vis.scriptAni");
   }
-  linkObjectMap(...map) {
-    for (const objectMap of map) {
-      if (!this.objectMapSet.has(objectMap)) {
-        this.objectMapSet.add(objectMap);
-      }
-    }
+  cover(config2) {
+    super.cover(config2);
+    const fun = this.map.get(config2.vid);
+    config2[Symbol.for(scriptAniSymbol)] = fun;
     return this;
-  }
-  linkTextureMap(textureMap) {
-    this.objectMapSet.add(textureMap);
-    return this;
-  }
-  linkMaterialMap(materialMap) {
-    this.objectMapSet.add(materialMap);
-    return this;
-  }
-  getObject(vid) {
-    for (const map of this.objectMapSet) {
-      if (map.has(vid)) {
-        return map.get(vid);
-      }
-    }
-    console.error(`animation compiler can not found object which vid: ${vid}`);
-    return {};
-  }
-  add(vid, config2) {
-    const renderManager = this.engine.renderManager;
-    let object = this.getObject(config2.target);
-    const attributeList = config2.attribute.split(".");
-    attributeList.shift();
-    const attribute = attributeList.pop();
-    for (const key of attributeList) {
-      if (object[key] === void 0) {
-        console.error(`animaton compiler: target object can not found key: ${key}`, object);
-        break;
-      }
-      object = object[key];
-    }
-    if (config2.type === CONFIGTYPE.SCRIPTANIMATION) {
-      const fun = AniScriptLibrary.generateScript(this.engine, object, attribute, config2.script);
-      config2[Symbol.for(this.scriptAniSymbol)] = fun;
-      config2.play && renderManager.addEventListener("render", fun);
-    } else {
-      console.warn(`animation compiler can not support this type config: ${config2.type}`);
-    }
-    return this;
-  }
-  update(vid, path, key, value) {
-    if (!this.target[vid]) {
-      console.warn(`AnimationCompiler can not found vid config: ${vid}`);
-      return this;
-    }
-    const config2 = this.target[vid];
-    if (config2.type === CONFIGTYPE.SCRIPTANIMATION) {
-      const renderManager = this.engine.renderManager;
-      const fun = config2[Symbol.for(this.scriptAniSymbol)];
-      if (fun === void 0) {
-        console.warn(`AnimationCompiler can not found function in update fun: ${vid}`);
-        return this;
-      }
-      if (key === "play" && value) {
-        if (!renderManager.hasEventListener("render", fun)) {
-          renderManager.addEventListener("render", fun);
-        }
-        return this;
-      }
-      if (key === "play" && !value) {
-        renderManager.removeEventListener("render", fun);
-        return this;
-      }
-    }
-    return this.remove(this.target[vid]).add(vid, this.target[vid]);
   }
   remove(config2) {
-    if (config2.type === CONFIGTYPE.SCRIPTANIMATION) {
-      this.engine.renderManager.removeEventListener("render", config2[Symbol.for(this.scriptAniSymbol)]);
-      let objectConfig = this.engine.getConfigBySymbol(config2.target);
-      if (!objectConfig) {
-        console.warn(`AnimationCompiler can not found vid object: ${config2.target}`);
-        return this;
-      }
-      const attributeList = config2.attribute.split(".");
-      attributeList.shift();
-      const attribute = attributeList.pop();
-      for (const key of attributeList) {
-        if (objectConfig[key] === void 0) {
-          console.warn(`animaton compiler: target object can not found key: ${key}`, objectConfig);
-          return this;
-        }
-        objectConfig = objectConfig[key];
-      }
-      objectConfig[attribute] = objectConfig[attribute];
-    }
+    delete config2[Symbol.for(scriptAniSymbol)];
+    super.remove(config2);
     return this;
   }
-  setTarget(target) {
-    this.target = target;
+  compile(vid, notice) {
+    super.compile(vid, notice);
+    const config2 = this.target[vid];
+    const fun = this.map.get(config2.vid);
+    config2[Symbol.for(scriptAniSymbol)] = fun;
     return this;
-  }
-  useEngine(engine) {
-    this.engine = engine;
-    return this;
-  }
-  compileAll() {
-    for (const config2 of Object.values(this.target)) {
-      this.add(config2.vid, config2);
-    }
-    return this;
-  }
-  dispose(parameter) {
-    for (const config2 of Object.values(this.target)) {
-      this.remove(config2);
-    }
-    return this;
-  }
-  getObjectSymbol(animation) {
-    return null;
-  }
-  getObjectBySymbol(vid) {
-    return null;
   }
 }
+Compiler.processor(ScriptAnimationProcessor);
 class ObjectCompiler extends Compiler {
   constructor() {
     super();
     __publicField(this, "IS_OBJECTCOMPILER", true);
   }
 }
-class Processor2 {
-  constructor(options) {
-    __publicField(this, "configType");
-    __publicField(this, "commands");
-    __publicField(this, "create");
-    __publicField(this, "dispose");
-    this.configType = options.configType;
-    this.commands = options.commands;
-    this.create = options.create;
-    this.dispose = options.dispose;
-  }
-  process(params) {
-    if (!this.commands || !this.commands[params.operate]) {
-      this[params.operate](params);
-      return;
-    }
-    let commands2 = this.commands[params.operate];
-    for (const key of [].concat(params.path, params.key)) {
-      if (!commands2[key] && !commands2.$reg) {
-        this[params.operate](params);
-        return;
-      } else if (commands2[key]) {
-        if (typeof commands2[key] === "function") {
-          commands2[key](params);
-          return;
-        } else {
-          commands2 = commands2[key];
-        }
-      } else if (commands2.$reg) {
-        for (const item of commands2.$reg) {
-          if (item.reg.test(key)) {
-            item.handler(params);
-            return;
-          }
-        }
-      }
-    }
-    this[params.operate](params);
-  }
-  add(params) {
-    let target = params.target;
-    const path = params.path;
-    for (const key of path) {
-      if (typeof target[key] !== void 0) {
-        target = target[key];
-      } else {
-        console.warn(`processor can not exec default add operate.`, params);
-        return;
-      }
-    }
-    target[params.key] = params.value;
-  }
-  set(params) {
-    let target = params.target;
-    const path = params.path;
-    for (const key of path) {
-      if (typeof target[key] !== void 0) {
-        target = target[key];
-      } else {
-        console.warn(`processor can not exec default set operate.`, params);
-        return;
-      }
-    }
-    target[params.key] = params.value;
-  }
-  delete(params) {
-    let target = params.target;
-    const path = params.path;
-    for (const key of path) {
-      if (typeof target[key] !== void 0) {
-        target = target[key];
-      } else {
-        console.warn(`processor can not exec default delete operate.`, params);
-        return;
-      }
-    }
-    delete target[params.key];
-  }
-}
-const defineProcessor = (options) => {
-  return new Processor2(options);
-};
 const config$h = {
   name: "openWindow",
   params: {
@@ -7018,7 +6939,7 @@ const colorHandler = function({
 };
 const emptyHandler = function({}) {
 };
-const lightCreate = function(light, config2, filter = {}, engine) {
+const lightCreate = function(light, config2, filter, engine) {
   light.color.copy(new Color(config2.color));
   return objectCreate(light, config2, __spreadValues({
     color: true,
@@ -7109,7 +7030,7 @@ const materialHandler = function({ target, config: config2, engine }) {
   }
   target.material = material;
 };
-const solidObjectCreate = function(object, config2, filter = {}, engine) {
+const solidObjectCreate = function(object, config2, filter, engine) {
   if (!filter.geometry) {
     let geometry = engine.getObjectBySymbol(config2.geometry);
     if (!(geometry instanceof BufferGeometry)) {
@@ -8432,17 +8353,12 @@ class CompilerManager {
         this[key] = parameters[key];
       });
     }
-    const textureMap = this.textureCompiler.getMap();
-    this.animationCompiler.linkTextureMap(textureMap);
-    this.geometryCompiler.getMap();
-    const materialMap = this.materialCompiler.getMap();
     const objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
-    const objectMapList = objectCompilerList.map((compiler) => {
+    objectCompilerList.map((compiler) => {
       const map = compiler.getMap();
       this.object3DMapSet.add(map);
       return map;
     });
-    this.animationCompiler.linkObjectMap(...objectMapList).linkMaterialMap(materialMap);
     const compilerMap = new Map();
     Object.keys(this).forEach((key) => {
       const compiler = this[key];

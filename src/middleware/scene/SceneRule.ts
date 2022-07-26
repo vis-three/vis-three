@@ -4,15 +4,10 @@ import { ProxyNotice } from "../../core/ProxyBroadcast";
 import { Rule } from "../../core/Rule";
 import { CONFIGTYPE } from "../constants/configType";
 import { ObjectRule } from "../object/ObjectRule";
-import { SceneCompiler, SceneCompilerTarget } from "./SceneCompiler";
+import { SceneCompiler } from "./SceneCompiler";
 import { SceneConfig } from "./SceneConfig";
 
-export type SceneRule = ObjectRule<
-  SceneCompiler,
-  SceneConfig,
-  SceneCompilerTarget,
-  Scene
->;
+export type SceneRule = ObjectRule<SceneCompiler, SceneConfig, Scene>;
 
 export const SceneRule: SceneRule = function (
   input: ProxyNotice,

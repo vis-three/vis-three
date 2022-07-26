@@ -1,4 +1,8 @@
+import { CONFIGTYPE } from "./configType";
 import { MODULETYPE } from "./MODULETYPE";
+/**
+ * @deprecated - use getModule
+ */
 export declare const CONFIGMODULE: {
     ImageTexture: MODULETYPE;
     CubeTexture: MODULETYPE;
@@ -52,3 +56,4 @@ export declare const CONFIGMODULE: {
     ScriptAnimation: MODULETYPE;
     KeyframeAnimation: MODULETYPE;
 };
+export declare const getModule: (type: CONFIGTYPE) => MODULETYPE | null;

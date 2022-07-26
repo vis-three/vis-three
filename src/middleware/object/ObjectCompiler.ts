@@ -3,19 +3,14 @@ import { Compiler, CompilerTarget } from "../../core/Compiler";
 
 import { ObjectConfig } from "./ObjectConfig";
 
-export type BasicObjectCompiler = ObjectCompiler<
-  ObjectConfig,
-  ObjectCompilerTarget<ObjectConfig>,
-  Object3D
->;
+export type BasicObjectCompiler = ObjectCompiler<ObjectConfig, Object3D>;
 export interface ObjectCompilerTarget<C extends ObjectConfig>
   extends CompilerTarget<C> {}
 
 export abstract class ObjectCompiler<
   C extends ObjectConfig,
-  T extends ObjectCompilerTarget<C>,
   O extends Object3D
-> extends Compiler<C, T, O> {
+> extends Compiler<C, O> {
   IS_OBJECTCOMPILER = true;
 
   constructor() {

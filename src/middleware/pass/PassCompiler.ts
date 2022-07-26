@@ -10,13 +10,7 @@ import SMAAPassProcessor from "./processor/SMAAPassProcessor";
 import UnrealBloomPassProcessor from "./processor/UnrealBloomPassProcessor";
 import SelectiveBloomPassProcessor from "./processor/SelectiveBloomPassProcessor";
 
-export interface PassCompilerTarget extends CompilerTarget<PassConfigAllType> {}
-
-export class PassCompiler extends Compiler<
-  PassConfigAllType,
-  PassCompilerTarget,
-  Pass
-> {
+export class PassCompiler extends Compiler<PassConfigAllType, Pass> {
   MODULE: MODULETYPE = MODULETYPE.PASS;
 
   private composer!: EffectComposer;

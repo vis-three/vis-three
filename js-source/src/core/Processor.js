@@ -1,55 +1,89 @@
-export class Processor {
-    filterMap = {};
-    assembly = false;
-    constructor() {
-        this.filterMap = Object.assign({
-            vid: true,
-            type: true,
-        }, this.filterMap);
+export class Processor2 {
+    configType;
+    commands;
+    create;
+    dispose;
+    constructor(options) {
+        this.configType = options.configType;
+        this.commands = options.commands;
+        this.create = options.create;
+        this.dispose = options.dispose;
     }
-    mergeAttribute(path, key, value) {
-        if (this.filterMap[path.concat([key]).join(".")]) {
+    process(params) {
+        if (!this.commands || !this.commands[params.operate]) {
+            this[params.operate](params);
             return;
         }
-        let object = this.target;
-        if (path.length) {
-            for (const key of path) {
-                object = object[key];
+        let commands = this.commands[params.operate];
+        for (const key of [].concat(params.path, params.key)) {
+            if (!commands[key] && !commands.$reg) {
+                this[params.operate](params);
+                return;
+            }
+            else if (commands[key]) {
+                if (typeof commands[key] === "function") {
+                    commands[key](params);
+                    return;
+                }
+                else {
+                    commands = commands[key];
+                }
+            }
+            else if (commands.$reg) {
+                for (const item of commands.$reg) {
+                    if (item.reg.test(key)) {
+                        item.handler(params);
+                        return;
+                    }
+                }
             }
         }
-        object[key] = value;
+        this[params.operate](params);
     }
-    mergeObject(callBack) {
-        const recursiveConfig = (config, object) => {
-            for (const key in config) {
-                if (this.filterMap[key]) {
-                    continue;
-                }
-                if (typeof config[key] === "object" && typeof config[key] !== null) {
-                    recursiveConfig(config[key], object[key]);
-                    continue;
-                }
-                object[key] = config[key];
+    add(params) {
+        let target = params.target;
+        const path = params.path;
+        for (const key of path) {
+            if (typeof target[key] !== undefined) {
+                target = target[key];
             }
-        };
-        recursiveConfig(this.config, this.target);
-        callBack && callBack();
+            else {
+                console.warn(`processor can not exec default add operate.`, params);
+                return;
+            }
+        }
+        target[params.key] = params.value;
     }
-    processAll() {
-        const recursiveConfig = (config, path) => {
-            for (const key in config) {
-                if (this.filterMap[path.concat([key]).join(".")]) {
-                    continue;
-                }
-                if (typeof config[key] === "object" && typeof config[key] !== null) {
-                    recursiveConfig(config[key], path.concat([key]));
-                    continue;
-                }
-                this.process({ path, key, value: config[key] });
+    set(params) {
+        let target = params.target;
+        const path = params.path;
+        for (const key of path) {
+            if (typeof target[key] !== undefined) {
+                target = target[key];
             }
-        };
-        recursiveConfig(this.config, []);
-        return this;
+            else {
+                console.warn(`processor can not exec default set operate.`, params);
+                return;
+            }
+        }
+        target[params.key] = params.value;
+    }
+    delete(params) {
+        let target = params.target;
+        const path = params.path;
+        for (const key of path) {
+            if (typeof target[key] !== undefined) {
+                target = target[key];
+            }
+            else {
+                console.warn(`processor can not exec default delete operate.`, params);
+                return;
+            }
+        }
+        delete target[params.key];
     }
 }
+export const defineProcessor = (options) => {
+    return new Processor2(options);
+};
 //# sourceMappingURL=Processor.js.map

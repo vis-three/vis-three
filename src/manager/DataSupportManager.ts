@@ -4,58 +4,59 @@ import { MaterialDataSupport } from "../middleware/material/MaterialDataSupport"
 import { LightDataSupport } from "../middleware/light/LightDataSupport";
 import { GeometryDataSupport } from "../middleware/geometry/GeometryDataSupport";
 import { CameraDataSupport } from "../middleware/camera/CameraDataSupport";
-import { TextureCompilerTarget } from "../middleware/texture/TextureCompiler";
-import { LightCompilerTarget } from "../middleware/light/LightCompiler";
-import { GeometryCompilerTarget } from "../middleware/geometry/GeometryCompiler";
-import { CameraCompilerTarget } from "../middleware/camera/CameraCompiler";
-import { MaterialCompilerTarget } from "../middleware/material/MaterialCompiler";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
-import { RendererCompilerTarget } from "../middleware/renderer/RendererCompiler";
 import { RendererDataSupport } from "../middleware/renderer/RendererDataSupport";
-import { SceneCompilerTarget } from "../middleware/scene/SceneCompiler";
 import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
-import { ControlsCompilerTarget } from "../middleware/controls/ControlsCompiler";
 import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
-import { Compiler, CompilerTarget } from "../core/Compiler";
-import { SpriteCompilerTarget } from "../middleware/sprite/SpriteCompiler";
+import { BasicCompiler, CompilerTarget } from "../core/Compiler";
 import { SpriteDataSupport } from "../middleware/sprite/SpriteDataSupport";
 import { LineDataSupport } from "../middleware/line/LineDataSupport";
-import { MeshCompilerTarget } from "../middleware/mesh/MeshCompiler";
 import { MeshDataSupport } from "../middleware/mesh/MeshDataSupport";
-import { PointsCompilerTarget } from "../middleware/points/PointsCompiler";
 import { PointsDataSupport } from "../middleware/points/PointsDataSupport";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
-import { GroupCompilerTarget } from "../middleware/group/GroupCompiler";
 import { GroupDataSupport } from "../middleware/group/GroupDataSupport";
 import { stringify } from "../convenient/JSONHandler";
-import { PassCompilerTarget } from "../middleware/pass/PassCompiler";
 import { PassDataSupport } from "../middleware/pass/PassDataSupport";
 import { getModule } from "../middleware/constants/CONFIGMODULE";
-import { AnimationCompilerTarget } from "../middleware/animation/AnimationCompiler";
 import { AnimationDataSupport } from "../middleware/animation/AnimationDataSupport";
-import { CSS3DCompilerTarget } from "../middleware/css3D/CSS3DCompiler";
 import { CSS3DDataSupport } from "../middleware/css3D/CSS3DDataSupport";
 import { CONFIGTYPE } from "../middleware/constants/configType";
+import { TextureAllType } from "../middleware/texture/TextureConfig";
+import { MaterialAllType } from "../middleware/material/MaterialConfig";
+import { GeometryAllType } from "../middleware/geometry/GeometryInterface";
+import { LightConfigAllType } from "../middleware/light/LightConfig";
+import { CameraConfigAllType } from "../middleware/camera/CameraConfig";
+import { SpriteConfig } from "../middleware/sprite/SpriteConfig";
+import { LineConfig } from "../middleware/line/LineConfig";
+import { MeshConfig } from "../middleware/mesh/MeshConfig";
+import { PointsConfig } from "../middleware/points/PointsConfig";
+import { GroupConfig } from "../middleware/group/GroupConfig";
+import { CSS3DAllType } from "../middleware/css3D/CSS3DConfig";
+import { RendererConfig } from "../middleware/renderer/RendererConfig";
+import { SceneConfig } from "../middleware/scene/SceneConfig";
+import { PassConfigAllType } from "../middleware/pass/PassConfig";
+import { ControlsAllConfig } from "../middleware/controls/ControlsConfig";
+import { AnimationAllType } from "../middleware/animation/AnimationConfig";
 
 export interface LoadOptions {
-  [MODULETYPE.TEXTURE]?: TextureCompilerTarget;
-  [MODULETYPE.MATERIAL]?: MaterialCompilerTarget;
-  [MODULETYPE.GEOMETRY]?: GeometryCompilerTarget;
+  [MODULETYPE.TEXTURE]?: CompilerTarget<TextureAllType>;
+  [MODULETYPE.MATERIAL]?: CompilerTarget<MaterialAllType>;
+  [MODULETYPE.GEOMETRY]?: CompilerTarget<GeometryAllType>;
 
-  [MODULETYPE.LIGHT]?: LightCompilerTarget;
-  [MODULETYPE.CAMERA]?: CameraCompilerTarget;
-  [MODULETYPE.SPRITE]?: SpriteCompilerTarget;
-  [MODULETYPE.LINE]?: LightCompilerTarget;
-  [MODULETYPE.MESH]?: MeshCompilerTarget;
-  [MODULETYPE.POINTS]?: PointsCompilerTarget;
-  [MODULETYPE.GROUP]?: GroupCompilerTarget;
-  [MODULETYPE.CSS3D]?: CSS3DCompilerTarget;
+  [MODULETYPE.LIGHT]?: CompilerTarget<LightConfigAllType>;
+  [MODULETYPE.CAMERA]?: CompilerTarget<CameraConfigAllType>;
+  [MODULETYPE.SPRITE]?: CompilerTarget<SpriteConfig>;
+  [MODULETYPE.LINE]?: CompilerTarget<LineConfig>;
+  [MODULETYPE.MESH]?: CompilerTarget<MeshConfig>;
+  [MODULETYPE.POINTS]?: CompilerTarget<PointsConfig>;
+  [MODULETYPE.GROUP]?: CompilerTarget<GroupConfig>;
+  [MODULETYPE.CSS3D]?: CompilerTarget<CSS3DAllType>;
 
-  [MODULETYPE.RENDERER]?: RendererCompilerTarget;
-  [MODULETYPE.SCENE]?: SceneCompilerTarget;
-  [MODULETYPE.PASS]?: PassCompilerTarget;
-  [MODULETYPE.CONTROLS]?: ControlsCompilerTarget;
-  [MODULETYPE.ANIMATION]?: AnimationCompilerTarget;
+  [MODULETYPE.RENDERER]?: CompilerTarget<RendererConfig>;
+  [MODULETYPE.SCENE]?: CompilerTarget<SceneConfig>;
+  [MODULETYPE.PASS]?: CompilerTarget<PassConfigAllType>;
+  [MODULETYPE.CONTROLS]?: CompilerTarget<ControlsAllConfig>;
+  [MODULETYPE.ANIMATION]?: CompilerTarget<AnimationAllType>;
 }
 
 export interface DataSupportManagerParameters {
@@ -97,7 +98,7 @@ export class DataSupportManager {
 
   private dataSupportMap: Map<
     MODULETYPE,
-    DataSupport<CompilerTarget, Compiler>
+    DataSupport<SymbolConfig, object, BasicCompiler>
   >;
 
   constructor(parameters?: DataSupportManagerParameters) {
@@ -138,11 +139,9 @@ export class DataSupportManager {
   /**
    * @experimental 获取该模块下的响应式数据对象
    */
-  getSupportData<C extends CompilerTarget, D extends DataSupport<C, Compiler>>(
-    type: MODULETYPE
-  ): C | null {
+  getSupportData(type: MODULETYPE) {
     if (this.dataSupportMap.has(type)) {
-      return (this.dataSupportMap.get(type)! as unknown as D).getData();
+      return this.dataSupportMap.get(type)!.getData();
     } else {
       console.warn(`can not found this type in dataSupportManager: ${type}`);
       return null;
@@ -152,12 +151,9 @@ export class DataSupportManager {
   /**
    * @experimental 设置该模块下的响应式数据对象
    */
-  setSupportData<C extends CompilerTarget, D extends DataSupport<C, Compiler>>(
-    type: MODULETYPE,
-    data: C
-  ): this {
+  setSupportData(type: MODULETYPE, data: CompilerTarget<SymbolConfig>): this {
     if (this.dataSupportMap.has(type)) {
-      (this.dataSupportMap.get(type)! as unknown as D).setData(data);
+      this.dataSupportMap.get(type)!.setData(data);
     } else {
       console.warn(`can not found this type in dataSupportManager: ${type}`);
     }
@@ -250,7 +246,7 @@ export class DataSupportManager {
       return this.dataSupportMap
         .get(module as MODULETYPE)!
         .addConfig(config)
-        .getConfig<T>(config.vid);
+        .getConfig(config.vid) as T;
     } else {
       console.warn(
         `dataSupportManager can not found this config module: ${config.type}`

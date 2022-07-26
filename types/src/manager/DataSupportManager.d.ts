@@ -16,7 +16,7 @@ import { SceneCompilerTarget } from "../middleware/scene/SceneCompiler";
 import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { ControlsCompilerTarget } from "../middleware/controls/ControlsCompiler";
 import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
-import { Compiler, CompilerTarget } from "../core/Compiler";
+import { BasicCompiler, CompilerTarget } from "../core/Compiler";
 import { SpriteCompilerTarget } from "../middleware/sprite/SpriteCompiler";
 import { SpriteDataSupport } from "../middleware/sprite/SpriteDataSupport";
 import { LineDataSupport } from "../middleware/line/LineDataSupport";
@@ -70,59 +70,6 @@ export interface DataSupportManagerParameters {
     animationDataSupport?: AnimationDataSupport;
 }
 export declare class DataSupportManager {
-    static configModuleMap: {
-        ImageTexture: MODULETYPE;
-        CubeTexture: MODULETYPE;
-        CanvasTexture: MODULETYPE;
-        VideoTexture: MODULETYPE;
-        MeshBasicMaterial: MODULETYPE;
-        MeshStandardMaterial: MODULETYPE;
-        MeshPhongMaterial: MODULETYPE;
-        SpriteMaterial: MODULETYPE;
-        LineBasicMaterial: MODULETYPE;
-        PointsMaterial: MODULETYPE;
-        ShaderMaterial: MODULETYPE;
-        AmbientLight: MODULETYPE;
-        SpotLight: MODULETYPE;
-        PointLight: MODULETYPE;
-        DirectionalLight: MODULETYPE;
-        BoxGeometry: MODULETYPE;
-        SphereGeometry: MODULETYPE;
-        LoadGeometry: MODULETYPE;
-        CustomGeometry: MODULETYPE;
-        PlaneGeometry: MODULETYPE;
-        CircleGeometry: MODULETYPE;
-        ConeGeometry: MODULETYPE;
-        EdgesGeometry: MODULETYPE;
-        CylinderGeometry: MODULETYPE;
-        LineCurveGeometry: MODULETYPE;
-        SplineCurveGeometry: MODULETYPE;
-        CubicBezierCurveGeometry: MODULETYPE;
-        QuadraticBezierCurveGeometry: MODULETYPE;
-        LineTubeGeometry: MODULETYPE;
-        SplineTubeGeometry: MODULETYPE;
-        TorusGeometry: MODULETYPE;
-        RingGeometry: MODULETYPE;
-        LineShapeGeometry: MODULETYPE;
-        Sprite: MODULETYPE;
-        Line: MODULETYPE;
-        Mesh: MODULETYPE;
-        Points: MODULETYPE;
-        Group: MODULETYPE;
-        CSS3DObject: MODULETYPE;
-        CSS3DSprite: MODULETYPE;
-        CSS3DPlane: MODULETYPE;
-        PerspectiveCamera: MODULETYPE;
-        OrthographicCamera: MODULETYPE;
-        WebGLRenderer: MODULETYPE;
-        Scene: MODULETYPE;
-        TransformControls: MODULETYPE;
-        OrbitControls: MODULETYPE;
-        SMAAPass: MODULETYPE;
-        UnrealBloomPass: MODULETYPE;
-        ScriptAnimation: MODULETYPE;
-        KeyframeAnimation: MODULETYPE;
-    };
     cameraDataSupport: CameraDataSupport;
     lightDataSupport: LightDataSupport;
     geometryDataSupport: GeometryDataSupport;
@@ -150,11 +97,11 @@ export declare class DataSupportManager {
     /**
      * @experimental 获取该模块下的响应式数据对象
      */
-    getSupportData<C extends CompilerTarget, D extends DataSupport<C, Compiler>>(type: MODULETYPE): C | null;
+    getSupportData<C extends CompilerTarget<SymbolConfig>, D extends DataSupport<C, BasicCompiler>>(type: MODULETYPE): C | null;
     /**
      * @experimental 设置该模块下的响应式数据对象
      */
-    setSupportData<C extends CompilerTarget, D extends DataSupport<C, Compiler>>(type: MODULETYPE, data: C): this;
+    setSupportData<C extends CompilerTarget<SymbolConfig>, D extends DataSupport<C, BasicCompiler>>(type: MODULETYPE, data: C): this;
     /**
      * 通过vid标识获取相应配置对象
      * @param vid vid标识

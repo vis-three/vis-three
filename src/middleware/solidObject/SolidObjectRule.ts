@@ -1,14 +1,9 @@
 import { Rule } from "../../core/Rule";
-import {
-  SolidObject3D,
-  SolidObjectCompiler,
-  SolidObjectCompilerTarget,
-} from "./SolidObjectCompiler";
+import { SolidObject3D, SolidObjectCompiler } from "./SolidObjectCompiler";
 import { SolidObjectConfig } from "./SolidObjectConfig";
 
 export type SolidObjectRule<
-  E extends SolidObjectCompiler<C, T, O>,
+  E extends SolidObjectCompiler<C, O>,
   C extends SolidObjectConfig,
-  T extends SolidObjectCompilerTarget<C>,
   O extends SolidObject3D
 > = Rule<E>;

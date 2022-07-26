@@ -54,6 +54,7 @@ export declare enum CONFIGTYPE {
     ORBITCONTROLS = "OrbitControls",
     SMAAPASS = "SMAAPass",
     UNREALBLOOMPASS = "UnrealBloomPass",
+    SELECTIVEBLOOMPASS = "SelectiveBloomPass",
     SCRIPTANIMATION = "ScriptAnimation",
     KEYFRAMEANIMATION = "KeyframeAnimation"
 }

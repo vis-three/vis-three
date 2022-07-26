@@ -4,10 +4,9 @@ import { EngineSupport } from "../../engine/EngineSupport";
 import { SymbolConfig } from "../common/CommonConfig";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { AnimationAllType } from "./AnimationConfig";
-export interface AnimationCompilerTarget extends CompilerTarget {
-    [key: string]: AnimationAllType;
+export interface AnimationCompilerTarget extends CompilerTarget<AnimationAllType> {
 }
-export declare class AnimationCompiler extends Compiler {
+export declare class AnimationCompiler extends Compiler<AnimationAllType, AnimationCompilerTarget, Function> {
     MODULE: MODULETYPE;
     private target;
     private engine;

@@ -1,36 +1,5 @@
-import { validate } from "uuid";
+import { Rule } from "../../core/Rule";
 export const MaterialRule = function (notice, compiler) {
-    const { operate, key, path, value } = notice;
-    if (operate === "add") {
-        if (validate(key)) {
-            compiler.add(key, value);
-        }
-        return;
-    }
-    if (operate === "set") {
-        if (validate(key) && !path.length && typeof value === "object") {
-            compiler.cover(key, value);
-            return;
-        }
-        const tempPath = path.concat([]);
-        const vid = tempPath.shift();
-        if (vid && validate(vid)) {
-            compiler.set(vid, tempPath, key, value);
-        }
-        else {
-            console.warn(`material rule vid is illeage: '${vid}'`);
-        }
-        return;
-    }
-    if (operate === "delete") {
-        const vid = path[0] || key;
-        if (validate(vid)) {
-            compiler.remove(vid);
-        }
-        else {
-            console.warn(`texture rule vid is illeage: '${vid}'`);
-        }
-        return;
-    }
+    Rule(notice, compiler);
 };
 //# sourceMappingURL=MaterialRule.js.map
