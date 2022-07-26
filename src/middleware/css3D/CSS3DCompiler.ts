@@ -3,6 +3,7 @@ import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
 import { CSS3DAllType } from "./CSS3DConfig";
+import CSS3DObjectProcessor from "./processor/CSS3DObjectProcessor";
 import CSS3DPlaneProcessor from "./processor/CSS3DPlaneProcessor";
 
 export interface CSS3DCompilerTarget
@@ -21,3 +22,4 @@ export class CSS3DCompiler extends ObjectCompiler<
 }
 
 Compiler.processor(CSS3DPlaneProcessor);
+Compiler.processor(CSS3DObjectProcessor);

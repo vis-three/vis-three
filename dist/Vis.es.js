@@ -6727,6 +6727,38 @@ class ControlsCompiler extends Compiler {
     return this.map.get(vid) || null;
   }
 }
+const getElement = function(element, engine) {
+  const resourceMap = engine.resourceManager.resourceMap;
+  if (!resourceMap.has(element)) {
+    console.warn(`css3D compiler: can not found resource element: ${element}`);
+    return document.createElement("div");
+  }
+  const resource = resourceMap.get(element);
+  if (resource instanceof HTMLElement) {
+    return resource;
+  } else {
+    console.warn(`css3D compiler can not suport render this resource type.`, resource.constructor, element);
+    return document.createElement("div");
+  }
+};
+var CSS3DObjectProcessor = defineProcessor({
+  configType: CONFIGTYPE.CSS3DOBJECT,
+  commands: {
+    add: objectCommands.add,
+    set: __spreadValues({
+      element({ target, value, engine }) {
+        target.element = getElement(value, engine);
+      }
+    }, objectCommands.set),
+    delete: objectCommands.delete
+  },
+  create(config2, engine) {
+    return objectCreate(new CSS3DObject(getElement(config2.element, engine)), config2, {
+      element: true
+    }, engine);
+  },
+  dispose: objectDispose
+});
 class VisCSS3DObject extends CSS3DObject {
   constructor(element = document.createElement("div")) {
     const root = document.createElement("div");
@@ -6783,20 +6815,6 @@ class CSS3DPlane extends VisCSS3DObject {
     }
   }
 }
-const getElement = function(element, engine) {
-  const resourceMap = engine.resourceManager.resourceMap;
-  if (!resourceMap.has(element)) {
-    console.warn(`css3D compiler: can not found resource element: ${element}`);
-    return document.createElement("div");
-  }
-  const resource = resourceMap.get(element);
-  if (resource instanceof HTMLElement) {
-    return resource;
-  } else {
-    console.warn(`css3D compiler can not suport render this resource type.`, resource.constructor, element);
-    return document.createElement("div");
-  }
-};
 var CSS3DPlaneProcessor = defineProcessor({
   configType: CONFIGTYPE.CSS3DPLANE,
   commands: {
@@ -6822,6 +6840,7 @@ class CSS3DCompiler extends ObjectCompiler {
   }
 }
 Compiler.processor(CSS3DPlaneProcessor);
+Compiler.processor(CSS3DObjectProcessor);
 class CurveGeometry extends BufferGeometry {
   constructor(path = [], divisions = 36, space = true) {
     super();
