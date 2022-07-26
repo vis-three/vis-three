@@ -4093,14 +4093,14 @@ class DataSupport {
     return this.MODULE;
   }
 }
-const Rule = (input, compiler) => {
+const Rule = (input, compiler, validateFun = validate) => {
   const { operate, key, path, value } = input;
   let vid = key;
   const tempPath = [].concat(path);
   if (path.length) {
     vid = tempPath.shift();
   }
-  if (!validate(vid)) {
+  if (!validateFun(vid)) {
     console.warn(`${compiler.MODULE} Rule: vid is illeage: ${vid}`);
     return;
   }
@@ -4112,7 +4112,7 @@ const Rule = (input, compiler) => {
     compiler.remove(value);
     return;
   }
-  if (input.operate === "set" && !tempPath.length && !key) {
+  if (input.operate === "set" && !tempPath.length && key === vid) {
     compiler.cover(value);
     return;
   }
@@ -4182,34 +4182,9 @@ class CameraDataSupport extends ObjectDataSupport {
   }
 }
 const RendererRule = function(input, compiler) {
-  const { operate, key, value } = input;
-  const path = input.path.concat([]);
-  if (operate === "add") {
-    compiler.add(value);
-    return;
-  }
-  if (operate === "set") {
-    if (validate(key) || key === CONFIGTYPE.WEBGLRENDERER) {
-      compiler.add(value);
-      return;
-    }
-    let vid = key;
-    if (path.length) {
-      vid = path.shift();
-    }
-    if (validate(vid) || vid === CONFIGTYPE.WEBGLRENDERER) {
-      compiler.assembly(vid, (processer) => {
-        processer.process({
-          path: path.concat([]),
-          key,
-          value
-        });
-      });
-    } else {
-      console.warn(`renderer rule can not support this vid: ${vid}`);
-    }
-    return;
-  }
+  Rule(input, compiler, (vid) => {
+    return validate(vid) || [CONFIGTYPE.WEBGLRENDERER, CONFIGTYPE.CSS3DRENDERER].includes(vid);
+  });
 };
 class RendererDataSupport extends DataSupport {
   constructor(data, ignore) {
@@ -4219,29 +4194,9 @@ class RendererDataSupport extends DataSupport {
   }
 }
 const SceneRule = function(input, compiler) {
-  const { operate, key, path, value } = input;
-  let vid = key;
-  const tempPath = [].concat(path);
-  if (path.length) {
-    vid = tempPath.shift();
-  }
-  if (!validate(vid) && vid !== CONFIGTYPE.SCENE) {
-    console.warn(`${compiler.MODULE} Rule: vid is illeage: ${vid}`);
-    return;
-  }
-  if (operate === "add" && !tempPath.length) {
-    compiler.add(value);
-    return;
-  }
-  if (input.operate === "delete" && !tempPath.length) {
-    compiler.remove(value);
-    return;
-  }
-  if (input.operate === "set" && !tempPath.length && !key) {
-    compiler.cover(value);
-    return;
-  }
-  compiler.compile(vid, { operate, key, path: tempPath, value });
+  Rule(input, compiler, (vid) => {
+    return validate(vid) || [CONFIGTYPE.SCENE].includes(vid);
+  });
 };
 class SceneDataSupport extends ObjectDataSupport {
   constructor(data, ignore) {
@@ -4251,29 +4206,9 @@ class SceneDataSupport extends ObjectDataSupport {
   }
 }
 const ControlsRule = function(input, compiler) {
-  const { operate, key, path, value } = input;
-  let vid = key;
-  const tempPath = [].concat(path);
-  if (path.length) {
-    vid = tempPath.shift();
-  }
-  if (!validate(vid) && ![CONFIGTYPE.ORBITCONTROLS, CONFIGTYPE.TRNASFORMCONTROLS].includes(vid)) {
-    console.warn(`${compiler.MODULE} Rule: vid is illeage: ${vid}`);
-    return;
-  }
-  if (operate === "add" && !tempPath.length) {
-    compiler.add(value);
-    return;
-  }
-  if (input.operate === "delete" && !tempPath.length) {
-    compiler.remove(value);
-    return;
-  }
-  if (input.operate === "set" && !tempPath.length && !key) {
-    compiler.cover(value);
-    return;
-  }
-  compiler.compile(vid, { operate, key, path: tempPath, value });
+  Rule(input, compiler, (vid) => {
+    return validate(vid) || [CONFIGTYPE.TRNASFORMCONTROLS, CONFIGTYPE.ORBITCONTROLS].includes(vid);
+  });
 };
 class ControlsDataSupport extends DataSupport {
   constructor(data, ignore) {
@@ -4957,60 +4892,6 @@ class ObjectCompiler extends Compiler {
   constructor() {
     super();
     __publicField(this, "IS_OBJECTCOMPILER", true);
-  }
-}
-class Processor {
-  constructor() {
-    __publicField(this, "filterMap", {});
-    __publicField(this, "assembly", false);
-    this.filterMap = Object.assign({
-      vid: true,
-      type: true
-    }, this.filterMap);
-  }
-  mergeAttribute(path, key, value) {
-    if (this.filterMap[path.concat([key]).join(".")]) {
-      return;
-    }
-    let object = this.target;
-    if (path.length) {
-      for (const key2 of path) {
-        object = object[key2];
-      }
-    }
-    object[key] = value;
-  }
-  mergeObject(callBack) {
-    const recursiveConfig = (config2, object) => {
-      for (const key in config2) {
-        if (this.filterMap[key]) {
-          continue;
-        }
-        if (typeof config2[key] === "object" && typeof config2[key] !== null) {
-          recursiveConfig(config2[key], object[key]);
-          continue;
-        }
-        object[key] = config2[key];
-      }
-    };
-    recursiveConfig(this.config, this.target);
-    callBack && callBack();
-  }
-  processAll() {
-    const recursiveConfig = (config2, path) => {
-      for (const key in config2) {
-        if (this.filterMap[path.concat([key]).join(".")]) {
-          continue;
-        }
-        if (typeof config2[key] === "object" && typeof config2[key] !== null) {
-          recursiveConfig(config2[key], path.concat([key]));
-          continue;
-        }
-        this.process({ path, key, value: config2[key] });
-      }
-    };
-    recursiveConfig(this.config, []);
-    return this;
   }
 }
 class Processor2 {
@@ -6286,7 +6167,7 @@ const removeChildrenHandler = function({ target, config: config2, value, engine 
   }
   childrenConfig.parent = "";
 };
-const objectCreate = function(object, config2, filter = {}, engine) {
+const objectCreate = function(object, config2, filter, engine) {
   const asyncFun = Promise.resolve();
   asyncFun.then(() => {
     !filter.lookAt && lookAtHandler({
@@ -7954,239 +7835,136 @@ class PointsCompiler extends SolidObjectCompiler {
   }
 }
 Compiler.processor(PointsProcessor);
-class WebGLRendererProcessor extends Processor {
+var WebGLRendererProcessor = defineProcessor({
+  configType: CONFIGTYPE.WEBGLRENDERER,
+  commands: {
+    set: {
+      size({ target, config: config2 }) {
+        if (!config2.size) {
+          target.setSize(target.domElement.offsetWidth, target.domElement.offsetHeight);
+        } else {
+          target.setSize(config2.size.x, config2.size.y);
+        }
+      },
+      clearColor({ target, value }) {
+        const alpha = Number(value.slice(0, -1).split(",").pop().trim());
+        target.setClearColor(value, alpha);
+        target.clear();
+      },
+      viewport({ target, config: config2 }) {
+        const viewport = config2.viewport;
+        if (viewport) {
+          target.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+        } else {
+          const domElement = target.domElement;
+          target.setViewport(0, 0, domElement.offsetWidth, domElement.offsetHeight);
+        }
+      },
+      scissor({ target, config: config2 }) {
+        const scissor = config2.scissor;
+        if (scissor) {
+          target.setScissorTest(true);
+          target.setScissor(scissor.x, scissor.y, scissor.width, scissor.height);
+        } else {
+          target.setScissorTest(false);
+          const domElement = target.domElement;
+          target.setScissor(0, 0, domElement.offsetWidth, domElement.offsetHeight);
+        }
+      },
+      pixelRatio({ target, value }) {
+        target.setPixelRatio(value);
+        target.clear();
+      }
+    }
+  },
+  create(config2, engine) {
+    let renderer;
+    if (engine.webGLRenderer) {
+      renderer = engine.webGLRenderer;
+    } else {
+      renderer = new WebGLRenderer();
+    }
+    if (config2.size) {
+      renderer.setSize(config2.size.x, config2.size.y);
+    }
+    if (config2.clearColor) {
+      const alpha = Number(config2.clearColor.slice(0, -1).split(",").pop().trim());
+      renderer.setClearColor(config2.clearColor, alpha);
+    }
+    if (config2.viewport) {
+      const viewport = config2.viewport;
+      renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+    }
+    if (config2.scissor) {
+      const scissor = config2.scissor;
+      renderer.setScissorTest(true);
+      renderer.setScissor(scissor.x, scissor.y, scissor.width, scissor.height);
+    }
+    if (config2.pixelRatio) {
+      renderer.setPixelRatio(config2.pixelRatio);
+    }
+    syncObject(config2, renderer, {
+      size: true,
+      clearColor: true,
+      viewport: true,
+      scissor: true,
+      pixelRatio: true
+    });
+    return renderer;
+  },
+  dispose(renderer) {
+    renderer.clear();
+    renderer.dispose();
+  }
+});
+var CSS3DRendererProcessor = defineProcessor({
+  configType: CONFIGTYPE.CSS3DRENDERER,
+  commands: {
+    set: {
+      size({ target, config: config2 }) {
+        if (!config2.size) {
+          target.setSize(target.domElement.offsetWidth, target.domElement.offsetHeight);
+        } else {
+          target.setSize(config2.size.x, config2.size.y);
+        }
+      }
+    }
+  },
+  create(config2, engine) {
+    let renderer;
+    if (engine.css3DRenderer) {
+      renderer = engine.css3DRenderer;
+    } else {
+      renderer = new CSS3DRenderer();
+    }
+    if (config2.size) {
+      renderer.setSize(config2.size.x, config2.size.y);
+    }
+    syncObject(config2, renderer, {
+      size: true
+    });
+    return renderer;
+  },
+  dispose(target) {
+  }
+});
+class RendererCompiler extends Compiler {
   constructor() {
     super();
-    __publicField(this, "target");
-    __publicField(this, "config");
-    __publicField(this, "engine");
-    __publicField(this, "rendererCacheData");
-    this.rendererCacheData = {};
-  }
-  assemble(params) {
-    this.target = params.renderer;
-    this.config = params.config;
-    this.engine = params.engine;
-    this.assembly = true;
-    return this;
-  }
-  process(params) {
-    if (!this.assembly) {
-      console.warn(`webGLRenderer Processor unassembled`);
-      return this;
-    }
-    if (this[params.key]) {
-      this[params.key](params.value);
-      return this;
-    }
-    if (params.path.length && this[params.path[0]]) {
-      this[params.path[0]](params.value);
-      return this;
-    }
-    this.mergeAttribute(params.path, params.key, params.value);
-    return this;
-  }
-  dispose() {
-    this.target = void 0;
-    this.config = void 0;
-    this.engine = void 0;
-    this.assembly = false;
-    return this;
-  }
-  clearColor(value) {
-    const alpha = Number(value.slice(0, -1).split(",").pop().trim());
-    this.target.setClearColor(value, alpha);
-    this.target.clear();
-    return this;
-  }
-  pixelRatio(value) {
-    this.target.setPixelRatio(value);
-    this.target.clear();
-    return this;
-  }
-  size() {
-    const renderer = this.target;
-    const vector2 = this.config.size;
-    if (vector2) {
-      renderer.setSize(vector2.x, vector2.y);
-    } else {
-      const domElement = renderer.domElement;
-      renderer.setSize(domElement.offsetWidth, domElement.offsetHeight);
-    }
-    return this;
-  }
-  viewport() {
-    const renderer = this.target;
-    const config2 = this.config.viewport;
-    if (config2) {
-      renderer.setViewport(config2.x, config2.y, config2.width, config2.height);
-    } else {
-      const domElement = renderer.domElement;
-      renderer.setViewport(0, 0, domElement.offsetWidth, domElement.offsetHeight);
-    }
-    return this;
-  }
-  scissor() {
-    const renderer = this.target;
-    const config2 = this.config.scissor;
-    if (config2) {
-      renderer.setScissorTest(true);
-      renderer.setScissor(config2.x, config2.y, config2.width, config2.height);
-    } else {
-      renderer.setScissorTest(false);
-      const domElement = renderer.domElement;
-      renderer.setScissor(0, 0, domElement.offsetWidth, domElement.offsetHeight);
-    }
-    return this;
-  }
-  adaptiveCamera(value) {
-    if (!this.engine) {
-      console.warn(`renderer compiler is not set engine.`);
-      return this;
-    }
-    const renderer = this.target;
-    const engine = this.engine;
-    const renderManager = engine.renderManager;
-    if (!value) {
-      if (!this.rendererCacheData.adaptiveCameraFun) {
-        return this;
-      }
-      if (this.rendererCacheData.adaptiveCameraFun) {
-        renderManager.removeEventListener("render", this.rendererCacheData.adaptiveCameraFun);
-        this.rendererCacheData.adaptiveCameraFun = void 0;
-        return this;
-      }
-    }
-    if (value) {
-      if (this.rendererCacheData.adaptiveCameraFun) {
-        renderManager.addEventListener("render", this.rendererCacheData.adaptiveCameraFun);
-        return this;
-      }
-      const adaptiveCameraFun = (event) => {
-        const camera = engine.camera;
-        const domWidth = renderer.domElement.offsetWidth;
-        const domHeight = renderer.domElement.offsetHeight;
-        let width = 0;
-        let height = 0;
-        let offsetX = 0;
-        let offsetY = 0;
-        let aspect = 0;
-        if (camera instanceof PerspectiveCamera) {
-          aspect = camera.aspect;
-        } else if (camera instanceof OrthographicCamera) {
-          width = camera.right - camera.left;
-          height = camera.top - camera.bottom;
-          aspect = width / height;
-        } else {
-          console.warn(`renderer compiler can not support this camera`, camera);
-          return;
-        }
-        if (aspect >= 1) {
-          width = domWidth;
-          height = width / aspect;
-          offsetY = domHeight / 2 - height / 2;
-        } else {
-          height = domHeight;
-          width = height * aspect;
-          offsetX = domWidth / 2 - width / 2;
-        }
-        renderer.setScissor(offsetX, offsetY, width, height);
-        renderer.setViewport(offsetX, offsetY, width, height);
-        renderer.setScissorTest(true);
-      };
-      this.rendererCacheData.adaptiveCameraFun = adaptiveCameraFun;
-      renderManager.addEventListener("render", this.rendererCacheData.adaptiveCameraFun);
-    }
-    return this;
-  }
-}
-class RendererCompiler extends Compiler {
-  constructor(parameters) {
-    super();
     __publicField(this, "MODULE", MODULETYPE.RENDERER);
-    __publicField(this, "target");
-    __publicField(this, "engine");
-    __publicField(this, "processorMap", {
-      [CONFIGTYPE.WEBGLRENDERER]: new WebGLRendererProcessor()
-    });
-    __publicField(this, "map", new Map());
-    if (parameters) {
-      parameters.target && (this.target = parameters.target);
-      parameters.engine && (this.engine = parameters.engine);
-    } else {
-      this.target = {};
-      this.engine = new Engine();
-    }
-  }
-  assembly(vid, callback) {
-    const config2 = this.target[vid];
-    if (!config2) {
-      console.warn(`controls compiler can not found this config: '${vid}'`);
-      return;
-    }
-    const processer = this.processorMap[config2.type];
-    if (!processer) {
-      console.warn(`renderer compiler can not support this renderer: '${vid}'`);
-      return;
-    }
-    const renderer = this.map.get(vid);
-    if (!renderer) {
-      console.warn(`renderer compiler can not found type of renderer: '${config2.type}'`);
-      return;
-    }
-    processer.dispose().assemble({
-      config: config2,
-      renderer,
-      processer,
-      engine: this.engine
-    });
-    callback(processer);
-  }
-  add(config2) {
-    if (config2.type === CONFIGTYPE.WEBGLRENDERER) {
-      this.map.set(config2.vid, this.engine.webGLRenderer);
-    }
-    this.assembly(config2.vid, (processer) => {
-      processer.processAll().dispose();
-    });
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
   }
   useEngine(engine) {
     if (engine.webGLRenderer) {
       this.map.set(CONFIGTYPE.WEBGLRENDERER, engine.webGLRenderer);
     }
-    this.engine = engine;
-    return this;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const config2 of Object.values(target)) {
-      this.add(config2);
+    if (engine.css3DRenderer) {
+      this.map.set(CONFIGTYPE.CSS3DRENDERER, engine.css3DRenderer);
     }
-    return this;
-  }
-  dispose() {
-    this.map.forEach((renderer, vid) => {
-      renderer.dispose && renderer.dispose();
-    });
-    return this;
-  }
-  getObjectSymbol(renderer) {
-    let result = null;
-    this.map.forEach((rend, vid) => {
-      if (rend === renderer) {
-        result = vid;
-      }
-    });
-    return result;
-  }
-  getObjectBySymbol(vid) {
-    return this.map.get(vid) || null;
+    return super.useEngine(engine);
   }
 }
+Compiler.processor(WebGLRendererProcessor);
+Compiler.processor(CSS3DRendererProcessor);
 const setBackground = function(scene, value, engine) {
   if (!value) {
     scene.background = null;

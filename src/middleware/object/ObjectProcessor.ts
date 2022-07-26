@@ -200,12 +200,7 @@ export const removeChildrenHandler = function <
 export const objectCreate = function <
   C extends ObjectConfig,
   O extends Object3D
->(
-  object: O,
-  config: C,
-  filter: IgnoreAttribute = {},
-  engine: EngineSupport
-): O {
+>(object: O, config: C, filter: IgnoreAttribute<C>, engine: EngineSupport): O {
   const asyncFun = Promise.resolve();
 
   asyncFun.then(() => {

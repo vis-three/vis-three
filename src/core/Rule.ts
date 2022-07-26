@@ -1,22 +1,17 @@
 import { validate } from "uuid";
-import { SymbolConfig } from "../middleware/common/CommonConfig";
-import { Compiler, CompilerTarget } from "./Compiler";
+import { BasicCompiler } from "./Compiler";
 import { ProxyNotice } from "./ProxyBroadcast";
-
-type BasicCompiler = Compiler<
-  SymbolConfig,
-  CompilerTarget<SymbolConfig>,
-  object
->;
 
 export type Rule<C extends BasicCompiler> = (
   input: ProxyNotice,
-  output: C
+  output: C,
+  validateFun: (key: string) => boolean
 ) => void;
 
 export const Rule: Rule<BasicCompiler> = (
   input: ProxyNotice,
-  compiler: BasicCompiler
+  compiler: BasicCompiler,
+  validateFun = validate
 ) => {
   const { operate, key, path, value } = input;
 
@@ -27,7 +22,7 @@ export const Rule: Rule<BasicCompiler> = (
     vid = tempPath.shift()!;
   }
 
-  if (!validate(vid)) {
+  if (!validateFun(vid)) {
     console.warn(`${compiler.MODULE} Rule: vid is illeage: ${vid}`);
     return;
   }
@@ -42,7 +37,7 @@ export const Rule: Rule<BasicCompiler> = (
     return;
   }
 
-  if (input.operate === "set" && !tempPath.length && !key) {
+  if (input.operate === "set" && !tempPath.length && key === vid) {
     compiler.cover(value);
     return;
   }

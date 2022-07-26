@@ -22,9 +22,10 @@ export type DeepIntersection<T, I> = T extends Function
   ? { [P in keyof T]: DeepIntersection<T[P], I> } & I
   : T;
 
-export interface IgnoreAttribute {
-  [key: string]: IgnoreAttribute | boolean;
-}
+export type IgnoreAttribute<O extends object> = DeepUnion<
+  DeepPartial<DeepRecord<O, boolean>>,
+  boolean
+>;
 
 export function isValidKey(
   key: string | number | symbol,
@@ -76,13 +77,13 @@ export function generateConfigFunction<T extends object>(config: T) {
 export function syncObject<C extends object, T extends object>(
   config: C,
   target: T,
-  filter?: IgnoreAttribute,
+  filter?: IgnoreAttribute<C>,
   callBack?: Function
 ) {
   const recursiveConfig = (
     config: object,
     target: object,
-    filter?: IgnoreAttribute
+    filter?: IgnoreAttribute<C>
   ) => {
     for (const key in config) {
       if (filter && filter[key]) {
@@ -95,11 +96,7 @@ export function syncObject<C extends object, T extends object>(
           typeof filter[key] === "object" &&
           typeof filter[key] !== null
         ) {
-          recursiveConfig(
-            config[key],
-            target[key],
-            filter[key] as IgnoreAttribute
-          );
+          recursiveConfig(config[key], target[key], filter[key]);
         } else {
           recursiveConfig(config[key], target[key]);
         }

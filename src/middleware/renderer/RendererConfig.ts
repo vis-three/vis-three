@@ -23,7 +23,6 @@ export interface WebGLRendererViewPort {
 export type WebGLRendererScissor = WebGLRendererViewPort;
 
 export interface WebGLRendererConfig extends RendererConfig {
-  vid: string;
   clearColor: string;
   pixelRatio: number;
   outputEncoding: number;

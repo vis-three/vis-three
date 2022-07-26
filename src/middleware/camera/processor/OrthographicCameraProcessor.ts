@@ -1,5 +1,5 @@
 import { OrthographicCamera } from "three";
-import { defineProcessor, ProcessParams } from "../../../core/Processor";
+import { defineProcessor } from "../../../core/Processor";
 import { SetSizeEvent } from "../../../engine/Engine";
 import { EngineSupport } from "../../../engine/EngineSupport";
 import { CONFIGTYPE } from "../../constants/configType";

@@ -118,7 +118,7 @@ export abstract class Compiler<
 
     const object = this.map.get(vid)!;
 
-    syncObject(config, object, {
+    syncObject(config as SymbolConfig, object, {
       vid: true,
       type: true,
     });
