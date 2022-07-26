@@ -139,14 +139,13 @@ export const addChildrenHanlder = function <
   C extends ObjectConfig,
   O extends Object3D
 >({ target, config, value, engine }: ProcessParams<C, O>) {
-  // children如果有parent先从parent移除
   const childrenConfig = engine.getConfigBySymbol<ObjectConfig>(value);
-
   if (!childrenConfig) {
     console.warn(` can not foud object parent config in engine: ${value}`);
     return;
   }
 
+  // children如果有parent先从parent移除
   if (childrenConfig.parent && childrenConfig.parent !== config.vid) {
     const parentConfig = engine.getConfigBySymbol<ObjectConfig>(
       childrenConfig.parent
@@ -293,6 +292,7 @@ export const objectCommands: ObjectCommands<ObjectConfig, Object3D> = {
     click: updateEventHandler,
     dblclick: updateEventHandler,
     contextmenu: updateEventHandler,
+    children() {},
   },
   delete: {
     pointerdown: removeEventHandler,
