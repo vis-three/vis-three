@@ -1,17 +1,22 @@
+import { CompilerTarget } from "../../core/Compiler";
 import { DataSupport } from "../../core/DataSupport";
 import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { RendererCompiler, RendererCompilerTarget } from "./RendererCompiler";
-import { getWebGLRendererConfig } from "./RendererConfig";
+import { RendererAllType, RendererCompiler } from "./RendererCompiler";
+import { RendererConfigAllType } from "./RendererConfig";
 import { RendererRule } from "./RendererRule";
 
 export class RendererDataSupport extends DataSupport<
-  RendererCompilerTarget,
+  RendererConfigAllType,
+  RendererAllType,
   RendererCompiler
 > {
   MODULE: MODULETYPE = MODULETYPE.RENDERER;
 
-  constructor(data?: RendererCompilerTarget, ignore?: IgnoreAttribute) {
+  constructor(
+    data?: CompilerTarget<RendererConfigAllType>,
+    ignore?: IgnoreAttribute
+  ) {
     !data && (data = {});
     super(RendererRule, data, ignore);
   }

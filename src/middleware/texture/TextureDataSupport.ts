@@ -1,16 +1,20 @@
+import { Texture } from "three";
+import { CompilerTarget } from "../../core/Compiler";
 import { DataSupport } from "../../core/DataSupport";
 import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { TextureCompiler, TextureCompilerTarget } from "./TextureCompiler";
+import { TextureCompiler } from "./TextureCompiler";
+import { TextureAllType } from "./TextureConfig";
 import { TextureRule } from "./TextureRule";
 
 export class TextureDataSupport extends DataSupport<
-  TextureCompilerTarget,
+  TextureAllType,
+  Texture,
   TextureCompiler
 > {
   MODULE: MODULETYPE = MODULETYPE.TEXTURE;
 
-  constructor(data?: TextureCompilerTarget, ignore?: IgnoreAttribute) {
+  constructor(data?: CompilerTarget<TextureAllType>, ignore?: IgnoreAttribute) {
     !data && (data = {});
     super(TextureRule, data, ignore);
   }

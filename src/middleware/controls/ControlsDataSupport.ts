@@ -1,17 +1,22 @@
+import { CompilerTarget } from "../../core/Compiler";
 import { DataSupport } from "../../core/DataSupport";
 import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ControlsCompiler, ControlsCompilerTarget } from "./ControlsCompiler";
-import { getTransformControlsConfig } from "./ControlsConfig";
+import { ControlsAllType, ControlsCompiler } from "./ControlsCompiler";
+import { ControlsAllConfig } from "./ControlsConfig";
 import { ControlsRule } from "./ControlsRule";
 
 export class ControlsDataSupport extends DataSupport<
-  ControlsCompilerTarget,
+  ControlsAllConfig,
+  ControlsAllType,
   ControlsCompiler
 > {
   MODULE: MODULETYPE = MODULETYPE.CONTROLS;
 
-  constructor(data?: ControlsCompilerTarget, ignore?: IgnoreAttribute) {
+  constructor(
+    data?: CompilerTarget<ControlsAllConfig>,
+    ignore?: IgnoreAttribute
+  ) {
     !data && (data = {});
     super(ControlsRule, data, ignore);
   }

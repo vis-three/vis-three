@@ -1,5 +1,5 @@
 import { Event, Mesh, Object3D } from "three";
-import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { ObjectCompiler } from "../object/ObjectCompiler";
 import { SolidObjectConfig } from "./SolidObjectConfig";
 
 export interface SolidObject3D extends Object3D<Event> {
@@ -15,8 +15,6 @@ export abstract class SolidObjectCompiler<
   C extends SolidObjectConfig,
   O extends SolidObject3D
 > extends ObjectCompiler<C, O> {
-  IS_SOLIDOBJECTCOMPILER = true;
-
   constructor() {
     super();
   }

@@ -1,5 +1,4 @@
 import { BufferGeometry, Material, Object3D, Texture } from "three";
-import { validate } from "uuid";
 import { BasicCompiler, Compiler } from "../core/Compiler";
 import { EngineSupport } from "../engine/EngineSupport";
 import { MODULETYPE } from "../main";
@@ -14,18 +13,13 @@ import { LightCompiler } from "../middleware/light/LightCompiler";
 import { LineCompiler } from "../middleware/line/LineCompiler";
 import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { MeshCompiler } from "../middleware/mesh/MeshCompiler";
-import {
-  BasicObjectCompiler,
-  ObjectCompiler,
-} from "../middleware/object/ObjectCompiler";
+import { ObjectCompiler } from "../middleware/object/ObjectCompiler";
 import { PassCompiler } from "../middleware/pass/PassCompiler";
 import { PointsCompiler } from "../middleware/points/PointsCompiler";
 import { RendererCompiler } from "../middleware/renderer/RendererCompiler";
 import { SceneCompiler } from "../middleware/scene/SceneCompiler";
-import { BasicSolidObjectCompiler } from "../middleware/solidObject/SolidObjectCompiler";
 import { SpriteCompiler } from "../middleware/sprite/SpriteCompiler";
 import { TextureCompiler } from "../middleware/texture/TextureCompiler";
-import { isValidKey } from "../utils/utils";
 
 export interface CompilerManagerParameters {
   cameraCompiler: CameraCompiler;

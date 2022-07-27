@@ -1,16 +1,23 @@
+import { BufferGeometry } from "three";
+import { CompilerTarget } from "../../core/Compiler";
 import { DataSupport } from "../../core/DataSupport";
 import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { GeometryCompiler, GeometryCompilerTarget } from "./GeometryCompiler";
+import { GeometryCompiler } from "./GeometryCompiler";
+import { GeometryAllType } from "./GeometryInterface";
 import { GeometryRule } from "./GeometryRule";
 
 export class GeometryDataSupport extends DataSupport<
-  GeometryCompilerTarget,
+  GeometryAllType,
+  BufferGeometry,
   GeometryCompiler
 > {
   MODULE: MODULETYPE = MODULETYPE.GEOMETRY;
 
-  constructor(data?: GeometryCompilerTarget, ignore?: IgnoreAttribute) {
+  constructor(
+    data?: CompilerTarget<GeometryAllType>,
+    ignore?: IgnoreAttribute
+  ) {
     !data && (data = {});
     super(GeometryRule, data, ignore);
   }

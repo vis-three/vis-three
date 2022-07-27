@@ -1,25 +1,23 @@
-import { Object3D } from "three";
+import { CompilerTarget } from "../../core/Compiler";
 import { DataSupport } from "../../core/DataSupport";
 import { IgnoreAttribute } from "../../core/ProxyBroadcast";
+import { Rule } from "../../core/Rule";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import {
-  SolidObject3D,
-  SolidObjectCompiler,
-  SolidObjectCompilerTarget,
-} from "./SolidObjectCompiler";
+import { SolidObject3D, SolidObjectCompiler } from "./SolidObjectCompiler";
 import { SolidObjectConfig } from "./SolidObjectConfig";
-import { SolidObjectRule } from "./SolidObjectRule";
 
 export class SolidObjectDataSupport<
-  R extends SolidObjectRule<E, C, T, O>,
-  E extends SolidObjectCompiler<C, T, O>,
   C extends SolidObjectConfig,
-  T extends SolidObjectCompilerTarget<C>,
-  O extends SolidObject3D
-> extends DataSupport<T, E> {
+  O extends SolidObject3D,
+  P extends SolidObjectCompiler<C, O>
+> extends DataSupport<C, O, P> {
   MODULE: MODULETYPE = MODULETYPE.MESH;
 
-  constructor(rule: R, data?: T, ignore?: IgnoreAttribute) {
+  constructor(
+    rule: Rule<SolidObjectCompiler<C, O>>,
+    data?: CompilerTarget<C>,
+    ignore?: IgnoreAttribute
+  ) {
     !data && (data = Object.create(Object.prototype));
     super(rule, data!, ignore);
   }
