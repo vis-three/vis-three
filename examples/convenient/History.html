@@ -38,25 +38,25 @@
 
         constructor({ objects, engine }) {
           super();
+
           this.oldObjects = [].concat(SectionAction.cacheSection);
           this.newObjects = [].concat(objects);
           this.engine = engine;
-
           SectionAction.cacheSection = [].concat(objects);
         }
 
         next() {
+          SectionAction.status = true;
           this.engine.setSelectionBox({
             objects: this.newObjects,
           });
-          SectionAction.status = true;
         }
 
         prev() {
+          SectionAction.status = true;
           this.engine.setSelectionBox({
             objects: this.oldObjects,
           });
-          SectionAction.status = true;
         }
       }
 
