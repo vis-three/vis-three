@@ -34,20 +34,12 @@ export class CompilerManager {
     passCompiler = new PassCompiler();
     animationCompiler = new AnimationCompiler();
     compilerMap;
-    object3DMapSet = new Set();
     constructor(parameters) {
         if (parameters) {
             Object.keys(parameters).forEach((key) => {
                 this[key] = parameters[key];
             });
         }
-        const objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
-        // TODO: 编译器内部物体全部从compilerManager里面获取
-        const objectMapList = objectCompilerList.map((compiler) => {
-            const map = compiler.getMap();
-            this.object3DMapSet.add(map);
-            return map;
-        });
         const compilerMap = new Map();
         Object.keys(this).forEach((key) => {
             const compiler = this[key];
@@ -121,9 +113,11 @@ export class CompilerManager {
      * @returns Object3D | null
      */
     getObject3D(vid) {
-        for (const map of this.object3DMapSet) {
-            if (map.has(vid)) {
-                return map.get(vid);
+        for (const compiler of this.compilerMap.values()) {
+            if (compiler instanceof ObjectCompiler) {
+                if (compiler.map.has(vid)) {
+                    return compiler.map.get(vid);
+                }
             }
         }
         return null;

@@ -70,14 +70,23 @@
       const gui = new GUI();
 
       const guiParams = {
+        extend: material2.uniforms.extend.value,
         color: material2.uniforms.color.value,
         brightness: material2.uniforms.brightness.value,
+        range: material2.uniforms.range.value,
       };
 
       gui.addColor(guiParams, "color");
+      gui.add(guiParams, "extend", 0, 10, 1).onChange((value) => {
+        material2.uniforms.extend.value = value;
+      });
 
       gui.add(guiParams, "brightness", 0, 1, 0.01).onChange((value) => {
         material2.uniforms.brightness.value = value;
+      });
+
+      gui.add(guiParams, "range", 0, 20, 1).onChange((value) => {
+        material2.uniforms.range.value = value;
       });
     </script>
   </body>

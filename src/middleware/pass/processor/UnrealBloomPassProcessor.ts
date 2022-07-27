@@ -6,9 +6,18 @@ import { UnrealBloomPassConfig } from "../PassConfig";
 
 export default defineProcessor<UnrealBloomPassConfig, UnrealBloomPass>({
   configType: CONFIGTYPE.UNREALBLOOMPASS,
-  create(config): UnrealBloomPass {
+  create(config, engine): UnrealBloomPass {
+    const pixelRatio = window.devicePixelRatio;
+
     const pass = new UnrealBloomPass(
-      new Vector2(config.resolution.x, config.resolution.y),
+      new Vector2(
+        engine.dom
+          ? engine.dom.offsetWidth * pixelRatio
+          : window.innerWidth * pixelRatio,
+        engine.dom
+          ? engine.dom.offsetHeight * pixelRatio
+          : window.innerWidth * pixelRatio
+      ),
       config.strength,
       config.radius,
       config.threshold

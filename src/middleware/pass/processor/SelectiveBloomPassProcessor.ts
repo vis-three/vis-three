@@ -1,5 +1,9 @@
 import { Camera, Object3D, Scene, Vector2 } from "three";
-import { defineProcessor } from "../../../core/Processor";
+import {
+  defineProcessor,
+  emptyHandler,
+  RegCommand,
+} from "../../../core/Processor";
 import { SelectiveBloomPass } from "../../../extends/pass/SelectiveBloomPass";
 import { CONFIGTYPE } from "../../constants/configType";
 import { SelectiveBloomPassConfig } from "../PassConfig";
@@ -37,6 +41,23 @@ export default defineProcessor<SelectiveBloomPassConfig, SelectiveBloomPass>({
           `selectiveBloomPassProcessor: can not set renderCamera in engine: ${value}`;
         }
       },
+      selectedObjects({ target, config, engine }) {
+        const objects = config.selectedObjects
+          .map((vid) => {
+            const object = engine.compilerManager.getObject3D(vid);
+            if (object) {
+              return object;
+            } else {
+              console.warn(
+                `selectiveBloomPassProcessor: can not found vid in engine: ${vid}`
+              );
+              return undefined;
+            }
+          })
+          .filter((object) => object) as Object3D[];
+
+        target.selectedObjects = objects;
+      },
     },
     delete: {
       selectedObjects({ target, engine, value }) {
@@ -64,8 +85,17 @@ export default defineProcessor<SelectiveBloomPassConfig, SelectiveBloomPass>({
       object && objects.push(object);
     }
 
+    const pixelRatio = window.devicePixelRatio;
+
     const pass = new SelectiveBloomPass(
-      new Vector2(config.resolution.x, config.resolution.y),
+      new Vector2(
+        engine.dom
+          ? engine.dom.offsetWidth * pixelRatio
+          : window.innerWidth * pixelRatio,
+        engine.dom
+          ? engine.dom.offsetHeight * pixelRatio
+          : window.innerWidth * pixelRatio
+      ),
       config.strength,
       config.radius,
       config.threshold,

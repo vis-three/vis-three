@@ -8,9 +8,15 @@ import { SMAAPassConfig } from "../PassConfig";
 export default defineProcessor<SMAAPassConfig, SMAAPass>({
   configType: CONFIGTYPE.SMAAPASS,
   create(config, engine): SMAAPass {
+    const pixelRatio = window.devicePixelRatio;
+
     const pass = new SMAAPass(
-      engine.dom!.offsetWidth,
-      engine.dom!.offsetHeight
+      engine.dom
+        ? engine.dom.offsetWidth * pixelRatio
+        : window.innerWidth * pixelRatio,
+      engine.dom
+        ? engine.dom.offsetHeight * pixelRatio
+        : window.innerWidth * pixelRatio
     );
     return pass;
   },

@@ -53,7 +53,6 @@ export declare class CompilerManager {
     private passCompiler;
     private animationCompiler;
     private compilerMap;
-    private object3DMapSet;
     constructor(parameters?: CompilerManagerParameters);
     /**
      * engine进行编译器链接

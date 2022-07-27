@@ -2308,7 +2308,10 @@ const shader = {
   name: "BloomShader",
   uniforms: {
     brightness: { value: 0.5 },
-    width: { value: 5 },
+    extend: { value: 5 },
+    range: { value: 10 },
+    specular: { value: 0.8 },
+    specularRange: { value: 2 },
     color: {
       value: {
         r: 1,
@@ -2318,26 +2321,30 @@ const shader = {
     }
   },
   vertexShader: `
-  uniform float width;
+  uniform float extend;
 
-  varying vec3 vNormal; // \u6CD5\u7EBF
-  varying vec3 vPositionNormal;
+  varying vec2 vUv;
+
   void main () {
-    vec3 vNormal = normalize( normalMatrix * normal ); // \u8F6C\u6362\u5230\u89C6\u56FE\u7A7A\u95F4
-    vec3 vPositionNormal = normalize(normalMatrix * -cameraPosition);
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position + normalize(position) * width, 1.0);
-    // gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+
+    vUv = uv;
+
+    vec3 extendPosition = position + normalize(position) * extend;
+
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(extendPosition , 1.0 );
   }`,
   fragmentShader: `
     uniform vec3 color;
     uniform float brightness;
+    uniform float specular;
+    uniform float range;
+    uniform float specularRange;
 
-    varying vec3 vNormal;
-    varying vec3 vPositionNormal;
+    varying vec2 vUv;
     
     void main () {
-      float a = dot(vNormal, vPositionNormal);
-      gl_FragColor = vec4(color, a);
+
+      gl_FragColor = vec4(color, brightness);
     }`
 };
 const _ShaderLibrary = class {
@@ -3133,10 +3140,6 @@ const getSMAAPassConfig = function() {
 const getUnrealBloomPassConfig = function() {
   return Object.assign(getPassConfig(), {
     type: CONFIGTYPE.UNREALBLOOMPASS,
-    resolution: {
-      x: window.innerWidth,
-      y: window.innerHeight
-    },
     strength: 1.5,
     threshold: 0,
     radius: 0
@@ -3145,10 +3148,6 @@ const getUnrealBloomPassConfig = function() {
 const getSelectiveBloomPassConfig = function() {
   return Object.assign(getPassConfig(), {
     type: CONFIGTYPE.SELECTIVEBLOOMPASS,
-    resolution: {
-      x: window.innerWidth,
-      y: window.innerHeight
-    },
     strength: 1,
     threshold: 0,
     radius: 0,
@@ -7289,7 +7288,8 @@ Compiler.processor(MeshProcessor);
 var SMAAPassProcessor = defineProcessor({
   configType: CONFIGTYPE.SMAAPASS,
   create(config2, engine) {
-    const pass = new SMAAPass(engine.dom.offsetWidth, engine.dom.offsetHeight);
+    const pixelRatio = window.devicePixelRatio;
+    const pass = new SMAAPass(engine.dom ? engine.dom.offsetWidth * pixelRatio : window.innerWidth * pixelRatio, engine.dom ? engine.dom.offsetHeight * pixelRatio : window.innerWidth * pixelRatio);
     return pass;
   },
   dispose(pass) {
@@ -7297,8 +7297,9 @@ var SMAAPassProcessor = defineProcessor({
 });
 var UnrealBloomPassProcessor = defineProcessor({
   configType: CONFIGTYPE.UNREALBLOOMPASS,
-  create(config2) {
-    const pass = new UnrealBloomPass(new Vector2(config2.resolution.x, config2.resolution.y), config2.strength, config2.radius, config2.threshold);
+  create(config2, engine) {
+    const pixelRatio = window.devicePixelRatio;
+    const pass = new UnrealBloomPass(new Vector2(engine.dom ? engine.dom.offsetWidth * pixelRatio : window.innerWidth * pixelRatio, engine.dom ? engine.dom.offsetHeight * pixelRatio : window.innerWidth * pixelRatio), config2.strength, config2.radius, config2.threshold);
     return pass;
   },
   dispose(pass) {
@@ -7686,6 +7687,18 @@ var SelectiveBloomPassProcessor = defineProcessor({
         if (object instanceof Camera) {
           target.renderCamera = object;
         }
+      },
+      selectedObjects({ target, config: config2, engine }) {
+        const objects = config2.selectedObjects.map((vid) => {
+          const object = engine.compilerManager.getObject3D(vid);
+          if (object) {
+            return object;
+          } else {
+            console.warn(`selectiveBloomPassProcessor: can not found vid in engine: ${vid}`);
+            return void 0;
+          }
+        }).filter((object) => object);
+        target.selectedObjects = objects;
       }
     },
     delete: {
@@ -7707,7 +7720,8 @@ var SelectiveBloomPassProcessor = defineProcessor({
       const object = engine.compilerManager.getObject3D(vid);
       object && objects.push(object);
     }
-    const pass = new SelectiveBloomPass(new Vector2(config2.resolution.x, config2.resolution.y), config2.strength, config2.radius, config2.threshold, config2.renderScene && engine.compilerManager.getObject3D(config2.renderScene) || void 0, config2.renderCamera && engine.compilerManager.getObject3D(config2.renderCamera) || void 0, objects);
+    const pixelRatio = window.devicePixelRatio;
+    const pass = new SelectiveBloomPass(new Vector2(engine.dom ? engine.dom.offsetWidth * pixelRatio : window.innerWidth * pixelRatio, engine.dom ? engine.dom.offsetHeight * pixelRatio : window.innerWidth * pixelRatio), config2.strength, config2.radius, config2.threshold, config2.renderScene && engine.compilerManager.getObject3D(config2.renderScene) || void 0, config2.renderCamera && engine.compilerManager.getObject3D(config2.renderCamera) || void 0, objects);
     return pass;
   },
   dispose(target) {
@@ -8354,18 +8368,11 @@ class CompilerManager {
     __publicField(this, "passCompiler", new PassCompiler());
     __publicField(this, "animationCompiler", new AnimationCompiler());
     __publicField(this, "compilerMap");
-    __publicField(this, "object3DMapSet", new Set());
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
         this[key] = parameters[key];
       });
     }
-    const objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
-    objectCompilerList.map((compiler) => {
-      const map = compiler.getMap();
-      this.object3DMapSet.add(map);
-      return map;
-    });
     const compilerMap = new Map();
     Object.keys(this).forEach((key) => {
       const compiler = this[key];
@@ -8417,9 +8424,11 @@ class CompilerManager {
     return null;
   }
   getObject3D(vid) {
-    for (const map of this.object3DMapSet) {
-      if (map.has(vid)) {
-        return map.get(vid);
+    for (const compiler of this.compilerMap.values()) {
+      if (compiler instanceof ObjectCompiler) {
+        if (compiler.map.has(vid)) {
+          return compiler.map.get(vid);
+        }
       }
     }
     return null;

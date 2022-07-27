@@ -60,24 +60,12 @@ export class CompilerManager {
 
   private compilerMap: Map<MODULETYPE, BasicCompiler>;
 
-  private object3DMapSet: Set<Map<SymbolConfig["vid"], Object3D>> = new Set();
-
   constructor(parameters?: CompilerManagerParameters) {
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
         this[key] = parameters[key];
       });
     }
-
-    const objectCompilerList = Object.values(this).filter(
-      (object) => object instanceof ObjectCompiler
-    );
-    // TODO: 编译器内部物体全部从compilerManager里面获取
-    const objectMapList = objectCompilerList.map((compiler) => {
-      const map = compiler.getMap();
-      this.object3DMapSet.add(map);
-      return map;
-    });
 
     const compilerMap = new Map();
 
@@ -161,9 +149,11 @@ export class CompilerManager {
    * @returns Object3D | null
    */
   getObject3D<O extends Object3D>(vid: string): O | null {
-    for (const map of this.object3DMapSet) {
-      if (map.has(vid)) {
-        return map.get(vid)! as O;
+    for (const compiler of this.compilerMap.values()) {
+      if (compiler instanceof ObjectCompiler) {
+        if (compiler.map.has(vid)) {
+          return compiler.map.get(vid)! as O;
+        }
       }
     }
     return null;

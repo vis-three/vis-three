@@ -13,7 +13,7 @@ export interface ProcessParams<C extends SymbolConfig, T extends object>
   extends ProxyNotice {
   config: C;
   target: T;
-  processor: Processor<C, T>;
+  processor: Processor2<C, T>;
   engine: EngineSupport;
 }
 
