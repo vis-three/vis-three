@@ -1,4 +1,4 @@
 import { ShaderMaterial } from "three";
 import { ShaderMaterialConfig } from "../MaterialConfig";
-declare const _default: import("../../../core/Processor").Processor2<ShaderMaterialConfig, ShaderMaterial>;
+declare const _default: import("../../../core/Processor").Processor<ShaderMaterialConfig, ShaderMaterial>;
 export default _default;

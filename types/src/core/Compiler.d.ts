@@ -2,12 +2,12 @@ import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { EngineSupport } from "../engine/EngineSupport";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { ProxyNotice } from "./ProxyBroadcast";
-import { Processor2 } from "./Processor";
+import { Processor } from "./Processor";
 export declare type CompilerTarget<C extends SymbolConfig> = Record<string, C>;
 export declare type BasicCompiler = Compiler<SymbolConfig, object>;
 export declare abstract class Compiler<C extends SymbolConfig, O extends object> {
-    static processors: Map<string, Processor2<SymbolConfig, object>>;
-    static processor: <C_1 extends SymbolConfig, T extends object>(processor: Processor2<C_1, T>) => void;
+    static processors: Map<string, Processor<SymbolConfig, object>>;
+    static processor: <C_1 extends SymbolConfig, T extends object>(processor: Processor<C_1, T>) => void;
     abstract MODULE: MODULETYPE;
     target: CompilerTarget<C>;
     map: Map<SymbolConfig["vid"], O>;

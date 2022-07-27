@@ -44,6 +44,7 @@ export default defineProcessor({
     commands: {
         add: objectCommands.add,
         set: {
+            ...objectCommands.set,
             lookAt() { },
             fog({ target, config, key, value }) {
                 const fog = config.fog;
@@ -83,7 +84,6 @@ export default defineProcessor({
             environment({ target, value, engine }) {
                 setEnvironment(target, value, engine);
             },
-            ...objectCommands.set,
         },
         delete: objectCommands
             .delete,
@@ -104,7 +104,7 @@ export default defineProcessor({
                 console.warn(`scene processor can not support this type fog:'${config.type}'`);
             }
         }
-        return objectCreate(new Scene(), config, {
+        return objectCreate(scene, config, {
             lookAt: true,
             background: true,
             environment: true,

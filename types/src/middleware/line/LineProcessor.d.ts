@@ -1,4 +1,4 @@
 import { Line } from "three";
 import { LineConfig } from "./LineConfig";
-declare const _default: import("../../core/Processor").Processor2<LineConfig, Line<import("three").BufferGeometry, import("three").Material | import("three").Material[]>>;
+declare const _default: import("../../core/Processor").Processor<LineConfig, Line<import("three").BufferGeometry, import("three").Material | import("three").Material[]>>;
 export default _default;

@@ -54,10 +54,13 @@ export class Compiler {
             console.warn(`${this.MODULE} compiler can not found this vid object: ${vid}.`);
             return this;
         }
-        const object = this.map.get(vid);
-        syncObject(config, object, {
-            vid: true,
-            type: true,
+        Promise.resolve().then(() => {
+            // 兼容初始时候的cover
+            // 自己跟自己合并一次
+            syncObject(config, config, {
+                vid: true,
+                type: true,
+            });
         });
         return this;
     }

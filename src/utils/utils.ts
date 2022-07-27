@@ -26,6 +26,14 @@ export type ArrayToObject<A extends Array<any>> = {
   [P in keyof A]: A[P];
 };
 
+export type DeepArrayToObject<T> = T extends Function
+  ? T
+  : T extends object
+  ? { [P in keyof T]: DeepArrayToObject<T[P]> }
+  : T extends Array<any>
+  ? ArrayToObject<T>
+  : T;
+
 export type IgnoreAttribute<O extends object> = DeepUnion<
   DeepPartial<DeepRecord<O, boolean>>,
   boolean

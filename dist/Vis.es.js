@@ -4643,7 +4643,7 @@ __publicField(Compiler, "processor", function(processor) {
   _Compiler.processors.set(processor.configType, processor);
 });
 const scriptAniSymbol = "vis.scriptAni";
-class Processor2 {
+class Processor {
   constructor(options) {
     __publicField(this, "configType");
     __publicField(this, "commands");
@@ -4723,7 +4723,7 @@ class Processor2 {
   }
 }
 const defineProcessor = (options) => {
-  return new Processor2(options);
+  return new Processor(options);
 };
 const emptyHandler = function() {
 };

@@ -1,4 +1,4 @@
-export class Processor2 {
+export class Processor {
     configType;
     commands;
     create;
@@ -84,6 +84,7 @@ export class Processor2 {
     }
 }
 export const defineProcessor = (options) => {
-    return new Processor2(options);
+    return new Processor(options);
 };
+export const emptyHandler = function () { };
 //# sourceMappingURL=Processor.js.map

@@ -1,3 +1,4 @@
+import { emptyHandler, } from "../../core/Processor";
 import { EventLibrary } from "../../library/event/EventLibrary";
 import { EVENTNAME } from "../../manager/EventManager";
 import { syncObject } from "../../utils/utils";
@@ -84,7 +85,7 @@ export const updateEventHandler = function ({ target, config, path, engine }) {
 export const addChildrenHanlder = function ({ target, config, value, engine }) {
     const childrenConfig = engine.getConfigBySymbol(value);
     if (!childrenConfig) {
-        console.warn(` can not foud object parent config in engine: ${value}`);
+        console.warn(` can not foud object config in engine: ${value}`);
         return;
     }
     // children如果有parent先从parent移除
@@ -153,6 +154,7 @@ export const objectCreate = function (object, config, filter, engine) {
         }
     });
     syncObject(config, object, {
+        vid: true,
         type: true,
         lookAt: true,
         parent: true,
@@ -195,7 +197,15 @@ export const objectCommands = {
         click: updateEventHandler,
         dblclick: updateEventHandler,
         contextmenu: updateEventHandler,
-        children() { },
+        parent: emptyHandler,
+        children: {
+            $reg: [
+                {
+                    reg: new RegExp(".*"),
+                    handler: addChildrenHanlder,
+                },
+            ],
+        },
     },
     delete: {
         pointerdown: removeEventHandler,

@@ -13,7 +13,7 @@ export interface ProcessParams<C extends SymbolConfig, T extends object>
   extends ProxyNotice {
   config: C;
   target: T;
-  processor: Processor2<C, T>;
+  processor: Processor<C, T>;
   engine: EngineSupport;
 }
 
@@ -49,9 +49,9 @@ export interface ProcessorOptions<C extends SymbolConfig, T extends object> {
 
 export type DefineProcessor = <C extends SymbolConfig, T extends object>(
   options: ProcessorOptions<C, T>
-) => Processor2<C, T>;
+) => Processor<C, T>;
 
-export class Processor2<C extends SymbolConfig, T extends object> {
+export class Processor<C extends SymbolConfig, T extends object> {
   configType: CONFIGTYPE | string;
   commands?: ProcessorCommands<C, T>;
   create: (config: C, engine: EngineSupport) => T;
@@ -150,7 +150,7 @@ export const defineProcessor: DefineProcessor = <
 >(
   options: ProcessorOptions<C, T>
 ) => {
-  return new Processor2<C, T>(options);
+  return new Processor<C, T>(options);
 };
 
 export const emptyHandler = function () {};

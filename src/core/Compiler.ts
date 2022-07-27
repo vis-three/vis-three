@@ -3,7 +3,7 @@ import { EngineSupport } from "../engine/EngineSupport";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { ProxyNotice } from "./ProxyBroadcast";
-import { Processor2 } from "./Processor";
+import { Processor } from "./Processor";
 import { syncObject } from "../utils/utils";
 
 export type CompilerTarget<C extends SymbolConfig> = Record<string, C>;
@@ -13,15 +13,15 @@ export type BasicCompiler = Compiler<SymbolConfig, object>;
 export abstract class Compiler<C extends SymbolConfig, O extends object> {
   static processors = new Map<
     CONFIGTYPE | string,
-    Processor2<SymbolConfig, object>
+    Processor<SymbolConfig, object>
   >();
 
   static processor = function <C extends SymbolConfig, T extends object>(
-    processor: Processor2<C, T>
+    processor: Processor<C, T>
   ) {
     Compiler.processors.set(
       processor.configType,
-      <Processor2<SymbolConfig, object>>(<unknown>processor)
+      <Processor<SymbolConfig, object>>(<unknown>processor)
     );
   };
 
@@ -35,7 +35,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
   private cacheCompile?: {
     target: O;
     config: C;
-    processor: Processor2<SymbolConfig, object>;
+    processor: Processor<SymbolConfig, object>;
     vid: string;
   };
 
@@ -65,7 +65,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
 
     const processor = Compiler.processors.get(
       config.type
-    )! as unknown as Processor2<C, O>;
+    )! as unknown as Processor<C, O>;
 
     const object = processor.create(config, this.engine);
     this.map.set(config.vid, object);
@@ -124,7 +124,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
 
     let object: O;
     let config: C;
-    let processor: Processor2<SymbolConfig, object>;
+    let processor: Processor<SymbolConfig, object>;
 
     if (cacheCompile && cacheCompile.vid === vid) {
       object = cacheCompile.target;

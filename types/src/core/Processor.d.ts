@@ -6,7 +6,7 @@ import { ProxyNotice } from "./ProxyBroadcast";
 export interface ProcessParams<C extends SymbolConfig, T extends object> extends ProxyNotice {
     config: C;
     target: T;
-    processor: Processor2<C, T>;
+    processor: Processor<C, T>;
     engine: EngineSupport;
 }
 export declare type RegCommand<C extends SymbolConfig, T extends object> = {
@@ -28,8 +28,8 @@ export interface ProcessorOptions<C extends SymbolConfig, T extends object> {
     create: (config: C, engine: EngineSupport) => T;
     dispose: (target: T) => void;
 }
-export declare type DefineProcessor = <C extends SymbolConfig, T extends object>(options: ProcessorOptions<C, T>) => Processor2<C, T>;
-export declare class Processor2<C extends SymbolConfig, T extends object> {
+export declare type DefineProcessor = <C extends SymbolConfig, T extends object>(options: ProcessorOptions<C, T>) => Processor<C, T>;
+export declare class Processor<C extends SymbolConfig, T extends object> {
     configType: CONFIGTYPE | string;
     commands?: ProcessorCommands<C, T>;
     create: (config: C, engine: EngineSupport) => T;
@@ -41,3 +41,4 @@ export declare class Processor2<C extends SymbolConfig, T extends object> {
     delete(params: ProcessParams<C, T>): void;
 }
 export declare const defineProcessor: DefineProcessor;
+export declare const emptyHandler: () => void;
