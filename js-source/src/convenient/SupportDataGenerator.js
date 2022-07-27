@@ -1,7 +1,6 @@
-import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
+import { getModule } from "../middleware/constants/CONFIGMODULE";
 import { generateConfig } from "./generateConfig";
 export class SupportDataGenerator {
-    static configModelMap = CONFIGMODULE;
     supportData;
     supportDataType;
     constructor() { }
@@ -23,7 +22,7 @@ export class SupportDataGenerator {
             console.warn(`config can not found attribute 'type'`);
             return this;
         }
-        if (SupportDataGenerator.configModelMap[config.type] !== this.supportDataType) {
+        if (getModule(config.type) !== this.supportDataType) {
             console.warn(`current generator create config which module is in: ${this.supportDataType}, but you provide type is '${config.type}'`);
             return this;
         }

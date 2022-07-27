@@ -1,8 +1,11 @@
+import { Material } from "three";
+import { CompilerTarget } from "../../core/Compiler";
 import { DataSupport } from "../../core/DataSupport";
 import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { MaterialCompiler, MaterialCompilerTarget } from "./MaterialCompiler";
-export declare class MaterialDataSupport extends DataSupport<MaterialCompilerTarget, MaterialCompiler> {
+import { MaterialCompiler } from "./MaterialCompiler";
+import { MaterialAllType } from "./MaterialConfig";
+export declare class MaterialDataSupport extends DataSupport<MaterialAllType, Material, MaterialCompiler> {
     MODULE: MODULETYPE;
-    constructor(data?: MaterialCompilerTarget, ignore?: IgnoreAttribute);
+    constructor(data?: CompilerTarget<MaterialAllType>, ignore?: IgnoreAttribute);
 }

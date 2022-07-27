@@ -3,15 +3,13 @@ import { EngineSupport } from "../engine/EngineSupport";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { ProxyNotice } from "./ProxyBroadcast";
 import { Processor2 } from "./Processor";
-export interface CompilerTarget<C extends SymbolConfig> {
-    [key: string]: C;
-}
-export declare type BasicCompiler = Compiler<SymbolConfig, CompilerTarget<SymbolConfig>, object>;
-export declare abstract class Compiler<C extends SymbolConfig, T extends CompilerTarget<C>, O extends object> {
+export declare type CompilerTarget<C extends SymbolConfig> = Record<string, C>;
+export declare type BasicCompiler = Compiler<SymbolConfig, object>;
+export declare abstract class Compiler<C extends SymbolConfig, O extends object> {
     static processors: Map<string, Processor2<SymbolConfig, object>>;
-    static processor: <C_1 extends SymbolConfig, T_1 extends object>(processor: Processor2<C_1, T_1>) => void;
+    static processor: <C_1 extends SymbolConfig, T extends object>(processor: Processor2<C_1, T>) => void;
     abstract MODULE: MODULETYPE;
-    target: T;
+    target: CompilerTarget<C>;
     map: Map<SymbolConfig["vid"], O>;
     weakMap: WeakMap<O, SymbolConfig["vid"]>;
     engine: EngineSupport;
@@ -19,7 +17,7 @@ export declare abstract class Compiler<C extends SymbolConfig, T extends Compile
     constructor();
     getMap(): Map<SymbolConfig["vid"], O>;
     useEngine(engine: EngineSupport): this;
-    setTarget(target: T): this;
+    setTarget(target: CompilerTarget<C>): this;
     add(config: C): O | null;
     remove(config: C): this;
     cover(config: C): this;

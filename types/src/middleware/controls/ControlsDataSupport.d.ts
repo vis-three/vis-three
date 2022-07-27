@@ -1,8 +1,10 @@
+import { CompilerTarget } from "../../core/Compiler";
 import { DataSupport } from "../../core/DataSupport";
 import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ControlsCompiler, ControlsCompilerTarget } from "./ControlsCompiler";
-export declare class ControlsDataSupport extends DataSupport<ControlsCompilerTarget, ControlsCompiler> {
+import { ControlsAllType, ControlsCompiler } from "./ControlsCompiler";
+import { ControlsAllConfig } from "./ControlsConfig";
+export declare class ControlsDataSupport extends DataSupport<ControlsAllConfig, ControlsAllType, ControlsCompiler> {
     MODULE: MODULETYPE;
-    constructor(data?: ControlsCompilerTarget, ignore?: IgnoreAttribute);
+    constructor(data?: CompilerTarget<ControlsAllConfig>, ignore?: IgnoreAttribute);
 }

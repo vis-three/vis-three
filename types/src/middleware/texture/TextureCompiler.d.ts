@@ -1,10 +1,8 @@
 import { Texture } from "three";
-import { Compiler, CompilerTarget } from "../../core/Compiler";
+import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { TextureAllType } from "./TextureConfig";
-export interface TextureCompilerTarget extends CompilerTarget<TextureAllType> {
-}
-export declare class TextureCompiler extends Compiler<TextureAllType, TextureCompilerTarget, Texture> {
+export declare class TextureCompiler extends Compiler<TextureAllType, Texture> {
     MODULE: MODULETYPE;
     constructor();
 }

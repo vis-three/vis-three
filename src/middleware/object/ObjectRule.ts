@@ -1,7 +1,7 @@
 import { Object3D } from "three";
 import { ProxyNotice } from "../../core/ProxyBroadcast";
 import { Rule } from "../../core/Rule";
-import { ObjectCompiler, ObjectCompilerTarget } from "./ObjectCompiler";
+import { ObjectCompiler } from "./ObjectCompiler";
 import { ObjectConfig } from "./ObjectConfig";
 
 export type ObjectRule<

@@ -47,7 +47,7 @@ import {
 - `dist`vis-three 库 build
 - `dist-website`主页 build
 - `js-source` tsc 编译 js 版本
-- `types`vis-three 的声明文件地址
+- `types`vis-three 的声明文件
 - `uitls`项目级别工具库
 
 ## 开发说明
@@ -66,11 +66,10 @@ website 的最终展现是使用的其他模块的 build 版本，如需要更�
 - 构建： `npm run build`
 - 代码格式化： `npm run lint`
 
-### 测试
+### 列子
 
 - 例子开发： `npm run examples:dev`
 - 例子构建： `npm run examples:build`
-- e2e 测试： `npm run e2e:open`
 
 ### 文档
 
@@ -83,6 +82,10 @@ website 的最终展现是使用的其他模块的 build 版本，如需要更�
 - 主页开发： `npm run website:dev`
 - 主页构建： `npm run website:build`
 - 主页代码格式化： `npm run website:lint`
+
+### 测试
+
+- e2e 测试： `npm run e2e:open`
 
 ## 项目案例
 

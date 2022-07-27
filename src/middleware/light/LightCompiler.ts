@@ -1,6 +1,6 @@
 import { Light } from "three";
 import { LightConfigAllType } from "./LightConfig";
-import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { ObjectCompiler } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { Compiler } from "../../core/Compiler";
 import AmbientLightProcessor from "./processor/AmbientLightProcessor";

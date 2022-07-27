@@ -1,5 +1,10 @@
 import { Object3D, Vector3 } from "three";
-import { ProcessorCommands, ProcessParams } from "../../core/Processor";
+import {
+  emptyHandler,
+  ProcessorCommands,
+  ProcessParams,
+  RegCommand,
+} from "../../core/Processor";
 import { EngineSupport } from "../../engine/EngineSupport";
 import { EventLibrary } from "../../library/event/EventLibrary";
 import { EVENTNAME, ObjectEvent } from "../../manager/EventManager";
@@ -141,7 +146,7 @@ export const addChildrenHanlder = function <
 >({ target, config, value, engine }: ProcessParams<C, O>) {
   const childrenConfig = engine.getConfigBySymbol<ObjectConfig>(value);
   if (!childrenConfig) {
-    console.warn(` can not foud object parent config in engine: ${value}`);
+    console.warn(` can not foud object config in engine: ${value}`);
     return;
   }
 
@@ -237,6 +242,7 @@ export const objectCreate = function <
   });
 
   syncObject(config, object, {
+    vid: true,
     type: true,
     lookAt: true,
     parent: true,
@@ -287,7 +293,15 @@ export const objectCommands: ObjectCommands<ObjectConfig, Object3D> = {
     click: updateEventHandler,
     dblclick: updateEventHandler,
     contextmenu: updateEventHandler,
-    children() {},
+    parent: emptyHandler,
+    children: {
+      $reg: [
+        {
+          reg: new RegExp(".*"),
+          handler: addChildrenHanlder,
+        },
+      ],
+    } as Array<undefined> & { $reg?: RegCommand<ObjectConfig, Object3D>[] },
   },
   delete: {
     pointerdown: removeEventHandler,

@@ -103,11 +103,15 @@
             .setStats(true)
             .setSize();
 
+          window.engine = engine;
+
+          const scene = Vis.generateConfig("Scene");
+          engine.applyConfig(scene).setScene(visConfig.scene.Scene.vid);
+
           engine.loaderManager.setPath(import.meta.env.BASE_URL);
 
           engine.loadConfigAsync(visConfig).then((res) => {
             document.body.removeChild(loadingDom);
-            engine.setScene(visConfig.scene.Scene.vid).play();
             this.$forceUpdate();
           });
         },

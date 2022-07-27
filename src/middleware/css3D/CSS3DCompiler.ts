@@ -1,7 +1,7 @@
 import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { ObjectCompiler } from "../object/ObjectCompiler";
 import { CSS3DAllType } from "./CSS3DConfig";
 import CSS3DObjectProcessor from "./processor/CSS3DObjectProcessor";
 import CSS3DPlaneProcessor from "./processor/CSS3DPlaneProcessor";

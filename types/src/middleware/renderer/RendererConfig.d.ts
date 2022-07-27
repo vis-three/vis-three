@@ -29,7 +29,7 @@ export interface WebGLRendererConfig extends RendererConfig {
 }
 export interface CSS3DRendererConfig extends RendererConfig {
 }
-export declare type RendererAllType = WebGLRendererConfig | CSS3DRendererConfig;
+export declare type RendererConfigAllType = WebGLRendererConfig | CSS3DRendererConfig;
 export declare const getRendererConfig: () => RendererConfig;
 export declare const getWebGLRendererConfig: () => WebGLRendererConfig;
 export declare const getCSS3DRenderereConfig: () => CSS3DRendererConfig;

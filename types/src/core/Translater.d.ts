@@ -1,7 +1,8 @@
-import { BasicCompiler } from "./Compiler";
+import { SymbolConfig } from "../middleware/common/CommonConfig";
+import { Compiler } from "./Compiler";
 import { ProxyNotice } from "./ProxyBroadcast";
 import { Rule } from "./Rule";
-export declare class Translater<C extends BasicCompiler> {
+export declare class Translater<S extends SymbolConfig, O extends object, C extends Compiler<S, O>> {
     private rule;
     private memberSet;
     constructor();

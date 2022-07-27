@@ -1,6 +1,6 @@
 import { Camera } from "three";
 import { CameraConfigAllType } from "./CameraConfig";
-import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { ObjectCompiler } from "../object/ObjectCompiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { Compiler } from "../../core/Compiler";
 import PerspectiveCameraProcessor from "./processor/PerspectiveCameraProcessor";

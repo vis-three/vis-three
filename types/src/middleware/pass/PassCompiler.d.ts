@@ -1,11 +1,9 @@
 import { Pass } from "three/examples/jsm/postprocessing/EffectComposer";
-import { Compiler, CompilerTarget } from "../../core/Compiler";
+import { Compiler } from "../../core/Compiler";
 import { PassConfigAllType } from "./PassConfig";
 import { EngineSupport } from "../../engine/EngineSupport";
 import { MODULETYPE } from "../constants/MODULETYPE";
-export interface PassCompilerTarget extends CompilerTarget<PassConfigAllType> {
-}
-export declare class PassCompiler extends Compiler<PassConfigAllType, PassCompilerTarget, Pass> {
+export declare class PassCompiler extends Compiler<PassConfigAllType, Pass> {
     MODULE: MODULETYPE;
     private composer;
     constructor();

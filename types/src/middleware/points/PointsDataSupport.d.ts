@@ -1,11 +1,11 @@
 import { Points } from "three";
+import { CompilerTarget } from "../../core/Compiler";
 import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
-import { PointsCompiler, PointsCompilerTarget } from "./PointsCompiler";
+import { PointsCompiler } from "./PointsCompiler";
 import { PointsConfig } from "./PointsConfig";
-import { PointsRule } from "./PointsRule";
-export declare class PointsDataSupport extends SolidObjectDataSupport<PointsRule, PointsCompiler, PointsConfig, PointsCompilerTarget, Points> {
+export declare class PointsDataSupport extends SolidObjectDataSupport<PointsConfig, Points, PointsCompiler> {
     MODULE: MODULETYPE;
-    constructor(data?: PointsCompilerTarget, ignore?: IgnoreAttribute);
+    constructor(data?: CompilerTarget<PointsConfig>, ignore?: IgnoreAttribute);
 }

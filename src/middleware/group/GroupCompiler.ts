@@ -1,7 +1,7 @@
 import { Group } from "three";
 import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
-import { ObjectCompiler, ObjectCompilerTarget } from "../object/ObjectCompiler";
+import { ObjectCompiler } from "../object/ObjectCompiler";
 import { GroupConfig } from "./GroupConfig";
 import GroupProcessor from "./GroupProcessor";
 

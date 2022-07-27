@@ -1,11 +1,11 @@
 import { Sprite } from "three";
+import { CompilerTarget } from "../../core/Compiler";
 import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
-import { SpriteCompiler, SpriteCompilerTarget } from "./SpriteCompiler";
+import { SpriteCompiler } from "./SpriteCompiler";
 import { SpriteConfig } from "./SpriteConfig";
-import { SpriteRule } from "./SpriteRule";
-export declare class SpriteDataSupport extends SolidObjectDataSupport<SpriteRule, SpriteCompiler, SpriteConfig, SpriteCompilerTarget, Sprite> {
+export declare class SpriteDataSupport extends SolidObjectDataSupport<SpriteConfig, Sprite, SpriteCompiler> {
     MODULE: MODULETYPE;
-    constructor(data?: SpriteCompilerTarget, ignore?: IgnoreAttribute);
+    constructor(data?: CompilerTarget<SpriteConfig>, ignore?: IgnoreAttribute);
 }

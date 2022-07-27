@@ -1,11 +1,11 @@
 import { Group } from "three";
+import { CompilerTarget } from "../../core/Compiler";
 import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectDataSupport } from "../object/ObjectDataSupport";
-import { GroupCompiler, GroupCompilerTarget } from "./GroupCompiler";
+import { GroupCompiler } from "./GroupCompiler";
 import { GroupConfig } from "./GroupConfig";
-import { GroupRule } from "./GroupRule";
-export declare class GroupDataSupport extends ObjectDataSupport<GroupRule, GroupCompiler, GroupConfig, GroupCompilerTarget, Group> {
+export declare class GroupDataSupport extends ObjectDataSupport<GroupConfig, Group, GroupCompiler> {
     MODULE: MODULETYPE;
-    constructor(data?: GroupCompilerTarget, ignore?: IgnoreAttribute);
+    constructor(data?: CompilerTarget<GroupConfig>, ignore?: IgnoreAttribute);
 }

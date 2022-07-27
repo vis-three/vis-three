@@ -107,11 +107,13 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
       return this;
     }
 
-    const object = this.map.get(vid)!;
-
-    syncObject(config as SymbolConfig, object, {
-      vid: true,
-      type: true,
+    Promise.resolve().then(() => {
+      // 兼容初始时候的cover
+      // 自己跟自己合并一次
+      syncObject(config as SymbolConfig, config, {
+        vid: true,
+        type: true,
+      });
     });
 
     return this;

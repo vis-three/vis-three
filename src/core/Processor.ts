@@ -152,3 +152,5 @@ export const defineProcessor: DefineProcessor = <
 ) => {
   return new Processor2<C, T>(options);
 };
+
+export const emptyHandler = function () {};

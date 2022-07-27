@@ -2,6 +2,7 @@ import { Material, Object3D, Texture } from "three";
 import { CompilerManager } from "../manager/CompilerManager";
 import { DataSupportManager, DataSupportManagerParameters, LoadOptions } from "../manager/DataSupportManager";
 import { LoaderManager } from "../manager/LoaderManager";
+import { RenderManager } from "../manager/RenderManager";
 import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { Engine } from "./Engine";
@@ -15,6 +16,7 @@ export declare class EngineSupport extends Engine {
     resourceManager: ResourceManager;
     dataSupportManager: DataSupportManager;
     compilerManager: CompilerManager;
+    renderManager: RenderManager;
     loadResources: (urlList: Array<string>) => this;
     registerResources: (resourceMap: {
         [key: string]: unknown;

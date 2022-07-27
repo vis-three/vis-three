@@ -1,36 +1,45 @@
-import { CameraCompilerTarget } from "../middleware/camera/CameraCompiler";
+import { CompilerTarget } from "../core/Compiler";
+import { AnimationAllType } from "../middleware/animation/AnimationConfig";
+import { CameraConfigAllType } from "../middleware/camera/CameraConfig";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
-import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
+import { getModule } from "../middleware/constants/CONFIGMODULE";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
-import { GeometryCompilerTarget } from "../middleware/geometry/GeometryCompiler";
-import { GroupCompilerTarget } from "../middleware/group/GroupCompiler";
-import { LightCompilerTarget } from "../middleware/light/LightCompiler";
-import { LineCompilerTarget } from "../middleware/line/LineCompiler";
-import { MaterialCompilerTarget } from "../middleware/material/MaterialCompiler";
-import { MeshCompilerTarget } from "../middleware/mesh/MeshCompiler";
-import { PointsCompilerTarget } from "../middleware/points/PointsCompiler";
-import { RendererCompilerTarget } from "../middleware/renderer/RendererCompiler";
-import { SpriteCompilerTarget } from "../middleware/sprite/SpriteCompiler";
-import { TextureCompilerTarget } from "../middleware/texture/TextureCompiler";
+import { ControlsAllConfig } from "../middleware/controls/ControlsConfig";
+import { CSS3DAllType } from "../middleware/css3D/CSS3DConfig";
+import { GeometryAllType } from "../middleware/geometry/GeometryInterface";
+import { GroupConfig } from "../middleware/group/GroupConfig";
+import { LightConfigAllType } from "../middleware/light/LightConfig";
+import { LineConfig } from "../middleware/line/LineConfig";
+import { MaterialAllType } from "../middleware/material/MaterialConfig";
+import { MeshConfig } from "../middleware/mesh/MeshConfig";
+import { PassConfigAllType } from "../middleware/pass/PassConfig";
+import { PointsConfig } from "../middleware/points/PointsConfig";
+import { RendererConfigAllType } from "../middleware/renderer/RendererConfig";
+import { SceneConfig } from "../middleware/scene/SceneConfig";
+import { SpriteConfig } from "../middleware/sprite/SpriteConfig";
+import { TextureAllType } from "../middleware/texture/TextureConfig";
 import { generateConfig } from "./generateConfig";
 
 export type SupportDataAllType =
-  | TextureCompilerTarget
-  | MaterialCompilerTarget
-  | LightCompilerTarget
-  | GeometryCompilerTarget
-  | CameraCompilerTarget
-  | RendererCompilerTarget
-  | SpriteCompilerTarget
-  | GroupCompilerTarget
-  | MeshCompilerTarget
-  | PointsCompilerTarget
-  | LineCompilerTarget;
+  | CompilerTarget<TextureAllType>
+  | CompilerTarget<MaterialAllType>
+  | CompilerTarget<GeometryAllType>
+  | CompilerTarget<LightConfigAllType>
+  | CompilerTarget<CameraConfigAllType>
+  | CompilerTarget<SpriteConfig>
+  | CompilerTarget<LineConfig>
+  | CompilerTarget<MeshConfig>
+  | CompilerTarget<PointsConfig>
+  | CompilerTarget<GroupConfig>
+  | CompilerTarget<CSS3DAllType>
+  | CompilerTarget<RendererConfigAllType>
+  | CompilerTarget<SceneConfig>
+  | CompilerTarget<PassConfigAllType>
+  | CompilerTarget<ControlsAllConfig>
+  | CompilerTarget<AnimationAllType>;
 
 export class SupportDataGenerator {
-  private static configModelMap = CONFIGMODULE;
-
   private supportData?: SupportDataAllType;
   private supportDataType?: MODULETYPE;
 
@@ -58,9 +67,7 @@ export class SupportDataGenerator {
       return this;
     }
 
-    if (
-      SupportDataGenerator.configModelMap[config.type] !== this.supportDataType
-    ) {
+    if (getModule(config.type as CONFIGTYPE) !== this.supportDataType) {
       console.warn(
         `current generator create config which module is in: ${this.supportDataType}, but you provide type is '${config.type}'`
       );

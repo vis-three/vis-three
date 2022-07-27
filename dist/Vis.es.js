@@ -4555,10 +4555,11 @@ const _Compiler = class {
       console.warn(`${this.MODULE} compiler can not found this vid object: ${vid}.`);
       return this;
     }
-    const object = this.map.get(vid);
-    syncObject(config2, object, {
-      vid: true,
-      type: true
+    Promise.resolve().then(() => {
+      syncObject(config2, config2, {
+        vid: true,
+        type: true
+      });
     });
     return this;
   }
@@ -4723,6 +4724,8 @@ class Processor2 {
 }
 const defineProcessor = (options) => {
   return new Processor2(options);
+};
+const emptyHandler = function() {
 };
 const config$j = {
   name: "linearTime",
@@ -4894,7 +4897,6 @@ Compiler.processor(ScriptAnimationProcessor);
 class ObjectCompiler extends Compiler {
   constructor() {
     super();
-    __publicField(this, "IS_OBJECTCOMPILER", true);
   }
 }
 const config$h = {
@@ -6055,7 +6057,7 @@ const updateEventHandler = function({ target, config: config2, path, engine }) {
 const addChildrenHanlder = function({ target, config: config2, value, engine }) {
   const childrenConfig = engine.getConfigBySymbol(value);
   if (!childrenConfig) {
-    console.warn(` can not foud object parent config in engine: ${value}`);
+    console.warn(` can not foud object config in engine: ${value}`);
     return;
   }
   if (childrenConfig.parent && childrenConfig.parent !== config2.vid) {
@@ -6117,6 +6119,7 @@ const objectCreate = function(object, config2, filter, engine) {
     }
   });
   syncObject(config2, object, __spreadValues({
+    vid: true,
     type: true,
     lookAt: true,
     parent: true,
@@ -6157,7 +6160,14 @@ const objectCommands = {
     click: updateEventHandler,
     dblclick: updateEventHandler,
     contextmenu: updateEventHandler,
-    children() {
+    parent: emptyHandler,
+    children: {
+      $reg: [
+        {
+          reg: new RegExp(".*"),
+          handler: addChildrenHanlder
+        }
+      ]
     }
   },
   delete: {
@@ -6937,8 +6947,6 @@ const colorHandler = function({
 }) {
   target.color.copy(new Color(value));
 };
-const emptyHandler = function({}) {
-};
 const lightCreate = function(light, config2, filter, engine) {
   light.color.copy(new Color(config2.color));
   return objectCreate(light, config2, __spreadValues({
@@ -7001,7 +7009,6 @@ Compiler.processor(SpotLightProcessor);
 class SolidObjectCompiler extends ObjectCompiler {
   constructor() {
     super();
-    __publicField(this, "IS_SOLIDOBJECTCOMPILER", true);
   }
 }
 const replaceMaterial = new ShaderMaterial({
@@ -7922,7 +7929,7 @@ var SceneProcessor = defineProcessor({
   configType: CONFIGTYPE.SCENE,
   commands: {
     add: objectCommands.add,
-    set: __spreadValues({
+    set: __spreadProps(__spreadValues({}, objectCommands.set), {
       lookAt() {
       },
       fog({ target, config: config2, key, value }) {
@@ -7957,7 +7964,7 @@ var SceneProcessor = defineProcessor({
       environment({ target, value, engine }) {
         setEnvironment(target, value, engine);
       }
-    }, objectCommands.set),
+    }),
     delete: objectCommands.delete
   },
   create(config2, engine) {
@@ -7974,7 +7981,7 @@ var SceneProcessor = defineProcessor({
         console.warn(`scene processor can not support this type fog:'${config2.type}'`);
       }
     }
-    return objectCreate(new Scene(), config2, {
+    return objectCreate(scene, config2, {
       lookAt: true,
       background: true,
       environment: true,
@@ -10452,7 +10459,7 @@ class ModelingEngine extends Engine {
     }).install(ENGINEPLUGIN.SELECTION).install(ENGINEPLUGIN.AXESHELPER).install(ENGINEPLUGIN.GRIDHELPER).install(ENGINEPLUGIN.OBJECTHELPER).install(ENGINEPLUGIN.VIEWPOINT).install(ENGINEPLUGIN.DISPLAYMODE).install(ENGINEPLUGIN.STATS).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.KEYBOARDMANAGER).install(ENGINEPLUGIN.TRANSFORMCONTROLS).complete();
   }
 }
-const _SupportDataGenerator = class {
+class SupportDataGenerator {
   constructor() {
     __publicField(this, "supportData");
     __publicField(this, "supportDataType");
@@ -10475,7 +10482,7 @@ const _SupportDataGenerator = class {
       console.warn(`config can not found attribute 'type'`);
       return this;
     }
-    if (_SupportDataGenerator.configModelMap[config2.type] !== this.supportDataType) {
+    if (getModule(config2.type) !== this.supportDataType) {
       console.warn(`current generator create config which module is in: ${this.supportDataType}, but you provide type is '${config2.type}'`);
       return this;
     }
@@ -10490,9 +10497,7 @@ const _SupportDataGenerator = class {
       return {};
     }
   }
-};
-let SupportDataGenerator = _SupportDataGenerator;
-__publicField(SupportDataGenerator, "configModelMap", CONFIGMODULE);
+}
 const pointLight = new PointLight("rgb(255, 255, 255)", 0.5, 200, 1);
 pointLight.position.set(-30, 5, 20);
 pointLight.castShadow = true;

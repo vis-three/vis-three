@@ -1,5 +1,5 @@
 import { Color, Light } from "three";
-import { ProcessParams } from "../../../core/Processor";
+import { emptyHandler, ProcessParams } from "../../../core/Processor";
 import { EngineSupport } from "../../../engine/EngineSupport";
 import { IgnoreAttribute } from "../../../utils/utils";
 import { objectCommands, objectCreate } from "../../object/ObjectProcessor";
@@ -11,11 +11,6 @@ export const colorHandler = function <C extends LightConifg, O extends Light>({
 }: ProcessParams<C, O>) {
   target.color.copy(new Color(value));
 };
-
-export const emptyHandler = function <
-  C extends LightConifg,
-  O extends Light
->({}: ProcessParams<C, O>) {};
 
 export const lightCreate = function <C extends LightConifg, O extends Light>(
   light: O,

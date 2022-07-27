@@ -32,7 +32,7 @@ import { MeshConfig } from "../middleware/mesh/MeshConfig";
 import { PointsConfig } from "../middleware/points/PointsConfig";
 import { GroupConfig } from "../middleware/group/GroupConfig";
 import { CSS3DAllType } from "../middleware/css3D/CSS3DConfig";
-import { RendererConfig } from "../middleware/renderer/RendererConfig";
+import { RendererConfigAllType } from "../middleware/renderer/RendererConfig";
 import { SceneConfig } from "../middleware/scene/SceneConfig";
 import { PassConfigAllType } from "../middleware/pass/PassConfig";
 import { ControlsAllConfig } from "../middleware/controls/ControlsConfig";
@@ -52,7 +52,7 @@ export interface LoadOptions {
   [MODULETYPE.GROUP]?: CompilerTarget<GroupConfig>;
   [MODULETYPE.CSS3D]?: CompilerTarget<CSS3DAllType>;
 
-  [MODULETYPE.RENDERER]?: CompilerTarget<RendererConfig>;
+  [MODULETYPE.RENDERER]?: CompilerTarget<RendererConfigAllType>;
   [MODULETYPE.SCENE]?: CompilerTarget<SceneConfig>;
   [MODULETYPE.PASS]?: CompilerTarget<PassConfigAllType>;
   [MODULETYPE.CONTROLS]?: CompilerTarget<ControlsAllConfig>;

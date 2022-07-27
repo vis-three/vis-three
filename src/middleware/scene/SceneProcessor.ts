@@ -60,6 +60,7 @@ export default defineProcessor<SceneConfig, Scene>({
   commands: {
     add: (<ObjectCommands<SceneConfig, Scene>>(<unknown>objectCommands)).add,
     set: {
+      ...(<ObjectCommands<SceneConfig, Scene>>(<unknown>objectCommands)).set,
       lookAt() {},
       fog({ target, config, key, value }) {
         const fog = config.fog;
@@ -93,7 +94,6 @@ export default defineProcessor<SceneConfig, Scene>({
       environment({ target, value, engine }) {
         setEnvironment(target, value, engine);
       },
-      ...(<ObjectCommands<SceneConfig, Scene>>(<unknown>objectCommands)).set,
     },
     delete: (<ObjectCommands<SceneConfig, Scene>>(<unknown>objectCommands))
       .delete,
@@ -117,7 +117,7 @@ export default defineProcessor<SceneConfig, Scene>({
     }
 
     return objectCreate(
-      new Scene(),
+      scene,
       config,
       {
         lookAt: true,

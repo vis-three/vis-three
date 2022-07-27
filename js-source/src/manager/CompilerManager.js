@@ -9,7 +9,7 @@ import { LightCompiler } from "../middleware/light/LightCompiler";
 import { LineCompiler } from "../middleware/line/LineCompiler";
 import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { MeshCompiler } from "../middleware/mesh/MeshCompiler";
-import { ObjectCompiler, } from "../middleware/object/ObjectCompiler";
+import { ObjectCompiler } from "../middleware/object/ObjectCompiler";
 import { PassCompiler } from "../middleware/pass/PassCompiler";
 import { PointsCompiler } from "../middleware/points/PointsCompiler";
 import { RendererCompiler } from "../middleware/renderer/RendererCompiler";
@@ -41,13 +41,6 @@ export class CompilerManager {
                 this[key] = parameters[key];
             });
         }
-        // 建立编译器链接
-        const textureMap = this.textureCompiler.getMap();
-        // 贴图连接
-        this.animationCompiler.linkTextureMap(textureMap);
-        // 物体几何连接，材质连接，物体连接
-        const geometryMap = this.geometryCompiler.getMap();
-        const materialMap = this.materialCompiler.getMap();
         const objectCompilerList = Object.values(this).filter((object) => object instanceof ObjectCompiler);
         // TODO: 编译器内部物体全部从compilerManager里面获取
         const objectMapList = objectCompilerList.map((compiler) => {
@@ -55,9 +48,6 @@ export class CompilerManager {
             this.object3DMapSet.add(map);
             return map;
         });
-        this.animationCompiler
-            .linkObjectMap(...objectMapList)
-            .linkMaterialMap(materialMap);
         const compilerMap = new Map();
         Object.keys(this).forEach((key) => {
             const compiler = this[key];
