@@ -6413,6 +6413,21 @@ var TransformControlsProcessor = defineProcessor({
           target.rotationSnap = null;
           target.scaleSnap = null;
         }
+      },
+      translationSnap({ target, config: config2, value }) {
+        if (config2.snapAllow) {
+          target.translationSnap = value;
+        }
+      },
+      rotationSnap({ target, config: config2, value }) {
+        if (config2.snapAllow) {
+          target.rotationSnap = value;
+        }
+      },
+      scaleSnap({ target, config: config2, value }) {
+        if (config2.snapAllow) {
+          target.scaleSnap = value;
+        }
       }
     }
   },
