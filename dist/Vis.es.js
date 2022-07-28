@@ -6564,13 +6564,17 @@ var CSS3DPlaneProcessor = defineProcessor({
     add: objectCommands.add,
     set: __spreadValues({
       element({ target, value, engine }) {
-        target.element = getElement(value, engine);
+        target.element.innerHTML = "";
+        target.element.appendChild(getElement(value, engine));
       }
     }, objectCommands.set),
     delete: objectCommands.delete
   },
   create(config2, engine) {
-    return objectCreate(new CSS3DPlane(getElement(config2.element, engine)), config2, {
+    const dom = document.createElement("div");
+    const children = getElement(config2.element, engine);
+    dom.appendChild(children);
+    return objectCreate(new CSS3DPlane(dom), config2, {
       element: true
     }, engine);
   },

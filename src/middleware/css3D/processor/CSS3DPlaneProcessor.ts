@@ -19,7 +19,8 @@ export default defineProcessor<CSS3DPlaneConfig, CSS3DPlane>({
     ).add,
     set: {
       element({ target, value, engine }) {
-        target.element = getElement(value, engine);
+        target.element.innerHTML = "";
+        target.element.appendChild(getElement(value, engine));
       },
       ...(<ObjectCommands<CSS3DPlaneConfig, CSS3DPlane>>objectCommands.set),
     },
@@ -28,8 +29,12 @@ export default defineProcessor<CSS3DPlaneConfig, CSS3DPlane>({
     ).delete,
   },
   create(config: CSS3DPlaneConfig, engine: EngineSupport): CSS3DPlane {
+    const dom = document.createElement("div");
+    const children = getElement(config.element, engine);
+    dom.appendChild(children);
+
     return objectCreate(
-      new CSS3DPlane(getElement(config.element, engine)),
+      new CSS3DPlane(dom),
       config,
       {
         element: true,

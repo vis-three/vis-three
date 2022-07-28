@@ -9,7 +9,10 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 ## 主页、demo、文档在线地址
 
+[https://shiotsukikaedesari.github.io/vis-three/](https://shiotsukikaedesari.github.io/vis-three/)
 [https://shiotsukikaedesari.gitee.io/vis-three](https://shiotsukikaedesari.gitee.io/vis-three)
+
+> gitee 视频资源会失效
 
 ## 安装
 
