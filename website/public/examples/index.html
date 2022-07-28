@@ -7,12 +7,11 @@
     <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
     <title>Document</title>
     
-    <script type="module" crossorigin src="/vis-three/examples/assets/examples/index.771d5a11.js"></script>
+    <script type="module" crossorigin src="/vis-three/examples/assets/examples/index.399921b8.js"></script>
     <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
-    <link rel="modulepreload" href="/vis-three/examples/assets/three.988821a1.js">
-    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.8be35a0c.js">
-    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.824ecc78.js">
-    <link rel="modulepreload" href="/vis-three/examples/assets/v4.90f1a8cc.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
     <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
@@ -24,6 +23,11 @@
       position: fixed;
       top: 0;
       left: 0;
+    }
+
+    #module-main {
+      display: flex;
+      flex-wrap: wrap;
     }
 
     body a,
@@ -49,6 +53,7 @@
       background-color: rgba(0, 0, 0, 0.2);
       padding: 10px;
       box-shadow: 0 0 4px white;
+      flex: 1;
     }
 
     .module-box h3 {
@@ -67,6 +72,7 @@
 
   <body>
     <div id="app"></div>
+    <div id="module-main"></div>
 
     
   </body>
