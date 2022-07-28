@@ -9,8 +9,9 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 ## 主页、demo、文档在线地址
 
-[https://shiotsukikaedesari.github.io/vis-three/](https://shiotsukikaedesari.github.io/vis-three/)
-[https://shiotsukikaedesari.gitee.io/vis-three](https://shiotsukikaedesari.gitee.io/vis-three)
+- [https://shiotsukikaedesari.github.io/vis-three/](https://shiotsukikaedesari.github.io/vis-three/)
+
+- [https://shiotsukikaedesari.gitee.io/vis-three](https://shiotsukikaedesari.gitee.io/vis-three)
 
 > gitee 视频资源会失效
 
@@ -37,7 +38,7 @@ import {
 ## 备注
 
 - gitee 仓库为 github 的同步备份仓库
-  github 地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github.com/Shiotsukikaedesari/vis-three)
+- github 地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github.com/Shiotsukikaedesari/vis-three)
 
 ## 项目结构说明
 
@@ -88,7 +89,8 @@ website 的最终展现是使用的其他模块的 build 版本，如需要更�
 
 ### 测试
 
-- e2e 测试： `npm run e2e:open`
+- 单元测试： `npm run test:unit`
+- 可视化测试： `npm run test:open`
 
 ## 项目案例
 
