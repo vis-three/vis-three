@@ -5,8 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Engine</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/engine/Engine.c0e9c0f1.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -19,45 +25,6 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as Vis from "vis-three";
-
-      const engine = new Vis.Engine()
-        .install("WebGLRenderer", {
-          antialias: true,
-          alpha: true,
-        })
-        .install("RenderManager")
-        .install("Stats")
-        .install("EffectComposer", {
-          WebGLMultisampleRenderTarget: true,
-        })
-        .install("OrbitControls")
-        .install("PointerManager")
-        .install("EventManager")
-        .install("TransformControls")
-        .complete()
-        .setDom(document.getElementById("app"))
-        .setStats(true)
-        .setScene(new THREE.Scene());
-
-      const camera = new THREE.PerspectiveCamera();
-      camera.position.set(50, 50, 50);
-
-      engine.addEventListener("setSize", (event) => {
-        camera.aspect = event.width / event.height;
-        camera.updateProjectionMatrix();
-      });
-
-      const box = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(30, 30, 30),
-        new THREE.MeshStandardMaterial()
-      );
-
-      engine.scene.add(box);
-
-      engine.setCamera(camera).setSize().play();
-    </script>
+    
   </body>
 </html>

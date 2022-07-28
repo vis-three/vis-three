@@ -4,9 +4,15 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
     <title>LoaderManager</title>
+    <script type="module" crossorigin src="/vis-three/examples/assets/manager/ResourceManager.28338e8d.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -31,55 +37,6 @@
     <div class="mappingStructure" id="mappingStructure"></div>
     <div id="app"></div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as Vis from "vis-three";
-      import assetsList from "../public/assetsConfig/resourceManager.json";
-
-      const loaderManager = new Vis.LoaderManager();
-      const resourceManager = new Vis.ResourceManager();
-
-      const engine = new Vis.ModelingEngine()
-        .setDom(document.getElementById("app"))
-        .setStats(true)
-        .setSize()
-        .play();
-
-      const scene = engine.scene;
-
-      const pointLight = new THREE.PointLight(
-        "rgb(255, 255, 255)",
-        1,
-        100,
-        0.01
-      );
-      pointLight.position.set(10, 10, 10);
-      scene.add(pointLight);
-
-      loaderManager.addEventListener("loaded", (event) => {
-        resourceManager.mappingResource(event.resourceMap);
-        event.resourceMap.forEach((resource, url) => {
-          if (resource instanceof THREE.Object3D) {
-            resource.scale.set(30, 30, 30);
-            scene.add(resource);
-          }
-        });
-      });
-
-      resourceManager.addEventListener("mapped", (e) => {
-        console.log(e);
-        let str = "";
-        e.configMap.forEach((config, url) => {
-          str += `${url}: ${JSON.stringify(config)}\n`;
-        });
-        str = str
-          .replace(/",/g, '",\n')
-          .replace(/"},/g, '"},\n')
-          .replace(/{"/g, '{"\n');
-        document.getElementById("mappingStructure").innerText = str;
-      });
-
-      loaderManager.load(assetsList);
-    </script>
+    
   </body>
 </html>

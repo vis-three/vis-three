@@ -4,9 +4,16 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
     <title>Vue2-ConfigExtends</title>
+    <script type="module" crossorigin src="/vis-three/examples/assets/develop/Vue2-ConfigExtends.f952d266.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vue.esm.browser.min.816a6d7c.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -56,109 +63,6 @@
       </div>
     </div>
 
-    <script type="module">
-      import Vue from "vue2/dist/vue.esm.browser.min.js";
-      import * as Vis from "vis-three";
-
-      const canvasGenerator = new Vis.CanvasGenerator({
-        width: 800,
-        height: 160,
-      }).preview({
-        top: "5%",
-        left: "5%",
-      });
-
-      const textureDataSupport = new Vis.TextureDataSupport(
-        {},
-        { canvasExtends: true }
-      );
-
-      const engine = new Vis.ModelingEngineSupport({
-        textureDataSupport,
-      }).registerResources({
-        "example.canvas": canvasGenerator.get(),
-      });
-
-      engine.loaderManager.setPath(import.meta.env.BASE_URL);
-
-      const ambientLight = Vis.generateConfig("AmbientLight");
-      const canvasTexture = engine.reactiveConfig(
-        Vue.observable(
-          Vis.generateConfig(
-            "CanvasTexture",
-            {
-              url: "example.canvas",
-              canvasExtends: {
-                number: 0,
-                text: "Hello World",
-              },
-            },
-            false
-          )
-        )
-      );
-
-      const spriteMaterial = Vis.generateConfig("SpriteMaterial", {
-        map: canvasTexture.vid,
-      });
-
-      const sprite = Vis.generateConfig("Sprite", {
-        material: spriteMaterial.vid,
-        position: {
-          y: 15,
-        },
-        scale: {
-          x: 25,
-          y: 5,
-        },
-      });
-
-      const scene = Vis.generateConfig("Scene", {
-        children: [ambientLight.vid, sprite.vid],
-      });
-
-      engine.applyConfig(
-        ambientLight,
-        canvasTexture,
-        spriteMaterial,
-        sprite,
-        scene
-      );
-
-      new Vue({
-        el: "#app",
-        data() {
-          return {
-            canvasTexture,
-          };
-        },
-        methods: {
-          updateCanvas() {
-            canvasGenerator.clear().draw((ctx) => {
-              ctx.textBaseline = "middle";
-              ctx.textAlign = "center";
-
-              ctx.fillStyle = "rgb(206, 42, 230)";
-
-              ctx.font = " bold 72px 微软雅黑";
-              ctx.fillText(
-                `${this.canvasTexture.canvasExtends.text} ${this.canvasTexture.canvasExtends.number} `,
-                400,
-                80
-              );
-            });
-            this.canvasTexture.needsUpdate = true;
-          },
-        },
-        mounted() {
-          this.updateCanvas();
-          engine
-            .setDom(document.getElementById("app"))
-            .setSize()
-            .setScene(scene.vid)
-            .play();
-        },
-      });
-    </script>
+    
   </body>
 </html>

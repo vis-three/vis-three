@@ -5,8 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GroupSupport</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/support/GroupSupport.2286771a.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -19,98 +25,6 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as Vis from "vis-three";
-      import { v4 as getUUid } from "uuid";
-
-      const canvasGenerator = new Vis.CanvasGenerator({
-        width: 256,
-        height: 256,
-      })
-        .draw((ctx) => {
-          ctx.textBaseline = "middle";
-          ctx.textAlign = "center";
-
-          ctx.fillStyle = "rgb(206, 42, 230)";
-
-          ctx.font = " bold 72px 微软雅黑";
-          ctx.fillText("GROUP", 128, 128);
-        })
-        .preview();
-
-      const engine = new Vis.ModelingEngineSupport()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true);
-
-      const pointLight = Vis.generateConfig("PointLight", {
-        position: {
-          x: 30,
-          y: 50,
-        },
-        distance: 100,
-      });
-
-      const material = Vis.generateConfig("MeshStandardMaterial");
-
-      const geometry = Vis.generateConfig("BoxGeometry", {
-        width: 20,
-        height: 20,
-        depth: 20,
-      });
-
-      const mesh1 = Vis.generateConfig("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
-        position: {
-          z: -20,
-        },
-      });
-
-      const mesh2 = Vis.generateConfig("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
-        position: {
-          z: 20,
-          x: 20,
-        },
-      });
-
-      const mesh3 = Vis.generateConfig("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
-        position: {
-          z: 20,
-          x: -20,
-        },
-      });
-
-      const group = Vis.generateConfig("Group", {
-        children: [mesh1.vid, mesh2.vid, mesh3.vid],
-        position: {
-          y: 20,
-        },
-      });
-
-      const scene = Vis.generateConfig("Scene", {
-        children: [group.vid, pointLight.vid],
-      });
-
-      engine.applyConfig(
-        material,
-        geometry,
-        pointLight,
-        mesh1,
-        mesh2,
-        mesh3,
-        group,
-        scene
-      );
-
-      engine.setScene(scene.vid).play();
-
-      window.engine = engine;
-    </script>
+    
   </body>
 </html>

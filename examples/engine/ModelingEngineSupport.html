@@ -5,8 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ModelingEngineSupport</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/engine/ModelingEngineSupport.66705b46.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -19,55 +25,6 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as Vis from "vis-three";
-      import { v4 as getUUid } from "uuid";
-
-      const engine = new Vis.ModelingEngineSupport()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true)
-        .play();
-
-      const pointLight = Vis.generateConfig("PointLight", {
-        position: {
-          x: 30,
-          y: 50,
-        },
-        distance: 100,
-      });
-
-      const meshStandardMaterial = Vis.generateConfig("MeshStandardMaterial", {
-        color: "rgb(255, 0, 0)",
-      });
-
-      const boxGeometry = Vis.generateConfig("BoxGeometry", {
-        width: 20,
-        height: 40,
-        depth: 60,
-      });
-
-      const mesh = Vis.generateConfig("Mesh", {
-        geometry: boxGeometry.vid,
-        material: meshStandardMaterial.vid,
-      });
-
-      const scene = Vis.generateConfig("Scene", {
-        children: [pointLight.vid, mesh.vid],
-      });
-
-      engine.applyConfig(
-        pointLight,
-        meshStandardMaterial,
-        boxGeometry,
-        mesh,
-        scene
-      );
-
-      engine.setScene(scene.vid).play();
-      console.log(engine);
-      window.engine = engine;
-    </script>
+    
   </body>
 </html>

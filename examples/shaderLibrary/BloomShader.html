@@ -5,8 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BloomShader</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/shaderLibrary/BloomShader.4a486b10.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/lil-gui.module.min.2e05211e.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -19,75 +26,6 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as VIS from "vis-three";
-      import { v4 as getUUid } from "uuid";
-      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
-
-      const engine = new VIS.ModelingEngineSupport()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true);
-
-      VIS.generateConfig.injectEngine = engine;
-
-      const scene = VIS.generateConfig("Scene");
-
-      engine.setScene(scene.vid);
-
-      VIS.generateConfig.injectScene = true;
-
-      const material = VIS.generateConfig("MeshBasicMaterial", {
-        side: THREE.DoubleSide,
-        transparent: true,
-        color: "rgb(200, 100, 200)",
-      });
-      const material2 = VIS.generateConfig("ShaderMaterial", {
-        shader: "BloomShader",
-        side: THREE.DoubleSide,
-        transparent: true,
-      });
-
-      const geometry = VIS.generateConfig("SphereGeometry", {
-        radius: 10,
-        groups: [
-          { start: 0, count: Infinity, materialIndex: 0 },
-          { start: 0, count: Infinity, materialIndex: 1 },
-        ],
-      });
-
-      const mesh = VIS.generateConfig("Mesh", {
-        material: [material.vid, material2.vid],
-        geometry: geometry.vid,
-      });
-
-      engine.play();
-
-      window.engine = engine;
-      window.material = material;
-
-      const gui = new GUI();
-
-      const guiParams = {
-        extend: material2.uniforms.extend.value,
-        color: material2.uniforms.color.value,
-        brightness: material2.uniforms.brightness.value,
-        range: material2.uniforms.range.value,
-      };
-
-      gui.addColor(guiParams, "color");
-      gui.add(guiParams, "extend", 0, 10, 1).onChange((value) => {
-        material2.uniforms.extend.value = value;
-      });
-
-      gui.add(guiParams, "brightness", 0, 1, 0.01).onChange((value) => {
-        material2.uniforms.brightness.value = value;
-      });
-
-      gui.add(guiParams, "range", 0, 20, 1).onChange((value) => {
-        material2.uniforms.range.value = value;
-      });
-    </script>
+    
   </body>
 </html>

@@ -5,8 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RendererSupport</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/support/RendererSupport.1d3cd0ad.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/lil-gui.module.min.2e05211e.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -19,108 +26,6 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as VIS from "vis-three";
-      import { v4 as getUUid } from "uuid";
-      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
-
-      const engine = new VIS.ModelingEngineSupport()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true);
-
-      VIS.generateConfig.injectEngine = engine;
-
-      const renderer = VIS.generateConfig("WebGLRenderer", {
-        physicallyCorrectLights: true,
-        shadowMap: {
-          enabled: true,
-        },
-      });
-
-      console.log(renderer);
-
-      const scene = VIS.generateConfig("Scene");
-
-      engine.setScene(scene.vid);
-
-      VIS.generateConfig.injectScene = true;
-
-      const ambientLight = VIS.generateConfig("AmbientLight");
-
-      const pointLight = VIS.generateConfig("PointLight", {
-        position: {
-          x: 30,
-          y: 50,
-        },
-        distance: 200,
-        intensity: 5,
-      });
-
-      const material = VIS.generateConfig("MeshStandardMaterial");
-
-      const geometry = VIS.generateConfig("BoxGeometry", {
-        width: 20,
-        height: 60,
-        depth: 20,
-      });
-
-      const mesh = VIS.generateConfig("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
-        position: {
-          y: 30,
-        },
-      });
-
-      const stageGeometry = VIS.generateConfig("BoxGeometry", {
-        width: 500,
-        height: 10,
-        depth: 500,
-      });
-
-      const stageMaterial = VIS.generateConfig("MeshStandardMaterial", {
-        color: "rgb(100, 100, 100)",
-      });
-
-      const stage = VIS.generateConfig("Mesh", {
-        material: stageMaterial.vid,
-        geometry: stageGeometry.vid,
-        position: {
-          y: -5,
-        },
-      });
-
-      engine.play();
-
-      const gui = new GUI();
-
-      gui.add(renderer, "physicallyCorrectLights");
-
-      gui.add(renderer, "outputEncoding", {
-        LinearEncoding: THREE.LinearEncoding,
-        sRGBEncoding: THREE.sRGBEncoding,
-      });
-
-      let shadowMap = gui.addFolder("shadowMap setting");
-      shadowMap.add(renderer.shadowMap, "enabled");
-      shadowMap.add(renderer.shadowMap, "type", {
-        "THREE.BasicShadowMap": THREE.BasicShadowMap,
-        "THREE.PCFShadowMap": THREE.PCFShadowMap,
-        "THREE.PCFSoftShadowMap": THREE.PCFSoftShadowMap,
-        "THREE.VSMShadowMap": THREE.VSMShadowMap,
-      });
-
-      let toneMapping = gui.addFolder("toneMapping setting");
-      toneMapping.add(renderer, "toneMapping", {
-        "THREE.NoToneMapping": THREE.NoToneMapping,
-        "THREE.LinearToneMapping": THREE.LinearToneMapping,
-        "THREE.ReinhardToneMapping": THREE.ReinhardToneMapping,
-        "THREE.CineonToneMapping": THREE.CineonToneMapping,
-        "THREE.ACESFilmicToneMapping": THREE.ACESFilmicToneMapping,
-      });
-      toneMapping.add(renderer, "toneMappingExposure", 0, 20, 1);
-    </script>
+    
   </body>
 </html>

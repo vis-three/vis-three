@@ -5,8 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CanvasExtends</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/develop/CanvasExtends.fddc2685.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -21,77 +27,6 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as VIS from "vis-three";
-      import { v4 as getUUid } from "uuid";
-
-      const canvasGenerator = new VIS.CanvasGenerator({
-        width: 800,
-        height: 160,
-      })
-        .draw((ctx) => {
-          ctx.textBaseline = "middle";
-          ctx.textAlign = "center";
-
-          ctx.fillStyle = "rgb(206, 42, 230)";
-
-          ctx.font = " bold 72px 微软雅黑";
-          ctx.fillText("Hello World! 0", 400, 80);
-        })
-        .preview({
-          top: "10%",
-          left: "10%",
-        });
-
-      const engine = new VIS.ModelingEngineSupport()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true)
-        .registerResources({
-          "example.canvas": canvasGenerator.get(),
-        });
-
-      VIS.generateConfig.injectEngine = engine;
-
-      const scene = VIS.generateConfig("Scene");
-
-      engine.setScene(scene.vid).play();
-
-      VIS.generateConfig.injectScene = true;
-
-      const ambientLight = VIS.generateConfig("AmbientLight");
-
-      const canvasTexture = engine.reactiveConfig(
-        VIS.generateConfig("CanvasTexture", {
-          url: "example.canvas",
-        })
-      );
-
-      const spriteMaterial = VIS.generateConfig("SpriteMaterial", {
-        map: canvasTexture.vid,
-      });
-
-      const sprite = VIS.generateConfig("Sprite", {
-        material: spriteMaterial.vid,
-        position: {
-          y: 15,
-        },
-        scale: {
-          x: 25,
-          y: 5,
-        },
-      });
-
-      let number = 0;
-
-      setInterval(() => {
-        canvasGenerator.clear().draw((ctx) => {
-          ctx.fillText(`Hello World! ${number}`, 400, 80);
-        });
-        number += 1;
-        canvasTexture.needsUpdate = true;
-      }, 1000);
-    </script>
+    
   </body>
 </html>

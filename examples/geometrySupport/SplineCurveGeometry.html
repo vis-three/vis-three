@@ -5,8 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SplineCurveGeometry</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/geometrySupport/SplineCurveGeometry.569b4e66.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/lil-gui.module.min.2e05211e.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -25,80 +32,6 @@
       </div>
     </div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as VIS from "vis-three";
-      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
-
-      const engine = new VIS.ModelingEngineSupport()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true)
-        .play();
-
-      VIS.generateConfig.injectEngine = engine;
-
-      const scene = VIS.generateConfig("Scene");
-
-      engine.setScene(scene.vid);
-
-      VIS.generateConfig.injectScene = true;
-
-      const pointLight = VIS.generateConfig("PointLight", {
-        position: {
-          x: 30,
-          y: 50,
-        },
-        distance: 100,
-      });
-
-      const material = VIS.generateConfig(VIS.CONFIGTYPE.MESHSTANDARDMATERIAL);
-
-      const geometry = VIS.generateConfig(VIS.CONFIGTYPE.SPLINETUBEGEOMETRY, {
-        path: [
-          { x: 0, y: 0, z: -5 },
-          { x: 0, y: 0, z: 5 },
-          { x: 0, y: 5, z: 5 },
-          { x: 0, y: 5, z: 10 },
-          { x: 10, y: 5, z: 10 },
-        ],
-      });
-
-      const mesh = VIS.generateConfig(VIS.CONFIGTYPE.MESH, {
-        material: material.vid,
-        geometry: geometry.vid,
-      });
-
-      const gui = new GUI();
-
-      gui.add(geometry, "radius", 1, 20, 1);
-      gui.add(geometry, "tubularSegments", 12, 512, 1);
-      gui.add(geometry, "radialSegments", 8, 128, 1);
-      gui.add(geometry, "closed");
-
-      const addPointGui = function (index) {
-        const point = gui.addFolder("point" + index).close();
-        const config = geometry.path[index];
-        point.add(geometry.path[index], "x", config.x - 50, config.x + 50, 1);
-        point.add(geometry.path[index], "y", config.y - 50, config.y + 50, 1);
-        point.add(geometry.path[index], "z", config.z - 50, config.z + 50, 1);
-      };
-
-      addPointGui(0);
-      addPointGui(1);
-      addPointGui(2);
-      addPointGui(3);
-      addPointGui(4);
-
-      document.getElementById("addPath").onclick = async () => {
-        const lastPoint = geometry.path[geometry.path.length - 1];
-        geometry.path.push({
-          x: lastPoint.x + Math.random() * 20 - 10,
-          y: lastPoint.y + Math.random() * 20 - 10,
-          z: lastPoint.z + Math.random() * 20 - 10,
-        });
-        addPointGui(geometry.path.length - 1);
-      };
-    </script>
+    
   </body>
 </html>

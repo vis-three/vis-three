@@ -5,8 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SelectionPlugin</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/plugin/SelectionPlugin.226dd36e.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -44,62 +50,6 @@
     <div id="intro">选择物体， 按住ctrl多选</div>
     <div id="selected"></div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as Vis from "vis-three";
-
-      const engine = new Vis.DisplayEngine()
-        .install("ObjectHelper")
-        .install("Selection")
-        .complete()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .play();
-
-      const scene = engine.scene;
-
-      const box = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(10, 10, 10),
-        new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
-      );
-      box.position.x = 10;
-      scene.add(box);
-
-      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 30, 0);
-      pointLight.position.y = 20;
-      scene.add(pointLight);
-
-      const line = new THREE.Line(
-        box.geometry,
-        new THREE.LineBasicMaterial({ color: "yellow" })
-      );
-      scene.add(line);
-
-      const points = new THREE.Points(
-        box.geometry,
-        new THREE.PointsMaterial({ color: "blue" })
-      );
-
-      points.position.x = -10;
-      scene.add(points);
-
-      const camera = new THREE.PerspectiveCamera(
-        (180 / Math.PI) * 45,
-        16 / 9,
-        5,
-        70
-      );
-      camera.position.set(0, 20, 50);
-      camera.lookAt(0, 0, 0);
-      scene.add(camera);
-
-      engine.addEventListener("selected", (event) => {
-        let html = "";
-        event.objects.forEach((object) => {
-          html += `<div class="selected-elem">${object.uuid}</div>`;
-        });
-        document.getElementById("selected").innerHTML = html;
-      });
-    </script>
+    
   </body>
 </html>

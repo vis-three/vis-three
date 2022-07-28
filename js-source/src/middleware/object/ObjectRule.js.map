@@ -1,1 +1,0 @@
-{"version":3,"file":"ObjectRule.js","sourceRoot":"","sources":["../../../../src/middleware/object/ObjectRule.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,IAAI,EAAE,MAAM,iBAAiB,CAAC;AAUvC,MAAM,CAAC,MAAM,UAAU,GAAG,UAIxB,KAAkB,EAAE,QAAW;IAC/B,IAAI,KAAK,CAAC,GAAG,KAAK,QAAQ,EAAE;QAC1B,OAAO;KACR;IAED,IAAI,CAAC,KAAK,EAAE,QAAQ,CAAC,CAAC;AACxB,CAAC,CAAC"}

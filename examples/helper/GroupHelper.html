@@ -5,8 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GroupHelper</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/helper/GroupHelper.929fe57a.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -18,35 +24,6 @@
 
   <body>
     <div id="app"></div>
-    <script type="module">
-      import * as THREE from "three";
-      import * as VIS from "vis-three";
-
-      const dom = document.getElementById("app");
-
-      const engine = new VIS.ModelingEngine()
-        .setDom(dom)
-        .setSize()
-        .setStats(true)
-        .play();
-
-      const scene = engine.scene;
-
-      scene.add(new THREE.AmbientLight("white", 1));
-
-      const box = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(10, 10, 10),
-        new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
-      );
-      box.position.set(-15, 15, -15);
-
-      const group = new THREE.Group();
-      group.add(box);
-
-      const helper = new VIS.GroupHelper(group);
-
-      scene.add(group);
-      scene.add(helper);
-    </script>
+    
   </body>
 </html>

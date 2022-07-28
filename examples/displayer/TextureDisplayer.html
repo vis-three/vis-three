@@ -4,9 +4,16 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
     <title>TextureDisplayer</title>
+    <script type="module" crossorigin src="/vis-three/examples/assets/displayer/TextureDisplayer.d372ce7b.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/lil-gui.module.min.2e05211e.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
   <style>
     body {
@@ -23,53 +30,6 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import * as VIS from "vis-three";
-      import * as THREE from "three";
-      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
-
-      // 加载器
-      const loaderManager = new VIS.LoaderManager().setPath(
-        import.meta.env.BASE_URL
-      );
-
-      loaderManager.addEventListener("loaded", (event) => {
-        const texture = new THREE.Texture();
-        texture.image = loaderManager.getResource("/texture/Bricks_Color.jpg");
-        texture.needsUpdate = true;
-
-        const displayer = new VIS.TextureDisplayer({
-          dom: document.getElementById("app"),
-          texture,
-        });
-
-        displayer.render();
-
-        const gui = new GUI();
-
-        const guiParams = {
-          rotation: (texture.rotation * 180) / Math.PI,
-          centerX: texture.center.x,
-          centerY: texture.center.y,
-        };
-
-        gui.add(guiParams, "rotation", 0, 360, 1).onChange((data) => {
-          texture.rotation = (data * Math.PI) / 180;
-          displayer.render();
-        });
-
-        gui.add(guiParams, "centerX", 0, 1, 0.01).onChange((data) => {
-          texture.center.x = data;
-          displayer.render();
-        });
-
-        gui.add(guiParams, "centerY", 0, 1, 0.01).onChange((data) => {
-          texture.center.y = data;
-          displayer.render();
-        });
-      });
-
-      loaderManager.load(["/texture/Bricks_Color.jpg"]);
-    </script>
+    
   </body>
 </html>

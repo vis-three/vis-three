@@ -5,8 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MaterialSupport</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/support/MaterialSupport.e4908dea.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -19,157 +25,6 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as VIS from "vis-three";
-      import { v4 as getUUid } from "uuid";
-
-      const canvasGenerator = new VIS.CanvasGenerator({
-        width: 256,
-        height: 256,
-      }).draw((ctx) => {
-        ctx.textBaseline = "middle";
-        ctx.textAlign = "center";
-
-        ctx.fillStyle = "rgb(206, 42, 230)";
-
-        ctx.font = " bold 48px 微软雅黑";
-        ctx.fillText("MATERIAL", 128, 128);
-      });
-
-      const engine = new VIS.ModelingEngineSupport()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true)
-        .registerResources({
-          "example.canvas": canvasGenerator.get(),
-        });
-
-      window.engine = engine;
-
-      VIS.generateConfig.injectEngine = engine;
-
-      const scene = VIS.generateConfig("Scene");
-
-      VIS.generateConfig.injectScene = scene.vid;
-
-      const pointLight = VIS.generateConfig("PointLight", {
-        position: {
-          x: 30,
-          y: 50,
-        },
-        distance: 100,
-      });
-
-      const geometry = VIS.generateConfig("BoxGeometry", {
-        width: 10,
-        height: 10,
-        depth: 10,
-        groups: [
-          { start: 0, count: Infinity, materialIndex: 0 },
-          { start: 0, count: Infinity, materialIndex: 1 },
-        ],
-      });
-
-      const canvasTexture = VIS.generateConfig("CanvasTexture", {
-        url: "example.canvas",
-      });
-
-      const meshStandardMaterial = VIS.generateConfig("MeshStandardMaterial", {
-        metalness: 0.5,
-        roughness: 0.5,
-        color: "rgb(100, 200, 100)",
-        transparent: true,
-        opacity: 0.5,
-        alphaTest: 0.0,
-      });
-
-      const meshPhongMaterial = VIS.generateConfig("MeshPhongMaterial", {
-        color: "rgb(100, 100, 200)",
-      });
-
-      const spriteMaterial = VIS.generateConfig("SpriteMaterial", {
-        map: canvasTexture.vid,
-      });
-
-      window.spriteMaterial = spriteMaterial;
-
-      const lineBasicMaterial = VIS.generateConfig("LineBasicMaterial");
-
-      const pointsMaterial = VIS.generateConfig("PointsMaterial");
-
-      const shaderMaterial = VIS.generateConfig("ShaderMaterial", {
-        shader: "uvPulseShader",
-      });
-
-      const standardMesh = VIS.generateConfig("Mesh", {
-        material: meshStandardMaterial.vid,
-        geometry: geometry.vid,
-        position: {
-          x: -10,
-        },
-      });
-
-      const phongMesh = VIS.generateConfig("Mesh", {
-        material: meshPhongMaterial.vid,
-        geometry: geometry.vid,
-        position: {
-          x: 10,
-        },
-      });
-
-      const sprite = VIS.generateConfig("Sprite", {
-        material: spriteMaterial.vid,
-        scale: {
-          x: 10,
-          y: 10,
-        },
-        position: {
-          y: 15,
-        },
-      });
-
-      const line = VIS.generateConfig("Line", {
-        material: lineBasicMaterial.vid,
-        geometry: geometry.vid,
-        position: {
-          z: 10,
-        },
-      });
-
-      const points = VIS.generateConfig("Points", {
-        material: pointsMaterial.vid,
-        geometry: geometry.vid,
-        position: {
-          z: -10,
-        },
-      });
-
-      const shaderMesh = VIS.generateConfig("Mesh", {
-        material: shaderMaterial.vid,
-        geometry: geometry.vid,
-        position: {
-          x: 10,
-          z: 10,
-        },
-      });
-
-      const multMaterialMesh = VIS.generateConfig("Mesh", {
-        material: [meshStandardMaterial.vid, shaderMaterial.vid],
-        geometry: geometry.vid,
-        position: {
-          x: -10,
-          z: 10,
-        },
-      });
-
-      engine.setScene(scene.vid).play();
-
-      engine.renderManager.addEventListener("render", (event) => {
-        shaderMaterial.uniforms.time.value += event.delta * 5;
-      });
-
-      window.engine = engine;
-    </script>
+    
   </body>
 </html>

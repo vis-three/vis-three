@@ -4,9 +4,15 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
     <title>Document</title>
-    <link rel="stylesheet" href="./css/common.css" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/examples/index.399921b8.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -68,143 +74,6 @@
     <div id="app"></div>
     <div id="module-main"></div>
 
-    <script type="module">
-      import * as VIS from "vis-three";
-      import { v4 as getUUid } from "uuid";
-
-      import engineRouter from "./engine";
-      import pluginRouter from "./plugin";
-      import supportRouter from "./support";
-      import displayerRouter from "./displayer";
-      import convenientRouter from "./convenient";
-      import managerRouter from "./manager";
-      import modifierRouter from "./modifier";
-      import helperRouter from "./helper";
-      import loaderRouter from "./loader";
-      import developRouter from "./develop";
-      import coreRouter from "./core";
-      import testRouter from "./test";
-      import libraryRouter from "./library";
-      import extendsRouter from "./extends";
-      import homepageRouter from "./homepage";
-      import dataviewRouter from "./dataview";
-      import passSupportRouter from "./passSupport";
-      import GeometrySupportRouter from "./geometrySupport";
-      import textureSupportRouter from "./textureSupport";
-      import CameraSupportRouter from "./CameraSupport";
-      import ControlsSupportRouter from "./ControlsSupport";
-
-      const engine = new VIS.DisplayEngineSupport()
-        .complete()
-        .setDom(document.getElementById("app"))
-        .setSize();
-
-      window.addEventListener("resize", () => {
-        engine.setSize();
-      });
-
-      VIS.generateConfig.injectEngine = engine;
-
-      const scene = VIS.generateConfig("Scene");
-
-      engine.setScene(scene.vid);
-
-      VIS.generateConfig.injectScene = true;
-
-      const camera = VIS.generateConfig("PerspectiveCamera", {
-        far: 500,
-        position: {
-          y: 10,
-          z: 120,
-        },
-      });
-
-      engine.setCamera(camera.vid);
-
-      const ambientLight = VIS.generateConfig("AmbientLight");
-
-      const spotLight = VIS.generateConfig("SpotLight", {
-        position: {
-          y: 15,
-          x: 50,
-          z: 50,
-        },
-        intensity: 2,
-        distance: 120,
-      });
-
-      const meshStandardMaterial = VIS.generateConfig("MeshStandardMaterial", {
-        color: "rgb(45, 0, 50)",
-        roughness: 0.8,
-      });
-
-      const boxGeometry = VIS.generateConfig("BoxGeometry", {
-        width: 100,
-        height: 5,
-        depth: 40,
-      });
-
-      const mesh = VIS.generateConfig("Mesh", {
-        geometry: boxGeometry.vid,
-        material: meshStandardMaterial.vid,
-      });
-
-      const animation = VIS.generateConfig("ScriptAnimation", {
-        target: mesh.vid,
-        attribute: ".rotation.y",
-        script: VIS.AniScriptLibrary.generateConfig("linearTime", {
-          multiply: 1,
-        }),
-      });
-
-      engine.play();
-
-      const tree = [
-        engineRouter,
-        pluginRouter,
-        supportRouter,
-        displayerRouter,
-        convenientRouter,
-        managerRouter,
-        modifierRouter,
-        helperRouter,
-        loaderRouter,
-        developRouter,
-        coreRouter,
-        testRouter,
-        libraryRouter,
-        extendsRouter,
-        homepageRouter,
-        dataviewRouter,
-        passSupportRouter,
-        GeometrySupportRouter,
-        textureSupportRouter,
-        CameraSupportRouter,
-        ControlsSupportRouter,
-      ];
-
-      const domList = [];
-      const moduleMain = document.getElementById("module-main");
-      tree.forEach((module) => {
-        let childrenDom = "";
-
-        if (module.children && module.children.length) {
-          for (let url of module.children) {
-            childrenDom += `<a href="${module.router}${url}">${url
-              .split("/")
-              .pop()}</a>`;
-          }
-        }
-        const moduleDom = document.createElement("div");
-        moduleDom.className = "module-box";
-        moduleDom.innerHTML = `
-        <h3>${module.router.toLocaleUpperCase()}</h3>
-        <div class="children-box">
-          ${childrenDom}
-        </div>
-      `;
-        moduleMain.appendChild(moduleDom);
-      });
-    </script>
+    
   </body>
 </html>

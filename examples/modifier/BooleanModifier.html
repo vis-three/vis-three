@@ -5,8 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BooleanModifier</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/modifier/BooleanModifier.2bcf9ddb.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -18,68 +24,6 @@
 
   <body>
     <div id="app"></div>
-    <script type="module">
-      import * as THREE from "three";
-      import * as Vis from "vis-three";
-      const engine = new Vis.ModelingEngine()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true)
-        .play();
-
-      const scene = engine.scene;
-
-      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
-      pointLight.position.y = 30;
-      scene.add(pointLight);
-
-      const box = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(20, 10, 10),
-        new THREE.MeshStandardMaterial({
-          // color: 'rgb(255, 105, 100)',
-          map: new THREE.TextureLoader().load(
-            "/examples/public/texture/Bricks_Color.jpg"
-          ),
-        })
-      );
-      scene.add(box);
-
-      const sphere = new THREE.Mesh(
-        new THREE.SphereBufferGeometry(7),
-        new THREE.MeshBasicMaterial({
-          wireframe: true,
-          color: "rgb(155, 155, 0)",
-          transparent: true,
-          opacity: 0.5,
-        })
-      );
-      sphere.position.x = -5;
-      sphere.updateMatrix();
-      scene.add(sphere);
-
-      const cylinder = new THREE.Mesh(
-        new THREE.CylinderGeometry(3, 3, 15, 16),
-        sphere.material
-      );
-      cylinder.position.x = 5;
-      cylinder.updateMatrix();
-      scene.add(cylinder);
-
-      const modifier1 = new Vis.BooleanModifier({
-        source: box,
-        target: sphere,
-      });
-
-      const modifier2 = new Vis.BooleanModifier({
-        source: box,
-        target: cylinder,
-        mode: "union",
-      });
-
-      engine.renderManager.addEventListener("render", () => {
-        modifier1.render();
-        modifier2.render();
-      });
-    </script>
+    
   </body>
 </html>

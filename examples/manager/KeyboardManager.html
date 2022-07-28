@@ -5,8 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KeyboardManager</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/manager/KeyboardManager.6e0b8ebe.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -64,47 +70,6 @@
 
     <div class="keyboard-message">按键盘触发</div>
 
-    <script type="module">
-      import * as VIS from "vis-three";
-
-      const manager = new VIS.KeyboardManager();
-
-      const keyboardList = [];
-
-      // 0-9
-      for (let key = 0; key <= 9; key += 1) {
-        keyboardList.push(String.fromCharCode(key));
-      }
-
-      // 97-122 a-z
-      for (let key = 97; key <= 122; key += 1) {
-        keyboardList.push(String.fromCharCode(key));
-      }
-
-      const dom = document.querySelector(".keyboard-message");
-
-      let currentArea = "window";
-
-      keyboardList.forEach((key) => {
-        manager.register({
-          shortcutKey: [key],
-          desp: `key ${key}`,
-          keyup: (event) => {
-            dom.innerHTML = `${currentArea} touch '${key}'`;
-          },
-        });
-      });
-
-      document.getElementById("app1").onclick = (event) => {
-        currentArea = "app1";
-        console.log(currentArea);
-        manager.watch(document.getElementById("app1"));
-      };
-
-      document.getElementById("app2").onclick = (event) => {
-        currentArea = "app2";
-        manager.watch(document.getElementById("app2"));
-      };
-    </script>
+    
   </body>
 </html>

@@ -5,8 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GridHelperPlugin</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/plugin/GridHelperPlugin.8bd62972.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -33,27 +39,6 @@
     <div id="app"></div>
     <button id="operate">tirggle</button>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as Vis from "vis-three";
-      const engine = new Vis.DisplayEngine()
-        .install("GridHelper", {
-          range: 200,
-          spacing: 50,
-          axesColor: "red",
-          cellColor: "yellow",
-          opacity: 1,
-        })
-        .complete()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .play();
-
-      let show = true;
-      document.getElementById("operate").onclick = (event) => {
-        show = !show;
-        engine.setGridHelper({ show });
-      };
-    </script>
+    
   </body>
 </html>

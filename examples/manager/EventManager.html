@@ -5,71 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EventManager</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/manager/EventManager.b38597cd.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <body>
     <div id="app"></div>
-    <script type="module">
-      import * as THREE from "three";
-      import * as Vis from "vis-three";
-
-      const engine = new Vis.DisplayEngine()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .play();
-
-      const scene = engine.scene;
-
-      const box = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(10, 10, 10),
-        new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
-      );
-      box.position.x = 10;
-      scene.add(box);
-
-      const box2 = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(10, 10, 10),
-        new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
-      );
-      box2.position.x = 5;
-      box2.position.y = 5;
-      scene.add(box2);
-
-      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
-      pointLight.position.y = 30;
-      scene.add(pointLight);
-
-      // pointer or mouse but support use pointer follow three
-      const global = engine.eventManager;
-
-      const genericEvents = [
-        "pointerdown",
-        "pointerup",
-        "mousedown",
-        "mouseup",
-        // "pointermove",
-        "pointerenter",
-        "pointerleave",
-        "click",
-        "dblclick",
-        "contextmenu",
-      ];
-
-      for (const name of genericEvents) {
-        box.addEventListener(name, (event) => {
-          console.log(`box ${name}`);
-        });
-
-        box2.addEventListener(name, (event) => {
-          console.log(`box2 ${name}`);
-        });
-
-        global.addEventListener(name, (event) => {
-          console.log(`global ${name}`);
-        });
-      }
-    </script>
+    
   </body>
 </html>

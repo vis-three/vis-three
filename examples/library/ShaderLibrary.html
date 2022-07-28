@@ -5,8 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ShaderLibrary</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/library/ShaderLibrary.78e05397.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -28,21 +31,6 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      const list = [
-        "../shaderLibrary/uvPulseShader.html",
-        "../shaderLibrary/fragCoordTestingShader.html",
-        "../shaderLibrary/colorMixShader.html",
-        "../shaderLibrary/BloomShader.html",
-      ];
-
-      const app = document.getElementById("app");
-      list.forEach((url) => {
-        const a = document.createElement("a");
-        a.href = url;
-        a.innerText = url;
-        app.appendChild(a);
-      });
-    </script>
+    
   </body>
 </html>

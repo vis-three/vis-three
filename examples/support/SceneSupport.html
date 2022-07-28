@@ -5,8 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SceneSupport</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/support/SceneSupport.363c6ddc.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -24,7 +30,7 @@
     <div id="element1">
       <p>canvas P</p>
       <img
-        src="/texture/Bricks_Color.jpg"
+        src="/vis-three/examples/texture/Bricks_Color.jpg"
         style="width: 50px; height: 50px"
         alt=""
       />
@@ -42,124 +48,6 @@
       </div>
     </div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as VIS from "vis-three";
-      import { v4 as getUUid } from "uuid";
-
-      const canvasGenerator = new VIS.CanvasGenerator({
-        width: 256,
-        height: 256,
-      })
-        .draw((ctx) => {
-          ctx.textBaseline = "middle";
-          ctx.textAlign = "center";
-
-          ctx.fillStyle = "rgb(206, 42, 230)";
-
-          ctx.font = " bold 68px 微软雅黑";
-          ctx.fillText("SCENE", 128, 128);
-        })
-        .preview();
-
-      const engine = new VIS.ModelingEngineSupport()
-        .install("CSS3DRenderer")
-        .complete()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true)
-        .registerResources({
-          "examples.css3DObject": document.getElementById("element1"),
-        });
-      const ambientLight1 = VIS.generateConfig("AmbientLight", {
-        intensity: 0.5,
-      });
-
-      const ambientLight2 = VIS.generateConfig("AmbientLight", {
-        intensity: 1,
-      });
-
-      const material = VIS.generateConfig("MeshStandardMaterial");
-
-      const geometry = VIS.generateConfig("BoxGeometry", {
-        width: 20,
-        height: 20,
-        depth: 20,
-      });
-
-      const scene2Symbol = getUUid();
-
-      const mesh1 = VIS.generateConfig("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
-        dblclick: [
-          VIS.EventLibrary.generateConfig("changeScene", {
-            params: {
-              scene: scene2Symbol,
-            },
-          }),
-        ],
-      });
-
-      const css3DObject = VIS.generateConfig("CSS3DObject", {
-        element: "examples.css3DObject",
-        position: {
-          x: -50,
-          y: 10,
-        },
-        rotation: {
-          y: (Math.PI / 180) * 20,
-        },
-        scale: {
-          x: 0.1,
-          y: 0.1,
-          z: 0.1,
-        },
-      });
-
-      const scene1 = VIS.generateConfig("Scene", {
-        children: [ambientLight1.vid, mesh1.vid, css3DObject.vid],
-      });
-
-      const mesh2 = VIS.generateConfig("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
-        position: {
-          x: 10,
-          y: 10,
-        },
-        scale: {
-          x: 2,
-          y: 2,
-        },
-      });
-
-      const scene2 = VIS.generateConfig("Scene", {
-        vid: scene2Symbol,
-        children: [ambientLight2.vid, mesh2.vid],
-      });
-
-      engine.applyConfig(
-        ambientLight1,
-        ambientLight2,
-        material,
-        geometry,
-        mesh1,
-        css3DObject,
-        scene1,
-        mesh2,
-        scene2
-      );
-
-      engine.setScene(scene1.vid).play();
-
-      document.getElementById("scene1").onclick = () => {
-        engine.setScene(scene1.vid);
-      };
-
-      document.getElementById("scene2").onclick = () => {
-        engine.setScene(scene2.vid);
-      };
-    </script>
+    
   </body>
 </html>

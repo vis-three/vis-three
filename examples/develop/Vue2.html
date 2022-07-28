@@ -4,9 +4,17 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
     <title>Vue2</title>
+    <script type="module" crossorigin src="/vis-three/examples/assets/develop/Vue2.68c0b54b.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vue.esm.browser.min.816a6d7c.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vue3Support.5ea10b76.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -67,55 +75,6 @@
       </div>
     </div>
 
-    <script type="module">
-      import Vue from "vue2/dist/vue.esm.browser.min.js";
-      import * as Vis from "vis-three";
-
-      import config from "/public/assetsConfig/vue3Support.json";
-
-      const visConfig = Vue.observable(
-        JSON.parse(JSON.stringify(config), Vis.JSONHandler.parse)
-      );
-      const lightDataSupport = new Vis.LightDataSupport(Vue.observable({}));
-
-      new Vue({
-        el: "#app",
-        data() {
-          return {
-            lightMap: lightDataSupport.getData(),
-          };
-        },
-        methods: {
-          addPositionY(item) {
-            item.position.y += 5;
-          },
-        },
-        mounted() {
-          const loadingDom = document.createElement("div");
-          loadingDom.innerText = "正在加载...";
-          loadingDom.className = "loadingDom";
-          document.body.appendChild(loadingDom);
-
-          const engine = new Vis.ModelingEngineSupport({
-            lightDataSupport,
-          })
-            .setDom(document.getElementById("three"))
-            .setStats(true)
-            .setSize();
-
-          window.engine = engine;
-
-          const scene = Vis.generateConfig("Scene");
-          engine.applyConfig(scene).setScene(visConfig.scene.Scene.vid);
-
-          engine.loaderManager.setPath(import.meta.env.BASE_URL);
-
-          engine.loadConfigAsync(visConfig).then((res) => {
-            document.body.removeChild(loadingDom);
-            this.$forceUpdate();
-          });
-        },
-      });
-    </script>
+    
   </body>
 </html>

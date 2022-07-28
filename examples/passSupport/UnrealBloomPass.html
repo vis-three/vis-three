@@ -5,8 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PassSupport</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/passSupport/UnrealBloomPass.57a09b82.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/lil-gui.module.min.2e05211e.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -19,58 +26,6 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as VIS from "vis-three";
-      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
-
-      const engine = new VIS.ModelingEngineSupport()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true)
-        .play();
-
-      VIS.generateConfig.injectEngine = engine;
-
-      const scene = VIS.generateConfig("Scene");
-
-      engine.setScene(scene.vid);
-
-      VIS.generateConfig.injectScene = true;
-
-      const pointLight = VIS.generateConfig("PointLight", {
-        position: {
-          x: 30,
-          y: 50,
-        },
-        distance: 100,
-      });
-
-      const material = VIS.generateConfig(VIS.CONFIGTYPE.MESHSTANDARDMATERIAL, {
-        color: "red",
-      });
-
-      const geometry = VIS.generateConfig(VIS.CONFIGTYPE.SPHEREGEOMETRY, {
-        radius: 10,
-        widthSegments: 64,
-        heightSegments: 64,
-      });
-
-      const mesh = VIS.generateConfig(VIS.CONFIGTYPE.MESH, {
-        material: material.vid,
-        geometry: geometry.vid,
-      });
-
-      const unrealBloom = VIS.generateConfig(VIS.CONFIGTYPE.UNREALBLOOMPASS, {
-        strength: 1,
-      });
-
-      const gui = new GUI();
-
-      gui.add(unrealBloom, "strength", 0, 5, 0.1);
-      gui.add(unrealBloom, "threshold", 0, 1, 0.01);
-      gui.add(unrealBloom, "radius", 0, 5, 0.1);
-      gui.addColor(material, "color");
-    </script>
+    
   </body>
 </html>

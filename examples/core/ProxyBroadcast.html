@@ -5,8 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ProxyBroadcast</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/core/ProxyBroadcast.3d456c64.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vue.esm.browser.min.816a6d7c.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -19,43 +26,6 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as VIS from "vis-three";
-      import Vue from "vue2/dist/vue.esm.browser.min.js";
-
-      const proxyBroadcast = new VIS.ProxyBroadcast();
-
-      const testObject = {
-        string: "string",
-        number: 1,
-        boolean: true,
-        object: {
-          attr1: "adv",
-        },
-        array: [1, { a: 3 }, [1, 3, 5, 7], 4, 5],
-      };
-
-      const reactiveObject = proxyBroadcast.proxyExtends(testObject);
-
-      proxyBroadcast.addEventListener("broadcast", (event) => {
-        console.log(event.notice);
-      });
-
-      window.reactiveObject = reactiveObject;
-
-      const vue2Object = Vue.observable({
-        string: "string",
-        number: 1,
-        boolean: true,
-        object: {
-          attr1: "adv",
-        },
-        array: [1, { a: 3 }, [1, 3, 5, 7], 4, 5],
-        array2: [],
-      });
-      const vue2ReactObject = proxyBroadcast.proxyExtends(vue2Object);
-      window.vue2ReactObject = vue2ReactObject;
-    </script>
+    
   </body>
 </html>

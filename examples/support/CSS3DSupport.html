@@ -5,8 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CSS3DSupport</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/support/CSS3DSupport.042f2729.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/lil-gui.module.min.2e05211e.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -70,95 +77,6 @@
       </div>
     </div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as VIS from "vis-three";
-      import { v4 as getUUid } from "uuid";
-      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
-
-      const canvasGenerator = new VIS.CanvasGenerator({
-        width: 256,
-        height: 256,
-      })
-        .draw((ctx) => {
-          ctx.textBaseline = "middle";
-          ctx.textAlign = "center";
-
-          ctx.fillStyle = "rgb(206, 42, 230)";
-
-          ctx.font = " bold 54px 微软雅黑";
-          ctx.fillText("CSS3D", 128, 128);
-        })
-        .preview();
-
-      const engine = new VIS.ModelingEngineSupport()
-        .install("CSS3DRenderer")
-        .complete()
-        .setDom(document.getElementById("app"))
-        .setStats(true)
-        .registerResources({
-          "examples.element1": document.getElementById("element1"),
-          "examples.element2": document.getElementById("element2"),
-        });
-
-      VIS.generateConfig.injectEngine = engine;
-
-      const scene = VIS.generateConfig("Scene");
-
-      engine.setScene(scene.vid);
-
-      VIS.generateConfig.injectScene = true;
-
-      const pointLight = VIS.generateConfig("PointLight", {
-        position: {
-          x: 30,
-          y: 50,
-        },
-        distance: 100,
-      });
-
-      const css3DObject = VIS.generateConfig("CSS3DPlane", {
-        element: "examples.element1",
-        width: 50,
-        height: 50,
-        position: {
-          x: 50,
-          y: 10,
-        },
-        rotation: {
-          y: -(Math.PI / 180) * 15,
-        },
-        scale: {
-          x: 0.3,
-          y: 0.3,
-          z: 0.3,
-        },
-      });
-
-      engine.play();
-
-      window.engine = engine;
-
-      const gui = new GUI();
-
-      gui.add(css3DObject, "width", 0, 300).onChange((data) => {
-        css3DObject.width = data;
-      });
-
-      gui.add(css3DObject, "height", 0, 300).onChange((data) => {
-        css3DObject.height = data;
-      });
-
-      setTimeout(() => {
-        engine.setSize();
-        document.getElementById("element1").addEventListener("click", () => {
-          css3DObject.element = "examples.element1";
-        });
-
-        document.getElementById("element2").addEventListener("click", () => {
-          css3DObject.element = "examples.element2";
-        });
-      }, 0);
-    </script>
+    
   </body>
 </html>

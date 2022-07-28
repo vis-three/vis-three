@@ -5,8 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Memory-canvas</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/test/Pressure-canvas.65aa3e74.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -25,74 +31,6 @@
       </div>
     </div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as Vis from "vis-three";
-      import { v4 as getUUid } from "uuid";
-
-      const canvasGenerator = new Vis.CanvasGenerator({
-        width: 256,
-        height: 256,
-      })
-        .draw((ctx) => {
-          ctx.textBaseline = "middle";
-          ctx.textAlign = "center";
-
-          ctx.fillStyle = "rgb(206, 42, 230)";
-
-          ctx.font = " bold 52px 微软雅黑";
-          ctx.fillText("PRESSURE", 128, 128);
-        })
-        .preview();
-
-      const engine = new Vis.DisplayEngineSupport()
-        .install("Stats")
-        .complete()
-        .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true);
-
-      const ambientLight = Vis.generateConfig("AmbientLight", {
-        color: "rgb(100, 100, 100)",
-      });
-
-      const material = Vis.generateConfig("MeshStandardMaterial");
-
-      const geometry = Vis.generateConfig("BoxGeometry", {
-        width: 20,
-        height: 10,
-        depth: 20,
-      });
-
-      const scene = Vis.generateConfig("Scene", {
-        children: [ambientLight.vid],
-      });
-
-      engine.applyConfig(ambientLight, material, geometry, scene);
-
-      engine.setScene(scene.vid).play();
-
-      let num = 0;
-      document.getElementById("object").onclick = () => {
-        for (let i = 0; i < 100; i += 1) {
-          const mesh = Vis.generateConfig("Mesh", {
-            material: material.vid,
-            geometry: geometry.vid,
-            position: {
-              x: Math.random() * (500 + 1) - 250,
-              y: Math.random() * (500 + 1) - 250,
-              z: Math.random() * (500 + 1) - 250,
-            },
-            matrixAutoUpdate: false,
-          });
-          engine.applyConfig(mesh);
-          scene.children.push(mesh.vid);
-        }
-        num += 1;
-        document.getElementById(
-          "button-group"
-        ).children[0].innerHTML = `total: ${num * 100}`;
-      };
-    </script>
+    
   </body>
 </html>

@@ -5,8 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CSS3DRendererPlugin</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    
+    <script type="module" crossorigin src="/vis-three/examples/assets/plugin/CSS3DRendererPlugin.68e770be.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/common.006007ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.1b4256b1.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/vis-three.72224a55.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Vis.es.dd28f8ae.js">
+    <link rel="stylesheet" href="/vis-three/examples/assets/common.2ba27c9f.css">
   </head>
 
   <style>
@@ -34,7 +40,7 @@
     <div id="element1">
       <p>canvas P</p>
       <img
-        src="/texture/Bricks_Color.jpg"
+        src="/vis-three/examples/texture/Bricks_Color.jpg"
         style="width: 50px; height: 50px"
         alt=""
       />
@@ -61,82 +67,12 @@
 
     <div id="element3">
       <video
-        src="/video/1.mp4"
+        src="/vis-three/examples/video/1.mp4"
         style="width: 192px; height: 108"
         controls
       ></video>
     </div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as VIS from "vis-three";
-
-      const engine = new VIS.DisplayEngineSupport()
-        .install("CSS3DRenderer")
-        .complete()
-        .setDom(document.getElementById("app"))
-        .registerResources({
-          "examples.css3DObject": document.getElementById("element1"),
-          "examples.css3DObject2": document.getElementById("element2"),
-          "examples.css3DObject3": document.getElementById("element3"),
-        });
-
-      const css3DObject = VIS.generateConfig("CSS3DObject", {
-        element: "examples.css3DObject",
-        position: {
-          x: -50,
-          y: 10,
-        },
-        rotation: {
-          y: (Math.PI / 180) * 20,
-        },
-        scale: {
-          x: 0.1,
-          y: 0.1,
-          z: 0.1,
-        },
-      });
-
-      const css3DObject2 = VIS.generateConfig("CSS3DObject", {
-        element: "examples.css3DObject2",
-        position: {
-          x: 50,
-          y: 10,
-        },
-        rotation: {
-          y: -(Math.PI / 180) * 20,
-        },
-        scale: {
-          x: 0.1,
-          y: 0.1,
-          z: 0.1,
-        },
-      });
-
-      const css3DObject3 = VIS.generateConfig("CSS3DObject", {
-        element: "examples.css3DObject3",
-        position: {
-          z: -30,
-          y: 10,
-        },
-        scale: {
-          x: 0.5,
-          y: 0.5,
-          z: 0.5,
-        },
-      });
-
-      const scene = VIS.generateConfig("Scene", {
-        children: [css3DObject.vid, css3DObject2.vid, css3DObject3.vid],
-      });
-
-      engine.applyConfig(css3DObject, css3DObject2, css3DObject3, scene);
-
-      engine.setScene(scene.vid).play();
-
-      setTimeout(() => {
-        engine.setSize();
-      }, 0);
-    </script>
+    
   </body>
 </html>
