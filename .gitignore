@@ -6,3 +6,5 @@ dist-ssr
 website/public/examples/texture/katana/katana_Normal.png
 dist-website/examples/texture/katana/katana_Normal.png
 stats.html
+coverage
+.nyc_output

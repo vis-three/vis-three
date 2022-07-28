@@ -15,7 +15,6 @@
     "dev": "vite build --watch -c ./utils/build/vite.config.js",
     "build": "tsc -p ./utils/build/tsconfig.json  && vite build -c ./utils/build/vite.config.js",
     "lint": "npx eslint *.js src/**/*.ts cypress/**/*.js --fix",
-    "e2e:open": "cypress open",
     "examples:dev": "vite -c ./utils/build/vite-examples.config.js",
     "examples:build": "vite build --emptyOutDir -c ./utils/build/vite-examples.config.js",
     "docs:dev": "vitepress dev docs",
@@ -23,11 +22,14 @@
     "docs:serve": "vitepress serve docs",
     "website:dev": "vite serve ./website -c ./utils/build/vite-webside.config.js",
     "website:build": "vite build --emptyOutDir -c ./utils/build/vite-webside.config.js",
-    "website:lint": "npx eslint ./website/src/**/*.vue --fix"
+    "website:lint": "npx eslint ./website/src/**/*.vue --fix",
+    "test:unit": "cypress run --spec 'cypress/integration/unit/**/*'",
+    "test:open": "cypress open"
   },
   "devDependencies": {
     "@ant-design/icons-vue": "^6.1.0",
     "@antv/g6": "^4.6.8",
+    "@cypress/code-coverage": "^3.10.0",
     "@rollup/plugin-alias": "^3.1.9",
     "@types/three": "^0.133.1",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
@@ -35,6 +37,8 @@
     "@vitejs/plugin-vue": "^2.3.3",
     "ant-design-vue": "^3.2.6",
     "axios": "^0.27.2",
+    "babel-loader": "^8.2.5",
+    "babel-plugin-istanbul": "^6.1.1",
     "cypress": "^9.5.4",
     "echarts": "^5.3.3",
     "eslint": "^8.12.0",
@@ -52,7 +56,8 @@
     "vitepress": "^0.22.4",
     "vue": "^3.2.21",
     "vue-tsc": "^0.37.0",
-    "vue2": "npm:vue@^2.6.11"
+    "vue2": "npm:vue@^2.6.11",
+    "webpack": "^5.74.0"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^18.6.4",
