@@ -63,7 +63,7 @@ export class SelectiveBloomPass extends Pass {
   private sceneBackgroundCache: Texture | Color | null = null;
 
   private overrideBackground = new Color("black");
-  private overrideMeshMaterial = new MeshStandardMaterial({
+  private overrideMeshMaterial = new MeshBasicMaterial({
     color: "black",
   });
   private overrideLineMaterial = new LineBasicMaterial({ color: "black" });
@@ -294,7 +294,7 @@ export class SelectiveBloomPass extends Pass {
       this.fsQuad.render(renderer);
     }
 
-    // 1. Extract Bright Areas
+    // // 1. Extract Bright Areas
 
     this.highPassUniforms["tDiffuse"].value = this.selectRenderTarget.texture;
     this.highPassUniforms["luminosityThreshold"].value = this.threshold;

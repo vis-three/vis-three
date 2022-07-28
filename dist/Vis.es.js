@@ -7337,7 +7337,7 @@ const _SelectiveBloomPass = class extends Pass {
     __publicField(this, "materialCache", new Map());
     __publicField(this, "sceneBackgroundCache", null);
     __publicField(this, "overrideBackground", new Color("black"));
-    __publicField(this, "overrideMeshMaterial", new MeshStandardMaterial({
+    __publicField(this, "overrideMeshMaterial", new MeshBasicMaterial({
       color: "black"
     }));
     __publicField(this, "overrideLineMaterial", new LineBasicMaterial({ color: "black" }));

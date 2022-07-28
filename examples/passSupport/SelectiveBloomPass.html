@@ -23,6 +23,7 @@
       import * as THREE from "three";
       import * as VIS from "vis-three";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+      import { v4 } from "uuid";
 
       const engine = new VIS.DisplayEngineSupport()
         .setDom(document.getElementById("app"))
@@ -32,6 +33,9 @@
       VIS.generateConfig.injectEngine = engine;
 
       const scene = VIS.generateConfig("Scene");
+      const scene2 = VIS.generateConfig("Scene", {
+        vid: v4(),
+      });
 
       engine.setScene(scene.vid);
 
@@ -54,7 +58,7 @@
           x: 30,
           y: 50,
         },
-        distance: 100,
+        distance: 200,
       });
 
       const material = VIS.generateConfig(VIS.CONFIGTYPE.MESHSTANDARDMATERIAL, {
@@ -72,10 +76,32 @@
         color: "blue",
       });
 
+      const circleMaterial = VIS.generateConfig(
+        VIS.CONFIGTYPE.MESHSTANDARDMATERIAL,
+        {
+          roughness: 0.2,
+        }
+      );
+
+      const circleGeometry = VIS.generateConfig(VIS.CONFIGTYPE.CIRCLEGEOMETRY, {
+        radius: 40,
+      });
+
       const geometry = VIS.generateConfig(VIS.CONFIGTYPE.SPHEREGEOMETRY, {
         radius: 10,
         widthSegments: 12,
         heightSegments: 12,
+      });
+
+      const circle = VIS.generateConfig(VIS.CONFIGTYPE.MESH, {
+        material: circleMaterial.vid,
+        geometry: circleGeometry.vid,
+        position: {
+          y: -10,
+        },
+        rotation: {
+          x: -Math.PI / 2,
+        },
       });
 
       const mesh = VIS.generateConfig(VIS.CONFIGTYPE.MESH, {
@@ -130,6 +156,7 @@
         line: false,
         points: false,
         sprite: false,
+        scene: scene.vid,
       };
 
       gui.add(selectiveBloom, "strength", 0, 5, 0.1);
@@ -195,6 +222,16 @@
           }
         }
       });
+
+      gui
+        .add(selection, "scene", {
+          scene: scene.vid,
+          scene2: scene2.vid,
+        })
+        .onChange((data) => {
+          selectiveBloom.renderScene = data;
+          // engine.setScene(data);
+        });
     </script>
   </body>
 </html>
