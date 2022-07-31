@@ -24,7 +24,9 @@
     "website:build": "vite build --emptyOutDir -c ./utils/build/vite-webside.config.js",
     "website:lint": "npx eslint ./website/src/**/*.vue --fix",
     "test:unit": "cypress run --spec 'cypress/integration/unit/**/*'",
-    "test:open": "cypress open"
+    "test:e2e": "cypress run --spec 'cypress/integration/e2e/**/*'",
+    "test:open": "cypress open",
+    "test:report": "lite-server --baseDir=./coverage/lcov-report"
   },
   "devDependencies": {
     "@ant-design/icons-vue": "^6.1.0",
@@ -46,6 +48,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^9.1.0",
     "less": "^4.1.2",
+    "lite-server": "^2.6.1",
     "nprogress": "^0.2.0",
     "prettier": "^2.6.2",
     "rollup-plugin-visualizer": "^5.6.0",
