@@ -167,6 +167,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
       target: object,
       engine: this.engine,
       processor,
+      compiler: this,
       ...notice,
     });
     return this;

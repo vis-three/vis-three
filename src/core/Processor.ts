@@ -7,6 +7,7 @@ import {
   DeepRecord,
   DeepUnion,
 } from "../utils/utils";
+import { Compiler } from "./Compiler";
 import { ProxyNotice } from "./ProxyBroadcast";
 
 export interface ProcessParams<C extends SymbolConfig, T extends object>
@@ -14,6 +15,7 @@ export interface ProcessParams<C extends SymbolConfig, T extends object>
   config: C;
   target: T;
   processor: Processor<C, T>;
+  compiler: Compiler<C, T>;
   engine: EngineSupport;
 }
 

@@ -1,5 +1,5 @@
 import { BufferGeometry } from "three";
-import { Compiler, CompilerTarget } from "../../core/Compiler";
+import { Compiler } from "../../core/Compiler";
 import { GeometryAllType } from "./GeometryInterface";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ParametricGeometryProcessors } from "./processor/ParametricGeometryProcessors";
