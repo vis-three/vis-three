@@ -3790,7 +3790,6 @@ function syncObject(config2, target, filter, callBack) {
   const recursiveConfig = (config22, target2, filter2) => {
     for (const key in config22) {
       if (target2[key] === void 0) {
-        console.warn(`target object has not key: ${key}`, target2);
         continue;
       }
       if (filter2 && filter2[key]) {
@@ -6608,10 +6607,7 @@ var CSS3DPlaneProcessor = defineProcessor({
     delete: objectCommands.delete
   },
   create(config2, engine) {
-    const dom = document.createElement("div");
-    const children = getElement(config2.element, engine);
-    dom.appendChild(children);
-    return objectCreate(new CSS3DPlane(dom), config2, {
+    return objectCreate(new CSS3DPlane(getElement(config2.element, engine)), config2, {
       element: true
     }, engine);
   },
@@ -10995,7 +10991,7 @@ class History {
     this.actionList = [];
   }
 }
-const version = "0.2.0";
+const version = "0.2.1";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
 }
@@ -11058,4 +11054,4 @@ const lightShadow = new LightShadow(new OrthographicCamera(-256, 256, 256, -256)
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
-export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig };
+export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig };

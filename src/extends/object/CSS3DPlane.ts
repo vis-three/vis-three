@@ -1,5 +1,5 @@
 import { Intersection, Raycaster } from "three";
-import { VisCSS3DObject } from "./VisCSS3DObject";
+import { VisCSS3DObject } from "../../optimize/VisCSS3DObject";
 
 export class CSS3DPlane extends VisCSS3DObject {
   constructor(element: HTMLElement = document.createElement("div")) {

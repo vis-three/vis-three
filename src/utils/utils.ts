@@ -99,7 +99,6 @@ export function syncObject<C extends object, T extends object>(
   ) => {
     for (const key in config) {
       if (target[key] === undefined) {
-        console.warn(`target object has not key: ${key}`, target);
         continue;
       }
 

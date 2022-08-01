@@ -1,6 +1,6 @@
 import { defineProcessor } from "../../../core/Processor";
 import { EngineSupport } from "../../../engine/EngineSupport";
-import { CSS3DPlane } from "../../../optimize/CSS3DPlane";
+import { CSS3DPlane } from "../../../extends/object/CSS3DPlane";
 import { CONFIGTYPE } from "../../constants/configType";
 import {
   ObjectCommands,
@@ -29,12 +29,8 @@ export default defineProcessor<CSS3DPlaneConfig, CSS3DPlane>({
     ).delete,
   },
   create(config: CSS3DPlaneConfig, engine: EngineSupport): CSS3DPlane {
-    const dom = document.createElement("div");
-    const children = getElement(config.element, engine);
-    dom.appendChild(children);
-
     return objectCreate(
-      new CSS3DPlane(dom),
+      new CSS3DPlane(getElement(config.element, engine)),
       config,
       {
         element: true,

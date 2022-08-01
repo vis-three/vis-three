@@ -56,6 +56,7 @@ import { KeyboardManager } from "./manager/KeyboardManager";
 import { SelectiveBloomPass } from "./extends/pass/SelectiveBloomPass";
 import * as Utils from "./utils/utils";
 import "./optimize/optimizeScirpt";
+import { CSS3DPlane } from "./extends/object/CSS3DPlane";
 
 export {
   // core
@@ -132,4 +133,6 @@ export {
   SelectiveBloomPass,
   // utils
   Utils,
+  // extends
+  CSS3DPlane,
 };
