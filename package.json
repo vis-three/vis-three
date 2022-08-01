@@ -73,7 +73,6 @@
   "files": [
     "dist",
     "types",
-    "examples",
     "package.json",
     "LICENSE"
   ],
