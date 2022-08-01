@@ -54,7 +54,7 @@ import { CONFIGMODULE } from "./middleware/constants/CONFIGMODULE";
 import { GroupDataSupport } from "./middleware/group/GroupDataSupport";
 import { KeyboardManager } from "./manager/KeyboardManager";
 import { SelectiveBloomPass } from "./extends/pass/SelectiveBloomPass";
-
+import * as Utils from "./utils/utils";
 import "./optimize/optimizeScirpt";
 
 export {
@@ -130,4 +130,6 @@ export {
   BooleanModifier,
   // pass
   SelectiveBloomPass,
+  // utils
+  Utils,
 };

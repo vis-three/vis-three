@@ -3762,9 +3762,37 @@ const ResourceManagerPlugin = function(params) {
 function isValidKey(key, object) {
   return key in object;
 }
+function isValidEnum(enumeration, value) {
+  return Object.values(enumeration).includes(value);
+}
+function generateConfigFunction(config2) {
+  return (merge) => {
+    const recursion = (config22, merge2) => {
+      for (const key in merge2) {
+        if (config22[key] === void 0) {
+          console.warn(` config can not set key: ${key}`);
+          continue;
+        }
+        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
+          recursion(config22[key], merge2[key]);
+        } else {
+          config22[key] = merge2[key];
+        }
+      }
+    };
+    if (merge) {
+      recursion(config2, merge);
+    }
+    return config2;
+  };
+}
 function syncObject(config2, target, filter, callBack) {
   const recursiveConfig = (config22, target2, filter2) => {
     for (const key in config22) {
+      if (target2[key] === void 0) {
+        console.warn(`target object has not key: ${key}`, target2);
+        continue;
+      }
       if (filter2 && filter2[key]) {
         continue;
       }
@@ -3782,6 +3810,14 @@ function syncObject(config2, target, filter, callBack) {
   recursiveConfig(config2, target, filter);
   callBack && callBack();
 }
+var utils = /* @__PURE__ */ Object.freeze({
+  __proto__: null,
+  [Symbol.toStringTag]: "Module",
+  isValidKey,
+  isValidEnum,
+  generateConfigFunction,
+  syncObject
+});
 const _ProxyBroadcast = class extends EventDispatcher {
   constructor(ignore) {
     super();
@@ -4598,7 +4634,8 @@ const _Compiler = class {
       config: config2,
       target: object,
       engine: this.engine,
-      processor
+      processor,
+      compiler: this
     }, notice));
     return this;
   }
@@ -11021,4 +11058,4 @@ const lightShadow = new LightShadow(new OrthographicCamera(-256, 256, 256, -256)
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
-export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, VIEWPOINT, VideoLoader, generateConfig };
+export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig };

@@ -1,4 +1,9 @@
-import { generateConfig, CONFIGTYPE } from "../../../../dist/Vis.es";
+import { Scene } from "three";
+import {
+  generateConfig,
+  CONFIGTYPE,
+  DisplayEngineSupport,
+} from "../../../../dist/Vis.es";
 
 describe("generateConfig", () => {
   it("test generateConfig have config type config", () => {
@@ -80,4 +85,19 @@ describe("generateConfig", () => {
     expect(meshConfig2).to.have.property("other", 1);
     expect(warn).to.be.calledOnce;
   });
+
+  it("test generateConfig global injectEngine", () => {
+    const engine = new DisplayEngineSupport();
+    generateConfig.injectEngine = engine;
+    generateConfig(CONFIGTYPE.SCENE);
+    const reactiveSceneConfig = engine.getConfigBySymbol(CONFIGTYPE.SCENE);
+    const sceneObject = engine.getObjectBySymbol(CONFIGTYPE.SCENE);
+
+    expect(reactiveSceneConfig).to.not.equal(null);
+    expect(sceneObject).to.instanceOf(Scene);
+  });
+
+  it("test generateConfig global injectScene", () => {});
+
+  it("test generateConfig global autoInject", () => {});
 });

@@ -6,6 +6,8 @@
 
 #### fix
 
+- utils syncObject config has key but object not have
+
 #### perf
 
 - processor

@@ -98,6 +98,11 @@ export function syncObject<C extends object, T extends object>(
     filter?: IgnoreAttribute<C>
   ) => {
     for (const key in config) {
+      if (target[key] === undefined) {
+        console.warn(`target object has not key: ${key}`, target);
+        continue;
+      }
+
       if (filter && filter[key]) {
         continue;
       }
