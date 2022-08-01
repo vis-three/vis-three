@@ -3275,7 +3275,6 @@ var MODULETYPE;
   MODULETYPE2["GROUP"] = "group";
   MODULETYPE2["CSS3D"] = "css3D";
   MODULETYPE2["PASS"] = "pass";
-  MODULETYPE2["MODIFIER"] = "modifier";
   MODULETYPE2["ANIMATION"] = "animation";
 })(MODULETYPE || (MODULETYPE = {}));
 var OBJECTMODULE;
@@ -4035,7 +4034,7 @@ class DataSupport {
   }
   exportConfig(compress = true) {
     if (!compress) {
-      return JSON.parse(JSON.stringify(this.data, stringify), parse);
+      return clone(this.data);
     } else {
       const data = this.data;
       const target = {};
@@ -4053,7 +4052,7 @@ class DataSupport {
               }
               result[key] = config2[key].map((elem) => {
                 if (typeof elem === "object" && elem !== null) {
-                  return JSON.parse(JSON.stringify(elem));
+                  return clone(elem);
                 } else {
                   return elem;
                 }
@@ -4062,7 +4061,7 @@ class DataSupport {
             }
             result[key] = {};
             if (!template[key]) {
-              result[key] = JSON.parse(JSON.stringify(config2[key]));
+              result[key] = clone(config2[key]);
             } else {
               recursion(config2[key], template[key], result[key]);
               if (Object.keys(result[key]).length === 0) {
@@ -11054,4 +11053,4 @@ const lightShadow = new LightShadow(new OrthographicCamera(-256, 256, 256, -256)
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
-export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig };
+export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig, getModule };

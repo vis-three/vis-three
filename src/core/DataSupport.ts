@@ -1,5 +1,5 @@
 import { generateConfig } from "../convenient/generateConfig";
-import { parse, stringify } from "../convenient/JSONHandler";
+import { parse, stringify, clone } from "../convenient/JSONHandler";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
@@ -90,7 +90,7 @@ export abstract class DataSupport<
    */
   exportConfig(compress = true): CompilerTarget<C> {
     if (!compress) {
-      return JSON.parse(JSON.stringify(this.data, stringify), parse);
+      return clone(this.data);
     } else {
       const data = this.data;
       const target = {};
@@ -116,7 +116,7 @@ export abstract class DataSupport<
 
               result[key] = config[key].map((elem) => {
                 if (typeof elem === "object" && elem !== null) {
-                  return JSON.parse(JSON.stringify(elem));
+                  return clone(elem);
                 } else {
                   return elem;
                 }
@@ -127,7 +127,7 @@ export abstract class DataSupport<
             result[key] = {};
             // 扩展对象
             if (!template[key]) {
-              result[key] = JSON.parse(JSON.stringify(config[key]));
+              result[key] = clone(config[key]);
             } else {
               recursion(config[key], template[key], result[key]);
               if (Object.keys(result[key]).length === 0) {

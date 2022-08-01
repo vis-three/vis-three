@@ -17,7 +17,7 @@ export enum MODULETYPE {
   GROUP = "group",
   CSS3D = "css3D",
   PASS = "pass",
-  MODIFIER = "modifier",
+  // MODIFIER = "modifier",
 
   ANIMATION = "animation",
 }

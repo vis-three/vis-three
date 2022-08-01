@@ -50,13 +50,14 @@ import { TIMINGFUNCTION } from "./library/event/RealTimeAnimateLibrary/common";
 import { PassDataSupport } from "./middleware/pass/PassDataSupport";
 import { CSS3DDataSupport } from "./middleware/css3D/CSS3DDataSupport";
 import { RenderManager } from "./manager/RenderManager";
-import { CONFIGMODULE } from "./middleware/constants/CONFIGMODULE";
+import { CONFIGMODULE, getModule } from "./middleware/constants/CONFIGMODULE";
 import { GroupDataSupport } from "./middleware/group/GroupDataSupport";
 import { KeyboardManager } from "./manager/KeyboardManager";
 import { SelectiveBloomPass } from "./extends/pass/SelectiveBloomPass";
 import * as Utils from "./utils/utils";
-import "./optimize/optimizeScirpt";
 import { CSS3DPlane } from "./extends/object/CSS3DPlane";
+
+import "./optimize/optimizeScirpt";
 
 export {
   // core
@@ -73,6 +74,7 @@ export {
   VIEWPOINT,
   EVENTNAME,
   TIMINGFUNCTION,
+  getModule,
   // manager
   LoaderManager,
   ResourceManager,
