@@ -106,4 +106,77 @@ describe("test ProxyBroadcast", () => {
     expect(notice).to.have.property("key", index.toString());
     expect(notice).to.have.property("value", 2);
   });
+
+  it("test add basic key", () => {
+    reactive.basicKey = "basic";
+    expect(object).to.have.property("basicKey", "basic");
+
+    expect(notice).to.have.property("operate", "add");
+    expect(notice).to.have.property("path").that.to.be.lengthOf(0);
+    expect(notice).to.have.property("key", "basicKey");
+    expect(notice).to.have.property("value", "basic");
+  });
+
+  it("test add object key", () => {
+    reactive.object.attrAdd = "attrAdd";
+
+    expect(object.object).to.have.property("attrAdd", "attrAdd");
+
+    expect(notice).to.have.property("operate", "add");
+    expect(notice).to.have.property("path").that.to.be.lengthOf(1);
+    expect(notice.path[0]).to.equal("object");
+    expect(notice).to.have.property("key", "attrAdd");
+    expect(notice).to.have.property("value", "attrAdd");
+  });
+
+  it("test add array key", () => {
+    reactive.array.push("addKey");
+
+    expect(object.array[object.array.length - 1]).to.equal("addKey");
+
+    expect(notice).to.have.property("operate", "add");
+    expect(notice).to.have.property("path").that.to.be.lengthOf(1);
+    expect(notice.path[0]).to.equal("array");
+    expect(notice).to.have.property(
+      "key",
+      (object.array.length - 1).toString()
+    );
+    expect(notice).to.have.property("value", "addKey");
+  });
+
+  it("test delete basic key", () => {
+    delete reactive.basicKey;
+
+    expect(object).to.not.have.property("basicKey");
+
+    expect(notice).to.have.property("operate", "delete");
+    expect(notice).to.have.property("path").that.to.be.lengthOf(0);
+    expect(notice).to.have.property("key", "basicKey");
+    expect(notice).to.have.property("value", "basic");
+  });
+
+  it("test delete object key", () => {
+    delete reactive.object.attrAdd;
+
+    expect(object.object).to.not.have.property("attrAdd");
+
+    expect(notice).to.have.property("operate", "delete");
+    expect(notice).to.have.property("path").that.to.be.lengthOf(1);
+    expect(notice.path[0]).to.equal("object");
+    expect(notice).to.have.property("key", "attrAdd");
+    expect(notice).to.have.property("value", "attrAdd");
+  });
+
+  it("test delete array key", () => {
+    const length = object.array.length;
+    reactive.array.splice(object.array.length - 1, 1);
+
+    expect(object.array).to.not.include("addKey");
+    console.log(notice);
+    expect(notice).to.have.property("operate", "delete");
+    expect(notice).to.have.property("path").that.to.be.lengthOf(1);
+    expect(notice.path[0]).to.equal("array");
+    expect(notice).to.have.property("key", (length - 1).toString());
+    expect(notice).to.have.property("value", "addKey");
+  });
 });

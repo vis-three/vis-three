@@ -3863,11 +3863,11 @@ const _ProxyBroadcast = class extends EventDispatcher {
                 value: value2
               });
               execNum += 1;
-              index += 1;
               if (execNum === num) {
                 break;
               }
             }
+            index += 1;
           }
         }
         target[Symbol.for(this.arraySymobl)] = target.concat([]);
