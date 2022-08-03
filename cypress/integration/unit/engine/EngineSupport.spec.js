@@ -3,19 +3,22 @@ import {
   CONFIGTYPE,
   DisplayEngineSupport,
   MODULETYPE,
+  CanvasGenerator,
 } from "../../../../dist/Vis.es";
 
 describe("dataSupport", () => {
   const engine = new DisplayEngineSupport();
 
+  const canvas = new CanvasGenerator().getDom();
+
+  engine.registerResources({
+    examples: canvas,
+  });
+
   generateConfig.injectEngine = engine;
 
-  const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
-    width: 10,
-    groups: [
-      { start: 0, count: Infinity, materialIndex: 0 },
-      { start: 0, count: Infinity, materialIndex: 1 },
-    ],
+  const texture = generateConfig(CONFIGTYPE.CANVASTEXTURE, {
+    url: "examples",
   });
 
   const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
@@ -24,6 +27,15 @@ describe("dataSupport", () => {
     color: "rgb(100, 200, 100)",
     transparent: true,
     opacity: 0.5,
+    map: texture.vid,
+  });
+
+  const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+    width: 10,
+    groups: [
+      { start: 0, count: Infinity, materialIndex: 0 },
+      { start: 0, count: Infinity, materialIndex: 1 },
+    ],
   });
 
   const mesh = generateConfig(CONFIGTYPE.MESH, {

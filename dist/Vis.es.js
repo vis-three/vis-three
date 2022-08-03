@@ -7161,7 +7161,7 @@ const commonMapRegCommand = {
     value,
     engine
   }) {
-    const texture = engine.resourceManager.resourceMap.get(value);
+    const texture = engine.compilerManager.getObjectBySymbol(value);
     if (!(texture instanceof Texture)) {
       console.warn(`this url resource is not instance of Texture: ${key}`, value, texture);
     }

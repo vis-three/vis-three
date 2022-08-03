@@ -179,4 +179,10 @@ describe("test ProxyBroadcast", () => {
     expect(notice).to.have.property("key", (length - 1).toString());
     expect(notice).to.have.property("value", "addKey");
   });
+
+  it("test basic key to array", () => {
+    reactive.string = [1, 2, 3];
+
+    expect(object.string).to.have.deep.property("string", [1, 2, 3]);
+  });
 });
