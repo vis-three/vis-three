@@ -21,6 +21,17 @@ export class ProxyBroadcast extends EventDispatcher {
 
   private static arraySymobl = "vis.array";
 
+  private static cacheArray = function (object: any) {
+    if (
+      Array.isArray(object) &&
+      !object[Symbol.for(ProxyBroadcast.arraySymobl)]
+    ) {
+      object[Symbol.for(ProxyBroadcast.arraySymobl)] = (
+        object as Array<any>
+      ).concat([]);
+    }
+  };
+
   private static proxyGetter(target: any, key: string | symbol, receiver: any) {
     return Reflect.get(target, key, receiver);
   }
@@ -37,6 +48,9 @@ export class ProxyBroadcast extends EventDispatcher {
     if (typeof key === "symbol") {
       return Reflect.set(target, key, value, receiver);
     }
+
+    // 对array value 执行缓存
+    ProxyBroadcast.cacheArray(value);
 
     // 先执行反射
     let result: boolean;
@@ -208,12 +222,7 @@ export class ProxyBroadcast extends EventDispatcher {
           object[key] !== null
         ) {
           // 给array增加symbol与缓存
-          if (Array.isArray(object[key])) {
-            // 引用值保持为引用
-            object[key][Symbol.for(ProxyBroadcast.arraySymobl)] = (
-              object[key] as Array<any>
-            ).concat([]) as never;
-          }
+          ProxyBroadcast.cacheArray(object[key]);
           object[key] = this.proxyExtends(object[key], tempPath) as never;
         }
       }

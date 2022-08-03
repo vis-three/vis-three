@@ -25,6 +25,7 @@ describe("test ProxyBroadcast", () => {
     notice = event.notice;
   });
 
+  console.log(object);
   it("test set string", () => {
     reactive.string = "abc";
 
@@ -172,7 +173,7 @@ describe("test ProxyBroadcast", () => {
     reactive.array.splice(object.array.length - 1, 1);
 
     expect(object.array).to.not.include("addKey");
-    console.log(notice);
+
     expect(notice).to.have.property("operate", "delete");
     expect(notice).to.have.property("path").that.to.be.lengthOf(1);
     expect(notice.path[0]).to.equal("array");
@@ -183,6 +184,18 @@ describe("test ProxyBroadcast", () => {
   it("test basic key to array", () => {
     reactive.string = [1, 2, 3];
 
-    expect(object.string).to.have.deep.property("string", [1, 2, 3]);
+    expect(object.string).to.have.include.members([1, 2, 3]);
+    expect(object.string).to.have.property(Symbol.for("vis.array"));
+
+    expect(notice).to.have.property("operate", "set");
+    expect(notice).to.have.property("path").that.to.be.lengthOf(0);
+    expect(notice).to.have.property("key", "string");
+    expect(notice).to.have.property("value").to.have.include.members([1, 2, 3]);
+  });
+
+  it("test array key to string", () => {
+    reactive.array = "string";
+    console.log(object);
+    expect(object).to.have.property("array", "string");
   });
 });

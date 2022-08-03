@@ -5,6 +5,7 @@
 #### fix
 
 - material support set map
+- proxyBroadcast set new Array
 
 #### perf
 

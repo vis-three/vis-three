@@ -1,5 +1,5 @@
 import { Material } from "three";
-import { Compiler, CompilerTarget } from "../../core/Compiler";
+import { Compiler } from "../../core/Compiler";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { MaterialAllType } from "./MaterialConfig";
 import LineBasicMaterialProcessor from "./processor/LineBasicMaterialProcessor";

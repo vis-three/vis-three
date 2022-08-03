@@ -3829,6 +3829,7 @@ const _ProxyBroadcast = class extends EventDispatcher {
     if (typeof key === "symbol") {
       return Reflect.set(target, key, value, receiver);
     }
+    _ProxyBroadcast.cacheArray(value);
     let result;
     if (target[key] === void 0) {
       if (typeof value === "object" && value !== null && !_ProxyBroadcast.proxyWeakSet.has(value) && !broadcast.ignoreAttribute[key]) {
@@ -3925,9 +3926,7 @@ const _ProxyBroadcast = class extends EventDispatcher {
           continue;
         }
         if (isValidKey(key, object) && typeof object[key] === "object" && object[key] !== null) {
-          if (Array.isArray(object[key])) {
-            object[key][Symbol.for(_ProxyBroadcast.arraySymobl)] = object[key].concat([]);
-          }
+          _ProxyBroadcast.cacheArray(object[key]);
           object[key] = this.proxyExtends(object[key], tempPath);
         }
       }
@@ -3954,6 +3953,11 @@ const _ProxyBroadcast = class extends EventDispatcher {
 let ProxyBroadcast = _ProxyBroadcast;
 __publicField(ProxyBroadcast, "proxyWeakSet", new WeakSet());
 __publicField(ProxyBroadcast, "arraySymobl", "vis.array");
+__publicField(ProxyBroadcast, "cacheArray", function(object) {
+  if (Array.isArray(object) && !object[Symbol.for(_ProxyBroadcast.arraySymobl)]) {
+    object[Symbol.for(_ProxyBroadcast.arraySymobl)] = object.concat([]);
+  }
+});
 class Translater {
   constructor() {
     __publicField(this, "rule");
