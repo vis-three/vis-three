@@ -36,6 +36,7 @@ export enum CONFIGTYPE {
   CUBETEXTURE = "CubeTexture",
   CANVASTEXTURE = "CanvasTexture",
   VIDEOTEXTURE = "VideoTexture",
+  LOADTEXTURE = "LoadTexture",
 
   MESHBASICMATERIAL = "MeshBasicMaterial",
   MESHSTANDARDMATERIAL = "MeshStandardMaterial",

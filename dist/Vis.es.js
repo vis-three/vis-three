@@ -21,13 +21,14 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Euler, Material, Matrix4, Color, Box3, PlaneBufferGeometry, BufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, Float32BufferAttribute, EdgesGeometry, Group, AmbientLight, DirectionalLight, PointLight, SpotLight, ShaderMaterial, Line, Texture, LineBasicMaterial, MeshBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, PointsMaterial, SpriteMaterial, Mesh, Scene, UniformsUtils, Points, Sprite, AdditiveBlending, Camera, Fog, FogExp2, CanvasTexture, CubeTexture, RGBFormat, AxesHelper, GridHelper, MeshLambertMaterial, Light, LineSegments, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, PCFSoftShadowMap } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, DataTexture, Euler, Material, Matrix4, Color, Box3, PlaneBufferGeometry, BufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, Float32BufferAttribute, EdgesGeometry, Group, AmbientLight, DirectionalLight, PointLight, SpotLight, ShaderMaterial, Line, Texture, LineBasicMaterial, MeshBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, PointsMaterial, SpriteMaterial, Mesh, Scene, UniformsUtils, Points, Sprite, AdditiveBlending, Camera, Fog, FogExp2, CanvasTexture, CubeTexture, RGBFormat, AxesHelper, GridHelper, MeshLambertMaterial, Light, LineSegments, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, PCFSoftShadowMap } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { v4, validate } from "uuid";
 import { CSS3DObject, CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { Easing, Tween } from "@tweenjs/tween.js";
@@ -85,6 +86,13 @@ class EventDispatcher {
   }
   useful() {
     return Boolean([...this.listeners.keys()].length);
+  }
+  once(type, listener) {
+    const onceListener = function(event) {
+      listener.call(this, event);
+      this.removeEventListener(type, onceListener);
+    };
+    this.addEventListener(type, onceListener);
   }
 }
 class RenderManager extends EventDispatcher {
@@ -1915,7 +1923,8 @@ class LoaderManager extends EventDispatcher {
       mtl: new MTLLoader(),
       mp4: videoLoader,
       webm: videoLoader,
-      ogg: videoLoader
+      ogg: videoLoader,
+      hdr: new RGBELoader()
     };
     if (parameters) {
       this.loaderMap = Object.assign(this.loaderMap, parameters.loaderExtends);
@@ -2427,6 +2436,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
   CONFIGTYPE2["CANVASTEXTURE"] = "CanvasTexture";
   CONFIGTYPE2["VIDEOTEXTURE"] = "VideoTexture";
+  CONFIGTYPE2["LOADTEXTURE"] = "LoadTexture";
   CONFIGTYPE2["MESHBASICMATERIAL"] = "MeshBasicMaterial";
   CONFIGTYPE2["MESHSTANDARDMATERIAL"] = "MeshStandardMaterial";
   CONFIGTYPE2["MESHPHONGMATERIAL"] = "MeshPhongMaterial";
@@ -2810,6 +2820,12 @@ const getCanvasTextureConfig = function() {
     type: CONFIGTYPE.CANVASTEXTURE,
     url: "",
     needsUpdate: false
+  });
+};
+const getLoadTextureConfig = function() {
+  return Object.assign(getTextureConfig(), {
+    type: CONFIGTYPE.LOADTEXTURE,
+    url: ""
   });
 };
 const getMaterialConfig = function() {
@@ -3206,6 +3222,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
   [CONFIGTYPE.CANVASTEXTURE]: getCanvasTextureConfig,
   [CONFIGTYPE.VIDEOTEXTURE]: getVideoTextureConfig,
+  [CONFIGTYPE.LOADTEXTURE]: getLoadTextureConfig,
   [CONFIGTYPE.MESHBASICMATERIAL]: getMeshBasicMaterialConfig,
   [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
   [CONFIGTYPE.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,
@@ -3459,7 +3476,6 @@ class ResourceManager extends EventDispatcher {
     __publicField(this, "structureMap", new Map());
     __publicField(this, "configMap", new Map());
     __publicField(this, "resourceMap", new Map());
-    __publicField(this, "configModuleMap", CONFIGMODULE);
     __publicField(this, "mappingHandler", new Map());
     const mappingHandler = this.mappingHandler;
     mappingHandler.set(HTMLImageElement, this.HTMLImageElementHandler);
@@ -3468,6 +3484,7 @@ class ResourceManager extends EventDispatcher {
     mappingHandler.set(Object3D, this.Object3DHandler);
     mappingHandler.set(HTMLDivElement, this.HTMLDivElementHandler);
     mappingHandler.set(HTMLSpanElement, this.HTMLSpanElementHandler);
+    mappingHandler.set(DataTexture, this.DataTextureElementHandler);
     const map = new Map();
     for (const key in resources) {
       if (map.has(key)) {
@@ -3595,6 +3612,14 @@ class ResourceManager extends EventDispatcher {
     this.structureMap.set(url, url);
     return this;
   }
+  DataTextureElementHandler(url, element) {
+    this.resourceMap.set(url, element);
+    this.configMap.set(url, generateConfig(CONFIGTYPE.LOADTEXTURE, {
+      url
+    }));
+    this.structureMap.set(url, url);
+    return this;
+  }
   mappingResource(loadResourceMap) {
     const structureMap = this.structureMap;
     const configMap = this.configMap;
@@ -3642,7 +3667,7 @@ class ResourceManager extends EventDispatcher {
         return {};
       } else {
         return {
-          [this.configModuleMap[config2.type]]: {
+          [getModule(config2.type)]: {
             [config2.vid]: clone(config2)
           }
         };
@@ -3650,18 +3675,17 @@ class ResourceManager extends EventDispatcher {
     } else {
       const configure = {};
       const configMap = this.configMap;
-      const configModuleMap = this.configModuleMap;
       const structure = this.structureMap.get(url);
       const recursionStructure = (structure2) => {
         let config2 = configMap.get(structure2.url);
-        let module = configModuleMap[config2.type];
+        let module = getModule(config2.type);
         if (!configure[module]) {
           configure[module] = {};
         }
         configure[module][config2.vid] = clone(config2);
         if (structure2.geometry) {
           config2 = configMap.get(structure2.geometry);
-          module = configModuleMap[config2.type];
+          module = getModule(config2.type);
           if (!configure[module]) {
             configure[module] = {};
           }
@@ -3669,7 +3693,7 @@ class ResourceManager extends EventDispatcher {
         }
         if (structure2.material) {
           config2 = configMap.get(structure2.material);
-          module = configModuleMap[config2.type];
+          module = getModule(config2.type);
           if (!configure[module]) {
             configure[module] = {};
           }
@@ -8116,92 +8140,6 @@ class ImageTexture extends Texture {
     super(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding);
   }
 }
-class CanvasGenerator {
-  constructor(parameters) {
-    __publicField(this, "canvas");
-    this.canvas = document.createElement("canvas");
-    const devicePixelRatio = window.devicePixelRatio;
-    this.canvas.width = ((parameters == null ? void 0 : parameters.width) || 512) * devicePixelRatio;
-    this.canvas.height = ((parameters == null ? void 0 : parameters.height) || 512) * devicePixelRatio;
-    this.canvas.style.backgroundColor = (parameters == null ? void 0 : parameters.bgColor) || "rgb(255, 255, 255)";
-    const ctx = this.canvas.getContext("2d");
-    ctx && ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  }
-  get() {
-    return this.canvas;
-  }
-  getDom() {
-    return this.canvas;
-  }
-  clear(x = 0, y = 0, width, height) {
-    !width && (width = this.canvas.width);
-    !height && (height = this.canvas.height);
-    const ctx = this.canvas.getContext("2d");
-    if (ctx) {
-      ctx.clearRect(x, y, width, height);
-      return this;
-    } else {
-      console.warn(`you browser can not support canvas 2d`);
-      return this;
-    }
-  }
-  draw(fun) {
-    const ctx = this.canvas.getContext("2d");
-    if (ctx) {
-      fun(ctx);
-      return this;
-    } else {
-      console.warn(`you browser can not support canvas 2d`);
-      return this;
-    }
-  }
-  preview(parameters) {
-    const canvas = this.canvas;
-    canvas.style.position = "fixed";
-    canvas.style.top = (parameters == null ? void 0 : parameters.top) || "5%";
-    canvas.style.left = (parameters == null ? void 0 : parameters.left) || "5%";
-    canvas.style.right = (parameters == null ? void 0 : parameters.right) || "unset";
-    canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
-    if (parameters == null ? void 0 : parameters.scale) {
-      canvas.style.transform = `scale(${parameters.scale})`;
-    }
-    document.body.appendChild(this.canvas);
-    return this;
-  }
-}
-const replaceImage = new CanvasGenerator({
-  width: 512,
-  height: 512
-}).draw((ctx) => {
-  ctx.translate(256, 256);
-  ctx.font = "72px";
-  ctx.fillStyle = "white";
-  ctx.fillText("\u6682\u65E0\u56FE\u7247", 0, 0);
-}).getDom();
-const getResource = function(url, engine, instanceClasses2) {
-  const resourceMap = engine.resourceManager.resourceMap;
-  if (!resourceMap.has(url)) {
-    console.warn(`engine resourceManager can not found this url: ${url}`);
-    return replaceImage;
-  }
-  const resource = resourceMap.get(url);
-  if (Array.isArray(instanceClasses2)) {
-    for (const instanceClass of instanceClasses2) {
-      if (resource instanceof instanceClass) {
-        return resource;
-      }
-    }
-    console.warn(`this url mapping resource is not a texture image class: ${url}`, resource);
-    return replaceImage;
-  } else {
-    if (resource instanceof instanceClasses2) {
-      return resource;
-    } else {
-      console.warn(`this url mapping resource is not a texture image class: ${url}`, resource);
-      return replaceImage;
-    }
-  }
-};
 const needUpdateRegCommand = {
   reg: new RegExp("wrapS|wrapT|format|encoding|anisotropy|magFilter|minFilter|mapping"),
   handler({ target, key, value }) {
@@ -8214,7 +8152,7 @@ var ImageTextureProcessor = defineProcessor({
   commands: {
     set: {
       url({ target, value, engine }) {
-        target.image = getResource(value, engine, HTMLImageElement);
+        target.image = engine.compilerManager.textureCompiler.getResource(value, HTMLImageElement);
         target.needsUpdate = true;
       },
       $reg: [needUpdateRegCommand]
@@ -8223,7 +8161,7 @@ var ImageTextureProcessor = defineProcessor({
   create(config2, engine) {
     const texture = new ImageTexture();
     if (config2.url) {
-      texture.image = getResource(config2.url, engine, HTMLImageElement);
+      texture.image = engine.compilerManager.textureCompiler.getResource(config2.url, HTMLImageElement);
     }
     syncObject(config2, texture, {
       type: true,
@@ -8241,16 +8179,14 @@ var CanvasTextureProcessor = defineProcessor({
   commands: {
     set: {
       url({ target, value, engine }) {
-        target.image = getResource(value, engine, HTMLCanvasElement);
+        target.image = engine.compilerManager.textureCompiler.getResource(value, HTMLCanvasElement);
         target.needsUpdate = true;
-      }
+      },
+      $reg: [needUpdateRegCommand]
     }
   },
   create(config2, engine) {
-    const texture = new CanvasTexture(replaceImage);
-    if (config2.url) {
-      texture.image = getResource(config2.url, engine, HTMLCanvasElement);
-    }
+    const texture = new CanvasTexture(engine.compilerManager.textureCompiler.getResource(config2.url, HTMLCanvasElement));
     syncObject(config2, texture, {
       type: true,
       url: true
@@ -8264,7 +8200,7 @@ var CanvasTextureProcessor = defineProcessor({
 });
 const instanceClasses = [HTMLImageElement, HTMLVideoElement, HTMLCanvasElement];
 const imageHanlder = function({ target, index, value, engine }) {
-  target.images[index] = getResource(value, engine, instanceClasses);
+  target.images[index] = engine.compilerManager.textureCompiler.getResource(value, instanceClasses);
   target.needsUpdate = true;
 };
 var CubeTextureProcessor = defineProcessor({
@@ -8326,13 +8262,14 @@ var CubeTextureProcessor = defineProcessor({
   create(config2, engine) {
     const texture = new CubeTexture();
     const cube = config2.cube;
+    const compiler = engine.compilerManager.textureCompiler;
     const images = [
-      getResource(cube.px, engine, instanceClasses),
-      getResource(cube.nx, engine, instanceClasses),
-      getResource(cube.py, engine, instanceClasses),
-      getResource(cube.ny, engine, instanceClasses),
-      getResource(cube.pz, engine, instanceClasses),
-      getResource(cube.nz, engine, instanceClasses)
+      compiler.getResource(cube.px, instanceClasses),
+      compiler.getResource(cube.nx, instanceClasses),
+      compiler.getResource(cube.py, instanceClasses),
+      compiler.getResource(cube.ny, instanceClasses),
+      compiler.getResource(cube.pz, instanceClasses),
+      compiler.getResource(cube.nz, instanceClasses)
     ];
     texture.image = images;
     syncObject(config2, texture, {
@@ -8373,15 +8310,16 @@ var VideoTextureProcessor = defineProcessor({
   commands: {
     set: {
       url({ target, value, engine }) {
-        target.image = getResource(value, engine, HTMLVideoElement);
+        target.image = engine.compilerManager.textureCompiler.getResource(value, HTMLVideoElement);
         target.needsUpdate = true;
-      }
+      },
+      $reg: [needUpdateRegCommand]
     }
   },
   create(config2, engine) {
     const texture = new VideoTexture(document.createElement("video"));
     if (config2.url) {
-      texture.image = getResource(config2.url, engine, HTMLVideoElement);
+      texture.image = engine.compilerManager.textureCompiler.getResource(config2.url, HTMLVideoElement);
     }
     syncObject(config2, texture, {
       type: true,
@@ -8394,16 +8332,141 @@ var VideoTextureProcessor = defineProcessor({
     target.dispose();
   }
 });
-class TextureCompiler extends Compiler {
+class CanvasGenerator {
+  constructor(parameters) {
+    __publicField(this, "canvas");
+    this.canvas = document.createElement("canvas");
+    const devicePixelRatio = window.devicePixelRatio;
+    this.canvas.width = ((parameters == null ? void 0 : parameters.width) || 512) * devicePixelRatio;
+    this.canvas.height = ((parameters == null ? void 0 : parameters.height) || 512) * devicePixelRatio;
+    this.canvas.style.backgroundColor = (parameters == null ? void 0 : parameters.bgColor) || "rgb(255, 255, 255)";
+    const ctx = this.canvas.getContext("2d");
+    ctx && ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  }
+  get() {
+    return this.canvas;
+  }
+  getDom() {
+    return this.canvas;
+  }
+  clear(x = 0, y = 0, width, height) {
+    !width && (width = this.canvas.width);
+    !height && (height = this.canvas.height);
+    const ctx = this.canvas.getContext("2d");
+    if (ctx) {
+      ctx.clearRect(x, y, width, height);
+      return this;
+    } else {
+      console.warn(`you browser can not support canvas 2d`);
+      return this;
+    }
+  }
+  draw(fun) {
+    const ctx = this.canvas.getContext("2d");
+    if (ctx) {
+      fun(ctx);
+      return this;
+    } else {
+      console.warn(`you browser can not support canvas 2d`);
+      return this;
+    }
+  }
+  preview(parameters) {
+    const canvas = this.canvas;
+    canvas.style.position = "fixed";
+    canvas.style.top = (parameters == null ? void 0 : parameters.top) || "5%";
+    canvas.style.left = (parameters == null ? void 0 : parameters.left) || "5%";
+    canvas.style.right = (parameters == null ? void 0 : parameters.right) || "unset";
+    canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
+    if (parameters == null ? void 0 : parameters.scale) {
+      canvas.style.transform = `scale(${parameters.scale})`;
+    }
+    document.body.appendChild(this.canvas);
+    return this;
+  }
+}
+class LoadTexture extends Texture {
+  constructor(texture) {
+    super();
+    Object.keys(texture).forEach((key) => {
+      this[key] = texture[key];
+    });
+  }
+}
+var LoadTextureProcessor = defineProcessor({
+  configType: CONFIGTYPE.LOADTEXTURE,
+  commands: {
+    set: {
+      url({}) {
+      },
+      $reg: [needUpdateRegCommand]
+    }
+  },
+  create(config2, engine) {
+    let texture;
+    const resource = engine.compilerManager.textureCompiler.getResource(config2.url, Texture);
+    if (resource instanceof Texture) {
+      texture = new LoadTexture(resource);
+    } else {
+      const tempTexture = new Texture(resource);
+      texture = new LoadTexture(tempTexture);
+    }
+    syncObject(config2, texture, {
+      type: true,
+      url: true
+    });
+    texture.needsUpdate = true;
+    return texture;
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
+const _TextureCompiler = class extends Compiler {
   constructor() {
     super();
     __publicField(this, "MODULE", MODULETYPE.TEXTURE);
   }
-}
+  getResource(url, instanceClasses2) {
+    const resourceMap = this.engine.resourceManager.resourceMap;
+    if (!resourceMap.has(url)) {
+      console.warn(`engine resourceManager can not found this url: ${url}`);
+      return _TextureCompiler.replaceImage;
+    }
+    const resource = resourceMap.get(url);
+    if (Array.isArray(instanceClasses2)) {
+      for (const instanceClass of instanceClasses2) {
+        if (resource instanceof instanceClass) {
+          return resource;
+        }
+      }
+      console.warn(`this url mapping resource is not a texture image class: ${url}`, resource);
+      return _TextureCompiler.replaceImage;
+    } else {
+      if (resource instanceof instanceClasses2) {
+        return resource;
+      } else {
+        console.warn(`this url mapping resource is not a texture image class: ${url}`, resource);
+        return _TextureCompiler.replaceImage;
+      }
+    }
+  }
+};
+let TextureCompiler = _TextureCompiler;
+__publicField(TextureCompiler, "replaceImage", new CanvasGenerator({
+  width: 512,
+  height: 512
+}).draw((ctx) => {
+  ctx.translate(256, 256);
+  ctx.font = "72px";
+  ctx.fillStyle = "white";
+  ctx.fillText("\u6682\u65E0\u56FE\u7247", 0, 0);
+}).getDom());
 Compiler.processor(ImageTextureProcessor);
 Compiler.processor(CanvasTextureProcessor);
 Compiler.processor(CubeTextureProcessor);
 Compiler.processor(VideoTextureProcessor);
+Compiler.processor(LoadTextureProcessor);
 class CompilerManager {
   constructor(parameters) {
     __publicField(this, "cameraCompiler", new CameraCompiler());
@@ -11057,4 +11120,4 @@ const lightShadow = new LightShadow(new OrthographicCamera(-256, 256, 256, -256)
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
-export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig, getModule };
+export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig, getModule };

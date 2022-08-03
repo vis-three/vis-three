@@ -30,6 +30,7 @@ import {
   getCanvasTextureConfig,
   getCubeTextureConfig,
   getImageTextureConfig,
+  getLoadTextureConfig,
   getVideoTextureConfig,
 } from "../texture/TextureConfig";
 import {
@@ -80,6 +81,7 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
   [CONFIGTYPE.CANVASTEXTURE]: getCanvasTextureConfig,
   [CONFIGTYPE.VIDEOTEXTURE]: getVideoTextureConfig,
+  [CONFIGTYPE.LOADTEXTURE]: getLoadTextureConfig,
 
   [CONFIGTYPE.MESHBASICMATERIAL]: getMeshBasicMaterialConfig,
   [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,

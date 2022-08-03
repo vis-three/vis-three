@@ -31,6 +31,7 @@ export default {
         "three/examples/jsm/shaders/CopyShader",
         "three/examples/jsm/loaders/OBJLoader",
         "three/examples/jsm/loaders/MTLLoader",
+        "three/examples/jsm/loaders/RGBELoader",
       ],
       plugins: [],
     },

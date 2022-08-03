@@ -76,4 +76,13 @@ export class EventDispatcher {
   useful(): boolean {
     return Boolean([...this.listeners.keys()].length);
   }
+
+  once<C extends BaseEvent>(type: string, listener: EventListener<C>) {
+    const onceListener = function (this: EventDispatcher, event: C) {
+      listener.call(this, event);
+      this.removeEventListener(type, onceListener);
+    };
+
+    this.addEventListener(type, onceListener);
+  }
 }

@@ -5,6 +5,7 @@ export default {
     "/VideoTextureSupport.html",
     "/CubeTextureSupport.html",
     "/CanvasTextureSupport.html",
+    "/LoadTextureSupport.html"
   ],
   position: {
     x: 75,

@@ -56,6 +56,7 @@ import { KeyboardManager } from "./manager/KeyboardManager";
 import { SelectiveBloomPass } from "./extends/pass/SelectiveBloomPass";
 import * as Utils from "./utils/utils";
 import { CSS3DPlane } from "./extends/object/CSS3DPlane";
+import { EventDispatcher } from "./core/EventDispatcher";
 
 import "./optimize/optimizeScirpt";
 
@@ -63,6 +64,7 @@ export {
   // core
   ProxyBroadcast,
   Translater,
+  EventDispatcher,
   // menu
   RESOURCEEVENTTYPE,
   MODULETYPE,

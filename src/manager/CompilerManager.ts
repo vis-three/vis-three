@@ -41,22 +41,22 @@ export interface CompilerManagerParameters {
 }
 
 export class CompilerManager {
-  private cameraCompiler = new CameraCompiler();
-  private lightCompiler = new LightCompiler();
-  private geometryCompiler = new GeometryCompiler();
-  private textureCompiler = new TextureCompiler();
-  private materialCompiler = new MaterialCompiler();
-  private rendererCompiler = new RendererCompiler();
-  private sceneCompiler = new SceneCompiler();
-  private controlsCompiler = new ControlsCompiler();
-  private spriteCompiler = new SpriteCompiler();
-  private lineCompiler = new LineCompiler();
-  private meshCompiler = new MeshCompiler();
-  private pointsCompiler = new PointsCompiler();
-  private groupCompiler = new GroupCompiler();
-  private css3DCompiler = new CSS3DCompiler();
-  private passCompiler = new PassCompiler();
-  private animationCompiler = new AnimationCompiler();
+  cameraCompiler = new CameraCompiler();
+  lightCompiler = new LightCompiler();
+  geometryCompiler = new GeometryCompiler();
+  textureCompiler = new TextureCompiler();
+  materialCompiler = new MaterialCompiler();
+  rendererCompiler = new RendererCompiler();
+  sceneCompiler = new SceneCompiler();
+  controlsCompiler = new ControlsCompiler();
+  spriteCompiler = new SpriteCompiler();
+  lineCompiler = new LineCompiler();
+  meshCompiler = new MeshCompiler();
+  pointsCompiler = new PointsCompiler();
+  groupCompiler = new GroupCompiler();
+  css3DCompiler = new CSS3DCompiler();
+  passCompiler = new PassCompiler();
+  animationCompiler = new AnimationCompiler();
 
   private compilerMap: Map<MODULETYPE, BasicCompiler>;
 

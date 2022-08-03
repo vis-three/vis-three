@@ -53,11 +53,16 @@ export interface CanvasTextureConfig extends TextureConfig {
   needsUpdate: boolean;
 }
 
+export interface LoadTextureConfig extends TextureConfig {
+  url: string;
+}
+
 export type TextureAllType =
   | ImageTextureConfig
   | CubeTextureConfig
   | CanvasTextureConfig
-  | VideoTextureConfig;
+  | VideoTextureConfig
+  | LoadTextureConfig;
 
 export const getTextureConfig = function (): TextureConfig {
   return {
@@ -126,5 +131,12 @@ export const getCanvasTextureConfig = function (): CanvasTextureConfig {
     type: CONFIGTYPE.CANVASTEXTURE,
     url: "",
     needsUpdate: false,
+  });
+};
+
+export const getLoadTextureConfig = function (): LoadTextureConfig {
+  return Object.assign(getTextureConfig(), {
+    type: CONFIGTYPE.LOADTEXTURE,
+    url: "",
   });
 };

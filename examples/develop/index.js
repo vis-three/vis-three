@@ -6,6 +6,7 @@ export default {
     "/Vue2.html",
     "/CanvasExtends.html",
     "/Vue2-ConfigExtends.html",
+    "/LocalUpload.html",
   ],
   position: {
     x: 60,

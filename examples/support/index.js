@@ -6,7 +6,6 @@ export default {
     "/MaterialSupport.html",
     "/LightSupport.html",
     "/GroupSupport.html",
-    "/TextureSupport.html",
     "/EventSupport.html",
     "/SceneSupport.html",
     "/CSS3DSupport.html",
