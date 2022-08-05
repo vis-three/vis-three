@@ -1,9 +1,9 @@
-import { Object3D, Vector3 } from "three";
+import { DataTexture, Object3D, Vector3, } from "three";
 import { generateConfig } from "../convenient/generateConfig";
 import { EventDispatcher } from "../core/EventDispatcher";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import * as JSONHandler from "../convenient/JSONHandler";
-import { CONFIGMODULE } from "../middleware/constants/CONFIGMODULE";
+import { getModule } from "../middleware/constants/CONFIGMODULE";
 export var RESOURCEEVENTTYPE;
 (function (RESOURCEEVENTTYPE) {
     RESOURCEEVENTTYPE["MAPPED"] = "mapped";
@@ -12,7 +12,6 @@ export class ResourceManager extends EventDispatcher {
     structureMap = new Map(); // 外部资源结构映射 url -> structure mappingUrl
     configMap = new Map(); // 配置映射 mappingUrl -> config
     resourceMap = new Map(); // 资源映射 mappingUrl -> resource
-    configModuleMap = CONFIGMODULE;
     mappingHandler = new Map();
     constructor(resources = {}) {
         super();
@@ -23,6 +22,7 @@ export class ResourceManager extends EventDispatcher {
         mappingHandler.set(Object3D, this.Object3DHandler);
         mappingHandler.set(HTMLDivElement, this.HTMLDivElementHandler);
         mappingHandler.set(HTMLSpanElement, this.HTMLSpanElementHandler);
+        mappingHandler.set(DataTexture, this.DataTextureElementHandler);
         const map = new Map();
         for (const key in resources) {
             if (map.has(key)) {
@@ -166,6 +166,15 @@ export class ResourceManager extends EventDispatcher {
         this.structureMap.set(url, url);
         return this;
     }
+    // TODO:
+    DataTextureElementHandler(url, element) {
+        this.resourceMap.set(url, element);
+        this.configMap.set(url, generateConfig(CONFIGTYPE.LOADTEXTURE, {
+            url: url,
+        }));
+        this.structureMap.set(url, url);
+        return this;
+    }
     /**
      *  根据加载好的资源拆解映射为最小资源单位与形成相应的配置与结构
      * @param loadResourceMap loaderManager的resourceMap
@@ -233,7 +242,7 @@ export class ResourceManager extends EventDispatcher {
             }
             else {
                 return {
-                    [this.configModuleMap[config.type]]: {
+                    [getModule(config.type)]: {
                         [config.vid]: JSONHandler.clone(config),
                     },
                 };
@@ -242,18 +251,17 @@ export class ResourceManager extends EventDispatcher {
         else {
             const configure = {};
             const configMap = this.configMap;
-            const configModuleMap = this.configModuleMap;
             const structure = this.structureMap.get(url);
             const recursionStructure = (structure) => {
                 let config = configMap.get(structure.url);
-                let module = configModuleMap[config.type];
+                let module = getModule(config.type);
                 if (!configure[module]) {
                     configure[module] = {};
                 }
                 configure[module][config.vid] = JSONHandler.clone(config);
                 if (structure.geometry) {
                     config = configMap.get(structure.geometry);
-                    module = configModuleMap[config.type];
+                    module = getModule(config.type);
                     if (!configure[module]) {
                         configure[module] = {};
                     }
@@ -261,7 +269,7 @@ export class ResourceManager extends EventDispatcher {
                 }
                 if (structure.material) {
                     config = configMap.get(structure.material);
-                    module = configModuleMap[config.type];
+                    module = getModule(config.type);
                     if (!configure[module]) {
                         configure[module] = {};
                     }

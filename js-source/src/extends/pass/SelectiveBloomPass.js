@@ -1,4 +1,4 @@
-import { AdditiveBlending, Color, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, MeshStandardMaterial, PerspectiveCamera, Points, PointsMaterial, Scene, ShaderMaterial, Sprite, SpriteMaterial, UniformsUtils, Vector2, Vector3, WebGLRenderTarget, } from "three";
+import { AdditiveBlending, Color, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, PerspectiveCamera, Points, PointsMaterial, Scene, ShaderMaterial, Sprite, SpriteMaterial, UniformsUtils, Vector2, Vector3, WebGLRenderTarget, } from "three";
 import { FullScreenQuad, Pass } from "three/examples/jsm/postprocessing/Pass";
 import { LuminosityHighPassShader } from "three/examples/jsm/shaders/LuminosityHighPassShader";
 export class SelectiveBloomPass extends Pass {
@@ -32,7 +32,7 @@ export class SelectiveBloomPass extends Pass {
     materialCache = new Map();
     sceneBackgroundCache = null;
     overrideBackground = new Color("black");
-    overrideMeshMaterial = new MeshStandardMaterial({
+    overrideMeshMaterial = new MeshBasicMaterial({
         color: "black",
     });
     overrideLineMaterial = new LineBasicMaterial({ color: "black" });
@@ -196,7 +196,7 @@ export class SelectiveBloomPass extends Pass {
             renderer.clear();
             this.fsQuad.render(renderer);
         }
-        // 1. Extract Bright Areas
+        // // 1. Extract Bright Areas
         this.highPassUniforms["tDiffuse"].value = this.selectRenderTarget.texture;
         this.highPassUniforms["luminosityThreshold"].value = this.threshold;
         this.fsQuad.material = this.materialHighPassFilter;

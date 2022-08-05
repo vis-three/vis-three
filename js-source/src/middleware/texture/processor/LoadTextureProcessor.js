@@ -1,23 +1,27 @@
+import { Texture } from "three";
 import { defineProcessor } from "../../../core/Processor";
-import { ImageTexture } from "../../../extends/texture/ImageTexture";
+import { LoadTexture } from "../../../extends/texture/LoadTexture";
 import { syncObject } from "../../../utils/utils";
 import { CONFIGTYPE } from "../../constants/configType";
 import { needUpdateRegCommand } from "./common";
 export default defineProcessor({
-    configType: CONFIGTYPE.IMAGETEXTURE,
+    configType: CONFIGTYPE.LOADTEXTURE,
     commands: {
         set: {
-            url({ target, value, engine }) {
-                target.image = engine.compilerManager.textureCompiler.getResource(value, HTMLImageElement);
-                target.needsUpdate = true;
-            },
+            // 当前的LoadTexture是一次性的
+            url({}) { },
             $reg: [needUpdateRegCommand],
         },
     },
     create(config, engine) {
-        const texture = new ImageTexture();
-        if (config.url) {
-            texture.image = engine.compilerManager.textureCompiler.getResource(config.url, HTMLImageElement);
+        let texture;
+        const resource = engine.compilerManager.textureCompiler.getResource(config.url, Texture);
+        if (resource instanceof Texture) {
+            texture = new LoadTexture(resource);
+        }
+        else {
+            const tempTexture = new Texture(resource);
+            texture = new LoadTexture(tempTexture);
         }
         syncObject(config, texture, {
             type: true,
@@ -30,4 +34,4 @@ export default defineProcessor({
         target.dispose();
     },
 });
-//# sourceMappingURL=ImageTextureProcessor.js.map
+//# sourceMappingURL=LoadTextureProcessor.js.map

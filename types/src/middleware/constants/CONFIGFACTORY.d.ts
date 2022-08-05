@@ -3,6 +3,7 @@ export declare const CONFIGFACTORY: {
     CubeTexture: () => import("../texture/TextureConfig").CubeTextureConfig;
     CanvasTexture: () => import("../texture/TextureConfig").CanvasTextureConfig;
     VideoTexture: () => import("../texture/TextureConfig").ImageTextureConfig;
+    LoadTexture: () => import("../texture/TextureConfig").LoadTextureConfig;
     MeshBasicMaterial: () => import("../material/MaterialConfig").MeshBasicMaterialConfig;
     MeshStandardMaterial: () => import("../material/MaterialConfig").MeshStandardMaterialConfig;
     MeshPhongMaterial: () => import("../material/MaterialConfig").MeshPhongMaterialConfig;

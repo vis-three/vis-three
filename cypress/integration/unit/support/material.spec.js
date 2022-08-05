@@ -2,8 +2,6 @@ import {
   generateConfig,
   CONFIGTYPE,
   DisplayEngineSupport,
-  ENGINEPLUGIN,
-  CSS3DPlane,
   CanvasGenerator,
 } from "../../../../dist/Vis.es";
 

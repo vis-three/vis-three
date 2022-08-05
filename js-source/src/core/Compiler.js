@@ -102,6 +102,7 @@ export class Compiler {
             target: object,
             engine: this.engine,
             processor,
+            compiler: this,
             ...notice,
         });
         return this;

@@ -1,6 +1,6 @@
 import { getAmbientLightConfig, getSpotLightConfig, getPointLightConfig, getDirectionalLightConfig, getHemisphereLightConfig, } from "../light/LightConfig";
 import { getBoxGeometryConfig, getSphereGeometryConfig, getLoadGeometryConfig, getPlaneGeometryConfig, getCircleGeometryConfig, getConeGeometryConfig, getCylinderGeometryConfig, getEdgesGeometryConfig, getLineCurveGeometryConfig, getSplineCurveGeometryConfig, getCubicBezierCurveGeometryConfig, getQuadraticBezierCurveGeometryConfig, getDodecahedronGeometryConfig, getCustomGeometryConfig, getSplineTubeGeometryConfig, getLineTubeGeometryConfig, getTorusGeometryConfig, getRingGeometryConfig, getLineShapeGeometryConfig, } from "../geometry/GeometryConfig";
-import { getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig, getVideoTextureConfig, } from "../texture/TextureConfig";
+import { getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig, getLoadTextureConfig, getVideoTextureConfig, } from "../texture/TextureConfig";
 import { getLineBasicMaterialConfig, getMeshBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getShaderMaterialConfig, getSpriteMaterialConfig, } from "../material/MaterialConfig";
 import { getOrthographicCameraConfig, getPerspectiveCameraConfig, } from "../camera/CameraConfig";
 import { getCSS3DRenderereConfig, getWebGLRendererConfig, } from "../renderer/RendererConfig";
@@ -20,6 +20,7 @@ export const CONFIGFACTORY = {
     [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
     [CONFIGTYPE.CANVASTEXTURE]: getCanvasTextureConfig,
     [CONFIGTYPE.VIDEOTEXTURE]: getVideoTextureConfig,
+    [CONFIGTYPE.LOADTEXTURE]: getLoadTextureConfig,
     [CONFIGTYPE.MESHBASICMATERIAL]: getMeshBasicMaterialConfig,
     [CONFIGTYPE.MESHSTANDARDMATERIAL]: getMeshStandardMaterialConfig,
     [CONFIGTYPE.MESHPHONGMATERIAL]: getMeshPhongMaterialConfig,

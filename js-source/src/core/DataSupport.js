@@ -1,4 +1,4 @@
-import { parse, stringify } from "../convenient/JSONHandler";
+import { stringify, clone } from "../convenient/JSONHandler";
 import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
 import { ProxyBroadcast } from "./ProxyBroadcast";
 import { Translater } from "./Translater";
@@ -64,7 +64,7 @@ export class DataSupport {
      */
     exportConfig(compress = true) {
         if (!compress) {
-            return JSON.parse(JSON.stringify(this.data, stringify), parse);
+            return clone(this.data);
         }
         else {
             const data = this.data;
@@ -84,7 +84,7 @@ export class DataSupport {
                             }
                             result[key] = config[key].map((elem) => {
                                 if (typeof elem === "object" && elem !== null) {
-                                    return JSON.parse(JSON.stringify(elem));
+                                    return clone(elem);
                                 }
                                 else {
                                     return elem;
@@ -96,7 +96,7 @@ export class DataSupport {
                         result[key] = {};
                         // 扩展对象
                         if (!template[key]) {
-                            result[key] = JSON.parse(JSON.stringify(config[key]));
+                            result[key] = clone(config[key]);
                         }
                         else {
                             recursion(config[key], template[key], result[key]);

@@ -3,6 +3,7 @@ import { ImageLoader } from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { VideoLoader } from "../extends/loader/VideoLoader";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 export var LOADERMANAGER;
 (function (LOADERMANAGER) {
     LOADERMANAGER["BEFORELOAD"] = "beforeLoad";
@@ -44,6 +45,7 @@ export class LoaderManager extends EventDispatcher {
             mp4: videoLoader,
             webm: videoLoader,
             ogg: videoLoader,
+            hdr: new RGBELoader(),
         };
         if (parameters) {
             this.loaderMap = Object.assign(this.loaderMap, parameters.loaderExtends);

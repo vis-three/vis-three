@@ -14,6 +14,7 @@ export interface IgnoreAttribute {
 export declare class ProxyBroadcast extends EventDispatcher {
     private static proxyWeakSet;
     private static arraySymobl;
+    private static cacheArray;
     private static proxyGetter;
     private static proxySetter;
     private static proxyDeleter;

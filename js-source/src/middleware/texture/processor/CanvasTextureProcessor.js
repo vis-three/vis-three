@@ -2,22 +2,20 @@ import { CanvasTexture } from "three";
 import { defineProcessor } from "../../../core/Processor";
 import { syncObject } from "../../../utils/utils";
 import { CONFIGTYPE } from "../../constants/configType";
-import { getResource, replaceImage } from "./common";
+import { needUpdateRegCommand } from "./common";
 export default defineProcessor({
     configType: CONFIGTYPE.CANVASTEXTURE,
     commands: {
         set: {
             url({ target, value, engine }) {
-                target.image = getResource(value, engine, HTMLCanvasElement);
+                target.image = engine.compilerManager.textureCompiler.getResource(value, HTMLCanvasElement);
                 target.needsUpdate = true;
             },
+            $reg: [needUpdateRegCommand],
         },
     },
     create(config, engine) {
-        const texture = new CanvasTexture(replaceImage);
-        if (config.url) {
-            texture.image = getResource(config.url, engine, HTMLCanvasElement);
-        }
+        const texture = new CanvasTexture(engine.compilerManager.textureCompiler.getResource(config.url, HTMLCanvasElement));
         syncObject(config, texture, {
             type: true,
             url: true,

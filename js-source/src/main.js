@@ -48,16 +48,19 @@ import { TIMINGFUNCTION } from "./library/event/RealTimeAnimateLibrary/common";
 import { PassDataSupport } from "./middleware/pass/PassDataSupport";
 import { CSS3DDataSupport } from "./middleware/css3D/CSS3DDataSupport";
 import { RenderManager } from "./manager/RenderManager";
-import { CONFIGMODULE } from "./middleware/constants/CONFIGMODULE";
+import { CONFIGMODULE, getModule } from "./middleware/constants/CONFIGMODULE";
 import { GroupDataSupport } from "./middleware/group/GroupDataSupport";
 import { KeyboardManager } from "./manager/KeyboardManager";
 import { SelectiveBloomPass } from "./extends/pass/SelectiveBloomPass";
+import * as Utils from "./utils/utils";
+import { CSS3DPlane } from "./extends/object/CSS3DPlane";
+import { EventDispatcher } from "./core/EventDispatcher";
 import "./optimize/optimizeScirpt";
 export { 
 // core
-ProxyBroadcast, Translater, 
+ProxyBroadcast, Translater, EventDispatcher, 
 // menu
-RESOURCEEVENTTYPE, MODULETYPE, OBJECTMODULE, CONFIGTYPE, CONFIGMODULE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, EVENTNAME, TIMINGFUNCTION, 
+RESOURCEEVENTTYPE, MODULETYPE, OBJECTMODULE, CONFIGTYPE, CONFIGMODULE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, EVENTNAME, TIMINGFUNCTION, getModule, 
 // manager
 LoaderManager, ResourceManager, DataSupportManager, RenderManager, KeyboardManager, 
 // engine
@@ -78,5 +81,9 @@ VideoLoader,
 // modifier
 BooleanModifier, 
 // pass
-SelectiveBloomPass, };
+SelectiveBloomPass, 
+// utils
+Utils, 
+// extends
+CSS3DPlane, };
 //# sourceMappingURL=main.js.map

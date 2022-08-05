@@ -2,7 +2,10 @@ const shader = {
     name: "BloomShader",
     uniforms: {
         brightness: { value: 0.5 },
-        width: { value: 5.0 },
+        extend: { value: 5.0 },
+        range: { value: 10.0 },
+        specular: { value: 0.8 },
+        specularRange: { value: 2.0 },
         color: {
             value: {
                 r: 1,
@@ -12,26 +15,30 @@ const shader = {
         },
     },
     vertexShader: `
-  uniform float width;
+  uniform float extend;
 
-  varying vec3 vNormal; // 法线
-  varying vec3 vPositionNormal;
+  varying vec2 vUv;
+
   void main () {
-    vec3 vNormal = normalize( normalMatrix * normal ); // 转换到视图空间
-    vec3 vPositionNormal = normalize(normalMatrix * -cameraPosition);
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position + normalize(position) * width, 1.0);
-    // gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+
+    vUv = uv;
+
+    vec3 extendPosition = position + normalize(position) * extend;
+
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(extendPosition , 1.0 );
   }`,
     fragmentShader: `
     uniform vec3 color;
     uniform float brightness;
+    uniform float specular;
+    uniform float range;
+    uniform float specularRange;
 
-    varying vec3 vNormal;
-    varying vec3 vPositionNormal;
+    varying vec2 vUv;
     
     void main () {
-      float a = dot(vNormal, vPositionNormal);
-      gl_FragColor = vec4(color, a);
+
+      gl_FragColor = vec4(color, brightness);
     }`,
 };
 export default shader;

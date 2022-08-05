@@ -17,7 +17,6 @@ export declare enum MODULETYPE {
     GROUP = "group",
     CSS3D = "css3D",
     PASS = "pass",
-    MODIFIER = "modifier",
     ANIMATION = "animation"
 }
 export declare enum OBJECTMODULE {

@@ -65,4 +65,10 @@ export const getCanvasTextureConfig = function () {
         needsUpdate: false,
     });
 };
+export const getLoadTextureConfig = function () {
+    return Object.assign(getTextureConfig(), {
+        type: CONFIGTYPE.LOADTEXTURE,
+        url: "",
+    });
+};
 //# sourceMappingURL=TextureConfig.js.map

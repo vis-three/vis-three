@@ -6112,8 +6112,8 @@ const updateEventHandler = function({ target, config: config2, path, engine }) {
     return;
   }
   target.removeEventListener(eventName, fun);
-  const newFun = EventLibrary.generateEvent(config2, engine);
-  eventConfig[eventSymbol] = newFun;
+  const newFun = EventLibrary.generateEvent(eventConfig, engine);
+  eventConfig[Symbol.for(eventSymbol)] = newFun;
   target.addEventListener(eventName, newFun);
 };
 const addChildrenHanlder = function({ target, config: config2, value, engine }) {

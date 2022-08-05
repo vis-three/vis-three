@@ -2,11 +2,13 @@ import { EngineSupport } from "../engine/EngineSupport";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { DeepIntersection, DeepPartial, DeepRecord, DeepUnion } from "../utils/utils";
+import { Compiler } from "./Compiler";
 import { ProxyNotice } from "./ProxyBroadcast";
 export interface ProcessParams<C extends SymbolConfig, T extends object> extends ProxyNotice {
     config: C;
     target: T;
     processor: Processor<C, T>;
+    compiler: Compiler<C, T>;
     engine: EngineSupport;
 }
 export declare type RegCommand<C extends SymbolConfig, T extends object> = {

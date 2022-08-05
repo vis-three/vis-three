@@ -2,10 +2,9 @@ import { CubeTexture } from "three";
 import { defineProcessor } from "../../../core/Processor";
 import { syncObject } from "../../../utils/utils";
 import { CONFIGTYPE } from "../../constants/configType";
-import { getResource } from "./common";
 const instanceClasses = [HTMLImageElement, HTMLVideoElement, HTMLCanvasElement];
 const imageHanlder = function ({ target, index, value, engine }) {
-    target.images[index] = getResource(value, engine, instanceClasses);
+    target.images[index] = engine.compilerManager.textureCompiler.getResource(value, instanceClasses);
     target.needsUpdate = true;
 };
 export default defineProcessor({
@@ -67,13 +66,14 @@ export default defineProcessor({
     create(config, engine) {
         const texture = new CubeTexture();
         const cube = config.cube;
+        const compiler = engine.compilerManager.textureCompiler;
         const images = [
-            getResource(cube.px, engine, instanceClasses),
-            getResource(cube.nx, engine, instanceClasses),
-            getResource(cube.py, engine, instanceClasses),
-            getResource(cube.ny, engine, instanceClasses),
-            getResource(cube.pz, engine, instanceClasses),
-            getResource(cube.nz, engine, instanceClasses),
+            compiler.getResource(cube.px, instanceClasses),
+            compiler.getResource(cube.nx, instanceClasses),
+            compiler.getResource(cube.py, instanceClasses),
+            compiler.getResource(cube.ny, instanceClasses),
+            compiler.getResource(cube.pz, instanceClasses),
+            compiler.getResource(cube.nz, instanceClasses),
         ];
         texture.image = images;
         syncObject(config, texture, {

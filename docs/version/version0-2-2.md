@@ -6,6 +6,8 @@
 
 - material support set map
 - proxyBroadcast set new Array
+- eventConfig set
+- fix object event set
 
 #### perf
 

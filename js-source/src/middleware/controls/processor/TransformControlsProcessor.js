@@ -19,6 +19,22 @@ export default defineProcessor({
                     target.scaleSnap = null;
                 }
             },
+            translationSnap({ target, config, value }) {
+                if (config.snapAllow) {
+                    target.translationSnap = value;
+                }
+            },
+            rotationSnap({ target, config, value }) {
+                if (config.snapAllow) {
+                    target.rotationSnap = value;
+                }
+            },
+            scaleSnap({ target, config, value }) {
+                if (config.snapAllow) {
+                    // @ts-ignore types 没写 源码有这个属性
+                    target.scaleSnap = value;
+                }
+            },
         },
     },
     create(config, engine) {

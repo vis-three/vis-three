@@ -38,6 +38,9 @@ export function generateConfigFunction(config) {
 export function syncObject(config, target, filter, callBack) {
     const recursiveConfig = (config, target, filter) => {
         for (const key in config) {
+            if (target[key] === undefined) {
+                continue;
+            }
             if (filter && filter[key]) {
                 continue;
             }

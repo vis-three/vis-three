@@ -127,10 +127,10 @@ export const updateEventHandler = function <
   target.removeEventListener(eventName, fun!);
 
   // 生成函数
-  const newFun = EventLibrary.generateEvent(config, engine);
+  const newFun = EventLibrary.generateEvent(eventConfig, engine);
 
   // 映射缓存
-  eventConfig[eventSymbol] = newFun;
+  eventConfig[Symbol.for(eventSymbol)] = newFun;
 
   // 绑定事件
   (<Object3D<ObjectEvent>>(<unknown>target)).addEventListener(

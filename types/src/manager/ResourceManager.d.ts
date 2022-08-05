@@ -24,7 +24,6 @@ export declare class ResourceManager extends EventDispatcher {
     structureMap: Map<string, unknown>;
     configMap: Map<string, SymbolConfig>;
     resourceMap: Map<string, unknown>;
-    private configModuleMap;
     private mappingHandler;
     constructor(resources?: {
         [key: string]: any;
@@ -35,6 +34,7 @@ export declare class ResourceManager extends EventDispatcher {
     private HTMLVideoElementHandler;
     private HTMLDivElementHandler;
     private HTMLSpanElementHandler;
+    private DataTextureElementHandler;
     /**
      *  根据加载好的资源拆解映射为最小资源单位与形成相应的配置与结构
      * @param loadResourceMap loaderManager的resourceMap

@@ -1,5 +1,5 @@
 import { Camera, Scene, Vector2 } from "three";
-import { defineProcessor } from "../../../core/Processor";
+import { defineProcessor, } from "../../../core/Processor";
 import { SelectiveBloomPass } from "../../../extends/pass/SelectiveBloomPass";
 import { CONFIGTYPE } from "../../constants/configType";
 export default defineProcessor({
@@ -35,6 +35,21 @@ export default defineProcessor({
                     `selectiveBloomPassProcessor: can not set renderCamera in engine: ${value}`;
                 }
             },
+            selectedObjects({ target, config, engine }) {
+                const objects = config.selectedObjects
+                    .map((vid) => {
+                    const object = engine.compilerManager.getObject3D(vid);
+                    if (object) {
+                        return object;
+                    }
+                    else {
+                        console.warn(`selectiveBloomPassProcessor: can not found vid in engine: ${vid}`);
+                        return undefined;
+                    }
+                })
+                    .filter((object) => object);
+                target.selectedObjects = objects;
+            },
         },
         delete: {
             selectedObjects({ target, engine, value }) {
@@ -56,7 +71,12 @@ export default defineProcessor({
             const object = engine.compilerManager.getObject3D(vid);
             object && objects.push(object);
         }
-        const pass = new SelectiveBloomPass(new Vector2(config.resolution.x, config.resolution.y), config.strength, config.radius, config.threshold, (config.renderScene &&
+        const pixelRatio = window.devicePixelRatio;
+        const pass = new SelectiveBloomPass(new Vector2(engine.dom
+            ? engine.dom.offsetWidth * pixelRatio
+            : window.innerWidth * pixelRatio, engine.dom
+            ? engine.dom.offsetHeight * pixelRatio
+            : window.innerWidth * pixelRatio), config.strength, config.radius, config.threshold, (config.renderScene &&
             engine.compilerManager.getObject3D(config.renderScene)) ||
             undefined, (config.renderCamera &&
             engine.compilerManager.getObject3D(config.renderCamera)) ||

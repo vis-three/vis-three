@@ -18,7 +18,7 @@ export var MODULETYPE;
     MODULETYPE["GROUP"] = "group";
     MODULETYPE["CSS3D"] = "css3D";
     MODULETYPE["PASS"] = "pass";
-    MODULETYPE["MODIFIER"] = "modifier";
+    // MODIFIER = "modifier",
     MODULETYPE["ANIMATION"] = "animation";
 })(MODULETYPE || (MODULETYPE = {}));
 // 物体模块

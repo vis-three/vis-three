@@ -4,7 +4,12 @@ import { CONFIGTYPE } from "../../constants/configType";
 export default defineProcessor({
     configType: CONFIGTYPE.SMAAPASS,
     create(config, engine) {
-        const pass = new SMAAPass(engine.dom.offsetWidth, engine.dom.offsetHeight);
+        const pixelRatio = window.devicePixelRatio;
+        const pass = new SMAAPass(engine.dom
+            ? engine.dom.offsetWidth * pixelRatio
+            : window.innerWidth * pixelRatio, engine.dom
+            ? engine.dom.offsetHeight * pixelRatio
+            : window.innerWidth * pixelRatio);
         return pass;
     },
     dispose(pass) {

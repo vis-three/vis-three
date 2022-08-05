@@ -3,6 +3,12 @@ import { isValidKey } from "../utils/utils";
 export class ProxyBroadcast extends EventDispatcher {
     static proxyWeakSet = new WeakSet();
     static arraySymobl = "vis.array";
+    static cacheArray = function (object) {
+        if (Array.isArray(object) &&
+            !object[Symbol.for(ProxyBroadcast.arraySymobl)]) {
+            object[Symbol.for(ProxyBroadcast.arraySymobl)] = object.concat([]);
+        }
+    };
     static proxyGetter(target, key, receiver) {
         return Reflect.get(target, key, receiver);
     }
@@ -11,6 +17,8 @@ export class ProxyBroadcast extends EventDispatcher {
         if (typeof key === "symbol") {
             return Reflect.set(target, key, value, receiver);
         }
+        // 对array value 执行缓存
+        ProxyBroadcast.cacheArray(value);
         // 先执行反射
         let result;
         // 新增
@@ -59,11 +67,11 @@ export class ProxyBroadcast extends EventDispatcher {
                                 value: value,
                             });
                             execNum += 1;
-                            index += 1;
                             if (execNum === num) {
                                 break;
                             }
                         }
+                        index += 1;
                     }
                 }
                 target[Symbol.for(this.arraySymobl)] = target.concat([]);
@@ -135,10 +143,7 @@ export class ProxyBroadcast extends EventDispatcher {
                     typeof object[key] === "object" &&
                     object[key] !== null) {
                     // 给array增加symbol与缓存
-                    if (Array.isArray(object[key])) {
-                        // 引用值保持为引用
-                        object[key][Symbol.for(ProxyBroadcast.arraySymobl)] = object[key].concat([]);
-                    }
+                    ProxyBroadcast.cacheArray(object[key]);
                     object[key] = this.proxyExtends(object[key], tempPath);
                 }
             }

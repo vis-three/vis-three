@@ -36,22 +36,22 @@ export interface CompilerManagerParameters {
     css3DCompiler: CSS3DCompiler;
 }
 export declare class CompilerManager {
-    private cameraCompiler;
-    private lightCompiler;
-    private geometryCompiler;
-    private textureCompiler;
-    private materialCompiler;
-    private rendererCompiler;
-    private sceneCompiler;
-    private controlsCompiler;
-    private spriteCompiler;
-    private lineCompiler;
-    private meshCompiler;
-    private pointsCompiler;
-    private groupCompiler;
-    private css3DCompiler;
-    private passCompiler;
-    private animationCompiler;
+    cameraCompiler: CameraCompiler;
+    lightCompiler: LightCompiler;
+    geometryCompiler: GeometryCompiler;
+    textureCompiler: TextureCompiler;
+    materialCompiler: MaterialCompiler;
+    rendererCompiler: RendererCompiler;
+    sceneCompiler: SceneCompiler;
+    controlsCompiler: ControlsCompiler;
+    spriteCompiler: SpriteCompiler;
+    lineCompiler: LineCompiler;
+    meshCompiler: MeshCompiler;
+    pointsCompiler: PointsCompiler;
+    groupCompiler: GroupCompiler;
+    css3DCompiler: CSS3DCompiler;
+    passCompiler: PassCompiler;
+    animationCompiler: AnimationCompiler;
     private compilerMap;
     constructor(parameters?: CompilerManagerParameters);
     /**

@@ -44,5 +44,12 @@ export class EventDispatcher {
     useful() {
         return Boolean([...this.listeners.keys()].length);
     }
+    once(type, listener) {
+        const onceListener = function (event) {
+            listener.call(this, event);
+            this.removeEventListener(type, onceListener);
+        };
+        this.addEventListener(type, onceListener);
+    }
 }
 //# sourceMappingURL=EventDispatcher.js.map

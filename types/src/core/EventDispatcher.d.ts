@@ -16,4 +16,5 @@ export declare class EventDispatcher {
     dispatchEvent<C extends BaseEvent>(event: C): void;
     clear(): void;
     useful(): boolean;
+    once<C extends BaseEvent>(type: string, listener: EventListener<C>): void;
 }

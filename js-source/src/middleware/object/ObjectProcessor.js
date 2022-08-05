@@ -75,7 +75,7 @@ export const updateEventHandler = function ({ target, config, path, engine }) {
     }
     target.removeEventListener(eventName, fun);
     // 生成函数
-    const newFun = EventLibrary.generateEvent(config, engine);
+    const newFun = EventLibrary.generateEvent(eventConfig, engine);
     // 映射缓存
     eventConfig[eventSymbol] = newFun;
     // 绑定事件
