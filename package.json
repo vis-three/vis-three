@@ -73,6 +73,7 @@
   "files": [
     "dist",
     "types",
+    "js-source",
     "package.json",
     "LICENSE"
   ],
