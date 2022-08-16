@@ -3,8 +3,10 @@
 three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 <p>
-  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/Version-0.2.2-{}" alt="Version"></a>
-  <a href="https://www.npmjs.com/package/vis-three"><img src="https://img.shields.io/badge/License-MPL2.0-{}" alt="License"></a>
+  <img alt="NPM" src="https://img.shields.io/npm/l/vis-three?color=blue">
+  <img alt="npm" src="https://img.shields.io/npm/v/vis-three?color=light">
+  <img alt="npm" src="https://img.shields.io/npm/dt/vis-three">
+  <img src="https://img.shields.io/nycrc/Shiotsukikaedesari/vis-three?color=red&label=coverage" alt="coverage">
 </p>
 
 ## 主页、demo、文档在线地址

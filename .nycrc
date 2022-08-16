@@ -1,3 +1,7 @@
 {
-  "temp-dir": "./coverage/.nyc_output"
+  "temp-dir": "./coverage/.nyc_output",
+  "branches": 35,
+  "lines": 35,
+  "functions": 35,
+  "statements": 35
 }
