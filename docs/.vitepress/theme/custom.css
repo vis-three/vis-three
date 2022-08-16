@@ -26,6 +26,10 @@ tr:nth-child(2n) {
   background-color: unset;
 }
 
+.custom-block.tip {
+  background-color: var(--c-divider-light);
+}
+
 :root {
   --c-brand: rgb(230, 20, 240);
   --c-brand-light: rgba(230, 20, 240, 0.5);

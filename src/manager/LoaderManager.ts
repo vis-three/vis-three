@@ -4,6 +4,7 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { VideoLoader } from "../extends/loader/VideoLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 export enum LOADERMANAGER {
   BEFORELOAD = "beforeLoad",
@@ -77,6 +78,7 @@ export class LoaderManager extends EventDispatcher {
 
     const imageLoader = new ImageLoader();
     const videoLoader = new VideoLoader();
+    const gltfLoader = new GLTFLoader();
 
     this.loaderMap = {
       jpg: imageLoader,
@@ -88,6 +90,8 @@ export class LoaderManager extends EventDispatcher {
       webm: videoLoader,
       ogg: videoLoader,
       hdr: new RGBELoader(),
+      glb: gltfLoader,
+      gltf: gltfLoader,
     };
 
     if (parameters) {

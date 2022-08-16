@@ -1,13 +1,13 @@
 {
   "name": "vis-three",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "main": "dist/Vis.umd.js",
   "module": "dist/Vis.es.js",
   "types": "types/src/main.d.ts",
   "license": "MPL-2.0",
   "author": "Shiotsuki_",
   "repository": "https://github.com/Shiotsukikaedesari/vis-three",
-  "homepage": "https://shiotsukikaedesari.gitee.io/vis-three",
+  "homepage": "https://shiotsukikaedesari.github.io/vis-three",
   "bugs": {
     "url": "https://github.com/Shiotsukikaedesari/vis-three/issues"
   },
