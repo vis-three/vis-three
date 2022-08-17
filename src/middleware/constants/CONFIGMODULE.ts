@@ -69,7 +69,7 @@ export const CONFIGMODULE = {
   [CONFIGTYPE.KEYFRAMEANIMATION]: MODULETYPE.ANIMATION,
 };
 
-export const getModule = (type: CONFIGTYPE): MODULETYPE | null => {
+export const getModule = (type: CONFIGTYPE | string): MODULETYPE | null => {
   const matchModule = (module: MODULETYPE) => {
     return type.toLocaleLowerCase().includes(module.toLocaleLowerCase());
   };

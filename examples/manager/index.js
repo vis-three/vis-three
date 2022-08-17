@@ -6,12 +6,4 @@ export default {
     "/ResourceManager.html",
     "/KeyboardManager.html",
   ],
-  position: {
-    x: 45,
-    z: 5,
-    y: -30,
-  },
-  rotation: {
-    y: (Math.PI / 180) * -15,
-  },
 };

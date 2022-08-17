@@ -5,7 +5,6 @@ import {
   MultiplyOperation,
   NormalBlending,
   OneMinusSrcAlphaFactor,
-  RGBAFormat,
   SrcAlphaFactor,
   TangentSpaceNormalMap,
 } from "three";

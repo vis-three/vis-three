@@ -93,6 +93,7 @@
       import textureSupportRouter from "./textureSupport";
       import CameraSupportRouter from "./CameraSupport";
       import ControlsSupportRouter from "./ControlsSupport";
+      import LoaderManager from "./LoaderManager";
 
       const engine = new VIS.DisplayEngineSupport()
         .complete()
@@ -181,6 +182,7 @@
         textureSupportRouter,
         CameraSupportRouter,
         ControlsSupportRouter,
+        LoaderManager,
       ];
 
       const domList = [];
