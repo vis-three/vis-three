@@ -10,3 +10,5 @@
 #### perf
 
 #### deprecated
+
+- resourceManager 废弃了 structureMap，内容将返回空。
