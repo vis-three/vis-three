@@ -2,6 +2,7 @@
  * @experimental  PASS ANIMATION
  */
 export enum MODULETYPE {
+  OBJECT3D = "Object3D",
   CAMERA = "camera",
   LIGHT = "light",
   GEOMETRY = "geometry",
@@ -33,4 +34,5 @@ export enum OBJECTMODULE {
   POINTS = MODULETYPE.POINTS,
   GROUP = MODULETYPE.GROUP,
   CSS3D = MODULETYPE.CSS3D,
+  OBJECT3D = MODULETYPE.OBJECT3D,
 }

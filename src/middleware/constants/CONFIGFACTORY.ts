@@ -75,6 +75,7 @@ import {
   getCSS3DPlaneConfig,
   getCSS3DSpriteConfig,
 } from "../css3D/CSS3DConfig";
+import { getObjectConfig } from "../object/ObjectConfig";
 
 export const CONFIGFACTORY = {
   [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
@@ -118,6 +119,7 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.RINGGEOMETRY]: getRingGeometryConfig,
   [CONFIGTYPE.LINESHAPEGEOMETRY]: getLineShapeGeometryConfig,
 
+  [CONFIGTYPE.OBJECT3D]: getObjectConfig,
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,
   [CONFIGTYPE.MESH]: getMeshConfig,

@@ -7,6 +7,34 @@ export interface ParseParams {
   resourceMap: Map<string, any>;
 }
 
+export type ResourceHanlder = (
+  url: string,
+  resource: any,
+  parseMap: Map<string, Parser>
+) => Parser | null;
+
+export const defaultHanlder: ResourceHanlder = (
+  url: string,
+  resource: any,
+  parseMap: Map<string, Parser>
+): Parser | null => {
+  const resourceHanlder = (url: string, object: object): Parser | null => {
+    if (!Object.getPrototypeOf(object)) {
+      return null;
+    } else if (parseMap.has(Object.getPrototypeOf(object).constructor.name)) {
+      return parseMap.get(Object.getPrototypeOf(object).constructor.name)!;
+    } else {
+      return resourceHanlder(url, Object.getPrototypeOf(object));
+    }
+  };
+
+  return resourceHanlder(url, resource);
+};
+
 export abstract class Parser {
   abstract parse(params: ParseParams): void;
+
+  registHandler(): ResourceHanlder {
+    return defaultHanlder;
+  }
 }

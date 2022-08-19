@@ -7,5 +7,7 @@ export class LoadTexture extends Texture {
     Object.keys(texture).forEach((key) => {
       this[key] = texture[key];
     });
+
+    this.copy(texture);
   }
 }

@@ -32,9 +32,13 @@
 
       engine.setScene(scene.vid);
 
+      VIS.generateConfig.injectScene = true;
+
       engine.loaderManager.setPath(import.meta.env.BASE_URL);
 
-      VIS.generateConfig("AmbientLight");
+      VIS.generateConfig("AmbientLight", {
+        intensity: 10,
+      });
 
       message.loading({
         content: "正在加载资源：0%",
@@ -62,11 +66,29 @@
       });
 
       engine
-        .loadResourcesAsync(["/model/glb/RobotExpressive/RobotExpressive.glb"])
+        .loadResourcesAsync([
+          "model/glb/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf",
+        ])
         .then((res) => {
           console.log(res);
+          engine.loadConfig(
+            res.resourceConfig[
+              "model/glb/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf"
+            ]
+          );
+
+          const root = res.configMap.get(
+            "model/glb/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf.scene"
+          );
+
+          root.scale.x = 50;
+          root.scale.y = 50;
+          root.scale.z = 50;
+
+          scene.children.push(root.vid);
         });
       console.log(engine);
+      window.engine = engine;
     </script>
   </body>
 </html>

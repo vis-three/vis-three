@@ -4321,10 +4321,6 @@ class LoaderManager extends EventDispatcher {
     return this;
   }
   setPath(path) {
-    const map = this.loaderMap;
-    Object.keys(map).forEach((ext) => {
-      map[ext].setPath(path);
-    });
     this.path = path;
     return this;
   }
@@ -4415,7 +4411,10 @@ class LoaderManager extends EventDispatcher {
         });
         continue;
       }
-      loader.loadAsync(url, (event) => {
+      const pathAnalysis = url.replace(/\\/g, "/").split("/");
+      const filename = pathAnalysis.pop();
+      const path = this.path + pathAnalysis.join("/") + "/";
+      loader.setPath(path).loadAsync(filename, (event) => {
         detail.progress = Number((event.loaded / event.total).toFixed(2));
         this.dispatchEvent({
           type: LOADERMANAGER.DETAILLOADING,
@@ -4584,6 +4583,7 @@ var CONFIGTYPE;
   CONFIGTYPE2["LINETUBEGEOMETRY"] = "LineTubeGeometry";
   CONFIGTYPE2["SPLINETUBEGEOMETRY"] = "SplineTubeGeometry";
   CONFIGTYPE2["LINESHAPEGEOMETRY"] = "LineShapeGeometry";
+  CONFIGTYPE2["OBJECT3D"] = "Object3D";
   CONFIGTYPE2["MESH"] = "Mesh";
   CONFIGTYPE2["LINE"] = "Line";
   CONFIGTYPE2["POINTS"] = "Points";
@@ -4624,6 +4624,7 @@ var CONFIGTYPE;
 })(CONFIGTYPE || (CONFIGTYPE = {}));
 var MODULETYPE;
 (function(MODULETYPE2) {
+  MODULETYPE2["OBJECT3D"] = "Object3D";
   MODULETYPE2["CAMERA"] = "camera";
   MODULETYPE2["LIGHT"] = "light";
   MODULETYPE2["GEOMETRY"] = "geometry";
@@ -4652,6 +4653,7 @@ var OBJECTMODULE;
   OBJECTMODULE2[OBJECTMODULE2["POINTS"] = MODULETYPE.POINTS] = "POINTS";
   OBJECTMODULE2[OBJECTMODULE2["GROUP"] = MODULETYPE.GROUP] = "GROUP";
   OBJECTMODULE2[OBJECTMODULE2["CSS3D"] = MODULETYPE.CSS3D] = "CSS3D";
+  OBJECTMODULE2[OBJECTMODULE2["OBJECT3D"] = MODULETYPE.OBJECT3D] = "OBJECT3D";
 })(OBJECTMODULE || (OBJECTMODULE = {}));
 const CONFIGMODULE = {
   [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
@@ -4722,7 +4724,7 @@ const getObjectConfig = () => {
   return {
     vid: "",
     name: "",
-    type: "Object3D",
+    type: CONFIGTYPE.OBJECT3D,
     castShadow: true,
     receiveShadow: true,
     lookAt: "",
@@ -5025,6 +5027,7 @@ const getTextureConfig = function() {
     minFilter: LinearMipmapLinearFilter,
     anisotropy: 1,
     format: RGBAFormat,
+    flipY: true,
     offset: {
       x: 0,
       y: 0
@@ -5510,6 +5513,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.TORUSGEOMETRY]: getTorusGeometryConfig,
   [CONFIGTYPE.RINGGEOMETRY]: getRingGeometryConfig,
   [CONFIGTYPE.LINESHAPEGEOMETRY]: getLineShapeGeometryConfig,
+  [CONFIGTYPE.OBJECT3D]: getObjectConfig,
   [CONFIGTYPE.SPRITE]: getSpriteConfig,
   [CONFIGTYPE.LINE]: getLineConfig,
   [CONFIGTYPE.MESH]: getMeshConfig,
@@ -5531,7 +5535,22 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.SCRIPTANIMATION]: getScriptAnimationConfig,
   [CONFIGTYPE.KEYFRAMEANIMATION]: getKeyframeAnimationConfig
 };
+const defaultHanlder = (url, resource, parseMap) => {
+  const resourceHanlder = (url2, object) => {
+    if (!Object.getPrototypeOf(object)) {
+      return null;
+    } else if (parseMap.has(Object.getPrototypeOf(object).constructor.name)) {
+      return parseMap.get(Object.getPrototypeOf(object).constructor.name);
+    } else {
+      return resourceHanlder(url2, Object.getPrototypeOf(object));
+    }
+  };
+  return resourceHanlder(url, resource);
+};
 class Parser {
+  registHandler() {
+    return defaultHanlder;
+  }
 }
 class HTMLImageElementParser extends Parser {
   parse({ url, resource, configMap, resourceMap }) {
@@ -5624,12 +5643,14 @@ class Object3DParser extends Parser {
   }
   parseTexture({ url, resource, configMap, resourceMap }) {
     resourceMap.set(url, resource);
-    const config2 = CONFIGFACTORY[resource.type === "Texture" ? CONFIGTYPE.IMAGETEXTURE : resource.type]();
+    const config2 = CONFIGFACTORY[CONFIGTYPE.LOADTEXTURE]();
     configMap.set(url, config2);
     config2.vid = v4();
+    config2.url = url;
     syncObject(resource, config2, {
       type: true,
-      vid: true
+      vid: true,
+      url: true
     });
   }
   parseMaterial({
@@ -5639,6 +5660,10 @@ class Object3DParser extends Parser {
     resourceMap
   }) {
     resourceMap.set(url, resource);
+    if (!CONFIGFACTORY[resource.type]) {
+      console.warn(`can not found support config in vis for this resource`, resource);
+      return;
+    }
     const config2 = CONFIGFACTORY[resource.type]();
     configMap.set(url, config2);
     config2.vid = v4();
@@ -5689,6 +5714,10 @@ class Object3DParser extends Parser {
     resourceMap
   }) {
     resourceMap.set(url, resource);
+    if (!CONFIGFACTORY[resource.type]) {
+      console.warn(`can not found support config in vis for this resource`, resource);
+      return;
+    }
     const config2 = CONFIGFACTORY[resource.type]();
     config2.vid = v4();
     syncObject(resource, config2, {
@@ -5765,6 +5794,29 @@ class TextureParser extends Parser {
     configMap.set(url, config2);
   }
 }
+class GLTFResourceParser extends Parser {
+  constructor() {
+    super();
+    __publicField(this, "object3DParser", new Object3DParser());
+  }
+  parse({ url, resource, configMap, resourceMap }) {
+    this.object3DParser.parse({
+      url: `${url}.scene`,
+      resource: resource.scene,
+      configMap,
+      resourceMap
+    });
+  }
+  registHandler() {
+    return (url, rescource, parseMap) => {
+      if (rescource.parser.constructor.name === "GLTFParser") {
+        return parseMap.get(this.constructor.name) || null;
+      } else {
+        return null;
+      }
+    };
+  }
+}
 var RESOURCEEVENTTYPE;
 (function(RESOURCEEVENTTYPE2) {
   RESOURCEEVENTTYPE2["MAPPED"] = "mapped";
@@ -5775,14 +5827,9 @@ class ResourceManager extends EventDispatcher {
     __publicField(this, "structureMap", new Map());
     __publicField(this, "configMap", new Map());
     __publicField(this, "resourceMap", new Map());
-    __publicField(this, "mappingHandler", new Map());
-    const mappingHandler = this.mappingHandler;
-    mappingHandler.set(HTMLImageElement, new HTMLImageElementParser());
-    mappingHandler.set(HTMLCanvasElement, new HTMLCanvasElementParser());
-    mappingHandler.set(HTMLVideoElement, new HTMLVideoElementParser());
-    mappingHandler.set(Object3D, new Object3DParser());
-    mappingHandler.set(HTMLElement, new HTMLElementParser());
-    mappingHandler.set(Texture, new TextureParser());
+    __publicField(this, "paserMap", new Map());
+    __publicField(this, "handlerMap", new Map());
+    this.addParser(new HTMLImageElementParser()).addParser(new HTMLCanvasElementParser()).addParser(new HTMLVideoElementParser()).addParser(new Object3DParser()).addParser(new HTMLElementParser()).addParser(new TextureParser()).addParser(new GLTFResourceParser());
     const map = new Map();
     for (const key in resources) {
       if (map.has(key)) {
@@ -5792,32 +5839,63 @@ class ResourceManager extends EventDispatcher {
     }
     this.mappingResource(map);
   }
-  mappingResource(loadResourceMap) {
+  addParser(parser) {
+    if (this.paserMap.has(parser.constructor.name)) {
+      console.warn(`resourceManager has already exist this parser, that will be cover`, this.paserMap.get(parser.constructor.name));
+    }
+    this.paserMap.set(parser.constructor.name, parser);
+    this.addHanlder(parser.registHandler());
+    return this;
+  }
+  addHanlder(hanlder) {
+    if (this.handlerMap.has(hanlder.name)) {
+      console.warn(`resourceManager has already exist this hanlder, that will be cover`, hanlder.name);
+    }
+    this.handlerMap.set(hanlder.name, hanlder);
+    return this;
+  }
+  mappingResource(loadResourceMap, options) {
     const configMap = this.configMap;
     const resourceMap = this.resourceMap;
-    const mappingHandler = this.mappingHandler;
-    const resourceHanlder = (url, object, prototype) => {
-      if (!Object.getPrototypeOf(prototype)) {
-        return false;
-      } else if (mappingHandler.has(Object.getPrototypeOf(prototype).constructor)) {
-        mappingHandler.get(Object.getPrototypeOf(prototype).constructor).parse({
-          url,
-          resource: object,
-          configMap: this.configMap,
-          resourceMap: this.resourceMap
-        });
-        return true;
-      } else {
-        return resourceHanlder(url, object, Object.getPrototypeOf(prototype));
-      }
-    };
     const resourceConfig = {};
     loadResourceMap.forEach((resource, url) => {
-      if (!resourceHanlder(url, resource, resource)) {
-        resourceMap.set(url, resource);
-        console.warn(`resource manager can not support this resource to generate config`, resource);
+      if (options && options.hanlder && options.hanlder[url]) {
+        const hanlder = this.handlerMap.get(options.hanlder[url]);
+        if (!hanlder) {
+          console.warn(`resource manager can not support this handler: ${options.hanlder[url]}`);
+        } else {
+          const parser = hanlder(url, resource, this.paserMap);
+          if (!parser) {
+            console.warn(`resource manager hanlder can not found this resource parser: `, resource, hanlder);
+          } else {
+            parser.parse({
+              url,
+              resource,
+              configMap,
+              resourceMap
+            });
+            resourceConfig[url] = this.getResourceConfig(url);
+          }
+        }
       } else {
-        resourceConfig[url] = this.getResourceConfig(url);
+        let parser = null;
+        for (const handler of this.handlerMap.values()) {
+          parser = handler(url, resource, this.paserMap);
+          if (parser) {
+            break;
+          }
+        }
+        if (!parser) {
+          console.warn(`resouce manager can not found some handler to parser this resource:`, resource);
+        } else {
+          parser.parse({
+            url,
+            resource,
+            configMap,
+            resourceMap
+          });
+          resourceConfig[url] = this.getResourceConfig(url);
+        }
       }
     });
     this.dispatchEvent({
@@ -5852,6 +5930,14 @@ class ResourceManager extends EventDispatcher {
     return this.resourceMap.has(url);
   }
   remove(url) {
+    const configMap = this.configMap;
+    const resourceMap = this.resourceMap;
+    [...configMap.keys()].filter((key) => key.startsWith(url)).forEach((url2) => {
+      configMap.delete(url2);
+      const resource = resourceMap.get(url2);
+      resource.dispose && resource.dispose();
+      resourceMap.delete(url2);
+    });
     return this;
   }
   dispose() {
@@ -6446,8 +6532,19 @@ class CSS3DDataSupport extends ObjectDataSupport {
     __publicField(this, "MODULE", MODULETYPE.CSS3D);
   }
 }
+const Object3DRule = function(notice, compiler) {
+  ObjectRule(notice, compiler);
+};
+class Object3DDataSupport extends ObjectDataSupport {
+  constructor(data, ignore) {
+    !data && (data = {});
+    super(Object3DRule, data, ignore);
+    __publicField(this, "MODULE", MODULETYPE.OBJECT3D);
+  }
+}
 class DataSupportManager {
   constructor(parameters) {
+    __publicField(this, "object3DDataSupport", new Object3DDataSupport());
     __publicField(this, "cameraDataSupport", new CameraDataSupport());
     __publicField(this, "lightDataSupport", new LightDataSupport());
     __publicField(this, "geometryDataSupport", new GeometryDataSupport());
@@ -8597,6 +8694,14 @@ const objectCommands = {
     children: removeChildrenHandler
   }
 };
+defineProcessor({
+  configType: CONFIGTYPE.OBJECT3D,
+  commands: objectCommands,
+  create(config2, engine) {
+    return objectCreate(new Object3D(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
 const cacheCameraMap = new WeakMap();
 var PerspectiveCameraProcessor = defineProcessor({
   configType: CONFIGTYPE.PERSPECTIVECAMERA,
@@ -9717,6 +9822,21 @@ class MeshCompiler extends SolidObjectCompiler {
   }
 }
 Compiler.processor(MeshProcessor);
+var Object3DProcessor = defineProcessor({
+  configType: CONFIGTYPE.OBJECT3D,
+  commands: objectCommands,
+  create(config2, engine) {
+    return objectCreate(new Object3D(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
+class Object3DCompiler extends ObjectCompiler {
+  constructor() {
+    super();
+    __publicField(this, "MODULE", MODULETYPE.OBJECT3D);
+  }
+}
+Compiler.processor(Object3DProcessor);
 var SMAAPassProcessor = defineProcessor({
   configType: CONFIGTYPE.SMAAPASS,
   create(config2, engine) {
@@ -10744,6 +10864,7 @@ class LoadTexture extends Texture {
     Object.keys(texture).forEach((key) => {
       this[key] = texture[key];
     });
+    this.copy(texture);
   }
 }
 var LoadTextureProcessor = defineProcessor({
@@ -10822,6 +10943,7 @@ Compiler.processor(VideoTextureProcessor);
 Compiler.processor(LoadTextureProcessor);
 class CompilerManager {
   constructor(parameters) {
+    __publicField(this, "object3DCompiler", new Object3DCompiler());
     __publicField(this, "cameraCompiler", new CameraCompiler());
     __publicField(this, "lightCompiler", new LightCompiler());
     __publicField(this, "geometryCompiler", new GeometryCompiler());
@@ -10864,6 +10986,7 @@ class CompilerManager {
     dataSupportManager.rendererDataSupport.addCompiler(this.rendererCompiler);
     dataSupportManager.controlsDataSupport.addCompiler(this.controlsCompiler);
     dataSupportManager.passDataSupport.addCompiler(this.passCompiler);
+    dataSupportManager.object3DDataSupport.addCompiler(this.object3DCompiler);
     dataSupportManager.cameraDataSupport.addCompiler(this.cameraCompiler);
     dataSupportManager.lightDataSupport.addCompiler(this.lightCompiler);
     dataSupportManager.spriteDataSupport.addCompiler(this.spriteCompiler);

@@ -37,12 +37,15 @@ import { SceneConfig } from "../middleware/scene/SceneConfig";
 import { PassConfigAllType } from "../middleware/pass/PassConfig";
 import { ControlsAllConfig } from "../middleware/controls/ControlsConfig";
 import { AnimationAllType } from "../middleware/animation/AnimationConfig";
+import { Object3DConfig } from "../middleware/object3D/Object3DConfig";
+import { Object3DDataSupport } from "../middleware/object3D/Object3DDataSupport";
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: CompilerTarget<TextureAllType>;
   [MODULETYPE.MATERIAL]?: CompilerTarget<MaterialAllType>;
   [MODULETYPE.GEOMETRY]?: CompilerTarget<GeometryAllType>;
 
+  [MODULETYPE.OBJECT3D]?: CompilerTarget<Object3DConfig>;
   [MODULETYPE.LIGHT]?: CompilerTarget<LightConfigAllType>;
   [MODULETYPE.CAMERA]?: CompilerTarget<CameraConfigAllType>;
   [MODULETYPE.SPRITE]?: CompilerTarget<SpriteConfig>;
@@ -60,6 +63,7 @@ export interface LoadOptions {
 }
 
 export interface DataSupportManagerParameters {
+  object3DDataSupport?: Object3DDataSupport;
   cameraDataSupport?: CameraDataSupport;
   lightDataSupport?: LightDataSupport;
   geometryDataSupport?: GeometryDataSupport;
@@ -79,22 +83,23 @@ export interface DataSupportManagerParameters {
 }
 
 export class DataSupportManager {
-  cameraDataSupport: CameraDataSupport = new CameraDataSupport();
-  lightDataSupport: LightDataSupport = new LightDataSupport();
-  geometryDataSupport: GeometryDataSupport = new GeometryDataSupport();
-  textureDataSupport: TextureDataSupport = new TextureDataSupport();
-  materialDataSupport: MaterialDataSupport = new MaterialDataSupport();
-  rendererDataSupport: RendererDataSupport = new RendererDataSupport();
-  sceneDataSupport: SceneDataSupport = new SceneDataSupport();
-  controlsDataSupport: ControlsDataSupport = new ControlsDataSupport();
-  spriteDataSupport: SpriteDataSupport = new SpriteDataSupport();
-  lineDataSupport: LineDataSupport = new LineDataSupport();
-  meshDataSupport: MeshDataSupport = new MeshDataSupport();
-  pointsDataSupport: PointsDataSupport = new PointsDataSupport();
-  groupDataSupport: GroupDataSupport = new GroupDataSupport();
-  css3DDataSupport: CSS3DDataSupport = new CSS3DDataSupport();
-  passDataSupport: PassDataSupport = new PassDataSupport();
-  animationDataSupport: AnimationDataSupport = new AnimationDataSupport();
+  object3DDataSupport = new Object3DDataSupport();
+  cameraDataSupport = new CameraDataSupport();
+  lightDataSupport = new LightDataSupport();
+  geometryDataSupport = new GeometryDataSupport();
+  textureDataSupport = new TextureDataSupport();
+  materialDataSupport = new MaterialDataSupport();
+  rendererDataSupport = new RendererDataSupport();
+  sceneDataSupport = new SceneDataSupport();
+  controlsDataSupport = new ControlsDataSupport();
+  spriteDataSupport = new SpriteDataSupport();
+  lineDataSupport = new LineDataSupport();
+  meshDataSupport = new MeshDataSupport();
+  pointsDataSupport = new PointsDataSupport();
+  groupDataSupport = new GroupDataSupport();
+  css3DDataSupport = new CSS3DDataSupport();
+  passDataSupport = new PassDataSupport();
+  animationDataSupport = new AnimationDataSupport();
 
   private dataSupportMap: Map<
     MODULETYPE,

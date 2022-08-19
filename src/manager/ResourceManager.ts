@@ -1,5 +1,4 @@
-import { BaseEvent, Object3D, Texture } from "three";
-import { EventDispatcher } from "../core/EventDispatcher";
+import { BaseEvent, EventDispatcher } from "../core/EventDispatcher";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { LoadOptions } from "./DataSupportManager";
 import { getModule } from "../middleware/constants/CONFIGMODULE";
@@ -9,7 +8,8 @@ import { HTMLVideoElementParser } from "../parser/HTMLVideoElementParser";
 import { Object3DParser } from "../parser/Object3DParser";
 import { HTMLElementParser } from "../parser/HTMLElementParser";
 import { TextureParser } from "../parser/TextureParser";
-import { Parser } from "../parser/Parser";
+import { defaultHanlder, Parser, ResourceHanlder } from "../parser/Parser";
+import { GLTFResourceParser } from "../parser/GLTFResourceParser";
 
 export interface MappedEvent extends BaseEvent {
   structureMap: Map<string, unknown>;
@@ -18,8 +18,15 @@ export interface MappedEvent extends BaseEvent {
   resourceConfig: { [key: string]: LoadOptions };
 }
 
+/**
+ * @deprecated
+ */
 export enum RESOURCEEVENTTYPE {
   MAPPED = "mapped",
+}
+
+export interface MappingOptions {
+  hanlder?: Record<string, string>;
 }
 
 export class ResourceManager extends EventDispatcher {
@@ -30,20 +37,22 @@ export class ResourceManager extends EventDispatcher {
   configMap: Map<string, SymbolConfig> = new Map(); // 配置映射 mappingUrl -> config
   resourceMap: Map<string, any> = new Map(); // 资源映射 mappingUrl -> resource
 
-  private mappingHandler = new Map<any, Parser>();
+  private paserMap: Map<string, Parser> = new Map();
+  private handlerMap = new Map<string, ResourceHanlder>();
 
   constructor(resources: { [key: string]: any } = {}) {
     super();
-    const mappingHandler = this.mappingHandler;
 
-    mappingHandler.set(HTMLImageElement, new HTMLImageElementParser());
-    mappingHandler.set(HTMLCanvasElement, new HTMLCanvasElementParser());
-    mappingHandler.set(HTMLVideoElement, new HTMLVideoElementParser());
-    mappingHandler.set(Object3D, new Object3DParser());
-    mappingHandler.set(HTMLElement, new HTMLElementParser());
-    mappingHandler.set(Texture, new TextureParser());
+    this.addParser(new HTMLImageElementParser())
+      .addParser(new HTMLCanvasElementParser())
+      .addParser(new HTMLVideoElementParser())
+      .addParser(new Object3DParser())
+      .addParser(new HTMLElementParser())
+      .addParser(new TextureParser())
+      .addParser(new GLTFResourceParser());
 
-    const map = new Map<string, unknown>();
+    const map = new Map<string, any>();
+
     for (const key in resources) {
       if (map.has(key)) {
         console.warn(
@@ -58,52 +67,107 @@ export class ResourceManager extends EventDispatcher {
   }
 
   /**
+   * 添加解析器
+   * @param parser  extends VIS.Parser
+   * @returns this
+   */
+  addParser(parser: Parser): this {
+    if (this.paserMap.has(parser.constructor.name)) {
+      console.warn(
+        `resourceManager has already exist this parser, that will be cover`,
+        this.paserMap.get(parser.constructor.name)
+      );
+    }
+
+    this.paserMap.set(parser.constructor.name, parser);
+
+    this.addHanlder(parser.registHandler());
+    return this;
+  }
+
+  /**
+   * 添加处理器
+   * @param hanlder 处理器函数
+   * @returns this
+   */
+  addHanlder(hanlder: ResourceHanlder): this {
+    if (this.handlerMap.has(hanlder.name)) {
+      console.warn(
+        `resourceManager has already exist this hanlder, that will be cover`,
+        hanlder.name
+      );
+    }
+
+    this.handlerMap.set(hanlder.name, hanlder);
+    return this;
+  }
+
+  /**
    *  根据加载好的资源拆解映射为最小资源单位与形成相应的配置与结构
    * @param loadResourceMap loaderManager的resourceMap
    * @returns this
    */
-  mappingResource(loadResourceMap: Map<string, unknown>): this {
+  mappingResource(
+    loadResourceMap: Map<string, unknown>,
+    options?: MappingOptions
+  ): this {
     const configMap = this.configMap;
     const resourceMap = this.resourceMap;
-
-    const mappingHandler = this.mappingHandler;
-
-    const resourceHanlder = (
-      url: string,
-      object: object,
-      prototype: object
-    ): boolean => {
-      if (!Object.getPrototypeOf(prototype)) {
-        return false;
-      } else if (
-        mappingHandler.has(Object.getPrototypeOf(prototype).constructor)
-      ) {
-        mappingHandler
-          .get(Object.getPrototypeOf(prototype).constructor)!
-          .parse({
-            url,
-            resource: object,
-            configMap: this.configMap,
-            resourceMap: this.resourceMap,
-          });
-        return true;
-      } else {
-        return resourceHanlder(url, object, Object.getPrototypeOf(prototype));
-      }
-    };
 
     const resourceConfig: { [key: string]: LoadOptions } = {};
 
     loadResourceMap.forEach((resource, url) => {
-      // 图片贴图
-      if (!resourceHanlder(url, resource as object, resource as object)) {
-        resourceMap.set(url, resource);
-        console.warn(
-          `resource manager can not support this resource to generate config`,
-          resource
-        );
+      // 如果options.handler规定了处理器，就使用handler
+      if (options && options.hanlder && options.hanlder[url]) {
+        const hanlder = this.handlerMap.get(options.hanlder[url]);
+
+        if (!hanlder) {
+          console.warn(
+            `resource manager can not support this handler: ${options.hanlder[url]}`
+          );
+        } else {
+          const parser = hanlder(url, resource, this.paserMap);
+
+          if (!parser) {
+            console.warn(
+              `resource manager hanlder can not found this resource parser: `,
+              resource,
+              hanlder
+            );
+          } else {
+            parser.parse({
+              url,
+              resource,
+              configMap,
+              resourceMap,
+            });
+            resourceConfig[url] = this.getResourceConfig(url);
+          }
+        }
       } else {
-        resourceConfig[url] = this.getResourceConfig(url);
+        // 冲上往下执行hanlder
+        let parser: Parser | null = null;
+        for (const handler of this.handlerMap.values()) {
+          parser = handler(url, resource, this.paserMap);
+          if (parser) {
+            break;
+          }
+        }
+
+        if (!parser) {
+          console.warn(
+            `resouce manager can not found some handler to parser this resource:`,
+            resource
+          );
+        } else {
+          parser.parse({
+            url,
+            resource,
+            configMap,
+            resourceMap,
+          });
+          resourceConfig[url] = this.getResourceConfig(url);
+        }
       }
     });
 
@@ -162,12 +226,30 @@ export class ResourceManager extends EventDispatcher {
     return this.resourceMap.has(url);
   }
 
-  // TODO: 根据strictureMap去清空configMap和resourceMap
+  /**
+   * 移除url下的所有资源
+   * @param url url
+   * @returns this
+   */
   remove(url: string): this {
+    const configMap = this.configMap;
+    const resourceMap = this.resourceMap;
+
+    // 便利urlList找出所有以 url 开头的的结构组成LoadOptions配置单
+    [...configMap.keys()]
+      .filter((key) => key.startsWith(url))
+      .forEach((url) => {
+        configMap.delete(url);
+        const resource = resourceMap.get(url);
+        (resource as any).dispose && (resource as any).dispose();
+        resourceMap.delete(url);
+      });
     return this;
   }
 
-  // TODO: dispose
+  /**
+   * 清空所有资源
+   */
   dispose() {
     this.resourceMap.forEach((object, url) => {
       (object as any).dispose && (object as any).dispose();

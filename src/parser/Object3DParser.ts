@@ -3,7 +3,7 @@ import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
 import { CONFIGTYPE } from "../middleware/constants/configType";
 import { MaterialConfig } from "../middleware/material/MaterialConfig";
 import { SolidObjectConfig } from "../middleware/solidObject/SolidObjectConfig";
-import { TextureConfig } from "../middleware/texture/TextureConfig";
+import { LoadTextureConfig } from "../middleware/texture/TextureConfig";
 import { syncObject } from "../utils/utils";
 import { ParseParams, Parser } from "./Parser";
 import { v4 } from "uuid";
@@ -31,18 +31,21 @@ export class Object3DParser extends Parser {
   private parseTexture({ url, resource, configMap, resourceMap }: ParseParams) {
     resourceMap.set(url, resource);
 
-    const config =
-      CONFIGFACTORY[
-        resource.type === "Texture" ? CONFIGTYPE.IMAGETEXTURE : resource.type
-      ]();
+    const config = CONFIGFACTORY[CONFIGTYPE.LOADTEXTURE]();
     configMap.set(url, config);
 
     config.vid = v4();
+    config.url = url;
 
-    syncObject<TextureConfig, Texture>(resource, config, {
-      type: true,
-      vid: true,
-    });
+    syncObject<LoadTextureConfig, Texture>(
+      resource,
+      config as unknown as Texture,
+      {
+        type: true,
+        vid: true,
+        url: true,
+      }
+    );
   }
 
   private parseMaterial({
@@ -52,6 +55,14 @@ export class Object3DParser extends Parser {
     resourceMap,
   }: ParseParams) {
     resourceMap.set(url, resource);
+
+    if (!CONFIGFACTORY[resource.type]) {
+      console.warn(
+        `can not found support config in vis for this resource`,
+        resource
+      );
+      return;
+    }
 
     const config = CONFIGFACTORY[resource.type]();
     configMap.set(url, config);
@@ -117,6 +128,14 @@ export class Object3DParser extends Parser {
     resourceMap,
   }: ParseParams) {
     resourceMap.set(url, resource);
+
+    if (!CONFIGFACTORY[resource.type]) {
+      console.warn(
+        `can not found support config in vis for this resource`,
+        resource
+      );
+      return;
+    }
 
     const config = CONFIGFACTORY[resource.type]();
     config.vid = v4();

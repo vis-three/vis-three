@@ -121,10 +121,6 @@ export class LoaderManager extends EventDispatcher {
   }
 
   setPath(path: string): this {
-    const map = this.loaderMap;
-    Object.keys(map).forEach((ext) => {
-      map[ext].setPath(path);
-    });
     this.path = path;
     return this;
   }
@@ -232,8 +228,14 @@ export class LoaderManager extends EventDispatcher {
         continue;
       }
 
+      const pathAnalysis = url.replace(/\\/g, "/").split("/");
+
+      const filename = pathAnalysis.pop()!;
+      const path = this.path + pathAnalysis.join("/") + "/";
+
       loader
-        .loadAsync(url, (event: ProgressEvent) => {
+        .setPath(path)
+        .loadAsync(filename, (event: ProgressEvent) => {
           detail.progress = Number((event.loaded / event.total).toFixed(2));
           this.dispatchEvent({
             type: LOADERMANAGER.DETAILLOADING,

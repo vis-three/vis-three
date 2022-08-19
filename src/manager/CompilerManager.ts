@@ -14,6 +14,7 @@ import { LineCompiler } from "../middleware/line/LineCompiler";
 import { MaterialCompiler } from "../middleware/material/MaterialCompiler";
 import { MeshCompiler } from "../middleware/mesh/MeshCompiler";
 import { ObjectCompiler } from "../middleware/object/ObjectCompiler";
+import { Object3DCompiler } from "../middleware/object3D/Object3DCompiler";
 import { PassCompiler } from "../middleware/pass/PassCompiler";
 import { PointsCompiler } from "../middleware/points/PointsCompiler";
 import { RendererCompiler } from "../middleware/renderer/RendererCompiler";
@@ -22,6 +23,7 @@ import { SpriteCompiler } from "../middleware/sprite/SpriteCompiler";
 import { TextureCompiler } from "../middleware/texture/TextureCompiler";
 
 export interface CompilerManagerParameters {
+  object3DCompiler: Object3DCompiler;
   cameraCompiler: CameraCompiler;
   lightCompiler: LightCompiler;
   geometryCompiler: GeometryCompiler;
@@ -41,6 +43,7 @@ export interface CompilerManagerParameters {
 }
 
 export class CompilerManager {
+  object3DCompiler = new Object3DCompiler();
   cameraCompiler = new CameraCompiler();
   lightCompiler = new LightCompiler();
   geometryCompiler = new GeometryCompiler();
@@ -99,6 +102,7 @@ export class CompilerManager {
     dataSupportManager.controlsDataSupport.addCompiler(this.controlsCompiler);
     dataSupportManager.passDataSupport.addCompiler(this.passCompiler);
 
+    dataSupportManager.object3DDataSupport.addCompiler(this.object3DCompiler);
     dataSupportManager.cameraDataSupport.addCompiler(this.cameraCompiler);
     dataSupportManager.lightDataSupport.addCompiler(this.lightCompiler);
     dataSupportManager.spriteDataSupport.addCompiler(this.spriteCompiler);

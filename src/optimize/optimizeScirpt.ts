@@ -1,4 +1,11 @@
-import { AmbientLight, Object3D, OrthographicCamera, Scene } from "three";
+import {
+  AmbientLight,
+  DefaultLoadingManager,
+  Object3D,
+  OrthographicCamera,
+  Scene,
+} from "three";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import { LightShadow } from "three/src/lights/LightShadow";
 

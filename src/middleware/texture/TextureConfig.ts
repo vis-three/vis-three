@@ -27,6 +27,7 @@ export interface TextureConfig extends SymbolConfig {
   matrixAutoUpdate: boolean;
   encoding: number;
   needsUpdate: boolean;
+  flipY: boolean;
 }
 
 export interface ImageTextureConfig extends TextureConfig {
@@ -76,6 +77,7 @@ export const getTextureConfig = function (): TextureConfig {
     minFilter: LinearMipmapLinearFilter,
     anisotropy: 1,
     format: RGBAFormat,
+    flipY: true,
     offset: {
       x: 0,
       y: 0,

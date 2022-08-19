@@ -22,6 +22,7 @@ export enum CONFIGTYPE {
   SPLINETUBEGEOMETRY = "SplineTubeGeometry",
   LINESHAPEGEOMETRY = "LineShapeGeometry",
 
+  OBJECT3D = "Object3D",
   MESH = "Mesh",
   LINE = "Line",
   // LINESEGMENTS = "LineSegments",

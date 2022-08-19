@@ -1,5 +1,6 @@
 import { Object3D, Vector3 } from "three";
 import {
+  defineProcessor,
   emptyHandler,
   ProcessorCommands,
   ProcessParams,
@@ -9,6 +10,7 @@ import { EngineSupport } from "../../engine/EngineSupport";
 import { EventLibrary } from "../../library/event/EventLibrary";
 import { EVENTNAME, ObjectEvent } from "../../manager/EventManager";
 import { IgnoreAttribute, syncObject } from "../../utils/utils";
+import { CONFIGTYPE } from "../constants/configType";
 import { ObjectConfig } from "./ObjectConfig";
 
 export interface ObjectCacheData {
@@ -315,3 +317,12 @@ export const objectCommands: ObjectCommands<ObjectConfig, Object3D> = {
     children: removeChildrenHandler,
   },
 };
+
+export default defineProcessor<ObjectConfig, Object3D>({
+  configType: CONFIGTYPE.OBJECT3D,
+  commands: objectCommands,
+  create(config: ObjectConfig, engine: EngineSupport): Object3D {
+    return objectCreate(new Object3D(), config, {}, engine);
+  },
+  dispose: objectDispose,
+});

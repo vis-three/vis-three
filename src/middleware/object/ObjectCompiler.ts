@@ -2,6 +2,7 @@ import { Object3D } from "three";
 import { Compiler } from "../../core/Compiler";
 
 import { ObjectConfig } from "./ObjectConfig";
+import ObjectProcessor from "./ObjectProcessor";
 
 export type BasicObjectCompiler = ObjectCompiler<ObjectConfig, Object3D>;
 

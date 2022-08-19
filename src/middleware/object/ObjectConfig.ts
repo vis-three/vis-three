@@ -1,5 +1,6 @@
 import { BasicEventConfig } from "../../library/event/EventLibrary";
 import { Vector3Config, SymbolConfig } from "../common/CommonConfig";
+import { CONFIGTYPE } from "../constants/configType";
 
 export interface ObjectConfig extends SymbolConfig {
   type: string;
@@ -30,7 +31,7 @@ export const getObjectConfig = (): ObjectConfig => {
   return {
     vid: "",
     name: "",
-    type: "Object3D",
+    type: CONFIGTYPE.OBJECT3D,
     castShadow: true,
     receiveShadow: true,
     lookAt: "",
