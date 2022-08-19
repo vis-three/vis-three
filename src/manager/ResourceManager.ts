@@ -8,7 +8,7 @@ import { HTMLVideoElementParser } from "../parser/HTMLVideoElementParser";
 import { Object3DParser } from "../parser/Object3DParser";
 import { HTMLElementParser } from "../parser/HTMLElementParser";
 import { TextureParser } from "../parser/TextureParser";
-import { defaultHanlder, Parser, ResourceHanlder } from "../parser/Parser";
+import { Parser, ResourceHanlder } from "../parser/Parser";
 import { GLTFResourceParser } from "../parser/GLTFResourceParser";
 
 export interface MappedEvent extends BaseEvent {
@@ -43,13 +43,13 @@ export class ResourceManager extends EventDispatcher {
   constructor(resources: { [key: string]: any } = {}) {
     super();
 
-    this.addParser(new HTMLImageElementParser())
-      .addParser(new HTMLCanvasElementParser())
-      .addParser(new HTMLVideoElementParser())
-      .addParser(new Object3DParser())
-      .addParser(new HTMLElementParser())
-      .addParser(new TextureParser())
-      .addParser(new GLTFResourceParser());
+    this.addParser(new HTMLImageElementParser(), { warn: false })
+      .addParser(new HTMLCanvasElementParser(), { warn: false })
+      .addParser(new HTMLVideoElementParser(), { warn: false })
+      .addParser(new Object3DParser(), { warn: false })
+      .addParser(new HTMLElementParser(), { warn: false })
+      .addParser(new TextureParser(), { warn: false })
+      .addParser(new GLTFResourceParser(), { warn: false });
 
     const map = new Map<string, any>();
 
@@ -71,17 +71,18 @@ export class ResourceManager extends EventDispatcher {
    * @param parser  extends VIS.Parser
    * @returns this
    */
-  addParser(parser: Parser): this {
+  addParser(parser: Parser, options: { warn: boolean } = { warn: true }): this {
     if (this.paserMap.has(parser.constructor.name)) {
-      console.warn(
-        `resourceManager has already exist this parser, that will be cover`,
-        this.paserMap.get(parser.constructor.name)
-      );
+      options.warn &&
+        console.warn(
+          `resourceManager has already exist this parser, that will be cover`,
+          this.paserMap.get(parser.constructor.name)
+        );
     }
 
     this.paserMap.set(parser.constructor.name, parser);
 
-    this.addHanlder(parser.registHandler());
+    this.addHanlder(parser.registHandler(), options);
     return this;
   }
 
@@ -90,12 +91,16 @@ export class ResourceManager extends EventDispatcher {
    * @param hanlder 处理器函数
    * @returns this
    */
-  addHanlder(hanlder: ResourceHanlder): this {
+  addHanlder(
+    hanlder: ResourceHanlder,
+    options: { warn: boolean } = { warn: true }
+  ): this {
     if (this.handlerMap.has(hanlder.name)) {
-      console.warn(
-        `resourceManager has already exist this hanlder, that will be cover`,
-        hanlder.name
-      );
+      options.warn &&
+        console.warn(
+          `resourceManager has already exist this hanlder, that will be cover`,
+          hanlder.name
+        );
     }
 
     this.handlerMap.set(hanlder.name, hanlder);
@@ -105,6 +110,7 @@ export class ResourceManager extends EventDispatcher {
   /**
    *  根据加载好的资源拆解映射为最小资源单位与形成相应的配置与结构
    * @param loadResourceMap loaderManager的resourceMap
+   * @param options options.handler: {url, hanlder}可以根据特定的url指定特定的解析器
    * @returns this
    */
   mappingResource(

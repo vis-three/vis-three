@@ -78,7 +78,6 @@ export class LoaderManager extends EventDispatcher {
 
     const imageLoader = new ImageLoader();
     const videoLoader = new VideoLoader();
-    const gltfLoader = new GLTFLoader();
 
     this.loaderMap = {
       jpg: imageLoader,
@@ -90,8 +89,7 @@ export class LoaderManager extends EventDispatcher {
       webm: videoLoader,
       ogg: videoLoader,
       hdr: new RGBELoader(),
-      glb: gltfLoader,
-      gltf: gltfLoader,
+      gltf: new GLTFLoader(),
     };
 
     if (parameters) {

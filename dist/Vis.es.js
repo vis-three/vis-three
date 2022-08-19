@@ -4283,7 +4283,6 @@ class LoaderManager extends EventDispatcher {
     this.loadDetailMap = {};
     const imageLoader = new ImageLoader();
     const videoLoader = new VideoLoader();
-    const gltfLoader = new GLTFLoader();
     this.loaderMap = {
       jpg: imageLoader,
       png: imageLoader,
@@ -4294,8 +4293,7 @@ class LoaderManager extends EventDispatcher {
       webm: videoLoader,
       ogg: videoLoader,
       hdr: new RGBELoader(),
-      glb: gltfLoader,
-      gltf: gltfLoader
+      gltf: new GLTFLoader()
     };
     if (parameters) {
       this.loaderMap = Object.assign(this.loaderMap, parameters.loaderExtends);
@@ -5829,7 +5827,7 @@ class ResourceManager extends EventDispatcher {
     __publicField(this, "resourceMap", new Map());
     __publicField(this, "paserMap", new Map());
     __publicField(this, "handlerMap", new Map());
-    this.addParser(new HTMLImageElementParser()).addParser(new HTMLCanvasElementParser()).addParser(new HTMLVideoElementParser()).addParser(new Object3DParser()).addParser(new HTMLElementParser()).addParser(new TextureParser()).addParser(new GLTFResourceParser());
+    this.addParser(new HTMLImageElementParser(), { warn: false }).addParser(new HTMLCanvasElementParser(), { warn: false }).addParser(new HTMLVideoElementParser(), { warn: false }).addParser(new Object3DParser(), { warn: false }).addParser(new HTMLElementParser(), { warn: false }).addParser(new TextureParser(), { warn: false }).addParser(new GLTFResourceParser(), { warn: false });
     const map = new Map();
     for (const key in resources) {
       if (map.has(key)) {
@@ -5839,17 +5837,17 @@ class ResourceManager extends EventDispatcher {
     }
     this.mappingResource(map);
   }
-  addParser(parser) {
+  addParser(parser, options = { warn: true }) {
     if (this.paserMap.has(parser.constructor.name)) {
-      console.warn(`resourceManager has already exist this parser, that will be cover`, this.paserMap.get(parser.constructor.name));
+      options.warn && console.warn(`resourceManager has already exist this parser, that will be cover`, this.paserMap.get(parser.constructor.name));
     }
     this.paserMap.set(parser.constructor.name, parser);
-    this.addHanlder(parser.registHandler());
+    this.addHanlder(parser.registHandler(), options);
     return this;
   }
-  addHanlder(hanlder) {
+  addHanlder(hanlder, options = { warn: true }) {
     if (this.handlerMap.has(hanlder.name)) {
-      console.warn(`resourceManager has already exist this hanlder, that will be cover`, hanlder.name);
+      options.warn && console.warn(`resourceManager has already exist this hanlder, that will be cover`, hanlder.name);
     }
     this.handlerMap.set(hanlder.name, hanlder);
     return this;
