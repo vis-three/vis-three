@@ -5537,8 +5537,8 @@ const defaultHanlder = (url, resource, parseMap) => {
   const resourceHanlder = (url2, object) => {
     if (!Object.getPrototypeOf(object)) {
       return null;
-    } else if (parseMap.has(Object.getPrototypeOf(object).constructor.name)) {
-      return parseMap.get(Object.getPrototypeOf(object).constructor.name);
+    } else if (parseMap.has(Object.getPrototypeOf(object).constructor.name + "Parser")) {
+      return parseMap.get(Object.getPrototypeOf(object).constructor.name + "Parser");
     } else {
       return resourceHanlder(url2, Object.getPrototypeOf(object));
     }
