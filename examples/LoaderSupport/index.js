@@ -1,4 +1,4 @@
 export default {
-  router: "LoaderManager",
+  router: "LoaderSupport",
   children: ["/gltf.html", "/obj.html"],
 };
