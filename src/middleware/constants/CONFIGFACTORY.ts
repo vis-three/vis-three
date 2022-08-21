@@ -37,6 +37,7 @@ import {
   getLineBasicMaterialConfig,
   getMeshBasicMaterialConfig,
   getMeshPhongMaterialConfig,
+  getMeshPhysicalMaterialConfig,
   getMeshStandardMaterialConfig,
   getPointsMaterialConfig,
   getShaderMaterialConfig,
@@ -91,6 +92,7 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.LINEBASICMATERIAL]: getLineBasicMaterialConfig,
   [CONFIGTYPE.POINTSMATERIAL]: getPointsMaterialConfig,
   [CONFIGTYPE.SHADERMATERIAL]: getShaderMaterialConfig,
+  [CONFIGTYPE.MESHPHYSICALMATERIAL]: getMeshPhysicalMaterialConfig,
 
   [CONFIGTYPE.AMBIENTLIGHT]: getAmbientLightConfig,
   [CONFIGTYPE.SPOTLIGHT]: getSpotLightConfig,

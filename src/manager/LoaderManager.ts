@@ -5,6 +5,9 @@ import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { VideoLoader } from "../extends/loader/VideoLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
+import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 
 export enum LOADERMANAGER {
   BEFORELOAD = "beforeLoad",
@@ -78,6 +81,11 @@ export class LoaderManager extends EventDispatcher {
 
     const imageLoader = new ImageLoader();
     const videoLoader = new VideoLoader();
+    const gltfLoader = new GLTFLoader();
+
+    gltfLoader.setDRACOLoader(new DRACOLoader());
+    gltfLoader.setKTX2Loader(new KTX2Loader());
+    gltfLoader.setMeshoptDecoder(MeshoptDecoder);
 
     this.loaderMap = {
       jpg: imageLoader,
@@ -89,7 +97,8 @@ export class LoaderManager extends EventDispatcher {
       webm: videoLoader,
       ogg: videoLoader,
       hdr: new RGBELoader(),
-      gltf: new GLTFLoader(),
+      gltf: gltfLoader,
+      glb: gltfLoader,
     };
 
     if (parameters) {
@@ -121,6 +130,19 @@ export class LoaderManager extends EventDispatcher {
   setPath(path: string): this {
     this.path = path;
     return this;
+  }
+
+  /**
+   * 获取加载器
+   * @param ext 资源类型
+   * @returns
+   */
+  getLoader(ext: string): Loader | null {
+    if (this.loaderMap[ext]) {
+      return this.loaderMap[ext];
+    } else {
+      return null;
+    }
   }
 
   /**

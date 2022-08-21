@@ -25,6 +25,24 @@ export class Object3DParser extends Parser {
   }
 
   /**
+   * 对象增强,class对象的get set属性转key， three中的是通过_key进行闭包
+   * @param object
+   * @returns object
+   */
+  private attributeEnhance<O extends object>(object: O): O {
+    const result: O = {} as O;
+
+    for (const key in object) {
+      if (key.startsWith("_")) {
+        result[key.slice(1)] = object[key];
+      } else {
+        result[key] = object[key];
+      }
+    }
+    return result;
+  }
+
+  /**
    *  解析贴图
    * @param params
    */
@@ -69,21 +87,26 @@ export class Object3DParser extends Parser {
 
     config.vid = v4();
 
-    syncObject<MaterialConfig, Material>(resource, config, {
-      type: true,
-      vid: true,
-    });
+    syncObject<MaterialConfig, Material>(
+      this.attributeEnhance(resource),
+      config,
+      {
+        type: true,
+        vid: true,
+      }
+    );
 
     // 同步颜色配置
-    for (const key of ["color", "emissive", "specular"]) {
-      if (config[key]) {
-        config[key] = this.parseColor(resource[key]);
-      }
-    }
-
     // 同步贴图
-    for (const key of Object.keys(config)) {
-      if (key.toLocaleLowerCase().endsWith("map") && resource[key]) {
+
+    for (const key in resource) {
+      if (!resource[key]) {
+        continue;
+      }
+
+      if ((<Color>resource[key]).isColor) {
+        config[key] = this.parseColor(resource[key]);
+      } else if (key.toLocaleLowerCase().endsWith("map") && resource[key]) {
         const textureUrl = `${url}.${key}`;
 
         this.parseTexture({
@@ -150,6 +173,10 @@ export class Object3DParser extends Parser {
       parent: true,
       lookAt: true, // load object是没有lookAt的
     });
+
+    config.rotation.x = resource.rotation.x;
+    config.rotation.y = resource.rotation.y;
+    config.rotation.z = resource.rotation.z;
 
     configMap.set(url, config);
 

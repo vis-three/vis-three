@@ -8,7 +8,7 @@ import {
   SrcAlphaFactor,
   TangentSpaceNormalMap,
 } from "three";
-import { SymbolConfig } from "../common/CommonConfig";
+import { SymbolConfig, Vector2Config } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
 export interface MaterialConfig extends SymbolConfig {
   alphaTest: number;
@@ -150,6 +150,33 @@ export interface ShaderMaterialConfig extends MaterialConfig {
   uniforms: { [key: string]: any };
 }
 
+export interface MeshPhysicalMaterialConfig extends MeshStandardMaterialConfig {
+  attenuationColor: string;
+  attenuationDistance: number;
+  clearcoat: number;
+  clearcoatNormalScale: Vector2Config;
+  clearcoatRoughness: number;
+  ior: number;
+  reflectivity: number;
+  sheen: number;
+  sheenRoughness: number;
+  sheenColor: string;
+  specularIntensity: number;
+  specularColor: string;
+  thickness: number;
+  transmission: number;
+
+  clearcoatMap: string;
+  clearcoatNormalMap: string;
+  clearcoatRoughnessMap: string;
+  sheenRoughnessMap: string;
+  sheenColorMap: string;
+  specularIntensityMap: string;
+  specularColorMap: string;
+  thicknessMap: string;
+  transmissionMap: string;
+}
+
 // TODO:
 export interface LoadMaterialConfig extends MaterialConfig {
   url: string;
@@ -162,7 +189,8 @@ export type MaterialAllType =
   | LineBasicMaterialConfig
   | SpriteMaterialConfig
   | PointsMaterialConfig
-  | ShaderMaterialConfig;
+  | ShaderMaterialConfig
+  | MeshPhysicalMaterialConfig;
 
 export const getMaterialConfig = function (): MaterialConfig {
   return {
@@ -253,6 +281,40 @@ export const getMeshStandardMaterialConfig =
       bumpMap: "",
       alphaMap: "",
       aoMap: "",
+    });
+  };
+
+export const getMeshPhysicalMaterialConfig =
+  function (): MeshPhysicalMaterialConfig {
+    return Object.assign(getMeshStandardMaterialConfig(), {
+      type: CONFIGTYPE.MESHPHYSICALMATERIAL,
+      attenuationColor: "rgb(255, 255, 255)",
+      attenuationDistance: 0,
+      clearcoat: 0.0,
+      clearcoatNormalScale: {
+        x: 1,
+        y: 1,
+      },
+      clearcoatRoughness: 0,
+      ior: 1.5,
+      reflectivity: 0.5,
+      sheen: 0.0,
+      sheenRoughness: 1.0,
+      sheenColor: "rgb(255, 255, 255)",
+      specularIntensity: 0.0,
+      specularColor: "rgb(255, 255, 255)",
+      thickness: 0,
+      transmission: 0,
+
+      clearcoatMap: "",
+      clearcoatNormalMap: "",
+      clearcoatRoughnessMap: "",
+      sheenRoughnessMap: "",
+      sheenColorMap: "",
+      specularIntensityMap: "",
+      specularColorMap: "",
+      thicknessMap: "",
+      transmissionMap: "",
     });
   };
 

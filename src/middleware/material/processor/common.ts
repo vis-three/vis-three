@@ -10,7 +10,6 @@ export const commonNeedUpdatesRegCommand = {
     target,
     key,
     value,
-    engine,
   }: ProcessParams<C, T>) {
     target[key] = value;
     target.needsUpdate = true;
@@ -65,7 +64,7 @@ export const create = function <T extends Material, C extends MaterialConfig>(
       }
       target[key] = texture;
       filter[key] = true;
-    } else if (["color", "emissive", "specular"].includes(key)) {
+    } else if (target[key] instanceof Color) {
       target[key] = new Color(config[key]);
       filter[key] = true;
     }

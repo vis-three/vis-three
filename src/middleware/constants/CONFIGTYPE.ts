@@ -46,6 +46,7 @@ export enum CONFIGTYPE {
   LINEBASICMATERIAL = "LineBasicMaterial",
   POINTSMATERIAL = "PointsMaterial",
   SHADERMATERIAL = "ShaderMaterial",
+  MESHPHYSICALMATERIAL = "MeshPhysicalMaterial",
   // RAWSHADERMATERIAL = "RawShaderMaterial",
 
   AMBIENTLIGHT = "AmbientLight",
