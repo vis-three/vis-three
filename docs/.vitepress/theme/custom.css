@@ -16,6 +16,7 @@
   display: none;
 }
 
+li > code,
 p > code,
 td > code {
   background: var(--code-bg-color);
@@ -33,8 +34,8 @@ tr:nth-child(2n) {
 :root {
   --c-brand: rgb(230, 20, 240);
   --c-brand-light: rgba(230, 20, 240, 0.5);
-  --c-bg: rgb(6, 1, 12);
+  --c-bg: rgb(23, 26, 31);
   --c-text: rgb(236, 236, 236);
   --c-text-light: rgb(180, 180, 180);
-  --c-divider-light: rgb(40, 25, 40);
+  --c-divider-light: rgb(36, 42, 49);
 }
