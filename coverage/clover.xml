@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1660630144960" clover="3.2.0">
+  <project timestamp="1660630144960" name="All files">
+    <metrics statements="20" coveredstatements="20" conditionals="2" coveredconditionals="2" methods="7" coveredmethods="7" elements="29" coveredelements="29" complexity="0" loc="20" ncloc="20" packages="1" files="1" classes="1"/>
+    <file name="index.spec.js" path="D:\work\self\vis-three\cypress\integration\e2e\index.spec.js">
+      <metrics statements="20" coveredstatements="20" conditionals="2" coveredconditionals="2" methods="7" coveredmethods="7"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="8" count="1" type="stmt"/>
+      <line num="10" count="1" type="stmt"/>
+      <line num="12" count="1" type="stmt"/>
+      <line num="13" count="134" type="stmt"/>
+      <line num="15" count="1" type="stmt"/>
+      <line num="16" count="67" type="stmt"/>
+      <line num="17" count="67" type="stmt"/>
+      <line num="18" count="67" type="stmt"/>
+      <line num="19" count="67" type="stmt"/>
+      <line num="20" count="67" type="stmt"/>
+      <line num="21" count="67" type="stmt"/>
+      <line num="22" count="67" type="stmt"/>
+      <line num="24" count="67" type="cond" truecount="2" falsecount="0"/>
+      <line num="25" count="66" type="stmt"/>
+      <line num="29" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>
