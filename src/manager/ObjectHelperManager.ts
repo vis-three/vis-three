@@ -33,6 +33,7 @@ export class ObjectHelperManager extends EventDispatcher {
     [CONFIGTYPE.LINE]: LineHelper,
     [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper,
     [CONFIGTYPE.CSS3DPLANE]: CSS3DPlaneHelper,
+    [CONFIGTYPE.CSS3DSPRITE]: CSS3DPlaneHelper,
   };
 
   private helperFilter = {

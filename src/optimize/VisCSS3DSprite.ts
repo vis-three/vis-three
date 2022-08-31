@@ -5,6 +5,7 @@ import {
   Matrix4,
   PerspectiveCamera,
   PlaneBufferGeometry,
+  Quaternion,
   Raycaster,
   Vector2,
   Vector3,
@@ -16,7 +17,13 @@ export class VisCSS3DSprite extends CSS3DSprite {
   private _width: number;
   private _height: number;
 
-  private cacheBox: Box3 = new Box3();
+  private cacheBox = new Box3();
+  private cachePosition = new Vector3();
+  private cacheQuaternion = new Quaternion();
+  private cacheScale = new Vector3();
+
+  private cacheMatrix4 = new Matrix4();
+  private rotateMatrix4 = new Matrix4();
 
   constructor(element: HTMLElement = document.createElement("div")) {
     const root = document.createElement("div");
@@ -65,7 +72,28 @@ export class VisCSS3DSprite extends CSS3DSprite {
 
   raycast(raycaster: Raycaster, intersects: Intersection[]) {
     const box = this.cacheBox.copy(this.geometry.boundingBox!);
-    box.applyMatrix4(this.matrixWorld);
+
+    this.matrixWorld.decompose(
+      this.cachePosition,
+      this.cacheQuaternion,
+      this.cacheScale
+    );
+
+    const rotateMatrix4 = this.rotateMatrix4.lookAt(
+      this.position,
+      raycaster.camera.position,
+      this.up
+    );
+
+    this.cacheQuaternion.setFromRotationMatrix(rotateMatrix4);
+
+    this.cacheMatrix4.compose(
+      this.cachePosition,
+      this.cacheQuaternion,
+      this.cacheScale
+    );
+
+    box.applyMatrix4(this.cacheMatrix4);
 
     if (raycaster.ray.intersectsBox(box)) {
       intersects.push({

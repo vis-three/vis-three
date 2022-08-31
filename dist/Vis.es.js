@@ -21,21 +21,20 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, Cache, LoaderUtils, FileLoader, Color, SpotLight, PointLight, DirectionalLight, MeshBasicMaterial, sRGBEncoding, MeshPhysicalMaterial, TangentSpaceNormalMap, TextureLoader, ImageBitmapLoader, InterleavedBuffer, InterleavedBufferAttribute, BufferAttribute, LinearFilter, LinearMipmapLinearFilter, RepeatWrapping, PointsMaterial, Material, LineBasicMaterial, MeshStandardMaterial, DoubleSide, PropertyBinding, BufferGeometry, SkinnedMesh, Mesh, LineSegments, Line, LineLoop, Points, Group, MathUtils, InterpolateLinear, AnimationClip, Bone, Matrix4, Skeleton, TriangleFanDrawMode, Interpolant, NearestFilter, NearestMipmapNearestFilter, LinearMipmapNearestFilter, NearestMipmapLinearFilter, ClampToEdgeWrapping, MirroredRepeatWrapping, InterpolateDiscrete, FrontSide, Texture, TriangleStripDrawMode, VectorKeyframeTrack, QuaternionKeyframeTrack, NumberKeyframeTrack, Box3, Sphere, CompressedTexture, UnsignedByteType, LinearEncoding, RGBA_ASTC_4x4_Format, RGBA_BPTC_Format, RGBA_ETC2_EAC_Format, RGBA_PVRTC_4BPPV1_Format, RGBA_S3TC_DXT5_Format, RGB_ETC1_Format, RGB_ETC2_Format, RGB_PVRTC_4BPPV1_Format, RGB_S3TC_DXT1_Format, ImageLoader, UVMapping, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, PCFShadowMap, NoToneMapping, Euler, PlaneBufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, Float32BufferAttribute, EdgesGeometry, AmbientLight, ShaderMaterial, MeshPhongMaterial, SpriteMaterial, Scene, UniformsUtils, Sprite, AdditiveBlending, Camera, Fog, FogExp2, CanvasTexture, CubeTexture, RGBFormat, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, OctahedronBufferGeometry, PCFSoftShadowMap } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, BufferGeometry, Float32BufferAttribute, Color, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, LoaderUtils, FileLoader, FrontSide, RepeatWrapping, MeshPhongMaterial, DefaultLoadingManager, TextureLoader, sRGBEncoding, Cache, SpotLight, PointLight, DirectionalLight, MeshBasicMaterial, MeshPhysicalMaterial, TangentSpaceNormalMap, ImageBitmapLoader, InterleavedBuffer, InterleavedBufferAttribute, BufferAttribute, LinearFilter, LinearMipmapLinearFilter, PointsMaterial, Material, LineBasicMaterial, MeshStandardMaterial, DoubleSide, PropertyBinding, SkinnedMesh, Mesh, LineSegments, Line, LineLoop, Points, Group, MathUtils, InterpolateLinear, AnimationClip, Bone, Matrix4, Skeleton, TriangleFanDrawMode, Interpolant, NearestFilter, NearestMipmapNearestFilter, LinearMipmapNearestFilter, NearestMipmapLinearFilter, ClampToEdgeWrapping, MirroredRepeatWrapping, InterpolateDiscrete, Texture, TriangleStripDrawMode, VectorKeyframeTrack, QuaternionKeyframeTrack, NumberKeyframeTrack, Box3, Sphere, CompressedTexture, UnsignedByteType, LinearEncoding, RGBA_ASTC_4x4_Format, RGBA_BPTC_Format, RGBA_ETC2_EAC_Format, RGBA_PVRTC_4BPPV1_Format, RGBA_S3TC_DXT5_Format, RGB_ETC1_Format, RGB_ETC2_Format, RGB_PVRTC_4BPPV1_Format, RGB_S3TC_DXT1_Format, ImageLoader, UVMapping, CubeReflectionMapping, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, PCFShadowMap, NoToneMapping, Euler, PlaneBufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, EdgesGeometry, AmbientLight, ShaderMaterial, SpriteMaterial, Scene, UniformsUtils, Sprite, AdditiveBlending, Camera, Fog, FogExp2, CanvasTexture, CubeTexture, RGBFormat, AxesHelper, GridHelper, MeshLambertMaterial, Light, CameraHelper as CameraHelper$1, OctahedronBufferGeometry, PCFSoftShadowMap } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
-import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { v4, validate } from "uuid";
-import { CSS3DObject, CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS3DObject, CSS3DSprite, CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { Easing, Tween } from "@tweenjs/tween.js";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
-import { Pass, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass";
-import { LuminosityHighPassShader } from "three/examples/jsm/shaders/LuminosityHighPassShader";
+import { Pass as Pass$1, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass";
 import keyboardjs from "keyboardjs";
 import { CSG } from "three-csg-ts";
 import { LightShadow } from "three/src/lights/LightShadow";
@@ -1104,6 +1103,65 @@ const StatsPlugin = function(params) {
   };
   return true;
 };
+class Pass {
+  constructor() {
+    this.enabled = true;
+    this.needsSwap = true;
+    this.clear = false;
+    this.renderToScreen = false;
+  }
+  setSize() {
+  }
+  render() {
+    console.error("THREE.Pass: .render() must be implemented in derived pass.");
+  }
+}
+new OrthographicCamera(-1, 1, 1, -1, 0, 1);
+const _geometry = new BufferGeometry();
+_geometry.setAttribute("position", new Float32BufferAttribute([-1, 3, 0, -1, -1, 0, 3, -1, 0], 3));
+_geometry.setAttribute("uv", new Float32BufferAttribute([0, 2, 0, 0, 2, 0], 2));
+class RenderPass extends Pass {
+  constructor(scene, camera, overrideMaterial, clearColor, clearAlpha) {
+    super();
+    this.scene = scene;
+    this.camera = camera;
+    this.overrideMaterial = overrideMaterial;
+    this.clearColor = clearColor;
+    this.clearAlpha = clearAlpha !== void 0 ? clearAlpha : 0;
+    this.clear = true;
+    this.clearDepth = false;
+    this.needsSwap = false;
+    this._oldClearColor = new Color();
+  }
+  render(renderer, writeBuffer, readBuffer) {
+    const oldAutoClear = renderer.autoClear;
+    renderer.autoClear = false;
+    let oldClearAlpha, oldOverrideMaterial;
+    if (this.overrideMaterial !== void 0) {
+      oldOverrideMaterial = this.scene.overrideMaterial;
+      this.scene.overrideMaterial = this.overrideMaterial;
+    }
+    if (this.clearColor) {
+      renderer.getClearColor(this._oldClearColor);
+      oldClearAlpha = renderer.getClearAlpha();
+      renderer.setClearColor(this.clearColor, this.clearAlpha);
+    }
+    if (this.clearDepth) {
+      renderer.clearDepth();
+    }
+    renderer.setRenderTarget(this.renderToScreen ? null : readBuffer);
+    if (this.clear)
+      renderer.clear(renderer.autoClearColor, renderer.autoClearDepth, renderer.autoClearStencil);
+    renderer.render(this.scene, this.camera);
+    if (this.clearColor) {
+      renderer.setClearColor(this._oldClearColor, oldClearAlpha);
+    }
+    if (this.overrideMaterial !== void 0) {
+      this.scene.overrideMaterial = oldOverrideMaterial;
+    }
+    renderer.autoClear = oldAutoClear;
+  }
+}
 const EffectComposerPlugin = function(params = {}) {
   if (this.effectComposer) {
     console.warn("this has installed effect composer plugin.");
@@ -1835,6 +1893,276 @@ const WebGLRendererPlugin = function(params = {}) {
   }
   return true;
 };
+class MTLLoader extends Loader {
+  constructor(manager) {
+    super(manager);
+  }
+  load(url, onLoad, onProgress, onError) {
+    const scope = this;
+    const path = this.path === "" ? LoaderUtils.extractUrlBase(url) : this.path;
+    const loader = new FileLoader(this.manager);
+    loader.setPath(this.path);
+    loader.setRequestHeader(this.requestHeader);
+    loader.setWithCredentials(this.withCredentials);
+    loader.load(url, function(text) {
+      try {
+        onLoad(scope.parse(text, path));
+      } catch (e) {
+        if (onError) {
+          onError(e);
+        } else {
+          console.error(e);
+        }
+        scope.manager.itemError(url);
+      }
+    }, onProgress, onError);
+  }
+  setMaterialOptions(value) {
+    this.materialOptions = value;
+    return this;
+  }
+  parse(text, path) {
+    const lines = text.split("\n");
+    let info = {};
+    const delimiter_pattern = /\s+/;
+    const materialsInfo = {};
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i];
+      line = line.trim();
+      if (line.length === 0 || line.charAt(0) === "#") {
+        continue;
+      }
+      const pos = line.indexOf(" ");
+      let key = pos >= 0 ? line.substring(0, pos) : line;
+      key = key.toLowerCase();
+      let value = pos >= 0 ? line.substring(pos + 1) : "";
+      value = value.trim();
+      if (key === "newmtl") {
+        info = { name: value };
+        materialsInfo[value] = info;
+      } else {
+        if (key === "ka" || key === "kd" || key === "ks" || key === "ke") {
+          const ss = value.split(delimiter_pattern, 3);
+          info[key] = [parseFloat(ss[0]), parseFloat(ss[1]), parseFloat(ss[2])];
+        } else {
+          info[key] = value;
+        }
+      }
+    }
+    const materialCreator = new MaterialCreator(this.resourcePath || path, this.materialOptions);
+    materialCreator.setCrossOrigin(this.crossOrigin);
+    materialCreator.setManager(this.manager);
+    materialCreator.setMaterials(materialsInfo);
+    return materialCreator;
+  }
+}
+class MaterialCreator {
+  constructor(baseUrl = "", options = {}) {
+    this.baseUrl = baseUrl;
+    this.options = options;
+    this.materialsInfo = {};
+    this.materials = {};
+    this.materialsArray = [];
+    this.nameLookup = {};
+    this.crossOrigin = "anonymous";
+    this.side = this.options.side !== void 0 ? this.options.side : FrontSide;
+    this.wrap = this.options.wrap !== void 0 ? this.options.wrap : RepeatWrapping;
+  }
+  setCrossOrigin(value) {
+    this.crossOrigin = value;
+    return this;
+  }
+  setManager(value) {
+    this.manager = value;
+  }
+  setMaterials(materialsInfo) {
+    this.materialsInfo = this.convert(materialsInfo);
+    this.materials = {};
+    this.materialsArray = [];
+    this.nameLookup = {};
+  }
+  convert(materialsInfo) {
+    if (!this.options)
+      return materialsInfo;
+    const converted = {};
+    for (const mn in materialsInfo) {
+      const mat = materialsInfo[mn];
+      const covmat = {};
+      converted[mn] = covmat;
+      for (const prop in mat) {
+        let save = true;
+        let value = mat[prop];
+        const lprop = prop.toLowerCase();
+        switch (lprop) {
+          case "kd":
+          case "ka":
+          case "ks":
+            if (this.options && this.options.normalizeRGB) {
+              value = [value[0] / 255, value[1] / 255, value[2] / 255];
+            }
+            if (this.options && this.options.ignoreZeroRGBs) {
+              if (value[0] === 0 && value[1] === 0 && value[2] === 0) {
+                save = false;
+              }
+            }
+            break;
+        }
+        if (save) {
+          covmat[lprop] = value;
+        }
+      }
+    }
+    return converted;
+  }
+  preload() {
+    for (const mn in this.materialsInfo) {
+      this.create(mn);
+    }
+  }
+  getIndex(materialName) {
+    return this.nameLookup[materialName];
+  }
+  getAsArray() {
+    let index = 0;
+    for (const mn in this.materialsInfo) {
+      this.materialsArray[index] = this.create(mn);
+      this.nameLookup[mn] = index;
+      index++;
+    }
+    return this.materialsArray;
+  }
+  create(materialName) {
+    if (this.materials[materialName] === void 0) {
+      this.createMaterial_(materialName);
+    }
+    return this.materials[materialName];
+  }
+  createMaterial_(materialName) {
+    const scope = this;
+    const mat = this.materialsInfo[materialName];
+    const params = {
+      name: materialName,
+      side: this.side
+    };
+    function resolveURL(baseUrl, url) {
+      if (typeof url !== "string" || url === "")
+        return "";
+      if (/^https?:\/\//i.test(url))
+        return url;
+      return baseUrl + url;
+    }
+    function setMapForType(mapType, value) {
+      if (params[mapType])
+        return;
+      const texParams = scope.getTextureParams(value, params);
+      const map = scope.loadTexture(resolveURL(scope.baseUrl, texParams.url));
+      map.repeat.copy(texParams.scale);
+      map.offset.copy(texParams.offset);
+      map.wrapS = scope.wrap;
+      map.wrapT = scope.wrap;
+      if (mapType === "map" || mapType === "emissiveMap") {
+        map.encoding = sRGBEncoding;
+      }
+      params[mapType] = map;
+    }
+    for (const prop in mat) {
+      const value = mat[prop];
+      let n;
+      if (value === "")
+        continue;
+      switch (prop.toLowerCase()) {
+        case "kd":
+          params.color = new Color().fromArray(value).convertSRGBToLinear();
+          break;
+        case "ks":
+          params.specular = new Color().fromArray(value).convertSRGBToLinear();
+          break;
+        case "ke":
+          params.emissive = new Color().fromArray(value).convertSRGBToLinear();
+          break;
+        case "map_kd":
+          setMapForType("map", value);
+          break;
+        case "map_ks":
+          setMapForType("specularMap", value);
+          break;
+        case "map_ke":
+          setMapForType("emissiveMap", value);
+          break;
+        case "norm":
+          setMapForType("normalMap", value);
+          break;
+        case "map_bump":
+        case "bump":
+          setMapForType("bumpMap", value);
+          break;
+        case "map_d":
+          setMapForType("alphaMap", value);
+          params.transparent = true;
+          break;
+        case "ns":
+          params.shininess = parseFloat(value);
+          break;
+        case "d":
+          n = parseFloat(value);
+          if (n < 1) {
+            params.opacity = n;
+            params.transparent = true;
+          }
+          break;
+        case "tr":
+          n = parseFloat(value);
+          if (this.options && this.options.invertTrProperty)
+            n = 1 - n;
+          if (n > 0) {
+            params.opacity = 1 - n;
+            params.transparent = true;
+          }
+          break;
+      }
+    }
+    this.materials[materialName] = new MeshPhongMaterial(params);
+    return this.materials[materialName];
+  }
+  getTextureParams(value, matParams) {
+    const texParams = {
+      scale: new Vector2(1, 1),
+      offset: new Vector2(0, 0)
+    };
+    const items = value.split(/\s+/);
+    let pos;
+    pos = items.indexOf("-bm");
+    if (pos >= 0) {
+      matParams.bumpScale = parseFloat(items[pos + 1]);
+      items.splice(pos, 2);
+    }
+    pos = items.indexOf("-s");
+    if (pos >= 0) {
+      texParams.scale.set(parseFloat(items[pos + 1]), parseFloat(items[pos + 2]));
+      items.splice(pos, 4);
+    }
+    pos = items.indexOf("-o");
+    if (pos >= 0) {
+      texParams.offset.set(parseFloat(items[pos + 1]), parseFloat(items[pos + 2]));
+      items.splice(pos, 4);
+    }
+    texParams.url = items.join(" ").trim();
+    return texParams;
+  }
+  loadTexture(url, mapping, onLoad, onProgress, onError) {
+    const manager = this.manager !== void 0 ? this.manager : DefaultLoadingManager;
+    let loader = manager.getHandler(url);
+    if (loader === null) {
+      loader = new TextureLoader(manager);
+    }
+    if (loader.setCrossOrigin)
+      loader.setCrossOrigin(this.crossOrigin);
+    const texture = loader.load(url, onLoad, onProgress, onError);
+    if (mapping !== void 0)
+      texture.mapping = mapping;
+    return texture;
+  }
+}
 const _VideoLoader = class extends Loader {
   constructor(manager) {
     super(manager);
@@ -4252,332 +4580,6 @@ function toTrianglesDrawMode(geometry, drawMode) {
   newGeometry.setIndex(newIndices);
   return newGeometry;
 }
-const _taskCache$1 = new WeakMap();
-class DRACOLoader extends Loader {
-  constructor(manager) {
-    super(manager);
-    this.decoderPath = "";
-    this.decoderConfig = {};
-    this.decoderBinary = null;
-    this.decoderPending = null;
-    this.workerLimit = 4;
-    this.workerPool = [];
-    this.workerNextTaskID = 1;
-    this.workerSourceURL = "";
-    this.defaultAttributeIDs = {
-      position: "POSITION",
-      normal: "NORMAL",
-      color: "COLOR",
-      uv: "TEX_COORD"
-    };
-    this.defaultAttributeTypes = {
-      position: "Float32Array",
-      normal: "Float32Array",
-      color: "Float32Array",
-      uv: "Float32Array"
-    };
-  }
-  setDecoderPath(path) {
-    this.decoderPath = path;
-    return this;
-  }
-  setDecoderConfig(config2) {
-    this.decoderConfig = config2;
-    return this;
-  }
-  setWorkerLimit(workerLimit) {
-    this.workerLimit = workerLimit;
-    return this;
-  }
-  load(url, onLoad, onProgress, onError) {
-    const loader = new FileLoader(this.manager);
-    loader.setPath(this.path);
-    loader.setResponseType("arraybuffer");
-    loader.setRequestHeader(this.requestHeader);
-    loader.setWithCredentials(this.withCredentials);
-    loader.load(url, (buffer) => {
-      const taskConfig = {
-        attributeIDs: this.defaultAttributeIDs,
-        attributeTypes: this.defaultAttributeTypes,
-        useUniqueIDs: false
-      };
-      this.decodeGeometry(buffer, taskConfig).then(onLoad).catch(onError);
-    }, onProgress, onError);
-  }
-  decodeDracoFile(buffer, callback, attributeIDs, attributeTypes) {
-    const taskConfig = {
-      attributeIDs: attributeIDs || this.defaultAttributeIDs,
-      attributeTypes: attributeTypes || this.defaultAttributeTypes,
-      useUniqueIDs: !!attributeIDs
-    };
-    this.decodeGeometry(buffer, taskConfig).then(callback);
-  }
-  decodeGeometry(buffer, taskConfig) {
-    for (const attribute in taskConfig.attributeTypes) {
-      const type = taskConfig.attributeTypes[attribute];
-      if (type.BYTES_PER_ELEMENT !== void 0) {
-        taskConfig.attributeTypes[attribute] = type.name;
-      }
-    }
-    const taskKey = JSON.stringify(taskConfig);
-    if (_taskCache$1.has(buffer)) {
-      const cachedTask = _taskCache$1.get(buffer);
-      if (cachedTask.key === taskKey) {
-        return cachedTask.promise;
-      } else if (buffer.byteLength === 0) {
-        throw new Error("THREE.DRACOLoader: Unable to re-decode a buffer with different settings. Buffer has already been transferred.");
-      }
-    }
-    let worker;
-    const taskID = this.workerNextTaskID++;
-    const taskCost = buffer.byteLength;
-    const geometryPending = this._getWorker(taskID, taskCost).then((_worker) => {
-      worker = _worker;
-      return new Promise((resolve, reject) => {
-        worker._callbacks[taskID] = { resolve, reject };
-        worker.postMessage({ type: "decode", id: taskID, taskConfig, buffer }, [buffer]);
-      });
-    }).then((message) => this._createGeometry(message.geometry));
-    geometryPending.catch(() => true).then(() => {
-      if (worker && taskID) {
-        this._releaseTask(worker, taskID);
-      }
-    });
-    _taskCache$1.set(buffer, {
-      key: taskKey,
-      promise: geometryPending
-    });
-    return geometryPending;
-  }
-  _createGeometry(geometryData) {
-    const geometry = new BufferGeometry();
-    if (geometryData.index) {
-      geometry.setIndex(new BufferAttribute(geometryData.index.array, 1));
-    }
-    for (let i = 0; i < geometryData.attributes.length; i++) {
-      const attribute = geometryData.attributes[i];
-      const name = attribute.name;
-      const array = attribute.array;
-      const itemSize = attribute.itemSize;
-      geometry.setAttribute(name, new BufferAttribute(array, itemSize));
-    }
-    return geometry;
-  }
-  _loadLibrary(url, responseType) {
-    const loader = new FileLoader(this.manager);
-    loader.setPath(this.decoderPath);
-    loader.setResponseType(responseType);
-    loader.setWithCredentials(this.withCredentials);
-    return new Promise((resolve, reject) => {
-      loader.load(url, resolve, void 0, reject);
-    });
-  }
-  preload() {
-    this._initDecoder();
-    return this;
-  }
-  _initDecoder() {
-    if (this.decoderPending)
-      return this.decoderPending;
-    const useJS = typeof WebAssembly !== "object" || this.decoderConfig.type === "js";
-    const librariesPending = [];
-    if (useJS) {
-      librariesPending.push(this._loadLibrary("draco_decoder.js", "text"));
-    } else {
-      librariesPending.push(this._loadLibrary("draco_wasm_wrapper.js", "text"));
-      librariesPending.push(this._loadLibrary("draco_decoder.wasm", "arraybuffer"));
-    }
-    this.decoderPending = Promise.all(librariesPending).then((libraries) => {
-      const jsContent = libraries[0];
-      if (!useJS) {
-        this.decoderConfig.wasmBinary = libraries[1];
-      }
-      const fn = DRACOWorker.toString();
-      const body = [
-        "/* draco decoder */",
-        jsContent,
-        "",
-        "/* worker */",
-        fn.substring(fn.indexOf("{") + 1, fn.lastIndexOf("}"))
-      ].join("\n");
-      this.workerSourceURL = URL.createObjectURL(new Blob([body]));
-    });
-    return this.decoderPending;
-  }
-  _getWorker(taskID, taskCost) {
-    return this._initDecoder().then(() => {
-      if (this.workerPool.length < this.workerLimit) {
-        const worker2 = new Worker(this.workerSourceURL);
-        worker2._callbacks = {};
-        worker2._taskCosts = {};
-        worker2._taskLoad = 0;
-        worker2.postMessage({ type: "init", decoderConfig: this.decoderConfig });
-        worker2.onmessage = function(e) {
-          const message = e.data;
-          switch (message.type) {
-            case "decode":
-              worker2._callbacks[message.id].resolve(message);
-              break;
-            case "error":
-              worker2._callbacks[message.id].reject(message);
-              break;
-            default:
-              console.error('THREE.DRACOLoader: Unexpected message, "' + message.type + '"');
-          }
-        };
-        this.workerPool.push(worker2);
-      } else {
-        this.workerPool.sort(function(a, b) {
-          return a._taskLoad > b._taskLoad ? -1 : 1;
-        });
-      }
-      const worker = this.workerPool[this.workerPool.length - 1];
-      worker._taskCosts[taskID] = taskCost;
-      worker._taskLoad += taskCost;
-      return worker;
-    });
-  }
-  _releaseTask(worker, taskID) {
-    worker._taskLoad -= worker._taskCosts[taskID];
-    delete worker._callbacks[taskID];
-    delete worker._taskCosts[taskID];
-  }
-  debug() {
-    console.log("Task load: ", this.workerPool.map((worker) => worker._taskLoad));
-  }
-  dispose() {
-    for (let i = 0; i < this.workerPool.length; ++i) {
-      this.workerPool[i].terminate();
-    }
-    this.workerPool.length = 0;
-    return this;
-  }
-}
-function DRACOWorker() {
-  let decoderConfig;
-  let decoderPending;
-  onmessage = function(e) {
-    const message = e.data;
-    switch (message.type) {
-      case "init":
-        decoderConfig = message.decoderConfig;
-        decoderPending = new Promise(function(resolve) {
-          decoderConfig.onModuleLoaded = function(draco) {
-            resolve({ draco });
-          };
-          DracoDecoderModule(decoderConfig);
-        });
-        break;
-      case "decode":
-        const buffer = message.buffer;
-        const taskConfig = message.taskConfig;
-        decoderPending.then((module) => {
-          const draco = module.draco;
-          const decoder = new draco.Decoder();
-          const decoderBuffer = new draco.DecoderBuffer();
-          decoderBuffer.Init(new Int8Array(buffer), buffer.byteLength);
-          try {
-            const geometry = decodeGeometry(draco, decoder, decoderBuffer, taskConfig);
-            const buffers = geometry.attributes.map((attr) => attr.array.buffer);
-            if (geometry.index)
-              buffers.push(geometry.index.array.buffer);
-            self.postMessage({ type: "decode", id: message.id, geometry }, buffers);
-          } catch (error) {
-            console.error(error);
-            self.postMessage({ type: "error", id: message.id, error: error.message });
-          } finally {
-            draco.destroy(decoderBuffer);
-            draco.destroy(decoder);
-          }
-        });
-        break;
-    }
-  };
-  function decodeGeometry(draco, decoder, decoderBuffer, taskConfig) {
-    const attributeIDs = taskConfig.attributeIDs;
-    const attributeTypes = taskConfig.attributeTypes;
-    let dracoGeometry;
-    let decodingStatus;
-    const geometryType = decoder.GetEncodedGeometryType(decoderBuffer);
-    if (geometryType === draco.TRIANGULAR_MESH) {
-      dracoGeometry = new draco.Mesh();
-      decodingStatus = decoder.DecodeBufferToMesh(decoderBuffer, dracoGeometry);
-    } else if (geometryType === draco.POINT_CLOUD) {
-      dracoGeometry = new draco.PointCloud();
-      decodingStatus = decoder.DecodeBufferToPointCloud(decoderBuffer, dracoGeometry);
-    } else {
-      throw new Error("THREE.DRACOLoader: Unexpected geometry type.");
-    }
-    if (!decodingStatus.ok() || dracoGeometry.ptr === 0) {
-      throw new Error("THREE.DRACOLoader: Decoding failed: " + decodingStatus.error_msg());
-    }
-    const geometry = { index: null, attributes: [] };
-    for (const attributeName in attributeIDs) {
-      const attributeType = self[attributeTypes[attributeName]];
-      let attribute;
-      let attributeID;
-      if (taskConfig.useUniqueIDs) {
-        attributeID = attributeIDs[attributeName];
-        attribute = decoder.GetAttributeByUniqueId(dracoGeometry, attributeID);
-      } else {
-        attributeID = decoder.GetAttributeId(dracoGeometry, draco[attributeIDs[attributeName]]);
-        if (attributeID === -1)
-          continue;
-        attribute = decoder.GetAttribute(dracoGeometry, attributeID);
-      }
-      geometry.attributes.push(decodeAttribute(draco, decoder, dracoGeometry, attributeName, attributeType, attribute));
-    }
-    if (geometryType === draco.TRIANGULAR_MESH) {
-      geometry.index = decodeIndex(draco, decoder, dracoGeometry);
-    }
-    draco.destroy(dracoGeometry);
-    return geometry;
-  }
-  function decodeIndex(draco, decoder, dracoGeometry) {
-    const numFaces = dracoGeometry.num_faces();
-    const numIndices = numFaces * 3;
-    const byteLength = numIndices * 4;
-    const ptr = draco._malloc(byteLength);
-    decoder.GetTrianglesUInt32Array(dracoGeometry, byteLength, ptr);
-    const index = new Uint32Array(draco.HEAPF32.buffer, ptr, numIndices).slice();
-    draco._free(ptr);
-    return { array: index, itemSize: 1 };
-  }
-  function decodeAttribute(draco, decoder, dracoGeometry, attributeName, attributeType, attribute) {
-    const numComponents = attribute.num_components();
-    const numPoints = dracoGeometry.num_points();
-    const numValues = numPoints * numComponents;
-    const byteLength = numValues * attributeType.BYTES_PER_ELEMENT;
-    const dataType = getDracoDataType(draco, attributeType);
-    const ptr = draco._malloc(byteLength);
-    decoder.GetAttributeDataArrayForAllPoints(dracoGeometry, attribute, dataType, byteLength, ptr);
-    const array = new attributeType(draco.HEAPF32.buffer, ptr, numValues).slice();
-    draco._free(ptr);
-    return {
-      name: attributeName,
-      array,
-      itemSize: numComponents
-    };
-  }
-  function getDracoDataType(draco, attributeType) {
-    switch (attributeType) {
-      case Float32Array:
-        return draco.DT_FLOAT32;
-      case Int8Array:
-        return draco.DT_INT8;
-      case Int16Array:
-        return draco.DT_INT16;
-      case Int32Array:
-        return draco.DT_INT32;
-      case Uint8Array:
-        return draco.DT_UINT8;
-      case Uint16Array:
-        return draco.DT_UINT16;
-      case Uint32Array:
-        return draco.DT_UINT32;
-    }
-  }
-}
 class WorkerPool {
   constructor(pool = 4) {
     this.pool = pool;
@@ -4976,90 +4978,6 @@ KTX2Loader.BasisWorker = function() {
     return (value & value - 1) === 0 && value !== 0;
   }
 };
-var MeshoptDecoder = function() {
-  var wasm_base = "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";
-  var wasm_simd = "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";
-  var detector = new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 4, 1, 96, 0, 0, 3, 3, 2, 0, 0, 5, 3, 1, 0, 1, 12, 1, 0, 10, 22, 2, 12, 0, 65, 0, 65, 0, 65, 0, 252, 10, 0, 0, 11, 7, 0, 65, 0, 253, 15, 26, 11]);
-  var wasmpack = new Uint8Array([32, 0, 65, 253, 3, 1, 2, 34, 4, 106, 6, 5, 11, 8, 7, 20, 13, 33, 12, 16, 128, 9, 116, 64, 19, 113, 127, 15, 10, 21, 22, 14, 255, 66, 24, 54, 136, 107, 18, 23, 192, 26, 114, 118, 132, 17, 77, 101, 130, 144, 27, 87, 131, 44, 45, 74, 156, 154, 70, 167]);
-  if (typeof WebAssembly !== "object") {
-    return {
-      supported: false
-    };
-  }
-  var wasm = wasm_base;
-  if (WebAssembly.validate(detector)) {
-    wasm = wasm_simd;
-    console.log("Warning: meshopt_decoder is using experimental SIMD support");
-  }
-  var instance;
-  var promise = WebAssembly.instantiate(unpack(wasm), {}).then(function(result) {
-    instance = result.instance;
-    instance.exports.__wasm_call_ctors();
-  });
-  function unpack(data) {
-    var result = new Uint8Array(data.length);
-    for (var i = 0; i < data.length; ++i) {
-      var ch = data.charCodeAt(i);
-      result[i] = ch > 96 ? ch - 71 : ch > 64 ? ch - 65 : ch > 47 ? ch + 4 : ch > 46 ? 63 : 62;
-    }
-    var write = 0;
-    for (var i = 0; i < data.length; ++i) {
-      result[write++] = result[i] < 60 ? wasmpack[result[i]] : (result[i] - 60) * 64 + result[++i];
-    }
-    return result.buffer.slice(0, write);
-  }
-  function decode(fun, target, count, size, source, filter) {
-    var sbrk = instance.exports.sbrk;
-    var count4 = count + 3 & ~3;
-    var tp = sbrk(count4 * size);
-    var sp = sbrk(source.length);
-    var heap = new Uint8Array(instance.exports.memory.buffer);
-    heap.set(source, sp);
-    var res = fun(tp, count, size, sp, source.length);
-    if (res == 0 && filter) {
-      filter(tp, count4, size);
-    }
-    target.set(heap.subarray(tp, tp + count * size));
-    sbrk(tp - sbrk(0));
-    if (res != 0) {
-      throw new Error("Malformed buffer data: " + res);
-    }
-  }
-  var filters = {
-    0: "",
-    1: "meshopt_decodeFilterOct",
-    2: "meshopt_decodeFilterQuat",
-    3: "meshopt_decodeFilterExp",
-    NONE: "",
-    OCTAHEDRAL: "meshopt_decodeFilterOct",
-    QUATERNION: "meshopt_decodeFilterQuat",
-    EXPONENTIAL: "meshopt_decodeFilterExp"
-  };
-  var decoders = {
-    0: "meshopt_decodeVertexBuffer",
-    1: "meshopt_decodeIndexBuffer",
-    2: "meshopt_decodeIndexSequence",
-    ATTRIBUTES: "meshopt_decodeVertexBuffer",
-    TRIANGLES: "meshopt_decodeIndexBuffer",
-    INDICES: "meshopt_decodeIndexSequence"
-  };
-  return {
-    ready: promise,
-    supported: true,
-    decodeVertexBuffer: function(target, count, size, source, filter) {
-      decode(instance.exports.meshopt_decodeVertexBuffer, target, count, size, source, instance.exports[filters[filter]]);
-    },
-    decodeIndexBuffer: function(target, count, size, source) {
-      decode(instance.exports.meshopt_decodeIndexBuffer, target, count, size, source);
-    },
-    decodeIndexSequence: function(target, count, size, source) {
-      decode(instance.exports.meshopt_decodeIndexSequence, target, count, size, source);
-    },
-    decodeGltfBuffer: function(target, count, size, source, mode, filter) {
-      decode(instance.exports[decoders[mode]], target, count, size, source, instance.exports[filters[filter]]);
-    }
-  };
-}();
 var LOADERMANAGER;
 (function(LOADERMANAGER2) {
   LOADERMANAGER2["BEFORELOAD"] = "beforeLoad";
@@ -9900,7 +9818,6 @@ class VisCSS3DObject extends CSS3DObject {
     __publicField(this, "geometry");
     __publicField(this, "_width");
     __publicField(this, "_height");
-    __publicField(this, "cacheBox", new Box3());
     this.geometry = new PlaneBufferGeometry(width, height);
     this.geometry.computeBoundingBox();
     this._width = width;
@@ -9930,7 +9847,9 @@ class VisCSS3DObject extends CSS3DObject {
 class CSS3DPlane extends VisCSS3DObject {
   constructor(element = document.createElement("div")) {
     super(element);
-    this.element.classList.add("vis-css3d-plane");
+    __publicField(this, "cacheBox", new Box3());
+    this.type = "CSS3DPlane";
+    this.element.classList.add("vis-css3d", "vis-css3d-plane");
   }
   raycast(raycaster, intersects) {
     const box = this.cacheBox.copy(this.geometry.boundingBox);
@@ -9963,6 +9882,86 @@ var CSS3DPlaneProcessor = defineProcessor({
   },
   dispose: objectDispose
 });
+class VisCSS3DSprite extends CSS3DSprite {
+  constructor(element = document.createElement("div")) {
+    const root = document.createElement("div");
+    const width = 50;
+    const height = 50;
+    root.style.width = `${width}px`;
+    root.style.height = `${height}px`;
+    root.appendChild(element);
+    element.classList.add("vis-css3d", "vis-css3d-sprite");
+    super(root);
+    __publicField(this, "geometry");
+    __publicField(this, "_width");
+    __publicField(this, "_height");
+    __publicField(this, "cacheBox", new Box3());
+    __publicField(this, "cachePosition", new Vector3());
+    __publicField(this, "cacheQuaternion", new Quaternion());
+    __publicField(this, "cacheScale", new Vector3());
+    __publicField(this, "cacheMatrix4", new Matrix4());
+    __publicField(this, "rotateMatrix4", new Matrix4());
+    this.geometry = new PlaneBufferGeometry(width, height);
+    this.geometry.computeBoundingBox();
+    this._width = width;
+    this._height = height;
+    this.type = "CSS3DSprite";
+  }
+  get width() {
+    return this._width;
+  }
+  set width(value) {
+    this.geometry.dispose();
+    this.geometry = new PlaneBufferGeometry(value, this._height);
+    this.geometry.computeBoundingBox();
+    this.element.style.width = `${value}px`;
+    this._width = value;
+  }
+  get height() {
+    return this._height;
+  }
+  set height(value) {
+    this.geometry.dispose();
+    this.geometry = new PlaneBufferGeometry(this._width, value);
+    this.geometry.computeBoundingBox();
+    this.element.style.height = `${value}px`;
+    this._height = value;
+  }
+  raycast(raycaster, intersects) {
+    const box = this.cacheBox.copy(this.geometry.boundingBox);
+    this.matrixWorld.decompose(this.cachePosition, this.cacheQuaternion, this.cacheScale);
+    const rotateMatrix4 = this.rotateMatrix4.lookAt(this.position, raycaster.camera.position, this.up);
+    this.cacheQuaternion.setFromRotationMatrix(rotateMatrix4);
+    this.cacheMatrix4.compose(this.cachePosition, this.cacheQuaternion, this.cacheScale);
+    box.applyMatrix4(this.cacheMatrix4);
+    if (raycaster.ray.intersectsBox(box)) {
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(this.position),
+        object: this,
+        point: this.position
+      });
+    }
+  }
+}
+var CSS3DSpriteProcessor = defineProcessor({
+  configType: CONFIGTYPE.CSS3DSPRITE,
+  commands: {
+    add: objectCommands.add,
+    set: __spreadValues({
+      element({ target, value, engine }) {
+        target.element.innerHTML = "";
+        target.element.appendChild(getElement(value, engine));
+      }
+    }, objectCommands.set),
+    delete: objectCommands.delete
+  },
+  create(config2, engine) {
+    return objectCreate(new VisCSS3DSprite(getElement(config2.element, engine)), config2, {
+      element: true
+    }, engine);
+  },
+  dispose: objectDispose
+});
 class CSS3DCompiler extends ObjectCompiler {
   constructor() {
     super();
@@ -9971,6 +9970,7 @@ class CSS3DCompiler extends ObjectCompiler {
 }
 Compiler.processor(CSS3DPlaneProcessor);
 Compiler.processor(CSS3DObjectProcessor);
+Compiler.processor(CSS3DSpriteProcessor);
 class CurveGeometry extends BufferGeometry {
   constructor(path = [], divisions = 36, space = true) {
     super();
@@ -10740,7 +10740,53 @@ var UnrealBloomPassProcessor = defineProcessor({
     pass.dispose();
   }
 });
-const _SelectiveBloomPass = class extends Pass {
+const LuminosityHighPassShader = {
+  shaderID: "luminosityHighPass",
+  uniforms: {
+    "tDiffuse": { value: null },
+    "luminosityThreshold": { value: 1 },
+    "smoothWidth": { value: 1 },
+    "defaultColor": { value: new Color(0) },
+    "defaultOpacity": { value: 0 }
+  },
+  vertexShader: `
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vUv = uv;
+
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+		}`,
+  fragmentShader: `
+
+		uniform sampler2D tDiffuse;
+		uniform vec3 defaultColor;
+		uniform float defaultOpacity;
+		uniform float luminosityThreshold;
+		uniform float smoothWidth;
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vec4 texel = texture2D( tDiffuse, vUv );
+
+			vec3 luma = vec3( 0.299, 0.587, 0.114 );
+
+			float v = dot( texel.xyz, luma );
+
+			vec4 outputColor = vec4( defaultColor.rgb, defaultOpacity );
+
+			float alpha = smoothstep( luminosityThreshold, luminosityThreshold + smoothWidth, v );
+
+			gl_FragColor = mix( outputColor, texel, alpha );
+
+		}`
+};
+const _SelectiveBloomPass = class extends Pass$1 {
   constructor(resolution = new Vector2(256, 256), strength = 1, radius = 0, threshold = 0, renderScene = new Scene(), renderCamera = new PerspectiveCamera(), selectedObjects) {
     super();
     __publicField(this, "resolution");
@@ -13366,7 +13412,8 @@ class ObjectHelperManager extends EventDispatcher {
       [CONFIGTYPE.POINTS]: PointsHelper,
       [CONFIGTYPE.LINE]: LineHelper,
       [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper,
-      [CONFIGTYPE.CSS3DPLANE]: CSS3DPlaneHelper
+      [CONFIGTYPE.CSS3DPLANE]: CSS3DPlaneHelper,
+      [CONFIGTYPE.CSS3DSPRITE]: CSS3DPlaneHelper
     });
     __publicField(this, "helperFilter", {
       AmbientLight: true,
