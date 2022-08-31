@@ -48,7 +48,7 @@
     <div class="test">
       <div id="element1">
         <div class="form">
-          <label for="element1-text">input</label>
+          <label for="element1-text">CSS3DPlane</label>
           <input id="element1-text" type="text" />
         </div>
 
@@ -56,16 +56,12 @@
           <label for="element1-range">range</label>
           <input id="element1-range" type="range" />
         </div>
-        <div class="form">
-          <label for="element1-range">a</label>
-          <a href="/examples/index.html">/examples/index.html</a>
-        </div>
       </div>
 
       <div id="element2">
         <div class="form">
-          <label for="element1-text">点击我替换dom</label>
-          <input id="element1-text" type="text" value="点击替换" />
+          <label for="element1-text">CSS3DSprite</label>
+          <input id="element1-text" type="text" value="CSS3DSprite" />
         </div>
       </div>
     </div>
@@ -117,12 +113,30 @@
         distance: 100,
       });
 
-      const css3DObject = VIS.generateConfig("CSS3DPlane", {
+      const css3DPlane = VIS.generateConfig("CSS3DPlane", {
         element: "examples.element1",
-        width: 50,
-        height: 50,
+        width: 120,
+        height: 100,
         position: {
-          x: 50,
+          x: 30,
+          y: 10,
+        },
+        rotation: {
+          y: -(Math.PI / 180) * 15,
+        },
+        scale: {
+          x: 0.3,
+          y: 0.3,
+          z: 0.3,
+        },
+      });
+
+      const css3DSprite = VIS.generateConfig("CSS3DSprite", {
+        element: "examples.element2",
+        width: 120,
+        height: 100,
+        position: {
+          x: -30,
           y: 10,
         },
         rotation: {
@@ -141,23 +155,36 @@
 
       const gui = new GUI();
 
-      gui.add(css3DObject, "width", 0, 300).onChange((data) => {
-        css3DObject.width = data;
+      const planeFloder = gui.addFolder("plane");
+
+      planeFloder.add(css3DPlane, "width", 0, 300).onChange((data) => {
+        css3DPlane.width = data;
       });
 
-      gui.add(css3DObject, "height", 0, 300).onChange((data) => {
-        css3DObject.height = data;
+      planeFloder.add(css3DPlane, "height", 0, 300).onChange((data) => {
+        css3DPlane.height = data;
+      });
+
+      const spriteFloder = gui.addFolder("sprite");
+
+      spriteFloder.add(css3DSprite, "width", 0, 300).onChange((data) => {
+        css3DSprite.width = data;
+      });
+
+      spriteFloder.add(css3DSprite, "height", 0, 300).onChange((data) => {
+        css3DSprite.height = data;
+      });
+
+      const tempRotation = {
+        rotation2D: css3DSprite.rotation2D,
+      };
+
+      spriteFloder.add(tempRotation, "rotation2D", 0, 180).onChange((data) => {
+        css3DSprite.rotation2D = (Math.PI / 180) * data;
       });
 
       setTimeout(() => {
         engine.setSize();
-        document.getElementById("element1").addEventListener("click", () => {
-          css3DObject.element = "examples.element1";
-        });
-
-        document.getElementById("element2").addEventListener("click", () => {
-          css3DObject.element = "examples.element2";
-        });
       }, 0);
     </script>
   </body>
