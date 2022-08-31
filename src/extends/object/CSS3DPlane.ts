@@ -1,10 +1,13 @@
-import { Intersection, Raycaster } from "three";
+import { Box3, Intersection, Raycaster } from "three";
 import { VisCSS3DObject } from "../../optimize/VisCSS3DObject";
 
 export class CSS3DPlane extends VisCSS3DObject {
+  protected cacheBox: Box3 = new Box3();
+
   constructor(element: HTMLElement = document.createElement("div")) {
     super(element);
-    this.element.classList.add("vis-css3d-plane");
+    this.type = "CSS3DPlane";
+    this.element.classList.add("vis-css3d", "vis-css3d-plane");
   }
 
   raycast(raycaster: Raycaster, intersects: Intersection[]) {
