@@ -23,6 +23,7 @@
       import * as THREE from "three";
       import * as VIS from "vis-three";
       import { v4 as getUUid } from "uuid";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       const canvasGenerator = new VIS.CanvasGenerator({
         width: 256,
@@ -110,6 +111,21 @@
       window.animation = animation;
       window.animation2 = animation2;
       window.animation3 = animation3;
+
+      const gui = new GUI();
+
+      const aniFloder1 = gui.addFolder("animation1");
+
+      aniFloder1.add(animation.script, "multiply", 0, 10, 1);
+
+      const aniFloder2 = gui.addFolder("animation2");
+
+      aniFloder2.add(animation2.script, "multiply", 0, 10, 1);
+
+      const aniFloder3 = gui.addFolder("animation3");
+
+      aniFloder3.add(animation3.script, "amplitude", 0, 15, 1);
+      aniFloder3.add(animation3.script, "wavelength", 0, 1, 0.01);
     </script>
   </body>
 </html>

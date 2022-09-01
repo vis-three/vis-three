@@ -5025,14 +5025,16 @@ AniScriptLibrary.register(config$i, generator$i);
 const createFunction = function(config2, engine) {
   let object = engine.compilerManager.getObjectBySymbol(config2.target);
   if (!object) {
-    console.error(`can not found object in enigne: ${config2.target}`);
+    console.warn(`can not found object in enigne: ${config2.target}`);
+    return () => {
+    };
   }
   const attributeList = config2.attribute.split(".");
   attributeList.shift();
   const attribute = attributeList.pop();
   for (const key of attributeList) {
     if (object[key] === void 0) {
-      console.error(`animaton processor: target object can not found key: ${key}`, object);
+      console.warn(`animaton processor: target object can not found key: ${key}`, object);
       return () => {
       };
     }
@@ -5079,6 +5081,30 @@ class AnimationCompiler extends Compiler {
     super();
     __publicField(this, "MODULE", MODULETYPE.ANIMATION);
   }
+  restoreAttribute(config2) {
+    if (!config2.target || !config2.attribute) {
+      return this;
+    }
+    let target = this.engine.getObjectBySymbol(config2.target);
+    let configure = this.engine.getConfigBySymbol(config2.target);
+    if (!target || !configure) {
+      console.warn("AnimationCompiler: can not found object target or config in engine", config2.vid);
+    }
+    const attirbuteList = config2.attribute.split(".");
+    attirbuteList.shift();
+    const attribute = attirbuteList.pop();
+    for (const key of attirbuteList) {
+      if (target[key] && configure[key]) {
+        target = target[key];
+        configure = configure[key];
+      } else {
+        console.warn(`AnimationCompiler: object and config attribute are not sync`);
+        return this;
+      }
+    }
+    target[attribute] = configure[attribute];
+    return this;
+  }
   cover(config2) {
     super.cover(config2);
     const fun = this.map.get(config2.vid);
@@ -5086,15 +5112,21 @@ class AnimationCompiler extends Compiler {
     return this;
   }
   remove(config2) {
+    this.engine.removeEventListener("render", config2[Symbol.for(scriptAniSymbol)]);
+    this.restoreAttribute(config2);
     delete config2[Symbol.for(scriptAniSymbol)];
     super.remove(config2);
     return this;
   }
   compile(vid, notice) {
-    super.compile(vid, notice);
     const config2 = this.target[vid];
-    const fun = this.map.get(config2.vid);
-    config2[Symbol.for(scriptAniSymbol)] = fun;
+    this.restoreAttribute(config2);
+    super.compile(vid, notice);
+    const oldFun = this.map.get(vid);
+    const fun = config2[Symbol.for(scriptAniSymbol)];
+    this.map.set(config2.vid, fun);
+    this.weakMap.delete(oldFun);
+    this.weakMap.set(fun, vid);
     return this;
   }
 }

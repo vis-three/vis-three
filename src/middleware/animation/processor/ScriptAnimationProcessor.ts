@@ -13,8 +13,8 @@ const createFunction = function (
   let object = engine.compilerManager.getObjectBySymbol(config.target)!;
 
   if (!object) {
-    console.error(`can not found object in enigne: ${config.target}`);
-    () => {};
+    console.warn(`can not found object in enigne: ${config.target}`);
+    return () => {};
   }
 
   const attributeList = config.attribute.split(".");
@@ -23,7 +23,7 @@ const createFunction = function (
   const attribute = attributeList.pop()!;
   for (const key of attributeList) {
     if (object[key] === undefined) {
-      console.error(
+      console.warn(
         `animaton processor: target object can not found key: ${key}`,
         object
       );
