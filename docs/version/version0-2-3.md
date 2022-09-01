@@ -9,7 +9,11 @@
 
 #### fix
 
+- 修复 ScriptAnimation set 与 remove 的部分问题
+
 #### perf
+
+- 优化 ScirptAnimation set 与 remove 时，会基于原配置进行
 
 #### deprecated
 
