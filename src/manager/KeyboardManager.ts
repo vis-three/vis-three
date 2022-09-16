@@ -22,6 +22,11 @@ export class KeyboardManager extends EventDispatcher {
     return entity.shortcutKey.join(" + ");
   }
 
+  /**
+   * 限定捷键监听dom- 默认document
+   * @param dom
+   * @returns this
+   */
   watch(dom: HTMLElement | undefined): this {
     if (!dom) {
       keyboardjs.watch();
@@ -31,6 +36,11 @@ export class KeyboardManager extends EventDispatcher {
     return this;
   }
 
+  /**
+   * 注册快捷键
+   * @param entity
+   * @returns
+   */
   register(entity: KeyboardEntity): this {
     const symbol = this.generateSymbol(entity);
     if (this.map.has(symbol)) {
@@ -48,6 +58,11 @@ export class KeyboardManager extends EventDispatcher {
     return this;
   }
 
+  /**
+   * 更新快捷键
+   * @param entity
+   * @returns
+   */
   update(entity: KeyboardEntity): this {
     const symbol = this.generateSymbol(entity);
     if (!this.map.has(symbol)) {
@@ -63,6 +78,11 @@ export class KeyboardManager extends EventDispatcher {
     return this;
   }
 
+  /**
+   * 注销快捷键
+   * @param keyArray 快捷键组合
+   * @returns this
+   */
   cancel(keyArray: string[]): this {
     const symbol = this.generateSymbol(keyArray);
 
@@ -75,8 +95,27 @@ export class KeyboardManager extends EventDispatcher {
     return this;
   }
 
+  /**
+   * 检查有无重复键
+   * @param keyArray 快捷键组合
+   * @returns boolean
+   */
   checkRepeat(keyArray: string[]): boolean {
     const symbol = this.generateSymbol(keyArray);
     return this.map.has(symbol);
+  }
+
+  /**
+   * 获取快捷键文档
+   */
+  getDocs(): Array<Pick<KeyboardEntity, "shortcutKey" | "desp">> {
+    const list: Array<Pick<KeyboardEntity, "shortcutKey" | "desp">> = [];
+    this.map.forEach((entity) => {
+      list.push({
+        shortcutKey: [].concat(entity.shortcutKey),
+        desp: entity.desp,
+      });
+    });
+    return list;
   }
 }

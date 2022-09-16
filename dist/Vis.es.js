@@ -8950,6 +8950,16 @@ class KeyboardManager extends EventDispatcher {
     const symbol = this.generateSymbol(keyArray);
     return this.map.has(symbol);
   }
+  getDocs() {
+    const list = [];
+    this.map.forEach((entity) => {
+      list.push({
+        shortcutKey: [].concat(entity.shortcutKey),
+        desp: entity.desp
+      });
+    });
+    return list;
+  }
 }
 const KeyboardManagerPlugin = function(params) {
   if (this.keyboardManager) {
@@ -8960,66 +8970,12 @@ const KeyboardManagerPlugin = function(params) {
   this.keyboardManager = keyboardManager;
   this.completeSet.add(() => {
     if (this.transformControls) {
+      let transformControls;
       if (this.IS_ENGINESUPPORT) {
-        const transformControls = this.dataSupportManager.controlsDataSupport.getData()[CONFIGTYPE.TRNASFORMCONTROLS];
+        transformControls = this.dataSupportManager.controlsDataSupport.getData()[CONFIGTYPE.TRNASFORMCONTROLS];
         keyboardManager.register({
-          shortcutKey: ["r"],
-          desp: "tranformControls rotate mode",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            transformControls.mode = "rotate";
-          }
-        }).register({
-          shortcutKey: ["t"],
-          desp: "tranformControls translate mode",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            transformControls.mode = "translate";
-          }
-        }).register({
-          shortcutKey: ["e"],
-          desp: "tranformControls scale mode",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            transformControls.mode = "scale";
-          }
-        }).register({
-          shortcutKey: ["x"],
-          desp: "tranformControls switch x axis",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            transformControls.showX = !transformControls.showX;
-          }
-        }).register({
-          shortcutKey: ["y"],
-          desp: "tranformControls switch y axis",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            if (event == null ? void 0 : event.ctrlKey) {
-              return;
-            }
-            transformControls.showY = !transformControls.showY;
-          }
-        }).register({
-          shortcutKey: ["z"],
-          desp: "tranformControls switch z axis",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            if (event == null ? void 0 : event.ctrlKey) {
-              return;
-            }
-            transformControls.showZ = !transformControls.showZ;
-          }
-        }).register({
-          shortcutKey: ["space"],
-          desp: "tranformControls switch coordinate space",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            transformControls.space = transformControls.space === "local" ? "world" : "local";
-          }
-        }).register({
           shortcutKey: ["shift"],
-          desp: "tranformControls switch tranform numeric value",
+          desp: "\u53D8\u6362\u63A7\u5236\u5668\u9501\u5B9A\u6B65\u5E45",
           keyup: (event) => {
             event == null ? void 0 : event.preventDefault();
             transformControls.snapAllow = false;
@@ -9031,65 +8987,10 @@ const KeyboardManagerPlugin = function(params) {
           }
         });
       } else {
-        const transformControls = this.transformControls;
+        transformControls = this.transformControls;
         keyboardManager.register({
-          shortcutKey: ["r"],
-          desp: "tranformControls rotate mode",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            transformControls.mode = "rotate";
-          }
-        }).register({
-          shortcutKey: ["t"],
-          desp: "tranformControls translate mode",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            transformControls.mode = "translate";
-          }
-        }).register({
-          shortcutKey: ["e"],
-          desp: "tranformControls scale mode",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            transformControls.mode = "scale";
-          }
-        }).register({
-          shortcutKey: ["x"],
-          desp: "tranformControls switch x axis",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            transformControls.showX = !transformControls.showX;
-          }
-        }).register({
-          shortcutKey: ["y"],
-          desp: "tranformControls switch y axis",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            if (event == null ? void 0 : event.ctrlKey) {
-              return;
-            }
-            transformControls.showY = !transformControls.showY;
-          }
-        }).register({
-          shortcutKey: ["z"],
-          desp: "tranformControls switch z axis",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            if (event == null ? void 0 : event.ctrlKey) {
-              return;
-            }
-            transformControls.showZ = !transformControls.showZ;
-          }
-        }).register({
-          shortcutKey: ["space"],
-          desp: "tranformControls switch coordinate space",
-          keyup: (event) => {
-            event == null ? void 0 : event.preventDefault();
-            transformControls.space = transformControls.space === "local" ? "world" : "local";
-          }
-        }).register({
           shortcutKey: ["shift"],
-          desp: "tranformControls switch tranform numeric value",
+          desp: "\u53D8\u6362\u63A7\u5236\u5668\u9501\u5B9A\u6B65\u5E45",
           keyup: (event) => {
             event == null ? void 0 : event.preventDefault();
             transformControls.translationSnap = null;
@@ -9105,6 +9006,62 @@ const KeyboardManagerPlugin = function(params) {
           }
         });
       }
+      keyboardManager.register({
+        shortcutKey: ["r"],
+        desp: "\u53D8\u6362\u63A7\u5236\u5668\u6A21\u5F0F\uFF1A\u65CB\u8F6C",
+        keyup: (event) => {
+          event == null ? void 0 : event.preventDefault();
+          transformControls.mode = "rotate";
+        }
+      }).register({
+        shortcutKey: ["t"],
+        desp: "\u53D8\u6362\u63A7\u5236\u5668\u6A21\u5F0F\uFF1A\u79FB\u52A8",
+        keyup: (event) => {
+          event == null ? void 0 : event.preventDefault();
+          transformControls.mode = "translate";
+        }
+      }).register({
+        shortcutKey: ["e"],
+        desp: "\u53D8\u6362\u63A7\u5236\u5668\u6A21\u5F0F\uFF1A\u7F29\u653E",
+        keyup: (event) => {
+          event == null ? void 0 : event.preventDefault();
+          transformControls.mode = "scale";
+        }
+      }).register({
+        shortcutKey: ["x"],
+        desp: "\u53D8\u6362\u63A7\u5236\u5668\u5207\u6362\u8F74\uFF1Ax",
+        keyup: (event) => {
+          event == null ? void 0 : event.preventDefault();
+          transformControls.showX = !transformControls.showX;
+        }
+      }).register({
+        shortcutKey: ["y"],
+        desp: "\u53D8\u6362\u63A7\u5236\u5668\u5207\u6362\u8F74\uFF1Ay",
+        keyup: (event) => {
+          event == null ? void 0 : event.preventDefault();
+          if (event == null ? void 0 : event.ctrlKey) {
+            return;
+          }
+          transformControls.showY = !transformControls.showY;
+        }
+      }).register({
+        shortcutKey: ["z"],
+        desp: "\u53D8\u6362\u63A7\u5236\u5668\u5207\u6362\u8F74\uFF1Az",
+        keyup: (event) => {
+          event == null ? void 0 : event.preventDefault();
+          if (event == null ? void 0 : event.ctrlKey) {
+            return;
+          }
+          transformControls.showZ = !transformControls.showZ;
+        }
+      }).register({
+        shortcutKey: ["space"],
+        desp: "\u53D8\u6362\u63A7\u5236\u5668\u5207\u6362\u53D8\u6362\u7A7A\u95F4",
+        keyup: (event) => {
+          event == null ? void 0 : event.preventDefault();
+          transformControls.space = transformControls.space === "local" ? "world" : "local";
+        }
+      });
     }
   });
   return true;
