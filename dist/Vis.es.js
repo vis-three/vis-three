@@ -1963,6 +1963,18 @@ class LoaderManager extends EventDispatcher {
     this.path = path;
     return this;
   }
+  setRequestHeader(headers) {
+    Object.values(this.loaderMap).forEach((loader) => {
+      loader.setRequestHeader(headers);
+    });
+    return this;
+  }
+  setResponseType(responseType) {
+    Object.values(this.loaderMap).forEach((loader) => {
+      loader.setResponseType && loader.setResponseType(responseType);
+    });
+    return this;
+  }
   getLoader(ext) {
     if (this.loaderMap[ext]) {
       return this.loaderMap[ext];

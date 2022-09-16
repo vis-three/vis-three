@@ -7,6 +7,7 @@
 - 支持 GLB 模型导入
 - 支持 MeshPhysicalMaterial 材质
 - keyboardManager 新增`getDocs`
+- LoaderManager 新增`setRequestHeader`、`setResponseType`
 
 #### fix
 
@@ -20,3 +21,4 @@
 #### deprecated
 
 - resourceManager 废弃了 structureMap，内容将返回空。
+- LoaderManager 废弃`getLoadDetailMap`,`setLoadDetailMap`

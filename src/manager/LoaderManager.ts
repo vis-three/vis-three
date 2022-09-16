@@ -1,5 +1,5 @@
 import { EventDispatcher, BaseEvent } from "./../core/EventDispatcher";
-import { ImageLoader, Loader, TextureLoader } from "three";
+import { FileLoader, ImageLoader, Loader, TextureLoader } from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { VideoLoader } from "../extends/loader/VideoLoader";
@@ -127,8 +127,38 @@ export class LoaderManager extends EventDispatcher {
     return this;
   }
 
+  /**
+   * 设置统一资源路径前缀
+   * @param path
+   * @returns
+   */
   setPath(path: string): this {
     this.path = path;
+    return this;
+  }
+
+  /**
+   * 设置请求头
+   * @param headers
+   * @returns this
+   */
+  setRequestHeader(headers: Record<string, string>): this {
+    Object.values(this.loaderMap).forEach((loader) => {
+      loader.setRequestHeader(headers);
+    });
+    return this;
+  }
+
+  /**
+   * 设置响应类型
+   * @param responseType
+   * @returns this
+   */
+  setResponseType(responseType: string): this {
+    Object.values(this.loaderMap).forEach((loader) => {
+      (<FileLoader>loader).setResponseType &&
+        (<FileLoader>loader).setResponseType(responseType);
+    });
     return this;
   }
 
@@ -299,6 +329,10 @@ export class LoaderManager extends EventDispatcher {
     return this;
   }
 
+  /**
+   * 重置加载管理器属性
+   * @returns
+   */
   reset(): this {
     this.loadTotal = 0;
     this.loadSuccess = 0;
@@ -326,16 +360,30 @@ export class LoaderManager extends EventDispatcher {
     return this.resourceMap.has(url);
   }
 
+  /**
+   * 获取url下的资源
+   * @param url
+   * @returns
+   */
   getResource(url: string): unknown {
     return this.resourceMap.get(url);
   }
 
-  // 获取详细资源信息
+  /**
+   * @deprecated
+   * 获取详细资源信息
+   * @returns
+   */
   getLoadDetailMap(): { [key: string]: LoadDetail } {
     return this.loadDetailMap;
   }
 
-  // 设置详细资源信息
+  /**
+   * @deprecated
+   * 设置详细资源信息
+   * @param map
+   * @returns
+   */
   setLoadDetailMap(map: { [key: string]: LoadDetail }): this {
     this.loadDetailMap = map;
     return this;
@@ -344,7 +392,7 @@ export class LoaderManager extends EventDispatcher {
   // TODO:
   remove(url: string) {}
 
-  // 导出资源单
+  // 导出json资源单
   toJSON(): string {
     const assets: string[] = [];
     this.resourceMap.forEach((value, url) => {
@@ -368,6 +416,10 @@ export class LoaderManager extends EventDispatcher {
     return assets;
   }
 
+  /**
+   * 清空缓存
+   * @returns
+   */
   dispose(): this {
     this.resourceMap.clear();
     return this;
