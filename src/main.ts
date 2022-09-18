@@ -58,6 +58,7 @@ import * as Utils from "./utils/utils";
 import { CSS3DPlane } from "./extends/object/CSS3DPlane";
 import { EventDispatcher } from "./core/EventDispatcher";
 import template from "./convenient/template";
+import { Object3DDataSupport } from "./middleware/object3D/Object3DDataSupport";
 
 import "./optimize/optimizeScirpt";
 
@@ -110,6 +111,7 @@ export {
   PassDataSupport,
   CSS3DDataSupport,
   GroupDataSupport,
+  Object3DDataSupport,
   // helper
   PointLightHelper,
   CameraHelper,

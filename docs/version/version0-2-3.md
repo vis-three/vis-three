@@ -2,7 +2,7 @@
 
 #### feat
 
-- 支持 Object3D 模块
+- 支持 Object3D 模块 - `Object3DDataSupport`
 - 支持 GLTF 模型导入
 - 支持 GLB 模型导入
 - 支持 MeshPhysicalMaterial 材质

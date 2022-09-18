@@ -11335,13 +11335,40 @@ class History {
 }
 const clone = (object, options) => {
   let jsonObject = JSON.stringify(object, JSONHandler.stringify);
+  const detail = {};
   const modulekeys = Object.keys(object).filter((module) => module !== "assets");
   for (const modulekey of modulekeys) {
     for (const vid of Object.keys(object[modulekey])) {
-      jsonObject = jsonObject.replace(new RegExp(vid, "g"), v4());
+      const newVid = v4();
+      jsonObject = jsonObject.replace(new RegExp(vid, "g"), newVid);
+      if (options.detail) {
+        detail[vid] = newVid;
+      }
     }
   }
-  return JSON.parse(jsonObject, JSONHandler.parse);
+  const config2 = JSON.parse(jsonObject, JSONHandler.parse);
+  if (options.fillName) {
+    if (typeof options.fillName === "function") {
+      for (const modulekey of modulekeys) {
+        for (const vid of Object.keys(config2[modulekey])) {
+          const objectConfig = config2[modulekey][vid];
+          if (!objectConfig.name) {
+            objectConfig.name = options.fillName(objectConfig);
+          }
+        }
+      }
+    } else {
+      for (const modulekey of modulekeys) {
+        for (const vid of Object.keys(config2[modulekey])) {
+          const objectConfig = config2[modulekey][vid];
+          if (!objectConfig.name) {
+            objectConfig.name = `${objectConfig.type}-${vid.slice(-2)}`;
+          }
+        }
+      }
+    }
+  }
+  return options.detail ? { config: config2, detail } : config2;
 };
 var template = {
   clone
@@ -11409,4 +11436,4 @@ const lightShadow = new LightShadow(new OrthographicCamera(-256, 256, 256, -256)
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
-export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig, getModule, template };
+export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig, getModule, template };
