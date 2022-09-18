@@ -30,3 +30,9 @@ export const parse = (key, value) => {
 export const clone = <T extends object>(object: T): T => {
   return JSON.parse(JSON.stringify(object, stringify), parse);
 };
+
+export default {
+  stringify,
+  parse,
+  clone,
+};

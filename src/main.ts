@@ -57,6 +57,7 @@ import { SelectiveBloomPass } from "./extends/pass/SelectiveBloomPass";
 import * as Utils from "./utils/utils";
 import { CSS3DPlane } from "./extends/object/CSS3DPlane";
 import { EventDispatcher } from "./core/EventDispatcher";
+import template from "./convenient/template";
 
 import "./optimize/optimizeScirpt";
 
@@ -122,6 +123,7 @@ export {
   History,
   Action,
   JSONHandler,
+  template,
   // library
   EventLibrary,
   ShaderLibrary,

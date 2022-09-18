@@ -8,6 +8,7 @@
 - 支持 MeshPhysicalMaterial 材质
 - keyboardManager 新增`getDocs`
 - LoaderManager 新增`setRequestHeader`、`setResponseType`
+- 增加模板化模块：`template`, `template.clone`
 
 #### fix
 

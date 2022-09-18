@@ -3696,15 +3696,21 @@ const parse = (key, value) => {
   }
   return value;
 };
-const clone = (object) => {
+const clone$1 = (object) => {
   return JSON.parse(JSON.stringify(object, stringify), parse);
 };
-var JSONHandler = /* @__PURE__ */ Object.freeze({
+var JSONHandler = {
+  stringify,
+  parse,
+  clone: clone$1
+};
+var JSONHandler$1 = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
   stringify,
   parse,
-  clone
+  clone: clone$1,
+  "default": JSONHandler
 });
 const _ProxyBroadcast = class extends EventDispatcher {
   constructor(ignore) {
@@ -3928,12 +3934,12 @@ class DataSupport {
   }
   exportConfig(compress = true) {
     if (!compress) {
-      return clone(this.data);
+      return clone$1(this.data);
     } else {
       const data = this.data;
       const target = {};
       const cacheConfigTemplate = {};
-      const recursion = (config2, template, result = {}) => {
+      const recursion = (config2, template2, result = {}) => {
         for (const key in config2) {
           if (["vid", "type"].includes(key)) {
             result[key] = config2[key];
@@ -3946,7 +3952,7 @@ class DataSupport {
               }
               result[key] = config2[key].map((elem) => {
                 if (typeof elem === "object" && elem !== null) {
-                  return clone(elem);
+                  return clone$1(elem);
                 } else {
                   return elem;
                 }
@@ -3954,16 +3960,16 @@ class DataSupport {
               continue;
             }
             result[key] = {};
-            if (!template[key]) {
-              result[key] = clone(config2[key]);
+            if (!template2[key]) {
+              result[key] = clone$1(config2[key]);
             } else {
-              recursion(config2[key], template[key], result[key]);
+              recursion(config2[key], template2[key], result[key]);
               if (Object.keys(result[key]).length === 0) {
                 delete result[key];
               }
             }
           } else {
-            if (template[key] !== config2[key]) {
+            if (template2[key] !== config2[key]) {
               result[key] = config2[key];
             }
           }
@@ -3986,12 +3992,12 @@ class DataSupport {
   load(configMap) {
     const data = this.data;
     const cacheConfigTemplate = {};
-    const restore = (config2, template) => {
-      for (const key in template) {
-        if (typeof config2[key] === "object" && config2[key] !== null && typeof template[key] === "object" && template[key] !== null) {
-          restore(config2[key], template[key]);
+    const restore = (config2, template2) => {
+      for (const key in template2) {
+        if (typeof config2[key] === "object" && config2[key] !== null && typeof template2[key] === "object" && template2[key] !== null) {
+          restore(config2[key], template2[key]);
         } else if (config2[key] === void 0) {
-          config2[key] = template[key];
+          config2[key] = template2[key];
         }
       }
     };
@@ -5006,9 +5012,9 @@ const _AniScriptLibrary = class {
         }
       }
     };
-    const template = JSON.parse(JSON.stringify(_AniScriptLibrary.configLibrary.get(name)));
-    recursion(template, merge);
-    return template;
+    const template2 = JSON.parse(JSON.stringify(_AniScriptLibrary.configLibrary.get(name)));
+    recursion(template2, merge);
+    return template2;
   }
   static generateScript(engine, target, attribute, config2) {
     if (!_AniScriptLibrary.generatorLibrary.has(config2.name)) {
@@ -6191,9 +6197,9 @@ const _EventLibrary = class {
         }
       }
     };
-    const template = JSON.parse(JSON.stringify(_EventLibrary.configLibrary.get(name)));
-    recursion(template, merge);
-    return template;
+    const template2 = JSON.parse(JSON.stringify(_EventLibrary.configLibrary.get(name)));
+    recursion(template2, merge);
+    return template2;
   }
   static generateEvent(config2, engine) {
     if (!_EventLibrary.generatorLibrary.has(config2.name)) {
@@ -11327,6 +11333,19 @@ class History {
     this.actionList = [];
   }
 }
+const clone = (object, options) => {
+  let jsonObject = JSON.stringify(object, JSONHandler.stringify);
+  const modulekeys = Object.keys(object).filter((module) => module !== "assets");
+  for (const modulekey of modulekeys) {
+    for (const vid of Object.keys(object[modulekey])) {
+      jsonObject = jsonObject.replace(new RegExp(vid, "g"), v4());
+    }
+  }
+  return JSON.parse(jsonObject, JSONHandler.parse);
+};
+var template = {
+  clone
+};
 const version = "0.2.3";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
@@ -11390,4 +11409,4 @@ const lightShadow = new LightShadow(new OrthographicCamera(-256, 256, 256, -256)
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
-export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig, getModule };
+export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig, getModule, template };
