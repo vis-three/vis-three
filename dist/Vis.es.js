@@ -3584,8 +3584,8 @@ class ResourceManager extends EventDispatcher {
         }
       } else {
         let parser = null;
-        for (const handler of this.handlerMap.values()) {
-          parser = handler(url, resource, this.paserMap);
+        for (const handler2 of this.handlerMap.values()) {
+          parser = handler2(url, resource, this.paserMap);
           if (parser) {
             break;
           }
@@ -3797,7 +3797,7 @@ const _ProxyBroadcast = class extends EventDispatcher {
     if (_ProxyBroadcast.proxyWeakSet.has(object) || typeof object !== "object") {
       return object;
     }
-    const handler = {
+    const handler2 = {
       get: _ProxyBroadcast.proxyGetter,
       set: (target, key, value, receiver) => {
         return _ProxyBroadcast.proxySetter(target, key, value, receiver, this, path);
@@ -3827,7 +3827,7 @@ const _ProxyBroadcast = class extends EventDispatcher {
         }
       }
     }
-    const proxy = new Proxy(object, handler);
+    const proxy = new Proxy(object, handler2);
     _ProxyBroadcast.proxyWeakSet.add(proxy);
     return proxy;
   }
@@ -3939,7 +3939,7 @@ class DataSupport {
       const data = this.data;
       const target = {};
       const cacheConfigTemplate = {};
-      const recursion = (config2, template2, result = {}) => {
+      const recursion = (config2, template, result = {}) => {
         for (const key in config2) {
           if (["vid", "type"].includes(key)) {
             result[key] = config2[key];
@@ -3960,16 +3960,16 @@ class DataSupport {
               continue;
             }
             result[key] = {};
-            if (!template2[key]) {
+            if (!template[key]) {
               result[key] = clone$1(config2[key]);
             } else {
-              recursion(config2[key], template2[key], result[key]);
+              recursion(config2[key], template[key], result[key]);
               if (Object.keys(result[key]).length === 0) {
                 delete result[key];
               }
             }
           } else {
-            if (template2[key] !== config2[key]) {
+            if (template[key] !== config2[key]) {
               result[key] = config2[key];
             }
           }
@@ -3992,12 +3992,12 @@ class DataSupport {
   load(configMap) {
     const data = this.data;
     const cacheConfigTemplate = {};
-    const restore = (config2, template2) => {
-      for (const key in template2) {
-        if (typeof config2[key] === "object" && config2[key] !== null && typeof template2[key] === "object" && template2[key] !== null) {
-          restore(config2[key], template2[key]);
+    const restore = (config2, template) => {
+      for (const key in template) {
+        if (typeof config2[key] === "object" && config2[key] !== null && typeof template[key] === "object" && template[key] !== null) {
+          restore(config2[key], template[key]);
         } else if (config2[key] === void 0) {
-          config2[key] = template2[key];
+          config2[key] = template[key];
         }
       }
     };
@@ -5012,9 +5012,9 @@ const _AniScriptLibrary = class {
         }
       }
     };
-    const template2 = JSON.parse(JSON.stringify(_AniScriptLibrary.configLibrary.get(name)));
-    recursion(template2, merge);
-    return template2;
+    const template = JSON.parse(JSON.stringify(_AniScriptLibrary.configLibrary.get(name)));
+    recursion(template, merge);
+    return template;
   }
   static generateScript(engine, target, attribute, config2) {
     if (!_AniScriptLibrary.generatorLibrary.has(config2.name)) {
@@ -6197,9 +6197,9 @@ const _EventLibrary = class {
         }
       }
     };
-    const template2 = JSON.parse(JSON.stringify(_EventLibrary.configLibrary.get(name)));
-    recursion(template2, merge);
-    return template2;
+    const template = JSON.parse(JSON.stringify(_EventLibrary.configLibrary.get(name)));
+    recursion(template, merge);
+    return template;
   }
   static generateEvent(config2, engine) {
     if (!_EventLibrary.generatorLibrary.has(config2.name)) {
@@ -10813,8 +10813,8 @@ const _Engine = class extends EventDispatcher {
 };
 let Engine = _Engine;
 __publicField(Engine, "pluginHandler", new Map());
-__publicField(Engine, "register", function(name, handler) {
-  _Engine.pluginHandler && _Engine.pluginHandler.set(name, handler);
+__publicField(Engine, "register", function(name, handler2) {
+  _Engine.pluginHandler && _Engine.pluginHandler.set(name, handler2);
   return _Engine;
 });
 __publicField(Engine, "dispose", function() {
@@ -11333,7 +11333,7 @@ class History {
     this.actionList = [];
   }
 }
-const clone = (object, options) => {
+const clone = (object, options = {}) => {
   let jsonObject = JSON.stringify(object, JSONHandler.stringify);
   const detail = {};
   const modulekeys = Object.keys(object).filter((module) => module !== "assets");
@@ -11370,8 +11370,23 @@ const clone = (object, options) => {
   }
   return options.detail ? { config: config2, detail } : config2;
 };
-var template = {
-  clone
+const handler = (object, handler2, options = {
+  clone: true,
+  assets: false
+}) => {
+  const config2 = options.clone ? JSONHandler.clone(object) : object;
+  const modulekeys = options.assets ? Object.keys(config2) : Object.keys(config2).filter((module) => module !== "assets");
+  for (const modulekey of modulekeys) {
+    const module = object[modulekey];
+    for (const vid of Object.keys(module)) {
+      module[vid] = handler2(module[vid]);
+    }
+  }
+  return config2;
+};
+var Template = {
+  clone,
+  handler
 };
 const version = "0.2.3";
 if (!window.__THREE__) {
@@ -11436,4 +11451,4 @@ const lightShadow = new LightShadow(new OrthographicCamera(-256, 256, 256, -256)
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
-export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig, getModule, template };
+export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, Template, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig, getModule };

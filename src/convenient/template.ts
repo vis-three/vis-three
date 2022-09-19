@@ -1,6 +1,7 @@
 import { EngineSupportLoadOptions } from "../engine/EngineSupport";
 import JSONHandler from "./JSONHandler";
 import { v4 } from "uuid";
+import { SymbolConfig } from "../middleware/common/CommonConfig";
 
 export interface CloneResult {
   config: EngineSupportLoadOptions;
@@ -10,7 +11,9 @@ export interface CloneResult {
 /**
  * 克隆整个配置单
  * @param object EngineSupportLoadOptions
- * @param options .detail:bolean -> 返回clone映射
+ * @param options 额外选项
+ * - detail:bolean 返回clone映射
+ * - fillName 是否填充未命名的单位
  * @returns EngineSupportLoadOptions | CloneResult
  */
 export const clone = (
@@ -18,7 +21,7 @@ export const clone = (
   options: {
     detail?: boolean;
     fillName?: boolean | ((SymbolConfig) => string);
-  }
+  } = {}
 ): EngineSupportLoadOptions | CloneResult => {
   let jsonObject = JSON.stringify(object, JSONHandler.stringify);
   const detail: Record<string, string> = {};
@@ -64,6 +67,40 @@ export const clone = (
   return options.detail ? { config, detail } : config;
 };
 
+/**
+ * 对配置单中的每个配置项做处理
+ * @param object
+ * @param handler
+ * @param options
+ */
+export const handler = (
+  object: EngineSupportLoadOptions,
+  handler: (config: SymbolConfig) => SymbolConfig,
+  options: {
+    clone?: boolean;
+    assets?: boolean;
+  } = {
+    clone: true,
+    assets: false,
+  }
+) => {
+  const config = options.clone ? JSONHandler.clone(object) : object;
+
+  const modulekeys = options.assets
+    ? Object.keys(config)
+    : Object.keys(config).filter((module) => module !== "assets");
+
+  for (const modulekey of modulekeys) {
+    const module = object[modulekey];
+    for (const vid of Object.keys(module)) {
+      module[vid] = handler(module[vid]);
+    }
+  }
+
+  return config;
+};
+
 export default {
   clone,
+  handler,
 };

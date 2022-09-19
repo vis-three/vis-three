@@ -1,9 +1,9 @@
-import { JSONHandler, template } from "../../../../dist/Vis.es";
+import { JSONHandler, Template } from "../../../../dist/Vis.es";
 
-describe("template", () => {
-  it("test template clone", () => {
+describe("Template", () => {
+  it("test Template clone", () => {
     cy.fixture("compressConfig.json").then((config) => {
-      const newConfig = template.clone(config);
+      const newConfig = Template.clone(config);
       const jsonNewConfig = JSON.stringify(newConfig, JSONHandler.stringify);
 
       Object.keys(config)
