@@ -18,7 +18,10 @@ export class GLTFResourceParser extends Parser {
 
   registHandler(): ResourceHanlder {
     return (url, rescource, parseMap) => {
-      if (rescource.parser.constructor.name === "GLTFParser") {
+      if (
+        rescource.parser &&
+        rescource.parser.constructor.name === "GLTFParser"
+      ) {
         return parseMap.get(this.constructor.name) || null;
       } else {
         return null;
