@@ -91,7 +91,7 @@ export const handler = (
     : Object.keys(config).filter((module) => module !== "assets");
 
   for (const modulekey of modulekeys) {
-    const module = object[modulekey];
+    const module = config[modulekey];
     for (const vid of Object.keys(module)) {
       module[vid] = handler(module[vid]);
     }

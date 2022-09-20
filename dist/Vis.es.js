@@ -11377,7 +11377,7 @@ const handler = (object, handler2, options = {
   const config2 = options.clone ? JSONHandler.clone(object) : object;
   const modulekeys = options.assets ? Object.keys(config2) : Object.keys(config2).filter((module) => module !== "assets");
   for (const modulekey of modulekeys) {
-    const module = object[modulekey];
+    const module = config2[modulekey];
     for (const vid of Object.keys(module)) {
       module[vid] = handler2(module[vid]);
     }
