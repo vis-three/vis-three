@@ -95,3 +95,9 @@ website 的最终展现是使用的其他模块的 build 版本，如需要更�
 - e2e 测试： `npm run test:e2e`
 - 自定义测试： `npm run test:open`
 - 查看测试报告： `npm run test:report`
+
+## 贡献者
+
+<a href="https://github.com/Shiotsukikaedesari/vis-three/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Shiotsukikaedesari/vis-three" />
+</a>
