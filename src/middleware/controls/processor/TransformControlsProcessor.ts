@@ -50,7 +50,7 @@ export default defineProcessor<TransformControlsConfig, VisTransformControls>({
     } else {
       control = new VisTransformControls();
       control.setCamera(engine.camera);
-      control.setDom(engine.dom!);
+      engine.dom && control.setDom(engine.dom!);
     }
 
     if (config.snapAllow) {

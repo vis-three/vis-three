@@ -5,10 +5,22 @@ import { MaterialConfig } from "../middleware/material/MaterialConfig";
 import { SolidObjectConfig } from "../middleware/solidObject/SolidObjectConfig";
 import { LoadTextureConfig } from "../middleware/texture/TextureConfig";
 import { syncObject } from "../utils/utils";
-import { ParseParams, Parser } from "./Parser";
+import { ParseParams, Parser, ResourceHanlder } from "./Parser";
 import { v4 } from "uuid";
 
 export class Object3DParser extends Parser {
+  selector: ResourceHanlder = (
+    url: string,
+    resource: Object3D,
+    parseMap: Map<Function, Parser>
+  ) => {
+    if (resource.isObject3D) {
+      return parseMap.get(Object3DParser) || null;
+    } else {
+      return null;
+    }
+  };
+
   parse(params: ParseParams): void {
     this.parseObject3D(params);
   }

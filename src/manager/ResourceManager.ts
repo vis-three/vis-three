@@ -26,7 +26,8 @@ export enum RESOURCEEVENTTYPE {
 }
 
 export interface MappingOptions {
-  hanlder?: Record<string, string>;
+  selector?: Record<string, ResourceHanlder>;
+  parser?: Record<string, Parser>;
 }
 
 export class ResourceManager extends EventDispatcher {
@@ -37,19 +38,18 @@ export class ResourceManager extends EventDispatcher {
   configMap: Map<string, SymbolConfig> = new Map(); // 配置映射 mappingUrl -> config
   resourceMap: Map<string, any> = new Map(); // 资源映射 mappingUrl -> resource
 
-  private paserMap: Map<string, Parser> = new Map();
-  private handlerMap = new Map<string, ResourceHanlder>();
+  private paserMap: Map<Function, Parser> = new Map();
 
   constructor(resources: { [key: string]: any } = {}) {
     super();
 
-    this.addParser(new HTMLImageElementParser(), { warn: false })
-      .addParser(new HTMLCanvasElementParser(), { warn: false })
-      .addParser(new HTMLVideoElementParser(), { warn: false })
-      .addParser(new Object3DParser(), { warn: false })
-      .addParser(new HTMLElementParser(), { warn: false })
-      .addParser(new TextureParser(), { warn: false })
-      .addParser(new GLTFResourceParser(), { warn: false });
+    this.addParser(new HTMLImageElementParser())
+      .addParser(new HTMLCanvasElementParser())
+      .addParser(new HTMLVideoElementParser())
+      .addParser(new Object3DParser())
+      .addParser(new HTMLElementParser())
+      .addParser(new TextureParser())
+      .addParser(new GLTFResourceParser());
 
     const map = new Map<string, any>();
 
@@ -71,39 +71,12 @@ export class ResourceManager extends EventDispatcher {
    * @param parser  extends VIS.Parser
    * @returns this
    */
-  addParser(parser: Parser, options: { warn: boolean } = { warn: true }): this {
-    if (this.paserMap.has(parser.constructor.name)) {
-      options.warn &&
-        console.warn(
-          `resourceManager has already exist this parser, that will be cover`,
-          this.paserMap.get(parser.constructor.name)
-        );
+  addParser(parser: Parser): this {
+    if (this.paserMap.has(parser.constructor)) {
+      return this;
     }
 
-    this.paserMap.set(parser.constructor.name, parser);
-
-    this.addHanlder(parser.registHandler(), options);
-    return this;
-  }
-
-  /**
-   * 添加处理器
-   * @param hanlder 处理器函数
-   * @returns this
-   */
-  addHanlder(
-    hanlder: ResourceHanlder,
-    options: { warn: boolean } = { warn: true }
-  ): this {
-    if (this.handlerMap.has(hanlder.name)) {
-      options.warn &&
-        console.warn(
-          `resourceManager has already exist this hanlder, that will be cover`,
-          hanlder.name
-        );
-    }
-
-    this.handlerMap.set(hanlder.name, hanlder);
+    this.paserMap.set(parser.constructor, parser);
     return this;
   }
 
@@ -119,63 +92,71 @@ export class ResourceManager extends EventDispatcher {
   ): this {
     const configMap = this.configMap;
     const resourceMap = this.resourceMap;
+    const parserList = [...this.paserMap.values()];
 
     const resourceConfig: { [key: string]: LoadOptions } = {};
 
-    loadResourceMap.forEach((resource, url) => {
-      // 如果options.handler规定了处理器，就使用handler
-      if (options && options.hanlder && options.hanlder[url]) {
-        const hanlder = this.handlerMap.get(options.hanlder[url]);
+    for (const [url, resource] of loadResourceMap.entries()) {
+      // 如果指定了url的解析器，用解析器处理
+      if (options?.parser && options.parser[url]) {
+        options.parser[url].parse({
+          url,
+          resource,
+          configMap,
+          resourceMap,
+        });
+        continue;
+      }
 
-        if (!hanlder) {
-          console.warn(
-            `resource manager can not support this handler: ${options.hanlder[url]}`
-          );
-        } else {
-          const parser = hanlder(url, resource, this.paserMap);
-
-          if (!parser) {
-            console.warn(
-              `resource manager hanlder can not found this resource parser: `,
-              resource,
-              hanlder
-            );
-          } else {
-            parser.parse({
-              url,
-              resource,
-              configMap,
-              resourceMap,
-            });
-            resourceConfig[url] = this.getResourceConfig(url);
-          }
-        }
-      } else {
-        // 冲上往下执行hanlder
-        let parser: Parser | null = null;
-        for (const handler of this.handlerMap.values()) {
-          parser = handler(url, resource, this.paserMap);
-          if (parser) {
-            break;
-          }
-        }
+      // 如果options.selector规定了选择器用 selector
+      if (options?.selector && options.selector[url]) {
+        const parser = options.selector[url](url, resource, this.paserMap);
 
         if (!parser) {
           console.warn(
-            `resouce manager can not found some handler to parser this resource:`,
-            resource
-          );
-        } else {
-          parser.parse({
-            url,
+            `resource manager hanlder can not found this resource parser: `,
             resource,
-            configMap,
-            resourceMap,
-          });
-          resourceConfig[url] = this.getResourceConfig(url);
+            options.selector[url]
+          );
+          continue;
+        }
+
+        parser.parse({
+          url,
+          resource,
+          configMap,
+          resourceMap,
+        });
+        resourceConfig[url] = this.getResourceConfig(url);
+        continue;
+      }
+
+      // 从上往下执行parser selector
+      let parser: Parser | null = null;
+
+      for (const TParser of parserList) {
+        parser = TParser.selector(url, resource, this.paserMap);
+        if (parser) {
+          break;
         }
       }
-    });
+
+      if (!parser) {
+        console.warn(
+          `resouce manager can not found some handler to parser this resource:`,
+          resource
+        );
+        continue;
+      }
+
+      parser.parse({
+        url,
+        resource,
+        configMap,
+        resourceMap,
+      });
+      resourceConfig[url] = this.getResourceConfig(url);
+    }
 
     this.dispatchEvent({
       type: "mapped",

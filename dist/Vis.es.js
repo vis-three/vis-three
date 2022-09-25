@@ -21,7 +21,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Euler, Material, Matrix4, Color, PlaneBufferGeometry, Box3, BufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, Float32BufferAttribute, EdgesGeometry, Group, AmbientLight, DirectionalLight, PointLight, SpotLight, ShaderMaterial, Line, Texture, LineBasicMaterial, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, PointsMaterial, SpriteMaterial, Mesh, Scene, UniformsUtils, Points, Sprite, AdditiveBlending, Camera, Fog, FogExp2, CanvasTexture, CubeTexture, RGBFormat, AxesHelper, GridHelper, MeshLambertMaterial, Light, LineSegments, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, PCFSoftShadowMap } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Texture, Euler, Material, Matrix4, Color, PlaneBufferGeometry, Box3, BufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, Float32BufferAttribute, EdgesGeometry, Group, AmbientLight, DirectionalLight, PointLight, SpotLight, ShaderMaterial, Line, LineBasicMaterial, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, PointsMaterial, SpriteMaterial, Mesh, Scene, UniformsUtils, Points, Sprite, AdditiveBlending, Camera, Fog, FogExp2, CanvasTexture, CubeTexture, RGBFormat, AxesHelper, GridHelper, MeshLambertMaterial, Light, LineSegments, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, PCFSoftShadowMap } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -3226,24 +3226,19 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.SCRIPTANIMATION]: getScriptAnimationConfig,
   [CONFIGTYPE.KEYFRAMEANIMATION]: getKeyframeAnimationConfig
 };
-const defaultHanlder = (url, resource, parseMap) => {
-  const resourceHanlder = (url2, object) => {
-    if (!Object.getPrototypeOf(object)) {
-      return null;
-    } else if (parseMap.has(Object.getPrototypeOf(object).constructor.name + "Parser")) {
-      return parseMap.get(Object.getPrototypeOf(object).constructor.name + "Parser");
-    } else {
-      return resourceHanlder(url2, Object.getPrototypeOf(object));
-    }
-  };
-  return resourceHanlder(url, resource);
-};
 class Parser {
-  registHandler() {
-    return defaultHanlder;
-  }
 }
 class HTMLImageElementParser extends Parser {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "selector", (url, resource, parseMap) => {
+      if (resource instanceof HTMLImageElement) {
+        return parseMap.get(HTMLImageElementParser) || null;
+      } else {
+        return null;
+      }
+    });
+  }
   parse({ url, resource, configMap, resourceMap }) {
     const config2 = CONFIGFACTORY[CONFIGTYPE.IMAGETEXTURE]();
     config2.url = url;
@@ -3252,6 +3247,16 @@ class HTMLImageElementParser extends Parser {
   }
 }
 class HTMLCanvasElementParser extends Parser {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "selector", (url, resource, parseMap) => {
+      if (resource instanceof HTMLCanvasElement) {
+        return parseMap.get(HTMLCanvasElementParser) || null;
+      } else {
+        return null;
+      }
+    });
+  }
   parse({ url, resource, configMap, resourceMap }) {
     const config2 = CONFIGFACTORY[CONFIGTYPE.CANVASTEXTURE]();
     config2.url = url;
@@ -3260,6 +3265,16 @@ class HTMLCanvasElementParser extends Parser {
   }
 }
 class HTMLVideoElementParser extends Parser {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "selector", (url, resource, parseMap) => {
+      if (resource instanceof HTMLVideoElement) {
+        return parseMap.get(HTMLVideoElementParser) || null;
+      } else {
+        return null;
+      }
+    });
+  }
   parse({ url, resource, configMap, resourceMap }) {
     const config2 = CONFIGFACTORY[CONFIGTYPE.VIDEOTEXTURE]();
     config2.url = url;
@@ -3326,6 +3341,16 @@ var utils = /* @__PURE__ */ Object.freeze({
   syncObject
 });
 class Object3DParser extends Parser {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "selector", (url, resource, parseMap) => {
+      if (resource.isObject3D) {
+        return parseMap.get(Object3DParser) || null;
+      } else {
+        return null;
+      }
+    });
+  }
   parse(params) {
     this.parseObject3D(params);
   }
@@ -3484,6 +3509,16 @@ class Object3DParser extends Parser {
   }
 }
 class HTMLElementParser extends Parser {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "selector", (url, resource, parseMap) => {
+      if (resource instanceof HTMLElement) {
+        return parseMap.get(HTMLElementParser) || null;
+      } else {
+        return null;
+      }
+    });
+  }
   parse({ url, resource, configMap, resourceMap }) {
     const config2 = CONFIGFACTORY[CONFIGTYPE.CSS3DPLANE]();
     config2.element = url;
@@ -3492,6 +3527,16 @@ class HTMLElementParser extends Parser {
   }
 }
 class TextureParser extends Parser {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "selector", (url, resource, parseMap) => {
+      if (resource instanceof Texture) {
+        return parseMap.get(TextureParser) || null;
+      } else {
+        return null;
+      }
+    });
+  }
   parse({ url, resource, configMap, resourceMap }) {
     const config2 = CONFIGFACTORY[CONFIGTYPE.LOADTEXTURE]();
     config2.url = url;
@@ -3503,6 +3548,13 @@ class GLTFResourceParser extends Parser {
   constructor() {
     super();
     __publicField(this, "object3DParser", new Object3DParser());
+    __publicField(this, "selector", (url, resource, parseMap) => {
+      if (resource.parser && resource.animations && resource.scene && resource.scenes) {
+        return parseMap.get(GLTFResourceParser) || null;
+      } else {
+        return null;
+      }
+    });
   }
   parse({ url, resource, configMap, resourceMap }) {
     this.object3DParser.parse({
@@ -3511,15 +3563,6 @@ class GLTFResourceParser extends Parser {
       configMap,
       resourceMap
     });
-  }
-  registHandler() {
-    return (url, rescource, parseMap) => {
-      if (rescource.parser.constructor.name === "GLTFParser") {
-        return parseMap.get(this.constructor.name) || null;
-      } else {
-        return null;
-      }
-    };
   }
 }
 var RESOURCEEVENTTYPE;
@@ -3533,8 +3576,7 @@ class ResourceManager extends EventDispatcher {
     __publicField(this, "configMap", new Map());
     __publicField(this, "resourceMap", new Map());
     __publicField(this, "paserMap", new Map());
-    __publicField(this, "handlerMap", new Map());
-    this.addParser(new HTMLImageElementParser(), { warn: false }).addParser(new HTMLCanvasElementParser(), { warn: false }).addParser(new HTMLVideoElementParser(), { warn: false }).addParser(new Object3DParser(), { warn: false }).addParser(new HTMLElementParser(), { warn: false }).addParser(new TextureParser(), { warn: false }).addParser(new GLTFResourceParser(), { warn: false });
+    this.addParser(new HTMLImageElementParser()).addParser(new HTMLCanvasElementParser()).addParser(new HTMLVideoElementParser()).addParser(new Object3DParser()).addParser(new HTMLElementParser()).addParser(new TextureParser()).addParser(new GLTFResourceParser());
     const map = new Map();
     for (const key in resources) {
       if (map.has(key)) {
@@ -3544,65 +3586,62 @@ class ResourceManager extends EventDispatcher {
     }
     this.mappingResource(map);
   }
-  addParser(parser, options = { warn: true }) {
-    if (this.paserMap.has(parser.constructor.name)) {
-      options.warn && console.warn(`resourceManager has already exist this parser, that will be cover`, this.paserMap.get(parser.constructor.name));
+  addParser(parser) {
+    if (this.paserMap.has(parser.constructor)) {
+      return this;
     }
-    this.paserMap.set(parser.constructor.name, parser);
-    this.addHanlder(parser.registHandler(), options);
-    return this;
-  }
-  addHanlder(hanlder, options = { warn: true }) {
-    if (this.handlerMap.has(hanlder.name)) {
-      options.warn && console.warn(`resourceManager has already exist this hanlder, that will be cover`, hanlder.name);
-    }
-    this.handlerMap.set(hanlder.name, hanlder);
+    this.paserMap.set(parser.constructor, parser);
     return this;
   }
   mappingResource(loadResourceMap, options) {
     const configMap = this.configMap;
     const resourceMap = this.resourceMap;
+    const parserList = [...this.paserMap.values()];
     const resourceConfig = {};
-    loadResourceMap.forEach((resource, url) => {
-      if (options && options.hanlder && options.hanlder[url]) {
-        const hanlder = this.handlerMap.get(options.hanlder[url]);
-        if (!hanlder) {
-          console.warn(`resource manager can not support this handler: ${options.hanlder[url]}`);
-        } else {
-          const parser = hanlder(url, resource, this.paserMap);
-          if (!parser) {
-            console.warn(`resource manager hanlder can not found this resource parser: `, resource, hanlder);
-          } else {
-            parser.parse({
-              url,
-              resource,
-              configMap,
-              resourceMap
-            });
-            resourceConfig[url] = this.getResourceConfig(url);
-          }
+    for (const [url, resource] of loadResourceMap.entries()) {
+      if ((options == null ? void 0 : options.parser) && options.parser[url]) {
+        options.parser[url].parse({
+          url,
+          resource,
+          configMap,
+          resourceMap
+        });
+        continue;
+      }
+      if ((options == null ? void 0 : options.selector) && options.selector[url]) {
+        const parser2 = options.selector[url](url, resource, this.paserMap);
+        if (!parser2) {
+          console.warn(`resource manager hanlder can not found this resource parser: `, resource, options.selector[url]);
+          continue;
         }
-      } else {
-        let parser = null;
-        for (const handler2 of this.handlerMap.values()) {
-          parser = handler2(url, resource, this.paserMap);
-          if (parser) {
-            break;
-          }
-        }
-        if (!parser) {
-          console.warn(`resouce manager can not found some handler to parser this resource:`, resource);
-        } else {
-          parser.parse({
-            url,
-            resource,
-            configMap,
-            resourceMap
-          });
-          resourceConfig[url] = this.getResourceConfig(url);
+        parser2.parse({
+          url,
+          resource,
+          configMap,
+          resourceMap
+        });
+        resourceConfig[url] = this.getResourceConfig(url);
+        continue;
+      }
+      let parser = null;
+      for (const TParser of parserList) {
+        parser = TParser.selector(url, resource, this.paserMap);
+        if (parser) {
+          break;
         }
       }
-    });
+      if (!parser) {
+        console.warn(`resouce manager can not found some handler to parser this resource:`, resource);
+        continue;
+      }
+      parser.parse({
+        url,
+        resource,
+        configMap,
+        resourceMap
+      });
+      resourceConfig[url] = this.getResourceConfig(url);
+    }
     this.dispatchEvent({
       type: "mapped",
       structureMap: this.structureMap,
@@ -6702,7 +6741,7 @@ var TransformControlsProcessor = defineProcessor({
     } else {
       control = new VisTransformControls();
       control.setCamera(engine.camera);
-      control.setDom(engine.dom);
+      engine.dom && control.setDom(engine.dom);
     }
     if (config2.snapAllow) {
       control.translationSnap = config2.translationSnap;
