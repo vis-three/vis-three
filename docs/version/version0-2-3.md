@@ -1,4 +1,4 @@
-## version 0.2.2
+## version 0.2.3
 
 #### feat
 
@@ -9,7 +9,8 @@
 - keyboardManager 新增`getDocs`
 - LoaderManager 新增`setRequestHeader`、`setResponseType`
 - 增加模板化模块：`template`, `template.clone`
-- 增加resourceManager的parser支持
+- 增加 resourceManager 的 parser 支持
+
 #### fix
 
 - 修复 ScriptAnimation set 与 remove 的部分问题
