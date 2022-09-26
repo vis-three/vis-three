@@ -39,6 +39,7 @@ import {
   LoadedEvent,
   LoaderManager,
   LoaderManagerParameters,
+  LoadUnit,
 } from "../manager/LoaderManager";
 import { LoaderManagerPlugin } from "../plugins/LoaderManagerPlugin";
 import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
@@ -210,14 +211,14 @@ export class Engine extends EventDispatcher {
   setSelectionBox?: (params: { objects: Object3D[] }) => this;
 
   loadResources?: (
-    urlList: Array<string>,
+    urlList: Array<LoadUnit>,
     callback: (
       err: Error | undefined,
       event?: LoadedEvent | MappedEvent
     ) => void
   ) => this;
   loadResourcesAsync?: (
-    urlList: Array<string>
+    urlList: Array<LoadUnit>
   ) => Promise<LoadedEvent | MappedEvent>;
 
   registerResources?: (resourceMap: { [key: string]: unknown }) => this;

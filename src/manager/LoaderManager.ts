@@ -45,10 +45,12 @@ export interface LoadedEvent extends BaseEvent {
   resourceMap: Map<string, unknown>;
 }
 
-export interface LoadUnit {
-  url: string;
-  ext: string;
-}
+export type LoadUnit =
+  | string
+  | {
+      url: string;
+      ext: string;
+    };
 
 export interface LoaderManagerParameters {
   loaderExtends: { [key: string]: Loader };
@@ -58,6 +60,7 @@ export interface LoaderManagerParameters {
 export class LoaderManager extends EventDispatcher {
   private resourceMap: Map<string, unknown>;
   private loaderMap: { [key: string]: Loader };
+  private urlList: Array<string | LoadUnit> = [];
   private loadTotal: number;
   private loadSuccess: number;
   private loadError: number;
@@ -180,7 +183,7 @@ export class LoaderManager extends EventDispatcher {
    * @param urlList string[] | [{ext: string, url: string}]
    * @returns this
    */
-  load(urlList: Array<string | LoadUnit>): this {
+  load(urlList: Array<LoadUnit>): this {
     this.reset();
     this.isLoading = true;
 
@@ -210,6 +213,10 @@ export class LoaderManager extends EventDispatcher {
       } else {
         url = unit.url;
         ext = unit.ext.toLocaleLowerCase();
+
+        if (ext.startsWith(".")) {
+          ext = ext.slice(1);
+        }
       }
       const detail: LoadDetail = {
         url,
@@ -296,6 +303,8 @@ export class LoaderManager extends EventDispatcher {
           detail.progress = 1;
           this.loadSuccess += 1;
           this.resourceMap.set(url, res);
+          this.urlList.push(unit);
+
           this.dispatchEvent({
             type: LOADERMANAGER.DETAILLOADED,
             detail,
@@ -394,12 +403,7 @@ export class LoaderManager extends EventDispatcher {
 
   // 导出json资源单
   toJSON(): string {
-    const assets: string[] = [];
-    this.resourceMap.forEach((value, url) => {
-      assets.push(url);
-    });
-
-    return JSON.stringify(assets);
+    return JSON.stringify(this.urlList);
   }
 
   /**
@@ -408,12 +412,7 @@ export class LoaderManager extends EventDispatcher {
    * @todo 对比缓存
    */
   exportConfig(): string[] {
-    const assets: string[] = [];
-    this.resourceMap.forEach((value, url) => {
-      assets.push(url);
-    });
-
-    return assets;
+    return JSON.parse(JSON.stringify(this.urlList));
   }
 
   /**

@@ -5,7 +5,7 @@ import {
   DataSupportManagerParameters,
   LoadOptions,
 } from "../manager/DataSupportManager";
-import { LoadedEvent, LoaderManager } from "../manager/LoaderManager";
+import { LoadedEvent, LoaderManager, LoadUnit } from "../manager/LoaderManager";
 import { RenderManager } from "../manager/RenderManager";
 import { MappedEvent, ResourceManager } from "../manager/ResourceManager";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
@@ -27,9 +27,11 @@ export class EngineSupport extends Engine {
   declare compilerManager: CompilerManager;
   declare renderManager: RenderManager;
 
-  declare loadResources: (urlList: Array<string>) => this;
+  declare loadResources: (urlList: Array<LoadUnit>) => this;
   declare registerResources: (resourceMap: { [key: string]: unknown }) => this;
-  declare loadResourcesAsync: (urlList: Array<string>) => Promise<MappedEvent>;
+  declare loadResourcesAsync: (
+    urlList: Array<LoadUnit>
+  ) => Promise<MappedEvent>;
   declare toJSON: () => string;
 
   declare exportConfig: (compress: boolean) => LoadOptions;

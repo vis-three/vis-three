@@ -1901,6 +1901,7 @@ class LoaderManager extends EventDispatcher {
     super();
     __publicField(this, "resourceMap");
     __publicField(this, "loaderMap");
+    __publicField(this, "urlList", []);
     __publicField(this, "loadTotal");
     __publicField(this, "loadSuccess");
     __publicField(this, "loadError");
@@ -2008,6 +2009,9 @@ class LoaderManager extends EventDispatcher {
       } else {
         url = unit.url;
         ext = unit.ext.toLocaleLowerCase();
+        if (ext.startsWith(".")) {
+          ext = ext.slice(1);
+        }
       }
       const detail = {
         url,
@@ -2082,6 +2086,7 @@ class LoaderManager extends EventDispatcher {
         detail.progress = 1;
         this.loadSuccess += 1;
         this.resourceMap.set(url, res);
+        this.urlList.push(unit);
         this.dispatchEvent({
           type: LOADERMANAGER.DETAILLOADED,
           detail
@@ -2142,18 +2147,10 @@ class LoaderManager extends EventDispatcher {
   remove(url) {
   }
   toJSON() {
-    const assets = [];
-    this.resourceMap.forEach((value, url) => {
-      assets.push(url);
-    });
-    return JSON.stringify(assets);
+    return JSON.stringify(this.urlList);
   }
   exportConfig() {
-    const assets = [];
-    this.resourceMap.forEach((value, url) => {
-      assets.push(url);
-    });
-    return assets;
+    return JSON.parse(JSON.stringify(this.urlList));
   }
   dispose() {
     this.resourceMap.clear();
