@@ -39,14 +39,15 @@
       VIS.generateConfig.injectScene = true;
 
       const material = VIS.generateConfig("MeshBasicMaterial", {
-        side: THREE.DoubleSide,
-        transparent: true,
         color: "rgb(200, 100, 200)",
       });
       const material2 = VIS.generateConfig("ShaderMaterial", {
         shader: "BloomShader",
-        side: THREE.DoubleSide,
         transparent: true,
+        depthTest: 0,
+        uniforms: {
+          color: { value: { r: 0.5, g: 1, b: 1 } },
+        },
       });
 
       const geometry = VIS.generateConfig("SphereGeometry", {
@@ -57,9 +58,33 @@
         ],
       });
 
+      const geometry2 = VIS.generateConfig("BoxGeometry", {
+        groups: [
+          { start: 0, count: Infinity, materialIndex: 0 },
+          { start: 0, count: Infinity, materialIndex: 1 },
+        ],
+      });
+
       const mesh = VIS.generateConfig("Mesh", {
         material: [material.vid, material2.vid],
         geometry: geometry.vid,
+      });
+
+      const mesh2 = VIS.generateConfig("Mesh", {
+        material: [material.vid, material2.vid],
+        geometry: geometry2.vid,
+        position: {
+          x: 30,
+        },
+      });
+
+      const animation = VIS.generateConfig("ScriptAnimation", {
+        target: material2.vid,
+        attribute: ".uniforms.extend.value",
+        script: VIS.AniScriptLibrary.generateConfig("sinWave", {
+          amplitude: 0.3,
+          speed: 5,
+        }),
       });
 
       engine.play();
@@ -73,7 +98,9 @@
         extend: material2.uniforms.extend.value,
         color: material2.uniforms.color.value,
         brightness: material2.uniforms.brightness.value,
-        range: material2.uniforms.range.value,
+        specular: material2.uniforms.specular.value,
+        outFade: material2.uniforms.outFade.value,
+        inFade: material2.uniforms.inFade.value,
       };
 
       gui.addColor(guiParams, "color");
@@ -85,8 +112,16 @@
         material2.uniforms.brightness.value = value;
       });
 
-      gui.add(guiParams, "range", 0, 20, 1).onChange((value) => {
-        material2.uniforms.range.value = value;
+      gui.add(guiParams, "outFade", 0, 3, 0.1).onChange((value) => {
+        material2.uniforms.outFade.value = value;
+      });
+
+      gui.add(guiParams, "inFade", 0, 3, 0.1).onChange((value) => {
+        material2.uniforms.inFade.value = value;
+      });
+
+      gui.add(guiParams, "specular", 0, 1, 0.01).onChange((value) => {
+        material2.uniforms.specular.value = value;
       });
     </script>
   </body>
