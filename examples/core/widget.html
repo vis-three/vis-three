@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ModelingEngineSupport</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as VIS from "vis-three";
+
+      const engine = new VIS.ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true)
+        .play();
+
+      engine.applyConfig(VIS.generateConfig("Scene")).setScene("Scene");
+
+      // const point = VIS.Widget.component({
+      //   name: "point",
+      //   input: {
+      //     color: "rgb(255, 0, 0)",
+      //   },
+      //   render(g) {
+      //     const geometry = g("BoxBufferGeometry", {
+      //       width: 10,
+      //       height: 10,
+      //       depth: 10,
+      //     });
+
+      //     const material = g("MeshStandardMaterial", {
+      //       color: this.color,
+      //     });
+
+      //     return {
+      //       geometry,
+      //       material,
+      //       point: g("Mesh", {
+      //         geometry: geometry.vid,
+      //         material: material.vid,
+      //         position: this.offset + 20,
+      //       }),
+      //     };
+      //   },
+      //   data() {
+      //     return {
+      //       offset: 10,
+      //     };
+      //   },
+      // });
+
+      const widget = new VIS.Widget({
+        name: "China-map",
+        parent: "Scene",
+        resources: {},
+        render(g, c, onComputed) {
+          const geometry = g("BoxGeometry", {
+            width: 100,
+          });
+          const material = g("MeshBasicMaterial", {
+            color: onComputed(() => this.color),
+          });
+
+          return {
+            geometry,
+            material,
+            stage: g("Mesh", {
+              geometry: geometry.vid,
+              material: material.vid,
+              position: {
+                x: onComputed(() => this.bigOffset + 20),
+              },
+              click: [this.move],
+            }),
+          };
+        },
+        data() {
+          return {
+            offset: 1,
+            color: "rgb(255, 120, 120)",
+          };
+        },
+        computed: {
+          bigOffset() {
+            return this.offset + 1;
+          },
+        },
+        watch: {},
+        methods: {
+          move() {
+            this.stage.position.x += 20 + this.offset;
+          },
+        },
+        beforeLoad() {},
+        loaded() {},
+        beforeCreate() {},
+        created() {},
+        beforeDispose() {},
+        disposed() {},
+      });
+
+      // 使用
+      engine.use(widget);
+
+      console.log(widget);
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>

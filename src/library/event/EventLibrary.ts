@@ -22,7 +22,7 @@ import * as ColorChange from "./RealTimeAnimateLibrary/colorChange";
 import * as OrbitTargetMove from "./RealTimeAnimateLibrary/orbitTargetMove";
 
 export interface BasicEventConfig {
-  name: string;
+  name: string | Symbol;
 }
 
 export type EventGenerator<C extends BasicEventConfig> = (
@@ -31,8 +31,11 @@ export type EventGenerator<C extends BasicEventConfig> = (
 ) => (event?: ObjectEvent) => void;
 
 export class EventLibrary {
-  private static configLibrary = new Map<string, unknown>();
-  private static generatorLibrary = new Map<string, EventGenerator<any>>();
+  private static configLibrary = new Map<string | Symbol, unknown>();
+  private static generatorLibrary = new Map<
+    string | Symbol,
+    EventGenerator<any>
+  >();
 
   static register = function <C extends BasicEventConfig>(
     config: C,

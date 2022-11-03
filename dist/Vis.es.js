@@ -3829,7 +3829,10 @@ const _ProxyBroadcast = class extends EventDispatcher {
     });
     return result;
   }
-  proxyExtends(object, path = []) {
+  setIgnore(ignore) {
+    this.ignoreAttribute = Object.assign(this.ignoreAttribute, ignore);
+  }
+  proxyExtends(object, path = [], module = true) {
     if (_ProxyBroadcast.proxyWeakSet.has(object) || typeof object !== "object") {
       return object;
     }
@@ -3847,7 +3850,7 @@ const _ProxyBroadcast = class extends EventDispatcher {
         const tempPath = path.concat([key]);
         let ignoreAttribute = this.ignoreAttribute;
         let ignore = false;
-        for (const tempKey of tempPath.slice(1)) {
+        for (const tempKey of module ? tempPath.slice(1) : tempPath) {
           if (ignoreAttribute[tempKey] === true) {
             ignore = true;
             break;
@@ -11224,6 +11227,9 @@ class EngineSupport extends Engine {
       return null;
     }
   }
+  use(widget) {
+    widget.init(this);
+  }
 }
 class ModelingEngineSupport extends EngineSupport {
   constructor(parameters) {
@@ -11435,6 +11441,214 @@ var Template = {
   clone,
   handler
 };
+class Dependence {
+  constructor() {
+    __publicField(this, "dep", {});
+    __publicField(this, "target", {});
+  }
+  createSign(notice) {
+    return notice.path.length ? `${notice.path.join(".")}.${notice.key}` : notice.key;
+  }
+  walk(path, value) {
+    if (path.includes(".")) {
+      path.split(".");
+    } else {
+      this.target[path] = value;
+    }
+  }
+  setTarget(target) {
+    this.target = target;
+  }
+  collect(collectKey, ob, fun) {
+    const depend = (event) => {
+      if (event.notice.operate === "get") {
+        const depSign = this.createSign(event.notice);
+        if (!this.dep[depSign]) {
+          this.dep[depSign] = new Set();
+        }
+        this.dep[depSign].add(collectKey);
+      }
+    };
+    ob.addEventListener("broadcast", depend);
+    const value = fun();
+    ob.removeEventListener("broadcast", depend);
+    return value;
+  }
+  notify(notice) {
+    const depSign = this.createSign(notice);
+    if (this.dep[depSign]) {
+      this.dep[depSign].forEach((path) => {
+      });
+    }
+  }
+}
+class Observer extends ProxyBroadcast {
+  constructor() {
+    super();
+    __publicField(this, "deps", new Set());
+    this.addEventListener("broadcast", (event) => {
+      if (event.notice.operate !== "get") {
+        this.deps.forEach((dep) => {
+          dep.notify(event.notice);
+        });
+      }
+    });
+  }
+  addDep(dep) {
+    this.deps.add(dep);
+  }
+}
+const _Updater = class {
+  constructor(fun) {
+    __publicField(this, "run");
+    __publicField(this, "token", Symbol("VIS.RENDER.UPDATE"));
+    this.run = fun;
+    _Updater.map.set(this.token, this);
+  }
+};
+let Updater = _Updater;
+__publicField(Updater, "map", new Map());
+__publicField(Updater, "get", function(s) {
+  return _Updater.map.get(s);
+});
+const onComputed = function(fun) {
+  return new Updater(fun);
+};
+const createElement = function(type, merge) {
+  const recursion = (object) => {
+    for (const key in object) {
+      if (typeof object[key] === "object" && object[key] !== null && !(object[key] instanceof Updater)) {
+        recursion(object[key]);
+      } else {
+        if (object[key] instanceof Updater) {
+          object[key] = object[key].token;
+        }
+      }
+    }
+  };
+  recursion(merge);
+  return generateConfig(type, merge, false, false);
+};
+const _Widget = class extends EventDispatcher {
+  constructor(options) {
+    super();
+    __publicField(this, "component", function(options) {
+      if (_Widget.components[options.name]) {
+        console.warn(`${options.name} components has exist`);
+        return;
+      }
+      _Widget.components[options.name] = options;
+    });
+    __publicField(this, "observed", {});
+    __publicField(this, "options");
+    __publicField(this, "render", {});
+    __publicField(this, "observer", new Observer());
+    __publicField(this, "dependence", new Dependence());
+    this.options = options;
+  }
+  createComputed() {
+    const computed = this.options.computed || {};
+    for (const key in computed) {
+      this.observed[key] = this.dependence.collect(key, this.observer, computed[key].bind(this.observed));
+    }
+  }
+  createRender() {
+    const render = this.options.render.call(this.observed, createElement, () => {
+    }, onComputed);
+    const recursion = (object, path) => {
+      for (const key in object) {
+        if (typeof object[key] === "object" && object[key] !== null) {
+          recursion(object[key], path.concat([key]));
+        } else if (typeof object[key] === "symbol") {
+          const updater = Updater.get(object[key]);
+          if (!updater) {
+            console.error(`Widget createRender can not found this updater: ${object[key]}`);
+          } else {
+            object[key] = this.dependence.collect(`${path.join(".")}.${key}`, this.observer, updater.run.bind(this.observed));
+          }
+        }
+      }
+    };
+    recursion(render, []);
+    this.render = render;
+    Object.assign(this.observed, this.render);
+  }
+  createObserver() {
+    const options = this.options;
+    const computed = Object.assign({}, options.computed || {});
+    for (const key in computed) {
+      computed[key] = null;
+    }
+    this.observed = this.observer.proxyExtends(Object.assign({}, options.input, options.data ? options.data() : {}, computed, options.methods || {}), [], false);
+  }
+  createWatch() {
+    const watch = this.options.watch || {};
+    this.observer.addEventListener("broadcast", (event) => {
+      const { operate, key, path, value } = event.notice;
+      if (operate !== "get") {
+        const sign = path.length ? `${path.join(".")}.${key}` : key;
+        if (watch[sign]) {
+          watch[sign].call(this.observed, value);
+        }
+      }
+    });
+  }
+  createMethods() {
+    this.options.methods || {};
+  }
+  async init(engineSupport) {
+    const options = this.options;
+    options.beforeLoad && options.beforeLoad();
+    if (options.resources) {
+      await engineSupport.loadResourcesAsync(Object.values(options.resources));
+    }
+    options.loaded && options.loaded();
+    this.createObserver();
+    this.createComputed();
+    this.createRender();
+    this.createWatch();
+    options.beforeCreate && options.beforeCreate();
+    const configure = {};
+    Object.values(this.render).forEach((config2) => {
+      const model = getModule(config2.type);
+      if (!model) {
+        console.warn(`widget can not support this config type: ${config2.type}`);
+      } else if (configure[model]) {
+        configure[model][config2.vid] = config2;
+      } else {
+        configure[model] = {
+          [config2.vid]: config2
+        };
+      }
+    });
+    const group = generateConfig(CONFIGTYPE.GROUP);
+    Object.keys(configure).forEach((key) => {
+      if (key.toLocaleUpperCase() in OBJECTMODULE) {
+        Object.values(configure[key]).forEach((config2) => {
+          if (!config2.parent) {
+            group.children.push(config2.vid);
+          }
+        });
+      }
+    });
+    if (configure[MODULETYPE.GROUP]) {
+      configure[MODULETYPE.GROUP][group.vid] = group;
+    } else {
+      configure[MODULETYPE.GROUP] = {
+        [group.vid]: group
+      };
+    }
+    engineSupport.loadConfig(configure);
+    engineSupport.getConfigBySymbol(options.parent).children.push(group.vid);
+    options.created && options.created();
+  }
+  exportConfig() {
+  }
+  loadConfig() {
+  }
+};
+let Widget = _Widget;
+__publicField(Widget, "components", {});
 const version = "0.2.4";
 if (!window.__THREE__) {
   console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
@@ -11498,4 +11712,4 @@ const lightShadow = new LightShadow(new OrthographicCamera(-256, 256, 256, -256)
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
-export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, Template, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, generateConfig, getModule };
+export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, Template, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, Widget, generateConfig, getModule };

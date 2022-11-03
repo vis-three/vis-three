@@ -2,7 +2,7 @@ import { BaseEvent, EventDispatcher } from "./EventDispatcher";
 import { isValidKey } from "../utils/utils";
 
 export interface ProxyNotice {
-  operate: "add" | "set" | "delete";
+  operate: "get" | "add" | "set" | "delete";
   path: Array<string>;
   key: string;
   value: any;
@@ -17,6 +17,7 @@ export interface IgnoreAttribute {
 }
 
 export class ProxyBroadcast extends EventDispatcher {
+  // private static proxyWeakMap = new WeakMap<object, Set<ProxyBroadcast>>();
   private static proxyWeakSet = new WeakSet();
 
   private static arraySymobl = "vis.array";
@@ -166,8 +167,16 @@ export class ProxyBroadcast extends EventDispatcher {
     this.ignoreAttribute = ignore || {};
   }
 
+  setIgnore(ignore: IgnoreAttribute) {
+    this.ignoreAttribute = Object.assign(this.ignoreAttribute, ignore);
+  }
+
   // 代理拓展
-  proxyExtends<T extends object>(object: T, path: Array<string> = []): T {
+  proxyExtends<T extends object>(
+    object: T,
+    path: Array<string> = [],
+    module = true
+  ): T {
     if (ProxyBroadcast.proxyWeakSet.has(object) || typeof object !== "object") {
       return object;
     }
@@ -200,10 +209,10 @@ export class ProxyBroadcast extends EventDispatcher {
       for (const key in object) {
         const tempPath = path!.concat([key]);
 
-        // 判断是否需要忽略 第一个为对象id所以忽略
         let ignoreAttribute = this.ignoreAttribute;
         let ignore = false;
-        for (const tempKey of tempPath.slice(1)) {
+        // 判断是否需要忽略 第一个为对象id所以忽略
+        for (const tempKey of module ? tempPath.slice(1) : tempPath) {
           if (ignoreAttribute[tempKey] === true) {
             ignore = true;
             break;

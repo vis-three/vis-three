@@ -59,6 +59,7 @@ import { CSS3DPlane } from "./extends/object/CSS3DPlane";
 import { EventDispatcher } from "./core/EventDispatcher";
 import Template from "./convenient/Template";
 import { Object3DDataSupport } from "./middleware/object3D/Object3DDataSupport";
+import { Widget } from "./core/Widget";
 
 import "./optimize/optimizeScirpt";
 
@@ -143,4 +144,6 @@ export {
   Utils,
   // extends
   CSS3DPlane,
+  // widget
+  Widget,
 };

@@ -78,14 +78,14 @@
         },
       });
 
-      const animation = VIS.generateConfig("ScriptAnimation", {
-        target: material2.vid,
-        attribute: ".uniforms.extend.value",
-        script: VIS.AniScriptLibrary.generateConfig("sinWave", {
-          amplitude: 0.3,
-          speed: 5,
-        }),
-      });
+      // const animation = VIS.generateConfig("ScriptAnimation", {
+      //   target: material2.vid,
+      //   attribute: ".uniforms.extend.value",
+      //   script: VIS.AniScriptLibrary.generateConfig("sinWave", {
+      //     amplitude: 0.3,
+      //     speed: 5,
+      //   }),
+      // });
 
       engine.play();
 

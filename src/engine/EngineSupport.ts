@@ -1,4 +1,5 @@
 import { Material, Object3D, Texture } from "three";
+import { Widget } from "../core/Widget";
 import { CompilerManager } from "../manager/CompilerManager";
 import {
   DataSupportManager,
@@ -192,5 +193,13 @@ export class EngineSupport extends Engine {
     } else {
       return null;
     }
+  }
+
+  /**
+   * 组件化
+   * @param options
+   */
+  use(widget: Widget) {
+    widget.init(this);
   }
 }
