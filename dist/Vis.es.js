@@ -86,7 +86,7 @@ class EventDispatcher {
     }
   }
   clear() {
-    this.listeners = new Map();
+    this.listeners.clear();
   }
   useful() {
     return Boolean([...this.listeners.keys()].length);
@@ -97,6 +97,36 @@ class EventDispatcher {
       this.removeEventListener(type, onceListener);
     };
     this.addEventListener(type, onceListener);
+  }
+  emit(name, params) {
+    var _a;
+    const listeners = this.listeners;
+    if (listeners.has(name)) {
+      try {
+        (_a = listeners.get(name)) == null ? void 0 : _a.forEach((listener) => {
+          listener.call(this, params);
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+  on(type, listener) {
+    this.addEventListener(type, listener);
+  }
+  has(type, listener) {
+    return this.hasEventListener(type, listener);
+  }
+  off(type, listener) {
+    if (listener) {
+      this.removeEventListener(type, listener);
+    } else {
+      const listeners = this.listeners;
+      if (!listeners.has(type)) {
+        return;
+      }
+      listeners.delete(type);
+    }
   }
 }
 class RenderManager extends EventDispatcher {
@@ -3764,32 +3794,32 @@ const _ProxyBroadcast = class extends EventDispatcher {
     _ProxyBroadcast.cacheArray(value);
     let result;
     if (target[key] === void 0) {
-      if (typeof value === "object" && value !== null && !_ProxyBroadcast.proxyWeakSet.has(value) && !broadcast.ignoreAttribute[key]) {
+      if (typeof value === "object" && value !== null && !broadcast.ignoreAttribute[key]) {
         const newPath = path.concat([key]);
         value = broadcast.proxyExtends(value, newPath);
       }
       result = Reflect.set(target, key, value);
-      broadcast.broadcast({
+      broadcast.broadcast(target, {
         operate: "add",
         path: path.concat([]),
         key,
         value
       });
     } else {
-      if (typeof value === "object" && value !== null && !_ProxyBroadcast.proxyWeakSet.has(value) && !broadcast.ignoreAttribute[key]) {
+      if (typeof value === "object" && value !== null && !value[_ProxyBroadcast.proxySymbol] && !broadcast.ignoreAttribute[key]) {
         const newPath = path.concat([key]);
         value = broadcast.proxyExtends(value, newPath);
       }
       result = Reflect.set(target, key, value);
       if (Array.isArray(target) && key === "length") {
-        const oldValue = target[Symbol.for(_ProxyBroadcast.arraySymobl)];
+        const oldValue = target[_ProxyBroadcast.arraySymbol];
         const num = oldValue.length - target.length;
         if (num > 0) {
           let execNum = 0;
           let index = 0;
           for (const value2 of oldValue) {
             if (!target.includes(value2)) {
-              broadcast.broadcast({
+              broadcast.broadcast(target, {
                 operate: "delete",
                 path: path.concat([]),
                 key: index.toString(),
@@ -3803,10 +3833,10 @@ const _ProxyBroadcast = class extends EventDispatcher {
             index += 1;
           }
         }
-        target[Symbol.for(this.arraySymobl)] = target.concat([]);
+        target[_ProxyBroadcast.arraySymbol] = target.concat([]);
         return result;
       }
-      broadcast.broadcast({
+      broadcast.broadcast(target, {
         operate: "set",
         path: path.concat([]),
         key,
@@ -3821,7 +3851,7 @@ const _ProxyBroadcast = class extends EventDispatcher {
     if (Array.isArray(target) || typeof key === "symbol") {
       return result;
     }
-    broadcast.broadcast({
+    broadcast.broadcast(target, {
       operate: "delete",
       path: path.concat([]),
       key,
@@ -3829,13 +3859,41 @@ const _ProxyBroadcast = class extends EventDispatcher {
     });
     return result;
   }
+  addBroadcast(target) {
+    const raw = target[_ProxyBroadcast.rawSymbol];
+    if (!raw) {
+      console.warn(`object can not found it raw object`, target);
+      return;
+    }
+    if (_ProxyBroadcast.proxyWeakMap.has(raw)) {
+      const list = _ProxyBroadcast.proxyWeakMap.get(raw);
+      if (list.includes(this)) {
+        return;
+      } else {
+        list.push(this);
+      }
+    } else {
+      _ProxyBroadcast.proxyWeakMap.set(raw, [this]);
+    }
+  }
   setIgnore(ignore) {
     this.ignoreAttribute = Object.assign(this.ignoreAttribute, ignore);
   }
   proxyExtends(object, path = [], module = true) {
-    if (_ProxyBroadcast.proxyWeakSet.has(object) || typeof object !== "object") {
+    if (typeof object !== "object") {
       return object;
     }
+    if (object[_ProxyBroadcast.proxySymbol]) {
+      this.addBroadcast(object);
+      for (const key in object) {
+        if (typeof object[key] === "object" && object[key] !== null) {
+          this.proxyExtends(object[key]);
+        }
+      }
+      return object;
+    }
+    object[_ProxyBroadcast.rawSymbol] = object;
+    object[_ProxyBroadcast.proxySymbol] = true;
     const handler2 = {
       get: _ProxyBroadcast.proxyGetter,
       set: (target, key, value, receiver) => {
@@ -3867,30 +3925,35 @@ const _ProxyBroadcast = class extends EventDispatcher {
       }
     }
     const proxy = new Proxy(object, handler2);
-    _ProxyBroadcast.proxyWeakSet.add(proxy);
+    this.addBroadcast(object);
     return proxy;
   }
-  broadcast({ operate, path, key, value }) {
+  broadcast(target, { operate, path, key, value }) {
     const filterMap = {
       __poto__: true,
       length: true
     };
     if (filterMap[key]) {
-      return this;
+      return;
     }
-    this.dispatchEvent({
-      type: "broadcast",
-      notice: { operate, path, key, value }
-    });
-    return this;
+    if (_ProxyBroadcast.proxyWeakMap.has(target)) {
+      for (const porxyBroadcast of _ProxyBroadcast.proxyWeakMap.get(target)) {
+        porxyBroadcast.dispatchEvent({
+          type: "broadcast",
+          notice: { operate, path, key, value }
+        });
+      }
+    }
   }
 };
 let ProxyBroadcast = _ProxyBroadcast;
-__publicField(ProxyBroadcast, "proxyWeakSet", new WeakSet());
-__publicField(ProxyBroadcast, "arraySymobl", "vis.array");
+__publicField(ProxyBroadcast, "proxySymbol", Symbol.for("VIS.PROXY"));
+__publicField(ProxyBroadcast, "arraySymbol", Symbol.for("VIS.PROXY.ARRAY"));
+__publicField(ProxyBroadcast, "rawSymbol", Symbol.for("VIS.PROXY.RAW"));
+__publicField(ProxyBroadcast, "proxyWeakMap", new WeakMap());
 __publicField(ProxyBroadcast, "cacheArray", function(object) {
-  if (Array.isArray(object) && !object[Symbol.for(_ProxyBroadcast.arraySymobl)]) {
-    object[Symbol.for(_ProxyBroadcast.arraySymobl)] = object.concat([]);
+  if (Array.isArray(object) && !object[_ProxyBroadcast.arraySymbol]) {
+    object[_ProxyBroadcast.arraySymbol] = object.concat([]);
   }
 });
 class Translater {
@@ -4220,6 +4283,7 @@ class LineDataSupport extends SolidObjectDataSupport {
   }
 }
 const MeshRule = function(notice, compiler) {
+  console.log(notice);
   ObjectRule(notice, compiler);
 };
 class MeshDataSupport extends SolidObjectDataSupport {
@@ -11508,11 +11572,13 @@ const _Updater = class {
 };
 let Updater = _Updater;
 __publicField(Updater, "map", new Map());
-__publicField(Updater, "get", function(s) {
-  return _Updater.map.get(s);
-});
 const onComputed = function(fun) {
   return new Updater(fun);
+};
+const onEvent = function(fun) {
+  const config2 = { name: Symbol("VIS.RENDER.EVENT") };
+  EventLibrary.register(config2, () => fun);
+  return config2;
 };
 const createElement = function(type, merge) {
   const recursion = (object) => {
@@ -11554,18 +11620,14 @@ const _Widget = class extends EventDispatcher {
   }
   createRender() {
     const render = this.options.render.call(this.observed, createElement, () => {
-    }, onComputed);
+    }, onComputed, onEvent);
     const recursion = (object, path) => {
       for (const key in object) {
         if (typeof object[key] === "object" && object[key] !== null) {
           recursion(object[key], path.concat([key]));
-        } else if (typeof object[key] === "symbol") {
-          const updater = Updater.get(object[key]);
-          if (!updater) {
-            console.error(`Widget createRender can not found this updater: ${object[key]}`);
-          } else {
-            object[key] = this.dependence.collect(`${path.join(".")}.${key}`, this.observer, updater.run.bind(this.observed));
-          }
+        } else if (typeof object[key] === "symbol" && Updater.map.has(object[key])) {
+          const updater = Updater.map.get(object[key]);
+          object[key] = this.dependence.collect(`${path.join(".")}.${key}`, this.observer, updater.run.bind(this.observed));
         }
       }
     };
@@ -11593,9 +11655,6 @@ const _Widget = class extends EventDispatcher {
       }
     });
   }
-  createMethods() {
-    this.options.methods || {};
-  }
   async init(engineSupport) {
     const options = this.options;
     options.beforeLoad && options.beforeLoad();
@@ -11608,37 +11667,22 @@ const _Widget = class extends EventDispatcher {
     this.createRender();
     this.createWatch();
     options.beforeCreate && options.beforeCreate();
-    const configure = {};
+    const dataSupportManager = engineSupport.dataSupportManager;
+    const group = generateConfig(CONFIGTYPE.GROUP);
     Object.values(this.render).forEach((config2) => {
       const model = getModule(config2.type);
       if (!model) {
         console.warn(`widget can not support this config type: ${config2.type}`);
-      } else if (configure[model]) {
-        configure[model][config2.vid] = config2;
       } else {
-        configure[model] = {
-          [config2.vid]: config2
-        };
-      }
-    });
-    const group = generateConfig(CONFIGTYPE.GROUP);
-    Object.keys(configure).forEach((key) => {
-      if (key.toLocaleUpperCase() in OBJECTMODULE) {
-        Object.values(configure[key]).forEach((config2) => {
+        if (model.toLocaleUpperCase() in OBJECTMODULE) {
           if (!config2.parent) {
             group.children.push(config2.vid);
           }
-        });
+        }
+        dataSupportManager.applyConfig(config2);
       }
     });
-    if (configure[MODULETYPE.GROUP]) {
-      configure[MODULETYPE.GROUP][group.vid] = group;
-    } else {
-      configure[MODULETYPE.GROUP] = {
-        [group.vid]: group
-      };
-    }
-    engineSupport.loadConfig(configure);
+    dataSupportManager.applyConfig(group);
     engineSupport.getConfigBySymbol(options.parent).children.push(group.vid);
     options.created && options.created();
   }

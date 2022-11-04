@@ -11,5 +11,6 @@ export const MeshRule: MeshRule = function (
   notice: ProxyNotice,
   compiler: MeshCompiler
 ) {
+  console.log(notice);
   ObjectRule(notice, compiler);
 };

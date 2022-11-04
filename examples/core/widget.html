@@ -29,6 +29,8 @@
         .setStats(true)
         .play();
 
+      engine.eventManager.recursive = true;
+
       engine.applyConfig(VIS.generateConfig("Scene")).setScene("Scene");
 
       // const point = VIS.Widget.component({
@@ -68,7 +70,7 @@
         name: "China-map",
         parent: "Scene",
         resources: {},
-        render(g, c, onComputed) {
+        render(g, c, onComputed, onEvent) {
           const geometry = g("BoxGeometry", {
             width: 100,
           });
@@ -85,7 +87,11 @@
               position: {
                 x: onComputed(() => this.bigOffset + 20),
               },
-              click: [this.move],
+              click: [
+                onEvent(() => {
+                  this.stage.position.x += 20 + this.offset;
+                }),
+              ],
             }),
           };
         },
@@ -101,11 +107,7 @@
           },
         },
         watch: {},
-        methods: {
-          move() {
-            this.stage.position.x += 20 + this.offset;
-          },
-        },
+        methods: {},
         beforeLoad() {},
         loaded() {},
         beforeCreate() {},

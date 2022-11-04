@@ -17,19 +17,15 @@ export interface IgnoreAttribute {
 }
 
 export class ProxyBroadcast extends EventDispatcher {
-  // private static proxyWeakMap = new WeakMap<object, Set<ProxyBroadcast>>();
-  private static proxyWeakSet = new WeakSet();
+  private static proxySymbol = Symbol.for("VIS.PROXY");
+  private static arraySymbol = Symbol.for("VIS.PROXY.ARRAY");
+  private static rawSymbol = Symbol.for("VIS.PROXY.RAW");
 
-  private static arraySymobl = "vis.array";
+  private static proxyWeakMap = new WeakMap<object, Array<ProxyBroadcast>>();
 
   private static cacheArray = function (object: any) {
-    if (
-      Array.isArray(object) &&
-      !object[Symbol.for(ProxyBroadcast.arraySymobl)]
-    ) {
-      object[Symbol.for(ProxyBroadcast.arraySymobl)] = (
-        object as Array<any>
-      ).concat([]);
+    if (Array.isArray(object) && !object[ProxyBroadcast.arraySymbol]) {
+      object[ProxyBroadcast.arraySymbol] = (object as Array<any>).concat([]);
     }
   };
 
@@ -62,7 +58,6 @@ export class ProxyBroadcast extends EventDispatcher {
       if (
         typeof value === "object" &&
         value !== null &&
-        !ProxyBroadcast.proxyWeakSet.has(value) &&
         !broadcast.ignoreAttribute[key]
       ) {
         const newPath = path!.concat([key]);
@@ -71,7 +66,7 @@ export class ProxyBroadcast extends EventDispatcher {
 
       result = Reflect.set(target, key, value);
 
-      broadcast.broadcast({
+      broadcast.broadcast(target, {
         operate: "add",
         path: path!.concat([]),
         key,
@@ -83,7 +78,7 @@ export class ProxyBroadcast extends EventDispatcher {
       if (
         typeof value === "object" &&
         value !== null &&
-        !ProxyBroadcast.proxyWeakSet.has(value) &&
+        !value[ProxyBroadcast.proxySymbol] &&
         !broadcast.ignoreAttribute[key]
       ) {
         const newPath = path!.concat([key]);
@@ -94,7 +89,7 @@ export class ProxyBroadcast extends EventDispatcher {
 
       // array的length变更需要重新比对数组，找出真正的操作对象，并且更新缓存
       if (Array.isArray(target) && key === "length") {
-        const oldValue = target[Symbol.for(ProxyBroadcast.arraySymobl)];
+        const oldValue = target[ProxyBroadcast.arraySymbol];
 
         // 只用还原length减少的现场
         const num = oldValue.length - target.length;
@@ -103,7 +98,7 @@ export class ProxyBroadcast extends EventDispatcher {
           let index = 0;
           for (const value of oldValue) {
             if (!target.includes(value)) {
-              broadcast.broadcast({
+              broadcast.broadcast(target, {
                 operate: "delete",
                 path: path!.concat([]),
                 key: index.toString(),
@@ -119,11 +114,11 @@ export class ProxyBroadcast extends EventDispatcher {
             index += 1;
           }
         }
-        target[Symbol.for(this.arraySymobl)] = target.concat([]);
+        target[ProxyBroadcast.arraySymbol] = target.concat([]);
         return result;
       }
 
-      broadcast.broadcast({
+      broadcast.broadcast(target, {
         operate: "set",
         path: path!.concat([]),
         key,
@@ -149,7 +144,7 @@ export class ProxyBroadcast extends EventDispatcher {
       return result;
     }
 
-    broadcast.broadcast({
+    broadcast.broadcast(target, {
       operate: "delete",
       path: path!.concat([]),
       key,
@@ -167,6 +162,26 @@ export class ProxyBroadcast extends EventDispatcher {
     this.ignoreAttribute = ignore || {};
   }
 
+  private addBroadcast(target: object) {
+    const raw = target[ProxyBroadcast.rawSymbol];
+
+    if (!raw) {
+      console.warn(`object can not found it raw object`, target);
+      return;
+    }
+
+    if (ProxyBroadcast.proxyWeakMap.has(raw)) {
+      const list = ProxyBroadcast.proxyWeakMap.get(raw)!;
+      if (list.includes(this)) {
+        return;
+      } else {
+        list.push(this);
+      }
+    } else {
+      ProxyBroadcast.proxyWeakMap.set(raw, [this]);
+    }
+  }
+
   setIgnore(ignore: IgnoreAttribute) {
     this.ignoreAttribute = Object.assign(this.ignoreAttribute, ignore);
   }
@@ -177,9 +192,22 @@ export class ProxyBroadcast extends EventDispatcher {
     path: Array<string> = [],
     module = true
   ): T {
-    if (ProxyBroadcast.proxyWeakSet.has(object) || typeof object !== "object") {
+    if (typeof object !== "object") {
       return object;
     }
+
+    if (object[ProxyBroadcast.proxySymbol]) {
+      this.addBroadcast(object);
+      for (const key in object) {
+        if (typeof object[key] === "object" && object[key] !== null) {
+          this.proxyExtends(object[key] as object);
+        }
+      }
+      return object;
+    }
+
+    object[ProxyBroadcast.rawSymbol] = object;
+    object[ProxyBroadcast.proxySymbol] = true;
 
     const handler: ProxyHandler<object> = {
       get: ProxyBroadcast.proxyGetter,
@@ -239,13 +267,13 @@ export class ProxyBroadcast extends EventDispatcher {
 
     const proxy = new Proxy(object, handler) as T;
 
-    ProxyBroadcast.proxyWeakSet.add(proxy);
+    this.addBroadcast(object);
 
     return proxy;
   }
 
   // 广播
-  broadcast({ operate, path, key, value }: ProxyNotice): this {
+  broadcast(target: object, { operate, path, key, value }: ProxyNotice) {
     // 过滤
     const filterMap = {
       __poto__: true,
@@ -253,14 +281,16 @@ export class ProxyBroadcast extends EventDispatcher {
     };
 
     if (filterMap[key]) {
-      return this;
+      return;
     }
 
-    this.dispatchEvent({
-      type: "broadcast",
-      notice: { operate, path, key, value },
-    });
-
-    return this;
+    if (ProxyBroadcast.proxyWeakMap.has(target)) {
+      for (const porxyBroadcast of ProxyBroadcast.proxyWeakMap.get(target)!) {
+        porxyBroadcast.dispatchEvent({
+          type: "broadcast",
+          notice: { operate, path, key, value },
+        });
+      }
+    }
   }
 }

@@ -2,7 +2,12 @@ import {
   EngineSupport,
   EngineSupportLoadOptions,
 } from "../engine/EngineSupport";
+import {
+  BasicEventConfig,
+  EventGenerator,
+} from "../library/event/EventLibrary";
 import { EventLibrary, generateConfig } from "../main";
+import { ObjectEvent } from "../manager/EventManager";
 import { LoadUnit } from "../manager/LoaderManager";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
@@ -15,7 +20,7 @@ import { EventDispatcher } from "./EventDispatcher";
 import { ProxyEvent, ProxyNotice } from "./ProxyBroadcast";
 import { Dependence } from "./widget/Dependence";
 import { Observer } from "./widget/Observer";
-import { createElement, onComputed, Updater } from "./widget/render";
+import { createElement, onComputed, onEvent, Updater } from "./widget/render";
 
 export interface WigetLifetimes {
   beforeLoad?: Function;
@@ -37,7 +42,8 @@ export interface WidgetOptions {
       merge: any
     ) => ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>,
     c: () => any,
-    onComputed: (fun: () => any) => Updater
+    onComputed: (fun: () => any) => Updater,
+    onEvent: (fun: (event?: ObjectEvent) => void) => void
   ) => Record<string, ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>>;
   data?: () => Record<string, any>;
   computed?: Record<string, Function>;
@@ -49,6 +55,8 @@ export interface WidgetOptions {
   created?: WigetLifetimes["created"];
   beforeDispose?: WigetLifetimes["beforeDispose"];
   disposed?: WigetLifetimes["disposed"];
+  sceneChange?: Function;
+  cameraChange?: Function;
 }
 
 export class Widget extends EventDispatcher {
@@ -95,26 +103,24 @@ export class Widget extends EventDispatcher {
       this.observed,
       createElement,
       () => {},
-      onComputed
+      onComputed,
+      onEvent
     );
 
     const recursion = (object: object, path: Array<string>) => {
       for (const key in object) {
         if (typeof object[key] === "object" && object[key] !== null) {
           recursion(object[key], path.concat([key]));
-        } else if (typeof object[key] === "symbol") {
-          const updater = Updater.get(object[key]);
-          if (!updater) {
-            console.error(
-              `Widget createRender can not found this updater: ${object[key]}`
-            );
-          } else {
-            object[key] = this.dependence.collect(
-              `${path.join(".")}.${key}`,
-              this.observer,
-              updater.run.bind(this.observed)
-            );
-          }
+        } else if (
+          typeof object[key] === "symbol" &&
+          Updater.map.has(object[key])
+        ) {
+          const updater = Updater.map.get(object[key])!;
+          object[key] = this.dependence.collect(
+            `${path.join(".")}.${key}`,
+            this.observer,
+            updater.run.bind(this.observed)
+          );
         }
       }
     };
@@ -164,12 +170,6 @@ export class Widget extends EventDispatcher {
     );
   }
 
-  private createMethods() {
-    const methods = this.options.methods || {};
-    // TODO:
-    // EventLibrary.register({name: } as BasicEventConfig)
-  }
-
   async init(engineSupport: EngineSupport) {
     const options = this.options;
 
@@ -189,45 +189,28 @@ export class Widget extends EventDispatcher {
 
     options.beforeCreate && options.beforeCreate();
 
-    const configure: EngineSupportLoadOptions = {};
-
-    Object.values(this.render).forEach((config) => {
-      const model = getModule(config.type);
-      if (!model) {
-        console.warn(`widget can not support this config type: ${config.type}`);
-      } else if (configure[model]) {
-        (<object>configure[model])[config.vid] = config;
-      } else {
-        configure[model] = {
-          [config.vid]: config as any,
-        };
-      }
-    });
+    const dataSupportManager = engineSupport.dataSupportManager;
 
     // 打包成组
 
     const group = generateConfig(CONFIGTYPE.GROUP) as GroupConfig;
 
-    // 更新parent
-    Object.keys(configure).forEach((key) => {
-      if (key.toLocaleUpperCase() in OBJECTMODULE) {
-        Object.values(configure[key]).forEach((config) => {
+    Object.values(this.render).forEach((config) => {
+      const model = getModule(config.type);
+      if (!model) {
+        console.warn(`widget can not support this config type: ${config.type}`);
+      } else {
+        // 更新parent
+        if (model.toLocaleUpperCase() in OBJECTMODULE) {
           if (!(config as ObjectConfig).parent) {
             group.children.push((config as ObjectConfig).vid);
           }
-        });
+        }
+        dataSupportManager.applyConfig(config);
       }
     });
 
-    if (configure[MODULETYPE.GROUP]) {
-      configure[MODULETYPE.GROUP]![group.vid] = group;
-    } else {
-      configure[MODULETYPE.GROUP] = {
-        [group.vid]: group,
-      };
-    }
-
-    engineSupport.loadConfig(configure);
+    dataSupportManager.applyConfig(group);
 
     (<ObjectConfig>(
       engineSupport.getConfigBySymbol(options.parent)

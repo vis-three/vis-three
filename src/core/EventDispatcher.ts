@@ -70,7 +70,7 @@ export class EventDispatcher {
   }
 
   clear() {
-    this.listeners = new Map();
+    this.listeners.clear();
   }
 
   useful(): boolean {
@@ -84,5 +84,41 @@ export class EventDispatcher {
     };
 
     this.addEventListener(type, onceListener);
+  }
+
+  emit<C extends BaseEvent>(name: C["type"], params: Omit<C, "type">): void {
+    const listeners = this.listeners;
+    if (listeners.has(name)) {
+      try {
+        listeners.get(name)?.forEach((listener) => {
+          listener.call(this, params);
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  on<C extends BaseEvent>(type: C["type"], listener: EventListener<C>): void {
+    this.addEventListener(type, listener);
+  }
+
+  has<C extends BaseEvent>(
+    type: C["type"],
+    listener: EventListener<C>
+  ): boolean {
+    return this.hasEventListener(type, listener);
+  }
+
+  off<C extends BaseEvent>(type: C["type"], listener?: EventListener<C>): void {
+    if (listener) {
+      this.removeEventListener(type, listener);
+    } else {
+      const listeners = this.listeners;
+      if (!listeners.has(type)) {
+        return;
+      }
+      listeners.delete(type);
+    }
   }
 }
