@@ -227,7 +227,6 @@ export class Engine extends EventDispatcher {
   exportConfig?: (compress: boolean) => LoadOptions;
 
   applyConfig?: <T extends SymbolConfig>(...configs: T[]) => this;
-  reactiveConfig?: <T extends SymbolConfig>(config: T) => T;
   getConfigBySymbol?: <T extends SymbolConfig>(vid: string) => T | null;
   removeConfigBySymbol?: (...vids: string[]) => this;
 

@@ -1,6 +1,4 @@
 import { Line } from "three";
-import { CompilerTarget } from "../../core/Compiler";
-import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { LineCompiler } from "./LineCompiler";
@@ -14,8 +12,7 @@ export class LineDataSupport extends SolidObjectDataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.LINE;
 
-  constructor(data?: CompilerTarget<LineConfig>, ignore?: IgnoreAttribute) {
-    !data && (data = {});
-    super(LineRule, data, ignore);
+  constructor(data: Array<LineConfig> = []) {
+    super(LineRule, data);
   }
 }

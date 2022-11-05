@@ -1,6 +1,4 @@
 import { Points } from "three";
-import { CompilerTarget } from "../../core/Compiler";
-import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { PointsCompiler } from "./PointsCompiler";
@@ -14,8 +12,7 @@ export class PointsDataSupport extends SolidObjectDataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.POINTS;
 
-  constructor(data?: CompilerTarget<PointsConfig>, ignore?: IgnoreAttribute) {
-    !data && (data = {});
-    super(PointsRule, data, ignore);
+  constructor(data: Array<PointsConfig> = []) {
+    super(PointsRule, data);
   }
 }

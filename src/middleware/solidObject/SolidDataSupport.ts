@@ -1,6 +1,4 @@
-import { CompilerTarget } from "../../core/Compiler";
 import { DataSupport } from "../../core/DataSupport";
-import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { Rule } from "../../core/Rule";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { SolidObject3D, SolidObjectCompiler } from "./SolidObjectCompiler";
@@ -13,12 +11,7 @@ export class SolidObjectDataSupport<
 > extends DataSupport<C, O, P> {
   MODULE: MODULETYPE = MODULETYPE.MESH;
 
-  constructor(
-    rule: Rule<SolidObjectCompiler<C, O>>,
-    data?: CompilerTarget<C>,
-    ignore?: IgnoreAttribute
-  ) {
-    !data && (data = Object.create(Object.prototype));
-    super(rule, data!, ignore);
+  constructor(rule: Rule<SolidObjectCompiler<C, O>>, data: Array<C> = []) {
+    super(rule, data);
   }
 }

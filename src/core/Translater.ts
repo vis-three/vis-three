@@ -1,6 +1,6 @@
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { Compiler } from "./Compiler";
-import { ProxyNotice } from "./ProxyBroadcast";
+import { ProxyNotice } from "./DataContainer";
 import { Rule } from "./Rule";
 
 export class Translater<

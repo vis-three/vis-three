@@ -1,5 +1,5 @@
 import { Mesh } from "three";
-import { ProxyNotice } from "../../core/ProxyBroadcast";
+import { ProxyNotice } from "../../core/DataContainer";
 import { ObjectRule } from "../object/ObjectRule";
 import { SolidObjectRule } from "../solidObject/SolidObjectRule";
 import { MeshCompiler } from "./MeshCompiler";
@@ -11,6 +11,5 @@ export const MeshRule: MeshRule = function (
   notice: ProxyNotice,
   compiler: MeshCompiler
 ) {
-  console.log(notice);
   ObjectRule(notice, compiler);
 };

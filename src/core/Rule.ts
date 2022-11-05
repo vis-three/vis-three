@@ -1,6 +1,6 @@
 import { validate } from "uuid";
 import { BasicCompiler } from "./Compiler";
-import { ProxyNotice } from "./ProxyBroadcast";
+import { ProxyNotice } from "./DataContainer";
 
 export type Rule<C extends BasicCompiler> = (
   input: ProxyNotice,
@@ -17,9 +17,11 @@ export const Rule: Rule<BasicCompiler> = (
 
   let vid = key;
 
-  const tempPath = ([] as string[]).concat(path);
+  const tempPath = path.split(".");
+
   if (path.length) {
     vid = tempPath.shift()!;
+    tempPath.pop();
   }
 
   if (!validateFun(vid)) {

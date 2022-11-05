@@ -1,22 +1,5 @@
 var __defProp = Object.defineProperty;
-var __defProps = Object.defineProperties;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
-    }
-  return a;
-};
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
@@ -45,12 +28,12 @@ import { CSG } from "three-csg-ts";
 import { LightShadow } from "three/src/lights/LightShadow";
 class EventDispatcher {
   constructor() {
-    __publicField(this, "listeners", new Map());
+    __publicField(this, "listeners", /* @__PURE__ */ new Map());
   }
   addEventListener(type, listener) {
     const listeners = this.listeners;
     if (!listeners.has(type)) {
-      listeners.set(type, new Set());
+      listeners.set(type, /* @__PURE__ */ new Set());
     }
     listeners.get(type).add(listener);
   }
@@ -292,7 +275,10 @@ class VisOrbitControls extends EventDispatcher {
     this.zoom0 = this.object.zoom;
     this.update = (() => {
       const offset = new Vector3();
-      const quat = new Quaternion().setFromUnitVectors(this.object.up, new Vector3(0, 1, 0));
+      const quat = new Quaternion().setFromUnitVectors(
+        this.object.up,
+        new Vector3(0, 1, 0)
+      );
       const quatInverse = quat.clone().invert();
       const lastPosition = new Vector3();
       const lastQuaternion = new Quaternion();
@@ -329,10 +315,16 @@ class VisOrbitControls extends EventDispatcher {
             spherical.theta = spherical.theta > (min + max) / 2 ? Math.max(min, spherical.theta) : Math.min(max, spherical.theta);
           }
         }
-        spherical.phi = Math.max(this.minPolarAngle, Math.min(this.maxPolarAngle, spherical.phi));
+        spherical.phi = Math.max(
+          this.minPolarAngle,
+          Math.min(this.maxPolarAngle, spherical.phi)
+        );
         spherical.makeSafe();
         spherical.radius *= scale;
-        spherical.radius = Math.max(this.minDistance, Math.min(this.maxDistance, spherical.radius));
+        spherical.radius = Math.max(
+          this.minDistance,
+          Math.min(this.maxDistance, spherical.radius)
+        );
         if (this.enableDamping === true) {
           this.target.addScaledVector(panOffset, this.dampingFactor);
         } else {
@@ -431,13 +423,27 @@ class VisOrbitControls extends EventDispatcher {
           offset.copy(position).sub(this.target);
           let targetDistance = offset.length();
           targetDistance *= Math.tan(this.object.fov / 2 * Math.PI / 180);
-          panLeft(2 * deltaX * targetDistance / element.clientHeight, this.object.matrix);
-          panUp(2 * deltaY * targetDistance / element.clientHeight, this.object.matrix);
+          panLeft(
+            2 * deltaX * targetDistance / element.clientHeight,
+            this.object.matrix
+          );
+          panUp(
+            2 * deltaY * targetDistance / element.clientHeight,
+            this.object.matrix
+          );
         } else if (this.object instanceof OrthographicCamera) {
-          panLeft(deltaX * (this.object.right - this.object.left) / this.object.zoom / element.clientWidth, this.object.matrix);
-          panUp(deltaY * (this.object.top - this.object.bottom) / this.object.zoom / element.clientHeight, this.object.matrix);
+          panLeft(
+            deltaX * (this.object.right - this.object.left) / this.object.zoom / element.clientWidth,
+            this.object.matrix
+          );
+          panUp(
+            deltaY * (this.object.top - this.object.bottom) / this.object.zoom / element.clientHeight,
+            this.object.matrix
+          );
         } else {
-          console.warn("WARNING: OrbitControls.js encountered an unknown camera type - pan disabled.");
+          console.warn(
+            "WARNING: OrbitControls.js encountered an unknown camera type - pan disabled."
+          );
           this.enablePan = false;
         }
       };
@@ -446,11 +452,16 @@ class VisOrbitControls extends EventDispatcher {
       if (this.object instanceof PerspectiveCamera) {
         scale /= dollyScale;
       } else if (this.object instanceof OrthographicCamera) {
-        this.object.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, this.object.zoom * dollyScale));
+        this.object.zoom = Math.max(
+          this.minZoom,
+          Math.min(this.maxZoom, this.object.zoom * dollyScale)
+        );
         this.object.updateProjectionMatrix();
         zoomChanged = true;
       } else {
-        console.warn("WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.");
+        console.warn(
+          "WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled."
+        );
         this.enableZoom = false;
       }
     };
@@ -458,11 +469,16 @@ class VisOrbitControls extends EventDispatcher {
       if (this.object instanceof PerspectiveCamera) {
         scale *= dollyScale;
       } else if (this.object instanceof OrthographicCamera) {
-        this.object.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, this.object.zoom / dollyScale));
+        this.object.zoom = Math.max(
+          this.minZoom,
+          Math.min(this.maxZoom, this.object.zoom / dollyScale)
+        );
         this.object.updateProjectionMatrix();
         zoomChanged = true;
       } else {
-        console.warn("WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.");
+        console.warn(
+          "WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled."
+        );
         this.enableZoom = false;
       }
     };
@@ -932,8 +948,7 @@ class VisOrbitControls extends EventDispatcher {
     }
   }
 }
-var VIEWPOINT;
-(function(VIEWPOINT2) {
+var VIEWPOINT = /* @__PURE__ */ ((VIEWPOINT2) => {
   VIEWPOINT2["DEFAULT"] = "default";
   VIEWPOINT2["TOP"] = "top";
   VIEWPOINT2["BOTTOM"] = "bottom";
@@ -941,14 +956,15 @@ var VIEWPOINT;
   VIEWPOINT2["RIGHT"] = "right";
   VIEWPOINT2["FRONT"] = "front";
   VIEWPOINT2["BACK"] = "back";
-})(VIEWPOINT || (VIEWPOINT = {}));
+  return VIEWPOINT2;
+})(VIEWPOINT || {});
 const ViewpointPlugin = function(params = {}) {
   var _a;
   if (!this.webGLRenderer) {
     console.error("must install some renderer before BasicViewpoint plugin.");
     return false;
   }
-  !params.viewpoint && (params.viewpoint = VIEWPOINT.DEFAULT);
+  !params.viewpoint && (params.viewpoint = "default");
   !params.perspective && (params.perspective = {});
   !params.perspective.position && (params.perspective.position = {
     x: 60,
@@ -972,12 +988,35 @@ const ViewpointPlugin = function(params = {}) {
     z: 0
   });
   const perspectiveCamera = new PerspectiveCamera();
-  perspectiveCamera.position.set(params.perspective.position.x, params.perspective.position.y, params.perspective.position.z);
-  perspectiveCamera.lookAt(params.perspective.lookAt.x, params.perspective.lookAt.y, params.perspective.lookAt.z);
-  perspectiveCamera.up.set(params.perspective.up.x, params.perspective.up.y, params.perspective.up.z);
+  perspectiveCamera.position.set(
+    params.perspective.position.x,
+    params.perspective.position.y,
+    params.perspective.position.z
+  );
+  perspectiveCamera.lookAt(
+    params.perspective.lookAt.x,
+    params.perspective.lookAt.y,
+    params.perspective.lookAt.z
+  );
+  perspectiveCamera.up.set(
+    params.perspective.up.x,
+    params.perspective.up.y,
+    params.perspective.up.z
+  );
   const distance = params.orthograpbic.distance || 1e4;
-  const orthograpbicCamera = new OrthographicCamera(-window.innerWidth / 8, window.innerWidth / 8, -window.innerHeight / 8, window.innerHeight / 8, 0, distance);
-  orthograpbicCamera.up.set(params.perspective.up.x, params.perspective.up.y, params.perspective.up.z);
+  const orthograpbicCamera = new OrthographicCamera(
+    -window.innerWidth / 8,
+    window.innerWidth / 8,
+    -window.innerHeight / 8,
+    window.innerHeight / 8,
+    0,
+    distance
+  );
+  orthograpbicCamera.up.set(
+    params.perspective.up.x,
+    params.perspective.up.y,
+    params.perspective.up.z
+  );
   this.setViewpoint = function(viewpoint) {
     this.dispatchEvent({
       type: "setViewpoint",
@@ -1001,33 +1040,36 @@ const ViewpointPlugin = function(params = {}) {
   (_a = params.orthograpbic.allowRotate) != null ? _a : false;
   this.addEventListener("setViewpoint", (event) => {
     const viewpoint = event.viewpoint;
-    if (viewpoint === VIEWPOINT.DEFAULT) {
+    if (viewpoint === "default") {
       this.setCamera(perspectiveCamera);
       return;
     }
-    if (viewpoint === VIEWPOINT.TOP) {
+    if (viewpoint === "top") {
       orthograpbicCamera.position.set(0, distance / 2, 0);
-    } else if (viewpoint === VIEWPOINT.BOTTOM) {
+    } else if (viewpoint === "bottom") {
       orthograpbicCamera.position.set(0, -distance / 2, 0);
-    } else if (viewpoint === VIEWPOINT.RIGHT) {
+    } else if (viewpoint === "right") {
       orthograpbicCamera.position.set(distance / 2, 0, 0);
-    } else if (viewpoint === VIEWPOINT.LEFT) {
+    } else if (viewpoint === "left") {
       orthograpbicCamera.position.set(-distance / 2, 0, 0);
-    } else if (viewpoint === VIEWPOINT.FRONT) {
+    } else if (viewpoint === "front") {
       orthograpbicCamera.position.set(0, 0, distance / 2);
-    } else if (viewpoint === VIEWPOINT.BACK) {
+    } else if (viewpoint === "back") {
       orthograpbicCamera.position.set(0, 0, -distance / 2);
     }
     this.setCamera(orthograpbicCamera);
   });
   this.completeSet.add(() => {
-    if (params.viewpoint === VIEWPOINT.DEFAULT) {
+    if (params.viewpoint === "default") {
       this.setCamera(perspectiveCamera);
     } else {
       this.setCamera(orthograpbicCamera);
     }
     if (this.objectHelperManager) {
-      this.objectHelperManager.addFilteredObject(perspectiveCamera, orthograpbicCamera);
+      this.objectHelperManager.addFilteredObject(
+        perspectiveCamera,
+        orthograpbicCamera
+      );
     }
   });
   return true;
@@ -1038,7 +1080,9 @@ const OrbitControlsPlugin = function(params) {
     return false;
   }
   if (!this.renderManager) {
-    console.warn("this must install renderManager before install orbitControls plugin.");
+    console.warn(
+      "this must install renderManager before install orbitControls plugin."
+    );
     return false;
   }
   this.orbitControls = new VisOrbitControls(this.camera, this.dom);
@@ -1115,7 +1159,9 @@ const StatsPlugin = function(params) {
     return false;
   }
   if (!this.renderManager) {
-    console.warn("this must install renderManager before install stats plugin.");
+    console.warn(
+      "this must install renderManager before install stats plugin."
+    );
     return false;
   }
   const stats = new VisStats(params);
@@ -1153,14 +1199,28 @@ const EffectComposerPlugin = function(params = {}) {
     const pixelRatio = renderer.getPixelRatio();
     const size = renderer.getDrawingBufferSize(new Vector2());
     if (Number(window.__THREE__) > 137) {
-      composer = new EffectComposer(renderer, new WebGLRenderTarget(size.width * pixelRatio, size.height * pixelRatio, {
-        format: params.format || RGBAFormat,
-        samples: params.samples || 4
-      }));
+      composer = new EffectComposer(
+        renderer,
+        new WebGLRenderTarget(
+          size.width * pixelRatio,
+          size.height * pixelRatio,
+          {
+            format: params.format || RGBAFormat,
+            samples: params.samples || 4
+          }
+        )
+      );
     } else {
-      composer = new EffectComposer(renderer, new WebGLMultisampleRenderTarget(size.width * pixelRatio, size.height * pixelRatio, {
-        format: params.format || RGBAFormat
-      }));
+      composer = new EffectComposer(
+        renderer,
+        new WebGLMultisampleRenderTarget(
+          size.width * pixelRatio,
+          size.height * pixelRatio,
+          {
+            format: params.format || RGBAFormat
+          }
+        )
+      );
     }
   } else {
     composer = new EffectComposer(this.webGLRenderer);
@@ -1296,17 +1356,18 @@ const PointerManagerPlugin = function(params) {
     console.warn("this has installed pointerManager plugin.");
     return false;
   }
-  const pointerManager = new PointerManager(Object.assign(params || {}, {
-    dom: this.dom
-  }));
+  const pointerManager = new PointerManager(
+    Object.assign(params || {}, {
+      dom: this.dom
+    })
+  );
   this.addEventListener("setDom", (event) => {
     pointerManager.setDom(event.dom);
   });
   this.pointerManager = pointerManager;
   return true;
 };
-var EVENTNAME;
-(function(EVENTNAME2) {
+var EVENTNAME = /* @__PURE__ */ ((EVENTNAME2) => {
   EVENTNAME2["POINTERDOWN"] = "pointerdown";
   EVENTNAME2["POINTERUP"] = "pointerup";
   EVENTNAME2["POINTERMOVE"] = "pointermove";
@@ -1315,14 +1376,15 @@ var EVENTNAME;
   EVENTNAME2["CLICK"] = "click";
   EVENTNAME2["DBLCLICK"] = "dblclick";
   EVENTNAME2["CONTEXTMENU"] = "contextmenu";
-})(EVENTNAME || (EVENTNAME = {}));
+  return EVENTNAME2;
+})(EVENTNAME || {});
 class EventManager extends EventDispatcher {
   constructor(parameters) {
     super();
     __publicField(this, "raycaster");
     __publicField(this, "scene");
     __publicField(this, "camera");
-    __publicField(this, "filter", new Set());
+    __publicField(this, "filter", /* @__PURE__ */ new Set());
     __publicField(this, "recursive", false);
     __publicField(this, "penetrate", false);
     __publicField(this, "propagation", false);
@@ -1352,7 +1414,9 @@ class EventManager extends EventDispatcher {
   intersectObject(mouse) {
     this.raycaster.setFromCamera(mouse, this.camera);
     const filter = this.filter;
-    const filterScene = this.scene.children.filter((object) => !filter.has(object));
+    const filterScene = this.scene.children.filter(
+      (object) => !filter.has(object)
+    );
     return this.raycaster.intersectObjects(filterScene, this.recursive);
   }
   use(pointerManager) {
@@ -1364,23 +1428,29 @@ class EventManager extends EventDispatcher {
       if (intersections.length) {
         if (this.penetrate) {
           for (const intersection of intersections) {
-            intersection.object.dispatchEvent(mergeEvent(event, {
-              type: eventName,
-              intersection
-            }));
+            intersection.object.dispatchEvent(
+              mergeEvent(event, {
+                type: eventName,
+                intersection
+              })
+            );
           }
         } else {
           const intersection = intersections[0];
-          intersection.object.dispatchEvent(mergeEvent(event, {
-            type: eventName,
-            intersection
-          }));
+          intersection.object.dispatchEvent(
+            mergeEvent(event, {
+              type: eventName,
+              intersection
+            })
+          );
         }
       }
-      this.dispatchEvent(mergeEvent(event, {
-        type: eventName,
-        intersections
-      }));
+      this.dispatchEvent(
+        mergeEvent(event, {
+          type: eventName,
+          intersections
+        })
+      );
     };
     const genericEvents = [
       "pointerdown",
@@ -1397,56 +1467,72 @@ class EventManager extends EventDispatcher {
         genericEventHanlder(event, name);
       });
     }
-    const cacheObjectMap = new Map();
+    const cacheObjectMap = /* @__PURE__ */ new Map();
     let topCacheIntersection = null;
     pointerManager.addEventListener("pointermove", (event) => {
       const intersections = this.intersectObject(event.mouse);
       if (this.penetrate) {
         if (!intersections.length) {
           cacheObjectMap.forEach((intersection) => {
-            intersection.object.dispatchEvent(mergeEvent(event, {
-              type: "pointerleave",
-              intersection
-            }));
-            intersection.object.dispatchEvent(mergeEvent(event, {
-              type: "mouseleave",
-              intersection
-            }));
+            intersection.object.dispatchEvent(
+              mergeEvent(event, {
+                type: "pointerleave",
+                intersection
+              })
+            );
+            intersection.object.dispatchEvent(
+              mergeEvent(event, {
+                type: "mouseleave",
+                intersection
+              })
+            );
           });
           cacheObjectMap.clear();
           return;
         }
         for (const intersection of intersections) {
           if (cacheObjectMap.has(intersection.object)) {
-            intersection.object.dispatchEvent(mergeEvent(event, {
-              type: "pointermove",
-              intersection
-            }));
-            intersection.object.dispatchEvent(mergeEvent(event, {
-              type: "mousemove",
-              intersection
-            }));
+            intersection.object.dispatchEvent(
+              mergeEvent(event, {
+                type: "pointermove",
+                intersection
+              })
+            );
+            intersection.object.dispatchEvent(
+              mergeEvent(event, {
+                type: "mousemove",
+                intersection
+              })
+            );
             cacheObjectMap.delete(intersection.object);
           } else {
-            intersection.object.dispatchEvent(mergeEvent(event, {
-              type: "pointerenter",
-              intersection
-            }));
-            intersection.object.dispatchEvent(mergeEvent(event, {
-              type: "mouseenter",
-              intersection
-            }));
+            intersection.object.dispatchEvent(
+              mergeEvent(event, {
+                type: "pointerenter",
+                intersection
+              })
+            );
+            intersection.object.dispatchEvent(
+              mergeEvent(event, {
+                type: "mouseenter",
+                intersection
+              })
+            );
           }
         }
         for (const intersection of cacheObjectMap.values()) {
-          intersection.object.dispatchEvent(mergeEvent(event, {
-            type: "pointerleave",
-            intersection
-          }));
-          intersection.object.dispatchEvent(mergeEvent(event, {
-            type: "mouseleave",
-            intersection
-          }));
+          intersection.object.dispatchEvent(
+            mergeEvent(event, {
+              type: "pointerleave",
+              intersection
+            })
+          );
+          intersection.object.dispatchEvent(
+            mergeEvent(event, {
+              type: "mouseleave",
+              intersection
+            })
+          );
         }
         cacheObjectMap.clear();
         for (const intersection of intersections) {
@@ -1455,70 +1541,94 @@ class EventManager extends EventDispatcher {
       } else {
         if (!intersections.length) {
           if (topCacheIntersection) {
-            topCacheIntersection.object.dispatchEvent(mergeEvent(event, {
-              type: "pointerleave",
-              intersection: topCacheIntersection
-            }));
-            topCacheIntersection.object.dispatchEvent(mergeEvent(event, {
-              type: "mouseleave",
-              intersection: topCacheIntersection
-            }));
+            topCacheIntersection.object.dispatchEvent(
+              mergeEvent(event, {
+                type: "pointerleave",
+                intersection: topCacheIntersection
+              })
+            );
+            topCacheIntersection.object.dispatchEvent(
+              mergeEvent(event, {
+                type: "mouseleave",
+                intersection: topCacheIntersection
+              })
+            );
             topCacheIntersection = null;
           }
           return;
         }
         const intersection = intersections[0];
         if (!topCacheIntersection) {
-          intersection.object.dispatchEvent(mergeEvent(event, {
-            type: "pointerenter",
-            intersection
-          }));
-          intersection.object.dispatchEvent(mergeEvent(event, {
-            type: "mouseenter",
-            intersection
-          }));
+          intersection.object.dispatchEvent(
+            mergeEvent(event, {
+              type: "pointerenter",
+              intersection
+            })
+          );
+          intersection.object.dispatchEvent(
+            mergeEvent(event, {
+              type: "mouseenter",
+              intersection
+            })
+          );
           topCacheIntersection = intersection;
           return;
         }
         if (intersection.object !== topCacheIntersection.object) {
-          topCacheIntersection.object.dispatchEvent(mergeEvent(event, {
-            type: "pointerleave",
-            intersection
-          }));
-          topCacheIntersection.object.dispatchEvent(mergeEvent(event, {
-            type: "mouseleave",
-            intersection
-          }));
-          intersection.object.dispatchEvent(mergeEvent(event, {
-            type: "pointerenter",
-            intersection
-          }));
-          intersection.object.dispatchEvent(mergeEvent(event, {
-            type: "mouseenter",
-            intersection
-          }));
+          topCacheIntersection.object.dispatchEvent(
+            mergeEvent(event, {
+              type: "pointerleave",
+              intersection
+            })
+          );
+          topCacheIntersection.object.dispatchEvent(
+            mergeEvent(event, {
+              type: "mouseleave",
+              intersection
+            })
+          );
+          intersection.object.dispatchEvent(
+            mergeEvent(event, {
+              type: "pointerenter",
+              intersection
+            })
+          );
+          intersection.object.dispatchEvent(
+            mergeEvent(event, {
+              type: "mouseenter",
+              intersection
+            })
+          );
           topCacheIntersection = intersection;
           return;
         }
         if (intersection.object === topCacheIntersection.object) {
-          intersection.object.dispatchEvent(mergeEvent(event, {
-            type: "pointermove",
-            intersection
-          }));
-          intersection.object.dispatchEvent(mergeEvent(event, {
-            type: "mousemove",
-            intersection
-          }));
+          intersection.object.dispatchEvent(
+            mergeEvent(event, {
+              type: "pointermove",
+              intersection
+            })
+          );
+          intersection.object.dispatchEvent(
+            mergeEvent(event, {
+              type: "mousemove",
+              intersection
+            })
+          );
         }
       }
-      this.dispatchEvent(mergeEvent(event, {
-        type: "pointermove",
-        intersections
-      }));
-      this.dispatchEvent(mergeEvent(event, {
-        type: "mousemove",
-        intersections
-      }));
+      this.dispatchEvent(
+        mergeEvent(event, {
+          type: "pointermove",
+          intersections
+        })
+      );
+      this.dispatchEvent(
+        mergeEvent(event, {
+          type: "mousemove",
+          intersections
+        })
+      );
     });
     return this;
   }
@@ -1532,10 +1642,15 @@ const EventManagerPlugin = function(params) {
     console.error("must install pointerManager before this plugin.");
     return false;
   }
-  const eventManager = new EventManager(Object.assign({
-    scene: this.scene,
-    camera: this.camera
-  }, params));
+  const eventManager = new EventManager(
+    Object.assign(
+      {
+        scene: this.scene,
+        camera: this.camera
+      },
+      params
+    )
+  );
   eventManager.use(this.pointerManager);
   this.eventManager = eventManager;
   this.addEventListener("setCamera", (event) => {
@@ -1546,10 +1661,10 @@ const EventManagerPlugin = function(params) {
   });
   return true;
 };
-var TRANSFORMEVENT;
-(function(TRANSFORMEVENT2) {
+var TRANSFORMEVENT = /* @__PURE__ */ ((TRANSFORMEVENT2) => {
   TRANSFORMEVENT2["OBJECTCHANGED"] = "objectChanged";
-})(TRANSFORMEVENT || (TRANSFORMEVENT = {}));
+  return TRANSFORMEVENT2;
+})(TRANSFORMEVENT || {});
 class VisTransformControls extends TransformControls {
   constructor(camera, dom) {
     !camera && (camera = new PerspectiveCamera());
@@ -1568,7 +1683,7 @@ class VisTransformControls extends TransformControls {
     };
     this.domElement.addEventListener("pointerdown", this._onPointerDown);
     this.target = new Object3D();
-    this.transObjectSet = new Set();
+    this.transObjectSet = /* @__PURE__ */ new Set();
     let mode = "";
     const target = this.target;
     const transObjectSet = this.transObjectSet;
@@ -1577,7 +1692,7 @@ class VisTransformControls extends TransformControls {
       y: 0,
       z: 0
     };
-    const objectMatrixAutoMap = new WeakMap();
+    const objectMatrixAutoMap = /* @__PURE__ */ new WeakMap();
     this.addEventListener("mouseDown", (event) => {
       mode = event.target.mode;
       mode === "translate" && (mode = "position");
@@ -1605,7 +1720,7 @@ class VisTransformControls extends TransformControls {
         elem.updateMatrixWorld();
       });
       this.dispatchEvent({
-        type: TRANSFORMEVENT.OBJECTCHANGED,
+        type: "objectChanged",
         transObjectSet,
         mode,
         target
@@ -1649,7 +1764,11 @@ class VisTransformControls extends TransformControls {
     const target = this.target;
     if (object.length === 1) {
       const currentObject = object[0];
-      currentObject.matrixWorld.decompose(target.position, target.quaternion, target.scale);
+      currentObject.matrixWorld.decompose(
+        target.position,
+        target.quaternion,
+        target.scale
+      );
       target.updateMatrix();
       target.updateMatrixWorld();
       this.transObjectSet.add(currentObject);
@@ -1682,11 +1801,15 @@ const TransformControlsPlugin = function(params) {
     return false;
   }
   if (!this.pointerManager) {
-    console.warn("this must install pointerManager before install transformControls plugin.");
+    console.warn(
+      "this must install pointerManager before install transformControls plugin."
+    );
     return false;
   }
   if (!this.eventManager) {
-    console.warn("this must install eventManager before install transformControls plugin.");
+    console.warn(
+      "this must install eventManager before install transformControls plugin."
+    );
     return false;
   }
   const transformControls = new VisTransformControls(this.camera, this.dom);
@@ -1749,18 +1872,21 @@ const TransformControlsPlugin = function(params) {
       };
       let config2 = null;
       let mode;
-      transformControls.addEventListener(TRANSFORMEVENT.OBJECTCHANGED, (event) => {
-        const e = event;
-        e.transObjectSet.forEach((object) => {
-          config2 = objectToConfig(object);
-          mode = e.mode;
-          if (config2) {
-            config2[mode].x = object[mode].x;
-            config2[mode].y = object[mode].y;
-            config2[mode].z = object[mode].z;
-          }
-        });
-      });
+      transformControls.addEventListener(
+        TRANSFORMEVENT.OBJECTCHANGED,
+        (event) => {
+          const e = event;
+          e.transObjectSet.forEach((object) => {
+            config2 = objectToConfig(object);
+            mode = e.mode;
+            if (config2) {
+              config2[mode].x = object[mode].x;
+              config2[mode].y = object[mode].y;
+              config2[mode].z = object[mode].z;
+            }
+          });
+        }
+      );
     }
   });
   return true;
@@ -1818,17 +1944,26 @@ const WebGLRendererPlugin = function(params = {}) {
       }
       const drawList = [];
       renderList.forEach((elem) => {
-        this.camera.setViewOffset(params2.width, params2.height, elem.x, elem.y, partWidth, partHeight);
+        this.camera.setViewOffset(
+          params2.width,
+          params2.height,
+          elem.x,
+          elem.y,
+          partWidth,
+          partHeight
+        );
         this.renderManager.render();
         const DataURI2 = this.webGLRenderer.domElement.toDataURL(params2.mine);
-        drawList.push(new Promise((resolve, reject) => {
-          const image = new Image();
-          image.src = DataURI2;
-          image.onload = () => {
-            ctx.drawImage(image, elem.x, elem.y, partWidth, partHeight);
-            resolve(null);
-          };
-        }));
+        drawList.push(
+          new Promise((resolve, reject) => {
+            const image = new Image();
+            image.src = DataURI2;
+            image.onload = () => {
+              ctx.drawImage(image, elem.x, elem.y, partWidth, partHeight);
+              resolve(null);
+            };
+          })
+        );
       });
       this.setSize(cacheSize.width, cacheSize.height);
       await Promise.all(drawList).catch((err) => {
@@ -1918,14 +2053,6 @@ __publicField(VideoLoader, "autoplay", true);
 __publicField(VideoLoader, "preload", "auto");
 __publicField(VideoLoader, "muted", true);
 __publicField(VideoLoader, "loop", true);
-var LOADERMANAGER;
-(function(LOADERMANAGER2) {
-  LOADERMANAGER2["BEFORELOAD"] = "beforeLoad";
-  LOADERMANAGER2["LOADING"] = "loading";
-  LOADERMANAGER2["DETAILLOADING"] = "detailLoading";
-  LOADERMANAGER2["DETAILLOADED"] = "detailLoaded";
-  LOADERMANAGER2["LOADED"] = "loaded";
-})(LOADERMANAGER || (LOADERMANAGER = {}));
 class LoaderManager extends EventDispatcher {
   constructor(parameters) {
     super();
@@ -1940,7 +2067,7 @@ class LoaderManager extends EventDispatcher {
     __publicField(this, "isLoaded");
     __publicField(this, "loadDetailMap");
     __publicField(this, "path", "");
-    this.resourceMap = new Map();
+    this.resourceMap = /* @__PURE__ */ new Map();
     this.loadTotal = 0;
     this.loadSuccess = 0;
     this.loadError = 0;
@@ -1973,7 +2100,7 @@ class LoaderManager extends EventDispatcher {
   }
   loaded() {
     this.dispatchEvent({
-      type: LOADERMANAGER.LOADED,
+      type: "loaded",
       loadTotal: this.loadTotal,
       loadSuccess: this.loadSuccess,
       loadError: this.loadError,
@@ -2018,7 +2145,7 @@ class LoaderManager extends EventDispatcher {
     this.reset();
     this.isLoading = true;
     this.dispatchEvent({
-      type: LOADERMANAGER.BEFORELOAD,
+      type: "beforeLoad",
       urlList: [...urlList]
     });
     if (urlList.length <= 0) {
@@ -2054,11 +2181,11 @@ class LoaderManager extends EventDispatcher {
         detail.progress = 1;
         this.loadSuccess += 1;
         this.dispatchEvent({
-          type: LOADERMANAGER.DETAILLOADED,
+          type: "detailLoaded",
           detail
         });
         this.dispatchEvent({
-          type: LOADERMANAGER.LOADING,
+          type: "loading",
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
           loadError: this.loadError
@@ -2073,11 +2200,11 @@ class LoaderManager extends EventDispatcher {
         this.isError = true;
         this.loadError += 1;
         this.dispatchEvent({
-          type: LOADERMANAGER.DETAILLOADED,
+          type: "detailLoaded",
           detail
         });
         this.dispatchEvent({
-          type: LOADERMANAGER.LOADING,
+          type: "loading",
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
           loadError: this.loadError
@@ -2092,11 +2219,11 @@ class LoaderManager extends EventDispatcher {
         this.isError = true;
         this.loadError += 1;
         this.dispatchEvent({
-          type: LOADERMANAGER.DETAILLOADED,
+          type: "detailLoaded",
           detail
         });
         this.dispatchEvent({
-          type: LOADERMANAGER.LOADING,
+          type: "loading",
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
           loadError: this.loadError
@@ -2109,7 +2236,7 @@ class LoaderManager extends EventDispatcher {
       loader.setPath(path).loadAsync(filename, (event) => {
         detail.progress = Number((event.loaded / event.total).toFixed(2));
         this.dispatchEvent({
-          type: LOADERMANAGER.DETAILLOADING,
+          type: "detailLoading",
           detail
         });
       }).then((res) => {
@@ -2118,11 +2245,11 @@ class LoaderManager extends EventDispatcher {
         this.resourceMap.set(url, res);
         this.urlList.push(unit);
         this.dispatchEvent({
-          type: LOADERMANAGER.DETAILLOADED,
+          type: "detailLoaded",
           detail
         });
         this.dispatchEvent({
-          type: LOADERMANAGER.LOADING,
+          type: "loading",
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
           loadError: this.loadError
@@ -2133,11 +2260,11 @@ class LoaderManager extends EventDispatcher {
         detail.message = JSON.stringify(err);
         this.loadError += 1;
         this.dispatchEvent({
-          type: LOADERMANAGER.DETAILLOADED,
+          type: "detailLoaded",
           detail
         });
         this.dispatchEvent({
-          type: LOADERMANAGER.LOADING,
+          type: "loading",
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
           loadError: this.loadError
@@ -2198,7 +2325,10 @@ const LoaderManagerPlugin = function(params) {
     if (this.resourceManager) {
       const lodedFun = (event) => {
         callback(void 0, event);
-        this.resourceManager.removeEventListener("mapped", lodedFun);
+        this.resourceManager.removeEventListener(
+          "mapped",
+          lodedFun
+        );
       };
       try {
         this.resourceManager.addEventListener("mapped", lodedFun);
@@ -2208,7 +2338,10 @@ const LoaderManagerPlugin = function(params) {
     } else {
       const lodedFun = (event) => {
         callback(void 0, event);
-        this.loaderManager.removeEventListener("loaded", lodedFun);
+        this.loaderManager.removeEventListener(
+          "loaded",
+          lodedFun
+        );
       };
       try {
         this.loaderManager.addEventListener("loaded", lodedFun);
@@ -2224,17 +2357,26 @@ const LoaderManagerPlugin = function(params) {
       if (this.resourceManager) {
         const lodedFun = (event) => {
           resolve(event);
-          this.resourceManager.removeEventListener("mapped", lodedFun);
+          this.resourceManager.removeEventListener(
+            "mapped",
+            lodedFun
+          );
         };
         try {
-          this.resourceManager.addEventListener("mapped", lodedFun);
+          this.resourceManager.addEventListener(
+            "mapped",
+            lodedFun
+          );
         } catch (error) {
           reject(error);
         }
       } else {
         const lodedFun = (event) => {
           resolve(event);
-          this.loaderManager.removeEventListener("loaded", lodedFun);
+          this.loaderManager.removeEventListener(
+            "loaded",
+            lodedFun
+          );
         };
         try {
           this.loaderManager.addEventListener("loaded", lodedFun);
@@ -2247,8 +2389,7 @@ const LoaderManagerPlugin = function(params) {
   };
   return true;
 };
-var CONFIGTYPE;
-(function(CONFIGTYPE2) {
+var CONFIGTYPE = /* @__PURE__ */ ((CONFIGTYPE2) => {
   CONFIGTYPE2["BOXGEOMETRY"] = "BoxGeometry";
   CONFIGTYPE2["SPHEREGEOMETRY"] = "SphereGeometry";
   CONFIGTYPE2["LOADGEOMETRY"] = "LoadGeometry";
@@ -2307,9 +2448,9 @@ var CONFIGTYPE;
   CONFIGTYPE2["SELECTIVEBLOOMPASS"] = "SelectiveBloomPass";
   CONFIGTYPE2["SCRIPTANIMATION"] = "ScriptAnimation";
   CONFIGTYPE2["KEYFRAMEANIMATION"] = "KeyframeAnimation";
-})(CONFIGTYPE || (CONFIGTYPE = {}));
-var MODULETYPE;
-(function(MODULETYPE2) {
+  return CONFIGTYPE2;
+})(CONFIGTYPE || {});
+var MODULETYPE = /* @__PURE__ */ ((MODULETYPE2) => {
   MODULETYPE2["OBJECT3D"] = "Object3D";
   MODULETYPE2["CAMERA"] = "camera";
   MODULETYPE2["LIGHT"] = "light";
@@ -2327,20 +2468,21 @@ var MODULETYPE;
   MODULETYPE2["CSS3D"] = "css3D";
   MODULETYPE2["PASS"] = "pass";
   MODULETYPE2["ANIMATION"] = "animation";
-})(MODULETYPE || (MODULETYPE = {}));
-var OBJECTMODULE;
-(function(OBJECTMODULE2) {
-  OBJECTMODULE2[OBJECTMODULE2["CAMERA"] = MODULETYPE.CAMERA] = "CAMERA";
-  OBJECTMODULE2[OBJECTMODULE2["LIGHT"] = MODULETYPE.LIGHT] = "LIGHT";
-  OBJECTMODULE2[OBJECTMODULE2["SCENE"] = MODULETYPE.SCENE] = "SCENE";
-  OBJECTMODULE2[OBJECTMODULE2["SPRITE"] = MODULETYPE.SPRITE] = "SPRITE";
-  OBJECTMODULE2[OBJECTMODULE2["LINE"] = MODULETYPE.LINE] = "LINE";
-  OBJECTMODULE2[OBJECTMODULE2["MESH"] = MODULETYPE.MESH] = "MESH";
-  OBJECTMODULE2[OBJECTMODULE2["POINTS"] = MODULETYPE.POINTS] = "POINTS";
-  OBJECTMODULE2[OBJECTMODULE2["GROUP"] = MODULETYPE.GROUP] = "GROUP";
-  OBJECTMODULE2[OBJECTMODULE2["CSS3D"] = MODULETYPE.CSS3D] = "CSS3D";
-  OBJECTMODULE2[OBJECTMODULE2["OBJECT3D"] = MODULETYPE.OBJECT3D] = "OBJECT3D";
-})(OBJECTMODULE || (OBJECTMODULE = {}));
+  return MODULETYPE2;
+})(MODULETYPE || {});
+var OBJECTMODULE = /* @__PURE__ */ ((OBJECTMODULE2) => {
+  OBJECTMODULE2["CAMERA"] = "camera";
+  OBJECTMODULE2["LIGHT"] = "light";
+  OBJECTMODULE2["SCENE"] = "scene";
+  OBJECTMODULE2["SPRITE"] = "sprite";
+  OBJECTMODULE2["LINE"] = "line";
+  OBJECTMODULE2["MESH"] = "mesh";
+  OBJECTMODULE2["POINTS"] = "points";
+  OBJECTMODULE2["GROUP"] = "group";
+  OBJECTMODULE2["CSS3D"] = "css3D";
+  OBJECTMODULE2["OBJECT3D"] = "Object3D";
+  return OBJECTMODULE2;
+})(OBJECTMODULE || {});
 const CONFIGMODULE = {
   [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
   [CONFIGTYPE.CUBETEXTURE]: MODULETYPE.TEXTURE,
@@ -3359,13 +3501,36 @@ function syncObject(config2, target, filter, callBack) {
   recursiveConfig(config2, target, filter);
   callBack && callBack();
 }
+const isObject = function(object) {
+  return typeof object === "object" && object !== null;
+};
+const isArray = function(object) {
+  return typeof object === "object" && object !== null && Array.isArray(object);
+};
+const extendPath = function(path, key) {
+  return path && key ? `${path}.${key}` : path || key;
+};
+const arrayCache = /* @__PURE__ */ new WeakMap();
+const cacheArray = function(object) {
+  if (Array.isArray(object) && !arrayCache.has(object)) {
+    arrayCache.set(object, object.concat([]));
+  }
+};
+const getCacheArray = function(object) {
+  return arrayCache.get(object);
+};
 var utils = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
   isValidKey,
   isValidEnum,
   generateConfigFunction,
-  syncObject
+  syncObject,
+  isObject,
+  isArray,
+  extendPath,
+  cacheArray,
+  getCacheArray
 });
 class Object3DParser extends Parser {
   constructor() {
@@ -3382,7 +3547,9 @@ class Object3DParser extends Parser {
     this.parseObject3D(params);
   }
   parseColor(color) {
-    return `rgb(${Math.round(255 * color.r)}, ${Math.round(255 * color.g)}, ${Math.round(255 * color.b)})`;
+    return `rgb(${Math.round(255 * color.r)}, ${Math.round(
+      255 * color.g
+    )}, ${Math.round(255 * color.b)})`;
   }
   attributeEnhance(object) {
     const result = {};
@@ -3401,11 +3568,15 @@ class Object3DParser extends Parser {
     configMap.set(url, config2);
     config2.vid = v4();
     config2.url = url;
-    syncObject(resource, config2, {
-      type: true,
-      vid: true,
-      url: true
-    });
+    syncObject(
+      resource,
+      config2,
+      {
+        type: true,
+        vid: true,
+        url: true
+      }
+    );
   }
   parseMaterial({
     url,
@@ -3415,16 +3586,23 @@ class Object3DParser extends Parser {
   }) {
     resourceMap.set(url, resource);
     if (!CONFIGFACTORY[resource.type]) {
-      console.warn(`can not found support config in vis for this resource`, resource);
+      console.warn(
+        `can not found support config in vis for this resource`,
+        resource
+      );
       return;
     }
     const config2 = CONFIGFACTORY[resource.type]();
     configMap.set(url, config2);
     config2.vid = v4();
-    syncObject(this.attributeEnhance(resource), config2, {
-      type: true,
-      vid: true
-    });
+    syncObject(
+      this.attributeEnhance(resource),
+      config2,
+      {
+        type: true,
+        vid: true
+      }
+    );
     for (const key in resource) {
       if (!resource[key]) {
         continue;
@@ -3469,7 +3647,10 @@ class Object3DParser extends Parser {
   }) {
     resourceMap.set(url, resource);
     if (!CONFIGFACTORY[resource.type]) {
-      console.warn(`can not found support config in vis for this resource`, resource);
+      console.warn(
+        `can not found support config in vis for this resource`,
+        resource
+      );
       return;
     }
     const config2 = CONFIGFACTORY[resource.type]();
@@ -3592,22 +3773,24 @@ class GLTFResourceParser extends Parser {
     });
   }
 }
-var RESOURCEEVENTTYPE;
-(function(RESOURCEEVENTTYPE2) {
+var RESOURCEEVENTTYPE = /* @__PURE__ */ ((RESOURCEEVENTTYPE2) => {
   RESOURCEEVENTTYPE2["MAPPED"] = "mapped";
-})(RESOURCEEVENTTYPE || (RESOURCEEVENTTYPE = {}));
+  return RESOURCEEVENTTYPE2;
+})(RESOURCEEVENTTYPE || {});
 class ResourceManager extends EventDispatcher {
   constructor(resources = {}) {
     super();
-    __publicField(this, "structureMap", new Map());
-    __publicField(this, "configMap", new Map());
-    __publicField(this, "resourceMap", new Map());
-    __publicField(this, "paserMap", new Map());
+    __publicField(this, "structureMap", /* @__PURE__ */ new Map());
+    __publicField(this, "configMap", /* @__PURE__ */ new Map());
+    __publicField(this, "resourceMap", /* @__PURE__ */ new Map());
+    __publicField(this, "paserMap", /* @__PURE__ */ new Map());
     this.addParser(new HTMLImageElementParser()).addParser(new HTMLCanvasElementParser()).addParser(new HTMLVideoElementParser()).addParser(new Object3DParser()).addParser(new HTMLElementParser()).addParser(new TextureParser()).addParser(new GLTFResourceParser());
-    const map = new Map();
+    const map = /* @__PURE__ */ new Map();
     for (const key in resources) {
       if (map.has(key)) {
-        console.warn(`resourceManager construct params rescource already exist: ${key}, that will be cover.`);
+        console.warn(
+          `resourceManager construct params rescource already exist: ${key}, that will be cover.`
+        );
       }
       map.set(key, resources[key]);
     }
@@ -3638,7 +3821,11 @@ class ResourceManager extends EventDispatcher {
       if ((options == null ? void 0 : options.selector) && options.selector[url]) {
         const parser2 = options.selector[url](url, resource, this.paserMap);
         if (!parser2) {
-          console.warn(`resource manager hanlder can not found this resource parser: `, resource, options.selector[url]);
+          console.warn(
+            `resource manager hanlder can not found this resource parser: `,
+            resource,
+            options.selector[url]
+          );
           continue;
         }
         parser2.parse({
@@ -3658,7 +3845,10 @@ class ResourceManager extends EventDispatcher {
         }
       }
       if (!parser) {
-        console.warn(`resouce manager can not found some handler to parser this resource:`, resource);
+        console.warn(
+          `resouce manager can not found some handler to parser this resource:`,
+          resource
+        );
         continue;
       }
       parser.parse({
@@ -3688,7 +3878,10 @@ class ResourceManager extends EventDispatcher {
       } else {
         const module = getModule(config2.type);
         if (!module) {
-          console.error(`unknow error: can not found module by type: ${config2.type}`, config2);
+          console.error(
+            `unknow error: can not found module by type: ${config2.type}`,
+            config2
+          );
         } else {
           !loadOptions[module] && (loadOptions[module] = {});
           loadOptions[module][config2.vid] = config2;
@@ -3732,7 +3925,7 @@ const ResourceManagerPlugin = function(params) {
     });
   }
   this.registerResources = (resourceMap) => {
-    const map = new Map();
+    const map = /* @__PURE__ */ new Map();
     Object.keys(resourceMap).forEach((key) => {
       map.set(key, resourceMap[key]);
     });
@@ -3778,191 +3971,13 @@ var JSONHandler$1 = /* @__PURE__ */ Object.freeze({
   clone: clone$1,
   "default": JSONHandler
 });
-const _ProxyBroadcast = class extends EventDispatcher {
-  constructor(ignore) {
-    super();
-    __publicField(this, "ignoreAttribute");
-    this.ignoreAttribute = ignore || {};
-  }
-  static proxyGetter(target, key, receiver) {
-    return Reflect.get(target, key, receiver);
-  }
-  static proxySetter(target, key, value, receiver, broadcast, path) {
-    if (typeof key === "symbol") {
-      return Reflect.set(target, key, value, receiver);
-    }
-    _ProxyBroadcast.cacheArray(value);
-    let result;
-    if (target[key] === void 0) {
-      if (typeof value === "object" && value !== null && !broadcast.ignoreAttribute[key]) {
-        const newPath = path.concat([key]);
-        value = broadcast.proxyExtends(value, newPath);
-      }
-      result = Reflect.set(target, key, value);
-      broadcast.broadcast(target, {
-        operate: "add",
-        path: path.concat([]),
-        key,
-        value
-      });
-    } else {
-      if (typeof value === "object" && value !== null && !value[_ProxyBroadcast.proxySymbol] && !broadcast.ignoreAttribute[key]) {
-        const newPath = path.concat([key]);
-        value = broadcast.proxyExtends(value, newPath);
-      }
-      result = Reflect.set(target, key, value);
-      if (Array.isArray(target) && key === "length") {
-        const oldValue = target[_ProxyBroadcast.arraySymbol];
-        const num = oldValue.length - target.length;
-        if (num > 0) {
-          let execNum = 0;
-          let index = 0;
-          for (const value2 of oldValue) {
-            if (!target.includes(value2)) {
-              broadcast.broadcast(target, {
-                operate: "delete",
-                path: path.concat([]),
-                key: index.toString(),
-                value: value2
-              });
-              execNum += 1;
-              if (execNum === num) {
-                break;
-              }
-            }
-            index += 1;
-          }
-        }
-        target[_ProxyBroadcast.arraySymbol] = target.concat([]);
-        return result;
-      }
-      broadcast.broadcast(target, {
-        operate: "set",
-        path: path.concat([]),
-        key,
-        value
-      });
-    }
-    return result;
-  }
-  static proxyDeleter(target, key, broadcast, path) {
-    const value = target[key];
-    const result = Reflect.deleteProperty(target, key);
-    if (Array.isArray(target) || typeof key === "symbol") {
-      return result;
-    }
-    broadcast.broadcast(target, {
-      operate: "delete",
-      path: path.concat([]),
-      key,
-      value
-    });
-    return result;
-  }
-  addBroadcast(target) {
-    const raw = target[_ProxyBroadcast.rawSymbol];
-    if (!raw) {
-      console.warn(`object can not found it raw object`, target);
-      return;
-    }
-    if (_ProxyBroadcast.proxyWeakMap.has(raw)) {
-      const list = _ProxyBroadcast.proxyWeakMap.get(raw);
-      if (list.includes(this)) {
-        return;
-      } else {
-        list.push(this);
-      }
-    } else {
-      _ProxyBroadcast.proxyWeakMap.set(raw, [this]);
-    }
-  }
-  setIgnore(ignore) {
-    this.ignoreAttribute = Object.assign(this.ignoreAttribute, ignore);
-  }
-  proxyExtends(object, path = [], module = true) {
-    if (typeof object !== "object") {
-      return object;
-    }
-    if (object[_ProxyBroadcast.proxySymbol]) {
-      this.addBroadcast(object);
-      for (const key in object) {
-        if (typeof object[key] === "object" && object[key] !== null) {
-          this.proxyExtends(object[key]);
-        }
-      }
-      return object;
-    }
-    object[_ProxyBroadcast.rawSymbol] = object;
-    object[_ProxyBroadcast.proxySymbol] = true;
-    const handler2 = {
-      get: _ProxyBroadcast.proxyGetter,
-      set: (target, key, value, receiver) => {
-        return _ProxyBroadcast.proxySetter(target, key, value, receiver, this, path);
-      },
-      deleteProperty: (target, key) => {
-        return _ProxyBroadcast.proxyDeleter(target, key, this, path);
-      }
-    };
-    if (typeof object === "object" && object !== null) {
-      for (const key in object) {
-        const tempPath = path.concat([key]);
-        let ignoreAttribute = this.ignoreAttribute;
-        let ignore = false;
-        for (const tempKey of module ? tempPath.slice(1) : tempPath) {
-          if (ignoreAttribute[tempKey] === true) {
-            ignore = true;
-            break;
-          }
-          ignoreAttribute[tempKey] && (ignoreAttribute = ignoreAttribute[tempKey]);
-        }
-        if (ignore) {
-          continue;
-        }
-        if (isValidKey(key, object) && typeof object[key] === "object" && object[key] !== null) {
-          _ProxyBroadcast.cacheArray(object[key]);
-          object[key] = this.proxyExtends(object[key], tempPath);
-        }
-      }
-    }
-    const proxy = new Proxy(object, handler2);
-    this.addBroadcast(object);
-    return proxy;
-  }
-  broadcast(target, { operate, path, key, value }) {
-    const filterMap = {
-      __poto__: true,
-      length: true
-    };
-    if (filterMap[key]) {
-      return;
-    }
-    if (_ProxyBroadcast.proxyWeakMap.has(target)) {
-      for (const porxyBroadcast of _ProxyBroadcast.proxyWeakMap.get(target)) {
-        porxyBroadcast.dispatchEvent({
-          type: "broadcast",
-          notice: { operate, path, key, value }
-        });
-      }
-    }
-  }
-};
-let ProxyBroadcast = _ProxyBroadcast;
-__publicField(ProxyBroadcast, "proxySymbol", Symbol.for("VIS.PROXY"));
-__publicField(ProxyBroadcast, "arraySymbol", Symbol.for("VIS.PROXY.ARRAY"));
-__publicField(ProxyBroadcast, "rawSymbol", Symbol.for("VIS.PROXY.RAW"));
-__publicField(ProxyBroadcast, "proxyWeakMap", new WeakMap());
-__publicField(ProxyBroadcast, "cacheArray", function(object) {
-  if (Array.isArray(object) && !object[_ProxyBroadcast.arraySymbol]) {
-    object[_ProxyBroadcast.arraySymbol] = object.concat([]);
-  }
-});
 class Translater {
   constructor() {
     __publicField(this, "rule");
     __publicField(this, "memberSet");
     this.rule = function() {
     };
-    this.memberSet = new Set();
+    this.memberSet = /* @__PURE__ */ new Set();
   }
   apply(compiler) {
     this.memberSet.add(compiler);
@@ -3984,61 +3999,987 @@ class Translater {
     return this;
   }
 }
-class DataSupport {
-  constructor(rule, data, ignore) {
-    __publicField(this, "data");
-    __publicField(this, "broadcast");
-    __publicField(this, "translater");
-    this.translater = new Translater().setRule(rule);
-    this.broadcast = new ProxyBroadcast(ignore);
-    this.data = this.broadcast.proxyExtends(data);
-    this.broadcast.addEventListener("broadcast", (event) => {
-      this.translater.translate(event.notice);
+var extendStatics = function(d, b) {
+  extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
+    d2.__proto__ = b2;
+  } || function(d2, b2) {
+    for (var p in b2)
+      if (Object.prototype.hasOwnProperty.call(b2, p))
+        d2[p] = b2[p];
+  };
+  return extendStatics(d, b);
+};
+function __extends(d, b) {
+  if (typeof b !== "function" && b !== null)
+    throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+  extendStatics(d, b);
+  function __() {
+    this.constructor = d;
+  }
+  d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+function __values(o) {
+  var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+  if (m)
+    return m.call(o);
+  if (o && typeof o.length === "number")
+    return {
+      next: function() {
+        if (o && i >= o.length)
+          o = void 0;
+        return { value: o && o[i++], done: !o };
+      }
+    };
+  throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+}
+function __read(o, n) {
+  var m = typeof Symbol === "function" && o[Symbol.iterator];
+  if (!m)
+    return o;
+  var i = m.call(o), r, ar = [], e;
+  try {
+    while ((n === void 0 || n-- > 0) && !(r = i.next()).done)
+      ar.push(r.value);
+  } catch (error) {
+    e = { error };
+  } finally {
+    try {
+      if (r && !r.done && (m = i["return"]))
+        m.call(i);
+    } finally {
+      if (e)
+        throw e.error;
+    }
+  }
+  return ar;
+}
+function __spreadArray(to, from, pack) {
+  if (pack || arguments.length === 2)
+    for (var i = 0, l = from.length, ar; i < l; i++) {
+      if (ar || !(i in from)) {
+        if (!ar)
+          ar = Array.prototype.slice.call(from, 0, i);
+        ar[i] = from[i];
+      }
+    }
+  return to.concat(ar || Array.prototype.slice.call(from));
+}
+function isFunction(value) {
+  return typeof value === "function";
+}
+function createErrorClass(createImpl) {
+  var _super = function(instance) {
+    Error.call(instance);
+    instance.stack = new Error().stack;
+  };
+  var ctorFunc = createImpl(_super);
+  ctorFunc.prototype = Object.create(Error.prototype);
+  ctorFunc.prototype.constructor = ctorFunc;
+  return ctorFunc;
+}
+var UnsubscriptionError = createErrorClass(function(_super) {
+  return function UnsubscriptionErrorImpl(errors) {
+    _super(this);
+    this.message = errors ? errors.length + " errors occurred during unsubscription:\n" + errors.map(function(err, i) {
+      return i + 1 + ") " + err.toString();
+    }).join("\n  ") : "";
+    this.name = "UnsubscriptionError";
+    this.errors = errors;
+  };
+});
+function arrRemove(arr, item) {
+  if (arr) {
+    var index = arr.indexOf(item);
+    0 <= index && arr.splice(index, 1);
+  }
+}
+var Subscription = function() {
+  function Subscription2(initialTeardown) {
+    this.initialTeardown = initialTeardown;
+    this.closed = false;
+    this._parentage = null;
+    this._finalizers = null;
+  }
+  Subscription2.prototype.unsubscribe = function() {
+    var e_1, _a, e_2, _b;
+    var errors;
+    if (!this.closed) {
+      this.closed = true;
+      var _parentage = this._parentage;
+      if (_parentage) {
+        this._parentage = null;
+        if (Array.isArray(_parentage)) {
+          try {
+            for (var _parentage_1 = __values(_parentage), _parentage_1_1 = _parentage_1.next(); !_parentage_1_1.done; _parentage_1_1 = _parentage_1.next()) {
+              var parent_1 = _parentage_1_1.value;
+              parent_1.remove(this);
+            }
+          } catch (e_1_1) {
+            e_1 = { error: e_1_1 };
+          } finally {
+            try {
+              if (_parentage_1_1 && !_parentage_1_1.done && (_a = _parentage_1.return))
+                _a.call(_parentage_1);
+            } finally {
+              if (e_1)
+                throw e_1.error;
+            }
+          }
+        } else {
+          _parentage.remove(this);
+        }
+      }
+      var initialFinalizer = this.initialTeardown;
+      if (isFunction(initialFinalizer)) {
+        try {
+          initialFinalizer();
+        } catch (e) {
+          errors = e instanceof UnsubscriptionError ? e.errors : [e];
+        }
+      }
+      var _finalizers = this._finalizers;
+      if (_finalizers) {
+        this._finalizers = null;
+        try {
+          for (var _finalizers_1 = __values(_finalizers), _finalizers_1_1 = _finalizers_1.next(); !_finalizers_1_1.done; _finalizers_1_1 = _finalizers_1.next()) {
+            var finalizer = _finalizers_1_1.value;
+            try {
+              execFinalizer(finalizer);
+            } catch (err) {
+              errors = errors !== null && errors !== void 0 ? errors : [];
+              if (err instanceof UnsubscriptionError) {
+                errors = __spreadArray(__spreadArray([], __read(errors)), __read(err.errors));
+              } else {
+                errors.push(err);
+              }
+            }
+          }
+        } catch (e_2_1) {
+          e_2 = { error: e_2_1 };
+        } finally {
+          try {
+            if (_finalizers_1_1 && !_finalizers_1_1.done && (_b = _finalizers_1.return))
+              _b.call(_finalizers_1);
+          } finally {
+            if (e_2)
+              throw e_2.error;
+          }
+        }
+      }
+      if (errors) {
+        throw new UnsubscriptionError(errors);
+      }
+    }
+  };
+  Subscription2.prototype.add = function(teardown) {
+    var _a;
+    if (teardown && teardown !== this) {
+      if (this.closed) {
+        execFinalizer(teardown);
+      } else {
+        if (teardown instanceof Subscription2) {
+          if (teardown.closed || teardown._hasParent(this)) {
+            return;
+          }
+          teardown._addParent(this);
+        }
+        (this._finalizers = (_a = this._finalizers) !== null && _a !== void 0 ? _a : []).push(teardown);
+      }
+    }
+  };
+  Subscription2.prototype._hasParent = function(parent) {
+    var _parentage = this._parentage;
+    return _parentage === parent || Array.isArray(_parentage) && _parentage.includes(parent);
+  };
+  Subscription2.prototype._addParent = function(parent) {
+    var _parentage = this._parentage;
+    this._parentage = Array.isArray(_parentage) ? (_parentage.push(parent), _parentage) : _parentage ? [_parentage, parent] : parent;
+  };
+  Subscription2.prototype._removeParent = function(parent) {
+    var _parentage = this._parentage;
+    if (_parentage === parent) {
+      this._parentage = null;
+    } else if (Array.isArray(_parentage)) {
+      arrRemove(_parentage, parent);
+    }
+  };
+  Subscription2.prototype.remove = function(teardown) {
+    var _finalizers = this._finalizers;
+    _finalizers && arrRemove(_finalizers, teardown);
+    if (teardown instanceof Subscription2) {
+      teardown._removeParent(this);
+    }
+  };
+  Subscription2.EMPTY = function() {
+    var empty = new Subscription2();
+    empty.closed = true;
+    return empty;
+  }();
+  return Subscription2;
+}();
+var EMPTY_SUBSCRIPTION = Subscription.EMPTY;
+function isSubscription(value) {
+  return value instanceof Subscription || value && "closed" in value && isFunction(value.remove) && isFunction(value.add) && isFunction(value.unsubscribe);
+}
+function execFinalizer(finalizer) {
+  if (isFunction(finalizer)) {
+    finalizer();
+  } else {
+    finalizer.unsubscribe();
+  }
+}
+var config$k = {
+  onUnhandledError: null,
+  onStoppedNotification: null,
+  Promise: void 0,
+  useDeprecatedSynchronousErrorHandling: false,
+  useDeprecatedNextContext: false
+};
+var timeoutProvider = {
+  setTimeout: function(handler2, timeout) {
+    var args = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+      args[_i - 2] = arguments[_i];
+    }
+    var delegate = timeoutProvider.delegate;
+    if (delegate === null || delegate === void 0 ? void 0 : delegate.setTimeout) {
+      return delegate.setTimeout.apply(delegate, __spreadArray([handler2, timeout], __read(args)));
+    }
+    return setTimeout.apply(void 0, __spreadArray([handler2, timeout], __read(args)));
+  },
+  clearTimeout: function(handle) {
+    var delegate = timeoutProvider.delegate;
+    return ((delegate === null || delegate === void 0 ? void 0 : delegate.clearTimeout) || clearTimeout)(handle);
+  },
+  delegate: void 0
+};
+function reportUnhandledError(err) {
+  timeoutProvider.setTimeout(function() {
+    {
+      throw err;
+    }
+  });
+}
+function noop() {
+}
+var context = null;
+function errorContext(cb) {
+  if (config$k.useDeprecatedSynchronousErrorHandling) {
+    var isRoot = !context;
+    if (isRoot) {
+      context = { errorThrown: false, error: null };
+    }
+    cb();
+    if (isRoot) {
+      var _a = context, errorThrown = _a.errorThrown, error = _a.error;
+      context = null;
+      if (errorThrown) {
+        throw error;
+      }
+    }
+  } else {
+    cb();
+  }
+}
+var Subscriber = function(_super) {
+  __extends(Subscriber2, _super);
+  function Subscriber2(destination) {
+    var _this = _super.call(this) || this;
+    _this.isStopped = false;
+    if (destination) {
+      _this.destination = destination;
+      if (isSubscription(destination)) {
+        destination.add(_this);
+      }
+    } else {
+      _this.destination = EMPTY_OBSERVER;
+    }
+    return _this;
+  }
+  Subscriber2.create = function(next, error, complete) {
+    return new SafeSubscriber(next, error, complete);
+  };
+  Subscriber2.prototype.next = function(value) {
+    if (this.isStopped)
+      ;
+    else {
+      this._next(value);
+    }
+  };
+  Subscriber2.prototype.error = function(err) {
+    if (this.isStopped)
+      ;
+    else {
+      this.isStopped = true;
+      this._error(err);
+    }
+  };
+  Subscriber2.prototype.complete = function() {
+    if (this.isStopped)
+      ;
+    else {
+      this.isStopped = true;
+      this._complete();
+    }
+  };
+  Subscriber2.prototype.unsubscribe = function() {
+    if (!this.closed) {
+      this.isStopped = true;
+      _super.prototype.unsubscribe.call(this);
+      this.destination = null;
+    }
+  };
+  Subscriber2.prototype._next = function(value) {
+    this.destination.next(value);
+  };
+  Subscriber2.prototype._error = function(err) {
+    try {
+      this.destination.error(err);
+    } finally {
+      this.unsubscribe();
+    }
+  };
+  Subscriber2.prototype._complete = function() {
+    try {
+      this.destination.complete();
+    } finally {
+      this.unsubscribe();
+    }
+  };
+  return Subscriber2;
+}(Subscription);
+var _bind = Function.prototype.bind;
+function bind(fn, thisArg) {
+  return _bind.call(fn, thisArg);
+}
+var ConsumerObserver = function() {
+  function ConsumerObserver2(partialObserver) {
+    this.partialObserver = partialObserver;
+  }
+  ConsumerObserver2.prototype.next = function(value) {
+    var partialObserver = this.partialObserver;
+    if (partialObserver.next) {
+      try {
+        partialObserver.next(value);
+      } catch (error) {
+        handleUnhandledError(error);
+      }
+    }
+  };
+  ConsumerObserver2.prototype.error = function(err) {
+    var partialObserver = this.partialObserver;
+    if (partialObserver.error) {
+      try {
+        partialObserver.error(err);
+      } catch (error) {
+        handleUnhandledError(error);
+      }
+    } else {
+      handleUnhandledError(err);
+    }
+  };
+  ConsumerObserver2.prototype.complete = function() {
+    var partialObserver = this.partialObserver;
+    if (partialObserver.complete) {
+      try {
+        partialObserver.complete();
+      } catch (error) {
+        handleUnhandledError(error);
+      }
+    }
+  };
+  return ConsumerObserver2;
+}();
+var SafeSubscriber = function(_super) {
+  __extends(SafeSubscriber2, _super);
+  function SafeSubscriber2(observerOrNext, error, complete) {
+    var _this = _super.call(this) || this;
+    var partialObserver;
+    if (isFunction(observerOrNext) || !observerOrNext) {
+      partialObserver = {
+        next: observerOrNext !== null && observerOrNext !== void 0 ? observerOrNext : void 0,
+        error: error !== null && error !== void 0 ? error : void 0,
+        complete: complete !== null && complete !== void 0 ? complete : void 0
+      };
+    } else {
+      var context_1;
+      if (_this && config$k.useDeprecatedNextContext) {
+        context_1 = Object.create(observerOrNext);
+        context_1.unsubscribe = function() {
+          return _this.unsubscribe();
+        };
+        partialObserver = {
+          next: observerOrNext.next && bind(observerOrNext.next, context_1),
+          error: observerOrNext.error && bind(observerOrNext.error, context_1),
+          complete: observerOrNext.complete && bind(observerOrNext.complete, context_1)
+        };
+      } else {
+        partialObserver = observerOrNext;
+      }
+    }
+    _this.destination = new ConsumerObserver(partialObserver);
+    return _this;
+  }
+  return SafeSubscriber2;
+}(Subscriber);
+function handleUnhandledError(error) {
+  {
+    reportUnhandledError(error);
+  }
+}
+function defaultErrorHandler(err) {
+  throw err;
+}
+var EMPTY_OBSERVER = {
+  closed: true,
+  next: noop,
+  error: defaultErrorHandler,
+  complete: noop
+};
+var observable$1 = function() {
+  return typeof Symbol === "function" && Symbol.observable || "@@observable";
+}();
+function identity(x) {
+  return x;
+}
+function pipeFromArray(fns) {
+  if (fns.length === 0) {
+    return identity;
+  }
+  if (fns.length === 1) {
+    return fns[0];
+  }
+  return function piped(input) {
+    return fns.reduce(function(prev, fn) {
+      return fn(prev);
+    }, input);
+  };
+}
+var Observable$1 = function() {
+  function Observable2(subscribe) {
+    if (subscribe) {
+      this._subscribe = subscribe;
+    }
+  }
+  Observable2.prototype.lift = function(operator) {
+    var observable2 = new Observable2();
+    observable2.source = this;
+    observable2.operator = operator;
+    return observable2;
+  };
+  Observable2.prototype.subscribe = function(observerOrNext, error, complete) {
+    var _this = this;
+    var subscriber = isSubscriber(observerOrNext) ? observerOrNext : new SafeSubscriber(observerOrNext, error, complete);
+    errorContext(function() {
+      var _a = _this, operator = _a.operator, source = _a.source;
+      subscriber.add(operator ? operator.call(subscriber, source) : source ? _this._subscribe(subscriber) : _this._trySubscribe(subscriber));
+    });
+    return subscriber;
+  };
+  Observable2.prototype._trySubscribe = function(sink) {
+    try {
+      return this._subscribe(sink);
+    } catch (err) {
+      sink.error(err);
+    }
+  };
+  Observable2.prototype.forEach = function(next, promiseCtor) {
+    var _this = this;
+    promiseCtor = getPromiseCtor(promiseCtor);
+    return new promiseCtor(function(resolve, reject) {
+      var subscriber = new SafeSubscriber({
+        next: function(value) {
+          try {
+            next(value);
+          } catch (err) {
+            reject(err);
+            subscriber.unsubscribe();
+          }
+        },
+        error: reject,
+        complete: resolve
+      });
+      _this.subscribe(subscriber);
+    });
+  };
+  Observable2.prototype._subscribe = function(subscriber) {
+    var _a;
+    return (_a = this.source) === null || _a === void 0 ? void 0 : _a.subscribe(subscriber);
+  };
+  Observable2.prototype[observable$1] = function() {
+    return this;
+  };
+  Observable2.prototype.pipe = function() {
+    var operations = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+      operations[_i] = arguments[_i];
+    }
+    return pipeFromArray(operations)(this);
+  };
+  Observable2.prototype.toPromise = function(promiseCtor) {
+    var _this = this;
+    promiseCtor = getPromiseCtor(promiseCtor);
+    return new promiseCtor(function(resolve, reject) {
+      var value;
+      _this.subscribe(function(x) {
+        return value = x;
+      }, function(err) {
+        return reject(err);
+      }, function() {
+        return resolve(value);
+      });
+    });
+  };
+  Observable2.create = function(subscribe) {
+    return new Observable2(subscribe);
+  };
+  return Observable2;
+}();
+function getPromiseCtor(promiseCtor) {
+  var _a;
+  return (_a = promiseCtor !== null && promiseCtor !== void 0 ? promiseCtor : config$k.Promise) !== null && _a !== void 0 ? _a : Promise;
+}
+function isObserver(value) {
+  return value && isFunction(value.next) && isFunction(value.error) && isFunction(value.complete);
+}
+function isSubscriber(value) {
+  return value && value instanceof Subscriber || isObserver(value) && isSubscription(value);
+}
+var ObjectUnsubscribedError = createErrorClass(function(_super) {
+  return function ObjectUnsubscribedErrorImpl() {
+    _super(this);
+    this.name = "ObjectUnsubscribedError";
+    this.message = "object unsubscribed";
+  };
+});
+var Subject = function(_super) {
+  __extends(Subject2, _super);
+  function Subject2() {
+    var _this = _super.call(this) || this;
+    _this.closed = false;
+    _this.currentObservers = null;
+    _this.observers = [];
+    _this.isStopped = false;
+    _this.hasError = false;
+    _this.thrownError = null;
+    return _this;
+  }
+  Subject2.prototype.lift = function(operator) {
+    var subject = new AnonymousSubject(this, this);
+    subject.operator = operator;
+    return subject;
+  };
+  Subject2.prototype._throwIfClosed = function() {
+    if (this.closed) {
+      throw new ObjectUnsubscribedError();
+    }
+  };
+  Subject2.prototype.next = function(value) {
+    var _this = this;
+    errorContext(function() {
+      var e_1, _a;
+      _this._throwIfClosed();
+      if (!_this.isStopped) {
+        if (!_this.currentObservers) {
+          _this.currentObservers = Array.from(_this.observers);
+        }
+        try {
+          for (var _b = __values(_this.currentObservers), _c = _b.next(); !_c.done; _c = _b.next()) {
+            var observer = _c.value;
+            observer.next(value);
+          }
+        } catch (e_1_1) {
+          e_1 = { error: e_1_1 };
+        } finally {
+          try {
+            if (_c && !_c.done && (_a = _b.return))
+              _a.call(_b);
+          } finally {
+            if (e_1)
+              throw e_1.error;
+          }
+        }
+      }
+    });
+  };
+  Subject2.prototype.error = function(err) {
+    var _this = this;
+    errorContext(function() {
+      _this._throwIfClosed();
+      if (!_this.isStopped) {
+        _this.hasError = _this.isStopped = true;
+        _this.thrownError = err;
+        var observers = _this.observers;
+        while (observers.length) {
+          observers.shift().error(err);
+        }
+      }
+    });
+  };
+  Subject2.prototype.complete = function() {
+    var _this = this;
+    errorContext(function() {
+      _this._throwIfClosed();
+      if (!_this.isStopped) {
+        _this.isStopped = true;
+        var observers = _this.observers;
+        while (observers.length) {
+          observers.shift().complete();
+        }
+      }
+    });
+  };
+  Subject2.prototype.unsubscribe = function() {
+    this.isStopped = this.closed = true;
+    this.observers = this.currentObservers = null;
+  };
+  Object.defineProperty(Subject2.prototype, "observed", {
+    get: function() {
+      var _a;
+      return ((_a = this.observers) === null || _a === void 0 ? void 0 : _a.length) > 0;
+    },
+    enumerable: false,
+    configurable: true
+  });
+  Subject2.prototype._trySubscribe = function(subscriber) {
+    this._throwIfClosed();
+    return _super.prototype._trySubscribe.call(this, subscriber);
+  };
+  Subject2.prototype._subscribe = function(subscriber) {
+    this._throwIfClosed();
+    this._checkFinalizedStatuses(subscriber);
+    return this._innerSubscribe(subscriber);
+  };
+  Subject2.prototype._innerSubscribe = function(subscriber) {
+    var _this = this;
+    var _a = this, hasError = _a.hasError, isStopped = _a.isStopped, observers = _a.observers;
+    if (hasError || isStopped) {
+      return EMPTY_SUBSCRIPTION;
+    }
+    this.currentObservers = null;
+    observers.push(subscriber);
+    return new Subscription(function() {
+      _this.currentObservers = null;
+      arrRemove(observers, subscriber);
+    });
+  };
+  Subject2.prototype._checkFinalizedStatuses = function(subscriber) {
+    var _a = this, hasError = _a.hasError, thrownError = _a.thrownError, isStopped = _a.isStopped;
+    if (hasError) {
+      subscriber.error(thrownError);
+    } else if (isStopped) {
+      subscriber.complete();
+    }
+  };
+  Subject2.prototype.asObservable = function() {
+    var observable2 = new Observable$1();
+    observable2.source = this;
+    return observable2;
+  };
+  Subject2.create = function(destination, source) {
+    return new AnonymousSubject(destination, source);
+  };
+  return Subject2;
+}(Observable$1);
+var AnonymousSubject = function(_super) {
+  __extends(AnonymousSubject2, _super);
+  function AnonymousSubject2(destination, source) {
+    var _this = _super.call(this) || this;
+    _this.destination = destination;
+    _this.source = source;
+    return _this;
+  }
+  AnonymousSubject2.prototype.next = function(value) {
+    var _a, _b;
+    (_b = (_a = this.destination) === null || _a === void 0 ? void 0 : _a.next) === null || _b === void 0 ? void 0 : _b.call(_a, value);
+  };
+  AnonymousSubject2.prototype.error = function(err) {
+    var _a, _b;
+    (_b = (_a = this.destination) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.call(_a, err);
+  };
+  AnonymousSubject2.prototype.complete = function() {
+    var _a, _b;
+    (_b = (_a = this.destination) === null || _a === void 0 ? void 0 : _a.complete) === null || _b === void 0 ? void 0 : _b.call(_a);
+  };
+  AnonymousSubject2.prototype._subscribe = function(subscriber) {
+    var _a, _b;
+    return (_b = (_a = this.source) === null || _a === void 0 ? void 0 : _a.subscribe(subscriber)) !== null && _b !== void 0 ? _b : EMPTY_SUBSCRIPTION;
+  };
+  return AnonymousSubject2;
+}(Subject);
+const proxyWeak = /* @__PURE__ */ new WeakMap();
+const proxyGetter = function(target, key, receiver, observable2, path) {
+  const result = Reflect.get(target, key, receiver);
+  if (typeof key !== "symbol") {
+    path = extendPath(path, key);
+    observable2.next({
+      operate: "get",
+      path,
+      key,
+      value: target[key]
     });
   }
+  return result;
+};
+const proxySetter = function(target, key, value, receiver, observable2, path) {
+  if (typeof key === "symbol") {
+    return Reflect.set(target, key, value, receiver);
+  }
+  path = extendPath(path, key);
+  if (isObject(value) && !proxyWeak.has(value)) {
+    value = react(observable2, value, path);
+  }
+  if (target[key] === void 0) {
+    isArray(value) && cacheArray(value);
+    const result2 = Reflect.set(target, key, value);
+    observable2.next({
+      operate: "add",
+      path,
+      key,
+      value
+    });
+    return result2;
+  }
+  const result = Reflect.set(target, key, value);
+  if (isArray(target) && key === "length") {
+    const oldValue = getCacheArray(target);
+    if (!oldValue) {
+      console.error("array value is not be cached:", target);
+      return result;
+    }
+    const num = oldValue.length - value.length;
+    if (num > 0) {
+      let execNum = 0;
+      for (const del of oldValue) {
+        if (!value.includes(del)) {
+          observable2.next({
+            operate: "delete",
+            path,
+            key,
+            value: del
+          });
+          execNum += 1;
+          if (execNum === num) {
+            break;
+          }
+        }
+      }
+    }
+    cacheArray(target);
+    return result;
+  }
+  observable2.next({
+    operate: "set",
+    path,
+    key,
+    value
+  });
+  return result;
+};
+const proxyDeleter = function(target, key, observable2, path) {
+  if (typeof key === "symbol") {
+    return Reflect.deleteProperty(target, key);
+  }
+  path = extendPath(path, key);
+  const value = target[key];
+  const result = Reflect.deleteProperty(target, key);
+  if (isArray(value)) {
+    return result;
+  }
+  observable2.next({
+    operate: "delete",
+    path,
+    key,
+    value
+  });
+  return result;
+};
+const react = function(observable2, object, path = "") {
+  if (typeof object !== "object") {
+    return object;
+  }
+  if (proxyWeak.has(object)) {
+    return object;
+  }
+  if (observable2.isIgnore(path)) {
+    return object;
+  }
+  const handler2 = {
+    get: (target, key, receiver) => proxyGetter(target, key, receiver, observable2, path),
+    set: (target, key, value, receiver) => proxySetter(target, key, value, receiver, observable2, path),
+    deleteProperty: (target, key) => proxyDeleter(target, key, observable2, path)
+  };
+  if (isObject(object)) {
+    for (const key in object) {
+      const tempPath = extendPath(path, key);
+      if (observable2.isIgnore(tempPath)) {
+        continue;
+      }
+      if (isObject(object[key])) {
+        isArray(object[key]) && cacheArray(object[key]);
+        object[key] = react(observable2, object[key], tempPath);
+      }
+    }
+  }
+  const proxy = new Proxy(object, handler2);
+  proxyWeak.set(proxy, observable2);
+  return proxy;
+};
+class Observable extends Subject {
+  constructor(object, ignore) {
+    super();
+    __publicField(this, "ignore", {});
+    __publicField(this, "raw");
+    this.raw = object;
+    ignore && (this.ignore = ignore);
+  }
+  isIgnore(path) {
+    let ignore = this.ignore;
+    for (const key of path.split(".")) {
+      if (ignore[key] === void 0) {
+        return false;
+      }
+      if (typeof ignore[key] === "boolean" && ignore[key]) {
+        return true;
+      } else {
+        ignore = ignore[key];
+      }
+    }
+    return false;
+  }
+  setIgnore(ignore) {
+    this.ignore = ignore;
+  }
+  mergeIgnore(ignore) {
+    this.ignore = Object.assign(this.ignore, ignore);
+  }
+}
+const observable = function(object, ignore) {
+  const observable2 = new Observable(object, ignore);
+  return react(observable2, object);
+};
+const getObservable = function(object) {
+  return proxyWeak.get(object);
+};
+const containerGetter = function(target, key, receiver) {
+  return Reflect.get(target, key, receiver);
+};
+const containerSetter = function(target, key, value, receiver, container) {
+  if (typeof key === "symbol") {
+    return Reflect.set(target, key, value, receiver);
+  }
+  if (target[key] === void 0) {
+    const result = Reflect.set(target, key, value);
+    container.add(value);
+    container.next({
+      operate: "add",
+      path: key,
+      key,
+      value
+    });
+    return result;
+  }
+  return Reflect.set(target, key, value, receiver);
+};
+const containerDeleter = function(target, key, container) {
+  if (typeof key === "symbol") {
+    return Reflect.deleteProperty(target, key);
+  }
+  const value = target[key];
+  const result = Reflect.deleteProperty(target, key);
+  container.next({
+    operate: "delete",
+    path: key,
+    key,
+    value
+  });
+  container.remove(value.vid);
+  return result;
+};
+class DataContainer extends Subject {
+  constructor() {
+    super();
+    __publicField(this, "container", new Proxy(
+      {},
+      {
+        get: containerGetter,
+        set: (target, key, value, receiver) => containerSetter(target, key, value, receiver, this),
+        deleteProperty: (target, key) => containerDeleter(target, key, this)
+      }
+    ));
+    __publicField(this, "subscriptions", /* @__PURE__ */ new Map());
+  }
+  add(config2) {
+    const observable2 = getObservable(config2);
+    if (!observable2) {
+      console.error("DataContainer: this config can not Obasrvable", config2);
+      return;
+    }
+    this.subscriptions.set(
+      observable2.raw.vid,
+      observable2.subscribe((notice) => {
+        if (notice.operate !== "get") {
+          this.next({
+            operate: notice.operate,
+            path: extendPath(observable2.raw.vid, notice.path),
+            key: notice.key,
+            value: notice.value
+          });
+        }
+      })
+    );
+    this.container[observable2.raw.vid] = config2;
+  }
+  remove(vid) {
+  }
+}
+class DataSupport {
+  constructor(rule, data = []) {
+    __publicField(this, "dataContainer", new DataContainer());
+    __publicField(this, "translater");
+    this.translater = new Translater().setRule(rule);
+    this.dataContainer.subscribe((notice) => {
+      this.translater.translate(notice);
+    });
+    for (const config2 of data) {
+      this.dataContainer.add(config2);
+    }
+  }
   getData() {
-    return this.data;
-  }
-  setData(data) {
-    this.data = data;
-    return this;
-  }
-  proxyData(data) {
-    this.data = this.broadcast.proxyExtends(data);
-    return this.data;
+    return this.dataContainer.container;
   }
   existSymbol(vid) {
-    return Boolean(this.data[vid]);
+    return Boolean(this.dataContainer.container[vid]);
   }
   addConfig(config2) {
-    this.data[config2.vid] = config2;
+    this.dataContainer.container[config2.vid] = config2;
     return this;
   }
   getConfig(vid) {
-    return this.data[vid];
+    return this.dataContainer.container[vid];
   }
   removeConfig(vid) {
-    const data = this.data;
+    const data = this.dataContainer.container;
     data[vid] !== void 0 && delete data[vid];
   }
   addCompiler(compiler) {
-    compiler.setTarget(this.data);
+    compiler.setTarget(this.dataContainer.container);
     compiler.compileAll();
     this.translater.apply(compiler);
     return this;
   }
   toJSON(compress = true) {
     if (!compress) {
-      return JSON.stringify(this.data, stringify);
+      return JSON.stringify(this.dataContainer.container, stringify);
     } else {
       return JSON.stringify(this.exportConfig(), stringify);
     }
   }
   exportConfig(compress = true) {
     if (!compress) {
-      return clone$1(this.data);
+      return clone$1(this.dataContainer.container);
     } else {
-      const data = this.data;
+      const data = this.dataContainer.container;
       const target = {};
       const cacheConfigTemplate = {};
       const recursion = (config2, template, result = {}) => {
@@ -4092,7 +5033,7 @@ class DataSupport {
     }
   }
   load(configMap) {
-    const data = this.data;
+    const data = this.dataContainer.container;
     const cacheConfigTemplate = {};
     const restore = (config2, template) => {
       for (const key in template) {
@@ -4118,7 +5059,7 @@ class DataSupport {
     return this;
   }
   remove(config2) {
-    const data = this.data;
+    const data = this.dataContainer.container;
     for (const key in config2) {
       data[key] !== void 0 && delete data[key];
     }
@@ -4131,9 +5072,10 @@ class DataSupport {
 const Rule = (input, compiler, validateFun = validate) => {
   const { operate, key, path, value } = input;
   let vid = key;
-  const tempPath = [].concat(path);
+  const tempPath = path.split(".");
   if (path.length) {
     vid = tempPath.shift();
+    tempPath.pop();
   }
   if (!validateFun(vid)) {
     console.warn(`${compiler.MODULE} Rule: vid is illeage: ${vid}`);
@@ -4157,9 +5099,8 @@ const TextureRule = function(notice, compiler) {
   Rule(notice, compiler);
 };
 class TextureDataSupport extends DataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(TextureRule, data, ignore);
+  constructor(data = []) {
+    super(TextureRule, data);
     __publicField(this, "MODULE", MODULETYPE.TEXTURE);
   }
 }
@@ -4167,16 +5108,14 @@ const MaterialRule = function(notice, compiler) {
   Rule(notice, compiler);
 };
 class MaterialDataSupport extends DataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(MaterialRule, data, ignore);
+  constructor(data = []) {
+    super(MaterialRule, data);
     __publicField(this, "MODULE", MODULETYPE.MATERIAL);
   }
 }
 class ObjectDataSupport extends DataSupport {
-  constructor(rule, data, ignore) {
-    !data && (data = Object.create(Object.prototype));
-    super(rule, data, ignore);
+  constructor(rule, data = []) {
+    super(rule, data);
     __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
@@ -4190,9 +5129,8 @@ const LightRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class LightDataSupport extends ObjectDataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(LightRule, data, ignore);
+  constructor(data = []) {
+    super(LightRule, data);
     __publicField(this, "MODULE", MODULETYPE.LIGHT);
   }
 }
@@ -4200,9 +5138,8 @@ const GeometryRule = function(notice, compiler) {
   Rule(notice, compiler);
 };
 class GeometryDataSupport extends DataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(GeometryRule, data, ignore);
+  constructor(data = []) {
+    super(GeometryRule, data);
     __publicField(this, "MODULE", MODULETYPE.GEOMETRY);
   }
 }
@@ -4210,21 +5147,21 @@ const CameraRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class CameraDataSupport extends ObjectDataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(CameraRule, data, ignore);
+  constructor(data = []) {
+    super(CameraRule, data);
     __publicField(this, "MODULE", MODULETYPE.CAMERA);
   }
 }
 const RendererRule = function(input, compiler) {
   Rule(input, compiler, (vid) => {
-    return validate(vid) || [CONFIGTYPE.WEBGLRENDERER, CONFIGTYPE.CSS3DRENDERER].includes(vid);
+    return validate(vid) || [CONFIGTYPE.WEBGLRENDERER, CONFIGTYPE.CSS3DRENDERER].includes(
+      vid
+    );
   });
 };
 class RendererDataSupport extends DataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(RendererRule, data, ignore);
+  constructor(data = []) {
+    super(RendererRule, data);
     __publicField(this, "MODULE", MODULETYPE.RENDERER);
   }
 }
@@ -4234,28 +5171,27 @@ const SceneRule = function(input, compiler) {
   });
 };
 class SceneDataSupport extends ObjectDataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(SceneRule, data, ignore);
+  constructor(data = []) {
+    super(SceneRule, data);
     __publicField(this, "MODULE", MODULETYPE.SCENE);
   }
 }
 const ControlsRule = function(input, compiler) {
   Rule(input, compiler, (vid) => {
-    return validate(vid) || [CONFIGTYPE.TRNASFORMCONTROLS, CONFIGTYPE.ORBITCONTROLS].includes(vid);
+    return validate(vid) || [CONFIGTYPE.TRNASFORMCONTROLS, CONFIGTYPE.ORBITCONTROLS].includes(
+      vid
+    );
   });
 };
 class ControlsDataSupport extends DataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(ControlsRule, data, ignore);
+  constructor(data = []) {
+    super(ControlsRule, data);
     __publicField(this, "MODULE", MODULETYPE.CONTROLS);
   }
 }
 class SolidObjectDataSupport extends DataSupport {
-  constructor(rule, data, ignore) {
-    !data && (data = Object.create(Object.prototype));
-    super(rule, data, ignore);
+  constructor(rule, data = []) {
+    super(rule, data);
     __publicField(this, "MODULE", MODULETYPE.MESH);
   }
 }
@@ -4266,9 +5202,8 @@ const SpriteRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class SpriteDataSupport extends SolidObjectDataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(SpriteRule, data, ignore);
+  constructor(data = []) {
+    super(SpriteRule, data);
     __publicField(this, "MODULE", MODULETYPE.SPRITE);
   }
 }
@@ -4276,20 +5211,17 @@ const LineRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class LineDataSupport extends SolidObjectDataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(LineRule, data, ignore);
+  constructor(data = []) {
+    super(LineRule, data);
     __publicField(this, "MODULE", MODULETYPE.LINE);
   }
 }
 const MeshRule = function(notice, compiler) {
-  console.log(notice);
   ObjectRule(notice, compiler);
 };
 class MeshDataSupport extends SolidObjectDataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(MeshRule, data, ignore);
+  constructor(data = []) {
+    super(MeshRule, data);
     __publicField(this, "MODULE", MODULETYPE.MESH);
   }
 }
@@ -4297,9 +5229,8 @@ const PointsRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class PointsDataSupport extends SolidObjectDataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(PointsRule, data, ignore);
+  constructor(data = []) {
+    super(PointsRule, data);
     __publicField(this, "MODULE", MODULETYPE.POINTS);
   }
 }
@@ -4307,9 +5238,8 @@ const GroupRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class GroupDataSupport extends ObjectDataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(GroupRule, data, ignore);
+  constructor(data = []) {
+    super(GroupRule, data);
     __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
@@ -4317,9 +5247,8 @@ const PassRule = function(input, compiler) {
   Rule(input, compiler);
 };
 class PassDataSupport extends DataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(PassRule, data, ignore);
+  constructor(data = []) {
+    super(PassRule, data);
     __publicField(this, "MODULE", MODULETYPE.PASS);
   }
 }
@@ -4330,9 +5259,8 @@ const AnimationRule = function(notice, compiler) {
   Rule(notice, compiler);
 };
 class AnimationDataSupport extends DataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(AnimationRule, data, ignore);
+  constructor(data = []) {
+    super(AnimationRule, data);
     __publicField(this, "MODULE", MODULETYPE.ANIMATION);
   }
 }
@@ -4340,9 +5268,8 @@ const CSS3DRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class CSS3DDataSupport extends ObjectDataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(CSS3DRule, data, ignore);
+  constructor(data = []) {
+    super(CSS3DRule, data);
     __publicField(this, "MODULE", MODULETYPE.CSS3D);
   }
 }
@@ -4350,9 +5277,8 @@ const Object3DRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
 };
 class Object3DDataSupport extends ObjectDataSupport {
-  constructor(data, ignore) {
-    !data && (data = {});
-    super(Object3DRule, data, ignore);
+  constructor(data = []) {
+    super(Object3DRule, data);
     __publicField(this, "MODULE", MODULETYPE.OBJECT3D);
   }
 }
@@ -4383,7 +5309,7 @@ class DataSupportManager {
         }
       });
     }
-    const dataSupportMap = new Map();
+    const dataSupportMap = /* @__PURE__ */ new Map();
     Object.keys(this).forEach((key) => {
       const dataSupport = this[key];
       if (dataSupport instanceof DataSupport) {
@@ -4407,14 +5333,6 @@ class DataSupportManager {
       console.warn(`can not found this type in dataSupportManager: ${type}`);
       return null;
     }
-  }
-  setSupportData(type, data) {
-    if (this.dataSupportMap.has(type)) {
-      this.dataSupportMap.get(type).setData(data);
-    } else {
-      console.warn(`can not found this type in dataSupportManager: ${type}`);
-    }
-    return this;
   }
   getConfigBySymbol(vid) {
     const dataSupportList = this.dataSupportMap.values();
@@ -4453,19 +5371,12 @@ class DataSupportManager {
       if (module) {
         this.dataSupportMap.get(module).addConfig(config2);
       } else {
-        console.warn(`dataSupportManager can not found this config module: ${config2.type}`);
+        console.warn(
+          `dataSupportManager can not found this config module: ${config2.type}`
+        );
       }
     }
     return this;
-  }
-  reactiveConfig(config2) {
-    const module = getModule(config2.type);
-    if (module) {
-      return this.dataSupportMap.get(module).addConfig(config2).getConfig(config2.vid);
-    } else {
-      console.warn(`dataSupportManager can not found this config module: ${config2.type}`);
-      return config2;
-    }
   }
   load(config2) {
     const dataSupportMap = this.dataSupportMap;
@@ -4482,7 +5393,10 @@ class DataSupportManager {
     return this;
   }
   toJSON(extendsConfig = {}, compress = true) {
-    return JSON.stringify(this.exportConfig(extendsConfig, compress), stringify);
+    return JSON.stringify(
+      this.exportConfig(extendsConfig, compress),
+      stringify
+    );
   }
   exportConfig(extendsConfig = {}, compress = true) {
     const dataSupportMap = this.dataSupportMap;
@@ -4492,6 +5406,3320 @@ class DataSupportManager {
     return extendsConfig;
   }
 }
+const DataSupportManagerPlugin = function(params) {
+  if (this.dataSupportManager) {
+    console.warn("engine has installed dataSupportManager plugin.");
+    return false;
+  }
+  const dataSupportManager = new DataSupportManager(params);
+  this.dataSupportManager = dataSupportManager;
+  this.applyConfig = function(...config2) {
+    this.dataSupportManager.applyConfig(...config2);
+    return this;
+  };
+  this.getConfigBySymbol = function(vid) {
+    return this.dataSupportManager.getConfigBySymbol(vid);
+  };
+  this.removeConfigBySymbol = function(...vids) {
+    this.dataSupportManager.removeConfigBySymbol(...vids);
+    return this;
+  };
+  this.toJSON = function() {
+    if (this.loaderManager) {
+      const assets = {
+        assets: JSON.parse(this.loaderManager.toJSON())
+      };
+      return this.dataSupportManager.toJSON(assets);
+    }
+    return this.dataSupportManager.toJSON();
+  };
+  this.exportConfig = function() {
+    let extendConfig = {};
+    if (this.loaderManager) {
+      extendConfig = {
+        assets: this.loaderManager.exportConfig()
+      };
+    }
+    return this.dataSupportManager.exportConfig(extendConfig);
+  };
+  return true;
+};
+const _Compiler = class {
+  constructor() {
+    __publicField(this, "target", {});
+    __publicField(this, "map", /* @__PURE__ */ new Map());
+    __publicField(this, "weakMap", /* @__PURE__ */ new WeakMap());
+    __publicField(this, "engine");
+    __publicField(this, "cacheCompile");
+  }
+  getMap() {
+    return this.map;
+  }
+  useEngine(engine) {
+    this.engine = engine;
+    return this;
+  }
+  setTarget(target) {
+    this.target = target;
+    return this;
+  }
+  add(config2) {
+    if (!_Compiler.processors.has(config2.type)) {
+      console.warn(
+        `${this.MODULE} compiler can not support this type: ${config2.type}`
+      );
+      return null;
+    }
+    const processor = _Compiler.processors.get(
+      config2.type
+    );
+    const object = processor.create(config2, this.engine);
+    this.map.set(config2.vid, object);
+    this.weakMap.set(object, config2.vid);
+    return object;
+  }
+  remove(config2) {
+    const vid = config2.vid;
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.MODULE} compiler can not found this vid object: ${vid}.`
+      );
+      return this;
+    }
+    if (!_Compiler.processors.has(config2.type)) {
+      console.warn(
+        `${this.MODULE} compiler can not support this type: ${config2.type}`
+      );
+      return this;
+    }
+    const object = this.map.get(vid);
+    _Compiler.processors.get(config2.type).dispose(object);
+    this.map.delete(vid);
+    this.weakMap.delete(object);
+    return this;
+  }
+  cover(config2) {
+    const vid = config2.vid;
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.MODULE} compiler can not found this vid object: ${vid}.`
+      );
+      return this;
+    }
+    Promise.resolve().then(() => {
+      syncObject(config2, config2, {
+        vid: true,
+        type: true
+      });
+    });
+    return this;
+  }
+  compile(vid, notice) {
+    const cacheCompile = this.cacheCompile;
+    let object;
+    let config2;
+    let processor;
+    if (cacheCompile && cacheCompile.vid === vid) {
+      object = cacheCompile.target;
+      config2 = cacheCompile.config;
+      processor = cacheCompile.processor;
+    } else {
+      if (!this.map.has(vid)) {
+        console.warn(
+          `${this.MODULE} compiler set function: can not found object which vid is: '${vid}'`
+        );
+        return this;
+      }
+      if (!this.target[vid]) {
+        console.warn(
+          `${this.MODULE} compiler set function: can not found config which vid is: '${vid}'`
+        );
+        return this;
+      }
+      object = this.map.get(vid);
+      config2 = this.target[vid];
+      if (!_Compiler.processors.has(config2.type)) {
+        console.warn(`PassCompiler can not support this type: ${config2.type}`);
+        return this;
+      }
+      processor = _Compiler.processors.get(config2.type);
+      this.cacheCompile = {
+        target: object,
+        config: config2,
+        processor,
+        vid
+      };
+    }
+    processor.process({
+      config: config2,
+      target: object,
+      engine: this.engine,
+      processor,
+      compiler: this,
+      ...notice
+    });
+    return this;
+  }
+  compileAll() {
+    const target = this.target;
+    for (const config2 of Object.values(target)) {
+      this.add(config2);
+    }
+    return this;
+  }
+  dispose() {
+    if (this.cacheCompile) {
+      this.cacheCompile = void 0;
+    }
+    for (const config2 of Object.values(this.target)) {
+      if (!this.map.has(config2.vid)) {
+        console.warn(
+          `${this.MODULE} compiler set function: can not found object which vid is: '${config2.vid}'`
+        );
+        continue;
+      }
+      const object = this.map.get(config2.vid);
+      if (!_Compiler.processors.has(config2.type)) {
+        console.warn(
+          `${this.MODULE}  can not support this type: ${config2.type}`
+        );
+        continue;
+      }
+      _Compiler.processors.get(config2.type).dispose(object);
+    }
+    this.map.clear();
+    this.target = {};
+    return this;
+  }
+  getObjectSymbol(object) {
+    return this.weakMap.get(object) || null;
+  }
+  getObjectBySymbol(vid) {
+    return this.map.get(vid) || null;
+  }
+};
+let Compiler = _Compiler;
+__publicField(Compiler, "processors", /* @__PURE__ */ new Map());
+__publicField(Compiler, "processor", function(processor) {
+  _Compiler.processors.set(
+    processor.configType,
+    processor
+  );
+});
+const scriptAniSymbol = "vis.scriptAni";
+class Processor {
+  constructor(options) {
+    __publicField(this, "configType");
+    __publicField(this, "commands");
+    __publicField(this, "create");
+    __publicField(this, "dispose");
+    this.configType = options.configType;
+    this.commands = options.commands;
+    this.create = options.create;
+    this.dispose = options.dispose;
+  }
+  process(params) {
+    if (!this.commands || !this.commands[params.operate]) {
+      this[params.operate](params);
+      return;
+    }
+    let commands2 = this.commands[params.operate];
+    for (const key of [].concat(params.path, params.key)) {
+      if (!commands2[key] && !commands2.$reg) {
+        this[params.operate](params);
+        return;
+      } else if (commands2[key]) {
+        if (typeof commands2[key] === "function") {
+          commands2[key](params);
+          return;
+        } else {
+          commands2 = commands2[key];
+        }
+      } else if (commands2.$reg) {
+        for (const item of commands2.$reg) {
+          if (item.reg.test(key)) {
+            item.handler(params);
+            return;
+          }
+        }
+      }
+    }
+    this[params.operate](params);
+  }
+  add(params) {
+    let target = params.target;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default add operate.`, params);
+        return;
+      }
+    }
+    target[params.key] = params.value;
+  }
+  set(params) {
+    let target = params.target;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default set operate.`, params);
+        return;
+      }
+    }
+    target[params.key] = params.value;
+  }
+  delete(params) {
+    let target = params.target;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default delete operate.`, params);
+        return;
+      }
+    }
+    delete target[params.key];
+  }
+}
+const defineProcessor = (options) => {
+  return new Processor(options);
+};
+const emptyHandler = function() {
+};
+const config$j = {
+  name: "linearTime",
+  multiply: 1
+};
+const generator$j = function(engine, target, attribute, config2) {
+  if (target[attribute] === void 0) {
+    console.warn(`object not exist attribute: ${attribute}`, target);
+    return (event) => {
+    };
+  }
+  if (typeof target[attribute] !== "number") {
+    console.warn(`object attribute is not typeof number.`, target, attribute);
+    return (event) => {
+    };
+  }
+  return (event) => {
+    target[attribute] += event.delta * config2.multiply;
+  };
+};
+const config$i = {
+  name: "sinWave",
+  wavelength: 1,
+  offset: 0,
+  amplitude: 1,
+  speed: 1
+};
+const generator$i = function(engine, target, attribute, config2) {
+  if (target[attribute] === void 0) {
+    console.warn(`object not exist attribute: ${attribute}`, target);
+    return (event) => {
+    };
+  }
+  if (typeof target[attribute] !== "number") {
+    console.warn(`object attribute is not typeof number.`, target, attribute);
+    return (event) => {
+    };
+  }
+  const origin = target[attribute];
+  return (event) => {
+    target[attribute] = origin + config2.amplitude * Math.sin(event.total * config2.speed / config2.wavelength) + config2.offset;
+  };
+};
+const _AniScriptLibrary = class {
+  static generateConfig(name, merge) {
+    if (!_AniScriptLibrary.configLibrary.has(name)) {
+      console.warn(`event library can not found config by name: ${name}`);
+      return {
+        name: ""
+      };
+    }
+    const recursion = (config2, merge2) => {
+      for (const key in merge2) {
+        if (config2[key] === void 0) {
+          continue;
+        }
+        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
+          recursion(config2[key], merge2[key]);
+        } else {
+          config2[key] = merge2[key];
+        }
+      }
+    };
+    const template = JSON.parse(
+      JSON.stringify(_AniScriptLibrary.configLibrary.get(name))
+    );
+    recursion(template, merge);
+    return template;
+  }
+  static generateScript(engine, target, attribute, config2) {
+    if (!_AniScriptLibrary.generatorLibrary.has(config2.name)) {
+      console.error(
+        `event library can not found generator by name: ${config2.name}`
+      );
+      return () => {
+      };
+    }
+    return _AniScriptLibrary.generatorLibrary.get(config2.name)(
+      engine,
+      target,
+      attribute,
+      config2
+    );
+  }
+  static has(name) {
+    return _AniScriptLibrary.configLibrary.has(name);
+  }
+};
+let AniScriptLibrary = _AniScriptLibrary;
+__publicField(AniScriptLibrary, "configLibrary", /* @__PURE__ */ new Map());
+__publicField(AniScriptLibrary, "generatorLibrary", /* @__PURE__ */ new Map());
+__publicField(AniScriptLibrary, "register", function(config2, generator2) {
+  if (_AniScriptLibrary.configLibrary.has(config2.name)) {
+    console.warn(
+      `EventLibrary has already exist this event generator: ${config2.name}, that will be cover.`
+    );
+  }
+  _AniScriptLibrary.configLibrary.set(
+    config2.name,
+    JSON.parse(JSON.stringify(config2))
+  );
+  _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
+});
+AniScriptLibrary.register(config$j, generator$j);
+AniScriptLibrary.register(config$i, generator$i);
+const createFunction = function(config2, engine) {
+  let object = engine.compilerManager.getObjectBySymbol(config2.target);
+  if (!object) {
+    console.warn(`can not found object in enigne: ${config2.target}`);
+    return () => {
+    };
+  }
+  const attributeList = config2.attribute.split(".");
+  attributeList.shift();
+  const attribute = attributeList.pop();
+  for (const key of attributeList) {
+    if (object[key] === void 0) {
+      console.warn(
+        `animaton processor: target object can not found key: ${key}`,
+        object
+      );
+      return () => {
+      };
+    }
+    object = object[key];
+  }
+  return AniScriptLibrary.generateScript(
+    engine,
+    object,
+    attribute,
+    config2.script
+  );
+};
+var ScriptAnimationProcessor = defineProcessor({
+  configType: CONFIGTYPE.SCRIPTANIMATION,
+  commands: {
+    set: {
+      play({ target, engine, value }) {
+        if (value) {
+          engine.renderManager.addEventListener("render", target);
+        } else {
+          engine.renderManager.removeEventListener(
+            "render",
+            target
+          );
+        }
+      },
+      $reg: [
+        {
+          reg: new RegExp(".*"),
+          handler({ config: config2, engine }) {
+            const fun = config2[Symbol.for(scriptAniSymbol)];
+            engine.renderManager.removeEventListener("render", fun);
+            const newFun = createFunction(config2, engine);
+            config2[Symbol.for(scriptAniSymbol)] = newFun;
+            config2.play && engine.renderManager.addEventListener("render", fun);
+          }
+        }
+      ]
+    }
+  },
+  create(config2, engine) {
+    const fun = createFunction(config2, engine);
+    config2.play && engine.renderManager.addEventListener("render", fun);
+    config2[Symbol.for(scriptAniSymbol)] = fun;
+    return fun;
+  },
+  dispose() {
+  }
+});
+class AnimationCompiler extends Compiler {
+  constructor() {
+    super();
+    __publicField(this, "MODULE", MODULETYPE.ANIMATION);
+  }
+  restoreAttribute(config2) {
+    if (!config2.target || !config2.attribute) {
+      return this;
+    }
+    let target = this.engine.getObjectBySymbol(config2.target);
+    let configure = this.engine.getConfigBySymbol(config2.target);
+    if (!target || !configure) {
+      console.warn(
+        "AnimationCompiler: can not found object target or config in engine",
+        config2.vid
+      );
+    }
+    const attirbuteList = config2.attribute.split(".");
+    attirbuteList.shift();
+    const attribute = attirbuteList.pop();
+    for (const key of attirbuteList) {
+      if (target[key] && configure[key]) {
+        target = target[key];
+        configure = configure[key];
+      } else {
+        console.warn(
+          `AnimationCompiler: object and config attribute are not sync`
+        );
+        return this;
+      }
+    }
+    target[attribute] = configure[attribute];
+    return this;
+  }
+  cover(config2) {
+    super.cover(config2);
+    const fun = this.map.get(config2.vid);
+    config2[Symbol.for(scriptAniSymbol)] = fun;
+    return this;
+  }
+  remove(config2) {
+    this.engine.removeEventListener(
+      "render",
+      config2[Symbol.for(scriptAniSymbol)]
+    );
+    this.restoreAttribute(config2);
+    delete config2[Symbol.for(scriptAniSymbol)];
+    super.remove(config2);
+    return this;
+  }
+  compile(vid, notice) {
+    const config2 = this.target[vid];
+    this.restoreAttribute(config2);
+    super.compile(vid, notice);
+    const oldFun = this.map.get(vid);
+    const fun = config2[Symbol.for(scriptAniSymbol)];
+    this.map.set(config2.vid, fun);
+    this.weakMap.delete(oldFun);
+    this.weakMap.set(fun, vid);
+    return this;
+  }
+}
+Compiler.processor(ScriptAnimationProcessor);
+class ObjectCompiler extends Compiler {
+  constructor() {
+    super();
+  }
+}
+const config$h = {
+  name: "openWindow",
+  params: {
+    url: ""
+  }
+};
+const generator$h = function(engine, config2) {
+  return () => {
+    window.open(config2.params.url);
+  };
+};
+const config$g = {
+  name: "visibleObject",
+  params: {
+    target: "",
+    visible: true,
+    delay: 0
+  }
+};
+const generator$g = function(engine, config2) {
+  const params = config2.params;
+  const target = engine.getObjectBySymbol(params.target);
+  if (!target) {
+    console.warn(
+      `basic event visibleObject: can not found vid object: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  return () => {
+    setTimeout(() => {
+      target.visible = params.visible;
+    }, params.delay);
+  };
+};
+const config$f = {
+  name: "addClass",
+  params: {
+    target: "",
+    className: "",
+    delay: 0
+  }
+};
+const generator$f = function(engine, config2) {
+  const params = config2.params;
+  const targets = [];
+  if (params.target === "all") {
+    engine.scene.traverse((object) => {
+      if (object instanceof CSS3DObject) {
+        targets.push(object);
+      }
+    });
+  } else if (Array.isArray(params.target)) {
+    params.target.forEach((symbol) => {
+      const target = engine.getObjectBySymbol(symbol);
+      if (!target) {
+        console.warn(
+          `basic event AddClass: can not found vid object: ${params.target}`
+        );
+      } else {
+        targets.push(target);
+      }
+    });
+  } else {
+    const target = engine.getObjectBySymbol(params.target);
+    if (!target) {
+      console.warn(
+        `basic event AddClass: can not found vid object: ${params.target}`
+      );
+      return () => {
+      };
+    }
+    if (!(target instanceof CSS3DObject)) {
+      console.warn(`basic event AddClass: object is not a CSS3DObject.`);
+      return () => {
+      };
+    }
+    targets.push(target);
+  }
+  if (!targets.length) {
+    console.warn(
+      `basic event AddClass: can not found vid object: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  return () => {
+    setTimeout(() => {
+      targets.forEach((target) => {
+        target.element.classList.add(params.className);
+      });
+    }, params.delay);
+  };
+};
+const config$e = {
+  name: "changeScene",
+  params: {
+    scene: "Scene",
+    delay: 0
+  }
+};
+const generator$e = function(engine, config2) {
+  const params = config2.params;
+  return () => {
+    setTimeout(() => {
+      engine.setScene(params.scene);
+    }, params.delay);
+  };
+};
+const config$d = {
+  name: "changeCamera",
+  params: {
+    camera: "",
+    delay: 0
+  }
+};
+const generator$d = function(engine, config2) {
+  const params = config2.params;
+  return () => {
+    setTimeout(() => {
+      engine.setCamera(params.camera);
+    }, params.delay);
+  };
+};
+const config$c = {
+  name: "switchAnimate",
+  params: {
+    target: "",
+    toggle: "auto",
+    delay: 0
+  }
+};
+const generator$c = function(engine, config2) {
+  const params = config2.params;
+  const target = engine.getConfigBySymbol(params.target);
+  if (!target) {
+    console.warn(
+      `basic event switchAnimate: can not found vid config: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  return () => {
+    setTimeout(() => {
+      if (params.toggle === "auto") {
+        target.play != target.play;
+        return;
+      }
+      if (params.toggle === "off") {
+        target.play = false;
+        return;
+      }
+      if (params.toggle === "on") {
+        target.play = true;
+        return;
+      }
+    }, params.delay);
+  };
+};
+var TIMINGFUNCTION = /* @__PURE__ */ ((TIMINGFUNCTION2) => {
+  TIMINGFUNCTION2["ELN"] = "ELN";
+  TIMINGFUNCTION2["EQI"] = "EQI";
+  TIMINGFUNCTION2["EQO"] = "EQO";
+  TIMINGFUNCTION2["EASING_LINEAR_NONE"] = "EASING_LINEAR_NONE";
+  TIMINGFUNCTION2["EASING_QUARTIC_IN"] = "EASING_QUARTIC_IN";
+  TIMINGFUNCTION2["EASING_QUARTIC_OUT"] = "EASING_QUARTIC_OUT";
+  TIMINGFUNCTION2["EASING_QUARTIC_INOUT"] = "EASING_QUARTIC_INOUT";
+  TIMINGFUNCTION2["EASING_QUADRATIC_IN"] = "EASING_QUADRATIC_IN";
+  TIMINGFUNCTION2["EASING_QUADRATIC_OUT"] = "EASING_QUADRATIC_OUT";
+  TIMINGFUNCTION2["EASING_QUADRATIC_INOUT"] = "EASING_QUADRATIC_INOUT";
+  return TIMINGFUNCTION2;
+})(TIMINGFUNCTION || {});
+const timingFunction = {
+  ELN: Easing.Linear.None,
+  EQI: Easing.Quartic.In,
+  EQO: Easing.Quartic.Out,
+  EASING_LINEAR_NONE: Easing.Linear.None,
+  EASING_QUARTIC_IN: Easing.Quartic.In,
+  EASING_QUARTIC_OUT: Easing.Quartic.Out,
+  EASING_QUARTIC_INOUT: Easing.Quartic.InOut,
+  EASING_QUADRATIC_IN: Easing.Quadratic.In,
+  EASING_QUADRATIC_OUT: Easing.Quadratic.Out,
+  EASING_QUADRATIC_INOUT: Easing.Quadratic.InOut
+};
+const config$b = {
+  name: "moveTo",
+  params: {
+    target: "",
+    position: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator$b = function(engine, config2) {
+  const params = config2.params;
+  const compiler = engine.compilerManager;
+  const object = compiler.getObjectBySymbol(params.target);
+  if (!object) {
+    console.warn(
+      `real time animation moveTO: can not found vid object: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  const renderManager = engine.renderManager;
+  const supportData = engine.dataSupportManager.getConfigBySymbol(
+    params.target
+  );
+  if (!supportData) {
+    console.warn(`can not found object config: ${params.target}`);
+    return () => {
+    };
+  }
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    const tween = new Tween(object.position).to(params.position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      supportData.position.x = params.position.x;
+      supportData.position.y = params.position.y;
+      supportData.position.z = params.position.z;
+      animating = false;
+    });
+  };
+};
+const config$a = {
+  name: "rotationTo",
+  params: {
+    target: "",
+    rotation: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator$a = function(engine, config2) {
+  const params = config2.params;
+  const compiler = engine.compilerManager;
+  const object = compiler.getObjectBySymbol(params.target);
+  if (!object) {
+    console.warn(
+      `real time animation moveTO: can not found vid object: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  const renderManager = engine.renderManager;
+  const supportData = engine.dataSupportManager.getConfigBySymbol(
+    params.target
+  );
+  if (!supportData) {
+    console.warn(`can not found object config: ${params.target}`);
+    return () => {
+    };
+  }
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    const tween = new Tween(object.rotation).to(params.rotation).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      supportData.rotation.x = params.rotation.x;
+      supportData.rotation.y = params.rotation.y;
+      supportData.rotation.z = params.rotation.z;
+      animating = false;
+    });
+  };
+};
+const config$9 = {
+  name: "upTo",
+  params: {
+    target: "",
+    up: {
+      x: 0,
+      y: 1,
+      z: 0
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator$9 = function(engine, config2) {
+  const params = config2.params;
+  const compiler = engine.compilerManager;
+  const object = compiler.getObjectBySymbol(params.target);
+  if (!object) {
+    console.warn(
+      `real time animation upTo: can not found vid object: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  const renderManager = engine.renderManager;
+  const supportData = engine.dataSupportManager.getConfigBySymbol(
+    params.target
+  );
+  if (!supportData) {
+    console.warn(`can not found object config: ${params.target}`);
+    return () => {
+    };
+  }
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    const tween = new Tween(object.up).to(params.up).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      supportData.up.x = params.up.x;
+      supportData.up.y = params.up.y;
+      supportData.up.z = params.up.z;
+      animating = false;
+    });
+  };
+};
+const config$8 = {
+  name: "moveFromTo",
+  params: {
+    target: "",
+    from: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    to: {
+      x: 10,
+      y: 10,
+      z: 10
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator$8 = function(engine, config2) {
+  const params = config2.params;
+  const compiler = engine.compilerManager;
+  const object = compiler.getObjectBySymbol(params.target);
+  if (!object) {
+    console.warn(
+      `real time animation moveTO: can not found vid object: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  const renderManager = engine.renderManager;
+  const supportData = engine.dataSupportManager.getConfigBySymbol(
+    params.target
+  );
+  if (!supportData) {
+    console.warn(`can not found object config: ${params.target}`);
+    return () => {
+    };
+  }
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    object.position.set(params.from.x, params.from.y, params.from.z);
+    object.updateMatrix();
+    object.updateMatrixWorld();
+    const tween = new Tween(object.position).to(params.to).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      supportData.position.x = params.to.x;
+      supportData.position.y = params.to.y;
+      supportData.position.z = params.to.z;
+      animating = false;
+    });
+  };
+};
+const config$7 = {
+  name: "moveSpacing",
+  params: {
+    target: "",
+    spacing: {
+      x: 10,
+      y: 10,
+      z: 10
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator$7 = function(engine, config2) {
+  const params = config2.params;
+  const object = engine.getObjectBySymbol(params.target);
+  if (!object) {
+    console.warn(`can not found vid object: ${params.target}`);
+    return () => {
+    };
+  }
+  if (!(object instanceof Object3D)) {
+    console.warn(`object is not instanceof Object3D: ${params.target}`);
+    return () => {
+    };
+  }
+  const renderManager = engine.renderManager;
+  const supportData = engine.getConfigBySymbol(params.target);
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    const position = {
+      x: object.position.x + params.spacing.x,
+      y: object.position.y + params.spacing.y,
+      z: object.position.z + params.spacing.z
+    };
+    const tween = new Tween(object.position).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      supportData.position.x = position.x;
+      supportData.position.y = position.y;
+      supportData.position.z = position.z;
+      animating = false;
+    });
+  };
+};
+const config$6 = {
+  name: "moveToObject",
+  params: {
+    target: "",
+    to: "",
+    offset: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator$6 = function(engine, config2) {
+  const params = config2.params;
+  const compiler = engine.compilerManager;
+  const object = compiler.getObjectBySymbol(params.target);
+  const toObject = compiler.getObjectBySymbol(params.to);
+  if (!object) {
+    console.warn(
+      `real time animation MoveToObject: can not found vid object: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  if (!toObject) {
+    console.warn(
+      `real time animation MoveToObject: can not found vid object: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  const renderManager = engine.renderManager;
+  const supportData = engine.dataSupportManager.getConfigBySymbol(
+    params.target
+  );
+  if (!supportData) {
+    console.warn(`can not found object config: ${params.target}`);
+    return () => {
+    };
+  }
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    const position = {
+      x: toObject.position.x + params.offset.x,
+      y: toObject.position.y + params.offset.y,
+      z: toObject.position.z + params.offset.z
+    };
+    const tween = new Tween(object.position).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      supportData.position.x = position.x;
+      supportData.position.y = position.y;
+      supportData.position.z = position.z;
+      animating = false;
+    });
+  };
+};
+const config$5 = {
+  name: "vector3To",
+  params: {
+    target: "",
+    attribute: ".position",
+    props: {
+      x: "x",
+      y: "y",
+      z: "z"
+    },
+    delay: 0,
+    duration: 500,
+    to: {},
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator$5 = function(engine, config2) {
+  var _a, _b, _c;
+  const params = config2.params;
+  const object = engine.compilerManager.getObjectBySymbol(params.target);
+  if (!object) {
+    console.warn(
+      `real time animation vector3To: can not found vid object: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  const renderManager = engine.renderManager;
+  let supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
+  if (!supportData) {
+    console.warn(
+      `real time animation vector3To: can not found object config: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  const attributeList = params.attribute.split(".");
+  attributeList.shift();
+  let targetObject = object;
+  for (const key of attributeList) {
+    if (targetObject[key] === void 0) {
+      console.error(
+        `real time animation vector3To: object can not support key: ${key}`,
+        object
+      );
+      return () => {
+      };
+    }
+    targetObject = targetObject[key];
+    supportData = supportData[key];
+  }
+  const props = params.props;
+  if (!(props.x in targetObject) || !(props.y in targetObject) || !(props.z in targetObject)) {
+    console.error(
+      `real time animation vector3To: object can not support props:`,
+      targetObject,
+      props
+    );
+    return () => {
+    };
+  }
+  if (!(props.x in supportData) || !(props.y in supportData) || !(props.z in supportData)) {
+    console.error(
+      `real time animation vector3To: config can not support props:`,
+      supportData,
+      props
+    );
+    return () => {
+    };
+  }
+  const toObject = {
+    x: (_a = params.to.x) != null ? _a : targetObject[props.x],
+    y: (_b = params.to.y) != null ? _b : targetObject[props.y],
+    z: (_c = params.to.z) != null ? _c : targetObject[props.z]
+  };
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    const tween = new Tween(targetObject).to(toObject).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      supportData[props.x] = toObject.x;
+      supportData[props.y] = toObject.y;
+      supportData[props.z] = toObject.z;
+      animating = false;
+    });
+  };
+};
+const config$4 = {
+  name: "focusObject",
+  params: {
+    target: "",
+    camera: "",
+    space: "world",
+    offset: {
+      x: 0,
+      y: 0,
+      z: 20
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
+    back: true
+  }
+};
+const generator$4 = function(engine, config2) {
+  const params = config2.params;
+  const target = engine.getObjectBySymbol(params.target);
+  const orbTarget = engine.orbitControls.target;
+  if (!target) {
+    console.warn(
+      `real time animation focusObject: can not found vid object: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  if (!(target instanceof Object3D)) {
+    console.warn(
+      `real time animation focusObject: vid object is not a class of THREE.Object3D: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  let animating = false;
+  const cacheEuler = new Euler();
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    let camera = engine.camera;
+    if (params.camera) {
+      camera = engine.getObjectBySymbol(params.camera);
+      if (!camera) {
+        camera = engine.camera;
+        console.warn(
+          `real time animation focusObject: can not found camera config: ${params.camera}`
+        );
+      }
+    }
+    const cameraConfig = engine.getObjectConfig(camera);
+    const orb = engine.orbitControls && engine.orbitControls.object === camera;
+    if (!cameraConfig) {
+      console.warn(`engine current camera can not found config.`);
+    }
+    const renderManager = engine.renderManager;
+    let position = {
+      x: target.matrixWorld.elements[12] + params.offset.x,
+      y: target.matrixWorld.elements[13] + params.offset.y,
+      z: target.matrixWorld.elements[14] + params.offset.z
+    };
+    const backPosition = {
+      x: camera.position.x,
+      y: camera.position.y,
+      z: camera.position.z
+    };
+    if (params.space === "local") {
+      const vector3 = new Vector3(
+        params.offset.x,
+        params.offset.y,
+        params.offset.z
+      ).applyEuler(cacheEuler.setFromRotationMatrix(target.matrixWorld));
+      position = {
+        x: target.matrixWorld.elements[12] + vector3.x,
+        y: target.matrixWorld.elements[13] + vector3.y,
+        z: target.matrixWorld.elements[14] + vector3.z
+      };
+    }
+    const positionTween = new Tween(camera.position).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    let upTween;
+    const backUp = {
+      x: camera.up.x,
+      y: camera.up.y,
+      z: camera.up.z
+    };
+    if (params.space === "local") {
+      const upVector3 = new Vector3(0, 1, 0).applyEuler(
+        cacheEuler.setFromRotationMatrix(target.matrixWorld)
+      );
+      upTween = new Tween(camera.up).to({
+        x: upVector3.x,
+        y: upVector3.y,
+        z: upVector3.z
+      }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    }
+    let orbTween;
+    const backOrb = {
+      x: orbTarget.x,
+      y: orbTarget.y,
+      z: orbTarget.z
+    };
+    if (orb) {
+      orbTween = new Tween(orbTarget).to({
+        x: target.matrixWorld.elements[12],
+        y: target.matrixWorld.elements[13],
+        z: target.matrixWorld.elements[14]
+      }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    }
+    let renderFun;
+    if (orb && params.space === "local") {
+      renderFun = (event) => {
+        positionTween.update();
+        upTween.update();
+        orbTween.update();
+      };
+    } else if (orb) {
+      renderFun = (event) => {
+        positionTween.update();
+        orbTween.update();
+      };
+    } else if (params.space === "local") {
+      renderFun = (event) => {
+        positionTween.update();
+        upTween.update();
+      };
+    } else {
+      renderFun = (event) => {
+        positionTween.update();
+      };
+    }
+    renderManager.addEventListener("render", renderFun);
+    positionTween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      if (cameraConfig) {
+        cameraConfig.position.x = position.x;
+        cameraConfig.position.y = position.y;
+        cameraConfig.position.z = position.z;
+      }
+      animating = false;
+      if (params.back) {
+        const backFun = () => {
+          const positionTween2 = new Tween(camera.position).to(backPosition).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+          let upTween2;
+          if (params.space === "local") {
+            upTween2 = new Tween(camera.up).to(backUp).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+          }
+          let orbTween2;
+          if (orb) {
+            orbTween2 = new Tween(orbTarget).to(backOrb).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+          }
+          const renderFun2 = (event) => {
+            positionTween2.update();
+            upTween2 && upTween2.update();
+            orbTween2 && orbTween2.update();
+          };
+          positionTween2.onComplete(() => {
+            renderManager.removeEventListener("render", renderFun2);
+          });
+          renderManager.addEventListener("render", renderFun2);
+          document.removeEventListener("dblclick", backFun);
+        };
+        document.addEventListener("dblclick", backFun);
+      }
+    });
+  };
+};
+const config$3 = {
+  name: "fadeObject",
+  params: {
+    target: "",
+    direction: "out",
+    delay: 0,
+    duration: 300,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
+    visible: true
+  }
+};
+const generator$3 = function(engine, config2) {
+  const params = config2.params;
+  const target = engine.getObjectBySymbol(params.target);
+  if (!target) {
+    console.warn(
+      `real time animation fadeObject: can not found vid object: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  const objectConfig = engine.getObjectConfig(target);
+  if (!objectConfig.material) {
+    console.warn(
+      `real time animation fadeObject: target can not support fade: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  const materialList = [];
+  const materialConfigList = [];
+  const materialSymbolList = Array.isArray(objectConfig.material) ? [].concat(objectConfig.material) : [objectConfig.material];
+  for (const vid of materialSymbolList) {
+    const material = engine.getObjectBySymbol(vid);
+    const materialConfig = engine.getConfigBySymbol(vid);
+    if (!(material instanceof Material)) {
+      console.error(
+        `real time animation fadeObject: object config material is not instanceof Material: ${vid}`
+      );
+      continue;
+    }
+    if (!materialConfig) {
+      console.error(
+        `real time animation fadeObject: object config material can not found config: ${vid}`
+      );
+      continue;
+    }
+    materialList.push(material);
+    materialConfigList.push(materialConfig);
+  }
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    const renderManager = engine.renderManager;
+    objectConfig.visible = true;
+    materialList.forEach((material, i, arr) => {
+      material.visible = true;
+      material.transparent = true;
+      material.opacity = params.direction === "in" ? 0 : 1;
+      material.needsUpdate = true;
+      const tween = new Tween(material).to({
+        opacity: params.direction === "in" ? 1 : 0
+      }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+      const renderFun = (event) => {
+        tween.update();
+      };
+      renderManager.addEventListener("render", renderFun);
+      tween.onComplete(() => {
+        renderManager.removeEventListener("render", renderFun);
+        if (params.direction === "out" && params.visible) {
+          materialConfigList[i].visible = false;
+          objectConfig.visible = false;
+        } else if (params.direction === "in" && params.visible) {
+          materialConfigList[i].visible = true;
+          objectConfig.visible = true;
+        }
+        materialConfigList[i].opacity = params.direction === "in" ? 1 : 0;
+        animating = false;
+      });
+    });
+  };
+};
+const config$2 = {
+  name: "showToCamera",
+  params: {
+    target: "",
+    offset: {
+      x: 0,
+      y: 0,
+      z: -30
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
+    back: true
+  }
+};
+const generator$2 = function(engine, config2) {
+  const params = config2.params;
+  const target = engine.getObjectBySymbol(params.target);
+  const targetConfig = engine.getConfigBySymbol(params.target);
+  const camera = engine.camera;
+  if (!target) {
+    console.warn(
+      `real time animation showToCamera: can not found vid object: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  if (!target) {
+    console.warn(
+      `real time animation showToCamera: can not found vid config: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  if (!(target instanceof Object3D)) {
+    console.warn(
+      `real time animation showToCamera: vid object is not a class of THREE.Object3D: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  const matrix4 = new Matrix4();
+  const euler = new Euler();
+  const vector3 = new Vector3();
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    const renderManager = engine.renderManager;
+    vector3.set(params.offset.x, params.offset.y, params.offset.z).applyEuler(camera.rotation);
+    vector3.set(
+      camera.position.x + vector3.x,
+      camera.position.y + vector3.y,
+      camera.position.z + vector3.z
+    );
+    matrix4.lookAt(camera.position, vector3, camera.up);
+    euler.setFromRotationMatrix(matrix4);
+    const cachePosition = {
+      x: target.position.x,
+      y: target.position.y,
+      z: target.position.z
+    };
+    const cacheRotation = {
+      x: target.rotation.x,
+      y: target.rotation.y,
+      z: target.rotation.z
+    };
+    const positionTween = new Tween(target.position).to({
+      x: vector3.x,
+      y: vector3.y,
+      z: vector3.z
+    }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const rotationTween = new Tween(target.rotation).to({
+      x: euler.x,
+      y: euler.y,
+      z: euler.z
+    }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      positionTween.update();
+      rotationTween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    positionTween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      targetConfig.position.x = vector3.x;
+      targetConfig.position.y = vector3.y;
+      targetConfig.position.z = vector3.z;
+      targetConfig.rotation.x = euler.x;
+      targetConfig.rotation.y = euler.y;
+      targetConfig.rotation.z = euler.z;
+      animating = false;
+      if (params.back) {
+        const backFun = () => {
+          const positionTween2 = new Tween(target.position).to(cachePosition).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+          const rotationTween2 = new Tween(target.rotation).to(cacheRotation).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+          const renderFun2 = (event) => {
+            positionTween2.update();
+            rotationTween2.update();
+          };
+          positionTween2.onComplete(() => {
+            renderManager.removeEventListener("render", renderFun2);
+            targetConfig.position.x = cachePosition.x;
+            targetConfig.position.y = cachePosition.y;
+            targetConfig.position.z = cachePosition.z;
+            targetConfig.rotation.x = cacheRotation.x;
+            targetConfig.rotation.y = cacheRotation.y;
+            targetConfig.rotation.z = cacheRotation.z;
+          });
+          renderManager.addEventListener("render", renderFun2);
+          document.removeEventListener("dblclick", backFun);
+        };
+        document.addEventListener("dblclick", backFun);
+      }
+    });
+  };
+};
+const config$1 = {
+  name: "colorChange",
+  params: {
+    target: "",
+    attribute: "color",
+    color: "rgb(255, 255, 255)",
+    delay: 0,
+    duration: 500,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator$1 = function(engine, config2) {
+  const params = config2.params;
+  const material = engine.getObjectBySymbol(params.target);
+  if (!material) {
+    console.warn(
+      `real time animation ColorChange: can not found vid material: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  if (!material[params.attribute] || !(material[params.attribute] instanceof Color)) {
+    console.warn(
+      `real time animation ColorChange: material attribute is illeage: ${params.attribute}`
+    );
+    return () => {
+    };
+  }
+  const supportData = engine.getConfigBySymbol(params.target);
+  if (!supportData) {
+    console.warn(
+      `real time animation ColorChange: can not found material config: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  const color = new Color(params.color);
+  const renderManager = engine.renderManager;
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    const tween = new Tween(material[params.attribute]).to({
+      r: color.r,
+      g: color.g,
+      b: color.b
+    }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      supportData[params.attribute] = params.color;
+      animating = false;
+    });
+  };
+};
+const config = {
+  name: "orbitTargetMove",
+  params: {
+    target: "",
+    offset: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    delay: 0,
+    duration: 1e3,
+    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+  }
+};
+const generator = function(engine, config2) {
+  const params = config2.params;
+  engine.compilerManager;
+  if (!engine.orbitControls) {
+    console.warn(
+      `real time animation orbitTargetMove: engine can not install orbitControls.`
+    );
+    return () => {
+    };
+  }
+  const renderManager = engine.renderManager;
+  let animating = false;
+  return () => {
+    if (animating) {
+      return;
+    }
+    animating = true;
+    let position = params.offset;
+    if (params.target) {
+      const object = engine.getObjectBySymbol(params.target);
+      if (!object) {
+        console.warn(
+          `real time animation orbitTargetMove: can not found vid object: ${params.target}`
+        );
+      } else {
+        position = {
+          x: object.matrixWorld.elements[12] + position.x,
+          y: object.matrixWorld.elements[13] + position.y,
+          z: object.matrixWorld.elements[14] + position.z
+        };
+      }
+    }
+    const tween = new Tween(engine.orbitControls.target).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const renderFun = (event) => {
+      tween.update();
+    };
+    renderManager.addEventListener("render", renderFun);
+    tween.onComplete(() => {
+      renderManager.removeEventListener("render", renderFun);
+      animating = false;
+    });
+  };
+};
+const _EventLibrary = class {
+  static generateConfig(name, merge) {
+    if (!_EventLibrary.configLibrary.has(name)) {
+      console.warn(`event library can not found config by name: ${name}`);
+      return {
+        name: ""
+      };
+    }
+    const recursion = (config2, merge2) => {
+      for (const key in merge2) {
+        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
+          recursion(config2[key], merge2[key]);
+        } else {
+          config2[key] = merge2[key];
+        }
+      }
+    };
+    const template = JSON.parse(
+      JSON.stringify(_EventLibrary.configLibrary.get(name))
+    );
+    recursion(template, merge);
+    return template;
+  }
+  static generateEvent(config2, engine) {
+    if (!_EventLibrary.generatorLibrary.has(config2.name)) {
+      console.error(
+        `event library can not found generator by name: ${config2.name}`
+      );
+      return () => {
+      };
+    }
+    return _EventLibrary.generatorLibrary.get(config2.name)(engine, config2);
+  }
+  static has(name) {
+    return _EventLibrary.configLibrary.has(name);
+  }
+};
+let EventLibrary = _EventLibrary;
+__publicField(EventLibrary, "configLibrary", /* @__PURE__ */ new Map());
+__publicField(EventLibrary, "generatorLibrary", /* @__PURE__ */ new Map());
+__publicField(EventLibrary, "register", function(config2, generator2) {
+  if (_EventLibrary.configLibrary.has(config2.name)) {
+    console.warn(
+      `EventLibrary has already exist this event generator: ${config2.name}, that will be cover.`
+    );
+  }
+  _EventLibrary.configLibrary.set(
+    config2.name,
+    JSON.parse(JSON.stringify(config2))
+  );
+  _EventLibrary.generatorLibrary.set(config2.name, generator2);
+});
+EventLibrary.register(config$h, generator$h);
+EventLibrary.register(config$g, generator$g);
+EventLibrary.register(config$f, generator$f);
+EventLibrary.register(config$e, generator$e);
+EventLibrary.register(config$d, generator$d);
+EventLibrary.register(config$c, generator$c);
+EventLibrary.register(config$b, generator$b);
+EventLibrary.register(config$a, generator$a);
+EventLibrary.register(config$9, generator$9);
+EventLibrary.register(config$8, generator$8);
+EventLibrary.register(config$7, generator$7);
+EventLibrary.register(config$6, generator$6);
+EventLibrary.register(config$5, generator$5);
+EventLibrary.register(config$4, generator$4);
+EventLibrary.register(config$3, generator$3);
+EventLibrary.register(config$2, generator$2);
+EventLibrary.register(config$1, generator$1);
+EventLibrary.register(config, generator);
+const objectCacheMap = /* @__PURE__ */ new WeakMap();
+const lookAtHandler = function({ target, config: config2, value, engine }) {
+  if (config2.vid === value) {
+    console.warn(`can not set object lookAt itself.`);
+    return;
+  }
+  let cacheData = objectCacheMap.get(target);
+  if (!cacheData) {
+    cacheData = { lookAtTarget: null, updateMatrixWorldFun: null };
+    objectCacheMap.set(target, cacheData);
+  }
+  if (!value) {
+    if (!cacheData.updateMatrixWorldFun) {
+      return;
+    }
+    target.updateMatrixWorld = cacheData.updateMatrixWorldFun;
+    cacheData.lookAtTarget = null;
+    cacheData.updateMatrixWorldFun = null;
+    return;
+  }
+  const lookAtTarget = engine.compilerManager.getObject3D(value);
+  if (!lookAtTarget) {
+    console.warn(
+      `lookAt handler can not found this vid mapping object: '${value}'`
+    );
+    return;
+  }
+  const updateMatrixWorldFun = target.updateMatrixWorld;
+  cacheData.updateMatrixWorldFun = updateMatrixWorldFun;
+  cacheData.lookAtTarget = lookAtTarget.position;
+  target.updateMatrixWorld = (focus) => {
+    updateMatrixWorldFun.call(target, focus);
+    target.lookAt(cacheData.lookAtTarget);
+  };
+};
+const eventSymbol = "vis.event";
+const addEventHanlder = function({ target, path, value, engine }) {
+  const eventName = path[0];
+  if (!EventLibrary.has(value.name)) {
+    console.warn(`EventLibrary: can not support this event: ${value.name}`);
+    return;
+  }
+  const fun = EventLibrary.generateEvent(value, engine);
+  const symbol = Symbol.for(eventSymbol);
+  value[symbol] = fun;
+  target.addEventListener(eventName, fun);
+};
+const removeEventHandler = function({ target, path, value }) {
+  const eventName = path[0];
+  const fun = value[Symbol.for(eventSymbol)];
+  if (!fun) {
+    console.warn(`event remove can not fun found event in config`, value);
+    return;
+  }
+  target.removeEventListener(eventName, fun);
+  delete value[Symbol.for(eventSymbol)];
+};
+const updateEventHandler = function({ target, config: config2, path, engine }) {
+  const eventName = path[0];
+  const eventConfig = config2[path[0]][path[1]];
+  const fun = eventConfig[Symbol.for(eventSymbol)];
+  if (!fun) {
+    console.warn(`event remove can not fun found event in config`, eventConfig);
+    return;
+  }
+  target.removeEventListener(eventName, fun);
+  const newFun = EventLibrary.generateEvent(eventConfig, engine);
+  eventConfig[Symbol.for(eventSymbol)] = newFun;
+  target.addEventListener(
+    eventName,
+    newFun
+  );
+};
+const addChildrenHanlder = function({ target, config: config2, value, engine }) {
+  const childrenConfig = engine.getConfigBySymbol(value);
+  if (!childrenConfig) {
+    console.warn(` can not foud object config in engine: ${value}`);
+    return;
+  }
+  if (childrenConfig.parent && childrenConfig.parent !== config2.vid) {
+    const parentConfig = engine.getConfigBySymbol(
+      childrenConfig.parent
+    );
+    if (!parentConfig) {
+      console.warn(
+        ` can not foud object parent config in engine: ${childrenConfig.parent}`
+      );
+      return;
+    }
+    parentConfig.children.splice(parentConfig.children.indexOf(value), 1);
+  }
+  childrenConfig.parent = config2.vid;
+  const childrenObject = engine.compilerManager.getObject3D(value);
+  if (!childrenObject) {
+    console.warn(`can not found this vid in engine: ${value}.`);
+    return;
+  }
+  target.add(childrenObject);
+};
+const removeChildrenHandler = function({ target, config: config2, value, engine }) {
+  const childrenObject = engine.compilerManager.getObject3D(value);
+  if (!childrenObject) {
+    console.warn(`can not found this vid in engine: ${value}.`);
+    return;
+  }
+  target.remove(childrenObject);
+  const childrenConfig = engine.getConfigBySymbol(value);
+  if (!childrenConfig) {
+    console.warn(`can not found this vid in engine: ${value}.`);
+    return;
+  }
+  childrenConfig.parent = "";
+};
+const objectCreate = function(object, config2, filter, engine) {
+  const asyncFun = Promise.resolve();
+  asyncFun.then(() => {
+    !filter.lookAt && lookAtHandler({
+      target: object,
+      config: config2,
+      engine,
+      value: config2.lookAt
+    });
+    config2.children.forEach((vid) => {
+      addChildrenHanlder({
+        target: object,
+        config: config2,
+        value: vid,
+        engine
+      });
+    });
+    for (const eventName of Object.values(EVENTNAME)) {
+      config2[eventName].forEach((event, i) => {
+        addEventHanlder({
+          target: object,
+          path: [eventName, i.toString()],
+          value: event,
+          engine
+        });
+      });
+    }
+  });
+  syncObject(config2, object, {
+    vid: true,
+    type: true,
+    lookAt: true,
+    parent: true,
+    children: true,
+    pointerdown: true,
+    pointermove: true,
+    pointerup: true,
+    pointerenter: true,
+    pointerleave: true,
+    click: true,
+    dblclick: true,
+    contextmenu: true,
+    ...filter
+  });
+  return object;
+};
+const objectDispose = function(target) {
+  target._listener = {};
+};
+const objectCommands = {
+  add: {
+    pointerdown: addEventHanlder,
+    pointerup: addEventHanlder,
+    pointermove: addEventHanlder,
+    pointerenter: addEventHanlder,
+    pointerleave: addEventHanlder,
+    click: addEventHanlder,
+    dblclick: addEventHanlder,
+    contextmenu: addEventHanlder,
+    children: addChildrenHanlder
+  },
+  set: {
+    lookAt: lookAtHandler,
+    pointerdown: updateEventHandler,
+    pointerup: updateEventHandler,
+    pointermove: updateEventHandler,
+    pointerenter: updateEventHandler,
+    pointerleave: updateEventHandler,
+    click: updateEventHandler,
+    dblclick: updateEventHandler,
+    contextmenu: updateEventHandler,
+    parent: emptyHandler,
+    children: {
+      $reg: [
+        {
+          reg: new RegExp(".*"),
+          handler: addChildrenHanlder
+        }
+      ]
+    }
+  },
+  delete: {
+    pointerdown: removeEventHandler,
+    pointerup: removeEventHandler,
+    pointermove: removeEventHandler,
+    pointerenter: removeEventHandler,
+    pointerleave: removeEventHandler,
+    click: removeEventHandler,
+    dblclick: removeEventHandler,
+    contextmenu: removeEventHandler,
+    children: removeChildrenHandler
+  }
+};
+defineProcessor({
+  configType: CONFIGTYPE.OBJECT3D,
+  commands: objectCommands,
+  create(config2, engine) {
+    return objectCreate(new Object3D(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
+const cacheCameraMap = /* @__PURE__ */ new WeakMap();
+var PerspectiveCameraProcessor = defineProcessor({
+  configType: CONFIGTYPE.PERSPECTIVECAMERA,
+  commands: {
+    add: {
+      scale() {
+      },
+      ...objectCommands.add
+    },
+    set: {
+      scale() {
+      },
+      adaptiveWindow({ target, value, engine }) {
+        if (value) {
+          if (!cacheCameraMap.has(value)) {
+            const fun = (event) => {
+              target.aspect = event.width / event.height;
+              target.updateProjectionMatrix();
+            };
+            cacheCameraMap.set(target, fun);
+            engine.addEventListener("setSize", fun);
+            fun({
+              type: "setSize",
+              width: engine.dom.offsetWidth,
+              height: engine.dom.offsetHeight
+            });
+          }
+        } else {
+          const fun = cacheCameraMap.get(target);
+          if (fun) {
+            engine.removeEventListener("setSize", fun);
+            cacheCameraMap.delete(target);
+          }
+        }
+      },
+      ...objectCommands.set,
+      $reg: [
+        {
+          reg: new RegExp("fov|aspect|near|far"),
+          handler({ target, key, value }) {
+            target[key] = value;
+            target.updateProjectionMatrix();
+          }
+        }
+      ]
+    },
+    delete: {
+      scale() {
+      },
+      ...objectCommands.delete
+    }
+  },
+  create(config2, engine) {
+    const camera = new PerspectiveCamera();
+    objectCreate(
+      camera,
+      config2,
+      {
+        scale: true,
+        adaptiveWindow: true
+      },
+      engine
+    );
+    camera.updateProjectionMatrix();
+    if (config2.adaptiveWindow) {
+      const fun = (event) => {
+        camera.aspect = event.width / event.height;
+        camera.updateProjectionMatrix();
+      };
+      cacheCameraMap.set(camera, fun);
+      engine.addEventListener("setSize", fun);
+      fun({
+        type: "setSize",
+        width: engine.dom.offsetWidth,
+        height: engine.dom.offsetHeight
+      });
+    }
+    return camera;
+  },
+  dispose(camera) {
+    cacheCameraMap.delete(camera);
+    objectDispose(camera);
+  }
+});
+var OrthographicCameraProcessor = defineProcessor({
+  configType: CONFIGTYPE.ORTHOGRAPHICCAMERA,
+  commands: {
+    add: {
+      scale() {
+      },
+      ...objectCommands.add
+    },
+    set: {
+      scale() {
+      },
+      adaptiveWindow({ target, value, engine }) {
+        if (value) {
+          if (!cacheCameraMap.has(value)) {
+            const fun = (event) => {
+              const width = event.width;
+              const height = event.height;
+              target.left = -width;
+              target.right = width;
+              target.top = height;
+              target.bottom = -height;
+              target.updateProjectionMatrix();
+            };
+            cacheCameraMap.set(target, fun);
+            engine.addEventListener("setSize", fun);
+            fun({
+              type: "setSize",
+              width: engine.dom.offsetWidth,
+              height: engine.dom.offsetHeight
+            });
+          }
+        } else {
+          const fun = cacheCameraMap.get(target);
+          if (fun) {
+            engine.removeEventListener("setSize", fun);
+            cacheCameraMap.delete(target);
+          }
+        }
+      },
+      ...objectCommands.set,
+      $reg: [
+        {
+          reg: new RegExp("left|right|top|bottom|near|far|zoom"),
+          handler({ target, key, value }) {
+            target[key] = value;
+            target.updateProjectionMatrix();
+          }
+        }
+      ]
+    },
+    delete: {
+      scale() {
+      },
+      ...objectCommands.delete
+    }
+  },
+  create(config2, engine) {
+    const camera = new OrthographicCamera(-50, 50, 50, -50);
+    objectCreate(
+      camera,
+      config2,
+      {
+        scale: true,
+        adaptiveWindow: true
+      },
+      engine
+    );
+    camera.updateProjectionMatrix();
+    if (config2.adaptiveWindow) {
+      const fun = (event) => {
+        const width = event.width;
+        const height = event.height;
+        camera.left = -width;
+        camera.right = width;
+        camera.top = height;
+        camera.bottom = -height;
+        camera.updateProjectionMatrix();
+      };
+      cacheCameraMap.set(camera, fun);
+      engine.addEventListener("setSize", fun);
+      fun({
+        type: "setSize",
+        width: engine.dom.offsetWidth,
+        height: engine.dom.offsetHeight
+      });
+    }
+    return camera;
+  },
+  dispose(camera) {
+    cacheCameraMap.delete(camera);
+    objectDispose(camera);
+  }
+});
+class CameraCompiler extends ObjectCompiler {
+  constructor() {
+    super();
+    __publicField(this, "MODULE", MODULETYPE.CAMERA);
+  }
+}
+Compiler.processor(PerspectiveCameraProcessor);
+Compiler.processor(OrthographicCameraProcessor);
+var OrbitControlsProcessor = defineProcessor({
+  configType: CONFIGTYPE.ORBITCONTROLS,
+  commands: {
+    set: {
+      target({ target, config: config2, path, key, value }) {
+        const targetConfig = config2.target;
+        if (!config2.type) {
+          config2.target = new Vector3(0, 0, 0);
+          return;
+        }
+        if (typeof config2.target === "string")
+          ;
+        else {
+          if (path.length > 1) {
+            target.target[key] = value;
+          } else {
+            target.target = new Vector3(
+              targetConfig.x,
+              targetConfig.y,
+              targetConfig.z
+            );
+          }
+        }
+      }
+    }
+  },
+  create(config2, engine) {
+    let controls;
+    if (engine.orbitControls) {
+      controls = engine.orbitControls;
+    } else {
+      controls = new VisOrbitControls();
+      controls.setCamera(engine.camera);
+      controls.setDom(engine.dom);
+    }
+    if (config2.target) {
+      if (typeof config2.target === "string")
+        ;
+      else {
+        controls.target = new Vector3(
+          config2.target.x,
+          config2.target.y,
+          config2.target.z
+        );
+      }
+    }
+    syncObject(config2, controls, {
+      target: true
+    });
+    return controls;
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
+var TransformControlsProcessor = defineProcessor({
+  configType: CONFIGTYPE.TRNASFORMCONTROLS,
+  commands: {
+    set: {
+      snapAllow({ target, config: config2, value }) {
+        if (value) {
+          target.translationSnap = config2.translationSnap;
+          target.rotationSnap = config2.rotationSnap;
+          target.scaleSnap = config2.scaleSnap;
+        } else {
+          target.translationSnap = null;
+          target.rotationSnap = null;
+          target.scaleSnap = null;
+        }
+      },
+      translationSnap({ target, config: config2, value }) {
+        if (config2.snapAllow) {
+          target.translationSnap = value;
+        }
+      },
+      rotationSnap({ target, config: config2, value }) {
+        if (config2.snapAllow) {
+          target.rotationSnap = value;
+        }
+      },
+      scaleSnap({ target, config: config2, value }) {
+        if (config2.snapAllow) {
+          target.scaleSnap = value;
+        }
+      }
+    }
+  },
+  create(config2, engine) {
+    let control;
+    if (engine.transformControls) {
+      control = engine.transformControls;
+    } else {
+      control = new VisTransformControls();
+      control.setCamera(engine.camera);
+      engine.dom && control.setDom(engine.dom);
+    }
+    if (config2.snapAllow) {
+      control.translationSnap = config2.translationSnap;
+      control.rotationSnap = config2.rotationSnap;
+      control.scaleSnap = config2.scaleSnap;
+    }
+    return control;
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
+class ControlsCompiler extends Compiler {
+  constructor() {
+    super();
+    __publicField(this, "MODULE", MODULETYPE.CONTROLS);
+  }
+  useEngine(engine) {
+    if (engine.transformControls) {
+      this.map.set(CONFIGTYPE.TRNASFORMCONTROLS, engine.transformControls);
+      this.weakMap.set(engine.transformControls, CONFIGTYPE.TRNASFORMCONTROLS);
+    }
+    if (engine.orbitControls) {
+      this.map.set(CONFIGTYPE.ORBITCONTROLS, engine.orbitControls);
+      this.weakMap.set(engine.orbitControls, CONFIGTYPE.ORBITCONTROLS);
+    }
+    return super.useEngine(engine);
+  }
+}
+Compiler.processor(OrbitControlsProcessor);
+Compiler.processor(TransformControlsProcessor);
+const getElement = function(element, engine) {
+  const resourceMap = engine.resourceManager.resourceMap;
+  if (!resourceMap.has(element)) {
+    console.warn(`css3D compiler: can not found resource element: ${element}`);
+    return document.createElement("div");
+  }
+  const resource = resourceMap.get(element);
+  if (resource instanceof HTMLElement) {
+    return resource;
+  } else {
+    console.warn(
+      `css3D compiler can not suport render this resource type.`,
+      resource.constructor,
+      element
+    );
+    return document.createElement("div");
+  }
+};
+var CSS3DObjectProcessor = defineProcessor({
+  configType: CONFIGTYPE.CSS3DOBJECT,
+  commands: {
+    add: objectCommands.add,
+    set: {
+      element({ target, value, engine }) {
+        target.element = getElement(value, engine);
+      },
+      ...objectCommands.set
+    },
+    delete: objectCommands.delete
+  },
+  create(config2, engine) {
+    return objectCreate(
+      new CSS3DObject(getElement(config2.element, engine)),
+      config2,
+      {
+        element: true
+      },
+      engine
+    );
+  },
+  dispose: objectDispose
+});
+class VisCSS3DObject extends CSS3DObject {
+  constructor(element = document.createElement("div")) {
+    const root = document.createElement("div");
+    const width = 50;
+    const height = 50;
+    root.style.width = `${width}px`;
+    root.style.height = `${height}px`;
+    root.appendChild(element);
+    super(root);
+    __publicField(this, "geometry");
+    __publicField(this, "_width");
+    __publicField(this, "_height");
+    this.geometry = new PlaneBufferGeometry(width, height);
+    this.geometry.computeBoundingBox();
+    this._width = width;
+    this._height = height;
+  }
+  get width() {
+    return this._width;
+  }
+  set width(value) {
+    this.geometry.dispose();
+    this.geometry = new PlaneBufferGeometry(value, this._height);
+    this.geometry.computeBoundingBox();
+    this.element.style.width = `${value}px`;
+    this._width = value;
+  }
+  get height() {
+    return this._height;
+  }
+  set height(value) {
+    this.geometry.dispose();
+    this.geometry = new PlaneBufferGeometry(this._width, value);
+    this.geometry.computeBoundingBox();
+    this.element.style.height = `${value}px`;
+    this._height = value;
+  }
+}
+class CSS3DPlane extends VisCSS3DObject {
+  constructor(element = document.createElement("div")) {
+    super(element);
+    __publicField(this, "cacheBox", new Box3());
+    this.type = "CSS3DPlane";
+    this.element.classList.add("vis-css3d", "vis-css3d-plane");
+  }
+  raycast(raycaster, intersects) {
+    const box = this.cacheBox.copy(this.geometry.boundingBox);
+    box.applyMatrix4(this.matrixWorld);
+    if (raycaster.ray.intersectsBox(box)) {
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(this.position),
+        object: this,
+        point: this.position
+      });
+    }
+  }
+}
+var CSS3DPlaneProcessor = defineProcessor({
+  configType: CONFIGTYPE.CSS3DPLANE,
+  commands: {
+    add: objectCommands.add,
+    set: {
+      element({ target, value, engine }) {
+        target.element.innerHTML = "";
+        target.element.appendChild(getElement(value, engine));
+      },
+      ...objectCommands.set
+    },
+    delete: objectCommands.delete
+  },
+  create(config2, engine) {
+    return objectCreate(
+      new CSS3DPlane(getElement(config2.element, engine)),
+      config2,
+      {
+        element: true
+      },
+      engine
+    );
+  },
+  dispose: objectDispose
+});
+class VisCSS3DSprite extends CSS3DSprite {
+  constructor(element = document.createElement("div")) {
+    const root = document.createElement("div");
+    const width = 50;
+    const height = 50;
+    root.style.width = `${width}px`;
+    root.style.height = `${height}px`;
+    root.appendChild(element);
+    element.classList.add("vis-css3d", "vis-css3d-sprite");
+    super(root);
+    __publicField(this, "geometry");
+    __publicField(this, "_width");
+    __publicField(this, "_height");
+    __publicField(this, "cacheBox", new Box3());
+    __publicField(this, "cachePosition", new Vector3());
+    __publicField(this, "cacheQuaternion", new Quaternion());
+    __publicField(this, "cacheScale", new Vector3());
+    __publicField(this, "cacheMatrix4", new Matrix4());
+    __publicField(this, "rotateMatrix4", new Matrix4());
+    this.geometry = new PlaneBufferGeometry(width, height);
+    this.geometry.computeBoundingBox();
+    this._width = width;
+    this._height = height;
+    this.type = "CSS3DSprite";
+  }
+  get width() {
+    return this._width;
+  }
+  set width(value) {
+    this.geometry.dispose();
+    this.geometry = new PlaneBufferGeometry(value, this._height);
+    this.geometry.computeBoundingBox();
+    this.element.style.width = `${value}px`;
+    this._width = value;
+  }
+  get height() {
+    return this._height;
+  }
+  set height(value) {
+    this.geometry.dispose();
+    this.geometry = new PlaneBufferGeometry(this._width, value);
+    this.geometry.computeBoundingBox();
+    this.element.style.height = `${value}px`;
+    this._height = value;
+  }
+  raycast(raycaster, intersects) {
+    const box = this.cacheBox.copy(this.geometry.boundingBox);
+    this.matrixWorld.decompose(
+      this.cachePosition,
+      this.cacheQuaternion,
+      this.cacheScale
+    );
+    const rotateMatrix4 = this.rotateMatrix4.lookAt(
+      this.position,
+      raycaster.camera.position,
+      this.up
+    );
+    this.cacheQuaternion.setFromRotationMatrix(rotateMatrix4);
+    this.cacheMatrix4.compose(
+      this.cachePosition,
+      this.cacheQuaternion,
+      this.cacheScale
+    );
+    box.applyMatrix4(this.cacheMatrix4);
+    if (raycaster.ray.intersectsBox(box)) {
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(this.position),
+        object: this,
+        point: this.position
+      });
+    }
+  }
+}
+var CSS3DSpriteProcessor = defineProcessor({
+  configType: CONFIGTYPE.CSS3DSPRITE,
+  commands: {
+    add: objectCommands.add,
+    set: {
+      element({ target, value, engine }) {
+        target.element.innerHTML = "";
+        target.element.appendChild(getElement(value, engine));
+      },
+      ...objectCommands.set
+    },
+    delete: objectCommands.delete
+  },
+  create(config2, engine) {
+    return objectCreate(
+      new VisCSS3DSprite(getElement(config2.element, engine)),
+      config2,
+      {
+        element: true
+      },
+      engine
+    );
+  },
+  dispose: objectDispose
+});
+class CSS3DCompiler extends ObjectCompiler {
+  constructor() {
+    super();
+    __publicField(this, "MODULE", MODULETYPE.CSS3D);
+  }
+}
+Compiler.processor(CSS3DPlaneProcessor);
+Compiler.processor(CSS3DObjectProcessor);
+Compiler.processor(CSS3DSpriteProcessor);
+class CurveGeometry extends BufferGeometry {
+  constructor(path = [], divisions = 36, space = true) {
+    super();
+    __publicField(this, "parameters");
+    this.type = "CurveGeometry";
+    this.parameters = {
+      path: path.map((vector3) => vector3.clone()),
+      space,
+      divisions
+    };
+  }
+}
+class QuadraticBezierCurveGeometry extends CurveGeometry {
+  constructor(path = [], divisions = 36, space = true) {
+    super(path, divisions, space);
+    this.type = "QuadraticBezierCurveGeometry";
+    const curvePath = new CurvePath();
+    if (path.length < 3) {
+      console.warn(`QuadraticBezierCurveGeometry path length at least 3.`);
+      return;
+    }
+    const length = 3 + (path.length - 3) - (path.length - 3) % 2;
+    for (let i = 1; i < length; i += 2) {
+      curvePath.add(
+        new QuadraticBezierCurve3(path[i - 1], path[i], path[i + 1])
+      );
+    }
+    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
+      return sum += curve.arcLengthDivisions;
+    }, 0);
+    if (divisions > totalArcLengthDivisions) {
+      const mutily = Math.ceil(
+        (divisions - totalArcLengthDivisions) / curvePath.curves.length
+      );
+      curvePath.curves.forEach((curve) => {
+        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
+        curve.updateArcLengths();
+      });
+    }
+    this.setFromPoints(
+      space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions)
+    );
+  }
+}
+class CubicBezierCurveGeometry extends CurveGeometry {
+  constructor(path = [], divisions = 36, space = true) {
+    super(path, divisions, space);
+    this.type = "CubicBezierCurveGeometry";
+    const curvePath = new CurvePath();
+    if (path.length < 4) {
+      console.warn(`CubicBezierCurveGeometry path length at least 4.`);
+      return;
+    }
+    const length = 4 + (path.length - 4) - (path.length - 4) % 3;
+    for (let i = 2; i < length; i += 3) {
+      curvePath.add(
+        new CubicBezierCurve3(path[i - 2], path[i - 1], path[i], path[i + 1])
+      );
+    }
+    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
+      return sum += curve.arcLengthDivisions;
+    }, 0);
+    if (divisions > totalArcLengthDivisions) {
+      const mutily = Math.ceil(
+        (divisions - totalArcLengthDivisions) / curvePath.curves.length
+      );
+      curvePath.curves.forEach((curve) => {
+        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
+        curve.updateArcLengths();
+      });
+    }
+    this.setFromPoints(
+      space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions)
+    );
+  }
+}
+class LineCurveGeometry extends CurveGeometry {
+  constructor(path = [], divisions = 36, space = true) {
+    super(path, divisions, space);
+    this.type = "LineCurveGeometry";
+    if (!path.length) {
+      console.warn(`LineCurveGeometry path length at least 1.`);
+      return;
+    }
+    const curvePath = new CurvePath();
+    for (let i = 1; i < path.length; i += 1) {
+      curvePath.add(new LineCurve3(path[i - 1], path[i]));
+    }
+    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
+      return sum += curve.arcLengthDivisions;
+    }, 0);
+    if (divisions > totalArcLengthDivisions) {
+      const mutily = Math.ceil(
+        (divisions - totalArcLengthDivisions) / curvePath.curves.length
+      );
+      curvePath.curves.forEach((curve) => {
+        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
+        curve.updateArcLengths();
+      });
+    }
+    this.setFromPoints(
+      space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions)
+    );
+  }
+}
+class SplineCurveGeometry extends CurveGeometry {
+  constructor(path = [], divisions = 36, space = true) {
+    super(path, divisions, space);
+    this.type = "SplineCurveGeometry";
+    if (!path.length) {
+      console.warn(`SplineCurveGeometry path length at least 1.`);
+      return;
+    }
+    const splineCurve = new CatmullRomCurve3(path);
+    this.setFromPoints(
+      space ? splineCurve.getSpacedPoints(divisions) : splineCurve.getPoints(divisions)
+    );
+  }
+}
+class LineTubeGeometry extends TubeGeometry {
+  constructor(path = [], tubularSegments = 64, radius = 1, radialSegments = 8, closed = false) {
+    if (!path.length) {
+      console.warn(`LineTubeGeometry path length at least 1.`);
+      return;
+    }
+    const curvePath = new CurvePath();
+    for (let i = 1; i < path.length; i += 1) {
+      curvePath.add(new LineCurve3(path[i - 1], path[i]));
+    }
+    super(curvePath, tubularSegments, radius, radialSegments, closed);
+    this.type = "LineTubeGeometry";
+  }
+}
+class SplineTubeGeometry extends TubeGeometry {
+  constructor(path = [], tubularSegments = 64, radius = 1, radialSegments = 8, closed = false) {
+    if (!path.length) {
+      console.warn(`SplineTubeGeometry path length at least 1.`);
+      return;
+    }
+    const splineCurve = new CatmullRomCurve3(path);
+    super(splineCurve, tubularSegments, radius, radialSegments, closed);
+    this.type = "SplineTubeGeometry";
+  }
+}
+class LineShapeGeometry extends ShapeBufferGeometry {
+  constructor(path = [new Vector2(0, 0)], curveSegments = 12) {
+    const lineShape = new Shape();
+    const move = path[0];
+    if (move) {
+      lineShape.moveTo(move.x, move.y);
+      for (let i = 1; i < path.length; i += 1) {
+        lineShape.lineTo(path[i].x, path[i].y);
+      }
+    }
+    super(lineShape, curveSegments);
+    this.type = "LineShapeGeometry";
+  }
+}
+const transfromAnchor = function(geometry, config2) {
+  if (!(geometry instanceof CurveGeometry) && !(geometry instanceof TubeGeometry) && !(geometry instanceof ShapeGeometry)) {
+    geometry.center();
+  }
+  geometry.computeBoundingBox();
+  const box = geometry.boundingBox;
+  const position = config2.position;
+  const rotation = config2.rotation;
+  const scale = config2.scale;
+  const quaternion = new Quaternion().setFromEuler(
+    new Euler(rotation.x, rotation.y, rotation.z, "XYZ")
+  );
+  geometry.applyQuaternion(quaternion);
+  geometry.scale(scale.x, scale.y, scale.z);
+  if (!(geometry instanceof CurveGeometry) && !(geometry instanceof TubeGeometry) && !(geometry instanceof ShapeGeometry)) {
+    geometry.center();
+  }
+  geometry.computeBoundingBox();
+  geometry.translate(
+    (box.max.x - box.min.x) / 2 * position.x,
+    (box.max.y - box.min.y) / 2 * position.y,
+    (box.max.z - box.min.z) / 2 * position.z
+  );
+  return geometry;
+};
+const commonRegCommand = {
+  reg: new RegExp(".*"),
+  handler({ config: config2, target, processor, engine }) {
+    const newGeometry = processor.create(config2, engine);
+    target.copy(newGeometry);
+    target.dispatchEvent({
+      type: "update"
+    });
+    target.uuid = newGeometry.uuid;
+    newGeometry.dispose();
+  }
+};
+const commands = {
+  add: {
+    groups({ target, value }) {
+      target.addGroup(value.start, value.count, value.materialIndex);
+    },
+    $reg: [commonRegCommand]
+  },
+  set: {
+    groups(params) {
+      const { path, target, config: config2 } = params;
+      if (path[1] !== void 0) {
+        target.groups.splice(Number(params.path[1]), 1);
+        const group = config2.groups[path[1]];
+        target.addGroup(group.start, group.count, group.materialIndex);
+      } else {
+        console.warn(`geometry processor can not set group`, params);
+      }
+    },
+    $reg: [commonRegCommand]
+  },
+  delete: {
+    groups({ target, key }) {
+      target.groups.splice(Number(key), 1);
+    },
+    $reg: [commonRegCommand]
+  }
+};
+const create$2 = function(target, config2) {
+  target.clearGroups();
+  for (const group of config2.groups) {
+    target.addGroup(group.start, group.count, group.materialIndex);
+  }
+  return transfromAnchor(target, config2);
+};
+const constructMap = /* @__PURE__ */ new Map();
+constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config2) => {
+  return new BoxBufferGeometry(
+    config2.width,
+    config2.height,
+    config2.depth,
+    config2.widthSegments,
+    config2.heightSegments,
+    config2.depthSegments
+  );
+});
+constructMap.set(CONFIGTYPE.SPHEREGEOMETRY, (config2) => {
+  return new SphereBufferGeometry(
+    config2.radius,
+    config2.widthSegments,
+    config2.heightSegments,
+    config2.phiStart,
+    config2.phiLength,
+    config2.thetaStart,
+    config2.thetaLength
+  );
+});
+constructMap.set(CONFIGTYPE.PLANEGEOMETRY, (config2) => {
+  return new PlaneBufferGeometry(
+    config2.width,
+    config2.height,
+    config2.widthSegments,
+    config2.heightSegments
+  );
+});
+constructMap.set(CONFIGTYPE.CIRCLEGEOMETRY, (config2) => {
+  return new CircleBufferGeometry(
+    config2.radius,
+    config2.segments,
+    config2.thetaStart,
+    config2.thetaLength
+  );
+});
+constructMap.set(CONFIGTYPE.CONEGEOMETRY, (config2) => {
+  return new ConeBufferGeometry(
+    config2.radius,
+    config2.height,
+    config2.radialSegments,
+    config2.heightSegments,
+    config2.openEnded,
+    config2.thetaStart,
+    config2.thetaLength
+  );
+});
+constructMap.set(
+  CONFIGTYPE.CYLINDERGEOMETRY,
+  (config2) => {
+    return new CylinderBufferGeometry(
+      config2.radiusTop,
+      config2.radiusBottom,
+      config2.height,
+      config2.radialSegments,
+      config2.heightSegments,
+      config2.openEnded,
+      config2.thetaStart,
+      config2.thetaLength
+    );
+  }
+);
+constructMap.set(
+  CONFIGTYPE.LINECURVEGEOMETRY,
+  (config2) => {
+    return new LineCurveGeometry(
+      config2.path.map(
+        (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
+      ),
+      config2.divisions,
+      config2.space
+    );
+  }
+);
+constructMap.set(
+  CONFIGTYPE.SPLINECURVEGEOMETRY,
+  (config2) => {
+    return new SplineCurveGeometry(
+      config2.path.map(
+        (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
+      ),
+      config2.divisions,
+      config2.space
+    );
+  }
+);
+constructMap.set(
+  CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY,
+  (config2) => {
+    return new CubicBezierCurveGeometry(
+      config2.path.map(
+        (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
+      ),
+      config2.divisions,
+      config2.space
+    );
+  }
+);
+constructMap.set(
+  CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY,
+  (config2) => {
+    return new QuadraticBezierCurveGeometry(
+      config2.path.map(
+        (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
+      ),
+      config2.divisions,
+      config2.space
+    );
+  }
+);
+constructMap.set(
+  CONFIGTYPE.LINETUBEGEOMETRY,
+  (config2) => {
+    return new LineTubeGeometry(
+      config2.path.map(
+        (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
+      ),
+      config2.tubularSegments,
+      config2.radius,
+      config2.radialSegments,
+      config2.closed
+    );
+  }
+);
+constructMap.set(
+  CONFIGTYPE.SPLINETUBEGEOMETRY,
+  (config2) => {
+    return new SplineTubeGeometry(
+      config2.path.map(
+        (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
+      ),
+      config2.tubularSegments,
+      config2.radius,
+      config2.radialSegments,
+      config2.closed
+    );
+  }
+);
+constructMap.set(CONFIGTYPE.TORUSGEOMETRY, (config2) => {
+  return new TorusGeometry(
+    config2.radius,
+    config2.tube,
+    config2.radialSegments,
+    config2.tubularSegments,
+    config2.arc
+  );
+});
+constructMap.set(CONFIGTYPE.RINGGEOMETRY, (config2) => {
+  return new RingBufferGeometry(
+    config2.innerRadius,
+    config2.outerRadius,
+    config2.thetaSegments,
+    config2.phiSegments,
+    config2.thetaStart,
+    config2.thetaLength
+  );
+});
+constructMap.set(
+  CONFIGTYPE.LINESHAPEGEOMETRY,
+  (config2) => {
+    return new LineShapeGeometry(
+      config2.path.map((vector2) => new Vector2(vector2.x, vector2.y)),
+      config2.curveSegments
+    );
+  }
+);
+const create$1 = function(config2) {
+  if (!constructMap.has(config2.type)) {
+    console.error(
+      `parametric geometry can not support this type config: ${config2.type}`
+    );
+    return new BufferGeometry();
+  }
+  return create$2(
+    constructMap.get(config2.type)(config2),
+    config2
+  );
+};
+const dispose$1 = function(target) {
+  target.dispose();
+};
+const parametricProcessorFactory = function(configType) {
+  return defineProcessor({
+    configType,
+    commands,
+    create: create$1,
+    dispose: dispose$1
+  });
+};
+const ParametricGeometryList = [
+  CONFIGTYPE.BOXGEOMETRY,
+  CONFIGTYPE.SPHEREGEOMETRY,
+  CONFIGTYPE.PLANEGEOMETRY,
+  CONFIGTYPE.CIRCLEGEOMETRY,
+  CONFIGTYPE.CONEGEOMETRY,
+  CONFIGTYPE.CYLINDERGEOMETRY,
+  CONFIGTYPE.LINECURVEGEOMETRY,
+  CONFIGTYPE.SPLINECURVEGEOMETRY,
+  CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY,
+  CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY,
+  CONFIGTYPE.LINETUBEGEOMETRY,
+  CONFIGTYPE.SPLINETUBEGEOMETRY,
+  CONFIGTYPE.TORUSGEOMETRY,
+  CONFIGTYPE.RINGGEOMETRY,
+  CONFIGTYPE.LINESHAPEGEOMETRY
+];
+const ParametricGeometryProcessors = ParametricGeometryList.map(
+  (type) => parametricProcessorFactory(type)
+);
+class LoadGeometry extends BufferGeometry {
+  constructor(geometry) {
+    super();
+    __publicField(this, "type", "LoadBufferGeometry");
+    geometry && this.copy(geometry);
+  }
+}
+var LoadGeometryProcessor = defineProcessor({
+  configType: CONFIGTYPE.LOADGEOMETRY,
+  commands,
+  create(config2, engine) {
+    const originGeometry = engine.resourceManager.resourceMap.get(config2.url);
+    if (!originGeometry && !(originGeometry instanceof BufferGeometry)) {
+      console.error(`engine rescoure can not found url: ${config2.url}`);
+      return new BoxBufferGeometry(5, 5, 5);
+    }
+    return create$2(new LoadGeometry(originGeometry), config2);
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
+const generateGeometry = function(attribute) {
+  const geometry = new BufferGeometry();
+  attribute.position.length && geometry.setAttribute(
+    "position",
+    new Float32BufferAttribute(attribute.position, 3)
+  );
+  attribute.color.length && geometry.setAttribute(
+    "color",
+    new Float32BufferAttribute(attribute.color, 3)
+  );
+  attribute.normal.length && geometry.setAttribute(
+    "normal",
+    new Float32BufferAttribute(attribute.normal, 3)
+  );
+  attribute.uv.length && geometry.setAttribute("uv", new Float32BufferAttribute(attribute.uv, 2));
+  attribute.uv2.length && geometry.setAttribute("uv2", new Float32BufferAttribute(attribute.uv2, 2));
+  attribute.index.length && geometry.setIndex(attribute.index);
+  return geometry;
+};
+var CustomGeometryProcessor = defineProcessor({
+  configType: CONFIGTYPE.CUSTOMGEOMETRY,
+  commands,
+  create(config2) {
+    return create$2(generateGeometry(config2.attribute), config2);
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
+var EdgesGeometryProcessor = defineProcessor({
+  configType: CONFIGTYPE.EDGESGEOMETRY,
+  commands,
+  create(config2, engine) {
+    const geometry = engine.compilerManager.getObjectBySymbol(config2.url);
+    if (!geometry || !(geometry instanceof BufferGeometry)) {
+      console.error(`engine rescoure can not found url: ${config2.url}`);
+      return new EdgesGeometry(new BoxBufferGeometry(5, 5, 5));
+    }
+    return create$2(new EdgesGeometry(geometry), config2);
+  },
+  dispose(target) {
+    target.dispose();
+  }
+});
+class GeometryCompiler extends Compiler {
+  constructor() {
+    super();
+    __publicField(this, "MODULE", MODULETYPE.GEOMETRY);
+  }
+}
+ParametricGeometryProcessors.forEach((processor) => {
+  Compiler.processor(processor);
+});
+Compiler.processor(LoadGeometryProcessor);
+Compiler.processor(CustomGeometryProcessor);
+Compiler.processor(EdgesGeometryProcessor);
+var GroupProcessor = defineProcessor({
+  configType: CONFIGTYPE.GROUP,
+  commands: objectCommands,
+  create(config2, engine) {
+    return objectCreate(new Group(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
+class GroupCompiler extends ObjectCompiler {
+  constructor() {
+    super();
+    __publicField(this, "MODULE", MODULETYPE.GROUP);
+  }
+}
+Compiler.processor(GroupProcessor);
+const colorHandler = function({
+  target,
+  value
+}) {
+  target.color.copy(new Color(value));
+};
+const lightCreate = function(light, config2, filter, engine) {
+  light.color.copy(new Color(config2.color));
+  return objectCreate(
+    light,
+    config2,
+    {
+      color: true,
+      scale: true,
+      rotation: true,
+      lookAt: true,
+      ...filter
+    },
+    engine
+  );
+};
+const lightCommands = Object.assign({}, objectCommands, {
+  set: {
+    color: colorHandler,
+    scale: emptyHandler,
+    rotation: emptyHandler,
+    lookAt: emptyHandler
+  }
+});
+var AmbientLightProcessor = defineProcessor({
+  configType: CONFIGTYPE.AMBIENTLIGHT,
+  commands: lightCommands,
+  create(config2, engine) {
+    return lightCreate(new AmbientLight(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
+var DirectionalLightProcessor = defineProcessor({
+  configType: CONFIGTYPE.DIRECTIONALLIGHT,
+  commands: lightCommands,
+  create(config2, engine) {
+    return lightCreate(new DirectionalLight(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
+var PointLightProcessor = defineProcessor({
+  configType: CONFIGTYPE.POINTLIGHT,
+  commands: lightCommands,
+  create(config2, engine) {
+    return lightCreate(new PointLight(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
+var SpotLightProcessor = defineProcessor({
+  configType: CONFIGTYPE.SPOTLIGHT,
+  commands: lightCommands,
+  create(config2, engine) {
+    return lightCreate(new SpotLight(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
+class LightCompiler extends ObjectCompiler {
+  constructor() {
+    super();
+    __publicField(this, "MODULE", MODULETYPE.LIGHT);
+  }
+}
+Compiler.processor(AmbientLightProcessor);
+Compiler.processor(DirectionalLightProcessor);
+Compiler.processor(PointLightProcessor);
+Compiler.processor(SpotLightProcessor);
+class SolidObjectCompiler extends ObjectCompiler {
+  constructor() {
+    super();
+  }
+}
+const replaceMaterial = new ShaderMaterial({
+  fragmentShader: `
+  void main () {
+    gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
+  }
+  `
+});
+const replaceGeometry = new BoxBufferGeometry(10, 10, 10);
+const geometryHandler = function({ target, value, engine }) {
+  const geometry = engine.compilerManager.getGeometry(value);
+  if (!geometry) {
+    console.warn(`can not found geometry by vid in engine: ${value}`);
+    target.geometry = replaceGeometry;
+    return;
+  }
+  target.geometry = geometry;
+};
+const materialHandler = function({ target, config: config2, engine }) {
+  let material;
+  if (typeof config2.material === "string") {
+    material = engine.compilerManager.getMaterial(config2.material) || replaceMaterial;
+  } else {
+    material = config2.material.map(
+      (vid) => engine.compilerManager.getMaterial(vid) || replaceMaterial
+    );
+  }
+  target.material = material;
+};
+const solidObjectCreate = function(object, config2, filter, engine) {
+  if (!filter.geometry) {
+    let geometry = engine.getObjectBySymbol(
+      config2.geometry
+    );
+    if (!(geometry instanceof BufferGeometry)) {
+      console.warn(
+        `geometry vid in engine is not instance of BufferGeometry: ${config2.geometry}`,
+        geometry
+      );
+      geometry = replaceGeometry;
+    }
+    object.geometry.dispose();
+    object.geometry = geometry;
+  }
+  if (!filter.material) {
+    let material;
+    if (typeof config2.material === "string") {
+      material = engine.compilerManager.getMaterial(config2.material) || replaceMaterial;
+    } else {
+      material = config2.material.map(
+        (vid) => engine.compilerManager.getMaterial(vid) || replaceMaterial
+      );
+    }
+    object.material = material;
+  }
+  return objectCreate(
+    object,
+    config2,
+    {
+      geometry: true,
+      material: true,
+      ...filter
+    },
+    engine
+  );
+};
+const solidObjectDispose = function(target) {
+  objectDispose(target);
+};
+const solidObjectCommands = {
+  add: {
+    material: materialHandler,
+    ...objectCommands.add
+  },
+  set: {
+    geometry: geometryHandler,
+    material: materialHandler,
+    ...objectCommands.set
+  },
+  delete: {
+    material: materialHandler,
+    ...objectCommands.delete
+  }
+};
+var LineProcessor = defineProcessor({
+  configType: CONFIGTYPE.LINE,
+  commands: solidObjectCommands,
+  create(config2, engine) {
+    return solidObjectCreate(new Line(), config2, {}, engine);
+  },
+  dispose: solidObjectDispose
+});
+class LineCompiler extends SolidObjectCompiler {
+  constructor() {
+    super();
+    __publicField(this, "MODULE", MODULETYPE.LINE);
+  }
+}
+Compiler.processor(LineProcessor);
+const commonNeedUpdatesRegCommand = {
+  reg: new RegExp("transparent|sizeAttenuation"),
+  handler({
+    target,
+    key,
+    value
+  }) {
+    target[key] = value;
+    target.needsUpdate = true;
+  }
+};
+const commonMapRegCommand = {
+  reg: new RegExp("map$", "i"),
+  handler({
+    target,
+    key,
+    value,
+    engine
+  }) {
+    const texture = engine.compilerManager.getObjectBySymbol(value);
+    if (!(texture instanceof Texture)) {
+      console.warn(
+        `this url resource is not instance of Texture: ${key}`,
+        value,
+        texture
+      );
+    }
+    target[key] = texture;
+    target.needsUpdate = true;
+  }
+};
+const colorSetHandler = function({ target, key, value }) {
+  target[key].copy(new Color(value));
+};
+const create = function(target, config2, engine) {
+  const filter = {};
+  for (const key of Object.keys(config2)) {
+    if (key.toLocaleLowerCase().endsWith("map") && config2[key]) {
+      const texture = engine.compilerManager.getObjectBySymbol(config2[key]);
+      if (!(texture instanceof Texture)) {
+        console.warn(
+          `this url resource is not instance of Texture: ${key}`,
+          config2[key],
+          texture
+        );
+        continue;
+      }
+      target[key] = texture;
+      filter[key] = true;
+    } else if (target[key] instanceof Color) {
+      target[key] = new Color(config2[key]);
+      filter[key] = true;
+    }
+  }
+  syncObject(config2, target, filter);
+  target.needsUpdate = true;
+  return target;
+};
+const dispose = function(target) {
+  target.dispose();
+};
+var LineBasicMaterialProcessor = defineProcessor({
+  configType: CONFIGTYPE.LINEBASICMATERIAL,
+  commands: {
+    set: {
+      color: colorSetHandler,
+      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+    }
+  },
+  create: function(config2, engine) {
+    return create(new LineBasicMaterial(), config2, engine);
+  },
+  dispose
+});
+var MeshBasicMaterialProcessor = defineProcessor({
+  configType: CONFIGTYPE.MESHBASICMATERIAL,
+  commands: {
+    set: {
+      color: colorSetHandler,
+      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+    }
+  },
+  create: function(config2, engine) {
+    return create(new MeshBasicMaterial(), config2, engine);
+  },
+  dispose
+});
+var MeshPhongMaterialProcessor = defineProcessor({
+  configType: CONFIGTYPE.MESHPHONGMATERIAL,
+  commands: {
+    set: {
+      color: colorSetHandler,
+      emissive: colorSetHandler,
+      specular: colorSetHandler,
+      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+    }
+  },
+  create: function(config2, engine) {
+    return create(new MeshPhongMaterial(), config2, engine);
+  },
+  dispose
+});
+var MeshPhysicalMaterialProcessor = defineProcessor({
+  configType: CONFIGTYPE.MESHPHYSICALMATERIAL,
+  commands: {
+    set: {
+      color: colorSetHandler,
+      emissive: colorSetHandler,
+      specularColor: colorSetHandler,
+      sheenColor: colorSetHandler,
+      attenuationColor: colorSetHandler,
+      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+    }
+  },
+  create: function(config2, engine) {
+    return create(new MeshPhysicalMaterial(), config2, engine);
+  },
+  dispose
+});
+var MeshStandardMaterialProcessor = defineProcessor({
+  configType: CONFIGTYPE.MESHSTANDARDMATERIAL,
+  commands: {
+    set: {
+      color: colorSetHandler,
+      emissive: colorSetHandler,
+      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+    }
+  },
+  create: function(config2, engine) {
+    return create(new MeshStandardMaterial(), config2, engine);
+  },
+  dispose
+});
+var PointsMaterialProcessor = defineProcessor({
+  configType: CONFIGTYPE.POINTSMATERIAL,
+  commands: {
+    set: {
+      color: colorSetHandler,
+      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+    }
+  },
+  create: function(config2, engine) {
+    return create(new PointsMaterial(), config2, engine);
+  },
+  dispose
+});
 const shader$3 = {
   name: "uvPulseShader",
   uniforms: {
@@ -4699,10 +8927,12 @@ const _ShaderLibrary = class {
   }
 };
 let ShaderLibrary = _ShaderLibrary;
-__publicField(ShaderLibrary, "library", new Map());
+__publicField(ShaderLibrary, "library", /* @__PURE__ */ new Map());
 __publicField(ShaderLibrary, "reigster", function(shader2) {
   if (_ShaderLibrary.library.has(shader2.name)) {
-    console.warn(`shader library has exist shader: ${shader2.name} that will be cover.`);
+    console.warn(
+      `shader library has exist shader: ${shader2.name} that will be cover.`
+    );
   }
   _ShaderLibrary.library.set(shader2.name, shader2);
 });
@@ -4714,2996 +8944,6 @@ ShaderLibrary.reigster(shader$3);
 ShaderLibrary.reigster(shader$2);
 ShaderLibrary.reigster(shader$1);
 ShaderLibrary.reigster(shader);
-const generateConfig = function(type, merge, strict = true, warn = true) {
-  if (!CONFIGFACTORY[type]) {
-    console.error(`type: ${type} can not be found in configList.`);
-    return {
-      vid: "",
-      type
-    };
-  }
-  const recursion = (config2, merge2) => {
-    for (const key in merge2) {
-      if (config2[key] === void 0) {
-        !strict && (config2[key] = merge2[key]);
-        strict && warn && console.warn(`'${type}' config can not set key: ${key}`);
-        continue;
-      }
-      if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
-        if (config2[key] === null) {
-          config2[key] = __spreadValues({}, merge2[key]);
-        }
-        recursion(config2[key], merge2[key]);
-      } else {
-        config2[key] = merge2[key];
-      }
-    }
-  };
-  const initConfig = CONFIGFACTORY[type]();
-  if ([
-    CONFIGTYPE.SHADERMATERIAL
-  ].includes(type)) {
-    const shaderConfig = ShaderLibrary.generateConfig((merge == null ? void 0 : merge.shader) || "defaultShader");
-    const cacheStrict = strict;
-    strict = false;
-    recursion(initConfig, shaderConfig);
-    strict = cacheStrict;
-  }
-  if ([CONFIGTYPE.SCRIPTANIMATION, CONFIGTYPE.KEYFRAMEANIMATION].includes(type)) {
-    strict = false;
-  }
-  if (initConfig.vid === "") {
-    initConfig.vid = v4();
-  }
-  merge && recursion(initConfig, merge);
-  if (generateConfig.autoInject && generateConfig.injectEngine) {
-    const engine = generateConfig.injectEngine;
-    const reactive = engine.reactiveConfig(initConfig);
-    if (generateConfig.injectScene) {
-      if (getModule(initConfig.type) in OBJECTMODULE && initConfig.type !== CONFIGTYPE.SCENE) {
-        let sceneConfig = null;
-        if (typeof generateConfig.injectScene === "boolean") {
-          sceneConfig = engine.getObjectConfig(engine.scene);
-        } else if (typeof generateConfig.injectScene === "string") {
-          sceneConfig = engine.getConfigBySymbol(generateConfig.injectScene);
-        }
-        if (!sceneConfig) {
-          console.warn(`current engine scene can not found it config`, engine, engine.scene);
-        } else {
-          sceneConfig.children.push(initConfig.vid);
-        }
-      }
-    }
-    return reactive;
-  }
-  return initConfig;
-};
-generateConfig.autoInject = true;
-generateConfig.injectScene = false;
-generateConfig.injectEngine = null;
-const DataSupportManagerPlugin = function(params) {
-  if (this.dataSupportManager) {
-    console.warn("engine has installed dataSupportManager plugin.");
-    return false;
-  }
-  const dataSupportManager = new DataSupportManager(params);
-  this.dataSupportManager = dataSupportManager;
-  this.applyConfig = function(...config2) {
-    this.dataSupportManager.applyConfig(...config2);
-    return this;
-  };
-  this.reactiveConfig = function(config2) {
-    return this.dataSupportManager.reactiveConfig(config2);
-  };
-  this.getConfigBySymbol = function(vid) {
-    return this.dataSupportManager.getConfigBySymbol(vid);
-  };
-  this.removeConfigBySymbol = function(...vids) {
-    this.dataSupportManager.removeConfigBySymbol(...vids);
-    return this;
-  };
-  this.toJSON = function() {
-    if (this.loaderManager) {
-      const assets = {
-        assets: JSON.parse(this.loaderManager.toJSON())
-      };
-      return this.dataSupportManager.toJSON(assets);
-    }
-    return this.dataSupportManager.toJSON();
-  };
-  this.exportConfig = function() {
-    let extendConfig = {};
-    if (this.loaderManager) {
-      extendConfig = {
-        assets: this.loaderManager.exportConfig()
-      };
-    }
-    return this.dataSupportManager.exportConfig(extendConfig);
-  };
-  this.completeSet.add(() => {
-    const rendererData = this.dataSupportManager.getDataSupport(MODULETYPE.RENDERER).getData();
-    if (!rendererData.WebGLRenderer) {
-      rendererData.WebGLRenderer = generateConfig(CONFIGTYPE.WEBGLRENDERER);
-    }
-    const controlsData = this.dataSupportManager.getDataSupport(MODULETYPE.CONTROLS).getData();
-    if (this.transformControls) {
-      if (!controlsData[CONFIGTYPE.TRNASFORMCONTROLS]) {
-        controlsData[CONFIGTYPE.TRNASFORMCONTROLS] = generateConfig(CONFIGTYPE.TRNASFORMCONTROLS);
-      }
-    }
-    if (this.orbitControls) {
-      if (!controlsData[CONFIGTYPE.ORBITCONTROLS]) {
-        controlsData[CONFIGTYPE.ORBITCONTROLS] = generateConfig(CONFIGTYPE.ORBITCONTROLS);
-      }
-    }
-  });
-  return true;
-};
-const _Compiler = class {
-  constructor() {
-    __publicField(this, "target", {});
-    __publicField(this, "map", new Map());
-    __publicField(this, "weakMap", new WeakMap());
-    __publicField(this, "engine");
-    __publicField(this, "cacheCompile");
-  }
-  getMap() {
-    return this.map;
-  }
-  useEngine(engine) {
-    this.engine = engine;
-    return this;
-  }
-  setTarget(target) {
-    this.target = target;
-    return this;
-  }
-  add(config2) {
-    if (!_Compiler.processors.has(config2.type)) {
-      console.warn(`${this.MODULE} compiler can not support this type: ${config2.type}`);
-      return null;
-    }
-    const processor = _Compiler.processors.get(config2.type);
-    const object = processor.create(config2, this.engine);
-    this.map.set(config2.vid, object);
-    this.weakMap.set(object, config2.vid);
-    return object;
-  }
-  remove(config2) {
-    const vid = config2.vid;
-    if (!this.map.has(vid)) {
-      console.warn(`${this.MODULE} compiler can not found this vid object: ${vid}.`);
-      return this;
-    }
-    if (!_Compiler.processors.has(config2.type)) {
-      console.warn(`${this.MODULE} compiler can not support this type: ${config2.type}`);
-      return this;
-    }
-    const object = this.map.get(vid);
-    _Compiler.processors.get(config2.type).dispose(object);
-    this.map.delete(vid);
-    this.weakMap.delete(object);
-    return this;
-  }
-  cover(config2) {
-    const vid = config2.vid;
-    if (!this.map.has(vid)) {
-      console.warn(`${this.MODULE} compiler can not found this vid object: ${vid}.`);
-      return this;
-    }
-    Promise.resolve().then(() => {
-      syncObject(config2, config2, {
-        vid: true,
-        type: true
-      });
-    });
-    return this;
-  }
-  compile(vid, notice) {
-    const cacheCompile = this.cacheCompile;
-    let object;
-    let config2;
-    let processor;
-    if (cacheCompile && cacheCompile.vid === vid) {
-      object = cacheCompile.target;
-      config2 = cacheCompile.config;
-      processor = cacheCompile.processor;
-    } else {
-      if (!this.map.has(vid)) {
-        console.warn(`${this.MODULE} compiler set function: can not found object which vid is: '${vid}'`);
-        return this;
-      }
-      if (!this.target[vid]) {
-        console.warn(`${this.MODULE} compiler set function: can not found config which vid is: '${vid}'`);
-        return this;
-      }
-      object = this.map.get(vid);
-      config2 = this.target[vid];
-      if (!_Compiler.processors.has(config2.type)) {
-        console.warn(`PassCompiler can not support this type: ${config2.type}`);
-        return this;
-      }
-      processor = _Compiler.processors.get(config2.type);
-      this.cacheCompile = {
-        target: object,
-        config: config2,
-        processor,
-        vid
-      };
-    }
-    processor.process(__spreadValues({
-      config: config2,
-      target: object,
-      engine: this.engine,
-      processor,
-      compiler: this
-    }, notice));
-    return this;
-  }
-  compileAll() {
-    const target = this.target;
-    for (const config2 of Object.values(target)) {
-      this.add(config2);
-    }
-    return this;
-  }
-  dispose() {
-    if (this.cacheCompile) {
-      this.cacheCompile = void 0;
-    }
-    for (const config2 of Object.values(this.target)) {
-      if (!this.map.has(config2.vid)) {
-        console.warn(`${this.MODULE} compiler set function: can not found object which vid is: '${config2.vid}'`);
-        continue;
-      }
-      const object = this.map.get(config2.vid);
-      if (!_Compiler.processors.has(config2.type)) {
-        console.warn(`${this.MODULE}  can not support this type: ${config2.type}`);
-        continue;
-      }
-      _Compiler.processors.get(config2.type).dispose(object);
-    }
-    this.map.clear();
-    this.target = {};
-    return this;
-  }
-  getObjectSymbol(object) {
-    return this.weakMap.get(object) || null;
-  }
-  getObjectBySymbol(vid) {
-    return this.map.get(vid) || null;
-  }
-};
-let Compiler = _Compiler;
-__publicField(Compiler, "processors", new Map());
-__publicField(Compiler, "processor", function(processor) {
-  _Compiler.processors.set(processor.configType, processor);
-});
-const scriptAniSymbol = "vis.scriptAni";
-class Processor {
-  constructor(options) {
-    __publicField(this, "configType");
-    __publicField(this, "commands");
-    __publicField(this, "create");
-    __publicField(this, "dispose");
-    this.configType = options.configType;
-    this.commands = options.commands;
-    this.create = options.create;
-    this.dispose = options.dispose;
-  }
-  process(params) {
-    if (!this.commands || !this.commands[params.operate]) {
-      this[params.operate](params);
-      return;
-    }
-    let commands2 = this.commands[params.operate];
-    for (const key of [].concat(params.path, params.key)) {
-      if (!commands2[key] && !commands2.$reg) {
-        this[params.operate](params);
-        return;
-      } else if (commands2[key]) {
-        if (typeof commands2[key] === "function") {
-          commands2[key](params);
-          return;
-        } else {
-          commands2 = commands2[key];
-        }
-      } else if (commands2.$reg) {
-        for (const item of commands2.$reg) {
-          if (item.reg.test(key)) {
-            item.handler(params);
-            return;
-          }
-        }
-      }
-    }
-    this[params.operate](params);
-  }
-  add(params) {
-    let target = params.target;
-    const path = params.path;
-    for (const key of path) {
-      if (typeof target[key] !== void 0) {
-        target = target[key];
-      } else {
-        console.warn(`processor can not exec default add operate.`, params);
-        return;
-      }
-    }
-    target[params.key] = params.value;
-  }
-  set(params) {
-    let target = params.target;
-    const path = params.path;
-    for (const key of path) {
-      if (typeof target[key] !== void 0) {
-        target = target[key];
-      } else {
-        console.warn(`processor can not exec default set operate.`, params);
-        return;
-      }
-    }
-    target[params.key] = params.value;
-  }
-  delete(params) {
-    let target = params.target;
-    const path = params.path;
-    for (const key of path) {
-      if (typeof target[key] !== void 0) {
-        target = target[key];
-      } else {
-        console.warn(`processor can not exec default delete operate.`, params);
-        return;
-      }
-    }
-    delete target[params.key];
-  }
-}
-const defineProcessor = (options) => {
-  return new Processor(options);
-};
-const emptyHandler = function() {
-};
-const config$j = {
-  name: "linearTime",
-  multiply: 1
-};
-const generator$j = function(engine, target, attribute, config2) {
-  if (target[attribute] === void 0) {
-    console.warn(`object not exist attribute: ${attribute}`, target);
-    return (event) => {
-    };
-  }
-  if (typeof target[attribute] !== "number") {
-    console.warn(`object attribute is not typeof number.`, target, attribute);
-    return (event) => {
-    };
-  }
-  return (event) => {
-    target[attribute] += event.delta * config2.multiply;
-  };
-};
-const config$i = {
-  name: "sinWave",
-  wavelength: 1,
-  offset: 0,
-  amplitude: 1,
-  speed: 1
-};
-const generator$i = function(engine, target, attribute, config2) {
-  if (target[attribute] === void 0) {
-    console.warn(`object not exist attribute: ${attribute}`, target);
-    return (event) => {
-    };
-  }
-  if (typeof target[attribute] !== "number") {
-    console.warn(`object attribute is not typeof number.`, target, attribute);
-    return (event) => {
-    };
-  }
-  const origin = target[attribute];
-  return (event) => {
-    target[attribute] = origin + config2.amplitude * Math.sin(event.total * config2.speed / config2.wavelength) + config2.offset;
-  };
-};
-const _AniScriptLibrary = class {
-  static generateConfig(name, merge) {
-    if (!_AniScriptLibrary.configLibrary.has(name)) {
-      console.warn(`event library can not found config by name: ${name}`);
-      return {
-        name: ""
-      };
-    }
-    const recursion = (config2, merge2) => {
-      for (const key in merge2) {
-        if (config2[key] === void 0) {
-          continue;
-        }
-        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
-          recursion(config2[key], merge2[key]);
-        } else {
-          config2[key] = merge2[key];
-        }
-      }
-    };
-    const template = JSON.parse(JSON.stringify(_AniScriptLibrary.configLibrary.get(name)));
-    recursion(template, merge);
-    return template;
-  }
-  static generateScript(engine, target, attribute, config2) {
-    if (!_AniScriptLibrary.generatorLibrary.has(config2.name)) {
-      console.error(`event library can not found generator by name: ${config2.name}`);
-      return () => {
-      };
-    }
-    return _AniScriptLibrary.generatorLibrary.get(config2.name)(engine, target, attribute, config2);
-  }
-  static has(name) {
-    return _AniScriptLibrary.configLibrary.has(name);
-  }
-};
-let AniScriptLibrary = _AniScriptLibrary;
-__publicField(AniScriptLibrary, "configLibrary", new Map());
-__publicField(AniScriptLibrary, "generatorLibrary", new Map());
-__publicField(AniScriptLibrary, "register", function(config2, generator2) {
-  if (_AniScriptLibrary.configLibrary.has(config2.name)) {
-    console.warn(`EventLibrary has already exist this event generator: ${config2.name}, that will be cover.`);
-  }
-  _AniScriptLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
-  _AniScriptLibrary.generatorLibrary.set(config2.name, generator2);
-});
-AniScriptLibrary.register(config$j, generator$j);
-AniScriptLibrary.register(config$i, generator$i);
-const createFunction = function(config2, engine) {
-  let object = engine.compilerManager.getObjectBySymbol(config2.target);
-  if (!object) {
-    console.warn(`can not found object in enigne: ${config2.target}`);
-    return () => {
-    };
-  }
-  const attributeList = config2.attribute.split(".");
-  attributeList.shift();
-  const attribute = attributeList.pop();
-  for (const key of attributeList) {
-    if (object[key] === void 0) {
-      console.warn(`animaton processor: target object can not found key: ${key}`, object);
-      return () => {
-      };
-    }
-    object = object[key];
-  }
-  return AniScriptLibrary.generateScript(engine, object, attribute, config2.script);
-};
-var ScriptAnimationProcessor = defineProcessor({
-  configType: CONFIGTYPE.SCRIPTANIMATION,
-  commands: {
-    set: {
-      play({ target, engine, value }) {
-        if (value) {
-          engine.renderManager.addEventListener("render", target);
-        } else {
-          engine.renderManager.removeEventListener("render", target);
-        }
-      },
-      $reg: [
-        {
-          reg: new RegExp(".*"),
-          handler({ config: config2, engine }) {
-            const fun = config2[Symbol.for(scriptAniSymbol)];
-            engine.renderManager.removeEventListener("render", fun);
-            const newFun = createFunction(config2, engine);
-            config2[Symbol.for(scriptAniSymbol)] = newFun;
-            config2.play && engine.renderManager.addEventListener("render", fun);
-          }
-        }
-      ]
-    }
-  },
-  create(config2, engine) {
-    const fun = createFunction(config2, engine);
-    config2.play && engine.renderManager.addEventListener("render", fun);
-    config2[Symbol.for(scriptAniSymbol)] = fun;
-    return fun;
-  },
-  dispose() {
-  }
-});
-class AnimationCompiler extends Compiler {
-  constructor() {
-    super();
-    __publicField(this, "MODULE", MODULETYPE.ANIMATION);
-  }
-  restoreAttribute(config2) {
-    if (!config2.target || !config2.attribute) {
-      return this;
-    }
-    let target = this.engine.getObjectBySymbol(config2.target);
-    let configure = this.engine.getConfigBySymbol(config2.target);
-    if (!target || !configure) {
-      console.warn("AnimationCompiler: can not found object target or config in engine", config2.vid);
-    }
-    const attirbuteList = config2.attribute.split(".");
-    attirbuteList.shift();
-    const attribute = attirbuteList.pop();
-    for (const key of attirbuteList) {
-      if (target[key] && configure[key]) {
-        target = target[key];
-        configure = configure[key];
-      } else {
-        console.warn(`AnimationCompiler: object and config attribute are not sync`);
-        return this;
-      }
-    }
-    target[attribute] = configure[attribute];
-    return this;
-  }
-  cover(config2) {
-    super.cover(config2);
-    const fun = this.map.get(config2.vid);
-    config2[Symbol.for(scriptAniSymbol)] = fun;
-    return this;
-  }
-  remove(config2) {
-    this.engine.removeEventListener("render", config2[Symbol.for(scriptAniSymbol)]);
-    this.restoreAttribute(config2);
-    delete config2[Symbol.for(scriptAniSymbol)];
-    super.remove(config2);
-    return this;
-  }
-  compile(vid, notice) {
-    const config2 = this.target[vid];
-    this.restoreAttribute(config2);
-    super.compile(vid, notice);
-    const oldFun = this.map.get(vid);
-    const fun = config2[Symbol.for(scriptAniSymbol)];
-    this.map.set(config2.vid, fun);
-    this.weakMap.delete(oldFun);
-    this.weakMap.set(fun, vid);
-    return this;
-  }
-}
-Compiler.processor(ScriptAnimationProcessor);
-class ObjectCompiler extends Compiler {
-  constructor() {
-    super();
-  }
-}
-const config$h = {
-  name: "openWindow",
-  params: {
-    url: ""
-  }
-};
-const generator$h = function(engine, config2) {
-  return () => {
-    window.open(config2.params.url);
-  };
-};
-const config$g = {
-  name: "visibleObject",
-  params: {
-    target: "",
-    visible: true,
-    delay: 0
-  }
-};
-const generator$g = function(engine, config2) {
-  const params = config2.params;
-  const target = engine.getObjectBySymbol(params.target);
-  if (!target) {
-    console.warn(`basic event visibleObject: can not found vid object: ${params.target}`);
-    return () => {
-    };
-  }
-  return () => {
-    setTimeout(() => {
-      target.visible = params.visible;
-    }, params.delay);
-  };
-};
-const config$f = {
-  name: "addClass",
-  params: {
-    target: "",
-    className: "",
-    delay: 0
-  }
-};
-const generator$f = function(engine, config2) {
-  const params = config2.params;
-  const targets = [];
-  if (params.target === "all") {
-    engine.scene.traverse((object) => {
-      if (object instanceof CSS3DObject) {
-        targets.push(object);
-      }
-    });
-  } else if (Array.isArray(params.target)) {
-    params.target.forEach((symbol) => {
-      const target = engine.getObjectBySymbol(symbol);
-      if (!target) {
-        console.warn(`basic event AddClass: can not found vid object: ${params.target}`);
-      } else {
-        targets.push(target);
-      }
-    });
-  } else {
-    const target = engine.getObjectBySymbol(params.target);
-    if (!target) {
-      console.warn(`basic event AddClass: can not found vid object: ${params.target}`);
-      return () => {
-      };
-    }
-    if (!(target instanceof CSS3DObject)) {
-      console.warn(`basic event AddClass: object is not a CSS3DObject.`);
-      return () => {
-      };
-    }
-    targets.push(target);
-  }
-  if (!targets.length) {
-    console.warn(`basic event AddClass: can not found vid object: ${params.target}`);
-    return () => {
-    };
-  }
-  return () => {
-    setTimeout(() => {
-      targets.forEach((target) => {
-        target.element.classList.add(params.className);
-      });
-    }, params.delay);
-  };
-};
-const config$e = {
-  name: "changeScene",
-  params: {
-    scene: "Scene",
-    delay: 0
-  }
-};
-const generator$e = function(engine, config2) {
-  const params = config2.params;
-  return () => {
-    setTimeout(() => {
-      engine.setScene(params.scene);
-    }, params.delay);
-  };
-};
-const config$d = {
-  name: "changeCamera",
-  params: {
-    camera: "",
-    delay: 0
-  }
-};
-const generator$d = function(engine, config2) {
-  const params = config2.params;
-  return () => {
-    setTimeout(() => {
-      engine.setCamera(params.camera);
-    }, params.delay);
-  };
-};
-const config$c = {
-  name: "switchAnimate",
-  params: {
-    target: "",
-    toggle: "auto",
-    delay: 0
-  }
-};
-const generator$c = function(engine, config2) {
-  const params = config2.params;
-  const target = engine.getConfigBySymbol(params.target);
-  if (!target) {
-    console.warn(`basic event switchAnimate: can not found vid config: ${params.target}`);
-    return () => {
-    };
-  }
-  return () => {
-    setTimeout(() => {
-      if (params.toggle === "auto") {
-        target.play != target.play;
-        return;
-      }
-      if (params.toggle === "off") {
-        target.play = false;
-        return;
-      }
-      if (params.toggle === "on") {
-        target.play = true;
-        return;
-      }
-    }, params.delay);
-  };
-};
-var TIMINGFUNCTION;
-(function(TIMINGFUNCTION2) {
-  TIMINGFUNCTION2["ELN"] = "ELN";
-  TIMINGFUNCTION2["EQI"] = "EQI";
-  TIMINGFUNCTION2["EQO"] = "EQO";
-  TIMINGFUNCTION2["EASING_LINEAR_NONE"] = "EASING_LINEAR_NONE";
-  TIMINGFUNCTION2["EASING_QUARTIC_IN"] = "EASING_QUARTIC_IN";
-  TIMINGFUNCTION2["EASING_QUARTIC_OUT"] = "EASING_QUARTIC_OUT";
-  TIMINGFUNCTION2["EASING_QUARTIC_INOUT"] = "EASING_QUARTIC_INOUT";
-  TIMINGFUNCTION2["EASING_QUADRATIC_IN"] = "EASING_QUADRATIC_IN";
-  TIMINGFUNCTION2["EASING_QUADRATIC_OUT"] = "EASING_QUADRATIC_OUT";
-  TIMINGFUNCTION2["EASING_QUADRATIC_INOUT"] = "EASING_QUADRATIC_INOUT";
-})(TIMINGFUNCTION || (TIMINGFUNCTION = {}));
-const timingFunction = {
-  ELN: Easing.Linear.None,
-  EQI: Easing.Quartic.In,
-  EQO: Easing.Quartic.Out,
-  EASING_LINEAR_NONE: Easing.Linear.None,
-  EASING_QUARTIC_IN: Easing.Quartic.In,
-  EASING_QUARTIC_OUT: Easing.Quartic.Out,
-  EASING_QUARTIC_INOUT: Easing.Quartic.InOut,
-  EASING_QUADRATIC_IN: Easing.Quadratic.In,
-  EASING_QUADRATIC_OUT: Easing.Quadratic.Out,
-  EASING_QUADRATIC_INOUT: Easing.Quadratic.InOut
-};
-const config$b = {
-  name: "moveTo",
-  params: {
-    target: "",
-    position: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    delay: 0,
-    duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
-  }
-};
-const generator$b = function(engine, config2) {
-  const params = config2.params;
-  const compiler = engine.compilerManager;
-  const object = compiler.getObjectBySymbol(params.target);
-  if (!object) {
-    console.warn(`real time animation moveTO: can not found vid object: ${params.target}`);
-    return () => {
-    };
-  }
-  const renderManager = engine.renderManager;
-  const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
-  if (!supportData) {
-    console.warn(`can not found object config: ${params.target}`);
-    return () => {
-    };
-  }
-  let animating = false;
-  return () => {
-    if (animating) {
-      return;
-    }
-    animating = true;
-    const tween = new Tween(object.position).to(params.position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
-    };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData.position.x = params.position.x;
-      supportData.position.y = params.position.y;
-      supportData.position.z = params.position.z;
-      animating = false;
-    });
-  };
-};
-const config$a = {
-  name: "rotationTo",
-  params: {
-    target: "",
-    rotation: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    delay: 0,
-    duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
-  }
-};
-const generator$a = function(engine, config2) {
-  const params = config2.params;
-  const compiler = engine.compilerManager;
-  const object = compiler.getObjectBySymbol(params.target);
-  if (!object) {
-    console.warn(`real time animation moveTO: can not found vid object: ${params.target}`);
-    return () => {
-    };
-  }
-  const renderManager = engine.renderManager;
-  const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
-  if (!supportData) {
-    console.warn(`can not found object config: ${params.target}`);
-    return () => {
-    };
-  }
-  let animating = false;
-  return () => {
-    if (animating) {
-      return;
-    }
-    animating = true;
-    const tween = new Tween(object.rotation).to(params.rotation).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
-    };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData.rotation.x = params.rotation.x;
-      supportData.rotation.y = params.rotation.y;
-      supportData.rotation.z = params.rotation.z;
-      animating = false;
-    });
-  };
-};
-const config$9 = {
-  name: "upTo",
-  params: {
-    target: "",
-    up: {
-      x: 0,
-      y: 1,
-      z: 0
-    },
-    delay: 0,
-    duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
-  }
-};
-const generator$9 = function(engine, config2) {
-  const params = config2.params;
-  const compiler = engine.compilerManager;
-  const object = compiler.getObjectBySymbol(params.target);
-  if (!object) {
-    console.warn(`real time animation upTo: can not found vid object: ${params.target}`);
-    return () => {
-    };
-  }
-  const renderManager = engine.renderManager;
-  const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
-  if (!supportData) {
-    console.warn(`can not found object config: ${params.target}`);
-    return () => {
-    };
-  }
-  let animating = false;
-  return () => {
-    if (animating) {
-      return;
-    }
-    animating = true;
-    const tween = new Tween(object.up).to(params.up).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
-    };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData.up.x = params.up.x;
-      supportData.up.y = params.up.y;
-      supportData.up.z = params.up.z;
-      animating = false;
-    });
-  };
-};
-const config$8 = {
-  name: "moveFromTo",
-  params: {
-    target: "",
-    from: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    to: {
-      x: 10,
-      y: 10,
-      z: 10
-    },
-    delay: 0,
-    duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
-  }
-};
-const generator$8 = function(engine, config2) {
-  const params = config2.params;
-  const compiler = engine.compilerManager;
-  const object = compiler.getObjectBySymbol(params.target);
-  if (!object) {
-    console.warn(`real time animation moveTO: can not found vid object: ${params.target}`);
-    return () => {
-    };
-  }
-  const renderManager = engine.renderManager;
-  const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
-  if (!supportData) {
-    console.warn(`can not found object config: ${params.target}`);
-    return () => {
-    };
-  }
-  let animating = false;
-  return () => {
-    if (animating) {
-      return;
-    }
-    animating = true;
-    object.position.set(params.from.x, params.from.y, params.from.z);
-    object.updateMatrix();
-    object.updateMatrixWorld();
-    const tween = new Tween(object.position).to(params.to).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
-    };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData.position.x = params.to.x;
-      supportData.position.y = params.to.y;
-      supportData.position.z = params.to.z;
-      animating = false;
-    });
-  };
-};
-const config$7 = {
-  name: "moveSpacing",
-  params: {
-    target: "",
-    spacing: {
-      x: 10,
-      y: 10,
-      z: 10
-    },
-    delay: 0,
-    duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
-  }
-};
-const generator$7 = function(engine, config2) {
-  const params = config2.params;
-  const object = engine.getObjectBySymbol(params.target);
-  if (!object) {
-    console.warn(`can not found vid object: ${params.target}`);
-    return () => {
-    };
-  }
-  if (!(object instanceof Object3D)) {
-    console.warn(`object is not instanceof Object3D: ${params.target}`);
-    return () => {
-    };
-  }
-  const renderManager = engine.renderManager;
-  const supportData = engine.getConfigBySymbol(params.target);
-  let animating = false;
-  return () => {
-    if (animating) {
-      return;
-    }
-    animating = true;
-    const position = {
-      x: object.position.x + params.spacing.x,
-      y: object.position.y + params.spacing.y,
-      z: object.position.z + params.spacing.z
-    };
-    const tween = new Tween(object.position).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
-    };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData.position.x = position.x;
-      supportData.position.y = position.y;
-      supportData.position.z = position.z;
-      animating = false;
-    });
-  };
-};
-const config$6 = {
-  name: "moveToObject",
-  params: {
-    target: "",
-    to: "",
-    offset: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    delay: 0,
-    duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
-  }
-};
-const generator$6 = function(engine, config2) {
-  const params = config2.params;
-  const compiler = engine.compilerManager;
-  const object = compiler.getObjectBySymbol(params.target);
-  const toObject = compiler.getObjectBySymbol(params.to);
-  if (!object) {
-    console.warn(`real time animation MoveToObject: can not found vid object: ${params.target}`);
-    return () => {
-    };
-  }
-  if (!toObject) {
-    console.warn(`real time animation MoveToObject: can not found vid object: ${params.target}`);
-    return () => {
-    };
-  }
-  const renderManager = engine.renderManager;
-  const supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
-  if (!supportData) {
-    console.warn(`can not found object config: ${params.target}`);
-    return () => {
-    };
-  }
-  let animating = false;
-  return () => {
-    if (animating) {
-      return;
-    }
-    animating = true;
-    const position = {
-      x: toObject.position.x + params.offset.x,
-      y: toObject.position.y + params.offset.y,
-      z: toObject.position.z + params.offset.z
-    };
-    const tween = new Tween(object.position).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
-    };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData.position.x = position.x;
-      supportData.position.y = position.y;
-      supportData.position.z = position.z;
-      animating = false;
-    });
-  };
-};
-const config$5 = {
-  name: "vector3To",
-  params: {
-    target: "",
-    attribute: ".position",
-    props: {
-      x: "x",
-      y: "y",
-      z: "z"
-    },
-    delay: 0,
-    duration: 500,
-    to: {},
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
-  }
-};
-const generator$5 = function(engine, config2) {
-  var _a, _b, _c;
-  const params = config2.params;
-  const object = engine.compilerManager.getObjectBySymbol(params.target);
-  if (!object) {
-    console.warn(`real time animation vector3To: can not found vid object: ${params.target}`);
-    return () => {
-    };
-  }
-  const renderManager = engine.renderManager;
-  let supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
-  if (!supportData) {
-    console.warn(`real time animation vector3To: can not found object config: ${params.target}`);
-    return () => {
-    };
-  }
-  const attributeList = params.attribute.split(".");
-  attributeList.shift();
-  let targetObject = object;
-  for (const key of attributeList) {
-    if (targetObject[key] === void 0) {
-      console.error(`real time animation vector3To: object can not support key: ${key}`, object);
-      return () => {
-      };
-    }
-    targetObject = targetObject[key];
-    supportData = supportData[key];
-  }
-  const props = params.props;
-  if (!(props.x in targetObject) || !(props.y in targetObject) || !(props.z in targetObject)) {
-    console.error(`real time animation vector3To: object can not support props:`, targetObject, props);
-    return () => {
-    };
-  }
-  if (!(props.x in supportData) || !(props.y in supportData) || !(props.z in supportData)) {
-    console.error(`real time animation vector3To: config can not support props:`, supportData, props);
-    return () => {
-    };
-  }
-  const toObject = {
-    x: (_a = params.to.x) != null ? _a : targetObject[props.x],
-    y: (_b = params.to.y) != null ? _b : targetObject[props.y],
-    z: (_c = params.to.z) != null ? _c : targetObject[props.z]
-  };
-  let animating = false;
-  return () => {
-    if (animating) {
-      return;
-    }
-    animating = true;
-    const tween = new Tween(targetObject).to(toObject).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
-    };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData[props.x] = toObject.x;
-      supportData[props.y] = toObject.y;
-      supportData[props.z] = toObject.z;
-      animating = false;
-    });
-  };
-};
-const config$4 = {
-  name: "focusObject",
-  params: {
-    target: "",
-    camera: "",
-    space: "world",
-    offset: {
-      x: 0,
-      y: 0,
-      z: 20
-    },
-    delay: 0,
-    duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
-    back: true
-  }
-};
-const generator$4 = function(engine, config2) {
-  const params = config2.params;
-  const target = engine.getObjectBySymbol(params.target);
-  const orbTarget = engine.orbitControls.target;
-  if (!target) {
-    console.warn(`real time animation focusObject: can not found vid object: ${params.target}`);
-    return () => {
-    };
-  }
-  if (!(target instanceof Object3D)) {
-    console.warn(`real time animation focusObject: vid object is not a class of THREE.Object3D: ${params.target}`);
-    return () => {
-    };
-  }
-  let animating = false;
-  const cacheEuler = new Euler();
-  return () => {
-    if (animating) {
-      return;
-    }
-    animating = true;
-    let camera = engine.camera;
-    if (params.camera) {
-      camera = engine.getObjectBySymbol(params.camera);
-      if (!camera) {
-        camera = engine.camera;
-        console.warn(`real time animation focusObject: can not found camera config: ${params.camera}`);
-      }
-    }
-    const cameraConfig = engine.getObjectConfig(camera);
-    const orb = engine.orbitControls && engine.orbitControls.object === camera;
-    if (!cameraConfig) {
-      console.warn(`engine current camera can not found config.`);
-    }
-    const renderManager = engine.renderManager;
-    let position = {
-      x: target.matrixWorld.elements[12] + params.offset.x,
-      y: target.matrixWorld.elements[13] + params.offset.y,
-      z: target.matrixWorld.elements[14] + params.offset.z
-    };
-    const backPosition = {
-      x: camera.position.x,
-      y: camera.position.y,
-      z: camera.position.z
-    };
-    if (params.space === "local") {
-      const vector3 = new Vector3(params.offset.x, params.offset.y, params.offset.z).applyEuler(cacheEuler.setFromRotationMatrix(target.matrixWorld));
-      position = {
-        x: target.matrixWorld.elements[12] + vector3.x,
-        y: target.matrixWorld.elements[13] + vector3.y,
-        z: target.matrixWorld.elements[14] + vector3.z
-      };
-    }
-    const positionTween = new Tween(camera.position).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    let upTween;
-    const backUp = {
-      x: camera.up.x,
-      y: camera.up.y,
-      z: camera.up.z
-    };
-    if (params.space === "local") {
-      const upVector3 = new Vector3(0, 1, 0).applyEuler(cacheEuler.setFromRotationMatrix(target.matrixWorld));
-      upTween = new Tween(camera.up).to({
-        x: upVector3.x,
-        y: upVector3.y,
-        z: upVector3.z
-      }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    }
-    let orbTween;
-    const backOrb = {
-      x: orbTarget.x,
-      y: orbTarget.y,
-      z: orbTarget.z
-    };
-    if (orb) {
-      orbTween = new Tween(orbTarget).to({
-        x: target.matrixWorld.elements[12],
-        y: target.matrixWorld.elements[13],
-        z: target.matrixWorld.elements[14]
-      }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    }
-    let renderFun;
-    if (orb && params.space === "local") {
-      renderFun = (event) => {
-        positionTween.update();
-        upTween.update();
-        orbTween.update();
-      };
-    } else if (orb) {
-      renderFun = (event) => {
-        positionTween.update();
-        orbTween.update();
-      };
-    } else if (params.space === "local") {
-      renderFun = (event) => {
-        positionTween.update();
-        upTween.update();
-      };
-    } else {
-      renderFun = (event) => {
-        positionTween.update();
-      };
-    }
-    renderManager.addEventListener("render", renderFun);
-    positionTween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      if (cameraConfig) {
-        cameraConfig.position.x = position.x;
-        cameraConfig.position.y = position.y;
-        cameraConfig.position.z = position.z;
-      }
-      animating = false;
-      if (params.back) {
-        const backFun = () => {
-          const positionTween2 = new Tween(camera.position).to(backPosition).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-          let upTween2;
-          if (params.space === "local") {
-            upTween2 = new Tween(camera.up).to(backUp).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-          }
-          let orbTween2;
-          if (orb) {
-            orbTween2 = new Tween(orbTarget).to(backOrb).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-          }
-          const renderFun2 = (event) => {
-            positionTween2.update();
-            upTween2 && upTween2.update();
-            orbTween2 && orbTween2.update();
-          };
-          positionTween2.onComplete(() => {
-            renderManager.removeEventListener("render", renderFun2);
-          });
-          renderManager.addEventListener("render", renderFun2);
-          document.removeEventListener("dblclick", backFun);
-        };
-        document.addEventListener("dblclick", backFun);
-      }
-    });
-  };
-};
-const config$3 = {
-  name: "fadeObject",
-  params: {
-    target: "",
-    direction: "out",
-    delay: 0,
-    duration: 300,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
-    visible: true
-  }
-};
-const generator$3 = function(engine, config2) {
-  const params = config2.params;
-  const target = engine.getObjectBySymbol(params.target);
-  if (!target) {
-    console.warn(`real time animation fadeObject: can not found vid object: ${params.target}`);
-    return () => {
-    };
-  }
-  const objectConfig = engine.getObjectConfig(target);
-  if (!objectConfig.material) {
-    console.warn(`real time animation fadeObject: target can not support fade: ${params.target}`);
-    return () => {
-    };
-  }
-  const materialList = [];
-  const materialConfigList = [];
-  const materialSymbolList = Array.isArray(objectConfig.material) ? [].concat(objectConfig.material) : [objectConfig.material];
-  for (const vid of materialSymbolList) {
-    const material = engine.getObjectBySymbol(vid);
-    const materialConfig = engine.getConfigBySymbol(vid);
-    if (!(material instanceof Material)) {
-      console.error(`real time animation fadeObject: object config material is not instanceof Material: ${vid}`);
-      continue;
-    }
-    if (!materialConfig) {
-      console.error(`real time animation fadeObject: object config material can not found config: ${vid}`);
-      continue;
-    }
-    materialList.push(material);
-    materialConfigList.push(materialConfig);
-  }
-  let animating = false;
-  return () => {
-    if (animating) {
-      return;
-    }
-    animating = true;
-    const renderManager = engine.renderManager;
-    objectConfig.visible = true;
-    materialList.forEach((material, i, arr) => {
-      material.visible = true;
-      material.transparent = true;
-      material.opacity = params.direction === "in" ? 0 : 1;
-      material.needsUpdate = true;
-      const tween = new Tween(material).to({
-        opacity: params.direction === "in" ? 1 : 0
-      }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-      const renderFun = (event) => {
-        tween.update();
-      };
-      renderManager.addEventListener("render", renderFun);
-      tween.onComplete(() => {
-        renderManager.removeEventListener("render", renderFun);
-        if (params.direction === "out" && params.visible) {
-          materialConfigList[i].visible = false;
-          objectConfig.visible = false;
-        } else if (params.direction === "in" && params.visible) {
-          materialConfigList[i].visible = true;
-          objectConfig.visible = true;
-        }
-        materialConfigList[i].opacity = params.direction === "in" ? 1 : 0;
-        animating = false;
-      });
-    });
-  };
-};
-const config$2 = {
-  name: "showToCamera",
-  params: {
-    target: "",
-    offset: {
-      x: 0,
-      y: 0,
-      z: -30
-    },
-    delay: 0,
-    duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
-    back: true
-  }
-};
-const generator$2 = function(engine, config2) {
-  const params = config2.params;
-  const target = engine.getObjectBySymbol(params.target);
-  const targetConfig = engine.getConfigBySymbol(params.target);
-  const camera = engine.camera;
-  if (!target) {
-    console.warn(`real time animation showToCamera: can not found vid object: ${params.target}`);
-    return () => {
-    };
-  }
-  if (!target) {
-    console.warn(`real time animation showToCamera: can not found vid config: ${params.target}`);
-    return () => {
-    };
-  }
-  if (!(target instanceof Object3D)) {
-    console.warn(`real time animation showToCamera: vid object is not a class of THREE.Object3D: ${params.target}`);
-    return () => {
-    };
-  }
-  const matrix4 = new Matrix4();
-  const euler = new Euler();
-  const vector3 = new Vector3();
-  let animating = false;
-  return () => {
-    if (animating) {
-      return;
-    }
-    animating = true;
-    const renderManager = engine.renderManager;
-    vector3.set(params.offset.x, params.offset.y, params.offset.z).applyEuler(camera.rotation);
-    vector3.set(camera.position.x + vector3.x, camera.position.y + vector3.y, camera.position.z + vector3.z);
-    matrix4.lookAt(camera.position, vector3, camera.up);
-    euler.setFromRotationMatrix(matrix4);
-    const cachePosition = {
-      x: target.position.x,
-      y: target.position.y,
-      z: target.position.z
-    };
-    const cacheRotation = {
-      x: target.rotation.x,
-      y: target.rotation.y,
-      z: target.rotation.z
-    };
-    const positionTween = new Tween(target.position).to({
-      x: vector3.x,
-      y: vector3.y,
-      z: vector3.z
-    }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const rotationTween = new Tween(target.rotation).to({
-      x: euler.x,
-      y: euler.y,
-      z: euler.z
-    }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      positionTween.update();
-      rotationTween.update();
-    };
-    renderManager.addEventListener("render", renderFun);
-    positionTween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      targetConfig.position.x = vector3.x;
-      targetConfig.position.y = vector3.y;
-      targetConfig.position.z = vector3.z;
-      targetConfig.rotation.x = euler.x;
-      targetConfig.rotation.y = euler.y;
-      targetConfig.rotation.z = euler.z;
-      animating = false;
-      if (params.back) {
-        const backFun = () => {
-          const positionTween2 = new Tween(target.position).to(cachePosition).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-          const rotationTween2 = new Tween(target.rotation).to(cacheRotation).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-          const renderFun2 = (event) => {
-            positionTween2.update();
-            rotationTween2.update();
-          };
-          positionTween2.onComplete(() => {
-            renderManager.removeEventListener("render", renderFun2);
-            targetConfig.position.x = cachePosition.x;
-            targetConfig.position.y = cachePosition.y;
-            targetConfig.position.z = cachePosition.z;
-            targetConfig.rotation.x = cacheRotation.x;
-            targetConfig.rotation.y = cacheRotation.y;
-            targetConfig.rotation.z = cacheRotation.z;
-          });
-          renderManager.addEventListener("render", renderFun2);
-          document.removeEventListener("dblclick", backFun);
-        };
-        document.addEventListener("dblclick", backFun);
-      }
-    });
-  };
-};
-const config$1 = {
-  name: "colorChange",
-  params: {
-    target: "",
-    attribute: "color",
-    color: "rgb(255, 255, 255)",
-    delay: 0,
-    duration: 500,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
-  }
-};
-const generator$1 = function(engine, config2) {
-  const params = config2.params;
-  const material = engine.getObjectBySymbol(params.target);
-  if (!material) {
-    console.warn(`real time animation ColorChange: can not found vid material: ${params.target}`);
-    return () => {
-    };
-  }
-  if (!material[params.attribute] || !(material[params.attribute] instanceof Color)) {
-    console.warn(`real time animation ColorChange: material attribute is illeage: ${params.attribute}`);
-    return () => {
-    };
-  }
-  const supportData = engine.getConfigBySymbol(params.target);
-  if (!supportData) {
-    console.warn(`real time animation ColorChange: can not found material config: ${params.target}`);
-    return () => {
-    };
-  }
-  const color = new Color(params.color);
-  const renderManager = engine.renderManager;
-  let animating = false;
-  return () => {
-    if (animating) {
-      return;
-    }
-    animating = true;
-    const tween = new Tween(material[params.attribute]).to({
-      r: color.r,
-      g: color.g,
-      b: color.b
-    }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
-    };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData[params.attribute] = params.color;
-      animating = false;
-    });
-  };
-};
-const config = {
-  name: "orbitTargetMove",
-  params: {
-    target: "",
-    offset: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    delay: 0,
-    duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
-  }
-};
-const generator = function(engine, config2) {
-  const params = config2.params;
-  engine.compilerManager;
-  if (!engine.orbitControls) {
-    console.warn(`real time animation orbitTargetMove: engine can not install orbitControls.`);
-    return () => {
-    };
-  }
-  const renderManager = engine.renderManager;
-  let animating = false;
-  return () => {
-    if (animating) {
-      return;
-    }
-    animating = true;
-    let position = params.offset;
-    if (params.target) {
-      const object = engine.getObjectBySymbol(params.target);
-      if (!object) {
-        console.warn(`real time animation orbitTargetMove: can not found vid object: ${params.target}`);
-      } else {
-        position = {
-          x: object.matrixWorld.elements[12] + position.x,
-          y: object.matrixWorld.elements[13] + position.y,
-          z: object.matrixWorld.elements[14] + position.z
-        };
-      }
-    }
-    const tween = new Tween(engine.orbitControls.target).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
-    };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      animating = false;
-    });
-  };
-};
-const _EventLibrary = class {
-  static generateConfig(name, merge) {
-    if (!_EventLibrary.configLibrary.has(name)) {
-      console.warn(`event library can not found config by name: ${name}`);
-      return {
-        name: ""
-      };
-    }
-    const recursion = (config2, merge2) => {
-      for (const key in merge2) {
-        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
-          recursion(config2[key], merge2[key]);
-        } else {
-          config2[key] = merge2[key];
-        }
-      }
-    };
-    const template = JSON.parse(JSON.stringify(_EventLibrary.configLibrary.get(name)));
-    recursion(template, merge);
-    return template;
-  }
-  static generateEvent(config2, engine) {
-    if (!_EventLibrary.generatorLibrary.has(config2.name)) {
-      console.error(`event library can not found generator by name: ${config2.name}`);
-      return () => {
-      };
-    }
-    return _EventLibrary.generatorLibrary.get(config2.name)(engine, config2);
-  }
-  static has(name) {
-    return _EventLibrary.configLibrary.has(name);
-  }
-};
-let EventLibrary = _EventLibrary;
-__publicField(EventLibrary, "configLibrary", new Map());
-__publicField(EventLibrary, "generatorLibrary", new Map());
-__publicField(EventLibrary, "register", function(config2, generator2) {
-  if (_EventLibrary.configLibrary.has(config2.name)) {
-    console.warn(`EventLibrary has already exist this event generator: ${config2.name}, that will be cover.`);
-  }
-  _EventLibrary.configLibrary.set(config2.name, JSON.parse(JSON.stringify(config2)));
-  _EventLibrary.generatorLibrary.set(config2.name, generator2);
-});
-EventLibrary.register(config$h, generator$h);
-EventLibrary.register(config$g, generator$g);
-EventLibrary.register(config$f, generator$f);
-EventLibrary.register(config$e, generator$e);
-EventLibrary.register(config$d, generator$d);
-EventLibrary.register(config$c, generator$c);
-EventLibrary.register(config$b, generator$b);
-EventLibrary.register(config$a, generator$a);
-EventLibrary.register(config$9, generator$9);
-EventLibrary.register(config$8, generator$8);
-EventLibrary.register(config$7, generator$7);
-EventLibrary.register(config$6, generator$6);
-EventLibrary.register(config$5, generator$5);
-EventLibrary.register(config$4, generator$4);
-EventLibrary.register(config$3, generator$3);
-EventLibrary.register(config$2, generator$2);
-EventLibrary.register(config$1, generator$1);
-EventLibrary.register(config, generator);
-const objectCacheMap = new WeakMap();
-const lookAtHandler = function({ target, config: config2, value, engine }) {
-  if (config2.vid === value) {
-    console.warn(`can not set object lookAt itself.`);
-    return;
-  }
-  let cacheData = objectCacheMap.get(target);
-  if (!cacheData) {
-    cacheData = { lookAtTarget: null, updateMatrixWorldFun: null };
-    objectCacheMap.set(target, cacheData);
-  }
-  if (!value) {
-    if (!cacheData.updateMatrixWorldFun) {
-      return;
-    }
-    target.updateMatrixWorld = cacheData.updateMatrixWorldFun;
-    cacheData.lookAtTarget = null;
-    cacheData.updateMatrixWorldFun = null;
-    return;
-  }
-  const lookAtTarget = engine.compilerManager.getObject3D(value);
-  if (!lookAtTarget) {
-    console.warn(`lookAt handler can not found this vid mapping object: '${value}'`);
-    return;
-  }
-  const updateMatrixWorldFun = target.updateMatrixWorld;
-  cacheData.updateMatrixWorldFun = updateMatrixWorldFun;
-  cacheData.lookAtTarget = lookAtTarget.position;
-  target.updateMatrixWorld = (focus) => {
-    updateMatrixWorldFun.call(target, focus);
-    target.lookAt(cacheData.lookAtTarget);
-  };
-};
-const eventSymbol = "vis.event";
-const addEventHanlder = function({ target, path, value, engine }) {
-  const eventName = path[0];
-  if (!EventLibrary.has(value.name)) {
-    console.warn(`EventLibrary: can not support this event: ${value.name}`);
-    return;
-  }
-  const fun = EventLibrary.generateEvent(value, engine);
-  const symbol = Symbol.for(eventSymbol);
-  value[symbol] = fun;
-  target.addEventListener(eventName, fun);
-};
-const removeEventHandler = function({ target, path, value }) {
-  const eventName = path[0];
-  const fun = value[Symbol.for(eventSymbol)];
-  if (!fun) {
-    console.warn(`event remove can not fun found event in config`, value);
-    return;
-  }
-  target.removeEventListener(eventName, fun);
-  delete value[Symbol.for(eventSymbol)];
-};
-const updateEventHandler = function({ target, config: config2, path, engine }) {
-  const eventName = path[0];
-  const eventConfig = config2[path[0]][path[1]];
-  const fun = eventConfig[Symbol.for(eventSymbol)];
-  if (!fun) {
-    console.warn(`event remove can not fun found event in config`, eventConfig);
-    return;
-  }
-  target.removeEventListener(eventName, fun);
-  const newFun = EventLibrary.generateEvent(eventConfig, engine);
-  eventConfig[Symbol.for(eventSymbol)] = newFun;
-  target.addEventListener(eventName, newFun);
-};
-const addChildrenHanlder = function({ target, config: config2, value, engine }) {
-  const childrenConfig = engine.getConfigBySymbol(value);
-  if (!childrenConfig) {
-    console.warn(` can not foud object config in engine: ${value}`);
-    return;
-  }
-  if (childrenConfig.parent && childrenConfig.parent !== config2.vid) {
-    const parentConfig = engine.getConfigBySymbol(childrenConfig.parent);
-    if (!parentConfig) {
-      console.warn(` can not foud object parent config in engine: ${childrenConfig.parent}`);
-      return;
-    }
-    parentConfig.children.splice(parentConfig.children.indexOf(value), 1);
-  }
-  childrenConfig.parent = config2.vid;
-  const childrenObject = engine.compilerManager.getObject3D(value);
-  if (!childrenObject) {
-    console.warn(`can not found this vid in engine: ${value}.`);
-    return;
-  }
-  target.add(childrenObject);
-};
-const removeChildrenHandler = function({ target, config: config2, value, engine }) {
-  const childrenObject = engine.compilerManager.getObject3D(value);
-  if (!childrenObject) {
-    console.warn(`can not found this vid in engine: ${value}.`);
-    return;
-  }
-  target.remove(childrenObject);
-  const childrenConfig = engine.getConfigBySymbol(value);
-  if (!childrenConfig) {
-    console.warn(`can not found this vid in engine: ${value}.`);
-    return;
-  }
-  childrenConfig.parent = "";
-};
-const objectCreate = function(object, config2, filter, engine) {
-  const asyncFun = Promise.resolve();
-  asyncFun.then(() => {
-    !filter.lookAt && lookAtHandler({
-      target: object,
-      config: config2,
-      engine,
-      value: config2.lookAt
-    });
-    config2.children.forEach((vid) => {
-      addChildrenHanlder({
-        target: object,
-        config: config2,
-        value: vid,
-        engine
-      });
-    });
-    for (const eventName of Object.values(EVENTNAME)) {
-      config2[eventName].forEach((event, i) => {
-        addEventHanlder({
-          target: object,
-          path: [eventName, i.toString()],
-          value: event,
-          engine
-        });
-      });
-    }
-  });
-  syncObject(config2, object, __spreadValues({
-    vid: true,
-    type: true,
-    lookAt: true,
-    parent: true,
-    children: true,
-    pointerdown: true,
-    pointermove: true,
-    pointerup: true,
-    pointerenter: true,
-    pointerleave: true,
-    click: true,
-    dblclick: true,
-    contextmenu: true
-  }, filter));
-  return object;
-};
-const objectDispose = function(target) {
-  target._listener = {};
-};
-const objectCommands = {
-  add: {
-    pointerdown: addEventHanlder,
-    pointerup: addEventHanlder,
-    pointermove: addEventHanlder,
-    pointerenter: addEventHanlder,
-    pointerleave: addEventHanlder,
-    click: addEventHanlder,
-    dblclick: addEventHanlder,
-    contextmenu: addEventHanlder,
-    children: addChildrenHanlder
-  },
-  set: {
-    lookAt: lookAtHandler,
-    pointerdown: updateEventHandler,
-    pointerup: updateEventHandler,
-    pointermove: updateEventHandler,
-    pointerenter: updateEventHandler,
-    pointerleave: updateEventHandler,
-    click: updateEventHandler,
-    dblclick: updateEventHandler,
-    contextmenu: updateEventHandler,
-    parent: emptyHandler,
-    children: {
-      $reg: [
-        {
-          reg: new RegExp(".*"),
-          handler: addChildrenHanlder
-        }
-      ]
-    }
-  },
-  delete: {
-    pointerdown: removeEventHandler,
-    pointerup: removeEventHandler,
-    pointermove: removeEventHandler,
-    pointerenter: removeEventHandler,
-    pointerleave: removeEventHandler,
-    click: removeEventHandler,
-    dblclick: removeEventHandler,
-    contextmenu: removeEventHandler,
-    children: removeChildrenHandler
-  }
-};
-defineProcessor({
-  configType: CONFIGTYPE.OBJECT3D,
-  commands: objectCommands,
-  create(config2, engine) {
-    return objectCreate(new Object3D(), config2, {}, engine);
-  },
-  dispose: objectDispose
-});
-const cacheCameraMap = new WeakMap();
-var PerspectiveCameraProcessor = defineProcessor({
-  configType: CONFIGTYPE.PERSPECTIVECAMERA,
-  commands: {
-    add: __spreadValues({
-      scale() {
-      }
-    }, objectCommands.add),
-    set: __spreadProps(__spreadValues({
-      scale() {
-      },
-      adaptiveWindow({ target, value, engine }) {
-        if (value) {
-          if (!cacheCameraMap.has(value)) {
-            const fun = (event) => {
-              target.aspect = event.width / event.height;
-              target.updateProjectionMatrix();
-            };
-            cacheCameraMap.set(target, fun);
-            engine.addEventListener("setSize", fun);
-            fun({
-              type: "setSize",
-              width: engine.dom.offsetWidth,
-              height: engine.dom.offsetHeight
-            });
-          }
-        } else {
-          const fun = cacheCameraMap.get(target);
-          if (fun) {
-            engine.removeEventListener("setSize", fun);
-            cacheCameraMap.delete(target);
-          }
-        }
-      }
-    }, objectCommands.set), {
-      $reg: [
-        {
-          reg: new RegExp("fov|aspect|near|far"),
-          handler({ target, key, value }) {
-            target[key] = value;
-            target.updateProjectionMatrix();
-          }
-        }
-      ]
-    }),
-    delete: __spreadValues({
-      scale() {
-      }
-    }, objectCommands.delete)
-  },
-  create(config2, engine) {
-    const camera = new PerspectiveCamera();
-    objectCreate(camera, config2, {
-      scale: true,
-      adaptiveWindow: true
-    }, engine);
-    camera.updateProjectionMatrix();
-    if (config2.adaptiveWindow) {
-      const fun = (event) => {
-        camera.aspect = event.width / event.height;
-        camera.updateProjectionMatrix();
-      };
-      cacheCameraMap.set(camera, fun);
-      engine.addEventListener("setSize", fun);
-      fun({
-        type: "setSize",
-        width: engine.dom.offsetWidth,
-        height: engine.dom.offsetHeight
-      });
-    }
-    return camera;
-  },
-  dispose(camera) {
-    cacheCameraMap.delete(camera);
-    objectDispose(camera);
-  }
-});
-var OrthographicCameraProcessor = defineProcessor({
-  configType: CONFIGTYPE.ORTHOGRAPHICCAMERA,
-  commands: {
-    add: __spreadValues({
-      scale() {
-      }
-    }, objectCommands.add),
-    set: __spreadProps(__spreadValues({
-      scale() {
-      },
-      adaptiveWindow({ target, value, engine }) {
-        if (value) {
-          if (!cacheCameraMap.has(value)) {
-            const fun = (event) => {
-              const width = event.width;
-              const height = event.height;
-              target.left = -width;
-              target.right = width;
-              target.top = height;
-              target.bottom = -height;
-              target.updateProjectionMatrix();
-            };
-            cacheCameraMap.set(target, fun);
-            engine.addEventListener("setSize", fun);
-            fun({
-              type: "setSize",
-              width: engine.dom.offsetWidth,
-              height: engine.dom.offsetHeight
-            });
-          }
-        } else {
-          const fun = cacheCameraMap.get(target);
-          if (fun) {
-            engine.removeEventListener("setSize", fun);
-            cacheCameraMap.delete(target);
-          }
-        }
-      }
-    }, objectCommands.set), {
-      $reg: [
-        {
-          reg: new RegExp("left|right|top|bottom|near|far|zoom"),
-          handler({ target, key, value }) {
-            target[key] = value;
-            target.updateProjectionMatrix();
-          }
-        }
-      ]
-    }),
-    delete: __spreadValues({
-      scale() {
-      }
-    }, objectCommands.delete)
-  },
-  create(config2, engine) {
-    const camera = new OrthographicCamera(-50, 50, 50, -50);
-    objectCreate(camera, config2, {
-      scale: true,
-      adaptiveWindow: true
-    }, engine);
-    camera.updateProjectionMatrix();
-    if (config2.adaptiveWindow) {
-      const fun = (event) => {
-        const width = event.width;
-        const height = event.height;
-        camera.left = -width;
-        camera.right = width;
-        camera.top = height;
-        camera.bottom = -height;
-        camera.updateProjectionMatrix();
-      };
-      cacheCameraMap.set(camera, fun);
-      engine.addEventListener("setSize", fun);
-      fun({
-        type: "setSize",
-        width: engine.dom.offsetWidth,
-        height: engine.dom.offsetHeight
-      });
-    }
-    return camera;
-  },
-  dispose(camera) {
-    cacheCameraMap.delete(camera);
-    objectDispose(camera);
-  }
-});
-class CameraCompiler extends ObjectCompiler {
-  constructor() {
-    super();
-    __publicField(this, "MODULE", MODULETYPE.CAMERA);
-  }
-}
-Compiler.processor(PerspectiveCameraProcessor);
-Compiler.processor(OrthographicCameraProcessor);
-var OrbitControlsProcessor = defineProcessor({
-  configType: CONFIGTYPE.ORBITCONTROLS,
-  commands: {
-    set: {
-      target({ target, config: config2, path, key, value }) {
-        const targetConfig = config2.target;
-        if (!config2.type) {
-          config2.target = new Vector3(0, 0, 0);
-          return;
-        }
-        if (typeof config2.target === "string")
-          ;
-        else {
-          if (path.length > 1) {
-            target.target[key] = value;
-          } else {
-            target.target = new Vector3(targetConfig.x, targetConfig.y, targetConfig.z);
-          }
-        }
-      }
-    }
-  },
-  create(config2, engine) {
-    let controls;
-    if (engine.orbitControls) {
-      controls = engine.orbitControls;
-    } else {
-      controls = new VisOrbitControls();
-      controls.setCamera(engine.camera);
-      controls.setDom(engine.dom);
-    }
-    if (config2.target) {
-      if (typeof config2.target === "string")
-        ;
-      else {
-        controls.target = new Vector3(config2.target.x, config2.target.y, config2.target.z);
-      }
-    }
-    syncObject(config2, controls, {
-      target: true
-    });
-    return controls;
-  },
-  dispose(target) {
-    target.dispose();
-  }
-});
-var TransformControlsProcessor = defineProcessor({
-  configType: CONFIGTYPE.TRNASFORMCONTROLS,
-  commands: {
-    set: {
-      snapAllow({ target, config: config2, value }) {
-        if (value) {
-          target.translationSnap = config2.translationSnap;
-          target.rotationSnap = config2.rotationSnap;
-          target.scaleSnap = config2.scaleSnap;
-        } else {
-          target.translationSnap = null;
-          target.rotationSnap = null;
-          target.scaleSnap = null;
-        }
-      },
-      translationSnap({ target, config: config2, value }) {
-        if (config2.snapAllow) {
-          target.translationSnap = value;
-        }
-      },
-      rotationSnap({ target, config: config2, value }) {
-        if (config2.snapAllow) {
-          target.rotationSnap = value;
-        }
-      },
-      scaleSnap({ target, config: config2, value }) {
-        if (config2.snapAllow) {
-          target.scaleSnap = value;
-        }
-      }
-    }
-  },
-  create(config2, engine) {
-    let control;
-    if (engine.transformControls) {
-      control = engine.transformControls;
-    } else {
-      control = new VisTransformControls();
-      control.setCamera(engine.camera);
-      engine.dom && control.setDom(engine.dom);
-    }
-    if (config2.snapAllow) {
-      control.translationSnap = config2.translationSnap;
-      control.rotationSnap = config2.rotationSnap;
-      control.scaleSnap = config2.scaleSnap;
-    }
-    return control;
-  },
-  dispose(target) {
-    target.dispose();
-  }
-});
-class ControlsCompiler extends Compiler {
-  constructor() {
-    super();
-    __publicField(this, "MODULE", MODULETYPE.CONTROLS);
-  }
-  useEngine(engine) {
-    if (engine.transformControls) {
-      this.map.set(CONFIGTYPE.TRNASFORMCONTROLS, engine.transformControls);
-      this.weakMap.set(engine.transformControls, CONFIGTYPE.TRNASFORMCONTROLS);
-    }
-    if (engine.orbitControls) {
-      this.map.set(CONFIGTYPE.ORBITCONTROLS, engine.orbitControls);
-      this.weakMap.set(engine.orbitControls, CONFIGTYPE.ORBITCONTROLS);
-    }
-    return super.useEngine(engine);
-  }
-}
-Compiler.processor(OrbitControlsProcessor);
-Compiler.processor(TransformControlsProcessor);
-const getElement = function(element, engine) {
-  const resourceMap = engine.resourceManager.resourceMap;
-  if (!resourceMap.has(element)) {
-    console.warn(`css3D compiler: can not found resource element: ${element}`);
-    return document.createElement("div");
-  }
-  const resource = resourceMap.get(element);
-  if (resource instanceof HTMLElement) {
-    return resource;
-  } else {
-    console.warn(`css3D compiler can not suport render this resource type.`, resource.constructor, element);
-    return document.createElement("div");
-  }
-};
-var CSS3DObjectProcessor = defineProcessor({
-  configType: CONFIGTYPE.CSS3DOBJECT,
-  commands: {
-    add: objectCommands.add,
-    set: __spreadValues({
-      element({ target, value, engine }) {
-        target.element = getElement(value, engine);
-      }
-    }, objectCommands.set),
-    delete: objectCommands.delete
-  },
-  create(config2, engine) {
-    return objectCreate(new CSS3DObject(getElement(config2.element, engine)), config2, {
-      element: true
-    }, engine);
-  },
-  dispose: objectDispose
-});
-class VisCSS3DObject extends CSS3DObject {
-  constructor(element = document.createElement("div")) {
-    const root = document.createElement("div");
-    const width = 50;
-    const height = 50;
-    root.style.width = `${width}px`;
-    root.style.height = `${height}px`;
-    root.appendChild(element);
-    super(root);
-    __publicField(this, "geometry");
-    __publicField(this, "_width");
-    __publicField(this, "_height");
-    this.geometry = new PlaneBufferGeometry(width, height);
-    this.geometry.computeBoundingBox();
-    this._width = width;
-    this._height = height;
-  }
-  get width() {
-    return this._width;
-  }
-  set width(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(value, this._height);
-    this.geometry.computeBoundingBox();
-    this.element.style.width = `${value}px`;
-    this._width = value;
-  }
-  get height() {
-    return this._height;
-  }
-  set height(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(this._width, value);
-    this.geometry.computeBoundingBox();
-    this.element.style.height = `${value}px`;
-    this._height = value;
-  }
-}
-class CSS3DPlane extends VisCSS3DObject {
-  constructor(element = document.createElement("div")) {
-    super(element);
-    __publicField(this, "cacheBox", new Box3());
-    this.type = "CSS3DPlane";
-    this.element.classList.add("vis-css3d", "vis-css3d-plane");
-  }
-  raycast(raycaster, intersects) {
-    const box = this.cacheBox.copy(this.geometry.boundingBox);
-    box.applyMatrix4(this.matrixWorld);
-    if (raycaster.ray.intersectsBox(box)) {
-      intersects.push({
-        distance: raycaster.ray.origin.distanceTo(this.position),
-        object: this,
-        point: this.position
-      });
-    }
-  }
-}
-var CSS3DPlaneProcessor = defineProcessor({
-  configType: CONFIGTYPE.CSS3DPLANE,
-  commands: {
-    add: objectCommands.add,
-    set: __spreadValues({
-      element({ target, value, engine }) {
-        target.element.innerHTML = "";
-        target.element.appendChild(getElement(value, engine));
-      }
-    }, objectCommands.set),
-    delete: objectCommands.delete
-  },
-  create(config2, engine) {
-    return objectCreate(new CSS3DPlane(getElement(config2.element, engine)), config2, {
-      element: true
-    }, engine);
-  },
-  dispose: objectDispose
-});
-class VisCSS3DSprite extends CSS3DSprite {
-  constructor(element = document.createElement("div")) {
-    const root = document.createElement("div");
-    const width = 50;
-    const height = 50;
-    root.style.width = `${width}px`;
-    root.style.height = `${height}px`;
-    root.appendChild(element);
-    element.classList.add("vis-css3d", "vis-css3d-sprite");
-    super(root);
-    __publicField(this, "geometry");
-    __publicField(this, "_width");
-    __publicField(this, "_height");
-    __publicField(this, "cacheBox", new Box3());
-    __publicField(this, "cachePosition", new Vector3());
-    __publicField(this, "cacheQuaternion", new Quaternion());
-    __publicField(this, "cacheScale", new Vector3());
-    __publicField(this, "cacheMatrix4", new Matrix4());
-    __publicField(this, "rotateMatrix4", new Matrix4());
-    this.geometry = new PlaneBufferGeometry(width, height);
-    this.geometry.computeBoundingBox();
-    this._width = width;
-    this._height = height;
-    this.type = "CSS3DSprite";
-  }
-  get width() {
-    return this._width;
-  }
-  set width(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(value, this._height);
-    this.geometry.computeBoundingBox();
-    this.element.style.width = `${value}px`;
-    this._width = value;
-  }
-  get height() {
-    return this._height;
-  }
-  set height(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(this._width, value);
-    this.geometry.computeBoundingBox();
-    this.element.style.height = `${value}px`;
-    this._height = value;
-  }
-  raycast(raycaster, intersects) {
-    const box = this.cacheBox.copy(this.geometry.boundingBox);
-    this.matrixWorld.decompose(this.cachePosition, this.cacheQuaternion, this.cacheScale);
-    const rotateMatrix4 = this.rotateMatrix4.lookAt(this.position, raycaster.camera.position, this.up);
-    this.cacheQuaternion.setFromRotationMatrix(rotateMatrix4);
-    this.cacheMatrix4.compose(this.cachePosition, this.cacheQuaternion, this.cacheScale);
-    box.applyMatrix4(this.cacheMatrix4);
-    if (raycaster.ray.intersectsBox(box)) {
-      intersects.push({
-        distance: raycaster.ray.origin.distanceTo(this.position),
-        object: this,
-        point: this.position
-      });
-    }
-  }
-}
-var CSS3DSpriteProcessor = defineProcessor({
-  configType: CONFIGTYPE.CSS3DSPRITE,
-  commands: {
-    add: objectCommands.add,
-    set: __spreadValues({
-      element({ target, value, engine }) {
-        target.element.innerHTML = "";
-        target.element.appendChild(getElement(value, engine));
-      }
-    }, objectCommands.set),
-    delete: objectCommands.delete
-  },
-  create(config2, engine) {
-    return objectCreate(new VisCSS3DSprite(getElement(config2.element, engine)), config2, {
-      element: true
-    }, engine);
-  },
-  dispose: objectDispose
-});
-class CSS3DCompiler extends ObjectCompiler {
-  constructor() {
-    super();
-    __publicField(this, "MODULE", MODULETYPE.CSS3D);
-  }
-}
-Compiler.processor(CSS3DPlaneProcessor);
-Compiler.processor(CSS3DObjectProcessor);
-Compiler.processor(CSS3DSpriteProcessor);
-class CurveGeometry extends BufferGeometry {
-  constructor(path = [], divisions = 36, space = true) {
-    super();
-    __publicField(this, "parameters");
-    this.type = "CurveGeometry";
-    this.parameters = {
-      path: path.map((vector3) => vector3.clone()),
-      space,
-      divisions
-    };
-  }
-}
-class QuadraticBezierCurveGeometry extends CurveGeometry {
-  constructor(path = [], divisions = 36, space = true) {
-    super(path, divisions, space);
-    this.type = "QuadraticBezierCurveGeometry";
-    const curvePath = new CurvePath();
-    if (path.length < 3) {
-      console.warn(`QuadraticBezierCurveGeometry path length at least 3.`);
-      return;
-    }
-    const length = 3 + (path.length - 3) - (path.length - 3) % 2;
-    for (let i = 1; i < length; i += 2) {
-      curvePath.add(new QuadraticBezierCurve3(path[i - 1], path[i], path[i + 1]));
-    }
-    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
-      return sum += curve.arcLengthDivisions;
-    }, 0);
-    if (divisions > totalArcLengthDivisions) {
-      const mutily = Math.ceil((divisions - totalArcLengthDivisions) / curvePath.curves.length);
-      curvePath.curves.forEach((curve) => {
-        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
-        curve.updateArcLengths();
-      });
-    }
-    this.setFromPoints(space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions));
-  }
-}
-class CubicBezierCurveGeometry extends CurveGeometry {
-  constructor(path = [], divisions = 36, space = true) {
-    super(path, divisions, space);
-    this.type = "CubicBezierCurveGeometry";
-    const curvePath = new CurvePath();
-    if (path.length < 4) {
-      console.warn(`CubicBezierCurveGeometry path length at least 4.`);
-      return;
-    }
-    const length = 4 + (path.length - 4) - (path.length - 4) % 3;
-    for (let i = 2; i < length; i += 3) {
-      curvePath.add(new CubicBezierCurve3(path[i - 2], path[i - 1], path[i], path[i + 1]));
-    }
-    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
-      return sum += curve.arcLengthDivisions;
-    }, 0);
-    if (divisions > totalArcLengthDivisions) {
-      const mutily = Math.ceil((divisions - totalArcLengthDivisions) / curvePath.curves.length);
-      curvePath.curves.forEach((curve) => {
-        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
-        curve.updateArcLengths();
-      });
-    }
-    this.setFromPoints(space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions));
-  }
-}
-class LineCurveGeometry extends CurveGeometry {
-  constructor(path = [], divisions = 36, space = true) {
-    super(path, divisions, space);
-    this.type = "LineCurveGeometry";
-    if (!path.length) {
-      console.warn(`LineCurveGeometry path length at least 1.`);
-      return;
-    }
-    const curvePath = new CurvePath();
-    for (let i = 1; i < path.length; i += 1) {
-      curvePath.add(new LineCurve3(path[i - 1], path[i]));
-    }
-    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
-      return sum += curve.arcLengthDivisions;
-    }, 0);
-    if (divisions > totalArcLengthDivisions) {
-      const mutily = Math.ceil((divisions - totalArcLengthDivisions) / curvePath.curves.length);
-      curvePath.curves.forEach((curve) => {
-        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
-        curve.updateArcLengths();
-      });
-    }
-    this.setFromPoints(space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions));
-  }
-}
-class SplineCurveGeometry extends CurveGeometry {
-  constructor(path = [], divisions = 36, space = true) {
-    super(path, divisions, space);
-    this.type = "SplineCurveGeometry";
-    if (!path.length) {
-      console.warn(`SplineCurveGeometry path length at least 1.`);
-      return;
-    }
-    const splineCurve = new CatmullRomCurve3(path);
-    this.setFromPoints(space ? splineCurve.getSpacedPoints(divisions) : splineCurve.getPoints(divisions));
-  }
-}
-class LineTubeGeometry extends TubeGeometry {
-  constructor(path = [], tubularSegments = 64, radius = 1, radialSegments = 8, closed = false) {
-    if (!path.length) {
-      console.warn(`LineTubeGeometry path length at least 1.`);
-      return;
-    }
-    const curvePath = new CurvePath();
-    for (let i = 1; i < path.length; i += 1) {
-      curvePath.add(new LineCurve3(path[i - 1], path[i]));
-    }
-    super(curvePath, tubularSegments, radius, radialSegments, closed);
-    this.type = "LineTubeGeometry";
-  }
-}
-class SplineTubeGeometry extends TubeGeometry {
-  constructor(path = [], tubularSegments = 64, radius = 1, radialSegments = 8, closed = false) {
-    if (!path.length) {
-      console.warn(`SplineTubeGeometry path length at least 1.`);
-      return;
-    }
-    const splineCurve = new CatmullRomCurve3(path);
-    super(splineCurve, tubularSegments, radius, radialSegments, closed);
-    this.type = "SplineTubeGeometry";
-  }
-}
-class LineShapeGeometry extends ShapeBufferGeometry {
-  constructor(path = [new Vector2(0, 0)], curveSegments = 12) {
-    const lineShape = new Shape();
-    const move = path[0];
-    if (move) {
-      lineShape.moveTo(move.x, move.y);
-      for (let i = 1; i < path.length; i += 1) {
-        lineShape.lineTo(path[i].x, path[i].y);
-      }
-    }
-    super(lineShape, curveSegments);
-    this.type = "LineShapeGeometry";
-  }
-}
-const transfromAnchor = function(geometry, config2) {
-  if (!(geometry instanceof CurveGeometry) && !(geometry instanceof TubeGeometry) && !(geometry instanceof ShapeGeometry)) {
-    geometry.center();
-  }
-  geometry.computeBoundingBox();
-  const box = geometry.boundingBox;
-  const position = config2.position;
-  const rotation = config2.rotation;
-  const scale = config2.scale;
-  const quaternion = new Quaternion().setFromEuler(new Euler(rotation.x, rotation.y, rotation.z, "XYZ"));
-  geometry.applyQuaternion(quaternion);
-  geometry.scale(scale.x, scale.y, scale.z);
-  if (!(geometry instanceof CurveGeometry) && !(geometry instanceof TubeGeometry) && !(geometry instanceof ShapeGeometry)) {
-    geometry.center();
-  }
-  geometry.computeBoundingBox();
-  geometry.translate((box.max.x - box.min.x) / 2 * position.x, (box.max.y - box.min.y) / 2 * position.y, (box.max.z - box.min.z) / 2 * position.z);
-  return geometry;
-};
-const commonRegCommand = {
-  reg: new RegExp(".*"),
-  handler({ config: config2, target, processor, engine }) {
-    const newGeometry = processor.create(config2, engine);
-    target.copy(newGeometry);
-    target.dispatchEvent({
-      type: "update"
-    });
-    target.uuid = newGeometry.uuid;
-    newGeometry.dispose();
-  }
-};
-const commands = {
-  add: {
-    groups({ target, value }) {
-      target.addGroup(value.start, value.count, value.materialIndex);
-    },
-    $reg: [commonRegCommand]
-  },
-  set: {
-    groups(params) {
-      const { path, target, config: config2 } = params;
-      if (path[1] !== void 0) {
-        target.groups.splice(Number(params.path[1]), 1);
-        const group = config2.groups[path[1]];
-        target.addGroup(group.start, group.count, group.materialIndex);
-      } else {
-        console.warn(`geometry processor can not set group`, params);
-      }
-    },
-    $reg: [commonRegCommand]
-  },
-  delete: {
-    groups({ target, key }) {
-      target.groups.splice(Number(key), 1);
-    },
-    $reg: [commonRegCommand]
-  }
-};
-const create$2 = function(target, config2) {
-  target.clearGroups();
-  for (const group of config2.groups) {
-    target.addGroup(group.start, group.count, group.materialIndex);
-  }
-  return transfromAnchor(target, config2);
-};
-const constructMap = new Map();
-constructMap.set(CONFIGTYPE.BOXGEOMETRY, (config2) => {
-  return new BoxBufferGeometry(config2.width, config2.height, config2.depth, config2.widthSegments, config2.heightSegments, config2.depthSegments);
-});
-constructMap.set(CONFIGTYPE.SPHEREGEOMETRY, (config2) => {
-  return new SphereBufferGeometry(config2.radius, config2.widthSegments, config2.heightSegments, config2.phiStart, config2.phiLength, config2.thetaStart, config2.thetaLength);
-});
-constructMap.set(CONFIGTYPE.PLANEGEOMETRY, (config2) => {
-  return new PlaneBufferGeometry(config2.width, config2.height, config2.widthSegments, config2.heightSegments);
-});
-constructMap.set(CONFIGTYPE.CIRCLEGEOMETRY, (config2) => {
-  return new CircleBufferGeometry(config2.radius, config2.segments, config2.thetaStart, config2.thetaLength);
-});
-constructMap.set(CONFIGTYPE.CONEGEOMETRY, (config2) => {
-  return new ConeBufferGeometry(config2.radius, config2.height, config2.radialSegments, config2.heightSegments, config2.openEnded, config2.thetaStart, config2.thetaLength);
-});
-constructMap.set(CONFIGTYPE.CYLINDERGEOMETRY, (config2) => {
-  return new CylinderBufferGeometry(config2.radiusTop, config2.radiusBottom, config2.height, config2.radialSegments, config2.heightSegments, config2.openEnded, config2.thetaStart, config2.thetaLength);
-});
-constructMap.set(CONFIGTYPE.LINECURVEGEOMETRY, (config2) => {
-  return new LineCurveGeometry(config2.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space);
-});
-constructMap.set(CONFIGTYPE.SPLINECURVEGEOMETRY, (config2) => {
-  return new SplineCurveGeometry(config2.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space);
-});
-constructMap.set(CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY, (config2) => {
-  return new CubicBezierCurveGeometry(config2.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space);
-});
-constructMap.set(CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY, (config2) => {
-  return new QuadraticBezierCurveGeometry(config2.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config2.divisions, config2.space);
-});
-constructMap.set(CONFIGTYPE.LINETUBEGEOMETRY, (config2) => {
-  return new LineTubeGeometry(config2.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config2.tubularSegments, config2.radius, config2.radialSegments, config2.closed);
-});
-constructMap.set(CONFIGTYPE.SPLINETUBEGEOMETRY, (config2) => {
-  return new SplineTubeGeometry(config2.path.map((vector3) => new Vector3(vector3.x, vector3.y, vector3.z)), config2.tubularSegments, config2.radius, config2.radialSegments, config2.closed);
-});
-constructMap.set(CONFIGTYPE.TORUSGEOMETRY, (config2) => {
-  return new TorusGeometry(config2.radius, config2.tube, config2.radialSegments, config2.tubularSegments, config2.arc);
-});
-constructMap.set(CONFIGTYPE.RINGGEOMETRY, (config2) => {
-  return new RingBufferGeometry(config2.innerRadius, config2.outerRadius, config2.thetaSegments, config2.phiSegments, config2.thetaStart, config2.thetaLength);
-});
-constructMap.set(CONFIGTYPE.LINESHAPEGEOMETRY, (config2) => {
-  return new LineShapeGeometry(config2.path.map((vector2) => new Vector2(vector2.x, vector2.y)), config2.curveSegments);
-});
-const create$1 = function(config2) {
-  if (!constructMap.has(config2.type)) {
-    console.error(`parametric geometry can not support this type config: ${config2.type}`);
-    return new BufferGeometry();
-  }
-  return create$2(constructMap.get(config2.type)(config2), config2);
-};
-const dispose$1 = function(target) {
-  target.dispose();
-};
-const parametricProcessorFactory = function(configType) {
-  return defineProcessor({
-    configType,
-    commands,
-    create: create$1,
-    dispose: dispose$1
-  });
-};
-const ParametricGeometryList = [
-  CONFIGTYPE.BOXGEOMETRY,
-  CONFIGTYPE.SPHEREGEOMETRY,
-  CONFIGTYPE.PLANEGEOMETRY,
-  CONFIGTYPE.CIRCLEGEOMETRY,
-  CONFIGTYPE.CONEGEOMETRY,
-  CONFIGTYPE.CYLINDERGEOMETRY,
-  CONFIGTYPE.LINECURVEGEOMETRY,
-  CONFIGTYPE.SPLINECURVEGEOMETRY,
-  CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY,
-  CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY,
-  CONFIGTYPE.LINETUBEGEOMETRY,
-  CONFIGTYPE.SPLINETUBEGEOMETRY,
-  CONFIGTYPE.TORUSGEOMETRY,
-  CONFIGTYPE.RINGGEOMETRY,
-  CONFIGTYPE.LINESHAPEGEOMETRY
-];
-const ParametricGeometryProcessors = ParametricGeometryList.map((type) => parametricProcessorFactory(type));
-class LoadGeometry extends BufferGeometry {
-  constructor(geometry) {
-    super();
-    __publicField(this, "type", "LoadBufferGeometry");
-    geometry && this.copy(geometry);
-  }
-}
-var LoadGeometryProcessor = defineProcessor({
-  configType: CONFIGTYPE.LOADGEOMETRY,
-  commands,
-  create(config2, engine) {
-    const originGeometry = engine.resourceManager.resourceMap.get(config2.url);
-    if (!originGeometry && !(originGeometry instanceof BufferGeometry)) {
-      console.error(`engine rescoure can not found url: ${config2.url}`);
-      return new BoxBufferGeometry(5, 5, 5);
-    }
-    return create$2(new LoadGeometry(originGeometry), config2);
-  },
-  dispose(target) {
-    target.dispose();
-  }
-});
-const generateGeometry = function(attribute) {
-  const geometry = new BufferGeometry();
-  attribute.position.length && geometry.setAttribute("position", new Float32BufferAttribute(attribute.position, 3));
-  attribute.color.length && geometry.setAttribute("color", new Float32BufferAttribute(attribute.color, 3));
-  attribute.normal.length && geometry.setAttribute("normal", new Float32BufferAttribute(attribute.normal, 3));
-  attribute.uv.length && geometry.setAttribute("uv", new Float32BufferAttribute(attribute.uv, 2));
-  attribute.uv2.length && geometry.setAttribute("uv2", new Float32BufferAttribute(attribute.uv2, 2));
-  attribute.index.length && geometry.setIndex(attribute.index);
-  return geometry;
-};
-var CustomGeometryProcessor = defineProcessor({
-  configType: CONFIGTYPE.CUSTOMGEOMETRY,
-  commands,
-  create(config2) {
-    return create$2(generateGeometry(config2.attribute), config2);
-  },
-  dispose(target) {
-    target.dispose();
-  }
-});
-var EdgesGeometryProcessor = defineProcessor({
-  configType: CONFIGTYPE.EDGESGEOMETRY,
-  commands,
-  create(config2, engine) {
-    const geometry = engine.compilerManager.getObjectBySymbol(config2.url);
-    if (!geometry || !(geometry instanceof BufferGeometry)) {
-      console.error(`engine rescoure can not found url: ${config2.url}`);
-      return new EdgesGeometry(new BoxBufferGeometry(5, 5, 5));
-    }
-    return create$2(new EdgesGeometry(geometry), config2);
-  },
-  dispose(target) {
-    target.dispose();
-  }
-});
-class GeometryCompiler extends Compiler {
-  constructor() {
-    super();
-    __publicField(this, "MODULE", MODULETYPE.GEOMETRY);
-  }
-}
-ParametricGeometryProcessors.forEach((processor) => {
-  Compiler.processor(processor);
-});
-Compiler.processor(LoadGeometryProcessor);
-Compiler.processor(CustomGeometryProcessor);
-Compiler.processor(EdgesGeometryProcessor);
-var GroupProcessor = defineProcessor({
-  configType: CONFIGTYPE.GROUP,
-  commands: objectCommands,
-  create(config2, engine) {
-    return objectCreate(new Group(), config2, {}, engine);
-  },
-  dispose: objectDispose
-});
-class GroupCompiler extends ObjectCompiler {
-  constructor() {
-    super();
-    __publicField(this, "MODULE", MODULETYPE.GROUP);
-  }
-}
-Compiler.processor(GroupProcessor);
-const colorHandler = function({
-  target,
-  value
-}) {
-  target.color.copy(new Color(value));
-};
-const lightCreate = function(light, config2, filter, engine) {
-  light.color.copy(new Color(config2.color));
-  return objectCreate(light, config2, __spreadValues({
-    color: true,
-    scale: true,
-    rotation: true,
-    lookAt: true
-  }, filter), engine);
-};
-const lightCommands = Object.assign({}, objectCommands, {
-  set: {
-    color: colorHandler,
-    scale: emptyHandler,
-    rotation: emptyHandler,
-    lookAt: emptyHandler
-  }
-});
-var AmbientLightProcessor = defineProcessor({
-  configType: CONFIGTYPE.AMBIENTLIGHT,
-  commands: lightCommands,
-  create(config2, engine) {
-    return lightCreate(new AmbientLight(), config2, {}, engine);
-  },
-  dispose: objectDispose
-});
-var DirectionalLightProcessor = defineProcessor({
-  configType: CONFIGTYPE.DIRECTIONALLIGHT,
-  commands: lightCommands,
-  create(config2, engine) {
-    return lightCreate(new DirectionalLight(), config2, {}, engine);
-  },
-  dispose: objectDispose
-});
-var PointLightProcessor = defineProcessor({
-  configType: CONFIGTYPE.POINTLIGHT,
-  commands: lightCommands,
-  create(config2, engine) {
-    return lightCreate(new PointLight(), config2, {}, engine);
-  },
-  dispose: objectDispose
-});
-var SpotLightProcessor = defineProcessor({
-  configType: CONFIGTYPE.SPOTLIGHT,
-  commands: lightCommands,
-  create(config2, engine) {
-    return lightCreate(new SpotLight(), config2, {}, engine);
-  },
-  dispose: objectDispose
-});
-class LightCompiler extends ObjectCompiler {
-  constructor() {
-    super();
-    __publicField(this, "MODULE", MODULETYPE.LIGHT);
-  }
-}
-Compiler.processor(AmbientLightProcessor);
-Compiler.processor(DirectionalLightProcessor);
-Compiler.processor(PointLightProcessor);
-Compiler.processor(SpotLightProcessor);
-class SolidObjectCompiler extends ObjectCompiler {
-  constructor() {
-    super();
-  }
-}
-const replaceMaterial = new ShaderMaterial({
-  fragmentShader: `
-  void main () {
-    gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
-  }
-  `
-});
-const replaceGeometry = new BoxBufferGeometry(10, 10, 10);
-const geometryHandler = function({ target, value, engine }) {
-  const geometry = engine.compilerManager.getGeometry(value);
-  if (!geometry) {
-    console.warn(`can not found geometry by vid in engine: ${value}`);
-    target.geometry = replaceGeometry;
-    return;
-  }
-  target.geometry = geometry;
-};
-const materialHandler = function({ target, config: config2, engine }) {
-  let material;
-  if (typeof config2.material === "string") {
-    material = engine.compilerManager.getMaterial(config2.material) || replaceMaterial;
-  } else {
-    material = config2.material.map((vid) => engine.compilerManager.getMaterial(vid) || replaceMaterial);
-  }
-  target.material = material;
-};
-const solidObjectCreate = function(object, config2, filter, engine) {
-  if (!filter.geometry) {
-    let geometry = engine.getObjectBySymbol(config2.geometry);
-    if (!(geometry instanceof BufferGeometry)) {
-      console.warn(`geometry vid in engine is not instance of BufferGeometry: ${config2.geometry}`, geometry);
-      geometry = replaceGeometry;
-    }
-    object.geometry.dispose();
-    object.geometry = geometry;
-  }
-  if (!filter.material) {
-    let material;
-    if (typeof config2.material === "string") {
-      material = engine.compilerManager.getMaterial(config2.material) || replaceMaterial;
-    } else {
-      material = config2.material.map((vid) => engine.compilerManager.getMaterial(vid) || replaceMaterial);
-    }
-    object.material = material;
-  }
-  return objectCreate(object, config2, __spreadValues({
-    geometry: true,
-    material: true
-  }, filter), engine);
-};
-const solidObjectDispose = function(target) {
-  objectDispose(target);
-};
-const solidObjectCommands = {
-  add: __spreadValues({
-    material: materialHandler
-  }, objectCommands.add),
-  set: __spreadValues({
-    geometry: geometryHandler,
-    material: materialHandler
-  }, objectCommands.set),
-  delete: __spreadValues({
-    material: materialHandler
-  }, objectCommands.delete)
-};
-var LineProcessor = defineProcessor({
-  configType: CONFIGTYPE.LINE,
-  commands: solidObjectCommands,
-  create(config2, engine) {
-    return solidObjectCreate(new Line(), config2, {}, engine);
-  },
-  dispose: solidObjectDispose
-});
-class LineCompiler extends SolidObjectCompiler {
-  constructor() {
-    super();
-    __publicField(this, "MODULE", MODULETYPE.LINE);
-  }
-}
-Compiler.processor(LineProcessor);
-const commonNeedUpdatesRegCommand = {
-  reg: new RegExp("transparent|sizeAttenuation"),
-  handler({
-    target,
-    key,
-    value
-  }) {
-    target[key] = value;
-    target.needsUpdate = true;
-  }
-};
-const commonMapRegCommand = {
-  reg: new RegExp("map$", "i"),
-  handler({
-    target,
-    key,
-    value,
-    engine
-  }) {
-    const texture = engine.compilerManager.getObjectBySymbol(value);
-    if (!(texture instanceof Texture)) {
-      console.warn(`this url resource is not instance of Texture: ${key}`, value, texture);
-    }
-    target[key] = texture;
-    target.needsUpdate = true;
-  }
-};
-const colorSetHandler = function({ target, key, value }) {
-  target[key].copy(new Color(value));
-};
-const create = function(target, config2, engine) {
-  const filter = {};
-  for (const key of Object.keys(config2)) {
-    if (key.toLocaleLowerCase().endsWith("map") && config2[key]) {
-      const texture = engine.compilerManager.getObjectBySymbol(config2[key]);
-      if (!(texture instanceof Texture)) {
-        console.warn(`this url resource is not instance of Texture: ${key}`, config2[key], texture);
-        continue;
-      }
-      target[key] = texture;
-      filter[key] = true;
-    } else if (target[key] instanceof Color) {
-      target[key] = new Color(config2[key]);
-      filter[key] = true;
-    }
-  }
-  syncObject(config2, target, filter);
-  target.needsUpdate = true;
-  return target;
-};
-const dispose = function(target) {
-  target.dispose();
-};
-var LineBasicMaterialProcessor = defineProcessor({
-  configType: CONFIGTYPE.LINEBASICMATERIAL,
-  commands: {
-    set: {
-      color: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
-    }
-  },
-  create: function(config2, engine) {
-    return create(new LineBasicMaterial(), config2, engine);
-  },
-  dispose
-});
-var MeshBasicMaterialProcessor = defineProcessor({
-  configType: CONFIGTYPE.MESHBASICMATERIAL,
-  commands: {
-    set: {
-      color: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
-    }
-  },
-  create: function(config2, engine) {
-    return create(new MeshBasicMaterial(), config2, engine);
-  },
-  dispose
-});
-var MeshPhongMaterialProcessor = defineProcessor({
-  configType: CONFIGTYPE.MESHPHONGMATERIAL,
-  commands: {
-    set: {
-      color: colorSetHandler,
-      emissive: colorSetHandler,
-      specular: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
-    }
-  },
-  create: function(config2, engine) {
-    return create(new MeshPhongMaterial(), config2, engine);
-  },
-  dispose
-});
-var MeshPhysicalMaterialProcessor = defineProcessor({
-  configType: CONFIGTYPE.MESHPHYSICALMATERIAL,
-  commands: {
-    set: {
-      color: colorSetHandler,
-      emissive: colorSetHandler,
-      specularColor: colorSetHandler,
-      sheenColor: colorSetHandler,
-      attenuationColor: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
-    }
-  },
-  create: function(config2, engine) {
-    return create(new MeshPhysicalMaterial(), config2, engine);
-  },
-  dispose
-});
-var MeshStandardMaterialProcessor = defineProcessor({
-  configType: CONFIGTYPE.MESHSTANDARDMATERIAL,
-  commands: {
-    set: {
-      color: colorSetHandler,
-      emissive: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
-    }
-  },
-  create: function(config2, engine) {
-    return create(new MeshStandardMaterial(), config2, engine);
-  },
-  dispose
-});
-var PointsMaterialProcessor = defineProcessor({
-  configType: CONFIGTYPE.POINTSMATERIAL,
-  commands: {
-    set: {
-      color: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
-    }
-  },
-  create: function(config2, engine) {
-    return create(new PointsMaterial(), config2, engine);
-  },
-  dispose
-});
 var ShaderMaterialProcessor = defineProcessor({
   configType: CONFIGTYPE.SHADERMATERIAL,
   commands: {
@@ -7797,7 +9037,10 @@ var SMAAPassProcessor = defineProcessor({
   configType: CONFIGTYPE.SMAAPASS,
   create(config2, engine) {
     const pixelRatio = window.devicePixelRatio;
-    const pass = new SMAAPass(engine.dom ? engine.dom.offsetWidth * pixelRatio : window.innerWidth * pixelRatio, engine.dom ? engine.dom.offsetHeight * pixelRatio : window.innerWidth * pixelRatio);
+    const pass = new SMAAPass(
+      engine.dom ? engine.dom.offsetWidth * pixelRatio : window.innerWidth * pixelRatio,
+      engine.dom ? engine.dom.offsetHeight * pixelRatio : window.innerWidth * pixelRatio
+    );
     return pass;
   },
   dispose(pass) {
@@ -7807,7 +9050,15 @@ var UnrealBloomPassProcessor = defineProcessor({
   configType: CONFIGTYPE.UNREALBLOOMPASS,
   create(config2, engine) {
     const pixelRatio = window.devicePixelRatio;
-    const pass = new UnrealBloomPass(new Vector2(engine.dom ? engine.dom.offsetWidth * pixelRatio : window.innerWidth * pixelRatio, engine.dom ? engine.dom.offsetHeight * pixelRatio : window.innerWidth * pixelRatio), config2.strength, config2.radius, config2.threshold);
+    const pass = new UnrealBloomPass(
+      new Vector2(
+        engine.dom ? engine.dom.offsetWidth * pixelRatio : window.innerWidth * pixelRatio,
+        engine.dom ? engine.dom.offsetHeight * pixelRatio : window.innerWidth * pixelRatio
+      ),
+      config2.strength,
+      config2.radius,
+      config2.threshold
+    );
     return pass;
   },
   dispose(pass) {
@@ -7842,7 +9093,7 @@ const _SelectiveBloomPass = class extends Pass {
     __publicField(this, "oldClearAlpha", 1);
     __publicField(this, "basic", new MeshBasicMaterial());
     __publicField(this, "fsQuad", new FullScreenQuad());
-    __publicField(this, "materialCache", new Map());
+    __publicField(this, "materialCache", /* @__PURE__ */ new Map());
     __publicField(this, "sceneBackgroundCache", null);
     __publicField(this, "overrideBackground", new Color("black"));
     __publicField(this, "overrideMeshMaterial", new MeshBasicMaterial({
@@ -7894,8 +9145,13 @@ const _SelectiveBloomPass = class extends Pass {
     resx = Math.round(this.resolution.x / 2);
     resy = Math.round(this.resolution.y / 2);
     for (let i = 0; i < this.nMips; i++) {
-      this.separableBlurMaterials.push(this.getSeperableBlurMaterial(kernelSizeArray[i]));
-      this.separableBlurMaterials[i].uniforms["texSize"].value = new Vector2(resx, resy);
+      this.separableBlurMaterials.push(
+        this.getSeperableBlurMaterial(kernelSizeArray[i])
+      );
+      this.separableBlurMaterials[i].uniforms["texSize"].value = new Vector2(
+        resx,
+        resy
+      );
       resx = Math.round(resx / 2);
       resy = Math.round(resy / 2);
     }
@@ -7937,7 +9193,10 @@ const _SelectiveBloomPass = class extends Pass {
     for (let i = 0; i < this.nMips; i++) {
       this.renderTargetsHorizontal[i].setSize(resx, resy);
       this.renderTargetsVertical[i].setSize(resx, resy);
-      this.separableBlurMaterials[i].uniforms["texSize"].value = new Vector2(resx, resy);
+      this.separableBlurMaterials[i].uniforms["texSize"].value = new Vector2(
+        resx,
+        resy
+      );
       resx = Math.round(resx / 2);
       resy = Math.round(resy / 2);
     }
@@ -7960,7 +9219,7 @@ const _SelectiveBloomPass = class extends Pass {
     renderer.setClearColor(this.clearColor, 0);
     if (maskActive)
       renderer.state.buffers.stencil.setTest(false);
-    const selectedObjectsMap = new Map();
+    const selectedObjectsMap = /* @__PURE__ */ new Map();
     for (const object of this.selectedObjects) {
       selectedObjectsMap.set(object, true);
     }
@@ -8179,7 +9438,9 @@ var SelectiveBloomPassProcessor = defineProcessor({
         if (object) {
           target.selectedObjects.push(object);
         } else {
-          console.warn(`selectiveBloomPassProcessor: can not found vid in engine: ${value}`);
+          console.warn(
+            `selectiveBloomPassProcessor: can not found vid in engine: ${value}`
+          );
         }
       }
     },
@@ -8202,7 +9463,9 @@ var SelectiveBloomPassProcessor = defineProcessor({
           if (object) {
             return object;
           } else {
-            console.warn(`selectiveBloomPassProcessor: can not found vid in engine: ${vid}`);
+            console.warn(
+              `selectiveBloomPassProcessor: can not found vid in engine: ${vid}`
+            );
             return void 0;
           }
         }).filter((object) => object);
@@ -8214,10 +9477,15 @@ var SelectiveBloomPassProcessor = defineProcessor({
         const object = engine.compilerManager.getObject3D(value);
         if (object) {
           if (target.selectedObjects.includes(object)) {
-            target.selectedObjects.splice(target.selectedObjects.indexOf(object), 1);
+            target.selectedObjects.splice(
+              target.selectedObjects.indexOf(object),
+              1
+            );
           }
         } else {
-          console.warn(`selectiveBloomPassProcessor: can not found vid in engine: ${value}`);
+          console.warn(
+            `selectiveBloomPassProcessor: can not found vid in engine: ${value}`
+          );
         }
       }
     }
@@ -8229,7 +9497,18 @@ var SelectiveBloomPassProcessor = defineProcessor({
       object && objects.push(object);
     }
     const pixelRatio = window.devicePixelRatio;
-    const pass = new SelectiveBloomPass(new Vector2(engine.dom ? engine.dom.offsetWidth * pixelRatio : window.innerWidth * pixelRatio, engine.dom ? engine.dom.offsetHeight * pixelRatio : window.innerWidth * pixelRatio), config2.strength, config2.radius, config2.threshold, config2.renderScene && engine.compilerManager.getObject3D(config2.renderScene) || void 0, config2.renderCamera && engine.compilerManager.getObject3D(config2.renderCamera) || void 0, objects);
+    const pass = new SelectiveBloomPass(
+      new Vector2(
+        engine.dom ? engine.dom.offsetWidth * pixelRatio : window.innerWidth * pixelRatio,
+        engine.dom ? engine.dom.offsetHeight * pixelRatio : window.innerWidth * pixelRatio
+      ),
+      config2.strength,
+      config2.radius,
+      config2.threshold,
+      config2.renderScene && engine.compilerManager.getObject3D(config2.renderScene) || void 0,
+      config2.renderCamera && engine.compilerManager.getObject3D(config2.renderCamera) || void 0,
+      objects
+    );
     return pass;
   },
   dispose(target) {
@@ -8245,7 +9524,9 @@ class PassCompiler extends Compiler {
   useEngine(engine) {
     super.useEngine(engine);
     if (!engine.effectComposer) {
-      console.warn(`engine need install effectComposer plugin that can use pass compiler.`);
+      console.warn(
+        `engine need install effectComposer plugin that can use pass compiler.`
+      );
       return this;
     }
     this.composer = engine.effectComposer;
@@ -8291,7 +9572,10 @@ var WebGLRendererProcessor = defineProcessor({
     set: {
       size({ target, config: config2 }) {
         if (!config2.size) {
-          target.setSize(target.domElement.offsetWidth, target.domElement.offsetHeight);
+          target.setSize(
+            target.domElement.offsetWidth,
+            target.domElement.offsetHeight
+          );
         } else {
           target.setSize(config2.size.x, config2.size.y);
         }
@@ -8304,21 +9588,41 @@ var WebGLRendererProcessor = defineProcessor({
       viewport({ target, config: config2 }) {
         const viewport = config2.viewport;
         if (viewport) {
-          target.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+          target.setViewport(
+            viewport.x,
+            viewport.y,
+            viewport.width,
+            viewport.height
+          );
         } else {
           const domElement = target.domElement;
-          target.setViewport(0, 0, domElement.offsetWidth, domElement.offsetHeight);
+          target.setViewport(
+            0,
+            0,
+            domElement.offsetWidth,
+            domElement.offsetHeight
+          );
         }
       },
       scissor({ target, config: config2 }) {
         const scissor = config2.scissor;
         if (scissor) {
           target.setScissorTest(true);
-          target.setScissor(scissor.x, scissor.y, scissor.width, scissor.height);
+          target.setScissor(
+            scissor.x,
+            scissor.y,
+            scissor.width,
+            scissor.height
+          );
         } else {
           target.setScissorTest(false);
           const domElement = target.domElement;
-          target.setScissor(0, 0, domElement.offsetWidth, domElement.offsetHeight);
+          target.setScissor(
+            0,
+            0,
+            domElement.offsetWidth,
+            domElement.offsetHeight
+          );
         }
       },
       pixelRatio({ target, value }) {
@@ -8338,12 +9642,19 @@ var WebGLRendererProcessor = defineProcessor({
       renderer.setSize(config2.size.x, config2.size.y);
     }
     if (config2.clearColor) {
-      const alpha = Number(config2.clearColor.slice(0, -1).split(",").pop().trim());
+      const alpha = Number(
+        config2.clearColor.slice(0, -1).split(",").pop().trim()
+      );
       renderer.setClearColor(config2.clearColor, alpha);
     }
     if (config2.viewport) {
       const viewport = config2.viewport;
-      renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+      renderer.setViewport(
+        viewport.x,
+        viewport.y,
+        viewport.width,
+        viewport.height
+      );
     }
     if (config2.scissor) {
       const scissor = config2.scissor;
@@ -8373,7 +9684,10 @@ var CSS3DRendererProcessor = defineProcessor({
     set: {
       size({ target, config: config2 }) {
         if (!config2.size) {
-          target.setSize(target.domElement.offsetWidth, target.domElement.offsetHeight);
+          target.setSize(
+            target.domElement.offsetWidth,
+            target.domElement.offsetHeight
+          );
         } else {
           target.setSize(config2.size.x, config2.size.y);
         }
@@ -8451,7 +9765,8 @@ var SceneProcessor = defineProcessor({
   configType: CONFIGTYPE.SCENE,
   commands: {
     add: objectCommands.add,
-    set: __spreadProps(__spreadValues({}, objectCommands.set), {
+    set: {
+      ...objectCommands.set,
       lookAt() {
       },
       fog({ target, config: config2, key, value }) {
@@ -8486,7 +9801,7 @@ var SceneProcessor = defineProcessor({
       environment({ target, value, engine }) {
         setEnvironment(target, value, engine);
       }
-    }),
+    },
     delete: objectCommands.delete
   },
   create(config2, engine) {
@@ -8500,15 +9815,22 @@ var SceneProcessor = defineProcessor({
       } else if (fog.type === "FogExp2") {
         scene.fog = new FogExp2(fog.color, fog.density);
       } else {
-        console.warn(`scene processor can not support this type fog:'${config2.type}'`);
+        console.warn(
+          `scene processor can not support this type fog:'${config2.type}'`
+        );
       }
     }
-    return objectCreate(scene, config2, {
-      lookAt: true,
-      background: true,
-      environment: true,
-      fog: true
-    }, engine);
+    return objectCreate(
+      scene,
+      config2,
+      {
+        lookAt: true,
+        background: true,
+        environment: true,
+        fog: true
+      },
+      engine
+    );
   },
   dispose: objectDispose
 });
@@ -8526,10 +9848,10 @@ var SpriteProcessor = defineProcessor({
   configType: CONFIGTYPE.SPRITE,
   commands: {
     add: solidObjectCommands.add,
-    set: __spreadProps(__spreadValues({
+    set: {
       lookAt() {
-      }
-    }, solidObjectCommands.set), {
+      },
+      ...solidObjectCommands.set,
       material({ target, engine, value }) {
         const material = engine.compilerManager.getMaterial(value);
         if (material && material instanceof SpriteMaterial) {
@@ -8538,7 +9860,7 @@ var SpriteProcessor = defineProcessor({
           target.material = spriteReplaceMaterial;
         }
       }
-    }),
+    },
     delete: solidObjectCommands.add
   },
   create(config2, engine) {
@@ -8549,11 +9871,16 @@ var SpriteProcessor = defineProcessor({
     } else {
       sprite.material = spriteReplaceMaterial;
     }
-    return solidObjectCreate(sprite, config2, {
-      geometry: true,
-      material: true,
-      lookAt: true
-    }, engine);
+    return solidObjectCreate(
+      sprite,
+      config2,
+      {
+        geometry: true,
+        material: true,
+        lookAt: true
+      },
+      engine
+    );
   },
   dispose: solidObjectDispose
 });
@@ -8566,11 +9893,24 @@ class SpriteCompiler extends SolidObjectCompiler {
 Compiler.processor(SpriteProcessor);
 class ImageTexture extends Texture {
   constructor(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding) {
-    super(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding);
+    super(
+      image,
+      mapping,
+      wrapS,
+      wrapT,
+      magFilter,
+      minFilter,
+      format,
+      type,
+      anisotropy,
+      encoding
+    );
   }
 }
 const needUpdateRegCommand = {
-  reg: new RegExp("wrapS|wrapT|format|encoding|anisotropy|magFilter|minFilter|mapping"),
+  reg: new RegExp(
+    "wrapS|wrapT|format|encoding|anisotropy|magFilter|minFilter|mapping"
+  ),
   handler({ target, key, value }) {
     target[key] = value;
     target.needsUpdate = true;
@@ -8581,7 +9921,10 @@ var ImageTextureProcessor = defineProcessor({
   commands: {
     set: {
       url({ target, value, engine }) {
-        target.image = engine.compilerManager.textureCompiler.getResource(value, HTMLImageElement);
+        target.image = engine.compilerManager.textureCompiler.getResource(
+          value,
+          HTMLImageElement
+        );
         target.needsUpdate = true;
       },
       $reg: [needUpdateRegCommand]
@@ -8590,7 +9933,10 @@ var ImageTextureProcessor = defineProcessor({
   create(config2, engine) {
     const texture = new ImageTexture();
     if (config2.url) {
-      texture.image = engine.compilerManager.textureCompiler.getResource(config2.url, HTMLImageElement);
+      texture.image = engine.compilerManager.textureCompiler.getResource(
+        config2.url,
+        HTMLImageElement
+      );
     }
     syncObject(config2, texture, {
       type: true,
@@ -8608,14 +9954,22 @@ var CanvasTextureProcessor = defineProcessor({
   commands: {
     set: {
       url({ target, value, engine }) {
-        target.image = engine.compilerManager.textureCompiler.getResource(value, HTMLCanvasElement);
+        target.image = engine.compilerManager.textureCompiler.getResource(
+          value,
+          HTMLCanvasElement
+        );
         target.needsUpdate = true;
       },
       $reg: [needUpdateRegCommand]
     }
   },
   create(config2, engine) {
-    const texture = new CanvasTexture(engine.compilerManager.textureCompiler.getResource(config2.url, HTMLCanvasElement));
+    const texture = new CanvasTexture(
+      engine.compilerManager.textureCompiler.getResource(
+        config2.url,
+        HTMLCanvasElement
+      )
+    );
     syncObject(config2, texture, {
       type: true,
       url: true
@@ -8629,7 +9983,10 @@ var CanvasTextureProcessor = defineProcessor({
 });
 const instanceClasses = [HTMLImageElement, HTMLVideoElement, HTMLCanvasElement];
 const imageHanlder = function({ target, index, value, engine }) {
-  target.images[index] = engine.compilerManager.textureCompiler.getResource(value, instanceClasses);
+  target.images[index] = engine.compilerManager.textureCompiler.getResource(
+    value,
+    instanceClasses
+  );
   target.needsUpdate = true;
 };
 var CubeTextureProcessor = defineProcessor({
@@ -8714,7 +10071,17 @@ var CubeTextureProcessor = defineProcessor({
 });
 class VideoTexture extends Texture {
   constructor(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
-    super(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
+    super(
+      video,
+      mapping,
+      wrapS,
+      wrapT,
+      magFilter,
+      minFilter,
+      format,
+      type,
+      anisotropy
+    );
     __publicField(this, "isVideoTexture", true);
     this.format = format !== void 0 ? format : RGBFormat;
     this.minFilter = minFilter !== void 0 ? minFilter : LinearFilter;
@@ -8739,7 +10106,10 @@ var VideoTextureProcessor = defineProcessor({
   commands: {
     set: {
       url({ target, value, engine }) {
-        target.image = engine.compilerManager.textureCompiler.getResource(value, HTMLVideoElement);
+        target.image = engine.compilerManager.textureCompiler.getResource(
+          value,
+          HTMLVideoElement
+        );
         target.needsUpdate = true;
       },
       $reg: [needUpdateRegCommand]
@@ -8748,7 +10118,10 @@ var VideoTextureProcessor = defineProcessor({
   create(config2, engine) {
     const texture = new VideoTexture(document.createElement("video"));
     if (config2.url) {
-      texture.image = engine.compilerManager.textureCompiler.getResource(config2.url, HTMLVideoElement);
+      texture.image = engine.compilerManager.textureCompiler.getResource(
+        config2.url,
+        HTMLVideoElement
+      );
     }
     syncObject(config2, texture, {
       type: true,
@@ -8834,7 +10207,10 @@ var LoadTextureProcessor = defineProcessor({
   },
   create(config2, engine) {
     let texture;
-    const resource = engine.compilerManager.textureCompiler.getResource(config2.url, Texture);
+    const resource = engine.compilerManager.textureCompiler.getResource(
+      config2.url,
+      Texture
+    );
     if (resource instanceof Texture) {
       texture = new LoadTexture(resource);
     } else {
@@ -8870,13 +10246,19 @@ const _TextureCompiler = class extends Compiler {
           return resource;
         }
       }
-      console.warn(`this url mapping resource is not a texture image class: ${url}`, resource);
+      console.warn(
+        `this url mapping resource is not a texture image class: ${url}`,
+        resource
+      );
       return _TextureCompiler.replaceImage;
     } else {
       if (resource instanceof instanceClasses2) {
         return resource;
       } else {
-        console.warn(`this url mapping resource is not a texture image class: ${url}`, resource);
+        console.warn(
+          `this url mapping resource is not a texture image class: ${url}`,
+          resource
+        );
         return _TextureCompiler.replaceImage;
       }
     }
@@ -8922,7 +10304,7 @@ class CompilerManager {
         this[key] = parameters[key];
       });
     }
-    const compilerMap = new Map();
+    const compilerMap = /* @__PURE__ */ new Map();
     Object.keys(this).forEach((key) => {
       const compiler = this[key];
       if (compiler instanceof Compiler) {
@@ -9006,7 +10388,9 @@ const CompilerManagerPlugin = function(params) {
     return false;
   }
   if (!this.dataSupportManager) {
-    console.warn("must install dataSupportManager before compilerManager plugin.");
+    console.warn(
+      "must install dataSupportManager before compilerManager plugin."
+    );
     return false;
   }
   if (!this.renderManager) {
@@ -9032,7 +10416,7 @@ const CompilerManagerPlugin = function(params) {
 class KeyboardManager extends EventDispatcher {
   constructor() {
     super();
-    __publicField(this, "map", new Map());
+    __publicField(this, "map", /* @__PURE__ */ new Map());
   }
   generateSymbol(entity) {
     if (Array.isArray(entity)) {
@@ -9051,7 +10435,9 @@ class KeyboardManager extends EventDispatcher {
   register(entity) {
     const symbol = this.generateSymbol(entity);
     if (this.map.has(symbol)) {
-      console.warn(`KeyboardManager: shortcutKey already exist: ${symbol}. desp: ${this.map.get(symbol).desp}`);
+      console.warn(
+        `KeyboardManager: shortcutKey already exist: ${symbol}. desp: ${this.map.get(symbol).desp}`
+      );
       return this;
     }
     keyboardjs.bind(symbol, entity.keydown || null, entity.keyup);
@@ -9061,7 +10447,9 @@ class KeyboardManager extends EventDispatcher {
   update(entity) {
     const symbol = this.generateSymbol(entity);
     if (!this.map.has(symbol)) {
-      console.warn(`KeyboardManager: shortcutKey unregister then exec register function`);
+      console.warn(
+        `KeyboardManager: shortcutKey unregister then exec register function`
+      );
       this.register(entity);
       return this;
     }
@@ -9200,7 +10588,9 @@ const KeyboardManagerPlugin = function(params) {
 };
 const AxesHelperPlugin = function(params = {}) {
   if (!this.scene) {
-    console.error("must install some scene plugin before BasicViewpoint plugin.");
+    console.error(
+      "must install some scene plugin before BasicViewpoint plugin."
+    );
     return false;
   }
   const axesHelper = new AxesHelper(params.length || 500);
@@ -9226,7 +10616,12 @@ const GridHelperPlugin = function(params = {}) {
     console.error("must install some scene before BasicViewpoint plugin.");
     return false;
   }
-  const gridHelper = new GridHelper(params.range || 500, params.spacing || 50, params.axesColor || "rgb(130, 130, 130)", params.cellColor || "rgb(70, 70, 70)");
+  const gridHelper = new GridHelper(
+    params.range || 500,
+    params.spacing || 50,
+    params.axesColor || "rgb(130, 130, 130)",
+    params.cellColor || "rgb(70, 70, 70)"
+  );
   if (params.opacity !== 1) {
     const material = gridHelper.material;
     material.transparent = true;
@@ -9274,13 +10669,13 @@ const GridHelperPlugin = function(params = {}) {
   });
   return true;
 };
-var DISPLAYMODE;
-(function(DISPLAYMODE2) {
+var DISPLAYMODE = /* @__PURE__ */ ((DISPLAYMODE2) => {
   DISPLAYMODE2["GEOMETRY"] = "geometry";
   DISPLAYMODE2["MATERIAL"] = "material";
   DISPLAYMODE2["LIGHT"] = "light";
   DISPLAYMODE2["ENV"] = "env";
-})(DISPLAYMODE || (DISPLAYMODE = {}));
+  return DISPLAYMODE2;
+})(DISPLAYMODE || {});
 const DisplayModelPlugin = function(params = {}) {
   if (!this.webGLRenderer) {
     console.error("must install some renderer before DisplayModel plugin.");
@@ -9294,7 +10689,10 @@ const DisplayModelPlugin = function(params = {}) {
   !params.defaultAmbientLightSetting && (params.defaultAmbientLightSetting = {});
   !params.defaultAmbientLightSetting.color && (params.defaultAmbientLightSetting.color = "rgb(255, 255, 255)");
   !params.defaultAmbientLightSetting.intensity && (params.defaultAmbientLightSetting.intensity = 0.5);
-  const defaultAmbientLight = new AmbientLight(params.defaultAmbientLightSetting.color, params.defaultAmbientLightSetting.intensity);
+  const defaultAmbientLight = new AmbientLight(
+    params.defaultAmbientLightSetting.color,
+    params.defaultAmbientLightSetting.intensity
+  );
   defaultAmbientLight.matrixAutoUpdate = false;
   !params.defaultDirectionalLightSetting && (params.defaultDirectionalLightSetting = {});
   !params.defaultDirectionalLightSetting.color && (params.defaultDirectionalLightSetting.color = "rgb(255, 255, 255)");
@@ -9304,13 +10702,20 @@ const DisplayModelPlugin = function(params = {}) {
     y: 100,
     z: 100
   });
-  const defaultDirectionalLight = new DirectionalLight(params.defaultDirectionalLightSetting.color, params.defaultDirectionalLightSetting.intensity);
+  const defaultDirectionalLight = new DirectionalLight(
+    params.defaultDirectionalLightSetting.color,
+    params.defaultDirectionalLightSetting.intensity
+  );
   defaultDirectionalLight.castShadow = false;
-  defaultDirectionalLight.position.set(params.defaultDirectionalLightSetting.position.x, params.defaultDirectionalLightSetting.position.y, params.defaultDirectionalLightSetting.position.z);
+  defaultDirectionalLight.position.set(
+    params.defaultDirectionalLightSetting.position.x,
+    params.defaultDirectionalLightSetting.position.y,
+    params.defaultDirectionalLightSetting.position.z
+  );
   defaultDirectionalLight.updateMatrix();
   defaultDirectionalLight.updateMatrixWorld();
   defaultDirectionalLight.matrixAutoUpdate = false;
-  !params.mode && (params.mode = DISPLAYMODE.ENV);
+  !params.mode && (params.mode = "env");
   this.displayMode = params.mode;
   const meshOverrideMaterial = new MeshLambertMaterial({
     color: params.overrideColor
@@ -9326,12 +10731,12 @@ const DisplayModelPlugin = function(params = {}) {
   const spriteOverrideMaterial = new SpriteMaterial({
     color: params.overrideColor
   });
-  const materialCacheMap = new WeakMap();
-  const lightSet = new Set();
-  const meshSet = new Set();
-  const lineSet = new Set();
-  const pointsSet = new Set();
-  const spriteSet = new Set();
+  const materialCacheMap = /* @__PURE__ */ new WeakMap();
+  const lightSet = /* @__PURE__ */ new Set();
+  const meshSet = /* @__PURE__ */ new Set();
+  const lineSet = /* @__PURE__ */ new Set();
+  const pointsSet = /* @__PURE__ */ new Set();
+  const spriteSet = /* @__PURE__ */ new Set();
   let backgroundCache;
   let environmentCache;
   const filterTypeMap = {
@@ -9347,13 +10752,13 @@ const DisplayModelPlugin = function(params = {}) {
       }
       if (elem instanceof Mesh && elem.type === "Mesh") {
         meshSet.add(elem);
-        if (displayMode === DISPLAYMODE.GEOMETRY) {
+        if (displayMode === "geometry") {
           materialCacheMap.set(elem, elem.material);
           elem.material = meshOverrideMaterial;
         }
       } else if (elem instanceof Line && elem.type.includes("Line")) {
         lineSet.add(elem);
-        if (displayMode === DISPLAYMODE.GEOMETRY) {
+        if (displayMode === "geometry") {
           materialCacheMap.set(elem, elem.material);
           elem.material = lineOverrideMaterial;
         }
@@ -9364,18 +10769,18 @@ const DisplayModelPlugin = function(params = {}) {
         if (!lightSet.has(elem)) {
           lightSet.add(elem);
         }
-        if (displayMode !== DISPLAYMODE.ENV && displayMode !== DISPLAYMODE.LIGHT) {
+        if (displayMode !== "env" && displayMode !== "light") {
           this.scene.remove(elem);
         }
       } else if (elem instanceof Points && elem.type === "Points") {
         pointsSet.add(elem);
-        if (displayMode === DISPLAYMODE.GEOMETRY) {
+        if (displayMode === "geometry") {
           materialCacheMap.set(elem, elem.material);
           elem.material = pointsOverrideMaterial;
         }
       } else if (elem instanceof Sprite && elem.type === "Sprite") {
         spriteSet.add(elem);
-        if (displayMode === DISPLAYMODE.GEOMETRY) {
+        if (displayMode === "geometry") {
           materialCacheMap.set(elem, elem.material);
           elem.material = spriteOverrideMaterial;
         }
@@ -9499,20 +10904,20 @@ const DisplayModelPlugin = function(params = {}) {
     }
   };
   this.setDisplayMode = function(mode) {
-    this.displayMode = mode || DISPLAYMODE.ENV;
-    if (mode === DISPLAYMODE.GEOMETRY) {
+    this.displayMode = mode || "env";
+    if (mode === "geometry") {
       filterMaterial();
       filterScene();
       filterLight();
-    } else if (mode === DISPLAYMODE.MATERIAL) {
+    } else if (mode === "material") {
       reduceMaterial();
       filterScene();
       filterLight();
-    } else if (mode === DISPLAYMODE.LIGHT) {
+    } else if (mode === "light") {
       reduceMaterial();
       filterScene();
       reduceLight();
-    } else if (mode === DISPLAYMODE.ENV) {
+    } else if (mode === "env") {
       reduceMaterial();
       reduceScene();
       reduceLight();
@@ -9809,15 +11214,21 @@ class DirectionalLightHelper extends LineSegments {
       0,
       0.707
     ];
-    this.geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
+    this.geometry.setAttribute(
+      "position",
+      new Float32BufferAttribute(points, 3)
+    );
     this.material = getHelperLineMaterial();
     this.geometry.boundingSphere;
     const color = new Color().copy(directionalLight.color).multiplyScalar(directionalLight.intensity);
     const planeGemetry = new PlaneBufferGeometry(20, 20);
     planeGemetry.dispose();
-    const shape = new LineSegments(new EdgesGeometry(planeGemetry), new LineBasicMaterial({
-      color
-    }));
+    const shape = new LineSegments(
+      new EdgesGeometry(planeGemetry),
+      new LineBasicMaterial({
+        color
+      })
+    );
     shape.raycast = () => {
     };
     this.shape = shape;
@@ -9922,14 +11333,20 @@ class PointLightHelper extends LineSegments {
       0,
       0.707
     ];
-    this.geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
+    this.geometry.setAttribute(
+      "position",
+      new Float32BufferAttribute(points, 3)
+    );
     this.material = getHelperLineMaterial();
     this.geometry.boundingSphere;
     const color = new Color().copy(pointLight2.color).multiplyScalar(pointLight2.intensity);
-    const shape = new Mesh(new OctahedronBufferGeometry(pointLight2.distance, 0), new MeshBasicMaterial({
-      color,
-      wireframe: true
-    }));
+    const shape = new Mesh(
+      new OctahedronBufferGeometry(pointLight2.distance, 0),
+      new MeshBasicMaterial({
+        color,
+        wireframe: true
+      })
+    );
     shape.raycast = () => {
     };
     shape.matrixAutoUpdate = false;
@@ -10041,7 +11458,10 @@ class SpotLightHelper extends LineSegments {
       0,
       0.707
     ];
-    this.geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
+    this.geometry.setAttribute(
+      "position",
+      new Float32BufferAttribute(points, 3)
+    );
     this.material = getHelperLineMaterial();
     this.geometry.boundingSphere;
     const shapeGeometry = new BufferGeometry();
@@ -10074,9 +11494,19 @@ class SpotLightHelper extends LineSegments {
     for (let i = 0, j = 1, l = 32; i < l; i++, j++) {
       const p1 = i / l * Math.PI * 2;
       const p2 = j / l * Math.PI * 2;
-      positions.push(Math.cos(p1), Math.sin(p1), 1, Math.cos(p2), Math.sin(p2), 1);
+      positions.push(
+        Math.cos(p1),
+        Math.sin(p1),
+        1,
+        Math.cos(p2),
+        Math.sin(p2),
+        1
+      );
     }
-    shapeGeometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
+    shapeGeometry.setAttribute(
+      "position",
+      new Float32BufferAttribute(positions, 3)
+    );
     const material = getHelperLineMaterial();
     const shape = new LineSegments(shapeGeometry, material);
     shape.material.color.copy(spotLight.color).multiplyScalar(spotLight.intensity);
@@ -10174,7 +11604,9 @@ class CSS3DPlaneHelper extends LineSegments {
     __publicField(this, "target");
     __publicField(this, "type", "VisCSS3DPlaneHelper");
     __publicField(this, "observer");
-    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(target.width, target.height));
+    this.geometry = new EdgesGeometry(
+      new PlaneBufferGeometry(target.width, target.height)
+    );
     this.geometry.computeBoundingBox();
     this.material = getHelperLineMaterial();
     this.matrixAutoUpdate = false;
@@ -10184,7 +11616,9 @@ class CSS3DPlaneHelper extends LineSegments {
     this.target = target;
     const observer = new MutationObserver(() => {
       this.geometry.dispose();
-      this.geometry = new EdgesGeometry(new PlaneBufferGeometry(target.width, target.height));
+      this.geometry = new EdgesGeometry(
+        new PlaneBufferGeometry(target.width, target.height)
+      );
       this.geometry.computeBoundingBox();
     });
     observer.observe(target.element, {
@@ -10234,21 +11668,23 @@ const _GroupHelper = class extends Sprite {
   }
 };
 let GroupHelper = _GroupHelper;
-__publicField(GroupHelper, "colorTexture", new CanvasTexture(new CanvasGenerator({ width: 512, height: 512 }).draw((ctx) => {
-  ctx.beginPath();
-  ctx.fillStyle = "rgba(0, 0, 0, 0)";
-  ctx.fillRect(0, 0, 512, 512);
-  ctx.closePath();
-  ctx.translate(256, 200);
-  ctx.beginPath();
-  ctx.fillStyle = "yellow";
-  ctx.fillRect(-200, 0, 400, 200);
-  ctx.closePath();
-  ctx.beginPath();
-  ctx.fillStyle = "yellow";
-  ctx.fillRect(-200, -70, 200, 70);
-  ctx.closePath();
-}).get()));
+__publicField(GroupHelper, "colorTexture", new CanvasTexture(
+  new CanvasGenerator({ width: 512, height: 512 }).draw((ctx) => {
+    ctx.beginPath();
+    ctx.fillStyle = "rgba(0, 0, 0, 0)";
+    ctx.fillRect(0, 0, 512, 512);
+    ctx.closePath();
+    ctx.translate(256, 200);
+    ctx.beginPath();
+    ctx.fillStyle = "yellow";
+    ctx.fillRect(-200, 0, 400, 200);
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.fillStyle = "yellow";
+    ctx.fillRect(-200, -70, 200, 70);
+    ctx.closePath();
+  }).get()
+));
 const _LineHelper = class extends Points {
   constructor(line) {
     super();
@@ -10284,13 +11720,15 @@ const _LineHelper = class extends Points {
   }
 };
 let LineHelper = _LineHelper;
-__publicField(LineHelper, "alphaTexture", new CanvasTexture(new CanvasGenerator({ width: 512, height: 512, bgColor: "rgb(0, 0, 0)" }).draw((ctx) => {
-  ctx.beginPath();
-  ctx.fillStyle = "rgb(255, 255, 255)";
-  ctx.arc(256, 256, 200, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.closePath();
-}).getDom()));
+__publicField(LineHelper, "alphaTexture", new CanvasTexture(
+  new CanvasGenerator({ width: 512, height: 512, bgColor: "rgb(0, 0, 0)" }).draw((ctx) => {
+    ctx.beginPath();
+    ctx.fillStyle = "rgb(255, 255, 255)";
+    ctx.arc(256, 256, 200, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.closePath();
+  }).getDom()
+));
 class MeshHelper extends LineSegments {
   constructor(mesh) {
     super();
@@ -10346,13 +11784,15 @@ const _PointsHelper = class extends Points {
   }
 };
 let PointsHelper = _PointsHelper;
-__publicField(PointsHelper, "alphaTexture", new CanvasTexture(new CanvasGenerator({ width: 512, height: 512, bgColor: "rgb(0, 0, 0)" }).draw((ctx) => {
-  ctx.beginPath();
-  ctx.strokeStyle = "rgb(255, 255, 255)";
-  ctx.lineWidth = 4;
-  ctx.strokeRect(0, 0, 512, 512);
-  ctx.closePath();
-}).get()));
+__publicField(PointsHelper, "alphaTexture", new CanvasTexture(
+  new CanvasGenerator({ width: 512, height: 512, bgColor: "rgb(0, 0, 0)" }).draw((ctx) => {
+    ctx.beginPath();
+    ctx.strokeStyle = "rgb(255, 255, 255)";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(0, 0, 512, 512);
+    ctx.closePath();
+  }).get()
+));
 const _SpriteHelper = class extends Sprite {
   constructor(sprite) {
     super();
@@ -10375,13 +11815,15 @@ const _SpriteHelper = class extends Sprite {
   }
 };
 let SpriteHelper = _SpriteHelper;
-__publicField(SpriteHelper, "alphaTexture", new CanvasTexture(new CanvasGenerator({ width: 512, height: 512, bgColor: "rgb(0, 0, 0)" }).draw((ctx) => {
-  ctx.beginPath();
-  ctx.strokeStyle = "rgb(255, 255, 255)";
-  ctx.lineWidth = 4;
-  ctx.strokeRect(0, 0, 512, 512);
-  ctx.closePath();
-}).get()));
+__publicField(SpriteHelper, "alphaTexture", new CanvasTexture(
+  new CanvasGenerator({ width: 512, height: 512, bgColor: "rgb(0, 0, 0)" }).draw((ctx) => {
+    ctx.beginPath();
+    ctx.strokeStyle = "rgb(255, 255, 255)";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(0, 0, 512, 512);
+    ctx.closePath();
+  }).get()
+));
 class ObjectHelperManager extends EventDispatcher {
   constructor(params = {}) {
     super();
@@ -10406,11 +11848,19 @@ class ObjectHelperManager extends EventDispatcher {
       TransformControls: true,
       Scene: true
     });
-    __publicField(this, "objectFilter", new Set());
-    __publicField(this, "objectHelperMap", new Map());
-    params.helperGenerator && (this.helperGenerator = Object.assign(this.helperGenerator, params.helperGenerator));
-    params.helperFilter && (this.helperFilter = Object.assign(this.helperFilter, params.helperFilter));
-    params.objectFilter && (this.objectFilter = new Set(params.objectFilter.concat(Array.from(this.objectFilter))));
+    __publicField(this, "objectFilter", /* @__PURE__ */ new Set());
+    __publicField(this, "objectHelperMap", /* @__PURE__ */ new Map());
+    params.helperGenerator && (this.helperGenerator = Object.assign(
+      this.helperGenerator,
+      params.helperGenerator
+    ));
+    params.helperFilter && (this.helperFilter = Object.assign(
+      this.helperFilter,
+      params.helperFilter
+    ));
+    params.objectFilter && (this.objectFilter = new Set(
+      params.objectFilter.concat(Array.from(this.objectFilter))
+    ));
   }
   addFilteredObject(...objects) {
     for (const object of objects) {
@@ -10423,7 +11873,9 @@ class ObjectHelperManager extends EventDispatcher {
       return null;
     }
     if (!this.helperGenerator[object.type]) {
-      console.warn(`object helper can not support this type object: '${object.type}'`);
+      console.warn(
+        `object helper can not support this type object: '${object.type}'`
+      );
       return null;
     }
     const helper = new this.helperGenerator[object.type](object);
@@ -10435,7 +11887,10 @@ class ObjectHelperManager extends EventDispatcher {
       return null;
     }
     if (!this.objectHelperMap.has(object)) {
-      console.warn(`object helper manager can not found this object\`s helper: `, object);
+      console.warn(
+        `object helper manager can not found this object\`s helper: `,
+        object
+      );
       return null;
     }
     const helper = this.objectHelperMap.get(object);
@@ -10463,14 +11918,16 @@ const ObjectHelperPlugin = function(params = {}) {
   }
   if (params.interact) {
     if (!this.eventManager) {
-      console.warn("must install eventManager plugin that can use interact function.");
+      console.warn(
+        "must install eventManager plugin that can use interact function."
+      );
       params.interact = false;
     }
   }
   const helperManager = new ObjectHelperManager();
-  const pointerenterFunMap = new Map();
-  const pointerleaveFunMap = new Map();
-  const clickFunMap = new Map();
+  const pointerenterFunMap = /* @__PURE__ */ new Map();
+  const pointerleaveFunMap = /* @__PURE__ */ new Map();
+  const clickFunMap = /* @__PURE__ */ new Map();
   const helperMap = helperManager.objectHelperMap;
   this.objectHelperManager = helperManager;
   !params.activeColor && (params.activeColor = "rgb(230, 20, 240)");
@@ -10481,7 +11938,7 @@ const ObjectHelperPlugin = function(params = {}) {
   const activeColorHex = new Color(params.activeColor).getHex();
   const hoverColorHex = new Color(params.hoverColor).getHex();
   const selectedColorHex = new Color(params.selectedColor).getHex();
-  const cacheSceneSet = new WeakSet();
+  const cacheSceneSet = /* @__PURE__ */ new WeakSet();
   const afterAddFun = (event) => {
     const objects = event.objects;
     for (const object of objects) {
@@ -10546,8 +12003,14 @@ const ObjectHelperPlugin = function(params = {}) {
       }
       this.scene.remove(helper);
       if (params.interact) {
-        object.removeEventListener("pointerenter", pointerenterFunMap.get(object));
-        object.removeEventListener("pointerleave", pointerleaveFunMap.get(object));
+        object.removeEventListener(
+          "pointerenter",
+          pointerenterFunMap.get(object)
+        );
+        object.removeEventListener(
+          "pointerleave",
+          pointerleaveFunMap.get(object)
+        );
         object.removeEventListener("click", clickFunMap.get(object));
         pointerenterFunMap.delete(object);
         pointerleaveFunMap.delete(object);
@@ -10593,7 +12056,7 @@ const ObjectHelperPlugin = function(params = {}) {
       scene.addEventListener("afterRemove", afterRemoveFun);
     }
   });
-  const cacheObjectsHelper = new Set();
+  const cacheObjectsHelper = /* @__PURE__ */ new Set();
   this.completeSet.add(() => {
     if (this.selectionBox) {
       this.addEventListener("selected", (event) => {
@@ -10622,7 +12085,7 @@ const SelectionPlugin = function(params = {}) {
     console.warn("must install eventManager plugin before Selection plugin.");
     return false;
   }
-  this.selectionBox = new Set();
+  this.selectionBox = /* @__PURE__ */ new Set();
   const dispatchEvent = () => {
     const objectSymbols = [];
     if (this.IS_ENGINESUPPORT) {
@@ -10631,7 +12094,10 @@ const SelectionPlugin = function(params = {}) {
         if (objectSymbol) {
           objectSymbols.push(objectSymbol);
         } else {
-          console.warn("selection plugin can not font vid in compilerManager.", object);
+          console.warn(
+            "selection plugin can not font vid in compilerManager.",
+            object
+          );
         }
       });
     }
@@ -10732,8 +12198,7 @@ const CSS3DRendererPlugin = function(params = {}) {
   }
   return true;
 };
-var ENGINEPLUGIN;
-(function(ENGINEPLUGIN2) {
+var ENGINEPLUGIN = /* @__PURE__ */ ((ENGINEPLUGIN2) => {
   ENGINEPLUGIN2["WEBGLRENDERER"] = "WebGLRenderer";
   ENGINEPLUGIN2["CSS3DRENDERER"] = "CSS3DRenderer";
   ENGINEPLUGIN2["SCENE"] = "Scene";
@@ -10756,7 +12221,8 @@ var ENGINEPLUGIN;
   ENGINEPLUGIN2["DISPLAYMODE"] = "DisplayMode";
   ENGINEPLUGIN2["OBJECTHELPER"] = "ObjectHelper";
   ENGINEPLUGIN2["SELECTION"] = "Selection";
-})(ENGINEPLUGIN || (ENGINEPLUGIN = {}));
+  return ENGINEPLUGIN2;
+})(ENGINEPLUGIN || {});
 const _Engine = class extends EventDispatcher {
   constructor() {
     super();
@@ -10798,7 +12264,6 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "toJSON");
     __publicField(this, "exportConfig");
     __publicField(this, "applyConfig");
-    __publicField(this, "reactiveConfig");
     __publicField(this, "getConfigBySymbol");
     __publicField(this, "removeConfigBySymbol");
     __publicField(this, "getObjectSymbol");
@@ -10806,7 +12271,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "play");
     __publicField(this, "stop");
     __publicField(this, "render");
-    this.completeSet = new Set();
+    this.completeSet = /* @__PURE__ */ new Set();
     this.render = function() {
       console.warn("can not install some plugin");
       return this;
@@ -10856,7 +12321,9 @@ const _Engine = class extends EventDispatcher {
   setSize(width, height) {
     var _a, _b;
     if (width && width <= 0 || height && height <= 0) {
-      console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
+      console.warn(
+        `you must be input width and height bigger then zero, width: ${width}, height: ${height}`
+      );
       return this;
     }
     !width && (width = ((_a = this.dom) == null ? void 0 : _a.offsetWidth) || window.innerWidth);
@@ -10870,29 +12337,39 @@ const _Engine = class extends EventDispatcher {
       this.dispatchEvent({
         type: "setCamera",
         camera,
-        options: Object.assign({
-          orbitControls: true,
-          transformControls: true
-        }, options || {})
+        options: Object.assign(
+          {
+            orbitControls: true,
+            transformControls: true
+          },
+          options || {}
+        )
       });
     } else {
       if (this.IS_ENGINESUPPORT) {
-        const target = this.compilerManager.getObjectBySymbol(camera);
+        const target = this.compilerManager.getObjectBySymbol(
+          camera
+        );
         if (target) {
           this.camera = target;
           this.dispatchEvent({
             type: "setCamera",
             camera: target,
-            options: Object.assign({
-              orbitControls: true,
-              transformControls: true
-            }, options || {})
+            options: Object.assign(
+              {
+                orbitControls: true,
+                transformControls: true
+              },
+              options || {}
+            )
           });
         } else {
           console.warn(`can not found camera in compilerManager: ${camera}`);
         }
       } else {
-        console.warn(`engine is not a Engine support but use symbol to found camera.`);
+        console.warn(
+          `engine is not a Engine support but use symbol to found camera.`
+        );
       }
     }
     return this;
@@ -10907,7 +12384,9 @@ const _Engine = class extends EventDispatcher {
       this.scene = scene;
     } else {
       if (this.IS_ENGINESUPPORT) {
-        const target = this.compilerManager.getObjectBySymbol(scene);
+        const target = this.compilerManager.getObjectBySymbol(
+          scene
+        );
         if (target) {
           this.dispatchEvent({
             type: "setScene",
@@ -10919,14 +12398,16 @@ const _Engine = class extends EventDispatcher {
           console.warn(`can not found scene in compilerManager: ${scene}`);
         }
       } else {
-        console.warn(`engine is not a Engine support but use symbol to found scene.`);
+        console.warn(
+          `engine is not a Engine support but use symbol to found scene.`
+        );
       }
     }
     return this;
   }
 };
 let Engine = _Engine;
-__publicField(Engine, "pluginHandler", new Map());
+__publicField(Engine, "pluginHandler", /* @__PURE__ */ new Map());
 __publicField(Engine, "register", function(name, handler2) {
   _Engine.pluginHandler && _Engine.pluginHandler.set(name, handler2);
   return _Engine;
@@ -10934,26 +12415,68 @@ __publicField(Engine, "register", function(name, handler2) {
 __publicField(Engine, "dispose", function() {
   _Engine.pluginHandler = void 0;
 });
-Engine.register(ENGINEPLUGIN.WEBGLRENDERER, WebGLRendererPlugin);
-Engine.register(ENGINEPLUGIN.CSS3DRENDERER, CSS3DRendererPlugin);
-Engine.register(ENGINEPLUGIN.EFFECTCOMPOSER, EffectComposerPlugin);
-Engine.register(ENGINEPLUGIN.RENDERMANAGER, RenderManagerPlugin);
-Engine.register(ENGINEPLUGIN.POINTERMANAGER, PointerManagerPlugin);
-Engine.register(ENGINEPLUGIN.EVENTMANAGER, EventManagerPlugin);
-Engine.register(ENGINEPLUGIN.LOADERMANAGER, LoaderManagerPlugin);
-Engine.register(ENGINEPLUGIN.RESOURCEMANAGER, ResourceManagerPlugin);
-Engine.register(ENGINEPLUGIN.DATASUPPORTMANAGER, DataSupportManagerPlugin);
-Engine.register(ENGINEPLUGIN.COMPILERMANAGER, CompilerManagerPlugin);
-Engine.register(ENGINEPLUGIN.KEYBOARDMANAGER, KeyboardManagerPlugin);
-Engine.register(ENGINEPLUGIN.ORBITCONTROLS, OrbitControlsPlugin);
-Engine.register(ENGINEPLUGIN.TRANSFORMCONTROLS, TransformControlsPlugin);
-Engine.register(ENGINEPLUGIN.AXESHELPER, AxesHelperPlugin);
-Engine.register(ENGINEPLUGIN.GRIDHELPER, GridHelperPlugin);
-Engine.register(ENGINEPLUGIN.OBJECTHELPER, ObjectHelperPlugin);
-Engine.register(ENGINEPLUGIN.DISPLAYMODE, DisplayModelPlugin);
-Engine.register(ENGINEPLUGIN.VIEWPOINT, ViewpointPlugin);
-Engine.register(ENGINEPLUGIN.STATS, StatsPlugin);
-Engine.register(ENGINEPLUGIN.SELECTION, SelectionPlugin);
+Engine.register(
+  "WebGLRenderer",
+  WebGLRendererPlugin
+);
+Engine.register(
+  "CSS3DRenderer",
+  CSS3DRendererPlugin
+);
+Engine.register(
+  "EffectComposer",
+  EffectComposerPlugin
+);
+Engine.register("RenderManager", RenderManagerPlugin);
+Engine.register(
+  "PointerManager",
+  PointerManagerPlugin
+);
+Engine.register(
+  "EventManager",
+  EventManagerPlugin
+);
+Engine.register(
+  "LoaderManager",
+  LoaderManagerPlugin
+);
+Engine.register(
+  "ResourceManager",
+  ResourceManagerPlugin
+);
+Engine.register(
+  "DataSupportManager",
+  DataSupportManagerPlugin
+);
+Engine.register(
+  "CompilerManager",
+  CompilerManagerPlugin
+);
+Engine.register("KeyboardManager", KeyboardManagerPlugin);
+Engine.register("OrbitControls", OrbitControlsPlugin);
+Engine.register(
+  "TransformControls",
+  TransformControlsPlugin
+);
+Engine.register(
+  "AxesHelper",
+  AxesHelperPlugin
+);
+Engine.register(
+  "GridHelper",
+  GridHelperPlugin
+);
+Engine.register(
+  "ObjectHelper",
+  ObjectHelperPlugin
+);
+Engine.register(
+  "DisplayMode",
+  DisplayModelPlugin
+);
+Engine.register("Viewpoint", ViewpointPlugin);
+Engine.register("Stats", StatsPlugin);
+Engine.register("Selection", SelectionPlugin);
 class DisplayEngine extends Engine {
   constructor() {
     super();
@@ -10976,6 +12499,84 @@ class ModelingEngine extends Engine {
     }).install(ENGINEPLUGIN.SELECTION).install(ENGINEPLUGIN.AXESHELPER).install(ENGINEPLUGIN.GRIDHELPER).install(ENGINEPLUGIN.OBJECTHELPER).install(ENGINEPLUGIN.VIEWPOINT).install(ENGINEPLUGIN.DISPLAYMODE).install(ENGINEPLUGIN.STATS).install(ENGINEPLUGIN.ORBITCONTROLS).install(ENGINEPLUGIN.KEYBOARDMANAGER).install(ENGINEPLUGIN.TRANSFORMCONTROLS).complete();
   }
 }
+const generateConfig = function(type, merge, strict = true, warn = true) {
+  if (!CONFIGFACTORY[type]) {
+    console.error(`type: ${type} can not be found in configList.`);
+    return {
+      vid: "",
+      type
+    };
+  }
+  const recursion = (config2, merge2) => {
+    for (const key in merge2) {
+      if (config2[key] === void 0) {
+        !strict && (config2[key] = merge2[key]);
+        strict && warn && console.warn(`'${type}' config can not set key: ${key}`);
+        continue;
+      }
+      if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
+        if (config2[key] === null) {
+          config2[key] = { ...merge2[key] };
+        }
+        recursion(config2[key], merge2[key]);
+      } else {
+        config2[key] = merge2[key];
+      }
+    }
+  };
+  const initConfig = CONFIGFACTORY[type]();
+  if ([
+    CONFIGTYPE.SHADERMATERIAL
+  ].includes(type)) {
+    const shaderConfig = ShaderLibrary.generateConfig(
+      (merge == null ? void 0 : merge.shader) || "defaultShader"
+    );
+    const cacheStrict = strict;
+    strict = false;
+    recursion(initConfig, shaderConfig);
+    strict = cacheStrict;
+  }
+  if ([CONFIGTYPE.SCRIPTANIMATION, CONFIGTYPE.KEYFRAMEANIMATION].includes(
+    type
+  )) {
+    strict = false;
+  }
+  if (initConfig.vid === "") {
+    initConfig.vid = v4();
+  }
+  merge && recursion(initConfig, merge);
+  const ob = observable(initConfig);
+  if (generateConfig.autoInject && generateConfig.injectEngine) {
+    const engine = generateConfig.injectEngine;
+    engine.applyConfig(ob);
+    if (generateConfig.injectScene) {
+      if (getModule(initConfig.type).toLocaleUpperCase() in OBJECTMODULE && initConfig.type !== CONFIGTYPE.SCENE) {
+        let sceneConfig = null;
+        if (typeof generateConfig.injectScene === "boolean") {
+          sceneConfig = engine.getObjectConfig(engine.scene);
+        } else if (typeof generateConfig.injectScene === "string") {
+          sceneConfig = engine.getConfigBySymbol(
+            generateConfig.injectScene
+          );
+        }
+        if (!sceneConfig) {
+          console.warn(
+            `current engine scene can not found it config`,
+            engine,
+            engine.scene
+          );
+        } else {
+          sceneConfig.children.push(initConfig.vid);
+        }
+      }
+    }
+    return ob;
+  }
+  return ob;
+};
+generateConfig.autoInject = true;
+generateConfig.injectScene = false;
+generateConfig.injectEngine = null;
 class SupportDataGenerator {
   constructor() {
     __publicField(this, "supportData");
@@ -11000,7 +12601,9 @@ class SupportDataGenerator {
       return this;
     }
     if (getModule(config2.type) !== this.supportDataType) {
-      console.warn(`current generator create config which module is in: ${this.supportDataType}, but you provide type is '${config2.type}'`);
+      console.warn(
+        `current generator create config which module is in: ${this.supportDataType}, but you provide type is '${config2.type}'`
+      );
       return this;
     }
     this.supportData[config2.vid] = generateConfig(config2.type, config2);
@@ -11018,9 +12621,12 @@ class SupportDataGenerator {
 const pointLight = new PointLight("rgb(255, 255, 255)", 0.5, 200, 1);
 pointLight.position.set(-30, 5, 20);
 pointLight.castShadow = true;
-const plane = new Mesh(new BoxBufferGeometry(80, 2, 80), new MeshStandardMaterial({
-  color: "rgb(255, 255, 255)"
-}));
+const plane = new Mesh(
+  new BoxBufferGeometry(80, 2, 80),
+  new MeshStandardMaterial({
+    color: "rgb(255, 255, 255)"
+  })
+);
 plane.position.set(0, -11, 0);
 plane.receiveShadow = true;
 plane.castShadow = true;
@@ -11041,7 +12647,12 @@ const _MaterialDisplayer = class {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = PCFSoftShadowMap;
     const scene = new Scene();
-    const camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
+    const camera = new PerspectiveCamera(
+      45,
+      window.innerWidth / window.innerHeight,
+      1,
+      500
+    );
     camera.position.set(0, 0, 35);
     camera.up.x = 0;
     camera.up.y = 1;
@@ -11069,7 +12680,9 @@ const _MaterialDisplayer = class {
     } else if (material.type.includes("Sprite")) {
       this.object = new Sprite(material);
     } else {
-      console.warn(`material displayer can not support this type material: '${material.type}'`);
+      console.warn(
+        `material displayer can not support this type material: '${material.type}'`
+      );
       return this;
     }
     this.object.castShadow = true;
@@ -11090,7 +12703,9 @@ const _MaterialDisplayer = class {
       this.renderer.setSize(width, height, true);
     } else {
       if (!this.dom) {
-        console.warn(`material displayer must set dom before setSize with empty parameters`);
+        console.warn(
+          `material displayer must set dom before setSize with empty parameters`
+        );
         return this;
       }
       const dom = this.dom;
@@ -11135,7 +12750,12 @@ const _TextureDisplayer = class {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = PCFSoftShadowMap;
     const scene = new Scene();
-    const camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
+    const camera = new PerspectiveCamera(
+      45,
+      window.innerWidth / window.innerHeight,
+      1,
+      500
+    );
     camera.position.set(0, 0, 35);
     camera.up.x = 0;
     camera.up.y = 1;
@@ -11165,7 +12785,9 @@ const _TextureDisplayer = class {
       this.renderer.setSize(width, height, true);
     } else {
       if (!this.dom) {
-        console.warn(`texture displayer must set dom before setSize with empty parameters`);
+        console.warn(
+          `texture displayer must set dom before setSize with empty parameters`
+        );
         return this;
       }
       const dom = this.dom;
@@ -11356,7 +12978,10 @@ class BooleanModifier extends Modifier {
     };
     const csgSource = CSG.fromMesh(likeMesh);
     const csgTarget = CSG.fromMesh(this.target);
-    const csgGeometry = CSG.toGeometry(csgSource[this.mode](csgTarget), source.matrix);
+    const csgGeometry = CSG.toGeometry(
+      csgSource[this.mode](csgTarget),
+      source.matrix
+    );
     this.modifiedGeometry.copy(csgGeometry);
     this.modifiedGeometry.uuid = csgGeometry.uuid;
   }
@@ -11398,10 +13023,14 @@ class BooleanModifier extends Modifier {
 }
 class Action {
   next() {
-    console.warn(`this action can not set next function: ${this.constructor.name}`);
+    console.warn(
+      `this action can not set next function: ${this.constructor.name}`
+    );
   }
   prev() {
-    console.warn(`this action can not set prev function: ${this.constructor.name}`);
+    console.warn(
+      `this action can not set prev function: ${this.constructor.name}`
+    );
   }
 }
 class History {
@@ -11453,7 +13082,9 @@ class History {
 const clone = (object, options = {}) => {
   let jsonObject = JSON.stringify(object, JSONHandler.stringify);
   const detail = {};
-  const modulekeys = Object.keys(object).filter((module) => module !== "assets");
+  const modulekeys = Object.keys(object).filter(
+    (module) => module !== "assets"
+  );
   for (const modulekey of modulekeys) {
     for (const vid of Object.keys(object[modulekey])) {
       const newVid = v4();
@@ -11528,7 +13159,7 @@ class Dependence {
       if (event.notice.operate === "get") {
         const depSign = this.createSign(event.notice);
         if (!this.dep[depSign]) {
-          this.dep[depSign] = new Set();
+          this.dep[depSign] = /* @__PURE__ */ new Set();
         }
         this.dep[depSign].add(collectKey);
       }
@@ -11546,17 +13177,9 @@ class Dependence {
     }
   }
 }
-class Observer extends ProxyBroadcast {
+class Observer {
   constructor() {
-    super();
-    __publicField(this, "deps", new Set());
-    this.addEventListener("broadcast", (event) => {
-      if (event.notice.operate !== "get") {
-        this.deps.forEach((dep) => {
-          dep.notify(event.notice);
-        });
-      }
-    });
+    __publicField(this, "deps", /* @__PURE__ */ new Set());
   }
   addDep(dep) {
     this.deps.add(dep);
@@ -11571,7 +13194,7 @@ const _Updater = class {
   }
 };
 let Updater = _Updater;
-__publicField(Updater, "map", new Map());
+__publicField(Updater, "map", /* @__PURE__ */ new Map());
 const onComputed = function(fun) {
   return new Updater(fun);
 };
@@ -11615,19 +13238,33 @@ const _Widget = class extends EventDispatcher {
   createComputed() {
     const computed = this.options.computed || {};
     for (const key in computed) {
-      this.observed[key] = this.dependence.collect(key, this.observer, computed[key].bind(this.observed));
+      this.observed[key] = this.dependence.collect(
+        key,
+        this.observer,
+        computed[key].bind(this.observed)
+      );
     }
   }
   createRender() {
-    const render = this.options.render.call(this.observed, createElement, () => {
-    }, onComputed, onEvent);
+    const render = this.options.render.call(
+      this.observed,
+      createElement,
+      () => {
+      },
+      onComputed,
+      onEvent
+    );
     const recursion = (object, path) => {
       for (const key in object) {
         if (typeof object[key] === "object" && object[key] !== null) {
           recursion(object[key], path.concat([key]));
         } else if (typeof object[key] === "symbol" && Updater.map.has(object[key])) {
           const updater = Updater.map.get(object[key]);
-          object[key] = this.dependence.collect(`${path.join(".")}.${key}`, this.observer, updater.run.bind(this.observed));
+          object[key] = this.dependence.collect(
+            `${path.join(".")}.${key}`,
+            this.observer,
+            updater.run.bind(this.observed)
+          );
         }
       }
     };
@@ -11641,19 +13278,32 @@ const _Widget = class extends EventDispatcher {
     for (const key in computed) {
       computed[key] = null;
     }
-    this.observed = this.observer.proxyExtends(Object.assign({}, options.input, options.data ? options.data() : {}, computed, options.methods || {}), [], false);
+    this.observed = this.observer.proxyExtends(
+      Object.assign(
+        {},
+        options.input,
+        options.data ? options.data() : {},
+        computed,
+        options.methods || {}
+      ),
+      [],
+      false
+    );
   }
   createWatch() {
     const watch = this.options.watch || {};
-    this.observer.addEventListener("broadcast", (event) => {
-      const { operate, key, path, value } = event.notice;
-      if (operate !== "get") {
-        const sign = path.length ? `${path.join(".")}.${key}` : key;
-        if (watch[sign]) {
-          watch[sign].call(this.observed, value);
+    this.observer.addEventListener(
+      "broadcast",
+      (event) => {
+        const { operate, key, path, value } = event.notice;
+        if (operate !== "get") {
+          const sign = path.length ? `${path.join(".")}.${key}` : key;
+          if (watch[sign]) {
+            watch[sign].call(this.observed, value);
+          }
         }
       }
-    });
+    );
   }
   async init(engineSupport) {
     const options = this.options;
@@ -11695,7 +13345,9 @@ let Widget = _Widget;
 __publicField(Widget, "components", {});
 const version = "0.2.4";
 if (!window.__THREE__) {
-  console.error(`vis-three dependent on three.js module, pleace run 'npm i three' first.`);
+  console.error(
+    `vis-three dependent on three.js module, pleace run 'npm i three' first.`
+  );
 }
 if (window.__VIS__) {
   console.warn(`Duplicate vis-three frames are introduced`);
@@ -11714,7 +13366,10 @@ Scene.prototype.add = function(...object) {
   }
   const currentObject = object[0];
   if (currentObject === this) {
-    console.error("THREE.Object3D.add: object can't be added as a child of itself.", object);
+    console.error(
+      "THREE.Object3D.add: object can't be added as a child of itself.",
+      object
+    );
     return this;
   }
   if (currentObject && currentObject.isObject3D) {
@@ -11730,7 +13385,10 @@ Scene.prototype.add = function(...object) {
     this.children.push(currentObject);
     currentObject.dispatchEvent({ type: "added" });
   } else {
-    console.error("THREE.Object3D.add: object not an instance of THREE.Object3D.", object);
+    console.error(
+      "THREE.Object3D.add: object not an instance of THREE.Object3D.",
+      object
+    );
   }
   return this;
 };
@@ -11752,8 +13410,10 @@ Scene.prototype.remove = function(...object) {
   });
   return this;
 };
-const lightShadow = new LightShadow(new OrthographicCamera(-256, 256, 256, -256));
+const lightShadow = new LightShadow(
+  new OrthographicCamera(-256, 256, 256, -256)
+);
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
-export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, ProxyBroadcast, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, Template, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, Widget, generateConfig, getModule };
+export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataContainer, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, Template, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, Widget, generateConfig, getModule };

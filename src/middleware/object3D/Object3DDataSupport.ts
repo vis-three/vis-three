@@ -1,6 +1,4 @@
 import { Object3D } from "three";
-import { CompilerTarget } from "../../core/Compiler";
-import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { Object3DCompiler } from "./Object3DCompiler";
@@ -14,8 +12,7 @@ export class Object3DDataSupport extends ObjectDataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.OBJECT3D;
 
-  constructor(data?: CompilerTarget<Object3DConfig>, ignore?: IgnoreAttribute) {
-    !data && (data = {});
-    super(Object3DRule, data, ignore);
+  constructor(data: Array<Object3DConfig> = []) {
+    super(Object3DRule, data);
   }
 }

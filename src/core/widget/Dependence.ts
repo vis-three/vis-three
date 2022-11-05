@@ -1,4 +1,4 @@
-import { ProxyEvent, ProxyNotice } from "../ProxyBroadcast";
+import { ProxyEvent, ProxyNotice } from "../DataContainer";
 import { Observer } from "./Observer";
 
 export class Dependence {

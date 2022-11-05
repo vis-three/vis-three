@@ -2,7 +2,7 @@ import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { EngineSupport } from "../engine/EngineSupport";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { CONFIGTYPE } from "../middleware/constants/configType";
-import { ProxyNotice } from "./ProxyBroadcast";
+import { ProxyNotice } from "./DataContainer";
 import { Processor } from "./Processor";
 import { syncObject } from "../utils/utils";
 
@@ -38,8 +38,6 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
     processor: Processor<SymbolConfig, object>;
     vid: string;
   };
-
-  constructor() {}
 
   getMap(): Map<SymbolConfig["vid"], O> {
     return this.map;
@@ -119,7 +117,10 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
     return this;
   }
 
-  compile(vid: SymbolConfig["vid"], notice: ProxyNotice): this {
+  compile(
+    vid: SymbolConfig["vid"],
+    notice: Omit<ProxyNotice, "path"> & { path: string[] }
+  ): this {
     const cacheCompile = this.cacheCompile;
 
     let object: O;

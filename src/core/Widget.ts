@@ -17,7 +17,7 @@ import { MODULETYPE, OBJECTMODULE } from "../middleware/constants/MODULETYPE";
 import { GroupConfig } from "../middleware/group/GroupConfig";
 import { ObjectConfig } from "../middleware/object/ObjectConfig";
 import { EventDispatcher } from "./EventDispatcher";
-import { ProxyEvent, ProxyNotice } from "./ProxyBroadcast";
+import { ProxyEvent, ProxyNotice } from "./DataContainer";
 import { Dependence } from "./widget/Dependence";
 import { Observer } from "./widget/Observer";
 import { createElement, onComputed, onEvent, Updater } from "./widget/render";

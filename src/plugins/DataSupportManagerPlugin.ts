@@ -34,10 +34,6 @@ export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> =
       return this;
     };
 
-    this.reactiveConfig = function (config) {
-      return this.dataSupportManager.reactiveConfig(config);
-    };
-
     this.getConfigBySymbol = function (vid) {
       return this.dataSupportManager.getConfigBySymbol(vid);
     };
@@ -67,39 +63,6 @@ export const DataSupportManagerPlugin: Plugin<DataSupportManagerParameters> =
 
       return this.dataSupportManager.exportConfig(extendConfig);
     };
-
-    this.completeSet.add(() => {
-      // 帮助其他插件进行support初始化
-      const rendererData =
-        this.dataSupportManager!.getDataSupport<RendererDataSupport>(
-          MODULETYPE.RENDERER
-        )!.getData();
-      if (!rendererData.WebGLRenderer) {
-        rendererData.WebGLRenderer = generateConfig(
-          CONFIGTYPE.WEBGLRENDERER
-        ) as WebGLRendererConfig;
-      }
-
-      const controlsData =
-        this.dataSupportManager!.getDataSupport<ControlsDataSupport>(
-          MODULETYPE.CONTROLS
-        )!.getData();
-
-      if (this.transformControls) {
-        if (!controlsData[CONFIGTYPE.TRNASFORMCONTROLS]) {
-          controlsData[CONFIGTYPE.TRNASFORMCONTROLS] = generateConfig(
-            CONFIGTYPE.TRNASFORMCONTROLS
-          ) as TransformControlsConfig;
-        }
-      }
-      if (this.orbitControls) {
-        if (!controlsData[CONFIGTYPE.ORBITCONTROLS]) {
-          controlsData[CONFIGTYPE.ORBITCONTROLS] = generateConfig(
-            CONFIGTYPE.ORBITCONTROLS
-          ) as OrbitControlsConfig;
-        }
-      }
-    });
 
     return true;
   };

@@ -37,7 +37,7 @@ import { Action, History } from "./convenient/History";
 import { SpotLightHelper } from "./extends/helper/light/SpotLightHelper";
 import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightHelper";
 import { VideoLoader } from "./extends/loader/VideoLoader";
-import { ProxyBroadcast } from "./core/ProxyBroadcast";
+import { ProxyBroadcast } from "./core/DataContainer";
 import { Translater } from "./core/Translater";
 import { ShaderLibrary } from "./library/shader/ShaderLibrary";
 import { EventLibrary } from "./library/event/EventLibrary";
@@ -56,4 +56,67 @@ import * as Utils from "./utils/utils";
 import { CSS3DPlane } from "./extends/object/CSS3DPlane";
 import { EventDispatcher } from "./core/EventDispatcher";
 import "./optimize/optimizeScirpt";
-export { ProxyBroadcast, Translater, EventDispatcher, RESOURCEEVENTTYPE, MODULETYPE, OBJECTMODULE, CONFIGTYPE, CONFIGMODULE, DISPLAYMODE, ENGINEPLUGIN, VIEWPOINT, EVENTNAME, TIMINGFUNCTION, getModule, LoaderManager, ResourceManager, DataSupportManager, RenderManager, KeyboardManager, Engine, ModelingEngine, DisplayEngine, EngineSupport, ModelingEngineSupport, DisplayEngineSupport, TextureDataSupport, MaterialDataSupport, LightDataSupport, GeometryDataSupport, CameraDataSupport, ControlsDataSupport, RendererDataSupport, SceneDataSupport, MeshDataSupport, SpriteDataSupport, LineDataSupport, PointsDataSupport, AnimationDataSupport, PassDataSupport, CSS3DDataSupport, GroupDataSupport, PointLightHelper, CameraHelper, GroupHelper, SpotLightHelper, DirectionalLightHelper, generateConfig, SupportDataGenerator, CanvasGenerator, History, Action, JSONHandler, EventLibrary, ShaderLibrary, AniScriptLibrary, MaterialDisplayer, TextureDisplayer, VideoLoader, BooleanModifier, SelectiveBloomPass, Utils, CSS3DPlane, };
+export {
+  ProxyBroadcast,
+  Translater,
+  EventDispatcher,
+  RESOURCEEVENTTYPE,
+  MODULETYPE,
+  OBJECTMODULE,
+  CONFIGTYPE,
+  CONFIGMODULE,
+  DISPLAYMODE,
+  ENGINEPLUGIN,
+  VIEWPOINT,
+  EVENTNAME,
+  TIMINGFUNCTION,
+  getModule,
+  LoaderManager,
+  ResourceManager,
+  DataSupportManager,
+  RenderManager,
+  KeyboardManager,
+  Engine,
+  ModelingEngine,
+  DisplayEngine,
+  EngineSupport,
+  ModelingEngineSupport,
+  DisplayEngineSupport,
+  TextureDataSupport,
+  MaterialDataSupport,
+  LightDataSupport,
+  GeometryDataSupport,
+  CameraDataSupport,
+  ControlsDataSupport,
+  RendererDataSupport,
+  SceneDataSupport,
+  MeshDataSupport,
+  SpriteDataSupport,
+  LineDataSupport,
+  PointsDataSupport,
+  AnimationDataSupport,
+  PassDataSupport,
+  CSS3DDataSupport,
+  GroupDataSupport,
+  PointLightHelper,
+  CameraHelper,
+  GroupHelper,
+  SpotLightHelper,
+  DirectionalLightHelper,
+  generateConfig,
+  SupportDataGenerator,
+  CanvasGenerator,
+  History,
+  Action,
+  JSONHandler,
+  EventLibrary,
+  ShaderLibrary,
+  AniScriptLibrary,
+  MaterialDisplayer,
+  TextureDisplayer,
+  VideoLoader,
+  BooleanModifier,
+  SelectiveBloomPass,
+  Utils,
+  CSS3DPlane,
+};

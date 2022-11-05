@@ -9,6 +9,7 @@ import { OBJECTMODULE } from "../middleware/constants/MODULETYPE";
 import { ShaderMaterialConfig } from "../middleware/material/MaterialConfig";
 import { SceneConfig } from "../middleware/scene/SceneConfig";
 import { DeepPartial } from "../utils/utils";
+import { observable } from "../core/Observable";
 
 export interface GenerateConfig {
   (
@@ -102,16 +103,18 @@ export const generateConfig = <GenerateConfig>(
     }
     merge && recursion(initConfig, merge);
 
+    const ob = observable(initConfig);
+
     // 自动注入配置
     if (generateConfig.autoInject && generateConfig.injectEngine) {
       const engine = generateConfig.injectEngine;
 
-      const reactive = engine.reactiveConfig(initConfig);
+      engine.applyConfig(ob);
 
       // 自动注入场景
       if (generateConfig.injectScene) {
         if (
-          getModule(initConfig.type)! in OBJECTMODULE &&
+          getModule(initConfig.type)!.toLocaleUpperCase() in OBJECTMODULE &&
           initConfig.type !== CONFIGTYPE.SCENE
         ) {
           let sceneConfig: SceneConfig | null = null;
@@ -137,10 +140,11 @@ export const generateConfig = <GenerateConfig>(
       }
 
       // return a reactive config object
-      return reactive as C;
+
+      return ob as C;
     }
 
-    return initConfig;
+    return ob;
   }
 );
 

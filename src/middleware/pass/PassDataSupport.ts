@@ -1,7 +1,5 @@
 import { Pass } from "three/examples/jsm/postprocessing/Pass";
-import { CompilerTarget } from "../../core/Compiler";
 import { DataSupport } from "../../core/DataSupport";
-import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { PassCompiler } from "./PassCompiler";
 import { PassConfigAllType } from "./PassConfig";
@@ -14,11 +12,7 @@ export class PassDataSupport extends DataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.PASS;
 
-  constructor(
-    data?: CompilerTarget<PassConfigAllType>,
-    ignore?: IgnoreAttribute
-  ) {
-    !data && (data = {});
-    super(PassRule, data, ignore);
+  constructor(data: Array<PassConfigAllType> = []) {
+    super(PassRule, data);
   }
 }

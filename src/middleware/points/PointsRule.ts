@@ -1,5 +1,5 @@
 import { Points } from "three";
-import { ProxyNotice } from "../../core/ProxyBroadcast";
+import { ProxyNotice } from "../../core/DataContainer";
 import { ObjectRule } from "../object/ObjectRule";
 import { SolidObjectRule } from "../solidObject/SolidObjectRule";
 import { PointsCompiler } from "./PointsCompiler";

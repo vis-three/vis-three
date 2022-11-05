@@ -39,7 +39,7 @@ import { Action, History } from "./convenient/History";
 import { SpotLightHelper } from "./extends/helper/light/SpotLightHelper";
 import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightHelper";
 import { VideoLoader } from "./extends/loader/VideoLoader";
-import { ProxyBroadcast } from "./core/ProxyBroadcast";
+import { DataContainer } from "./core/DataContainer";
 import { Translater } from "./core/Translater";
 import { ShaderLibrary } from "./library/shader/ShaderLibrary";
 import { EventLibrary } from "./library/event/EventLibrary";
@@ -65,7 +65,7 @@ import "./optimize/optimizeScirpt";
 
 export {
   // core
-  ProxyBroadcast,
+  DataContainer,
   Translater,
   EventDispatcher,
   // menu

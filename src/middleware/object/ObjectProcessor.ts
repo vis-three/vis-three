@@ -238,7 +238,7 @@ export const objectCreate = function <
           path: [eventName, i.toString()],
           value: event,
           engine,
-        } as ProcessParams<C, O>);
+        } as unknown as ProcessParams<C, O>);
       });
     }
   });

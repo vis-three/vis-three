@@ -1,6 +1,6 @@
 import { Scene } from "three";
 import { validate } from "uuid";
-import { ProxyNotice } from "../../core/ProxyBroadcast";
+import { ProxyNotice } from "../../core/DataContainer";
 import { Rule } from "../../core/Rule";
 import { CONFIGTYPE } from "../constants/configType";
 import { ObjectRule } from "../object/ObjectRule";

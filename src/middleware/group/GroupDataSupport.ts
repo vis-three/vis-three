@@ -1,6 +1,4 @@
 import { Group } from "three";
-import { CompilerTarget } from "../../core/Compiler";
-import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { GroupCompiler } from "./GroupCompiler";
@@ -14,8 +12,7 @@ export class GroupDataSupport extends ObjectDataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.GROUP;
 
-  constructor(data?: CompilerTarget<GroupConfig>, ignore?: IgnoreAttribute) {
-    !data && (data = {});
-    super(GroupRule, data, ignore);
+  constructor(data: Array<GroupConfig> = []) {
+    super(GroupRule, data);
   }
 }

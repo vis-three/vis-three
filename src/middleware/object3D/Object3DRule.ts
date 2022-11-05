@@ -1,5 +1,5 @@
 import { Object3D } from "three";
-import { ProxyNotice } from "../../core/ProxyBroadcast";
+import { ProxyNotice } from "../../core/DataContainer";
 import { ObjectRule } from "../object/ObjectRule";
 import { Object3DCompiler } from "./Object3DCompiler";
 import { Object3DConfig } from "./Object3DConfig";

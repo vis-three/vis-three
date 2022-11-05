@@ -1,5 +1,5 @@
 import { Compiler } from "../../core/Compiler";
-import { ProxyNotice } from "../../core/ProxyBroadcast";
+import { ProxyNotice } from "../../core/DataContainer";
 
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { AnimationAllType } from "./AnimationConfig";

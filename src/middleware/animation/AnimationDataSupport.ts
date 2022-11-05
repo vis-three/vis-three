@@ -1,6 +1,4 @@
-import { CompilerTarget } from "../../core/Compiler";
 import { DataSupport } from "../../core/DataSupport";
-import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { AnimationCompiler } from "./AnimationCompiler";
 import { AnimationAllType } from "./AnimationConfig";
@@ -13,11 +11,7 @@ export class AnimationDataSupport extends DataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.ANIMATION;
 
-  constructor(
-    data?: CompilerTarget<AnimationAllType>,
-    ignore?: IgnoreAttribute
-  ) {
-    !data && (data = {});
-    super(AnimationRule, data, ignore);
+  constructor(data: Array<AnimationAllType> = []) {
+    super(AnimationRule, data);
   }
 }

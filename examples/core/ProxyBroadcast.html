@@ -23,39 +23,48 @@
       import * as THREE from "three";
       import * as VIS from "vis-three";
       import Vue from "vue2/dist/vue.esm.browser.min.js";
+      import { Subject } from "rxjs";
 
-      const proxyBroadcast = new VIS.ProxyBroadcast();
+      // const proxyBroadcast = new VIS.ProxyBroadcast();
 
-      const testObject = {
-        string: "string",
-        number: 1,
-        boolean: true,
-        object: {
-          attr1: "adv",
-        },
-        array: [1, { a: 3 }, [1, 3, 5, 7], 4, 5],
-      };
+      // const testObject = {
+      //   string: "string",
+      //   number: 1,
+      //   boolean: true,
+      //   object: {
+      //     attr1: "adv",
+      //   },
+      //   array: [1, { a: 3 }, [1, 3, 5, 7], 4, 5],
+      // };
 
-      const reactiveObject = proxyBroadcast.proxyExtends(testObject);
+      // const reactiveObject = proxyBroadcast.proxyExtends(testObject);
 
-      proxyBroadcast.addEventListener("broadcast", (event) => {
-        console.log(event.notice);
+      // proxyBroadcast.addEventListener("broadcast", (event) => {
+      //   console.log(event.notice);
+      // });
+
+      // window.reactiveObject = reactiveObject;
+
+      // const vue2Object = Vue.observable({
+      //   string: "string",
+      //   number: 1,
+      //   boolean: true,
+      //   object: {
+      //     attr1: "adv",
+      //   },
+      //   array: [1, { a: 3 }, [1, 3, 5, 7], 4, 5],
+      //   array2: [],
+      // });
+      // const vue2ReactObject = proxyBroadcast.proxyExtends(vue2Object);
+      // window.vue2ReactObject = vue2ReactObject;
+
+      const subject = new Subject();
+
+      subject.subscribe((c) => {
+        console.log(c);
       });
 
-      window.reactiveObject = reactiveObject;
-
-      const vue2Object = Vue.observable({
-        string: "string",
-        number: 1,
-        boolean: true,
-        object: {
-          attr1: "adv",
-        },
-        array: [1, { a: 3 }, [1, 3, 5, 7], 4, 5],
-        array2: [],
-      });
-      const vue2ReactObject = proxyBroadcast.proxyExtends(vue2Object);
-      window.vue2ReactObject = vue2ReactObject;
+      window.subject = subject;
     </script>
   </body>
 </html>

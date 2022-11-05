@@ -1,6 +1,4 @@
-import { CompilerTarget } from "../../core/Compiler";
 import { DataSupport } from "../../core/DataSupport";
-import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { RendererAllType, RendererCompiler } from "./RendererCompiler";
 import { RendererConfigAllType } from "./RendererConfig";
@@ -13,11 +11,7 @@ export class RendererDataSupport extends DataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.RENDERER;
 
-  constructor(
-    data?: CompilerTarget<RendererConfigAllType>,
-    ignore?: IgnoreAttribute
-  ) {
-    !data && (data = {});
-    super(RendererRule, data, ignore);
+  constructor(data: Array<RendererConfigAllType> = []) {
+    super(RendererRule, data);
   }
 }

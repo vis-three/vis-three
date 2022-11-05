@@ -46,6 +46,14 @@
         depth: 60,
       });
 
+      const geometry = VIS.reactive(
+        Vis.generateConfig("BoxGeometry", {
+          width: 20,
+          height: 40,
+          depth: 60,
+        })
+      );
+
       const mesh = Vis.generateConfig("Mesh", {
         geometry: boxGeometry.vid,
         material: meshStandardMaterial.vid,

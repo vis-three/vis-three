@@ -1,5 +1,5 @@
 import { validate } from "uuid";
-import { ProxyNotice } from "../../core/ProxyBroadcast";
+import { ProxyNotice } from "../../core/DataContainer";
 import { Rule } from "../../core/Rule";
 import { TextureCompiler } from "./TextureCompiler";
 

@@ -126,3 +126,27 @@ export function syncObject<C extends object, T extends object>(
   recursiveConfig(config, target, filter);
   callBack && callBack();
 }
+
+export const isObject = function (object: any) {
+  return typeof object === "object" && object !== null;
+};
+
+export const isArray = function (object: any) {
+  return typeof object === "object" && object !== null && Array.isArray(object);
+};
+
+export const extendPath = function (path: string, key: string) {
+  return path && key ? `${path}.${key}` : path || key;
+};
+
+const arrayCache = new WeakMap<Array<any>, Array<any>>();
+
+export const cacheArray = function (object: Array<any>) {
+  if (Array.isArray(object) && !arrayCache.has(object)) {
+    arrayCache.set(object, object.concat([]));
+  }
+};
+
+export const getCacheArray = function (object: Array<any>) {
+  return arrayCache.get(object);
+};

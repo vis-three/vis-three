@@ -1,5 +1,5 @@
 import { Line } from "three";
-import { ProxyNotice } from "../../core/ProxyBroadcast";
+import { ProxyNotice } from "../../core/DataContainer";
 import { Rule } from "../../core/Rule";
 import { ObjectRule } from "../object/ObjectRule";
 import { SolidObjectRule } from "../solidObject/SolidObjectRule";

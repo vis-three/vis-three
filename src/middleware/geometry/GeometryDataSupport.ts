@@ -1,7 +1,5 @@
 import { BufferGeometry } from "three";
-import { CompilerTarget } from "../../core/Compiler";
 import { DataSupport } from "../../core/DataSupport";
-import { IgnoreAttribute } from "../../core/ProxyBroadcast";
 import { MODULETYPE } from "../constants/MODULETYPE";
 import { GeometryCompiler } from "./GeometryCompiler";
 import { GeometryAllType } from "./GeometryInterface";
@@ -14,11 +12,7 @@ export class GeometryDataSupport extends DataSupport<
 > {
   MODULE: MODULETYPE = MODULETYPE.GEOMETRY;
 
-  constructor(
-    data?: CompilerTarget<GeometryAllType>,
-    ignore?: IgnoreAttribute
-  ) {
-    !data && (data = {});
-    super(GeometryRule, data, ignore);
+  constructor(data: Array<GeometryAllType> = []) {
+    super(GeometryRule, data);
   }
 }

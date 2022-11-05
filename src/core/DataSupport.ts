@@ -1,12 +1,11 @@
-import { generateConfig } from "../convenient/generateConfig";
-import { parse, stringify, clone } from "../convenient/JSONHandler";
+import { stringify, clone } from "../convenient/JSONHandler";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
 import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { Compiler, CompilerTarget } from "./Compiler";
-import { IgnoreAttribute, ProxyBroadcast, ProxyEvent } from "./ProxyBroadcast";
 import { Rule } from "./Rule";
 import { Translater } from "./Translater";
+import { ProxyNotice, DataContainer } from "./DataContainer";
 
 export abstract class DataSupport<
   C extends SymbolConfig,
@@ -15,57 +14,45 @@ export abstract class DataSupport<
 > {
   abstract MODULE: MODULETYPE;
 
-  private data: CompilerTarget<C>;
-  private broadcast: ProxyBroadcast;
+  private dataContainer = new DataContainer<C>();
   private translater: Translater<C, O, P>;
-  constructor(
-    rule: Rule<P>,
-    data: CompilerTarget<C>,
-    ignore?: IgnoreAttribute
-  ) {
+  constructor(rule: Rule<P>, data: Array<C> = []) {
     this.translater = new Translater<C, O, P>().setRule(rule);
-    this.broadcast = new ProxyBroadcast(ignore);
-    this.data = this.broadcast.proxyExtends<CompilerTarget<C>>(data);
 
-    this.broadcast.addEventListener("broadcast", (event: ProxyEvent) => {
-      this.translater.translate(event.notice);
+    this.dataContainer.subscribe((notice: ProxyNotice) => {
+      this.translater.translate(notice);
     });
+
+    for (const config of data) {
+      this.dataContainer.add(config);
+    }
   }
 
   getData(): CompilerTarget<C> {
-    return this.data;
-  }
-
-  setData(data: CompilerTarget<C>): this {
-    this.data = data;
-    return this;
-  }
-
-  proxyData(data: CompilerTarget<C>): CompilerTarget<C> {
-    this.data = this.broadcast.proxyExtends<CompilerTarget<C>>(data);
-    return this.data;
+    return this.dataContainer.container;
   }
 
   existSymbol(vid: string): boolean {
-    return Boolean(this.data[vid]);
+    return Boolean(this.dataContainer.container[vid]);
   }
 
   addConfig(config: valueOf<CompilerTarget<C>>): this {
-    this.data[config.vid as keyof CompilerTarget<C>] = config;
+    this.dataContainer.container[config.vid as keyof CompilerTarget<C>] =
+      config;
     return this;
   }
 
   getConfig(vid: string) {
-    return this.data[vid];
+    return this.dataContainer.container[vid];
   }
 
   removeConfig(vid: string) {
-    const data = this.data;
+    const data = this.dataContainer.container;
     data[vid] !== undefined && delete data[vid];
   }
 
   addCompiler(compiler: P): this {
-    compiler.setTarget(this.data);
+    compiler.setTarget(this.dataContainer.container);
     compiler.compileAll();
     this.translater.apply(compiler);
     return this;
@@ -77,7 +64,7 @@ export abstract class DataSupport<
    */
   toJSON(compress = true): string {
     if (!compress) {
-      return JSON.stringify(this.data, stringify);
+      return JSON.stringify(this.dataContainer.container, stringify);
     } else {
       return JSON.stringify(this.exportConfig(), stringify);
     }
@@ -90,9 +77,9 @@ export abstract class DataSupport<
    */
   exportConfig(compress = true): CompilerTarget<C> {
     if (!compress) {
-      return clone(this.data);
+      return clone(this.dataContainer.container);
     } else {
-      const data = this.data;
+      const data = this.dataContainer.container;
       const target = {};
       const cacheConfigTemplate: { [key: string]: SymbolConfig } = {};
 
@@ -163,7 +150,7 @@ export abstract class DataSupport<
    * @returns true
    */
   load(configMap: CompilerTarget<C>): this {
-    const data = this.data;
+    const data = this.dataContainer.container;
 
     const cacheConfigTemplate: { [key: string]: SymbolConfig } = {};
     const restore = (config: object, template: object) => {
@@ -198,7 +185,7 @@ export abstract class DataSupport<
   }
 
   remove(config: CompilerTarget<C>): this {
-    const data = this.data;
+    const data = this.dataContainer.container;
     for (const key in config) {
       data[key] !== undefined && delete data[key];
     }

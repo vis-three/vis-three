@@ -8,7 +8,7 @@ import {
   DeepUnion,
 } from "../utils/utils";
 import { Compiler } from "./Compiler";
-import { ProxyNotice } from "./ProxyBroadcast";
+import { ProxyNotice } from "./DataContainer";
 
 export interface ProcessParams<C extends SymbolConfig, T extends object>
   extends ProxyNotice {

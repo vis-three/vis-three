@@ -1,4 +1,4 @@
-import { ProxyNotice } from "../../core/ProxyBroadcast";
+import { ProxyNotice } from "../../core/DataContainer";
 import { Rule } from "../../core/Rule";
 import { AnimationCompiler } from "./AnimationCompiler";
 

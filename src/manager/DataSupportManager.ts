@@ -154,17 +154,6 @@ export class DataSupportManager {
   }
 
   /**
-   * @experimental 设置该模块下的响应式数据对象
-   */
-  setSupportData(type: MODULETYPE, data: CompilerTarget<SymbolConfig>): this {
-    if (this.dataSupportMap.has(type)) {
-      this.dataSupportMap.get(type)!.setData(data);
-    } else {
-      console.warn(`can not found this type in dataSupportManager: ${type}`);
-    }
-    return this;
-  }
-  /**
    * 通过vid标识获取相应配置对象
    * @param vid vid标识
    * @returns config || null
@@ -238,26 +227,6 @@ export class DataSupportManager {
     }
 
     return this;
-  }
-
-  /**
-   * 获取响应式配置对象
-   * @param config vis相关配置对象
-   * @returns config
-   */
-  reactiveConfig<T extends SymbolConfig>(config: T): T {
-    const module = getModule(config.type as CONFIGTYPE);
-    if (module) {
-      return this.dataSupportMap
-        .get(module as MODULETYPE)!
-        .addConfig(config)
-        .getConfig(config.vid) as T;
-    } else {
-      console.warn(
-        `dataSupportManager can not found this config module: ${config.type}`
-      );
-      return config;
-    }
   }
 
   /**
