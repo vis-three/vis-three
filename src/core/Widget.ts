@@ -17,10 +17,10 @@ import { MODULETYPE, OBJECTMODULE } from "../middleware/constants/MODULETYPE";
 import { GroupConfig } from "../middleware/group/GroupConfig";
 import { ObjectConfig } from "../middleware/object/ObjectConfig";
 import { EventDispatcher } from "./EventDispatcher";
-import { ProxyEvent, ProxyNotice } from "./DataContainer";
-import { Dependence } from "./widget/Dependence";
 import { Observer } from "./widget/Observer";
-import { createElement, onComputed, onEvent, Updater } from "./widget/render";
+import { createElement, onComputed, onEvent } from "./widget/render";
+import { getObservable, observable } from "./Observable";
+import { Watcher } from "./widget/Watcher";
 
 export interface WigetLifetimes {
   beforeLoad?: Function;
@@ -42,11 +42,11 @@ export interface WidgetOptions {
       merge: any
     ) => ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>,
     c: () => any,
-    onComputed: (fun: () => any) => Updater,
+    onComputed: (fun: () => any) => Watcher,
     onEvent: (fun: (event?: ObjectEvent) => void) => void
   ) => Record<string, ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>>;
   data?: () => Record<string, any>;
-  computed?: Record<string, Function>;
+  computed?: Record<string, () => any>;
   watch?: Record<string, Function>;
   methods?: Record<string, Function>;
   beforeLoad?: WigetLifetimes["beforeLoad"];
@@ -75,10 +75,8 @@ export class Widget extends EventDispatcher {
 
   private options: WidgetOptions;
 
-  private render: Record<string, ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>> =
-    {};
+  private render?: Record<string, true> = {};
   private observer = new Observer();
-  private dependence = new Dependence();
 
   constructor(options: WidgetOptions) {
     super();
@@ -90,11 +88,7 @@ export class Widget extends EventDispatcher {
     const computed = this.options.computed || {};
 
     for (const key in computed) {
-      this.observed[key] = this.dependence.collect(
-        key,
-        this.observer,
-        computed[key].bind(this.observed)
-      );
+      this.observed[key] = onComputed(computed[key].bind(this.observed)).token;
     }
   }
 
@@ -107,67 +101,54 @@ export class Widget extends EventDispatcher {
       onEvent
     );
 
-    const recursion = (object: object, path: Array<string>) => {
-      for (const key in object) {
-        if (typeof object[key] === "object" && object[key] !== null) {
-          recursion(object[key], path.concat([key]));
-        } else if (
-          typeof object[key] === "symbol" &&
-          Updater.map.has(object[key])
-        ) {
-          const updater = Updater.map.get(object[key])!;
-          object[key] = this.dependence.collect(
-            `${path.join(".")}.${key}`,
-            this.observer,
-            updater.run.bind(this.observed)
-          );
-        }
-      }
-    };
-
-    recursion(render, []);
-
-    this.render = render;
-
-    Object.assign(this.observed, this.render);
+    for (const key in render) {
+      this.observed[key] = render[key];
+      this.render![key] = true;
+    }
   }
 
-  // 创建观察者
-  private createObserver() {
+  private createObserved() {
     const options = this.options;
-    const computed = Object.assign({}, options.computed || {});
 
-    for (const key in computed) {
-      computed[key] = null as unknown as Function;
+    const ignore = {};
+
+    const methods = options.methods || {};
+
+    for (const key in methods) {
+      ignore[key] = true;
     }
-    this.observed = this.observer.proxyExtends(
+
+    this.observed = observable(
       Object.assign(
-        {},
+        this.observed,
         options.input,
-        options.data ? options.data() : {},
-        computed,
-        options.methods || {}
+        options.data && options.data(),
+        methods
       ),
-      [],
-      false
+      ignore
     );
+  }
+
+  // 初始观察者
+  private initObserver() {
+    this.observer.watch(this.observed);
   }
 
   private createWatch() {
     const watch = this.options.watch || {};
-    this.observer.addEventListener<ProxyEvent>(
-      "broadcast",
-      (event: ProxyEvent) => {
-        const { operate, key, path, value } = event.notice;
-        if (operate !== "get") {
-          const sign = path.length ? `${path.join(".")}.${key}` : key;
+    // this.observer.addEventListener<ProxyEvent>(
+    //   "broadcast",
+    //   (event: ProxyEvent) => {
+    //     const { operate, key, path, value } = event.notice;
+    //     if (operate !== "get") {
+    //       const sign = path.length ? `${path.join(".")}.${key}` : key;
 
-          if (watch[sign]) {
-            watch[sign].call(this.observed, value);
-          }
-        }
-      }
-    );
+    //       if (watch[sign]) {
+    //         watch[sign].call(this.observable, value);
+    //       }
+    //     }
+    //   }
+    // );
   }
 
   async init(engineSupport: EngineSupport) {
@@ -182,9 +163,10 @@ export class Widget extends EventDispatcher {
 
     options.loaded && options.loaded();
 
-    this.createObserver();
+    this.createObserved();
     this.createComputed();
     this.createRender();
+    this.initObserver();
     this.createWatch();
 
     options.beforeCreate && options.beforeCreate();
@@ -195,7 +177,8 @@ export class Widget extends EventDispatcher {
 
     const group = generateConfig(CONFIGTYPE.GROUP) as GroupConfig;
 
-    Object.values(this.render).forEach((config) => {
+    Object.keys(this.render!).forEach((key) => {
+      const config = this.observed[key];
       const model = getModule(config.type);
       if (!model) {
         console.warn(`widget can not support this config type: ${config.type}`);

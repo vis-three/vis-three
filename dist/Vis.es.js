@@ -4710,7 +4710,7 @@ var AnonymousSubject = function(_super) {
 const proxyWeak = /* @__PURE__ */ new WeakMap();
 const proxyGetter = function(target, key, receiver, observable2, path) {
   const result = Reflect.get(target, key, receiver);
-  if (typeof key !== "symbol") {
+  if (typeof key !== "symbol" && !observable2.isIgnore(path)) {
     path = extendPath(path, key);
     observable2.next({
       operate: "get",
@@ -4722,7 +4722,7 @@ const proxyGetter = function(target, key, receiver, observable2, path) {
   return result;
 };
 const proxySetter = function(target, key, value, receiver, observable2, path) {
-  if (typeof key === "symbol") {
+  if (typeof key === "symbol" || observable2.isIgnore(path)) {
     return Reflect.set(target, key, value, receiver);
   }
   path = extendPath(path, key);
@@ -4777,7 +4777,7 @@ const proxySetter = function(target, key, value, receiver, observable2, path) {
   return result;
 };
 const proxyDeleter = function(target, key, observable2, path) {
-  if (typeof key === "symbol") {
+  if (typeof key === "symbol" || observable2.isIgnore(path)) {
     return Reflect.deleteProperty(target, key);
   }
   path = extendPath(path, key);
@@ -4931,6 +4931,7 @@ class DataContainer extends Subject {
     this.container[observable2.raw.vid] = config2;
   }
   remove(vid) {
+    this.subscriptions.delete(vid);
   }
 }
 class DataSupport {
@@ -13136,67 +13137,117 @@ var Template = {
   clone,
   handler
 };
-class Dependence {
-  constructor() {
-    __publicField(this, "dep", {});
-    __publicField(this, "target", {});
-  }
-  createSign(notice) {
-    return notice.path.length ? `${notice.path.join(".")}.${notice.key}` : notice.key;
-  }
-  walk(path, value) {
-    if (path.includes(".")) {
-      path.split(".");
-    } else {
-      this.target[path] = value;
-    }
-  }
-  setTarget(target) {
-    this.target = target;
-  }
-  collect(collectKey, ob, fun) {
-    const depend = (event) => {
-      if (event.notice.operate === "get") {
-        const depSign = this.createSign(event.notice);
-        if (!this.dep[depSign]) {
-          this.dep[depSign] = /* @__PURE__ */ new Set();
-        }
-        this.dep[depSign].add(collectKey);
-      }
-    };
-    ob.addEventListener("broadcast", depend);
-    const value = fun();
-    ob.removeEventListener("broadcast", depend);
-    return value;
-  }
-  notify(notice) {
-    const depSign = this.createSign(notice);
-    if (this.dep[depSign]) {
-      this.dep[depSign].forEach((path) => {
-      });
-    }
-  }
-}
-class Observer {
-  constructor() {
-    __publicField(this, "deps", /* @__PURE__ */ new Set());
-  }
-  addDep(dep) {
-    this.deps.add(dep);
-  }
-}
-const _Updater = class {
+const _Watcher = class {
   constructor(fun) {
+    __publicField(this, "token", Symbol("VIS.RENDER.WATCHER"));
+    __publicField(this, "target", {});
+    __publicField(this, "path", "");
+    __publicField(this, "dep", {});
+    __publicField(this, "ob");
     __publicField(this, "run");
-    __publicField(this, "token", Symbol("VIS.RENDER.UPDATE"));
     this.run = fun;
-    _Updater.map.set(this.token, this);
+    _Watcher.map.set(this.token, this);
+  }
+  init(path, target, ob) {
+    this.target = target;
+    this.path = path;
+    this.ob = ob;
+  }
+  notify(path) {
+    if (this.dep[path]) {
+      this.update();
+    }
+  }
+  update() {
+    const path = this.path.split(".");
+    const key = path.pop();
+    let object = this.target;
+    for (const key2 of path) {
+      object = object[key2];
+    }
+    const sub = this.ob.subscribe((notice) => {
+      if (notice.operate === "get") {
+        this.dep[notice.path] = true;
+      }
+    });
+    object[key] = this.run();
+    sub.unsubscribe();
   }
 };
-let Updater = _Updater;
-__publicField(Updater, "map", /* @__PURE__ */ new Map());
+let Watcher = _Watcher;
+__publicField(Watcher, "map", /* @__PURE__ */ new Map());
+class Observer extends Subject {
+  constructor() {
+    super();
+    __publicField(this, "subscriptions", []);
+    __publicField(this, "watchers", []);
+  }
+  watch(observed) {
+    const rootObservable = getObservable(observed);
+    if (!rootObservable) {
+      console.error("Observer: can not found observable", observed);
+      return;
+    }
+    for (const key in observed) {
+      if (isObject(observed[key])) {
+        const child = getObservable(observed[key]);
+        if (!child) {
+          continue;
+        }
+        this.subscriptions.push(
+          child.subscribe((notice) => {
+            rootObservable.next({
+              operate: notice.operate,
+              path: extendPath(key, notice.path),
+              key: notice.key,
+              value: notice.value
+            });
+          })
+        );
+      }
+    }
+    this.subscriptions.push(
+      rootObservable.subscribe((notice) => {
+        this.next(notice);
+      })
+    );
+    this.subscriptions.push(
+      this.subscribe((notice) => {
+        if (notice.operate !== "get") {
+          for (const watcher of this.watchers) {
+            watcher.notify(notice.path);
+          }
+        }
+      })
+    );
+    const recursion = (object, path = "") => {
+      for (const key in object) {
+        const tempPath = extendPath(path, key);
+        if (typeof object[key] === "symbol") {
+          const watcher = Watcher.map.get(object[key]);
+          if (!watcher) {
+            continue;
+          }
+          watcher.init(tempPath, observed, this);
+          this.watchers.push(watcher);
+        } else if (isObject(object[key])) {
+          recursion(object[key], tempPath);
+        }
+      }
+    };
+    recursion(observed);
+    for (const watcher of this.watchers) {
+      watcher.update();
+    }
+  }
+  dispose() {
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
+  }
+}
 const onComputed = function(fun) {
-  return new Updater(fun);
+  return new Watcher(fun);
 };
 const onEvent = function(fun) {
   const config2 = { name: Symbol("VIS.RENDER.EVENT") };
@@ -13206,10 +13257,10 @@ const onEvent = function(fun) {
 const createElement = function(type, merge) {
   const recursion = (object) => {
     for (const key in object) {
-      if (typeof object[key] === "object" && object[key] !== null && !(object[key] instanceof Updater)) {
+      if (isObject(object[key]) && !(object[key] instanceof Watcher)) {
         recursion(object[key]);
       } else {
-        if (object[key] instanceof Updater) {
+        if (object[key] instanceof Watcher) {
           object[key] = object[key].token;
         }
       }
@@ -13232,17 +13283,12 @@ const _Widget = class extends EventDispatcher {
     __publicField(this, "options");
     __publicField(this, "render", {});
     __publicField(this, "observer", new Observer());
-    __publicField(this, "dependence", new Dependence());
     this.options = options;
   }
   createComputed() {
     const computed = this.options.computed || {};
     for (const key in computed) {
-      this.observed[key] = this.dependence.collect(
-        key,
-        this.observer,
-        computed[key].bind(this.observed)
-      );
+      this.observed[key] = onComputed(computed[key].bind(this.observed)).token;
     }
   }
   createRender() {
@@ -13254,56 +13300,33 @@ const _Widget = class extends EventDispatcher {
       onComputed,
       onEvent
     );
-    const recursion = (object, path) => {
-      for (const key in object) {
-        if (typeof object[key] === "object" && object[key] !== null) {
-          recursion(object[key], path.concat([key]));
-        } else if (typeof object[key] === "symbol" && Updater.map.has(object[key])) {
-          const updater = Updater.map.get(object[key]);
-          object[key] = this.dependence.collect(
-            `${path.join(".")}.${key}`,
-            this.observer,
-            updater.run.bind(this.observed)
-          );
-        }
-      }
-    };
-    recursion(render, []);
-    this.render = render;
-    Object.assign(this.observed, this.render);
-  }
-  createObserver() {
-    const options = this.options;
-    const computed = Object.assign({}, options.computed || {});
-    for (const key in computed) {
-      computed[key] = null;
+    for (const key in render) {
+      this.observed[key] = render[key];
+      this.render[key] = true;
     }
-    this.observed = this.observer.proxyExtends(
+  }
+  createObserved() {
+    const options = this.options;
+    const ignore = {};
+    const methods = options.methods || {};
+    for (const key in methods) {
+      ignore[key] = true;
+    }
+    this.observed = observable(
       Object.assign(
-        {},
+        this.observed,
         options.input,
-        options.data ? options.data() : {},
-        computed,
-        options.methods || {}
+        options.data && options.data(),
+        methods
       ),
-      [],
-      false
+      ignore
     );
+  }
+  initObserver() {
+    this.observer.watch(this.observed);
   }
   createWatch() {
-    const watch = this.options.watch || {};
-    this.observer.addEventListener(
-      "broadcast",
-      (event) => {
-        const { operate, key, path, value } = event.notice;
-        if (operate !== "get") {
-          const sign = path.length ? `${path.join(".")}.${key}` : key;
-          if (watch[sign]) {
-            watch[sign].call(this.observed, value);
-          }
-        }
-      }
-    );
+    this.options.watch || {};
   }
   async init(engineSupport) {
     const options = this.options;
@@ -13312,14 +13335,16 @@ const _Widget = class extends EventDispatcher {
       await engineSupport.loadResourcesAsync(Object.values(options.resources));
     }
     options.loaded && options.loaded();
-    this.createObserver();
+    this.createObserved();
     this.createComputed();
     this.createRender();
+    this.initObserver();
     this.createWatch();
     options.beforeCreate && options.beforeCreate();
     const dataSupportManager = engineSupport.dataSupportManager;
     const group = generateConfig(CONFIGTYPE.GROUP);
-    Object.values(this.render).forEach((config2) => {
+    Object.keys(this.render).forEach((key) => {
+      const config2 = this.observed[key];
       const model = getModule(config2.type);
       if (!model) {
         console.warn(`widget can not support this config type: ${config2.type}`);
@@ -13343,7 +13368,7 @@ const _Widget = class extends EventDispatcher {
 };
 let Widget = _Widget;
 __publicField(Widget, "components", {});
-const version = "0.2.4";
+const version = "0.3.0";
 if (!window.__THREE__) {
   console.error(
     `vis-three dependent on three.js module, pleace run 'npm i three' first.`

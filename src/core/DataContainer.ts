@@ -117,6 +117,6 @@ export class DataContainer<
   }
 
   remove(vid: string) {
-    // this.subscriptions.delete(vid);
+    this.subscriptions.delete(vid);
   }
 }

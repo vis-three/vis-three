@@ -6,22 +6,11 @@ import {
 } from "../../library/event/EventLibrary";
 import { ObjectEvent } from "../../manager/EventManager";
 import { CONFIGTYPE } from "../../middleware/constants/configType";
-
-export class Updater {
-  static map = new Map<Symbol, Updater>();
-
-  run: () => any;
-  token = Symbol("VIS.RENDER.UPDATE");
-
-  constructor(fun: () => any) {
-    this.run = fun;
-
-    Updater.map.set(this.token, this);
-  }
-}
+import { isObject } from "../../utils/utils";
+import { Watcher } from "./Watcher";
 
 export const onComputed = function (fun: () => any) {
-  return new Updater(fun);
+  return new Watcher(fun);
 };
 
 export const onEvent = function (fun: (event?: ObjectEvent) => void) {
@@ -33,14 +22,10 @@ export const onEvent = function (fun: (event?: ObjectEvent) => void) {
 export const createElement = function (type: CONFIGTYPE, merge: any) {
   const recursion = (object: object) => {
     for (const key in object) {
-      if (
-        typeof object[key] === "object" &&
-        object[key] !== null &&
-        !(object[key] instanceof Updater)
-      ) {
+      if (isObject(object[key]) && !(object[key] instanceof Watcher)) {
         recursion(object[key]);
       } else {
-        if (object[key] instanceof Updater) {
+        if (object[key] instanceof Watcher) {
           object[key] = object[key].token;
         }
       }

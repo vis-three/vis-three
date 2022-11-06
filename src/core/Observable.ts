@@ -1,6 +1,4 @@
 import { Subject } from "rxjs";
-import { EngineSupport } from "../engine/EngineSupport";
-import { SymbolConfig } from "../middleware/common/CommonConfig";
 import {
   cacheArray,
   extendPath,
@@ -31,7 +29,7 @@ const proxyGetter = function (
 ) {
   const result = Reflect.get(target, key, receiver);
 
-  if (typeof key !== "symbol") {
+  if (typeof key !== "symbol" && !observable.isIgnore(path)) {
     path = extendPath(path, key);
 
     observable.next({
@@ -54,7 +52,7 @@ const proxySetter = function (
   path: string
 ): boolean {
   // 剔除symbol
-  if (typeof key === "symbol") {
+  if (typeof key === "symbol" || observable.isIgnore(path)) {
     return Reflect.set(target, key, value, receiver);
   }
 
@@ -96,7 +94,6 @@ const proxySetter = function (
     const num = oldValue.length - value.length;
     if (num > 0) {
       let execNum = 0;
-      let index = 0;
       for (const del of oldValue) {
         if (!value.includes(del)) {
           observable.next({
@@ -112,7 +109,6 @@ const proxySetter = function (
             break;
           }
         }
-        index += 1;
       }
     }
     cacheArray(target);
@@ -135,7 +131,7 @@ const proxyDeleter = function (
   observable: Observable<object>,
   path: string
 ): boolean {
-  if (typeof key === "symbol") {
+  if (typeof key === "symbol" || observable.isIgnore(path)) {
     return Reflect.deleteProperty(target, key);
   }
 
@@ -210,7 +206,7 @@ const react = function (
   return proxy;
 };
 
-class Observable<T extends object> extends Subject<ReactNotice> {
+export class Observable<T extends object> extends Subject<ReactNotice> {
   private ignore: Ignore = {};
   raw: T;
 
