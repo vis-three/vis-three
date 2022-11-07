@@ -9,6 +9,7 @@ import {
 import { EngineSupport } from "../../engine/EngineSupport";
 import { EventLibrary } from "../../library/event/EventLibrary";
 import { EVENTNAME, ObjectEvent } from "../../manager/EventManager";
+import { antiShake } from "../../utils/AntiShake";
 import { IgnoreAttribute, syncObject } from "../../utils/utils";
 import { CONFIGTYPE } from "../constants/configType";
 import { ObjectConfig } from "./ObjectConfig";
@@ -31,7 +32,7 @@ export const lookAtHandler = function <
     return;
   }
 
-  let cacheData = objectCacheMap.get(target);
+  let cacheData = objectCacheMap.get(target)!;
 
   if (!cacheData) {
     cacheData = { lookAtTarget: null, updateMatrixWorldFun: null };
@@ -49,24 +50,30 @@ export const lookAtHandler = function <
     return;
   }
 
-  const lookAtTarget = engine.compilerManager.getObject3D(value);
+  antiShake.exec((finish) => {
+    const lookAtTarget = engine.compilerManager.getObject3D(value);
 
-  if (!lookAtTarget) {
-    console.warn(
-      `lookAt handler can not found this vid mapping object: '${value}'`
-    );
-    return;
-  }
+    if (!lookAtTarget) {
+      if (finish) {
+        console.warn(
+          `lookAt handler can not found this vid mapping object: '${value}'`
+        );
+      }
+      return false;
+    }
 
-  const updateMatrixWorldFun = target.updateMatrixWorld;
+    const updateMatrixWorldFun = target.updateMatrixWorld;
 
-  cacheData.updateMatrixWorldFun = updateMatrixWorldFun;
-  cacheData.lookAtTarget = lookAtTarget.position;
+    cacheData.updateMatrixWorldFun = updateMatrixWorldFun;
+    cacheData.lookAtTarget = lookAtTarget.position;
 
-  target.updateMatrixWorld = (focus: boolean) => {
-    updateMatrixWorldFun.call(target, focus);
-    target.lookAt(cacheData!.lookAtTarget!);
-  };
+    target.updateMatrixWorld = (focus: boolean) => {
+      updateMatrixWorldFun.call(target, focus);
+      target.lookAt(cacheData!.lookAtTarget!);
+    };
+
+    return true;
+  });
 };
 
 const eventSymbol = "vis.event";
@@ -146,38 +153,47 @@ export const addChildrenHanlder = function <
   C extends ObjectConfig,
   O extends Object3D
 >({ target, config, value, engine }: ProcessParams<C, O>) {
-  const childrenConfig = engine.getConfigBySymbol<ObjectConfig>(value);
-  if (!childrenConfig) {
-    console.warn(` can not foud object config in engine: ${value}`);
-    return;
-  }
-
-  // children如果有parent先从parent移除
-  if (childrenConfig.parent && childrenConfig.parent !== config.vid) {
-    const parentConfig = engine.getConfigBySymbol<ObjectConfig>(
-      childrenConfig.parent
-    );
-
-    if (!parentConfig) {
-      console.warn(
-        ` can not foud object parent config in engine: ${childrenConfig.parent}`
-      );
-      return;
+  antiShake.exec((finish) => {
+    const childrenConfig = engine.getConfigBySymbol<ObjectConfig>(value);
+    if (!childrenConfig) {
+      if (finish) {
+        console.warn(` can not foud object config in engine: ${value}`);
+      }
+      return false;
     }
 
-    parentConfig.children.splice(parentConfig.children.indexOf(value), 1);
-  }
+    // children如果有parent先从parent移除
+    if (childrenConfig.parent && childrenConfig.parent !== config.vid) {
+      const parentConfig = engine.getConfigBySymbol<ObjectConfig>(
+        childrenConfig.parent
+      );
 
-  childrenConfig.parent = config.vid;
+      if (!parentConfig) {
+        if (finish) {
+          console.warn(
+            ` can not foud object parent config in engine: ${childrenConfig.parent}`
+          );
+        }
+        return false;
+      }
 
-  const childrenObject = engine.compilerManager.getObject3D(value);
+      parentConfig.children.splice(parentConfig.children.indexOf(value), 1);
+    }
 
-  if (!childrenObject) {
-    console.warn(`can not found this vid in engine: ${value}.`);
-    return;
-  }
+    childrenConfig.parent = config.vid;
 
-  target.add(childrenObject);
+    const childrenObject = engine.compilerManager.getObject3D(value);
+
+    if (!childrenObject) {
+      if (finish) {
+        console.warn(`can not found this vid in engine: ${value}.`);
+      }
+      return false;
+    }
+
+    target.add(childrenObject);
+    return true;
+  });
 };
 
 // 移除子项
@@ -210,38 +226,36 @@ export const objectCreate = function <
 >(object: O, config: C, filter: IgnoreAttribute<C>, engine: EngineSupport): O {
   const asyncFun = Promise.resolve();
 
-  asyncFun.then(() => {
-    // lookAt
-    !filter.lookAt &&
-      lookAtHandler({
-        target: object,
-        config,
-        engine,
-        value: config.lookAt,
-      } as ProcessParams<C, O>);
+  // lookAt
+  !filter.lookAt &&
+    lookAtHandler({
+      target: object,
+      config,
+      engine,
+      value: config.lookAt,
+    } as ProcessParams<C, O>);
 
-    // children
-    config.children.forEach((vid) => {
-      addChildrenHanlder({
-        target: object,
-        config,
-        value: vid,
-        engine,
-      } as ProcessParams<C, O>);
-    });
-
-    // event
-    for (const eventName of Object.values(EVENTNAME)) {
-      config[eventName].forEach((event, i) => {
-        addEventHanlder({
-          target: object,
-          path: [eventName, i.toString()],
-          value: event,
-          engine,
-        } as unknown as ProcessParams<C, O>);
-      });
-    }
+  // children
+  config.children.forEach((vid) => {
+    addChildrenHanlder({
+      target: object,
+      config,
+      value: vid,
+      engine,
+    } as ProcessParams<C, O>);
   });
+
+  // event
+  for (const eventName of Object.values(EVENTNAME)) {
+    config[eventName].forEach((event, i) => {
+      addEventHanlder({
+        target: object,
+        path: [eventName, i.toString()],
+        value: event,
+        engine,
+      } as unknown as ProcessParams<C, O>);
+    });
+  }
 
   syncObject(config, object, {
     vid: true,

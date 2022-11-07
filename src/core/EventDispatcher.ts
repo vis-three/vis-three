@@ -86,7 +86,10 @@ export class EventDispatcher {
     this.addEventListener(type, onceListener);
   }
 
-  emit<C extends BaseEvent>(name: C["type"], params: Omit<C, "type">): void {
+  emit<C extends BaseEvent>(
+    name: C["type"],
+    params: Omit<C, "type"> = {} as Omit<C, "type">
+  ): void {
     const listeners = this.listeners;
     if (listeners.has(name)) {
       try {

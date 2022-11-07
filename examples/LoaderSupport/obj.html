@@ -69,6 +69,7 @@
           "/model/advert/advert.obj",
         ])
         .then((res) => {
+          console.log(res);
           engine.loadConfig(res.resourceConfig["/model/advert/advert.obj"]);
           engine.loadConfig(res.resourceConfig["/model/Lowpoly/Lowpoly.obj"]);
 

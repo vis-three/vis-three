@@ -21,6 +21,7 @@ import { Observer } from "./widget/Observer";
 import { createElement, onComputed, onEvent } from "./widget/render";
 import { getObservable, observable } from "./Observable";
 import { Watcher } from "./widget/Watcher";
+import { clone } from "../convenient/Template";
 
 export interface WigetLifetimes {
   beforeLoad?: Function;
@@ -62,7 +63,7 @@ export interface WidgetOptions {
 export class Widget extends EventDispatcher {
   private static components: Record<string, WidgetOptions> = {};
 
-  component = function (options: WidgetOptions) {
+  static component = function (options: WidgetOptions) {
     if (Widget.components[options.name]) {
       console.warn(`${options.name} components has exist`);
       return;
@@ -81,6 +82,29 @@ export class Widget extends EventDispatcher {
   constructor(options: WidgetOptions) {
     super();
     this.options = options;
+  }
+
+  private async createResources(engineSupport: EngineSupport) {
+    const options = this.options;
+    const resources = options.resources || {};
+
+    // 加载资源
+    options.beforeLoad && options.beforeLoad();
+
+    if (resources) {
+      const { resourceConfig } = await engineSupport.loadResourcesAsync(
+        Object.values(resources)
+      );
+
+      for (const key in resources) {
+        this.observed[key] = clone(
+          resourceConfig[(<any>resources[key]).url || resources[key]],
+          { fillName: true }
+        );
+      }
+    }
+
+    options.loaded && options.loaded();
   }
 
   // 创建Computed
@@ -105,6 +129,10 @@ export class Widget extends EventDispatcher {
       this.observed[key] = render[key];
       this.render![key] = true;
     }
+
+    for (const key in this.options.resources || {}) {
+      delete this.observed[key];
+    }
   }
 
   private createObserved() {
@@ -113,8 +141,13 @@ export class Widget extends EventDispatcher {
     const ignore = {};
 
     const methods = options.methods || {};
+    const resources = options.resources || {};
 
     for (const key in methods) {
+      ignore[key] = true;
+    }
+
+    for (const key in resources) {
       ignore[key] = true;
     }
 
@@ -123,7 +156,8 @@ export class Widget extends EventDispatcher {
         this.observed,
         options.input,
         options.data && options.data(),
-        methods
+        methods,
+        resources
       ),
       ignore
     );
@@ -154,16 +188,8 @@ export class Widget extends EventDispatcher {
   async init(engineSupport: EngineSupport) {
     const options = this.options;
 
-    // 加载资源
-    options.beforeLoad && options.beforeLoad();
-
-    if (options.resources) {
-      await engineSupport.loadResourcesAsync(Object.values(options.resources));
-    }
-
-    options.loaded && options.loaded();
-
     this.createObserved();
+    await this.createResources(engineSupport);
     this.createComputed();
     this.createRender();
     this.initObserver();
@@ -174,7 +200,6 @@ export class Widget extends EventDispatcher {
     const dataSupportManager = engineSupport.dataSupportManager;
 
     // 打包成组
-
     const group = generateConfig(CONFIGTYPE.GROUP) as GroupConfig;
 
     Object.keys(this.render!).forEach((key) => {

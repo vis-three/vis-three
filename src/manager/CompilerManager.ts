@@ -1,4 +1,5 @@
 import { BufferGeometry, Material, Object3D, Texture } from "three";
+import { EventDispatcher } from "../core/EventDispatcher";
 import { BasicCompiler, Compiler } from "../core/Compiler";
 import { EngineSupport } from "../engine/EngineSupport";
 import { MODULETYPE } from "../main";
@@ -42,7 +43,7 @@ export interface CompilerManagerParameters {
   css3DCompiler: CSS3DCompiler;
 }
 
-export class CompilerManager {
+export class CompilerManager extends EventDispatcher {
   object3DCompiler = new Object3DCompiler();
   cameraCompiler = new CameraCompiler();
   lightCompiler = new LightCompiler();
@@ -64,6 +65,7 @@ export class CompilerManager {
   private compilerMap: Map<MODULETYPE, BasicCompiler>;
 
   constructor(parameters?: CompilerManagerParameters) {
+    super();
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
         this[key] = parameters[key];
@@ -82,6 +84,10 @@ export class CompilerManager {
     this.compilerMap = compilerMap;
   }
 
+  wait(fun: () => void, timeout: string) {
+    // this.once('')
+  }
+
   /**
    * engine进行编译器链接
    * @param engine EngineSupport
@@ -94,25 +100,13 @@ export class CompilerManager {
     });
 
     const dataSupportManager = engine.dataSupportManager!;
-    // 添加通知 TODO: 注意生命周期 lookAt group等
-    dataSupportManager.textureDataSupport.addCompiler(this.textureCompiler);
-    dataSupportManager.materialDataSupport.addCompiler(this.materialCompiler);
-    dataSupportManager.geometryDataSupport.addCompiler(this.geometryCompiler);
-    dataSupportManager.rendererDataSupport.addCompiler(this.rendererCompiler);
-    dataSupportManager.controlsDataSupport.addCompiler(this.controlsCompiler);
-    dataSupportManager.passDataSupport.addCompiler(this.passCompiler);
 
-    dataSupportManager.object3DDataSupport.addCompiler(this.object3DCompiler);
-    dataSupportManager.cameraDataSupport.addCompiler(this.cameraCompiler);
-    dataSupportManager.lightDataSupport.addCompiler(this.lightCompiler);
-    dataSupportManager.spriteDataSupport.addCompiler(this.spriteCompiler);
-    dataSupportManager.lineDataSupport.addCompiler(this.lineCompiler);
-    dataSupportManager.meshDataSupport.addCompiler(this.meshCompiler);
-    dataSupportManager.pointsDataSupport.addCompiler(this.pointsCompiler);
-    dataSupportManager.css3DDataSupport.addCompiler(this.css3DCompiler);
-    dataSupportManager.groupDataSupport.addCompiler(this.groupCompiler);
-    dataSupportManager.sceneDataSupport.addCompiler(this.sceneCompiler);
-    dataSupportManager.animationDataSupport.addCompiler(this.animationCompiler);
+    for (const module of Object.values(MODULETYPE)) {
+      dataSupportManager[`${module}DataSupport`].addCompiler(
+        // @ts-ignore
+        this[`${module}Compiler`]
+      );
+    }
     return this;
   }
 

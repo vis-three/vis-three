@@ -12,7 +12,6 @@ import { Parser, ResourceHanlder } from "../parser/Parser";
 import { GLTFResourceParser } from "../parser/GLTFResourceParser";
 
 export interface MappedEvent extends BaseEvent {
-  structureMap: Map<string, unknown>;
   configMap: Map<string, SymbolConfig>;
   resourceMap: Map<string, unknown>;
   resourceConfig: { [key: string]: LoadOptions };
@@ -31,10 +30,6 @@ export interface MappingOptions {
 }
 
 export class ResourceManager extends EventDispatcher {
-  /**
-   * @deprecated - 可以直接从configMap里面拿
-   */
-  structureMap: Map<string, any> = new Map(); // 外部资源结构映射 url -> structure mappingUrl
   configMap: Map<string, SymbolConfig> = new Map(); // 配置映射 mappingUrl -> config
   resourceMap: Map<string, any> = new Map(); // 资源映射 mappingUrl -> resource
 
@@ -160,7 +155,6 @@ export class ResourceManager extends EventDispatcher {
 
     this.dispatchEvent({
       type: "mapped",
-      structureMap: this.structureMap,
       configMap,
       resourceMap,
       resourceConfig,
@@ -180,7 +174,7 @@ export class ResourceManager extends EventDispatcher {
     // 便利urlList找出所有以 url 开头的的结构组成LoadOptions配置单
     [...configMap.keys()]
       .filter((key) => key.startsWith(url))
-      .some((url) => {
+      .forEach((url) => {
         const config = configMap.get(url);
 
         if (!config) {
@@ -194,9 +188,9 @@ export class ResourceManager extends EventDispatcher {
               config
             );
           } else {
-            !loadOptions[module] && (loadOptions[module] = {});
+            !loadOptions[module] && (loadOptions[module] = []);
 
-            loadOptions[module][config.vid] = config;
+            loadOptions[module].push(config);
           }
         }
       });

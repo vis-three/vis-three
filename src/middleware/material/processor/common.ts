@@ -1,6 +1,7 @@
 import { Color, Material, Texture } from "three";
 import { ProcessParams } from "../../../core/Processor";
 import { EngineSupport } from "../../../engine/EngineSupport";
+import { antiShake } from "../../../utils/AntiShake";
 import { IgnoreAttribute, syncObject } from "../../../utils/utils";
 import { MaterialConfig } from "../MaterialConfig";
 
@@ -16,25 +17,32 @@ export const commonNeedUpdatesRegCommand = {
   },
 };
 
-export const commonMapRegCommand = {
-  reg: new RegExp("map$", "i"),
-  handler<T extends Material, C extends MaterialConfig>({
-    target,
-    key,
-    value,
-    engine,
-  }: ProcessParams<C, T>) {
+export const mapHandler = function <
+  T extends Material,
+  C extends MaterialConfig
+>({ target, key, value, engine }: ProcessParams<C, T>) {
+  antiShake.exec((finish) => {
     const texture = engine.compilerManager.getObjectBySymbol(value);
     if (!(texture instanceof Texture)) {
-      console.warn(
-        `this url resource is not instance of Texture: ${key}`,
-        value,
-        texture
-      );
+      finish &&
+        console.warn(
+          `this url resource is not instance of Texture: ${key}`,
+          value,
+          texture
+        );
+
+      target[key] = null;
+      return false;
     }
     target[key] = texture;
     target.needsUpdate = true;
-  },
+    return true;
+  });
+};
+
+export const commonMapRegCommand = {
+  reg: new RegExp("map$", "i"),
+  handler: mapHandler,
 };
 
 export const colorSetHandler = function <
@@ -53,17 +61,10 @@ export const create = function <T extends Material, C extends MaterialConfig>(
 
   for (const key of Object.keys(config)) {
     if (key.toLocaleLowerCase().endsWith("map") && config[key]) {
-      const texture = engine.compilerManager.getObjectBySymbol(config[key]);
-      if (!(texture instanceof Texture)) {
-        console.warn(
-          `this url resource is not instance of Texture: ${key}`,
-          config[key],
-          texture
-        );
-        continue;
-      }
-      target[key] = texture;
-      filter[key] = true;
+      mapHandler({ target, key, value: config[key], engine } as ProcessParams<
+        C,
+        T
+      >);
     } else if (target[key] instanceof Color) {
       target[key] = new Color(config[key]);
       filter[key] = true;

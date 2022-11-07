@@ -6,6 +6,7 @@ import {
   Sprite,
 } from "three";
 import { EngineSupport } from "../../engine/EngineSupport";
+import { antiShake } from "../../utils/AntiShake";
 import { IgnoreAttribute } from "../../utils/utils";
 import {
   objectCommands,
@@ -30,54 +31,27 @@ export const geometryHandler = function <
   C extends SolidObjectConfig,
   O extends SolidObject3D
 >({ target, value, engine }) {
-  const geometry = engine.compilerManager.getGeometry(value);
-  if (!geometry) {
-    console.warn(`can not found geometry by vid in engine: ${value}`);
-    target.geometry = replaceGeometry;
-    return;
-  }
+  antiShake.exec((finish) => {
+    const geometry = engine.compilerManager.getGeometry(value);
+    if (!geometry) {
+      if (finish) {
+        console.warn(`can not found geometry by vid in engine: ${value}`);
+      }
+      target.geometry = replaceGeometry;
+      return false;
+    }
 
-  target.geometry = geometry;
+    target.geometry = geometry;
+
+    return true;
+  });
 };
 
 export const materialHandler = function <
   C extends SolidObjectConfig,
   O extends SolidObject3D
 >({ target, config, engine }) {
-  let material: Material | Material[];
-  if (typeof config.material === "string") {
-    material =
-      engine.compilerManager.getMaterial(config.material) || replaceMaterial;
-  } else {
-    material = config.material.map(
-      (vid) => engine.compilerManager.getMaterial(vid) || replaceMaterial
-    );
-  }
-
-  target.material = material;
-};
-
-export const solidObjectCreate = function <
-  C extends SolidObjectConfig,
-  O extends SolidObject3D
->(object: O, config: C, filter: IgnoreAttribute<C>, engine: EngineSupport) {
-  if (!filter.geometry) {
-    let geometry = engine.getObjectBySymbol(
-      config.geometry
-    ) as unknown as BufferGeometry;
-
-    if (!(geometry instanceof BufferGeometry)) {
-      console.warn(
-        `geometry vid in engine is not instance of BufferGeometry: ${config.geometry}`,
-        geometry
-      );
-      geometry = replaceGeometry;
-    }
-    object.geometry.dispose();
-    object.geometry = geometry;
-  }
-
-  if (!filter.material) {
+  antiShake.exec((finish) => {
     let material: Material | Material[];
     if (typeof config.material === "string") {
       material =
@@ -88,7 +62,32 @@ export const solidObjectCreate = function <
       );
     }
 
-    object.material = material;
+    target.material = material;
+
+    if (
+      (Array.isArray(material) &&
+        material.length &&
+        material[0] === replaceMaterial) ||
+      material === replaceMaterial
+    ) {
+      return false;
+    }
+
+    return true;
+  });
+};
+
+export const solidObjectCreate = function <
+  C extends SolidObjectConfig,
+  O extends SolidObject3D
+>(object: O, config: C, filter: IgnoreAttribute<C>, engine: EngineSupport) {
+  if (!filter.geometry) {
+    object.geometry.dispose();
+    geometryHandler({ target: object, value: config.geometry, engine });
+  }
+
+  if (!filter.material) {
+    materialHandler({ target: object, config, engine });
   }
 
   return objectCreate(

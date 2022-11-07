@@ -79,8 +79,8 @@ export class EngineSupport extends Engine {
 
   private removeLifeCycle(config: EngineSupportLoadOptions) {
     const dataSupportManager = this.dataSupportManager;
-    const texture = config[MODULETYPE.TEXTURE] || {};
-    const material = config[MODULETYPE.MATERIAL] || {};
+    const texture = config[MODULETYPE.TEXTURE] || [];
+    const material = config[MODULETYPE.MATERIAL] || [];
     const assets = config.assets || [];
 
     delete config.texture;

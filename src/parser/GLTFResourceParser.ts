@@ -1,4 +1,5 @@
 import { GLTF, GLTFParser } from "three/examples/jsm/loaders/GLTFLoader";
+import { SymbolConfig } from "../middleware/common/CommonConfig";
 import { Object3DParser } from "./Object3DParser";
 import { ParseParams, Parser, ResourceHanlder } from "./Parser";
 

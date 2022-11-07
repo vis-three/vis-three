@@ -2,6 +2,7 @@ import { EngineSupportLoadOptions } from "../engine/EngineSupport";
 import JSONHandler from "./JSONHandler";
 import { v4 } from "uuid";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
+import { LoadOptions } from "../manager/DataSupportManager";
 
 export interface CloneResult {
   config: EngineSupportLoadOptions;
@@ -31,7 +32,8 @@ export const clone = (
   );
   // 遍历所有的vid替换新的vid
   for (const modulekey of modulekeys) {
-    for (const vid of Object.keys(object[modulekey])) {
+    for (const config of object[modulekey]) {
+      const vid = config.vid;
       const newVid = v4();
       jsonObject = jsonObject.replace(new RegExp(vid, "g"), newVid);
       if (options.detail) {
@@ -40,31 +42,29 @@ export const clone = (
     }
   }
 
-  const config = JSON.parse(jsonObject, JSONHandler.parse);
+  const newConfig = JSON.parse(jsonObject, JSONHandler.parse);
 
   if (options.fillName) {
     if (typeof options.fillName === "function") {
       for (const modulekey of modulekeys) {
-        for (const vid of Object.keys(config[modulekey])) {
-          const objectConfig = config[modulekey][vid];
-          if (!objectConfig.name) {
-            objectConfig.name = options.fillName(objectConfig);
+        for (const config of newConfig[modulekey]) {
+          if (!config.name) {
+            config.name = options.fillName(config);
           }
         }
       }
     } else {
       for (const modulekey of modulekeys) {
-        for (const vid of Object.keys(config[modulekey])) {
-          const objectConfig = config[modulekey][vid];
-          if (!objectConfig.name) {
-            objectConfig.name = `${objectConfig.type}-${vid.slice(-2)}`;
+        for (const config of newConfig[modulekey]) {
+          if (!config.name) {
+            config.name = `${config.type}-${config.vid.slice(-2)}`;
           }
         }
       }
     }
   }
 
-  return options.detail ? { config, detail } : config;
+  return options.detail ? { config: newConfig, detail } : newConfig;
 };
 
 /**
@@ -92,15 +92,30 @@ export const handler = (
 
   for (const modulekey of modulekeys) {
     const module = config[modulekey];
-    for (const vid of Object.keys(module)) {
-      module[vid] = handler(module[vid]);
-    }
+    module.forEach((elem, i, arr) => {
+      arr[i] = handler(elem);
+    });
   }
 
   return config;
 };
 
+export const planish = function (
+  configs: LoadOptions
+): Record<string, SymbolConfig> {
+  const result = {};
+
+  for (const module of Object.keys(configs)) {
+    for (const config of configs[module]) {
+      result[config.name] = config;
+    }
+  }
+
+  return result;
+};
+
 export default {
   clone,
   handler,
+  planish,
 };

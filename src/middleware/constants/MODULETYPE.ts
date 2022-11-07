@@ -2,7 +2,7 @@
  * @experimental  PASS ANIMATION
  */
 export enum MODULETYPE {
-  OBJECT3D = "Object3D",
+  OBJECT3D = "object3D",
   CAMERA = "camera",
   LIGHT = "light",
   GEOMETRY = "geometry",

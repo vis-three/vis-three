@@ -146,10 +146,10 @@ export abstract class DataSupport<
 
   /**
    * 加载配置
-   * @param configMap this module configMap
+   * @param configs this module configs
    * @returns true
    */
-  load(configMap: CompilerTarget<C>): this {
+  load(configs: Array<C>): this {
     const data = this.dataContainer.container;
 
     const cacheConfigTemplate: { [key: string]: SymbolConfig } = {};
@@ -168,8 +168,7 @@ export abstract class DataSupport<
       }
     };
 
-    for (const key in configMap) {
-      const config = configMap[key];
+    for (const config of configs) {
       if (!cacheConfigTemplate[config.type]) {
         if (!CONFIGFACTORY[config.type]) {
           console.error(`can not font some config with: ${config.type}`);
@@ -178,16 +177,16 @@ export abstract class DataSupport<
         cacheConfigTemplate[config.type] = CONFIGFACTORY[config.type]();
       }
       restore(config, cacheConfigTemplate[config.type]);
-      data[key] = config;
+      data[config.vid] = config;
     }
 
     return this;
   }
 
-  remove(config: CompilerTarget<C>): this {
+  remove(configs: Array<C>): this {
     const data = this.dataContainer.container;
-    for (const key in config) {
-      data[key] !== undefined && delete data[key];
+    for (const config of configs) {
+      data[config.vid] !== undefined && delete data[config.vid];
     }
     return this;
   }

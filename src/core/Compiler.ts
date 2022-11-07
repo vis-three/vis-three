@@ -68,6 +68,9 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
     const object = processor.create(config, this.engine);
     this.map.set(config.vid, object);
     this.weakMap.set(object, config.vid);
+
+    this.engine.compilerManager.emit(config.vid, {});
+
     return object;
   }
 

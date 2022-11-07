@@ -8,7 +8,7 @@ import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { RendererDataSupport } from "../middleware/renderer/RendererDataSupport";
 import { SceneDataSupport } from "../middleware/scene/SceneDataSupport";
 import { ControlsDataSupport } from "../middleware/controls/ControlsDataSupport";
-import { BasicCompiler, CompilerTarget } from "../core/Compiler";
+import { BasicCompiler } from "../core/Compiler";
 import { SpriteDataSupport } from "../middleware/sprite/SpriteDataSupport";
 import { LineDataSupport } from "../middleware/line/LineDataSupport";
 import { MeshDataSupport } from "../middleware/mesh/MeshDataSupport";
@@ -41,25 +41,25 @@ import { Object3DConfig } from "../middleware/object3D/Object3DConfig";
 import { Object3DDataSupport } from "../middleware/object3D/Object3DDataSupport";
 
 export interface LoadOptions {
-  [MODULETYPE.TEXTURE]?: CompilerTarget<TextureAllType>;
-  [MODULETYPE.MATERIAL]?: CompilerTarget<MaterialAllType>;
-  [MODULETYPE.GEOMETRY]?: CompilerTarget<GeometryAllType>;
+  [MODULETYPE.TEXTURE]?: Array<TextureAllType>;
+  [MODULETYPE.MATERIAL]?: Array<MaterialAllType>;
+  [MODULETYPE.GEOMETRY]?: Array<GeometryAllType>;
 
-  [MODULETYPE.OBJECT3D]?: CompilerTarget<Object3DConfig>;
-  [MODULETYPE.LIGHT]?: CompilerTarget<LightConfigAllType>;
-  [MODULETYPE.CAMERA]?: CompilerTarget<CameraConfigAllType>;
-  [MODULETYPE.SPRITE]?: CompilerTarget<SpriteConfig>;
-  [MODULETYPE.LINE]?: CompilerTarget<LineConfig>;
-  [MODULETYPE.MESH]?: CompilerTarget<MeshConfig>;
-  [MODULETYPE.POINTS]?: CompilerTarget<PointsConfig>;
-  [MODULETYPE.GROUP]?: CompilerTarget<GroupConfig>;
-  [MODULETYPE.CSS3D]?: CompilerTarget<CSS3DAllType>;
+  [MODULETYPE.OBJECT3D]?: Array<Object3DConfig>;
+  [MODULETYPE.LIGHT]?: Array<LightConfigAllType>;
+  [MODULETYPE.CAMERA]?: Array<CameraConfigAllType>;
+  [MODULETYPE.SPRITE]?: Array<SpriteConfig>;
+  [MODULETYPE.LINE]?: Array<LineConfig>;
+  [MODULETYPE.MESH]?: Array<MeshConfig>;
+  [MODULETYPE.POINTS]?: Array<PointsConfig>;
+  [MODULETYPE.GROUP]?: Array<GroupConfig>;
+  [MODULETYPE.CSS3D]?: Array<CSS3DAllType>;
 
-  [MODULETYPE.RENDERER]?: CompilerTarget<RendererConfigAllType>;
-  [MODULETYPE.SCENE]?: CompilerTarget<SceneConfig>;
-  [MODULETYPE.PASS]?: CompilerTarget<PassConfigAllType>;
-  [MODULETYPE.CONTROLS]?: CompilerTarget<ControlsAllConfig>;
-  [MODULETYPE.ANIMATION]?: CompilerTarget<AnimationAllType>;
+  [MODULETYPE.RENDERER]?: Array<RendererConfigAllType>;
+  [MODULETYPE.SCENE]?: Array<SceneConfig>;
+  [MODULETYPE.PASS]?: Array<PassConfigAllType>;
+  [MODULETYPE.CONTROLS]?: Array<ControlsAllConfig>;
+  [MODULETYPE.ANIMATION]?: Array<AnimationAllType>;
 }
 
 export interface DataSupportManagerParameters {

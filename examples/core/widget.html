@@ -29,6 +29,8 @@
         .setStats(true)
         .play();
 
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
       engine.eventManager.recursive = true;
 
       engine.applyConfig(VIS.generateConfig("Scene")).setScene("Scene");
@@ -69,7 +71,10 @@
       const widget = new VIS.Widget({
         name: "China-map",
         parent: "Scene",
-        resources: {},
+        resources: {
+          MaterialsVariantsShoe:
+            "model/glb/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf",
+        },
         render(g, c, onComputed, onEvent) {
           const geometry = g("BoxGeometry", {
             width: 100,
@@ -78,9 +83,20 @@
             color: onComputed(() => this.color),
           });
 
+          const MaterialsVariantsShoe = VIS.Template.planish(
+            VIS.Template.handler(this.MaterialsVariantsShoe, (config) =>
+              g(config.type, config)
+            )
+          );
+
+          MaterialsVariantsShoe.Scene.scale.x = 50;
+          MaterialsVariantsShoe.Scene.scale.y = 50;
+          MaterialsVariantsShoe.Scene.scale.z = 50;
+
           return {
             geometry,
             material,
+            ambient: g("AmbientLight"),
             stage: g("Mesh", {
               geometry: geometry.vid,
               material: material.vid,
@@ -89,10 +105,11 @@
               },
               click: [
                 onEvent(() => {
-                  this.stage.position.x += 20 + this.offset;
+                  this.stage.position.x += 20 + this.offset + this.add();
                 }),
               ],
             }),
+            ...MaterialsVariantsShoe,
           };
         },
         data() {
@@ -107,7 +124,11 @@
           },
         },
         watch: {},
-        methods: {},
+        methods: {
+          add() {
+            return this.offset + 20;
+          },
+        },
         beforeLoad() {},
         loaded() {},
         beforeCreate() {},
