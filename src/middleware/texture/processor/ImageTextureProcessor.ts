@@ -4,29 +4,20 @@ import { ImageTexture } from "../../../extends/texture/ImageTexture";
 import { syncObject } from "../../../utils/utils";
 import { CONFIGTYPE } from "../../constants/configType";
 import { ImageTextureConfig } from "../TextureConfig";
-import { needUpdateRegCommand } from "./common";
+import { needUpdateRegCommand, urlHanlder } from "./common";
 
 export default defineProcessor<ImageTextureConfig, ImageTexture>({
   configType: CONFIGTYPE.IMAGETEXTURE,
   commands: {
     set: {
-      url({ target, value, engine }) {
-        target.image = engine.compilerManager.textureCompiler.getResource(
-          value,
-          HTMLImageElement
-        );
-        target.needsUpdate = true;
-      },
+      url: urlHanlder,
       $reg: [needUpdateRegCommand],
     },
   },
   create(config: ImageTextureConfig, engine: EngineSupport): ImageTexture {
     const texture = new ImageTexture();
     if (config.url) {
-      texture.image = engine.compilerManager.textureCompiler.getResource(
-        config.url,
-        HTMLImageElement
-      );
+      urlHanlder({ target: texture, value: config.url, engine });
     }
 
     syncObject(config, texture, {

@@ -23,6 +23,7 @@ export const mapHandler = function <
 >({ target, key, value, engine }: ProcessParams<C, T>) {
   antiShake.exec((finish) => {
     const texture = engine.compilerManager.getObjectBySymbol(value);
+
     if (!(texture instanceof Texture)) {
       finish &&
         console.warn(
@@ -65,6 +66,7 @@ export const create = function <T extends Material, C extends MaterialConfig>(
         C,
         T
       >);
+      filter[key] = true;
     } else if (target[key] instanceof Color) {
       target[key] = new Color(config[key]);
       filter[key] = true;

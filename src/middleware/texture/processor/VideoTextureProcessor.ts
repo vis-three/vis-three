@@ -5,19 +5,13 @@ import { VideoTexture } from "../../../optimize/VideoTexture";
 import { syncObject } from "../../../utils/utils";
 import { CONFIGTYPE } from "../../constants/configType";
 import { VideoTextureConfig } from "../TextureConfig";
-import { needUpdateRegCommand } from "./common";
+import { needUpdateRegCommand, urlHanlder } from "./common";
 
 export default defineProcessor<VideoTextureConfig, VideoTexture>({
   configType: CONFIGTYPE.VIDEOTEXTURE,
   commands: {
     set: {
-      url({ target, value, engine }) {
-        target.image = engine.compilerManager.textureCompiler.getResource(
-          value,
-          HTMLVideoElement
-        );
-        target.needsUpdate = true;
-      },
+      url: urlHanlder,
       $reg: [needUpdateRegCommand],
     },
   },
@@ -25,10 +19,7 @@ export default defineProcessor<VideoTextureConfig, VideoTexture>({
     const texture = new VideoTexture(document.createElement("video"));
 
     if (config.url) {
-      texture.image = engine.compilerManager.textureCompiler.getResource(
-        config.url,
-        HTMLVideoElement
-      );
+      urlHanlder({ target: texture, value: config.url, engine });
     }
 
     syncObject(config, texture, {

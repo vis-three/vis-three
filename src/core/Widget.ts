@@ -19,9 +19,10 @@ import { ObjectConfig } from "../middleware/object/ObjectConfig";
 import { EventDispatcher } from "./EventDispatcher";
 import { Observer } from "./widget/Observer";
 import { createElement, onComputed, onEvent } from "./widget/render";
-import { getObservable, observable } from "./Observable";
+import { getObservable, Ignore, observable } from "./Observable";
 import { Watcher } from "./widget/Watcher";
-import { clone } from "../convenient/Template";
+import { clone, handler, planish } from "../convenient/Template";
+import { antiShake } from "../utils/AntiShake";
 
 export interface WigetLifetimes {
   beforeLoad?: Function;
@@ -35,7 +36,8 @@ export interface WigetLifetimes {
 export interface WidgetOptions {
   name: string;
   input?: Record<string, any>;
-  resources?: Record<string, string | LoadUnit>;
+  load?: Array<LoadUnit>;
+  resources?: () => Record<string, any>;
   parent: string;
   render: (
     e: (
@@ -44,11 +46,19 @@ export interface WidgetOptions {
     ) => ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>,
     c: () => any,
     onComputed: (fun: () => any) => Watcher,
-    onEvent: (fun: (event?: ObjectEvent) => void) => void
+    onEvent: (fun: (event?: ObjectEvent) => void) => void,
+    onResource: (url: string) => any
   ) => Record<string, ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>>;
-  data?: () => Record<string, any>;
+  data?: (ignore: Ignore) => Record<string, any>;
   computed?: Record<string, () => any>;
-  watch?: Record<string, Function>;
+  watch?: Record<
+    string,
+    | Function
+    | {
+        handler: Function;
+        immediate: boolean;
+      }
+  >;
   methods?: Record<string, Function>;
   beforeLoad?: WigetLifetimes["beforeLoad"];
   loaded?: WigetLifetimes["loaded"];
@@ -84,24 +94,15 @@ export class Widget extends EventDispatcher {
     this.options = options;
   }
 
-  private async createResources(engineSupport: EngineSupport) {
+  private async createLoad(engineSupport: EngineSupport) {
     const options = this.options;
-    const resources = options.resources || {};
+    const resources = options.load;
 
     // 加载资源
     options.beforeLoad && options.beforeLoad();
 
     if (resources) {
-      const { resourceConfig } = await engineSupport.loadResourcesAsync(
-        Object.values(resources)
-      );
-
-      for (const key in resources) {
-        this.observed[key] = clone(
-          resourceConfig[(<any>resources[key]).url || resources[key]],
-          { fillName: true }
-        );
-      }
+      await engineSupport.loadResourcesAsync(resources);
     }
 
     options.loaded && options.loaded();
@@ -116,13 +117,23 @@ export class Widget extends EventDispatcher {
     }
   }
 
-  private createRender() {
+  private createRender(engineSupport: EngineSupport) {
     const render = this.options.render.call(
       this.observed,
       createElement,
       () => {},
       onComputed,
-      onEvent
+      onEvent,
+      (url: string) => {
+        return planish(
+          handler(
+            clone(engineSupport.resourceManager.getResourceConfig(url), {
+              fillName: true,
+            }) as EngineSupportLoadOptions,
+            (config) => createElement(config.type as CONFIGTYPE, config)
+          )
+        );
+      }
     );
 
     for (const key in render) {
@@ -141,64 +152,77 @@ export class Widget extends EventDispatcher {
     const ignore = {};
 
     const methods = options.methods || {};
-    const resources = options.resources || {};
 
     for (const key in methods) {
       ignore[key] = true;
     }
 
-    for (const key in resources) {
-      ignore[key] = true;
-    }
-
-    this.observed = observable(
-      Object.assign(
-        this.observed,
-        options.input,
-        options.data && options.data(),
-        methods,
-        resources
-      ),
-      ignore
+    const data = Object.assign(
+      this.observed,
+      options.input,
+      options.data && options.data(ignore),
+      methods
     );
+
+    options.beforeCreate && options.beforeCreate(data);
+
+    this.observed = observable(data, ignore);
+  }
+
+  private createResources(engineSupport: EngineSupport) {
+    const resources = this.options.resources;
+
+    if (resources) {
+      engineSupport.registerResources(resources.call(this.observed));
+    }
   }
 
   // 初始观察者
   private initObserver() {
     this.observer.watch(this.observed);
+    this.options.created && this.options.created.call(this.observed);
   }
 
   private createWatch() {
     const watch = this.options.watch || {};
-    // this.observer.addEventListener<ProxyEvent>(
-    //   "broadcast",
-    //   (event: ProxyEvent) => {
-    //     const { operate, key, path, value } = event.notice;
-    //     if (operate !== "get") {
-    //       const sign = path.length ? `${path.join(".")}.${key}` : key;
-
-    //       if (watch[sign]) {
-    //         watch[sign].call(this.observable, value);
-    //       }
-    //     }
-    //   }
-    // );
+    for (const wPath in watch) {
+      const watcher = watch[wPath];
+      let handler: Function;
+      if (typeof watcher === "object") {
+        if (watcher.immediate) {
+          let object = this.observed;
+          const walk = wPath.split(".");
+          const key = walk.pop()!;
+          for (const key of walk) {
+            object = object[key];
+          }
+          const value = object[key];
+          watcher.handler.call(this.observed, value);
+        }
+        handler = watcher.handler;
+      } else {
+        handler = watcher;
+      }
+      this.observer.subscribe((notice) => {
+        const { operate, key, path, value } = notice;
+        if (operate !== "get" && wPath === path) {
+          handler.call(this.observed, value);
+        }
+      });
+    }
   }
 
   async init(engineSupport: EngineSupport) {
     const options = this.options;
 
+    await this.createLoad(engineSupport);
     this.createObserved();
-    await this.createResources(engineSupport);
+    this.createResources(engineSupport);
     this.createComputed();
-    this.createRender();
+    this.createRender(engineSupport);
     this.initObserver();
-    this.createWatch();
-
-    options.beforeCreate && options.beforeCreate();
 
     const dataSupportManager = engineSupport.dataSupportManager;
-
     // 打包成组
     const group = generateConfig(CONFIGTYPE.GROUP) as GroupConfig;
 
@@ -224,7 +248,10 @@ export class Widget extends EventDispatcher {
       engineSupport.getConfigBySymbol(options.parent)
     )).children.push(group.vid);
 
-    options.created && options.created();
+    antiShake.append(() => {
+      this.createWatch();
+      return true;
+    });
   }
 
   exportConfig() {}

@@ -69,7 +69,8 @@ export class Observer extends Subject<ReactNotice> {
           watcher.init(tempPath, observed, this);
           this.watchers.push(watcher);
         } else if (isObject(object[key])) {
-          recursion(object[key], tempPath);
+          !rootObservable.isIgnore(tempPath) &&
+            recursion(object[key], tempPath);
         }
       }
     };

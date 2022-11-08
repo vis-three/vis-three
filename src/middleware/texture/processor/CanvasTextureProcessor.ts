@@ -5,19 +5,13 @@ import { ImageTexture } from "../../../extends/texture/ImageTexture";
 import { syncObject } from "../../../utils/utils";
 import { CONFIGTYPE } from "../../constants/configType";
 import { CanvasTextureConfig } from "../TextureConfig";
-import { needUpdateRegCommand } from "./common";
+import { needUpdateRegCommand, urlHanlder } from "./common";
 
 export default defineProcessor<CanvasTextureConfig, CanvasTexture>({
   configType: CONFIGTYPE.CANVASTEXTURE,
   commands: {
     set: {
-      url({ target, value, engine }) {
-        target.image = engine.compilerManager.textureCompiler.getResource(
-          value,
-          HTMLCanvasElement
-        );
-        target.needsUpdate = true;
-      },
+      url: urlHanlder,
       $reg: [needUpdateRegCommand],
     },
   },
@@ -28,6 +22,8 @@ export default defineProcessor<CanvasTextureConfig, CanvasTexture>({
         HTMLCanvasElement
       ) as HTMLCanvasElement
     );
+
+    urlHanlder({ target: texture, value: config.url, engine });
 
     syncObject(config, texture, {
       type: true,

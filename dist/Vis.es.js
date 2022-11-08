@@ -7114,7 +7114,7 @@ class AntiShake {
   constructor() {
     __publicField(this, "list", []);
     __publicField(this, "timer");
-    __publicField(this, "time", 500);
+    __publicField(this, "time", 0);
   }
   exec(fun) {
     if (fun(false)) {
@@ -7130,6 +7130,13 @@ class AntiShake {
       }
       this.list = [];
     }, this.time);
+  }
+  append(fun) {
+    if (this.list.length && !this.list.includes(fun)) {
+      this.list.push(fun);
+    } else {
+      this.exec(fun);
+    }
   }
 }
 const antiShake = new AntiShake();
@@ -8641,6 +8648,7 @@ const create = function(target, config2, engine) {
   for (const key of Object.keys(config2)) {
     if (key.toLocaleLowerCase().endsWith("map") && config2[key]) {
       mapHandler({ target, key, value: config2[key], engine });
+      filter[key] = true;
     } else if (target[key] instanceof Color) {
       target[key] = new Color(config2[key]);
       filter[key] = true;
@@ -9934,27 +9942,36 @@ const needUpdateRegCommand = {
     target.needsUpdate = true;
   }
 };
+const urlHanlder = function({
+  target,
+  value,
+  engine
+}) {
+  antiShake.exec((finish) => {
+    target.url = engine.compilerManager.textureCompiler.getResource(value, [
+      HTMLImageElement,
+      HTMLVideoElement,
+      HTMLCanvasElement
+    ]);
+    target.needsUpdate = true;
+    if (target.url === TextureCompiler.replaceImage) {
+      return false;
+    }
+    return true;
+  });
+};
 var ImageTextureProcessor = defineProcessor({
   configType: CONFIGTYPE.IMAGETEXTURE,
   commands: {
     set: {
-      url({ target, value, engine }) {
-        target.image = engine.compilerManager.textureCompiler.getResource(
-          value,
-          HTMLImageElement
-        );
-        target.needsUpdate = true;
-      },
+      url: urlHanlder,
       $reg: [needUpdateRegCommand]
     }
   },
   create(config2, engine) {
     const texture = new ImageTexture();
     if (config2.url) {
-      texture.image = engine.compilerManager.textureCompiler.getResource(
-        config2.url,
-        HTMLImageElement
-      );
+      urlHanlder({ target: texture, value: config2.url, engine });
     }
     syncObject(config2, texture, {
       type: true,
@@ -9971,13 +9988,7 @@ var CanvasTextureProcessor = defineProcessor({
   configType: CONFIGTYPE.CANVASTEXTURE,
   commands: {
     set: {
-      url({ target, value, engine }) {
-        target.image = engine.compilerManager.textureCompiler.getResource(
-          value,
-          HTMLCanvasElement
-        );
-        target.needsUpdate = true;
-      },
+      url: urlHanlder,
       $reg: [needUpdateRegCommand]
     }
   },
@@ -9988,6 +9999,7 @@ var CanvasTextureProcessor = defineProcessor({
         HTMLCanvasElement
       )
     );
+    urlHanlder({ target: texture, value: config2.url, engine });
     syncObject(config2, texture, {
       type: true,
       url: true
@@ -10123,23 +10135,14 @@ var VideoTextureProcessor = defineProcessor({
   configType: CONFIGTYPE.VIDEOTEXTURE,
   commands: {
     set: {
-      url({ target, value, engine }) {
-        target.image = engine.compilerManager.textureCompiler.getResource(
-          value,
-          HTMLVideoElement
-        );
-        target.needsUpdate = true;
-      },
+      url: urlHanlder,
       $reg: [needUpdateRegCommand]
     }
   },
   create(config2, engine) {
     const texture = new VideoTexture(document.createElement("video"));
     if (config2.url) {
-      texture.image = engine.compilerManager.textureCompiler.getResource(
-        config2.url,
-        HTMLVideoElement
-      );
+      urlHanlder({ target: texture, value: config2.url, engine });
     }
     syncObject(config2, texture, {
       type: true,
@@ -10499,29 +10502,32 @@ const KeyboardManagerPlugin = function(params) {
   this.keyboardManager = keyboardManager;
   this.completeSet.add(() => {
     if (this.transformControls) {
-      let transformControls;
+      const getTransformControls = () => {
+        return this.dataSupportManager.controlsDataSupport.getData()[CONFIGTYPE.TRNASFORMCONTROLS] || this.transformControls;
+      };
       if (this.IS_ENGINESUPPORT) {
-        transformControls = this.dataSupportManager.controlsDataSupport.getData()[CONFIGTYPE.TRNASFORMCONTROLS];
         keyboardManager.register({
           shortcutKey: ["shift"],
           desp: "\u53D8\u6362\u63A7\u5236\u5668\u9501\u5B9A\u6B65\u5E45",
           keyup: (event) => {
             event == null ? void 0 : event.preventDefault();
-            transformControls.snapAllow = false;
+            const transformControls = getTransformControls();
+            transformControls && (transformControls.snapAllow = false);
           },
           keydown: (event) => {
             event == null ? void 0 : event.preventDefault();
             event == null ? void 0 : event.preventRepeat();
-            transformControls.snapAllow = true;
+            const transformControls = getTransformControls();
+            transformControls && (transformControls.snapAllow = true);
           }
         });
       } else {
-        transformControls = this.transformControls;
         keyboardManager.register({
           shortcutKey: ["shift"],
           desp: "\u53D8\u6362\u63A7\u5236\u5668\u9501\u5B9A\u6B65\u5E45",
           keyup: (event) => {
             event == null ? void 0 : event.preventDefault();
+            const transformControls = getTransformControls();
             transformControls.translationSnap = null;
             transformControls.rotationSnap = null;
             transformControls.scaleSnap = null;
@@ -10529,6 +10535,7 @@ const KeyboardManagerPlugin = function(params) {
           keydown: (event) => {
             event == null ? void 0 : event.preventDefault();
             event == null ? void 0 : event.preventRepeat();
+            const transformControls = getTransformControls();
             transformControls.translationSnap = 5;
             transformControls.rotationSnap = Math.PI / 180 * 10;
             transformControls.scaleSnap = 0.1;
@@ -10540,20 +10547,23 @@ const KeyboardManagerPlugin = function(params) {
         desp: "\u53D8\u6362\u63A7\u5236\u5668\u6A21\u5F0F\uFF1A\u65CB\u8F6C",
         keyup: (event) => {
           event == null ? void 0 : event.preventDefault();
-          transformControls.mode = "rotate";
+          const transformControls = getTransformControls();
+          transformControls && (transformControls.mode = "rotate");
         }
       }).register({
         shortcutKey: ["t"],
         desp: "\u53D8\u6362\u63A7\u5236\u5668\u6A21\u5F0F\uFF1A\u79FB\u52A8",
         keyup: (event) => {
           event == null ? void 0 : event.preventDefault();
-          transformControls.mode = "translate";
+          const transformControls = getTransformControls();
+          transformControls && (transformControls.mode = "translate");
         }
       }).register({
         shortcutKey: ["e"],
         desp: "\u53D8\u6362\u63A7\u5236\u5668\u6A21\u5F0F\uFF1A\u7F29\u653E",
         keyup: (event) => {
           event == null ? void 0 : event.preventDefault();
+          const transformControls = getTransformControls();
           transformControls.mode = "scale";
         }
       }).register({
@@ -10561,6 +10571,7 @@ const KeyboardManagerPlugin = function(params) {
         desp: "\u53D8\u6362\u63A7\u5236\u5668\u5207\u6362\u8F74\uFF1Ax",
         keyup: (event) => {
           event == null ? void 0 : event.preventDefault();
+          const transformControls = getTransformControls();
           transformControls.showX = !transformControls.showX;
         }
       }).register({
@@ -10571,6 +10582,7 @@ const KeyboardManagerPlugin = function(params) {
           if (event == null ? void 0 : event.ctrlKey) {
             return;
           }
+          const transformControls = getTransformControls();
           transformControls.showY = !transformControls.showY;
         }
       }).register({
@@ -10581,6 +10593,7 @@ const KeyboardManagerPlugin = function(params) {
           if (event == null ? void 0 : event.ctrlKey) {
             return;
           }
+          const transformControls = getTransformControls();
           transformControls.showZ = !transformControls.showZ;
         }
       }).register({
@@ -10588,6 +10601,7 @@ const KeyboardManagerPlugin = function(params) {
         desp: "\u53D8\u6362\u63A7\u5236\u5668\u5207\u6362\u53D8\u6362\u7A7A\u95F4",
         keyup: (event) => {
           event == null ? void 0 : event.preventDefault();
+          const transformControls = getTransformControls();
           transformControls.space = transformControls.space === "local" ? "world" : "local";
         }
       });
@@ -13248,7 +13262,7 @@ class Observer extends Subject {
           watcher.init(tempPath, observed, this);
           this.watchers.push(watcher);
         } else if (isObject(object[key])) {
-          recursion(object[key], tempPath);
+          !rootObservable.isIgnore(tempPath) && recursion(object[key], tempPath);
         }
       }
     };
@@ -13295,20 +13309,12 @@ const _Widget = class extends EventDispatcher {
     __publicField(this, "observer", new Observer());
     this.options = options;
   }
-  async createResources(engineSupport) {
+  async createLoad(engineSupport) {
     const options = this.options;
-    const resources = options.resources || {};
+    const resources = options.load;
     options.beforeLoad && options.beforeLoad();
     if (resources) {
-      const { resourceConfig } = await engineSupport.loadResourcesAsync(
-        Object.values(resources)
-      );
-      for (const key in resources) {
-        this.observed[key] = clone(
-          resourceConfig[resources[key].url || resources[key]],
-          { fillName: true }
-        );
-      }
+      await engineSupport.loadResourcesAsync(resources);
     }
     options.loaded && options.loaded();
   }
@@ -13318,14 +13324,24 @@ const _Widget = class extends EventDispatcher {
       this.observed[key] = onComputed(computed[key].bind(this.observed)).token;
     }
   }
-  createRender() {
+  createRender(engineSupport) {
     const render = this.options.render.call(
       this.observed,
       createElement,
       () => {
       },
       onComputed,
-      onEvent
+      onEvent,
+      (url) => {
+        return planish(
+          handler(
+            clone(engineSupport.resourceManager.getResourceConfig(url), {
+              fillName: true
+            }),
+            (config2) => createElement(config2.type, config2)
+          )
+        );
+      }
     );
     for (const key in render) {
       this.observed[key] = render[key];
@@ -13339,39 +13355,64 @@ const _Widget = class extends EventDispatcher {
     const options = this.options;
     const ignore = {};
     const methods = options.methods || {};
-    const resources = options.resources || {};
     for (const key in methods) {
       ignore[key] = true;
     }
-    for (const key in resources) {
-      ignore[key] = true;
-    }
-    this.observed = observable(
-      Object.assign(
-        this.observed,
-        options.input,
-        options.data && options.data(),
-        methods,
-        resources
-      ),
-      ignore
+    const data = Object.assign(
+      this.observed,
+      options.input,
+      options.data && options.data(ignore),
+      methods
     );
+    options.beforeCreate && options.beforeCreate(data);
+    this.observed = observable(data, ignore);
+  }
+  createResources(engineSupport) {
+    const resources = this.options.resources;
+    if (resources) {
+      engineSupport.registerResources(resources.call(this.observed));
+    }
   }
   initObserver() {
     this.observer.watch(this.observed);
+    this.options.created && this.options.created.call(this.observed);
   }
   createWatch() {
-    this.options.watch || {};
+    const watch = this.options.watch || {};
+    for (const wPath in watch) {
+      const watcher = watch[wPath];
+      let handler2;
+      if (typeof watcher === "object") {
+        if (watcher.immediate) {
+          let object = this.observed;
+          const walk = wPath.split(".");
+          const key = walk.pop();
+          for (const key2 of walk) {
+            object = object[key2];
+          }
+          const value = object[key];
+          watcher.handler.call(this.observed, value);
+        }
+        handler2 = watcher.handler;
+      } else {
+        handler2 = watcher;
+      }
+      this.observer.subscribe((notice) => {
+        const { operate, key, path, value } = notice;
+        if (operate !== "get" && wPath === path) {
+          handler2.call(this.observed, value);
+        }
+      });
+    }
   }
   async init(engineSupport) {
     const options = this.options;
+    await this.createLoad(engineSupport);
     this.createObserved();
-    await this.createResources(engineSupport);
+    this.createResources(engineSupport);
     this.createComputed();
-    this.createRender();
+    this.createRender(engineSupport);
     this.initObserver();
-    this.createWatch();
-    options.beforeCreate && options.beforeCreate();
     const dataSupportManager = engineSupport.dataSupportManager;
     const group = generateConfig(CONFIGTYPE.GROUP);
     Object.keys(this.render).forEach((key) => {
@@ -13390,7 +13431,10 @@ const _Widget = class extends EventDispatcher {
     });
     dataSupportManager.applyConfig(group);
     engineSupport.getConfigBySymbol(options.parent).children.push(group.vid);
-    options.created && options.created();
+    antiShake.append(() => {
+      this.createWatch();
+      return true;
+    });
   }
   exportConfig() {
   }
