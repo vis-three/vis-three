@@ -45,7 +45,7 @@ export interface WidgetOptions {
       merge: any
     ) => ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>,
     c: () => any,
-    onComputed: (fun: () => any) => Watcher,
+    onComputed: (fun: () => any) => Symbol,
     onEvent: (fun: (event?: ObjectEvent) => void) => void,
     onResource: (url: string) => any
   ) => Record<string, ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>>;
@@ -113,7 +113,7 @@ export class Widget extends EventDispatcher {
     const computed = this.options.computed || {};
 
     for (const key in computed) {
-      this.observed[key] = onComputed(computed[key].bind(this.observed)).token;
+      this.observed[key] = onComputed(computed[key].bind(this.observed));
     }
   }
 

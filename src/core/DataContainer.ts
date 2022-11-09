@@ -74,21 +74,21 @@ const containerDeleter = function (
 export class DataContainer<
   C extends SymbolConfig
 > extends Subject<ProxyNotice> {
-  container: CompilerTarget<C> = new Proxy(
-    {},
-    {
-      get: containerGetter,
-      set: (target: any, key: string | symbol, value: any, receiver: any) =>
-        containerSetter(target, key, value, receiver, this),
-      deleteProperty: (target: any, key: string | symbol) =>
-        containerDeleter(target, key, this),
-    }
-  );
+  static generator = () => ({});
+
+  container: CompilerTarget<C>;
 
   subscriptions = new Map<SymbolConfig["vid"], Subscription>();
 
   constructor() {
     super();
+    this.container = new Proxy(DataContainer.generator(), {
+      get: containerGetter,
+      set: (target: any, key: string | symbol, value: any, receiver: any) =>
+        containerSetter(target, key, value, receiver, this),
+      deleteProperty: (target: any, key: string | symbol) =>
+        containerDeleter(target, key, this),
+    });
   }
 
   add(config: C) {

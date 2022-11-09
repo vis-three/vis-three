@@ -1,6 +1,7 @@
 import { LinearEncoding, NoToneMapping, PCFShadowMap } from "three";
 import { SymbolConfig, Vector2Config } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
+import { uniqueSymbol } from "../constants/UNIQUESYMBOL";
 
 export interface RendererConfig extends SymbolConfig {
   size: Vector2Config | null; // 为null 默认跟随canves
@@ -49,7 +50,7 @@ export const getRendererConfig = function (): RendererConfig {
 
 export const getWebGLRendererConfig = function (): WebGLRendererConfig {
   return Object.assign(getRendererConfig(), {
-    vid: CONFIGTYPE.WEBGLRENDERER, // WebGLRenderer or vid
+    vid: uniqueSymbol(CONFIGTYPE.WEBGLRENDERER), // WebGLRenderer or vid
     type: CONFIGTYPE.WEBGLRENDERER,
     clearColor: "rgba(0, 0, 0, 0)",
     outputEncoding: LinearEncoding,
@@ -71,7 +72,7 @@ export const getWebGLRendererConfig = function (): WebGLRendererConfig {
 
 export const getCSS3DRenderereConfig = function (): CSS3DRendererConfig {
   return Object.assign(getRendererConfig(), {
-    vid: CONFIGTYPE.CSS3DRENDERER, // WebGLRenderer or vid
+    vid: uniqueSymbol(CONFIGTYPE.CSS3DRENDERER), // WebGLRenderer or vid
     type: CONFIGTYPE.CSS3DRENDERER,
   });
 };

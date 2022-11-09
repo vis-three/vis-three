@@ -12,7 +12,7 @@ import { isObject } from "../../utils/utils";
 import { Watcher } from "./Watcher";
 
 export const onComputed = function (fun: () => any) {
-  return new Watcher(fun);
+  return new Watcher(fun).token;
 };
 
 export const onEvent = function (fun: (event?: ObjectEvent) => void) {
@@ -22,19 +22,5 @@ export const onEvent = function (fun: (event?: ObjectEvent) => void) {
 };
 
 export const createElement = function (type: CONFIGTYPE, merge: any) {
-  const recursion = (object: object) => {
-    for (const key in object) {
-      if (isObject(object[key]) && !(object[key] instanceof Watcher)) {
-        recursion(object[key]);
-      } else {
-        if (object[key] instanceof Watcher) {
-          object[key] = object[key].token;
-        }
-      }
-    }
-  };
-
-  recursion(merge);
-
   return generateConfig(type, merge, false, false);
 };

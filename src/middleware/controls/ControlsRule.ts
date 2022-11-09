@@ -2,6 +2,7 @@ import { validate } from "uuid";
 import { ProxyNotice } from "../../core/DataContainer";
 import { Rule } from "../../core/Rule";
 import { CONFIGTYPE } from "../constants/configType";
+import { uniqueSymbol } from "../constants/UNIQUESYMBOL";
 import { ControlsCompiler } from "./ControlsCompiler";
 
 export const ControlsRule: Rule<ControlsCompiler> = function (
@@ -11,9 +12,10 @@ export const ControlsRule: Rule<ControlsCompiler> = function (
   Rule(input, compiler, (vid) => {
     return (
       validate(vid) ||
-      [CONFIGTYPE.TRNASFORMCONTROLS, CONFIGTYPE.ORBITCONTROLS].includes(
-        vid as CONFIGTYPE
-      )
+      [
+        uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS),
+        uniqueSymbol(CONFIGTYPE.ORBITCONTROLS),
+      ].includes(vid as CONFIGTYPE)
     );
   });
 };

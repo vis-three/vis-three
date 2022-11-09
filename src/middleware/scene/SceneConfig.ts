@@ -1,4 +1,5 @@
 import { CONFIGTYPE } from "../constants/configType";
+import { uniqueSymbol } from "../constants/UNIQUESYMBOL";
 import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
 
 export interface SceneFogConfig {
@@ -17,7 +18,7 @@ export interface SceneConfig extends ObjectConfig {
 
 export const getSceneConfig = function (): SceneConfig {
   return Object.assign(getObjectConfig(), {
-    vid: CONFIGTYPE.SCENE,
+    vid: uniqueSymbol(CONFIGTYPE.SCENE),
     type: CONFIGTYPE.SCENE,
     background: "",
     environment: "",

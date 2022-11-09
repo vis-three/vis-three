@@ -7,6 +7,7 @@ import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import WebGLRendererProcessor from "./processor/WebGLRendererProcessor";
 import CSS3DRendererProcessor from "./processor/CSS3DRendererProcessor";
 import { RendererConfigAllType } from "./RendererConfig";
+import { uniqueSymbol } from "../constants/UNIQUESYMBOL";
 
 export type RendererAllType = WebGLRenderer | CSS3DRenderer;
 
@@ -22,11 +23,27 @@ export class RendererCompiler extends Compiler<
 
   useEngine(engine: EngineSupport): this {
     if (engine.webGLRenderer) {
-      this.map.set(CONFIGTYPE.WEBGLRENDERER, engine.webGLRenderer);
+      this.map.set(
+        uniqueSymbol(CONFIGTYPE.WEBGLRENDERER),
+        engine.webGLRenderer
+      );
+
+      this.weakMap.set(
+        engine.webGLRenderer,
+        uniqueSymbol(CONFIGTYPE.WEBGLRENDERER)
+      );
     }
 
     if (engine.css3DRenderer) {
-      this.map.set(CONFIGTYPE.CSS3DRENDERER, engine.css3DRenderer);
+      this.map.set(
+        uniqueSymbol(CONFIGTYPE.CSS3DRENDERER),
+        engine.css3DRenderer
+      );
+
+      this.weakMap.set(
+        engine.css3DRenderer,
+        uniqueSymbol(CONFIGTYPE.CSS3DRENDERER)
+      );
     }
     return super.useEngine(engine);
   }

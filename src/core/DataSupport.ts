@@ -64,7 +64,10 @@ export abstract class DataSupport<
    */
   toJSON(compress = true): string {
     if (!compress) {
-      return JSON.stringify(this.dataContainer.container, stringify);
+      return JSON.stringify(
+        Object.values(this.dataContainer.container),
+        stringify
+      );
     } else {
       return JSON.stringify(this.exportConfig(), stringify);
     }
@@ -75,12 +78,12 @@ export abstract class DataSupport<
    * @param compress 是否压缩配置单 default true
    * @returns config
    */
-  exportConfig(compress = true): CompilerTarget<C> {
+  exportConfig(compress = true): Array<C> {
     if (!compress) {
-      return clone(this.dataContainer.container);
+      return Object.values(clone(this.dataContainer.container));
     } else {
       const data = this.dataContainer.container;
-      const target = {};
+      const target: Array<C> = [];
       const cacheConfigTemplate: { [key: string]: SymbolConfig } = {};
 
       const recursion = (
@@ -137,10 +140,11 @@ export abstract class DataSupport<
           }
           cacheConfigTemplate[config.type] = CONFIGFACTORY[config.type]();
         }
-        target[config.vid] = {};
-        recursion(config, cacheConfigTemplate[config.type], target[config.vid]);
+        const temp = {} as C;
+        recursion(config, cacheConfigTemplate[config.type], temp);
+        target.push(temp);
       }
-      return target as CompilerTarget<C>;
+      return target;
     }
   }
 

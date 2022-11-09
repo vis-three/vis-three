@@ -60,7 +60,7 @@ import { EventDispatcher } from "./core/EventDispatcher";
 import Template from "./convenient/Template";
 import { Object3DDataSupport } from "./middleware/object3D/Object3DDataSupport";
 import { Widget } from "./core/Widget";
-
+import { uniqueSymbol } from "./middleware/constants/UNIQUESYMBOL";
 import "./optimize/optimizeScirpt";
 
 export {
@@ -121,6 +121,7 @@ export {
   DirectionalLightHelper,
   // convenient
   generateConfig,
+  uniqueSymbol,
   SupportDataGenerator,
   CanvasGenerator,
   History,

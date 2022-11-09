@@ -11,7 +11,9 @@ engine.loaderManager.setPath(import.meta.env.BASE_URL);
 
 engine.eventManager.recursive = true;
 
-engine.applyConfig(VIS.generateConfig("Scene")).setScene("Scene");
+engine
+  .applyConfig(VIS.generateConfig("Scene"))
+  .setScene(VIS.uniqueSymbol("Scene"));
 
 // const point = VIS.Widget.component({
 //   name: "point",
@@ -48,7 +50,7 @@ engine.applyConfig(VIS.generateConfig("Scene")).setScene("Scene");
 
 const widget = new VIS.Widget({
   name: "test",
-  parent: "Scene",
+  parent: VIS.uniqueSymbol("Scene"),
   load: ["model/glb/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf"],
   resources() {
     return {
@@ -57,7 +59,6 @@ const widget = new VIS.Widget({
     };
   },
   render(g, c, onComputed, onEvent, onResource) {
-    console.log(THREE.NearestFilter);
     const longTexture = g("CanvasTexture", {
       url: "longCanvas",
       minFilter: THREE.NearestFilter,

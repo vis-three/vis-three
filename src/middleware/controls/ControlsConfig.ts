@@ -1,5 +1,6 @@
 import { SymbolConfig, Vector3Config } from "../common/CommonConfig";
 import { CONFIGTYPE } from "../constants/configType";
+import { uniqueSymbol } from "../constants/UNIQUESYMBOL";
 
 export type ControlsConfig = SymbolConfig;
 
@@ -50,7 +51,7 @@ export type ControlsAllConfig = TransformControlsConfig | OrbitControlsConfig;
 
 export const getTransformControlsConfig = function (): TransformControlsConfig {
   return {
-    vid: CONFIGTYPE.TRNASFORMCONTROLS,
+    vid: uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS),
     type: CONFIGTYPE.TRNASFORMCONTROLS,
     axis: "XYZ",
     enabled: true,
@@ -73,7 +74,7 @@ export const getTransformControlsConfig = function (): TransformControlsConfig {
 
 export const getOrbitControlsConfig = function (): OrbitControlsConfig {
   return {
-    vid: CONFIGTYPE.ORBITCONTROLS,
+    vid: uniqueSymbol(CONFIGTYPE.ORBITCONTROLS),
     type: CONFIGTYPE.ORBITCONTROLS,
     autoRotate: false,
     autoRotateSpeed: 2.0,

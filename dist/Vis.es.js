@@ -3123,6 +3123,14 @@ const getOrthographicCameraConfig = function() {
     zoom: 1
   });
 };
+({
+  [CONFIGTYPE.WEBGLRENDERER]: true,
+  [CONFIGTYPE.CSS3DRENDERER]: true,
+  [CONFIGTYPE.SCENE]: true
+});
+const uniqueSymbol = function(type) {
+  return `DEFUALT-${type}`;
+};
 const getRendererConfig = function() {
   return {
     vid: "",
@@ -3132,7 +3140,7 @@ const getRendererConfig = function() {
 };
 const getWebGLRendererConfig = function() {
   return Object.assign(getRendererConfig(), {
-    vid: CONFIGTYPE.WEBGLRENDERER,
+    vid: uniqueSymbol(CONFIGTYPE.WEBGLRENDERER),
     type: CONFIGTYPE.WEBGLRENDERER,
     clearColor: "rgba(0, 0, 0, 0)",
     outputEncoding: LinearEncoding,
@@ -3153,13 +3161,13 @@ const getWebGLRendererConfig = function() {
 };
 const getCSS3DRenderereConfig = function() {
   return Object.assign(getRendererConfig(), {
-    vid: CONFIGTYPE.CSS3DRENDERER,
+    vid: uniqueSymbol(CONFIGTYPE.CSS3DRENDERER),
     type: CONFIGTYPE.CSS3DRENDERER
   });
 };
 const getSceneConfig = function() {
   return Object.assign(getObjectConfig(), {
-    vid: CONFIGTYPE.SCENE,
+    vid: uniqueSymbol(CONFIGTYPE.SCENE),
     type: CONFIGTYPE.SCENE,
     background: "",
     environment: "",
@@ -3174,7 +3182,7 @@ const getSceneConfig = function() {
 };
 const getTransformControlsConfig = function() {
   return {
-    vid: CONFIGTYPE.TRNASFORMCONTROLS,
+    vid: uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS),
     type: CONFIGTYPE.TRNASFORMCONTROLS,
     axis: "XYZ",
     enabled: true,
@@ -3192,7 +3200,7 @@ const getTransformControlsConfig = function() {
 };
 const getOrbitControlsConfig = function() {
   return {
-    vid: CONFIGTYPE.ORBITCONTROLS,
+    vid: uniqueSymbol(CONFIGTYPE.ORBITCONTROLS),
     type: CONFIGTYPE.ORBITCONTROLS,
     autoRotate: false,
     autoRotateSpeed: 2,
@@ -4894,18 +4902,16 @@ const containerDeleter = function(target, key, container) {
   container.remove(value.vid);
   return result;
 };
-class DataContainer extends Subject {
+const _DataContainer = class extends Subject {
   constructor() {
     super();
-    __publicField(this, "container", new Proxy(
-      {},
-      {
-        get: containerGetter,
-        set: (target, key, value, receiver) => containerSetter(target, key, value, receiver, this),
-        deleteProperty: (target, key) => containerDeleter(target, key, this)
-      }
-    ));
+    __publicField(this, "container");
     __publicField(this, "subscriptions", /* @__PURE__ */ new Map());
+    this.container = new Proxy(_DataContainer.generator(), {
+      get: containerGetter,
+      set: (target, key, value, receiver) => containerSetter(target, key, value, receiver, this),
+      deleteProperty: (target, key) => containerDeleter(target, key, this)
+    });
   }
   add(config2) {
     const observable2 = getObservable(config2);
@@ -4931,7 +4937,9 @@ class DataContainer extends Subject {
   remove(vid) {
     this.subscriptions.delete(vid);
   }
-}
+};
+let DataContainer = _DataContainer;
+__publicField(DataContainer, "generator", () => ({}));
 class DataSupport {
   constructor(rule, data = []) {
     __publicField(this, "dataContainer", new DataContainer());
@@ -4969,17 +4977,20 @@ class DataSupport {
   }
   toJSON(compress = true) {
     if (!compress) {
-      return JSON.stringify(this.dataContainer.container, stringify);
+      return JSON.stringify(
+        Object.values(this.dataContainer.container),
+        stringify
+      );
     } else {
       return JSON.stringify(this.exportConfig(), stringify);
     }
   }
   exportConfig(compress = true) {
     if (!compress) {
-      return clone$1(this.dataContainer.container);
+      return Object.values(clone$1(this.dataContainer.container));
     } else {
       const data = this.dataContainer.container;
-      const target = {};
+      const target = [];
       const cacheConfigTemplate = {};
       const recursion = (config2, template, result = {}) => {
         for (const key in config2) {
@@ -5025,8 +5036,9 @@ class DataSupport {
           }
           cacheConfigTemplate[config2.type] = CONFIGFACTORY[config2.type]();
         }
-        target[config2.vid] = {};
-        recursion(config2, cacheConfigTemplate[config2.type], target[config2.vid]);
+        const temp = {};
+        recursion(config2, cacheConfigTemplate[config2.type], temp);
+        target.push(temp);
       }
       return target;
     }
@@ -5152,9 +5164,10 @@ class CameraDataSupport extends ObjectDataSupport {
 }
 const RendererRule = function(input, compiler) {
   Rule(input, compiler, (vid) => {
-    return validate(vid) || [CONFIGTYPE.WEBGLRENDERER, CONFIGTYPE.CSS3DRENDERER].includes(
-      vid
-    );
+    return validate(vid) || [
+      uniqueSymbol(CONFIGTYPE.WEBGLRENDERER),
+      uniqueSymbol(CONFIGTYPE.CSS3DRENDERER)
+    ].includes(vid);
   });
 };
 class RendererDataSupport extends DataSupport {
@@ -5165,7 +5178,7 @@ class RendererDataSupport extends DataSupport {
 }
 const SceneRule = function(input, compiler) {
   Rule(input, compiler, (vid) => {
-    return validate(vid) || [CONFIGTYPE.SCENE].includes(vid);
+    return validate(vid) || [uniqueSymbol(CONFIGTYPE.SCENE)].includes(vid);
   });
 };
 class SceneDataSupport extends ObjectDataSupport {
@@ -5176,9 +5189,10 @@ class SceneDataSupport extends ObjectDataSupport {
 }
 const ControlsRule = function(input, compiler) {
   Rule(input, compiler, (vid) => {
-    return validate(vid) || [CONFIGTYPE.TRNASFORMCONTROLS, CONFIGTYPE.ORBITCONTROLS].includes(
-      vid
-    );
+    return validate(vid) || [
+      uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS),
+      uniqueSymbol(CONFIGTYPE.ORBITCONTROLS)
+    ].includes(vid);
   });
 };
 class ControlsDataSupport extends DataSupport {
@@ -7665,12 +7679,24 @@ class ControlsCompiler extends Compiler {
   }
   useEngine(engine) {
     if (engine.transformControls) {
-      this.map.set(CONFIGTYPE.TRNASFORMCONTROLS, engine.transformControls);
-      this.weakMap.set(engine.transformControls, CONFIGTYPE.TRNASFORMCONTROLS);
+      this.map.set(
+        uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS),
+        engine.transformControls
+      );
+      this.weakMap.set(
+        engine.transformControls,
+        uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS)
+      );
     }
     if (engine.orbitControls) {
-      this.map.set(CONFIGTYPE.ORBITCONTROLS, engine.orbitControls);
-      this.weakMap.set(engine.orbitControls, CONFIGTYPE.ORBITCONTROLS);
+      this.map.set(
+        uniqueSymbol(CONFIGTYPE.ORBITCONTROLS),
+        engine.orbitControls
+      );
+      this.weakMap.set(
+        engine.orbitControls,
+        uniqueSymbol(CONFIGTYPE.ORBITCONTROLS)
+      );
     }
     return super.useEngine(engine);
   }
@@ -9745,10 +9771,24 @@ class RendererCompiler extends Compiler {
   }
   useEngine(engine) {
     if (engine.webGLRenderer) {
-      this.map.set(CONFIGTYPE.WEBGLRENDERER, engine.webGLRenderer);
+      this.map.set(
+        uniqueSymbol(CONFIGTYPE.WEBGLRENDERER),
+        engine.webGLRenderer
+      );
+      this.weakMap.set(
+        engine.webGLRenderer,
+        uniqueSymbol(CONFIGTYPE.WEBGLRENDERER)
+      );
     }
     if (engine.css3DRenderer) {
-      this.map.set(CONFIGTYPE.CSS3DRENDERER, engine.css3DRenderer);
+      this.map.set(
+        uniqueSymbol(CONFIGTYPE.CSS3DRENDERER),
+        engine.css3DRenderer
+      );
+      this.weakMap.set(
+        engine.css3DRenderer,
+        uniqueSymbol(CONFIGTYPE.CSS3DRENDERER)
+      );
     }
     return super.useEngine(engine);
   }
@@ -13278,7 +13318,7 @@ class Observer extends Subject {
   }
 }
 const onComputed = function(fun) {
-  return new Watcher(fun);
+  return new Watcher(fun).token;
 };
 const onEvent = function(fun) {
   const config2 = { name: Symbol("VIS.RENDER.EVENT") };
@@ -13286,18 +13326,6 @@ const onEvent = function(fun) {
   return config2;
 };
 const createElement = function(type, merge) {
-  const recursion = (object) => {
-    for (const key in object) {
-      if (isObject(object[key]) && !(object[key] instanceof Watcher)) {
-        recursion(object[key]);
-      } else {
-        if (object[key] instanceof Watcher) {
-          object[key] = object[key].token;
-        }
-      }
-    }
-  };
-  recursion(merge);
   return generateConfig(type, merge, false, false);
 };
 const _Widget = class extends EventDispatcher {
@@ -13321,7 +13349,7 @@ const _Widget = class extends EventDispatcher {
   createComputed() {
     const computed = this.options.computed || {};
     for (const key in computed) {
-      this.observed[key] = onComputed(computed[key].bind(this.observed)).token;
+      this.observed[key] = onComputed(computed[key].bind(this.observed));
     }
   }
   createRender(engineSupport) {
@@ -13523,4 +13551,4 @@ const lightShadow = new LightShadow(
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
-export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataContainer, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, Template, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, Widget, generateConfig, getModule };
+export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataContainer, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, Template, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, Widget, generateConfig, getModule, uniqueSymbol };
