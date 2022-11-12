@@ -1,5 +1,5 @@
 import { CONFIGTYPE } from "./configType";
-import { MODULETYPE } from "./MODULETYPE";
+import { MODULETYPE, OBJECTMODULE } from "./MODULETYPE";
 
 /**
  * @deprecated - use getModule
@@ -81,4 +81,17 @@ export const getModule = (type: CONFIGTYPE | string): MODULETYPE | null => {
   }
 
   return null;
+};
+
+export const isObjectModule = (module: string): boolean => {
+  return module.toLocaleUpperCase() in OBJECTMODULE;
+};
+
+export const isObject = (type: string): boolean => {
+  const module = getModule(type);
+  if (module) {
+    return isObjectModule(module);
+  } else {
+    return false;
+  }
 };
