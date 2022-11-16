@@ -23,6 +23,18 @@ import { getObservable, Ignore, observable } from "./Observable";
 import { Watcher } from "./widget/Watcher";
 import { clone, handler, planish } from "../convenient/Template";
 import { antiShake } from "../utils/AntiShake";
+import { v4 } from "uuid";
+
+const lifetimes = [
+  "beforeLoad",
+  "loaded",
+  "beforeCreate",
+  "created",
+  "beforeRender",
+  "rednered",
+  "beforeDispose",
+  "disposed",
+];
 
 export interface WigetLifetimes {
   beforeLoad?: Function;
@@ -34,6 +46,7 @@ export interface WigetLifetimes {
 }
 
 export interface WidgetOptions {
+  mixins?: Omit<WidgetOptions, "name" | "parent">[];
   name: string;
   input?: Record<string, any>;
   load?: Array<LoadUnit>;
@@ -82,16 +95,52 @@ export class Widget extends EventDispatcher {
     Widget.components[options.name] = options;
   };
 
+  wid = v4();
+  name: string;
   observed: Record<string, any> = {};
 
   private options: WidgetOptions;
 
+  private load: Array<LoadUnit> = [];
   private render?: Record<string, true> = {};
   private observer = new Observer();
 
   constructor(options: WidgetOptions) {
     super();
     this.options = options;
+    this.name = `${options.name}-${this.wid.slice(-4)}`;
+  }
+
+  private initMixins() {
+    // const mixinLoad = (mixin: Omit<WidgetOptions, 'name' | 'parent'>) => {
+    //   if (mixin.load && mixin.load.length) {
+    //     this.load.push(...mixin.load)
+    //   }
+    // }
+    // const recursion = (mixins: Omit<WidgetOptions, 'name' | 'parent'>) => {
+    //   if (options.mixins && options.mixins.length) {
+    //     for (const mixins of options.mixins) {
+    //       recursion(mixins)
+    //     } else {
+    //       mixinLoad()
+    //     }
+    //   }
+    // };
+    // // 从内到外覆盖
+    // const options = this.options;
+    // const mixins = options.mixins;
+  }
+
+  private initLifetimes() {
+    const options = this.options;
+
+    for (const key of lifetimes) {
+      if (options[key]) {
+        this.on(key, () => {
+          options[key]();
+        });
+      }
+    }
   }
 
   private async createLoad(engineSupport: EngineSupport) {
@@ -99,13 +148,13 @@ export class Widget extends EventDispatcher {
     const resources = options.load;
 
     // 加载资源
-    options.beforeLoad && options.beforeLoad();
+    this.emit("beforeLoad");
 
     if (resources) {
       await engineSupport.loadResourcesAsync(resources);
     }
 
-    options.loaded && options.loaded();
+    this.emit("created");
   }
 
   // 创建Computed
@@ -215,6 +264,7 @@ export class Widget extends EventDispatcher {
   async init(engineSupport: EngineSupport) {
     const options = this.options;
 
+    this.initLifetimes();
     await this.createLoad(engineSupport);
     this.createObserved();
     this.createResources(engineSupport);
@@ -222,6 +272,7 @@ export class Widget extends EventDispatcher {
     this.createRender(engineSupport);
     this.initObserver();
 
+    this.emit("beforeRender");
     const dataSupportManager = engineSupport.dataSupportManager;
     // 打包成组
     const group = generateConfig(CONFIGTYPE.GROUP) as GroupConfig;
@@ -250,6 +301,7 @@ export class Widget extends EventDispatcher {
 
     antiShake.append(() => {
       this.createWatch();
+      this.emit("rendered");
       return true;
     });
   }

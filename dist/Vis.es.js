@@ -2548,6 +2548,17 @@ const getModule = (type) => {
   }
   return null;
 };
+const isObjectModule = (module) => {
+  return module.toLocaleUpperCase() in OBJECTMODULE;
+};
+const isObject$1 = (type) => {
+  const module = getModule(type);
+  if (module) {
+    return isObjectModule(module);
+  } else {
+    return false;
+  }
+};
 const getObjectConfig = () => {
   return {
     vid: "",
@@ -13328,23 +13339,49 @@ const onEvent = function(fun) {
 const createElement = function(type, merge) {
   return generateConfig(type, merge, false, false);
 };
+const lifetimes = [
+  "beforeLoad",
+  "loaded",
+  "beforeCreate",
+  "created",
+  "beforeRender",
+  "rednered",
+  "beforeDispose",
+  "disposed"
+];
 const _Widget = class extends EventDispatcher {
   constructor(options) {
     super();
+    __publicField(this, "wid", v4());
+    __publicField(this, "name");
     __publicField(this, "observed", {});
     __publicField(this, "options");
+    __publicField(this, "load", []);
     __publicField(this, "render", {});
     __publicField(this, "observer", new Observer());
     this.options = options;
+    this.name = `${options.name}-${this.wid.slice(-4)}`;
+  }
+  initMixins() {
+  }
+  initLifetimes() {
+    const options = this.options;
+    for (const key of lifetimes) {
+      if (options[key]) {
+        this.on(key, () => {
+          options[key]();
+        });
+      }
+    }
   }
   async createLoad(engineSupport) {
     const options = this.options;
     const resources = options.load;
-    options.beforeLoad && options.beforeLoad();
+    this.emit("beforeLoad");
     if (resources) {
       await engineSupport.loadResourcesAsync(resources);
     }
-    options.loaded && options.loaded();
+    this.emit("created");
   }
   createComputed() {
     const computed = this.options.computed || {};
@@ -13435,12 +13472,14 @@ const _Widget = class extends EventDispatcher {
   }
   async init(engineSupport) {
     const options = this.options;
+    this.initLifetimes();
     await this.createLoad(engineSupport);
     this.createObserved();
     this.createResources(engineSupport);
     this.createComputed();
     this.createRender(engineSupport);
     this.initObserver();
+    this.emit("beforeRender");
     const dataSupportManager = engineSupport.dataSupportManager;
     const group = generateConfig(CONFIGTYPE.GROUP);
     Object.keys(this.render).forEach((key) => {
@@ -13461,6 +13500,7 @@ const _Widget = class extends EventDispatcher {
     engineSupport.getConfigBySymbol(options.parent).children.push(group.vid);
     antiShake.append(() => {
       this.createWatch();
+      this.emit("rendered");
       return true;
     });
   }
@@ -13551,4 +13591,4 @@ const lightShadow = new LightShadow(
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
-export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataContainer, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, Template, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, Widget, generateConfig, getModule, uniqueSymbol };
+export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataContainer, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, Template, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, Widget, generateConfig, getModule, isObject$1 as isObject, isObjectModule, uniqueSymbol };

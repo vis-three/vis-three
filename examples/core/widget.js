@@ -183,6 +183,10 @@ const widget = new VIS.Widget({
   created() {},
 });
 
+widget.once("rendered", () => {
+  console.log(1);
+});
+
 // 使用
 engine.use(widget);
 
