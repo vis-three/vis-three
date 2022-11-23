@@ -2,6 +2,8 @@
 
 three.js 库二次功能封装 + 配置化的 three.js 开发。
 
+> 由于目前需要解决生存问题，后面的版本展示不开源，详细情况可查看：[https://www.bilibili.com/video/BV1Tg411i7Xu](https://www.bilibili.com/video/BV1Tg411i7Xu)
+
 <p>
   <img alt="NPM" src="https://img.shields.io/npm/l/vis-three?color=blue">
   <img alt="npm" src="https://img.shields.io/npm/v/vis-three?color=light">
