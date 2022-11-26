@@ -14,9 +14,8 @@ export const Rule: Rule<BasicCompiler> = (
   validateFun = validate
 ) => {
   const { operate, key, path, value } = input;
-
   let vid = key;
-
+  // console.log(input);
   const tempPath = path.split(".");
 
   if (path.length) {

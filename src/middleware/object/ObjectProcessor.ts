@@ -247,13 +247,16 @@ export const objectCreate = function <
 
   // event
   for (const eventName of Object.values(EVENTNAME)) {
-    config[eventName].forEach((event, i) => {
-      addEventHanlder({
-        target: object,
-        path: [eventName, i.toString()],
-        value: event,
-        engine,
-      } as unknown as ProcessParams<C, O>);
+    antiShake.focus(() => {
+      config[eventName].forEach((event, i) => {
+        addEventHanlder({
+          target: object,
+          path: [eventName, i.toString()],
+          value: event,
+          engine,
+        } as unknown as ProcessParams<C, O>);
+      });
+      return true;
     });
   }
 

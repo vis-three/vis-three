@@ -24,7 +24,7 @@ export abstract class DataSupport<
     });
 
     for (const config of data) {
-      this.dataContainer.add(config);
+      this.addConfig(config);
     }
   }
 

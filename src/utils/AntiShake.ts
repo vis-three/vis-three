@@ -30,6 +30,12 @@ export class AntiShake {
       this.exec(fun);
     }
   }
+
+  focus(fun: () => boolean) {
+    setTimeout(() => {
+      fun();
+    }, this.time);
+  }
 }
 
 export const antiShake = new AntiShake();

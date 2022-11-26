@@ -24,7 +24,7 @@ export const urlHanlder = function ({
   engine: EngineSupport;
 }) {
   antiShake.exec((finish) => {
-    target.url = engine.compilerManager.textureCompiler.getResource(value, [
+    target.image = engine.compilerManager.textureCompiler.getResource(value, [
       HTMLImageElement,
       HTMLVideoElement,
       HTMLCanvasElement,
@@ -32,7 +32,7 @@ export const urlHanlder = function ({
 
     target.needsUpdate = true;
 
-    if (target.url === TextureCompiler.replaceImage) {
+    if (target.images === TextureCompiler.replaceImage) {
       return false;
     }
 

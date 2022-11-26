@@ -1,4 +1,4 @@
 export default {
   router: "core",
-  children: ["/ProxyBroadcast.html", "/Widget.html"],
+  children: ["/observable.html", "/Widget.html", "/cover.html"],
 };

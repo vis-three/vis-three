@@ -66,10 +66,13 @@ import Template from "./convenient/Template";
 import { Object3DDataSupport } from "./middleware/object3D/Object3DDataSupport";
 import { Widget } from "./core/Widget";
 import { uniqueSymbol } from "./middleware/constants/UNIQUESYMBOL";
+import { observable } from "./core/Observable";
+
 import "./optimize/optimizeScirpt";
 
 export {
   // core
+  observable,
   DataContainer,
   Translater,
   EventDispatcher,

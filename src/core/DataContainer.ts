@@ -43,8 +43,21 @@ const containerSetter = function (
     });
 
     return result;
+  } else {
+    const result = Reflect.set(target, key, value);
+
+    container.remove(value.vid);
+    container.add(value);
+
+    container.next({
+      operate: "set",
+      path: key,
+      key,
+      value,
+    });
+
+    return result;
   }
-  return Reflect.set(target, key, value, receiver);
 };
 
 const containerDeleter = function (
@@ -112,8 +125,6 @@ export class DataContainer<
         }
       })
     );
-
-    this.container[observable.raw.vid] = config;
   }
 
   remove(vid: string) {

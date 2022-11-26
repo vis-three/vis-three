@@ -18,7 +18,8 @@ export default {
         "@tweenjs/tween.js",
         "three",
         "three/src/lights/LightShadow",
-        new RegExp("^three/examples/jsm")
+        new RegExp("^three/examples/jsm"),
+        "rxjs",
       ],
       plugins: [],
     },

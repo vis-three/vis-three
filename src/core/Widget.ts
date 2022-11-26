@@ -96,6 +96,7 @@ export class Widget extends EventDispatcher {
   };
 
   wid = v4();
+  parent = "";
   name: string;
   observed: Record<string, any> = {};
 
@@ -295,9 +296,13 @@ export class Widget extends EventDispatcher {
 
     dataSupportManager.applyConfig(group);
 
-    (<ObjectConfig>(
-      engineSupport.getConfigBySymbol(options.parent)
-    )).children.push(group.vid);
+    const scene = engineSupport.getConfigBySymbol(
+      options.parent
+    ) as ObjectConfig;
+
+    scene.children.push(group.vid);
+
+    this.parent = options.parent;
 
     antiShake.append(() => {
       this.createWatch();
