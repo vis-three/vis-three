@@ -3976,10 +3976,24 @@ const parse = (key, value) => {
 const clone$1 = (object) => {
   return JSON.parse(JSON.stringify(object, stringify), parse);
 };
+class Pipeline {
+  constructor(config2) {
+    __publicField(this, "config");
+    this.config = config2;
+  }
+  pipe(fun) {
+    this.config = fun(this.config);
+    return this;
+  }
+  get() {
+    return this.config;
+  }
+}
 var JSONHandler = {
   stringify,
   parse,
-  clone: clone$1
+  clone: clone$1,
+  Pipeline
 };
 var JSONHandler$1 = /* @__PURE__ */ Object.freeze({
   __proto__: null,
@@ -3987,6 +4001,7 @@ var JSONHandler$1 = /* @__PURE__ */ Object.freeze({
   stringify,
   parse,
   clone: clone$1,
+  Pipeline,
   "default": JSONHandler
 });
 class Translater {
@@ -6465,7 +6480,7 @@ class AntiShake {
       this.exec(fun);
     }
   }
-  focus(fun) {
+  force(fun) {
     setTimeout(() => {
       fun();
     }, this.time);
@@ -6535,6 +6550,9 @@ const removeEventHandler = function({ target, path, value }) {
   delete value[Symbol.for(eventSymbol)];
 };
 const updateEventHandler = function({ target, config: config2, path, engine }) {
+  if (path.length < 2) {
+    return;
+  }
   const eventName = path[0];
   const eventConfig = config2[path[0]][path[1]];
   const fun = eventConfig[Symbol.for(eventSymbol)];
@@ -6616,7 +6634,7 @@ const objectCreate = function(object, config2, filter, engine) {
     });
   });
   for (const eventName of Object.values(EVENTNAME)) {
-    antiShake.focus(() => {
+    antiShake.force(() => {
       config2[eventName].forEach((event, i) => {
         addEventHanlder({
           target: object,

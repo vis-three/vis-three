@@ -123,6 +123,10 @@ export const updateEventHandler = function <
   C extends ObjectConfig,
   O extends Object3D
 >({ target, config, path, engine }: ProcessParams<C, O>) {
+  // fixed: cover empty array
+  if (path.length < 2) {
+    return;
+  }
   const eventName = path[0];
   const eventConfig = config[path[0]][path[1]];
 
@@ -247,7 +251,7 @@ export const objectCreate = function <
 
   // event
   for (const eventName of Object.values(EVENTNAME)) {
-    antiShake.focus(() => {
+    antiShake.force(() => {
       config[eventName].forEach((event, i) => {
         addEventHanlder({
           target: object,

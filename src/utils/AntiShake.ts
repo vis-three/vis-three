@@ -31,7 +31,7 @@ export class AntiShake {
     }
   }
 
-  focus(fun: () => boolean) {
+  force(fun: () => boolean) {
     setTimeout(() => {
       fun();
     }, this.time);

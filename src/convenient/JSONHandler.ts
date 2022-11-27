@@ -31,8 +31,29 @@ export const clone = <T extends object>(object: T): T => {
   return JSON.parse(JSON.stringify(object, stringify), parse);
 };
 
+/**
+ * 管道处理
+ */
+export class Pipeline {
+  config: any;
+
+  constructor(config: any) {
+    this.config = config;
+  }
+
+  pipe(fun: (config: any) => any): this {
+    this.config = fun(this.config);
+    return this;
+  }
+
+  get() {
+    return this.config;
+  }
+}
+
 export default {
   stringify,
   parse,
   clone,
+  Pipeline,
 };
