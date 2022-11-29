@@ -84,7 +84,7 @@ export const getModule = (type: CONFIGTYPE | string): MODULETYPE | null => {
 };
 
 export const isObjectModule = (module: string): boolean => {
-  return module.toLocaleUpperCase() in OBJECTMODULE;
+  return OBJECTMODULE[module];
 };
 
 export const isObject = (type: string): boolean => {

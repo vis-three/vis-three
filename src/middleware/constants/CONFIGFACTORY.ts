@@ -77,6 +77,7 @@ import {
   getCSS3DSpriteConfig,
 } from "../css3D/CSS3DConfig";
 import { getObjectConfig } from "../object/ObjectConfig";
+import { getCSS2DPlaneConfig } from "../css2D/CSS2DConfig";
 
 export const CONFIGFACTORY = {
   [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
@@ -130,6 +131,7 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.CSS3DOBJECT]: getCSS3DObjectConfig,
   [CONFIGTYPE.CSS3DSPRITE]: getCSS3DSpriteConfig,
   [CONFIGTYPE.CSS3DPLANE]: getCSS3DPlaneConfig,
+  [CONFIGTYPE.CSS2DPLANE]: getCSS2DPlaneConfig,
 
   [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
   [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,

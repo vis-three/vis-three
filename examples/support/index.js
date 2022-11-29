@@ -9,6 +9,7 @@ export default {
     "/EventSupport.html",
     "/SceneSupport.html",
     "/CSS3DSupport.html",
+    "/CSS2DSupport.html",
     "/AnimationSupport.html",
     "/SolidObjectSupport.html",
   ],

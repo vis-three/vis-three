@@ -27,6 +27,7 @@ import { LuminosityHighPassShader } from "three/examples/jsm/shaders/LuminosityH
 import { LightShadow } from "three/src/lights/LightShadow";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
+import { CSS2DObject, CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 class EventDispatcher {
   constructor() {
     __publicField(this, "listeners", /* @__PURE__ */ new Map());
@@ -2419,6 +2420,7 @@ var CONFIGTYPE = /* @__PURE__ */ ((CONFIGTYPE2) => {
   CONFIGTYPE2["CSS3DOBJECT"] = "CSS3DObject";
   CONFIGTYPE2["CSS3DSPRITE"] = "CSS3DSprite";
   CONFIGTYPE2["CSS3DPLANE"] = "CSS3DPlane";
+  CONFIGTYPE2["CSS2DPLANE"] = "CSS2DPlane";
   CONFIGTYPE2["IMAGETEXTURE"] = "ImageTexture";
   CONFIGTYPE2["CUBETEXTURE"] = "CubeTexture";
   CONFIGTYPE2["CANVASTEXTURE"] = "CanvasTexture";
@@ -2467,23 +2469,24 @@ var MODULETYPE = /* @__PURE__ */ ((MODULETYPE2) => {
   MODULETYPE2["POINTS"] = "points";
   MODULETYPE2["GROUP"] = "group";
   MODULETYPE2["CSS3D"] = "css3D";
+  MODULETYPE2["CSS2D"] = "css2D";
   MODULETYPE2["PASS"] = "pass";
   MODULETYPE2["ANIMATION"] = "animation";
   return MODULETYPE2;
 })(MODULETYPE || {});
-var OBJECTMODULE = /* @__PURE__ */ ((OBJECTMODULE2) => {
-  OBJECTMODULE2["CAMERA"] = "camera";
-  OBJECTMODULE2["LIGHT"] = "light";
-  OBJECTMODULE2["SCENE"] = "scene";
-  OBJECTMODULE2["SPRITE"] = "sprite";
-  OBJECTMODULE2["LINE"] = "line";
-  OBJECTMODULE2["MESH"] = "mesh";
-  OBJECTMODULE2["POINTS"] = "points";
-  OBJECTMODULE2["GROUP"] = "group";
-  OBJECTMODULE2["CSS3D"] = "css3D";
-  OBJECTMODULE2["OBJECT3D"] = "object3D";
-  return OBJECTMODULE2;
-})(OBJECTMODULE || {});
+const OBJECTMODULE = {
+  ["camera"]: true,
+  ["light"]: true,
+  ["scene"]: true,
+  ["sprite"]: true,
+  ["line"]: true,
+  ["mesh"]: true,
+  ["points"]: true,
+  ["group"]: true,
+  ["css3D"]: true,
+  ["css2D"]: true,
+  ["object3D"]: true
+};
 const CONFIGMODULE = {
   [CONFIGTYPE.IMAGETEXTURE]: MODULETYPE.TEXTURE,
   [CONFIGTYPE.CUBETEXTURE]: MODULETYPE.TEXTURE,
@@ -2550,7 +2553,7 @@ const getModule = (type) => {
   return null;
 };
 const isObjectModule = (module) => {
-  return module.toLocaleUpperCase() in OBJECTMODULE;
+  return OBJECTMODULE[module];
 };
 const isObject$1 = (type) => {
   const module = getModule(type);
@@ -3355,6 +3358,19 @@ const getCSS3DSpriteConfig = function() {
     rotation2D: 0
   });
 };
+const getCSS2DObjectConfig = function() {
+  return Object.assign(getObjectConfig(), {
+    type: CONFIGTYPE.CSS3DOBJECT,
+    element: "",
+    width: 50,
+    height: 50
+  });
+};
+const getCSS2DPlaneConfig = function() {
+  return Object.assign(getCSS2DObjectConfig(), {
+    type: CONFIGTYPE.CSS2DPLANE
+  });
+};
 const CONFIGFACTORY = {
   [CONFIGTYPE.IMAGETEXTURE]: getImageTextureConfig,
   [CONFIGTYPE.CUBETEXTURE]: getCubeTextureConfig,
@@ -3402,6 +3418,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.CSS3DOBJECT]: getCSS3DObjectConfig,
   [CONFIGTYPE.CSS3DSPRITE]: getCSS3DSpriteConfig,
   [CONFIGTYPE.CSS3DPLANE]: getCSS3DPlaneConfig,
+  [CONFIGTYPE.CSS2DPLANE]: getCSS2DPlaneConfig,
   [CONFIGTYPE.PERSPECTIVECAMERA]: getPerspectiveCameraConfig,
   [CONFIGTYPE.ORTHOGRAPHICCAMERA]: getOrthographicCameraConfig,
   [CONFIGTYPE.WEBGLRENDERER]: getWebGLRendererConfig,
@@ -4622,6 +4639,15 @@ class Object3DDataSupport extends ObjectDataSupport {
     __publicField(this, "MODULE", MODULETYPE.OBJECT3D);
   }
 }
+const CSS2DRule = function(notice, compiler) {
+  ObjectRule(notice, compiler);
+};
+class CSS2DDataSupport extends ObjectDataSupport {
+  constructor(data = []) {
+    super(CSS2DRule, data);
+    __publicField(this, "MODULE", MODULETYPE.CSS2D);
+  }
+}
 class DataSupportManager {
   constructor(parameters) {
     __publicField(this, "object3DDataSupport", new Object3DDataSupport());
@@ -4639,6 +4665,7 @@ class DataSupportManager {
     __publicField(this, "pointsDataSupport", new PointsDataSupport());
     __publicField(this, "groupDataSupport", new GroupDataSupport());
     __publicField(this, "css3DDataSupport", new CSS3DDataSupport());
+    __publicField(this, "css2DDataSupport", new CSS2DDataSupport());
     __publicField(this, "passDataSupport", new PassDataSupport());
     __publicField(this, "animationDataSupport", new AnimationDataSupport());
     __publicField(this, "dataSupportMap");
@@ -7042,7 +7069,7 @@ class ControlsCompiler extends Compiler {
 }
 Compiler.processor(OrbitControlsProcessor);
 Compiler.processor(TransformControlsProcessor);
-const getElement = function(element, engine) {
+const getElement$1 = function(element, engine) {
   const resourceMap = engine.resourceManager.resourceMap;
   if (!resourceMap.has(element)) {
     console.warn(`css3D compiler: can not found resource element: ${element}`);
@@ -7066,7 +7093,7 @@ var CSS3DObjectProcessor = defineProcessor({
     add: objectCommands.add,
     set: {
       element({ target, value, engine }) {
-        target.element = getElement(value, engine);
+        target.element = getElement$1(value, engine);
       },
       ...objectCommands.set
     },
@@ -7074,7 +7101,7 @@ var CSS3DObjectProcessor = defineProcessor({
   },
   create(config2, engine) {
     return objectCreate(
-      new CSS3DObject(getElement(config2.element, engine)),
+      new CSS3DObject(getElement$1(config2.element, engine)),
       config2,
       {
         element: true
@@ -7148,7 +7175,7 @@ var CSS3DPlaneProcessor = defineProcessor({
     set: {
       element({ target, value, engine }) {
         target.element.innerHTML = "";
-        target.element.appendChild(getElement(value, engine));
+        target.element.appendChild(getElement$1(value, engine));
       },
       ...objectCommands.set
     },
@@ -7156,7 +7183,7 @@ var CSS3DPlaneProcessor = defineProcessor({
   },
   create(config2, engine) {
     return objectCreate(
-      new CSS3DPlane(getElement(config2.element, engine)),
+      new CSS3DPlane(getElement$1(config2.element, engine)),
       config2,
       {
         element: true
@@ -7246,7 +7273,7 @@ var CSS3DSpriteProcessor = defineProcessor({
     set: {
       element({ target, value, engine }) {
         target.element.innerHTML = "";
-        target.element.appendChild(getElement(value, engine));
+        target.element.appendChild(getElement$1(value, engine));
       },
       ...objectCommands.set
     },
@@ -7254,7 +7281,7 @@ var CSS3DSpriteProcessor = defineProcessor({
   },
   create(config2, engine) {
     return objectCreate(
-      new VisCSS3DSprite(getElement(config2.element, engine)),
+      new VisCSS3DSprite(getElement$1(config2.element, engine)),
       config2,
       {
         element: true
@@ -9679,6 +9706,113 @@ Compiler.processor(CanvasTextureProcessor);
 Compiler.processor(CubeTextureProcessor);
 Compiler.processor(VideoTextureProcessor);
 Compiler.processor(LoadTextureProcessor);
+class VisCSS2DObject extends CSS2DObject {
+  constructor(element = document.createElement("div")) {
+    const root = document.createElement("div");
+    const width = 50;
+    const height = 50;
+    root.style.width = `${width}px`;
+    root.style.height = `${height}px`;
+    root.appendChild(element);
+    super(root);
+    __publicField(this, "geometry");
+    __publicField(this, "_width");
+    __publicField(this, "_height");
+    this.geometry = new PlaneBufferGeometry(width, height);
+    this.geometry.computeBoundingBox();
+    this._width = width;
+    this._height = height;
+  }
+  get width() {
+    return this._width;
+  }
+  set width(value) {
+    this.geometry.dispose();
+    this.geometry = new PlaneBufferGeometry(value, this._height);
+    this.geometry.computeBoundingBox();
+    this.element.style.width = `${value}px`;
+    this._width = value;
+  }
+  get height() {
+    return this._height;
+  }
+  set height(value) {
+    this.geometry.dispose();
+    this.geometry = new PlaneBufferGeometry(this._width, value);
+    this.geometry.computeBoundingBox();
+    this.element.style.height = `${value}px`;
+    this._height = value;
+  }
+}
+class CSS2DPlane extends VisCSS2DObject {
+  constructor(element = document.createElement("div")) {
+    super(element);
+    __publicField(this, "cacheBox", new Box3());
+    this.type = "CSS2DPlane";
+    this.element.classList.add("vis-css2d", "vis-css2d-plane");
+  }
+  raycast(raycaster, intersects) {
+    const box = this.cacheBox.copy(this.geometry.boundingBox);
+    box.applyMatrix4(this.matrixWorld);
+    if (raycaster.ray.intersectsBox(box)) {
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(this.position),
+        object: this,
+        point: this.position
+      });
+    }
+  }
+}
+const getElement = function(element, engine) {
+  const resourceMap = engine.resourceManager.resourceMap;
+  if (!resourceMap.has(element)) {
+    console.warn(`css2D compiler: can not found resource element: ${element}`);
+    return document.createElement("div");
+  }
+  const resource = resourceMap.get(element);
+  if (resource instanceof HTMLElement) {
+    return resource;
+  } else {
+    console.warn(
+      `css2D compiler can not suport render this resource type.`,
+      resource.constructor,
+      element
+    );
+    return document.createElement("div");
+  }
+};
+var CSS2DPlaneProcessor = defineProcessor({
+  configType: CONFIGTYPE.CSS2DPLANE,
+  commands: {
+    add: objectCommands.add,
+    set: {
+      element({ target, value, engine }) {
+        target.element.innerHTML = "";
+        target.element.appendChild(getElement(value, engine));
+      },
+      ...objectCommands.set
+    },
+    delete: objectCommands.delete
+  },
+  create(config2, engine) {
+    return objectCreate(
+      new CSS2DPlane(getElement(config2.element, engine)),
+      config2,
+      {
+        element: true
+      },
+      engine
+    );
+  },
+  dispose: objectDispose
+});
+class CSS2DCompiler extends ObjectCompiler {
+  constructor() {
+    super();
+    __publicField(this, "MODULE", MODULETYPE.CSS2D);
+  }
+}
+Compiler.processor(CSS2DPlaneProcessor);
 class CompilerManager extends EventDispatcher {
   constructor(parameters) {
     super();
@@ -9697,6 +9831,7 @@ class CompilerManager extends EventDispatcher {
     __publicField(this, "pointsCompiler", new PointsCompiler());
     __publicField(this, "groupCompiler", new GroupCompiler());
     __publicField(this, "css3DCompiler", new CSS3DCompiler());
+    __publicField(this, "css2DCompiler", new CSS2DCompiler());
     __publicField(this, "passCompiler", new PassCompiler());
     __publicField(this, "animationCompiler", new AnimationCompiler());
     __publicField(this, "compilerMap");
@@ -9713,8 +9848,6 @@ class CompilerManager extends EventDispatcher {
       }
     });
     this.compilerMap = compilerMap;
-  }
-  wait(fun, timeout) {
   }
   support(engine) {
     this.compilerMap.forEach((compiler) => {
@@ -10968,6 +11101,38 @@ class SpotLightHelper extends LineSegments {
     }
   }
 }
+class CSS2DPlaneHelper extends LineSegments {
+  constructor(target) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "type", "VisCSS2DPlaneHelper");
+    __publicField(this, "observer");
+    this.geometry = new EdgesGeometry(
+      new PlaneBufferGeometry(target.width, target.height)
+    );
+    this.geometry.computeBoundingBox();
+    this.material = getHelperLineMaterial();
+    this.matrixAutoUpdate = false;
+    this.matrix = target.matrix;
+    this.matrixWorldNeedsUpdate = false;
+    this.matrixWorld = target.matrixWorld;
+    this.target = target;
+    const observer = new MutationObserver(() => {
+      this.geometry.dispose();
+      this.geometry = new EdgesGeometry(
+        new PlaneBufferGeometry(target.width, target.height)
+      );
+      this.geometry.computeBoundingBox();
+    });
+    observer.observe(target.element, {
+      attributeFilter: ["style"]
+    });
+    this.observer = observer;
+  }
+  dispose() {
+    this.observer.disconnect();
+  }
+}
 class CSS3DObjectHelper extends LineSegments {
   constructor(target) {
     super();
@@ -11242,7 +11407,8 @@ class ObjectHelperManager extends EventDispatcher {
       [CONFIGTYPE.LINE]: LineHelper,
       [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper,
       [CONFIGTYPE.CSS3DPLANE]: CSS3DPlaneHelper,
-      [CONFIGTYPE.CSS3DSPRITE]: CSS3DPlaneHelper
+      [CONFIGTYPE.CSS3DSPRITE]: CSS3DPlaneHelper,
+      [CONFIGTYPE.CSS2DPLANE]: CSS2DPlaneHelper
     });
     __publicField(this, "helperFilter", {
       AmbientLight: true,
@@ -11579,30 +11745,62 @@ const CSS3DRendererPlugin = function(params = {}) {
     });
   });
   if (this.renderManager) {
-    this.renderManager.removeEventListener("render", this.render);
     this.renderManager.addEventListener("render", (event) => {
       this.css3DRenderer.render(this.scene, this.camera);
     });
   } else {
-    if (this.webGLRenderer) {
-      const render = this.render.bind(this);
-      this.render = function() {
-        render();
-        this.webGLRenderer.render(this.scene, this.camera);
-        return this;
-      };
-    } else {
-      this.render = function() {
-        this.webGLRenderer.render(this.scene, this.camera);
-        return this;
-      };
-    }
+    const render = this.render.bind(this);
+    this.render = function() {
+      render();
+      this.css3DRenderer.render(this.scene, this.camera);
+      return this;
+    };
+  }
+  return true;
+};
+const CSS2DRendererPlugin = function(params = {}) {
+  if (this.css2DRenderer) {
+    console.warn("this has installed css2DRenderer plugin.");
+    return false;
+  }
+  this.css2DRenderer = new CSS2DRenderer();
+  const domElement = this.css2DRenderer.domElement;
+  domElement.classList.add("vis-css2D");
+  domElement.style.position = "absolute";
+  domElement.style.top = "0";
+  domElement.style.left = "0";
+  this.addEventListener("setDom", (event) => {
+    event.dom.appendChild(this.css2DRenderer.domElement);
+  });
+  this.addEventListener("setSize", (event) => {
+    this.css2DRenderer.setSize(event.width, event.height);
+  });
+  this.addEventListener("setScene", (event) => {
+    const oldScene = event.oldScene;
+    oldScene.traverse((object) => {
+      if (object instanceof CSS2DObject) {
+        object.element.style.display = "none";
+      }
+    });
+  });
+  if (this.renderManager) {
+    this.renderManager.addEventListener("render", (event) => {
+      this.css2DRenderer.render(this.scene, this.camera);
+    });
+  } else {
+    const render = this.render.bind(this);
+    this.render = function() {
+      render();
+      this.css2DRenderer.render(this.scene, this.camera);
+      return this;
+    };
   }
   return true;
 };
 var ENGINEPLUGIN = /* @__PURE__ */ ((ENGINEPLUGIN2) => {
   ENGINEPLUGIN2["WEBGLRENDERER"] = "WebGLRenderer";
   ENGINEPLUGIN2["CSS3DRENDERER"] = "CSS3DRenderer";
+  ENGINEPLUGIN2["CSS2DRENDERER"] = "CSS2DRenderer";
   ENGINEPLUGIN2["SCENE"] = "Scene";
   ENGINEPLUGIN2["MODELINGSCENE"] = "ModelingScene";
   ENGINEPLUGIN2["RENDERMANAGER"] = "RenderManager";
@@ -11635,6 +11833,7 @@ const _Engine = class extends EventDispatcher {
     __publicField(this, "dom");
     __publicField(this, "webGLRenderer");
     __publicField(this, "css3DRenderer");
+    __publicField(this, "css2DRenderer");
     __publicField(this, "orbitControls");
     __publicField(this, "transformControls");
     __publicField(this, "effectComposer");
@@ -11826,6 +12025,10 @@ Engine.register(
   CSS3DRendererPlugin
 );
 Engine.register(
+  "CSS2DRenderer",
+  CSS2DRendererPlugin
+);
+Engine.register(
   "EffectComposer",
   EffectComposerPlugin
 );
@@ -11958,7 +12161,7 @@ const generateConfig = function(type, merge, options = {
     const engine = generateConfig.injectEngine;
     engine.applyConfig(ob);
     if (generateConfig.injectScene) {
-      if (getModule(initConfig.type).toLocaleUpperCase() in OBJECTMODULE && initConfig.type !== CONFIGTYPE.SCENE) {
+      if (isObject$1(initConfig.type) && initConfig.type !== CONFIGTYPE.SCENE) {
         let sceneConfig = null;
         if (typeof generateConfig.injectScene === "boolean") {
           sceneConfig = engine.getObjectConfig(engine.scene);
@@ -12930,4 +13133,4 @@ const lightShadow = new LightShadow(
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
-export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataContainer, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, Template, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, Widget, generateConfig, getModule, isObject$1 as isObject, isObjectModule, observable, uniqueSymbol };
+export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS2DDataSupport, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataContainer, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, Template, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, Widget, generateConfig, getModule, isObject$1 as isObject, isObjectModule, observable, uniqueSymbol };

@@ -4,6 +4,7 @@ import { CameraHelper } from "../extends/helper/camera/CameraHelper";
 import { DirectionalLightHelper } from "../extends/helper/light/DirectionalLightHelper";
 import { PointLightHelper } from "../extends/helper/light/PointLightHelper";
 import { SpotLightHelper } from "../extends/helper/light/SpotLightHelper";
+import { CSS2DPlaneHelper } from "../extends/helper/object/CSS2DPlaneHelper";
 import { CSS3DObjectHelper } from "../extends/helper/object/CSS3DObjectHelper";
 import { CSS3DPlaneHelper } from "../extends/helper/object/CSS3DPlaneHelper";
 import { GroupHelper } from "../extends/helper/object/GroupHelper";
@@ -34,6 +35,7 @@ export class ObjectHelperManager extends EventDispatcher {
     [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper,
     [CONFIGTYPE.CSS3DPLANE]: CSS3DPlaneHelper,
     [CONFIGTYPE.CSS3DSPRITE]: CSS3DPlaneHelper,
+    [CONFIGTYPE.CSS2DPLANE]: CSS2DPlaneHelper,
   };
 
   private helperFilter = {

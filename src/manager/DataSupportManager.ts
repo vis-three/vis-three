@@ -39,6 +39,8 @@ import { ControlsAllConfig } from "../middleware/controls/ControlsConfig";
 import { AnimationAllType } from "../middleware/animation/AnimationConfig";
 import { Object3DConfig } from "../middleware/object3D/Object3DConfig";
 import { Object3DDataSupport } from "../middleware/object3D/Object3DDataSupport";
+import { CSS2DAllType } from "../middleware/css2D/CSS2DConfig";
+import { CSS2DDataSupport } from "../middleware/css2D/CSS2DDataSupport";
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: Array<TextureAllType>;
@@ -54,6 +56,7 @@ export interface LoadOptions {
   [MODULETYPE.POINTS]?: Array<PointsConfig>;
   [MODULETYPE.GROUP]?: Array<GroupConfig>;
   [MODULETYPE.CSS3D]?: Array<CSS3DAllType>;
+  [MODULETYPE.CSS2D]?: Array<CSS2DAllType>;
 
   [MODULETYPE.RENDERER]?: Array<RendererConfigAllType>;
   [MODULETYPE.SCENE]?: Array<SceneConfig>;
@@ -78,6 +81,7 @@ export interface DataSupportManagerParameters {
   pointsDataSupport?: PointsDataSupport;
   groupDataSupport?: GroupDataSupport;
   css3DDataSupport?: CSS3DDataSupport;
+  css2DDataSupport?: CSS2DDataSupport;
   passDataSupport?: PassDataSupport;
   animationDataSupport?: AnimationDataSupport;
 }
@@ -98,6 +102,7 @@ export class DataSupportManager {
   pointsDataSupport = new PointsDataSupport();
   groupDataSupport = new GroupDataSupport();
   css3DDataSupport = new CSS3DDataSupport();
+  css2DDataSupport = new CSS2DDataSupport();
   passDataSupport = new PassDataSupport();
   animationDataSupport = new AnimationDataSupport();
 

@@ -67,6 +67,7 @@ import { Object3DDataSupport } from "./middleware/object3D/Object3DDataSupport";
 import { Widget } from "./core/Widget";
 import { uniqueSymbol } from "./middleware/constants/UNIQUESYMBOL";
 import { observable } from "./core/Observable";
+import { CSS2DDataSupport } from "./middleware/css2D/CSS2DDataSupport";
 
 import "./optimize/optimizeScirpt";
 
@@ -123,6 +124,7 @@ export {
   CSS3DDataSupport,
   GroupDataSupport,
   Object3DDataSupport,
+  CSS2DDataSupport,
   // helper
   PointLightHelper,
   CameraHelper,

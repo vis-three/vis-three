@@ -22,6 +22,7 @@ import { RendererCompiler } from "../middleware/renderer/RendererCompiler";
 import { SceneCompiler } from "../middleware/scene/SceneCompiler";
 import { SpriteCompiler } from "../middleware/sprite/SpriteCompiler";
 import { TextureCompiler } from "../middleware/texture/TextureCompiler";
+import { CSS2DCompiler } from "../middleware/css2D/CSS2DCompiler";
 
 export interface CompilerManagerParameters {
   object3DCompiler: Object3DCompiler;
@@ -41,6 +42,7 @@ export interface CompilerManagerParameters {
   passCompiler: PassCompiler;
   animationCompiler: AnimationCompiler;
   css3DCompiler: CSS3DCompiler;
+  css2DCompiler: CSS2DCompiler;
 }
 
 export class CompilerManager extends EventDispatcher {
@@ -59,6 +61,7 @@ export class CompilerManager extends EventDispatcher {
   pointsCompiler = new PointsCompiler();
   groupCompiler = new GroupCompiler();
   css3DCompiler = new CSS3DCompiler();
+  css2DCompiler = new CSS2DCompiler();
   passCompiler = new PassCompiler();
   animationCompiler = new AnimationCompiler();
 
@@ -82,10 +85,6 @@ export class CompilerManager extends EventDispatcher {
     });
 
     this.compilerMap = compilerMap;
-  }
-
-  wait(fun: () => void, timeout: string) {
-    // this.once('')
   }
 
   /**

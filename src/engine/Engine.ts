@@ -10,6 +10,7 @@ import {
   WebGLRendererParameters,
 } from "three";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 
 import { BaseEvent, EventDispatcher } from "../core/EventDispatcher";
 
@@ -93,11 +94,16 @@ import {
   CSS3DRendererParameters,
   CSS3DRendererPlugin,
 } from "../plugins/CSS3DRendererPlugin";
+import {
+  CSS2DRendererParameters,
+  CSS2DRendererPlugin,
+} from "../plugins/CSS2DRendererRlugin";
 
 // 存在的插件接口
 export enum ENGINEPLUGIN {
   WEBGLRENDERER = "WebGLRenderer",
   CSS3DRENDERER = "CSS3DRenderer",
+  CSS2DRENDERER = "CSS2DRenderer",
   SCENE = "Scene",
   MODELINGSCENE = "ModelingScene",
   RENDERMANAGER = "RenderManager",
@@ -181,6 +187,7 @@ export class Engine extends EventDispatcher {
   dom?: HTMLElement;
   webGLRenderer?: WebGLRenderer;
   css3DRenderer?: CSS3DRenderer;
+  css2DRenderer?: CSS2DRenderer;
 
   orbitControls?: VisOrbitControls;
   transformControls?: TransformControls;
@@ -237,7 +244,7 @@ export class Engine extends EventDispatcher {
 
   play?: () => this;
   stop?: () => this;
-  render?: () => this;
+  render: () => this;
 
   constructor() {
     super();
@@ -444,6 +451,11 @@ Engine.register<WebGLRendererParameters>(
 Engine.register<CSS3DRendererParameters>(
   ENGINEPLUGIN.CSS3DRENDERER,
   CSS3DRendererPlugin
+);
+
+Engine.register<CSS2DRendererParameters>(
+  ENGINEPLUGIN.CSS2DRENDERER,
+  CSS2DRendererPlugin
 );
 
 Engine.register<EffectComposerParameters>(
