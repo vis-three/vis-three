@@ -1,4 +1,4 @@
-import { Color, Object3D, Scene, Sprite } from "three";
+import { Color, Object3D, Scene, ShaderMaterial, Sprite } from "three";
 import { Engine, SetSceneEvent } from "../engine/Engine";
 import { Plugin } from "./plugin";
 import { SelectedEvent } from "./SelectionPlugin";
@@ -54,6 +54,14 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
 
   const cacheSceneSet = new WeakSet<Scene>();
 
+  const updateHelperMaterial = (helper: Sprite, color: number) => {
+    if (helper.material.color) {
+      helper.material.color.setHex(defaultColorHex);
+    } else if (helper.material instanceof ShaderMaterial) {
+      (helper.material.uniforms.color.value as unknown as Color).setHex(color);
+    }
+  };
+
   const afterAddFun = (event) => {
     const objects = event.objects;
 
@@ -63,7 +71,7 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
       if (!helper) {
         continue;
       }
-      helper.material.color.setHex(defaultColorHex);
+      updateHelperMaterial(helper, defaultColorHex);
 
       this.scene.add(helper);
 
@@ -77,7 +85,7 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
               return;
             }
           }
-          helper.material.color.setHex(hoverColorHex);
+          updateHelperMaterial(helper, hoverColorHex);
         };
 
         const pointerleaveFun = () => {
@@ -90,7 +98,7 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
             }
           }
 
-          helper.material.color.setHex(defaultColorHex);
+          updateHelperMaterial(helper, defaultColorHex);
         };
 
         const clickFun = () => {
@@ -102,7 +110,8 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
               return;
             }
           }
-          helper.material.color.setHex(activeColorHex);
+
+          updateHelperMaterial(helper, activeColorHex);
         };
 
         object.addEventListener("pointerenter", pointerenterFun);
@@ -199,14 +208,14 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperParameters> = function (
     if (this.selectionBox) {
       this.addEventListener<SelectedEvent>("selected", (event) => {
         cacheObjectsHelper.forEach((helper) => {
-          (helper as Sprite).material.color.setHex(defaultColorHex);
+          updateHelperMaterial(helper as Sprite, defaultColorHex);
         });
         cacheObjectsHelper.clear();
 
         for (const object of event.objects) {
           if (helperMap.has(object)) {
             const helper = helperMap.get(object) as Sprite;
-            helper.material.color.setHex(selectedColorHex);
+            updateHelperMaterial(helper as Sprite, selectedColorHex);
             cacheObjectsHelper.add(helper);
           }
         }

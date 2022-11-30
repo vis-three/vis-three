@@ -9748,19 +9748,105 @@ class CSS2DPlane extends VisCSS2DObject {
   constructor(element = document.createElement("div")) {
     super(element);
     __publicField(this, "cacheBox", new Box3());
+    __publicField(this, "viewWorldMatrix", new Matrix4());
+    __publicField(this, "mvPosition", new Vector3());
+    __publicField(this, "matrixScale", new Vector3());
+    __publicField(this, "worldScale", new Vector3());
+    __publicField(this, "vA", new Vector3());
+    __publicField(this, "vB", new Vector3());
+    __publicField(this, "vC", new Vector3());
+    __publicField(this, "alignedPosition", new Vector2());
+    __publicField(this, "rotatedPosition", new Vector2());
+    __publicField(this, "intersectPoint", new Vector3());
     this.type = "CSS2DPlane";
     this.element.classList.add("vis-css2d", "vis-css2d-plane");
+    const observer = new MutationObserver(() => {
+      this.matrixScale.set(
+        Math.abs(this.width / 100) * 0.1,
+        Math.abs(this.height / 100) * 0.1,
+        1
+      );
+    });
+    observer.observe(this.element, {
+      attributeFilter: ["style"]
+    });
+  }
+  transformVertex(vertexPosition, mvPosition, scale) {
+    const alignedPosition = this.alignedPosition;
+    const rotatedPosition = this.rotatedPosition;
+    const sin = 0;
+    const cos = 1;
+    alignedPosition.copy(vertexPosition).multiply(scale);
+    {
+      rotatedPosition.x = cos * alignedPosition.x - sin * alignedPosition.y;
+      rotatedPosition.y = sin * alignedPosition.x + cos * alignedPosition.y;
+    }
+    vertexPosition.copy(mvPosition);
+    vertexPosition.x += rotatedPosition.x;
+    vertexPosition.y += rotatedPosition.y;
+    vertexPosition.applyMatrix4(this.viewWorldMatrix);
   }
   raycast(raycaster, intersects) {
-    const box = this.cacheBox.copy(this.geometry.boundingBox);
-    box.applyMatrix4(this.matrixWorld);
-    if (raycaster.ray.intersectsBox(box)) {
-      intersects.push({
-        distance: raycaster.ray.origin.distanceTo(this.position),
-        object: this,
-        point: this.position
-      });
+    if (raycaster.camera === null) {
+      console.error(
+        'THREE.Sprite: "Raycaster.camera" needs to be set in order to raycast against sprites.'
+      );
     }
+    this.viewWorldMatrix.copy(raycaster.camera.matrixWorld);
+    this.modelViewMatrix.multiplyMatrices(
+      raycaster.camera.matrixWorldInverse,
+      this.matrixWorld
+    );
+    this.mvPosition.setFromMatrixPosition(this.modelViewMatrix);
+    this.worldScale.copy(this.matrixScale).multiplyScalar(-this.mvPosition.z);
+    this.transformVertex(
+      this.vA.set(-0.5, -0.5, 0),
+      this.mvPosition,
+      this.worldScale
+    );
+    this.transformVertex(
+      this.vB.set(0.5, -0.5, 0),
+      this.mvPosition,
+      this.worldScale
+    );
+    this.transformVertex(
+      this.vC.set(0.5, 0.5, 0),
+      this.mvPosition,
+      this.worldScale
+    );
+    let intersect = raycaster.ray.intersectTriangle(
+      this.vA,
+      this.vB,
+      this.vC,
+      false,
+      this.intersectPoint
+    );
+    if (intersect === null) {
+      this.transformVertex(
+        this.vB.set(-0.5, 0.5, 0),
+        this.mvPosition,
+        this.worldScale
+      );
+      intersect = raycaster.ray.intersectTriangle(
+        this.vA,
+        this.vC,
+        this.vB,
+        false,
+        this.intersectPoint
+      );
+      if (intersect === null) {
+        return;
+      }
+    }
+    const distance = raycaster.ray.origin.distanceTo(this.intersectPoint);
+    if (distance < raycaster.near || distance > raycaster.far)
+      return;
+    intersects.push({
+      distance,
+      point: this.intersectPoint.clone(),
+      face: null,
+      object: this
+    });
   }
 }
 const getElement = function(element, engine) {
@@ -11101,33 +11187,80 @@ class SpotLightHelper extends LineSegments {
     }
   }
 }
+const vertex = `
+
+#include <common>
+
+void main() {
+	vec4 mvPosition = modelViewMatrix * vec4( 0.0, 0.0, 0.0, 1.0 );
+
+	vec2 scale;
+	scale.x = length( vec3( modelMatrix[ 0 ].x, modelMatrix[ 0 ].y, modelMatrix[ 0 ].z ) );
+	scale.y = length( vec3( modelMatrix[ 1 ].x, modelMatrix[ 1 ].y, modelMatrix[ 1 ].z ) );
+
+  bool isPerspective = isPerspectiveMatrix( projectionMatrix );
+
+  if ( isPerspective ) scale *= - mvPosition.z;
+
+	vec2 alignedPosition = position.xy * scale;
+
+	vec2 rotatedPosition;
+	rotatedPosition.x = cos( 0.0 ) * alignedPosition.x - sin( 0.0 ) * alignedPosition.y;
+	rotatedPosition.y = sin( 0.0 ) * alignedPosition.x + cos( 0.0 ) * alignedPosition.y;
+
+	mvPosition.xy += rotatedPosition;
+
+	gl_Position = projectionMatrix * mvPosition;
+
+}
+
+`;
+const fragment = `
+
+uniform vec3 color;
+
+void main() {
+  gl_FragColor = vec4(color, 1.0);
+}
+`;
+class CSS2DHelperMaterial extends ShaderMaterial {
+  constructor() {
+    super();
+    this.vertexShader = vertex;
+    this.fragmentShader = fragment;
+    this.uniforms = {
+      color: { value: new Color("white") }
+    };
+  }
+}
 class CSS2DPlaneHelper extends LineSegments {
   constructor(target) {
     super();
     __publicField(this, "target");
     __publicField(this, "type", "VisCSS2DPlaneHelper");
     __publicField(this, "observer");
-    this.geometry = new EdgesGeometry(
-      new PlaneBufferGeometry(target.width, target.height)
-    );
+    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(1, 1));
     this.geometry.computeBoundingBox();
-    this.material = getHelperLineMaterial();
-    this.matrixAutoUpdate = false;
-    this.matrix = target.matrix;
-    this.matrixWorldNeedsUpdate = false;
-    this.matrixWorld = target.matrixWorld;
+    this.material = new CSS2DHelperMaterial();
+    this.scale.copy(target.matrixScale);
+    this.position.set(target.position.x, target.position.y, target.position.z);
     this.target = target;
     const observer = new MutationObserver(() => {
-      this.geometry.dispose();
-      this.geometry = new EdgesGeometry(
-        new PlaneBufferGeometry(target.width, target.height)
-      );
-      this.geometry.computeBoundingBox();
+      this.scale.copy(target.matrixScale);
     });
     observer.observe(target.element, {
       attributeFilter: ["style"]
     });
     this.observer = observer;
+    this.onBeforeRender = () => {
+      this.position.set(
+        this.target.position.x,
+        this.target.position.y,
+        this.target.position.z
+      );
+    };
+    this.raycast = () => {
+    };
   }
   dispose() {
     this.observer.disconnect();
@@ -11507,6 +11640,13 @@ const ObjectHelperPlugin = function(params = {}) {
   const hoverColorHex = new Color(params.hoverColor).getHex();
   const selectedColorHex = new Color(params.selectedColor).getHex();
   const cacheSceneSet = /* @__PURE__ */ new WeakSet();
+  const updateHelperMaterial = (helper, color) => {
+    if (helper.material.color) {
+      helper.material.color.setHex(defaultColorHex);
+    } else if (helper.material instanceof ShaderMaterial) {
+      helper.material.uniforms.color.value.setHex(color);
+    }
+  };
   const afterAddFun = (event) => {
     const objects = event.objects;
     for (const object of objects) {
@@ -11514,7 +11654,7 @@ const ObjectHelperPlugin = function(params = {}) {
       if (!helper) {
         continue;
       }
-      helper.material.color.setHex(defaultColorHex);
+      updateHelperMaterial(helper, defaultColorHex);
       this.scene.add(helper);
       if (params.interact) {
         const pointerenterFun = () => {
@@ -11527,7 +11667,7 @@ const ObjectHelperPlugin = function(params = {}) {
               return;
             }
           }
-          helper.material.color.setHex(hoverColorHex);
+          updateHelperMaterial(helper, hoverColorHex);
         };
         const pointerleaveFun = () => {
           var _a;
@@ -11539,7 +11679,7 @@ const ObjectHelperPlugin = function(params = {}) {
               return;
             }
           }
-          helper.material.color.setHex(defaultColorHex);
+          updateHelperMaterial(helper, defaultColorHex);
         };
         const clickFun = () => {
           var _a;
@@ -11551,7 +11691,7 @@ const ObjectHelperPlugin = function(params = {}) {
               return;
             }
           }
-          helper.material.color.setHex(activeColorHex);
+          updateHelperMaterial(helper, activeColorHex);
         };
         object.addEventListener("pointerenter", pointerenterFun);
         object.addEventListener("pointerleave", pointerleaveFun);
@@ -11629,13 +11769,13 @@ const ObjectHelperPlugin = function(params = {}) {
     if (this.selectionBox) {
       this.addEventListener("selected", (event) => {
         cacheObjectsHelper.forEach((helper) => {
-          helper.material.color.setHex(defaultColorHex);
+          updateHelperMaterial(helper, defaultColorHex);
         });
         cacheObjectsHelper.clear();
         for (const object of event.objects) {
           if (helperMap.has(object)) {
             const helper = helperMap.get(object);
-            helper.material.color.setHex(selectedColorHex);
+            updateHelperMaterial(helper, selectedColorHex);
             cacheObjectsHelper.add(helper);
           }
         }
