@@ -11187,7 +11187,7 @@ class SpotLightHelper extends LineSegments {
     }
   }
 }
-const vertex$1 = `
+const vertex$2 = `
 
 #include <common>
 
@@ -11215,7 +11215,7 @@ void main() {
 }
 
 `;
-const fragment$1 = `
+const fragment$2 = `
 
 uniform vec3 color;
 
@@ -11226,8 +11226,8 @@ void main() {
 class CSS2DHelperMaterial$1 extends ShaderMaterial {
   constructor() {
     super();
-    this.vertexShader = vertex$1;
-    this.fragmentShader = fragment$1;
+    this.vertexShader = vertex$2;
+    this.fragmentShader = fragment$2;
     this.uniforms = {
       color: { value: new Color("white") }
     };
@@ -11325,6 +11325,85 @@ class CSS3DPlaneHelper extends LineSegments {
       attributeFilter: ["style"]
     });
     this.observer = observer;
+  }
+  dispose() {
+    this.observer.disconnect();
+  }
+}
+const vertex$1 = `
+uniform float rotation2D;
+
+#include <common>
+
+void main() {
+	vec4 mvPosition = modelViewMatrix * vec4( 0.0, 0.0, 0.0, 1.0 );
+
+	vec2 scale;
+	scale.x = length( vec3( modelMatrix[ 0 ].x, modelMatrix[ 0 ].y, modelMatrix[ 0 ].z ) );
+	scale.y = length( vec3( modelMatrix[ 1 ].x, modelMatrix[ 1 ].y, modelMatrix[ 1 ].z ) );
+
+	vec2 alignedPosition = position.xy * scale;
+
+	vec2 rotatedPosition;
+	rotatedPosition.x = cos( rotation2D ) * alignedPosition.x - sin( rotation2D ) * alignedPosition.y;
+	rotatedPosition.y = sin( rotation2D ) * alignedPosition.x + cos( rotation2D ) * alignedPosition.y;
+
+	mvPosition.xy += rotatedPosition;
+
+	gl_Position = projectionMatrix * mvPosition;
+
+}
+
+`;
+const fragment$1 = `
+
+uniform vec3 color;
+
+void main() {
+  gl_FragColor = vec4(color, 1.0);
+}
+`;
+class CSS3DSpriteHelperMaterial extends ShaderMaterial {
+  constructor() {
+    super();
+    this.vertexShader = vertex$1;
+    this.fragmentShader = fragment$1;
+    this.uniforms = {
+      color: { value: new Color("white") },
+      rotation2D: { value: 0 }
+    };
+  }
+}
+class CSS3DSpriteHelper extends LineSegments {
+  constructor(target) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "type", "VisCSS3DSpriteHelper");
+    __publicField(this, "observer");
+    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(1, 1));
+    this.geometry.computeBoundingBox();
+    this.material = new CSS3DSpriteHelperMaterial();
+    this.matrixAutoUpdate = false;
+    this.matrix = target.matrix;
+    this.matrixWorldNeedsUpdate = false;
+    this.matrixWorld = target.matrixWorld;
+    this.target = target;
+    const observer = new MutationObserver(() => {
+      this.geometry.dispose();
+      this.geometry = new EdgesGeometry(
+        new PlaneBufferGeometry(target.width, target.height)
+      );
+      this.geometry.computeBoundingBox();
+    });
+    observer.observe(target.element, {
+      attributeFilter: ["style"]
+    });
+    this.observer = observer;
+    this.onBeforeRender = () => {
+      this.material.uniforms.rotation2D.value = this.target.rotation2D;
+    };
+    this.raycast = () => {
+    };
   }
   dispose() {
     this.observer.disconnect();
@@ -11591,7 +11670,7 @@ class ObjectHelperManager extends EventDispatcher {
       [CONFIGTYPE.LINE]: LineHelper,
       [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper,
       [CONFIGTYPE.CSS3DPLANE]: CSS3DPlaneHelper,
-      [CONFIGTYPE.CSS3DSPRITE]: CSS3DPlaneHelper,
+      [CONFIGTYPE.CSS3DSPRITE]: CSS3DSpriteHelper,
       [CONFIGTYPE.CSS2DPLANE]: CSS2DPlaneHelper
     });
     __publicField(this, "helperFilter", {

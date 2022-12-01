@@ -7,6 +7,7 @@ import { SpotLightHelper } from "../extends/helper/light/SpotLightHelper";
 import { CSS2DPlaneHelper } from "../extends/helper/object/CSS2DPlaneHelper";
 import { CSS3DObjectHelper } from "../extends/helper/object/CSS3DObjectHelper";
 import { CSS3DPlaneHelper } from "../extends/helper/object/CSS3DPlaneHelper";
+import { CSS3DSpriteHelper } from "../extends/helper/object/CSS3DSpriteHelper";
 import { GroupHelper } from "../extends/helper/object/GroupHelper";
 import { LineHelper } from "../extends/helper/object/LineHelper";
 import { MeshHelper } from "../extends/helper/object/MeshHelper";
@@ -34,7 +35,7 @@ export class ObjectHelperManager extends EventDispatcher {
     [CONFIGTYPE.LINE]: LineHelper,
     [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper,
     [CONFIGTYPE.CSS3DPLANE]: CSS3DPlaneHelper,
-    [CONFIGTYPE.CSS3DSPRITE]: CSS3DPlaneHelper,
+    [CONFIGTYPE.CSS3DSPRITE]: CSS3DSpriteHelper,
     [CONFIGTYPE.CSS2DPLANE]: CSS2DPlaneHelper,
   };
 

@@ -66,9 +66,7 @@ export class CSS3DSpriteHelper extends LineSegments implements VisHelper {
 
   constructor(target: VisCSS3DSprite) {
     super();
-    this.geometry = new EdgesGeometry(
-      new PlaneBufferGeometry(target.width, target.height)
-    );
+    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(1, 1));
     this.geometry.computeBoundingBox();
 
     this.material = new CSS3DSpriteHelperMaterial();
@@ -93,6 +91,12 @@ export class CSS3DSpriteHelper extends LineSegments implements VisHelper {
     });
 
     this.observer = observer;
+
+    this.onBeforeRender = () => {
+      (<CSS3DSpriteHelperMaterial>this.material).uniforms.rotation2D.value =
+        // @ts-ignore
+        this.target.rotation2D;
+    };
 
     this.raycast = () => {};
   }
