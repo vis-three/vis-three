@@ -11187,7 +11187,7 @@ class SpotLightHelper extends LineSegments {
     }
   }
 }
-const vertex = `
+const vertex$1 = `
 
 #include <common>
 
@@ -11215,7 +11215,7 @@ void main() {
 }
 
 `;
-const fragment = `
+const fragment$1 = `
 
 uniform vec3 color;
 
@@ -11223,11 +11223,11 @@ void main() {
   gl_FragColor = vec4(color, 1.0);
 }
 `;
-class CSS2DHelperMaterial extends ShaderMaterial {
+class CSS2DHelperMaterial$1 extends ShaderMaterial {
   constructor() {
     super();
-    this.vertexShader = vertex;
-    this.fragmentShader = fragment;
+    this.vertexShader = vertex$1;
+    this.fragmentShader = fragment$1;
     this.uniforms = {
       color: { value: new Color("white") }
     };
@@ -11241,7 +11241,7 @@ class CSS2DPlaneHelper extends LineSegments {
     __publicField(this, "observer");
     this.geometry = new EdgesGeometry(new PlaneBufferGeometry(1, 1));
     this.geometry.computeBoundingBox();
-    this.material = new CSS2DHelperMaterial();
+    this.material = new CSS2DHelperMaterial$1();
     this.scale.copy(target.matrixScale);
     this.position.set(target.position.x, target.position.y, target.position.z);
     this.target = target;
@@ -11493,37 +11493,88 @@ __publicField(PointsHelper, "alphaTexture", new CanvasTexture(
     ctx.closePath();
   }).get()
 ));
-const _SpriteHelper = class extends Sprite {
-  constructor(sprite) {
+const vertex = `
+
+uniform float rotation;
+uniform vec2 center;
+uniform bool sizeAttenuation;
+
+#include <common>
+
+void main() {
+  vec4 mvPosition = modelViewMatrix * vec4( 0.0, 0.0, 0.0, 1.0 );
+
+	vec2 scale;
+	scale.x = length( vec3( modelMatrix[ 0 ].x, modelMatrix[ 0 ].y, modelMatrix[ 0 ].z ) );
+	scale.y = length( vec3( modelMatrix[ 1 ].x, modelMatrix[ 1 ].y, modelMatrix[ 1 ].z ) );
+
+	if (!sizeAttenuation) {
+		bool isPerspective = isPerspectiveMatrix( projectionMatrix );
+
+		if ( isPerspective ) scale *= - mvPosition.z;
+  }
+
+	vec2 alignedPosition = ( position.xy - ( center - vec2( 0.5 ) ) ) * scale;
+
+	vec2 rotatedPosition;
+	rotatedPosition.x = cos( rotation ) * alignedPosition.x - sin( rotation ) * alignedPosition.y;
+	rotatedPosition.y = sin( rotation ) * alignedPosition.x + cos( rotation ) * alignedPosition.y;
+
+	mvPosition.xy += rotatedPosition;
+
+	gl_Position = projectionMatrix * mvPosition;
+
+}
+
+`;
+const fragment = `
+
+uniform vec3 color;
+
+void main() {
+  gl_FragColor = vec4(color, 1.0);
+}
+`;
+class CSS2DHelperMaterial extends ShaderMaterial {
+  constructor() {
+    super();
+    this.vertexShader = vertex;
+    this.fragmentShader = fragment;
+    this.uniforms = {
+      color: { value: new Color("white") },
+      center: {
+        value: new Vector2(0.5, 0.5)
+      },
+      rotation: {
+        value: 0
+      },
+      sizeAttenuation: {
+        value: false
+      }
+    };
+  }
+}
+class SpriteHelper extends LineSegments {
+  constructor(target) {
     super();
     __publicField(this, "target");
     __publicField(this, "type", "VisSpriteHelper");
-    this.target = sprite;
-    this.material.dispose();
-    this.material = new SpriteMaterial({
-      color: "rgb(255, 255, 255)",
-      alphaMap: _SpriteHelper.alphaTexture,
-      transparent: true,
-      depthWrite: false
-    });
+    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(1, 1));
+    this.geometry.computeBoundingBox();
+    this.material = new CSS2DHelperMaterial();
     this.matrixAutoUpdate = false;
     this.matrixWorldNeedsUpdate = false;
-    this.matrix = sprite.matrix;
-    this.matrixWorld = sprite.matrixWorld;
+    this.matrix = target.matrix;
+    this.matrixWorld = target.matrixWorld;
+    this.target = target;
+    this.onBeforeRender = () => {
+      this.material.uniforms.rotation.value = this.target.material.rotation;
+      this.material.uniforms.sizeAttenuation.value = this.target.material.sizeAttenuation;
+    };
     this.raycast = () => {
     };
   }
-};
-let SpriteHelper = _SpriteHelper;
-__publicField(SpriteHelper, "alphaTexture", new CanvasTexture(
-  new CanvasGenerator({ width: 512, height: 512, bgColor: "rgb(0, 0, 0)" }).draw((ctx) => {
-    ctx.beginPath();
-    ctx.strokeStyle = "rgb(255, 255, 255)";
-    ctx.lineWidth = 4;
-    ctx.strokeRect(0, 0, 512, 512);
-    ctx.closePath();
-  }).get()
-));
+}
 class ObjectHelperManager extends EventDispatcher {
   constructor(params = {}) {
     super();

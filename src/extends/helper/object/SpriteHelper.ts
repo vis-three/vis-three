@@ -1,43 +1,109 @@
-import { CanvasTexture, Material, Sprite, SpriteMaterial } from "three";
-import { CanvasGenerator } from "../../../convenient/CanvasGenerator";
-import { VisHelper } from "../common";
+import {
+  Color,
+  EdgesGeometry,
+  Intersection,
+  LineSegments,
+  Matrix4,
+  PerspectiveCamera,
+  PlaneBufferGeometry,
+  Raycaster,
+  ShaderMaterial,
+  Sprite,
+  Vector2,
+  Vector3,
+} from "three";
+import { CSS2DPlane } from "../../object/CSS2DPlane";
+import { getHelperLineMaterial, VisHelper } from "../common";
 
-export class SpriteHelper extends Sprite implements VisHelper {
-  static alphaTexture = new CanvasTexture(
-    new CanvasGenerator({ width: 512, height: 512, bgColor: "rgb(0, 0, 0)" })
-      .draw((ctx) => {
-        ctx.beginPath();
-        ctx.strokeStyle = "rgb(255, 255, 255)";
-        ctx.lineWidth = 4;
-        ctx.strokeRect(0, 0, 512, 512);
-        ctx.closePath();
-      })
-      // .preview({
-      //   left: "50%",
-      // })
-      .get()
-  );
-  target: Sprite;
-  // @ts-ignore
-  type = "VisSpriteHelper";
-  constructor(sprite: Sprite) {
+const vertex = `
+
+uniform float rotation;
+uniform vec2 center;
+uniform bool sizeAttenuation;
+
+#include <common>
+
+void main() {
+  vec4 mvPosition = modelViewMatrix * vec4( 0.0, 0.0, 0.0, 1.0 );
+
+	vec2 scale;
+	scale.x = length( vec3( modelMatrix[ 0 ].x, modelMatrix[ 0 ].y, modelMatrix[ 0 ].z ) );
+	scale.y = length( vec3( modelMatrix[ 1 ].x, modelMatrix[ 1 ].y, modelMatrix[ 1 ].z ) );
+
+	if (!sizeAttenuation) {
+		bool isPerspective = isPerspectiveMatrix( projectionMatrix );
+
+		if ( isPerspective ) scale *= - mvPosition.z;
+  }
+
+	vec2 alignedPosition = ( position.xy - ( center - vec2( 0.5 ) ) ) * scale;
+
+	vec2 rotatedPosition;
+	rotatedPosition.x = cos( rotation ) * alignedPosition.x - sin( rotation ) * alignedPosition.y;
+	rotatedPosition.y = sin( rotation ) * alignedPosition.x + cos( rotation ) * alignedPosition.y;
+
+	mvPosition.xy += rotatedPosition;
+
+	gl_Position = projectionMatrix * mvPosition;
+
+}
+
+`;
+
+const fragment = `
+
+uniform vec3 color;
+
+void main() {
+  gl_FragColor = vec4(color, 1.0);
+}
+`;
+
+class CSS2DHelperMaterial extends ShaderMaterial {
+  constructor() {
     super();
+    this.vertexShader = vertex;
+    this.fragmentShader = fragment;
+    this.uniforms = {
+      color: { value: new Color("white") },
+      center: {
+        value: new Vector2(0.5, 0.5),
+      },
+      rotation: {
+        value: 0,
+      },
+      sizeAttenuation: {
+        value: false,
+      },
+    };
+  }
+}
 
-    this.target = sprite;
+export class SpriteHelper extends LineSegments implements VisHelper {
+  target: Sprite;
 
-    (this.material as Material).dispose();
+  type = "VisSpriteHelper";
 
-    this.material = new SpriteMaterial({
-      color: "rgb(255, 255, 255)",
-      alphaMap: SpriteHelper.alphaTexture,
-      transparent: true,
-      depthWrite: false,
-    });
+  constructor(target: Sprite) {
+    super();
+    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(1, 1));
+    this.geometry.computeBoundingBox();
+
+    this.material = new CSS2DHelperMaterial();
 
     this.matrixAutoUpdate = false;
     this.matrixWorldNeedsUpdate = false;
-    this.matrix = sprite.matrix;
-    this.matrixWorld = sprite.matrixWorld;
+    this.matrix = target.matrix;
+    this.matrixWorld = target.matrixWorld;
+
+    this.target = target;
+
+    this.onBeforeRender = () => {
+      (<CSS2DHelperMaterial>this.material).uniforms.rotation.value =
+        this.target.material.rotation;
+      (<CSS2DHelperMaterial>this.material).uniforms.sizeAttenuation.value =
+        this.target.material.sizeAttenuation;
+    };
 
     this.raycast = () => {};
   }
