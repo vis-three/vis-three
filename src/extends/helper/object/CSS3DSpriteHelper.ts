@@ -8,6 +8,7 @@ import {
   ShaderMaterial,
 } from "three";
 import { VisCSS3DSprite } from "../../../optimize/VisCSS3DSprite";
+import { CSS3DSprite } from "../../object/CSS3DSprite";
 import { getHelperLineMaterial, VisHelper } from "../common";
 
 const vertex = `
@@ -64,7 +65,7 @@ export class CSS3DSpriteHelper extends LineSegments implements VisHelper {
 
   private observer: MutationObserver;
 
-  constructor(target: VisCSS3DSprite) {
+  constructor(target: CSS3DSprite) {
     super();
     this.geometry = new EdgesGeometry(new PlaneBufferGeometry(1, 1));
     this.geometry.computeBoundingBox();

@@ -19,7 +19,7 @@ import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.j
 import { v4, validate } from "uuid";
 import { Subject } from "rxjs";
 import { CSG } from "three-csg-ts";
-import { CSS3DObject, CSS3DSprite, CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS3DObject, CSS3DSprite as CSS3DSprite$1, CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { Easing, Tween } from "@tweenjs/tween.js";
 import keyboardjs from "keyboardjs";
 import { Pass, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass";
@@ -7193,7 +7193,7 @@ var CSS3DPlaneProcessor = defineProcessor({
   },
   dispose: objectDispose
 });
-class VisCSS3DSprite extends CSS3DSprite {
+class VisCSS3DSprite extends CSS3DSprite$1 {
   constructor(element = document.createElement("div")) {
     const root = document.createElement("div");
     const width = 50;
@@ -7266,6 +7266,13 @@ class VisCSS3DSprite extends CSS3DSprite {
     }
   }
 }
+class CSS3DSprite extends VisCSS3DSprite {
+  constructor(element = document.createElement("div")) {
+    super(element);
+    this.type = "CSS3DSprite";
+    this.element.classList.add("vis-css3d", "vis-css3d-plane");
+  }
+}
 var CSS3DSpriteProcessor = defineProcessor({
   configType: CONFIGTYPE.CSS3DSPRITE,
   commands: {
@@ -7281,7 +7288,7 @@ var CSS3DSpriteProcessor = defineProcessor({
   },
   create(config2, engine) {
     return objectCreate(
-      new VisCSS3DSprite(getElement$1(config2.element, engine)),
+      new CSS3DSprite(getElement$1(config2.element, engine)),
       config2,
       {
         element: true
