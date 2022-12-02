@@ -4089,18 +4089,21 @@ const proxySetter = function(target, key, value, receiver, observable2, path) {
       console.error("array value is not be cached:", target);
       return result;
     }
-    const num = oldValue.length - value.length;
+    const num = oldValue.length - target.length;
     if (num > 0) {
       let execNum = 0;
+      let index = 0;
+      path = path.slice(0, -key.length);
       for (const del of oldValue) {
-        if (!value.includes(del)) {
+        if (!target.includes(del)) {
           observable2.next({
             operate: "delete",
-            path,
-            key,
+            path: path + index,
+            key: index.toString(),
             value: del
           });
           execNum += 1;
+          index += 1;
           if (execNum === num) {
             break;
           }
@@ -4125,7 +4128,7 @@ const proxyDeleter = function(target, key, observable2, path) {
   path = extendPath(path, key);
   const value = target[key];
   const result = Reflect.deleteProperty(target, key);
-  if (isArray(value)) {
+  if (isArray(target)) {
     return result;
   }
   observable2.next({
@@ -11332,6 +11335,10 @@ class CSS3DPlaneHelper extends LineSegments {
       attributeFilter: ["style"]
     });
     this.observer = observer;
+    this.raycast = () => {
+    };
+    this.updateMatrixWorld = () => {
+    };
   }
   dispose() {
     this.observer.disconnect();
@@ -11410,6 +11417,8 @@ class CSS3DSpriteHelper extends LineSegments {
       this.material.uniforms.rotation2D.value = this.target.rotation2D;
     };
     this.raycast = () => {
+    };
+    this.updateMatrixWorld = () => {
     };
   }
   dispose() {
@@ -11526,12 +11535,14 @@ class MeshHelper extends LineSegments {
     this.geometry = new EdgesGeometry(mesh.geometry, thresholdAngle);
     this.cachaGeometryUUid = mesh.geometry.uuid;
     this.material = getHelperLineMaterial();
-    this.raycast = () => {
-    };
     this.matrixAutoUpdate = false;
     this.matrixWorldNeedsUpdate = false;
     this.matrix = mesh.matrix;
     this.matrixWorld = mesh.matrixWorld;
+    this.updateMatrixWorld = () => {
+    };
+    this.raycast = () => {
+    };
     this.onBeforeRender = () => {
       const target = this.target;
       if (target.geometry.uuid !== this.cachaGeometryUUid) {
@@ -13337,7 +13348,7 @@ __publicField(Widget, "component", function(options) {
   }
   _Widget.components[options.name] = options;
 });
-const version = "0.3.0";
+const version = "0.3.1";
 if (!window.__THREE__) {
   console.error(
     `vis-three dependent on three.js module, pleace run 'npm i three' first.`

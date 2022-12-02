@@ -100,6 +100,7 @@ export class CSS3DSpriteHelper extends LineSegments implements VisHelper {
     };
 
     this.raycast = () => {};
+    this.updateMatrixWorld = () => {};
   }
 
   dispose() {

@@ -41,16 +41,8 @@
 
       const engine = new Vis.ModelingEngineSupport()
         .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true);
-
-      const pointLight = Vis.generateConfig("PointLight", {
-        position: {
-          x: 30,
-          y: 50,
-        },
-        distance: 100,
-      });
+        .setSize();
+      // .setStats(true);
 
       const material = Vis.generateConfig("MeshStandardMaterial");
 
@@ -68,42 +60,41 @@
         },
       });
 
-      const mesh2 = Vis.generateConfig("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
-        position: {
-          z: 20,
-          x: 20,
-        },
-      });
+      // const mesh2 = Vis.generateConfig("Mesh", {
+      //   material: material.vid,
+      //   geometry: geometry.vid,
+      //   position: {
+      //     z: 20,
+      //     x: 20,
+      //   },
+      // });
 
-      const mesh3 = Vis.generateConfig("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
-        position: {
-          z: 20,
-          x: -20,
-        },
-      });
+      // const mesh3 = Vis.generateConfig("Mesh", {
+      //   material: material.vid,
+      //   geometry: geometry.vid,
+      //   position: {
+      //     z: 20,
+      //     x: -20,
+      //   },
+      // });
 
       const group = Vis.generateConfig("Group", {
-        children: [mesh1.vid, mesh2.vid, mesh3.vid],
+        children: [],
         position: {
           y: 20,
         },
       });
 
       const scene = Vis.generateConfig("Scene", {
-        children: [group.vid, pointLight.vid],
+        children: [mesh1.vid, group.vid],
       });
 
       engine.applyConfig(
         material,
         geometry,
-        pointLight,
         mesh1,
-        mesh2,
-        mesh3,
+        // mesh2,
+        // mesh3,
         group,
         scene
       );
@@ -111,6 +102,13 @@
       engine.setScene(scene.vid).play();
 
       window.engine = engine;
+      window.group = group;
+      window.mesh1 = mesh1;
+      // window.mesh2 = mesh2;
+      // window.mesh3 = mesh3;
+      window.scene = scene;
+
+      // engine.stop();
     </script>
   </body>
 </html>

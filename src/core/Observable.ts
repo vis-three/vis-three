@@ -91,19 +91,22 @@ const proxySetter = function (
     }
 
     // 只用还原length减少的现场
-    const num = oldValue.length - value.length;
+    const num = oldValue.length - target.length;
     if (num > 0) {
       let execNum = 0;
+      let index = 0;
+      path = path.slice(0, -key.length);
       for (const del of oldValue) {
-        if (!value.includes(del)) {
+        if (!target.includes(del)) {
           observable.next({
             operate: "delete",
-            path,
-            key,
+            path: path + index,
+            key: index.toString(),
             value: del,
           });
 
           execNum += 1;
+          index += 1;
 
           if (execNum === num) {
             break;
@@ -140,7 +143,7 @@ const proxyDeleter = function (
   const result = Reflect.deleteProperty(target, key);
 
   // array的delete不可信
-  if (isArray(value)) {
+  if (isArray(target)) {
     return result;
   }
 

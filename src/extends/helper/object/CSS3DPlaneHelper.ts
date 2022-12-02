@@ -44,6 +44,9 @@ export class CSS3DPlaneHelper extends LineSegments implements VisHelper {
     });
 
     this.observer = observer;
+
+    this.raycast = () => {};
+    this.updateMatrixWorld = () => {};
   }
 
   dispose() {
