@@ -150,3 +150,20 @@ export const cacheArray = function (object: Array<any>) {
 export const getCacheArray = function (object: Array<any>) {
   return arrayCache.get(object);
 };
+
+export class Pipeline {
+  config: any;
+
+  constructor(config: any) {
+    this.config = config;
+  }
+
+  pipe(fun: (config: any) => any): this {
+    this.config = fun(this.config);
+    return this;
+  }
+
+  get() {
+    return this.config;
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "vis-three",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "main": "dist/Vis.umd.js",
   "module": "dist/Vis.es.js",
   "types": "types/src/main.d.ts",

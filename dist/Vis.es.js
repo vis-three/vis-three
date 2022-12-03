@@ -3556,6 +3556,19 @@ const cacheArray = function(object) {
 const getCacheArray = function(object) {
   return arrayCache.get(object);
 };
+class Pipeline$1 {
+  constructor(config2) {
+    __publicField(this, "config");
+    this.config = config2;
+  }
+  pipe(fun) {
+    this.config = fun(this.config);
+    return this;
+  }
+  get() {
+    return this.config;
+  }
+}
 var utils = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
@@ -3567,7 +3580,8 @@ var utils = /* @__PURE__ */ Object.freeze({
   isArray,
   extendPath,
   cacheArray,
-  getCacheArray
+  getCacheArray,
+  Pipeline: Pipeline$1
 });
 class Object3DParser extends Parser {
   constructor() {

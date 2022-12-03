@@ -32,6 +32,7 @@ export const clone = <T extends object>(object: T): T => {
 };
 
 /**
+ * @deprecated use util.Pipeline
  * 管道处理
  */
 export class Pipeline {
