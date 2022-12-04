@@ -21,10 +21,10 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import * as VIS from "vis-three";
       import { v4 as getUUid } from "uuid";
 
-      const canvasGenerator = new Vis.CanvasGenerator({
+      const canvasGenerator = new VIS.CanvasGenerator({
         width: 256,
         height: 256,
       }).draw((ctx) => {
@@ -37,15 +37,24 @@
         ctx.fillText("LIGHT", 128, 128);
       });
 
-      const engine = new Vis.ModelingEngineSupport()
+      const engine = new VIS.ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true);
-      const ambientLight = Vis.generateConfig("AmbientLight", {
+
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid);
+
+      VIS.generateConfig.injectScene = true;
+
+      const ambientLight = VIS.generateConfig("AmbientLight", {
         intensity: 0.2,
       });
 
-      const pointLight = Vis.generateConfig("PointLight", {
+      const pointLight = VIS.generateConfig("PointLight", {
         position: {
           y: 28,
         },
@@ -54,7 +63,7 @@
         intensity: 0.6,
       });
 
-      const spotLight = Vis.generateConfig("SpotLight", {
+      const spotLight = VIS.generateConfig("SpotLight", {
         position: {
           x: 20,
         },
@@ -63,7 +72,7 @@
         intensity: 0.6,
       });
 
-      const directionalLight = Vis.generateConfig("DirectionalLight", {
+      const directionalLight = VIS.generateConfig("DirectionalLight", {
         color: "rgb(0, 255, 0)",
         intensity: 0.5,
         position: {
@@ -73,41 +82,30 @@
         },
       });
 
-      const material = Vis.generateConfig("MeshStandardMaterial");
+      const hemisphereLight = VIS.generateConfig("HemisphereLight");
 
-      const geometry = Vis.generateConfig("BoxGeometry", {
+      const rectAreaLight = VIS.generateConfig("RectAreaLight", {
+        position: {
+          x: 0,
+          y: 0,
+          z: 20,
+        },
+      });
+
+      const material = VIS.generateConfig("MeshStandardMaterial");
+
+      const geometry = VIS.generateConfig("BoxGeometry", {
         width: 20,
         height: 20,
         depth: 20,
       });
 
-      const mesh = Vis.generateConfig("Mesh", {
+      const mesh = VIS.generateConfig("Mesh", {
         material: material.vid,
         geometry: geometry.vid,
       });
 
-      const scene = Vis.generateConfig("Scene", {
-        children: [
-          ambientLight.vid,
-          pointLight.vid,
-          spotLight.vid,
-          directionalLight.vid,
-          mesh.vid,
-        ],
-      });
-
-      engine.applyConfig(
-        ambientLight,
-        pointLight,
-        spotLight,
-        directionalLight,
-        material,
-        geometry,
-        mesh,
-        scene
-      );
-
-      engine.setScene(scene.vid).play();
+      window.engine = engine;
     </script>
   </body>
 </html>

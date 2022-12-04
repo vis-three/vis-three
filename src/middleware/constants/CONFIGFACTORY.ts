@@ -4,6 +4,7 @@ import {
   getPointLightConfig,
   getDirectionalLightConfig,
   getHemisphereLightConfig,
+  getRectAreaLightConfig,
 } from "../light/LightConfig";
 import {
   getBoxGeometryConfig,
@@ -100,6 +101,7 @@ export const CONFIGFACTORY = {
   [CONFIGTYPE.POINTLIGHT]: getPointLightConfig,
   [CONFIGTYPE.DIRECTIONALLIGHT]: getDirectionalLightConfig,
   [CONFIGTYPE.HEMISPHERELIGHT]: getHemisphereLightConfig,
+  [CONFIGTYPE.RECTAREALIGHT]: getRectAreaLightConfig,
 
   [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
   [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,

@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Texture, Euler, Material, Matrix4, Color, PlaneBufferGeometry, Box3, BufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, Float32BufferAttribute, EdgesGeometry, Group, AmbientLight, DirectionalLight, PointLight, SpotLight, ShaderMaterial, Line, LineBasicMaterial, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, PointsMaterial, SpriteMaterial, Mesh, Scene, UniformsUtils, Points, Sprite, AdditiveBlending, Camera, Fog, FogExp2, CanvasTexture, CubeTexture, RGBFormat, AxesHelper, GridHelper, MeshLambertMaterial, Light, LineSegments, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, PCFSoftShadowMap } from "three";
+import { Clock, Vector3, MOUSE, TOUCH, PerspectiveCamera, Quaternion, Spherical, Vector2, OrthographicCamera, WebGLRenderTarget, RGBAFormat, WebGLMultisampleRenderTarget, Raycaster, Object3D, WebGLRenderer, Loader, Cache, ImageLoader, UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, LinearEncoding, CubeReflectionMapping, FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, PCFShadowMap, NoToneMapping, Texture, Euler, Material, Matrix4, Color, PlaneBufferGeometry, Box3, BufferGeometry, CurvePath, QuadraticBezierCurve3, CubicBezierCurve3, LineCurve3, CatmullRomCurve3, TubeGeometry, ShapeBufferGeometry, Shape, ShapeGeometry, BoxBufferGeometry, SphereBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, CylinderBufferGeometry, TorusGeometry, RingBufferGeometry, Float32BufferAttribute, EdgesGeometry, Group, AmbientLight, DirectionalLight, PointLight, SpotLight, HemisphereLight, RectAreaLight, ShaderMaterial, Line, LineBasicMaterial, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, PointsMaterial, SpriteMaterial, Mesh, Scene, UniformsUtils, Points, Sprite, AdditiveBlending, Camera, Fog, FogExp2, CanvasTexture, CubeTexture, RGBFormat, AxesHelper, GridHelper, MeshLambertMaterial, Light, LineSegments, CameraHelper as CameraHelper$1, Sphere, OctahedronBufferGeometry, PCFSoftShadowMap } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
@@ -25,6 +25,7 @@ import { Easing, Tween } from "@tweenjs/tween.js";
 import keyboardjs from "keyboardjs";
 import { Pass, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass";
 import { LuminosityHighPassShader } from "three/examples/jsm/shaders/LuminosityHighPassShader";
+import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
 import { LightShadow } from "three/src/lights/LightShadow";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
@@ -2441,6 +2442,7 @@ var CONFIGTYPE = /* @__PURE__ */ ((CONFIGTYPE2) => {
   CONFIGTYPE2["POINTLIGHT"] = "PointLight";
   CONFIGTYPE2["DIRECTIONALLIGHT"] = "DirectionalLight";
   CONFIGTYPE2["HEMISPHERELIGHT"] = "HemisphereLight";
+  CONFIGTYPE2["RECTAREALIGHT"] = "RectAreaLight";
   CONFIGTYPE2["PERSPECTIVECAMERA"] = "PerspectiveCamera";
   CONFIGTYPE2["ORTHOGRAPHICCAMERA"] = "OrthographicCamera";
   CONFIGTYPE2["WEBGLRENDERER"] = "WebGLRenderer";
@@ -2658,6 +2660,13 @@ const getHemisphereLightConfig = function() {
     type: CONFIGTYPE.HEMISPHERELIGHT,
     color: "rgb(255, 255, 255)",
     groundColor: "rgb(0, 0, 0)"
+  });
+};
+const getRectAreaLightConfig = function() {
+  return Object.assign(getLightConfig(), {
+    type: CONFIGTYPE.RECTAREALIGHT,
+    width: 10,
+    height: 10
   });
 };
 const getGeometryConfig = function() {
@@ -3392,6 +3401,7 @@ const CONFIGFACTORY = {
   [CONFIGTYPE.POINTLIGHT]: getPointLightConfig,
   [CONFIGTYPE.DIRECTIONALLIGHT]: getDirectionalLightConfig,
   [CONFIGTYPE.HEMISPHERELIGHT]: getHemisphereLightConfig,
+  [CONFIGTYPE.RECTAREALIGHT]: getRectAreaLightConfig,
   [CONFIGTYPE.BOXGEOMETRY]: getBoxGeometryConfig,
   [CONFIGTYPE.SPHEREGEOMETRY]: getSphereGeometryConfig,
   [CONFIGTYPE.LOADGEOMETRY]: getLoadGeometryConfig,
@@ -7926,6 +7936,41 @@ var SpotLightProcessor = defineProcessor({
   },
   dispose: objectDispose
 });
+var HemisphereLightProcessor = defineProcessor({
+  configType: CONFIGTYPE.HEMISPHERELIGHT,
+  commands: {
+    set: {
+      ...lightCommands.set,
+      groundColor: function({
+        target,
+        value
+      }) {
+        target.groundColor.copy(new Color(value));
+      }
+    }
+  },
+  create(config2, engine) {
+    const light = new HemisphereLight();
+    light.groundColor.copy(new Color(config2.groundColor));
+    return lightCreate(
+      light,
+      config2,
+      {
+        groundColor: true
+      },
+      engine
+    );
+  },
+  dispose: objectDispose
+});
+var RectAreaLightProcessor = defineProcessor({
+  configType: CONFIGTYPE.RECTAREALIGHT,
+  commands: lightCommands,
+  create(config2, engine) {
+    return lightCreate(new RectAreaLight(), config2, {}, engine);
+  },
+  dispose: objectDispose
+});
 class LightCompiler extends ObjectCompiler {
   constructor() {
     super();
@@ -7936,6 +7981,8 @@ Compiler.processor(AmbientLightProcessor);
 Compiler.processor(DirectionalLightProcessor);
 Compiler.processor(PointLightProcessor);
 Compiler.processor(SpotLightProcessor);
+Compiler.processor(HemisphereLightProcessor);
+Compiler.processor(RectAreaLightProcessor);
 class SolidObjectCompiler extends ObjectCompiler {
   constructor() {
     super();
@@ -11043,6 +11090,61 @@ class PointLightHelper extends LineSegments {
     }
   }
 }
+class RectAreaLightHelper extends LineSegments {
+  constructor(rectAreaLight) {
+    super();
+    __publicField(this, "target");
+    __publicField(this, "type", "VisRectAreaLightHelper");
+    __publicField(this, "cacheBox", new Box3());
+    __publicField(this, "cacheVector3", new Vector3());
+    __publicField(this, "cacheColor");
+    __publicField(this, "cacheIntensity");
+    this.target = rectAreaLight;
+    this.generateShape();
+    const material = getHelperLineMaterial();
+    material.color.copy(rectAreaLight.color).multiplyScalar(rectAreaLight.intensity);
+    this.cacheColor = rectAreaLight.color.getHex();
+    this.cacheIntensity = rectAreaLight.intensity;
+    this.material = material;
+    this.matrixAutoUpdate = false;
+    this.matrix = rectAreaLight.matrix;
+    this.matrixWorldNeedsUpdate = false;
+    this.matrixWorld = rectAreaLight.matrixWorld;
+    this.onBeforeRender = () => {
+      const target = this.target;
+      if (target.width !== this.geometry.parameters.width || target.height !== this.geometry.parameters.height) {
+        this.generateShape();
+      }
+      if (target.color.getHex() !== this.cacheColor || this.cacheIntensity !== target.intensity) {
+        this.material.color.copy(target.color).multiplyScalar(target.intensity);
+        this.cacheColor = target.color.getHex();
+      }
+    };
+  }
+  generateShape() {
+    this.geometry.dispose();
+    this.geometry = new PlaneBufferGeometry(
+      this.target.width,
+      this.target.height,
+      4,
+      4
+    );
+    this.geometry.computeBoundingBox();
+  }
+  raycast(raycaster, intersects) {
+    const target = this.target;
+    const box = this.cacheBox;
+    box.copy(this.geometry.boundingBox);
+    box.applyMatrix4(target.matrixWorld);
+    if (raycaster.ray.intersectBox(box, this.cacheVector3)) {
+      intersects.push({
+        distance: raycaster.ray.origin.distanceTo(target.position),
+        object: target,
+        point: target.position
+      });
+    }
+  }
+}
 class SpotLightHelper extends LineSegments {
   constructor(spotLight) {
     super();
@@ -11701,6 +11803,7 @@ class ObjectHelperManager extends EventDispatcher {
       [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
       [CONFIGTYPE.SPOTLIGHT]: SpotLightHelper,
       [CONFIGTYPE.DIRECTIONALLIGHT]: DirectionalLightHelper,
+      [CONFIGTYPE.RECTAREALIGHT]: RectAreaLightHelper,
       [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
       [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
       [CONFIGTYPE.MESH]: MeshHelper,
@@ -11715,6 +11818,7 @@ class ObjectHelperManager extends EventDispatcher {
     });
     __publicField(this, "helperFilter", {
       AmbientLight: true,
+      HemisphereLight: true,
       Object3D: true,
       TransformControls: true,
       Scene: true
@@ -13443,4 +13547,5 @@ const lightShadow = new LightShadow(
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
+RectAreaLightUniformsLib.init();
 export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS2DDataSupport, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataContainer, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, Template, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, Widget, generateConfig, getModule, isObject$1 as isObject, isObjectModule, observable, uniqueSymbol };

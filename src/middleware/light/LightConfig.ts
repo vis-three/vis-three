@@ -36,11 +36,17 @@ export interface HemisphereLightConfig extends LightConifg {
   groundColor: string;
 }
 
+export interface RectAreaLightConfig extends LightConifg {
+  width: number;
+  height: number;
+}
+
 export type LightConfigAllType =
   | AmbientLightConfig
   | PointLightConfig
   | SpotLightConfig
-  | DirectionalLightConfig;
+  | DirectionalLightConfig
+  | RectAreaLightConfig;
 
 const getLightConfig = function (): LightConifg {
   return Object.assign(getObjectConfig(), {
@@ -97,5 +103,13 @@ export const getHemisphereLightConfig = function (): HemisphereLightConfig {
     type: CONFIGTYPE.HEMISPHERELIGHT,
     color: "rgb(255, 255, 255)",
     groundColor: "rgb(0, 0, 0)",
+  });
+};
+
+export const getRectAreaLightConfig = function (): RectAreaLightConfig {
+  return Object.assign(getLightConfig(), {
+    type: CONFIGTYPE.RECTAREALIGHT,
+    width: 10,
+    height: 10,
   });
 };

@@ -55,6 +55,7 @@ export enum CONFIGTYPE {
   POINTLIGHT = "PointLight",
   DIRECTIONALLIGHT = "DirectionalLight",
   HEMISPHERELIGHT = "HemisphereLight",
+  RECTAREALIGHT = "RectAreaLight",
 
   PERSPECTIVECAMERA = "PerspectiveCamera",
   ORTHOGRAPHICCAMERA = "OrthographicCamera",

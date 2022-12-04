@@ -3,6 +3,7 @@ import { EventDispatcher } from "../core/EventDispatcher";
 import { CameraHelper } from "../extends/helper/camera/CameraHelper";
 import { DirectionalLightHelper } from "../extends/helper/light/DirectionalLightHelper";
 import { PointLightHelper } from "../extends/helper/light/PointLightHelper";
+import { RectAreaLightHelper } from "../extends/helper/light/RectAreaLightHelper";
 import { SpotLightHelper } from "../extends/helper/light/SpotLightHelper";
 import { CSS2DPlaneHelper } from "../extends/helper/object/CSS2DPlaneHelper";
 import { CSS3DObjectHelper } from "../extends/helper/object/CSS3DObjectHelper";
@@ -26,6 +27,7 @@ export class ObjectHelperManager extends EventDispatcher {
     [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
     [CONFIGTYPE.SPOTLIGHT]: SpotLightHelper,
     [CONFIGTYPE.DIRECTIONALLIGHT]: DirectionalLightHelper,
+    [CONFIGTYPE.RECTAREALIGHT]: RectAreaLightHelper,
     [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
     [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
     [CONFIGTYPE.MESH]: MeshHelper,
@@ -41,6 +43,7 @@ export class ObjectHelperManager extends EventDispatcher {
 
   private helperFilter = {
     AmbientLight: true,
+    HemisphereLight: true,
     Object3D: true,
     TransformControls: true,
     Scene: true,

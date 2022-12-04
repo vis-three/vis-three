@@ -1,11 +1,5 @@
-import {
-  AmbientLight,
-  DefaultLoadingManager,
-  Object3D,
-  OrthographicCamera,
-  Scene,
-} from "three";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { AmbientLight, Object3D, OrthographicCamera, Scene } from "three";
+import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
 
 import { LightShadow } from "three/src/lights/LightShadow";
 
@@ -101,3 +95,5 @@ lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 
 AmbientLight.prototype.shadow = lightShadow;
+
+RectAreaLightUniformsLib.init();

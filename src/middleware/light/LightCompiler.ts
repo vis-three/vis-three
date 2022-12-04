@@ -7,6 +7,8 @@ import AmbientLightProcessor from "./processor/AmbientLightProcessor";
 import DirectionalLightProcessor from "./processor/DirectionalLightProcessor";
 import PointLightProcessor from "./processor/PointLightProcessor";
 import SpotLightProcessor from "./processor/SpotLightProcessor";
+import HemisphereLightProcessor from "./processor/HemisphereLightProcessor";
+import RectAreaLightProcessor from "./processor/RectAreaLightProcessor";
 
 export class LightCompiler extends ObjectCompiler<LightConfigAllType, Light> {
   MODULE: MODULETYPE = MODULETYPE.LIGHT;
@@ -20,3 +22,5 @@ Compiler.processor(AmbientLightProcessor);
 Compiler.processor(DirectionalLightProcessor);
 Compiler.processor(PointLightProcessor);
 Compiler.processor(SpotLightProcessor);
+Compiler.processor(HemisphereLightProcessor);
+Compiler.processor(RectAreaLightProcessor);
