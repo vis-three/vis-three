@@ -1,10 +1,10 @@
 import { GLTF, GLTFParser } from "three/examples/jsm/loaders/GLTFLoader";
 import { SymbolConfig } from "../middleware/common/CommonConfig";
-import { Object3DParser } from "./Object3DParser";
+import { defaultObject3DParser, Object3DParser } from "./Object3DParser";
 import { ParseParams, Parser, ResourceHanlder } from "./Parser";
 
 export class GLTFResourceParser extends Parser {
-  private object3DParser = new Object3DParser();
+  private object3DParser = defaultObject3DParser;
 
   constructor() {
     super();

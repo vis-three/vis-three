@@ -10,6 +10,7 @@ import { HTMLElementParser } from "../parser/HTMLElementParser";
 import { TextureParser } from "../parser/TextureParser";
 import { Parser, ResourceHanlder } from "../parser/Parser";
 import { GLTFResourceParser } from "../parser/GLTFResourceParser";
+import { FBXResourceParser } from "../parser/FBXResourceParser";
 
 export interface MappedEvent extends BaseEvent {
   configMap: Map<string, SymbolConfig>;
@@ -44,7 +45,8 @@ export class ResourceManager extends EventDispatcher {
       .addParser(new Object3DParser())
       .addParser(new HTMLElementParser())
       .addParser(new TextureParser())
-      .addParser(new GLTFResourceParser());
+      .addParser(new GLTFResourceParser())
+      .addParser(new FBXResourceParser());
 
     const map = new Map<string, any>();
 

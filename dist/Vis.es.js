@@ -13,6 +13,7 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
@@ -2094,7 +2095,8 @@ class LoaderManager extends EventDispatcher {
       ogg: videoLoader,
       hdr: new RGBELoader(),
       gltf: gltfLoader,
-      glb: gltfLoader
+      glb: gltfLoader,
+      fbx: new FBXLoader()
     };
     if (parameters) {
       this.loaderMap = Object.assign(this.loaderMap, parameters.loaderExtends);
@@ -3767,6 +3769,7 @@ class Object3DParser extends Parser {
     }
   }
 }
+const defaultObject3DParser = new Object3DParser();
 class HTMLElementParser extends Parser {
   constructor() {
     super(...arguments);
@@ -3806,7 +3809,7 @@ class TextureParser extends Parser {
 class GLTFResourceParser extends Parser {
   constructor() {
     super();
-    __publicField(this, "object3DParser", new Object3DParser());
+    __publicField(this, "object3DParser", defaultObject3DParser);
     __publicField(this, "selector", (url, resource, parseMap) => {
       if (resource.parser && resource.animations && resource.scene && resource.scenes) {
         return parseMap.get(GLTFResourceParser) || null;
@@ -3824,6 +3827,11 @@ class GLTFResourceParser extends Parser {
     });
   }
 }
+class FBXResourceParser extends Object3DParser {
+  constructor() {
+    super();
+  }
+}
 var RESOURCEEVENTTYPE = /* @__PURE__ */ ((RESOURCEEVENTTYPE2) => {
   RESOURCEEVENTTYPE2["MAPPED"] = "mapped";
   return RESOURCEEVENTTYPE2;
@@ -3834,7 +3842,7 @@ class ResourceManager extends EventDispatcher {
     __publicField(this, "configMap", /* @__PURE__ */ new Map());
     __publicField(this, "resourceMap", /* @__PURE__ */ new Map());
     __publicField(this, "paserMap", /* @__PURE__ */ new Map());
-    this.addParser(new HTMLImageElementParser()).addParser(new HTMLCanvasElementParser()).addParser(new HTMLVideoElementParser()).addParser(new Object3DParser()).addParser(new HTMLElementParser()).addParser(new TextureParser()).addParser(new GLTFResourceParser());
+    this.addParser(new HTMLImageElementParser()).addParser(new HTMLCanvasElementParser()).addParser(new HTMLVideoElementParser()).addParser(new Object3DParser()).addParser(new HTMLElementParser()).addParser(new TextureParser()).addParser(new GLTFResourceParser()).addParser(new FBXResourceParser());
     const map = /* @__PURE__ */ new Map();
     for (const key in resources) {
       if (map.has(key)) {
@@ -13362,7 +13370,7 @@ __publicField(Widget, "component", function(options) {
   }
   _Widget.components[options.name] = options;
 });
-const version = "0.3.1";
+const version = "0.3.2";
 if (!window.__THREE__) {
   console.error(
     `vis-three dependent on three.js module, pleace run 'npm i three' first.`

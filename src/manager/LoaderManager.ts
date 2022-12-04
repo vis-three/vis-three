@@ -5,6 +5,7 @@ import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { VideoLoader } from "../extends/loader/VideoLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
@@ -102,6 +103,7 @@ export class LoaderManager extends EventDispatcher {
       hdr: new RGBELoader(),
       gltf: gltfLoader,
       glb: gltfLoader,
+      fbx: new FBXLoader(),
     };
 
     if (parameters) {
