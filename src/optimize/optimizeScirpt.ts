@@ -1,4 +1,11 @@
-import { AmbientLight, Object3D, OrthographicCamera, Scene } from "three";
+import {
+  AmbientLight,
+  HemisphereLight,
+  Object3D,
+  OrthographicCamera,
+  RectAreaLight,
+  Scene,
+} from "three";
 import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
 
 import { LightShadow } from "three/src/lights/LightShadow";
@@ -86,7 +93,7 @@ Scene.prototype.remove = function (...object: Object3D[]): Scene {
   return this;
 };
 
-// AmbientLight 增加无用shadow，不然WebGLShadowMap会一直warning
+// AmbientLight RectAreaLight HemisphereLight增加无用shadow，不然WebGLShadowMap会一直warning
 
 const lightShadow = new LightShadow(
   new OrthographicCamera(-256, 256, 256, -256)
@@ -95,5 +102,7 @@ lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 
 AmbientLight.prototype.shadow = lightShadow;
+RectAreaLight.prototype.shadow = lightShadow;
+HemisphereLight.prototype.shadow = lightShadow;
 
 RectAreaLightUniformsLib.init();

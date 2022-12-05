@@ -3561,7 +3561,7 @@ const extendPath = function(path, key) {
 };
 const arrayCache = /* @__PURE__ */ new WeakMap();
 const cacheArray = function(object) {
-  if (Array.isArray(object) && !arrayCache.has(object)) {
+  if (Array.isArray(object)) {
     arrayCache.set(object, object.concat([]));
   }
 };
@@ -4509,11 +4509,11 @@ class ObjectDataSupport extends DataSupport {
     __publicField(this, "MODULE", MODULETYPE.GROUP);
   }
 }
-const ObjectRule = function(input, compiler) {
+const ObjectRule = function(input, compiler, validateFun = validate) {
   if (input.key === "parent") {
     return;
   }
-  Rule(input, compiler);
+  Rule(input, compiler, validateFun);
 };
 const LightRule = function(notice, compiler) {
   ObjectRule(notice, compiler);
@@ -4557,7 +4557,7 @@ class RendererDataSupport extends DataSupport {
   }
 }
 const SceneRule = function(input, compiler) {
-  Rule(input, compiler, (vid) => {
+  ObjectRule(input, compiler, (vid) => {
     return validate(vid) || [uniqueSymbol(CONFIGTYPE.SCENE)].includes(vid);
   });
 };
@@ -6667,6 +6667,7 @@ const addChildrenHanlder = function({ target, config: config2, value, engine }) 
 };
 const removeChildrenHandler = function({ target, config: config2, value, engine }) {
   const childrenObject = engine.compilerManager.getObject3D(value);
+  console.log(1);
   if (!childrenObject) {
     console.warn(`can not found this vid in engine: ${value}.`);
     return;
@@ -13547,5 +13548,7 @@ const lightShadow = new LightShadow(
 lightShadow.autoUpdate = false;
 lightShadow.needsUpdate = false;
 AmbientLight.prototype.shadow = lightShadow;
+RectAreaLight.prototype.shadow = lightShadow;
+HemisphereLight.prototype.shadow = lightShadow;
 RectAreaLightUniformsLib.init();
 export { Action, AniScriptLibrary, AnimationDataSupport, BooleanModifier, CONFIGMODULE, CONFIGTYPE, CSS2DDataSupport, CSS3DDataSupport, CSS3DPlane, CameraDataSupport, CameraHelper, CanvasGenerator, ControlsDataSupport, DISPLAYMODE, DataContainer, DataSupportManager, DirectionalLightHelper, DisplayEngine, DisplayEngineSupport, ENGINEPLUGIN, EVENTNAME, Engine, EngineSupport, EventDispatcher, EventLibrary, GeometryDataSupport, GroupDataSupport, GroupHelper, History, JSONHandler$1 as JSONHandler, KeyboardManager, LightDataSupport, LineDataSupport, LoaderManager, MODULETYPE, MaterialDataSupport, MaterialDisplayer, MeshDataSupport, ModelingEngine, ModelingEngineSupport, OBJECTMODULE, Object3DDataSupport, PassDataSupport, PointLightHelper, PointsDataSupport, RESOURCEEVENTTYPE, RenderManager, RendererDataSupport, ResourceManager, SceneDataSupport, SelectiveBloomPass, ShaderLibrary, SpotLightHelper, SpriteDataSupport, SupportDataGenerator, TIMINGFUNCTION, Template, TextureDataSupport, TextureDisplayer, Translater, utils as Utils, VIEWPOINT, VideoLoader, Widget, generateConfig, getModule, isObject$1 as isObject, isObjectModule, observable, uniqueSymbol };

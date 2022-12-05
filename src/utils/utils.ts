@@ -142,7 +142,7 @@ export const extendPath = function (path: string, key: string) {
 const arrayCache = new WeakMap<Array<any>, Array<any>>();
 
 export const cacheArray = function (object: Array<any>) {
-  if (Array.isArray(object) && !arrayCache.has(object)) {
+  if (Array.isArray(object)) {
     arrayCache.set(object, object.concat([]));
   }
 };

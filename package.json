@@ -4,7 +4,7 @@
   "main": "dist/Vis.umd.js",
   "module": "dist/Vis.es.js",
   "types": "types/src/main.d.ts",
-  "license": "AGPL-3.0",
+  "license": "MPL-2.0",
   "author": "Shiotsuki_",
   "repository": "https://github.com/Shiotsukikaedesari/vis-three",
   "homepage": "https://shiotsukikaedesari.github.io/vis-three",

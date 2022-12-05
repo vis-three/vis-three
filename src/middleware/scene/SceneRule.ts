@@ -1,7 +1,6 @@
 import { Scene } from "three";
 import { validate } from "uuid";
 import { ProxyNotice } from "../../core/DataContainer";
-import { Rule } from "../../core/Rule";
 import { CONFIGTYPE } from "../constants/configType";
 import { uniqueSymbol } from "../constants/UNIQUESYMBOL";
 import { ObjectRule } from "../object/ObjectRule";
@@ -14,7 +13,7 @@ export const SceneRule: SceneRule = function (
   input: ProxyNotice,
   compiler: SceneCompiler
 ) {
-  Rule(input, compiler, (vid) => {
+  ObjectRule(input, compiler, (vid) => {
     return (
       validate(vid) ||
       [uniqueSymbol(CONFIGTYPE.SCENE)].includes(vid as CONFIGTYPE)
