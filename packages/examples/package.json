@@ -1,0 +1,14 @@
+{
+  "name": "@vis-three/examples",
+  "version": "0.4.0",
+  "description": "vis-three examples",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shiotsuki_",
+  "license": "MPL-2.0"
+}

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSS3DSupport</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    #element1,
+    #element2 {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 4px rgb(170, 150, 241);
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: unset;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    label,
+    a {
+      color: white;
+    }
+
+    .test {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 200px;
+      height: 200px;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <div class="test">
+      <div id="element1">
+        <div class="form">
+          <label for="element1-text">CSS3DPlane</label>
+          <input id="element1-text" type="text" />
+        </div>
+
+        <div class="form">
+          <label for="element1-range">range</label>
+          <input id="element1-range" type="range" />
+        </div>
+      </div>
+
+      <div id="element2">
+        <div class="form">
+          <label for="element1-text">CSS3DSprite</label>
+          <input id="element1-text" type="text" value="CSS3DSprite" />
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as VIS from "vis-three";
+      import { v4 as getUUid } from "uuid";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      const canvasGenerator = new VIS.CanvasGenerator({
+        width: 256,
+        height: 256,
+      })
+        .draw((ctx) => {
+          ctx.textBaseline = "middle";
+          ctx.textAlign = "center";
+
+          ctx.fillStyle = "rgb(206, 42, 230)";
+
+          ctx.font = " bold 54px 微软雅黑";
+          ctx.fillText("CSS3D", 128, 128);
+        })
+        .preview();
+
+      const engine = new VIS.ModelingEngineSupport()
+        .install("CSS2DRenderer")
+        .complete()
+        .setDom(document.getElementById("app"))
+        .setStats(true)
+        .registerResources({
+          "examples.element1": document.getElementById("element1"),
+          "examples.element2": document.getElementById("element2"),
+        });
+
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid);
+
+      VIS.generateConfig.injectScene = true;
+
+      // const css2DPlane = VIS.generateConfig("CSS2DPlane", {
+      //   element: "examples.element1",
+      //   width: 100,
+      //   height: 100,
+      //   position: {
+      //     x: 30,
+      //     y: 10,
+      //   },
+      // });
+
+      const css2DPlane2 = VIS.generateConfig("CSS2DPlane", {
+        element: "examples.element2",
+        width: 200,
+        height: 200,
+      });
+
+      const spriteMaterial = VIS.generateConfig("SpriteMaterial", {
+        sizeAttenuation: false,
+      });
+
+      VIS.generateConfig("Sprite", {
+        material: spriteMaterial.vid,
+        scale: {
+          x: 2 / 10,
+          y: 2 / 10,
+        },
+      });
+
+      engine.play();
+
+      window.engine = engine;
+
+      const gui = new GUI();
+
+      const planeFloder = gui.addFolder("plane");
+
+      // planeFloder.add(css2DPlane, "width", 0, 300).onChange((data) => {
+      //   css2DPlane.width = data;
+      // });
+
+      // planeFloder.add(css2DPlane, "height", 0, 300).onChange((data) => {
+      //   css2DPlane.height = data;
+      // });
+
+      setTimeout(() => {
+        engine.setSize();
+      }, 0);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cover</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+
+    button {
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      transform: translate(-50%);
+      margin: 0 5px;
+      font-size: 16px;
+      padding: 8px 10px;
+      background: rgb(237, 75, 243);
+      border-radius: 3px;
+      box-shadow: 0 0 6px rgb(236, 182, 238);
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+    <button id="cover">cover</button>
+    <script type="module">
+      import * as THREE from "three";
+      import * as VIS from "vis-three";
+      import { v4 as getUUid } from "uuid";
+
+      const engine = new VIS.ModelingEngineSupport()
+        .complete()
+        .setDom(document.getElementById("app"));
+
+      VIS.generateConfig.injectEngine = engine;
+
+      VIS.generateConfig("WebGLRenderer", {
+        clearColor: "rgba(255, 0, 0, 1)",
+      });
+
+      const pointLight = VIS.generateConfig("PointLight", {
+        position: {
+          x: 30,
+          y: 50,
+        },
+        distance: 100,
+      });
+
+      const meshStandardMaterial = VIS.generateConfig("MeshStandardMaterial", {
+        color: "rgb(255, 0, 0)",
+      });
+
+      const boxGeometry = VIS.generateConfig("BoxGeometry", {
+        width: 20,
+        height: 40,
+        depth: 60,
+      });
+
+      const geometry = VIS.generateConfig("BoxGeometry", {
+        width: 20,
+        height: 40,
+        depth: 60,
+      });
+
+      const mesh = VIS.generateConfig("Mesh", {
+        geometry: boxGeometry.vid,
+        material: meshStandardMaterial.vid,
+      });
+
+      const scene = VIS.generateConfig("Scene", {
+        children: [pointLight.vid, mesh.vid],
+      });
+
+      const camera = VIS.generateConfig("PerspectiveCamera", {
+        far: 1000,
+        adaptiveWindow: true,
+        position: {
+          x: 60,
+          y: 60,
+          z: 60,
+        },
+      });
+
+      engine.setCamera(camera.vid).setScene(scene.vid).setSize().play();
+
+      window.onload = () => {
+        document.getElementById("cover").onclick = () => {
+          VIS.generateConfig("WebGLRenderer", {
+            clearColor: "rgba(0, 0, 0, 1)",
+          });
+        };
+      };
+    </script>
+  </body>
+</html>

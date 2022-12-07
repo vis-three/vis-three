@@ -1,1 +1,0 @@
-{"version":3,"file":"SpriteRule.js","sourceRoot":"","sources":["../../../../src/middleware/sprite/SpriteRule.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,UAAU,EAAE,MAAM,sBAAsB,CAAC;AAOlD,MAAM,CAAC,MAAM,UAAU,GAAe,UACpC,MAAmB,EACnB,QAAwB;IAExB,IAAI,MAAM,CAAC,GAAG,KAAK,UAAU,EAAE;QAC7B,OAAO;KACR;IAED,UAAU,CAAC,MAAM,EAAE,QAAQ,CAAC,CAAC;AAC/B,CAAC,CAAC"}

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GeometrySupport</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as VIS from "vis-three";
+      import { v4 as getUUid } from "uuid";
+
+      const engine = new VIS.ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true)
+        .play();
+
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid);
+
+      VIS.generateConfig.injectScene = true;
+
+      const pointLight = VIS.generateConfig("PointLight", {
+        position: {
+          y: 50,
+        },
+        distance: 150,
+      });
+
+      const meshMaterial = VIS.generateConfig("MeshStandardMaterial");
+
+      const geometryTypeList = [
+        VIS.CONFIGTYPE.BOXGEOMETRY,
+        VIS.CONFIGTYPE.SPHEREGEOMETRY,
+        VIS.CONFIGTYPE.PLANEGEOMETRY,
+        VIS.CONFIGTYPE.CIRCLEGEOMETRY,
+        VIS.CONFIGTYPE.CONEGEOMETRY,
+        VIS.CONFIGTYPE.CYLINDERGEOMETRY,
+        VIS.CONFIGTYPE.RINGGEOMETRY,
+        VIS.CONFIGTYPE.TORUSGEOMETRY,
+        // VIS.CONFIGTYPE.LOADGEOMETRY,
+        // VIS.CONFIGTYPE.EDGESGEOMETRY,
+      ];
+
+      const size = 15;
+
+      geometryTypeList.forEach((cofigType, i) => {
+        const geometry = VIS.generateConfig(cofigType);
+        const number = i + 1;
+        const mesh = VIS.generateConfig("Mesh", {
+          material: meshMaterial.vid,
+          geometry: geometry.vid,
+          position: {
+            x:
+              number % 2
+                ? -(Math.floor(number / 2) + 1) * size
+                : Math.floor(number / 2) * size,
+          },
+          scale: {
+            x: 2,
+            y: 2,
+            z: 2,
+          },
+        });
+
+        engine.applyConfig(geometry, mesh);
+        scene.children.push(mesh.vid);
+      });
+
+      // line
+      const lineMaterial = VIS.generateConfig("LineBasicMaterial", {
+        color: "white",
+      });
+
+      const lineCurveGeometry = VIS.generateConfig("LineCurveGeometry", {
+        path: [
+          { x: 0, y: 0, z: -5 },
+          { x: 0, y: 0, z: 5 },
+          { x: 0, y: 5, z: 5 },
+          { x: 0, y: 5, z: 10 },
+          { x: 10, y: 5, z: 10 },
+        ],
+      });
+
+      const splineCurveGeometry = VIS.generateConfig("SplineCurveGeometry", {
+        path: [
+          { x: 0, y: 0, z: -5 },
+          { x: 0, y: 0, z: 5 },
+          { x: 0, y: 5, z: 5 },
+          { x: 0, y: 5, z: 10 },
+          { x: 10, y: 5, z: 10 },
+        ],
+      });
+
+      const CubicBezierCureGeometry = VIS.generateConfig(
+        "CubicBezierCurveGeometry",
+        {
+          path: [
+            { x: 0, y: 0, z: -5 },
+            { x: 0, y: 20, z: 5 },
+            { x: 0, y: -15, z: 5 },
+            { x: 0, y: 5, z: 10 },
+            { x: 10, y: 5, z: 10 },
+            { x: 10, y: 0, z: 10 },
+            { x: 0, y: 0, z: 20 },
+            { x: 10, y: 0, z: 10 },
+          ],
+        }
+      );
+
+      const quadraticBezierCurveGeometry = VIS.generateConfig(
+        "QuadraticBezierCurveGeometry",
+        {
+          path: [
+            { x: 0, y: 0, z: -5 },
+            { x: 0, y: 0, z: 5 },
+            { x: 0, y: 5, z: 5 },
+            { x: 0, y: 5, z: 10 },
+            { x: 10, y: 5, z: 10 },
+          ],
+        }
+      );
+
+      const splineTubeGeometry = VIS.generateConfig("SplineTubeGeometry", {
+        path: [
+          { x: 0, y: 0, z: -5 },
+          { x: 0, y: 0, z: 5 },
+          { x: 0, y: 5, z: 5 },
+          { x: 0, y: 5, z: 10 },
+          { x: 10, y: 5, z: 10 },
+        ],
+        radialSegments: 8,
+      });
+
+      const lineTubeGeometry = VIS.generateConfig("LineTubeGeometry", {
+        path: [
+          { x: 0, y: 0, z: -5 },
+          { x: 0, y: 0, z: 5 },
+          { x: 0, y: 5, z: 5 },
+          { x: 0, y: 5, z: 10 },
+          { x: 10, y: 5, z: 10 },
+        ],
+        radialSegments: 8,
+      });
+
+      const lineCurveLine = VIS.generateConfig("Line", {
+        geometry: lineCurveGeometry.vid,
+        material: lineMaterial.vid,
+      });
+
+      const splineCurveLine = VIS.generateConfig("Line", {
+        geometry: splineCurveGeometry.vid,
+        material: lineMaterial.vid,
+        position: {
+          y: 10,
+        },
+      });
+
+      const CubicBezierCurveLine = VIS.generateConfig("Line", {
+        geometry: CubicBezierCureGeometry.vid,
+        material: lineMaterial.vid,
+        position: {
+          y: 20,
+        },
+      });
+
+      const quadraticBezierCurveLine = VIS.generateConfig("Line", {
+        geometry: quadraticBezierCurveGeometry.vid,
+        material: lineMaterial.vid,
+        position: {
+          y: 30,
+        },
+      });
+
+      const splineTubeMesh = VIS.generateConfig("Mesh", {
+        geometry: splineTubeGeometry.vid,
+        material: meshMaterial.vid,
+        position: {
+          y: -10,
+        },
+      });
+
+      const lineTubeMesh = VIS.generateConfig("Mesh", {
+        geometry: lineTubeGeometry.vid,
+        material: meshMaterial.vid,
+        position: {
+          y: -20,
+        },
+      });
+
+      const lineShapeGeometry = VIS.generateConfig("LineShapeGeometry", {
+        path: [
+          { x: -5, y: 5 },
+          { x: 0, y: 10 },
+          { x: 5, y: 5 },
+          { x: 5, y: -5 },
+          { x: -5, y: -5 },
+        ],
+      });
+
+      const lineShapeMesh = VIS.generateConfig("Mesh", {
+        geometry: lineShapeGeometry.vid,
+        material: meshMaterial.vid,
+        position: {
+          x: 15,
+          y: 20,
+        },
+      });
+
+      window.reactData = lineCurveGeometry;
+      console.log(engine);
+    </script>
+  </body>
+</html>

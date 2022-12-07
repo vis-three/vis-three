@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <title>obj</title>
+  </head>
+
+  <style></style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as VIS from "vis-three";
+      import { message } from "ant-design-vue";
+      import "ant-design-vue/lib/message/style/index.css";
+
+      const engine = new VIS.ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setStats(true)
+        .setSize()
+        .play();
+
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid);
+
+      VIS.generateConfig.injectScene = true;
+
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
+      VIS.generateConfig("AmbientLight");
+
+      message.loading({
+        content: "正在加载资源：0%",
+        key: "loading",
+        duration: 0,
+      });
+
+      engine.loaderManager.addEventListener("loading", (event) => {
+        message.loading({
+          content: `正在加载资源：${parseInt(
+            ((event.loadSuccess / event.loadTotal) * 100).toString()
+          )}
+            %`,
+          key: "loading",
+          duration: 0,
+        });
+      });
+
+      engine.loaderManager.addEventListener("loaded", (event) => {
+        message.success({
+          content: "加载完成！",
+          key: "loading",
+          duration: 1,
+        });
+      });
+
+      engine
+        .loadResourcesAsync([
+          "/model/Lowpoly/Lowpoly.obj",
+          "/model/advert/advert.obj",
+        ])
+        .then((res) => {
+          console.log(res);
+          engine.loadConfig(res.resourceConfig["/model/advert/advert.obj"]);
+          engine.loadConfig(res.resourceConfig["/model/Lowpoly/Lowpoly.obj"]);
+
+          const config = res.configMap.get("/model/Lowpoly/Lowpoly.obj");
+          const config2 = res.configMap.get("/model/advert/advert.obj");
+
+          scene.children.push(config.vid, config2.vid);
+        });
+      console.log(engine);
+    </script>
+  </body>
+</html>

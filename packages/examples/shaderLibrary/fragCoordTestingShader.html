@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fragCoordTestingShader</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as VIS from "vis-three";
+      import { v4 as getUUid } from "uuid";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      const engine = new VIS.ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true);
+
+      VIS.generateConfig.injectEngine = engine;
+
+      const scene = VIS.generateConfig("Scene");
+
+      engine.setScene(scene.vid);
+
+      VIS.generateConfig.injectScene = true;
+
+      const ambientLight = VIS.generateConfig("AmbientLight");
+
+      const material = VIS.generateConfig("ShaderMaterial", {
+        shader: "fragCoordTestingShader",
+        side: THREE.DoubleSide,
+        uniforms: {
+          resolution: {
+            value: {
+              x: window.innerWidth,
+              y: window.innerHeight,
+            },
+          },
+        },
+      });
+
+      const geometry = VIS.generateConfig("PlaneGeometry", {
+        width: 100,
+        height: 100,
+      });
+
+      const mesh = VIS.generateConfig("Mesh", {
+        material: material.vid,
+        geometry: geometry.vid,
+      });
+
+      engine.play();
+
+      window.engine = engine;
+      window.material = material;
+
+      const gui = new GUI();
+
+      const guiParams = {
+        width: material.uniforms.resolution.value.x,
+        height: material.uniforms.resolution.value.y,
+      };
+
+      gui.add(guiParams, "width", 0, window.innerWidth, 5).onChange((value) => {
+        material.uniforms.resolution.value.x = value;
+      });
+
+      gui
+        .add(guiParams, "height", 0, window.innerHeight, 5)
+        .onChange((value) => {
+          material.uniforms.resolution.value.y = value;
+        });
+    </script>
+  </body>
+</html>

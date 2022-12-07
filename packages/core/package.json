@@ -1,0 +1,11 @@
+{
+  "name": "@vis-three/core",
+  "version": "0.4.0",
+  "description": "vis-three core",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shiotsuki_",
+  "license": "MPL-2.0"
+}

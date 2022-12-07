@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DisplayEngine</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+    <script type="module">
+      import * as THREE from "three";
+      import * as Vis from "vis-three";
+      import { v4 as getUUid } from "uuid";
+
+      const engine = new Vis.DisplayEngineSupport()
+        .install("GridHelper")
+        .complete()
+        .setDom(document.getElementById("app"));
+
+      const pointLight = Vis.generateConfig("PointLight", {
+        position: {
+          x: 30,
+          y: 50,
+        },
+        distance: 100,
+      });
+
+      const meshStandardMaterial = Vis.generateConfig("MeshStandardMaterial", {
+        color: "rgb(255, 0, 0)",
+      });
+
+      const boxGeometry = Vis.generateConfig("BoxGeometry", {
+        width: 20,
+        height: 40,
+        depth: 60,
+      });
+
+      const geometry = VIS.reactive(
+        Vis.generateConfig("BoxGeometry", {
+          width: 20,
+          height: 40,
+          depth: 60,
+        })
+      );
+
+      const mesh = Vis.generateConfig("Mesh", {
+        geometry: boxGeometry.vid,
+        material: meshStandardMaterial.vid,
+      });
+
+      const scene = Vis.generateConfig("Scene", {
+        children: [pointLight.vid, mesh.vid],
+      });
+
+      const camera = Vis.generateConfig("PerspectiveCamera", {
+        far: 1000,
+        adaptiveWindow: true,
+        position: {
+          x: 60,
+          y: 60,
+          z: 60,
+        },
+      });
+
+      engine.applyConfig(
+        pointLight,
+        meshStandardMaterial,
+        boxGeometry,
+        mesh,
+        scene,
+        camera
+      );
+
+      engine.setCamera(camera.vid).setScene(scene.vid).setSize().play();
+    </script>
+  </body>
+</html>
