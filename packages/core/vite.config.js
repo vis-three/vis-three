@@ -2,13 +2,13 @@ import path from "path";
 export default {
   build: {
     lib: {
-      entry: path.resolve(__dirname, "../../src/main.ts"),
-      name: "Vis",
+      entry: path.resolve(__dirname, "./src/main.ts"),
+      name: "VIS.core",
     },
     rollupOptions: {
       output: {
         chunkFileNames: "[name]-[hash].js",
-        entryFileNames: "Vis.[format].js",
+        entryFileNames: "VIS.core.[format].js",
         assetFileNames: "static/[name]-[hash].[ext]",
       },
       external: [

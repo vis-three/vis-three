@@ -3,12 +3,39 @@
   "version": "0.4.0",
   "description": "vis-three examples",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Shiotsuki_",
-  "license": "MPL-2.0"
+  "license": "MPL-2.0",
+  "scripts": {
+    "dev": "vite serve",
+    "build": "vite build --emptyOutDir",
+    "lint": "npx eslint ./src/**/*.vue --fix"
+  },
+  "devDependencies": {
+    "@ant-design/icons-vue": "^6.1.0",
+    "@rollup/plugin-alias": "^3.1.9",
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "^5.18.0",
+    "@vitejs/plugin-vue": "^2.3.3",
+    "ant-design-vue": "^3.2.6",
+    "axios": "^0.27.2",
+    "babel-loader": "^8.2.5",
+    "babel-plugin-istanbul": "^6.1.1",
+    "esbuild-windows-64": "^0.15.13",
+    "eslint": "^8.12.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^9.1.0",
+    "less": "^4.1.2",
+    "lite-server": "^2.6.1",
+    "nprogress": "^0.2.0",
+    "prettier": "^2.6.2",
+    "rollup-plugin-visualizer": "^5.6.0",
+    "typescript": "^4.3.2",
+    "url-parse": "^1.5.10",
+    "vis-three": "0.3.2",
+    "vite": "^2.9.15",
+    "vue": "^3.2.21",
+    "vue-tsc": "^0.37.0",
+    "webpack": "^5.74.0"
+  }
 }

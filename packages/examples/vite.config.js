@@ -7,9 +7,12 @@ import fs from "fs";
 // 遍历examples文件夹形成input, 顺便写一份json配置进vis-three/website/examples/assets/menus.json
 const input = {};
 const menusJson = [];
-const examplesDir = path.resolve(__dirname, "../../examples");
+const examplesDir = path.resolve(__dirname, "./");
 
 const recursion = (parentDir) => {
+  if (!fs.statSync(parentDir).isDirectory()) {
+    return;
+  }
   fs.readdirSync(parentDir).forEach((filename) => {
     if (path.extname(filename) === ".html") {
       const name = `${parentDir.replace(/\\/g, "/").split("/").pop()}/${
@@ -36,25 +39,24 @@ recursion(examplesDir);
 
 const menusPath = path.resolve(
   __dirname,
-  "../../website/examples/assets/menus.json"
+  "../website/src/examples/assets/menus.json"
 );
 
 fs.writeFileSync(menusPath, JSON.stringify(menusJson));
 
 export default defineConfig({
-  root: path.resolve(__dirname, "../../examples"),
   base: "/vis-three/examples/",
   server: {
     open: "/index.html",
   },
   build: {
-    outDir: path.resolve(__dirname, "../../website/public/examples"),
+    outDir: path.resolve(__dirname, "../website/public/examples"),
     rollupOptions: {
       input,
       output: {
         manualChunks: {
           three: ["three"],
-          "vis-three": ["dist/Vis.es.js"],
+          "vis-three": ["vis-three"],
           Antd: ["ant-design-vue"],
           echarts: ["echarts"],
           zrender: ["zrender"],
@@ -69,9 +71,4 @@ export default defineConfig({
       open: true,
     }),
   ],
-  resolve: {
-    alias: {
-      "vis-three": path.resolve(__dirname, "../../dist/Vis.es.js"),
-    },
-  },
 });

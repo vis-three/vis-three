@@ -1,7 +1,3 @@
-import { Engine, ENGINEPLUGIN } from "./engine/Engine";
-import { DisplayEngine } from "./engine/DisplayEngine";
-import { ModelingEngine } from "./engine/ModelingEngine";
-
 import { LightDataSupport } from "./middleware/light/LightDataSupport";
 import { GeometryDataSupport } from "./middleware/geometry/GeometryDataSupport";
 import { PointLightHelper } from "./extends/helper/light/PointLightHelper";
@@ -23,30 +19,21 @@ import { TextureDisplayer } from "./displayer/TextureDisplayer";
 import { SceneDataSupport } from "./middleware/scene/SceneDataSupport";
 import { CanvasGenerator } from "./convenient/CanvasGenerator";
 import { SpriteDataSupport } from "./middleware/sprite/SpriteDataSupport";
-import { ModelingEngineSupport } from "./engine/ModelingEngineSupport";
-import { DisplayEngineSupport } from "./engine/DisplayEngineSupport";
 import { LineDataSupport } from "./middleware/line/LineDataSupport";
 import { MeshDataSupport } from "./middleware/mesh/MeshDataSupport";
 import { PointsDataSupport } from "./middleware/points/PointsDataSupport";
 import { GroupHelper } from "./extends/helper/object/GroupHelper";
-import { EngineSupport } from "./engine/EngineSupport";
 import * as JSONHandler from "./convenient/JSONHandler";
 
 import { BooleanModifier } from "./modifier/BooleanModifier";
-import { VIEWPOINT } from "../packages/plugins/ViewpointPlugin";
-import { DISPLAYMODE } from "../packages/plugins/DisplayModePlugin";
 import { Action, History } from "./convenient/History";
 import { SpotLightHelper } from "./extends/helper/light/SpotLightHelper";
 import { DirectionalLightHelper } from "./extends/helper/light/DirectionalLightHelper";
 import { VideoLoader } from "./extends/loader/VideoLoader";
 import { DataContainer } from "./core/DataContainer";
 import { Translater } from "./core/Translater";
-import { ShaderLibrary } from "./library/shader/ShaderLibrary";
-import { EventLibrary } from "./library/event/EventLibrary";
-import { AniScriptLibrary } from "./library/aniScript/AniScriptLibrary";
 import { AnimationDataSupport } from "./middleware/animation/AnimationDataSupport";
 import { EVENTNAME } from "./manager/EventManager";
-import { TIMINGFUNCTION } from "./library/event/RealTimeAnimateLibrary/common";
 import { PassDataSupport } from "./middleware/pass/PassDataSupport";
 import { CSS3DDataSupport } from "./middleware/css3D/CSS3DDataSupport";
 import { RenderManager } from "./manager/RenderManager";
@@ -64,10 +51,11 @@ import { CSS3DPlane } from "./extends/object/CSS3DPlane";
 import { EventDispatcher } from "./core/EventDispatcher";
 import Template from "./convenient/Template";
 import { Object3DDataSupport } from "./middleware/object3D/Object3DDataSupport";
-import { Widget } from "./core/Widget";
 import { uniqueSymbol } from "./middleware/constants/UNIQUESYMBOL";
 import { observable } from "./core/Observable";
 import { CSS2DDataSupport } from "./middleware/css2D/CSS2DDataSupport";
+import { Engine, ENGINE_EVENT } from "./core/Engine";
+import { definePlugin } from "./core/Plugin";
 
 import "./optimize/optimizeScirpt";
 
@@ -77,17 +65,16 @@ export {
   DataContainer,
   Translater,
   EventDispatcher,
+  Engine,
+  ENGINE_EVENT,
+  definePlugin,
   // menu
   RESOURCEEVENTTYPE,
   MODULETYPE,
   OBJECTMODULE,
   CONFIGTYPE,
   CONFIGMODULE,
-  DISPLAYMODE,
-  ENGINEPLUGIN,
-  VIEWPOINT,
   EVENTNAME,
-  TIMINGFUNCTION,
   getModule,
   isObjectModule,
   isObject,
@@ -97,14 +84,6 @@ export {
   DataSupportManager,
   RenderManager,
   KeyboardManager,
-  // engine
-  Engine,
-  ModelingEngine,
-  DisplayEngine,
-  EngineSupport,
-  ModelingEngineSupport,
-  DisplayEngineSupport,
-  // engine connector
 
   // data support
   TextureDataSupport,
@@ -140,10 +119,6 @@ export {
   Action,
   JSONHandler,
   Template,
-  // library
-  EventLibrary,
-  ShaderLibrary,
-  AniScriptLibrary,
   // displayer
   MaterialDisplayer,
   TextureDisplayer,
@@ -157,6 +132,4 @@ export {
   Utils,
   // extends
   CSS3DPlane,
-  // widget
-  Widget,
 };
