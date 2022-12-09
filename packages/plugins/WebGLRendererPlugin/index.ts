@@ -29,7 +29,6 @@ const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
 ) {
   return {
     name: "WebGLRendererPlugin",
-    deps: "RenderManagerPlugin",
     install(engine: WebGLRendererEngine) {
       engine.webGLRenderer = new WebGLRenderer(params);
       const domElement = engine.webGLRenderer.domElement;

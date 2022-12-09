@@ -1,0 +1,32 @@
+{
+  "name": "@vis-three/engine",
+  "version": "0.4.0",
+  "description": "vis-three engine",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "author": "Shiotsuki_",
+  "license": "MPL-2.0",
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc",
+    "lint": "npx eslint *.js src/**/*.ts --fix"
+  },
+  "devDependencies": {
+    "@types/three": "^0.133.1",
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "^5.18.0",
+    "eslint": "^8.12.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.6.2",
+    "three": "^0.141.0",
+    "typescript": "^4.3.2"
+  },
+  "files": [
+    "/**/*.js",
+    "/**/*.d.ts",
+    "package.json",
+    "LICENSE"
+  ]
+}

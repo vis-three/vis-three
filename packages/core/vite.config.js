@@ -2,7 +2,7 @@ import path from "path";
 export default {
   build: {
     lib: {
-      entry: path.resolve(__dirname, "./src/main.ts"),
+      entry: path.resolve(__dirname, "./main.ts"),
       name: "VIS.core",
     },
     rollupOptions: {
