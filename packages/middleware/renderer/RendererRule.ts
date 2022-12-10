@@ -1,21 +1,19 @@
+import { ProxyNotice, Rule } from "@vis-three/core";
 import { validate } from "uuid";
-import { ProxyNotice } from "../../core/DataContainer";
-import { Rule } from "../../core/Rule";
+import { uniqueSymbol } from "../common";
 import { CONFIGTYPE } from "../constants/configType";
-import { uniqueSymbol } from "../../core/middleware/UNIQUESYMBOL";
 import { RendererCompiler } from "./RendererCompiler";
+
+const uniqueList = [
+  uniqueSymbol(CONFIGTYPE.WEBGLRENDERER),
+  uniqueSymbol(CONFIGTYPE.CSS3DRENDERER),
+];
 
 export const RendererRule: Rule<RendererCompiler> = function (
   input: ProxyNotice,
   compiler: RendererCompiler
 ) {
   Rule(input, compiler, (vid) => {
-    return (
-      validate(vid) ||
-      [
-        uniqueSymbol(CONFIGTYPE.WEBGLRENDERER),
-        uniqueSymbol(CONFIGTYPE.CSS3DRENDERER),
-      ].includes(vid as CONFIGTYPE)
-    );
+    return validate(vid) || uniqueList.includes(vid as CONFIGTYPE);
   });
 };

@@ -1,5 +1,4 @@
-import { ProxyNotice } from "../../core/DataContainer";
-import { VisCSS2DObject } from "../../optimize/VisCSS2DObject";
+import { ProxyNotice, VisCSS2DObject } from "@vis-three/core";
 import { ObjectRule } from "../object/ObjectRule";
 import { CSS2DCompiler } from "./CSS2DCompiler";
 import { CSS2DAllType } from "./CSS2DConfig";

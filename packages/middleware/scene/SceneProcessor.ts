@@ -1,7 +1,6 @@
+import { EngineSupport, defineProcessor } from "@vis-three/core";
 import { Color, Fog, FogExp2, Scene } from "three";
 import { validate } from "uuid";
-import { defineProcessor } from "../../core/Processor";
-import { EngineSupport } from "../../engine/EngineSupport";
 import { CONFIGTYPE } from "../constants/configType";
 import {
   objectCommands,

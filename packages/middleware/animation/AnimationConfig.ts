@@ -1,4 +1,4 @@
-import { BasicAniScriptConfig } from "../../library/aniScript/AniScriptLibrary";
+import { BasicAniScriptConfig } from "@vis-three/core/library/AniScriptLibrary";
 import { SymbolConfig } from "../common";
 import { CONFIGTYPE } from "../constants/configType";
 

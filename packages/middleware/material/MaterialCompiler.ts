@@ -1,6 +1,6 @@
+import { Compiler } from "@vis-three/core";
 import { Material } from "three";
-import { Compiler } from "../../core/Compiler";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { MaterialAllType } from "./MaterialConfig";
 import LineBasicMaterialProcessor from "./processor/LineBasicMaterialProcessor";
 import MeshBasicMaterialProcessor from "./processor/MeshBasicMaterialProcessor";

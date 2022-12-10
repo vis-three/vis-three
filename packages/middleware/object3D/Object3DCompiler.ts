@@ -1,6 +1,6 @@
+import { Compiler } from "@vis-three/core";
 import { Object3D } from "three";
-import { Compiler } from "../../core/Compiler";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { ObjectCompiler } from "../object/ObjectCompiler";
 import { Object3DConfig } from "./Object3DConfig";
 import Object3DProcessor from "./Object3DProcessor";

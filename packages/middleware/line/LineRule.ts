@@ -1,6 +1,5 @@
 import { Line } from "three";
-import { ProxyNotice } from "../../core/DataContainer";
-import { Rule } from "../../core/Rule";
+import { ProxyNotice, Rule } from "@vis-three/core";
 import { ObjectRule } from "../object/ObjectRule";
 import { SolidObjectRule } from "../solidObject/SolidObjectRule";
 import { LineCompiler } from "./LineCompiler";

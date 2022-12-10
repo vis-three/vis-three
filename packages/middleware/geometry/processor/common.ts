@@ -1,3 +1,4 @@
+import { CurveGeometry, ProcessorCommands, ProcessParams } from "@vis-three/core";
 import {
   Box3,
   BufferGeometry,
@@ -7,8 +8,6 @@ import {
   ShapeGeometry,
   TubeGeometry,
 } from "three";
-import { ProcessorCommands, ProcessParams } from "../../../core/Processor";
-import { CurveGeometry } from "../../../extends/geometry/CurveGeometry/CurveGeometry";
 import { GeometryAllType, GeometryConfig } from "../GeometryInterface";
 
 export const transfromAnchor = function <

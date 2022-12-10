@@ -1,7 +1,5 @@
+import { EngineSupport, syncObject, defineProcessor } from "@vis-three/core";
 import { CubeTexture } from "three";
-import { defineProcessor, ProcessParams } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
-import { syncObject } from "../../../utils/utils";
 import { CONFIGTYPE } from "../../constants/configType";
 import { CubeTextureConfig } from "../TextureConfig";
 

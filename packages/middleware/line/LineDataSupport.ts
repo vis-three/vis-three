@@ -1,5 +1,5 @@
 import { Line } from "three";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { LineCompiler } from "./LineCompiler";
 import { LineConfig } from "./LineConfig";

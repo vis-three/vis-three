@@ -1,5 +1,5 @@
 import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { CSS3DCompiler } from "./CSS3DCompiler";
 import { CSS3DAllType } from "./CSS3DConfig";

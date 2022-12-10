@@ -1,7 +1,10 @@
-import { defineProcessor } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
-import { ImageTexture } from "../../../extends/texture/ImageTexture";
-import { syncObject } from "../../../utils/utils";
+import {
+  antiShake,
+  EngineSupport,
+  ImageTexture,
+  syncObject,
+  defineProcessor,
+} from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import { ImageTextureConfig } from "../TextureConfig";
 import { needUpdateRegCommand, urlHanlder } from "./common";

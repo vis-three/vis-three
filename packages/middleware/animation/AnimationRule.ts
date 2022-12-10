@@ -1,5 +1,4 @@
-import { ProxyNotice } from "../../core/DataContainer";
-import { Rule } from "../../core/Rule";
+import { ProxyNotice, Rule } from "@vis-three/core";
 import { AnimationCompiler } from "./AnimationCompiler";
 
 export const AnimationRule: Rule<AnimationCompiler> = function (

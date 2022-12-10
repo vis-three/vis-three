@@ -1,7 +1,5 @@
 import { OrthographicCamera } from "three";
-import { defineProcessor } from "../../../core/Processor";
-import { SetSizeEvent } from "../../../engine/Engine";
-import { EngineSupport } from "../../../engine/EngineSupport";
+import { antiShake, EngineSupport, defineProcessor, SetSizeEvent } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import {
   ObjectCommands,

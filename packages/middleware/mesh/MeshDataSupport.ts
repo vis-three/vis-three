@@ -1,5 +1,5 @@
 import { Mesh } from "three";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { MeshCompiler } from "./MeshCompiler";
 import { MeshConfig } from "./MeshConfig";

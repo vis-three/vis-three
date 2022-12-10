@@ -1,5 +1,5 @@
+import { SetSizeEvent } from "@vis-three/core";
 import { Camera } from "three";
-import { SetSizeEvent } from "../../../engine/Engine";
 
 export const cacheCameraMap = new WeakMap<
   Camera,

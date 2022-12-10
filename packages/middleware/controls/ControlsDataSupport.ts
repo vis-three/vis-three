@@ -1,5 +1,5 @@
-import { DataSupport } from "../../core/DataSupport";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { DataSupport } from "@vis-three/core";
+import { MODULETYPE } from "../constants";
 import { ControlsAllType, ControlsCompiler } from "./ControlsCompiler";
 import { ControlsAllConfig } from "./ControlsConfig";
 import { ControlsRule } from "./ControlsRule";

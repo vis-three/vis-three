@@ -1,5 +1,5 @@
 import { Sprite } from "three";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { SpriteCompiler } from "./SpriteCompiler";
 import { SpriteConfig } from "./SpriteConfig";

@@ -1,8 +1,6 @@
 import { ShaderMaterial } from "three";
-import { defineProcessor } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
-import { ShaderLibrary } from "../../../library/shader/ShaderLibrary";
-import { syncObject } from "../../../utils/utils";
+import { antiShake, defineProcessor, EngineSupport, syncObject } from "@vis-three/core";
+
 import { CONFIGTYPE } from "../../constants/configType";
 import { ShaderMaterialConfig } from "../MaterialConfig";
 import { commonNeedUpdatesRegCommand, create, dispose } from "./common";

@@ -1,8 +1,5 @@
-import { ProcessParams } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
-import { antiShake } from "../../../utils/AntiShake";
+import { antiShake, EngineSupport, ProcessParams } from "@vis-three/core";
 import { TextureCompiler } from "../TextureCompiler";
-import { TextureConfig } from "../TextureConfig";
 
 export const needUpdateRegCommand = {
   reg: new RegExp(

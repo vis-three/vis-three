@@ -1,6 +1,6 @@
 import { MeshPhysicalMaterial } from "three";
-import { defineProcessor } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
+
+import { antiShake, EngineSupport, defineProcessor } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import { MeshPhysicalMaterialConfig } from "../MaterialConfig";
 import {

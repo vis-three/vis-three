@@ -1,9 +1,8 @@
 import { validate } from "uuid";
-import { ProxyNotice } from "../../core/DataContainer";
-import { Rule } from "../../core/Rule";
+import { ProxyNotice, Rule } from "@vis-three/core";
 import { CONFIGTYPE } from "../constants/configType";
-import { uniqueSymbol } from "../../core/middleware/UNIQUESYMBOL";
 import { ControlsCompiler } from "./ControlsCompiler";
+import { uniqueSymbol } from "../common";
 
 export const ControlsRule: Rule<ControlsCompiler> = function (
   input: ProxyNotice,

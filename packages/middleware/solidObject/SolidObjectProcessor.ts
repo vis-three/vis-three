@@ -1,3 +1,4 @@
+import { antiShake, EngineSupport, IgnoreAttribute } from "@vis-three/core";
 import {
   BoxBufferGeometry,
   BufferGeometry,
@@ -5,9 +6,6 @@ import {
   ShaderMaterial,
   Sprite,
 } from "three";
-import { EngineSupport } from "../../engine/EngineSupport";
-import { antiShake } from "../../utils/AntiShake";
-import { IgnoreAttribute } from "../../utils/utils";
 import {
   objectCommands,
   ObjectCommands,

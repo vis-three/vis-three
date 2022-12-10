@@ -1,11 +1,12 @@
-import { defineProcessor } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
-import { ImageTexture } from "../../../extends/texture/ImageTexture";
-import { VideoTexture } from "../../../optimize/VideoTexture";
-import { syncObject } from "../../../utils/utils";
 import { CONFIGTYPE } from "../../constants/configType";
 import { VideoTextureConfig } from "../TextureConfig";
 import { needUpdateRegCommand, urlHanlder } from "./common";
+import {
+  EngineSupport,
+  VideoTexture,
+  syncObject,
+  defineProcessor,
+} from "@vis-three/core";
 
 export default defineProcessor<VideoTextureConfig, VideoTexture>({
   configType: CONFIGTYPE.VIDEOTEXTURE,
@@ -32,7 +33,7 @@ export default defineProcessor<VideoTextureConfig, VideoTexture>({
     return texture;
   },
 
-  dispose(target: ImageTexture): void {
+  dispose(target: VideoTexture): void {
     target.dispose();
   },
 });

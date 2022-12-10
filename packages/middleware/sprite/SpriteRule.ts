@@ -1,5 +1,5 @@
+import { ProxyNotice } from "@vis-three/core";
 import { Sprite } from "three";
-import { ProxyNotice } from "../../core/DataContainer";
 import { ObjectRule } from "../object/ObjectRule";
 import { SolidObjectRule } from "../solidObject/SolidObjectRule";
 import { SpriteCompiler } from "./SpriteCompiler";

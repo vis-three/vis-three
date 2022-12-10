@@ -1,6 +1,6 @@
+import { Compiler } from "@vis-three/core";
 import { Points } from "three";
-import { Compiler } from "../../core/Compiler";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { SolidObjectCompiler } from "../solidObject/SolidObjectCompiler";
 import { PointsConfig } from "./PointsConfig";
 import PointsProcessor from "./PointsProcessor";

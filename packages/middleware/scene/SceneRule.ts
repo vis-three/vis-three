@@ -1,8 +1,8 @@
+import { ProxyNotice } from "@vis-three/core";
 import { Scene } from "three";
 import { validate } from "uuid";
-import { ProxyNotice } from "../../core/DataContainer";
+import { uniqueSymbol } from "../common";
 import { CONFIGTYPE } from "../constants/configType";
-import { uniqueSymbol } from "../../core/middleware/UNIQUESYMBOL";
 import { ObjectRule } from "../object/ObjectRule";
 import { SceneCompiler } from "./SceneCompiler";
 import { SceneConfig } from "./SceneConfig";

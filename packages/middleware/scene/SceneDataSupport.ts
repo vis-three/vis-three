@@ -1,5 +1,5 @@
 import { Scene } from "three";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { SceneCompiler } from "./SceneCompiler";
 import { getSceneConfig, SceneConfig } from "./SceneConfig";

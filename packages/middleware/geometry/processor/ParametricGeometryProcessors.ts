@@ -11,7 +11,7 @@ import {
   Vector3,
   Vector2,
 } from "three";
-import { defineProcessor } from "../../../core/Processor";
+
 import { CONFIGTYPE } from "../../constants/configType";
 import {
   BoxGeometryConfig,
@@ -31,13 +31,16 @@ import {
   SplineTubeGeometryConfig,
   TorusGeometryConfig,
 } from "../GeometryInterface";
-import { QuadraticBezierCurveGeometry } from "../../../extends/geometry/CurveGeometry/QuadraticBezierCurveGeometry";
-import { CubicBezierCurveGeometry } from "../../../extends/geometry/CurveGeometry/CubicBezierCurveGeometry";
-import { LineCurveGeometry } from "../../../extends/geometry/CurveGeometry/LineCurveGeometry";
-import { SplineCurveGeometry } from "../../../extends/geometry/CurveGeometry/SplineCurveGeometry";
-import { LineTubeGeometry } from "../../../extends/geometry/TubeGeometry/LineTubeGeometry";
-import { SplineTubeGeometry } from "../../../extends/geometry/TubeGeometry/SplineTubeGeometry";
-import { LineShapeGeometry } from "../../../extends/geometry/ShapeGeometry/LineShapeGeometry";
+import {
+  CubicBezierCurveGeometry,
+  defineProcessor,
+  LineCurveGeometry,
+  LineShapeGeometry,
+  LineTubeGeometry,
+  QuadraticBezierCurveGeometry,
+  SplineCurveGeometry,
+  SplineTubeGeometry,
+} from "@vis-three/core";
 import { commands, create as commonCreate } from "./common";
 
 const constructMap = new Map<CONFIGTYPE, (config: any) => BufferGeometry>();

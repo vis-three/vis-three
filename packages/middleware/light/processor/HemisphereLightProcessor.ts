@@ -1,8 +1,12 @@
 import { Color, HemisphereLight } from "three";
-import { defineProcessor, ProcessParams } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
+import {
+  antiShake,
+  EngineSupport,
+  defineProcessor,
+  ProcessParams,
+} from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
-import { objectDispose } from "../../object/ObjectProcessor";
+import { ObjectCommands, objectDispose } from "../../object/ObjectProcessor";
 import { HemisphereLightConfig } from "../LightConfig";
 import { lightCommands, lightCreate } from "./common";
 
@@ -10,7 +14,10 @@ export default defineProcessor<HemisphereLightConfig, HemisphereLight>({
   configType: CONFIGTYPE.HEMISPHERELIGHT,
   commands: {
     set: {
-      ...lightCommands.set,
+      ...(lightCommands.set as unknown as ObjectCommands<
+        HemisphereLightConfig,
+        HemisphereLight
+      >),
       groundColor: function ({
         target,
         value,

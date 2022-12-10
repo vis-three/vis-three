@@ -1,7 +1,6 @@
+import { DataSupport, Rule } from "@vis-three/core";
 import { Object3D } from "three";
-import { DataSupport } from "../../core/DataSupport";
-import { Rule } from "../../core/Rule";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { ObjectCompiler } from "./ObjectCompiler";
 import { ObjectConfig } from "./ObjectConfig";
 

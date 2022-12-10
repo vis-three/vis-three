@@ -1,5 +1,5 @@
 import { Points } from "three";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { SolidObjectDataSupport } from "../solidObject/SolidDataSupport";
 import { PointsCompiler } from "./PointsCompiler";
 import { PointsConfig } from "./PointsConfig";

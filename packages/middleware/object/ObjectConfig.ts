@@ -1,4 +1,4 @@
-import { BasicEventConfig } from "../../library/event/EventLibrary";
+import { BasicEventConfig } from "@vis-three/core/library/EventLibrary";
 import { SymbolConfig, Vector3Config } from "../common";
 import { CONFIGTYPE } from "../constants/configType";
 

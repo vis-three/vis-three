@@ -1,5 +1,5 @@
+import { ProxyNotice } from "@vis-three/core";
 import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
-import { ProxyNotice } from "../../core/DataContainer";
 import { ObjectRule } from "../object/ObjectRule";
 import { CSS3DCompiler } from "./CSS3DCompiler";
 import { CSS3DAllType } from "./CSS3DConfig";

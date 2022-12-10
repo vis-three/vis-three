@@ -1,6 +1,4 @@
-import { defineProcessor } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
-import { CSS3DPlane } from "../../../extends/object/CSS3DPlane";
+import { antiShake, EngineSupport, defineProcessor, CSS3DPlane } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import {
   ObjectCommands,

@@ -1,13 +1,12 @@
 import { WebGLRenderer } from "three";
-import { Compiler } from "../../core/Compiler";
 import { CONFIGTYPE } from "../constants/configType";
-import { EngineSupport } from "../../main";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import WebGLRendererProcessor from "./processor/WebGLRendererProcessor";
 import CSS3DRendererProcessor from "./processor/CSS3DRendererProcessor";
 import { RendererConfigAllType } from "./RendererConfig";
-import { uniqueSymbol } from "../../core/middleware/UNIQUESYMBOL";
+import { MODULETYPE } from "../constants";
+import { Compiler, EngineSupport } from "@vis-three/core";
+import { uniqueSymbol } from "../common";
 
 export type RendererAllType = WebGLRenderer | CSS3DRenderer;
 

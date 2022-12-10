@@ -1,6 +1,5 @@
+import { defineProcessor, EngineSupport } from "@vis-three/core";
 import { Mesh } from "three";
-import { defineProcessor } from "../../core/Processor";
-import { EngineSupport } from "../../engine/EngineSupport";
 import { CONFIGTYPE } from "../constants/configType";
 import {
   solidObjectCommands,

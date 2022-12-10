@@ -1,5 +1,5 @@
-import { VisCSS2DObject } from "../../optimize/VisCSS2DObject";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { VisCSS2DObject } from "@vis-three/core";
+import { MODULETYPE } from "../constants";
 import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { CSS2DCompiler } from "./CSS2DCompiler";
 import { CSS2DAllType } from "./CSS2DConfig";

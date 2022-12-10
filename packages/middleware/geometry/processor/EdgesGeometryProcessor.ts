@@ -1,6 +1,10 @@
 import { BoxBufferGeometry, BufferGeometry, EdgesGeometry } from "three";
-import { defineProcessor, ProcessorCommands } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
+import {
+  antiShake,
+  defineProcessor,
+  EngineSupport,
+  ProcessorCommands,
+} from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import { EdgesGeometryConfig } from "../GeometryInterface";
 import { commands, create } from "./common";

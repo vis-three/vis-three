@@ -1,5 +1,5 @@
 import { Object3D } from "three";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { Object3DCompiler } from "./Object3DCompiler";
 import { Object3DConfig } from "./Object3DConfig";

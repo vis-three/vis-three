@@ -1,6 +1,9 @@
-import { defineProcessor } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
-import { VisTransformControls } from "../../../optimize/VisTransformControls";
+import {
+  antiShake,
+  defineProcessor,
+  EngineSupport,
+  VisTransformControls,
+} from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import { TransformControlsConfig } from "../ControlsConfig";
 

@@ -1,6 +1,6 @@
+import { defineProcessor } from "@vis-three/core";
 import { Vector2 } from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
-import { defineProcessor } from "../../../core/Processor";
 import { CONFIGTYPE } from "../../constants/configType";
 import { UnrealBloomPassConfig } from "../PassConfig";
 

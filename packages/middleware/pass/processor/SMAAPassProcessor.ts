@@ -1,7 +1,5 @@
-import { Vector2 } from "three";
+import { defineProcessor } from "@vis-three/core";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
-import { defineProcessor } from "../../../core/Processor";
-import { SetSizeEvent } from "../../../engine/Engine";
 import { CONFIGTYPE } from "../../constants/configType";
 import { SMAAPassConfig } from "../PassConfig";
 

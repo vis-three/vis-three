@@ -1,6 +1,6 @@
+import { DataSupport } from "@vis-three/core";
 import { BufferGeometry } from "three";
-import { DataSupport } from "../../core/DataSupport";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { GeometryCompiler } from "./GeometryCompiler";
 import { GeometryAllType } from "./GeometryInterface";
 import { GeometryRule } from "./GeometryRule";

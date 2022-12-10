@@ -1,6 +1,6 @@
+import { DataSupport } from "@vis-three/core";
 import { Pass } from "three/examples/jsm/postprocessing/Pass";
-import { DataSupport } from "../../core/DataSupport";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { PassCompiler } from "./PassCompiler";
 import { PassConfigAllType } from "./PassConfig";
 import { PassRule } from "./PassRule";

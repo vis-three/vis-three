@@ -1,5 +1,6 @@
-import { DataSupport } from "../../core/DataSupport";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+
+import { DataSupport } from "@vis-three/core";
+import { MODULETYPE } from "../constants";
 import { AnimationCompiler } from "./AnimationCompiler";
 import { AnimationAllType } from "./AnimationConfig";
 import { AnimationRule } from "./AnimationRule";

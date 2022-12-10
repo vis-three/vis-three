@@ -1,6 +1,6 @@
+import { DataSupport } from "@vis-three/core";
 import { Material } from "three";
-import { DataSupport } from "../../core/DataSupport";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { MaterialCompiler } from "./MaterialCompiler";
 import { MaterialAllType } from "./MaterialConfig";
 import { MaterialRule } from "./MaterialRule";

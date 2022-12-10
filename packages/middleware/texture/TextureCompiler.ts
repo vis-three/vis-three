@@ -1,6 +1,4 @@
 import { Texture } from "three";
-import { Compiler } from "../../core/Compiler";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
 import ImageTextureProcessor from "./processor/ImageTextureProcessor";
 import CanvasTextureProcessor from "./processor/CanvasTextureProcessor";
 import CubeTextureProcessor from "./processor/CubeTextureProcessor";
@@ -8,6 +6,8 @@ import VideoTextureProcessor from "./processor/VideoTextureProcessor";
 import { TextureAllType } from "./TextureConfig";
 import { CanvasGenerator } from "../../convenient/CanvasGenerator";
 import LoadTextureProcessor from "./processor/LoadTextureProcessor";
+import { MODULETYPE } from "../constants";
+import { Compiler } from "@vis-three/core";
 
 export class TextureCompiler extends Compiler<TextureAllType, Texture> {
   static replaceImage = new CanvasGenerator({

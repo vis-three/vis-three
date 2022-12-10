@@ -1,16 +1,20 @@
-import { Object3D, Vector3 } from "three";
 import {
+  antiShake,
   defineProcessor,
   emptyHandler,
+  EngineSupport,
+  IgnoreAttribute,
   ProcessorCommands,
   ProcessParams,
   RegCommand,
-} from "../../core/Processor";
-import { EngineSupport } from "../../engine/EngineSupport";
-import { EventLibrary } from "../../library/event/EventLibrary";
-import { EVENTNAME, ObjectEvent } from "../../manager/EventManager";
-import { antiShake } from "../../utils/AntiShake";
-import { IgnoreAttribute, syncObject } from "../../utils/utils";
+  syncObject,
+} from "@vis-three/core";
+import {
+  EVENTNAME,
+  ObjectEvent,
+} from "@vis-three/core/plugin/EventManagerPlugin/EventManager";
+import { Object3D, Vector3 } from "three";
+import { EventLibrary } from "@vis-three/core/library/EventLibrary";
 import { CONFIGTYPE } from "../constants/configType";
 import { ObjectConfig } from "./ObjectConfig";
 
@@ -158,7 +162,7 @@ export const addChildrenHanlder = function <
   O extends Object3D
 >({ target, config, value, engine }: ProcessParams<C, O>) {
   antiShake.exec((finish) => {
-    const childrenConfig = engine.getConfigBySymbol<ObjectConfig>(value);
+    const childrenConfig = engine.getConfigBySymbol(value) as ObjectConfig;
     if (!childrenConfig) {
       if (finish) {
         console.warn(` can not foud object config in engine: ${value}`);
@@ -168,9 +172,9 @@ export const addChildrenHanlder = function <
 
     // children如果有parent先从parent移除
     if (childrenConfig.parent && childrenConfig.parent !== config.vid) {
-      const parentConfig = engine.getConfigBySymbol<ObjectConfig>(
+      const parentConfig = engine.getConfigBySymbol(
         childrenConfig.parent
-      );
+      ) as ObjectConfig;
 
       if (!parentConfig) {
         if (finish) {
@@ -215,7 +219,7 @@ export const removeChildrenHandler = function <
   target.remove(childrenObject);
 
   // 更新children对象的parent
-  const childrenConfig = engine.getConfigBySymbol<ObjectConfig>(value);
+  const childrenConfig = engine.getConfigBySymbol(value) as ObjectConfig;
   if (!childrenConfig) {
     console.warn(`can not found this vid in engine: ${value}.`);
     return;

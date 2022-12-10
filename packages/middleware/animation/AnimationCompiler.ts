@@ -1,7 +1,5 @@
-import { Compiler } from "../../core/Compiler";
-import { ProxyNotice } from "../../core/DataContainer";
-
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { CompileNotice, Compiler } from "@vis-three/core";
+import { MODULETYPE } from "../constants";
 import { AnimationAllType } from "./AnimationConfig";
 import { scriptAniSymbol } from "./processor/common";
 import ScriptAnimationProcessor from "./processor/ScriptAnimationProcessor";
@@ -74,7 +72,7 @@ export class AnimationCompiler extends Compiler<AnimationAllType, Function> {
     return this;
   }
 
-  compile(vid: string, notice: ProxyNotice): this {
+  compile(vid: string, notice: CompileNotice): this {
     const config = this.target[vid]!;
 
     this.restoreAttribute(config);

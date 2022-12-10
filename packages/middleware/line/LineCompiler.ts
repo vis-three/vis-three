@@ -1,6 +1,6 @@
+import { Compiler } from "@vis-three/core";
 import { Line } from "three";
-import { Compiler } from "../../core/Compiler";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { SolidObjectCompiler } from "../solidObject/SolidObjectCompiler";
 import { LineConfig } from "./LineConfig";
 import LineProcessor from "./LineProcessor";

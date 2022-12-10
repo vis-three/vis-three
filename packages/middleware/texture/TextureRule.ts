@@ -1,6 +1,4 @@
-import { validate } from "uuid";
-import { ProxyNotice } from "../../core/DataContainer";
-import { Rule } from "../../core/Rule";
+import { ProxyNotice, Rule } from "@vis-three/core";
 import { TextureCompiler } from "./TextureCompiler";
 
 export const TextureRule: Rule<TextureCompiler> = function (

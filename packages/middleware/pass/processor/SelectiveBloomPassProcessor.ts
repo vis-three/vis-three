@@ -1,10 +1,5 @@
+import { defineProcessor, SelectiveBloomPass } from "@vis-three/core";
 import { Camera, Object3D, Scene, Vector2 } from "three";
-import {
-  defineProcessor,
-  emptyHandler,
-  RegCommand,
-} from "../../../core/Processor";
-import { SelectiveBloomPass } from "../../../extends/pass/SelectiveBloomPass";
 import { CONFIGTYPE } from "../../constants/configType";
 import { SelectiveBloomPassConfig } from "../PassConfig";
 

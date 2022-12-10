@@ -1,7 +1,6 @@
 import { Object3D } from "three";
 import { validate } from "uuid";
-import { ProxyNotice } from "../../core/DataContainer";
-import { Rule } from "../../core/Rule";
+import { ProxyNotice, Rule } from "@vis-three/core";
 import { ObjectCompiler } from "./ObjectCompiler";
 import { ObjectConfig } from "./ObjectConfig";
 

@@ -1,6 +1,6 @@
 import { RectAreaLight } from "three";
-import { defineProcessor } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
+
+import { antiShake, defineProcessor, EngineSupport } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import { ObjectCommands, objectDispose } from "../../object/ObjectProcessor";
 import { RectAreaLightConfig } from "../LightConfig";

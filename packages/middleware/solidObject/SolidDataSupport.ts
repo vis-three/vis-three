@@ -1,6 +1,5 @@
-import { DataSupport } from "../../core/DataSupport";
-import { Rule } from "../../core/Rule";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { DataSupport, Rule } from "@vis-three/core";
+import { MODULETYPE } from "../constants";
 import { SolidObject3D, SolidObjectCompiler } from "./SolidObjectCompiler";
 import { SolidObjectConfig } from "./SolidObjectConfig";
 

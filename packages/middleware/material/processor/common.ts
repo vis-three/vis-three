@@ -1,8 +1,5 @@
 import { Color, Material, Texture } from "three";
-import { ProcessParams } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
-import { antiShake } from "../../../utils/AntiShake";
-import { IgnoreAttribute, syncObject } from "../../../utils/utils";
+import { antiShake, EngineSupport, IgnoreAttribute, ProcessParams, syncObject } from "@vis-three/core";
 import { MaterialConfig } from "../MaterialConfig";
 
 export const commonNeedUpdatesRegCommand = {

@@ -1,6 +1,6 @@
+import { Compiler } from "@vis-three/core";
 import { Group } from "three";
-import { Compiler } from "../../core/Compiler";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { ObjectCompiler } from "../object/ObjectCompiler";
 import { GroupConfig } from "./GroupConfig";
 import GroupProcessor from "./GroupProcessor";

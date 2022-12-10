@@ -1,5 +1,4 @@
-import { ProxyNotice } from "../../core/DataContainer";
-import { Rule } from "../../core/Rule";
+import { ProxyNotice, Rule } from "@vis-three/core";
 import { PassCompiler } from "./PassCompiler";
 
 export const PassRule: Rule<PassCompiler> = function (

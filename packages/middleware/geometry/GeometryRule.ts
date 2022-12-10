@@ -1,5 +1,4 @@
-import { ProxyNotice } from "../../core/DataContainer";
-import { Rule } from "../../core/Rule";
+import { ProxyNotice, Rule } from "@vis-three/core";
 import { GeometryCompiler } from "./GeometryCompiler";
 
 export const GeometryRule: Rule<GeometryCompiler> = function (

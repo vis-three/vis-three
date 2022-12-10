@@ -1,5 +1,5 @@
 import { Light } from "three";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { ObjectDataSupport } from "../object/ObjectDataSupport";
 import { LightCompiler } from "./LightCompiler";
 import { LightConfigAllType } from "./LightConfig";

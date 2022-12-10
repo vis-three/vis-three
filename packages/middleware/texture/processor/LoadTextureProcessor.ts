@@ -1,9 +1,13 @@
 import { Texture } from "three";
-import { defineProcessor } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
-import { ImageTexture } from "../../../extends/texture/ImageTexture";
-import { LoadTexture } from "../../../extends/texture/LoadTexture";
-import { syncObject } from "../../../utils/utils";
+
+import {
+  antiShake,
+  EngineSupport,
+  ImageTexture,
+  LoadTexture,
+  syncObject,
+  defineProcessor,
+} from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import { LoadTextureConfig } from "../TextureConfig";
 import { needUpdateRegCommand } from "./common";

@@ -1,7 +1,11 @@
 import { Color, Light } from "three";
-import { emptyHandler, ProcessParams } from "../../../core/Processor";
-import { EngineSupport } from "../../../engine/EngineSupport";
-import { IgnoreAttribute } from "../../../utils/utils";
+import {
+  antiShake,
+  emptyHandler,
+  EngineSupport,
+  IgnoreAttribute,
+  ProcessParams,
+} from "@vis-three/core";
 import { objectCommands, objectCreate } from "../../object/ObjectProcessor";
 import { LightConifg } from "../LightConfig";
 

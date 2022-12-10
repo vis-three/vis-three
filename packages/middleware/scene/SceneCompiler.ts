@@ -1,6 +1,6 @@
+import { Compiler } from "@vis-three/core";
 import { Scene } from "three";
-import { Compiler } from "../../core/Compiler";
-import { MODULETYPE } from "../../core/middleware/MODULETYPE";
+import { MODULETYPE } from "../constants";
 import { ObjectCompiler } from "../object/ObjectCompiler";
 import { SceneConfig } from "./SceneConfig";
 import SceneProcessor from "./SceneProcessor";

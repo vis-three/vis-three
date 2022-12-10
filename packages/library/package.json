@@ -1,7 +1,7 @@
 {
-  "name": "@vis-three/engine",
+  "name": "@vis-three/library",
   "version": "0.4.0",
-  "description": "vis-three engine",
+  "description": "vis-three library",
   "main": "index.js",
   "module": "index.js",
   "types": "index.d.ts",

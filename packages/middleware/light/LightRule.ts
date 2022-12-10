@@ -1,5 +1,5 @@
+import { ProxyNotice } from "@vis-three/core";
 import { Light } from "three";
-import { ProxyNotice } from "../../core/DataContainer";
 import { ObjectRule } from "../object/ObjectRule";
 import { LightCompiler } from "./LightCompiler";
 import { LightConfigAllType } from "./LightConfig";

@@ -1,4 +1,4 @@
-import { EngineSupport } from "../../../engine/EngineSupport";
+import { antiShake, EngineSupport } from "@vis-three/core";
 
 export const getElement = function (
   element: string,
