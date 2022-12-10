@@ -92,6 +92,7 @@ importers:
       '@rollup/plugin-alias': ^3.1.9
       '@tweenjs/tween.js': ^18.6.4
       '@types/keyboardjs': ^2.5.0
+      '@types/node': ^18.11.12
       '@types/three': ^0.133.1
       '@types/uuid': ^8.3.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
@@ -119,6 +120,7 @@ importers:
     dependencies:
       '@tweenjs/tween.js': 18.6.4
       '@types/keyboardjs': 2.5.0
+      '@types/node': 18.11.12
       '@types/uuid': 8.3.4
       '@vis-three/engine': link:../engine
       '@vis-three/middleware': link:../middleware
@@ -2254,6 +2256,9 @@ packages:
   /@types/node/18.11.11:
     resolution: {integrity: sha512-KJ021B1nlQUBLopzZmPBVuGU9un7WJd/W4ya7Ih02B4Uwky5Nja0yGYav2EfYIk0RR2Q9oVhf60S2XR1BCWJ2g==}
     dev: true
+
+  /@types/node/18.11.12:
+    resolution: {integrity: sha512-FgD3NtTAKvyMmD44T07zz2fEf+OKwutgBCEVM8GcvMGVGaDktiLNTDvPwC/LUe3PinMW+X6CuLOF2Ui1mAlSXg==}
 
   /@types/semver/7.3.13:
     resolution: {integrity: sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==}
@@ -5030,7 +5035,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 18.11.11
+      '@types/node': 18.11.12
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true

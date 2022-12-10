@@ -1,5 +1,4 @@
 import "./optimize/optimizeScirpt";
-
 export * from "./compiler";
 export * from "./rule/rule";
 export * from "./dataContainer";
