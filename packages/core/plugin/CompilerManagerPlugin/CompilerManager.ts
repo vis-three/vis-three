@@ -21,9 +21,10 @@ import {
   TextureCompiler,
 } from "@vis-three/middleware";
 import { ObjectCompiler } from "@vis-three/middleware/object/ObjectCompiler";
-import { BufferGeometry, EventDispatcher, Material, Object3D, Texture } from "three";
+import { BufferGeometry, Material, Object3D, Texture } from "three";
 import { BasicCompiler, Compiler } from "../../compiler";
 import { EngineSupport } from "../../engine/EngineSupport";
+import { EventDispatcher } from "../../eventDispatcher";
 
 export interface CompilerManagerParameters {
   object3DCompiler: Object3DCompiler;

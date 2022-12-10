@@ -1,4 +1,4 @@
-import { SymbolConfig } from "../middleware/common/CommonConfig";
+import { SymbolConfig } from "@vis-three/middleware";
 
 export interface ParseParams {
   url: string;

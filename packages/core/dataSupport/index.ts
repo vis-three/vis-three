@@ -1,11 +1,9 @@
-import { stringify, clone } from "../convenient/JSONHandler";
-import { SymbolConfig } from "../middleware/common/CommonConfig";
-import { CONFIGFACTORY } from "../middleware/constants/CONFIGFACTORY";
-import { MODULETYPE } from "../middleware/constants/MODULETYPE";
 import { Compiler, CompilerTarget } from "../compiler";
 import { Rule } from "../rule/rule";
 import { Translater } from "../translater";
 import { ProxyNotice, DataContainer } from "../dataContainer";
+import { CONFIGFACTORY, JSONHandler, MODULETYPE, SymbolConfig } from "@vis-three/middleware";
+import { valueOf } from "../utils/utils";
 
 export abstract class DataSupport<
   C extends SymbolConfig,
@@ -66,10 +64,10 @@ export abstract class DataSupport<
     if (!compress) {
       return JSON.stringify(
         Object.values(this.dataContainer.container),
-        stringify
+        JSONHandler.stringify
       );
     } else {
-      return JSON.stringify(this.exportConfig(), stringify);
+      return JSON.stringify(this.exportConfig(), JSONHandler.stringify);
     }
   }
 
@@ -80,7 +78,7 @@ export abstract class DataSupport<
    */
   exportConfig(compress = true): Array<C> {
     if (!compress) {
-      return Object.values(clone(this.dataContainer.container));
+      return Object.values(JSONHandler.clone(this.dataContainer.container));
     } else {
       const data = this.dataContainer.container;
       const target: Array<C> = [];
@@ -106,7 +104,7 @@ export abstract class DataSupport<
 
               result[key] = config[key].map((elem) => {
                 if (typeof elem === "object" && elem !== null) {
-                  return clone(elem);
+                  return JSONHandler.clone(elem);
                 } else {
                   return elem;
                 }
@@ -117,7 +115,7 @@ export abstract class DataSupport<
             result[key] = {};
             // 扩展对象
             if (!template[key]) {
-              result[key] = clone(config[key]);
+              result[key] = JSONHandler.clone(config[key]);
             } else {
               recursion(config[key], template[key], result[key]);
               if (Object.keys(result[key]).length === 0) {

@@ -1,4 +1,5 @@
 import path from "path";
+import pkg from "./package.json";
 export default {
   build: {
     lib: {
@@ -12,14 +13,9 @@ export default {
         assetFileNames: "static/[name]-[hash].[ext]",
       },
       external: [
-        "uuid",
-        "keyboardjs",
-        "three-csg-ts",
-        "@tweenjs/tween.js",
-        "three",
+        ...Object.keys(pkg.dependencies),
         "three/src/lights/LightShadow",
         new RegExp("^three/examples/jsm"),
-        "rxjs",
       ],
       plugins: [],
     },

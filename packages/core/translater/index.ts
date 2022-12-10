@@ -1,4 +1,4 @@
-import { SymbolConfig } from "../middleware/common/CommonConfig";
+import { SymbolConfig } from "@vis-three/middleware";
 import { Compiler } from "../compiler";
 import { ProxyNotice } from "../dataContainer";
 import { Rule } from "../rule/rule";

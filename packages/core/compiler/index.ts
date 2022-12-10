@@ -1,12 +1,14 @@
-import { EngineSupport } from "@vis-three/engine";
 import { SymbolConfig } from "../../middleware";
 import { ProxyNotice } from "../DataContainer";
+import { EngineSupport } from "../engine/EngineSupport";
 import { Processor } from "../Processor";
 import { syncObject } from "../utils/utils";
 
 export type CompilerTarget<C extends SymbolConfig> = Record<string, C>;
 
 export type BasicCompiler = Compiler<SymbolConfig, object>;
+
+export type CompileNotice = Omit<ProxyNotice, "path"> & { path: string[] };
 
 export abstract class Compiler<C extends SymbolConfig, O extends object> {
   static processors = new Map<string, Processor<SymbolConfig, object>>();
@@ -115,10 +117,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
     return this;
   }
 
-  compile(
-    vid: SymbolConfig["vid"],
-    notice: Omit<ProxyNotice, "path"> & { path: string[] }
-  ): this {
+  compile(vid: SymbolConfig["vid"], notice: CompileNotice): this {
     const cacheCompile = this.cacheCompile;
 
     let object: O;

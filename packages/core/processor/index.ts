@@ -1,17 +1,15 @@
 import { EngineSupport } from "../engine/EngineSupport";
-import { SymbolConfig } from "../middleware/common/CommonConfig";
-import { CONFIGTYPE } from "../middleware/constants/configType";
 import {
   DeepIntersection,
   DeepPartial,
   DeepRecord,
   DeepUnion,
 } from "../utils/utils";
-import { Compiler } from "../compiler";
-import { ProxyNotice } from "../dataContainer";
+import { CompileNotice, Compiler } from "../compiler";
+import { CONFIGTYPE, SymbolConfig } from "@vis-three/middleware";
 
 export interface ProcessParams<C extends SymbolConfig, T extends object>
-  extends ProxyNotice {
+  extends CompileNotice {
   config: C;
   target: T;
   processor: Processor<C, T>;

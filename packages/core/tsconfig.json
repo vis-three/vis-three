@@ -16,5 +16,5 @@
     "noImplicitAny": false,
     "declaration": true
   },
-  "exclude": ["./index.d.ts", "./main.d.ts", "./main.ts"]
+  "exclude": ["./index.d.ts", "./main.d.ts", "./main.ts", "node_modules"]
 }

@@ -9,3 +9,4 @@ export * from "./eventDispatcher";
 export * from "./observable";
 export * from "./processor";
 export * from "./translater";
+export * from "./plugin";

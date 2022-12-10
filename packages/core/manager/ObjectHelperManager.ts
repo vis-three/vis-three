@@ -1,3 +1,4 @@
+import { CONFIGTYPE } from "@vis-three/middleware";
 import { Material, Mesh, Object3D } from "three";
 import { EventDispatcher } from "../eventDispatcher";
 import { CameraHelper } from "../extends/helper/camera/CameraHelper";
@@ -14,7 +15,6 @@ import { LineHelper } from "../extends/helper/object/LineHelper";
 import { MeshHelper } from "../extends/helper/object/MeshHelper";
 import { PointsHelper } from "../extends/helper/object/PointsHelper";
 import { SpriteHelper } from "../extends/helper/object/SpriteHelper";
-import { CONFIGTYPE } from "../middleware/constants/configType";
 
 export interface ObjectHelperManagerParameters {
   helperGenerator?: { [key: string]: typeof Object3D };
