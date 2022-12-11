@@ -1,4 +1,5 @@
-import { ENGINE_EVENT, RENDER_EVENT, } from "@vis-three/core";
+import { ENGINE_EVENT } from "@vis-three/core";
+import { RENDER_EVENT } from "@vis-three/render-manager-plugin";
 import { CSS2DObject, CSS2DRenderer, } from "three/examples/jsm/renderers/CSS2DRenderer";
 export const CSS2DRendererPlugin = function () {
     let setDomFun;

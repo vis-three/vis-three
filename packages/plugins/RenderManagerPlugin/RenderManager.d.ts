@@ -1,4 +1,4 @@
-import { BaseEvent, EventDispatcher } from "../../eventDispatcher";
+import { BaseEvent, EventDispatcher } from "@vis-three/core";
 export interface RenderEvent extends BaseEvent {
     delta: number;
     total: number;

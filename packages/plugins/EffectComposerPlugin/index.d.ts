@@ -1,6 +1,7 @@
-import { Plugin, RenderManagerEngine } from "@vis-three/core";
+import { Plugin } from "@vis-three/core";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
+import { RenderManagerEngine } from "@vis-three/render-manager-plugin";
 export interface EffectComposerParameters {
     WebGLMultisampleRenderTarget?: boolean;
     samples?: number;

@@ -1,8 +1,7 @@
-import { Engine } from "../../engine/Engine";
-import { Plugin } from "../plugin";
+import { Engine, Plugin } from "@vis-three/core";
 import { PointerManager } from "./PointerManager";
+export * from "./PointerManager";
 export interface PointerManagerEngine extends Engine {
     pointerManager: PointerManager;
 }
-declare const PointerManagerPlugin: Plugin<PointerManagerEngine>;
-export default PointerManagerPlugin;
+export declare const PointerManagerPlugin: Plugin<PointerManagerEngine>;

@@ -5,17 +5,21 @@ import { CSS2DRendererPlugin } from "@vis-three/css2d-renderer-plugin";
 import { CSS3DRendererPlugin } from "@vis-three/css3d-renderer-plugin";
 import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
 import { OrbitControlsPlugin } from "@vis-three/orbit-controls-plugin";
-
+import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
 import {
-  Engine,
-  EventManager,
-  PointerManager,
   RenderManager,
-  VisOrbitControls,
   RenderManagerPlugin,
+} from "@vis-three/render-manager-plugin";
+import {
+  PointerManager,
   PointerManagerPlugin,
+} from "@vis-three/pointer-manager-plugin";
+import {
+  EventManager,
   EventManagerPlugin,
-} from "@vis-three/core";
+} from "@vis-three/event-manager-plugin";
+
+import { Engine, VisOrbitControls } from "@vis-three/core";
 export class DisplayEngine extends Engine {
   declare dom: HTMLElement;
   declare webGLRenderer: WebGLRenderer;
@@ -50,6 +54,7 @@ export class DisplayEngine extends Engine {
           WebGLMultisampleRenderTarget: true,
         })
       )
-      .install(OrbitControlsPlugin());
+      .install(OrbitControlsPlugin())
+      .install(CameraAdaptivePlugin());
   }
 }

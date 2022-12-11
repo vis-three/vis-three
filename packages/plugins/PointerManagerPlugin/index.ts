@@ -1,5 +1,4 @@
-import { Engine, ENGINE_EVENT, SetDomEvent } from "../../engine";
-import { Plugin } from "../plugin";
+import { Engine, ENGINE_EVENT, Plugin, SetDomEvent } from "@vis-three/core";
 import { PointerManager, PointerManagerParameters } from "./PointerManager";
 
 export * from "./PointerManager";

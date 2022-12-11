@@ -1,7 +1,10 @@
-import { Engine } from "../../engine";
+import { Engine } from "@vis-three/core";
 import { RenderManager } from "./RenderManager";
+export * from "./RenderManager";
 export interface RenderManagerEngine extends Engine {
     renderManager: RenderManager;
+    render: () => void;
+    play: () => void;
+    stop: () => void;
 }
-declare const _default: import("../plugin").Plugin<RenderManagerEngine>;
-export default _default;
+export declare const RenderManagerPlugin: import("@vis-three/core").Plugin<RenderManagerEngine>;

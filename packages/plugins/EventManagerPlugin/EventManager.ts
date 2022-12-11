@@ -1,3 +1,4 @@
+import { EventDispatcher } from "@vis-three/core";
 import {
   Camera,
   Event,
@@ -7,7 +8,6 @@ import {
   Scene,
   Vector2,
 } from "three";
-import { EventDispatcher } from "../../eventDispatcher";
 import {
   PointerManager,
   VisPointerEvent,

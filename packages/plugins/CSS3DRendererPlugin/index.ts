@@ -2,15 +2,15 @@ import {
   Engine,
   ENGINE_EVENT,
   Plugin,
-  RenderManagerEngine,
   SetDomEvent,
   SetSceneEvent,
   SetSizeEvent,
 } from "@vis-three/core";
 import {
   RenderEvent,
+  RenderManagerEngine,
   RENDER_EVENT,
-} from "@vis-three/core/plugin/RenderManagerPlugin/RenderManager";
+} from "@vis-three/render-manager-plugin";
 import {
   CSS3DObject,
   CSS3DRenderer,

@@ -1,5 +1,6 @@
-import { ENGINE_EVENT, RENDER_EVENT, VisOrbitControls, } from "@vis-three/core";
+import { ENGINE_EVENT, VisOrbitControls, } from "@vis-three/core";
 import { SETVIEWPOINT, VIEWPOINT, } from "@vis-three/viewpoint-plugin";
+import { RENDER_EVENT, } from "@vis-three/render-manager-plugin";
 export const OrbitControlsPlugin = function () {
     let setDomFun;
     let setCameraFun;

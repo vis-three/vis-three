@@ -48,8 +48,6 @@ export class Engine extends EventDispatcher {
   scene: Scene = new Scene();
 
   render: () => void;
-  play: () => void;
-  stop: () => void;
 
   constructor() {
     super();
@@ -57,9 +55,6 @@ export class Engine extends EventDispatcher {
     this.render = function () {
       console.warn("can not install some plugin");
     };
-
-    this.play = this.render;
-    this.stop = this.render;
   }
 
   /**

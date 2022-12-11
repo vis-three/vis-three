@@ -1,11 +1,7 @@
 import {
   Engine,
   ENGINE_EVENT,
-  Optional,
   Plugin,
-  RenderEvent,
-  RenderManagerEngine,
-  RENDER_EVENT,
   SetCameraEvent,
   SetDomEvent,
   VisOrbitControls,
@@ -16,6 +12,12 @@ import {
   ViewpointEngine,
   VIEWPOINT,
 } from "@vis-three/viewpoint-plugin";
+import {
+  RenderEvent,
+  RenderManagerEngine,
+  RENDER_EVENT,
+} from "@vis-three/render-manager-plugin";
+import { Optional } from "@vis-three/utils";
 
 export interface OrbitControlsEngine extends Engine {
   orbitControls: VisOrbitControls;

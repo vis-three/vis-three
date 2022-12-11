@@ -1,5 +1,6 @@
-import { Engine, Plugin, RenderManagerEngine, VisOrbitControls } from "@vis-three/core";
+import { Engine, Plugin, VisOrbitControls } from "@vis-three/core";
 import { ViewpointEngine } from "@vis-three/viewpoint-plugin";
+import { RenderManagerEngine } from "@vis-three/render-manager-plugin";
 export interface OrbitControlsEngine extends Engine {
     orbitControls: VisOrbitControls;
 }

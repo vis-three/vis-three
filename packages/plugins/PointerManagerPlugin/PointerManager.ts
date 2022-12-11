@@ -1,5 +1,5 @@
+import { EventDispatcher } from "@vis-three/core";
 import { BaseEvent, Vector2 } from "three";
-import { EventDispatcher } from "../../eventDispatcher";
 
 export interface VisPointerEvent extends Omit<PointerEvent, "type">, BaseEvent {
   mouse: Vector2;

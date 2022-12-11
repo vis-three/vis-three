@@ -1,5 +1,5 @@
+import { EventDispatcher } from "@vis-three/core";
 import { Camera, Event, Intersection, Object3D, Scene } from "three";
-import { EventDispatcher } from "../../eventDispatcher";
 import { PointerManager, VisPointerEvent } from "../PointerManagerPlugin/PointerManager";
 export interface ObjectEvent extends VisPointerEvent {
     intersection: Intersection<Object3D<Event>>;

@@ -1,10 +1,9 @@
 import { Camera, Scene, WebGLRenderer } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { EventManager } from "../manager/EventManager";
-import { PointerManager } from "../manager/PointerManager";
-import { RenderManager } from "../manager/RenderManager";
-import { VisOrbitControls } from "../optimize/VisOrbitControls";
-import { Engine } from "@vis-three/core";
+import { RenderManager } from "@vis-three/render-manager-plugin";
+import { PointerManager } from "@vis-three/pointer-manager-plugin";
+import { EventManager } from "@vis-three/event-manager-plugin";
+import { Engine, VisOrbitControls } from "@vis-three/core";
 export declare class DisplayEngine extends Engine {
     dom: HTMLElement;
     webGLRenderer: WebGLRenderer;

@@ -31,11 +31,11 @@ export class AntiShake {
     }
   }
 
-  force(fun: () => boolean) {
+  nextTick(fun: () => boolean) {
     setTimeout(() => {
       fun();
     }, this.time);
   }
 }
 
-export const antiShake = new AntiShake();
+export const globalAntiShake = new AntiShake();

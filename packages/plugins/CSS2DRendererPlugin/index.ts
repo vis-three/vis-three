@@ -4,11 +4,9 @@ import {
   Plugin,
   SetDomEvent,
   SetSceneEvent,
-  SetSizeEvent,
-  RenderManagerEngine,
-  RenderEvent,
-  RENDER_EVENT,
+  SetSizeEvent
 } from "@vis-three/core";
+import { RenderEvent, RenderManagerEngine, RENDER_EVENT } from "@vis-three/render-manager-plugin";
 import {
   CSS2DObject,
   CSS2DRenderer,

@@ -1,11 +1,7 @@
 import {
   Engine,
   ENGINE_EVENT,
-  Optional,
   Plugin,
-  RenderEvent,
-  RenderManagerEngine,
-  RENDER_EVENT,
   SetCameraEvent,
   SetDomEvent,
   SetSceneEvent,
@@ -20,6 +16,12 @@ import {
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
+import {
+  RenderEvent,
+  RenderManagerEngine,
+} from "@vis-three/render-manager-plugin";
+import { Optional } from "@vis-three/utils";
+
 export interface EffectComposerParameters {
   WebGLMultisampleRenderTarget?: boolean;
   samples?: number;

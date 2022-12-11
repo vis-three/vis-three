@@ -1,12 +1,11 @@
-import {
-  Engine,
-  ENGINE_EVENT,
-  SetCameraEvent,
-  SetSceneEvent,
-} from "../../engine";
-import { Plugin } from "../plugin";
 import { PointerManagerEngine } from "../PointerManagerPlugin";
 import { EventManager, EventManagerParameters } from "./EventManager";
+import {
+  ENGINE_EVENT,
+  Plugin,
+  SetCameraEvent,
+  SetSceneEvent,
+} from "@vis-three/core";
 
 export * from "./EventManager";
 export interface EventManagerEngine extends PointerManagerEngine {

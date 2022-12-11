@@ -25,8 +25,9 @@
 
       const engine = new DisplayEngine()
         .setDom(document.getElementById("app"))
-        .setSize()
         .play();
+
+      engine.camera.position.set(50, 50, 50);
 
       const scene = engine.scene;
 
@@ -48,6 +49,12 @@
 
       points.position.x = -10;
       scene.add(points);
+
+      window.engine = engine;
+
+      window.onload = () => {
+        engine.setSize();
+      };
     </script>
   </body>
 </html>

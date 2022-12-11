@@ -1,5 +1,5 @@
+import { BaseEvent, EventDispatcher } from "@vis-three/core";
 import { Clock } from "three";
-import { BaseEvent, EventDispatcher } from "../../eventDispatcher";
 
 // 渲染事件
 export interface RenderEvent extends BaseEvent {
