@@ -21,9 +21,9 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import { DisplayEngine } from "@vis-three/display-engine";
 
-      const engine = new Vis.DisplayEngine()
+      const engine = new DisplayEngine()
         .setDom(document.getElementById("app"))
         .setSize()
         .play();

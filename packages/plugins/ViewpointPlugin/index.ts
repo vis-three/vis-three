@@ -1,8 +1,17 @@
+import {
+  BaseEvent,
+  Engine,
+  ENGINE_EVENT,
+  Plugin,
+  SetSizeEvent,
+} from "@vis-three/core";
 import { OrthographicCamera, PerspectiveCamera } from "three";
-import { BaseEvent } from "../core/EventDispatcher";
-import { Engine, SetSizeEvent } from "../../engine/Engine";
-import { Vector3Config } from "../middleware/common/CommonConfig";
-import { Plugin } from "../../core/src/core/Plugin";
+
+export interface Vector3Config {
+  x: number;
+  y: number;
+  z: number;
+}
 
 export enum VIEWPOINT {
   DEFAULT = "default",
@@ -18,8 +27,11 @@ export interface ViewpointEvent extends BaseEvent {
   viewpoint: VIEWPOINT;
 }
 
+export interface ViewpointEngine extends Engine {
+  setViewpoint: (viewpoint: VIEWPOINT) => Engine;
+}
+
 export interface ViewpointParameters {
-  viewpoint?: VIEWPOINT;
   perspective?: {
     position?: Vector3Config;
     lookAt?: Vector3Config;
@@ -32,18 +44,11 @@ export interface ViewpointParameters {
   };
 }
 
-export const ViewpointPlugin: Plugin<ViewpointParameters> = function (
-  this: Engine,
+export const SETVIEWPOINT = "setViewpoint";
+
+export const ViewpointPlugin: Plugin<ViewpointEngine> = function (
   params: ViewpointParameters = {}
-): boolean {
-  // 前置条件
-  if (!this.webGLRenderer) {
-    console.error("must install some renderer before BasicViewpoint plugin.");
-    return false;
-  }
-
-  !params.viewpoint && (params.viewpoint = VIEWPOINT.DEFAULT);
-
+) {
   !params.perspective && (params.perspective = {});
   !params.perspective.position &&
     (params.perspective.position = {
@@ -111,69 +116,75 @@ export const ViewpointPlugin: Plugin<ViewpointParameters> = function (
     params.perspective.up.z
   );
 
-  this.setViewpoint = function (viewpoint: VIEWPOINT): Engine {
-    this.dispatchEvent({
-      type: "setViewpoint",
-      viewpoint,
-    });
-    return this;
-  };
-
-  this.addEventListener<SetSizeEvent>("setSize", (event) => {
-    const width = event.width;
-    const height = event.height;
-    const aspect = width / height;
-
-    perspectiveCamera.aspect = aspect;
-    perspectiveCamera.updateProjectionMatrix();
-
-    orthograpbicCamera.left = -distance * aspect;
-    orthograpbicCamera.right = distance * aspect;
-    orthograpbicCamera.top = distance;
-    orthograpbicCamera.bottom = -distance;
-    orthograpbicCamera.zoom = (distance / height) * 5;
-    orthograpbicCamera.updateProjectionMatrix();
-  });
-
   const allowRotate = params.orthograpbic.allowRotate ?? false;
-  this.addEventListener<ViewpointEvent>("setViewpoint", (event) => {
-    const viewpoint = event.viewpoint;
 
-    if (viewpoint === VIEWPOINT.DEFAULT) {
-      this.setCamera!(perspectiveCamera);
-      return;
-    }
+  let setSizeFun: (event: SetSizeEvent) => void;
+  let viewpointFun: (event: ViewpointEvent) => void;
 
-    if (viewpoint === VIEWPOINT.TOP) {
-      orthograpbicCamera.position.set(0, distance / 2, 0);
-    } else if (viewpoint === VIEWPOINT.BOTTOM) {
-      orthograpbicCamera.position.set(0, -distance / 2, 0);
-    } else if (viewpoint === VIEWPOINT.RIGHT) {
-      orthograpbicCamera.position.set(distance / 2, 0, 0);
-    } else if (viewpoint === VIEWPOINT.LEFT) {
-      orthograpbicCamera.position.set(-distance / 2, 0, 0);
-    } else if (viewpoint === VIEWPOINT.FRONT) {
-      orthograpbicCamera.position.set(0, 0, distance / 2);
-    } else if (viewpoint === VIEWPOINT.BACK) {
-      orthograpbicCamera.position.set(0, 0, -distance / 2);
-    }
+  return {
+    name: "ViewpointPlugin",
+    install(engine) {
+      engine.setViewpoint = function (viewpoint: VIEWPOINT): Engine {
+        this.dispatchEvent({
+          type: SETVIEWPOINT,
+          viewpoint,
+        });
+        return this;
+      };
 
-    this.setCamera!(orthograpbicCamera);
-  });
+      setSizeFun = (event) => {
+        const width = event.width;
+        const height = event.height;
+        const aspect = width / height;
 
-  this.completeSet.add(() => {
-    if (params.viewpoint === VIEWPOINT.DEFAULT) {
-      this.setCamera!(perspectiveCamera);
-    } else {
-      this.setCamera!(orthograpbicCamera);
-    }
+        perspectiveCamera.aspect = aspect;
+        perspectiveCamera.updateProjectionMatrix();
 
-    if (this.objectHelperManager) {
-      this.objectHelperManager.addFilteredObject(
-        perspectiveCamera,
-        orthograpbicCamera
-      );
-    }
-  });
-  return true;
+        orthograpbicCamera.left = -distance * aspect;
+        orthograpbicCamera.right = distance * aspect;
+        orthograpbicCamera.top = distance;
+        orthograpbicCamera.bottom = -distance;
+        orthograpbicCamera.zoom = (distance / height) * 5;
+        orthograpbicCamera.updateProjectionMatrix();
+      };
+
+      engine.addEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, setSizeFun);
+
+      viewpointFun = (event) => {
+        const viewpoint = event.viewpoint;
+
+        if (viewpoint === VIEWPOINT.DEFAULT) {
+          engine.setCamera(perspectiveCamera);
+          return;
+        }
+
+        if (viewpoint === VIEWPOINT.TOP) {
+          orthograpbicCamera.position.set(0, distance / 2, 0);
+        } else if (viewpoint === VIEWPOINT.BOTTOM) {
+          orthograpbicCamera.position.set(0, -distance / 2, 0);
+        } else if (viewpoint === VIEWPOINT.RIGHT) {
+          orthograpbicCamera.position.set(distance / 2, 0, 0);
+        } else if (viewpoint === VIEWPOINT.LEFT) {
+          orthograpbicCamera.position.set(-distance / 2, 0, 0);
+        } else if (viewpoint === VIEWPOINT.FRONT) {
+          orthograpbicCamera.position.set(0, 0, distance / 2);
+        } else if (viewpoint === VIEWPOINT.BACK) {
+          orthograpbicCamera.position.set(0, 0, -distance / 2);
+        }
+
+        engine.setCamera(orthograpbicCamera);
+      };
+
+      engine.addEventListener<ViewpointEvent>(SETVIEWPOINT, viewpointFun);
+    },
+    dispose() {},
+    installDeps: {
+      ObjectHelperPlugin(engine) {
+        // this.objectHelperManager.addFilteredObject(
+        //   perspectiveCamera,
+        //   orthograpbicCamera
+        // );
+      },
+    },
+  };
 };

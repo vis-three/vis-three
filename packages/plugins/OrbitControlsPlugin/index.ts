@@ -1,63 +1,124 @@
-import { Engine, SetCameraEvent, SetDomEvent } from "../../engine/Engine";
-import { VisOrbitControls } from "../optimize/VisOrbitControls";
-import { Plugin } from "../../core/src/core/Plugin";
-import { VIEWPOINT, ViewpointEvent } from "../ViewpointPlugin";
+import {
+  Engine,
+  ENGINE_EVENT,
+  Optional,
+  Plugin,
+  RenderEvent,
+  RenderManagerEngine,
+  RENDER_EVENT,
+  SetCameraEvent,
+  SetDomEvent,
+  VisOrbitControls,
+} from "@vis-three/core";
+import {
+  ViewpointEvent,
+  SETVIEWPOINT,
+  ViewpointEngine,
+  VIEWPOINT,
+} from "@vis-three/viewpoint-plugin";
 
-export const OrbitControlsPlugin: Plugin<Object> = function (
-  this: Engine,
-  params: Object
-): boolean {
-  if (this.orbitControls) {
-    console.warn("this has installed orbitControls plugin.");
-    return false;
-  }
+export interface OrbitControlsEngine extends Engine {
+  orbitControls: VisOrbitControls;
+}
 
-  if (!this.renderManager) {
-    console.warn(
-      "this must install renderManager before install orbitControls plugin."
-    );
-    return false;
-  }
+export interface OrbitRenderEngine
+  extends OrbitControlsEngine,
+    RenderManagerEngine {}
 
-  this.orbitControls = new VisOrbitControls(this.camera, this.dom);
+export interface OrbitViewpointEngine
+  extends OrbitControlsEngine,
+    ViewpointEngine {}
 
-  this.addEventListener<SetCameraEvent>("setCamera", (event) => {
-    event.options.orbitControls && this.orbitControls!.setCamera(event.camera);
-  });
+export const OrbitControlsPlugin: Plugin<OrbitControlsEngine> = function () {
+  let setDomFun: (event: SetDomEvent) => void;
+  let setCameraFun: (event: SetCameraEvent) => void;
+  let renderFun: (event: RenderEvent) => void;
+  let viewpointFun: (event: ViewpointEvent) => void;
 
-  this.addEventListener<SetDomEvent>("setDom", (event) => {
-    this.orbitControls!.setDom(event.dom);
-  });
+  let cacheRender: () => void;
 
-  this.renderManager!.addEventListener("render", () => {
-    this.orbitControls!.update();
-  });
+  return {
+    name: "OrbitControlsPlugin",
+    install(engine) {
+      const controls = new VisOrbitControls(engine.camera, engine.dom);
 
-  this.completeSet.add(() => {
-    if (this.setViewpoint) {
-      this.addEventListener<ViewpointEvent>("setViewpoint", (event) => {
-        const viewpoint = event.viewpoint;
+      engine.orbitControls = controls;
 
-        this.orbitControls!.target.set(0, 0, 0);
+      setDomFun = (event) => {
+        controls.setDom(event.dom);
+      };
 
-        if (viewpoint === VIEWPOINT.DEFAULT) {
-          this.orbitControls!.enableRotate = true;
-        } else if (viewpoint === VIEWPOINT.TOP) {
-          this.orbitControls!.enableRotate = false;
-        } else if (viewpoint === VIEWPOINT.BOTTOM) {
-          this.orbitControls!.enableRotate = false;
-        } else if (viewpoint === VIEWPOINT.RIGHT) {
-          this.orbitControls!.enableRotate = false;
-        } else if (viewpoint === VIEWPOINT.LEFT) {
-          this.orbitControls!.enableRotate = false;
-        } else if (viewpoint === VIEWPOINT.FRONT) {
-          this.orbitControls!.enableRotate = false;
-        } else if (viewpoint === VIEWPOINT.BACK) {
-          this.orbitControls!.enableRotate = false;
-        }
-      });
-    }
-  });
+      engine.addEventListener<SetDomEvent>(ENGINE_EVENT.SETDOM, setDomFun);
 
-  return true;
+      setCameraFun = (event) => {
+        event.options.orbitControls && controls.setCamera(event.camera);
+      };
+
+      engine.addEventListener<SetCameraEvent>(
+        ENGINE_EVENT.SETCAMERA,
+        setCameraFun
+      );
+
+      cacheRender = engine.render;
+
+      engine.render = function () {
+        cacheRender();
+        controls.update();
+      };
+    },
+    dispose(engine: Optional<OrbitControlsEngine, "orbitControls">) {
+      engine.removeEventListener<SetDomEvent>(ENGINE_EVENT.SETDOM, setDomFun);
+      engine.removeEventListener<SetCameraEvent>(
+        ENGINE_EVENT.SETCAMERA,
+        setCameraFun
+      );
+
+      engine.render = cacheRender;
+    },
+
+    installDeps: {
+      RenderManagerPlugin(engine: OrbitRenderEngine) {
+        renderFun = () => {
+          engine.orbitControls.update();
+        };
+        engine.renderManager.addEventListener(RENDER_EVENT.RENDER, renderFun);
+      },
+      ViewpointPlugin(engine: OrbitViewpointEngine) {
+        const disableRotate = () => {
+          engine.orbitControls.enableRotate = true;
+        };
+
+        const actionMap = {
+          [VIEWPOINT.DEFAULT]: disableRotate,
+          [VIEWPOINT.TOP]: disableRotate,
+          [VIEWPOINT.BOTTOM]: disableRotate,
+          [VIEWPOINT.RIGHT]: disableRotate,
+          [VIEWPOINT.LEFT]: disableRotate,
+          [VIEWPOINT.FRONT]: disableRotate,
+          [VIEWPOINT.BACK]: disableRotate,
+        };
+
+        viewpointFun = (event) => {
+          const viewpoint = event.viewpoint;
+
+          engine.orbitControls.target.set(0, 0, 0);
+          actionMap[viewpoint] && actionMap[viewpoint]();
+        };
+
+        engine.addEventListener<ViewpointEvent>(SETVIEWPOINT, viewpointFun);
+      },
+    },
+
+    disposeDeps: {
+      RenderManagerPlugin(engine: OrbitRenderEngine) {
+        engine.renderManager.removeEventListener(
+          RENDER_EVENT.RENDER,
+          renderFun
+        );
+      },
+      ViewpointPlugin(engine: OrbitViewpointEngine) {
+        engine.removeEventListener<ViewpointEvent>(SETVIEWPOINT, viewpointFun);
+      },
+    },
+  };
 };

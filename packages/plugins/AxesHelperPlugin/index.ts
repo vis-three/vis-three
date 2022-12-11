@@ -1,39 +1,66 @@
+import { Engine, ENGINE_EVENT, Plugin, SetSceneEvent } from "@vis-three/core";
 import { AxesHelper } from "three";
-import { Engine, ENGINEPLUGIN, SetSceneEvent } from "../../engine/Engine";
-import { Plugin } from "../../core/src/core/Plugin";
 
 export interface AxesHelperParameters {
   length?: number;
 }
 
-export const AxesHelperPlugin: Plugin<AxesHelperParameters> = function (
-  this: Engine,
-  params: AxesHelperParameters = {}
-): boolean {
-  if (!this.scene) {
-    console.error(
-      "must install some scene plugin before BasicViewpoint plugin."
-    );
-    return false;
-  }
+export interface AxesHelperOptions {
+  show: boolean;
+}
 
-  const axesHelper = new AxesHelper(params.length || 500);
-  axesHelper.matrixAutoUpdate = false;
-  axesHelper.raycast = () => {};
+export interface AxesHelperEngine extends Engine {
+  axesHelper: AxesHelper;
+  setAxesHelper: (params: AxesHelperOptions) => AxesHelperEngine;
+}
 
-  this.scene.add(axesHelper);
+const AxesHelperPlugin: Plugin<AxesHelperEngine> = function (
+  params: AxesHelperParameters
+) {
+  let setSceneFun: (event: SetSceneEvent) => void;
 
-  this.setAxesHelper = function (params: { show: boolean }): Engine {
-    if (params.show) {
-      this.scene!.add(axesHelper);
-    } else {
-      this.scene!.remove(axesHelper);
-    }
-    return this;
+  return {
+    name: "AxesHelperPlugin",
+    install(engine) {
+      const axesHelper = new AxesHelper(params.length || 500);
+      axesHelper.matrixAutoUpdate = false;
+      axesHelper.raycast = () => {};
+
+      engine.axesHelper = axesHelper;
+
+      engine.scene.add(axesHelper);
+
+      engine.setAxesHelper = function (
+        params: AxesHelperOptions
+      ): AxesHelperEngine {
+        if (params.show) {
+          engine.scene.add(axesHelper);
+        } else {
+          engine.scene.remove(axesHelper);
+        }
+        return this;
+      };
+
+      setSceneFun = (event) => {
+        event.scene.add(axesHelper);
+      };
+
+      engine.addEventListener<SetSceneEvent>(
+        ENGINE_EVENT.SETSCENE,
+        setSceneFun
+      );
+    },
+    dispose(engine: Partial<AxesHelperEngine>) {
+      delete engine.setAxesHelper;
+      engine.axesHelper!.dispose();
+      delete engine.axesHelper;
+
+      engine.removeEventListener!<SetSceneEvent>(
+        ENGINE_EVENT.SETSCENE,
+        setSceneFun
+      );
+    },
   };
-
-  this.addEventListener<SetSceneEvent>("setScene", (event) => {
-    event.scene.add(axesHelper);
-  });
-  return true;
 };
+
+export default AxesHelperPlugin;

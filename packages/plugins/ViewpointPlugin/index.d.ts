@@ -1,6 +1,9 @@
-import { BaseEvent } from "../core/EventDispatcher";
-import { Vector3Config } from "../middleware/common/CommonConfig";
-import { Plugin } from "../../core/src/core/Plugin";
+import { BaseEvent, Engine, Plugin } from "@vis-three/core";
+export interface Vector3Config {
+    x: number;
+    y: number;
+    z: number;
+}
 export declare enum VIEWPOINT {
     DEFAULT = "default",
     TOP = "top",
@@ -13,8 +16,10 @@ export declare enum VIEWPOINT {
 export interface ViewpointEvent extends BaseEvent {
     viewpoint: VIEWPOINT;
 }
+export interface ViewpointEngine extends Engine {
+    setViewpoint: (viewpoint: VIEWPOINT) => Engine;
+}
 export interface ViewpointParameters {
-    viewpoint?: VIEWPOINT;
     perspective?: {
         position?: Vector3Config;
         lookAt?: Vector3Config;
@@ -26,4 +31,5 @@ export interface ViewpointParameters {
         allowRotate?: boolean;
     };
 }
-export declare const ViewpointPlugin: Plugin<ViewpointParameters>;
+export declare const SETVIEWPOINT = "setViewpoint";
+export declare const ViewpointPlugin: Plugin<ViewpointEngine>;

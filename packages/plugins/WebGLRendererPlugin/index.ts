@@ -1,18 +1,18 @@
-import { Engine } from "@vis-three/core";
-import { Plugin } from "@vis-three/core/src/core/Plugin";
-
-import { RenderManagerEngine } from "../RenderManagerPlugin";
+import {
+  Engine,
+  RenderManagerEngine,
+  Plugin,
+  SetDomEvent,
+  ENGINE_EVENT,
+  SetSizeEvent,
+  RENDER_EVENT,
+} from "@vis-three/core";
 
 import {
   PerspectiveCamera,
   WebGLRenderer,
   WebGLRendererParameters,
 } from "three";
-import {
-  ENGINE_EVENT,
-  SetDomEvent,
-  SetSizeEvent,
-} from "@vis-three/core/src/core/Engine";
 
 export interface Screenshot {
   width?: number;
@@ -24,7 +24,7 @@ export interface WebGLRendererEngine extends RenderManagerEngine {
   getScreenshot: (params?: Screenshot) => Promise<string>;
 }
 
-const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
+export const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
   params: WebGLRendererParameters
 ) {
   return {
@@ -158,19 +158,16 @@ const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
       engine.addEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, (event) => {
         engine.webGLRenderer!.setSize(event.width, event.height, true);
       });
-
-      engine.addEventListener(ENGINE_EVENT.DISPOSE, () => {
-        engine.webGLRenderer!.dispose();
-      });
     },
-    installed: {
+    installDeps: {
       RenderManagerPlugin(engine: WebGLRendererEngine) {
-        engine.renderManager.addEventListener("render", (event) => {
+        engine.renderManager.addEventListener(RENDER_EVENT.RENDER, (event) => {
           engine.webGLRenderer.render(engine.scene, engine.camera);
         });
       },
     },
+    dispose(engine) {
+      engine.webGLRenderer.dispose();
+    },
   };
 };
-
-export default WebGLRendererPlugin;

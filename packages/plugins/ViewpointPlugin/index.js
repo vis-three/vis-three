@@ -1,3 +1,4 @@
+import { ENGINE_EVENT, } from "@vis-three/core";
 import { OrthographicCamera, PerspectiveCamera } from "three";
 export var VIEWPOINT;
 (function (VIEWPOINT) {
@@ -9,13 +10,8 @@ export var VIEWPOINT;
     VIEWPOINT["FRONT"] = "front";
     VIEWPOINT["BACK"] = "back";
 })(VIEWPOINT || (VIEWPOINT = {}));
+export const SETVIEWPOINT = "setViewpoint";
 export const ViewpointPlugin = function (params = {}) {
-    // 前置条件
-    if (!this.webGLRenderer) {
-        console.error("must install some renderer before BasicViewpoint plugin.");
-        return false;
-    }
-    !params.viewpoint && (params.viewpoint = VIEWPOINT.DEFAULT);
     !params.perspective && (params.perspective = {});
     !params.perspective.position &&
         (params.perspective.position = {
@@ -49,63 +45,69 @@ export const ViewpointPlugin = function (params = {}) {
     const distance = params.orthograpbic.distance || 10000;
     const orthograpbicCamera = new OrthographicCamera(-window.innerWidth / 8, window.innerWidth / 8, -window.innerHeight / 8, window.innerHeight / 8, 0, distance);
     orthograpbicCamera.up.set(params.perspective.up.x, params.perspective.up.y, params.perspective.up.z);
-    this.setViewpoint = function (viewpoint) {
-        this.dispatchEvent({
-            type: "setViewpoint",
-            viewpoint,
-        });
-        return this;
-    };
-    this.addEventListener("setSize", (event) => {
-        const width = event.width;
-        const height = event.height;
-        const aspect = width / height;
-        perspectiveCamera.aspect = aspect;
-        perspectiveCamera.updateProjectionMatrix();
-        orthograpbicCamera.left = -distance * aspect;
-        orthograpbicCamera.right = distance * aspect;
-        orthograpbicCamera.top = distance;
-        orthograpbicCamera.bottom = -distance;
-        orthograpbicCamera.zoom = (distance / height) * 5;
-        orthograpbicCamera.updateProjectionMatrix();
-    });
     const allowRotate = params.orthograpbic.allowRotate ?? false;
-    this.addEventListener("setViewpoint", (event) => {
-        const viewpoint = event.viewpoint;
-        if (viewpoint === VIEWPOINT.DEFAULT) {
-            this.setCamera(perspectiveCamera);
-            return;
-        }
-        if (viewpoint === VIEWPOINT.TOP) {
-            orthograpbicCamera.position.set(0, distance / 2, 0);
-        }
-        else if (viewpoint === VIEWPOINT.BOTTOM) {
-            orthograpbicCamera.position.set(0, -distance / 2, 0);
-        }
-        else if (viewpoint === VIEWPOINT.RIGHT) {
-            orthograpbicCamera.position.set(distance / 2, 0, 0);
-        }
-        else if (viewpoint === VIEWPOINT.LEFT) {
-            orthograpbicCamera.position.set(-distance / 2, 0, 0);
-        }
-        else if (viewpoint === VIEWPOINT.FRONT) {
-            orthograpbicCamera.position.set(0, 0, distance / 2);
-        }
-        else if (viewpoint === VIEWPOINT.BACK) {
-            orthograpbicCamera.position.set(0, 0, -distance / 2);
-        }
-        this.setCamera(orthograpbicCamera);
-    });
-    this.completeSet.add(() => {
-        if (params.viewpoint === VIEWPOINT.DEFAULT) {
-            this.setCamera(perspectiveCamera);
-        }
-        else {
-            this.setCamera(orthograpbicCamera);
-        }
-        if (this.objectHelperManager) {
-            this.objectHelperManager.addFilteredObject(perspectiveCamera, orthograpbicCamera);
-        }
-    });
-    return true;
+    let setSizeFun;
+    let viewpointFun;
+    return {
+        name: "ViewpointPlugin",
+        install(engine) {
+            engine.setViewpoint = function (viewpoint) {
+                this.dispatchEvent({
+                    type: SETVIEWPOINT,
+                    viewpoint,
+                });
+                return this;
+            };
+            setSizeFun = (event) => {
+                const width = event.width;
+                const height = event.height;
+                const aspect = width / height;
+                perspectiveCamera.aspect = aspect;
+                perspectiveCamera.updateProjectionMatrix();
+                orthograpbicCamera.left = -distance * aspect;
+                orthograpbicCamera.right = distance * aspect;
+                orthograpbicCamera.top = distance;
+                orthograpbicCamera.bottom = -distance;
+                orthograpbicCamera.zoom = (distance / height) * 5;
+                orthograpbicCamera.updateProjectionMatrix();
+            };
+            engine.addEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
+            viewpointFun = (event) => {
+                const viewpoint = event.viewpoint;
+                if (viewpoint === VIEWPOINT.DEFAULT) {
+                    engine.setCamera(perspectiveCamera);
+                    return;
+                }
+                if (viewpoint === VIEWPOINT.TOP) {
+                    orthograpbicCamera.position.set(0, distance / 2, 0);
+                }
+                else if (viewpoint === VIEWPOINT.BOTTOM) {
+                    orthograpbicCamera.position.set(0, -distance / 2, 0);
+                }
+                else if (viewpoint === VIEWPOINT.RIGHT) {
+                    orthograpbicCamera.position.set(distance / 2, 0, 0);
+                }
+                else if (viewpoint === VIEWPOINT.LEFT) {
+                    orthograpbicCamera.position.set(-distance / 2, 0, 0);
+                }
+                else if (viewpoint === VIEWPOINT.FRONT) {
+                    orthograpbicCamera.position.set(0, 0, distance / 2);
+                }
+                else if (viewpoint === VIEWPOINT.BACK) {
+                    orthograpbicCamera.position.set(0, 0, -distance / 2);
+                }
+                engine.setCamera(orthograpbicCamera);
+            };
+            engine.addEventListener(SETVIEWPOINT, viewpointFun);
+        },
+        dispose() { },
+        installDeps: {
+            ObjectHelperPlugin(engine) {
+                // this.objectHelperManager.addFilteredObject(
+                //   perspectiveCamera,
+                //   orthograpbicCamera
+                // );
+            },
+        },
+    };
 };

@@ -1,10 +1,21 @@
 import { Camera, Scene, WebGLRenderer } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { EventManager } from "../manager/EventManager";
-import { PointerManager } from "../manager/PointerManager";
-import { RenderManager } from "../manager/RenderManager";
-import { VisOrbitControls } from "../optimize/VisOrbitControls";
-import { Engine } from "@vis-three/core";
+import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+import { CSS2DRendererPlugin } from "@vis-three/css2d-renderer-plugin";
+import { CSS3DRendererPlugin } from "@vis-three/css3d-renderer-plugin";
+import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
+import { OrbitControlsPlugin } from "@vis-three/orbit-controls-plugin";
+
+import {
+  Engine,
+  EventManager,
+  PointerManager,
+  RenderManager,
+  VisOrbitControls,
+  RenderManagerPlugin,
+  PointerManagerPlugin,
+  EventManagerPlugin,
+} from "@vis-three/core";
 export class DisplayEngine extends Engine {
   declare dom: HTMLElement;
   declare webGLRenderer: WebGLRenderer;
@@ -22,17 +33,23 @@ export class DisplayEngine extends Engine {
 
   constructor() {
     super();
-    this.install(ENGINEPLUGIN.WEBGLRENDERER, {
-      antialias: true,
-      alpha: true,
-    })
-      .install(ENGINEPLUGIN.RENDERMANAGER)
-      .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
-        WebGLMultisampleRenderTarget: true,
-      })
-      .install(ENGINEPLUGIN.ORBITCONTROLS)
-      .install(ENGINEPLUGIN.POINTERMANAGER)
-      .install(ENGINEPLUGIN.EVENTMANAGER)
-      .complete();
+    this.install(RenderManagerPlugin())
+
+      .install(PointerManagerPlugin())
+      .install(EventManagerPlugin())
+      .install(
+        WebGLRendererPlugin({
+          antialias: true,
+          alpha: true,
+        })
+      )
+      .install(CSS2DRendererPlugin())
+      .install(CSS3DRendererPlugin())
+      .install(
+        EffectComposerPlugin({
+          WebGLMultisampleRenderTarget: true,
+        })
+      )
+      .install(OrbitControlsPlugin());
   }
 }
