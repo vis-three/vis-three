@@ -13,7 +13,7 @@ import Stats from "three/examples/jsm/libs/stats.module";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { Pass, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass";
 import { LuminosityHighPassShader } from "three/examples/jsm/shaders/LuminosityHighPassShader";
-const version = "0.4.0";
+const version = "0.5.0";
 if (!window.__THREE__) {
   console.error(
     `vis-three dependent on three.js module, pleace run 'npm i three' first.`
@@ -131,56 +131,41 @@ class Engine extends EventDispatcher {
   constructor() {
     super();
     __publicField(this, "pluginTables", /* @__PURE__ */ new Map());
+    __publicField(this, "strategyTables", /* @__PURE__ */ new Map());
     __publicField(this, "dom", document.createElement("div"));
     __publicField(this, "camera", new PerspectiveCamera());
     __publicField(this, "scene", new Scene());
     __publicField(this, "render");
-    __publicField(this, "play");
-    __publicField(this, "stop");
     this.render = function() {
       console.warn("can not install some plugin");
     };
-    this.play = this.render;
-    this.stop = this.render;
   }
   install(plugin) {
     if (this.pluginTables.has(plugin.name)) {
       console.warn(`This plugin already exists`, plugin.name);
       return this;
     }
-    const validateDep = (name, order) => {
+    const validateDep = (name) => {
       if (!this.pluginTables.has(name)) {
-        if (order) {
-          console.error(
-            `${plugin.name} must install this plugin before: ${name}`
-          );
-          return false;
-        }
-        console.warn(`${plugin.name} recommends using this plugin: ${name}`);
-        return true;
+        console.error(
+          `${plugin.name} must install this plugin before: ${name}`
+        );
+        return false;
       }
       return true;
     };
     if (plugin.deps) {
       if (Array.isArray(plugin.deps)) {
         for (const name of plugin.deps) {
-          if (!validateDep(name, plugin.order))
+          if (!validateDep(name))
             ;
         }
       } else {
-        if (!validateDep(plugin.deps, plugin.order))
+        if (!validateDep(plugin.deps))
           ;
       }
     }
-    const plugins = this.pluginTables.values();
-    const pluginNames = this.pluginTables.keys();
     plugin.install(this);
-    for (const plu of plugins) {
-      plu.installDeps && plu.installDeps[plugin.name] && plu.installDeps[plugin.name](this);
-    }
-    for (const name of pluginNames) {
-      plugin.installDeps && plugin.installDeps[name] && plugin.installDeps[name](this);
-    }
     this.pluginTables.set(plugin.name, plugin);
     return this;
   }
@@ -190,15 +175,27 @@ class Engine extends EventDispatcher {
     }
     const plugin = this.pluginTables.get(name);
     plugin.dispose(this);
-    if (plugin.disposeDeps) {
-      Object.values(plugin.disposeDeps).forEach((fun) => {
-        fun(this);
-      });
-    }
-    for (const plu of this.pluginTables.values()) {
-      plu.disposeDeps && plu.disposeDeps[name] && plu.disposeDeps[name](this);
-    }
     this.pluginTables.delete(name);
+    return this;
+  }
+  exec(strategy) {
+    const tables = this.strategyTables;
+    if (tables.has(strategy.name)) {
+      console.warn(`This strategy already exists`, strategy.name);
+      return this;
+    }
+    strategy.exec(this);
+    tables.set(strategy.name, strategy);
+    return this;
+  }
+  rollback(name) {
+    const tables = this.strategyTables;
+    if (!tables.has(name)) {
+      return this;
+    }
+    const strategy = tables.get(name);
+    strategy.rollback(this);
+    tables.delete(name);
     return this;
   }
   setDom(dom) {
@@ -1257,10 +1254,13 @@ class VisStats {
     }
   }
 }
-var TRANSFORMEVENT = /* @__PURE__ */ ((TRANSFORMEVENT2) => {
-  TRANSFORMEVENT2["OBJECTCHANGED"] = "objectChanged";
-  return TRANSFORMEVENT2;
-})(TRANSFORMEVENT || {});
+var TRANSFORM_EVENT;
+(function(TRANSFORM_EVENT2) {
+  TRANSFORM_EVENT2["CHANGED"] = "changed";
+  TRANSFORM_EVENT2["MOUSE_DOWN"] = "mouseDown";
+  TRANSFORM_EVENT2["CHANGEING"] = "changing";
+  TRANSFORM_EVENT2["MOUSE_UP"] = "mouseUp";
+})(TRANSFORM_EVENT || (TRANSFORM_EVENT = {}));
 class VisTransformControls extends TransformControls {
   constructor(camera, dom) {
     !camera && (camera = new PerspectiveCamera());
@@ -1289,7 +1289,7 @@ class VisTransformControls extends TransformControls {
       z: 0
     };
     const objectMatrixAutoMap = /* @__PURE__ */ new WeakMap();
-    this.addEventListener("mouseDown", (event) => {
+    this.addEventListener(TRANSFORM_EVENT.MOUSE_DOWN, (event) => {
       mode = event.target.mode;
       mode === "translate" && (mode = "position");
       mode === "rotate" && (mode = "rotation");
@@ -1301,7 +1301,7 @@ class VisTransformControls extends TransformControls {
         object.matrixAutoUpdate = false;
       });
     });
-    this.addEventListener("objectChange", (event) => {
+    this.addEventListener(TRANSFORM_EVENT.CHANGEING, (event) => {
       const offsetX = target[mode].x - cachaTargetTrans.x;
       const offsetY = target[mode].y - cachaTargetTrans.y;
       const offsetZ = target[mode].z - cachaTargetTrans.z;
@@ -1316,13 +1316,13 @@ class VisTransformControls extends TransformControls {
         elem.updateMatrixWorld();
       });
       this.dispatchEvent({
-        type: "objectChanged",
+        type: TRANSFORM_EVENT.CHANGED,
         transObjectSet,
         mode,
         target
       });
     });
-    this.addEventListener("mouseUp", (event) => {
+    this.addEventListener(TRANSFORM_EVENT.MOUSE_UP, (event) => {
       transObjectSet.forEach((object) => {
         object.matrixAutoUpdate = objectMatrixAutoMap.get(object);
         objectMatrixAutoMap.delete(object);
@@ -1360,11 +1360,7 @@ class VisTransformControls extends TransformControls {
     const target = this.target;
     if (object.length === 1) {
       const currentObject = object[0];
-      currentObject.matrixWorld.decompose(
-        target.position,
-        target.quaternion,
-        target.scale
-      );
+      currentObject.matrixWorld.decompose(target.position, target.quaternion, target.scale);
       target.updateMatrix();
       target.updateMatrixWorld();
       this.transObjectSet.add(currentObject);
@@ -2125,4 +2121,7 @@ __publicField(VideoLoader, "autoplay", true);
 __publicField(VideoLoader, "preload", "auto");
 __publicField(VideoLoader, "muted", true);
 __publicField(VideoLoader, "loop", true);
-export { CSS2DPlane, CSS3DPlane, CSS3DSprite, CubicBezierCurveGeometry, CurveGeometry, ENGINE_EVENT, Engine, EventDispatcher, ImageTexture, LineCurveGeometry, LineShapeGeometry, LineTubeGeometry, LoadGeometry, LoadTexture, QuadraticBezierCurveGeometry, SelectiveBloomPass, SplineCurveGeometry, SplineTubeGeometry, TRANSFORMEVENT, VideoLoader, VideoTexture, VisCSS2DObject, VisCSS3DObject, VisCSS3DSprite, VisOrbitControls, VisSelectionBox, VisSelectionHelper, VisStats, VisTransformControls, definePlugin };
+const defineStrategy = function(options) {
+  return () => options;
+};
+export { CSS2DPlane, CSS3DPlane, CSS3DSprite, CubicBezierCurveGeometry, CurveGeometry, ENGINE_EVENT, Engine, EventDispatcher, ImageTexture, LineCurveGeometry, LineShapeGeometry, LineTubeGeometry, LoadGeometry, LoadTexture, QuadraticBezierCurveGeometry, SelectiveBloomPass, SplineCurveGeometry, SplineTubeGeometry, TRANSFORM_EVENT, VideoLoader, VideoTexture, VisCSS2DObject, VisCSS3DObject, VisCSS3DSprite, VisOrbitControls, VisSelectionBox, VisSelectionHelper, VisStats, VisTransformControls, definePlugin, defineStrategy };

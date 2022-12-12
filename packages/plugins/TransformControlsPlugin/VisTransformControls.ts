@@ -1,13 +1,16 @@
 import { BaseEvent, Camera, Object3D, PerspectiveCamera } from "three";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 
-export enum TRANSFORMEVENT {
-  OBJECTCHANGED = "objectChanged",
+export enum TRANSFORM_EVENT {
+  CHANGED = "changed",
+  MOUSE_DOWN = "mouseDown",
+  CHANGEING = "changing",
+  MOUSE_UP = "mouseUp",
 }
 
 // 控制器更新物体完成后的事件
 export interface ObjectChangedEvent extends BaseEvent {
-  type: "objectChanged";
+  type: TRANSFORM_EVENT.CHANGED;
   transObjectSet: Set<Object3D>;
   mode: string;
   target: Object3D;
@@ -56,7 +59,7 @@ export class VisTransformControls extends TransformControls {
     // TODO: 有children的物体更新
     const objectMatrixAutoMap = new WeakMap<Object3D, boolean>();
     // TODO: 轴应用
-    this.addEventListener("mouseDown", (event) => {
+    this.addEventListener(TRANSFORM_EVENT.MOUSE_DOWN, (event) => {
       mode = event.target.mode;
 
       mode === "translate" && (mode = "position");
@@ -74,7 +77,7 @@ export class VisTransformControls extends TransformControls {
       });
     });
 
-    this.addEventListener("objectChange", (event) => {
+    this.addEventListener(TRANSFORM_EVENT.CHANGEING, (event) => {
       // 计算 target 的增量
       const offsetX = target[mode].x - cachaTargetTrans.x;
       const offsetY = target[mode].y - cachaTargetTrans.y;
@@ -95,14 +98,14 @@ export class VisTransformControls extends TransformControls {
       });
 
       this.dispatchEvent({
-        type: TRANSFORMEVENT.OBJECTCHANGED,
+        type: TRANSFORM_EVENT.CHANGED,
         transObjectSet,
         mode,
         target,
       });
     });
 
-    this.addEventListener("mouseUp", (event) => {
+    this.addEventListener(TRANSFORM_EVENT.MOUSE_UP, (event) => {
       // 归还物体自动更新设置
       transObjectSet.forEach((object) => {
         object.matrixAutoUpdate = objectMatrixAutoMap.get(object)!;

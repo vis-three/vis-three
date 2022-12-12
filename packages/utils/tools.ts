@@ -78,3 +78,14 @@ export const isArray = function (object: any) {
 export const extendPath = function (str1: string, str2: string) {
   return str1 && str2 ? `${str1}.${str2}` : str1 || str2;
 };
+
+export const transPkgName = function (str: string) {
+  let name = str.split("/").pop();
+  if (!name) {
+    return str;
+  }
+
+  return name.split("-").reduce((str, elem) => {
+    return (str += elem[0].toUpperCase() + elem.slice(1));
+  }, "");
+};

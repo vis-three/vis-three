@@ -2,16 +2,17 @@ import { ENGINE_EVENT, } from "@vis-three/core";
 import { RGBAFormat, Vector2, WebGLMultisampleRenderTarget, WebGLRenderTarget, } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
+import { transPkgName } from "@vis-three/utils";
+import { name as pkgname } from "./package.json";
+export const name = transPkgName(pkgname);
 export const EffectComposerPlugin = function (params) {
     let setCameraFun;
     let setSizeFun;
     let setSceneFun;
-    let renderFun;
     let cacheRender;
     return {
-        name: "EffectComposerPlugin",
+        name,
         deps: "WebGLRendererPlugin",
-        order: true,
         install(engine) {
             let composer;
             if (params.WebGLMultisampleRenderTarget || params.MSAA) {
@@ -61,20 +62,6 @@ export const EffectComposerPlugin = function (params) {
             engine.addEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
             engine.render = cacheRender;
             delete engine.effectComposer;
-        },
-        installDeps: {
-            RenderManagerPlugin(engine) {
-                engine.renderManager.removeEventListener(ENGINE_EVENT.SETSIZE, cacheRender);
-                renderFun = (event) => {
-                    engine.effectComposer.render(event.delta);
-                };
-                engine.renderManager.addEventListener(ENGINE_EVENT.SETSIZE, renderFun);
-            },
-        },
-        disposeDeps: {
-            RenderManagerPlugin(engine) {
-                engine.renderManager.removeEventListener(ENGINE_EVENT.SETSIZE, renderFun);
-            },
         },
     };
 };

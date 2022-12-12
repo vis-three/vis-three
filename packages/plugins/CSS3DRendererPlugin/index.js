@@ -1,14 +1,15 @@
 import { ENGINE_EVENT, } from "@vis-three/core";
-import { RENDER_EVENT, } from "@vis-three/render-manager-plugin";
 import { CSS3DObject, CSS3DRenderer, } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { transPkgName } from "@vis-three/utils";
+import { name as pkgname } from "./package.json";
+export const name = transPkgName(pkgname);
 export const CSS3DRendererPlugin = function () {
     let setDomFun;
     let setSizeFun;
     let setSceneFun;
-    let renderFun;
     let cacheRender;
     return {
-        name: "CSS3DRendererPlugin",
+        name,
         install(engine) {
             const css3DRenderer = new CSS3DRenderer();
             engine.css3DRenderer = css3DRenderer;
@@ -46,19 +47,6 @@ export const CSS3DRendererPlugin = function () {
             engine.removeEventListener(ENGINE_EVENT.SETDOM, setDomFun);
             engine.removeEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
             engine.removeEventListener(ENGINE_EVENT.SETSCENE, setSceneFun);
-        },
-        installDeps: {
-            RendererManagerPlugin(engine) {
-                renderFun = (event) => {
-                    engine.css3DRenderer.render(engine.scene, engine.camera);
-                };
-                engine.renderManager.addEventListener(RENDER_EVENT.RENDER, renderFun);
-            },
-        },
-        disposeDeps: {
-            RendererManagerPlugin(engine) {
-                engine.renderManager.removeEventListener(RENDER_EVENT.RENDER, renderFun);
-            },
         },
     };
 };

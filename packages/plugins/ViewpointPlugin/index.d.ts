@@ -32,4 +32,5 @@ export interface ViewpointParameters {
     };
 }
 export declare const SETVIEWPOINT = "setViewpoint";
+export declare const name: string;
 export declare const ViewpointPlugin: Plugin<ViewpointEngine>;

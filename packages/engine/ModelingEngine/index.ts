@@ -2,16 +2,46 @@ import { Camera, Object3D, Scene, WebGLRenderer } from "three";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { EventManager } from "../manager/EventManager";
-import { KeyboardManager } from "../manager/KeyboardManager";
-import { PointerManager } from "../manager/PointerManager";
-import { RenderManager } from "../manager/RenderManager";
-import { VisOrbitControls } from "../optimize/VisOrbitControls";
-import { DISPLAYMODE } from "../../plugins/DisplayModePlugin";
-import { VIEWPOINT } from "../../plugins/ViewpointPlugin";
-import { Engine, ENGINEPLUGIN } from "../Engine";
-
-export class ModelingEngine extends Engine {
+import { Engine, VisOrbitControls } from "@vis-three/core";
+import {
+  RenderManager,
+  RenderManagerEngine,
+  RenderManagerPlugin,
+} from "@vis-three/render-manager-plugin";
+import {
+  Screenshot,
+  WebGLRendererEngine,
+  WebGLRendererPlugin,
+} from "@vis-three/webgl-renderer-plugin";
+import {
+  PointerManager,
+  PointerManagerEngine,
+  PointerManagerPlugin,
+} from "@vis-three/pointer-manager-plugin";
+import {
+  EventManager,
+  EventManagerEngine,
+  EventManagerPlugin,
+} from "@vis-three/event-manager-plugin";
+import {
+  EffectComposerEngine,
+  EffectComposerPlugin,
+} from "@vis-three/effect-composer-plugin";
+import {
+  OrbitControlsEngine,
+  OrbitControlsPlugin,
+} from "@vis-three/orbit-controls-plugin";
+import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+export class ModelingEngine
+  extends Engine
+  implements
+    WebGLRendererEngine,
+    EffectComposerEngine,
+    OrbitControlsEngine,
+    RenderManagerEngine,
+    PointerManagerEngine,
+    EventManagerEngine
+{
   declare dom: HTMLElement;
   declare webGLRenderer: WebGLRenderer;
   declare camera: Camera;
@@ -39,18 +69,27 @@ export class ModelingEngine extends Engine {
   declare stop: () => this;
   declare render: () => this;
 
+  declaregetScreenshot: (params?: Screenshot | undefined) => Promise<string>;
+
   constructor() {
     super();
-    this.install(ENGINEPLUGIN.RENDERMANAGER)
-      .install(ENGINEPLUGIN.WEBGLRENDERER, {
-        antialias: true,
-        alpha: true,
-      })
-      .install(ENGINEPLUGIN.POINTERMANAGER)
-      .install(ENGINEPLUGIN.EVENTMANAGER)
-      .install(ENGINEPLUGIN.EFFECTCOMPOSER, {
-        WebGLMultisampleRenderTarget: true,
-      })
+    this.install(RenderManagerPlugin())
+      .install(
+        WebGLRendererPlugin({
+          antialias: true,
+          alpha: true,
+        })
+      )
+
+      .install(PointerManagerPlugin())
+      .install(EventManagerPlugin())
+      .install(
+        EffectComposerPlugin({
+          WebGLMultisampleRenderTarget: true,
+        })
+      )
+      .install(OrbitControlsPlugin())
+      .install(CameraAdaptivePlugin())
       .install(ENGINEPLUGIN.SELECTION)
       .install(ENGINEPLUGIN.AXESHELPER)
       .install(ENGINEPLUGIN.GRIDHELPER)
@@ -58,7 +97,6 @@ export class ModelingEngine extends Engine {
       .install(ENGINEPLUGIN.VIEWPOINT)
       .install(ENGINEPLUGIN.DISPLAYMODE)
       .install(ENGINEPLUGIN.STATS)
-      .install(ENGINEPLUGIN.ORBITCONTROLS)
       .install(ENGINEPLUGIN.KEYBOARDMANAGER)
       .install(ENGINEPLUGIN.TRANSFORMCONTROLS)
       .complete();

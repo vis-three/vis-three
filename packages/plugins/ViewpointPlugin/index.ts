@@ -6,6 +6,8 @@ import {
   SetSizeEvent,
 } from "@vis-three/core";
 import { OrthographicCamera, PerspectiveCamera } from "three";
+import { transPkgName } from "@vis-three/utils";
+import { name as pkgname } from "./package.json";
 
 export interface Vector3Config {
   x: number;
@@ -45,6 +47,8 @@ export interface ViewpointParameters {
 }
 
 export const SETVIEWPOINT = "setViewpoint";
+
+export const name = transPkgName(pkgname);
 
 export const ViewpointPlugin: Plugin<ViewpointEngine> = function (
   params: ViewpointParameters = {}
@@ -122,7 +126,7 @@ export const ViewpointPlugin: Plugin<ViewpointEngine> = function (
   let viewpointFun: (event: ViewpointEvent) => void;
 
   return {
-    name: "ViewpointPlugin",
+    name,
     install(engine) {
       engine.setViewpoint = function (viewpoint: VIEWPOINT): Engine {
         this.dispatchEvent({

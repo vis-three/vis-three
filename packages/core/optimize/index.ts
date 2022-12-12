@@ -6,4 +6,4 @@ export * from "./VisOrbitControls";
 export * from "./VisSelectionBox";
 export * from "./VisSelectionHelper";
 export * from "./VisStats";
-export * from "./VisTransformControls";
+export * from "../../plugins/TransformControlsPlugin/VisTransformControls";

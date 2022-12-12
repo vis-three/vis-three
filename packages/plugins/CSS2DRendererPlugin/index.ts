@@ -4,31 +4,31 @@ import {
   Plugin,
   SetDomEvent,
   SetSceneEvent,
-  SetSizeEvent
+  SetSizeEvent,
 } from "@vis-three/core";
-import { RenderEvent, RenderManagerEngine, RENDER_EVENT } from "@vis-three/render-manager-plugin";
 import {
   CSS2DObject,
   CSS2DRenderer,
 } from "three/examples/jsm/renderers/CSS2DRenderer";
 
+import { transPkgName } from "@vis-three/utils";
+import { name as pkgname } from "./package.json";
+
 export interface CSS2DRendererEngine extends Engine {
   css2DRenderer: CSS2DRenderer;
 }
 
-export interface CSS2DAndRenderEngine
-  extends CSS2DRendererEngine,
-    RenderManagerEngine {}
+export const name = transPkgName(pkgname);
 
 export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine> = function () {
   let setDomFun: (event: SetDomEvent) => void;
   let setSizeFun: (event: SetSizeEvent) => void;
   let setSceneFun: (event: SetSceneEvent) => void;
-  let renderFun: (event: RenderEvent) => void;
+
   let cacheRender: () => void;
 
   return {
-    name: "CSS2DRendererPlugin",
+    name,
     install(engine) {
       const css2DRenderer = new CSS2DRenderer();
 
@@ -89,25 +89,6 @@ export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine> = function () {
         ENGINE_EVENT.SETSCENE,
         setSceneFun
       );
-    },
-    installDeps: {
-      RendererManagerPlugin(engine: CSS2DAndRenderEngine) {
-        renderFun = (event: RenderEvent) => {
-          engine.css2DRenderer.render(engine.scene, engine.camera);
-        };
-        engine.renderManager.addEventListener<RenderEvent>(
-          RENDER_EVENT.RENDER,
-          renderFun
-        );
-      },
-    },
-    disposeDeps: {
-      RendererManagerPlugin(engine: CSS2DAndRenderEngine) {
-        engine.renderManager.removeEventListener(
-          RENDER_EVENT.RENDER,
-          renderFun
-        );
-      },
     },
   };
 };

@@ -13,3 +13,4 @@ export declare function syncObject<C extends object, T extends object>(config: C
 export declare const isObject: (object: any) => boolean;
 export declare const isArray: (object: any) => boolean;
 export declare const extendPath: (str1: string, str2: string) => string;
+export declare const transPkgName: (str: string) => string;

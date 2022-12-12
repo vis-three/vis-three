@@ -6,41 +6,22 @@ import {
   SetDomEvent,
   VisOrbitControls,
 } from "@vis-three/core";
-import {
-  ViewpointEvent,
-  SETVIEWPOINT,
-  ViewpointEngine,
-  VIEWPOINT,
-} from "@vis-three/viewpoint-plugin";
-import {
-  RenderEvent,
-  RenderManagerEngine,
-  RENDER_EVENT,
-} from "@vis-three/render-manager-plugin";
-import { Optional } from "@vis-three/utils";
-
+import { Optional, transPkgName } from "@vis-three/utils";
+import { name as pkgname } from "./package.json";
 export interface OrbitControlsEngine extends Engine {
   orbitControls: VisOrbitControls;
 }
 
-export interface OrbitRenderEngine
-  extends OrbitControlsEngine,
-    RenderManagerEngine {}
-
-export interface OrbitViewpointEngine
-  extends OrbitControlsEngine,
-    ViewpointEngine {}
+export const ORBIT_CONTROLS_PLUGIN = transPkgName(pkgname);
 
 export const OrbitControlsPlugin: Plugin<OrbitControlsEngine> = function () {
   let setDomFun: (event: SetDomEvent) => void;
   let setCameraFun: (event: SetCameraEvent) => void;
-  let renderFun: (event: RenderEvent) => void;
-  let viewpointFun: (event: ViewpointEvent) => void;
 
   let cacheRender: () => void;
 
   return {
-    name: "OrbitControlsPlugin",
+    name: ORBIT_CONTROLS_PLUGIN,
     install(engine) {
       const controls = new VisOrbitControls(engine.camera, engine.dom);
 
@@ -76,51 +57,6 @@ export const OrbitControlsPlugin: Plugin<OrbitControlsEngine> = function () {
       );
 
       engine.render = cacheRender;
-    },
-
-    installDeps: {
-      RenderManagerPlugin(engine: OrbitRenderEngine) {
-        renderFun = () => {
-          engine.orbitControls.update();
-        };
-        engine.renderManager.addEventListener(RENDER_EVENT.RENDER, renderFun);
-      },
-      ViewpointPlugin(engine: OrbitViewpointEngine) {
-        const disableRotate = () => {
-          engine.orbitControls.enableRotate = true;
-        };
-
-        const actionMap = {
-          [VIEWPOINT.DEFAULT]: disableRotate,
-          [VIEWPOINT.TOP]: disableRotate,
-          [VIEWPOINT.BOTTOM]: disableRotate,
-          [VIEWPOINT.RIGHT]: disableRotate,
-          [VIEWPOINT.LEFT]: disableRotate,
-          [VIEWPOINT.FRONT]: disableRotate,
-          [VIEWPOINT.BACK]: disableRotate,
-        };
-
-        viewpointFun = (event) => {
-          const viewpoint = event.viewpoint;
-
-          engine.orbitControls.target.set(0, 0, 0);
-          actionMap[viewpoint] && actionMap[viewpoint]();
-        };
-
-        engine.addEventListener<ViewpointEvent>(SETVIEWPOINT, viewpointFun);
-      },
-    },
-
-    disposeDeps: {
-      RenderManagerPlugin(engine: OrbitRenderEngine) {
-        engine.renderManager.removeEventListener(
-          RENDER_EVENT.RENDER,
-          renderFun
-        );
-      },
-      ViewpointPlugin(engine: OrbitViewpointEngine) {
-        engine.removeEventListener<ViewpointEvent>(SETVIEWPOINT, viewpointFun);
-      },
     },
   };
 };

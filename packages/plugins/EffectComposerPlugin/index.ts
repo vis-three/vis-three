@@ -3,7 +3,6 @@ import {
   ENGINE_EVENT,
   Plugin,
   SetCameraEvent,
-  SetDomEvent,
   SetSceneEvent,
   SetSizeEvent,
 } from "@vis-three/core";
@@ -16,12 +15,8 @@ import {
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
-import {
-  RenderEvent,
-  RenderManagerEngine,
-} from "@vis-three/render-manager-plugin";
-import { Optional } from "@vis-three/utils";
-
+import { Optional, transPkgName } from "@vis-three/utils";
+import { name as pkgname } from "./package.json";
 export interface EffectComposerParameters {
   WebGLMultisampleRenderTarget?: boolean;
   samples?: number;
@@ -33,9 +28,7 @@ export interface EffectComposerEngine extends WebGLRendererEngine {
   effectComposer: EffectComposer;
 }
 
-export interface ComposerRenderEngine
-  extends EffectComposerEngine,
-    RenderManagerEngine {}
+export const name = transPkgName(pkgname);
 
 export const EffectComposerPlugin: Plugin<EffectComposerEngine> = function (
   params: EffectComposerParameters
@@ -43,13 +36,11 @@ export const EffectComposerPlugin: Plugin<EffectComposerEngine> = function (
   let setCameraFun: (event: SetCameraEvent) => void;
   let setSizeFun: (event: SetSizeEvent) => void;
   let setSceneFun: (event: SetSceneEvent) => void;
-  let renderFun: (event: RenderEvent) => void;
   let cacheRender: () => void;
 
   return {
-    name: "EffectComposerPlugin",
+    name,
     deps: "WebGLRendererPlugin",
-    order: true,
     install(engine) {
       let composer: EffectComposer;
 
@@ -139,31 +130,6 @@ export const EffectComposerPlugin: Plugin<EffectComposerEngine> = function (
       engine.render = cacheRender;
 
       delete engine.effectComposer;
-    },
-    installDeps: {
-      RenderManagerPlugin(engine: ComposerRenderEngine) {
-        engine.renderManager.removeEventListener<RenderEvent>(
-          ENGINE_EVENT.SETSIZE,
-          cacheRender
-        );
-
-        renderFun = (event) => {
-          engine.effectComposer.render(event.delta);
-        };
-
-        engine.renderManager.addEventListener<RenderEvent>(
-          ENGINE_EVENT.SETSIZE,
-          renderFun
-        );
-      },
-    },
-    disposeDeps: {
-      RenderManagerPlugin(engine: ComposerRenderEngine) {
-        engine.renderManager.removeEventListener<RenderEvent>(
-          ENGINE_EVENT.SETSIZE,
-          renderFun
-        );
-      },
     },
   };
 };

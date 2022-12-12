@@ -2,4 +2,6 @@ node_modules
 .tgz
 packages/plugins/**/*.d.ts
 packages/plugins/**/*.js
+packages/strategy/**/*.d.ts
+packages/strategy/**/*.js
 coverage

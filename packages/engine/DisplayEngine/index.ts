@@ -1,26 +1,52 @@
 import { Camera, Scene, WebGLRenderer } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+import {
+  Screenshot,
+  WebGLRendererEngine,
+  WebGLRendererPlugin,
+} from "@vis-three/webgl-renderer-plugin";
 import { CSS2DRendererPlugin } from "@vis-three/css2d-renderer-plugin";
 import { CSS3DRendererPlugin } from "@vis-three/css3d-renderer-plugin";
-import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
-import { OrbitControlsPlugin } from "@vis-three/orbit-controls-plugin";
+import {
+  EffectComposerEngine,
+  EffectComposerPlugin,
+} from "@vis-three/effect-composer-plugin";
+import {
+  OrbitControlsEngine,
+  OrbitControlsPlugin,
+} from "@vis-three/orbit-controls-plugin";
 import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
 import {
   RenderManager,
+  RenderManagerEngine,
   RenderManagerPlugin,
 } from "@vis-three/render-manager-plugin";
 import {
   PointerManager,
+  PointerManagerEngine,
   PointerManagerPlugin,
 } from "@vis-three/pointer-manager-plugin";
 import {
   EventManager,
+  EventManagerEngine,
   EventManagerPlugin,
 } from "@vis-three/event-manager-plugin";
+import { CSS2DRenderStrategy } from "@vis-three/css2d-render-strategy";
+import { CSS3DRenderStrategy } from "@vis-three/css3d-render-strategy";
+import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
 
 import { Engine, VisOrbitControls } from "@vis-three/core";
-export class DisplayEngine extends Engine {
+export class DisplayEngine
+  extends Engine
+  implements
+    WebGLRendererEngine,
+    EffectComposerEngine,
+    OrbitControlsEngine,
+    RenderManagerEngine,
+    PointerManagerEngine,
+    EventManagerEngine
+{
   declare dom: HTMLElement;
   declare webGLRenderer: WebGLRenderer;
   declare currentCamera: Camera;
@@ -34,6 +60,8 @@ export class DisplayEngine extends Engine {
   declare play: () => this;
   declare stop: () => this;
   declare render: () => this;
+
+  declare getScreenshot: (params?: Screenshot | undefined) => Promise<string>;
 
   constructor() {
     super();
@@ -56,5 +84,10 @@ export class DisplayEngine extends Engine {
       )
       .install(OrbitControlsPlugin())
       .install(CameraAdaptivePlugin());
+
+    this.exec(CSS2DRenderStrategy())
+      .exec(CSS3DRenderStrategy())
+      .exec(EffectRenderStrategy())
+      .exec(OrbitRenderStrategy());
   }
 }

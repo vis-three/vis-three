@@ -1,5 +1,7 @@
 import { ENGINE_EVENT, } from "@vis-three/core";
 import { OrthographicCamera, PerspectiveCamera } from "three";
+import { transPkgName } from "@vis-three/utils";
+import { name as pkgname } from "./package.json";
 export var VIEWPOINT;
 (function (VIEWPOINT) {
     VIEWPOINT["DEFAULT"] = "default";
@@ -11,6 +13,7 @@ export var VIEWPOINT;
     VIEWPOINT["BACK"] = "back";
 })(VIEWPOINT || (VIEWPOINT = {}));
 export const SETVIEWPOINT = "setViewpoint";
+export const name = transPkgName(pkgname);
 export const ViewpointPlugin = function (params = {}) {
     !params.perspective && (params.perspective = {});
     !params.perspective.position &&
@@ -49,7 +52,7 @@ export const ViewpointPlugin = function (params = {}) {
     let setSizeFun;
     let viewpointFun;
     return {
-        name: "ViewpointPlugin",
+        name,
         install(engine) {
             engine.setViewpoint = function (viewpoint) {
                 this.dispatchEvent({

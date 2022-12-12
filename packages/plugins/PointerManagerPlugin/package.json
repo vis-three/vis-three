@@ -13,7 +13,7 @@
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.4.0",
+    "@vis-three/core": "workspace:^0.5.0",
     "three": "^0.141.0"
   },
   "devDependencies": {

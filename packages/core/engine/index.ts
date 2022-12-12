@@ -1,6 +1,7 @@
 import { Camera, PerspectiveCamera, Scene } from "three";
 import { BaseEvent, EventDispatcher } from "../eventDispatcher";
-import { Plugin, PluginOptions } from "../plugin";
+import { PluginOptions } from "../plugin";
+import { StrategyOptions } from "../strategy";
 
 export interface SetDomEvent extends BaseEvent {
   type: "setDom";
@@ -42,6 +43,7 @@ export enum ENGINE_EVENT {
 // 引擎槽
 export class Engine extends EventDispatcher {
   pluginTables = new Map<string, PluginOptions<Engine>>();
+  strategyTables = new Map<string, StrategyOptions<Engine>>();
 
   dom: HTMLElement = document.createElement("div");
   camera: Camera = new PerspectiveCamera();
@@ -68,16 +70,12 @@ export class Engine extends EventDispatcher {
       return this as unknown as E;
     }
 
-    const validateDep = (name: string, order?: boolean) => {
+    const validateDep = (name: string) => {
       if (!this.pluginTables.has(name)) {
-        if (order) {
-          console.error(
-            `${plugin.name} must install this plugin before: ${name}`
-          );
-          return false;
-        }
-        console.warn(`${plugin.name} recommends using this plugin: ${name}`);
-        return true;
+        console.error(
+          `${plugin.name} must install this plugin before: ${name}`
+        );
+        return false;
       }
       return true;
     };
@@ -86,33 +84,18 @@ export class Engine extends EventDispatcher {
     if (plugin.deps) {
       if (Array.isArray(plugin.deps)) {
         for (const name of plugin.deps) {
-          if (!validateDep(name, plugin.order)) {
+          if (!validateDep(name)) {
             this as unknown as E;
           }
         }
       } else {
-        if (!validateDep(plugin.deps, plugin.order)) {
+        if (!validateDep(plugin.deps)) {
           this as unknown as E;
         }
       }
     }
 
-    const plugins = this.pluginTables.values();
-    const pluginNames = this.pluginTables.keys();
-
     plugin.install(this as unknown as E);
-
-    for (const plu of plugins) {
-      plu.installDeps &&
-        plu.installDeps[plugin.name] &&
-        plu.installDeps[plugin.name](this);
-    }
-
-    for (const name of pluginNames) {
-      plugin.installDeps &&
-        plugin.installDeps[name] &&
-        plugin.installDeps[name](this);
-    }
 
     this.pluginTables.set(plugin.name, plugin as PluginOptions<Engine>);
     return this as unknown as E;
@@ -132,17 +115,43 @@ export class Engine extends EventDispatcher {
 
     plugin.dispose(this);
 
-    if (plugin.disposeDeps) {
-      Object.values(plugin.disposeDeps).forEach((fun) => {
-        fun(this);
-      });
-    }
-
-    for (const plu of this.pluginTables.values()) {
-      plu.disposeDeps && plu.disposeDeps[name] && plu.disposeDeps[name](this);
-    }
-
     this.pluginTables.delete(name);
+    return this;
+  }
+
+  /**
+   * 执行策略
+   * @returns
+   */
+  exec<E extends Engine>(strategy: StrategyOptions<E>): E {
+    const tables = this.strategyTables;
+    if (tables.has(strategy.name)) {
+      console.warn(`This strategy already exists`, strategy.name);
+      return this as unknown as E;
+    }
+
+    strategy.exec(this as unknown as E);
+
+    tables.set(strategy.name, strategy as StrategyOptions<Engine>);
+
+    return this as unknown as E;
+  }
+
+  /**
+   * 回滚策略
+   * @returns
+   */
+  rollback(name: string): this {
+    const tables = this.strategyTables;
+    if (!tables.has(name)) {
+      return this;
+    }
+
+    const strategy = tables.get(name)!;
+
+    strategy.rollback(this);
+
+    tables.delete(name);
     return this;
   }
 

@@ -6,8 +6,12 @@ import {
   SetCameraEvent,
   SetSceneEvent,
 } from "@vis-three/core";
+import { Optional, transPkgName } from "@vis-three/utils";
+import { name as pkgname } from "./package.json";
 
 export * from "./EventManager";
+
+export const EVENT_MANAGER_PLUGIN = transPkgName(pkgname);
 export interface EventManagerEngine extends PointerManagerEngine {
   eventManager: EventManager;
 }
@@ -19,7 +23,7 @@ export const EventManagerPlugin: Plugin<EventManagerEngine> = function (
   let setSceneFun: ((event: SetSceneEvent) => void) | undefined;
 
   return {
-    name: "EventManagerPlugin",
+    name: EVENT_MANAGER_PLUGIN,
     deps: "PointerManagerPlugin",
     install(engine) {
       const eventManager = new EventManager(

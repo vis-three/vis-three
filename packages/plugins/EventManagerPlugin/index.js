@@ -1,11 +1,14 @@
 import { EventManager } from "./EventManager";
 import { ENGINE_EVENT, } from "@vis-three/core";
+import { transPkgName } from "@vis-three/utils";
+import { name as pkgname } from "./package.json";
 export * from "./EventManager";
+export const EVENT_MANAGER_PLUGIN = transPkgName(pkgname);
 export const EventManagerPlugin = function (params) {
     let setCameraFun;
     let setSceneFun;
     return {
-        name: "EventManagerPlugin",
+        name: EVENT_MANAGER_PLUGIN,
         deps: "PointerManagerPlugin",
         install(engine) {
             const eventManager = new EventManager(Object.assign({

@@ -1,8 +1,11 @@
 import { definePlugin, Engine } from "@vis-three/core";
 import { RenderManager } from "./RenderManager";
+import { transPkgName } from "@vis-three/utils";
+import { name as pkgname } from "./package.json";
 
 export * from "./RenderManager";
 
+export const name = transPkgName(pkgname);
 export interface RenderManagerEngine extends Engine {
   renderManager: RenderManager;
   render: () => void;
@@ -11,7 +14,7 @@ export interface RenderManagerEngine extends Engine {
 }
 
 export const RenderManagerPlugin = definePlugin<RenderManagerEngine>({
-  name: "RenderManagerPlugin",
+  name,
   install(engine) {
     engine.renderManager = new RenderManager();
 
