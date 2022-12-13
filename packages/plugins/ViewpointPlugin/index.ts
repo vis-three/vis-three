@@ -48,7 +48,7 @@ export interface ViewpointParameters {
 
 export const SETVIEWPOINT = "setViewpoint";
 
-export const name = transPkgName(pkgname);
+export const VIEWPOINT_PLUGIN = transPkgName(pkgname);
 
 export const ViewpointPlugin: Plugin<ViewpointEngine> = function (
   params: ViewpointParameters = {}
@@ -126,7 +126,7 @@ export const ViewpointPlugin: Plugin<ViewpointEngine> = function (
   let viewpointFun: (event: ViewpointEvent) => void;
 
   return {
-    name,
+    name: VIEWPOINT_PLUGIN,
     install(engine) {
       engine.setViewpoint = function (viewpoint: VIEWPOINT): Engine {
         this.dispatchEvent({

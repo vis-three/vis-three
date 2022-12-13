@@ -3,9 +3,9 @@ import { RenderManager } from "./RenderManager";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 export * from "./RenderManager";
-export const name = transPkgName(pkgname);
+export const RENDER_MANAGER_PLUGIN = transPkgName(pkgname);
 export const RenderManagerPlugin = definePlugin({
-    name,
+    name: RENDER_MANAGER_PLUGIN,
     install(engine) {
         engine.renderManager = new RenderManager();
         engine.render = function () {

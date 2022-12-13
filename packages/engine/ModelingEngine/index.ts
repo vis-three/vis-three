@@ -1,5 +1,12 @@
-import { Camera, Object3D, Scene, WebGLRenderer } from "three";
-import { TransformControls } from "three/examples/jsm/controls/TransformControls";
+import {
+  AxesHelper,
+  Camera,
+  Event,
+  GridHelper,
+  Object3D,
+  Scene,
+  WebGLRenderer,
+} from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { Engine, VisOrbitControls } from "@vis-three/core";
@@ -32,6 +39,37 @@ import {
   OrbitControlsPlugin,
 } from "@vis-three/orbit-controls-plugin";
 import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+import { SelectionEngine, SelectionPlugin } from "@vis-three/selection-plugin";
+import {
+  AxesHelperEngine,
+  AxesHelperPlugin,
+} from "@vis-three/axes-helper-plugin";
+import {
+  GridHelperEngine,
+  GridHelperPlugin,
+} from "@vis-three/grid-helper-plugin";
+import {
+  VIEWPOINT,
+  ViewpointEngine,
+  ViewpointPlugin,
+} from "@vis-three/viewpoint-plugin";
+import {
+  TransformControlsEngine,
+  TransformControlsPlugin,
+  VisTransformControls,
+} from "@vis-three/transform-controls-plugin";
+import { StatsEngine, StatsPlugin } from "@vis-three/stats-plugin";
+import {
+  KeyboardManager,
+  KeyboardManagerEngine,
+  KeyboardManagerPlugin,
+} from "@vis-three/keyboard-manager-plugin";
+import {
+  ObjectHelperEngine,
+  ObjectHelperPlugin,
+  ObjectHelperManager,
+} from "@vis-three/object-helper-plugin";
+
 export class ModelingEngine
   extends Engine
   implements
@@ -40,36 +78,47 @@ export class ModelingEngine
     OrbitControlsEngine,
     RenderManagerEngine,
     PointerManagerEngine,
-    EventManagerEngine
+    EventManagerEngine,
+    KeyboardManagerEngine,
+    StatsEngine,
+    TransformControlsEngine,
+    ViewpointEngine,
+    GridHelperEngine,
+    AxesHelperEngine,
+    SelectionEngine,
+    ObjectHelperEngine
 {
   declare dom: HTMLElement;
   declare webGLRenderer: WebGLRenderer;
   declare camera: Camera;
   declare scene: Scene;
   declare orbitControls: VisOrbitControls;
-  declare transformControls: TransformControls;
+  declare transformControls: VisTransformControls;
   declare effectComposer: EffectComposer;
   declare renderManager: RenderManager;
   declare pointerManager: PointerManager;
   declare eventManager: EventManager;
   declare keyboardManager: KeyboardManager;
   declare stats: Stats;
-  declare displayMode: DISPLAYMODE;
   declare selectionBox: Set<Object3D>;
+  declare axesHelper: AxesHelper;
+  declare gridHelper: GridHelper;
+  declare transing: boolean;
+  declare objectHelperManager: ObjectHelperManager;
 
   declare setStats: (show: boolean) => this;
   declare setTransformControls: (show: boolean) => this;
   declare setViewpoint: (viewpoint: VIEWPOINT) => this;
-  declare setDisplayMode: (mode: DISPLAYMODE) => this;
   declare setAxesHelper: (params: { show: boolean }) => this;
-  declare setGridHelper: (params: { show: boolean }) => this;
-  declare setObjectHelper: (params: { show: boolean }) => this;
+  declare setGridHelper: (show: boolean) => this;
+  declare setObjectHelper: (show: boolean) => this;
 
   declare play: () => this;
   declare stop: () => this;
   declare render: () => this;
 
-  declaregetScreenshot: (params?: Screenshot | undefined) => Promise<string>;
+  declare getScreenshot: (params?: Screenshot | undefined) => Promise<string>;
+  declare setSelectionBox: (objects: Object3D<Event>[]) => this;
 
   constructor() {
     super();
@@ -80,7 +129,6 @@ export class ModelingEngine
           alpha: true,
         })
       )
-
       .install(PointerManagerPlugin())
       .install(EventManagerPlugin())
       .install(
@@ -90,15 +138,13 @@ export class ModelingEngine
       )
       .install(OrbitControlsPlugin())
       .install(CameraAdaptivePlugin())
-      .install(ENGINEPLUGIN.SELECTION)
-      .install(ENGINEPLUGIN.AXESHELPER)
-      .install(ENGINEPLUGIN.GRIDHELPER)
-      .install(ENGINEPLUGIN.OBJECTHELPER)
-      .install(ENGINEPLUGIN.VIEWPOINT)
-      .install(ENGINEPLUGIN.DISPLAYMODE)
-      .install(ENGINEPLUGIN.STATS)
-      .install(ENGINEPLUGIN.KEYBOARDMANAGER)
-      .install(ENGINEPLUGIN.TRANSFORMCONTROLS)
-      .complete();
+      .install(SelectionPlugin())
+      .install(AxesHelperPlugin())
+      .install(GridHelperPlugin())
+      .install(ViewpointPlugin())
+      .install(TransformControlsPlugin())
+      .install(StatsPlugin())
+      .install(KeyboardManagerPlugin())
+      .install(ObjectHelperPlugin());
   }
 }

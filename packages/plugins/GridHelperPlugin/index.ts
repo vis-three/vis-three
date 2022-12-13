@@ -1,7 +1,7 @@
+import { Engine, ENGINE_EVENT, Plugin, SetSceneEvent } from "@vis-three/core";
 import { GridHelper, Material } from "three";
-import { Engine, ENGINEPLUGIN, SetSceneEvent } from "../../engine/Engine";
-import { VIEWPOINT, ViewpointEvent } from "../ViewpointPlugin";
-import { Plugin } from "../../core/src/core/Plugin";
+import { Optional, transPkgName } from "@vis-three/utils";
+import { name as pkgname } from "./package.json";
 
 export interface GridHelperParameters {
   range?: number;
@@ -11,72 +11,70 @@ export interface GridHelperParameters {
   opacity?: number;
 }
 
-export const GridHelperPlugin: Plugin<GridHelperParameters> = function (
-  this: Engine,
+export interface GridHelperEngine extends Engine {
+  gridHelper: GridHelper;
+  setGridHelper: (show: boolean) => GridHelperEngine;
+}
+
+export const GRID_HELPER_PLUGIN = transPkgName(pkgname);
+
+export const GridHelperPlugin: Plugin<GridHelperEngine> = function (
   params: GridHelperParameters = {}
-): boolean {
-  if (!this.scene) {
-    console.error("must install some scene before BasicViewpoint plugin.");
-    return false;
-  }
+) {
+  let setSceneFun: (event: SetSceneEvent) => void;
 
-  const gridHelper = new GridHelper(
-    params.range || 500,
-    params.spacing || 50,
-    params.axesColor || "rgb(130, 130, 130)",
-    params.cellColor || "rgb(70, 70, 70)"
-  );
+  return {
+    name: GRID_HELPER_PLUGIN,
+    install(engine) {
+      const gridHelper = new GridHelper(
+        params.range || 500,
+        params.spacing || 50,
+        params.axesColor || "rgb(130, 130, 130)",
+        params.cellColor || "rgb(70, 70, 70)"
+      );
 
-  if (params.opacity !== 1) {
-    const material = gridHelper.material as Material;
-    material.transparent = true;
-    material.opacity = params.opacity || 0.5;
-    material.needsUpdate = true;
-  }
+      if (params.opacity !== 1) {
+        const material = gridHelper.material as Material;
+        material.transparent = true;
+        material.opacity = params.opacity || 0.5;
+        material.needsUpdate = true;
+      }
 
-  gridHelper.matrixAutoUpdate = false;
-  gridHelper.raycast = () => {};
+      gridHelper.matrixAutoUpdate = false;
+      gridHelper.raycast = () => {};
 
-  this.scene.add(gridHelper);
+      engine.scene.add(gridHelper);
 
-  this.setGridHelper = function (params: { show: boolean }): Engine {
-    if (params.show) {
-      this.scene!.add(gridHelper);
-    } else {
-      this.scene!.remove(gridHelper);
-    }
-    return this;
-  };
-
-  this.addEventListener<SetSceneEvent>("setScene", (event) => {
-    event.scene.add(gridHelper);
-  });
-
-  this.completeSet.add(() => {
-    if (this.setViewpoint) {
-      this.addEventListener<ViewpointEvent>("setViewpoint", (event) => {
-        const viewpoint = event.viewpoint;
-
-        if (viewpoint === VIEWPOINT.DEFAULT) {
-          gridHelper.rotation.set(0, 0, 0);
-        } else if (viewpoint === VIEWPOINT.TOP) {
-          gridHelper.rotation.set(0, 0, 0);
-        } else if (viewpoint === VIEWPOINT.BOTTOM) {
-          gridHelper.rotation.set(0, 0, 0);
-        } else if (viewpoint === VIEWPOINT.RIGHT) {
-          gridHelper.rotation.set(0, 0, Math.PI / 2);
-        } else if (viewpoint === VIEWPOINT.LEFT) {
-          gridHelper.rotation.set(0, 0, Math.PI / 2);
-        } else if (viewpoint === VIEWPOINT.FRONT) {
-          gridHelper.rotation.set(Math.PI / 2, 0, 0);
-        } else if (viewpoint === VIEWPOINT.BACK) {
-          gridHelper.rotation.set(Math.PI / 2, 0, 0);
+      engine.setGridHelper = function (show: boolean) {
+        if (show) {
+          this.scene.add(gridHelper);
+        } else {
+          this.scene.remove(gridHelper);
         }
+        return this;
+      };
 
-        gridHelper.updateMatrix();
-        gridHelper.updateMatrixWorld();
-      });
-    }
-  });
-  return true;
+      setSceneFun = (event) => {
+        event.scene.add(gridHelper);
+      };
+
+      engine.addEventListener<SetSceneEvent>(
+        ENGINE_EVENT.SETSCENE,
+        setSceneFun
+      );
+    },
+    dispose(
+      engine: Optional<GridHelperEngine, "gridHelper" | "setGridHelper">
+    ) {
+      engine.removeEventListener<SetSceneEvent>(
+        ENGINE_EVENT.SETSCENE,
+        setSceneFun
+      );
+
+      (<Material>engine.gridHelper!.material).dispose();
+      engine.gridHelper!.geometry.dispose();
+      delete engine.gridHelper;
+      delete engine.setGridHelper;
+    },
+  };
 };

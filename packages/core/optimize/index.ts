@@ -5,5 +5,3 @@ export * from "./VisCSS3DSprite";
 export * from "./VisOrbitControls";
 export * from "./VisSelectionBox";
 export * from "./VisSelectionHelper";
-export * from "./VisStats";
-export * from "../../plugins/TransformControlsPlugin/VisTransformControls";

@@ -8,7 +8,7 @@ import {
 import {
   RenderEvent,
   RenderManagerEngine,
-  name as RENDER_MANAGER_PLUGIN,
+  RENDER_MANAGER_PLUGIN,
   RENDER_EVENT,
 } from "@vis-three/render-manager-plugin";
 

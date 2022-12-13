@@ -7,7 +7,7 @@ import {
   SpriteMaterial,
 } from "three";
 import { VisHelper } from "../common";
-import { CanvasGenerator } from "../../../convenient/CanvasGenerator";
+import { CanvasGenerator } from "@vis-three/convenient";
 
 export class GroupHelper extends Sprite implements VisHelper {
   static colorTexture = new CanvasTexture(

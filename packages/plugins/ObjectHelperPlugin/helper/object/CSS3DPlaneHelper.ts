@@ -1,3 +1,4 @@
+import { CSS3DPlane } from "@vis-three/core";
 import {
   EdgesGeometry,
   Intersection,
@@ -5,7 +6,6 @@ import {
   PlaneBufferGeometry,
   Raycaster,
 } from "three";
-import { CSS3DPlane } from "../../object/CSS3DPlane";
 import { getHelperLineMaterial, VisHelper } from "../common";
 
 export class CSS3DPlaneHelper extends LineSegments implements VisHelper {

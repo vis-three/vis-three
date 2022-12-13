@@ -5,7 +5,7 @@ import { name as pkgname } from "./package.json";
 
 export * from "./RenderManager";
 
-export const name = transPkgName(pkgname);
+export const RENDER_MANAGER_PLUGIN = transPkgName(pkgname);
 export interface RenderManagerEngine extends Engine {
   renderManager: RenderManager;
   render: () => void;
@@ -14,7 +14,7 @@ export interface RenderManagerEngine extends Engine {
 }
 
 export const RenderManagerPlugin = definePlugin<RenderManagerEngine>({
-  name,
+  name: RENDER_MANAGER_PLUGIN,
   install(engine) {
     engine.renderManager = new RenderManager();
 

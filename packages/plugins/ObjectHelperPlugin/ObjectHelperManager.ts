@@ -1,20 +1,20 @@
-import { CONFIGTYPE } from "@vis-three/middleware";
-import { Material, Mesh, Object3D } from "three";
-import { EventDispatcher } from "../eventDispatcher";
-import { CameraHelper } from "../extends/helper/camera/CameraHelper";
-import { DirectionalLightHelper } from "../extends/helper/light/DirectionalLightHelper";
-import { PointLightHelper } from "../extends/helper/light/PointLightHelper";
-import { RectAreaLightHelper } from "../extends/helper/light/RectAreaLightHelper";
-import { SpotLightHelper } from "../extends/helper/light/SpotLightHelper";
-import { CSS2DPlaneHelper } from "../extends/helper/object/CSS2DPlaneHelper";
-import { CSS3DObjectHelper } from "../extends/helper/object/CSS3DObjectHelper";
-import { CSS3DPlaneHelper } from "../extends/helper/object/CSS3DPlaneHelper";
-import { CSS3DSpriteHelper } from "../extends/helper/object/CSS3DSpriteHelper";
-import { GroupHelper } from "../extends/helper/object/GroupHelper";
-import { LineHelper } from "../extends/helper/object/LineHelper";
-import { MeshHelper } from "../extends/helper/object/MeshHelper";
-import { PointsHelper } from "../extends/helper/object/PointsHelper";
-import { SpriteHelper } from "../extends/helper/object/SpriteHelper";
+import { EventDispatcher } from "@vis-three/core";
+import { Material, Mesh, Object3D, Sprite } from "three";
+import {
+  CameraHelper,
+  CSS2DPlaneHelper,
+  CSS3DPlaneHelper,
+  CSS3DSpriteHelper,
+  DirectionalLightHelper,
+  GroupHelper,
+  LineHelper,
+  MeshHelper,
+  PointLightHelper,
+  PointsHelper,
+  RectAreaLightHelper,
+  SpotLightHelper,
+  SpriteHelper,
+} from "./helper";
 
 export interface ObjectHelperManagerParameters {
   helperGenerator?: { [key: string]: typeof Object3D };
@@ -24,21 +24,20 @@ export interface ObjectHelperManagerParameters {
 
 export class ObjectHelperManager extends EventDispatcher {
   private helperGenerator = {
-    [CONFIGTYPE.POINTLIGHT]: PointLightHelper,
-    [CONFIGTYPE.SPOTLIGHT]: SpotLightHelper,
-    [CONFIGTYPE.DIRECTIONALLIGHT]: DirectionalLightHelper,
-    [CONFIGTYPE.RECTAREALIGHT]: RectAreaLightHelper,
-    [CONFIGTYPE.PERSPECTIVECAMERA]: CameraHelper,
-    [CONFIGTYPE.ORTHOGRAPHICCAMERA]: CameraHelper,
-    [CONFIGTYPE.MESH]: MeshHelper,
-    [CONFIGTYPE.GROUP]: GroupHelper,
-    [CONFIGTYPE.SPRITE]: SpriteHelper,
-    [CONFIGTYPE.POINTS]: PointsHelper,
-    [CONFIGTYPE.LINE]: LineHelper,
-    [CONFIGTYPE.CSS3DOBJECT]: CSS3DObjectHelper,
-    [CONFIGTYPE.CSS3DPLANE]: CSS3DPlaneHelper,
-    [CONFIGTYPE.CSS3DSPRITE]: CSS3DSpriteHelper,
-    [CONFIGTYPE.CSS2DPLANE]: CSS2DPlaneHelper,
+    PointLight: PointLightHelper,
+    SpotLight: SpotLightHelper,
+    DirectionalLight: DirectionalLightHelper,
+    RectAreaLight: RectAreaLightHelper,
+    PerspectiveCamera: CameraHelper,
+    OrthographicCamera: CameraHelper,
+    Mesh: MeshHelper,
+    Group: GroupHelper,
+    Sprite: SpriteHelper,
+    Points: PointsHelper,
+    Line: LineHelper,
+    CSS3DPlane: CSS3DPlaneHelper,
+    CSS3DSprite: CSS3DSpriteHelper,
+    CSS2DPlane: CSS2DPlaneHelper,
   };
 
   private helperFilter = {
@@ -154,5 +153,13 @@ export class ObjectHelperManager extends EventDispatcher {
     this.objectHelperMap.delete(object);
 
     return helper;
+  }
+
+  dispose() {
+    for (const object of this.objectHelperMap.keys()) {
+      this.disposeObjectHelper(object);
+    }
+
+    this.objectHelperMap.clear();
   }
 }

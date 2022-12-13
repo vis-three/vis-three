@@ -8,7 +8,7 @@ import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLigh
 
 import { LightShadow } from "three/src/lights/LightShadow";
 
-import { version } from "../package.json";
+import { version } from "../../plugins/StatsPlugin/package.json";
 declare global {
   interface Window {
     __THREE__: string;

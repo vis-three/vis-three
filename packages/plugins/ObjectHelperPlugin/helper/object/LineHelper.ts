@@ -1,3 +1,4 @@
+import { CanvasGenerator } from "@vis-three/convenient";
 import {
   CanvasTexture,
   Event,
@@ -9,7 +10,6 @@ import {
   Points,
   PointsMaterial,
 } from "three";
-import { CanvasGenerator } from "../../../convenient/CanvasGenerator";
 import { VisHelper } from "../common";
 
 export class LineHelper extends Points implements VisHelper {

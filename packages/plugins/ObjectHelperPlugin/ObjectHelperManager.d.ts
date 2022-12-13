@@ -1,5 +1,5 @@
+import { EventDispatcher } from "@vis-three/core";
 import { Object3D } from "three";
-import { EventDispatcher } from "../../core/eventDispatcher";
 export interface ObjectHelperManagerParameters {
     helperGenerator?: {
         [key: string]: typeof Object3D;
@@ -33,4 +33,5 @@ export declare class ObjectHelperManager extends EventDispatcher {
      * @return {*} three object or null
      */
     disposeObjectHelper(object: Object3D): Object3D | null;
+    dispose(): void;
 }

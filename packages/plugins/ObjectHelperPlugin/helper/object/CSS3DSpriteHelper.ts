@@ -1,3 +1,4 @@
+import { CSS3DSprite, VisCSS3DSprite } from "@vis-three/core";
 import {
   Color,
   EdgesGeometry,
@@ -7,8 +8,6 @@ import {
   Raycaster,
   ShaderMaterial,
 } from "three";
-import { VisCSS3DSprite } from "../../../optimize/VisCSS3DSprite";
-import { CSS3DSprite } from "../../object/CSS3DSprite";
 import { getHelperLineMaterial, VisHelper } from "../common";
 
 const vertex = `

@@ -1,43 +1,39 @@
-import { Engine } from "../../engine/Engine";
-import { Plugin } from "../../core/src/core/Plugin";
-import { VisStats, VisStatsParameters } from "../optimize/VisStats";
+import { Engine, Plugin } from "@vis-three/core";
+import { VisStats, VisStatsParameters } from "./VisStats";
+import { Optional, transPkgName } from "@vis-three/utils";
+import { name as pkgname } from "./package.json";
 
-export const StatsPlugin: Plugin<VisStatsParameters> = function (
-  this: Engine,
-  params: VisStatsParameters
-): boolean {
-  if (this.stats) {
-    console.warn("this has installed stats plugin.");
-    return false;
-  }
+export interface StatsEngine extends Engine {
+  stats: VisStats;
+  setStats: (show: boolean) => StatsEngine;
+}
 
-  if (!this.renderManager) {
-    console.warn(
-      "this must install renderManager before install stats plugin."
-    );
-    return false;
-  }
+export const STATS_PLUGIN = transPkgName(pkgname);
 
-  const stats = new VisStats(params);
+export const StatsPlugin: Plugin<StatsEngine> = function (
+  params?: VisStatsParameters
+) {
+  return {
+    name: STATS_PLUGIN,
+    install(engine) {
+      const stats = new VisStats(params);
 
-  this.stats = stats;
+      engine.stats = stats;
 
-  const statsUpdateFun = () => {
-    this.stats!.update();
+      engine.setStats = function (show: boolean) {
+        if (show) {
+          engine.dom.appendChild(stats.domElement);
+        } else {
+          try {
+            this.dom.removeChild(stats.domElement);
+          } catch (error) {}
+        }
+        return this;
+      };
+    },
+    dispose(engine: Optional<StatsEngine, "stats" | "setStats">) {
+      delete engine.stats;
+      delete engine.setStats;
+    },
   };
-
-  this.setStats = function (show: boolean): Engine {
-    if (show) {
-      this.dom!.appendChild(this.stats!.domElement);
-      this.renderManager!.addEventListener("render", statsUpdateFun);
-    } else {
-      try {
-        this.dom!.removeChild(this.stats!.domElement);
-        this.renderManager!.removeEventListener("render", statsUpdateFun);
-      } catch (error) {}
-    }
-    return this;
-  };
-
-  return true;
 };

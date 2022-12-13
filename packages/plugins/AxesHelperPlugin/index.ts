@@ -14,7 +14,7 @@ export interface AxesHelperEngine extends Engine {
   setAxesHelper: (params: AxesHelperOptions) => AxesHelperEngine;
 }
 
-const AxesHelperPlugin: Plugin<AxesHelperEngine> = function (
+export const AxesHelperPlugin: Plugin<AxesHelperEngine> = function (
   params: AxesHelperParameters
 ) {
   let setSceneFun: (event: SetSceneEvent) => void;
@@ -62,5 +62,3 @@ const AxesHelperPlugin: Plugin<AxesHelperEngine> = function (
     },
   };
 };
-
-export default AxesHelperPlugin;

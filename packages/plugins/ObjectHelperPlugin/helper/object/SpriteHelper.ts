@@ -12,7 +12,6 @@ import {
   Vector2,
   Vector3,
 } from "three";
-import { CSS2DPlane } from "../../object/CSS2DPlane";
 import { getHelperLineMaterial, VisHelper } from "../common";
 
 const vertex = `

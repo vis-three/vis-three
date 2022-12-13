@@ -4,16 +4,14 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { OrthographicCamera, AmbientLight, RectAreaLight, HemisphereLight, PerspectiveCamera, Scene, Texture, RGBFormat, LinearFilter, PlaneBufferGeometry, Box3, Vector3, Quaternion, Matrix4, MOUSE, TOUCH, Spherical, Vector2, Object3D, Color, MeshBasicMaterial, LineBasicMaterial, PointsMaterial, SpriteMaterial, WebGLRenderTarget, UniformsUtils, ShaderMaterial, Mesh, Line, Points, Sprite, AdditiveBlending, BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, TubeGeometry, Loader, Cache } from "three";
+import { OrthographicCamera, AmbientLight, RectAreaLight, HemisphereLight, PerspectiveCamera, Scene, Texture, RGBFormat, LinearFilter, PlaneBufferGeometry, Box3, Vector3, Quaternion, Matrix4, MOUSE, TOUCH, Spherical, Vector2, Color, MeshBasicMaterial, LineBasicMaterial, PointsMaterial, SpriteMaterial, WebGLRenderTarget, UniformsUtils, ShaderMaterial, Mesh, Line, Points, Sprite, AdditiveBlending, BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, TubeGeometry, Loader, Cache } from "three";
 import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
 import { LightShadow } from "three/src/lights/LightShadow";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { CSS3DObject, CSS3DSprite as CSS3DSprite$1 } from "three/examples/jsm/renderers/CSS3DRenderer";
-import Stats from "three/examples/jsm/libs/stats.module";
-import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { Pass, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass";
 import { LuminosityHighPassShader } from "three/examples/jsm/shaders/LuminosityHighPassShader";
-const version = "0.5.0";
+const version = "0.4.0";
 if (!window.__THREE__) {
   console.error(
     `vis-three dependent on three.js module, pleace run 'npm i three' first.`
@@ -1221,172 +1219,6 @@ class VisSelectionHelper {
     document.body.removeChild(this.element);
   }
 }
-class VisStats {
-  constructor(parameters) {
-    __publicField(this, "REVISION");
-    __publicField(this, "dom");
-    __publicField(this, "addPanel");
-    __publicField(this, "showPanel");
-    __publicField(this, "begin");
-    __publicField(this, "end");
-    __publicField(this, "update");
-    __publicField(this, "domElement");
-    __publicField(this, "setMode");
-    const stats = Stats();
-    this.REVISION = stats.REVISION;
-    this.dom = stats.dom;
-    this.domElement = stats.domElement;
-    this.begin = stats.begin.bind(stats);
-    this.end = stats.end.bind(stats);
-    this.update = stats.update.bind(stats);
-    this.addPanel = stats.addPanel.bind(stats);
-    this.showPanel = stats.showPanel.bind(stats);
-    this.setMode = stats.setMode.bind(stats);
-    const dom = this.domElement;
-    dom.style.position = "absolute";
-    dom.style.top = "0";
-    dom.style.left = "35px";
-    if (parameters) {
-      dom.style.top = `${parameters.top}px`;
-      dom.style.left = `${parameters.left}px`;
-      dom.style.right = `${parameters.right}px`;
-      dom.style.bottom = `${parameters.bottom}px`;
-    }
-  }
-}
-var TRANSFORM_EVENT;
-(function(TRANSFORM_EVENT2) {
-  TRANSFORM_EVENT2["CHANGED"] = "changed";
-  TRANSFORM_EVENT2["MOUSE_DOWN"] = "mouseDown";
-  TRANSFORM_EVENT2["CHANGEING"] = "changing";
-  TRANSFORM_EVENT2["MOUSE_UP"] = "mouseUp";
-})(TRANSFORM_EVENT || (TRANSFORM_EVENT = {}));
-class VisTransformControls extends TransformControls {
-  constructor(camera, dom) {
-    !camera && (camera = new PerspectiveCamera());
-    !dom && (dom = document.body);
-    super(camera, dom);
-    __publicField(this, "target");
-    __publicField(this, "transObjectSet");
-    this.domElement.removeEventListener("pointerdown", this._onPointerDown);
-    this._onPointerDown = (event) => {
-      var _a;
-      if (!this.enabled || !((_a = this.object) == null ? void 0 : _a.parent))
-        return;
-      this.domElement.addEventListener("pointermove", this._onPointerMove);
-      this.pointerHover(this._getPointer(event));
-      this.pointerDown(this._getPointer(event));
-    };
-    this.domElement.addEventListener("pointerdown", this._onPointerDown);
-    this.target = new Object3D();
-    this.transObjectSet = /* @__PURE__ */ new Set();
-    let mode = "";
-    const target = this.target;
-    const transObjectSet = this.transObjectSet;
-    const cachaTargetTrans = {
-      x: 0,
-      y: 0,
-      z: 0
-    };
-    const objectMatrixAutoMap = /* @__PURE__ */ new WeakMap();
-    this.addEventListener(TRANSFORM_EVENT.MOUSE_DOWN, (event) => {
-      mode = event.target.mode;
-      mode === "translate" && (mode = "position");
-      mode === "rotate" && (mode = "rotation");
-      cachaTargetTrans.x = target[mode].x;
-      cachaTargetTrans.y = target[mode].y;
-      cachaTargetTrans.z = target[mode].z;
-      transObjectSet.forEach((object) => {
-        objectMatrixAutoMap.set(object, object.matrixAutoUpdate);
-        object.matrixAutoUpdate = false;
-      });
-    });
-    this.addEventListener(TRANSFORM_EVENT.CHANGEING, (event) => {
-      const offsetX = target[mode].x - cachaTargetTrans.x;
-      const offsetY = target[mode].y - cachaTargetTrans.y;
-      const offsetZ = target[mode].z - cachaTargetTrans.z;
-      cachaTargetTrans.x = target[mode].x;
-      cachaTargetTrans.y = target[mode].y;
-      cachaTargetTrans.z = target[mode].z;
-      transObjectSet.forEach((elem) => {
-        elem[mode].x += offsetX;
-        elem[mode].y += offsetY;
-        elem[mode].z += offsetZ;
-        elem.updateMatrix();
-        elem.updateMatrixWorld();
-      });
-      this.dispatchEvent({
-        type: TRANSFORM_EVENT.CHANGED,
-        transObjectSet,
-        mode,
-        target
-      });
-    });
-    this.addEventListener(TRANSFORM_EVENT.MOUSE_UP, (event) => {
-      transObjectSet.forEach((object) => {
-        object.matrixAutoUpdate = objectMatrixAutoMap.get(object);
-        objectMatrixAutoMap.delete(object);
-      });
-    });
-  }
-  setDom(dom) {
-    this.domElement.removeEventListener("pointerdown", this._onPointerDown);
-    this.domElement.removeEventListener("pointermove", this._onPointerHover);
-    this.domElement.removeEventListener("pointermove", this._onPointerMove);
-    this.domElement.removeEventListener("pointerup", this._onPointerUp);
-    dom.addEventListener("pointerdown", this._onPointerDown);
-    dom.addEventListener("pointermove", this._onPointerHover);
-    dom.addEventListener("pointerup", this._onPointerUp);
-    this.domElement = dom;
-    return this;
-  }
-  setCamera(camera) {
-    this.camera = camera;
-    return this;
-  }
-  getTarget() {
-    return this.target;
-  }
-  getTransObjectSet() {
-    return this.transObjectSet;
-  }
-  setAttach(...object) {
-    this.transObjectSet.clear();
-    if (!object.length || !object[0]) {
-      this.detach();
-      return this;
-    }
-    this.attach(this.target);
-    const target = this.target;
-    if (object.length === 1) {
-      const currentObject = object[0];
-      currentObject.matrixWorld.decompose(target.position, target.quaternion, target.scale);
-      target.updateMatrix();
-      target.updateMatrixWorld();
-      this.transObjectSet.add(currentObject);
-      return this;
-    }
-    const xList = [];
-    const yList = [];
-    const zList = [];
-    object.forEach((elem) => {
-      xList.push(elem.matrixWorld.elements[12]);
-      yList.push(elem.matrixWorld.elements[13]);
-      zList.push(elem.matrixWorld.elements[14]);
-    });
-    target.rotation.set(0, 0, 0);
-    target.scale.set(0, 0, 0);
-    target.position.x = (Math.max(...xList) - Math.min(...xList)) / 2 + Math.min(...xList);
-    target.position.y = (Math.max(...yList) - Math.min(...yList)) / 2 + Math.min(...yList);
-    target.position.z = (Math.max(...zList) - Math.min(...zList)) / 2 + Math.min(...zList);
-    target.updateMatrix();
-    target.updateMatrixWorld();
-    object.forEach((elem) => {
-      this.transObjectSet.add(elem);
-    });
-    return this;
-  }
-}
 class ImageTexture extends Texture {
   constructor(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding) {
     super(
@@ -2124,4 +1956,4 @@ __publicField(VideoLoader, "loop", true);
 const defineStrategy = function(options) {
   return () => options;
 };
-export { CSS2DPlane, CSS3DPlane, CSS3DSprite, CubicBezierCurveGeometry, CurveGeometry, ENGINE_EVENT, Engine, EventDispatcher, ImageTexture, LineCurveGeometry, LineShapeGeometry, LineTubeGeometry, LoadGeometry, LoadTexture, QuadraticBezierCurveGeometry, SelectiveBloomPass, SplineCurveGeometry, SplineTubeGeometry, TRANSFORM_EVENT, VideoLoader, VideoTexture, VisCSS2DObject, VisCSS3DObject, VisCSS3DSprite, VisOrbitControls, VisSelectionBox, VisSelectionHelper, VisStats, VisTransformControls, definePlugin, defineStrategy };
+export { CSS2DPlane, CSS3DPlane, CSS3DSprite, CubicBezierCurveGeometry, CurveGeometry, ENGINE_EVENT, Engine, EventDispatcher, ImageTexture, LineCurveGeometry, LineShapeGeometry, LineTubeGeometry, LoadGeometry, LoadTexture, QuadraticBezierCurveGeometry, SelectiveBloomPass, SplineCurveGeometry, SplineTubeGeometry, VideoLoader, VideoTexture, VisCSS2DObject, VisCSS3DObject, VisCSS3DSprite, VisOrbitControls, VisSelectionBox, VisSelectionHelper, definePlugin, defineStrategy };
