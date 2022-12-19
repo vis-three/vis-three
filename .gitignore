@@ -5,5 +5,5 @@ packages/plugins/**/*.js
 packages/strategy/**/*.d.ts
 packages/strategy/**/*.js
 coverage
-./index.d.ts
-./index.js
+index.d.ts
+index.js
