@@ -52,7 +52,7 @@
     "@vis-three/transform-controls-plugin": "workspace:^0.5.0",
     "@vis-three/transform-keyboard-strategy": "workspace:^0.5.0",
     "@vis-three/viewpoint-plugin": "workspace:^0.5.0",
-    "@vis-three/webgl-renderer-plugin": "workspace:^0.4.0"
+    "@vis-three/webgl-renderer-plugin": "workspace:^0.5.0"
   },
   "files": [
     "/**/*.js",
