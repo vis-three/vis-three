@@ -5,8 +5,14 @@ import {
   WebGLRendererEngine,
   WebGLRendererPlugin,
 } from "@vis-three/webgl-renderer-plugin";
-import { CSS2DRendererPlugin } from "@vis-three/css2d-renderer-plugin";
-import { CSS3DRendererPlugin } from "@vis-three/css3d-renderer-plugin";
+import {
+  CSS2DRendererEngine,
+  CSS2DRendererPlugin,
+} from "@vis-three/css2d-renderer-plugin";
+import {
+  CSS3DRendererEngine,
+  CSS3DRendererPlugin,
+} from "@vis-three/css3d-renderer-plugin";
 import {
   EffectComposerEngine,
   EffectComposerPlugin,
@@ -37,6 +43,8 @@ import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
 import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
 
 import { Engine, VisOrbitControls } from "@vis-three/core";
+import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 export class DisplayEngine
   extends Engine
   implements
@@ -45,7 +53,9 @@ export class DisplayEngine
     OrbitControlsEngine,
     RenderManagerEngine,
     PointerManagerEngine,
-    EventManagerEngine
+    EventManagerEngine,
+    CSS2DRendererEngine,
+    CSS3DRendererEngine
 {
   declare dom: HTMLElement;
   declare webGLRenderer: WebGLRenderer;
@@ -56,6 +66,8 @@ export class DisplayEngine
   declare renderManager: RenderManager;
   declare pointerManager: PointerManager;
   declare eventManager: EventManager;
+  declare css3DRenderer: CSS3DRenderer;
+  declare css2DRenderer: CSS2DRenderer;
 
   declare play: () => this;
   declare stop: () => this;

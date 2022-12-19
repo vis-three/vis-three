@@ -1,6 +1,6 @@
 import { WebGLRendererPlugin, } from "@vis-three/webgl-renderer-plugin";
-import { CSS2DRendererPlugin } from "@vis-three/css2d-renderer-plugin";
-import { CSS3DRendererPlugin } from "@vis-three/css3d-renderer-plugin";
+import { CSS2DRendererPlugin, } from "@vis-three/css2d-renderer-plugin";
+import { CSS3DRendererPlugin, } from "@vis-three/css3d-renderer-plugin";
 import { EffectComposerPlugin, } from "@vis-three/effect-composer-plugin";
 import { OrbitControlsPlugin, } from "@vis-three/orbit-controls-plugin";
 import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";

@@ -10,6 +10,8 @@ import {
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { Engine, VisOrbitControls } from "@vis-three/core";
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
+import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import {
   RenderManager,
   RenderManagerEngine,
@@ -69,7 +71,25 @@ import {
   ObjectHelperPlugin,
   ObjectHelperManager,
 } from "@vis-three/object-helper-plugin";
+import {
+  CSS2DRendererEngine,
+  CSS2DRendererPlugin,
+} from "@vis-three/css2d-renderer-plugin";
+import {
+  CSS3DRendererEngine,
+  CSS3DRendererPlugin,
+} from "@vis-three/css3d-renderer-plugin";
 
+import { CSS2DRenderStrategy } from "@vis-three/css2d-render-strategy";
+import { CSS3DRenderStrategy } from "@vis-three/css3d-render-strategy";
+import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
+import { OrbitViewpointStrategy } from "@vis-three/orbit-viewpoint-strategy";
+import { TransSelectEventStrategy } from "@vis-three/trans-select-event-strategy";
+import { StatsRenderStrategy } from "@vis-three/stats-render-strategy";
+import { GridViewpointStrategy } from "@vis-three/grid-viewpoint-strategy";
+import { TransformKeyboardStrategy } from "@vis-three/transform-keyboard-strategy";
+import { HelperSelectInteractStrategy } from "@vis-three/helper-select-interact-strategy";
 export class ModelingEngine
   extends Engine
   implements
@@ -86,7 +106,9 @@ export class ModelingEngine
     GridHelperEngine,
     AxesHelperEngine,
     SelectionEngine,
-    ObjectHelperEngine
+    ObjectHelperEngine,
+    CSS2DRendererEngine,
+    CSS3DRendererEngine
 {
   declare dom: HTMLElement;
   declare webGLRenderer: WebGLRenderer;
@@ -105,6 +127,8 @@ export class ModelingEngine
   declare gridHelper: GridHelper;
   declare transing: boolean;
   declare objectHelperManager: ObjectHelperManager;
+  declare css3DRenderer: CSS3DRenderer;
+  declare css2DRenderer: CSS2DRenderer;
 
   declare setStats: (show: boolean) => this;
   declare setTransformControls: (show: boolean) => this;
@@ -129,6 +153,8 @@ export class ModelingEngine
           alpha: true,
         })
       )
+      .install(CSS2DRendererPlugin())
+      .install(CSS3DRendererPlugin())
       .install(PointerManagerPlugin())
       .install(EventManagerPlugin())
       .install(
@@ -146,5 +172,16 @@ export class ModelingEngine
       .install(StatsPlugin())
       .install(KeyboardManagerPlugin())
       .install(ObjectHelperPlugin());
+
+    this.exec(CSS2DRenderStrategy())
+      .exec(CSS3DRenderStrategy())
+      .exec(EffectRenderStrategy())
+      .exec(OrbitRenderStrategy())
+      .exec(OrbitViewpointStrategy())
+      .exec(TransSelectEventStrategy())
+      .exec(StatsRenderStrategy())
+      .exec(GridViewpointStrategy())
+      .exec(TransformKeyboardStrategy())
+      .exec(HelperSelectInteractStrategy());
   }
 }

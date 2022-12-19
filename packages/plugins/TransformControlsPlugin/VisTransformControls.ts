@@ -4,7 +4,7 @@ import { TransformControls } from "three/examples/jsm/controls/TransformControls
 export enum TRANSFORM_EVENT {
   CHANGED = "changed",
   MOUSE_DOWN = "mouseDown",
-  CHANGEING = "changing",
+  CHANGEING = "objectChange",
   MOUSE_UP = "mouseUp",
 }
 

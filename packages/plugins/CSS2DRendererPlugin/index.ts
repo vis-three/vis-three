@@ -40,6 +40,7 @@ export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine> = function () {
       domElement.style.position = "absolute";
       domElement.style.top = "0";
       domElement.style.left = "0";
+      domElement.style.zIndex = "2";
 
       setDomFun = (event) => {
         event.dom.appendChild(css2DRenderer.domElement);

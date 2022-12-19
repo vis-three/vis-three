@@ -87,6 +87,26 @@ importers:
       vue2: /vue/2.7.14
       webpack: 5.75.0
 
+  packages/convenient:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      typescript: ^4.3.2
+    devDependencies:
+      '@types/node': 18.11.12
+      '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
+      '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
+      eslint: 8.29.0
+      eslint-config-prettier: 8.5.0_eslint@8.29.0
+      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
+      prettier: 2.8.0
+      typescript: 4.9.3
+
   packages/core:
     specifiers:
       '@rollup/plugin-alias': ^3.1.9
@@ -220,19 +240,29 @@ importers:
       '@vis-three/axes-helper-plugin': workspace:^0.4.0
       '@vis-three/camera-adaptive-plugin': workspace:^0.4.0
       '@vis-three/core': workspace:^0.5.0
+      '@vis-three/css2d-render-strategy': workspace:^0.5.0
       '@vis-three/css2d-renderer-plugin': workspace:^0.5.0
+      '@vis-three/css3d-render-strategy': workspace:^0.5.0
       '@vis-three/css3d-renderer-plugin': workspace:^0.5.0
       '@vis-three/effect-composer-plugin': workspace:^0.5.0
+      '@vis-three/effect-render-strategy': workspace:^0.5.0
       '@vis-three/event-manager-plugin': workspace:^0.5.0
       '@vis-three/grid-helper-plugin': workspace:^0.4.0
+      '@vis-three/grid-viewpoint-strategy': workspace:^0.5.0
+      '@vis-three/helper-select-interact-strategy': workspace:^0.5.0
       '@vis-three/keyboard-manager-plugin': workspace:^0.4.0
       '@vis-three/object-helper-plugin': workspace:^0.4.0
       '@vis-three/orbit-controls-plugin': workspace:^0.5.0
+      '@vis-three/orbit-render-strategy': workspace:^0.5.0
+      '@vis-three/orbit-viewpoint-strategy': workspace:^0.5.0
       '@vis-three/pointer-manager-plugin': workspace:^0.4.0
       '@vis-three/render-manager-plugin': workspace:^0.4.0
       '@vis-three/selection-plugin': workspace:^0.4.0
       '@vis-three/stats-plugin': workspace:^0.4.0
+      '@vis-three/stats-render-strategy': workspace:^0.5.0
+      '@vis-three/trans-select-event-strategy': workspace:^0.5.0
       '@vis-three/transform-controls-plugin': workspace:^0.5.0
+      '@vis-three/transform-keyboard-strategy': workspace:^0.5.0
       '@vis-three/viewpoint-plugin': workspace:^0.5.0
       '@vis-three/webgl-renderer-plugin': workspace:^0.4.0
       eslint: ^8.12.0
@@ -245,19 +275,29 @@ importers:
       '@vis-three/axes-helper-plugin': link:../../plugins/AxesHelperPlugin
       '@vis-three/camera-adaptive-plugin': link:../../plugins/CameraAdaptivePlugin
       '@vis-three/core': link:../../core
+      '@vis-three/css2d-render-strategy': link:../../strategy/CSS2DRenderStrategy
       '@vis-three/css2d-renderer-plugin': link:../../plugins/CSS2DRendererPlugin
+      '@vis-three/css3d-render-strategy': link:../../strategy/CSS3DRenderStrategy
       '@vis-three/css3d-renderer-plugin': link:../../plugins/CSS3DRendererPlugin
       '@vis-three/effect-composer-plugin': link:../../plugins/EffectComposerPlugin
+      '@vis-three/effect-render-strategy': link:../../strategy/EffectRenderStrategy
       '@vis-three/event-manager-plugin': link:../../plugins/EventManagerPlugin
       '@vis-three/grid-helper-plugin': link:../../plugins/GridHelperPlugin
+      '@vis-three/grid-viewpoint-strategy': link:../../strategy/GridViewpointStrategy
+      '@vis-three/helper-select-interact-strategy': link:../../strategy/HelperSelectInteractStrategy
       '@vis-three/keyboard-manager-plugin': link:../../plugins/KeyboardManagerPlugin
       '@vis-three/object-helper-plugin': link:../../plugins/ObjectHelperPlugin
       '@vis-three/orbit-controls-plugin': link:../../plugins/OrbitControlsPlugin
+      '@vis-three/orbit-render-strategy': link:../../strategy/OrbitRenderStrategy
+      '@vis-three/orbit-viewpoint-strategy': link:../../strategy/OrbitViewpointStrategy
       '@vis-three/pointer-manager-plugin': link:../../plugins/PointerManagerPlugin
       '@vis-three/render-manager-plugin': link:../../plugins/RenderManagerPlugin
       '@vis-three/selection-plugin': link:../../plugins/SelectionPlugin
       '@vis-three/stats-plugin': link:../../plugins/StatsPlugin
+      '@vis-three/stats-render-strategy': link:../../strategy/StatsRenderStrategy
+      '@vis-three/trans-select-event-strategy': link:../../strategy/TransSelectEventStrategy
       '@vis-three/transform-controls-plugin': link:../../plugins/TransformControlsPlugin
+      '@vis-three/transform-keyboard-strategy': link:../../strategy/TransformKeyboardStrategy
       '@vis-three/viewpoint-plugin': link:../../plugins/ViewpointPlugin
       '@vis-three/webgl-renderer-plugin': link:../../plugins/WebGLRendererPlugin
     devDependencies:
@@ -279,6 +319,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/display-engine': workspace:^0.5.0
+      '@vis-three/modeling-engine': workspace:^0.4.0
       '@vitejs/plugin-vue': ^2.3.3
       ant-design-vue: ^3.2.6
       axios: ^0.27.2
@@ -303,6 +344,7 @@ importers:
       webpack: ^5.74.0
     dependencies:
       '@vis-three/display-engine': link:../engine/DisplayEngine
+      '@vis-three/modeling-engine': link:../engine/ModelingEngine
     devDependencies:
       '@ant-design/icons-vue': 6.1.0_vue@3.2.45
       '@rollup/plugin-alias': 3.1.9_rollup@2.77.3
@@ -1003,6 +1045,43 @@ importers:
       three: 0.141.0
       typescript: 4.9.3
 
+  packages/strategy/HelperSelectInteractStrategy:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.5.0
+      '@vis-three/event-manager-plugin': workspace:^0.5.0
+      '@vis-three/object-helper-plugin': workspace:^0.4.0
+      '@vis-three/selection-plugin': workspace:^0.4.0
+      '@vis-three/transform-controls-plugin': workspace:^0.5.0
+      '@vis-three/utils': workspace:^0.4.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+    dependencies:
+      '@vis-three/core': link:../../core
+      '@vis-three/event-manager-plugin': link:../../plugins/EventManagerPlugin
+      '@vis-three/object-helper-plugin': link:../../plugins/ObjectHelperPlugin
+      '@vis-three/selection-plugin': link:../../plugins/SelectionPlugin
+      '@vis-three/transform-controls-plugin': link:../../plugins/TransformControlsPlugin
+      '@vis-three/utils': link:../../utils
+    devDependencies:
+      '@types/node': 18.11.12
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
+      '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
+      eslint: 8.29.0
+      eslint-config-prettier: 8.5.0_eslint@8.29.0
+      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
+      prettier: 2.8.0
+      three: 0.141.0
+      typescript: 4.9.3
+
   packages/strategy/OrbitRenderStrategy:
     specifiers:
       '@types/node': ^18.11.12
@@ -1123,6 +1202,39 @@ importers:
       '@vis-three/core': link:../../core
       '@vis-three/event-manager-plugin': link:../../plugins/EventManagerPlugin
       '@vis-three/selection-plugin': link:../../plugins/SelectionPlugin
+      '@vis-three/transform-controls-plugin': link:../../plugins/TransformControlsPlugin
+      '@vis-three/utils': link:../../utils
+    devDependencies:
+      '@types/node': 18.11.12
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
+      '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
+      eslint: 8.29.0
+      eslint-config-prettier: 8.5.0_eslint@8.29.0
+      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
+      prettier: 2.8.0
+      three: 0.141.0
+      typescript: 4.9.3
+
+  packages/strategy/TransformKeyboardStrategy:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.5.0
+      '@vis-three/keyboard-manager-plugin': workspace:^0.4.0
+      '@vis-three/transform-controls-plugin': workspace:^0.5.0
+      '@vis-three/utils': workspace:^0.4.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+    dependencies:
+      '@vis-three/core': link:../../core
+      '@vis-three/keyboard-manager-plugin': link:../../plugins/KeyboardManagerPlugin
       '@vis-three/transform-controls-plugin': link:../../plugins/TransformControlsPlugin
       '@vis-three/utils': link:../../utils
     devDependencies:

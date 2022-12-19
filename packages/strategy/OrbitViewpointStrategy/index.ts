@@ -8,7 +8,7 @@ import {
 import {
   ViewpointEngine,
   ViewpointEvent,
-  name as VIEWPOINT_PLUGIN,
+  VIEWPOINT_PLUGIN,
   VIEWPOINT,
   SETVIEWPOINT,
 } from "@vis-three/viewpoint-plugin";
@@ -19,38 +19,41 @@ export interface OrbitViewpointEngine
 
 export const name = transPkgName(pkgname);
 
-export const CSS2DRenderStrategy: Strategy<OrbitViewpointEngine> = function () {
-  let viewpointFun: (event: ViewpointEvent) => void;
+export const OrbitViewpointStrategy: Strategy<OrbitViewpointEngine> =
+  function () {
+    let viewpointFun: (event: ViewpointEvent) => void;
 
-  return {
-    name,
-    condition: [ORBIT_CONTROLS_PLUGIN, VIEWPOINT_PLUGIN],
-    exec(engine) {
-      const disableRotate = () => {
-        engine.orbitControls.enableRotate = true;
-      };
+    return {
+      name,
+      condition: [ORBIT_CONTROLS_PLUGIN, VIEWPOINT_PLUGIN],
+      exec(engine) {
+        const disableRotate = () => {
+          engine.orbitControls.enableRotate = false;
+        };
 
-      const actionMap = {
-        [VIEWPOINT.DEFAULT]: disableRotate,
-        [VIEWPOINT.TOP]: disableRotate,
-        [VIEWPOINT.BOTTOM]: disableRotate,
-        [VIEWPOINT.RIGHT]: disableRotate,
-        [VIEWPOINT.LEFT]: disableRotate,
-        [VIEWPOINT.FRONT]: disableRotate,
-        [VIEWPOINT.BACK]: disableRotate,
-      };
+        const actionMap = {
+          [VIEWPOINT.DEFAULT]: () => {
+            engine.orbitControls.enableRotate = true;
+          },
+          [VIEWPOINT.TOP]: disableRotate,
+          [VIEWPOINT.BOTTOM]: disableRotate,
+          [VIEWPOINT.RIGHT]: disableRotate,
+          [VIEWPOINT.LEFT]: disableRotate,
+          [VIEWPOINT.FRONT]: disableRotate,
+          [VIEWPOINT.BACK]: disableRotate,
+        };
 
-      viewpointFun = (event) => {
-        const viewpoint = event.viewpoint;
+        viewpointFun = (event) => {
+          const viewpoint = event.viewpoint;
 
-        engine.orbitControls.target.set(0, 0, 0);
-        actionMap[viewpoint] && actionMap[viewpoint]();
-      };
+          engine.orbitControls.target.set(0, 0, 0);
+          actionMap[viewpoint] && actionMap[viewpoint]();
+        };
 
-      engine.addEventListener<ViewpointEvent>(SETVIEWPOINT, viewpointFun);
-    },
-    rollback(engine) {
-      engine.removeEventListener<ViewpointEvent>(SETVIEWPOINT, viewpointFun);
-    },
+        engine.addEventListener<ViewpointEvent>(SETVIEWPOINT, viewpointFun);
+      },
+      rollback(engine) {
+        engine.removeEventListener<ViewpointEvent>(SETVIEWPOINT, viewpointFun);
+      },
+    };
   };
-};

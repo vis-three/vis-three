@@ -2,7 +2,7 @@ import {
   RenderEvent,
   RenderManagerEngine,
   RENDER_EVENT,
-  name as RENDER_MANAGER_PLUGIN,
+  RENDER_MANAGER_PLUGIN,
 } from "@vis-three/render-manager-plugin";
 import {
   name as EFFECT_COMPOSER_PLUGIN,

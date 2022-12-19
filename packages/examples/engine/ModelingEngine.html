@@ -20,12 +20,15 @@
     <div id="app"></div>
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
-      const engine = new Vis.ModelingEngine()
+      import { ModelingEngine } from "@vis-three/modeling-engine";
+
+      const engine = new ModelingEngine()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true)
         .play();
+
+      engine.camera.position.set(50, 50, 50);
 
       const scene = engine.scene;
 
@@ -47,6 +50,8 @@
 
       points.position.x = -10;
       scene.add(points);
+
+      window.engine = engine;
     </script>
   </body>
 </html>

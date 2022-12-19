@@ -15,14 +15,14 @@ export interface AxesHelperEngine extends Engine {
 }
 
 export const AxesHelperPlugin: Plugin<AxesHelperEngine> = function (
-  params: AxesHelperParameters
+  params?: AxesHelperParameters
 ) {
   let setSceneFun: (event: SetSceneEvent) => void;
 
   return {
     name: "AxesHelperPlugin",
     install(engine) {
-      const axesHelper = new AxesHelper(params.length || 500);
+      const axesHelper = new AxesHelper(params?.length || 500);
       axesHelper.matrixAutoUpdate = false;
       axesHelper.raycast = () => {};
 

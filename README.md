@@ -17,6 +17,10 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 > gitee 视频资源会失效
 
+## 进度
+
+version0.3.2 -> version0.5.0
+
 ## 安装
 
 ```
@@ -44,57 +48,9 @@ import {
 
 ## 项目结构说明
 
-- `src`vis-three 库源码
-- `website`主页源码
-- `docs`文档源码
-- `examples`例子库源码
-- `arts`美术资源
-- `cypress`e2e 测试用例源码
-- `dist`vis-three 库 build
-- `dist-website`主页 build
-- `js-source` tsc 编译 js 版本
-- `types`vis-three 的声明文件
-- `uitls`项目级别工具库
-
-## 开发说明
-
-- 例子或者网页需要添加额外依赖的，请添加到`devDependencies`中：`npm i xxxx -D`
-- 提交更新之后请到`/docs/version`下简写更新功能
-- 开发期请使用`jsdoc`进行注释辅助
-
 ## 项目命令
 
 website 的最终展现是使用的其他模块的 build 版本，如需要更新请先执行相应的：`bulid`构建。
-
-### 库
-
-- 开发：`npm run dev`
-- 构建： `npm run build`
-- 代码格式化： `npm run lint`
-
-### 列子
-
-- 例子开发： `npm run examples:dev`
-- 例子构建： `npm run examples:build`
-
-### 文档
-
-- 文档开发： `npm run docs:dev`
-- 文档构建： `npm run docs:build`
-- 文档服务： `npm run docs:serve`
-
-### 主页
-
-- 主页开发： `npm run website:dev`
-- 主页构建： `npm run website:build`
-- 主页代码格式化： `npm run website:lint`
-
-### 测试
-
-- 单元测试： `npm run test:unit`
-- e2e 测试： `npm run test:e2e`
-- 自定义测试： `npm run test:open`
-- 查看测试报告： `npm run test:report`
 
 ## 贡献者
 

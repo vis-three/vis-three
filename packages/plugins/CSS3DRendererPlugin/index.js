@@ -18,6 +18,7 @@ export const CSS3DRendererPlugin = function () {
             domElement.style.position = "absolute";
             domElement.style.top = "0";
             domElement.style.left = "0";
+            domElement.style.zIndex = "1";
             setDomFun = (event) => {
                 event.dom.appendChild(css3DRenderer.domElement);
             };

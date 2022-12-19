@@ -1,5 +1,5 @@
 import { name as CSS2D_RENDERER_PLUGIN, } from "@vis-three/css2d-renderer-plugin";
-import { RENDER_EVENT, name as RENDER_MANAGER_PLUGIN, } from "@vis-three/render-manager-plugin";
+import { RENDER_EVENT, RENDER_MANAGER_PLUGIN, } from "@vis-three/render-manager-plugin";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 export const name = transPkgName(pkgname);

@@ -129,6 +129,16 @@ export class Engine extends EventDispatcher {
       console.warn(`This strategy already exists`, strategy.name);
       return this as unknown as E;
     }
+    // 检测条件
+    const plugins = this.pluginTables;
+    for (const plugin of strategy.condition) {
+      if (!plugins.has(plugin)) {
+        console.warn(
+          `${strategy.name} does not meet the conditions for execution: ${plugin}`
+        );
+        return this as unknown as E;
+      }
+    }
 
     strategy.exec(this as unknown as E);
 
@@ -241,3 +251,26 @@ export class Engine extends EventDispatcher {
     return this;
   }
 }
+
+export interface EngineOptions {
+  plugins?: PluginOptions<any>[];
+  strategy?: StrategyOptions<any>[];
+}
+
+export const defineEngine = function (options: EngineOptions) {
+  const engine = new Engine();
+
+  if (options.plugins) {
+    options.plugins.forEach((plugin) => {
+      engine.install(plugin);
+    });
+  }
+
+  if (options.strategy) {
+    options.strategy.forEach((strategy) => {
+      engine.exec(strategy);
+    });
+  }
+
+  return engine;
+};

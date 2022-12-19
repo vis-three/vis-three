@@ -4,4 +4,4 @@ import { ViewpointEngine } from "@vis-three/viewpoint-plugin";
 export interface OrbitViewpointEngine extends OrbitControlsEngine, ViewpointEngine {
 }
 export declare const name: string;
-export declare const CSS2DRenderStrategy: Strategy<OrbitViewpointEngine>;
+export declare const OrbitViewpointStrategy: Strategy<OrbitViewpointEngine>;

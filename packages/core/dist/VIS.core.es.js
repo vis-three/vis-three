@@ -182,6 +182,15 @@ class Engine extends EventDispatcher {
       console.warn(`This strategy already exists`, strategy.name);
       return this;
     }
+    const plugins = this.pluginTables;
+    for (const plugin of strategy.condition) {
+      if (!plugins.has(plugin)) {
+        console.warn(
+          `${strategy.name} does not meet the conditions for execution: ${plugin}`
+        );
+        return this;
+      }
+    }
     strategy.exec(this);
     tables.set(strategy.name, strategy);
     return this;

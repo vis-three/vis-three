@@ -1,13 +1,17 @@
 import { Camera, Scene, WebGLRenderer } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { Screenshot, WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
+import { CSS2DRendererEngine } from "@vis-three/css2d-renderer-plugin";
+import { CSS3DRendererEngine } from "@vis-three/css3d-renderer-plugin";
 import { EffectComposerEngine } from "@vis-three/effect-composer-plugin";
 import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
 import { RenderManager, RenderManagerEngine } from "@vis-three/render-manager-plugin";
 import { PointerManager, PointerManagerEngine } from "@vis-three/pointer-manager-plugin";
 import { EventManager, EventManagerEngine } from "@vis-three/event-manager-plugin";
 import { Engine, VisOrbitControls } from "@vis-three/core";
-export declare class DisplayEngine extends Engine implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, RenderManagerEngine, PointerManagerEngine, EventManagerEngine {
+import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
+export declare class DisplayEngine extends Engine implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, RenderManagerEngine, PointerManagerEngine, EventManagerEngine, CSS2DRendererEngine, CSS3DRendererEngine {
     dom: HTMLElement;
     webGLRenderer: WebGLRenderer;
     currentCamera: Camera;
@@ -17,6 +21,8 @@ export declare class DisplayEngine extends Engine implements WebGLRendererEngine
     renderManager: RenderManager;
     pointerManager: PointerManager;
     eventManager: EventManager;
+    css3DRenderer: CSS3DRenderer;
+    css2DRenderer: CSS2DRenderer;
     play: () => this;
     stop: () => this;
     render: () => this;
