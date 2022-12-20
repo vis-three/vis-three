@@ -1,5 +1,5 @@
 {
-  "name": "@vis-three/display-engine-support",
+  "name": "@vis-three/modeling-engine-support",
   "version": "0.5.0",
   "description": "",
   "main": "index.js",
@@ -25,6 +25,7 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
+    "@vis-three/axes-helper-plugin": "workspace:^0.4.0",
     "@vis-three/camera-adaptive-plugin": "workspace:^0.4.0",
     "@vis-three/css2d-render-strategy": "workspace:^0.5.0",
     "@vis-three/css2d-renderer-plugin": "workspace:^0.5.0",
@@ -32,9 +33,22 @@
     "@vis-three/css3d-renderer-plugin": "workspace:^0.5.0",
     "@vis-three/effect-composer-plugin": "workspace:^0.5.0",
     "@vis-three/effect-render-strategy": "workspace:^0.5.0",
+    "@vis-three/grid-helper-plugin": "workspace:^0.4.0",
+    "@vis-three/grid-viewpoint-strategy": "workspace:^0.5.0",
+    "@vis-three/helper-select-interact-strategy": "workspace:^0.5.0",
+    "@vis-three/keyboard-manager-plugin": "workspace:^0.4.0",
     "@vis-three/middleware": "workspace:^0.5.0",
+    "@vis-three/object-helper-plugin": "workspace:^0.4.0",
     "@vis-three/orbit-controls-plugin": "workspace:^0.5.0",
     "@vis-three/orbit-render-strategy": "workspace:^0.5.0",
+    "@vis-three/orbit-viewpoint-strategy": "workspace:^0.5.0",
+    "@vis-three/selection-plugin": "workspace:^0.4.0",
+    "@vis-three/stats-plugin": "workspace:^0.4.0",
+    "@vis-three/stats-render-strategy": "workspace:^0.5.0",
+    "@vis-three/trans-select-event-strategy": "workspace:^0.5.0",
+    "@vis-three/transform-controls-plugin": "workspace:^0.5.0",
+    "@vis-three/transform-keyboard-strategy": "workspace:^0.5.0",
+    "@vis-three/viewpoint-plugin": "workspace:^0.5.0",
     "@vis-three/webgl-renderer-plugin": "workspace:^0.5.0"
   },
   "files": [
