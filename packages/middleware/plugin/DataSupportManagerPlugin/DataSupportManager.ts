@@ -1,48 +1,26 @@
-import { DataSupport } from "../../dataSupport";
-import { BasicCompiler } from "../../compiler";
-import {
-  AnimationAllType,
-  AnimationDataSupport,
-  CameraConfigAllType,
-  CameraDataSupport,
-  CONFIGTYPE,
-  ControlsAllConfig,
-  ControlsDataSupport,
-  CSS2DAllType,
-  CSS2DDataSupport,
-  CSS3DAllType,
-  CSS3DDataSupport,
-  GeometryAllType,
-  GeometryDataSupport,
-  getModule,
-  GroupConfig,
-  GroupDataSupport,
-  JSONHandler,
-  LightConfigAllType,
-  LightDataSupport,
-  LineConfig,
-  LineDataSupport,
-  MaterialAllType,
-  MaterialDataSupport,
-  MeshConfig,
-  MeshDataSupport,
-  MODULETYPE,
-  Object3DConfig,
-  Object3DDataSupport,
-  PassConfigAllType,
-  PassDataSupport,
-  PointsConfig,
-  PointsDataSupport,
-  RendererConfigAllType,
-  RendererDataSupport,
-  SceneConfig,
-  SceneDataSupport,
-  SpriteConfig,
-  SpriteDataSupport,
-  SymbolConfig,
-  TextureAllType,
-  TextureDataSupport,
-} from "@vis-three/middleware";
+import { AnimationAllType, AnimationDataSupport } from "../../animation";
+import { CameraConfigAllType, CameraDataSupport } from "../../camera";
+import { getModule, SymbolConfig } from "../../common";
+import { CONFIGTYPE, MODULETYPE } from "../../constants";
+import { ControlsAllConfig, ControlsDataSupport } from "../../controls";
+import { CSS2DAllType, CSS2DDataSupport } from "../../css2D";
+import { CSS3DAllType, CSS3DDataSupport } from "../../css3D";
+import { GeometryAllType, GeometryDataSupport } from "../../geometry";
+import { GroupConfig, GroupDataSupport } from "../../group";
+import { LightConfigAllType, LightDataSupport } from "../../light";
+import { LineConfig, LineDataSupport } from "../../line";
+import { MaterialAllType, MaterialDataSupport } from "../../material";
+import { MeshConfig, MeshDataSupport } from "../../mesh";
+import { BasicCompiler, DataSupport } from "../../module";
+import { Object3DConfig, Object3DDataSupport } from "../../object3D";
+import { PassConfigAllType, PassDataSupport } from "../../pass";
+import { PointsConfig, PointsDataSupport } from "../../points";
+import { RendererConfigAllType, RendererDataSupport } from "../../renderer";
+import { SceneConfig, SceneDataSupport } from "../../scene";
+import { SpriteConfig, SpriteDataSupport } from "../../sprite";
+import { TextureAllType, TextureDataSupport } from "../../texture";
+import { JSONHandler } from "../../utils";
+
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: Array<TextureAllType>;

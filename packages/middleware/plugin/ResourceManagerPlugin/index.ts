@@ -1,10 +1,4 @@
-import { Engine, ENGINE_EVENT } from "../../engine";
-import { LoaderMappingEngine } from "../LoaderManagerPlugin";
-import {
-  LoadedEvent,
-  LOADER_EVENT,
-} from "../LoaderManagerPlugin/LoaderManager";
-import { Plugin } from "../plugin";
+import { Engine, Plugin } from "@vis-three/core";
 import { ResourceManager } from "./ResourceManager";
 
 export * from "./ResourceManager";
@@ -37,16 +31,6 @@ export const ResourceManagerPlugin: Plugin<ResourceManagerEngine> = function (
         resourceManager.mappingResource(map);
         return engine;
       };
-    },
-    installDeps: {
-      LoaderManagerPlugin(engine: LoaderMappingEngine) {
-        engine.loaderManager.addEventListener<LoadedEvent>(
-          LOADER_EVENT.LOADED,
-          (event) => {
-            engine.resourceManager.mappingResource(event.resourceMap);
-          }
-        );
-      },
     },
 
     dispose(engine) {

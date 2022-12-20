@@ -1,9 +1,11 @@
 import { Compiler, CompilerTarget } from "../compiler";
-import { Rule } from "../rule/rule";
+import { Rule } from "../rule";
 import { Translater } from "../translater";
 import { ProxyNotice, DataContainer } from "../dataContainer";
-import { CONFIGFACTORY, JSONHandler, MODULETYPE, SymbolConfig } from "@vis-three/middleware";
-import { valueOf } from "../utils/utils";
+import { SymbolConfig } from "../../common";
+import { CONFIGFACTORY, MODULETYPE } from "../../constants";
+import { valueOf } from "@vis-three/utils";
+import { JSONHandler } from "../../utils";
 
 export abstract class DataSupport<
   C extends SymbolConfig,

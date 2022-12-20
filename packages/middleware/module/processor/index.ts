@@ -1,12 +1,12 @@
-import { EngineSupport } from "../engine/EngineSupport";
 import {
   DeepIntersection,
   DeepPartial,
   DeepRecord,
   DeepUnion,
-} from "../utils/utils";
+} from "@vis-three/utils";
+import { SymbolConfig } from "../../common";
+import { CONFIGTYPE } from "../../constants";
 import { CompileNotice, Compiler } from "../compiler";
-import { CONFIGTYPE, SymbolConfig } from "@vis-three/middleware";
 
 export interface ProcessParams<C extends SymbolConfig, T extends object>
   extends CompileNotice {

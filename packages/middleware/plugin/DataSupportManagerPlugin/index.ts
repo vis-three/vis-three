@@ -55,26 +55,6 @@ export const DataSupportManagerPlugin: Plugin<DataSupportEngine> = function (
         return dataSupportManager.exportConfig();
       };
     },
-    installDeps: {
-      LoaderManagerPlugin(engine: LoaderDataSupportEngine) {
-        engine.toJSON = function () {
-          const assets = {
-            assets: JSON.parse(engine.loaderManager.toJSON()),
-          };
-          return engine.dataSupportManager.toJSON(assets);
-        };
-
-        engine.exportConfig = function () {
-          let extendConfig = {};
-
-          extendConfig = {
-            assets: engine.loaderManager.exportConfig(),
-          };
-
-          return engine.dataSupportManager.exportConfig(extendConfig);
-        };
-      },
-    },
     dispose() {},
   };
 };

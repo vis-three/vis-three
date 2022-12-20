@@ -1,6 +1,6 @@
 import { validate } from "uuid";
 import { BasicCompiler } from "../compiler";
-import { ProxyNotice } from "../dataContainer";
+import { ProxyNotice } from "../DataContainer";
 
 export type Rule<C extends BasicCompiler> = (
   input: ProxyNotice,

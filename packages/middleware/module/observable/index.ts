@@ -1,11 +1,6 @@
 import { Subject } from "rxjs";
-import {
-  cacheArray,
-  extendPath,
-  getCacheArray,
-  isArray,
-  isObject,
-} from "../utils/utils";
+import { extendPath, isArray, isObject } from "@vis-three/utils";
+import { cacheArray, getCacheArray } from "../../utils/utils";
 
 export interface ReactNotice {
   operate: "get" | "add" | "set" | "delete";

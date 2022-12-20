@@ -1,8 +1,8 @@
+import { extendPath } from "@vis-three/utils";
 import { Subject, Subscription } from "rxjs";
-import { extendPath } from "../utils/utils";
+import { SymbolConfig } from "../../common";
 import { CompilerTarget } from "../compiler";
 import { getObservable } from "../observable";
-import { SymbolConfig } from "@vis-three/middleware";
 
 export interface ProxyNotice {
   operate: "add" | "set" | "delete";

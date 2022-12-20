@@ -1,8 +1,8 @@
-import { Engine } from "../../engine";
-import { Plugin } from "../plugin";
+import { Engine, Plugin } from "@vis-three/core";
 import { CompilerManager, CompilerManagerParameters } from "./CompilerManager";
 
 export * from "./CompilerManager";
+
 export interface CompilerManagerEngine extends Engine {
   compilerManager: CompilerManager;
   getObjectSymbol: (object: any) => string | null;
@@ -14,7 +14,6 @@ export const CompilerManagerPlugin: Plugin<CompilerManagerEngine> = function (
 ) {
   return {
     name: "CompilerManagerPlugin",
-    deps: ["DataSupportManagerPlugin", "RenderManagerPlugin"],
     install(engine) {
       const compilerManager = new CompilerManager(params);
 
@@ -31,8 +30,5 @@ export const CompilerManagerPlugin: Plugin<CompilerManagerEngine> = function (
     dispose(engine) {
       engine.compilerManager.dispose();
     },
-    // finally(engine: EngineSupport) {
-    //   engine.compilerManager.support(engine);
-    // },
   };
 };

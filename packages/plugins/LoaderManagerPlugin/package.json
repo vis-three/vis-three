@@ -1,18 +1,23 @@
 {
-  "name": "@vis-three/middleware",
+  "name": "@vis-three/loader-manager-plugin",
   "version": "0.5.0",
-  "description": "vis-three configure middleware",
-  "author": "Shiotsuki_",
-  "license": "MPL-2.0",
+  "description": "",
   "main": "index.js",
   "module": "index.js",
   "types": "index.d.ts",
+  "author": "Shiotsuki_",
+  "license": "MPL-2.0",
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc",
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
+  "dependencies": {
+    "@vis-three/core": "workspace:^0.5.0",
+    "@vis-three/utils": "workspace:^0.4.0"
+  },
   "devDependencies": {
+    "@types/node": "^18.11.12",
     "@types/three": "^0.133.1",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
@@ -28,12 +33,5 @@
     "/**/*.d.ts",
     "package.json",
     "LICENSE"
-  ],
-  "dependencies": {
-    "@vis-three/core": "workspace:^0.5.0",
-    "@vis-three/loader-manager-plugin": "workspace:^0.5.0",
-    "@vis-three/utils": "workspace:^0.4.0",
-    "rxjs": "^7.5.7",
-    "uuid": "^8.3.2"
-  }
+  ]
 }

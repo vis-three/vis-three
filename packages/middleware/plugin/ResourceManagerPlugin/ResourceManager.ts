@@ -1,15 +1,15 @@
-import { BaseEvent, EventDispatcher } from "../../eventDispatcher";
-import { LoadOptions } from "@vis-three/middleware/plugin/DataSupportManagerPlugin/DataSupportManager";
-import { HTMLImageElementParser } from "../../parser/HTMLImageElementParser";
-import { HTMLCanvasElementParser } from "../../parser/HTMLCanvasElementParser";
-import { HTMLVideoElementParser } from "../../parser/HTMLVideoElementParser";
-import { Object3DParser } from "../../parser/Object3DParser";
-import { HTMLElementParser } from "../../parser/HTMLElementParser";
-import { TextureParser } from "../../parser/TextureParser";
-import { Parser, ResourceHanlder } from "../../parser/Parser";
-import { GLTFResourceParser } from "../../parser/GLTFResourceParser";
-import { FBXResourceParser } from "../../parser/FBXResourceParser";
-import { getModule, SymbolConfig } from "../../../middleware";
+import { BaseEvent, EventDispatcher } from "@vis-three/core";
+import { getModule, SymbolConfig } from "../../common";
+import { LoadOptions } from "../DataSupportManagerPlugin";
+import { FBXResourceParser } from "./parser/FBXResourceParser";
+import { GLTFResourceParser } from "./parser/GLTFResourceParser";
+import { HTMLCanvasElementParser } from "./parser/HTMLCanvasElementParser";
+import { HTMLElementParser } from "./parser/HTMLElementParser";
+import { HTMLImageElementParser } from "./parser/HTMLImageElementParser";
+import { HTMLVideoElementParser } from "./parser/HTMLVideoElementParser";
+import { Object3DParser } from "./parser/Object3DParser";
+import { Parser, ResourceHanlder } from "./parser/Parser";
+import { TextureParser } from "./parser/TextureParser";
 
 export interface MappedEvent extends BaseEvent {
   configMap: Map<string, SymbolConfig>;
@@ -17,10 +17,7 @@ export interface MappedEvent extends BaseEvent {
   resourceConfig: { [key: string]: LoadOptions };
 }
 
-/**
- * @deprecated
- */
-export enum RESOURCEEVENTTYPE {
+export enum RESOURCE_EVENT {
   MAPPED = "mapped",
 }
 

@@ -1,5 +1,5 @@
-import { EventDispatcher, BaseEvent } from "../../eventDispatcher";
 import { Loader } from "three";
+import { BaseEvent, EventDispatcher } from "@vis-three/core";
 export declare enum LOADER_EVENT {
     BEFORELOAD = "beforeLoad",
     LOADING = "loading",

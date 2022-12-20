@@ -1,7 +1,7 @@
 import { SymbolConfig } from "@vis-three/middleware";
 import { Compiler } from "../compiler";
 import { ProxyNotice } from "../dataContainer";
-import { Rule } from "../rule/rule";
+import { Rule } from "../rule";
 
 export class Translater<
   S extends SymbolConfig,
