@@ -1,5 +1,5 @@
 {
-  "name": "@vis-three/css2d-render-strategy",
+  "name": "@vis-three/webgl-render-strategy",
   "version": "0.5.0",
   "description": "",
   "author": "Shiotsuki_",

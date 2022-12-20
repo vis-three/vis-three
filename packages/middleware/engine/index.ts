@@ -36,6 +36,8 @@ import {
   ResourceManagerPlugin,
 } from "../plugin/ResourceManagerPlugin";
 import { SymbolConfig } from "../common";
+import { LoaderDataSupportStrategy } from "../strategy/LoaderDataSuportStrategy";
+import { LoaderMappingStrategy } from "../strategy/LoaderMappingStrategy";
 
 export type EngineSupportParameters = DataSupportManagerParameters;
 
@@ -88,6 +90,8 @@ export class EngineSupport
       .install(ResourceManagerPlugin({ resources }))
       .install(DataSupportManagerPlugin(parameters))
       .install(CompilerManagerPlugin());
+
+    this.exec(LoaderDataSupportStrategy()).exec(LoaderMappingStrategy());
   }
 
   private loadLifeCycle(config: Omit<EngineSupportLoadOptions, "assets">) {
