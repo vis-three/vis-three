@@ -1,4 +1,4 @@
-import { Compiler } from "@vis-three/core";
+import { Compiler } from "../module";
 import { Object3D } from "three";
 
 import { ObjectConfig } from "./ObjectConfig";

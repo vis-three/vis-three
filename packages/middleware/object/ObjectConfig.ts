@@ -1,6 +1,6 @@
-import { BasicEventConfig } from "@vis-three/core/library/EventLibrary";
 import { SymbolConfig, Vector3Config } from "../common";
 import { CONFIGTYPE } from "../constants/configType";
+import { BasicEventConfig } from "../library/EventLibrary";
 
 export interface ObjectConfig extends SymbolConfig {
   type: string;

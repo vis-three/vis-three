@@ -1,10 +1,6 @@
-import {
-  antiShake,
-  CSS3DSprite,
-  EngineSupport,
-  defineProcessor,
-} from "@vis-three/core";
+import { CSS3DSprite } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
 import {
   ObjectCommands,
   objectCommands,
@@ -13,6 +9,7 @@ import {
 } from "../../object/ObjectProcessor";
 import { CSS3DSpriteConfig } from "../CSS3DConfig";
 import { getElement } from "./common";
+import { defineProcessor } from "../../module";
 
 export default defineProcessor<CSS3DSpriteConfig, CSS3DSprite>({
   configType: CONFIGTYPE.CSS3DSPRITE,

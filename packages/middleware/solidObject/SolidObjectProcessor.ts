@@ -1,4 +1,4 @@
-import { antiShake, EngineSupport, IgnoreAttribute } from "@vis-three/core";
+import { IgnoreAttribute } from "@vis-three/utils";
 import {
   BoxBufferGeometry,
   BufferGeometry,
@@ -6,12 +6,14 @@ import {
   ShaderMaterial,
   Sprite,
 } from "three";
+import { EngineSupport } from "../engine";
 import {
   objectCommands,
   ObjectCommands,
   objectCreate,
   objectDispose,
 } from "../object/ObjectProcessor";
+import { globalAntiShake } from "../utils";
 import { SolidObject3D } from "./SolidObjectCompiler";
 import { SolidObjectConfig } from "./SolidObjectConfig";
 
@@ -29,7 +31,7 @@ export const geometryHandler = function <
   C extends SolidObjectConfig,
   O extends SolidObject3D
 >({ target, value, engine }) {
-  antiShake.exec((finish) => {
+  globalAntiShake.exec((finish) => {
     const geometry = engine.compilerManager.getGeometry(value);
     if (!geometry) {
       if (finish) {
@@ -49,7 +51,7 @@ export const materialHandler = function <
   C extends SolidObjectConfig,
   O extends SolidObject3D
 >({ target, config, engine }) {
-  antiShake.exec((finish) => {
+  globalAntiShake.exec((finish) => {
     let material: Material | Material[];
     if (typeof config.material === "string") {
       material =

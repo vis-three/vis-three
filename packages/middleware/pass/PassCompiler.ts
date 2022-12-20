@@ -6,8 +6,9 @@ import { PassConfigAllType } from "./PassConfig";
 import SMAAPassProcessor from "./processor/SMAAPassProcessor";
 import UnrealBloomPassProcessor from "./processor/UnrealBloomPassProcessor";
 import SelectiveBloomPassProcessor from "./processor/SelectiveBloomPassProcessor";
-import { Compiler, EngineSupport } from "@vis-three/core";
 import { MODULETYPE } from "../constants";
+import { Compiler } from "../module";
+import { EngineSupport } from "../engine";
 
 export class PassCompiler extends Compiler<PassConfigAllType, Pass> {
   MODULE: MODULETYPE = MODULETYPE.PASS;

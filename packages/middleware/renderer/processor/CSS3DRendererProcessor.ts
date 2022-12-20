@@ -1,7 +1,8 @@
+import { syncObject } from "@vis-three/utils";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
-
-import { antiShake, defineProcessor, EngineSupport, syncObject } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
+import { defineProcessor } from "../../module";
 import { CSS3DRendererConfig } from "../RendererConfig";
 
 export default defineProcessor<CSS3DRendererConfig, CSS3DRenderer>({

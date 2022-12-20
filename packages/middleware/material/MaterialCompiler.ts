@@ -1,4 +1,4 @@
-import { Compiler } from "@vis-three/core";
+import { Compiler } from "../module";
 import { Material } from "three";
 import { MODULETYPE } from "../constants";
 import { MaterialAllType } from "./MaterialConfig";

@@ -1,4 +1,4 @@
-import { DataSupport } from "@vis-three/core";
+import { DataSupport } from "../module";
 import { Pass } from "three/examples/jsm/postprocessing/Pass";
 import { MODULETYPE } from "../constants";
 import { PassCompiler } from "./PassCompiler";

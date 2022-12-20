@@ -1,12 +1,10 @@
-import {
-  EngineSupport,
-  syncObject,
-  ImageTexture,
-  defineProcessor,
-} from "@vis-three/core";
+import { ImageTexture } from "@vis-three/core";
+import { syncObject } from "@vis-three/utils";
 import { CanvasTexture } from "three";
 
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
+import { defineProcessor } from "../../module";
 import { CanvasTextureConfig } from "../TextureConfig";
 import { needUpdateRegCommand, urlHanlder } from "./common";
 

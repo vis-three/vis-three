@@ -1,6 +1,6 @@
-import { DataSupport } from "@vis-three/core";
 import { Texture } from "three";
 import { MODULETYPE } from "../constants/MODULETYPE";
+import { DataSupport } from "../module";
 import { TextureCompiler } from "./TextureCompiler";
 import { TextureAllType } from "./TextureConfig";
 import { TextureRule } from "./TextureRule";

@@ -1,7 +1,7 @@
 import { AmbientLight } from "three";
-
-import { antiShake, defineProcessor, EngineSupport } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
+import { defineProcessor } from "../../module";
 import { ObjectCommands, objectDispose } from "../../object/ObjectProcessor";
 import { AmbientLightConfig } from "../LightConfig";
 import { colorHandler, lightCommands, lightCreate } from "./common";

@@ -1,6 +1,6 @@
 import { Tween } from "@tweenjs/tween.js";
 import { Object3D } from "three";
-import { antiShake, EngineSupport } from "@vis-three/core";
+import { globalAntiShake, EngineSupport } from "@vis-three/core";
 import { ObjectEvent } from "../../../manager/EventManager";
 import { RenderEvent } from "../../../manager/RenderManager";
 import { Vector3Config } from "../../../middleware/common/CommonConfig";

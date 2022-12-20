@@ -1,5 +1,5 @@
 import { OrthographicCamera } from "three";
-import { antiShake, EngineSupport, defineProcessor, SetSizeEvent } from "@vis-three/core";
+import { SetSizeEvent } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import {
   ObjectCommands,
@@ -8,8 +8,10 @@ import {
   objectDispose,
 } from "../../object/ObjectProcessor";
 import { OrthographicCameraConfig } from "../CameraConfig";
+import { defineProcessor } from "../../module";
 
 import { cacheCameraMap } from "./common";
+import { EngineSupport } from "../../engine";
 
 export default defineProcessor<OrthographicCameraConfig, OrthographicCamera>({
   configType: CONFIGTYPE.ORTHOGRAPHICCAMERA,

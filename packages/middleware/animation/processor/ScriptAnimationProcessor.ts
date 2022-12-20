@@ -1,7 +1,8 @@
-import { antiShake, defineProcessor, EngineSupport } from "@vis-three/core";
-import { RenderEvent } from "@vis-three/core/plugin/RenderManagerPlugin/RenderManager";
-import { AniScriptLibrary } from "@vis-three/core/library/AniScriptLibrary";
+import { RenderEvent } from "@vis-three/render-manager-plugin";
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
+import { AniScriptLibrary } from "../../library/AniScriptLibrary";
+import { defineProcessor } from "../../module";
 import { ScriptAnimationConfig } from "../AnimationConfig";
 import { scriptAniSymbol } from "./common";
 

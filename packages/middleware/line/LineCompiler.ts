@@ -1,4 +1,4 @@
-import { Compiler } from "@vis-three/core";
+import { Compiler } from "../module";
 import { Line } from "three";
 import { MODULETYPE } from "../constants";
 import { SolidObjectCompiler } from "../solidObject/SolidObjectCompiler";

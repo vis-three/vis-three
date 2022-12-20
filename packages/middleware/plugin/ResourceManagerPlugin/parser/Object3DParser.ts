@@ -1,15 +1,12 @@
 import { Color, Material, Object3D, Texture, Vector3 } from "three";
-
-import { syncObject } from "@vis-three/core/utils/utils";
 import { ParseParams, Parser, ResourceHanlder } from "./Parser";
 import { v4 } from "uuid";
-import {
-  CONFIGFACTORY,
-  CONFIGTYPE,
-  LoadTextureConfig,
-  MaterialConfig,
-} from "@vis-three/middleware";
-import { SolidObjectConfig } from "@vis-three/middleware/solidObject/SolidObjectConfig";
+import { CONFIGFACTORY, CONFIGTYPE } from "../../../constants";
+import { syncObject } from "@vis-three/utils";
+import { LoadTextureConfig } from "../../../texture";
+import { MaterialConfig } from "../../../material";
+import { SolidObjectConfig } from "../../../solidObject/SolidObjectConfig";
+
 
 export class Object3DParser extends Parser {
   selector: ResourceHanlder = (

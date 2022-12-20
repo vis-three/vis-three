@@ -1,4 +1,4 @@
-import { Compiler } from "@vis-three/core";
+import { Compiler } from "../module";
 import { Scene } from "three";
 import { MODULETYPE } from "../constants";
 import { ObjectCompiler } from "../object/ObjectCompiler";

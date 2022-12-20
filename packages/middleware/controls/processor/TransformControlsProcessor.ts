@@ -1,10 +1,7 @@
-import {
-  antiShake,
-  defineProcessor,
-  EngineSupport,
-  VisTransformControls,
-} from "@vis-three/core";
+
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
+import { defineProcessor } from "../../module";
 import { TransformControlsConfig } from "../ControlsConfig";
 
 export default defineProcessor<TransformControlsConfig, VisTransformControls>({

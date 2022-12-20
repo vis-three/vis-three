@@ -1,6 +1,6 @@
 import { PerspectiveCamera } from "three";
-
-import { antiShake, EngineSupport, defineProcessor, SetSizeEvent } from "@vis-three/core";
+import { defineProcessor } from "../../module";
+import { SetSizeEvent } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import {
   ObjectCommands,
@@ -10,6 +10,7 @@ import {
 } from "../../object/ObjectProcessor";
 import { PerspectiveCameraConfig } from "../CameraConfig";
 import { cacheCameraMap } from "./common";
+import { EngineSupport } from "../../engine";
 
 export default defineProcessor<PerspectiveCameraConfig, PerspectiveCamera>({
   configType: CONFIGTYPE.PERSPECTIVECAMERA,

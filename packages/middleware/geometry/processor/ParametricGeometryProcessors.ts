@@ -33,7 +33,6 @@ import {
 } from "../GeometryInterface";
 import {
   CubicBezierCurveGeometry,
-  defineProcessor,
   LineCurveGeometry,
   LineShapeGeometry,
   LineTubeGeometry,
@@ -42,6 +41,7 @@ import {
   SplineTubeGeometry,
 } from "@vis-three/core";
 import { commands, create as commonCreate } from "./common";
+import { defineProcessor } from "../../module";
 
 const constructMap = new Map<CONFIGTYPE, (config: any) => BufferGeometry>();
 

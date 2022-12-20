@@ -1,5 +1,5 @@
+import { RenderEvent } from "@vis-three/render-manager-plugin";
 import { EngineSupport } from "../engine";
-import { RenderEvent } from "../plugin/RenderManagerPlugin/RenderManager";
 
 export interface BasicAniScriptConfig {
   name: string;

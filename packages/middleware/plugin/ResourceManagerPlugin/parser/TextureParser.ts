@@ -1,5 +1,5 @@
-import { CONFIGFACTORY, CONFIGTYPE } from "@vis-three/middleware";
 import { Texture } from "three";
+import { CONFIGFACTORY, CONFIGTYPE } from "../../../constants";
 import { ParseParams, Parser, ResourceHanlder } from "./Parser";
 
 export class TextureParser extends Parser {

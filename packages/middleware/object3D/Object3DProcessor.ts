@@ -1,6 +1,7 @@
-import { defineProcessor, EngineSupport } from "@vis-three/core";
 import { Object3D } from "three";
 import { CONFIGTYPE } from "../constants/configType";
+import { EngineSupport } from "../engine";
+import { defineProcessor } from "../module";
 import { ObjectConfig } from "../object/ObjectConfig";
 import {
   objectCommands,

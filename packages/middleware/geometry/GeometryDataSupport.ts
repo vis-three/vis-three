@@ -1,4 +1,4 @@
-import { DataSupport } from "@vis-three/core";
+import { DataSupport } from "../module";
 import { BufferGeometry } from "three";
 import { MODULETYPE } from "../constants";
 import { GeometryCompiler } from "./GeometryCompiler";

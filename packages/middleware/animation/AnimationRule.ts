@@ -1,4 +1,4 @@
-import { ProxyNotice, Rule } from "@vis-three/core";
+import { ProxyNotice, Rule } from "../module";
 import { AnimationCompiler } from "./AnimationCompiler";
 
 export const AnimationRule: Rule<AnimationCompiler> = function (

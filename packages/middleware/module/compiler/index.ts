@@ -1,6 +1,6 @@
-import { Engine } from "@vis-three/core";
 import { syncObject } from "@vis-three/utils";
 import { SymbolConfig } from "../../common";
+import { EngineSupport } from "../../engine";
 import { ProxyNotice } from "../DataContainer";
 
 import { Processor } from "../Processor";
@@ -28,7 +28,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
   target: CompilerTarget<C> = {} as CompilerTarget<C>;
   map: Map<SymbolConfig["vid"], O> = new Map();
   weakMap: WeakMap<O, SymbolConfig["vid"]> = new WeakMap();
-  engine!: Engine;
+  engine!: EngineSupport;
 
   private cacheCompile?: {
     target: O;
@@ -41,7 +41,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
     return this.map;
   }
 
-  useEngine(engine: Engine): this {
+  useEngine(engine: EngineSupport): this {
     this.engine = engine;
     return this;
   }

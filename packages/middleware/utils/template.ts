@@ -1,8 +1,8 @@
-import { EngineSupportLoadOptions } from "@vis-three/core/engine/EngineSupport";
 import JSONHandler from "./JSONHandler";
 import { v4 } from "uuid";
-import { LoadOptions } from "@vis-three/core/plugin/DataSupportManagerPlugin/DataSupportManager";
 import { SymbolConfig } from "../common";
+import { EngineSupportLoadOptions } from "../engine";
+import { LoadOptions } from "../plugin/DataSupportManagerPlugin";
 
 export interface CloneResult {
   config: EngineSupportLoadOptions;

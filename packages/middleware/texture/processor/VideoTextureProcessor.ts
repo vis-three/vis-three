@@ -1,12 +1,10 @@
 import { CONFIGTYPE } from "../../constants/configType";
 import { VideoTextureConfig } from "../TextureConfig";
 import { needUpdateRegCommand, urlHanlder } from "./common";
-import {
-  EngineSupport,
-  VideoTexture,
-  syncObject,
-  defineProcessor,
-} from "@vis-three/core";
+import { VideoTexture } from "@vis-three/core";
+import { EngineSupport } from "../../engine";
+import { defineProcessor } from "../../module";
+import { syncObject } from "@vis-three/utils";
 
 export default defineProcessor<VideoTextureConfig, VideoTexture>({
   configType: CONFIGTYPE.VIDEOTEXTURE,

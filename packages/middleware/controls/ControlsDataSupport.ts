@@ -1,4 +1,4 @@
-import { DataSupport } from "@vis-three/core";
+import { DataSupport } from "../module";
 import { MODULETYPE } from "../constants";
 import { ControlsAllType, ControlsCompiler } from "./ControlsCompiler";
 import { ControlsAllConfig } from "./ControlsConfig";

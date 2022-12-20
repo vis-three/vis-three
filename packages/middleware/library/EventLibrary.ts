@@ -1,5 +1,5 @@
+import { ObjectEvent } from "@vis-three/event-manager-plugin";
 import { EngineSupport } from "../engine";
-import { ObjectEvent } from "../plugin/EventManagerPlugin/EventManager";
 
 export interface BasicEventConfig {
   name: string | Symbol;

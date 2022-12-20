@@ -1,15 +1,10 @@
 import { Vector3 } from "three";
-
-import {
-  antiShake,
-  defineProcessor,
-  EngineSupport,
-  syncObject,
-  VisOrbitControls,
-} from "@vis-three/core";
+import { VisOrbitControls } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import { OrbitControlsConfig } from "../ControlsConfig";
 import { Vector3Config } from "../../common";
+import { defineProcessor } from "../../module";
+import { EngineSupport } from "../../engine";
 
 export default defineProcessor<OrbitControlsConfig, VisOrbitControls>({
   configType: CONFIGTYPE.ORBITCONTROLS,

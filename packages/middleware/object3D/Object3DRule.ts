@@ -1,4 +1,4 @@
-import { ProxyNotice } from "@vis-three/core";
+import { ProxyNotice } from "../module";
 import { Object3D } from "three";
 import { ObjectRule } from "../object/ObjectRule";
 import { Object3DCompiler } from "./Object3DCompiler";

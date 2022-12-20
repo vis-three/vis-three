@@ -1,16 +1,12 @@
 import { Texture } from "three";
 
-import {
-  antiShake,
-  EngineSupport,
-  ImageTexture,
-  LoadTexture,
-  syncObject,
-  defineProcessor,
-} from "@vis-three/core";
+import { ImageTexture, LoadTexture } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import { LoadTextureConfig } from "../TextureConfig";
 import { needUpdateRegCommand } from "./common";
+import { defineProcessor } from "../../module";
+import { EngineSupport } from "../../engine";
+import { syncObject } from "@vis-three/utils";
 
 export default defineProcessor<LoadTextureConfig, LoadTexture>({
   configType: CONFIGTYPE.LOADTEXTURE,

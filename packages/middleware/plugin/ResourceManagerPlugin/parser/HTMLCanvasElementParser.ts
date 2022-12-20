@@ -1,4 +1,4 @@
-import { CONFIGFACTORY, CONFIGTYPE } from "@vis-three/middleware";
+import { CONFIGFACTORY, CONFIGTYPE } from "../../../constants";
 import { ParseParams, Parser, ResourceHanlder } from "./Parser";
 
 export class HTMLCanvasElementParser extends Parser {

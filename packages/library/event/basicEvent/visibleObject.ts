@@ -1,5 +1,5 @@
 import { Object3D } from "three";
-import { antiShake, EngineSupport } from "@vis-three/core";
+import { globalAntiShake, EngineSupport } from "@vis-three/core";
 import { ObjectEvent } from "../../../manager/EventManager";
 import { BasicEventConfig, EventGenerator } from "../EventLibrary";
 

@@ -1,7 +1,7 @@
 import { PointsMaterial } from "three";
-
-import { antiShake, defineProcessor, EngineSupport } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
+import { defineProcessor } from "../../module";
 import { PointsMaterialConfig } from "../MaterialConfig";
 import {
   colorSetHandler,

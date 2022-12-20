@@ -1,4 +1,4 @@
-import { antiShake, EngineSupport, defineProcessor, CSS3DPlane } from "@vis-three/core";
+import { CSS3DPlane } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import {
   ObjectCommands,
@@ -8,6 +8,8 @@ import {
 } from "../../object/ObjectProcessor";
 import { CSS3DPlaneConfig } from "../CSS3DConfig";
 import { getElement } from "./common";
+import { defineProcessor } from "../../module";
+import { EngineSupport } from "../../engine";
 
 export default defineProcessor<CSS3DPlaneConfig, CSS3DPlane>({
   configType: CONFIGTYPE.CSS3DPLANE,

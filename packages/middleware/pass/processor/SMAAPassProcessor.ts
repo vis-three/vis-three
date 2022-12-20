@@ -1,6 +1,6 @@
-import { defineProcessor } from "@vis-three/core";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 import { CONFIGTYPE } from "../../constants/configType";
+import { defineProcessor } from "../../module";
 import { SMAAPassConfig } from "../PassConfig";
 
 export default defineProcessor<SMAAPassConfig, SMAAPass>({

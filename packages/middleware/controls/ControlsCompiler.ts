@@ -1,8 +1,10 @@
-import { Compiler, EngineSupport, VisOrbitControls } from "@vis-three/core";
+import { VisOrbitControls } from "@vis-three/core";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { uniqueSymbol } from "../common";
 import { MODULETYPE } from "../constants";
 import { CONFIGTYPE } from "../constants/configType";
+import { EngineSupport } from "../engine";
+import { Compiler } from "../module";
 
 import { ControlsAllConfig } from "./ControlsConfig";
 import OrbitControlsProcessor from "./processor/OrbitControlsProcessor";

@@ -1,6 +1,6 @@
 import { Tween } from "@tweenjs/tween.js";
 import { Color } from "three";
-import { antiShake, EngineSupport } from "@vis-three/core";
+import { globalAntiShake, EngineSupport } from "@vis-three/core";
 import { ObjectEvent } from "../../../manager/EventManager";
 import { RenderEvent } from "../../../manager/RenderManager";
 import { BasicEventConfig, EventGenerator } from "../EventLibrary";

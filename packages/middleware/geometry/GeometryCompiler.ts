@@ -4,7 +4,7 @@ import { ParametricGeometryProcessors } from "./processor/ParametricGeometryProc
 import LoadGeometryProcessor from "./processor/LoadGeometryProcessor";
 import CustomGeometryProcessor from "./processor/CustomGeometryProcessor";
 import EdgesGeometryProcessor from "./processor/EdgesGeometryProcessor";
-import { Compiler } from "@vis-three/core";
+import { Compiler } from "../module";
 import { MODULETYPE } from "../constants";
 
 export class GeometryCompiler extends Compiler<

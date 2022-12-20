@@ -1,5 +1,6 @@
-import { Compiler, VisCSS2DObject } from "@vis-three/core";
+import { VisCSS2DObject } from "@vis-three/core";
 import { MODULETYPE } from "../constants";
+import { Compiler } from "../module";
 import { ObjectCompiler } from "../object/ObjectCompiler";
 import { CSS2DAllType } from "./CSS2DConfig";
 import CSS2DPlaneProcessor from "./CSS2DPlaneProcessor";

@@ -1,14 +1,10 @@
 import { Color, HemisphereLight } from "three";
-import {
-  antiShake,
-  EngineSupport,
-  defineProcessor,
-  ProcessParams,
-} from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
 import { ObjectCommands, objectDispose } from "../../object/ObjectProcessor";
 import { HemisphereLightConfig } from "../LightConfig";
 import { lightCommands, lightCreate } from "./common";
+import { defineProcessor, ProcessParams } from "../../module";
+import { EngineSupport } from "../../engine";
 
 export default defineProcessor<HemisphereLightConfig, HemisphereLight>({
   configType: CONFIGTYPE.HEMISPHERELIGHT,

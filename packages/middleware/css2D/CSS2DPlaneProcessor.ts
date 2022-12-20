@@ -1,5 +1,6 @@
-import { CSS2DPlane, EngineSupport, defineProcessor } from "@vis-three/core";
+import { CSS2DPlane } from "@vis-three/core";
 import { CONFIGTYPE } from "../constants/configType";
+import { EngineSupport } from "../engine";
 import {
   ObjectCommands,
   objectCommands,
@@ -7,6 +8,7 @@ import {
   objectDispose,
 } from "../object/ObjectProcessor";
 import { CSS2DPlaneConfig } from "./CSS2DConfig";
+import { defineProcessor } from "../module";
 
 export const getElement = function (
   element: string,

@@ -1,5 +1,5 @@
-import { CompileNotice, Compiler } from "@vis-three/core";
 import { MODULETYPE } from "../constants";
+import { CompileNotice, Compiler } from "../module";
 import { AnimationAllType } from "./AnimationConfig";
 import { scriptAniSymbol } from "./processor/common";
 import ScriptAnimationProcessor from "./processor/ScriptAnimationProcessor";

@@ -33,7 +33,7 @@ import {
 } from "../../core/src/core/Observable";
 import { Watcher } from "../../core/src/core/widget/Watcher";
 import { clone, handler, planish } from "../../core/src/convenient/Template";
-import { antiShake } from "../../core/src/utils/AntiShake";
+import { globalAntiShake } from "../../core/src/utils/AntiShake";
 import { v4 } from "uuid";
 
 const lifetimes = [
@@ -315,7 +315,7 @@ export class Widget extends EventDispatcher {
 
     this.parent = options.parent;
 
-    antiShake.append(() => {
+    globalAntiShake.append(() => {
       this.createWatch();
       this.emit("rendered");
       return true;

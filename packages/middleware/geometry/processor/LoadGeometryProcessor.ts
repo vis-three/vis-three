@@ -1,12 +1,8 @@
+import { LoadGeometry } from "@vis-three/core";
 import { BoxBufferGeometry, BufferGeometry } from "three";
-import {
-  antiShake,
-  defineProcessor,
-  EngineSupport,
-  LoadGeometry,
-  ProcessorCommands,
-} from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
+import { defineProcessor, ProcessorCommands } from "../../module";
 import { LoadGeometryConfig } from "../GeometryInterface";
 import { commands, create } from "./common";
 

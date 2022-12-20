@@ -4,7 +4,7 @@ import { ObjectCompiler } from "../object/ObjectCompiler";
 import PerspectiveCameraProcessor from "./processor/PerspectiveCameraProcessor";
 import OrthographicCameraProcessor from "./processor/OrthographicCameraProcessor";
 import { MODULETYPE } from "../constants";
-import { Compiler } from "@vis-three/core";
+import { Compiler } from "../module";
 
 export class CameraCompiler extends ObjectCompiler<
   CameraConfigAllType,

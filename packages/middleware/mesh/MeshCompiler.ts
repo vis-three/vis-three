@@ -1,11 +1,5 @@
-import { Compiler } from "@vis-three/core";
-import {
-  BoxBufferGeometry,
-  BufferGeometry,
-  Material,
-  Mesh,
-  MeshBasicMaterial,
-} from "three";
+import { Compiler } from "../module";
+import { Mesh } from "three";
 import { MODULETYPE } from "../constants";
 import { SolidObjectCompiler } from "../solidObject/SolidObjectCompiler";
 import { MeshConfig } from "./MeshConfig";

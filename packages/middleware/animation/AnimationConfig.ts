@@ -1,6 +1,6 @@
-import { BasicAniScriptConfig } from "@vis-three/core/library/AniScriptLibrary";
 import { SymbolConfig } from "../common";
 import { CONFIGTYPE } from "../constants/configType";
+import { BasicAniScriptConfig } from "../library/AniScriptLibrary";
 
 export interface AnimationConfig extends SymbolConfig {
   name: string;

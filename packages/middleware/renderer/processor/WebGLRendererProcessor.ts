@@ -1,7 +1,8 @@
+import { syncObject } from "@vis-three/utils";
 import { WebGLRenderer } from "three";
-
-import { antiShake, defineProcessor, EngineSupport, syncObject } from "@vis-three/core";
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
+import { defineProcessor } from "../../module";
 import { WebGLRendererConfig } from "../RendererConfig";
 
 export default defineProcessor<WebGLRendererConfig, WebGLRenderer>({

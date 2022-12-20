@@ -1,28 +1,28 @@
 import { EventDispatcher } from "@vis-three/core";
-import {
-  AnimationCompiler,
-  CameraCompiler,
-  ControlsCompiler,
-  CSS2DCompiler,
-  CSS3DCompiler,
-  GeometryCompiler,
-  GroupCompiler,
-  LightCompiler,
-  LineCompiler,
-  MaterialCompiler,
-  MeshCompiler,
-  MODULETYPE,
-  Object3DCompiler,
-  PassCompiler,
-  PointsCompiler,
-  RendererCompiler,
-  SceneCompiler,
-  SpriteCompiler,
-  SymbolConfig,
-  TextureCompiler,
-} from "@vis-three/middleware";
-import { ObjectCompiler } from "@vis-three/middleware/object/ObjectCompiler";
 import { BufferGeometry, Material, Object3D, Texture } from "three";
+import { AnimationCompiler } from "../../animation";
+import { CameraCompiler } from "../../camera";
+import { SymbolConfig } from "../../common";
+import { MODULETYPE } from "../../constants";
+import { ControlsCompiler } from "../../controls";
+import { CSS2DCompiler } from "../../css2D";
+import { CSS3DCompiler } from "../../css3D";
+import { EngineSupport } from "../../engine";
+import { GeometryCompiler } from "../../geometry";
+import { GroupCompiler } from "../../group";
+import { LightCompiler } from "../../light";
+import { LineCompiler } from "../../line";
+import { MaterialCompiler } from "../../material";
+import { MeshCompiler } from "../../mesh";
+import { BasicCompiler, Compiler } from "../../module";
+import { ObjectCompiler } from "../../object/ObjectCompiler";
+import { Object3DCompiler } from "../../object3D";
+import { PassCompiler } from "../../pass";
+import { PointsCompiler } from "../../points";
+import { RendererCompiler } from "../../renderer";
+import { SceneCompiler } from "../../scene";
+import { SpriteCompiler } from "../../sprite";
+import { TextureCompiler } from "../../texture";
 
 export interface CompilerManagerParameters {
   object3DCompiler: Object3DCompiler;

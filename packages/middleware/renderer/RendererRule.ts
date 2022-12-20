@@ -1,7 +1,7 @@
-import { ProxyNotice, Rule } from "@vis-three/core";
 import { validate } from "uuid";
 import { uniqueSymbol } from "../common";
 import { CONFIGTYPE } from "../constants/configType";
+import { ProxyNotice, Rule } from "../module";
 import { RendererCompiler } from "./RendererCompiler";
 
 const uniqueList = [

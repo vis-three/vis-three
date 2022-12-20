@@ -1,6 +1,6 @@
-import { defineProcessor, ProcessorCommands } from "@vis-three/core";
 import { BufferGeometry, Float32BufferAttribute } from "three";
 import { CONFIGTYPE } from "../../constants/configType";
+import { defineProcessor, ProcessorCommands } from "../../module";
 import { CustomGeometryConfig } from "../GeometryInterface";
 import { commands, create } from "./common";
 

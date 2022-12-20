@@ -1,5 +1,9 @@
+import { IgnoreAttribute, syncObject } from "@vis-three/utils";
 import { Color, Material, Texture } from "three";
-import { antiShake, EngineSupport, IgnoreAttribute, ProcessParams, syncObject } from "@vis-three/core";
+import { EngineSupport } from "../../engine";
+import { ProcessParams } from "../../module";
+import { globalAntiShake } from "../../utils";
+
 import { MaterialConfig } from "../MaterialConfig";
 
 export const commonNeedUpdatesRegCommand = {
@@ -18,7 +22,7 @@ export const mapHandler = function <
   T extends Material,
   C extends MaterialConfig
 >({ target, key, value, engine }: ProcessParams<C, T>) {
-  antiShake.exec((finish) => {
+  globalAntiShake.exec((finish) => {
     const texture = engine.compilerManager.getObjectBySymbol(value);
 
     if (!(texture instanceof Texture)) {

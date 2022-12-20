@@ -1,4 +1,5 @@
-import { ProxyNotice, VisCSS2DObject } from "@vis-three/core";
+import { VisCSS2DObject } from "@vis-three/core";
+import { ProxyNotice } from "../module";
 import { ObjectRule } from "../object/ObjectRule";
 import { CSS2DCompiler } from "./CSS2DCompiler";
 import { CSS2DAllType } from "./CSS2DConfig";

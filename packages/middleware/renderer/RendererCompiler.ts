@@ -5,8 +5,9 @@ import WebGLRendererProcessor from "./processor/WebGLRendererProcessor";
 import CSS3DRendererProcessor from "./processor/CSS3DRendererProcessor";
 import { RendererConfigAllType } from "./RendererConfig";
 import { MODULETYPE } from "../constants";
-import { Compiler, EngineSupport } from "@vis-three/core";
 import { uniqueSymbol } from "../common";
+import { EngineSupport } from "../engine";
+import { Compiler } from "../module";
 
 export type RendererAllType = WebGLRenderer | CSS3DRenderer;
 

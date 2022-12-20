@@ -1,11 +1,8 @@
-import {
-  antiShake,
-  EngineSupport,
-  ImageTexture,
-  syncObject,
-  defineProcessor,
-} from "@vis-three/core";
+import { ImageTexture } from "@vis-three/core";
+import { syncObject } from "@vis-three/utils";
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
+import { defineProcessor } from "../../module";
 import { ImageTextureConfig } from "../TextureConfig";
 import { needUpdateRegCommand, urlHanlder } from "./common";
 

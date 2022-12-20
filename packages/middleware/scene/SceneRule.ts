@@ -1,4 +1,4 @@
-import { ProxyNotice } from "@vis-three/core";
+import { ProxyNotice } from "../module";
 import { Scene } from "three";
 import { validate } from "uuid";
 import { uniqueSymbol } from "../common";

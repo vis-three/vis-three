@@ -6,6 +6,7 @@ import {
 } from "@vis-three/utils";
 import { SymbolConfig } from "../../common";
 import { CONFIGTYPE } from "../../constants";
+import { EngineSupport } from "../../engine";
 import { CompileNotice, Compiler } from "../compiler";
 
 export interface ProcessParams<C extends SymbolConfig, T extends object>

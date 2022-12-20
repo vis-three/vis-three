@@ -2,7 +2,7 @@ import { Vector3Config } from "../../../middleware/common/CommonConfig";
 import { BasicEventConfig, EventGenerator } from "../EventLibrary";
 import { Tween } from "@tweenjs/tween.js";
 import { timingFunction, TIMINGFUNCTION } from "./common";
-import { antiShake, EngineSupport } from "@vis-three/core";
+import { globalAntiShake, EngineSupport } from "@vis-three/core";
 import { ObjectEvent } from "../../../manager/EventManager";
 import { ObjectConfig } from "../../../middleware/object/ObjectConfig";
 import { RenderEvent } from "../../../manager/RenderManager";

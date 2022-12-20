@@ -1,21 +1,17 @@
+import { EVENTNAME, ObjectEvent } from "@vis-three/event-manager-plugin";
+import { IgnoreAttribute, syncObject } from "@vis-three/utils";
+import { Object3D, Vector3 } from "three";
+import { CONFIGTYPE } from "../constants/configType";
+import { EngineSupport } from "../engine";
+import { EventLibrary } from "../library/EventLibrary";
 import {
-  antiShake,
   defineProcessor,
   emptyHandler,
-  EngineSupport,
-  IgnoreAttribute,
   ProcessorCommands,
   ProcessParams,
   RegCommand,
-  syncObject,
-} from "@vis-three/core";
-import {
-  EVENTNAME,
-  ObjectEvent,
-} from "@vis-three/core/plugin/EventManagerPlugin/EventManager";
-import { Object3D, Vector3 } from "three";
-import { EventLibrary } from "@vis-three/core/library/EventLibrary";
-import { CONFIGTYPE } from "../constants/configType";
+} from "../module";
+import { globalAntiShake } from "../utils";
 import { ObjectConfig } from "./ObjectConfig";
 
 export interface ObjectCacheData {
@@ -54,7 +50,7 @@ export const lookAtHandler = function <
     return;
   }
 
-  antiShake.exec((finish) => {
+  globalAntiShake.exec((finish) => {
     const lookAtTarget = engine.compilerManager.getObject3D(value);
 
     if (!lookAtTarget) {
@@ -161,7 +157,7 @@ export const addChildrenHanlder = function <
   C extends ObjectConfig,
   O extends Object3D
 >({ target, config, value, engine }: ProcessParams<C, O>) {
-  antiShake.exec((finish) => {
+  globalAntiShake.exec((finish) => {
     const childrenConfig = engine.getConfigBySymbol(value) as ObjectConfig;
     if (!childrenConfig) {
       if (finish) {
@@ -255,7 +251,7 @@ export const objectCreate = function <
 
   // event
   for (const eventName of Object.values(EVENTNAME)) {
-    antiShake.force(() => {
+    globalAntiShake.nextTick(() => {
       config[eventName].forEach((event, i) => {
         addEventHanlder({
           target: object,

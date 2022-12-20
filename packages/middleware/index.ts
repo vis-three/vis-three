@@ -20,3 +20,4 @@ export * from "./texture";
 export * from "./group";
 export * from "./utils";
 export * from "./engine";
+export * from "./library";

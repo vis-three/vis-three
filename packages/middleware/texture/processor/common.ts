@@ -1,4 +1,6 @@
-import { antiShake, EngineSupport, ProcessParams } from "@vis-three/core";
+import { EngineSupport } from "../../engine";
+import { ProcessParams } from "../../module";
+import { globalAntiShake } from "../../utils";
 import { TextureCompiler } from "../TextureCompiler";
 
 export const needUpdateRegCommand = {
@@ -20,7 +22,7 @@ export const urlHanlder = function ({
   value: string;
   engine: EngineSupport;
 }) {
-  antiShake.exec((finish) => {
+  globalAntiShake.exec((finish) => {
     target.image = engine.compilerManager.textureCompiler.getResource(value, [
       HTMLImageElement,
       HTMLVideoElement,

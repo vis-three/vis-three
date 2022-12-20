@@ -8,7 +8,7 @@ import SpotLightProcessor from "./processor/SpotLightProcessor";
 import HemisphereLightProcessor from "./processor/HemisphereLightProcessor";
 import RectAreaLightProcessor from "./processor/RectAreaLightProcessor";
 import { MODULETYPE } from "../constants";
-import { Compiler } from "@vis-three/core";
+import { Compiler } from "../module";
 
 export class LightCompiler extends ObjectCompiler<LightConfigAllType, Light> {
   MODULE: MODULETYPE = MODULETYPE.LIGHT;

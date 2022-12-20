@@ -1,10 +1,5 @@
-import { Compiler } from "@vis-three/core";
-import {
-  BufferGeometry,
-  PlaneBufferGeometry,
-  Sprite,
-  SpriteMaterial,
-} from "three";
+import { Compiler } from "../module";
+import { Sprite } from "three";
 import { MODULETYPE } from "../constants";
 import { SolidObjectCompiler } from "../solidObject/SolidObjectCompiler";
 import { SpriteConfig } from "./SpriteConfig";

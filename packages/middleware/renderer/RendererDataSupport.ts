@@ -1,4 +1,4 @@
-import { DataSupport } from "@vis-three/core";
+import { DataSupport } from "../module";
 import { MODULETYPE } from "../constants";
 import { RendererAllType, RendererCompiler } from "./RendererCompiler";
 import { RendererConfigAllType } from "./RendererConfig";
