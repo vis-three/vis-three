@@ -1,4 +1,4 @@
-import { SymbolConfig } from "@vis-three/middleware";
+import { SymbolConfig } from "../../common";
 import { Compiler } from "../compiler";
 import { ProxyNotice } from "../dataContainer";
 import { Rule } from "../rule";
@@ -8,21 +8,20 @@ export class Translater<
   O extends object,
   C extends Compiler<S, O>
 > {
-  private rule: Rule<C>;
-  private memberSet: Set<C>;
-
-  constructor() {
-    this.rule = function () {};
-    this.memberSet = new Set();
-  }
+  private rule: Rule<C> = () => {};
+  private members: Array<C> = [];
 
   apply(compiler: C): this {
-    this.memberSet.add(compiler);
+    if (!this.members.includes(compiler)) {
+      this.members.push(compiler);
+    }
     return this;
   }
 
   cancel(compiler: C): this {
-    this.memberSet.delete(compiler);
+    if (this.members.includes(compiler)) {
+      this.members.splice(this.members.indexOf(compiler), 1);
+    }
     return this;
   }
 
@@ -33,9 +32,10 @@ export class Translater<
 
   translate(notice: ProxyNotice): this {
     const rule = this.rule;
-    this.memberSet.forEach((compiler) => {
+
+    for (const compiler of this.members) {
       rule(notice, compiler);
-    });
+    }
     return this;
   }
 }

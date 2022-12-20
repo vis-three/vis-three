@@ -1,9 +1,9 @@
-import { observable } from "@vis-three/core";
-import { EngineSupport } from "@vis-three/core/engine/EngineSupport";
-import { DeepPartial } from "@vis-three/core/utils/utils";
+import { DeepPartial } from "@vis-three/utils";
 import { v4 as getUuid } from "uuid";
 import { isObjectType, SymbolConfig } from "../common";
 import { CONFIGFACTORY, CONFIGTYPE } from "../constants";
+import { EngineSupport } from "../engine";
+import { observable } from "../module";
 import { SceneConfig } from "../scene/SceneConfig";
 
 export interface C extends SymbolConfig {}
