@@ -1,4 +1,4 @@
-import { Engine, Plugin } from "@vis-three/core";
+import { Engine, ENGINE_EVENT, Plugin } from "@vis-three/core";
 import { ResourceManager } from "./ResourceManager";
 
 export * from "./ResourceManager";
@@ -13,11 +13,13 @@ export interface ResourceManagerEngine extends Engine {
   ) => ResourceManagerEngine;
 }
 
+export const RESOURCE_MANAGER_PLUGIN = "ResourceManagerPlugin";
+
 export const ResourceManagerPlugin: Plugin<ResourceManagerEngine> = function (
   params: ResourceManagerPluginParameters
 ) {
   return {
-    name: "ResourceManagerPlugin",
+    name: RESOURCE_MANAGER_PLUGIN,
     install(engine) {
       const resourceManager = new ResourceManager(params.resources);
 

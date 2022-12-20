@@ -1,7 +1,5 @@
-import { SymbolConfig } from "@vis-three/middleware";
 import { Engine } from "@vis-three/core/engine";
-import { LoaderManagerEngine } from "@vis-three/core/plugin/LoaderManagerPlugin";
-import { Plugin } from "@vis-three/core/plugin/plugin";
+
 import {
   DataSupportManager,
   DataSupportManagerParameters,

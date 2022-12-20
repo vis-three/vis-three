@@ -343,7 +343,10 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.5.0
+      '@vis-three/event-manager-plugin': workspace:^0.5.0
       '@vis-three/loader-manager-plugin': workspace:^0.5.0
+      '@vis-three/pointer-manager-plugin': workspace:^0.4.0
+      '@vis-three/render-manager-plugin': workspace:^0.4.0
       '@vis-three/utils': workspace:^0.4.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -355,7 +358,10 @@ importers:
       uuid: ^8.3.2
     dependencies:
       '@vis-three/core': link:../core
+      '@vis-three/event-manager-plugin': link:../plugins/EventManagerPlugin
       '@vis-three/loader-manager-plugin': link:../plugins/LoaderManagerPlugin
+      '@vis-three/pointer-manager-plugin': link:../plugins/PointerManagerPlugin
+      '@vis-three/render-manager-plugin': link:../plugins/RenderManagerPlugin
       '@vis-three/utils': link:../utils
       rxjs: 7.6.0
       uuid: 8.3.2

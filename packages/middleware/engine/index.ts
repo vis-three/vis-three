@@ -1,5 +1,38 @@
 import { Engine } from "@vis-three/core";
-
+import {
+  LoadedEvent,
+  LoaderManager,
+  LoaderManagerEngine,
+  LoaderManagerPlugin,
+  LoadUnit,
+} from "@vis-three/loader-manager-plugin";
+import {
+  PointerManager,
+  PointerManagerEngine,
+  PointerManagerPlugin,
+} from "@vis-three/pointer-manager-plugin";
+import {
+  EventManager,
+  EventManagerEngine,
+  EventManagerPlugin,
+} from "@vis-three/event-manager-plugin";
+import {
+  RenderManager,
+  RenderManagerEngine,
+  RenderManagerPlugin,
+} from "@vis-three/render-manager-plugin";
+import {
+  DataSupportManagerParameters,
+  DataSupportManagerPlugin,
+  LoadOptions,
+} from "../plugin/DataSupportManagerPlugin";
+import { MODULETYPE } from "../constants";
+import {
+  ResourceManager,
+  ResourceManagerEngine,
+  ResourceManagerPlugin,
+} from "../plugin/ResourceManagerPlugin";
+import { SymbolConfig } from "../common";
 
 export type EngineSupportParameters = DataSupportManagerParameters;
 
@@ -10,35 +43,29 @@ export interface EngineSupportLoadOptions extends LoadOptions {
 export class EngineSupport
   extends Engine
   implements
-    LoaderMappingEngine,
+    LoaderManagerEngine,
     PointerManagerEngine,
     EventManagerEngine,
     RenderManagerEngine,
+    ResourceManagerEngine,
     DataSupportEngine,
     CompilerManagerEngine
 {
   declare loaderManager: LoaderManager;
   declare loadResources: (
     urlList: LoadUnit[],
-    callback: (err: Error | undefined, event?: MappedEvent | undefined) => void
-  ) => LoaderMappingEngine;
-  declare loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
+    callback: (err: Error | undefined, event?: LoadedEvent | undefined) => void
+  ) => LoaderManagerEngine;
+  declare loadResourcesAsync: (urlList: LoadUnit[]) => Promise<LoadedEvent>;
+  declare eventManager: EventManager;
+  declare renderManager: RenderManager;
+  declare play: () => void;
+  declare stop: () => void;
+  declare pointerManager: PointerManager;
   declare resourceManager: ResourceManager;
   declare registerResources: (
     resourceMap: Record<string, unknown>
   ) => ResourceManagerEngine;
-  declare renderManager: RenderManager;
-  declare pointerManager: PointerManager;
-  declare compilerManager: CompilerManager;
-  declare getObjectSymbol: (object: any) => string | null;
-  declare getObjectBySymbol: (vid: string) => any;
-  declare dataSupportManager: DataSupportManager;
-  declare applyConfig: (...args: SymbolConfig[]) => DataSupportEngine;
-  declare getConfigBySymbol: (vid: string) => SymbolConfig | null;
-  declare removeConfigBySymbol: (...args: string[]) => DataSupportEngine;
-  declare toJSON: () => string;
-  declare exportConfig: () => LoadOptions;
-  declare eventManager: EventManager;
 
   constructor(
     parameters: EngineSupportParameters = {},
@@ -46,10 +73,10 @@ export class EngineSupport
   ) {
     super();
     this.install(LoaderManagerPlugin())
-      .install(ResourceManagerPlugin({ resources }))
       .install(PointerManagerPlugin())
       .install(EventManagerPlugin())
       .install(RenderManagerPlugin())
+      .install(ResourceManagerPlugin({ resources }))
       .install(DataSupportManagerPlugin(parameters))
       .install(CompilerManagerPlugin());
   }
