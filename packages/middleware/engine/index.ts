@@ -1,8 +1,6 @@
 import { Engine } from "@vis-three/core";
 import {
-  LoadedEvent,
   LoaderManager,
-  LoaderManagerEngine,
   LoaderManagerPlugin,
   LoadUnit,
 } from "@vis-three/loader-manager-plugin";
@@ -37,7 +35,15 @@ import {
 } from "../plugin/ResourceManagerPlugin";
 import { SymbolConfig } from "../common";
 import { LoaderDataSupportStrategy } from "../strategy/LoaderDataSuportStrategy";
-import { LoaderMappingStrategy } from "../strategy/LoaderMappingStrategy";
+import {
+  LoaderMappingEngine,
+  LoaderMappingStrategy,
+} from "../strategy/LoaderMappingStrategy";
+import {
+  CompilerManager,
+  CompilerManagerEngine,
+  CompilerManagerPlugin,
+} from "../plugin/CompilerManagerPlugin";
 
 export type EngineSupportParameters = DataSupportManagerParameters;
 
@@ -48,20 +54,15 @@ export interface EngineSupportLoadOptions extends LoadOptions {
 export class EngineSupport
   extends Engine
   implements
-    LoaderManagerEngine,
     PointerManagerEngine,
     EventManagerEngine,
     RenderManagerEngine,
     ResourceManagerEngine,
     DataSupportEngine,
-    CompilerManagerEngine
+    CompilerManagerEngine,
+    LoaderMappingEngine
 {
   declare loaderManager: LoaderManager;
-  declare loadResources: (
-    urlList: LoadUnit[],
-    callback: (err: Error | undefined, event?: LoadedEvent | undefined) => void
-  ) => LoaderManagerEngine;
-  declare loadResourcesAsync: (urlList: LoadUnit[]) => Promise<LoadedEvent>;
   declare eventManager: EventManager;
   declare renderManager: RenderManager;
   declare play: () => void;
@@ -77,6 +78,14 @@ export class EngineSupport
   declare removeConfigBySymbol: (...args: string[]) => DataSupportEngine;
   declare toJSON: () => string;
   declare exportConfig: () => LoadOptions;
+  declare compilerManager: CompilerManager;
+  declare getObjectSymbol: (object: any) => string | null;
+  declare getObjectBySymbol: (vid: string) => any;
+  declare loadResources: (
+    urlList: LoadUnit[],
+    callback: (err: Error | undefined, event?: MappedEvent | undefined) => void
+  ) => this;
+  declare loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
 
   constructor(
     parameters: EngineSupportParameters = {},
