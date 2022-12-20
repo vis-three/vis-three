@@ -1,5 +1,6 @@
-import { Engine } from "@vis-three/core/engine";
-
+import { Engine, Plugin } from "@vis-three/core";
+import { Optional } from "@vis-three/utils";
+import { SymbolConfig } from "../../common";
 import {
   DataSupportManager,
   DataSupportManagerParameters,
@@ -17,15 +18,13 @@ export interface DataSupportEngine extends Engine {
 
 export * from "./DataSupportManager";
 
-export interface LoaderDataSupportEngine
-  extends LoaderManagerEngine,
-    DataSupportEngine {}
+export const DATA_SUPPORT_MANAGER_PLUGIN = "DataSupportManagerPlugin";
 
 export const DataSupportManagerPlugin: Plugin<DataSupportEngine> = function (
   params: DataSupportManagerParameters
 ) {
   return {
-    name: "DataSupportManagerPlugin",
+    name: DATA_SUPPORT_MANAGER_PLUGIN,
     install(engine) {
       const dataSupportManager = new DataSupportManager(params);
 
@@ -53,6 +52,23 @@ export const DataSupportManagerPlugin: Plugin<DataSupportEngine> = function (
         return dataSupportManager.exportConfig();
       };
     },
-    dispose() {},
+    dispose(
+      engine: Optional<
+        DataSupportEngine,
+        | "dataSupportManager"
+        | "applyConfig"
+        | "getConfigBySymbol"
+        | "removeConfigBySymbol"
+        | "toJSON"
+        | "exportConfig"
+      >
+    ) {
+      delete engine.dataSupportManager;
+      delete engine.applyConfig;
+      delete engine.getConfigBySymbol;
+      delete engine.removeConfigBySymbol;
+      delete engine.toJSON;
+      delete engine.exportConfig;
+    },
   };
 };

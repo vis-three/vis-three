@@ -22,12 +22,15 @@ import {
   RenderManagerPlugin,
 } from "@vis-three/render-manager-plugin";
 import {
+  DataSupportEngine,
+  DataSupportManager,
   DataSupportManagerParameters,
   DataSupportManagerPlugin,
   LoadOptions,
 } from "../plugin/DataSupportManagerPlugin";
 import { MODULETYPE } from "../constants";
 import {
+  MappedEvent,
   ResourceManager,
   ResourceManagerEngine,
   ResourceManagerPlugin,
@@ -66,6 +69,12 @@ export class EngineSupport
   declare registerResources: (
     resourceMap: Record<string, unknown>
   ) => ResourceManagerEngine;
+  declare dataSupportManager: DataSupportManager;
+  declare applyConfig: (...args: SymbolConfig[]) => DataSupportEngine;
+  declare getConfigBySymbol: (vid: string) => SymbolConfig | null;
+  declare removeConfigBySymbol: (...args: string[]) => DataSupportEngine;
+  declare toJSON: () => string;
+  declare exportConfig: () => LoadOptions;
 
   constructor(
     parameters: EngineSupportParameters = {},
@@ -126,10 +135,10 @@ export class EngineSupport
     config: EngineSupportLoadOptions,
     callback?: (event?: MappedEvent) => void
   ): this {
-    const renderFlag = this.renderManager!.hasRendering();
+    const renderFlag = this.renderManager.hasRendering();
 
     if (renderFlag) {
-      this.renderManager!.stop();
+      this.renderManager.stop();
     }
 
     // 导入外部资源
@@ -141,9 +150,9 @@ export class EngineSupport
         this.resourceManager.removeEventListener("mapped", mappedFun);
         callback && callback(event);
         if (renderFlag) {
-          this.renderManager!.play();
+          this.renderManager.play();
         } else {
-          this.renderManager!.render();
+          this.renderManager.render();
         }
       };
 
@@ -154,9 +163,9 @@ export class EngineSupport
       callback && callback();
 
       if (renderFlag) {
-        this.renderManager!.play();
+        this.renderManager.play();
       } else {
-        this.renderManager!.render();
+        this.renderManager.render();
       }
     }
 
@@ -170,7 +179,7 @@ export class EngineSupport
       const renderFlag = this.renderManager!.hasRendering();
 
       if (renderFlag) {
-        this.renderManager!.stop();
+        this.renderManager.stop();
       }
       // 导入外部资源
       if (config.assets && config.assets.length) {
@@ -180,9 +189,9 @@ export class EngineSupport
 
           this.resourceManager.removeEventListener("mapped", mappedFun);
           if (renderFlag) {
-            this.renderManager!.play();
+            this.renderManager.play();
           } else {
-            this.renderManager!.render();
+            this.renderManager.render();
           }
           resolve(event);
         };
@@ -192,9 +201,9 @@ export class EngineSupport
       } else {
         this.loadLifeCycle(config);
         if (renderFlag) {
-          this.renderManager!.play();
+          this.renderManager.play();
         } else {
-          this.renderManager!.render();
+          this.renderManager.render();
         }
         resolve(undefined);
       }
