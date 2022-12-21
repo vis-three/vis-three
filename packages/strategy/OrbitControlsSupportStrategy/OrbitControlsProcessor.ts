@@ -1,16 +1,23 @@
 import { Vector3 } from "three";
 import { VisOrbitControls } from "@vis-three/core";
-import { CONFIGTYPE } from "../../constants/configType";
-import { OrbitControlsConfig } from "../ControlsConfig";
-import { Vector3Config } from "../../common";
-import { defineProcessor } from "../../module";
-import { EngineSupport } from "../../engine";
 import { syncObject } from "@vis-three/utils";
+import {
+  CONFIGTYPE,
+  defineProcessor,
+  EngineSupport,
+  OrbitControlsConfig,
+  Vector3Config,
+} from "@vis-three/middleware";
+import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
+
+export interface OrbitControlsSupportEngine
+  extends EngineSupport,
+    OrbitControlsEngine {}
 
 export default defineProcessor<
   OrbitControlsConfig,
   VisOrbitControls,
-  EngineSupport
+  OrbitControlsSupportEngine
 >({
   configType: CONFIGTYPE.ORBITCONTROLS,
   commands: {
@@ -39,16 +46,11 @@ export default defineProcessor<
       },
     },
   },
-  create(config: OrbitControlsConfig, engine: EngineSupport): VisOrbitControls {
-    let controls: VisOrbitControls;
-
-    if (engine.orbitControls) {
-      controls = engine.orbitControls!;
-    } else {
-      controls = new VisOrbitControls();
-      controls.setCamera(engine.camera);
-      controls.setDom(engine.dom!);
-    }
+  create(
+    config: OrbitControlsConfig,
+    engine: OrbitControlsSupportEngine
+  ): VisOrbitControls {
+    let controls = engine.orbitControls;
 
     if (config.target) {
       if (typeof config.target === "string") {

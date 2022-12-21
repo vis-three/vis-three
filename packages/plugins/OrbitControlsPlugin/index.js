@@ -1,13 +1,13 @@
 import { ENGINE_EVENT, VisOrbitControls, } from "@vis-three/core";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
-export const name = transPkgName(pkgname);
+export const ORBIT_CONTROLS_PLUGIN = transPkgName(pkgname);
 export const OrbitControlsPlugin = function () {
     let setDomFun;
     let setCameraFun;
     let cacheRender;
     return {
-        name,
+        name: ORBIT_CONTROLS_PLUGIN,
         install(engine) {
             const controls = new VisOrbitControls(engine.camera, engine.dom);
             engine.orbitControls = controls;
