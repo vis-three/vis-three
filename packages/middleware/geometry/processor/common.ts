@@ -8,6 +8,7 @@ import {
   ShapeGeometry,
   TubeGeometry,
 } from "three";
+import { EngineSupport } from "../../engine";
 import { ProcessorCommands, ProcessParams } from "../../module";
 import { GeometryAllType, GeometryConfig } from "../GeometryInterface";
 
@@ -63,7 +64,12 @@ export const transfromAnchor = function <
 
 const commonRegCommand = {
   reg: new RegExp(".*"),
-  handler({ config, target, processor, engine }: ProcessParams<any, any>) {
+  handler({
+    config,
+    target,
+    processor,
+    engine,
+  }: ProcessParams<any, any, EngineSupport>) {
     const newGeometry = processor.create(config, engine);
     target.copy(newGeometry);
     target // TODO: 使用dispatch通知更新 // 辅助的更新根据uuid的更新而更新，直接copy无法判断是否更新
@@ -76,7 +82,11 @@ const commonRegCommand = {
   },
 };
 
-export const commands: ProcessorCommands<GeometryConfig, BufferGeometry> = {
+export const commands: ProcessorCommands<
+  GeometryConfig,
+  BufferGeometry,
+  EngineSupport
+> = {
   add: {
     groups({ target, value }) {
       target.addGroup(value.start, value.count, value.materialIndex);

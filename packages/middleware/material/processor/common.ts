@@ -12,7 +12,7 @@ export const commonNeedUpdatesRegCommand = {
     target,
     key,
     value,
-  }: ProcessParams<C, T>) {
+  }: ProcessParams<C, T, EngineSupport>) {
     target[key] = value;
     target.needsUpdate = true;
   },
@@ -21,7 +21,7 @@ export const commonNeedUpdatesRegCommand = {
 export const mapHandler = function <
   T extends Material,
   C extends MaterialConfig
->({ target, key, value, engine }: ProcessParams<C, T>) {
+>({ target, key, value, engine }: ProcessParams<C, T, EngineSupport>) {
   globalAntiShake.exec((finish) => {
     const texture = engine.compilerManager.getObjectBySymbol(value);
 
@@ -50,7 +50,7 @@ export const commonMapRegCommand = {
 export const colorSetHandler = function <
   T extends Material,
   C extends MaterialConfig
->({ target, key, value }: ProcessParams<C, T>) {
+>({ target, key, value }: ProcessParams<C, T, EngineSupport>) {
   (target[key] as Color).copy(new Color(value));
 };
 
@@ -65,7 +65,8 @@ export const create = function <T extends Material, C extends MaterialConfig>(
     if (key.toLocaleLowerCase().endsWith("map") && config[key]) {
       mapHandler({ target, key, value: config[key], engine } as ProcessParams<
         C,
-        T
+        T,
+        EngineSupport
       >);
       filter[key] = true;
     } else if (target[key] instanceof Color) {

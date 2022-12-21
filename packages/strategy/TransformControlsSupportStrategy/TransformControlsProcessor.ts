@@ -1,12 +1,22 @@
-import { CONFIGTYPE } from "../../constants/configType";
-import { EngineSupport } from "../../engine";
-import { defineProcessor } from "../../module";
-import { TransformControlsConfig } from "../ControlsConfig";
+import {
+  CONFIGTYPE,
+  defineProcessor,
+  EngineSupport,
+  TransformControlsConfig,
+} from "@vis-three/middleware";
+import {
+  TransformControlsEngine,
+  VisTransformControls,
+} from "@vis-three/transform-controls-plugin";
+
+export interface TransformControlsSupportEngine
+  extends EngineSupport,
+    TransformControlsEngine {}
 
 export default defineProcessor<
   TransformControlsConfig,
   VisTransformControls,
-  EngineSupport
+  TransformControlsSupportEngine
 >({
   configType: CONFIGTYPE.TRNASFORMCONTROLS,
   commands: {
@@ -44,17 +54,9 @@ export default defineProcessor<
   },
   create(
     config: TransformControlsConfig,
-    engine: EngineSupport
+    engine: TransformControlsSupportEngine
   ): VisTransformControls {
-    let control: VisTransformControls;
-
-    if (engine.transformControls) {
-      control = engine.transformControls! as VisTransformControls;
-    } else {
-      control = new VisTransformControls();
-      control.setCamera(engine.camera);
-      engine.dom && control.setDom(engine.dom!);
-    }
+    let control = engine.transformControls;
 
     if (config.snapAllow) {
       control.translationSnap = config.translationSnap;

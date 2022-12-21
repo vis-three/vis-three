@@ -12,14 +12,17 @@ export type BasicCompiler = Compiler<SymbolConfig, object>;
 export type CompileNotice = Omit<ProxyNotice, "path"> & { path: string[] };
 
 export abstract class Compiler<C extends SymbolConfig, O extends object> {
-  static processors = new Map<string, Processor<SymbolConfig, object>>();
+  static processors = new Map<
+    string,
+    Processor<SymbolConfig, object, EngineSupport>
+  >();
 
   static processor = function <C extends SymbolConfig, T extends object>(
-    processor: Processor<C, T>
+    processor: Processor<C, T, EngineSupport>
   ) {
     Compiler.processors.set(
       processor.configType,
-      <Processor<SymbolConfig, object>>(<unknown>processor)
+      <Processor<SymbolConfig, object, EngineSupport>>(<unknown>processor)
     );
   };
 
@@ -33,7 +36,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
   private cacheCompile?: {
     target: O;
     config: C;
-    processor: Processor<SymbolConfig, object>;
+    processor: Processor<SymbolConfig, object, EngineSupport>;
     vid: string;
   };
 
@@ -61,7 +64,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
 
     const processor = Compiler.processors.get(
       config.type
-    )! as unknown as Processor<C, O>;
+    )! as unknown as Processor<C, O, EngineSupport>;
 
     const object = processor.create(config, this.engine);
     this.map.set(config.vid, object);
@@ -121,7 +124,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
 
     let object: O;
     let config: C;
-    let processor: Processor<SymbolConfig, object>;
+    let processor: Processor<SymbolConfig, object, EngineSupport>;
 
     if (cacheCompile && cacheCompile.vid === vid) {
       object = cacheCompile.target;

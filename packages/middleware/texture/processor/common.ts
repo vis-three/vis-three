@@ -7,7 +7,7 @@ export const needUpdateRegCommand = {
   reg: new RegExp(
     "wrapS|wrapT|format|encoding|anisotropy|magFilter|minFilter|mapping"
   ),
-  handler({ target, key, value }: ProcessParams<any, any>) {
+  handler({ target, key, value }: ProcessParams<any, any, EngineSupport>) {
     target[key] = value;
     target.needsUpdate = true;
   },

@@ -25,7 +25,7 @@ const objectCacheMap = new WeakMap<Object3D, ObjectCacheData>();
 export const lookAtHandler = function <
   C extends ObjectConfig,
   O extends Object3D
->({ target, config, value, engine }: ProcessParams<C, O>) {
+>({ target, config, value, engine }: ProcessParams<C, O, EngineSupport>) {
   // 不能自己看自己
   if (config.vid === value) {
     console.warn(`can not set object lookAt itself.`);
@@ -82,7 +82,7 @@ const eventSymbol = "vis.event";
 export const addEventHanlder = function <
   C extends ObjectConfig,
   O extends Object3D
->({ target, path, value, engine }: ProcessParams<C, O>) {
+>({ target, path, value, engine }: ProcessParams<C, O, EngineSupport>) {
   const eventName = path[0];
 
   if (!EventLibrary.has(value.name)) {
@@ -105,7 +105,7 @@ export const addEventHanlder = function <
 export const removeEventHandler = function <
   C extends ObjectConfig,
   O extends Object3D
->({ target, path, value }: ProcessParams<C, O>) {
+>({ target, path, value }: ProcessParams<C, O, EngineSupport>) {
   const eventName = path[0];
   const fun = value[Symbol.for(eventSymbol)];
 
@@ -122,7 +122,7 @@ export const removeEventHandler = function <
 export const updateEventHandler = function <
   C extends ObjectConfig,
   O extends Object3D
->({ target, config, path, engine }: ProcessParams<C, O>) {
+>({ target, config, path, engine }: ProcessParams<C, O, EngineSupport>) {
   // fixed: cover empty array
   if (path.length < 2) {
     return;
@@ -156,7 +156,7 @@ export const updateEventHandler = function <
 export const addChildrenHanlder = function <
   C extends ObjectConfig,
   O extends Object3D
->({ target, config, value, engine }: ProcessParams<C, O>) {
+>({ target, config, value, engine }: ProcessParams<C, O, EngineSupport>) {
   globalAntiShake.exec((finish) => {
     const childrenConfig = engine.getConfigBySymbol(value) as ObjectConfig;
     if (!childrenConfig) {
@@ -204,7 +204,7 @@ export const addChildrenHanlder = function <
 export const removeChildrenHandler = function <
   C extends ObjectConfig,
   O extends Object3D
->({ target, config, value, engine }: ProcessParams<C, O>) {
+>({ target, config, value, engine }: ProcessParams<C, O, EngineSupport>) {
   const childrenObject = engine.compilerManager.getObject3D(value);
 
   if (!childrenObject) {
@@ -237,7 +237,7 @@ export const objectCreate = function <
       config,
       engine,
       value: config.lookAt,
-    } as ProcessParams<C, O>);
+    } as ProcessParams<C, O, EngineSupport>);
 
   // children
   config.children.forEach((vid) => {
@@ -246,7 +246,7 @@ export const objectCreate = function <
       config,
       value: vid,
       engine,
-    } as ProcessParams<C, O>);
+    } as ProcessParams<C, O, EngineSupport>);
   });
 
   // event
@@ -258,7 +258,7 @@ export const objectCreate = function <
           path: [eventName, i.toString()],
           value: event,
           engine,
-        } as unknown as ProcessParams<C, O>);
+        } as unknown as ProcessParams<C, O, EngineSupport>);
       });
       return true;
     });
@@ -292,7 +292,7 @@ export const objectDispose = function <O extends Object3D>(target: O) {
 export type ObjectCommands<
   C extends ObjectConfig,
   T extends Object3D
-> = ProcessorCommands<C, T>;
+> = ProcessorCommands<C, T, EngineSupport>;
 
 export const objectCommands: ObjectCommands<ObjectConfig, Object3D> = {
   add: {
@@ -324,7 +324,9 @@ export const objectCommands: ObjectCommands<ObjectConfig, Object3D> = {
           handler: addChildrenHanlder,
         },
       ],
-    } as Array<undefined> & { $reg?: RegCommand<ObjectConfig, Object3D>[] },
+    } as Array<undefined> & {
+      $reg?: RegCommand<ObjectConfig, Object3D, EngineSupport>[];
+    },
   },
   delete: {
     pointerdown: removeEventHandler,

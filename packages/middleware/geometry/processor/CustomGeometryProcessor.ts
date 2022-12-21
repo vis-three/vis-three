@@ -1,5 +1,6 @@
 import { BufferGeometry, Float32BufferAttribute } from "three";
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
 import { defineProcessor, ProcessorCommands } from "../../module";
 import { CustomGeometryConfig } from "../GeometryInterface";
 import { commands, create } from "./common";
@@ -40,9 +41,9 @@ export default defineProcessor<
   EngineSupport
 >({
   configType: CONFIGTYPE.CUSTOMGEOMETRY,
-  commands: <ProcessorCommands<CustomGeometryConfig, BufferGeometry>>(
-    (<unknown>commands)
-  ),
+  commands: <
+    ProcessorCommands<CustomGeometryConfig, BufferGeometry, EngineSupport>
+  >(<unknown>commands),
   create(config: CustomGeometryConfig): BufferGeometry {
     return create(generateGeometry(config.attribute), config);
   },

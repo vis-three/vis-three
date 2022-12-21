@@ -21,7 +21,7 @@ export default defineProcessor<
       groundColor: function ({
         target,
         value,
-      }: ProcessParams<HemisphereLightConfig, HemisphereLight>) {
+      }: ProcessParams<HemisphereLightConfig, HemisphereLight, EngineSupport>) {
         target.groundColor.copy(new Color(value));
       },
     },

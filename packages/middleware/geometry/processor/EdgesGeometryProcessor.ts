@@ -11,9 +11,9 @@ export default defineProcessor<
   EngineSupport
 >({
   configType: CONFIGTYPE.EDGESGEOMETRY,
-  commands: <ProcessorCommands<EdgesGeometryConfig, EdgesGeometry>>(
-    (<unknown>commands)
-  ),
+  commands: <
+    ProcessorCommands<EdgesGeometryConfig, EdgesGeometry, EngineSupport>
+  >(<unknown>commands),
   create(config: EdgesGeometryConfig, engine: EngineSupport): EdgesGeometry {
     const geometry = engine.compilerManager.getObjectBySymbol(config.url);
     if (!geometry || !(geometry instanceof BufferGeometry)) {

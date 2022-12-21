@@ -8,7 +8,7 @@ import { LightConifg } from "../LightConfig";
 export const colorHandler = function <C extends LightConifg, O extends Light>({
   target,
   value,
-}: ProcessParams<C, O>) {
+}: ProcessParams<C, O, EngineSupport>) {
   target.color.copy(new Color(value));
 };
 

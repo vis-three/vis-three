@@ -1,5 +1,6 @@
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
 import { defineProcessor } from "../../module";
 import { SMAAPassConfig } from "../PassConfig";
 

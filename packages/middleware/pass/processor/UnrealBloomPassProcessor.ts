@@ -1,6 +1,7 @@
 import { Vector2 } from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
 import { defineProcessor } from "../../module";
 import { UnrealBloomPassConfig } from "../PassConfig";
 

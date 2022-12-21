@@ -1,6 +1,7 @@
 import { SelectiveBloomPass } from "@vis-three/core";
 import { Camera, Object3D, Scene, Vector2 } from "three";
 import { CONFIGTYPE } from "../../constants/configType";
+import { EngineSupport } from "../../engine";
 import { defineProcessor } from "../../module";
 import { SelectiveBloomPassConfig } from "../PassConfig";
 

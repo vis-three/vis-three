@@ -9,9 +9,9 @@ import { commands, create } from "./common";
 export default defineProcessor<LoadGeometryConfig, LoadGeometry, EngineSupport>(
   {
     configType: CONFIGTYPE.LOADGEOMETRY,
-    commands: <ProcessorCommands<LoadGeometryConfig, LoadGeometry>>(
-      (<unknown>commands)
-    ),
+    commands: <
+      ProcessorCommands<LoadGeometryConfig, LoadGeometry, EngineSupport>
+    >(<unknown>commands),
     create(config: LoadGeometryConfig, engine: EngineSupport) {
       const originGeometry = engine.resourceManager.resourceMap.get(
         config.url
