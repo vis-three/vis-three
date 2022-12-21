@@ -4,7 +4,11 @@ import { CONFIGTYPE } from "../../constants/configType";
 import { defineProcessor } from "../../module";
 import { SelectiveBloomPassConfig } from "../PassConfig";
 
-export default defineProcessor<SelectiveBloomPassConfig, SelectiveBloomPass>({
+export default defineProcessor<
+  SelectiveBloomPassConfig,
+  SelectiveBloomPass,
+  EngineSupport
+>({
   configType: CONFIGTYPE.SELECTIVEBLOOMPASS,
 
   commands: {

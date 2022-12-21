@@ -5,8 +5,13 @@ import { OrbitControlsConfig } from "../ControlsConfig";
 import { Vector3Config } from "../../common";
 import { defineProcessor } from "../../module";
 import { EngineSupport } from "../../engine";
+import { syncObject } from "@vis-three/utils";
 
-export default defineProcessor<OrbitControlsConfig, VisOrbitControls>({
+export default defineProcessor<
+  OrbitControlsConfig,
+  VisOrbitControls,
+  EngineSupport
+>({
   configType: CONFIGTYPE.ORBITCONTROLS,
   commands: {
     set: {

@@ -11,7 +11,7 @@ import { CSS3DSpriteConfig } from "../CSS3DConfig";
 import { getElement } from "./common";
 import { defineProcessor } from "../../module";
 
-export default defineProcessor<CSS3DSpriteConfig, CSS3DSprite>({
+export default defineProcessor<CSS3DSpriteConfig, CSS3DSprite, EngineSupport>({
   configType: CONFIGTYPE.CSS3DSPRITE,
   commands: {
     add: (

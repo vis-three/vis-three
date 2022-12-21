@@ -5,7 +5,11 @@ import { defineProcessor, ProcessorCommands } from "../../module";
 import { EdgesGeometryConfig } from "../GeometryInterface";
 import { commands, create } from "./common";
 
-export default defineProcessor<EdgesGeometryConfig, EdgesGeometry>({
+export default defineProcessor<
+  EdgesGeometryConfig,
+  EdgesGeometry,
+  EngineSupport
+>({
   configType: CONFIGTYPE.EDGESGEOMETRY,
   commands: <ProcessorCommands<EdgesGeometryConfig, EdgesGeometry>>(
     (<unknown>commands)

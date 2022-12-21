@@ -55,7 +55,7 @@ const setEnvironment = function (
   }
 };
 
-export default defineProcessor<SceneConfig, Scene>({
+export default defineProcessor<SceneConfig, Scene, EngineSupport>({
   configType: CONFIGTYPE.SCENE,
   commands: {
     add: (<ObjectCommands<SceneConfig, Scene>>(<unknown>objectCommands)).add,

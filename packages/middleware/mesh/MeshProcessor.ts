@@ -10,7 +10,7 @@ import {
 } from "../solidObject/SolidObjectProcessor";
 import { MeshConfig } from "./MeshConfig";
 
-export default defineProcessor<MeshConfig, Mesh>({
+export default defineProcessor<MeshConfig, Mesh, EngineSupport>({
   configType: CONFIGTYPE.MESH,
   commands: <SolidObjectCommands<MeshConfig, Mesh>>(
     (<unknown>solidObjectCommands)

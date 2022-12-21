@@ -6,7 +6,11 @@ import { ObjectCommands, objectDispose } from "../../object/ObjectProcessor";
 import { DirectionalLightConfig } from "../LightConfig";
 import { colorHandler, lightCommands, lightCreate } from "./common";
 
-export default defineProcessor<DirectionalLightConfig, DirectionalLight>({
+export default defineProcessor<
+  DirectionalLightConfig,
+  DirectionalLight,
+  EngineSupport
+>({
   configType: CONFIGTYPE.DIRECTIONALLIGHT,
   commands: lightCommands as unknown as ObjectCommands<
     DirectionalLightConfig,

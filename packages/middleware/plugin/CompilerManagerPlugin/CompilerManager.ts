@@ -65,7 +65,7 @@ export class CompilerManager extends EventDispatcher {
   passCompiler = new PassCompiler();
   animationCompiler = new AnimationCompiler();
 
-  private compilerMap: Map<MODULETYPE, BasicCompiler>;
+  compilerMap: Map<MODULETYPE, BasicCompiler>;
 
   constructor(parameters?: CompilerManagerParameters) {
     super();
@@ -85,28 +85,6 @@ export class CompilerManager extends EventDispatcher {
     });
 
     this.compilerMap = compilerMap;
-  }
-
-  /**
-   * engine进行编译器链接
-   * @param engine EngineSupport
-   * @returns this
-   */
-  support(engine: EngineSupport): this {
-    // 根据engine设置
-    this.compilerMap.forEach((compiler) => {
-      compiler.useEngine(engine);
-    });
-
-    const dataSupportManager = engine.dataSupportManager;
-
-    for (const module of Object.values(MODULETYPE)) {
-      dataSupportManager[`${module}DataSupport`].addCompiler(
-        // @ts-ignore
-        this[`${module}Compiler`]
-      );
-    }
-    return this;
   }
 
   /**

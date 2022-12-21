@@ -11,7 +11,7 @@ import { getElement } from "./common";
 import { defineProcessor } from "../../module";
 import { EngineSupport } from "../../engine";
 
-export default defineProcessor<CSS3DPlaneConfig, CSS3DPlane>({
+export default defineProcessor<CSS3DPlaneConfig, CSS3DPlane, EngineSupport>({
   configType: CONFIGTYPE.CSS3DPLANE,
   commands: {
     add: (

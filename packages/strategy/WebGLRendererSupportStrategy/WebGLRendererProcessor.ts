@@ -1,11 +1,22 @@
+import {
+  CONFIGTYPE,
+  defineProcessor,
+  EngineSupport,
+  WebGLRendererConfig,
+} from "@vis-three/middleware";
 import { syncObject } from "@vis-three/utils";
+import { WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
 import { WebGLRenderer } from "three";
-import { CONFIGTYPE } from "../../constants/configType";
-import { EngineSupport } from "../../engine";
-import { defineProcessor } from "../../module";
-import { WebGLRendererConfig } from "../RendererConfig";
 
-export default defineProcessor<WebGLRendererConfig, WebGLRenderer>({
+export interface WebGLRendererSupportEngine
+  extends EngineSupport,
+    WebGLRendererEngine {}
+
+export default defineProcessor<
+  WebGLRendererConfig,
+  WebGLRenderer,
+  WebGLRendererSupportEngine
+>({
   configType: CONFIGTYPE.WEBGLRENDERER,
   commands: {
     set: {
@@ -71,13 +82,11 @@ export default defineProcessor<WebGLRendererConfig, WebGLRenderer>({
       },
     },
   },
-  create(config: WebGLRendererConfig, engine: EngineSupport): WebGLRenderer {
-    let renderer: WebGLRenderer;
-    if (engine.webGLRenderer) {
-      renderer = engine.webGLRenderer;
-    } else {
-      renderer = new WebGLRenderer();
-    }
+  create(
+    config: WebGLRendererConfig,
+    engine: WebGLRendererSupportEngine
+  ): WebGLRenderer {
+    let renderer = engine.webGLRenderer;
 
     if (config.size) {
       renderer.setSize(config.size.x, config.size.y);

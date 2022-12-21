@@ -6,7 +6,7 @@ import { ObjectCommands, objectDispose } from "../../object/ObjectProcessor";
 import { SpotLightConfig } from "../LightConfig";
 import { lightCommands, lightCreate } from "./common";
 
-export default defineProcessor<SpotLightConfig, SpotLight>({
+export default defineProcessor<SpotLightConfig, SpotLight, EngineSupport>({
   configType: CONFIGTYPE.SPOTLIGHT,
   commands: lightCommands as unknown as ObjectCommands<
     SpotLightConfig,

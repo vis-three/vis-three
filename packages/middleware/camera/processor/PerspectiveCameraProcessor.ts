@@ -12,7 +12,11 @@ import { PerspectiveCameraConfig } from "../CameraConfig";
 import { cacheCameraMap } from "./common";
 import { EngineSupport } from "../../engine";
 
-export default defineProcessor<PerspectiveCameraConfig, PerspectiveCamera>({
+export default defineProcessor<
+  PerspectiveCameraConfig,
+  PerspectiveCamera,
+  EngineSupport
+>({
   configType: CONFIGTYPE.PERSPECTIVECAMERA,
   commands: {
     add: {

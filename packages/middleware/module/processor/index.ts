@@ -9,63 +9,91 @@ import { CONFIGTYPE } from "../../constants";
 import { EngineSupport } from "../../engine";
 import { CompileNotice, Compiler } from "../compiler";
 
-export interface ProcessParams<C extends SymbolConfig, T extends object>
-  extends CompileNotice {
+export interface ProcessParams<
+  C extends SymbolConfig,
+  T extends object,
+  E extends EngineSupport
+> extends CompileNotice {
   config: C;
   target: T;
-  processor: Processor<C, T>;
+  processor: Processor<C, T, E>;
   compiler: Compiler<C, T>;
-  engine: EngineSupport;
+  engine: E;
 }
 
-export type RegCommand<C extends SymbolConfig, T extends object> = {
+export type RegCommand<
+  C extends SymbolConfig,
+  T extends object,
+  E extends EngineSupport
+> = {
   reg: RegExp;
-  handler: (params: ProcessParams<C, T>) => void;
+  handler: (params: ProcessParams<C, T, E>) => void;
 };
 
-export type KeyCommand<C extends SymbolConfig, T extends object> = (
-  params: ProcessParams<C, T>
-) => void;
+export type KeyCommand<
+  C extends SymbolConfig,
+  T extends object,
+  E extends EngineSupport
+> = (params: ProcessParams<C, T, E>) => void;
 
 export type CommandStructure<
   C extends SymbolConfig,
-  T extends object
+  T extends object,
+  E extends EngineSupport
 > = DeepIntersection<
-  DeepPartial<DeepRecord<DeepUnion<C, KeyCommand<C, T>>, KeyCommand<C, T>>>,
-  { $reg?: RegCommand<C, T>[] }
+  DeepPartial<
+    DeepRecord<DeepUnion<C, KeyCommand<C, T, E>>, KeyCommand<C, T, E>>
+  >,
+  { $reg?: RegCommand<C, T, E>[] }
 >;
 
-export interface ProcessorCommands<C extends SymbolConfig, T extends object> {
-  add?: CommandStructure<C, T>;
-  set?: CommandStructure<C, T>;
-  delete?: CommandStructure<C, T>;
+export interface ProcessorCommands<
+  C extends SymbolConfig,
+  T extends object,
+  E extends EngineSupport
+> {
+  add?: CommandStructure<C, T, E>;
+  set?: CommandStructure<C, T, E>;
+  delete?: CommandStructure<C, T, E>;
 }
 
-export interface ProcessorOptions<C extends SymbolConfig, T extends object> {
+export interface ProcessorOptions<
+  C extends SymbolConfig,
+  T extends object,
+  E extends EngineSupport
+> {
   configType: CONFIGTYPE | string;
-  commands?: ProcessorCommands<C, T>;
-  create: (config: C, engine: EngineSupport) => T;
+  commands?: ProcessorCommands<C, T, E>;
+  create: (config: C, engine: E) => T;
   dispose: (target: T) => void;
 }
 
-export type DefineProcessor = <C extends SymbolConfig, T extends object>(
-  options: ProcessorOptions<C, T>
-) => Processor<C, T>;
+export type DefineProcessor = <
+  C extends SymbolConfig,
+  T extends object,
+  E extends EngineSupport
+>(
+  options: ProcessorOptions<C, T, E>
+) => Processor<C, T, E>;
 
-export class Processor<C extends SymbolConfig, T extends object> {
+export class Processor<
+  C extends SymbolConfig,
+  T extends object,
+  E extends EngineSupport
+> {
   configType: CONFIGTYPE | string;
-  commands?: ProcessorCommands<C, T>;
-  create: (config: C, engine: EngineSupport) => T;
+  commands?: ProcessorCommands<C, T, E>;
+  create: (config: C, engine: E) => T;
   dispose: (target: T) => void;
 
-  constructor(options: ProcessorOptions<C, T>) {
+  constructor(options: ProcessorOptions<C, T, E>) {
     this.configType = options.configType;
     this.commands = options.commands;
     this.create = options.create;
     this.dispose = options.dispose;
   }
 
-  process(params: ProcessParams<C, T>) {
+  process(params: ProcessParams<C, T, E>) {
     if (!this.commands || !this.commands[params.operate]) {
       this[params.operate](params);
       return;
@@ -96,7 +124,7 @@ export class Processor<C extends SymbolConfig, T extends object> {
     this[params.operate](params);
   }
 
-  add(params: ProcessParams<C, T>) {
+  add(params: ProcessParams<C, T, E>) {
     let target = params.target;
     const path = params.path;
 
@@ -112,7 +140,7 @@ export class Processor<C extends SymbolConfig, T extends object> {
     target[params.key] = params.value;
   }
 
-  set(params: ProcessParams<C, T>) {
+  set(params: ProcessParams<C, T, E>) {
     let target = params.target;
     const path = params.path;
 
@@ -128,7 +156,7 @@ export class Processor<C extends SymbolConfig, T extends object> {
     target[params.key] = params.value;
   }
 
-  delete(params: ProcessParams<C, T>) {
+  delete(params: ProcessParams<C, T, E>) {
     let target = params.target;
     const path = params.path;
 
@@ -147,11 +175,12 @@ export class Processor<C extends SymbolConfig, T extends object> {
 
 export const defineProcessor: DefineProcessor = <
   C extends SymbolConfig,
-  T extends object
+  T extends object,
+  E extends EngineSupport
 >(
-  options: ProcessorOptions<C, T>
+  options: ProcessorOptions<C, T, E>
 ) => {
-  return new Processor<C, T>(options);
+  return new Processor<C, T, E>(options);
 };
 
 export const emptyHandler = function () {};

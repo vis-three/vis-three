@@ -43,7 +43,8 @@ const createFunction = function (
 
 export default defineProcessor<
   ScriptAnimationConfig,
-  (event: RenderEvent) => void
+  (event: RenderEvent) => void,
+  EngineSupport
 >({
   configType: CONFIGTYPE.SCRIPTANIMATION,
   commands: {

@@ -9,7 +9,7 @@ import {
   objectDispose,
 } from "../object/ObjectProcessor";
 
-export default defineProcessor<ObjectConfig, Object3D>({
+export default defineProcessor<ObjectConfig, Object3D, EngineSupport>({
   configType: CONFIGTYPE.OBJECT3D,
   commands: objectCommands,
   create(config: ObjectConfig, engine: EngineSupport): Object3D {

@@ -11,7 +11,11 @@ import {
   dispose,
 } from "./common";
 
-export default defineProcessor<LineBasicMaterialConfig, LineBasicMaterial>({
+export default defineProcessor<
+  LineBasicMaterialConfig,
+  LineBasicMaterial,
+  EngineSupport
+>({
   configType: CONFIGTYPE.LINEBASICMATERIAL,
   commands: {
     set: {

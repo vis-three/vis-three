@@ -8,7 +8,11 @@ import { defineProcessor } from "../../module";
 import { CanvasTextureConfig } from "../TextureConfig";
 import { needUpdateRegCommand, urlHanlder } from "./common";
 
-export default defineProcessor<CanvasTextureConfig, CanvasTexture>({
+export default defineProcessor<
+  CanvasTextureConfig,
+  CanvasTexture,
+  EngineSupport
+>({
   configType: CONFIGTYPE.CANVASTEXTURE,
   commands: {
     set: {

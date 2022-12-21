@@ -13,7 +13,8 @@ import {
 
 export default defineProcessor<
   MeshStandardMaterialConfig,
-  MeshStandardMaterial
+  MeshStandardMaterial,
+  EngineSupport
 >({
   configType: CONFIGTYPE.MESHSTANDARDMATERIAL,
   commands: {

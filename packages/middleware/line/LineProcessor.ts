@@ -10,7 +10,7 @@ import {
 } from "../solidObject/SolidObjectProcessor";
 import { LineConfig } from "./LineConfig";
 
-export default defineProcessor<LineConfig, Line>({
+export default defineProcessor<LineConfig, Line, EngineSupport>({
   configType: CONFIGTYPE.LINE,
   commands: <SolidObjectCommands<LineConfig, Line>>(
     (<unknown>solidObjectCommands)

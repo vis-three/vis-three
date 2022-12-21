@@ -13,7 +13,8 @@ import {
 
 export default defineProcessor<
   MeshPhysicalMaterialConfig,
-  MeshPhysicalMaterial
+  MeshPhysicalMaterial,
+  EngineSupport
 >({
   configType: CONFIGTYPE.MESHPHYSICALMATERIAL,
   commands: {

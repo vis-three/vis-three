@@ -1,3 +1,4 @@
+export * from "./module";
 export * from "./common";
 export * from "./constants";
 export * from "./animation";
@@ -21,3 +22,11 @@ export * from "./group";
 export * from "./utils";
 export * from "./engine";
 export * from "./library";
+
+export * from "./plugin/CompilerManagerPlugin";
+export * from "./plugin/DataSupportManagerPlugin";
+export * from "./plugin/ResourceManagerPlugin";
+
+export * from "./strategy/CompilerSupportStrategy";
+export * from "./strategy/LoaderDataSuportStrategy";
+export * from "./strategy/LoaderMappingStrategy";

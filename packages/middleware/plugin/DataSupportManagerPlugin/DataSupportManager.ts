@@ -86,7 +86,7 @@ export class DataSupportManager {
   passDataSupport = new PassDataSupport();
   animationDataSupport = new AnimationDataSupport();
 
-  private dataSupportMap: Map<
+  dataSupportMap: Map<
     MODULETYPE,
     DataSupport<SymbolConfig, object, BasicCompiler>
   >;

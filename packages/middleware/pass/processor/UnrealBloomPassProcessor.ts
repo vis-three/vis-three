@@ -4,7 +4,11 @@ import { CONFIGTYPE } from "../../constants/configType";
 import { defineProcessor } from "../../module";
 import { UnrealBloomPassConfig } from "../PassConfig";
 
-export default defineProcessor<UnrealBloomPassConfig, UnrealBloomPass>({
+export default defineProcessor<
+  UnrealBloomPassConfig,
+  UnrealBloomPass,
+  EngineSupport
+>({
   configType: CONFIGTYPE.UNREALBLOOMPASS,
   create(config, engine): UnrealBloomPass {
     const pixelRatio = window.devicePixelRatio;

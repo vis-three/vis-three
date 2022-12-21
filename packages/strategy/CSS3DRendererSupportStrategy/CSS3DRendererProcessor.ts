@@ -1,11 +1,22 @@
+import { CSS3DRendererEngine } from "@vis-three/css3d-renderer-plugin";
+import {
+  CONFIGTYPE,
+  CSS3DRendererConfig,
+  defineProcessor,
+  EngineSupport,
+} from "@vis-three/middleware";
 import { syncObject } from "@vis-three/utils";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
-import { CONFIGTYPE } from "../../constants/configType";
-import { EngineSupport } from "../../engine";
-import { defineProcessor } from "../../module";
-import { CSS3DRendererConfig } from "../RendererConfig";
 
-export default defineProcessor<CSS3DRendererConfig, CSS3DRenderer>({
+export interface CSS3DRendererSupportEngine
+  extends EngineSupport,
+    CSS3DRendererEngine {}
+
+export default defineProcessor<
+  CSS3DRendererConfig,
+  CSS3DRenderer,
+  CSS3DRendererSupportEngine
+>({
   configType: CONFIGTYPE.CSS3DRENDERER,
   commands: {
     set: {
@@ -21,14 +32,11 @@ export default defineProcessor<CSS3DRendererConfig, CSS3DRenderer>({
       },
     },
   },
-  create(config: CSS3DRendererConfig, engine: EngineSupport): CSS3DRenderer {
-    let renderer: CSS3DRenderer;
-
-    if (engine.css3DRenderer) {
-      renderer = engine.css3DRenderer!;
-    } else {
-      renderer = new CSS3DRenderer();
-    }
+  create(
+    config: CSS3DRendererConfig,
+    engine: CSS3DRendererSupportEngine
+  ): CSS3DRenderer {
+    let renderer = engine.css3DRenderer;
 
     if (config.size) {
       renderer.setSize(config.size.x, config.size.y);

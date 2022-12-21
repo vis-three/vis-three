@@ -11,7 +11,11 @@ import {
   dispose,
 } from "./common";
 
-export default defineProcessor<PointsMaterialConfig, PointsMaterial>({
+export default defineProcessor<
+  PointsMaterialConfig,
+  PointsMaterial,
+  EngineSupport
+>({
   configType: CONFIGTYPE.POINTSMATERIAL,
   commands: {
     set: {

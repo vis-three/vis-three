@@ -2,14 +2,14 @@ import { ENGINE_EVENT, } from "@vis-three/core";
 import { CSS3DObject, CSS3DRenderer, } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
-export const name = transPkgName(pkgname);
+export const CSS3D_RENDERER_PLUGIN = transPkgName(pkgname);
 export const CSS3DRendererPlugin = function () {
     let setDomFun;
     let setSizeFun;
     let setSceneFun;
     let cacheRender;
     return {
-        name,
+        name: CSS3D_RENDERER_PLUGIN,
         install(engine) {
             const css3DRenderer = new CSS3DRenderer();
             engine.css3DRenderer = css3DRenderer;

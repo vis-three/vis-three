@@ -12,7 +12,11 @@ import {
   dispose,
 } from "./common";
 
-export default defineProcessor<MeshBasicMaterialConfig, MeshBasicMaterial>({
+export default defineProcessor<
+  MeshBasicMaterialConfig,
+  MeshBasicMaterial,
+  EngineSupport
+>({
   configType: CONFIGTYPE.MESHBASICMATERIAL,
   commands: {
     set: {

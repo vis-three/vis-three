@@ -10,7 +10,7 @@ import {
 } from "../object/ObjectProcessor";
 import { GroupConfig } from "./GroupConfig";
 
-export default defineProcessor<GroupConfig, Group>({
+export default defineProcessor<GroupConfig, Group, EngineSupport>({
   configType: CONFIGTYPE.GROUP,
   commands: <ObjectCommands<GroupConfig, Group>>(<unknown>objectCommands),
   create(config: GroupConfig, engine: EngineSupport): Group {

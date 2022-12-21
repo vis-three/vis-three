@@ -6,7 +6,11 @@ import { ObjectCommands, objectDispose } from "../../object/ObjectProcessor";
 import { RectAreaLightConfig } from "../LightConfig";
 import { lightCommands, lightCreate } from "./common";
 
-export default defineProcessor<RectAreaLightConfig, RectAreaLight>({
+export default defineProcessor<
+  RectAreaLightConfig,
+  RectAreaLight,
+  EngineSupport
+>({
   configType: CONFIGTYPE.RECTAREALIGHT,
   commands: lightCommands as unknown as ObjectCommands<
     RectAreaLightConfig,

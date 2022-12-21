@@ -14,7 +14,7 @@ const spriteReplaceMaterial = new SpriteMaterial({
   color: "rgb(123, 123, 123)",
 });
 
-export default defineProcessor<SpriteConfig, Sprite>({
+export default defineProcessor<SpriteConfig, Sprite, EngineSupport>({
   configType: CONFIGTYPE.SPRITE,
   commands: {
     add: (

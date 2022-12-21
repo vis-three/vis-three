@@ -11,7 +11,11 @@ import {
   dispose,
 } from "./common";
 
-export default defineProcessor<MeshPhongMaterialConfig, MeshPhongMaterial>({
+export default defineProcessor<
+  MeshPhongMaterialConfig,
+  MeshPhongMaterial,
+  EngineSupport
+>({
   configType: CONFIGTYPE.MESHPHONGMATERIAL,
   commands: {
     set: {

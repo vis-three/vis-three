@@ -34,7 +34,11 @@ const generateGeometry = function (
   return geometry;
 };
 
-export default defineProcessor<CustomGeometryConfig, BufferGeometry>({
+export default defineProcessor<
+  CustomGeometryConfig,
+  BufferGeometry,
+  EngineSupport
+>({
   configType: CONFIGTYPE.CUSTOMGEOMETRY,
   commands: <ProcessorCommands<CustomGeometryConfig, BufferGeometry>>(
     (<unknown>commands)

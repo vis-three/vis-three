@@ -1,10 +1,13 @@
-
 import { CONFIGTYPE } from "../../constants/configType";
 import { EngineSupport } from "../../engine";
 import { defineProcessor } from "../../module";
 import { TransformControlsConfig } from "../ControlsConfig";
 
-export default defineProcessor<TransformControlsConfig, VisTransformControls>({
+export default defineProcessor<
+  TransformControlsConfig,
+  VisTransformControls,
+  EngineSupport
+>({
   configType: CONFIGTYPE.TRNASFORMCONTROLS,
   commands: {
     set: {

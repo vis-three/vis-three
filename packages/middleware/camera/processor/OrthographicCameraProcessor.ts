@@ -13,7 +13,11 @@ import { defineProcessor } from "../../module";
 import { cacheCameraMap } from "./common";
 import { EngineSupport } from "../../engine";
 
-export default defineProcessor<OrthographicCameraConfig, OrthographicCamera>({
+export default defineProcessor<
+  OrthographicCameraConfig,
+  OrthographicCamera,
+  EngineSupport
+>({
   configType: CONFIGTYPE.ORTHOGRAPHICCAMERA,
   commands: {
     add: {

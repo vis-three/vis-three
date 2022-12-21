@@ -8,7 +8,7 @@ import { defineProcessor } from "../../module";
 import { EngineSupport } from "../../engine";
 import { syncObject } from "@vis-three/utils";
 
-export default defineProcessor<LoadTextureConfig, LoadTexture>({
+export default defineProcessor<LoadTextureConfig, LoadTexture, EngineSupport>({
   configType: CONFIGTYPE.LOADTEXTURE,
   commands: {
     set: {

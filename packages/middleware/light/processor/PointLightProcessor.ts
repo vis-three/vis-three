@@ -6,7 +6,7 @@ import { ObjectCommands, objectDispose } from "../../object/ObjectProcessor";
 import { PointLightConfig } from "../LightConfig";
 import { lightCommands, lightCreate } from "./common";
 
-export default defineProcessor<PointLightConfig, PointLight>({
+export default defineProcessor<PointLightConfig, PointLight, EngineSupport>({
   configType: CONFIGTYPE.POINTLIGHT,
   commands: lightCommands as unknown as ObjectCommands<
     PointLightConfig,

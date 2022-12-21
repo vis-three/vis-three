@@ -8,7 +8,11 @@ import { defineProcessor } from "../../module";
 import { ShaderMaterialConfig } from "../MaterialConfig";
 import { commonNeedUpdatesRegCommand, create, dispose } from "./common";
 
-export default defineProcessor<ShaderMaterialConfig, ShaderMaterial>({
+export default defineProcessor<
+  ShaderMaterialConfig,
+  ShaderMaterial,
+  EngineSupport
+>({
   configType: CONFIGTYPE.SHADERMATERIAL,
   commands: {
     set: {

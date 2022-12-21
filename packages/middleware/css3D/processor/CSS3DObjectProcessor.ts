@@ -11,7 +11,7 @@ import { getElement } from "./common";
 import { defineProcessor } from "../../module";
 import { EngineSupport } from "../../engine";
 
-export default defineProcessor<CSS3DObjectConfig, CSS3DObject>({
+export default defineProcessor<CSS3DObjectConfig, CSS3DObject, EngineSupport>({
   configType: CONFIGTYPE.CSS3DOBJECT,
   commands: {
     add: (

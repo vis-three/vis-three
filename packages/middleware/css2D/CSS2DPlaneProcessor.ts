@@ -35,7 +35,7 @@ export const getElement = function (
   }
 };
 
-export default defineProcessor<CSS2DPlaneConfig, CSS2DPlane>({
+export default defineProcessor<CSS2DPlaneConfig, CSS2DPlane, EngineSupport>({
   configType: CONFIGTYPE.CSS2DPLANE,
   commands: {
     add: (

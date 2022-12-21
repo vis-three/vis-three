@@ -6,7 +6,11 @@ import { lightCommands, lightCreate } from "./common";
 import { defineProcessor, ProcessParams } from "../../module";
 import { EngineSupport } from "../../engine";
 
-export default defineProcessor<HemisphereLightConfig, HemisphereLight>({
+export default defineProcessor<
+  HemisphereLightConfig,
+  HemisphereLight,
+  EngineSupport
+>({
   configType: CONFIGTYPE.HEMISPHERELIGHT,
   commands: {
     set: {

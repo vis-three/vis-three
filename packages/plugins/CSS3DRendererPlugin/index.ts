@@ -18,7 +18,7 @@ export interface CSS3DRendererEngine extends Engine {
   css3DRenderer: CSS3DRenderer;
 }
 
-export const name = transPkgName(pkgname);
+export const CSS3D_RENDERER_PLUGIN = transPkgName(pkgname);
 
 export const CSS3DRendererPlugin: Plugin<CSS3DRendererEngine> = function () {
   let setDomFun: (event: SetDomEvent) => void;
@@ -26,7 +26,7 @@ export const CSS3DRendererPlugin: Plugin<CSS3DRendererEngine> = function () {
   let setSceneFun: (event: SetSceneEvent) => void;
   let cacheRender: () => void;
   return {
-    name,
+    name: CSS3D_RENDERER_PLUGIN,
     install(engine) {
       const css3DRenderer = new CSS3DRenderer();
 

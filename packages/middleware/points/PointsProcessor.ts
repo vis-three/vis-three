@@ -10,7 +10,7 @@ import {
 } from "../solidObject/SolidObjectProcessor";
 import { PointsConfig } from "./PointsConfig";
 
-export default defineProcessor<PointsConfig, Points>({
+export default defineProcessor<PointsConfig, Points, EngineSupport>({
   configType: CONFIGTYPE.POINTS,
   commands: <SolidObjectCommands<PointsConfig, Points>>(
     (<unknown>solidObjectCommands)

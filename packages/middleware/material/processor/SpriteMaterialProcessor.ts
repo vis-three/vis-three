@@ -11,7 +11,11 @@ import {
   dispose,
 } from "./common";
 
-export default defineProcessor<SpriteMaterialConfig, SpriteMaterial>({
+export default defineProcessor<
+  SpriteMaterialConfig,
+  SpriteMaterial,
+  EngineSupport
+>({
   configType: CONFIGTYPE.SPRITEMATERIAL,
   commands: {
     set: {

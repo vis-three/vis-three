@@ -15,7 +15,7 @@ const imageHanlder = function ({ target, index, value, engine }) {
   target.needsUpdate = true;
 };
 
-export default defineProcessor<CubeTextureConfig, CubeTexture>({
+export default defineProcessor<CubeTextureConfig, CubeTexture, EngineSupport>({
   configType: CONFIGTYPE.CUBETEXTURE,
 
   commands: {
