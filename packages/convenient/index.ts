@@ -1,3 +1,3 @@
-export * from "./CanvasGenerator";
-export * from "./History";
+export * from "./canvasGenerator";
+export * from "./history";
 export * from "./displayer";

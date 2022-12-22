@@ -1,13 +1,13 @@
-import { AmbientLight, BoxBufferGeometry, Material, Mesh, MeshStandardMaterial, PointLight, SphereBufferGeometry } from "three";
+import { Material } from "three";
 export interface MaterialDisplayerParameters {
     dom?: HTMLElement;
     material?: Material;
 }
 export declare class MaterialDisplayer {
-    static ambientLight: AmbientLight;
-    static pointLight: PointLight;
-    static geometry: SphereBufferGeometry;
-    static plane: Mesh<BoxBufferGeometry, MeshStandardMaterial>;
+    static ambientLight: any;
+    static pointLight: any;
+    static geometry: any;
+    static plane: any;
     static dispose: () => void;
     private material?;
     private dom?;
@@ -25,6 +25,6 @@ export declare class MaterialDisplayer {
      * @param mine 图片格式
      * @returns DataURL
      */
-    getDataURL(mine: string): string;
+    getDataURL(mine: string): any;
     dispose(): void;
 }
