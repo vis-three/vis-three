@@ -54,6 +54,8 @@ export class Engine extends EventDispatcher {
   constructor() {
     super();
 
+    this.camera.position.set(50, 50, 50);
+
     this.render = function () {
       console.warn("can not install some plugin");
     };

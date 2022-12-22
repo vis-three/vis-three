@@ -78,6 +78,11 @@ import { GridViewpointStrategy } from "@vis-three/grid-viewpoint-strategy";
 import { TransformKeyboardStrategy } from "@vis-three/transform-keyboard-strategy";
 import { HelperSelectInteractStrategy } from "@vis-three/helper-select-interact-strategy";
 import { VisStats } from "@vis-three/stats-plugin/VisStats";
+import { ComposerSupportStrategy } from "@vis-three/composer-support-strategy";
+import { CSS3DRendererSupportStrategy } from "@vis-three/css3d-renderer-support-strategy";
+import { WebGLRendererSupportStrategy } from "@vis-three/webgl-renderer-support-strategy";
+import { TransformControlsSupportStrategy } from "@vis-three/transform-controls-support-strategy";
+import { TransformControlsHelperFilterStrategy } from "@vis-three/transform-controls-helper-filter-strategy";
 export class ModelingEngineSupport
   extends EngineSupport
   implements
@@ -152,6 +157,11 @@ export class ModelingEngineSupport
       .exec(StatsRenderStrategy())
       .exec(GridViewpointStrategy())
       .exec(TransformKeyboardStrategy())
-      .exec(HelperSelectInteractStrategy());
+      .exec(HelperSelectInteractStrategy())
+      .exec(ComposerSupportStrategy())
+      .exec(CSS3DRendererSupportStrategy())
+      .exec(WebGLRendererSupportStrategy())
+      .exec(TransformControlsSupportStrategy())
+      .exec(TransformControlsHelperFilterStrategy());
   }
 }

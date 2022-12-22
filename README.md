@@ -2,6 +2,10 @@
 
 three.js 库二次功能封装 + 配置化的 three.js 开发。
 
+- 功能插件化
+- 逻辑策略化
+- 场景配置化
+
 <p>
   <img alt="NPM" src="https://img.shields.io/npm/l/vis-three?color=blue">
   <img alt="npm" src="https://img.shields.io/npm/v/vis-three?color=light">
@@ -23,22 +27,34 @@ version0.3.2 -> version0.5.0
 
 ## 安装
 
+### 安装总包
+
 ```
 npm i vis-three
 ```
 
-## 导入
+### 按需安装
+
+```
+npm i @vis-three/modeling-engine-support
+```
+
+## 使用
 
 ```js
-// 整体导入
-import * as Vis from "vis-three";
+import * as VIS from "vis-three";
 
-// 按需导入
 import {
   ModelingEngineSupport,
   SupportDataGenerator,
   generateConfig,
 } from "vis-three";
+```
+
+```js
+import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+
+const engine = new ModelingEngineSupport();
 ```
 
 ## 备注

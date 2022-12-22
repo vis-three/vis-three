@@ -7,7 +7,7 @@ import fs from "fs";
 // 遍历examples文件夹形成input, 顺便写一份json配置进vis-three/website/examples/assets/menus.json
 const input = {};
 const menusJson = [];
-const examplesDir = path.resolve(__dirname, "./");
+const examplesDir = path.resolve(__dirname, "./engine");
 
 const recursion = (parentDir) => {
   if (!fs.statSync(parentDir).isDirectory()) {

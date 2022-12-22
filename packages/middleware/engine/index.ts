@@ -44,6 +44,10 @@ import {
   CompilerManagerEngine,
   CompilerManagerPlugin,
 } from "../plugin/CompilerManagerPlugin";
+import { Scene } from "three";
+import { SceneCompiler } from "../scene";
+import { CameraCompiler } from "../camera";
+import { CompilerSupportStrategy } from "../strategy/CompilerSupportStrategy";
 
 export type EngineSupportParameters = DataSupportManagerParameters;
 
@@ -100,7 +104,9 @@ export class EngineSupport
       .install(DataSupportManagerPlugin(parameters))
       .install(CompilerManagerPlugin());
 
-    this.exec(LoaderDataSupportStrategy()).exec(LoaderMappingStrategy());
+    this.exec(LoaderDataSupportStrategy())
+      .exec(LoaderMappingStrategy())
+      .exec(CompilerSupportStrategy());
   }
 
   private loadLifeCycle(config: Omit<EngineSupportLoadOptions, "assets">) {
@@ -235,5 +241,29 @@ export class EngineSupport
     } else {
       return null;
     }
+  }
+
+  setCameraBySymbol(camera: string) {
+    const compiler = this.compilerManager.getCompiler<CameraCompiler>(
+      MODULETYPE.CAMERA
+    )!;
+    if (compiler.map.has(camera)) {
+      this.setCamera(compiler.map.get(camera)!);
+    } else {
+      console.warn("can not found camera", camera);
+    }
+    return this;
+  }
+
+  setSceneBySymbol(scene: string): this {
+    const compiler = this.compilerManager.getCompiler<SceneCompiler>(
+      MODULETYPE.SCENE
+    )!;
+    if (compiler.map.has(scene)) {
+      this.setScene(compiler.map.get(scene)!);
+    } else {
+      console.warn("can not found scene", scene);
+    }
+    return this;
   }
 }

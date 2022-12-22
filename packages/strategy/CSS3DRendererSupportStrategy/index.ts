@@ -5,6 +5,8 @@ import {
   COMPILER_MANAGER_PLUGIN,
   CONFIGTYPE,
   DATA_SUPPORT_MANAGER_PLUGIN,
+  MODULETYPE,
+  RendererCompiler,
   uniqueSymbol,
 } from "@vis-three/middleware";
 import { transPkgName } from "@vis-three/utils";
@@ -25,7 +27,9 @@ export const CSS3DRendererSupportStrategy: Strategy<CSS3DRendererSupportEngine> 
         CSS3D_RENDERER_PLUGIN,
       ],
       exec(engine) {
-        const compiler = engine.compilerManager.rendererCompiler;
+        const compiler = engine.compilerManager.getCompiler<RendererCompiler>(
+          MODULETYPE.RENDERER
+        )!;
 
         compiler.map.set(
           uniqueSymbol(CONFIGTYPE.CSS3DRENDERER),

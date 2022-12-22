@@ -69,122 +69,52 @@
     <div id="module-main"></div>
 
     <script type="module">
-      import * as VIS from "vis-three";
-      import { v4 as getUUid } from "uuid";
-
       import engineRouter from "./engine";
-      import pluginRouter from "./plugin";
-      import supportRouter from "./support";
-      import displayerRouter from "./displayer";
-      import convenientRouter from "./convenient";
-      import managerRouter from "./manager";
-      import modifierRouter from "./modifier";
-      import helperRouter from "./helper";
-      import loaderRouter from "./loader";
-      import developRouter from "./develop";
-      import coreRouter from "./core";
-      import testRouter from "./test";
-      import libraryRouter from "./library";
-      import extendsRouter from "./extends";
-      import homepageRouter from "./homepage";
-      import dataviewRouter from "./dataview";
-      import passSupportRouter from "./passSupport";
-      import GeometrySupportRouter from "./geometrySupport";
-      import textureSupportRouter from "./textureSupport";
-      import CameraSupportRouter from "./CameraSupport";
-      import ControlsSupportRouter from "./ControlsSupport";
-      import LoaderSupport from "./LoaderSupport";
-
-      const engine = new VIS.DisplayEngineSupport()
-        .complete()
-        .setDom(document.getElementById("app"))
-        .setSize();
-
-      window.addEventListener("resize", () => {
-        engine.setSize();
-      });
-
-      VIS.generateConfig.injectEngine = engine;
-
-      const scene = VIS.generateConfig("Scene");
-
-      engine.setScene(scene.vid);
-
-      VIS.generateConfig.injectScene = true;
-
-      const camera = VIS.generateConfig("PerspectiveCamera", {
-        far: 500,
-        position: {
-          y: 10,
-          z: 120,
-        },
-      });
-
-      engine.setCamera(camera.vid);
-
-      const ambientLight = VIS.generateConfig("AmbientLight");
-
-      const spotLight = VIS.generateConfig("SpotLight", {
-        position: {
-          y: 15,
-          x: 50,
-          z: 50,
-        },
-        intensity: 2,
-        distance: 120,
-      });
-
-      const meshStandardMaterial = VIS.generateConfig("MeshStandardMaterial", {
-        color: "rgb(45, 0, 50)",
-        roughness: 0.8,
-      });
-
-      const boxGeometry = VIS.generateConfig("BoxGeometry", {
-        width: 100,
-        height: 5,
-        depth: 40,
-      });
-
-      const mesh = VIS.generateConfig("Mesh", {
-        geometry: boxGeometry.vid,
-        material: meshStandardMaterial.vid,
-      });
-
-      const animation = VIS.generateConfig("ScriptAnimation", {
-        target: mesh.vid,
-        attribute: ".rotation.y",
-        script: VIS.AniScriptLibrary.generateConfig("linearTime", {
-          multiply: 1,
-        }),
-      });
-
-      engine.play();
-
-      window.engine = engine;
+      // import pluginRouter from "./plugin";
+      // import supportRouter from "./support";
+      // import displayerRouter from "./displayer";
+      // import convenientRouter from "./convenient";
+      // import managerRouter from "./manager";
+      // import modifierRouter from "./modifier";
+      // import helperRouter from "./helper";
+      // import loaderRouter from "./loader";
+      // import developRouter from "./develop";
+      // import coreRouter from "./core";
+      // import testRouter from "./test";
+      // import libraryRouter from "./library";
+      // import extendsRouter from "./extends";
+      // import homepageRouter from "./homepage";
+      // import dataviewRouter from "./dataview";
+      // import passSupportRouter from "./passSupport";
+      // import GeometrySupportRouter from "./geometrySupport";
+      // import textureSupportRouter from "./textureSupport";
+      // import CameraSupportRouter from "./CameraSupport";
+      // import ControlsSupportRouter from "./ControlsSupport";
+      // import LoaderSupport from "./LoaderSupport";
 
       const tree = [
         engineRouter,
-        pluginRouter,
-        supportRouter,
-        displayerRouter,
-        convenientRouter,
-        managerRouter,
-        modifierRouter,
-        helperRouter,
-        loaderRouter,
-        developRouter,
-        coreRouter,
-        testRouter,
-        libraryRouter,
-        extendsRouter,
-        homepageRouter,
-        dataviewRouter,
-        passSupportRouter,
-        GeometrySupportRouter,
-        textureSupportRouter,
-        CameraSupportRouter,
-        ControlsSupportRouter,
-        LoaderSupport,
+        // pluginRouter,
+        // supportRouter,
+        // displayerRouter,
+        // convenientRouter,
+        // managerRouter,
+        // modifierRouter,
+        // helperRouter,
+        // loaderRouter,
+        // developRouter,
+        // coreRouter,
+        // testRouter,
+        // libraryRouter,
+        // extendsRouter,
+        // homepageRouter,
+        // dataviewRouter,
+        // passSupportRouter,
+        // GeometrySupportRouter,
+        // textureSupportRouter,
+        // CameraSupportRouter,
+        // ControlsSupportRouter,
+        // LoaderSupport,
       ];
 
       const domList = [];

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DisplayEngine</title>
+    <title>DisplayEngineSupport</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="../css/common.css" />
   </head>
@@ -19,16 +19,14 @@
   <body>
     <div id="app"></div>
     <script type="module">
-      import * as THREE from "three";
-      import * as Vis from "vis-three";
-      import { v4 as getUUid } from "uuid";
+      import { DisplayEngineSupport } from "@vis-three/display-engine-support";
+      import { generateConfig as G } from "@vis-three/middleware";
 
-      const engine = new Vis.DisplayEngineSupport()
-        .install("GridHelper")
-        .complete()
-        .setDom(document.getElementById("app"));
+      const engine = new DisplayEngineSupport().setDom(
+        document.getElementById("app")
+      );
 
-      const pointLight = Vis.generateConfig("PointLight", {
+      const pointLight = G("PointLight", {
         position: {
           x: 30,
           y: 50,
@@ -36,34 +34,32 @@
         distance: 100,
       });
 
-      const meshStandardMaterial = Vis.generateConfig("MeshStandardMaterial", {
+      const meshStandardMaterial = G("MeshStandardMaterial", {
         color: "rgb(255, 0, 0)",
       });
 
-      const boxGeometry = Vis.generateConfig("BoxGeometry", {
+      const boxGeometry = G("BoxGeometry", {
         width: 20,
         height: 40,
         depth: 60,
       });
 
-      const geometry = VIS.reactive(
-        Vis.generateConfig("BoxGeometry", {
-          width: 20,
-          height: 40,
-          depth: 60,
-        })
-      );
+      const geometry = G("BoxGeometry", {
+        width: 20,
+        height: 40,
+        depth: 60,
+      });
 
-      const mesh = Vis.generateConfig("Mesh", {
+      const mesh = G("Mesh", {
         geometry: boxGeometry.vid,
         material: meshStandardMaterial.vid,
       });
 
-      const scene = Vis.generateConfig("Scene", {
+      const scene = G("Scene", {
         children: [pointLight.vid, mesh.vid],
       });
 
-      const camera = Vis.generateConfig("PerspectiveCamera", {
+      const camera = G("PerspectiveCamera", {
         far: 1000,
         adaptiveWindow: true,
         position: {
@@ -82,7 +78,13 @@
         camera
       );
 
-      engine.setCamera(camera.vid).setScene(scene.vid).setSize().play();
+      engine
+        .setCameraBySymbol(camera.vid)
+        .setSceneBySymbol(scene.vid)
+        .setSize()
+        .play();
+
+      window.engine = engine;
     </script>
   </body>
 </html>

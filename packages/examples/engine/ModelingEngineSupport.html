@@ -18,19 +18,26 @@
 
   <body>
     <div id="app"></div>
-
     <script type="module">
+      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import { generateConfig as G } from "@vis-three/middleware";
       import * as THREE from "three";
-      import * as Vis from "vis-three";
-      import { v4 as getUUid } from "uuid";
 
-      const engine = new Vis.ModelingEngineSupport()
+      const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
-        .setSize()
         .setStats(true)
+        .setSize()
         .play();
 
-      const pointLight = Vis.generateConfig("PointLight", {
+      G.injectEngine = engine;
+
+      const scene = G("Scene");
+
+      engine.setSceneBySymbol(scene.vid);
+
+      G.injectScene = true;
+
+      const pointLight = G("PointLight", {
         position: {
           x: 30,
           y: 50,
@@ -38,35 +45,27 @@
         distance: 100,
       });
 
-      const meshStandardMaterial = Vis.generateConfig("MeshStandardMaterial", {
+      const meshStandardMaterial = G("MeshStandardMaterial", {
         color: "rgb(255, 0, 0)",
       });
 
-      const boxGeometry = Vis.generateConfig("BoxGeometry", {
+      const boxGeometry = G("BoxGeometry", {
         width: 20,
         height: 40,
         depth: 60,
       });
 
-      const mesh = Vis.generateConfig("Mesh", {
+      const geometry = G("BoxGeometry", {
+        width: 20,
+        height: 40,
+        depth: 60,
+      });
+
+      const mesh = G("Mesh", {
         geometry: boxGeometry.vid,
         material: meshStandardMaterial.vid,
       });
 
-      const scene = Vis.generateConfig("Scene", {
-        children: [pointLight.vid, mesh.vid],
-      });
-
-      engine.applyConfig(
-        pointLight,
-        meshStandardMaterial,
-        boxGeometry,
-        mesh,
-        scene
-      );
-
-      engine.setScene(scene.vid).play();
-      console.log(engine);
       window.engine = engine;
     </script>
   </body>

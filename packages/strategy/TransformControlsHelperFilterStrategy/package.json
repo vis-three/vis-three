@@ -1,5 +1,5 @@
 {
-  "name": "@vis-three/transform-controls-support-strategy",
+  "name": "@vis-three/transform-controls-helper-filter-strategy",
   "version": "0.5.0",
   "description": "",
   "author": "Shiotsuki_",
@@ -24,6 +24,7 @@
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.0",
     "@vis-three/middleware": "workspace:^0.5.0",
+    "@vis-three/object-helper-plugin": "workspace:^0.4.0",
     "@vis-three/transform-controls-plugin": "workspace:^0.5.0",
     "@vis-three/utils": "workspace:^0.4.0"
   },

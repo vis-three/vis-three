@@ -156,6 +156,11 @@ export class CompilerManager extends EventDispatcher {
     return textureCompiler.map.get(vid) as Texture | null;
   }
 
+  getGeometry(vid: string) {
+    const geometryCompiler = this.compilerMap.get(MODULETYPE.GEOMETRY)!;
+    return geometryCompiler.map.get(vid) as BufferGeometry | null;
+  }
+
   dispose(): this {
     for (const compiler of this.compilerMap.values()) {
       compiler.dispose();

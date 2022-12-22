@@ -19,45 +19,6 @@
   <body>
     <div id="app"></div>
 
-    <script type="module">
-      import * as THREE from "three";
-      import * as Vis from "vis-three";
-
-      const engine = new Vis.Engine()
-        .install("WebGLRenderer", {
-          antialias: true,
-          alpha: true,
-        })
-        .install("RenderManager")
-        .install("Stats")
-        .install("EffectComposer", {
-          WebGLMultisampleRenderTarget: true,
-        })
-        .install("OrbitControls")
-        .install("PointerManager")
-        .install("EventManager")
-        .install("TransformControls")
-        .complete()
-        .setDom(document.getElementById("app"))
-        .setStats(true)
-        .setScene(new THREE.Scene());
-
-      const camera = new THREE.PerspectiveCamera();
-      camera.position.set(50, 50, 50);
-
-      engine.addEventListener("setSize", (event) => {
-        camera.aspect = event.width / event.height;
-        camera.updateProjectionMatrix();
-      });
-
-      const box = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(30, 30, 30),
-        new THREE.MeshStandardMaterial()
-      );
-
-      engine.scene.add(box);
-
-      engine.setCamera(camera).setSize().play();
-    </script>
+    <script type="module"></script>
   </body>
 </html>
