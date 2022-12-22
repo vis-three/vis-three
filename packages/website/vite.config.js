@@ -9,10 +9,11 @@ export default defineConfig({
     open: "src/index.html",
   },
   build: {
+    outDir: path.resolve(__dirname, "../../docs"),
     rollupOptions: {
       input: {
-        index: path.resolve(__dirname, "./src/index.html"),
-        examples: path.resolve(__dirname, "./src/examples.html"),
+        index: path.resolve(__dirname, "./index.html"),
+        examples: path.resolve(__dirname, "./examples.html"),
       },
       output: {
         manualChunks: {
