@@ -1,4 +1,4 @@
-import { name as CSS3D_RENDERER_PLUGIN, } from "@vis-three/css3d-renderer-plugin";
+import { CSS3D_RENDERER_PLUGIN, } from "@vis-three/css3d-renderer-plugin";
 import { RENDER_EVENT, RENDER_MANAGER_PLUGIN, } from "@vis-three/render-manager-plugin";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";

@@ -3,7 +3,7 @@ import { name as pkgname } from "./package.json";
 import { Strategy } from "@vis-three/core";
 import {
   OrbitControlsEngine,
-  name as ORBIT_CONTROLS_PLUGIN,
+  ORBIT_CONTROLS_PLUGIN,
 } from "@vis-three/orbit-controls-plugin";
 import {
   RenderEvent,

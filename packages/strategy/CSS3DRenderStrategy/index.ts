@@ -1,6 +1,6 @@
 import {
   CSS3DRendererEngine,
-  name as CSS3D_RENDERER_PLUGIN,
+  CSS3D_RENDERER_PLUGIN,
 } from "@vis-three/css3d-renderer-plugin";
 import {
   RenderEvent,

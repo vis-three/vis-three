@@ -5,7 +5,7 @@ import {
   RENDER_MANAGER_PLUGIN,
 } from "@vis-three/render-manager-plugin";
 import {
-  name as EFFECT_COMPOSER_PLUGIN,
+  EFFECT_COMPOSER_PLUGIN,
   EffectComposerEngine,
 } from "@vis-three/effect-composer-plugin";
 import { transPkgName } from "@vis-three/utils";
