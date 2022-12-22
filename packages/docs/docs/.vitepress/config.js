@@ -1,4 +1,4 @@
-import pkg from "../../../package.json";
+import pkg from "../../../../package.json";
 import { defineConfig } from "vitepress";
 import path from "path";
 import fs from "fs";
@@ -8,7 +8,7 @@ export default defineConfig({
   lang: "zh-cn",
   title: "VIS-THREE",
   description: "more convenient development for three.js",
-  outDir: path.resolve(__dirname, "../../website/public/docs"),
+  outDir: path.resolve(__dirname, "../../../website/public/docs"),
   head: [["link", { rel: "icon", href: "/favicon.ico" }]],
   themeConfig: {
     nav: [
@@ -41,7 +41,7 @@ export default defineConfig({
               const name = filename.split(".").shift();
               return {
                 text: name.split("-").join("."),
-                link: `/api/convenient/${name}`,  
+                link: `/api/convenient/${name}`,
               };
             }),
         },
