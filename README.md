@@ -13,17 +13,13 @@
 </p>
 <br/>
 
-## vis-three
+## VIS-THREE
 
 three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 - 功能插件化
 - 逻辑策略化
 - 场景配置化
-
-<p>
-
-</p>
 
 ## 主页、demo、文档在线地址
 
@@ -40,19 +36,54 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 ## Packages
 
+`vis-three`所提供的其他模块。
+
 | Package                                      | Version                                                                                    |
 | -------------------------------------------- | :----------------------------------------------------------------------------------------- |
 | [@vis-three/core](packages/core)             | ![@vis-three/core](https://img.shields.io/npm/v/@vis-three/core.svg?label=%20)             |
 | [@vis-three/middleware](packages/middleware) | ![@vis-three/middleware](https://img.shields.io/npm/v/@vis-three/middleware.svg?label=%20) |
 | [@vis-three/convenient](packages/convenient) | ![@vis-three/convenient](https://img.shields.io/npm/v/@vis-three/convenient?label=%20)     |
+| [@vis-three/utils](packages/utils)           | ![@vis-three/utils](https://img.shields.io/npm/v/@vis-three/utils?label=%20)               |
+
+## Engines
+
+`vis-three`提供的各种功能引擎。
+
+| Engine                                                                      | Version                                                                                                            |
+| --------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------- |
+| [@vis-three/display-engine](packages/engine/DisplayEngine/)                 | ![@vis-three/display-engine](https://img.shields.io/npm/v/@vis-three/display-engine.svg?label=%20)                 |
+| [@vis-three/modeling-engine](packages/engine/ModelingEngine/)               | ![@vis-three/modeling-engine](https://img.shields.io/npm/v/@vis-three/modeling-engine.svg?label=%20)               |
+| [@vis-three/display-engine-support](packages/engine/DisplayEngineSupport/)  | ![@vis-three/display-engine-support](https://img.shields.io/npm/v/@vis-three/display-engine-support.svg?label=%20) |
+| [@vis-three/display-engine-support](packages/engine/DisplayEngineSupporat/) | ![@vis-three/display-engine-support](https://img.shields.io/npm/v/@vis-three/display-engine-support.svg?label=%20) |
 
 ## Plugins
 
-| Plugin                                                                    | Version                                                                                                          |
-| ------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------- |
-| [@vis-three/webgl-renderer-plugin](packages/plugins/WebGLRendererPlugin/) | ![@vis-three/webgl-renderer-plugin](https://img.shields.io/npm/v/@vis-three/webgl-renderer-plugin.svg?label=%20) |
+`vis-three`现有集成的插件。
+
+| Plugin                                                                            | Version                                                                                                                  |
+| --------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------- |
+| [@vis-three/webgl-renderer-plugin](packages/plugins/WebGLRendererPlugin/)         | ![@vis-three/webgl-renderer-plugin](https://img.shields.io/npm/v/@vis-three/webgl-renderer-plugin.svg?label=%20)         |
+| [@vis-three/axes-helper-plugin](packages/plugins/AxesHelperPlugin/)               | ![@vis-three/axes-helper-plugin](https://img.shields.io/npm/v/@vis-three/axes-helper-plugin.svg?label=%20)               |
+| [@vis-three/camera-adaptive-plugin](packages/plugins/CameraAdaptivePlugin/)       | ![@vis-three/camera-adaptive-plugin](https://img.shields.io/npm/v/@vis-three/camera-adaptive-plugin.svg?label=%20)       |
+| [@vis-three/css2d-renderer-plugin](packages/plugins/CSS2DRendererPlugin/)         | ![@vis-three/css2d-renderer-plugin](https://img.shields.io/npm/v/@vis-three/css2d-renderer-plugin.svg?label=%20)         |
+| [@vis-three/css3d-renderer-plugin](packages/plugins/CSS3DRendererPlugin/)         | ![@vis-three/css3d-renderer-plugin](https://img.shields.io/npm/v/@vis-three/css3d-renderer-plugin.svg?label=%20)         |
+| [@vis-three/effect-composer-plugin](packages/plugins/EffectComposerPlugin/)       | ![@vis-three/effect-composer-plugin](https://img.shields.io/npm/v/@vis-three/effect-composer-plugin.svg?label=%20)       |
+| [@vis-three/event-manager-plugin](packages/plugins/EventManagerPlugin/)           | ![@vis-three/event-manager-plugin](https://img.shields.io/npm/v/@vis-three/event-manager-plugin.svg?label=%20)           |
+| [@vis-three/grid-helper-plugin](packages/plugins/GridHelperPlugin/)               | ![@vis-three/grid-helper-plugin](https://img.shields.io/npm/v/@vis-three/grid-helper-plugin.svg?label=%20)               |
+| [@vis-three/keyboard-manager-plugin](packages/plugins/KeyboardManagerPlugin/)     | ![@vis-three/keyboard-manager-plugin](https://img.shields.io/npm/v/@vis-three/keyboard-manager-plugin.svg?label=%20)     |
+| [@vis-three/loader-manager-plugin](packages/plugins/LoaderManagerPlugin/)         | ![@vis-three/loader-manager-plugin](https://img.shields.io/npm/v/@vis-three/loader-manager-plugin.svg?label=%20)         |
+| [@vis-three/object-helper-plugin](packages/plugins/ObjectHelperPlugin/)           | ![@vis-three/object-helper-plugin](https://img.shields.io/npm/v/@vis-three/object-helper-plugin.svg?label=%20)           |
+| [@vis-three/orbit-controls-plugin](packages/plugins/OrbitControlsPlugin/)         | ![@vis-three/orbit-controls-plugin](https://img.shields.io/npm/v/@vis-three/orbit-controls-plugin.svg?label=%20)         |
+| [@vis-three/pointer-manager-plugin](packages/plugins/PointerManagerPlugin/)       | ![@vis-three/pointer-manager-plugin](https://img.shields.io/npm/v/@vis-three/pointer-manager-plugin.svg?label=%20)       |
+| [@vis-three/render-manager-plugin](packages/plugins/RenderManagerPlugin/)         | ![@vis-three/render-manager-plugin](https://img.shields.io/npm/v/@vis-three/render-manager-plugin.svg?label=%20)         |
+| [@vis-three/selection-plugin](packages/plugins/SelectionPlugin/)                  | ![@vis-three/selection-plugin](https://img.shields.io/npm/v/@vis-three/selection-plugin.svg?label=%20)                   |
+| [@vis-three/stats-plugin](packages/plugins/StatsPlugin/)                          | ![@vis-three/stats-plugin](https://img.shields.io/npm/v/@vis-three/stats-plugin.svg?label=%20)                           |
+| [@vis-three/transform-controls-plugin](packages/plugins/TransformControlsPlugin/) | ![@vis-three/transform-controls-plugin](https://img.shields.io/npm/v/@vis-three/transform-controls-plugin.svg?label=%20) |
+| [@vis-three/viewpoint-plugin](packages/plugins/ViewpointPlugin/)                  | ![@vis-three/viewpoint-plugin](https://img.shields.io/npm/v/@vis-three/viewpoint-plugin.svg?label=%20)                   |
 
 ## Strategys
+
+`vis-three`现有集成的策略。
 
 | Strategy                                                                   | Version                                                                                                          |
 | -------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------- |
