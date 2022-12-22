@@ -10,5 +10,5 @@ export interface EffectComposerParameters {
 export interface EffectComposerEngine extends WebGLRendererEngine {
     effectComposer: EffectComposer;
 }
-export declare const name: string;
+export declare const EFFECT_COMPOSER_PLUGIN: string;
 export declare const EffectComposerPlugin: Plugin<EffectComposerEngine>;

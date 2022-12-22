@@ -65,11 +65,6 @@ export enum CONFIGTYPE {
   TRNASFORMCONTROLS = "TransformControls",
   ORBITCONTROLS = "OrbitControls",
 
-  SMAAPASS = "SMAAPass",
-  UNREALBLOOMPASS = "UnrealBloomPass",
-  SELECTIVEBLOOMPASS = "SelectiveBloomPass",
-  SSAOPASS = "SSAOPass",
-
   SCRIPTANIMATION = "ScriptAnimation",
   KEYFRAMEANIMATION = "KeyframeAnimation",
 }

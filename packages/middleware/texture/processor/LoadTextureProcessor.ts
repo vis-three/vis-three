@@ -7,6 +7,8 @@ import { needUpdateRegCommand } from "./common";
 import { defineProcessor } from "../../module";
 import { EngineSupport } from "../../engine";
 import { syncObject } from "@vis-three/utils";
+import { TextureCompiler } from "../TextureCompiler";
+import { MODULETYPE } from "../../constants";
 
 export default defineProcessor<LoadTextureConfig, LoadTexture, EngineSupport>({
   configType: CONFIGTYPE.LOADTEXTURE,
@@ -20,10 +22,9 @@ export default defineProcessor<LoadTextureConfig, LoadTexture, EngineSupport>({
   create(config: LoadTextureConfig, engine: EngineSupport): LoadTexture {
     let texture: LoadTexture;
 
-    const resource = engine.compilerManager.textureCompiler.getResource(
-      config.url,
-      Texture
-    );
+    const resource = engine.compilerManager
+      .getCompiler<TextureCompiler>(MODULETYPE.TEXTURE)!
+      .getResource(config.url, Texture);
 
     if (resource instanceof Texture) {
       texture = new LoadTexture(resource);

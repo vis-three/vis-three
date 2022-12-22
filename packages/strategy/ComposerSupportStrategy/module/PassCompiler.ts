@@ -6,9 +6,12 @@ import { PassConfigAllType } from "./PassConfig";
 import SMAAPassProcessor from "./processor/SMAAPassProcessor";
 import UnrealBloomPassProcessor from "./processor/UnrealBloomPassProcessor";
 import SelectiveBloomPassProcessor from "./processor/SelectiveBloomPassProcessor";
-import { MODULETYPE } from "../constants";
-import { Compiler } from "../module";
-import { EngineSupport } from "../engine";
+import { Compiler, EngineSupport, MODULETYPE } from "@vis-three/middleware";
+import { EffectComposerEngine } from "@vis-three/effect-composer-plugin";
+
+export interface ComposerSupportEngine
+  extends EngineSupport,
+    EffectComposerEngine {}
 
 export class PassCompiler extends Compiler<PassConfigAllType, Pass> {
   MODULE: MODULETYPE = MODULETYPE.PASS;
@@ -19,7 +22,7 @@ export class PassCompiler extends Compiler<PassConfigAllType, Pass> {
     super();
   }
 
-  useEngine(engine: EngineSupport): this {
+  useEngine(engine: ComposerSupportEngine): this {
     super.useEngine(engine);
 
     if (!engine.effectComposer) {

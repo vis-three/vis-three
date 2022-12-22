@@ -13,14 +13,12 @@ import { MaterialAllType, MaterialDataSupport } from "../../material";
 import { MeshConfig, MeshDataSupport } from "../../mesh";
 import { BasicCompiler, DataSupport } from "../../module";
 import { Object3DConfig, Object3DDataSupport } from "../../object3D";
-import { PassConfigAllType, PassDataSupport } from "../../pass";
 import { PointsConfig, PointsDataSupport } from "../../points";
 import { RendererConfigAllType, RendererDataSupport } from "../../renderer";
 import { SceneConfig, SceneDataSupport } from "../../scene";
 import { SpriteConfig, SpriteDataSupport } from "../../sprite";
 import { TextureAllType, TextureDataSupport } from "../../texture";
 import { JSONHandler } from "../../utils";
-
 
 export interface LoadOptions {
   [MODULETYPE.TEXTURE]?: Array<TextureAllType>;
@@ -40,7 +38,6 @@ export interface LoadOptions {
 
   [MODULETYPE.RENDERER]?: Array<RendererConfigAllType>;
   [MODULETYPE.SCENE]?: Array<SceneConfig>;
-  [MODULETYPE.PASS]?: Array<PassConfigAllType>;
   [MODULETYPE.CONTROLS]?: Array<ControlsAllConfig>;
   [MODULETYPE.ANIMATION]?: Array<AnimationAllType>;
 }
@@ -62,36 +59,45 @@ export interface DataSupportManagerParameters {
   groupDataSupport?: GroupDataSupport;
   css3DDataSupport?: CSS3DDataSupport;
   css2DDataSupport?: CSS2DDataSupport;
-  passDataSupport?: PassDataSupport;
   animationDataSupport?: AnimationDataSupport;
 }
 
 export class DataSupportManager {
-  object3DDataSupport = new Object3DDataSupport();
-  cameraDataSupport = new CameraDataSupport();
-  lightDataSupport = new LightDataSupport();
-  geometryDataSupport = new GeometryDataSupport();
-  textureDataSupport = new TextureDataSupport();
-  materialDataSupport = new MaterialDataSupport();
-  rendererDataSupport = new RendererDataSupport();
-  sceneDataSupport = new SceneDataSupport();
-  controlsDataSupport = new ControlsDataSupport();
-  spriteDataSupport = new SpriteDataSupport();
-  lineDataSupport = new LineDataSupport();
-  meshDataSupport = new MeshDataSupport();
-  pointsDataSupport = new PointsDataSupport();
-  groupDataSupport = new GroupDataSupport();
-  css3DDataSupport = new CSS3DDataSupport();
-  css2DDataSupport = new CSS2DDataSupport();
-  passDataSupport = new PassDataSupport();
-  animationDataSupport = new AnimationDataSupport();
-
   dataSupportMap: Map<
-    MODULETYPE,
+    string,
     DataSupport<SymbolConfig, object, BasicCompiler>
-  >;
+  > = new Map();
 
   constructor(parameters?: DataSupportManagerParameters) {
+    [
+      new Object3DDataSupport(),
+      new CameraDataSupport(),
+      new LightDataSupport(),
+      new GeometryDataSupport(),
+      new TextureDataSupport(),
+      new MaterialDataSupport(),
+      new RendererDataSupport(),
+      new SceneDataSupport(),
+      new ControlsDataSupport(),
+      new SpriteDataSupport(),
+      new LineDataSupport(),
+      new MeshDataSupport(),
+      new PointsDataSupport(),
+      new GroupDataSupport(),
+      new CSS3DDataSupport(),
+      new CSS2DDataSupport(),
+      new AnimationDataSupport(),
+    ].forEach((dataSupport) => {
+      this.dataSupportMap.set(
+        dataSupport.MODULE,
+        dataSupport as unknown as DataSupport<
+          SymbolConfig,
+          object,
+          BasicCompiler
+        >
+      );
+    });
+
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
         if (this[key] !== undefined) {
@@ -100,16 +106,29 @@ export class DataSupportManager {
       });
     }
 
-    const dataSupportMap = new Map();
-
     Object.keys(this).forEach((key) => {
       const dataSupport = this[key];
       if (dataSupport instanceof DataSupport) {
-        dataSupportMap.set(dataSupport.MODULE, dataSupport);
+        this.dataSupportMap.set(dataSupport.MODULE, dataSupport);
       }
     });
+  }
 
-    this.dataSupportMap = dataSupportMap;
+  /**
+   * 编译器扩展
+   * @param compiler
+   */
+  extend(dataSupport) {
+    if (this.dataSupportMap.has(dataSupport.MODULE)) {
+      console.warn(
+        "dataSupport manager has exist this compiler, that will cover",
+        dataSupport
+      );
+    }
+    this.dataSupportMap.set(
+      dataSupport.MODULE,
+      dataSupport as DataSupport<SymbolConfig, object, BasicCompiler>
+    );
   }
 
   /**
@@ -120,18 +139,6 @@ export class DataSupportManager {
   getDataSupport<D>(type: MODULETYPE): D | null {
     if (this.dataSupportMap.has(type)) {
       return this.dataSupportMap.get(type)! as unknown as D;
-    } else {
-      console.warn(`can not found this type in dataSupportManager: ${type}`);
-      return null;
-    }
-  }
-
-  /**
-   * @experimental 获取该模块下的响应式数据对象
-   */
-  getSupportData(type: MODULETYPE) {
-    if (this.dataSupportMap.has(type)) {
-      return this.dataSupportMap.get(type)!.getData();
     } else {
       console.warn(`can not found this type in dataSupportManager: ${type}`);
       return null;

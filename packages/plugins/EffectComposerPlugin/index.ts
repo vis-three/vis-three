@@ -14,7 +14,10 @@ import {
 } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
+import {
+  WebGLRendererEngine,
+  WEBGL_RENDERER_PLUGIN,
+} from "@vis-three/webgl-renderer-plugin";
 import { Optional, transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 export interface EffectComposerParameters {
@@ -28,7 +31,7 @@ export interface EffectComposerEngine extends WebGLRendererEngine {
   effectComposer: EffectComposer;
 }
 
-export const name = transPkgName(pkgname);
+export const EFFECT_COMPOSER_PLUGIN = transPkgName(pkgname);
 
 export const EffectComposerPlugin: Plugin<EffectComposerEngine> = function (
   params: EffectComposerParameters
@@ -39,8 +42,8 @@ export const EffectComposerPlugin: Plugin<EffectComposerEngine> = function (
   let cacheRender: () => void;
 
   return {
-    name,
-    deps: "WebGLRendererPlugin",
+    name: EFFECT_COMPOSER_PLUGIN,
+    deps: WEBGL_RENDERER_PLUGIN,
     install(engine) {
       let composer: EffectComposer;
 

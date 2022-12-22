@@ -7,17 +7,15 @@ import { MODULETYPE } from "../../constants";
 import { ControlsCompiler } from "../../controls";
 import { CSS2DCompiler } from "../../css2D";
 import { CSS3DCompiler } from "../../css3D";
-import { EngineSupport } from "../../engine";
 import { GeometryCompiler } from "../../geometry";
 import { GroupCompiler } from "../../group";
 import { LightCompiler } from "../../light";
 import { LineCompiler } from "../../line";
 import { MaterialCompiler } from "../../material";
 import { MeshCompiler } from "../../mesh";
-import { BasicCompiler, Compiler } from "../../module";
+import { BasicCompiler } from "../../module";
 import { ObjectCompiler } from "../../object/ObjectCompiler";
 import { Object3DCompiler } from "../../object3D";
-import { PassCompiler } from "../../pass";
 import { PointsCompiler } from "../../points";
 import { RendererCompiler } from "../../renderer";
 import { SceneCompiler } from "../../scene";
@@ -39,52 +37,66 @@ export interface CompilerManagerParameters {
   meshCompiler: MeshCompiler;
   pointsCompiler: PointsCompiler;
   groupCompiler: GroupCompiler;
-  passCompiler: PassCompiler;
   animationCompiler: AnimationCompiler;
   css3DCompiler: CSS3DCompiler;
   css2DCompiler: CSS2DCompiler;
 }
 
 export class CompilerManager extends EventDispatcher {
-  object3DCompiler = new Object3DCompiler();
-  cameraCompiler = new CameraCompiler();
-  lightCompiler = new LightCompiler();
-  geometryCompiler = new GeometryCompiler();
-  textureCompiler = new TextureCompiler();
-  materialCompiler = new MaterialCompiler();
-  rendererCompiler = new RendererCompiler();
-  sceneCompiler = new SceneCompiler();
-  controlsCompiler = new ControlsCompiler();
-  spriteCompiler = new SpriteCompiler();
-  lineCompiler = new LineCompiler();
-  meshCompiler = new MeshCompiler();
-  pointsCompiler = new PointsCompiler();
-  groupCompiler = new GroupCompiler();
-  css3DCompiler = new CSS3DCompiler();
-  css2DCompiler = new CSS2DCompiler();
-  passCompiler = new PassCompiler();
-  animationCompiler = new AnimationCompiler();
-
-  compilerMap: Map<MODULETYPE, BasicCompiler>;
+  compilerMap: Map<string, BasicCompiler> = new Map();
 
   constructor(parameters?: CompilerManagerParameters) {
     super();
-    if (parameters) {
-      Object.keys(parameters).forEach((key) => {
-        this[key] = parameters[key];
-      });
-    }
-
-    const compilerMap = new Map();
-
-    Object.keys(this).forEach((key) => {
-      const compiler = this[key];
-      if (compiler instanceof Compiler) {
-        compilerMap.set(compiler.MODULE, compiler);
-      }
+    [
+      new Object3DCompiler(),
+      new CameraCompiler(),
+      new LightCompiler(),
+      new GeometryCompiler(),
+      new TextureCompiler(),
+      new MaterialCompiler(),
+      new RendererCompiler(),
+      new SceneCompiler(),
+      new ControlsCompiler(),
+      new SpriteCompiler(),
+      new LineCompiler(),
+      new MeshCompiler(),
+      new PointsCompiler(),
+      new GroupCompiler(),
+      new CSS3DCompiler(),
+      new CSS2DCompiler(),
+      new AnimationCompiler(),
+    ].forEach((compiler) => {
+      this.compilerMap.set(compiler.MODULE, compiler);
     });
 
-    this.compilerMap = compilerMap;
+    if (parameters) {
+      Object.keys(parameters).forEach((key) => {
+        this.compilerMap.set(parameters[key].MODULE, parameters[key]);
+      });
+    }
+  }
+
+  /**
+   * 编译器扩展
+   * @param compiler
+   */
+  extend(compiler) {
+    if (this.compilerMap.has(compiler.MODULE)) {
+      console.warn(
+        "compiler manager has exist this compiler, that will cover",
+        compiler
+      );
+    }
+    this.compilerMap.set(compiler.MODULE, compiler as BasicCompiler);
+  }
+
+  getCompiler<D>(module: string) {
+    if (this.compilerMap.has(module)) {
+      return this.compilerMap.get(module)! as unknown as D;
+    } else {
+      console.warn(`can not found this type in compiler manager: ${module}`);
+      return null;
+    }
   }
 
   /**
@@ -134,16 +146,14 @@ export class CompilerManager extends EventDispatcher {
     return null;
   }
 
-  getGeometry<G extends BufferGeometry>(vid: string): G | null {
-    return (this.geometryCompiler.map.get(vid) as G) || null;
+  getMaterial(vid: string) {
+    const materialCompiler = this.compilerMap.get(MODULETYPE.MATERIAL)!;
+    return materialCompiler.map.get(vid) as Material | null;
   }
 
-  getMaterial<M extends Material>(vid: string): M | null {
-    return (this.materialCompiler.map.get(vid) as M) || null;
-  }
-
-  getTexture<T extends Texture>(vid: string): T | null {
-    return (this.textureCompiler.map.get(vid) as T) || null;
+  getTexture(vid: string) {
+    const textureCompiler = this.compilerMap.get(MODULETYPE.TEXTURE)!;
+    return textureCompiler.map.get(vid) as Texture | null;
   }
 
   dispose(): this {

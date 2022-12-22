@@ -12,7 +12,6 @@ export * from "./line";
 export * from "./material";
 export * from "./mesh";
 export * from "./object3D";
-export * from "./pass";
 export * from "./points";
 export * from "./renderer";
 export * from "./scene";

@@ -1,10 +1,12 @@
 import { ImageTexture } from "@vis-three/core";
 import { syncObject } from "@vis-three/utils";
 import { CanvasTexture } from "three";
+import { MODULETYPE } from "../../constants";
 
 import { CONFIGTYPE } from "../../constants/configType";
 import { EngineSupport } from "../../engine";
 import { defineProcessor } from "../../module";
+import { TextureCompiler } from "../TextureCompiler";
 import { CanvasTextureConfig } from "../TextureConfig";
 import { needUpdateRegCommand, urlHanlder } from "./common";
 
@@ -22,10 +24,9 @@ export default defineProcessor<
   },
   create(config: CanvasTextureConfig, engine: EngineSupport): CanvasTexture {
     const texture = new CanvasTexture(
-      engine.compilerManager.textureCompiler.getResource(
-        config.url,
-        HTMLCanvasElement
-      ) as HTMLCanvasElement
+      engine.compilerManager
+        .getCompiler<TextureCompiler>(MODULETYPE.TEXTURE)!
+        .getResource(config.url, HTMLCanvasElement) as HTMLCanvasElement
     );
 
     urlHanlder({ target: texture, value: config.url, engine });

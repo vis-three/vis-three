@@ -1,8 +1,10 @@
 import { syncObject } from "@vis-three/utils";
 import { CubeTexture } from "three";
+import { MODULETYPE } from "../../constants";
 import { CONFIGTYPE } from "../../constants/configType";
 import { EngineSupport } from "../../engine";
 import { defineProcessor } from "../../module";
+import { TextureCompiler } from "../TextureCompiler";
 import { CubeTextureConfig } from "../TextureConfig";
 
 const instanceClasses = [HTMLImageElement, HTMLVideoElement, HTMLCanvasElement];
@@ -77,7 +79,9 @@ export default defineProcessor<CubeTextureConfig, CubeTexture, EngineSupport>({
     const texture = new CubeTexture();
     const cube = config.cube;
 
-    const compiler = engine.compilerManager.textureCompiler;
+    const compiler = engine.compilerManager.getCompiler<TextureCompiler>(
+      MODULETYPE.TEXTURE
+    )!;
 
     const images = [
       compiler.getResource(cube.px, instanceClasses),

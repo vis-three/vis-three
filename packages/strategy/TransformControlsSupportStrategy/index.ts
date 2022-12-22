@@ -2,7 +2,9 @@ import {
   Compiler,
   COMPILER_MANAGER_PLUGIN,
   CONFIGTYPE,
+  ControlsCompiler,
   DATA_SUPPORT_MANAGER_PLUGIN,
+  MODULETYPE,
   uniqueSymbol,
 } from "@vis-three/middleware";
 import { TRANSFORM_CONTROLS_PLUGIN } from "@vis-three/transform-controls-plugin";
@@ -25,7 +27,9 @@ export const TransformControlsSupportStrategy: Strategy<TransformControlsSupport
         TRANSFORM_CONTROLS_PLUGIN,
       ],
       exec(engine) {
-        const compiler = engine.compilerManager.controlsCompiler;
+        const compiler = engine.compilerManager.getCompiler<ControlsCompiler>(
+          MODULETYPE.CONTROLS
+        )!;
 
         compiler.map.set(
           uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS),
@@ -37,7 +41,7 @@ export const TransformControlsSupportStrategy: Strategy<TransformControlsSupport
           uniqueSymbol(CONFIGTYPE.ORBITCONTROLS)
         );
 
-        Compiler.processor(TransformControlsProcessor);
+        Compiler.processor(TransformControlsProcessor as any);
       },
       rollback() {},
     };

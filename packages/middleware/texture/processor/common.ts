@@ -1,3 +1,4 @@
+import { MODULETYPE } from "../../constants";
 import { EngineSupport } from "../../engine";
 import { ProcessParams } from "../../module";
 import { globalAntiShake } from "../../utils";
@@ -23,11 +24,13 @@ export const urlHanlder = function ({
   engine: EngineSupport;
 }) {
   globalAntiShake.exec((finish) => {
-    target.image = engine.compilerManager.textureCompiler.getResource(value, [
-      HTMLImageElement,
-      HTMLVideoElement,
-      HTMLCanvasElement,
-    ]);
+    target.image = engine.compilerManager
+      .getCompiler<TextureCompiler>(MODULETYPE.TEXTURE)!
+      .getResource(value, [
+        HTMLImageElement,
+        HTMLVideoElement,
+        HTMLCanvasElement,
+      ]);
 
     target.needsUpdate = true;
 

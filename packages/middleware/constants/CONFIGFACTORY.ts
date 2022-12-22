@@ -62,12 +62,6 @@ import { getMeshConfig } from "../mesh/MeshConfig";
 import { getPointsConfig } from "../points/PointsConfig";
 import { getLineConfig } from "../line/LineConfig";
 import { getGroupConfig } from "../group/GroupConfig";
-import {
-  getSelectiveBloomPassConfig,
-  getSMAAPassConfig,
-  getSSAOPassConfig,
-  getUnrealBloomPassConfig,
-} from "../pass/PassConfig";
 import { CONFIGTYPE } from "./configType";
 import {
   getKeyframeAnimationConfig,
@@ -146,11 +140,6 @@ export const CONFIGFACTORY = {
 
   [CONFIGTYPE.TRNASFORMCONTROLS]: getTransformControlsConfig,
   [CONFIGTYPE.ORBITCONTROLS]: getOrbitControlsConfig,
-
-  [CONFIGTYPE.SMAAPASS]: getSMAAPassConfig,
-  [CONFIGTYPE.UNREALBLOOMPASS]: getUnrealBloomPassConfig,
-  [CONFIGTYPE.SELECTIVEBLOOMPASS]: getSelectiveBloomPassConfig,
-  [CONFIGTYPE.SSAOPASS]: getSSAOPassConfig,
 
   [CONFIGTYPE.SCRIPTANIMATION]: getScriptAnimationConfig,
   [CONFIGTYPE.KEYFRAMEANIMATION]: getKeyframeAnimationConfig,

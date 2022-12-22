@@ -17,8 +17,8 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
     Processor<SymbolConfig, object, EngineSupport>
   >();
 
-  static processor = function <C extends SymbolConfig, T extends object>(
-    processor: Processor<C, T, EngineSupport>
+  static processor = function <C extends SymbolConfig, T extends object, E extends EngineSupport>(
+    processor: Processor<C, T, E>
   ) {
     Compiler.processors.set(
       processor.configType,

@@ -1,4 +1,4 @@
-import { ProxyNotice, Rule } from "../module";
+import { ProxyNotice, Rule } from "@vis-three/middleware";
 import { PassCompiler } from "./PassCompiler";
 
 export const PassRule: Rule<PassCompiler> = function (
