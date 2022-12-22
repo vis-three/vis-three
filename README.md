@@ -38,7 +38,25 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 - gitee 仓库为 github 的同步备份仓库
 - github 地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github.com/Shiotsukikaedesari/vis-three)
 
-## 项目结构说明
+## Packages
+
+| Package                                      | Version                                                                                    |
+| -------------------------------------------- | :----------------------------------------------------------------------------------------- |
+| [@vis-three/core](packages/core)             | ![@vis-three/core](https://img.shields.io/npm/v/@vis-three/core.svg?label=%20)             |
+| [@vis-three/middleware](packages/middleware) | ![@vis-three/middleware](https://img.shields.io/npm/v/@vis-three/middleware.svg?label=%20) |
+| [@vis-three/convenient](packages/convenient) | ![@vis-three/convenient](https://img.shields.io/npm/v/@vis-three/convenient?label=%20)     |
+
+## Plugins
+
+| Plugin                                                                    | Version                                                                                                          |
+| ------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------- |
+| [@vis-three/webgl-renderer-plugin](packages/plugins/WebGLRendererPlugin/) | ![@vis-three/webgl-renderer-plugin](https://img.shields.io/npm/v/@vis-three/webgl-renderer-plugin.svg?label=%20) |
+
+## Strategys
+
+| Strategy                                                                   | Version                                                                                                          |
+| -------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------- |
+| [@vis-three/webgl-render-strategy](packages/strategy/WebGLRenderStrategy/) | ![@vis-three/webgl-render-strategy](https://img.shields.io/npm/v/@vis-three/webgl-render-strategy.svg?label=%20) |
 
 ## 贡献者
 
