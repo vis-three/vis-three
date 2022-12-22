@@ -4,11 +4,19 @@ importers:
 
   .:
     specifiers:
+      '@vis-three/core': workspace:^0.5.0
       '@vis-three/display-engine': workspace:^0.5.0
+      '@vis-three/display-engine-support': workspace:^0.5.0
+      '@vis-three/middleware': workspace:^0.5.0
       '@vis-three/modeling-engine': workspace:^0.5.0
+      '@vis-three/modeling-engine-support': workspace:^0.5.0
     dependencies:
+      '@vis-three/core': link:packages/core
       '@vis-three/display-engine': link:packages/engine/DisplayEngine
+      '@vis-three/display-engine-support': link:packages/engine/DisplayEngineSupport
+      '@vis-three/middleware': link:packages/middleware
       '@vis-three/modeling-engine': link:packages/engine/ModelingEngine
+      '@vis-three/modeling-engine-support': link:packages/engine/ModelingEngineSupport
 
   packages/convenient:
     specifiers:

@@ -17,8 +17,12 @@
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
   "dependencies": {
+    "@vis-three/core": "workspace:^0.5.0",
     "@vis-three/display-engine": "workspace:^0.5.0",
-    "@vis-three/modeling-engine": "workspace:^0.5.0"
+    "@vis-three/display-engine-support": "workspace:^0.5.0",
+    "@vis-three/middleware": "workspace:^0.5.0",
+    "@vis-three/modeling-engine": "workspace:^0.5.0",
+    "@vis-three/modeling-engine-support": "workspace:^0.5.0"
   },
   "files": [
     "index.js",
