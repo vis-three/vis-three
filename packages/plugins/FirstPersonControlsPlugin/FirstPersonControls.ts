@@ -100,6 +100,10 @@ class FirstPersonControls {
     this.domElement.addEventListener("mouseup", this._onMouseUp);
   }
 
+  setSize(width: number, height: number) {
+    this.handleResize();
+  }
+
   setOrientation() {
     const quaternion = this.object.quaternion;
 

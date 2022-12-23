@@ -133,6 +133,7 @@ class Engine extends EventDispatcher {
     __publicField(this, "scene", new Scene());
     __publicField(this, "render");
     this.camera.position.set(50, 50, 50);
+    this.camera.lookAt(0, 0, 0);
     this.render = function() {
       console.warn("can not install some plugin");
     };
