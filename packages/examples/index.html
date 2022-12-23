@@ -70,6 +70,7 @@
 
     <script type="module">
       import engineRouter from "./engine";
+      import controlsRouter from "./controls";
       // import pluginRouter from "./plugin";
       // import supportRouter from "./support";
       // import displayerRouter from "./displayer";
@@ -89,33 +90,10 @@
       // import GeometrySupportRouter from "./geometrySupport";
       // import textureSupportRouter from "./textureSupport";
       // import CameraSupportRouter from "./CameraSupport";
-      // import ControlsSupportRouter from "./ControlsSupport";
+
       // import LoaderSupport from "./LoaderSupport";
 
-      const tree = [
-        engineRouter,
-        // pluginRouter,
-        // supportRouter,
-        // displayerRouter,
-        // convenientRouter,
-        // managerRouter,
-        // modifierRouter,
-        // helperRouter,
-        // loaderRouter,
-        // developRouter,
-        // coreRouter,
-        // testRouter,
-        // libraryRouter,
-        // extendsRouter,
-        // homepageRouter,
-        // dataviewRouter,
-        // passSupportRouter,
-        // GeometrySupportRouter,
-        // textureSupportRouter,
-        // CameraSupportRouter,
-        // ControlsSupportRouter,
-        // LoaderSupport,
-      ];
+      const tree = [engineRouter, controlsRouter];
 
       const domList = [];
       const moduleMain = document.getElementById("module-main");

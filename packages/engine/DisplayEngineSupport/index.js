@@ -12,6 +12,7 @@ import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
 import { ComposerSupportStrategy } from "@vis-three/composer-support-strategy";
 import { CSS3DRendererSupportStrategy } from "@vis-three/css3d-renderer-support-strategy";
 import { WebGLRendererSupportStrategy } from "@vis-three/webgl-renderer-support-strategy";
+import { OrbitControlsSupportStrategy } from "@vis-three/orbit-controls-support-strategy";
 export class DisplayEngineSupport extends EngineSupport {
     constructor(parameters) {
         super(parameters);
@@ -32,6 +33,7 @@ export class DisplayEngineSupport extends EngineSupport {
             .exec(OrbitRenderStrategy())
             .exec(ComposerSupportStrategy())
             .exec(CSS3DRendererSupportStrategy())
-            .exec(WebGLRendererSupportStrategy());
+            .exec(WebGLRendererSupportStrategy())
+            .exec(OrbitControlsSupportStrategy());
     }
 }

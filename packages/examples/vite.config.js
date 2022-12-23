@@ -7,12 +7,12 @@ import fs from "fs";
 // 遍历examples文件夹形成input, 顺便写一份json配置进vis-three/website/examples/assets/menus.json
 const input = {};
 const menusJson = [];
-const examplesDir = path.resolve(__dirname, "./engine");
 
 const recursion = (parentDir) => {
   if (!fs.statSync(parentDir).isDirectory()) {
     return;
   }
+
   fs.readdirSync(parentDir).forEach((filename) => {
     if (path.extname(filename) === ".html") {
       const name = `${parentDir.replace(/\\/g, "/").split("/").pop()}/${
@@ -33,7 +33,8 @@ const recursion = (parentDir) => {
   });
 };
 
-recursion(examplesDir);
+recursion(path.resolve(__dirname, "./engine"));
+recursion(path.resolve(__dirname, "./controls"));
 // console.log(input);
 // console.log(menusJson);
 

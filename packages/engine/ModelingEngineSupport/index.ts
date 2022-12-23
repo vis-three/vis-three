@@ -83,6 +83,7 @@ import { CSS3DRendererSupportStrategy } from "@vis-three/css3d-renderer-support-
 import { WebGLRendererSupportStrategy } from "@vis-three/webgl-renderer-support-strategy";
 import { TransformControlsSupportStrategy } from "@vis-three/transform-controls-support-strategy";
 import { TransformControlsHelperFilterStrategy } from "@vis-three/transform-controls-helper-filter-strategy";
+import { OrbitControlsSupportStrategy } from "@vis-three/orbit-controls-support-strategy";
 export class ModelingEngineSupport
   extends EngineSupport
   implements
@@ -162,6 +163,7 @@ export class ModelingEngineSupport
       .exec(CSS3DRendererSupportStrategy())
       .exec(WebGLRendererSupportStrategy())
       .exec(TransformControlsSupportStrategy())
-      .exec(TransformControlsHelperFilterStrategy());
+      .exec(TransformControlsHelperFilterStrategy())
+      .exec(OrbitControlsSupportStrategy());
   }
 }

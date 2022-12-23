@@ -3,7 +3,9 @@ import {
   Compiler,
   COMPILER_MANAGER_PLUGIN,
   CONFIGTYPE,
+  ControlsCompiler,
   DATA_SUPPORT_MANAGER_PLUGIN,
+  MODULETYPE,
   uniqueSymbol,
 } from "@vis-three/middleware";
 import { ORBIT_CONTROLS_PLUGIN } from "@vis-three/orbit-controls-plugin";
@@ -25,7 +27,9 @@ export const OrbitControlsSupportStrategy: Strategy<OrbitControlsSupportEngine> 
         ORBIT_CONTROLS_PLUGIN,
       ],
       exec(engine) {
-        const compiler = engine.compilerManager.controlsCompiler;
+        const compiler = engine.compilerManager.getCompiler<ControlsCompiler>(
+          MODULETYPE.CONTROLS
+        )!;
 
         compiler.map.set(
           uniqueSymbol(CONFIGTYPE.ORBITCONTROLS),
