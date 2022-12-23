@@ -1,6 +1,6 @@
-import { Shader } from "../shader";
+import { Shader } from "@vis-three/middleware";
 
-const shader: Shader = {
+export const BloomShader: Shader = {
   name: "BloomShader",
   uniforms: {
     brightness: { value: 0.8 },
@@ -54,5 +54,3 @@ const shader: Shader = {
       gl_FragColor = vec4(color, present * brightness);
     }`,
 };
-
-export default shader;

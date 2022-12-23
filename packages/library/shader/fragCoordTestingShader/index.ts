@@ -1,6 +1,6 @@
-import { Shader } from "../shader";
+import { Shader } from "@vis-three/middleware";
 
-const shader: Shader = {
+export const fragCoordTestingShader: Shader = {
   name: "fragCoordTestingShader",
   uniforms: {
     resolution: {
@@ -22,5 +22,3 @@ const shader: Shader = {
       gl_FragColor = vec4(st.x,st.y,0.0,1.0);
     }`,
 };
-
-export default shader;

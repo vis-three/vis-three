@@ -1,6 +1,6 @@
-import { Shader } from "../shader";
+import { Shader } from "@vis-three/middleware";
 
-const shader: Shader = {
+export const colorMixShader: Shader = {
   name: "colorMixShader",
   uniforms: {
     colorA: {
@@ -34,5 +34,3 @@ const shader: Shader = {
       gl_FragColor = vec4(mix(colorA, colorB, percent), 1.0);
     }`,
 };
-
-export default shader;

@@ -1,6 +1,6 @@
-import { Shader } from "../shader";
+import { Shader } from "@vis-three/middleware";
 
-const shader: Shader = {
+export const uvPulseShader: Shader = {
   name: "uvPulseShader",
   uniforms: {
     time: { value: 0.0 },
@@ -65,5 +65,3 @@ const shader: Shader = {
       gl_FragColor = vec4(color, opacity);
     }`,
 };
-
-export default shader;

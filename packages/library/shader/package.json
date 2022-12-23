@@ -1,7 +1,7 @@
 {
-  "name": "@vis-three/library",
-  "version": "0.4.0",
-  "description": "vis-three library",
+  "name": "@vis-three/shader-library",
+  "version": "0.5.0",
+  "description": "vis-three shader library",
   "main": "index.js",
   "module": "index.js",
   "types": "index.d.ts",
@@ -13,6 +13,7 @@
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
   "devDependencies": {
+    "@types/node": "^18.11.12",
     "@types/three": "^0.133.1",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
@@ -28,5 +29,8 @@
     "/**/*.d.ts",
     "package.json",
     "LICENSE"
-  ]
+  ],
+  "dependencies": {
+    "@vis-three/middleware": "workspace:^0.5.0"
+  }
 }
