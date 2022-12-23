@@ -26,6 +26,7 @@ button {
   position: fixed;
   top: 30px;
   left: 50%;
+  z-index: 10;
 }
 
 #button-group {

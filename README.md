@@ -82,6 +82,7 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 | [@vis-three/transform-controls-plugin](packages/plugins/TransformControlsPlugin/)      | ![@vis-three/transform-controls-plugin](https://img.shields.io/npm/v/@vis-three/transform-controls-plugin.svg?label=%20)       |
 | [@vis-three/viewpoint-plugin](packages/plugins/ViewpointPlugin/)                       | ![@vis-three/viewpoint-plugin](https://img.shields.io/npm/v/@vis-three/viewpoint-plugin.svg?label=%20)                         |
 | [@vis-three/first-person-controls-plugin](packages/plugins/FirstPersonControlsPlugin/) | ![@vis-three/first-person-controls-plugin](https://img.shields.io/npm/v/@vis-three/first-person-controls-plugin.svg?label=%20) |
+| [@vis-three/pointer-lock-controls-plugin](packages/plugins/PointerLockControlsPlugin/) | ![@vis-three/pointer-lock-controls-plugin](https://img.shields.io/npm/v/@vis-three/pointer-lock-controls-plugin.svg?label=%20) |
 
 ## Strategys
 
