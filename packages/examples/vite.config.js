@@ -35,6 +35,8 @@ const recursion = (parentDir) => {
 
 recursion(path.resolve(__dirname, "./engine"));
 recursion(path.resolve(__dirname, "./controls"));
+recursion(path.resolve(__dirname, "./plugin"));
+
 // console.log(input);
 // console.log(menusJson);
 

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TransformControlsPlugin</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+
+    #button-position {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+    }
+
+    #button-group {
+      transform: translate(-50%, 0);
+    }
+
+    #button-group button {
+      margin: 0 5px;
+      font-size: 16px;
+      padding: 8px 10px;
+      background: rgb(237, 75, 243);
+      border-radius: 3px;
+      box-shadow: 0 0 6px rgb(236, 182, 238);
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <div id="button-position">
+      <div id="button-group">
+        <button id="translate">translate</button>
+        <button id="rotate">rotate</button>
+        <button id="scale">scale</button>
+      </div>
+    </div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as Vis from "vis-three";
+      const engine = new Vis.DisplayEngine()
+        .install("TransformControls")
+        .complete()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      engine.eventManager.recursive = true;
+      const scene = engine.scene;
+
+      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
+      pointLight.position.y = 30;
+      scene.add(pointLight);
+
+      const box = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(10, 10, 10),
+        new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
+      );
+      box.position.x = 10;
+      scene.add(box);
+
+      const box1 = new THREE.Mesh(box.geometry, box.material);
+      box1.position.x = 10;
+      box1.position.y = 10;
+      box1.position.z = -10;
+      box.add(box1);
+
+      const line = new THREE.Line(box.geometry);
+      scene.add(line);
+
+      const points = new THREE.Points(box.geometry);
+
+      points.position.x = -10;
+      scene.add(points);
+
+      console.log(engine);
+
+      document.getElementById("translate").onclick = () => {
+        engine.transformControls.mode = "translate";
+      };
+      document.getElementById("rotate").onclick = () => {
+        engine.transformControls.mode = "rotate";
+      };
+      document.getElementById("scale").onclick = () => {
+        engine.transformControls.mode = "scale";
+      };
+    </script>
+  </body>
+</html>

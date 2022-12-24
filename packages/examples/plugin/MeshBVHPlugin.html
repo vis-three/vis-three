@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MeshBVHPlugin</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <style></style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
+      import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
+      import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
+      import { LoaderManagerPlugin } from "@vis-three/loader-manager-plugin";
+      import { OrbitControlsPlugin } from "@vis-three/orbit-controls-plugin";
+      import { MeshBVHPlugin } from "@vis-three/mesh-bvh-plugin";
+      import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+      import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
+      import { defineEngine } from "@vis-three/core";
+
+      const engine = defineEngine({
+        plugins: [
+          RenderManagerPlugin(),
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          EffectComposerPlugin({
+            WebGLMultisampleRenderTarget: true,
+          }),
+          CameraAdaptivePlugin(),
+          GridHelperPlugin(),
+          LoaderManagerPlugin({
+            path: import.meta.env.BASE_URL,
+          }),
+          OrbitControlsPlugin(),
+          MeshBVHPlugin({
+            visualizer: true,
+          }),
+        ],
+        strategy: [EffectRenderStrategy(), OrbitRenderStrategy()],
+      })
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      engine
+        .loadResourcesAsync([
+          "/model/glb/dungeon_low_poly_game_level_challenge/scene.gltf",
+        ])
+        .then((res) => {
+          const gltf = res.resourceMap.get(
+            "/model/glb/dungeon_low_poly_game_level_challenge/scene.gltf"
+          );
+
+          const gltfScene = gltf.scene;
+          gltfScene.scale.setScalar(0.1);
+
+          const box = new THREE.Box3();
+          box.setFromObject(gltfScene);
+          box.getCenter(gltfScene.position).negate();
+          gltfScene.updateMatrixWorld(true);
+
+          // visual geometry setup
+          const toMerge = {};
+          gltfScene.traverse((c) => {
+            if (
+              /Boss/.test(c.name) ||
+              /Enemie/.test(c.name) ||
+              /Shield/.test(c.name) ||
+              /Sword/.test(c.name) ||
+              /Character/.test(c.name) ||
+              /Gate/.test(c.name) ||
+              // spears
+              /Cube/.test(c.name) ||
+              // pink brick
+              (c.material && c.material.color.r === 1.0)
+            ) {
+              return;
+            }
+
+            if (c.isMesh) {
+              const hex = c.material.color.getHex();
+              toMerge[hex] = toMerge[hex] || [];
+              toMerge[hex].push(c);
+            }
+          });
+
+          const environment = new THREE.Group();
+          for (const hex in toMerge) {
+            const arr = toMerge[hex];
+            const visualGeometries = [];
+            arr.forEach((mesh) => {
+              if (mesh.material.emissive.r !== 0) {
+                environment.attach(mesh);
+              } else {
+                const geom = mesh.geometry.clone();
+                geom.applyMatrix4(mesh.matrixWorld);
+                visualGeometries.push(geom);
+              }
+            });
+
+            if (visualGeometries.length) {
+              const newGeom =
+                BufferGeometryUtils.mergeBufferGeometries(visualGeometries);
+              const newMesh = new THREE.Mesh(
+                newGeom,
+                new THREE.MeshStandardMaterial({
+                  color: parseInt(hex),
+                  shadowSide: 2,
+                })
+              );
+              newMesh.castShadow = true;
+              newMesh.receiveShadow = true;
+              newMesh.material.shadowSide = 2;
+
+              environment.add(newMesh);
+            }
+          }
+
+          const geometries = [];
+          environment.updateMatrixWorld(true);
+          environment.traverse((c) => {
+            if (c.geometry) {
+              engine.MeshBVHManager.addBVH(c);
+            }
+          });
+
+          engine.scene.add(environment);
+        });
+
+      const scene = engine.scene;
+
+      const box = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(10, 10, 10),
+        new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
+      );
+      box.position.x = 10;
+      scene.add(box);
+
+      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 10, 800, 0);
+      pointLight.position.y = 50;
+
+      scene.add(pointLight);
+
+      const line = new THREE.Line(box.geometry);
+      scene.add(line);
+
+      const points = new THREE.Points(box.geometry);
+
+      points.position.x = -10;
+      scene.add(points);
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>

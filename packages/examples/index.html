@@ -71,7 +71,7 @@
     <script type="module">
       import engineRouter from "./engine";
       import controlsRouter from "./controls";
-      // import pluginRouter from "./plugin";
+      import pluginRouter from "./plugin";
       // import supportRouter from "./support";
       // import displayerRouter from "./displayer";
       // import convenientRouter from "./convenient";
@@ -93,7 +93,7 @@
 
       // import LoaderSupport from "./LoaderSupport";
 
-      const tree = [engineRouter, controlsRouter];
+      const tree = [engineRouter, controlsRouter, pluginRouter];
 
       const domList = [];
       const moduleMain = document.getElementById("module-main");

@@ -22,15 +22,24 @@ export interface LoaderManagerEngine extends Engine {
   loadResourcesAsync: (urlList: Array<LoadUnit>) => Promise<LoadedEvent>;
 }
 
+export interface LoaderManagerPluginParameters extends LoaderManagerParameters {
+  path?: string;
+}
+
 export const LOADER_MANAGER_PLUGIN = transPkgName(pkgname);
 
 export const LoaderManagerPlugin: Plugin<LoaderManagerEngine> = function (
-  params?: LoaderManagerParameters
+  params?: LoaderManagerPluginParameters
 ) {
   return {
     name: LOADER_MANAGER_PLUGIN,
     install(engine) {
       const loaderManager = new LoaderManager(params);
+
+      if (params?.path) {
+        loaderManager.setPath(params.path);
+      }
+
       engine.loaderManager = loaderManager;
 
       engine.loadResources = (
