@@ -24,6 +24,9 @@ export default defineConfig({
     sidebar: {
       "/start/": [
         { text: "开始", link: "/start/start" },
+        { text: "自定义插件", link: "/start/plugin" },
+        { text: "自定义策略", link: "/start/startegy" },
+        { text: "配置化", link: "/start/middleware" },
         { text: "TODO", link: "/start/todo" },
       ],
       "/api/": [
