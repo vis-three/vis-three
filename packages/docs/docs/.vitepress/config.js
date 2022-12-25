@@ -14,7 +14,9 @@ export default defineConfig({
     nav: [
       { text: "首页", link: "/" },
       { text: "开始", link: "/start/start" },
-      { text: "API", link: "/api/engine" },
+      { text: "插件", link: "/api/engine" },
+      { text: "策略", link: "/api/engine" },
+      { text: "配置化", link: "/api/engine" },
       { text: "版本", link: "/version/version0-1-13" },
       {
         text: "website",
@@ -24,6 +26,7 @@ export default defineConfig({
     sidebar: {
       "/start/": [
         { text: "开始", link: "/start/start" },
+        { text: "引擎构建", link: "/start/engine" },
         { text: "自定义插件", link: "/start/plugin" },
         { text: "自定义策略", link: "/start/startegy" },
         { text: "配置化", link: "/start/middleware" },
