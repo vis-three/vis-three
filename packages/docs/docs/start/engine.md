@@ -475,5 +475,5 @@ const engine = defineEngine({
 ```
 
 ::: tip
-关于策略的编写请参考[自定义策略](/start/startegy)部分。
+关于策略的编写请参考[自定义策略](/start/strategy)部分。
 :::
