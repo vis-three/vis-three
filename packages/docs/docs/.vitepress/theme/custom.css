@@ -38,4 +38,5 @@ tr:nth-child(2n) {
   --c-text: rgb(230, 230, 230);
   --c-text-light: rgb(180, 180, 180);
   --c-divider-light: rgb(36, 42, 49);
+  --code-bg-color: #373c47;
 }

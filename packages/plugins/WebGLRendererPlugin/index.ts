@@ -12,7 +12,7 @@ import {
   WebGLRendererParameters,
 } from "three";
 
-import { transPkgName } from "@vis-three/utils";
+import { Optional, transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 
 export interface Screenshot {
@@ -157,13 +157,18 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
 
       engine.addEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, setSizeFun);
     },
-    dispose(engine) {
+    dispose(
+      engine: Optional<WebGLRendererEngine, "webGLRenderer" | "getScreenshot">
+    ) {
       engine.removeEventListener<SetDomEvent>(ENGINE_EVENT.SETDOM, setDomFun);
       engine.removeEventListener<SetSizeEvent>(
         ENGINE_EVENT.SETSIZE,
         setSizeFun
       );
-      engine.webGLRenderer.dispose();
+      engine.webGLRenderer!.dispose();
+
+      delete engine.webGLRenderer;
+      delete engine.getScreenshot;
     },
   };
 };

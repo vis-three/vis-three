@@ -28,7 +28,7 @@ export default defineConfig({
         { text: "开始", link: "/start/start" },
         { text: "引擎构建", link: "/start/engine" },
         { text: "自定义插件", link: "/start/plugin" },
-        { text: "自定义策略", link: "/start/startegy" },
+        { text: "自定义策略", link: "/start/strategy" },
         { text: "配置化", link: "/start/middleware" },
         { text: "TODO", link: "/start/todo" },
       ],
