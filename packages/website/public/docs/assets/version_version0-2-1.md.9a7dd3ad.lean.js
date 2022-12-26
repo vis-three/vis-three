@@ -1,1 +1,0 @@
-import{_ as e,c as a,o as r,a as t}from"./app.9dfb895f.js";const u='{"title":"version 0.2.1","description":"","frontmatter":{},"headers":[{"level":2,"title":"version 0.2.1","slug":"version-0-2-1"}],"relativePath":"version/version0-2-1.md"}',i={},n=t("",6),s=[n];function d(o,c,h,l,_,f){return r(),a("div",null,s)}var v=e(i,[["render",d]]);export{u as __pageData,v as default};

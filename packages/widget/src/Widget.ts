@@ -1,40 +1,21 @@
+import { EventDispatcher } from "@vis-three/core";
 import {
+  CONFIGFACTORY,
+  CONFIGTYPE,
   EngineSupport,
   EngineSupportLoadOptions,
-} from "../engine/EngineSupport";
-import {
-  BasicEventConfig,
-  EventGenerator,
-} from "../library/event/EventLibrary";
-import { EventLibrary, generateConfig } from "../../core/src/main";
-import { ObjectEvent } from "../../core/src/manager/EventManager";
-import { LoadUnit } from "../../core/src/manager/LoaderManager";
-import { SymbolConfig } from "../../core/src/middleware/common/CommonConfig";
-import { CONFIGFACTORY } from "../../core/src/middleware/constants/CONFIGFACTORY";
-import { getModule } from "../../core/src/middleware/constants/CONFIGMODULE";
-import { CONFIGTYPE } from "../../core/src/middleware/constants/configType";
-import {
-  MODULETYPE,
-  OBJECTMODULE,
-} from "../../core/src/middleware/constants/MODULETYPE";
-import { GroupConfig } from "../../core/src/middleware/group/GroupConfig";
-import { ObjectConfig } from "../../core/src/middleware/object/ObjectConfig";
-import { EventDispatcher } from "../../core/src/core/EventDispatcher";
-import { Observer } from "../../core/src/core/widget/Observer";
-import {
-  createElement,
-  onComputed,
-  onEvent,
-} from "../../core/src/core/widget/render";
-import {
-  getObservable,
+  generateConfig,
+  getModule,
+  globalAntiShake,
+  GroupConfig,
   Ignore,
-  observable,
-} from "../../core/src/core/Observable";
-import { Watcher } from "../../core/src/core/widget/Watcher";
-import { clone, handler, planish } from "../../core/src/convenient/Template";
-import { globalAntiShake } from "../../core/src/utils/AntiShake";
+  OBJECTMODULE,
+} from "@vis-three/middleware";
+import { ObjectConfig } from "@vis-three/middleware/object/ObjectConfig";
 import { v4 } from "uuid";
+import { LoadUnit } from "../../plugins/LoaderManagerPlugin";
+import { Observer } from "./widget/Observer";
+import { createElement, onComputed, onEvent } from "./widget/render";
 
 const lifetimes = [
   "beforeLoad",
