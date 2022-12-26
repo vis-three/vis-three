@@ -1,0 +1,1 @@
+import{_ as e,c as r,o as t}from"./app.76bdd79a.js";const f='{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"other/aniScriptLibrary.md"}',a={};function n(o,c,s,i,p,_){return t(),r("div")}var l=e(a,[["render",n]]);export{f as __pageData,l as default};

@@ -33,6 +33,36 @@ export default defineConfig({
         { text: "配置化开发", link: "/start/middleware" },
         { text: "组件化开发-alpha", link: "/start/widget" },
       ],
+      "/plugins/": [
+        { text: "总览", link: "/plugins/start" },
+        ...fs
+          .readdirSync(path.resolve(__dirname, "../plugins"))
+          .filter((name) => name !== "start.md")
+          .map((version) => {
+            const name = version.split(".").shift();
+            return {
+              text: name.split("-").reduce((str, elem) => {
+                return (str += elem[0].toUpperCase() + elem.slice(1));
+              }, ""),
+              link: `/plugins/${name}`,
+            };
+          }),
+      ],
+      "/strategy/": [
+        { text: "总览", link: "/strategy/start" },
+        ...fs
+          .readdirSync(path.resolve(__dirname, "../strategy"))
+          .filter((name) => name !== "start.md")
+          .map((version) => {
+            const name = version.split(".").shift();
+            return {
+              text: name.split("-").reduce((str, elem) => {
+                return (str += elem[0].toUpperCase() + elem.slice(1));
+              }, ""),
+              link: `/strategy/${name}`,
+            };
+          }),
+      ],
       "/version/": fs
         .readdirSync(path.resolve(__dirname, "../version"))
         .map((version) => {
