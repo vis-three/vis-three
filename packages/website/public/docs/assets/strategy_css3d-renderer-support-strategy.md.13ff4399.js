@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as r}from"./app.5e0e61e4.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"strategy/css3d-renderer-support-strategy.md"}'),s={name:"strategy/css3d-renderer-support-strategy.md"};function a(o,c,n,p,d,_){return r(),t("div")}const f=e(s,[["render",a]]);export{m as __pageData,f as default};

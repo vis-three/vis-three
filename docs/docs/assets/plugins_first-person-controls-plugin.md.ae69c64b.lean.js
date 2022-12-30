@@ -1,0 +1,1 @@
+import{_ as t,c as e,o as r}from"./app.5e0e61e4.js";const f=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/first-person-controls-plugin.md"}'),s={name:"plugins/first-person-controls-plugin.md"};function n(o,a,c,i,p,l){return r(),e("div")}const d=t(s,[["render",n]]);export{f as __pageData,d as default};

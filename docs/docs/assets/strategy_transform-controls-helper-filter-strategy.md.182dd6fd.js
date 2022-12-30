@@ -1,0 +1,1 @@
+import{_ as t,c as e,o as r}from"./app.5e0e61e4.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"strategy/transform-controls-helper-filter-strategy.md"}'),a={name:"strategy/transform-controls-helper-filter-strategy.md"};function o(s,n,c,l,p,f){return r(),e("div")}const _=t(a,[["render",o]]);export{m as __pageData,_ as default};

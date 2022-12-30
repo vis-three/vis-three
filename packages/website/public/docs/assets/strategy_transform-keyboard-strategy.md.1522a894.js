@@ -1,0 +1,1 @@
+import{_ as t,c as e,o as r}from"./app.5e0e61e4.js";const f=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"strategy/transform-keyboard-strategy.md"}'),a={name:"strategy/transform-keyboard-strategy.md"};function o(s,n,c,d,m,p){return r(),e("div")}const i=t(a,[["render",o]]);export{f as __pageData,i as default};

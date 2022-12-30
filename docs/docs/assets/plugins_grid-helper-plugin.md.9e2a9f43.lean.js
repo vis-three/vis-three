@@ -1,0 +1,1 @@
+import{_ as e,c as r,o as t}from"./app.5e0e61e4.js";const _=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/grid-helper-plugin.md"}'),n={name:"plugins/grid-helper-plugin.md"};function a(p,s,i,o,c,l){return t(),r("div")}const g=e(n,[["render",a]]);export{_ as __pageData,g as default};

@@ -7,5 +7,5 @@ packages/strategy/**/*.js
 packages/library/**/*.d.ts
 packages/library/**/*.js
 coverage
-index.d.ts
-index.js
+/index.d.ts
+/index.js

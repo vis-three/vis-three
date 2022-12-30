@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as r}from"./app.5e0e61e4.js";const d=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"strategy/helper-select-interact-strategy.md"}'),a={name:"strategy/helper-select-interact-strategy.md"};function s(c,n,o,p,l,i){return r(),t("div")}const m=e(a,[["render",s]]);export{d as __pageData,m as default};

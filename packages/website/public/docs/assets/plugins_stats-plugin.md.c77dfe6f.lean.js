@@ -1,0 +1,1 @@
+import{_ as t,c as e,o as s}from"./app.5e0e61e4.js";const d=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/stats-plugin.md"}'),a={name:"plugins/stats-plugin.md"};function n(r,o,c,p,i,l){return s(),e("div")}const u=t(a,[["render",n]]);export{d as __pageData,u as default};
