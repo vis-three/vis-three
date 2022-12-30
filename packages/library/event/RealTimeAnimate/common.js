@@ -1,18 +1,6 @@
 import { Easing } from "@tweenjs/tween.js";
 export var TIMINGFUNCTION;
 (function (TIMINGFUNCTION) {
-    /**
-     * @deprecated 使用 EASING_LINEAR_NONE
-     */
-    TIMINGFUNCTION["ELN"] = "ELN";
-    /**
-     * @deprecated 使用 EASING_QUARTIC_IN
-     */
-    TIMINGFUNCTION["EQI"] = "EQI";
-    /**
-     * @deprecated 使用 EASING_QUARTIC_OUT
-     */
-    TIMINGFUNCTION["EQO"] = "EQO";
     TIMINGFUNCTION["EASING_LINEAR_NONE"] = "EASING_LINEAR_NONE";
     TIMINGFUNCTION["EASING_QUARTIC_IN"] = "EASING_QUARTIC_IN";
     TIMINGFUNCTION["EASING_QUARTIC_OUT"] = "EASING_QUARTIC_OUT";
@@ -22,9 +10,6 @@ export var TIMINGFUNCTION;
     TIMINGFUNCTION["EASING_QUADRATIC_INOUT"] = "EASING_QUADRATIC_INOUT";
 })(TIMINGFUNCTION || (TIMINGFUNCTION = {}));
 export const timingFunction = {
-    ELN: Easing.Linear.None,
-    EQI: Easing.Quartic.In,
-    EQO: Easing.Quartic.Out,
     EASING_LINEAR_NONE: Easing.Linear.None,
     EASING_QUARTIC_IN: Easing.Quartic.In,
     EASING_QUARTIC_OUT: Easing.Quartic.Out,

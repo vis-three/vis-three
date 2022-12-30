@@ -1,11 +1,14 @@
 import { Tween } from "@tweenjs/tween.js";
+import {
+  BasicEventConfig,
+  EngineSupport,
+  EventGenerator,
+  MeshConfig,
+  ObjectEvent,
+  RenderEvent,
+  Vector3Config,
+} from "@vis-three/middleware";
 import { Object3D } from "three";
-import { globalAntiShake, EngineSupport } from "@vis-three/core";
-import { ObjectEvent } from "../../../manager/EventManager";
-import { RenderEvent } from "../../../manager/RenderManager";
-import { Vector3Config } from "../../../middleware/common/CommonConfig";
-import { ObjectConfig } from "../../../middleware/object/ObjectConfig";
-import { BasicEventConfig, EventGenerator } from "../EventLibrary";
 import { timingFunction, TIMINGFUNCTION } from "./common";
 
 export interface MoveSpacing extends BasicEventConfig {
@@ -52,7 +55,7 @@ export const generator: EventGenerator<MoveSpacing> = function (
 
   const renderManager = engine.renderManager!;
   // 同步配置
-  const supportData = engine.getConfigBySymbol<ObjectConfig>(params.target);
+  const supportData = engine.getConfigBySymbol(params.target) as MeshConfig;
 
   // 防止重复触发
   let animating = false;

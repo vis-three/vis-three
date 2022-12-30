@@ -12,7 +12,7 @@ export type AniScriptGenerator<C extends BasicAniScriptConfig> = (
   config: C
 ) => (event: RenderEvent) => void;
 
-export class AniScriptLibrary {
+export class AniScriptGeneratorManager {
   private static configLibrary = new Map<string, unknown>();
   private static generatorLibrary = new Map<string, AniScriptGenerator<any>>();
 
@@ -20,22 +20,22 @@ export class AniScriptLibrary {
     config: C,
     generator: AniScriptGenerator<C>
   ) {
-    if (AniScriptLibrary.configLibrary.has(config.name)) {
+    if (AniScriptGeneratorManager.configLibrary.has(config.name)) {
       console.warn(
         `EventLibrary has already exist this event generator: ${config.name}, that will be cover.`
       );
     }
 
-    AniScriptLibrary.configLibrary.set(
+    AniScriptGeneratorManager.configLibrary.set(
       config.name,
       JSON.parse(JSON.stringify(config))
     );
 
-    AniScriptLibrary.generatorLibrary.set(config.name, generator);
+    AniScriptGeneratorManager.generatorLibrary.set(config.name, generator);
   };
 
   static generateConfig(name: string, merge: object): BasicAniScriptConfig {
-    if (!AniScriptLibrary.configLibrary.has(name)) {
+    if (!AniScriptGeneratorManager.configLibrary.has(name)) {
       console.warn(`event library can not found config by name: ${name}`);
       return {
         name: "",
@@ -60,7 +60,7 @@ export class AniScriptLibrary {
     };
 
     const template = JSON.parse(
-      JSON.stringify(AniScriptLibrary.configLibrary.get(name)!)
+      JSON.stringify(AniScriptGeneratorManager.configLibrary.get(name)!)
     );
 
     recursion(template, merge);
@@ -74,14 +74,14 @@ export class AniScriptLibrary {
     attribute: string,
     config: BasicAniScriptConfig
   ): (event: RenderEvent) => void {
-    if (!AniScriptLibrary.generatorLibrary.has(config.name)) {
+    if (!AniScriptGeneratorManager.generatorLibrary.has(config.name)) {
       console.error(
         `event library can not found generator by name: ${config.name}`
       );
       return () => {};
     }
 
-    return AniScriptLibrary.generatorLibrary.get(config.name)!(
+    return AniScriptGeneratorManager.generatorLibrary.get(config.name)!(
       engine,
       target,
       attribute,
@@ -90,6 +90,6 @@ export class AniScriptLibrary {
   }
 
   static has(name: string): boolean {
-    return AniScriptLibrary.configLibrary.has(name);
+    return AniScriptGeneratorManager.configLibrary.has(name);
   }
 }

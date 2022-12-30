@@ -3,7 +3,7 @@ import { ShaderMaterial } from "three";
 
 import { CONFIGTYPE } from "../../constants/configType";
 import { EngineSupport } from "../../engine";
-import { ShaderLibrary } from "../../library/ShaderLibrary";
+import { ShaderGeneratorManager } from "../../manager/ShaderGeneratorManager";
 import { defineProcessor } from "../../module";
 import { ShaderMaterialConfig } from "../MaterialConfig";
 import { commonNeedUpdatesRegCommand, create, dispose } from "./common";
@@ -17,7 +17,7 @@ export default defineProcessor<
   commands: {
     set: {
       shader({ target, value }) {
-        const shader = ShaderLibrary.getShader(value);
+        const shader = ShaderGeneratorManager.getShader(value);
         shader?.vertexShader && (target.vertexShader = shader.vertexShader);
         shader?.fragmentShader &&
           (target.fragmentShader = shader.fragmentShader);
@@ -34,7 +34,7 @@ export default defineProcessor<
   ): ShaderMaterial {
     const material = new ShaderMaterial();
 
-    const shader = ShaderLibrary.getShader(config.shader);
+    const shader = ShaderGeneratorManager.getShader(config.shader);
     shader?.vertexShader && (material.vertexShader = shader.vertexShader);
     shader?.fragmentShader && (material.fragmentShader = shader.fragmentShader);
     shader?.uniforms && (material.uniforms = shader.uniforms);

@@ -1,9 +1,12 @@
 import { Tween } from "@tweenjs/tween.js";
+import {
+  BasicEventConfig,
+  EngineSupport,
+  EventGenerator,
+  ObjectEvent,
+  RenderEvent,
+} from "@vis-three/middleware";
 import { Color } from "three";
-import { globalAntiShake, EngineSupport } from "@vis-three/core";
-import { ObjectEvent } from "../../../manager/EventManager";
-import { RenderEvent } from "../../../manager/RenderManager";
-import { BasicEventConfig, EventGenerator } from "../EventLibrary";
 import { timingFunction, TIMINGFUNCTION } from "./common";
 
 export interface ColorChange extends BasicEventConfig {

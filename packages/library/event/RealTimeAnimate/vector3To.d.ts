@@ -1,5 +1,4 @@
-import { Vector3Config } from "../../../middleware/common/CommonConfig";
-import { BasicEventConfig, EventGenerator } from "../EventLibrary";
+import { BasicEventConfig, EventGenerator, Vector3Config } from "@vis-three/middleware";
 import { TIMINGFUNCTION } from "./common";
 export interface Vector3To extends BasicEventConfig {
     params: {

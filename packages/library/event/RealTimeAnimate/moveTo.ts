@@ -1,11 +1,14 @@
-import { Vector3Config } from "../../../middleware/common/CommonConfig";
-import { BasicEventConfig, EventGenerator } from "../EventLibrary";
 import { Tween } from "@tweenjs/tween.js";
+import {
+  BasicEventConfig,
+  EngineSupport,
+  EventGenerator,
+  ObjectConfig,
+  ObjectEvent,
+  RenderEvent,
+  Vector3Config,
+} from "@vis-three/middleware";
 import { timingFunction, TIMINGFUNCTION } from "./common";
-import { globalAntiShake, EngineSupport } from "@vis-three/core";
-import { ObjectEvent } from "../../../manager/EventManager";
-import { ObjectConfig } from "../../../middleware/object/ObjectConfig";
-import { RenderEvent } from "../../../manager/RenderManager";
 
 export interface MoveTo extends BasicEventConfig {
   params: {

@@ -1,7 +1,7 @@
 import { RenderEvent } from "@vis-three/render-manager-plugin";
 import { CONFIGTYPE } from "../../constants/configType";
 import { EngineSupport } from "../../engine";
-import { AniScriptLibrary } from "../../library/AniScriptLibrary";
+import { AniScriptGeneratorManager } from "../../manager/AniScriptGeneratorManager";
 import { defineProcessor } from "../../module";
 import { ScriptAnimationConfig } from "../AnimationConfig";
 import { scriptAniSymbol } from "./common";
@@ -33,7 +33,7 @@ const createFunction = function (
     object = object[key];
   }
 
-  return AniScriptLibrary.generateScript(
+  return AniScriptGeneratorManager.generateScript(
     engine,
     object,
     attribute,

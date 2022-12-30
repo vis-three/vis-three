@@ -1,4 +1,4 @@
-import { BasicEventConfig, EventGenerator } from "../EventLibrary";
+import { BasicEventConfig, EventGenerator } from "@vis-three/middleware";
 import { TIMINGFUNCTION } from "./common";
 export interface FadeObject extends BasicEventConfig {
     params: {

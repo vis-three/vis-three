@@ -1,7 +1,10 @@
-import { globalAntiShake, EngineSupport } from "@vis-three/core";
-import { ObjectEvent } from "../../../manager/EventManager";
-import { AnimationConfig } from "../../../middleware/animation/AnimationConfig";
-import { BasicEventConfig, EventGenerator } from "../EventLibrary";
+import {
+  AnimationConfig,
+  BasicEventConfig,
+  EngineSupport,
+  EventGenerator,
+  ObjectEvent,
+} from "@vis-three/middleware";
 
 export interface SwitchAnimate extends BasicEventConfig {
   params: {

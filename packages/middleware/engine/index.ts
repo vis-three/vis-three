@@ -71,6 +71,7 @@ export class EngineSupport
   declare renderManager: RenderManager;
   declare play: () => void;
   declare stop: () => void;
+  declare render: () => void;
   declare pointerManager: PointerManager;
   declare resourceManager: ResourceManager;
   declare registerResources: (
@@ -90,6 +91,7 @@ export class EngineSupport
     callback: (err: Error | undefined, event?: MappedEvent | undefined) => void
   ) => this;
   declare loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
+  orbitControls: any;
 
   constructor(
     parameters: EngineSupportParameters = {},

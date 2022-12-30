@@ -1,11 +1,14 @@
 import { Tween } from "@tweenjs/tween.js";
+import {
+  BasicEventConfig,
+  CameraConfig,
+  EngineSupport,
+  EventGenerator,
+  ObjectEvent,
+  RenderEvent,
+  Vector3Config,
+} from "@vis-three/middleware";
 import { Camera, Euler, Object3D, Vector3 } from "three";
-import { globalAntiShake, EngineSupport } from "@vis-three/core";
-import { ObjectEvent } from "../../../manager/EventManager";
-import { RenderEvent } from "../../../manager/RenderManager";
-import { CameraConfig } from "../../../middleware/camera/CameraConfig";
-import { Vector3Config } from "../../../middleware/common/CommonConfig";
-import { BasicEventConfig, EventGenerator } from "../EventLibrary";
 import { timingFunction, TIMINGFUNCTION } from "./common";
 
 export interface FocusObject extends BasicEventConfig {
@@ -44,7 +47,7 @@ export const generator: EventGenerator<FocusObject> = function (
   config: FocusObject
 ): (event?: ObjectEvent) => void {
   const params = config.params;
-  const target = engine.getObjectBySymbol(params.target)!;
+  const target = engine.getObjectBySymbol(params.target);
   const orbTarget = engine.orbitControls!.target;
 
   if (!target) {

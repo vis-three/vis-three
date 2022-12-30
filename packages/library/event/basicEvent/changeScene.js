@@ -9,7 +9,7 @@ export const generator = function (engine, config) {
     const params = config.params;
     return () => {
         setTimeout(() => {
-            engine.setScene(params.scene);
+            engine.setSceneBySymbol(params.scene);
         }, params.delay);
     };
 };

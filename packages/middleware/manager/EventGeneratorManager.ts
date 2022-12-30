@@ -10,7 +10,7 @@ export type EventGenerator<C extends BasicEventConfig> = (
   config: C
 ) => (event?: ObjectEvent) => void;
 
-export class EventLibrary {
+export class EventGeneratorManager {
   private static configLibrary = new Map<string | Symbol, unknown>();
   private static generatorLibrary = new Map<
     string | Symbol,
@@ -21,22 +21,22 @@ export class EventLibrary {
     config: C,
     generator: EventGenerator<C>
   ) {
-    if (EventLibrary.configLibrary.has(config.name)) {
+    if (EventGeneratorManager.configLibrary.has(config.name)) {
       console.warn(
-        `EventLibrary has already exist this event generator: ${config.name}, that will be cover.`
+        `EventGeneratorManager has already exist this event generator: ${config.name}, that will be cover.`
       );
     }
 
-    EventLibrary.configLibrary.set(
+    EventGeneratorManager.configLibrary.set(
       config.name,
       JSON.parse(JSON.stringify(config))
     );
 
-    EventLibrary.generatorLibrary.set(config.name, generator);
+    EventGeneratorManager.generatorLibrary.set(config.name, generator);
   };
 
   static generateConfig(name: string, merge: object): BasicEventConfig {
-    if (!EventLibrary.configLibrary.has(name)) {
+    if (!EventGeneratorManager.configLibrary.has(name)) {
       console.warn(`event library can not found config by name: ${name}`);
       return {
         name: "",
@@ -58,7 +58,7 @@ export class EventLibrary {
     };
 
     const template = JSON.parse(
-      JSON.stringify(EventLibrary.configLibrary.get(name)!)
+      JSON.stringify(EventGeneratorManager.configLibrary.get(name)!)
     );
 
     recursion(template, merge);
@@ -70,17 +70,17 @@ export class EventLibrary {
     config: BasicEventConfig,
     engine: EngineSupport
   ): (event?: ObjectEvent) => void {
-    if (!EventLibrary.generatorLibrary.has(config.name)) {
+    if (!EventGeneratorManager.generatorLibrary.has(config.name)) {
       console.error(
         `event library can not found generator by name: ${config.name}`
       );
       return () => {};
     }
 
-    return EventLibrary.generatorLibrary.get(config.name)!(engine, config);
+    return EventGeneratorManager.generatorLibrary.get(config.name)!(engine, config);
   }
 
   static has(name: string): boolean {
-    return EventLibrary.configLibrary.has(name);
+    return EventGeneratorManager.configLibrary.has(name);
   }
 }

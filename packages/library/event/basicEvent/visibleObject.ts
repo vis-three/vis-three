@@ -1,8 +1,10 @@
+import {
+  BasicEventConfig,
+  EngineSupport,
+  EventGenerator,
+  ObjectEvent,
+} from "@vis-three/middleware";
 import { Object3D } from "three";
-import { globalAntiShake, EngineSupport } from "@vis-three/core";
-import { ObjectEvent } from "../../../manager/EventManager";
-import { BasicEventConfig, EventGenerator } from "../EventLibrary";
-
 export interface VisibleObject extends BasicEventConfig {
   params: {
     target: string;

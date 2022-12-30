@@ -1,6 +1,5 @@
-import { Vector3Config } from "../../../middleware/common/CommonConfig";
-import { BasicEventConfig, EventGenerator } from "../EventLibrary";
 import { TIMINGFUNCTION } from "./common";
+import { BasicEventConfig, EventGenerator, Vector3Config } from "@vis-three/middleware";
 export interface OrbitTargetMove extends BasicEventConfig {
     params: {
         target: string;

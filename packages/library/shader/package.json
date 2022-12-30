@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/shader-library",
-  "version": "0.5.0",
+  "version": "0.5.2",
   "description": "vis-three shader library",
   "main": "index.js",
   "module": "index.js",
@@ -24,13 +24,15 @@
     "three": "^0.141.0",
     "typescript": "^4.3.2"
   },
+  "dependencies": {
+    "@vis-three/middleware": "workspace:^0.5.1"
+  },
   "files": [
     "/**/*.js",
     "/**/*.d.ts",
+    "index.d.ts",
+    "index.js",
     "package.json",
     "LICENSE"
-  ],
-  "dependencies": {
-    "@vis-three/middleware": "workspace:^0.5.0"
-  }
+  ]
 }

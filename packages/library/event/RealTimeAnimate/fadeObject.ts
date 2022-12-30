@@ -1,11 +1,14 @@
 import { Tween } from "@tweenjs/tween.js";
+import {
+  BasicEventConfig,
+  EngineSupport,
+  EventGenerator,
+  MaterialConfig,
+  MeshConfig,
+  ObjectEvent,
+  RenderEvent,
+} from "@vis-three/middleware";
 import { Material } from "three";
-import { globalAntiShake, EngineSupport } from "@vis-three/core";
-import { ObjectEvent } from "../../../manager/EventManager";
-import { RenderEvent } from "../../../manager/RenderManager";
-import { MaterialConfig } from "../../../middleware/material/MaterialConfig";
-import { MeshConfig } from "../../../middleware/mesh/MeshConfig";
-import { BasicEventConfig, EventGenerator } from "../EventLibrary";
 import { timingFunction, TIMINGFUNCTION } from "./common";
 
 export interface FadeObject extends BasicEventConfig {

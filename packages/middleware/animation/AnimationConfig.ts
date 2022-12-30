@@ -1,6 +1,6 @@
 import { SymbolConfig } from "../common";
 import { CONFIGTYPE } from "../constants/configType";
-import { BasicAniScriptConfig } from "../library/AniScriptLibrary";
+import { BasicAniScriptConfig } from "../manager/AniScriptGeneratorManager";
 
 export interface AnimationConfig extends SymbolConfig {
   name: string;

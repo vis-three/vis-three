@@ -1,6 +1,9 @@
-import { globalAntiShake, EngineSupport } from "@vis-three/core";
-import { ObjectEvent } from "../../../manager/EventManager";
-import { BasicEventConfig, EventGenerator } from "../EventLibrary";
+import {
+  BasicEventConfig,
+  EngineSupport,
+  EventGenerator,
+  ObjectEvent,
+} from "@vis-three/middleware";
 
 export interface ChangeCamera extends BasicEventConfig {
   params: {
@@ -24,7 +27,7 @@ export const generator: EventGenerator<ChangeCamera> = function (
   const params = config.params;
   return () => {
     setTimeout(() => {
-      engine.setCamera(params.camera);
+      engine.setCameraBySymbol(params.camera);
     }, params.delay);
   };
 };

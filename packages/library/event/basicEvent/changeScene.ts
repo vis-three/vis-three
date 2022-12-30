@@ -1,6 +1,9 @@
-import { globalAntiShake, EngineSupport } from "@vis-three/core";
-import { ObjectEvent } from "../../../manager/EventManager";
-import { BasicEventConfig, EventGenerator } from "../EventLibrary";
+import {
+  BasicEventConfig,
+  EngineSupport,
+  EventGenerator,
+  ObjectEvent,
+} from "@vis-three/middleware";
 
 export interface ChangeScene extends BasicEventConfig {
   params: {
@@ -24,7 +27,7 @@ export const generator: EventGenerator<ChangeScene> = function (
   const params = config.params;
   return () => {
     setTimeout(() => {
-      engine.setScene(params.scene);
+      engine.setSceneBySymbol(params.scene);
     }, params.delay);
   };
 };

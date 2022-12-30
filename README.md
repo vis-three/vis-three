@@ -47,6 +47,7 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 | [@vis-three/convenient](packages/convenient)          | ![@vis-three/convenient](https://img.shields.io/npm/v/@vis-three/convenient?label=%20)         |
 | [@vis-three/utils](packages/utils)                    | ![@vis-three/utils](https://img.shields.io/npm/v/@vis-three/utils?label=%20)                   |
 | [@vis-three/shader-library](packages/library/shader/) | ![@vis-three/shader-library](https://img.shields.io/npm/v/@vis-three/shader-library?label=%20) |
+| [@vis-three/event-library](packages/library/event/)   | ![@vis-three/event-library](https://img.shields.io/npm/v/@vis-three/event-library?label=%20)   |
 
 ## Engines
 

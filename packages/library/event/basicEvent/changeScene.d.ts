@@ -1,4 +1,4 @@
-import { BasicEventConfig, EventGenerator } from "../EventLibrary";
+import { BasicEventConfig, EventGenerator } from "@vis-three/middleware";
 export interface ChangeScene extends BasicEventConfig {
     params: {
         scene: string;

@@ -3,7 +3,7 @@ import { IgnoreAttribute, syncObject } from "@vis-three/utils";
 import { Object3D, Vector3 } from "three";
 import { CONFIGTYPE } from "../constants/configType";
 import { EngineSupport } from "../engine";
-import { EventLibrary } from "../library/EventLibrary";
+import { EventGeneratorManager } from "../manager/EventGeneratorManager";
 import {
   defineProcessor,
   emptyHandler,
@@ -85,13 +85,15 @@ export const addEventHanlder = function <
 >({ target, path, value, engine }: ProcessParams<C, O, EngineSupport>) {
   const eventName = path[0];
 
-  if (!EventLibrary.has(value.name)) {
-    console.warn(`EventLibrary: can not support this event: ${value.name}`);
+  if (!EventGeneratorManager.has(value.name)) {
+    console.warn(
+      `EventGeneratorManager: can not support this event: ${value.name}`
+    );
     return;
   }
 
   // 生成函数
-  const fun = EventLibrary.generateEvent(value, engine);
+  const fun = EventGeneratorManager.generateEvent(value, engine);
 
   // 映射缓存
   const symbol = Symbol.for(eventSymbol);
@@ -140,7 +142,7 @@ export const updateEventHandler = function <
   target.removeEventListener(eventName, fun!);
 
   // 生成函数
-  const newFun = EventLibrary.generateEvent(eventConfig, engine);
+  const newFun = EventGeneratorManager.generateEvent(eventConfig, engine);
 
   // 映射缓存
   eventConfig[Symbol.for(eventSymbol)] = newFun;
