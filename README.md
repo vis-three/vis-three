@@ -40,14 +40,15 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 `vis-three`所提供的其他模块。
 
-| Package                                               | Version                                                                                        |
-| ----------------------------------------------------- | :--------------------------------------------------------------------------------------------- |
-| [@vis-three/core](packages/core)                      | ![@vis-three/core](https://img.shields.io/npm/v/@vis-three/core.svg?label=%20)                 |
-| [@vis-three/middleware](packages/middleware)          | ![@vis-three/middleware](https://img.shields.io/npm/v/@vis-three/middleware.svg?label=%20)     |
-| [@vis-three/convenient](packages/convenient)          | ![@vis-three/convenient](https://img.shields.io/npm/v/@vis-three/convenient?label=%20)         |
-| [@vis-three/utils](packages/utils)                    | ![@vis-three/utils](https://img.shields.io/npm/v/@vis-three/utils?label=%20)                   |
-| [@vis-three/shader-library](packages/library/shader/) | ![@vis-three/shader-library](https://img.shields.io/npm/v/@vis-three/shader-library?label=%20) |
-| [@vis-three/event-library](packages/library/event/)   | ![@vis-three/event-library](https://img.shields.io/npm/v/@vis-three/event-library?label=%20)   |
+| Package                                                          | Version                                                                                               |
+| ---------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------- |
+| [@vis-three/core](packages/core)                                 | ![@vis-three/core](https://img.shields.io/npm/v/@vis-three/core.svg?label=%20)                        |
+| [@vis-three/middleware](packages/middleware)                     | ![@vis-three/middleware](https://img.shields.io/npm/v/@vis-three/middleware.svg?label=%20)            |
+| [@vis-three/convenient](packages/convenient)                     | ![@vis-three/convenient](https://img.shields.io/npm/v/@vis-three/convenient?label=%20)                |
+| [@vis-three/utils](packages/utils)                               | ![@vis-three/utils](https://img.shields.io/npm/v/@vis-three/utils?label=%20)                          |
+| [@vis-three/shader-library](packages/library/shader/)            | ![@vis-three/shader-library](https://img.shields.io/npm/v/@vis-three/shader-library?label=%20)        |
+| [@vis-three/event-library](packages/library/event/)              | ![@vis-three/event-library](https://img.shields.io/npm/v/@vis-three/event-library?label=%20)          |
+| [@vis-three/animate-script-library](packages/library/aniScript/) | ![@vis-three/event-library](https://img.shields.io/npm/v/@vis-three/animate-script-library?label=%20) |
 
 ## Engines
 

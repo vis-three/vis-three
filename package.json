@@ -17,6 +17,7 @@
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
   "dependencies": {
+    "@vis-three/animate-script-library": "^0.5.0",
     "@vis-three/core": "workspace:^0.5.0",
     "@vis-three/display-engine": "workspace:^0.5.0",
     "@vis-three/display-engine-support": "workspace:^0.5.0",

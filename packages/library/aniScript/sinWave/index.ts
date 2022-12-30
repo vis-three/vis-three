@@ -1,7 +1,9 @@
-import { EngineSupport } from "../../engine/EngineSupport";
-import { RenderEvent } from "../../manager/RenderManager";
-import { AniScriptGenerator, BasicAniScriptConfig } from "./AniScriptLibrary";
-import { LinearTime } from "./linearTime";
+import {
+  AniScriptGenerator,
+  BasicAniScriptConfig,
+  EngineSupport,
+  RenderEvent,
+} from "@vis-three/middleware";
 
 export interface SinWave extends BasicAniScriptConfig {
   wavelength: number;

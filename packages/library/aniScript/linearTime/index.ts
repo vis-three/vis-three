@@ -1,6 +1,4 @@
-import { EngineSupport } from "../../main";
-import { RenderEvent } from "../../manager/RenderManager";
-import { AniScriptGenerator, BasicAniScriptConfig } from "./AniScriptLibrary";
+import { AniScriptGenerator, BasicAniScriptConfig, EngineSupport, RenderEvent } from "@vis-three/middleware";
 
 export interface LinearTime extends BasicAniScriptConfig {
   multiply: number;
