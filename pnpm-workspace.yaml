@@ -3,3 +3,4 @@ packages:
   - "packages/plugins/*"
   - "packages/engine/*"
   - "packages/strategy/*"
+  - "packages/library/*"

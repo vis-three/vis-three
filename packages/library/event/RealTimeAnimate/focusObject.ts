@@ -10,6 +10,7 @@ import {
 } from "@vis-three/middleware";
 import { Camera, Euler, Object3D, Vector3 } from "three";
 import { timingFunction, TIMINGFUNCTION } from "./common";
+import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
 
 export interface FocusObject extends BasicEventConfig {
   params: {
@@ -42,13 +43,17 @@ export const config: FocusObject = {
   },
 };
 
+export interface OrbitSupportEngine
+  extends EngineSupport,
+    OrbitControlsEngine {}
+
 export const generator: EventGenerator<FocusObject> = function (
   engine: EngineSupport,
   config: FocusObject
 ): (event?: ObjectEvent) => void {
   const params = config.params;
   const target = engine.getObjectBySymbol(params.target);
-  const orbTarget = engine.orbitControls!.target;
+  const orbTarget = (<OrbitSupportEngine>engine).orbitControls.target;
 
   if (!target) {
     console.warn(
@@ -89,7 +94,9 @@ export const generator: EventGenerator<FocusObject> = function (
     }
 
     const cameraConfig = engine.getObjectConfig(camera) as CameraConfig;
-    const orb = engine.orbitControls && engine.orbitControls.object === camera;
+    const orb =
+      (<OrbitSupportEngine>engine).orbitControls &&
+      (<OrbitSupportEngine>engine).orbitControls.object === camera;
 
     if (!cameraConfig) {
       console.warn(`engine current camera can not found config.`);

@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/event-library",
-  "version": "0.5.0",
+  "version": "0.5.2",
   "description": "vis-three event library",
   "main": "index.js",
   "module": "index.js",
@@ -26,13 +26,12 @@
   },
   "dependencies": {
     "@tweenjs/tween.js": "^18.6.4",
-    "@vis-three/middleware": "workspace:^0.5.2"
+    "@vis-three/middleware": "workspace:^0.5.5",
+    "@vis-three/orbit-controls-plugin": "workspace:^0.5.1"
   },
   "files": [
-    "/**/*.js",
-    "/**/*.d.ts",
-    "index.d.ts",
-    "index.js",
+    "**/*.js",
+    "**/*.d.ts",
     "package.json",
     "LICENSE"
   ]

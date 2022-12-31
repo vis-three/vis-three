@@ -47,7 +47,8 @@ export const generator = function (engine, config) {
             }
         }
         const cameraConfig = engine.getObjectConfig(camera);
-        const orb = engine.orbitControls && engine.orbitControls.object === camera;
+        const orb = engine.orbitControls &&
+            engine.orbitControls.object === camera;
         if (!cameraConfig) {
             console.warn(`engine current camera can not found config.`);
         }

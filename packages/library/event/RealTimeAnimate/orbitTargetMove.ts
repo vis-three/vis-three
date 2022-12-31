@@ -9,6 +9,7 @@ import {
   RenderEvent,
   Vector3Config,
 } from "@vis-three/middleware";
+import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
 
 export interface OrbitTargetMove extends BasicEventConfig {
   params: {
@@ -35,6 +36,10 @@ export const config: OrbitTargetMove = {
   },
 };
 
+export interface OrbitSupportEngine
+  extends EngineSupport,
+    OrbitControlsEngine {}
+
 export const generator: EventGenerator<OrbitTargetMove> = function (
   engine: EngineSupport,
   config: OrbitTargetMove
@@ -42,7 +47,7 @@ export const generator: EventGenerator<OrbitTargetMove> = function (
   const params = config.params;
   const compiler = engine.compilerManager;
 
-  if (!engine.orbitControls) {
+  if (!(<OrbitSupportEngine>engine).orbitControls) {
     console.warn(
       `real time animation orbitTargetMove: engine can not install orbitControls.`
     );
@@ -79,7 +84,7 @@ export const generator: EventGenerator<OrbitTargetMove> = function (
       }
     }
 
-    const tween = new Tween(engine.orbitControls!.target)
+    const tween = new Tween((<OrbitSupportEngine>engine).orbitControls.target)
       .to(position)
       .duration(params.duration)
       .delay(params.delay)
