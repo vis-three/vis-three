@@ -14,7 +14,7 @@ importers:
       '@vis-three/middleware': workspace:^0.5.5
       '@vis-three/modeling-engine': workspace:^0.5.1
       '@vis-three/modeling-engine-support': workspace:^0.5.2
-      '@vis-three/shader-library': workspace:^0.5.3
+      '@vis-three/shader-library': workspace:^0.5.4
       '@vis-three/utils': workspace:^0.5.0
     dependencies:
       '@vis-three/animate-script-library': link:packages/library/aniScript
@@ -596,7 +596,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.5.0
+      '@vis-three/core': workspace:^0.5.1
       '@vis-three/event-manager-plugin': workspace:^0.5.1
       '@vis-three/loader-manager-plugin': workspace:^0.5.2
       '@vis-three/pointer-manager-plugin': workspace:^0.5.1
