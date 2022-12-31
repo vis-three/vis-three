@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/stats-render-strategy",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
@@ -23,13 +23,13 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.0",
-    "@vis-three/render-manager-plugin": "workspace:^0.4.0",
-    "@vis-three/stats-plugin": "workspace:^0.4.0",
+    "@vis-three/render-manager-plugin": "workspace:^0.5.0",
+    "@vis-three/stats-plugin": "workspace:^0.5.0",
     "@vis-three/utils": "workspace:^0.5.0"
   },
   "files": [
-    "/**/*.js",
-    "/**/*.d.ts",
+    "**/*.js",
+    "**/*.d.ts",
     "package.json",
     "LICENSE"
   ]

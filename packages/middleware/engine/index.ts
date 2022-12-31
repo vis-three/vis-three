@@ -91,7 +91,6 @@ export class EngineSupport
     callback: (err: Error | undefined, event?: MappedEvent | undefined) => void
   ) => this;
   declare loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
-  orbitControls: any;
 
   constructor(
     parameters: EngineSupportParameters = {},
