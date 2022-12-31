@@ -4,7 +4,9 @@ importers:
 
   .:
     specifiers:
+      '@types/node': ^18.11.12
       '@vis-three/animate-script-library': ^0.5.0
+      '@vis-three/convenient': workspace:^0.5.1
       '@vis-three/core': workspace:^0.5.1
       '@vis-three/display-engine': workspace:^0.5.1
       '@vis-three/display-engine-support': workspace:^0.5.2
@@ -13,8 +15,10 @@ importers:
       '@vis-three/modeling-engine': workspace:^0.5.1
       '@vis-three/modeling-engine-support': workspace:^0.5.2
       '@vis-three/shader-library': ^0.5.2
+      '@vis-three/utils': workspace:^0.5.0
     dependencies:
       '@vis-three/animate-script-library': 0.5.0
+      '@vis-three/convenient': link:packages/convenient
       '@vis-three/core': link:packages/core
       '@vis-three/display-engine': link:packages/engine/DisplayEngine
       '@vis-three/display-engine-support': link:packages/engine/DisplayEngineSupport
@@ -23,6 +27,9 @@ importers:
       '@vis-three/modeling-engine': link:packages/engine/ModelingEngine
       '@vis-three/modeling-engine-support': link:packages/engine/ModelingEngineSupport
       '@vis-three/shader-library': 0.5.2
+      '@vis-three/utils': link:packages/utils
+    devDependencies:
+      '@types/node': 18.11.18
 
   packages/convenient:
     specifiers:

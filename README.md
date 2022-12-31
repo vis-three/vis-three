@@ -29,7 +29,7 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 > gitee 视频资源会失效
 
-![website](/readme/website.png)
+![website](/rm/website.png)
 
 ## 备注
 

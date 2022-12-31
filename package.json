@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@vis-three/animate-script-library": "^0.5.0",
+    "@vis-three/convenient": "workspace:^0.5.1",
     "@vis-three/core": "workspace:^0.5.1",
     "@vis-three/display-engine": "workspace:^0.5.1",
     "@vis-three/display-engine-support": "workspace:^0.5.2",
@@ -25,13 +26,18 @@
     "@vis-three/middleware": "workspace:^0.5.5",
     "@vis-three/modeling-engine": "workspace:^0.5.1",
     "@vis-three/modeling-engine-support": "workspace:^0.5.2",
-    "@vis-three/shader-library": "^0.5.2"
+    "@vis-three/shader-library": "^0.5.2",
+    "@vis-three/utils": "workspace:^0.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.12"
   },
   "files": [
     "index.js",
     "index.d.ts",
     "package.json",
-    "LICENSE"
+    "LICENSE",
+    "README.md"
   ],
   "engines": {
     "node": ">=14.15.0"
