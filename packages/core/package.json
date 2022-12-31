@@ -38,8 +38,7 @@
   },
   "files": [
     "dist",
-    "*.d.ts",
-    "/**/*.d.ts",
+    "**/*.d.ts",
     "package.json",
     "LICENSE"
   ],
