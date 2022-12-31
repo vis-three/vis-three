@@ -25,7 +25,7 @@
     "@vis-three/core": "workspace:^0.5.0",
     "@vis-three/css3d-renderer-plugin": "workspace:^0.5.0",
     "@vis-three/middleware": "workspace:^0.5.0",
-    "@vis-three/utils": "workspace:^0.4.0"
+    "@vis-three/utils": "workspace:^0.5.0"
   },
   "files": [
     "/**/*.js",

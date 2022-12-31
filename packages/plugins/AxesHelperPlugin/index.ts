@@ -1,5 +1,7 @@
 import { Engine, ENGINE_EVENT, Plugin, SetSceneEvent } from "@vis-three/core";
 import { AxesHelper } from "three";
+import { transPkgName } from "@vis-three/utils";
+import { name as pkgname } from "./package.json";
 
 export interface AxesHelperParameters {
   length?: number;
@@ -14,13 +16,15 @@ export interface AxesHelperEngine extends Engine {
   setAxesHelper: (params: AxesHelperOptions) => AxesHelperEngine;
 }
 
+export const AXES_HELPER_PLUGIN = transPkgName(pkgname);
+
 export const AxesHelperPlugin: Plugin<AxesHelperEngine> = function (
   params?: AxesHelperParameters
 ) {
   let setSceneFun: (event: SetSceneEvent) => void;
 
   return {
-    name: "AxesHelperPlugin",
+    name: AXES_HELPER_PLUGIN,
     install(engine) {
       const axesHelper = new AxesHelper(params?.length || 500);
       axesHelper.matrixAutoUpdate = false;

@@ -1,4 +1,4 @@
-import { DeepPartial, DeepRecord, DeepUnion } from "./declare";
+import { DeepPartial, DeepRecord, DeepUnion } from "../declare";
 
 export function isValidKey(
   key: string | number | symbol,
