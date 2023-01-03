@@ -1,6 +1,6 @@
 {
   "name": "vis-three",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "main": "index.js",
   "module": "index.js",
   "types": "index.d.ts",
@@ -21,12 +21,12 @@
     "@vis-three/convenient": "workspace:^0.5.1",
     "@vis-three/core": "workspace:^0.5.1",
     "@vis-three/display-engine": "workspace:^0.5.1",
-    "@vis-three/display-engine-support": "workspace:^0.5.2",
+    "@vis-three/display-engine-support": "workspace:^0.5.3",
     "@vis-three/event-library": "workspace:^0.5.2",
-    "@vis-three/middleware": "workspace:^0.5.5",
+    "@vis-three/middleware": "workspace:^0.5.7",
     "@vis-three/modeling-engine": "workspace:^0.5.1",
-    "@vis-three/modeling-engine-support": "workspace:^0.5.2",
-    "@vis-three/shader-library": "workspace:^0.5.4",
+    "@vis-three/modeling-engine-support": "workspace:^0.5.3",
+    "@vis-three/shader-library": "workspace:^0.5.5",
     "@vis-three/utils": "workspace:^0.5.0"
   },
   "devDependencies": {
