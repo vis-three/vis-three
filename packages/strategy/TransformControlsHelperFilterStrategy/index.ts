@@ -1,15 +1,15 @@
 import { name as pkgname } from "./package.json";
 import { transPkgName } from "@vis-three/utils";
-import { Strategy } from "../../core/strategy";
-import {
-  TransformControlsEngine,
-  TRANSFORM_CONTROLS_PLUGIN,
-} from "../../plugins/TransformControlsPlugin";
 import {
   ObjectHelperEngine,
   OBJECT_HELPER_PLUGIN,
 } from "@vis-three/object-helper-plugin";
 import { Object3D } from "three";
+import {
+  TransformControlsEngine,
+  TRANSFORM_CONTROLS_PLUGIN,
+} from "@vis-three/transform-controls-plugin";
+import { Strategy } from "@vis-three/core";
 
 export interface TransformHelperEngine
   extends TransformControlsEngine,

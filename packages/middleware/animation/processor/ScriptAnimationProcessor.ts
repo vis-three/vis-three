@@ -1,5 +1,5 @@
 import { RenderEvent } from "@vis-three/render-manager-plugin";
-import { CONFIGTYPE } from "../../constants/configType";
+import { CONFIGTYPE } from "../../constants/CONFIGTYPE";
 import { EngineSupport } from "../../engine";
 import { AniScriptGeneratorManager } from "../../manager/AniScriptGeneratorManager";
 import { defineProcessor } from "../../module";

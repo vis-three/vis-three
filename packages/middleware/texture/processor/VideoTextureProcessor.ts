@@ -1,4 +1,4 @@
-import { CONFIGTYPE } from "../../constants/configType";
+import { CONFIGTYPE } from "../../constants/CONFIGTYPE";
 import { VideoTextureConfig } from "../TextureConfig";
 import { needUpdateRegCommand, urlHanlder } from "./common";
 import { VideoTexture } from "@vis-three/core";

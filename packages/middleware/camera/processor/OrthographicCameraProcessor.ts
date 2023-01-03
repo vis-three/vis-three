@@ -1,6 +1,6 @@
 import { OrthographicCamera } from "three";
 import { SetSizeEvent } from "@vis-three/core";
-import { CONFIGTYPE } from "../../constants/configType";
+import { CONFIGTYPE } from "../../constants/CONFIGTYPE";
 import {
   ObjectCommands,
   objectCommands,

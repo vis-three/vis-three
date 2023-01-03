@@ -2,7 +2,7 @@ import { ProxyNotice } from "../module";
 import { Scene } from "three";
 import { validate } from "uuid";
 import { uniqueSymbol } from "../common";
-import { CONFIGTYPE } from "../constants/configType";
+import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { ObjectRule } from "../object/ObjectRule";
 import { SceneCompiler } from "./SceneCompiler";
 import { SceneConfig } from "./SceneConfig";

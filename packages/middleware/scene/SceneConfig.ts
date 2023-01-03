@@ -1,5 +1,5 @@
 import { uniqueSymbol } from "../common";
-import { CONFIGTYPE } from "../constants/configType";
+import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
 
 export interface SceneFogConfig {

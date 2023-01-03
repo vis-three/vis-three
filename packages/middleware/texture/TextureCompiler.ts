@@ -4,10 +4,10 @@ import CanvasTextureProcessor from "./processor/CanvasTextureProcessor";
 import CubeTextureProcessor from "./processor/CubeTextureProcessor";
 import VideoTextureProcessor from "./processor/VideoTextureProcessor";
 import { TextureAllType } from "./TextureConfig";
-import { CanvasGenerator } from "../../convenient/CanvasGenerator";
 import LoadTextureProcessor from "./processor/LoadTextureProcessor";
 import { MODULETYPE } from "../constants";
 import { Compiler } from "../module";
+import { CanvasGenerator } from "@vis-three/convenient";
 
 export class TextureCompiler extends Compiler<TextureAllType, Texture> {
   static replaceImage = new CanvasGenerator({

@@ -62,7 +62,7 @@ import { getMeshConfig } from "../mesh/MeshConfig";
 import { getPointsConfig } from "../points/PointsConfig";
 import { getLineConfig } from "../line/LineConfig";
 import { getGroupConfig } from "../group/GroupConfig";
-import { CONFIGTYPE } from "./configType";
+import { CONFIGTYPE } from "./CONFIGTYPE";
 import {
   getKeyframeAnimationConfig,
   getScriptAnimationConfig,

@@ -1,5 +1,5 @@
 import { SymbolConfig, Vector3Config } from "../common";
-import { CONFIGTYPE } from "../constants/configType";
+import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { BasicEventConfig } from "../manager/EventGeneratorManager";
 
 export interface ObjectConfig extends SymbolConfig {

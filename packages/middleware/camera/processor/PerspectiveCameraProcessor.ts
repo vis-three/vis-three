@@ -1,7 +1,7 @@
 import { PerspectiveCamera } from "three";
 import { defineProcessor } from "../../module";
 import { SetSizeEvent } from "@vis-three/core";
-import { CONFIGTYPE } from "../../constants/configType";
+import { CONFIGTYPE } from "../../constants/CONFIGTYPE";
 import {
   ObjectCommands,
   objectCommands,

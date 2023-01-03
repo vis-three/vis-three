@@ -1,7 +1,7 @@
 import { syncObject } from "@vis-three/utils";
 import { CubeTexture } from "three";
 import { MODULETYPE } from "../../constants";
-import { CONFIGTYPE } from "../../constants/configType";
+import { CONFIGTYPE } from "../../constants/CONFIGTYPE";
 import { EngineSupport } from "../../engine";
 import { defineProcessor } from "../../module";
 import { TextureCompiler } from "../TextureCompiler";

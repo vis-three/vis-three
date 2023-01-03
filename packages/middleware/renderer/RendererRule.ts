@@ -1,6 +1,6 @@
 import { validate } from "uuid";
 import { uniqueSymbol } from "../common";
-import { CONFIGTYPE } from "../constants/configType";
+import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { ProxyNotice, Rule } from "../module";
 import { RendererCompiler } from "./RendererCompiler";
 

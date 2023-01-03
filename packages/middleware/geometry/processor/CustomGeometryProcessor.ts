@@ -1,5 +1,5 @@
 import { BufferGeometry, Float32BufferAttribute } from "three";
-import { CONFIGTYPE } from "../../constants/configType";
+import { CONFIGTYPE } from "../../constants/CONFIGTYPE";
 import { EngineSupport } from "../../engine";
 import { defineProcessor, ProcessorCommands } from "../../module";
 import { CustomGeometryConfig } from "../GeometryInterface";

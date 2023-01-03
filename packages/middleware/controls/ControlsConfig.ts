@@ -1,5 +1,5 @@
 import { SymbolConfig, uniqueSymbol, Vector3Config } from "../common";
-import { CONFIGTYPE } from "../constants/configType";
+import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 
 export type ControlsConfig = SymbolConfig;
 

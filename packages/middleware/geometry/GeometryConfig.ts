@@ -1,4 +1,4 @@
-import { CONFIGTYPE } from "../constants/configType";
+import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import {
   BoxGeometryConfig,
   CircleGeometryConfig,

@@ -1,5 +1,5 @@
 import { validate } from "uuid";
-import { CONFIGTYPE } from "../constants/configType";
+import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { ControlsCompiler } from "./ControlsCompiler";
 import { uniqueSymbol } from "../common";
 import { ProxyNotice, Rule } from "../module";

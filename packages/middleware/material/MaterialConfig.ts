@@ -9,7 +9,7 @@ import {
   TangentSpaceNormalMap,
 } from "three";
 import { SymbolConfig, Vector2Config } from "../common";
-import { CONFIGTYPE } from "../constants/configType";
+import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 export interface MaterialConfig extends SymbolConfig {
   alphaTest: number;
   colorWrite: boolean;

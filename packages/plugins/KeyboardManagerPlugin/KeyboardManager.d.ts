@@ -1,4 +1,4 @@
-import { EventDispatcher } from "@vis-three/core/eventDispatcher";
+import { EventDispatcher } from "@vis-three/core";
 import { KeyEvent } from "keyboardjs";
 export interface KeyboardEntity {
     shortcutKey: string[];

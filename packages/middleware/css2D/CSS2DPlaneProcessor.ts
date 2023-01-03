@@ -1,5 +1,5 @@
 import { CSS2DPlane } from "@vis-three/core";
-import { CONFIGTYPE } from "../constants/configType";
+import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { EngineSupport } from "../engine";
 import {
   ObjectCommands,

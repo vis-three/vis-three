@@ -12,7 +12,7 @@ import {
   Vector2,
 } from "three";
 
-import { CONFIGTYPE } from "../../constants/configType";
+import { CONFIGTYPE } from "../../constants/CONFIGTYPE";
 import {
   BoxGeometryConfig,
   CircleGeometryConfig,

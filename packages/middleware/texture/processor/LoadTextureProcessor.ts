@@ -1,7 +1,7 @@
 import { Texture } from "three";
 
 import { ImageTexture, LoadTexture } from "@vis-three/core";
-import { CONFIGTYPE } from "../../constants/configType";
+import { CONFIGTYPE } from "../../constants/CONFIGTYPE";
 import { LoadTextureConfig } from "../TextureConfig";
 import { needUpdateRegCommand } from "./common";
 import { defineProcessor } from "../../module";

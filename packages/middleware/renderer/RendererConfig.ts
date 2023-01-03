@@ -1,7 +1,6 @@
 import { LinearEncoding, NoToneMapping, PCFShadowMap } from "three";
 import { SymbolConfig, uniqueSymbol, Vector2Config } from "../common";
-import { CONFIGTYPE } from "../constants/configType";
-
+import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 
 export interface RendererConfig extends SymbolConfig {
   size: Vector2Config | null; // 为null 默认跟随canves

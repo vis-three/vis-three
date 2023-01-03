@@ -1,7 +1,7 @@
 import { syncObject } from "@vis-three/utils";
 import { ShaderMaterial } from "three";
 
-import { CONFIGTYPE } from "../../constants/configType";
+import { CONFIGTYPE } from "../../constants/CONFIGTYPE";
 import { EngineSupport } from "../../engine";
 import { ShaderGeneratorManager } from "../../manager/ShaderGeneratorManager";
 import { defineProcessor } from "../../module";

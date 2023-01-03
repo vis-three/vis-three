@@ -1,5 +1,5 @@
 import { Color, HemisphereLight } from "three";
-import { CONFIGTYPE } from "../../constants/configType";
+import { CONFIGTYPE } from "../../constants/CONFIGTYPE";
 import { ObjectCommands, objectDispose } from "../../object/ObjectProcessor";
 import { HemisphereLightConfig } from "../LightConfig";
 import { lightCommands, lightCreate } from "./common";

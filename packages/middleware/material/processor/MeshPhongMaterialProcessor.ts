@@ -1,5 +1,5 @@
 import { MeshPhongMaterial } from "three";
-import { CONFIGTYPE } from "../../constants/configType";
+import { CONFIGTYPE } from "../../constants/CONFIGTYPE";
 import { EngineSupport } from "../../engine";
 import { defineProcessor } from "../../module";
 import { MeshPhongMaterialConfig } from "../MaterialConfig";

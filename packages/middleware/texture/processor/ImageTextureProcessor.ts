@@ -1,6 +1,6 @@
 import { ImageTexture } from "@vis-three/core";
 import { syncObject } from "@vis-three/utils";
-import { CONFIGTYPE } from "../../constants/configType";
+import { CONFIGTYPE } from "../../constants/CONFIGTYPE";
 import { EngineSupport } from "../../engine";
 import { defineProcessor } from "../../module";
 import { ImageTextureConfig } from "../TextureConfig";

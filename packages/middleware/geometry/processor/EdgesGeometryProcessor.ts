@@ -1,5 +1,5 @@
 import { BoxBufferGeometry, BufferGeometry, EdgesGeometry } from "three";
-import { CONFIGTYPE } from "../../constants/configType";
+import { CONFIGTYPE } from "../../constants/CONFIGTYPE";
 import { EngineSupport } from "../../engine";
 import { defineProcessor, ProcessorCommands } from "../../module";
 import { EdgesGeometryConfig } from "../GeometryInterface";

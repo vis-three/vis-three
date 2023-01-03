@@ -1,7 +1,7 @@
 import { EVENTNAME, ObjectEvent } from "@vis-three/event-manager-plugin";
 import { IgnoreAttribute, syncObject } from "@vis-three/utils";
 import { Object3D, Vector3 } from "three";
-import { CONFIGTYPE } from "../constants/configType";
+import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { EngineSupport } from "../engine";
 import { EventGeneratorManager } from "../manager/EventGeneratorManager";
 import {

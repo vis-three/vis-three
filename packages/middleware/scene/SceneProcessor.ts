@@ -1,6 +1,6 @@
 import { Color, Fog, FogExp2, Scene } from "three";
 import { validate } from "uuid";
-import { CONFIGTYPE } from "../constants/configType";
+import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { EngineSupport } from "../engine";
 import { defineProcessor } from "../module";
 import {

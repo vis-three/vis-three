@@ -7,7 +7,7 @@ import {
 import { LoadOptions } from "../../manager/DataSupportManager";
 import { ObjectEvent } from "../../manager/EventManager";
 import { SymbolConfig } from "../../middleware/common/CommonConfig";
-import { CONFIGTYPE } from "../../middleware/constants/configType";
+import { CONFIGTYPE } from "../../middleware/constants/CONFIGTYPE";
 import { isObject } from "../../utils/utils";
 import { Watcher } from "./Watcher";
 

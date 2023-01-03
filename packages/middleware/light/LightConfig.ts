@@ -1,4 +1,4 @@
-import { CONFIGTYPE } from "../constants/configType";
+import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { ObjectConfig, getObjectConfig } from "../object/ObjectConfig";
 
 export interface LightConifg extends ObjectConfig {
