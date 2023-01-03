@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/display-engine-support",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "",
   "main": "index.js",
   "module": "index.js",

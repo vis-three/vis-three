@@ -30,10 +30,16 @@ import { WebGLRenderer } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
-import { ComposerSupportStrategy } from "@vis-three/composer-support-strategy";
+import {
+  ComposerSupportStrategy,
+  PassDataSupport,
+  PASS_CONFIGTYPE,
+} from "@vis-three/composer-support-strategy";
 import { CSS3DRendererSupportStrategy } from "@vis-three/css3d-renderer-support-strategy";
 import { WebGLRendererSupportStrategy } from "@vis-three/webgl-renderer-support-strategy";
 import { OrbitControlsSupportStrategy } from "@vis-three/orbit-controls-support-strategy";
+
+export { PassDataSupport, PASS_CONFIGTYPE };
 
 export class DisplayEngineSupport
   extends EngineSupport

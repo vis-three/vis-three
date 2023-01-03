@@ -1,14 +1,5 @@
 import { EngineSupport, EngineSupportParameters } from "@vis-three/middleware";
-import {
-  AxesHelper,
-  Camera,
-  Event,
-  GridHelper,
-  Object3D,
-  Scene,
-  WebGLRenderer,
-} from "three";
-import Stats from "three/examples/jsm/libs/stats.module";
+import { AxesHelper, Event, GridHelper, Object3D, WebGLRenderer } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
@@ -78,12 +69,18 @@ import { GridViewpointStrategy } from "@vis-three/grid-viewpoint-strategy";
 import { TransformKeyboardStrategy } from "@vis-three/transform-keyboard-strategy";
 import { HelperSelectInteractStrategy } from "@vis-three/helper-select-interact-strategy";
 import { VisStats } from "@vis-three/stats-plugin/VisStats";
-import { ComposerSupportStrategy } from "@vis-three/composer-support-strategy";
+import {
+  ComposerSupportStrategy,
+  PassDataSupport,
+  PASS_CONFIGTYPE,
+} from "@vis-three/composer-support-strategy";
 import { CSS3DRendererSupportStrategy } from "@vis-three/css3d-renderer-support-strategy";
 import { WebGLRendererSupportStrategy } from "@vis-three/webgl-renderer-support-strategy";
 import { TransformControlsSupportStrategy } from "@vis-three/transform-controls-support-strategy";
 import { TransformControlsHelperFilterStrategy } from "@vis-three/transform-controls-helper-filter-strategy";
 import { OrbitControlsSupportStrategy } from "@vis-three/orbit-controls-support-strategy";
+
+export { VIEWPOINT, PassDataSupport, PASS_CONFIGTYPE };
 export class ModelingEngineSupport
   extends EngineSupport
   implements

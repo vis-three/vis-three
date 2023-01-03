@@ -9,7 +9,7 @@ import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
 import { SelectionEngine } from "@vis-three/selection-plugin";
 import { AxesHelperEngine, AxesHelperOptions } from "@vis-three/axes-helper-plugin";
 import { GridHelperEngine } from "@vis-three/grid-helper-plugin";
-import { ViewpointEngine } from "@vis-three/viewpoint-plugin";
+import { VIEWPOINT, ViewpointEngine } from "@vis-three/viewpoint-plugin";
 import { TransformControlsEngine, VisTransformControls } from "@vis-three/transform-controls-plugin";
 import { StatsEngine } from "@vis-three/stats-plugin";
 import { KeyboardManager, KeyboardManagerEngine } from "@vis-three/keyboard-manager-plugin";
@@ -17,6 +17,8 @@ import { ObjectHelperEngine, ObjectHelperManager } from "@vis-three/object-helpe
 import { CSS2DRendererEngine } from "@vis-three/css2d-renderer-plugin";
 import { CSS3DRendererEngine } from "@vis-three/css3d-renderer-plugin";
 import { VisStats } from "@vis-three/stats-plugin/VisStats";
+import { PassDataSupport, PASS_CONFIGTYPE } from "@vis-three/composer-support-strategy";
+export { VIEWPOINT, PassDataSupport, PASS_CONFIGTYPE };
 export declare class ModelingEngineSupport extends EngineSupport implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, KeyboardManagerEngine, StatsEngine, TransformControlsEngine, ViewpointEngine, GridHelperEngine, AxesHelperEngine, SelectionEngine, ObjectHelperEngine, CSS2DRendererEngine, CSS3DRendererEngine {
     webGLRenderer: WebGLRenderer;
     getScreenshot: (params?: Screenshot | undefined) => Promise<string>;

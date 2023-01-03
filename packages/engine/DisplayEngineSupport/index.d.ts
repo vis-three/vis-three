@@ -8,6 +8,8 @@ import { WebGLRenderer } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { PassDataSupport, PASS_CONFIGTYPE } from "@vis-three/composer-support-strategy";
+export { PassDataSupport, PASS_CONFIGTYPE };
 export declare class DisplayEngineSupport extends EngineSupport implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, CSS2DRendererEngine, CSS3DRendererEngine {
     webGLRenderer: WebGLRenderer;
     getScreenshot: (params?: Screenshot | undefined) => Promise<string>;

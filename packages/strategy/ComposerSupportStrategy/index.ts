@@ -4,6 +4,7 @@ import { name as pkgname } from "./package.json";
 import {
   COMPILER_MANAGER_PLUGIN,
   CONFIGFACTORY,
+  CONFIGTYPE,
   DATA_SUPPORT_MANAGER_PLUGIN,
 } from "@vis-three/middleware";
 import { EFFECT_COMPOSER_PLUGIN } from "@vis-three/effect-composer-plugin";
@@ -16,6 +17,8 @@ import {
 } from "./module/PassConfig";
 import { PASS_CONFIGTYPE } from "./module/constant";
 import { PassDataSupport } from "./module/PassDataSupport";
+
+Object.assign(CONFIGTYPE, PASS_CONFIGTYPE);
 
 export const COMPOSER_SUPPORT_STRATEGY = transPkgName(pkgname);
 
@@ -48,3 +51,5 @@ export const ComposerSupportStrategy: Strategy<ComposerSupportEngine> =
       rollback() {},
     };
   };
+
+export { PASS_CONFIGTYPE, PassDataSupport };
