@@ -21,6 +21,8 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 - 逻辑策略化
 - 场景配置化
 
+> 资金人手不足，文档，demo，功能更新比较慢，忘各位海涵。
+
 ## 主页、demo、文档在线地址
 
 - [https://shiotsukikaedesari.github.io/vis-three/](https://shiotsukikaedesari.github.io/vis-three/)
