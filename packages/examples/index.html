@@ -70,30 +70,9 @@
 
     <script type="module">
       import engineRouter from "./engine";
-      import controlsRouter from "./controls";
-      import pluginRouter from "./plugin";
-      // import supportRouter from "./support";
-      // import displayerRouter from "./displayer";
-      // import convenientRouter from "./convenient";
-      // import managerRouter from "./manager";
-      // import modifierRouter from "./modifier";
-      // import helperRouter from "./helper";
-      // import loaderRouter from "./loader";
-      // import developRouter from "./develop";
-      // import coreRouter from "./core";
-      // import testRouter from "./test";
-      // import libraryRouter from "./library";
-      // import extendsRouter from "./extends";
-      // import homepageRouter from "./homepage";
-      // import dataviewRouter from "./dataview";
-      // import passSupportRouter from "./passSupport";
-      // import GeometrySupportRouter from "./geometrySupport";
-      // import textureSupportRouter from "./textureSupport";
-      // import CameraSupportRouter from "./CameraSupport";
+      import pluginRouter from "./plugins";
 
-      // import LoaderSupport from "./LoaderSupport";
-
-      const tree = [engineRouter, controlsRouter, pluginRouter];
+      const tree = [engineRouter, pluginRouter];
 
       const domList = [];
       const moduleMain = document.getElementById("module-main");

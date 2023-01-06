@@ -6,13 +6,5 @@ export default {
     "/DisplayEngine.html",
     "/ModelingEngineSupport.html",
     "/DisplayEngineSupport.html",
-  ],
-  position: {
-    x: -70,
-    y: 20,
-    z: -30,
-  },
-  rotation: {
-    y: (Math.PI / 180) * 35,
-  },
+  ]
 };

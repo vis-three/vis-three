@@ -18,15 +18,14 @@ const recursion = (parentDir) => {
       const name = `${parentDir.replace(/\\/g, "/").split("/").pop()}/${
         filename.split(".")[0]
       }`;
+
       input[name] = path.resolve(parentDir, `./${filename}`);
 
-      if (filename !== "index.html") {
-        menusJson.push({
-          name,
-          url: `${name}.html`,
-          poster: `poster/${name}.jpg`,
-        });
-      }
+      menusJson.push({
+        name,
+        url: `${name}.html`,
+        poster: `poster/${name}.jpg`,
+      });
     } else if (!path.extname(filename)) {
       recursion(path.resolve(parentDir, `./${filename}`));
     }
@@ -34,8 +33,7 @@ const recursion = (parentDir) => {
 };
 
 recursion(path.resolve(__dirname, "./engine"));
-recursion(path.resolve(__dirname, "./controls"));
-recursion(path.resolve(__dirname, "./plugin"));
+recursion(path.resolve(__dirname, "./plugins"));
 
 // console.log(input);
 // console.log(menusJson);
@@ -59,7 +57,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           three: ["three"],
-          "vis-three": ["vis-three"],
+          "@vis-three": ["@vis-three"],
           Antd: ["ant-design-vue"],
           echarts: ["echarts"],
           zrender: ["zrender"],
