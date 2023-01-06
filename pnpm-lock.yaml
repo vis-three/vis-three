@@ -400,6 +400,7 @@ importers:
     specifiers:
       '@ant-design/icons-vue': ^6.1.0
       '@rollup/plugin-alias': ^3.1.9
+      '@vis-three/axes-helper-plugin': workspace:^0.5.2
       '@vis-three/camera-adaptive-plugin': workspace:^0.5.0
       '@vis-three/core': workspace:^0.5.1
       '@vis-three/css2d-render-strategy': workspace:^0.5.1
@@ -445,6 +446,7 @@ importers:
       webpack: ^5.74.0
     dependencies:
       '@ant-design/icons-vue': 6.1.0_vue@3.2.45
+      '@vis-three/axes-helper-plugin': link:../plugins/AxesHelperPlugin
       '@vis-three/camera-adaptive-plugin': link:../plugins/CameraAdaptivePlugin
       '@vis-three/core': link:../core
       '@vis-three/css2d-render-strategy': link:../strategy/CSS2DRenderStrategy

@@ -7,13 +7,11 @@ export interface AxesHelperParameters {
   length?: number;
 }
 
-export interface AxesHelperOptions {
-  show: boolean;
-}
+export interface AxesHelperOptions {}
 
 export interface AxesHelperEngine extends Engine {
   axesHelper: AxesHelper;
-  setAxesHelper: (params: AxesHelperOptions) => AxesHelperEngine;
+  setAxesHelper: (show: boolean, params: AxesHelperOptions) => AxesHelperEngine;
 }
 
 export const AXES_HELPER_PLUGIN = transPkgName(pkgname);
@@ -35,9 +33,10 @@ export const AxesHelperPlugin: Plugin<AxesHelperEngine> = function (
       engine.scene.add(axesHelper);
 
       engine.setAxesHelper = function (
+        show: boolean,
         params: AxesHelperOptions
       ): AxesHelperEngine {
-        if (params.show) {
+        if (show) {
           engine.scene.add(axesHelper);
         } else {
           engine.scene.remove(axesHelper);
