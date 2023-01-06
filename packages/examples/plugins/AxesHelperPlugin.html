@@ -37,39 +37,32 @@
       import * as THREE from "three";
       import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
       import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
-      import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
-      import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
-      import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
       import { defineEngine } from "@vis-three/core";
 
       import { AxesHelperPlugin } from "@vis-three/axes-helper-plugin";
 
       const engine = defineEngine({
         plugins: [
-          RenderManagerPlugin(),
           WebGLRendererPlugin({
             antialias: true,
             alpha: true,
           }),
-          EffectComposerPlugin({
-            WebGLMultisampleRenderTarget: true,
-          }),
           CameraAdaptivePlugin(),
-
           AxesHelperPlugin({
             length: 40,
           }),
         ],
-        strategy: [EffectRenderStrategy()],
       })
         .setDom(document.getElementById("app"))
-        .setSize()
-        .play();
+        .setSize();
+
+      engine.render();
 
       let show = true;
       document.getElementById("operate").onclick = (event) => {
         show = !show;
         engine.setAxesHelper(show);
+        engine.render();
       };
     </script>
   </body>

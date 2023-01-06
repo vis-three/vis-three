@@ -1,4 +1,5 @@
-import { Engine, Plugin, VisOrbitControls } from "@vis-three/core";
+import { Engine, Plugin } from "@vis-three/core";
+import { VisOrbitControls } from "./VisOrbitControls";
 export interface OrbitControlsEngine extends Engine {
     orbitControls: VisOrbitControls;
 }

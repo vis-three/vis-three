@@ -4,10 +4,10 @@ import {
   Plugin,
   SetCameraEvent,
   SetDomEvent,
-  VisOrbitControls,
 } from "@vis-three/core";
 import { Optional, transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
+import { VisOrbitControls } from "./VisOrbitControls";
 export interface OrbitControlsEngine extends Engine {
   orbitControls: VisOrbitControls;
 }
@@ -18,7 +18,7 @@ export const OrbitControlsPlugin: Plugin<OrbitControlsEngine> = function () {
   let setDomFun: (event: SetDomEvent) => void;
   let setCameraFun: (event: SetCameraEvent) => void;
 
-  let cacheRender: () => void;
+  let cacheRender: (delta: number) => OrbitControlsEngine;
 
   return {
     name: ORBIT_CONTROLS_PLUGIN,
@@ -44,9 +44,10 @@ export const OrbitControlsPlugin: Plugin<OrbitControlsEngine> = function () {
 
       cacheRender = engine.render;
 
-      engine.render = function () {
-        cacheRender();
+      engine.render = function (delta) {
+        cacheRender(delta);
         controls.update();
+        return this;
       };
     },
     dispose(engine: Optional<OrbitControlsEngine, "orbitControls">) {

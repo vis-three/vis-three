@@ -6,6 +6,7 @@ export const WEBGL_RENDERER_PLUGIN = transPkgName(pkgname);
 export const WebGLRendererPlugin = function (params) {
     let setDomFun;
     let setSizeFun;
+    let cacheRender;
     return {
         name: WEBGL_RENDERER_PLUGIN,
         install(engine) {
@@ -91,11 +92,19 @@ export const WebGLRendererPlugin = function (params) {
                 engine.webGLRenderer.setSize(event.width, event.height, true);
             };
             engine.addEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
+            cacheRender = engine.render;
+            engine.render = function () {
+                this.webGLRenderer.render(this.scene, this.camera);
+                return this;
+            };
         },
         dispose(engine) {
             engine.removeEventListener(ENGINE_EVENT.SETDOM, setDomFun);
             engine.removeEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
             engine.webGLRenderer.dispose();
+            delete engine.webGLRenderer;
+            delete engine.getScreenshot;
+            engine.render = cacheRender;
         },
     };
 };

@@ -49,7 +49,7 @@ export class Engine extends EventDispatcher {
   camera: Camera = new PerspectiveCamera();
   scene: Scene = new Scene();
 
-  render: () => void;
+  render: (delta: number) => this;
 
   constructor() {
     super();
@@ -59,6 +59,7 @@ export class Engine extends EventDispatcher {
 
     this.render = function () {
       console.warn("can not install some plugin");
+      return this;
     };
   }
 

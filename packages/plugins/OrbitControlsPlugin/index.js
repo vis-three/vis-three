@@ -1,6 +1,7 @@
-import { ENGINE_EVENT, VisOrbitControls, } from "@vis-three/core";
+import { ENGINE_EVENT, } from "@vis-three/core";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
+import { VisOrbitControls } from "./VisOrbitControls";
 export const ORBIT_CONTROLS_PLUGIN = transPkgName(pkgname);
 export const OrbitControlsPlugin = function () {
     let setDomFun;
@@ -20,9 +21,10 @@ export const OrbitControlsPlugin = function () {
             };
             engine.addEventListener(ENGINE_EVENT.SETCAMERA, setCameraFun);
             cacheRender = engine.render;
-            engine.render = function () {
-                cacheRender();
+            engine.render = function (delta) {
+                cacheRender(delta);
                 controls.update();
+                return this;
             };
         },
         dispose(engine) {

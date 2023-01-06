@@ -12,11 +12,7 @@ export default {
         entryFileNames: "VIS.core.[format].js",
         assetFileNames: "static/[name]-[hash].[ext]",
       },
-      external: [
-        ...Object.keys(pkg.dependencies),
-        "three/src/lights/LightShadow",
-        new RegExp("^three/examples/jsm"),
-      ],
+      external: [new RegExp("^three")],
       plugins: [],
     },
   },
