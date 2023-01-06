@@ -7,35 +7,43 @@ import fs from "fs";
 // 遍历examples文件夹形成input, 顺便写一份json配置进vis-three/website/examples/assets/menus.json
 const input = {};
 const menusJson = [];
+const routerJson = [];
 
 const recursion = (parentDir) => {
   if (!fs.statSync(parentDir).isDirectory()) {
     return;
   }
 
+  const parentName = parentDir.replace(/\\/g, "/").split("/").pop();
+
+  const tempRouter = {
+    router: parentName,
+    children: [],
+  };
+
   fs.readdirSync(parentDir).forEach((filename) => {
     if (path.extname(filename) === ".html") {
-      const name = `${parentDir.replace(/\\/g, "/").split("/").pop()}/${
-        filename.split(".")[0]
-      }`;
+      const name = `${parentName}/${filename.split(".")[0]}`;
 
       input[name] = path.resolve(parentDir, `./${filename}`);
+
+      tempRouter.children.push(`/${filename}`);
 
       menusJson.push({
         name,
         url: `${name}.html`,
         poster: `poster/${name}.jpg`,
       });
-    } else if (!path.extname(filename)) {
-      recursion(path.resolve(parentDir, `./${filename}`));
     }
   });
+
+  routerJson.push(tempRouter);
 };
 
 recursion(path.resolve(__dirname, "./engine"));
 recursion(path.resolve(__dirname, "./plugins"));
 
-// console.log(input);
+console.log(routerJson);
 // console.log(menusJson);
 
 const menusPath = path.resolve(
@@ -44,7 +52,10 @@ const menusPath = path.resolve(
 );
 
 fs.writeFileSync(menusPath, JSON.stringify(menusJson));
-
+fs.writeFileSync(
+  path.resolve(__dirname, "./router.json"),
+  JSON.stringify(routerJson)
+);
 export default defineConfig({
   base: "/vis-three/examples/",
   server: {

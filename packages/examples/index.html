@@ -69,10 +69,7 @@
     <div id="module-main"></div>
 
     <script type="module">
-      import engineRouter from "./engine";
-      import pluginRouter from "./plugins";
-
-      const tree = [engineRouter, pluginRouter];
+      import tree from "./router.json";
 
       const domList = [];
       const moduleMain = document.getElementById("module-main");
