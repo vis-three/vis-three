@@ -32,6 +32,7 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
 ) {
   let setDomFun: (event: SetDomEvent) => void;
   let setSizeFun: (event: SetSizeEvent) => void;
+  let cacheRender: (delta: number) => WebGLRendererEngine;
   return {
     name: WEBGL_RENDERER_PLUGIN,
     install(engine: WebGLRendererEngine) {
@@ -156,6 +157,13 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
       };
 
       engine.addEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, setSizeFun);
+
+      cacheRender = engine.render;
+
+      engine.render = function () {
+        this.webGLRenderer.render(this.scene, this.camera);
+        return this;
+      };
     },
     dispose(
       engine: Optional<WebGLRendererEngine, "webGLRenderer" | "getScreenshot">
@@ -169,6 +177,8 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
 
       delete engine.webGLRenderer;
       delete engine.getScreenshot;
+
+      engine.render = cacheRender;
     },
   };
 };
