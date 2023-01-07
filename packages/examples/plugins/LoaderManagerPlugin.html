@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <title>LoaderManagerPlugin</title>
+  </head>
+
+  <style>
+    #totalProgress {
+      position: fixed;
+      color: white;
+      top: 10%;
+      right: 10%;
+      left: unset;
+      background: black;
+    }
+
+    #detailProgress {
+      position: fixed;
+      color: white;
+      top: 15%;
+      right: 10%;
+      left: unset;
+      background: black;
+    }
+  </style>
+
+  <body>
+    <div class="totalProgress" id="totalProgress"></div>
+    <div class="detailProgress" id="detailProgress"></div>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { defineEngine } from "@vis-three/core";
+
+      import { LoaderManagerPlugin } from "@vis-three/loader-manager-plugin";
+
+      const engine = defineEngine({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          CameraAdaptivePlugin(),
+          LoaderManagerPlugin({
+            path: import.meta.env.BASE_URL,
+          }),
+        ],
+      })
+        .setDom(document.getElementById("app"))
+        .setSize();
+
+      const scene = engine.scene;
+
+      const pointLight = new THREE.PointLight(
+        "rgb(255, 255, 255)",
+        1,
+        1000,
+        0.01
+      );
+      pointLight.position.set(10, 10, 10);
+
+      scene.add(pointLight);
+
+      const totalProgress = document.getElementById("totalProgress");
+      const detailProgress = document.getElementById("detailProgress");
+
+      engine.loaderManager.addEventListener("loading", (e) => {
+        totalProgress.innerHTML = `total: ${e.loadTotal}, success: ${e.loadSuccess}, error: ${e.loadError}`;
+      });
+
+      engine.loaderManager.addEventListener("detailLoading", (e) => {
+        detailProgress.innerText = `
+              url: ${e.detail.url}
+              progress: ${e.detail.progress}
+              error: ${e.detail.error}
+              message: ${e.detail.message}
+            `;
+      });
+
+      const box3 = new THREE.Box3();
+      engine.loaderManager.addEventListener("loaded", (e) => {
+        let position = -20;
+        e.resourceMap.forEach((resource, url) => {
+          if (
+            url ===
+            "/model/glb/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf"
+          ) {
+            resource = resource.scene;
+          }
+
+          box3.setFromObject(resource);
+
+          const scale =
+            30 /
+            Math.abs(
+              Math.max(
+                box3.max.x - box3.min.x,
+                box3.max.y - box3.min.y,
+                box3.max.z - box3.min.z
+              )
+            );
+
+          resource.position.set(position, 0, 0);
+          resource.scale.set(scale, scale, scale);
+
+          scene.add(resource);
+          position += 20;
+        });
+
+        engine.render();
+      });
+
+      engine.loaderManager.load([
+        "/model/fbx/nurbs.fbx",
+        "/model/glb/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf",
+        {
+          url: "/model/katana/katana.obj",
+          ext: "obj",
+        },
+      ]);
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>

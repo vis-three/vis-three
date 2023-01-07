@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/loader-manager-plugin",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -13,7 +13,7 @@
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.5.0",
+    "@vis-three/core": "workspace:^0.5.2",
     "@vis-three/utils": "workspace:^0.5.0"
   },
   "devDependencies": {
@@ -29,10 +29,8 @@
     "typescript": "^4.3.2"
   },
   "files": [
-    "/**/*.js",
-    "/**/*.d.ts",
-    "index.js",
-    "index.d.ts",
+    "**/*.js",
+    "**/*.d.ts",
     "package.json",
     "LICENSE"
   ]
