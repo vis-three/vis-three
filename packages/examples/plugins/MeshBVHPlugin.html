@@ -21,13 +21,13 @@
       import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
       import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
       import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
-      import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
       import { LoaderManagerPlugin } from "@vis-three/loader-manager-plugin";
       import { OrbitControlsPlugin } from "@vis-three/orbit-controls-plugin";
-      import { MeshBVHPlugin } from "@vis-three/mesh-bvh-plugin";
       import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
       import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
       import { defineEngine } from "@vis-three/core";
+
+      import { MeshBVHPlugin } from "@vis-three/mesh-bvh-plugin";
 
       const engine = defineEngine({
         plugins: [
@@ -40,7 +40,6 @@
             WebGLMultisampleRenderTarget: true,
           }),
           CameraAdaptivePlugin(),
-          GridHelperPlugin(),
           LoaderManagerPlugin({
             path: import.meta.env.BASE_URL,
           }),
@@ -140,27 +139,7 @@
           engine.scene.add(environment);
         });
 
-      const scene = engine.scene;
-
-      const box = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(10, 10, 10),
-        new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
-      );
-      box.position.x = 10;
-      scene.add(box);
-
-      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 10, 800, 0);
-      pointLight.position.y = 50;
-
-      scene.add(pointLight);
-
-      const line = new THREE.Line(box.geometry);
-      scene.add(line);
-
-      const points = new THREE.Points(box.geometry);
-
-      points.position.x = -10;
-      scene.add(points);
+      engine.scene.add(new THREE.AmbientLight("white", 8));
 
       window.engine = engine;
     </script>
