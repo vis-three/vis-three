@@ -423,6 +423,7 @@ importers:
       '@vis-three/middleware': workspace:^0.5.7
       '@vis-three/modeling-engine': workspace:^0.5.1
       '@vis-three/modeling-engine-support': workspace:^0.5.3
+      '@vis-three/object-helper-plugin': workspace:^0.5.1
       '@vis-three/orbit-controls-plugin': workspace:^0.5.1
       '@vis-three/orbit-render-strategy': workspace:^0.5.1
       '@vis-three/pointer-lock-controls-plugin': workspace:^0.5.1
@@ -470,6 +471,7 @@ importers:
       '@vis-three/middleware': link:../middleware
       '@vis-three/modeling-engine': link:../engine/ModelingEngine
       '@vis-three/modeling-engine-support': link:../engine/ModelingEngineSupport
+      '@vis-three/object-helper-plugin': link:../plugins/ObjectHelperPlugin
       '@vis-three/orbit-controls-plugin': link:../plugins/OrbitControlsPlugin
       '@vis-three/orbit-render-strategy': link:../strategy/OrbitRenderStrategy
       '@vis-three/pointer-lock-controls-plugin': link:../plugins/PointerLockControlsPlugin
@@ -983,8 +985,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/convenient': workspace:^0.5.0
-      '@vis-three/core': workspace:^0.5.0
+      '@vis-three/core': workspace:^0.5.2
       '@vis-three/utils': workspace:^0.5.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -993,7 +994,6 @@ importers:
       three: ^0.141.0
       typescript: ^4.3.2
     dependencies:
-      '@vis-three/convenient': link:../../convenient
       '@vis-three/core': link:../../core
       '@vis-three/utils': link:../../utils
     devDependencies:
@@ -1506,9 +1506,9 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.5.1
-      '@vis-three/event-manager-plugin': workspace:^0.5.1
-      '@vis-three/object-helper-plugin': workspace:^0.5.0
+      '@vis-three/core': workspace:^0.5.2
+      '@vis-three/event-manager-plugin': workspace:^0.5.2
+      '@vis-three/object-helper-plugin': workspace:^0.5.1
       '@vis-three/selection-plugin': workspace:^0.5.0
       '@vis-three/transform-controls-plugin': workspace:^0.5.1
       '@vis-three/utils': workspace:^0.5.0

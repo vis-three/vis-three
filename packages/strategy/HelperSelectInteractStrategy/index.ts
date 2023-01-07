@@ -12,6 +12,8 @@ import {
   EVENT_MANAGER_PLUGIN,
 } from "@vis-three/event-manager-plugin";
 import {
+  AFTERADD,
+  AFTERREMOVE,
   ObjectHelperEngine,
   OBJECT_HELPER_PLUGIN,
 } from "@vis-three/object-helper-plugin";
@@ -28,88 +30,6 @@ export interface HelperSelectInteractEngine
     SelectionEngine,
     TransformControlsEngine {}
 
-export interface AfterAddEvent extends BaseEvent {
-  type: "afterAdd";
-  objects: Object3D[];
-}
-
-export interface AfterRemoveEvent extends BaseEvent {
-  type: "afterRemove";
-  objects: Object3D[];
-}
-
-export const AFTERADD = "afterAdd";
-
-export const AFTERREMOVE = "afterRemove";
-// 重写一下scene的add方法，由于其内部add会调用remove方法，存在藕合性
-Scene.prototype.add = function (...object: Object3D[]): Scene {
-  if (!arguments.length) {
-    return this;
-  }
-
-  if (arguments.length > 1) {
-    for (let i = 0; i < arguments.length; i++) {
-      // eslint-disable-next-line
-      this.add(arguments[i]);
-    }
-    return this;
-  }
-
-  const currentObject = object[0];
-
-  if (currentObject === (this as Object3D)) {
-    console.error(
-      "THREE.Object3D.add: object can't be added as a child of itself.",
-      object
-    );
-    return this;
-  }
-
-  if (currentObject && currentObject.isObject3D) {
-    if (currentObject.parent !== null) {
-      const index = this.children.indexOf(currentObject);
-
-      if (index !== -1) {
-        currentObject.parent = null;
-        this.children.splice(index, 1);
-        currentObject.dispatchEvent({ type: "removed" });
-      }
-    }
-    currentObject.parent = this;
-    this.children.push(currentObject);
-    currentObject.dispatchEvent({ type: "added" });
-  } else {
-    console.error(
-      "THREE.Object3D.add: object not an instance of THREE.Object3D.",
-      object
-    );
-  }
-
-  return this;
-};
-
-const sceneAdd = Scene.prototype.add;
-
-const sceneRemove = Scene.prototype.remove;
-
-Scene.prototype.add = function (...object: Object3D[]): Scene {
-  sceneAdd.call(this, ...object);
-  this.dispatchEvent({
-    type: AFTERADD,
-    objects: object,
-  });
-  return this;
-};
-
-Scene.prototype.remove = function (...object: Object3D[]): Scene {
-  sceneRemove.call(this, ...object);
-  this.dispatchEvent({
-    type: AFTERREMOVE,
-    objects: object,
-  });
-  return this;
-};
-
 export const HELPER_SELECT_INTERACT_STRATEGY = transPkgName(pkgname);
 
 export interface HelperSelectInteractParameters {
@@ -125,7 +45,7 @@ export const HelperSelectInteractStrategy: Strategy<HelperSelectInteractEngine> 
     const pointerenterFunMap = new Map<Object3D, Function>();
     const pointerleaveFunMap = new Map<Object3D, Function>();
     const clickFunMap = new Map<Object3D, Function>();
-    const cacheSceneSet = new WeakSet<Scene>();
+
     const cacheObjectsHelper = new Set<Object3D>();
 
     let afterAddFun: any;
@@ -174,8 +94,6 @@ export const HelperSelectInteractStrategy: Strategy<HelperSelectInteractEngine> 
               continue;
             }
             updateHelperMaterial(helper, defaultColorHex);
-
-            engine.scene.add(helper);
 
             if (params.interact) {
               const pointerenterFun = () => {
@@ -237,8 +155,6 @@ export const HelperSelectInteractStrategy: Strategy<HelperSelectInteractEngine> 
               continue;
             }
 
-            engine.scene.remove(helper);
-
             if (params.interact) {
               object.removeEventListener(
                 "pointerenter",
@@ -257,26 +173,12 @@ export const HelperSelectInteractStrategy: Strategy<HelperSelectInteractEngine> 
           }
         };
 
-        const initSceneHelper = (scene: Scene) => {
-          if (cacheSceneSet.has(scene)) {
-            return;
-          }
-
-          scene.traverse((object) => {
-            const helper = helperManager.addObjectHelper(object);
-            helper && scene.add(helper);
-          });
-          cacheSceneSet.add(scene);
-        };
-
         engine.scene.addEventListener(AFTERADD, afterAddFun);
 
         engine.scene.addEventListener(AFTERREMOVE, afterRemoveFun);
 
         setSceneFun = (event) => {
           const scene = event.scene;
-          // 初始化场景辅助
-          !cacheSceneSet.has(scene) && initSceneHelper(scene);
 
           if (!scene.hasEventListener(AFTERADD, afterAddFun)) {
             scene.addEventListener(AFTERADD, afterAddFun);
@@ -286,7 +188,6 @@ export const HelperSelectInteractStrategy: Strategy<HelperSelectInteractEngine> 
             scene.addEventListener(AFTERREMOVE, afterRemoveFun);
           }
         };
-
         engine.addEventListener<SetSceneEvent>(
           ENGINE_EVENT.SETSCENE,
           setSceneFun
@@ -314,12 +215,12 @@ export const HelperSelectInteractStrategy: Strategy<HelperSelectInteractEngine> 
 
         engine.scene.removeEventListener(AFTERREMOVE, afterRemoveFun);
 
+        engine.removeEventListener<SelectedEvent>(SELECTED, selectedFun);
+
         engine.removeEventListener<SetSceneEvent>(
           ENGINE_EVENT.SETSCENE,
           setSceneFun
         );
-
-        engine.removeEventListener<SelectedEvent>(SELECTED, selectedFun);
 
         pointerenterFunMap.clear();
         pointerleaveFunMap.clear();
