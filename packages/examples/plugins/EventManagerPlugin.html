@@ -10,15 +10,33 @@
   </head>
 
   <body>
+    <div id="tips">mouse event to object</div>
     <div id="app"></div>
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
+      import { defineEngine } from "@vis-three/core";
 
-      const engine = new Vis.DisplayEngine()
+      import { PointerManagerPlugin } from "@vis-three/pointer-manager-plugin";
+      import { EventManagerPlugin } from "@vis-three/event-manager-plugin";
+
+      const engine = defineEngine({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          CameraAdaptivePlugin(),
+          GridHelperPlugin(),
+
+          PointerManagerPlugin(),
+          EventManagerPlugin(),
+        ],
+      })
         .setDom(document.getElementById("app"))
-        .setSize()
-        .play();
+        .setSize();
 
       const scene = engine.scene;
 
@@ -41,6 +59,8 @@
       pointLight.position.y = 30;
       scene.add(pointLight);
 
+      engine.render();
+
       // pointer or mouse but support use pointer follow three
       const global = engine.eventManager;
 
@@ -49,7 +69,7 @@
         "pointerup",
         "mousedown",
         "mouseup",
-        // "pointermove",
+        "pointermove",
         "pointerenter",
         "pointerleave",
         "click",
@@ -57,17 +77,17 @@
         "contextmenu",
       ];
 
+      const showToTips = (str) => {
+        document.getElementById("tips").innerText = str;
+      };
+
       for (const name of genericEvents) {
         box.addEventListener(name, (event) => {
-          console.log(`box ${name}`);
+          showToTips(`box ${name}`);
         });
 
         box2.addEventListener(name, (event) => {
-          console.log(`box2 ${name}`);
-        });
-
-        global.addEventListener(name, (event) => {
-          console.log(`global ${name}`);
+          showToTips(`box2 ${name}`);
         });
       }
     </script>

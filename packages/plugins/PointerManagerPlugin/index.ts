@@ -1,5 +1,7 @@
 import { Engine, ENGINE_EVENT, Plugin, SetDomEvent } from "@vis-three/core";
 import { PointerManager, PointerManagerParameters } from "./PointerManager";
+import { name as pkgname } from "./package.json";
+import { Optional, transPkgName } from "@vis-three/utils";
 
 export * from "./PointerManager";
 
@@ -7,13 +9,15 @@ export interface PointerManagerEngine extends Engine {
   pointerManager: PointerManager;
 }
 
+export const POINTER_MANAGER_PLUGIN = transPkgName(pkgname);
+
 export const PointerManagerPlugin: Plugin<PointerManagerEngine> = function (
   params: PointerManagerParameters
 ) {
   let setDomFun: ((event: SetDomEvent) => void) | undefined;
 
   return {
-    name: "PointerManagerPlugin",
+    name: POINTER_MANAGER_PLUGIN,
     install(engine) {
       const pointerManager = new PointerManager(
         Object.assign(params || {}, {

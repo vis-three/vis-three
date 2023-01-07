@@ -1,4 +1,7 @@
-import { PointerManagerEngine } from "../PointerManagerPlugin";
+import {
+  PointerManagerEngine,
+  POINTER_MANAGER_PLUGIN,
+} from "../PointerManagerPlugin";
 import { EventManager, EventManagerParameters } from "./EventManager";
 import {
   ENGINE_EVENT,
@@ -24,7 +27,7 @@ export const EventManagerPlugin: Plugin<EventManagerEngine> = function (
 
   return {
     name: EVENT_MANAGER_PLUGIN,
-    deps: "PointerManagerPlugin",
+    deps: POINTER_MANAGER_PLUGIN,
     install(engine) {
       const eventManager = new EventManager(
         Object.assign(

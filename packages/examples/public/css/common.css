@@ -45,3 +45,12 @@ button {
   border-radius: 3px;
   box-shadow: 0 0 6px rgb(236, 182, 238);
 }
+
+#tips {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  z-index: 10;
+  transform: translate(-50%, 0);
+  color: white;
+}

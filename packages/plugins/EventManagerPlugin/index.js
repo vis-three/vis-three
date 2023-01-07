@@ -1,3 +1,4 @@
+import { POINTER_MANAGER_PLUGIN, } from "../PointerManagerPlugin";
 import { EventManager } from "./EventManager";
 import { ENGINE_EVENT, } from "@vis-three/core";
 import { transPkgName } from "@vis-three/utils";
@@ -9,7 +10,7 @@ export const EventManagerPlugin = function (params) {
     let setSceneFun;
     return {
         name: EVENT_MANAGER_PLUGIN,
-        deps: "PointerManagerPlugin",
+        deps: POINTER_MANAGER_PLUGIN,
         install(engine) {
             const eventManager = new EventManager(Object.assign({
                 scene: engine.scene,

@@ -64,9 +64,9 @@ export class PointerManager extends EventDispatcher {
         const boundingBox = dom.getBoundingClientRect();
         // 兼容css3 dom
         mouse.x =
-          ((event.clientX - boundingBox.left) / dom!.offsetWidth) * 2 - 1;
+          ((event.clientX - boundingBox.left) / dom.offsetWidth) * 2 - 1;
         mouse.y =
-          -((event.clientY - boundingBox.top) / dom!.offsetHeight) * 2 + 1;
+          -((event.clientY - boundingBox.top) / dom.offsetHeight) * 2 + 1;
 
         this.canMouseMove = true;
 
