@@ -25,7 +25,7 @@ export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine> = function () {
   let setSizeFun: (event: SetSizeEvent) => void;
   let setSceneFun: (event: SetSceneEvent) => void;
 
-  let cacheRender: () => void;
+  let cacheRender: (delta: number) => CSS2DRendererEngine;
 
   return {
     name,
@@ -70,8 +70,8 @@ export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine> = function () {
 
       cacheRender = engine.render.bind(engine);
 
-      engine.render = function (): Engine {
-        cacheRender();
+      engine.render = function (delta: number) {
+        cacheRender(delta);
         this.css2DRenderer.render(this.scene, this.camera);
         return this;
       };
@@ -90,6 +90,8 @@ export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine> = function () {
         ENGINE_EVENT.SETSCENE,
         setSceneFun
       );
+
+      engine.render = cacheRender;
     },
   };
 };

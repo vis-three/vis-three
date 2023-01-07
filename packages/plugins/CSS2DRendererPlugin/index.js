@@ -37,8 +37,8 @@ export const CSS2DRendererPlugin = function () {
             engine.addEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
             engine.addEventListener(ENGINE_EVENT.SETSCENE, setSceneFun);
             cacheRender = engine.render.bind(engine);
-            engine.render = function () {
-                cacheRender();
+            engine.render = function (delta) {
+                cacheRender(delta);
                 this.css2DRenderer.render(this.scene, this.camera);
                 return this;
             };
@@ -48,6 +48,7 @@ export const CSS2DRendererPlugin = function () {
             engine.removeEventListener(ENGINE_EVENT.SETDOM, setDomFun);
             engine.removeEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
             engine.removeEventListener(ENGINE_EVENT.SETSCENE, setSceneFun);
+            engine.render = cacheRender;
         },
     };
 };
