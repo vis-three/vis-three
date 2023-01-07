@@ -46,6 +46,19 @@ button {
   box-shadow: 0 0 6px rgb(236, 182, 238);
 }
 
+#operate {
+  position: fixed;
+  top: 50px;
+  left: 50%;
+  transform: translate(-50%);
+  margin: 0 5px;
+  font-size: 16px;
+  padding: 8px 10px;
+  background: rgb(237, 75, 243);
+  border-radius: 3px;
+  box-shadow: 0 0 6px rgb(236, 182, 238);
+}
+
 #tips {
   position: fixed;
   top: 30px;
