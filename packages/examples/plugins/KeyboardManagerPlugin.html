@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KeyboardManager</title>
+    <title>KeyboardManagerPlugin</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -65,9 +65,13 @@
     <div class="keyboard-message">按键盘触发</div>
 
     <script type="module">
-      import * as VIS from "vis-three";
+      import { defineEngine } from "@vis-three/core";
 
-      const manager = new VIS.KeyboardManager();
+      import { KeyboardManagerPlugin } from "@vis-three/keyboard-manager-plugin";
+
+      const engine = defineEngine({
+        plugins: [KeyboardManagerPlugin()],
+      });
 
       const keyboardList = [];
 
@@ -86,7 +90,7 @@
       let currentArea = "window";
 
       keyboardList.forEach((key) => {
-        manager.register({
+        engine.keyboardManager.register({
           shortcutKey: [key],
           desp: `key ${key}`,
           keyup: (event) => {
@@ -95,17 +99,16 @@
         });
       });
 
-      console.log(manager.getDocs());
+      console.log(engine.keyboardManager.getDocs());
 
       document.getElementById("app1").onclick = (event) => {
         currentArea = "app1";
-        console.log(currentArea);
-        manager.watch(document.getElementById("app1"));
+        engine.keyboardManager.watch(document.getElementById("app1"));
       };
 
       document.getElementById("app2").onclick = (event) => {
         currentArea = "app2";
-        manager.watch(document.getElementById("app2"));
+        engine.keyboardManager.watch(document.getElementById("app2"));
       };
     </script>
   </body>
