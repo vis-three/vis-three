@@ -69,11 +69,12 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as VIS from "vis-three";
+      import { EngineSupport, generateConfig } from "@vis-three/middleware";
 
-      const engine = new VIS.DisplayEngineSupport()
-        .install("CSS3DRenderer")
-        .complete()
+      import { CSS3DRendererPlugin } from "@vis-three/css3d-renderer-plugin";
+
+      const engine = new EngineSupport()
+        .install(CSS3DRendererPlugin())
         .setDom(document.getElementById("app"))
         .registerResources({
           "examples.css3DObject": document.getElementById("element1"),
@@ -81,7 +82,7 @@
           "examples.css3DObject3": document.getElementById("element3"),
         });
 
-      const css3DObject = VIS.generateConfig("CSS3DObject", {
+      const css3DObject = generateConfig("CSS3DObject", {
         element: "examples.css3DObject",
         position: {
           x: -50,
@@ -97,7 +98,7 @@
         },
       });
 
-      const css3DObject2 = VIS.generateConfig("CSS3DObject", {
+      const css3DObject2 = generateConfig("CSS3DObject", {
         element: "examples.css3DObject2",
         position: {
           x: 50,
@@ -113,7 +114,7 @@
         },
       });
 
-      const css3DObject3 = VIS.generateConfig("CSS3DObject", {
+      const css3DObject3 = generateConfig("CSS3DObject", {
         element: "examples.css3DObject3",
         position: {
           z: -30,
@@ -126,16 +127,21 @@
         },
       });
 
-      const scene = VIS.generateConfig("Scene", {
+      const scene = generateConfig("Scene", {
         children: [css3DObject.vid, css3DObject2.vid, css3DObject3.vid],
       });
 
       engine.applyConfig(css3DObject, css3DObject2, css3DObject3, scene);
 
-      engine.setScene(scene.vid).play();
+      engine.setSceneBySymbol(scene.vid).play();
+
+      engine.camera.position.set(0, 50, 100);
+      engine.camera.lookAt(0, 20, 0);
+
+      window.engine = engine;
 
       setTimeout(() => {
-        engine.setSize();
+        engine.setSize().render();
       }, 0);
     </script>
   </body>
