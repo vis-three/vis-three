@@ -1,6 +1,6 @@
 {
   "name": "vis-three",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "main": "index.js",
   "module": "index.js",
   "types": "index.d.ts",
