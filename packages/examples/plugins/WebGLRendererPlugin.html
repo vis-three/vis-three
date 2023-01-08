@@ -52,12 +52,21 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as VIS from "vis-three";
-      const engine = new VIS.ModelingEngine()
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { defineEngine } from "@vis-three/core";
+
+      const engine = defineEngine({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          CameraAdaptivePlugin(),
+        ],
+      })
         .setDom(document.getElementById("app"))
-        .setSize()
-        .setStats(true)
-        .play();
+        .setSize();
 
       const scene = engine.scene;
 
@@ -82,7 +91,7 @@
       points.position.x = -10;
       scene.add(points);
 
-      console.log(engine);
+      engine.render();
 
       async function downLoadScreenshot(name, width, height) {
         const uri = await engine.getScreenshot({
