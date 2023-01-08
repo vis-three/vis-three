@@ -14,25 +14,6 @@
       width: 100%;
       height: 100%;
     }
-
-    #button-position {
-      position: fixed;
-      top: 30px;
-      left: 50%;
-    }
-
-    #button-group {
-      transform: translate(-50%, 0);
-    }
-
-    #button-group button {
-      margin: 0 5px;
-      font-size: 16px;
-      padding: 8px 10px;
-      background: rgb(237, 75, 243);
-      border-radius: 3px;
-      box-shadow: 0 0 6px rgb(236, 182, 238);
-    }
   </style>
 
   <body>
@@ -48,13 +29,32 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
-      const engine = new Vis.DisplayEngine()
-        .install("TransformControls")
-        .complete()
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { PointerManagerPlugin } from "@vis-three/pointer-manager-plugin";
+      import { EventManagerPlugin } from "@vis-three/event-manager-plugin";
+      import { TransSelectEventStrategy } from "@vis-three/trans-select-event-strategy";
+      import { SelectionPlugin } from "@vis-three/selection-plugin";
+      import { defineEngine } from "@vis-three/core";
+
+      import { TransformControlsPlugin } from "@vis-three/transform-controls-plugin";
+
+      const engine = defineEngine({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          CameraAdaptivePlugin(),
+          PointerManagerPlugin(),
+          EventManagerPlugin(),
+          SelectionPlugin(),
+          TransformControlsPlugin(),
+        ],
+        strategy: [TransSelectEventStrategy()],
+      })
         .setDom(document.getElementById("app"))
-        .setSize()
-        .play();
+        .setSize();
 
       engine.eventManager.recursive = true;
       const scene = engine.scene;
@@ -84,17 +84,32 @@
       points.position.x = -10;
       scene.add(points);
 
-      console.log(engine);
+      box.updateMatrixWorld();
+
+      engine.setSelectionBox([box]);
+
+      engine.render();
+
+      engine.addEventListener("selected", (event) => {
+        engine.render();
+      });
 
       document.getElementById("translate").onclick = () => {
         engine.transformControls.mode = "translate";
+        engine.render();
       };
       document.getElementById("rotate").onclick = () => {
         engine.transformControls.mode = "rotate";
+        engine.render();
       };
       document.getElementById("scale").onclick = () => {
         engine.transformControls.mode = "scale";
+        engine.render();
       };
+
+      engine.transformControls.addEventListener("objectChange", (event) => {
+        engine.render();
+      });
     </script>
   </body>
 </html>
