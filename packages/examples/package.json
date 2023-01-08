@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
+    "@antv/g6": "^4.8.3",
     "@vis-three/axes-helper-plugin": "workspace:^0.5.2",
     "@vis-three/camera-adaptive-plugin": "workspace:^0.5.0",
     "@vis-three/core": "workspace:^0.5.1",
@@ -63,6 +64,7 @@
     "@vis-three/webgl-renderer-plugin": "workspace:^0.5.1",
     "ant-design-vue": "^3.2.6",
     "axios": "^0.27.2",
+    "echarts": "^5.4.1",
     "nprogress": "^0.2.0",
     "three": "^0.141.0",
     "uuid": "^8.3.2"

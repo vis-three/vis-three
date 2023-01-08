@@ -68,10 +68,8 @@ export default defineConfig({
       output: {
         manualChunks: {
           three: ["three"],
-          "@vis-three": ["@vis-three"],
-          Antd: ["ant-design-vue"],
+          Antdv: ["ant-design-vue"],
           echarts: ["echarts"],
-          zrender: ["zrender"],
           G6: ["@antv/g6"],
         },
       },

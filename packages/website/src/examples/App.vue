@@ -18,7 +18,7 @@
           </a-input>
         </div>
       </div>
-      <div class="sidebar-box" @scroll="scroll" ref="sidebarBox">
+      <div ref="sidebarBox" class="sidebar-box" @scroll="scroll">
         <div
           v-for="item in filterMenus"
           :key="item.name"
@@ -141,7 +141,7 @@ export default defineComponent({
       scroll,
       basePath: import.meta.env.BASE_URL,
       repoPrefix:
-        "https://github.com/Shiotsukikaedesari/vis-three/tree/main/examples/",
+        "https://github.com/Shiotsukikaedesari/vis-three/tree/main/packages/examples/",
       filterMenus,
       pageIndex,
       change,

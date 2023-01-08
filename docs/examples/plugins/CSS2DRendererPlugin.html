@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSS2DRendererPlugin</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    <link rel="stylesheet" href="/vis-three/examples/css/common.css" />
+    <script type="module" crossorigin src="/vis-three/examples/assets/plugins/CSS2DRendererPlugin.843f6589.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.073ebd5b.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.4a26448f.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.53102d89.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.c5f2fc63.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.4d1bf992.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/G6.7751b749.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/TextureDisplayer.e74018cc.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.ec261eef.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.1f24cd40.js">
+  </head>
+
+  <style>
+    body {
+      color: white;
+    }
+
+    #element1,
+    #element2 {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 4px rgb(170, 150, 241);
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      color: white;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <div id="element1">
+      <p>canvas P</p>
+      <img
+        src="/vis-three/examples/texture/Bricks_Color.jpg"
+        style="width: 50px; height: 50px"
+        alt=""
+      />
+
+      <div class="form">
+        <label for="element1-range">range</label>
+        <input id="element1-range" type="range" />
+      </div>
+    </div>
+
+    <div id="element2">
+      <h1>H1标题</h1>
+      <div>div测试</div>
+      <div class="form">
+        <label for="element1-text">测试2 input</label>
+        <input id="element1-text" type="text" />
+      </div>
+
+      <div class="form">
+        <label for="element1-range">测试2 range</label>
+        <input id="element1-range" type="range" />
+      </div>
+    </div>
+
+    <div id="element3">
+      <video
+        src="/vis-three/examples/video/1.mp4"
+        style="width: 192px; height: 108"
+        controls
+      ></video>
+    </div>
+
+    
+  </body>
+</html>
