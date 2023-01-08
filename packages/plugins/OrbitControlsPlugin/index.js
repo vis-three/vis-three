@@ -20,7 +20,7 @@ export const OrbitControlsPlugin = function () {
                 event.options.orbitControls && controls.setCamera(event.camera);
             };
             engine.addEventListener(ENGINE_EVENT.SETCAMERA, setCameraFun);
-            cacheRender = engine.render;
+            cacheRender = engine.render.bind(engine);
             engine.render = function (delta) {
                 cacheRender(delta);
                 controls.update();

@@ -1,5 +1,5 @@
 import { EventDispatcher } from "@vis-three/core";
-import { BaseEvent, Vector2 } from "three";
+import { BaseEvent, Camera, Plane, Ray, Vector2, Vector3 } from "three";
 
 export interface VisPointerEvent extends Omit<PointerEvent, "type">, BaseEvent {
   mouse: Vector2;
@@ -125,5 +125,41 @@ export class PointerManager extends EventDispatcher {
    */
   getNormalMouse(): Vector2 {
     return this.mouse;
+  }
+
+  /**
+   * 获取当前指针位置从给定相机出发的世界坐标
+   * @param camera
+   * @param offset
+   * @param result
+   * @returns
+   */
+  getWorldPosition(camera: Camera, offset: number, result?: Vector3) {
+    const mouse = new Vector3(this.mouse.x, this.mouse.y, 1);
+    !result && (result = new Vector3());
+
+    mouse.unproject(camera);
+    mouse.sub(camera.position).normalize();
+
+    result.copy(camera.position).add(mouse.multiplyScalar(offset));
+    return result;
+  }
+
+  /**
+   * 获取当前指针从给定相机出发与给定平面的焦点
+   * @param camera
+   * @param plane
+   * @param result
+   */
+  intersectPlane(camera: Camera, plane: Plane, result?: Vector3) {
+    !result && (result = new Vector3());
+
+    const mouse = new Vector3(this.mouse.x, this.mouse.y, 1);
+    mouse.unproject(camera);
+    mouse.sub(camera.position).normalize();
+
+    const ray = new Ray(camera.position, mouse);
+
+    return ray.intersectPlane(plane, result);
   }
 }

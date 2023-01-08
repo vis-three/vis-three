@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CameraAdaptivePlugin</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+
+  <body>
+    <div id="app" style="width: 160px; height: 90px"></div>
+    <button id="operate">size + 50</button>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
+      import { defineEngine } from "@vis-three/core";
+
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+
+      const engine = defineEngine({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          GridHelperPlugin(),
+
+          CameraAdaptivePlugin(),
+        ],
+      })
+        .setDom(document.getElementById("app"))
+        .setSize();
+
+      engine.render();
+
+      const app = document.getElementById("app");
+
+      document.getElementById("operate").onclick = (event) => {
+        app.style.width = `${parseInt(app.style.width) + 50}px`;
+        app.style.height = `${parseInt(app.style.height) + 50}px`;
+        engine.setSize().render();
+      };
+    </script>
+  </body>
+</html>

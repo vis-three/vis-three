@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PointerManagerPlugin</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script type="module">
+      import * as THREE from "three";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
+      import { defineEngine } from "@vis-three/core";
+
+      import { PointerManagerPlugin } from "@vis-three/pointer-manager-plugin";
+
+      const engine = defineEngine({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          CameraAdaptivePlugin(),
+          GridHelperPlugin(),
+
+          PointerManagerPlugin(),
+        ],
+      })
+        .setDom(document.getElementById("app"))
+        .setSize();
+
+      const scene = engine.scene;
+
+      const box = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(1, 1, 1),
+        new THREE.MeshBasicMaterial({ color: "rgb(255, 255, 0)" })
+      );
+      scene.add(box);
+
+      const box2 = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(10, 10, 10).translate(0, 5, 0),
+        new THREE.MeshBasicMaterial({ color: "rgb(255, 105, 100)" })
+      );
+      scene.add(box2);
+
+      engine.render();
+
+      const position = new THREE.Vector3();
+
+      const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0));
+
+      engine.pointerManager.addEventListener("pointermove", () => {
+        box.position.copy(
+          engine.pointerManager.getWorldPosition(engine.camera, 50, position)
+        );
+
+        box2.position.copy(
+          engine.pointerManager.intersectPlane(engine.camera, plane, position)
+        );
+        engine.render();
+      });
+    </script>
+  </body>
+</html>

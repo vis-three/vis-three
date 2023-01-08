@@ -42,7 +42,7 @@ export const OrbitControlsPlugin: Plugin<OrbitControlsEngine> = function () {
         setCameraFun
       );
 
-      cacheRender = engine.render;
+      cacheRender = engine.render.bind(engine);
 
       engine.render = function (delta) {
         cacheRender(delta);
