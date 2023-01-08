@@ -19,7 +19,7 @@
   "dependencies": {
     "@vis-three/animate-script-library": "workspace:^0.5.1",
     "@vis-three/convenient": "workspace:^0.5.1",
-    "@vis-three/core": "workspace:^0.5.1",
+    "@vis-three/core": "workspace:^0.5.2",
     "@vis-three/display-engine": "workspace:^0.5.1",
     "@vis-three/display-engine-support": "workspace:^0.5.3",
     "@vis-three/event-library": "workspace:^0.5.2",
