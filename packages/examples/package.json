@@ -59,6 +59,7 @@
     "@vis-three/stats-plugin": "workspace:^0.5.0",
     "@vis-three/trans-select-event-strategy": "workspace:^0.5.1",
     "@vis-three/transform-controls-plugin": "workspace:^0.5.1",
+    "@vis-three/viewpoint-plugin": "workspace:^0.5.1",
     "@vis-three/webgl-renderer-plugin": "workspace:^0.5.1",
     "ant-design-vue": "^3.2.6",
     "axios": "^0.27.2",

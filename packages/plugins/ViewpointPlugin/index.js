@@ -99,18 +99,14 @@ export const ViewpointPlugin = function (params = {}) {
                 else if (viewpoint === VIEWPOINT.BACK) {
                     orthograpbicCamera.position.set(0, 0, -distance / 2);
                 }
+                orthograpbicCamera.lookAt(0, 0, 0);
                 engine.setCamera(orthograpbicCamera);
             };
             engine.addEventListener(SETVIEWPOINT, viewpointFun);
         },
-        dispose() { },
-        installDeps: {
-            ObjectHelperPlugin(engine) {
-                // this.objectHelperManager.addFilteredObject(
-                //   perspectiveCamera,
-                //   orthograpbicCamera
-                // );
-            },
+        dispose(engine) {
+            engine.removeEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
+            engine.removeEventListener(SETVIEWPOINT, viewpointFun);
         },
     };
 };

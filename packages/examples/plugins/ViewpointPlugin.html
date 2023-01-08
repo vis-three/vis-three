@@ -9,35 +9,7 @@
     <link rel="stylesheet" href="/css/common.css" />
   </head>
 
-  <style>
-    #app {
-      width: 100%;
-      height: 100%;
-    }
-
-    #button-position {
-      position: fixed;
-      top: 30px;
-      left: 50%;
-    }
-
-    #button-group {
-      transform: translate(-50%, 0);
-    }
-
-    #button-group p {
-      color: white;
-    }
-
-    #button-group button {
-      margin: 0 5px;
-      font-size: 16px;
-      padding: 8px 10px;
-      background: rgb(237, 75, 243);
-      border-radius: 3px;
-      box-shadow: 0 0 6px rgb(236, 182, 238);
-    }
-  </style>
+  <style></style>
 
   <body>
     <div id="app"></div>
@@ -49,33 +21,40 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as VIS from "vis-three";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
+      import { defineEngine } from "@vis-three/core";
 
-      const engine = new VIS.DisplayEngine()
-        .install("GridHelper", {
-          axesColor: "rgb(100, 100, 100)",
-          cellColor: "yellow",
-          opacity: 0.5,
-        })
-        .install("AxesHelper")
-        .install("Viewpoint", {
-          viewpoint: "default",
-        })
-        .complete()
+      import { ViewpointPlugin, VIEWPOINT } from "@vis-three/viewpoint-plugin";
+
+      const engine = defineEngine({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          CameraAdaptivePlugin(),
+          GridHelperPlugin(),
+          ViewpointPlugin(),
+        ],
+      })
         .setDom(document.getElementById("app"))
-        .setSize()
-        .play();
+        .setSize();
 
       const model = new THREE.Mesh(new THREE.BoxBufferGeometry(20, 30, 40));
-      model.position.set(0, 40, 0);
+      model.position.set(10, 10, 10);
       engine.scene.add(model);
 
+      engine.render();
+
       const buttonGroup = document.getElementById("button-group");
-      Object.keys(VIS.VIEWPOINT).forEach((key) => {
+      Object.keys(VIEWPOINT).forEach((key) => {
         const buttonDom = document.createElement("button");
-        buttonDom.innerText = VIS.VIEWPOINT[key];
+        buttonDom.innerText = VIEWPOINT[key];
         buttonDom.onclick = () => {
-          engine.setViewpoint(VIS.VIEWPOINT[key]);
+          engine.setViewpoint(VIEWPOINT[key]);
+          engine.render();
         };
 
         buttonGroup.appendChild(buttonDom);

@@ -433,6 +433,7 @@ importers:
       '@vis-three/stats-plugin': workspace:^0.5.0
       '@vis-three/trans-select-event-strategy': workspace:^0.5.1
       '@vis-three/transform-controls-plugin': workspace:^0.5.1
+      '@vis-three/viewpoint-plugin': workspace:^0.5.1
       '@vis-three/webgl-renderer-plugin': workspace:^0.5.1
       '@vitejs/plugin-vue': ^2.3.3
       ant-design-vue: ^3.2.6
@@ -485,6 +486,7 @@ importers:
       '@vis-three/stats-plugin': link:../plugins/StatsPlugin
       '@vis-three/trans-select-event-strategy': link:../strategy/TransSelectEventStrategy
       '@vis-three/transform-controls-plugin': link:../plugins/TransformControlsPlugin
+      '@vis-three/viewpoint-plugin': link:../plugins/ViewpointPlugin
       '@vis-three/webgl-renderer-plugin': link:../plugins/WebGLRendererPlugin
       ant-design-vue: 3.2.15_vue@3.2.45
       axios: 0.27.2

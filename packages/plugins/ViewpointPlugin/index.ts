@@ -6,7 +6,7 @@ import {
   SetSizeEvent,
 } from "@vis-three/core";
 import { OrthographicCamera, PerspectiveCamera } from "three";
-import { transPkgName } from "@vis-three/utils";
+import { Optional, transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 
 export interface Vector3Config {
@@ -176,19 +176,18 @@ export const ViewpointPlugin: Plugin<ViewpointEngine> = function (
           orthograpbicCamera.position.set(0, 0, -distance / 2);
         }
 
+        orthograpbicCamera.lookAt(0, 0, 0);
         engine.setCamera(orthograpbicCamera);
       };
 
       engine.addEventListener<ViewpointEvent>(SETVIEWPOINT, viewpointFun);
     },
-    dispose() {},
-    installDeps: {
-      ObjectHelperPlugin(engine) {
-        // this.objectHelperManager.addFilteredObject(
-        //   perspectiveCamera,
-        //   orthograpbicCamera
-        // );
-      },
+    dispose(engine: Optional<ViewpointEngine, "setViewpoint">) {
+      engine.removeEventListener<SetSizeEvent>(
+        ENGINE_EVENT.SETSIZE,
+        setSizeFun
+      );
+      engine.removeEventListener<ViewpointEvent>(SETVIEWPOINT, viewpointFun);
     },
   };
 };
