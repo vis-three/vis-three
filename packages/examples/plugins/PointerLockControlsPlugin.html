@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PointerLockControls</title>
+    <title>PointerLockControlsPlugin</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -27,9 +27,10 @@
       import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
       import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
       import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
-      import { PointerLockControlsPlugin } from "@vis-three/pointer-lock-controls-plugin";
       import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
       import { defineEngine } from "@vis-three/core";
+
+      import { PointerLockControlsPlugin } from "@vis-three/pointer-lock-controls-plugin";
 
       const engine = defineEngine({
         plugins: [

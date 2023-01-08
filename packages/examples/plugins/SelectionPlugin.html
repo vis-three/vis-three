@@ -46,15 +46,32 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { TransformControlsPlugin } from "@vis-three/transform-controls-plugin";
+      import { PointerManagerPlugin } from "@vis-three/pointer-manager-plugin";
+      import { EventManagerPlugin } from "@vis-three/event-manager-plugin";
+      import { TransSelectEventStrategy } from "@vis-three/trans-select-event-strategy";
+      import { defineEngine } from "@vis-three/core";
 
-      const engine = new Vis.DisplayEngine()
-        .install("ObjectHelper")
-        .install("Selection")
-        .complete()
+      import { SelectionPlugin } from "@vis-three/selection-plugin";
+
+      const engine = defineEngine({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          CameraAdaptivePlugin(),
+          PointerManagerPlugin(),
+          EventManagerPlugin(),
+          TransformControlsPlugin(),
+          SelectionPlugin(),
+        ],
+        strategy: [TransSelectEventStrategy()],
+      })
         .setDom(document.getElementById("app"))
-        .setSize()
-        .play();
+        .setSize();
 
       const scene = engine.scene;
 
@@ -65,33 +82,22 @@
       box.position.x = 10;
       scene.add(box);
 
-      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 30, 0);
-      pointLight.position.y = 20;
+      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
+      pointLight.position.y = 30;
+
       scene.add(pointLight);
 
-      const line = new THREE.Line(
-        box.geometry,
-        new THREE.LineBasicMaterial({ color: "yellow" })
-      );
+      const line = new THREE.Line(box.geometry);
       scene.add(line);
 
-      const points = new THREE.Points(
-        box.geometry,
-        new THREE.PointsMaterial({ color: "blue" })
-      );
+      const points = new THREE.Points(box.geometry);
 
       points.position.x = -10;
       scene.add(points);
 
-      const camera = new THREE.PerspectiveCamera(
-        (180 / Math.PI) * 45,
-        16 / 9,
-        5,
-        70
-      );
-      camera.position.set(0, 20, 50);
-      camera.lookAt(0, 0, 0);
-      scene.add(camera);
+      window.engine = engine;
+
+      engine.render();
 
       engine.addEventListener("selected", (event) => {
         let html = "";
@@ -99,6 +105,8 @@
           html += `<div class="selected-elem">${object.uuid}</div>`;
         });
         document.getElementById("selected").innerHTML = html;
+
+        engine.render();
       });
     </script>
   </body>
