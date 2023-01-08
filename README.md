@@ -52,17 +52,9 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 | [@vis-three/event-library](packages/library/event/)              | ![@vis-three/event-library](https://img.shields.io/npm/v/@vis-three/event-library?label=%20)          |
 | [@vis-three/animate-script-library](packages/library/aniScript/) | ![@vis-three/event-library](https://img.shields.io/npm/v/@vis-three/animate-script-library?label=%20) |
 
-## Engines
+## 交流合作
 
-[引擎文档](https://shiotsukikaedesari.gitee.io/vis-three/docs/start/engine.html)
-
-## Plugins
-
-[插件文档](https://shiotsukikaedesari.gitee.io/vis-three/docs/plugins/start.html)
-
-## Strategy
-
-[策略文档](https://shiotsukikaedesari.gitee.io/vis-three/docs/strategy/start.html)
+- QQ 群：1025827206
 
 ## 贡献者
 
