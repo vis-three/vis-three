@@ -103,6 +103,8 @@
         a.download = name + new Date().getTime();
         a.href = uri;
         a.click();
+
+        engine.render();
       }
 
       document.getElementById("screenShot").onclick = () => {
