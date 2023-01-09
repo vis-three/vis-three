@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ComposerSupportStrategy</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style></style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import {
+        defineEngineSupport,
+        generateConfig,
+        CONFIGTYPE,
+      } from "@vis-three/middleware";
+
+      import { ComposerSupportStrategy } from "@vis-three/composer-support-strategy";
+
+      const engine = defineEngineSupport({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          EffectComposerPlugin({
+            WebGLMultisampleRenderTarget: true,
+          }),
+          CameraAdaptivePlugin(),
+        ],
+
+        strategy: [ComposerSupportStrategy()],
+      })
+        .setDom(document.getElementById("app"))
+        .setSize();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig(CONFIGTYPE.SCENE);
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = true;
+
+      generateConfig(CONFIGTYPE.AMBIENTLIGHT);
+
+      const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+        width: 10,
+        height: 10,
+        depth: 10,
+      });
+
+      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+        color: "rgb(255, 0, 0)",
+      });
+
+      const lineMaterial = generateConfig(CONFIGTYPE.LINEBASICMATERIAL, {
+        color: "rgb(255, 255, 0)",
+      });
+
+      generateConfig(CONFIGTYPE.MESH, {
+        geometry: geometry.vid,
+        material: material.vid,
+        position: {
+          x: -10,
+        },
+      });
+
+      generateConfig(CONFIGTYPE.LINE, {
+        geometry: geometry.vid,
+        material: lineMaterial.vid,
+        position: {
+          x: 10,
+        },
+      });
+
+      generateConfig(CONFIGTYPE.UNREALBLOOMPASS, {
+        strength: 1.5,
+        threshold: 0,
+        radius: 0,
+      });
+
+      generateConfig(CONFIGTYPE.SMAAPASS);
+
+      engine.render();
+    </script>
+  </body>
+</html>

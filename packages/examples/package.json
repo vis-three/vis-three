@@ -29,6 +29,7 @@
     "@antv/g6": "^4.8.3",
     "@vis-three/axes-helper-plugin": "workspace:^0.5.3",
     "@vis-three/camera-adaptive-plugin": "workspace:^0.5.0",
+    "@vis-three/composer-support-strategy": "workspace:^0.5.2",
     "@vis-three/core": "workspace:^0.5.2",
     "@vis-three/css2d-render-strategy": "workspace:^0.5.1",
     "@vis-three/css2d-renderer-plugin": "workspace:^0.5.3",

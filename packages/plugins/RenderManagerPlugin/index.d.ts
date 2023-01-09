@@ -4,7 +4,6 @@ export * from "./RenderManager";
 export declare const RENDER_MANAGER_PLUGIN: string;
 export interface RenderManagerEngine extends Engine {
     renderManager: RenderManager;
-    render: () => void;
     play: () => void;
     stop: () => void;
 }

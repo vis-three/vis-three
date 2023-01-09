@@ -1,4 +1,4 @@
-import { Engine } from "@vis-three/core";
+import { Engine, EngineOptions } from "@vis-three/core";
 import {
   LoaderManager,
   LoaderManagerPlugin,
@@ -61,7 +61,6 @@ export class EngineSupport
     PointerManagerEngine,
     EventManagerEngine,
     RenderManagerEngine,
-    ResourceManagerEngine,
     DataSupportEngine,
     CompilerManagerEngine,
     LoaderMappingEngine
@@ -71,7 +70,7 @@ export class EngineSupport
   declare renderManager: RenderManager;
   declare play: () => void;
   declare stop: () => void;
-  declare render: () => void;
+  declare render: (delta: number) => this;
   declare pointerManager: PointerManager;
   declare resourceManager: ResourceManager;
   declare registerResources: (
@@ -268,3 +267,21 @@ export class EngineSupport
     return this;
   }
 }
+
+export const defineEngineSupport = function (options: EngineOptions) {
+  const engine = new EngineSupport();
+
+  if (options.plugins) {
+    options.plugins.forEach((plugin) => {
+      engine.install(plugin);
+    });
+  }
+
+  if (options.strategy) {
+    options.strategy.forEach((strategy) => {
+      engine.exec(strategy);
+    });
+  }
+
+  return engine;
+};

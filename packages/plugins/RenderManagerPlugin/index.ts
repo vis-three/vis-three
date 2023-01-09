@@ -8,7 +8,6 @@ export * from "./RenderManager";
 export const RENDER_MANAGER_PLUGIN = transPkgName(pkgname);
 export interface RenderManagerEngine extends Engine {
   renderManager: RenderManager;
-  render: () => void;
   play: () => void;
   stop: () => void;
 }
