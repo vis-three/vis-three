@@ -9,7 +9,6 @@ export const EffectRenderStrategy = function () {
         name,
         condition: [EFFECT_COMPOSER_PLUGIN, RENDER_MANAGER_PLUGIN],
         exec(engine) {
-            engine.renderManager.removeEventListener(RENDER_EVENT.RENDER, engine.render);
             renderFun = (event) => {
                 engine.effectComposer.render(event.delta);
             };
