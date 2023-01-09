@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HelperSelectInteractStrategy</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+
+    #intro {
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      font-size: 16px;
+      color: white;
+      transform: translate(-50%);
+    }
+
+    #selected {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translate(-50%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .selected-elem {
+      color: white;
+      margin: 5px 0;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+    <div id="intro">选择物体， 按住ctrl多选</div>
+    <div id="selected"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { PointerManagerPlugin } from "@vis-three/pointer-manager-plugin";
+      import { EventManagerPlugin } from "@vis-three/event-manager-plugin";
+      import { ObjectHelperPlugin } from "@vis-three/object-helper-plugin";
+      import { SelectionPlugin } from "@vis-three/selection-plugin";
+      import { TransformControlsPlugin } from "@vis-three/transform-controls-plugin";
+      import { TransSelectEventStrategy } from "@vis-three/trans-select-event-strategy";
+      import { defineEngine } from "@vis-three/core";
+
+      import { HelperSelectInteractStrategy } from "@vis-three/helper-select-interact-strategy";
+
+      const engine = defineEngine({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          CameraAdaptivePlugin(),
+          PointerManagerPlugin(),
+          EventManagerPlugin(),
+          SelectionPlugin(),
+          ObjectHelperPlugin(),
+          TransformControlsPlugin(),
+        ],
+        strategy: [TransSelectEventStrategy(), HelperSelectInteractStrategy()],
+      })
+        .setDom(document.getElementById("app"))
+        .setSize();
+
+      const scene = engine.scene;
+
+      const box = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(10, 10, 10),
+        new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
+      );
+      box.position.x = 10;
+      scene.add(box);
+
+      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
+      pointLight.position.y = 15;
+
+      scene.add(pointLight);
+
+      const line = new THREE.Line(box.geometry);
+      scene.add(line);
+
+      const points = new THREE.Points(box.geometry);
+
+      points.position.x = -10;
+      scene.add(points);
+
+      window.engine = engine;
+
+      engine.render();
+
+      engine.addEventListener("selected", (event) => {
+        let html = "";
+        event.objects.forEach((object) => {
+          html += `<div class="selected-elem">${object.uuid}</div>`;
+        });
+        document.getElementById("selected").innerHTML = html;
+
+        engine.render();
+      });
+
+      engine.transformControls.addEventListener("objectChange", () => {
+        engine.render();
+      });
+    </script>
+  </body>
+</html>
