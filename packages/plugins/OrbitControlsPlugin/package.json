@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/orbit-controls-plugin",
-  "version": "0.5.4",
+  "version": "0.5.10",
   "description": "",
   "main": "index.js",
   "module": "index.js",

@@ -2,6 +2,7 @@ import {
   Engine,
   ENGINE_EVENT,
   Plugin,
+  RenderEvent,
   SetCameraEvent,
   SetSceneEvent,
   SetSizeEvent,
@@ -39,7 +40,7 @@ export const EffectComposerPlugin: Plugin<EffectComposerEngine> = function (
   let setCameraFun: (event: SetCameraEvent) => void;
   let setSizeFun: (event: SetSizeEvent) => void;
   let setSceneFun: (event: SetSceneEvent) => void;
-  let cacheRender: () => void;
+  let renderFun: (event: RenderEvent) => void;
 
   return {
     name: EFFECT_COMPOSER_PLUGIN,
@@ -110,12 +111,17 @@ export const EffectComposerPlugin: Plugin<EffectComposerEngine> = function (
 
       engine.addEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, setSizeFun);
 
-      cacheRender = engine.render;
+      console.warn(
+        `${EFFECT_COMPOSER_PLUGIN}: hope install close behind the ${WEBGL_RENDERER_PLUGIN}, because ${WEBGL_RENDERER_PLUGIN}\`s renderFun can be dispose. if you not do this, render are prone to bugs`
+      );
 
-      engine.render = function (): Engine {
-        this.effectComposer.render();
-        return this;
+      engine.popLatestEvent(ENGINE_EVENT.RENDER);
+
+      renderFun = () => {
+        composer.render();
       };
+
+      engine.addEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
     },
     dispose(engine: Optional<EffectComposerEngine, "effectComposer">) {
       engine.removeEventListener<SetCameraEvent>(
@@ -130,7 +136,7 @@ export const EffectComposerPlugin: Plugin<EffectComposerEngine> = function (
 
       engine.addEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, setSizeFun);
 
-      engine.render = cacheRender;
+      engine.removeEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
 
       delete engine.effectComposer;
     },

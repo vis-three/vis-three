@@ -55,6 +55,7 @@
     "@vis-three/modeling-engine-support": "workspace:^0.5.3",
     "@vis-three/object-helper-plugin": "workspace:^0.5.1",
     "@vis-three/orbit-controls-plugin": "workspace:^0.5.4",
+    "@vis-three/orbit-controls-support-strategy": "workspace:^0.5.3",
     "@vis-three/orbit-render-strategy": "workspace:^0.5.1",
     "@vis-three/pointer-lock-controls-plugin": "workspace:^0.5.1",
     "@vis-three/pointer-manager-plugin": "workspace:^0.5.3",

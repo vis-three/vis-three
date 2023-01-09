@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/first-person-controls-plugin",
-  "version": "0.5.1",
+  "version": "0.5.10",
   "description": "",
   "main": "index.js",
   "module": "index.js",

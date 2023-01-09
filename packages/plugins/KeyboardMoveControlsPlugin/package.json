@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/keyboard-move-controls-plugin",
-  "version": "0.5.0",
+  "version": "0.5.10",
   "description": "",
   "main": "index.js",
   "module": "index.js",

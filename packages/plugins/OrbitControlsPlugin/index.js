@@ -6,7 +6,7 @@ export const ORBIT_CONTROLS_PLUGIN = transPkgName(pkgname);
 export const OrbitControlsPlugin = function () {
     let setDomFun;
     let setCameraFun;
-    let cacheRender;
+    let renderFun;
     return {
         name: ORBIT_CONTROLS_PLUGIN,
         install(engine) {
@@ -20,17 +20,15 @@ export const OrbitControlsPlugin = function () {
                 event.options.orbitControls && controls.setCamera(event.camera);
             };
             engine.addEventListener(ENGINE_EVENT.SETCAMERA, setCameraFun);
-            cacheRender = engine.render.bind(engine);
-            engine.render = function (delta) {
-                cacheRender(delta);
+            renderFun = () => {
                 controls.update();
-                return this;
             };
+            engine.addEventListener(ENGINE_EVENT.RENDER, renderFun);
         },
         dispose(engine) {
             engine.removeEventListener(ENGINE_EVENT.SETDOM, setDomFun);
             engine.removeEventListener(ENGINE_EVENT.SETCAMERA, setCameraFun);
-            engine.render = cacheRender;
+            engine.removeEventListener(ENGINE_EVENT.RENDER, renderFun);
         },
     };
 };

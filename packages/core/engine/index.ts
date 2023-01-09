@@ -32,11 +32,17 @@ export interface SetSizeEvent extends BaseEvent {
   height: number;
 }
 
+export interface RenderEvent extends BaseEvent {
+  type: "render";
+  delta: number;
+}
+
 export enum ENGINE_EVENT {
   SETDOM = "setDom",
   SETSIZE = "setSize",
   SETCAMERA = "setCamera",
   SETSCENE = "setScene",
+  RENDER = "render",
   DISPOSE = "dispose",
 }
 
@@ -49,18 +55,11 @@ export class Engine extends EventDispatcher {
   camera: Camera = new PerspectiveCamera();
   scene: Scene = new Scene();
 
-  render: (delta: number) => this;
-
   constructor() {
     super();
 
     this.camera.position.set(50, 50, 50);
     this.camera.lookAt(0, 0, 0);
-
-    this.render = function () {
-      console.warn("can not install some plugin");
-      return this;
-    };
   }
 
   /**
@@ -241,6 +240,19 @@ export class Engine extends EventDispatcher {
 
     this.scene = scene;
 
+    return this;
+  }
+
+  /**
+   * 渲染方法
+   * @param delta
+   * @returns
+   */
+  render(delta: number): this {
+    this.dispatchEvent({
+      type: ENGINE_EVENT.RENDER,
+      delta,
+    });
     return this;
   }
 

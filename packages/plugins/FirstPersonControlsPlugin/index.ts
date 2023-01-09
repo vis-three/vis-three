@@ -2,6 +2,7 @@ import {
   Engine,
   ENGINE_EVENT,
   Plugin,
+  RenderEvent,
   SetCameraEvent,
   SetDomEvent,
   SetSizeEvent,
@@ -36,8 +37,8 @@ export const FirstPersonControlsPlugin: Plugin<FirstPersonControlsEngine> =
     let setDomFun: (event: SetDomEvent) => void;
     let setCameraFun: (event: SetCameraEvent) => void;
     let setSizeFun: (event: SetSizeEvent) => void;
+    let renderFun: (event: RenderEvent) => void;
 
-    let cacheRender: () => void;
     return {
       name: FIRST_PERSON_CONTROLS_PLUGIN,
       install(engine) {
@@ -77,12 +78,11 @@ export const FirstPersonControlsPlugin: Plugin<FirstPersonControlsEngine> =
 
         engine.addEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, setSizeFun);
 
-        cacheRender = engine.render;
-
-        engine.render = function () {
-          cacheRender();
-          controls.update(1000 / 60);
+        renderFun = (event) => {
+          controls.update(event.delta);
         };
+
+        engine.addEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
       },
       dispose(
         engine: Optional<FirstPersonControlsEngine, "firstPersonControls">
@@ -97,7 +97,7 @@ export const FirstPersonControlsPlugin: Plugin<FirstPersonControlsEngine> =
           setSizeFun
         );
 
-        engine.render = cacheRender;
+        engine.removeEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
       },
     };
   };

@@ -70,11 +70,13 @@
     <script type="module">
       import * as THREE from "three";
       import { EngineSupport, generateConfig } from "@vis-three/middleware";
+      import { CSS3DRenderStrategy } from "@vis-three/css3d-render-strategy";
 
       import { CSS3DRendererPlugin } from "@vis-three/css3d-renderer-plugin";
 
       const engine = new EngineSupport()
         .install(CSS3DRendererPlugin())
+        .exec(CSS3DRenderStrategy())
         .setDom(document.getElementById("app"))
         .registerResources({
           "examples.css3DObject": document.getElementById("element1"),

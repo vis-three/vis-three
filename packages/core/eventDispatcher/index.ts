@@ -12,8 +12,14 @@ export interface EventListener<E extends BaseEvent = Event> {
 }
 
 export class EventDispatcher {
-  private listeners: Map<string, Set<Function>> = new Map();
+  private listeners: Map<string, Array<Function>> = new Map();
 
+  /**
+   * 添加事件
+   * @param type
+   * @param listener
+   * @returns
+   */
   addEventListener<C extends BaseEvent>(
     type: string,
     listener: EventListener<C>
@@ -21,12 +27,24 @@ export class EventDispatcher {
     const listeners = this.listeners;
 
     if (!listeners.has(type)) {
-      listeners.set(type, new Set());
+      listeners.set(type, []);
     }
 
-    listeners.get(type)!.add(listener);
+    const array = listeners.get(type)!;
+
+    if (array.includes(listener)) {
+      return;
+    }
+
+    array.push(listener);
   }
 
+  /**
+   * 是否有此事件
+   * @param type
+   * @param listener
+   * @returns
+   */
   hasEventListener<C extends BaseEvent>(
     type: string,
     listener: EventListener<C>
@@ -36,9 +54,15 @@ export class EventDispatcher {
       return false;
     }
 
-    return listeners.get(type)!.has(listener);
+    return listeners.get(type)!.includes(listener);
   }
 
+  /**
+   * 移除事件
+   * @param type
+   * @param listener
+   * @returns
+   */
   removeEventListener<C extends BaseEvent>(
     type: string,
     listener: EventListener<C>
@@ -48,13 +72,19 @@ export class EventDispatcher {
       return;
     }
 
-    if (!listeners.get(type)!.has(listener)) {
+    if (!listeners.get(type)!.includes(listener)) {
       return;
     }
 
-    listeners.get(type)!.delete(listener);
+    const array = listeners.get(type)!;
+
+    array.splice(array.indexOf(listener), 1);
   }
 
+  /**
+   * 触发事件
+   * @param event
+   */
   dispatchEvent<C extends BaseEvent>(event: C): void {
     const type = event.type;
     const listeners = this.listeners;
@@ -69,14 +99,11 @@ export class EventDispatcher {
     }
   }
 
-  clear() {
-    this.listeners.clear();
-  }
-
-  useful(): boolean {
-    return Boolean([...this.listeners.keys()].length);
-  }
-
+  /**
+   * 一次性事件触发
+   * @param type
+   * @param listener
+   */
   once<C extends BaseEvent>(type: string, listener: EventListener<C>) {
     const onceListener = function (this: EventDispatcher, event: C) {
       listener.call(this, event);
@@ -86,6 +113,11 @@ export class EventDispatcher {
     this.addEventListener(type, onceListener);
   }
 
+  /**
+   * 触发事件
+   * @param name
+   * @param params
+   */
   emit<C extends BaseEvent>(
     name: C["type"],
     params: Omit<C, "type"> = {} as Omit<C, "type">
@@ -102,10 +134,21 @@ export class EventDispatcher {
     }
   }
 
+  /**
+   * 订阅事件
+   * @param type
+   * @param listener
+   */
   on<C extends BaseEvent>(type: C["type"], listener: EventListener<C>): void {
     this.addEventListener(type, listener);
   }
 
+  /**
+   * 是否有此事件
+   * @param type
+   * @param listener
+   * @returns
+   */
   has<C extends BaseEvent>(
     type: C["type"],
     listener: EventListener<C>
@@ -113,6 +156,12 @@ export class EventDispatcher {
     return this.hasEventListener(type, listener);
   }
 
+  /**
+   * 移除事件
+   * @param type
+   * @param listener
+   * @returns
+   */
   off<C extends BaseEvent>(type: C["type"], listener?: EventListener<C>): void {
     if (listener) {
       this.removeEventListener(type, listener);
@@ -123,5 +172,45 @@ export class EventDispatcher {
       }
       listeners.delete(type);
     }
+  }
+
+  /**
+   * 获取事件数量
+   * @param type
+   * @returns
+   */
+  eventCount(type: string): number {
+    if (!this.listeners.has(type)) {
+      return 0;
+    }
+    return this.listeners.get(type)!.length;
+  }
+
+  /**
+   * 销毁该类型的最后一个事件
+   * @param type
+   * @returns
+   */
+  popLatestEvent(type: string) {
+    if (!this.listeners.has(type)) {
+      return;
+    }
+
+    this.listeners.get(type)!.pop();
+  }
+
+  /**
+   * 清空所有事件
+   */
+  clear() {
+    this.listeners.clear();
+  }
+
+  /**
+   * 当前派发器是否使用
+   * @returns
+   */
+  useful(): boolean {
+    return Boolean([...this.listeners.keys()].length);
   }
 }

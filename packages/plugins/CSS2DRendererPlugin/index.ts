@@ -2,6 +2,7 @@ import {
   Engine,
   ENGINE_EVENT,
   Plugin,
+  RenderEvent,
   SetDomEvent,
   SetSceneEvent,
   SetSizeEvent,
@@ -24,8 +25,7 @@ export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine> = function () {
   let setDomFun: (event: SetDomEvent) => void;
   let setSizeFun: (event: SetSizeEvent) => void;
   let setSceneFun: (event: SetSceneEvent) => void;
-
-  let cacheRender: (delta: number) => CSS2DRendererEngine;
+  let renderFun: (event: RenderEvent) => void;
 
   return {
     name,
@@ -59,6 +59,10 @@ export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine> = function () {
         });
       };
 
+      renderFun = () => {
+        css2DRenderer.render(engine.scene, engine.camera);
+      };
+
       engine.addEventListener<SetDomEvent>(ENGINE_EVENT.SETDOM, setDomFun);
 
       engine.addEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, setSizeFun);
@@ -68,17 +72,9 @@ export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine> = function () {
         setSceneFun
       );
 
-      cacheRender = engine.render.bind(engine);
-
-      engine.render = function (delta: number) {
-        cacheRender(delta);
-        this.css2DRenderer.render(this.scene, this.camera);
-        return this;
-      };
+      engine.addEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
     },
     dispose(engine) {
-      engine.render = cacheRender;
-
       engine.removeEventListener<SetDomEvent>(ENGINE_EVENT.SETDOM, setDomFun);
 
       engine.removeEventListener<SetSizeEvent>(
@@ -91,7 +87,7 @@ export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine> = function () {
         setSceneFun
       );
 
-      engine.render = cacheRender;
+      engine.removeEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
     },
   };
 };

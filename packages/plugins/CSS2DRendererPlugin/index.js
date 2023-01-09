@@ -7,7 +7,7 @@ export const CSS2DRendererPlugin = function () {
     let setDomFun;
     let setSizeFun;
     let setSceneFun;
-    let cacheRender;
+    let renderFun;
     return {
         name,
         install(engine) {
@@ -33,22 +33,19 @@ export const CSS2DRendererPlugin = function () {
                     }
                 });
             };
+            renderFun = () => {
+                css2DRenderer.render(engine.scene, engine.camera);
+            };
             engine.addEventListener(ENGINE_EVENT.SETDOM, setDomFun);
             engine.addEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
             engine.addEventListener(ENGINE_EVENT.SETSCENE, setSceneFun);
-            cacheRender = engine.render.bind(engine);
-            engine.render = function (delta) {
-                cacheRender(delta);
-                this.css2DRenderer.render(this.scene, this.camera);
-                return this;
-            };
+            engine.addEventListener(ENGINE_EVENT.RENDER, renderFun);
         },
         dispose(engine) {
-            engine.render = cacheRender;
             engine.removeEventListener(ENGINE_EVENT.SETDOM, setDomFun);
             engine.removeEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
             engine.removeEventListener(ENGINE_EVENT.SETSCENE, setSceneFun);
-            engine.render = cacheRender;
+            engine.removeEventListener(ENGINE_EVENT.RENDER, renderFun);
         },
     };
 };

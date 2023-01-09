@@ -70,11 +70,13 @@
     <script type="module">
       import * as THREE from "three";
       import { EngineSupport, generateConfig } from "@vis-three/middleware";
+      import { CSS2DRenderStrategy } from "@vis-three/css2d-render-strategy";
 
       import { CSS2DRendererPlugin } from "@vis-three/css2d-renderer-plugin";
 
       const engine = new EngineSupport()
         .install(CSS2DRendererPlugin())
+        .exec(CSS2DRenderStrategy())
         .setDom(document.getElementById("app"))
         .registerResources({
           "examples.css2DObject": document.getElementById("element1"),

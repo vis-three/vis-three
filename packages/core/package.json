@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/core",
-  "version": "0.5.2",
+  "version": "0.5.10",
   "description": "vis-three core",
   "main": "dist/VIS.core.es.js",
   "module": "dist/VIS.core.es.js",

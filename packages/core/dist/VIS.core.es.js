@@ -9,7 +9,7 @@ import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLigh
 import { LightShadow } from "three/src/lights/LightShadow";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { CSS3DObject, CSS3DSprite as CSS3DSprite$1 } from "three/examples/jsm/renderers/CSS3DRenderer";
-const version = "0.5.0";
+const version = "0.5.10";
 if (!window.__THREE__) {
   console.error(
     `vis-three dependent on three.js module, pleace run 'npm i three' first.`
@@ -36,26 +36,31 @@ class EventDispatcher {
   addEventListener(type, listener) {
     const listeners = this.listeners;
     if (!listeners.has(type)) {
-      listeners.set(type, /* @__PURE__ */ new Set());
+      listeners.set(type, []);
     }
-    listeners.get(type).add(listener);
+    const array = listeners.get(type);
+    if (array.includes(listener)) {
+      return;
+    }
+    array.push(listener);
   }
   hasEventListener(type, listener) {
     const listeners = this.listeners;
     if (!listeners.has(type)) {
       return false;
     }
-    return listeners.get(type).has(listener);
+    return listeners.get(type).includes(listener);
   }
   removeEventListener(type, listener) {
     const listeners = this.listeners;
     if (!listeners.has(type)) {
       return;
     }
-    if (!listeners.get(type).has(listener)) {
+    if (!listeners.get(type).includes(listener)) {
       return;
     }
-    listeners.get(type).delete(listener);
+    const array = listeners.get(type);
+    array.splice(array.indexOf(listener), 1);
   }
   dispatchEvent(event) {
     var _a;
@@ -70,12 +75,6 @@ class EventDispatcher {
         console.error(error);
       }
     }
-  }
-  clear() {
-    this.listeners.clear();
-  }
-  useful() {
-    return Boolean([...this.listeners.keys()].length);
   }
   once(type, listener) {
     const onceListener = function(event) {
@@ -114,15 +113,34 @@ class EventDispatcher {
       listeners.delete(type);
     }
   }
+  eventCount(type) {
+    if (!this.listeners.has(type)) {
+      return 0;
+    }
+    return this.listeners.get(type).length;
+  }
+  popLatestEvent(type) {
+    if (!this.listeners.has(type)) {
+      return;
+    }
+    this.listeners.get(type).pop();
+  }
+  clear() {
+    this.listeners.clear();
+  }
+  useful() {
+    return Boolean([...this.listeners.keys()].length);
+  }
 }
-var ENGINE_EVENT;
-(function(ENGINE_EVENT2) {
+var ENGINE_EVENT = /* @__PURE__ */ ((ENGINE_EVENT2) => {
   ENGINE_EVENT2["SETDOM"] = "setDom";
   ENGINE_EVENT2["SETSIZE"] = "setSize";
   ENGINE_EVENT2["SETCAMERA"] = "setCamera";
   ENGINE_EVENT2["SETSCENE"] = "setScene";
+  ENGINE_EVENT2["RENDER"] = "render";
   ENGINE_EVENT2["DISPOSE"] = "dispose";
-})(ENGINE_EVENT || (ENGINE_EVENT = {}));
+  return ENGINE_EVENT2;
+})(ENGINE_EVENT || {});
 class Engine extends EventDispatcher {
   constructor() {
     super();
@@ -131,12 +149,8 @@ class Engine extends EventDispatcher {
     __publicField(this, "dom", document.createElement("div"));
     __publicField(this, "camera", new PerspectiveCamera());
     __publicField(this, "scene", new Scene());
-    __publicField(this, "render");
     this.camera.position.set(50, 50, 50);
     this.camera.lookAt(0, 0, 0);
-    this.render = function() {
-      console.warn("can not install some plugin");
-    };
   }
   install(plugin) {
     if (this.pluginTables.has(plugin.name)) {
@@ -145,7 +159,9 @@ class Engine extends EventDispatcher {
     }
     const validateDep = (name) => {
       if (!this.pluginTables.has(name)) {
-        console.error(`${plugin.name} must install this plugin before: ${name}`);
+        console.error(
+          `${plugin.name} must install this plugin before: ${name}`
+        );
         return false;
       }
       return true;
@@ -183,7 +199,9 @@ class Engine extends EventDispatcher {
     const plugins = this.pluginTables;
     for (const plugin of strategy.condition) {
       if (!plugins.has(plugin)) {
-        console.warn(`${strategy.name} does not meet the conditions for execution: ${plugin}`);
+        console.warn(
+          `${strategy.name} does not meet the conditions for execution: ${plugin}`
+        );
         return this;
       }
     }
@@ -204,7 +222,7 @@ class Engine extends EventDispatcher {
   setDom(dom) {
     this.dom = dom;
     this.dispatchEvent({
-      type: ENGINE_EVENT.SETDOM,
+      type: "setDom",
       dom
     });
     return this;
@@ -212,39 +230,51 @@ class Engine extends EventDispatcher {
   setSize(width, height) {
     var _a, _b;
     if (width && width <= 0 || height && height <= 0) {
-      console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
+      console.warn(
+        `you must be input width and height bigger then zero, width: ${width}, height: ${height}`
+      );
       return this;
     }
     !width && (width = ((_a = this.dom) == null ? void 0 : _a.offsetWidth) || window.innerWidth);
     !height && (height = ((_b = this.dom) == null ? void 0 : _b.offsetHeight) || window.innerHeight);
-    this.dispatchEvent({ type: ENGINE_EVENT.SETSIZE, width, height });
+    this.dispatchEvent({ type: "setSize", width, height });
     return this;
   }
   setCamera(camera, options) {
     this.dispatchEvent({
-      type: ENGINE_EVENT.SETCAMERA,
+      type: "setCamera",
       camera,
       oldCamera: this.camera,
-      options: Object.assign({
-        orbitControls: true,
-        transformControls: true
-      }, options || {})
+      options: Object.assign(
+        {
+          orbitControls: true,
+          transformControls: true
+        },
+        options || {}
+      )
     });
     this.camera = camera;
     return this;
   }
   setScene(scene) {
     this.dispatchEvent({
-      type: ENGINE_EVENT.SETSCENE,
+      type: "setScene",
       scene,
       oldScene: this.scene
     });
     this.scene = scene;
     return this;
   }
+  render(delta) {
+    this.dispatchEvent({
+      type: "render",
+      delta
+    });
+    return this;
+  }
   dispose() {
     this.dispatchEvent({
-      type: ENGINE_EVENT.DISPOSE
+      type: "dispose"
     });
     return this;
   }

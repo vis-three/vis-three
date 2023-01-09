@@ -4,6 +4,7 @@ import {
   SetDomEvent,
   ENGINE_EVENT,
   SetSizeEvent,
+  RenderEvent,
 } from "@vis-three/core";
 
 import {
@@ -32,7 +33,8 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
 ) {
   let setDomFun: (event: SetDomEvent) => void;
   let setSizeFun: (event: SetSizeEvent) => void;
-  let cacheRender: (delta: number) => WebGLRendererEngine;
+  let renderFun: (event: RenderEvent) => void;
+
   return {
     name: WEBGL_RENDERER_PLUGIN,
     install(engine: WebGLRendererEngine) {
@@ -158,12 +160,11 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
 
       engine.addEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, setSizeFun);
 
-      cacheRender = engine.render;
-
-      engine.render = function () {
-        this.webGLRenderer.render(this.scene, this.camera);
-        return this;
+      renderFun = () => {
+        engine.webGLRenderer.render(engine.scene, engine.camera);
       };
+
+      engine.addEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
     },
     dispose(
       engine: Optional<WebGLRendererEngine, "webGLRenderer" | "getScreenshot">
@@ -173,12 +174,12 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
         ENGINE_EVENT.SETSIZE,
         setSizeFun
       );
+      engine.removeEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
+
       engine.webGLRenderer!.dispose();
 
       delete engine.webGLRenderer;
       delete engine.getScreenshot;
-
-      engine.render = cacheRender;
     },
   };
 };

@@ -10,7 +10,7 @@ export const EffectComposerPlugin = function (params) {
     let setCameraFun;
     let setSizeFun;
     let setSceneFun;
-    let cacheRender;
+    let renderFun;
     return {
         name: EFFECT_COMPOSER_PLUGIN,
         deps: WEBGL_RENDERER_PLUGIN,
@@ -51,17 +51,18 @@ export const EffectComposerPlugin = function (params) {
                 composer.setSize(event.width, event.height);
             };
             engine.addEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
-            cacheRender = engine.render;
-            engine.render = function () {
-                this.effectComposer.render();
-                return this;
+            console.warn(`${EFFECT_COMPOSER_PLUGIN}: hope install close behind the ${WEBGL_RENDERER_PLUGIN}, because ${WEBGL_RENDERER_PLUGIN}\`s renderFun can be dispose. if you not do this, render are prone to bugs`);
+            engine.popLatestEvent(ENGINE_EVENT.RENDER);
+            renderFun = () => {
+                composer.render();
             };
+            engine.addEventListener(ENGINE_EVENT.RENDER, renderFun);
         },
         dispose(engine) {
             engine.removeEventListener(ENGINE_EVENT.SETCAMERA, setCameraFun);
             engine.addEventListener(ENGINE_EVENT.SETSCENE, setSceneFun);
             engine.addEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
-            engine.render = cacheRender;
+            engine.removeEventListener(ENGINE_EVENT.RENDER, renderFun);
             delete engine.effectComposer;
         },
     };

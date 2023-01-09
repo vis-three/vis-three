@@ -2,6 +2,7 @@ import {
   Engine,
   ENGINE_EVENT,
   Plugin,
+  RenderEvent,
   SetDomEvent,
   SetSceneEvent,
   SetSizeEvent,
@@ -24,7 +25,7 @@ export const CSS3DRendererPlugin: Plugin<CSS3DRendererEngine> = function () {
   let setDomFun: (event: SetDomEvent) => void;
   let setSizeFun: (event: SetSizeEvent) => void;
   let setSceneFun: (event: SetSceneEvent) => void;
-  let cacheRender: () => void;
+  let renderFun: (event: RenderEvent) => void;
   return {
     name: CSS3D_RENDERER_PLUGIN,
     install(engine) {
@@ -57,6 +58,10 @@ export const CSS3DRendererPlugin: Plugin<CSS3DRendererEngine> = function () {
         });
       };
 
+      renderFun = () => {
+        css3DRenderer.render(engine.scene, engine.camera);
+      };
+
       engine.addEventListener<SetDomEvent>(ENGINE_EVENT.SETDOM, setDomFun);
 
       engine.addEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, setSizeFun);
@@ -65,16 +70,10 @@ export const CSS3DRendererPlugin: Plugin<CSS3DRendererEngine> = function () {
         ENGINE_EVENT.SETSCENE,
         setSceneFun
       );
-      cacheRender = engine.render.bind(engine);
-      engine.render = function (): Engine {
-        cacheRender();
-        this.css3DRenderer.render(this.scene, this.camera);
-        return this;
-      };
+
+      engine.addEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
     },
     dispose(engine) {
-      engine.render = cacheRender;
-
       engine.removeEventListener<SetDomEvent>(ENGINE_EVENT.SETDOM, setDomFun);
 
       engine.removeEventListener<SetSizeEvent>(
@@ -86,6 +85,8 @@ export const CSS3DRendererPlugin: Plugin<CSS3DRendererEngine> = function () {
         ENGINE_EVENT.SETSCENE,
         setSceneFun
       );
+
+      engine.removeEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
     },
   };
 };

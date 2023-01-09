@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/css2d-renderer-plugin",
-  "version": "0.5.3",
+  "version": "0.5.10",
   "description": "",
   "main": "index.js",
   "module": "index.js",

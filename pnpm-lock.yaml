@@ -428,6 +428,7 @@ importers:
       '@vis-three/modeling-engine-support': workspace:^0.5.3
       '@vis-three/object-helper-plugin': workspace:^0.5.1
       '@vis-three/orbit-controls-plugin': workspace:^0.5.4
+      '@vis-three/orbit-controls-support-strategy': workspace:^0.5.3
       '@vis-three/orbit-render-strategy': workspace:^0.5.1
       '@vis-three/pointer-lock-controls-plugin': workspace:^0.5.1
       '@vis-three/pointer-manager-plugin': workspace:^0.5.3
@@ -486,6 +487,7 @@ importers:
       '@vis-three/modeling-engine-support': link:../engine/ModelingEngineSupport
       '@vis-three/object-helper-plugin': link:../plugins/ObjectHelperPlugin
       '@vis-three/orbit-controls-plugin': link:../plugins/OrbitControlsPlugin
+      '@vis-three/orbit-controls-support-strategy': link:../strategy/OrbitControlsSupportStrategy
       '@vis-three/orbit-render-strategy': link:../strategy/OrbitRenderStrategy
       '@vis-three/pointer-lock-controls-plugin': link:../plugins/PointerLockControlsPlugin
       '@vis-three/pointer-manager-plugin': link:../plugins/PointerManagerPlugin

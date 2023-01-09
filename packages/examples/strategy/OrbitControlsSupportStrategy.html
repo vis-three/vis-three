@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrbitControlsSupportStrategy</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style></style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { OrbitControlsPlugin } from "@vis-three/orbit-controls-plugin";
+      import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
+
+      import { ComposerSupportStrategy } from "@vis-three/composer-support-strategy";
+      import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
+      import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+
+      import {
+        defineEngineSupport,
+        generateConfig,
+      } from "@vis-three/middleware";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      import { OrbitControlsSupportStrategy } from "@vis-three/orbit-controls-support-strategy";
+
+      const engine = defineEngineSupport({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          EffectComposerPlugin({
+            WebGLMultisampleRenderTarget: true,
+          }),
+          CameraAdaptivePlugin(),
+          OrbitControlsPlugin(),
+          GridHelperPlugin(),
+        ],
+
+        strategy: [
+          ComposerSupportStrategy(),
+          OrbitRenderStrategy(),
+          EffectRenderStrategy(),
+          OrbitControlsSupportStrategy(),
+        ],
+      })
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = scene.vid;
+
+      const pointLight = generateConfig("PointLight", {
+        position: {
+          x: 30,
+          y: 50,
+        },
+        distance: 100,
+      });
+
+      const material = generateConfig("MeshStandardMaterial");
+
+      const geometry = generateConfig("BoxGeometry", {
+        width: 20,
+        height: 10,
+        depth: 20,
+      });
+
+      const mesh = generateConfig("Mesh", {
+        material: material.vid,
+        geometry: geometry.vid,
+      });
+
+      const orbitControls = generateConfig("OrbitControls", {
+        autoRotate: true,
+      });
+
+      window.engine = engine;
+
+      const gui = new GUI();
+
+      gui.add(orbitControls, "enabled");
+      gui.add(orbitControls, "autoRotate");
+      gui.add(orbitControls, "autoRotateSpeed", -5, 5, 0.1);
+      gui.add(orbitControls, "enableDamping");
+      gui.add(orbitControls, "dampingFactor", -5, 5, 0.1);
+      gui.add(orbitControls, "enablePan");
+      gui.add(orbitControls, "panSpeed", -5, 5, 0.1);
+      gui.add(orbitControls, "enableRotate");
+      gui.add(orbitControls, "rotateSpeed", -5, 5, 0.1);
+      gui.add(orbitControls, "enableZoom");
+      gui.add(orbitControls, "zoomSpeed", -5, 5, 0.1);
+      gui.add(orbitControls, "maxAzimuthAngle", -2 * Math.PI, 2 * Math.PI, 0.1);
+      gui.add(orbitControls, "maxDistance", 0, 200, 1);
+      gui.add(orbitControls, "maxPolarAngle", 0, Math.PI, 0.1);
+      gui.add(orbitControls, "maxZoom", 0, 100, 1);
+      gui.add(orbitControls, "minAzimuthAngle", -2 * Math.PI, 2 * Math.PI, 0.1);
+      gui.add(orbitControls, "minDistance", 0, 200, 1);
+      gui.add(orbitControls, "minPolarAngle", 0, Math.PI, 0.1);
+      gui.add(orbitControls, "minZoom", 0, 100, 1);
+
+      window.addEventListener("resize", () => {
+        engine.setSize();
+      });
+    </script>
+  </body>
+</html>

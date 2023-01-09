@@ -2,6 +2,7 @@ import {
   Engine,
   ENGINE_EVENT,
   Plugin,
+  RenderEvent,
   SetCameraEvent,
   SetDomEvent,
   SetSizeEvent,
@@ -24,8 +25,8 @@ export const KeyboardMoveControlsPlugin: Plugin<KeyboardMoveControlsEngine> =
   function (params: FirstPersonControlsParameters = {}) {
     let setDomFun: (event: SetDomEvent) => void;
     let setCameraFun: (event: SetCameraEvent) => void;
+    let renderFun: (event: RenderEvent) => void;
 
-    let cacheRender: () => void;
     return {
       name: KEYBOARD_MOVE_CONTROLS_PLUGIN,
       install(engine) {
@@ -50,12 +51,11 @@ export const KeyboardMoveControlsPlugin: Plugin<KeyboardMoveControlsEngine> =
           setCameraFun
         );
 
-        cacheRender = engine.render;
-
-        engine.render = function () {
-          cacheRender();
-          controls.update(1000 / 60);
+        renderFun = (event) => {
+          controls.update(event.delta);
         };
+
+        engine.addEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
       },
       dispose(
         engine: Optional<KeyboardMoveControlsEngine, "keyboardMoveControls">
@@ -66,7 +66,7 @@ export const KeyboardMoveControlsPlugin: Plugin<KeyboardMoveControlsEngine> =
           setCameraFun
         );
 
-        engine.render = cacheRender;
+        engine.removeEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
       },
     };
   };
