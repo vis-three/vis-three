@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrbitViewpointStrategy</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style></style>
+
+  <body>
+    <div id="tips">鼠标中键缩放，鼠标右键旋转，ctrl/shift + 鼠标右键平移</div>
+    <div id="button-position">
+      <div id="button-group">
+        <p>change viewpoint:</p>
+      </div>
+    </div>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { OrbitControlsPlugin } from "@vis-three/orbit-controls-plugin";
+      import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
+      import { ViewpointPlugin, VIEWPOINT } from "@vis-three/viewpoint-plugin";
+      import { ComposerSupportStrategy } from "@vis-three/composer-support-strategy";
+      import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+      import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
+
+      import { defineEngine } from "@vis-three/core";
+
+      import { OrbitViewpointStrategy } from "@vis-three/orbit-viewpoint-strategy";
+
+      const engine = defineEngine({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          EffectComposerPlugin({
+            WebGLMultisampleRenderTarget: true,
+          }),
+          RenderManagerPlugin(),
+          CameraAdaptivePlugin(),
+          OrbitControlsPlugin(),
+          ViewpointPlugin(),
+        ],
+
+        strategy: [
+          EffectRenderStrategy(),
+          OrbitRenderStrategy(),
+          OrbitViewpointStrategy(),
+        ],
+      })
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      engine.orbitControls.autoRotate = true;
+
+      const scene = engine.scene;
+
+      const box = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(10, 10, 10),
+        new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
+      );
+      box.position.x = 10;
+      scene.add(box);
+
+      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 30, 0);
+      pointLight.position.y = 20;
+      scene.add(pointLight);
+
+      const line = new THREE.Line(
+        box.geometry,
+        new THREE.LineBasicMaterial({ color: "yellow" })
+      );
+      scene.add(line);
+
+      const points = new THREE.Points(
+        box.geometry,
+        new THREE.PointsMaterial({ color: "blue" })
+      );
+
+      points.position.x = -10;
+      scene.add(points);
+
+      window.engine = engine;
+
+      const buttonGroup = document.getElementById("button-group");
+      Object.keys(VIEWPOINT).forEach((key) => {
+        const buttonDom = document.createElement("button");
+        buttonDom.innerText = VIEWPOINT[key];
+        buttonDom.onclick = () => {
+          engine.setViewpoint(VIEWPOINT[key]);
+          engine.render();
+        };
+
+        buttonGroup.appendChild(buttonDom);
+      });
+    </script>
+  </body>
+</html>
