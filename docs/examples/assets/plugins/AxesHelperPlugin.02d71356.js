@@ -1,0 +1,1 @@
+import{v as n}from"../index.4424140c.js";import{W as r,C as i}from"../index.4f3227eb.js";import{A as a}from"../index.9d92c10b.js";import"../three.c9232d79.js";const t=n({plugins:[r({antialias:!0,alpha:!0}),i(),a({length:40})]}).setDom(document.getElementById("app")).setSize();t.render();let e=!0;document.getElementById("operate").onclick=o=>{e=!e,t.setAxesHelper(e),t.render()};

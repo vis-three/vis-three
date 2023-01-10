@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HelperSelectInteractStrategy</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    <link rel="stylesheet" href="/vis-three/examples/css/common.css" />
+    <script type="module" crossorigin src="/vis-three/examples/assets/strategy/TransSelectEventStrategy.eceea2bc.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.c9232d79.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.4424140c.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.4f3227eb.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.263b27ed.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.60f12b64.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/TextureDisplayer.5189c82c.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.71105b7b.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.1295c70d.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.cedb7fa3.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.94b5b771.js">
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+
+    #intro {
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      font-size: 16px;
+      color: white;
+      transform: translate(-50%);
+    }
+
+    #selected {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translate(-50%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .selected-elem {
+      color: white;
+      margin: 5px 0;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+    <div id="intro">选择物体， 按住ctrl多选</div>
+    <div id="selected"></div>
+
+    
+  </body>
+</html>
