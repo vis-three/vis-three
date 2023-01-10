@@ -441,6 +441,7 @@ importers:
       '@vis-three/transform-controls-helper-filter-strategy': workspace:^0.5.2
       '@vis-three/transform-controls-plugin': workspace:^0.5.1
       '@vis-three/transform-controls-support-strategy': workspace:^0.5.1
+      '@vis-three/transform-keyboard-strategy': workspace:^0.5.1
       '@vis-three/viewpoint-plugin': workspace:^0.5.2
       '@vis-three/webgl-renderer-plugin': workspace:^0.5.2
       '@vitejs/plugin-vue': ^2.3.3
@@ -504,6 +505,7 @@ importers:
       '@vis-three/transform-controls-helper-filter-strategy': link:../strategy/TransformControlsHelperFilterStrategy
       '@vis-three/transform-controls-plugin': link:../plugins/TransformControlsPlugin
       '@vis-three/transform-controls-support-strategy': link:../strategy/TransformControlsSupportStrategy
+      '@vis-three/transform-keyboard-strategy': link:../strategy/TransformKeyboardStrategy
       '@vis-three/viewpoint-plugin': link:../plugins/ViewpointPlugin
       '@vis-three/webgl-renderer-plugin': link:../plugins/WebGLRendererPlugin
       ant-design-vue: 3.2.15_vue@3.2.45

@@ -68,6 +68,7 @@
     "@vis-three/transform-controls-helper-filter-strategy": "workspace:^0.5.2",
     "@vis-three/transform-controls-plugin": "workspace:^0.5.1",
     "@vis-three/transform-controls-support-strategy": "workspace:^0.5.1",
+    "@vis-three/transform-keyboard-strategy": "workspace:^0.5.1",
     "@vis-three/viewpoint-plugin": "workspace:^0.5.2",
     "@vis-three/webgl-renderer-plugin": "workspace:^0.5.2",
     "ant-design-vue": "^3.2.6",
