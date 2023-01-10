@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StatsRenderStrategy</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+
+    #button-position {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+    }
+
+    #button-group {
+      transform: translate(-50%, 0);
+    }
+
+    #button-group p {
+      color: white;
+    }
+
+    #button-group button {
+      margin: 0 5px;
+      font-size: 16px;
+      padding: 8px 10px;
+      background: rgb(237, 75, 243);
+      border-radius: 3px;
+      box-shadow: 0 0 6px rgb(236, 182, 238);
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+    <div id="button-position">
+      <div id="button-group">
+        <button id="visible">triggle Stats</button>
+      </div>
+    </div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
+      import { StatsPlugin } from "@vis-three/stats-plugin";
+      import { defineEngine } from "@vis-three/core";
+
+      import { StatsRenderStrategy } from "@vis-three/stats-render-strategy";
+
+      const engine = defineEngine({
+        plugins: [
+          RenderManagerPlugin(),
+          StatsPlugin({
+            rmode: 1,
+            top: window.innerHeight / 2,
+            left: window.innerWidth / 2,
+          }),
+        ],
+        strategy: [StatsRenderStrategy()],
+      }).setDom(document.getElementById("app"));
+
+      engine.setStats(true);
+
+      let show = true;
+      document.getElementById("visible").onclick = () => {
+        show = !show;
+        engine.setStats(show);
+      };
+    </script>
+  </body>
+</html>

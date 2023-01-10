@@ -27,7 +27,7 @@ export const StatsPlugin: Plugin<StatsEngine> = function (
           engine.dom.appendChild(stats.domElement);
         } else {
           try {
-            this.dom.removeChild(stats.domElement);
+            engine.dom.removeChild(stats.domElement);
           } catch (error) {}
         }
         return this;

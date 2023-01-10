@@ -436,6 +436,7 @@ importers:
       '@vis-three/render-manager-plugin': workspace:^0.5.0
       '@vis-three/selection-plugin': workspace:^0.5.0
       '@vis-three/stats-plugin': workspace:^0.5.0
+      '@vis-three/stats-render-strategy': workspace:^0.5.1
       '@vis-three/trans-select-event-strategy': workspace:^0.5.1
       '@vis-three/transform-controls-plugin': workspace:^0.5.1
       '@vis-three/viewpoint-plugin': workspace:^0.5.2
@@ -496,6 +497,7 @@ importers:
       '@vis-three/render-manager-plugin': link:../plugins/RenderManagerPlugin
       '@vis-three/selection-plugin': link:../plugins/SelectionPlugin
       '@vis-three/stats-plugin': link:../plugins/StatsPlugin
+      '@vis-three/stats-render-strategy': link:../strategy/StatsRenderStrategy
       '@vis-three/trans-select-event-strategy': link:../strategy/TransSelectEventStrategy
       '@vis-three/transform-controls-plugin': link:../plugins/TransformControlsPlugin
       '@vis-three/viewpoint-plugin': link:../plugins/ViewpointPlugin

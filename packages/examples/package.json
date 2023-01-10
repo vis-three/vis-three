@@ -63,6 +63,7 @@
     "@vis-three/render-manager-plugin": "workspace:^0.5.0",
     "@vis-three/selection-plugin": "workspace:^0.5.0",
     "@vis-three/stats-plugin": "workspace:^0.5.0",
+    "@vis-three/stats-render-strategy": "workspace:^0.5.1",
     "@vis-three/trans-select-event-strategy": "workspace:^0.5.1",
     "@vis-three/transform-controls-plugin": "workspace:^0.5.1",
     "@vis-three/viewpoint-plugin": "workspace:^0.5.2",
