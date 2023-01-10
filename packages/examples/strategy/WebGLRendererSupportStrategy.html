@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RendererSupport</title>
+    <title>WebGLRendererSupportStrategy</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -21,37 +21,53 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as VIS from "vis-three";
-      import { v4 as getUUid } from "uuid";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { WebGLRendererStrategy } from "@vis-three/webgl-render-strategy";
+      import {
+        defineEngineSupport,
+        generateConfig,
+      } from "@vis-three/middleware";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-      const engine = new VIS.ModelingEngineSupport()
+      import { WebGLRendererSupportStrategy } from "@vis-three/webgl-renderer-support-strategy";
+
+      const engine = defineEngineSupport({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          CameraAdaptivePlugin(),
+        ],
+
+        strategy: [WebGLRendererStrategy(), WebGLRendererSupportStrategy()],
+      })
         .setDom(document.getElementById("app"))
         .setSize()
-        .setStats(true);
+        .play();
 
-      VIS.generateConfig.injectEngine = engine;
+      engine.camera.position.set(60, 60, 60);
+      engine.camera.lookAt(0, 20, 0);
 
-      const renderer = VIS.generateConfig("WebGLRenderer", {
+      generateConfig.injectEngine = engine;
+
+      const renderer = generateConfig("WebGLRenderer", {
         physicallyCorrectLights: true,
         shadowMap: {
           enabled: true,
         },
       });
 
-      console.log(renderer);
+      const scene = generateConfig("Scene");
 
-      window.renderer = renderer;
+      engine.setSceneBySymbol(scene.vid);
 
-      const scene = VIS.generateConfig("Scene");
+      generateConfig.injectScene = true;
 
-      engine.setScene(scene.vid);
+      const ambientLight = generateConfig("AmbientLight");
 
-      VIS.generateConfig.injectScene = true;
-
-      const ambientLight = VIS.generateConfig("AmbientLight");
-
-      const pointLight = VIS.generateConfig("PointLight", {
+      const pointLight = generateConfig("PointLight", {
         position: {
           x: 30,
           y: 50,
@@ -60,15 +76,15 @@
         intensity: 5,
       });
 
-      const material = VIS.generateConfig("MeshStandardMaterial");
+      const material = generateConfig("MeshStandardMaterial");
 
-      const geometry = VIS.generateConfig("BoxGeometry", {
+      const geometry = generateConfig("BoxGeometry", {
         width: 20,
         height: 60,
         depth: 20,
       });
 
-      const mesh = VIS.generateConfig("Mesh", {
+      const mesh = generateConfig("Mesh", {
         material: material.vid,
         geometry: geometry.vid,
         position: {
@@ -76,17 +92,17 @@
         },
       });
 
-      const stageGeometry = VIS.generateConfig("BoxGeometry", {
+      const stageGeometry = generateConfig("BoxGeometry", {
         width: 500,
         height: 10,
         depth: 500,
       });
 
-      const stageMaterial = VIS.generateConfig("MeshStandardMaterial", {
+      const stageMaterial = generateConfig("MeshStandardMaterial", {
         color: "rgb(100, 100, 100)",
       });
 
-      const stage = VIS.generateConfig("Mesh", {
+      const stage = generateConfig("Mesh", {
         material: stageMaterial.vid,
         geometry: stageGeometry.vid,
         position: {

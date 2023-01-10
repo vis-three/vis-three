@@ -443,7 +443,9 @@ importers:
       '@vis-three/transform-controls-support-strategy': workspace:^0.5.1
       '@vis-three/transform-keyboard-strategy': workspace:^0.5.1
       '@vis-three/viewpoint-plugin': workspace:^0.5.2
+      '@vis-three/webgl-render-strategy': workspace:^0.5.1
       '@vis-three/webgl-renderer-plugin': workspace:^0.5.2
+      '@vis-three/webgl-renderer-support-strategy': workspace:^0.5.1
       '@vitejs/plugin-vue': ^2.3.3
       ant-design-vue: ^3.2.6
       axios: ^0.27.2
@@ -507,7 +509,9 @@ importers:
       '@vis-three/transform-controls-support-strategy': link:../strategy/TransformControlsSupportStrategy
       '@vis-three/transform-keyboard-strategy': link:../strategy/TransformKeyboardStrategy
       '@vis-three/viewpoint-plugin': link:../plugins/ViewpointPlugin
+      '@vis-three/webgl-render-strategy': link:../strategy/WebGLRenderStrategy
       '@vis-three/webgl-renderer-plugin': link:../plugins/WebGLRendererPlugin
+      '@vis-three/webgl-renderer-support-strategy': link:../strategy/WebGLRendererSupportStrategy
       ant-design-vue: 3.2.15_vue@3.2.45
       axios: 0.27.2
       echarts: 5.4.1

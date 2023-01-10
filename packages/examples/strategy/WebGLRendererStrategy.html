@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebGLRendererStrategy</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { defineEngine } from "@vis-three/core";
+
+      import { WebGLRendererStrategy } from "@vis-three/webgl-render-strategy";
+
+      const engine = defineEngine({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          CameraAdaptivePlugin(),
+          RenderManagerPlugin(),
+        ],
+
+        strategy: [WebGLRendererStrategy()],
+      })
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      const scene = engine.scene;
+
+      scene.background = new THREE.Color("black");
+
+      const box = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(10, 10, 10),
+        new THREE.MeshStandardMaterial({
+          color: "rgb(255, 105, 100)",
+          roughness: 0.1,
+          metalness: 0.8,
+        })
+      );
+      box.position.x = 10;
+      scene.add(box);
+
+      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 3, 50, 0);
+      pointLight.position.y = 30;
+      scene.add(pointLight);
+
+      const line = new THREE.Line(box.geometry);
+      scene.add(line);
+
+      const points = new THREE.Points(box.geometry);
+
+      points.position.x = -10;
+      scene.add(points);
+
+      engine.renderManager.addEventListener("render", (event) => {
+        pointLight.position.x = 70 * Math.sin(event.total);
+        pointLight.position.z = 70 * Math.cos(event.total);
+      });
+    </script>
+  </body>
+</html>
