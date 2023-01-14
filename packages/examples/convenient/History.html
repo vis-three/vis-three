@@ -30,9 +30,10 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as VIS from "vis-three";
+      import { History, Action } from "@vis-three/convenient";
+      import { ModelingEngine } from "@vis-three/modeling-engine";
 
-      class SectionAction extends VIS.Action {
+      class SectionAction extends Action {
         static status = false;
         static cacheSection = [];
 
@@ -47,20 +48,16 @@
 
         next() {
           SectionAction.status = true;
-          this.engine.setSelectionBox({
-            objects: this.newObjects,
-          });
+          this.engine.setSelectionBox([this.newObjects]);
         }
 
         prev() {
           SectionAction.status = true;
-          this.engine.setSelectionBox({
-            objects: this.oldObjects,
-          });
+          this.engine.setSelectionBox([this.oldObjects]);
         }
       }
 
-      class TransformAction extends VIS.Action {
+      class TransformAction extends Action {
         constructor({ transformControls }) {
           super();
           this.nextState = {
@@ -124,13 +121,13 @@
         }
       }
 
-      const engine = new VIS.ModelingEngine()
+      const engine = new ModelingEngine()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true)
         .play();
 
-      const history = new VIS.History(50);
+      const history = new History(50);
 
       engine.keyboardManager
         .register({
@@ -158,6 +155,7 @@
       );
       box.position.x = 10;
       scene.add(box);
+      box.updateMatrixWorld();
 
       const sphere = new THREE.Mesh(
         new THREE.SphereBufferGeometry(5, 32, 32),
@@ -169,6 +167,8 @@
       const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
       pointLight.position.y = 30;
       scene.add(pointLight);
+
+      engine.setSelectionBox([box]);
 
       // selection action
       engine.addEventListener("selected", (event) => {
