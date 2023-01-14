@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
-    <title>TextureDisplayer</title>
+    <title>MaterialDisplayer</title>
   </head>
   <style>
     body {
@@ -38,18 +38,26 @@
     <div id="app"></div>
 
     <script type="module">
-      import * as VIS from "vis-three";
+      import { defineEngine } from "@vis-three/core";
+      import { LoaderManagerPlugin } from "@vis-three/loader-manager-plugin";
       import * as THREE from "three";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-      // 加载器
-      const loaderManager = new VIS.LoaderManager().setPath(
-        import.meta.env.BASE_URL
-      );
+      import { MaterialDisplayer } from "@vis-three/convenient";
 
-      loaderManager.addEventListener("loaded", (event) => {
+      const engine = defineEngine({
+        plugins: [
+          LoaderManagerPlugin({
+            path: import.meta.env.BASE_URL,
+          }),
+        ],
+      });
+
+      engine.loaderManager.addEventListener("loaded", (event) => {
         const texture = new THREE.Texture();
-        texture.image = loaderManager.getResource("/texture/Bricks_Color.jpg");
+        texture.image = engine.loaderManager.getResource(
+          "/texture/Bricks_Color.jpg"
+        );
         texture.needsUpdate = true;
 
         const material = new THREE.MeshStandardMaterial({
@@ -58,7 +66,7 @@
           bumpScale: 2,
         });
 
-        const displayer = new VIS.MaterialDisplayer({
+        const displayer = new MaterialDisplayer({
           dom: document.getElementById("app"),
           material,
         });
@@ -131,7 +139,7 @@
         });
       });
 
-      loaderManager.load(["/texture/Bricks_Color.jpg"]);
+      engine.loaderManager.load(["/texture/Bricks_Color.jpg"]);
     </script>
   </body>
 </html>
