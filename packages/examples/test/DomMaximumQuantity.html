@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pressure-canvas</title>
+    <title>Dom Maximum Quantity</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -34,37 +34,28 @@
 
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
+      import { DisplayEngineSupport } from "@vis-three/display-engine-support";
+      import { generateConfig } from "@vis-three/middleware";
       import { v4 as getUUid } from "uuid";
 
-      const canvasGenerator = new Vis.CanvasGenerator({
-        width: 256,
-        height: 256,
-      })
-        .draw((ctx) => {
-          ctx.textBaseline = "middle";
-          ctx.textAlign = "center";
+      import { StatsPlugin } from "@vis-three/stats-plugin";
+      import { StatsRenderStrategy } from "@vis-three/stats-render-strategy";
 
-          ctx.fillStyle = "rgb(206, 42, 230)";
-
-          ctx.font = " bold 42px 微软雅黑";
-          ctx.fillText("PRESSURE", 128, 128);
-        })
-        .preview();
-
-      const engine = new Vis.DisplayEngineSupport()
-        .install("Stats")
-        .install("CSS3DRenderer")
-        .complete()
+      const engine = new DisplayEngineSupport()
+        .install(StatsPlugin())
+        .exec(StatsRenderStrategy())
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true);
 
-      const scene = Vis.generateConfig("Scene");
+      const scene = generateConfig("Scene");
 
       engine.applyConfig(scene);
 
-      engine.setScene(scene.vid).play();
+      engine.setSceneBySymbol(scene.vid).play();
+
+      engine.camera.position.set(550, 500, 550);
+      engine.camera.lookAt(0, 0, 0);
 
       let num = 0;
       document.getElementById("object").onclick = () => {
@@ -77,14 +68,13 @@
 
           engine.registerResources({ [`${num * 100 + i}`]: element });
 
-          const object = Vis.generateConfig("CSS3DObject", {
+          const object = generateConfig("CSS3DObject", {
             element: `${num * 100 + i}`,
             position: {
               x: Math.random() * (500 + 1) - 250,
               y: Math.random() * (500 + 1) - 250,
               z: Math.random() * (500 + 1) - 250,
             },
-            matrixAutoUpdate: false,
           });
           engine.applyConfig(object);
           scene.children.push(object.vid);
