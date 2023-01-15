@@ -24,21 +24,29 @@
     <div id="app"></div>
 
     <script type="module">
-      import * as VIS from "vis-three";
+      import { defineEngine } from "@vis-three/core";
+      import { LoaderManagerPlugin } from "@vis-three/loader-manager-plugin";
       import * as THREE from "three";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-      // 加载器
-      const loaderManager = new VIS.LoaderManager().setPath(
-        import.meta.env.BASE_URL
-      );
+      import { TextureDisplayer } from "@vis-three/convenient";
 
-      loaderManager.addEventListener("loaded", (event) => {
+      const engine = defineEngine({
+        plugins: [
+          LoaderManagerPlugin({
+            path: import.meta.env.BASE_URL,
+          }),
+        ],
+      });
+
+      engine.loaderManager.addEventListener("loaded", (event) => {
         const texture = new THREE.Texture();
-        texture.image = loaderManager.getResource("/texture/Bricks_Color.jpg");
+        texture.image = engine.loaderManager.getResource(
+          "/texture/Bricks_Color.jpg"
+        );
         texture.needsUpdate = true;
 
-        const displayer = new VIS.TextureDisplayer({
+        const displayer = new TextureDisplayer({
           dom: document.getElementById("app"),
           texture,
         });
@@ -69,7 +77,7 @@
         });
       });
 
-      loaderManager.load(["/texture/Bricks_Color.jpg"]);
+      engine.loaderManager.load(["/texture/Bricks_Color.jpg"]);
     </script>
   </body>
 </html>
