@@ -84,14 +84,7 @@
         };
 
         let timer = "";
-        gui.addColor(guiParams, "color").onChange((data) => {
-          material.color.setHex(data);
-          displayer.render();
-
-          if (timer) {
-            return;
-          }
-
+        const getScreenShot = () => {
           timer = setTimeout(() => {
             timer = "";
             const dom = document.getElementById("display-box");
@@ -110,32 +103,53 @@
             };
 
             dom.appendChild(canvas);
-          }, 1000);
+          }, 500);
+        };
+
+        gui.addColor(guiParams, "color").onChange((data) => {
+          material.color.setHex(data);
+          displayer.render();
+
+          if (timer) {
+            return;
+          }
+
+          getScreenShot();
         });
 
         gui.add(guiParams, "wireframe").onChange((data) => {
           material.wireframe = data;
           displayer.render();
+
+          getScreenShot();
         });
 
         gui.add(guiParams, "rotation", 0, 360, 1).onChange((data) => {
           texture.rotation = (data * Math.PI) / 180;
           displayer.render();
+
+          getScreenShot();
         });
 
         gui.add(guiParams, "rotation", 0, 360, 1).onChange((data) => {
           texture.rotation = (data * Math.PI) / 180;
           displayer.render();
+
+          getScreenShot();
         });
 
         gui.add(guiParams, "centerX", 0, 1, 0.01).onChange((data) => {
           texture.center.x = data;
           displayer.render();
+
+          getScreenShot();
         });
 
         gui.add(guiParams, "centerY", 0, 1, 0.01).onChange((data) => {
           texture.center.y = data;
           displayer.render();
+
+          getScreenShot();
         });
       });
 
