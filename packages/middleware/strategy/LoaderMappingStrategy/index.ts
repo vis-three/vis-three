@@ -1,6 +1,8 @@
 import { Strategy } from "@vis-three/core";
 import {
+  LoadedEvent,
   LoaderManager,
+  LOADER_EVENT,
   LOADER_MANAGER_PLUGIN,
   LoadUnit,
 } from "@vis-three/loader-manager-plugin";
@@ -44,14 +46,14 @@ export const LoaderMappingStrategy: Strategy<LoaderMappingEngine> =
           const lodedFun = (event: MappedEvent) => {
             callback(undefined, event);
             engine.resourceManager.removeEventListener<MappedEvent>(
-              RESOURCE_EVENT.MAPPED,
+              LOADER_EVENT.LOADED,
               lodedFun
             );
           };
 
           try {
             engine.resourceManager.addEventListener<MappedEvent>(
-              RESOURCE_EVENT.MAPPED,
+              LOADER_EVENT.LOADED,
               lodedFun
             );
           } catch (error) {
@@ -67,18 +69,28 @@ export const LoaderMappingStrategy: Strategy<LoaderMappingEngine> =
           urlList: Array<LoadUnit>
         ): Promise<MappedEvent> => {
           return new Promise((resolve, reject) => {
-            const lodedFun = (event: MappedEvent) => {
-              resolve(event);
-              engine.resourceManager.removeEventListener<MappedEvent>(
-                RESOURCE_EVENT.MAPPED,
-                lodedFun
-              );
-            };
-
             try {
-              engine.resourceManager.addEventListener<MappedEvent>(
-                RESOURCE_EVENT.MAPPED,
-                lodedFun
+              engine.loaderManager.once<LoadedEvent>(
+                LOADER_EVENT.LOADED,
+                (e: LoadedEvent) => {
+                  engine.resourceManager.once<MappedEvent>(
+                    RESOURCE_EVENT.MAPPED,
+                    (event) => {
+                      resolve(event);
+                    }
+                  );
+
+                  const map = new Map();
+
+                  urlList.forEach((unit) => {
+                    if (typeof unit === "string") {
+                      map.set(unit, e.resourceMap.get(unit));
+                    } else {
+                      map.set(unit.url, e.resourceMap.get(unit.url));
+                    }
+                  });
+                  engine.resourceManager.mappingResource(map);
+                }
               );
             } catch (error) {
               reject(error);

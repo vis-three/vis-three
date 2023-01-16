@@ -16,10 +16,12 @@ export class AniScriptGeneratorManager {
   private static configLibrary = new Map<string, unknown>();
   private static generatorLibrary = new Map<string, AniScriptGenerator<any>>();
 
-  static register = function <C extends BasicAniScriptConfig>(
-    config: C,
-    generator: AniScriptGenerator<C>
-  ) {
+  static register = function <C extends BasicAniScriptConfig>(params: {
+    config: C;
+    generator: AniScriptGenerator<C>;
+  }) {
+    const config = params.config;
+    const generator = params.generator;
     if (AniScriptGeneratorManager.configLibrary.has(config.name)) {
       console.warn(
         `EventLibrary has already exist this event generator: ${config.name}, that will be cover.`

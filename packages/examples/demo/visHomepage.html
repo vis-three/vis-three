@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VIS</title>
+    <title>vis homepage</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -19,12 +19,16 @@
       import "ant-design-vue/lib/message/style/index.css";
 
       import { ReinhardToneMapping } from "three";
+
+      import { DisplayEngineSupport } from "@vis-three/display-engine-support";
       import {
-        CONFIGTYPE,
-        DisplayEngineSupport,
         generateConfig,
-        AniScriptLibrary,
-      } from "vis-three";
+        CONFIGTYPE,
+        AniScriptGeneratorManager,
+      } from "@vis-three/middleware";
+      import { linearTime } from "@vis-three/animate-script-library";
+
+      AniScriptGeneratorManager.register(linearTime);
 
       export const engine = new DisplayEngineSupport().setDom(
         document.getElementById("app")
@@ -59,7 +63,6 @@
 
       (async () => {
         generateConfig.injectEngine = engine;
-        generateConfig.injectScene = true;
 
         // 引擎配置
         generateConfig(CONFIGTYPE.WEBGLRENDERER, {
@@ -81,11 +84,6 @@
           // enableRotate: false,
         });
 
-        // 场景
-        const scene = generateConfig(CONFIGTYPE.SCENE);
-
-        engine.setScene(scene.vid);
-
         // 相机
         const camera = generateConfig(CONFIGTYPE.PERSPECTIVECAMERA, {
           far: 10000,
@@ -97,20 +95,31 @@
           },
         });
 
-        engine.setCamera(camera.vid).setSize();
+        engine.setCameraBySymbol(camera.vid).setSize();
+
+        // 场景
+        const scene = generateConfig(CONFIGTYPE.SCENE);
+
+        engine.setSceneBySymbol(scene.vid);
+
+        generateConfig.injectScene = true;
 
         // 外部资源
-        const loadeMessage = await engine.loadResourcesAsync([
-          "/model/three.obj",
-          "/model/vis.obj",
-          "/texture/vis/colorMap.png",
-          "/skyBox/lightblue/px.png",
-          "/skyBox/lightblue/py.png",
-          "/skyBox/lightblue/pz.png",
-          "/skyBox/lightblue/nx.png",
-          "/skyBox/lightblue/ny.png",
-          "/skyBox/lightblue/nz.png",
-        ]);
+        const loadeMessage = await engine
+          .loadResourcesAsync([
+            "/model/three.obj",
+            "/model/vis.obj",
+            "/texture/vis/colorMap.png",
+            "/skyBox/lightblue/px.png",
+            "/skyBox/lightblue/py.png",
+            "/skyBox/lightblue/pz.png",
+            "/skyBox/lightblue/nx.png",
+            "/skyBox/lightblue/ny.png",
+            "/skyBox/lightblue/nz.png",
+          ])
+          .catch((err) => {
+            console.log(err);
+          });
 
         // 环境贴图
         const envTexture = generateConfig(CONFIGTYPE.CUBETEXTURE, {
@@ -222,11 +231,11 @@
           material: visMaterial.vid,
         });
 
-        // 动画
+        // // 动画
         generateConfig(CONFIGTYPE.SCRIPTANIMATION, {
           target: threeMesh.vid,
           attribute: ".rotation.z",
-          script: AniScriptLibrary.generateConfig("linearTime", {
+          script: AniScriptGeneratorManager.generateConfig("linearTime", {
             multiply: 0.2,
           }),
         });
@@ -234,7 +243,7 @@
         generateConfig(CONFIGTYPE.SCRIPTANIMATION, {
           target: visMesh.vid,
           attribute: ".rotation.y",
-          script: AniScriptLibrary.generateConfig("linearTime", {
+          script: AniScriptGeneratorManager.generateConfig("linearTime", {
             multiply: 0.7,
           }),
         });
