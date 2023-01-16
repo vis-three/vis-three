@@ -17,14 +17,18 @@ export class EventGeneratorManager {
     EventGenerator<any>
   >();
 
-  static register = function <C extends BasicEventConfig>(
-    config: C,
-    generator: EventGenerator<C>
-  ) {
+  static register = function <C extends BasicEventConfig>({
+    config,
+    generator,
+  }: {
+    config: C;
+    generator: EventGenerator<C>;
+  }): EventGeneratorManager {
     if (EventGeneratorManager.configLibrary.has(config.name)) {
       console.warn(
         `EventGeneratorManager has already exist this event generator: ${config.name}, that will be cover.`
       );
+      return EventGeneratorManager;
     }
 
     EventGeneratorManager.configLibrary.set(
@@ -33,6 +37,7 @@ export class EventGeneratorManager {
     );
 
     EventGeneratorManager.generatorLibrary.set(config.name, generator);
+    return EventGeneratorManager;
   };
 
   static generateConfig(name: string, merge: object): BasicEventConfig {
@@ -77,7 +82,10 @@ export class EventGeneratorManager {
       return () => {};
     }
 
-    return EventGeneratorManager.generatorLibrary.get(config.name)!(engine, config);
+    return EventGeneratorManager.generatorLibrary.get(config.name)!(
+      engine,
+      config
+    );
   }
 
   static has(name: string): boolean {

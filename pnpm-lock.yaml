@@ -399,6 +399,7 @@ importers:
     specifiers:
       '@ant-design/icons-vue': ^6.1.0
       '@antv/g6': ^4.8.3
+      '@antv/util': ^3.3.2
       '@rollup/plugin-alias': ^3.1.9
       '@vis-three/animate-script-library': workspace:^0.5.1
       '@vis-three/axes-helper-plugin': workspace:^0.5.3
@@ -414,6 +415,7 @@ importers:
       '@vis-three/display-engine-support': workspace:^0.5.3
       '@vis-three/effect-composer-plugin': workspace:^0.5.1
       '@vis-three/effect-render-strategy': workspace:^0.5.1
+      '@vis-three/event-library': workspace:^0.5.2
       '@vis-three/event-manager-plugin': workspace:^0.5.2
       '@vis-three/first-person-controls-plugin': workspace:^0.5.1
       '@vis-three/first-person-render-strategy': workspace:^0.5.1
@@ -468,6 +470,7 @@ importers:
     dependencies:
       '@ant-design/icons-vue': 6.1.0_vue@3.2.45
       '@antv/g6': 4.8.3
+      '@antv/util': 3.3.2
       '@vis-three/animate-script-library': link:../library/aniScript
       '@vis-three/axes-helper-plugin': link:../plugins/AxesHelperPlugin
       '@vis-three/camera-adaptive-plugin': link:../plugins/CameraAdaptivePlugin
@@ -482,6 +485,7 @@ importers:
       '@vis-three/display-engine-support': link:../engine/DisplayEngineSupport
       '@vis-three/effect-composer-plugin': link:../plugins/EffectComposerPlugin
       '@vis-three/effect-render-strategy': link:../strategy/EffectRenderStrategy
+      '@vis-three/event-library': link:../library/event
       '@vis-three/event-manager-plugin': link:../plugins/EventManagerPlugin
       '@vis-three/first-person-controls-plugin': link:../plugins/FirstPersonControlsPlugin
       '@vis-three/first-person-render-strategy': link:../strategy/FirstPersonRenderStrategy
@@ -2496,6 +2500,14 @@ packages:
     resolution: {integrity: sha512-o6I9hi5CIUvLGDhth0RxNSFDRwXeywmt6ExR4+RmVAzIi48ps6HUy+svxOCayvrPBN37uE6TAc2KDofRo0nK9Q==}
     dependencies:
       csstype: 3.1.1
+      tslib: 2.4.1
+    dev: false
+
+  /@antv/util/3.3.2:
+    resolution: {integrity: sha512-uvyQxEOugdJs/FVlpz/+8pKxn70z8jEVydPqv+LI62cpIF7YDjVnMfNIsoMqwEoTzPUJ9TJalyLqZhT5rYez0w==}
+    dependencies:
+      fast-deep-equal: 3.1.3
+      gl-matrix: 3.4.3
       tslib: 2.4.1
     dev: false
 
@@ -6678,7 +6690,6 @@ packages:
 
   /fast-deep-equal/3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
-    dev: true
 
   /fast-diff/1.2.0:
     resolution: {integrity: sha512-xJuoT5+L99XlZ8twedaRf6Ax2TgQVxvgZOYoPKqZufmJib0tL2tegPBOZb1pVNgIhlqDlA0eO0c3wBvQcmzx4w==}

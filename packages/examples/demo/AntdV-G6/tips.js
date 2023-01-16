@@ -1,4 +1,4 @@
-import { CanvasGenerator } from "vis-three";
+import { CanvasGenerator } from "@vis-three/convenient";
 
 export const treeTips = new CanvasGenerator({
   width: 512,
