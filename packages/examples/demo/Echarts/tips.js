@@ -1,4 +1,4 @@
-import { CanvasGenerator } from "vis-three";
+import { CanvasGenerator } from "@vis-three/convenient";
 
 export const meshTips = new CanvasGenerator({
   width: 256,

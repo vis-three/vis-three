@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Echarts</title>
+    <title>Echarts Usage</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -16,7 +16,8 @@
 
     <script type="module">
       import * as echarts from "echarts";
-      import * as VIS from "vis-three";
+      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import { generateConfig } from "@vis-three/middleware";
 
       import { stackedAreaChart } from "./Echarts/stackedAreaChart.js";
       import { scatterAggregateChart } from "./Echarts/scatterAggregateChart.js";
@@ -24,21 +25,21 @@
 
       import { meshTips, spriteTips, css3DTips } from "./Echarts/tips.js";
 
-      const engine = new VIS.ModelingEngineSupport()
-        .install("CSS3DRenderer")
-        .complete()
+      const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize();
 
-      VIS.generateConfig.injectEngine = engine;
+      engine.camera.position.set(50, 20, 100);
 
-      const scene = VIS.generateConfig("Scene");
+      generateConfig.injectEngine = engine;
 
-      engine.setScene(scene.vid);
+      const scene = generateConfig("Scene");
 
-      VIS.generateConfig.injectScene = true;
+      engine.setSceneBySymbol(scene.vid);
 
-      VIS.generateConfig("AmbientLight");
+      generateConfig.injectScene = true;
+
+      generateConfig("AmbientLight");
 
       engine.registerResources({
         stackedArea: stackedAreaChart.getDom(),
@@ -49,11 +50,11 @@
         css3DTips: css3DTips.getDom(),
       });
 
-      const stackedAreaTexture = VIS.generateConfig("CanvasTexture", {
+      const stackedAreaTexture = generateConfig("CanvasTexture", {
         url: "stackedArea",
       });
 
-      const scatterAggregateTexture = VIS.generateConfig("CanvasTexture", {
+      const scatterAggregateTexture = generateConfig("CanvasTexture", {
         url: "scatterAggregate",
       });
 
@@ -71,15 +72,15 @@
         scatterAggregateTexture.needsUpdate = true;
       });
 
-      const meshTipsTexture = VIS.generateConfig("CanvasTexture", {
+      const meshTipsTexture = generateConfig("CanvasTexture", {
         url: "meshTips",
       });
 
-      const meshTipsMaterial = VIS.generateConfig("SpriteMaterial", {
+      const meshTipsMaterial = generateConfig("SpriteMaterial", {
         map: meshTipsTexture.vid,
       });
 
-      const meshTipsSprite = VIS.generateConfig("Sprite", {
+      const meshTipsSprite = generateConfig("Sprite", {
         material: meshTipsMaterial.vid,
         scale: {
           x: 10,
@@ -91,16 +92,16 @@
         },
       });
 
-      const planeMaterial = VIS.generateConfig("MeshStandardMaterial", {
+      const planeMaterial = generateConfig("MeshStandardMaterial", {
         map: stackedAreaTexture.vid,
       });
 
-      const planeGeometry = VIS.generateConfig("PlaneGeometry", {
+      const planeGeometry = generateConfig("PlaneGeometry", {
         width: 40,
         height: 40,
       });
 
-      const plane = VIS.generateConfig("Mesh", {
+      const plane = generateConfig("Mesh", {
         geometry: planeGeometry.vid,
         material: planeMaterial.vid,
         position: {
@@ -108,15 +109,15 @@
         },
       });
 
-      const spriteTipsTexture = VIS.generateConfig("CanvasTexture", {
+      const spriteTipsTexture = generateConfig("CanvasTexture", {
         url: "spriteTips",
       });
 
-      const spriteTipsMaterial = VIS.generateConfig("SpriteMaterial", {
+      const spriteTipsMaterial = generateConfig("SpriteMaterial", {
         map: spriteTipsTexture.vid,
       });
 
-      const spriteTipsSprite = VIS.generateConfig("Sprite", {
+      const spriteTipsSprite = generateConfig("Sprite", {
         material: spriteTipsMaterial.vid,
         scale: {
           x: 10,
@@ -127,11 +128,11 @@
         },
       });
 
-      const spriteMaterial = VIS.generateConfig("SpriteMaterial", {
+      const spriteMaterial = generateConfig("SpriteMaterial", {
         map: scatterAggregateTexture.vid,
       });
 
-      const sprite = VIS.generateConfig("Sprite", {
+      const sprite = generateConfig("Sprite", {
         material: spriteMaterial.vid,
         scale: {
           x: 40,
@@ -139,15 +140,15 @@
         },
       });
 
-      const css3DTipsTexture = VIS.generateConfig("CanvasTexture", {
+      const css3DTipsTexture = generateConfig("CanvasTexture", {
         url: "css3DTips",
       });
 
-      const css3DTipsMaterial = VIS.generateConfig("SpriteMaterial", {
+      const css3DTipsMaterial = generateConfig("SpriteMaterial", {
         map: css3DTipsTexture.vid,
       });
 
-      const css3DTipsSprite = VIS.generateConfig("Sprite", {
+      const css3DTipsSprite = generateConfig("Sprite", {
         material: css3DTipsMaterial.vid,
         scale: {
           x: 10,
@@ -159,7 +160,7 @@
         },
       });
 
-      const css3DPlane = VIS.generateConfig("CSS3DPlane", {
+      const css3DPlane = generateConfig("CSS3DPlane", {
         element: "treemapSunburst",
         width: 512,
         height: 512,
@@ -172,8 +173,6 @@
           z: 40 / 512,
         },
       });
-      console.log(css3DPlane);
-      console.log(engine);
     </script>
   </body>
 </html>
