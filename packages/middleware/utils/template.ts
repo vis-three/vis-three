@@ -3,6 +3,7 @@ import { v4 } from "uuid";
 import { SymbolConfig } from "../common";
 import { EngineSupportLoadOptions } from "../engine";
 import { LoadOptions } from "../plugin/DataSupportManagerPlugin";
+import { generateConfig } from "./generateConfig";
 
 export interface CloneResult {
   config: EngineSupportLoadOptions;
@@ -114,8 +115,24 @@ export const planish = function (
   return result;
 };
 
+export const observable = function (
+  object: EngineSupportLoadOptions,
+  obCallback?: (config: SymbolConfig) => SymbolConfig
+) {
+  return handler(JSONHandler.clone(object), (c) => {
+    c = generateConfig(c.type, c);
+
+    if (obCallback) {
+      return obCallback(c);
+    } else {
+      return c;
+    }
+  });
+};
+
 export default {
   clone,
   handler,
   planish,
+  observable,
 };

@@ -22,11 +22,14 @@ export class RenderManager extends EventDispatcher {
      * @returns
      */
     setFPS(fps) {
+        let playFlag = false;
         if (this.animationFrame !== -1) {
             cancelAnimationFrame(this.animationFrame);
+            playFlag = true;
         }
         if (this.timer) {
             clearTimeout(this.timer);
+            playFlag = true;
         }
         this.fps = fps;
         if (fps <= 0) {
@@ -44,7 +47,7 @@ export class RenderManager extends EventDispatcher {
                 this.render();
             };
         }
-        this.playFun();
+        playFlag && this.playFun();
         return this;
     }
     /**
@@ -66,7 +69,7 @@ export class RenderManager extends EventDispatcher {
             return;
         }
         this.dispatchEvent({
-            type: RENDER_EVENT.RENDER,
+            type: RENDER_EVENT.PLAY,
         });
         this.playFun();
     };

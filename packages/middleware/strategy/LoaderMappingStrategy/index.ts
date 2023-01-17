@@ -59,7 +59,7 @@ export const LoaderMappingStrategy: Strategy<LoaderMappingEngine> =
           } catch (error) {
             callback(error as Error);
           }
-          engine.loaderManager.load(urlList);
+          engine.loaderManager.reset().load(urlList);
           return engine;
         };
 
@@ -96,7 +96,7 @@ export const LoaderMappingStrategy: Strategy<LoaderMappingEngine> =
               reject(error);
             }
 
-            engine.loaderManager.load(urlList);
+            engine.loaderManager.reset().load(urlList);
           });
         };
       },

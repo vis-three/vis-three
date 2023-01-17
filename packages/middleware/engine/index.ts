@@ -195,28 +195,24 @@ export class EngineSupport
     config: EngineSupportLoadOptions
   ): Promise<MappedEvent | undefined> {
     return new Promise((resolve, reject) => {
-      const renderFlag = this.renderManager!.hasRendering();
+      const renderFlag = this.renderManager.hasRendering();
 
       if (renderFlag) {
         this.renderManager.stop();
       }
       // 导入外部资源
       if (config.assets && config.assets.length) {
-        const mappedFun = (event: MappedEvent) => {
+        this.loadResourcesAsync(config.assets).then((event) => {
           delete config.assets;
           this.loadLifeCycle(config);
 
-          this.resourceManager.removeEventListener("mapped", mappedFun);
           if (renderFlag) {
             this.renderManager.play();
           } else {
             this.renderManager.render();
           }
           resolve(event);
-        };
-
-        this.resourceManager.addEventListener<MappedEvent>("mapped", mappedFun);
-        this.loaderManager.reset().load(config.assets);
+        });
       } else {
         this.loadLifeCycle(config);
         if (renderFlag) {

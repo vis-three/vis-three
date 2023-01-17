@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <title>config-development</title>
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+
+    #exportConfig {
+      position: fixed;
+      color: white;
+      top: 0%;
+      left: 0%;
+      background: black;
+      max-width: 100%;
+      max-height: 100%;
+      overflow: auto;
+    }
+
+    .loadingDom {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 36px;
+      z-index: 10;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import { message } from "ant-design-vue";
+      import "ant-design-vue/lib/message/style/index.css";
+
+      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import {
+        Template,
+        JSONHandler,
+        generateConfig,
+        CONFIGTYPE,
+        AniScriptGeneratorManager,
+      } from "@vis-three/middleware";
+      import { linearTime } from "@vis-three/animate-script-library";
+
+      import axios from "axios";
+
+      AniScriptGeneratorManager.register(linearTime);
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize();
+
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
+      message.loading({
+        content: "正在加载3D资源：0%",
+        key: "loading",
+        duration: 0,
+      });
+
+      engine.loaderManager.addEventListener("loading", (event) => {
+        message.loading({
+          content: `正在加载3D资源：${parseInt(
+            ((event.loadSuccess / event.loadTotal) * 100).toString()
+          )}
+      %`,
+          key: "loading",
+          duration: 0,
+        });
+      });
+
+      engine.loaderManager.addEventListener("loaded", (event) => {
+        message.success({
+          content: "加载完成！",
+          key: "loading",
+          duration: 1,
+        });
+      });
+
+      axios
+        .get(import.meta.env.BASE_URL + "config/config-development.json")
+        .then((res) => {
+          const config = Template.observable(res.data);
+
+          engine.loadConfigAsync(config).then(() => {
+            engine
+              .setCameraBySymbol(config.camera[0].vid)
+              .setSceneBySymbol(config.scene[0].vid)
+              .play();
+          });
+        });
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>
