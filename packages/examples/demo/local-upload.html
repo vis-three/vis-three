@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
-    <title>LocalUpload</title>
+    <title>local-upload</title>
   </head>
 
   <style></style>
@@ -25,13 +25,13 @@
       </div>
     </div>
     <script type="module">
-      import { v4 as getUUid } from "uuid";
-      import * as VIS from "vis-three";
+      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import { Template } from "@vis-three/middleware";
       import * as THREE from "three";
       import { message } from "ant-design-vue";
       import "ant-design-vue/lib/message/style/index.css";
 
-      const engine = new VIS.ModelingEngineSupport()
+      const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize();
 
@@ -61,20 +61,22 @@
         fileReader.onload = () => {
           loaded();
           try {
-            const data = JSON.parse(fileReader.result, VIS.JSONHandler.parse);
+            const data = Template.observable(fileReader.result);
 
             engine
               .loadConfigAsync(data)
               .then(() => {
                 message.success("导入成功！");
-                engine.setScene("Scene");
+                engine.setSceneBySymbol(data.scene[0].vid);
+                engine.setCameraBySymbol(data.camera[0].vid);
               })
               .catch((err) => {
                 console.error(err);
                 message.error("导入失败！");
               });
           } catch (error) {
-            message.error("文件格式有误！");
+            console.error(error);
+            message.error(error);
           }
 
           importInput.value = "";

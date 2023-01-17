@@ -116,10 +116,14 @@ export const planish = function (
 };
 
 export const observable = function (
-  object: EngineSupportLoadOptions,
+  object: EngineSupportLoadOptions | string,
   obCallback?: (config: SymbolConfig) => SymbolConfig
 ) {
-  return handler(JSONHandler.clone(object), (c) => {
+  if (typeof object === "string") {
+    object = JSON.parse(object, JSONHandler.parse);
+  }
+
+  return handler(JSONHandler.clone(object as EngineSupportLoadOptions), (c) => {
     c = generateConfig(c.type, c);
 
     if (obCallback) {
