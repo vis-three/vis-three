@@ -47,14 +47,14 @@ export const TransSelectEventStrategy: Strategy<TransSelectEventEngine> =
           }
           const intersections = event.intersections;
           // ctrl多选
-          if (!event.ctrlKey) {
+          if (!event.altKey) {
             engine.selectionBox.clear();
           }
 
           if (engine.eventManager.penetrate) {
             for (const intersection of intersections) {
               // 反选
-              if (event.ctrlKey) {
+              if (event.altKey) {
                 if (engine.selectionBox.has(intersection.object)) {
                   engine.selectionBox.delete(intersection.object);
                   continue;
@@ -66,7 +66,7 @@ export const TransSelectEventStrategy: Strategy<TransSelectEventEngine> =
             if (intersections.length) {
               const object = intersections[0].object;
               // 反选
-              if (event.ctrlKey) {
+              if (event.altKey) {
                 if (engine.selectionBox.has(object)) {
                   engine.selectionBox.delete(object);
                   return;
