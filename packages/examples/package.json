@@ -20,7 +20,6 @@
     "rollup-plugin-visualizer": "^5.6.0",
     "typescript": "^4.3.2",
     "vite": "^2.9.15",
-    "vue": "^3.2.21",
     "vue-tsc": "^0.37.0",
     "webpack": "^5.74.0"
   },
@@ -83,6 +82,7 @@
     "nprogress": "^0.2.0",
     "three": "^0.141.0",
     "uuid": "^8.3.2",
-    "vue2": "npm:vue@2.6.14"
+    "vue2": "npm:vue@2.6.14",
+    "vue3": "npm:vue@^3.2.45"
   }
 }
