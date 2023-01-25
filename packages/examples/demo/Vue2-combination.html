@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <title>Vue2-combination</title>
+  </head>
+
+  <style>
+    #app,
+    #three {
+      width: 100%;
+      height: 100%;
+    }
+
+    #three {
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    .operate-box {
+      position: fixed;
+      color: rgb(255, 255, 255);
+      top: 20%;
+      left: 40%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .operate-box > * {
+      margin: 12px;
+    }
+
+    .loadingDom {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 36px;
+      z-index: 10;
+    }
+
+    button {
+      padding: 10px;
+      background: rgb(126, 255, 255);
+      color: rgb(0, 0, 0);
+      border: 0;
+      border-radius: 5px;
+      box-shadow: 2px 2px 6px rgb(53, 170, 160);
+      cursor: pointer;
+    }
+  </style>
+
+  <body>
+    <div id="three"></div>
+    <div id="app">
+      <div class="operate-box">
+        <span>
+          box.x:
+          <input v-model="box.position.x" />
+        </span>
+        <span>
+          box.y:
+          <input v-model="box.position.y" />
+        </span>
+        <span>
+          box.z:
+          <input v-model="box.position.z" />
+        </span>
+        <span>
+          computed:
+          <input :value="computedAttr" />
+        </span>
+        <span>
+          watcher:
+          <input :value="watchAttr" />
+        </span>
+        <button @click="addPositionY">box position y add 5</button>
+        <button @click="calcZ">box calc x by y</button>
+      </div>
+    </div>
+
+    <script type="module">
+      import Vue from "vue2/dist/vue.esm.browser.min.js";
+      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+      import * as THREE from "three";
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("three"))
+        .setStats(true)
+        .setSize()
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig(CONFIGTYPE.SCENE);
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = true;
+
+      const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+        width: 10,
+        height: 10,
+        depth: 10,
+      });
+
+      const material = generateConfig(CONFIGTYPE.MESHBASICMATERIAL, {
+        color: "rgb(255, 0, 0)",
+      });
+
+      const box = generateConfig(
+        CONFIGTYPE.MESH,
+        {
+          geometry: geometry.vid,
+          material: material.vid,
+        },
+        {
+          handler: (c) => Vue.observable(c),
+        }
+      );
+
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            box,
+            watchAttr: 0,
+          };
+        },
+        computed: {
+          computedAttr() {
+            return (
+              Number(this.box.position.x) +
+              Number(this.box.position.y) +
+              Number(this.box.position.z)
+            );
+          },
+        },
+        methods: {
+          addPositionY() {
+            box.position.y += 5;
+          },
+          calcZ() {
+            box.position.z = this.box.position.y + 5;
+          },
+        },
+        watch: {
+          "box.position.y"(val) {
+            this.watchAttr =
+              Number(this.box.position.x) +
+              Number(this.box.position.y) +
+              Number(this.box.position.z);
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

@@ -466,6 +466,7 @@ importers:
       vite: ^2.9.15
       vue: ^3.2.21
       vue-tsc: ^0.37.0
+      vue2: npm:vue@2.6.14
       webpack: ^5.74.0
     dependencies:
       '@ant-design/icons-vue': 6.1.0_vue@3.2.45
@@ -526,6 +527,7 @@ importers:
       nprogress: 0.2.0
       three: 0.141.0
       uuid: 8.3.2
+      vue2: /vue/2.6.14
     devDependencies:
       '@rollup/plugin-alias': 3.1.9_rollup@2.79.1
       '@vitejs/plugin-vue': 2.3.4_vite@2.9.15+vue@3.2.45
@@ -9367,6 +9369,10 @@ packages:
     dependencies:
       is-plain-object: 3.0.1
       vue: 3.2.45
+    dev: false
+
+  /vue/2.6.14:
+    resolution: {integrity: sha512-x2284lgYvjOMj3Za7kqzRcUSxBboHqtgRE2zlos1qWaOye5yUmHn42LB1250NJBLRwEcdrB0JRwyPTEPhfQjiQ==}
     dev: false
 
   /vue/3.2.45:
