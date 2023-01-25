@@ -109,7 +109,8 @@
 
       const engine = new DisplayEngineSupport()
         .setDom(document.getElementById("app"))
-        .setSize();
+        .setSize()
+        .play();
 
       engine.registerResources({
         hookAlpha: generator.getDom(),

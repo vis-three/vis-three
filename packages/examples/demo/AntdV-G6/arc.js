@@ -142,9 +142,9 @@ fetch(
     if (typeof window !== "undefined")
       window.onresize = () => {
         if (!arcGraph || arcGraph.get("destroyed")) return;
-        if (!container || !container.scrollWidth || !container.scrollHeight)
-          return;
-        arcGraph.changeSize(container.scrollWidth, container.scrollHeight);
+        // if (!container || !container.scrollWidth || !container.scrollHeight)
+        //   return;
+        // arcGraph.changeSize(container.scrollWidth, container.scrollHeight);
       };
 
     //   const tooltip = document.getElementsByClassName('g6-tooltip')[0];
