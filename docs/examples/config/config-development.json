@@ -1,0 +1,181 @@
+{
+  "assets": [
+    "/texture/vis/colorMap.png",
+    "/skyBox/lightblue/px.png",
+    "/skyBox/lightblue/py.png",
+    "/skyBox/lightblue/pz.png",
+    "/skyBox/lightblue/nx.png",
+    "/skyBox/lightblue/ny.png",
+    "/model/three.obj",
+    "/skyBox/lightblue/nz.png",
+    "/model/vis.obj"
+  ],
+  "object3D": [],
+  "camera": [
+    {
+      "vid": "e5b91b27-5bb4-45b3-991e-ac544b923c96",
+      "type": "PerspectiveCamera",
+      "position": { "x": 90, "y": -90, "z": 100 },
+      "near": 0.01,
+      "far": 10000
+    }
+  ],
+  "light": [
+    {
+      "vid": "37c15bae-ffe1-4fa9-97e7-305d152240e5",
+      "type": "AmbientLight",
+      "parent": "DEFUALT-Scene"
+    },
+    {
+      "vid": "dadb25a6-9ab7-45db-898d-e83e8d2f477d",
+      "type": "DirectionalLight",
+      "position": { "x": -10, "y": 40, "z": 20 },
+      "parent": "DEFUALT-Scene",
+      "intensity": 12566.370614359172
+    },
+    {
+      "vid": "a29a9873-8d5a-4b3f-8478-4a87d0e453fd",
+      "type": "DirectionalLight",
+      "position": { "x": 10, "y": 40, "z": -20 },
+      "parent": "DEFUALT-Scene",
+      "intensity": 12566.370614359172
+    }
+  ],
+  "geometry": [
+    {
+      "vid": "d2c17fc2-bfab-448b-9b8b-ac42397feb27",
+      "type": "LoadGeometry",
+      "position": { "x": 0.13, "y": -0.14 },
+      "rotation": { "x": 1.5707963267948966, "y": -0.5235987755982988 },
+      "scale": { "x": 80, "y": 80, "z": 80 },
+      "url": "/model/three.obj.children.0.geometry"
+    },
+    {
+      "vid": "a5a58a1e-e690-4bb5-98c4-cc9d25a9a7b9",
+      "type": "LoadGeometry",
+      "position": {
+        "x": 0.03853263046418975,
+        "y": 0.06207702192810319,
+        "z": -0.08647157189875437
+      },
+      "scale": { "x": 6, "y": 6, "z": 6 },
+      "url": "/model/vis.obj.children.0.geometry"
+    }
+  ],
+  "texture": [
+    {
+      "vid": "061cebcf-b0e5-4346-b87a-e4eeb628b345",
+      "type": "CubeTexture",
+      "cube": {
+        "nx": "/skyBox/lightblue/nx.png",
+        "ny": "/skyBox/lightblue/ny.png",
+        "nz": "/skyBox/lightblue/nz.png",
+        "px": "/skyBox/lightblue/px.png",
+        "py": "/skyBox/lightblue/py.png",
+        "pz": "/skyBox/lightblue/pz.png"
+      }
+    },
+    {
+      "vid": "db4cac30-3383-4154-acd8-46fbaa01952e",
+      "type": "ImageTexture",
+      "url": "/texture/vis/colorMap.png"
+    }
+  ],
+  "material": [
+    {
+      "vid": "dbe959f0-3d49-4fe6-8f77-12f988b95792",
+      "type": "MeshStandardMaterial",
+      "color": "white",
+      "envMapIntensity": 0.8,
+      "metalness": 1,
+      "roughness": 0
+    },
+    {
+      "vid": "a50acf57-9e61-485b-9ace-da64743853b0",
+      "type": "MeshStandardMaterial",
+      "opacity": 0.8,
+      "transparent": true,
+      "metalness": 1,
+      "roughness": 0,
+      "map": "db4cac30-3383-4154-acd8-46fbaa01952e"
+    }
+  ],
+  "renderer": [
+    {
+      "vid": "DEFUALT-WebGLRenderer",
+      "type": "WebGLRenderer",
+      "clearColor": "rgba(10, 2, 10, 1)",
+      "physicallyCorrectLights": true,
+      "shadowMap": { "type": 1 },
+      "toneMapping": 2,
+      "toneMappingExposure": 3
+    }
+  ],
+  "scene": [
+    {
+      "vid": "DEFUALT-Scene",
+      "type": "Scene",
+      "children": [
+        "37c15bae-ffe1-4fa9-97e7-305d152240e5",
+        "dadb25a6-9ab7-45db-898d-e83e8d2f477d",
+        "a29a9873-8d5a-4b3f-8478-4a87d0e453fd",
+        "e2c12201-a6f7-4dce-8367-d3aaaed5e487",
+        "cb18a8a2-5152-45cb-bff5-418afdd5ed66"
+      ],
+      "background": "061cebcf-b0e5-4346-b87a-e4eeb628b345",
+      "environment": "061cebcf-b0e5-4346-b87a-e4eeb628b345",
+      "fog": { "type": "" }
+    }
+  ],
+  "controls": [
+    {
+      "vid": "DEFUALT-OrbitControls",
+      "type": "OrbitControls",
+      "autoRotate": true,
+      "autoRotateSpeed": 0.5,
+      "enableDamping": true,
+      "enablePan": false,
+      "maxDistance": 200,
+      "minDistance": 100
+    }
+  ],
+  "sprite": [],
+  "line": [],
+  "mesh": [
+    {
+      "vid": "e2c12201-a6f7-4dce-8367-d3aaaed5e487",
+      "type": "Mesh",
+      "parent": "DEFUALT-Scene",
+      "material": "dbe959f0-3d49-4fe6-8f77-12f988b95792",
+      "geometry": "d2c17fc2-bfab-448b-9b8b-ac42397feb27"
+    },
+    {
+      "vid": "cb18a8a2-5152-45cb-bff5-418afdd5ed66",
+      "type": "Mesh",
+      "parent": "DEFUALT-Scene",
+      "material": "a50acf57-9e61-485b-9ace-da64743853b0",
+      "geometry": "a5a58a1e-e690-4bb5-98c4-cc9d25a9a7b9"
+    }
+  ],
+  "points": [],
+  "group": [],
+  "css3D": [],
+  "css2D": [],
+  "animation": [
+    {
+      "vid": "cfc21d19-6003-4a14-9ed2-e70eb0b4abd7",
+      "type": "ScriptAnimation",
+      "target": "e2c12201-a6f7-4dce-8367-d3aaaed5e487",
+      "attribute": ".rotation.z",
+      "script": { "name": "linearTime", "multiply": 0.2 }
+    },
+    {
+      "vid": "9c4db9d4-0c38-48fe-b0e5-11d5000a0191",
+      "type": "ScriptAnimation",
+      "target": "cb18a8a2-5152-45cb-bff5-418afdd5ed66",
+      "attribute": ".rotation.y",
+      "script": { "name": "linearTime", "multiply": 0.7 }
+    }
+  ],
+  "pass": []
+}

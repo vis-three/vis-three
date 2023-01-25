@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/x-icon" href="/vis-three/examples/favicon.ico" />
+    <link rel="stylesheet" href="/vis-three/examples/css/common.css" />
+    <title>Vue3-combination</title>
+    <script type="module" crossorigin src="/vis-three/examples/assets/demo/Vue3-combination.89b6c8fd.js"></script>
+    <link rel="modulepreload" href="/vis-three/examples/assets/modulepreload-polyfill.b7f2da20.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/three.a7f96461.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.8b9e7665.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/Antdv.e37529d7.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/G6.3fcc88ef.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.f27dc7ff.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.9a3e1c8e.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.b0fe2ce4.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/TextureDisplayer.4cf2d30b.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.7855cb86.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.453e5660.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.6ff295ff.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.a9490ea5.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.071db2cc.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.d73b554e.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.4b35f5ef.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.e4f0d89e.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.0c42058c.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.53db7820.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.2f25bd0d.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.b0feb0e4.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.e94667fe.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.44166243.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.b701c9b3.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.3f5976b9.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.a270601c.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.1e646713.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.b36d6dbf.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.72413cc4.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.003089c8.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.f641c187.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.ed6ffead.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/UnrealBloomPass.cda4d03b.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.a5568c80.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.b6aecce9.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.4f6b3c96.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.10b718ea.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.09d5135c.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.17bccc77.js">
+    <link rel="modulepreload" href="/vis-three/examples/assets/index.0d830424.js">
+  </head>
+
+  <style>
+    #app,
+    #three {
+      width: 100%;
+      height: 100%;
+    }
+
+    #three {
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    .operate-sphere {
+      position: fixed;
+      color: rgb(255, 255, 255);
+      top: 20%;
+      left: 40%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .operate-sphere > * {
+      margin: 12px;
+    }
+
+    .loadingDom {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 36px;
+      z-index: 10;
+    }
+
+    button {
+      padding: 10px;
+      background: rgb(126, 255, 255);
+      color: rgb(0, 0, 0);
+      border: 0;
+      border-radius: 5px;
+      box-shadow: 2px 2px 6px rgb(53, 170, 160);
+      cursor: pointer;
+    }
+  </style>
+
+  <body>
+    <div id="three"></div>
+    <div id="app">
+      <div class="operate-sphere">
+        <span>
+          sphere.x:
+          <input v-model="sphere.position.x" />
+        </span>
+        <span>
+          sphere.y:
+          <input v-model="sphere.position.y" />
+        </span>
+        <span>
+          sphere.z:
+          <input v-model="sphere.position.z" />
+        </span>
+        <span>
+          computed:
+          <input :value="computedAttr" />
+        </span>
+        <span>
+          watcher:
+          <input :value="watchAttr" />
+        </span>
+        <button @click="addPositionY">sphere position y add 5</button>
+        <button @click="calcZ">sphere calc x by y</button>
+      </div>
+    </div>
+
+    
+  </body>
+</html>
