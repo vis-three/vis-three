@@ -2,7 +2,7 @@ import { Engine, Plugin } from "@vis-three/core";
 import { Mesh } from "three";
 import { CastOptions, MeshBVHManager } from "./MeshBVHManager";
 export interface MeshBVHEngine extends Engine {
-    MeshBVHManager: MeshBVHManager;
+    meshBVHManager: MeshBVHManager;
     addBVH: (mesh: Mesh) => MeshBVHEngine;
 }
 export interface MeshBVHPluginParameters {

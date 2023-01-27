@@ -5,7 +5,7 @@ import { CastOptions, MeshBVHManager } from "./MeshBVHManager";
 import { name as pkgname } from "./package.json";
 
 export interface MeshBVHEngine extends Engine {
-  MeshBVHManager: MeshBVHManager;
+  meshBVHManager: MeshBVHManager;
   addBVH: (mesh: Mesh) => MeshBVHEngine;
 }
 
@@ -33,16 +33,16 @@ export const MeshBVHPlugin: Plugin<MeshBVHEngine> = function (
         manager.castOptions = params.shapecast;
       }
 
-      engine.MeshBVHManager = manager;
+      engine.meshBVHManager = manager;
 
       engine.addBVH = function (mesh: Mesh) {
         manager.addBVH(mesh);
         return engine;
       };
     },
-    dispose(engine: Optional<MeshBVHEngine, "MeshBVHManager" | "addBVH">) {
-      engine.MeshBVHManager!.dispose();
-      delete engine.MeshBVHManager;
+    dispose(engine: Optional<MeshBVHEngine, "meshBVHManager" | "addBVH">) {
+      engine.meshBVHManager!.dispose();
+      delete engine.meshBVHManager;
       delete engine.addBVH;
     },
   };

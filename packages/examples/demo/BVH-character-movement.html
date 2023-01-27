@@ -12,6 +12,10 @@
   <style></style>
 
   <body>
+    <div id="tips">
+      w,a,s,d移动, shift加速, 空格跳跃，鼠标右键旋转视角，鼠标滚轮缩放视角
+    </div>
+
     <div id="app"></div>
 
     <script type="module">
@@ -35,11 +39,16 @@
       const tempVector = new THREE.Vector3();
       const tempVector2 = new THREE.Vector3();
       const tempBox = new THREE.Box3();
+      const tempMat = new THREE.Matrix4();
+      const tempSegment = new THREE.Line3();
+      let playerIsOnGround = false;
 
       const player = new THREE.Mesh(
         new THREE.CylinderGeometry(0.5, 0.5, 1),
         new THREE.MeshBasicMaterial({ color: "red" })
       );
+
+      const playerVelocity = new THREE.Vector3();
 
       player.geometry.translate(0, -0.5, 0);
 
@@ -89,7 +98,26 @@
               },
             },
           }),
-          KeyboardMoveControlsPlugin({ target: player, movementSpeed: 30 }),
+          KeyboardMoveControlsPlugin({
+            target: player,
+            movementSpeed: 50,
+            quickenSpeed: 50,
+            space: "world",
+            extendKeyDown: (e) => {
+              switch (e.code) {
+                case "Space":
+                  if (playerIsOnGround) {
+                    playerVelocity.y = 0.5;
+                  }
+
+                  break;
+              }
+            },
+            beforeUpdate: ({ delta }) => {
+              playerVelocity.y += playerIsOnGround ? 0 : delta * -1;
+              player.position.add(playerVelocity);
+            },
+          }),
         ],
         strategy: [
           EffectRenderStrategy(),
@@ -100,14 +128,13 @@
         .setDom(document.getElementById("app"))
         .setSize();
 
+      loadingTips(engine);
+
       const reset = () => {
+        playerVelocity.y = 0;
         player.position.set(155, 0, 300);
-        engine.camera.position.set(
-          player.position.x,
-          player.position.y + 5,
-          player.position.z + 20
-        );
-        engine.orbitControls.target = player.position;
+        engine.camera.position.set(0, 5, 15);
+        engine.orbitControls.target.set(0, 0, 0);
       };
 
       const directionalLight = new THREE.DirectionalLight("white", 7);
@@ -117,7 +144,66 @@
 
       reset();
 
-      loadingTips(engine);
+      const forwradVector = new THREE.Vector3();
+      engine.keyboardMoveControls.forwrad = (object) => {
+        return forwradVector
+          .set(0, 0, -1)
+          .applyAxisAngle(object.up, engine.orbitControls.getAzimuthalAngle());
+      };
+
+      engine.keyboardMoveControls.addEventListener("afterUpdate", (event) => {
+        player.updateMatrixWorld();
+
+        const camera = engine.camera;
+        const orbitControls = engine.orbitControls;
+
+        tempBox.makeEmpty();
+        tempSegment.copy(capsuleInfo.segment);
+
+        tempSegment.start.applyMatrix4(player.matrixWorld);
+        tempSegment.end.applyMatrix4(player.matrixWorld);
+
+        tempBox.expandByPoint(tempSegment.start);
+        tempBox.expandByPoint(tempSegment.end);
+
+        tempBox.min.addScalar(-capsuleInfo.radius);
+        tempBox.max.addScalar(capsuleInfo.radius);
+
+        engine.meshBVHManager.shapecast();
+
+        const newPosition = tempVector;
+
+        newPosition.copy(tempSegment.start);
+
+        const deltaVector = tempVector2;
+        deltaVector.subVectors(newPosition, player.position);
+
+        playerIsOnGround =
+          deltaVector.y > Math.abs(event.delta * playerVelocity.y * 0.01);
+
+        const offset = Math.max(0.0, deltaVector.length());
+        deltaVector.normalize().multiplyScalar(offset);
+
+        player.position.add(deltaVector);
+
+        if (!playerIsOnGround) {
+          deltaVector.normalize();
+          playerVelocity.addScaledVector(
+            deltaVector,
+            -deltaVector.dot(playerVelocity)
+          );
+        } else {
+          playerVelocity.set(0, 0, 0);
+        }
+
+        if (player.position.y < -100) {
+          reset();
+        }
+
+        camera.position.sub(orbitControls.target);
+        orbitControls.target.copy(player.position);
+        camera.position.add(player.position);
+      });
 
       engine
         .loadResourcesAsync([
@@ -197,7 +283,7 @@
           environment.updateMatrixWorld(true);
           environment.traverse((c) => {
             if (c.geometry) {
-              engine.MeshBVHManager.addBVH(c);
+              engine.addBVH(c);
             }
           });
 

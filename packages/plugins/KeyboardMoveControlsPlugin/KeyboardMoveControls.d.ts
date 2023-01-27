@@ -17,7 +17,9 @@ export declare class KeyboardMoveControls extends EventDispatcher {
     movementSpeed: number;
     quickenSpeed: number;
     space: string;
-    forwradVector: Vector3;
+    forwrad: Vector3 | ((object: Object3D) => Vector3);
+    extendKeyDown: (event: KeyboardEvent) => void;
+    extendKeyUp: (event: KeyboardEvent) => void;
     private moveForward;
     private moveBackward;
     private moveLeft;

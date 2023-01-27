@@ -24,7 +24,10 @@ export class KeyboardMoveControls extends EventDispatcher {
 
   space = "local";
 
-  forwradVector = new Vector3(0, 0, -1);
+  forwrad: Vector3 | ((object: Object3D) => Vector3) = new Vector3(0, 0, -1);
+
+  extendKeyDown: (event: KeyboardEvent) => void = () => {};
+  extendKeyUp: (event: KeyboardEvent) => void = () => {};
 
   private moveForward = false;
   private moveBackward = false;
@@ -86,6 +89,8 @@ export class KeyboardMoveControls extends EventDispatcher {
     if (event.shiftKey) {
       this.quicken = true;
     }
+
+    this.extendKeyDown(event);
   }
 
   onKeyUp(event: KeyboardEvent) {
@@ -114,6 +119,8 @@ export class KeyboardMoveControls extends EventDispatcher {
     if (!event.shiftKey) {
       this.quicken = false;
     }
+
+    this.extendKeyUp(event);
   }
 
   update(delta: number) {
@@ -131,7 +138,8 @@ export class KeyboardMoveControls extends EventDispatcher {
     const space = this.space;
     const object = this.object;
     const worldVector = this.worldVector;
-    const forwradVector = this.forwradVector;
+    const forwradVector =
+      typeof this.forwrad === "object" ? this.forwrad : this.forwrad(object);
     const upVector = object.up;
 
     if (this.moveForward) {
@@ -169,7 +177,7 @@ export class KeyboardMoveControls extends EventDispatcher {
     }
 
     this.dispatchEvent({
-      type: "beforeUpdate",
+      type: "afterUpdate",
       delta,
       object,
     });

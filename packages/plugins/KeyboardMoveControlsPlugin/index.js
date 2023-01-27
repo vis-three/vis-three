@@ -1,6 +1,6 @@
 import { ENGINE_EVENT, } from "@vis-three/core";
 import { transPkgName } from "@vis-three/utils";
-import { KeyboardMoveControls } from "./KeyboardMoveControls";
+import { KeyboardMoveControls, } from "./KeyboardMoveControls";
 import { name as pkgname } from "./package.json";
 export const KEYBOARD_MOVE_CONTROLS_PLUGIN = transPkgName(pkgname);
 export const KeyboardMoveControlsPlugin = function (params = {}) {
@@ -14,7 +14,15 @@ export const KeyboardMoveControlsPlugin = function (params = {}) {
             params.movementSpeed && (controls.movementSpeed = params.movementSpeed);
             params.quickenSpeed && (controls.quickenSpeed = params.quickenSpeed);
             params.space && (controls.space = params.space);
-            params.forwrad && (controls.forwradVector = params.forwrad);
+            params.forwrad && (controls.forwrad = params.forwrad);
+            params.extendKeyDown && (controls.extendKeyDown = params.extendKeyDown);
+            params.extendKeyUp && (controls.extendKeyUp = params.extendKeyUp);
+            if (params.beforeUpdate) {
+                controls.addEventListener("beforeUpdate", params.beforeUpdate);
+            }
+            if (params.afterUpdate) {
+                controls.addEventListener("afterUpdate", params.afterUpdate);
+            }
             engine.keyboardMoveControls = controls;
             setDomFun = (event) => {
                 controls.setDom(event.dom);
@@ -30,6 +38,12 @@ export const KeyboardMoveControlsPlugin = function (params = {}) {
             engine.addEventListener(ENGINE_EVENT.RENDER, renderFun);
         },
         dispose(engine) {
+            if (params.beforeUpdate) {
+                engine.keyboardMoveControls.removeEventListener("beforeUpdate", params.beforeUpdate);
+            }
+            if (params.afterUpdate) {
+                engine.keyboardMoveControls.removeEventListener("afterUpdate", params.afterUpdate);
+            }
             engine.removeEventListener(ENGINE_EVENT.SETDOM, setDomFun);
             engine.removeEventListener(ENGINE_EVENT.SETCAMERA, setCameraFun);
             engine.removeEventListener(ENGINE_EVENT.RENDER, renderFun);

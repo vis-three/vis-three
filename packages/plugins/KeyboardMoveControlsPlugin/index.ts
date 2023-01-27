@@ -9,7 +9,11 @@ import {
 } from "@vis-three/core";
 import { Optional, transPkgName } from "@vis-three/utils";
 import { Object3D, Vector3 } from "three";
-import { KeyboardMoveControls } from "./KeyboardMoveControls";
+import {
+  AfterUpdateEvent,
+  BeforeUpdateEvent,
+  KeyboardMoveControls,
+} from "./KeyboardMoveControls";
 import { name as pkgname } from "./package.json";
 
 export interface KeyboardMoveControlsEngine extends Engine {
@@ -21,7 +25,11 @@ export interface FirstPersonControlsParameters {
   movementSpeed?: number;
   quickenSpeed?: number;
   space?: "local" | "world";
-  forwrad?: Vector3;
+  forwrad?: Vector3 | ((object: Object3D) => Vector3);
+  extendKeyDown?: (event: KeyboardEvent) => void;
+  extendKeyUp?: (event: KeyboardEvent) => void;
+  beforeUpdate?: (event: BeforeUpdateEvent) => void;
+  afterUpdate?: (event: AfterUpdateEvent) => void;
 }
 
 export const KEYBOARD_MOVE_CONTROLS_PLUGIN = transPkgName(pkgname);
@@ -42,7 +50,23 @@ export const KeyboardMoveControlsPlugin: Plugin<KeyboardMoveControlsEngine> =
         params.movementSpeed && (controls.movementSpeed = params.movementSpeed);
         params.quickenSpeed && (controls.quickenSpeed = params.quickenSpeed);
         params.space && (controls.space = params.space);
-        params.forwrad && (controls.forwradVector = params.forwrad);
+        params.forwrad && (controls.forwrad = params.forwrad);
+        params.extendKeyDown && (controls.extendKeyDown = params.extendKeyDown);
+        params.extendKeyUp && (controls.extendKeyUp = params.extendKeyUp);
+
+        if (params.beforeUpdate) {
+          controls.addEventListener<BeforeUpdateEvent>(
+            "beforeUpdate",
+            params.beforeUpdate
+          );
+        }
+
+        if (params.afterUpdate) {
+          controls.addEventListener<AfterUpdateEvent>(
+            "afterUpdate",
+            params.afterUpdate
+          );
+        }
 
         engine.keyboardMoveControls = controls;
 
@@ -70,6 +94,20 @@ export const KeyboardMoveControlsPlugin: Plugin<KeyboardMoveControlsEngine> =
       dispose(
         engine: Optional<KeyboardMoveControlsEngine, "keyboardMoveControls">
       ) {
+        if (params.beforeUpdate) {
+          engine.keyboardMoveControls!.removeEventListener<BeforeUpdateEvent>(
+            "beforeUpdate",
+            params.beforeUpdate
+          );
+        }
+
+        if (params.afterUpdate) {
+          engine.keyboardMoveControls!.removeEventListener<AfterUpdateEvent>(
+            "afterUpdate",
+            params.afterUpdate
+          );
+        }
+
         engine.removeEventListener<SetDomEvent>(ENGINE_EVENT.SETDOM, setDomFun);
         engine.removeEventListener<SetCameraEvent>(
           ENGINE_EVENT.SETCAMERA,

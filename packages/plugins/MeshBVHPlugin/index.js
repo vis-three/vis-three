@@ -14,15 +14,16 @@ export const MeshBVHPlugin = function (params = {}) {
             if (params.shapecast) {
                 manager.castOptions = params.shapecast;
             }
-            engine.MeshBVHManager = manager;
+            engine.meshBVHManager = manager;
             engine.addBVH = function (mesh) {
                 manager.addBVH(mesh);
                 return engine;
             };
         },
         dispose(engine) {
-            engine.MeshBVHManager.dispose();
-            delete engine.MeshBVHManager;
+            engine.meshBVHManager.dispose();
+            delete engine.meshBVHManager;
+            delete engine.addBVH;
         },
     };
 };
