@@ -8,6 +8,7 @@ import {
   SetSizeEvent,
 } from "@vis-three/core";
 import { Optional, transPkgName } from "@vis-three/utils";
+import { Object3D, Vector3 } from "three";
 import { KeyboardMoveControls } from "./KeyboardMoveControls";
 import { name as pkgname } from "./package.json";
 
@@ -16,7 +17,11 @@ export interface KeyboardMoveControlsEngine extends Engine {
 }
 
 export interface FirstPersonControlsParameters {
+  target?: Object3D;
   movementSpeed?: number;
+  quickenSpeed?: number;
+  space?: "local" | "world";
+  forwrad?: Vector3;
 }
 
 export const KEYBOARD_MOVE_CONTROLS_PLUGIN = transPkgName(pkgname);
@@ -30,9 +35,14 @@ export const KeyboardMoveControlsPlugin: Plugin<KeyboardMoveControlsEngine> =
     return {
       name: KEYBOARD_MOVE_CONTROLS_PLUGIN,
       install(engine) {
-        const controls = new KeyboardMoveControls(engine.camera, engine.dom);
-
-        controls.movementSpeed = params.movementSpeed || 1.0;
+        const controls = new KeyboardMoveControls(
+          params.target || engine.camera,
+          engine.dom
+        );
+        params.movementSpeed && (controls.movementSpeed = params.movementSpeed);
+        params.quickenSpeed && (controls.quickenSpeed = params.quickenSpeed);
+        params.space && (controls.space = params.space);
+        params.forwrad && (controls.forwradVector = params.forwrad);
 
         engine.keyboardMoveControls = controls;
 

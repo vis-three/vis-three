@@ -1,10 +1,12 @@
 import { Engine, Plugin } from "@vis-three/core";
 import { Optional, transPkgName } from "@vis-three/utils";
+import { Mesh, Object3D } from "three";
 import { CastOptions, MeshBVHManager } from "./MeshBVHManager";
 import { name as pkgname } from "./package.json";
 
 export interface MeshBVHEngine extends Engine {
   MeshBVHManager: MeshBVHManager;
+  addBVH: (mesh: Mesh) => MeshBVHEngine;
 }
 
 export interface MeshBVHPluginParameters {
@@ -24,7 +26,7 @@ export const MeshBVHPlugin: Plugin<MeshBVHEngine> = function (
 
       if (params.visualizer) {
         manager.createVisualizer();
-        engine.scene.add(manager.visualizer!);
+        engine.scene.add(manager.visualizer! as unknown as Object3D);
       }
 
       if (params.shapecast) {
@@ -32,10 +34,16 @@ export const MeshBVHPlugin: Plugin<MeshBVHEngine> = function (
       }
 
       engine.MeshBVHManager = manager;
+
+      engine.addBVH = function (mesh: Mesh) {
+        manager.addBVH(mesh);
+        return engine;
+      };
     },
-    dispose(engine: Optional<MeshBVHEngine, "MeshBVHManager">) {
+    dispose(engine: Optional<MeshBVHEngine, "MeshBVHManager" | "addBVH">) {
       engine.MeshBVHManager!.dispose();
       delete engine.MeshBVHManager;
+      delete engine.addBVH;
     },
   };
 };

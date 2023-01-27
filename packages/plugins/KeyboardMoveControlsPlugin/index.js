@@ -10,8 +10,11 @@ export const KeyboardMoveControlsPlugin = function (params = {}) {
     return {
         name: KEYBOARD_MOVE_CONTROLS_PLUGIN,
         install(engine) {
-            const controls = new KeyboardMoveControls(engine.camera, engine.dom);
-            controls.movementSpeed = params.movementSpeed || 1.0;
+            const controls = new KeyboardMoveControls(params.target || engine.camera, engine.dom);
+            params.movementSpeed && (controls.movementSpeed = params.movementSpeed);
+            params.quickenSpeed && (controls.quickenSpeed = params.quickenSpeed);
+            params.space && (controls.space = params.space);
+            params.forwrad && (controls.forwradVector = params.forwrad);
             engine.keyboardMoveControls = controls;
             setDomFun = (event) => {
                 controls.setDom(event.dom);

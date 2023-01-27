@@ -1,17 +1,23 @@
-export class KeyboardMoveControls {
+import { EventDispatcher } from "@vis-three/core";
+import { Vector3 } from "three";
+export class KeyboardMoveControls extends EventDispatcher {
     object;
     domElement;
     enabled = true;
     movementSpeed = 1.0;
+    quickenSpeed = 10;
+    space = "local";
+    forwradVector = new Vector3(0, 0, -1);
     moveForward = false;
     moveBackward = false;
     moveLeft = false;
     moveRight = false;
-    moveUp = false;
-    moveDown = false;
+    quicken = false;
+    worldVector = new Vector3();
     _onKeyDown = this.onKeyDown.bind(this);
     _onKeyUp = this.onKeyUp.bind(this);
     constructor(object, domElement) {
+        super();
         if (domElement === undefined) {
             console.warn('THREE.KeyboardMoveControls: The second parameter "domElement" is now mandatory.');
             domElement = document.body;
@@ -45,12 +51,9 @@ export class KeyboardMoveControls {
             case "KeyD":
                 this.moveRight = true;
                 break;
-            case "KeyR":
-                this.moveUp = true;
-                break;
-            case "KeyF":
-                this.moveDown = true;
-                break;
+        }
+        if (event.shiftKey) {
+            this.quicken = true;
         }
     }
     onKeyUp(event) {
@@ -71,30 +74,67 @@ export class KeyboardMoveControls {
             case "KeyD":
                 this.moveRight = false;
                 break;
-            case "KeyR":
-                this.moveUp = false;
-                break;
-            case "KeyF":
-                this.moveDown = false;
-                break;
+        }
+        if (!event.shiftKey) {
+            this.quicken = false;
         }
     }
     update(delta) {
         if (this.enabled === false)
             return;
-        const actualMoveSpeed = delta * this.movementSpeed;
-        if (this.moveForward)
-            this.object.translateZ(-actualMoveSpeed);
-        if (this.moveBackward)
-            this.object.translateZ(actualMoveSpeed);
-        if (this.moveLeft)
-            this.object.translateX(-actualMoveSpeed);
-        if (this.moveRight)
-            this.object.translateX(actualMoveSpeed);
-        if (this.moveUp)
-            this.object.translateY(actualMoveSpeed);
-        if (this.moveDown)
-            this.object.translateY(-actualMoveSpeed);
+        this.dispatchEvent({
+            type: "beforeUpdate",
+            delta,
+            object: this.object,
+        });
+        const actualMoveSpeed = delta * this.movementSpeed +
+            (this.quicken ? this.quickenSpeed * delta : 0);
+        const space = this.space;
+        const object = this.object;
+        const worldVector = this.worldVector;
+        const forwradVector = this.forwradVector;
+        const upVector = object.up;
+        if (this.moveForward) {
+            if (space === "local") {
+                object.translateZ(-actualMoveSpeed);
+            }
+            else {
+                worldVector.copy(forwradVector);
+                object.position.addScaledVector(worldVector, actualMoveSpeed);
+            }
+        }
+        if (this.moveBackward) {
+            if (space === "local") {
+                object.translateZ(actualMoveSpeed);
+            }
+            else {
+                worldVector.copy(forwradVector).applyAxisAngle(upVector, Math.PI);
+                object.position.addScaledVector(worldVector, actualMoveSpeed);
+            }
+        }
+        if (this.moveLeft) {
+            if (space === "local") {
+                object.translateX(-actualMoveSpeed);
+            }
+            else {
+                worldVector.copy(forwradVector).applyAxisAngle(upVector, Math.PI / 2);
+                object.position.addScaledVector(worldVector, actualMoveSpeed);
+            }
+        }
+        if (this.moveRight) {
+            if (space === "local") {
+                object.translateX(actualMoveSpeed);
+            }
+            else {
+                worldVector.copy(forwradVector).applyAxisAngle(upVector, -Math.PI / 2);
+                object.position.addScaledVector(worldVector, actualMoveSpeed);
+            }
+        }
+        this.dispatchEvent({
+            type: "beforeUpdate",
+            delta,
+            object,
+        });
     }
     dispose() {
         window.removeEventListener("keydown", this._onKeyDown);

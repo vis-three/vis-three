@@ -1,24 +1,43 @@
-import { Camera, Object3D } from "three";
+import { BaseEvent, EventDispatcher } from "@vis-three/core";
+import { Camera, Object3D, Vector3 } from "three";
 
-export class KeyboardMoveControls {
+export interface BeforeUpdateEvent extends BaseEvent {
+  type: "beforeUpdate";
+  delta: number;
+  object: Object3D;
+}
+
+export interface AfterUpdateEvent extends BaseEvent {
+  type: "afterUpdate";
+  delta: number;
+  object: Object3D;
+}
+
+export class KeyboardMoveControls extends EventDispatcher {
   object: Object3D;
   domElement: HTMLElement;
 
   enabled = true;
 
   movementSpeed = 1.0;
+  quickenSpeed = 10;
+
+  space = "local";
+
+  forwradVector = new Vector3(0, 0, -1);
 
   private moveForward = false;
   private moveBackward = false;
   private moveLeft = false;
   private moveRight = false;
-  private moveUp = false;
-  private moveDown = false;
+  private quicken = false;
 
+  private worldVector = new Vector3();
   private _onKeyDown = this.onKeyDown.bind(this);
   private _onKeyUp = this.onKeyUp.bind(this);
 
   constructor(object: Object3D, domElement: HTMLElement) {
+    super();
     if (domElement === undefined) {
       console.warn(
         'THREE.KeyboardMoveControls: The second parameter "domElement" is now mandatory.'
@@ -62,13 +81,10 @@ export class KeyboardMoveControls {
       case "KeyD":
         this.moveRight = true;
         break;
+    }
 
-      case "KeyR":
-        this.moveUp = true;
-        break;
-      case "KeyF":
-        this.moveDown = true;
-        break;
+    if (event.shiftKey) {
+      this.quicken = true;
     }
   }
 
@@ -93,29 +109,70 @@ export class KeyboardMoveControls {
       case "KeyD":
         this.moveRight = false;
         break;
+    }
 
-      case "KeyR":
-        this.moveUp = false;
-        break;
-      case "KeyF":
-        this.moveDown = false;
-        break;
+    if (!event.shiftKey) {
+      this.quicken = false;
     }
   }
 
   update(delta: number) {
     if (this.enabled === false) return;
 
-    const actualMoveSpeed = delta * this.movementSpeed;
+    this.dispatchEvent({
+      type: "beforeUpdate",
+      delta,
+      object: this.object,
+    });
 
-    if (this.moveForward) this.object.translateZ(-actualMoveSpeed);
-    if (this.moveBackward) this.object.translateZ(actualMoveSpeed);
+    const actualMoveSpeed =
+      delta * this.movementSpeed +
+      (this.quicken ? this.quickenSpeed * delta : 0);
+    const space = this.space;
+    const object = this.object;
+    const worldVector = this.worldVector;
+    const forwradVector = this.forwradVector;
+    const upVector = object.up;
 
-    if (this.moveLeft) this.object.translateX(-actualMoveSpeed);
-    if (this.moveRight) this.object.translateX(actualMoveSpeed);
+    if (this.moveForward) {
+      if (space === "local") {
+        object.translateZ(-actualMoveSpeed);
+      } else {
+        worldVector.copy(forwradVector);
+        object.position.addScaledVector(worldVector, actualMoveSpeed);
+      }
+    }
+    if (this.moveBackward) {
+      if (space === "local") {
+        object.translateZ(actualMoveSpeed);
+      } else {
+        worldVector.copy(forwradVector).applyAxisAngle(upVector, Math.PI);
+        object.position.addScaledVector(worldVector, actualMoveSpeed);
+      }
+    }
 
-    if (this.moveUp) this.object.translateY(actualMoveSpeed);
-    if (this.moveDown) this.object.translateY(-actualMoveSpeed);
+    if (this.moveLeft) {
+      if (space === "local") {
+        object.translateX(-actualMoveSpeed);
+      } else {
+        worldVector.copy(forwradVector).applyAxisAngle(upVector, Math.PI / 2);
+        object.position.addScaledVector(worldVector, actualMoveSpeed);
+      }
+    }
+    if (this.moveRight) {
+      if (space === "local") {
+        object.translateX(actualMoveSpeed);
+      } else {
+        worldVector.copy(forwradVector).applyAxisAngle(upVector, -Math.PI / 2);
+        object.position.addScaledVector(worldVector, actualMoveSpeed);
+      }
+    }
+
+    this.dispatchEvent({
+      type: "beforeUpdate",
+      delta,
+      object,
+    });
   }
 
   dispose() {

@@ -15,6 +15,8 @@
     <div id="app"></div>
 
     <script type="module">
+      import loadingTips from "../common/loadingTips.js";
+
       import * as THREE from "three";
       import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
       import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
@@ -53,6 +55,8 @@
         .setDom(document.getElementById("app"))
         .setSize()
         .play();
+
+      loadingTips(engine);
 
       engine
         .loadResourcesAsync([
@@ -132,14 +136,17 @@
           environment.updateMatrixWorld(true);
           environment.traverse((c) => {
             if (c.geometry) {
-              engine.MeshBVHManager.addBVH(c);
+              engine.addBVH(c);
             }
           });
 
           engine.scene.add(environment);
         });
 
-      engine.scene.add(new THREE.AmbientLight("white", 8));
+      const directionalLight = new THREE.DirectionalLight("white", 7);
+      directionalLight.position.set(-5, 5, 10);
+
+      engine.scene.add(directionalLight);
 
       window.engine = engine;
     </script>

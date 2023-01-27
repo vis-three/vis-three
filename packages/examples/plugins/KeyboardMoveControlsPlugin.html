@@ -12,12 +12,14 @@
   <style></style>
 
   <body>
-    <div id="tips">w,a,s,d移动</div>
+    <div id="tips">w,a,s,d移动, shift加速</div>
 
     <div id="app"></div>
 
     <script type="module">
       import * as THREE from "three";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
       import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
       import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
       import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
@@ -43,6 +45,7 @@
           GridHelperPlugin(),
           KeyboardMoveControlsPlugin({
             movementSpeed: 30,
+            quickenSpeed: 20,
           }),
         ],
         strategy: [EffectRenderStrategy(), KeyboardMoveRenderStrategy()],
@@ -73,11 +76,14 @@
       points.position.x = -10;
       scene.add(points);
 
-      window.engine = engine;
+      const gui = new GUI();
 
-      document.getElementById("lock").onclick = () => {
-        engine.pointerLockControls.lock();
-      };
+      const controls = engine.keyboardMoveControls;
+
+      gui.add(controls, "enabled");
+      gui.add(controls, "movementSpeed", 0, 50, 1);
+      gui.add(controls, "quickenSpeed", 0, 50, 1);
+      gui.add(controls, "space", ["local", "world"]);
     </script>
   </body>
 </html>
