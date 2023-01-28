@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BVH first person</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #lock {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      z-index: 100;
+    }
+  </style>
+
+  <body>
+    <div id="tips">
+      w,a,s,d移动, shift加速, 空格跳跃，鼠标右键旋转视角，鼠标滚轮缩放视角,
+      esc退出鼠标锁定
+    </div>
+    <div id="lock">点击开始！</div>
+
+    <div id="app"></div>
+
+    <script type="module">
+      import loadingTips from "../common/loadingTips.js";
+
+      import * as THREE from "three";
+      import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
+      import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
+      import { LoaderManagerPlugin } from "@vis-three/loader-manager-plugin";
+      import { KeyboardMoveControlsPlugin } from "@vis-three/keyboard-move-controls-plugin";
+      import { StatsPlugin } from "@vis-three/stats-plugin";
+      import { MeshBVHPlugin } from "@vis-three/mesh-bvh-plugin";
+      import { PointerLockControlsPlugin } from "@vis-three/pointer-lock-controls-plugin";
+
+      import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+      import { KeyboardMoveRenderStrategy } from "@vis-three/keyboard-move-render-strategy";
+      import { StatsRenderStrategy } from "@vis-three/stats-render-strategy";
+
+      import { defineEngine } from "@vis-three/core";
+
+      const tempVector = new THREE.Vector3();
+      const tempVector2 = new THREE.Vector3();
+      const tempBox = new THREE.Box3();
+      const tempMat = new THREE.Matrix4();
+      const tempSegment = new THREE.Line3();
+      const physicsSteps = 5;
+      const jumpHeight = 20;
+      let playerIsOnGround = false;
+
+      const playerVelocity = new THREE.Vector3();
+
+      const capsuleInfo = {
+        radius: 0.5,
+        segment: new THREE.Line3(
+          new THREE.Vector3(),
+          new THREE.Vector3(0, -1.0, 0.0)
+        ),
+      };
+
+      const engine = defineEngine({
+        plugins: [
+          RenderManagerPlugin({
+            // fps: 1000 / 60,
+          }),
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          EffectComposerPlugin({
+            WebGLMultisampleRenderTarget: true,
+          }),
+          CameraAdaptivePlugin(),
+          LoaderManagerPlugin({
+            path: import.meta.env.BASE_URL,
+          }),
+          StatsPlugin(),
+          MeshBVHPlugin({
+            visualizer: true,
+            shapecast: {
+              intersectsBounds: (box) => box.intersectsBox(tempBox),
+              intersectsTriangle: (tri) => {
+                const triPoint = tempVector;
+                const capsulePoint = tempVector2;
+
+                const distance = tri.closestPointToSegment(
+                  tempSegment,
+                  triPoint,
+                  capsulePoint
+                );
+                if (distance < capsuleInfo.radius) {
+                  const depth = capsuleInfo.radius - distance;
+                  const direction = capsulePoint.sub(triPoint).normalize();
+
+                  tempSegment.start.addScaledVector(direction, depth);
+                  tempSegment.end.addScaledVector(direction, depth);
+                }
+              },
+            },
+          }),
+          PointerLockControlsPlugin(),
+        ],
+        strategy: [EffectRenderStrategy(), StatsRenderStrategy()],
+      })
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true);
+
+      engine
+        .install(
+          KeyboardMoveControlsPlugin({
+            target: engine.camera,
+            movementSpeed: 10,
+            quickenSpeed: 10,
+            space: "world",
+            extendKeyDown: (e) => {
+              switch (e.code) {
+                case "Space":
+                  if (playerIsOnGround) {
+                    playerVelocity.y = jumpHeight;
+                  }
+
+                  break;
+              }
+            },
+            beforeUpdate: ({ delta }) => {
+              playerVelocity.y += playerIsOnGround ? 0 : delta * -30;
+              player.position.addScaledVector(playerVelocity, delta);
+            },
+          })
+        )
+        .exec(KeyboardMoveRenderStrategy());
+
+      const player = engine.camera;
+
+      loadingTips(engine);
+
+      document.getElementById("lock").onclick = () => {
+        engine.pointerLockControls.lock();
+        document.getElementById("lock").style.display = "none";
+      };
+
+      engine.pointerLockControls.addEventListener("unlock", () => {
+        document.getElementById("lock").style.display = "flex";
+      });
+
+      const reset = () => {
+        playerVelocity.y = 0;
+        player.position.set(47, 0, 90);
+        player.lookAt(
+          player.position.x,
+          player.position.y,
+          player.position.z - 10
+        );
+        console.log(player.matrixWorld);
+      };
+
+      const directionalLight = new THREE.DirectionalLight("white", 7);
+      directionalLight.position.set(-5, 5, 10);
+
+      engine.scene.add(player, directionalLight);
+
+      reset();
+
+      const forwradVector = new THREE.Vector3();
+      engine.keyboardMoveControls.forwrad = (object) => {
+        return engine.pointerLockControls.getDirection(forwradVector);
+      };
+
+      const updatePlayer = (delta) => {
+        player.updateMatrixWorld();
+
+        tempBox.makeEmpty();
+        tempSegment.copy(capsuleInfo.segment);
+
+        tempSegment.start.applyMatrix4(player.matrixWorld);
+        tempSegment.end.applyMatrix4(player.matrixWorld);
+
+        tempBox.expandByPoint(tempSegment.start);
+        tempBox.expandByPoint(tempSegment.end);
+
+        tempBox.min.addScalar(-capsuleInfo.radius);
+        tempBox.max.addScalar(capsuleInfo.radius);
+
+        engine.meshBVHManager.shapecast();
+
+        const newPosition = tempVector;
+
+        newPosition.copy(tempSegment.start);
+
+        const deltaVector = tempVector2;
+        deltaVector.subVectors(newPosition, player.position);
+
+        playerIsOnGround =
+          deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
+
+        const offset = Math.max(0.0, deltaVector.length() - 1e-5);
+        deltaVector.normalize().multiplyScalar(offset);
+
+        player.position.add(deltaVector);
+
+        if (!playerIsOnGround) {
+          deltaVector.normalize();
+          playerVelocity.addScaledVector(
+            deltaVector,
+            -deltaVector.dot(playerVelocity)
+          );
+        } else {
+          playerVelocity.set(0, 0, 0);
+        }
+
+        if (player.position.y < -80) {
+          reset();
+        }
+      };
+
+      engine.keyboardMoveControls.addEventListener("afterUpdate", (event) => {
+        for (let i = 0; i < physicsSteps; i += 1) {
+          updatePlayer(event.delta / physicsSteps);
+        }
+      });
+
+      engine
+        .loadResourcesAsync([
+          "/model/glb/dungeon_low_poly_game_level_challenge/scene.gltf",
+        ])
+        .then((res) => {
+          const gltf = res.resourceMap.get(
+            "/model/glb/dungeon_low_poly_game_level_challenge/scene.gltf"
+          );
+
+          const gltfScene = gltf.scene;
+          gltfScene.scale.setScalar(0.03);
+
+          const box = new THREE.Box3();
+          box.setFromObject(gltfScene);
+          box.getCenter(gltfScene.position).negate();
+          gltfScene.updateMatrixWorld(true);
+
+          // visual geometry setup
+          const toMerge = {};
+          gltfScene.traverse((c) => {
+            if (
+              /Boss/.test(c.name) ||
+              /Enemie/.test(c.name) ||
+              /Shield/.test(c.name) ||
+              /Sword/.test(c.name) ||
+              /Character/.test(c.name) ||
+              /Gate/.test(c.name) ||
+              // spears
+              /Cube/.test(c.name) ||
+              // pink brick
+              (c.material && c.material.color.r === 1.0)
+            ) {
+              return;
+            }
+
+            if (c.isMesh) {
+              const hex = c.material.color.getHex();
+              toMerge[hex] = toMerge[hex] || [];
+              toMerge[hex].push(c);
+            }
+          });
+
+          const environment = new THREE.Group();
+          for (const hex in toMerge) {
+            const arr = toMerge[hex];
+            const visualGeometries = [];
+            arr.forEach((mesh) => {
+              if (mesh.material.emissive.r !== 0) {
+                environment.attach(mesh);
+              } else {
+                const geom = mesh.geometry.clone();
+                geom.applyMatrix4(mesh.matrixWorld);
+                visualGeometries.push(geom);
+              }
+            });
+
+            if (visualGeometries.length) {
+              const newGeom =
+                BufferGeometryUtils.mergeBufferGeometries(visualGeometries);
+              const newMesh = new THREE.Mesh(
+                newGeom,
+                new THREE.MeshStandardMaterial({
+                  color: parseInt(hex),
+                  shadowSide: 2,
+                })
+              );
+              newMesh.castShadow = true;
+              newMesh.receiveShadow = true;
+              newMesh.material.shadowSide = 2;
+
+              environment.add(newMesh);
+            }
+          }
+
+          const geometries = [];
+          environment.updateMatrixWorld(true);
+          environment.traverse((c) => {
+            if (c.geometry) {
+              engine.addBVH(c);
+            }
+          });
+
+          engine.scene.add(environment);
+          engine.play();
+        });
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>
