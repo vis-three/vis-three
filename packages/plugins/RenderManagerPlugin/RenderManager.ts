@@ -19,7 +19,7 @@ export class RenderManager extends EventDispatcher {
   private fps = 0; // 帧率 0 跟随系统
   private timer: NodeJS.Timeout | null = null;
 
-  private playFun = () => {};
+  private playFun: () => void = () => {};
 
   constructor(fps = 0) {
     super();
@@ -54,10 +54,20 @@ export class RenderManager extends EventDispatcher {
       };
     } else {
       this.playFun = () => {
-        this.timer = setTimeout(() => {
-          this.playFun();
-        }, fps);
-        this.render();
+        const startTime = performance.now();
+        let count = 0;
+
+        const timerFun = () => {
+          count += 1;
+          const endTime = performance.now();
+          this.timer = setTimeout(
+            timerFun,
+            fps - (endTime - startTime - count * fps)
+          );
+
+          this.render();
+        };
+        this.timer = setTimeout(timerFun, fps);
       };
     }
 

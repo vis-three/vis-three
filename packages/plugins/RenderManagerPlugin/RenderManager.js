@@ -41,10 +41,15 @@ export class RenderManager extends EventDispatcher {
         }
         else {
             this.playFun = () => {
-                this.timer = setTimeout(() => {
-                    this.playFun();
-                }, fps);
-                this.render();
+                const startTime = performance.now();
+                let count = 0;
+                const timerFun = () => {
+                    count += 1;
+                    const endTime = performance.now();
+                    this.timer = setTimeout(timerFun, fps - (endTime - startTime - count * fps));
+                    this.render();
+                };
+                this.timer = setTimeout(timerFun, fps);
             };
         }
         playFlag && this.playFun();

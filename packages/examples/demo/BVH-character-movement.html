@@ -30,10 +30,14 @@
       import { LoaderManagerPlugin } from "@vis-three/loader-manager-plugin";
       import { OrbitControlsPlugin } from "@vis-three/orbit-controls-plugin";
       import { KeyboardMoveControlsPlugin } from "@vis-three/keyboard-move-controls-plugin";
+      import { StatsPlugin } from "@vis-three/stats-plugin";
       import { MeshBVHPlugin } from "@vis-three/mesh-bvh-plugin";
+
       import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
       import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
       import { KeyboardMoveRenderStrategy } from "@vis-three/keyboard-move-render-strategy";
+      import { StatsRenderStrategy } from "@vis-three/stats-render-strategy";
+
       import { defineEngine } from "@vis-three/core";
 
       const tempVector = new THREE.Vector3();
@@ -41,6 +45,8 @@
       const tempBox = new THREE.Box3();
       const tempMat = new THREE.Matrix4();
       const tempSegment = new THREE.Line3();
+      const physicsSteps = 5;
+      const jumpHeight = 20;
       let playerIsOnGround = false;
 
       const player = new THREE.Mesh(
@@ -62,7 +68,9 @@
 
       const engine = defineEngine({
         plugins: [
-          RenderManagerPlugin(),
+          RenderManagerPlugin({
+            // fps: 1000 / 60,
+          }),
           WebGLRendererPlugin({
             antialias: true,
             alpha: true,
@@ -75,6 +83,7 @@
             path: import.meta.env.BASE_URL,
           }),
           OrbitControlsPlugin(),
+          StatsPlugin(),
           MeshBVHPlugin({
             visualizer: true,
             shapecast: {
@@ -100,22 +109,22 @@
           }),
           KeyboardMoveControlsPlugin({
             target: player,
-            movementSpeed: 50,
-            quickenSpeed: 50,
+            movementSpeed: 10,
+            quickenSpeed: 10,
             space: "world",
             extendKeyDown: (e) => {
               switch (e.code) {
                 case "Space":
                   if (playerIsOnGround) {
-                    playerVelocity.y = 0.5;
+                    playerVelocity.y = jumpHeight;
                   }
 
                   break;
               }
             },
             beforeUpdate: ({ delta }) => {
-              playerVelocity.y += playerIsOnGround ? 0 : delta * -1;
-              player.position.add(playerVelocity);
+              playerVelocity.y += playerIsOnGround ? 0 : delta * -30;
+              player.position.addScaledVector(playerVelocity, delta);
             },
           }),
         ],
@@ -123,16 +132,18 @@
           EffectRenderStrategy(),
           OrbitRenderStrategy(),
           KeyboardMoveRenderStrategy(),
+          StatsRenderStrategy(),
         ],
       })
         .setDom(document.getElementById("app"))
-        .setSize();
+        .setSize()
+        .setStats(true);
 
       loadingTips(engine);
 
       const reset = () => {
         playerVelocity.y = 0;
-        player.position.set(155, 0, 300);
+        player.position.set(47, 0, 90);
         engine.camera.position.set(0, 5, 15);
         engine.orbitControls.target.set(0, 0, 0);
       };
@@ -151,7 +162,7 @@
           .applyAxisAngle(object.up, engine.orbitControls.getAzimuthalAngle());
       };
 
-      engine.keyboardMoveControls.addEventListener("afterUpdate", (event) => {
+      const updatePlayer = (delta) => {
         player.updateMatrixWorld();
 
         const camera = engine.camera;
@@ -179,9 +190,9 @@
         deltaVector.subVectors(newPosition, player.position);
 
         playerIsOnGround =
-          deltaVector.y > Math.abs(event.delta * playerVelocity.y * 0.01);
+          deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
-        const offset = Math.max(0.0, deltaVector.length());
+        const offset = Math.max(0.0, deltaVector.length() - 1e-5);
         deltaVector.normalize().multiplyScalar(offset);
 
         player.position.add(deltaVector);
@@ -196,13 +207,19 @@
           playerVelocity.set(0, 0, 0);
         }
 
-        if (player.position.y < -100) {
+        if (player.position.y < -80) {
           reset();
         }
 
         camera.position.sub(orbitControls.target);
         orbitControls.target.copy(player.position);
         camera.position.add(player.position);
+      };
+
+      engine.keyboardMoveControls.addEventListener("afterUpdate", (event) => {
+        for (let i = 0; i < physicsSteps; i += 1) {
+          updatePlayer(event.delta / physicsSteps);
+        }
       });
 
       engine
@@ -215,7 +232,7 @@
           );
 
           const gltfScene = gltf.scene;
-          gltfScene.scale.setScalar(0.1);
+          gltfScene.scale.setScalar(0.03);
 
           const box = new THREE.Box3();
           box.setFromObject(gltfScene);
