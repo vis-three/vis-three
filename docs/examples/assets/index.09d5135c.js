@@ -1,1 +1,0 @@
-import{t as o}from"./index.8b9e7665.js";import{a as s}from"./index.44166243.js";import{b as a}from"./index.e4f0d89e.js";const n="@vis-three/transform-controls-helper-filter-strategy",c=o(n),O=function(){return{name:c,condition:[a,s],exec(r){const t=[];r.transformControls.traverse(e=>{t.push(e)}),r.objectHelperManager.addFilteredObject(...t)},rollback(r){}}};export{O as T};

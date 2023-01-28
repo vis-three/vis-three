@@ -1,0 +1,1 @@
+import{J as t,g as i}from"./index.a7d17fbb.js";const c=(s,r,e={clone:!0,assets:!1})=>{const n=e.clone?t.clone(s):s,a=e.assets?Object.keys(n):Object.keys(n).filter(o=>o!=="assets");for(const o of a)n[o].forEach((f,l,u)=>{u[l]=r(f)});return n},y=function(s,r){return typeof s=="string"&&(s=JSON.parse(s,t.parse)),c(t.clone(s),e=>(e=i(e.type,e),r?r(e):e))};export{y as o};
