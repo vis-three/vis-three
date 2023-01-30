@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>360 vr panorama</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+  <body>
+    <div id="button-position">
+      <div id="button-group">
+        <button id="global">全局视角</button>
+        <button id="livingroom">livingroom</button>
+        <button id="bedroom">bedroom</button>
+        <button id="kitchenroom">kitchenroom</button>
+      </div>
+    </div>
+    <div id="app"></div>
+
+    <script type="module">
+      import loadingTips from "../common/loadingTips.js";
+
+      import * as THREE from "three";
+      import { PointerVisualControlsPlugin } from "@vis-three/pointer-visual-controls-plugin";
+      import { DisplayEngineSupport } from "@vis-three/display-engine-support";
+      import {
+        generateConfig,
+        CONFIGTYPE,
+        EventGeneratorManager,
+        createSymbol,
+      } from "@vis-three/middleware";
+      import { CanvasGenerator } from "@vis-three/convenient";
+      import { moveTo } from "@vis-three/event-library";
+
+      import { AxesHelperPlugin } from "@vis-three/axes-helper-plugin";
+
+      EventGeneratorManager.register(moveTo);
+
+      const drawFun = (ctx, text) => {
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+
+        ctx.fillStyle = "rgb(26, 203, 208)";
+        ctx.fillRect(0, 0, 512, 512);
+
+        ctx.fillStyle = "white";
+
+        ctx.font = `bold 58px 微软雅黑`;
+        ctx.fillText(text, 255, 255);
+      };
+
+      const bedroomCanvas = new CanvasGenerator().draw((ctx) =>
+        drawFun(ctx, "to bedroom")
+      );
+
+      const kitchenroomCanvas = new CanvasGenerator().draw((ctx) =>
+        drawFun(ctx, "to kitchenroom")
+      );
+
+      const livingroomCanvas = new CanvasGenerator().draw((ctx) =>
+        drawFun(ctx, "to livingroom")
+      );
+
+      const engine = new DisplayEngineSupport()
+        .rollback("OrbitControlsSupportStrategy")
+        .unistall("OrbitControlsPlugin")
+        .install(PointerVisualControlsPlugin())
+        .install(AxesHelperPlugin())
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      loadingTips(engine);
+
+      generateConfig.injectEngine = engine;
+
+      const camera = generateConfig(CONFIGTYPE.PERSPECTIVECAMERA, {
+        near: 0.01,
+        far: 500,
+      });
+
+      engine.setCameraBySymbol(camera.vid);
+
+      engine.setSize();
+
+      const scene = generateConfig(CONFIGTYPE.SCENE);
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = true;
+
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
+      engine
+        .registerResources({
+          bedroomCanvas: bedroomCanvas.getDom(),
+          kitchenroomCanvas: kitchenroomCanvas.getDom(),
+          livingroomCanvas: livingroomCanvas.getDom(),
+        })
+        .loadResourcesAsync([
+          "/texture/360vr/room/bedroom.jpeg",
+          "/texture/360vr/room/kitchenroom.jpeg",
+          "/texture/360vr/room/livingroom.jpeg",
+        ])
+        .then((res) => {
+          const geometry = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
+            radius: 7,
+            widthSegments: 128,
+            heightSegments: 128,
+          });
+
+          const livingroomTexture = generateConfig(CONFIGTYPE.IMAGETEXTURE, {
+            url: "/texture/360vr/room/livingroom.jpeg",
+          });
+
+          const livingroomMaterial = generateConfig(
+            CONFIGTYPE.MESHBASICMATERIAL,
+            {
+              map: livingroomTexture.vid,
+              side: THREE.BackSide,
+            }
+          );
+
+          const livingroom = generateConfig(CONFIGTYPE.MESH, {
+            geometry: geometry.vid,
+            material: livingroomMaterial.vid,
+          });
+
+          const bedroomTexture = generateConfig(CONFIGTYPE.IMAGETEXTURE, {
+            url: "/texture/360vr/room/bedroom.jpeg",
+          });
+
+          const bedroomMaterial = generateConfig(CONFIGTYPE.MESHBASICMATERIAL, {
+            map: bedroomTexture.vid,
+            side: THREE.BackSide,
+          });
+
+          const bedroom = generateConfig(CONFIGTYPE.MESH, {
+            geometry: geometry.vid,
+            material: bedroomMaterial.vid,
+            position: {
+              x: livingroom.position.x + 9,
+              y: livingroom.position.y,
+              z: livingroom.position.z - 14,
+            },
+          });
+
+          const kitchenroomTexture = generateConfig(CONFIGTYPE.IMAGETEXTURE, {
+            url: "/texture/360vr/room/kitchenroom.jpeg",
+          });
+
+          const kitchenroomMaterial = generateConfig(
+            CONFIGTYPE.MESHBASICMATERIAL,
+            {
+              map: kitchenroomTexture.vid,
+              side: THREE.BackSide,
+            }
+          );
+
+          const kitchenroom = generateConfig(CONFIGTYPE.MESH, {
+            geometry: geometry.vid,
+            material: kitchenroomMaterial.vid,
+            position: {
+              x: livingroom.position.x + 15,
+              y: livingroom.position.y,
+              z: livingroom.position.z,
+            },
+          });
+
+          const kitchenroomTipsTexture = generateConfig(
+            CONFIGTYPE.CANVASTEXTURE,
+            {
+              url: "kitchenroomCanvas",
+            }
+          );
+
+          const kitchenroomTipsMaterial = generateConfig(
+            CONFIGTYPE.SPRITEMATERIAL,
+            {
+              map: kitchenroomTipsTexture.vid,
+            }
+          );
+
+          const kitchenroomTips = generateConfig(CONFIGTYPE.SPRITE, {
+            material: kitchenroomTipsMaterial.vid,
+            scale: {
+              x: 0.5,
+              y: 0.5,
+              z: 0.5,
+            },
+            position: {
+              x: livingroom.position.x + 5,
+              y: livingroom.position.y + 0.5,
+              z: livingroom.position.z + 0.2,
+            },
+            click: [
+              EventGeneratorManager.generateConfig("moveTo", {
+                params: {
+                  target: camera.vid,
+                  position: {
+                    x: kitchenroom.position.x,
+                    y: kitchenroom.position.y,
+                    z: kitchenroom.position.z,
+                  },
+                },
+              }),
+            ],
+          });
+
+          const bedroomTipsTexture = generateConfig(CONFIGTYPE.CANVASTEXTURE, {
+            url: "bedroomCanvas",
+          });
+
+          const bedroomTipsMaterial = generateConfig(
+            CONFIGTYPE.SPRITEMATERIAL,
+            {
+              map: bedroomTipsTexture.vid,
+            }
+          );
+
+          const bedroomTips = generateConfig(CONFIGTYPE.SPRITE, {
+            material: bedroomTipsMaterial.vid,
+            scale: {
+              x: 0.5,
+              y: 0.5,
+              z: 0.5,
+            },
+            position: {
+              x: livingroom.position.x + 2,
+              y: livingroom.position.y + 0.5,
+              z: livingroom.position.z - 5,
+            },
+            click: [
+              EventGeneratorManager.generateConfig("moveTo", {
+                params: {
+                  target: camera.vid,
+                  position: {
+                    x: bedroom.position.x,
+                    y: bedroom.position.y,
+                    z: bedroom.position.z,
+                  },
+                },
+              }),
+            ],
+          });
+
+          camera.position.x = livingroom.position.x;
+          camera.position.y = livingroom.position.y;
+          camera.position.z = livingroom.position.z;
+
+          document.getElementById("global").onclick = () => {
+            engine.camera.position.set(0, 70, 0);
+            engine.camera.lookAt(0, 0, 0);
+          };
+
+          document.getElementById("bedroom").onclick = () => {
+            engine.camera.position.set(
+              bedroom.position.x,
+              bedroom.position.y,
+              bedroom.position.z
+            );
+            engine.camera.lookAt(0, 0, 0);
+          };
+
+          document.getElementById("kitchenroom").onclick = () => {
+            engine.camera.position.set(
+              kitchenroom.position.x,
+              kitchenroom.position.y,
+              kitchenroom.position.z
+            );
+            engine.camera.lookAt(0, 0, 0);
+          };
+
+          document.getElementById("livingroom").onclick = () => {
+            engine.camera.position.set(
+              livingroom.position.x,
+              livingroom.position.y,
+              livingroom.position.z
+            );
+            engine.camera.lookAt(0, 0, 0);
+          };
+        });
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>
