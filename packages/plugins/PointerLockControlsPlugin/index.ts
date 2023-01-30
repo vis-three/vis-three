@@ -13,6 +13,10 @@ export interface PointerLockControlsEngine extends Engine {
   pointerLockControls: PointerLockControls;
 }
 
+export interface PointerLockControlsPluginParams {
+  pointerSpeed: 1;
+}
+
 export const POINTER_LOCK_CONTROLS_PLUGIN = transPkgName(pkgname);
 
 export const PointerLockControlsPlugin: Plugin<PointerLockControlsEngine> =

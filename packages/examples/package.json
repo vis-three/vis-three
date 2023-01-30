@@ -63,6 +63,7 @@
     "@vis-three/orbit-viewpoint-strategy": "workspace:^0.5.1",
     "@vis-three/pointer-lock-controls-plugin": "workspace:^0.5.1",
     "@vis-three/pointer-manager-plugin": "workspace:^0.5.3",
+    "@vis-three/pointer-visual-controls-plugin": "workspace:^0.5.0",
     "@vis-three/render-manager-plugin": "workspace:^0.5.0",
     "@vis-three/selection-plugin": "workspace:^0.5.0",
     "@vis-three/stats-plugin": "workspace:^0.5.0",

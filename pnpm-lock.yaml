@@ -437,6 +437,7 @@ importers:
       '@vis-three/orbit-viewpoint-strategy': workspace:^0.5.1
       '@vis-three/pointer-lock-controls-plugin': workspace:^0.5.1
       '@vis-three/pointer-manager-plugin': workspace:^0.5.3
+      '@vis-three/pointer-visual-controls-plugin': workspace:^0.5.0
       '@vis-three/render-manager-plugin': workspace:^0.5.0
       '@vis-three/selection-plugin': workspace:^0.5.0
       '@vis-three/stats-plugin': workspace:^0.5.0
@@ -508,6 +509,7 @@ importers:
       '@vis-three/orbit-viewpoint-strategy': link:../strategy/OrbitViewpointStrategy
       '@vis-three/pointer-lock-controls-plugin': link:../plugins/PointerLockControlsPlugin
       '@vis-three/pointer-manager-plugin': link:../plugins/PointerManagerPlugin
+      '@vis-three/pointer-visual-controls-plugin': link:../plugins/PointerVisualControlsPlugin
       '@vis-three/render-manager-plugin': link:../plugins/RenderManagerPlugin
       '@vis-three/selection-plugin': link:../plugins/SelectionPlugin
       '@vis-three/stats-plugin': link:../plugins/StatsPlugin
@@ -1139,6 +1141,35 @@ importers:
       prettier: 2.8.0
       three: 0.141.0
       typescript: 4.9.3
+
+  packages/plugins/PointerVisualControlsPlugin:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.5.2
+      '@vis-three/utils': workspace:^0.5.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+    dependencies:
+      '@vis-three/core': link:../../core
+      '@vis-three/utils': link:../../utils
+    devDependencies:
+      '@types/node': 18.11.18
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.47.1_txmweb6yn7coi7nfrp22gpyqmy
+      '@typescript-eslint/parser': 5.47.1_lzzuuodtsqwxnvqeq4g4likcqa
+      eslint: 8.30.0
+      eslint-config-prettier: 8.5.0_eslint@8.30.0
+      eslint-plugin-prettier: 4.2.1_kl4pe43v5b43npmso5hoplpbyi
+      prettier: 2.8.1
+      three: 0.141.0
+      typescript: 4.9.4
 
   packages/plugins/RenderManagerPlugin:
     specifiers:
@@ -1974,7 +2005,7 @@ importers:
       vue-tsc: ^0.37.0
       webpack: ^5.74.0
     devDependencies:
-      '@cypress/code-coverage': 3.10.0_2jljw3dtlji5dkl3y4afbj4y3i
+      '@cypress/code-coverage': 3.10.0_ads3akj7thi7o4g2vdc33lt3mu
       '@rollup/plugin-alias': 3.1.9_rollup@2.79.1
       '@types/three': 0.133.1
       '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
@@ -2864,6 +2895,7 @@ packages:
     hasBin: true
     dependencies:
       '@babel/types': 7.20.5
+    dev: true
 
   /@babel/parser/7.20.7:
     resolution: {integrity: sha512-T3Z9oHybU+0vZlY9CiDSJQTD5ZapcW18ZctFMi0MOAl/4BjFF4ul7NVSARLdbGO5vDqy9eQiGTV0LtKfvCYvcg==}
@@ -2871,7 +2903,6 @@ packages:
     hasBin: true
     dependencies:
       '@babel/types': 7.20.7
-    dev: true
 
   /@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression/7.18.6_@babel+core@7.20.12:
     resolution: {integrity: sha512-Dgxsyg54Fx1d4Nge8UnvTrED63vrwOdPmyvPzlNN/boaliRP54pm3pGzZD1SJUwrBA+Cs/xdG8kXX6Mn/RfISQ==}
@@ -3762,6 +3793,7 @@ packages:
       '@babel/helper-string-parser': 7.19.4
       '@babel/helper-validator-identifier': 7.19.1
       to-fast-properties: 2.0.0
+    dev: true
 
   /@babel/types/7.20.7:
     resolution: {integrity: sha512-69OnhBxSSgK0OzTJai4kyPDiKTIe3j+ctaHdIGVbRahTLAT7L3R9oeXHC2aVSuGYt3cVnoAMDmOCgJ2yaiLMvg==}
@@ -3770,7 +3802,6 @@ packages:
       '@babel/helper-string-parser': 7.19.4
       '@babel/helper-validator-identifier': 7.19.1
       to-fast-properties: 2.0.0
-    dev: true
 
   /@colors/colors/1.5.0:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -3784,12 +3815,12 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
-  /@cypress/code-coverage/3.10.0_2jljw3dtlji5dkl3y4afbj4y3i:
+  /@cypress/code-coverage/3.10.0_ads3akj7thi7o4g2vdc33lt3mu:
     resolution: {integrity: sha512-K5pW2KPpK4vKMXqxd6vuzo6m9BNgpAv1LcrrtmqAtOJ1RGoEILXYZVost0L6Q+V01NyY7n7jXIIfS7LR3nP6YA==}
     peerDependencies:
       cypress: '*'
     dependencies:
-      '@cypress/webpack-preprocessor': 5.16.0_z55wzhjjrdtefyvtzcfbwh2ocq
+      '@cypress/webpack-preprocessor': 5.16.0_b5wvtdhdtswww2gxdcjqgta3zm
       chalk: 4.1.2
       cypress: 9.7.0
       dayjs: 1.10.7
@@ -3800,6 +3831,7 @@ packages:
       js-yaml: 3.14.1
       nyc: 15.1.0
     transitivePeerDependencies:
+      - '@babel/core'
       - '@babel/preset-env'
       - babel-loader
       - supports-color
@@ -3830,14 +3862,15 @@ packages:
       uuid: 8.3.2
     dev: true
 
-  /@cypress/webpack-preprocessor/5.16.0_z55wzhjjrdtefyvtzcfbwh2ocq:
+  /@cypress/webpack-preprocessor/5.16.0_b5wvtdhdtswww2gxdcjqgta3zm:
     resolution: {integrity: sha512-cQM0pPMZ/3DjA8ohFL5vBOrkD7CCpk7nH8k0ML4pLJrN6WDeIHRWuFQRISZoNXom4KP2M0kJNxJ7fCV7EbOYIg==}
     peerDependencies:
+      '@babel/core': ^7.0.1
       '@babel/preset-env': ^7.0.0
       babel-loader: ^8.0.2
       webpack: ^4 || ^5
     dependencies:
-      '@babel/core': 7.20.5
+      '@babel/core': 7.20.12
       '@babel/generator': 7.20.5
       '@babel/parser': 7.20.5
       '@babel/preset-env': 7.20.2_@babel+core@7.20.12
@@ -4308,7 +4341,7 @@ packages:
   /@types/cors/2.8.13:
     resolution: {integrity: sha512-RG8AStHlUiV5ysZQKq97copd2UmVYw3/pRMLefISZ3S1hK104Cwm7iLQ3fTKx+lsUH2CE8FlLaYeEA2LSeqYUA==}
     dependencies:
-      '@types/node': 18.11.12
+      '@types/node': 18.11.18
     dev: true
 
   /@types/d3-timer/2.0.1:
@@ -4388,7 +4421,7 @@ packages:
     resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
     requiresBuild: true
     dependencies:
-      '@types/node': 18.11.12
+      '@types/node': 18.11.18
     dev: true
     optional: true
 
@@ -4705,7 +4738,7 @@ packages:
   /@vue/compiler-core/3.2.45:
     resolution: {integrity: sha512-rcMj7H+PYe5wBV3iYeUgbCglC+pbpN8hBLTJvRiK2eKQiWqu+fG9F+8sW99JdL4LQi7Re178UOxn09puSXvn4A==}
     dependencies:
-      '@babel/parser': 7.20.5
+      '@babel/parser': 7.20.7
       '@vue/shared': 3.2.45
       estree-walker: 2.0.2
       source-map: 0.6.1
@@ -4719,7 +4752,7 @@ packages:
   /@vue/compiler-sfc/3.2.45:
     resolution: {integrity: sha512-1jXDuWah1ggsnSAOGsec8cFjT/K6TMZ0sPL3o3d84Ft2AYZi2jWJgRMjw4iaK0rBfA89L5gw427H4n1RZQBu6Q==}
     dependencies:
-      '@babel/parser': 7.20.5
+      '@babel/parser': 7.20.7
       '@vue/compiler-core': 3.2.45
       '@vue/compiler-dom': 3.2.45
       '@vue/compiler-ssr': 3.2.45
@@ -4743,7 +4776,7 @@ packages:
   /@vue/reactivity-transform/3.2.45:
     resolution: {integrity: sha512-BHVmzYAvM7vcU5WmuYqXpwaBHjsS8T63jlKGWVtHxAHIoMIlmaMyurUSEs1Zcg46M4AYT5MtB1U274/2aNzjJQ==}
     dependencies:
-      '@babel/parser': 7.20.5
+      '@babel/parser': 7.20.7
       '@vue/compiler-core': 3.2.45
       '@vue/shared': 3.2.45
       estree-walker: 2.0.2
@@ -5307,7 +5340,7 @@ packages:
       fresh: 0.5.2
       mitt: 1.2.0
       rxjs: 5.5.12
-      typescript: 4.9.3
+      typescript: 4.9.4
     dev: true
 
   /browser-sync-ui/2.27.10:
@@ -6058,7 +6091,7 @@ packages:
     dependencies:
       '@types/cookie': 0.4.1
       '@types/cors': 2.8.13
-      '@types/node': 18.11.12
+      '@types/node': 18.11.18
       accepts: 1.3.8
       base64id: 2.0.0
       cookie: 0.4.2
@@ -7410,7 +7443,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 18.11.12
+      '@types/node': 18.11.18
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
