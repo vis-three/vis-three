@@ -12,6 +12,7 @@
   <style></style>
 
   <body>
+    <div id="tips">鼠标左键旋转</div>
     <div id="app"></div>
 
     <script type="module">
@@ -23,6 +24,8 @@
       import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
       import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
       import { defineEngine } from "@vis-three/core";
+
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       import { PointerVisualControlsPlugin } from "@vis-three/pointer-visual-controls-plugin";
 
@@ -67,6 +70,14 @@
 
       points.position.x = -10;
       scene.add(points);
+
+      const controls = engine.pointerVisualControls;
+
+      const gui = new GUI();
+
+      gui.add(controls, "minPolarAngle");
+      gui.add(controls, "maxPolarAngle");
+      gui.add(controls, "pointerSpeed");
 
       window.engine = engine;
     </script>
