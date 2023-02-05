@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AnimationSupport</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style></style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import {
+        generateConfig,
+        AniScriptGeneratorManager,
+        ShaderGeneratorManager,
+      } from "@vis-three/middleware";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      import { linearTime, sinWare } from "@vis-three/animate-script-library";
+      import { uvPulseShader } from "@vis-three/shader-library";
+
+      AniScriptGeneratorManager.register(linearTime).register(sinWare);
+      ShaderGeneratorManager.register(uvPulseShader);
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true);
+
+      generateConfig.injectEngine = engine;
+
+      const pointLight = generateConfig("PointLight", {
+        position: {
+          x: 30,
+          y: 50,
+        },
+        distance: 100,
+      });
+
+      const material = generateConfig("ShaderMaterial", {
+        shader: "uvPulseShader",
+      });
+
+      const geometry = generateConfig("BoxGeometry", {
+        width: 20,
+        height: 20,
+        depth: 20,
+      });
+
+      const mesh = generateConfig("Mesh", {
+        material: material.vid,
+        geometry: geometry.vid,
+      });
+
+      const animation = generateConfig("ScriptAnimation", {
+        target: material.vid,
+        attribute: ".uniforms.time.value",
+        script: AniScriptGeneratorManager.generateConfig("linearTime", {
+          multiply: 7,
+        }),
+      });
+
+      const animation2 = generateConfig("ScriptAnimation", {
+        target: mesh.vid,
+        attribute: ".rotation.y",
+        script: AniScriptGeneratorManager.generateConfig("linearTime", {
+          multiply: 1,
+        }),
+      });
+
+      const animation3 = generateConfig("ScriptAnimation", {
+        target: mesh.vid,
+        attribute: ".position.y",
+        script: AniScriptGeneratorManager.generateConfig("sinWave", {
+          amplitude: 10,
+          wavelength: 0.5,
+        }),
+      });
+
+      const scene = generateConfig("Scene", {
+        children: [pointLight.vid, mesh.vid],
+      });
+
+      engine.setSceneBySymbol(scene.vid).play();
+
+      const gui = new GUI();
+
+      const aniFloder1 = gui.addFolder("animation1");
+
+      aniFloder1.add(animation.script, "multiply", 0, 10, 1);
+
+      const aniFloder2 = gui.addFolder("animation2");
+
+      aniFloder2.add(animation2.script, "multiply", 0, 10, 1);
+
+      const aniFloder3 = gui.addFolder("animation3");
+
+      aniFloder3.add(animation3.script, "amplitude", 0, 15, 1);
+      aniFloder3.add(animation3.script, "wavelength", 0, 1, 0.01);
+    </script>
+  </body>
+</html>

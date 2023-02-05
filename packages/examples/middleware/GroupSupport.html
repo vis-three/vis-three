@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GroupSupport</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize();
+
+      const material = generateConfig("MeshStandardMaterial");
+
+      const geometry = generateConfig("BoxGeometry", {
+        width: 20,
+        height: 20,
+        depth: 20,
+      });
+
+      const mesh1 = generateConfig("Mesh", {
+        material: material.vid,
+        geometry: geometry.vid,
+        position: {
+          z: -20,
+        },
+      });
+
+      const mesh2 = generateConfig("Mesh", {
+        material: material.vid,
+        geometry: geometry.vid,
+        position: {
+          z: 20,
+          x: 20,
+        },
+      });
+
+      const mesh3 = generateConfig("Mesh", {
+        material: material.vid,
+        geometry: geometry.vid,
+        position: {
+          z: 20,
+          x: -20,
+        },
+      });
+
+      const group = generateConfig("Group", {
+        children: [mesh1.vid, mesh2.vid, mesh3.vid],
+        position: {
+          y: 20,
+        },
+      });
+
+      const pointLight = generateConfig("PointLight", {
+        position: {
+          y: 50,
+        },
+        distance: 150,
+      });
+
+      const scene = generateConfig("Scene", {
+        children: [pointLight.vid, group.vid],
+      });
+
+      engine.applyConfig(
+        pointLight,
+        material,
+        geometry,
+        mesh1,
+        mesh2,
+        mesh3,
+        group,
+        scene
+      );
+
+      engine.setSceneBySymbol(scene.vid).play();
+    </script>
+  </body>
+</html>

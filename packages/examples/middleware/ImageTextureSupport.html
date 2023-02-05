@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ImageTextureSupport</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background-color: black;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import loadingTips from "../common/loadingTips.js";
+
+      import * as THREE from "three";
+      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true)
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = true;
+
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
+      engine
+        .loadResourcesAsync([
+          "/texture/skyBox/snowVillage/nx.jpg",
+          "/texture/skyBox/snowVillage/ny.jpg",
+          "/texture/skyBox/snowVillage/nz.jpg",
+          "/texture/skyBox/snowVillage/px.jpg",
+          "/texture/skyBox/snowVillage/py.jpg",
+          "/texture/skyBox/snowVillage/pz.jpg",
+        ])
+        .then(() => {
+          const texture = generateConfig("ImageTexture", {
+            url: "/texture/skyBox/snowVillage/nx.jpg",
+          });
+
+          const material = generateConfig("MeshBasicMaterial", {
+            map: texture.vid,
+          });
+
+          const geometry = generateConfig("BoxGeometry", {
+            width: 20,
+            height: 20,
+            depth: 20,
+          });
+
+          const sphereGeometry = generateConfig("SphereGeometry", {
+            radius: 10,
+          });
+
+          const box = generateConfig("Mesh", {
+            geometry: geometry.vid,
+            material: material.vid,
+            position: {
+              x: -25,
+            },
+          });
+
+          const sphere = generateConfig("Mesh", {
+            geometry: sphereGeometry.vid,
+            material: material.vid,
+            position: {
+              x: 25,
+            },
+          });
+
+          scene.background = texture.vid;
+
+          const gui = new GUI();
+
+          gui.add(texture, "url", [
+            "/texture/skyBox/snowVillage/nx.jpg",
+            "/texture/skyBox/snowVillage/ny.jpg",
+            "/texture/skyBox/snowVillage/nz.jpg",
+            "/texture/skyBox/snowVillage/px.jpg",
+            "/texture/skyBox/snowVillage/py.jpg",
+            "/texture/skyBox/snowVillage/pz.jpg",
+          ]);
+
+          gui.add(texture, "mapping", {
+            UVMapping: THREE.UVMapping,
+            CubeReflectionMapping: THREE.CubeReflectionMapping,
+            CubeRefractionMapping: THREE.CubeRefractionMapping,
+            EquirectangularReflectionMapping:
+              THREE.EquirectangularReflectionMapping,
+            EquirectangularRefractionMapping:
+              THREE.EquirectangularRefractionMapping,
+            CubeUVReflectionMapping: THREE.CubeUVReflectionMapping,
+          });
+
+          gui.add(texture, "wrapS", {
+            "THREE.RepeatWrapping": THREE.RepeatWrapping,
+            "THREE.ClampToEdgeWrapping": THREE.ClampToEdgeWrapping,
+            "THREE.MirroredRepeatWrapping": THREE.MirroredRepeatWrapping,
+          });
+
+          gui.add(texture, "wrapT", {
+            "THREE.RepeatWrapping": THREE.RepeatWrapping,
+            "THREE.ClampToEdgeWrapping": THREE.ClampToEdgeWrapping,
+            "THREE.MirroredRepeatWrapping": THREE.MirroredRepeatWrapping,
+          });
+
+          gui.add(texture, "format", {
+            AlphaFormat: THREE.AlphaFormat,
+            RedFormat: THREE.RedFormat,
+            RedIntegerFormat: THREE.RedIntegerFormat,
+            RGFormat: THREE.RGFormat,
+            RGIntegerFormat: THREE.RGIntegerFormat,
+            RGBAFormat: THREE.RGBAFormat,
+            RGBAIntegerFormat: THREE.RGBAIntegerFormat,
+            LuminanceFormat: THREE.LuminanceFormat,
+            LuminanceAlphaFormat: THREE.LuminanceAlphaFormat,
+            DepthFormat: THREE.DepthFormat,
+            DepthStencilFormat: THREE.DepthStencilFormat,
+          });
+
+          gui.add(texture, "encoding", {
+            LinearEncoding: THREE.LinearEncoding,
+            sRGBEncoding: THREE.sRGBEncoding,
+          });
+
+          gui.add(texture, "magFilter", {
+            Nearest: THREE.NearestFilter,
+            Linear: THREE.LinearFilter,
+          });
+
+          gui.add(texture, "minFilter", {
+            Nearest: THREE.NearestFilter,
+            Linear: THREE.LinearFilter,
+            NearestMipmapNearest: THREE.NearestMipmapNearestFilter,
+            NearestMipmapLinear: THREE.NearestMipmapLinearFilter,
+            LinearMipmapNearest: THREE.LinearMipmapNearestFilter,
+            LinearMipmapLinear: THREE.LinearMipmapLinearFilter,
+          });
+
+          gui.add(texture, "rotation", -Math.PI, Math.PI, 0.01);
+
+          gui
+            .add({ anisotropy: texture.anisotropy }, "anisotropy", 1, 5, 1)
+            .onChange((data) => {
+              texture.anisotropy = 2 ** data;
+            });
+
+          const repeat = gui.addFolder("repeat");
+
+          repeat.add(texture.repeat, "x", 1, 5, 1);
+          repeat.add(texture.repeat, "y", 1, 5, 1);
+
+          const offset = gui.addFolder("offset");
+
+          offset.add(texture.offset, "x", -1, 1, 0.1);
+          offset.add(texture.offset, "y", -1, 1, 0.1);
+
+          const center = gui.addFolder("center");
+
+          center.add(texture.center, "x", -1, 1, 0.1);
+          center.add(texture.center, "y", -1, 1, 0.1);
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EventSupport</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="tips">鼠标交互立方体</div>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import {
+        generateConfig,
+        createSymbol,
+        EventGeneratorManager,
+      } from "@vis-three/middleware";
+      import {
+        openWindow,
+        moveTo,
+        moveSpacing,
+      } from "@vis-three/event-library";
+
+      EventGeneratorManager.register(openWindow)
+        .register(moveTo)
+        .register(moveSpacing);
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      generateConfig.injectScene = scene.vid;
+
+      engine.setSceneBySymbol(scene.vid).play();
+
+      const pointLight = generateConfig("PointLight", {
+        position: {
+          x: 30,
+          y: 50,
+        },
+        distance: 100,
+      });
+
+      const material = generateConfig("MeshStandardMaterial");
+
+      const geometry = generateConfig("BoxGeometry", {
+        width: 5,
+        height: 5,
+        depth: 5,
+      });
+
+      const meshSymbol = createSymbol();
+      const mesh = generateConfig("Mesh", {
+        vid: meshSymbol,
+        material: material.vid,
+        geometry: geometry.vid,
+        pointerup: [
+          EventGeneratorManager.generateConfig("openWindow", {
+            params: {
+              url: "https://gitee.com/Shiotsukikaedesari/vis-three",
+            },
+          }),
+        ],
+      });
+
+      const mesh2Symbol = createSymbol();
+      const mesh2 = generateConfig("Mesh", {
+        vid: mesh2Symbol,
+        material: material.vid,
+        geometry: geometry.vid,
+        position: {
+          x: 0,
+          y: 20,
+          z: 0,
+        },
+        pointerup: [
+          EventGeneratorManager.generateConfig("moveTo", {
+            params: {
+              target: meshSymbol,
+              position: {
+                x: 20,
+                y: -10,
+                z: 10,
+              },
+            },
+          }),
+        ],
+      });
+
+      const mesh3Symbol = createSymbol();
+      const mesh3 = generateConfig("Mesh", {
+        vid: mesh3Symbol,
+        material: material.vid,
+        geometry: geometry.vid,
+        position: {
+          x: -35,
+          y: 0,
+          z: 0,
+        },
+        pointerenter: [
+          EventGeneratorManager.generateConfig("moveSpacing", {
+            params: {
+              target: mesh3Symbol,
+              spacing: {
+                x: 15,
+                y: 0,
+                z: 0,
+              },
+            },
+          }),
+        ],
+      });
+    </script>
+  </body>
+</html>

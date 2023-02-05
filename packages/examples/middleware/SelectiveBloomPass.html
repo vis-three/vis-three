@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SelectiveBloomPass</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { DisplayEngineSupport } from "@vis-three/display-engine-support";
+      import {
+        generateConfig,
+        Template,
+        CONFIGTYPE,
+        createSymbol,
+      } from "@vis-three/middleware";
+
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      const engine = new DisplayEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+      const scene2 = generateConfig("Scene", {
+        vid: createSymbol(),
+      });
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = true;
+
+      const camera = generateConfig("PerspectiveCamera", {
+        position: {
+          x: 50,
+          y: 50,
+          z: 50,
+        },
+        near: 1,
+        far: 1000,
+        adaptiveWindow: true,
+      });
+      engine.setCameraBySymbol(camera.vid).setSize();
+
+      const pointLight = generateConfig("PointLight", {
+        position: {
+          x: 30,
+          y: 50,
+        },
+        distance: 200,
+      });
+
+      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+        color: "red",
+      });
+
+      const lineMaterial = generateConfig(CONFIGTYPE.LINEBASICMATERIAL, {
+        color: "yellow",
+      });
+
+      const pointsMaterial = generateConfig(CONFIGTYPE.POINTSMATERIAL, {
+        color: "blue",
+      });
+
+      const circleMaterial = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+        roughness: 0.2,
+      });
+
+      const circleGeometry = generateConfig(CONFIGTYPE.CIRCLEGEOMETRY, {
+        radius: 40,
+      });
+
+      const geometry = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
+        radius: 10,
+        widthSegments: 12,
+        heightSegments: 12,
+      });
+
+      const circle = generateConfig(CONFIGTYPE.MESH, {
+        material: circleMaterial.vid,
+        geometry: circleGeometry.vid,
+        position: {
+          y: -10,
+        },
+        rotation: {
+          x: -Math.PI / 2,
+        },
+      });
+
+      const mesh = generateConfig(CONFIGTYPE.MESH, {
+        material: material.vid,
+        geometry: geometry.vid,
+        position: {
+          x: -20,
+        },
+      });
+
+      const line = generateConfig(CONFIGTYPE.LINE, {
+        material: lineMaterial.vid,
+        geometry: geometry.vid,
+        position: {
+          x: 20,
+        },
+      });
+
+      const points = generateConfig(CONFIGTYPE.POINTS, {
+        material: pointsMaterial.vid,
+        geometry: geometry.vid,
+        position: {
+          z: 20,
+        },
+      });
+
+      const sprite = generateConfig(CONFIGTYPE.SPRITE, {
+        scale: {
+          x: 10,
+          y: 10,
+          z: 10,
+        },
+        position: {
+          z: -20,
+        },
+      });
+
+      const selectiveBloom = generateConfig(CONFIGTYPE.SELECTIVEBLOOMPASS, {
+        strength: 1,
+        renderScene: scene.vid,
+        renderCamera: camera.vid,
+        selectedObjects: [mesh.vid],
+      });
+
+      const gui = new GUI();
+
+      const selection = {
+        mesh: true,
+        line: false,
+        points: false,
+        sprite: false,
+        scene: scene.vid,
+      };
+
+      gui.add(selectiveBloom, "strength", 0, 5, 0.1);
+      gui.add(selectiveBloom, "threshold", 0, 1, 0.01);
+      gui.add(selectiveBloom, "radius", 0, 5, 0.1);
+
+      gui.add(selection, "mesh").onChange((data) => {
+        if (data) {
+          if (!selectiveBloom.selectedObjects.includes(mesh.vid)) {
+            selectiveBloom.selectedObjects.push(mesh.vid);
+          }
+        } else {
+          if (selectiveBloom.selectedObjects.includes(mesh.vid)) {
+            selectiveBloom.selectedObjects.splice(
+              selectiveBloom.selectedObjects.indexOf(mesh.vid),
+              1
+            );
+          }
+        }
+      });
+
+      gui.add(selection, "line").onChange((data) => {
+        if (data) {
+          if (!selectiveBloom.selectedObjects.includes(line.vid)) {
+            selectiveBloom.selectedObjects.push(line.vid);
+          }
+        } else {
+          if (selectiveBloom.selectedObjects.includes(line.vid)) {
+            selectiveBloom.selectedObjects.splice(
+              selectiveBloom.selectedObjects.indexOf(line.vid),
+              1
+            );
+          }
+        }
+      });
+
+      gui.add(selection, "points").onChange((data) => {
+        if (data) {
+          if (!selectiveBloom.selectedObjects.includes(points.vid)) {
+            selectiveBloom.selectedObjects.push(points.vid);
+          }
+        } else {
+          if (selectiveBloom.selectedObjects.includes(points.vid)) {
+            selectiveBloom.selectedObjects.splice(
+              selectiveBloom.selectedObjects.indexOf(points.vid),
+              1
+            );
+          }
+        }
+      });
+
+      gui.add(selection, "sprite").onChange((data) => {
+        if (data) {
+          if (!selectiveBloom.selectedObjects.includes(sprite.vid)) {
+            selectiveBloom.selectedObjects.push(sprite.vid);
+          }
+        } else {
+          if (selectiveBloom.selectedObjects.includes(sprite.vid)) {
+            selectiveBloom.selectedObjects.splice(
+              selectiveBloom.selectedObjects.indexOf(sprite.vid),
+              1
+            );
+          }
+        }
+      });
+
+      gui
+        .add(selection, "scene", {
+          scene: scene.vid,
+          scene2: scene2.vid,
+        })
+        .onChange((data) => {
+          selectiveBloom.renderScene = data;
+          // engine.setScene(data);
+        });
+    </script>
+  </body>
+</html>

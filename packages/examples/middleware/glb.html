@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <title>glb</title>
+  </head>
+
+  <style></style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import loadingTips from "../common/loadingTips.js";
+
+      import * as THREE from "three";
+      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import { generateConfig, Template } from "@vis-three/middleware";
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setStats(true)
+        .setSize()
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = true;
+
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
+      generateConfig("AmbientLight", {
+        intensity: 10,
+      });
+
+      engine.loaderManager
+        .getLoader("glb")
+        .dracoLoader.setDecoderPath(import.meta.env.BASE_URL + "/draco/gltf/");
+
+      engine
+        .loadResourcesAsync(["model/glb/IridescentDishWithOlives.glb"])
+        .then((res) => {
+          engine.loadConfig(
+            Template.observable(
+              res.resourceConfig["model/glb/IridescentDishWithOlives.glb"]
+            )
+          );
+
+          const rootTemplate = res.configMap.get(
+            "model/glb/IridescentDishWithOlives.glb.scene"
+          );
+
+          const root = engine.getConfigBySymbol(rootTemplate.vid);
+
+          root.scale.x = 50;
+          root.scale.y = 50;
+          root.scale.z = 50;
+
+          scene.children.push(root.vid);
+        });
+      console.log(engine);
+      window.engine = engine;
+    </script>
+  </body>
+</html>

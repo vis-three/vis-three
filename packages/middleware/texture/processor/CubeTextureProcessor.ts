@@ -10,10 +10,9 @@ import { CubeTextureConfig } from "../TextureConfig";
 const instanceClasses = [HTMLImageElement, HTMLVideoElement, HTMLCanvasElement];
 
 const imageHanlder = function ({ target, index, value, engine }) {
-  target.images[index] = engine.compilerManager.textureCompiler.getResource(
-    value,
-    instanceClasses
-  );
+  target.images[index] = engine.compilerManager
+    .getCompiler(MODULETYPE.TEXTURE)
+    .getResource(value, instanceClasses);
   target.needsUpdate = true;
 };
 

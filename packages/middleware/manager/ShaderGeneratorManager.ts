@@ -14,7 +14,7 @@ export class ShaderGeneratorManager {
    * 注册着色器文件
    * @param shader
    */
-  static reigster = function (shader: Shader) {
+  static register = function (shader: Shader) {
     if (ShaderGeneratorManager.library.has(shader.name)) {
       console.warn(
         `shader library has exist shader: ${shader.name} that will be cover.`
