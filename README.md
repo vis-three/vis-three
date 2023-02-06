@@ -7,8 +7,7 @@
 <br/>
 <p align="center">
    <img alt="NPM" src="https://img.shields.io/npm/l/vis-three?color=blue">
-  <img alt="npm" src="https://img.shields.io/npm/v/vis-three?color=light">
-  <img alt="npm" src="https://img.shields.io/npm/dt/vis-three">
+   <img alt="version" src="https://img.shields.io/badge/version-0.5.X-g.svg">
   <!-- <img src="https://img.shields.io/nycrc/Shiotsukikaedesari/vis-three?color=red&label=coverage" alt="coverage"> -->
 </p>
 <br/>
@@ -16,6 +15,20 @@
 ## VIS-THREE
 
 three.js 库二次功能封装 + 配置化的 three.js 开发。
+
+## Packages
+
+`vis-three`所提供的其他模块。
+
+| package                                                          | Version                                                                                               | download                                                                              |
+| ---------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| [@vis-three/core](packages/core)                                 | ![@vis-three/core](https://img.shields.io/npm/v/@vis-three/core.svg?label=%20)                        | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/core">                   |
+| [@vis-three/middleware](packages/middleware)                     | ![@vis-three/middleware](https://img.shields.io/npm/v/@vis-three/middleware.svg?label=%20)            | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/middleware">             |
+| [@vis-three/convenient](packages/convenient)                     | ![@vis-three/convenient](https://img.shields.io/npm/v/@vis-three/convenient?label=%20)                | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/convenient">             |
+| [@vis-three/utils](packages/utils)                               | ![@vis-three/utils](https://img.shields.io/npm/v/@vis-three/utils?label=%20)                          | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/utils">                  |
+| [@vis-three/shader-library](packages/library/shader/)            | ![@vis-three/shader-library](https://img.shields.io/npm/v/@vis-three/shader-library?label=%20)        | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/shader-library">         |
+| [@vis-three/event-library](packages/library/event/)              | ![@vis-three/event-library](https://img.shields.io/npm/v/@vis-three/event-library?label=%20)          | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/event-library">          |
+| [@vis-three/animate-script-library](packages/library/aniScript/) | ![@vis-three/event-library](https://img.shields.io/npm/v/@vis-three/animate-script-library?label=%20) | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/animate-script-library"> |
 
 ## 主页、demo、文档在线地址
 
@@ -30,20 +43,6 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 ## 交流、合作、通知
 
 - QQ 群：1025827206
-
-## Packages
-
-`vis-three`所提供的其他模块。
-
-| Package                                                          | Version                                                                                               |
-| ---------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------- |
-| [@vis-three/core](packages/core)                                 | ![@vis-three/core](https://img.shields.io/npm/v/@vis-three/core.svg?label=%20)                        |
-| [@vis-three/middleware](packages/middleware)                     | ![@vis-three/middleware](https://img.shields.io/npm/v/@vis-three/middleware.svg?label=%20)            |
-| [@vis-three/convenient](packages/convenient)                     | ![@vis-three/convenient](https://img.shields.io/npm/v/@vis-three/convenient?label=%20)                |
-| [@vis-three/utils](packages/utils)                               | ![@vis-three/utils](https://img.shields.io/npm/v/@vis-three/utils?label=%20)                          |
-| [@vis-three/shader-library](packages/library/shader/)            | ![@vis-three/shader-library](https://img.shields.io/npm/v/@vis-three/shader-library?label=%20)        |
-| [@vis-three/event-library](packages/library/event/)              | ![@vis-three/event-library](https://img.shields.io/npm/v/@vis-three/event-library?label=%20)          |
-| [@vis-three/animate-script-library](packages/library/aniScript/) | ![@vis-three/event-library](https://img.shields.io/npm/v/@vis-three/animate-script-library?label=%20) |
 
 ## 衍生产品 Demo
 
