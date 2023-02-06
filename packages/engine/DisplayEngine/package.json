@@ -26,19 +26,19 @@
   },
   "dependencies": {
     "@vis-three/camera-adaptive-plugin": "workspace:^0.5.0",
-    "@vis-three/core": "workspace:^0.5.2",
+    "@vis-three/core": "workspace:^0.5.10",
     "@vis-three/css2d-render-strategy": "workspace:^0.5.1",
-    "@vis-three/css2d-renderer-plugin": "workspace:^0.5.3",
+    "@vis-three/css2d-renderer-plugin": "workspace:^0.5.10",
     "@vis-three/css3d-render-strategy": "workspace:^0.5.1",
-    "@vis-three/css3d-renderer-plugin": "workspace:^0.5.1",
+    "@vis-three/css3d-renderer-plugin": "workspace:^0.5.10",
     "@vis-three/effect-composer-plugin": "workspace:^0.5.1",
-    "@vis-three/effect-render-strategy": "workspace:^0.5.1",
+    "@vis-three/effect-render-strategy": "workspace:^0.5.2",
     "@vis-three/event-manager-plugin": "workspace:^0.5.2",
-    "@vis-three/orbit-controls-plugin": "workspace:^0.5.4",
+    "@vis-three/orbit-controls-plugin": "workspace:^0.5.10",
     "@vis-three/orbit-render-strategy": "workspace:^0.5.1",
     "@vis-three/pointer-manager-plugin": "workspace:^0.5.3",
-    "@vis-three/render-manager-plugin": "workspace:^0.5.0",
-    "@vis-three/webgl-renderer-plugin": "workspace:^0.5.2"
+    "@vis-three/render-manager-plugin": "workspace:^0.5.3",
+    "@vis-three/webgl-renderer-plugin": "workspace:^0.5.10"
   },
   "files": [
     "**/*.js",

@@ -22,10 +22,10 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.5.2",
+    "@vis-three/core": "workspace:^0.5.10",
     "@vis-three/event-manager-plugin": "workspace:^0.5.2",
     "@vis-three/object-helper-plugin": "workspace:^0.5.1",
-    "@vis-three/selection-plugin": "workspace:^0.5.0",
+    "@vis-three/selection-plugin": "workspace:^0.5.1",
     "@vis-three/transform-controls-plugin": "workspace:^0.5.1",
     "@vis-three/utils": "workspace:^0.5.0"
   },

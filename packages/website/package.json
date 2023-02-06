@@ -7,6 +7,7 @@
   "license": "MPL-2.0",
   "repository": "https://github.com/Shiotsukikaedesari/vis-three",
   "homepage": "https://shiotsukikaedesari.github.io/vis-three",
+  "private": true,
   "bugs": {
     "url": "https://github.com/Shiotsukikaedesari/vis-three/issues"
   },
