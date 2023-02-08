@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
-    "@vis-three/middleware": "workspace:^0.5.8",
+    "@vis-three/middleware": "workspace:^0.5.10",
     "@vis-three/object-helper-plugin": "workspace:^0.5.1",
     "@vis-three/transform-controls-plugin": "workspace:^0.5.1",
     "@vis-three/utils": "workspace:^0.5.0"
