@@ -9,6 +9,8 @@ import {
 import { Optional, transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 import { VisOrbitControls } from "./VisOrbitControls";
+
+export * from "./VisOrbitControls";
 export interface OrbitControlsEngine extends Engine {
   orbitControls: VisOrbitControls;
 }

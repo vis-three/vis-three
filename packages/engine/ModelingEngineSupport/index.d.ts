@@ -6,7 +6,7 @@ import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { Screenshot, WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
 import { EffectComposerEngine } from "@vis-three/effect-composer-plugin";
 import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
-import { SelectionEngine } from "@vis-three/selection-plugin";
+import { SelectionSupportEngine } from "@vis-three/selection-support-plugin";
 import { AxesHelperEngine, AxesHelperOptions } from "@vis-three/axes-helper-plugin";
 import { GridHelperEngine } from "@vis-three/grid-helper-plugin";
 import { VIEWPOINT, ViewpointEngine } from "@vis-three/viewpoint-plugin";
@@ -18,8 +18,9 @@ import { CSS2DRendererEngine } from "@vis-three/css2d-renderer-plugin";
 import { CSS3DRendererEngine } from "@vis-three/css3d-renderer-plugin";
 import { VisStats } from "@vis-three/stats-plugin/VisStats";
 import { PassDataSupport, PASS_CONFIGTYPE } from "@vis-three/composer-support-strategy";
+import { SelectionEngine } from "@vis-three/selection-plugin";
 export { VIEWPOINT, PassDataSupport, PASS_CONFIGTYPE };
-export declare class ModelingEngineSupport extends EngineSupport implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, KeyboardManagerEngine, StatsEngine, TransformControlsEngine, ViewpointEngine, GridHelperEngine, AxesHelperEngine, SelectionEngine, ObjectHelperEngine, CSS2DRendererEngine, CSS3DRendererEngine {
+export declare class ModelingEngineSupport extends EngineSupport implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, KeyboardManagerEngine, StatsEngine, TransformControlsEngine, ViewpointEngine, GridHelperEngine, AxesHelperEngine, SelectionSupportEngine, ObjectHelperEngine, CSS2DRendererEngine, CSS3DRendererEngine {
     webGLRenderer: WebGLRenderer;
     getScreenshot: (params?: Screenshot | undefined) => Promise<string>;
     effectComposer: EffectComposer;
@@ -37,6 +38,7 @@ export declare class ModelingEngineSupport extends EngineSupport implements WebG
     setAxesHelper: (params: AxesHelperOptions) => AxesHelperEngine;
     selectionBox: Set<Object3D<Event>>;
     setSelectionBox: (objects: Object3D<Event>[]) => SelectionEngine;
+    setSelectionBoxBySymbol: (symbols: string[]) => SelectionSupportEngine;
     objectHelperManager: ObjectHelperManager;
     setObjectHelper: (show: boolean) => ObjectHelperEngine;
     css2DRenderer: CSS2DRenderer;

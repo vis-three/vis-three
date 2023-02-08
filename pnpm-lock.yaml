@@ -306,12 +306,13 @@ importers:
       '@vis-three/orbit-render-strategy': workspace:^0.5.1
       '@vis-three/orbit-viewpoint-strategy': workspace:^0.5.1
       '@vis-three/selection-plugin': workspace:^0.5.1
+      '@vis-three/selection-support-plugin': workspace:^0.5.0
       '@vis-three/stats-plugin': workspace:^0.5.10
       '@vis-three/stats-render-strategy': workspace:^0.5.1
-      '@vis-three/trans-select-event-strategy': workspace:^0.5.1
+      '@vis-three/trans-select-event-support-strategy': workspace:^0.5.0
       '@vis-three/transform-controls-helper-filter-strategy': workspace:^0.5.2
       '@vis-three/transform-controls-plugin': workspace:^0.5.1
-      '@vis-three/transform-controls-support-strategy': workspace:^0.5.1
+      '@vis-three/transform-controls-support-strategy': workspace:^0.5.2
       '@vis-three/transform-keyboard-strategy': workspace:^0.5.1
       '@vis-three/viewpoint-plugin': workspace:^0.5.2
       '@vis-three/webgl-renderer-plugin': workspace:^0.5.10
@@ -344,9 +345,10 @@ importers:
       '@vis-three/orbit-render-strategy': link:../../strategy/OrbitRenderStrategy
       '@vis-three/orbit-viewpoint-strategy': link:../../strategy/OrbitViewpointStrategy
       '@vis-three/selection-plugin': link:../../plugins/SelectionPlugin
+      '@vis-three/selection-support-plugin': link:../../plugins/SelectionSupportPlugin
       '@vis-three/stats-plugin': link:../../plugins/StatsPlugin
       '@vis-three/stats-render-strategy': link:../../strategy/StatsRenderStrategy
-      '@vis-three/trans-select-event-strategy': link:../../strategy/TransSelectEventStrategy
+      '@vis-three/trans-select-event-support-strategy': link:../../strategy/TransSelectEventSupportStrategy
       '@vis-three/transform-controls-helper-filter-strategy': link:../../strategy/TransformControlsHelperFilterStrategy
       '@vis-three/transform-controls-plugin': link:../../plugins/TransformControlsPlugin
       '@vis-three/transform-controls-support-strategy': link:../../strategy/TransformControlsSupportStrategy

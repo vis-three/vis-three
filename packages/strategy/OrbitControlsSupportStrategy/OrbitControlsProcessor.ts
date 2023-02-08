@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import { VisOrbitControls } from "@vis-three/core";
+import { VisOrbitControls } from "@vis-three/orbit-controls-plugin";
 import { syncObject } from "@vis-three/utils";
 import {
   CONFIGTYPE,

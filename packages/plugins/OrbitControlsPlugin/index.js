@@ -2,6 +2,7 @@ import { ENGINE_EVENT, } from "@vis-three/core";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 import { VisOrbitControls } from "./VisOrbitControls";
+export * from "./VisOrbitControls";
 export const ORBIT_CONTROLS_PLUGIN = transPkgName(pkgname);
 export const OrbitControlsPlugin = function () {
     let setDomFun;

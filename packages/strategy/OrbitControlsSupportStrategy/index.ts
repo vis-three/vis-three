@@ -33,10 +33,12 @@ export const OrbitControlsSupportStrategy: Strategy<OrbitControlsSupportEngine> 
 
         compiler.map.set(
           uniqueSymbol(CONFIGTYPE.ORBITCONTROLS),
+          //@ts-ignore
           engine.orbitControls
         );
 
         compiler.weakMap.set(
+          //@ts-ignore
           engine.orbitControls,
           uniqueSymbol(CONFIGTYPE.ORBITCONTROLS)
         );

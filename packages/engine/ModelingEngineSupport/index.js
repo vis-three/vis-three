@@ -3,7 +3,7 @@ import { WebGLRendererPlugin, } from "@vis-three/webgl-renderer-plugin";
 import { EffectComposerPlugin, } from "@vis-three/effect-composer-plugin";
 import { OrbitControlsPlugin, } from "@vis-three/orbit-controls-plugin";
 import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
-import { SelectionPlugin } from "@vis-three/selection-plugin";
+import { SelectionSupportPlugin, } from "@vis-three/selection-support-plugin";
 import { AxesHelperPlugin, } from "@vis-three/axes-helper-plugin";
 import { GridHelperPlugin, } from "@vis-three/grid-helper-plugin";
 import { VIEWPOINT, ViewpointPlugin, } from "@vis-three/viewpoint-plugin";
@@ -18,7 +18,7 @@ import { CSS3DRenderStrategy } from "@vis-three/css3d-render-strategy";
 import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
 import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
 import { OrbitViewpointStrategy } from "@vis-three/orbit-viewpoint-strategy";
-import { TransSelectEventStrategy } from "@vis-three/trans-select-event-strategy";
+import { TransSelectEventSupportStrategy } from "@vis-three/trans-select-event-support-strategy";
 import { StatsRenderStrategy } from "@vis-three/stats-render-strategy";
 import { GridViewpointStrategy } from "@vis-three/grid-viewpoint-strategy";
 import { TransformKeyboardStrategy } from "@vis-three/transform-keyboard-strategy";
@@ -29,6 +29,7 @@ import { WebGLRendererSupportStrategy } from "@vis-three/webgl-renderer-support-
 import { TransformControlsSupportStrategy } from "@vis-three/transform-controls-support-strategy";
 import { TransformControlsHelperFilterStrategy } from "@vis-three/transform-controls-helper-filter-strategy";
 import { OrbitControlsSupportStrategy } from "@vis-three/orbit-controls-support-strategy";
+import { SelectionPlugin } from "@vis-three/selection-plugin";
 export { VIEWPOINT, PassDataSupport, PASS_CONFIGTYPE };
 export class ModelingEngineSupport extends EngineSupport {
     constructor(parameters) {
@@ -45,6 +46,7 @@ export class ModelingEngineSupport extends EngineSupport {
             .install(OrbitControlsPlugin())
             .install(CameraAdaptivePlugin())
             .install(SelectionPlugin())
+            .install(SelectionSupportPlugin())
             .install(AxesHelperPlugin())
             .install(GridHelperPlugin())
             .install(ViewpointPlugin())
@@ -57,7 +59,7 @@ export class ModelingEngineSupport extends EngineSupport {
             .exec(EffectRenderStrategy())
             .exec(OrbitRenderStrategy())
             .exec(OrbitViewpointStrategy())
-            .exec(TransSelectEventStrategy())
+            .exec(TransSelectEventSupportStrategy())
             .exec(StatsRenderStrategy())
             .exec(GridViewpointStrategy())
             .exec(TransformKeyboardStrategy())
