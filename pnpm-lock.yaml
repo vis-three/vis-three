@@ -2,35 +2,6 @@ lockfileVersion: 5.4
 
 importers:
 
-  .:
-    specifiers:
-      '@types/node': ^18.11.12
-      '@vis-three/animate-script-library': workspace:^0.5.1
-      '@vis-three/convenient': workspace:^0.5.1
-      '@vis-three/core': workspace:^0.5.10
-      '@vis-three/display-engine': workspace:^0.5.1
-      '@vis-three/display-engine-support': workspace:^0.5.3
-      '@vis-three/event-library': workspace:^0.5.2
-      '@vis-three/middleware': workspace:^0.5.8
-      '@vis-three/modeling-engine': workspace:^0.5.1
-      '@vis-three/modeling-engine-support': workspace:^0.5.3
-      '@vis-three/shader-library': workspace:^0.5.5
-      '@vis-three/utils': workspace:^0.5.0
-    dependencies:
-      '@vis-three/animate-script-library': link:packages/library/aniScript
-      '@vis-three/convenient': link:packages/convenient
-      '@vis-three/core': link:packages/core
-      '@vis-three/display-engine': link:packages/engine/DisplayEngine
-      '@vis-three/display-engine-support': link:packages/engine/DisplayEngineSupport
-      '@vis-three/event-library': link:packages/library/event
-      '@vis-three/middleware': link:packages/middleware
-      '@vis-three/modeling-engine': link:packages/engine/ModelingEngine
-      '@vis-three/modeling-engine-support': link:packages/engine/ModelingEngineSupport
-      '@vis-three/shader-library': link:packages/library/shader
-      '@vis-three/utils': link:packages/utils
-    devDependencies:
-      '@types/node': 18.11.18
-
   packages/convenient:
     specifiers:
       '@types/node': ^18.11.12
@@ -440,9 +411,11 @@ importers:
       '@vis-three/pointer-visual-controls-plugin': workspace:^0.5.0
       '@vis-three/render-manager-plugin': workspace:^0.5.3
       '@vis-three/selection-plugin': workspace:^0.5.1
+      '@vis-three/selection-support-plugin': workspace:^0.5.0
       '@vis-three/stats-plugin': workspace:^0.5.10
       '@vis-three/stats-render-strategy': workspace:^0.5.1
       '@vis-three/trans-select-event-strategy': workspace:^0.5.1
+      '@vis-three/trans-select-event-support-strategy': workspace:^0.5.0
       '@vis-three/transform-controls-helper-filter-strategy': workspace:^0.5.2
       '@vis-three/transform-controls-plugin': workspace:^0.5.1
       '@vis-three/transform-controls-support-strategy': workspace:^0.5.1
@@ -512,9 +485,11 @@ importers:
       '@vis-three/pointer-visual-controls-plugin': link:../plugins/PointerVisualControlsPlugin
       '@vis-three/render-manager-plugin': link:../plugins/RenderManagerPlugin
       '@vis-three/selection-plugin': link:../plugins/SelectionPlugin
+      '@vis-three/selection-support-plugin': link:../plugins/SelectionSupportPlugin
       '@vis-three/stats-plugin': link:../plugins/StatsPlugin
       '@vis-three/stats-render-strategy': link:../strategy/StatsRenderStrategy
       '@vis-three/trans-select-event-strategy': link:../strategy/TransSelectEventStrategy
+      '@vis-three/trans-select-event-support-strategy': link:../strategy/TransSelectEventSupportStrategy
       '@vis-three/transform-controls-helper-filter-strategy': link:../strategy/TransformControlsHelperFilterStrategy
       '@vis-three/transform-controls-plugin': link:../plugins/TransformControlsPlugin
       '@vis-three/transform-controls-support-strategy': link:../strategy/TransformControlsSupportStrategy
@@ -1229,6 +1204,39 @@ importers:
       three: 0.141.0
       typescript: 4.9.3
 
+  packages/plugins/SelectionSupportPlugin:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.5.10
+      '@vis-three/middleware': workspace:^0.5.10
+      '@vis-three/selection-plugin': workspace:^0.5.1
+      '@vis-three/utils': workspace:^0.5.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+    dependencies:
+      '@vis-three/core': link:../../core
+      '@vis-three/middleware': link:../../middleware
+      '@vis-three/selection-plugin': link:../SelectionPlugin
+      '@vis-three/utils': link:../../utils
+    devDependencies:
+      '@types/node': 18.11.18
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.47.1_txmweb6yn7coi7nfrp22gpyqmy
+      '@typescript-eslint/parser': 5.47.1_lzzuuodtsqwxnvqeq4g4likcqa
+      eslint: 8.30.0
+      eslint-config-prettier: 8.5.0_eslint@8.30.0
+      eslint-plugin-prettier: 4.2.1_kl4pe43v5b43npmso5hoplpbyi
+      prettier: 2.8.1
+      three: 0.141.0
+      typescript: 4.9.4
+
   packages/plugins/StatsPlugin:
     specifiers:
       '@types/node': ^18.11.12
@@ -1812,6 +1820,45 @@ importers:
       prettier: 2.8.0
       three: 0.141.0
       typescript: 4.9.3
+
+  packages/strategy/TransSelectEventSupportStrategy:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.5.10
+      '@vis-three/event-manager-plugin': workspace:^0.5.2
+      '@vis-three/middleware': workspace:^0.5.10
+      '@vis-three/selection-plugin': workspace:^0.5.1
+      '@vis-three/selection-support-plugin': workspace:^0.5.0
+      '@vis-three/transform-controls-plugin': workspace:^0.5.1
+      '@vis-three/utils': workspace:^0.5.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+    dependencies:
+      '@vis-three/core': link:../../core
+      '@vis-three/event-manager-plugin': link:../../plugins/EventManagerPlugin
+      '@vis-three/middleware': link:../../middleware
+      '@vis-three/selection-plugin': link:../../plugins/SelectionPlugin
+      '@vis-three/selection-support-plugin': link:../../plugins/SelectionSupportPlugin
+      '@vis-three/transform-controls-plugin': link:../../plugins/TransformControlsPlugin
+      '@vis-three/utils': link:../../utils
+    devDependencies:
+      '@types/node': 18.11.18
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.47.1_txmweb6yn7coi7nfrp22gpyqmy
+      '@typescript-eslint/parser': 5.47.1_lzzuuodtsqwxnvqeq4g4likcqa
+      eslint: 8.30.0
+      eslint-config-prettier: 8.5.0_eslint@8.30.0
+      eslint-plugin-prettier: 4.2.1_kl4pe43v5b43npmso5hoplpbyi
+      prettier: 2.8.1
+      three: 0.141.0
+      typescript: 4.9.4
 
   packages/strategy/TransformControlsHelperFilterStrategy:
     specifiers:

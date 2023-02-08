@@ -100,18 +100,11 @@ export class DataSupportManager {
 
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
-        if (this[key] !== undefined) {
-          this[key] = parameters[key];
+        if (this.dataSupportMap.has(parameters[key].MODULE)) {
+          this.dataSupportMap.set(parameters[key].MODULE, parameters[key]);
         }
       });
     }
-
-    Object.keys(this).forEach((key) => {
-      const dataSupport = this[key];
-      if (dataSupport instanceof DataSupport) {
-        this.dataSupportMap.set(dataSupport.MODULE, dataSupport);
-      }
-    });
   }
 
   /**

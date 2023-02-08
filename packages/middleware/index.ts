@@ -1,3 +1,6 @@
+import { COMPILER_MANAGER_PLUGIN } from "./plugin/CompilerManagerPlugin";
+import { DATA_SUPPORT_MANAGER_PLUGIN } from "./plugin/DataSupportManagerPlugin";
+
 export * from "./module";
 export * from "./common";
 export * from "./constants";
@@ -36,3 +39,5 @@ export * from "@vis-three/event-manager-plugin";
 export * from "@vis-three/render-manager-plugin";
 export * from "@vis-three/loader-manager-plugin";
 export * from "@vis-three/pointer-manager-plugin";
+
+export const PLUGINS = [COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN];

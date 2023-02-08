@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SelectionSupportPlugin</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+
+    #intro {
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      font-size: 16px;
+      color: white;
+      transform: translate(-50%);
+    }
+
+    #selected {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translate(-50%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .selected-elem {
+      color: white;
+      margin: 5px 0;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+    <div id="button-position">
+      <div id="button-group">
+        <button id="mesh">mesh</button>
+
+        <button id="line">line</button>
+
+        <button id="points">points</button>
+      </div>
+    </div>
+    <div id="selected"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
+      import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { TransformControlsPlugin } from "@vis-three/transform-controls-plugin";
+      import { TransSelectEventStrategy } from "@vis-three/trans-select-event-strategy";
+      import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+
+      import {
+        defineEngineSupport,
+        generateConfig,
+      } from "@vis-three/middleware";
+
+      import { SelectionPlugin } from "@vis-three/selection-plugin";
+      import { SelectionSupportPlugin } from "@vis-three/selection-support-plugin";
+
+      const engine = defineEngineSupport({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          EffectComposerPlugin({
+            WebGLMultisampleRenderTarget: true,
+          }),
+          CameraAdaptivePlugin(),
+          TransformControlsPlugin(),
+          SelectionPlugin(),
+          SelectionSupportPlugin(),
+        ],
+        strategy: [EffectRenderStrategy(), TransSelectEventStrategy()],
+      })
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = scene.vid;
+
+      const pointLight = generateConfig("PointLight", {
+        position: {
+          y: 30,
+        },
+      });
+
+      const material = generateConfig("MeshStandardMaterial", {
+        color: "rgb(255, 105, 100)",
+      });
+
+      const geometry = generateConfig("BoxGeometry", {
+        width: 10,
+        height: 10,
+        depth: 10,
+      });
+
+      const mesh = generateConfig("Mesh", {
+        material: material.vid,
+        geometry: geometry.vid,
+        position: {
+          x: 10,
+        },
+      });
+
+      const line = generateConfig("Line", {
+        geometry: geometry.vid,
+      });
+
+      const pointsMaterial = generateConfig("PointsMaterial");
+
+      const points = generateConfig("Points", {
+        geometry: geometry.vid,
+        material: pointsMaterial.vid,
+        position: {
+          x: -10,
+        },
+      });
+
+      document.getElementById("mesh").onclick = () => {
+        engine.setSelectionBoxBySymbol([mesh.vid]);
+      };
+
+      document.getElementById("line").onclick = () => {
+        engine.setSelectionBoxBySymbol([line.vid]);
+      };
+
+      document.getElementById("points").onclick = () => {
+        engine.setSelectionBoxBySymbol([points.vid]);
+      };
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>

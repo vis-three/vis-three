@@ -1,5 +1,5 @@
 import { Camera, MOUSE, Spherical, TOUCH, Vector3 } from "three";
-import { EventDispatcher } from "@vis-three/core/eventDispatcher";
+import { EventDispatcher } from "@vis-three/core";
 export declare class VisOrbitControls extends EventDispatcher {
     object: Camera;
     domElement: HTMLElement;

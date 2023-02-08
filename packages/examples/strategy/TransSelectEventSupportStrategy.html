@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TransformControlsSupportStrategy</title>
+    <title>TransSelectEventSupportStrategy</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -23,7 +23,6 @@
       import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
       import { TransformControlsPlugin } from "@vis-three/transform-controls-plugin";
       import { SelectionPlugin } from "@vis-three/selection-plugin";
-      import { TransSelectEventStrategy } from "@vis-three/trans-select-event-strategy";
       import { ComposerSupportStrategy } from "@vis-three/composer-support-strategy";
       import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
       import {
@@ -32,7 +31,7 @@
       } from "@vis-three/middleware";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-      import { TransformControlsSupportStrategy } from "@vis-three/transform-controls-support-strategy";
+      import { TransSelectEventSupportStrategy } from "@vis-three/trans-select-event-support-strategy";
 
       const engine = defineEngineSupport({
         plugins: [
@@ -51,8 +50,7 @@
         strategy: [
           ComposerSupportStrategy(),
           EffectRenderStrategy(),
-          TransSelectEventStrategy(),
-          TransformControlsSupportStrategy(),
+          TransSelectEventSupportStrategy(),
         ],
       })
         .setDom(document.getElementById("app"))
@@ -88,27 +86,7 @@
         geometry: geometry.vid,
       });
 
-      engine.setSelectionBox([engine.getObjectBySymbol(mesh.vid)]);
-
-      const transformControls = generateConfig("TransformControls");
-
-      window.engine = engine;
-
-      const gui = new GUI();
-
-      gui.add(transformControls, "enabled");
-      gui.add(transformControls, "snapAllow");
-      gui.add(transformControls, "mode", ["translate", "rotate", "scale"]);
-
-      window.addEventListener("resize", () => {
-        engine.setSize();
-      });
-
-      engine.transformControls.addEventListener("changed", (event) => {
-        document.getElementById(
-          "tips"
-        ).innerHTML = `x: ${mesh.position.x}, y:${mesh.position.y}, z: ${mesh.position.z}`;
-      });
+      engine.setSelectionBox([mesh.vid]);
     </script>
   </body>
 </html>

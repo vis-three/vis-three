@@ -1,7 +1,10 @@
 {
-  "name": "@vis-three/transform-controls-support-strategy",
-  "version": "0.5.2",
+  "name": "@vis-three/selection-support-plugin",
+  "version": "0.5.0",
   "description": "",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
   "scripts": {
@@ -23,8 +26,8 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
-    "@vis-three/middleware": "workspace:^0.5.8",
-    "@vis-three/transform-controls-plugin": "workspace:^0.5.1",
+    "@vis-three/middleware": "workspace:^0.5.10",
+    "@vis-three/selection-plugin": "workspace:^0.5.1",
     "@vis-three/utils": "workspace:^0.5.0"
   },
   "files": [

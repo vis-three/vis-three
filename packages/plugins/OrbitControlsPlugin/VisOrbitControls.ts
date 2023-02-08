@@ -9,7 +9,7 @@ import {
   Vector2,
   Vector3,
 } from "three";
-import { EventDispatcher } from "@vis-three/core/eventDispatcher";
+import { EventDispatcher } from "@vis-three/core";
 export class VisOrbitControls extends EventDispatcher {
   object: Camera;
   domElement: HTMLElement;

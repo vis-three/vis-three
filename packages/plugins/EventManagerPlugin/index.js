@@ -1,4 +1,4 @@
-import { POINTER_MANAGER_PLUGIN, } from "../PointerManagerPlugin";
+import { POINTER_MANAGER_PLUGIN, } from "@vis-three/pointer-manager-plugin";
 import { EventManager } from "./EventManager";
 import { ENGINE_EVENT, } from "@vis-three/core";
 import { transPkgName } from "@vis-three/utils";

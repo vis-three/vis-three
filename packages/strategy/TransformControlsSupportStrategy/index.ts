@@ -5,10 +5,16 @@ import {
   ControlsCompiler,
   DATA_SUPPORT_MANAGER_PLUGIN,
   MODULETYPE,
+  ObjectConfig,
   uniqueSymbol,
 } from "@vis-three/middleware";
-import { TRANSFORM_CONTROLS_PLUGIN } from "@vis-three/transform-controls-plugin";
+import {
+  ObjectChangedEvent,
+  TRANSFORM_CONTROLS_PLUGIN,
+  TRANSFORM_EVENT,
+} from "@vis-three/transform-controls-plugin";
 import { transPkgName } from "@vis-three/utils";
+import { Object3D } from "three";
 import { Strategy } from "../../core/strategy";
 import { name as pkgname } from "./package.json";
 import TransformControlsProcessor, {
@@ -42,6 +48,34 @@ export const TransformControlsSupportStrategy: Strategy<TransformControlsSupport
         );
 
         Compiler.processor(TransformControlsProcessor as any);
+
+        const objectToConfig = (object: Object3D): ObjectConfig | null => {
+          const symbol = engine.compilerManager.getObjectSymbol(object);
+          if (!symbol) {
+            return null;
+          }
+
+          return engine.dataSupportManager.getConfigBySymbol(symbol);
+        };
+
+        let config: ObjectConfig | null = null;
+        let mode: string;
+        engine.transformControls.addEventListener(
+          TRANSFORM_EVENT.CHANGED,
+          (event) => {
+            const e = event as unknown as ObjectChangedEvent;
+
+            e.transObjectSet.forEach((object) => {
+              config = objectToConfig(object);
+              mode = e.mode;
+              if (config) {
+                config[mode].x = object[mode].x;
+                config[mode].y = object[mode].y;
+                config[mode].z = object[mode].z;
+              }
+            });
+          }
+        );
       },
       rollback() {},
     };

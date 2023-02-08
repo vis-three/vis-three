@@ -43,6 +43,8 @@ export const GridHelperPlugin: Plugin<GridHelperEngine> = function (
       gridHelper.matrixAutoUpdate = false;
       gridHelper.raycast = () => {};
 
+      engine.gridHelper = gridHelper;
+
       engine.scene.add(gridHelper);
 
       engine.setGridHelper = function (show: boolean) {

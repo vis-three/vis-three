@@ -17,6 +17,7 @@ export const GridHelperPlugin = function (params = {}) {
             }
             gridHelper.matrixAutoUpdate = false;
             gridHelper.raycast = () => { };
+            engine.gridHelper = gridHelper;
             engine.scene.add(gridHelper);
             engine.setGridHelper = function (show) {
                 if (show) {
