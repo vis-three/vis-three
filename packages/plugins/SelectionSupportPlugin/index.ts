@@ -4,7 +4,12 @@ import {
   DATA_SUPPORT_MANAGER_PLUGIN,
   EngineSupport,
 } from "@vis-three/middleware";
-import { SelectionEngine, SELECTION_PLUGIN } from "@vis-three/selection-plugin";
+import {
+  SELECTED,
+  SelectedEvent,
+  SelectionEngine,
+  SELECTION_PLUGIN,
+} from "@vis-three/selection-plugin";
 import { Optional, transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 
@@ -12,7 +17,9 @@ export interface SelectionSupportEngine extends SelectionEngine, EngineSupport {
   setSelectionBoxBySymbol: (symbols: string[]) => SelectionSupportEngine;
 }
 
-export const SELECTED = "selected";
+export interface SelectedSupportEvent extends SelectedEvent {
+  objectSymbols: string[];
+}
 
 export const SELECTION_SUPPORT_PLUGIN = transPkgName(pkgname);
 

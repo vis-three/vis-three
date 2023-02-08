@@ -12,7 +12,6 @@
   <style></style>
 
   <body>
-    <div id="tips">x: 0, y: 0, z: 0</div>
     <div id="app"></div>
 
     <script type="module">
@@ -23,6 +22,7 @@
       import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
       import { TransformControlsPlugin } from "@vis-three/transform-controls-plugin";
       import { SelectionPlugin } from "@vis-three/selection-plugin";
+      import { SelectionSupportPlugin } from "@vis-three/selection-support-plugin";
       import { ComposerSupportStrategy } from "@vis-three/composer-support-strategy";
       import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
       import {
@@ -45,6 +45,7 @@
           CameraAdaptivePlugin(),
           GridHelperPlugin(),
           SelectionPlugin(),
+          SelectionSupportPlugin(),
           TransformControlsPlugin(),
         ],
         strategy: [
@@ -86,7 +87,9 @@
         geometry: geometry.vid,
       });
 
-      engine.setSelectionBox([mesh.vid]);
+      engine.setSelectionBoxBySymbol([mesh.vid]);
+
+
     </script>
   </body>
 </html>
