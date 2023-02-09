@@ -66,4 +66,10 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
   <img src="https://contrib.rocks/image?repo=Shiotsukikaedesari/vis-three" />
 </a>
 
-## 赞助
+## 支持
+
+[https://space.bilibili.com/3048588](https://space.bilibili.com/3048588)，支持形式可以采取充电或者你的一键三连
+
+## 赞助者
+
+## 赞助商

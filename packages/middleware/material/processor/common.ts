@@ -23,6 +23,12 @@ export const mapHandler = function <
   C extends MaterialConfig
 >({ target, key, value, engine }: ProcessParams<C, T, EngineSupport>) {
   globalAntiShake.exec((finish) => {
+    if (!value) {
+      target[key] = null;
+      target.needsUpdate = true;
+      return true;
+    }
+
     const texture = engine.compilerManager.getObjectBySymbol(value);
 
     if (!(texture instanceof Texture)) {
