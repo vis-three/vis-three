@@ -80,14 +80,19 @@ export class CompilerManager extends EventDispatcher {
    * 编译器扩展
    * @param compiler
    */
-  extend(compiler) {
+  extend(compiler, focus: boolean = false) {
     if (this.compilerMap.has(compiler.MODULE)) {
       console.warn(
         "compiler manager has exist this compiler, that will cover",
         compiler
       );
+
+      if (focus) {
+        this.compilerMap.set(compiler.MODULE, compiler as BasicCompiler);
+      }
+    } else {
+      this.compilerMap.set(compiler.MODULE, compiler as BasicCompiler);
     }
-    this.compilerMap.set(compiler.MODULE, compiler as BasicCompiler);
   }
 
   getCompiler<D>(module: string) {

@@ -100,7 +100,7 @@ export class DataSupportManager {
 
     if (parameters) {
       Object.keys(parameters).forEach((key) => {
-        if (this.dataSupportMap.has(parameters[key].MODULE)) {
+        if (parameters[key] instanceof DataSupport) {
           this.dataSupportMap.set(parameters[key].MODULE, parameters[key]);
         }
       });
@@ -111,17 +111,25 @@ export class DataSupportManager {
    * 编译器扩展
    * @param compiler
    */
-  extend(dataSupport) {
+  extend(dataSupport, focus: boolean = false) {
     if (this.dataSupportMap.has(dataSupport.MODULE)) {
       console.warn(
         "dataSupport manager has exist this compiler, that will cover",
         dataSupport
       );
+
+      if (focus) {
+        this.dataSupportMap.set(
+          dataSupport.MODULE,
+          dataSupport as DataSupport<SymbolConfig, object, BasicCompiler>
+        );
+      }
+    } else {
+      this.dataSupportMap.set(
+        dataSupport.MODULE,
+        dataSupport as DataSupport<SymbolConfig, object, BasicCompiler>
+      );
     }
-    this.dataSupportMap.set(
-      dataSupport.MODULE,
-      dataSupport as DataSupport<SymbolConfig, object, BasicCompiler>
-    );
   }
 
   /**
