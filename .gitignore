@@ -1,5 +1,5 @@
 node_modules
-.tgz
+**/*.tgz
 # packages/plugins/**/*.d.ts
 # packages/plugins/**/*.js
 # packages/strategy/**/*.d.ts

@@ -26,9 +26,9 @@ export const ComposerSupportStrategy = function () {
             const support = new PassDataSupport();
             const compiler = new PassCompiler();
             compiler.useEngine(engine);
-            support.addCompiler(compiler);
             engine.dataSupportManager.extend(support);
             engine.compilerManager.extend(compiler);
+            engine.dataSupportManager.getDataSupport(support.MODULE).addCompiler(compiler);
         },
         rollback() { },
     };

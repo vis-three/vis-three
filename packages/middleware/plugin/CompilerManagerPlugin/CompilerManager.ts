@@ -82,10 +82,7 @@ export class CompilerManager extends EventDispatcher {
    */
   extend(compiler, focus: boolean = false) {
     if (this.compilerMap.has(compiler.MODULE)) {
-      console.warn(
-        "compiler manager has exist this compiler, that will cover",
-        compiler
-      );
+      console.warn("compiler manager has exist this compiler", compiler);
 
       if (focus) {
         this.compilerMap.set(compiler.MODULE, compiler as BasicCompiler);

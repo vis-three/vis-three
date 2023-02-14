@@ -43,10 +43,15 @@ export const ComposerSupportStrategy: Strategy<ComposerSupportEngine> =
         const compiler = new PassCompiler();
 
         compiler.useEngine(engine);
-        support.addCompiler(compiler);
 
         engine.dataSupportManager.extend(support);
         engine.compilerManager.extend(compiler);
+
+        (
+          engine.dataSupportManager.getDataSupport(
+            support.MODULE
+          )! as PassDataSupport
+        ).addCompiler(compiler);
       },
       rollback() {},
     };

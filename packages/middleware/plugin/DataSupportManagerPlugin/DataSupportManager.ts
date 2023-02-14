@@ -114,7 +114,7 @@ export class DataSupportManager {
   extend(dataSupport, focus: boolean = false) {
     if (this.dataSupportMap.has(dataSupport.MODULE)) {
       console.warn(
-        "dataSupport manager has exist this compiler, that will cover",
+        "dataSupport manager has exist this dataSupport",
         dataSupport
       );
 
