@@ -1,14 +1,13 @@
 import { Strategy } from "@vis-three/core";
 import { CSS3D_RENDERER_PLUGIN } from "@vis-three/css3d-renderer-plugin";
 import {
-  Compiler,
   COMPILER_MANAGER_PLUGIN,
   CONFIGTYPE,
   DATA_SUPPORT_MANAGER_PLUGIN,
   MODULETYPE,
-  RendererCompiler,
   uniqueSymbol,
 } from "@vis-three/middleware";
+import { RendererCompiler } from "@vis-three/middleware/renderer/RendererCompiler";
 import { transPkgName } from "@vis-three/utils";
 import CSS3DRendererProcessor, {
   CSS3DRendererSupportEngine,
@@ -31,17 +30,17 @@ export const CSS3DRendererSupportStrategy: Strategy<CSS3DRendererSupportEngine> 
           MODULETYPE.RENDERER
         )!;
 
-        compiler.map.set(
-          uniqueSymbol(CONFIGTYPE.CSS3DRENDERER),
-          engine.css3DRenderer
-        );
+        compiler.reigstProcessor(CSS3DRendererProcessor, (compiler) => {
+          compiler.map.set(
+            uniqueSymbol(CONFIGTYPE.CSS3DRENDERER),
+            engine.css3DRenderer
+          );
 
-        compiler.weakMap.set(
-          engine.css3DRenderer,
-          uniqueSymbol(CONFIGTYPE.CSS3DRENDERER)
-        );
-
-        Compiler.processor(CSS3DRendererProcessor);
+          compiler.weakMap.set(
+            engine.css3DRenderer,
+            uniqueSymbol(CONFIGTYPE.CSS3DRENDERER)
+          );
+        });
       },
       rollback() {},
     };

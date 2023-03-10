@@ -1,4 +1,5 @@
-import { CONFIGFACTORY, CONFIGTYPE } from "../../../constants";
+import { CONFIGFACTORY, CONFIGTYPE } from "../../../module";
+import { ImageTextureConfig } from "../../../texture/TextureConfig";
 import { ParseParams, Parser, ResourceHanlder } from "./Parser";
 
 export class HTMLImageElementParser extends Parser {
@@ -15,7 +16,9 @@ export class HTMLImageElementParser extends Parser {
   };
 
   parse({ url, resource, configMap, resourceMap }: ParseParams): void {
-    const config = CONFIGFACTORY[CONFIGTYPE.IMAGETEXTURE]();
+    const config = CONFIGFACTORY[
+      CONFIGTYPE.IMAGETEXTURE
+    ]() as ImageTextureConfig;
     config.url = url;
 
     resourceMap.set(url, resource);

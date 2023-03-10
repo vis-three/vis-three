@@ -1,6 +1,6 @@
 import JSONHandler from "./JSONHandler";
 import { v4 } from "uuid";
-import { SymbolConfig } from "../common";
+import { SymbolConfig } from "../module/common";
 import { EngineSupportLoadOptions } from "../engine";
 import { LoadOptions } from "../plugin/DataSupportManagerPlugin";
 import { generateConfig } from "./generateConfig";

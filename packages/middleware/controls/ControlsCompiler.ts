@@ -1,19 +1,18 @@
-import { TransformControls } from "three/examples/jsm/controls/TransformControls";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { MODULETYPE } from "../constants";
-import { Compiler } from "../module";
+import { Compiler, Processor, uniqueSymbol } from "../module";
 
-import { ControlsAllConfig } from "./ControlsConfig";
+import { ControlsConfig } from "./ControlsConfig";
+import { validSymbols } from "./ControlsRule";
 
-export type ControlsAllType = TransformControls | OrbitControls;
-
-export class ControlsCompiler extends Compiler<
-  ControlsAllConfig,
-  ControlsAllType
-> {
-  MODULE: MODULETYPE = MODULETYPE.CONTROLS;
-
+export class ControlsCompiler extends Compiler<ControlsConfig, any> {
   constructor() {
     super();
+  }
+
+  reigstProcessor(
+    processor: Processor<any, any, any, any>,
+    fun: (compiler: Compiler<ControlsConfig, any>) => void
+  ): this {
+    validSymbols.push(uniqueSymbol(processor.type));
+    return super.reigstProcessor(processor, fun);
   }
 }

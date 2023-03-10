@@ -1,9 +1,10 @@
 import { syncObject } from "@vis-three/utils";
-import { SymbolConfig } from "../../common";
+import { SymbolConfig } from "../common";
 import { EngineSupport } from "../../engine";
 import { ProxyNotice } from "../DataContainer";
 
 import { Processor } from "../Processor";
+import { installProcessor } from "../space";
 
 export type CompilerTarget<C extends SymbolConfig> = Record<string, C>;
 
@@ -11,23 +12,13 @@ export type BasicCompiler = Compiler<SymbolConfig, object>;
 
 export type CompileNotice = Omit<ProxyNotice, "path"> & { path: string[] };
 
-export abstract class Compiler<C extends SymbolConfig, O extends object> {
-  static processors = new Map<
+export class Compiler<C extends SymbolConfig, O extends object> {
+  MODULE: string = "";
+
+  processors = new Map<
     string,
-    Processor<SymbolConfig, object, EngineSupport>
+    Processor<SymbolConfig, object, EngineSupport, any>
   >();
-
-  static processor = function <C extends SymbolConfig, T extends object, E extends EngineSupport>(
-    processor: Processor<C, T, E>
-  ) {
-    Compiler.processors.set(
-      processor.configType,
-      <Processor<SymbolConfig, object, EngineSupport>>(<unknown>processor)
-    );
-  };
-
-  abstract MODULE: string;
-
   target: CompilerTarget<C> = {} as CompilerTarget<C>;
   map: Map<SymbolConfig["vid"], O> = new Map();
   weakMap: WeakMap<O, SymbolConfig["vid"]> = new WeakMap();
@@ -36,7 +27,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
   private cacheCompile?: {
     target: O;
     config: C;
-    processor: Processor<SymbolConfig, object, EngineSupport>;
+    processor: Processor<SymbolConfig, object, EngineSupport, any>;
     vid: string;
   };
 
@@ -55,18 +46,21 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
   }
 
   add(config: C): O | null {
-    if (!Compiler.processors.has(config.type)) {
+    if (!this.processors.has(config.type)) {
       console.warn(
         `${this.MODULE} compiler can not support this type: ${config.type}`
       );
       return null;
     }
 
-    const processor = Compiler.processors.get(
-      config.type
-    )! as unknown as Processor<C, O, EngineSupport>;
+    const processor = this.processors.get(config.type)! as unknown as Processor<
+      C,
+      O,
+      EngineSupport,
+      any
+    >;
 
-    const object = processor.create(config, this.engine);
+    const object = processor.create(config, this.engine, this);
     this.map.set(config.vid, object);
     this.weakMap.set(object, config.vid);
 
@@ -83,7 +77,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
       return this;
     }
 
-    if (!Compiler.processors.has(config.type)) {
+    if (!this.processors.has(config.type)) {
       console.warn(
         `${this.MODULE} compiler can not support this type: ${config.type}`
       );
@@ -91,7 +85,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
     }
 
     const object = this.map.get(vid)!;
-    Compiler.processors.get(config.type)!.dispose(object);
+    this.processors.get(config.type)!.dispose(object, this.engine, this);
     this.map.delete(vid);
     this.weakMap.delete(object);
     return this;
@@ -124,7 +118,7 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
 
     let object: O;
     let config: C;
-    let processor: Processor<SymbolConfig, object, EngineSupport>;
+    let processor: Processor<SymbolConfig, object, EngineSupport, any>;
 
     if (cacheCompile && cacheCompile.vid === vid) {
       object = cacheCompile.target;
@@ -147,12 +141,12 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
       object = this.map.get(vid)!;
       config = this.target[vid]!;
 
-      if (!Compiler.processors.has(config.type)) {
+      if (!this.processors.has(config.type)) {
         console.warn(`PassCompiler can not support this type: ${config.type}`);
         return this;
       }
 
-      processor = Compiler.processors.get(config.type)!;
+      processor = this.processors.get(config.type)!;
 
       this.cacheCompile = {
         target: object,
@@ -196,18 +190,35 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
 
       const object = this.map.get(config.vid)!;
 
-      if (!Compiler.processors.has(config.type)) {
+      if (!this.processors.has(config.type)) {
         console.warn(
           `${this.MODULE}  can not support this type: ${config.type}`
         );
         continue;
       }
 
-      Compiler.processors.get(config.type)!.dispose(object);
+      this.processors.get(config.type)!.dispose(object, this.engine, this);
     }
 
     this.map.clear();
     this.target = {} as CompilerTarget<C>;
+    return this;
+  }
+
+  reigstProcessor(
+    processor: Processor<any, any, any, any>,
+    fun: (compiler: Compiler<C, O>) => void
+  ): this {
+    if (this.processors.has(processor.type)) {
+      console.warn(
+        `${this.MODULE} compiler has already exist this processor ${processor.type}, that will be cover.`
+      );
+      return this;
+    }
+    this.processors.set(processor.type, processor);
+    installProcessor(processor);
+    fun(this);
+
     return this;
   }
 
@@ -218,3 +229,28 @@ export abstract class Compiler<C extends SymbolConfig, O extends object> {
     return this.map.get(vid) || null;
   }
 }
+
+export interface CompilerSimplifier<C extends SymbolConfig, O extends object> {
+  new (): Compiler<C, O>;
+}
+
+export const CompilerFactory = function <
+  C extends SymbolConfig,
+  O extends object
+>(
+  type: string,
+  compiler: typeof Compiler<C, O>,
+  processors: Processor<any, any, any, any>[]
+): CompilerSimplifier<C, O> {
+  return class extends compiler {
+    MODULE = type;
+
+    constructor() {
+      super();
+
+      for (const processor of processors) {
+        this.processors.set(processor.type, processor);
+      }
+    }
+  };
+};

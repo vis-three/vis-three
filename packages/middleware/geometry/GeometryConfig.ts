@@ -1,4 +1,3 @@
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import {
   BoxGeometryConfig,
   CircleGeometryConfig,
@@ -50,7 +49,6 @@ export const getGeometryConfig = function (): GeometryConfig {
 
 export const getBoxGeometryConfig = function (): BoxGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: CONFIGTYPE.BOXGEOMETRY,
     width: 5,
     height: 5,
     depth: 5,
@@ -62,7 +60,6 @@ export const getBoxGeometryConfig = function (): BoxGeometryConfig {
 
 export const getSphereGeometryConfig = function (): SphereGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: CONFIGTYPE.SPHEREGEOMETRY,
     radius: 3,
     widthSegments: 32,
     heightSegments: 32,
@@ -75,7 +72,6 @@ export const getSphereGeometryConfig = function (): SphereGeometryConfig {
 
 export const getPlaneGeometryConfig = function (): PlaneGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: CONFIGTYPE.PLANEGEOMETRY,
     width: 5,
     height: 5,
     widthSegments: 1,
@@ -85,7 +81,6 @@ export const getPlaneGeometryConfig = function (): PlaneGeometryConfig {
 
 export const getCircleGeometryConfig = function (): CircleGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: CONFIGTYPE.CIRCLEGEOMETRY,
     radius: 3,
     segments: 8,
     thetaStart: 0,
@@ -95,7 +90,6 @@ export const getCircleGeometryConfig = function (): CircleGeometryConfig {
 
 export const getConeGeometryConfig = function (): ConeGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: CONFIGTYPE.CONEGEOMETRY,
     radius: 3,
     height: 5,
     radialSegments: 8,
@@ -108,7 +102,6 @@ export const getConeGeometryConfig = function (): ConeGeometryConfig {
 
 export const getTorusGeometryConfig = function (): TorusGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: CONFIGTYPE.TORUSGEOMETRY,
     radius: 3,
     tube: 0.4,
     radialSegments: 8,
@@ -119,7 +112,6 @@ export const getTorusGeometryConfig = function (): TorusGeometryConfig {
 
 export const getRingGeometryConfig = function (): RingGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: CONFIGTYPE.RINGGEOMETRY,
     innerRadius: 2,
     outerRadius: 3,
     thetaSegments: 8,
@@ -131,14 +123,12 @@ export const getRingGeometryConfig = function (): RingGeometryConfig {
 
 export const getLoadGeometryConfig = function (): LoadGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: CONFIGTYPE.LOADGEOMETRY,
     url: "",
   });
 };
 
 export const getCustomGeometryConfig = function (): CustomGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: CONFIGTYPE.CUSTOMGEOMETRY,
     attribute: {
       position: [],
       color: [],
@@ -152,7 +142,6 @@ export const getCustomGeometryConfig = function (): CustomGeometryConfig {
 
 export const getCylinderGeometryConfig = function (): CylinderGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: CONFIGTYPE.CYLINDERGEOMETRY,
     radiusTop: 3,
     radiusBottom: 3,
     height: 5,
@@ -175,7 +164,6 @@ export const getDodecahedronGeometryConfig =
 
 export const getEdgesGeometryConfig = function (): EdgesGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: CONFIGTYPE.LOADGEOMETRY,
     url: "",
     thresholdAngle: 1,
   });
@@ -190,35 +178,26 @@ const getCurveGeometryConfig = function (): CurveGeometryConfig {
 };
 
 export const getLineCurveGeometryConfig = function (): LineCurveGeometryConfig {
-  return Object.assign(getCurveGeometryConfig(), {
-    type: CONFIGTYPE.LINECURVEGEOMETRY,
-  });
+  return Object.assign(getCurveGeometryConfig(), {});
 };
 
 export const getSplineCurveGeometryConfig =
   function (): SplineCurveGeometryConfig {
-    return Object.assign(getCurveGeometryConfig(), {
-      type: CONFIGTYPE.SPLINECURVEGEOMETRY,
-    });
+    return Object.assign(getCurveGeometryConfig(), {});
   };
 
 export const getCubicBezierCurveGeometryConfig =
   function (): CubicBezierCurveGeometryConfig {
-    return Object.assign(getCurveGeometryConfig(), {
-      type: CONFIGTYPE.CUBICBEZIERCURVEGEOMETRY,
-    });
+    return Object.assign(getCurveGeometryConfig(), {});
   };
 
 export const getQuadraticBezierCurveGeometryConfig =
   function (): QuadraticBezierCurveGeometryConfig {
-    return Object.assign(getCurveGeometryConfig(), {
-      type: CONFIGTYPE.QUADRATICBEZIERCURVEGEOMETRY,
-    });
+    return Object.assign(getCurveGeometryConfig(), {});
   };
 
 export const getTubeGeometryConfig = function (): TubeGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    type: "TubeGeometry",
     path: [],
     tubularSegments: 64,
     radius: 1,
@@ -228,16 +207,12 @@ export const getTubeGeometryConfig = function (): TubeGeometryConfig {
 };
 
 export const getLineTubeGeometryConfig = function (): LineTubeGeometryConfig {
-  return Object.assign(getTubeGeometryConfig(), {
-    type: CONFIGTYPE.LINETUBEGEOMETRY,
-  });
+  return Object.assign(getTubeGeometryConfig(), {});
 };
 
 export const getSplineTubeGeometryConfig =
   function (): SplineTubeGeometryConfig {
-    return Object.assign(getTubeGeometryConfig(), {
-      type: CONFIGTYPE.SPLINETUBEGEOMETRY,
-    });
+    return Object.assign(getTubeGeometryConfig(), {});
   };
 
 export const getShapeGeometryConfig = function (): ShapeGeometryConfig {
@@ -248,7 +223,5 @@ export const getShapeGeometryConfig = function (): ShapeGeometryConfig {
 };
 
 export const getLineShapeGeometryConfig = function (): LineShapeGeometryConfig {
-  return Object.assign(getShapeGeometryConfig(), {
-    type: CONFIGTYPE.LINESHAPEGEOMETRY,
-  });
+  return Object.assign(getShapeGeometryConfig(), {});
 };

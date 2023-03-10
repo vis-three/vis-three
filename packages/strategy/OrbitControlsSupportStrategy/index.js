@@ -1,4 +1,4 @@
-import { Compiler, COMPILER_MANAGER_PLUGIN, CONFIGTYPE, DATA_SUPPORT_MANAGER_PLUGIN, MODULETYPE, uniqueSymbol, } from "@vis-three/middleware";
+import { COMPILER_MANAGER_PLUGIN, CONFIGTYPE, DATA_SUPPORT_MANAGER_PLUGIN, MODULETYPE, uniqueSymbol, } from "@vis-three/middleware";
 import { ORBIT_CONTROLS_PLUGIN } from "@vis-three/orbit-controls-plugin";
 import { transPkgName } from "@vis-three/utils";
 import OrbitControlsProcessor from "./OrbitControlsProcessor";
@@ -14,9 +14,10 @@ export const OrbitControlsSupportStrategy = function () {
         ],
         exec(engine) {
             const compiler = engine.compilerManager.getCompiler(MODULETYPE.CONTROLS);
-            compiler.map.set(uniqueSymbol(CONFIGTYPE.ORBITCONTROLS), engine.orbitControls);
-            compiler.weakMap.set(engine.orbitControls, uniqueSymbol(CONFIGTYPE.ORBITCONTROLS));
-            Compiler.processor(OrbitControlsProcessor);
+            compiler.reigstProcessor(OrbitControlsProcessor, (compiler) => {
+                compiler.map.set(uniqueSymbol(CONFIGTYPE.ORBITCONTROLS), engine.orbitControls);
+                compiler.weakMap.set(engine.orbitControls, uniqueSymbol(CONFIGTYPE.ORBITCONTROLS));
+            });
         },
         rollback() { },
     };

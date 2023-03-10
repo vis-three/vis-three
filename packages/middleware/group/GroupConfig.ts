@@ -1,4 +1,3 @@
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
 
 export interface GroupConfig extends ObjectConfig {
@@ -7,7 +6,6 @@ export interface GroupConfig extends ObjectConfig {
 
 export const getGroupConfig = function (): GroupConfig {
   return Object.assign(getObjectConfig(), {
-    type: CONFIGTYPE.GROUP,
     children: [],
   });
 };

@@ -1,5 +1,4 @@
-
-import { Vector2Config } from "../common";
+import { Vector2Config } from "../module/common";
 import {
   getSolidObjectConfig,
   SolidObjectConfig,

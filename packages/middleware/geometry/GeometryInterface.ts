@@ -1,5 +1,5 @@
 import { Vector2, Vector3 } from "three";
-import { SymbolConfig, Vector3Config } from "../common";
+import { SymbolConfig, Vector3Config } from "../module/common";
 
 export interface GeometryGroup {
   start: number;

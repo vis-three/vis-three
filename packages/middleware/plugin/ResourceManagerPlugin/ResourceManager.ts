@@ -1,5 +1,6 @@
 import { BaseEvent, EventDispatcher } from "@vis-three/core";
-import { getModule, SymbolConfig } from "../../common";
+import { getModule } from "../../module";
+import { SymbolConfig } from "../../module/common";
 import { LoadOptions } from "../DataSupportManagerPlugin";
 import { FBXResourceParser } from "./parser/FBXResourceParser";
 import { GLTFResourceParser } from "./parser/GLTFResourceParser";

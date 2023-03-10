@@ -1,4 +1,11 @@
-export * from "./GroupCompiler";
-export * from "./GroupConfig";
-export * from "./GroupDataSupport";
-export * from "./GroupRule";
+import { defineModule } from "../module";
+import { GroupCompiler } from "./GroupCompiler";
+import GroupProcessor from "./GroupProcessor";
+import { GroupRule } from "./GroupRule";
+
+export default defineModule({
+  type: "group",
+  compiler: GroupCompiler,
+  rule: GroupRule,
+  processors: [GroupProcessor],
+});

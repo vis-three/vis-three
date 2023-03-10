@@ -1,12 +1,13 @@
 import { Color, Material, Object3D, Texture, Vector3 } from "three";
 import { ParseParams, Parser, ResourceHanlder } from "./Parser";
 import { v4 } from "uuid";
-import { CONFIGFACTORY, CONFIGTYPE } from "../../../constants";
 import { syncObject } from "@vis-three/utils";
-import { LoadTextureConfig } from "../../../texture";
-import { MaterialConfig } from "../../../material";
-import { SolidObjectConfig } from "../../../solidObject/SolidObjectConfig";
 
+import { SolidObjectConfig } from "../../../solidObject/SolidObjectConfig";
+import { CONFIGFACTORY, CONFIGTYPE } from "../../../module";
+import { LoadTextureConfig } from "../../../texture/TextureConfig";
+import { MaterialConfig } from "../../../material/MaterialConfig";
+import { LoadGeometryConfig } from "../../../geometry/GeometryInterface";
 
 export class Object3DParser extends Parser {
   selector: ResourceHanlder = (
@@ -61,7 +62,7 @@ export class Object3DParser extends Parser {
   private parseTexture({ url, resource, configMap, resourceMap }: ParseParams) {
     resourceMap.set(url, resource);
 
-    const config = CONFIGFACTORY[CONFIGTYPE.LOADTEXTURE]();
+    const config = CONFIGFACTORY[CONFIGTYPE.LOADTEXTURE]() as LoadTextureConfig;
     configMap.set(url, config);
 
     config.vid = v4();
@@ -101,7 +102,7 @@ export class Object3DParser extends Parser {
 
     syncObject<MaterialConfig, Material>(
       this.attributeEnhance(resource),
-      config,
+      config as unknown as Material,
       {
         type: true,
         vid: true,
@@ -146,7 +147,9 @@ export class Object3DParser extends Parser {
     const box = resource.boundingBox!;
     const center = box.getCenter(new Vector3());
 
-    const config = CONFIGFACTORY[CONFIGTYPE.LOADGEOMETRY]();
+    const config = CONFIGFACTORY[
+      CONFIGTYPE.LOADGEOMETRY
+    ]() as LoadGeometryConfig;
     config.vid = v4();
     config.url = url;
     config.position.x = (center.x / (box.max.x - box.min.x)) * 2;
@@ -172,19 +175,23 @@ export class Object3DParser extends Parser {
       return;
     }
 
-    const config = CONFIGFACTORY[resource.type]();
+    const config = CONFIGFACTORY[resource.type]() as SolidObjectConfig;
     config.vid = v4();
 
     // 将一般属性同步到配置
-    syncObject<SolidObjectConfig, Object3D>(resource, config, {
-      type: true,
-      vid: true,
-      children: true,
-      geometry: true,
-      material: true,
-      parent: true,
-      lookAt: true, // load object是没有lookAt的
-    });
+    syncObject<SolidObjectConfig, Object3D>(
+      resource,
+      config as unknown as Object3D,
+      {
+        type: true,
+        vid: true,
+        children: true,
+        geometry: true,
+        material: true,
+        parent: true,
+        lookAt: true, // load object是没有lookAt的
+      }
+    );
 
     config.rotation.x = resource.rotation.x;
     config.rotation.y = resource.rotation.y;
@@ -208,7 +215,7 @@ export class Object3DParser extends Parser {
           });
 
           // 同步配置
-          config.material.push(configMap.get(materialUrl)!.vid);
+          (<string[]>config.material).push(configMap.get(materialUrl)!.vid);
         });
       } else {
         const materialUrl = `${url}.material`;

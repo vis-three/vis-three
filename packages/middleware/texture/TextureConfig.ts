@@ -8,8 +8,7 @@ import {
   Texture,
   UVMapping,
 } from "three";
-import { SymbolConfig, Vector2Config } from "../common";
-import { CONFIGTYPE } from "../constants";
+import { SymbolConfig, Vector2Config } from "../module/common";
 
 export interface TextureConfig extends SymbolConfig {
   name: string;
@@ -99,14 +98,12 @@ export const getTextureConfig = function (): TextureConfig {
 
 export const getImageTextureConfig = function (): ImageTextureConfig {
   return Object.assign(getTextureConfig(), {
-    type: CONFIGTYPE.IMAGETEXTURE,
     url: "",
   });
 };
 
 export const getVideoTextureConfig = function (): ImageTextureConfig {
   return Object.assign(getTextureConfig(), {
-    type: CONFIGTYPE.VIDEOTEXTURE,
     url: "",
     minFilter: LinearFilter,
   });
@@ -114,7 +111,6 @@ export const getVideoTextureConfig = function (): ImageTextureConfig {
 
 export const getCubeTextureConfig = function (): CubeTextureConfig {
   return Object.assign(getTextureConfig(), {
-    type: CONFIGTYPE.CUBETEXTURE,
     cube: {
       nx: "",
       ny: "",
@@ -130,7 +126,6 @@ export const getCubeTextureConfig = function (): CubeTextureConfig {
 
 export const getCanvasTextureConfig = function (): CanvasTextureConfig {
   return Object.assign(getTextureConfig(), {
-    type: CONFIGTYPE.CANVASTEXTURE,
     url: "",
     needsUpdate: false,
   });
@@ -138,7 +133,6 @@ export const getCanvasTextureConfig = function (): CanvasTextureConfig {
 
 export const getLoadTextureConfig = function (): LoadTextureConfig {
   return Object.assign(getTextureConfig(), {
-    type: CONFIGTYPE.LOADTEXTURE,
     url: "",
   });
 };

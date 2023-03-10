@@ -1,4 +1,3 @@
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
 
 export interface CSS2DObjectConfig extends ObjectConfig {
@@ -13,7 +12,6 @@ export type CSS2DAllType = CSS2DPlaneConfig;
 
 export const getCSS2DObjectConfig = function (): CSS2DObjectConfig {
   return Object.assign(getObjectConfig(), {
-    type: CONFIGTYPE.CSS3DOBJECT,
     element: "",
     width: 50,
     height: 50,
@@ -21,7 +19,5 @@ export const getCSS2DObjectConfig = function (): CSS2DObjectConfig {
 };
 
 export const getCSS2DPlaneConfig = function (): CSS2DPlaneConfig {
-  return Object.assign(getCSS2DObjectConfig(), {
-    type: CONFIGTYPE.CSS2DPLANE,
-  });
+  return Object.assign(getCSS2DObjectConfig(), {});
 };

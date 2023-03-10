@@ -1,4 +1,5 @@
-import { CONFIGFACTORY, CONFIGTYPE } from "../../../constants";
+import { CONFIGFACTORY, CONFIGTYPE } from "../../../module";
+import { VideoTextureConfig } from "../../../texture/TextureConfig";
 import { ParseParams, Parser, ResourceHanlder } from "./Parser";
 
 export class HTMLVideoElementParser extends Parser {
@@ -15,7 +16,9 @@ export class HTMLVideoElementParser extends Parser {
   };
 
   parse({ url, resource, configMap, resourceMap }: ParseParams): void {
-    const config = CONFIGFACTORY[CONFIGTYPE.VIDEOTEXTURE]();
+    const config = CONFIGFACTORY[
+      CONFIGTYPE.VIDEOTEXTURE
+    ]() as VideoTextureConfig;
     config.url = url;
 
     resourceMap.set(url, resource);

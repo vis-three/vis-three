@@ -1,4 +1,11 @@
-export * from "./CSS2DCompiler";
-export * from "./CSS2DConfig";
-export * from "./CSS2DDataSupport";
-export * from "./CSS2DRule";
+import { defineModule } from "../module";
+import { CSS2DCompiler } from "./CSS2DCompiler";
+import CSS2DPlaneProcessor from "./CSS2DPlaneProcessor";
+import { CSS2DRule } from "./CSS2DRule";
+
+export default defineModule({
+  type: "css2D",
+  compiler: CSS2DCompiler,
+  rule: CSS2DRule,
+  processors: [CSS2DPlaneProcessor],
+});

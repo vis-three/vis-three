@@ -4,96 +4,116 @@ import {
   DeepRecord,
   DeepUnion,
 } from "@vis-three/utils";
-import { SymbolConfig } from "../../common";
-import { CONFIGTYPE } from "../../constants";
+import { SymbolConfig } from "../common";
 import { EngineSupport } from "../../engine";
 import { CompileNotice, Compiler } from "../compiler";
+import { CONFIGFACTORY, CONFIGTYPE } from "../space";
 
 export interface ProcessParams<
-  C extends SymbolConfig,
+  S extends SymbolConfig,
   T extends object,
-  E extends EngineSupport
+  E extends EngineSupport,
+  C extends Compiler<any, any>
 > extends CompileNotice {
-  config: C;
+  config: S;
   target: T;
-  processor: Processor<C, T, E>;
-  compiler: Compiler<C, T>;
+  compiler: C;
   engine: E;
+  processor: Processor<S, T, E, C>;
 }
 
 export type RegCommand<
-  C extends SymbolConfig,
+  S extends SymbolConfig,
   T extends object,
-  E extends EngineSupport
+  E extends EngineSupport,
+  C extends Compiler<S, T>
 > = {
   reg: RegExp;
-  handler: (params: ProcessParams<C, T, E>) => void;
+  handler: (params: ProcessParams<S, T, E, C>) => void;
 };
 
 export type KeyCommand<
-  C extends SymbolConfig,
+  S extends SymbolConfig,
   T extends object,
-  E extends EngineSupport
-> = (params: ProcessParams<C, T, E>) => void;
+  E extends EngineSupport,
+  C extends Compiler<S, T>
+> = (params: ProcessParams<S, T, E, C>) => void;
 
 export type CommandStructure<
-  C extends SymbolConfig,
+  S extends SymbolConfig,
   T extends object,
-  E extends EngineSupport
+  E extends EngineSupport,
+  C extends Compiler<S, T>
 > = DeepIntersection<
   DeepPartial<
-    DeepRecord<DeepUnion<C, KeyCommand<C, T, E>>, KeyCommand<C, T, E>>
+    DeepRecord<DeepUnion<S, KeyCommand<S, T, E, C>>, KeyCommand<S, T, E, C>>
   >,
-  { $reg?: RegCommand<C, T, E>[] }
+  { $reg?: RegCommand<S, T, E, C>[] }
 >;
 
 export interface ProcessorCommands<
-  C extends SymbolConfig,
+  S extends SymbolConfig,
   T extends object,
-  E extends EngineSupport
+  E extends EngineSupport,
+  C extends Compiler<any, any>
 > {
-  add?: CommandStructure<C, T, E>;
-  set?: CommandStructure<C, T, E>;
-  delete?: CommandStructure<C, T, E>;
+  add?: CommandStructure<S, T, E, C>;
+  set?: CommandStructure<S, T, E, C>;
+  delete?: CommandStructure<S, T, E, C>;
 }
 
 export interface ProcessorOptions<
-  C extends SymbolConfig,
+  S extends SymbolConfig,
   T extends object,
-  E extends EngineSupport
+  E extends EngineSupport,
+  C extends Compiler<S, T>
 > {
-  configType: CONFIGTYPE | string;
-  commands?: ProcessorCommands<C, T, E>;
-  create: (config: C, engine: E) => T;
-  dispose: (target: T) => void;
+  type: string;
+  config: () => S;
+  commands?: ProcessorCommands<S, T, E, C>;
+  create: (config: S, engine: E, compiler: C) => T;
+  dispose: (target: T, engine: E, compiler: C) => void;
 }
 
 export type DefineProcessor = <
-  C extends SymbolConfig,
+  S extends SymbolConfig,
   T extends object,
-  E extends EngineSupport
+  E extends EngineSupport,
+  C extends Compiler<any, any>
 >(
-  options: ProcessorOptions<C, T, E>
-) => Processor<C, T, E>;
+  options: ProcessorOptions<S, T, E, C>
+) => Processor<S, T, E, C>;
 
 export class Processor<
-  C extends SymbolConfig,
+  S extends SymbolConfig,
   T extends object,
-  E extends EngineSupport
+  E extends EngineSupport,
+  C extends Compiler<S, T>
 > {
-  configType: CONFIGTYPE | string;
-  commands?: ProcessorCommands<C, T, E>;
-  create: (config: C, engine: E) => T;
-  dispose: (target: T) => void;
+  type: string;
+  config: () => S;
+  commands?: ProcessorCommands<S, T, E, C>;
+  create: (config: S, engine: E, compiler: C) => T;
+  dispose: (target: T, engine: E, compiler: C) => void;
 
-  constructor(options: ProcessorOptions<C, T, E>) {
-    this.configType = options.configType;
+  constructor(options: ProcessorOptions<S, T, E, C>) {
+    this.type = options.type;
     this.commands = options.commands;
+
     this.create = options.create;
     this.dispose = options.dispose;
+
+    this.config = () => {
+      const c = options.config();
+      c.type = this.type;
+      return c;
+    };
+
+    CONFIGTYPE[this.type.toLocaleUpperCase()] = this.type;
+    CONFIGFACTORY[this.type] = this.config;
   }
 
-  process(params: ProcessParams<C, T, E>) {
+  process(params: ProcessParams<S, T, E, C>) {
     if (!this.commands || !this.commands[params.operate]) {
       this[params.operate](params);
       return;
@@ -124,7 +144,7 @@ export class Processor<
     this[params.operate](params);
   }
 
-  add(params: ProcessParams<C, T, E>) {
+  add(params: ProcessParams<S, T, E, C>) {
     let target = params.target;
     const path = params.path;
 
@@ -140,7 +160,7 @@ export class Processor<
     target[params.key] = params.value;
   }
 
-  set(params: ProcessParams<C, T, E>) {
+  set(params: ProcessParams<S, T, E, C>) {
     let target = params.target;
     const path = params.path;
 
@@ -156,7 +176,7 @@ export class Processor<
     target[params.key] = params.value;
   }
 
-  delete(params: ProcessParams<C, T, E>) {
+  delete(params: ProcessParams<S, T, E, C>) {
     let target = params.target;
     const path = params.path;
 
@@ -174,13 +194,12 @@ export class Processor<
 }
 
 export const defineProcessor: DefineProcessor = <
-  C extends SymbolConfig,
+  S extends SymbolConfig,
   T extends object,
-  E extends EngineSupport
+  E extends EngineSupport,
+  C extends Compiler<any, any>
 >(
-  options: ProcessorOptions<C, T, E>
+  options: ProcessorOptions<S, T, E, C>
 ) => {
-  return new Processor<C, T, E>(options);
+  return new Processor<S, T, E, C>(options);
 };
-
-export const emptyHandler = function () {};

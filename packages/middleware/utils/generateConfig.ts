@@ -1,9 +1,8 @@
 import { DeepPartial } from "@vis-three/utils";
 import { v4 as getUuid } from "uuid";
-import { isObjectType, SymbolConfig } from "../common";
-import { CONFIGFACTORY, CONFIGTYPE } from "../constants";
+import { SymbolConfig } from "../module/common";
 import { EngineSupport } from "../engine";
-import { observable } from "../module";
+import { CONFIGFACTORY, CONFIGTYPE, isObjectType, observable } from "../module";
 import { SceneConfig } from "../scene/SceneConfig";
 
 export interface C extends SymbolConfig {}
@@ -16,10 +15,10 @@ export interface GenerateOptions<C> {
 
 export interface GenerateConfig {
   (
-    type: CONFIGTYPE | string,
-    merge?: DeepPartial<ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>>,
+    type: string,
+    merge?: DeepPartial<ReturnType<typeof CONFIGFACTORY[string]>>,
     options?: GenerateOptions<C>
-  ): ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>;
+  ): ReturnType<typeof CONFIGFACTORY[string]>;
   autoInject: boolean;
   injectEngine: EngineSupport | null;
   injectScene: string | boolean;
@@ -34,8 +33,8 @@ export interface GenerateConfig {
  * @returns config object
  */
 export const generateConfig = <GenerateConfig>function (
-  type: CONFIGTYPE | string,
-  merge: DeepPartial<ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>> | undefined,
+  type: string,
+  merge: DeepPartial<ReturnType<typeof CONFIGFACTORY[string]>> | undefined,
   options: GenerateOptions<C> = {
     strict: true,
     warn: true,
@@ -77,9 +76,7 @@ export const generateConfig = <GenerateConfig>function (
 
   // animation
   if (
-    [CONFIGTYPE.SCRIPTANIMATION, CONFIGTYPE.KEYFRAMEANIMATION].includes(
-      type as CONFIGTYPE
-    )
+    [CONFIGTYPE.SCRIPTANIMATION, CONFIGTYPE.KEYFRAMEANIMATION].includes(type)
   ) {
     options.strict = false;
   }

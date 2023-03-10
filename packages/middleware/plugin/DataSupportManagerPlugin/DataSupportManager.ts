@@ -1,101 +1,22 @@
-import { AnimationAllType, AnimationDataSupport } from "../../animation";
-import { CameraConfigAllType, CameraDataSupport } from "../../camera";
-import { getModule, SymbolConfig } from "../../common";
-import { CONFIGTYPE, MODULETYPE } from "../../constants";
-import { ControlsAllConfig, ControlsDataSupport } from "../../controls";
-import { CSS2DAllType, CSS2DDataSupport } from "../../css2D";
-import { CSS3DAllType, CSS3DDataSupport } from "../../css3D";
-import { GeometryAllType, GeometryDataSupport } from "../../geometry";
-import { GroupConfig, GroupDataSupport } from "../../group";
-import { LightConfigAllType, LightDataSupport } from "../../light";
-import { LineConfig, LineDataSupport } from "../../line";
-import { MaterialAllType, MaterialDataSupport } from "../../material";
-import { MeshConfig, MeshDataSupport } from "../../mesh";
-import { BasicCompiler, DataSupport } from "../../module";
-import { Object3DConfig, Object3DDataSupport } from "../../object3D";
-import { PointsConfig, PointsDataSupport } from "../../points";
-import { RendererConfigAllType, RendererDataSupport } from "../../renderer";
-import { SceneConfig, SceneDataSupport } from "../../scene";
-import { SpriteConfig, SpriteDataSupport } from "../../sprite";
-import { TextureAllType, TextureDataSupport } from "../../texture";
+import { getModule, SymbolConfig } from "../../module";
+import { DataSupport } from "../../module";
+import { DataSupportMembers } from "../../module/space";
 import { JSONHandler } from "../../utils";
 
-export interface LoadOptions {
-  [MODULETYPE.TEXTURE]?: Array<TextureAllType>;
-  [MODULETYPE.MATERIAL]?: Array<MaterialAllType>;
-  [MODULETYPE.GEOMETRY]?: Array<GeometryAllType>;
+export type LoadOptions = Record<string, Array<any>>;
 
-  [MODULETYPE.OBJECT3D]?: Array<Object3DConfig>;
-  [MODULETYPE.LIGHT]?: Array<LightConfigAllType>;
-  [MODULETYPE.CAMERA]?: Array<CameraConfigAllType>;
-  [MODULETYPE.SPRITE]?: Array<SpriteConfig>;
-  [MODULETYPE.LINE]?: Array<LineConfig>;
-  [MODULETYPE.MESH]?: Array<MeshConfig>;
-  [MODULETYPE.POINTS]?: Array<PointsConfig>;
-  [MODULETYPE.GROUP]?: Array<GroupConfig>;
-  [MODULETYPE.CSS3D]?: Array<CSS3DAllType>;
-  [MODULETYPE.CSS2D]?: Array<CSS2DAllType>;
-
-  [MODULETYPE.RENDERER]?: Array<RendererConfigAllType>;
-  [MODULETYPE.SCENE]?: Array<SceneConfig>;
-  [MODULETYPE.CONTROLS]?: Array<ControlsAllConfig>;
-  [MODULETYPE.ANIMATION]?: Array<AnimationAllType>;
-}
-
-export interface DataSupportManagerParameters {
-  object3DDataSupport?: Object3DDataSupport;
-  cameraDataSupport?: CameraDataSupport;
-  lightDataSupport?: LightDataSupport;
-  geometryDataSupport?: GeometryDataSupport;
-  textureDataSupport?: TextureDataSupport;
-  materialDataSupport?: MaterialDataSupport;
-  rendererDataSupport?: RendererDataSupport;
-  sceneDataSupport?: SceneDataSupport;
-  controlsDataSupport?: ControlsDataSupport;
-  spriteDataSupport?: SpriteDataSupport;
-  lineDataSupport?: LineDataSupport;
-  meshDataSupport?: MeshDataSupport;
-  pointsDataSupport?: PointsDataSupport;
-  groupDataSupport?: GroupDataSupport;
-  css3DDataSupport?: CSS3DDataSupport;
-  css2DDataSupport?: CSS2DDataSupport;
-  animationDataSupport?: AnimationDataSupport;
-}
+export type DataSupportManagerParameters = Record<
+  string,
+  DataSupport<any, any, any>
+>;
 
 export class DataSupportManager {
-  dataSupportMap: Map<
-    string,
-    DataSupport<SymbolConfig, object, BasicCompiler>
-  > = new Map();
+  dataSupportMap: Map<string, DataSupport<any, any, any>> = new Map();
 
   constructor(parameters?: DataSupportManagerParameters) {
-    [
-      new Object3DDataSupport(),
-      new CameraDataSupport(),
-      new LightDataSupport(),
-      new GeometryDataSupport(),
-      new TextureDataSupport(),
-      new MaterialDataSupport(),
-      new RendererDataSupport(),
-      new SceneDataSupport(),
-      new ControlsDataSupport(),
-      new SpriteDataSupport(),
-      new LineDataSupport(),
-      new MeshDataSupport(),
-      new PointsDataSupport(),
-      new GroupDataSupport(),
-      new CSS3DDataSupport(),
-      new CSS2DDataSupport(),
-      new AnimationDataSupport(),
-    ].forEach((dataSupport) => {
-      this.dataSupportMap.set(
-        dataSupport.MODULE,
-        dataSupport as unknown as DataSupport<
-          SymbolConfig,
-          object,
-          BasicCompiler
-        >
-      );
+    Object.values(DataSupportMembers).forEach((DataSupport) => {
+      const dataSupport = new DataSupport([]);
+      this.dataSupportMap.set(dataSupport.MODULE, dataSupport);
     });
 
     if (parameters) {
@@ -119,16 +40,10 @@ export class DataSupportManager {
       );
 
       if (focus) {
-        this.dataSupportMap.set(
-          dataSupport.MODULE,
-          dataSupport as DataSupport<SymbolConfig, object, BasicCompiler>
-        );
+        this.dataSupportMap.set(dataSupport.MODULE, dataSupport);
       }
     } else {
-      this.dataSupportMap.set(
-        dataSupport.MODULE,
-        dataSupport as DataSupport<SymbolConfig, object, BasicCompiler>
-      );
+      this.dataSupportMap.set(dataSupport.MODULE, dataSupport);
     }
   }
 
@@ -137,7 +52,7 @@ export class DataSupportManager {
    * @param type MODULETYPE
    * @returns DataSupport
    */
-  getDataSupport<D>(type: MODULETYPE): D | null {
+  getDataSupport<D>(type: string): D | null {
     if (this.dataSupportMap.has(type)) {
       return this.dataSupportMap.get(type)! as unknown as D;
     } else {
@@ -189,7 +104,7 @@ export class DataSupportManager {
    * @param vid vid标识
    * @returns MODULETYPE || null
    */
-  getModuleBySymbol(vid: string): MODULETYPE | null {
+  getModuleBySymbol(vid: string): string | null {
     const dataSupportList = this.dataSupportMap.values();
 
     for (const dataSupport of dataSupportList) {
@@ -208,10 +123,10 @@ export class DataSupportManager {
    */
   applyConfig<T extends SymbolConfig>(...configs: T[]): this {
     for (const config of configs) {
-      const module = getModule(config.type as CONFIGTYPE);
+      const module = getModule(config.type);
 
       if (module) {
-        this.dataSupportMap.get(module as MODULETYPE)!.addConfig(config);
+        this.dataSupportMap.get(module)!.addConfig(config);
       } else {
         console.warn(
           `dataSupportManager can not found this config module: ${config.type}`
@@ -254,7 +169,10 @@ export class DataSupportManager {
    * @param compress 是否压缩配置单 default true
    * @returns JSON string
    */
-  toJSON(extendsConfig: object = {}, compress = true): string {
+  toJSON(
+    extendsConfig: Record<string, Array<any>> = {},
+    compress = true
+  ): string {
     return JSON.stringify(
       this.exportConfig(extendsConfig, compress),
       JSONHandler.stringify
@@ -267,7 +185,10 @@ export class DataSupportManager {
    * @param compress 是否压缩配置单 default true
    * @returns LoadOptions
    */
-  exportConfig(extendsConfig: object = {}, compress = true): LoadOptions {
+  exportConfig(
+    extendsConfig: Record<string, Array<any>> = {},
+    compress = true
+  ): LoadOptions {
     const dataSupportMap = this.dataSupportMap;
     dataSupportMap.forEach((dataSupport, module) => {
       extendsConfig[module] = dataSupport.exportConfig(compress);

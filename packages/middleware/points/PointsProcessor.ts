@@ -1,5 +1,4 @@
 import { Points } from "three";
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { EngineSupport } from "../engine";
 import { defineProcessor } from "../module";
 import {
@@ -8,10 +7,17 @@ import {
   solidObjectCreate,
   solidObjectDispose,
 } from "../solidObject/SolidObjectProcessor";
-import { PointsConfig } from "./PointsConfig";
+import { PointsCompiler } from "./PointsCompiler";
+import { getPointsConfig, PointsConfig } from "./PointsConfig";
 
-export default defineProcessor<PointsConfig, Points, EngineSupport>({
-  configType: CONFIGTYPE.POINTS,
+export default defineProcessor<
+  PointsConfig,
+  Points,
+  EngineSupport,
+  PointsCompiler
+>({
+  type: "Points",
+  config: getPointsConfig,
   commands: <SolidObjectCommands<PointsConfig, Points>>(
     (<unknown>solidObjectCommands)
   ),

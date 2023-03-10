@@ -1,11 +1,8 @@
-import { MODULETYPE } from "../constants";
 import { CompileNotice, Compiler } from "../module";
 import { AnimationAllType } from "./AnimationConfig";
-import { scriptAniSymbol } from "./processor/common";
-import ScriptAnimationProcessor from "./processor/ScriptAnimationProcessor";
 
 export class AnimationCompiler extends Compiler<AnimationAllType, Function> {
-  MODULE: MODULETYPE = MODULETYPE.ANIMATION;
+  scriptAniSymbol = "vis.scriptAni";
 
   constructor() {
     super();
@@ -53,7 +50,7 @@ export class AnimationCompiler extends Compiler<AnimationAllType, Function> {
     super.cover(config);
 
     const fun = this.map.get(config.vid)!;
-    config[Symbol.for(scriptAniSymbol)] = fun;
+    config[Symbol.for(this.scriptAniSymbol)] = fun;
 
     return this;
   }
@@ -61,12 +58,12 @@ export class AnimationCompiler extends Compiler<AnimationAllType, Function> {
   remove(config: AnimationAllType): this {
     this.engine.removeEventListener(
       "render",
-      config[Symbol.for(scriptAniSymbol)]
+      config[Symbol.for(this.scriptAniSymbol)]
     );
 
     this.restoreAttribute(config);
 
-    delete config[Symbol.for(scriptAniSymbol)];
+    delete config[Symbol.for(this.scriptAniSymbol)];
     super.remove(config);
 
     return this;
@@ -80,12 +77,10 @@ export class AnimationCompiler extends Compiler<AnimationAllType, Function> {
     super.compile(vid, notice);
 
     const oldFun = this.map.get(vid)!;
-    const fun = config[Symbol.for(scriptAniSymbol)];
+    const fun = config[Symbol.for(this.scriptAniSymbol)];
     this.map.set(config.vid, fun);
     this.weakMap.delete(oldFun);
     this.weakMap.set(fun, vid);
     return this;
   }
 }
-
-Compiler.processor(ScriptAnimationProcessor);

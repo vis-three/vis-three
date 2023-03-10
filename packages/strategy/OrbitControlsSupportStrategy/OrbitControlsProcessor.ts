@@ -2,13 +2,68 @@ import { Vector3 } from "three";
 import { VisOrbitControls } from "@vis-three/orbit-controls-plugin";
 import { syncObject } from "@vis-three/utils";
 import {
-  CONFIGTYPE,
   defineProcessor,
   EngineSupport,
-  OrbitControlsConfig,
+  uniqueSymbol,
   Vector3Config,
 } from "@vis-three/middleware";
 import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
+import { ControlsConfig } from "@vis-three/middleware/controls/ControlsConfig";
+import { ControlsCompiler } from "@vis-three/middleware/controls/ControlsCompiler";
+
+export interface OrbitControlsConfig extends ControlsConfig {
+  autoRotate: boolean;
+  autoRotateSpeed: number;
+  enableDamping: boolean;
+  dampingFactor: number;
+  enabled: boolean;
+  enablePan: boolean;
+  enableRotate: boolean;
+  enableZoom: boolean;
+  maxAzimuthAngle: number;
+  maxDistance: number;
+  maxPolarAngle: number;
+  maxZoom: number;
+  minAzimuthAngle: number;
+  minDistance: number;
+  minPolarAngle: number;
+  minZoom: number;
+  panSpeed: number;
+  rotateSpeed: number;
+  zoomSpeed: number;
+  screenSpacePanning: boolean;
+  target: string | Vector3Config | null;
+}
+
+const type = "OrbitControls";
+
+export const getOrbitControlsConfig = function (): OrbitControlsConfig {
+  return {
+    vid: uniqueSymbol(type),
+    type: "",
+    autoRotate: false,
+    autoRotateSpeed: 2.0,
+    enableDamping: false,
+    dampingFactor: 0.05,
+    enabled: true,
+    enablePan: true,
+    enableRotate: true,
+    enableZoom: true,
+    maxAzimuthAngle: Infinity,
+    maxDistance: Infinity,
+    maxPolarAngle: Math.PI,
+    maxZoom: Infinity,
+    minAzimuthAngle: -Infinity,
+    minDistance: 0,
+    minPolarAngle: 0,
+    minZoom: 0,
+    panSpeed: 1,
+    rotateSpeed: 1,
+    zoomSpeed: 1,
+    screenSpacePanning: true,
+    target: null,
+  };
+};
 
 export interface OrbitControlsSupportEngine
   extends EngineSupport,
@@ -17,9 +72,11 @@ export interface OrbitControlsSupportEngine
 export default defineProcessor<
   OrbitControlsConfig,
   VisOrbitControls,
-  OrbitControlsSupportEngine
+  OrbitControlsSupportEngine,
+  ControlsCompiler
 >({
-  configType: CONFIGTYPE.ORBITCONTROLS,
+  type: type,
+  config: getOrbitControlsConfig,
   commands: {
     set: {
       target({ target, config, path, key, value }) {

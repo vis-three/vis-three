@@ -1,13 +1,58 @@
 import {
-  CONFIGTYPE,
   defineProcessor,
   EngineSupport,
-  TransformControlsConfig,
+  uniqueSymbol,
 } from "@vis-three/middleware";
+import { ControlsCompiler } from "@vis-three/middleware/controls/ControlsCompiler";
+import { ControlsConfig } from "@vis-three/middleware/controls/ControlsConfig";
 import {
   TransformControlsEngine,
   VisTransformControls,
 } from "@vis-three/transform-controls-plugin";
+
+export interface TransformControlsConfig extends ControlsConfig {
+  axis: string;
+  enabled: boolean;
+  mode: string;
+
+  snapAllow: boolean; // 是否开启步幅功能
+  rotationSnap: number;
+  translationSnap: number;
+  scaleSnap: number;
+
+  showX: boolean;
+  showY: boolean;
+  showZ: boolean;
+
+  size: number;
+
+  space: string;
+}
+
+const type = "TransformControls";
+
+export const getTransformControlsConfig = function (): TransformControlsConfig {
+  return {
+    vid: uniqueSymbol(type),
+    type: "",
+    axis: "XYZ",
+    enabled: true,
+    mode: "translate",
+
+    snapAllow: false,
+    rotationSnap: (Math.PI / 180) * 10,
+    translationSnap: 5,
+    scaleSnap: 0.1,
+
+    showX: true,
+    showY: true,
+    showZ: true,
+
+    size: 1,
+
+    space: "world",
+  };
+};
 
 export interface TransformControlsSupportEngine
   extends EngineSupport,
@@ -16,9 +61,11 @@ export interface TransformControlsSupportEngine
 export default defineProcessor<
   TransformControlsConfig,
   VisTransformControls,
-  TransformControlsSupportEngine
+  TransformControlsSupportEngine,
+  ControlsCompiler
 >({
-  configType: CONFIGTYPE.TRNASFORMCONTROLS,
+  type,
+  config: getTransformControlsConfig,
   commands: {
     set: {
       snapAllow({ target, config, value }) {

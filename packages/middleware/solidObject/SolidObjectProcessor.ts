@@ -1,10 +1,8 @@
 import { IgnoreAttribute } from "@vis-three/utils";
 import {
   BoxBufferGeometry,
-  BufferGeometry,
   Material,
   ShaderMaterial,
-  Sprite,
 } from "three";
 import { EngineSupport } from "../engine";
 import {

@@ -3,11 +3,11 @@ import {
   Compiler,
   COMPILER_MANAGER_PLUGIN,
   CONFIGTYPE,
-  ControlsCompiler,
   DATA_SUPPORT_MANAGER_PLUGIN,
   MODULETYPE,
   uniqueSymbol,
 } from "@vis-three/middleware";
+import { ControlsCompiler } from "@vis-three/middleware/controls/ControlsCompiler";
 import { ORBIT_CONTROLS_PLUGIN } from "@vis-three/orbit-controls-plugin";
 import { transPkgName } from "@vis-three/utils";
 import OrbitControlsProcessor, {
@@ -31,19 +31,17 @@ export const OrbitControlsSupportStrategy: Strategy<OrbitControlsSupportEngine> 
           MODULETYPE.CONTROLS
         )!;
 
-        compiler.map.set(
-          uniqueSymbol(CONFIGTYPE.ORBITCONTROLS),
-          //@ts-ignore
-          engine.orbitControls
-        );
+        compiler.reigstProcessor(OrbitControlsProcessor, (compiler) => {
+          compiler.map.set(
+            uniqueSymbol(CONFIGTYPE.ORBITCONTROLS),
+            engine.orbitControls
+          );
 
-        compiler.weakMap.set(
-          //@ts-ignore
-          engine.orbitControls,
-          uniqueSymbol(CONFIGTYPE.ORBITCONTROLS)
-        );
-
-        Compiler.processor(OrbitControlsProcessor);
+          compiler.weakMap.set(
+            engine.orbitControls,
+            uniqueSymbol(CONFIGTYPE.ORBITCONTROLS)
+          );
+        });
       },
       rollback() {},
     };

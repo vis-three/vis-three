@@ -1,6 +1,26 @@
-import { CONFIGTYPE, defineProcessor, } from "@vis-three/middleware";
+import { defineProcessor, uniqueSymbol, } from "@vis-three/middleware";
+const type = "TransformControls";
+export const getTransformControlsConfig = function () {
+    return {
+        vid: uniqueSymbol(type),
+        type: "",
+        axis: "XYZ",
+        enabled: true,
+        mode: "translate",
+        snapAllow: false,
+        rotationSnap: (Math.PI / 180) * 10,
+        translationSnap: 5,
+        scaleSnap: 0.1,
+        showX: true,
+        showY: true,
+        showZ: true,
+        size: 1,
+        space: "world",
+    };
+};
 export default defineProcessor({
-    configType: CONFIGTYPE.TRNASFORMCONTROLS,
+    type,
+    config: getTransformControlsConfig,
     commands: {
         set: {
             snapAllow({ target, config, value }) {

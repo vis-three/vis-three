@@ -1,18 +1,17 @@
-import { WebGLRenderer } from "three";
-import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
-import { RendererConfigAllType } from "./RendererConfig";
-import { MODULETYPE } from "../constants";
-import { Compiler } from "../module";
+import { Compiler, Processor, uniqueSymbol } from "../module";
+import { RendererConfig } from "./RendererConfig";
+import { validSymbols } from "./RendererRule";
 
-export type RendererAllType = WebGLRenderer | CSS3DRenderer;
-
-export class RendererCompiler extends Compiler<
-  RendererConfigAllType,
-  RendererAllType
-> {
-  MODULE: MODULETYPE = MODULETYPE.RENDERER;
-
+export class RendererCompiler extends Compiler<any, any> {
   constructor() {
     super();
+  }
+
+  reigstProcessor(
+    processor: Processor<any, any, any, any>,
+    fun: (compiler: Compiler<RendererConfig, any>) => void
+  ): this {
+    validSymbols.push(uniqueSymbol(processor.type));
+    return super.reigstProcessor(processor, fun);
   }
 }

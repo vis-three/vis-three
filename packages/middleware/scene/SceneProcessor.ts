@@ -1,6 +1,5 @@
 import { Color, Fog, FogExp2, Scene } from "three";
 import { validate } from "uuid";
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { EngineSupport } from "../engine";
 import { defineProcessor } from "../module";
 import {
@@ -9,7 +8,8 @@ import {
   objectCreate,
   objectDispose,
 } from "../object/ObjectProcessor";
-import { SceneConfig } from "./SceneConfig";
+import { SceneCompiler } from "./SceneCompiler";
+import { getSceneConfig, SceneConfig } from "./SceneConfig";
 
 const setBackground = function (
   scene: Scene,
@@ -55,8 +55,14 @@ const setEnvironment = function (
   }
 };
 
-export default defineProcessor<SceneConfig, Scene, EngineSupport>({
-  configType: CONFIGTYPE.SCENE,
+export default defineProcessor<
+  SceneConfig,
+  Scene,
+  EngineSupport,
+  SceneCompiler
+>({
+  type: "Scene",
+  config: getSceneConfig,
   commands: {
     add: (<ObjectCommands<SceneConfig, Scene>>(<unknown>objectCommands)).add,
     set: {

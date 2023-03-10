@@ -2,20 +2,21 @@ import { Compiler, CompilerTarget } from "../compiler";
 import { Rule } from "../rule";
 import { Translater } from "../translater";
 import { ProxyNotice, DataContainer } from "../dataContainer";
-import { SymbolConfig } from "../../common";
-import { CONFIGFACTORY, MODULETYPE } from "../../constants";
+import { SymbolConfig } from "../common";
 import { valueOf } from "@vis-three/utils";
 import { JSONHandler } from "../../utils";
+import { CONFIGFACTORY } from "../space";
 
-export abstract class DataSupport<
+export class DataSupport<
   C extends SymbolConfig,
   O extends object,
   P extends Compiler<C, O>
 > {
-  abstract MODULE: MODULETYPE;
+  MODULE: string = "";
 
-  private dataContainer = new DataContainer<C>();
-  private translater: Translater<C, O, P>;
+  dataContainer = new DataContainer<C>();
+  translater: Translater<C, O, P>;
+
   constructor(rule: Rule<P>, data: Array<C> = []) {
     this.translater = new Translater<C, O, P>().setRule(rule);
 
@@ -194,8 +195,26 @@ export abstract class DataSupport<
     }
     return this;
   }
-
-  getModule(): MODULETYPE {
-    return this.MODULE;
-  }
 }
+
+export interface DataSupportSimplifier<
+  C extends SymbolConfig,
+  O extends object,
+  P extends Compiler<C, O>
+> {
+  new (data: Array<C>): DataSupport<C, O, P>;
+}
+
+export const DataSupportFactory = function <
+  C extends SymbolConfig,
+  O extends object,
+  P extends Compiler<C, O>
+>(type: string, rule: Rule<P>): DataSupportSimplifier<C, O, P> {
+  return class extends DataSupport<C, O, P> {
+    MODULE = type;
+
+    constructor(data: Array<C> = []) {
+      super(rule, data);
+    }
+  };
+};

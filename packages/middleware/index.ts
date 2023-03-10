@@ -2,8 +2,6 @@ import { COMPILER_MANAGER_PLUGIN } from "./plugin/CompilerManagerPlugin";
 import { DATA_SUPPORT_MANAGER_PLUGIN } from "./plugin/DataSupportManagerPlugin";
 
 export * from "./module";
-export * from "./common";
-export * from "./constants";
 export * from "./animation";
 export * from "./camera";
 export * from "./controls";

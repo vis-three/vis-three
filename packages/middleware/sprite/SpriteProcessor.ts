@@ -1,5 +1,4 @@
-import { Material, Sprite, SpriteMaterial } from "three";
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
+import { Sprite, SpriteMaterial } from "three";
 import { EngineSupport } from "../engine";
 import { defineProcessor } from "../module";
 import {
@@ -8,14 +7,21 @@ import {
   solidObjectCreate,
   solidObjectDispose,
 } from "../solidObject/SolidObjectProcessor";
-import { SpriteConfig } from "./SpriteConfig";
+import { SpriteCompiler } from "./SpriteCompiler";
+import { getSpriteConfig, SpriteConfig } from "./SpriteConfig";
 
 const spriteReplaceMaterial = new SpriteMaterial({
   color: "rgb(123, 123, 123)",
 });
 
-export default defineProcessor<SpriteConfig, Sprite, EngineSupport>({
-  configType: CONFIGTYPE.SPRITE,
+export default defineProcessor<
+  SpriteConfig,
+  Sprite,
+  EngineSupport,
+  SpriteCompiler
+>({
+  type: "Sprite",
+  config: getSpriteConfig,
   commands: {
     add: (
       solidObjectCommands as unknown as SolidObjectCommands<

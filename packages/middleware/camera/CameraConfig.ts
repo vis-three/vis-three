@@ -1,4 +1,3 @@
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
 
 export interface CameraConfig extends ObjectConfig {
@@ -28,7 +27,6 @@ export type CameraConfigAllType =
 
 export const getPerspectiveCameraConfig = function (): PerspectiveCameraConfig {
   return Object.assign(getObjectConfig(), {
-    type: CONFIGTYPE.PERSPECTIVECAMERA,
     adaptiveWindow: false,
     fov: 45,
     aspect: 1920 / 1080,
@@ -40,7 +38,6 @@ export const getPerspectiveCameraConfig = function (): PerspectiveCameraConfig {
 export const getOrthographicCameraConfig =
   function (): OrthographicCameraConfig {
     return Object.assign(getObjectConfig(), {
-      type: CONFIGTYPE.ORTHOGRAPHICCAMERA,
       adaptiveWindow: false,
       left: -window.innerWidth,
       right: window.innerWidth,

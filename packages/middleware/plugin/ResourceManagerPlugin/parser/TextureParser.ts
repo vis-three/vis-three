@@ -1,5 +1,6 @@
 import { Texture } from "three";
-import { CONFIGFACTORY, CONFIGTYPE } from "../../../constants";
+import { CONFIGFACTORY, CONFIGTYPE } from "../../../module";
+import { ImageTextureConfig } from "../../../texture/TextureConfig";
 import { ParseParams, Parser, ResourceHanlder } from "./Parser";
 
 export class TextureParser extends Parser {
@@ -15,7 +16,9 @@ export class TextureParser extends Parser {
     }
   };
   parse({ url, resource, configMap, resourceMap }: ParseParams): void {
-    const config = CONFIGFACTORY[CONFIGTYPE.LOADTEXTURE]();
+    const config = CONFIGFACTORY[
+      CONFIGTYPE.LOADTEXTURE
+    ]() as ImageTextureConfig;
     config.url = url;
 
     resourceMap.set(url, resource);

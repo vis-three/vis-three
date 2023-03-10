@@ -1,4 +1,3 @@
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import {
   getSolidObjectConfig,
   SolidObjectConfig,
@@ -10,7 +9,6 @@ export interface MeshConfig extends SolidObjectConfig {
 
 export const getMeshConfig = function (): MeshConfig {
   return Object.assign(getSolidObjectConfig(), {
-    type: CONFIGTYPE.MESH,
     geometry: "",
     material: "",
   });

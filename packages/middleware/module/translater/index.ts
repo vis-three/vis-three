@@ -1,4 +1,4 @@
-import { SymbolConfig } from "../../common";
+import { SymbolConfig } from "../common";
 import { Compiler } from "../compiler";
 import { ProxyNotice } from "../dataContainer";
 import { Rule } from "../rule";

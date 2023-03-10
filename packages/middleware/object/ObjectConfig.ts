@@ -1,5 +1,4 @@
-import { SymbolConfig, Vector3Config } from "../common";
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
+import { SymbolConfig, Vector3Config } from "../module/common";
 import { BasicEventConfig } from "../manager/EventGeneratorManager";
 
 export interface ObjectConfig extends SymbolConfig {
@@ -31,7 +30,7 @@ export const getObjectConfig = (): ObjectConfig => {
   return {
     vid: "",
     name: "",
-    type: CONFIGTYPE.OBJECT3D,
+    type: "Object3D",
     castShadow: true,
     receiveShadow: true,
     lookAt: "",

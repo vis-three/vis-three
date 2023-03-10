@@ -1,4 +1,3 @@
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
 
 export interface CSS3DObjectConfig extends ObjectConfig {
@@ -20,7 +19,6 @@ export type CSS3DAllType =
 
 export const getCSS3DObjectConfig = function (): CSS3DObjectConfig {
   return Object.assign(getObjectConfig(), {
-    type: CONFIGTYPE.CSS3DOBJECT,
     element: "",
     width: 50,
     height: 50,
@@ -28,14 +26,11 @@ export const getCSS3DObjectConfig = function (): CSS3DObjectConfig {
 };
 
 export const getCSS3DPlaneConfig = function (): CSS3DPlaneConfig {
-  return Object.assign(getCSS3DObjectConfig(), {
-    type: CONFIGTYPE.CSS3DPLANE,
-  });
+  return Object.assign(getCSS3DObjectConfig(), {});
 };
 
 export const getCSS3DSpriteConfig = function (): CSS3DSpriteConfig {
   return Object.assign(getCSS3DObjectConfig(), {
-    type: CONFIGTYPE.CSS3DSPRITE,
     rotation2D: 0,
   });
 };

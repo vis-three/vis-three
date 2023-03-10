@@ -1,11 +1,5 @@
 import { Texture } from "three";
-import ImageTextureProcessor from "./processor/ImageTextureProcessor";
-import CanvasTextureProcessor from "./processor/CanvasTextureProcessor";
-import CubeTextureProcessor from "./processor/CubeTextureProcessor";
-import VideoTextureProcessor from "./processor/VideoTextureProcessor";
 import { TextureAllType } from "./TextureConfig";
-import LoadTextureProcessor from "./processor/LoadTextureProcessor";
-import { MODULETYPE } from "../constants";
 import { Compiler } from "../module";
 import { CanvasGenerator } from "@vis-three/convenient";
 
@@ -21,8 +15,6 @@ export class TextureCompiler extends Compiler<TextureAllType, Texture> {
       ctx.fillText("暂无图片", 0, 0);
     })
     .getDom();
-
-  MODULE: MODULETYPE = MODULETYPE.TEXTURE;
 
   constructor() {
     super();
@@ -66,9 +58,3 @@ export class TextureCompiler extends Compiler<TextureAllType, Texture> {
     }
   }
 }
-
-Compiler.processor(ImageTextureProcessor);
-Compiler.processor(CanvasTextureProcessor);
-Compiler.processor(CubeTextureProcessor);
-Compiler.processor(VideoTextureProcessor);
-Compiler.processor(LoadTextureProcessor);

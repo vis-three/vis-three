@@ -1,6 +1,6 @@
 import { extendPath } from "@vis-three/utils";
 import { Subject, Subscription } from "rxjs";
-import { SymbolConfig } from "../../common";
+import { SymbolConfig } from "../common";
 import { CompilerTarget } from "../compiler";
 import { getObservable } from "../observable";
 

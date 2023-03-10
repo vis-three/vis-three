@@ -1,4 +1,3 @@
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import {
   getSolidObjectConfig,
   SolidObjectConfig,
@@ -11,7 +10,6 @@ export interface LineConfig extends SolidObjectConfig {
 
 export const getLineConfig = function (): LineConfig {
   return Object.assign(getSolidObjectConfig(), {
-    type: CONFIGTYPE.LINE,
     geometry: "",
     material: "",
   });

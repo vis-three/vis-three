@@ -1,4 +1,11 @@
-export * from "./RendererCompiler";
-export * from "./RendererConfig";
-export * from "./RendererDataSupport";
-export * from "./RendererRule";
+import { defineModule } from "../module";
+import { RendererCompiler } from "./RendererCompiler";
+import { RendererRule } from "./RendererRule";
+
+
+export default defineModule({
+  type: 'renderer',
+  compiler: RendererCompiler,
+  rule: RendererRule,
+  processors: []
+})

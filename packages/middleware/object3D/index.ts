@@ -1,4 +1,11 @@
-export * from './Object3DCompiler'
-export * from './Object3DConfig'
-export * from './Object3DDataSupport'
-export * from './Object3DRule'
+import { defineModule } from "../module";
+import { Object3DCompiler } from "./Object3DCompiler";
+import Object3DProcessor from "./Object3DProcessor";
+import { Object3DRule } from "./Object3DRule";
+
+export default defineModule({
+  type: "object3D",
+  compiler: Object3DCompiler,
+  rule: Object3DRule,
+  processors: [Object3DProcessor],
+});

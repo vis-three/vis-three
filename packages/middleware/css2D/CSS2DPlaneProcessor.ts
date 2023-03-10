@@ -1,5 +1,4 @@
 import { CSS2DPlane } from "@vis-three/core";
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { EngineSupport } from "../engine";
 import {
   ObjectCommands,
@@ -7,8 +6,9 @@ import {
   objectCreate,
   objectDispose,
 } from "../object/ObjectProcessor";
-import { CSS2DPlaneConfig } from "./CSS2DConfig";
-import { defineProcessor } from "../module";
+import { CSS2DPlaneConfig, getCSS2DPlaneConfig } from "./CSS2DConfig";
+import { defineProcessor, ProcessorCommands } from "../module";
+import { CSS2DCompiler } from "./CSS2DCompiler";
 
 export const getElement = function (
   element: string,
@@ -35,11 +35,22 @@ export const getElement = function (
   }
 };
 
-export default defineProcessor<CSS2DPlaneConfig, CSS2DPlane, EngineSupport>({
-  configType: CONFIGTYPE.CSS2DPLANE,
+export default defineProcessor<
+  CSS2DPlaneConfig,
+  CSS2DPlane,
+  EngineSupport,
+  CSS2DCompiler
+>({
+  type: "CSS2DPlane",
+  config: getCSS2DPlaneConfig,
   commands: {
     add: (
-      objectCommands as unknown as ObjectCommands<CSS2DPlaneConfig, CSS2DPlane>
+      objectCommands as unknown as ProcessorCommands<
+        CSS2DPlaneConfig,
+        CSS2DPlane,
+        EngineSupport,
+        CSS2DCompiler
+      >
     ).add,
     set: {
       element({ target, value, engine }) {
@@ -49,7 +60,12 @@ export default defineProcessor<CSS2DPlaneConfig, CSS2DPlane, EngineSupport>({
       ...(<ObjectCommands<CSS2DPlaneConfig, CSS2DPlane>>objectCommands.set),
     },
     delete: (
-      objectCommands as unknown as ObjectCommands<CSS2DPlaneConfig, CSS2DPlane>
+      objectCommands as unknown as ProcessorCommands<
+        CSS2DPlaneConfig,
+        CSS2DPlane,
+        EngineSupport,
+        CSS2DCompiler
+      >
     ).delete,
   },
   create(config: CSS2DPlaneConfig, engine: EngineSupport): CSS2DPlane {

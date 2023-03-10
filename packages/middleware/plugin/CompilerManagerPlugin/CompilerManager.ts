@@ -1,71 +1,20 @@
 import { EventDispatcher } from "@vis-three/core";
 import { BufferGeometry, Material, Object3D, Texture } from "three";
-import { AnimationCompiler } from "../../animation";
-import { CameraCompiler } from "../../camera";
-import { SymbolConfig } from "../../common";
-import { MODULETYPE } from "../../constants";
-import { ControlsCompiler } from "../../controls";
-import { CSS2DCompiler } from "../../css2D";
-import { CSS3DCompiler } from "../../css3D";
-import { GeometryCompiler } from "../../geometry";
-import { GroupCompiler } from "../../group";
-import { LightCompiler } from "../../light";
-import { LineCompiler } from "../../line";
-import { MaterialCompiler } from "../../material";
-import { MeshCompiler } from "../../mesh";
-import { BasicCompiler } from "../../module";
+import { SymbolConfig } from "../../module/common";
+import { BasicCompiler, Compiler } from "../../module";
+import { CompilerMembers, MODULETYPE } from "../../module/space";
 import { ObjectCompiler } from "../../object/ObjectCompiler";
-import { Object3DCompiler } from "../../object3D";
-import { PointsCompiler } from "../../points";
-import { RendererCompiler } from "../../renderer";
-import { SceneCompiler } from "../../scene";
-import { SpriteCompiler } from "../../sprite";
-import { TextureCompiler } from "../../texture";
 
-export interface CompilerManagerParameters {
-  object3DCompiler: Object3DCompiler;
-  cameraCompiler: CameraCompiler;
-  lightCompiler: LightCompiler;
-  geometryCompiler: GeometryCompiler;
-  textureCompiler: TextureCompiler;
-  materialCompiler: MaterialCompiler;
-  rendererCompiler: RendererCompiler;
-  sceneCompiler: SceneCompiler;
-  controlsCompiler: ControlsCompiler;
-  spriteCompiler: SpriteCompiler;
-  lineCompiler: LineCompiler;
-  meshCompiler: MeshCompiler;
-  pointsCompiler: PointsCompiler;
-  groupCompiler: GroupCompiler;
-  animationCompiler: AnimationCompiler;
-  css3DCompiler: CSS3DCompiler;
-  css2DCompiler: CSS2DCompiler;
-}
+export type CompilerManagerParameters = Record<string, Compiler<any, any>>;
 
 export class CompilerManager extends EventDispatcher {
   compilerMap: Map<string, BasicCompiler> = new Map();
 
   constructor(parameters?: CompilerManagerParameters) {
     super();
-    [
-      new Object3DCompiler(),
-      new CameraCompiler(),
-      new LightCompiler(),
-      new GeometryCompiler(),
-      new TextureCompiler(),
-      new MaterialCompiler(),
-      new RendererCompiler(),
-      new SceneCompiler(),
-      new ControlsCompiler(),
-      new SpriteCompiler(),
-      new LineCompiler(),
-      new MeshCompiler(),
-      new PointsCompiler(),
-      new GroupCompiler(),
-      new CSS3DCompiler(),
-      new CSS2DCompiler(),
-      new AnimationCompiler(),
-    ].forEach((compiler) => {
+
+    Object.values(CompilerMembers).forEach((Compiler) => {
+      const compiler = new Compiler();
       this.compilerMap.set(compiler.MODULE, compiler);
     });
 

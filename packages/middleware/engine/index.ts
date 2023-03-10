@@ -26,14 +26,13 @@ import {
   DataSupportManagerPlugin,
   LoadOptions,
 } from "../plugin/DataSupportManagerPlugin";
-import { MODULETYPE } from "../constants";
 import {
   MappedEvent,
   ResourceManager,
   ResourceManagerEngine,
   ResourceManagerPlugin,
 } from "../plugin/ResourceManagerPlugin";
-import { SymbolConfig } from "../common";
+import { SymbolConfig } from "../module/common";
 import { LoaderDataSupportStrategy } from "../strategy/LoaderDataSuportStrategy";
 import {
   LoaderMappingEngine,
@@ -44,16 +43,16 @@ import {
   CompilerManagerEngine,
   CompilerManagerPlugin,
 } from "../plugin/CompilerManagerPlugin";
-import { Scene } from "three";
-import { SceneCompiler } from "../scene";
-import { CameraCompiler } from "../camera";
 import { CompilerSupportStrategy } from "../strategy/CompilerSupportStrategy";
+import { MODULETYPE } from "../module";
+import { CameraCompiler } from "../camera/CameraCompiler";
+import { SceneCompiler } from "../scene/SceneCompiler";
 
 export type EngineSupportParameters = DataSupportManagerParameters;
 
-export interface EngineSupportLoadOptions extends LoadOptions {
+export type EngineSupportLoadOptions = LoadOptions & {
   assets?: string[];
-}
+};
 
 export class EngineSupport
   extends Engine

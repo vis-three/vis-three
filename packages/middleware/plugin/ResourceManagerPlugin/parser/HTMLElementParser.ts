@@ -1,4 +1,5 @@
-import { CONFIGFACTORY, CONFIGTYPE } from "../../../constants";
+import { CSS3DPlaneConfig } from "../../../css3D/CSS3DConfig";
+import { CONFIGFACTORY, CONFIGTYPE } from "../../../module";
 import { ParseParams, Parser, ResourceHanlder } from "./Parser";
 
 export class HTMLElementParser extends Parser {
@@ -15,7 +16,7 @@ export class HTMLElementParser extends Parser {
   };
 
   parse({ url, resource, configMap, resourceMap }: ParseParams): void {
-    const config = CONFIGFACTORY[CONFIGTYPE.CSS3DPLANE]();
+    const config = CONFIGFACTORY[CONFIGTYPE.CSS3DPLANE]() as CSS3DPlaneConfig;
     config.element = url;
 
     resourceMap.set(url, resource);

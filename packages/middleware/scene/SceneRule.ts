@@ -1,8 +1,7 @@
 import { ProxyNotice } from "../module";
 import { Scene } from "three";
 import { validate } from "uuid";
-import { uniqueSymbol } from "../common";
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
+import { uniqueSymbol } from "../module/common";
 import { ObjectRule } from "../object/ObjectRule";
 import { SceneCompiler } from "./SceneCompiler";
 import { SceneConfig } from "./SceneConfig";
@@ -14,9 +13,6 @@ export const SceneRule: SceneRule = function (
   compiler: SceneCompiler
 ) {
   ObjectRule(input, compiler, (vid) => {
-    return (
-      validate(vid) ||
-      [uniqueSymbol(CONFIGTYPE.SCENE)].includes(vid as CONFIGTYPE)
-    );
+    return validate(vid) || [uniqueSymbol("SCENE")].includes(vid);
   });
 };

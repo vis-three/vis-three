@@ -1,5 +1,4 @@
 import { Line } from "three";
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
 import { EngineSupport } from "../engine";
 import { defineProcessor } from "../module";
 import {
@@ -8,10 +7,12 @@ import {
   solidObjectCreate,
   solidObjectDispose,
 } from "../solidObject/SolidObjectProcessor";
-import { LineConfig } from "./LineConfig";
+import { LineCompiler } from "./LineCompiler";
+import { getLineConfig, LineConfig } from "./LineConfig";
 
-export default defineProcessor<LineConfig, Line, EngineSupport>({
-  configType: CONFIGTYPE.LINE,
+export default defineProcessor<LineConfig, Line, EngineSupport, LineCompiler>({
+  type: "Line",
+  config: getLineConfig,
   commands: <SolidObjectCommands<LineConfig, Line>>(
     (<unknown>solidObjectCommands)
   ),

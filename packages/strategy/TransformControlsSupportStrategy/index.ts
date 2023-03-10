@@ -1,13 +1,13 @@
+import { Strategy } from "@vis-three/core";
 import {
-  Compiler,
   COMPILER_MANAGER_PLUGIN,
   CONFIGTYPE,
-  ControlsCompiler,
   DATA_SUPPORT_MANAGER_PLUGIN,
   MODULETYPE,
   ObjectConfig,
   uniqueSymbol,
 } from "@vis-three/middleware";
+import { ControlsCompiler } from "@vis-three/middleware/controls/ControlsCompiler";
 import {
   ObjectChangedEvent,
   TRANSFORM_CONTROLS_PLUGIN,
@@ -15,7 +15,6 @@ import {
 } from "@vis-three/transform-controls-plugin";
 import { transPkgName } from "@vis-three/utils";
 import { Object3D } from "three";
-import { Strategy } from "../../core/strategy";
 import { name as pkgname } from "./package.json";
 import TransformControlsProcessor, {
   TransformControlsSupportEngine,
@@ -37,17 +36,17 @@ export const TransformControlsSupportStrategy: Strategy<TransformControlsSupport
           MODULETYPE.CONTROLS
         )!;
 
-        compiler.map.set(
-          uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS),
-          engine.transformControls
-        );
+        compiler.reigstProcessor(TransformControlsProcessor, (compiler) => {
+          compiler.map.set(
+            uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS),
+            engine.transformControls
+          );
 
-        compiler.weakMap.set(
-          engine.transformControls,
-          uniqueSymbol(CONFIGTYPE.ORBITCONTROLS)
-        );
-
-        Compiler.processor(TransformControlsProcessor as any);
+          compiler.weakMap.set(
+            engine.transformControls,
+            uniqueSymbol(CONFIGTYPE.ORBITCONTROLS)
+          );
+        });
 
         const objectToConfig = (object: Object3D): ObjectConfig | null => {
           const symbol = engine.compilerManager.getObjectSymbol(object);

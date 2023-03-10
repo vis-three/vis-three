@@ -1,7 +1,30 @@
-import { CONFIGTYPE, defineProcessor, } from "@vis-three/middleware";
+import { defineProcessor, uniqueSymbol, } from "@vis-three/middleware";
+import { getRendererConfig, } from "@vis-three/middleware/renderer/RendererConfig";
 import { syncObject } from "@vis-three/utils";
+import { LinearEncoding, NoToneMapping, PCFShadowMap, } from "three";
+export const getWebGLRendererConfig = function () {
+    return Object.assign(getRendererConfig(), {
+        vid: uniqueSymbol("WEBGLRENDERER"),
+        clearColor: "rgba(0, 0, 0, 0)",
+        outputEncoding: LinearEncoding,
+        physicallyCorrectLights: false,
+        shadowMap: {
+            enabled: false,
+            autoUpdate: true,
+            needsUpdate: false,
+            type: PCFShadowMap,
+        },
+        toneMapping: NoToneMapping,
+        toneMappingExposure: 1,
+        pixelRatio: window.devicePixelRatio,
+        adaptiveCamera: false,
+        viewport: null,
+        scissor: null,
+    });
+};
 export default defineProcessor({
-    configType: CONFIGTYPE.WEBGLRENDERER,
+    type: "WebGLRenderer",
+    config: getWebGLRendererConfig,
     commands: {
         set: {
             size({ target, config }) {

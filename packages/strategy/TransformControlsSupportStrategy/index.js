@@ -1,4 +1,4 @@
-import { Compiler, COMPILER_MANAGER_PLUGIN, CONFIGTYPE, DATA_SUPPORT_MANAGER_PLUGIN, MODULETYPE, uniqueSymbol, } from "@vis-three/middleware";
+import { COMPILER_MANAGER_PLUGIN, CONFIGTYPE, DATA_SUPPORT_MANAGER_PLUGIN, MODULETYPE, uniqueSymbol, } from "@vis-three/middleware";
 import { TRANSFORM_CONTROLS_PLUGIN, TRANSFORM_EVENT, } from "@vis-three/transform-controls-plugin";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
@@ -14,9 +14,10 @@ export const TransformControlsSupportStrategy = function () {
         ],
         exec(engine) {
             const compiler = engine.compilerManager.getCompiler(MODULETYPE.CONTROLS);
-            compiler.map.set(uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS), engine.transformControls);
-            compiler.weakMap.set(engine.transformControls, uniqueSymbol(CONFIGTYPE.ORBITCONTROLS));
-            Compiler.processor(TransformControlsProcessor);
+            compiler.reigstProcessor(TransformControlsProcessor, (compiler) => {
+                compiler.map.set(uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS), engine.transformControls);
+                compiler.weakMap.set(engine.transformControls, uniqueSymbol(CONFIGTYPE.ORBITCONTROLS));
+            });
             const objectToConfig = (object) => {
                 const symbol = engine.compilerManager.getObjectSymbol(object);
                 if (!symbol) {

@@ -8,8 +8,7 @@ import {
   SrcAlphaFactor,
   TangentSpaceNormalMap,
 } from "three";
-import { SymbolConfig, Vector2Config } from "../common";
-import { CONFIGTYPE } from "../constants/CONFIGTYPE";
+import { SymbolConfig, Vector2Config } from "../module/common";
 export interface MaterialConfig extends SymbolConfig {
   alphaTest: number;
   colorWrite: boolean;
@@ -226,7 +225,6 @@ export const getMaterialConfig = function (): MaterialConfig {
 
 export const getMeshBasicMaterialConfig = function (): MeshBasicMaterialConfig {
   return Object.assign(getMaterialConfig(), {
-    type: CONFIGTYPE.MESHBASICMATERIAL,
     color: "rgb(255, 255, 255)",
     combine: MultiplyOperation,
     aoMapIntensity: 1,
@@ -251,7 +249,6 @@ export const getMeshBasicMaterialConfig = function (): MeshBasicMaterialConfig {
 export const getMeshStandardMaterialConfig =
   function (): MeshStandardMaterialConfig {
     return Object.assign(getMaterialConfig(), {
-      type: CONFIGTYPE.MESHSTANDARDMATERIAL,
       aoMapIntensity: 1,
       bumpScale: 1,
       color: "rgb(255, 255, 255)",
@@ -287,7 +284,6 @@ export const getMeshStandardMaterialConfig =
 export const getMeshPhysicalMaterialConfig =
   function (): MeshPhysicalMaterialConfig {
     return Object.assign(getMeshStandardMaterialConfig(), {
-      type: CONFIGTYPE.MESHPHYSICALMATERIAL,
       attenuationColor: "rgb(255, 255, 255)",
       attenuationDistance: 0,
       clearcoat: 0.0,
@@ -320,7 +316,6 @@ export const getMeshPhysicalMaterialConfig =
 
 export const getMeshPhongMaterialConfig = function (): MeshPhongMaterialConfig {
   return Object.assign(getMaterialConfig(), {
-    type: CONFIGTYPE.MESHPHONGMATERIAL,
     aoMapIntensity: 1,
     bumpScale: 1,
     color: "rgb(255, 255, 255)",
@@ -355,7 +350,6 @@ export const getMeshPhongMaterialConfig = function (): MeshPhongMaterialConfig {
 
 export const getSpriteMaterialConfig = function (): SpriteMaterialConfig {
   return Object.assign(getMaterialConfig(), {
-    type: CONFIGTYPE.SPRITEMATERIAL,
     color: "rgb(255, 255, 255)",
     rotation: 0,
     map: "",
@@ -366,7 +360,6 @@ export const getSpriteMaterialConfig = function (): SpriteMaterialConfig {
 
 export const getLineBasicMaterialConfig = function (): LineBasicMaterialConfig {
   return Object.assign(getMaterialConfig(), {
-    type: CONFIGTYPE.LINEBASICMATERIAL,
     color: "rgb(255, 255, 255)",
     linecap: "round",
     linejoin: "round",
@@ -376,7 +369,6 @@ export const getLineBasicMaterialConfig = function (): LineBasicMaterialConfig {
 
 export const getPointsMaterialConfig = function (): PointsMaterialConfig {
   return Object.assign(getMaterialConfig(), {
-    type: CONFIGTYPE.POINTSMATERIAL,
     map: "",
     alphaMap: "",
     color: "rgb(255, 255, 255)",
@@ -387,7 +379,6 @@ export const getPointsMaterialConfig = function (): PointsMaterialConfig {
 
 export const getShaderMaterialConfig = function (): ShaderMaterialConfig {
   return Object.assign(getMaterialConfig(), {
-    type: CONFIGTYPE.SHADERMATERIAL,
     shader: "defaultShader",
     uniforms: {},
   });

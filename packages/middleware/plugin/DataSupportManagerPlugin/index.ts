@@ -1,6 +1,6 @@
 import { Engine, Plugin } from "@vis-three/core";
 import { Optional } from "@vis-three/utils";
-import { SymbolConfig } from "../../common";
+import { SymbolConfig } from "../../module/common";
 import {
   DataSupportManager,
   DataSupportManagerParameters,

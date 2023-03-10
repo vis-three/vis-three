@@ -2,11 +2,71 @@ import {
   CONFIGTYPE,
   defineProcessor,
   EngineSupport,
-  WebGLRendererConfig,
+  uniqueSymbol,
 } from "@vis-three/middleware";
+import { RendererCompiler } from "@vis-three/middleware/renderer/RendererCompiler";
+import {
+  getRendererConfig,
+  RendererConfig,
+} from "@vis-three/middleware/renderer/RendererConfig";
 import { syncObject } from "@vis-three/utils";
 import { WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
-import { WebGLRenderer } from "three";
+import {
+  LinearEncoding,
+  NoToneMapping,
+  PCFShadowMap,
+  WebGLRenderer,
+} from "three";
+
+export interface ShadowMapConfig {
+  enabled: boolean;
+  autoUpdate: boolean;
+  needsUpdate: boolean;
+  type: number;
+}
+
+export interface WebGLRendererViewPort {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export type WebGLRendererScissor = WebGLRendererViewPort;
+
+export interface WebGLRendererConfig extends RendererConfig {
+  clearColor: string;
+  pixelRatio: number;
+  outputEncoding: number;
+  physicallyCorrectLights: boolean;
+  shadowMap: ShadowMapConfig;
+  toneMapping: number;
+  toneMappingExposure: number;
+  adaptiveCamera: boolean; // 适应相机
+  viewport: WebGLRendererViewPort | null; // 为null 默认跟随canves
+  scissor: WebGLRendererScissor | null; // 为null 默认跟随canves
+}
+
+export const getWebGLRendererConfig = function (): WebGLRendererConfig {
+  return Object.assign(getRendererConfig(), {
+    vid: uniqueSymbol("WEBGLRENDERER"), // WebGLRenderer or vid
+    clearColor: "rgba(0, 0, 0, 0)",
+    outputEncoding: LinearEncoding,
+    physicallyCorrectLights: false,
+    shadowMap: {
+      enabled: false,
+      autoUpdate: true,
+      needsUpdate: false,
+      type: PCFShadowMap,
+    },
+    toneMapping: NoToneMapping,
+    toneMappingExposure: 1,
+    pixelRatio: window.devicePixelRatio,
+    adaptiveCamera: false,
+    viewport: null,
+    scissor: null,
+  });
+};
 
 export interface WebGLRendererSupportEngine
   extends EngineSupport,
@@ -15,9 +75,11 @@ export interface WebGLRendererSupportEngine
 export default defineProcessor<
   WebGLRendererConfig,
   WebGLRenderer,
-  WebGLRendererSupportEngine
+  WebGLRendererSupportEngine,
+  RendererCompiler
 >({
-  configType: CONFIGTYPE.WEBGLRENDERER,
+  type: "WebGLRenderer",
+  config: getWebGLRendererConfig,
   commands: {
     set: {
       size({ target, config }) {

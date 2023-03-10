@@ -1,4 +1,4 @@
-import { SymbolConfig } from "../../../common";
+import { SymbolConfig } from "../../../module/common";
 
 export interface ParseParams {
   url: string;
