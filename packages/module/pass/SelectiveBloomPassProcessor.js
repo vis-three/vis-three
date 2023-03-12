@@ -1,9 +1,10 @@
 import { defineProcessor } from "@vis-three/middleware";
 import { Camera, Scene, Vector2 } from "three";
-import { SelectiveBloomPass } from "../../extends/SelectiveBloomPass";
-import { PASS_CONFIGTYPE } from "../constant";
+import { SelectiveBloomPass } from "./extends/SelectiveBloomPass";
+import { getSelectiveBloomPassConfig, } from "./PassConfig";
 export default defineProcessor({
-    configType: PASS_CONFIGTYPE.SELECTIVEBLOOMPASS,
+    type: "SelectiveBloomPass",
+    config: getSelectiveBloomPassConfig,
     commands: {
         add: {
             selectedObjects({ target, engine, value }) {

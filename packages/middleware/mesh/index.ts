@@ -5,6 +5,7 @@ import { MeshRule } from "./MeshRule";
 
 export default defineModule({
   type: "mesh",
+  object: true,
   compiler: MeshCompiler,
   rule: MeshRule,
   processors: [MeshProcessor],

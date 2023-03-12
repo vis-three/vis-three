@@ -1,5 +1,4 @@
-import { CONFIGTYPE, SymbolConfig } from "@vis-three/middleware";
-import { PASS_CONFIGTYPE } from "./constant";
+import { SymbolConfig } from "@vis-three/middleware";
 
 /**
  * @todo width height 支持不同pass渲染不同区域
@@ -50,14 +49,11 @@ export const getPassConfig = function (): PassConfig {
 };
 
 export const getSMAAPassConfig = function (): SMAAPassConfig {
-  return Object.assign(getPassConfig(), {
-    type: PASS_CONFIGTYPE.SMAAPASS,
-  });
+  return Object.assign(getPassConfig(), {});
 };
 
 export const getUnrealBloomPassConfig = function (): UnrealBloomPassConfig {
   return Object.assign(getPassConfig(), {
-    type: PASS_CONFIGTYPE.UNREALBLOOMPASS,
     strength: 1.5,
     threshold: 0,
     radius: 0,
@@ -67,7 +63,6 @@ export const getUnrealBloomPassConfig = function (): UnrealBloomPassConfig {
 export const getSelectiveBloomPassConfig =
   function (): SelectiveBloomPassConfig {
     return Object.assign(getPassConfig(), {
-      type: PASS_CONFIGTYPE.SELECTIVEBLOOMPASS,
       strength: 1,
       threshold: 0,
       radius: 0,
@@ -79,7 +74,6 @@ export const getSelectiveBloomPassConfig =
 
 export const getSSAOPassConfig = function (): SSAOPassConfig {
   return Object.assign(getPassConfig(), {
-    type: PASS_CONFIGTYPE.SSAOPASS,
     camera: "",
     scene: "",
     kernelRadius: 8,

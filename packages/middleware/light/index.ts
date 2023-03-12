@@ -11,6 +11,7 @@ import SpotLightProcessor from "./SpotLightProcessor";
 
 export default defineModule({
   type: "light",
+  object: true,
   compiler: LightCompiler,
   rule: LightRule,
   processors: [

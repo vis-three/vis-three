@@ -1,9 +1,10 @@
 import { defineProcessor } from "@vis-three/middleware";
 import { Vector2 } from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
-import { PASS_CONFIGTYPE } from "../constant";
+import { getUnrealBloomPassConfig } from "./PassConfig";
 export default defineProcessor({
-    configType: PASS_CONFIGTYPE.UNREALBLOOMPASS,
+    type: "UnrealBloomPass",
+    config: getUnrealBloomPassConfig,
     create(config, engine) {
         const pixelRatio = window.devicePixelRatio;
         const pass = new UnrealBloomPass(new Vector2(engine.dom

@@ -23,7 +23,7 @@ export const ProcessorMembers: Record<
   Processor<any, any, any, any>
 > = {};
 
-export const getModule = (type: string | string): string | null => {
+export const getModule = (type: string): string | null => {
   const matchModule = (module: string) => {
     return type.toLocaleLowerCase().includes(module.toLocaleLowerCase());
   };

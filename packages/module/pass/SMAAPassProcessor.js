@@ -1,8 +1,9 @@
 import { defineProcessor } from "@vis-three/middleware";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
-import { PASS_CONFIGTYPE } from "../constant";
+import { getSMAAPassConfig } from "./PassConfig";
 export default defineProcessor({
-    configType: PASS_CONFIGTYPE.SMAAPASS,
+    type: "SMAAPass",
+    config: getSMAAPassConfig,
     create(config, engine) {
         const pixelRatio = window.devicePixelRatio;
         const pass = new SMAAPass(engine.dom

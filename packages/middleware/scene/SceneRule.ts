@@ -13,6 +13,6 @@ export const SceneRule: SceneRule = function (
   compiler: SceneCompiler
 ) {
   ObjectRule(input, compiler, (vid) => {
-    return validate(vid) || [uniqueSymbol("SCENE")].includes(vid);
+    return validate(vid) || [uniqueSymbol("Scene")].includes(vid);
   });
 };

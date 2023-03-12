@@ -5,6 +5,7 @@ import { PointsRule } from "./PointsRule";
 
 export default defineModule({
   type: "points",
+  object: true,
   compiler: PointsCompiler,
   rule: PointsRule,
   processors: [PointsProcessor],

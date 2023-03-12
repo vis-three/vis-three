@@ -23,14 +23,14 @@ import { StatsRenderStrategy } from "@vis-three/stats-render-strategy";
 import { GridViewpointStrategy } from "@vis-three/grid-viewpoint-strategy";
 import { TransformKeyboardStrategy } from "@vis-three/transform-keyboard-strategy";
 import { HelperSelectInteractStrategy } from "@vis-three/helper-select-interact-strategy";
-import { ComposerSupportStrategy, PassDataSupport, PASS_CONFIGTYPE, } from "@vis-three/composer-support-strategy";
 import { CSS3DRendererSupportStrategy } from "@vis-three/css3d-renderer-support-strategy";
 import { WebGLRendererSupportStrategy } from "@vis-three/webgl-renderer-support-strategy";
 import { TransformControlsSupportStrategy } from "@vis-three/transform-controls-support-strategy";
 import { TransformControlsHelperFilterStrategy } from "@vis-three/transform-controls-helper-filter-strategy";
 import { OrbitControlsSupportStrategy } from "@vis-three/orbit-controls-support-strategy";
 import { SelectionPlugin } from "@vis-three/selection-plugin";
-export { VIEWPOINT, PassDataSupport, PASS_CONFIGTYPE };
+import PassModule from "@vis-three/module-pass";
+export { VIEWPOINT };
 export class ModelingEngineSupport extends EngineSupport {
     constructor(parameters) {
         super(parameters);
@@ -64,11 +64,11 @@ export class ModelingEngineSupport extends EngineSupport {
             .exec(GridViewpointStrategy())
             .exec(TransformKeyboardStrategy())
             .exec(HelperSelectInteractStrategy())
-            .exec(ComposerSupportStrategy())
             .exec(CSS3DRendererSupportStrategy())
             .exec(WebGLRendererSupportStrategy())
             .exec(TransformControlsSupportStrategy())
             .exec(TransformControlsHelperFilterStrategy())
             .exec(OrbitControlsSupportStrategy());
+        this.registModule(PassModule);
     }
 }

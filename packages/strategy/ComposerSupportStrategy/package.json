@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/composer-support-strategy",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "description": "",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
@@ -24,7 +24,7 @@
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
     "@vis-three/effect-composer-plugin": "workspace:^0.5.1",
-    "@vis-three/middleware": "workspace:^0.5.10",
+    "@vis-three/middleware": "workspace:^0.6.0",
     "@vis-three/utils": "workspace:^0.5.0"
   },
   "files": [

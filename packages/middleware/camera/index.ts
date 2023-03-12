@@ -6,6 +6,7 @@ import PerspectiveCameraProcessor from "./PerspectiveCameraProcessor";
 
 export default defineModule({
   type: "camera",
+  object: true,
   compiler: CameraCompiler,
   rule: CameraRule,
   processors: [OrthographicCameraProcessor, PerspectiveCameraProcessor],

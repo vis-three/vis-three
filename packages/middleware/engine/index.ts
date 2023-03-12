@@ -44,7 +44,17 @@ import {
   CompilerManagerPlugin,
 } from "../plugin/CompilerManagerPlugin";
 import { CompilerSupportStrategy } from "../strategy/CompilerSupportStrategy";
-import { MODULETYPE } from "../module";
+import {
+  Compiler,
+  CompilerFactory,
+  CompilerMembers,
+  DataSupportFactory,
+  DataSupportMembers,
+  installProcessor,
+  ModuleOptions,
+  MODULETYPE,
+  OBJECTMODULE,
+} from "../module";
 import { CameraCompiler } from "../camera/CameraCompiler";
 import { SceneCompiler } from "../scene/SceneCompiler";
 
@@ -261,9 +271,46 @@ export class EngineSupport
     }
     return this;
   }
+
+  registModule<C extends Compiler<any, any>>(options: ModuleOptions<C>) {
+    MODULETYPE[options.type.toLocaleUpperCase()] = options.type;
+
+    if (options.object) {
+      OBJECTMODULE[options.type.toLocaleUpperCase()] = true;
+    }
+
+    const DataSupportClass = DataSupportFactory(options.type, options.rule);
+
+    DataSupportMembers[`${options.type}DataSupport`] = DataSupportClass;
+
+    const CompilerClass = CompilerFactory(
+      options.type,
+      options.compiler,
+      options.processors
+    );
+
+    CompilerMembers[`${options.type}Compiler`] = CompilerClass;
+
+    for (const processor of options.processors) {
+      installProcessor(processor);
+    }
+
+    const compiler = new CompilerClass() as C;
+    const dataSupport = new DataSupportClass([]);
+
+    this.dataSupportManager.extend(dataSupport);
+    this.compilerManager.extend(compiler);
+
+    compiler.useEngine(this);
+    dataSupport.addCompiler(compiler);
+  }
 }
 
-export const defineEngineSupport = function (options: EngineOptions) {
+export interface EngineSupportOptions extends EngineOptions {
+  modules: ModuleOptions<any>[];
+}
+
+export const defineEngineSupport = function (options: EngineSupportOptions) {
   const engine = new EngineSupport();
 
   if (options.plugins) {
@@ -275,6 +322,12 @@ export const defineEngineSupport = function (options: EngineOptions) {
   if (options.strategy) {
     options.strategy.forEach((strategy) => {
       engine.exec(strategy);
+    });
+  }
+
+  if (options.modules) {
+    options.modules.forEach((module) => {
+      engine.registModule(module);
     });
   }
 

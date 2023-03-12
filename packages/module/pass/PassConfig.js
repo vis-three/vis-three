@@ -1,4 +1,3 @@
-import { PASS_CONFIGTYPE } from "./constant";
 export const getPassConfig = function () {
     return {
         vid: "",
@@ -7,13 +6,10 @@ export const getPassConfig = function () {
     };
 };
 export const getSMAAPassConfig = function () {
-    return Object.assign(getPassConfig(), {
-        type: PASS_CONFIGTYPE.SMAAPASS,
-    });
+    return Object.assign(getPassConfig(), {});
 };
 export const getUnrealBloomPassConfig = function () {
     return Object.assign(getPassConfig(), {
-        type: PASS_CONFIGTYPE.UNREALBLOOMPASS,
         strength: 1.5,
         threshold: 0,
         radius: 0,
@@ -21,7 +17,6 @@ export const getUnrealBloomPassConfig = function () {
 };
 export const getSelectiveBloomPassConfig = function () {
     return Object.assign(getPassConfig(), {
-        type: PASS_CONFIGTYPE.SELECTIVEBLOOMPASS,
         strength: 1,
         threshold: 0,
         radius: 0,
@@ -32,7 +27,6 @@ export const getSelectiveBloomPassConfig = function () {
 };
 export const getSSAOPassConfig = function () {
     return Object.assign(getPassConfig(), {
-        type: PASS_CONFIGTYPE.SSAOPASS,
         camera: "",
         scene: "",
         kernelRadius: 8,

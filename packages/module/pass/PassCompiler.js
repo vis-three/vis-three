@@ -1,9 +1,5 @@
-import SMAAPassProcessor from "./processor/SMAAPassProcessor";
-import UnrealBloomPassProcessor from "./processor/UnrealBloomPassProcessor";
-import SelectiveBloomPassProcessor from "./processor/SelectiveBloomPassProcessor";
-import { Compiler, MODULETYPE } from "@vis-three/middleware";
+import { Compiler } from "@vis-three/middleware";
 export class PassCompiler extends Compiler {
-    MODULE = MODULETYPE.PASS;
     composer;
     constructor() {
         super();
@@ -33,6 +29,3 @@ export class PassCompiler extends Compiler {
         return this;
     }
 }
-Compiler.processor(SMAAPassProcessor);
-Compiler.processor(UnrealBloomPassProcessor);
-Compiler.processor(SelectiveBloomPassProcessor);

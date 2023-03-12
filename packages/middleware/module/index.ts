@@ -34,7 +34,7 @@ export const defineModule = function <C extends Compiler<any, any>>(
   MODULETYPE[options.type.toLocaleUpperCase()] = options.type;
 
   if (options.object) {
-    OBJECTMODULE[options.type.toLocaleUpperCase()] = true;
+    OBJECTMODULE[options.type] = true;
   }
 
   const DataSupportClass = DataSupportFactory(options.type, options.rule);

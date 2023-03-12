@@ -17,7 +17,7 @@ export interface SceneConfig extends ObjectConfig {
 
 export const getSceneConfig = function (): SceneConfig {
   return Object.assign(getObjectConfig(), {
-    vid: uniqueSymbol("SCENE"),
+    vid: uniqueSymbol("Scene"),
     background: "",
     environment: "",
     fog: {

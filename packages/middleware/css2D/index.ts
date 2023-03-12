@@ -5,6 +5,7 @@ import { CSS2DRule } from "./CSS2DRule";
 
 export default defineModule({
   type: "css2D",
+  object: true,
   compiler: CSS2DCompiler,
   rule: CSS2DRule,
   processors: [CSS2DPlaneProcessor],

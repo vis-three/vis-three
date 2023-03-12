@@ -5,6 +5,7 @@ import { SceneRule } from "./SceneRule";
 
 export default defineModule({
   type: "scene",
+  object: true,
   compiler: SceneCompiler,
   rule: SceneRule,
   processors: [SceneProcessor],

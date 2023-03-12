@@ -5,6 +5,7 @@ import { LineRule } from "./LineRule";
 
 export default defineModule({
   type: "line",
+  object: true,
   compiler: LineCompiler,
   rule: LineRule,
   processors: [LineProcessor],

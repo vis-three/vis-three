@@ -5,6 +5,7 @@ import { SpriteRule } from "./SpriteRule";
 
 export default defineModule({
   type: "sprite",
+  object: true,
   compiler: SpriteCompiler,
   rule: SpriteRule,
   processors: [SpriteProcessor],

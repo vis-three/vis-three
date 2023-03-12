@@ -3,10 +3,7 @@ import {
   Pass,
 } from "three/examples/jsm/postprocessing/EffectComposer";
 import { PassConfigAllType } from "./PassConfig";
-import SMAAPassProcessor from "./processor/SMAAPassProcessor";
-import UnrealBloomPassProcessor from "./processor/UnrealBloomPassProcessor";
-import SelectiveBloomPassProcessor from "./processor/SelectiveBloomPassProcessor";
-import { Compiler, EngineSupport, MODULETYPE } from "@vis-three/middleware";
+import { Compiler, EngineSupport } from "@vis-three/middleware";
 import { EffectComposerEngine } from "@vis-three/effect-composer-plugin";
 
 export interface ComposerSupportEngine
@@ -14,8 +11,6 @@ export interface ComposerSupportEngine
     EffectComposerEngine {}
 
 export class PassCompiler extends Compiler<PassConfigAllType, Pass> {
-  MODULE: MODULETYPE = MODULETYPE.PASS;
-
   private composer!: EffectComposer;
 
   constructor() {
@@ -56,7 +51,3 @@ export class PassCompiler extends Compiler<PassConfigAllType, Pass> {
     return this;
   }
 }
-
-Compiler.processor(SMAAPassProcessor);
-Compiler.processor(UnrealBloomPassProcessor);
-Compiler.processor(SelectiveBloomPassProcessor);

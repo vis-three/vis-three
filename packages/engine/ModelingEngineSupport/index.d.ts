@@ -17,9 +17,8 @@ import { ObjectHelperEngine, ObjectHelperManager } from "@vis-three/object-helpe
 import { CSS2DRendererEngine } from "@vis-three/css2d-renderer-plugin";
 import { CSS3DRendererEngine } from "@vis-three/css3d-renderer-plugin";
 import { VisStats } from "@vis-three/stats-plugin/VisStats";
-import { PassDataSupport, PASS_CONFIGTYPE } from "@vis-three/composer-support-strategy";
 import { SelectionEngine } from "@vis-three/selection-plugin";
-export { VIEWPOINT, PassDataSupport, PASS_CONFIGTYPE };
+export { VIEWPOINT };
 export declare class ModelingEngineSupport extends EngineSupport implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, KeyboardManagerEngine, StatsEngine, TransformControlsEngine, ViewpointEngine, GridHelperEngine, AxesHelperEngine, SelectionSupportEngine, ObjectHelperEngine, CSS2DRendererEngine, CSS3DRendererEngine {
     webGLRenderer: WebGLRenderer;
     getScreenshot: (params?: Screenshot | undefined) => Promise<string>;

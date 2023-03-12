@@ -7,6 +7,7 @@ import CSS3DSpriteProcessor from "./CSS3DSpriteProcessor";
 
 export default defineModule({
   type: "css3D",
+  object: true,
   compiler: CSS3DCompiler,
   rule: CSS3DRule,
   processors: [CSS3DPlaneProcessor, CSS3DObjectProcessor, CSS3DSpriteProcessor],

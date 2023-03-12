@@ -23,8 +23,10 @@
       import { TransformControlsPlugin } from "@vis-three/transform-controls-plugin";
       import { SelectionPlugin } from "@vis-three/selection-plugin";
       import { SelectionSupportPlugin } from "@vis-three/selection-support-plugin";
-      import { ComposerSupportStrategy } from "@vis-three/composer-support-strategy";
       import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+
+      import PassModule from "@vis-three/module-pass";
+
       import {
         defineEngineSupport,
         generateConfig,
@@ -48,11 +50,9 @@
           SelectionSupportPlugin(),
           TransformControlsPlugin(),
         ],
-        strategy: [
-          ComposerSupportStrategy(),
-          EffectRenderStrategy(),
-          TransSelectEventSupportStrategy(),
-        ],
+        strategy: [EffectRenderStrategy(), TransSelectEventSupportStrategy()],
+
+        modules: [PassModule],
       })
         .setDom(document.getElementById("app"))
         .setSize()
@@ -88,8 +88,6 @@
       });
 
       engine.setSelectionBoxBySymbol([mesh.vid]);
-
-
     </script>
   </body>
 </html>
