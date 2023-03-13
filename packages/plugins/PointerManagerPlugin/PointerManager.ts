@@ -50,6 +50,7 @@ export class PointerManager extends EventDispatcher {
     };
 
     const extendEventHanlder = (event: PointerEvent | MouseEvent) => {
+      event.preventDefault();
       this.dispatchEvent(mergeEvent(event));
     };
 
