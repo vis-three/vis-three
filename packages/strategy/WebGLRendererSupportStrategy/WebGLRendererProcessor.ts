@@ -49,7 +49,7 @@ export interface WebGLRendererConfig extends RendererConfig {
 
 export const getWebGLRendererConfig = function (): WebGLRendererConfig {
   return Object.assign(getRendererConfig(), {
-    vid: uniqueSymbol("WEBGLRENDERER"), // WebGLRenderer or vid
+    vid: uniqueSymbol("WebGLRenderer"), // WebGLRenderer or vid
     clearColor: "rgba(0, 0, 0, 0)",
     outputEncoding: LinearEncoding,
     physicallyCorrectLights: false,

@@ -11,6 +11,8 @@ export const CONFIGTYPE: Record<string, string> = {};
 
 export const OBJECTMODULE: Record<string, boolean> = {};
 
+export const CONFIGMODULE: Record<string, string> = {};
+
 export const CompilerMembers: Record<string, typeof Compiler<any, any>> = {};
 
 export const DataSupportMembers: Record<
@@ -24,17 +26,7 @@ export const ProcessorMembers: Record<
 > = {};
 
 export const getModule = (type: string): string | null => {
-  const matchModule = (module: string) => {
-    return type.toLocaleLowerCase().includes(module.toLocaleLowerCase());
-  };
-
-  for (const module of Object.values(MODULETYPE)) {
-    if (matchModule(module)) {
-      return module;
-    }
-  }
-
-  return null;
+  return CONFIGMODULE[type] || null;
 };
 
 export const isObjectModule = (module: string): boolean => {
@@ -63,9 +55,11 @@ export const ProcessorSelector = function (type: string) {
 };
 
 export const installProcessor = function (
-  processor: Processor<any, any, any, any>
+  processor: Processor<any, any, any, any>,
+  module: string
 ) {
   ProcessorMembers[processor.type] = processor;
   CONFIGTYPE[processor.type.toLocaleUpperCase()] = processor.type;
   CONFIGFACTORY[processor.type] = processor.config;
+  CONFIGMODULE[processor.type] = module;
 };

@@ -4,7 +4,7 @@ import { syncObject } from "@vis-three/utils";
 import { LinearEncoding, NoToneMapping, PCFShadowMap, } from "three";
 export const getWebGLRendererConfig = function () {
     return Object.assign(getRendererConfig(), {
-        vid: uniqueSymbol("WEBGLRENDERER"),
+        vid: uniqueSymbol("WebGLRenderer"),
         clearColor: "rgba(0, 0, 0, 0)",
         outputEncoding: LinearEncoding,
         physicallyCorrectLights: false,

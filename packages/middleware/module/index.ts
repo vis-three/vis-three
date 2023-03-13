@@ -50,6 +50,6 @@ export const defineModule = function <C extends Compiler<any, any>>(
   CompilerMembers[`${options.type}Compiler`] = CompilerClass;
 
   for (const processor of options.processors) {
-    installProcessor(processor);
+    installProcessor(processor, options.type);
   }
 };

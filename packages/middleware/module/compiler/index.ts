@@ -216,7 +216,7 @@ export class Compiler<C extends SymbolConfig, O extends object> {
       return this;
     }
     this.processors.set(processor.type, processor);
-    installProcessor(processor);
+    installProcessor(processor, this.MODULE);
     fun(this);
 
     return this;

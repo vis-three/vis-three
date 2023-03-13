@@ -44,10 +44,11 @@
       });
 
       engine.loadResourcesAsync(["model/fbx/nurbs.fbx"]).then((res) => {
+        console.log(res);
         const config = Template.observable(
           res.resourceConfig["model/fbx/nurbs.fbx"]
         );
-
+        console.log(config);
         engine.loadConfig(config);
 
         const root = res.configMap.get("model/fbx/nurbs.fbx");

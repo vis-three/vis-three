@@ -57,7 +57,10 @@
       const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
-        .setStats(true);
+        .setStats(true)
+        .registerResources({
+          "examples.css3DObject": document.getElementById("element1"),
+        });
 
       const ambientLight1 = generateConfig("AmbientLight", {
         intensity: 0.5,

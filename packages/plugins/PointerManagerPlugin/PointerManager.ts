@@ -49,8 +49,12 @@ export class PointerManager extends EventDispatcher {
       return eventObject as VisPointerEvent;
     };
 
-    const extendEventHanlder = (event: PointerEvent | MouseEvent) => {
+    const extendEventHandler = (event: PointerEvent | MouseEvent) => {
       event.preventDefault();
+      this.dispatchEvent(mergeEvent(event));
+    };
+
+    const pointEventHandler = (event: PointerEvent | MouseEvent) => {
       this.dispatchEvent(mergeEvent(event));
     };
 
@@ -75,19 +79,19 @@ export class PointerManager extends EventDispatcher {
       }, this.throttleTime);
     };
 
-    this.mouseDownHandler = extendEventHanlder;
+    this.mouseDownHandler = extendEventHandler;
 
-    this.mouseUpHandler = extendEventHanlder;
+    this.mouseUpHandler = extendEventHandler;
 
-    this.pointerDownHandler = extendEventHanlder;
+    this.pointerDownHandler = pointEventHandler;
 
-    this.pointerUpHandler = extendEventHanlder;
+    this.pointerUpHandler = pointEventHandler;
 
-    this.clickHandler = extendEventHanlder;
+    this.clickHandler = extendEventHandler;
 
-    this.dblclickHandler = extendEventHanlder;
+    this.dblclickHandler = extendEventHandler;
 
-    this.contextmenuHandler = extendEventHanlder;
+    this.contextmenuHandler = extendEventHandler;
   }
 
   /**

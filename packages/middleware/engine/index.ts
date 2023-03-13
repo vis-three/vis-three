@@ -292,7 +292,7 @@ export class EngineSupport
     CompilerMembers[`${options.type}Compiler`] = CompilerClass;
 
     for (const processor of options.processors) {
-      installProcessor(processor);
+      installProcessor(processor, options.type);
     }
 
     const compiler = new CompilerClass() as C;
