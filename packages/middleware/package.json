@@ -26,9 +26,9 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
-    "@vis-three/event-manager-plugin": "workspace:^0.5.3",
+    "@vis-three/event-manager-plugin": "workspace:^0.6.0",
     "@vis-three/loader-manager-plugin": "workspace:^0.5.3",
-    "@vis-three/pointer-manager-plugin": "workspace:^0.5.3",
+    "@vis-three/pointer-manager-plugin": "workspace:^0.6.0",
     "@vis-three/render-manager-plugin": "workspace:^0.5.3",
     "@vis-three/utils": "workspace:^0.5.0",
     "rxjs": "^7.5.7",
