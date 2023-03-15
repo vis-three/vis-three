@@ -5,3 +5,4 @@ packages:
   - "packages/strategy/*"
   - "packages/library/*"
   - "packages/module/*"
+  - "packages/modifier/*"

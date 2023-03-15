@@ -11,7 +11,7 @@ export abstract class Modifier {
     parameters.visible && (this.visible = parameters.visible);
   }
 
-  abstract apply();
-  abstract render();
-  abstract dispose();
+  abstract apply(): void;
+  abstract render(): void;
+  abstract dispose(): void;
 }

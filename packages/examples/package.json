@@ -56,6 +56,7 @@
     "@vis-three/middleware": "workspace:^0.6.0",
     "@vis-three/modeling-engine": "workspace:^0.6.0",
     "@vis-three/modeling-engine-support": "workspace:^0.6.0",
+    "@vis-three/modifier-boolean": "workspace:^0.6.0",
     "@vis-three/module-pass": "workspace:^0.6.0",
     "@vis-three/object-helper-plugin": "workspace:^0.5.1",
     "@vis-three/orbit-controls-plugin": "workspace:^0.5.12",

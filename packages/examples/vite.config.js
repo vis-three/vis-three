@@ -45,6 +45,7 @@ recursion(path.resolve(__dirname, "./plugins"));
 recursion(path.resolve(__dirname, "./strategy"));
 recursion(path.resolve(__dirname, "./convenient"));
 recursion(path.resolve(__dirname, "./middleware"));
+recursion(path.resolve(__dirname, "./modifier"));
 recursion(path.resolve(__dirname, "./demo"));
 recursion(path.resolve(__dirname, "./test"));
 

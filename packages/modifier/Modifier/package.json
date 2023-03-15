@@ -1,7 +1,7 @@
 {
-  "name": "@vis-three/modifier-library",
-  "version": "0.5.5",
-  "description": "vis-three modifier library",
+  "name": "@vis-three/modifier-base",
+  "version": "0.6.0",
+  "description": "vis-three modifier base",
   "main": "index.js",
   "module": "index.js",
   "types": "index.d.ts",
@@ -24,9 +24,7 @@
     "three": "^0.141.0",
     "typescript": "^4.3.2"
   },
-  "dependencies": {
-    "@vis-three/middleware": "workspace:^0.6.0"
-  },
+  "dependencies": {},
   "files": [
     "**/*.js",
     "**/*.d.ts",

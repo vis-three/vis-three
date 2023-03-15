@@ -10,13 +10,12 @@
   </head>
 
   <style>
-    #app,
+    #app {
+      height: 100%;
+      overflow: auto;
+    }
     #module-main {
       width: 100%;
-      height: 100%;
-      position: fixed;
-      top: 0;
-      left: 0;
     }
 
     #module-main {
@@ -47,7 +46,6 @@
       background-color: rgba(0, 0, 0, 0.2);
       padding: 10px;
       box-shadow: 0 0 4px white;
-      flex: 1;
     }
 
     .module-box h3 {
@@ -65,8 +63,7 @@
   </style>
 
   <body>
-    <div id="app"></div>
-    <div id="module-main"></div>
+    <div id="app"><div id="module-main"></div></div>
 
     <script type="module">
       import tree from "./router.json";

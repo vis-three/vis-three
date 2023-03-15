@@ -20,8 +20,11 @@
     <div id="app"></div>
     <script type="module">
       import * as THREE from "three";
-      import * as Vis from "vis-three";
-      const engine = new Vis.ModelingEngine()
+
+      import { ModelingEngine } from "@vis-three/modeling-engine";
+      import { BooleanModifier } from "@vis-three/modifier-boolean";
+
+      const engine = new ModelingEngine()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true)
@@ -29,16 +32,12 @@
 
       const scene = engine.scene;
 
-      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
-      pointLight.position.y = 30;
-      scene.add(pointLight);
-
       const box = new THREE.Mesh(
         new THREE.BoxBufferGeometry(20, 10, 10),
-        new THREE.MeshStandardMaterial({
+        new THREE.MeshBasicMaterial({
           // color: 'rgb(255, 105, 100)',
           map: new THREE.TextureLoader().load(
-            "/examples/public/texture/Bricks_Color.jpg"
+            import.meta.env.BASE_URL + "texture/Bricks_Color.jpg"
           ),
         })
       );
@@ -48,7 +47,6 @@
         new THREE.SphereBufferGeometry(7),
         new THREE.MeshBasicMaterial({
           wireframe: true,
-          color: "rgb(155, 155, 0)",
           transparent: true,
           opacity: 0.5,
         })
@@ -56,6 +54,8 @@
       sphere.position.x = -5;
       sphere.updateMatrix();
       scene.add(sphere);
+
+      engine.setObjectHelper(false);
 
       const cylinder = new THREE.Mesh(
         new THREE.CylinderGeometry(3, 3, 15, 16),
@@ -65,21 +65,26 @@
       cylinder.updateMatrix();
       scene.add(cylinder);
 
-      const modifier1 = new Vis.BooleanModifier({
+      const modifier1 = new BooleanModifier({
         source: box,
         target: sphere,
       });
 
-      const modifier2 = new Vis.BooleanModifier({
+      const modifier2 = new BooleanModifier({
         source: box,
         target: cylinder,
         mode: "union",
       });
 
-      engine.renderManager.addEventListener("render", () => {
+      modifier1.render();
+      modifier2.render();
+
+      engine.transformControls.addEventListener("objectChange", () => {
         modifier1.render();
         modifier2.render();
       });
+
+      window.engine = engine;
     </script>
   </body>
 </html>
