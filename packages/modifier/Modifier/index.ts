@@ -1,6 +1,6 @@
 export interface ModifierParameters {
   visible?: boolean;
-  source: any;
+  source?: any;
 }
 
 export abstract class Modifier {

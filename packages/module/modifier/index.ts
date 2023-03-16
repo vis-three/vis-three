@@ -1,16 +1,9 @@
-import { PassCompiler } from "./PassCompiler";
-import { PassRule } from "./PassRule";
-import SelectiveBloomPassProcessor from "./SelectiveBloomPassProcessor";
-import SMAAPassProcessor from "./SMAAPassProcessor";
-import UnrealBloomPassProcessor from "./UnrealBloomPassProcessor";
+import { ModifierCompiler } from "./ModifierCompiler";
+import { ModifierRule } from "./ModifierRule";
 
 export default {
-  type: "pass",
-  compiler: PassCompiler,
-  rule: PassRule,
-  processors: [
-    UnrealBloomPassProcessor,
-    SMAAPassProcessor,
-    SelectiveBloomPassProcessor,
-  ],
+  type: "modifier",
+  compiler: ModifierCompiler,
+  rule: ModifierRule,
+  processors: [],
 };

@@ -9,12 +9,17 @@ export class BooleanModifier extends Modifier {
     modifiedGeometry = new BufferGeometry();
     constructor(parameters) {
         super(parameters);
-        this.source = parameters.source;
-        this.target = parameters.target;
+        parameters.source && (this.source = parameters.source);
+        parameters.target && (this.target = parameters.target);
         this.mode = parameters.mode || "subtract";
-        this.originalGeometry = this.source.geometry;
-        this.modify();
-        this.source.geometry = this.modifiedGeometry;
+        this.init();
+    }
+    init() {
+        if (this.source && this.target) {
+            this.originalGeometry = this.source.geometry;
+            this.modify();
+            this.source.geometry = this.modifiedGeometry;
+        }
     }
     modify() {
         const source = this.source;

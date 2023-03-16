@@ -587,7 +587,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/middleware': workspace:^0.6.0
+      '@vis-three/modifier-boolean': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-prettier: ^4.0.0
@@ -595,7 +595,7 @@ importers:
       three: ^0.141.0
       typescript: ^4.3.2
     dependencies:
-      '@vis-three/middleware': link:../../middleware
+      '@vis-three/modifier-boolean': link:../../modifier/BooleanModifier
     devDependencies:
       '@types/node': 18.15.0
       '@types/three': 0.133.1
@@ -693,6 +693,92 @@ importers:
     dependencies:
       '@vis-three/modifier-base': link:../Modifier
       three-csg-ts: 3.1.11_k5pfjr5sd5oogwxlz26np7hhai
+    devDependencies:
+      '@types/node': 18.15.0
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
+      '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.7.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm
+      prettier: 2.8.4
+      three: 0.141.0
+      typescript: 4.9.5
+
+  packages/modifier/ExtrudeModifier:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/modifier-base': workspace:^0.6.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+    dependencies:
+      '@vis-three/modifier-base': link:../Modifier
+    devDependencies:
+      '@types/node': 18.15.0
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
+      '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.7.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm
+      prettier: 2.8.4
+      three: 0.141.0
+      typescript: 4.9.5
+
+  packages/modifier/Modifier:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+    devDependencies:
+      '@types/node': 18.15.0
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
+      '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.7.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm
+      prettier: 2.8.4
+      three: 0.141.0
+      typescript: 4.9.5
+
+  packages/module/modifier:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.5.10
+      '@vis-three/middleware': workspace:^0.6.0
+      '@vis-three/modifier-base': workspace:^0.6.0
+      '@vis-three/modifier-library': workspace:^0.5.5
+      '@vis-three/utils': workspace:^0.5.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+    dependencies:
+      '@vis-three/core': link:../../core
+      '@vis-three/middleware': link:../../middleware
+      '@vis-three/modifier-base': link:../../modifier/Modifier
+      '@vis-three/modifier-library': link:../../library/modifier
+      '@vis-three/utils': link:../../utils
     devDependencies:
       '@types/node': 18.15.0
       '@types/three': 0.133.1
@@ -2224,7 +2310,7 @@ importers:
       nprogress: 0.2.0
       three: 0.141.0
       url-parse: 1.5.10
-      vis-three: 0.3.2_5f3bhszgn4vcn4adwapovpp4re
+      vis-three: 0.3.2_k5pfjr5sd5oogwxlz26np7hhai
     devDependencies:
       '@rollup/plugin-alias': 3.1.9_rollup@2.79.1
       '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
@@ -4684,12 +4770,6 @@ packages:
   /@types/three/0.133.1:
     resolution: {integrity: sha512-XqBrP/+kbs+o0CYRhCVVE95v7FaL2bO5Z7+3VQJE0nEyjo+9LoLfeNgZITOnndKHxM+7ltEciAIR7uE0SZlsOg==}
 
-  /@types/three/0.149.0:
-    resolution: {integrity: sha512-fgNBm9LWc65ER/W0cvoXdC0iMy7Ke9e2CONmEr6Jt8sDSY3sw4DgOubZfmdZ747dkPhbQrgRQAWwDEr2S/7IEg==}
-    dependencies:
-      '@types/webxr': 0.5.1
-    dev: false
-
   /@types/uuid/8.3.4:
     resolution: {integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==}
 
@@ -4697,15 +4777,11 @@ packages:
     resolution: {integrity: sha512-oh8q2Zc32S6gd/j50GowEjKLoOVOwHP/bWVjKJInBwQqdOYMdPrf1oVlelTlyfFK3CKxL1uahMDAr+vy8T7yMQ==}
     dev: true
 
-  /@types/webxr/0.5.1:
-    resolution: {integrity: sha512-xlFXPfgJR5vIuDefhaHuUM9uUgvPaXB6GKdXy2gdEh8gBWQZ2ul24AJz3foUd8NNKlSTQuWYJpCb1/pL81m1KQ==}
-    dev: false
-
   /@types/yauzl/2.10.0:
     resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
     requiresBuild: true
     dependencies:
-      '@types/node': 14.18.35
+      '@types/node': 18.15.0
     dev: true
     optional: true
 
@@ -5878,7 +5954,7 @@ packages:
       fresh: 0.5.2
       mitt: 1.2.0
       rxjs: 5.5.12
-      typescript: 4.9.3
+      typescript: 4.9.5
     dev: true
 
   /browser-sync-ui/2.27.10:
@@ -9649,16 +9725,6 @@ packages:
       dlv: 1.1.3
     dev: true
 
-  /three-csg-ts/3.1.11_5f3bhszgn4vcn4adwapovpp4re:
-    resolution: {integrity: sha512-cR0b/u2wQRkQBooL1fZgsWPxjXBKfXlvAld+KItWWh3Qehxm/Jw5WyoCVdOD9PKZJj2RrAKvCFW6sZvYPik95w==}
-    peerDependencies:
-      '@types/three': '>= 0.125.0'
-      three: '>= 0.125.0'
-    dependencies:
-      '@types/three': 0.149.0
-      three: 0.141.0
-    dev: false
-
   /three-csg-ts/3.1.11_k5pfjr5sd5oogwxlz26np7hhai:
     resolution: {integrity: sha512-cR0b/u2wQRkQBooL1fZgsWPxjXBKfXlvAld+KItWWh3Qehxm/Jw5WyoCVdOD9PKZJj2RrAKvCFW6sZvYPik95w==}
     peerDependencies:
@@ -9928,7 +9994,7 @@ packages:
       extsprintf: 1.3.0
     dev: true
 
-  /vis-three/0.3.2_5f3bhszgn4vcn4adwapovpp4re:
+  /vis-three/0.3.2_k5pfjr5sd5oogwxlz26np7hhai:
     resolution: {integrity: sha512-NFA4p/6FjvCXewMQ+IlM8L+sPkjWv/huNXi+FDIwY75KwUSeROMdQYCyW5lIOib9NoTOc4jSPI6CGLr/+HPhww==}
     engines: {node: '>=14.15.0'}
     dependencies:
@@ -9937,7 +10003,7 @@ packages:
       '@types/uuid': 8.3.4
       keyboardjs: 2.7.0
       rxjs: 7.6.0
-      three-csg-ts: 3.1.11_5f3bhszgn4vcn4adwapovpp4re
+      three-csg-ts: 3.1.11_k5pfjr5sd5oogwxlz26np7hhai
       uuid: 8.3.2
     transitivePeerDependencies:
       - '@types/three'
