@@ -1,4 +1,4 @@
-import { BufferGeometry, Mesh } from "three";
+import { BoxBufferGeometry, BufferGeometry, Mesh } from "three";
 import { CSG } from "three-csg-ts";
 import { Modifier, ModifierParameters } from "@vis-three/modifier-base";
 
@@ -14,7 +14,7 @@ export class BooleanModifier extends Modifier {
   mode: "subtract" | "union" | "intersect";
 
   private originalGeometry!: BufferGeometry;
-  private modifiedGeometry: BufferGeometry = new BufferGeometry();
+  private modifiedGeometry: BufferGeometry = new BoxBufferGeometry();
 
   constructor(parameters: BooleanModifierParameters) {
     super(parameters);

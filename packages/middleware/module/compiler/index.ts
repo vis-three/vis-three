@@ -5,12 +5,19 @@ import { ProxyNotice } from "../DataContainer";
 
 import { Processor } from "../Processor";
 import { installProcessor } from "../space";
+import { EventDispatcher } from "three";
 
 export type CompilerTarget<C extends SymbolConfig> = Record<string, C>;
 
 export type BasicCompiler = Compiler<SymbolConfig, object>;
 
 export type CompileNotice = Omit<ProxyNotice, "path"> & { path: string[] };
+
+export enum COMPILER_EVENT {
+  ADD = "compiler.add",
+  REMOVE = "compiler.remove",
+  COMPILE = "compiler.compile",
+}
 
 export class Compiler<C extends SymbolConfig, O extends object> {
   MODULE: string = "";
@@ -64,6 +71,10 @@ export class Compiler<C extends SymbolConfig, O extends object> {
     this.map.set(config.vid, object);
     this.weakMap.set(object, config.vid);
 
+    if (object instanceof EventDispatcher) {
+      object.dispatchEvent({ type: COMPILER_EVENT.ADD });
+    }
+
     return object;
   }
 
@@ -88,6 +99,11 @@ export class Compiler<C extends SymbolConfig, O extends object> {
     this.processors.get(config.type)!.dispose(object, this.engine, this);
     this.map.delete(vid);
     this.weakMap.delete(object);
+
+    if (object instanceof EventDispatcher) {
+      object.dispatchEvent({ type: COMPILER_EVENT.REMOVE });
+    }
+
     return this;
   }
 
@@ -164,6 +180,15 @@ export class Compiler<C extends SymbolConfig, O extends object> {
       compiler: this,
       ...notice,
     });
+
+    if (object instanceof EventDispatcher) {
+      object.dispatchEvent({
+        type: `${COMPILER_EVENT.COMPILE}:${notice.path.join(".")}.${
+          notice.key
+        }`,
+      });
+    }
+
     return this;
   }
 

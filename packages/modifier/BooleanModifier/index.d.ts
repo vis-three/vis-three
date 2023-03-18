@@ -6,13 +6,14 @@ export interface BooleanModifierParameters extends ModifierParameters {
     mode?: "subtract" | "union" | "intersect";
 }
 export declare class BooleanModifier extends Modifier {
-    source: Mesh;
+    _source: Mesh;
     target: Mesh;
     mode: "subtract" | "union" | "intersect";
     private originalGeometry;
     private modifiedGeometry;
     constructor(parameters: BooleanModifierParameters);
-    init(): void;
+    set source(value: Mesh);
+    get source(): Mesh;
     private modify;
     render(): void;
     apply(): void;

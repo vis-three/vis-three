@@ -272,7 +272,7 @@ export class EngineSupport
     return this;
   }
 
-  registModule<C extends Compiler<any, any>>(options: ModuleOptions<C>) {
+  registModule<C extends Compiler<any, any>>(options: ModuleOptions<C>): this {
     MODULETYPE[options.type.toLocaleUpperCase()] = options.type;
 
     if (options.object) {
@@ -303,6 +303,8 @@ export class EngineSupport
 
     compiler.useEngine(this);
     dataSupport.addCompiler(compiler);
+
+    return this;
   }
 }
 

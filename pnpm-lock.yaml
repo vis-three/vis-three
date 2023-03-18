@@ -403,6 +403,7 @@ importers:
       '@vis-three/modeling-engine': workspace:^0.6.0
       '@vis-three/modeling-engine-support': workspace:^0.6.0
       '@vis-three/modifier-boolean': workspace:^0.6.0
+      '@vis-three/module-modifier': workspace:^0.6.0
       '@vis-three/module-pass': workspace:^0.6.0
       '@vis-three/object-helper-plugin': workspace:^0.5.1
       '@vis-three/orbit-controls-plugin': workspace:^0.5.12
@@ -478,6 +479,7 @@ importers:
       '@vis-three/modeling-engine': link:../engine/ModelingEngine
       '@vis-three/modeling-engine-support': link:../engine/ModelingEngineSupport
       '@vis-three/modifier-boolean': link:../modifier/BooleanModifier
+      '@vis-three/module-modifier': link:../module/modifier
       '@vis-three/module-pass': link:../module/pass
       '@vis-three/object-helper-plugin': link:../plugins/ObjectHelperPlugin
       '@vis-three/orbit-controls-plugin': link:../plugins/OrbitControlsPlugin

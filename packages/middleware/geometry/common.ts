@@ -9,7 +9,7 @@ import {
   TubeGeometry,
 } from "three";
 import { EngineSupport } from "../engine";
-import { ProcessorCommands, ProcessParams } from "../module";
+import { COMPILER_EVENT, ProcessorCommands, ProcessParams } from "../module";
 import { GeometryCompiler } from "./GeometryCompiler";
 import { GeometryAllType, GeometryConfig } from "./GeometryInterface";
 
@@ -76,7 +76,7 @@ const commonRegCommand = {
     target.copy(newGeometry);
     target // TODO: 使用dispatch通知更新 // 辅助的更新根据uuid的更新而更新，直接copy无法判断是否更新
       .dispatchEvent({
-        type: "update",
+        type: `${COMPILER_EVENT.COMPILE}:update`,
       });
     target.uuid = newGeometry.uuid;
 
