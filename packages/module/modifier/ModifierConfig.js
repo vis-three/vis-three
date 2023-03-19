@@ -4,6 +4,7 @@ export const getModifierConfig = function () {
         name: "",
         visible: true,
         source: "",
+        index: 0,
     });
 };
 export const getBooleanModifierConfig = function () {

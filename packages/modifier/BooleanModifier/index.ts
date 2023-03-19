@@ -16,6 +16,9 @@ export class BooleanModifier extends Modifier {
   private originalGeometry!: BufferGeometry;
   private modifiedGeometry: BufferGeometry = new BoxBufferGeometry();
 
+  private timer = 0;
+  private throttling = 1000 / 15;
+
   constructor(parameters: BooleanModifierParameters) {
     super(parameters);
     parameters.source && (this.source = parameters.source);
@@ -34,7 +37,7 @@ export class BooleanModifier extends Modifier {
     return this._source;
   }
 
-  private modify() {
+  modify() {
     if (this._source && this.target) {
       const source = this._source;
       const likeMesh = {
@@ -54,7 +57,12 @@ export class BooleanModifier extends Modifier {
 
   render() {
     if (this.visible) {
-      this.modify();
+      if (!this.timer) {
+        this.timer = window.setTimeout(() => {
+          this.modify();
+          this.timer = 0;
+        }, this.throttling);
+      }
     } else {
       this.modifiedGeometry.copy(this.originalGeometry);
     }

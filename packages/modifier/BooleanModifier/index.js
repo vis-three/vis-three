@@ -7,6 +7,8 @@ export class BooleanModifier extends Modifier {
     mode;
     originalGeometry;
     modifiedGeometry = new BoxBufferGeometry();
+    timer = 0;
+    throttling = 1000 / 15;
     constructor(parameters) {
         super(parameters);
         parameters.source && (this.source = parameters.source);
@@ -36,7 +38,12 @@ export class BooleanModifier extends Modifier {
     }
     render() {
         if (this.visible) {
-            this.modify();
+            if (!this.timer) {
+                this.timer = window.setTimeout(() => {
+                    this.modify();
+                    this.timer = 0;
+                }, this.throttling);
+            }
         }
         else {
             this.modifiedGeometry.copy(this.originalGeometry);

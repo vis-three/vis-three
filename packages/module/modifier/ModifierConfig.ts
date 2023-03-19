@@ -18,6 +18,7 @@ export const getModifierConfig = function (): ModifierConfig {
     name: "",
     visible: true,
     source: "",
+    index: 0,
   });
 };
 

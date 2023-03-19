@@ -18,7 +18,53 @@ export default defineProcessor({
     commands: {
         set: {
             source: () => { },
-            target: () => { },
+            target: ({ target: modifier, config, engine, compiler }) => {
+                globalAntiShake.exec((finish) => {
+                    if (config.target) {
+                        const target = engine.compilerManager.getObjectBySymbol(config.target);
+                        if (!target) {
+                            finish &&
+                                console.warn(`Boolean modifier processor can not found object by vid: ${config.target}`);
+                            return false;
+                        }
+                        modifier.target = target;
+                        const renderFun = compiler.cacheRenderFun.get(modifier);
+                        if (!renderFun) {
+                            console.error(`can not found cache render fun in ${compiler.MODULE} compiler`);
+                            return true;
+                        }
+                        const oldTarget = compiler.cacheTarget.get(modifier);
+                        if (oldTarget) {
+                            for (const key of modifyKey) {
+                                oldTarget.removeEventListener(`${COMPILER_EVENT.COMPILE}:${key}`, renderFun);
+                            }
+                            oldTarget.geometry.removeEventListener(`${COMPILER_EVENT.COMPILE}:update`, renderFun);
+                        }
+                        for (const key of modifyKey) {
+                            target.addEventListener(`${COMPILER_EVENT.COMPILE}:${key}`, renderFun);
+                        }
+                        target.geometry.addEventListener(`${COMPILER_EVENT.COMPILE}:update`, renderFun);
+                        compiler.cacheTarget.set(modifier, target);
+                        renderFun();
+                        return true;
+                    }
+                    return true;
+                });
+            },
+            $reg: [
+                {
+                    reg: new RegExp(".*"),
+                    handler({ value, key, target: modifier, compiler }) {
+                        modifier[key] = value;
+                        const renderFun = compiler.cacheRenderFun.get(modifier);
+                        if (!renderFun) {
+                            console.error(`can not found cache render fun in ${compiler.MODULE} compiler`);
+                            return;
+                        }
+                        renderFun();
+                    },
+                },
+            ],
         },
     },
     create: function (config, engine, compiler) {
@@ -27,6 +73,7 @@ export default defineProcessor({
         });
         const renderFun = () => {
             modifier.render();
+            compiler.chainRender(modifier);
         };
         compiler.cacheRenderFun.set(modifier, renderFun);
         globalAntiShake.exec((finish) => {
@@ -42,6 +89,7 @@ export default defineProcessor({
                     source.addEventListener(`${COMPILER_EVENT.COMPILE}:${key}`, renderFun);
                 }
                 source.geometry.addEventListener(`${COMPILER_EVENT.COMPILE}:update`, renderFun);
+                compiler.integrateModifer(modifier);
                 renderFun();
                 return true;
             }
@@ -60,6 +108,7 @@ export default defineProcessor({
                     target.addEventListener(`${COMPILER_EVENT.COMPILE}:${key}`, renderFun);
                 }
                 target.geometry.addEventListener(`${COMPILER_EVENT.COMPILE}:update`, renderFun);
+                compiler.cacheTarget.set(modifier, target);
                 renderFun();
                 return true;
             }

@@ -11,10 +11,12 @@ export declare class BooleanModifier extends Modifier {
     mode: "subtract" | "union" | "intersect";
     private originalGeometry;
     private modifiedGeometry;
+    private timer;
+    private throttling;
     constructor(parameters: BooleanModifierParameters);
     set source(value: Mesh);
     get source(): Mesh;
-    private modify;
+    modify(): void;
     render(): void;
     apply(): void;
     dispose(): void;

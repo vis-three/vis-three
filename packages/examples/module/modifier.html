@@ -43,10 +43,17 @@
 
       generateConfig.injectScene = true;
 
-      const material = generateConfig(CONFIGTYPE.MESHBASICMATERIAL);
+      generateConfig(CONFIGTYPE.POINTLIGHT, {
+        position: {
+          y: 20,
+          z: 15,
+        },
+      });
+
+      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {});
 
       const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
-        width: 10,
+        width: 20,
         height: 10,
         depth: 10,
       });
@@ -54,29 +61,75 @@
       const mesh1 = generateConfig(CONFIGTYPE.MESH, {
         material: material.vid,
         geometry: geometry.vid,
+        position: {
+          x: -2,
+        },
       });
 
       const geometry2 = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
-        radius: 5,
+        radius: 7,
       });
 
       const mesh2 = generateConfig(CONFIGTYPE.MESH, {
         material: material.vid,
         geometry: geometry2.vid,
         visible: false,
+        position: {
+          x: 2,
+          y: 3,
+        },
+      });
+
+      const geometry3 = generateConfig(CONFIGTYPE.CONEGEOMETRY, {
+        radius: 5,
+        height: 10,
+      });
+
+      const mesh3 = generateConfig(CONFIGTYPE.MESH, {
+        material: material.vid,
+        geometry: geometry3.vid,
+        visible: false,
+        position: {
+          z: 2,
+        },
+      });
+
+      const geometry4 = generateConfig(CONFIGTYPE.CYLINDERGEOMETRY, {
+        radiusTop: 4,
+        radiusBottom: 4,
+        height: 15,
+      });
+
+      const mesh4 = generateConfig(CONFIGTYPE.MESH, {
+        material: material.vid,
+        geometry: geometry4.vid,
+        visible: false,
+        position: {
+          x: -6,
+        },
       });
 
       const modifier = generateConfig(CONFIGTYPE.BOOLEANMODIFIER, {
         source: mesh1.vid,
         target: mesh2.vid,
-        mode: "intersect",
+        // mode: "intersect",
+      });
+
+      const modifier2 = generateConfig(CONFIGTYPE.BOOLEANMODIFIER, {
+        source: mesh1.vid,
+        target: mesh3.vid,
+        mode: "union",
       });
 
       const gui = new GUI();
 
-      // gui.add(geometry, "width", 1, 50, 1);
-      // gui.add(geometry, "height", 1, 50, 1);
-      // gui.add(geometry, "depth", 1, 50, 1);
+      const modif1Folder = gui.addFolder("modifier1");
+      modif1Folder.add(modifier, "target", [mesh2.vid, mesh4.vid]);
+      modif1Folder.add(modifier, "mode", ["subtract", "union", "intersect"]);
+
+      const modif2Folder = gui.addFolder("modifier2");
+      modif2Folder.add(modifier2, "target", [mesh3.vid, mesh4.vid]);
+      modif2Folder.add(modifier2, "mode", ["subtract", "union", "intersect"]);
 
       window.engine = engine;
     </script>
