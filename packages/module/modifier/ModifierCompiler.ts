@@ -5,8 +5,6 @@ import { ModifierAllType } from "./ModifierConfig";
 export class ModifierCompiler extends Compiler<ModifierAllType, Modifier> {
   cacheRenderFun: Map<Modifier, any> = new Map();
 
-  cacheTarget: Map<Modifier, object> = new Map();
-
   sourceModifiers: Map<object, Modifier[]> = new Map();
   constructor() {
     super();

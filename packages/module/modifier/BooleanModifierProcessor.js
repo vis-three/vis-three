@@ -12,6 +12,7 @@ const modifyKey = [
     "scale.y",
     "scale.z",
 ];
+const cacheTarget = new Map();
 export default defineProcessor({
     type: "BooleanModifier",
     config: getBooleanModifierConfig,
@@ -33,7 +34,7 @@ export default defineProcessor({
                             console.error(`can not found cache render fun in ${compiler.MODULE} compiler`);
                             return true;
                         }
-                        const oldTarget = compiler.cacheTarget.get(modifier);
+                        const oldTarget = cacheTarget.get(modifier);
                         if (oldTarget) {
                             for (const key of modifyKey) {
                                 oldTarget.removeEventListener(`${COMPILER_EVENT.COMPILE}:${key}`, renderFun);
@@ -44,7 +45,7 @@ export default defineProcessor({
                             target.addEventListener(`${COMPILER_EVENT.COMPILE}:${key}`, renderFun);
                         }
                         target.geometry.addEventListener(`${COMPILER_EVENT.COMPILE}:update`, renderFun);
-                        compiler.cacheTarget.set(modifier, target);
+                        cacheTarget.set(modifier, target);
                         renderFun();
                         return true;
                     }
@@ -108,7 +109,7 @@ export default defineProcessor({
                     target.addEventListener(`${COMPILER_EVENT.COMPILE}:${key}`, renderFun);
                 }
                 target.geometry.addEventListener(`${COMPILER_EVENT.COMPILE}:update`, renderFun);
-                compiler.cacheTarget.set(modifier, target);
+                cacheTarget.set(modifier, target);
                 renderFun();
                 return true;
             }

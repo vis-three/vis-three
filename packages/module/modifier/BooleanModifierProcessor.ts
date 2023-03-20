@@ -4,6 +4,7 @@ import {
   EngineSupport,
   globalAntiShake,
 } from "@vis-three/middleware";
+import { Modifier } from "@vis-three/modifier-base";
 import { BooleanModifier } from "@vis-three/modifier-library";
 import { Mesh } from "three";
 import { ModifierCompiler } from "./ModifierCompiler";
@@ -23,6 +24,8 @@ const modifyKey = [
   "scale.y",
   "scale.z",
 ];
+
+const cacheTarget: Map<Modifier, object> = new Map();
 
 export default defineProcessor<
   BooleanModifierConfig,
@@ -59,7 +62,7 @@ export default defineProcessor<
               return true;
             }
 
-            const oldTarget = compiler.cacheTarget.get(modifier) as Mesh;
+            const oldTarget = cacheTarget.get(modifier) as Mesh;
 
             if (oldTarget) {
               for (const key of modifyKey) {
@@ -87,7 +90,7 @@ export default defineProcessor<
               renderFun
             );
 
-            compiler.cacheTarget.set(modifier, target);
+            cacheTarget.set(modifier, target);
             renderFun();
             return true;
           }
@@ -191,7 +194,7 @@ export default defineProcessor<
           renderFun
         );
 
-        compiler.cacheTarget.set(modifier, target);
+        cacheTarget.set(modifier, target);
         renderFun();
         return true;
       }
