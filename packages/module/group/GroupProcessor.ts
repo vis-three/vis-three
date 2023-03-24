@@ -1,12 +1,12 @@
-import { Group } from "three";
-import { EngineSupport } from "../engine";
-import { defineProcessor } from "../module";
+import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 import {
   ObjectCommands,
   objectCommands,
   objectCreate,
   objectDispose,
-} from "../object/ObjectProcessor";
+} from "@vis-three/module-object";
+import { Group } from "three";
+
 import { GroupCompiler } from "./GroupCompiler";
 import { getGroupConfig, GroupConfig } from "./GroupConfig";
 
