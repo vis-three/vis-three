@@ -1,5 +1,6 @@
 import { COMPILER_EVENT, defineProcessor, globalAntiShake, } from "@vis-three/middleware";
 import { BooleanModifier } from "@vis-three/modifier-library";
+import { syncObject } from "@vis-three/utils";
 import { getBooleanModifierConfig, } from "./ModifierConfig";
 const modifyKey = [
     "position.x",
@@ -115,6 +116,7 @@ export default defineProcessor({
             }
             return true;
         });
+        syncObject(config, modifier, { target: true, source: true });
         return modifier;
     },
     dispose: function (target, engine, compiler) {

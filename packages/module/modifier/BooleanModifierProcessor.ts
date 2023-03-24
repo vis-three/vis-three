@@ -6,6 +6,7 @@ import {
 } from "@vis-three/middleware";
 import { Modifier } from "@vis-three/modifier-base";
 import { BooleanModifier } from "@vis-three/modifier-library";
+import { syncObject } from "@vis-three/utils";
 import { Mesh } from "three";
 import { ModifierCompiler } from "./ModifierCompiler";
 import {
@@ -200,6 +201,8 @@ export default defineProcessor<
       }
       return true;
     });
+
+    syncObject(config, modifier, { target: true, source: true });
 
     return modifier;
   },

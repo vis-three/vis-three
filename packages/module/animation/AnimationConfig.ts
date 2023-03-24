@@ -1,5 +1,4 @@
-import { getSymbolConfig, SymbolConfig } from "../module/common";
-import { BasicAniScriptConfig } from "../manager/AniScriptGeneratorManager";
+import { BasicAniScriptConfig, getSymbolConfig, SymbolConfig } from "@vis-three/middleware";
 
 export interface AnimationConfig extends SymbolConfig {
   name: string;

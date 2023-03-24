@@ -1,6 +1,6 @@
+import { ProxyNotice, Rule } from "@vis-three/middleware";
 import { Object3D } from "three";
 import { validate } from "uuid";
-import { ProxyNotice, Rule } from "../module";
 import { ObjectCompiler } from "./ObjectCompiler";
 import { ObjectConfig } from "./ObjectConfig";
 

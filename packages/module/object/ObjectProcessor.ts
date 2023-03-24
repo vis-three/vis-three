@@ -1,16 +1,15 @@
 import { EVENTNAME, ObjectEvent } from "@vis-three/event-manager-plugin";
-import { IgnoreAttribute, syncObject } from "@vis-three/utils";
-import { Object3D, Vector3 } from "three";
-import { EngineSupport } from "../engine";
-import { EventGeneratorManager } from "../manager/EventGeneratorManager";
 import {
-  defineProcessor,
   emptyHandler,
+  EngineSupport,
+  EventGeneratorManager,
+  globalAntiShake,
   ProcessorCommands,
   ProcessParams,
   RegCommand,
-} from "../module";
-import { globalAntiShake } from "../utils";
+} from "@vis-three/middleware";
+import { IgnoreAttribute, syncObject } from "@vis-three/utils";
+import { Object3D, Vector3 } from "three";
 import { ObjectCompiler } from "./ObjectCompiler";
 import { ObjectConfig } from "./ObjectConfig";
 

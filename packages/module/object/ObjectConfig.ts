@@ -1,5 +1,8 @@
-import { SymbolConfig, Vector3Config } from "../module/common";
-import { BasicEventConfig } from "../manager/EventGeneratorManager";
+import {
+  BasicEventConfig,
+  SymbolConfig,
+  Vector3Config,
+} from "@vis-three/middleware";
 
 export interface ObjectConfig extends SymbolConfig {
   type: string;
