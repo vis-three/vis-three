@@ -1,4 +1,4 @@
-import { Rule } from "../module";
+import { Rule } from "@vis-three/middleware";
 import { SolidObject3D, SolidObjectCompiler } from "./SolidObjectCompiler";
 import { SolidObjectConfig } from "./SolidObjectConfig";
 

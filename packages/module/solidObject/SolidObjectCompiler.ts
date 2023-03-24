@@ -1,5 +1,5 @@
+import { ObjectCompiler } from "@vis-three/module-object";
 import { Event, Mesh, Object3D } from "three";
-import { ObjectCompiler } from "../object/ObjectCompiler";
 import { SolidObjectConfig } from "./SolidObjectConfig";
 
 export interface SolidObject3D extends Object3D<Event> {

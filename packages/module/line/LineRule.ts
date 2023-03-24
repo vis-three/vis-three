@@ -1,7 +1,7 @@
+import { ProxyNotice, Rule } from "@vis-three/middleware";
+import { ObjectRule } from "@vis-three/module-object";
+import { SolidObjectRule } from "@vis-three/module-solid-object";
 import { Line } from "three";
-import { ProxyNotice, Rule } from "../module";
-import { ObjectRule } from "../object/ObjectRule";
-import { SolidObjectRule } from "../solidObject/SolidObjectRule";
 import { LineCompiler } from "./LineCompiler";
 import { LineConfig } from "./LineConfig";
 

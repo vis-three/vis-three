@@ -1,17 +1,13 @@
-import { IgnoreAttribute } from "@vis-three/utils";
-import {
-  BoxBufferGeometry,
-  Material,
-  ShaderMaterial,
-} from "three";
-import { EngineSupport } from "../engine";
+import { EngineSupport, globalAntiShake } from "@vis-three/middleware";
 import {
   objectCommands,
   ObjectCommands,
   objectCreate,
   objectDispose,
-} from "../object/ObjectProcessor";
-import { globalAntiShake } from "../utils";
+} from "@vis-three/module-object";
+import { IgnoreAttribute } from "@vis-three/utils";
+import { BoxBufferGeometry, Material, ShaderMaterial } from "three";
+
 import { SolidObject3D } from "./SolidObjectCompiler";
 import { SolidObjectConfig } from "./SolidObjectConfig";
 
