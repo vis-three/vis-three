@@ -1024,6 +1024,72 @@ importers:
       three: 0.141.0
       typescript: 4.9.5
 
+  packages/module/material:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.5.10
+      '@vis-three/middleware': workspace:^0.6.0
+      '@vis-three/utils': workspace:^0.5.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+    dependencies:
+      '@vis-three/core': link:../../core
+      '@vis-three/middleware': link:../../middleware
+      '@vis-three/utils': link:../../utils
+    devDependencies:
+      '@types/node': 18.15.0
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
+      '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.7.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm
+      prettier: 2.8.4
+      three: 0.141.0
+      typescript: 4.9.5
+
+  packages/module/mesh:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.5.10
+      '@vis-three/middleware': workspace:^0.6.0
+      '@vis-three/module-object': workspace:^0.6.0
+      '@vis-three/module-solid-object': workspace:^0.6.0
+      '@vis-three/utils': workspace:^0.5.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+    dependencies:
+      '@vis-three/core': link:../../core
+      '@vis-three/middleware': link:../../middleware
+      '@vis-three/module-object': link:../object
+      '@vis-three/module-solid-object': link:../solidObject
+      '@vis-three/utils': link:../../utils
+    devDependencies:
+      '@types/node': 18.15.0
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
+      '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.7.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm
+      prettier: 2.8.4
+      three: 0.141.0
+      typescript: 4.9.5
+
   packages/module/modifier:
     specifiers:
       '@types/node': ^18.11.12
@@ -1067,7 +1133,6 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.5.10
-      '@vis-three/event-manager-plugin': workspace:^0.6.0
       '@vis-three/middleware': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.5.0
       eslint: ^8.12.0
@@ -1079,7 +1144,41 @@ importers:
       uuid: ^8.3.2
     dependencies:
       '@vis-three/core': link:../../core
-      '@vis-three/event-manager-plugin': link:../../plugins/EventManagerPlugin
+      '@vis-three/middleware': link:../../middleware
+      '@vis-three/utils': link:../../utils
+      uuid: 8.3.2
+    devDependencies:
+      '@types/node': 18.15.0
+      '@types/three': 0.133.1
+      '@types/uuid': 8.3.4
+      '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
+      '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.7.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm
+      prettier: 2.8.4
+      three: 0.141.0
+      typescript: 4.9.5
+
+  packages/module/object3D:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@types/uuid': ^8.3.4
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.5.10
+      '@vis-three/middleware': workspace:^0.6.0
+      '@vis-three/utils': workspace:^0.5.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+      uuid: ^8.3.2
+    dependencies:
+      '@vis-three/core': link:../../core
       '@vis-three/middleware': link:../../middleware
       '@vis-three/utils': link:../../utils
       uuid: 8.3.2
@@ -1120,6 +1219,45 @@ importers:
     devDependencies:
       '@types/node': 18.15.0
       '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
+      '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.7.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm
+      prettier: 2.8.4
+      three: 0.141.0
+      typescript: 4.9.5
+
+  packages/module/points:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@types/uuid': ^8.3.4
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.5.10
+      '@vis-three/middleware': workspace:^0.6.0
+      '@vis-three/module-object': workspace:^0.6.0
+      '@vis-three/module-solid-object': workspace:^0.6.0
+      '@vis-three/utils': workspace:^0.5.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+      uuid: ^8.3.2
+    dependencies:
+      '@vis-three/core': link:../../core
+      '@vis-three/middleware': link:../../middleware
+      '@vis-three/module-object': link:../object
+      '@vis-three/module-solid-object': link:../solidObject
+      '@vis-three/utils': link:../../utils
+      uuid: 8.3.2
+    devDependencies:
+      '@types/node': 18.15.0
+      '@types/three': 0.133.1
+      '@types/uuid': 8.3.4
       '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
       '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
       eslint: 8.36.0

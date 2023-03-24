@@ -1,0 +1,178 @@
+import { AddEquation, FrontSide, MultiplyOperation, NormalBlending, OneMinusSrcAlphaFactor, SrcAlphaFactor, TangentSpaceNormalMap, } from "three";
+export const getMaterialConfig = function () {
+    return {
+        vid: "",
+        type: "Material",
+        alphaTest: 0,
+        colorWrite: true,
+        depthTest: true,
+        depthWrite: true,
+        fog: true,
+        name: "",
+        needsUpdate: false,
+        opacity: 1,
+        dithering: false,
+        shadowSide: null,
+        side: FrontSide,
+        toneMapped: true,
+        transparent: false,
+        visible: true,
+        blendDst: OneMinusSrcAlphaFactor,
+        blendDstAlpha: null,
+        blendEquation: AddEquation,
+        blendEquationAlpha: null,
+        blending: NormalBlending,
+        blendSrc: SrcAlphaFactor,
+        blendSrcAlpha: null,
+        polygonOffset: false,
+        polygonOffsetFactor: 0,
+        polygonOffsetUnits: 0,
+    };
+};
+export const getMeshBasicMaterialConfig = function () {
+    return Object.assign(getMaterialConfig(), {
+        color: "rgb(255, 255, 255)",
+        combine: MultiplyOperation,
+        aoMapIntensity: 1,
+        fog: true,
+        lightMapIntensity: 1,
+        reflectivity: 1,
+        refractionRatio: 0.98,
+        wireframe: false,
+        wireframeLinecap: "round",
+        wireframeLinejoin: "round",
+        wireframeLinewidth: 1,
+        map: "",
+        envMap: "",
+        alphaMap: "",
+        aoMap: "",
+        lightMap: "",
+        specularMap: "",
+    });
+};
+export const getMeshStandardMaterialConfig = function () {
+    return Object.assign(getMaterialConfig(), {
+        aoMapIntensity: 1,
+        bumpScale: 1,
+        color: "rgb(255, 255, 255)",
+        displacementScale: 1,
+        displacementBias: 0,
+        emissive: "rgb(0, 0, 0)",
+        emissiveIntensity: 1,
+        envMapIntensity: 1,
+        flatShading: false,
+        lightMapIntensity: 1,
+        metalness: 0,
+        normalMapType: TangentSpaceNormalMap,
+        refractionRatio: 0.98,
+        roughness: 1,
+        wireframe: false,
+        wireframeLinecap: "round",
+        wireframeLinejoin: "round",
+        roughnessMap: "",
+        normalMap: "",
+        metalnessMap: "",
+        map: "",
+        lightMap: "",
+        envMap: "",
+        emissiveMap: "",
+        displacementMap: "",
+        bumpMap: "",
+        alphaMap: "",
+        aoMap: "",
+    });
+};
+export const getMeshPhysicalMaterialConfig = function () {
+    return Object.assign(getMeshStandardMaterialConfig(), {
+        attenuationColor: "rgb(255, 255, 255)",
+        attenuationDistance: 0,
+        clearcoat: 0.0,
+        clearcoatNormalScale: {
+            x: 1,
+            y: 1,
+        },
+        clearcoatRoughness: 0,
+        ior: 1.5,
+        reflectivity: 0.5,
+        sheen: 0.0,
+        sheenRoughness: 1.0,
+        sheenColor: "rgb(255, 255, 255)",
+        specularIntensity: 0.0,
+        specularColor: "rgb(255, 255, 255)",
+        thickness: 0,
+        transmission: 0,
+        clearcoatMap: "",
+        clearcoatNormalMap: "",
+        clearcoatRoughnessMap: "",
+        sheenRoughnessMap: "",
+        sheenColorMap: "",
+        specularIntensityMap: "",
+        specularColorMap: "",
+        thicknessMap: "",
+        transmissionMap: "",
+    });
+};
+export const getMeshPhongMaterialConfig = function () {
+    return Object.assign(getMaterialConfig(), {
+        aoMapIntensity: 1,
+        bumpScale: 1,
+        color: "rgb(255, 255, 255)",
+        displacementScale: 1,
+        displacementBias: 0,
+        emissive: "rgb(0, 0, 0)",
+        emissiveIntensity: 1,
+        envMapIntensity: 1,
+        flatShading: false,
+        lightMapIntensity: 1,
+        normalMapType: TangentSpaceNormalMap,
+        refractionRatio: 0.98,
+        wireframe: false,
+        wireframeLinecap: "round",
+        wireframeLinejoin: "round",
+        specular: "rgb(17, 17, 17)",
+        shininess: 30,
+        combine: MultiplyOperation,
+        normalMap: "",
+        map: "",
+        lightMap: "",
+        envMap: "",
+        emissiveMap: "",
+        displacementMap: "",
+        bumpMap: "",
+        alphaMap: "",
+        aoMap: "",
+        specularMap: "",
+    });
+};
+export const getSpriteMaterialConfig = function () {
+    return Object.assign(getMaterialConfig(), {
+        color: "rgb(255, 255, 255)",
+        rotation: 0,
+        map: "",
+        alphaMap: "",
+        sizeAttenuation: true,
+    });
+};
+export const getLineBasicMaterialConfig = function () {
+    return Object.assign(getMaterialConfig(), {
+        color: "rgb(255, 255, 255)",
+        linecap: "round",
+        linejoin: "round",
+        linewidth: 1,
+    });
+};
+export const getPointsMaterialConfig = function () {
+    return Object.assign(getMaterialConfig(), {
+        map: "",
+        alphaMap: "",
+        color: "rgb(255, 255, 255)",
+        sizeAttenuation: true,
+        size: 1,
+    });
+};
+export const getShaderMaterialConfig = function () {
+    return Object.assign(getMaterialConfig(), {
+        shader: "defaultShader",
+        uniforms: {},
+    });
+};
