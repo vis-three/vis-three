@@ -1,4 +1,4 @@
-import { ObjectConfig, getObjectConfig } from "../object/ObjectConfig";
+import { getObjectConfig, ObjectConfig } from "@vis-three/module-object";
 
 export interface LightConifg extends ObjectConfig {
   color: string;

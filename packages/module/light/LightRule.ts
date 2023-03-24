@@ -1,6 +1,6 @@
-import { ProxyNotice } from "../module";
+import { ProxyNotice } from "@vis-three/middleware";
+import { ObjectRule } from "@vis-three/module-object";
 import { Light } from "three";
-import { ObjectRule } from "../object/ObjectRule";
 import { LightCompiler } from "./LightCompiler";
 import { LightConfigAllType } from "./LightConfig";
 

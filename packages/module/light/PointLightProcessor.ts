@@ -1,10 +1,9 @@
 import { PointLight } from "three";
-import { EngineSupport } from "./../engine";
-import { defineProcessor } from "./../module";
-import { objectDispose } from "./../object/ObjectProcessor";
 import { getPointLightConfig, PointLightConfig } from "./LightConfig";
 import { LightCommands, lightCommands, lightCreate } from "./common";
 import { LightCompiler } from "./LightCompiler";
+import { defineProcessor, EngineSupport } from "@vis-three/middleware";
+import { objectDispose } from "@vis-three/module-object";
 
 export default defineProcessor<
   PointLightConfig,

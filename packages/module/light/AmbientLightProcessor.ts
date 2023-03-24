@@ -1,10 +1,9 @@
 import { AmbientLight } from "three";
-import { EngineSupport } from "../engine";
-import { Compiler, defineProcessor } from "../module";
-import { ObjectCommands, objectDispose } from "../object/ObjectProcessor";
 import { AmbientLightConfig, getAmbientLightConfig } from "./LightConfig";
 import { LightCommands, lightCommands, lightCreate } from "./common";
 import { LightCompiler } from "./LightCompiler";
+import { defineProcessor, EngineSupport } from "@vis-three/middleware";
+import { objectDispose } from "@vis-three/module-object";
 
 export default defineProcessor<
   AmbientLightConfig,

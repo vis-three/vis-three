@@ -1,10 +1,9 @@
 import { Color, HemisphereLight } from "three";
-import { ObjectCommands, objectDispose } from "./../object/ObjectProcessor";
 import { getHemisphereLightConfig, HemisphereLightConfig } from "./LightConfig";
 import { lightCommands, lightCreate } from "./common";
-import { defineProcessor, ProcessParams } from "./../module";
-import { EngineSupport } from "./../engine";
 import { LightCompiler } from "./LightCompiler";
+import { defineProcessor, EngineSupport } from "@vis-three/middleware";
+import { ObjectCommands, objectDispose } from "@vis-three/module-object";
 
 export default defineProcessor<
   HemisphereLightConfig,

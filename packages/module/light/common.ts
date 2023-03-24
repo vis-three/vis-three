@@ -1,13 +1,12 @@
+import {
+  emptyHandler,
+  EngineSupport,
+  ProcessorCommands,
+  ProcessParams,
+} from "@vis-three/middleware";
+import { objectCommands, objectCreate } from "@vis-three/module-object";
 import { IgnoreAttribute } from "@vis-three/utils";
 import { Color, Light, Object3D } from "three";
-import { EngineSupport } from "../engine";
-import { emptyHandler, ProcessorCommands, ProcessParams } from "../module";
-import { ObjectConfig } from "../object";
-import {
-  ObjectCommands,
-  objectCommands,
-  objectCreate,
-} from "../object/ObjectProcessor";
 import { LightCompiler } from "./LightCompiler";
 import { LightConifg } from "./LightConfig";
 
