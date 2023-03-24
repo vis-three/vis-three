@@ -1,6 +1,6 @@
-import { ProxyNotice } from "../module";
+import { ProxyNotice } from "@vis-three/middleware";
+import { ObjectRule } from "@vis-three/module-object";
 import { Camera } from "three";
-import { ObjectRule } from "../object/ObjectRule";
 import { CameraCompiler } from "./CameraCompiler";
 import { CameraConfigAllType } from "./CameraConfig";
 

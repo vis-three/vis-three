@@ -1,4 +1,4 @@
-import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
+import { getObjectConfig, ObjectConfig } from "@vis-three/module-object";
 
 export interface CameraConfig extends ObjectConfig {
   adaptiveWindow: boolean; // 自适应窗口大小

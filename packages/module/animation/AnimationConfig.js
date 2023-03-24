@@ -1,4 +1,4 @@
-import { getSymbolConfig } from "../module/common";
+import { getSymbolConfig } from "@vis-three/middleware";
 const getAnimationConfig = function () {
     return Object.assign(getSymbolConfig(), {
         name: "",

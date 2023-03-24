@@ -1,7 +1,7 @@
 import { Camera } from "three";
 import { CameraConfigAllType } from "./CameraConfig";
-import { ObjectCompiler } from "../object/ObjectCompiler";
 import { SetSizeEvent } from "@vis-three/core";
+import { ObjectCompiler } from "@vis-three/module-object";
 
 export class CameraCompiler extends ObjectCompiler<
   CameraConfigAllType,

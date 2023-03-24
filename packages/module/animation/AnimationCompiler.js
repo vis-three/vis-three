@@ -1,4 +1,4 @@
-import { Compiler } from "../module";
+import { Compiler } from "@vis-three/middleware";
 export class AnimationCompiler extends Compiler {
     scriptAniSymbol = "vis.scriptAni";
     constructor() {

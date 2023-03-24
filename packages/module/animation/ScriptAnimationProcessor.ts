@@ -1,7 +1,9 @@
-import { RenderEvent } from "@vis-three/render-manager-plugin";
-import { EngineSupport } from "../engine";
-import { AniScriptGeneratorManager } from "../manager/AniScriptGeneratorManager";
-import { defineProcessor } from "../module";
+import {
+  AniScriptGeneratorManager,
+  defineProcessor,
+  EngineSupport,
+  RenderEvent,
+} from "@vis-three/middleware";
 import { AnimationCompiler } from "./AnimationCompiler";
 import {
   getScriptAnimationConfig,

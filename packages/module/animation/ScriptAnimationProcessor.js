@@ -1,5 +1,4 @@
-import { AniScriptGeneratorManager } from "../manager/AniScriptGeneratorManager";
-import { defineProcessor } from "../module";
+import { AniScriptGeneratorManager, defineProcessor, } from "@vis-three/middleware";
 import { getScriptAnimationConfig, } from "./AnimationConfig";
 const createFunction = function (config, engine) {
     let object = engine.compilerManager.getObjectBySymbol(config.target);

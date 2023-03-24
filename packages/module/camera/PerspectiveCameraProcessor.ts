@@ -1,18 +1,17 @@
 import { PerspectiveCamera } from "three";
-import { defineProcessor } from "../module";
 import { SetSizeEvent } from "@vis-three/core";
-import {
-  ObjectCommands,
-  objectCommands,
-  objectCreate,
-  objectDispose,
-} from "../object/ObjectProcessor";
 import {
   getPerspectiveCameraConfig,
   PerspectiveCameraConfig,
 } from "./CameraConfig";
-import { EngineSupport } from "../engine";
 import { CameraCompiler } from "./CameraCompiler";
+import { defineProcessor, EngineSupport } from "@vis-three/middleware";
+import {
+  objectCommands,
+  ObjectCommands,
+  objectCreate,
+  objectDispose,
+} from "@vis-three/module-object";
 
 export default defineProcessor<
   PerspectiveCameraConfig,

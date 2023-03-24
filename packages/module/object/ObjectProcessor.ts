@@ -1,9 +1,10 @@
-import { EVENTNAME, ObjectEvent } from "@vis-three/event-manager-plugin";
 import {
   emptyHandler,
   EngineSupport,
   EventGeneratorManager,
+  EVENTNAME,
   globalAntiShake,
+  ObjectEvent,
   ProcessorCommands,
   ProcessParams,
   RegCommand,

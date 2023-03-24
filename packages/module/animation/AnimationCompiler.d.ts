@@ -1,4 +1,4 @@
-import { CompileNotice, Compiler } from "../module";
+import { CompileNotice, Compiler } from "@vis-three/middleware";
 import { AnimationAllType } from "./AnimationConfig";
 export declare class AnimationCompiler extends Compiler<AnimationAllType, Function> {
     scriptAniSymbol: string;

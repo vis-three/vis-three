@@ -1,19 +1,12 @@
 import { OrthographicCamera } from "three";
 import { SetSizeEvent } from "@vis-three/core";
 import {
-  ObjectCommands,
-  objectCommands,
-  objectCreate,
-  objectDispose,
-} from "../object/ObjectProcessor";
-import {
   getOrthographicCameraConfig,
   OrthographicCameraConfig,
 } from "./CameraConfig";
-import { defineProcessor } from "../module";
-
-import { EngineSupport } from "../engine";
 import { CameraCompiler } from "./CameraCompiler";
+import { defineProcessor, EngineSupport } from "@vis-three/middleware";
+import { ObjectCommands, objectCommands, objectCreate, objectDispose } from "@vis-three/module-object";
 
 export default defineProcessor<
   OrthographicCameraConfig,

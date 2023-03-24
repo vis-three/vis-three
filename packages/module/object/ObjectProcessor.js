@@ -1,5 +1,4 @@
-import { EVENTNAME } from "@vis-three/event-manager-plugin";
-import { emptyHandler, EventGeneratorManager, globalAntiShake, } from "@vis-three/middleware";
+import { emptyHandler, EventGeneratorManager, EVENTNAME, globalAntiShake, } from "@vis-three/middleware";
 import { syncObject } from "@vis-three/utils";
 const objectCacheMap = new WeakMap();
 // 物体的lookAt方法

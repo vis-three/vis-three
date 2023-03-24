@@ -1,4 +1,4 @@
-import { CompileNotice, Compiler } from "../module";
+import { CompileNotice, Compiler } from "@vis-three/middleware";
 import { AnimationAllType } from "./AnimationConfig";
 
 export class AnimationCompiler extends Compiler<AnimationAllType, Function> {
