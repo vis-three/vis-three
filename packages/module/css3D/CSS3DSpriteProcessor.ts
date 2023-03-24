@@ -1,14 +1,17 @@
 import { CSS3DSprite } from "@vis-three/core";
-import { EngineSupport } from "../engine";
+import { CSS3DSpriteConfig, getCSS3DSpriteConfig } from "./CSS3DConfig";
+import { getElement } from "./common";
+import { CSS3DCompiler } from "./CSS3DCompiler";
+import {
+  EngineSupport,
+  defineProcessor,
+  ProcessorCommands,
+} from "@vis-three/middleware";
 import {
   objectCommands,
   objectCreate,
   objectDispose,
-} from "../object/ObjectProcessor";
-import { CSS3DSpriteConfig, getCSS3DSpriteConfig } from "./CSS3DConfig";
-import { getElement } from "./common";
-import { defineProcessor, ProcessorCommands } from "../module";
-import { CSS3DCompiler } from "./CSS3DCompiler";
+} from "@vis-three/module-object";
 
 export default defineProcessor<
   CSS3DSpriteConfig,

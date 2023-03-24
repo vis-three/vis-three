@@ -2,9 +2,6 @@ import { COMPILER_MANAGER_PLUGIN } from "./plugin/CompilerManagerPlugin";
 import { DATA_SUPPORT_MANAGER_PLUGIN } from "./plugin/DataSupportManagerPlugin";
 
 export * from "./module";
-export * from "./animation";
-export * from "./camera";
-export * from "./controls";
 export * from "./css2D";
 export * from "./css3D";
 export * from "./geometry";
@@ -13,7 +10,6 @@ export * from "./line";
 export * from "./material";
 export * from "./mesh";
 export * from "./object3D";
-export * from "./object";
 export * from "./solidObject";
 export * from "./points";
 export * from "./renderer";

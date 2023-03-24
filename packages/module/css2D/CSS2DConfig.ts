@@ -1,4 +1,4 @@
-import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
+import { getObjectConfig, ObjectConfig } from "@vis-three/module-object";
 
 export interface CSS2DObjectConfig extends ObjectConfig {
   element: string;

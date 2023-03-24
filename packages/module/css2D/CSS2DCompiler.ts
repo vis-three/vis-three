@@ -1,5 +1,5 @@
 import { VisCSS2DObject } from "@vis-three/core";
-import { ObjectCompiler } from "../object/ObjectCompiler";
+import { ObjectCompiler } from "@vis-three/module-object";
 import { CSS2DAllType } from "./CSS2DConfig";
 
 export class CSS2DCompiler extends ObjectCompiler<

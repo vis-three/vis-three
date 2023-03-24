@@ -1,14 +1,17 @@
 import { CSS2DPlane } from "@vis-three/core";
-import { EngineSupport } from "../engine";
+import { CSS2DPlaneConfig, getCSS2DPlaneConfig } from "./CSS2DConfig";
+import { CSS2DCompiler } from "./CSS2DCompiler";
+import {
+  defineProcessor,
+  EngineSupport,
+  ProcessorCommands,
+} from "@vis-three/middleware";
 import {
   ObjectCommands,
   objectCommands,
   objectCreate,
   objectDispose,
-} from "../object/ObjectProcessor";
-import { CSS2DPlaneConfig, getCSS2DPlaneConfig } from "./CSS2DConfig";
-import { defineProcessor, ProcessorCommands } from "../module";
-import { CSS2DCompiler } from "./CSS2DCompiler";
+} from "@vis-three/module-object";
 
 export const getElement = function (
   element: string,

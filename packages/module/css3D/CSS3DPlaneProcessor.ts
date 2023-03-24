@@ -1,15 +1,18 @@
 import { CSS3DPlane } from "@vis-three/core";
+import { CSS3DPlaneConfig, getCSS3DPlaneConfig } from "./CSS3DConfig";
+import { getElement } from "./common";
+import { CSS3DCompiler } from "./CSS3DCompiler";
+import {
+  defineProcessor,
+  EngineSupport,
+  ProcessorCommands,
+} from "@vis-three/middleware";
 import {
   ObjectCommands,
   objectCommands,
   objectCreate,
   objectDispose,
-} from "../object/ObjectProcessor";
-import { CSS3DPlaneConfig, getCSS3DPlaneConfig } from "./CSS3DConfig";
-import { getElement } from "./common";
-import { defineProcessor, ProcessorCommands } from "../module";
-import { EngineSupport } from "../engine";
-import { CSS3DCompiler } from "./CSS3DCompiler";
+} from "@vis-three/module-object";
 
 export default defineProcessor<
   CSS3DPlaneConfig,

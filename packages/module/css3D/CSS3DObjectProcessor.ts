@@ -1,15 +1,14 @@
 import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS3DObjectConfig, getCSS3DObjectConfig } from "./CSS3DConfig";
+import { getElement } from "./common";
+import { CSS3DCompiler } from "./CSS3DCompiler";
+import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 import {
   ObjectCommands,
   objectCommands,
   objectCreate,
   objectDispose,
-} from "../object/ObjectProcessor";
-import { CSS3DObjectConfig, getCSS3DObjectConfig } from "./CSS3DConfig";
-import { getElement } from "./common";
-import { defineProcessor } from "../module";
-import { EngineSupport } from "../engine";
-import { CSS3DCompiler } from "./CSS3DCompiler";
+} from "@vis-three/module-object";
 
 export default defineProcessor<
   CSS3DObjectConfig,

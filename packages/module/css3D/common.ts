@@ -1,4 +1,4 @@
-import { EngineSupport } from "../engine";
+import { EngineSupport } from "@vis-three/middleware";
 
 export const getElement = function (
   element: string,
