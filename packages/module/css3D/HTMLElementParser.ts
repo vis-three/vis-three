@@ -1,6 +1,11 @@
-import { CSS3DPlaneConfig } from "../../../css3D/CSS3DConfig";
-import { CONFIGFACTORY, CONFIGTYPE } from "../../../module";
-import { ParseParams, Parser, ResourceHanlder } from "../Parser";
+import {
+  CONFIGFACTORY,
+  CONFIGTYPE,
+  ParseParams,
+  Parser,
+  ResourceHanlder,
+} from "@vis-three/middleware";
+import { CSS3DPlaneConfig } from "./CSS3DConfig";
 
 export class HTMLElementParser extends Parser {
   selector: ResourceHanlder = (

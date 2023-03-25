@@ -5,7 +5,7 @@ import { LoadOptions } from "../DataSupportManagerPlugin";
 import { FBXResourceParser } from "./parser/FBXResourceParser";
 import { GLTFResourceParser } from "./parser/GLTFResourceParser";
 import { HTMLCanvasElementParser } from "./parser/HTMLCanvasElementParser";
-import { HTMLElementParser } from "./parser/HTMLElementParser";
+import { HTMLElementParser } from "../../../module/css3D/HTMLElementParser";
 import { HTMLImageElementParser } from "./parser/HTMLImageElementParser";
 import { HTMLVideoElementParser } from "./parser/HTMLVideoElementParser";
 import { Object3DParser } from "./parser/Object3DParser";
