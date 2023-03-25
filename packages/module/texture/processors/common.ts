@@ -1,7 +1,10 @@
-import { EngineSupport } from "../engine";
-import { MODULETYPE, ProcessParams } from "../module";
-import { globalAntiShake } from "../utils";
-import { TextureCompiler } from "./TextureCompiler";
+import {
+  EngineSupport,
+  globalAntiShake,
+  MODULETYPE,
+  ProcessParams,
+} from "@vis-three/middleware";
+import { TextureCompiler } from "../TextureCompiler";
 
 export const needUpdateRegCommand = {
   reg: new RegExp(

@@ -2,6 +2,7 @@ import { Engine, ENGINE_EVENT, Plugin } from "@vis-three/core";
 import { ResourceManager } from "./ResourceManager";
 
 export * from "./ResourceManager";
+export * from "./Parser";
 export interface ResourceManagerPluginParameters {
   resources: { [key: string]: any };
 }

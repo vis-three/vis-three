@@ -1,6 +1,6 @@
 import { CSS3DPlaneConfig } from "../../../css3D/CSS3DConfig";
 import { CONFIGFACTORY, CONFIGTYPE } from "../../../module";
-import { ParseParams, Parser, ResourceHanlder } from "./Parser";
+import { ParseParams, Parser, ResourceHanlder } from "../Parser";
 
 export class HTMLElementParser extends Parser {
   selector: ResourceHanlder = (

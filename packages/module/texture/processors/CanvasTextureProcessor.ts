@@ -2,12 +2,14 @@ import { ImageTexture } from "@vis-three/core";
 import { syncObject } from "@vis-three/utils";
 import { CanvasTexture } from "three";
 
-import { EngineSupport } from "../engine";
-import { defineProcessor, MODULETYPE } from "../module";
-import { TextureCompiler } from "./TextureCompiler";
-import { CanvasTextureConfig } from "./TextureConfig";
 import { needUpdateRegCommand, urlHanlder } from "./common";
-import { getCanvasTextureConfig } from "./TextureConfig";
+import {
+  defineProcessor,
+  EngineSupport,
+  MODULETYPE,
+} from "@vis-three/middleware";
+import { CanvasTextureConfig, getCanvasTextureConfig } from "../TextureConfig";
+import { TextureCompiler } from "../TextureCompiler";
 
 export default defineProcessor<
   CanvasTextureConfig,

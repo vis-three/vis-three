@@ -1,9 +1,12 @@
+import {
+  defineProcessor,
+  EngineSupport,
+  MODULETYPE,
+} from "@vis-three/middleware";
 import { syncObject } from "@vis-three/utils";
 import { CubeTexture } from "three";
-import { EngineSupport } from "../engine";
-import { defineProcessor, MODULETYPE } from "../module";
-import { TextureCompiler } from "./TextureCompiler";
-import { CubeTextureConfig, getCubeTextureConfig } from "./TextureConfig";
+import { TextureCompiler } from "../TextureCompiler";
+import { CubeTextureConfig, getCubeTextureConfig } from "../TextureConfig";
 
 const instanceClasses = [HTMLImageElement, HTMLVideoElement, HTMLCanvasElement];
 

@@ -9,8 +9,8 @@ import { HTMLElementParser } from "./parser/HTMLElementParser";
 import { HTMLImageElementParser } from "./parser/HTMLImageElementParser";
 import { HTMLVideoElementParser } from "./parser/HTMLVideoElementParser";
 import { Object3DParser } from "./parser/Object3DParser";
-import { Parser, ResourceHanlder } from "./parser/Parser";
-import { TextureParser } from "./parser/TextureParser";
+import { Parser, ResourceHanlder } from "./Parser";
+import { TextureParser } from "@vis-three/module-texture/parsers/TextureParser";
 
 export interface MappedEvent extends BaseEvent {
   configMap: Map<string, SymbolConfig>;

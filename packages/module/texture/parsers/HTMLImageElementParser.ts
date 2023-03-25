@@ -1,6 +1,11 @@
-import { CONFIGFACTORY, CONFIGTYPE } from "../../../module";
-import { ImageTextureConfig } from "@vis-three/module-texture/TextureConfig";
-import { ParseParams, Parser, ResourceHanlder } from "../Parser";
+import {
+  CONFIGFACTORY,
+  CONFIGTYPE,
+  ParseParams,
+  Parser,
+  ResourceHanlder,
+} from "@vis-three/middleware";
+import { ImageTextureConfig } from "../TextureConfig";
 
 export class HTMLImageElementParser extends Parser {
   selector: ResourceHanlder = (

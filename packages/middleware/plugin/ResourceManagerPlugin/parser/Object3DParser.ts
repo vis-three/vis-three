@@ -1,5 +1,5 @@
 import { Color, Material, Object3D, Texture, Vector3 } from "three";
-import { ParseParams, Parser, ResourceHanlder } from "./Parser";
+import { ParseParams, Parser, ResourceHanlder } from "../Parser";
 import { v4 } from "uuid";
 import { syncObject } from "@vis-three/utils";
 

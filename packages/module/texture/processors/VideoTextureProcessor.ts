@@ -1,10 +1,9 @@
-import { getVideoTextureConfig, VideoTextureConfig } from "./TextureConfig";
+import { getVideoTextureConfig, VideoTextureConfig } from "../TextureConfig";
 import { needUpdateRegCommand, urlHanlder } from "./common";
 import { VideoTexture } from "@vis-three/core";
-import { EngineSupport } from "../engine";
-import { defineProcessor } from "../module";
 import { syncObject } from "@vis-three/utils";
-import { TextureCompiler } from "./TextureCompiler";
+import { TextureCompiler } from "../TextureCompiler";
+import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 
 export default defineProcessor<
   VideoTextureConfig,

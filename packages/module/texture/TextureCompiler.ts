@@ -1,7 +1,7 @@
 import { Texture } from "three";
 import { TextureAllType } from "./TextureConfig";
-import { Compiler } from "../module";
 import { CanvasGenerator } from "@vis-three/convenient";
+import { Compiler } from "@vis-three/middleware";
 
 export class TextureCompiler extends Compiler<TextureAllType, Texture> {
   static replaceImage = new CanvasGenerator({

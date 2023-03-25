@@ -1,6 +1,11 @@
-import { CONFIGFACTORY, CONFIGTYPE } from "../../../module";
-import { VideoTextureConfig } from "@vis-three/module-texture/TextureConfig";
-import { ParseParams, Parser, ResourceHanlder } from "../Parser";
+import {
+  CONFIGFACTORY,
+  CONFIGTYPE,
+  ParseParams,
+  Parser,
+  ResourceHanlder,
+} from "@vis-three/middleware";
+import { VideoTextureConfig } from "../TextureConfig";
 
 export class HTMLVideoElementParser extends Parser {
   selector: ResourceHanlder = (

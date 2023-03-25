@@ -1,3 +1,4 @@
+import { SymbolConfig, Vector2Config } from "@vis-three/middleware";
 import {
   ClampToEdgeWrapping,
   CubeReflectionMapping,
@@ -5,10 +6,8 @@ import {
   LinearFilter,
   LinearMipmapLinearFilter,
   RGBAFormat,
-  Texture,
   UVMapping,
 } from "three";
-import { SymbolConfig, Vector2Config } from "../module/common";
 
 export interface TextureConfig extends SymbolConfig {
   name: string;
