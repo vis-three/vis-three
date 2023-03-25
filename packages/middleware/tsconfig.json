@@ -14,5 +14,6 @@
     "noImplicitReturns": true,
     "noImplicitAny": false,
     "declaration": true
-  }
+  },
+  "exclude": ["./index.ts"]
 }

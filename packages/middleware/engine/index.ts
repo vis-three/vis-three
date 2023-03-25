@@ -55,8 +55,6 @@ import {
   MODULETYPE,
   OBJECTMODULE,
 } from "../module";
-import { CameraCompiler } from "../camera/CameraCompiler";
-import { SceneCompiler } from "../scene/SceneCompiler";
 
 export type EngineSupportParameters = DataSupportManagerParameters;
 
@@ -100,17 +98,14 @@ export class EngineSupport
   ) => this;
   declare loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
 
-  constructor(
-    parameters: EngineSupportParameters = {},
-    resources: { [key: string]: any } = {}
-  ) {
+  constructor() {
     super();
     this.install(LoaderManagerPlugin())
       .install(PointerManagerPlugin())
       .install(EventManagerPlugin())
       .install(RenderManagerPlugin())
-      .install(ResourceManagerPlugin({ resources }))
-      .install(DataSupportManagerPlugin(parameters))
+      .install(ResourceManagerPlugin())
+      .install(DataSupportManagerPlugin())
       .install(CompilerManagerPlugin());
 
     this.exec(LoaderDataSupportStrategy())
@@ -246,30 +241,6 @@ export class EngineSupport
     } else {
       return null;
     }
-  }
-
-  setCameraBySymbol(camera: string) {
-    const compiler = this.compilerManager.getCompiler<CameraCompiler>(
-      MODULETYPE.CAMERA
-    )!;
-    if (compiler.map.has(camera)) {
-      this.setCamera(compiler.map.get(camera)!);
-    } else {
-      console.warn("can not found camera", camera);
-    }
-    return this;
-  }
-
-  setSceneBySymbol(scene: string): this {
-    const compiler = this.compilerManager.getCompiler<SceneCompiler>(
-      MODULETYPE.SCENE
-    )!;
-    if (compiler.map.has(scene)) {
-      this.setScene(compiler.map.get(scene)!);
-    } else {
-      console.warn("can not found scene", scene);
-    }
-    return this;
   }
 
   registModule<C extends Compiler<any, any>>(options: ModuleOptions<C>): this {

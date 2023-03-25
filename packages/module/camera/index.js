@@ -1,4 +1,5 @@
 import { CameraCompiler } from "./CameraCompiler";
+import CameraExtend from "./CameraExtend";
 import { CameraRule } from "./CameraRule";
 import OrthographicCameraProcessor from "./OrthographicCameraProcessor";
 import PerspectiveCameraProcessor from "./PerspectiveCameraProcessor";
@@ -8,4 +9,5 @@ export default {
     compiler: CameraCompiler,
     rule: CameraRule,
     processors: [OrthographicCameraProcessor, PerspectiveCameraProcessor],
+    extend: CameraExtend,
 };

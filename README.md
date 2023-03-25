@@ -22,6 +22,20 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 > 夫物速成则疾亡，晚就则善终。朝华之草，夕而零落；松柏之茂，隆寒不衰。是以大雅君子恶速成。——《群书治要》
 
+## 贡献者
+
+<a href="https://github.com/Shiotsukikaedesari/vis-three/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Shiotsukikaedesari/vis-three" />
+</a>
+
+## 赞助者
+
+| 赞助者                                                                                                                              | issue |
+| ----------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| <a href="https://space.bilibili.com/672852044"><img src="https://i0.hdslb.com/bfs/face/member/noface.jpg@60w_60h_1c_1s.webp" /></a> | 开源  |
+
+## 赞助商
+
 ## Packages
 
 `vis-three`所提供的主要模块。
@@ -67,7 +81,7 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 **多人赞助**：如果多人所提 issue 在功能需求上差不多，可进行 iusse 与赞助分摊合并，方便你我他。
 
-**赞助鸣谢**：赞助后的相关信息会计入下方的赞助名单中公开。
+**赞助鸣谢**：赞助后的相关信息会计入上方的赞助名单中公开。
 
 **诚信与公益**：如果您非常需要一个功能，而暂时又无法达成赞助条件，我们可以为您提供帮助，因为我们相信人都是善良与真诚的。如果您提的需求或功能非常的有价值与富有建设性，我们会把它纳入开发核心流程，并不需要赞助费用，因为这个需求或功能已经非常有含金量。
 
@@ -87,7 +101,7 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 **开发收益**：如果您完成了相关的 issue，并且这个 issue 是属于**付费赞助支持**部分的，您将收到此 issue 的**全额赞助费用**，收益模式可根据上方**赞助模式**和**模式举例**进行。
 
-**开发鸣谢**：只要提交并通过代码审核，您就会自动成为贡献者并记录于下方的贡献者名单中。
+**开发鸣谢**：只要提交并通过代码审核，您就会自动成为贡献者并记录于上方的贡献者名单中。
 
 ## 赞助、合作、通知
 
@@ -104,17 +118,3 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 - gitee 仓库为 github 的同步备份仓库
 - github 地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github.com/Shiotsukikaedesari/vis-three)
-
-## 贡献者
-
-<a href="https://github.com/Shiotsukikaedesari/vis-three/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Shiotsukikaedesari/vis-three" />
-</a>
-
-## 赞助者
-
-| 赞助者                                                                                                                              | issue |
-| ----------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| <a href="https://space.bilibili.com/672852044"><img src="https://i0.hdslb.com/bfs/face/member/noface.jpg@60w_60h_1c_1s.webp" /></a> | 开源  |
-
-## 赞助商

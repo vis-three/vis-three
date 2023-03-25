@@ -1,3 +1,5 @@
+import { EngineSupport } from "../engine";
+import { Parser } from "../plugin/ResourceManagerPlugin";
 import { Compiler, CompilerFactory } from "./compiler";
 import { DataSupportFactory } from "./dataSupport";
 import { Processor } from "./processor";
@@ -22,10 +24,12 @@ export * from "./space";
 
 export interface ModuleOptions<C extends Compiler<any, any>> {
   type: string;
-  object?: boolean;
   compiler: new () => C;
   rule: Rule<C>;
   processors: Processor<any, any, any, C>[];
+  object?: boolean;
+  parsers?: Parser[];
+  extend?: <E extends EngineSupport>(engine: E) => void;
 }
 
 export const defineModule = function <C extends Compiler<any, any>>(

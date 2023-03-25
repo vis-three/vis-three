@@ -646,8 +646,6 @@ importers:
       '@vis-three/core': workspace:^0.5.10
       '@vis-three/event-manager-plugin': workspace:^0.6.0
       '@vis-three/loader-manager-plugin': workspace:^0.5.3
-      '@vis-three/module-material': workspace:^0.6.0
-      '@vis-three/module-texture': workspace:^0.6.0
       '@vis-three/pointer-manager-plugin': workspace:^0.6.0
       '@vis-three/render-manager-plugin': workspace:^0.5.3
       '@vis-three/utils': workspace:^0.5.0
@@ -673,8 +671,6 @@ importers:
       '@types/three': 0.133.1
       '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
       '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
-      '@vis-three/module-material': link:../module/material
-      '@vis-three/module-texture': link:../module/texture
       eslint: 8.29.0
       eslint-config-prettier: 8.5.0_eslint@8.29.0
       eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm

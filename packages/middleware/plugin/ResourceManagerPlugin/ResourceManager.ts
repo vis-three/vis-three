@@ -4,13 +4,8 @@ import { SymbolConfig } from "../../module/common";
 import { LoadOptions } from "../DataSupportManagerPlugin";
 import { FBXResourceParser } from "./parser/FBXResourceParser";
 import { GLTFResourceParser } from "./parser/GLTFResourceParser";
-import { HTMLCanvasElementParser } from "./parser/HTMLCanvasElementParser";
-import { HTMLElementParser } from "../../../module/css3D/HTMLElementParser";
-import { HTMLImageElementParser } from "./parser/HTMLImageElementParser";
-import { HTMLVideoElementParser } from "./parser/HTMLVideoElementParser";
 import { Object3DParser } from "./parser/Object3DParser";
 import { Parser, ResourceHanlder } from "./Parser";
-import { TextureParser } from "@vis-three/module-texture/parsers/TextureParser";
 
 export interface MappedEvent extends BaseEvent {
   configMap: Map<string, SymbolConfig>;
@@ -36,12 +31,7 @@ export class ResourceManager extends EventDispatcher {
   constructor(resources: { [key: string]: any } = {}) {
     super();
 
-    this.addParser(new HTMLImageElementParser())
-      .addParser(new HTMLCanvasElementParser())
-      .addParser(new HTMLVideoElementParser())
-      .addParser(new Object3DParser())
-      .addParser(new HTMLElementParser())
-      .addParser(new TextureParser())
+    this.addParser(new Object3DParser())
       .addParser(new GLTFResourceParser())
       .addParser(new FBXResourceParser());
 
