@@ -1,4 +1,4 @@
-import { Compiler, Processor, uniqueSymbol } from "../module";
+import { Compiler, Processor, uniqueSymbol } from "@vis-three/middleware";
 import { RendererConfig } from "./RendererConfig";
 import { validSymbols } from "./RendererRule";
 

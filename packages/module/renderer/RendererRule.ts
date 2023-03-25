@@ -1,5 +1,5 @@
+import { ProxyNotice, Rule } from "@vis-three/middleware";
 import { validate } from "uuid";
-import { ProxyNotice, Rule } from "../module";
 import { RendererCompiler } from "./RendererCompiler";
 
 export const validSymbols: string[] = [];

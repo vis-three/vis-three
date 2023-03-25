@@ -1,11 +1,9 @@
-import { defineModule } from "../module";
 import { RendererCompiler } from "./RendererCompiler";
 import { RendererRule } from "./RendererRule";
 
-
-export default defineModule({
-  type: 'renderer',
+export default {
+  type: "renderer",
   compiler: RendererCompiler,
   rule: RendererRule,
-  processors: []
-})
+  processors: [],
+};
