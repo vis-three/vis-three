@@ -1,8 +1,8 @@
-import { Vector2Config } from "../module/common";
+import { Vector2Config } from "@vis-three/middleware";
 import {
   getSolidObjectConfig,
   SolidObjectConfig,
-} from "../solidObject/SolidObjectConfig";
+} from "@vis-three/module-solid-object";
 
 export interface SpriteConfig extends SolidObjectConfig {
   material: string;

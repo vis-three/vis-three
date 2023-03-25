@@ -1,5 +1,5 @@
+import { SolidObjectCompiler } from "@vis-three/module-solid-object";
 import { Sprite } from "three";
-import { SolidObjectCompiler } from "../solidObject/SolidObjectCompiler";
 import { SpriteConfig } from "./SpriteConfig";
 
 export class SpriteCompiler extends SolidObjectCompiler<SpriteConfig, Sprite> {

@@ -5,6 +5,8 @@
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
   "private": false,
+  "main": "index.js",
+  "module": "index.js",
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc",

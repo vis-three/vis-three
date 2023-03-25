@@ -1,7 +1,7 @@
+import { ProxyNotice } from "@vis-three/middleware";
+import { ObjectRule } from "@vis-three/module-object";
+import { SolidObjectRule } from "@vis-three/module-solid-object";
 import { Sprite } from "three";
-import { ProxyNotice } from "../module";
-import { ObjectRule } from "../object/ObjectRule";
-import { SolidObjectRule } from "../solidObject/SolidObjectRule";
 import { SpriteCompiler } from "./SpriteCompiler";
 import { SpriteConfig } from "./SpriteConfig";
 

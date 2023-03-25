@@ -1,12 +1,11 @@
-import { Sprite, SpriteMaterial } from "three";
-import { EngineSupport } from "../engine";
-import { defineProcessor } from "../module";
+import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 import {
   solidObjectCommands,
   SolidObjectCommands,
   solidObjectCreate,
   solidObjectDispose,
-} from "../solidObject/SolidObjectProcessor";
+} from "@vis-three/module-solid-object";
+import { Sprite, SpriteMaterial } from "three";
 import { SpriteCompiler } from "./SpriteCompiler";
 import { getSpriteConfig, SpriteConfig } from "./SpriteConfig";
 
