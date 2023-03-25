@@ -1,5 +1,6 @@
-import { uniqueSymbol } from "../module/common";
-import { getObjectConfig, ObjectConfig } from "../object/ObjectConfig";
+import { uniqueSymbol } from "@vis-three/middleware";
+import { getObjectConfig, ObjectConfig } from "@vis-three/module-object";
+
 
 export interface SceneFogConfig {
   type: string; //"Fog" | "FogExp2" | "";

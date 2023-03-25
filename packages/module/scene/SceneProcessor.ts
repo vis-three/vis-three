@@ -1,13 +1,7 @@
+import { defineProcessor, EngineSupport } from "@vis-three/middleware";
+import { objectCommands, ObjectCommands, objectCreate, objectDispose } from "@vis-three/module-object";
 import { Color, Fog, FogExp2, Scene } from "three";
 import { validate } from "uuid";
-import { EngineSupport } from "../engine";
-import { defineProcessor } from "../module";
-import {
-  objectCommands,
-  ObjectCommands,
-  objectCreate,
-  objectDispose,
-} from "../object/ObjectProcessor";
 import { SceneCompiler } from "./SceneCompiler";
 import { getSceneConfig, SceneConfig } from "./SceneConfig";
 
