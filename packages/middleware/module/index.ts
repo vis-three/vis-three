@@ -28,7 +28,6 @@ export interface ModuleOptions<C extends Compiler<any, any>> {
   rule: Rule<C>;
   processors: Processor<any, any, any, C>[];
   object?: boolean;
-  parsers?: Parser[];
   extend?: <E extends EngineSupport>(engine: E) => void;
 }
 

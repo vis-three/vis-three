@@ -1,9 +1,7 @@
 import { EventDispatcher } from "@vis-three/core";
-import { BufferGeometry, Material, Object3D, Texture } from "three";
 import { SymbolConfig } from "../../module/common";
 import { BasicCompiler, Compiler } from "../../module";
-import { CompilerMembers, MODULETYPE } from "../../module/space";
-import { ObjectCompiler } from "../../object/ObjectCompiler";
+import { CompilerMembers } from "../../module/space";
 
 export type CompilerManagerParameters = Record<string, Compiler<any, any>>;
 
@@ -55,7 +53,7 @@ export class CompilerManager extends EventDispatcher {
    * @param object three object
    * @returns vid or null
    */
-  getObjectSymbol<O extends Object3D>(object: O): SymbolConfig["vid"] | null {
+  getObjectSymbol<O extends object>(object: O): SymbolConfig["vid"] | null {
     for (const compiler of this.compilerMap.values()) {
       const vid = compiler.getObjectSymbol(object);
       if (vid) {
@@ -81,35 +79,32 @@ export class CompilerManager extends EventDispatcher {
     return null;
   }
 
-  /**
-   * 通过vid获取object3D对象
-   * @param vid 物体vid标识
-   * @returns Object3D | null
-   */
-  getObject3D<O extends Object3D>(vid: string): O | null {
-    for (const compiler of this.compilerMap.values()) {
-      if (compiler instanceof ObjectCompiler) {
-        if (compiler.map.has(vid)) {
-          return compiler.map.get(vid)! as O;
-        }
-      }
+  getObjectfromModule(module: string, vid: string) {
+    if (!this.compilerMap.has(module)) {
+      console.warn(`compiler manager can not found this module: ${module}`);
+      return null;
     }
+
+    const compiler = this.compilerMap.get(module)!;
+    return compiler.map.get(vid) || null;
+  }
+
+  getObjectfromModules(modules: string[] | Record<string, any>, vid: string) {
+    if (!Array.isArray(modules)) {
+      modules = Object.keys(modules);
+    }
+
+    for (const module of modules as string[]) {
+      if (!this.compilerMap.has(module)) {
+        console.warn(`compiler manager can not found this module: ${module}`);
+        continue;
+      }
+
+      const compiler = this.compilerMap.get(module)!;
+      return compiler.map.get(vid) || null;
+    }
+
     return null;
-  }
-
-  getMaterial(vid: string) {
-    const materialCompiler = this.compilerMap.get(MODULETYPE.MATERIAL)!;
-    return materialCompiler.map.get(vid) as Material | null;
-  }
-
-  getTexture(vid: string) {
-    const textureCompiler = this.compilerMap.get(MODULETYPE.TEXTURE)!;
-    return textureCompiler.map.get(vid) as Texture | null;
-  }
-
-  getGeometry(vid: string) {
-    const geometryCompiler = this.compilerMap.get(MODULETYPE.GEOMETRY)!;
-    return geometryCompiler.map.get(vid) as BufferGeometry | null;
   }
 
   dispose(): this {

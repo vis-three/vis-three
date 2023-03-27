@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/modifier-library",
-  "version": "0.5.5",
+  "version": "0.6.0",
   "description": "vis-three modifier library",
   "main": "index.js",
   "module": "index.js",

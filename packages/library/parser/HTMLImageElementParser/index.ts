@@ -5,16 +5,16 @@ import {
   Parser,
   ResourceHanlder,
 } from "@vis-three/middleware";
-import { VideoTextureConfig } from "../TextureConfig";
+import { ImageTextureConfig } from "@vis-three/module-texture/TextureConfig";
 
-export class HTMLVideoElementParser extends Parser {
+export class HTMLImageElementParser extends Parser {
   selector: ResourceHanlder = (
     url: string,
-    resource: HTMLVideoElement,
+    resource: HTMLImageElement,
     parseMap: Map<Function, Parser>
   ) => {
-    if (resource instanceof HTMLVideoElement) {
-      return parseMap.get(HTMLVideoElementParser) || null;
+    if (resource instanceof HTMLImageElement) {
+      return parseMap.get(HTMLImageElementParser) || null;
     } else {
       return null;
     }
@@ -22,8 +22,8 @@ export class HTMLVideoElementParser extends Parser {
 
   parse({ url, resource, configMap, resourceMap }: ParseParams): void {
     const config = CONFIGFACTORY[
-      CONFIGTYPE.VIDEOTEXTURE
-    ]() as VideoTextureConfig;
+      CONFIGTYPE.IMAGETEXTURE
+    ]() as ImageTextureConfig;
     config.url = url;
 
     resourceMap.set(url, resource);

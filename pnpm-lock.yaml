@@ -478,7 +478,7 @@ importers:
       '@vis-three/middleware': link:../middleware
       '@vis-three/modeling-engine': link:../engine/ModelingEngine
       '@vis-three/modeling-engine-support': link:../engine/ModelingEngineSupport
-      '@vis-three/modifier-boolean': link:../modifier/BooleanModifier
+      '@vis-three/modifier-boolean': link:../library/modifier/BooleanModifier
       '@vis-three/module-modifier': link:../module/modifier
       '@vis-three/module-pass': link:../module/pass
       '@vis-three/object-helper-plugin': link:../plugins/ObjectHelperPlugin
@@ -597,10 +597,104 @@ importers:
       three: ^0.141.0
       typescript: ^4.3.2
     dependencies:
-      '@vis-three/modifier-boolean': link:../../modifier/BooleanModifier
+      '@vis-three/modifier-boolean': link:BooleanModifier
     devDependencies:
       '@types/node': 18.15.0
       '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
+      '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.7.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm
+      prettier: 2.8.4
+      three: 0.141.0
+      typescript: 4.9.5
+
+  packages/library/modifier/BooleanModifier:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/modifier-base': workspace:^0.6.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      three-csg-ts: ^3.1.10
+      typescript: ^4.3.2
+    dependencies:
+      '@vis-three/modifier-base': link:../Modifier
+      three-csg-ts: 3.1.11_k5pfjr5sd5oogwxlz26np7hhai
+    devDependencies:
+      '@types/node': 18.15.0
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
+      '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.7.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm
+      prettier: 2.8.4
+      three: 0.141.0
+      typescript: 4.9.5
+
+  packages/library/modifier/Modifier:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+    devDependencies:
+      '@types/node': 18.15.0
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
+      '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.7.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm
+      prettier: 2.8.4
+      three: 0.141.0
+      typescript: 4.9.5
+
+  packages/library/parser:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@types/uuid': ^9.0.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/middleware': workspace:^0.6.0
+      '@vis-three/module-geometry': workspace:^0.6.0
+      '@vis-three/module-material': workspace:^0.6.0
+      '@vis-three/module-solid-object': workspace:^0.6.0
+      '@vis-three/module-texture': workspace:^0.6.0
+      '@vis-three/utils': workspace:^0.5.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+      uuid: ^8.3.2
+    dependencies:
+      '@vis-three/middleware': link:../../middleware
+      '@vis-three/module-geometry': link:../../module/geometry
+      '@vis-three/module-material': link:../../module/material
+      '@vis-three/module-solid-object': link:../../module/solidObject
+      '@vis-three/module-texture': link:../../module/texture
+      '@vis-three/utils': link:../../utils
+      uuid: 8.3.2
+    devDependencies:
+      '@types/node': 18.15.0
+      '@types/three': 0.133.1
+      '@types/uuid': 9.0.1
       '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
       '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
       eslint: 8.36.0
@@ -677,59 +771,6 @@ importers:
       prettier: 2.8.0
       three: 0.141.0
       typescript: 4.9.3
-
-  packages/modifier/BooleanModifier:
-    specifiers:
-      '@types/node': ^18.11.12
-      '@types/three': ^0.133.1
-      '@typescript-eslint/eslint-plugin': ^5.18.0
-      '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/modifier-base': workspace:^0.6.0
-      eslint: ^8.12.0
-      eslint-config-prettier: ^8.5.0
-      eslint-plugin-prettier: ^4.0.0
-      prettier: ^2.6.2
-      three: ^0.141.0
-      three-csg-ts: ^3.1.10
-      typescript: ^4.3.2
-    dependencies:
-      '@vis-three/modifier-base': link:../Modifier
-      three-csg-ts: 3.1.11_k5pfjr5sd5oogwxlz26np7hhai
-    devDependencies:
-      '@types/node': 18.15.0
-      '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
-      '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
-      eslint: 8.36.0
-      eslint-config-prettier: 8.7.0_eslint@8.36.0
-      eslint-plugin-prettier: 4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm
-      prettier: 2.8.4
-      three: 0.141.0
-      typescript: 4.9.5
-
-  packages/modifier/Modifier:
-    specifiers:
-      '@types/node': ^18.11.12
-      '@types/three': ^0.133.1
-      '@typescript-eslint/eslint-plugin': ^5.18.0
-      '@typescript-eslint/parser': ^5.18.0
-      eslint: ^8.12.0
-      eslint-config-prettier: ^8.5.0
-      eslint-plugin-prettier: ^4.0.0
-      prettier: ^2.6.2
-      three: ^0.141.0
-      typescript: ^4.3.2
-    devDependencies:
-      '@types/node': 18.15.0
-      '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
-      '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
-      eslint: 8.36.0
-      eslint-config-prettier: 8.7.0_eslint@8.36.0
-      eslint-plugin-prettier: 4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm
-      prettier: 2.8.4
-      three: 0.141.0
-      typescript: 4.9.5
 
   packages/module/animation:
     specifiers:
@@ -1099,7 +1140,7 @@ importers:
       '@vis-three/core': workspace:^0.5.10
       '@vis-three/middleware': workspace:^0.6.0
       '@vis-three/modifier-base': workspace:^0.6.0
-      '@vis-three/modifier-library': workspace:^0.5.5
+      '@vis-three/modifier-library': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.5.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1110,7 +1151,7 @@ importers:
     dependencies:
       '@vis-three/core': link:../../core
       '@vis-three/middleware': link:../../middleware
-      '@vis-three/modifier-base': link:../../modifier/Modifier
+      '@vis-three/modifier-base': link:../../library/modifier/Modifier
       '@vis-three/modifier-library': link:../../library/modifier
       '@vis-three/utils': link:../../utils
     devDependencies:
@@ -2268,39 +2309,6 @@ importers:
     dependencies:
       '@vis-three/core': link:../../core
       '@vis-three/css3d-renderer-plugin': link:../../plugins/CSS3DRendererPlugin
-      '@vis-three/middleware': link:../../middleware
-      '@vis-three/utils': link:../../utils
-    devDependencies:
-      '@types/node': 18.11.12
-      '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
-      '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
-      eslint: 8.29.0
-      eslint-config-prettier: 8.5.0_eslint@8.29.0
-      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
-      prettier: 2.8.0
-      three: 0.141.0
-      typescript: 4.9.3
-
-  packages/strategy/ComposerSupportStrategy:
-    specifiers:
-      '@types/node': ^18.11.12
-      '@types/three': ^0.133.1
-      '@typescript-eslint/eslint-plugin': ^5.18.0
-      '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.5.10
-      '@vis-three/effect-composer-plugin': workspace:^0.5.1
-      '@vis-three/middleware': workspace:^0.6.0
-      '@vis-three/utils': workspace:^0.5.0
-      eslint: ^8.12.0
-      eslint-config-prettier: ^8.5.0
-      eslint-plugin-prettier: ^4.0.0
-      prettier: ^2.6.2
-      three: ^0.141.0
-      typescript: ^4.3.2
-    dependencies:
-      '@vis-three/core': link:../../core
-      '@vis-three/effect-composer-plugin': link:../../plugins/EffectComposerPlugin
       '@vis-three/middleware': link:../../middleware
       '@vis-three/utils': link:../../utils
     devDependencies:
@@ -5391,6 +5399,10 @@ packages:
 
   /@types/uuid/8.3.4:
     resolution: {integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==}
+
+  /@types/uuid/9.0.1:
+    resolution: {integrity: sha512-rFT3ak0/2trgvp4yYZo5iKFEPsET7vKydKF+VRCxlQ9bpheehyAJH89dAkaLEq/j/RZXJIqcgsmPJKUP1Z28HA==}
+    dev: true
 
   /@types/web-bluetooth/0.0.16:
     resolution: {integrity: sha512-oh8q2Zc32S6gd/j50GowEjKLoOVOwHP/bWVjKJInBwQqdOYMdPrf1oVlelTlyfFK3CKxL1uahMDAr+vy8T7yMQ==}

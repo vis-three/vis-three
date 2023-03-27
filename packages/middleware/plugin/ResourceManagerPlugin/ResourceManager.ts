@@ -2,9 +2,6 @@ import { BaseEvent, EventDispatcher } from "@vis-three/core";
 import { getModule } from "../../module";
 import { SymbolConfig } from "../../module/common";
 import { LoadOptions } from "../DataSupportManagerPlugin";
-import { FBXResourceParser } from "./parser/FBXResourceParser";
-import { GLTFResourceParser } from "./parser/GLTFResourceParser";
-import { Object3DParser } from "./parser/Object3DParser";
 import { Parser, ResourceHanlder } from "./Parser";
 
 export interface MappedEvent extends BaseEvent {
@@ -30,10 +27,6 @@ export class ResourceManager extends EventDispatcher {
 
   constructor(resources: { [key: string]: any } = {}) {
     super();
-
-    this.addParser(new Object3DParser())
-      .addParser(new GLTFResourceParser())
-      .addParser(new FBXResourceParser());
 
     const map = new Map<string, any>();
 

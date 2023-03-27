@@ -3,7 +3,6 @@ import { v4 as getUuid } from "uuid";
 import { SymbolConfig } from "../module/common";
 import { EngineSupport } from "../engine";
 import { CONFIGFACTORY, CONFIGTYPE, isObjectType, observable } from "../module";
-import { SceneConfig } from "../scene/SceneConfig";
 
 export interface C extends SymbolConfig {}
 
@@ -105,14 +104,12 @@ export const generateConfig = <GenerateConfig>function (
         isObjectType(initConfig.type) &&
         initConfig.type !== CONFIGTYPE.SCENE
       ) {
-        let sceneConfig: SceneConfig | null = null;
+        let sceneConfig: SymbolConfig | null = null;
 
         if (typeof generateConfig.injectScene === "boolean") {
           sceneConfig = engine.getObjectConfig(engine.scene);
         } else if (typeof generateConfig.injectScene === "string") {
-          sceneConfig = engine.getConfigBySymbol(
-            generateConfig.injectScene
-          ) as SceneConfig;
+          sceneConfig = engine.getConfigBySymbol(generateConfig.injectScene);
         }
 
         if (!sceneConfig) {
@@ -122,7 +119,9 @@ export const generateConfig = <GenerateConfig>function (
             engine.scene
           );
         } else {
-          sceneConfig.children.push(initConfig.vid);
+          (<SymbolConfig & { children: string[] }>sceneConfig).children.push(
+            initConfig.vid
+          );
         }
       }
     }

@@ -1,4 +1,4 @@
-import { CONFIGFACTORY, CONFIGTYPE, Parser } from "@vis-three/middleware";
+import { CONFIGFACTORY, CONFIGTYPE, Parser, } from "@vis-three/middleware";
 export class HTMLCanvasElementParser extends Parser {
     selector = (url, resource, parseMap) => {
         if (resource instanceof HTMLCanvasElement) {

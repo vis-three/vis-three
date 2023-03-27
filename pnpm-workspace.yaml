@@ -3,6 +3,5 @@ packages:
   - "packages/plugins/*"
   - "packages/engine/*"
   - "packages/strategy/*"
-  - "packages/library/*"
+  - "packages/library/**/*"
   - "packages/module/*"
-  - "packages/modifier/*"

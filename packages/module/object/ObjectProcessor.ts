@@ -4,7 +4,9 @@ import {
   EventGeneratorManager,
   EVENTNAME,
   globalAntiShake,
+  MODULETYPE,
   ObjectEvent,
+  OBJECTMODULE,
   ProcessorCommands,
   ProcessParams,
   RegCommand,
@@ -56,7 +58,10 @@ export const lookAtHandler = function <
   }
 
   globalAntiShake.exec((finish) => {
-    const lookAtTarget = engine.compilerManager.getObject3D(value);
+    const lookAtTarget = engine.compilerManager.getObjectfromModules(
+      OBJECTMODULE,
+      value
+    ) as Object3D;
 
     if (!lookAtTarget) {
       if (finish) {
@@ -212,7 +217,10 @@ export const addChildrenHanlder = function <
 
     childrenConfig.parent = config.vid;
 
-    const childrenObject = engine.compilerManager.getObject3D(value);
+    const childrenObject = engine.compilerManager.getObjectfromModules(
+      OBJECTMODULE,
+      value
+    ) as Object3D;
 
     if (!childrenObject) {
       if (finish) {
@@ -236,7 +244,10 @@ export const removeChildrenHandler = function <
   value,
   engine,
 }: ProcessParams<C, O, EngineSupport, ObjectCompiler<C, O>>) {
-  const childrenObject = engine.compilerManager.getObject3D(value);
+  const childrenObject = engine.compilerManager.getObjectfromModules(
+    OBJECTMODULE,
+    value
+  ) as Object3D;
 
   if (!childrenObject) {
     console.warn(`can not found this vid in engine: ${value}.`);

@@ -1,6 +1,11 @@
-import { CONFIGFACTORY, CONFIGTYPE, ParseParams, Parser, ResourceHanlder } from "@vis-three/middleware";
-import { CanvasTextureConfig } from "../TextureConfig";
-
+import {
+  CONFIGFACTORY,
+  CONFIGTYPE,
+  ParseParams,
+  Parser,
+  ResourceHanlder,
+} from "@vis-three/middleware";
+import { CanvasTextureConfig } from "@vis-three/module-texture/TextureConfig";
 
 export class HTMLCanvasElementParser extends Parser {
   selector: ResourceHanlder = (
