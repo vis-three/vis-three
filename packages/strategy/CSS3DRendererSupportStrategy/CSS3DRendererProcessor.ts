@@ -16,7 +16,7 @@ export interface CSS3DRendererConfig extends RendererConfig {}
 
 export const getCSS3DRenderereConfig = function (): CSS3DRendererConfig {
   return Object.assign(getRendererConfig(), {
-    vid: uniqueSymbol("CSS3DRENDERER"), // WebGLRenderer or vid
+    vid: uniqueSymbol("CSS3DRenderer"), // WebGLRenderer or vid
   });
 };
 
