@@ -158,6 +158,7 @@ importers:
       '@vis-three/effect-composer-plugin': workspace:^0.5.1
       '@vis-three/effect-render-strategy': workspace:^0.5.2
       '@vis-three/middleware': workspace:^0.6.1
+      '@vis-three/module-library': workspace:^0.6.0
       '@vis-three/orbit-controls-plugin': workspace:^0.5.12
       '@vis-three/orbit-controls-support-strategy': workspace:^0.6.0
       '@vis-three/orbit-render-strategy': workspace:^0.5.1
@@ -179,6 +180,7 @@ importers:
       '@vis-three/effect-composer-plugin': link:../../plugins/EffectComposerPlugin
       '@vis-three/effect-render-strategy': link:../../strategy/EffectRenderStrategy
       '@vis-three/middleware': link:../../middleware
+      '@vis-three/module-library': link:../../library/module
       '@vis-three/orbit-controls-plugin': link:../../plugins/OrbitControlsPlugin
       '@vis-three/orbit-controls-support-strategy': link:../../strategy/OrbitControlsSupportStrategy
       '@vis-three/orbit-render-strategy': link:../../strategy/OrbitRenderStrategy
@@ -297,6 +299,7 @@ importers:
       '@vis-three/helper-select-interact-strategy': workspace:^0.6.0
       '@vis-three/keyboard-manager-plugin': workspace:^0.5.1
       '@vis-three/middleware': workspace:^0.6.1
+      '@vis-three/module-library': workspace:^0.6.0
       '@vis-three/module-pass': workspace:^0.6.0
       '@vis-three/object-helper-plugin': workspace:^0.6.0
       '@vis-three/orbit-controls-plugin': workspace:^0.5.12
@@ -336,6 +339,7 @@ importers:
       '@vis-three/helper-select-interact-strategy': link:../../strategy/HelperSelectInteractStrategy
       '@vis-three/keyboard-manager-plugin': link:../../plugins/KeyboardManagerPlugin
       '@vis-three/middleware': link:../../middleware
+      '@vis-three/module-library': link:../../library/module
       '@vis-three/module-pass': link:../../library/module/pass
       '@vis-three/object-helper-plugin': link:../../plugins/ObjectHelperPlugin
       '@vis-three/orbit-controls-plugin': link:../../plugins/OrbitControlsPlugin

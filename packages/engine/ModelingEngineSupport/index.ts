@@ -1,4 +1,4 @@
-import { EngineSupport, EngineSupportParameters } from "@vis-three/middleware";
+import { EngineSupport, ModuleOptions } from "@vis-three/middleware";
 import { AxesHelper, Event, GridHelper, Object3D, WebGLRenderer } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
@@ -79,7 +79,7 @@ import { TransformControlsHelperFilterStrategy } from "@vis-three/transform-cont
 import { OrbitControlsSupportStrategy } from "@vis-three/orbit-controls-support-strategy";
 import { SelectionEngine, SelectionPlugin } from "@vis-three/selection-plugin";
 
-import PassModule from "@vis-three/module-pass";
+import * as moduleLibrary from "@vis-three/module-library";
 
 export { VIEWPOINT };
 
@@ -125,8 +125,8 @@ export class ModelingEngineSupport
   declare css2DRenderer: CSS2DRenderer;
   declare css3DRenderer: CSS3DRenderer;
 
-  constructor(parameters?: EngineSupportParameters) {
-    super(parameters);
+  constructor() {
+    super();
     this.install(
       WebGLRendererPlugin({
         antialias: true,
@@ -168,6 +168,8 @@ export class ModelingEngineSupport
       .exec(TransformControlsHelperFilterStrategy())
       .exec(OrbitControlsSupportStrategy());
 
-    this.registModule(PassModule);
+    for (const module of Object.values(moduleLibrary)) {
+      this.registModule(module as ModuleOptions<any>);
+    }
   }
 }

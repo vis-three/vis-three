@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/display-engine-support",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -34,6 +34,7 @@
     "@vis-three/effect-composer-plugin": "workspace:^0.5.1",
     "@vis-three/effect-render-strategy": "workspace:^0.5.2",
     "@vis-three/middleware": "workspace:^0.6.1",
+    "@vis-three/module-library": "workspace:^0.6.0",
     "@vis-three/orbit-controls-plugin": "workspace:^0.5.12",
     "@vis-three/orbit-controls-support-strategy": "workspace:^0.6.0",
     "@vis-three/orbit-render-strategy": "workspace:^0.5.1",

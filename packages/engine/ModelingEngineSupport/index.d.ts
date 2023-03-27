@@ -1,4 +1,4 @@
-import { EngineSupport, EngineSupportParameters } from "@vis-three/middleware";
+import { EngineSupport } from "@vis-three/middleware";
 import { AxesHelper, Event, GridHelper, Object3D, WebGLRenderer } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
@@ -42,5 +42,5 @@ export declare class ModelingEngineSupport extends EngineSupport implements WebG
     setObjectHelper: (show: boolean) => ObjectHelperEngine;
     css2DRenderer: CSS2DRenderer;
     css3DRenderer: CSS3DRenderer;
-    constructor(parameters?: EngineSupportParameters);
+    constructor();
 }

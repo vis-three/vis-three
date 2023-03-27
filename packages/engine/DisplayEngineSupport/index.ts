@@ -1,4 +1,4 @@
-import { EngineSupport } from "@vis-three/middleware";
+import { EngineSupport, ModuleOptions } from "@vis-three/middleware";
 import {
   Screenshot,
   WebGLRendererEngine,
@@ -34,7 +34,8 @@ import { CSS3DRendererSupportStrategy } from "@vis-three/css3d-renderer-support-
 import { WebGLRendererSupportStrategy } from "@vis-three/webgl-renderer-support-strategy";
 import { OrbitControlsSupportStrategy } from "@vis-three/orbit-controls-support-strategy";
 
-import PassModule from "@vis-three/module-pass";
+import * as moduleLibrary from "@vis-three/module-library";
+
 export class DisplayEngineSupport
   extends EngineSupport
   implements
@@ -77,6 +78,8 @@ export class DisplayEngineSupport
       .exec(WebGLRendererSupportStrategy())
       .exec(OrbitControlsSupportStrategy());
 
-    this.registModule(PassModule);
+    for (const module of Object.values(moduleLibrary)) {
+      this.registModule(module as ModuleOptions<any>);
+    }
   }
 }

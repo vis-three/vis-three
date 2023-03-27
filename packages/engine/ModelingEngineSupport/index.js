@@ -29,11 +29,11 @@ import { TransformControlsSupportStrategy } from "@vis-three/transform-controls-
 import { TransformControlsHelperFilterStrategy } from "@vis-three/transform-controls-helper-filter-strategy";
 import { OrbitControlsSupportStrategy } from "@vis-three/orbit-controls-support-strategy";
 import { SelectionPlugin } from "@vis-three/selection-plugin";
-import PassModule from "@vis-three/module-pass";
+import * as moduleLibrary from "@vis-three/module-library";
 export { VIEWPOINT };
 export class ModelingEngineSupport extends EngineSupport {
-    constructor(parameters) {
-        super(parameters);
+    constructor() {
+        super();
         this.install(WebGLRendererPlugin({
             antialias: true,
             alpha: true,
@@ -69,6 +69,8 @@ export class ModelingEngineSupport extends EngineSupport {
             .exec(TransformControlsSupportStrategy())
             .exec(TransformControlsHelperFilterStrategy())
             .exec(OrbitControlsSupportStrategy());
-        this.registModule(PassModule);
+        for (const module of Object.values(moduleLibrary)) {
+            this.registModule(module);
+        }
     }
 }
