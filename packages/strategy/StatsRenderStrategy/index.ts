@@ -1,8 +1,8 @@
-import { StatsEngine, STATS_PLUGIN } from "@vis-three/stats-plugin";
+import { StatsEngine, STATS_PLUGIN } from "@vis-three/plugin-stats";
 import {
   RenderManagerEngine,
   RENDER_MANAGER_PLUGIN,
-} from "@vis-three/render-manager-plugin";
+} from "@vis-three/plugin-render-manager";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 import { Strategy } from "@vis-three/core";

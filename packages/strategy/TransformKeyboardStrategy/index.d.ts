@@ -1,5 +1,5 @@
-import { KeyboardManagerEngine } from "@vis-three/keyboard-manager-plugin";
-import { TransformControlsEngine } from "@vis-three/transform-controls-plugin";
+import { KeyboardManagerEngine } from "@vis-three/plugin-keyboard-manager";
+import { TransformControlsEngine } from "@vis-three/plugin-transform-controls";
 import { Strategy } from "@vis-three/core";
 export interface TransformKeyboardEngine extends KeyboardManagerEngine, TransformControlsEngine {
 }

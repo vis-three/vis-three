@@ -2,9 +2,9 @@ import { ENGINE_EVENT, } from "@vis-three/core";
 import { Color, ShaderMaterial } from "three";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
-import { EVENT_MANAGER_PLUGIN, } from "@vis-three/event-manager-plugin";
-import { AFTERADD, AFTERREMOVE, OBJECT_HELPER_PLUGIN, } from "@vis-three/object-helper-plugin";
-import { SELECTED, SELECTION_PLUGIN, } from "@vis-three/selection-plugin";
+import { EVENT_MANAGER_PLUGIN, } from "@vis-three/plugin-event-manager";
+import { AFTERADD, AFTERREMOVE, OBJECT_HELPER_PLUGIN, } from "@vis-three/plugin-object-helper";
+import { SELECTED, SELECTION_PLUGIN, } from "@vis-three/plugin-selection";
 export const HELPER_SELECT_INTERACT_STRATEGY = transPkgName(pkgname);
 export const HelperSelectInteractStrategy = function (params = {}) {
     const pointerenterFunMap = new Map();

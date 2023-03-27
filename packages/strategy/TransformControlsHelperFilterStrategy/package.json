@@ -1,6 +1,6 @@
 {
-  "name": "@vis-three/transform-controls-helper-filter-strategy",
-  "version": "0.5.2",
+  "name": "@vis-three/strategy-transform-controls-helper-filter",
+  "version": "0.6.0",
   "description": "",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
@@ -24,9 +24,9 @@
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
     "@vis-three/middleware": "workspace:^0.6.1",
-    "@vis-three/object-helper-plugin": "workspace:^0.6.0",
-    "@vis-three/transform-controls-plugin": "workspace:^0.5.1",
-    "@vis-three/utils": "workspace:^0.5.0"
+    "@vis-three/plugin-object-helper": "workspace:^0.6.0",
+    "@vis-three/plugin-transform-controls": "workspace:^0.6.0",
+    "@vis-three/utils": "workspace:^0.6.0"
   },
   "files": [
     "**/*.js",

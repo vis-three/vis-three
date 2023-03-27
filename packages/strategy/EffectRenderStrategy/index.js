@@ -1,5 +1,5 @@
-import { RENDER_EVENT, RENDER_MANAGER_PLUGIN, } from "@vis-three/render-manager-plugin";
-import { EFFECT_COMPOSER_PLUGIN, } from "@vis-three/effect-composer-plugin";
+import { RENDER_EVENT, RENDER_MANAGER_PLUGIN, } from "@vis-three/plugin-render-manager";
+import { EFFECT_COMPOSER_PLUGIN, } from "@vis-three/plugin-effect-composer";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 export const name = transPkgName(pkgname);

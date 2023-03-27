@@ -10,20 +10,20 @@ import { name as pkgname } from "./package.json";
 import {
   EventManagerEngine,
   EVENT_MANAGER_PLUGIN,
-} from "@vis-three/event-manager-plugin";
+} from "@vis-three/plugin-event-manager";
 import {
   AFTERADD,
   AFTERREMOVE,
   ObjectHelperEngine,
   OBJECT_HELPER_PLUGIN,
-} from "@vis-three/object-helper-plugin";
+} from "@vis-three/plugin-object-helper";
 import {
   SELECTED,
   SelectedEvent,
   SelectionEngine,
   SELECTION_PLUGIN,
-} from "@vis-three/selection-plugin";
-import { TransformControlsEngine } from "@vis-three/transform-controls-plugin";
+} from "@vis-three/plugin-selection";
+import { TransformControlsEngine } from "@vis-three/plugin-transform-controls";
 export interface HelperSelectInteractEngine
   extends EventManagerEngine,
     ObjectHelperEngine,

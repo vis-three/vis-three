@@ -1,6 +1,6 @@
 {
-  "name": "@vis-three/selection-support-plugin",
-  "version": "0.5.0",
+  "name": "@vis-three/plugin-selection-support",
+  "version": "0.6.0",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -27,8 +27,8 @@
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
     "@vis-three/middleware": "workspace:^0.6.1",
-    "@vis-three/selection-plugin": "workspace:^0.5.1",
-    "@vis-three/utils": "workspace:^0.5.0"
+    "@vis-three/plugin-selection": "workspace:^0.6.0",
+    "@vis-three/utils": "workspace:^0.6.0"
   },
   "files": [
     "**/*.js",

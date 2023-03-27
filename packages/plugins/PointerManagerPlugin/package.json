@@ -1,5 +1,5 @@
 {
-  "name": "@vis-three/pointer-manager-plugin",
+  "name": "@vis-three/plugin-pointer-manager",
   "version": "0.6.0",
   "description": "",
   "main": "index.js",
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
-    "@vis-three/utils": "workspace:^0.5.0"
+    "@vis-three/utils": "workspace:^0.6.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.12",

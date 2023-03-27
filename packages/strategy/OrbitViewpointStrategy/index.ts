@@ -4,14 +4,14 @@ import { Strategy } from "@vis-three/core";
 import {
   OrbitControlsEngine,
   ORBIT_CONTROLS_PLUGIN,
-} from "@vis-three/orbit-controls-plugin";
+} from "@vis-three/plugin-orbit-controls";
 import {
   ViewpointEngine,
   ViewpointEvent,
   VIEWPOINT_PLUGIN,
   VIEWPOINT,
   SETVIEWPOINT,
-} from "@vis-three/viewpoint-plugin";
+} from "@vis-three/plugin-viewpoint";
 
 export interface OrbitViewpointEngine
   extends OrbitControlsEngine,

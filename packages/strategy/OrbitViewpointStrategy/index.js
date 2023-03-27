@@ -1,7 +1,7 @@
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
-import { ORBIT_CONTROLS_PLUGIN, } from "@vis-three/orbit-controls-plugin";
-import { VIEWPOINT_PLUGIN, VIEWPOINT, SETVIEWPOINT, } from "@vis-three/viewpoint-plugin";
+import { ORBIT_CONTROLS_PLUGIN, } from "@vis-three/plugin-orbit-controls";
+import { VIEWPOINT_PLUGIN, VIEWPOINT, SETVIEWPOINT, } from "@vis-three/plugin-viewpoint";
 export const name = transPkgName(pkgname);
 export const OrbitViewpointStrategy = function () {
     let viewpointFun;

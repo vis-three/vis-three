@@ -1,5 +1,5 @@
-import { KEYBOARD_MANAGER_PLUGIN, } from "@vis-three/keyboard-manager-plugin";
-import { TRANSFORM_CONTROLS_PLUGIN, } from "@vis-three/transform-controls-plugin";
+import { KEYBOARD_MANAGER_PLUGIN, } from "@vis-three/plugin-keyboard-manager";
+import { TRANSFORM_CONTROLS_PLUGIN, } from "@vis-three/plugin-transform-controls";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 export const TRANSFORM_KEYBOARD_STRATEGY = transPkgName(pkgname);

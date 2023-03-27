@@ -1,5 +1,5 @@
-import { GridHelperEngine } from "@vis-three/grid-helper-plugin";
-import { ViewpointEngine } from "@vis-three/viewpoint-plugin";
+import { GridHelperEngine } from "@vis-three/plugin-grid-helper";
+import { ViewpointEngine } from "@vis-three/plugin-viewpoint";
 import { Strategy } from "@vis-three/core";
 export interface GridViewpointEngine extends GridHelperEngine, ViewpointEngine {
 }

@@ -2,13 +2,13 @@ import { Strategy } from "@vis-three/core";
 import {
   CSS2DRendererEngine,
   name as CSS2D_RENDERER_PLUGIN,
-} from "@vis-three/css2d-renderer-plugin";
+} from "@vis-three/plugin-css2d-renderer";
 import {
   RenderEvent,
   RenderManagerEngine,
   RENDER_EVENT,
   RENDER_MANAGER_PLUGIN,
-} from "@vis-three/render-manager-plugin";
+} from "@vis-three/plugin-render-manager";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 

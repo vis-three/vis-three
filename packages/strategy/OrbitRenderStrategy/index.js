@@ -1,7 +1,7 @@
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
-import { ORBIT_CONTROLS_PLUGIN, } from "@vis-three/orbit-controls-plugin";
-import { RENDER_MANAGER_PLUGIN, RENDER_EVENT, } from "@vis-three/render-manager-plugin";
+import { ORBIT_CONTROLS_PLUGIN, } from "@vis-three/plugin-orbit-controls";
+import { RENDER_MANAGER_PLUGIN, RENDER_EVENT, } from "@vis-three/plugin-render-manager";
 export const name = transPkgName(pkgname);
 export const OrbitRenderStrategy = function () {
     let renderFun;

@@ -1,7 +1,7 @@
 import {
   PointerManagerEngine,
   POINTER_MANAGER_PLUGIN,
-} from "@vis-three/pointer-manager-plugin";
+} from "@vis-three/plugin-pointer-manager";
 import { EventManager, EventManagerParameters } from "./EventManager";
 import {
   ENGINE_EVENT,

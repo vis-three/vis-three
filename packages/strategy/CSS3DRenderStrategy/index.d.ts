@@ -1,5 +1,5 @@
-import { CSS3DRendererEngine } from "@vis-three/css3d-renderer-plugin";
-import { RenderManagerEngine } from "@vis-three/render-manager-plugin";
+import { CSS3DRendererEngine } from "@vis-three/plugin-css3d-renderer";
+import { RenderManagerEngine } from "@vis-three/plugin-render-manager";
 import { Strategy } from "@vis-three/core";
 export interface CSS3DAndRenderEngine extends CSS3DRendererEngine, RenderManagerEngine {
 }

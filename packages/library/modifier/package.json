@@ -1,5 +1,5 @@
 {
-  "name": "@vis-three/modifier-library",
+  "name": "@vis-three/library-modifier",
   "version": "0.6.0",
   "description": "vis-three modifier library",
   "main": "index.js",

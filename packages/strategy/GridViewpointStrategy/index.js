@@ -1,5 +1,5 @@
-import { GRID_HELPER_PLUGIN, } from "@vis-three/grid-helper-plugin";
-import { SETVIEWPOINT, VIEWPOINT, VIEWPOINT_PLUGIN, } from "@vis-three/viewpoint-plugin";
+import { GRID_HELPER_PLUGIN, } from "@vis-three/plugin-grid-helper";
+import { SETVIEWPOINT, VIEWPOINT, VIEWPOINT_PLUGIN, } from "@vis-three/plugin-viewpoint";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 export const GRID_VIEWPOINT_STRATEGY = transPkgName(pkgname);

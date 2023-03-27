@@ -1,6 +1,6 @@
 {
-  "name": "@vis-three/transform-controls-plugin",
-  "version": "0.5.1",
+  "name": "@vis-three/plugin-transform-controls",
+  "version": "0.6.0",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -26,13 +26,11 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
-    "@vis-three/utils": "workspace:^0.5.0"
+    "@vis-three/utils": "workspace:^0.6.0"
   },
   "files": [
-    "/**/*.js",
-    "/**/*.d.ts",
-    "index.js",
-    "index.d.ts",
+    "**/*.js",
+    "**/*.d.ts",
     "package.json",
     "LICENSE"
   ]

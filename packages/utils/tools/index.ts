@@ -85,7 +85,13 @@ export const transPkgName = function (str: string) {
     return str;
   }
 
-  return name.split("-").reduce((str, elem) => {
+  const nameList = name.split("-");
+
+  nameList.push(nameList[0]);
+
+  nameList.shift();
+
+  return nameList.reduce((str, elem) => {
     return (str += elem[0].toUpperCase() + elem.slice(1));
   }, "");
 };

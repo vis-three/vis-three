@@ -2,11 +2,11 @@ import { ENGINE_EVENT, } from "@vis-three/core";
 import { RGBAFormat, Vector2, WebGLMultisampleRenderTarget, WebGLRenderTarget, } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { WEBGL_RENDERER_PLUGIN, } from "@vis-three/webgl-renderer-plugin";
+import { WEBGL_RENDERER_PLUGIN, } from "@vis-three/plugin-webgl-renderer";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 export const EFFECT_COMPOSER_PLUGIN = transPkgName(pkgname);
-export const EffectComposerPlugin = function (params) {
+export const EffectComposerPlugin = function (params = {}) {
     let setCameraFun;
     let setSizeFun;
     let setSceneFun;

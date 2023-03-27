@@ -1,5 +1,4 @@
 import { Strategy } from "@vis-three/core";
-import { CSS3D_RENDERER_PLUGIN } from "@vis-three/css3d-renderer-plugin";
 import {
   COMPILER_MANAGER_PLUGIN,
   CONFIGTYPE,
@@ -8,6 +7,7 @@ import {
   uniqueSymbol,
 } from "@vis-three/middleware";
 import { RendererCompiler } from "@vis-three/module-renderer/RendererCompiler";
+import { CSS3D_RENDERER_PLUGIN } from "@vis-three/plugin-css3d-renderer";
 import { transPkgName } from "@vis-three/utils";
 import CSS3DRendererProcessor, {
   CSS3DRendererSupportEngine,

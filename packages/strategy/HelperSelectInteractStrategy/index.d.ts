@@ -1,8 +1,8 @@
 import { Strategy } from "@vis-three/core";
-import { EventManagerEngine } from "@vis-three/event-manager-plugin";
-import { ObjectHelperEngine } from "@vis-three/object-helper-plugin";
-import { SelectionEngine } from "@vis-three/selection-plugin";
-import { TransformControlsEngine } from "@vis-three/transform-controls-plugin";
+import { EventManagerEngine } from "@vis-three/plugin-event-manager";
+import { ObjectHelperEngine } from "@vis-three/plugin-object-helper";
+import { SelectionEngine } from "@vis-three/plugin-selection";
+import { TransformControlsEngine } from "@vis-three/plugin-transform-controls";
 export interface HelperSelectInteractEngine extends EventManagerEngine, ObjectHelperEngine, SelectionEngine, TransformControlsEngine {
 }
 export declare const HELPER_SELECT_INTERACT_STRATEGY: string;

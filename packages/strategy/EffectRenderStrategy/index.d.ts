@@ -1,5 +1,5 @@
-import { RenderManagerEngine } from "@vis-three/render-manager-plugin";
-import { EffectComposerEngine } from "@vis-three/effect-composer-plugin";
+import { RenderManagerEngine } from "@vis-three/plugin-render-manager";
+import { EffectComposerEngine } from "@vis-three/plugin-effect-composer";
 import { Strategy } from "@vis-three/core";
 export interface EffectRenderEngine extends EffectComposerEngine, RenderManagerEngine {
 }

@@ -1,8 +1,8 @@
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
-import { SELECTED, SELECTION_PLUGIN, } from "@vis-three/selection-plugin";
-import { EVENT_MANAGER_PLUGIN, } from "@vis-three/event-manager-plugin";
-import { TRANSFORM_CONTROLS_PLUGIN, } from "@vis-three/transform-controls-plugin";
+import { SELECTED, SELECTION_PLUGIN, } from "@vis-three/plugin-selection";
+import { EVENT_MANAGER_PLUGIN, } from "@vis-three/plugin-event-manager";
+import { TRANSFORM_CONTROLS_PLUGIN, } from "@vis-three/plugin-transform-controls";
 export const name = transPkgName(pkgname);
 export const TransSelectEventStrategy = function () {
     let clickFun;

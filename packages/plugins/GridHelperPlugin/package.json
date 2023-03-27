@@ -1,6 +1,6 @@
 {
-  "name": "@vis-three/grid-helper-plugin",
-  "version": "0.5.1",
+  "name": "@vis-three/plugin-grid-helper",
+  "version": "0.6.0",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
-    "@vis-three/utils": "workspace:^0.5.0"
+    "@vis-three/utils": "workspace:^0.6.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.12",

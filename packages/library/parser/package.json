@@ -1,5 +1,5 @@
 {
-  "name": "@vis-three/parser-library",
+  "name": "@vis-three/library-parser",
   "version": "0.6.0",
   "description": "vis-three parser library",
   "main": "index.js",
@@ -31,7 +31,7 @@
     "@vis-three/module-material": "workspace:^0.6.0",
     "@vis-three/module-solid-object": "workspace:^0.6.0",
     "@vis-three/module-texture": "workspace:^0.6.0",
-    "@vis-three/utils": "workspace:^0.5.0",
+    "@vis-three/utils": "workspace:^0.6.0",
     "uuid": "^8.3.2"
   },
   "files": [

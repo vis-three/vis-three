@@ -1,5 +1,5 @@
-import { StatsEngine } from "@vis-three/stats-plugin";
-import { RenderManagerEngine } from "@vis-three/render-manager-plugin";
+import { StatsEngine } from "@vis-three/plugin-stats";
+import { RenderManagerEngine } from "@vis-three/plugin-render-manager";
 import { Strategy } from "@vis-three/core";
 export interface StatsRenderEngine extends StatsEngine, RenderManagerEngine {
 }

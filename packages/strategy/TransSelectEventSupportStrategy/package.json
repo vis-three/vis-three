@@ -1,5 +1,5 @@
 {
-  "name": "@vis-three/trans-select-event-support-strategy",
+  "name": "@vis-three/strategy-trans-select-event-support",
   "version": "0.6.0",
   "description": "",
   "author": "Shiotsuki_",
@@ -23,12 +23,12 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
-    "@vis-three/event-manager-plugin": "workspace:^0.6.0",
     "@vis-three/middleware": "workspace:^0.6.1",
-    "@vis-three/selection-plugin": "workspace:^0.5.1",
-    "@vis-three/selection-support-plugin": "workspace:^0.5.0",
-    "@vis-three/transform-controls-plugin": "workspace:^0.5.1",
-    "@vis-three/utils": "workspace:^0.5.0"
+    "@vis-three/plugin-event-manager": "workspace:^0.6.0",
+    "@vis-three/plugin-selection": "workspace:^0.6.0",
+    "@vis-three/plugin-selection-support": "workspace:^0.6.0",
+    "@vis-three/plugin-transform-controls": "workspace:^0.6.0",
+    "@vis-three/utils": "workspace:^0.6.0"
   },
   "files": [
     "**/*.js",

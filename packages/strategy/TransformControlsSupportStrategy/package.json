@@ -1,5 +1,5 @@
 {
-  "name": "@vis-three/transform-controls-support-strategy",
+  "name": "@vis-three/strategy-transform-controls-support",
   "version": "0.6.0",
   "description": "",
   "author": "Shiotsuki_",
@@ -26,8 +26,8 @@
     "@vis-three/middleware": "workspace:^0.6.1",
     "@vis-three/module-controls": "workspace:^0.6.0",
     "@vis-three/module-object": "workspace:^0.6.0",
-    "@vis-three/transform-controls-plugin": "workspace:^0.5.1",
-    "@vis-three/utils": "workspace:^0.5.0"
+    "@vis-three/plugin-transform-controls": "workspace:^0.6.0",
+    "@vis-three/utils": "workspace:^0.6.0"
   },
   "files": [
     "**/*.js",

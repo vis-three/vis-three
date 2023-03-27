@@ -1,4 +1,3 @@
-import { CSS3DRendererEngine } from "@vis-three/css3d-renderer-plugin";
 import {
   defineProcessor,
   EngineSupport,
@@ -9,6 +8,7 @@ import {
   getRendererConfig,
   RendererConfig,
 } from "@vis-three/module-renderer/RendererConfig";
+import { CSS3DRendererEngine } from "@vis-three/plugin-css3d-renderer";
 import { syncObject } from "@vis-three/utils";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 

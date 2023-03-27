@@ -4,13 +4,13 @@ import { Strategy } from "@vis-three/core";
 import {
   OrbitControlsEngine,
   ORBIT_CONTROLS_PLUGIN,
-} from "@vis-three/orbit-controls-plugin";
+} from "@vis-three/plugin-orbit-controls";
 import {
   RenderEvent,
   RenderManagerEngine,
   RENDER_MANAGER_PLUGIN,
   RENDER_EVENT,
-} from "@vis-three/render-manager-plugin";
+} from "@vis-three/plugin-render-manager";
 
 export interface OrbitRenderEngine
   extends OrbitControlsEngine,

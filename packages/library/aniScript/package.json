@@ -1,6 +1,6 @@
 {
-  "name": "@vis-three/animate-script-library",
-  "version": "0.5.1",
+  "name": "@vis-three/library-animate-script",
+  "version": "0.6.0",
   "description": "vis-three animate script library",
   "main": "index.js",
   "module": "index.js",

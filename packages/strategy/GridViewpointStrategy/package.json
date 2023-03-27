@@ -1,6 +1,6 @@
 {
-  "name": "@vis-three/grid-viewpoint-strategy",
-  "version": "0.5.1",
+  "name": "@vis-three/strategy-grid-viewpoint",
+  "version": "0.6.0",
   "description": "",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
-    "@vis-three/grid-helper-plugin": "workspace:^0.5.1",
-    "@vis-three/utils": "workspace:^0.5.0",
-    "@vis-three/viewpoint-plugin": "workspace:^0.5.2"
+    "@vis-three/plugin-grid-helper": "workspace:^0.6.0",
+    "@vis-three/plugin-viewpoint": "workspace:^0.6.0",
+    "@vis-three/utils": "workspace:^0.6.0"
   },
   "files": [
     "**/*.js",

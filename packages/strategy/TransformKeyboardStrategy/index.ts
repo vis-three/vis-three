@@ -1,11 +1,11 @@
 import {
   KeyboardManagerEngine,
   KEYBOARD_MANAGER_PLUGIN,
-} from "@vis-three/keyboard-manager-plugin";
+} from "@vis-three/plugin-keyboard-manager";
 import {
   TransformControlsEngine,
   TRANSFORM_CONTROLS_PLUGIN,
-} from "@vis-three/transform-controls-plugin";
+} from "@vis-three/plugin-transform-controls";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 import { Strategy } from "@vis-three/core";

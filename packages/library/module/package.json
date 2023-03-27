@@ -1,5 +1,5 @@
 {
-  "name": "@vis-three/module-library",
+  "name": "@vis-three/library-module",
   "version": "0.6.0",
   "description": "vis-three module library",
   "main": "index.js",

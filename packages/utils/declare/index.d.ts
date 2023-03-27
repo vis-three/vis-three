@@ -12,6 +12,7 @@ export type DeepUnion<T, K> = T extends Function ? T : T extends object ? {
 export type DeepIntersection<T, I> = T extends Function ? T : T extends object ? {
     [P in keyof T]: DeepIntersection<T[P], I>;
 } & I : T;
+export type ArrayToUnion<T extends any[]> = T[number];
 export type ArrayToObject<A extends Array<any>> = {
     [P in keyof A]: A[P];
 };

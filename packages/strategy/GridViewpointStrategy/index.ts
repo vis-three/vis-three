@@ -1,14 +1,14 @@
 import {
   GridHelperEngine,
   GRID_HELPER_PLUGIN,
-} from "@vis-three/grid-helper-plugin";
+} from "@vis-three/plugin-grid-helper";
 import {
   SETVIEWPOINT,
   VIEWPOINT,
   ViewpointEngine,
   ViewpointEvent,
   VIEWPOINT_PLUGIN,
-} from "@vis-three/viewpoint-plugin";
+} from "@vis-three/plugin-viewpoint";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 import { Strategy } from "@vis-three/core";

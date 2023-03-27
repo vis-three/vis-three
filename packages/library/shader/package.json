@@ -1,5 +1,5 @@
 {
-  "name": "@vis-three/shader-library",
+  "name": "@vis-three/library-shader",
   "version": "0.5.5",
   "description": "vis-three shader library",
   "main": "index.js",

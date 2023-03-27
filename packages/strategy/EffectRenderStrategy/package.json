@@ -1,6 +1,6 @@
 {
-  "name": "@vis-three/effect-render-strategy",
-  "version": "0.5.2",
+  "name": "@vis-three/strategy-effect-render",
+  "version": "0.6.0",
   "description": "",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
-    "@vis-three/effect-composer-plugin": "workspace:^0.5.1",
-    "@vis-three/render-manager-plugin": "workspace:^0.5.3",
-    "@vis-three/utils": "workspace:^0.5.0"
+    "@vis-three/plugin-effect-composer": "workspace:^0.6.0",
+    "@vis-three/plugin-render-manager": "workspace:^0.6.0",
+    "@vis-three/utils": "workspace:^0.6.0"
   },
   "files": [
     "**/*.js",

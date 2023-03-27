@@ -16,81 +16,81 @@ import {
   RenderManager,
   RenderManagerEngine,
   RenderManagerPlugin,
-} from "@vis-three/render-manager-plugin";
+} from "@vis-three/plugin-render-manager";
 import {
   Screenshot,
   WebGLRendererEngine,
   WebGLRendererPlugin,
-} from "@vis-three/webgl-renderer-plugin";
+} from "@vis-three/plugin-webgl-renderer";
 import {
   PointerManager,
   PointerManagerEngine,
   PointerManagerPlugin,
-} from "@vis-three/pointer-manager-plugin";
+} from "@vis-three/plugin-pointer-manager";
 import {
   EventManager,
   EventManagerEngine,
   EventManagerPlugin,
-} from "@vis-three/event-manager-plugin";
+} from "@vis-three/plugin-event-manager";
 import {
   EffectComposerEngine,
   EffectComposerPlugin,
-} from "@vis-three/effect-composer-plugin";
+} from "@vis-three/plugin-effect-composer";
 import {
   OrbitControlsEngine,
   OrbitControlsPlugin,
   VisOrbitControls,
-} from "@vis-three/orbit-controls-plugin";
-import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
-import { SelectionEngine, SelectionPlugin } from "@vis-three/selection-plugin";
+} from "@vis-three/plugin-orbit-controls";
+import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+import { SelectionEngine, SelectionPlugin } from "@vis-three/plugin-selection";
 import {
   AxesHelperEngine,
   AxesHelperPlugin,
-} from "@vis-three/axes-helper-plugin";
+} from "@vis-three/plugin-axes-helper";
 import {
   GridHelperEngine,
   GridHelperPlugin,
-} from "@vis-three/grid-helper-plugin";
+} from "@vis-three/plugin-grid-helper";
 import {
   VIEWPOINT,
   ViewpointEngine,
   ViewpointPlugin,
-} from "@vis-three/viewpoint-plugin";
+} from "@vis-three/plugin-viewpoint";
 import {
   TransformControlsEngine,
   TransformControlsPlugin,
   VisTransformControls,
-} from "@vis-three/transform-controls-plugin";
-import { StatsEngine, StatsPlugin } from "@vis-three/stats-plugin";
+} from "@vis-three/plugin-transform-controls";
+import { StatsEngine, StatsPlugin } from "@vis-three/plugin-stats";
 import {
   KeyboardManager,
   KeyboardManagerEngine,
   KeyboardManagerPlugin,
-} from "@vis-three/keyboard-manager-plugin";
+} from "@vis-three/plugin-keyboard-manager";
 import {
   ObjectHelperEngine,
   ObjectHelperPlugin,
   ObjectHelperManager,
-} from "@vis-three/object-helper-plugin";
+} from "@vis-three/plugin-object-helper";
 import {
   CSS2DRendererEngine,
   CSS2DRendererPlugin,
-} from "@vis-three/css2d-renderer-plugin";
+} from "@vis-three/plugin-css2d-renderer";
 import {
   CSS3DRendererEngine,
   CSS3DRendererPlugin,
-} from "@vis-three/css3d-renderer-plugin";
+} from "@vis-three/plugin-css3d-renderer";
 
-import { CSS2DRenderStrategy } from "@vis-three/css2d-render-strategy";
-import { CSS3DRenderStrategy } from "@vis-three/css3d-render-strategy";
-import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
-import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
-import { OrbitViewpointStrategy } from "@vis-three/orbit-viewpoint-strategy";
-import { TransSelectEventStrategy } from "@vis-three/trans-select-event-strategy";
-import { StatsRenderStrategy } from "@vis-three/stats-render-strategy";
-import { GridViewpointStrategy } from "@vis-three/grid-viewpoint-strategy";
-import { TransformKeyboardStrategy } from "@vis-three/transform-keyboard-strategy";
-import { HelperSelectInteractStrategy } from "@vis-three/helper-select-interact-strategy";
+import { CSS2DRenderStrategy } from "@vis-three/strategy-css2d-render";
+import { CSS3DRenderStrategy } from "@vis-three/strategy-css3d-render";
+import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
+import { OrbitRenderStrategy } from "@vis-three/strategy-orbit-render";
+import { OrbitViewpointStrategy } from "@vis-three/strategy-orbit-viewpoint";
+import { TransSelectEventStrategy } from "@vis-three/strategy-trans-select-event";
+import { StatsRenderStrategy } from "@vis-three/strategy-stats-render";
+import { GridViewpointStrategy } from "@vis-three/strategy-grid-viewpoint";
+import { TransformKeyboardStrategy } from "@vis-three/strategy-transform-keyboard";
+import { HelperSelectInteractStrategy } from "@vis-three/strategy-helper-select-interact";
 export class ModelingEngine
   extends Engine
   implements

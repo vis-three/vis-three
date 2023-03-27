@@ -1,5 +1,5 @@
 {
-  "name": "@vis-three/webgl-renderer-support-strategy",
+  "name": "@vis-three/strategy-webgl-renderer-support",
   "version": "0.6.0",
   "description": "",
   "author": "Shiotsuki_",
@@ -25,8 +25,8 @@
     "@vis-three/core": "workspace:^0.5.10",
     "@vis-three/middleware": "workspace:^0.6.1",
     "@vis-three/module-renderer": "workspace:^0.6.0",
-    "@vis-three/utils": "workspace:^0.5.0",
-    "@vis-three/webgl-renderer-plugin": "workspace:^0.5.10"
+    "@vis-three/plugin-webgl-renderer": "workspace:^0.6.0",
+    "@vis-three/utils": "workspace:^0.6.0"
   },
   "files": [
     "**/*.js",

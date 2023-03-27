@@ -3,11 +3,11 @@ import {
   RenderManagerEngine,
   RENDER_EVENT,
   RENDER_MANAGER_PLUGIN,
-} from "@vis-three/render-manager-plugin";
+} from "@vis-three/plugin-render-manager";
 import {
   EFFECT_COMPOSER_PLUGIN,
   EffectComposerEngine,
-} from "@vis-three/effect-composer-plugin";
+} from "@vis-three/plugin-effect-composer";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 import { Strategy } from "@vis-three/core";

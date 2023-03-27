@@ -1,6 +1,6 @@
 {
-  "name": "@vis-three/keyboard-move-render-strategy",
-  "version": "0.5.1",
+  "name": "@vis-three/strategy-keyboard-move-render",
+  "version": "0.6.0",
   "description": "",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
-    "@vis-three/keyboard-move-controls-plugin": "workspace:^0.5.10",
-    "@vis-three/render-manager-plugin": "workspace:^0.5.3",
-    "@vis-three/utils": "workspace:^0.5.0"
+    "@vis-three/plugin-keyboard-move-controls": "workspace:^0.6.0",
+    "@vis-three/plugin-render-manager": "workspace:^0.6.0",
+    "@vis-three/utils": "workspace:^0.6.0"
   },
   "files": [
     "**/*.js",
