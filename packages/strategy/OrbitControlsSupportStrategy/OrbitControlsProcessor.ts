@@ -8,8 +8,8 @@ import {
   Vector3Config,
 } from "@vis-three/middleware";
 import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
-import { ControlsConfig } from "@vis-three/middleware/controls/ControlsConfig";
-import { ControlsCompiler } from "@vis-three/middleware/controls/ControlsCompiler";
+import { ControlsConfig } from "@vis-three/module-controls/ControlsConfig";
+import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
 
 export interface OrbitControlsConfig extends ControlsConfig {
   autoRotate: boolean;

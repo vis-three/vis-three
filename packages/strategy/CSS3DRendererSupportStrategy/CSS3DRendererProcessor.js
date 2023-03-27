@@ -1,13 +1,13 @@
 import { defineProcessor, uniqueSymbol, } from "@vis-three/middleware";
-import { getRendererConfig } from "@vis-three/middleware/renderer/RendererConfig";
+import { getRendererConfig, } from "@vis-three/module-renderer/RendererConfig";
 import { syncObject } from "@vis-three/utils";
 export const getCSS3DRenderereConfig = function () {
     return Object.assign(getRendererConfig(), {
-        vid: uniqueSymbol('CSS3DRENDERER'), // WebGLRenderer or vid
+        vid: uniqueSymbol("CSS3DRENDERER"), // WebGLRenderer or vid
     });
 };
 export default defineProcessor({
-    type: 'CSS3DRenderer',
+    type: "CSS3DRenderer",
     config: getCSS3DRenderereConfig,
     commands: {
         set: {

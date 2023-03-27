@@ -4,10 +4,10 @@ import {
   CONFIGTYPE,
   DATA_SUPPORT_MANAGER_PLUGIN,
   MODULETYPE,
-  ObjectConfig,
   uniqueSymbol,
 } from "@vis-three/middleware";
-import { ControlsCompiler } from "@vis-three/middleware/controls/ControlsCompiler";
+import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
+import { ObjectConfig } from "@vis-three/module-object";
 import {
   ObjectChangedEvent,
   TRANSFORM_CONTROLS_PLUGIN,

@@ -3,8 +3,8 @@ import {
   EngineSupport,
   uniqueSymbol,
 } from "@vis-three/middleware";
-import { ControlsCompiler } from "@vis-three/middleware/controls/ControlsCompiler";
-import { ControlsConfig } from "@vis-three/middleware/controls/ControlsConfig";
+import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
+import { ControlsConfig } from "@vis-three/module-controls/ControlsConfig";
 import {
   TransformControlsEngine,
   VisTransformControls,

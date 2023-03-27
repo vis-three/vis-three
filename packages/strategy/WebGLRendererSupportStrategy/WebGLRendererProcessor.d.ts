@@ -1,6 +1,6 @@
 import { EngineSupport } from "@vis-three/middleware";
-import { RendererCompiler } from "@vis-three/middleware/renderer/RendererCompiler";
-import { RendererConfig } from "@vis-three/middleware/renderer/RendererConfig";
+import { RendererCompiler } from "@vis-three/module-renderer/RendererCompiler";
+import { RendererConfig } from "@vis-three/module-renderer/RendererConfig";
 import { WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
 import { WebGLRenderer } from "three";
 export interface ShadowMapConfig {

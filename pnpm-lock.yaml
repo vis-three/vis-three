@@ -2366,6 +2366,7 @@ importers:
       '@vis-three/core': workspace:^0.5.10
       '@vis-three/css3d-renderer-plugin': workspace:^0.5.10
       '@vis-three/middleware': workspace:^0.6.1
+      '@vis-three/module-renderer': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.5.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2377,6 +2378,7 @@ importers:
       '@vis-three/core': link:../../core
       '@vis-three/css3d-renderer-plugin': link:../../plugins/CSS3DRendererPlugin
       '@vis-three/middleware': link:../../middleware
+      '@vis-three/module-renderer': link:../../library/module/renderer
       '@vis-three/utils': link:../../utils
     devDependencies:
       '@types/node': 18.11.12
@@ -2567,6 +2569,7 @@ importers:
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.5.10
       '@vis-three/middleware': workspace:^0.6.1
+      '@vis-three/module-controls': workspace:^0.6.0
       '@vis-three/orbit-controls-plugin': workspace:^0.5.12
       '@vis-three/utils': workspace:^0.5.0
       eslint: ^8.12.0
@@ -2578,6 +2581,7 @@ importers:
     dependencies:
       '@vis-three/core': link:../../core
       '@vis-three/middleware': link:../../middleware
+      '@vis-three/module-controls': link:../../library/module/controls
       '@vis-three/orbit-controls-plugin': link:../../plugins/OrbitControlsPlugin
       '@vis-three/utils': link:../../utils
     devDependencies:
@@ -2808,6 +2812,8 @@ importers:
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.5.10
       '@vis-three/middleware': workspace:^0.6.1
+      '@vis-three/module-controls': workspace:^0.6.0
+      '@vis-three/module-object': workspace:^0.6.0
       '@vis-three/transform-controls-plugin': workspace:^0.5.1
       '@vis-three/utils': workspace:^0.5.0
       eslint: ^8.12.0
@@ -2819,6 +2825,8 @@ importers:
     dependencies:
       '@vis-three/core': link:../../core
       '@vis-three/middleware': link:../../middleware
+      '@vis-three/module-controls': link:../../library/module/controls
+      '@vis-three/module-object': link:../../library/module/object
       '@vis-three/transform-controls-plugin': link:../../plugins/TransformControlsPlugin
       '@vis-three/utils': link:../../utils
     devDependencies:
@@ -2907,6 +2915,7 @@ importers:
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.5.10
       '@vis-three/middleware': workspace:^0.6.1
+      '@vis-three/module-renderer': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.5.0
       '@vis-three/webgl-renderer-plugin': workspace:^0.5.10
       eslint: ^8.12.0
@@ -2918,6 +2927,7 @@ importers:
     dependencies:
       '@vis-three/core': link:../../core
       '@vis-three/middleware': link:../../middleware
+      '@vis-three/module-renderer': link:../../library/module/renderer
       '@vis-three/utils': link:../../utils
       '@vis-three/webgl-renderer-plugin': link:../../plugins/WebGLRendererPlugin
     devDependencies:

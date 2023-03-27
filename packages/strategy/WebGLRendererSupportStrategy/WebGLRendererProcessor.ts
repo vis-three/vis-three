@@ -1,14 +1,14 @@
 import {
-  CONFIGTYPE,
   defineProcessor,
   EngineSupport,
   uniqueSymbol,
 } from "@vis-three/middleware";
-import { RendererCompiler } from "@vis-three/middleware/renderer/RendererCompiler";
+import { RendererCompiler } from "@vis-three/module-renderer/RendererCompiler";
 import {
   getRendererConfig,
   RendererConfig,
-} from "@vis-three/middleware/renderer/RendererConfig";
+} from "@vis-three/module-renderer/RendererConfig";
+
 import { syncObject } from "@vis-three/utils";
 import { WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
 import {

@@ -6,7 +6,7 @@ import {
   MODULETYPE,
   uniqueSymbol,
 } from "@vis-three/middleware";
-import { RendererCompiler } from "@vis-three/middleware/renderer/RendererCompiler";
+import { RendererCompiler } from "@vis-three/module-renderer/RendererCompiler";
 import { transPkgName } from "@vis-three/utils";
 import { WEBGL_RENDERER_PLUGIN } from "@vis-three/webgl-renderer-plugin";
 import { name as pkgname } from "./package.json";

@@ -7,7 +7,7 @@ import {
   MODULETYPE,
   uniqueSymbol,
 } from "@vis-three/middleware";
-import { RendererCompiler } from "@vis-three/middleware/renderer/RendererCompiler";
+import { RendererCompiler } from "@vis-three/module-renderer/RendererCompiler";
 import { transPkgName } from "@vis-three/utils";
 import CSS3DRendererProcessor, {
   CSS3DRendererSupportEngine,

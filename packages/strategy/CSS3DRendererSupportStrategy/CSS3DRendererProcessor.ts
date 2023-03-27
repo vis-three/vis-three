@@ -4,17 +4,19 @@ import {
   EngineSupport,
   uniqueSymbol,
 } from "@vis-three/middleware";
-import { RendererCompiler } from "@vis-three/middleware/renderer/RendererCompiler";
-import { getRendererConfig, RendererConfig } from "@vis-three/middleware/renderer/RendererConfig";
+import { RendererCompiler } from "@vis-three/module-renderer/RendererCompiler";
+import {
+  getRendererConfig,
+  RendererConfig,
+} from "@vis-three/module-renderer/RendererConfig";
 import { syncObject } from "@vis-three/utils";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
-
 
 export interface CSS3DRendererConfig extends RendererConfig {}
 
 export const getCSS3DRenderereConfig = function (): CSS3DRendererConfig {
   return Object.assign(getRendererConfig(), {
-    vid: uniqueSymbol('CSS3DRENDERER'), // WebGLRenderer or vid
+    vid: uniqueSymbol("CSS3DRENDERER"), // WebGLRenderer or vid
   });
 };
 
@@ -28,7 +30,7 @@ export default defineProcessor<
   CSS3DRendererSupportEngine,
   RendererCompiler
 >({
-  type: 'CSS3DRenderer',
+  type: "CSS3DRenderer",
   config: getCSS3DRenderereConfig,
   commands: {
     set: {

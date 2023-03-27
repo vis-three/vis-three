@@ -1,13 +1,12 @@
 import { Strategy } from "@vis-three/core";
 import {
-  Compiler,
   COMPILER_MANAGER_PLUGIN,
   CONFIGTYPE,
   DATA_SUPPORT_MANAGER_PLUGIN,
   MODULETYPE,
   uniqueSymbol,
 } from "@vis-three/middleware";
-import { ControlsCompiler } from "@vis-three/middleware/controls/ControlsCompiler";
+import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
 import { ORBIT_CONTROLS_PLUGIN } from "@vis-three/orbit-controls-plugin";
 import { transPkgName } from "@vis-three/utils";
 import OrbitControlsProcessor, {
