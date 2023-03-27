@@ -1,41 +1,27 @@
 import { EventDispatcher } from "@vis-three/core";
 import { SymbolConfig } from "../../module/common";
 import { BasicCompiler, Compiler } from "../../module";
-import { CompilerMembers } from "../../module/space";
-
-export type CompilerManagerParameters = Record<string, Compiler<any, any>>;
 
 export class CompilerManager extends EventDispatcher {
   compilerMap: Map<string, BasicCompiler> = new Map();
 
-  constructor(parameters?: CompilerManagerParameters) {
+  constructor() {
     super();
-
-    Object.values(CompilerMembers).forEach((Compiler) => {
-      const compiler = new Compiler();
-      this.compilerMap.set(compiler.MODULE, compiler);
-    });
-
-    if (parameters) {
-      Object.keys(parameters).forEach((key) => {
-        this.compilerMap.set(parameters[key].MODULE, parameters[key]);
-      });
-    }
   }
 
   /**
    * 编译器扩展
    * @param compiler
    */
-  extend(compiler, focus: boolean = false) {
+  extend<C extends Compiler<any, any>>(compiler: C, focus: boolean = false) {
     if (this.compilerMap.has(compiler.MODULE)) {
       console.warn("compiler manager has exist this compiler", compiler);
 
       if (focus) {
-        this.compilerMap.set(compiler.MODULE, compiler as BasicCompiler);
+        this.compilerMap.set(compiler.MODULE, compiler);
       }
     } else {
-      this.compilerMap.set(compiler.MODULE, compiler as BasicCompiler);
+      this.compilerMap.set(compiler.MODULE, compiler);
     }
   }
 

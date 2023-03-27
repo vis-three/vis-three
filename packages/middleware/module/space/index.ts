@@ -13,13 +13,6 @@ export const OBJECTMODULE: Record<string, boolean> = {};
 
 export const CONFIGMODULE: Record<string, string> = {};
 
-export const CompilerMembers: Record<string, typeof Compiler<any, any>> = {};
-
-export const DataSupportMembers: Record<
-  string,
-  DataSupportSimplifier<any, any, any>
-> = {};
-
 export const ProcessorMembers: Record<
   string,
   Processor<any, any, any, any>
@@ -40,18 +33,6 @@ export const isObjectType = (type: string): boolean => {
   } else {
     return false;
   }
-};
-
-export const DataSupportSelector = function (type: string) {
-  return DataSupportMembers[type];
-};
-
-export const CompilerSelector = function (type: string) {
-  return CompilerMembers[type];
-};
-
-export const ProcessorSelector = function (type: string) {
-  return ProcessorMembers[type];
 };
 
 export const installProcessor = function (

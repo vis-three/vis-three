@@ -1,11 +1,7 @@
 import { Engine, Plugin } from "@vis-three/core";
 import { Optional } from "@vis-three/utils";
 import { SymbolConfig } from "../../module/common";
-import {
-  DataSupportManager,
-  DataSupportManagerParameters,
-  LoadOptions,
-} from "./DataSupportManager";
+import { DataSupportManager, LoadOptions } from "./DataSupportManager";
 
 export interface DataSupportEngine extends Engine {
   dataSupportManager: DataSupportManager;
@@ -20,13 +16,11 @@ export * from "./DataSupportManager";
 
 export const DATA_SUPPORT_MANAGER_PLUGIN = "DataSupportManagerPlugin";
 
-export const DataSupportManagerPlugin: Plugin<DataSupportEngine> = function (
-  params: DataSupportManagerParameters
-) {
+export const DataSupportManagerPlugin: Plugin<DataSupportEngine> = function () {
   return {
     name: DATA_SUPPORT_MANAGER_PLUGIN,
     install(engine) {
-      const dataSupportManager = new DataSupportManager(params);
+      const dataSupportManager = new DataSupportManager();
 
       engine.dataSupportManager = dataSupportManager;
 

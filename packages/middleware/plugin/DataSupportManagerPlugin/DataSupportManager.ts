@@ -1,38 +1,22 @@
+import { EventDispatcher } from "@vis-three/core";
 import { getModule, SymbolConfig } from "../../module";
 import { DataSupport } from "../../module";
-import { DataSupportMembers } from "../../module/space";
 import { JSONHandler } from "../../utils";
 
 export type LoadOptions = Record<string, Array<any>>;
 
-export type DataSupportManagerParameters = Record<
-  string,
-  DataSupport<any, any, any>
->;
-
-export class DataSupportManager {
+export class DataSupportManager extends EventDispatcher {
   dataSupportMap: Map<string, DataSupport<any, any, any>> = new Map();
 
-  constructor(parameters?: DataSupportManagerParameters) {
-    Object.values(DataSupportMembers).forEach((DataSupport) => {
-      const dataSupport = new DataSupport([]);
-      this.dataSupportMap.set(dataSupport.MODULE, dataSupport);
-    });
-
-    if (parameters) {
-      Object.keys(parameters).forEach((key) => {
-        if (parameters[key] instanceof DataSupport) {
-          this.dataSupportMap.set(parameters[key].MODULE, parameters[key]);
-        }
-      });
-    }
+  constructor() {
+    super();
   }
 
   /**
    * 编译器扩展
    * @param compiler
    */
-  extend(dataSupport, focus: boolean = false) {
+  extend(dataSupport: DataSupport<any, any, any>, focus: boolean = false) {
     if (this.dataSupportMap.has(dataSupport.MODULE)) {
       console.warn(
         "dataSupport manager has exist this dataSupport",

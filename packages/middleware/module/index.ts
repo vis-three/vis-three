@@ -1,16 +1,7 @@
 import { EngineSupport } from "../engine";
-import { Parser } from "../plugin/ResourceManagerPlugin";
-import { Compiler, CompilerFactory } from "./compiler";
-import { DataSupportFactory } from "./dataSupport";
+import { Compiler } from "./compiler";
 import { Processor } from "./processor";
 import { Rule } from "./rule";
-import {
-  CompilerMembers,
-  DataSupportMembers,
-  MODULETYPE,
-  OBJECTMODULE,
-  installProcessor,
-} from "./space";
 
 export * from "./compiler";
 export * from "./dataContainer";
@@ -30,29 +21,3 @@ export interface ModuleOptions<C extends Compiler<any, any>> {
   object?: boolean;
   extend?: <E extends EngineSupport>(engine: E) => void;
 }
-
-export const defineModule = function <C extends Compiler<any, any>>(
-  options: ModuleOptions<C>
-) {
-  MODULETYPE[options.type.toLocaleUpperCase()] = options.type;
-
-  if (options.object) {
-    OBJECTMODULE[options.type] = true;
-  }
-
-  const DataSupportClass = DataSupportFactory(options.type, options.rule);
-
-  DataSupportMembers[`${options.type}DataSupport`] = DataSupportClass;
-
-  const CompilerClass = CompilerFactory(
-    options.type,
-    options.compiler,
-    options.processors
-  );
-
-  CompilerMembers[`${options.type}Compiler`] = CompilerClass;
-
-  for (const processor of options.processors) {
-    installProcessor(processor, options.type);
-  }
-};

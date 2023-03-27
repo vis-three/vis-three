@@ -22,7 +22,6 @@ import {
 import {
   DataSupportEngine,
   DataSupportManager,
-  DataSupportManagerParameters,
   DataSupportManagerPlugin,
   LoadOptions,
 } from "../plugin/DataSupportManagerPlugin";
@@ -47,16 +46,13 @@ import { CompilerSupportStrategy } from "../strategy/CompilerSupportStrategy";
 import {
   Compiler,
   CompilerFactory,
-  CompilerMembers,
   DataSupportFactory,
-  DataSupportMembers,
   installProcessor,
   ModuleOptions,
   MODULETYPE,
   OBJECTMODULE,
 } from "../module";
-
-export type EngineSupportParameters = DataSupportManagerParameters;
+import { Object3D, Event } from "three";
 
 export type EngineSupportLoadOptions = LoadOptions & {
   assets?: string[];
@@ -97,6 +93,12 @@ export class EngineSupport
     callback: (err: Error | undefined, event?: MappedEvent | undefined) => void
   ) => this;
   declare loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
+  declare getObjectfromModule: (module: string, vid: string) => object | null;
+  declare getObjectfromModules: (
+    modules: string[] | Record<string, any>,
+    vid: string
+  ) => object | null;
+  declare getObject3D: (vid: string) => Object3D<Event> | null;
 
   constructor() {
     super();
@@ -252,15 +254,11 @@ export class EngineSupport
 
     const DataSupportClass = DataSupportFactory(options.type, options.rule);
 
-    DataSupportMembers[`${options.type}DataSupport`] = DataSupportClass;
-
     const CompilerClass = CompilerFactory(
       options.type,
       options.compiler,
       options.processors
     );
-
-    CompilerMembers[`${options.type}Compiler`] = CompilerClass;
 
     for (const processor of options.processors) {
       installProcessor(processor, options.type);
@@ -274,6 +272,10 @@ export class EngineSupport
 
     compiler.useEngine(this);
     dataSupport.addCompiler(compiler);
+
+    if (options.extend) {
+      options.extend(this);
+    }
 
     return this;
   }
