@@ -1,7 +1,7 @@
 import { AxesHelper, Camera, Event, GridHelper, Object3D, Scene, WebGLRenderer } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { Engine, VisOrbitControls } from "@vis-three/core";
+import { Engine } from "@vis-three/core";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { RenderManager, RenderManagerEngine } from "@vis-three/render-manager-plugin";
@@ -9,7 +9,7 @@ import { Screenshot, WebGLRendererEngine } from "@vis-three/webgl-renderer-plugi
 import { PointerManager, PointerManagerEngine } from "@vis-three/pointer-manager-plugin";
 import { EventManager, EventManagerEngine } from "@vis-three/event-manager-plugin";
 import { EffectComposerEngine } from "@vis-three/effect-composer-plugin";
-import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
+import { OrbitControlsEngine, VisOrbitControls } from "@vis-three/orbit-controls-plugin";
 import { SelectionEngine } from "@vis-three/selection-plugin";
 import { AxesHelperEngine } from "@vis-three/axes-helper-plugin";
 import { GridHelperEngine } from "@vis-three/grid-helper-plugin";
@@ -43,9 +43,7 @@ export declare class ModelingEngine extends Engine implements WebGLRendererEngin
     setStats: (show: boolean) => this;
     setTransformControls: (show: boolean) => this;
     setViewpoint: (viewpoint: VIEWPOINT) => this;
-    setAxesHelper: (params: {
-        show: boolean;
-    }) => this;
+    setAxesHelper: (show: boolean) => this;
     setGridHelper: (show: boolean) => this;
     setObjectHelper: (show: boolean) => this;
     play: () => this;

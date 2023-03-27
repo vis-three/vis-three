@@ -1,0 +1,52 @@
+{
+  "name": "@vis-three/module-library",
+  "version": "0.6.0",
+  "description": "vis-three module library",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "author": "Shiotsuki_",
+  "license": "MPL-2.0",
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc",
+    "lint": "npx eslint *.js src/**/*.ts --fix"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.12",
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "^5.18.0",
+    "eslint": "^8.12.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.6.2",
+    "typescript": "^4.3.2"
+  },
+  "dependencies": {
+    "@vis-three/module-animation": "workspace:^0.6.0",
+    "@vis-three/module-camera": "workspace:^0.6.0",
+    "@vis-three/module-controls": "workspace:^0.6.0",
+    "@vis-three/module-css2d": "workspace:^0.6.0",
+    "@vis-three/module-css3d": "workspace:^0.6.0",
+    "@vis-three/module-geometry": "workspace:^0.6.0",
+    "@vis-three/module-group": "workspace:^0.6.0",
+    "@vis-three/module-light": "workspace:^0.6.0",
+    "@vis-three/module-line": "workspace:^0.6.0",
+    "@vis-three/module-material": "workspace:^0.6.0",
+    "@vis-three/module-mesh": "workspace:^0.6.0",
+    "@vis-three/module-modifier": "workspace:^0.6.0",
+    "@vis-three/module-object3d": "workspace:^0.6.0",
+    "@vis-three/module-pass": "workspace:^0.6.0",
+    "@vis-three/module-points": "workspace:^0.6.0",
+    "@vis-three/module-renderer": "workspace:^0.6.0",
+    "@vis-three/module-scene": "workspace:^0.6.0",
+    "@vis-three/module-sprite": "workspace:^0.6.0",
+    "@vis-three/module-texture": "workspace:^0.6.0"
+  },
+  "files": [
+    "**/*.js",
+    "**/*.d.ts",
+    "package.json",
+    "LICENSE"
+  ]
+}

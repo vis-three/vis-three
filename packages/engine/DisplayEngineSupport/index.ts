@@ -1,4 +1,4 @@
-import { EngineSupport, EngineSupportParameters } from "@vis-three/middleware";
+import { EngineSupport } from "@vis-three/middleware";
 import {
   Screenshot,
   WebGLRendererEngine,
@@ -51,8 +51,8 @@ export class DisplayEngineSupport
   declare css2DRenderer: CSS2DRenderer;
   declare css3DRenderer: CSS3DRenderer;
 
-  constructor(parameters?: EngineSupportParameters) {
-    super(parameters);
+  constructor() {
+    super();
     this.install(
       WebGLRendererPlugin({
         antialias: true,

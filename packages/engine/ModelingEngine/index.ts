@@ -9,7 +9,7 @@ import {
 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { Engine, VisOrbitControls } from "@vis-three/core";
+import { Engine } from "@vis-three/core";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import {
@@ -39,6 +39,7 @@ import {
 import {
   OrbitControlsEngine,
   OrbitControlsPlugin,
+  VisOrbitControls,
 } from "@vis-three/orbit-controls-plugin";
 import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
 import { SelectionEngine, SelectionPlugin } from "@vis-three/selection-plugin";
@@ -133,7 +134,7 @@ export class ModelingEngine
   declare setStats: (show: boolean) => this;
   declare setTransformControls: (show: boolean) => this;
   declare setViewpoint: (viewpoint: VIEWPOINT) => this;
-  declare setAxesHelper: (params: { show: boolean }) => this;
+  declare setAxesHelper: (show: boolean) => this;
   declare setGridHelper: (show: boolean) => this;
   declare setObjectHelper: (show: boolean) => this;
 

@@ -24,7 +24,7 @@
   "dependencies": {
     "@vis-three/core": "workspace:^0.5.10",
     "@vis-three/css3d-renderer-plugin": "workspace:^0.5.10",
-    "@vis-three/middleware": "workspace:^0.6.0",
+    "@vis-three/middleware": "workspace:^0.6.1",
     "@vis-three/utils": "workspace:^0.5.0"
   },
   "files": [

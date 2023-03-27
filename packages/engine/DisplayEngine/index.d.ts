@@ -4,11 +4,11 @@ import { Screenshot, WebGLRendererEngine } from "@vis-three/webgl-renderer-plugi
 import { CSS2DRendererEngine } from "@vis-three/css2d-renderer-plugin";
 import { CSS3DRendererEngine } from "@vis-three/css3d-renderer-plugin";
 import { EffectComposerEngine } from "@vis-three/effect-composer-plugin";
-import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
+import { OrbitControlsEngine, VisOrbitControls } from "@vis-three/orbit-controls-plugin";
 import { RenderManager, RenderManagerEngine } from "@vis-three/render-manager-plugin";
 import { PointerManager, PointerManagerEngine } from "@vis-three/pointer-manager-plugin";
 import { EventManager, EventManagerEngine } from "@vis-three/event-manager-plugin";
-import { Engine, VisOrbitControls } from "@vis-three/core";
+import { Engine } from "@vis-three/core";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 export declare class DisplayEngine extends Engine implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, RenderManagerEngine, PointerManagerEngine, EventManagerEngine, CSS2DRendererEngine, CSS3DRendererEngine {

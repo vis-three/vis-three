@@ -20,6 +20,7 @@ import {
 import {
   OrbitControlsEngine,
   OrbitControlsPlugin,
+  VisOrbitControls,
 } from "@vis-three/orbit-controls-plugin";
 import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
 import {
@@ -42,7 +43,7 @@ import { CSS3DRenderStrategy } from "@vis-three/css3d-render-strategy";
 import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
 import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
 
-import { Engine, VisOrbitControls } from "@vis-three/core";
+import { Engine } from "@vis-three/core";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 export class DisplayEngine

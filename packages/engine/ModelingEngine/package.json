@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/modeling-engine",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -39,7 +39,7 @@
     "@vis-three/grid-viewpoint-strategy": "workspace:^0.5.1",
     "@vis-three/helper-select-interact-strategy": "workspace:^0.6.0",
     "@vis-three/keyboard-manager-plugin": "workspace:^0.5.1",
-    "@vis-three/object-helper-plugin": "workspace:^0.5.1",
+    "@vis-three/object-helper-plugin": "workspace:^0.6.0",
     "@vis-three/orbit-controls-plugin": "workspace:^0.5.12",
     "@vis-three/orbit-render-strategy": "workspace:^0.5.1",
     "@vis-three/orbit-viewpoint-strategy": "workspace:^0.5.1",
