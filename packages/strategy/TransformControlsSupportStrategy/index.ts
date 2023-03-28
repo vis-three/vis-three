@@ -12,7 +12,7 @@ import {
   ObjectChangedEvent,
   TRANSFORM_CONTROLS_PLUGIN,
   TRANSFORM_EVENT,
-} from "@vis-three/transform-controls-plugin";
+} from "@vis-three/plugin-transform-controls";
 import { transPkgName } from "@vis-three/utils";
 import { Object3D } from "three";
 import { name as pkgname } from "./package.json";

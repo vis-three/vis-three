@@ -1,5 +1,5 @@
 import { COMPILER_MANAGER_PLUGIN, CONFIGTYPE, DATA_SUPPORT_MANAGER_PLUGIN, MODULETYPE, uniqueSymbol, } from "@vis-three/middleware";
-import { TRANSFORM_CONTROLS_PLUGIN, TRANSFORM_EVENT, } from "@vis-three/transform-controls-plugin";
+import { TRANSFORM_CONTROLS_PLUGIN, TRANSFORM_EVENT, } from "@vis-three/plugin-transform-controls";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 import TransformControlsProcessor from "./TransformControlsProcessor";

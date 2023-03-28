@@ -8,7 +8,7 @@ import { ControlsConfig } from "@vis-three/module-controls/ControlsConfig";
 import {
   TransformControlsEngine,
   VisTransformControls,
-} from "@vis-three/transform-controls-plugin";
+} from "@vis-three/plugin-transform-controls";
 
 export interface TransformControlsConfig extends ControlsConfig {
   axis: string;

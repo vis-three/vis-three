@@ -3,12 +3,12 @@ import { transPkgName } from "@vis-three/utils";
 import {
   ObjectHelperEngine,
   OBJECT_HELPER_PLUGIN,
-} from "@vis-three/object-helper-plugin";
+} from "@vis-three/plugin-object-helper";
 import { Object3D } from "three";
 import {
   TransformControlsEngine,
   TRANSFORM_CONTROLS_PLUGIN,
-} from "@vis-three/transform-controls-plugin";
+} from "@vis-three/plugin-transform-controls";
 import { Strategy } from "@vis-three/core";
 
 export interface TransformHelperEngine

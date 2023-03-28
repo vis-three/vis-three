@@ -1,5 +1,5 @@
-import { ObjectHelperEngine } from "@vis-three/object-helper-plugin";
-import { TransformControlsEngine } from "@vis-three/transform-controls-plugin";
+import { ObjectHelperEngine } from "@vis-three/plugin-object-helper";
+import { TransformControlsEngine } from "@vis-three/plugin-transform-controls";
 import { Strategy } from "@vis-three/core";
 export interface TransformHelperEngine extends TransformControlsEngine, ObjectHelperEngine {
 }

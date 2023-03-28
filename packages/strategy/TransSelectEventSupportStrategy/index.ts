@@ -6,16 +6,16 @@ import {
   SelectedEvent,
   SelectionEngine,
   SELECTION_PLUGIN,
-} from "@vis-three/selection-plugin";
+} from "@vis-three/plugin-selection";
 import {
   EventManagerEngine,
   EVENT_MANAGER_PLUGIN,
   GlobalEvent,
-} from "@vis-three/event-manager-plugin";
+} from "@vis-three/plugin-event-manager";
 import {
   TransformControlsEngine,
   TRANSFORM_CONTROLS_PLUGIN,
-} from "@vis-three/transform-controls-plugin";
+} from "@vis-three/plugin-transform-controls";
 import {
   COMPILER_MANAGER_PLUGIN,
   DATA_SUPPORT_MANAGER_PLUGIN,
@@ -25,7 +25,7 @@ import { Object3D } from "three";
 import {
   SelectionSupportEngine,
   SELECTION_SUPPORT_PLUGIN,
-} from "@vis-three/selection-support-plugin";
+} from "@vis-three/plugin-selection-support";
 
 export interface TransSelectEventSupportEngine
   extends SelectionSupportEngine,

@@ -9,7 +9,7 @@ import {
   SelectedEvent,
   SelectionEngine,
   SELECTION_PLUGIN,
-} from "@vis-three/selection-plugin";
+} from "@vis-three/plugin-selection";
 import { Optional, transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 

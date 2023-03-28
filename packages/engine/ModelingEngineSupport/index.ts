@@ -7,79 +7,79 @@ import {
   Screenshot,
   WebGLRendererEngine,
   WebGLRendererPlugin,
-} from "@vis-three/webgl-renderer-plugin";
+} from "@vis-three/plugin-webgl-renderer";
 
 import {
   EffectComposerEngine,
   EffectComposerPlugin,
-} from "@vis-three/effect-composer-plugin";
+} from "@vis-three/plugin-effect-composer";
 import {
   OrbitControlsEngine,
   OrbitControlsPlugin,
-} from "@vis-three/orbit-controls-plugin";
-import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+} from "@vis-three/plugin-orbit-controls";
+import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
 import {
   SelectionSupportEngine,
   SelectionSupportPlugin,
-} from "@vis-three/selection-support-plugin";
+} from "@vis-three/plugin-selection-support";
 import {
   AxesHelperEngine,
   AxesHelperOptions,
   AxesHelperPlugin,
-} from "@vis-three/axes-helper-plugin";
+} from "@vis-three/plugin-axes-helper";
 import {
   GridHelperEngine,
   GridHelperPlugin,
-} from "@vis-three/grid-helper-plugin";
+} from "@vis-three/plugin-grid-helper";
 import {
   VIEWPOINT,
   ViewpointEngine,
   ViewpointPlugin,
-} from "@vis-three/viewpoint-plugin";
+} from "@vis-three/plugin-viewpoint";
 import {
   TransformControlsEngine,
   TransformControlsPlugin,
   VisTransformControls,
-} from "@vis-three/transform-controls-plugin";
-import { StatsEngine, StatsPlugin } from "@vis-three/stats-plugin";
+} from "@vis-three/plugin-transform-controls";
+import { StatsEngine, StatsPlugin } from "@vis-three/plugin-stats";
 import {
   KeyboardManager,
   KeyboardManagerEngine,
   KeyboardManagerPlugin,
-} from "@vis-three/keyboard-manager-plugin";
+} from "@vis-three/plugin-keyboard-manager";
 import {
   ObjectHelperEngine,
   ObjectHelperPlugin,
   ObjectHelperManager,
-} from "@vis-three/object-helper-plugin";
+} from "@vis-three/plugin-object-helper";
 import {
   CSS2DRendererEngine,
   CSS2DRendererPlugin,
-} from "@vis-three/css2d-renderer-plugin";
+} from "@vis-three/plugin-css2d-renderer";
 import {
   CSS3DRendererEngine,
   CSS3DRendererPlugin,
-} from "@vis-three/css3d-renderer-plugin";
+} from "@vis-three/plugin-css3d-renderer";
+import { SelectionEngine, SelectionPlugin } from "@vis-three/plugin-selection";
+import { VisStats } from "@vis-three/plugin-stats/VisStats";
 
-import { CSS2DRenderStrategy } from "@vis-three/css2d-render-strategy";
-import { CSS3DRenderStrategy } from "@vis-three/css3d-render-strategy";
-import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
-import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
-import { OrbitViewpointStrategy } from "@vis-three/orbit-viewpoint-strategy";
-import { TransSelectEventSupportStrategy } from "@vis-three/trans-select-event-support-strategy";
-import { StatsRenderStrategy } from "@vis-three/stats-render-strategy";
-import { GridViewpointStrategy } from "@vis-three/grid-viewpoint-strategy";
-import { TransformKeyboardStrategy } from "@vis-three/transform-keyboard-strategy";
-import { HelperSelectInteractStrategy } from "@vis-three/helper-select-interact-strategy";
-import { VisStats } from "@vis-three/stats-plugin/VisStats";
-import { CSS3DRendererSupportStrategy } from "@vis-three/css3d-renderer-support-strategy";
-import { WebGLRendererSupportStrategy } from "@vis-three/webgl-renderer-support-strategy";
-import { TransformControlsSupportStrategy } from "@vis-three/transform-controls-support-strategy";
-import { TransformControlsHelperFilterStrategy } from "@vis-three/transform-controls-helper-filter-strategy";
-import { OrbitControlsSupportStrategy } from "@vis-three/orbit-controls-support-strategy";
-import { SelectionEngine, SelectionPlugin } from "@vis-three/selection-plugin";
+import { CSS2DRenderStrategy } from "@vis-three/strategy-css2d-render";
+import { CSS3DRenderStrategy } from "@vis-three/strategy-css3d-render";
+import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
+import { OrbitRenderStrategy } from "@vis-three/strategy-orbit-render";
+import { OrbitViewpointStrategy } from "@vis-three/strategy-orbit-viewpoint";
+import { TransSelectEventSupportStrategy } from "@vis-three/strategy-trans-select-event-support";
+import { StatsRenderStrategy } from "@vis-three/strategy-stats-render";
+import { GridViewpointStrategy } from "@vis-three/strategy-grid-viewpoint";
+import { TransformKeyboardStrategy } from "@vis-three/strategy-transform-keyboard";
+import { HelperSelectInteractStrategy } from "@vis-three/strategy-helper-select-interact";
+import { CSS3DRendererSupportStrategy } from "@vis-three/strategy-css3d-renderer-support";
+import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer-support";
+import { TransformControlsSupportStrategy } from "@vis-three/strategy-transform-controls-support";
+import { TransformControlsHelperFilterStrategy } from "@vis-three/strategy-transform-controls-helper-filter";
+import { OrbitControlsSupportStrategy } from "@vis-three/strategy-orbit-controls-support";
 
-import * as moduleLibrary from "@vis-three/module-library";
+import * as moduleLibrary from "@vis-three/library-module";
 
 export { VIEWPOINT };
 

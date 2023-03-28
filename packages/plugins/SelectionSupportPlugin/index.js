@@ -1,5 +1,5 @@
 import { COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN, } from "@vis-three/middleware";
-import { SELECTED, SELECTION_PLUGIN, } from "@vis-three/selection-plugin";
+import { SELECTED, SELECTION_PLUGIN, } from "@vis-three/plugin-selection";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 export const SELECTION_SUPPORT_PLUGIN = transPkgName(pkgname);

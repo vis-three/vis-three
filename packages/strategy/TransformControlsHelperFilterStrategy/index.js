@@ -1,7 +1,7 @@
 import { name as pkgname } from "./package.json";
 import { transPkgName } from "@vis-three/utils";
-import { OBJECT_HELPER_PLUGIN, } from "@vis-three/object-helper-plugin";
-import { TRANSFORM_CONTROLS_PLUGIN, } from "@vis-three/transform-controls-plugin";
+import { OBJECT_HELPER_PLUGIN, } from "@vis-three/plugin-object-helper";
+import { TRANSFORM_CONTROLS_PLUGIN, } from "@vis-three/plugin-transform-controls";
 export const TRANSFORM_CONTROLS_OBJECT_HELPER_STRATEGY = transPkgName(pkgname);
 export const TransformControlsHelperFilterStrategy = function () {
     return {
