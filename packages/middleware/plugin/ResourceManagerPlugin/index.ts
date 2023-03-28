@@ -4,7 +4,7 @@ import { ResourceManager } from "./ResourceManager";
 export * from "./ResourceManager";
 export * from "./Parser";
 export interface ResourceManagerPluginParameters {
-  resources: { [key: string]: any };
+  resources?: { [key: string]: any };
 }
 
 export interface ResourceManagerEngine extends Engine {
@@ -17,7 +17,7 @@ export interface ResourceManagerEngine extends Engine {
 export const RESOURCE_MANAGER_PLUGIN = "ResourceManagerPlugin";
 
 export const ResourceManagerPlugin: Plugin<ResourceManagerEngine> = function (
-  params: ResourceManagerPluginParameters
+  params: ResourceManagerPluginParameters = {}
 ) {
   return {
     name: RESOURCE_MANAGER_PLUGIN,

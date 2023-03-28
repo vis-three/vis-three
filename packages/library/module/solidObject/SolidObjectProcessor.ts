@@ -1,4 +1,10 @@
-import { EngineSupport, globalAntiShake } from "@vis-three/middleware";
+import {
+  Compiler,
+  EngineSupport,
+  globalAntiShake,
+  MODULETYPE,
+  ProcessParams,
+} from "@vis-three/middleware";
 import {
   objectCommands,
   ObjectCommands,
@@ -6,7 +12,12 @@ import {
   objectDispose,
 } from "@vis-three/module-object";
 import { IgnoreAttribute } from "@vis-three/utils";
-import { BoxBufferGeometry, Material, ShaderMaterial } from "three";
+import {
+  BoxBufferGeometry,
+  BufferGeometry,
+  Material,
+  ShaderMaterial,
+} from "three";
 
 import { SolidObject3D } from "./SolidObjectCompiler";
 import { SolidObjectConfig } from "./SolidObjectConfig";
@@ -24,9 +35,12 @@ export const replaceGeometry = new BoxBufferGeometry(10, 10, 10);
 export const geometryHandler = function <
   C extends SolidObjectConfig,
   O extends SolidObject3D
->({ target, value, engine }) {
+>({ target, value, engine }: ProcessParams<C, O, EngineSupport, any>) {
   globalAntiShake.exec((finish) => {
-    const geometry = engine.compilerManager.getGeometry(value);
+    const geometry = engine.compilerManager.getObjectfromModule(
+      MODULETYPE.GEOMETRY,
+      value
+    ) as BufferGeometry;
     if (!geometry) {
       if (finish) {
         console.warn(`can not found geometry by vid in engine: ${value}`);
@@ -44,15 +58,22 @@ export const geometryHandler = function <
 export const materialHandler = function <
   C extends SolidObjectConfig,
   O extends SolidObject3D
->({ target, config, engine }) {
+>({ target, config, engine }: ProcessParams<C, O, EngineSupport, any>) {
   globalAntiShake.exec((finish) => {
     let material: Material | Material[];
     if (typeof config.material === "string") {
       material =
-        engine.compilerManager.getMaterial(config.material) || replaceMaterial;
+        (engine.compilerManager.getObjectfromModule(
+          MODULETYPE.MATERIAL,
+          config.material
+        ) as Material) || replaceMaterial;
     } else {
       material = config.material.map(
-        (vid) => engine.compilerManager.getMaterial(vid) || replaceMaterial
+        (vid) =>
+          (engine.compilerManager.getObjectfromModule(
+            MODULETYPE.MATERIAL,
+            vid
+          ) as Material) || replaceMaterial
       );
     }
 
@@ -77,11 +98,20 @@ export const solidObjectCreate = function <
 >(object: O, config: C, filter: IgnoreAttribute<C>, engine: EngineSupport) {
   if (!filter.geometry) {
     object.geometry.dispose();
-    geometryHandler({ target: object, value: config.geometry, engine });
+    geometryHandler({
+      target: object,
+      value: config.geometry,
+      engine,
+    } as ProcessParams<C, O, EngineSupport, any>);
   }
 
   if (!filter.material) {
-    materialHandler({ target: object, config, engine });
+    materialHandler({ target: object, config, engine } as ProcessParams<
+      C,
+      O,
+      EngineSupport,
+      any
+    >);
   }
 
   return objectCreate(

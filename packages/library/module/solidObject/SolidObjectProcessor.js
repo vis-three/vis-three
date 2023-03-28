@@ -1,6 +1,6 @@
-import { globalAntiShake } from "@vis-three/middleware";
+import { globalAntiShake, MODULETYPE, } from "@vis-three/middleware";
 import { objectCommands, objectCreate, objectDispose, } from "@vis-three/module-object";
-import { BoxBufferGeometry, ShaderMaterial } from "three";
+import { BoxBufferGeometry, ShaderMaterial, } from "three";
 export const replaceMaterial = new ShaderMaterial({
     fragmentShader: `
   void main () {
@@ -11,7 +11,7 @@ export const replaceMaterial = new ShaderMaterial({
 export const replaceGeometry = new BoxBufferGeometry(10, 10, 10);
 export const geometryHandler = function ({ target, value, engine }) {
     globalAntiShake.exec((finish) => {
-        const geometry = engine.compilerManager.getGeometry(value);
+        const geometry = engine.compilerManager.getObjectfromModule(MODULETYPE.GEOMETRY, value);
         if (!geometry) {
             if (finish) {
                 console.warn(`can not found geometry by vid in engine: ${value}`);
@@ -28,10 +28,10 @@ export const materialHandler = function ({ target, config, engine }) {
         let material;
         if (typeof config.material === "string") {
             material =
-                engine.compilerManager.getMaterial(config.material) || replaceMaterial;
+                engine.compilerManager.getObjectfromModule(MODULETYPE.MATERIAL, config.material) || replaceMaterial;
         }
         else {
-            material = config.material.map((vid) => engine.compilerManager.getMaterial(vid) || replaceMaterial);
+            material = config.material.map((vid) => engine.compilerManager.getObjectfromModule(MODULETYPE.MATERIAL, vid) || replaceMaterial);
         }
         target.material = material;
         if ((Array.isArray(material) &&
@@ -46,7 +46,11 @@ export const materialHandler = function ({ target, config, engine }) {
 export const solidObjectCreate = function (object, config, filter, engine) {
     if (!filter.geometry) {
         object.geometry.dispose();
-        geometryHandler({ target: object, value: config.geometry, engine });
+        geometryHandler({
+            target: object,
+            value: config.geometry,
+            engine,
+        });
     }
     if (!filter.material) {
         materialHandler({ target: object, config, engine });

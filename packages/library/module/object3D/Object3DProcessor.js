@@ -1,5 +1,5 @@
+import { defineProcessor } from "@vis-three/middleware";
 import { Object3D } from "three";
-import { defineProcessor } from "../module";
 import { objectCommands, objectCreate, objectDispose, } from "../object/ObjectProcessor";
 import { getObject3DConfig } from "./Object3DConfig";
 export default defineProcessor({

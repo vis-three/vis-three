@@ -109,9 +109,34 @@ export class Engine extends EventDispatcher {
    * @param plugin
    * @returns
    */
-  unistall(name: string): this {
+  uninstall(name: string): this {
     if (!this.pluginTables.has(name)) {
       return this;
+    }
+
+    // 检测策略依赖回滚策略
+    for (const strategy of this.strategyTables.values()) {
+      if (strategy.condition.includes(name)) {
+        console.info(
+          `engine auto rollback strategy: ${strategy.name} before uninstall plugin: ${name}.`
+        );
+        this.rollback(strategy.name);
+      }
+    }
+
+    // 检测插件依赖卸载插件
+    for (const plugin of this.pluginTables.values()) {
+      if (plugin.deps) {
+        if (
+          (Array.isArray(plugin.deps) && plugin.deps.includes(name)) ||
+          plugin.deps === name
+        ) {
+          console.info(
+            `engine auto uninstall plugin: ${plugin.name} before uninstall plugin: ${name}.`
+          );
+          this.uninstall(plugin.name);
+        }
+      }
     }
 
     const plugin = this.pluginTables.get(name)!;

@@ -1,10 +1,6 @@
-import { VisOrbitControls } from "@vis-three/core";
-import { TransformControls } from "three/examples/jsm/controls/TransformControls";
-import { MODULETYPE } from "../constants";
-import { Compiler } from "../module";
-import { ControlsAllConfig } from "./ControlsConfig";
-export type ControlsAllType = TransformControls | VisOrbitControls;
-export declare class ControlsCompiler extends Compiler<ControlsAllConfig, ControlsAllType> {
-    MODULE: MODULETYPE;
+import { Compiler, Processor } from "@vis-three/middleware";
+import { ControlsConfig } from "./ControlsConfig";
+export declare class ControlsCompiler extends Compiler<ControlsConfig, any> {
     constructor();
+    reigstProcessor(processor: Processor<any, any, any, any>, fun: (compiler: Compiler<ControlsConfig, any>) => void): this;
 }

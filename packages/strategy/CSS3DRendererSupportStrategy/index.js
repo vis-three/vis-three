@@ -1,5 +1,5 @@
-import { CSS3D_RENDERER_PLUGIN } from "@vis-three/css3d-renderer-plugin";
 import { COMPILER_MANAGER_PLUGIN, CONFIGTYPE, DATA_SUPPORT_MANAGER_PLUGIN, MODULETYPE, uniqueSymbol, } from "@vis-three/middleware";
+import { CSS3D_RENDERER_PLUGIN } from "@vis-three/plugin-css3d-renderer";
 import { transPkgName } from "@vis-three/utils";
 import CSS3DRendererProcessor from "./CSS3DRendererProcessor";
 import { name as pkgname } from "./package.json";

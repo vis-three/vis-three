@@ -34,6 +34,7 @@ import { CSS2DRenderStrategy } from "@vis-three/strategy-css2d-render";
 import { CSS3DRenderStrategy } from "@vis-three/strategy-css3d-render";
 import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
 import { OrbitRenderStrategy } from "@vis-three/strategy-orbit-render";
+import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 
 import * as moduleLibrary from "@vis-three/library-module";
 
@@ -55,6 +56,10 @@ export class DisplayEngineSupport
 
   constructor() {
     super();
+    for (const module of Object.values(moduleLibrary)) {
+      this.registModule(module as ModuleOptions<any>);
+    }
+
     this.install(
       WebGLRendererPlugin({
         antialias: true,
@@ -65,7 +70,7 @@ export class DisplayEngineSupport
       .install(CSS3DRendererPlugin())
       .install(
         EffectComposerPlugin({
-          WebGLMultisampleRenderTarget: true,
+          MSAA: true,
         })
       )
       .install(OrbitControlsPlugin())
@@ -77,10 +82,7 @@ export class DisplayEngineSupport
       .exec(OrbitRenderStrategy())
       .exec(CSS3DRendererSupportStrategy())
       .exec(WebGLRendererSupportStrategy())
-      .exec(OrbitControlsSupportStrategy());
-
-    for (const module of Object.values(moduleLibrary)) {
-      this.registModule(module as ModuleOptions<any>);
-    }
+      .exec(OrbitControlsSupportStrategy())
+      .exec(ComposerSupportStrategy());
   }
 }

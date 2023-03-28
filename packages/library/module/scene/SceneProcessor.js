@@ -1,5 +1,5 @@
-import { defineProcessor } from "@vis-three/middleware";
-import { objectCommands, objectCreate, objectDispose } from "@vis-three/module-object";
+import { defineProcessor, MODULETYPE, } from "@vis-three/middleware";
+import { objectCommands, objectCreate, objectDispose, } from "@vis-three/module-object";
 import { Color, Fog, FogExp2, Scene } from "three";
 import { validate } from "uuid";
 import { getSceneConfig } from "./SceneConfig";
@@ -9,7 +9,7 @@ const setBackground = function (scene, value, engine) {
         return;
     }
     if (validate(value)) {
-        const texture = engine.compilerManager.getTexture(value);
+        const texture = engine.compilerManager.getObjectfromModule(MODULETYPE.TEXTURE, value);
         if (texture) {
             scene.background = texture;
         }
@@ -27,7 +27,7 @@ const setEnvironment = function (scene, value, engine) {
         return;
     }
     if (validate(value)) {
-        const texture = engine.compilerManager.getTexture(value);
+        const texture = engine.compilerManager.getObjectfromModule(MODULETYPE.TEXTURE, value);
         if (texture) {
             scene.environment = texture;
         }

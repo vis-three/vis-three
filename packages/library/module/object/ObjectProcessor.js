@@ -1,4 +1,4 @@
-import { emptyHandler, EventGeneratorManager, EVENTNAME, globalAntiShake, } from "@vis-three/middleware";
+import { emptyHandler, EventGeneratorManager, EVENTNAME, globalAntiShake, OBJECTMODULE, } from "@vis-three/middleware";
 import { syncObject } from "@vis-three/utils";
 const objectCacheMap = new WeakMap();
 // 物体的lookAt方法
@@ -23,7 +23,7 @@ export const lookAtHandler = function ({ target, config, value, engine, }) {
         return;
     }
     globalAntiShake.exec((finish) => {
-        const lookAtTarget = engine.compilerManager.getObject3D(value);
+        const lookAtTarget = engine.compilerManager.getObjectfromModules(OBJECTMODULE, value);
         if (!lookAtTarget) {
             if (finish) {
                 console.warn(`lookAt handler can not found this vid mapping object: '${value}'`);
@@ -110,7 +110,7 @@ export const addChildrenHanlder = function ({ target, config, value, engine, }) 
             parentConfig.children.splice(parentConfig.children.indexOf(value), 1);
         }
         childrenConfig.parent = config.vid;
-        const childrenObject = engine.compilerManager.getObject3D(value);
+        const childrenObject = engine.compilerManager.getObjectfromModules(OBJECTMODULE, value);
         if (!childrenObject) {
             if (finish) {
                 console.warn(`can not found this vid in engine: ${value}.`);
@@ -123,7 +123,7 @@ export const addChildrenHanlder = function ({ target, config, value, engine, }) 
 };
 // 移除子项
 export const removeChildrenHandler = function ({ target, config, value, engine, }) {
-    const childrenObject = engine.compilerManager.getObject3D(value);
+    const childrenObject = engine.compilerManager.getObjectfromModules(OBJECTMODULE, value);
     if (!childrenObject) {
         console.warn(`can not found this vid in engine: ${value}.`);
         return;

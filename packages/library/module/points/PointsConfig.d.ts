@@ -1,4 +1,4 @@
-import { SolidObjectConfig } from "../solidObject/SolidObjectConfig";
+import { SolidObjectConfig } from "@vis-three/module-solid-object";
 export interface PointsConfig extends SolidObjectConfig {
     geometry: string;
     material: string;

@@ -87,7 +87,10 @@ export class CompilerManager extends EventDispatcher {
       }
 
       const compiler = this.compilerMap.get(module)!;
-      return compiler.map.get(vid) || null;
+
+      if (compiler.map.has(vid)) {
+        return compiler.map.get(vid)!;
+      }
     }
 
     return null;

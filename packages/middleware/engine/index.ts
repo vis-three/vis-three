@@ -249,7 +249,7 @@ export class EngineSupport
     MODULETYPE[options.type.toLocaleUpperCase()] = options.type;
 
     if (options.object) {
-      OBJECTMODULE[options.type.toLocaleUpperCase()] = true;
+      OBJECTMODULE[options.type] = true;
     }
 
     const DataSupportClass = DataSupportFactory(options.type, options.rule);
@@ -288,6 +288,12 @@ export interface EngineSupportOptions extends EngineOptions {
 export const defineEngineSupport = function (options: EngineSupportOptions) {
   const engine = new EngineSupport();
 
+  if (options.modules) {
+    options.modules.forEach((module) => {
+      engine.registModule(module);
+    });
+  }
+
   if (options.plugins) {
     options.plugins.forEach((plugin) => {
       engine.install(plugin);
@@ -297,12 +303,6 @@ export const defineEngineSupport = function (options: EngineSupportOptions) {
   if (options.strategy) {
     options.strategy.forEach((strategy) => {
       engine.exec(strategy);
-    });
-  }
-
-  if (options.modules) {
-    options.modules.forEach((module) => {
-      engine.registModule(module);
     });
   }
 

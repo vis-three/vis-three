@@ -9,7 +9,7 @@ import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLigh
 import { LightShadow } from "three/src/lights/LightShadow";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { CSS3DObject, CSS3DSprite as CSS3DSprite$1 } from "three/examples/jsm/renderers/CSS3DRenderer";
-const version = "0.5.10";
+const version = "0.6.0";
 if (!window.__THREE__) {
   console.error(
     `vis-three dependent on three.js module, pleace run 'npm i three' first.`
@@ -132,15 +132,15 @@ class EventDispatcher {
     return Boolean([...this.listeners.keys()].length);
   }
 }
-var ENGINE_EVENT = /* @__PURE__ */ ((ENGINE_EVENT2) => {
+var ENGINE_EVENT;
+(function(ENGINE_EVENT2) {
   ENGINE_EVENT2["SETDOM"] = "setDom";
   ENGINE_EVENT2["SETSIZE"] = "setSize";
   ENGINE_EVENT2["SETCAMERA"] = "setCamera";
   ENGINE_EVENT2["SETSCENE"] = "setScene";
   ENGINE_EVENT2["RENDER"] = "render";
   ENGINE_EVENT2["DISPOSE"] = "dispose";
-  return ENGINE_EVENT2;
-})(ENGINE_EVENT || {});
+})(ENGINE_EVENT || (ENGINE_EVENT = {}));
 class Engine extends EventDispatcher {
   constructor() {
     super();
@@ -159,9 +159,7 @@ class Engine extends EventDispatcher {
     }
     const validateDep = (name) => {
       if (!this.pluginTables.has(name)) {
-        console.error(
-          `${plugin.name} must install this plugin before: ${name}`
-        );
+        console.error(`${plugin.name} must install this plugin before: ${name}`);
         return false;
       }
       return true;
@@ -199,9 +197,7 @@ class Engine extends EventDispatcher {
     const plugins = this.pluginTables;
     for (const plugin of strategy.condition) {
       if (!plugins.has(plugin)) {
-        console.warn(
-          `${strategy.name} does not meet the conditions for execution: ${plugin}`
-        );
+        console.warn(`${strategy.name} does not meet the conditions for execution: ${plugin}`);
         return this;
       }
     }
@@ -222,7 +218,7 @@ class Engine extends EventDispatcher {
   setDom(dom) {
     this.dom = dom;
     this.dispatchEvent({
-      type: "setDom",
+      type: ENGINE_EVENT.SETDOM,
       dom
     });
     return this;
@@ -230,35 +226,30 @@ class Engine extends EventDispatcher {
   setSize(width, height) {
     var _a, _b;
     if (width && width <= 0 || height && height <= 0) {
-      console.warn(
-        `you must be input width and height bigger then zero, width: ${width}, height: ${height}`
-      );
+      console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
       return this;
     }
     !width && (width = ((_a = this.dom) == null ? void 0 : _a.offsetWidth) || window.innerWidth);
     !height && (height = ((_b = this.dom) == null ? void 0 : _b.offsetHeight) || window.innerHeight);
-    this.dispatchEvent({ type: "setSize", width, height });
+    this.dispatchEvent({ type: ENGINE_EVENT.SETSIZE, width, height });
     return this;
   }
   setCamera(camera, options) {
     this.dispatchEvent({
-      type: "setCamera",
+      type: ENGINE_EVENT.SETCAMERA,
       camera,
       oldCamera: this.camera,
-      options: Object.assign(
-        {
-          orbitControls: true,
-          transformControls: true
-        },
-        options || {}
-      )
+      options: Object.assign({
+        orbitControls: true,
+        transformControls: true
+      }, options || {})
     });
     this.camera = camera;
     return this;
   }
   setScene(scene) {
     this.dispatchEvent({
-      type: "setScene",
+      type: ENGINE_EVENT.SETSCENE,
       scene,
       oldScene: this.scene
     });
@@ -267,14 +258,14 @@ class Engine extends EventDispatcher {
   }
   render(delta) {
     this.dispatchEvent({
-      type: "render",
+      type: ENGINE_EVENT.RENDER,
       delta
     });
     return this;
   }
   dispose() {
     this.dispatchEvent({
-      type: "dispose"
+      type: ENGINE_EVENT.DISPOSE
     });
     return this;
   }

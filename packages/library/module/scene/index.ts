@@ -9,5 +9,5 @@ export default {
   compiler: SceneCompiler,
   rule: SceneRule,
   processors: [SceneProcessor],
-  extends: SceneExtend,
+  extend: SceneExtend,
 };

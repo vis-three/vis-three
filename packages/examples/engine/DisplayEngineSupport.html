@@ -26,6 +26,8 @@
         document.getElementById("app")
       );
 
+      window.engine = engine;
+
       const pointLight = G("PointLight", {
         position: {
           x: 30,
@@ -83,8 +85,6 @@
         .setSceneBySymbol(scene.vid)
         .setSize()
         .play();
-
-      window.engine = engine;
     </script>
   </body>
 </html>

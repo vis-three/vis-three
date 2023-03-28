@@ -24,7 +24,7 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.5.10",
+    "@vis-three/core": "workspace:^0.6.0",
     "@vis-three/library-modifier": "workspace:^0.6.0",
     "@vis-three/middleware": "workspace:^0.6.1",
     "@vis-three/modifier-base": "workspace:^0.6.0",

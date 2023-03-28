@@ -7,6 +7,6 @@ declare const _default: {
     compiler: typeof SceneCompiler;
     rule: SceneRule;
     processors: import("@vis-three/middleware").Processor<import("./SceneConfig").SceneConfig, import("three").Scene, import("@vis-three/middleware").EngineSupport, SceneCompiler>[];
-    extends: typeof SceneExtend;
+    extend: typeof SceneExtend;
 };
 export default _default;

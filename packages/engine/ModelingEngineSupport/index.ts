@@ -78,6 +78,7 @@ import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer
 import { TransformControlsSupportStrategy } from "@vis-three/strategy-transform-controls-support";
 import { TransformControlsHelperFilterStrategy } from "@vis-three/strategy-transform-controls-helper-filter";
 import { OrbitControlsSupportStrategy } from "@vis-three/strategy-orbit-controls-support";
+import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 
 import * as moduleLibrary from "@vis-three/library-module";
 
@@ -127,6 +128,10 @@ export class ModelingEngineSupport
 
   constructor() {
     super();
+    for (const module of Object.values(moduleLibrary)) {
+      this.registModule(module as ModuleOptions<any>);
+    }
+
     this.install(
       WebGLRendererPlugin({
         antialias: true,
@@ -166,10 +171,7 @@ export class ModelingEngineSupport
       .exec(WebGLRendererSupportStrategy())
       .exec(TransformControlsSupportStrategy())
       .exec(TransformControlsHelperFilterStrategy())
-      .exec(OrbitControlsSupportStrategy());
-
-    for (const module of Object.values(moduleLibrary)) {
-      this.registModule(module as ModuleOptions<any>);
-    }
+      .exec(OrbitControlsSupportStrategy())
+      .exec(ComposerSupportStrategy());
   }
 }
