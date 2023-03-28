@@ -44,8 +44,8 @@
     "@vis-three/module-texture": "workspace:^0.6.0"
   },
   "files": [
-    "**/*.js",
-    "**/*.d.ts",
+    "index.js",
+    "index.d.ts",
     "package.json",
     "LICENSE"
   ]

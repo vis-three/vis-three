@@ -2,6 +2,7 @@
   "name": "@vis-three/modifier-base",
   "version": "0.6.0",
   "description": "vis-three modifier base",
+  "private": false,
   "main": "index.js",
   "module": "index.js",
   "types": "index.d.ts",

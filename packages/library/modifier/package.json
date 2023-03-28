@@ -2,6 +2,7 @@
   "name": "@vis-three/library-modifier",
   "version": "0.6.0",
   "description": "vis-three modifier library",
+  "private": false,
   "main": "index.js",
   "module": "index.js",
   "types": "index.d.ts",
@@ -28,8 +29,8 @@
     "@vis-three/modifier-boolean": "workspace:^0.6.0"
   },
   "files": [
-    "**/*.js",
-    "**/*.d.ts",
+    "index.js",
+    "index.d.ts",
     "package.json",
     "LICENSE"
   ]
