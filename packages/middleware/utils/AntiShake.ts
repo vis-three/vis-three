@@ -1,5 +1,5 @@
 export class AntiShake {
-  private list: Array<any> = [];
+  private list: Array<Function> = [];
   private timer?: NodeJS.Timeout;
 
   time = 0;
@@ -13,14 +13,36 @@ export class AntiShake {
       this.list.push(fun);
     }
 
-    this.timer && clearTimeout(this.timer);
+    let cacheCount = 0;
 
-    this.timer = setTimeout(() => {
-      for (const fun of this.list) {
-        fun(true);
-      }
-      this.list = [];
-    }, this.time);
+    const autoSequential = () => {
+      this.timer && clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        const nextList: Array<Function> = [];
+        for (const fun of this.list) {
+          if (!fun(false)) {
+            nextList.push(fun);
+          }
+        }
+
+        if (nextList.length) {
+          if (nextList.length === cacheCount) {
+            for (const fun of nextList) {
+              fun(true);
+            }
+            this.list = [];
+          } else {
+            cacheCount = nextList.length;
+            this.list = nextList;
+            autoSequential();
+          }
+        } else {
+          this.list = [];
+        }
+      }, this.time);
+    };
+
+    autoSequential();
   }
 
   append(fun: (finish: boolean) => boolean) {

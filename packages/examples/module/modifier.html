@@ -23,13 +23,9 @@
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
       import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
-
-      import ModifierModule from "@vis-three/module-modifier";
-
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       const engine = new ModelingEngineSupport()
-        .registModule(ModifierModule)
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true)
