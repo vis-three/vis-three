@@ -1,5 +1,5 @@
 import { COMPILER_MANAGER_PLUGIN, CONFIGTYPE, DATA_SUPPORT_MANAGER_PLUGIN, MODULETYPE, uniqueSymbol, } from "@vis-three/middleware";
-import { ORBIT_CONTROLS_PLUGIN } from "@vis-three/orbit-controls-plugin";
+import { ORBIT_CONTROLS_PLUGIN } from "@vis-three/plugin-orbit-controls";
 import { transPkgName } from "@vis-three/utils";
 import OrbitControlsProcessor from "./OrbitControlsProcessor";
 import { name as pkgname } from "./package.json";

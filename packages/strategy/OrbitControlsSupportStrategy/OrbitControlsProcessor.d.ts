@@ -1,6 +1,6 @@
-import { VisOrbitControls } from "@vis-three/orbit-controls-plugin";
+import { VisOrbitControls } from "@vis-three/plugin-orbit-controls";
 import { EngineSupport, Vector3Config } from "@vis-three/middleware";
-import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
+import { OrbitControlsEngine } from "@vis-three/plugin-orbit-controls";
 import { ControlsConfig } from "@vis-three/module-controls/ControlsConfig";
 import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
 export interface OrbitControlsConfig extends ControlsConfig {

@@ -3,38 +3,39 @@ import {
   Screenshot,
   WebGLRendererEngine,
   WebGLRendererPlugin,
-} from "@vis-three/webgl-renderer-plugin";
+} from "@vis-three/plugin-webgl-renderer";
 import {
   CSS2DRendererEngine,
   CSS2DRendererPlugin,
-} from "@vis-three/css2d-renderer-plugin";
+} from "@vis-three/plugin-css2d-renderer";
 import {
   CSS3DRendererEngine,
   CSS3DRendererPlugin,
-} from "@vis-three/css3d-renderer-plugin";
+} from "@vis-three/plugin-css3d-renderer";
 import {
   EffectComposerEngine,
   EffectComposerPlugin,
-} from "@vis-three/effect-composer-plugin";
+} from "@vis-three/plugin-effect-composer";
 import {
   OrbitControlsEngine,
   OrbitControlsPlugin,
-} from "@vis-three/orbit-controls-plugin";
-import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+} from "@vis-three/plugin-orbit-controls";
+import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
 
-import { CSS2DRenderStrategy } from "@vis-three/css2d-render-strategy";
-import { CSS3DRenderStrategy } from "@vis-three/css3d-render-strategy";
-import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
-import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
 import { WebGLRenderer } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
-import { CSS3DRendererSupportStrategy } from "@vis-three/css3d-renderer-support-strategy";
-import { WebGLRendererSupportStrategy } from "@vis-three/webgl-renderer-support-strategy";
-import { OrbitControlsSupportStrategy } from "@vis-three/orbit-controls-support-strategy";
+import { CSS3DRendererSupportStrategy } from "@vis-three/strategy-css3d-renderer-support";
+import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer-support";
+import { OrbitControlsSupportStrategy } from "@vis-three/strategy-orbit-controls-support";
 
-import * as moduleLibrary from "@vis-three/module-library";
+import { CSS2DRenderStrategy } from "@vis-three/strategy-css2d-render";
+import { CSS3DRenderStrategy } from "@vis-three/strategy-css3d-render";
+import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
+import { OrbitRenderStrategy } from "@vis-three/strategy-orbit-render";
+
+import * as moduleLibrary from "@vis-three/library-module";
 
 export class DisplayEngineSupport
   extends EngineSupport

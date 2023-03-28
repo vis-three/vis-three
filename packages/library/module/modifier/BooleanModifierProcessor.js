@@ -1,5 +1,5 @@
 import { COMPILER_EVENT, defineProcessor, globalAntiShake, } from "@vis-three/middleware";
-import { BooleanModifier } from "@vis-three/modifier-library";
+import { BooleanModifier } from "@vis-three/library-modifier";
 import { syncObject } from "@vis-three/utils";
 import { getBooleanModifierConfig, } from "./ModifierConfig";
 const modifyKey = [

@@ -4,7 +4,7 @@ import {
 } from "three/examples/jsm/postprocessing/EffectComposer";
 import { PassConfigAllType } from "./PassConfig";
 import { Compiler, EngineSupport } from "@vis-three/middleware";
-import { EffectComposerEngine } from "@vis-three/effect-composer-plugin";
+import { EffectComposerEngine } from "@vis-three/plugin-effect-composer";
 
 export interface ComposerSupportEngine
   extends EngineSupport,

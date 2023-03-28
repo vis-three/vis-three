@@ -1,4 +1,4 @@
-import { defineProcessor } from "@vis-three/middleware";
+import { defineProcessor, MODULETYPE } from "@vis-three/middleware";
 import { Camera, Scene, Vector2 } from "three";
 import { SelectiveBloomPass } from "./extends/SelectiveBloomPass";
 import { getSelectiveBloomPassConfig, } from "./PassConfig";
@@ -8,7 +8,7 @@ export default defineProcessor({
     commands: {
         add: {
             selectedObjects({ target, engine, value }) {
-                const object = engine.compilerManager.getObject3D(value);
+                const object = engine.getObject3D(value);
                 if (object) {
                     target.selectedObjects.push(object);
                 }
@@ -19,7 +19,7 @@ export default defineProcessor({
         },
         set: {
             renderScene({ target, engine, value }) {
-                const object = engine.compilerManager.getObject3D(value);
+                const object = engine.getObject3D(value);
                 if (object instanceof Scene) {
                     target.renderScene = object;
                 }
@@ -28,7 +28,7 @@ export default defineProcessor({
                 }
             },
             renderCamera({ target, engine, value }) {
-                const object = engine.compilerManager.getObject3D(value);
+                const object = engine.getObject3D(value);
                 if (object instanceof Camera) {
                     target.renderCamera = object;
                 }
@@ -39,7 +39,7 @@ export default defineProcessor({
             selectedObjects({ target, config, engine }) {
                 const objects = config.selectedObjects
                     .map((vid) => {
-                    const object = engine.compilerManager.getObject3D(vid);
+                    const object = engine.getObject3D(vid);
                     if (object) {
                         return object;
                     }
@@ -54,7 +54,7 @@ export default defineProcessor({
         },
         delete: {
             selectedObjects({ target, engine, value }) {
-                const object = engine.compilerManager.getObject3D(value);
+                const object = engine.getObject3D(value);
                 if (object) {
                     if (target.selectedObjects.includes(object)) {
                         target.selectedObjects.splice(target.selectedObjects.indexOf(object), 1);
@@ -69,7 +69,7 @@ export default defineProcessor({
     create(config, engine) {
         const objects = [];
         for (const vid of config.selectedObjects) {
-            const object = engine.compilerManager.getObject3D(vid);
+            const object = engine.getObject3D(vid);
             object && objects.push(object);
         }
         const pixelRatio = window.devicePixelRatio;
@@ -78,10 +78,8 @@ export default defineProcessor({
             : window.innerWidth * pixelRatio, engine.dom
             ? engine.dom.offsetHeight * pixelRatio
             : window.innerWidth * pixelRatio), config.strength, config.radius, config.threshold, (config.renderScene &&
-            engine.compilerManager.getObject3D(config.renderScene)) ||
-            undefined, (config.renderCamera &&
-            engine.compilerManager.getObject3D(config.renderCamera)) ||
-            undefined, objects);
+            engine.getObjectfromModule(MODULETYPE.SCENE, config.renderScene)) || undefined, (config.renderCamera &&
+            engine.getObjectfromModule(MODULETYPE.CAMERA, config.renderCamera)) || undefined, objects);
         return pass;
     },
     dispose(target) {

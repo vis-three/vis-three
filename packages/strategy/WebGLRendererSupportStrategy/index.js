@@ -1,6 +1,6 @@
 import { COMPILER_MANAGER_PLUGIN, CONFIGTYPE, DATA_SUPPORT_MANAGER_PLUGIN, MODULETYPE, uniqueSymbol, } from "@vis-three/middleware";
 import { transPkgName } from "@vis-three/utils";
-import { WEBGL_RENDERER_PLUGIN } from "@vis-three/webgl-renderer-plugin";
+import { WEBGL_RENDERER_PLUGIN } from "@vis-three/plugin-webgl-renderer";
 import { name as pkgname } from "./package.json";
 import WebGLRendererProcessor from "./WebGLRendererProcessor";
 export const WEBGL_RENDERER_SUPPORT_STRATEGY = transPkgName(pkgname);

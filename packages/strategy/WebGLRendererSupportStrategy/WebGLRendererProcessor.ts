@@ -10,7 +10,7 @@ import {
 } from "@vis-three/module-renderer/RendererConfig";
 
 import { syncObject } from "@vis-three/utils";
-import { WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
+import { WebGLRendererEngine } from "@vis-three/plugin-webgl-renderer";
 import {
   LinearEncoding,
   NoToneMapping,

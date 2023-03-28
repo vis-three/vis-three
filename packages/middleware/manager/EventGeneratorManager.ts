@@ -1,4 +1,4 @@
-import { ObjectEvent } from "@vis-three/event-manager-plugin";
+import { ObjectEvent } from "@vis-three/plugin-event-manager";
 import { EngineSupport } from "../engine";
 
 export interface BasicEventConfig {

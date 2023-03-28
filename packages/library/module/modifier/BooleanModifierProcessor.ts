@@ -5,7 +5,7 @@ import {
   globalAntiShake,
 } from "@vis-three/middleware";
 import { Modifier } from "@vis-three/modifier-base";
-import { BooleanModifier } from "@vis-three/modifier-library";
+import { BooleanModifier } from "@vis-three/library-modifier";
 import { syncObject } from "@vis-three/utils";
 import { Mesh } from "three";
 import { ModifierCompiler } from "./ModifierCompiler";

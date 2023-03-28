@@ -2,7 +2,7 @@ import { Strategy } from "@vis-three/core";
 import {
   LoaderManagerEngine,
   LOADER_MANAGER_PLUGIN,
-} from "@vis-three/loader-manager-plugin";
+} from "@vis-three/plugin-loader-manager";
 import {
   DataSupportEngine,
   DATA_SUPPORT_MANAGER_PLUGIN,

@@ -5,7 +5,7 @@ import {
   LOADER_EVENT,
   LOADER_MANAGER_PLUGIN,
   LoadUnit,
-} from "@vis-three/loader-manager-plugin";
+} from "@vis-three/plugin-loader-manager";
 import {
   MappedEvent,
   ResourceManagerEngine,

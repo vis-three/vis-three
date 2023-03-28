@@ -1,4 +1,4 @@
-import { RenderEvent } from "@vis-three/render-manager-plugin";
+import { RenderEvent } from "@vis-three/plugin-render-manager";
 import { EngineSupport } from "../engine";
 
 export interface BasicAniScriptConfig {

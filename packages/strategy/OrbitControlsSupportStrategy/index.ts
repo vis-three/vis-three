@@ -7,7 +7,7 @@ import {
   uniqueSymbol,
 } from "@vis-three/middleware";
 import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
-import { ORBIT_CONTROLS_PLUGIN } from "@vis-three/orbit-controls-plugin";
+import { ORBIT_CONTROLS_PLUGIN } from "@vis-three/plugin-orbit-controls";
 import { transPkgName } from "@vis-three/utils";
 import OrbitControlsProcessor, {
   OrbitControlsSupportEngine,

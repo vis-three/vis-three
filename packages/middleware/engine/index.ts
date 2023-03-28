@@ -3,22 +3,22 @@ import {
   LoaderManager,
   LoaderManagerPlugin,
   LoadUnit,
-} from "@vis-three/loader-manager-plugin";
+} from "@vis-three/plugin-loader-manager";
 import {
   PointerManager,
   PointerManagerEngine,
   PointerManagerPlugin,
-} from "@vis-three/pointer-manager-plugin";
+} from "@vis-three/plugin-pointer-manager";
 import {
   EventManager,
   EventManagerEngine,
   EventManagerPlugin,
-} from "@vis-three/event-manager-plugin";
+} from "@vis-three/plugin-event-manager";
 import {
   RenderManager,
   RenderManagerEngine,
   RenderManagerPlugin,
-} from "@vis-three/render-manager-plugin";
+} from "@vis-three/plugin-render-manager";
 import {
   DataSupportEngine,
   DataSupportManager,

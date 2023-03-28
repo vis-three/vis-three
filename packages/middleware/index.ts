@@ -14,9 +14,9 @@ export * from "./strategy/CompilerSupportStrategy";
 export * from "./strategy/LoaderDataSuportStrategy";
 export * from "./strategy/LoaderMappingStrategy";
 
-export * from "@vis-three/event-manager-plugin";
-export * from "@vis-three/render-manager-plugin";
-export * from "@vis-three/loader-manager-plugin";
-export * from "@vis-three/pointer-manager-plugin";
+export * from "@vis-three/plugin-event-manager";
+export * from "@vis-three/plugin-render-manager";
+export * from "@vis-three/plugin-loader-manager";
+export * from "@vis-three/plugin-pointer-manager";
 
 export const PLUGINS = [COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN];

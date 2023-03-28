@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import { VisOrbitControls } from "@vis-three/orbit-controls-plugin";
+import { VisOrbitControls } from "@vis-three/plugin-orbit-controls";
 import { syncObject } from "@vis-three/utils";
 import {
   defineProcessor,
@@ -7,7 +7,7 @@ import {
   uniqueSymbol,
   Vector3Config,
 } from "@vis-three/middleware";
-import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
+import { OrbitControlsEngine } from "@vis-three/plugin-orbit-controls";
 import { ControlsConfig } from "@vis-three/module-controls/ControlsConfig";
 import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
 
