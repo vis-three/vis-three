@@ -1,9 +1,9 @@
 import { ParseParams, Parser, ResourceHanlder } from "@vis-three/middleware";
-import { GLTF, GLTFParser } from "three/examples/jsm/loaders/GLTFLoader";
-import { defaultObject3DParser } from "../Object3DParser";
+import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
+import { Object3DParser } from "../Object3DParser";
 
 export class GLTFResourceParser extends Parser {
-  private object3DParser = defaultObject3DParser;
+  private object3DParser = new Object3DParser();
 
   constructor() {
     super();

@@ -23,4 +23,3 @@ export declare class Object3DParser extends Parser {
     private parseGeometry;
     private parseObject3D;
 }
-export declare const defaultObject3DParser: Object3DParser;

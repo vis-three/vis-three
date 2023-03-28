@@ -148,6 +148,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/library-module': workspace:^0.6.0
+      '@vis-three/library-parser': workspace:^0.6.0
       '@vis-three/middleware': workspace:^0.6.1
       '@vis-three/plugin-camera-adaptive': workspace:^0.6.0
       '@vis-three/plugin-css2d-renderer': workspace:^0.6.0
@@ -171,6 +172,7 @@ importers:
       typescript: ^4.3.2
     dependencies:
       '@vis-three/library-module': link:../../library/module
+      '@vis-three/library-parser': link:../../library/parser
       '@vis-three/middleware': link:../../middleware
       '@vis-three/plugin-camera-adaptive': link:../../plugins/CameraAdaptivePlugin
       '@vis-three/plugin-css2d-renderer': link:../../plugins/CSS2DRendererPlugin
@@ -286,6 +288,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/library-module': workspace:^0.6.0
+      '@vis-three/library-parser': workspace:^0.6.0
       '@vis-three/middleware': workspace:^0.6.1
       '@vis-three/plugin-axes-helper': workspace:^0.6.0
       '@vis-three/plugin-camera-adaptive': workspace:^0.6.0
@@ -326,6 +329,7 @@ importers:
       typescript: ^4.3.2
     dependencies:
       '@vis-three/library-module': link:../../library/module
+      '@vis-three/library-parser': link:../../library/parser
       '@vis-three/middleware': link:../../middleware
       '@vis-three/plugin-axes-helper': link:../../plugins/AxesHelperPlugin
       '@vis-three/plugin-camera-adaptive': link:../../plugins/CameraAdaptivePlugin
@@ -1480,6 +1484,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/middleware': workspace:^0.6.1
+      '@vis-three/module-css3d': workspace:^0.6.0
       '@vis-three/module-geometry': workspace:^0.6.0
       '@vis-three/module-material': workspace:^0.6.0
       '@vis-three/module-solid-object': workspace:^0.6.0
@@ -1494,6 +1499,7 @@ importers:
       uuid: ^8.3.2
     dependencies:
       '@vis-three/middleware': link:../../middleware
+      '@vis-three/module-css3d': link:../module/css3D
       '@vis-three/module-geometry': link:../module/geometry
       '@vis-three/module-material': link:../module/material
       '@vis-three/module-solid-object': link:../module/solidObject

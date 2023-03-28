@@ -181,4 +181,3 @@ export class Object3DParser extends Parser {
         }
     }
 }
-export const defaultObject3DParser = new Object3DParser();

@@ -81,6 +81,7 @@ import { OrbitControlsSupportStrategy } from "@vis-three/strategy-orbit-controls
 import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 
 import * as moduleLibrary from "@vis-three/library-module";
+import * as parserLibrary from "@vis-three/library-parser";
 
 export { VIEWPOINT };
 
@@ -130,6 +131,10 @@ export class ModelingEngineSupport
     super();
     for (const module of Object.values(moduleLibrary)) {
       this.registModule(module as ModuleOptions<any>);
+    }
+
+    for (const parser of Object.values(parserLibrary)) {
+      this.resourceManager.addParser(new parser());
     }
 
     this.install(

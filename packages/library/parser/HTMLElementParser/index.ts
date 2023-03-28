@@ -5,7 +5,7 @@ import {
   Parser,
   ResourceHanlder,
 } from "@vis-three/middleware";
-import { CSS3DPlaneConfig } from "./CSS3DConfig";
+import { CSS3DPlaneConfig } from "@vis-three/module-css3d/CSS3DConfig";
 
 export class HTMLElementParser extends Parser {
   selector: ResourceHanlder = (

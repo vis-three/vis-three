@@ -37,6 +37,7 @@ import { OrbitRenderStrategy } from "@vis-three/strategy-orbit-render";
 import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 
 import * as moduleLibrary from "@vis-three/library-module";
+import * as parserLibrary from "@vis-three/library-parser";
 
 export class DisplayEngineSupport
   extends EngineSupport
@@ -58,6 +59,10 @@ export class DisplayEngineSupport
     super();
     for (const module of Object.values(moduleLibrary)) {
       this.registModule(module as ModuleOptions<any>);
+    }
+
+    for (const parser of Object.values(parserLibrary)) {
+      this.resourceManager.addParser(new parser());
     }
 
     this.install(
