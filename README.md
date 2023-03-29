@@ -40,15 +40,16 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 `vis-three`所提供的主要模块。
 
-| package                                                          | Version                                                                                               | download                                                                              |
-| ---------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| [@vis-three/core](packages/core)                                 | ![@vis-three/core](https://img.shields.io/npm/v/@vis-three/core.svg?label=%20)                        | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/core">                   |
-| [@vis-three/middleware](packages/middleware)                     | ![@vis-three/middleware](https://img.shields.io/npm/v/@vis-three/middleware.svg?label=%20)            | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/middleware">             |
-| [@vis-three/convenient](packages/convenient)                     | ![@vis-three/convenient](https://img.shields.io/npm/v/@vis-three/convenient?label=%20)                | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/convenient">             |
-| [@vis-three/utils](packages/utils)                               | ![@vis-three/utils](https://img.shields.io/npm/v/@vis-three/utils?label=%20)                          | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/utils">                  |
-| [@vis-three/shader-library](packages/library/shader/)            | ![@vis-three/shader-library](https://img.shields.io/npm/v/@vis-three/shader-library?label=%20)        | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/shader-library">         |
-| [@vis-three/event-library](packages/library/event/)              | ![@vis-three/event-library](https://img.shields.io/npm/v/@vis-three/event-library?label=%20)          | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/event-library">          |
-| [@vis-three/animate-script-library](packages/library/aniScript/) | ![@vis-three/event-library](https://img.shields.io/npm/v/@vis-three/animate-script-library?label=%20) | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/animate-script-library"> |
+| package                                                          | Version                                                                                                        | download                                                                              |
+| ---------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| [@vis-three/core](packages/core)                                 | ![@vis-three/core](https://img.shields.io/npm/v/@vis-three/core.svg?label=%20)                                 | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/core">                   |
+| [@vis-three/middleware](packages/middleware)                     | ![@vis-three/middleware](https://img.shields.io/npm/v/@vis-three/middleware.svg?label=%20)                     | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/middleware">             |
+| [@vis-three/convenient](packages/convenient)                     | ![@vis-three/convenient](https://img.shields.io/npm/v/@vis-three/convenient?label=%20)                         | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/convenient">             |
+| [@vis-three/utils](packages/utils)                               | ![@vis-three/utils](https://img.shields.io/npm/v/@vis-three/utils?label=%20)                                   | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/utils">                  |
+| [@vis-three/library-shader](packages/library/shader/)            | ![@vis-three/library-shader](https://img.shields.io/npm/v/@vis-three/library-shader?label=%20)                 | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-shader">         |
+| [@vis-three/library-event](packages/library/event/)              | ![@vis-three/library-event](https://img.shields.io/npm/v/@vis-three/library-event?label=%20)                   | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-event">          |
+| [@vis-three/library-animate-script](packages/library/aniScript/) | ![@vis-three/library-animate-script](https://img.shields.io/npm/v/@vis-three/library-animate-script?label=%20) | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-animate-script"> |
+| [@vis-three/library-module](packages/library/module/)            | ![@vis-three/library-module](https://img.shields.io/npm/v/@vis-three/library-module?label=%20)                 | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-module">         |
 
 ## 主页、demo、文档在线地址
 
@@ -58,7 +59,7 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 - gitee: [https://shiotsukikaedesari.gitee.io/vis-three](https://shiotsukikaedesari.gitee.io/vis-three)
 
-> gitee 视频资源会失效
+> 目前的 demo 与文档版本为 0.4 版本文档，最新文档与 demo 未更新， gitee 视频资源会失效
 
 ## 功能需求与支持
 
