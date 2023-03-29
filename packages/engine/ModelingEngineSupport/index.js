@@ -31,12 +31,16 @@ import { TransformControlsHelperFilterStrategy } from "@vis-three/strategy-trans
 import { OrbitControlsSupportStrategy } from "@vis-three/strategy-orbit-controls-support";
 import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 import * as moduleLibrary from "@vis-three/library-module";
+import * as parserLibrary from "@vis-three/library-parser";
 export { VIEWPOINT };
 export class ModelingEngineSupport extends EngineSupport {
     constructor() {
         super();
         for (const module of Object.values(moduleLibrary)) {
             this.registModule(module);
+        }
+        for (const parser of Object.values(parserLibrary)) {
+            this.resourceManager.addParser(new parser());
         }
         this.install(WebGLRendererPlugin({
             antialias: true,

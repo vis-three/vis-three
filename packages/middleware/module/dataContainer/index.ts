@@ -1,5 +1,6 @@
 import { extendPath } from "@vis-three/utils";
 import { Subject, Subscription } from "rxjs";
+import { globalOption } from "../../option";
 import { SymbolConfig } from "../common";
 import { CompilerTarget } from "../compiler";
 import { getObservable } from "../observable";
@@ -87,7 +88,9 @@ const containerDeleter = function (
 export class DataContainer<
   C extends SymbolConfig
 > extends Subject<ProxyNotice> {
-  static generator = () => ({});
+  static generator = globalOption.proxyExpand
+    ? () => globalOption.proxyExpand!({})
+    : () => ({});
 
   container: CompilerTarget<C>;
 

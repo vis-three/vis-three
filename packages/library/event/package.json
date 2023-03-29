@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/library-event",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "vis-three event library",
   "main": "index.js",
   "module": "index.js",

@@ -3,6 +3,7 @@ import { v4 as getUuid } from "uuid";
 import { SymbolConfig } from "../module/common";
 import { EngineSupport } from "../engine";
 import { CONFIGFACTORY, CONFIGTYPE, isObjectType, observable } from "../module";
+import { globalOption } from "../option";
 
 export interface C extends SymbolConfig {}
 
@@ -85,6 +86,8 @@ export const generateConfig = <GenerateConfig>function (
     initConfig.vid = getUuid();
   }
   merge && recursion(initConfig, merge);
+
+  !options.handler && (options.handler = globalOption.proxyExpand);
 
   if (options.handler) {
     initConfig = options.handler(initConfig);

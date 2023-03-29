@@ -1,11 +1,11 @@
 import { defineProcessor, EngineSupport } from "@vis-three/middleware";
-import { Object3D } from "three";
-import { ObjectConfig } from "../object/ObjectConfig";
 import {
   objectCommands,
+  ObjectConfig,
   objectCreate,
   objectDispose,
-} from "../object/ObjectProcessor";
+} from "@vis-three/module-object";
+import { Object3D } from "three";
 import { Object3DCompiler } from "./Object3DCompiler";
 import { getObject3DConfig } from "./Object3DConfig";
 

@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-object3d",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
@@ -28,6 +28,7 @@
   "dependencies": {
     "@vis-three/core": "workspace:^0.6.0",
     "@vis-three/middleware": "workspace:^0.6.1",
+    "@vis-three/module-object": "workspace:^0.6.0",
     "@vis-three/utils": "workspace:^0.6.0",
     "uuid": "^8.3.2"
   },
