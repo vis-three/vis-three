@@ -1,4 +1,4 @@
-import { defineProcessor } from "@vis-three/middleware";
+import { defineProcessor, MODULETYPE, } from "@vis-three/middleware";
 import { solidObjectCommands, solidObjectCreate, solidObjectDispose, } from "@vis-three/module-solid-object";
 import { Sprite, SpriteMaterial } from "three";
 import { getSpriteConfig } from "./SpriteConfig";
@@ -14,7 +14,7 @@ export default defineProcessor({
             lookAt() { },
             ...solidObjectCommands.set,
             material({ target, engine, value }) {
-                const material = engine.compilerManager.getMaterial(value);
+                const material = engine.compilerManager.getObjectfromModule(MODULETYPE.MATERIAL, value);
                 if (material && material instanceof SpriteMaterial) {
                     target.material = material;
                 }
@@ -27,7 +27,7 @@ export default defineProcessor({
     },
     create(config, engine) {
         const sprite = new Sprite();
-        const material = engine.compilerManager.getMaterial(config.material);
+        const material = engine.compilerManager.getObjectfromModule(MODULETYPE.MATERIAL, config.material);
         if (material && material instanceof SpriteMaterial) {
             sprite.material = material;
         }

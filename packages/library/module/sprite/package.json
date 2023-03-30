@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-sprite",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.6.0",
-    "@vis-three/middleware": "workspace:^0.6.1",
+    "@vis-three/middleware": "workspace:^0.6.3",
     "@vis-three/module-object": "workspace:^0.6.0",
     "@vis-three/module-solid-object": "workspace:^0.6.0",
     "@vis-three/utils": "workspace:^0.6.0",

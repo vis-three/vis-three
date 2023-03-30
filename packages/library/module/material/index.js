@@ -1,3 +1,4 @@
+import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import LineBasicMaterialProcessor from "./LineBasicMaterialProcessor";
 import { MaterialCompiler } from "./MaterialCompiler";
 import { MaterialRule } from "./MaterialRule";
@@ -22,4 +23,5 @@ export default {
         ShaderMaterialProcessor,
         SpriteMaterialProcessor,
     ],
+    lifeOrder: SUPPORT_LIFE_CYCLE.TWO,
 };

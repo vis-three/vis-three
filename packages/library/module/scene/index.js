@@ -1,3 +1,4 @@
+import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { SceneCompiler } from "./SceneCompiler";
 import SceneExtend from "./SceneExtend";
 import SceneProcessor from "./SceneProcessor";
@@ -9,4 +10,5 @@ export default {
     rule: SceneRule,
     processors: [SceneProcessor],
     extend: SceneExtend,
+    lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
 };

@@ -7,6 +7,7 @@ import HemisphereLightProcessor from "./HemisphereLightProcessor";
 import PointLightProcessor from "./PointLightProcessor";
 import RectAreaLightProcessor from "./RectAreaLightProcessor";
 import SpotLightProcessor from "./SpotLightProcessor";
+import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 
 export default {
   type: "light",
@@ -21,4 +22,5 @@ export default {
     RectAreaLightProcessor,
     SpotLightProcessor,
   ],
+  lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
 };

@@ -1,4 +1,4 @@
-import { Engine, EngineOptions } from "@vis-three/core";
+import { BaseEvent, Engine, EngineOptions } from "@vis-three/core";
 import {
   LoaderManager,
   LoaderManagerPlugin,
@@ -58,6 +58,19 @@ export type EngineSupportLoadOptions = LoadOptions & {
   assets?: string[];
 };
 
+export enum SUPPORT_LIFE_CYCLE {
+  ZERO = 0,
+  ONE = 100,
+  TWO = 200,
+  THREE = 300,
+  FOUR = 400,
+  FIVE = 500,
+  SIX = 600,
+  SEVEN = 700,
+  EIGHT = 800,
+  NINE = 900,
+}
+
 export class EngineSupport
   extends Engine
   implements
@@ -100,6 +113,8 @@ export class EngineSupport
   ) => object | null;
   declare getObject3D: (vid: string) => Object3D<Event> | null;
 
+  private moduleLifeCycle: Array<{ module: string; order: number }> = [];
+
   constructor() {
     super();
     this.install(LoaderManagerPlugin())
@@ -118,36 +133,24 @@ export class EngineSupport
   private loadLifeCycle(config: Omit<EngineSupportLoadOptions, "assets">) {
     const dataSupportManager = this.dataSupportManager;
 
-    // 生成贴图
-    config.texture && dataSupportManager.load({ texture: config.texture });
+    const loadCycle = this.moduleLifeCycle.sort((a, b) => a.order - b.order);
 
-    // 生成材质
-    config.material && dataSupportManager.load({ material: config.material });
-
-    // 其他
-    delete config.texture;
-    delete config.material;
-
-    dataSupportManager.load(config);
+    for (const { module } of loadCycle) {
+      config[module] && dataSupportManager.load({ [module]: config[module] });
+    }
   }
 
   private removeLifeCycle(config: EngineSupportLoadOptions) {
     const dataSupportManager = this.dataSupportManager;
-    const texture = config[MODULETYPE.TEXTURE] || [];
-    const material = config[MODULETYPE.MATERIAL] || [];
-    const assets = config.assets || [];
 
-    delete config.texture;
-    delete config.material;
-    delete config.assets;
+    const removeCycle = this.moduleLifeCycle.sort((a, b) => b.order - a.order);
 
-    // 先删物体
-    dataSupportManager.remove(config);
-    // 再删材质
-    dataSupportManager.remove({ [MODULETYPE.MATERIAL]: material });
-    // 再删贴图
-    dataSupportManager.remove({ [MODULETYPE.TEXTURE]: texture });
+    for (const { module } of removeCycle) {
+      config[module] && dataSupportManager.remove({ [module]: config[module] });
+    }
+
     // 再清空外部资源缓存
+    const assets = config.assets || [];
     const resourceManager = this.resourceManager;
     const loaderManager = this.loaderManager;
     assets.forEach((url) => {
@@ -246,6 +249,11 @@ export class EngineSupport
   }
 
   registModule<C extends Compiler<any, any>>(options: ModuleOptions<C>): this {
+    if (MODULETYPE[options.type.toLocaleUpperCase()]) {
+      console.warn(`module ${options.type} is already exist.`);
+      return this;
+    }
+
     MODULETYPE[options.type.toLocaleUpperCase()] = options.type;
 
     if (options.object) {
@@ -276,6 +284,11 @@ export class EngineSupport
     if (options.extend) {
       options.extend(this);
     }
+
+    this.moduleLifeCycle.push({
+      module: options.type,
+      order: options.lifeOrder || 0,
+    });
 
     return this;
   }

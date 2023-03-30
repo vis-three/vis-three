@@ -1,3 +1,4 @@
+import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { CameraCompiler } from "./CameraCompiler";
 import CameraExtend from "./CameraExtend";
 import { CameraRule } from "./CameraRule";
@@ -11,4 +12,5 @@ export default {
   rule: CameraRule,
   processors: [OrthographicCameraProcessor, PerspectiveCameraProcessor],
   extend: CameraExtend,
+  lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
 };

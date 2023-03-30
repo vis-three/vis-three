@@ -20,4 +20,5 @@ export interface ModuleOptions<C extends Compiler<any, any>> {
   processors: Processor<any, any, any, C>[];
   object?: boolean;
   extend?: <E extends EngineSupport>(engine: E) => void;
+  lifeOrder?: number;
 }
