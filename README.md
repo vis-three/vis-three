@@ -50,8 +50,8 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 | [@vis-three/library-event](packages/library/event/)                                               | ![@vis-three/library-event](https://img.shields.io/npm/v/@vis-three/library-event?label=%20)                   | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-event">          |
 | [@vis-three/library-animate-script](packages/library/aniScript/)                                  | ![@vis-three/library-animate-script](https://img.shields.io/npm/v/@vis-three/library-animate-script?label=%20) | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-animate-script"> |
 | [@vis-three/library-module](packages/library/module/)                                             | ![@vis-three/library-module](https://img.shields.io/npm/v/@vis-three/library-module?label=%20)                 | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-module">         |
-| [@vis-three/library-modifier](https://img.shields.io/npm/v/@vis-three/library-modifier?label=%20) | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-modifier">                                |
-| [@vis-three/library-parser](https://img.shields.io/npm/v/@vis-three/library-parser?label=%20)     | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-parser">                                  |
+| [@vis-three/library-modifier](https://img.shields.io/npm/v/@vis-three/library-modifier?label=%20) | ![@vis-three/library-module](https://img.shields.io/npm/v/@vis-three/library-modifier?label=%20)               | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-modifier">       |
+| [@vis-three/library-parser](https://img.shields.io/npm/v/@vis-three/library-parser?label=%20)     | ![@vis-three/library-module](https://img.shields.io/npm/v/@vis-three/library-parser?label=%20)                 | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-parser">         |
 
 ## 主页、demo、文档在线地址
 
