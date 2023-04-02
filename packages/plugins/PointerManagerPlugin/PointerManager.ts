@@ -79,17 +79,17 @@ export class PointerManager extends EventDispatcher {
       }, this.throttleTime);
     };
 
-    this.mouseDownHandler = extendEventHandler;
+    this.mouseDownHandler = pointEventHandler;
 
-    this.mouseUpHandler = extendEventHandler;
+    this.mouseUpHandler = pointEventHandler;
 
     this.pointerDownHandler = pointEventHandler;
 
     this.pointerUpHandler = pointEventHandler;
 
-    this.clickHandler = extendEventHandler;
+    this.clickHandler = pointEventHandler;
 
-    this.dblclickHandler = extendEventHandler;
+    this.dblclickHandler = pointEventHandler;
 
     this.contextmenuHandler = extendEventHandler;
   }
