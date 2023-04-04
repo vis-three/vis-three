@@ -1,5 +1,6 @@
-import { emptyHandler, EventGeneratorManager, EVENTNAME, globalAntiShake, OBJECTMODULE, } from "@vis-three/middleware";
+import { COMPILER_EVENT, emptyHandler, EventGeneratorManager, EVENTNAME, globalAntiShake, OBJECTMODULE, } from "@vis-three/middleware";
 import { syncObject } from "@vis-three/utils";
+import { EventDispatcher } from "three";
 const objectCacheMap = new WeakMap();
 // 物体的lookAt方法
 export const lookAtHandler = function ({ target, config, value, engine, }) {
@@ -118,6 +119,11 @@ export const addChildrenHanlder = function ({ target, config, value, engine, }) 
             return false;
         }
         target.add(childrenObject);
+        if (childrenObject instanceof EventDispatcher) {
+            childrenObject.dispatchEvent({
+                type: `${COMPILER_EVENT.COMPILE}:parent`,
+            });
+        }
         return true;
     });
 };
@@ -136,6 +142,11 @@ export const removeChildrenHandler = function ({ target, config, value, engine, 
         return;
     }
     childrenConfig.parent = "";
+    if (childrenObject instanceof EventDispatcher) {
+        childrenObject.dispatchEvent({
+            type: `${COMPILER_EVENT.COMPILE}:parent`,
+        });
+    }
 };
 export const objectCreate = function (object, config, filter, engine) {
     // lookAt

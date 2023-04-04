@@ -12,6 +12,7 @@ const modifyKey = [
     "scale.x",
     "scale.y",
     "scale.z",
+    "parent"
 ];
 const cacheTarget = new Map();
 export default defineProcessor({

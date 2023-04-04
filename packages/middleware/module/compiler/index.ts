@@ -1,11 +1,10 @@
 import { syncObject } from "@vis-three/utils";
 import { SymbolConfig } from "../common";
 import { EngineSupport } from "../../engine";
-import { ProxyNotice } from "../DataContainer";
-
-import { Processor } from "../Processor";
 import { installProcessor } from "../space";
 import { EventDispatcher } from "three";
+import { ProxyNotice } from "../DataContainer";
+import { Processor } from "../Processor";
 
 export type CompilerTarget<C extends SymbolConfig> = Record<string, C>;
 

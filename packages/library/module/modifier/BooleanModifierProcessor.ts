@@ -24,6 +24,7 @@ const modifyKey = [
   "scale.x",
   "scale.y",
   "scale.z",
+  "parent"
 ];
 
 const cacheTarget: Map<Modifier, object> = new Map();

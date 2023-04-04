@@ -1,23 +1,23 @@
-import BoxGeometryProcessor from "./BoxGeometryProcessor";
-import CircleGeometryProcessor from "./CircleGeometryProcessor";
-import ConeGeometryProcessor from "./ConeGeometryProcessor";
-import CubicBezierCurveGeometryProcessor from "./CubicBezierCurveGeometryProcessor";
-import CustomGeometryProcessor from "./CustomGeometryProcessor";
-import CylinderGeometryProcessor from "./CylinderGeometryProcessor";
-import EdgesGeometryProcessor from "./EdgesGeometryProcessor";
+import BoxGeometryProcessor from "./processors/BoxGeometryProcessor";
+import CircleGeometryProcessor from "./processors/CircleGeometryProcessor";
+import ConeGeometryProcessor from "./processors/ConeGeometryProcessor";
+import CubicBezierCurveGeometryProcessor from "./processors/CubicBezierCurveGeometryProcessor";
+import CustomGeometryProcessor from "./processors/CustomGeometryProcessor";
+import CylinderGeometryProcessor from "./processors/CylinderGeometryProcessor";
+import EdgesGeometryProcessor from "./processors/EdgesGeometryProcessor";
 import { GeometryCompiler } from "./GeometryCompiler";
 import { GeometryRule } from "./GeometryRule";
-import LineCurveGeometryProcessor from "./LineCurveGeometryProcessor";
-import LineShapeGeometryProcessor from "./LineShapeGeometryProcessor";
-import LineTubeGeometryProcessor from "./LineTubeGeometryProcessor";
-import LoadGeometryProcessor from "./LoadGeometryProcessor";
-import PlaneGeometryProcessor from "./PlaneGeometryProcessor";
-import QuadraticBezierCurveGeometryProcessor from "./QuadraticBezierCurveGeometryProcessor";
-import RingGeometryProcessor from "./RingGeometryProcessor";
-import SphereGeometryProcessor from "./SphereGeometryProcessor";
-import SplineCurveGeometryProcessor from "./SplineCurveGeometryProcessor";
-import SplineTubeGeometryProcessor from "./SplineTubeGeometryProcessor";
-import TorusGeometryProcessor from "./TorusGeometryProcessor";
+import LineCurveGeometryProcessor from "./processors/LineCurveGeometryProcessor";
+import LineShapeGeometryProcessor from "./processors/LineShapeGeometryProcessor";
+import LineTubeGeometryProcessor from "./processors/LineTubeGeometryProcessor";
+import LoadGeometryProcessor from "./processors/LoadGeometryProcessor";
+import PlaneGeometryProcessor from "./processors/PlaneGeometryProcessor";
+import QuadraticBezierCurveGeometryProcessor from "./processors/QuadraticBezierCurveGeometryProcessor";
+import RingGeometryProcessor from "./processors/RingGeometryProcessor";
+import SphereGeometryProcessor from "./processors/SphereGeometryProcessor";
+import SplineCurveGeometryProcessor from "./processors/SplineCurveGeometryProcessor";
+import SplineTubeGeometryProcessor from "./processors/SplineTubeGeometryProcessor";
+import TorusGeometryProcessor from "./processors/TorusGeometryProcessor";
 
 export default {
   type: "geometry",

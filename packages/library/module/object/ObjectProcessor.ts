@@ -1,4 +1,5 @@
 import {
+  COMPILER_EVENT,
   emptyHandler,
   EngineSupport,
   EventGeneratorManager,
@@ -12,7 +13,7 @@ import {
   RegCommand,
 } from "@vis-three/middleware";
 import { IgnoreAttribute, syncObject } from "@vis-three/utils";
-import { Object3D, Vector3 } from "three";
+import { EventDispatcher, Object3D, Vector3 } from "three";
 import { ObjectCompiler } from "./ObjectCompiler";
 import { ObjectConfig } from "./ObjectConfig";
 
@@ -230,6 +231,12 @@ export const addChildrenHanlder = function <
     }
 
     target.add(childrenObject);
+
+    if (childrenObject instanceof EventDispatcher) {
+      childrenObject.dispatchEvent({
+        type: `${COMPILER_EVENT.COMPILE}:parent`,
+      });
+    }
     return true;
   });
 };
@@ -264,6 +271,12 @@ export const removeChildrenHandler = function <
   }
 
   childrenConfig.parent = "";
+
+  if (childrenObject instanceof EventDispatcher) {
+    childrenObject.dispatchEvent({
+      type: `${COMPILER_EVENT.COMPILE}:parent`,
+    });
+  }
 };
 
 export const objectCreate = function <

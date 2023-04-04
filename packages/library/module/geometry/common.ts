@@ -1,5 +1,9 @@
-import { CurveGeometry } from "@vis-three/core";
-import { COMPILER_EVENT, EngineSupport, ProcessorCommands, ProcessParams } from "@vis-three/middleware";
+import {
+  COMPILER_EVENT,
+  EngineSupport,
+  ProcessorCommands,
+  ProcessParams,
+} from "@vis-three/middleware";
 import {
   Box3,
   BufferGeometry,
@@ -11,6 +15,7 @@ import {
 } from "three";
 import { GeometryCompiler } from "./GeometryCompiler";
 import { GeometryAllType, GeometryConfig } from "./GeometryInterface";
+import { CurveGeometry } from "./extends";
 
 export const transfromAnchor = function <
   T extends BufferGeometry,
