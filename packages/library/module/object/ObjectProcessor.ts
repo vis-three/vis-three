@@ -232,6 +232,8 @@ export const addChildrenHanlder = function <
 
     target.add(childrenObject);
 
+    childrenObject.updateMatrixWorld(true);
+
     if (childrenObject instanceof EventDispatcher) {
       childrenObject.dispatchEvent({
         type: `${COMPILER_EVENT.COMPILE}:parent`,
