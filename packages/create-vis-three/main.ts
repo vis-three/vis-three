@@ -109,7 +109,7 @@ program
 
       spinner.succeed(
         chalk.green(
-          `${params.name}--->${path.resolve(
+          `${params.name} ---> ${path.resolve(
             path.resolve(targetDir, `./${params.url}`)
           )}`
         )

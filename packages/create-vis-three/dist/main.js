@@ -70,7 +70,7 @@ program
         Object.assign(parameters, data);
         const result = ejs.render(template, parameters);
         writeFileSync(path.resolve(path.resolve(targetDir, `./${params.url}`)), result);
-        spinner.succeed(chalk.green(`${params.name}--->${path.resolve(path.resolve(targetDir, `./${params.url}`))}`));
+        spinner.succeed(chalk.green(`${params.name} ---> ${path.resolve(path.resolve(targetDir, `./${params.url}`))}`));
     }
     spinner.succeed(chalk.green(`文件生成完毕！`));
     rimraf(buildDir);

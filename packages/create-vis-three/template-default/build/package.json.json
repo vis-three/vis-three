@@ -1,0 +1,7 @@
+[
+  {
+    "type": "input",
+    "name": "name",
+    "message": "补充模块名@vis-three/："
+  }
+]
