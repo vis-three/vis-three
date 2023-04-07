@@ -1,9 +1,9 @@
 {
-  "name": "@vis-three/template-default",
+  "name": "@vis-three/template-module",
   "version": "0.6.0",
-  "description": "vis-three template default",
-  "main": "dist/vis-three.template-default.umd.js",
-  "module": "dist/vis-three.template-default.es.js",
+  "description": "vis-three template module",
+  "main": "dist/vis-three.template-module.umd.js",
+  "module": "dist/vis-three.template-module.es.js",
   "types": "index.d.ts",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
@@ -26,7 +26,12 @@
     "typescript": "^4.3.2",
     "vite": "^2.9.15"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@vis-three/core": "workspace:^0.6.1",
+    "@vis-three/middleware": "workspace:^0.6.3",
+    "@vis-three/utils": "workspace:^0.6.0",
+    "uuid": "^8.3.2"
+  },
   "files": [
     "dist",
     "**/*.d.ts",

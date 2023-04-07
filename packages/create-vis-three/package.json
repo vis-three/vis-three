@@ -1,18 +1,51 @@
 {
   "name": "create-vis-three",
   "version": "0.6.0",
-  "private": "false",
-  "description": "vis-three create",
-  "bin": {
-    "create-vis-three": "./index.js"
-  },
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
+  "private": "false",
+  "description": "vis-three create",
+  "type": "module",
+  "bin": {
+    "create-vis-three": "index.js"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p ./tsconfig.json  && rollup -c",
+    "lint": "npx eslint *.js src/**/*.ts --fix"
+  },
+  "devDependencies": {
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-typescript": "^11.1.0",
+    "@types/inquirer": "^9.0.3",
+    "@types/node": "^18.11.12",
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "^5.18.0",
+    "eslint": "^8.12.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.6.2",
+    "rollup": "^3.20.2",
+    "typescript": "^4.3.2"
+  },
   "dependencies": {
-    "chalk": "4",
-    "commander": "^9.4.0",
-    "copy-dir": "^1.3.0",
-    "inquirer": "^8",
-    "ora": "^5"
+    "chalk": "^5.2.0",
+    "commander": "^10.0.0",
+    "ejs": "^3.1.9",
+    "inquirer": "^9.1.5",
+    "ora": "^6.3.0"
+  },
+  "files": [
+    "dist",
+    "index.js",
+    "template-default",
+    "template-module",
+    "template-plugin",
+    "template-strategy",
+    "package.json",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=14.15.0"
   }
 }
