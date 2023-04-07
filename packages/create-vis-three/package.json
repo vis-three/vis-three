@@ -1,9 +1,9 @@
 {
   "name": "create-vis-three",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
-  "private": "false",
+  "private": false,
   "description": "vis-three create",
   "type": "module",
   "bin": {
