@@ -7,10 +7,11 @@ const { dependencies } = JSON.parse(
 );
 
 export default {
-  input: "./src/main.ts",
+  input: "./main.ts",
   output: {
-    file: "dist/main.js",
+    dir: "dist",
     format: "es",
+    preserveModules: true,
   },
   external: Object.keys(dependencies),
   plugins: [json(), typescirpt()],

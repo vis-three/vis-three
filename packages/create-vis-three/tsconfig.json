@@ -17,7 +17,7 @@
     "declaration": true,
     "declarationDir": "dist/types"
   },
-  "include": ["src/**/*"],
+  "include": ["build/**/*", "main.ts", "utils"],
   "exclude": [
     "template-default",
     "template-module",
