@@ -1,0 +1,10 @@
+[
+  {
+    "name": "package.json",
+    "url": "./package.json"
+  },
+  {
+    "name": "index.ts",
+    "url": "./index.ts"
+  }
+]

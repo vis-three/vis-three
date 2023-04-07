@@ -1,0 +1,15 @@
+import { Engine, Strategy } from "@vis-three/core";
+import { transPkgName } from "@vis-three/utils";
+
+import { name as pkgname } from "./package.json";
+
+export const <%= name.replace(/-/g, '_').toLocaleUpperCase()%>_STRATEGY = transPkgName(pkgname);
+
+export const <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Strategy: Strategy<Engine> = function () {
+  return {
+    name: <%= name.replace(/-/g, '_').toLocaleUpperCase()%>_STRATEGY,
+    condition: [],
+    exec(engine) {},
+    rollback(engine) {},
+  };
+};
