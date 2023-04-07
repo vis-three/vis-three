@@ -1,0 +1,13 @@
+import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Compiler } from "./<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Compiler";
+import { <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Rule } from "./<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Rule";
+import <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Processor from "./processors/<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Processor";
+
+export default {
+  type: "<%= name%>",
+  object: true,
+  compiler: <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Compiler,
+  rule: <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Rule,
+  processors: [<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Processor],
+  lifeOrder: SUPPORT_LIFE_CYCLE.ZERO,
+};

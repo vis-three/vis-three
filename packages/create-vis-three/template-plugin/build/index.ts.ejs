@@ -4,7 +4,7 @@ import { name as pkgname } from "./package.json";
 
 export const <%= name.replace(/-/g, '_').toLocaleUpperCase()%>_PLUGIN = transPkgName(pkgname);
 
-export const <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Plugin: Plugin<Engine> = function () {
+export const <%= name.split('-').map(str => str.slice(0, 1).toLocaleUpperCase() + str.slice(1)).join('')%>Plugin: Plugin<Engine> = function () {
   return {
     name: <%= name.replace(/-/g, '_').toLocaleUpperCase()%>_PLUGIN,
     install(engine) {},

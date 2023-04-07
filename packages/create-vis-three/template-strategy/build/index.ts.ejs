@@ -5,7 +5,7 @@ import { name as pkgname } from "./package.json";
 
 export const <%= name.replace(/-/g, '_').toLocaleUpperCase()%>_STRATEGY = transPkgName(pkgname);
 
-export const <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Strategy: Strategy<Engine> = function () {
+export const <%= name.split('-').map(str => str.slice(0, 1).toLocaleUpperCase() + str.slice(1)).join('')%>Strategy: Strategy<Engine> = function () {
   return {
     name: <%= name.replace(/-/g, '_').toLocaleUpperCase()%>_STRATEGY,
     condition: [],

@@ -1,0 +1,8 @@
+import { Compiler } from "@vis-three/middleware";
+import { <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Config } from "./<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Config";
+
+export class <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Compiler extends Compiler<<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Config, object> {
+  constructor() {
+    super();
+  }
+}

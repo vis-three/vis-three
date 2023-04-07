@@ -55,25 +55,36 @@ program
         return;
     }
     spinner.succeed(chalk.green("模板创建完成！"));
-    if (!existsSync(path.resolve(targetDir, `./build`))) {
-        return;
+    const totalParams = {};
+    if (existsSync(path.resolve(targetDir, `./build`))) {
+        spinner.start(chalk.blue(`正在生成文件...`));
+        const buildDir = path.resolve(targetDir, `./build`);
+        const fileList = jsonFileParse(path.resolve(buildDir, "./index.json"));
+        for (const params of fileList) {
+            spinner.info(chalk.blue(`正在生成${params.name}...`));
+            const template = readFileSync(path.resolve(buildDir, `./${params.name}.ejs`), "utf-8");
+            let data = {};
+            if (existsSync(path.resolve(buildDir, `./${params.name}.json`))) {
+                data = await inquirer.prompt(jsonFileParse(path.resolve(buildDir, `./${params.name}.json`)));
+            }
+            Object.assign(totalParams, data);
+            const result = ejs.render(template, totalParams);
+            writeFileSync(path.resolve(path.resolve(targetDir, `./${params.url}`)), result);
+            spinner.succeed(chalk.green(`${params.name} ---> ${path.resolve(path.resolve(targetDir, `./${params.url}`))}`));
+        }
+        rimraf(buildDir);
+        spinner.succeed(chalk.green(`文件生成完毕！`));
     }
-    spinner.start(chalk.blue(`正在生成文件...`));
-    const buildDir = path.resolve(targetDir, `./build`);
-    const fileList = jsonFileParse(path.resolve(buildDir, "./index.json"));
-    const parameters = {};
-    for (const params of fileList) {
-        spinner.info(chalk.blue(`正在生成${params.name}...`));
-        const template = readFileSync(path.resolve(buildDir, `./${params.name}.ejs`), "utf-8");
-        options = jsonFileParse(path.resolve(buildDir, `./${params.name}.json`));
-        const data = await inquirer.prompt(options);
-        Object.assign(parameters, data);
-        const result = ejs.render(template, parameters);
-        writeFileSync(path.resolve(path.resolve(targetDir, `./${params.url}`)), result);
-        spinner.succeed(chalk.green(`${params.name} ---> ${path.resolve(path.resolve(targetDir, `./${params.url}`))}`));
+    if (existsSync(path.resolve(targetDir, `./script`))) {
+        spinner.info(chalk.blue(`正在运行脚本...`));
+        const scriptDir = path.resolve(targetDir, `./script`);
+        const { default: script } = await import(`file://${path.resolve(scriptDir, "./index.mjs")}`);
+        script(Object.assign(totalParams, {
+            targetDir,
+        }));
+        rimraf(scriptDir);
+        spinner.succeed(chalk.green(`脚本运行完毕！`));
     }
-    spinner.succeed(chalk.green(`文件生成完毕！`));
-    rimraf(buildDir);
     log.success("\n下一步：");
     log.success(`cd ${targetDir}`);
     log.success(`npm i`);

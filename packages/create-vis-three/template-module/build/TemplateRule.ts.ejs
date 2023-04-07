@@ -1,0 +1,11 @@
+import { ProxyNotice, Rule } from "@vis-three/middleware";
+import { <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Compiler } from "./<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Compiler";
+import { validate } from "uuid";
+
+export const <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Rule: Rule<<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Compiler> = function (
+  input: ProxyNotice,
+  compiler,
+  validateFun = validate
+) {
+  Rule(input, compiler, validateFun);
+};

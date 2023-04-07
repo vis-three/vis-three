@@ -1,0 +1,13 @@
+[
+  {
+    "type": "input",
+    "name": "name",
+    "message": "补充模块名@vis-three/module-："
+  },
+  {
+    "type": "input",
+    "name": "author",
+    "message": "作者：",
+    "default": "Shiotsuki_"
+  }
+]

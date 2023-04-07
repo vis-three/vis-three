@@ -1,6 +1,7 @@
-import { Compiler, SymbolConfig } from "@vis-three/middleware";
+import { Compiler } from "@vis-three/middleware";
+import { TemplateConfig } from "./TemplateConfig";
 
-export class TemplateCompiler extends Compiler<SymbolConfig, object> {
+export class TemplateCompiler extends Compiler<TemplateConfig, object> {
   constructor() {
     super();
   }

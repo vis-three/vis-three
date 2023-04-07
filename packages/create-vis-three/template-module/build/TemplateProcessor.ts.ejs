@@ -1,0 +1,22 @@
+import { defineProcessor, EngineSupport } from "@vis-three/middleware";
+import { <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Compiler } from "../<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Compiler";
+import { get<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Config, <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Config } from "../<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Config";
+
+export default defineProcessor<
+  <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Config,
+  object,
+  EngineSupport,
+  <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Compiler
+>({
+  type: "<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>",
+  config: get<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Config,
+  commands: {
+    add: {},
+    set: {},
+    delete: {},
+  },
+  create(config, engine): object {
+    return {};
+  },
+  dispose() {},
+});

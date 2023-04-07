@@ -1,18 +1,14 @@
-import {
-  defineProcessor,
-  EngineSupport,
-  SymbolConfig,
-} from "@vis-three/middleware";
+import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 import { TemplateCompiler } from "../TemplateCompiler";
-import { getTemplateConfig } from "../TemplateConfig";
+import { getTemplateConfig, TemplateConfig } from "../TemplateConfig";
 
 export default defineProcessor<
-  SymbolConfig,
+  TemplateConfig,
   object,
   EngineSupport,
   TemplateCompiler
 >({
-  type: "templateObject",
+  type: "template",
   config: getTemplateConfig,
   commands: {
     add: {},

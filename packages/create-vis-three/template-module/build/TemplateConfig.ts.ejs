@@ -1,0 +1,7 @@
+import { SymbolConfig, getSymbolConfig } from "@vis-three/middleware";
+
+export interface <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Config extends SymbolConfig {}
+
+export const get<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Config = function (): <%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Config {
+  return Object.assign(getSymbolConfig(), {});
+};
