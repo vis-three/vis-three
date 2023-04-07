@@ -61,12 +61,14 @@ program
     spinner.start(chalk.blue(`正在生成文件...`));
     const buildDir = path.resolve(targetDir, `./build`);
     const fileList = jsonFileParse(path.resolve(buildDir, "./index.json"));
+    const parameters = {};
     for (const params of fileList) {
         spinner.info(chalk.blue(`正在生成${params.name}...`));
         const template = readFileSync(path.resolve(buildDir, `./${params.name}.ejs`), "utf-8");
-        const options = jsonFileParse(path.resolve(buildDir, `./${params.name}.json`));
+        options = jsonFileParse(path.resolve(buildDir, `./${params.name}.json`));
         const data = await inquirer.prompt(options);
-        const result = ejs.render(template, data);
+        Object.assign(parameters, data);
+        const result = ejs.render(template, parameters);
         writeFileSync(path.resolve(path.resolve(targetDir, `./${params.url}`)), result);
         spinner.succeed(chalk.green(`${params.name}--->${path.resolve(path.resolve(targetDir, `./${params.url}`))}`));
     }

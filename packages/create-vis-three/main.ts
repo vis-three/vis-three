@@ -84,6 +84,8 @@ program
 
     const fileList = jsonFileParse(path.resolve(buildDir, "./index.json"));
 
+    const parameters = {} as any;
+
     for (const params of fileList) {
       spinner.info(chalk.blue(`正在生成${params.name}...`));
 
@@ -92,13 +94,13 @@ program
         "utf-8"
       );
 
-      const options = jsonFileParse(
-        path.resolve(buildDir, `./${params.name}.json`)
-      );
+      options = jsonFileParse(path.resolve(buildDir, `./${params.name}.json`));
 
       const data = await inquirer.prompt(options);
 
-      const result = ejs.render(template, data);
+      Object.assign(parameters, data);
+
+      const result = ejs.render(template, parameters);
 
       writeFileSync(
         path.resolve(path.resolve(targetDir, `./${params.url}`)),
