@@ -1,8 +1,8 @@
 import { ProxyNotice, Rule } from "@vis-three/middleware";
-import { ShapeCompiler } from "./ShapeCompiler";
+import { PathCompiler } from "./PathCompiler";
 import { validate } from "uuid";
 
-export const ShapeRule: Rule<ShapeCompiler> = function (
+export const PathRule: Rule<PathCompiler> = function (
   input: ProxyNotice,
   compiler,
   validateFun = validate

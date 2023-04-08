@@ -1,9 +1,9 @@
 {
-  "name": "@vis-three/module-shape",
+  "name": "@vis-three/module-path",
   "version": "0.6.0",
-  "description": "vis-three shape module",
-  "main": "dist/vis-three.module-shape.umd.js",
-  "module": "dist/vis-three.module-shape.es.js",
+  "description": "vis-three path module",
+  "main": "dist/vis-three.module-path.umd.js",
+  "module": "dist/vis-three.module-path.es.js",
   "types": "index.d.ts",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
