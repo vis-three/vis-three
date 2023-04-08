@@ -31,7 +31,7 @@
     "@vis-three/module-geometry": "workspace:^0.6.1",
     "@vis-three/module-material": "workspace:^0.6.2",
     "@vis-three/module-solid-object": "workspace:^0.6.0",
-    "@vis-three/module-texture": "workspace:^0.6.0",
+    "@vis-three/module-texture": "workspace:^0.6.1",
     "@vis-three/utils": "workspace:^0.6.0",
     "uuid": "^8.3.2"
   },

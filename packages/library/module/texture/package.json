@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-texture",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "vis-three texture module",
   "main": "dist/vis-three.module-texture.umd.js",
   "module": "dist/vis-three.module-texture.es.js",

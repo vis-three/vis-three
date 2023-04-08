@@ -723,7 +723,7 @@ importers:
       '@vis-three/module-renderer': workspace:^0.6.0
       '@vis-three/module-scene': workspace:^0.6.1
       '@vis-three/module-sprite': workspace:^0.6.1
-      '@vis-three/module-texture': workspace:^0.6.0
+      '@vis-three/module-texture': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-prettier: ^4.0.0
@@ -1529,7 +1529,7 @@ importers:
       '@vis-three/module-geometry': workspace:^0.6.1
       '@vis-three/module-material': workspace:^0.6.2
       '@vis-three/module-solid-object': workspace:^0.6.0
-      '@vis-three/module-texture': workspace:^0.6.0
+      '@vis-three/module-texture': workspace:^0.6.1
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
