@@ -1,4 +1,3 @@
-import { ImageTexture } from "@vis-three/core";
 import { syncObject } from "@vis-three/utils";
 import { CanvasTexture } from "three";
 
@@ -44,7 +43,7 @@ export default defineProcessor<
     return texture;
   },
 
-  dispose(target: ImageTexture): void {
+  dispose(target): void {
     target.dispose();
   },
 });

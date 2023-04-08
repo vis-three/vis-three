@@ -4,4 +4,4 @@ packages:
   - "packages/engine/*"
   - "packages/strategy/*"
   - "packages/library/**/*"
-  - "packages/create-vis-three/**/*"
+  - "packages/create-vis-three"

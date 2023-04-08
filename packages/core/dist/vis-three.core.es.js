@@ -4,12 +4,10 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { OrthographicCamera, AmbientLight, RectAreaLight, HemisphereLight, PerspectiveCamera, Scene, Texture, RGBFormat, LinearFilter, PlaneBufferGeometry, Box3, Vector3, Quaternion, Matrix4, Vector2 } from "three";
+import { OrthographicCamera, AmbientLight, RectAreaLight, HemisphereLight, PerspectiveCamera, Scene } from "three";
 import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
 import { LightShadow } from "three/src/lights/LightShadow";
-import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
-import { CSS3DObject, CSS3DSprite as CSS3DSprite$1 } from "three/examples/jsm/renderers/CSS3DRenderer";
-const version = "0.6.0";
+const version = "0.6.1";
 if (!window.__THREE__) {
   console.error(
     `vis-three dependent on three.js module, pleace run 'npm i three' first.`
@@ -132,15 +130,15 @@ class EventDispatcher {
     return Boolean([...this.listeners.keys()].length);
   }
 }
-var ENGINE_EVENT;
-(function(ENGINE_EVENT2) {
+var ENGINE_EVENT = /* @__PURE__ */ ((ENGINE_EVENT2) => {
   ENGINE_EVENT2["SETDOM"] = "setDom";
   ENGINE_EVENT2["SETSIZE"] = "setSize";
   ENGINE_EVENT2["SETCAMERA"] = "setCamera";
   ENGINE_EVENT2["SETSCENE"] = "setScene";
   ENGINE_EVENT2["RENDER"] = "render";
   ENGINE_EVENT2["DISPOSE"] = "dispose";
-})(ENGINE_EVENT || (ENGINE_EVENT = {}));
+  return ENGINE_EVENT2;
+})(ENGINE_EVENT || {});
 class Engine extends EventDispatcher {
   constructor() {
     super();
@@ -159,7 +157,9 @@ class Engine extends EventDispatcher {
     }
     const validateDep = (name) => {
       if (!this.pluginTables.has(name)) {
-        console.error(`${plugin.name} must install this plugin before: ${name}`);
+        console.error(
+          `${plugin.name} must install this plugin before: ${name}`
+        );
         return false;
       }
       return true;
@@ -179,9 +179,27 @@ class Engine extends EventDispatcher {
     this.pluginTables.set(plugin.name, plugin);
     return this;
   }
-  unistall(name) {
+  uninstall(name) {
     if (!this.pluginTables.has(name)) {
       return this;
+    }
+    for (const strategy of this.strategyTables.values()) {
+      if (strategy.condition.includes(name)) {
+        console.info(
+          `engine auto rollback strategy: ${strategy.name} before uninstall plugin: ${name}.`
+        );
+        this.rollback(strategy.name);
+      }
+    }
+    for (const plugin2 of this.pluginTables.values()) {
+      if (plugin2.deps) {
+        if (Array.isArray(plugin2.deps) && plugin2.deps.includes(name) || plugin2.deps === name) {
+          console.info(
+            `engine auto uninstall plugin: ${plugin2.name} before uninstall plugin: ${name}.`
+          );
+          this.uninstall(plugin2.name);
+        }
+      }
     }
     const plugin = this.pluginTables.get(name);
     plugin.dispose(this);
@@ -197,7 +215,9 @@ class Engine extends EventDispatcher {
     const plugins = this.pluginTables;
     for (const plugin of strategy.condition) {
       if (!plugins.has(plugin)) {
-        console.warn(`${strategy.name} does not meet the conditions for execution: ${plugin}`);
+        console.warn(
+          `${strategy.name} does not meet the conditions for execution: ${plugin}`
+        );
         return this;
       }
     }
@@ -218,7 +238,7 @@ class Engine extends EventDispatcher {
   setDom(dom) {
     this.dom = dom;
     this.dispatchEvent({
-      type: ENGINE_EVENT.SETDOM,
+      type: "setDom",
       dom
     });
     return this;
@@ -226,30 +246,35 @@ class Engine extends EventDispatcher {
   setSize(width, height) {
     var _a, _b;
     if (width && width <= 0 || height && height <= 0) {
-      console.warn(`you must be input width and height bigger then zero, width: ${width}, height: ${height}`);
+      console.warn(
+        `you must be input width and height bigger then zero, width: ${width}, height: ${height}`
+      );
       return this;
     }
     !width && (width = ((_a = this.dom) == null ? void 0 : _a.offsetWidth) || window.innerWidth);
     !height && (height = ((_b = this.dom) == null ? void 0 : _b.offsetHeight) || window.innerHeight);
-    this.dispatchEvent({ type: ENGINE_EVENT.SETSIZE, width, height });
+    this.dispatchEvent({ type: "setSize", width, height });
     return this;
   }
   setCamera(camera, options) {
     this.dispatchEvent({
-      type: ENGINE_EVENT.SETCAMERA,
+      type: "setCamera",
       camera,
       oldCamera: this.camera,
-      options: Object.assign({
-        orbitControls: true,
-        transformControls: true
-      }, options || {})
+      options: Object.assign(
+        {
+          orbitControls: true,
+          transformControls: true
+        },
+        options || {}
+      )
     });
     this.camera = camera;
     return this;
   }
   setScene(scene) {
     this.dispatchEvent({
-      type: ENGINE_EVENT.SETSCENE,
+      type: "setScene",
       scene,
       oldScene: this.scene
     });
@@ -258,14 +283,14 @@ class Engine extends EventDispatcher {
   }
   render(delta) {
     this.dispatchEvent({
-      type: ENGINE_EVENT.RENDER,
+      type: "render",
       delta
     });
     return this;
   }
   dispose() {
     this.dispatchEvent({
-      type: ENGINE_EVENT.DISPOSE
+      type: "dispose"
     });
     return this;
   }
@@ -287,344 +312,7 @@ const defineEngine = function(options) {
 const definePlugin = function(options) {
   return () => options;
 };
-class VideoTexture extends Texture {
-  constructor(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
-    super(
-      video,
-      mapping,
-      wrapS,
-      wrapT,
-      magFilter,
-      minFilter,
-      format,
-      type,
-      anisotropy
-    );
-    __publicField(this, "isVideoTexture", true);
-    this.format = format !== void 0 ? format : RGBFormat;
-    this.minFilter = minFilter !== void 0 ? minFilter : LinearFilter;
-    this.magFilter = magFilter !== void 0 ? magFilter : LinearFilter;
-    this.generateMipmaps = false;
-  }
-  clone() {
-    return new this.constructor(this.image).copy(this);
-  }
-  update() {
-    const video = this.image;
-    const hasVideoFrameCallback = "requestVideoFrameCallback" in video;
-    if (hasVideoFrameCallback) {
-      this.needsUpdate = true;
-    } else if (hasVideoFrameCallback === false && video.readyState >= video.HAVE_CURRENT_DATA) {
-      this.needsUpdate = true;
-    }
-  }
-}
-class VisCSS2DObject extends CSS2DObject {
-  constructor(element = document.createElement("div")) {
-    const root = document.createElement("div");
-    const width = 50;
-    const height = 50;
-    root.style.width = `${width}px`;
-    root.style.height = `${height}px`;
-    root.appendChild(element);
-    super(root);
-    __publicField(this, "geometry");
-    __publicField(this, "_width");
-    __publicField(this, "_height");
-    this.geometry = new PlaneBufferGeometry(width, height);
-    this.geometry.computeBoundingBox();
-    this._width = width;
-    this._height = height;
-  }
-  get width() {
-    return this._width;
-  }
-  set width(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(value, this._height);
-    this.geometry.computeBoundingBox();
-    this.element.style.width = `${value}px`;
-    this._width = value;
-  }
-  get height() {
-    return this._height;
-  }
-  set height(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(this._width, value);
-    this.geometry.computeBoundingBox();
-    this.element.style.height = `${value}px`;
-    this._height = value;
-  }
-}
-class VisCSS3DObject extends CSS3DObject {
-  constructor(element = document.createElement("div")) {
-    const root = document.createElement("div");
-    const width = 50;
-    const height = 50;
-    root.style.width = `${width}px`;
-    root.style.height = `${height}px`;
-    root.appendChild(element);
-    super(root);
-    __publicField(this, "geometry");
-    __publicField(this, "_width");
-    __publicField(this, "_height");
-    this.geometry = new PlaneBufferGeometry(width, height);
-    this.geometry.computeBoundingBox();
-    this._width = width;
-    this._height = height;
-  }
-  get width() {
-    return this._width;
-  }
-  set width(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(value, this._height);
-    this.geometry.computeBoundingBox();
-    this.element.style.width = `${value}px`;
-    this._width = value;
-  }
-  get height() {
-    return this._height;
-  }
-  set height(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(this._width, value);
-    this.geometry.computeBoundingBox();
-    this.element.style.height = `${value}px`;
-    this._height = value;
-  }
-}
-class VisCSS3DSprite extends CSS3DSprite$1 {
-  constructor(element = document.createElement("div")) {
-    const root = document.createElement("div");
-    const width = 50;
-    const height = 50;
-    root.style.width = `${width}px`;
-    root.style.height = `${height}px`;
-    root.appendChild(element);
-    element.classList.add("vis-css3d", "vis-css3d-sprite");
-    super(root);
-    __publicField(this, "geometry");
-    __publicField(this, "_width");
-    __publicField(this, "_height");
-    __publicField(this, "cacheBox", new Box3());
-    __publicField(this, "cachePosition", new Vector3());
-    __publicField(this, "cacheQuaternion", new Quaternion());
-    __publicField(this, "cacheScale", new Vector3());
-    __publicField(this, "cacheMatrix4", new Matrix4());
-    __publicField(this, "rotateMatrix4", new Matrix4());
-    this.geometry = new PlaneBufferGeometry(width, height);
-    this.geometry.computeBoundingBox();
-    this._width = width;
-    this._height = height;
-    this.type = "CSS3DSprite";
-  }
-  get width() {
-    return this._width;
-  }
-  set width(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(value, this._height);
-    this.geometry.computeBoundingBox();
-    this.element.style.width = `${value}px`;
-    this._width = value;
-  }
-  get height() {
-    return this._height;
-  }
-  set height(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(this._width, value);
-    this.geometry.computeBoundingBox();
-    this.element.style.height = `${value}px`;
-    this._height = value;
-  }
-  raycast(raycaster, intersects) {
-    const box = this.cacheBox.copy(this.geometry.boundingBox);
-    this.matrixWorld.decompose(
-      this.cachePosition,
-      this.cacheQuaternion,
-      this.cacheScale
-    );
-    const rotateMatrix4 = this.rotateMatrix4.lookAt(
-      this.position,
-      raycaster.camera.position,
-      this.up
-    );
-    this.cacheQuaternion.setFromRotationMatrix(rotateMatrix4);
-    this.cacheMatrix4.compose(
-      this.cachePosition,
-      this.cacheQuaternion,
-      this.cacheScale
-    );
-    box.applyMatrix4(this.cacheMatrix4);
-    if (raycaster.ray.intersectsBox(box)) {
-      intersects.push({
-        distance: raycaster.ray.origin.distanceTo(this.position),
-        object: this,
-        point: this.position
-      });
-    }
-  }
-}
-class ImageTexture extends Texture {
-  constructor(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding) {
-    super(
-      image,
-      mapping,
-      wrapS,
-      wrapT,
-      magFilter,
-      minFilter,
-      format,
-      type,
-      anisotropy,
-      encoding
-    );
-  }
-}
-class LoadTexture extends Texture {
-  constructor(texture) {
-    super();
-    Object.keys(texture).forEach((key) => {
-      this[key] = texture[key];
-    });
-    this.copy(texture);
-  }
-}
-class CSS2DPlane extends VisCSS2DObject {
-  constructor(element = document.createElement("div")) {
-    super(element);
-    __publicField(this, "cacheBox", new Box3());
-    __publicField(this, "viewWorldMatrix", new Matrix4());
-    __publicField(this, "mvPosition", new Vector3());
-    __publicField(this, "matrixScale", new Vector3());
-    __publicField(this, "worldScale", new Vector3());
-    __publicField(this, "vA", new Vector3());
-    __publicField(this, "vB", new Vector3());
-    __publicField(this, "vC", new Vector3());
-    __publicField(this, "alignedPosition", new Vector2());
-    __publicField(this, "rotatedPosition", new Vector2());
-    __publicField(this, "intersectPoint", new Vector3());
-    this.type = "CSS2DPlane";
-    this.element.classList.add("vis-css2d", "vis-css2d-plane");
-    const observer = new MutationObserver(() => {
-      this.matrixScale.set(
-        Math.abs(this.width / 100) * 0.1,
-        Math.abs(this.height / 100) * 0.1,
-        1
-      );
-    });
-    observer.observe(this.element, {
-      attributeFilter: ["style"]
-    });
-  }
-  transformVertex(vertexPosition, mvPosition, scale) {
-    const alignedPosition = this.alignedPosition;
-    const rotatedPosition = this.rotatedPosition;
-    const sin = 0;
-    const cos = 1;
-    alignedPosition.copy(vertexPosition).multiply(scale);
-    {
-      rotatedPosition.x = cos * alignedPosition.x - sin * alignedPosition.y;
-      rotatedPosition.y = sin * alignedPosition.x + cos * alignedPosition.y;
-    }
-    vertexPosition.copy(mvPosition);
-    vertexPosition.x += rotatedPosition.x;
-    vertexPosition.y += rotatedPosition.y;
-    vertexPosition.applyMatrix4(this.viewWorldMatrix);
-  }
-  raycast(raycaster, intersects) {
-    if (raycaster.camera === null) {
-      console.error(
-        'THREE.Sprite: "Raycaster.camera" needs to be set in order to raycast against sprites.'
-      );
-    }
-    this.viewWorldMatrix.copy(raycaster.camera.matrixWorld);
-    this.modelViewMatrix.multiplyMatrices(
-      raycaster.camera.matrixWorldInverse,
-      this.matrixWorld
-    );
-    this.mvPosition.setFromMatrixPosition(this.modelViewMatrix);
-    this.worldScale.copy(this.matrixScale).multiplyScalar(-this.mvPosition.z);
-    this.transformVertex(
-      this.vA.set(-0.5, -0.5, 0),
-      this.mvPosition,
-      this.worldScale
-    );
-    this.transformVertex(
-      this.vB.set(0.5, -0.5, 0),
-      this.mvPosition,
-      this.worldScale
-    );
-    this.transformVertex(
-      this.vC.set(0.5, 0.5, 0),
-      this.mvPosition,
-      this.worldScale
-    );
-    let intersect = raycaster.ray.intersectTriangle(
-      this.vA,
-      this.vB,
-      this.vC,
-      false,
-      this.intersectPoint
-    );
-    if (intersect === null) {
-      this.transformVertex(
-        this.vB.set(-0.5, 0.5, 0),
-        this.mvPosition,
-        this.worldScale
-      );
-      intersect = raycaster.ray.intersectTriangle(
-        this.vA,
-        this.vC,
-        this.vB,
-        false,
-        this.intersectPoint
-      );
-      if (intersect === null) {
-        return;
-      }
-    }
-    const distance = raycaster.ray.origin.distanceTo(this.intersectPoint);
-    if (distance < raycaster.near || distance > raycaster.far)
-      return;
-    intersects.push({
-      distance,
-      point: this.intersectPoint.clone(),
-      face: null,
-      object: this
-    });
-  }
-}
-class CSS3DPlane extends VisCSS3DObject {
-  constructor(element = document.createElement("div")) {
-    super(element);
-    __publicField(this, "cacheBox", new Box3());
-    this.type = "CSS3DPlane";
-    this.element.classList.add("vis-css3d", "vis-css3d-plane");
-  }
-  raycast(raycaster, intersects) {
-    const box = this.cacheBox.copy(this.geometry.boundingBox);
-    box.applyMatrix4(this.matrixWorld);
-    if (raycaster.ray.intersectsBox(box)) {
-      intersects.push({
-        distance: raycaster.ray.origin.distanceTo(this.position),
-        object: this,
-        point: this.position
-      });
-    }
-  }
-}
-class CSS3DSprite extends VisCSS3DSprite {
-  constructor(element = document.createElement("div")) {
-    super(element);
-    this.type = "CSS3DSprite";
-    this.element.classList.add("vis-css3d", "vis-css3d-plane");
-  }
-}
 const defineStrategy = function(options) {
   return () => options;
 };
-export { CSS2DPlane, CSS3DPlane, CSS3DSprite, ENGINE_EVENT, Engine, EventDispatcher, ImageTexture, LoadTexture, VideoTexture, VisCSS2DObject, VisCSS3DObject, VisCSS3DSprite, defineEngine, definePlugin, defineStrategy };
+export { ENGINE_EVENT, Engine, EventDispatcher, defineEngine, definePlugin, defineStrategy };

@@ -6,7 +6,7 @@ declare const _default: {
     object: boolean;
     compiler: typeof CSS2DCompiler;
     rule: CSS2DRule;
-    processors: import("@vis-three/middleware").Processor<import("./CSS2DConfig").CSS2DPlaneConfig, import("@vis-three/core").CSS2DPlane, import("@vis-three/middleware").EngineSupport, CSS2DCompiler>[];
+    processors: import("@vis-three/middleware").Processor<import("./CSS2DConfig").CSS2DPlaneConfig, import("./extends/CSS2DPlane").CSS2DPlane, import("@vis-three/middleware").EngineSupport, CSS2DCompiler>[];
     lifeOrder: SUPPORT_LIFE_CYCLE;
 };
 export default _default;

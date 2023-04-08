@@ -1,8 +1,6 @@
-import "./optimize/optimizeScirpt";
+import "./optimize";
 
 export * from "./engine";
 export * from "./eventDispatcher";
 export * from "./plugin";
-export * from "./optimize";
-export * from "./extends";
 export * from "./strategy";

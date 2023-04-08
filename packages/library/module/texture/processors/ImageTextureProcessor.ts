@@ -1,9 +1,9 @@
-import { ImageTexture } from "@vis-three/core";
 import { syncObject } from "@vis-three/utils";
 import { needUpdateRegCommand, urlHanlder } from "./common";
 import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 import { getImageTextureConfig, ImageTextureConfig } from "../TextureConfig";
 import { TextureCompiler } from "../TextureCompiler";
+import { ImageTexture } from "../extends/ImageTexture";
 
 export default defineProcessor<
   ImageTextureConfig,

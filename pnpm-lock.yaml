@@ -95,129 +95,6 @@ importers:
       rollup: 3.20.2
       typescript: 4.9.5
 
-  packages/create-vis-three/template-default:
-    specifiers:
-      '@types/node': ^18.11.12
-      '@types/three': ^0.133.1
-      '@typescript-eslint/eslint-plugin': ^5.18.0
-      '@typescript-eslint/parser': ^5.18.0
-      eslint: ^8.12.0
-      eslint-config-prettier: ^8.5.0
-      eslint-plugin-prettier: ^4.0.0
-      prettier: ^2.6.2
-      three: ^0.141.0
-      typescript: ^4.3.2
-      vite: ^2.9.15
-    devDependencies:
-      '@types/node': 18.15.10
-      '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
-      '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
-      eslint: 8.36.0
-      eslint-config-prettier: 8.8.0_eslint@8.36.0
-      eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
-      prettier: 2.8.7
-      three: 0.141.0
-      typescript: 4.9.5
-      vite: 2.9.15
-
-  packages/create-vis-three/template-module:
-    specifiers:
-      '@types/node': ^18.11.12
-      '@types/three': ^0.133.1
-      '@typescript-eslint/eslint-plugin': ^5.18.0
-      '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.3
-      '@vis-three/utils': workspace:^0.6.0
-      eslint: ^8.12.0
-      eslint-config-prettier: ^8.5.0
-      eslint-plugin-prettier: ^4.0.0
-      prettier: ^2.6.2
-      three: ^0.141.0
-      typescript: ^4.3.2
-      uuid: ^8.3.2
-      vite: ^2.9.15
-    dependencies:
-      '@vis-three/core': link:../../core
-      '@vis-three/middleware': link:../../middleware
-      '@vis-three/utils': link:../../utils
-      uuid: 8.3.2
-    devDependencies:
-      '@types/node': 18.15.10
-      '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
-      '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
-      eslint: 8.36.0
-      eslint-config-prettier: 8.8.0_eslint@8.36.0
-      eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
-      prettier: 2.8.7
-      three: 0.141.0
-      typescript: 4.9.5
-      vite: 2.9.15
-
-  packages/create-vis-three/template-plugin:
-    specifiers:
-      '@types/node': ^18.11.12
-      '@types/three': ^0.133.1
-      '@typescript-eslint/eslint-plugin': ^5.18.0
-      '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/utils': workspace:^0.6.0
-      eslint: ^8.12.0
-      eslint-config-prettier: ^8.5.0
-      eslint-plugin-prettier: ^4.0.0
-      prettier: ^2.6.2
-      three: ^0.141.0
-      typescript: ^4.3.2
-      vite: ^2.9.15
-    dependencies:
-      '@vis-three/core': link:../../core
-      '@vis-three/utils': link:../../utils
-    devDependencies:
-      '@types/node': 18.15.10
-      '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
-      '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
-      eslint: 8.36.0
-      eslint-config-prettier: 8.8.0_eslint@8.36.0
-      eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
-      prettier: 2.8.7
-      three: 0.141.0
-      typescript: 4.9.5
-      vite: 2.9.15
-
-  packages/create-vis-three/template-strategy:
-    specifiers:
-      '@types/node': ^18.11.12
-      '@types/three': ^0.133.1
-      '@typescript-eslint/eslint-plugin': ^5.18.0
-      '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/utils': workspace:^0.6.0
-      eslint: ^8.12.0
-      eslint-config-prettier: ^8.5.0
-      eslint-plugin-prettier: ^4.0.0
-      prettier: ^2.6.2
-      three: ^0.141.0
-      typescript: ^4.3.2
-      vite: ^2.9.15
-    dependencies:
-      '@vis-three/core': link:../../core
-      '@vis-three/utils': link:../../utils
-    devDependencies:
-      '@types/node': 18.15.10
-      '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
-      '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
-      eslint: 8.36.0
-      eslint-config-prettier: 8.8.0_eslint@8.36.0
-      eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
-      prettier: 2.8.7
-      three: 0.141.0
-      typescript: 4.9.5
-      vite: 2.9.15
-
   packages/docs:
     specifiers:
       '@vitejs/plugin-vue': ^2.3.3
@@ -871,7 +748,7 @@ importers:
       '@vis-three/module-renderer': link:renderer
       '@vis-three/module-scene': link:scene
       '@vis-three/module-sprite': link:sprite
-      '@vis-three/module-texture': link:texture
+      '@vis-three/module-texture': link:texture-backup
     devDependencies:
       '@types/node': 18.15.10
       '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
@@ -987,9 +864,9 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.0
+      '@vis-three/core': workspace:^0.6.1
       '@vis-three/middleware': workspace:^0.6.3
-      '@vis-three/module-object': workspace:^0.6.0
+      '@vis-three/module-object': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -997,6 +874,7 @@ importers:
       prettier: ^2.6.2
       three: ^0.141.0
       typescript: ^4.3.2
+      vite: ^2.9.15
     dependencies:
       '@vis-three/core': link:../../../core
       '@vis-three/middleware': link:../../../middleware
@@ -1013,6 +891,7 @@ importers:
       prettier: 2.8.7
       three: 0.141.0
       typescript: 4.9.5
+      vite: 2.9.15
 
   packages/library/module/css3D:
     specifiers:
@@ -1020,9 +899,9 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.0
+      '@vis-three/core': workspace:^0.6.1
       '@vis-three/middleware': workspace:^0.6.3
-      '@vis-three/module-object': workspace:^0.6.0
+      '@vis-three/module-object': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1030,6 +909,7 @@ importers:
       prettier: ^2.6.2
       three: ^0.141.0
       typescript: ^4.3.2
+      vite: ^2.9.15
     dependencies:
       '@vis-three/core': link:../../../core
       '@vis-three/middleware': link:../../../middleware
@@ -1046,6 +926,7 @@ importers:
       prettier: 2.8.7
       three: 0.141.0
       typescript: 4.9.5
+      vite: 2.9.15
 
   packages/library/module/geometry:
     specifiers:
@@ -1608,6 +1489,41 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/convenient': workspace:^0.5.1
+      '@vis-three/core': ^0.6.1
+      '@vis-three/middleware': ^0.6.3
+      '@vis-three/utils': ^0.6.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+      vite: ^2.9.15
+    dependencies:
+      '@vis-three/convenient': link:../../../convenient
+      '@vis-three/core': link:../../../core
+      '@vis-three/middleware': link:../../../middleware
+      '@vis-three/utils': link:../../../utils
+    devDependencies:
+      '@types/node': 18.15.10
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
+      '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.8.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
+      prettier: 2.8.7
+      three: 0.141.0
+      typescript: 4.9.5
+      vite: 2.9.15
+
+  packages/library/module/texture-backup:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/convenient': workspace:^0.5.1
       '@vis-three/core': workspace:^0.6.0
       '@vis-three/middleware': workspace:^0.6.3
       '@vis-three/utils': workspace:^0.6.0
@@ -1661,7 +1577,7 @@ importers:
       '@vis-three/module-geometry': link:../module/geometry
       '@vis-three/module-material': link:../module/material
       '@vis-three/module-solid-object': link:../module/solidObject
-      '@vis-three/module-texture': link:../module/texture
+      '@vis-three/module-texture': link:../module/texture-backup
       '@vis-three/utils': link:../../utils
       uuid: 8.3.2
     devDependencies:
