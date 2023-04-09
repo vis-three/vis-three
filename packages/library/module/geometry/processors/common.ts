@@ -1,4 +1,5 @@
 import {
+  Bus,
   COMPILER_EVENT,
   EngineSupport,
   ProcessorCommands,
@@ -78,10 +79,9 @@ const commonRegCommand = {
   }: ProcessParams<any, any, EngineSupport, GeometryCompiler>) {
     const newGeometry = processor.create(config, engine, compiler);
     target.copy(newGeometry);
-    target // TODO: 使用dispatch通知更新 // 辅助的更新根据uuid的更新而更新，直接copy无法判断是否更新
-      .dispatchEvent({
-        type: `${COMPILER_EVENT.COMPILE}:update`,
-      });
+
+    Bus.compilerEvent.emit(target, `${COMPILER_EVENT.COMPILE}:update`);
+
     target.uuid = newGeometry.uuid;
 
     newGeometry.dispose();

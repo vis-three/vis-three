@@ -1,5 +1,5 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import BooleanModifierProcessor from "./BooleanModifierProcessor";
+import BooleanModifierProcessor from "./processors/BooleanModifierProcessor";
 import { ModifierCompiler } from "./ModifierCompiler";
 import { ModifierRule } from "./ModifierRule";
 

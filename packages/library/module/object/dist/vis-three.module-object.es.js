@@ -1,70 +1,90 @@
-import {
-  Bus,
-  COMPILER_EVENT,
-  emptyHandler,
-  EngineSupport,
-  EventGeneratorManager,
-  EVENTNAME,
-  globalAntiShake,
-  MODULETYPE,
-  ObjectEvent,
-  OBJECTMODULE,
-  ProcessorCommands,
-  ProcessParams,
-  RegCommand,
-} from "@vis-three/middleware";
-import { IgnoreAttribute, syncObject } from "@vis-three/utils";
-import { Object3D, Vector3 } from "three";
-import { ObjectCompiler } from "./ObjectCompiler";
-import { ObjectConfig } from "./ObjectConfig";
-
-export interface ObjectCacheData {
-  lookAtTarget: Vector3 | null;
-  updateMatrixWorldFun: ((focus: boolean) => void) | null;
+import { Compiler, Rule, globalAntiShake, OBJECTMODULE, EventGeneratorManager, Bus, COMPILER_EVENT, EVENTNAME, emptyHandler } from "@vis-three/middleware";
+import { validate } from "uuid";
+import { syncObject } from "@vis-three/utils";
+class ObjectCompiler extends Compiler {
+  constructor() {
+    super();
+  }
 }
-
-const objectCacheMap = new WeakMap<Object3D, ObjectCacheData>();
-
-// 物体的lookAt方法
-export const lookAtHandler = function <
-  C extends ObjectConfig,
-  O extends Object3D
->({
+const getObjectConfig = () => {
+  return {
+    vid: "",
+    name: "",
+    type: "Object3D",
+    castShadow: true,
+    receiveShadow: true,
+    lookAt: "",
+    visible: true,
+    matrixAutoUpdate: true,
+    renderOrder: 0,
+    position: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    rotation: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    scale: {
+      x: 1,
+      y: 1,
+      z: 1
+    },
+    up: {
+      x: 0,
+      y: 1,
+      z: 0
+    },
+    parent: "",
+    children: [],
+    pointerdown: [],
+    pointermove: [],
+    pointerup: [],
+    pointerenter: [],
+    pointerleave: [],
+    click: [],
+    dblclick: [],
+    contextmenu: []
+  };
+};
+const ObjectRule = function(input, compiler, validateFun = validate) {
+  if (input.key === "parent") {
+    return;
+  }
+  Rule(input, compiler, validateFun);
+};
+const objectCacheMap = /* @__PURE__ */ new WeakMap();
+const lookAtHandler = function({
   target,
   config,
   value,
-  engine,
-}: ProcessParams<C, O, EngineSupport, ObjectCompiler<C, O>>) {
-  // 不能自己看自己
+  engine
+}) {
   if (config.vid === value) {
     console.warn(`can not set object lookAt itself.`);
     return;
   }
-
-  let cacheData = objectCacheMap.get(target)!;
-
+  let cacheData = objectCacheMap.get(target);
   if (!cacheData) {
     cacheData = { lookAtTarget: null, updateMatrixWorldFun: null };
     objectCacheMap.set(target, cacheData);
   }
-
   if (!value) {
     if (!cacheData.updateMatrixWorldFun) {
       return;
     }
-
     target.updateMatrixWorld = cacheData.updateMatrixWorldFun;
     cacheData.lookAtTarget = null;
     cacheData.updateMatrixWorldFun = null;
     return;
   }
-
   globalAntiShake.exec((finish) => {
     const lookAtTarget = engine.compilerManager.getObjectfromModules(
       OBJECTMODULE,
       value
-    ) as Object3D;
-
+    );
     if (!lookAtTarget) {
       if (finish) {
         console.warn(
@@ -73,138 +93,91 @@ export const lookAtHandler = function <
       }
       return false;
     }
-
     const updateMatrixWorldFun = target.updateMatrixWorld;
-
     cacheData.updateMatrixWorldFun = updateMatrixWorldFun;
     cacheData.lookAtTarget = lookAtTarget.position;
-
-    target.updateMatrixWorld = (focus: boolean) => {
+    target.updateMatrixWorld = (focus) => {
       updateMatrixWorldFun.call(target, focus);
-      target.lookAt(cacheData!.lookAtTarget!);
+      target.lookAt(cacheData.lookAtTarget);
     };
-
     return true;
   });
 };
-
 const eventSymbol = "vis.event";
-
-// 添加事件
-export const addEventHanlder = function <
-  C extends ObjectConfig,
-  O extends Object3D
->({
+const addEventHanlder = function({
   target,
   path,
   value,
-  engine,
-}: ProcessParams<C, O, EngineSupport, ObjectCompiler<C, O>>) {
+  engine
+}) {
   const eventName = path[0];
-
   if (!EventGeneratorManager.has(value.name)) {
     console.warn(
       `EventGeneratorManager: can not support this event: ${value.name}`
     );
     return;
   }
-
-  // 生成函数
   const fun = EventGeneratorManager.generateEvent(value, engine);
-
-  // 映射缓存
   const symbol = Symbol.for(eventSymbol);
   value[symbol] = fun;
-
-  // 绑定事件
-  (<Object3D<ObjectEvent>>(<unknown>target)).addEventListener(eventName, fun);
+  target.addEventListener(eventName, fun);
 };
-
-// 移除事件
-export const removeEventHandler = function <
-  C extends ObjectConfig,
-  O extends Object3D
->({
+const removeEventHandler = function({
   target,
   path,
-  value,
-}: ProcessParams<C, O, EngineSupport, ObjectCompiler<C, O>>) {
+  value
+}) {
   const eventName = path[0];
   const fun = value[Symbol.for(eventSymbol)];
-
   if (!fun) {
     console.warn(`event remove can not fun found event in config`, value);
     return;
   }
-
-  target.removeEventListener(eventName, fun!);
+  target.removeEventListener(eventName, fun);
   delete value[Symbol.for(eventSymbol)];
 };
-
-// 更新事件
-export const updateEventHandler = function <
-  C extends ObjectConfig,
-  O extends Object3D
->({
+const updateEventHandler = function({
   target,
   config,
   path,
-  engine,
-}: ProcessParams<C, O, EngineSupport, ObjectCompiler<C, O>>) {
-  // fixed: cover empty array
+  engine
+}) {
   if (path.length < 2) {
     return;
   }
   const eventName = path[0];
   const eventConfig = config[path[0]][path[1]];
-
   const fun = eventConfig[Symbol.for(eventSymbol)];
-
   if (!fun) {
     console.warn(`event remove can not fun found event in config`, eventConfig);
     return;
   }
-
-  target.removeEventListener(eventName, fun!);
-
-  // 生成函数
+  target.removeEventListener(eventName, fun);
   const newFun = EventGeneratorManager.generateEvent(eventConfig, engine);
-
-  // 映射缓存
   eventConfig[Symbol.for(eventSymbol)] = newFun;
-
-  // 绑定事件
-  (<Object3D<ObjectEvent>>(<unknown>target)).addEventListener(
+  target.addEventListener(
     eventName,
     newFun
   );
 };
-
-// 添加子项
-export const addChildrenHanlder = function <
-  C extends ObjectConfig,
-  O extends Object3D
->({
+const addChildrenHanlder = function({
   target,
   config,
   value,
-  engine,
-}: ProcessParams<C, O, EngineSupport, ObjectCompiler<C, O>>) {
+  engine
+}) {
   globalAntiShake.exec((finish) => {
-    const childrenConfig = engine.getConfigBySymbol(value) as ObjectConfig;
+    const childrenConfig = engine.getConfigBySymbol(value);
     if (!childrenConfig) {
       if (finish) {
         console.warn(` can not foud object config in engine: ${value}`);
       }
       return false;
     }
-
-    // children如果有parent先从parent移除
     if (childrenConfig.parent && childrenConfig.parent !== config.vid) {
       const parentConfig = engine.getConfigBySymbol(
         childrenConfig.parent
-      ) as ObjectConfig;
-
+      );
       if (!parentConfig) {
         if (finish) {
           console.warn(
@@ -213,92 +186,63 @@ export const addChildrenHanlder = function <
         }
         return false;
       }
-
       parentConfig.children.splice(parentConfig.children.indexOf(value), 1);
     }
-
     childrenConfig.parent = config.vid;
-
     const childrenObject = engine.compilerManager.getObjectfromModules(
       OBJECTMODULE,
       value
-    ) as Object3D;
-
+    );
     if (!childrenObject) {
       if (finish) {
         console.warn(`can not found this vid in engine: ${value}.`);
       }
       return false;
     }
-
     target.add(childrenObject);
-
     childrenObject.updateMatrixWorld(true);
-
     Bus.compilerEvent.emit(childrenObject, `${COMPILER_EVENT.COMPILE}:parent`);
-
     return true;
   });
 };
-
-// 移除子项
-export const removeChildrenHandler = function <
-  C extends ObjectConfig,
-  O extends Object3D
->({
+const removeChildrenHandler = function({
   target,
   config,
   value,
-  engine,
-}: ProcessParams<C, O, EngineSupport, ObjectCompiler<C, O>>) {
+  engine
+}) {
   const childrenObject = engine.compilerManager.getObjectfromModules(
     OBJECTMODULE,
     value
-  ) as Object3D;
-
+  );
   if (!childrenObject) {
     console.warn(`can not found this vid in engine: ${value}.`);
     return;
   }
-
   target.remove(childrenObject);
-
-  // 更新children对象的parent
-  const childrenConfig = engine.getConfigBySymbol(value) as ObjectConfig;
+  const childrenConfig = engine.getConfigBySymbol(value);
   if (!childrenConfig) {
     console.warn(`can not found this vid in engine: ${value}.`);
     return;
   }
-
   childrenConfig.parent = "";
-
   Bus.compilerEvent.emit(childrenObject, `${COMPILER_EVENT.COMPILE}:parent`);
 };
-
-export const objectCreate = function <
-  C extends ObjectConfig,
-  O extends Object3D
->(object: O, config: C, filter: IgnoreAttribute<C>, engine: EngineSupport): O {
-  // lookAt
-  !filter.lookAt &&
-    lookAtHandler({
-      target: object,
-      config,
-      engine,
-      value: config.lookAt,
-    } as ProcessParams<C, O, EngineSupport, ObjectCompiler<C, O>>);
-
-  // children
+const objectCreate = function(object, config, filter, engine) {
+  !filter.lookAt && lookAtHandler({
+    target: object,
+    config,
+    engine,
+    value: config.lookAt
+  });
   config.children.forEach((vid) => {
     addChildrenHanlder({
       target: object,
       config,
       value: vid,
-      engine,
-    } as ProcessParams<C, O, EngineSupport, ObjectCompiler<C, O>>);
+      engine
+    });
   });
-
-  // event
   for (const eventName of Object.values(EVENTNAME)) {
     globalAntiShake.nextTick(() => {
       config[eventName].forEach((event, i) => {
@@ -306,13 +250,12 @@ export const objectCreate = function <
           target: object,
           path: [eventName, i.toString()],
           value: event,
-          engine,
-        } as unknown as ProcessParams<C, O, EngineSupport, ObjectCompiler<C, O>>);
+          engine
+        });
       });
       return true;
     });
   }
-
   syncObject(config, object, {
     vid: true,
     type: true,
@@ -327,23 +270,14 @@ export const objectCreate = function <
     click: true,
     dblclick: true,
     contextmenu: true,
-    ...filter,
+    ...filter
   });
-
   return object;
 };
-
-export const objectDispose = function <O extends Object3D>(target: O) {
-  // @ts-ignore
+const objectDispose = function(target) {
   target._listener = {};
 };
-
-export type ObjectCommands<
-  C extends ObjectConfig,
-  T extends Object3D
-> = ProcessorCommands<C, T, EngineSupport, ObjectCompiler<C, T>>;
-
-export const objectCommands: ObjectCommands<ObjectConfig, Object3D> = {
+const objectCommands = {
   add: {
     pointerdown: addEventHanlder,
     pointerup: addEventHanlder,
@@ -353,7 +287,7 @@ export const objectCommands: ObjectCommands<ObjectConfig, Object3D> = {
     click: addEventHanlder,
     dblclick: addEventHanlder,
     contextmenu: addEventHanlder,
-    children: addChildrenHanlder,
+    children: addChildrenHanlder
   },
   set: {
     lookAt: lookAtHandler,
@@ -370,17 +304,10 @@ export const objectCommands: ObjectCommands<ObjectConfig, Object3D> = {
       $reg: [
         {
           reg: new RegExp(".*"),
-          handler: addChildrenHanlder,
-        },
-      ],
-    } as Array<undefined> & {
-      $reg?: RegCommand<
-        ObjectConfig,
-        Object3D,
-        EngineSupport,
-        ObjectCompiler<ObjectConfig, Object3D>
-      >[];
-    },
+          handler: addChildrenHanlder
+        }
+      ]
+    }
   },
   delete: {
     pointerdown: removeEventHandler,
@@ -391,6 +318,7 @@ export const objectCommands: ObjectCommands<ObjectConfig, Object3D> = {
     click: removeEventHandler,
     dblclick: removeEventHandler,
     contextmenu: removeEventHandler,
-    children: removeChildrenHandler,
-  },
+    children: removeChildrenHandler
+  }
 };
+export { ObjectCompiler, ObjectRule, addChildrenHanlder, addEventHanlder, getObjectConfig, lookAtHandler, objectCommands, objectCreate, objectDispose, removeChildrenHandler, removeEventHandler, updateEventHandler };

@@ -1,4 +1,5 @@
 import {
+  Bus,
   COMPILER_EVENT,
   defineProcessor,
   EngineSupport,
@@ -8,11 +9,11 @@ import { Modifier } from "@vis-three/modifier-base";
 import { BooleanModifier } from "@vis-three/library-modifier";
 import { syncObject } from "@vis-three/utils";
 import { Mesh } from "three";
-import { ModifierCompiler } from "./ModifierCompiler";
+import { ModifierCompiler } from "../ModifierCompiler";
 import {
   BooleanModifierConfig,
   getBooleanModifierConfig,
-} from "./ModifierConfig";
+} from "../ModifierConfig";
 
 const modifyKey = [
   "position.x",
@@ -24,7 +25,7 @@ const modifyKey = [
   "scale.x",
   "scale.y",
   "scale.z",
-  "parent"
+  "parent",
 ];
 
 const cacheTarget: Map<Modifier, object> = new Map();
@@ -68,26 +69,30 @@ export default defineProcessor<
 
             if (oldTarget) {
               for (const key of modifyKey) {
-                oldTarget.removeEventListener(
+                Bus.compilerEvent.off(
+                  oldTarget,
                   `${COMPILER_EVENT.COMPILE}:${key}`,
                   renderFun
                 );
               }
 
-              oldTarget.geometry.removeEventListener(
+              Bus.compilerEvent.off(
+                oldTarget.geometry,
                 `${COMPILER_EVENT.COMPILE}:update`,
                 renderFun
               );
             }
 
             for (const key of modifyKey) {
-              target.addEventListener(
+              Bus.compilerEvent.on(
+                target,
                 `${COMPILER_EVENT.COMPILE}:${key}`,
                 renderFun
               );
             }
 
-            target.geometry.addEventListener(
+            Bus.compilerEvent.on(
+              target.geometry,
               `${COMPILER_EVENT.COMPILE}:update`,
               renderFun
             );
@@ -151,13 +156,15 @@ export default defineProcessor<
         modifier.source = source;
 
         for (const key of modifyKey) {
-          source.addEventListener(
+          Bus.compilerEvent.on(
+            source,
             `${COMPILER_EVENT.COMPILE}:${key}`,
             renderFun
           );
         }
 
-        source.geometry.addEventListener(
+        Bus.compilerEvent.on(
+          source.geometry,
           `${COMPILER_EVENT.COMPILE}:update`,
           renderFun
         );
@@ -185,13 +192,15 @@ export default defineProcessor<
         modifier.target = target;
 
         for (const key of modifyKey) {
-          target.addEventListener(
+          Bus.compilerEvent.on(
+            target,
             `${COMPILER_EVENT.COMPILE}:${key}`,
             renderFun
           );
         }
 
-        target.geometry.addEventListener(
+        Bus.compilerEvent.on(
+          target.geometry,
           `${COMPILER_EVENT.COMPILE}:update`,
           renderFun
         );

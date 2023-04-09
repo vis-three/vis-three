@@ -5,10 +5,7 @@ class Bus {
 
   create(object: object) {
     if (this.map.has(object)) {
-      console.warn(
-        `object is exist.`,
-        object
-      );
+      console.warn(`object is exist.`, object);
       return;
     }
     this.map.set(object, new EventDispatcher());
@@ -43,6 +40,20 @@ class Bus {
     const eventDispatcher = this.map.get(object)!;
 
     eventDispatcher.on(type, callback);
+  }
+
+  off(object: object, type: string, callback: (event: BaseEvent) => void) {
+    if (!this.map.has(object)) {
+      console.warn(
+        `object can not create eventDispatcher please create it`,
+        object
+      );
+      return;
+    }
+
+    const eventDispatcher = this.map.get(object)!;
+
+    eventDispatcher.off(type, callback);
   }
 }
 
