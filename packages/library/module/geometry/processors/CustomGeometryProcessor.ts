@@ -4,7 +4,7 @@ import {
   ProcessorCommands,
 } from "@vis-three/middleware";
 import { BufferGeometry, Float32BufferAttribute } from "three";
-import { commands, create } from "../common";
+import { commands, create } from "./common";
 import { GeometryCompiler } from "../GeometryCompiler";
 import { getCustomGeometryConfig } from "../GeometryConfig";
 import { CustomGeometryConfig } from "../GeometryInterface";

@@ -4,7 +4,7 @@ import {
   ProcessorCommands,
 } from "@vis-three/middleware";
 import { TorusGeometry } from "three";
-import { commands, create, dispose } from "../common";
+import { commands, create, dispose } from "./common";
 import { GeometryCompiler } from "../GeometryCompiler";
 import { getTorusGeometryConfig } from "../GeometryConfig";
 import { TorusGeometryConfig } from "../GeometryInterface";

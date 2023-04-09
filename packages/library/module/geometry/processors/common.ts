@@ -13,9 +13,9 @@ import {
   ShapeGeometry,
   TubeGeometry,
 } from "three";
-import { GeometryCompiler } from "./GeometryCompiler";
-import { GeometryAllType, GeometryConfig } from "./GeometryInterface";
-import { CurveGeometry } from "./extends";
+import { GeometryCompiler } from "../GeometryCompiler";
+import { GeometryAllType, GeometryConfig } from "../GeometryInterface";
+import { CurveGeometry } from "../extends";
 
 export const transfromAnchor = function <
   T extends BufferGeometry,

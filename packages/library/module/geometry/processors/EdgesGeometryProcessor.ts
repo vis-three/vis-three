@@ -1,6 +1,6 @@
 import { BoxBufferGeometry, BufferGeometry, EdgesGeometry } from "three";
 import { EdgesGeometryConfig } from "../GeometryInterface";
-import { commands, create } from "../common";
+import { commands, create } from "./common";
 import { GeometryCompiler } from "../GeometryCompiler";
 import { getEdgesGeometryConfig } from "../GeometryConfig";
 import {

@@ -4,7 +4,7 @@ import {
   ProcessorCommands,
 } from "@vis-three/middleware";
 import { CircleBufferGeometry, CircleGeometry } from "three";
-import { commands, create, dispose } from "../common";
+import { commands, create, dispose } from "./common";
 import { GeometryCompiler } from "../GeometryCompiler";
 import { getCircleGeometryConfig } from "../GeometryConfig";
 import { CircleGeometryConfig } from "../GeometryInterface";

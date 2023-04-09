@@ -4,7 +4,7 @@ import {
   ProcessorCommands,
 } from "@vis-three/middleware";
 import { Vector3 } from "three";
-import { commands, create, dispose } from "../common";
+import { commands, create, dispose } from "./common";
 import { GeometryCompiler } from "../GeometryCompiler";
 import { getLineTubeGeometryConfig } from "../GeometryConfig";
 import { LineTubeGeometryConfig } from "../GeometryInterface";

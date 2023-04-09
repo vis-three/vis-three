@@ -4,7 +4,7 @@ import {
   ProcessorCommands,
 } from "@vis-three/middleware";
 import { SphereBufferGeometry, SphereGeometry } from "three";
-import { commands, create, dispose } from "../common";
+import { commands, create, dispose } from "./common";
 import { GeometryCompiler } from "../GeometryCompiler";
 import { getSphereGeometryConfig } from "../GeometryConfig";
 import { SphereGeometryConfig } from "../GeometryInterface";

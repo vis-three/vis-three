@@ -4,7 +4,7 @@ import {
   ProcessorCommands,
 } from "@vis-three/middleware";
 import { ConeBufferGeometry, ConeGeometry } from "three";
-import { commands, create, dispose } from "../common";
+import { commands, create, dispose } from "./common";
 import { GeometryCompiler } from "../GeometryCompiler";
 import { getConeGeometryConfig } from "../GeometryConfig";
 import { ConeGeometryConfig } from "../GeometryInterface";

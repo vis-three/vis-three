@@ -4,7 +4,7 @@ import {
   ProcessorCommands,
 } from "@vis-three/middleware";
 import { CylinderBufferGeometry, CylinderGeometry } from "three";
-import { commands, create, dispose } from "../common";
+import { commands, create, dispose } from "./common";
 import { GeometryCompiler } from "../GeometryCompiler";
 import { getCylinderGeometryConfig } from "../GeometryConfig";
 import { CylinderGeometryConfig } from "../GeometryInterface";

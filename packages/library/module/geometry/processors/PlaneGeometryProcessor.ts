@@ -1,6 +1,6 @@
 import { defineProcessor, EngineSupport, ProcessorCommands } from "@vis-three/middleware";
 import { PlaneBufferGeometry, PlaneGeometry } from "three";
-import { commands, create, dispose } from "../common";
+import { commands, create, dispose } from "./common";
 import { GeometryCompiler } from "../GeometryCompiler";
 import { getPlaneGeometryConfig } from "../GeometryConfig";
 import { PlaneGeometryConfig } from "../GeometryInterface";
