@@ -5,6 +5,7 @@ import { installProcessor } from "../space";
 import { EventDispatcher } from "three";
 import { ProxyNotice } from "../DataContainer";
 import { Processor } from "../Processor";
+import { Bus } from "../../utils";
 
 export type CompilerTarget<C extends SymbolConfig> = Record<string, C>;
 
@@ -17,6 +18,7 @@ export enum COMPILER_EVENT {
   REMOVE = "compiler.remove",
   COMPILE = "compiler.compile",
 }
+
 
 export class Compiler<C extends SymbolConfig, O extends object> {
   MODULE: string = "";
@@ -74,6 +76,10 @@ export class Compiler<C extends SymbolConfig, O extends object> {
       object.dispatchEvent({ type: COMPILER_EVENT.ADD });
     }
 
+    Bus.compilerEvent.create(object);
+
+    Bus.compilerEvent.emit(object, COMPILER_EVENT.ADD);
+
     return object;
   }
 
@@ -99,9 +105,9 @@ export class Compiler<C extends SymbolConfig, O extends object> {
     this.map.delete(vid);
     this.weakMap.delete(object);
 
-    if (object instanceof EventDispatcher) {
-      object.dispatchEvent({ type: COMPILER_EVENT.REMOVE });
-    }
+    Bus.compilerEvent.emit(object, COMPILER_EVENT.REMOVE);
+
+    Bus.compilerEvent.dispose(object);
 
     return this;
   }
@@ -180,13 +186,10 @@ export class Compiler<C extends SymbolConfig, O extends object> {
       ...notice,
     });
 
-    if (object instanceof EventDispatcher) {
-      object.dispatchEvent({
-        type: `${COMPILER_EVENT.COMPILE}:${notice.path.join(".")}.${
-          notice.key
-        }`,
-      });
-    }
+    Bus.compilerEvent.emit(
+      object,
+      `${COMPILER_EVENT.COMPILE}:${notice.path.join(".")}.${notice.key}`
+    );
 
     return this;
   }
