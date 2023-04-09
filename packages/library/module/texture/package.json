@@ -29,7 +29,7 @@
   "dependencies": {
     "@vis-three/convenient": "workspace:^0.5.1",
     "@vis-three/core": "workspace:^0.6.1",
-    "@vis-three/middleware": "workspace:^0.6.3",
+    "@vis-three/middleware": "workspace:^0.6.4",
     "@vis-three/utils": "workspace:^0.6.0"
   },
   "files": [
