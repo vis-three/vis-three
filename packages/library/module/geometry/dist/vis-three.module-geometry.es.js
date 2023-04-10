@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { defineProcessor, Compiler, Rule } from "@vis-three/middleware";
+import { defineProcessor, Compiler, Rule, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, ShapeGeometry, Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry } from "three";
 class LoadGeometry extends BufferGeometry {
   constructor(geometry) {
@@ -756,6 +756,7 @@ var index = {
     SplineCurveGeometryProcessor,
     SplineTubeGeometryProcessor,
     TorusGeometryProcessor
-  ]
+  ],
+  lifeOrder: SUPPORT_LIFE_CYCLE.TWO
 };
 export { index as default };

@@ -18,6 +18,7 @@ import SphereGeometryProcessor from "./processors/SphereGeometryProcessor";
 import SplineCurveGeometryProcessor from "./processors/SplineCurveGeometryProcessor";
 import SplineTubeGeometryProcessor from "./processors/SplineTubeGeometryProcessor";
 import TorusGeometryProcessor from "./processors/TorusGeometryProcessor";
+import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 
 export default {
   type: "geometry",
@@ -43,4 +44,5 @@ export default {
     SplineTubeGeometryProcessor,
     TorusGeometryProcessor,
   ],
+  lifeOrder: SUPPORT_LIFE_CYCLE.TWO,
 };

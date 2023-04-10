@@ -8,6 +8,7 @@ import {
   CylinderGeometryConfig,
   DodecahedronGeometryConfig,
   EdgesGeometryConfig,
+  ExtrudeGeometryConfig,
   GeometryConfig,
   LineCurveGeometryConfig,
   LineShapeGeometryConfig,
@@ -224,4 +225,21 @@ export const getShapeGeometryConfig = function (): ShapeGeometryConfig {
 
 export const getLineShapeGeometryConfig = function (): LineShapeGeometryConfig {
   return Object.assign(getShapeGeometryConfig(), {});
+};
+
+export const getExtrudeGeometryConfig = function (): ExtrudeGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    shapes: "",
+    options: {
+      curveSegments: 12,
+      steps: 1,
+      depth: 1,
+      bevelEnabled: true,
+      bevelThickness: 0.2,
+      bevelSize: 0.1,
+      bevelOffset: 0,
+      bevelSegments: 3,
+      extrudePath: "",
+    },
+  });
 };

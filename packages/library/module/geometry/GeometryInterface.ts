@@ -144,6 +144,21 @@ export interface ShapeGeometryConfig extends GeometryConfig {
 
 export interface LineShapeGeometryConfig extends ShapeGeometryConfig {}
 
+export interface ExtrudeGeometryConfig extends GeometryConfig {
+  shapes: string;
+  options: {
+    curveSegments: number;
+    steps: number;
+    depth: number;
+    bevelEnabled: boolean;
+    bevelThickness: number;
+    bevelSize: number;
+    bevelOffset: number;
+    bevelSegments: number;
+    extrudePath: string;
+  };
+}
+
 export type GeometryAllType =
   | BoxGeometryConfig
   | SphereGeometryConfig
