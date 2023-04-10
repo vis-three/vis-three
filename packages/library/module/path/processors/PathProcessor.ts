@@ -12,11 +12,6 @@ const pathCurveMap = {
 };
 
 const generateCurve = function (path: Path, segment: SegmentConfig) {
-  if (!path.curves.length) {
-    path.moveTo(segment.params[0], segment.params[1]);
-    return true;
-  }
-
   if (!pathCurveMap[segment.curve]) {
     console.warn(`path processor can not support this curve: ${segment.curve}`);
     return false;
@@ -31,7 +26,11 @@ export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
   config: getPathConfig,
   commands: {
     add: {
-      curves({ target, value }) {
+      curves({ target, config, value }) {
+        if (config.curves.length === 1) {
+          target.moveTo(value.params[0], value.params[1]);
+          return;
+        }
         if (!generateCurve(target, value)) {
           console.warn(
             `path processor can not support this curve: ${value.curve}`
@@ -74,8 +73,14 @@ export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
   create(config, engine) {
     const path = new Path();
 
-    if (path.curves.length) {
-      for (const segment of config.curves) {
+    if (config.curves.length) {
+      for (let index = 0; index < config.curves.length; index += 1) {
+        const segment = config.curves[index];
+        if (index === 0) {
+          path.moveTo(segment.params[0], segment.params[1]);
+          continue;
+        }
+
         if (!generateCurve(path, segment)) {
           console.warn(
             `path processor can not support this curve: ${segment.curve}`

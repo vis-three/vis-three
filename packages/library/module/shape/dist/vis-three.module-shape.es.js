@@ -107,7 +107,6 @@ var ShapeProcessor = defineProcessor({
 });
 var index = {
   type: "shape",
-  object: true,
   compiler: ShapeCompiler,
   rule: ShapeRule,
   processors: [ShapeProcessor],

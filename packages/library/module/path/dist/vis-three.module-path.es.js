@@ -27,10 +27,6 @@ const pathCurveMap = {
   quadratic: "quadraticCurveTo"
 };
 const generateCurve = function(path, segment) {
-  if (!path.curves.length) {
-    path.moveTo(segment.params[0], segment.params[1]);
-    return true;
-  }
   if (!pathCurveMap[segment.curve]) {
     console.warn(`path processor can not support this curve: ${segment.curve}`);
     return false;
@@ -43,7 +39,11 @@ var PathProcessor = defineProcessor({
   config: getPathConfig,
   commands: {
     add: {
-      curves({ target, value }) {
+      curves({ target, config, value }) {
+        if (config.curves.length === 1) {
+          target.moveTo(value.params[0], value.params[1]);
+          return;
+        }
         if (!generateCurve(target, value)) {
           console.warn(
             `path processor can not support this curve: ${value.curve}`
@@ -78,8 +78,13 @@ var PathProcessor = defineProcessor({
   },
   create(config, engine) {
     const path = new Path();
-    if (path.curves.length) {
-      for (const segment of config.curves) {
+    if (config.curves.length) {
+      for (let index2 = 0; index2 < config.curves.length; index2 += 1) {
+        const segment = config.curves[index2];
+        if (index2 === 0) {
+          path.moveTo(segment.params[0], segment.params[1]);
+          continue;
+        }
         if (!generateCurve(path, segment)) {
           console.warn(
             `path processor can not support this curve: ${segment.curve}`

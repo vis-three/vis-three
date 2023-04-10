@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>modifier</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true)
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = true;
+
+      generateConfig(CONFIGTYPE.POINTLIGHT, {
+        position: {
+          y: 20,
+          z: 15,
+        },
+      });
+
+      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {});
+
+      const path = generateConfig(CONFIGTYPE.PATH, {
+        curves: [
+          {
+            curve: "move",
+            params: [0, 0],
+          },
+          {
+            curve: "line",
+            params: [10, 0],
+          },
+          {
+            curve: "line",
+            params: [10, 10],
+          },
+        ],
+        autoClose: true,
+      });
+
+      const shape = generateConfig(CONFIGTYPE.SHAPE, {
+        shape: path.vid,
+      });
+
+      const geometry = generateConfig(CONFIGTYPE.EXTRUDEGEOMETRY, {
+        shapes: shape.vid,
+        options: {
+          bevelEnabled: false,
+        },
+      });
+
+      const mesh = generateConfig(CONFIGTYPE.MESH, {
+        material: material.vid,
+        geometry: geometry.vid,
+        position: {
+          x: -2,
+        },
+      });
+
+      const gui = new GUI();
+
+      gui.add(geometry.options, "depth", 1, 30, 2);
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>

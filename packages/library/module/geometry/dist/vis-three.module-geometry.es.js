@@ -4,8 +4,8 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { defineProcessor, Compiler, Rule, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, ShapeGeometry, Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry } from "three";
+import { defineProcessor, Compiler, Rule, MODULETYPE, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, ShapeGeometry, Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry } from "three";
 class LoadGeometry extends BufferGeometry {
   constructor(geometry) {
     super();
@@ -415,6 +415,22 @@ const getShapeGeometryConfig = function() {
 const getLineShapeGeometryConfig = function() {
   return Object.assign(getShapeGeometryConfig(), {});
 };
+const getExtrudeGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    shapes: "",
+    options: {
+      curveSegments: 12,
+      steps: 1,
+      depth: 1,
+      bevelEnabled: true,
+      bevelThickness: 0.2,
+      bevelSize: 0.1,
+      bevelOffset: 0,
+      bevelSegments: 3,
+      extrudePath: ""
+    }
+  });
+};
 var BoxGeometryProcessor = defineProcessor({
   type: "BoxGeometry",
   config: getBoxGeometryConfig,
@@ -733,6 +749,27 @@ var TorusGeometryProcessor = defineProcessor({
   ),
   dispose
 });
+var ExtrudeGeometryProcessor = defineProcessor({
+  type: "ExtrudeGeometry",
+  config: getExtrudeGeometryConfig,
+  commands,
+  create: (config, engine) => create(
+    new ExtrudeBufferGeometry(
+      engine.compilerManager.getObjectfromModule(
+        MODULETYPE.SHAPE,
+        config.shapes
+      ) || void 0,
+      Object.assign({}, config.options, {
+        extrudePath: engine.compilerManager.getObjectfromModule(
+          MODULETYPE.PATH,
+          config.options.extrudePath
+        ) || void 0
+      })
+    ),
+    config
+  ),
+  dispose
+});
 var index = {
   type: "geometry",
   compiler: GeometryCompiler,
@@ -755,7 +792,8 @@ var index = {
     SphereGeometryProcessor,
     SplineCurveGeometryProcessor,
     SplineTubeGeometryProcessor,
-    TorusGeometryProcessor
+    TorusGeometryProcessor,
+    ExtrudeGeometryProcessor
   ],
   lifeOrder: SUPPORT_LIFE_CYCLE.TWO
 };
