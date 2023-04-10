@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/modifier-boolean",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "vis-three modifier boolean",
   "private": false,
   "main": "index.js",

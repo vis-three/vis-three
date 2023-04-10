@@ -14,7 +14,7 @@ export class BooleanModifier extends Modifier {
   mode: "subtract" | "union" | "intersect";
 
   private originalGeometry!: BufferGeometry;
-  private modifiedGeometry: BufferGeometry = new BoxBufferGeometry();
+  private modifiedGeometry: BufferGeometry = new BufferGeometry();
 
   private timer = 0;
   private throttling = 1000 / 15;
@@ -30,6 +30,7 @@ export class BooleanModifier extends Modifier {
   set source(value: Mesh) {
     this._source = value;
     this.originalGeometry = this._source.geometry;
+    this.modifiedGeometry.copy(this.originalGeometry);
     this.source.geometry = this.modifiedGeometry;
   }
 

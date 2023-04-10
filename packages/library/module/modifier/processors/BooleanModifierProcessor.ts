@@ -153,7 +153,6 @@ export default defineProcessor<
             );
           return false;
         }
-        modifier.source = source;
 
         for (const key of modifyKey) {
           Bus.compilerEvent.on(
@@ -163,7 +162,14 @@ export default defineProcessor<
           );
         }
 
-        Bus.compilerEvent.on(source.geometry, COMPILER_EVENT.UPDATE, renderFun);
+        Bus.compilerEvent.check(source.geometry) &&
+          Bus.compilerEvent.on(
+            source.geometry,
+            COMPILER_EVENT.UPDATE,
+            renderFun
+          );
+
+        modifier.source = source;
 
         compiler.integrateModifer(modifier);
 

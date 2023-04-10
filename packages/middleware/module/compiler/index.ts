@@ -72,10 +72,6 @@ export class Compiler<C extends SymbolConfig, O extends object> {
     this.map.set(config.vid, object);
     this.weakMap.set(object, config.vid);
 
-    if (object instanceof EventDispatcher) {
-      object.dispatchEvent({ type: COMPILER_EVENT.ADD });
-    }
-
     Bus.compilerEvent.create(object);
 
     Bus.compilerEvent.emit(object, COMPILER_EVENT.ADD);

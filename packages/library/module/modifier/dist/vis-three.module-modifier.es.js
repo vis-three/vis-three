@@ -133,7 +133,6 @@ var BooleanModifierProcessor = defineProcessor({
           );
           return false;
         }
-        modifier.source = source;
         for (const key of modifyKey) {
           Bus.compilerEvent.on(
             source,
@@ -141,7 +140,12 @@ var BooleanModifierProcessor = defineProcessor({
             renderFun
           );
         }
-        Bus.compilerEvent.on(source.geometry, COMPILER_EVENT.UPDATE, renderFun);
+        Bus.compilerEvent.check(source.geometry) && Bus.compilerEvent.on(
+          source.geometry,
+          COMPILER_EVENT.UPDATE,
+          renderFun
+        );
+        modifier.source = source;
         compiler.integrateModifer(modifier);
         renderFun();
         return true;

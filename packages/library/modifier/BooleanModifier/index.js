@@ -1,4 +1,4 @@
-import { BoxBufferGeometry } from "three";
+import { BufferGeometry } from "three";
 import { CSG } from "three-csg-ts";
 import { Modifier } from "@vis-three/modifier-base";
 export class BooleanModifier extends Modifier {
@@ -6,7 +6,7 @@ export class BooleanModifier extends Modifier {
     target;
     mode;
     originalGeometry;
-    modifiedGeometry = new BoxBufferGeometry();
+    modifiedGeometry = new BufferGeometry();
     timer = 0;
     throttling = 1000 / 15;
     constructor(parameters) {
@@ -18,6 +18,7 @@ export class BooleanModifier extends Modifier {
     set source(value) {
         this._source = value;
         this.originalGeometry = this._source.geometry;
+        this.modifiedGeometry.copy(this.originalGeometry);
         this.source.geometry = this.modifiedGeometry;
     }
     get source() {

@@ -15,6 +15,10 @@ class Bus {
     this.map.delete(object);
   }
 
+  check(object: object) {
+    return this.map.has(object);
+  }
+
   emit(object: object, type: string, data?: object) {
     if (!this.map.has(object)) {
       console.warn(
