@@ -723,6 +723,7 @@ importers:
       '@vis-three/module-points': workspace:^0.6.1
       '@vis-three/module-renderer': workspace:^0.6.0
       '@vis-three/module-scene': workspace:^0.6.1
+      '@vis-three/module-shape': workspace:^0.6.0
       '@vis-three/module-sprite': workspace:^0.6.1
       '@vis-three/module-texture': workspace:^0.6.1
       eslint: ^8.12.0
@@ -749,6 +750,7 @@ importers:
       '@vis-three/module-points': link:points
       '@vis-three/module-renderer': link:renderer
       '@vis-three/module-scene': link:scene
+      '@vis-three/module-shape': link:shape
       '@vis-three/module-sprite': link:sprite
       '@vis-three/module-texture': link:texture
     devDependencies:

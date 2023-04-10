@@ -17,6 +17,8 @@ import renderer from "@vis-three/module-renderer";
 import scene from "@vis-three/module-scene";
 import sprite from "@vis-three/module-sprite";
 import texture from "@vis-three/module-texture";
+import path from "@vis-three/module-path";
+import shape from "@vis-three/module-shape";
 
 export {
   animation,
@@ -38,4 +40,6 @@ export {
   scene,
   sprite,
   texture,
+  path,
+  shape,
 };

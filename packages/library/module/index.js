@@ -17,4 +17,6 @@ import renderer from "@vis-three/module-renderer";
 import scene from "@vis-three/module-scene";
 import sprite from "@vis-three/module-sprite";
 import texture from "@vis-three/module-texture";
-export { animation, camera, controls, css2D, css3D, geometry, group, light, line, material, mesh, modifier, object3d, pass, points, renderer, scene, sprite, texture, };
+import path from "@vis-three/module-path";
+import shape from "@vis-three/module-shape";
+export { animation, camera, controls, css2D, css3D, geometry, group, light, line, material, mesh, modifier, object3d, pass, points, renderer, scene, sprite, texture, path, shape, };
