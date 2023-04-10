@@ -9,5 +9,5 @@ export default {
   compiler: ShapeCompiler,
   rule: ShapeRule,
   processors: [ShapeProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.ZERO,
+  lifeOrder: SUPPORT_LIFE_CYCLE.ONE,
 };

@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Bus, COMPILER_EVENT, defineProcessor, Compiler, Rule } from "@vis-three/middleware";
+import { defineProcessor, Compiler, Rule } from "@vis-three/middleware";
 import { BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, ShapeGeometry, Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry } from "three";
 class LoadGeometry extends BufferGeometry {
   constructor(geometry) {
@@ -207,7 +207,6 @@ const commonRegCommand = {
   }) {
     const newGeometry = processor.create(config, engine, compiler);
     target.copy(newGeometry);
-    Bus.compilerEvent.emit(target, `${COMPILER_EVENT.COMPILE}:update`);
     target.uuid = newGeometry.uuid;
     newGeometry.dispose();
   }

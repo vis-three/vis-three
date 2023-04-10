@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/library-module",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "vis-three module library",
   "main": "index.js",
   "module": "index.js",
@@ -37,6 +37,7 @@
     "@vis-three/module-modifier": "workspace:^0.6.3",
     "@vis-three/module-object3d": "workspace:^0.6.2",
     "@vis-three/module-pass": "workspace:^0.6.1",
+    "@vis-three/module-path": "workspace:^0.6.0",
     "@vis-three/module-points": "workspace:^0.6.1",
     "@vis-three/module-renderer": "workspace:^0.6.0",
     "@vis-three/module-scene": "workspace:^0.6.1",

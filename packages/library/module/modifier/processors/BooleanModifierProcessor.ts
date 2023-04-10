@@ -78,7 +78,7 @@ export default defineProcessor<
 
               Bus.compilerEvent.off(
                 oldTarget.geometry,
-                `${COMPILER_EVENT.COMPILE}:update`,
+                COMPILER_EVENT.UPDATE,
                 renderFun
               );
             }
@@ -93,7 +93,7 @@ export default defineProcessor<
 
             Bus.compilerEvent.on(
               target.geometry,
-              `${COMPILER_EVENT.COMPILE}:update`,
+              COMPILER_EVENT.UPDATE,
               renderFun
             );
 
@@ -163,11 +163,7 @@ export default defineProcessor<
           );
         }
 
-        Bus.compilerEvent.on(
-          source.geometry,
-          `${COMPILER_EVENT.COMPILE}:update`,
-          renderFun
-        );
+        Bus.compilerEvent.on(source.geometry, COMPILER_EVENT.UPDATE, renderFun);
 
         compiler.integrateModifer(modifier);
 
@@ -199,11 +195,7 @@ export default defineProcessor<
           );
         }
 
-        Bus.compilerEvent.on(
-          target.geometry,
-          `${COMPILER_EVENT.COMPILE}:update`,
-          renderFun
-        );
+        Bus.compilerEvent.on(target.geometry, COMPILER_EVENT.UPDATE, renderFun);
 
         cacheTarget.set(modifier, target);
         renderFun();

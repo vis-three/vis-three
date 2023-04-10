@@ -719,6 +719,7 @@ importers:
       '@vis-three/module-modifier': workspace:^0.6.3
       '@vis-three/module-object3d': workspace:^0.6.2
       '@vis-three/module-pass': workspace:^0.6.1
+      '@vis-three/module-path': workspace:^0.6.0
       '@vis-three/module-points': workspace:^0.6.1
       '@vis-three/module-renderer': workspace:^0.6.0
       '@vis-three/module-scene': workspace:^0.6.1
@@ -744,6 +745,7 @@ importers:
       '@vis-three/module-modifier': link:modifier
       '@vis-three/module-object3d': link:object3D
       '@vis-three/module-pass': link:pass
+      '@vis-three/module-path': link:path
       '@vis-three/module-points': link:points
       '@vis-three/module-renderer': link:renderer
       '@vis-three/module-scene': link:scene

@@ -17,8 +17,8 @@ export enum COMPILER_EVENT {
   ADD = "compiler.add",
   REMOVE = "compiler.remove",
   COMPILE = "compiler.compile",
+  UPDATE = "compiler.update",
 }
-
 
 export class Compiler<C extends SymbolConfig, O extends object> {
   MODULE: string = "";
@@ -190,6 +190,8 @@ export class Compiler<C extends SymbolConfig, O extends object> {
       object,
       `${COMPILER_EVENT.COMPILE}:${notice.path.join(".")}.${notice.key}`
     );
+
+    Bus.compilerEvent.emit(object, `${COMPILER_EVENT.UPDATE}`);
 
     return this;
   }

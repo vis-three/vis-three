@@ -79,9 +79,6 @@ const commonRegCommand = {
   }: ProcessParams<any, any, EngineSupport, GeometryCompiler>) {
     const newGeometry = processor.create(config, engine, compiler);
     target.copy(newGeometry);
-
-    Bus.compilerEvent.emit(target, `${COMPILER_EVENT.COMPILE}:update`);
-
     target.uuid = newGeometry.uuid;
 
     newGeometry.dispose();

@@ -72,7 +72,7 @@ var BooleanModifierProcessor = defineProcessor({
               }
               Bus.compilerEvent.off(
                 oldTarget.geometry,
-                `${COMPILER_EVENT.COMPILE}:update`,
+                COMPILER_EVENT.UPDATE,
                 renderFun
               );
             }
@@ -85,7 +85,7 @@ var BooleanModifierProcessor = defineProcessor({
             }
             Bus.compilerEvent.on(
               target.geometry,
-              `${COMPILER_EVENT.COMPILE}:update`,
+              COMPILER_EVENT.UPDATE,
               renderFun
             );
             cacheTarget.set(modifier, target);
@@ -141,11 +141,7 @@ var BooleanModifierProcessor = defineProcessor({
             renderFun
           );
         }
-        Bus.compilerEvent.on(
-          source.geometry,
-          `${COMPILER_EVENT.COMPILE}:update`,
-          renderFun
-        );
+        Bus.compilerEvent.on(source.geometry, COMPILER_EVENT.UPDATE, renderFun);
         compiler.integrateModifer(modifier);
         renderFun();
         return true;
@@ -171,11 +167,7 @@ var BooleanModifierProcessor = defineProcessor({
             renderFun
           );
         }
-        Bus.compilerEvent.on(
-          target.geometry,
-          `${COMPILER_EVENT.COMPILE}:update`,
-          renderFun
-        );
+        Bus.compilerEvent.on(target.geometry, COMPILER_EVENT.UPDATE, renderFun);
         cacheTarget.set(modifier, target);
         renderFun();
         return true;
