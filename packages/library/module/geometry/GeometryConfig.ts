@@ -30,6 +30,7 @@ export const getGeometryConfig = function (): GeometryConfig {
   return {
     vid: "",
     type: "Geometry",
+    center: true,
     position: {
       x: 0, // percent
       y: 0, // percent
@@ -173,6 +174,7 @@ export const getEdgesGeometryConfig = function (): EdgesGeometryConfig {
 
 const getCurveGeometryConfig = function (): CurveGeometryConfig {
   return Object.assign(getGeometryConfig(), {
+    center: false,
     path: [],
     divisions: 36,
     space: true,
@@ -180,26 +182,27 @@ const getCurveGeometryConfig = function (): CurveGeometryConfig {
 };
 
 export const getLineCurveGeometryConfig = function (): LineCurveGeometryConfig {
-  return Object.assign(getCurveGeometryConfig(), {});
+  return Object.assign(getCurveGeometryConfig(), { center: false });
 };
 
 export const getSplineCurveGeometryConfig =
   function (): SplineCurveGeometryConfig {
-    return Object.assign(getCurveGeometryConfig(), {});
+    return Object.assign(getCurveGeometryConfig(), { center: false });
   };
 
 export const getCubicBezierCurveGeometryConfig =
   function (): CubicBezierCurveGeometryConfig {
-    return Object.assign(getCurveGeometryConfig(), {});
+    return Object.assign(getCurveGeometryConfig(), { center: false });
   };
 
 export const getQuadraticBezierCurveGeometryConfig =
   function (): QuadraticBezierCurveGeometryConfig {
-    return Object.assign(getCurveGeometryConfig(), {});
+    return Object.assign(getCurveGeometryConfig(), { center: false });
   };
 
 export const getTubeGeometryConfig = function (): TubeGeometryConfig {
   return Object.assign(getGeometryConfig(), {
+    center: false,
     path: [],
     tubularSegments: 64,
     radius: 1,
@@ -209,27 +212,33 @@ export const getTubeGeometryConfig = function (): TubeGeometryConfig {
 };
 
 export const getLineTubeGeometryConfig = function (): LineTubeGeometryConfig {
-  return Object.assign(getTubeGeometryConfig(), {});
+  return Object.assign(getTubeGeometryConfig(), { center: false });
 };
 
 export const getSplineTubeGeometryConfig =
   function (): SplineTubeGeometryConfig {
-    return Object.assign(getTubeGeometryConfig(), {});
+    return Object.assign(getTubeGeometryConfig(), { center: false });
   };
 
 export const getShapeGeometryConfig = function (): ShapeGeometryConfig {
   return Object.assign(getGeometryConfig(), {
+    center: false,
     shape: "",
     curveSegments: 12,
   });
 };
 
 export const getLineShapeGeometryConfig = function (): LineShapeGeometryConfig {
-  return Object.assign(getGeometryConfig(), { path: [], curveSegments: 12 });
+  return Object.assign(getGeometryConfig(), {
+    center: false,
+    path: [],
+    curveSegments: 12,
+  });
 };
 
 export const getExtrudeGeometryConfig = function (): ExtrudeGeometryConfig {
   return Object.assign(getGeometryConfig(), {
+    center: false,
     shapes: "",
     options: {
       curveSegments: 12,
@@ -247,6 +256,7 @@ export const getExtrudeGeometryConfig = function (): ExtrudeGeometryConfig {
 
 export const getPathGeometryConfig = function (): PathGeometryConfig {
   return Object.assign(getGeometryConfig(), {
+    center: false,
     path: "",
     space: true,
     divisions: 36,

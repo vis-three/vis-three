@@ -5,7 +5,330 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { defineProcessor, Compiler, Rule, MODULETYPE, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, ShapeGeometry, Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry, Path } from "three";
+import { Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry, Path } from "three";
+const transfromAnchor = function(geometry, config) {
+  config.center && geometry.center();
+  geometry.computeBoundingBox();
+  const box = geometry.boundingBox;
+  const position = config.position;
+  const rotation = config.rotation;
+  const scale = config.scale;
+  const quaternion = new Quaternion().setFromEuler(
+    new Euler(rotation.x, rotation.y, rotation.z, "XYZ")
+  );
+  geometry.applyQuaternion(quaternion);
+  geometry.scale(scale.x, scale.y, scale.z);
+  config.center && geometry.center();
+  geometry.computeBoundingBox();
+  geometry.translate(
+    (box.max.x - box.min.x) / 2 * position.x,
+    (box.max.y - box.min.y) / 2 * position.y,
+    (box.max.z - box.min.z) / 2 * position.z
+  );
+  return geometry;
+};
+const commonRegCommand = {
+  reg: new RegExp(".*"),
+  handler({
+    config,
+    target,
+    processor,
+    engine,
+    compiler
+  }) {
+    const newGeometry = processor.create(config, engine, compiler);
+    target.copy(newGeometry);
+    target.uuid = newGeometry.uuid;
+    processor.dispose(newGeometry, engine, compiler);
+  }
+};
+const commands = {
+  add: {
+    groups({ target, value }) {
+      target.addGroup(value.start, value.count, value.materialIndex);
+    },
+    $reg: [commonRegCommand]
+  },
+  set: {
+    groups(params) {
+      const { path, target, config } = params;
+      if (path[1] !== void 0) {
+        target.groups.splice(Number(params.path[1]), 1);
+        const group = config.groups[path[1]];
+        target.addGroup(group.start, group.count, group.materialIndex);
+      } else {
+        console.warn(`geometry processor can not set group`, params);
+      }
+    },
+    $reg: [commonRegCommand]
+  },
+  delete: {
+    groups({ target, key }) {
+      target.groups.splice(Number(key), 1);
+    },
+    $reg: [commonRegCommand]
+  }
+};
+const create = function(target, config) {
+  target.clearGroups();
+  for (const group of config.groups) {
+    target.addGroup(group.start, group.count, group.materialIndex);
+  }
+  return transfromAnchor(target, config);
+};
+const dispose = function(target) {
+  target.dispose();
+};
+const getGeometryConfig = function() {
+  return {
+    vid: "",
+    type: "Geometry",
+    center: true,
+    position: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    rotation: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    scale: {
+      x: 1,
+      y: 1,
+      z: 1
+    },
+    groups: []
+  };
+};
+const getBoxGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    width: 5,
+    height: 5,
+    depth: 5,
+    widthSegments: 1,
+    heightSegments: 1,
+    depthSegments: 1
+  });
+};
+const getSphereGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    radius: 3,
+    widthSegments: 32,
+    heightSegments: 32,
+    phiStart: 0,
+    phiLength: Math.PI * 2,
+    thetaStart: 0,
+    thetaLength: Math.PI
+  });
+};
+const getPlaneGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    width: 5,
+    height: 5,
+    widthSegments: 1,
+    heightSegments: 1
+  });
+};
+const getCircleGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    radius: 3,
+    segments: 8,
+    thetaStart: 0,
+    thetaLength: Math.PI * 2
+  });
+};
+const getConeGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    radius: 3,
+    height: 5,
+    radialSegments: 8,
+    heightSegments: 1,
+    openEnded: false,
+    thetaStart: 0,
+    thetaLength: Math.PI * 2
+  });
+};
+const getTorusGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    radius: 3,
+    tube: 0.4,
+    radialSegments: 8,
+    tubularSegments: 6,
+    arc: Math.PI * 2
+  });
+};
+const getRingGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    innerRadius: 2,
+    outerRadius: 3,
+    thetaSegments: 8,
+    phiSegments: 8,
+    thetaStart: 0,
+    thetaLength: Math.PI * 2
+  });
+};
+const getLoadGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    url: ""
+  });
+};
+const getCustomGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    attribute: {
+      position: [],
+      color: [],
+      index: [],
+      normal: [],
+      uv: [],
+      uv2: []
+    }
+  });
+};
+const getCylinderGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    radiusTop: 3,
+    radiusBottom: 3,
+    height: 5,
+    radialSegments: 8,
+    heightSegments: 1,
+    openEnded: false,
+    thetaStart: 0,
+    thetaLength: Math.PI * 2
+  });
+};
+const getEdgesGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    url: "",
+    thresholdAngle: 1
+  });
+};
+const getCurveGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    center: false,
+    path: [],
+    divisions: 36,
+    space: true
+  });
+};
+const getLineCurveGeometryConfig = function() {
+  return Object.assign(getCurveGeometryConfig(), { center: false });
+};
+const getSplineCurveGeometryConfig = function() {
+  return Object.assign(getCurveGeometryConfig(), { center: false });
+};
+const getCubicBezierCurveGeometryConfig = function() {
+  return Object.assign(getCurveGeometryConfig(), { center: false });
+};
+const getQuadraticBezierCurveGeometryConfig = function() {
+  return Object.assign(getCurveGeometryConfig(), { center: false });
+};
+const getTubeGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    center: false,
+    path: [],
+    tubularSegments: 64,
+    radius: 1,
+    radialSegments: 8,
+    closed: false
+  });
+};
+const getLineTubeGeometryConfig = function() {
+  return Object.assign(getTubeGeometryConfig(), { center: false });
+};
+const getSplineTubeGeometryConfig = function() {
+  return Object.assign(getTubeGeometryConfig(), { center: false });
+};
+const getShapeGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    center: false,
+    shape: "",
+    curveSegments: 12
+  });
+};
+const getLineShapeGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    center: false,
+    path: [],
+    curveSegments: 12
+  });
+};
+const getExtrudeGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    center: false,
+    shapes: "",
+    options: {
+      curveSegments: 12,
+      steps: 1,
+      depth: 1,
+      bevelEnabled: true,
+      bevelThickness: 0.2,
+      bevelSize: 0.1,
+      bevelOffset: 0,
+      bevelSegments: 3,
+      extrudePath: ""
+    }
+  });
+};
+const getPathGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    center: false,
+    path: "",
+    space: true,
+    divisions: 36
+  });
+};
+var BoxGeometryProcessor = defineProcessor({
+  type: "BoxGeometry",
+  config: getBoxGeometryConfig,
+  commands,
+  create: (config) => create(
+    new BoxBufferGeometry(
+      config.width,
+      config.height,
+      config.depth,
+      config.widthSegments,
+      config.heightSegments,
+      config.depthSegments
+    ),
+    config
+  ),
+  dispose
+});
+var CircleGeometryProcessor = defineProcessor({
+  type: "CircleGeometry",
+  config: getCircleGeometryConfig,
+  commands,
+  create: (config) => create(
+    new CircleBufferGeometry(
+      config.radius,
+      config.segments,
+      config.thetaStart,
+      config.thetaLength
+    ),
+    config
+  ),
+  dispose
+});
+var ConeGeometryProcessor = defineProcessor({
+  type: "ConeGeometry",
+  config: getConeGeometryConfig,
+  commands,
+  create: (config) => create(
+    new ConeBufferGeometry(
+      config.radius,
+      config.height,
+      config.radialSegments,
+      config.heightSegments,
+      config.openEnded,
+      config.thetaStart,
+      config.thetaLength
+    ),
+    config
+  ),
+  dispose
+});
 class LoadGeometry extends BufferGeometry {
   constructor(geometry) {
     super();
@@ -171,323 +494,6 @@ class SplineTubeGeometry extends TubeGeometry {
     this.type = "SplineTubeGeometry";
   }
 }
-const transfromAnchor = function(geometry, config) {
-  if (!(geometry instanceof CurveGeometry) && !(geometry instanceof TubeGeometry) && !(geometry instanceof ShapeGeometry)) {
-    geometry.center();
-  }
-  geometry.computeBoundingBox();
-  const box = geometry.boundingBox;
-  const position = config.position;
-  const rotation = config.rotation;
-  const scale = config.scale;
-  const quaternion = new Quaternion().setFromEuler(
-    new Euler(rotation.x, rotation.y, rotation.z, "XYZ")
-  );
-  geometry.applyQuaternion(quaternion);
-  geometry.scale(scale.x, scale.y, scale.z);
-  if (!(geometry instanceof CurveGeometry) && !(geometry instanceof TubeGeometry) && !(geometry instanceof ShapeGeometry)) {
-    geometry.center();
-  }
-  geometry.computeBoundingBox();
-  geometry.translate(
-    (box.max.x - box.min.x) / 2 * position.x,
-    (box.max.y - box.min.y) / 2 * position.y,
-    (box.max.z - box.min.z) / 2 * position.z
-  );
-  return geometry;
-};
-const commonRegCommand = {
-  reg: new RegExp(".*"),
-  handler({
-    config,
-    target,
-    processor,
-    engine,
-    compiler
-  }) {
-    const newGeometry = processor.create(config, engine, compiler);
-    target.copy(newGeometry);
-    target.uuid = newGeometry.uuid;
-    processor.dispose(newGeometry, engine, compiler);
-  }
-};
-const commands = {
-  add: {
-    groups({ target, value }) {
-      target.addGroup(value.start, value.count, value.materialIndex);
-    },
-    $reg: [commonRegCommand]
-  },
-  set: {
-    groups(params) {
-      const { path, target, config } = params;
-      if (path[1] !== void 0) {
-        target.groups.splice(Number(params.path[1]), 1);
-        const group = config.groups[path[1]];
-        target.addGroup(group.start, group.count, group.materialIndex);
-      } else {
-        console.warn(`geometry processor can not set group`, params);
-      }
-    },
-    $reg: [commonRegCommand]
-  },
-  delete: {
-    groups({ target, key }) {
-      target.groups.splice(Number(key), 1);
-    },
-    $reg: [commonRegCommand]
-  }
-};
-const create = function(target, config) {
-  target.clearGroups();
-  for (const group of config.groups) {
-    target.addGroup(group.start, group.count, group.materialIndex);
-  }
-  return transfromAnchor(target, config);
-};
-const dispose = function(target) {
-  target.dispose();
-};
-const getGeometryConfig = function() {
-  return {
-    vid: "",
-    type: "Geometry",
-    position: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    rotation: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    scale: {
-      x: 1,
-      y: 1,
-      z: 1
-    },
-    groups: []
-  };
-};
-const getBoxGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    width: 5,
-    height: 5,
-    depth: 5,
-    widthSegments: 1,
-    heightSegments: 1,
-    depthSegments: 1
-  });
-};
-const getSphereGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    radius: 3,
-    widthSegments: 32,
-    heightSegments: 32,
-    phiStart: 0,
-    phiLength: Math.PI * 2,
-    thetaStart: 0,
-    thetaLength: Math.PI
-  });
-};
-const getPlaneGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    width: 5,
-    height: 5,
-    widthSegments: 1,
-    heightSegments: 1
-  });
-};
-const getCircleGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    radius: 3,
-    segments: 8,
-    thetaStart: 0,
-    thetaLength: Math.PI * 2
-  });
-};
-const getConeGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    radius: 3,
-    height: 5,
-    radialSegments: 8,
-    heightSegments: 1,
-    openEnded: false,
-    thetaStart: 0,
-    thetaLength: Math.PI * 2
-  });
-};
-const getTorusGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    radius: 3,
-    tube: 0.4,
-    radialSegments: 8,
-    tubularSegments: 6,
-    arc: Math.PI * 2
-  });
-};
-const getRingGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    innerRadius: 2,
-    outerRadius: 3,
-    thetaSegments: 8,
-    phiSegments: 8,
-    thetaStart: 0,
-    thetaLength: Math.PI * 2
-  });
-};
-const getLoadGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    url: ""
-  });
-};
-const getCustomGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    attribute: {
-      position: [],
-      color: [],
-      index: [],
-      normal: [],
-      uv: [],
-      uv2: []
-    }
-  });
-};
-const getCylinderGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    radiusTop: 3,
-    radiusBottom: 3,
-    height: 5,
-    radialSegments: 8,
-    heightSegments: 1,
-    openEnded: false,
-    thetaStart: 0,
-    thetaLength: Math.PI * 2
-  });
-};
-const getEdgesGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    url: "",
-    thresholdAngle: 1
-  });
-};
-const getCurveGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    path: [],
-    divisions: 36,
-    space: true
-  });
-};
-const getLineCurveGeometryConfig = function() {
-  return Object.assign(getCurveGeometryConfig(), {});
-};
-const getSplineCurveGeometryConfig = function() {
-  return Object.assign(getCurveGeometryConfig(), {});
-};
-const getCubicBezierCurveGeometryConfig = function() {
-  return Object.assign(getCurveGeometryConfig(), {});
-};
-const getQuadraticBezierCurveGeometryConfig = function() {
-  return Object.assign(getCurveGeometryConfig(), {});
-};
-const getTubeGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    path: [],
-    tubularSegments: 64,
-    radius: 1,
-    radialSegments: 8,
-    closed: false
-  });
-};
-const getLineTubeGeometryConfig = function() {
-  return Object.assign(getTubeGeometryConfig(), {});
-};
-const getSplineTubeGeometryConfig = function() {
-  return Object.assign(getTubeGeometryConfig(), {});
-};
-const getShapeGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    shape: "",
-    curveSegments: 12
-  });
-};
-const getLineShapeGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), { path: [], curveSegments: 12 });
-};
-const getExtrudeGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    shapes: "",
-    options: {
-      curveSegments: 12,
-      steps: 1,
-      depth: 1,
-      bevelEnabled: true,
-      bevelThickness: 0.2,
-      bevelSize: 0.1,
-      bevelOffset: 0,
-      bevelSegments: 3,
-      extrudePath: ""
-    }
-  });
-};
-const getPathGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    path: "",
-    space: true,
-    divisions: 36
-  });
-};
-var BoxGeometryProcessor = defineProcessor({
-  type: "BoxGeometry",
-  config: getBoxGeometryConfig,
-  commands,
-  create: (config) => create(
-    new BoxBufferGeometry(
-      config.width,
-      config.height,
-      config.depth,
-      config.widthSegments,
-      config.heightSegments,
-      config.depthSegments
-    ),
-    config
-  ),
-  dispose
-});
-var CircleGeometryProcessor = defineProcessor({
-  type: "CircleGeometry",
-  config: getCircleGeometryConfig,
-  commands,
-  create: (config) => create(
-    new CircleBufferGeometry(
-      config.radius,
-      config.segments,
-      config.thetaStart,
-      config.thetaLength
-    ),
-    config
-  ),
-  dispose
-});
-var ConeGeometryProcessor = defineProcessor({
-  type: "ConeGeometry",
-  config: getConeGeometryConfig,
-  commands,
-  create: (config) => create(
-    new ConeBufferGeometry(
-      config.radius,
-      config.height,
-      config.radialSegments,
-      config.heightSegments,
-      config.openEnded,
-      config.thetaStart,
-      config.thetaLength
-    ),
-    config
-  ),
-  dispose
-});
 var CubicBezierCurveGeometryProcessor = defineProcessor({
   type: "CubicBezierCurveGeometry",
   config: getCubicBezierCurveGeometryConfig,

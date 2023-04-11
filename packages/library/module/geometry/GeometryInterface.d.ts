@@ -7,6 +7,7 @@ export interface GeometryGroup {
 }
 export interface GeometryConfig extends SymbolConfig {
     type: string;
+    center: boolean;
     position: Vector3Config;
     rotation: Vector3Config;
     scale: Vector3Config;

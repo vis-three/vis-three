@@ -22,15 +22,7 @@ export const transfromAnchor = function <
   T extends BufferGeometry,
   C extends GeometryConfig
 >(geometry: T, config: C): T {
-  // 曲线几何和形状几何不期望先center
-  // TODO:不再自动居中几何
-  if (
-    !(geometry instanceof CurveGeometry) &&
-    !(geometry instanceof TubeGeometry) &&
-    !(geometry instanceof ShapeGeometry)
-  ) {
-    geometry.center();
-  }
+  config.center && geometry.center();
 
   geometry.computeBoundingBox();
 
@@ -49,13 +41,7 @@ export const transfromAnchor = function <
   geometry.scale(scale.x, scale.y, scale.z);
 
   // 计算位置
-  if (
-    !(geometry instanceof CurveGeometry) &&
-    !(geometry instanceof TubeGeometry) &&
-    !(geometry instanceof ShapeGeometry)
-  ) {
-    geometry.center();
-  }
+  config.center && geometry.center();
 
   geometry.computeBoundingBox();
 
