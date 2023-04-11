@@ -4,8 +4,8 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { defineProcessor, Compiler, Rule, MODULETYPE, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, ShapeGeometry, Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry } from "three";
+import { defineProcessor, Compiler, Rule, MODULETYPE, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, ShapeGeometry, Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry, Path } from "three";
 class LoadGeometry extends BufferGeometry {
   constructor(geometry) {
     super();
@@ -208,7 +208,7 @@ const commonRegCommand = {
     const newGeometry = processor.create(config, engine, compiler);
     target.copy(newGeometry);
     target.uuid = newGeometry.uuid;
-    newGeometry.dispose();
+    processor.dispose(newGeometry, engine, compiler);
   }
 };
 const commands = {
@@ -408,12 +408,12 @@ const getSplineTubeGeometryConfig = function() {
 };
 const getShapeGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
-    path: [],
+    shape: "",
     curveSegments: 12
   });
 };
 const getLineShapeGeometryConfig = function() {
-  return Object.assign(getShapeGeometryConfig(), {});
+  return Object.assign(getGeometryConfig(), { path: [], curveSegments: 12 });
 };
 const getExtrudeGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
@@ -429,6 +429,13 @@ const getExtrudeGeometryConfig = function() {
       bevelSegments: 3,
       extrudePath: ""
     }
+  });
+};
+const getPathGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    path: "",
+    space: true,
+    divisions: 36
   });
 };
 var BoxGeometryProcessor = defineProcessor({
@@ -749,31 +756,165 @@ var TorusGeometryProcessor = defineProcessor({
   ),
   dispose
 });
+const cacheBusMap$2 = /* @__PURE__ */ new WeakMap();
+const cacheBusObject$2 = function(geometry, object, fun) {
+  if (!cacheBusMap$2.has(geometry)) {
+    cacheBusMap$2.set(geometry, /* @__PURE__ */ new Set());
+  }
+  const set = cacheBusMap$2.get(geometry);
+  set.add({
+    target: object,
+    eventFun: fun
+  });
+};
 var ExtrudeGeometryProcessor = defineProcessor({
   type: "ExtrudeGeometry",
   config: getExtrudeGeometryConfig,
   commands,
-  create: (config, engine) => create(
-    new ExtrudeBufferGeometry(
-      engine.compilerManager.getObjectfromModule(
-        MODULETYPE.SHAPE,
-        config.shapes
-      ) || void 0,
+  create(config, engine) {
+    const shape = engine.compilerManager.getObjectfromModule(
+      MODULETYPE.SHAPE,
+      config.shapes
+    ) || void 0;
+    const extrudePath = engine.compilerManager.getObjectfromModule(
+      MODULETYPE.PATH,
+      config.options.extrudePath
+    ) || void 0;
+    const geometry = new ExtrudeBufferGeometry(
+      shape,
       Object.assign({}, config.options, {
-        extrudePath: engine.compilerManager.getObjectfromModule(
-          MODULETYPE.PATH,
-          config.options.extrudePath
-        ) || void 0
+        extrudePath
       })
-    ),
-    config
-  ),
-  dispose
+    );
+    if (shape) {
+      const eventFun = () => {
+        config.shapes = config.shapes;
+      };
+      Bus.compilerEvent.on(shape, COMPILER_EVENT.UPDATE, eventFun);
+      cacheBusObject$2(geometry, shape, eventFun);
+    }
+    if (extrudePath) {
+      const eventFun = () => {
+        config.options.extrudePath = config.options.extrudePath;
+      };
+      Bus.compilerEvent.on(extrudePath, COMPILER_EVENT.UPDATE, eventFun);
+      cacheBusObject$2(geometry, extrudePath, eventFun);
+    }
+    return create(geometry, config);
+  },
+  dispose(target, engine, compiler) {
+    const set = cacheBusMap$2.get(target);
+    if (set) {
+      set.forEach((params) => {
+        Bus.compilerEvent.off(
+          params.target,
+          COMPILER_EVENT.UPDATE,
+          params.eventFun
+        );
+      });
+    }
+    cacheBusMap$2.delete(target);
+    dispose(target);
+  }
+});
+class PathGeometry extends BufferGeometry {
+  constructor(path = new Path(), divisions = 36, space = true) {
+    super();
+    __publicField(this, "parameters");
+    this.type = "PathGeometry";
+    this.parameters = {
+      path,
+      space,
+      divisions
+    };
+    path.curves.length && this.setFromPoints(
+      space ? path.getSpacedPoints(divisions) : path.getPoints(divisions)
+    );
+  }
+}
+const cacheBusMap$1 = /* @__PURE__ */ new WeakMap();
+const cacheBusObject$1 = function(geometry, object, fun) {
+  cacheBusMap$1.set(geometry, {
+    target: object,
+    eventFun: fun
+  });
+};
+var PathGeometryProcessor = defineProcessor({
+  type: "PathGeometry",
+  config: getPathGeometryConfig,
+  commands,
+  create(config, engine) {
+    const path = engine.compilerManager.getObjectfromModule(
+      MODULETYPE.PATH,
+      config.path
+    ) || void 0;
+    const geometry = new PathGeometry(path, config.divisions, config.space);
+    if (path) {
+      const eventFun = () => {
+        config.path = config.path;
+      };
+      Bus.compilerEvent.on(path, COMPILER_EVENT.UPDATE, eventFun);
+      cacheBusObject$1(geometry, path, eventFun);
+    }
+    return create(geometry, config);
+  },
+  dispose(target, engine, compiler) {
+    const params = cacheBusMap$1.get(target);
+    if (params) {
+      Bus.compilerEvent.off(
+        params.target,
+        COMPILER_EVENT.UPDATE,
+        params.eventFun
+      );
+    }
+    cacheBusMap$1.delete(target);
+    dispose(target);
+  }
+});
+const cacheBusMap = /* @__PURE__ */ new WeakMap();
+const cacheBusObject = function(geometry, object, fun) {
+  cacheBusMap.set(geometry, {
+    target: object,
+    eventFun: fun
+  });
+};
+var ShapeGeometryProcessor = defineProcessor({
+  type: "ShapeGeometry",
+  config: getShapeGeometryConfig,
+  commands,
+  create(config, engine) {
+    const shape = engine.compilerManager.getObjectfromModule(
+      MODULETYPE.SHAPE,
+      config.shape
+    ) || void 0;
+    const geometry = new ShapeBufferGeometry(shape, config.curveSegments);
+    if (shape) {
+      const eventFun = () => {
+        config.shape = config.shape;
+      };
+      Bus.compilerEvent.on(shape, COMPILER_EVENT.UPDATE, eventFun);
+      cacheBusObject(geometry, shape, eventFun);
+    }
+    return create(geometry, config);
+  },
+  dispose(target, engine, compiler) {
+    const params = cacheBusMap.get(target);
+    if (params) {
+      Bus.compilerEvent.off(
+        params.target,
+        COMPILER_EVENT.UPDATE,
+        params.eventFun
+      );
+    }
+    cacheBusMap.delete(target);
+    dispose(target);
+  }
 });
 var index = {
   type: "geometry",
   compiler: GeometryCompiler,
   rule: GeometryRule,
+  lifeOrder: SUPPORT_LIFE_CYCLE.TWO,
   processors: [
     BoxGeometryProcessor,
     CircleGeometryProcessor,
@@ -793,8 +934,9 @@ var index = {
     SplineCurveGeometryProcessor,
     SplineTubeGeometryProcessor,
     TorusGeometryProcessor,
-    ExtrudeGeometryProcessor
-  ],
-  lifeOrder: SUPPORT_LIFE_CYCLE.TWO
+    ExtrudeGeometryProcessor,
+    PathGeometryProcessor,
+    ShapeGeometryProcessor
+  ]
 };
 export { index as default };

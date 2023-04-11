@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>modifier</title>
+    <title>shape</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -21,7 +21,7 @@
 
     <script type="module">
       import * as THREE from "three";
-      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
       import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
@@ -66,8 +66,34 @@
         autoClose: true,
       });
 
+      const path2 = generateConfig(CONFIGTYPE.PATH, {
+        curves: [
+          {
+            curve: "move",
+            params: [0, 0],
+          },
+          {
+            curve: "line",
+            params: [5, -10],
+          },
+          {
+            curve: "line",
+            params: [10, 0],
+          },
+          {
+            curve: "line",
+            params: [10, 10],
+          },
+        ],
+        autoClose: true,
+      });
+
       const shape = generateConfig(CONFIGTYPE.SHAPE, {
         shape: path.vid,
+      });
+
+      const shape2 = generateConfig(CONFIGTYPE.SHAPE, {
+        shape: path2.vid,
       });
 
       const geometry = generateConfig(CONFIGTYPE.EXTRUDEGEOMETRY, {
@@ -77,17 +103,48 @@
         },
       });
 
+      const pathGeometry = generateConfig(CONFIGTYPE.PATHGEOMETRY, {
+        path: path.vid,
+      });
+
+      const shapeGeometry = generateConfig(CONFIGTYPE.SHAPEGEOMETRY, {
+        shape: shape2.vid,
+      });
+
       const mesh = generateConfig(CONFIGTYPE.MESH, {
         material: material.vid,
         geometry: geometry.vid,
         position: {
-          x: -2,
+          x: -15,
         },
       });
 
-      const gui = new GUI();
+      const mesh2 = generateConfig(CONFIGTYPE.MESH, {
+        material: material.vid,
+        geometry: shapeGeometry.vid,
+        position: {
+          x: 15,
+        },
+      });
 
-      gui.add(geometry.options, "depth", 1, 30, 2);
+      const line = generateConfig(CONFIGTYPE.LINE, {
+        material: material.vid,
+        geometry: pathGeometry.vid,
+      });
+
+      const gui = new GUI();
+      const lineFolder = gui.addFolder("line");
+
+      lineFolder.add(pathGeometry, "path", [path.vid, path2.vid]);
+
+      const meshFolder = gui.addFolder("mesh");
+
+      meshFolder.add(shape, "shape", [path.vid, path2.vid]);
+      meshFolder.add(geometry.options, "depth", 1, 30, 2);
+
+      const shapeFolder = gui.addFolder("shape");
+
+      shapeFolder.add(shape2, "shape", [path.vid, path2.vid]);
 
       window.engine = engine;
     </script>

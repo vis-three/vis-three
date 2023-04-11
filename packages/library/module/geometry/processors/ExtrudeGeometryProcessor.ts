@@ -1,4 +1,6 @@
 import {
+  Bus,
+  COMPILER_EVENT,
   defineProcessor,
   EngineSupport,
   MODULETYPE,
@@ -8,15 +10,39 @@ import {
   Curve,
   ExtrudeBufferGeometry,
   ExtrudeGeometry,
-  Path,
   Shape,
-  Vector2,
   Vector3,
 } from "three";
 import { commands, create, dispose } from "./common";
 import { GeometryCompiler } from "../GeometryCompiler";
 import { getExtrudeGeometryConfig } from "../GeometryConfig";
 import { ExtrudeGeometryConfig } from "../GeometryInterface";
+import { BaseEvent } from "@vis-three/core";
+
+const cacheBusMap: WeakMap<
+  ExtrudeBufferGeometry,
+  Set<{
+    target: Shape | Curve<any>;
+    eventFun: (event: BaseEvent) => void;
+  }>
+> = new WeakMap();
+
+const cacheBusObject = function (
+  geometry: ExtrudeBufferGeometry,
+  object: Shape | Curve<any>,
+  fun: (event: BaseEvent) => void
+) {
+  if (!cacheBusMap.has(geometry)) {
+    cacheBusMap.set(geometry, new Set());
+  }
+
+  const set = cacheBusMap.get(geometry)!;
+
+  set.add({
+    target: object,
+    eventFun: fun,
+  });
+};
 
 export default defineProcessor<
   ExtrudeGeometryConfig,
@@ -32,22 +58,57 @@ export default defineProcessor<
     EngineSupport,
     GeometryCompiler
   >,
-  create: (config, engine) =>
-    create(
-      new ExtrudeBufferGeometry(
-        (engine.compilerManager.getObjectfromModule(
-          MODULETYPE.SHAPE,
-          config.shapes
-        ) as Shape) || undefined,
-        Object.assign({}, config.options, {
-          extrudePath:
-            (engine.compilerManager.getObjectfromModule(
-              MODULETYPE.PATH,
-              config.options.extrudePath
-            ) as Curve<Vector3>) || undefined,
-        })
-      ),
-      config
-    ),
-  dispose: dispose,
+  create(config, engine) {
+    const shape =
+      (engine.compilerManager.getObjectfromModule(
+        MODULETYPE.SHAPE,
+        config.shapes
+      ) as Shape) || undefined;
+
+    const extrudePath =
+      (engine.compilerManager.getObjectfromModule(
+        MODULETYPE.PATH,
+        config.options.extrudePath
+      ) as Curve<Vector3>) || undefined;
+
+    const geometry = new ExtrudeBufferGeometry(
+      shape,
+      Object.assign({}, config.options, {
+        extrudePath,
+      })
+    );
+
+    if (shape) {
+      const eventFun = () => {
+        config.shapes = config.shapes;
+      };
+      Bus.compilerEvent.on(shape, COMPILER_EVENT.UPDATE, eventFun);
+      cacheBusObject(geometry, shape, eventFun);
+    }
+
+    if (extrudePath) {
+      const eventFun = () => {
+        config.options.extrudePath = config.options.extrudePath;
+      };
+      Bus.compilerEvent.on(extrudePath, COMPILER_EVENT.UPDATE, eventFun);
+      cacheBusObject(geometry, extrudePath, eventFun);
+    }
+
+    return create(geometry, config);
+  },
+  dispose(target, engine, compiler) {
+    const set = cacheBusMap.get(target);
+    if (set) {
+      set.forEach((params) => {
+        Bus.compilerEvent.off(
+          params.target,
+          COMPILER_EVENT.UPDATE,
+          params.eventFun
+        );
+      });
+    }
+
+    cacheBusMap.delete(target);
+    dispose(target);
+  },
 });

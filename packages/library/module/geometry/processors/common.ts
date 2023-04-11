@@ -81,7 +81,7 @@ const commonRegCommand = {
     target.copy(newGeometry);
     target.uuid = newGeometry.uuid;
 
-    newGeometry.dispose();
+    processor.dispose(newGeometry, engine, compiler);
   },
 };
 

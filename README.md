@@ -120,6 +120,10 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 - QQ 群：586362945
 
+## 前端交流
+
+- QQ 群： 1025827206
+
 ## 衍生产品 Demo
 
   <a href="https://github.com/Shiotsukikaedesari/three-vis-display-editor" target="_blank" rel="noopener noreferrer">

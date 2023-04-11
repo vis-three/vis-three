@@ -121,10 +121,12 @@ export interface LineTubeGeometryConfig extends TubeGeometryConfig {
 export interface SplineTubeGeometryConfig extends TubeGeometryConfig {
 }
 export interface ShapeGeometryConfig extends GeometryConfig {
-    path: Vector2[];
+    shape: string;
     curveSegments: number;
 }
-export interface LineShapeGeometryConfig extends ShapeGeometryConfig {
+export interface LineShapeGeometryConfig extends GeometryConfig {
+    path: Vector2[];
+    curveSegments: number;
 }
 export interface ExtrudeGeometryConfig extends GeometryConfig {
     shapes: string;
@@ -140,4 +142,9 @@ export interface ExtrudeGeometryConfig extends GeometryConfig {
         extrudePath: string;
     };
 }
-export type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig | LineCurveGeometryConfig | SplineCurveGeometryConfig | CubicBezierCurveGeometryConfig | QuadraticBezierCurveGeometryConfig | CustomGeometryConfig | LineTubeGeometryConfig | SplineTubeGeometryConfig | TorusGeometryConfig | RingGeometryConfig | LineShapeGeometryConfig;
+export interface PathGeometryConfig extends GeometryConfig {
+    path: string;
+    space: boolean;
+    divisions: number;
+}
+export type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig | LineCurveGeometryConfig | SplineCurveGeometryConfig | CubicBezierCurveGeometryConfig | QuadraticBezierCurveGeometryConfig | CustomGeometryConfig | LineTubeGeometryConfig | SplineTubeGeometryConfig | TorusGeometryConfig | RingGeometryConfig | LineShapeGeometryConfig | ExtrudeGeometryConfig | PathGeometryConfig;

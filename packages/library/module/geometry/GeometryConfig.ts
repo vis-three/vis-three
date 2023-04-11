@@ -14,6 +14,7 @@ import {
   LineShapeGeometryConfig,
   LineTubeGeometryConfig,
   LoadGeometryConfig,
+  PathGeometryConfig,
   PlaneGeometryConfig,
   QuadraticBezierCurveGeometryConfig,
   RingGeometryConfig,
@@ -218,13 +219,13 @@ export const getSplineTubeGeometryConfig =
 
 export const getShapeGeometryConfig = function (): ShapeGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    path: [],
+    shape: "",
     curveSegments: 12,
   });
 };
 
 export const getLineShapeGeometryConfig = function (): LineShapeGeometryConfig {
-  return Object.assign(getShapeGeometryConfig(), {});
+  return Object.assign(getGeometryConfig(), { path: [], curveSegments: 12 });
 };
 
 export const getExtrudeGeometryConfig = function (): ExtrudeGeometryConfig {
@@ -241,5 +242,13 @@ export const getExtrudeGeometryConfig = function (): ExtrudeGeometryConfig {
       bevelSegments: 3,
       extrudePath: "",
     },
+  });
+};
+
+export const getPathGeometryConfig = function (): PathGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    path: "",
+    space: true,
+    divisions: 36,
   });
 };

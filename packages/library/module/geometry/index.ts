@@ -20,11 +20,14 @@ import SplineTubeGeometryProcessor from "./processors/SplineTubeGeometryProcesso
 import TorusGeometryProcessor from "./processors/TorusGeometryProcessor";
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import ExtrudeGeometryProcessor from "./processors/ExtrudeGeometryProcessor";
+import PathGeometryProcessor from "./processors/PathGeometryProcessor";
+import ShapeGeometryProcessor from "./processors/ShapeGeometryProcessor";
 
 export default {
   type: "geometry",
   compiler: GeometryCompiler,
   rule: GeometryRule,
+  lifeOrder: SUPPORT_LIFE_CYCLE.TWO,
   processors: [
     BoxGeometryProcessor,
     CircleGeometryProcessor,
@@ -45,6 +48,7 @@ export default {
     SplineTubeGeometryProcessor,
     TorusGeometryProcessor,
     ExtrudeGeometryProcessor,
+    PathGeometryProcessor,
+    ShapeGeometryProcessor,
   ],
-  lifeOrder: SUPPORT_LIFE_CYCLE.TWO,
 };

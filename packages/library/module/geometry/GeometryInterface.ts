@@ -138,11 +138,14 @@ export interface LineTubeGeometryConfig extends TubeGeometryConfig {}
 export interface SplineTubeGeometryConfig extends TubeGeometryConfig {}
 
 export interface ShapeGeometryConfig extends GeometryConfig {
-  path: Vector2[];
+  shape: string;
   curveSegments: number;
 }
 
-export interface LineShapeGeometryConfig extends ShapeGeometryConfig {}
+export interface LineShapeGeometryConfig extends GeometryConfig {
+  path: Vector2[];
+  curveSegments: number;
+}
 
 export interface ExtrudeGeometryConfig extends GeometryConfig {
   shapes: string;
@@ -157,6 +160,12 @@ export interface ExtrudeGeometryConfig extends GeometryConfig {
     bevelSegments: number;
     extrudePath: string;
   };
+}
+
+export interface PathGeometryConfig extends GeometryConfig {
+  path: string;
+  space: boolean;
+  divisions: number;
 }
 
 export type GeometryAllType =
@@ -178,4 +187,6 @@ export type GeometryAllType =
   | SplineTubeGeometryConfig
   | TorusGeometryConfig
   | RingGeometryConfig
-  | LineShapeGeometryConfig;
+  | LineShapeGeometryConfig
+  | ExtrudeGeometryConfig
+  | PathGeometryConfig;

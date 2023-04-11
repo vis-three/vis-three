@@ -119,7 +119,7 @@ importers:
       vitepress: 1.0.0-alpha.33_rurrd674gzxmsn4o6mrapg6sje
       vue: 3.2.45
 
-  packages/engine/DisplayEngine:
+  packages/engine/display:
     specifiers:
       '@types/node': ^18.11.12
       '@types/three': ^0.133.1
@@ -161,18 +161,18 @@ importers:
       '@vis-three/strategy-effect-render': link:../../strategy/EffectRenderStrategy
       '@vis-three/strategy-orbit-render': link:../../strategy/OrbitRenderStrategy
     devDependencies:
-      '@types/node': 18.11.12
+      '@types/node': 18.15.10
       '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
-      '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
-      eslint: 8.29.0
-      eslint-config-prettier: 8.5.0_eslint@8.29.0
-      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
-      prettier: 2.8.0
+      '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
+      '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.8.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
+      prettier: 2.8.7
       three: 0.141.0
-      typescript: 4.9.3
+      typescript: 4.9.5
 
-  packages/engine/DisplayEngineSupport:
+  packages/engine/displaySupport:
     specifiers:
       '@types/node': ^18.11.12
       '@types/three': ^0.133.1
@@ -220,18 +220,18 @@ importers:
       '@vis-three/strategy-orbit-render': link:../../strategy/OrbitRenderStrategy
       '@vis-three/strategy-webgl-renderer-support': link:../../strategy/WebGLRendererSupportStrategy
     devDependencies:
-      '@types/node': 18.11.12
+      '@types/node': 18.15.10
       '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
-      '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
-      eslint: 8.29.0
-      eslint-config-prettier: 8.5.0_eslint@8.29.0
-      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
-      prettier: 2.8.0
+      '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
+      '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.8.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
+      prettier: 2.8.7
       three: 0.141.0
-      typescript: 4.9.3
+      typescript: 4.9.5
 
-  packages/engine/ModelingEngine:
+  packages/engine/modeling:
     specifiers:
       '@types/node': ^18.11.12
       '@types/three': ^0.133.1
@@ -301,18 +301,18 @@ importers:
       '@vis-three/strategy-trans-select-event': link:../../strategy/TransSelectEventStrategy
       '@vis-three/strategy-transform-keyboard': link:../../strategy/TransformKeyboardStrategy
     devDependencies:
-      '@types/node': 18.11.12
+      '@types/node': 18.15.10
       '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
-      '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
-      eslint: 8.29.0
-      eslint-config-prettier: 8.5.0_eslint@8.29.0
-      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
-      prettier: 2.8.0
+      '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
+      '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.8.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
+      prettier: 2.8.7
       three: 0.141.0
-      typescript: 4.9.3
+      typescript: 4.9.5
 
-  packages/engine/ModelingEngineSupport:
+  packages/engine/modelingSupport:
     specifiers:
       '@types/node': ^18.11.12
       '@types/three': ^0.133.1
@@ -394,16 +394,16 @@ importers:
       '@vis-three/strategy-transform-keyboard': link:../../strategy/TransformKeyboardStrategy
       '@vis-three/strategy-webgl-renderer-support': link:../../strategy/WebGLRendererSupportStrategy
     devDependencies:
-      '@types/node': 18.11.12
+      '@types/node': 18.15.10
       '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
-      '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
-      eslint: 8.29.0
-      eslint-config-prettier: 8.5.0_eslint@8.29.0
-      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
-      prettier: 2.8.0
+      '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
+      '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.8.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
+      prettier: 2.8.7
       three: 0.141.0
-      typescript: 4.9.3
+      typescript: 4.9.5
 
   packages/examples:
     specifiers:
@@ -413,13 +413,13 @@ importers:
       '@rollup/plugin-alias': ^3.1.9
       '@vis-three/convenient': workspace:^0.5.1
       '@vis-three/core': workspace:^0.6.1
-      '@vis-three/display-engine': workspace:^0.6.1
-      '@vis-three/display-engine-support': workspace:^0.6.2
+      '@vis-three/engine-display': workspace:^0.6.0
+      '@vis-three/engine-display-support': workspace:^0.6.0
+      '@vis-three/engine-modeling': workspace:^0.6.0
+      '@vis-three/engine-modeling-support': workspace:^0.6.0
       '@vis-three/library-animate-script': workspace:^0.6.0
       '@vis-three/library-event': workspace:^0.6.0
       '@vis-three/middleware': workspace:^0.6.4
-      '@vis-three/modeling-engine': workspace:^0.6.1
-      '@vis-three/modeling-engine-support': workspace:^0.6.3
       '@vis-three/modifier-boolean': workspace:^0.6.0
       '@vis-three/module-modifier': workspace:^0.6.3
       '@vis-three/module-pass': workspace:^0.6.1
@@ -489,13 +489,13 @@ importers:
       '@antv/util': 3.3.2
       '@vis-three/convenient': link:../convenient
       '@vis-three/core': link:../core
-      '@vis-three/display-engine': link:../engine/DisplayEngine
-      '@vis-three/display-engine-support': link:../engine/DisplayEngineSupport
+      '@vis-three/engine-display': link:../engine/display
+      '@vis-three/engine-display-support': link:../engine/displaySupport
+      '@vis-three/engine-modeling': link:../engine/modeling
+      '@vis-three/engine-modeling-support': link:../engine/modelingSupport
       '@vis-three/library-animate-script': link:../library/aniScript
       '@vis-three/library-event': link:../library/event
       '@vis-three/middleware': link:../middleware
-      '@vis-three/modeling-engine': link:../engine/ModelingEngine
-      '@vis-three/modeling-engine-support': link:../engine/ModelingEngineSupport
       '@vis-three/modifier-boolean': link:../library/modifier/BooleanModifier
       '@vis-three/module-modifier': link:../library/module/modifier
       '@vis-three/module-pass': link:../library/module/pass
@@ -9562,7 +9562,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /jsprim/2.0.2:
