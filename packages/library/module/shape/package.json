@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-shape",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "vis-three shape module",
   "main": "dist/vis-three.module-shape.umd.js",
   "module": "dist/vis-three.module-shape.es.js",
