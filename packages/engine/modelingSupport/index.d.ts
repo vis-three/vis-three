@@ -1,5 +1,5 @@
 import { EngineSupport } from "@vis-three/middleware";
-import { AxesHelper, Event, GridHelper, Object3D, WebGLRenderer } from "three";
+import { AxesHelper, Event, GridHelper, Object3D, Vector3, WebGLRenderer } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
@@ -18,8 +18,10 @@ import { CSS2DRendererEngine } from "@vis-three/plugin-css2d-renderer";
 import { CSS3DRendererEngine } from "@vis-three/plugin-css3d-renderer";
 import { SelectionEngine } from "@vis-three/plugin-selection";
 import { VisStats } from "@vis-three/plugin-stats/VisStats";
+import { PathDrawingEngine } from "@vis-three/plugin-path-drawing";
+import { PathDrawing } from "@vis-three/plugin-path-drawing/PathDrawing";
 export { VIEWPOINT };
-export declare class ModelingEngineSupport extends EngineSupport implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, KeyboardManagerEngine, StatsEngine, TransformControlsEngine, ViewpointEngine, GridHelperEngine, AxesHelperEngine, SelectionSupportEngine, ObjectHelperEngine, CSS2DRendererEngine, CSS3DRendererEngine {
+export declare class ModelingEngineSupport extends EngineSupport implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, KeyboardManagerEngine, StatsEngine, TransformControlsEngine, ViewpointEngine, GridHelperEngine, AxesHelperEngine, SelectionSupportEngine, ObjectHelperEngine, CSS2DRendererEngine, CSS3DRendererEngine, PathDrawingEngine {
     webGLRenderer: WebGLRenderer;
     getScreenshot: (params?: Screenshot | undefined) => Promise<string>;
     effectComposer: EffectComposer;
@@ -42,5 +44,8 @@ export declare class ModelingEngineSupport extends EngineSupport implements WebG
     setObjectHelper: (show: boolean) => ObjectHelperEngine;
     css2DRenderer: CSS2DRenderer;
     css3DRenderer: CSS3DRenderer;
+    pathDrawing: PathDrawing;
+    drawPath: () => PathDrawingEngine;
+    getPathPoint: (result?: Vector3 | undefined) => Vector3 | null;
     constructor();
 }

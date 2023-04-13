@@ -10,15 +10,22 @@
   </head>
 
   <body>
+    <div id="button-position">
+      <div id="button-group">
+        <button id="PerspectiveCamera">PerspectiveCamera</button>
+
+        <button id="OrthographicCamera">OrthographicCamera</button>
+      </div>
+    </div>
     <div id="app"></div>
     <script type="module">
       import * as THREE from "three";
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
-      import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+      import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
       import { defineEngine } from "@vis-three/core";
 
-      import { PointerManagerPlugin } from "@vis-three/pointer-manager-plugin";
+      import { PointerManagerPlugin } from "@vis-three/plugin-pointer-manager";
 
       const engine = defineEngine({
         plugins: [
@@ -36,6 +43,31 @@
         .setSize();
 
       const scene = engine.scene;
+
+      const perspectiveCamera = new THREE.PerspectiveCamera(
+        45,
+        window.innerWidth / window.innerHeight,
+        1,
+        1000
+      );
+
+      perspectiveCamera.position.set(50, 50, 50);
+      perspectiveCamera.lookAt(0, 0, 0);
+
+      const orthographicCamera = new THREE.OrthographicCamera(
+        -window.innerWidth,
+        window.innerWidth,
+        window.innerHeight,
+        -window.innerHeight,
+        0,
+        100000
+      );
+
+      orthographicCamera.zoom = 5;
+      orthographicCamera.updateProjectionMatrix();
+
+      orthographicCamera.position.copy(perspectiveCamera.position);
+      orthographicCamera.lookAt(0, 0, 0);
 
       const box = new THREE.Mesh(
         new THREE.BoxBufferGeometry(1, 1, 1),
@@ -56,15 +88,28 @@
       const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0));
 
       engine.pointerManager.addEventListener("pointermove", () => {
-        box.position.copy(
-          engine.pointerManager.getWorldPosition(engine.camera, 50, position)
-        );
+        engine.pointerManager.getWorldPosition(engine.camera, 50, position);
 
-        box2.position.copy(
-          engine.pointerManager.intersectPlane(engine.camera, plane, position)
-        );
+        box.position.copy(position);
+
+        engine.pointerManager.intersectPlane(engine.camera, plane, position);
+
+        box2.position.copy(position);
+
         engine.render();
       });
+
+      document.getElementById("PerspectiveCamera").onclick = () => {
+        engine.setCamera(perspectiveCamera);
+        engine.render();
+      };
+
+      document.getElementById("OrthographicCamera").onclick = () => {
+        engine.setCamera(orthographicCamera);
+        engine.render();
+      };
+
+      document.getElementById("PerspectiveCamera").click();
     </script>
   </body>
 </html>

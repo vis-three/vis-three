@@ -32,6 +32,7 @@ import { OrbitControlsSupportStrategy } from "@vis-three/strategy-orbit-controls
 import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 import * as moduleLibrary from "@vis-three/library-module";
 import * as parserLibrary from "@vis-three/library-parser";
+import { PathDrawingPlugin, } from "@vis-three/plugin-path-drawing";
 export { VIEWPOINT };
 export class ModelingEngineSupport extends EngineSupport {
     constructor() {
@@ -49,7 +50,7 @@ export class ModelingEngineSupport extends EngineSupport {
             .install(CSS2DRendererPlugin())
             .install(CSS3DRendererPlugin())
             .install(EffectComposerPlugin({
-            WebGLMultisampleRenderTarget: true,
+            MSAA: true,
         }))
             .install(OrbitControlsPlugin())
             .install(CameraAdaptivePlugin())
@@ -61,7 +62,8 @@ export class ModelingEngineSupport extends EngineSupport {
             .install(TransformControlsPlugin())
             .install(StatsPlugin())
             .install(KeyboardManagerPlugin())
-            .install(ObjectHelperPlugin());
+            .install(ObjectHelperPlugin())
+            .install(PathDrawingPlugin());
         this.exec(CSS2DRenderStrategy())
             .exec(CSS3DRenderStrategy())
             .exec(EffectRenderStrategy())

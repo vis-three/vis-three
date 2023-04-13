@@ -1,9 +1,9 @@
 {
-  "name": "@vis-three/module-path",
-  "version": "0.6.1",
-  "description": "vis-three path module",
-  "main": "dist/vis-three.module-path.umd.js",
-  "module": "dist/vis-three.module-path.es.js",
+  "name": "@vis-three/plugin-path-drawing",
+  "version": "0.6.0",
+  "description": "vis-three path-drawing plugin",
+  "main": "dist/vis-three.plugin-path-drawing.umd.js",
+  "module": "dist/vis-three.plugin-path-drawing.es.js",
   "types": "index.d.ts",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
@@ -28,9 +28,8 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.6.1",
-    "@vis-three/middleware": "workspace:^0.6.4",
-    "@vis-three/utils": "workspace:^0.6.0",
-    "uuid": "^8.3.2"
+    "@vis-three/plugin-pointer-manager": "workspace:^0.6.3",
+    "@vis-three/utils": "workspace:^0.6.0"
   },
   "files": [
     "dist",

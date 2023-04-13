@@ -1,5 +1,14 @@
 import { EventDispatcher } from "@vis-three/core";
-import { BaseEvent, Camera, Plane, Ray, Vector2, Vector3 } from "three";
+import {
+  BaseEvent,
+  Camera,
+  OrthographicCamera,
+  PerspectiveCamera,
+  Plane,
+  Ray,
+  Vector2,
+  Vector3,
+} from "three";
 
 export interface VisPointerEvent extends Omit<PointerEvent, "type">, BaseEvent {
   mouse: Vector2;
@@ -12,7 +21,7 @@ export interface PointerManagerParameters {
 
 export class PointerManager extends EventDispatcher {
   private dom: HTMLElement | undefined;
-  private mouse: Vector2;
+  mouse: Vector2;
 
   private canMouseMove: boolean;
   private mouseEventTimer: number | null;
@@ -140,13 +149,32 @@ export class PointerManager extends EventDispatcher {
    * @returns
    */
   getWorldPosition(camera: Camera, offset: number, result?: Vector3) {
-    const mouse = new Vector3(this.mouse.x, this.mouse.y, 1);
     !result && (result = new Vector3());
 
-    mouse.unproject(camera);
-    mouse.sub(camera.position).normalize();
+    if (camera instanceof PerspectiveCamera) {
+      const mouse = new Vector3(this.mouse.x, this.mouse.y, 1)
+        .unproject(camera)
+        .sub(result.setFromMatrixPosition(camera.matrixWorld))
+        .normalize();
 
-    result.copy(camera.position).add(mouse.multiplyScalar(offset));
+      result.add(mouse.multiplyScalar(offset));
+    } else if (camera instanceof OrthographicCamera) {
+      const mouse = new Vector3(
+        this.mouse.x,
+        this.mouse.y,
+        (camera.near + camera.far) / (camera.near - camera.far)
+      ).unproject(camera);
+
+      result
+        .set(0, 0, -1)
+        .transformDirection(camera.matrixWorld)
+        .add(mouse.multiplyScalar(offset));
+    } else {
+      console.warn(
+        `pointer manager can not support this type camera: ${camera.type}`
+      );
+    }
+
     return result;
   }
 
@@ -158,12 +186,40 @@ export class PointerManager extends EventDispatcher {
    */
   intersectPlane(camera: Camera, plane: Plane, result?: Vector3) {
     !result && (result = new Vector3());
+    const mouse = new Vector3();
+    const ray = new Ray();
 
-    const mouse = new Vector3(this.mouse.x, this.mouse.y, 1);
-    mouse.unproject(camera);
-    mouse.sub(camera.position).normalize();
+    if (camera instanceof PerspectiveCamera) {
+      const cameraPosition = new Vector3().setFromMatrixPosition(
+        camera.matrixWorld
+      );
 
-    const ray = new Ray(camera.position, mouse);
+      mouse
+        .set(this.mouse.x, this.mouse.y, 1)
+        .unproject(camera)
+        .sub(cameraPosition)
+        .normalize();
+
+      ray.set(cameraPosition, mouse);
+    } else if (camera instanceof OrthographicCamera) {
+      mouse
+        .set(
+          this.mouse.x,
+          this.mouse.y,
+          (camera.near + camera.far) / (camera.near - camera.far)
+        )
+        .unproject(camera);
+
+      const direction = new Vector3()
+        .set(0, 0, -1)
+        .transformDirection(camera.matrixWorld);
+
+      ray.set(mouse, direction);
+    } else {
+      console.warn(
+        `pointer manager can not support this type camera: ${camera.type}`
+      );
+    }
 
     return ray.intersectPlane(plane, result);
   }

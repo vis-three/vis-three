@@ -41,7 +41,7 @@ const recursion = (parentDir) => {
 };
 
 recursion(path.resolve(__dirname, "./engine"));
-// recursion(path.resolve(__dirname, "./plugins"));
+recursion(path.resolve(__dirname, "./plugins"));
 // recursion(path.resolve(__dirname, "./strategy"));
 // recursion(path.resolve(__dirname, "./convenient"));
 // recursion(path.resolve(__dirname, "./middleware"));

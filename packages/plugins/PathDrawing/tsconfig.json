@@ -9,12 +9,11 @@
     "sourceMap": false,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "noEmit": false,
+    "emitDeclarationOnly": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noImplicitAny": false,
-    "declaration": true,
-    "jsx": "preserve"
+    "declaration": true
   }
 }

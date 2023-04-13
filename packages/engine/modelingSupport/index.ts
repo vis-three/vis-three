@@ -1,5 +1,12 @@
 import { EngineSupport, ModuleOptions } from "@vis-three/middleware";
-import { AxesHelper, Event, GridHelper, Object3D, WebGLRenderer } from "three";
+import {
+  AxesHelper,
+  Event,
+  GridHelper,
+  Object3D,
+  Vector3,
+  WebGLRenderer,
+} from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
@@ -82,6 +89,11 @@ import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 
 import * as moduleLibrary from "@vis-three/library-module";
 import * as parserLibrary from "@vis-three/library-parser";
+import {
+  PathDrawingEngine,
+  PathDrawingPlugin,
+} from "@vis-three/plugin-path-drawing";
+import { PathDrawing } from "@vis-three/plugin-path-drawing/PathDrawing";
 
 export { VIEWPOINT };
 
@@ -100,7 +112,8 @@ export class ModelingEngineSupport
     SelectionSupportEngine,
     ObjectHelperEngine,
     CSS2DRendererEngine,
-    CSS3DRendererEngine
+    CSS3DRendererEngine,
+    PathDrawingEngine
 {
   declare webGLRenderer: WebGLRenderer;
   declare getScreenshot: (params?: Screenshot | undefined) => Promise<string>;
@@ -126,6 +139,9 @@ export class ModelingEngineSupport
   declare setObjectHelper: (show: boolean) => ObjectHelperEngine;
   declare css2DRenderer: CSS2DRenderer;
   declare css3DRenderer: CSS3DRenderer;
+  declare pathDrawing: PathDrawing;
+  declare drawPath: () => PathDrawingEngine;
+  declare getPathPoint: (result?: Vector3 | undefined) => Vector3 | null;
 
   constructor() {
     super();
@@ -147,7 +163,7 @@ export class ModelingEngineSupport
       .install(CSS3DRendererPlugin())
       .install(
         EffectComposerPlugin({
-          WebGLMultisampleRenderTarget: true,
+          MSAA: true,
         })
       )
       .install(OrbitControlsPlugin())
@@ -160,7 +176,8 @@ export class ModelingEngineSupport
       .install(TransformControlsPlugin())
       .install(StatsPlugin())
       .install(KeyboardManagerPlugin())
-      .install(ObjectHelperPlugin());
+      .install(ObjectHelperPlugin())
+      .install(PathDrawingPlugin());
 
     this.exec(CSS2DRenderStrategy())
       .exec(CSS3DRenderStrategy())

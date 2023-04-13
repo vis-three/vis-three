@@ -1,24 +1,145 @@
 import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 import { PathCompiler } from "../PathCompiler";
 import { getPathConfig, PathConfig, SegmentConfig } from "../PathConfig";
-import { Path } from "three";
+import {
+  CubicBezierCurve,
+  Curve,
+  EllipseCurve,
+  LineCurve,
+  Path,
+  QuadraticBezierCurve,
+  Vector2,
+} from "three";
 
+// TODO: 通过起始点去反推圆形和椭圆的参数
 const pathCurveMap = {
-  arc: "arc",
-  ellipse: "ellipse",
-  line: "lineTo",
-  bezier: "bezierCurveTo",
-  quadratic: "quadraticCurveTo",
+  // arc: (
+  //   startX: number,
+  //   startY: number,
+  //   aX: number,
+  //   aY: number,
+  //   aRadius: number,
+  //   aStartAngle: number,
+  //   aEndAngle: number,
+  //   aClockwise: boolean
+  // ) =>
+  //   new EllipseCurve(
+  //     startX + aX,
+  //     startY + aY,
+  //     aRadius,
+  //     aRadius,
+  //     aStartAngle,
+  //     aEndAngle,
+  //     aClockwise,
+  //     0
+  //   ),
+  // ellipse: (
+  //   startX: number,
+  //   startY: number,
+  //   aX: number,
+  //   aY: number,
+  //   xRadius: number,
+  //   yRadius: number,
+  //   aStartAngle: number,
+  //   aEndAngle: number,
+  //   aClockwise: boolean,
+  //   aRotation: number
+  // ) =>
+  //   new EllipseCurve(
+  //     startX + aX,
+  //     startY + aY,
+  //     xRadius,
+  //     yRadius,
+  //     aStartAngle,
+  //     aEndAngle,
+  //     aClockwise,
+  //     aRotation
+  //   ),
+  line: (startX: number, startY: number, endX: number, endY: number) =>
+    new LineCurve(new Vector2(startX, startY), new Vector2(endX, endY)),
+  bezier: (
+    startX: number,
+    startY: number,
+    aCP1x: number,
+    aCP1y: number,
+    aCP2x: number,
+    aCP2y: number,
+    endX: number,
+    endY: number
+  ) =>
+    new CubicBezierCurve(
+      new Vector2(startX, startY),
+      new Vector2(aCP1x, aCP1y),
+      new Vector2(aCP2x, aCP2y),
+      new Vector2(endX, endY)
+    ),
+  quadratic: (
+    startX: number,
+    startY: number,
+    aCPx: number,
+    aCPy: number,
+    endX: number,
+    endY: number
+  ) =>
+    new QuadraticBezierCurve(
+      new Vector2(startX, startY),
+      new Vector2(aCPx, aCPy),
+      new Vector2(endX, endY)
+    ),
 };
 
-const generateCurve = function (path: Path, segment: SegmentConfig) {
+const getCurveExtrPoint = function (
+  curve: Curve<Vector2>,
+  extr: "start" | "end"
+) {
+  return extr === "start" ? curve.getPoint(0) : curve.getPoint(1);
+};
+
+const curveParamsExtrMap = {
+  // arc: {
+  //   start: [0, 1],
+  //   end: (curve: Curve<Vector2>) => getCurveExtrPoint(curve, "end"),
+  // },
+  // ellipse: {
+  //   start: [0, 1],
+  //   end: (curve: Curve<Vector2>) => getCurveExtrPoint(curve, "end"),
+  // },
+  line: {
+    start: [0, 1],
+    end: [2, 3],
+  },
+  bezier: {
+    start: [0, 1],
+    end: [6, 7],
+  },
+  quadratic: {
+    start: [0, 1],
+    end: [4, 5],
+  },
+};
+
+const generateCurve = function (segment: SegmentConfig) {
   if (!pathCurveMap[segment.curve]) {
     console.warn(`path processor can not support this curve: ${segment.curve}`);
-    return false;
+    return null;
   }
+  return pathCurveMap[segment.curve](...segment.params);
+};
 
-  path[pathCurveMap[segment.curve]](...segment.params);
-  return true;
+const syncExtrParams = function (
+  config: SegmentConfig,
+  params: number[],
+  extr: "start" | "end"
+) {
+  if (!curveParamsExtrMap[config.curve]) {
+    console.warn(`can not support this curve: ${config.curve}`);
+    return;
+  }
+  curveParamsExtrMap[config.curve][extr].forEach((index: number, i: number) => {
+    if (params[i] !== config.params[index]) {
+      config.params[index] = params[i];
+    }
+  });
 };
 
 export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
@@ -27,15 +148,8 @@ export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
   commands: {
     add: {
       curves({ target, config, value }) {
-        if (config.curves.length === 1) {
-          target.moveTo(value.params[0], value.params[1]);
-          return;
-        }
-        if (!generateCurve(target, value)) {
-          console.warn(
-            `path processor can not support this curve: ${value.curve}`
-          );
-        }
+        const curve = generateCurve(value);
+        curve && target.curves.push(curve);
       },
     },
     set: {
@@ -47,16 +161,27 @@ export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
           return;
         }
 
-        const previous = target.curves[index - 1];
+        const currentCurve = generateCurve(config.curves[index]);
 
-        target.currentPoint.copy(previous.getPoint(1));
+        target.curves[index] = currentCurve;
 
-        const segmentList = config.curves.slice(index);
+        const startPoint = getCurveExtrPoint(currentCurve, "start");
+        const endPoint = getCurveExtrPoint(currentCurve, "end");
 
-        target.curves.splice(index, target.curves.length);
+        if (index - 1 >= 0) {
+          syncExtrParams(
+            config.curves[index - 1],
+            [startPoint.x, startPoint.y],
+            "end"
+          );
+        }
 
-        for (const segment of segmentList) {
-          generateCurve(target, segment);
+        if (index + 1 <= target.curves.length - 1) {
+          syncExtrParams(
+            config.curves[index + 1],
+            [endPoint.x, endPoint.y],
+            "start"
+          );
         }
       },
     },
@@ -74,19 +199,9 @@ export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
     const path = new Path();
 
     if (config.curves.length) {
-      for (let index = 0; index < config.curves.length; index += 1) {
-        const segment = config.curves[index];
-        if (index === 0) {
-          path.moveTo(segment.params[0], segment.params[1]);
-          continue;
-        }
-
-        if (!generateCurve(path, segment)) {
-          console.warn(
-            `path processor can not support this curve: ${segment.curve}`
-          );
-          continue;
-        }
+      for (const segment of config.curves) {
+        const curve = generateCurve(segment);
+        curve && path.curves.push(curve);
       }
     }
 

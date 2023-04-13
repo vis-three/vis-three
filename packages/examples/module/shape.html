@@ -51,16 +51,12 @@
       const path = generateConfig(CONFIGTYPE.PATH, {
         curves: [
           {
-            curve: "move",
-            params: [0, 0],
+            curve: "line",
+            params: [0, 0, 10, 0],
           },
           {
             curve: "line",
-            params: [10, 0],
-          },
-          {
-            curve: "line",
-            params: [10, 10],
+            params: [10, 0, 10, 10],
           },
         ],
         autoClose: true,
@@ -69,20 +65,16 @@
       const path2 = generateConfig(CONFIGTYPE.PATH, {
         curves: [
           {
-            curve: "move",
-            params: [0, 0],
+            curve: "line",
+            params: [0, 0, 5, -10],
           },
           {
             curve: "line",
-            params: [5, -10],
+            params: [5, -10, 10, 0],
           },
           {
             curve: "line",
-            params: [10, 0],
-          },
-          {
-            curve: "line",
-            params: [10, 10],
+            params: [10, 0, 10, 10],
           },
         ],
         autoClose: true,

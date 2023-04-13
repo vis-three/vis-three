@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PathDrawingPlugin</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script type="module">
+      import * as THREE from "three";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = true;
+
+      const path = generateConfig(CONFIGTYPE.PATH);
+
+      const geometry = generateConfig(CONFIGTYPE.PATHGEOMETRY, {
+        path: path.vid,
+      });
+
+      const material = generateConfig(CONFIGTYPE.LINEBASICMATERIAL, {});
+
+      const line = generateConfig(CONFIGTYPE.LINE, {
+        material: material.vid,
+        geometry: geometry.vid,
+      });
+
+      engine.drawPath();
+
+      const point = new Vector3();
+      engine.pointerManager.addEventListener("mousedown", (event) => {
+        engine.getPathPoint(point);
+
+        path.curves.push({
+          curve: "line",
+          params: [point.x, point.y],
+        });
+      });
+    </script>
+  </body>
+</html>
