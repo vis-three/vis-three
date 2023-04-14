@@ -10,12 +10,16 @@
   </head>
 
   <body>
+    <div id="button-position">
+      <div id="button-group">
+        <button id="default">default</button>
+      </div>
+    </div>
     <div id="app"></div>
     <script type="module">
       import * as THREE from "three";
       import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-
       const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
@@ -29,10 +33,13 @@
 
       generateConfig.injectScene = true;
 
-      const path = generateConfig(CONFIGTYPE.PATH);
+      const path = generateConfig(CONFIGTYPE.PATH, {
+        autoClose: true,
+      });
 
       const geometry = generateConfig(CONFIGTYPE.PATHGEOMETRY, {
         path: path.vid,
+        space: false,
       });
 
       const material = generateConfig(CONFIGTYPE.LINEBASICMATERIAL, {});
@@ -42,17 +49,51 @@
         geometry: geometry.vid,
       });
 
-      engine.drawPath();
-
-      const point = new Vector3();
-      engine.pointerManager.addEventListener("mousedown", (event) => {
-        engine.getPathPoint(point);
-
-        path.curves.push({
-          curve: "line",
-          params: [point.x, point.y],
-        });
+      const shape = generateConfig(CONFIGTYPE.SHAPE, {
+        shape: path.vid,
       });
+
+      const eGeometry = generateConfig(CONFIGTYPE.EXTRUDEGEOMETRY, {
+        shapes: shape.vid,
+        options: {
+          bevelEnabled: false,
+        },
+      });
+
+      const mesh = generateConfig(CONFIGTYPE.MESH, {
+        material: material.vid,
+        geometry: eGeometry.vid,
+        position: {
+          x: -15,
+        },
+      });
+
+      engine.drawPathByPlane();
+
+      const point = new THREE.Vector3();
+      const lineParams = [];
+
+      const drawFun = (event) => {
+        engine.getPathPoint(point);
+        lineParams.push(point.x, point.y);
+
+        if (lineParams.length === 4) {
+          path.curves.push({
+            curve: "line",
+            params: [].concat(lineParams),
+          });
+          lineParams.splice(0, 2);
+          geometry.divisions = path.curves.length;
+        }
+      };
+
+      engine.pointerManager.addEventListener("mousedown", drawFun);
+
+      document.getElementById("default").onclick = () => {
+        engine.setViewpoint("default");
+        engine.pointerManager.removeEventListener("mousedown", drawFun);
+      };
+      window.engine = engine;
     </script>
   </body>
 </html>

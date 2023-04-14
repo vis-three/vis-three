@@ -14,13 +14,13 @@
     <div id="app"></div>
     <script type="module">
       import * as THREE from "three";
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
-      import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+      import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
       import { defineEngine } from "@vis-three/core";
 
-      import { PointerManagerPlugin } from "@vis-three/pointer-manager-plugin";
-      import { EventManagerPlugin } from "@vis-three/event-manager-plugin";
+      import { PointerManagerPlugin } from "@vis-three/plugin-pointer-manager";
+      import { EventManagerPlugin } from "@vis-three/plugin-event-manager";
 
       const engine = defineEngine({
         plugins: [
@@ -84,6 +84,9 @@
       for (const name of genericEvents) {
         box.addEventListener(name, (event) => {
           showToTips(`box ${name}`);
+          if (name === "mousedown") {
+            console.log(event);
+          }
         });
 
         box2.addEventListener(name, (event) => {
