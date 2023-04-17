@@ -20,6 +20,8 @@
       import * as THREE from "three";
       import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
       const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
@@ -56,6 +58,7 @@
       const eGeometry = generateConfig(CONFIGTYPE.EXTRUDEGEOMETRY, {
         shapes: shape.vid,
         options: {
+          depth: 10,
           bevelEnabled: false,
         },
       });
@@ -64,35 +67,59 @@
         material: material.vid,
         geometry: eGeometry.vid,
         position: {
-          x: -15,
+          x: -50,
         },
       });
 
-      engine.drawPathByPlane();
-
       const point = new THREE.Vector3();
-      const lineParams = [];
+      let lineParams = [];
 
-      const drawFun = (event) => {
-        engine.getPathPoint(point);
-        lineParams.push(point.x, point.y);
+      const sketcher = engine.pathSketcher
+        .setSketcherByPlane()
+        .changeToDrawingView()
+        .beginDraw();
+
+      sketcher.addEventListener("write", (event) => {
+        path.curves.push({
+          curve: "line",
+          params: [event.point.x, event.point.y],
+        });
+        lineParams = path.curves[path.curves.length - 1].params;
 
         if (lineParams.length === 4) {
-          path.curves.push({
-            curve: "line",
-            params: [].concat(lineParams),
-          });
-          lineParams.splice(0, 2);
           geometry.divisions = path.curves.length;
         }
-      };
+      });
 
-      engine.pointerManager.addEventListener("mousedown", drawFun);
+      sketcher.addEventListener("move", (event) => {
+        if (lineParams.length < 4) {
+          lineParams.push(event.point.x, event.point.y);
+        }
+        lineParams[lineParams.length - 2] = event.point.x;
+        lineParams[lineParams.length - 1] = event.point.y;
 
-      document.getElementById("default").onclick = () => {
+        console.log("move", lineParams);
+      });
+
+      sketcher.addEventListener("end", (event) => {
+        if (path.curves[path.curves.length - 1].params.length < 4) {
+          path.curves.pop();
+        }
+      });
+
+      const end = () => {
         engine.setViewpoint("default");
-        engine.pointerManager.removeEventListener("mousedown", drawFun);
+        sketcher.endDraw();
       };
+
+      document.getElementById("default").onclick = end;
+      document.addEventListener("keydown", (event) => {
+        if (event.keyCode === 13) {
+          end();
+        }
+      });
+      const gui = new GUI();
+      gui.add(eGeometry.options, "depth", 1, 30, 2);
       window.engine = engine;
     </script>
   </body>

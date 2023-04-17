@@ -60,6 +60,13 @@ class EventDispatcher {
     const array = listeners.get(type);
     array.splice(array.indexOf(listener), 1);
   }
+  removeEvent(type) {
+    const listeners = this.listeners;
+    if (!listeners.has(type)) {
+      return;
+    }
+    listeners.delete(type);
+  }
   dispatchEvent(event) {
     var _a;
     const type = event.type;

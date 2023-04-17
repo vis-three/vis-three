@@ -82,6 +82,19 @@ export class EventDispatcher {
   }
 
   /**
+   * 移除该类型的所有事件
+   * @param type
+   * @returns
+   */
+  removeEvent(type: string) {
+    const listeners = this.listeners;
+    if (!listeners.has(type)) {
+      return;
+    }
+    listeners.delete(type);
+  }
+
+  /**
    * 触发事件
    * @param event
    */

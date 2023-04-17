@@ -4,13 +4,20 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { EventDispatcher, ENGINE_EVENT } from "@vis-three/core";
 import { transPkgName } from "@vis-three/utils";
 import { POINTER_MANAGER_PLUGIN } from "@vis-three/plugin-pointer-manager";
-import { OrthographicCamera, Plane, Vector3, Mesh, PlaneBufferGeometry, MeshBasicMaterial, Quaternion } from "three";
+import { EventDispatcher, ENGINE_EVENT } from "@vis-three/core";
+import { OrthographicCamera, Plane, Vector3, Mesh, PlaneBufferGeometry, MeshBasicMaterial, Matrix4, Quaternion } from "three";
 const name = "@vis-three/plugin-path-drawing";
+var PATHSKETCHER_EVENT = /* @__PURE__ */ ((PATHSKETCHER_EVENT2) => {
+  PATHSKETCHER_EVENT2["BEGIN"] = "begin";
+  PATHSKETCHER_EVENT2["END"] = "end";
+  PATHSKETCHER_EVENT2["WRITE"] = "write";
+  PATHSKETCHER_EVENT2["MOVE"] = "move";
+  return PATHSKETCHER_EVENT2;
+})(PATHSKETCHER_EVENT || {});
 class PathSketcher extends EventDispatcher {
-  constructor() {
+  constructor(engine) {
     super();
     __publicField(this, "camera", new OrthographicCamera(
       -window.innerWidth,
@@ -21,7 +28,8 @@ class PathSketcher extends EventDispatcher {
       1e4
     ));
     __publicField(this, "plane", new Plane(new Vector3(0, 0, 1), 0));
-    __publicField(this, "helper", new Mesh(
+    __publicField(this, "boardOffset", 20);
+    __publicField(this, "drawingBoard", new Mesh(
       new PlaneBufferGeometry(150, 150),
       new MeshBasicMaterial({
         transparent: true,
@@ -29,10 +37,60 @@ class PathSketcher extends EventDispatcher {
         color: "rgb(64, 255, 242)"
       })
     ));
-    this.helper.raycast = () => {
+    __publicField(this, "relativeMatrixInvert", new Matrix4());
+    __publicField(this, "engine");
+    __publicField(this, "cachePoint", new Vector3());
+    __publicField(this, "cacheRelativePoint", new Vector3());
+    __publicField(this, "setScene", (event) => {
+      event.scene.add(this.drawingBoard);
+    });
+    __publicField(this, "cacheWriteFun", (event) => {
+      const point = this.engine.pointerManager.intersectPlane(
+        this.camera,
+        this.plane,
+        this.cachePoint
+      );
+      if (!point) {
+        console.warn(
+          `path sketcher can not intersect point in this plane and this camera`
+        );
+        return;
+      }
+      this.dispatchEvent({
+        type: "write",
+        point,
+        relativePoint: this.cacheRelativePoint.copy(point).applyMatrix4(this.relativeMatrixInvert)
+      });
+    });
+    __publicField(this, "cacheMoveFun", (event) => {
+      const point = this.engine.pointerManager.intersectPlane(
+        this.camera,
+        this.plane,
+        this.cachePoint
+      );
+      if (!point) {
+        console.warn(
+          `path sketcher can not intersect point in this plane and this camera`
+        );
+        return;
+      }
+      this.dispatchEvent({
+        type: "move",
+        point,
+        relativePoint: this.cacheRelativePoint.copy(point).applyMatrix4(this.relativeMatrixInvert)
+      });
+    });
+    this.engine = engine;
+    this.drawingBoard.raycast = () => {
     };
-    this.helper.matrixAutoUpdate = false;
-    this.setHelperMatrix();
+    this.drawingBoard.matrixAutoUpdate = false;
+    this.setDrawingBoardMatrix();
+    engine.addEventListener(ENGINE_EVENT.SETSCENE, this.setScene);
+  }
+  setDraingBoardSize(width, height) {
+    const newGeometry = new PlaneBufferGeometry(width, height);
+    this.drawingBoard.geometry.copy(newGeometry);
+    newGeometry.dispose();
   }
   offsetCamera(offset) {
     offset.normalize().applyQuaternion(
@@ -42,36 +100,89 @@ class PathSketcher extends EventDispatcher {
       )
     );
     this.camera.position.copy(this.plane.normal).multiplyScalar(this.plane.constant).add(offset);
-    this.helper.position.add(offset);
-    this.helper.updateMatrix();
-    this.helper.updateMatrixWorld(true);
+    this.camera.zoom = (this.camera.top - this.camera.bottom) / (this.drawingBoard.geometry.parameters.height + this.boardOffset);
+    this.camera.updateProjectionMatrix();
+    this.drawingBoard.position.add(offset);
+    this.drawingBoard.updateMatrix();
+    this.drawingBoard.updateMatrixWorld(true);
+    return this;
+  }
+  setRelativeObject(object) {
+    this.relativeMatrixInvert.copy(object.matrixWorld).invert();
+    return this;
   }
   setDrawPlane(normal, constant = 0) {
     this.plane.set(normal, constant);
-    this.setHelperMatrix();
+    this.setDrawingBoardMatrix();
     return this;
   }
   setDrawPlaneByFace(face) {
     this.plane.setFromCoplanarPoints(face.a, face.b, face.c);
-    this.setHelperMatrix();
+    this.setDrawingBoardMatrix();
     return this;
   }
-  setHelperMatrix() {
-    const helper = this.helper;
-    helper.position.copy(this.plane.normal).multiplyScalar(this.plane.constant);
-    helper.applyQuaternion(
+  setDrawingBoardMatrix() {
+    const drawingBoard = this.drawingBoard;
+    drawingBoard.position.copy(this.plane.normal).multiplyScalar(this.plane.constant);
+    drawingBoard.applyQuaternion(
       new Quaternion().setFromUnitVectors(
         new Vector3(0, 0, 1),
         this.plane.normal
       )
     );
-    helper.updateMatrix();
-    helper.updateMatrixWorld(true);
+    drawingBoard.updateMatrix();
+    drawingBoard.updateMatrixWorld(true);
   }
   dispose() {
-    this.helper.removeFromParent();
-    this.helper.geometry.dispose();
-    this.helper.material.dispose();
+    this.drawingBoard.removeFromParent();
+    this.drawingBoard.geometry.dispose();
+    this.drawingBoard.material.dispose();
+    this.engine.removeEventListener(ENGINE_EVENT.SETSCENE, this.setScene);
+  }
+  showDrawingBoard(show) {
+    this.drawingBoard.visible = show;
+  }
+  setSketcherByPlane(normal = new Vector3(0, 0, 1), constant = 0, offset = new Vector3(0, 50, 0)) {
+    return this.setDrawPlane(normal, constant).offsetCamera(offset);
+  }
+  setSketcherByFace(face, offset = new Vector3(0, 50, 0)) {
+    return this.setDrawPlaneByFace(face).offsetCamera(offset);
+  }
+  setSketcherByFaceAndObject(face, object) {
+    const position = new Vector3().setFromMatrixPosition(object.matrixWorld);
+    this.setRelativeObject(object);
+    return this.setSketcherByFace(face, position);
+  }
+  changeToDrawingView() {
+    this.engine.setCamera(this.camera);
+    return this;
+  }
+  beginDraw() {
+    this.dispatchEvent({
+      type: "begin"
+    });
+    const pointerManager = this.engine.pointerManager;
+    pointerManager.once("mousedown", (event) => {
+      this.cacheWriteFun(event);
+      pointerManager.addEventListener("mousedown", this.cacheWriteFun);
+      pointerManager.addEventListener("pointermove", this.cacheMoveFun);
+    });
+    return this;
+  }
+  endDraw(clearEvent = true) {
+    const pointerManager = this.engine.pointerManager;
+    pointerManager.removeEventListener("mousedown", this.cacheWriteFun);
+    pointerManager.removeEventListener("pointermove", this.cacheMoveFun);
+    this.dispatchEvent({
+      type: "end"
+    });
+    if (clearEvent) {
+      this.removeEvent("begin");
+      this.removeEvent("write");
+      this.removeEvent("move");
+      this.removeEvent("end");
+    }
+    return this;
   }
 }
 const PATH_DRAWING_PLUGIN = transPkgName(name);
@@ -80,43 +191,13 @@ const PathDrawingPlugin = function() {
     name: PATH_DRAWING_PLUGIN,
     deps: [POINTER_MANAGER_PLUGIN],
     install(engine) {
-      const pathSketcher = new PathSketcher();
+      const pathSketcher = new PathSketcher(engine);
       engine.pathSketcher = pathSketcher;
-      engine.drawPathByPlane = function(normal = new Vector3(0, 0, 1), constant = 0, offset = new Vector3(0, 50, 0)) {
-        pathSketcher.setDrawPlane(normal, constant).offsetCamera(offset);
-        this.setCamera(pathSketcher.camera);
-        return this;
-      };
-      engine.drawPathByFace = function(face, offset = new Vector3(0, 50, 0)) {
-        pathSketcher.setDrawPlaneByFace(face).offsetCamera(offset);
-        this.setCamera(pathSketcher.camera);
-        return this;
-      };
-      engine.getPathPoint = function(result) {
-        return this.pointerManager.intersectPlane(
-          pathSketcher.camera,
-          pathSketcher.plane,
-          result || new Vector3()
-        );
-      };
-      engine.getRelativePathPoint = function(matrix, result) {
-        const v = this.getPathPoint(result);
-        if (!v) {
-          return v;
-        }
-        return v.applyMatrix4(matrix.invert());
-      };
-      engine.addEventListener(ENGINE_EVENT.SETSCENE, (event) => {
-        event.scene.add(pathSketcher.helper);
-      });
     },
     dispose(engine) {
       engine.pathSketcher.dispose();
       delete engine.pathSketcher;
-      delete engine.drawPathByPlane;
-      delete engine.getPathPoint;
-      delete engine.getRelativePathPoint;
     }
   };
 };
-export { PATH_DRAWING_PLUGIN, PathDrawingPlugin };
+export { PATHSKETCHER_EVENT, PATH_DRAWING_PLUGIN, PathDrawingPlugin };
