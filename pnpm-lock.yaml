@@ -716,6 +716,7 @@ importers:
       '@vis-three/module-css3d': workspace:^0.6.3
       '@vis-three/module-geometry': workspace:^0.6.2
       '@vis-three/module-group': workspace:^0.6.1
+      '@vis-three/module-helper': workspace:^0.6.0
       '@vis-three/module-light': workspace:^0.6.1
       '@vis-three/module-line': workspace:^0.6.1
       '@vis-three/module-material': workspace:^0.6.2
@@ -743,6 +744,7 @@ importers:
       '@vis-three/module-css3d': link:css3D
       '@vis-three/module-geometry': link:geometry
       '@vis-three/module-group': link:group
+      '@vis-three/module-helper': link:helper
       '@vis-three/module-light': link:light
       '@vis-three/module-line': link:line
       '@vis-three/module-material': link:material
@@ -1001,6 +1003,41 @@ importers:
       prettier: 2.8.7
       three: 0.141.0
       typescript: 4.9.5
+
+  packages/library/module/helper:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': ^0.6.1
+      '@vis-three/middleware': ^0.6.3
+      '@vis-three/utils': ^0.6.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+      uuid: ^8.3.2
+      vite: ^2.9.15
+    dependencies:
+      '@vis-three/core': link:../../../core
+      '@vis-three/middleware': link:../../../middleware
+      '@vis-three/utils': link:../../../utils
+      uuid: 8.3.2
+    devDependencies:
+      '@types/node': 18.15.10
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
+      '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.8.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
+      prettier: 2.8.7
+      three: 0.141.0
+      typescript: 4.9.5
+      vite: 2.9.15
 
   packages/library/module/light:
     specifiers:
