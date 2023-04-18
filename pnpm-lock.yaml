@@ -281,7 +281,7 @@ importers:
       '@vis-three/plugin-event-manager': link:../../plugins/EventManagerPlugin
       '@vis-three/plugin-grid-helper': link:../../plugins/GridHelperPlugin
       '@vis-three/plugin-keyboard-manager': link:../../plugins/KeyboardManagerPlugin
-      '@vis-three/plugin-object-helper': link:../../plugins/ObjectHelperPlugin
+      '@vis-three/plugin-object-helper': link:../../plugins/ObjectHelper
       '@vis-three/plugin-orbit-controls': link:../../plugins/OrbitControlsPlugin
       '@vis-three/plugin-pointer-manager': link:../../plugins/PointerManager
       '@vis-three/plugin-render-manager': link:../../plugins/RenderManagerPlugin
@@ -370,7 +370,7 @@ importers:
       '@vis-three/plugin-effect-composer': link:../../plugins/EffectComposerPlugin
       '@vis-three/plugin-grid-helper': link:../../plugins/GridHelperPlugin
       '@vis-three/plugin-keyboard-manager': link:../../plugins/KeyboardManagerPlugin
-      '@vis-three/plugin-object-helper': link:../../plugins/ObjectHelperPlugin
+      '@vis-three/plugin-object-helper': link:../../plugins/ObjectHelper
       '@vis-three/plugin-orbit-controls': link:../../plugins/OrbitControlsPlugin
       '@vis-three/plugin-path-drawing': link:../../plugins/PathDrawing
       '@vis-three/plugin-selection': link:../../plugins/SelectionPlugin
@@ -514,7 +514,7 @@ importers:
       '@vis-three/plugin-keyboard-move-controls': link:../plugins/KeyboardMoveControlsPlugin
       '@vis-three/plugin-loader-manager': link:../plugins/LoaderManagerPlugin
       '@vis-three/plugin-mesh-bvh': link:../plugins/MeshBVHPlugin
-      '@vis-three/plugin-object-helper': link:../plugins/ObjectHelperPlugin
+      '@vis-three/plugin-object-helper': link:../plugins/ObjectHelper
       '@vis-three/plugin-orbit-controls': link:../plugins/OrbitControlsPlugin
       '@vis-three/plugin-path-drawing': link:../plugins/PathDrawing
       '@vis-three/plugin-pointer-lock-controls': link:../plugins/PointerLockControlsPlugin
@@ -2035,7 +2035,7 @@ importers:
       three: 0.141.0
       typescript: 4.9.3
 
-  packages/plugins/ObjectHelperPlugin:
+  packages/plugins/ObjectHelper:
     specifiers:
       '@types/node': ^18.11.12
       '@types/three': ^0.133.1
@@ -2050,21 +2050,23 @@ importers:
       prettier: ^2.6.2
       three: ^0.141.0
       typescript: ^4.3.2
+      vite: ^2.9.15
     dependencies:
       '@vis-three/convenient': link:../../convenient
       '@vis-three/core': link:../../core
       '@vis-three/utils': link:../../utils
     devDependencies:
-      '@types/node': 18.11.12
+      '@types/node': 18.15.10
       '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
-      '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
-      eslint: 8.29.0
-      eslint-config-prettier: 8.5.0_eslint@8.29.0
-      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
-      prettier: 2.8.0
+      '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
+      '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
+      eslint: 8.36.0
+      eslint-config-prettier: 8.8.0_eslint@8.36.0
+      eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
+      prettier: 2.8.7
       three: 0.141.0
-      typescript: 4.9.3
+      typescript: 4.9.5
+      vite: 2.9.15
 
   packages/plugins/OrbitControlsPlugin:
     specifiers:
@@ -2102,7 +2104,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.1
-      '@vis-three/plugin-pointer-manager': workspace:^0.6.2
+      '@vis-three/plugin-pointer-manager': workspace:^0.6.3
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2680,7 +2682,7 @@ importers:
     dependencies:
       '@vis-three/core': link:../../core
       '@vis-three/plugin-event-manager': link:../../plugins/EventManagerPlugin
-      '@vis-three/plugin-object-helper': link:../../plugins/ObjectHelperPlugin
+      '@vis-three/plugin-object-helper': link:../../plugins/ObjectHelper
       '@vis-three/plugin-selection': link:../../plugins/SelectionPlugin
       '@vis-three/plugin-transform-controls': link:../../plugins/TransformControlsPlugin
       '@vis-three/utils': link:../../utils
@@ -2957,7 +2959,7 @@ importers:
     dependencies:
       '@vis-three/core': link:../../core
       '@vis-three/middleware': link:../../middleware
-      '@vis-three/plugin-object-helper': link:../../plugins/ObjectHelperPlugin
+      '@vis-three/plugin-object-helper': link:../../plugins/ObjectHelper
       '@vis-three/plugin-transform-controls': link:../../plugins/TransformControlsPlugin
       '@vis-three/utils': link:../../utils
     devDependencies:
@@ -11496,7 +11498,7 @@ packages:
     dependencies:
       esbuild: 0.14.54
       postcss: 8.4.21
-      resolve: 1.22.1
+      resolve: 1.22.2
       rollup: 2.77.3
     optionalDependencies:
       fsevents: 2.3.2
