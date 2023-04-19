@@ -1,4 +1,4 @@
-import { CSS3DPlane } from "@vis-three/core";
+import { CSS3DPlane } from "@vis-three/module-css3d/extends/CSS3DPlane";
 import { LineSegments } from "three";
 import { VisHelper } from "../common";
 export declare class CSS3DPlaneHelper extends LineSegments implements VisHelper {

@@ -4,4 +4,3 @@ export interface VisHelper {
     type: string;
 }
 export declare const getHelperLineMaterial: () => LineBasicMaterial;
-export declare const getTransformAxes: () => void;

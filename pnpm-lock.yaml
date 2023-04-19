@@ -2080,6 +2080,9 @@ importers:
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/convenient': workspace:^0.5.1
       '@vis-three/core': workspace:^0.6.1
+      '@vis-three/module-css2d': workspace:^0.6.2
+      '@vis-three/module-css3d': workspace:^0.6.3
+      '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2097,6 +2100,9 @@ importers:
       '@types/three': 0.133.1
       '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
       '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
+      '@vis-three/module-css2d': link:../../library/module/css2D
+      '@vis-three/module-css3d': link:../../library/module/css3D
+      '@vis-three/module-solid-object': link:../../library/module/solidObject
       eslint: 8.36.0
       eslint-config-prettier: 8.8.0_eslint@8.36.0
       eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm

@@ -1,4 +1,3 @@
-import { CSS2DPlane } from "@vis-three/core";
 import {
   Color,
   EdgesGeometry,
@@ -12,6 +11,7 @@ import {
   Vector2,
   Vector3,
 } from "three";
+import { CSS2DPlane } from "@vis-three/module-css2d/extends/CSS2DPlane";
 import { getHelperLineMaterial, VisHelper } from "../common";
 
 const vertex = `

@@ -25,14 +25,18 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperEngine> = function () {
         if (show) {
           this.scene.traverse((object) => {
             if (helperMap.has(object)) {
-              this.scene.add(helperMap.get(object)!);
+              Object.values(helperMap.get(object)!).forEach((helper) => {
+                helper.visible = true;
+              });
             }
           });
         } else {
           for (let i = 0; i < this.scene.children.length; i++) {
             const object = this.scene.children[i];
             if (helperMap.has(object)) {
-              this.scene.remove(helperMap.get(object)!);
+              Object.values(helperMap.get(object)!).forEach((helper) => {
+                helper.visible = false;
+              });
             }
           }
         }
@@ -45,10 +49,10 @@ export const ObjectHelperPlugin: Plugin<ObjectHelperEngine> = function () {
         "objectHelperManager" | "setObjectHelper"
       >
     ) {
-      engine.objectHelperManager!.objectHelperMap.forEach((helper) => {
-        if (helper.parent) {
-          helper.parent.remove(helper);
-        }
+      engine.objectHelperManager!.objectHelperMap.forEach((map) => {
+        Object.values(map).forEach((helper) => {
+          helper.removeFromParent();
+        });
       });
 
       engine.objectHelperManager!.dispose();

@@ -1,4 +1,4 @@
-import { CSS3DPlane } from "@vis-three/core";
+import { CSS3DPlane } from "@vis-three/module-css3d/extends/CSS3DPlane";
 import {
   EdgesGeometry,
   Intersection,

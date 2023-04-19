@@ -1,4 +1,5 @@
-import { CSS3DSprite, VisCSS3DSprite } from "@vis-three/core";
+import { CSS3DSprite } from "@vis-three/module-css3d/extends/CSS3DSprite";
+import { VisCSS3DSprite } from "@vis-three/module-css3d/extends/VisCSS3DSprite";
 import { LineSegments } from "three";
 import { VisHelper } from "../common";
 export declare class CSS3DSpriteHelper extends LineSegments implements VisHelper {

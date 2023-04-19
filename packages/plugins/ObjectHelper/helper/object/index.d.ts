@@ -1,3 +1,6 @@
+export * from "./GeometricOriginHelper";
+export * from "./BoundingBoxHelper";
+export * from "./LocalAxesHelper";
 export * from "./CSS2DPlaneHelper";
 export * from "./CSS3DPlaneHelper";
 export * from "./CSS3DSpriteHelper";
