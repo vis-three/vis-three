@@ -11,5 +11,5 @@ export default {
   rule: SceneRule,
   processors: [SceneProcessor],
   extend: SceneExtend,
-  lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
+  lifeOrder: SUPPORT_LIFE_CYCLE.THREE + 1,
 };

@@ -1012,6 +1012,7 @@ importers:
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': ^0.6.1
       '@vis-three/middleware': ^0.6.3
+      '@vis-three/plugin-object-helper': workspace:^0.6.1
       '@vis-three/utils': ^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1024,6 +1025,7 @@ importers:
     dependencies:
       '@vis-three/core': link:../../../core
       '@vis-three/middleware': link:../../../middleware
+      '@vis-three/plugin-object-helper': link:../../../plugins/ObjectHelper
       '@vis-three/utils': link:../../../utils
       uuid: 8.3.2
     devDependencies:
