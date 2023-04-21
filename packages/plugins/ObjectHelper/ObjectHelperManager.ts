@@ -1,16 +1,13 @@
 import { EventDispatcher } from "@vis-three/core";
 import { Material, Mesh, Object3D, Sprite } from "three";
 import {
-  BoundingBoxHelper,
   CameraHelper,
   CSS2DPlaneHelper,
   CSS3DPlaneHelper,
   CSS3DSpriteHelper,
   DirectionalLightHelper,
-  GeometricOriginHelper,
   GroupHelper,
   LineHelper,
-  LocalAxesHelper,
   MeshHelper,
   PointLightHelper,
   PointsHelper,
@@ -18,19 +15,15 @@ import {
   SpotLightHelper,
   SpriteHelper,
 } from "./helper";
-import { VisHelper } from "./helper/common";
 
 export interface ObjectHelperManagerParameters {
   helperGenerator?: { [key: string]: typeof Object3D };
-  typeFilter?: { [key: string]: boolean };
+  helperFilter?: { [key: string]: boolean };
   objectFilter?: Object3D[];
 }
 
 export class ObjectHelperManager extends EventDispatcher {
   private helperGenerator = {
-    LocalAxes: LocalAxesHelper,
-    BoundingBox: BoundingBoxHelper,
-    GeometricOrigin: GeometricOriginHelper,
     PointLight: PointLightHelper,
     SpotLight: SpotLightHelper,
     DirectionalLight: DirectionalLightHelper,
@@ -47,7 +40,7 @@ export class ObjectHelperManager extends EventDispatcher {
     CSS2DPlane: CSS2DPlaneHelper,
   };
 
-  private typeFilter = {
+  private helperFilter = {
     AmbientLight: true,
     HemisphereLight: true,
     Object3D: true,
@@ -57,7 +50,7 @@ export class ObjectHelperManager extends EventDispatcher {
 
   private objectFilter = new Set<Object3D>();
 
-  objectHelperMap = new Map<Object3D, Record<string, Object3D>>(); // object -> {type: helper}
+  objectHelperMap = new Map<Object3D, Object3D>();
 
   constructor(params: ObjectHelperManagerParameters = {}) {
     super();
@@ -68,8 +61,11 @@ export class ObjectHelperManager extends EventDispatcher {
         params.helperGenerator
       ));
 
-    params.typeFilter &&
-      (this.typeFilter = Object.assign(this.typeFilter, params.typeFilter));
+    params.helperFilter &&
+      (this.helperFilter = Object.assign(
+        this.helperFilter,
+        params.helperFilter
+      ));
 
     params.objectFilter &&
       (this.objectFilter = new Set(
@@ -78,7 +74,7 @@ export class ObjectHelperManager extends EventDispatcher {
   }
 
   /**
-   * 添加过滤的物体
+   * @description: 添加过滤的物体
    * @param {Object3D} objects three object
    * @return {this} this
    */
@@ -91,107 +87,72 @@ export class ObjectHelperManager extends EventDispatcher {
   }
 
   /**
-   * 添加过滤的类型
-   * @param types
-   * @returns this
-   */
-  addFilteredType(...types: string[]): this {
-    for (const type of types) {
-      this.typeFilter[type] = true;
-    }
-    return this;
-  }
-
-  /**
-   * 添加物体辅助
+   * @description:添加物体辅助
    * @param {Object3D} obejct three object
-   * @param helperType 辅助类型
    * @return {Object3D | null} three object or null
    */
-  addObjectHelper(object: Object3D, helperType?: string): Object3D | null {
+  addObjectHelper(object: Object3D): Object3D | null {
     if (
       this.objectFilter.has(object) ||
       this.objectHelperMap.has(object) ||
-      this.typeFilter[object.type] ||
+      this.helperFilter[object.type] ||
       object.type.toLocaleLowerCase().includes("helper")
     ) {
       return null;
     }
 
-    if (
-      !this.helperGenerator[object.type] ||
-      (helperType && !this.helperGenerator[helperType])
-    ) {
+    if (!this.helperGenerator[object.type]) {
       console.warn(
-        `object helper can not support this type object: '${object.type}', ${
-          helperType || ""
-        }`
+        `object helper can not support this type object: '${object.type}'`
       );
       return null;
     }
 
-    const helper = new this.helperGenerator[helperType || object.type](object);
-
-    if (!this.objectHelperMap.has(object)) {
-      this.objectHelperMap.set(object, {});
-    }
-    this.objectHelperMap.get(object)![helperType || object.type] = helper;
+    const helper = new this.helperGenerator[object.type](object);
+    this.objectHelperMap.set(object, helper);
 
     return helper;
   }
 
   /**
-   * 销毁物体，不传type销毁所有的物体辅助
-   * @param object
-   * @param helperType
-   * @returns
+   * @description: 销毁物体辅助
+   * @param {Object3D} object three object
+   * @return {*} three object or null
    */
-  disposeObjectHelper(object: Object3D, helperType?: string) {
+  disposeObjectHelper(object: Object3D): Object3D | null {
+    if (
+      this.objectFilter.has(object) ||
+      this.helperFilter[object.type] ||
+      object.type.toLocaleLowerCase().includes("helper")
+    ) {
+      return null;
+    }
+
     if (!this.objectHelperMap.has(object)) {
       console.warn(
-        `object helper manager can not found this object\`s helpers: `,
+        `object helper manager can not found this object\`s helper: `,
         object
       );
-      return;
+      return null;
     }
 
-    const dispose = function (helper: Mesh) {
-      helper.geometry && helper.geometry.dispose();
+    const helper = this.objectHelperMap.get(object)! as Mesh;
 
-      if (helper.material) {
-        if (helper.material instanceof Material) {
-          helper.material.dispose();
-        } else {
-          helper.material.forEach((material) => {
-            material.dispose();
-          });
-        }
+    helper.geometry && helper.geometry.dispose();
+
+    if (helper.material) {
+      if (helper.material instanceof Material) {
+        helper.material.dispose();
+      } else {
+        helper.material.forEach((material) => {
+          material.dispose();
+        });
       }
-    };
-
-    const map = this.objectHelperMap.get(object)!;
-
-    if (helperType) {
-      const helper = map[helperType]!;
-
-      if (!map[helperType]) {
-        console.warn(
-          `object helper manager can not found this helper type with object: ${helperType}`,
-          object
-        );
-        return;
-      }
-
-      dispose(helper as unknown as Mesh);
-      delete map[helperType];
-      return;
     }
-
-    Object.values(map).forEach((object) => {
-      dispose(object as unknown as Mesh);
-    });
 
     this.objectHelperMap.delete(object);
+
+    return helper;
   }
 
   dispose() {

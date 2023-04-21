@@ -4,8 +4,8 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { EventDispatcher } from "@vis-three/core";
-import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, Color, PlaneBufferGeometry, EdgesGeometry, Sphere, Vector3, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Box3, Points, CanvasTexture, BufferAttribute, PointsMaterial, AlwaysDepth, ShaderMaterial, Sprite, SpriteMaterial, Vector2, Material } from "three";
+import { EventDispatcher, ENGINE_EVENT } from "@vis-three/core";
+import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, Color, PlaneBufferGeometry, EdgesGeometry, Sphere, Vector3, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Box3, Points, CanvasTexture, BufferAttribute, PointsMaterial, AlwaysDepth, ShaderMaterial, Sprite, SpriteMaterial, Vector2, Material, Scene } from "three";
 import { CanvasGenerator } from "@vis-three/convenient";
 import { transPkgName } from "@vis-three/utils";
 const getHelperLineMaterial = () => new LineBasicMaterial({ color: "rgb(255, 255, 255)" });
@@ -738,161 +738,6 @@ __publicField(GeometricOriginHelper, "colorTexture", new CanvasTexture(
     ctx.closePath();
   }).get()
 ));
-class BoundingBoxHelper extends LineSegments {
-  constructor(target) {
-    const indices = new Uint16Array([
-      0,
-      1,
-      1,
-      2,
-      2,
-      3,
-      3,
-      0,
-      4,
-      5,
-      5,
-      6,
-      6,
-      7,
-      7,
-      4,
-      0,
-      4,
-      1,
-      5,
-      2,
-      6,
-      3,
-      7
-    ]);
-    const positions = new Float32Array(8 * 3);
-    const geometry = new BufferGeometry();
-    geometry.setIndex(new BufferAttribute(indices, 1));
-    geometry.setAttribute("position", new BufferAttribute(positions, 3));
-    super(
-      geometry,
-      new LineBasicMaterial({ color: 15662848, toneMapped: false })
-    );
-    __publicField(this, "target");
-    __publicField(this, "type", "BoundingBoxHelper");
-    __publicField(this, "cacheBox", new Box3());
-    __publicField(this, "compareBox", new Box3());
-    this.matrixAutoUpdate = false;
-    this.raycast = () => {
-    };
-    this.target = target;
-    this.onBeforeRender = () => {
-      this.update();
-    };
-  }
-  update() {
-    this.cacheBox.setFromObject(this.target);
-    if (this.cacheBox.isEmpty())
-      return;
-    if (this.cacheBox.equals(this.compareBox))
-      return;
-    this.compareBox.copy(this.cacheBox);
-    const min = this.cacheBox.min;
-    const max = this.cacheBox.max;
-    const position = this.geometry.attributes.position;
-    const array = position.array;
-    array[0] = max.x;
-    array[1] = max.y;
-    array[2] = max.z;
-    array[3] = min.x;
-    array[4] = max.y;
-    array[5] = max.z;
-    array[6] = min.x;
-    array[7] = min.y;
-    array[8] = max.z;
-    array[9] = max.x;
-    array[10] = min.y;
-    array[11] = max.z;
-    array[12] = max.x;
-    array[13] = max.y;
-    array[14] = min.z;
-    array[15] = min.x;
-    array[16] = max.y;
-    array[17] = min.z;
-    array[18] = min.x;
-    array[19] = min.y;
-    array[20] = min.z;
-    array[21] = max.x;
-    array[22] = min.y;
-    array[23] = min.z;
-    position.needsUpdate = true;
-    this.geometry.computeBoundingSphere();
-  }
-}
-class LocalAxesHelper extends LineSegments {
-  constructor(target) {
-    let size = 5;
-    if (target.geometry) {
-      const geometry2 = target.geometry;
-      !geometry2.boundingSphere && geometry2.computeBoundingSphere();
-      size = geometry2.boundingSphere.radius * 0.8;
-    }
-    const vertices = [
-      0,
-      0,
-      0,
-      size,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      size,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      size
-    ];
-    const colors = [
-      1,
-      0,
-      0,
-      1,
-      0.6,
-      0,
-      0,
-      1,
-      0,
-      0.6,
-      1,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0.6,
-      1
-    ];
-    const geometry = new BufferGeometry();
-    geometry.setAttribute("position", new Float32BufferAttribute(vertices, 3));
-    geometry.setAttribute("color", new Float32BufferAttribute(colors, 3));
-    const material = new LineBasicMaterial({
-      vertexColors: true,
-      toneMapped: false,
-      depthFunc: AlwaysDepth
-    });
-    super(geometry, material);
-    __publicField(this, "target");
-    this.target = target;
-    this.matrixAutoUpdate = false;
-    this.matrixWorldNeedsUpdate = false;
-    this.matrix = target.matrix;
-    this.matrixWorld = target.matrixWorld;
-    this.renderOrder = 100;
-    this.raycast = () => {
-    };
-  }
-}
 const vertex$2 = `
 
 #include <common>
@@ -1340,9 +1185,6 @@ class ObjectHelperManager extends EventDispatcher {
   constructor(params = {}) {
     super();
     __publicField(this, "helperGenerator", {
-      LocalAxes: LocalAxesHelper,
-      BoundingBox: BoundingBoxHelper,
-      GeometricOrigin: GeometricOriginHelper,
       PointLight: PointLightHelper,
       SpotLight: SpotLightHelper,
       DirectionalLight: DirectionalLightHelper,
@@ -1358,7 +1200,7 @@ class ObjectHelperManager extends EventDispatcher {
       CSS3DSprite: CSS3DSpriteHelper,
       CSS2DPlane: CSS2DPlaneHelper
     });
-    __publicField(this, "typeFilter", {
+    __publicField(this, "helperFilter", {
       AmbientLight: true,
       HemisphereLight: true,
       Object3D: true,
@@ -1371,7 +1213,10 @@ class ObjectHelperManager extends EventDispatcher {
       this.helperGenerator,
       params.helperGenerator
     ));
-    params.typeFilter && (this.typeFilter = Object.assign(this.typeFilter, params.typeFilter));
+    params.helperFilter && (this.helperFilter = Object.assign(
+      this.helperFilter,
+      params.helperFilter
+    ));
     params.objectFilter && (this.objectFilter = new Set(
       params.objectFilter.concat(Array.from(this.objectFilter))
     ));
@@ -1382,67 +1227,44 @@ class ObjectHelperManager extends EventDispatcher {
     }
     return this;
   }
-  addFilteredType(...types) {
-    for (const type of types) {
-      this.typeFilter[type] = true;
-    }
-    return this;
-  }
-  addObjectHelper(object, helperType) {
-    if (this.objectFilter.has(object) || this.objectHelperMap.has(object) || this.typeFilter[object.type] || object.type.toLocaleLowerCase().includes("helper")) {
+  addObjectHelper(object) {
+    if (this.objectFilter.has(object) || this.objectHelperMap.has(object) || this.helperFilter[object.type] || object.type.toLocaleLowerCase().includes("helper")) {
       return null;
     }
-    if (!this.helperGenerator[object.type] || helperType && !this.helperGenerator[helperType]) {
+    if (!this.helperGenerator[object.type]) {
       console.warn(
-        `object helper can not support this type object: '${object.type}', ${helperType || ""}`
+        `object helper can not support this type object: '${object.type}'`
       );
       return null;
     }
-    const helper = new this.helperGenerator[helperType || object.type](object);
-    if (!this.objectHelperMap.has(object)) {
-      this.objectHelperMap.set(object, {});
-    }
-    this.objectHelperMap.get(object)[helperType || object.type] = helper;
+    const helper = new this.helperGenerator[object.type](object);
+    this.objectHelperMap.set(object, helper);
     return helper;
   }
-  disposeObjectHelper(object, helperType) {
+  disposeObjectHelper(object) {
+    if (this.objectFilter.has(object) || this.helperFilter[object.type] || object.type.toLocaleLowerCase().includes("helper")) {
+      return null;
+    }
     if (!this.objectHelperMap.has(object)) {
       console.warn(
-        `object helper manager can not found this object\`s helpers: `,
+        `object helper manager can not found this object\`s helper: `,
         object
       );
-      return;
+      return null;
     }
-    const dispose = function(helper) {
-      helper.geometry && helper.geometry.dispose();
-      if (helper.material) {
-        if (helper.material instanceof Material) {
-          helper.material.dispose();
-        } else {
-          helper.material.forEach((material) => {
-            material.dispose();
-          });
-        }
+    const helper = this.objectHelperMap.get(object);
+    helper.geometry && helper.geometry.dispose();
+    if (helper.material) {
+      if (helper.material instanceof Material) {
+        helper.material.dispose();
+      } else {
+        helper.material.forEach((material) => {
+          material.dispose();
+        });
       }
-    };
-    const map = this.objectHelperMap.get(object);
-    if (helperType) {
-      const helper = map[helperType];
-      if (!map[helperType]) {
-        console.warn(
-          `object helper manager can not found this helper type with object: ${helperType}`,
-          object
-        );
-        return;
-      }
-      dispose(helper);
-      delete map[helperType];
-      return;
     }
-    Object.values(map).forEach((object2) => {
-      dispose(object2);
-    });
     this.objectHelperMap.delete(object);
+    return helper;
   }
   dispose() {
     for (const object of this.objectHelperMap.keys()) {
@@ -1452,8 +1274,70 @@ class ObjectHelperManager extends EventDispatcher {
   }
 }
 const name = "@vis-three/plugin-object-helper";
+const AFTERADD = "afterAdd";
+const AFTERREMOVE = "afterRemove";
+Scene.prototype.add = function(...object) {
+  if (!arguments.length) {
+    return this;
+  }
+  if (arguments.length > 1) {
+    for (let i = 0; i < arguments.length; i++) {
+      this.add(arguments[i]);
+    }
+    return this;
+  }
+  const currentObject = object[0];
+  if (currentObject === this) {
+    console.error(
+      "THREE.Object3D.add: object can't be added as a child of itself.",
+      object
+    );
+    return this;
+  }
+  if (currentObject && currentObject.isObject3D) {
+    if (currentObject.parent !== null) {
+      const index = this.children.indexOf(currentObject);
+      if (index !== -1) {
+        currentObject.parent = null;
+        this.children.splice(index, 1);
+        currentObject.dispatchEvent({ type: "removed" });
+      }
+    }
+    currentObject.parent = this;
+    this.children.push(currentObject);
+    currentObject.dispatchEvent({ type: "added" });
+  } else {
+    console.error(
+      "THREE.Object3D.add: object not an instance of THREE.Object3D.",
+      object
+    );
+  }
+  return this;
+};
+const sceneAdd = Scene.prototype.add;
+const sceneRemove = Scene.prototype.remove;
+Scene.prototype.add = function(...object) {
+  sceneAdd.call(this, ...object);
+  this.dispatchEvent({
+    type: AFTERADD,
+    objects: object
+  });
+  return this;
+};
+Scene.prototype.remove = function(...object) {
+  sceneRemove.call(this, ...object);
+  this.dispatchEvent({
+    type: AFTERREMOVE,
+    objects: object
+  });
+  return this;
+};
 const OBJECT_HELPER_PLUGIN = transPkgName(name);
 const ObjectHelperPlugin = function() {
+  let setSceneFun;
+  let afterAddFun;
+  let afterRemoveFun;
+  const cacheSceneSet = /* @__PURE__ */ new WeakSet();
   return {
     name: OBJECT_HELPER_PLUGIN,
     install(engine) {
@@ -1464,34 +1348,80 @@ const ObjectHelperPlugin = function() {
         if (show) {
           this.scene.traverse((object) => {
             if (helperMap.has(object)) {
-              Object.values(helperMap.get(object)).forEach((helper) => {
-                helper.visible = true;
-              });
+              this.scene.add(helperMap.get(object));
             }
           });
         } else {
           for (let i = 0; i < this.scene.children.length; i++) {
             const object = this.scene.children[i];
             if (helperMap.has(object)) {
-              Object.values(helperMap.get(object)).forEach((helper) => {
-                helper.visible = false;
-              });
+              this.scene.remove(helperMap.get(object));
             }
           }
         }
         return this;
       };
+      const initSceneHelper = (scene) => {
+        if (cacheSceneSet.has(scene)) {
+          return;
+        }
+        scene.traverse((object) => {
+          const helper = helperManager.addObjectHelper(object);
+          helper && scene.add(helper);
+        });
+        cacheSceneSet.add(scene);
+      };
+      afterAddFun = (event) => {
+        const objects = event.objects;
+        for (const object of objects) {
+          const helper = helperManager.addObjectHelper(object);
+          if (!helper) {
+            continue;
+          }
+          engine.scene.add(helper);
+        }
+      };
+      afterRemoveFun = (event) => {
+        const objects = event.objects;
+        for (const object of objects) {
+          const helper = helperManager.disposeObjectHelper(object);
+          if (!helper) {
+            continue;
+          }
+          engine.scene.remove(helper);
+        }
+      };
+      engine.scene.addEventListener(AFTERADD, afterAddFun);
+      engine.scene.addEventListener(AFTERREMOVE, afterRemoveFun);
+      setSceneFun = (event) => {
+        const scene = event.scene;
+        !cacheSceneSet.has(scene) && initSceneHelper(scene);
+        if (!scene.hasEventListener(AFTERADD, afterAddFun)) {
+          scene.addEventListener(AFTERADD, afterAddFun);
+        }
+        if (!scene.hasEventListener(AFTERREMOVE, afterRemoveFun)) {
+          scene.addEventListener(AFTERREMOVE, afterRemoveFun);
+        }
+      };
+      engine.addEventListener(
+        ENGINE_EVENT.SETSCENE,
+        setSceneFun
+      );
     },
     dispose(engine) {
-      engine.objectHelperManager.objectHelperMap.forEach((map) => {
-        Object.values(map).forEach((helper) => {
-          helper.removeFromParent();
-        });
+      engine.objectHelperManager.objectHelperMap.forEach((helper) => {
+        if (helper.parent) {
+          helper.parent.remove(helper);
+        }
       });
       engine.objectHelperManager.dispose();
       delete engine.objectHelperManager;
       delete engine.setObjectHelper;
+      engine.removeEventListener(
+        ENGINE_EVENT.SETSCENE,
+        setSceneFun
+      );
     }
   };
 };
-export { OBJECT_HELPER_PLUGIN, ObjectHelperManager, ObjectHelperPlugin };
+export { AFTERADD, AFTERREMOVE, OBJECT_HELPER_PLUGIN, ObjectHelperManager, ObjectHelperPlugin };
