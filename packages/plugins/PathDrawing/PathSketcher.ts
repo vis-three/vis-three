@@ -119,6 +119,7 @@ export class PathSketcher extends EventDispatcher {
     this.engine = engine;
     this.drawingBoard.raycast = () => {};
     this.drawingBoard.matrixAutoUpdate = false;
+    this.drawingBoard.visible = false;
     this.setDrawingBoardMatrix();
 
     engine.addEventListener(ENGINE_EVENT.SETSCENE, this.setScene);
@@ -199,6 +200,7 @@ export class PathSketcher extends EventDispatcher {
 
   showDrawingBoard(show: boolean) {
     this.drawingBoard.visible = show;
+    return this;
   }
 
   setSketcherByPlane(

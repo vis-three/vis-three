@@ -38,7 +38,7 @@ export declare class PathSketcher extends EventDispatcher {
     setDrawPlaneByFace(face: Face): this;
     private setDrawingBoardMatrix;
     dispose(): void;
-    showDrawingBoard(show: boolean): void;
+    showDrawingBoard(show: boolean): this;
     setSketcherByPlane(normal?: Vector3, constant?: number, offset?: Vector3): this;
     setSketcherByFace(face: Face, offset?: Vector3): this;
     setSketcherByFaceAndObject(face: Face, object: Object3D): this;

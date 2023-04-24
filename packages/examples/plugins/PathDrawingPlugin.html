@@ -13,6 +13,8 @@
     <div id="button-position">
       <div id="button-group">
         <button id="default">default</button>
+        <button id="line">line</button>
+        <button id="arc">arc</button>
       </div>
     </div>
     <div id="app"></div>
@@ -35,8 +37,36 @@
 
       generateConfig.injectScene = true;
 
+      // const tg = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+      //   width: 1,
+      //   height: 1,
+      //   depth: 1,
+      // });
+      // const tm = generateConfig(CONFIGTYPE.MESHBASICMATERIAL);
+      // const tb = generateConfig(CONFIGTYPE.MESH, {
+      //   geometry: tg.vid,
+      //   position: {
+      //     x: 17.07106,
+      //     y: 2.92893,
+      //   },
+      // });
+
+      // const eg = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+      //   width: 1,
+      //   height: 1,
+      //   depth: 1,
+      // });
+      // const em = generateConfig(CONFIGTYPE.MESHBASICMATERIAL);
+      // const eb = generateConfig(CONFIGTYPE.MESH, {
+      //   geometry: eg.vid,
+      //   position: {
+      //     x: 20,
+      //     y: 20,
+      //   },
+      // });
+
       const path = generateConfig(CONFIGTYPE.PATH, {
-        autoClose: true,
+        autoClose: false,
       });
 
       const geometry = generateConfig(CONFIGTYPE.PATHGEOMETRY, {
@@ -68,6 +98,7 @@
         geometry: eGeometry.vid,
         position: {
           x: -50,
+          z: -20,
         },
       });
 
@@ -75,30 +106,34 @@
       let lineParams = [];
 
       const sketcher = engine.pathSketcher
+        .showDrawingBoard(true)
         .setSketcherByPlane()
         .changeToDrawingView()
         .beginDraw();
 
+      const gui = new GUI();
+
       sketcher.addEventListener("write", (event) => {
+        // path.curves.push({
+        //   curve: "arc",
+        //   params: [event.point.x, event.point.y, 10, false, 20, 20],
+        // });
         path.curves.push({
           curve: "line",
-          params: [event.point.x, event.point.y],
+          params: [event.point.x, event.point.y, 0, 0],
         });
         lineParams = path.curves[path.curves.length - 1].params;
 
-        if (lineParams.length === 4) {
-          geometry.divisions = path.curves.length;
-        }
+        geometry.divisions = path.curves.length * 256;
+        console.log(JSON.parse(JSON.stringify(path.curves)));
+        console.log(path.curves[path.curves.length - 1]);
+        gui.add(path.curves[path.curves.length - 1].params, "0", 1, 130);
       });
 
+      window.visPath = path;
       sketcher.addEventListener("move", (event) => {
-        if (lineParams.length < 4) {
-          lineParams.push(event.point.x, event.point.y);
-        }
         lineParams[lineParams.length - 2] = event.point.x;
         lineParams[lineParams.length - 1] = event.point.y;
-
-        console.log("move", lineParams);
       });
 
       sketcher.addEventListener("end", (event) => {
@@ -118,7 +153,7 @@
           end();
         }
       });
-      const gui = new GUI();
+
       gui.add(eGeometry.options, "depth", 1, 30, 2);
       window.engine = engine;
     </script>

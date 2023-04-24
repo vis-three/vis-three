@@ -1,6 +1,6 @@
 import { Compiler, Rule, getSymbolConfig, defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { validate } from "uuid";
-import { Path, LineCurve, Vector2, CubicBezierCurve, QuadraticBezierCurve } from "three";
+import { Path, Vector2, EllipseCurve, LineCurve, CubicBezierCurve, QuadraticBezierCurve } from "three";
 class PathCompiler extends Compiler {
   constructor() {
     super();
@@ -20,6 +20,26 @@ const getPathConfig = function() {
   });
 };
 const pathCurveMap = {
+  arc: (startX, startY, vertical, aClockwise, endX, endY) => {
+    const start = new Vector2(startX, startY);
+    const end = new Vector2(endX, endY);
+    const mid = new Vector2((endX + startX) / 2, (endY + startY) / 2);
+    const center = new Vector2().copy(end).sub(start);
+    center.set(-center.y, center.x).negate().normalize().multiplyScalar(vertical).add(mid);
+    const r = new Vector2().copy(end).sub(center).length();
+    const startAngle = new Vector2().copy(start).sub(center).angle();
+    const endAngle = new Vector2().copy(end).sub(center).angle();
+    return new EllipseCurve(
+      center.x,
+      center.y,
+      r,
+      r,
+      startAngle,
+      endAngle,
+      aClockwise,
+      0
+    );
+  },
   line: (startX, startY, endX, endY) => new LineCurve(new Vector2(startX, startY), new Vector2(endX, endY)),
   bezier: (startX, startY, aCP1x, aCP1y, aCP2x, aCP2y, endX, endY) => new CubicBezierCurve(
     new Vector2(startX, startY),
@@ -34,21 +54,10 @@ const pathCurveMap = {
   )
 };
 const getCurveExtrPoint = function(curve, extr) {
-  return extr === "start" ? curve.getPoint(0) : curve.getPoint(1);
-};
-const curveParamsExtrMap = {
-  line: {
-    start: [0, 1],
-    end: [2, 3]
-  },
-  bezier: {
-    start: [0, 1],
-    end: [6, 7]
-  },
-  quadratic: {
-    start: [0, 1],
-    end: [4, 5]
-  }
+  return extr === "start" ? { x: curve.params[0], y: curve.params[1] } : {
+    x: curve.params[curve.params.length - 2],
+    y: curve.params[curve.params.length - 1]
+  };
 };
 const generateCurve = function(segment) {
   if (!pathCurveMap[segment.curve]) {
@@ -58,15 +67,14 @@ const generateCurve = function(segment) {
   return pathCurveMap[segment.curve](...segment.params);
 };
 const syncExtrParams = function(config, params, extr) {
-  if (!curveParamsExtrMap[config.curve]) {
-    console.warn(`can not support this curve: ${config.curve}`);
-    return;
+  if (extr === "start") {
+    config.params[0] !== params[0] && (config.params[0] = params[0]);
+    config.params[1] !== params[1] && (config.params[1] = params[1]);
+  } else {
+    const range = config.params.length - 1;
+    config.params[range - 1] !== params[0] && (config.params[range - 1] = params[0]);
+    config.params[range] !== params[1] && (config.params[range] = params[1]);
   }
-  curveParamsExtrMap[config.curve][extr].forEach((index2, i) => {
-    if (params[i] !== config.params[index2]) {
-      config.params[index2] = params[i];
-    }
-  });
 };
 var PathProcessor = defineProcessor({
   type: "Path",
@@ -87,8 +95,8 @@ var PathProcessor = defineProcessor({
         }
         const currentCurve = generateCurve(config.curves[index2]);
         target.curves[index2] = currentCurve;
-        const startPoint = getCurveExtrPoint(currentCurve, "start");
-        const endPoint = getCurveExtrPoint(currentCurve, "end");
+        const startPoint = getCurveExtrPoint(config.curves[index2], "start");
+        const endPoint = getCurveExtrPoint(config.curves[index2], "end");
         if (index2 - 1 >= 0) {
           syncExtrParams(
             config.curves[index2 - 1],

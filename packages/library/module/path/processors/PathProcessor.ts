@@ -11,28 +11,41 @@ import {
   Vector2,
 } from "three";
 
-// TODO: 通过起始点去反推圆形和椭圆的参数
 const pathCurveMap = {
-  // arc: (
-  //   startX: number,
-  //   startY: number,
-  //   aX: number,
-  //   aY: number,
-  //   aRadius: number,
-  //   aStartAngle: number,
-  //   aEndAngle: number,
-  //   aClockwise: boolean
-  // ) =>
-  //   new EllipseCurve(
-  //     startX + aX,
-  //     startY + aY,
-  //     aRadius,
-  //     aRadius,
-  //     aStartAngle,
-  //     aEndAngle,
-  //     aClockwise,
-  //     0
-  //   ),
+  arc: (
+    startX: number,
+    startY: number,
+    vertical: number,
+    aClockwise: boolean,
+    endX: number,
+    endY: number
+  ) => {
+    const start = new Vector2(startX, startY);
+    const end = new Vector2(endX, endY);
+    const mid = new Vector2((endX + startX) / 2, (endY + startY) / 2);
+    const center = new Vector2().copy(end).sub(start);
+    center
+      .set(-center.y, center.x)
+      .negate()
+      .normalize()
+      .multiplyScalar(vertical)
+      .add(mid);
+    const r = new Vector2().copy(end).sub(center).length();
+
+    const startAngle = new Vector2().copy(start).sub(center).angle();
+    const endAngle = new Vector2().copy(end).sub(center).angle();
+
+    return new EllipseCurve(
+      center.x,
+      center.y,
+      r,
+      r,
+      startAngle,
+      endAngle,
+      aClockwise,
+      0
+    );
+  },
   // ellipse: (
   //   startX: number,
   //   startY: number,
@@ -89,33 +102,15 @@ const pathCurveMap = {
 };
 
 const getCurveExtrPoint = function (
-  curve: Curve<Vector2>,
+  curve: SegmentConfig,
   extr: "start" | "end"
 ) {
-  return extr === "start" ? curve.getPoint(0) : curve.getPoint(1);
-};
-
-const curveParamsExtrMap = {
-  // arc: {
-  //   start: [0, 1],
-  //   end: (curve: Curve<Vector2>) => getCurveExtrPoint(curve, "end"),
-  // },
-  // ellipse: {
-  //   start: [0, 1],
-  //   end: (curve: Curve<Vector2>) => getCurveExtrPoint(curve, "end"),
-  // },
-  line: {
-    start: [0, 1],
-    end: [2, 3],
-  },
-  bezier: {
-    start: [0, 1],
-    end: [6, 7],
-  },
-  quadratic: {
-    start: [0, 1],
-    end: [4, 5],
-  },
+  return extr === "start"
+    ? { x: curve.params[0], y: curve.params[1] }
+    : {
+        x: curve.params[curve.params.length - 2],
+        y: curve.params[curve.params.length - 1],
+      };
 };
 
 const generateCurve = function (segment: SegmentConfig) {
@@ -131,15 +126,15 @@ const syncExtrParams = function (
   params: number[],
   extr: "start" | "end"
 ) {
-  if (!curveParamsExtrMap[config.curve]) {
-    console.warn(`can not support this curve: ${config.curve}`);
-    return;
+  if (extr === "start") {
+    config.params[0] !== params[0] && (config.params[0] = params[0]);
+    config.params[1] !== params[1] && (config.params[1] = params[1]);
+  } else {
+    const range = config.params.length - 1;
+    config.params[range - 1] !== params[0] &&
+      (config.params[range - 1] = params[0]);
+    config.params[range] !== params[1] && (config.params[range] = params[1]);
   }
-  curveParamsExtrMap[config.curve][extr].forEach((index: number, i: number) => {
-    if (params[i] !== config.params[index]) {
-      config.params[index] = params[i];
-    }
-  });
 };
 
 export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
@@ -165,8 +160,8 @@ export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
 
         target.curves[index] = currentCurve;
 
-        const startPoint = getCurveExtrPoint(currentCurve, "start");
-        const endPoint = getCurveExtrPoint(currentCurve, "end");
+        const startPoint = getCurveExtrPoint(config.curves[index], "start");
+        const endPoint = getCurveExtrPoint(config.curves[index], "end");
 
         if (index - 1 >= 0) {
           syncExtrParams(
