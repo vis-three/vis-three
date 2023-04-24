@@ -101,12 +101,12 @@ const proxySetter = function (
           });
 
           execNum += 1;
-          index += 1;
 
           if (execNum === num) {
             break;
           }
         }
+        index += 1;
       }
     }
     cacheArray(target);

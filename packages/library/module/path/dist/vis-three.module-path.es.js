@@ -114,11 +114,11 @@ var PathProcessor = defineProcessor({
       }
     },
     delete: {
-      curves({ target, value }) {
-        if (target.curves.length - 1 < value) {
+      curves({ target, key }) {
+        if (target.curves.length - 1 < Number(key)) {
           return;
         }
-        target.curves.splice(value, target.curves.length);
+        target.curves.splice(Number(key), target.curves.length);
       }
     }
   },

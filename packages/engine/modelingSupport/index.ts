@@ -93,7 +93,10 @@ import {
   PathDrawingEngine,
   PathDrawingPlugin,
 } from "@vis-three/plugin-path-drawing";
-import { PathDrawing } from "@vis-three/plugin-path-drawing/PathDrawing";
+import {
+  Face,
+  PathSketcher,
+} from "@vis-three/plugin-path-drawing/PathSketcher";
 
 export { VIEWPOINT };
 
@@ -139,9 +142,13 @@ export class ModelingEngineSupport
   declare setObjectHelper: (show: boolean) => ObjectHelperEngine;
   declare css2DRenderer: CSS2DRenderer;
   declare css3DRenderer: CSS3DRenderer;
-  declare pathDrawing: PathDrawing;
-  declare drawPath: () => PathDrawingEngine;
-  declare getPathPoint: (result?: Vector3 | undefined) => Vector3 | null;
+  declare pathSketcher: PathSketcher;
+  declare drawPathByPlane: (
+    normal: Vector3,
+    constant: number,
+    offset: Vector3
+  ) => PathDrawingEngine;
+  declare drawPathByFace: (face: Face, offset: Vector3) => PathDrawingEngine;
 
   constructor() {
     super();

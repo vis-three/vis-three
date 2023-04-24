@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/middleware",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "vis-three middleware",
   "main": "dist/vis-three.middleware.umd.js",
   "module": "dist/vis-three.middleware.es.js",
@@ -27,10 +27,10 @@
     "vite": "^2.9.15"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.1",
+    "@vis-three/core": "workspace:^0.6.2",
     "@vis-three/plugin-event-manager": "workspace:^0.6.0",
     "@vis-three/plugin-loader-manager": "workspace:^0.6.0",
-    "@vis-three/plugin-pointer-manager": "workspace:^0.6.2",
+    "@vis-three/plugin-pointer-manager": "workspace:^0.6.3",
     "@vis-three/plugin-render-manager": "workspace:^0.6.0",
     "@vis-three/utils": "workspace:^0.6.0",
     "rxjs": "^7.5.7",

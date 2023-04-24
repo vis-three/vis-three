@@ -19,7 +19,7 @@ import { CSS3DRendererEngine } from "@vis-three/plugin-css3d-renderer";
 import { SelectionEngine } from "@vis-three/plugin-selection";
 import { VisStats } from "@vis-three/plugin-stats/VisStats";
 import { PathDrawingEngine } from "@vis-three/plugin-path-drawing";
-import { PathDrawing } from "@vis-three/plugin-path-drawing/PathDrawing";
+import { Face, PathSketcher } from "@vis-three/plugin-path-drawing/PathSketcher";
 export { VIEWPOINT };
 export declare class ModelingEngineSupport extends EngineSupport implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, KeyboardManagerEngine, StatsEngine, TransformControlsEngine, ViewpointEngine, GridHelperEngine, AxesHelperEngine, SelectionSupportEngine, ObjectHelperEngine, CSS2DRendererEngine, CSS3DRendererEngine, PathDrawingEngine {
     webGLRenderer: WebGLRenderer;
@@ -44,8 +44,8 @@ export declare class ModelingEngineSupport extends EngineSupport implements WebG
     setObjectHelper: (show: boolean) => ObjectHelperEngine;
     css2DRenderer: CSS2DRenderer;
     css3DRenderer: CSS3DRenderer;
-    pathDrawing: PathDrawing;
-    drawPath: () => PathDrawingEngine;
-    getPathPoint: (result?: Vector3 | undefined) => Vector3 | null;
+    pathSketcher: PathSketcher;
+    drawPathByPlane: (normal: Vector3, constant: number, offset: Vector3) => PathDrawingEngine;
+    drawPathByFace: (face: Face, offset: Vector3) => PathDrawingEngine;
     constructor();
 }

@@ -125,14 +125,14 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-camera-adaptive': workspace:^0.6.0
       '@vis-three/plugin-css2d-renderer': workspace:^0.6.0
       '@vis-three/plugin-css3d-renderer': workspace:^0.6.0
       '@vis-three/plugin-effect-composer': workspace:^0.6.0
       '@vis-three/plugin-event-manager': workspace:^0.6.0
       '@vis-three/plugin-orbit-controls': workspace:^0.6.0
-      '@vis-three/plugin-pointer-manager': workspace:^0.6.2
+      '@vis-three/plugin-pointer-manager': workspace:^0.6.3
       '@vis-three/plugin-render-manager': workspace:^0.6.0
       '@vis-three/plugin-webgl-renderer': workspace:^0.6.0
       '@vis-three/strategy-css2d-render': workspace:^0.6.0
@@ -178,9 +178,9 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/library-module': workspace:^0.6.1
+      '@vis-three/library-module': workspace:^0.6.2
       '@vis-three/library-parser': workspace:^0.6.0
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/plugin-camera-adaptive': workspace:^0.6.0
       '@vis-three/plugin-css2d-renderer': workspace:^0.6.0
       '@vis-three/plugin-css3d-renderer': workspace:^0.6.0
@@ -237,7 +237,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-axes-helper': workspace:^0.6.0
       '@vis-three/plugin-camera-adaptive': workspace:^0.6.0
       '@vis-three/plugin-css2d-renderer': workspace:^0.6.0
@@ -248,7 +248,7 @@ importers:
       '@vis-three/plugin-keyboard-manager': workspace:^0.6.0
       '@vis-three/plugin-object-helper': workspace:^0.6.0
       '@vis-three/plugin-orbit-controls': workspace:^0.6.0
-      '@vis-three/plugin-pointer-manager': workspace:^0.6.2
+      '@vis-three/plugin-pointer-manager': workspace:^0.6.3
       '@vis-three/plugin-render-manager': workspace:^0.6.0
       '@vis-three/plugin-selection': workspace:^0.6.0
       '@vis-three/plugin-stats': workspace:^0.6.0
@@ -318,9 +318,9 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/library-module': workspace:^0.6.1
+      '@vis-three/library-module': workspace:^0.6.2
       '@vis-three/library-parser': workspace:^0.6.0
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/plugin-axes-helper': workspace:^0.6.0
       '@vis-three/plugin-camera-adaptive': workspace:^0.6.0
       '@vis-three/plugin-css2d-renderer': workspace:^0.6.0
@@ -330,7 +330,7 @@ importers:
       '@vis-three/plugin-keyboard-manager': workspace:^0.6.0
       '@vis-three/plugin-object-helper': workspace:^0.6.0
       '@vis-three/plugin-orbit-controls': workspace:^0.6.0
-      '@vis-three/plugin-path-drawing': workspace:^0.6.0
+      '@vis-three/plugin-path-drawing': workspace:^0.6.1
       '@vis-three/plugin-selection': workspace:^0.6.0
       '@vis-three/plugin-selection-support': workspace:^0.6.0
       '@vis-three/plugin-stats': workspace:^0.6.0
@@ -414,15 +414,15 @@ importers:
       '@antv/util': ^3.3.2
       '@rollup/plugin-alias': ^3.1.9
       '@vis-three/convenient': workspace:^0.5.1
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/engine-display': workspace:^0.6.0
       '@vis-three/engine-display-support': workspace:^0.6.0
       '@vis-three/engine-modeling': workspace:^0.6.0
-      '@vis-three/engine-modeling-support': workspace:^0.6.0
+      '@vis-three/engine-modeling-support': workspace:^0.6.1
       '@vis-three/library-animate-script': workspace:^0.6.0
       '@vis-three/library-event': workspace:^0.6.0
-      '@vis-three/middleware': workspace:^0.6.4
-      '@vis-three/modifier-boolean': workspace:^0.6.0
+      '@vis-three/middleware': workspace:^0.6.5
+      '@vis-three/modifier-boolean': workspace:^0.6.1
       '@vis-three/module-modifier': workspace:^0.6.3
       '@vis-three/module-pass': workspace:^0.6.1
       '@vis-three/plugin-axes-helper': workspace:^0.6.0
@@ -439,7 +439,7 @@ importers:
       '@vis-three/plugin-mesh-bvh': workspace:^0.6.0
       '@vis-three/plugin-object-helper': workspace:^0.6.0
       '@vis-three/plugin-orbit-controls': workspace:^0.6.0
-      '@vis-three/plugin-path-drawing': workspace:^0.6.0
+      '@vis-three/plugin-path-drawing': workspace:^0.6.1
       '@vis-three/plugin-pointer-lock-controls': workspace:^0.6.0
       '@vis-three/plugin-pointer-manager': workspace:^0.6.3
       '@vis-three/plugin-pointer-visual-controls': workspace:^0.6.0
@@ -572,7 +572,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/middleware': workspace:^0.6.5
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-prettier: ^4.0.0
@@ -600,7 +600,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/plugin-orbit-controls': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -630,7 +630,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/modifier-boolean': workspace:^0.6.0
+      '@vis-three/modifier-boolean': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-prettier: ^4.0.0
@@ -714,9 +714,8 @@ importers:
       '@vis-three/module-controls': workspace:^0.6.0
       '@vis-three/module-css2d': workspace:^0.6.2
       '@vis-three/module-css3d': workspace:^0.6.3
-      '@vis-three/module-geometry': workspace:^0.6.2
+      '@vis-three/module-geometry': workspace:^0.6.4
       '@vis-three/module-group': workspace:^0.6.1
-      '@vis-three/module-helper': workspace:^0.6.0
       '@vis-three/module-light': workspace:^0.6.1
       '@vis-three/module-line': workspace:^0.6.1
       '@vis-three/module-material': workspace:^0.6.2
@@ -724,11 +723,11 @@ importers:
       '@vis-three/module-modifier': workspace:^0.6.3
       '@vis-three/module-object3d': workspace:^0.6.2
       '@vis-three/module-pass': workspace:^0.6.1
-      '@vis-three/module-path': workspace:^0.6.0
+      '@vis-three/module-path': workspace:^0.6.2
       '@vis-three/module-points': workspace:^0.6.1
       '@vis-three/module-renderer': workspace:^0.6.0
-      '@vis-three/module-scene': workspace:^0.6.1
-      '@vis-three/module-shape': workspace:^0.6.0
+      '@vis-three/module-scene': workspace:^0.6.2
+      '@vis-three/module-shape': workspace:^0.6.2
       '@vis-three/module-sprite': workspace:^0.6.1
       '@vis-three/module-texture': workspace:^0.6.1
       eslint: ^8.12.0
@@ -744,7 +743,6 @@ importers:
       '@vis-three/module-css3d': link:css3D
       '@vis-three/module-geometry': link:geometry
       '@vis-three/module-group': link:group
-      '@vis-three/module-helper': link:helper
       '@vis-three/module-light': link:light
       '@vis-three/module-line': link:line
       '@vis-three/module-material': link:material
@@ -775,8 +773,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -806,8 +804,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-object': workspace:^0.6.3
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -840,8 +838,8 @@ importers:
       '@types/uuid': ^9.0.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -874,8 +872,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-object': workspace:^0.6.3
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -909,8 +907,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-object': workspace:^0.6.3
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -944,8 +942,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -977,8 +975,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-object': workspace:^0.6.3
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -1004,51 +1002,14 @@ importers:
       three: 0.141.0
       typescript: 4.9.5
 
-  packages/library/module/helper:
-    specifiers:
-      '@types/node': ^18.11.12
-      '@types/three': ^0.133.1
-      '@typescript-eslint/eslint-plugin': ^5.18.0
-      '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': ^0.6.1
-      '@vis-three/middleware': ^0.6.3
-      '@vis-three/plugin-object-helper': workspace:^0.6.1
-      '@vis-three/utils': ^0.6.0
-      eslint: ^8.12.0
-      eslint-config-prettier: ^8.5.0
-      eslint-plugin-prettier: ^4.0.0
-      prettier: ^2.6.2
-      three: ^0.141.0
-      typescript: ^4.3.2
-      uuid: ^8.3.2
-      vite: ^2.9.15
-    dependencies:
-      '@vis-three/core': link:../../../core
-      '@vis-three/middleware': link:../../../middleware
-      '@vis-three/plugin-object-helper': link:../../../plugins/ObjectHelper
-      '@vis-three/utils': link:../../../utils
-      uuid: 8.3.2
-    devDependencies:
-      '@types/node': 18.15.10
-      '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
-      '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
-      eslint: 8.36.0
-      eslint-config-prettier: 8.8.0_eslint@8.36.0
-      eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
-      prettier: 2.8.7
-      three: 0.141.0
-      typescript: 4.9.5
-      vite: 2.9.15
-
   packages/library/module/light:
     specifiers:
       '@types/node': ^18.11.12
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-object': workspace:^0.6.3
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -1080,8 +1041,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-object': workspace:^0.6.3
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -1115,8 +1076,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1146,8 +1107,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-object': workspace:^0.6.3
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -1181,9 +1142,9 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/library-modifier': workspace:^0.6.0
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/modifier-base': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -1218,8 +1179,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1254,8 +1215,8 @@ importers:
       '@types/uuid': ^8.3.4
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-object': workspace:^0.6.3
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -1290,8 +1251,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/plugin-effect-composer': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -1323,8 +1284,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1359,8 +1320,8 @@ importers:
       '@types/uuid': ^8.3.4
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-object': workspace:^0.6.3
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -1398,8 +1359,8 @@ importers:
       '@types/uuid': ^8.3.4
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1433,8 +1394,8 @@ importers:
       '@types/uuid': ^8.3.4
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-object': workspace:^0.6.3
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -1469,8 +1430,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1504,8 +1465,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-object': workspace:^0.6.3
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -1538,8 +1499,8 @@ importers:
       '@types/uuid': ^8.3.4
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-object': workspace:^0.6.3
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -1577,8 +1538,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/convenient': workspace:^0.5.1
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1612,9 +1573,9 @@ importers:
       '@types/uuid': ^9.0.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-css3d': workspace:^0.6.3
-      '@vis-three/module-geometry': workspace:^0.6.2
+      '@vis-three/module-geometry': workspace:^0.6.4
       '@vis-three/module-material': workspace:^0.6.2
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/module-texture': workspace:^0.6.1
@@ -1654,7 +1615,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/middleware': workspace:^0.6.5
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-prettier: ^4.0.0
@@ -1681,10 +1642,10 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-event-manager': workspace:^0.6.0
       '@vis-three/plugin-loader-manager': workspace:^0.6.0
-      '@vis-three/plugin-pointer-manager': workspace:^0.6.2
+      '@vis-three/plugin-pointer-manager': workspace:^0.6.3
       '@vis-three/plugin-render-manager': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -1724,7 +1685,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1753,7 +1714,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1782,7 +1743,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1811,7 +1772,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-prettier: ^4.0.0
@@ -1838,7 +1799,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-webgl-renderer': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -1869,8 +1830,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/plugin-pointer-manager': workspace:^0.6.2
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/plugin-pointer-manager': workspace:^0.6.3
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1900,7 +1861,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1929,7 +1890,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1959,7 +1920,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1991,7 +1952,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2020,7 +1981,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2049,7 +2010,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2081,7 +2042,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/convenient': workspace:^0.5.1
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/module-css2d': workspace:^0.6.2
       '@vis-three/module-css3d': workspace:^0.6.3
       '@vis-three/module-solid-object': workspace:^0.6.0
@@ -2119,7 +2080,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2148,7 +2109,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-pointer-manager': workspace:^0.6.3
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -2181,7 +2142,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2210,7 +2171,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2241,7 +2202,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2270,7 +2231,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2299,7 +2260,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2328,8 +2289,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/plugin-selection': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
@@ -2361,7 +2322,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2390,7 +2351,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2419,7 +2380,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2448,7 +2409,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -2477,7 +2438,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-css2d-renderer': workspace:^0.6.0
       '@vis-three/plugin-render-manager': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -2510,7 +2471,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-css3d-renderer': workspace:^0.6.0
       '@vis-three/plugin-render-manager': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -2543,8 +2504,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-renderer': workspace:^0.6.0
       '@vis-three/plugin-css3d-renderer': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -2578,8 +2539,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-pass': workspace:^0.6.1
       '@vis-three/plugin-effect-composer': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -2613,7 +2574,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-effect-composer': workspace:^0.6.0
       '@vis-three/plugin-render-manager': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -2646,7 +2607,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-first-person-controls': workspace:^0.6.0
       '@vis-three/plugin-render-manager': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -2679,7 +2640,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-grid-helper': workspace:^0.6.0
       '@vis-three/plugin-viewpoint': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -2712,7 +2673,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-event-manager': workspace:^0.6.0
       '@vis-three/plugin-object-helper': workspace:^0.6.0
       '@vis-three/plugin-selection': workspace:^0.6.0
@@ -2749,7 +2710,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-keyboard-move-controls': workspace:^0.6.0
       '@vis-three/plugin-render-manager': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -2782,8 +2743,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-controls': workspace:^0.6.0
       '@vis-three/plugin-orbit-controls': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -2817,7 +2778,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-orbit-controls': workspace:^0.6.0
       '@vis-three/plugin-render-manager': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -2850,7 +2811,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-orbit-controls': workspace:^0.6.0
       '@vis-three/plugin-viewpoint': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -2877,13 +2838,44 @@ importers:
       three: 0.141.0
       typescript: 4.9.3
 
+  packages/strategy/SceneDecorateHelper:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/utils': workspace:^0.6.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+      vite: ^2.9.15
+    dependencies:
+      '@vis-three/core': link:../../core
+      '@vis-three/utils': link:../../utils
+    devDependencies:
+      '@types/node': 18.16.0
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.59.0_p5urazbkpxqwbpulw3y4eskliy
+      '@typescript-eslint/parser': 5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq
+      eslint: 8.39.0
+      eslint-config-prettier: 8.8.0_eslint@8.39.0
+      eslint-plugin-prettier: 4.2.1_5pokp25ua6t5ubushhw3tqituq
+      prettier: 2.8.8
+      three: 0.141.0
+      typescript: 4.9.5
+      vite: 2.9.15
+
   packages/strategy/StatsRenderStrategy:
     specifiers:
       '@types/node': ^18.11.12
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-render-manager': workspace:^0.6.0
       '@vis-three/plugin-stats': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -2916,7 +2908,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-event-manager': workspace:^0.6.0
       '@vis-three/plugin-selection': workspace:^0.6.0
       '@vis-three/plugin-transform-controls': workspace:^0.6.0
@@ -2951,8 +2943,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/plugin-event-manager': workspace:^0.6.0
       '@vis-three/plugin-selection': workspace:^0.6.0
       '@vis-three/plugin-selection-support': workspace:^0.6.0
@@ -2990,8 +2982,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/plugin-object-helper': workspace:^0.6.0
       '@vis-three/plugin-transform-controls': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -3025,8 +3017,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-controls': workspace:^0.6.0
       '@vis-three/module-object': workspace:^0.6.3
       '@vis-three/plugin-transform-controls': workspace:^0.6.0
@@ -3062,7 +3054,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-keyboard-manager': workspace:^0.6.0
       '@vis-three/plugin-transform-controls': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -3095,7 +3087,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/core': workspace:^0.6.2
       '@vis-three/plugin-render-manager': workspace:^0.6.0
       '@vis-three/plugin-webgl-renderer': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -3128,8 +3120,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vis-three/module-renderer': workspace:^0.6.0
       '@vis-three/plugin-webgl-renderer': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
@@ -3261,7 +3253,7 @@ importers:
       nprogress: 0.2.0
       three: 0.141.0
       url-parse: 1.5.10
-      vis-three: 0.3.2_yp2zyio6xpj75ip2ahx6p2nfjq
+      vis-three: 0.3.2_nndly7iailzy634vajaskicuvy
     devDependencies:
       '@rollup/plugin-alias': 3.1.9_rollup@2.79.1
       '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
@@ -3293,8 +3285,8 @@ importers:
       '@types/uuid': ^8.3.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.4
+      '@vis-three/core': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.5
       '@vitejs/plugin-vue': ^2.3.3
       babel-loader: ^8.2.5
       babel-plugin-istanbul: ^6.1.1
@@ -3547,13 +3539,13 @@ packages:
     resolution: {integrity: sha512-TGwPyFoAu4+iEJd0y1l0gHdBXCbUj8a4gR7P3GzZRfEfRnWfk+gswApzOSTd7c6HP402JOEF64PAJQKxQgSPSQ==}
     dependencies:
       '@antv/util': 2.0.17
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /@antv/dom-util/2.0.4:
     resolution: {integrity: sha512-2shXUl504fKwt82T3GkuT4Uoc6p9qjCKnJ8gXGLSW4T1W37dqf9AV28aCfoVPHp2BUXpSsB+PAJX2rG/jLHsLQ==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /@antv/event-emitter/0.1.3:
@@ -3573,7 +3565,7 @@ packages:
       d3-interpolate: 3.0.1
       d3-timer: 1.0.10
       detect-browser: 5.3.0
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /@antv/g-canvas/0.5.13:
@@ -3585,7 +3577,7 @@ packages:
       '@antv/path-util': 2.0.15
       '@antv/util': 2.0.17
       gl-matrix: 3.4.3
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /@antv/g-math/0.1.9:
@@ -3602,7 +3594,7 @@ packages:
       '@antv/g-math': 0.1.9
       '@antv/util': 2.0.17
       detect-browser: 5.3.0
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /@antv/g-webgpu-core/0.7.2:
@@ -3645,7 +3637,7 @@ packages:
       '@antv/path-util': 2.0.15
       '@antv/util': 2.0.17
       ml-matrix: 6.10.4
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /@antv/g6-element/0.8.3:
@@ -3732,7 +3724,7 @@ packages:
     dependencies:
       '@antv/util': 2.0.17
       gl-matrix: 3.4.3
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /@antv/matrix-util/3.1.0-beta.3:
@@ -3740,7 +3732,7 @@ packages:
     dependencies:
       '@antv/util': 2.0.17
       gl-matrix: 3.4.3
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /@antv/path-util/2.0.15:
@@ -3748,7 +3740,7 @@ packages:
     dependencies:
       '@antv/matrix-util': 3.0.4
       '@antv/util': 2.0.17
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /@antv/scale/0.3.18:
@@ -3756,14 +3748,14 @@ packages:
     dependencies:
       '@antv/util': 2.0.17
       fecha: 4.2.3
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /@antv/util/2.0.17:
     resolution: {integrity: sha512-o6I9hi5CIUvLGDhth0RxNSFDRwXeywmt6ExR4+RmVAzIi48ps6HUy+svxOCayvrPBN37uE6TAc2KDofRo0nK9Q==}
     dependencies:
-      csstype: 3.1.1
-      tslib: 2.4.1
+      csstype: 3.1.2
+      tslib: 2.5.0
     dev: false
 
   /@antv/util/3.3.2:
@@ -4965,7 +4957,7 @@ packages:
       babel-plugin-polyfill-corejs2: 0.3.3_@babel+core@7.21.4
       babel-plugin-polyfill-corejs3: 0.6.0_@babel+core@7.21.4
       babel-plugin-polyfill-regenerator: 0.4.1_@babel+core@7.21.4
-      core-js-compat: 3.30.0
+      core-js-compat: 3.30.1
       semver: 6.3.0
     transitivePeerDependencies:
       - supports-color
@@ -5206,8 +5198,8 @@ packages:
       - '@algolia/client-search'
     dev: true
 
-  /@esbuild/android-arm/0.16.12:
-    resolution: {integrity: sha512-CTWgMJtpCyCltrvipZrrcjjRu+rzm6pf9V8muCsJqtKujR3kPmU4ffbckvugNNaRmhxAF1ZI3J+0FUIFLFg8KA==}
+  /@esbuild/android-arm/0.17.18:
+    resolution: {integrity: sha512-EmwL+vUBZJ7mhFCs5lA4ZimpUH3WMAoqvOIYhVQwdIgSpHC8ImHdsRyhHAVxpDYUSm0lWvd63z0XH1IlImS2Qw==}
     engines: {node: '>=12'}
     cpu: [arm]
     os: [android]
@@ -5215,8 +5207,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/android-arm64/0.16.12:
-    resolution: {integrity: sha512-0LacmiIW+X0/LOLMZqYtZ7d4uY9fxYABAYhSSOu+OGQVBqH4N5eIYgkT7bBFnR4Nm3qo6qS3RpHKVrDASqj/uQ==}
+  /@esbuild/android-arm64/0.17.18:
+    resolution: {integrity: sha512-/iq0aK0eeHgSC3z55ucMAHO05OIqmQehiGay8eP5l/5l+iEr4EIbh4/MI8xD9qRFjqzgkc0JkX0LculNC9mXBw==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [android]
@@ -5224,8 +5216,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/android-x64/0.16.12:
-    resolution: {integrity: sha512-sS5CR3XBKQXYpSGMM28VuiUnbX83Z+aWPZzClW+OB2JquKqxoiwdqucJ5qvXS8pM6Up3RtJfDnRQZkz3en2z5g==}
+  /@esbuild/android-x64/0.17.18:
+    resolution: {integrity: sha512-x+0efYNBF3NPW2Xc5bFOSFW7tTXdAcpfEg2nXmxegm4mJuVeS+i109m/7HMiOQ6M12aVGGFlqJX3RhNdYM2lWg==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [android]
@@ -5233,8 +5225,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/darwin-arm64/0.16.12:
-    resolution: {integrity: sha512-Dpe5hOAQiQRH20YkFAg+wOpcd4PEuXud+aGgKBQa/VriPJA8zuVlgCOSTwna1CgYl05lf6o5els4dtuyk1qJxQ==}
+  /@esbuild/darwin-arm64/0.17.18:
+    resolution: {integrity: sha512-6tY+djEAdF48M1ONWnQb1C+6LiXrKjmqjzPNPWXhu/GzOHTHX2nh8Mo2ZAmBFg0kIodHhciEgUBtcYCAIjGbjQ==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [darwin]
@@ -5242,8 +5234,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/darwin-x64/0.16.12:
-    resolution: {integrity: sha512-ApGRA6X5txIcxV0095X4e4KKv87HAEXfuDRcGTniDWUUN+qPia8sl/BqG/0IomytQWajnUn4C7TOwHduk/FXBQ==}
+  /@esbuild/darwin-x64/0.17.18:
+    resolution: {integrity: sha512-Qq84ykvLvya3dO49wVC9FFCNUfSrQJLbxhoQk/TE1r6MjHo3sFF2tlJCwMjhkBVq3/ahUisj7+EpRSz0/+8+9A==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [darwin]
@@ -5251,8 +5243,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/freebsd-arm64/0.16.12:
-    resolution: {integrity: sha512-AMdK2gA9EU83ccXCWS1B/KcWYZCj4P3vDofZZkl/F/sBv/fphi2oUqUTox/g5GMcIxk8CF1CVYTC82+iBSyiUg==}
+  /@esbuild/freebsd-arm64/0.17.18:
+    resolution: {integrity: sha512-fw/ZfxfAzuHfaQeMDhbzxp9mc+mHn1Y94VDHFHjGvt2Uxl10mT4CDavHm+/L9KG441t1QdABqkVYwakMUeyLRA==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [freebsd]
@@ -5260,8 +5252,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/freebsd-x64/0.16.12:
-    resolution: {integrity: sha512-KUKB9w8G/xaAbD39t6gnRBuhQ8vIYYlxGT2I+mT6UGRnCGRr1+ePFIGBQmf5V16nxylgUuuWVW1zU2ktKkf6WQ==}
+  /@esbuild/freebsd-x64/0.17.18:
+    resolution: {integrity: sha512-FQFbRtTaEi8ZBi/A6kxOC0V0E9B/97vPdYjY9NdawyLd4Qk5VD5g2pbWN2VR1c0xhzcJm74HWpObPszWC+qTew==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [freebsd]
@@ -5269,8 +5261,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/linux-arm/0.16.12:
-    resolution: {integrity: sha512-vhDdIv6z4eL0FJyNVfdr3C/vdd/Wc6h1683GJsFoJzfKb92dU/v88FhWdigg0i6+3TsbSDeWbsPUXb4dif2abg==}
+  /@esbuild/linux-arm/0.17.18:
+    resolution: {integrity: sha512-jW+UCM40LzHcouIaqv3e/oRs0JM76JfhHjCavPxMUti7VAPh8CaGSlS7cmyrdpzSk7A+8f0hiedHqr/LMnfijg==}
     engines: {node: '>=12'}
     cpu: [arm]
     os: [linux]
@@ -5278,8 +5270,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/linux-arm64/0.16.12:
-    resolution: {integrity: sha512-29HXMLpLklDfmw7T2buGqq3HImSUaZ1ArmrPOMaNiZZQptOSZs32SQtOHEl8xWX5vfdwZqrBfNf8Te4nArVzKQ==}
+  /@esbuild/linux-arm64/0.17.18:
+    resolution: {integrity: sha512-R7pZvQZFOY2sxUG8P6A21eq6q+eBv7JPQYIybHVf1XkQYC+lT7nDBdC7wWKTrbvMXKRaGudp/dzZCwL/863mZQ==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [linux]
@@ -5287,8 +5279,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/linux-ia32/0.16.12:
-    resolution: {integrity: sha512-JFDuNDTTfgD1LJg7wHA42o2uAO/9VzHYK0leAVnCQE/FdMB599YMH73ux+nS0xGr79pv/BK+hrmdRin3iLgQjg==}
+  /@esbuild/linux-ia32/0.17.18:
+    resolution: {integrity: sha512-ygIMc3I7wxgXIxk6j3V00VlABIjq260i967Cp9BNAk5pOOpIXmd1RFQJQX9Io7KRsthDrQYrtcx7QCof4o3ZoQ==}
     engines: {node: '>=12'}
     cpu: [ia32]
     os: [linux]
@@ -5305,8 +5297,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/linux-loong64/0.16.12:
-    resolution: {integrity: sha512-xTGzVPqm6WKfCC0iuj1fryIWr1NWEM8DMhAIo+4rFgUtwy/lfHl+Obvus4oddzRDbBetLLmojfVZGmt/g/g+Rw==}
+  /@esbuild/linux-loong64/0.17.18:
+    resolution: {integrity: sha512-bvPG+MyFs5ZlwYclCG1D744oHk1Pv7j8psF5TfYx7otCVmcJsEXgFEhQkbhNW8otDHL1a2KDINW20cfCgnzgMQ==}
     engines: {node: '>=12'}
     cpu: [loong64]
     os: [linux]
@@ -5314,8 +5306,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/linux-mips64el/0.16.12:
-    resolution: {integrity: sha512-zI1cNgHa3Gol+vPYjIYHzKhU6qMyOQrvZ82REr5Fv7rlh5PG6SkkuCoH7IryPqR+BK2c/7oISGsvPJPGnO2bHQ==}
+  /@esbuild/linux-mips64el/0.17.18:
+    resolution: {integrity: sha512-oVqckATOAGuiUOa6wr8TXaVPSa+6IwVJrGidmNZS1cZVx0HqkTMkqFGD2HIx9H1RvOwFeWYdaYbdY6B89KUMxA==}
     engines: {node: '>=12'}
     cpu: [mips64el]
     os: [linux]
@@ -5323,8 +5315,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/linux-ppc64/0.16.12:
-    resolution: {integrity: sha512-/C8OFXExoMmvTDIOAM54AhtmmuDHKoedUd0Otpfw3+AuuVGemA1nQK99oN909uZbLEU6Bi+7JheFMG3xGfZluQ==}
+  /@esbuild/linux-ppc64/0.17.18:
+    resolution: {integrity: sha512-3dLlQO+b/LnQNxgH4l9rqa2/IwRJVN9u/bK63FhOPB4xqiRqlQAU0qDU3JJuf0BmaH0yytTBdoSBHrb2jqc5qQ==}
     engines: {node: '>=12'}
     cpu: [ppc64]
     os: [linux]
@@ -5332,8 +5324,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/linux-riscv64/0.16.12:
-    resolution: {integrity: sha512-qeouyyc8kAGV6Ni6Isz8hUsKMr00EHgVwUKWNp1r4l88fHEoNTDB8mmestvykW6MrstoGI7g2EAsgr0nxmuGYg==}
+  /@esbuild/linux-riscv64/0.17.18:
+    resolution: {integrity: sha512-/x7leOyDPjZV3TcsdfrSI107zItVnsX1q2nho7hbbQoKnmoeUWjs+08rKKt4AUXju7+3aRZSsKrJtaRmsdL1xA==}
     engines: {node: '>=12'}
     cpu: [riscv64]
     os: [linux]
@@ -5341,8 +5333,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/linux-s390x/0.16.12:
-    resolution: {integrity: sha512-s9AyI/5vz1U4NNqnacEGFElqwnHusWa81pskAf8JNDM2eb6b2E6PpBmT8RzeZv6/TxE6/TADn2g9bb0jOUmXwQ==}
+  /@esbuild/linux-s390x/0.17.18:
+    resolution: {integrity: sha512-cX0I8Q9xQkL/6F5zWdYmVf5JSQt+ZfZD2bJudZrWD+4mnUvoZ3TDDXtDX2mUaq6upMFv9FlfIh4Gfun0tbGzuw==}
     engines: {node: '>=12'}
     cpu: [s390x]
     os: [linux]
@@ -5350,8 +5342,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/linux-x64/0.16.12:
-    resolution: {integrity: sha512-e8YA7GQGLWhvakBecLptUiKxOk4E/EPtSckS1i0MGYctW8ouvNUoh7xnU15PGO2jz7BYl8q1R6g0gE5HFtzpqQ==}
+  /@esbuild/linux-x64/0.17.18:
+    resolution: {integrity: sha512-66RmRsPlYy4jFl0vG80GcNRdirx4nVWAzJmXkevgphP1qf4dsLQCpSKGM3DUQCojwU1hnepI63gNZdrr02wHUA==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [linux]
@@ -5359,8 +5351,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/netbsd-x64/0.16.12:
-    resolution: {integrity: sha512-z2+kUxmOqBS+6SRVd57iOLIHE8oGOoEnGVAmwjm2aENSP35HPS+5cK+FL1l+rhrsJOFIPrNHqDUNechpuG96Sg==}
+  /@esbuild/netbsd-x64/0.17.18:
+    resolution: {integrity: sha512-95IRY7mI2yrkLlTLb1gpDxdC5WLC5mZDi+kA9dmM5XAGxCME0F8i4bYH4jZreaJ6lIZ0B8hTrweqG1fUyW7jbg==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [netbsd]
@@ -5368,8 +5360,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/openbsd-x64/0.16.12:
-    resolution: {integrity: sha512-PAonw4LqIybwn2/vJujhbg1N9W2W8lw9RtXIvvZoyzoA/4rA4CpiuahVbASmQohiytRsixbNoIOUSjRygKXpyA==}
+  /@esbuild/openbsd-x64/0.17.18:
+    resolution: {integrity: sha512-WevVOgcng+8hSZ4Q3BKL3n1xTv5H6Nb53cBrtzzEjDbbnOmucEVcZeGCsCOi9bAOcDYEeBZbD2SJNBxlfP3qiA==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [openbsd]
@@ -5377,8 +5369,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/sunos-x64/0.16.12:
-    resolution: {integrity: sha512-+wr1tkt1RERi+Zi/iQtkzmMH4nS8+7UIRxjcyRz7lur84wCkAITT50Olq/HiT4JN2X2bjtlOV6vt7ptW5Gw60Q==}
+  /@esbuild/sunos-x64/0.17.18:
+    resolution: {integrity: sha512-Rzf4QfQagnwhQXVBS3BYUlxmEbcV7MY+BH5vfDZekU5eYpcffHSyjU8T0xucKVuOcdCsMo+Ur5wmgQJH2GfNrg==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [sunos]
@@ -5386,8 +5378,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/win32-arm64/0.16.12:
-    resolution: {integrity: sha512-XEjeUSHmjsAOJk8+pXJu9pFY2O5KKQbHXZWQylJzQuIBeiGrpMeq9sTVrHefHxMOyxUgoKQTcaTS+VK/K5SviA==}
+  /@esbuild/win32-arm64/0.17.18:
+    resolution: {integrity: sha512-Kb3Ko/KKaWhjeAm2YoT/cNZaHaD1Yk/pa3FTsmqo9uFh1D1Rfco7BBLIPdDOozrObj2sahslFuAQGvWbgWldAg==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [win32]
@@ -5395,8 +5387,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/win32-ia32/0.16.12:
-    resolution: {integrity: sha512-eRKPM7e0IecUAUYr2alW7JGDejrFJXmpjt4MlfonmQ5Rz9HWpKFGCjuuIRgKO7W9C/CWVFXdJ2GjddsBXqQI4A==}
+  /@esbuild/win32-ia32/0.17.18:
+    resolution: {integrity: sha512-0/xUMIdkVHwkvxfbd5+lfG7mHOf2FRrxNbPiKWg9C4fFrB8H0guClmaM3BFiRUYrznVoyxTIyC/Ou2B7QQSwmw==}
     engines: {node: '>=12'}
     cpu: [ia32]
     os: [win32]
@@ -5404,8 +5396,8 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/win32-x64/0.16.12:
-    resolution: {integrity: sha512-iPYKN78t3op2+erv2frW568j1q0RpqX6JOLZ7oPPaAV1VaF7dDstOrNw37PVOYoTWE11pV4A1XUitpdEFNIsPg==}
+  /@esbuild/win32-x64/0.17.18:
+    resolution: {integrity: sha512-qU25Ma1I3NqTSHJUOKi9sAH1/Mzuvlke0ioMJRthLXKm7JiSKVwFghlGbDLOO2sARECGhja4xYfRAZNPAkooYg==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [win32]
@@ -5420,11 +5412,26 @@ packages:
       eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
     dependencies:
       eslint: 8.36.0
-      eslint-visitor-keys: 3.3.0
+      eslint-visitor-keys: 3.4.0
+    dev: true
+
+  /@eslint-community/eslint-utils/4.4.0_eslint@8.39.0:
+    resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    peerDependencies:
+      eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
+    dependencies:
+      eslint: 8.39.0
+      eslint-visitor-keys: 3.4.0
     dev: true
 
   /@eslint-community/regexpp/4.4.1:
     resolution: {integrity: sha512-BISJ6ZE4xQsuL/FmsyRaiffpq977bMlsKfGHTQrOGFErfByxIe6iZTxPf/00Zon9b9a7iUykfQwejN3s2ZW/Bw==}
+    engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
+    dev: true
+
+  /@eslint-community/regexpp/4.5.0:
+    resolution: {integrity: sha512-vITaYzIcNmjn5tF5uxcZ/ft7/RXGrMUIS9HalWckEOF6ESiwXKoMzAQf2UW0aVd6rnOeExTJVd5hmWXucBKGXQ==}
     engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
     dev: true
 
@@ -5434,9 +5441,9 @@ packages:
     dependencies:
       ajv: 6.12.6
       debug: 4.3.4
-      espree: 9.5.0
-      globals: 13.20.0
-      ignore: 5.2.4
+      espree: 9.4.1
+      globals: 13.18.0
+      ignore: 5.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       minimatch: 3.1.2
@@ -5451,8 +5458,8 @@ packages:
     dependencies:
       ajv: 6.12.6
       debug: 4.3.4
-      espree: 9.5.0
-      globals: 13.20.0
+      espree: 9.4.1
+      globals: 13.19.0
       ignore: 5.2.4
       import-fresh: 3.3.0
       js-yaml: 4.1.0
@@ -5479,8 +5486,30 @@ packages:
       - supports-color
     dev: true
 
+  /@eslint/eslintrc/2.0.2:
+    resolution: {integrity: sha512-3W4f5tDUra+pA+FzgugqL2pRimUTDJWKr7BINqOpkZrC0uYI0NIc0/JFgBROCU07HR6GieA5m3/rsPIhDmCXTQ==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dependencies:
+      ajv: 6.12.6
+      debug: 4.3.4
+      espree: 9.5.1
+      globals: 13.20.0
+      ignore: 5.2.4
+      import-fresh: 3.3.0
+      js-yaml: 4.1.0
+      minimatch: 3.1.2
+      strip-json-comments: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@eslint/js/8.36.0:
     resolution: {integrity: sha512-lxJ9R5ygVm8ZWgYdUweoq5ownDlJ4upvoWmO4eLxBYHdMo+vZ/Rx0EN6MbKWDJOSUGrqJy2Gt+Dyv/VKml0fjg==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dev: true
+
+  /@eslint/js/8.39.0:
+    resolution: {integrity: sha512-kf9RB0Fg7NZfap83B3QOqOGg9QmD9yBudqQXzzOtn3i4y7ZUXe5ONeW34Gwi+TxhH4mvj72R1Zc300KUMa9Bng==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
@@ -5614,7 +5643,7 @@ packages:
     engines: {node: '>= 8'}
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
-      fastq: 1.14.0
+      fastq: 1.15.0
     dev: true
 
   /@probe.gl/env/3.6.0:
@@ -5715,7 +5744,7 @@ packages:
   /@types/cors/2.8.13:
     resolution: {integrity: sha512-RG8AStHlUiV5ysZQKq97copd2UmVYw3/pRMLefISZ3S1hK104Cwm7iLQ3fTKx+lsUH2CE8FlLaYeEA2LSeqYUA==}
     dependencies:
-      '@types/node': 18.15.10
+      '@types/node': 18.16.0
     dev: true
 
   /@types/d3-timer/2.0.1:
@@ -5762,8 +5791,8 @@ packages:
   /@types/keyboardjs/2.5.0:
     resolution: {integrity: sha512-tGU6Lz04lDNH+N3AZYIWVeBza2ZSaLlZuSkzi38zSFSuh6DgVqBdqgkX+OS+jg1vwlw5XzS5MASY44fr9C12Yg==}
 
-  /@types/node/14.18.35:
-    resolution: {integrity: sha512-2ATO8pfhG1kDvw4Lc4C0GXIMSQFFJBCo/R1fSgTwmUlq5oy95LXyjDQinsRVgQY6gp6ghh3H91wk9ES5/5C+Tw==}
+  /@types/node/14.18.42:
+    resolution: {integrity: sha512-xefu+RBie4xWlK8hwAzGh3npDz/4VhF6icY/shU+zv/1fNn+ZVG7T7CRwe9LId9sAYRPxI+59QBPuKL3WpyGRg==}
     dev: true
 
   /@types/node/18.11.12:
@@ -5780,6 +5809,10 @@ packages:
 
   /@types/node/18.15.10:
     resolution: {integrity: sha512-9avDaQJczATcXgfmMAW3MIWArOO7A+m90vuCFLr8AotWf8igO/mRoYukrk2cqZVtv38tHs33retzHEilM7FpeQ==}
+    dev: true
+
+  /@types/node/18.16.0:
+    resolution: {integrity: sha512-BsAaKhB+7X+H4GnSjGhJG9Qi8Tw+inU9nJDwmD5CgOmBLEI6ArdhikpLX7DjbjDRDTbqZzU2LSQNZg8WGPiSZQ==}
     dev: true
 
   /@types/semver/7.3.13:
@@ -5801,8 +5834,8 @@ packages:
   /@types/three/0.133.1:
     resolution: {integrity: sha512-XqBrP/+kbs+o0CYRhCVVE95v7FaL2bO5Z7+3VQJE0nEyjo+9LoLfeNgZITOnndKHxM+7ltEciAIR7uE0SZlsOg==}
 
-  /@types/three/0.150.1:
-    resolution: {integrity: sha512-ZXS1M3brsfAAbTeeUEt0defPi98yWQuEyPBnvjEYY1dCEYfJnFaww0mYgRpJ9JVfmtwRxqISpVcv/g/0lMl1DQ==}
+  /@types/three/0.150.2:
+    resolution: {integrity: sha512-cvcz/81Mmj4oiAA+uxzwaRK3t8lYw8WxejXKqIBfu6PqvwSAEEiCi3VfCiVY18UflBqL0LDX/za85+sfqjMoIw==}
     dependencies:
       '@types/stats.js': 0.17.0
       '@types/webxr': 0.5.1
@@ -5813,7 +5846,7 @@ packages:
   /@types/through/0.0.30:
     resolution: {integrity: sha512-FvnCJljyxhPM3gkRgWmxmDZyAQSiBQQWLI0A0VFL0K7W1oRUrPJSqNO0NvTnLkBcotdlp3lKvaT0JrnyRDkzOg==}
     dependencies:
-      '@types/node': 18.15.10
+      '@types/node': 18.16.0
     dev: true
 
   /@types/uuid/8.3.4:
@@ -5835,7 +5868,7 @@ packages:
     resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
     requiresBuild: true
     dependencies:
-      '@types/node': 18.15.10
+      '@types/node': 14.18.42
     dev: true
     optional: true
 
@@ -5949,6 +5982,34 @@ packages:
       - supports-color
     dev: true
 
+  /@typescript-eslint/eslint-plugin/5.59.0_p5urazbkpxqwbpulw3y4eskliy:
+    resolution: {integrity: sha512-p0QgrEyrxAWBecR56gyn3wkG15TJdI//eetInP3zYRewDh0XS+DhB3VUAd3QqvziFsfaQIoIuZMxZRB7vXYaYw==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    peerDependencies:
+      '@typescript-eslint/parser': ^5.0.0
+      eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@eslint-community/regexpp': 4.5.0
+      '@typescript-eslint/parser': 5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq
+      '@typescript-eslint/scope-manager': 5.59.0
+      '@typescript-eslint/type-utils': 5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq
+      '@typescript-eslint/utils': 5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq
+      debug: 4.3.4
+      eslint: 8.39.0
+      grapheme-splitter: 1.0.4
+      ignore: 5.2.4
+      natural-compare-lite: 1.4.0
+      semver: 7.5.0
+      tsutils: 3.21.0_typescript@4.9.5
+      typescript: 4.9.5
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@typescript-eslint/parser/5.45.1_s5ps7njkmjlaqajutnox5ntcla:
     resolution: {integrity: sha512-JQ3Ep8bEOXu16q0ztsatp/iQfDCtvap7sp/DKo7DWltUquj5AfCOpX2zSzJ8YkAVnrQNqQ5R62PBz2UtrfmCkA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -6029,6 +6090,26 @@ packages:
       - supports-color
     dev: true
 
+  /@typescript-eslint/parser/5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq:
+    resolution: {integrity: sha512-qK9TZ70eJtjojSUMrrEwA9ZDQ4N0e/AuoOIgXuNBorXYcBDk397D2r5MIe1B3cok/oCtdNC5j+lUUpVB+Dpb+w==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    peerDependencies:
+      eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@typescript-eslint/scope-manager': 5.59.0
+      '@typescript-eslint/types': 5.59.0
+      '@typescript-eslint/typescript-estree': 5.59.0_typescript@4.9.5
+      debug: 4.3.4
+      eslint: 8.39.0
+      typescript: 4.9.5
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@typescript-eslint/scope-manager/5.45.1:
     resolution: {integrity: sha512-D6fCileR6Iai7E35Eb4Kp+k0iW7F1wxXYrOhX/3dywsOJpJAQ20Fwgcf+P/TDtvQ7zcsWsrJaglaQWDhOMsspQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -6059,6 +6140,14 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.56.0
       '@typescript-eslint/visitor-keys': 5.56.0
+    dev: true
+
+  /@typescript-eslint/scope-manager/5.59.0:
+    resolution: {integrity: sha512-tsoldKaMh7izN6BvkK6zRMINj4Z2d6gGhO2UsI8zGZY3XhLq1DndP3Ycjhi1JwdwPRwtLMW4EFPgpuKhbCGOvQ==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dependencies:
+      '@typescript-eslint/types': 5.59.0
+      '@typescript-eslint/visitor-keys': 5.59.0
     dev: true
 
   /@typescript-eslint/type-utils/5.45.1_s5ps7njkmjlaqajutnox5ntcla:
@@ -6141,6 +6230,26 @@ packages:
       - supports-color
     dev: true
 
+  /@typescript-eslint/type-utils/5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq:
+    resolution: {integrity: sha512-d/B6VSWnZwu70kcKQSCqjcXpVH+7ABKH8P1KNn4K7j5PXXuycZTPXF44Nui0TEm6rbWGi8kc78xRgOC4n7xFgA==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    peerDependencies:
+      eslint: '*'
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@typescript-eslint/typescript-estree': 5.59.0_typescript@4.9.5
+      '@typescript-eslint/utils': 5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq
+      debug: 4.3.4
+      eslint: 8.39.0
+      tsutils: 3.21.0_typescript@4.9.5
+      typescript: 4.9.5
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@typescript-eslint/types/5.45.1:
     resolution: {integrity: sha512-HEW3U0E5dLjUT+nk7b4lLbOherS1U4ap+b9pfu2oGsW3oPu7genRaY9dDv3nMczC1rbnRY2W/D7SN05wYoGImg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -6158,6 +6267,11 @@ packages:
 
   /@typescript-eslint/types/5.56.0:
     resolution: {integrity: sha512-JyAzbTJcIyhuUhogmiu+t79AkdnqgPUEsxMTMc/dCZczGMJQh1MK2wgrju++yMN6AWroVAy2jxyPcPr3SWCq5w==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dev: true
+
+  /@typescript-eslint/types/5.59.0:
+    resolution: {integrity: sha512-yR2h1NotF23xFFYKHZs17QJnB51J/s+ud4PYU4MqdZbzeNxpgUr05+dNeCN/bb6raslHvGdd6BFCkVhpPk/ZeA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
@@ -6245,6 +6359,27 @@ packages:
       - supports-color
     dev: true
 
+  /@typescript-eslint/typescript-estree/5.59.0_typescript@4.9.5:
+    resolution: {integrity: sha512-sUNnktjmI8DyGzPdZ8dRwW741zopGxltGs/SAPgGL/AAgDpiLsCFLcMNSpbfXfmnNeHmK9h3wGmCkGRGAoUZAg==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    peerDependencies:
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@typescript-eslint/types': 5.59.0
+      '@typescript-eslint/visitor-keys': 5.59.0
+      debug: 4.3.4
+      globby: 11.1.0
+      is-glob: 4.0.3
+      semver: 7.5.0
+      tsutils: 3.21.0_typescript@4.9.5
+      typescript: 4.9.5
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@typescript-eslint/utils/5.45.1_s5ps7njkmjlaqajutnox5ntcla:
     resolution: {integrity: sha512-rlbC5VZz68+yjAzQBc4I7KDYVzWG2X/OrqoZrMahYq3u8FFtmQYc+9rovo/7wlJH5kugJ+jQXV5pJMnofGmPRw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -6325,12 +6460,32 @@ packages:
       - typescript
     dev: true
 
+  /@typescript-eslint/utils/5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq:
+    resolution: {integrity: sha512-GGLFd+86drlHSvPgN/el6dRQNYYGOvRSDVydsUaQluwIW3HvbXuxyuD5JETvBt/9qGYe+lOrDk6gRrWOHb/FvA==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    peerDependencies:
+      eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
+    dependencies:
+      '@eslint-community/eslint-utils': 4.4.0_eslint@8.39.0
+      '@types/json-schema': 7.0.11
+      '@types/semver': 7.3.13
+      '@typescript-eslint/scope-manager': 5.59.0
+      '@typescript-eslint/types': 5.59.0
+      '@typescript-eslint/typescript-estree': 5.59.0_typescript@4.9.5
+      eslint: 8.39.0
+      eslint-scope: 5.1.1
+      semver: 7.5.0
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+    dev: true
+
   /@typescript-eslint/visitor-keys/5.45.1:
     resolution: {integrity: sha512-cy9ln+6rmthYWjH9fmx+5FU/JDpjQb586++x2FZlveq7GdGuLLW9a2Jcst2TGekH82bXpfmRNSwP9tyEs6RjvQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       '@typescript-eslint/types': 5.45.1
-      eslint-visitor-keys: 3.3.0
+      eslint-visitor-keys: 3.4.0
     dev: true
 
   /@typescript-eslint/visitor-keys/5.47.1:
@@ -6338,7 +6493,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       '@typescript-eslint/types': 5.47.1
-      eslint-visitor-keys: 3.3.0
+      eslint-visitor-keys: 3.4.0
     dev: true
 
   /@typescript-eslint/visitor-keys/5.54.1:
@@ -6346,7 +6501,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       '@typescript-eslint/types': 5.54.1
-      eslint-visitor-keys: 3.3.0
+      eslint-visitor-keys: 3.4.0
     dev: true
 
   /@typescript-eslint/visitor-keys/5.56.0:
@@ -6354,7 +6509,15 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       '@typescript-eslint/types': 5.56.0
-      eslint-visitor-keys: 3.3.0
+      eslint-visitor-keys: 3.4.0
+    dev: true
+
+  /@typescript-eslint/visitor-keys/5.59.0:
+    resolution: {integrity: sha512-qZ3iXxQhanchCeaExlKPV3gDQFxMUmU35xfd5eCXB6+kUw1TUAbIy2n7QIrwz9s98DQLzNWyHp61fY0da4ZcbA==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dependencies:
+      '@typescript-eslint/types': 5.59.0
+      eslint-visitor-keys: 3.4.0
     dev: true
 
   /@vitejs/plugin-vue/2.3.4_vite@2.9.15+vue@3.2.45:
@@ -6379,14 +6542,14 @@ packages:
       vue: 3.2.47
     dev: true
 
-  /@vitejs/plugin-vue/4.0.0_vite@4.0.3+vue@3.2.45:
+  /@vitejs/plugin-vue/4.0.0_vite@4.3.1+vue@3.2.45:
     resolution: {integrity: sha512-e0X4jErIxAB5oLtDqbHvHpJe/uWNkdpYV83AOG2xo2tEVSzCzewgJMtREZM30wXnM5ls90hxiOtAuVU6H5JgbA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.0.3
+      vite: 4.3.1
       vue: 3.2.45
     dev: true
 
@@ -6473,7 +6636,7 @@ packages:
       '@vue/shared': 3.2.47
       estree-walker: 2.0.2
       magic-string: 0.25.9
-      postcss: 8.4.21
+      postcss: 8.4.23
       source-map: 0.6.1
 
   /@vue/compiler-ssr/3.2.45:
@@ -7049,7 +7212,7 @@ packages:
     dependencies:
       '@babel/core': 7.21.4
       '@babel/helper-define-polyfill-provider': 0.3.3_@babel+core@7.21.4
-      core-js-compat: 3.30.0
+      core-js-compat: 3.30.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -7563,8 +7726,8 @@ packages:
     resolution: {integrity: sha512-Q4+qBFnN4bwGwvtXXzbp4P/4iNk0MaiGAzvQ8OiMtlLjkIKjmNN689uVzShSM0908q7GoFHXIPx4zi75ocoaHw==}
     dev: false
 
-  /core-js-compat/3.30.0:
-    resolution: {integrity: sha512-P5A2h/9mRYZFIAP+5Ab8ns6083IyVpSclU74UNvbGVQ8VM7n3n3/g2yF3AkKQ9NXz2O+ioxLbEWKnDtgsFamhg==}
+  /core-js-compat/3.30.1:
+    resolution: {integrity: sha512-d690npR7MC6P0gq4npTl5n2VQeNAmUrJ90n+MHiKS7W2+xno4o3F5GDEuylSdi6EJ3VssibSGXOa1r3YXD3Mhw==}
     dependencies:
       browserslist: 4.21.5
     dev: true
@@ -7608,8 +7771,8 @@ packages:
   /csstype/2.6.21:
     resolution: {integrity: sha512-Z1PhmomIfypOpoMjRQB70jfvy/wxT50qW08YXO5lMIJkrdq4yOTR+AW7FqutScmB9NkLwxo+jU+kZLbofZZq/w==}
 
-  /csstype/3.1.1:
-    resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
+  /csstype/3.1.2:
+    resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
     dev: false
 
   /cypress/9.7.0:
@@ -7620,7 +7783,7 @@ packages:
     dependencies:
       '@cypress/request': 2.88.10
       '@cypress/xvfb': 1.2.4_supports-color@8.1.1
-      '@types/node': 14.18.35
+      '@types/node': 14.18.42
       '@types/sinonjs__fake-timers': 8.1.1
       '@types/sizzle': 2.3.3
       arch: 2.2.0
@@ -7986,7 +8149,7 @@ packages:
     dependencies:
       '@types/cookie': 0.4.1
       '@types/cors': 2.8.13
-      '@types/node': 18.15.10
+      '@types/node': 18.16.0
       accepts: 1.3.8
       base64id: 2.0.0
       cookie: 0.4.2
@@ -8248,34 +8411,34 @@ packages:
       esbuild-windows-arm64: 0.14.54
     dev: true
 
-  /esbuild/0.16.12:
-    resolution: {integrity: sha512-eq5KcuXajf2OmivCl4e89AD3j8fbV+UTE9vczEzq5haA07U9oOTzBWlh3+6ZdjJR7Rz2QfWZ2uxZyhZxBgJ4+g==}
+  /esbuild/0.17.18:
+    resolution: {integrity: sha512-z1lix43jBs6UKjcZVKOw2xx69ffE2aG0PygLL5qJ9OS/gy0Ewd1gW/PUQIOIQGXBHWNywSc0floSKoMFF8aK2w==}
     engines: {node: '>=12'}
     hasBin: true
     requiresBuild: true
     optionalDependencies:
-      '@esbuild/android-arm': 0.16.12
-      '@esbuild/android-arm64': 0.16.12
-      '@esbuild/android-x64': 0.16.12
-      '@esbuild/darwin-arm64': 0.16.12
-      '@esbuild/darwin-x64': 0.16.12
-      '@esbuild/freebsd-arm64': 0.16.12
-      '@esbuild/freebsd-x64': 0.16.12
-      '@esbuild/linux-arm': 0.16.12
-      '@esbuild/linux-arm64': 0.16.12
-      '@esbuild/linux-ia32': 0.16.12
-      '@esbuild/linux-loong64': 0.16.12
-      '@esbuild/linux-mips64el': 0.16.12
-      '@esbuild/linux-ppc64': 0.16.12
-      '@esbuild/linux-riscv64': 0.16.12
-      '@esbuild/linux-s390x': 0.16.12
-      '@esbuild/linux-x64': 0.16.12
-      '@esbuild/netbsd-x64': 0.16.12
-      '@esbuild/openbsd-x64': 0.16.12
-      '@esbuild/sunos-x64': 0.16.12
-      '@esbuild/win32-arm64': 0.16.12
-      '@esbuild/win32-ia32': 0.16.12
-      '@esbuild/win32-x64': 0.16.12
+      '@esbuild/android-arm': 0.17.18
+      '@esbuild/android-arm64': 0.17.18
+      '@esbuild/android-x64': 0.17.18
+      '@esbuild/darwin-arm64': 0.17.18
+      '@esbuild/darwin-x64': 0.17.18
+      '@esbuild/freebsd-arm64': 0.17.18
+      '@esbuild/freebsd-x64': 0.17.18
+      '@esbuild/linux-arm': 0.17.18
+      '@esbuild/linux-arm64': 0.17.18
+      '@esbuild/linux-ia32': 0.17.18
+      '@esbuild/linux-loong64': 0.17.18
+      '@esbuild/linux-mips64el': 0.17.18
+      '@esbuild/linux-ppc64': 0.17.18
+      '@esbuild/linux-riscv64': 0.17.18
+      '@esbuild/linux-s390x': 0.17.18
+      '@esbuild/linux-x64': 0.17.18
+      '@esbuild/netbsd-x64': 0.17.18
+      '@esbuild/openbsd-x64': 0.17.18
+      '@esbuild/sunos-x64': 0.17.18
+      '@esbuild/win32-arm64': 0.17.18
+      '@esbuild/win32-ia32': 0.17.18
+      '@esbuild/win32-x64': 0.17.18
     dev: true
 
   /escalade/3.1.1:
@@ -8336,6 +8499,32 @@ packages:
       eslint: '>=7.0.0'
     dependencies:
       eslint: 8.36.0
+    dev: true
+
+  /eslint-config-prettier/8.8.0_eslint@8.39.0:
+    resolution: {integrity: sha512-wLbQiFre3tdGgpDv67NQKnJuTlcUVYHas3k+DZCc2U2BadthoEY4B7hLPvAxaqdyOGCzuLfii2fqGph10va7oA==}
+    hasBin: true
+    peerDependencies:
+      eslint: '>=7.0.0'
+    dependencies:
+      eslint: 8.39.0
+    dev: true
+
+  /eslint-plugin-prettier/4.2.1_5pokp25ua6t5ubushhw3tqituq:
+    resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      eslint: '>=7.28.0'
+      eslint-config-prettier: '*'
+      prettier: '>=2.0.0'
+    peerDependenciesMeta:
+      eslint-config-prettier:
+        optional: true
+    dependencies:
+      eslint: 8.39.0
+      eslint-config-prettier: 8.8.0_eslint@8.39.0
+      prettier: 2.8.8
+      prettier-linter-helpers: 1.0.0
     dev: true
 
   /eslint-plugin-prettier/4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm:
@@ -8440,6 +8629,14 @@ packages:
       estraverse: 5.3.0
     dev: true
 
+  /eslint-scope/7.2.0:
+    resolution: {integrity: sha512-DYj5deGlHBfMt15J7rdtyKNq/Nqlv5KfU4iodrQ019XESsRnwXH9KAE0y3cwtUHDo2ob7CypAnCqefh6vioWRw==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dependencies:
+      esrecurse: 4.3.0
+      estraverse: 5.3.0
+    dev: true
+
   /eslint-utils/3.0.0_eslint@8.29.0:
     resolution: {integrity: sha512-uuQC43IGctw68pJA1RgbQS8/NP7rch6Cwd4j3ZBtgo4/8Flj4eGE7ZYSZRN3iq5pVUv6GPdW5Z1RFleo84uLDA==}
     engines: {node: ^10.0.0 || ^12.0.0 || >= 14.0.0}
@@ -8477,6 +8674,11 @@ packages:
 
   /eslint-visitor-keys/3.3.0:
     resolution: {integrity: sha512-mQ+suqKJVyeuwGYHAdjMFqjCyfl8+Ldnxuyp3ldiMBFKkvytrXUZWaiPCEav8qDHKty44bD+qV1IP4T+w+xXRA==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dev: true
+
+  /eslint-visitor-keys/3.4.0:
+    resolution: {integrity: sha512-HPpKPUBQcAsZOsHAFwTtIKcYlCje62XB7SEAcxjtmW6TD1WVpkS6i6/hOVtTZIl4zGj/mBqpFVGvaDneik+VoQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
@@ -8625,6 +8827,55 @@ packages:
       - supports-color
     dev: true
 
+  /eslint/8.39.0:
+    resolution: {integrity: sha512-mwiok6cy7KTW7rBpo05k6+p4YVZByLNjAZ/ACB9DRCu4YDRwjXI01tWHp6KAUWelsBetTxKK/2sHB0vdS8Z2Og==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    hasBin: true
+    dependencies:
+      '@eslint-community/eslint-utils': 4.4.0_eslint@8.39.0
+      '@eslint-community/regexpp': 4.5.0
+      '@eslint/eslintrc': 2.0.2
+      '@eslint/js': 8.39.0
+      '@humanwhocodes/config-array': 0.11.8
+      '@humanwhocodes/module-importer': 1.0.1
+      '@nodelib/fs.walk': 1.2.8
+      ajv: 6.12.6
+      chalk: 4.1.2
+      cross-spawn: 7.0.3
+      debug: 4.3.4
+      doctrine: 3.0.0
+      escape-string-regexp: 4.0.0
+      eslint-scope: 7.2.0
+      eslint-visitor-keys: 3.4.0
+      espree: 9.5.1
+      esquery: 1.5.0
+      esutils: 2.0.3
+      fast-deep-equal: 3.1.3
+      file-entry-cache: 6.0.1
+      find-up: 5.0.0
+      glob-parent: 6.0.2
+      globals: 13.20.0
+      grapheme-splitter: 1.0.4
+      ignore: 5.2.4
+      import-fresh: 3.3.0
+      imurmurhash: 0.1.4
+      is-glob: 4.0.3
+      is-path-inside: 3.0.3
+      js-sdsl: 4.4.0
+      js-yaml: 4.1.0
+      json-stable-stringify-without-jsonify: 1.0.1
+      levn: 0.4.1
+      lodash.merge: 4.6.2
+      minimatch: 3.1.2
+      natural-compare: 1.4.0
+      optionator: 0.9.1
+      strip-ansi: 6.0.1
+      strip-json-comments: 3.1.1
+      text-table: 0.2.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /espree/9.4.1:
     resolution: {integrity: sha512-XwctdmTO6SIvCzd9810yyNzIrOrqNYV9Koizx4C/mRhf9uq0o4yHoCEU/670pOxOL/MSraektvSAji79kX90Vg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -8641,6 +8892,15 @@ packages:
       acorn: 8.8.2
       acorn-jsx: 5.3.2_acorn@8.8.2
       eslint-visitor-keys: 3.3.0
+    dev: true
+
+  /espree/9.5.1:
+    resolution: {integrity: sha512-5yxtHSZXRSW5pvv3hAlXM5+/Oswi1AUFqBmbibKb5s6bp3rGIDkyXU6xCoyuuLhijr4SFwPrXRoZjz0AZDN9tg==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dependencies:
+      acorn: 8.8.2
+      acorn-jsx: 5.3.2_acorn@8.8.2
+      eslint-visitor-keys: 3.4.0
     dev: true
 
   /esprima/4.0.1:
@@ -8785,8 +9045,8 @@ packages:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
     dev: true
 
-  /fastq/1.14.0:
-    resolution: {integrity: sha512-eR2D+V9/ExcbF9ls441yIuN6TI2ED1Y2ZcA5BmMtJsOkWOFRJQ0Jt0g1UwqXJJVAb+V+umH5Dfr8oh4EVP7VVg==}
+  /fastq/1.15.0:
+    resolution: {integrity: sha512-wBrocU2LCXXa+lWBt8RoIRD89Fi8OdABODa/kEnyeyjS5aZO5/GNvI5sEINADqP/h8M29UHTHUb53sUu5Ihqdw==}
     dependencies:
       reusify: 1.0.4
     dev: true
@@ -9058,7 +9318,7 @@ packages:
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       fs.realpath: 1.0.0
-      minimatch: 8.0.3
+      minimatch: 8.0.4
       minipass: 4.2.5
       path-scurry: 1.6.3
     dev: false
@@ -9555,7 +9815,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 18.15.10
+      '@types/node': 18.16.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
@@ -9566,6 +9826,10 @@ packages:
 
   /js-sdsl/4.3.0:
     resolution: {integrity: sha512-mifzlm2+5nZ+lEcLJMoBK0/IH/bDg8XnJfd/Wq6IP+xoCjLZsTOnV2QpxlVbX9bMnkl5PdEjNtBJ9Cj1NjifhQ==}
+    dev: true
+
+  /js-sdsl/4.4.0:
+    resolution: {integrity: sha512-FfVSdx6pJ41Oa+CF7RDaFmTnCaFhua+SNYQX74riGOpl96x+2jQCqEfQ2bnXu/5DPCqlRuiqyvTJM0Qjz26IVg==}
     dev: true
 
   /js-tokens/4.0.0:
@@ -9648,7 +9912,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.10
     dev: true
 
   /jsprim/2.0.2:
@@ -9947,8 +10211,8 @@ packages:
       brace-expansion: 2.0.1
     dev: false
 
-  /minimatch/8.0.3:
-    resolution: {integrity: sha512-tEEvU9TkZgnFDCtpnrEYnPsjT7iUx42aXfs4bzmQ5sMA09/6hZY0jeZcGkXyDagiBOvkUjNo8Viom+Me6+2x7g==}
+  /minimatch/8.0.4:
+    resolution: {integrity: sha512-W0Wvr9HyFXZRGIDgCicunpQ299OKXs9RgZfaukz4qAW/pJhcpUfupc9c+OObPOFueNy8VSrZgEmDtk6Kh4WzDA==}
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
@@ -10372,6 +10636,14 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.0.2
 
+  /postcss/8.4.23:
+    resolution: {integrity: sha512-bQ3qMcpF6A/YjR55xtoTr0jGOlnPOKAIMdOWiv0EIT6HVPEaJiJB4NLljSbiHoC2RX7DN5Uvjtpbg1NPdwv1oA==}
+    engines: {node: ^10 || ^12 || >=14}
+    dependencies:
+      nanoid: 3.3.6
+      picocolors: 1.0.0
+      source-map-js: 1.0.2
+
   /preact/10.11.3:
     resolution: {integrity: sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==}
     dev: true
@@ -10408,6 +10680,12 @@ packages:
 
   /prettier/2.8.7:
     resolution: {integrity: sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
+    dev: true
+
+  /prettier/2.8.8:
+    resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
@@ -10455,6 +10733,11 @@ packages:
 
   /punycode/2.1.1:
     resolution: {integrity: sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==}
+    engines: {node: '>=6'}
+    dev: true
+
+  /punycode/2.3.0:
+    resolution: {integrity: sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==}
     engines: {node: '>=6'}
     dev: true
 
@@ -10802,6 +11085,14 @@ packages:
 
   /semver/7.3.8:
     resolution: {integrity: sha512-NB1ctGL5rlHrPJtFDVIVzTyQylMLu9N9VICA6HSFJo8MCGVTMW6gfpicwKmmK/dAjTOrqu5l63JJOpDSrAis3A==}
+    engines: {node: '>=10'}
+    hasBin: true
+    dependencies:
+      lru-cache: 6.0.0
+    dev: true
+
+  /semver/7.5.0:
+    resolution: {integrity: sha512-+XC0AD/R7Q2mPSRuy2Id0+CGTZ98+8f+KvwirxOKIEyid+XSx6HbC63p+O4IndTHuX5Z+JxQ0TghCkO5Cg/2HA==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
@@ -11230,13 +11521,13 @@ packages:
       three: 0.141.0
     dev: false
 
-  /three-csg-ts/3.1.11_yp2zyio6xpj75ip2ahx6p2nfjq:
+  /three-csg-ts/3.1.11_nndly7iailzy634vajaskicuvy:
     resolution: {integrity: sha512-cR0b/u2wQRkQBooL1fZgsWPxjXBKfXlvAld+KItWWh3Qehxm/Jw5WyoCVdOD9PKZJj2RrAKvCFW6sZvYPik95w==}
     peerDependencies:
       '@types/three': '>= 0.125.0'
       three: '>= 0.125.0'
     dependencies:
-      '@types/three': 0.150.1
+      '@types/three': 0.150.2
       three: 0.141.0
     dev: false
 
@@ -11297,7 +11588,7 @@ packages:
     engines: {node: '>=0.8'}
     dependencies:
       psl: 1.9.0
-      punycode: 2.1.1
+      punycode: 2.3.0
     dev: true
 
   /tslib/1.14.1:
@@ -11310,6 +11601,10 @@ packages:
 
   /tslib/2.4.1:
     resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
+
+  /tslib/2.5.0:
+    resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
+    dev: false
 
   /tsutils/3.21.0_typescript@4.9.3:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
@@ -11509,7 +11804,7 @@ packages:
       extsprintf: 1.3.0
     dev: true
 
-  /vis-three/0.3.2_yp2zyio6xpj75ip2ahx6p2nfjq:
+  /vis-three/0.3.2_nndly7iailzy634vajaskicuvy:
     resolution: {integrity: sha512-NFA4p/6FjvCXewMQ+IlM8L+sPkjWv/huNXi+FDIwY75KwUSeROMdQYCyW5lIOib9NoTOc4jSPI6CGLr/+HPhww==}
     engines: {node: '>=14.15.0'}
     dependencies:
@@ -11518,7 +11813,7 @@ packages:
       '@types/uuid': 8.3.4
       keyboardjs: 2.7.0
       rxjs: 7.6.0
-      three-csg-ts: 3.1.11_yp2zyio6xpj75ip2ahx6p2nfjq
+      three-csg-ts: 3.1.11_nndly7iailzy634vajaskicuvy
       uuid: 8.3.2
     transitivePeerDependencies:
       - '@types/three'
@@ -11574,8 +11869,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vite/4.0.3:
-    resolution: {integrity: sha512-HvuNv1RdE7deIfQb8mPk51UKjqptO/4RXZ5yXSAvurd5xOckwS/gg8h9Tky3uSbnjYTgUm0hVCet1cyhKd73ZA==}
+  /vite/4.3.1:
+    resolution: {integrity: sha512-EPmfPLAI79Z/RofuMvkIS0Yr091T2ReUoXQqc5ppBX/sjFRhHKiPPF/R46cTdoci/XgeQpB23diiJxq5w30vdg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
@@ -11599,9 +11894,8 @@ packages:
       terser:
         optional: true
     dependencies:
-      esbuild: 0.16.12
-      postcss: 8.4.21
-      resolve: 1.22.2
+      esbuild: 0.17.18
+      postcss: 8.4.23
       rollup: 3.20.2
     optionalDependencies:
       fsevents: 2.3.2
@@ -11613,12 +11907,12 @@ packages:
     dependencies:
       '@docsearch/css': 3.3.1
       '@docsearch/js': 3.3.1_rurrd674gzxmsn4o6mrapg6sje
-      '@vitejs/plugin-vue': 4.0.0_vite@4.0.3+vue@3.2.45
+      '@vitejs/plugin-vue': 4.0.0_vite@4.3.1+vue@3.2.45
       '@vue/devtools-api': 6.4.5
       '@vueuse/core': 9.9.0_vue@3.2.45
       body-scroll-lock: 4.0.0-beta.0
       shiki: 0.12.1
-      vite: 4.0.3
+      vite: 4.3.1
       vue: 3.2.45
     transitivePeerDependencies:
       - '@algolia/client-search'
@@ -11665,9 +11959,9 @@ packages:
     dependencies:
       debug: 4.3.4
       eslint: 8.29.0
-      eslint-scope: 7.1.1
-      eslint-visitor-keys: 3.3.0
-      espree: 9.5.0
+      eslint-scope: 7.2.0
+      eslint-visitor-keys: 3.4.0
+      espree: 9.5.1
       esquery: 1.5.0
       lodash: 4.17.21
       semver: 7.3.8

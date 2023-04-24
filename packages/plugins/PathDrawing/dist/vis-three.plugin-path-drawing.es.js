@@ -84,7 +84,6 @@ class PathSketcher extends EventDispatcher {
     this.drawingBoard.raycast = () => {
     };
     this.drawingBoard.matrixAutoUpdate = false;
-    this.drawingBoard.visible = false;
     this.setDrawingBoardMatrix();
     engine.addEventListener(ENGINE_EVENT.SETSCENE, this.setScene);
   }
@@ -141,7 +140,11 @@ class PathSketcher extends EventDispatcher {
     this.engine.removeEventListener(ENGINE_EVENT.SETSCENE, this.setScene);
   }
   showDrawingBoard(show) {
-    this.drawingBoard.visible = show;
+    if (show) {
+      this.engine.scene.add(this.drawingBoard);
+    } else {
+      this.engine.scene.remove(this.drawingBoard);
+    }
     return this;
   }
   setSketcherByPlane(normal = new Vector3(0, 0, 1), constant = 0, offset = new Vector3(0, 50, 0)) {

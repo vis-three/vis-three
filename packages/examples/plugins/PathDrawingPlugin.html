@@ -137,9 +137,9 @@
       });
 
       sketcher.addEventListener("end", (event) => {
-        if (path.curves[path.curves.length - 1].params.length < 4) {
-          path.curves.pop();
-        }
+        // if (path.curves[path.curves.length - 1].params.length < 4) {
+        path.curves.pop();
+        // }
       });
 
       const end = () => {
