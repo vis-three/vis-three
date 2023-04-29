@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PathDrawingPlugin</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script type="module">
+      import * as THREE from "three";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+      import { PathSupportControls } from "@vis-three/library-controls";
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = true;
+
+      const path = generateConfig(CONFIGTYPE.PATH, {
+        autoClose: false,
+        curves: [
+          {
+            curve: "line",
+            params: [0, 0, 10, 10],
+          },
+          {
+            curve: "line",
+            params: [10, 10, 10, 0],
+          },
+          {
+            curve: "line",
+            params: [10, 0, -10, -10],
+          },
+        ],
+      });
+
+      const geometry = generateConfig(CONFIGTYPE.PATHGEOMETRY, {
+        path: path.vid,
+        space: false,
+      });
+
+      const material = generateConfig(CONFIGTYPE.LINEBASICMATERIAL, {});
+
+      const line = generateConfig(CONFIGTYPE.LINE, {
+        material: material.vid,
+        geometry: geometry.vid,
+      });
+
+      const controls = new PathSupportControls(
+        engine.camera,
+        engine.dom,
+        engine.getObjectBySymbol(line.vid),
+        path
+      );
+
+      engine.scene.add(controls);
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>

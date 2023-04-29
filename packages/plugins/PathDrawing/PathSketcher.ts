@@ -69,7 +69,7 @@ export class PathSketcher extends EventDispatcher {
   private cacheRelativePoint = new Vector3();
 
   private setScene = (event: SetSceneEvent) => {
-    event.scene.add(this.drawingBoard);
+    this.drawingBoard.parent && event.scene.add(this.drawingBoard);
   };
 
   private cacheWriteFun = (event: MouseEvent) => {

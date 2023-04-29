@@ -1,0 +1,35 @@
+import { PathConfig } from "@vis-three/module-path/PathConfig";
+import { Object3D, OrthographicCamera, PerspectiveCamera, Points, PointsMaterial } from "three";
+export declare class PathSupportControls extends Points {
+    static commonMaterial: PointsMaterial;
+    dragging: boolean;
+    private raycaster;
+    private plane;
+    private cachePlaneVector3;
+    private cacheQuaternion;
+    private cacheNormal;
+    private cachePosition;
+    private index;
+    private domElement;
+    private camera;
+    private config;
+    private object;
+    private _pointerHover;
+    private _pointerMove;
+    private _pointerDown;
+    private _pointerUp;
+    constructor(camera: PerspectiveCamera | OrthographicCamera, dom: HTMLElement, object?: Object3D, config?: PathConfig);
+    setDom(dom: HTMLElement): this;
+    setCamera(camera: PerspectiveCamera | OrthographicCamera): this;
+    setObject(object: Object3D): this;
+    setConfig(config: PathConfig): this;
+    connect(): this;
+    disconnect(): this;
+    private getPointer;
+    private intersectPoint;
+    private intersectPlane;
+    pointerHover(event: MouseEvent): void;
+    pointerDown(event: MouseEvent): void;
+    pointerMove(event: MouseEvent): void;
+    pointerUp(event: MouseEvent): void;
+}

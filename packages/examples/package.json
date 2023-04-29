@@ -35,6 +35,7 @@
     "@vis-three/engine-modeling": "workspace:^0.6.0",
     "@vis-three/engine-modeling-support": "workspace:^0.6.1",
     "@vis-three/library-animate-script": "workspace:^0.6.0",
+    "@vis-three/library-controls": "workspace:^0.6.0",
     "@vis-three/library-event": "workspace:^0.6.0",
     "@vis-three/middleware": "workspace:^0.6.5",
     "@vis-three/modifier-boolean": "workspace:^0.6.1",

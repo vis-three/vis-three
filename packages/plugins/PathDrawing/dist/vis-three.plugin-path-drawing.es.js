@@ -42,7 +42,7 @@ class PathSketcher extends EventDispatcher {
     __publicField(this, "cachePoint", new Vector3());
     __publicField(this, "cacheRelativePoint", new Vector3());
     __publicField(this, "setScene", (event) => {
-      event.scene.add(this.drawingBoard);
+      this.drawingBoard.parent && event.scene.add(this.drawingBoard);
     });
     __publicField(this, "cacheWriteFun", (event) => {
       const point = this.engine.pointerManager.intersectPlane(
