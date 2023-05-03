@@ -259,6 +259,7 @@ export class PathSupportControls extends Points {
     if (!vect) {
       return;
     }
+    vect.sub(this.cachePosition);
     const length = this.config.curves.length;
     if (this.index !== this.config.curves.length) {
       const segment = this.config.curves[this.index];

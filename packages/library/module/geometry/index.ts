@@ -23,6 +23,9 @@ import ExtrudeGeometryProcessor from "./processors/ExtrudeGeometryProcessor";
 import PathGeometryProcessor from "./processors/PathGeometryProcessor";
 import ShapeGeometryProcessor from "./processors/ShapeGeometryProcessor";
 
+export * from "./GeometryInterface";
+export * from "./GeometryCompiler";
+
 export default {
   type: "geometry",
   compiler: GeometryCompiler,

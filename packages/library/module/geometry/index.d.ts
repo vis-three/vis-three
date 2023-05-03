@@ -1,5 +1,7 @@
 import { GeometryCompiler } from "./GeometryCompiler";
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+export * from "./GeometryInterface";
+export * from "./GeometryCompiler";
 declare const _default: {
     type: string;
     compiler: typeof GeometryCompiler;

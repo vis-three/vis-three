@@ -1,6 +1,8 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { MeshCompiler } from "./MeshCompiler";
 import { MeshRule } from "./MeshRule";
+export * from "./MeshConfig";
+export * from "./MeshCompiler";
 declare const _default: {
     type: string;
     object: boolean;

@@ -25,9 +25,19 @@
 
       generateConfig.injectEngine = engine;
 
+      const camera = generateConfig(CONFIGTYPE.ORTHOGRAPHICCAMERA, {
+        far: 1000,
+        near: 0,
+        zoom: 20,
+        position: {
+          z: 100,
+        },
+      });
+
       const scene = generateConfig("Scene");
 
       engine.setSceneBySymbol(scene.vid);
+      engine.setCameraBySymbol(camera.vid);
 
       generateConfig.injectScene = true;
 
@@ -45,6 +55,20 @@
           {
             curve: "line",
             params: [10, 0, -10, -10],
+          },
+          {
+            curve: "arc",
+            params: [-10, -10, 10, false, 10, -10],
+          },
+
+          {
+            curve: "bezier",
+            params: [10, -10, 20, -10, 10, 10, 20, 10],
+          },
+
+          {
+            curve: "quadratic",
+            params: [20, 10, 20, -10, 20, -10],
           },
         ],
       });

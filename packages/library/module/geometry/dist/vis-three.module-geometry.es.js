@@ -945,4 +945,4 @@ var index = {
     ShapeGeometryProcessor
   ]
 };
-export { index as default };
+export { GeometryCompiler, index as default };

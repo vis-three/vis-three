@@ -1,24 +1,21 @@
 import { DeepPartial } from "@vis-three/utils";
-import { v4 as getUuid } from "uuid";
 import { SymbolConfig } from "../module/common";
 import { EngineSupport } from "../engine";
 import { CONFIGFACTORY, CONFIGTYPE, isObjectType, observable } from "../module";
 import { globalOption } from "../option";
 
-export interface C extends SymbolConfig {}
-
-export interface GenerateOptions<C> {
+export interface GenerateOptions<C extends SymbolConfig> {
   strict: boolean;
   warn: boolean;
   handler?: (c: C) => C;
 }
 
 export interface GenerateConfig {
-  (
+  <C extends SymbolConfig>(
     type: string,
-    merge?: DeepPartial<ReturnType<typeof CONFIGFACTORY[string]>>,
+    merge?: DeepPartial<C>,
     options?: GenerateOptions<C>
-  ): ReturnType<typeof CONFIGFACTORY[string]>;
+  ): C;
   autoInject: boolean;
   injectEngine: EngineSupport | null;
   injectScene: string | boolean;
@@ -29,12 +26,13 @@ export interface GenerateConfig {
  * @param type 对象类型 CONFIGTYPE
  * @param merge 合并的对象
  * @param options.strict 严格模式，只允许合并CONFIGTYPE规定的属性，自定义扩展配置下关闭
- * @param warn 是否输出warn
+ * @param options.warn 是否输出warn
+ * @param options.handler 配置额外处理方法
  * @returns config object
  */
-export const generateConfig = <GenerateConfig>function (
+export const generateConfig = <GenerateConfig>function <C extends SymbolConfig>(
   type: string,
-  merge: DeepPartial<ReturnType<typeof CONFIGFACTORY[string]>> | undefined,
+  merge: DeepPartial<C> | undefined,
   options: GenerateOptions<C> = {
     strict: true,
     warn: true,
@@ -48,7 +46,7 @@ export const generateConfig = <GenerateConfig>function (
     } as C;
   }
 
-  const recursion = (config: C, merge: object) => {
+  const recursion = (config: object, merge: object) => {
     for (const key in merge) {
       if (config[key] === undefined) {
         !options.strict && (config[key] = merge[key]); // 允许额外配置
@@ -72,7 +70,7 @@ export const generateConfig = <GenerateConfig>function (
     }
   };
 
-  let initConfig = CONFIGFACTORY[type]();
+  let initConfig = CONFIGFACTORY[type]() as C;
 
   // animation
   if (
@@ -83,7 +81,7 @@ export const generateConfig = <GenerateConfig>function (
 
   // 自动生成uuid
   if (initConfig.vid === "") {
-    initConfig.vid = getUuid();
+    initConfig.vid = globalOption.symbol.generator();
   }
   merge && recursion(initConfig, merge);
 

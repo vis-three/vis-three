@@ -1,5 +1,7 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { AnimationCompiler } from "./AnimationCompiler";
+export * from "./AnimationCompiler";
+export * from "./AnimationConfig";
 declare const _default: {
     type: string;
     compiler: typeof AnimationCompiler;
