@@ -1,7 +1,10 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { Object3DCompiler } from "./Object3DCompiler";
-import Object3DProcessor from "./Object3DProcessor";
+import Object3DProcessor from "./processors/Object3DProcessor";
 import { Object3DRule } from "./Object3DRule";
+
+export * from "./Object3DConfig";
+export * from "./Object3DCompiler";
 
 export default {
   type: "object3D",

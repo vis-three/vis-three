@@ -6,8 +6,8 @@ import {
   objectDispose,
 } from "@vis-three/module-object";
 import { Object3D } from "three";
-import { Object3DCompiler } from "./Object3DCompiler";
-import { getObject3DConfig } from "./Object3DConfig";
+import { Object3DCompiler } from "../Object3DCompiler";
+import { getObject3DConfig } from "../Object3DConfig";
 
 export default defineProcessor<
   ObjectConfig,

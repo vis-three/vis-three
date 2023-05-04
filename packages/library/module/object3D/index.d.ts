@@ -1,6 +1,8 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { Object3DCompiler } from "./Object3DCompiler";
 import { Object3DRule } from "./Object3DRule";
+export * from "./Object3DConfig";
+export * from "./Object3DCompiler";
 declare const _default: {
     type: string;
     object: boolean;
