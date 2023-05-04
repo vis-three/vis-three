@@ -7,8 +7,8 @@ import {
 } from "@vis-three/module-object";
 import { Group } from "three";
 
-import { GroupCompiler } from "./GroupCompiler";
-import { getGroupConfig, GroupConfig } from "./GroupConfig";
+import { GroupCompiler } from "../GroupCompiler";
+import { getGroupConfig, GroupConfig } from "../GroupConfig";
 
 export default defineProcessor<
   GroupConfig,

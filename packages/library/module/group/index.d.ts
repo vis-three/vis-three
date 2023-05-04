@@ -1,6 +1,8 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { GroupCompiler } from "./GroupCompiler";
 import { GroupRule } from "./GroupRule";
+export * from "./GroupCompiler";
+export * from "./GroupConfig";
 declare const _default: {
     type: string;
     object: boolean;
