@@ -6,8 +6,8 @@ import {
   solidObjectDispose,
 } from "@vis-three/module-solid-object";
 import { Points } from "three";
-import { PointsCompiler } from "./PointsCompiler";
-import { getPointsConfig, PointsConfig } from "./PointsConfig";
+import { PointsCompiler } from "../PointsCompiler";
+import { getPointsConfig, PointsConfig } from "../PointsConfig";
 
 export default defineProcessor<
   PointsConfig,

@@ -1,6 +1,8 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { PointsCompiler } from "./PointsCompiler";
 import { PointsRule } from "./PointsRule";
+export * from "./PointsConfig";
+export * from "./PointsCompiler";
 declare const _default: {
     type: string;
     object: boolean;
