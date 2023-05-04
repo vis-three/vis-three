@@ -1,6 +1,6 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { LineCompiler } from "./LineCompiler";
-import LineProcessor from "./LineProcessor";
+import LineProcessor from "./processors/LineProcessor";
 import { LineRule } from "./LineRule";
 
 export default {

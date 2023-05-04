@@ -6,8 +6,8 @@ import {
   solidObjectDispose,
 } from "@vis-three/module-solid-object";
 import { Line } from "three";
-import { LineCompiler } from "./LineCompiler";
-import { getLineConfig, LineConfig } from "./LineConfig";
+import { LineCompiler } from "../LineCompiler";
+import { getLineConfig, LineConfig } from "../LineConfig";
 
 export default defineProcessor<LineConfig, Line, EngineSupport, LineCompiler>({
   type: "Line",
