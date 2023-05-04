@@ -3,9 +3,9 @@ import { ShaderMaterial } from "three";
 import {
   getShaderMaterialConfig,
   ShaderMaterialConfig,
-} from "./MaterialConfig";
+} from "../MaterialConfig";
 import { commonNeedUpdatesRegCommand, create, dispose } from "./common";
-import { MaterialCompiler } from "./MaterialCompiler";
+import { MaterialCompiler } from "../MaterialCompiler";
 import {
   defineProcessor,
   EngineSupport,

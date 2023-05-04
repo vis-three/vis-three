@@ -2,7 +2,7 @@ import { MeshPhongMaterial } from "three";
 import {
   getMeshPhongMaterialConfig,
   MeshPhongMaterialConfig,
-} from "./MaterialConfig";
+} from "../MaterialConfig";
 import {
   colorSetHandler,
   commonMapRegCommand,
@@ -10,7 +10,7 @@ import {
   create,
   dispose,
 } from "./common";
-import { MaterialCompiler } from "./MaterialCompiler";
+import { MaterialCompiler } from "../MaterialCompiler";
 import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 
 export default defineProcessor<

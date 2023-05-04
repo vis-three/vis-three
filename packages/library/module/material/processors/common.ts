@@ -1,9 +1,9 @@
 import { EngineSupport, globalAntiShake, ProcessParams } from "@vis-three/middleware";
 import { IgnoreAttribute, syncObject } from "@vis-three/utils";
 import { Color, Material, Texture } from "three";
-import { MaterialCompiler } from "./MaterialCompiler";
+import { MaterialCompiler } from "../MaterialCompiler";
 
-import { MaterialConfig } from "./MaterialConfig";
+import { MaterialConfig } from "../MaterialConfig";
 
 export const commonNeedUpdatesRegCommand = {
   reg: new RegExp("transparent|sizeAttenuation"),

@@ -1,14 +1,17 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import LineBasicMaterialProcessor from "./LineBasicMaterialProcessor";
 import { MaterialCompiler } from "./MaterialCompiler";
 import { MaterialRule } from "./MaterialRule";
-import MeshBasicMaterialProcessor from "./MeshBasicMaterialProcessor";
-import MeshPhongMaterialProcessor from "./MeshPhongMaterialProcessor";
-import MeshPhysicalMaterialProcessor from "./MeshPhysicalMaterialProcessor";
-import MeshStandardMaterialProcessor from "./MeshStandardMaterialProcessor";
-import PointsMaterialProcessor from "./PointsMaterialProcessor";
-import ShaderMaterialProcessor from "./ShaderMaterialProcessor";
-import SpriteMaterialProcessor from "./SpriteMaterialProcessor";
+import MeshBasicMaterialProcessor from "./processors/MeshBasicMaterialProcessor";
+import MeshPhongMaterialProcessor from "./processors/MeshPhongMaterialProcessor";
+import MeshPhysicalMaterialProcessor from "./processors/MeshPhysicalMaterialProcessor";
+import MeshStandardMaterialProcessor from "./processors/MeshStandardMaterialProcessor";
+import PointsMaterialProcessor from "./processors/PointsMaterialProcessor";
+import ShaderMaterialProcessor from "./processors/ShaderMaterialProcessor";
+import SpriteMaterialProcessor from "./processors/SpriteMaterialProcessor";
+import LineBasicMaterialProcessor from "./processors/LineBasicMaterialProcessor";
+
+export * from "./MaterialCompiler";
+export * from "./MaterialConfig";
 
 export default {
   type: "material",

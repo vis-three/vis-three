@@ -1,7 +1,7 @@
 import { EngineSupport, ProcessParams } from "@vis-three/middleware";
 import { Material } from "three";
-import { MaterialCompiler } from "./MaterialCompiler";
-import { MaterialConfig } from "./MaterialConfig";
+import { MaterialCompiler } from "../MaterialCompiler";
+import { MaterialConfig } from "../MaterialConfig";
 export declare const commonNeedUpdatesRegCommand: {
     reg: RegExp;
     handler<T extends Material, C extends MaterialConfig>({ target, key, value, }: ProcessParams<C, T, EngineSupport, MaterialCompiler>): void;

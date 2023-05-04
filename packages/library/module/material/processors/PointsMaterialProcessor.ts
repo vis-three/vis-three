@@ -1,9 +1,8 @@
-import { MeshBasicMaterial } from "three";
-
+import { PointsMaterial } from "three";
 import {
-  getMeshBasicMaterialConfig,
-  MeshBasicMaterialConfig,
-} from "./MaterialConfig";
+  getPointsMaterialConfig,
+  PointsMaterialConfig,
+} from "../MaterialConfig";
 import {
   colorSetHandler,
   commonMapRegCommand,
@@ -11,17 +10,17 @@ import {
   create,
   dispose,
 } from "./common";
-import { MaterialCompiler } from "./MaterialCompiler";
+import { MaterialCompiler } from "../MaterialCompiler";
 import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 
 export default defineProcessor<
-  MeshBasicMaterialConfig,
-  MeshBasicMaterial,
+  PointsMaterialConfig,
+  PointsMaterial,
   EngineSupport,
   MaterialCompiler
 >({
-  type: "MeshBasicMaterial",
-  config: getMeshBasicMaterialConfig,
+  type: "PointsMaterial",
+  config: getPointsMaterialConfig,
   commands: {
     set: {
       color: colorSetHandler,
@@ -29,10 +28,10 @@ export default defineProcessor<
     },
   },
   create: function (
-    config: MeshBasicMaterialConfig,
+    config: PointsMaterialConfig,
     engine: EngineSupport
-  ): MeshBasicMaterial {
-    return create(new MeshBasicMaterial(), config, engine);
+  ): PointsMaterial {
+    return create(new PointsMaterial(), config, engine);
   },
   dispose,
 });
