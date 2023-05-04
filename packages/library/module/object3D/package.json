@@ -27,10 +27,10 @@
     "vite": "^2.9.15"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.1",
-    "@vis-three/middleware": "workspace:^0.6.3",
-    "@vis-three/utils": "workspace:^0.6.0",
-    "@vis-three/module-object": "workspace:^0.6.3"
+    "@vis-three/core": "workspace:^0.6.2",
+    "@vis-three/middleware": "workspace:^0.6.6",
+    "@vis-three/module-object": "workspace:^0.6.3",
+    "@vis-three/utils": "workspace:^0.6.0"
   },
   "files": [
     "dist",
