@@ -6,6 +6,9 @@ import { TextureCompiler } from "./TextureCompiler";
 import { TextureRule } from "./TextureRule";
 import VideoTextureProcessor from "./processors/VideoTextureProcessor";
 
+export * from "./TextureCompiler";
+export * from "./TextureConfig";
+
 export default {
   type: "texture",
   compiler: TextureCompiler,

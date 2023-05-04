@@ -1,4 +1,6 @@
 import { TextureCompiler } from "./TextureCompiler";
+export * from "./TextureCompiler";
+export * from "./TextureConfig";
 declare const _default: {
     type: string;
     compiler: typeof TextureCompiler;

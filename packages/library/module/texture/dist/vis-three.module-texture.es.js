@@ -5,7 +5,7 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { syncObject } from "@vis-three/utils";
-import { LinearFilter, CubeReflectionMapping, UVMapping, ClampToEdgeWrapping, LinearMipmapLinearFilter, RGBAFormat, LinearEncoding, CanvasTexture, CubeTexture, Texture, RGBFormat } from "three";
+import { UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, LinearEncoding, CubeReflectionMapping, CanvasTexture, CubeTexture, Texture, RGBFormat } from "three";
 import { Compiler, globalAntiShake, MODULETYPE, defineProcessor, Rule } from "@vis-three/middleware";
 import { CanvasGenerator } from "@vis-three/convenient";
 const _TextureCompiler = class extends Compiler {
@@ -416,4 +416,4 @@ var index = {
     VideoTextureProcessor
   ]
 };
-export { index as default };
+export { TextureCompiler, index as default, getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig, getLoadTextureConfig, getTextureConfig, getVideoTextureConfig };
