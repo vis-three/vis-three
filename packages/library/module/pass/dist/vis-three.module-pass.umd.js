@@ -1,0 +1,74 @@
+(function(l,t){typeof exports=="object"&&typeof module!="undefined"?module.exports=t(require("@vis-three/middleware"),require("three"),require("three/examples/jsm/postprocessing/Pass"),require("three/examples/jsm/shaders/LuminosityHighPassShader"),require("three/examples/jsm/postprocessing/SMAAPass"),require("three/examples/jsm/postprocessing/UnrealBloomPass")):typeof define=="function"&&define.amd?define(["@vis-three/middleware","three","three/examples/jsm/postprocessing/Pass","three/examples/jsm/shaders/LuminosityHighPassShader","three/examples/jsm/postprocessing/SMAAPass","three/examples/jsm/postprocessing/UnrealBloomPass"],t):(l=typeof globalThis!="undefined"?globalThis:l||self,l["vis-three"]=l["vis-three"]||{},l["vis-three"]["module-pass"]=t(l.middleware,l.three,l.Pass,l.LuminosityHighPassShader,l.SMAAPass,l.UnrealBloomPass))})(this,function(l,t,f,S,C,P){"use strict";var z=Object.defineProperty;var H=(l,t,f)=>t in l?z(l,t,{enumerable:!0,configurable:!0,writable:!0,value:f}):l[t]=f;var s=(l,t,f)=>(H(l,typeof t!="symbol"?t+"":t,f),f);class w extends l.Compiler{constructor(){super();s(this,"composer")}useEngine(e){return super.useEngine(e),e.effectComposer?(this.composer=e.effectComposer,this):(console.warn("engine need install effectComposer plugin that can use pass compiler."),this)}add(e){const o=super.add(e);return o&&this.composer.addPass(o),o}remove(e){if(!this.map.has(e.vid))return console.warn(`PassCompiler can not found this vid pass: ${e.vid}.`),this;const o=this.map.get(e.vid);return this.composer.removePass(o),super.remove(e),this}}const B=function(i,a){l.Rule(i,a)},v=class extends f.Pass{constructor(e=new t.Vector2(256,256),o=1,n=0,u=0,d=new t.Scene,x=new t.PerspectiveCamera,g){super();s(this,"resolution");s(this,"strength");s(this,"radius");s(this,"threshold");s(this,"selectedObjects",[]);s(this,"renderScene");s(this,"renderCamera");s(this,"clearColor",new t.Color(0,0,0));s(this,"renderTargetsHorizontal",[]);s(this,"renderTargetsVertical",[]);s(this,"nMips",5);s(this,"selectRenderTarget");s(this,"renderTargetBright");s(this,"highPassUniforms");s(this,"materialHighPassFilter");s(this,"separableBlurMaterials",[]);s(this,"compositeMaterial");s(this,"bloomTintColors");s(this,"mixMaterial");s(this,"enabled",!0);s(this,"needsSwap",!1);s(this,"_oldClearColor",new t.Color);s(this,"oldClearAlpha",1);s(this,"basic",new t.MeshBasicMaterial);s(this,"fsQuad",new f.FullScreenQuad);s(this,"materialCache",new Map);s(this,"sceneBackgroundCache",null);s(this,"overrideBackground",new t.Color("black"));s(this,"overrideMeshMaterial",new t.MeshBasicMaterial({color:"black"}));s(this,"overrideLineMaterial",new t.LineBasicMaterial({color:"black"}));s(this,"overridePointsMaterial",new t.PointsMaterial({color:"black"}));s(this,"overrideSpriteMaterial",new t.SpriteMaterial({color:"black"}));this.resolution=e,this.strength=o,this.radius=n,this.threshold=u,this.renderScene=d,this.renderCamera=x,this.selectedObjects=g;let c=Math.round(this.resolution.x/2),h=Math.round(this.resolution.y/2);this.selectRenderTarget=new t.WebGLRenderTarget(c,h),this.selectRenderTarget.texture.name="UnrealBloomPass.selected",this.selectRenderTarget.texture.generateMipmaps=!1,this.renderTargetBright=new t.WebGLRenderTarget(c,h),this.renderTargetBright.texture.name="UnrealBloomPass.bright",this.renderTargetBright.texture.generateMipmaps=!1;for(let m=0;m<this.nMips;m++){const M=new t.WebGLRenderTarget(c,h);M.texture.name="UnrealBloomPass.h"+m,M.texture.generateMipmaps=!1,this.renderTargetsHorizontal.push(M);const T=new t.WebGLRenderTarget(c,h);T.texture.name="UnrealBloomPass.v"+m,T.texture.generateMipmaps=!1,this.renderTargetsVertical.push(T),c=Math.round(c/2),h=Math.round(h/2)}S.LuminosityHighPassShader===void 0&&console.error("THREE.UnrealBloomPass relies on LuminosityHighPassShader");const r=S.LuminosityHighPassShader;this.highPassUniforms=t.UniformsUtils.clone(r.uniforms),this.highPassUniforms.luminosityThreshold.value=u,this.highPassUniforms.smoothWidth.value=.01,this.materialHighPassFilter=new t.ShaderMaterial({uniforms:this.highPassUniforms,vertexShader:r.vertexShader,fragmentShader:r.fragmentShader,defines:{}});const A=[3,5,7,9,11];c=Math.round(this.resolution.x/2),h=Math.round(this.resolution.y/2);for(let m=0;m<this.nMips;m++)this.separableBlurMaterials.push(this.getSeperableBlurMaterial(A[m])),this.separableBlurMaterials[m].uniforms.texSize.value=new t.Vector2(c,h),c=Math.round(c/2),h=Math.round(h/2);this.compositeMaterial=this.getCompositeMaterial(this.nMips),this.compositeMaterial.uniforms.blurTexture1.value=this.renderTargetsVertical[0].texture,this.compositeMaterial.uniforms.blurTexture2.value=this.renderTargetsVertical[1].texture,this.compositeMaterial.uniforms.blurTexture3.value=this.renderTargetsVertical[2].texture,this.compositeMaterial.uniforms.blurTexture4.value=this.renderTargetsVertical[3].texture,this.compositeMaterial.uniforms.blurTexture5.value=this.renderTargetsVertical[4].texture,this.compositeMaterial.uniforms.bloomStrength.value=o,this.compositeMaterial.uniforms.bloomRadius.value=.1,this.compositeMaterial.needsUpdate=!0;const F=[1,.8,.6,.4,.2];this.compositeMaterial.uniforms.bloomFactors.value=F,this.bloomTintColors=[new t.Vector3(1,1,1),new t.Vector3(1,1,1),new t.Vector3(1,1,1),new t.Vector3(1,1,1),new t.Vector3(1,1,1)],this.compositeMaterial.uniforms.bloomTintColors.value=this.bloomTintColors,this.mixMaterial=this.getMixMaterial()}dispose(){for(let e=0;e<this.renderTargetsHorizontal.length;e++)this.renderTargetsHorizontal[e].dispose();for(let e=0;e<this.renderTargetsVertical.length;e++)this.renderTargetsVertical[e].dispose();this.renderTargetBright.dispose()}setSize(e,o){let n=Math.round(e/2),u=Math.round(o/2);this.selectRenderTarget.setSize(n,u),this.renderTargetBright.setSize(n,u);for(let d=0;d<this.nMips;d++)this.renderTargetsHorizontal[d].setSize(n,u),this.renderTargetsVertical[d].setSize(n,u),this.separableBlurMaterials[d].uniforms.texSize.value=new t.Vector2(n,u),n=Math.round(n/2),u=Math.round(u/2)}render(e,o,n,u,d){if(!this.selectedObjects.length){this.renderToScreen&&(this.fsQuad.material=this.basic,this.basic.map=n.texture,e.setRenderTarget(null),e.clear(),this.fsQuad.render(e));return}e.getClearColor(this._oldClearColor),this.oldClearAlpha=e.getClearAlpha();const x=e.autoClear;e.autoClear=!1,e.setClearColor(this.clearColor,0),d&&e.state.buffers.stencil.setTest(!1);const g=new Map;for(const r of this.selectedObjects)g.set(r,!0);const c=this.materialCache;this.renderScene.background&&(this.sceneBackgroundCache=this.renderScene.background,this.renderScene.background=this.overrideBackground),this.renderScene.traverse(r=>{!g.has(r)&&!r.isLight&&r.visible&&(c.set(r,r.material),r instanceof t.Mesh?r.material=this.overrideMeshMaterial:r instanceof t.Line?r.material=this.overrideLineMaterial:r instanceof t.Points?r.material=this.overridePointsMaterial:r instanceof t.Sprite&&(r.material=this.overrideSpriteMaterial))}),e.setRenderTarget(this.selectRenderTarget),e.clear(),e.render(this.renderScene,this.renderCamera),this.renderToScreen&&(this.fsQuad.material=this.basic,this.basic.map=this.selectRenderTarget.texture,e.setRenderTarget(null),e.clear(),this.fsQuad.render(e)),this.highPassUniforms.tDiffuse.value=this.selectRenderTarget.texture,this.highPassUniforms.luminosityThreshold.value=this.threshold,this.fsQuad.material=this.materialHighPassFilter,e.setRenderTarget(this.renderTargetBright),e.clear(),this.fsQuad.render(e);let h=this.renderTargetBright;for(let r=0;r<this.nMips;r++)this.fsQuad.material=this.separableBlurMaterials[r],this.separableBlurMaterials[r].uniforms.colorTexture.value=h.texture,this.separableBlurMaterials[r].uniforms.direction.value=v.BlurDirectionX,e.setRenderTarget(this.renderTargetsHorizontal[r]),e.clear(),this.fsQuad.render(e),this.separableBlurMaterials[r].uniforms.colorTexture.value=this.renderTargetsHorizontal[r].texture,this.separableBlurMaterials[r].uniforms.direction.value=v.BlurDirectionY,e.setRenderTarget(this.renderTargetsVertical[r]),e.clear(),this.fsQuad.render(e),h=this.renderTargetsVertical[r];this.fsQuad.material=this.compositeMaterial,this.compositeMaterial.uniforms.bloomStrength.value=this.strength,this.compositeMaterial.uniforms.bloomRadius.value=this.radius,this.compositeMaterial.uniforms.bloomTintColors.value=this.bloomTintColors,e.setRenderTarget(this.renderTargetsHorizontal[0]),e.clear(),this.fsQuad.render(e),this.fsQuad.material=this.mixMaterial,this.mixMaterial.uniforms.bloom.value=this.renderTargetsHorizontal[0].texture,this.mixMaterial.uniforms.origin.value=n.texture,d&&e.state.buffers.stencil.setTest(!0),this.renderToScreen?(e.setRenderTarget(null),this.fsQuad.render(e)):(e.setRenderTarget(n),this.fsQuad.render(e)),e.setClearColor(this._oldClearColor,this.oldClearAlpha),e.autoClear=x;for(const r of c.entries())r[0].material=r[1];c.clear(),this.sceneBackgroundCache&&(this.renderScene.background=this.sceneBackgroundCache,this.sceneBackgroundCache=null)}getMixMaterial(){return new t.ShaderMaterial({blending:t.AdditiveBlending,depthTest:!1,depthWrite:!1,transparent:!0,uniforms:{bloom:{value:null},origin:{value:null}},vertexShader:`
+    
+        varying vec2 vUv;
+    
+        void main() {
+    
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    
+        }`,fragmentShader:`
+        uniform sampler2D bloom;
+        uniform sampler2D origin;
+    
+        varying vec2 vUv;
+    
+        void main() {
+          vec3 bloomColor = texture2D(bloom, vUv).rgb;
+          vec3 originColor = texture2D(origin, vUv).rgb;
+          gl_FragColor = vec4(originColor + bloomColor, 1.0);
+        }`})}getSeperableBlurMaterial(e){return new t.ShaderMaterial({defines:{KERNEL_RADIUS:e,SIGMA:e},uniforms:{colorTexture:{value:null},texSize:{value:new t.Vector2(.5,.5)},direction:{value:new t.Vector2(.5,.5)}},vertexShader:`varying vec2 vUv;
+				void main() {
+					vUv = uv;
+					gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+				}`,fragmentShader:`#include <common>
+				varying vec2 vUv;
+				uniform sampler2D colorTexture;
+				uniform vec2 texSize;
+				uniform vec2 direction;
+
+				float gaussianPdf(in float x, in float sigma) {
+					return 0.39894 * exp( -0.5 * x * x/( sigma * sigma))/sigma;
+				}
+				void main() {
+					vec2 invSize = 1.0 / texSize;
+					float fSigma = float(SIGMA);
+					float weightSum = gaussianPdf(0.0, fSigma);
+					vec3 diffuseSum = texture2D( colorTexture, vUv).rgb * weightSum;
+					for( int i = 1; i < KERNEL_RADIUS; i ++ ) {
+						float x = float(i);
+						float w = gaussianPdf(x, fSigma);
+						vec2 uvOffset = direction * invSize * x;
+						vec3 sample1 = texture2D( colorTexture, vUv + uvOffset).rgb;
+						vec3 sample2 = texture2D( colorTexture, vUv - uvOffset).rgb;
+						diffuseSum += (sample1 + sample2) * w;
+						weightSum += 2.0 * w;
+					}
+					gl_FragColor = vec4(diffuseSum/weightSum, 1.0);
+				}`})}getCompositeMaterial(e){return new t.ShaderMaterial({defines:{NUM_MIPS:e},uniforms:{blurTexture1:{value:null},blurTexture2:{value:null},blurTexture3:{value:null},blurTexture4:{value:null},blurTexture5:{value:null},bloomStrength:{value:1},bloomFactors:{value:null},bloomTintColors:{value:null},bloomRadius:{value:0}},vertexShader:`varying vec2 vUv;
+				void main() {
+					vUv = uv;
+					gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+				}`,fragmentShader:`varying vec2 vUv;
+				uniform sampler2D blurTexture1;
+				uniform sampler2D blurTexture2;
+				uniform sampler2D blurTexture3;
+				uniform sampler2D blurTexture4;
+				uniform sampler2D blurTexture5;
+				uniform float bloomStrength;
+				uniform float bloomRadius;
+				uniform float bloomFactors[NUM_MIPS];
+				uniform vec3 bloomTintColors[NUM_MIPS];
+
+				float lerpBloomFactor(const in float factor) {
+					float mirrorFactor = 1.2 - factor;
+					return mix(factor, mirrorFactor, bloomRadius);
+				}
+
+				void main() {
+					gl_FragColor = bloomStrength * ( lerpBloomFactor(bloomFactors[0]) * vec4(bloomTintColors[0], 1.0) * texture2D(blurTexture1, vUv) +
+						lerpBloomFactor(bloomFactors[1]) * vec4(bloomTintColors[1], 1.0) * texture2D(blurTexture2, vUv) +
+						lerpBloomFactor(bloomFactors[2]) * vec4(bloomTintColors[2], 1.0) * texture2D(blurTexture3, vUv) +
+						lerpBloomFactor(bloomFactors[3]) * vec4(bloomTintColors[3], 1.0) * texture2D(blurTexture4, vUv) +
+						lerpBloomFactor(bloomFactors[4]) * vec4(bloomTintColors[4], 1.0) * texture2D(blurTexture5, vUv) );
+				}`})}};let p=v;s(p,"BlurDirectionX",new t.Vector2(1,0)),s(p,"BlurDirectionY",new t.Vector2(0,1));const b=function(){return{vid:"",type:"Pass",index:0}},U=function(){return Object.assign(b(),{})},R=function(){return Object.assign(b(),{strength:1.5,threshold:0,radius:0})},j=function(){return Object.assign(b(),{strength:1,threshold:0,radius:0,renderScene:"",renderCamera:"",selectedObjects:[]})};var D=l.defineProcessor({type:"SelectiveBloomPass",config:j,commands:{add:{selectedObjects({target:i,engine:a,value:e}){const o=a.getObject3D(e);o?i.selectedObjects.push(o):console.warn(`selectiveBloomPassProcessor: can not found vid in engine: ${e}`)}},set:{renderScene({target:i,engine:a,value:e}){const o=a.getObject3D(e);o instanceof t.Scene&&(i.renderScene=o)},renderCamera({target:i,engine:a,value:e}){const o=a.getObject3D(e);o instanceof t.Camera&&(i.renderCamera=o)},selectedObjects({target:i,config:a,engine:e}){const o=a.selectedObjects.map(n=>{const u=e.getObject3D(n);if(u)return u;console.warn(`selectiveBloomPassProcessor: can not found vid in engine: ${n}`)}).filter(n=>n);i.selectedObjects=o}},delete:{selectedObjects({target:i,engine:a,value:e}){const o=a.getObject3D(e);o?i.selectedObjects.includes(o)&&i.selectedObjects.splice(i.selectedObjects.indexOf(o),1):console.warn(`selectiveBloomPassProcessor: can not found vid in engine: ${e}`)}}},create(i,a){const e=[];for(const u of i.selectedObjects){const d=a.getObject3D(u);d&&e.push(d)}const o=window.devicePixelRatio;return new p(new t.Vector2(a.dom?a.dom.offsetWidth*o:window.innerWidth*o,a.dom?a.dom.offsetHeight*o:window.innerWidth*o),i.strength,i.radius,i.threshold,i.renderScene&&a.getObjectfromModule(l.MODULETYPE.SCENE,i.renderScene)||void 0,i.renderCamera&&a.getObjectfromModule(l.MODULETYPE.CAMERA,i.renderCamera)||void 0,e)},dispose(i){i.dispose()}}),O=l.defineProcessor({type:"SMAAPass",config:U,create(i,a){const e=window.devicePixelRatio;return new C.SMAAPass(a.dom?a.dom.offsetWidth*e:window.innerWidth*e,a.dom?a.dom.offsetHeight*e:window.innerWidth*e)},dispose(i){}}),V=l.defineProcessor({type:"UnrealBloomPass",config:R,create(i,a){const e=window.devicePixelRatio;return new P.UnrealBloomPass(new t.Vector2(a.dom?a.dom.offsetWidth*e:window.innerWidth*e,a.dom?a.dom.offsetHeight*e:window.innerWidth*e),i.strength,i.radius,i.threshold)},dispose(i){i.dispose()}}),y={type:"pass",compiler:w,rule:B,processors:[V,O,D]};return y});

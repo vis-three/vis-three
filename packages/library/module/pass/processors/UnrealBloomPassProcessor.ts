@@ -1,8 +1,8 @@
 import { defineProcessor } from "@vis-three/middleware";
 import { Vector2 } from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
-import { ComposerSupportEngine, PassCompiler } from "./PassCompiler";
-import { getUnrealBloomPassConfig, UnrealBloomPassConfig } from "./PassConfig";
+import { ComposerSupportEngine, PassCompiler } from "../PassCompiler";
+import { getUnrealBloomPassConfig, UnrealBloomPassConfig } from "../PassConfig";
 
 export default defineProcessor<
   UnrealBloomPassConfig,

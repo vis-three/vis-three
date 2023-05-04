@@ -1,11 +1,11 @@
 import { defineProcessor, MODULETYPE } from "@vis-three/middleware";
 import { Camera, Object3D, Scene, Vector2 } from "three";
-import { SelectiveBloomPass } from "./extends/SelectiveBloomPass";
-import { ComposerSupportEngine, PassCompiler } from "./PassCompiler";
+import { SelectiveBloomPass } from "../extends/SelectiveBloomPass";
+import { ComposerSupportEngine, PassCompiler } from "../PassCompiler";
 import {
   getSelectiveBloomPassConfig,
   SelectiveBloomPassConfig,
-} from "./PassConfig";
+} from "../PassConfig";
 
 export default defineProcessor<
   SelectiveBloomPassConfig,

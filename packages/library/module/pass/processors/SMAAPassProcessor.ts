@@ -1,8 +1,8 @@
 import { defineProcessor } from "@vis-three/middleware";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
-import { ComposerSupportEngine, PassCompiler } from "./PassCompiler";
+import { ComposerSupportEngine, PassCompiler } from "../PassCompiler";
 
-import { getSMAAPassConfig, SMAAPassConfig } from "./PassConfig";
+import { getSMAAPassConfig, SMAAPassConfig } from "../PassConfig";
 
 export default defineProcessor<
   SMAAPassConfig,
