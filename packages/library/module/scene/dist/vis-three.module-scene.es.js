@@ -1,34 +1,49 @@
-import {
-  defineProcessor,
-  EngineSupport,
-  MODULETYPE,
-} from "@vis-three/middleware";
-import {
-  objectCommands,
-  ObjectCommands,
-  objectCreate,
-  objectDispose,
-} from "@vis-three/module-object";
-import { Color, Fog, FogExp2, Scene, Texture } from "three";
+import { MODULETYPE, uniqueSymbol, defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { ObjectCompiler, getObjectConfig, objectCommands, objectCreate, objectDispose, ObjectRule } from "@vis-three/module-object";
+import { Fog, Color, FogExp2, Scene } from "three";
 import { validate } from "uuid";
-import { SceneCompiler } from "./SceneCompiler";
-import { getSceneConfig, SceneConfig } from "./SceneConfig";
-
-const setBackground = function (
-  scene: Scene,
-  value: string | null,
-  engine: EngineSupport
-) {
+class SceneCompiler extends ObjectCompiler {
+  constructor() {
+    super();
+  }
+}
+function SceneExtend(engine) {
+  engine.setSceneBySymbol = function(scene) {
+    const compiler = this.compilerManager.getCompiler(
+      MODULETYPE.SCENE
+    );
+    if (compiler.map.has(scene)) {
+      this.setScene(compiler.map.get(scene));
+    } else {
+      console.warn("can not found scene", scene);
+    }
+    return this;
+  };
+}
+const getSceneConfig = function() {
+  return Object.assign(getObjectConfig(), {
+    vid: uniqueSymbol("Scene"),
+    background: "",
+    environment: "",
+    fog: {
+      type: "",
+      color: "rgb(150, 150, 150)",
+      near: 1,
+      far: 200,
+      density: 3e-3
+    }
+  });
+};
+const setBackground = function(scene, value, engine) {
   if (!value) {
     scene.background = null;
     return;
   }
-
   if (validate(value)) {
     const texture = engine.compilerManager.getObjectfromModule(
       MODULETYPE.TEXTURE,
       value
-    ) as Texture;
+    );
     if (texture) {
       scene.background = texture;
     } else {
@@ -38,22 +53,16 @@ const setBackground = function (
     scene.background = new Color(value);
   }
 };
-
-const setEnvironment = function (
-  scene: Scene,
-  value: string | null,
-  engine: EngineSupport
-) {
+const setEnvironment = function(scene, value, engine) {
   if (!value) {
     scene.environment = null;
     return;
   }
-
   if (validate(value)) {
     const texture = engine.compilerManager.getObjectfromModule(
       MODULETYPE.TEXTURE,
       value
-    ) as Texture;
+    );
     if (texture) {
       scene.environment = texture;
     } else {
@@ -63,20 +72,15 @@ const setEnvironment = function (
     console.warn(`scene environment is illeage: ${value}`);
   }
 };
-
-export default defineProcessor<
-  SceneConfig,
-  Scene,
-  EngineSupport,
-  SceneCompiler
->({
+var SceneProcessor = defineProcessor({
   type: "Scene",
   config: getSceneConfig,
   commands: {
-    add: (<ObjectCommands<SceneConfig, Scene>>(<unknown>objectCommands)).add,
+    add: objectCommands.add,
     set: {
-      ...(<ObjectCommands<SceneConfig, Scene>>(<unknown>objectCommands)).set,
-      lookAt() {},
+      ...objectCommands.set,
+      lookAt() {
+      },
       fog({ target, config, key, value }) {
         const fog = config.fog;
         if (!fog.type) {
@@ -108,16 +112,14 @@ export default defineProcessor<
       },
       environment({ target, value, engine }) {
         setEnvironment(target, value, engine);
-      },
+      }
     },
-    delete: (<ObjectCommands<SceneConfig, Scene>>(<unknown>objectCommands))
-      .delete,
+    delete: objectCommands.delete
   },
-  create(config: SceneConfig, engine: EngineSupport): Scene {
+  create(config, engine) {
     const scene = new Scene();
     setBackground(scene, config.background, engine);
     setEnvironment(scene, config.environment, engine);
-
     if (config.fog.type) {
       const fog = config.fog;
       if (fog.type === "Fog") {
@@ -130,7 +132,6 @@ export default defineProcessor<
         );
       }
     }
-
     return objectCreate(
       scene,
       config,
@@ -138,10 +139,26 @@ export default defineProcessor<
         lookAt: true,
         background: true,
         environment: true,
-        fog: true,
+        fog: true
       },
       engine
     );
   },
-  dispose: objectDispose,
+  dispose: objectDispose
 });
+const symbolList = [uniqueSymbol("Scene")];
+const SceneRule = function(input, compiler) {
+  ObjectRule(input, compiler, (vid) => {
+    return validate(vid) || symbolList.includes(vid);
+  });
+};
+var index = {
+  type: "scene",
+  object: true,
+  compiler: SceneCompiler,
+  rule: SceneRule,
+  processors: [SceneProcessor],
+  extend: SceneExtend,
+  lifeOrder: SUPPORT_LIFE_CYCLE.THREE + 1
+};
+export { SceneCompiler, index as default, getSceneConfig };

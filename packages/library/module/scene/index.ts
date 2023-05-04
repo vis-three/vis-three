@@ -1,8 +1,11 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { SceneCompiler } from "./SceneCompiler";
 import SceneExtend from "./SceneExtend";
-import SceneProcessor from "./SceneProcessor";
+import SceneProcessor from "./processors/SceneProcessor";
 import { SceneRule } from "./SceneRule";
+
+export * from "./SceneCompiler";
+export * from "./SceneConfig";
 
 export default {
   type: "scene",

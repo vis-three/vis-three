@@ -1,6 +1,8 @@
 import { SceneCompiler } from "./SceneCompiler";
 import SceneExtend from "./SceneExtend";
 import { SceneRule } from "./SceneRule";
+export * from "./SceneCompiler";
+export * from "./SceneConfig";
 declare const _default: {
     type: string;
     object: boolean;
