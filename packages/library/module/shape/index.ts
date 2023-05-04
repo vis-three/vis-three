@@ -3,6 +3,9 @@ import { ShapeCompiler } from "./ShapeCompiler";
 import { ShapeRule } from "./ShapeRule";
 import ShapeProcessor from "./processors/ShapeProcessor";
 
+export * from "./ShapeCompiler";
+export * from "./ShapeConfig";
+
 export default {
   type: "shape",
   compiler: ShapeCompiler,

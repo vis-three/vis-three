@@ -1,5 +1,7 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { ShapeCompiler } from "./ShapeCompiler";
+export * from "./ShapeCompiler";
+export * from "./ShapeConfig";
 declare const _default: {
     type: string;
     compiler: typeof ShapeCompiler;

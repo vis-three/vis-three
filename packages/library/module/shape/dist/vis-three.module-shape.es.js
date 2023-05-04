@@ -165,4 +165,4 @@ var index = {
   processors: [ShapeProcessor],
   lifeOrder: SUPPORT_LIFE_CYCLE.ONE
 };
-export { index as default };
+export { ShapeCompiler, index as default, getShapeConfig };
