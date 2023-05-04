@@ -1,5 +1,7 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { ModifierCompiler } from "./ModifierCompiler";
+export * from "./ModifierCompiler";
+export * from "./ModifierConfig";
 declare const _default: {
     type: string;
     compiler: typeof ModifierCompiler;

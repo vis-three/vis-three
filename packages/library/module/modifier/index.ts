@@ -3,6 +3,9 @@ import BooleanModifierProcessor from "./processors/BooleanModifierProcessor";
 import { ModifierCompiler } from "./ModifierCompiler";
 import { ModifierRule } from "./ModifierRule";
 
+export * from "./ModifierCompiler";
+export * from "./ModifierConfig";
+
 export default {
   type: "modifier",
   compiler: ModifierCompiler,

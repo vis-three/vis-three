@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-modifier",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "vis-three modifier module",
   "main": "dist/vis-three.module-modifier.umd.js",
   "module": "dist/vis-three.module-modifier.es.js",

@@ -231,4 +231,4 @@ var index = {
   processors: [BooleanModifierProcessor],
   lifeOrder: SUPPORT_LIFE_CYCLE.NINE
 };
-export { index as default };
+export { ModifierCompiler, index as default, getBooleanModifierConfig, getModifierConfig };
