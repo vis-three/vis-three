@@ -990,11 +990,13 @@ importers:
       prettier: ^2.6.2
       three: ^0.141.0
       typescript: ^4.3.2
+      uuid: ^8.3.2
       vite: ^2.9.15
     dependencies:
       '@vis-three/core': link:../../../core
       '@vis-three/middleware': link:../../../middleware
       '@vis-three/utils': link:../../../utils
+      uuid: 8.3.2
     devDependencies:
       '@types/node': 18.16.0
       '@types/three': 0.133.1
@@ -1370,6 +1372,7 @@ importers:
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.2
       '@vis-three/middleware': workspace:^0.6.6
+      '@vis-three/module-curve': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1382,6 +1385,7 @@ importers:
     dependencies:
       '@vis-three/core': link:../../../core
       '@vis-three/middleware': link:../../../middleware
+      '@vis-three/module-curve': link:../curve
       '@vis-three/utils': link:../../../utils
       uuid: 8.3.2
     devDependencies:

@@ -1,29 +1,7 @@
 import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 import { CurveCompiler } from "../CurveCompiler";
 import { getArcCurveConfig, ArcCurveConfig } from "../CurveConfig";
-import { EllipseCurve, Vector2 } from "three";
-
-class ArcCurve extends EllipseCurve {
-  private start = new Vector2();
-  private end = new Vector2();
-  private radius = 0;
-
-  constructor(
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number,
-    radius: number,
-    clockwise: boolean
-  ) {
-    this.start.set(startX, startY);
-    this.end.set(endX, endY);
-    this.radius = radius;
-    this.aClockwise = clockwise;
-
-    const mid = new Vector2((endX + startX) / 2, (endY + startY) / 2);
-  }
-}
+import { ArcCurve } from "../extends/ArcCurve";
 
 export default defineProcessor<
   ArcCurveConfig,
@@ -39,7 +17,14 @@ export default defineProcessor<
     delete: {},
   },
   create(config, engine) {
-    return {};
+    return new ArcCurve(
+      config.start.x,
+      config.start.y,
+      config.vertical,
+      config.clockwise,
+      config.end.x,
+      config.end.y
+    );
   },
   dispose() {},
 });

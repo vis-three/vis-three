@@ -11,7 +11,7 @@ export interface CurveConfig extends SymbolConfig {
 export interface ArcCurveConfig extends CurveConfig {
   start: Vector2Config;
   end: Vector2Config;
-  radius: number;
+  vertical: number;
   clockwise: boolean;
 }
 
@@ -27,11 +27,11 @@ export const getArcCurveConfig = function (): ArcCurveConfig {
       x: 0,
       y: 0,
     },
+    vertical: 5,
+    clockwise: false,
     end: {
       x: 0,
       y: 0,
     },
-    radius: 5,
-    clockwise: false,
   });
 };

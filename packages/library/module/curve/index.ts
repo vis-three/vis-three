@@ -3,6 +3,8 @@ import { CurveCompiler } from "./CurveCompiler";
 import { CurveRule } from "./CurveRule";
 import CurveProcessor from "./processors/ArcCurveProcessor";
 
+export * from "./extends";
+
 export default {
   type: "curve",
   object: true,

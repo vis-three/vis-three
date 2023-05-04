@@ -10,41 +10,18 @@ import {
   QuadraticBezierCurve,
   Vector2,
 } from "three";
+import { ArcCurve } from "@vis-three/module-curve/extends";
 
 const pathCurveMap = {
   arc: (
     startX: number,
     startY: number,
     vertical: number,
-    aClockwise: boolean,
+    clockwise: boolean,
     endX: number,
     endY: number
   ) => {
-    const start = new Vector2(startX, startY);
-    const end = new Vector2(endX, endY);
-    const mid = new Vector2((endX + startX) / 2, (endY + startY) / 2);
-    const center = new Vector2().copy(end).sub(start);
-    center
-      .set(-center.y, center.x)
-      .negate()
-      .normalize()
-      .multiplyScalar(vertical)
-      .add(mid);
-    const r = new Vector2().copy(end).sub(center).length();
-
-    const startAngle = new Vector2().copy(start).sub(center).angle();
-    const endAngle = new Vector2().copy(end).sub(center).angle();
-
-    return new EllipseCurve(
-      center.x,
-      center.y,
-      r,
-      r,
-      startAngle,
-      endAngle,
-      aClockwise,
-      0
-    );
+    return new ArcCurve(startX, startY, vertical, clockwise, endX, endY);
   },
   // ellipse: (
   //   startX: number,
@@ -181,12 +158,33 @@ export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
       },
     },
     delete: {
-      curves({ target, key }) {
-        if (target.curves.length - 1 < Number(key)) {
+      curves({ target, config, key }) {
+        const index = Number(key);
+
+        if (target.curves.length - 1 < index) {
           return;
         }
 
-        target.curves.splice(Number(key), target.curves.length);
+        target.curves.splice(index, target.curves.length);
+
+        const startPoint = getCurveExtrPoint(config.curves[index], "start");
+        const endPoint = getCurveExtrPoint(config.curves[index], "end");
+
+        if (index - 1 >= 0) {
+          syncExtrParams(
+            config.curves[index - 1],
+            [startPoint.x, startPoint.y],
+            "end"
+          );
+        }
+
+        if (index + 1 <= target.curves.length - 1) {
+          syncExtrParams(
+            config.curves[index + 1],
+            [endPoint.x, endPoint.y],
+            "start"
+          );
+        }
       },
     },
   },

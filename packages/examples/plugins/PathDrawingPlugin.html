@@ -37,34 +37,6 @@
 
       generateConfig.injectScene = true;
 
-      // const tg = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
-      //   width: 1,
-      //   height: 1,
-      //   depth: 1,
-      // });
-      // const tm = generateConfig(CONFIGTYPE.MESHBASICMATERIAL);
-      // const tb = generateConfig(CONFIGTYPE.MESH, {
-      //   geometry: tg.vid,
-      //   position: {
-      //     x: 17.07106,
-      //     y: 2.92893,
-      //   },
-      // });
-
-      // const eg = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
-      //   width: 1,
-      //   height: 1,
-      //   depth: 1,
-      // });
-      // const em = generateConfig(CONFIGTYPE.MESHBASICMATERIAL);
-      // const eb = generateConfig(CONFIGTYPE.MESH, {
-      //   geometry: eg.vid,
-      //   position: {
-      //     x: 20,
-      //     y: 20,
-      //   },
-      // });
-
       const path = generateConfig(CONFIGTYPE.PATH, {
         autoClose: false,
       });
@@ -116,7 +88,7 @@
       sketcher.addEventListener("write", (event) => {
         // path.curves.push({
         //   curve: "arc",
-        //   params: [event.point.x, event.point.y, 10, false, 20, 20],
+        //   params: [event.point.x, event.point.y, 10, 20, 20],
         // });
         path.curves.push({
           curve: "line",
