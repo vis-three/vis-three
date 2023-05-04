@@ -10,8 +10,8 @@ import {
   solidObjectDispose,
 } from "@vis-three/module-solid-object";
 import { Sprite, SpriteMaterial } from "three";
-import { SpriteCompiler } from "./SpriteCompiler";
-import { getSpriteConfig, SpriteConfig } from "./SpriteConfig";
+import { SpriteCompiler } from "../SpriteCompiler";
+import { getSpriteConfig, SpriteConfig } from "../SpriteConfig";
 
 const spriteReplaceMaterial = new SpriteMaterial({
   color: "rgb(123, 123, 123)",

@@ -1,6 +1,8 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { SpriteCompiler } from "./SpriteCompiler";
 import { SpriteRule } from "./SpriteRule";
+export * from "./SpriteCompiler";
+export * from "./SpriteConfig";
 declare const _default: {
     type: string;
     object: boolean;
