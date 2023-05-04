@@ -1,5 +1,7 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { PathCompiler } from "./PathCompiler";
+export * from "./PathCompiler";
+export * from "./PathConfig";
 declare const _default: {
     type: string;
     compiler: typeof PathCompiler;

@@ -19,6 +19,9 @@ const getPathConfig = function() {
     autoClose: false
   });
 };
+const getPath3Config = function() {
+  return Object.assign(getSymbolConfig(), {});
+};
 const pathCurveMap = {
   arc: (startX, startY, vertical, aClockwise, endX, endY) => {
     const start = new Vector2(startX, startY);
@@ -144,4 +147,4 @@ var index = {
   processors: [PathProcessor],
   lifeOrder: SUPPORT_LIFE_CYCLE.ZERO
 };
-export { index as default };
+export { PathCompiler, index as default, getPath3Config, getPathConfig };

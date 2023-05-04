@@ -436,6 +436,18 @@ const getSelectiveBloomPassConfig = function() {
     selectedObjects: []
   });
 };
+const getSSAOPassConfig = function() {
+  return Object.assign(getPassConfig(), {
+    camera: "",
+    scene: "",
+    kernelRadius: 8,
+    kernelSize: 32,
+    noiseTexture: "",
+    output: 0,
+    minDistance: 5e-3,
+    maxDistance: 0.1
+  });
+};
 var SelectiveBloomPassProcessor = defineProcessor({
   type: "SelectiveBloomPass",
   config: getSelectiveBloomPassConfig,
@@ -573,4 +585,4 @@ var index = {
     SelectiveBloomPassProcessor
   ]
 };
-export { index as default };
+export { PassCompiler, index as default, getPassConfig, getSMAAPassConfig, getSSAOPassConfig, getSelectiveBloomPassConfig, getUnrealBloomPassConfig };

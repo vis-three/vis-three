@@ -4,6 +4,9 @@ import SelectiveBloomPassProcessor from "./processors/SelectiveBloomPassProcesso
 import SMAAPassProcessor from "./processors/SMAAPassProcessor";
 import UnrealBloomPassProcessor from "./processors/UnrealBloomPassProcessor";
 
+export * from "./PassCompiler";
+export * from "./PassConfig";
+
 export default {
   type: "pass",
   compiler: PassCompiler,

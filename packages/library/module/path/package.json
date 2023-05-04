@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-path",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "vis-three path module",
   "main": "dist/vis-three.module-path.umd.js",
   "module": "dist/vis-three.module-path.es.js",

@@ -1,4 +1,6 @@
 import { PassCompiler } from "./PassCompiler";
+export * from "./PassCompiler";
+export * from "./PassConfig";
 declare const _default: {
     type: string;
     compiler: typeof PassCompiler;
