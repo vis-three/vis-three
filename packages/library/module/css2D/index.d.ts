@@ -1,6 +1,8 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { CSS2DCompiler } from "./CSS2DCompiler";
 import { CSS2DRule } from "./CSS2DRule";
+export * from "./CSS2DConfig";
+export * from "./CSS2DCompiler";
 declare const _default: {
     type: string;
     object: boolean;

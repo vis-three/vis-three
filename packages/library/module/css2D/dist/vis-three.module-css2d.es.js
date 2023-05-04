@@ -221,4 +221,4 @@ var index = {
   processors: [CSS2DPlaneProcessor],
   lifeOrder: SUPPORT_LIFE_CYCLE.THREE
 };
-export { index as default };
+export { CSS2DCompiler, index as default, getCSS2DObjectConfig, getCSS2DPlaneConfig };

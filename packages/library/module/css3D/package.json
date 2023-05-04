@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-css3d",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "vis-three css3d module",
   "main": "dist/vis-three.module-css3d.umd.js",
   "module": "dist/vis-three.module-css3d.es.js",

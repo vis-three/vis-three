@@ -271,4 +271,4 @@ var index = {
   processors: [CSS3DPlaneProcessor, CSS3DObjectProcessor, CSS3DSpriteProcessor],
   lifeOrder: SUPPORT_LIFE_CYCLE.THREE
 };
-export { index as default };
+export { CSS3DCompiler, index as default, getCSS3DObjectConfig, getCSS3DPlaneConfig, getCSS3DSpriteConfig };

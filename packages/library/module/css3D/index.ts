@@ -5,6 +5,9 @@ import CSS3DObjectProcessor from "./processors/CSS3DObjectProcessor";
 import CSS3DSpriteProcessor from "./processors/CSS3DSpriteProcessor";
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 
+export * from "./CSS3DCompiler";
+export * from "./CSS3DConfig";
+
 export default {
   type: "css3D",
   object: true,
