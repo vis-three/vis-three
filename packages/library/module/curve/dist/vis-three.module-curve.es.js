@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { Compiler, Rule, getSymbolConfig, defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { validate } from "uuid";
-import { EllipseCurve, Vector2 } from "three";
+import { EllipseCurve, Vector2, LineCurve } from "three";
 class CurveCompiler extends Compiler {
   constructor() {
     super();
@@ -22,16 +22,20 @@ const getCurveConfig = function() {
 };
 const getArcCurveConfig = function() {
   return Object.assign(getCurveConfig(), {
-    start: {
-      x: 0,
-      y: 0
-    },
+    startX: 0,
+    startY: 0,
     vertical: 5,
     clockwise: false,
-    end: {
-      x: 0,
-      y: 0
-    }
+    endX: 10,
+    endY: 10
+  });
+};
+const getLineCurveConfig = function() {
+  return Object.assign(getCurveConfig(), {
+    startX: 0,
+    startY: 0,
+    endX: 10,
+    endY: 10
   });
 };
 class ArcCurve extends EllipseCurve {
@@ -60,22 +64,59 @@ class ArcCurve extends EllipseCurve {
     this.aClockwise = clockwise;
   }
 }
-var CurveProcessor = defineProcessor({
+const commonRegCommand = {
+  reg: new RegExp(".*"),
+  handler({
+    config,
+    target,
+    processor,
+    engine,
+    compiler
+  }) {
+    const newCurve = processor.create(config, engine, compiler);
+    compiler.map.set(config.vid, newCurve);
+    compiler.weakMap.set(newCurve, config.vid);
+    compiler.weakMap.delete(target);
+    processor.dispose(target, engine, compiler);
+  }
+};
+var ArcCurveProcessor = defineProcessor({
   type: "ArcCurve",
   config: getArcCurveConfig,
   commands: {
     add: {},
-    set: {},
+    set: {
+      $reg: [commonRegCommand]
+    },
     delete: {}
   },
   create(config, engine) {
     return new ArcCurve(
-      config.start.x,
-      config.start.y,
+      config.startX,
+      config.startY,
       config.vertical,
       config.clockwise,
-      config.end.x,
-      config.end.y
+      config.endX,
+      config.endY
+    );
+  },
+  dispose() {
+  }
+});
+var LineCurveProcessor = defineProcessor({
+  type: "LineCurve",
+  config: getLineCurveConfig,
+  commands: {
+    add: {},
+    set: {
+      $reg: [commonRegCommand]
+    },
+    delete: {}
+  },
+  create(config, engine) {
+    return new LineCurve(
+      new Vector2(config.startX, config.startY),
+      new Vector2(config.endX, config.endY)
     );
   },
   dispose() {
@@ -83,10 +124,9 @@ var CurveProcessor = defineProcessor({
 });
 var index = {
   type: "curve",
-  object: true,
   compiler: CurveCompiler,
   rule: CurveRule,
-  processors: [CurveProcessor],
+  processors: [ArcCurveProcessor, LineCurveProcessor],
   lifeOrder: SUPPORT_LIFE_CYCLE.ZERO - 1
 };
-export { ArcCurve, index as default };
+export { ArcCurve, CurveCompiler, index as default, getArcCurveConfig, getCurveConfig, getLineCurveConfig };

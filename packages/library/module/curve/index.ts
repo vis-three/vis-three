@@ -1,15 +1,17 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { CurveCompiler } from "./CurveCompiler";
 import { CurveRule } from "./CurveRule";
-import CurveProcessor from "./processors/ArcCurveProcessor";
+import ArcCurveProcessor from "./processors/ArcCurveProcessor";
+import LineCurveProcessor from "./processors/LineCurveProcessor";
 
 export * from "./extends";
+export * from "./CurveCompiler";
+export * from "./CurveConfig";
 
 export default {
   type: "curve",
-  object: true,
   compiler: CurveCompiler,
   rule: CurveRule,
-  processors: [CurveProcessor],
+  processors: [ArcCurveProcessor, LineCurveProcessor],
   lifeOrder: SUPPORT_LIFE_CYCLE.ZERO - 1,
 };

@@ -19,6 +19,7 @@ import sprite from "@vis-three/module-sprite";
 import texture from "@vis-three/module-texture";
 import path from "@vis-three/module-path";
 import shape from "@vis-three/module-shape";
+import curve from "@vis-three/module-curve";
 
 export {
   animation,
@@ -42,4 +43,5 @@ export {
   texture,
   path,
   shape,
+  curve,
 };

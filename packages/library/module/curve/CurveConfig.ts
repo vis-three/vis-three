@@ -9,11 +9,22 @@ export interface CurveConfig extends SymbolConfig {
 }
 
 export interface ArcCurveConfig extends CurveConfig {
-  start: Vector2Config;
-  end: Vector2Config;
+  startX: number;
+  startY: number;
   vertical: number;
   clockwise: boolean;
+  endX: number;
+  endY: number;
 }
+
+export interface LineCurveConfig extends CurveConfig {
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+}
+
+export type CurveAllType = LineCurveConfig | ArcCurveConfig;
 
 export const getCurveConfig = function (): CurveConfig {
   return Object.assign(getSymbolConfig(), {
@@ -23,15 +34,20 @@ export const getCurveConfig = function (): CurveConfig {
 
 export const getArcCurveConfig = function (): ArcCurveConfig {
   return Object.assign(getCurveConfig(), {
-    start: {
-      x: 0,
-      y: 0,
-    },
+    startX: 0,
+    startY: 0,
     vertical: 5,
     clockwise: false,
-    end: {
-      x: 0,
-      y: 0,
-    },
+    endX: 10,
+    endY: 10,
+  });
+};
+
+export const getLineCurveConfig = function (): LineCurveConfig {
+  return Object.assign(getCurveConfig(), {
+    startX: 0,
+    startY: 0,
+    endX: 10,
+    endY: 10,
   });
 };

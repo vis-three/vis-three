@@ -1,7 +1,11 @@
 import { Compiler } from "@vis-three/middleware";
-import { CurveConfig } from "./CurveConfig";
+import { CurveAllType } from "./CurveConfig";
+import { Curve, Vector2, Vector3 } from "three";
 
-export class CurveCompiler extends Compiler<CurveConfig, object> {
+export class CurveCompiler extends Compiler<
+  CurveAllType,
+  Curve<Vector2 | Vector3>
+> {
   constructor() {
     super();
   }

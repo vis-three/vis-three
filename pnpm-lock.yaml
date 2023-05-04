@@ -749,6 +749,7 @@ importers:
       '@vis-three/module-controls': workspace:^0.6.1
       '@vis-three/module-css2d': workspace:^0.6.3
       '@vis-three/module-css3d': workspace:^0.6.4
+      '@vis-three/module-curve': workspace:^0.6.0
       '@vis-three/module-geometry': workspace:^0.6.5
       '@vis-three/module-group': workspace:^0.6.2
       '@vis-three/module-light': workspace:^0.6.2
@@ -776,6 +777,7 @@ importers:
       '@vis-three/module-controls': link:controls
       '@vis-three/module-css2d': link:css2D
       '@vis-three/module-css3d': link:css3D
+      '@vis-three/module-curve': link:curve
       '@vis-three/module-geometry': link:geometry
       '@vis-three/module-group': link:group
       '@vis-three/module-light': link:light

@@ -1,17 +1,17 @@
 import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 import { CurveCompiler } from "../CurveCompiler";
-import { getArcCurveConfig, ArcCurveConfig } from "../CurveConfig";
-import { ArcCurve } from "../extends/ArcCurve";
+import { getLineCurveConfig, LineCurveConfig } from "../CurveConfig";
 import { commonRegCommand } from "./common";
+import { LineCurve, Vector2 } from "three";
 
 export default defineProcessor<
-  ArcCurveConfig,
-  ArcCurve,
+  LineCurveConfig,
+  LineCurve,
   EngineSupport,
   CurveCompiler
 >({
-  type: "ArcCurve",
-  config: getArcCurveConfig,
+  type: "LineCurve",
+  config: getLineCurveConfig,
   commands: {
     add: {},
     set: {
@@ -20,13 +20,9 @@ export default defineProcessor<
     delete: {},
   },
   create(config, engine) {
-    return new ArcCurve(
-      config.startX,
-      config.startY,
-      config.vertical,
-      config.clockwise,
-      config.endX,
-      config.endY
+    return new LineCurve(
+      new Vector2(config.startX, config.startY),
+      new Vector2(config.endX, config.endY)
     );
   },
   dispose() {},
