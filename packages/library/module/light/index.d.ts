@@ -1,6 +1,8 @@
 import { LightCompiler } from "./LightCompiler";
 import { LightRule } from "./LightRule";
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+export * from "./LightConfig";
+export * from "./LightCompiler";
 declare const _default: {
     type: string;
     object: boolean;

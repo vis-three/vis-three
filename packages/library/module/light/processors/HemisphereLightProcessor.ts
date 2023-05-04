@@ -1,7 +1,7 @@
 import { Color, HemisphereLight } from "three";
-import { getHemisphereLightConfig, HemisphereLightConfig } from "./LightConfig";
+import { getHemisphereLightConfig, HemisphereLightConfig } from "../LightConfig";
 import { lightCommands, lightCreate } from "./common";
-import { LightCompiler } from "./LightCompiler";
+import { LightCompiler } from "../LightCompiler";
 import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 import { ObjectCommands, objectDispose } from "@vis-three/module-object";
 

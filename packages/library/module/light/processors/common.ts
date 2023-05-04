@@ -7,8 +7,8 @@ import {
 import { objectCommands, objectCreate } from "@vis-three/module-object";
 import { IgnoreAttribute } from "@vis-three/utils";
 import { Color, Light, Object3D } from "three";
-import { LightCompiler } from "./LightCompiler";
-import { LightConifg } from "./LightConfig";
+import { LightCompiler } from "../LightCompiler";
+import { LightConifg } from "../LightConfig";
 
 export const colorHandler = function <C extends LightConifg, O extends Light>({
   target,
