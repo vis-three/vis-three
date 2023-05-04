@@ -2,6 +2,8 @@ import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { CameraCompiler } from "./CameraCompiler";
 import CameraExtend from "./CameraExtend";
 import { CameraRule } from "./CameraRule";
+export * from "./CameraConfig";
+export * from "./CameraCompiler";
 declare const _default: {
     type: string;
     object: boolean;

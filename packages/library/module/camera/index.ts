@@ -5,6 +5,9 @@ import { CameraRule } from "./CameraRule";
 import OrthographicCameraProcessor from "./processors/OrthographicCameraProcessor";
 import PerspectiveCameraProcessor from "./processors/PerspectiveCameraProcessor";
 
+export * from "./CameraConfig";
+export * from "./CameraCompiler";
+
 export default {
   type: "camera",
   object: true,
