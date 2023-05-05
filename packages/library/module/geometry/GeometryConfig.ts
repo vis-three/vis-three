@@ -258,7 +258,7 @@ export const getPathGeometryConfig = function (): PathGeometryConfig {
   return Object.assign(getGeometryConfig(), {
     center: false,
     path: "",
-    space: true,
+    space: false,
     divisions: 36,
   });
 };

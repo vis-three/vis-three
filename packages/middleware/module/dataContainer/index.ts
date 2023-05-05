@@ -3,7 +3,7 @@ import { Subject, Subscription } from "rxjs";
 import { globalOption } from "../../option";
 import { SymbolConfig } from "../common";
 import { CompilerTarget } from "../compiler";
-import { getObservable } from "../observable";
+import { getObserver } from "../observer";
 
 export interface ProxyNotice {
   operate: "add" | "set" | "delete";
@@ -108,24 +108,22 @@ export class DataContainer<
   }
 
   add(config: C) {
-    const observable = getObservable<C>(config);
+    const observer = getObserver<C>(config);
 
-    if (!observable) {
-      console.error("DataContainer: this config can not Obasrvable", config);
+    if (!observer) {
+      console.error("DataContainer: this config can not observer", config);
       return;
     }
 
     this.subscriptions.set(
-      observable.raw.vid,
-      observable.subscribe((notice) => {
-        if (notice.operate !== "get") {
-          this.next({
-            operate: notice.operate,
-            path: extendPath(observable.raw.vid, notice.path), // 直接调用raw不会额外触发getter
-            key: notice.key,
-            value: notice.value,
-          });
-        }
+      observer.target.vid,
+      observer.subscribe((notice) => {
+        this.next({
+          operate: notice.operate,
+          path: extendPath(observer.target.vid, notice.path),
+          key: notice.key,
+          value: notice.value,
+        });
       })
     );
   }

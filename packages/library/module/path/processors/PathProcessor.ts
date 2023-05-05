@@ -125,10 +125,13 @@ export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
       },
     },
     set: {
-      curves({ target, config, path }) {
-        const index = Number(path[1]);
+      curves({ target, config, path, key }) {
+        let index = Number(path[1]);
 
         if (!Number.isInteger(index)) {
+          if (Number.isInteger(Number(key))) {
+            return;
+          }
           console.warn(`path processor: set curves path error:`, path);
           return;
         }
@@ -165,22 +168,12 @@ export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
           return;
         }
 
-        target.curves.splice(index, target.curves.length);
+        target.curves.splice(index, 1);
 
-        const startPoint = getCurveExtrPoint(config.curves[index], "start");
-        const endPoint = getCurveExtrPoint(config.curves[index], "end");
-
-        if (index - 1 >= 0) {
+        if (index <= target.curves.length - 1 && index - 1 >= 0) {
+          const endPoint = getCurveExtrPoint(config.curves[index - 1], "end");
           syncExtrParams(
-            config.curves[index - 1],
-            [startPoint.x, startPoint.y],
-            "end"
-          );
-        }
-
-        if (index + 1 <= target.curves.length - 1) {
-          syncExtrParams(
-            config.curves[index + 1],
+            config.curves[index],
             [endPoint.x, endPoint.y],
             "start"
           );

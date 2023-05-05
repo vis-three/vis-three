@@ -40,6 +40,7 @@
       engine.setCameraBySymbol(camera.vid);
 
       generateConfig.injectScene = true;
+      window.scene = scene;
 
       const path = generateConfig(CONFIGTYPE.PATH, {
         autoClose: false,
@@ -73,6 +74,8 @@
         ],
       });
 
+      window.drawPath = path;
+
       const geometry = generateConfig(CONFIGTYPE.PATHGEOMETRY, {
         path: path.vid,
         space: false,
@@ -84,6 +87,8 @@
         material: material.vid,
         geometry: geometry.vid,
       });
+
+      window.line = line;
 
       const controls = new PathSupportControls(
         engine.camera,
