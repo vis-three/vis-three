@@ -4,4 +4,4 @@ import { Strategy } from "@vis-three/core";
 export interface EffectRenderEngine extends EffectComposerEngine, RenderManagerEngine {
 }
 export declare const name: string;
-export declare const EffectRenderStrategy: Strategy<EffectRenderEngine>;
+export declare const EffectRenderStrategy: Strategy<EffectRenderEngine, object>;

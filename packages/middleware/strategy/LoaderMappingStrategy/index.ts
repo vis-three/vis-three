@@ -24,7 +24,7 @@ export interface LoaderMappingEngine extends ResourceManagerEngine {
 
 export const LOADER_MAPPING_STRATEGY = "LoaderMappingStrategy";
 
-export const LoaderMappingStrategy: Strategy<LoaderMappingEngine> =
+export const LoaderMappingStrategy: Strategy<LoaderMappingEngine, object> =
   function () {
     let cacheLoadResources: (
       urlList: Array<LoadUnit>,

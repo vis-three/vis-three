@@ -28,9 +28,10 @@ export interface WebGLRendererEngine extends Engine {
 
 export const WEBGL_RENDERER_PLUGIN = transPkgName(pkgname);
 
-export const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
-  params: WebGLRendererParameters
-) {
+export const WebGLRendererPlugin: Plugin<
+  WebGLRendererEngine,
+  WebGLRendererParameters
+> = function (params?: WebGLRendererParameters) {
   let setDomFun: (event: SetDomEvent) => void;
   let setSizeFun: (event: SetSizeEvent) => void;
   let renderFun: (event: RenderEvent) => void;

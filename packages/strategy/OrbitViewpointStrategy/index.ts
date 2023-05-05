@@ -19,7 +19,7 @@ export interface OrbitViewpointEngine
 
 export const name = transPkgName(pkgname);
 
-export const OrbitViewpointStrategy: Strategy<OrbitViewpointEngine> =
+export const OrbitViewpointStrategy: Strategy<OrbitViewpointEngine, object> =
   function () {
     let viewpointFun: (event: ViewpointEvent) => void;
 

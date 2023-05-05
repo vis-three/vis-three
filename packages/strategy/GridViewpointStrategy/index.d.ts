@@ -4,4 +4,4 @@ import { Strategy } from "@vis-three/core";
 export interface GridViewpointEngine extends GridHelperEngine, ViewpointEngine {
 }
 export declare const GRID_VIEWPOINT_STRATEGY: string;
-export declare const GridViewpointStrategy: Strategy<GridViewpointEngine>;
+export declare const GridViewpointStrategy: Strategy<GridViewpointEngine, object>;

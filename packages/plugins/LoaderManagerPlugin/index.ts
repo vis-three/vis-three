@@ -28,9 +28,10 @@ export interface LoaderManagerPluginParameters extends LoaderManagerParameters {
 
 export const LOADER_MANAGER_PLUGIN = transPkgName(pkgname);
 
-export const LoaderManagerPlugin: Plugin<LoaderManagerEngine> = function (
-  params?: LoaderManagerPluginParameters
-) {
+export const LoaderManagerPlugin: Plugin<
+  LoaderManagerEngine,
+  LoaderManagerPluginParameters
+> = function (params?: LoaderManagerPluginParameters) {
   return {
     name: LOADER_MANAGER_PLUGIN,
     install(engine) {

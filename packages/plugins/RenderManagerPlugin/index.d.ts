@@ -10,4 +10,4 @@ export interface RenderManagerEngine extends Engine {
     play: () => void;
     stop: () => void;
 }
-export declare const RenderManagerPlugin: Plugin<RenderManagerEngine>;
+export declare const RenderManagerPlugin: Plugin<RenderManagerEngine, RenderManagerPluginParams>;

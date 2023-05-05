@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/plugin-camera-adaptive",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -13,7 +13,7 @@
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.2"
+    "@vis-three/core": "workspace:^0.6.3"
   },
   "devDependencies": {
     "@types/node": "^18.11.12",

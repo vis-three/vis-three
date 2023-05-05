@@ -10,4 +10,4 @@ export interface AxesHelperEngine extends Engine {
     setAxesHelper: (show: boolean, params: AxesHelperOptions) => AxesHelperEngine;
 }
 export declare const AXES_HELPER_PLUGIN: string;
-export declare const AxesHelperPlugin: Plugin<AxesHelperEngine>;
+export declare const AxesHelperPlugin: Plugin<AxesHelperEngine, AxesHelperParameters>;

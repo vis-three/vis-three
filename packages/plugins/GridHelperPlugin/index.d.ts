@@ -12,4 +12,4 @@ export interface GridHelperEngine extends Engine {
     setGridHelper: (show: boolean) => GridHelperEngine;
 }
 export declare const GRID_HELPER_PLUGIN: string;
-export declare const GridHelperPlugin: Plugin<GridHelperEngine>;
+export declare const GridHelperPlugin: Plugin<GridHelperEngine, GridHelperParameters>;

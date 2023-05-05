@@ -19,7 +19,7 @@ export interface GridViewpointEngine
 
 export const GRID_VIEWPOINT_STRATEGY = transPkgName(pkgname);
 
-export const GridViewpointStrategy: Strategy<GridViewpointEngine> =
+export const GridViewpointStrategy: Strategy<GridViewpointEngine, object> =
   function () {
     let viewpointFun: (event: ViewpointEvent) => void;
 

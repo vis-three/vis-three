@@ -21,73 +21,74 @@ export interface CSS2DRendererEngine extends Engine {
 
 export const name = transPkgName(pkgname);
 
-export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine> = function () {
-  let setDomFun: (event: SetDomEvent) => void;
-  let setSizeFun: (event: SetSizeEvent) => void;
-  let setSceneFun: (event: SetSceneEvent) => void;
-  let renderFun: (event: RenderEvent) => void;
+export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine, object> =
+  function () {
+    let setDomFun: (event: SetDomEvent) => void;
+    let setSizeFun: (event: SetSizeEvent) => void;
+    let setSceneFun: (event: SetSceneEvent) => void;
+    let renderFun: (event: RenderEvent) => void;
 
-  return {
-    name,
-    install(engine) {
-      const css2DRenderer = new CSS2DRenderer();
+    return {
+      name,
+      install(engine) {
+        const css2DRenderer = new CSS2DRenderer();
 
-      engine.css2DRenderer = css2DRenderer;
+        engine.css2DRenderer = css2DRenderer;
 
-      const domElement = css2DRenderer.domElement;
+        const domElement = css2DRenderer.domElement;
 
-      domElement.classList.add("vis-css2D");
-      domElement.style.position = "absolute";
-      domElement.style.top = "0";
-      domElement.style.left = "0";
-      domElement.style.zIndex = "2";
+        domElement.classList.add("vis-css2D");
+        domElement.style.position = "absolute";
+        domElement.style.top = "0";
+        domElement.style.left = "0";
+        domElement.style.zIndex = "2";
 
-      setDomFun = (event) => {
-        event.dom.appendChild(css2DRenderer.domElement);
-      };
+        setDomFun = (event) => {
+          event.dom.appendChild(css2DRenderer.domElement);
+        };
 
-      setSizeFun = (event) => {
-        css2DRenderer.setSize(event.width, event.height);
-      };
+        setSizeFun = (event) => {
+          css2DRenderer.setSize(event.width, event.height);
+        };
 
-      setSceneFun = (event) => {
-        const oldScene = event.oldScene;
-        oldScene.traverse((object) => {
-          if (object instanceof CSS2DObject) {
-            object.element.style.display = "none";
-          }
-        });
-      };
+        setSceneFun = (event) => {
+          const oldScene = event.oldScene;
+          oldScene.traverse((object) => {
+            if (object instanceof CSS2DObject) {
+              object.element.style.display = "none";
+            }
+          });
+        };
 
-      renderFun = () => {
-        css2DRenderer.render(engine.scene, engine.camera);
-      };
+        renderFun = () => {
+          css2DRenderer.render(engine.scene, engine.camera);
+        };
 
-      engine.addEventListener<SetDomEvent>(ENGINE_EVENT.SETDOM, setDomFun);
+        engine.addEventListener<SetDomEvent>(ENGINE_EVENT.SETDOM, setDomFun);
 
-      engine.addEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, setSizeFun);
+        engine.addEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, setSizeFun);
 
-      engine.addEventListener<SetSceneEvent>(
-        ENGINE_EVENT.SETSCENE,
-        setSceneFun
-      );
+        engine.addEventListener<SetSceneEvent>(
+          ENGINE_EVENT.SETSCENE,
+          setSceneFun
+        );
 
-      engine.addEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
-    },
-    dispose(engine) {
-      engine.removeEventListener<SetDomEvent>(ENGINE_EVENT.SETDOM, setDomFun);
+        engine.addEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
+      },
+      dispose(engine) {
+        engine.removeEventListener<SetDomEvent>(ENGINE_EVENT.SETDOM, setDomFun);
 
-      engine.removeEventListener<SetSizeEvent>(
-        ENGINE_EVENT.SETSIZE,
-        setSizeFun
-      );
+        engine.removeEventListener<SetSizeEvent>(
+          ENGINE_EVENT.SETSIZE,
+          setSizeFun
+        );
 
-      engine.removeEventListener<SetSceneEvent>(
-        ENGINE_EVENT.SETSCENE,
-        setSceneFun
-      );
+        engine.removeEventListener<SetSceneEvent>(
+          ENGINE_EVENT.SETSCENE,
+          setSceneFun
+        );
 
-      engine.removeEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
-    },
+        engine.removeEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
+      },
+    };
   };
-};

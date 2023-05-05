@@ -34,9 +34,10 @@ export interface EffectComposerEngine extends WebGLRendererEngine {
 
 export const EFFECT_COMPOSER_PLUGIN = transPkgName(pkgname);
 
-export const EffectComposerPlugin: Plugin<EffectComposerEngine> = function (
-  params: EffectComposerParameters = {}
-) {
+export const EffectComposerPlugin: Plugin<
+  EffectComposerEngine,
+  EffectComposerParameters
+> = function (params: EffectComposerParameters = {}) {
   let setCameraFun: (event: SetCameraEvent) => void;
   let setSizeFun: (event: SetSizeEvent) => void;
   let setSceneFun: (event: SetSceneEvent) => void;

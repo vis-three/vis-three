@@ -18,26 +18,27 @@ export interface EffectRenderEngine
 
 export const name = transPkgName(pkgname);
 
-export const EffectRenderStrategy: Strategy<EffectRenderEngine> = function () {
-  let renderFun: (event: RenderEvent) => void;
-  return {
-    name,
-    condition: [EFFECT_COMPOSER_PLUGIN, RENDER_MANAGER_PLUGIN],
-    exec(engine) {
-      renderFun = (event) => {
-        engine.effectComposer.render(event.delta);
-      };
+export const EffectRenderStrategy: Strategy<EffectRenderEngine, object> =
+  function () {
+    let renderFun: (event: RenderEvent) => void;
+    return {
+      name,
+      condition: [EFFECT_COMPOSER_PLUGIN, RENDER_MANAGER_PLUGIN],
+      exec(engine) {
+        renderFun = (event) => {
+          engine.effectComposer.render(event.delta);
+        };
 
-      engine.renderManager.addEventListener<RenderEvent>(
-        RENDER_EVENT.RENDER,
-        renderFun
-      );
-    },
-    rollback(engine) {
-      engine.renderManager.removeEventListener<RenderEvent>(
-        RENDER_EVENT.RENDER,
-        renderFun
-      );
-    },
+        engine.renderManager.addEventListener<RenderEvent>(
+          RENDER_EVENT.RENDER,
+          renderFun
+        );
+      },
+      rollback(engine) {
+        engine.renderManager.removeEventListener<RenderEvent>(
+          RENDER_EVENT.RENDER,
+          renderFun
+        );
+      },
+    };
   };
-};

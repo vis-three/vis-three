@@ -10,4 +10,4 @@ export interface LoaderManagerPluginParameters extends LoaderManagerParameters {
     path?: string;
 }
 export declare const LOADER_MANAGER_PLUGIN: string;
-export declare const LoaderManagerPlugin: Plugin<LoaderManagerEngine>;
+export declare const LoaderManagerPlugin: Plugin<LoaderManagerEngine, LoaderManagerPluginParameters>;

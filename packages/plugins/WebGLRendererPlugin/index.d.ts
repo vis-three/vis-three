@@ -1,5 +1,5 @@
 import { Engine, Plugin } from "@vis-three/core";
-import { WebGLRenderer } from "three";
+import { WebGLRenderer, WebGLRendererParameters } from "three";
 export interface Screenshot {
     width?: number;
     height?: number;
@@ -10,4 +10,4 @@ export interface WebGLRendererEngine extends Engine {
     getScreenshot: (params?: Screenshot) => Promise<string>;
 }
 export declare const WEBGL_RENDERER_PLUGIN: string;
-export declare const WebGLRendererPlugin: Plugin<WebGLRendererEngine>;
+export declare const WebGLRendererPlugin: Plugin<WebGLRendererEngine, WebGLRendererParameters>;

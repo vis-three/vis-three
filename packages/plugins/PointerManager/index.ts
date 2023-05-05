@@ -11,9 +11,10 @@ export interface PointerManagerEngine extends Engine {
 
 export const POINTER_MANAGER_PLUGIN = transPkgName(pkgname);
 
-export const PointerManagerPlugin: Plugin<PointerManagerEngine> = function (
-  params: PointerManagerParameters
-) {
+export const PointerManagerPlugin: Plugin<
+  PointerManagerEngine,
+  PointerManagerParameters
+> = function (params?: PointerManagerParameters) {
   let setDomFun: ((event: SetDomEvent) => void) | undefined;
 
   return {

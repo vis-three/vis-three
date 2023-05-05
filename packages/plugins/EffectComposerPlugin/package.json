@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/plugin-effect-composer",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -25,9 +25,9 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.2",
-    "@vis-three/plugin-webgl-renderer": "workspace:^0.6.0",
-    "@vis-three/utils": "workspace:^0.6.0"
+    "@vis-three/core": "workspace:^0.6.3",
+    "@vis-three/plugin-webgl-renderer": "workspace:^0.6.1",
+    "@vis-three/utils": "workspace:^0.6.1"
   },
   "files": [
     "**/*.js",

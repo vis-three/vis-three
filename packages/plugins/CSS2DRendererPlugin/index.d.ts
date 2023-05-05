@@ -4,4 +4,4 @@ export interface CSS2DRendererEngine extends Engine {
     css2DRenderer: CSS2DRenderer;
 }
 export declare const name: string;
-export declare const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine>;
+export declare const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine, object>;

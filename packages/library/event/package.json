@@ -27,7 +27,7 @@
   "dependencies": {
     "@tweenjs/tween.js": "^18.6.4",
     "@vis-three/middleware": "workspace:^0.6.6",
-    "@vis-three/plugin-orbit-controls": "workspace:^0.6.0"
+    "@vis-three/plugin-orbit-controls": "workspace:^0.6.1"
   },
   "files": [
     "**/*.js",

@@ -1,5 +1,4 @@
-import { PathConfig } from "@vis-three/module-path/PathConfig";
-import { PathGeometry } from "@vis-three/module-geometry/extends/PathGeometry";
+import { PathConfig } from "@vis-three/module-path";
 import { CanvasGenerator } from "@vis-three/convenient";
 import {
   AlwaysDepth,
@@ -19,6 +18,7 @@ import {
   ShaderMaterial,
   Vector3,
 } from "three";
+import { PointerManager } from "@vis-three/plugin-pointer-manager";
 
 class PointsActiveMaterial extends ShaderMaterial {
   constructor(points: boolean[]) {
@@ -71,12 +71,11 @@ export class PathSupportControls extends Points {
     size: 15,
   });
 
-  // static commonActiveMaterial = new
-
   dragging = false;
 
   private raycaster = new Raycaster();
   private plane = new Plane();
+  private pointerManager!: PointerManager;
 
   private cachePlaneVector3 = new Vector3();
   private cacheQuaternion = new Quaternion();
@@ -164,6 +163,14 @@ export class PathSupportControls extends Points {
     return this;
   }
 
+  update() {
+    this.setConfig(this.config);
+  }
+
+  use(pointerManager: PointerManager) {
+    this.pointerManager = pointerManager;
+  }
+
   connect() {
     if (this.object && this.config) {
       this.domElement.addEventListener("pointermove", this._pointerHover);
@@ -178,26 +185,19 @@ export class PathSupportControls extends Points {
     return this;
   }
 
-  private getPointer(event: MouseEvent) {
-    if (this.domElement.ownerDocument.pointerLockElement) {
-      return {
-        x: 0,
-        y: 0,
-        button: event.button,
-      };
+  dispose() {
+    this.geometry.dispose();
+    if (Array.isArray(this.material)) {
+      this.material.forEach((m) => {
+        m.dispose();
+      });
     } else {
-      const rect = this.domElement.getBoundingClientRect();
-
-      return {
-        x: ((event.clientX - rect.left) / rect.width) * 2 - 1,
-        y: (-(event.clientY - rect.top) / rect.height) * 2 + 1,
-        button: event.button,
-      };
+      this.material.dispose();
     }
   }
 
   private intersectPoint(event: MouseEvent) {
-    this.raycaster.setFromCamera(this.getPointer(event), this.camera);
+    this.raycaster.setFromCamera(this.pointerManager.mouse, this.camera);
 
     const intersect = this.raycaster.intersectObject(this);
 
@@ -209,14 +209,14 @@ export class PathSupportControls extends Points {
   }
 
   private intersectPlane(event: MouseEvent) {
-    this.raycaster.setFromCamera(this.getPointer(event), this.camera);
+    this.raycaster.setFromCamera(this.pointerManager.mouse, this.camera);
     return this.raycaster.ray.intersectPlane(
       this.plane,
       this.cachePlaneVector3
     );
   }
 
-  pointerHover(event: MouseEvent) {
+  private pointerHover(event: MouseEvent) {
     if (this.dragging || !this.visible) {
       return;
     }
@@ -230,7 +230,7 @@ export class PathSupportControls extends Points {
     }
   }
 
-  pointerDown(event: MouseEvent) {
+  private pointerDown(event: MouseEvent) {
     if (!this.visible) {
       return;
     }
@@ -250,7 +250,7 @@ export class PathSupportControls extends Points {
     }
   }
 
-  pointerMove(event: MouseEvent) {
+  private pointerMove(event: MouseEvent) {
     if (!this.visible && !this.dragging) {
       return;
     }
@@ -280,7 +280,7 @@ export class PathSupportControls extends Points {
     position.needsUpdate = true;
   }
 
-  pointerUp(event: MouseEvent) {
+  private pointerUp(event: MouseEvent) {
     this.dragging = false;
 
     this.domElement.removeEventListener("mousemove", this._pointerMove);

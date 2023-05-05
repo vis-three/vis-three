@@ -7,10 +7,12 @@ export interface PluginOptions<E extends Engine> {
   dispose: (engine: E) => void;
 }
 
-export type Plugin<E extends Engine> = (params?: any) => PluginOptions<E>;
+export type Plugin<E extends Engine, P extends object> = (
+  params?: P
+) => PluginOptions<E>;
 
 export const definePlugin = function <E extends Engine>(
   options: PluginOptions<E>
-): Plugin<E> {
+): Plugin<E, any> {
   return () => options;
 };

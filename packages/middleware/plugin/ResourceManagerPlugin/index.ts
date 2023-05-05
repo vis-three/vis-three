@@ -16,9 +16,10 @@ export interface ResourceManagerEngine extends Engine {
 
 export const RESOURCE_MANAGER_PLUGIN = "ResourceManagerPlugin";
 
-export const ResourceManagerPlugin: Plugin<ResourceManagerEngine> = function (
-  params: ResourceManagerPluginParameters = {}
-) {
+export const ResourceManagerPlugin: Plugin<
+  ResourceManagerEngine,
+  ResourceManagerPluginParameters
+> = function (params: ResourceManagerPluginParameters = {}) {
   return {
     name: RESOURCE_MANAGER_PLUGIN,
     install(engine) {

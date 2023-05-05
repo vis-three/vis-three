@@ -20,7 +20,7 @@ export interface CompilerManagerEngine extends Engine {
 
 export const COMPILER_MANAGER_PLUGIN = "CompilerManagerPlugin";
 
-export const CompilerManagerPlugin: Plugin<CompilerManagerEngine> =
+export const CompilerManagerPlugin: Plugin<CompilerManagerEngine, object> =
   function () {
     return {
       name: COMPILER_MANAGER_PLUGIN,

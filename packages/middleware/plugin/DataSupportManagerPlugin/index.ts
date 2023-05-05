@@ -16,53 +16,54 @@ export * from "./DataSupportManager";
 
 export const DATA_SUPPORT_MANAGER_PLUGIN = "DataSupportManagerPlugin";
 
-export const DataSupportManagerPlugin: Plugin<DataSupportEngine> = function () {
-  return {
-    name: DATA_SUPPORT_MANAGER_PLUGIN,
-    install(engine) {
-      const dataSupportManager = new DataSupportManager();
+export const DataSupportManagerPlugin: Plugin<DataSupportEngine, object> =
+  function () {
+    return {
+      name: DATA_SUPPORT_MANAGER_PLUGIN,
+      install(engine) {
+        const dataSupportManager = new DataSupportManager();
 
-      engine.dataSupportManager = dataSupportManager;
+        engine.dataSupportManager = dataSupportManager;
 
-      engine.applyConfig = function (...config: SymbolConfig[]) {
-        dataSupportManager.applyConfig(...config);
-        return engine;
-      };
+        engine.applyConfig = function (...config: SymbolConfig[]) {
+          dataSupportManager.applyConfig(...config);
+          return engine;
+        };
 
-      engine.getConfigBySymbol = function (vid: string) {
-        return dataSupportManager.getConfigBySymbol(vid);
-      };
+        engine.getConfigBySymbol = function (vid: string) {
+          return dataSupportManager.getConfigBySymbol(vid);
+        };
 
-      engine.removeConfigBySymbol = function (...vids) {
-        dataSupportManager.removeConfigBySymbol(...vids);
-        return engine;
-      };
+        engine.removeConfigBySymbol = function (...vids) {
+          dataSupportManager.removeConfigBySymbol(...vids);
+          return engine;
+        };
 
-      engine.toJSON = function () {
-        return dataSupportManager.toJSON();
-      };
+        engine.toJSON = function () {
+          return dataSupportManager.toJSON();
+        };
 
-      engine.exportConfig = function () {
-        return dataSupportManager.exportConfig();
-      };
-    },
-    dispose(
-      engine: Optional<
-        DataSupportEngine,
-        | "dataSupportManager"
-        | "applyConfig"
-        | "getConfigBySymbol"
-        | "removeConfigBySymbol"
-        | "toJSON"
-        | "exportConfig"
-      >
-    ) {
-      delete engine.dataSupportManager;
-      delete engine.applyConfig;
-      delete engine.getConfigBySymbol;
-      delete engine.removeConfigBySymbol;
-      delete engine.toJSON;
-      delete engine.exportConfig;
-    },
+        engine.exportConfig = function () {
+          return dataSupportManager.exportConfig();
+        };
+      },
+      dispose(
+        engine: Optional<
+          DataSupportEngine,
+          | "dataSupportManager"
+          | "applyConfig"
+          | "getConfigBySymbol"
+          | "removeConfigBySymbol"
+          | "toJSON"
+          | "exportConfig"
+        >
+      ) {
+        delete engine.dataSupportManager;
+        delete engine.applyConfig;
+        delete engine.getConfigBySymbol;
+        delete engine.removeConfigBySymbol;
+        delete engine.toJSON;
+        delete engine.exportConfig;
+      },
+    };
   };
-};

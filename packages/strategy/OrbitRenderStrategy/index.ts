@@ -18,19 +18,23 @@ export interface OrbitRenderEngine
 
 export const name = transPkgName(pkgname);
 
-export const OrbitRenderStrategy: Strategy<OrbitRenderEngine> = function () {
-  let renderFun: (event: RenderEvent) => void;
-  return {
-    name,
-    condition: [ORBIT_CONTROLS_PLUGIN, RENDER_MANAGER_PLUGIN],
-    exec(engine) {
-      renderFun = () => {
-        engine.orbitControls.update();
-      };
-      engine.renderManager.addEventListener(RENDER_EVENT.RENDER, renderFun);
-    },
-    rollback(engine) {
-      engine.renderManager.removeEventListener(RENDER_EVENT.RENDER, renderFun);
-    },
+export const OrbitRenderStrategy: Strategy<OrbitRenderEngine, object> =
+  function () {
+    let renderFun: (event: RenderEvent) => void;
+    return {
+      name,
+      condition: [ORBIT_CONTROLS_PLUGIN, RENDER_MANAGER_PLUGIN],
+      exec(engine) {
+        renderFun = () => {
+          engine.orbitControls.update();
+        };
+        engine.renderManager.addEventListener(RENDER_EVENT.RENDER, renderFun);
+      },
+      rollback(engine) {
+        engine.renderManager.removeEventListener(
+          RENDER_EVENT.RENDER,
+          renderFun
+        );
+      },
+    };
   };
-};

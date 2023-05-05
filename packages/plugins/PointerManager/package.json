@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/plugin-pointer-manager",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "vis-three pointer-manager plugin",
   "main": "dist/vis-three.plugin-pointer-manager.umd.js",
   "module": "dist/vis-three.plugin-pointer-manager.es.js",
@@ -27,8 +27,8 @@
     "vite": "^2.9.15"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.2",
-    "@vis-three/utils": "workspace:^0.6.0"
+    "@vis-three/core": "workspace:^0.6.3",
+    "@vis-three/utils": "workspace:^0.6.1"
   },
   "files": [
     "dist",

@@ -16,9 +16,10 @@ export interface RenderManagerEngine extends Engine {
   stop: () => void;
 }
 
-export const RenderManagerPlugin: Plugin<RenderManagerEngine> = function (
-  params: RenderManagerPluginParams = {}
-) {
+export const RenderManagerPlugin: Plugin<
+  RenderManagerEngine,
+  RenderManagerPluginParams
+> = function (params: RenderManagerPluginParams = {}) {
   return {
     name: RENDER_MANAGER_PLUGIN,
     install(engine) {

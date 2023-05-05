@@ -7,7 +7,7 @@ import {
 } from "@vis-three/core";
 import { Camera, OrthographicCamera, PerspectiveCamera } from "three";
 
-export const CameraAdaptivePlugin: Plugin<Engine> = function () {
+export const CameraAdaptivePlugin: Plugin<Engine, object> = function () {
   let setSizeFun: (event: SetSizeEvent) => void;
   let setCameraFun: (event: SetCameraEvent) => void;
 

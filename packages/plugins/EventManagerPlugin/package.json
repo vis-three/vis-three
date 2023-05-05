@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/plugin-event-manager",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -13,9 +13,9 @@
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.2",
-    "@vis-three/plugin-pointer-manager": "workspace:^0.6.3",
-    "@vis-three/utils": "workspace:^0.6.0"
+    "@vis-three/core": "workspace:^0.6.3",
+    "@vis-three/plugin-pointer-manager": "workspace:^0.6.4",
+    "@vis-three/utils": "workspace:^0.6.1"
   },
   "devDependencies": {
     "@types/node": "^18.11.12",
