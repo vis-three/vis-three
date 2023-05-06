@@ -27,27 +27,6 @@ interface FunIndexMap {
   quadraticCP1: number[];
 }
 
-class PointsActiveMaterial extends ShaderMaterial {
-  constructor(points: boolean[]) {
-    super();
-
-    this.uniforms = {
-      index: {
-        value: points,
-      },
-    };
-
-    this.vertexShader = `
-    void main () {
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }`;
-
-    this.fragmentShader = `
-      uniform bool index[${points.length}]
-    `;
-  }
-}
-
 export class PathSupportControls extends Object3D {
   static anchorMaterial = new PointsMaterial({
     map: anchorTexture,
@@ -186,10 +165,23 @@ export class PathSupportControls extends Object3D {
   }
 
   setConfig(config: PathConfig) {
+    this.geometryIndexFunMap = {
+      arcVertical: [],
+      arcClockwise: [],
+      bezierCP1: [],
+      bezierCP2: [],
+      quadraticCP1: [],
+    };
+
+    this.arcVecticalDirectionsMap = {};
+
+    this.anchorArcUpdateIndexs = [];
+
     this.config = config;
     const anchor: number[] = [];
     const switchs: number[] = [];
     const move: number[] = [];
+
     const geometryIndexFunMap = this.geometryIndexFunMap;
     const arcVecticalDirectionsMap = this.arcVecticalDirectionsMap;
 
@@ -305,6 +297,7 @@ export class PathSupportControls extends Object3D {
 
     dispose(this.anchorGizmo);
     dispose(this.moveGizmo);
+    dispose(this.switchGizmo);
   }
 
   private intersectPoint(event: MouseEvent) {

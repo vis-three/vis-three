@@ -135,6 +135,15 @@ const _PathSupportControls = class extends Object3D {
     return this;
   }
   setConfig(config) {
+    this.geometryIndexFunMap = {
+      arcVertical: [],
+      arcClockwise: [],
+      bezierCP1: [],
+      bezierCP2: [],
+      quadraticCP1: []
+    };
+    this.arcVecticalDirectionsMap = {};
+    this.anchorArcUpdateIndexs = [];
     this.config = config;
     const anchor = [];
     const switchs = [];
@@ -221,6 +230,7 @@ const _PathSupportControls = class extends Object3D {
     };
     dispose(this.anchorGizmo);
     dispose(this.moveGizmo);
+    dispose(this.switchGizmo);
   }
   intersectPoint(event) {
     this.raycaster.setFromCamera(this.pointerManager.mouse, this.camera);
