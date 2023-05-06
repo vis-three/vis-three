@@ -9,4 +9,4 @@ export interface PathDrawingEngine extends PointerManagerEngine {
 }
 export { PATHSKETCHER_EVENT };
 export declare const PATH_DRAWING_PLUGIN: string;
-export declare const PathDrawingPlugin: Plugin<PathDrawingEngine>;
+export declare const PathDrawingPlugin: Plugin<PathDrawingEngine, object>;

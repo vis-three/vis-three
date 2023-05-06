@@ -22,18 +22,19 @@ export { PATHSKETCHER_EVENT };
 
 export const PATH_DRAWING_PLUGIN = transPkgName(pkgname);
 
-export const PathDrawingPlugin: Plugin<PathDrawingEngine> = function () {
-  return {
-    name: PATH_DRAWING_PLUGIN,
-    deps: [POINTER_MANAGER_PLUGIN],
-    install(engine) {
-      const pathSketcher = new PathSketcher(engine);
+export const PathDrawingPlugin: Plugin<PathDrawingEngine, object> =
+  function () {
+    return {
+      name: PATH_DRAWING_PLUGIN,
+      deps: [POINTER_MANAGER_PLUGIN],
+      install(engine) {
+        const pathSketcher = new PathSketcher(engine);
 
-      engine.pathSketcher = pathSketcher;
-    },
-    dispose(engine: Optional<PathDrawingEngine, "pathSketcher">) {
-      engine.pathSketcher!.dispose();
-      delete engine.pathSketcher;
-    },
+        engine.pathSketcher = pathSketcher;
+      },
+      dispose(engine: Optional<PathDrawingEngine, "pathSketcher">) {
+        engine.pathSketcher!.dispose();
+        delete engine.pathSketcher;
+      },
+    };
   };
-};
