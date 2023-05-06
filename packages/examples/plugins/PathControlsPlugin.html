@@ -11,14 +11,21 @@
 
   <body>
     <div id="app"></div>
+    <div id="button-position">
+      <div id="button-group">
+        <button id="deletePath">删2条</button>
+      </div>
+    </div>
     <script type="module">
       import * as THREE from "three";
       import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
-      import { PathSupportControls } from "@vis-three/library-controls";
+
+      import { PathSupportControlsPlugin } from "@vis-three/plugin-path-support-controls";
 
       const engine = new ModelingEngineSupport()
+        .install(PathSupportControlsPlugin())
         .setDom(document.getElementById("app"))
         .setSize()
         .play();
@@ -66,10 +73,9 @@
             curve: "bezier",
             params: [10, -10, 20, -10, 10, 10, 20, 10],
           },
-
           {
-            curve: "quadratic",
-            params: [20, 10, 20, -10, 20, -10],
+            curve: "arc",
+            params: [20, 10, -0, true, 30, -10],
           },
         ],
       });
@@ -90,16 +96,19 @@
 
       window.line = line;
 
-      const controls = new PathSupportControls(
-        engine.camera,
-        engine.dom,
-        engine.getObjectBySymbol(line.vid),
-        path
-      );
+      engine.pathSupportControls
+        .setObject(engine.getObjectBySymbol(line.vid))
+        .setConfig(path)
+        .connect();
 
-      engine.scene.add(controls);
+      engine.scene.add(engine.pathSupportControls);
 
       window.engine = engine;
+
+      document.getElementById("deletePath").onclick = () => {
+        path.curves.splice(1, 2);
+        engine.pathSupportControls.update();
+      };
     </script>
   </body>
 </html>

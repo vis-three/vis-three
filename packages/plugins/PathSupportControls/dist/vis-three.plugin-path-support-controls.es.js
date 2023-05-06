@@ -6,9 +6,9 @@ var __publicField = (obj, key, value) => {
 };
 import { ENGINE_EVENT } from "@vis-three/core";
 import { PLUGINS, POINTER_MANAGER_PLUGIN } from "@vis-three/middleware";
-import { transPkgName } from "@vis-three/utils";
+import { getArcDetail, transPkgName } from "@vis-three/utils";
+import { CanvasTexture, Object3D, PointsMaterial, AlwaysDepth, Points, BufferGeometry, Raycaster, Plane, Vector3, Quaternion, BufferAttribute } from "three";
 import { CanvasGenerator } from "@vis-three/convenient";
-import { CanvasTexture, Points, PointsMaterial, AlwaysDepth, Raycaster, Plane, Vector3, Quaternion, BufferAttribute } from "three";
 const name = "@vis-three/plugin-path-support-controls";
 const anchorTexture = new CanvasTexture(
   new CanvasGenerator({ width: 32, height: 32 }).draw((ctx) => {
@@ -26,10 +26,57 @@ const anchorTexture = new CanvasTexture(
     ctx.closePath();
   }).getDom()
 );
-const _PathSupportControls = class extends Points {
+const moveTexture = new CanvasTexture(
+  new CanvasGenerator({ width: 32, height: 32 }).draw((ctx) => {
+    ctx.beginPath();
+    ctx.fillStyle = "rgba(0, 0, 0, 0)";
+    ctx.fillRect(0, 0, 32, 32);
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.fillStyle = "rgb(255, 248, 0)";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
+    ctx.arc(16, 16, 15, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fill();
+    ctx.closePath();
+  }).getDom()
+);
+const switchTexture = new CanvasTexture(
+  new CanvasGenerator({ width: 32, height: 32 }).draw((ctx) => {
+    ctx.beginPath();
+    ctx.fillStyle = "rgba(0, 0, 0, 0)";
+    ctx.fillRect(0, 0, 32, 32);
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.fillStyle = "rgb(255, 0, 0)";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
+    ctx.moveTo(1, 0);
+    ctx.lineTo(31, 16);
+    ctx.lineTo(0, 31);
+    ctx.lineTo(1, 0);
+    ctx.stroke();
+    ctx.fill();
+    ctx.closePath();
+  }).getDom()
+);
+const _PathSupportControls = class extends Object3D {
   constructor(camera, dom, object, config) {
     super();
     __publicField(this, "dragging", false);
+    __publicField(this, "anchorGizmo", new Points(
+      new BufferGeometry(),
+      _PathSupportControls.anchorMaterial
+    ));
+    __publicField(this, "moveGizmo", new Points(
+      new BufferGeometry(),
+      _PathSupportControls.moveMaterial
+    ));
+    __publicField(this, "switchGizmo", new Points(
+      new BufferGeometry(),
+      _PathSupportControls.switchMaterial
+    ));
     __publicField(this, "raycaster", new Raycaster());
     __publicField(this, "plane", new Plane());
     __publicField(this, "pointerManager");
@@ -37,7 +84,20 @@ const _PathSupportControls = class extends Points {
     __publicField(this, "cacheQuaternion", new Quaternion());
     __publicField(this, "cacheNormal", new Vector3());
     __publicField(this, "cachePosition", new Vector3());
-    __publicField(this, "index", 0);
+    __publicField(this, "cacheVertical", 0);
+    __publicField(this, "cacheMouseDownPoistion", new Vector3());
+    __publicField(this, "cacheMouseMoveDirection", new Vector3());
+    __publicField(this, "geometryIndexFunMap", {
+      arcVertical: [],
+      arcClockwise: [],
+      bezierCP1: [],
+      bezierCP2: [],
+      quadraticCP1: []
+    });
+    __publicField(this, "anchorArcUpdateIndexs", []);
+    __publicField(this, "arcVecticalDirectionsMap", {});
+    __publicField(this, "currentGuizmo");
+    __publicField(this, "currentIndex", 0);
     __publicField(this, "domElement");
     __publicField(this, "camera");
     __publicField(this, "config");
@@ -46,7 +106,10 @@ const _PathSupportControls = class extends Points {
     __publicField(this, "_pointerMove", this.pointerMove.bind(this));
     __publicField(this, "_pointerDown", this.pointerDown.bind(this));
     __publicField(this, "_pointerUp", this.pointerUp.bind(this));
-    this.material = _PathSupportControls.commonMaterial;
+    this.anchorGizmo.type = "PathSupportControlsAnchorGizmo";
+    this.moveGizmo.type = "PathSupportControlsMoveGizmo";
+    this.switchGizmo.type = "PathSupportControlsSwitchGizmo";
+    this.add(this.anchorGizmo, this.moveGizmo, this.switchGizmo);
     this.renderOrder = Infinity;
     this.matrixAutoUpdate = false;
     config && this.setConfig(config);
@@ -73,10 +136,14 @@ const _PathSupportControls = class extends Points {
   }
   setConfig(config) {
     this.config = config;
-    const position = [];
+    const anchor = [];
+    const switchs = [];
+    const move = [];
+    const geometryIndexFunMap = this.geometryIndexFunMap;
+    const arcVecticalDirectionsMap = this.arcVecticalDirectionsMap;
     this.config.curves.forEach((segment, i, arr) => {
       if (i === arr.length - 1) {
-        position.push(
+        anchor.push(
           segment.params[0],
           segment.params[1],
           0,
@@ -85,14 +152,42 @@ const _PathSupportControls = class extends Points {
           0
         );
       } else {
-        position.push(segment.params[0], segment.params[1], 0);
+        anchor.push(segment.params[0], segment.params[1], 0);
+      }
+      if (segment.curve === "arc") {
+        this.anchorArcUpdateIndexs.push(i, i + 1);
+        const arcDetail = getArcDetail(
+          ...segment.params
+        );
+        move.push(arcDetail.center.x, arcDetail.center.y, 0);
+        geometryIndexFunMap.arcVertical.push(move.length / 3 - 1);
+        arcVecticalDirectionsMap[move.length / 3 - 1] = {
+          segment: i,
+          direction: new Vector3(
+            arcDetail.verticalDirection.x,
+            arcDetail.verticalDirection.y,
+            0
+          )
+        };
+        const harf = arcDetail.mid.clone().sub(arcDetail.start).multiplyScalar(0.5);
+        const clockwisePosition = arcDetail.start.clone().add(harf);
+        switchs.push(clockwisePosition.x, clockwisePosition.y, 0);
+        geometryIndexFunMap.arcClockwise.push(i);
       }
     });
-    this.geometry.setAttribute(
-      "position",
-      new BufferAttribute(new Float32Array(position), 3)
-    );
-    this.geometry.getAttribute("position").needsUpdate = true;
+    const updateGizmoGeometry = function(gizmo, position) {
+      const geometry = gizmo.geometry;
+      geometry.setAttribute(
+        "position",
+        new BufferAttribute(new Float32Array(position), 3)
+      );
+      geometry.getAttribute("position").needsUpdate = true;
+      geometry.computeBoundingBox();
+      geometry.computeBoundingSphere();
+    };
+    updateGizmoGeometry(this.anchorGizmo, anchor);
+    updateGizmoGeometry(this.moveGizmo, move);
+    updateGizmoGeometry(this.switchGizmo, switchs);
     return this;
   }
   update() {
@@ -114,20 +209,29 @@ const _PathSupportControls = class extends Points {
     return this;
   }
   dispose() {
-    this.geometry.dispose();
-    if (Array.isArray(this.material)) {
-      this.material.forEach((m) => {
-        m.dispose();
-      });
-    } else {
-      this.material.dispose();
-    }
+    const dispose = (object) => {
+      object.geometry.dispose();
+      if (Array.isArray(object.material)) {
+        object.material.forEach((m) => {
+          m.dispose();
+        });
+      } else {
+        object.material.dispose();
+      }
+    };
+    dispose(this.anchorGizmo);
+    dispose(this.moveGizmo);
   }
   intersectPoint(event) {
     this.raycaster.setFromCamera(this.pointerManager.mouse, this.camera);
-    const intersect = this.raycaster.intersectObject(this);
+    const intersect = this.raycaster.intersectObject(this, true);
     if (intersect.length) {
-      return intersect[0].index;
+      this.currentGuizmo = intersect[0].object;
+      this.currentIndex = intersect[0].index;
+      return {
+        guizmo: this.currentGuizmo,
+        index: this.currentIndex
+      };
     }
     return null;
   }
@@ -143,7 +247,7 @@ const _PathSupportControls = class extends Points {
       return;
     }
     const intersectPoint = this.intersectPoint(event);
-    if (Number.isInteger(intersectPoint)) {
+    if (Number.isInteger(intersectPoint == null ? void 0 : intersectPoint.index)) {
       this.domElement.style.cursor = "move";
     } else {
       this.domElement.style.cursor = "";
@@ -158,9 +262,20 @@ const _PathSupportControls = class extends Points {
     this.cachePosition.setFromMatrixPosition(this.object.matrixWorld);
     this.plane.set(this.cacheNormal, this.cachePosition.length());
     const intersectPoint = this.intersectPoint(event);
-    if (typeof intersectPoint === "number") {
-      this.index = intersectPoint;
+    if (intersectPoint) {
+      if (this.currentGuizmo === this.switchGizmo) {
+        const currentSegment = this.config.curves[this.geometryIndexFunMap.arcClockwise[this.currentIndex]];
+        currentSegment.params[3] = !currentSegment.params[3];
+        return;
+      }
       this.dragging = true;
+      this.cacheMouseDownPoistion.copy(this.intersectPlane(event)).sub(this.cachePosition);
+      if (this.currentGuizmo === this.moveGizmo) {
+        if (this.geometryIndexFunMap.arcVertical.includes(this.currentIndex)) {
+          const message = this.arcVecticalDirectionsMap[this.currentIndex];
+          this.cacheVertical = this.config.curves[message.segment].params[2];
+        }
+      }
       this.domElement.addEventListener("mousemove", this._pointerMove);
       this.domElement.addEventListener("mouseup", this._pointerUp);
     }
@@ -174,33 +289,75 @@ const _PathSupportControls = class extends Points {
       return;
     }
     vect.sub(this.cachePosition);
-    const length = this.config.curves.length;
-    if (this.index !== this.config.curves.length) {
-      const segment = this.config.curves[this.index];
-      segment.params[0] = vect.x;
-      segment.params[1] = vect.y;
-    } else {
-      const segment = this.config.curves[length - 1];
-      segment.params[segment.params.length - 2] = vect.x;
-      segment.params[segment.params.length - 1] = vect.y;
+    this.cacheMouseMoveDirection.copy(vect).sub(this.cacheMouseDownPoistion).normalize();
+    const currentGuizmo = this.currentGuizmo;
+    const currentIndex = this.currentIndex;
+    const config = this.config;
+    const geometryIndexFunMap = this.geometryIndexFunMap;
+    if (currentGuizmo === this.anchorGizmo) {
+      const length = config.curves.length;
+      if (currentIndex !== config.curves.length) {
+        const segment = config.curves[currentIndex];
+        segment.params[0] = vect.x;
+        segment.params[1] = vect.y;
+      } else {
+        const segment = config.curves[length - 1];
+        segment.params[segment.params.length - 2] = vect.x;
+        segment.params[segment.params.length - 1] = vect.y;
+      }
+      const position = this.anchorGizmo.geometry.getAttribute("position");
+      const array = position.array;
+      array[currentIndex * 3] = vect.x;
+      array[currentIndex * 3 + 1] = vect.y;
+      position.needsUpdate = true;
+      if (this.anchorArcUpdateIndexs.includes(this.currentIndex)) {
+        this.update();
+      }
+    } else if (currentGuizmo === this.moveGizmo) {
+      if (geometryIndexFunMap.arcVertical.includes(currentIndex)) {
+        const message = this.arcVecticalDirectionsMap[currentIndex];
+        const angle = this.cacheMouseMoveDirection.angleTo(message.direction);
+        config.curves[message.segment].params[2] = this.cacheVertical + vect.sub(this.cacheMouseDownPoistion).length() * Math.cos(angle);
+        const arcDetail = getArcDetail(
+          ...config.curves[message.segment].params
+        );
+        const position = this.moveGizmo.geometry.getAttribute("position");
+        const array = position.array;
+        array[currentIndex * 3] = arcDetail.center.x;
+        array[currentIndex * 3 + 1] = arcDetail.center.y;
+        position.needsUpdate = true;
+      }
     }
-    const position = this.geometry.getAttribute("position");
-    const array = position.array;
-    array[this.index * 3] = vect.x;
-    array[this.index * 3 + 1] = vect.y;
-    position.needsUpdate = true;
   }
   pointerUp(event) {
     this.dragging = false;
     this.domElement.removeEventListener("mousemove", this._pointerMove);
     this.domElement.removeEventListener("mouseup", this._pointerUp);
-    this.geometry.computeBoundingSphere();
-    this.geometry.computeBoundingBox();
+    if (this.currentGuizmo) {
+      this.currentGuizmo.geometry.computeBoundingSphere();
+      this.currentGuizmo.geometry.computeBoundingBox();
+    }
   }
 };
 let PathSupportControls = _PathSupportControls;
-__publicField(PathSupportControls, "commonMaterial", new PointsMaterial({
+__publicField(PathSupportControls, "anchorMaterial", new PointsMaterial({
   map: anchorTexture,
+  transparent: true,
+  depthFunc: AlwaysDepth,
+  alphaTest: 0.01,
+  sizeAttenuation: false,
+  size: 15
+}));
+__publicField(PathSupportControls, "moveMaterial", new PointsMaterial({
+  map: moveTexture,
+  transparent: true,
+  depthFunc: AlwaysDepth,
+  alphaTest: 0.01,
+  sizeAttenuation: false,
+  size: 15
+}));
+__publicField(PathSupportControls, "switchMaterial", new PointsMaterial({
+  map: switchTexture,
   transparent: true,
   depthFunc: AlwaysDepth,
   alphaTest: 0.01,
@@ -219,11 +376,13 @@ const PathSupportControlsPlugin = function() {
         engine.camera,
         engine.dom
       );
+      controls.use(engine.pointerManager);
+      engine.pathSupportControls = controls;
       setDomFun = (event) => {
         controls.setDom(event.dom);
       };
       setCameraFun = (event) => {
-        controls.setCamera(engine.camera);
+        controls.setCamera(event.camera);
       };
       engine.addEventListener(ENGINE_EVENT.SETDOM, setDomFun);
       engine.addEventListener(ENGINE_EVENT.SETCAMERA, setCameraFun);

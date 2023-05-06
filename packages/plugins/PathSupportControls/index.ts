@@ -36,12 +36,16 @@ export const PathSupportControlsPlugin: Plugin<
         engine.dom
       );
 
+      controls.use(engine.pointerManager);
+
+      engine.pathSupportControls = controls;
+
       setDomFun = (event) => {
         controls.setDom(event.dom);
       };
 
       setCameraFun = (event) => {
-        controls.setCamera(engine.camera as PerspectiveCamera);
+        controls.setCamera(event.camera as PerspectiveCamera);
       };
 
       engine.addEventListener(ENGINE_EVENT.SETDOM, setDomFun);

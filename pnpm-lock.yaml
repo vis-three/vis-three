@@ -440,6 +440,7 @@ importers:
       '@vis-three/plugin-object-helper': workspace:^0.6.0
       '@vis-three/plugin-orbit-controls': workspace:^0.6.1
       '@vis-three/plugin-path-drawing': workspace:^0.6.2
+      '@vis-three/plugin-path-support-controls': workspace:^0.6.0
       '@vis-three/plugin-pointer-lock-controls': workspace:^0.6.0
       '@vis-three/plugin-pointer-manager': workspace:^0.6.4
       '@vis-three/plugin-pointer-visual-controls': workspace:^0.6.0
@@ -517,6 +518,7 @@ importers:
       '@vis-three/plugin-object-helper': link:../plugins/ObjectHelper
       '@vis-three/plugin-orbit-controls': link:../plugins/OrbitControlsPlugin
       '@vis-three/plugin-path-drawing': link:../plugins/PathDrawing
+      '@vis-three/plugin-path-support-controls': link:../plugins/PathSupportControls
       '@vis-three/plugin-pointer-lock-controls': link:../plugins/PointerLockControlsPlugin
       '@vis-three/plugin-pointer-manager': link:../plugins/PointerManager
       '@vis-three/plugin-pointer-visual-controls': link:../plugins/PointerVisualControlsPlugin
@@ -3290,21 +3292,25 @@ importers:
   packages/utils:
     specifiers:
       '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-prettier: ^4.0.0
       prettier: ^2.6.2
+      three: ^0.141.0
       typescript: ^4.3.2
     devDependencies:
       '@types/node': 18.11.12
+      '@types/three': 0.133.1
       '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
       '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
       eslint: 8.29.0
       eslint-config-prettier: 8.5.0_eslint@8.29.0
       eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
       prettier: 2.8.0
+      three: 0.141.0
       typescript: 4.9.3
 
   packages/website:

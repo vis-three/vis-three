@@ -43,6 +43,29 @@ export const isObject = function (object) {
 export const isArray = function (object) {
     return typeof object === "object" && object !== null && Array.isArray(object);
 };
+export const typeOf = function (object) {
+    if (typeof object === "object") {
+        if (object === null) {
+            return "null";
+        }
+        if (Array.isArray(object)) {
+            return "array";
+        }
+        if (object instanceof String) {
+            return "String";
+        }
+        if (object instanceof Number) {
+            return "Number";
+        }
+        if (object instanceof Boolean) {
+            return "Boolean";
+        }
+        return "object";
+    }
+    else {
+        return typeof object;
+    }
+};
 export const extendPath = function (str1, str2) {
     return str1 && str2 ? `${str1}.${str2}` : str1 || str2;
 };

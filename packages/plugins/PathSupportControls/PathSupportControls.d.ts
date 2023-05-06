@@ -1,9 +1,14 @@
 import { PathConfig } from "@vis-three/module-path";
-import { Object3D, OrthographicCamera, PerspectiveCamera, Points, PointsMaterial } from "three";
+import { Object3D, OrthographicCamera, PerspectiveCamera, PointsMaterial } from "three";
 import { PointerManager } from "@vis-three/plugin-pointer-manager";
-export declare class PathSupportControls extends Points {
-    static commonMaterial: PointsMaterial;
+export declare class PathSupportControls extends Object3D {
+    static anchorMaterial: PointsMaterial;
+    static moveMaterial: PointsMaterial;
+    static switchMaterial: PointsMaterial;
     dragging: boolean;
+    private anchorGizmo;
+    private moveGizmo;
+    private switchGizmo;
     private raycaster;
     private plane;
     private pointerManager;
@@ -11,7 +16,14 @@ export declare class PathSupportControls extends Points {
     private cacheQuaternion;
     private cacheNormal;
     private cachePosition;
-    private index;
+    private cacheVertical;
+    private cacheMouseDownPoistion;
+    private cacheMouseMoveDirection;
+    private geometryIndexFunMap;
+    private anchorArcUpdateIndexs;
+    private arcVecticalDirectionsMap;
+    private currentGuizmo?;
+    private currentIndex;
     private domElement;
     private camera;
     private config;
