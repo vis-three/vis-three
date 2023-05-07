@@ -125,7 +125,7 @@ var PathProcessor = defineProcessor({
             "end"
           );
         }
-        if (index2 + 1 <= target.curves.length - 1) {
+        if (index2 + 1 <= config.curves.length - 1) {
           syncExtrParams(
             config.curves[index2 + 1],
             [endPoint.x, endPoint.y],
@@ -141,7 +141,7 @@ var PathProcessor = defineProcessor({
           return;
         }
         target.curves.splice(index2, 1);
-        if (index2 <= target.curves.length - 1 && index2 - 1 >= 0) {
+        if (index2 <= config.curves.length - 1 && index2 - 1 >= 0) {
           const endPoint = getCurveExtrPoint(config.curves[index2 - 1], "end");
           syncExtrParams(
             config.curves[index2],

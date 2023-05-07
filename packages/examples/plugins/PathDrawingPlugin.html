@@ -41,6 +41,8 @@
         autoClose: false,
       });
 
+      window.drawPath = path;
+
       const geometry = generateConfig(CONFIGTYPE.PATHGEOMETRY, {
         path: path.vid,
         space: false,
@@ -94,15 +96,15 @@
           curve: "line",
           params: [event.point.x, event.point.y, 0, 0],
         });
+
+        // debugger;
         lineParams = path.curves[path.curves.length - 1].params;
 
         geometry.divisions = path.curves.length * 256;
-        console.log(JSON.parse(JSON.stringify(path.curves)));
-        console.log(path.curves[path.curves.length - 1]);
+
         gui.add(path.curves[path.curves.length - 1].params, "0", 1, 130);
       });
 
-      window.visPath = path;
       sketcher.addEventListener("move", (event) => {
         lineParams[lineParams.length - 2] = event.point.x;
         lineParams[lineParams.length - 1] = event.point.y;
@@ -110,7 +112,9 @@
 
       sketcher.addEventListener("end", (event) => {
         // if (path.curves[path.curves.length - 1].params.length < 4) {
+        console.log(path.curves.length);
         path.curves.pop();
+        console.log(path.curves.length);
         // }
       });
 

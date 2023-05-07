@@ -71,6 +71,8 @@ export const react = function <T extends object>(
 
   const proxy = new Proxy(object, handler);
 
+  observer.saveRaw(proxy, object);
+
   proxyWeak.set(proxy, observer);
 
   return proxy;
