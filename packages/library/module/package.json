@@ -38,7 +38,7 @@
     "@vis-three/module-modifier": "workspace:^0.6.4",
     "@vis-three/module-object3d": "workspace:^0.6.3",
     "@vis-three/module-pass": "workspace:^0.6.2",
-    "@vis-three/module-path": "workspace:^0.6.3",
+    "@vis-three/module-path": "workspace:^0.6.4",
     "@vis-three/module-points": "workspace:^0.6.2",
     "@vis-three/module-renderer": "workspace:^0.6.1",
     "@vis-three/module-scene": "workspace:^0.6.3",
