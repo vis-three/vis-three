@@ -280,7 +280,7 @@ importers:
       '@vis-three/plugin-effect-composer': link:../../plugins/EffectComposerPlugin
       '@vis-three/plugin-event-manager': link:../../plugins/EventManagerPlugin
       '@vis-three/plugin-grid-helper': link:../../plugins/GridHelperPlugin
-      '@vis-three/plugin-keyboard-manager': link:../../plugins/KeyboardManagerPlugin
+      '@vis-three/plugin-keyboard-manager': link:../../plugins/KeyboardManager
       '@vis-three/plugin-object-helper': link:../../plugins/ObjectHelper
       '@vis-three/plugin-orbit-controls': link:../../plugins/OrbitControlsPlugin
       '@vis-three/plugin-pointer-manager': link:../../plugins/PointerManager
@@ -369,7 +369,7 @@ importers:
       '@vis-three/plugin-css3d-renderer': link:../../plugins/CSS3DRendererPlugin
       '@vis-three/plugin-effect-composer': link:../../plugins/EffectComposerPlugin
       '@vis-three/plugin-grid-helper': link:../../plugins/GridHelperPlugin
-      '@vis-three/plugin-keyboard-manager': link:../../plugins/KeyboardManagerPlugin
+      '@vis-three/plugin-keyboard-manager': link:../../plugins/KeyboardManager
       '@vis-three/plugin-object-helper': link:../../plugins/ObjectHelper
       '@vis-three/plugin-orbit-controls': link:../../plugins/OrbitControlsPlugin
       '@vis-three/plugin-path-drawing': link:../../plugins/PathDrawing
@@ -511,7 +511,7 @@ importers:
       '@vis-three/plugin-event-manager': link:../plugins/EventManagerPlugin
       '@vis-three/plugin-first-person-controls': link:../plugins/FirstPersonControlsPlugin
       '@vis-three/plugin-grid-helper': link:../plugins/GridHelperPlugin
-      '@vis-three/plugin-keyboard-manager': link:../plugins/KeyboardManagerPlugin
+      '@vis-three/plugin-keyboard-manager': link:../plugins/KeyboardManager
       '@vis-three/plugin-keyboard-move-controls': link:../plugins/KeyboardMoveControlsPlugin
       '@vis-three/plugin-loader-manager': link:../plugins/LoaderManagerPlugin
       '@vis-three/plugin-mesh-bvh': link:../plugins/MeshBVHPlugin
@@ -1966,9 +1966,8 @@ importers:
       three: 0.141.0
       typescript: 4.9.3
 
-  packages/plugins/KeyboardManagerPlugin:
+  packages/plugins/KeyboardManager:
     specifiers:
-      '@types/keyboardjs': ^2.5.0
       '@types/node': ^18.11.12
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
@@ -1982,22 +1981,23 @@ importers:
       prettier: ^2.6.2
       three: ^0.141.0
       typescript: ^4.3.2
+      vite: ^2.9.15
     dependencies:
       '@vis-three/core': link:../../core
       '@vis-three/utils': link:../../utils
       keyboardjs: 2.7.0
     devDependencies:
-      '@types/keyboardjs': 2.5.0
-      '@types/node': 18.11.12
+      '@types/node': 18.16.0
       '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
-      '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
-      eslint: 8.29.0
-      eslint-config-prettier: 8.5.0_eslint@8.29.0
-      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
-      prettier: 2.8.0
+      '@typescript-eslint/eslint-plugin': 5.59.0_p5urazbkpxqwbpulw3y4eskliy
+      '@typescript-eslint/parser': 5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq
+      eslint: 8.39.0
+      eslint-config-prettier: 8.8.0_eslint@8.39.0
+      eslint-plugin-prettier: 4.2.1_5pokp25ua6t5ubushhw3tqituq
+      prettier: 2.8.8
       three: 0.141.0
-      typescript: 4.9.3
+      typescript: 4.9.5
+      vite: 2.9.15
 
   packages/plugins/KeyboardMoveControlsPlugin:
     specifiers:
@@ -3158,7 +3158,7 @@ importers:
       typescript: ^4.3.2
     dependencies:
       '@vis-three/core': link:../../core
-      '@vis-three/plugin-keyboard-manager': link:../../plugins/KeyboardManagerPlugin
+      '@vis-three/plugin-keyboard-manager': link:../../plugins/KeyboardManager
       '@vis-three/plugin-transform-controls': link:../../plugins/TransformControlsPlugin
       '@vis-three/utils': link:../../utils
     devDependencies:
@@ -5907,6 +5907,7 @@ packages:
 
   /@types/keyboardjs/2.5.0:
     resolution: {integrity: sha512-tGU6Lz04lDNH+N3AZYIWVeBza2ZSaLlZuSkzi38zSFSuh6DgVqBdqgkX+OS+jg1vwlw5XzS5MASY44fr9C12Yg==}
+    dev: false
 
   /@types/node/14.18.42:
     resolution: {integrity: sha512-xefu+RBie4xWlK8hwAzGh3npDz/4VhF6icY/shU+zv/1fNn+ZVG7T7CRwe9LId9sAYRPxI+59QBPuKL3WpyGRg==}
@@ -10031,7 +10032,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /jsprim/2.0.2:

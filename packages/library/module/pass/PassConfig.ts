@@ -43,6 +43,7 @@ export type PassConfigAllType =
 export const getPassConfig = function (): PassConfig {
   return {
     vid: "",
+    name: "",
     type: "Pass",
     index: 0, // TODO: 顺序
   };
