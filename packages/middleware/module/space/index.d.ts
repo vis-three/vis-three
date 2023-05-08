@@ -1,0 +1,12 @@
+import { SymbolConfig } from "../common";
+import { Processor } from "../Processor";
+export declare const CONFIGFACTORY: Record<string, () => SymbolConfig>;
+export declare const MODULETYPE: Record<string, string>;
+export declare const CONFIGTYPE: Record<string, string>;
+export declare const OBJECTMODULE: Record<string, boolean>;
+export declare const CONFIGMODULE: Record<string, string>;
+export declare const ProcessorMembers: Record<string, Processor<any, any, any, any>>;
+export declare const getModule: (type: string) => string | null;
+export declare const isObjectModule: (module: string) => boolean;
+export declare const isObjectType: (type: string) => boolean;
+export declare const installProcessor: (processor: Processor<any, any, any, any>, module: string) => void;

@@ -1,11 +1,2 @@
 node_modules
 **/*.tgz
-# packages/plugins/**/*.d.ts
-# packages/plugins/**/*.js
-# packages/strategy/**/*.d.ts
-# packages/strategy/**/*.js
-# packages/library/**/*.d.ts
-# packages/library/**/*.js
-coverage
-# /index.d.ts
-# /index.js
