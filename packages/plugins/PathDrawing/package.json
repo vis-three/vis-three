@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/plugin-path-drawing",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "vis-three path-drawing plugin",
   "main": "dist/vis-three.plugin-path-drawing.umd.js",
   "module": "dist/vis-three.plugin-path-drawing.es.js",

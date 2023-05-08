@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-line",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "vis-three line module",
   "main": "dist/vis-three.module-line.umd.js",
   "module": "dist/vis-three.module-line.es.js",
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.6.3",
-    "@vis-three/middleware": "workspace:^0.6.7",
+    "@vis-three/middleware": "workspace:^0.6.8",
     "@vis-three/module-object": "workspace:^0.6.3",
     "@vis-three/module-solid-object": "workspace:^0.6.0",
     "@vis-three/utils": "workspace:^0.6.1"

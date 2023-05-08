@@ -85,6 +85,8 @@
         .changeToDrawingView()
         .beginDraw();
 
+      console.log(sketcher.camera);
+
       const gui = new GUI();
 
       sketcher.addEventListener("write", (event) => {

@@ -6,7 +6,12 @@ import {
   PointerManagerEngine,
 } from "@vis-three/plugin-pointer-manager";
 import { Matrix4, Vector3 } from "three";
-import { Face, PathSketcher, PATHSKETCHER_EVENT } from "./PathSketcher";
+import {
+  Face,
+  MoveEvent,
+  PathSketcher,
+  PATHSKETCHER_EVENT,
+} from "./PathSketcher";
 
 export interface PathDrawingEngine extends PointerManagerEngine {
   pathSketcher: PathSketcher;
@@ -18,7 +23,7 @@ export interface PathDrawingEngine extends PointerManagerEngine {
   drawPathByFace: (face: Face, offset: Vector3) => PathDrawingEngine;
 }
 
-export { PATHSKETCHER_EVENT };
+export * from "./PathSketcher";
 
 export const PATH_DRAWING_PLUGIN = transPkgName(pkgname);
 

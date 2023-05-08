@@ -1,5 +1,7 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { LineCompiler } from "./LineCompiler";
+export * from "./LineCompiler";
+export * from "./LineConfig";
 declare const _default: {
     type: string;
     object: boolean;

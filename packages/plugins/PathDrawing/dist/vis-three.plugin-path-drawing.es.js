@@ -93,13 +93,14 @@ class PathSketcher extends EventDispatcher {
     newGeometry.dispose();
   }
   offsetCamera(offset) {
+    const scalar = offset.length();
     offset.normalize().applyQuaternion(
       new Quaternion().setFromUnitVectors(
         new Vector3(0, 1, 0),
         this.plane.normal
       )
     );
-    this.camera.position.copy(this.plane.normal).multiplyScalar(this.plane.constant).add(offset);
+    this.camera.position.copy(this.plane.normal).multiplyScalar(this.plane.constant).add(offset.multiplyScalar(scalar));
     this.camera.zoom = (this.camera.top - this.camera.bottom) / (this.drawingBoard.geometry.parameters.height + this.boardOffset);
     this.camera.updateProjectionMatrix();
     this.drawingBoard.position.add(offset);
@@ -205,4 +206,4 @@ const PathDrawingPlugin = function() {
     }
   };
 };
-export { PATHSKETCHER_EVENT, PATH_DRAWING_PLUGIN, PathDrawingPlugin };
+export { PATHSKETCHER_EVENT, PATH_DRAWING_PLUGIN, PathDrawingPlugin, PathSketcher };

@@ -33,4 +33,4 @@ var index = {
   processors: [LineProcessor],
   lifeOrder: SUPPORT_LIFE_CYCLE.THREE
 };
-export { index as default };
+export { LineCompiler, index as default, getLineConfig };

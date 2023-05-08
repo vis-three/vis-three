@@ -27,7 +27,7 @@
   "dependencies": {
     "@vis-three/library-module": "workspace:^0.6.3",
     "@vis-three/library-parser": "workspace:^0.6.0",
-    "@vis-three/middleware": "workspace:^0.6.7",
+    "@vis-three/middleware": "workspace:^0.6.8",
     "@vis-three/plugin-axes-helper": "workspace:^0.6.1",
     "@vis-three/plugin-camera-adaptive": "workspace:^0.6.1",
     "@vis-three/plugin-css2d-renderer": "workspace:^0.6.1",

@@ -131,6 +131,7 @@ export class PathSketcher extends EventDispatcher {
   }
 
   offsetCamera(offset: Vector3) {
+    const scalar = offset.length();
     offset
       .normalize()
       .applyQuaternion(
@@ -143,7 +144,7 @@ export class PathSketcher extends EventDispatcher {
     this.camera.position
       .copy(this.plane.normal)
       .multiplyScalar(this.plane.constant)
-      .add(offset);
+      .add(offset.multiplyScalar(scalar));
 
     this.camera.zoom =
       (this.camera.top - this.camera.bottom) /
