@@ -2967,6 +2967,45 @@ importers:
       three: 0.141.0
       typescript: 4.9.3
 
+  packages/strategy/PathSupportControls:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': ^0.6.1
+      '@vis-three/middleware': workspace:^0.6.8
+      '@vis-three/module-controls': workspace:^0.6.1
+      '@vis-three/module-path': workspace:^0.6.4
+      '@vis-three/plugin-path-support-controls': workspace:^0.6.0
+      '@vis-three/utils': ^0.6.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+      vite: ^2.9.15
+    dependencies:
+      '@vis-three/core': link:../../core
+      '@vis-three/middleware': link:../../middleware
+      '@vis-three/module-controls': link:../../library/module/controls
+      '@vis-three/module-path': link:../../library/module/path
+      '@vis-three/plugin-path-support-controls': link:../../plugins/PathSupportControls
+      '@vis-three/utils': link:../../utils
+    devDependencies:
+      '@types/node': 18.16.0
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.59.0_p5urazbkpxqwbpulw3y4eskliy
+      '@typescript-eslint/parser': 5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq
+      eslint: 8.39.0
+      eslint-config-prettier: 8.8.0_eslint@8.39.0
+      eslint-plugin-prettier: 4.2.1_5pokp25ua6t5ubushhw3tqituq
+      prettier: 2.8.8
+      three: 0.141.0
+      typescript: 4.9.5
+      vite: 2.9.15
+
   packages/strategy/SceneDecorateHelper:
     specifiers:
       '@types/node': ^18.11.12

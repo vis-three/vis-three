@@ -1,9 +1,9 @@
 {
-  "name": "@vis-three/module-controls",
-  "version": "0.6.2",
-  "description": "vis-three controls module",
-  "main": "dist/vis-three.module-controls.umd.js",
-  "module": "dist/vis-three.module-controls.es.js",
+  "name": "@vis-three/strategy-path-support-controls",
+  "version": "0.6.0",
+  "description": "vis-three path-support-controls strategy",
+  "main": "dist/vis-three.strategy-path-support-controls.umd.js",
+  "module": "dist/vis-three.strategy-path-support-controls.es.js",
   "types": "index.d.ts",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
@@ -27,10 +27,12 @@
     "vite": "^2.9.15"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.3",
+    "@vis-three/core": "^0.6.1",
     "@vis-three/middleware": "workspace:^0.6.8",
-    "@vis-three/utils": "workspace:^0.6.1",
-    "uuid": "^8.3.2"
+    "@vis-three/module-controls": "workspace:^0.6.1",
+    "@vis-three/module-path": "workspace:^0.6.4",
+    "@vis-three/plugin-path-support-controls": "workspace:^0.6.0",
+    "@vis-three/utils": "^0.6.0"
   },
   "files": [
     "dist",

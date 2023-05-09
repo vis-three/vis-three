@@ -1,4 +1,4 @@
-import { Rule, Compiler, uniqueSymbol } from "@vis-three/middleware";
+import { Rule, Compiler, uniqueSymbol, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { validate } from "uuid";
 const validSymbols = [];
 const ControlsRule = function(input, compiler) {
@@ -19,6 +19,7 @@ var index = {
   type: "controls",
   compiler: ControlsCompiler,
   rule: ControlsRule,
-  processors: []
+  processors: [],
+  lifeOrder: SUPPORT_LIFE_CYCLE.NINE
 };
 export { index as default };
