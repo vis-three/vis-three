@@ -16,6 +16,8 @@ import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
 
 export const PATH_SUPPORT_CONTROLS_STRATEGY = transPkgName(pkgname);
 
+export * from "./PathSupportControlsProcessor";
+
 export const PathSupportControlsStrategy: Strategy<
   PathSupportControlsEngineSupport,
   object

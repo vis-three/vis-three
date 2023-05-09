@@ -96,4 +96,4 @@ const PathSupportControlsStrategy = function() {
     }
   };
 };
-export { PATH_SUPPORT_CONTROLS_STRATEGY, PathSupportControlsStrategy };
+export { PATH_SUPPORT_CONTROLS_STRATEGY, PathSupportControlsStrategy, getPathSupportControlsConfig };
