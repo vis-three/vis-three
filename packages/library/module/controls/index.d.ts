@@ -1,5 +1,7 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { ControlsCompiler } from "./ControlsCompiler";
+export * from "./ControlsCompiler";
+export * from "./ControlsConfig";
 declare const _default: {
     type: string;
     compiler: typeof ControlsCompiler;

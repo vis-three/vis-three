@@ -80,7 +80,7 @@ var OrbitControlsProcessor = defineProcessor({
     target.dispose();
   }
 });
-const name = "@vis-three/plugin-orbit-controls-support";
+const name = "@vis-three/strategy-orbit-controls-support";
 const ORBIT_CONTROLS_SUPPORT_STRATEGY = transPkgName(name);
 const OrbitControlsSupportStrategy = function() {
   return {
@@ -109,4 +109,4 @@ const OrbitControlsSupportStrategy = function() {
     }
   };
 };
-export { ORBIT_CONTROLS_SUPPORT_STRATEGY, OrbitControlsSupportStrategy };
+export { ORBIT_CONTROLS_SUPPORT_STRATEGY, OrbitControlsSupportStrategy, getOrbitControlsConfig };

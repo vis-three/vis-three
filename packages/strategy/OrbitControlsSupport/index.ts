@@ -16,6 +16,8 @@ import { name as pkgname } from "./package.json";
 
 export const ORBIT_CONTROLS_SUPPORT_STRATEGY = transPkgName(pkgname);
 
+export * from "./OrbitControlsProcessor";
+
 export const OrbitControlsSupportStrategy: Strategy<
   OrbitControlsSupportEngine,
   object

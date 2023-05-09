@@ -22,4 +22,4 @@ var index = {
   processors: [],
   lifeOrder: SUPPORT_LIFE_CYCLE.NINE
 };
-export { index as default };
+export { ControlsCompiler, index as default };

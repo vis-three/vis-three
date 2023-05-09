@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/strategy-orbit-controls-support",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "vis-three orbit-controls-support strategy",
   "main": "dist/vis-three.strategy-orbit-controls-support.umd.js",
   "module": "dist/vis-three.strategy-orbit-controls-support.es.js",
