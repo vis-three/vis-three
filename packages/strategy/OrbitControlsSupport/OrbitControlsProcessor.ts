@@ -40,6 +40,7 @@ const type = "OrbitControls";
 export const getOrbitControlsConfig = function (): OrbitControlsConfig {
   return {
     vid: uniqueSymbol(type),
+    name: "",
     type: "",
     autoRotate: false,
     autoRotateSpeed: 2.0,
