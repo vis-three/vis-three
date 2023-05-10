@@ -3,7 +3,7 @@ import { SymbolConfig } from "../common";
 import { EngineSupport } from "../../engine";
 import { installProcessor } from "../space";
 import { EventDispatcher } from "three";
-import { ProxyNotice } from "../DataContainer";
+import { ProxyNotice } from "../dataContainer";
 import { Processor } from "../Processor";
 import { Bus } from "../../utils";
 
@@ -104,6 +104,10 @@ export class Compiler<C extends SymbolConfig, O extends object> {
     Bus.compilerEvent.emit(object, COMPILER_EVENT.REMOVE);
 
     Bus.compilerEvent.dispose(object);
+
+    if (this.cacheCompile && this.cacheCompile.vid === vid) {
+      this.cacheCompile = undefined;
+    }
 
     return this;
   }

@@ -2,7 +2,11 @@ import { DeepPartial } from "@vis-three/utils";
 import { v4, validate } from "uuid";
 
 export interface GlobalOption {
-  proxyExpand?: (c: any) => any;
+  proxy: {
+    expand?: (c: any) => any;
+    timing: "before" | "after";
+    toRaw?: (c: any) => any;
+  };
   symbol: {
     generator: Function;
     validator: Function;
@@ -10,7 +14,11 @@ export interface GlobalOption {
 }
 
 export const globalOption: GlobalOption = {
-  proxyExpand: undefined,
+  proxy: {
+    expand: undefined,
+    timing: "before",
+    toRaw: undefined,
+  },
   symbol: {
     generator: v4,
     validator: validate,

@@ -1,6 +1,6 @@
 import { SymbolConfig } from "../common";
 import { EngineSupport } from "../../engine";
-import { ProxyNotice } from "../DataContainer";
+import { ProxyNotice } from "../dataContainer";
 import { Processor } from "../Processor";
 export type CompilerTarget<C extends SymbolConfig> = Record<string, C>;
 export type BasicCompiler = Compiler<SymbolConfig, object>;

@@ -85,13 +85,17 @@ export const generateConfig = <GenerateConfig>function <C extends SymbolConfig>(
   }
   merge && recursion(initConfig, merge);
 
-  !options.handler && (options.handler = globalOption.proxyExpand);
+  !options.handler && (options.handler = globalOption.proxy.expand);
 
-  if (options.handler) {
+  if (options.handler && globalOption.proxy.timing === "before") {
     initConfig = options.handler(initConfig);
   }
 
-  const ob = observable(initConfig);
+  let ob = observable(initConfig);
+
+  if (options.handler && globalOption.proxy.timing === "after") {
+    ob = options.handler(ob);
+  }
 
   // 自动注入配置
   if (generateConfig.autoInject && generateConfig.injectEngine) {

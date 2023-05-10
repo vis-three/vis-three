@@ -1,6 +1,10 @@
 import { DeepPartial } from "@vis-three/utils";
 export interface GlobalOption {
-    proxyExpand?: (c: any) => any;
+    proxy: {
+        expand?: (c: any) => any;
+        timing: "before" | "after";
+        toRaw?: (c: any) => any;
+    };
     symbol: {
         generator: Function;
         validator: Function;

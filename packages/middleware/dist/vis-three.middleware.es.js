@@ -91,7 +91,11 @@ var JSONHandler$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineP
   "default": JSONHandler
 }, Symbol.toStringTag, { value: "Module" }));
 const globalOption = {
-  proxyExpand: void 0,
+  proxy: {
+    expand: void 0,
+    timing: "before",
+    toRaw: void 0
+  },
   symbol: {
     generator: v4,
     validator: validate
@@ -136,11 +140,14 @@ const generateConfig = function(type, merge, options = {
     initConfig.vid = globalOption.symbol.generator();
   }
   merge && recursion(initConfig, merge);
-  !options.handler && (options.handler = globalOption.proxyExpand);
-  if (options.handler) {
+  !options.handler && (options.handler = globalOption.proxy.expand);
+  if (options.handler && globalOption.proxy.timing === "before") {
     initConfig = options.handler(initConfig);
   }
-  const ob = observable(initConfig);
+  let ob = observable(initConfig);
+  if (options.handler && globalOption.proxy.timing === "after") {
+    ob = options.handler(ob);
+  }
   if (generateConfig.autoInject && generateConfig.injectEngine) {
     const engine = generateConfig.injectEngine;
     engine.applyConfig(ob);
@@ -437,6 +444,9 @@ class Compiler {
     this.weakMap.delete(object);
     compilerEvent.emit(object, "compiler.remove");
     compilerEvent.dispose(object);
+    if (this.cacheCompile && this.cacheCompile.vid === vid) {
+      this.cacheCompile = void 0;
+    }
     return this;
   }
   cover(config) {
@@ -789,7 +799,9 @@ const observable = function(object, ignore) {
   return observer.target;
 };
 const getObserver = function(object) {
-  return proxyWeak.get(object);
+  return proxyWeak.get(
+    globalOption.proxy.toRaw ? globalOption.proxy.toRaw(object) : object
+  );
 };
 const containerGetter = function(target, key, receiver) {
   return Reflect.get(target, key, receiver);
@@ -870,7 +882,7 @@ const _DataContainer = class extends Subject {
   }
 };
 let DataContainer = _DataContainer;
-__publicField(DataContainer, "generator", globalOption.proxyExpand ? () => globalOption.proxyExpand({}) : () => ({}));
+__publicField(DataContainer, "generator", globalOption.proxy.expand ? () => globalOption.proxy.expand({}) : () => ({}));
 class Translater {
   constructor() {
     __publicField(this, "rule", () => {

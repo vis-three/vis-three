@@ -88,8 +88,8 @@ const containerDeleter = function (
 export class DataContainer<
   C extends SymbolConfig
 > extends Subject<ProxyNotice> {
-  static generator = globalOption.proxyExpand
-    ? () => globalOption.proxyExpand!({})
+  static generator = globalOption.proxy.expand
+    ? () => globalOption.proxy.expand!({})
     : () => ({});
 
   container: CompilerTarget<C>;
