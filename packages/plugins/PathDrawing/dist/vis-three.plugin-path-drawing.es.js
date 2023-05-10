@@ -41,8 +41,17 @@ class PathSketcher extends EventDispatcher {
     __publicField(this, "engine");
     __publicField(this, "cachePoint", new Vector3());
     __publicField(this, "cacheRelativePoint", new Vector3());
+    __publicField(this, "begun", false);
     __publicField(this, "setScene", (event) => {
       this.drawingBoard.parent && event.scene.add(this.drawingBoard);
+    });
+    __publicField(this, "cacheBeginWriteFun", (event) => {
+      const pointerManager = this.engine.pointerManager;
+      this.cacheWriteFun(event);
+      pointerManager.addEventListener("mousedown", this.cacheWriteFun);
+      pointerManager.addEventListener("pointermove", this.cacheMoveFun);
+      pointerManager.removeEventListener("mousedown", this.cacheBeginWriteFun);
+      this.begun = true;
     });
     __publicField(this, "cacheWriteFun", (event) => {
       const point = this.engine.pointerManager.intersectPlane(
@@ -167,12 +176,11 @@ class PathSketcher extends EventDispatcher {
     this.dispatchEvent({
       type: "begin"
     });
-    const pointerManager = this.engine.pointerManager;
-    pointerManager.once("mousedown", (event) => {
-      this.cacheWriteFun(event);
-      pointerManager.addEventListener("mousedown", this.cacheWriteFun);
-      pointerManager.addEventListener("pointermove", this.cacheMoveFun);
-    });
+    this.begun = false;
+    this.engine.pointerManager.addEventListener(
+      "mousedown",
+      this.cacheBeginWriteFun
+    );
     return this;
   }
   endDraw(clearEvent = true) {
@@ -183,6 +191,12 @@ class PathSketcher extends EventDispatcher {
       type: "end"
     });
     if (clearEvent) {
+      if (!this.begun) {
+        this.engine.pointerManager.removeEventListener(
+          "mousedown",
+          this.cacheBeginWriteFun
+        );
+      }
       this.removeEvent("begin");
       this.removeEvent("write");
       this.removeEvent("move");

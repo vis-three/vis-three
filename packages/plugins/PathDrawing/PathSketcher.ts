@@ -68,8 +68,19 @@ export class PathSketcher extends EventDispatcher {
   private cachePoint = new Vector3();
   private cacheRelativePoint = new Vector3();
 
+  private begun = false;
+
   private setScene = (event: SetSceneEvent) => {
     this.drawingBoard.parent && event.scene.add(this.drawingBoard);
+  };
+
+  private cacheBeginWriteFun = (event: MouseEvent) => {
+    const pointerManager = this.engine.pointerManager;
+    this.cacheWriteFun(event);
+    pointerManager.addEventListener("mousedown", this.cacheWriteFun);
+    pointerManager.addEventListener("pointermove", this.cacheMoveFun);
+    pointerManager.removeEventListener("mousedown", this.cacheBeginWriteFun);
+    this.begun = true;
   };
 
   private cacheWriteFun = (event: MouseEvent) => {
@@ -234,12 +245,11 @@ export class PathSketcher extends EventDispatcher {
     this.dispatchEvent({
       type: PATHSKETCHER_EVENT.BEGIN,
     });
-    const pointerManager = this.engine.pointerManager;
-    pointerManager.once<MouseEvent>("mousedown", (event) => {
-      this.cacheWriteFun(event);
-      pointerManager.addEventListener("mousedown", this.cacheWriteFun);
-      pointerManager.addEventListener("pointermove", this.cacheMoveFun);
-    });
+    this.begun = false;
+    this.engine.pointerManager.addEventListener<MouseEvent>(
+      "mousedown",
+      this.cacheBeginWriteFun
+    );
     return this;
   }
 
@@ -252,11 +262,19 @@ export class PathSketcher extends EventDispatcher {
     });
 
     if (clearEvent) {
+      if (!this.begun) {
+        this.engine.pointerManager.removeEventListener(
+          "mousedown",
+          this.cacheBeginWriteFun
+        );
+      }
+
       this.removeEvent(PATHSKETCHER_EVENT.BEGIN);
       this.removeEvent(PATHSKETCHER_EVENT.WRITE);
       this.removeEvent(PATHSKETCHER_EVENT.MOVE);
       this.removeEvent(PATHSKETCHER_EVENT.END);
     }
+
     return this;
   }
 }
