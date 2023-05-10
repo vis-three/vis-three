@@ -1,7 +1,17 @@
 import { PathConfig } from "@vis-three/module-path";
-import { Object3D, OrthographicCamera, PerspectiveCamera, PointsMaterial } from "three";
+import { BaseEvent, Object3D, OrthographicCamera, PerspectiveCamera, PointsMaterial } from "three";
 import { PointerManager } from "@vis-three/plugin-pointer-manager";
-export declare class PathSupportControls extends Object3D {
+export declare enum PATHSUPPORTCONTROLS_EVENT {
+    MOUSEDOWN = "mousedown",
+    CHANGING = "changing",
+    MOUSEUP = "mouseup"
+}
+export interface ContolsEvent extends BaseEvent {
+    index: number;
+    config: PathConfig;
+    operate: "anchor" | "move" | "switch";
+}
+export declare class PathSupportControls extends Object3D<ContolsEvent> {
     static anchorMaterial: PointsMaterial;
     static moveMaterial: PointsMaterial;
     static switchMaterial: PointsMaterial;
@@ -22,6 +32,7 @@ export declare class PathSupportControls extends Object3D {
     private geometryIndexFunMap;
     private anchorArcUpdateIndexs;
     private arcVecticalDirectionsMap;
+    private cacheConfigIndex;
     private currentGuizmo?;
     private currentIndex;
     private domElement;

@@ -27,7 +27,7 @@ export declare class PathSketcher extends EventDispatcher {
     engine: PointerManagerEngine;
     private cachePoint;
     private cacheRelativePoint;
-    private begun;
+    begun: boolean;
     private setScene;
     private cacheBeginWriteFun;
     private cacheWriteFun;

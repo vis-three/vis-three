@@ -19,6 +19,10 @@ var PathSupportControlsProcessor = defineProcessor({
   commands: {
     set: {
       config({ target, value, engine }) {
+        if (!value) {
+          target.disconnect();
+          return;
+        }
         const conf = engine.getConfigBySymbol(value);
         if (!conf) {
           console.warn(
@@ -27,8 +31,13 @@ var PathSupportControlsProcessor = defineProcessor({
         } else {
           target.setConfig(conf);
         }
+        target.connect();
       },
       object({ target, value, engine }) {
+        if (!value) {
+          target.disconnect();
+          return;
+        }
         const object = engine.getObjectBySymbol(value);
         if (!object) {
           console.warn(
@@ -37,6 +46,15 @@ var PathSupportControlsProcessor = defineProcessor({
         } else {
           target.setObject(object);
         }
+        target.connect();
+      },
+      visible({ target, value }) {
+        if (value) {
+          target.connect();
+        } else {
+          target.disconnect();
+        }
+        target.visible = value;
       }
     }
   },
@@ -61,6 +79,9 @@ var PathSupportControlsProcessor = defineProcessor({
       } else {
         controls.setObject(object);
       }
+    }
+    if (config.object && config.config) {
+      controls.connect();
     }
     controls.visible = config.visible;
     engine.scene.add(controls);

@@ -202,6 +202,7 @@ class PathSketcher extends EventDispatcher {
       this.removeEvent("move");
       this.removeEvent("end");
     }
+    this.begun = false;
     return this;
   }
 }

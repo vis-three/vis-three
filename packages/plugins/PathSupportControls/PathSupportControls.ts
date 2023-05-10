@@ -1,6 +1,7 @@
 import { PathConfig } from "@vis-three/module-path";
 import {
   AlwaysDepth,
+  BaseEvent,
   BufferAttribute,
   BufferGeometry,
   Object3D,
@@ -27,7 +28,19 @@ interface FunIndexMap {
   quadraticCP1: number[];
 }
 
-export class PathSupportControls extends Object3D {
+export enum PATHSUPPORTCONTROLS_EVENT {
+  MOUSEDOWN = "mousedown",
+  CHANGING = "changing",
+  MOUSEUP = "mouseup",
+}
+
+export interface ContolsEvent extends BaseEvent {
+  index: number;
+  config: PathConfig;
+  operate: "anchor" | "move" | "switch";
+}
+
+export class PathSupportControls extends Object3D<ContolsEvent> {
   static anchorMaterial = new PointsMaterial({
     map: anchorTexture,
     transparent: true,
@@ -102,6 +115,8 @@ export class PathSupportControls extends Object3D {
       direction: Vector3;
     }
   > = {};
+
+  private cacheConfigIndex = 0;
 
   private currentGuizmo?: Points;
   private currentIndex = 0;
@@ -353,13 +368,29 @@ export class PathSupportControls extends Object3D {
 
     if (intersectPoint) {
       if (this.currentGuizmo === this.switchGizmo) {
-        const currentSegment =
-          this.config.curves[
-            this.geometryIndexFunMap.arcClockwise[this.currentIndex]
-          ];
+        const configIndex =
+          this.geometryIndexFunMap.arcClockwise[this.currentIndex];
+        const currentSegment = this.config.curves[configIndex];
+
+        this.dispatchEvent({
+          type: PATHSUPPORTCONTROLS_EVENT.MOUSEDOWN,
+          index: configIndex,
+          config: this.config,
+          operate: "switch",
+        });
 
         (<boolean>(<unknown>currentSegment.params[3])) =
           !currentSegment.params[3];
+
+        this.dispatchEvent({
+          type: PATHSUPPORTCONTROLS_EVENT.CHANGING,
+          index: configIndex,
+          config: this.config,
+          operate: "switch",
+        });
+
+        this.cacheConfigIndex = configIndex;
+        this.domElement.addEventListener("mouseup", this._pointerUp);
         return;
       }
 
@@ -373,8 +404,29 @@ export class PathSupportControls extends Object3D {
         if (this.geometryIndexFunMap.arcVertical.includes(this.currentIndex)) {
           const message = this.arcVecticalDirectionsMap[this.currentIndex];
           this.cacheVertical = this.config.curves[message.segment].params[2];
+          this.dispatchEvent({
+            type: PATHSUPPORTCONTROLS_EVENT.MOUSEDOWN,
+            index: message.segment,
+            config: this.config,
+            operate: "move",
+          });
+
+          this.cacheConfigIndex = message.segment;
         }
       }
+
+      const cacheConfigIndex =
+        this.currentIndex === this.config.curves.length
+          ? this.currentIndex - 1
+          : this.currentIndex;
+
+      this.dispatchEvent({
+        type: PATHSUPPORTCONTROLS_EVENT.MOUSEDOWN,
+        index: cacheConfigIndex,
+        config: this.config,
+        operate: "anchor",
+      });
+      this.cacheConfigIndex = cacheConfigIndex;
 
       this.domElement.addEventListener("mousemove", this._pointerMove);
       this.domElement.addEventListener("mouseup", this._pointerUp);
@@ -401,6 +453,7 @@ export class PathSupportControls extends Object3D {
     const currentGuizmo = this.currentGuizmo;
     const currentIndex = this.currentIndex;
     const config = this.config;
+    const cacheConfigIndex = this.cacheConfigIndex;
     const geometryIndexFunMap = this.geometryIndexFunMap;
 
     if (currentGuizmo === this.anchorGizmo) {
@@ -427,6 +480,13 @@ export class PathSupportControls extends Object3D {
         // TODO:只update arc相关的点
         this.update();
       }
+
+      this.dispatchEvent({
+        type: PATHSUPPORTCONTROLS_EVENT.CHANGING,
+        index: cacheConfigIndex,
+        config: this.config,
+        operate: "anchor",
+      });
     } else if (currentGuizmo === this.moveGizmo) {
       if (geometryIndexFunMap.arcVertical.includes(currentIndex)) {
         const message = this.arcVecticalDirectionsMap[currentIndex];
@@ -453,6 +513,13 @@ export class PathSupportControls extends Object3D {
         array[currentIndex * 3 + 1] = arcDetail.center.y;
 
         position.needsUpdate = true;
+
+        this.dispatchEvent({
+          type: PATHSUPPORTCONTROLS_EVENT.CHANGING,
+          index: message.segment,
+          config: this.config,
+          operate: "move",
+        });
       }
     }
   }
@@ -467,5 +534,17 @@ export class PathSupportControls extends Object3D {
       this.currentGuizmo.geometry.computeBoundingSphere();
       this.currentGuizmo.geometry.computeBoundingBox();
     }
+
+    this.dispatchEvent({
+      type: PATHSUPPORTCONTROLS_EVENT.MOUSEUP,
+      index: this.cacheConfigIndex,
+      config: this.config,
+      operate:
+        this.currentGuizmo === this.anchorGizmo
+          ? "anchor"
+          : this.currentGuizmo === this.moveGizmo
+          ? "move"
+          : "switch",
+    });
   }
 }

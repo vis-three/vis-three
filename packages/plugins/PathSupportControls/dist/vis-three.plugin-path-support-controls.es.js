@@ -96,6 +96,7 @@ const _PathSupportControls = class extends Object3D {
     });
     __publicField(this, "anchorArcUpdateIndexs", []);
     __publicField(this, "arcVecticalDirectionsMap", {});
+    __publicField(this, "cacheConfigIndex", 0);
     __publicField(this, "currentGuizmo");
     __publicField(this, "currentIndex", 0);
     __publicField(this, "domElement");
@@ -274,8 +275,23 @@ const _PathSupportControls = class extends Object3D {
     const intersectPoint = this.intersectPoint(event);
     if (intersectPoint) {
       if (this.currentGuizmo === this.switchGizmo) {
-        const currentSegment = this.config.curves[this.geometryIndexFunMap.arcClockwise[this.currentIndex]];
+        const configIndex = this.geometryIndexFunMap.arcClockwise[this.currentIndex];
+        const currentSegment = this.config.curves[configIndex];
+        this.dispatchEvent({
+          type: "mousedown",
+          index: configIndex,
+          config: this.config,
+          operate: "switch"
+        });
         currentSegment.params[3] = !currentSegment.params[3];
+        this.dispatchEvent({
+          type: "changing",
+          index: configIndex,
+          config: this.config,
+          operate: "switch"
+        });
+        this.cacheConfigIndex = configIndex;
+        this.domElement.addEventListener("mouseup", this._pointerUp);
         return;
       }
       this.dragging = true;
@@ -284,8 +300,23 @@ const _PathSupportControls = class extends Object3D {
         if (this.geometryIndexFunMap.arcVertical.includes(this.currentIndex)) {
           const message = this.arcVecticalDirectionsMap[this.currentIndex];
           this.cacheVertical = this.config.curves[message.segment].params[2];
+          this.dispatchEvent({
+            type: "mousedown",
+            index: message.segment,
+            config: this.config,
+            operate: "move"
+          });
+          this.cacheConfigIndex = message.segment;
         }
       }
+      const cacheConfigIndex = this.currentIndex === this.config.curves.length ? this.currentIndex - 1 : this.currentIndex;
+      this.dispatchEvent({
+        type: "mousedown",
+        index: cacheConfigIndex,
+        config: this.config,
+        operate: "anchor"
+      });
+      this.cacheConfigIndex = cacheConfigIndex;
       this.domElement.addEventListener("mousemove", this._pointerMove);
       this.domElement.addEventListener("mouseup", this._pointerUp);
     }
@@ -303,6 +334,7 @@ const _PathSupportControls = class extends Object3D {
     const currentGuizmo = this.currentGuizmo;
     const currentIndex = this.currentIndex;
     const config = this.config;
+    const cacheConfigIndex = this.cacheConfigIndex;
     const geometryIndexFunMap = this.geometryIndexFunMap;
     if (currentGuizmo === this.anchorGizmo) {
       const length = config.curves.length;
@@ -323,6 +355,12 @@ const _PathSupportControls = class extends Object3D {
       if (this.anchorArcUpdateIndexs.includes(this.currentIndex)) {
         this.update();
       }
+      this.dispatchEvent({
+        type: "changing",
+        index: cacheConfigIndex,
+        config: this.config,
+        operate: "anchor"
+      });
     } else if (currentGuizmo === this.moveGizmo) {
       if (geometryIndexFunMap.arcVertical.includes(currentIndex)) {
         const message = this.arcVecticalDirectionsMap[currentIndex];
@@ -336,6 +374,12 @@ const _PathSupportControls = class extends Object3D {
         array[currentIndex * 3] = arcDetail.center.x;
         array[currentIndex * 3 + 1] = arcDetail.center.y;
         position.needsUpdate = true;
+        this.dispatchEvent({
+          type: "changing",
+          index: message.segment,
+          config: this.config,
+          operate: "move"
+        });
       }
     }
   }
@@ -347,6 +391,12 @@ const _PathSupportControls = class extends Object3D {
       this.currentGuizmo.geometry.computeBoundingSphere();
       this.currentGuizmo.geometry.computeBoundingBox();
     }
+    this.dispatchEvent({
+      type: "mouseup",
+      index: this.cacheConfigIndex,
+      config: this.config,
+      operate: this.currentGuizmo === this.anchorGizmo ? "anchor" : this.currentGuizmo === this.moveGizmo ? "move" : "switch"
+    });
   }
 };
 let PathSupportControls = _PathSupportControls;

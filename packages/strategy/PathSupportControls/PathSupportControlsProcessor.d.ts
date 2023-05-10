@@ -4,7 +4,7 @@ import { ControlsConfig } from "@vis-three/module-controls/ControlsConfig";
 import { PathSupportControlsEngine } from "@vis-three/plugin-path-support-controls";
 import { PathSupportControls } from "@vis-three/plugin-path-support-controls/PathSupportControls";
 export interface PathSupportControlsConfig extends ControlsConfig {
-    object: string;
+    object: string | null;
     config: string | null;
     visible: boolean;
 }

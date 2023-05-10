@@ -11,7 +11,7 @@ import { PathSupportControls } from "@vis-three/plugin-path-support-controls/Pat
 import { Object3D } from "three";
 
 export interface PathSupportControlsConfig extends ControlsConfig {
-  object: string;
+  object: string | null;
   config: string | null;
   visible: boolean;
 }
@@ -45,6 +45,10 @@ export default defineProcessor<
   commands: {
     set: {
       config({ target, value, engine }) {
+        if (!value) {
+          target.disconnect();
+          return;
+        }
         const conf = engine.getConfigBySymbol(value) as PathConfig;
 
         if (!conf) {
@@ -54,8 +58,15 @@ export default defineProcessor<
         } else {
           target.setConfig(conf);
         }
+
+        target.connect();
       },
       object({ target, value, engine }) {
+        if (!value) {
+          target.disconnect();
+          return;
+        }
+
         const object = engine.getObjectBySymbol(value) as Object3D;
 
         if (!object) {
@@ -65,6 +76,17 @@ export default defineProcessor<
         } else {
           target.setObject(object);
         }
+
+        target.connect();
+      },
+      visible({ target, value }) {
+        if (value) {
+          target.connect();
+        } else {
+          target.disconnect();
+        }
+
+        target.visible = value;
       },
     },
   },
@@ -93,6 +115,10 @@ export default defineProcessor<
       } else {
         controls.setObject(object);
       }
+    }
+
+    if (config.object && config.config) {
+      controls.connect();
     }
 
     controls.visible = config.visible;

@@ -68,7 +68,7 @@ export class PathSketcher extends EventDispatcher {
   private cachePoint = new Vector3();
   private cacheRelativePoint = new Vector3();
 
-  private begun = false;
+  begun = false;
 
   private setScene = (event: SetSceneEvent) => {
     this.drawingBoard.parent && event.scene.add(this.drawingBoard);
@@ -275,6 +275,7 @@ export class PathSketcher extends EventDispatcher {
       this.removeEvent(PATHSKETCHER_EVENT.END);
     }
 
+    this.begun = false;
     return this;
   }
 }
