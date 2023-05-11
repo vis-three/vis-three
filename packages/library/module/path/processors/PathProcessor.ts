@@ -10,7 +10,7 @@ import {
   QuadraticBezierCurve,
   Vector2,
 } from "three";
-import { ArcCurve } from "@vis-three/module-curve/extends";
+import { ArcCurve } from "@vis-three/module-curve";
 
 const pathCurveMap = {
   arc: (
