@@ -36,3 +36,15 @@ export const getArcDetail = function (
     verticalDirection,
   };
 };
+
+export const isPointLeftSideLine = function (
+  line1: Vector2,
+  line2: Vector2,
+  point: Vector2
+) {
+  return (
+    (line2.x - line1.x) * (point.y - line1.y) -
+      (line2.y - line1.y) * (point.x - line1.x) >
+    0
+  );
+};
