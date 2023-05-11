@@ -30,6 +30,7 @@ export const getGeometryConfig = function (): GeometryConfig {
   return {
     vid: "",
     type: "Geometry",
+    name: "",
     center: true,
     position: {
       x: 0, // percent

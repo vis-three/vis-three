@@ -5,7 +5,7 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { defineProcessor, Compiler, Rule, MODULETYPE, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry, Path } from "three";
+import { Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, Path, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry } from "three";
 const transfromAnchor = function(geometry, config) {
   config.center && geometry.center();
   geometry.computeBoundingBox();
@@ -83,6 +83,7 @@ const getGeometryConfig = function() {
   return {
     vid: "",
     type: "Geometry",
+    name: "",
     center: true,
     position: {
       x: 0,
@@ -275,7 +276,7 @@ const getPathGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
     center: false,
     path: "",
-    space: true,
+    space: false,
     divisions: 36
   });
 };
@@ -492,6 +493,21 @@ class SplineTubeGeometry extends TubeGeometry {
     const splineCurve = new CatmullRomCurve3(path);
     super(splineCurve, tubularSegments, radius, radialSegments, closed);
     this.type = "SplineTubeGeometry";
+  }
+}
+class PathGeometry extends BufferGeometry {
+  constructor(path = new Path(), divisions = 36, space = true) {
+    super();
+    __publicField(this, "parameters");
+    this.type = "PathGeometry";
+    this.parameters = {
+      path,
+      space,
+      divisions
+    };
+    path.curves.length && this.setFromPoints(
+      space ? path.getSpacedPoints(divisions) : path.getPoints(divisions)
+    );
   }
 }
 var CubicBezierCurveGeometryProcessor = defineProcessor({
@@ -823,21 +839,6 @@ var ExtrudeGeometryProcessor = defineProcessor({
     dispose(target);
   }
 });
-class PathGeometry extends BufferGeometry {
-  constructor(path = new Path(), divisions = 36, space = true) {
-    super();
-    __publicField(this, "parameters");
-    this.type = "PathGeometry";
-    this.parameters = {
-      path,
-      space,
-      divisions
-    };
-    path.curves.length && this.setFromPoints(
-      space ? path.getSpacedPoints(divisions) : path.getPoints(divisions)
-    );
-  }
-}
 const cacheBusMap$1 = /* @__PURE__ */ new WeakMap();
 const cacheBusObject$1 = function(geometry, object, fun) {
   cacheBusMap$1.set(geometry, {
@@ -945,4 +946,4 @@ var index = {
     ShapeGeometryProcessor
   ]
 };
-export { GeometryCompiler, index as default };
+export { CubicBezierCurveGeometry, CurveGeometry, GeometryCompiler, LineCurveGeometry, LineShapeGeometry, LineTubeGeometry, LoadGeometry, PathGeometry, QuadraticBezierCurveGeometry, SplineCurveGeometry, SplineTubeGeometry, index as default };

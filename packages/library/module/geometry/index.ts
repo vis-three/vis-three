@@ -25,6 +25,7 @@ import ShapeGeometryProcessor from "./processors/ShapeGeometryProcessor";
 
 export * from "./GeometryInterface";
 export * from "./GeometryCompiler";
+export * from "./extends";
 
 export default {
   type: "geometry",
