@@ -23,7 +23,7 @@ export interface SelectedSupportEvent extends SelectedEvent {
 
 export const SELECTION_SUPPORT_PLUGIN = transPkgName(pkgname);
 
-export const SelectionSupportPlugin: Plugin<SelectionSupportEngine> =
+export const SelectionSupportPlugin: Plugin<SelectionSupportEngine, object> =
   function () {
     return {
       name: SELECTION_SUPPORT_PLUGIN,
