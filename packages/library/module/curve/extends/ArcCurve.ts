@@ -1,10 +1,10 @@
 import { EllipseCurve, Vector2 } from "three";
 
 export class ArcCurve extends EllipseCurve {
-  private start = new Vector2();
-  private end = new Vector2();
-  private vertical = 0;
-  private center = new Vector2();
+  start = new Vector2();
+  end = new Vector2();
+  vertical = 0;
+  center = new Vector2();
 
   private tempVector = new Vector2();
 

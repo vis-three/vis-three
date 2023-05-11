@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-curve",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "vis-three curve module",
   "main": "dist/vis-three.module-curve.umd.js",
   "module": "dist/vis-three.module-curve.es.js",
