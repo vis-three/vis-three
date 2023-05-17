@@ -11,31 +11,32 @@ export interface StatsRenderEngine extends StatsEngine, RenderManagerEngine {}
 
 export const STATS_RENDER_STRATEGY = transPkgName(pkgname);
 
-export const StatsRenderStrategy: Strategy<StatsRenderEngine> = function () {
-  let renderFun: () => void;
-  let cacheSetStats: (show: boolean) => StatsEngine;
-  return {
-    name: STATS_RENDER_STRATEGY,
-    condition: [RENDER_MANAGER_PLUGIN, STATS_PLUGIN],
-    exec(engine) {
-      renderFun = () => {
-        engine.stats.update();
-      };
+export const StatsRenderStrategy: Strategy<StatsRenderEngine, object> =
+  function () {
+    let renderFun: () => void;
+    let cacheSetStats: (show: boolean) => StatsEngine;
+    return {
+      name: STATS_RENDER_STRATEGY,
+      condition: [RENDER_MANAGER_PLUGIN, STATS_PLUGIN],
+      exec(engine) {
+        renderFun = () => {
+          engine.stats.update();
+        };
 
-      cacheSetStats = engine.setStats;
+        cacheSetStats = engine.setStats;
 
-      engine.setStats = function (show: boolean) {
-        cacheSetStats(show);
-        if (show) {
-          this.renderManager.addEventListener("render", renderFun);
-        } else {
-          this.renderManager.removeEventListener("render", renderFun);
-        }
-        return this;
-      };
-    },
-    rollback(engine) {
-      engine.setStats = cacheSetStats;
-    },
+        engine.setStats = function (show: boolean) {
+          cacheSetStats(show);
+          if (show) {
+            this.renderManager.addEventListener("render", renderFun);
+          } else {
+            this.renderManager.removeEventListener("render", renderFun);
+          }
+          return this;
+        };
+      },
+      rollback(engine) {
+        engine.setStats = cacheSetStats;
+      },
+    };
   };
-};

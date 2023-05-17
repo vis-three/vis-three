@@ -13,7 +13,6 @@ import { VIEWPOINT, ViewpointEngine } from "@vis-three/plugin-viewpoint";
 import { TransformControlsEngine, VisTransformControls } from "@vis-three/plugin-transform-controls";
 import { StatsEngine } from "@vis-three/plugin-stats";
 import { KeyboardManager, KeyboardManagerEngine } from "@vis-three/plugin-keyboard-manager";
-import { ObjectHelperEngine, ObjectHelperManager } from "@vis-three/plugin-object-helper";
 import { CSS2DRendererEngine } from "@vis-three/plugin-css2d-renderer";
 import { CSS3DRendererEngine } from "@vis-three/plugin-css3d-renderer";
 import { SelectionEngine } from "@vis-three/plugin-selection";
@@ -21,7 +20,7 @@ import { VisStats } from "@vis-three/plugin-stats/VisStats";
 import { PathDrawingEngine } from "@vis-three/plugin-path-drawing";
 import { Face, PathSketcher } from "@vis-three/plugin-path-drawing/PathSketcher";
 export { VIEWPOINT };
-export declare class ModelingEngineSupport extends EngineSupport implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, KeyboardManagerEngine, StatsEngine, TransformControlsEngine, ViewpointEngine, GridHelperEngine, AxesHelperEngine, SelectionSupportEngine, ObjectHelperEngine, CSS2DRendererEngine, CSS3DRendererEngine, PathDrawingEngine {
+export declare class ModelingEngineSupport extends EngineSupport implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, KeyboardManagerEngine, StatsEngine, TransformControlsEngine, ViewpointEngine, GridHelperEngine, AxesHelperEngine, SelectionSupportEngine, CSS2DRendererEngine, CSS3DRendererEngine, PathDrawingEngine {
     webGLRenderer: WebGLRenderer;
     getScreenshot: (params?: Screenshot | undefined) => Promise<string>;
     effectComposer: EffectComposer;
@@ -40,8 +39,6 @@ export declare class ModelingEngineSupport extends EngineSupport implements WebG
     selectionBox: Set<Object3D<Event>>;
     setSelectionBox: (objects: Object3D<Event>[]) => SelectionEngine;
     setSelectionBoxBySymbol: (symbols: string[]) => SelectionSupportEngine;
-    objectHelperManager: ObjectHelperManager;
-    setObjectHelper: (show: boolean) => ObjectHelperEngine;
     css2DRenderer: CSS2DRenderer;
     css3DRenderer: CSS3DRenderer;
     pathSketcher: PathSketcher;

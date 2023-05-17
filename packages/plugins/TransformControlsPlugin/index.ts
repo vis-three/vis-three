@@ -19,7 +19,7 @@ export interface TransformControlsEngine extends Engine {
 
 export const TRANSFORM_CONTROLS_PLUGIN = transPkgName(pkgname);
 
-export const TransformControlsPlugin: Plugin<TransformControlsEngine> =
+export const TransformControlsPlugin: Plugin<TransformControlsEngine, object> =
   function () {
     let setDomFun: (event: SetDomEvent) => void;
     let setCameraFun: (event: SetCameraEvent) => void;

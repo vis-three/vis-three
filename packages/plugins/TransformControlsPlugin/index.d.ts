@@ -7,4 +7,4 @@ export interface TransformControlsEngine extends Engine {
     setTransformControls: (show: boolean) => TransformControlsEngine;
 }
 export declare const TRANSFORM_CONTROLS_PLUGIN: string;
-export declare const TransformControlsPlugin: Plugin<TransformControlsEngine>;
+export declare const TransformControlsPlugin: Plugin<TransformControlsEngine, object>;

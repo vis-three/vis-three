@@ -10,6 +10,7 @@ export const getRendererConfig = function (): RendererConfig {
   return {
     vid: "",
     type: "Renderer",
+    name: "",
     size: null,
   };
 };

@@ -16,32 +16,34 @@ import WebGLRendererProcessor, {
 
 export const WEBGL_RENDERER_SUPPORT_STRATEGY = transPkgName(pkgname);
 
-export const WebGLRendererSupportStrategy: Strategy<WebGLRendererSupportEngine> =
-  function () {
-    return {
-      name: WEBGL_RENDERER_SUPPORT_STRATEGY,
-      condition: [
-        COMPILER_MANAGER_PLUGIN,
-        DATA_SUPPORT_MANAGER_PLUGIN,
-        WEBGL_RENDERER_PLUGIN,
-      ],
-      exec(engine) {
-        const compiler = engine.compilerManager.getCompiler<RendererCompiler>(
-          MODULETYPE.RENDERER
-        )!;
+export const WebGLRendererSupportStrategy: Strategy<
+  WebGLRendererSupportEngine,
+  object
+> = function () {
+  return {
+    name: WEBGL_RENDERER_SUPPORT_STRATEGY,
+    condition: [
+      COMPILER_MANAGER_PLUGIN,
+      DATA_SUPPORT_MANAGER_PLUGIN,
+      WEBGL_RENDERER_PLUGIN,
+    ],
+    exec(engine) {
+      const compiler = engine.compilerManager.getCompiler<RendererCompiler>(
+        MODULETYPE.RENDERER
+      )!;
 
-        compiler.reigstProcessor(WebGLRendererProcessor, (compiler) => {
-          compiler.map.set(
-            uniqueSymbol(CONFIGTYPE.WEBGLRENDERER),
-            engine.webGLRenderer
-          );
+      compiler.reigstProcessor(WebGLRendererProcessor, (compiler) => {
+        compiler.map.set(
+          uniqueSymbol(CONFIGTYPE.WEBGLRENDERER),
+          engine.webGLRenderer
+        );
 
-          compiler.weakMap.set(
-            engine.webGLRenderer,
-            uniqueSymbol(CONFIGTYPE.WEBGLRENDERER)
-          );
-        });
-      },
-      rollback() {},
-    };
+        compiler.weakMap.set(
+          engine.webGLRenderer,
+          uniqueSymbol(CONFIGTYPE.WEBGLRENDERER)
+        );
+      });
+    },
+    rollback() {},
   };
+};

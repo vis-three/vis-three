@@ -16,32 +16,34 @@ import { name as pkgname } from "./package.json";
 
 export const CSS3D_RENDERER_SUPPORT_STRATEGY = transPkgName(pkgname);
 
-export const CSS3DRendererSupportStrategy: Strategy<CSS3DRendererSupportEngine> =
-  function () {
-    return {
-      name: CSS3D_RENDERER_SUPPORT_STRATEGY,
-      condition: [
-        COMPILER_MANAGER_PLUGIN,
-        DATA_SUPPORT_MANAGER_PLUGIN,
-        CSS3D_RENDERER_PLUGIN,
-      ],
-      exec(engine) {
-        const compiler = engine.compilerManager.getCompiler<RendererCompiler>(
-          MODULETYPE.RENDERER
-        )!;
+export const CSS3DRendererSupportStrategy: Strategy<
+  CSS3DRendererSupportEngine,
+  object
+> = function () {
+  return {
+    name: CSS3D_RENDERER_SUPPORT_STRATEGY,
+    condition: [
+      COMPILER_MANAGER_PLUGIN,
+      DATA_SUPPORT_MANAGER_PLUGIN,
+      CSS3D_RENDERER_PLUGIN,
+    ],
+    exec(engine) {
+      const compiler = engine.compilerManager.getCompiler<RendererCompiler>(
+        MODULETYPE.RENDERER
+      )!;
 
-        compiler.reigstProcessor(CSS3DRendererProcessor, (compiler) => {
-          compiler.map.set(
-            uniqueSymbol(CONFIGTYPE.CSS3DRENDERER),
-            engine.css3DRenderer
-          );
+      compiler.reigstProcessor(CSS3DRendererProcessor, (compiler) => {
+        compiler.map.set(
+          uniqueSymbol(CONFIGTYPE.CSS3DRENDERER),
+          engine.css3DRenderer
+        );
 
-          compiler.weakMap.set(
-            engine.css3DRenderer,
-            uniqueSymbol(CONFIGTYPE.CSS3DRENDERER)
-          );
-        });
-      },
-      rollback() {},
-    };
+        compiler.weakMap.set(
+          engine.css3DRenderer,
+          uniqueSymbol(CONFIGTYPE.CSS3DRENDERER)
+        );
+      });
+    },
+    rollback() {},
   };
+};

@@ -9,4 +9,4 @@ export interface SelectedEvent extends BaseEvent {
 }
 export declare const SELECTED = "selected";
 export declare const SELECTION_PLUGIN: string;
-export declare const SelectionPlugin: Plugin<SelectionEngine>;
+export declare const SelectionPlugin: Plugin<SelectionEngine, object>;

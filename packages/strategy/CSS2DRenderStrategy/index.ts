@@ -18,22 +18,26 @@ export interface CSS2DAndRenderEngine
 
 export const name = transPkgName(pkgname);
 
-export const CSS2DRenderStrategy: Strategy<CSS2DAndRenderEngine> = function () {
-  let renderFun: (event: RenderEvent) => void;
-  return {
-    name,
-    condition: [CSS2D_RENDERER_PLUGIN, RENDER_MANAGER_PLUGIN],
-    exec(engine) {
-      renderFun = () => {
-        engine.css2DRenderer.render(engine.scene, engine.camera);
-      };
-      engine.renderManager.addEventListener<RenderEvent>(
-        RENDER_EVENT.RENDER,
-        renderFun
-      );
-    },
-    rollback(engine) {
-      engine.renderManager.removeEventListener(RENDER_EVENT.RENDER, renderFun);
-    },
+export const CSS2DRenderStrategy: Strategy<CSS2DAndRenderEngine, object> =
+  function () {
+    let renderFun: (event: RenderEvent) => void;
+    return {
+      name,
+      condition: [CSS2D_RENDERER_PLUGIN, RENDER_MANAGER_PLUGIN],
+      exec(engine) {
+        renderFun = () => {
+          engine.css2DRenderer.render(engine.scene, engine.camera);
+        };
+        engine.renderManager.addEventListener<RenderEvent>(
+          RENDER_EVENT.RENDER,
+          renderFun
+        );
+      },
+      rollback(engine) {
+        engine.renderManager.removeEventListener(
+          RENDER_EVENT.RENDER,
+          renderFun
+        );
+      },
+    };
   };
-};

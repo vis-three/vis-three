@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/plugin-object-helper",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "vis-three object-helper plugin",
   "main": "dist/vis-three.plugin-object-helper.umd.js",
   "module": "dist/vis-three.plugin-object-helper.es.js",

@@ -10,7 +10,7 @@ export interface StatsEngine extends Engine {
 
 export const STATS_PLUGIN = transPkgName(pkgname);
 
-export const StatsPlugin: Plugin<StatsEngine> = function (
+export const StatsPlugin: Plugin<StatsEngine, VisStatsParameters> = function (
   params?: VisStatsParameters
 ) {
   let renderFun: (event: RenderEvent) => void;

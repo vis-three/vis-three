@@ -16,7 +16,7 @@ export const SELECTED = "selected";
 
 export const SELECTION_PLUGIN = transPkgName(pkgname);
 
-export const SelectionPlugin: Plugin<SelectionEngine> = function () {
+export const SelectionPlugin: Plugin<SelectionEngine, object> = function () {
   return {
     name: SELECTION_PLUGIN,
     install(engine) {

@@ -20,6 +20,7 @@ import texture from "@vis-three/module-texture";
 import path from "@vis-three/module-path";
 import shape from "@vis-three/module-shape";
 import curve from "@vis-three/module-curve";
+import helper from "@vis-three/module-helper";
 
 export {
   animation,
@@ -44,4 +45,5 @@ export {
   path,
   shape,
   curve,
+  helper,
 };

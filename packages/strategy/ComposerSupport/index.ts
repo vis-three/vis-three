@@ -16,7 +16,7 @@ export interface ComposerSupportEngine
 
 export const name = transPkgName(pkgname);
 
-export const ComposerSupportStrategy: Strategy<ComposerSupportEngine> =
+export const ComposerSupportStrategy: Strategy<ComposerSupportEngine, object> =
   function () {
     return {
       name,

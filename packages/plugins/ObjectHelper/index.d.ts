@@ -22,4 +22,4 @@ export interface AfterRemoveEvent extends BaseEvent {
 export declare const AFTERADD = "afterAdd";
 export declare const AFTERREMOVE = "afterRemove";
 export declare const OBJECT_HELPER_PLUGIN: string;
-export declare const ObjectHelperPlugin: Plugin<ObjectHelperEngine>;
+export declare const ObjectHelperPlugin: Plugin<ObjectHelperEngine, object>;

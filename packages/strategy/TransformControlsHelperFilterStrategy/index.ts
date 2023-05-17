@@ -17,7 +17,7 @@ export interface TransformHelperEngine
 
 export const TRANSFORM_CONTROLS_OBJECT_HELPER_STRATEGY = transPkgName(pkgname);
 
-export const TransformControlsHelperFilterStrategy: Strategy<TransformHelperEngine> =
+export const TransformControlsHelperFilterStrategy: Strategy<TransformHelperEngine, object> =
   function () {
     return {
       name: TRANSFORM_CONTROLS_OBJECT_HELPER_STRATEGY,

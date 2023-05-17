@@ -35,6 +35,7 @@ export const getTransformControlsConfig = function (): TransformControlsConfig {
   return {
     vid: uniqueSymbol(type),
     type: "",
+    name: "",
     axis: "XYZ",
     enabled: true,
     mode: "translate",

@@ -108,122 +108,123 @@ Scene.prototype.remove = function (...object: Object3D[]): Scene {
 
 export const OBJECT_HELPER_PLUGIN = transPkgName(pkgname);
 
-export const ObjectHelperPlugin: Plugin<ObjectHelperEngine> = function () {
-  let setSceneFun: (event: SetSceneEvent) => void;
-  let afterAddFun: (event: any) => void;
-  let afterRemoveFun: (event: any) => void;
-  const cacheSceneSet = new WeakSet<Scene>();
+export const ObjectHelperPlugin: Plugin<ObjectHelperEngine, object> =
+  function () {
+    let setSceneFun: (event: SetSceneEvent) => void;
+    let afterAddFun: (event: any) => void;
+    let afterRemoveFun: (event: any) => void;
+    const cacheSceneSet = new WeakSet<Scene>();
 
-  return {
-    name: OBJECT_HELPER_PLUGIN,
-    install(engine) {
-      const helperManager = new ObjectHelperManager();
-      const helperMap = helperManager.objectHelperMap;
+    return {
+      name: OBJECT_HELPER_PLUGIN,
+      install(engine) {
+        const helperManager = new ObjectHelperManager();
+        const helperMap = helperManager.objectHelperMap;
 
-      engine.objectHelperManager = helperManager;
+        engine.objectHelperManager = helperManager;
 
-      engine.setObjectHelper = function (show: boolean) {
-        if (show) {
-          this.scene.traverse((object) => {
-            if (helperMap.has(object)) {
-              this.scene.add(helperMap.get(object)!);
+        engine.setObjectHelper = function (show: boolean) {
+          if (show) {
+            this.scene.traverse((object) => {
+              if (helperMap.has(object)) {
+                this.scene.add(helperMap.get(object)!);
+              }
+            });
+          } else {
+            for (let i = 0; i < this.scene.children.length; i++) {
+              const object = this.scene.children[i];
+              if (helperMap.has(object)) {
+                this.scene.remove(helperMap.get(object)!);
+              }
             }
+          }
+          return this;
+        };
+
+        const initSceneHelper = (scene: Scene) => {
+          if (cacheSceneSet.has(scene)) {
+            return;
+          }
+
+          scene.traverse((object) => {
+            const helper = helperManager.addObjectHelper(object);
+            helper && scene.add(helper);
           });
-        } else {
-          for (let i = 0; i < this.scene.children.length; i++) {
-            const object = this.scene.children[i];
-            if (helperMap.has(object)) {
-              this.scene.remove(helperMap.get(object)!);
+          cacheSceneSet.add(scene);
+        };
+
+        afterAddFun = (event) => {
+          const objects = event.objects;
+
+          for (const object of objects) {
+            const helper = helperManager.addObjectHelper(object) as Sprite;
+
+            if (!helper) {
+              continue;
             }
+
+            engine.scene.add(helper);
           }
-        }
-        return this;
-      };
+        };
 
-      const initSceneHelper = (scene: Scene) => {
-        if (cacheSceneSet.has(scene)) {
-          return;
-        }
+        afterRemoveFun = (event) => {
+          const objects = event.objects;
 
-        scene.traverse((object) => {
-          const helper = helperManager.addObjectHelper(object);
-          helper && scene.add(helper);
+          for (const object of objects) {
+            const helper = helperManager.disposeObjectHelper(object);
+
+            if (!helper) {
+              continue;
+            }
+
+            engine.scene.remove(helper);
+          }
+        };
+
+        engine.scene.addEventListener(AFTERADD, afterAddFun);
+
+        engine.scene.addEventListener(AFTERREMOVE, afterRemoveFun);
+
+        setSceneFun = (event) => {
+          const scene = event.scene;
+          // 初始化场景辅助
+          !cacheSceneSet.has(scene) && initSceneHelper(scene);
+
+          if (!scene.hasEventListener(AFTERADD, afterAddFun)) {
+            scene.addEventListener(AFTERADD, afterAddFun);
+          }
+
+          if (!scene.hasEventListener(AFTERREMOVE, afterRemoveFun)) {
+            scene.addEventListener(AFTERREMOVE, afterRemoveFun);
+          }
+        };
+
+        engine.addEventListener<SetSceneEvent>(
+          ENGINE_EVENT.SETSCENE,
+          setSceneFun
+        );
+      },
+      dispose(
+        engine: Optional<
+          ObjectHelperEngine,
+          "objectHelperManager" | "setObjectHelper"
+        >
+      ) {
+        engine.objectHelperManager!.objectHelperMap.forEach((helper) => {
+          if (helper.parent) {
+            helper.parent.remove(helper);
+          }
         });
-        cacheSceneSet.add(scene);
-      };
 
-      afterAddFun = (event) => {
-        const objects = event.objects;
+        engine.objectHelperManager!.dispose();
 
-        for (const object of objects) {
-          const helper = helperManager.addObjectHelper(object) as Sprite;
+        delete engine.objectHelperManager;
+        delete engine.setObjectHelper;
 
-          if (!helper) {
-            continue;
-          }
-
-          engine.scene.add(helper);
-        }
-      };
-
-      afterRemoveFun = (event) => {
-        const objects = event.objects;
-
-        for (const object of objects) {
-          const helper = helperManager.disposeObjectHelper(object);
-
-          if (!helper) {
-            continue;
-          }
-
-          engine.scene.remove(helper);
-        }
-      };
-
-      engine.scene.addEventListener(AFTERADD, afterAddFun);
-
-      engine.scene.addEventListener(AFTERREMOVE, afterRemoveFun);
-
-      setSceneFun = (event) => {
-        const scene = event.scene;
-        // 初始化场景辅助
-        !cacheSceneSet.has(scene) && initSceneHelper(scene);
-
-        if (!scene.hasEventListener(AFTERADD, afterAddFun)) {
-          scene.addEventListener(AFTERADD, afterAddFun);
-        }
-
-        if (!scene.hasEventListener(AFTERREMOVE, afterRemoveFun)) {
-          scene.addEventListener(AFTERREMOVE, afterRemoveFun);
-        }
-      };
-
-      engine.addEventListener<SetSceneEvent>(
-        ENGINE_EVENT.SETSCENE,
-        setSceneFun
-      );
-    },
-    dispose(
-      engine: Optional<
-        ObjectHelperEngine,
-        "objectHelperManager" | "setObjectHelper"
-      >
-    ) {
-      engine.objectHelperManager!.objectHelperMap.forEach((helper) => {
-        if (helper.parent) {
-          helper.parent.remove(helper);
-        }
-      });
-
-      engine.objectHelperManager!.dispose();
-
-      delete engine.objectHelperManager;
-      delete engine.setObjectHelper;
-
-      engine.removeEventListener<SetSceneEvent>(
-        ENGINE_EVENT.SETSCENE,
-        setSceneFun
-      );
-    },
+        engine.removeEventListener<SetSceneEvent>(
+          ENGINE_EVENT.SETSCENE,
+          setSceneFun
+        );
+      },
+    };
   };
-};

@@ -216,7 +216,7 @@ importers:
       '@vis-three/strategy-css3d-render': link:../../strategy/CSS3DRenderStrategy
       '@vis-three/strategy-css3d-renderer-support': link:../../strategy/CSS3DRendererSupportStrategy
       '@vis-three/strategy-effect-render': link:../../strategy/EffectRenderStrategy
-      '@vis-three/strategy-orbit-controls-support': link:../../strategy/OrbitControlsSupportStrategy
+      '@vis-three/strategy-orbit-controls-support': link:../../strategy/OrbitControlsSupport
       '@vis-three/strategy-orbit-render': link:../../strategy/OrbitRenderStrategy
       '@vis-three/strategy-webgl-renderer-support': link:../../strategy/WebGLRendererSupportStrategy
     devDependencies:
@@ -328,7 +328,6 @@ importers:
       '@vis-three/plugin-effect-composer': workspace:^0.6.1
       '@vis-three/plugin-grid-helper': workspace:^0.6.1
       '@vis-three/plugin-keyboard-manager': workspace:^0.6.1
-      '@vis-three/plugin-object-helper': workspace:^0.6.0
       '@vis-three/plugin-orbit-controls': workspace:^0.6.1
       '@vis-three/plugin-path-drawing': workspace:^0.6.4
       '@vis-three/plugin-selection': workspace:^0.6.0
@@ -343,13 +342,11 @@ importers:
       '@vis-three/strategy-css3d-renderer-support': workspace:^0.6.0
       '@vis-three/strategy-effect-render': workspace:^0.6.1
       '@vis-three/strategy-grid-viewpoint': workspace:^0.6.1
-      '@vis-three/strategy-helper-select-interact': workspace:^0.6.0
       '@vis-three/strategy-orbit-controls-support': workspace:^0.6.0
       '@vis-three/strategy-orbit-render': workspace:^0.6.1
       '@vis-three/strategy-orbit-viewpoint': workspace:^0.6.1
       '@vis-three/strategy-stats-render': workspace:^0.6.0
       '@vis-three/strategy-trans-select-event-support': workspace:^0.6.0
-      '@vis-three/strategy-transform-controls-helper-filter': workspace:^0.6.0
       '@vis-three/strategy-transform-controls-support': workspace:^0.6.0
       '@vis-three/strategy-transform-keyboard': workspace:^0.6.0
       '@vis-three/strategy-webgl-renderer-support': workspace:^0.6.0
@@ -370,7 +367,6 @@ importers:
       '@vis-three/plugin-effect-composer': link:../../plugins/EffectComposerPlugin
       '@vis-three/plugin-grid-helper': link:../../plugins/GridHelperPlugin
       '@vis-three/plugin-keyboard-manager': link:../../plugins/KeyboardManager
-      '@vis-three/plugin-object-helper': link:../../plugins/ObjectHelper
       '@vis-three/plugin-orbit-controls': link:../../plugins/OrbitControlsPlugin
       '@vis-three/plugin-path-drawing': link:../../plugins/PathDrawing
       '@vis-three/plugin-selection': link:../../plugins/SelectionPlugin
@@ -385,13 +381,11 @@ importers:
       '@vis-three/strategy-css3d-renderer-support': link:../../strategy/CSS3DRendererSupportStrategy
       '@vis-three/strategy-effect-render': link:../../strategy/EffectRenderStrategy
       '@vis-three/strategy-grid-viewpoint': link:../../strategy/GridViewpointStrategy
-      '@vis-three/strategy-helper-select-interact': link:../../strategy/HelperSelectInteractStrategy
-      '@vis-three/strategy-orbit-controls-support': link:../../strategy/OrbitControlsSupportStrategy
+      '@vis-three/strategy-orbit-controls-support': link:../../strategy/OrbitControlsSupport
       '@vis-three/strategy-orbit-render': link:../../strategy/OrbitRenderStrategy
       '@vis-three/strategy-orbit-viewpoint': link:../../strategy/OrbitViewpointStrategy
       '@vis-three/strategy-stats-render': link:../../strategy/StatsRenderStrategy
       '@vis-three/strategy-trans-select-event-support': link:../../strategy/TransSelectEventSupportStrategy
-      '@vis-three/strategy-transform-controls-helper-filter': link:../../strategy/TransformControlsHelperFilterStrategy
       '@vis-three/strategy-transform-controls-support': link:../../strategy/TransformControlsSupportStrategy
       '@vis-three/strategy-transform-keyboard': link:../../strategy/TransformKeyboardStrategy
       '@vis-three/strategy-webgl-renderer-support': link:../../strategy/WebGLRendererSupportStrategy
@@ -536,7 +530,7 @@ importers:
       '@vis-three/strategy-grid-viewpoint': link:../strategy/GridViewpointStrategy
       '@vis-three/strategy-helper-select-interact': link:../strategy/HelperSelectInteractStrategy
       '@vis-three/strategy-keyboard-move-render': link:../strategy/KeyboardMoveRenderStrategy
-      '@vis-three/strategy-orbit-controls-support': link:../strategy/OrbitControlsSupportStrategy
+      '@vis-three/strategy-orbit-controls-support': link:../strategy/OrbitControlsSupport
       '@vis-three/strategy-orbit-render': link:../strategy/OrbitRenderStrategy
       '@vis-three/strategy-orbit-viewpoint': link:../strategy/OrbitViewpointStrategy
       '@vis-three/strategy-stats-render': link:../strategy/StatsRenderStrategy
@@ -719,6 +713,7 @@ importers:
       '@vis-three/module-curve': workspace:^0.6.0
       '@vis-three/module-geometry': workspace:^0.6.5
       '@vis-three/module-group': workspace:^0.6.2
+      '@vis-three/module-helper': workspace:^0.6.0
       '@vis-three/module-light': workspace:^0.6.2
       '@vis-three/module-line': workspace:^0.6.3
       '@vis-three/module-material': workspace:^0.6.3
@@ -747,6 +742,7 @@ importers:
       '@vis-three/module-curve': link:curve
       '@vis-three/module-geometry': link:geometry
       '@vis-three/module-group': link:group
+      '@vis-three/module-helper': link:helper
       '@vis-three/module-light': link:light
       '@vis-three/module-line': link:line
       '@vis-three/module-material': link:material
@@ -1045,6 +1041,45 @@ importers:
       eslint-config-prettier: 8.8.0_eslint@8.36.0
       eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
       prettier: 2.8.7
+      three: 0.141.0
+      typescript: 4.9.5
+      vite: 2.9.15
+
+  packages/library/module/helper:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/convenient': workspace:^0.5.1
+      '@vis-three/core': workspace:^0.6.1
+      '@vis-three/middleware': workspace:^0.6.3
+      '@vis-three/module-solid-object': workspace:^0.6.0
+      '@vis-three/utils': workspace:^0.6.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+      uuid: ^8.3.2
+      vite: ^2.9.15
+    dependencies:
+      '@vis-three/convenient': link:../../../convenient
+      '@vis-three/core': link:../../../core
+      '@vis-three/middleware': link:../../../middleware
+      '@vis-three/module-solid-object': link:../solidObject
+      '@vis-three/utils': link:../../../utils
+      uuid: 8.3.2
+    devDependencies:
+      '@types/node': 18.16.0
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.59.0_p5urazbkpxqwbpulw3y4eskliy
+      '@typescript-eslint/parser': 5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq
+      eslint: 8.39.0
+      eslint-config-prettier: 8.8.0_eslint@8.39.0
+      eslint-plugin-prettier: 4.2.1_5pokp25ua6t5ubushhw3tqituq
+      prettier: 2.8.8
       three: 0.141.0
       typescript: 4.9.5
       vite: 2.9.15
@@ -2865,41 +2900,6 @@ importers:
       three: 0.141.0
       typescript: 4.9.5
       vite: 2.9.15
-
-  packages/strategy/OrbitControlsSupportStrategy:
-    specifiers:
-      '@types/node': ^18.11.12
-      '@types/three': ^0.133.1
-      '@typescript-eslint/eslint-plugin': ^5.18.0
-      '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.3
-      '@vis-three/middleware': workspace:^0.6.8
-      '@vis-three/module-controls': workspace:^0.6.1
-      '@vis-three/plugin-orbit-controls': workspace:^0.6.1
-      '@vis-three/utils': workspace:^0.6.1
-      eslint: ^8.12.0
-      eslint-config-prettier: ^8.5.0
-      eslint-plugin-prettier: ^4.0.0
-      prettier: ^2.6.2
-      three: ^0.141.0
-      typescript: ^4.3.2
-    dependencies:
-      '@vis-three/core': link:../../core
-      '@vis-three/middleware': link:../../middleware
-      '@vis-three/module-controls': link:../../library/module/controls
-      '@vis-three/plugin-orbit-controls': link:../../plugins/OrbitControlsPlugin
-      '@vis-three/utils': link:../../utils
-    devDependencies:
-      '@types/node': 18.11.18
-      '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.47.1_txmweb6yn7coi7nfrp22gpyqmy
-      '@typescript-eslint/parser': 5.47.1_lzzuuodtsqwxnvqeq4g4likcqa
-      eslint: 8.30.0
-      eslint-config-prettier: 8.5.0_eslint@8.30.0
-      eslint-plugin-prettier: 4.2.1_kl4pe43v5b43npmso5hoplpbyi
-      prettier: 2.8.1
-      three: 0.141.0
-      typescript: 4.9.4
 
   packages/strategy/OrbitRenderStrategy:
     specifiers:

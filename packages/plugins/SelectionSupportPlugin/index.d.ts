@@ -8,4 +8,4 @@ export interface SelectedSupportEvent extends SelectedEvent {
     objectSymbols: string[];
 }
 export declare const SELECTION_SUPPORT_PLUGIN: string;
-export declare const SelectionSupportPlugin: Plugin<SelectionSupportEngine>;
+export declare const SelectionSupportPlugin: Plugin<SelectionSupportEngine, object>;

@@ -16,7 +16,7 @@ export interface TransformKeyboardEngine
 
 export const TRANSFORM_KEYBOARD_STRATEGY = transPkgName(pkgname);
 
-export const TransformKeyboardStrategy: Strategy<TransformKeyboardEngine> =
+export const TransformKeyboardStrategy: Strategy<TransformKeyboardEngine, object> =
   function () {
     return {
       name: TRANSFORM_KEYBOARD_STRATEGY,

@@ -10,7 +10,6 @@ import { VIEWPOINT, ViewpointPlugin, } from "@vis-three/plugin-viewpoint";
 import { TransformControlsPlugin, } from "@vis-three/plugin-transform-controls";
 import { StatsPlugin } from "@vis-three/plugin-stats";
 import { KeyboardManagerPlugin, } from "@vis-three/plugin-keyboard-manager";
-import { ObjectHelperPlugin, } from "@vis-three/plugin-object-helper";
 import { CSS2DRendererPlugin, } from "@vis-three/plugin-css2d-renderer";
 import { CSS3DRendererPlugin, } from "@vis-three/plugin-css3d-renderer";
 import { SelectionPlugin } from "@vis-three/plugin-selection";
@@ -23,11 +22,9 @@ import { TransSelectEventSupportStrategy } from "@vis-three/strategy-trans-selec
 import { StatsRenderStrategy } from "@vis-three/strategy-stats-render";
 import { GridViewpointStrategy } from "@vis-three/strategy-grid-viewpoint";
 import { TransformKeyboardStrategy } from "@vis-three/strategy-transform-keyboard";
-import { HelperSelectInteractStrategy } from "@vis-three/strategy-helper-select-interact";
 import { CSS3DRendererSupportStrategy } from "@vis-three/strategy-css3d-renderer-support";
 import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer-support";
 import { TransformControlsSupportStrategy } from "@vis-three/strategy-transform-controls-support";
-import { TransformControlsHelperFilterStrategy } from "@vis-three/strategy-transform-controls-helper-filter";
 import { OrbitControlsSupportStrategy } from "@vis-three/strategy-orbit-controls-support";
 import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 import * as moduleLibrary from "@vis-three/library-module";
@@ -62,7 +59,6 @@ export class ModelingEngineSupport extends EngineSupport {
             .install(TransformControlsPlugin())
             .install(StatsPlugin())
             .install(KeyboardManagerPlugin())
-            .install(ObjectHelperPlugin())
             .install(PathDrawingPlugin());
         this.exec(CSS2DRenderStrategy())
             .exec(CSS3DRenderStrategy())
@@ -73,11 +69,9 @@ export class ModelingEngineSupport extends EngineSupport {
             .exec(StatsRenderStrategy())
             .exec(GridViewpointStrategy())
             .exec(TransformKeyboardStrategy())
-            .exec(HelperSelectInteractStrategy())
             .exec(CSS3DRendererSupportStrategy())
             .exec(WebGLRendererSupportStrategy())
             .exec(TransformControlsSupportStrategy())
-            .exec(TransformControlsHelperFilterStrategy())
             .exec(OrbitControlsSupportStrategy())
             .exec(ComposerSupportStrategy());
     }

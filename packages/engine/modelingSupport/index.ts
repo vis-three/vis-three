@@ -55,11 +55,6 @@ import {
   KeyboardManagerPlugin,
 } from "@vis-three/plugin-keyboard-manager";
 import {
-  ObjectHelperEngine,
-  ObjectHelperPlugin,
-  ObjectHelperManager,
-} from "@vis-three/plugin-object-helper";
-import {
   CSS2DRendererEngine,
   CSS2DRendererPlugin,
 } from "@vis-three/plugin-css2d-renderer";
@@ -79,11 +74,9 @@ import { TransSelectEventSupportStrategy } from "@vis-three/strategy-trans-selec
 import { StatsRenderStrategy } from "@vis-three/strategy-stats-render";
 import { GridViewpointStrategy } from "@vis-three/strategy-grid-viewpoint";
 import { TransformKeyboardStrategy } from "@vis-three/strategy-transform-keyboard";
-import { HelperSelectInteractStrategy } from "@vis-three/strategy-helper-select-interact";
 import { CSS3DRendererSupportStrategy } from "@vis-three/strategy-css3d-renderer-support";
 import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer-support";
 import { TransformControlsSupportStrategy } from "@vis-three/strategy-transform-controls-support";
-import { TransformControlsHelperFilterStrategy } from "@vis-three/strategy-transform-controls-helper-filter";
 import { OrbitControlsSupportStrategy } from "@vis-three/strategy-orbit-controls-support";
 import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 
@@ -113,7 +106,6 @@ export class ModelingEngineSupport
     GridHelperEngine,
     AxesHelperEngine,
     SelectionSupportEngine,
-    ObjectHelperEngine,
     CSS2DRendererEngine,
     CSS3DRendererEngine,
     PathDrawingEngine
@@ -138,8 +130,6 @@ export class ModelingEngineSupport
   declare setSelectionBoxBySymbol: (
     symbols: string[]
   ) => SelectionSupportEngine;
-  declare objectHelperManager: ObjectHelperManager;
-  declare setObjectHelper: (show: boolean) => ObjectHelperEngine;
   declare css2DRenderer: CSS2DRenderer;
   declare css3DRenderer: CSS3DRenderer;
   declare pathSketcher: PathSketcher;
@@ -183,7 +173,6 @@ export class ModelingEngineSupport
       .install(TransformControlsPlugin())
       .install(StatsPlugin())
       .install(KeyboardManagerPlugin())
-      .install(ObjectHelperPlugin())
       .install(PathDrawingPlugin());
 
     this.exec(CSS2DRenderStrategy())
@@ -195,11 +184,9 @@ export class ModelingEngineSupport
       .exec(StatsRenderStrategy())
       .exec(GridViewpointStrategy())
       .exec(TransformKeyboardStrategy())
-      .exec(HelperSelectInteractStrategy())
       .exec(CSS3DRendererSupportStrategy())
       .exec(WebGLRendererSupportStrategy())
       .exec(TransformControlsSupportStrategy())
-      .exec(TransformControlsHelperFilterStrategy())
       .exec(OrbitControlsSupportStrategy())
       .exec(ComposerSupportStrategy());
   }

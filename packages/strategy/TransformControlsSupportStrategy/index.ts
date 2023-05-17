@@ -22,60 +22,62 @@ import TransformControlsProcessor, {
 
 export const TRANSFORM_CONTROLS_SUPPORT_STRATEGY = transPkgName(pkgname);
 
-export const TransformControlsSupportStrategy: Strategy<TransformControlsSupportEngine> =
-  function () {
-    return {
-      name: TRANSFORM_CONTROLS_SUPPORT_STRATEGY,
-      condition: [
-        COMPILER_MANAGER_PLUGIN,
-        DATA_SUPPORT_MANAGER_PLUGIN,
-        TRANSFORM_CONTROLS_PLUGIN,
-      ],
-      exec(engine) {
-        const compiler = engine.compilerManager.getCompiler<ControlsCompiler>(
-          MODULETYPE.CONTROLS
-        )!;
+export const TransformControlsSupportStrategy: Strategy<
+  TransformControlsSupportEngine,
+  object
+> = function () {
+  return {
+    name: TRANSFORM_CONTROLS_SUPPORT_STRATEGY,
+    condition: [
+      COMPILER_MANAGER_PLUGIN,
+      DATA_SUPPORT_MANAGER_PLUGIN,
+      TRANSFORM_CONTROLS_PLUGIN,
+    ],
+    exec(engine) {
+      const compiler = engine.compilerManager.getCompiler<ControlsCompiler>(
+        MODULETYPE.CONTROLS
+      )!;
 
-        compiler.reigstProcessor(TransformControlsProcessor, (compiler) => {
-          compiler.map.set(
-            uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS),
-            engine.transformControls
-          );
-
-          compiler.weakMap.set(
-            engine.transformControls,
-            uniqueSymbol(CONFIGTYPE.ORBITCONTROLS)
-          );
-        });
-
-        const objectToConfig = (object: Object3D): ObjectConfig | null => {
-          const symbol = engine.compilerManager.getObjectSymbol(object);
-          if (!symbol) {
-            return null;
-          }
-
-          return engine.dataSupportManager.getConfigBySymbol(symbol);
-        };
-
-        let config: ObjectConfig | null = null;
-        let mode: string;
-        engine.transformControls.addEventListener(
-          TRANSFORM_EVENT.CHANGED,
-          (event) => {
-            const e = event as unknown as ObjectChangedEvent;
-
-            e.transObjectSet.forEach((object) => {
-              config = objectToConfig(object);
-              mode = e.mode;
-              if (config) {
-                config[mode].x = object[mode].x;
-                config[mode].y = object[mode].y;
-                config[mode].z = object[mode].z;
-              }
-            });
-          }
+      compiler.reigstProcessor(TransformControlsProcessor, (compiler) => {
+        compiler.map.set(
+          uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS),
+          engine.transformControls
         );
-      },
-      rollback() {},
-    };
+
+        compiler.weakMap.set(
+          engine.transformControls,
+          uniqueSymbol(CONFIGTYPE.ORBITCONTROLS)
+        );
+      });
+
+      const objectToConfig = (object: Object3D): ObjectConfig | null => {
+        const symbol = engine.compilerManager.getObjectSymbol(object);
+        if (!symbol) {
+          return null;
+        }
+
+        return engine.dataSupportManager.getConfigBySymbol(symbol);
+      };
+
+      let config: ObjectConfig | null = null;
+      let mode: string;
+      engine.transformControls.addEventListener(
+        TRANSFORM_EVENT.CHANGED,
+        (event) => {
+          const e = event as unknown as ObjectChangedEvent;
+
+          e.transObjectSet.forEach((object) => {
+            config = objectToConfig(object);
+            mode = e.mode;
+            if (config) {
+              config[mode].x = object[mode].x;
+              config[mode].y = object[mode].y;
+              config[mode].z = object[mode].z;
+            }
+          });
+        }
+      );
+    },
+    rollback() {},
   };
+};

@@ -191,6 +191,13 @@ export class Processor<
 
     delete target[params.key];
   }
+
+  expand<P extends S>(
+    commands: ProcessorCommands<P, T, E, C>
+  ): Processor<P, T, E, Compiler<P, T>> {
+    Object.assign(<ProcessorCommands<P, T, E, C>>this.commands, commands);
+    return this as unknown as Processor<P, T, E, Compiler<P, T>>;
+  }
 }
 
 export const defineProcessor: DefineProcessor = <
