@@ -1,5 +1,5 @@
 import { PathConfig } from "@vis-three/module-path";
-import { BaseEvent, Object3D, OrthographicCamera, PerspectiveCamera, PointsMaterial } from "three";
+import { BaseEvent, Object3D, OrthographicCamera, PerspectiveCamera, PointsMaterial, Raycaster } from "three";
 import { PointerManager } from "@vis-three/plugin-pointer-manager";
 export declare enum PATHSUPPORTCONTROLS_EVENT {
     MOUSEDOWN = "mousedown",
@@ -16,10 +16,10 @@ export declare class PathSupportControls extends Object3D<ContolsEvent> {
     static moveMaterial: PointsMaterial;
     static switchMaterial: PointsMaterial;
     dragging: boolean;
+    raycaster: Raycaster;
     private anchorGizmo;
     private moveGizmo;
     private switchGizmo;
-    private raycaster;
     private plane;
     private pointerManager;
     private cachePlaneVector3;

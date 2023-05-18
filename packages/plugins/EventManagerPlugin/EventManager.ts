@@ -27,6 +27,12 @@ export interface EventManagerParameters {
   recursive?: boolean;
   penetrate?: boolean;
   support?: boolean;
+  raycaster?: {
+    params: {
+      Line?: { threshold: number };
+      Points?: { threshold: number };
+    };
+  };
 }
 
 export enum EVENTNAME {
@@ -41,7 +47,7 @@ export enum EVENTNAME {
 }
 
 export class EventManager extends EventDispatcher {
-  private raycaster: Raycaster;
+  raycaster: Raycaster;
   private scene: Scene;
   private camera: Camera;
   private filter = new Set<Object3D>();
@@ -59,6 +65,10 @@ export class EventManager extends EventDispatcher {
 
     parameters.recursive && (this.recursive = parameters.recursive);
     parameters.penetrate && (this.penetrate = parameters.penetrate);
+
+    if (parameters.raycaster) {
+      Object.assign(this.raycaster.params, parameters.raycaster.params);
+    }
   }
 
   setScene(scene: Scene): this {

@@ -18,12 +18,21 @@ export interface PathSupportControlsEngine extends EngineSupport {
   pathSupportControls: PathSupportControls;
 }
 
+export interface PathSupportControlsParameters {
+  raycaster?: {
+    params: {
+      Line?: { threshold: number };
+      Points?: { threshold: number };
+    };
+  };
+}
+
 export const PATH_SUPPORT_CONTROLS_PLUGIN = transPkgName(pkgname);
 
 export const PathSupportControlsPlugin: Plugin<
   PathSupportControlsEngine,
-  object
-> = function () {
+  PathSupportControlsParameters
+> = function (params: PathSupportControlsParameters = {}) {
   let setCameraFun: (event: SetCameraEvent) => void;
   let setDomFun: (event: SetDomEvent) => void;
 
@@ -35,6 +44,10 @@ export const PathSupportControlsPlugin: Plugin<
         engine.camera as PerspectiveCamera,
         engine.dom
       );
+
+      if (params.raycaster && params.raycaster.params) {
+        Object.assign(controls.raycaster.params, params.raycaster.params);
+      }
 
       controls.use(engine.pointerManager);
 

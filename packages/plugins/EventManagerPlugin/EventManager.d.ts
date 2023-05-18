@@ -1,6 +1,6 @@
 import { EventDispatcher } from "@vis-three/core";
 import { PointerManager, VisPointerEvent } from "@vis-three/plugin-pointer-manager";
-import { Camera, Event, Intersection, Object3D, Scene } from "three";
+import { Camera, Event, Intersection, Object3D, Raycaster, Scene } from "three";
 export interface ObjectEvent extends VisPointerEvent {
     intersection: Intersection<Object3D<Event>>;
 }
@@ -13,6 +13,16 @@ export interface EventManagerParameters {
     recursive?: boolean;
     penetrate?: boolean;
     support?: boolean;
+    raycaster?: {
+        params: {
+            Line?: {
+                threshold: number;
+            };
+            Points?: {
+                threshold: number;
+            };
+        };
+    };
 }
 export declare enum EVENTNAME {
     POINTERDOWN = "pointerdown",
@@ -25,7 +35,7 @@ export declare enum EVENTNAME {
     CONTEXTMENU = "contextmenu"
 }
 export declare class EventManager extends EventDispatcher {
-    private raycaster;
+    raycaster: Raycaster;
     private scene;
     private camera;
     private filter;

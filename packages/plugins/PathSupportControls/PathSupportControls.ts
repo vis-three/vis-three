@@ -69,6 +69,7 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
   });
 
   dragging = false;
+  raycaster = new Raycaster();
 
   private anchorGizmo = new Points(
     new BufferGeometry(),
@@ -84,7 +85,6 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
     PathSupportControls.switchMaterial
   );
 
-  private raycaster = new Raycaster();
   private plane = new Plane();
   private pointerManager!: PointerManager;
 
@@ -367,6 +367,8 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
     const intersectPoint = this.intersectPoint(event);
 
     if (intersectPoint) {
+      this.dragging = true;
+
       if (this.currentGuizmo === this.switchGizmo) {
         const configIndex =
           this.geometryIndexFunMap.arcClockwise[this.currentIndex];
@@ -393,8 +395,6 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
         this.domElement.addEventListener("mouseup", this._pointerUp);
         return;
       }
-
-      this.dragging = true;
 
       this.cacheMouseDownPoistion
         .copy(this.intersectPlane(event)!)

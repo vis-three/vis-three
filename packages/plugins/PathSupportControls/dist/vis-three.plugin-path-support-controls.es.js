@@ -7,7 +7,7 @@ var __publicField = (obj, key, value) => {
 import { ENGINE_EVENT } from "@vis-three/core";
 import { PLUGINS, POINTER_MANAGER_PLUGIN } from "@vis-three/middleware";
 import { getArcDetail, transPkgName } from "@vis-three/utils";
-import { CanvasTexture, Object3D, PointsMaterial, AlwaysDepth, Points, BufferGeometry, Raycaster, Plane, Vector3, Quaternion, BufferAttribute } from "three";
+import { CanvasTexture, Object3D, PointsMaterial, AlwaysDepth, Raycaster, Points, BufferGeometry, Plane, Vector3, Quaternion, BufferAttribute } from "three";
 import { CanvasGenerator } from "@vis-three/convenient";
 const name = "@vis-three/plugin-path-support-controls";
 const anchorTexture = new CanvasTexture(
@@ -65,6 +65,7 @@ const _PathSupportControls = class extends Object3D {
   constructor(camera, dom, object, config) {
     super();
     __publicField(this, "dragging", false);
+    __publicField(this, "raycaster", new Raycaster());
     __publicField(this, "anchorGizmo", new Points(
       new BufferGeometry(),
       _PathSupportControls.anchorMaterial
@@ -77,7 +78,6 @@ const _PathSupportControls = class extends Object3D {
       new BufferGeometry(),
       _PathSupportControls.switchMaterial
     ));
-    __publicField(this, "raycaster", new Raycaster());
     __publicField(this, "plane", new Plane());
     __publicField(this, "pointerManager");
     __publicField(this, "cachePlaneVector3", new Vector3());
@@ -274,6 +274,7 @@ const _PathSupportControls = class extends Object3D {
     this.plane.set(this.cacheNormal, this.cachePosition.length());
     const intersectPoint = this.intersectPoint(event);
     if (intersectPoint) {
+      this.dragging = true;
       if (this.currentGuizmo === this.switchGizmo) {
         const configIndex = this.geometryIndexFunMap.arcClockwise[this.currentIndex];
         const currentSegment = this.config.curves[configIndex];
@@ -294,7 +295,6 @@ const _PathSupportControls = class extends Object3D {
         this.domElement.addEventListener("mouseup", this._pointerUp);
         return;
       }
-      this.dragging = true;
       this.cacheMouseDownPoistion.copy(this.intersectPlane(event)).sub(this.cachePosition);
       if (this.currentGuizmo === this.moveGizmo) {
         if (this.geometryIndexFunMap.arcVertical.includes(this.currentIndex)) {
@@ -425,7 +425,7 @@ __publicField(PathSupportControls, "switchMaterial", new PointsMaterial({
   size: 15
 }));
 const PATH_SUPPORT_CONTROLS_PLUGIN = transPkgName(name);
-const PathSupportControlsPlugin = function() {
+const PathSupportControlsPlugin = function(params = {}) {
   let setCameraFun;
   let setDomFun;
   return {
@@ -436,6 +436,9 @@ const PathSupportControlsPlugin = function() {
         engine.camera,
         engine.dom
       );
+      if (params.raycaster && params.raycaster.params) {
+        Object.assign(controls.raycaster.params, params.raycaster.params);
+      }
       controls.use(engine.pointerManager);
       engine.pathSupportControls = controls;
       setDomFun = (event) => {

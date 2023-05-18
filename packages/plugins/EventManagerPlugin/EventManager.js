@@ -27,6 +27,9 @@ export class EventManager extends EventDispatcher {
         this.scene = parameters.scene;
         parameters.recursive && (this.recursive = parameters.recursive);
         parameters.penetrate && (this.penetrate = parameters.penetrate);
+        if (parameters.raycaster) {
+            Object.assign(this.raycaster.params, parameters.raycaster.params);
+        }
     }
     setScene(scene) {
         this.scene = scene;
