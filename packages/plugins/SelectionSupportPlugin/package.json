@@ -26,8 +26,8 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.6.3",
-    "@vis-three/middleware": "workspace:^0.6.8",
-    "@vis-three/plugin-selection": "workspace:^0.6.0",
+    "@vis-three/middleware": "workspace:^0.6.11",
+    "@vis-three/plugin-selection": "workspace:^0.6.2",
     "@vis-three/utils": "workspace:^0.6.1"
   },
   "files": [

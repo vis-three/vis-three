@@ -28,10 +28,10 @@
   },
   "dependencies": {
     "@vis-three/convenient": "workspace:^0.5.1",
-    "@vis-three/core": "workspace:^0.6.1",
-    "@vis-three/middleware": "workspace:^0.6.3",
+    "@vis-three/core": "workspace:^0.6.3",
+    "@vis-three/middleware": "workspace:^0.6.11",
     "@vis-three/module-solid-object": "workspace:^0.6.0",
-    "@vis-three/utils": "workspace:^0.6.0",
+    "@vis-three/utils": "workspace:^0.6.1",
     "uuid": "^8.3.2"
   },
   "files": [

@@ -27,7 +27,7 @@
   "dependencies": {
     "@vis-three/library-module": "workspace:^0.6.3",
     "@vis-three/library-parser": "workspace:^0.6.0",
-    "@vis-three/middleware": "workspace:^0.6.8",
+    "@vis-three/middleware": "workspace:^0.6.11",
     "@vis-three/plugin-camera-adaptive": "workspace:^0.6.1",
     "@vis-three/plugin-css2d-renderer": "workspace:^0.6.1",
     "@vis-three/plugin-css3d-renderer": "workspace:^0.6.1",
@@ -39,7 +39,7 @@
     "@vis-three/strategy-css3d-render": "workspace:^0.6.0",
     "@vis-three/strategy-css3d-renderer-support": "workspace:^0.6.0",
     "@vis-three/strategy-effect-render": "workspace:^0.6.1",
-    "@vis-three/strategy-orbit-controls-support": "workspace:^0.6.0",
+    "@vis-three/strategy-orbit-controls-support": "workspace:^0.6.2",
     "@vis-three/strategy-orbit-render": "workspace:^0.6.1",
     "@vis-three/strategy-webgl-renderer-support": "workspace:^0.6.0"
   },
