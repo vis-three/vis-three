@@ -7,7 +7,7 @@ export interface PluginOptions<E extends Engine> {
   dispose: (engine: E) => void;
 }
 
-export type Plugin<E extends Engine, P extends object> = (
+export type Plugin<E extends Engine, P extends object = {}> = (
   params?: P
 ) => PluginOptions<E>;
 

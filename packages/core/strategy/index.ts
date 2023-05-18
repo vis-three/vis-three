@@ -7,7 +7,7 @@ export interface StrategyOptions<E extends Engine> {
   rollback: (engine: E) => void;
 }
 
-export type Strategy<E extends Engine, P extends object> = (
+export type Strategy<E extends Engine, P extends object = {}> = (
   params?: P
 ) => StrategyOptions<E>;
 
