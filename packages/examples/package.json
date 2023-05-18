@@ -83,7 +83,7 @@
     "@vis-three/strategy-transform-controls-support": "workspace:^0.6.0",
     "@vis-three/strategy-transform-keyboard": "workspace:^0.6.0",
     "@vis-three/strategy-webgl-render": "workspace:^0.6.0",
-    "@vis-three/strategy-webgl-renderer-support": "workspace:^0.6.0",
+    "@vis-three/strategy-webgl-renderer-support": "workspace:^0.6.1",
     "ant-design-vue": "^3.2.6",
     "axios": "^0.27.2",
     "echarts": "^5.4.1",

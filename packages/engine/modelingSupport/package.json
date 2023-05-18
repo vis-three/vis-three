@@ -46,7 +46,7 @@
     "@vis-three/strategy-composer-support": "workspace:^0.6.0",
     "@vis-three/strategy-css2d-render": "workspace:^0.6.0",
     "@vis-three/strategy-css3d-render": "workspace:^0.6.0",
-    "@vis-three/strategy-css3d-renderer-support": "workspace:^0.6.0",
+    "@vis-three/strategy-css3d-renderer-support": "workspace:^0.6.1",
     "@vis-three/strategy-effect-render": "workspace:^0.6.1",
     "@vis-three/strategy-grid-viewpoint": "workspace:^0.6.1",
     "@vis-three/strategy-orbit-controls-support": "workspace:^0.6.2",
@@ -56,7 +56,7 @@
     "@vis-three/strategy-trans-select-event-support": "workspace:^0.6.0",
     "@vis-three/strategy-transform-controls-support": "workspace:^0.6.0",
     "@vis-three/strategy-transform-keyboard": "workspace:^0.6.0",
-    "@vis-three/strategy-webgl-renderer-support": "workspace:^0.6.0"
+    "@vis-three/strategy-webgl-renderer-support": "workspace:^0.6.1"
   },
   "files": [
     "**/*.js",

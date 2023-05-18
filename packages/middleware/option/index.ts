@@ -26,5 +26,11 @@ export const globalOption: GlobalOption = {
 };
 
 export const defineOption = function (options: DeepPartial<GlobalOption>) {
-  Object.assign(globalOption, options);
+  if (options.proxy) {
+    Object.assign(globalOption.proxy, options.proxy);
+  }
+
+  if (options.symbol) {
+    Object.assign(globalOption.symbol, options.symbol);
+  }
 };
