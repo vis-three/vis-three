@@ -758,7 +758,9 @@ const _GeometricOriginHelper = class extends Points {
       map: _GeometricOriginHelper.colorTexture,
       transparent: true,
       alphaTest: 0.1,
-      depthFunc: AlwaysDepth
+      depthFunc: AlwaysDepth,
+      size: 10,
+      sizeAttenuation: false
     });
     this.matrixAutoUpdate = false;
     this.matrixWorldNeedsUpdate = false;
@@ -1469,21 +1471,26 @@ class ObjectHelper extends EventDispatcher {
     if (params) {
       if (this[params]) {
         this[params].dispose();
+        this[params] = void 0;
         return;
       }
     }
     this.target = void 0;
     if (this.shape) {
       this.shape.dispose();
+      this.shape = void 0;
     }
     if (this.boundingBox) {
       this.boundingBox.dispose();
+      this.boundingBox = void 0;
     }
     if (this.geometricOrigin) {
       this.geometricOrigin.dispose();
+      this.geometricOrigin = void 0;
     }
     if (this.localAxes) {
       this.localAxes.dispose();
+      this.localAxes = void 0;
     }
   }
 }

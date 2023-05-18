@@ -507,7 +507,7 @@ importers:
       '@vis-three/plugin-grid-helper': link:../plugins/GridHelperPlugin
       '@vis-three/plugin-keyboard-manager': link:../plugins/KeyboardManager
       '@vis-three/plugin-keyboard-move-controls': link:../plugins/KeyboardMoveControlsPlugin
-      '@vis-three/plugin-loader-manager': link:../plugins/LoaderManagerPlugin
+      '@vis-three/plugin-loader-manager': link:../plugins/loaderManager
       '@vis-three/plugin-mesh-bvh': link:../plugins/MeshBVHPlugin
       '@vis-three/plugin-object-helper': link:../plugins/ObjectHelper
       '@vis-three/plugin-orbit-controls': link:../plugins/OrbitControlsPlugin
@@ -1748,7 +1748,7 @@ importers:
     dependencies:
       '@vis-three/core': link:../core
       '@vis-three/plugin-event-manager': link:../plugins/EventManagerPlugin
-      '@vis-three/plugin-loader-manager': link:../plugins/LoaderManagerPlugin
+      '@vis-three/plugin-loader-manager': link:../plugins/loaderManager
       '@vis-three/plugin-pointer-manager': link:../plugins/PointerManager
       '@vis-three/plugin-render-manager': link:../plugins/RenderManagerPlugin
       '@vis-three/utils': link:../utils
@@ -2035,35 +2035,6 @@ importers:
       vite: 2.9.15
 
   packages/plugins/KeyboardMoveControlsPlugin:
-    specifiers:
-      '@types/node': ^18.11.12
-      '@types/three': ^0.133.1
-      '@typescript-eslint/eslint-plugin': ^5.18.0
-      '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/core': workspace:^0.6.3
-      '@vis-three/utils': workspace:^0.6.1
-      eslint: ^8.12.0
-      eslint-config-prettier: ^8.5.0
-      eslint-plugin-prettier: ^4.0.0
-      prettier: ^2.6.2
-      three: ^0.141.0
-      typescript: ^4.3.2
-    dependencies:
-      '@vis-three/core': link:../../core
-      '@vis-three/utils': link:../../utils
-    devDependencies:
-      '@types/node': 18.11.12
-      '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
-      '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
-      eslint: 8.29.0
-      eslint-config-prettier: 8.5.0_eslint@8.29.0
-      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
-      prettier: 2.8.0
-      three: 0.141.0
-      typescript: 4.9.3
-
-  packages/plugins/LoaderManagerPlugin:
     specifiers:
       '@types/node': ^18.11.12
       '@types/three': ^0.133.1
@@ -2558,6 +2529,37 @@ importers:
       prettier: 2.8.0
       three: 0.141.0
       typescript: 4.9.3
+
+  packages/plugins/loaderManager:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.6.3
+      '@vis-three/utils': workspace:^0.6.1
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+      vite: ^2.9.15
+    dependencies:
+      '@vis-three/core': link:../../core
+      '@vis-three/utils': link:../../utils
+    devDependencies:
+      '@types/node': 18.16.0
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.59.0_p5urazbkpxqwbpulw3y4eskliy
+      '@typescript-eslint/parser': 5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq
+      eslint: 8.39.0
+      eslint-config-prettier: 8.8.0_eslint@8.39.0
+      eslint-plugin-prettier: 4.2.1_5pokp25ua6t5ubushhw3tqituq
+      prettier: 2.8.8
+      three: 0.141.0
+      typescript: 4.9.5
+      vite: 2.9.15
 
   packages/strategy/CSS2DRenderStrategy:
     specifiers:

@@ -6,6 +6,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
+import { DDSLoader } from "three/examples/jsm/loaders/DDSLoader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { BaseEvent, EventDispatcher } from "@vis-three/core";
 import { VideoLoader } from "./loader";
@@ -104,6 +105,7 @@ export class LoaderManager extends EventDispatcher {
       gltf: gltfLoader,
       glb: gltfLoader,
       fbx: new FBXLoader(),
+      dds: new DDSLoader(),
     };
 
     if (parameters) {

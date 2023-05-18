@@ -52,6 +52,8 @@ export class GeometricOriginHelper extends Points implements VisHelper {
       transparent: true,
       alphaTest: 0.1,
       depthFunc: AlwaysDepth,
+      size: 10,
+      sizeAttenuation: false,
     });
 
     this.matrixAutoUpdate = false;
