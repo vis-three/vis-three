@@ -1,5 +1,5 @@
 import { defineProcessor, uniqueSymbol, } from "@vis-three/middleware";
-import { getRendererConfig, } from "@vis-three/module-renderer/RendererConfig";
+import { getRendererConfig, } from "@vis-three/module-renderer";
 import { syncObject } from "@vis-three/utils";
 import { LinearEncoding, NoToneMapping, PCFShadowMap, } from "three";
 export const getWebGLRendererConfig = function () {

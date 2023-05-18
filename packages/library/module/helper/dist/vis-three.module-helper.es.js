@@ -1412,6 +1412,9 @@ class SpriteHelper extends LineSegments {
     this.material.dispose();
   }
 }
+const getHelperExpandConfig = function(config) {
+  return config;
+};
 class ObjectHelper extends EventDispatcher {
   constructor() {
     super();
@@ -1566,6 +1569,10 @@ var HelperProcessor = defineProcessor({
     const helper = new ObjectHelper();
     if (config.target) {
       const target = engine.getObjectBySymbol(config.target);
+      const targetConfig = getHelperExpandConfig(
+        engine.getConfigBySymbol(config.target)
+      );
+      targetConfig.helper = config.vid;
       if (!target) {
         console.warn(
           `object helper processor can not found target in engine ${config.target}`
@@ -1603,4 +1610,4 @@ var index = {
   processors: [HelperProcessor],
   lifeOrder: SUPPORT_LIFE_CYCLE.ZERO
 };
-export { index as default };
+export { HelperCompiler, index as default, getHelperConfig, getHelperExpandConfig, getObjectHelperConfig };

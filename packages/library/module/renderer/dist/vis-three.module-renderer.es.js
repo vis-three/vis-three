@@ -15,10 +15,18 @@ class RendererCompiler extends Compiler {
     return super.reigstProcessor(processor, fun);
   }
 }
+const getRendererConfig = function() {
+  return {
+    vid: "",
+    type: "Renderer",
+    name: "",
+    size: null
+  };
+};
 var index = {
   type: "renderer",
   compiler: RendererCompiler,
   rule: RendererRule,
   processors: []
 };
-export { index as default };
+export { RendererCompiler, index as default, getRendererConfig };

@@ -3,11 +3,11 @@ import {
   EngineSupport,
   uniqueSymbol,
 } from "@vis-three/middleware";
-import { RendererCompiler } from "@vis-three/module-renderer/RendererCompiler";
 import {
   getRendererConfig,
   RendererConfig,
-} from "@vis-three/module-renderer/RendererConfig";
+  RendererCompiler,
+} from "@vis-three/module-renderer";
 
 import { syncObject } from "@vis-three/utils";
 import { WebGLRendererEngine } from "@vis-three/plugin-webgl-renderer";

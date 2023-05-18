@@ -1,5 +1,8 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { HelperCompiler } from "./HelperCompiler";
+export * from "./expand/objectHelper";
+export * from "./HelperConfig";
+export * from "./HelperCompiler";
 declare const _default: {
     type: string;
     compiler: typeof HelperCompiler;

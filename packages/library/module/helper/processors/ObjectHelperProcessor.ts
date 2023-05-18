@@ -28,6 +28,7 @@ import {
 import { Object3D } from "three";
 import { VisHelper } from "../extends/common";
 import { SolidObject3D } from "@vis-three/module-solid-object";
+import { getHelperExpandConfig } from "../expand/objectHelper";
 
 export interface ShapeHelper extends Object3D, VisHelper {}
 
@@ -218,6 +219,11 @@ export default defineProcessor<
 
     if (config.target) {
       const target = engine.getObjectBySymbol(config.target);
+      const targetConfig = getHelperExpandConfig(
+        engine.getConfigBySymbol(config.target)!
+      );
+
+      targetConfig.helper = config.vid;
 
       if (!target) {
         console.warn(
