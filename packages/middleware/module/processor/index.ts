@@ -3,6 +3,7 @@ import {
   DeepPartial,
   DeepRecord,
   DeepUnion,
+  isObject,
 } from "@vis-three/utils";
 import { SymbolConfig } from "../common";
 import { EngineSupport } from "../../engine";
@@ -195,7 +196,23 @@ export class Processor<
   expand<P extends S>(
     commands: ProcessorCommands<P, T, E, C>
   ): Processor<P, T, E, Compiler<P, T>> {
-    Object.assign(<ProcessorCommands<P, T, E, C>>this.commands, commands);
+    const assignCommands = function (oldCommand: object, newCommand: object) {
+      for (const key in newCommand) {
+        if (isObject(newCommand[key]) && isObject(oldCommand[key])) {
+          assignCommands(oldCommand[key], newCommand[key]);
+        } else if (
+          (isObject(newCommand[key]) && !oldCommand[key]) ||
+          (!isObject(newCommand[key]) && !oldCommand[key])
+        ) {
+          oldCommand[key] = newCommand[key];
+        }
+      }
+    };
+
+    if (!this.commands) {
+      this.commands = {};
+    }
+    assignCommands(this.commands!, commands);
     return this as unknown as Processor<P, T, E, Compiler<P, T>>;
   }
 }

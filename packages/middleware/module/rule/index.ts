@@ -18,7 +18,7 @@ export const Rule: Rule<BasicCompiler> = (
 
   const tempPath = path.split(".");
 
-  if (path.length) {
+  if (tempPath.length) {
     vid = tempPath.shift()!;
   }
 
@@ -27,7 +27,7 @@ export const Rule: Rule<BasicCompiler> = (
     return;
   }
 
-  if (operate === "add" && !tempPath.length) {
+  if (operate === "add" && !tempPath.length && vid === key) {
     compiler.add(value);
     return;
   }

@@ -50,6 +50,7 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     getObjectfromModules: (modules: string[] | Record<string, any>, vid: string) => object | null;
     getObject3D: (vid: string) => Object3D<Event> | null;
     private moduleLifeCycle;
+    private processorExpands;
     constructor();
     private loadLifeCycle;
     private removeLifeCycle;

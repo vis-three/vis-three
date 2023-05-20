@@ -51,6 +51,8 @@ import {
   ModuleOptions,
   MODULETYPE,
   OBJECTMODULE,
+  ProcessorCommands,
+  ProcessorMembers,
 } from "../module";
 import { Object3D, Event } from "three";
 
@@ -114,6 +116,11 @@ export class EngineSupport
   declare getObject3D: (vid: string) => Object3D<Event> | null;
 
   private moduleLifeCycle: Array<{ module: string; order: number }> = [];
+
+  private processorExpands: {
+    processors: string[] | RegExp;
+    command: ProcessorCommands<any, any, any, any>;
+  }[] = [];
 
   constructor() {
     super();
@@ -283,6 +290,29 @@ export class EngineSupport
 
     if (options.extend) {
       options.extend(this);
+    }
+
+    options.processors.forEach((processor) => {});
+
+    if (options.expand) {
+      this.processorExpands.push(...options.expand);
+    }
+
+    //TODO:做层cache记录哪个processor 做了 哪些拓展
+    for (const config of this.processorExpands) {
+      if (Array.isArray(config.processors)) {
+        Object.values(ProcessorMembers).forEach((processor) => {
+          if ((<string[]>config.processors).includes(processor.type)) {
+            processor.expand(config.command);
+          }
+        });
+      } else {
+        Object.values(ProcessorMembers).forEach((processor) => {
+          if ((<RegExp>config.processors).test(processor.type)) {
+            processor.expand(config.command);
+          }
+        });
+      }
     }
 
     this.moduleLifeCycle.push({

@@ -102,7 +102,12 @@ const globalOption = {
   }
 };
 const defineOption = function(options) {
-  Object.assign(globalOption, options);
+  if (options.proxy) {
+    Object.assign(globalOption.proxy, options.proxy);
+  }
+  if (options.symbol) {
+    Object.assign(globalOption.symbol, options.symbol);
+  }
 };
 const generateConfig = function(type, merge, options = {
   strict: true,
@@ -1144,6 +1149,22 @@ class Processor {
     }
     delete target[params.key];
   }
+  expand(commands) {
+    const assignCommands = function(oldCommand, newCommand) {
+      for (const key in newCommand) {
+        if (isObject(newCommand[key]) && isObject(oldCommand[key])) {
+          assignCommands(oldCommand[key], newCommand[key]);
+        } else if (isObject(newCommand[key]) && !oldCommand[key] || !isObject(newCommand[key]) && !oldCommand[key]) {
+          oldCommand[key] = newCommand[key];
+        }
+      }
+    };
+    if (!this.commands) {
+      this.commands = {};
+    }
+    assignCommands(this.commands, commands);
+    return this;
+  }
 }
 const defineProcessor = (options) => {
   return new Processor(options);
@@ -1152,14 +1173,14 @@ const Rule = (input, compiler, validateFun = validate) => {
   const { operate, key, path, value } = input;
   let vid = key;
   const tempPath = path.split(".");
-  if (path.length) {
+  if (tempPath.length) {
     vid = tempPath.shift();
   }
   if (!validateFun(vid)) {
     console.warn(`${compiler.MODULE} Rule: vid is illeage: ${vid}`);
     return;
   }
-  if (operate === "add" && !tempPath.length) {
+  if (operate === "add" && !tempPath.length && vid === key) {
     compiler.add(value);
     return;
   }
@@ -1717,6 +1738,7 @@ class EngineSupport extends Engine {
   constructor() {
     super();
     __publicField(this, "moduleLifeCycle", []);
+    __publicField(this, "processorExpands", []);
     this.install(LoaderManagerPlugin()).install(PointerManagerPlugin()).install(EventManagerPlugin()).install(RenderManagerPlugin()).install(ResourceManagerPlugin()).install(DataSupportManagerPlugin()).install(CompilerManagerPlugin());
     this.exec(LoaderDataSupportStrategy()).exec(LoaderMappingStrategy()).exec(CompilerSupportStrategy());
   }
@@ -1836,6 +1858,26 @@ class EngineSupport extends Engine {
     dataSupport.addCompiler(compiler);
     if (options.extend) {
       options.extend(this);
+    }
+    options.processors.forEach((processor) => {
+    });
+    if (options.expand) {
+      this.processorExpands.push(...options.expand);
+    }
+    for (const config of this.processorExpands) {
+      if (Array.isArray(config.processors)) {
+        Object.values(ProcessorMembers).forEach((processor) => {
+          if (config.processors.includes(processor.type)) {
+            processor.expand(config.command);
+          }
+        });
+      } else {
+        Object.values(ProcessorMembers).forEach((processor) => {
+          if (config.processors.test(processor.type)) {
+            processor.expand(config.command);
+          }
+        });
+      }
     }
     this.moduleLifeCycle.push({
       module: options.type,

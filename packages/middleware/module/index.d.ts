@@ -1,6 +1,6 @@
 import { EngineSupport } from "../engine";
 import { Compiler } from "./compiler";
-import { Processor } from "./processor";
+import { Processor, ProcessorCommands } from "./processor";
 import { Rule } from "./rule";
 export * from "./compiler";
 export * from "./dataContainer";
@@ -19,4 +19,8 @@ export interface ModuleOptions<C extends Compiler<any, any>> {
     object?: boolean;
     extend?: <E extends EngineSupport>(engine: E) => void;
     lifeOrder?: number;
+    expand?: {
+        processors: string[] | RegExp;
+        command: ProcessorCommands<any, any, any, any>;
+    }[];
 }

@@ -41,5 +41,6 @@ export declare class Processor<S extends SymbolConfig, T extends object, E exten
     add(params: ProcessParams<S, T, E, C>): void;
     set(params: ProcessParams<S, T, E, C>): void;
     delete(params: ProcessParams<S, T, E, C>): void;
+    expand<P extends S>(commands: ProcessorCommands<P, T, E, C>): Processor<P, T, E, Compiler<P, T>>;
 }
 export declare const defineProcessor: DefineProcessor;
