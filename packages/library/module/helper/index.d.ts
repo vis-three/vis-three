@@ -9,5 +9,16 @@ declare const _default: {
     rule: import("@vis-three/middleware").Rule<HelperCompiler>;
     processors: import("@vis-three/middleware").Processor<import("./HelperConfig").ObjectHelperConfig, import("./processors/ObjectHelperProcessor").ObjectHelper, import("@vis-three/middleware").EngineSupport, HelperCompiler>[];
     lifeOrder: SUPPORT_LIFE_CYCLE;
+    expand: {
+        processors: RegExp;
+        command: {
+            add: {
+                helper(): void;
+            };
+            set: {
+                helper(): void;
+            };
+        };
+    }[];
 };
 export default _default;

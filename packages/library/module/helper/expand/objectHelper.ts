@@ -5,3 +5,12 @@ export const getHelperExpandConfig = function <C extends SymbolConfig>(
 ) {
   return config as C & { helper: string };
 };
+
+export const expandCommand = {
+  add: {
+    helper() {},
+  },
+  set: {
+    helper() {},
+  },
+};

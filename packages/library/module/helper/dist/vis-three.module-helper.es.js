@@ -1415,6 +1415,16 @@ class SpriteHelper extends LineSegments {
 const getHelperExpandConfig = function(config) {
   return config;
 };
+const expandCommand = {
+  add: {
+    helper() {
+    }
+  },
+  set: {
+    helper() {
+    }
+  }
+};
 class ObjectHelper extends EventDispatcher {
   constructor() {
     super();
@@ -1608,6 +1618,12 @@ var index = {
   compiler: HelperCompiler,
   rule: HelperRule,
   processors: [HelperProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.ZERO
+  lifeOrder: SUPPORT_LIFE_CYCLE.FOUR,
+  expand: [
+    {
+      processors: new RegExp("Mesh|Light|Line|Points|Group|Object3D"),
+      command: expandCommand
+    }
+  ]
 };
-export { HelperCompiler, index as default, getHelperConfig, getHelperExpandConfig, getObjectHelperConfig };
+export { HelperCompiler, index as default, expandCommand, getHelperConfig, getHelperExpandConfig, getObjectHelperConfig };
