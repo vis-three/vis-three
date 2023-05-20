@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Compiler, Rule, getSymbolConfig, defineProcessor, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { Compiler, Rule, getSymbolConfig, defineProcessor, globalAntiShake, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { validate } from "uuid";
 import { EventDispatcher } from "@vis-three/core";
 import { LineBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, CameraHelper as CameraHelper$1, Matrix4, PerspectiveCamera, OrthographicCamera, Color, PlaneBufferGeometry, EdgesGeometry, Sphere, Vector3, Mesh, OctahedronBufferGeometry, MeshBasicMaterial, Box3, Points, CanvasTexture, BufferAttribute, PointsMaterial, AlwaysDepth, ShaderMaterial, Sprite, SpriteMaterial, Vector2 } from "three";
@@ -1509,19 +1509,24 @@ class ObjectHelper extends EventDispatcher {
 }
 const eventMap = /* @__PURE__ */ new WeakMap();
 const addHelper = function(helper, config, engine) {
-  const object = engine.getObjectBySymbol(config.target);
-  if (!object) {
-    console.warn(
-      `object helper processor can not fund object: ${config.target}`
-    );
-    return;
-  }
-  object.parent.add(helper);
-  const cacheFun = () => {
+  globalAntiShake.exec((finish) => {
+    const object = engine.getObjectBySymbol(config.target);
+    if (!object || !object.parent) {
+      if (finish) {
+        console.warn(
+          `object helper processor can not fund object parent: ${object}`
+        );
+      }
+      return false;
+    }
     object.parent.add(helper);
-  };
-  Bus.compilerEvent.on(object, `${COMPILER_EVENT.UPDATE}:parent`, cacheFun);
-  eventMap.set(object, cacheFun);
+    const cacheFun = () => {
+      object.parent.add(helper);
+    };
+    Bus.compilerEvent.on(object, `${COMPILER_EVENT.UPDATE}:parent`, cacheFun);
+    eventMap.set(object, cacheFun);
+    return true;
+  });
 };
 const removeHelper = function(helper, config, target, engine) {
   const object = engine.getObjectBySymbol(config.target);

@@ -3,6 +3,7 @@ import {
   COMPILER_EVENT,
   defineProcessor,
   EngineSupport,
+  globalAntiShake,
 } from "@vis-three/middleware";
 import { HelperCompiler } from "../HelperCompiler";
 import { getObjectHelperConfig, ObjectHelperConfig } from "../HelperConfig";
@@ -133,20 +134,27 @@ const addHelper = function (
   config: ObjectHelperConfig,
   engine: EngineSupport
 ) {
-  const object = engine.getObjectBySymbol(config.target) as Object3D;
-  if (!object) {
-    console.warn(
-      `object helper processor can not fund object: ${config.target}`
-    );
-    return;
-  }
-  object.parent!.add(helper);
+  globalAntiShake.exec((finish) => {
+    const object = engine.getObjectBySymbol(config.target) as Object3D;
+    if (!object || !object.parent) {
+      if (finish) {
+        console.warn(
+          `object helper processor can not fund object parent: ${object}`
+        );
+      }
+      return false;
+    }
 
-  const cacheFun = () => {
     object.parent!.add(helper);
-  };
-  Bus.compilerEvent.on(object, `${COMPILER_EVENT.UPDATE}:parent`, cacheFun);
-  eventMap.set(object, cacheFun);
+
+    const cacheFun = () => {
+      object.parent!.add(helper);
+    };
+    Bus.compilerEvent.on(object, `${COMPILER_EVENT.UPDATE}:parent`, cacheFun);
+    eventMap.set(object, cacheFun);
+
+    return true;
+  });
 };
 
 const removeHelper = function (
