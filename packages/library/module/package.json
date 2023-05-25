@@ -31,7 +31,7 @@
     "@vis-three/module-curve": "workspace:^0.6.1",
     "@vis-three/module-geometry": "workspace:^0.6.7",
     "@vis-three/module-group": "workspace:^0.6.2",
-    "@vis-three/module-helper": "workspace:^0.6.0",
+    "@vis-three/module-helper": "workspace:^0.6.1",
     "@vis-three/module-light": "workspace:^0.6.2",
     "@vis-three/module-line": "workspace:^0.6.3",
     "@vis-three/module-material": "workspace:^0.6.3",

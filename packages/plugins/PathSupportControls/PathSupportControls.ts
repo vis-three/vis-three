@@ -37,6 +37,8 @@ export enum PATHSUPPORTCONTROLS_EVENT {
 export interface ContolsEvent extends BaseEvent {
   index: number;
   config: PathConfig;
+  last: boolean;
+  object: Object3D;
   operate: "anchor" | "move" | "switch";
 }
 
@@ -378,6 +380,8 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
           type: PATHSUPPORTCONTROLS_EVENT.MOUSEDOWN,
           index: configIndex,
           config: this.config,
+          last: false,
+          object: this.object,
           operate: "switch",
         });
 
@@ -388,6 +392,8 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
           type: PATHSUPPORTCONTROLS_EVENT.CHANGING,
           index: configIndex,
           config: this.config,
+          last: false,
+          object: this.object,
           operate: "switch",
         });
 
@@ -408,6 +414,8 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
             type: PATHSUPPORTCONTROLS_EVENT.MOUSEDOWN,
             index: message.segment,
             config: this.config,
+            last: false,
+            object: this.object,
             operate: "move",
           });
 
@@ -424,6 +432,8 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
         type: PATHSUPPORTCONTROLS_EVENT.MOUSEDOWN,
         index: cacheConfigIndex,
         config: this.config,
+        last: this.currentIndex === this.config.curves.length ? true : false,
+        object: this.object,
         operate: "anchor",
       });
       this.cacheConfigIndex = cacheConfigIndex;
@@ -485,6 +495,8 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
         type: PATHSUPPORTCONTROLS_EVENT.CHANGING,
         index: cacheConfigIndex,
         config: this.config,
+        last: this.currentIndex === this.config.curves.length ? true : false,
+        object: this.object,
         operate: "anchor",
       });
     } else if (currentGuizmo === this.moveGizmo) {
@@ -518,6 +530,8 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
           type: PATHSUPPORTCONTROLS_EVENT.CHANGING,
           index: message.segment,
           config: this.config,
+          last: false,
+          object: this.object,
           operate: "move",
         });
       }
@@ -539,6 +553,8 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
       type: PATHSUPPORTCONTROLS_EVENT.MOUSEUP,
       index: this.cacheConfigIndex,
       config: this.config,
+      last: this.currentIndex === this.config.curves.length ? true : false,
+      object: this.object,
       operate:
         this.currentGuizmo === this.anchorGizmo
           ? "anchor"

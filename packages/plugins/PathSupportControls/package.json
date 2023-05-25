@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/plugin-path-support-controls",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "vis-three path-support-controls plugin",
   "main": "dist/vis-three.plugin-path-support-controls.umd.js",
   "module": "dist/vis-three.plugin-path-support-controls.es.js",
@@ -30,7 +30,7 @@
   "dependencies": {
     "@vis-three/convenient": "workspace:^0.5.1",
     "@vis-three/core": "workspace:^0.6.4",
-    "@vis-three/middleware": "workspace:^0.6.11",
+    "@vis-three/middleware": "workspace:^0.6.12",
     "@vis-three/plugin-pointer-manager": "workspace:^0.6.4",
     "@vis-three/utils": "workspace:^0.6.1"
   },

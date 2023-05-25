@@ -282,6 +282,8 @@ const _PathSupportControls = class extends Object3D {
           type: "mousedown",
           index: configIndex,
           config: this.config,
+          last: false,
+          object: this.object,
           operate: "switch"
         });
         currentSegment.params[3] = !currentSegment.params[3];
@@ -289,6 +291,8 @@ const _PathSupportControls = class extends Object3D {
           type: "changing",
           index: configIndex,
           config: this.config,
+          last: false,
+          object: this.object,
           operate: "switch"
         });
         this.cacheConfigIndex = configIndex;
@@ -304,6 +308,8 @@ const _PathSupportControls = class extends Object3D {
             type: "mousedown",
             index: message.segment,
             config: this.config,
+            last: false,
+            object: this.object,
             operate: "move"
           });
           this.cacheConfigIndex = message.segment;
@@ -314,6 +320,8 @@ const _PathSupportControls = class extends Object3D {
         type: "mousedown",
         index: cacheConfigIndex,
         config: this.config,
+        last: this.currentIndex === this.config.curves.length ? true : false,
+        object: this.object,
         operate: "anchor"
       });
       this.cacheConfigIndex = cacheConfigIndex;
@@ -359,6 +367,8 @@ const _PathSupportControls = class extends Object3D {
         type: "changing",
         index: cacheConfigIndex,
         config: this.config,
+        last: this.currentIndex === this.config.curves.length ? true : false,
+        object: this.object,
         operate: "anchor"
       });
     } else if (currentGuizmo === this.moveGizmo) {
@@ -378,6 +388,8 @@ const _PathSupportControls = class extends Object3D {
           type: "changing",
           index: message.segment,
           config: this.config,
+          last: false,
+          object: this.object,
           operate: "move"
         });
       }
@@ -395,6 +407,8 @@ const _PathSupportControls = class extends Object3D {
       type: "mouseup",
       index: this.cacheConfigIndex,
       config: this.config,
+      last: this.currentIndex === this.config.curves.length ? true : false,
+      object: this.object,
       operate: this.currentGuizmo === this.anchorGizmo ? "anchor" : this.currentGuizmo === this.moveGizmo ? "move" : "switch"
     });
   }

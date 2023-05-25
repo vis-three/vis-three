@@ -9,6 +9,8 @@ export declare enum PATHSUPPORTCONTROLS_EVENT {
 export interface ContolsEvent extends BaseEvent {
     index: number;
     config: PathConfig;
+    last: boolean;
+    object: Object3D;
     operate: "anchor" | "move" | "switch";
 }
 export declare class PathSupportControls extends Object3D<ContolsEvent> {
