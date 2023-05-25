@@ -110,6 +110,17 @@ npm i three
 npm i vis-three
 ```
 
+::: warning
+在`vis-three`@0.5.3 版本中，暂时不支持高版本`three`,推荐安装`three`的 0.141.0 版本，
+待后续更新后会支持更高版本的`three`
+
+```
+npm i three@0.141.0
+npm i vis-three
+```
+
+:::
+
 ### 整体安装后的使用
 
 ```js

@@ -1,4 +1,4 @@
-import pkg from "../../../../package.json";
+// import pkg from "../../../../package.json";
 import { defineConfig } from "vitepress";
 import path from "path";
 import fs from "fs";
@@ -87,7 +87,7 @@ export default defineConfig({
         },
       ],
     },
-    repo: pkg.repository,
+    // repo: pkg.repository,
     repoLabel: "github",
 
     lastUpdatedText: "更新日期",

@@ -62,7 +62,7 @@ engine.scene.add(
 
 ### @vis-three/modeling-engine
 
-原生 `three.js` 编辑期引擎，主要是更好的支持用户开发期进行原生`three.js`场景构建，提供视觉辅助与一定的调节监控功能。
+原生 `three.js` 编辑器引擎，主要是更好的支持用户开发期进行原生`three.js`场景构建，提供视觉辅助与一定的调节监控功能。
 
 #### 安装
 
@@ -228,7 +228,7 @@ generateConfig(CONFIGTYPE.MESH, {
 
 ### @vis-three/modeling-engine-support
 
-在原生 `three.js` 编辑期引擎基础上接入了配置化开发的能力，主要是更好的支持用户开发期进行配置化的场景构建，提供视觉辅助与一定的调节监控功能。
+在原生 `three.js` 编辑器引擎基础上接入了配置化开发的能力，主要是更好的支持用户开发期进行配置化的场景构建，提供视觉辅助与一定的调节监控功能。
 
 #### 安装
 
