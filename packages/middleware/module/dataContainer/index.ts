@@ -88,23 +88,43 @@ const containerDeleter = function (
 export class DataContainer<
   C extends SymbolConfig
 > extends Subject<ProxyNotice> {
-  static generator = globalOption.proxy.expand
-    ? () => globalOption.proxy.expand!({})
-    : () => ({});
-
   container: CompilerTarget<C>;
 
   subscriptions = new Map<SymbolConfig["vid"], Subscription>();
 
   constructor() {
     super();
-    this.container = new Proxy(DataContainer.generator(), {
-      get: containerGetter,
-      set: (target: any, key: string | symbol, value: any, receiver: any) =>
-        containerSetter(target, key, value, receiver, this),
-      deleteProperty: (target: any, key: string | symbol) =>
-        containerDeleter(target, key, this),
-    });
+
+    const generator = globalOption.proxy.expand
+      ? (data: object = {}) => globalOption.proxy.expand!(data)
+      : (data: object = {}) => data;
+
+    if (globalOption.proxy.timing === "before") {
+      this.container = new Proxy(generator(), {
+        get: containerGetter,
+        set: (target: any, key: string | symbol, value: any, receiver: any) =>
+          containerSetter(target, key, value, receiver, this),
+        deleteProperty: (target: any, key: string | symbol) =>
+          containerDeleter(target, key, this),
+      });
+    } else {
+      this.container = generator(
+        new Proxy(
+          {},
+          {
+            get: containerGetter,
+            set: (
+              target: any,
+              key: string | symbol,
+              value: any,
+              receiver: any
+            ) => containerSetter(target, key, value, receiver, this),
+            deleteProperty: (target: any, key: string | symbol) =>
+              containerDeleter(target, key, this),
+          }
+        )
+      );
+    }
   }
 
   add(config: C) {

@@ -853,16 +853,30 @@ const containerDeleter = function(target, key, container) {
   container.remove(value.vid);
   return result;
 };
-const _DataContainer = class extends Subject {
+class DataContainer extends Subject {
   constructor() {
     super();
     __publicField(this, "container");
     __publicField(this, "subscriptions", /* @__PURE__ */ new Map());
-    this.container = new Proxy(_DataContainer.generator(), {
-      get: containerGetter,
-      set: (target, key, value, receiver) => containerSetter(target, key, value, receiver, this),
-      deleteProperty: (target, key) => containerDeleter(target, key, this)
-    });
+    const generator = globalOption.proxy.expand ? (data = {}) => globalOption.proxy.expand(data) : (data = {}) => data;
+    if (globalOption.proxy.timing === "before") {
+      this.container = new Proxy(generator(), {
+        get: containerGetter,
+        set: (target, key, value, receiver) => containerSetter(target, key, value, receiver, this),
+        deleteProperty: (target, key) => containerDeleter(target, key, this)
+      });
+    } else {
+      this.container = generator(
+        new Proxy(
+          {},
+          {
+            get: containerGetter,
+            set: (target, key, value, receiver) => containerSetter(target, key, value, receiver, this),
+            deleteProperty: (target, key) => containerDeleter(target, key, this)
+          }
+        )
+      );
+    }
   }
   add(config) {
     const observer = getObserver(config);
@@ -885,9 +899,7 @@ const _DataContainer = class extends Subject {
   remove(vid) {
     this.subscriptions.delete(vid);
   }
-};
-let DataContainer = _DataContainer;
-__publicField(DataContainer, "generator", globalOption.proxy.expand ? () => globalOption.proxy.expand({}) : () => ({}));
+}
 class Translater {
   constructor() {
     __publicField(this, "rule", () => {

@@ -8,7 +8,6 @@ export interface ProxyNotice {
     value: any;
 }
 export declare class DataContainer<C extends SymbolConfig> extends Subject<ProxyNotice> {
-    static generator: () => any;
     container: CompilerTarget<C>;
     subscriptions: Map<string, Subscription>;
     constructor();

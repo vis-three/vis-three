@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.6.4",
-    "@vis-three/middleware": "workspace:^0.6.12",
+    "@vis-three/middleware": "workspace:^0.6.13",
     "@vis-three/plugin-effect-composer": "workspace:^0.6.1",
     "@vis-three/utils": "workspace:^0.6.1"
   },

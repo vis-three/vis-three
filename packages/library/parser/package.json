@@ -26,7 +26,7 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@vis-three/middleware": "workspace:^0.6.12",
+    "@vis-three/middleware": "workspace:^0.6.13",
     "@vis-three/module-css3d": "workspace:^0.6.4",
     "@vis-three/module-geometry": "workspace:^0.6.7",
     "@vis-three/module-material": "workspace:^0.6.3",
