@@ -69,10 +69,8 @@ export class DataSupportManager extends EventDispatcher {
    * @returns this
    */
   removeConfigBySymbol(...vids: string[]): this {
-    const dataSupportList = this.dataSupportMap.values();
-
     for (const vid of vids) {
-      for (const dataSupport of dataSupportList) {
+      for (const dataSupport of this.dataSupportMap.values()) {
         if (dataSupport.existSymbol(vid)) {
           dataSupport.removeConfig(vid);
           break;
