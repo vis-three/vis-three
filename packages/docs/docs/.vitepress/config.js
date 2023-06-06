@@ -1,4 +1,3 @@
-import pkg from "../../../../package.json";
 import { defineConfig } from "vitepress";
 import path from "path";
 import fs from "fs";
@@ -12,9 +11,12 @@ export default defineConfig({
   head: [["link", { rel: "icon", href: "/favicon.ico" }]],
   themeConfig: {
     logo: "/favicon.ico",
+    outline: {
+      label: "本页目录",
+    },
     nav: [
       { text: "首页", link: "/" },
-      { text: "开始", link: "/start/start" },
+      { text: "开始", link: "/start/intro" },
       { text: "插件", link: "/plugins/start" },
       { text: "策略", link: "/strategy/start" },
       { text: "配置化", link: "/middleware/start" },
@@ -29,6 +31,7 @@ export default defineConfig({
       "/start/": [
         {
           items: [
+            { text: "介绍", link: "/start/intro" },
             { text: "开始", link: "/start/start" },
             { text: "引擎构建", link: "/start/engine" },
             { text: "自定义插件", link: "/start/plugin" },
@@ -87,7 +90,7 @@ export default defineConfig({
         },
       ],
     },
-    repo: pkg.repository,
+    repo: "https://github.com/Shiotsukikaedesari/vis-three",
     repoLabel: "github",
 
     lastUpdatedText: "更新日期",
