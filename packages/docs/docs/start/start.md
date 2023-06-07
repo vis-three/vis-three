@@ -91,6 +91,14 @@ const engine = new DisplayEngine()
   .play();
 ```
 
+:::tip
+功能注销只用输入插件或者策略的`name`就行，如果直接注销插件，其所依赖的策略也会一同注销，不过不推荐这么做，在进行插件策略注销时希望**显示的按照依赖顺序级联注销**，方便进行问题排查。
+:::
+
+:::tip
+详细预置引擎功能请查看 API 文档。
+:::
+
 ## 使用预置配置化 3D 引擎
 
 官方提供的已经集成好的配置化 3D 引擎包括：
@@ -154,7 +162,153 @@ engine.applyConfig(material, geometry, mesh);
 
 ### 功能拓展与注销功能与原生一致。
 
+:::tip
+详细预置引擎功能请查看 API 文档。
+:::
+
 ## 按需自定义组装原生 3D 引擎
+
+如果你的引擎功能需求较少，或者引擎的功能较为独特，希望从零构建 3D 引擎，那么你可以根据下面的方法进行自定义的引擎构建：
+
+### 安装原生引擎核心
+
+在进行自定义引擎构建的时候，我们需要预先准备引擎核心，引擎核心提供了插件与策略的集成机制还有引擎最基本的属性与功能。
+
+```
+npm i @vis-three/core
+```
+
+### 选取安装插件与策略依赖
+
+根据项目业务功能需要准备相关的插件与策略，如通过`npm`进行安装，或者本地编写。
+
+```
+npm i @vis-three/plugin-webgl-renderer
+npm i @vis-three/plugin-camera-adaptive
+npm i @vis-three/plugin-render-manager
+npm i @vis-three/plugin-effect-composer
+
+npm i @vis-three/strategy-effect-render
+```
+
+```js
+// 本地controls.js
+
+export const ControlsPlugin = function () {
+  // ...
+};
+```
+
+### 原生引擎构建
+
+`vis-three`提供了**类形式**的组装模式，也提供了**函数式**的组装模式。
+
+```js
+import { Engine, defineEngine } from "@vis-three/core";
+
+import { WebGLRendererPlugin } from "@vis-three/webgl-renderer";
+import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
+import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
+import { ControlsPlugin } from "./controls.js";
+
+import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
+
+// 类实例安装
+const engine = new Engine()
+  .install(RenderManagerPlugin())
+  .install(
+    WebGLRendererPlugin({
+      antialias: true,
+      alpha: true,
+    })
+  )
+  .install(
+    EffectComposerPlugin({
+      MSAA: true,
+    })
+  )
+  .install(CameraAdaptivePlugin())
+  .install(ControlsPlugin())
+  .exec(EffectRenderStrategy());
+
+// 函数式安装
+const engine = defineEngine({
+  plugins: [
+    RenderManagerPlugin(),
+    WebGLRendererPlugin({
+      antialias: true,
+      alpha: true,
+    }),
+    EffectComposerPlugin({
+      MSAA: true,
+    }),
+    CameraAdaptivePlugin(),
+    ControlsPlugin(),
+  ],
+  strategy: [EffectRenderStrategy()],
+});
+```
+
+类形式的组装模式在`ts`的构建环境下有更好的功能 API 提示。
+
+```ts
+import {
+  Screenshot,
+  WebGLRendererEngine,
+  WebGLRendererPlugin,
+} from "@vis-three/plugin-webgl-renderer";
+import {
+  EffectComposerEngine,
+  EffectComposerPlugin,
+} from "@vis-three/plugin-effect-composer";
+import {
+  RenderManager,
+  RenderManagerEngine,
+  RenderManagerPlugin,
+} from "@vis-three/plugin-render-manager";
+
+import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
+
+class MyEngine
+  extends Engine
+  implements WebGLRendererEngine, EffectComposerEngine, RenderManagerEngine
+{
+  declare dom: HTMLElement;
+  declare webGLRenderer: WebGLRenderer;
+  declare effectComposer: EffectComposer;
+  declare renderManager: RenderManager;
+  declare camera: Camera;
+  declare scene: Scene;
+
+  declare play: () => this;
+  declare stop: () => this;
+  declare render: () => this;
+
+  declare getScreenshot: (params?: Screenshot | undefined) => Promise<string>;
+
+  constructor() {
+    super();
+    this.install(RenderManagerPlugin())
+      .install(
+        WebGLRendererPlugin({
+          antialias: true,
+          alpha: true,
+        })
+      )
+      .install(
+        EffectComposerPlugin({
+          MSAA: true,
+        })
+      )
+      .exec(EffectRenderStrategy());
+  }
+}
+
+export const engine = new MyEngine();
+```
+
+### 功能拓展与注销功能与前面一致。
 
 ## 按需自定义组装配置化 3D 引擎
 
