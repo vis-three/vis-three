@@ -2,7 +2,8 @@
   <a href="https://shiotsukikaedesari.gitee.io/vis-three/" target="_blank" rel="noopener noreferrer">
     <img width="180" src="https://shiotsukikaedesari.gitee.io/vis-three/docs/favicon.ico" alt="vis-three logo">
   </a>
-  <p align="center">more convenient development for three.js.</p>
+  <p align="center">A web 3D development framework based on three.js</p>
+
 </p>
 <br/>
 <p align="center">
@@ -27,7 +28,7 @@
 
 ## VIS-THREE
 
-three.js 库二次功能封装 + 配置化的 three.js 开发。
+基于 three.js 的前端 3D 开发框架。
 
 > 夫物速成则疾亡，晚就则善终。朝华之草，夕而零落；松柏之茂，隆寒不衰。是以大雅君子恶速成。——《群书治要》
 
@@ -73,22 +74,40 @@ three.js 库二次功能封装 + 配置化的 three.js 开发。
 
 > 目前的 demo 与文档版本为 0.4 版本文档，最新文档与 demo 未更新， gitee 视频资源会失效
 
-## 功能需求与支持
+## 关于 issue
 
-### issue 管理
+### 为何要特别的进行 issue 的管理？
 
-古人云：法不轻传，道不贱卖，师不顺路，医不叩门。对于所有的 issue，开发组会根据场景分配相关的标签。
+1、 项目人员较少，需要有一套平衡生活，工作，开源的模式。
+
+2、同一个问题会有很多人遇到，需要有一套避免重复提问与回答的模式。
+
+3、避免过强的依赖，需要有一套平衡 issue 难易与 issue 频率的模式。
+
+### issue 流程
+
+1、历史 issue 查找，避免重复提及。
+
+2、没有相关 issue，进行 issue 的新增。
+
+3、等待开发组进行 issue 的分类。
+
+4、进入赞助、合作、通知群进行赞助协商与 issue 完成度确认。
+
+### 关于 issue 分类
+
+对于所有的 issue，开发组会根据场景分配相关的标签。
 
 <img src="/rm/github-label.png" height=550>
 
-开发目罗列以下几个标签作为付费赞助支持点：
+开发组罗列以下几个标签作为付费赞助支持点：
 
 - 新增标签
 - 文档标签
 - 案例标签
 - 提问标签
 
-### 赞助模式
+### 关于赞助模式
 
 **开发与赞助额度**：由于不同需求工作量会不同，具体赞助额度可进入**下方 Q 群**中商讨，群内会有赞助标准与讨论空间。
 
