@@ -14,7 +14,7 @@ npm i three
 
 ## 安装 vis-three
 
-在你使用和安装`vis-three`之前，你可以根据你目前的技术水准、项目周期或者业务需要去选择相关的开发流程和集成模式，`vis-three`提供了几种模式去进行，下面从高效到高拓展进行列举。
+在你使用和安装`vis-three`之前，你可以根据你目前的技术水准、项目周期或者业务需要去选择相关的开发流程和集成模式，`vis-three`提供了几种模式去进行，下面从高效率到高拓展进行列举。
 
 ## 使用预置原生 3D 引擎
 
@@ -85,15 +85,15 @@ const engine = new DisplayEngine()
 
 ```js
 const engine = new DisplayEngine()
-  .uninstall(LoaderManagerPlugin())
-  .rollback(EffectRenderStrategy())
+  .uninstall("LoaderManagerPlugin")
+  .rollback("EffectRenderStrategy")
   .setDom(document.getElementById("app"))
   .play();
 ```
 
 ## 使用预置配置化 3D 引擎
 
-官方提供的已经集成好的原生 3D 引擎包括：
+官方提供的已经集成好的配置化 3D 引擎包括：
 
 1. `@vis-three/engine-display-support`展示用的配置化 3D 引擎——如：模型展示等
 2. `@vis-three/engine-modeling-support`编辑用的配置化 3D 引擎——如：编辑器应用等
@@ -115,7 +115,6 @@ npm i @vis-three/engine-modeling-support
 ### 引擎使用
 
 ```js
-import * as THREE from "three";
 import { DisplayEngineSupport } from "@vis-three/engine-display-support";
 // import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
 
