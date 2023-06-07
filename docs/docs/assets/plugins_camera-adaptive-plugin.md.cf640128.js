@@ -1,1 +1,0 @@
-import{_ as e,c as a,o as t}from"./app.5e0e61e4.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/camera-adaptive-plugin.md"}'),r={name:"plugins/camera-adaptive-plugin.md"};function n(c,p,s,i,o,d){return t(),a("div")}const _=e(r,[["render",n]]);export{m as __pageData,_ as default};

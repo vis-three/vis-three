@@ -1,1 +1,0 @@
-import{_ as t,c as o,o as e}from"./app.5e0e61e4.js";const d=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/pointer-lock-controls-plugin.md"}'),n={name:"plugins/pointer-lock-controls-plugin.md"};function r(s,c,a,p,i,l){return e(),o("div")}const u=t(n,[["render",r]]);export{d as __pageData,u as default};

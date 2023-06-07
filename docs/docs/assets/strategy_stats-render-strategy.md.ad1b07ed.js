@@ -1,1 +1,0 @@
-import{_ as t,c as e,o as r}from"./app.5e0e61e4.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"strategy/stats-render-strategy.md"}'),a={name:"strategy/stats-render-strategy.md"};function s(n,o,c,d,p,_){return r(),e("div")}const f=t(a,[["render",s]]);export{m as __pageData,f as default};

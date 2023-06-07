@@ -1,1 +1,0 @@
-import{_ as t,c as e,o as a}from"./app.5e0e61e4.js";const l=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"strategy/trans-select-event-strategy.md"}'),r={name:"strategy/trans-select-event-strategy.md"};function s(n,c,o,p,_,d){return a(),e("div")}const m=t(r,[["render",s]]);export{l as __pageData,m as default};

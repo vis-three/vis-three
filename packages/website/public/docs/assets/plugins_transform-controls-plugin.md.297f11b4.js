@@ -1,1 +1,0 @@
-import{_ as t,c as r,o as n}from"./app.5e0e61e4.js";const _=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/transform-controls-plugin.md"}'),o={name:"plugins/transform-controls-plugin.md"};function e(s,a,c,p,i,l){return n(),r("div")}const f=t(o,[["render",e]]);export{_ as __pageData,f as default};

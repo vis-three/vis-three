@@ -1,1 +1,0 @@
-import{_ as t,c as e,o as r}from"./app.5e0e61e4.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"strategy/orbit-viewpoint-strategy.md"}'),a={name:"strategy/orbit-viewpoint-strategy.md"};function o(s,i,n,c,p,_){return r(),e("div")}const f=t(a,[["render",o]]);export{m as __pageData,f as default};

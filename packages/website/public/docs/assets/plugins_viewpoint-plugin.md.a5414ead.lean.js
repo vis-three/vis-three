@@ -1,1 +1,0 @@
-import{_ as e,c as t,o as n}from"./app.5e0e61e4.js";const d=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/viewpoint-plugin.md"}'),i={name:"plugins/viewpoint-plugin.md"};function o(a,p,r,s,c,l){return n(),t("div")}const u=e(i,[["render",o]]);export{d as __pageData,u as default};

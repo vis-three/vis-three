@@ -1,1 +1,0 @@
-import{_ as e,c as t,o as n}from"./app.5e0e61e4.js";const d=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/selection-plugin.md"}'),s={name:"plugins/selection-plugin.md"};function o(a,c,r,i,p,l){return n(),t("div")}const u=e(s,[["render",o]]);export{d as __pageData,u as default};

@@ -1,1 +1,0 @@
-import{_ as t,c as r,o as e}from"./app.5e0e61e4.js";const l=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"strategy/orbit-controls-support-strategy.md"}'),o={name:"strategy/orbit-controls-support-strategy.md"};function s(a,n,c,p,i,_){return e(),r("div")}const m=t(o,[["render",s]]);export{l as __pageData,m as default};

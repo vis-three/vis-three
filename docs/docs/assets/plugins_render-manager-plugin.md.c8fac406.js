@@ -1,1 +1,0 @@
-import{_ as e,c as r,o as n}from"./app.5e0e61e4.js";const _=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/render-manager-plugin.md"}'),a={name:"plugins/render-manager-plugin.md"};function t(s,o,c,p,i,d){return n(),r("div")}const m=e(a,[["render",t]]);export{_ as __pageData,m as default};

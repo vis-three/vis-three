@@ -1,1 +1,0 @@
-import{_ as e,c as t,o as s}from"./app.5e0e61e4.js";const _=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/mesh-bvh-plugin.md"}'),n={name:"plugins/mesh-bvh-plugin.md"};function a(r,o,c,p,i,l){return s(),t("div")}const d=e(n,[["render",a]]);export{_ as __pageData,d as default};

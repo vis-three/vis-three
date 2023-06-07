@@ -18,7 +18,6 @@ export default defineConfig({
       output: {
         manualChunks: {
           three: ["three"],
-          "vis-three": ["vis-three"],
           Antd: ["ant-design-vue"],
         },
       },

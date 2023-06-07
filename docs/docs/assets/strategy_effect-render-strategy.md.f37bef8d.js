@@ -1,1 +1,0 @@
-import{_ as e,c as t,o as r}from"./app.5e0e61e4.js";const i=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"strategy/effect-render-strategy.md"}'),a={name:"strategy/effect-render-strategy.md"};function s(c,n,o,f,d,p){return r(),t("div")}const m=e(a,[["render",s]]);export{i as __pageData,m as default};

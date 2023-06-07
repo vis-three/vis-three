@@ -1,1 +1,0 @@
-import{_ as e,c as t,o as r}from"./app.5e0e61e4.js";const i=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"strategy/webgl-renderer-support-strategy.md"}'),a={name:"strategy/webgl-renderer-support-strategy.md"};function s(o,n,p,c,d,_){return r(),t("div")}const l=e(a,[["render",s]]);export{i as __pageData,l as default};

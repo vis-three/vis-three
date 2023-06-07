@@ -1,1 +1,0 @@
-import{_ as e,c as r,o as s}from"./app.5e0e61e4.js";const _=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/css2d-renderer-plugin.md"}'),t={name:"plugins/css2d-renderer-plugin.md"};function n(a,c,o,d,p,i){return s(),r("div")}const u=e(t,[["render",n]]);export{_ as __pageData,u as default};
