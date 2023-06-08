@@ -1,10 +1,10 @@
-## 自定义插件
+# 自定义插件
 
 为了满足各式各样的引擎功能需求，`vis-three`提供了可拔插的插件支持功能，我们通过`WebGLRendererPlugin`插件带大家了解实现以下插件化的过程。
 
 > 本文使用的是 ts 进行插件编写。
 
-### 插件选项
+## 插件选项
 
 插件选项是一个插件最终交给`engine`时所需要的选项对象，`engine`会通过相关的选项进行相关的安装销毁操作。
 
@@ -17,7 +17,7 @@ export interface PluginOptions<E extends Engine> {
 }
 ```
 
-### 插件引擎拓展声明
+## 插件引擎拓展声明
 
 我们编写插件的很多功能，都希望能够直接通过`engine`直接访问调用，那么在此之前，我们需要对拓展后的`engine`进行声明，告诉别人使用了我们这个插件之后，`engine`会变成什么样子，会多出那些方法和属性，避免其他插件联调的时候撞车。
 
@@ -32,7 +32,7 @@ export interface WebGLRendererEngine extends Engine {
 }
 ```
 
-### 插件安装，销毁功能编写
+## 插件安装，销毁功能编写
 
 当上面相关声明准备完成之后，我们需要对插件功能进行编写，由于我们的插件化是可拔插的，所以我们需要组织好插件安装和插件销毁时候的功能逻辑。
 
@@ -97,12 +97,16 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function () {
 - `name`, `install`, `dispose`是必要的字段，不能为空。
   :::
 
-### 插件传参
+## 插件传参
 
 插件化是函数式的编写形式，既然是函数式，所以我们是可以进行参数的传递的，这样子我们就能够编写更灵活的插件。如下面的例子，我们能够在插件应用的时候传入需要的`WebGLRenderer`参数。
 
 ```ts
-export const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
+export interface WebGLRendererParameters = {
+  //...
+}
+
+export const WebGLRendererPlugin: Plugin<WebGLRendererEngine, WebGLRendererParameters> = function (
   params: WebGLRendererParameters
 ) {
   return {
@@ -119,7 +123,7 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererEngine> = function (
 };
 ```
 
-### 插件依赖
+## 插件依赖
 
 有时候我们会遇到一个插件必须依赖另一个插件，或者另外一些插件的情况，这样子能够节省插件逻辑，避免逻辑冗余，我们可以通过插件的`deps`字段进行, 这样`engine`在使用插件的时候会帮我们进行依赖校验和提醒。比如我们的`EffectComposerPlugin`插件，它是必须依赖于我们的`WebGLRendererPlugin`插件进行。
 

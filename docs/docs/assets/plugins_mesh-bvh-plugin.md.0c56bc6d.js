@@ -1,1 +1,0 @@
-import{_ as e,o as t,c as s}from"./chunks/framework.a8fb2c59.js";const h=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/mesh-bvh-plugin.md","filePath":"plugins/mesh-bvh-plugin.md"}'),n={name:"plugins/mesh-bvh-plugin.md"};function a(r,i,o,p,c,l){return t(),s("div")}const u=e(n,[["render",a]]);export{h as __pageData,u as default};

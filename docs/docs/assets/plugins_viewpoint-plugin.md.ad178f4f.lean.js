@@ -1,1 +1,0 @@
-import{_ as e,o as t,c as n}from"./chunks/framework.a8fb2c59.js";const _=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/viewpoint-plugin.md","filePath":"plugins/viewpoint-plugin.md"}'),i={name:"plugins/viewpoint-plugin.md"};function o(p,a,s,r,c,l){return t(),n("div")}const d=e(i,[["render",o]]);export{_ as __pageData,d as default};

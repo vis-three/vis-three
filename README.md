@@ -72,7 +72,7 @@
 
 - gitee: [https://shiotsukikaedesari.gitee.io/vis-three](https://shiotsukikaedesari.gitee.io/vis-three)
 
-> 目前的 demo 与文档版本为 0.4 版本文档，最新文档与 demo 未更新， gitee 视频资源会失效
+> 目前的 demo 与版本为 0.4 版本，最新文档 0.6.x 版本正在进行中，不定时更新。
 
 ## 关于 issue
 

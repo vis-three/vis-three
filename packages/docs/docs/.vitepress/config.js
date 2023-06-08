@@ -17,10 +17,8 @@ export default defineConfig({
     nav: [
       { text: "首页", link: "/" },
       { text: "开始", link: "/start/intro" },
-      { text: "插件", link: "/plugins/start" },
-      { text: "策略", link: "/strategy/start" },
-      { text: "配置化", link: "/middleware/start" },
-      { text: "其他", link: "/other/start" },
+      { text: "API", link: "/api/start" },
+      { text: "库", link: "/library/start" },
       { text: "版本", link: "/version/version0-5-0" },
       {
         text: "主页",
@@ -33,48 +31,49 @@ export default defineConfig({
           items: [
             { text: "介绍", link: "/start/intro" },
             { text: "开始", link: "/start/start" },
-            { text: "引擎构建", link: "/start/engine" },
+            { text: "配置化开发", link: "/start/middleware" },
+            { text: "配置化与框架结合", link: "/start/combine" },
             { text: "自定义插件", link: "/start/plugin" },
             { text: "自定义策略", link: "/start/strategy" },
-            { text: "配置化开发", link: "/start/middleware" },
-            { text: "组件化开发-alpha", link: "/start/widget" },
+            { text: "自定义配置化模块", link: "/start/module" },
+            // { text: "组件化开发-alpha", link: "/start/widget" },
           ],
         },
       ],
-      "/plugins/": [
-        {
-          text: "plugins",
-          items: fs
-            .readdirSync(path.resolve(__dirname, "../plugins"))
-            .filter((name) => name !== "start.md")
-            .map((version) => {
-              const name = version.split(".").shift();
-              return {
-                text: name.split("-").reduce((str, elem) => {
-                  return (str += elem[0].toUpperCase() + elem.slice(1));
-                }, ""),
-                link: `/plugins/${name}`,
-              };
-            }),
-        },
-      ],
-      "/strategy/": [
-        {
-          text: "strategy",
-          items: fs
-            .readdirSync(path.resolve(__dirname, "../strategy"))
-            .filter((name) => name !== "start.md")
-            .map((version) => {
-              const name = version.split(".").shift();
-              return {
-                text: name.split("-").reduce((str, elem) => {
-                  return (str += elem[0].toUpperCase() + elem.slice(1));
-                }, ""),
-                link: `/strategy/${name}`,
-              };
-            }),
-        },
-      ],
+      // "/plugins/": [
+      //   {
+      //     text: "plugins",
+      //     items: fs
+      //       .readdirSync(path.resolve(__dirname, "../plugins"))
+      //       .filter((name) => name !== "start.md")
+      //       .map((version) => {
+      //         const name = version.split(".").shift();
+      //         return {
+      //           text: name.split("-").reduce((str, elem) => {
+      //             return (str += elem[0].toUpperCase() + elem.slice(1));
+      //           }, ""),
+      //           link: `/plugins/${name}`,
+      //         };
+      //       }),
+      //   },
+      // ],
+      // "/strategy/": [
+      //   {
+      //     text: "strategy",
+      //     items: fs
+      //       .readdirSync(path.resolve(__dirname, "../strategy"))
+      //       .filter((name) => name !== "start.md")
+      //       .map((version) => {
+      //         const name = version.split(".").shift();
+      //         return {
+      //           text: name.split("-").reduce((str, elem) => {
+      //             return (str += elem[0].toUpperCase() + elem.slice(1));
+      //           }, ""),
+      //           link: `/strategy/${name}`,
+      //         };
+      //       }),
+      //   },
+      // ],
       "/version/": [
         {
           text: "version",

@@ -1,1 +1,0 @@
-import{_ as e,o as t,c as n}from"./chunks/framework.a8fb2c59.js";const _=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"plugins/selection-plugin.md","filePath":"plugins/selection-plugin.md"}'),s={name:"plugins/selection-plugin.md"};function i(o,a,c,l,r,p){return t(),n("div")}const d=e(s,[["render",i]]);export{_ as __pageData,d as default};
