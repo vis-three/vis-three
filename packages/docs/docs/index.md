@@ -2,7 +2,7 @@
 layout: home
 hero:
   name: VIS-THREE
-  text: more convenient development for three.js
+  text: A web 3D development framework based on three.js
   tagline: 基于three.js的前端3D开发框架
   image:
     src: /favicon.ico

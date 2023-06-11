@@ -37,6 +37,7 @@ export default defineConfig({
             { text: "自定义策略", link: "/start/strategy" },
             { text: "自定义配置化模块", link: "/start/module" },
             // { text: "组件化开发-alpha", link: "/start/widget" },
+            { text: "不只是three.js", link: "/start/more" },
           ],
         },
       ],
