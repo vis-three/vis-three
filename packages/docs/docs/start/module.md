@@ -240,7 +240,7 @@ const commands = {
 
 - 模糊命令是在精确命令没有命中的时候才会执行。
 
-- 模糊自定义命令是一个数组，它是从上往下对数组定义的`reg`进行匹配处理，只要匹配命中就会执行，并不在往下执行。
+- 模糊自定义命令是一个数组，它是从上往下对数组定义的`reg`进行匹配处理，只要匹配命中就会执行，并不再往下执行。
   :::
 
 ### 生成与销毁
@@ -446,3 +446,162 @@ export default {
 :::warning
 此 API 目前属于试验阶段。
 :::
+
+## 全局防抖器
+
+全局防抖器是一个增加额外处理线路的工具，主要是在区别于`lifeOrder`加载时间线的使用，目的是用来兼容无法通过`lifeOrder`区分前后的属性功能的辅助工具。
+
+什么情况下会用到防抖器呢？也就是你无法确定该功能需要对象的加载时间，或者说是模块与模块间`lifeOrder`确定后，与模块内属性所需要的资源或者对象加载需要不符合的时候。
+
+举个例子，顺便来看看防抖器的工作原理。
+
+只要是符合`three.js`的`Object3D`对象，都有`children`这个属性，我们在划分模块的时候，划分了`mesh`、`line`、`light`、`scene`等等的物体模块，按照`three.js`的功能来讲，只要是物体模块，都能够往`children`对象下添加物体，而且是没有限制的，也就是在这个情况下，我们对于物体模块的`children`是无法推测出模块的先后顺序，这个时候我们就要用到防抖器了。
+
+![/image/start/global-anti-shake.png](/image/start/global-anti-shake.png)
+
+### 调用激活
+
+一般情况下，都是在`processor`编写中，对需要的属性进行防抖兼容，拿上面`children`举例。我们只要调用`globalAntiShake.exec`就会自动激活防抖器开始工作。
+
+```ts
+import { globalAntiShake } from "@vis-three/middleware";
+
+const commands = {
+  add: {
+    children({ target, config, value, engine }) {
+      globalAntiShake.exec((finish) => {
+        const childrenConfig = engine.getConfigBySymbol(value) as ObjectConfig;
+        if (!childrenConfig) {
+          if (finish) {
+            console.warn(` can not foud object config in engine: ${value}`);
+          }
+          return false;
+        }
+
+        const childrenObject = engine.compilerManager.getObjectfromModules(
+          OBJECTMODULE,
+          value
+        ) as Object3D;
+
+        if (!childrenObject) {
+          if (finish) {
+            console.warn(`can not found this vid in engine: ${value}.`);
+          }
+          return false;
+        }
+
+        target.add(childrenObject);
+
+        childrenObject.updateMatrixWorld(true);
+
+        return true;
+      });
+    },
+  },
+};
+```
+
+### 执行与自动延迟
+
+调用`exec`后，`globalAntiShake`会阻塞执行一次里面的方法，如果执行后返回的结果为`true`，这个方法就已经完成了，不会加入后面的过程。
+
+如果执行为`false`，`globalAntiShake`会将该方法缓存进一个`list`中，等待下一个`timer`周期开始时再按顺序执行。
+
+### 重试与自动排序
+
+在`timer`按顺序执行缓存的方法中，如果这个方法在此次执行返回为`true`，就会被移出缓存`list`。在一个周期完成时，剩下的方法会形成新的`list`进入下一个`timer`周期。
+
+### 失败与结束
+
+在一个`timer`周期中，只要有一个方法的返回为`true`，`globalAntiShake`就会重新组织未完成的方法进入下一个`timer`周期。
+
+如果一个`timer`周期中所有的方法返回值都是`false`，或者说已经完成了所有方法，`globalAntiShake`就会结束循环。
+
+:::tip
+`AntiShake`的 API 请查看 API 文档。
+:::
+
+## 编译事件总线
+
+`vis-three`采用的是非侵入式的编程方式，尽可能的不会影响改变`three.js`对象的方法属性，我们知道，`three.js`的大多数对象都继承了`three.js`内部的`EventDispatcher`也就是事件派发器。这个事件派发器能够让我们直接通过`three.js`对象去发布相关事件。
+
+但是`vis-three`特别是内部的`middleware`配置化模块的方法和事件派发都不会去使用`three.js`对象的事件派发器。这是为什么？
+
+- **很容易造成事件冲突**：如果插件，配置化模块，运行时的各种方法都去使用同一个事件派发器，当模块插件功能复制起来之后，命名问题是一个很头疼的问题。
+
+- **不能区分运行期与编译期事件**：如果使用同一个事件派发器去调度所有的发布订阅方法，什么事件是运行期间的事件，什么事件又是编译期的事件？这个不好区分。
+
+- **不是所有的`three.js`对象都继承了事件派发器**：`three.js`有很多的类没有继承事件派发器，这个时候该怎么办。
+
+`@vis-three/middleware`模块提供了事件总线的类`Bus`，这个类可以不入侵原本的对象，通过外链的形式发布订阅各种事件方法。
+
+`@vis-three/middleware`内部预置了编译期的事件总线实例`compilerEvent`，将所有配置化模块需要的发布订阅通过该实例进行发布，对原本的对象进行了很好的隔离。
+
+### compiler 自动发布事件
+
+如果我们继承了默认的`compiler`类，在配置化运行期间的所有操作都会通过`compilerEvent`发布相关的事件。我们只要按照需要订阅即可。
+
+下面是一个只要该 mesh 材质配置做出变化，mesh 的 x 位置会自动+1 的示例。
+
+```ts
+import { Mesh } from "three";
+import { Bus, COMPILER_EVENT } from "@vis-three/middleware";
+
+export default defineProcessor({
+  create(config, engine) {
+    const material = engine.getObjectBySymbol(config.material);
+    const mesh = new Mesh(undefiend, material);
+
+    Bus.compilerEvent.on(material, COMPILER_EVENT.UPDATE, () => {
+      mesh.position.x += 1;
+    });
+
+    return mesh;
+  },
+});
+```
+
+:::tip
+默认`compiler`发布的事件请查看 API 文档。
+:::
+
+### 自定义事件派发
+
+在有些情况下，我们希望在自己所写的配置化模块中，自己根据需要发布一些事件。
+
+```ts
+import { Mesh } from "three";
+import { Bus, COMPILER_EVENT } from "@vis-three/middleware";
+
+export default defineProcessor({
+  commands: {
+    set: {
+      position: {
+        x({ target, value }) {
+          Bus.compilerEvent.emit(target, "position-dispatch", {
+            key: "x",
+            value,
+          });
+        },
+        y({ target, value }) {
+          Bus.compilerEvent.emit(target, "position-dispatch", {
+            key: "y",
+            value,
+          });
+        },
+        z({ target, value }) {
+          Bus.compilerEvent.emit(target, "position-dispatch", {
+            key: "z",
+            value,
+          });
+        },
+      },
+    },
+  },
+});
+
+// 使用
+Bus.compilerEvent.on(target, "mesh-dispatch", (event) => {
+  console.log(event);
+});
+```

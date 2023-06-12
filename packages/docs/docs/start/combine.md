@@ -71,9 +71,8 @@ export default {
       material: material.vid,
     });
 
-    defaultScene.children.push(box.vid);
-
     engine.applyConfig(geometry, material, box);
+    defaultScene.children.push(box.vid);
 
     return {
       geometry,
@@ -205,21 +204,24 @@ export default defineComponent({
 
     const watchAttr = ref(0);
 
-    watch(() => box.position.y, (val) {
-      const position = box.position;
-      watchAttr = position.x + position.y + position.z;
-    });
+    watch(
+      () => box.position.y,
+      (val) => {
+        const position = box.position;
+        watchAttr = position.x + position.y + position.z;
+      }
+    );
 
     const changeColor = () => {
       material.color = "rgb(0, 255, 255)";
     };
 
     onMounted(() => {
-      defaultScene.children.push(box.vid);
       engine.applyConfig(geometry, material, box);
+      defaultScene.children.push(box.vid);
     });
 
-    return { box,computedAttr, watchAttr, changeColor };
+    return { box, computedAttr, watchAttr, changeColor };
   },
 });
 </script>
@@ -287,8 +289,8 @@ export default defineComponent({
       material: material.vid,
     });
 
-    defaultScene.children.push(box.vid);
     engine.applyConfig(geometry, material, box);
+    defaultScene.children.push(box.vid);
 
     const vertNum = ref(0);
 
