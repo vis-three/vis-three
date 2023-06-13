@@ -2,6 +2,24 @@ import { defineConfig } from "vitepress";
 import path from "path";
 import fs from "fs";
 
+const getAPIModules = function (url) {
+  const apiPath = path.resolve(__dirname, "../api");
+  const targetPath = path.resolve(apiPath, `./${url}/modules`);
+  const list = [];
+
+  const files = fs.readdirSync(targetPath);
+
+  files.forEach((file) => {
+    const name = path.basename(file, path.extname(file));
+    list.push({
+      text: name,
+      link: `/api/${url}/modules/${name}.md`,
+    });
+  });
+
+  return list;
+};
+
 export default defineConfig({
   base: "/vis-three/docs",
   lang: "zh-cn",
@@ -11,13 +29,12 @@ export default defineConfig({
   head: [["link", { rel: "icon", href: "/favicon.ico" }]],
   themeConfig: {
     logo: "/favicon.ico",
-    outline: {
-      label: "本页目录",
-    },
+    outline: [2, 3],
+    outlineTitle: "本页目录",
     nav: [
       { text: "首页", link: "/" },
       { text: "开始", link: "/start/intro" },
-      { text: "API", link: "/api/start" },
+      { text: "API", link: "/api/core/modules.md" },
       { text: "库", link: "/library/start" },
       { text: "版本", link: "/version/version0-5-0" },
       {
@@ -40,6 +57,12 @@ export default defineConfig({
             { text: "不只是three.js", link: "/start/more" },
             { text: "Q & A", link: "/start/qa" },
           ],
+        },
+      ],
+      "/api/": [
+        {
+          text: "@vis-three/core",
+          items: getAPIModules("core"),
         },
       ],
       // "/plugins/": [

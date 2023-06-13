@@ -3,8 +3,20 @@ import { BaseEvent, EventDispatcher } from "../eventDispatcher";
 import { PluginOptions } from "../plugin";
 import { StrategyOptions } from "../strategy";
 
+/**
+ * 设置Dom事件的触发对象接口
+ * @example
+ * 可以将其作为泛型传入Engine的EventDispatcher方法中
+ * ```ts
+ * engine.addEventListener<SetDomEvent>('setDom', (event) => {
+ *  console.log(event.dom);
+ * })
+ * ```
+ */
 export interface SetDomEvent extends BaseEvent {
+  /**事件类型 */
   type: "setDom";
+  /**设置时传入的dom对象 */
   dom: HTMLElement;
 }
 

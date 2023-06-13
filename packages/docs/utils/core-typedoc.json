@@ -1,0 +1,13 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "../../core/engine/index.ts",
+    "../../core/eventDispatcher/index.ts",
+    "../../core/plugin/index.ts",
+    "../../core/strategy/index.ts"
+  ],
+  "out": "../docs/api/core",
+  "tsconfig": "../../core/tsconfig.json",
+  "plugin": "typedoc-plugin-markdown",
+  "hideBreadcrumbs": true
+}
