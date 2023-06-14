@@ -1,0 +1,21 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "../../middleware/engine/index.ts",
+    "../../middleware/manager/index.ts",
+    "../../middleware/module/index.ts",
+    "../../middleware/option/index.ts",
+    "../../middleware/plugin/CompilerManagerPlugin/index.ts",
+    "../../middleware/plugin/DataSupportManagerPlugin/index.ts",
+    "../../middleware/plugin/ResourceManagerPlugin/index.ts",
+    "../../middleware/strategy/CompilerSupportStrategy/index.ts",
+    "../../middleware/strategy/LoaderDataSuportStrategy/index.ts",
+    "../../middleware/strategy/LoaderMappingStrategy/index.ts",
+    "../../middleware/utils/index.ts"
+  ],
+  "out": "../docs/api/middleware",
+  "tsconfig": "../../middleware/tsconfig.json",
+  "plugin": "typedoc-plugin-markdown",
+  "hideBreadcrumbs": true,
+  "hideInPageTOC": true
+}

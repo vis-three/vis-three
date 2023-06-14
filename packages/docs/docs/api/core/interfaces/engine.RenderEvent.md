@@ -8,13 +8,6 @@
 
   ↳ **`RenderEvent`**
 
-## Table of contents
-
-### Properties
-
-- [delta](engine.RenderEvent.md#delta)
-- [type](engine.RenderEvent.md#type)
-
 ## Properties
 
 ### delta
@@ -23,7 +16,7 @@
 
 #### Defined in
 
-[engine/index.ts:54](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L54)
+[engine/index.ts:49](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L49)
 
 ___
 
@@ -37,4 +30,4 @@ ___
 
 #### Defined in
 
-[engine/index.ts:53](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L53)
+[engine/index.ts:48](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L48)

@@ -26,4 +26,4 @@
 
 #### Defined in
 
-[eventDispatcher/index.ts:11](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L11)
+[eventDispatcher/index.ts:11](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L11)

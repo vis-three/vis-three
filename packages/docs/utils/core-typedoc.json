@@ -9,5 +9,6 @@
   "out": "../docs/api/core",
   "tsconfig": "../../core/tsconfig.json",
   "plugin": "typedoc-plugin-markdown",
-  "hideBreadcrumbs": true
+  "hideBreadcrumbs": true,
+  "hideInPageTOC": true
 }

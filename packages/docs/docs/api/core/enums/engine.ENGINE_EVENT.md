@@ -2,17 +2,6 @@
 
 [engine](../modules/engine.md).ENGINE_EVENT
 
-## Table of contents
-
-### Enumeration Members
-
-- [DISPOSE](engine.ENGINE_EVENT.md#dispose)
-- [RENDER](engine.ENGINE_EVENT.md#render)
-- [SETCAMERA](engine.ENGINE_EVENT.md#setcamera)
-- [SETDOM](engine.ENGINE_EVENT.md#setdom)
-- [SETSCENE](engine.ENGINE_EVENT.md#setscene)
-- [SETSIZE](engine.ENGINE_EVENT.md#setsize)
-
 ## Enumeration Members
 
 ### DISPOSE
@@ -21,7 +10,7 @@
 
 #### Defined in
 
-[engine/index.ts:63](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L63)
+[engine/index.ts:58](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L58)
 
 ___
 
@@ -31,7 +20,7 @@ ___
 
 #### Defined in
 
-[engine/index.ts:62](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L62)
+[engine/index.ts:57](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L57)
 
 ___
 
@@ -41,7 +30,7 @@ ___
 
 #### Defined in
 
-[engine/index.ts:60](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L60)
+[engine/index.ts:55](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L55)
 
 ___
 
@@ -51,7 +40,7 @@ ___
 
 #### Defined in
 
-[engine/index.ts:58](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L58)
+[engine/index.ts:53](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L53)
 
 ___
 
@@ -61,7 +50,7 @@ ___
 
 #### Defined in
 
-[engine/index.ts:61](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L61)
+[engine/index.ts:56](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L56)
 
 ___
 
@@ -71,4 +60,4 @@ ___
 
 #### Defined in
 
-[engine/index.ts:59](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L59)
+[engine/index.ts:54](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L54)

@@ -8,14 +8,6 @@
 
   ↳ **`SetSizeEvent`**
 
-## Table of contents
-
-### Properties
-
-- [height](engine.SetSizeEvent.md#height)
-- [type](engine.SetSizeEvent.md#type)
-- [width](engine.SetSizeEvent.md#width)
-
 ## Properties
 
 ### height
@@ -24,7 +16,7 @@
 
 #### Defined in
 
-[engine/index.ts:49](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L49)
+[engine/index.ts:44](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L44)
 
 ___
 
@@ -38,7 +30,7 @@ ___
 
 #### Defined in
 
-[engine/index.ts:47](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L47)
+[engine/index.ts:42](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L42)
 
 ___
 
@@ -48,4 +40,4 @@ ___
 
 #### Defined in
 
-[engine/index.ts:48](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L48)
+[engine/index.ts:43](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L43)

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "../../utils/tools/index.ts",
+    "../../utils/pipleLine/index.ts"
+  ],
+  "out": "../docs/api/utils",
+  "tsconfig": "../../utils/tsconfig.json",
+  "plugin": "typedoc-plugin-markdown",
+  "hideBreadcrumbs": true,
+  "hideInPageTOC": true
+}

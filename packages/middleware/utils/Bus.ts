@@ -1,6 +1,6 @@
 import { BaseEvent, EventDispatcher } from "@vis-three/core";
 
-class Bus {
+export class Bus {
   map: WeakMap<object, EventDispatcher> = new WeakMap();
 
   create(object: object) {

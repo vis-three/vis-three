@@ -8,15 +8,6 @@
 
   ↳ **`SetCameraEvent`**
 
-## Table of contents
-
-### Properties
-
-- [camera](engine.SetCameraEvent.md#camera)
-- [oldCamera](engine.SetCameraEvent.md#oldcamera)
-- [options](engine.SetCameraEvent.md#options)
-- [type](engine.SetCameraEvent.md#type)
-
 ## Properties
 
 ### camera
@@ -25,7 +16,7 @@
 
 #### Defined in
 
-[engine/index.ts:35](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L35)
+[engine/index.ts:30](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L30)
 
 ___
 
@@ -35,7 +26,7 @@ ___
 
 #### Defined in
 
-[engine/index.ts:36](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L36)
+[engine/index.ts:31](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L31)
 
 ___
 
@@ -45,7 +36,7 @@ ___
 
 #### Defined in
 
-[engine/index.ts:37](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L37)
+[engine/index.ts:32](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L32)
 
 ___
 
@@ -59,4 +50,4 @@ ___
 
 #### Defined in
 
-[engine/index.ts:34](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L34)
+[engine/index.ts:29](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L29)

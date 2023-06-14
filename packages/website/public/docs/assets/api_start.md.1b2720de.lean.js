@@ -1,1 +1,0 @@
-import{_ as t,o as e,c as a,z as s}from"./chunks/framework.a8fb2c59.js";const h=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"api/start.md","filePath":"api/start.md"}'),r={name:"api/start.md"},o=s("p",null,"文档待补充！",-1),n=[o];function c(i,p,_,d,l,m){return e(),a("div",null,n)}const u=t(r,[["render",c]]);export{h as __pageData,u as default};

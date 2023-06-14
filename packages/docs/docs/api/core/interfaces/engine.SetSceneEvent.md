@@ -8,14 +8,6 @@
 
   ↳ **`SetSceneEvent`**
 
-## Table of contents
-
-### Properties
-
-- [oldScene](engine.SetSceneEvent.md#oldscene)
-- [scene](engine.SetSceneEvent.md#scene)
-- [type](engine.SetSceneEvent.md#type)
-
 ## Properties
 
 ### oldScene
@@ -24,7 +16,7 @@
 
 #### Defined in
 
-[engine/index.ts:43](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L43)
+[engine/index.ts:38](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L38)
 
 ___
 
@@ -34,7 +26,7 @@ ___
 
 #### Defined in
 
-[engine/index.ts:42](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L42)
+[engine/index.ts:37](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L37)
 
 ___
 
@@ -48,4 +40,4 @@ ___
 
 #### Defined in
 
-[engine/index.ts:41](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L41)
+[engine/index.ts:36](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L36)

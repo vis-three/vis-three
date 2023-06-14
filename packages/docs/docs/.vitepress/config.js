@@ -27,6 +27,7 @@ export default defineConfig({
   description: "more convenient development for three.js",
   outDir: path.resolve(__dirname, "../../../website/public/docs"),
   head: [["link", { rel: "icon", href: "/favicon.ico" }]],
+  markdown: { attrs: { disable: true } },
   themeConfig: {
     logo: "/favicon.ico",
     outline: [2, 3],
@@ -34,7 +35,7 @@ export default defineConfig({
     nav: [
       { text: "首页", link: "/" },
       { text: "开始", link: "/start/intro" },
-      { text: "API", link: "/api/core/modules.md" },
+      { text: "API", link: "/api/core/modules/engine" },
       { text: "库", link: "/library/start" },
       { text: "版本", link: "/version/version0-5-0" },
       {
@@ -63,6 +64,18 @@ export default defineConfig({
         {
           text: "@vis-three/core",
           items: getAPIModules("core"),
+        },
+        {
+          text: "@vis-three/middleware",
+          items: getAPIModules("middleware"),
+        },
+        {
+          text: "@vis-three/convenient",
+          items: getAPIModules("convenient"),
+        },
+        {
+          text: "@vis-three/utils",
+          items: getAPIModules("utils"),
         },
       ],
       // "/plugins/": [

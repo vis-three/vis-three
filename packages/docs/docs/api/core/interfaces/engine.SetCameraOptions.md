@@ -2,13 +2,6 @@
 
 [engine](../modules/engine.md).SetCameraOptions
 
-## Table of contents
-
-### Properties
-
-- [orbitControls](engine.SetCameraOptions.md#orbitcontrols)
-- [transformControls](engine.SetCameraOptions.md#transformcontrols)
-
 ## Properties
 
 ### orbitControls
@@ -17,7 +10,7 @@
 
 #### Defined in
 
-[engine/index.ts:29](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L29)
+[engine/index.ts:24](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L24)
 
 ___
 
@@ -27,4 +20,4 @@ ___
 
 #### Defined in
 
-[engine/index.ts:30](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L30)
+[engine/index.ts:25](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L25)

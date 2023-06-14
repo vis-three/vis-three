@@ -1,0 +1,13 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "../../convenient/canvasGenerator/index.ts",
+    "../../convenient/displayer/index.ts",
+    "../../convenient/history/index.ts"
+  ],
+  "out": "../docs/api/convenient",
+  "tsconfig": "../../convenient/tsconfig.json",
+  "plugin": "typedoc-plugin-markdown",
+  "hideBreadcrumbs": true,
+  "hideInPageTOC": true
+}

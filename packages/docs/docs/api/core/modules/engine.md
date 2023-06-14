@@ -1,16 +1,14 @@
 # Module: engine
 
-## Table of contents
-
-### Enumerations
+## Enumerations
 
 - [ENGINE\_EVENT](../enums/engine.ENGINE_EVENT.md)
 
-### Classes
+## Classes
 
 - [Engine](../classes/engine.Engine.md)
 
-### Interfaces
+## Interfaces
 
 - [EngineOptions](../interfaces/engine.EngineOptions.md)
 - [RenderEvent](../interfaces/engine.RenderEvent.md)
@@ -19,10 +17,6 @@
 - [SetDomEvent](../interfaces/engine.SetDomEvent.md)
 - [SetSceneEvent](../interfaces/engine.SetSceneEvent.md)
 - [SetSizeEvent](../interfaces/engine.SetSizeEvent.md)
-
-### Functions
-
-- [defineEngine](engine.md#defineengine)
 
 ## Functions
 
@@ -42,4 +36,4 @@
 
 #### Defined in
 
-[engine/index.ts:318](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L318)
+[engine/index.ts:313](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L313)

@@ -2,13 +2,6 @@
 
 [engine](../modules/engine.md).EngineOptions
 
-## Table of contents
-
-### Properties
-
-- [plugins](engine.EngineOptions.md#plugins)
-- [strategy](engine.EngineOptions.md#strategy)
-
 ## Properties
 
 ### plugins
@@ -17,7 +10,7 @@
 
 #### Defined in
 
-[engine/index.ts:314](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L314)
+[engine/index.ts:309](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L309)
 
 ___
 
@@ -27,4 +20,4 @@ ___
 
 #### Defined in
 
-[engine/index.ts:315](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L315)
+[engine/index.ts:310](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L310)

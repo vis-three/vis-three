@@ -2,13 +2,13 @@
 
 [engine](../modules/engine.md).SetDomEvent
 
-设置Dom事件的触发对象
+设置Dom事件的触发对象接口
 
 **`Example`**
 
-可以将其作为泛型传入EventDispatcher方法中
+可以将其作为泛型传入Engine的EventDispatcher方法中
 ```ts
-eventDispatcher.addEventListener<SetDomEvent>('setDom', (event) => {
+engine.addEventListener<SetDomEvent>('setDom', (event) => {
  console.log(event.dom);
 })
 ```
@@ -18,13 +18,6 @@ eventDispatcher.addEventListener<SetDomEvent>('setDom', (event) => {
 - [`BaseEvent`](eventDispatcher.BaseEvent.md)
 
   ↳ **`SetDomEvent`**
-
-## Table of contents
-
-### Properties
-
-- [dom](engine.SetDomEvent.md#dom)
-- [type](engine.SetDomEvent.md#type)
 
 ## Properties
 
@@ -36,7 +29,7 @@ eventDispatcher.addEventListener<SetDomEvent>('setDom', (event) => {
 
 #### Defined in
 
-[engine/index.ts:25](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L25)
+[engine/index.ts:20](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L20)
 
 ___
 
@@ -52,4 +45,4 @@ ___
 
 #### Defined in
 
-[engine/index.ts:23](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/engine/index.ts#L23)
+[engine/index.ts:18](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/engine/index.ts#L18)

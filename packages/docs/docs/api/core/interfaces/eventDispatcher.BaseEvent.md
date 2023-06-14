@@ -18,12 +18,6 @@
 
   ↳ [`Event`](eventDispatcher.Event.md)
 
-## Table of contents
-
-### Properties
-
-- [type](eventDispatcher.BaseEvent.md#type)
-
 ## Properties
 
 ### type
@@ -32,4 +26,4 @@
 
 #### Defined in
 
-[eventDispatcher/index.ts:2](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L2)
+[eventDispatcher/index.ts:2](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L2)

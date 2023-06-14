@@ -7,6 +7,10 @@
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
     "build:core": " npx typedoc --options ./utils/core-typedoc.json",
+    "build:middleware": " npx typedoc --options ./utils/middleware-typedoc.json",
+    "build:utils": " npx typedoc --options ./utils/utils-typedoc.json",
+    "build:convenient": " npx typedoc --options ./utils/convenient-typedoc.json",
+    "build:api": "pnpm run build:core & pnpm run build:middleware & pnpm run build:utils & pnpm run build:convenient",
     "serve": "vitepress serve docs"
   },
   "author": "Shiotsuki_",

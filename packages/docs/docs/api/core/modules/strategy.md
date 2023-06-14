@@ -1,18 +1,8 @@
 # Module: strategy
 
-## Table of contents
-
-### Interfaces
+## Interfaces
 
 - [StrategyOptions](../interfaces/strategy.StrategyOptions.md)
-
-### Type Aliases
-
-- [Strategy](strategy.md#strategy)
-
-### Functions
-
-- [defineStrategy](strategy.md#definestrategy)
 
 ## Type Aliases
 
@@ -43,7 +33,7 @@
 
 #### Defined in
 
-[strategy/index.ts:10](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/strategy/index.ts#L10)
+[strategy/index.ts:10](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/strategy/index.ts#L10)
 
 ## Functions
 
@@ -69,4 +59,4 @@
 
 #### Defined in
 
-[strategy/index.ts:14](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/strategy/index.ts#L14)
+[strategy/index.ts:14](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/strategy/index.ts#L14)

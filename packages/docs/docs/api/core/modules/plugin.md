@@ -1,18 +1,8 @@
 # Module: plugin
 
-## Table of contents
-
-### Interfaces
+## Interfaces
 
 - [PluginOptions](../interfaces/plugin.PluginOptions.md)
-
-### Type Aliases
-
-- [Plugin](plugin.md#plugin)
-
-### Functions
-
-- [definePlugin](plugin.md#defineplugin)
 
 ## Type Aliases
 
@@ -43,7 +33,7 @@
 
 #### Defined in
 
-[plugin/index.ts:10](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/plugin/index.ts#L10)
+[plugin/index.ts:10](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/plugin/index.ts#L10)
 
 ## Functions
 
@@ -69,4 +59,4 @@
 
 #### Defined in
 
-[plugin/index.ts:14](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/plugin/index.ts#L14)
+[plugin/index.ts:14](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/plugin/index.ts#L14)

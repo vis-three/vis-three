@@ -1,1 +1,0 @@
-import{_ as e,o as r,c as a}from"./chunks/framework.a8fb2c59.js";const _=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"api/other/shaderLibrary.md","filePath":"api/other/shaderLibrary.md"}'),t={name:"api/other/shaderLibrary.md"};function o(s,i,c,n,d,p){return r(),a("div")}const m=e(t,[["render",o]]);export{_ as __pageData,m as default};

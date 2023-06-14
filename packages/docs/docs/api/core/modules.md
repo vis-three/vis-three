@@ -1,8 +1,6 @@
 # @vis-three/core
 
-## Table of contents
-
-### Modules
+## Modules
 
 - [engine](modules/engine.md)
 - [eventDispatcher](modules/eventDispatcher.md)

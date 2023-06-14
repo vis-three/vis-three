@@ -8,33 +8,6 @@
 
   ↳ [`Engine`](engine.Engine.md)
 
-## Table of contents
-
-### Constructors
-
-- [constructor](eventDispatcher.EventDispatcher.md#constructor)
-
-### Properties
-
-- [listeners](eventDispatcher.EventDispatcher.md#listeners)
-
-### Methods
-
-- [addEventListener](eventDispatcher.EventDispatcher.md#addeventlistener)
-- [clear](eventDispatcher.EventDispatcher.md#clear)
-- [dispatchEvent](eventDispatcher.EventDispatcher.md#dispatchevent)
-- [emit](eventDispatcher.EventDispatcher.md#emit)
-- [eventCount](eventDispatcher.EventDispatcher.md#eventcount)
-- [has](eventDispatcher.EventDispatcher.md#has)
-- [hasEventListener](eventDispatcher.EventDispatcher.md#haseventlistener)
-- [off](eventDispatcher.EventDispatcher.md#off)
-- [on](eventDispatcher.EventDispatcher.md#on)
-- [once](eventDispatcher.EventDispatcher.md#once)
-- [popLatestEvent](eventDispatcher.EventDispatcher.md#poplatestevent)
-- [removeEvent](eventDispatcher.EventDispatcher.md#removeevent)
-- [removeEventListener](eventDispatcher.EventDispatcher.md#removeeventlistener)
-- [useful](eventDispatcher.EventDispatcher.md#useful)
-
 ## Constructors
 
 ### constructor
@@ -49,7 +22,7 @@
 
 #### Defined in
 
-[eventDispatcher/index.ts:15](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L15)
+[eventDispatcher/index.ts:15](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L15)
 
 ## Methods
 
@@ -78,7 +51,7 @@
 
 #### Defined in
 
-[eventDispatcher/index.ts:23](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L23)
+[eventDispatcher/index.ts:23](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L23)
 
 ___
 
@@ -94,7 +67,7 @@ ___
 
 #### Defined in
 
-[eventDispatcher/index.ts:218](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L218)
+[eventDispatcher/index.ts:218](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L218)
 
 ___
 
@@ -122,7 +95,7 @@ ___
 
 #### Defined in
 
-[eventDispatcher/index.ts:101](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L101)
+[eventDispatcher/index.ts:101](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L101)
 
 ___
 
@@ -151,7 +124,7 @@ ___
 
 #### Defined in
 
-[eventDispatcher/index.ts:134](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L134)
+[eventDispatcher/index.ts:134](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L134)
 
 ___
 
@@ -173,7 +146,7 @@ ___
 
 #### Defined in
 
-[eventDispatcher/index.ts:195](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L195)
+[eventDispatcher/index.ts:195](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L195)
 
 ___
 
@@ -202,7 +175,7 @@ ___
 
 #### Defined in
 
-[eventDispatcher/index.ts:165](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L165)
+[eventDispatcher/index.ts:165](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L165)
 
 ___
 
@@ -231,7 +204,7 @@ ___
 
 #### Defined in
 
-[eventDispatcher/index.ts:48](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L48)
+[eventDispatcher/index.ts:48](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L48)
 
 ___
 
@@ -260,7 +233,7 @@ ___
 
 #### Defined in
 
-[eventDispatcher/index.ts:178](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L178)
+[eventDispatcher/index.ts:178](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L178)
 
 ___
 
@@ -289,7 +262,7 @@ ___
 
 #### Defined in
 
-[eventDispatcher/index.ts:155](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L155)
+[eventDispatcher/index.ts:155](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L155)
 
 ___
 
@@ -318,7 +291,7 @@ ___
 
 #### Defined in
 
-[eventDispatcher/index.ts:120](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L120)
+[eventDispatcher/index.ts:120](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L120)
 
 ___
 
@@ -340,7 +313,7 @@ ___
 
 #### Defined in
 
-[eventDispatcher/index.ts:207](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L207)
+[eventDispatcher/index.ts:207](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L207)
 
 ___
 
@@ -362,7 +335,7 @@ ___
 
 #### Defined in
 
-[eventDispatcher/index.ts:89](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L89)
+[eventDispatcher/index.ts:89](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L89)
 
 ___
 
@@ -391,7 +364,7 @@ ___
 
 #### Defined in
 
-[eventDispatcher/index.ts:66](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L66)
+[eventDispatcher/index.ts:66](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L66)
 
 ___
 
@@ -407,4 +380,4 @@ ___
 
 #### Defined in
 
-[eventDispatcher/index.ts:226](https://github.com/Shiotsukikaedesari/vis-three/blob/f03bb58b/packages/core/eventDispatcher/index.ts#L226)
+[eventDispatcher/index.ts:226](https://github.com/Shiotsukikaedesari/vis-three/blob/2f5203e6/packages/core/eventDispatcher/index.ts#L226)

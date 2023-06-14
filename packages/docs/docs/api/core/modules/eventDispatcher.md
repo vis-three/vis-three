@@ -1,12 +1,10 @@
 # Module: eventDispatcher
 
-## Table of contents
-
-### Classes
+## Classes
 
 - [EventDispatcher](../classes/eventDispatcher.EventDispatcher.md)
 
-### Interfaces
+## Interfaces
 
 - [BaseEvent](../interfaces/eventDispatcher.BaseEvent.md)
 - [Event](../interfaces/eventDispatcher.Event.md)
