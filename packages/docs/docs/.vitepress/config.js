@@ -20,6 +20,25 @@ const getAPIModules = function (url) {
   return list;
 };
 
+const getModuleLibraryModules = function () {
+  const libraryPath = path.resolve(__dirname, "../library");
+  const targetPath = path.resolve(libraryPath, `./module`);
+  const list = [];
+
+  const files = fs.readdirSync(targetPath);
+
+  files.forEach((file) => {
+    list.push({
+      text: file,
+      link: `/library/module/${file}/modules/${
+        file.slice(0, 1).toLocaleUpperCase() + file.slice(1)
+      }Config.md`,
+    });
+  });
+
+  return list;
+};
+
 export default defineConfig({
   base: "/vis-three/docs",
   lang: "zh-cn",
@@ -76,6 +95,47 @@ export default defineConfig({
         {
           text: "@vis-three/utils",
           items: getAPIModules("utils"),
+        },
+      ],
+      "/library/": [
+        {
+          text: "引擎",
+          items: [],
+        },
+        {
+          text: "插件",
+          items: [],
+        },
+        {
+          text: "策略",
+          items: [],
+        },
+        {
+          text: "模块",
+          items: getModuleLibraryModules(),
+        },
+        {
+          text: "库",
+          items: [
+            {
+              text: "事件",
+            },
+            {
+              text: "脚本动画",
+            },
+            {
+              text: "着色器",
+            },
+            {
+              text: "解析器",
+            },
+            {
+              text: "修改器",
+            },
+            {
+              text: "约束器",
+            },
+          ],
         },
       ],
       // "/plugins/": [

@@ -9,6 +9,7 @@ import PointsMaterialProcessor from "./processors/PointsMaterialProcessor";
 import ShaderMaterialProcessor from "./processors/ShaderMaterialProcessor";
 import SpriteMaterialProcessor from "./processors/SpriteMaterialProcessor";
 import LineBasicMaterialProcessor from "./processors/LineBasicMaterialProcessor";
+import LineDashMaterialProcessor from "./processors/LineDashMaterialProcessor";
 
 export * from "./MaterialCompiler";
 export * from "./MaterialConfig";
@@ -19,6 +20,7 @@ export default {
   rule: MaterialRule,
   processors: [
     LineBasicMaterialProcessor,
+    LineDashMaterialProcessor,
     MeshBasicMaterialProcessor,
     MeshPhongMaterialProcessor,
     MeshPhysicalMaterialProcessor,

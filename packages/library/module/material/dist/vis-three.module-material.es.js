@@ -1,5 +1,5 @@
 import { Compiler, Rule, globalAntiShake, defineProcessor, ShaderGeneratorManager, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, Color, Texture, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, PointsMaterial, ShaderMaterial, SpriteMaterial, LineBasicMaterial } from "three";
+import { FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, Color, Texture, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, PointsMaterial, ShaderMaterial, SpriteMaterial, LineBasicMaterial, LineDashedMaterial } from "three";
 import { syncObject } from "@vis-three/utils";
 class MaterialCompiler extends Compiler {
   constructor() {
@@ -17,7 +17,6 @@ const getMaterialConfig = function() {
     colorWrite: true,
     depthTest: true,
     depthWrite: true,
-    fog: true,
     name: "",
     needsUpdate: false,
     opacity: 1,
@@ -169,6 +168,13 @@ const getLineBasicMaterialConfig = function() {
     linecap: "round",
     linejoin: "round",
     linewidth: 1
+  });
+};
+const getLineDashedMaterialConfig = function() {
+  return Object.assign(getLineBasicMaterialConfig(), {
+    dashSize: 3,
+    gapSize: 1,
+    scale: 1
   });
 };
 const getPointsMaterialConfig = function() {
@@ -390,12 +396,27 @@ var LineBasicMaterialProcessor = defineProcessor({
   },
   dispose
 });
+var LineDashMaterialProcessor = defineProcessor({
+  type: "LineDashedMaterial",
+  config: getLineDashedMaterialConfig,
+  commands: {
+    set: {
+      color: colorSetHandler,
+      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+    }
+  },
+  create: function(config, engine) {
+    return create(new LineDashedMaterial(), config, engine);
+  },
+  dispose
+});
 var index = {
   type: "material",
   compiler: MaterialCompiler,
   rule: MaterialRule,
   processors: [
     LineBasicMaterialProcessor,
+    LineDashMaterialProcessor,
     MeshBasicMaterialProcessor,
     MeshPhongMaterialProcessor,
     MeshPhysicalMaterialProcessor,
@@ -406,4 +427,4 @@ var index = {
   ],
   lifeOrder: SUPPORT_LIFE_CYCLE.TWO
 };
-export { MaterialCompiler, index as default, getLineBasicMaterialConfig, getMaterialConfig, getMeshBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshPhysicalMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getShaderMaterialConfig, getSpriteMaterialConfig };
+export { MaterialCompiler, index as default, getLineBasicMaterialConfig, getLineDashedMaterialConfig, getMaterialConfig, getMeshBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshPhysicalMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getShaderMaterialConfig, getSpriteMaterialConfig };

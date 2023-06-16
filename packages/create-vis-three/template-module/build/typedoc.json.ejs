@@ -1,0 +1,13 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "./<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Config.ts",
+    "./<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Rule.ts",
+    "./<%= name.slice(0, 1).toLocaleUpperCase() + name.slice(1)%>Compiler.ts"
+  ],
+  "out": "./docs",
+  "tsconfig": "./tsconfig.json",
+  "plugin": "typedoc-plugin-markdown",
+  "hideBreadcrumbs": true,
+  "hideInPageTOC": true
+}

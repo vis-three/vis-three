@@ -1,50 +1,99 @@
 import { SymbolConfig, Vector2Config } from "@vis-three/middleware";
 import { Blending } from "three";
+/**
+ * 材质配置基类
+ * @see {@link https://threejs.org/docs/index.html#api/zh/materials/Material}
+ */
 export interface MaterialConfig extends SymbolConfig {
+    /**设置运行alphaTest时要使用的alpha值。如果不透明度低于此值，则不会渲染材质。默认值为0。*/
     alphaTest: number;
+    /**是否渲染材质的颜色。 这可以与网格的renderOrder属性结合使用，以创建遮挡其他对象的不可见对象。*/
     colorWrite: boolean;
+    /** 是否在渲染此材质时启用深度测试。*/
     depthTest: boolean;
+    /**渲染此材质是否对深度缓冲区有任何影响。 */
     depthWrite: boolean;
-    fog: boolean;
-    name: string;
+    /**材质是否需要更新。一般来讲是不用手动更新，除非有特殊情况。 */
     needsUpdate: boolean;
+    /**在0.0 - 1.0的范围内的浮点数，表明材质的透明度。值0.0表示完全透明，1.0表示完全不透明。在transparent为true时有效 */
     opacity: number;
+    /**是否对颜色应用抖动以消除条带的外观。 */
     dithering: boolean;
+    /**定义投影的面。设置时，可以是THREE.FrontSide, THREE.BackSide, 或Materials。 */
     shadowSide: number | null;
+    /**定义将要渲染哪一面 - 正面，背面或两者。 默认为THREE.FrontSide。其他选项有THREE.BackSide 和 THREE.DoubleSide。 */
     side: number;
+    /**定义这个材质是否会被渲染器的toneMapping设置所影响。 */
     toneMapped: boolean;
+    /**定义此材质是否透明。 */
     transparent: boolean;
+    /**此材质是否可见。 */
     visible: boolean;
+    /**混合目标。默认值为OneMinusSrcAlphaFactor。 目标因子所有可能的取值请参阅constants。 必须将材质的blending设置为CustomBlending才能生效。 */
     blendDst: number;
+    /**.blendDst的透明度。 */
     blendDstAlpha: number | null;
+    /**使用混合时所采用的混合方程式。默认值为AddEquation。必须将材质的blending设置为CustomBlending才能生效。 */
     blendEquation: number;
+    /**.blendEquation 的透明度。 */
     blendEquationAlpha: number | null;
+    /**在使用此材质显示对象时要使用何种混合。必须将其设置为CustomBlending才能使用自定义blendSrc, blendDst 或者 [page:Constant blendEquation]。  */
     blending: Blending;
+    /**混合源。默认值为SrcAlphaFactor。必须将材质的blending设置为CustomBlending才能生效。 */
     blendSrc: number;
+    /** .blendSrc的透明度。*/
     blendSrcAlpha: number | null;
+    /**是否使用多边形偏移。 */
     polygonOffset: boolean;
+    /**设置多边形偏移系数。 */
     polygonOffsetFactor: number;
+    /**设置多边形偏移单位。 */
     polygonOffsetUnits: number;
 }
+/**
+ * 基础网格材质,这种材质不受光照的影响。
+ * @see {@link https://threejs.org/docs/index.html#api/zh/materials/MeshBasicMaterial}
+ */
 export interface MeshBasicMaterialConfig extends MaterialConfig {
+    /**材质的颜色(Color) */
     color: string;
+    /**如何将表面颜色的结果与环境贴图（如果有）结合起来。 */
     combine: number;
+    /**环境遮挡效果的强度。零是不遮挡效果。 */
     aoMapIntensity: number;
+    /**材质是否受雾影响。 */
     fog: boolean;
+    /**烘焙光的强度。 */
     lightMapIntensity: number;
+    /**环境贴图对表面的影响程度; 见.combine。有效范围介于0（无反射）和1（完全反射）之间。 */
     reflectivity: number;
+    /**空气的折射率（IOR）（约为1）除以材质的折射率。它与环境映射模式THREE.CubeRefractionMapping 和THREE.EquirectangularRefractionMapping一起使用。折射率不应超过1 */
     refractionRatio: number;
+    /**将几何体渲染为线框。 */
     wireframe: boolean;
+    /**定义线两端的外观。可选值为 'butt'，'round' 和 'square'。 */
     wireframeLinecap: string;
+    /**定义线连接节点的样式。可选值为 'round', 'bevel' 和 'miter'。 */
     wireframeLinejoin: string;
+    /**控制线框宽度。默认值为1。由于OpenGL Core Profile与大多数平台上WebGL渲染器的限制， 无论如何设置该值，线宽始终为1。 */
     wireframeLinewidth: number;
+    /**颜色贴图。值为vid标识 */
     map: string;
+    /**环境贴图。值为vid标识 */
     envMap: string;
+    /**alpha贴图是一张灰度纹理，用于控制整个表面的不透明度。（黑色：完全透明；白色：完全不透明）。值为vid标识 */
     alphaMap: string;
+    /**该纹理的红色通道用作环境遮挡贴图。aoMap需要第二组UV。值为vid标识*/
     aoMap: string;
+    /**光照贴图。lightMap需要第二组UV。值为vid标识 */
     lightMap: string;
+    /**材质使用的高光贴图。 值为vid标识*/
     specularMap: string;
 }
+/**
+ * 标准网格材质
+ * @see {@link https://threejs.org/docs/index.html#api/zh/materials/MeshStandardMaterial}
+ */
 export interface MeshStandardMaterialConfig extends MaterialConfig {
     aoMapIntensity: number;
     bumpScale: number;
@@ -75,6 +124,10 @@ export interface MeshStandardMaterialConfig extends MaterialConfig {
     alphaMap: string;
     aoMap: string;
 }
+/**
+ * Phong网格材质
+ * @see {@link https://threejs.org/docs/index.html#api/zh/materials/MeshPhongMaterial}
+ */
 export interface MeshPhongMaterialConfig extends MaterialConfig {
     aoMapIntensity: number;
     bumpScale: number;
@@ -104,6 +157,10 @@ export interface MeshPhongMaterialConfig extends MaterialConfig {
     aoMap: string;
     specularMap: string;
 }
+/**
+ * 点精灵材质
+ * @see {@link https://threejs.org/docs/index.html#api/zh/materials/SpriteMaterial}
+ */
 export interface SpriteMaterialConfig extends MaterialConfig {
     color: string;
     rotation: number;
@@ -111,12 +168,32 @@ export interface SpriteMaterialConfig extends MaterialConfig {
     alphaMap: string;
     sizeAttenuation: boolean;
 }
+/**
+ * 基础线条材质
+ * @see {@link https://threejs.org/docs/index.html#api/zh/materials/LineBasicMaterial}
+ */
 export interface LineBasicMaterialConfig extends MaterialConfig {
     color: string;
     linecap: string;
     linejoin: string;
     linewidth: number;
 }
+/**
+ * 虚线材质
+ * @see {@link https://threejs.org/docs/index.html#api/zh/materials/LineDashedMaterial}
+ */
+export interface LineDashedMaterialConfig extends LineBasicMaterialConfig {
+    /**虚线的大小，是指破折号和间隙之和 */
+    dashSize: number;
+    /**间隙的大小 */
+    gapSize: number;
+    /**线条中虚线部分的占比 */
+    scale: number;
+}
+/**
+ * 点材质
+ * @see {@link https://threejs.org/docs/index.html#api/zh/materials/PointsMaterial}
+ */
 export interface PointsMaterialConfig extends MaterialConfig {
     alphaMap: string;
     color: string;
@@ -124,12 +201,20 @@ export interface PointsMaterialConfig extends MaterialConfig {
     size: number;
     sizeAttenuation: boolean;
 }
+/**
+ * 着色器材质
+ * @see {@link https://threejs.org/docs/index.html#api/zh/materials/ShaderMaterial}
+ */
 export interface ShaderMaterialConfig extends MaterialConfig {
     shader: string;
     uniforms: {
         [key: string]: any;
     };
 }
+/**
+ * 物理网格材质
+ * @see {@link https://threejs.org/docs/index.html#api/zh/materials/MeshPhysicalMaterial}
+ */
 export interface MeshPhysicalMaterialConfig extends MeshStandardMaterialConfig {
     attenuationColor: string;
     attenuationDistance: number;
@@ -155,16 +240,252 @@ export interface MeshPhysicalMaterialConfig extends MeshStandardMaterialConfig {
     thicknessMap: string;
     transmissionMap: string;
 }
+/**
+ * 加载材质
+ */
 export interface LoadMaterialConfig extends MaterialConfig {
+    /**目标材质资源vid */
     url: string;
 }
-export type MaterialAllType = MeshBasicMaterialConfig | MeshStandardMaterialConfig | MeshPhongMaterialConfig | LineBasicMaterialConfig | SpriteMaterialConfig | PointsMaterialConfig | ShaderMaterialConfig | MeshPhysicalMaterialConfig;
+/**
+ * 所有材质配置类型
+ */
+export type MaterialAllType = MeshBasicMaterialConfig | MeshStandardMaterialConfig | MeshPhongMaterialConfig | LineBasicMaterialConfig | LineDashedMaterialConfig | SpriteMaterialConfig | PointsMaterialConfig | ShaderMaterialConfig | MeshPhysicalMaterialConfig;
+/**
+ * 获取材质基础配置
+ * @returns
+ * @default
+ * {
+    vid: "",
+    type: "Material",
+    alphaTest: 0,
+    colorWrite: true,
+    depthTest: true,
+    depthWrite: true,
+    name: "",
+    needsUpdate: false,
+    opacity: 1,
+    dithering: false,
+    shadowSide: null,
+    side: FrontSide,
+    toneMapped: true,
+    transparent: false,
+    visible: true,
+    blendDst: OneMinusSrcAlphaFactor,
+    blendDstAlpha: null,
+    blendEquation: AddEquation,
+    blendEquationAlpha: null,
+    blending: NormalBlending,
+    blendSrc: SrcAlphaFactor,
+    blendSrcAlpha: null,
+
+    polygonOffset: false,
+    polygonOffsetFactor: 0,
+    polygonOffsetUnits: 0,
+  }
+ *
+ */
 export declare const getMaterialConfig: () => MaterialConfig;
+/**
+ * 获取网格基础材质配置 - 会与`getMaterialConfig`合并
+ * @returns
+ * @default
+ * {
+    type: "MeshBasicMaterial",
+    color: "rgb(255, 255, 255)",
+    combine: MultiplyOperation,
+    aoMapIntensity: 1,
+    fog: true,
+    lightMapIntensity: 1,
+    reflectivity: 1,
+    refractionRatio: 0.98,
+    wireframe: false,
+    wireframeLinecap: "round",
+    wireframeLinejoin: "round",
+    wireframeLinewidth: 1,
+
+    map: "",
+    envMap: "",
+    alphaMap: "",
+    aoMap: "",
+    lightMap: "",
+    specularMap: "",
+  }
+ */
 export declare const getMeshBasicMaterialConfig: () => MeshBasicMaterialConfig;
+/**
+ * 获取标准网格配置 - 会与`getMaterialConfig`合并
+ * @returns
+ * @default
+ * {
+      type: "MeshStandardMaterial",
+      aoMapIntensity: 1,
+      bumpScale: 1,
+      color: "rgb(255, 255, 255)",
+      displacementScale: 1,
+      displacementBias: 0,
+      emissive: "rgb(0, 0, 0)",
+      emissiveIntensity: 1,
+      envMapIntensity: 1,
+      flatShading: false,
+      lightMapIntensity: 1,
+      metalness: 0,
+      normalMapType: TangentSpaceNormalMap,
+      refractionRatio: 0.98,
+      roughness: 1,
+      wireframe: false,
+      wireframeLinecap: "round",
+      wireframeLinejoin: "round",
+
+      roughnessMap: "",
+      normalMap: "",
+      metalnessMap: "",
+      map: "",
+      lightMap: "",
+      envMap: "",
+      emissiveMap: "",
+      displacementMap: "",
+      bumpMap: "",
+      alphaMap: "",
+      aoMap: "",
+    }
+ */
 export declare const getMeshStandardMaterialConfig: () => MeshStandardMaterialConfig;
+/**
+   * 获取物理网格材质 - 会与`getMeshStandardMaterialConfig`合并，也就是会合并基础标准网格默认值。
+   * @returns
+   * @default
+   * {
+      type: "MeshPhysicalMaterial",
+      attenuationColor: "rgb(255, 255, 255)",
+      attenuationDistance: 0,
+      clearcoat: 0.0,
+      clearcoatNormalScale: {
+        x: 1,
+        y: 1,
+      },
+      clearcoatRoughness: 0,
+      ior: 1.5,
+      reflectivity: 0.5,
+      sheen: 0.0,
+      sheenRoughness: 1.0,
+      sheenColor: "rgb(255, 255, 255)",
+      specularIntensity: 0.0,
+      specularColor: "rgb(255, 255, 255)",
+      thickness: 0,
+      transmission: 0,
+
+      clearcoatMap: "",
+      clearcoatNormalMap: "",
+      clearcoatRoughnessMap: "",
+      sheenRoughnessMap: "",
+      sheenColorMap: "",
+      specularIntensityMap: "",
+      specularColorMap: "",
+      thicknessMap: "",
+      transmissionMap: "",
+    }
+   */
 export declare const getMeshPhysicalMaterialConfig: () => MeshPhysicalMaterialConfig;
+/**
+ * 获取phong网格材质 - 会与`getMaterialConfig`合并
+ * @returns
+ * @default
+ * {
+    type: "MeshPhongMaterial",
+    aoMapIntensity: 1,
+    bumpScale: 1,
+    color: "rgb(255, 255, 255)",
+    displacementScale: 1,
+    displacementBias: 0,
+    emissive: "rgb(0, 0, 0)",
+    emissiveIntensity: 1,
+    envMapIntensity: 1,
+    flatShading: false,
+    lightMapIntensity: 1,
+    normalMapType: TangentSpaceNormalMap,
+    refractionRatio: 0.98,
+    wireframe: false,
+    wireframeLinecap: "round",
+    wireframeLinejoin: "round",
+    specular: "rgb(17, 17, 17)",
+    shininess: 30,
+    combine: MultiplyOperation,
+
+    normalMap: "",
+    map: "",
+    lightMap: "",
+    envMap: "",
+    emissiveMap: "",
+    displacementMap: "",
+    bumpMap: "",
+    alphaMap: "",
+    aoMap: "",
+    specularMap: "",
+  }
+ */
 export declare const getMeshPhongMaterialConfig: () => MeshPhongMaterialConfig;
+/**
+ * 获取精灵材质配置 - 会与`getMaterialConfig`合并
+ * @returns
+ * @default
+ * {
+    type: "SpriteMaterial",
+    color: "rgb(255, 255, 255)",
+    rotation: 0,
+    map: "",
+    alphaMap: "",
+    sizeAttenuation: true,
+  }
+ */
 export declare const getSpriteMaterialConfig: () => SpriteMaterialConfig;
+/**
+ * 获取基础线条材质配置 - 会与`getMaterialConfig`合并
+ * @returns
+ * @default
+ * {
+    type: "LineBasicMaterial",
+    color: "rgb(255, 255, 255)",
+    linecap: "round",
+    linejoin: "round",
+    linewidth: 1,
+  }
+ */
 export declare const getLineBasicMaterialConfig: () => LineBasicMaterialConfig;
+/**
+ * 获取虚线条材质配置 - 会与`getLineBasicMaterialConfig`合并
+ * @returns
+ * @default
+ * {
+    type: "LineDashedMaterial",
+    dashSize: 3,
+    gapSize: 1,
+    scale: 1,
+  }
+ */
+export declare const getLineDashedMaterialConfig: () => LineDashedMaterialConfig;
+/**
+ * 获取点材质配置 - 会与`getMaterialConfig`合并
+ * @returns
+ * @default
+ * {
+    type: "PointsMaterial",
+    map: "",
+    alphaMap: "",
+    color: "rgb(255, 255, 255)",
+    sizeAttenuation: true,
+    size: 1,
+  }
+ */
 export declare const getPointsMaterialConfig: () => PointsMaterialConfig;
+/**
+ * 获取着色器材质配置 - 会与`getMaterialConfig`合并。可以通过`@vis-three/middleware`的`ShaderGeneratorManager`中获取相关着色器配置
+ * @returns
+ * @default
+ * {
+    type: "ShaderMaterial",
+    shader: "defaultShader",
+    uniforms: {},
+  }
+ */
 export declare const getShaderMaterialConfig: () => ShaderMaterialConfig;
