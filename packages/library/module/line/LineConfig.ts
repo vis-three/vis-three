@@ -11,8 +11,8 @@ export interface LineConfig extends SolidObjectConfig {
   material: string;
   /**几何vid标识 */
   geometry: string;
-  /**是否计算距离数组，如果当前的使用材质是`LineDashedMaterial`请打开 */
-  computeLineDistances: boolean;
+  /**是否为虚线，如果当前的使用材质是`LineDashedMaterial`请打开 */
+  dashed: boolean;
 }
 
 /**
@@ -23,13 +23,13 @@ export interface LineConfig extends SolidObjectConfig {
     type: "Line",
     geometry: "",
     material: "",
-    computeLineDistances: false,
+    dashed: false,
   }
  */
 export const getLineConfig = function (): LineConfig {
   return Object.assign(getSolidObjectConfig(), {
     geometry: "",
     material: "",
-    computeLineDistances: false,
+    dashed: false,
   });
 };

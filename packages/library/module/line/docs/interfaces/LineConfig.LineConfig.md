@@ -22,7 +22,7 @@ SolidObjectConfig.castShadow
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:10](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L10)
+[library/module/object/ObjectConfig.ts:10](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L10)
 
 ___
 
@@ -36,7 +36,7 @@ SolidObjectConfig.children
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:21](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L21)
+[library/module/object/ObjectConfig.ts:21](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L21)
 
 ___
 
@@ -50,19 +50,7 @@ SolidObjectConfig.click
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:27](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L27)
-
-___
-
-### computeLineDistances
-
-• **computeLineDistances**: `boolean`
-
-是否计算距离数组，如果当前的使用材质是`LineDashedMaterial`请打开
-
-#### Defined in
-
-[library/module/line/LineConfig.ts:15](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/line/LineConfig.ts#L15)
+[library/module/object/ObjectConfig.ts:27](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L27)
 
 ___
 
@@ -76,7 +64,19 @@ SolidObjectConfig.contextmenu
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:29](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L29)
+[library/module/object/ObjectConfig.ts:29](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L29)
+
+___
+
+### dashed
+
+• **dashed**: `boolean`
+
+是否为虚线，如果当前的使用材质是`LineDashedMaterial`请打开
+
+#### Defined in
+
+[library/module/line/LineConfig.ts:15](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/line/LineConfig.ts#L15)
 
 ___
 
@@ -90,7 +90,7 @@ SolidObjectConfig.dblclick
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:28](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L28)
+[library/module/object/ObjectConfig.ts:28](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L28)
 
 ___
 
@@ -106,7 +106,7 @@ SolidObjectConfig.geometry
 
 #### Defined in
 
-[library/module/line/LineConfig.ts:13](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/line/LineConfig.ts#L13)
+[library/module/line/LineConfig.ts:13](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/line/LineConfig.ts#L13)
 
 ___
 
@@ -120,7 +120,7 @@ SolidObjectConfig.lookAt
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:12](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L12)
+[library/module/object/ObjectConfig.ts:12](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L12)
 
 ___
 
@@ -136,7 +136,7 @@ SolidObjectConfig.material
 
 #### Defined in
 
-[library/module/line/LineConfig.ts:11](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/line/LineConfig.ts#L11)
+[library/module/line/LineConfig.ts:11](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/line/LineConfig.ts#L11)
 
 ___
 
@@ -150,7 +150,7 @@ SolidObjectConfig.matrixAutoUpdate
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:18](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L18)
+[library/module/object/ObjectConfig.ts:18](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L18)
 
 ___
 
@@ -164,7 +164,7 @@ SolidObjectConfig.name
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:9](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L9)
+[library/module/object/ObjectConfig.ts:9](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L9)
 
 ___
 
@@ -178,7 +178,7 @@ SolidObjectConfig.parent
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:20](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L20)
+[library/module/object/ObjectConfig.ts:20](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L20)
 
 ___
 
@@ -192,7 +192,7 @@ SolidObjectConfig.pointerdown
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:22](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L22)
+[library/module/object/ObjectConfig.ts:22](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L22)
 
 ___
 
@@ -206,7 +206,7 @@ SolidObjectConfig.pointerenter
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:25](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L25)
+[library/module/object/ObjectConfig.ts:25](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L25)
 
 ___
 
@@ -220,7 +220,7 @@ SolidObjectConfig.pointerleave
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:26](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L26)
+[library/module/object/ObjectConfig.ts:26](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L26)
 
 ___
 
@@ -234,7 +234,7 @@ SolidObjectConfig.pointermove
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:23](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L23)
+[library/module/object/ObjectConfig.ts:23](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L23)
 
 ___
 
@@ -248,7 +248,7 @@ SolidObjectConfig.pointerup
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:24](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L24)
+[library/module/object/ObjectConfig.ts:24](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L24)
 
 ___
 
@@ -262,7 +262,7 @@ SolidObjectConfig.position
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:13](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L13)
+[library/module/object/ObjectConfig.ts:13](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L13)
 
 ___
 
@@ -276,7 +276,7 @@ SolidObjectConfig.receiveShadow
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:11](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L11)
+[library/module/object/ObjectConfig.ts:11](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L11)
 
 ___
 
@@ -290,7 +290,7 @@ SolidObjectConfig.renderOrder
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:19](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L19)
+[library/module/object/ObjectConfig.ts:19](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L19)
 
 ___
 
@@ -304,7 +304,7 @@ SolidObjectConfig.rotation
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:14](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L14)
+[library/module/object/ObjectConfig.ts:14](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L14)
 
 ___
 
@@ -318,7 +318,7 @@ SolidObjectConfig.scale
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:15](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L15)
+[library/module/object/ObjectConfig.ts:15](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L15)
 
 ___
 
@@ -332,7 +332,7 @@ SolidObjectConfig.type
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:8](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L8)
+[library/module/object/ObjectConfig.ts:8](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L8)
 
 ___
 
@@ -346,7 +346,7 @@ SolidObjectConfig.up
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:16](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L16)
+[library/module/object/ObjectConfig.ts:16](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L16)
 
 ___
 
@@ -360,7 +360,7 @@ SolidObjectConfig.vid
 
 #### Defined in
 
-[middleware/module/common/index.ts:2](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/middleware/module/common/index.ts#L2)
+[middleware/module/common/index.ts:2](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/middleware/module/common/index.ts#L2)
 
 ___
 
@@ -374,4 +374,4 @@ SolidObjectConfig.visible
 
 #### Defined in
 
-[library/module/object/ObjectConfig.ts:17](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/object/ObjectConfig.ts#L17)
+[library/module/object/ObjectConfig.ts:17](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/object/ObjectConfig.ts#L17)

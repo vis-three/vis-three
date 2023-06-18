@@ -19,7 +19,7 @@
     type: "Line",
     geometry: "",
     material: "",
-    computeLineDistances: false,
+    dashed: false,
   }
 ```
 
@@ -29,4 +29,4 @@
 
 #### Defined in
 
-[library/module/line/LineConfig.ts:29](https://github.com/Shiotsukikaedesari/vis-three/blob/16950a2b/packages/library/module/line/LineConfig.ts#L29)
+[library/module/line/LineConfig.ts:29](https://github.com/Shiotsukikaedesari/vis-three/blob/3a72576c/packages/library/module/line/LineConfig.ts#L29)
