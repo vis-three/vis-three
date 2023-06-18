@@ -1,26 +1,49 @@
 import { SymbolConfig, Vector3Config } from "@vis-three/middleware";
 import { Vector2, Vector3 } from "three";
 
+/**
+ * 几何组配置
+ */
 export interface GeometryGroup {
+  /**开始几何点 */
   start: number;
+  /**结束几何点 */
   count: number;
+  /**材质索引 */
   materialIndex: number;
 }
+
+/**
+ * 几何配置基础
+ */
 export interface GeometryConfig extends SymbolConfig {
-  type: string;
+  /**是否居中几何，开启后会先居中几何，再进行其他几何运算，这对于几何中心不再原点的模型很有用。 */
   center: boolean;
+  /**几何锚点中心位置 */
   position: Vector3Config;
+  /**几何锚点旋转 */
   rotation: Vector3Config;
+  /**几何锚点缩放 */
   scale: Vector3Config;
+  /**几何组 */
   groups: GeometryGroup[];
 }
 
+/**
+ * 立方体几何
+ */
 export interface BoxGeometryConfig extends GeometryConfig {
+  /**立方体宽 */
   width: number;
+  /**立方体高 */
   height: number;
+  /** 立方体深度 */
   depth: number;
+  /** 宽分段数 */
   widthSegments: number;
+  /** 高分段数 */
   heightSegments: number;
+  /** 深分段数 */
   depthSegments: number;
 }
 
