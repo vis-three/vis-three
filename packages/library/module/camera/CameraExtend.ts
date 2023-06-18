@@ -1,7 +1,11 @@
 import { EngineSupport, MODULETYPE } from "@vis-three/middleware";
 import { CameraCompiler } from "./CameraCompiler";
 
+/**
+ * 相机模块提供的引擎拓展支持
+ */
 export interface CameraEngineSupport extends EngineSupport {
+  /**通过vid设置engine的当前相机 */
   setCameraBySymbol: (camera: string) => this;
 }
 

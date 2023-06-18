@@ -30,9 +30,7 @@ const getModuleLibraryModules = function () {
   files.forEach((file) => {
     list.push({
       text: file,
-      link: `/library/module/${file}/modules/${
-        file.slice(0, 1).toLocaleUpperCase() + file.slice(1)
-      }Config.md`,
+      link: `/library/module/${file}/readme.md`,
     });
   });
 
@@ -46,7 +44,13 @@ export default defineConfig({
   description: "more convenient development for three.js",
   outDir: path.resolve(__dirname, "../../../website/public/docs"),
   head: [["link", { rel: "icon", href: "/favicon.ico" }]],
-  markdown: { attrs: { disable: true } },
+  markdown: {
+    attrs: { disable: true },
+    theme: {
+      dark: "github-dark",
+      light: "github-light",
+    },
+  },
   themeConfig: {
     logo: "/favicon.ico",
     outline: [2, 3],
