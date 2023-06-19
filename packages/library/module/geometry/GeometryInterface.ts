@@ -47,6 +47,9 @@ export interface BoxGeometryConfig extends GeometryConfig {
   depthSegments: number;
 }
 
+/**
+ * 球型几何
+ */
 export interface SphereGeometryConfig extends GeometryConfig {
   radius: number;
   widthSegments: number;
@@ -81,7 +84,11 @@ export interface ConeGeometryConfig extends GeometryConfig {
   thetaLength: number;
 }
 
+/**
+ * 加载几何
+ */
 export interface LoadGeometryConfig extends GeometryConfig {
+  /**目标几何资源地址，通过ResourceManagerPlugin解析 */
   url: string;
 }
 
@@ -102,6 +109,7 @@ export interface DodecahedronGeometryConfig extends GeometryConfig {
 }
 
 export interface EdgesGeometryConfig extends GeometryConfig {
+  /**目标几何vid标识 */
   url: string;
   thresholdAngle: number;
 }
@@ -134,9 +142,15 @@ export interface CustomGeometryConfig extends GeometryConfig {
   };
 }
 
+/**
+ * 曲线几何
+ */
 export interface CurveGeometryConfig extends GeometryConfig {
+  /**曲线参数点集 */
   path: Vector3Config[];
+  /**曲线分段数 */
   divisions: number;
+  /**是否等距分段 */
   space: boolean;
 }
 
@@ -150,7 +164,7 @@ export interface QuadraticBezierCurveGeometryConfig
   extends CurveGeometryConfig {}
 
 export interface TubeGeometryConfig extends GeometryConfig {
-  path: Vector3[];
+  path: Vector3Config[];
   tubularSegments: number;
   radius: number;
   radialSegments: number;
@@ -161,7 +175,11 @@ export interface LineTubeGeometryConfig extends TubeGeometryConfig {}
 
 export interface SplineTubeGeometryConfig extends TubeGeometryConfig {}
 
+/**
+ * 形状几何
+ */
 export interface ShapeGeometryConfig extends GeometryConfig {
+  /**形状vid标识 */
   shape: string;
   curveSegments: number;
 }
@@ -172,6 +190,7 @@ export interface LineShapeGeometryConfig extends GeometryConfig {
 }
 
 export interface ExtrudeGeometryConfig extends GeometryConfig {
+  /**挤压形状vid标识 */
   shapes: string;
   options: {
     curveSegments: number;
@@ -187,6 +206,7 @@ export interface ExtrudeGeometryConfig extends GeometryConfig {
 }
 
 export interface PathGeometryConfig extends GeometryConfig {
+  /**路径vid标识 */
   path: string;
   space: boolean;
   divisions: number;
