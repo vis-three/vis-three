@@ -10,6 +10,13 @@ export type ObjectRule<
   O extends Object3D
 > = Rule<E>;
 
+/**
+ *
+ * @param input - 代理通知输入
+ * @param compiler - 编译器
+ * @param validateFun - 验证规则
+ * @returns
+ */
 export const ObjectRule = function <
   E extends ObjectCompiler<C, O>,
   C extends ObjectConfig,
