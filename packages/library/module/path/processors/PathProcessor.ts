@@ -83,10 +83,10 @@ const getCurveExtrPoint = function (
   extr: "start" | "end"
 ) {
   return extr === "start"
-    ? { x: curve.params[0], y: curve.params[1] }
+    ? { x: curve.params[0] as number, y: curve.params[1] as number }
     : {
-        x: curve.params[curve.params.length - 2],
-        y: curve.params[curve.params.length - 1],
+        x: curve.params[curve.params.length - 2] as number,
+        y: curve.params[curve.params.length - 1] as number,
       };
 };
 

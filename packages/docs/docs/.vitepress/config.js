@@ -117,6 +117,7 @@ export default defineConfig({
         {
           text: "模块",
           items: getModuleLibraryModules(),
+          collapsed: false,
         },
         {
           text: "库",
