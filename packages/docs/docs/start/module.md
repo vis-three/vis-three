@@ -601,7 +601,7 @@ export default defineProcessor({
 });
 
 // 使用
-Bus.compilerEvent.on(target, "mesh-dispatch", (event) => {
+Bus.compilerEvent.on(target, "position-dispatch", (event) => {
   console.log(event);
 });
 ```

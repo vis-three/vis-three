@@ -86,3 +86,7 @@ export interface PathConfig extends SymbolConfig {
    autoClose: false,
 }
 ```
+
+:::tip
+路径配置修改一个曲线`params`中的值，会影响这个曲线前后曲线的值（如果有的话），目的是让曲线之间始终保持首尾连贯。
+:::
