@@ -4,13 +4,16 @@ import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 
 export interface AxesHelperParameters {
+  /**坐标轴长度 */
   length?: number;
 }
 
 export interface AxesHelperOptions {}
 
 export interface AxesHelperEngine extends Engine {
+  /**坐标轴物体 */
   axesHelper: AxesHelper;
+  /** 设置显示隐藏坐标轴方法。*/
   setAxesHelper: (show: boolean, params: AxesHelperOptions) => AxesHelperEngine;
 }
 

@@ -22,9 +22,13 @@ import {
 import { Optional, transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 export interface EffectComposerParameters {
+  /**如果three版本低于137需要支持MSAA请开启 */
   WebGLMultisampleRenderTarget?: boolean;
+  /**采样数 */
   samples?: number;
+  /**渲染格式 */
   format?: number;
+  /**是否开启msaa */
   MSAA?: boolean;
 }
 

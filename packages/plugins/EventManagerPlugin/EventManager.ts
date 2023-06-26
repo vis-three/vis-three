@@ -22,11 +22,16 @@ export interface GlobalEvent extends VisPointerEvent {
 }
 
 export interface EventManagerParameters {
+  /**指定事件触发场景 */
   scene: Scene;
+  /**指定事件触发相机 */
   camera: Camera;
+  /**是否递归场景物体子集 */
   recursive?: boolean;
+  /**是否穿透触发事件，比如2个物体即使重叠都会触发 */
   penetrate?: boolean;
-  support?: boolean;
+  // support?: boolean;
+  /**射线设置 参考three.js的射线设置*/
   raycaster?: {
     params: {
       Line?: { threshold: number };
@@ -47,14 +52,22 @@ export enum EVENTNAME {
 }
 
 export class EventManager extends EventDispatcher {
+  /**射线发射器 */
   raycaster: Raycaster;
+  /**目标场景 */
   private scene: Scene;
+  /**目标相机 */
   private camera: Camera;
+  /**不会触发事件的过滤器 */
   private filter = new Set<Object3D>();
-  recursive = false; // 递归子物体
-  penetrate = false; // 事件穿透
-  propagation = false; // 冒泡
-  delegation = false; // 委托
+  /**递归子物体 */
+  recursive = false;
+  /**事件穿透 */
+  penetrate = false;
+  /**@todo 以事件冒泡的形式触发事件 */
+  propagation = false;
+  /**@todo 以事件委托的形式触发事件 */
+  delegation = false;
 
   constructor(parameters: EventManagerParameters) {
     super();
@@ -70,12 +83,21 @@ export class EventManager extends EventDispatcher {
       Object.assign(this.raycaster.params, parameters.raycaster.params);
     }
   }
-
+  /**
+   * 设置当前场景
+   * @param scene
+   * @returns
+   */
   setScene(scene: Scene): this {
     this.scene = scene;
     return this;
   }
 
+  /**
+   * 设置当前相机
+   * @param camera
+   * @returns
+   */
   setCamera(camera: Camera): this {
     this.camera = camera;
     return this;
@@ -84,7 +106,7 @@ export class EventManager extends EventDispatcher {
   /**
    * 添加不会触发事件的场景中的物体
    * @param object Object3D
-   * @returns this
+   * @returns
    */
   addFilterObject(object: Object3D): this {
     this.filter.add(object);
@@ -111,6 +133,11 @@ export class EventManager extends EventDispatcher {
     return this.raycaster.intersectObjects(filterScene, this.recursive);
   }
 
+  /**
+   * 使用pointerManger
+   * @param pointerManager 
+   * @returns 
+   */
   use(pointerManager: PointerManager): this {
     const mergeEvent = function (event, object) {
       return Object.assign({}, event, object);

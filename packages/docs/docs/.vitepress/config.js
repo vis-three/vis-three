@@ -20,6 +20,23 @@ const getAPIModules = function (url) {
   return list;
 };
 
+const getPluginsLibraryModules = function () {
+  const libraryPath = path.resolve(__dirname, "../library");
+  const targetPath = path.resolve(libraryPath, `./plugins`);
+  const list = [];
+
+  const files = fs.readdirSync(targetPath);
+
+  files.forEach((file) => {
+    list.push({
+      text: path.basename(file, path.extname(file)),
+      link: `/library/plugins/${file}`,
+    });
+  });
+
+  return list;
+};
+
 const getModuleLibraryModules = function () {
   const libraryPath = path.resolve(__dirname, "../library");
   const targetPath = path.resolve(libraryPath, `./module`);
@@ -108,7 +125,8 @@ export default defineConfig({
         },
         {
           text: "插件",
-          items: [],
+          items: getPluginsLibraryModules(),
+          collapsed: false,
         },
         {
           text: "策略",
