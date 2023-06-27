@@ -2,9 +2,13 @@ import { EventDispatcher } from "@vis-three/core";
 import keyboardjs, { KeyEvent } from "keyboardjs";
 
 export interface KeyboardEntity {
+  /**快捷键组合，比如 ['ctrl', 'z'] */
   shortcutKey: string[];
+  /**快捷键功能描述 */
   desp: string;
+  /**按下时触发功能 */
   keydown?: (event?: KeyEvent) => void;
+  /**抬起时触发功能 */
   keyup?: (event?: KeyEvent) => void;
 }
 

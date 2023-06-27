@@ -10,6 +10,7 @@ export interface KeyboardManagerEngine extends Engine {
 }
 
 export interface KeyboardParameters {
+  /**快捷键设置 */
   keyboards?: Array<KeyboardEntity>;
 }
 

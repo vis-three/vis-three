@@ -69,7 +69,7 @@ export default defineConfig({
     },
   },
   themeConfig: {
-    logo: "/favicon.ico",
+    logo: "/vis-three/favicon.ico",
     outline: [2, 3],
     outlineTitle: "本页目录",
     nav: [
@@ -77,7 +77,7 @@ export default defineConfig({
       { text: "开始", link: "/start/intro" },
       { text: "API", link: "/api/core/modules/engine" },
       { text: "库", link: "/library/start" },
-      { text: "版本", link: "/version/version0-5-0" },
+      // { text: "版本", link: "/version/version0-5-0" },
       {
         text: "主页",
         link: "https://shiotsukikaedesari.gitee.io/vis-three/",
@@ -161,54 +161,20 @@ export default defineConfig({
           ],
         },
       ],
-      // "/plugins/": [
+      // "/version/": [
       //   {
-      //     text: "plugins",
+      //     text: "version",
       //     items: fs
-      //       .readdirSync(path.resolve(__dirname, "../plugins"))
-      //       .filter((name) => name !== "start.md")
+      //       .readdirSync(path.resolve(__dirname, "../version"))
       //       .map((version) => {
       //         const name = version.split(".").shift();
       //         return {
-      //           text: name.split("-").reduce((str, elem) => {
-      //             return (str += elem[0].toUpperCase() + elem.slice(1));
-      //           }, ""),
-      //           link: `/plugins/${name}`,
+      //           text: name.split("-").join("."),
+      //           link: `/version/${name}`,
       //         };
       //       }),
       //   },
       // ],
-      // "/strategy/": [
-      //   {
-      //     text: "strategy",
-      //     items: fs
-      //       .readdirSync(path.resolve(__dirname, "../strategy"))
-      //       .filter((name) => name !== "start.md")
-      //       .map((version) => {
-      //         const name = version.split(".").shift();
-      //         return {
-      //           text: name.split("-").reduce((str, elem) => {
-      //             return (str += elem[0].toUpperCase() + elem.slice(1));
-      //           }, ""),
-      //           link: `/strategy/${name}`,
-      //         };
-      //       }),
-      //   },
-      // ],
-      "/version/": [
-        {
-          text: "version",
-          items: fs
-            .readdirSync(path.resolve(__dirname, "../version"))
-            .map((version) => {
-              const name = version.split(".").shift();
-              return {
-                text: name.split("-").join("."),
-                link: `/version/${name}`,
-              };
-            }),
-        },
-      ],
     },
     repo: "https://github.com/Shiotsukikaedesari/vis-three",
     repoLabel: "github",

@@ -2046,6 +2046,8 @@ importers:
       keyboardjs: ^2.6.4
       prettier: ^2.6.2
       three: ^0.141.0
+      typedoc: ^0.24.8
+      typedoc-plugin-markdown: ^3.15.3
       typescript: ^4.3.2
       vite: ^2.9.15
     dependencies:
@@ -2062,6 +2064,8 @@ importers:
       eslint-plugin-prettier: 4.2.1_5pokp25ua6t5ubushhw3tqituq
       prettier: 2.8.8
       three: 0.141.0
+      typedoc: 0.24.8_typescript@4.9.5
+      typedoc-plugin-markdown: 3.15.3_typedoc@0.24.8
       typescript: 4.9.5
       vite: 2.9.15
 
@@ -12133,7 +12137,7 @@ packages:
       typedoc: '>=0.24.0'
     dependencies:
       handlebars: 4.7.7
-      typedoc: 0.24.8_typescript@4.9.3
+      typedoc: 0.24.8_typescript@4.9.5
 
   /typedoc/0.24.8_typescript@4.9.3:
     resolution: {integrity: sha512-ahJ6Cpcvxwaxfu4KtjA8qZNqS43wYt6JL27wYiIgl1vd38WW/KWX11YuAeZhuz9v+ttrutSsgK+XO1CjL1kA3w==}
@@ -12147,6 +12151,7 @@ packages:
       minimatch: 9.0.1
       shiki: 0.14.2
       typescript: 4.9.3
+    dev: true
 
   /typedoc/0.24.8_typescript@4.9.5:
     resolution: {integrity: sha512-ahJ6Cpcvxwaxfu4KtjA8qZNqS43wYt6JL27wYiIgl1vd38WW/KWX11YuAeZhuz9v+ttrutSsgK+XO1CjL1kA3w==}
@@ -12160,7 +12165,6 @@ packages:
       minimatch: 9.0.1
       shiki: 0.14.2
       typescript: 4.9.5
-    dev: true
 
   /typedoc/0.24.8_typescript@5.1.3:
     resolution: {integrity: sha512-ahJ6Cpcvxwaxfu4KtjA8qZNqS43wYt6JL27wYiIgl1vd38WW/KWX11YuAeZhuz9v+ttrutSsgK+XO1CjL1kA3w==}
@@ -12180,6 +12184,7 @@ packages:
     resolution: {integrity: sha512-CIfGzTelbKNEnLpLdGFgdyKhG23CKdKgQPOBc+OUNrkJ2vr+KSzsSV5kq5iWhEQbok+quxgGzrAtGWCyU7tHnA==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+    dev: true
 
   /typescript/4.9.4:
     resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==}
@@ -12191,7 +12196,6 @@ packages:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
 
   /typescript/5.1.3:
     resolution: {integrity: sha512-XH627E9vkeqhlZFQuL+UsyAXEnibT0kWR2FWONlr4sTjvxyJYnyefgrkyECLzM5NenmKzRAy2rR/OlYLA1HkZw==}
