@@ -2578,6 +2578,8 @@ importers:
       eslint-plugin-prettier: ^4.0.0
       prettier: ^2.6.2
       three: ^0.141.0
+      typedoc: ^0.24.8
+      typedoc-plugin-markdown: ^3.15.3
       typescript: ^4.3.2
       vite: ^2.9.15
     dependencies:
@@ -2593,6 +2595,8 @@ importers:
       eslint-plugin-prettier: 4.2.1_5pokp25ua6t5ubushhw3tqituq
       prettier: 2.8.8
       three: 0.141.0
+      typedoc: 0.24.8_typescript@4.9.5
+      typedoc-plugin-markdown: 3.15.3_typedoc@0.24.8
       typescript: 4.9.5
       vite: 2.9.15
 

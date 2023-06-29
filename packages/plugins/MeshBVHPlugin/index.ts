@@ -5,12 +5,16 @@ import { CastOptions, MeshBVHManager } from "./MeshBVHManager";
 import { name as pkgname } from "./package.json";
 
 export interface MeshBVHEngine extends Engine {
+  /**bvh管理器 */
   meshBVHManager: MeshBVHManager;
+  /**添加bvh */
   addBVH: (mesh: Mesh) => MeshBVHEngine;
 }
 
 export interface MeshBVHPluginParameters {
+  /**可视化显示bvh */
   visualizer?: boolean;
+  /**自定义形状检测规则 */
   shapecast?: CastOptions;
 }
 

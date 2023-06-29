@@ -55,6 +55,7 @@ export type LoadUnit =
     };
 
 export interface LoaderManagerParameters {
+  /**加载器拓展 */
   loaderExtends: { [key: string]: Loader };
 }
 
