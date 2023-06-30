@@ -1,0 +1,9 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./ObjectHelperManager.ts"],
+  "out": "./docs",
+  "tsconfig": "./tsconfig.json",
+  "plugin": "typedoc-plugin-markdown",
+  "hideBreadcrumbs": true,
+  "hideInPageTOC": true
+}

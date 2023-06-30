@@ -155,6 +155,9 @@ export class ObjectHelperManager extends EventDispatcher {
     return helper;
   }
 
+  /**
+   * 释放所有管理器资源
+   */
   dispose() {
     for (const object of this.objectHelperMap.keys()) {
       this.disposeObjectHelper(object);

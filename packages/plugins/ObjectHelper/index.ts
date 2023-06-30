@@ -13,7 +13,9 @@ import { name as pkgname } from "./package.json";
 export * from "./ObjectHelperManager";
 
 export interface ObjectHelperParameters {
+  /**是否会与辅助进行交互 */
   interact?: boolean;
+  /** */
   activeColor?: string;
   hoverColor?: string;
   defaultColor?: string;
@@ -21,7 +23,9 @@ export interface ObjectHelperParameters {
 }
 
 export interface ObjectHelperEngine extends Engine {
+  /**物体辅助管理器 */
   objectHelperManager: ObjectHelperManager;
+  /**设置物体辅助显示隐藏 */
   setObjectHelper: (show: boolean) => ObjectHelperEngine;
 }
 

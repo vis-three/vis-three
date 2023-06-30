@@ -6,6 +6,7 @@ import { Optional, transPkgName } from "@vis-three/utils";
 export * from "./PointerManager";
 
 export interface PointerManagerEngine extends Engine {
+  /**指针管理器 */
   pointerManager: PointerManager;
 }
 

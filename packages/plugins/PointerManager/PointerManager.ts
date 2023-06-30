@@ -15,17 +15,22 @@ export interface VisPointerEvent extends Omit<PointerEvent, "type">, BaseEvent {
 }
 
 export interface PointerManagerParameters {
+  /**目标dom */
   dom?: HTMLElement;
+  /**鼠标事件的节流时间 */
   throttleTime?: number;
 }
 
 export class PointerManager extends EventDispatcher {
   private dom: HTMLElement | undefined;
+
+  /**归一化鼠标指针 */
   mouse: Vector2;
+  /**鼠标事件的节流时间 */
+  throttleTime: number;
 
   private canMouseMove: boolean;
   private mouseEventTimer: number | null;
-  private throttleTime: number;
 
   private pointerDownHandler: (event: PointerEvent) => void;
   private pointerMoveHandler: (event: PointerEvent) => void;
