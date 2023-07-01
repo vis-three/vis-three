@@ -11,8 +11,11 @@ export interface RenderManagerPluginParams {
 
 export const RENDER_MANAGER_PLUGIN = transPkgName(pkgname);
 export interface RenderManagerEngine extends Engine {
+  /**渲染管理器 */
   renderManager: RenderManager;
+  /**开始渲染函数 */
   play: () => void;
+  /**停止渲染函数 */
   stop: () => void;
 }
 

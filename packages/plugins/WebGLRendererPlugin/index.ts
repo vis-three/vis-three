@@ -22,7 +22,9 @@ export interface Screenshot {
   mine?: string;
 }
 export interface WebGLRendererEngine extends Engine {
+  /**webgl渲染器 */
   webGLRenderer: WebGLRenderer;
+  /**获取webGL渲染截图 */
   getScreenshot: (params?: Screenshot) => Promise<string>;
 }
 

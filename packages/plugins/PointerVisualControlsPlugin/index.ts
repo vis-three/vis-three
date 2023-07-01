@@ -16,9 +16,13 @@ export interface PointerVisualControlsEngine extends Engine {
 }
 
 export interface PointerLockControlsPluginParams {
+  /**触发控制器的鼠标键 */
   pointerButton?: MOUSE_BUTTON;
+  /**最小极角 */
   minPolarAngle?: number;
+  /**最大极角 */
   maxPolarAngle?: number;
+  /**指针旋转速度 */
   pointerSpeed?: number;
 }
 

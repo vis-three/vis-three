@@ -4,7 +4,9 @@ import { Object3D } from "three";
 import { name as pkgname } from "./package.json";
 
 export interface SelectionEngine extends Engine {
+  /**当前engine的选中对象集合 */
   selectionBox: Set<Object3D>;
+  /**设置当前engine的选中物体 */
   setSelectionBox: (objects: Object3D[]) => SelectionEngine;
 }
 

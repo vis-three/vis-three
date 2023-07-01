@@ -14,6 +14,7 @@ import { Optional, transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 
 export interface SelectionSupportEngine extends SelectionEngine, EngineSupport {
+  /**通过vid标识设置场景的选中对象 */
   setSelectionBoxBySymbol: (symbols: string[]) => SelectionSupportEngine;
 }
 

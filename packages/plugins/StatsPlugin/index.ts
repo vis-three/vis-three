@@ -4,7 +4,9 @@ import { Optional, transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 
 export interface StatsEngine extends Engine {
+  /**监视器 */
   stats: VisStats;
+  /**设置监视器显示隐藏 */
   setStats: (show: boolean) => StatsEngine;
 }
 

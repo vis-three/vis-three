@@ -37,6 +37,23 @@ const getPluginsLibraryModules = function () {
   return list;
 };
 
+const getStrategysLibraryModules = function () {
+  const libraryPath = path.resolve(__dirname, "../library");
+  const targetPath = path.resolve(libraryPath, `./strategys`);
+  const list = [];
+
+  const files = fs.readdirSync(targetPath);
+
+  files.forEach((file) => {
+    list.push({
+      text: path.basename(file, path.extname(file)),
+      link: `/library/strategys/${file}`,
+    });
+  });
+
+  return list;
+};
+
 const getModuleLibraryModules = function () {
   const libraryPath = path.resolve(__dirname, "../library");
   const targetPath = path.resolve(libraryPath, `./module`);
@@ -130,7 +147,8 @@ export default defineConfig({
         },
         {
           text: "策略",
-          items: [],
+          items: getStrategysLibraryModules(),
+          collapsed: false,
         },
         {
           text: "模块",
