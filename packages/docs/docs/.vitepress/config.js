@@ -86,7 +86,7 @@ export default defineConfig({
     },
   },
   themeConfig: {
-    logo: "/vis-three/favicon.ico",
+    logo: "/favicon.ico",
     outline: [2, 3],
     outlineTitle: "本页目录",
     nav: [
@@ -143,20 +143,21 @@ export default defineConfig({
         {
           text: "插件",
           items: getPluginsLibraryModules(),
-          collapsed: false,
+          collapsed: true,
         },
         {
           text: "策略",
           items: getStrategysLibraryModules(),
-          collapsed: false,
+          collapsed: true,
         },
         {
           text: "模块",
           items: getModuleLibraryModules(),
-          collapsed: false,
+          collapsed: true,
         },
         {
           text: "库",
+          collapsed: true,
           items: [
             {
               text: "事件",
