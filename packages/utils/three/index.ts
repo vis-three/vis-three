@@ -1,4 +1,4 @@
-import { MathUtils, Vector2 } from "three";
+import { Vector2 } from "three";
 
 const tempVector1 = new Vector2();
 const tempVector2 = new Vector2();
@@ -37,26 +37,4 @@ export const getArcDetail = function (
   };
 };
 
-export const isPointLeftSideLine = function (
-  line1: Vector2,
-  line2: Vector2,
-  point: Vector2
-) {
-  return (
-    (line2.x - line1.x) * (point.y - line1.y) -
-      (line2.y - line1.y) * (point.x - line1.x) >
-    0
-  );
-};
 
-export const isSameDirecton = function (vect1: Vector2, vect2: Vector2) {
-  const denominator = Math.sqrt(vect1.lengthSq() * vect2.lengthSq());
-
-  if (denominator === 0) {
-    return false;
-  }
-
-  const theta = vect1.dot(vect2) / denominator;
-
-  return Math.acos(MathUtils.clamp(theta, -1, 1)) < Math.PI / 2;
-};

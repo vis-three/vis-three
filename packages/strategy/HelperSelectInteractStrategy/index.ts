@@ -33,10 +33,15 @@ export interface HelperSelectInteractEngine
 export const HELPER_SELECT_INTERACT_STRATEGY = transPkgName(pkgname);
 
 export interface HelperSelectInteractParameters {
+  /**是否会与辅助进行交互 */
   interact?: boolean;
+  /**选中激活时的颜色 */
   activeColor?: string;
+  /**鼠标hover时候的颜色 */
   hoverColor?: string;
+  /**默认的辅助颜色 */
   defaultColor?: string;
+  /**选中时候的辅助颜色 */
   selectedColor?: string;
 }
 
