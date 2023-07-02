@@ -20,6 +20,23 @@ const getAPIModules = function (url) {
   return list;
 };
 
+const getEnginesLibraryModules = function () {
+  const libraryPath = path.resolve(__dirname, "../library");
+  const targetPath = path.resolve(libraryPath, `./engines`);
+  const list = [];
+
+  const files = fs.readdirSync(targetPath);
+
+  files.forEach((file) => {
+    list.push({
+      text: path.basename(file, path.extname(file)),
+      link: `/library/engines/${file}`,
+    });
+  });
+
+  return list;
+};
+
 const getPluginsLibraryModules = function () {
   const libraryPath = path.resolve(__dirname, "../library");
   const targetPath = path.resolve(libraryPath, `./plugins`);
@@ -93,7 +110,7 @@ export default defineConfig({
       { text: "首页", link: "/" },
       { text: "开始", link: "/start/intro" },
       { text: "API", link: "/api/core/modules/engine" },
-      { text: "库", link: "/library/start" },
+      { text: "库", link: "/library/engines/engine-display" },
       // { text: "版本", link: "/version/version0-5-0" },
       {
         text: "主页",
@@ -138,7 +155,8 @@ export default defineConfig({
       "/library/": [
         {
           text: "引擎",
-          items: [],
+          items: getEnginesLibraryModules(),
+          collapsed: false,
         },
         {
           text: "插件",
