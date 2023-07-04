@@ -711,6 +711,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/module-animation': workspace:^0.6.2
+      '@vis-three/module-bone': workspace:^0.6.0
       '@vis-three/module-camera': workspace:^0.6.2
       '@vis-three/module-controls': workspace:^0.6.3
       '@vis-three/module-css2d': workspace:^0.6.3
@@ -731,6 +732,7 @@ importers:
       '@vis-three/module-renderer': workspace:^0.6.2
       '@vis-three/module-scene': workspace:^0.6.3
       '@vis-three/module-shape': workspace:^0.6.3
+      '@vis-three/module-skeleton': workspace:^0.6.0
       '@vis-three/module-sprite': workspace:^0.6.2
       '@vis-three/module-texture': workspace:^0.6.1
       eslint: ^8.12.0
@@ -740,6 +742,7 @@ importers:
       typescript: ^4.3.2
     dependencies:
       '@vis-three/module-animation': link:animation
+      '@vis-three/module-bone': link:bone
       '@vis-three/module-camera': link:camera
       '@vis-three/module-controls': link:controls
       '@vis-three/module-css2d': link:css2D
@@ -760,6 +763,7 @@ importers:
       '@vis-three/module-renderer': link:renderer
       '@vis-three/module-scene': link:scene
       '@vis-three/module-shape': link:shape
+      '@vis-three/module-skeleton': link:skeleton
       '@vis-three/module-sprite': link:sprite
       '@vis-three/module-texture': link:texture
     devDependencies:
@@ -805,6 +809,43 @@ importers:
       typescript: 4.9.5
       vite: 2.9.15
 
+  packages/library/module/bone:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.6.4
+      '@vis-three/middleware': workspace:^0.6.14
+      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/utils': workspace:^0.6.1
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+      uuid: ^8.3.2
+      vite: ^2.9.15
+    dependencies:
+      '@vis-three/core': link:../../../core
+      '@vis-three/middleware': link:../../../middleware
+      '@vis-three/module-object': link:../object
+      '@vis-three/utils': link:../../../utils
+      uuid: 8.3.2
+    devDependencies:
+      '@types/node': 18.16.0
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.59.0_p5urazbkpxqwbpulw3y4eskliy
+      '@typescript-eslint/parser': 5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq
+      eslint: 8.39.0
+      eslint-config-prettier: 8.8.0_eslint@8.39.0
+      eslint-plugin-prettier: 4.2.1_5pokp25ua6t5ubushhw3tqituq
+      prettier: 2.8.8
+      three: 0.141.0
+      typescript: 4.9.5
+      vite: 2.9.15
+
   packages/library/module/camera:
     specifiers:
       '@types/node': ^18.11.12
@@ -820,8 +861,6 @@ importers:
       eslint-plugin-prettier: ^4.0.0
       prettier: ^2.6.2
       three: ^0.141.0
-      typedoc: ^0.24.8
-      typedoc-plugin-markdown: ^3.15.3
       typescript: ^4.3.2
       vite: ^2.9.15
     dependencies:
@@ -839,8 +878,6 @@ importers:
       eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
       prettier: 2.8.7
       three: 0.141.0
-      typedoc: 0.24.8_typescript@4.9.5
-      typedoc-plugin-markdown: 3.15.3_typedoc@0.24.8
       typescript: 4.9.5
       vite: 2.9.15
 
@@ -1146,8 +1183,6 @@ importers:
       eslint-plugin-prettier: ^4.0.0
       prettier: ^2.6.2
       three: ^0.141.0
-      typedoc: ^0.24.8
-      typedoc-plugin-markdown: ^3.15.3
       typescript: ^4.3.2
       vite: ^2.9.15
     dependencies:
@@ -1166,8 +1201,6 @@ importers:
       eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
       prettier: 2.8.7
       three: 0.141.0
-      typedoc: 0.24.8_typescript@4.9.5
-      typedoc-plugin-markdown: 3.15.3_typedoc@0.24.8
       typescript: 4.9.5
       vite: 2.9.15
 
@@ -1185,8 +1218,6 @@ importers:
       eslint-plugin-prettier: ^4.0.0
       prettier: ^2.6.2
       three: ^0.141.0
-      typedoc: ^0.24.8
-      typedoc-plugin-markdown: ^3.15.3
       typescript: ^4.3.2
       vite: ^2.9.15
     dependencies:
@@ -1203,8 +1234,6 @@ importers:
       eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
       prettier: 2.8.7
       three: 0.141.0
-      typedoc: 0.24.8_typescript@4.9.5
-      typedoc-plugin-markdown: 3.15.3_typedoc@0.24.8
       typescript: 4.9.5
       vite: 2.9.15
 
@@ -1568,6 +1597,41 @@ importers:
       eslint-config-prettier: 8.8.0_eslint@8.36.0
       eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
       prettier: 2.8.7
+      three: 0.141.0
+      typescript: 4.9.5
+      vite: 2.9.15
+
+  packages/library/module/skeleton:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': ^0.6.1
+      '@vis-three/middleware': ^0.6.3
+      '@vis-three/utils': ^0.6.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+      uuid: ^8.3.2
+      vite: ^2.9.15
+    dependencies:
+      '@vis-three/core': link:../../../core
+      '@vis-three/middleware': link:../../../middleware
+      '@vis-three/utils': link:../../../utils
+      uuid: 8.3.2
+    devDependencies:
+      '@types/node': 18.16.0
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.59.0_p5urazbkpxqwbpulw3y4eskliy
+      '@typescript-eslint/parser': 5.59.0_tbtvr3a5zwdiktqy4vlmx63mqq
+      eslint: 8.39.0
+      eslint-config-prettier: 8.8.0_eslint@8.39.0
+      eslint-plugin-prettier: 4.2.1_5pokp25ua6t5ubushhw3tqituq
+      prettier: 2.8.8
       three: 0.141.0
       typescript: 4.9.5
       vite: 2.9.15
@@ -4025,7 +4089,7 @@ packages:
       '@babel/helper-compilation-targets': 7.20.7_@babel+core@7.20.5
       '@babel/helper-module-transforms': 7.20.11
       '@babel/helpers': 7.20.6
-      '@babel/parser': 7.22.4
+      '@babel/parser': 7.22.5
       '@babel/template': 7.20.7
       '@babel/traverse': 7.20.10
       '@babel/types': 7.22.5
@@ -4421,14 +4485,6 @@ packages:
       '@babel/helper-validator-identifier': 7.22.5
       chalk: 2.4.2
       js-tokens: 4.0.0
-    dev: true
-
-  /@babel/parser/7.22.4:
-    resolution: {integrity: sha512-VLLsx06XkEYqBtE5YGPwfSGwfrjnyPP5oiGty3S8pQLFDFLaS8VwWSIxkTXpcvr5zeYLE6+MBNl2npl/YnfofA==}
-    engines: {node: '>=6.0.0'}
-    hasBin: true
-    dependencies:
-      '@babel/types': 7.22.5
     dev: true
 
   /@babel/parser/7.22.5:
@@ -5332,7 +5388,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/code-frame': 7.18.6
-      '@babel/parser': 7.22.4
+      '@babel/parser': 7.22.5
       '@babel/types': 7.22.5
     dev: true
 
@@ -5355,7 +5411,7 @@ packages:
       '@babel/helper-function-name': 7.19.0
       '@babel/helper-hoist-variables': 7.18.6
       '@babel/helper-split-export-declaration': 7.18.6
-      '@babel/parser': 7.22.4
+      '@babel/parser': 7.22.5
       '@babel/types': 7.22.5
       debug: 4.3.4
       globals: 11.12.0
@@ -5373,7 +5429,7 @@ packages:
       '@babel/helper-function-name': 7.19.0
       '@babel/helper-hoist-variables': 7.18.6
       '@babel/helper-split-export-declaration': 7.18.6
-      '@babel/parser': 7.22.4
+      '@babel/parser': 7.22.5
       '@babel/types': 7.22.5
       debug: 4.3.4
       globals: 11.12.0
@@ -5476,7 +5532,7 @@ packages:
     dependencies:
       '@babel/core': 7.22.5
       '@babel/generator': 7.20.5
-      '@babel/parser': 7.22.4
+      '@babel/parser': 7.22.5
       '@babel/preset-env': 7.22.5_@babel+core@7.22.5
       '@babel/traverse': 7.20.5
       babel-loader: 8.3.0_zr65p4a7aobqlwszf7uzbwbqhu
@@ -10184,7 +10240,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       '@babel/core': 7.20.5
-      '@babel/parser': 7.22.4
+      '@babel/parser': 7.22.5
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.0
       semver: 6.3.0
@@ -11087,15 +11143,6 @@ packages:
     dependencies:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
-    dev: true
-
-  /postcss/8.4.23:
-    resolution: {integrity: sha512-bQ3qMcpF6A/YjR55xtoTr0jGOlnPOKAIMdOWiv0EIT6HVPEaJiJB4NLljSbiHoC2RX7DN5Uvjtpbg1NPdwv1oA==}
-    engines: {node: ^10 || ^12 || >=14}
-    dependencies:
-      nanoid: 3.3.6
-      picocolors: 1.0.0
-      source-map-js: 1.0.2
     dev: true
 
   /postcss/8.4.24:
@@ -12153,7 +12200,7 @@ packages:
       typedoc: '>=0.24.0'
     dependencies:
       handlebars: 4.7.7
-      typedoc: 0.24.8_typescript@4.9.3
+      typedoc: 0.24.8_typescript@4.9.5
 
   /typedoc/0.24.8_typescript@4.9.3:
     resolution: {integrity: sha512-ahJ6Cpcvxwaxfu4KtjA8qZNqS43wYt6JL27wYiIgl1vd38WW/KWX11YuAeZhuz9v+ttrutSsgK+XO1CjL1kA3w==}
@@ -12167,6 +12214,7 @@ packages:
       minimatch: 9.0.1
       shiki: 0.14.2
       typescript: 4.9.3
+    dev: true
 
   /typedoc/0.24.8_typescript@4.9.5:
     resolution: {integrity: sha512-ahJ6Cpcvxwaxfu4KtjA8qZNqS43wYt6JL27wYiIgl1vd38WW/KWX11YuAeZhuz9v+ttrutSsgK+XO1CjL1kA3w==}
@@ -12180,7 +12228,6 @@ packages:
       minimatch: 9.0.1
       shiki: 0.14.2
       typescript: 4.9.5
-    dev: true
 
   /typedoc/0.24.8_typescript@5.1.3:
     resolution: {integrity: sha512-ahJ6Cpcvxwaxfu4KtjA8qZNqS43wYt6JL27wYiIgl1vd38WW/KWX11YuAeZhuz9v+ttrutSsgK+XO1CjL1kA3w==}
@@ -12200,6 +12247,7 @@ packages:
     resolution: {integrity: sha512-CIfGzTelbKNEnLpLdGFgdyKhG23CKdKgQPOBc+OUNrkJ2vr+KSzsSV5kq5iWhEQbok+quxgGzrAtGWCyU7tHnA==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+    dev: true
 
   /typescript/4.9.4:
     resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==}
@@ -12211,7 +12259,6 @@ packages:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
 
   /typescript/5.1.3:
     resolution: {integrity: sha512-XH627E9vkeqhlZFQuL+UsyAXEnibT0kWR2FWONlr4sTjvxyJYnyefgrkyECLzM5NenmKzRAy2rR/OlYLA1HkZw==}
@@ -12377,7 +12424,7 @@ packages:
         optional: true
     dependencies:
       esbuild: 0.14.54
-      postcss: 8.4.23
+      postcss: 8.4.24
       resolve: 1.22.2
       rollup: 2.77.3
     optionalDependencies:
@@ -12402,7 +12449,7 @@ packages:
     dependencies:
       esbuild: 0.14.54
       less: 4.1.3
-      postcss: 8.4.23
+      postcss: 8.4.24
       resolve: 1.22.2
       rollup: 2.77.3
     optionalDependencies:

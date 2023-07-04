@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/library-module",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "vis-three module library",
   "main": "index.js",
   "module": "index.js",
@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@vis-three/module-animation": "workspace:^0.6.2",
+    "@vis-three/module-bone": "workspace:^0.6.0",
     "@vis-three/module-camera": "workspace:^0.6.2",
     "@vis-three/module-controls": "workspace:^0.6.3",
     "@vis-three/module-css2d": "workspace:^0.6.3",
@@ -44,6 +45,7 @@
     "@vis-three/module-renderer": "workspace:^0.6.2",
     "@vis-three/module-scene": "workspace:^0.6.3",
     "@vis-three/module-shape": "workspace:^0.6.3",
+    "@vis-three/module-skeleton": "workspace:^0.6.0",
     "@vis-three/module-sprite": "workspace:^0.6.2",
     "@vis-three/module-texture": "workspace:^0.6.1"
   },

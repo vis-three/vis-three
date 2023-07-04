@@ -21,6 +21,8 @@ import path from "@vis-three/module-path";
 import shape from "@vis-three/module-shape";
 import curve from "@vis-three/module-curve";
 import helper from "@vis-three/module-helper";
+import bone from "@vis-three/module-bone";
+import skeleton from "@vis-three/module-skeleton";
 
 export {
   animation,
@@ -46,4 +48,6 @@ export {
   shape,
   curve,
   helper,
+  bone,
+  skeleton,
 };
