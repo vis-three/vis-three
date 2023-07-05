@@ -46,6 +46,7 @@
     "@vis-three/module-scene": "workspace:^0.6.3",
     "@vis-three/module-shape": "workspace:^0.6.3",
     "@vis-three/module-skeleton": "workspace:^0.6.0",
+    "@vis-three/module-skinned-mesh": "workspace:^0.6.0",
     "@vis-three/module-sprite": "workspace:^0.6.2",
     "@vis-three/module-texture": "workspace:^0.6.1"
   },

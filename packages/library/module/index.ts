@@ -23,6 +23,7 @@ import curve from "@vis-three/module-curve";
 import helper from "@vis-three/module-helper";
 import bone from "@vis-three/module-bone";
 import skeleton from "@vis-three/module-skeleton";
+import skinnedMesh from "@vis-three/module-skinned-mesh";
 
 export {
   animation,
@@ -50,4 +51,5 @@ export {
   helper,
   bone,
   skeleton,
+  skinnedMesh,
 };
