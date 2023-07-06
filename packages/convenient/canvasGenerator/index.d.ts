@@ -43,5 +43,12 @@ export declare class CanvasGenerator {
      * @returns this
      */
     preview(parameters?: PreviewParameters): this;
+    /**
+     * 设置canvas画布大小
+     * @param width
+     * @param height
+     * @returns
+     */
+    setSize(width: number, height: number): this;
 }
 export {};

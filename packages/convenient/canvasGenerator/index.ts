@@ -101,4 +101,16 @@ export class CanvasGenerator {
     document.body.appendChild(this.canvas);
     return this;
   }
+
+  /**
+   * 设置canvas画布大小
+   * @param width
+   * @param height
+   * @returns
+   */
+  setSize(width: number, height: number): this {
+    this.canvas.width = width * devicePixelRatio;
+    this.canvas.height = height * devicePixelRatio;
+    return this;
+  }
 }
