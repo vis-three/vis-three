@@ -3,6 +3,9 @@ import { SkeletonCompiler } from "./SkeletonCompiler";
 import { SkeletonRule } from "./SkeletonRule";
 import SkeletonProcessor from "./processors/SkeletonProcessor";
 
+export * from "./SkeletonCompiler";
+export * from "./SkeletonConfig";
+
 export default {
   type: "skeleton",
   compiler: SkeletonCompiler,

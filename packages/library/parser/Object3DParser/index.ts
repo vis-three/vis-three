@@ -1,4 +1,4 @@
-import { Color, Material, Object3D, Texture, Vector3 } from "three";
+import { Bone, Color, Material, Object3D, Texture, Vector3 } from "three";
 import { v4 } from "uuid";
 import { syncObject } from "@vis-three/utils";
 import {
@@ -12,6 +12,9 @@ import { LoadTextureConfig } from "@vis-three/module-texture/TextureConfig";
 import { LoadGeometryConfig } from "@vis-three/module-geometry/GeometryInterface";
 import { SolidObjectConfig } from "@vis-three/module-solid-object";
 import { MaterialConfig } from "@vis-three/module-material/MaterialConfig";
+import { SkinnedMeshConfig } from "@vis-three/module-skinned-mesh";
+import { SkeletonConfig } from "@vis-three/module-skeleton";
+import { BoneConfig } from "@vis-three/module-bone";
 
 export class Object3DParser extends Parser {
   selector: ResourceHanlder = (
@@ -163,6 +166,21 @@ export class Object3DParser extends Parser {
     configMap.set(url, config);
   }
 
+  private parseSkeleton({
+    url,
+    resource,
+    configMap,
+    resourceMap,
+  }: ParseParams) {
+    const config = CONFIGFACTORY[CONFIGTYPE.SKELETON]() as SkeletonConfig;
+
+    const boneConfigMap: WeakMap<Bone, BoneConfig> = new WeakMap();
+
+    // TODO:
+
+    configMap.set(url, config);
+  }
+
   private parseObject3D({
     url,
     resource,
@@ -173,17 +191,17 @@ export class Object3DParser extends Parser {
 
     if (!CONFIGFACTORY[resource.type]) {
       console.warn(
-        `can not found support config in vis for this resource`,
+        `can not found support config in middleware module for this resource`,
         resource
       );
       return;
     }
 
-    const config = CONFIGFACTORY[resource.type]() as SolidObjectConfig;
+    const config = CONFIGFACTORY[resource.type]() as SkinnedMeshConfig;
     config.vid = v4();
 
     // 将一般属性同步到配置
-    syncObject<SolidObjectConfig, Object3D>(
+    syncObject<SkinnedMeshConfig, Object3D>(
       resource,
       config as unknown as Object3D,
       {
@@ -194,6 +212,7 @@ export class Object3DParser extends Parser {
         material: true,
         parent: true,
         lookAt: true, // load object是没有lookAt的
+        skeleton: true,
       }
     );
 
@@ -251,6 +270,21 @@ export class Object3DParser extends Parser {
 
       // 同步配置
       config.geometry = configMap.get(geometryUrl)!.vid;
+    }
+
+    // 解析骨架
+    if (resource.skeleton) {
+      const skeletonUrl = `${url}.skeleton`;
+
+      this.parseSkeleton({
+        url: skeletonUrl,
+        resource: resource.skeleton,
+
+        configMap,
+        resourceMap,
+      });
+
+      config.skeleton = configMap.get(skeletonUrl)!.vid;
     }
 
     // 解析children

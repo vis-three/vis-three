@@ -3,6 +3,9 @@ import { SkinnedMeshCompiler } from "./SkinnedMeshCompiler";
 import { SkinnedMeshRule } from "./SkinnedMeshRule";
 import SkinnedMeshProcessor from "./processors/SkinnedMeshProcessor";
 
+export * from "./SkinnedMeshConfig";
+export * from "./SkinnedMeshCompiler";
+
 export default {
   type: "skinned-mesh",
   object: true,

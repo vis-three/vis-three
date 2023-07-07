@@ -1829,9 +1829,12 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/middleware': workspace:^0.6.14
+      '@vis-three/module-bone': workspace:^0.6.0
       '@vis-three/module-css3d': workspace:^0.6.4
       '@vis-three/module-geometry': workspace:^0.6.7
       '@vis-three/module-material': workspace:^0.6.4
+      '@vis-three/module-skeleton': workspace:^0.6.0
+      '@vis-three/module-skinned-mesh': workspace:^0.6.0
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/module-texture': workspace:^0.6.1
       '@vis-three/utils': workspace:^0.6.1
@@ -1844,9 +1847,12 @@ importers:
       uuid: ^8.3.2
     dependencies:
       '@vis-three/middleware': link:../../middleware
+      '@vis-three/module-bone': link:../module/bone
       '@vis-three/module-css3d': link:../module/css3D
       '@vis-three/module-geometry': link:../module/geometry
       '@vis-three/module-material': link:../module/material
+      '@vis-three/module-skeleton': link:../module/skeleton
+      '@vis-three/module-skinned-mesh': link:../module/skinnedMesh
       '@vis-three/module-solid-object': link:../module/solidObject
       '@vis-three/module-texture': link:../module/texture
       '@vis-three/utils': link:../../utils
