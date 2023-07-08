@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/middleware",
-  "version": "0.6.14",
+  "version": "0.6.15",
   "description": "vis-three middleware",
   "main": "dist/vis-three.middleware.umd.js",
   "module": "dist/vis-three.middleware.es.js",

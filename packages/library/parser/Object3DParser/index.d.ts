@@ -21,5 +21,6 @@ export declare class Object3DParser extends Parser {
     private parseTexture;
     private parseMaterial;
     private parseGeometry;
+    private parseSkeleton;
     private parseObject3D;
 }

@@ -47,6 +47,13 @@ export declare class DataSupportManager extends EventDispatcher {
      */
     load(config: LoadOptions): this;
     /**
+     * 根据模块加载配置
+     * @param config
+     * @param module
+     * @returns
+     */
+    loadByModule(config: SymbolConfig[], module: string): this;
+    /**
      * 根据配置单移除相关对象
      * @param config  符合vis配置选项的配置单对象
      * @returns this

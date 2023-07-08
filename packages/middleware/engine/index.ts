@@ -143,7 +143,7 @@ export class EngineSupport
     const loadCycle = this.moduleLifeCycle.sort((a, b) => a.order - b.order);
 
     for (const { module } of loadCycle) {
-      config[module] && dataSupportManager.load({ [module]: config[module] });
+      config[module] && dataSupportManager.loadByModule(config[module], module);
     }
   }
 

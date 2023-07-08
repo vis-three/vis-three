@@ -173,10 +173,23 @@ export class Object3DParser extends Parser {
     resourceMap,
   }: ParseParams) {
     const config = CONFIGFACTORY[CONFIGTYPE.SKELETON]() as SkeletonConfig;
+    config.vid = v4();
 
     const boneConfigMap: WeakMap<Bone, BoneConfig> = new WeakMap();
 
-    // TODO:
+    for (const [url, object] of resourceMap.entries()) {
+      if (object instanceof Bone) {
+        boneConfigMap.set(object, configMap.get(url) as BoneConfig);
+      }
+    }
+
+    for (const bone of resource.bones) {
+      if (!boneConfigMap.has(bone)) {
+        console.warn(`object3D parser can not fond bone in configMap`, bone);
+        continue;
+      }
+      config.bones.push(boneConfigMap.get(bone)!.vid);
+    }
 
     configMap.set(url, config);
   }

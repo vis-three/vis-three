@@ -1,4 +1,4 @@
-import { Vector3 } from "three";
+import { Bone, Vector3 } from "three";
 import { v4 } from "uuid";
 import { syncObject } from "@vis-three/utils";
 import { CONFIGFACTORY, CONFIGTYPE, Parser, } from "@vis-three/middleware";
@@ -103,10 +103,28 @@ export class Object3DParser extends Parser {
         config.position.z = (center.z / (box.max.z - box.min.z)) * 2;
         configMap.set(url, config);
     }
+    parseSkeleton({ url, resource, configMap, resourceMap, }) {
+        const config = CONFIGFACTORY[CONFIGTYPE.SKELETON]();
+        config.vid = v4();
+        const boneConfigMap = new WeakMap();
+        for (const [url, object] of resourceMap.entries()) {
+            if (object instanceof Bone) {
+                boneConfigMap.set(object, configMap.get(url));
+            }
+        }
+        for (const bone of resource.bones) {
+            if (!boneConfigMap.has(bone)) {
+                console.warn(`object3D parser can not fond bone in configMap`, bone);
+                continue;
+            }
+            config.bones.push(boneConfigMap.get(bone).vid);
+        }
+        configMap.set(url, config);
+    }
     parseObject3D({ url, resource, configMap, resourceMap, }) {
         resourceMap.set(url, resource);
         if (!CONFIGFACTORY[resource.type]) {
-            console.warn(`can not found support config in vis for this resource`, resource);
+            console.warn(`can not found support config in middleware module for this resource`, resource);
             return;
         }
         const config = CONFIGFACTORY[resource.type]();
@@ -119,7 +137,8 @@ export class Object3DParser extends Parser {
             geometry: true,
             material: true,
             parent: true,
-            lookAt: true, // load object是没有lookAt的
+            lookAt: true,
+            skeleton: true,
         });
         config.rotation.x = resource.rotation.x;
         config.rotation.y = resource.rotation.y;
@@ -164,6 +183,17 @@ export class Object3DParser extends Parser {
             });
             // 同步配置
             config.geometry = configMap.get(geometryUrl).vid;
+        }
+        // 解析骨架
+        if (resource.skeleton) {
+            const skeletonUrl = `${url}.skeleton`;
+            this.parseSkeleton({
+                url: skeletonUrl,
+                resource: resource.skeleton,
+                configMap,
+                resourceMap,
+            });
+            config.skeleton = configMap.get(skeletonUrl).vid;
         }
         // 解析children
         if (resource.children && resource.children.length) {

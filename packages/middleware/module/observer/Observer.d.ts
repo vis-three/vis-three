@@ -8,6 +8,10 @@ export interface ReactNotice {
     key: string;
     value: any;
 }
+/**
+ * 观察者类
+ * @internal
+ */
 export declare class Observer<T extends object> extends Subject<ReactNotice> {
     private ignore;
     target: T;

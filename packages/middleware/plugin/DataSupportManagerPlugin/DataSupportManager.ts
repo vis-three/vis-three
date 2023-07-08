@@ -133,6 +133,24 @@ export class DataSupportManager extends EventDispatcher {
   }
 
   /**
+   * 根据模块加载配置
+   * @param config
+   * @param module
+   * @returns
+   */
+  loadByModule(config: SymbolConfig[], module: string): this {
+    const dataSupport = this.dataSupportMap.get(module);
+
+    if (!dataSupport) {
+      console.warn(`DataSupportManager can not support this module: ${module}`);
+      return this;
+    }
+
+    dataSupport.load(config);
+    return this;
+  }
+
+  /**
    * 根据配置单移除相关对象
    * @param config  符合vis配置选项的配置单对象
    * @returns this

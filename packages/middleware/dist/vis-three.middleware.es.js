@@ -381,6 +381,7 @@ class Bus {
 const compilerEvent = new Bus();
 var Bus$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  Bus,
   compilerEvent
 }, Symbol.toStringTag, { value: "Module" }));
 const createSymbol = function() {
@@ -1404,6 +1405,15 @@ class DataSupportManager extends EventDispatcher {
     });
     return this;
   }
+  loadByModule(config, module) {
+    const dataSupport = this.dataSupportMap.get(module);
+    if (!dataSupport) {
+      console.warn(`DataSupportManager can not support this module: ${module}`);
+      return this;
+    }
+    dataSupport.load(config);
+    return this;
+  }
   remove(config) {
     const dataSupportMap = this.dataSupportMap;
     dataSupportMap.forEach((dataSupport, module) => {
@@ -1757,7 +1767,7 @@ class EngineSupport extends Engine {
     const dataSupportManager = this.dataSupportManager;
     const loadCycle = this.moduleLifeCycle.sort((a, b) => a.order - b.order);
     for (const { module } of loadCycle) {
-      config[module] && dataSupportManager.load({ [module]: config[module] });
+      config[module] && dataSupportManager.loadByModule(config[module], module);
     }
   }
   removeLifeCycle(config) {

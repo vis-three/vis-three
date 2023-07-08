@@ -1,5 +1,5 @@
 import { BaseEvent, EventDispatcher } from "@vis-three/core";
-declare class Bus {
+export declare class Bus {
     map: WeakMap<object, EventDispatcher>;
     create(object: object): void;
     dispose(object: object): void;
@@ -9,4 +9,3 @@ declare class Bus {
     off(object: object, type: string, callback: (event: BaseEvent) => void): void;
 }
 export declare const compilerEvent: Bus;
-export {};
