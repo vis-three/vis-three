@@ -1,4 +1,8 @@
-import { EngineSupport, defineProcessor } from "@vis-three/middleware";
+import {
+  EngineSupport,
+  RenderEvent,
+  defineProcessor,
+} from "@vis-three/middleware";
 import {
   MixerAnimationConfig,
   getMixerAnimationConfig,
@@ -11,6 +15,9 @@ import {
 } from "three";
 import { AnimationCompiler } from "../AnimationCompiler";
 
+const cachePlayMap: WeakMap<AnimationMixer, (render: RenderEvent) => void> =
+  new WeakMap();
+
 export default defineProcessor<
   MixerAnimationConfig,
   AnimationMixer,
@@ -19,7 +26,7 @@ export default defineProcessor<
 >({
   type: "MixerAnimation",
   config: getMixerAnimationConfig,
-  create(config, engine) {
+  create(config, engine, compiler) {
     let target: Object3D | AnimationObjectGroup;
 
     if (Array.isArray(config.target)) {
@@ -50,11 +57,25 @@ export default defineProcessor<
     mixer.timeScale = config.timeScale;
 
     if (config.play) {
+      const fun = (event: RenderEvent) => {
+        mixer.update(event.delta);
+      };
+
+      compiler.playAnimation(fun);
+
+      cachePlayMap.set(mixer, fun);
     }
 
     return mixer;
   },
-  dispose(target) {
+  dispose(target, engine, compiler) {
+    const fun = cachePlayMap.get(target);
+
+    if (fun) {
+      compiler.stopAnimation(fun);
+      cachePlayMap.delete(target);
+    }
+
     target.uncacheRoot(target.getRoot());
     //@ts-ignore
     target._actions.forEach((action: AnimationAction) => {
