@@ -1,41 +1,45 @@
-import { BasicAniScriptConfig, getSymbolConfig, SymbolConfig } from "@vis-three/middleware";
+import {
+  BasicAniScriptConfig,
+  getSymbolConfig,
+  SymbolConfig,
+} from "@vis-three/middleware";
 
 export interface AnimationConfig extends SymbolConfig {
-  name: string;
-  target: string;
-  attribute: string;
+  target: string | string[];
   play: boolean;
 }
 
-export interface ScriptAnimationConfig extends AnimationConfig {
+export interface ScriptAnimationConfig extends Omit<AnimationConfig, "target"> {
+  target: string;
   script: BasicAniScriptConfig;
+  attribute: string;
 }
 
-export interface KeyframeAnimationConfig extends AnimationConfig {}
+export interface MixerAnimationConfig extends AnimationConfig {
+  time: number;
+  timeScale: number;
+}
 
-export type AnimationAllType = ScriptAnimationConfig | KeyframeAnimationConfig;
+export type AnimationAllType = ScriptAnimationConfig | MixerAnimationConfig;
 
 const getAnimationConfig = function (): AnimationConfig {
   return Object.assign(getSymbolConfig(), {
-    name: "",
     target: "",
-    attribute: "",
     play: true,
+  });
+};
+
+export const getMixerAnimationConfig = function (): MixerAnimationConfig {
+  return Object.assign(getAnimationConfig(), {
+    time: 0,
+    timeScale: 1,
   });
 };
 
 export const getScriptAnimationConfig = function (): ScriptAnimationConfig {
   return Object.assign(getAnimationConfig(), {
-    script: {
-      name: "",
-    },
-  });
-};
-
-export const getKeyframeAnimationConfig = function (): KeyframeAnimationConfig {
-  return Object.assign(getAnimationConfig(), {
-    script: {
-      name: "",
-    },
+    target: "",
+    script: { name: "" },
+    attribute: "",
   });
 };

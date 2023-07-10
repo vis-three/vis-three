@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.6.4",
-    "@vis-three/middleware": "workspace:^0.6.14",
+    "@vis-three/middleware": "workspace:^0.6.15",
     "@vis-three/plugin-event-manager": "workspace:^0.6.2",
     "@vis-three/plugin-selection": "workspace:^0.6.2",
     "@vis-three/plugin-selection-support": "workspace:^0.6.1",

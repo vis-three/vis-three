@@ -14,7 +14,9 @@ const createFunction = function (
   config: ScriptAnimationConfig,
   engine: EngineSupport
 ): (event: RenderEvent) => void {
-  let object = engine.compilerManager.getObjectBySymbol(config.target)!;
+  let object = engine.compilerManager.getObjectBySymbol(
+    config.target as string
+  )!;
 
   if (!object) {
     console.warn(`can not found object in enigne: ${config.target}`);
@@ -55,14 +57,11 @@ export default defineProcessor<
   config: getScriptAnimationConfig,
   commands: {
     set: {
-      play({ target, engine, value }) {
+      play({ target, compiler, value }) {
         if (value) {
-          engine.renderManager.addEventListener<RenderEvent>("render", target);
+          compiler.playAnimation(target);
         } else {
-          engine.renderManager.removeEventListener<RenderEvent>(
-            "render",
-            target
-          );
+          compiler.stopAnimation(target);
         }
       },
       $reg: [
@@ -70,11 +69,11 @@ export default defineProcessor<
           reg: new RegExp(".*"),
           handler({ config, engine, compiler }) {
             const fun = config[Symbol.for(compiler.scriptAniSymbol)];
-            engine.renderManager.removeEventListener("render", fun);
+            compiler.stopAnimation(fun);
             const newFun = createFunction(config, engine);
             config[Symbol.for(compiler.scriptAniSymbol)] = newFun;
 
-            config.play && engine.renderManager.addEventListener("render", fun);
+            config.play && compiler.playAnimation(fun);
           },
         },
       ],
@@ -87,11 +86,13 @@ export default defineProcessor<
   ): (event: RenderEvent) => void {
     const fun = createFunction(config, engine);
 
-    config.play && engine.renderManager.addEventListener("render", fun);
+    config.play && compiler.playAnimation(fun);
 
     config[Symbol.for(compiler.scriptAniSymbol)] = fun;
 
     return fun;
   },
-  dispose() {},
+  dispose(target, engine, compiler) {
+    compiler.stopAnimation(target);
+  },
 });
