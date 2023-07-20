@@ -5,7 +5,6 @@ import {
 } from "@vis-three/middleware";
 
 export interface AnimationConfig extends SymbolConfig {
-  target: string | string[];
   play: boolean;
 }
 
@@ -16,6 +15,7 @@ export interface ScriptAnimationConfig extends Omit<AnimationConfig, "target"> {
 }
 
 export interface MixerAnimationConfig extends AnimationConfig {
+  target: string | string[];
   time: number;
   timeScale: number;
 }
@@ -24,13 +24,13 @@ export type AnimationAllType = ScriptAnimationConfig | MixerAnimationConfig;
 
 const getAnimationConfig = function (): AnimationConfig {
   return Object.assign(getSymbolConfig(), {
-    target: "",
     play: true,
   });
 };
 
 export const getMixerAnimationConfig = function (): MixerAnimationConfig {
   return Object.assign(getAnimationConfig(), {
+    target: "",
     time: 0,
     timeScale: 1,
   });

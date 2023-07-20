@@ -1,4 +1,4 @@
-import { Bone, Vector3 } from "three";
+import { Bone, Vector3, } from "three";
 import { v4 } from "uuid";
 import { syncObject } from "@vis-three/utils";
 import { CONFIGFACTORY, CONFIGTYPE, Parser, } from "@vis-three/middleware";
@@ -13,6 +13,14 @@ export class Object3DParser extends Parser {
     };
     parse(params) {
         this.parseObject3D(params);
+    }
+    parseAnimation({ url, resource, configMap, resourceMap }) {
+        resourceMap.set(url, resource);
+        const config = CONFIGFACTORY[CONFIGTYPE.LOADANIMATIONCLIP]();
+        config.vid = v4();
+        config.url = url;
+        config.name = resource.name;
+        configMap.set(url, config);
     }
     /**
      * 解析颜色

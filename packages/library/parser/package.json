@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@vis-three/middleware": "workspace:^0.6.15",
+    "@vis-three/module-animation-clip": "workspace:^0.6.0",
     "@vis-three/module-bone": "workspace:^0.6.0",
     "@vis-three/module-css3d": "workspace:^0.6.4",
     "@vis-three/module-geometry": "workspace:^0.6.7",

@@ -1,15 +1,17 @@
 import { BasicAniScriptConfig, SymbolConfig } from "@vis-three/middleware";
 export interface AnimationConfig extends SymbolConfig {
-    name: string;
-    target: string;
-    attribute: string;
     play: boolean;
 }
-export interface ScriptAnimationConfig extends AnimationConfig {
+export interface ScriptAnimationConfig extends Omit<AnimationConfig, "target"> {
+    target: string;
     script: BasicAniScriptConfig;
+    attribute: string;
 }
-export interface KeyframeAnimationConfig extends AnimationConfig {
+export interface MixerAnimationConfig extends AnimationConfig {
+    target: string | string[];
+    time: number;
+    timeScale: number;
 }
-export type AnimationAllType = ScriptAnimationConfig | KeyframeAnimationConfig;
+export type AnimationAllType = ScriptAnimationConfig | MixerAnimationConfig;
+export declare const getMixerAnimationConfig: () => MixerAnimationConfig;
 export declare const getScriptAnimationConfig: () => ScriptAnimationConfig;
-export declare const getKeyframeAnimationConfig: () => KeyframeAnimationConfig;

@@ -1,4 +1,12 @@
-import { Bone, Color, Material, Object3D, Texture, Vector3 } from "three";
+import {
+  AnimationClip,
+  Bone,
+  Color,
+  Material,
+  Object3D,
+  Texture,
+  Vector3,
+} from "three";
 import { v4 } from "uuid";
 import { syncObject } from "@vis-three/utils";
 import {
@@ -15,6 +23,7 @@ import { MaterialConfig } from "@vis-three/module-material/MaterialConfig";
 import { SkinnedMeshConfig } from "@vis-three/module-skinned-mesh";
 import { SkeletonConfig } from "@vis-three/module-skeleton";
 import { BoneConfig } from "@vis-three/module-bone";
+import { LoadAnimationClipConfig } from "@vis-three/module-animation-clip";
 
 export class Object3DParser extends Parser {
   selector: ResourceHanlder = (
@@ -31,6 +40,20 @@ export class Object3DParser extends Parser {
 
   parse(params: ParseParams): void {
     this.parseObject3D(params);
+  }
+
+  parseAnimation({ url, resource, configMap, resourceMap }: ParseParams) {
+    resourceMap.set(url, resource);
+
+    const config = CONFIGFACTORY[
+      CONFIGTYPE.LOADANIMATIONCLIP
+    ]() as LoadAnimationClipConfig;
+
+    config.vid = v4();
+    config.url = url;
+    config.name = resource.name;
+
+    configMap.set(url, config);
   }
 
   /**

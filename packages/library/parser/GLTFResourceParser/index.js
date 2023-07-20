@@ -24,5 +24,13 @@ export class GLTFResourceParser extends Parser {
             configMap,
             resourceMap,
         });
+        resource.animations.forEach((animationClip, i) => {
+            this.object3DParser.parseAnimation({
+                url: `${url}.animations.${i}`,
+                resource: animationClip,
+                configMap,
+                resourceMap,
+            });
+        });
     }
 }

@@ -3,7 +3,7 @@ import { LoopRepeat } from "three";
 
 export interface AnimationActionConfig extends SymbolConfig {
   mixer: string;
-  clip: string; // vid | url
+  clip: string;
   clampWhenFinished: boolean;
   enabled: boolean;
   loop: number;

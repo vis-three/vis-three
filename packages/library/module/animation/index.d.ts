@@ -6,7 +6,7 @@ declare const _default: {
     type: string;
     compiler: typeof AnimationCompiler;
     rule: import("@vis-three/middleware").Rule<AnimationCompiler>;
-    processors: import("@vis-three/middleware").Processor<import("./AnimationConfig").ScriptAnimationConfig, (event: import("@vis-three/middleware").RenderEvent) => void, import("@vis-three/middleware").EngineSupport, AnimationCompiler>[];
+    processors: (import("@vis-three/middleware").Processor<import("./AnimationConfig").ScriptAnimationConfig, (event: import("@vis-three/middleware").RenderEvent) => void, import("@vis-three/middleware").EngineSupport, AnimationCompiler> | import("@vis-three/middleware").Processor<import("./AnimationConfig").MixerAnimationConfig, import("three").AnimationMixer, import("@vis-three/middleware").EngineSupport, AnimationCompiler>)[];
     lifeOrder: SUPPORT_LIFE_CYCLE;
 };
 export default _default;

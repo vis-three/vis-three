@@ -24,4 +24,6 @@ import helper from "@vis-three/module-helper";
 import bone from "@vis-three/module-bone";
 import skeleton from "@vis-three/module-skeleton";
 import skinnedMesh from "@vis-three/module-skinned-mesh";
-export { animation, camera, controls, css2D, css3D, geometry, group, light, line, material, mesh, modifier, object3d, pass, points, renderer, scene, sprite, texture, path, shape, curve, helper, bone, skeleton, skinnedMesh, };
+import animationClip from "@vis-three/module-animation-clip";
+import animationAction from "@vis-three/module-animation-action";
+export { animation, camera, controls, css2D, css3D, geometry, group, light, line, material, mesh, modifier, object3d, pass, points, renderer, scene, sprite, texture, path, shape, curve, helper, bone, skeleton, skinnedMesh, animationClip, animationAction, };

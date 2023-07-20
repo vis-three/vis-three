@@ -24,6 +24,8 @@ import helper from "@vis-three/module-helper";
 import bone from "@vis-three/module-bone";
 import skeleton from "@vis-three/module-skeleton";
 import skinnedMesh from "@vis-three/module-skinned-mesh";
+import animationClip from "@vis-three/module-animation-clip";
+import animationAction from "@vis-three/module-animation-action";
 
 export {
   animation,
@@ -52,4 +54,6 @@ export {
   bone,
   skeleton,
   skinnedMesh,
+  animationClip,
+  animationAction,
 };

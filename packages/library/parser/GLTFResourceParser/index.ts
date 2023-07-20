@@ -1,6 +1,7 @@
 import { ParseParams, Parser, ResourceHanlder } from "@vis-three/middleware";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { Object3DParser } from "../Object3DParser";
+import { AnimationClip } from "three";
 
 export class GLTFResourceParser extends Parser {
   private object3DParser = new Object3DParser();
@@ -33,6 +34,15 @@ export class GLTFResourceParser extends Parser {
       resource: resource.scene,
       configMap,
       resourceMap,
+    });
+
+    resource.animations.forEach((animationClip: AnimationClip, i: number) => {
+      this.object3DParser.parseAnimation({
+        url: `${url}.animations.${i}`,
+        resource: animationClip,
+        configMap,
+        resourceMap,
+      });
     });
   }
 }

@@ -2,6 +2,7 @@ import { ParseParams, Parser, ResourceHanlder } from "@vis-three/middleware";
 export declare class Object3DParser extends Parser {
     selector: ResourceHanlder;
     parse(params: ParseParams): void;
+    parseAnimation({ url, resource, configMap, resourceMap }: ParseParams): void;
     /**
      * 解析颜色
      * @param color

@@ -1,5 +1,5 @@
 import { SymbolConfig } from "../common";
-import { Processor } from "../Processor";
+import { Processor } from "../processor";
 export declare const CONFIGFACTORY: Record<string, () => SymbolConfig>;
 export declare const MODULETYPE: Record<string, string>;
 export declare const CONFIGTYPE: Record<string, string>;

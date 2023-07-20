@@ -5,10 +5,17 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { Compiler, Rule, getSymbolConfig, defineProcessor, AniScriptGeneratorManager, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { AnimationObjectGroup, Object3D, AnimationMixer } from "three";
 class AnimationCompiler extends Compiler {
   constructor() {
     super();
     __publicField(this, "scriptAniSymbol", "vis.scriptAni");
+  }
+  playAnimation(fun) {
+    this.engine.renderManager.addEventListener("render", fun);
+  }
+  stopAnimation(fun) {
+    this.engine.renderManager.removeEventListener("render", fun);
   }
   restoreAttribute(config) {
     if (!config.target || !config.attribute) {
@@ -41,29 +48,37 @@ class AnimationCompiler extends Compiler {
   }
   cover(config) {
     super.cover(config);
-    const fun = this.map.get(config.vid);
-    config[Symbol.for(this.scriptAniSymbol)] = fun;
+    if (config.type === "ScriptAnimation") {
+      const fun = this.map.get(config.vid);
+      config[Symbol.for(this.scriptAniSymbol)] = fun;
+    }
     return this;
   }
   remove(config) {
-    this.engine.removeEventListener(
-      "render",
-      config[Symbol.for(this.scriptAniSymbol)]
-    );
-    this.restoreAttribute(config);
-    delete config[Symbol.for(this.scriptAniSymbol)];
+    if (config.type === "ScriptAnimation") {
+      this.engine.removeEventListener(
+        "render",
+        config[Symbol.for(this.scriptAniSymbol)]
+      );
+      this.restoreAttribute(config);
+      delete config[Symbol.for(this.scriptAniSymbol)];
+    }
     super.remove(config);
     return this;
   }
   compile(vid, notice) {
     const config = this.target[vid];
-    this.restoreAttribute(config);
+    if (config.type === "ScriptAnimation") {
+      this.restoreAttribute(config);
+      super.compile(vid, notice);
+      const oldFun = this.map.get(vid);
+      const fun = config[Symbol.for(this.scriptAniSymbol)];
+      this.map.set(config.vid, fun);
+      this.weakMap.delete(oldFun);
+      this.weakMap.set(fun, vid);
+      return this;
+    }
     super.compile(vid, notice);
-    const oldFun = this.map.get(vid);
-    const fun = config[Symbol.for(this.scriptAniSymbol)];
-    this.map.set(config.vid, fun);
-    this.weakMap.delete(oldFun);
-    this.weakMap.set(fun, vid);
     return this;
   }
 }
@@ -75,28 +90,27 @@ const AnimationRule = function(notice, compiler) {
 };
 const getAnimationConfig = function() {
   return Object.assign(getSymbolConfig(), {
-    name: "",
-    target: "",
-    attribute: "",
     play: true
+  });
+};
+const getMixerAnimationConfig = function() {
+  return Object.assign(getAnimationConfig(), {
+    target: "",
+    time: 0,
+    timeScale: 1
   });
 };
 const getScriptAnimationConfig = function() {
   return Object.assign(getAnimationConfig(), {
-    script: {
-      name: ""
-    }
-  });
-};
-const getKeyframeAnimationConfig = function() {
-  return Object.assign(getAnimationConfig(), {
-    script: {
-      name: ""
-    }
+    target: "",
+    script: { name: "" },
+    attribute: ""
   });
 };
 const createFunction = function(config, engine) {
-  let object = engine.compilerManager.getObjectBySymbol(config.target);
+  let object = engine.compilerManager.getObjectBySymbol(
+    config.target
+  );
   if (!object) {
     console.warn(`can not found object in enigne: ${config.target}`);
     return () => {
@@ -128,14 +142,11 @@ var ScriptAnimationProcessor = defineProcessor({
   config: getScriptAnimationConfig,
   commands: {
     set: {
-      play({ target, engine, value }) {
+      play({ target, compiler, value }) {
         if (value) {
-          engine.renderManager.addEventListener("render", target);
+          compiler.playAnimation(target);
         } else {
-          engine.renderManager.removeEventListener(
-            "render",
-            target
-          );
+          compiler.stopAnimation(target);
         }
       },
       $reg: [
@@ -143,10 +154,10 @@ var ScriptAnimationProcessor = defineProcessor({
           reg: new RegExp(".*"),
           handler({ config, engine, compiler }) {
             const fun = config[Symbol.for(compiler.scriptAniSymbol)];
-            engine.renderManager.removeEventListener("render", fun);
+            compiler.stopAnimation(fun);
             const newFun = createFunction(config, engine);
             config[Symbol.for(compiler.scriptAniSymbol)] = newFun;
-            config.play && engine.renderManager.addEventListener("render", fun);
+            config.play && compiler.playAnimation(fun);
           }
         }
       ]
@@ -154,18 +165,72 @@ var ScriptAnimationProcessor = defineProcessor({
   },
   create(config, engine, compiler) {
     const fun = createFunction(config, engine);
-    config.play && engine.renderManager.addEventListener("render", fun);
+    config.play && compiler.playAnimation(fun);
     config[Symbol.for(compiler.scriptAniSymbol)] = fun;
     return fun;
   },
-  dispose() {
+  dispose(target, engine, compiler) {
+    compiler.stopAnimation(target);
+  }
+});
+const cachePlayMap = /* @__PURE__ */ new WeakMap();
+var MixerAnimationProcessor = defineProcessor({
+  type: "MixerAnimation",
+  config: getMixerAnimationConfig,
+  create(config, engine, compiler) {
+    let target;
+    if (Array.isArray(config.target)) {
+      target = new AnimationObjectGroup();
+      config.target.forEach((vid) => {
+        const object = engine.getObjectBySymbol(vid);
+        if (!object) {
+          console.warn(
+            `mixer animation processor can not found vid in engine: ${vid}`
+          );
+        } else {
+          target.add(object);
+        }
+      });
+    } else {
+      target = engine.getObjectBySymbol(config.target);
+      if (!target) {
+        console.warn(
+          `mixer animation processor can not found vid in engine: ${config.target}`
+        );
+        target = new Object3D();
+      }
+    }
+    const mixer = new AnimationMixer(target);
+    mixer.time = config.time;
+    mixer.timeScale = config.timeScale;
+    if (config.play) {
+      const fun = (event) => {
+        mixer.update(event.delta);
+      };
+      compiler.playAnimation(fun);
+      cachePlayMap.set(mixer, fun);
+    }
+    return mixer;
+  },
+  dispose(target, engine, compiler) {
+    const fun = cachePlayMap.get(target);
+    if (fun) {
+      compiler.stopAnimation(fun);
+      cachePlayMap.delete(target);
+    }
+    target.uncacheRoot(target.getRoot());
+    target._actions.forEach((action) => {
+      const clip = action.getClip();
+      target.uncacheClip(clip);
+      target.uncacheAction(clip);
+    });
   }
 });
 var index = {
   type: "animation",
   compiler: AnimationCompiler,
   rule: AnimationRule,
-  processors: [ScriptAnimationProcessor],
+  processors: [ScriptAnimationProcessor, MixerAnimationProcessor],
   lifeOrder: SUPPORT_LIFE_CYCLE.NINE
 };
-export { AnimationCompiler, index as default, getKeyframeAnimationConfig, getScriptAnimationConfig };
+export { AnimationCompiler, index as default, getMixerAnimationConfig, getScriptAnimationConfig };

@@ -711,6 +711,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/module-animation': workspace:^0.6.2
+      '@vis-three/module-animation-action': workspace:^0.6.0
+      '@vis-three/module-animation-clip': workspace:^0.6.0
       '@vis-three/module-bone': workspace:^0.6.0
       '@vis-three/module-camera': workspace:^0.6.2
       '@vis-three/module-controls': workspace:^0.6.3
@@ -743,6 +745,8 @@ importers:
       typescript: ^4.3.2
     dependencies:
       '@vis-three/module-animation': link:animation
+      '@vis-three/module-animation-action': link:animationAction
+      '@vis-three/module-animation-clip': link:animationClip
       '@vis-three/module-bone': link:bone
       '@vis-three/module-camera': link:camera
       '@vis-three/module-controls': link:controls
@@ -1899,6 +1903,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/middleware': workspace:^0.6.15
+      '@vis-three/module-animation-clip': workspace:^0.6.0
       '@vis-three/module-bone': workspace:^0.6.0
       '@vis-three/module-css3d': workspace:^0.6.4
       '@vis-three/module-geometry': workspace:^0.6.7
@@ -1917,6 +1922,7 @@ importers:
       uuid: ^8.3.2
     dependencies:
       '@vis-three/middleware': link:../../middleware
+      '@vis-three/module-animation-clip': link:../module/animationClip
       '@vis-three/module-bone': link:../module/bone
       '@vis-three/module-css3d': link:../module/css3D
       '@vis-three/module-geometry': link:../module/geometry

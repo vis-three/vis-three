@@ -13,13 +13,16 @@ export * from "./translater";
 export * from "./common";
 export * from "./space";
 
-export interface ModuleOptions<C extends Compiler<any, any>> {
+export interface ModuleOptions<
+  C extends Compiler<any, any> = Compiler<any, any>,
+  E extends EngineSupport = EngineSupport
+> {
   type: string;
   compiler: new () => C;
   rule: Rule<C>;
   processors: Processor<any, any, any, C>[];
   object?: boolean;
-  extend?: <E extends EngineSupport>(engine: E) => void;
+  extend?: (engine: E) => void;
   lifeOrder?: number;
   expand?: {
     processors: string[] | RegExp;

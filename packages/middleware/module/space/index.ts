@@ -1,7 +1,5 @@
 import { SymbolConfig } from "../common";
-import { Compiler } from "../compiler";
-import { DataSupportSimplifier } from "../dataSupport";
-import { Processor } from "../Processor";
+import { Processor } from "../processor";
 
 export const CONFIGFACTORY: Record<string, () => SymbolConfig> = {};
 

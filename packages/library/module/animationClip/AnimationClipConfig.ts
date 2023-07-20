@@ -60,9 +60,19 @@ export interface AnimationClipConfig extends SymbolConfig {
   tracks: KeyframeTracks[];
 }
 
+export interface LoadAnimationClipConfig extends SymbolConfig {
+  url: string;
+}
+
 export const getAnimationClipConfig = function (): AnimationClipConfig {
   return Object.assign(getSymbolConfig(), {
     duration: -1,
     tracks: [],
+  });
+};
+
+export const getLoadAnimationClipConfig = function (): LoadAnimationClipConfig {
+  return Object.assign(getSymbolConfig(), {
+    url: "",
   });
 };
