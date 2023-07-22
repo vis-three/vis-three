@@ -9,7 +9,6 @@ export * from "./AnimationClipCompiler";
 
 export default {
   type: "animation-clip",
-  object: true,
   compiler: AnimationClipCompiler,
   rule: AnimationClipRule,
   processors: [AnimationClipProcessor, LoadAnimationClipProcessor],

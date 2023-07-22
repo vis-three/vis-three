@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-animation-clip",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "vis-three animation-clip module",
   "main": "dist/vis-three.module-animation-clip.umd.js",
   "module": "dist/vis-three.module-animation-clip.es.js",

@@ -56,7 +56,6 @@ var LoadAnimationClipProcessor = defineProcessor({
 });
 var index = {
   type: "animation-clip",
-  object: true,
   compiler: AnimationClipCompiler,
   rule: AnimationClipRule,
   processors: [AnimationClipProcessor, LoadAnimationClipProcessor],

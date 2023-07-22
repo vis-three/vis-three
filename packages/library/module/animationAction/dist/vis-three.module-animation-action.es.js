@@ -72,7 +72,6 @@ var AnimationActionProcessor = defineProcessor({
 });
 var index = {
   type: "animation-action",
-  object: true,
   compiler: AnimationActionCompiler,
   rule: AnimationActionRule,
   processors: [AnimationActionProcessor],

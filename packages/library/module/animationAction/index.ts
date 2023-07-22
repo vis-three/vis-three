@@ -8,7 +8,6 @@ export * from "./AnimationActionCompiler";
 
 export default {
   type: "animation-action",
-  object: true,
   compiler: AnimationActionCompiler,
   rule: AnimationActionRule,
   processors: [AnimationActionProcessor],
