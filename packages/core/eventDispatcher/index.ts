@@ -120,7 +120,10 @@ export class EventDispatcher {
   once<C extends BaseEvent>(type: string, listener: EventListener<C>) {
     const onceListener = function (this: EventDispatcher, event: C) {
       listener.call(this, event);
-      this.removeEventListener(type, onceListener);
+      // 防止影响当前列表的length导致出问题
+      Promise.resolve(() => {
+        this.removeEventListener(type, onceListener);
+      });
     };
 
     this.addEventListener(type, onceListener);
