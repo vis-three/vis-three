@@ -5,9 +5,11 @@ import LoadTextureProcessor from "./processors/LoadTextureProcessor";
 import { TextureCompiler } from "./TextureCompiler";
 import { TextureRule } from "./TextureRule";
 import VideoTextureProcessor from "./processors/VideoTextureProcessor";
+import TextureExtend from "./TextureExtend";
 
 export * from "./TextureCompiler";
 export * from "./TextureConfig";
+export * from "./TextureExtend";
 
 export default {
   type: "texture",
@@ -20,4 +22,5 @@ export default {
     LoadTextureProcessor,
     VideoTextureProcessor,
   ],
+  extend: TextureExtend,
 };

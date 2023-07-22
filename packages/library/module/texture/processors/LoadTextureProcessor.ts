@@ -1,9 +1,13 @@
-import { Texture } from "three";
+import { CompressedTexture, Texture } from "three";
 import { getLoadTextureConfig, LoadTextureConfig } from "../TextureConfig";
 import { needUpdateRegCommand } from "./common";
 import { syncObject } from "@vis-three/utils";
 import { TextureCompiler } from "../TextureCompiler";
-import { defineProcessor, EngineSupport, MODULETYPE } from "@vis-three/middleware";
+import {
+  defineProcessor,
+  EngineSupport,
+  MODULETYPE,
+} from "@vis-three/middleware";
 import { LoadTexture } from "../extends/LoadTexture";
 
 export default defineProcessor<

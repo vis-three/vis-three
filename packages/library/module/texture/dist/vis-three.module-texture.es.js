@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { syncObject } from "@vis-three/utils";
 import { UVMapping, ClampToEdgeWrapping, LinearFilter, LinearMipmapLinearFilter, RGBAFormat, LinearEncoding, CubeReflectionMapping, CanvasTexture, CubeTexture, Texture, RGBFormat } from "three";
-import { Compiler, globalAntiShake, MODULETYPE, defineProcessor, Rule } from "@vis-three/middleware";
+import { Compiler, globalAntiShake, MODULETYPE, defineProcessor, Rule, generateConfig, CONFIGTYPE } from "@vis-three/middleware";
 import { CanvasGenerator } from "@vis-three/convenient";
 const _TextureCompiler = class extends Compiler {
   constructor() {
@@ -404,6 +404,23 @@ var VideoTextureProcessor = defineProcessor({
     target.dispose();
   }
 });
+function TextureExtend(engine) {
+  engine.generateLoadTextureConfig = function(url) {
+    const resource = this.compilerManager.getCompiler(MODULETYPE.TEXTURE).getResource(url, Texture);
+    if (resource instanceof HTMLCanvasElement) {
+      return null;
+    }
+    return generateConfig(CONFIGTYPE.LOADTEXTURE, {
+      url,
+      flipY: resource.flipY,
+      format: resource.format,
+      mapping: resource.mapping,
+      encoding: resource.encoding,
+      minFilter: resource.minFilter,
+      magFilter: resource.magFilter
+    });
+  };
+}
 var index = {
   type: "texture",
   compiler: TextureCompiler,
@@ -414,6 +431,7 @@ var index = {
     ImageTextureProcessor,
     LoadTextureProcessor,
     VideoTextureProcessor
-  ]
+  ],
+  extend: TextureExtend
 };
 export { TextureCompiler, index as default, getCanvasTextureConfig, getCubeTextureConfig, getImageTextureConfig, getLoadTextureConfig, getTextureConfig, getVideoTextureConfig };
