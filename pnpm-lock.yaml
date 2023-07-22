@@ -183,8 +183,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/library-module': workspace:^0.6.5
-      '@vis-three/library-parser': workspace:^0.6.0
+      '@vis-three/library-module': workspace:^0.6.6
+      '@vis-three/library-parser': workspace:^0.6.1
       '@vis-three/middleware': workspace:^0.6.15
       '@vis-three/plugin-camera-adaptive': workspace:^0.6.1
       '@vis-three/plugin-css2d-renderer': workspace:^0.6.1
@@ -323,8 +323,8 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/library-module': workspace:^0.6.5
-      '@vis-three/library-parser': workspace:^0.6.0
+      '@vis-three/library-module': workspace:^0.6.6
+      '@vis-three/library-parser': workspace:^0.6.1
       '@vis-three/middleware': workspace:^0.6.15
       '@vis-three/plugin-axes-helper': workspace:^0.6.1
       '@vis-three/plugin-camera-adaptive': workspace:^0.6.1
@@ -415,9 +415,9 @@ importers:
       '@vis-three/convenient': workspace:^0.6.0
       '@vis-three/core': workspace:^0.6.4
       '@vis-three/engine-display': workspace:^0.6.0
-      '@vis-three/engine-display-support': workspace:^0.6.0
+      '@vis-three/engine-display-support': workspace:^0.6.2
       '@vis-three/engine-modeling': workspace:^0.6.0
-      '@vis-three/engine-modeling-support': workspace:^0.6.3
+      '@vis-three/engine-modeling-support': workspace:^0.6.4
       '@vis-three/library-animate-script': workspace:^0.6.0
       '@vis-three/library-event': workspace:^0.6.0
       '@vis-three/middleware': workspace:^0.6.15
@@ -711,8 +711,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/module-animation': workspace:^0.6.2
-      '@vis-three/module-animation-action': workspace:^0.6.0
-      '@vis-three/module-animation-clip': workspace:^0.6.0
+      '@vis-three/module-animation-action': workspace:^0.6.1
+      '@vis-three/module-animation-clip': workspace:^0.6.1
       '@vis-three/module-bone': workspace:^0.6.0
       '@vis-three/module-camera': workspace:^0.6.2
       '@vis-three/module-controls': workspace:^0.6.3
@@ -1903,7 +1903,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/middleware': workspace:^0.6.15
-      '@vis-three/module-animation-clip': workspace:^0.6.0
+      '@vis-three/module-animation-clip': workspace:^0.6.1
       '@vis-three/module-bone': workspace:^0.6.0
       '@vis-three/module-css3d': workspace:^0.6.4
       '@vis-three/module-geometry': workspace:^0.6.7

@@ -3,6 +3,7 @@
   "version": "0.6.0",
   "description": "vis-three document",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",

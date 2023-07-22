@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/library-parser",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "vis-three parser library",
   "main": "index.js",
   "module": "index.js",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@vis-three/middleware": "workspace:^0.6.15",
-    "@vis-three/module-animation-clip": "workspace:^0.6.0",
+    "@vis-three/module-animation-clip": "workspace:^0.6.1",
     "@vis-three/module-bone": "workspace:^0.6.0",
     "@vis-three/module-css3d": "workspace:^0.6.4",
     "@vis-three/module-geometry": "workspace:^0.6.7",
