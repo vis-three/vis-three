@@ -110,6 +110,7 @@ const defineOption = function(options) {
   }
 };
 const generateConfig = function(type, merge, options = {
+  observer: true,
   strict: true,
   warn: true
 }) {
@@ -145,6 +146,9 @@ const generateConfig = function(type, merge, options = {
     initConfig.vid = globalOption.symbol.generator();
   }
   merge && recursion(initConfig, merge);
+  if (!options.observer) {
+    return initConfig;
+  }
   !options.handler && (options.handler = globalOption.proxy.expand);
   if (options.handler && globalOption.proxy.timing === "before") {
     initConfig = options.handler(initConfig);

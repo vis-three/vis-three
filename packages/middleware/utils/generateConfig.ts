@@ -8,6 +8,8 @@ import { globalOption } from "../option";
  * 配置单生成的附加选项
  */
 export interface GenerateOptions<C extends SymbolConfig> {
+  /**是否生成响应式配置，默认为true */
+  observer: boolean;
   /**严格模式，只允许合并CONFIGTYPE规定的属性，自定义扩展配置下关闭 */
   strict: boolean;
   /**控制台是否输出warn */
@@ -40,6 +42,7 @@ export const generateConfig = <GenerateConfig>function <C extends SymbolConfig>(
   type: string,
   merge: DeepPartial<C> | undefined,
   options: GenerateOptions<C> = {
+    observer: true,
     strict: true,
     warn: true,
   }
@@ -90,6 +93,10 @@ export const generateConfig = <GenerateConfig>function <C extends SymbolConfig>(
     initConfig.vid = globalOption.symbol.generator();
   }
   merge && recursion(initConfig, merge);
+
+  if (!options.observer) {
+    return initConfig;
+  }
 
   !options.handler && (options.handler = globalOption.proxy.expand);
 
