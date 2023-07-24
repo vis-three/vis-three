@@ -13,9 +13,18 @@ export default defineProcessor<
 >({
   type: "RectAreaLight",
   config: getRectAreaLightConfig,
-  commands: lightCommands as LightCommands<RectAreaLightConfig, RectAreaLight>,
+  commands: {
+    set: {
+      ...(lightCommands as LightCommands<RectAreaLightConfig, RectAreaLight>)
+        .set,
+      rotation: undefined,
+    },
+  },
   create(config: RectAreaLightConfig, engine: EngineSupport): RectAreaLight {
-    return lightCreate(new RectAreaLight(), config, {}, engine);
+    const light = lightCreate(new RectAreaLight(), config, {}, engine);
+    light.rotation.set(config.rotation.x, config.rotation.y, config.rotation.z);
+    light.updateMatrixWorld();
+    return light;
   },
 
   dispose: objectDispose,

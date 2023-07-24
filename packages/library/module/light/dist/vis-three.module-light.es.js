@@ -146,9 +146,17 @@ var PointLightProcessor = defineProcessor({
 var RectAreaLightProcessor = defineProcessor({
   type: "RectAreaLight",
   config: getRectAreaLightConfig,
-  commands: lightCommands,
+  commands: {
+    set: {
+      ...lightCommands.set,
+      rotation: void 0
+    }
+  },
   create(config, engine) {
-    return lightCreate(new RectAreaLight(), config, {}, engine);
+    const light = lightCreate(new RectAreaLight(), config, {}, engine);
+    light.rotation.set(config.rotation.x, config.rotation.y, config.rotation.z);
+    light.updateMatrixWorld();
+    return light;
   },
   dispose: objectDispose
 });
