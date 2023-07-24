@@ -1483,28 +1483,20 @@ class ObjectHelper extends EventDispatcher {
   dispose(params) {
     if (params) {
       if (this[params]) {
+        this[params].removeFromParent();
         this[params].dispose();
         this[params] = void 0;
         return;
       }
     }
     this.target = void 0;
-    if (this.shape) {
-      this.shape.dispose();
-      this.shape = void 0;
-    }
-    if (this.boundingBox) {
-      this.boundingBox.dispose();
-      this.boundingBox = void 0;
-    }
-    if (this.geometricOrigin) {
-      this.geometricOrigin.dispose();
-      this.geometricOrigin = void 0;
-    }
-    if (this.localAxes) {
-      this.localAxes.dispose();
-      this.localAxes = void 0;
-    }
+    ["shape", "boundingBox", "geometricOrigin", "localAxes"].forEach((key) => {
+      if (this[key]) {
+        this[key].removeFromParent();
+        this[key].dispose();
+        this[key] = void 0;
+      }
+    });
   }
 }
 const eventMap = /* @__PURE__ */ new WeakMap();
@@ -1536,7 +1528,6 @@ const removeHelper = function(helper, config, target, engine) {
     );
     return;
   }
-  target[helper].removeFromParent();
   const cacheFun = eventMap.get(object);
   cacheFun && Bus.compilerEvent.off(object, `${COMPILER_EVENT.UPDATE}:parent`, cacheFun);
   target.dispose(helper);

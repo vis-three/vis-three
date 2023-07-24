@@ -98,6 +98,7 @@ export class ObjectHelper extends EventDispatcher {
   dispose(params?: string) {
     if (params) {
       if (this[params]) {
+        this[params].removeFromParent();
         this[params].dispose();
         this[params] = undefined;
         return;
@@ -105,25 +106,13 @@ export class ObjectHelper extends EventDispatcher {
     }
 
     this.target = undefined;
-    if (this.shape) {
-      this.shape.dispose();
-      this.shape = undefined;
-    }
-
-    if (this.boundingBox) {
-      this.boundingBox.dispose();
-      this.boundingBox = undefined;
-    }
-
-    if (this.geometricOrigin) {
-      this.geometricOrigin.dispose();
-      this.geometricOrigin = undefined;
-    }
-
-    if (this.localAxes) {
-      this.localAxes.dispose();
-      this.localAxes = undefined;
-    }
+    ["shape", "boundingBox", "geometricOrigin", "localAxes"].forEach((key) => {
+      if (this[key]) {
+        this[key].removeFromParent();
+        this[key].dispose();
+        this[key] = undefined;
+      }
+    });
   }
 }
 
@@ -170,7 +159,7 @@ const removeHelper = function (
     );
     return;
   }
-  target[helper].removeFromParent();
+
   const cacheFun = eventMap.get(object);
   cacheFun &&
     Bus.compilerEvent.off(object, `${COMPILER_EVENT.UPDATE}:parent`, cacheFun);

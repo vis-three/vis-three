@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-helper",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "vis-three helper module",
   "main": "dist/vis-three.module-helper.umd.js",
   "module": "dist/vis-three.module-helper.es.js",
