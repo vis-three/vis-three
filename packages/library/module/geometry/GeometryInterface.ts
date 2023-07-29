@@ -110,7 +110,7 @@ export interface DodecahedronGeometryConfig extends GeometryConfig {
 
 export interface EdgesGeometryConfig extends GeometryConfig {
   /**目标几何vid标识 */
-  url: string;
+  target: string;
   thresholdAngle: number;
 }
 

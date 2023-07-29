@@ -168,7 +168,7 @@ export const getDodecahedronGeometryConfig =
 
 export const getEdgesGeometryConfig = function (): EdgesGeometryConfig {
   return Object.assign(getGeometryConfig(), {
-    url: "",
+    target: "",
     thresholdAngle: 1,
   });
 };

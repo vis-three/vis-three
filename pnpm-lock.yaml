@@ -1605,6 +1605,43 @@ importers:
       typescript: 4.9.5
       vite: 2.9.15
 
+  packages/library/module/reflector:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': ^0.6.1
+      '@vis-three/middleware': ^0.6.3
+      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/utils': ^0.6.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+      uuid: ^8.3.2
+      vite: ^2.9.15
+    dependencies:
+      '@vis-three/core': link:../../../core
+      '@vis-three/middleware': link:../../../middleware
+      '@vis-three/module-object': link:../object
+      '@vis-three/utils': link:../../../utils
+      uuid: 8.3.2
+    devDependencies:
+      '@types/node': 18.16.19
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.61.0_tiwiljqgmizmat2g4tqcn7wxxu
+      '@typescript-eslint/parser': 5.61.0_c6scop6gobf6637sntyzfiffg4
+      eslint: 8.44.0
+      eslint-config-prettier: 8.8.0_eslint@8.44.0
+      eslint-plugin-prettier: 4.2.1_qkgbdr345imkz5woyd5e5k6xse
+      prettier: 2.8.8
+      three: 0.141.0
+      typescript: 4.9.5
+      vite: 2.9.16
+
   packages/library/module/renderer:
     specifiers:
       '@types/node': ^18.11.12
@@ -5956,7 +5993,7 @@ packages:
       eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
     dependencies:
       eslint: 8.44.0
-      eslint-visitor-keys: 3.3.0
+      eslint-visitor-keys: 3.4.1
     dev: true
 
   /@eslint-community/regexpp/4.4.1:
@@ -10530,12 +10567,6 @@ packages:
       ci-info: 3.7.0
     dev: true
 
-  /is-core-module/2.11.0:
-    resolution: {integrity: sha512-RRjxlvLDkD1YJwDbroBHMb+cukurkDWNyHx7D3oNB5x9rb5ogcksMC5wHCadcXoo67gVr/+3GFySh3134zi6rw==}
-    dependencies:
-      has: 1.0.3
-    dev: true
-
   /is-core-module/2.12.1:
     resolution: {integrity: sha512-Q4ZuBAe2FUsKtyQJoQHlvP8OvBERxO3jEmy1I7hcRXcJBGGHFh/aJBswbXuS9sgrDH2QUO8ilkwNPHvHMd8clg==}
     dependencies:
@@ -11611,15 +11642,6 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /postcss/8.4.25:
-    resolution: {integrity: sha512-7taJ/8t2av0Z+sQEvNzCkpDynl0tX3uJMCODi6nT3PfASC7dYCWV9aQ+uiCf+KBD4SEFcu+GvJdGdwzQ6OSjCw==}
-    engines: {node: ^10 || ^12 || >=14}
-    dependencies:
-      nanoid: 3.3.6
-      picocolors: 1.0.0
-      source-map-js: 1.0.2
-    dev: true
-
   /postcss/8.4.27:
     resolution: {integrity: sha512-gY/ACJtJPSmUFPDCHtX78+01fHa64FaU4zaaWfuh1MhGJISufJAH4cun6k/8fwsHYeK4UQmENQK+tRLCFJE8JQ==}
     engines: {node: ^10 || ^12 || >=14}
@@ -11874,7 +11896,7 @@ packages:
     resolution: {integrity: sha512-Sb+mjNHOULsBv818T40qSPeRiuWLyaGMa5ewydRLFimneixmVy2zdivRl+AF6jaYPC8ERxGDmFSiqui6SfPd+g==}
     hasBin: true
     dependencies:
-      is-core-module: 2.11.0
+      is-core-module: 2.12.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
     dev: true
@@ -12961,7 +12983,7 @@ packages:
         optional: true
     dependencies:
       esbuild: 0.14.54
-      postcss: 8.4.25
+      postcss: 8.4.27
       resolve: 1.22.2
       rollup: 2.77.3
     optionalDependencies:

@@ -103,7 +103,7 @@ export class MaterialDisplayer {
       this.object = new Mesh(MaterialDisplayer.geometry, material);
     } else if (material.type.includes("Line")) {
       this.object = new Line(MaterialDisplayer.geometry, material);
-    } else if (material.type.includes("Ponits")) {
+    } else if (material.type.includes("Points")) {
       this.object = new Points(MaterialDisplayer.geometry, material);
     } else if (material.type.includes("Sprite")) {
       this.object = new Sprite(material as SpriteMaterial);

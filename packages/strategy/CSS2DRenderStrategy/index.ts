@@ -1,7 +1,7 @@
 import { Strategy } from "@vis-three/core";
 import {
   CSS2DRendererEngine,
-  name as CSS2D_RENDERER_PLUGIN,
+  CSS2D_RENDERER_PLUGIN,
 } from "@vis-three/plugin-css2d-renderer";
 import {
   RenderEvent,

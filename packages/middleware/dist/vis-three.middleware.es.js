@@ -146,7 +146,7 @@ const generateConfig = function(type, merge, options = {
     initConfig.vid = globalOption.symbol.generator();
   }
   merge && recursion(initConfig, merge);
-  if (!options.observer) {
+  if (options.observer === false) {
     return initConfig;
   }
   !options.handler && (options.handler = globalOption.proxy.expand);
@@ -383,10 +383,12 @@ class Bus {
   }
 }
 const compilerEvent = new Bus();
+const configEvent = new Bus();
 var Bus$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   Bus,
-  compilerEvent
+  compilerEvent,
+  configEvent
 }, Symbol.toStringTag, { value: "Module" }));
 const createSymbol = function() {
   return v4();
@@ -1842,7 +1844,12 @@ class EngineSupport extends Engine {
         } else {
           this.renderManager.render();
         }
-        resolve(void 0);
+        resolve({
+          type: RESOURCE_EVENT.MAPPED,
+          configMap: this.resourceManager.configMap,
+          resourceMap: this.resourceManager.resourceMap,
+          resourceConfig: {}
+        });
       }
     });
   }

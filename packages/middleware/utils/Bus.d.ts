@@ -9,3 +9,4 @@ export declare class Bus {
     off(object: object, type: string, callback: (event: BaseEvent) => void): void;
 }
 export declare const compilerEvent: Bus;
+export declare const configEvent: Bus;

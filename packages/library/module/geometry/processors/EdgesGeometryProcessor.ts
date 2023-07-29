@@ -6,8 +6,11 @@ import { getEdgesGeometryConfig } from "../GeometryConfig";
 import {
   defineProcessor,
   EngineSupport,
+  MODULETYPE,
   ProcessorCommands,
 } from "@vis-three/middleware";
+
+const occupyGeometry = new EdgesGeometry(new BoxBufferGeometry(5, 5, 5));
 
 export default defineProcessor<
   EdgesGeometryConfig,
@@ -26,13 +29,19 @@ export default defineProcessor<
     >
   >(<unknown>commands),
   create(config: EdgesGeometryConfig, engine: EngineSupport): EdgesGeometry {
-    const geometry = engine.compilerManager.getObjectBySymbol(config.url);
+    const geometry = engine.compilerManager.getObjectfromModule(
+      MODULETYPE.GEOMETRY,
+      config.target
+    );
     if (!geometry || !(geometry instanceof BufferGeometry)) {
-      console.error(`engine rescoure can not found url: ${config.url}`);
-      return new EdgesGeometry(new BoxBufferGeometry(5, 5, 5));
+      console.error(`engine rescoure can not found url: ${config.target}`);
+      return occupyGeometry;
     }
 
-    return create(new EdgesGeometry(<BufferGeometry>geometry), config);
+    return create(
+      new EdgesGeometry(<BufferGeometry>geometry, config.thresholdAngle),
+      config
+    );
   },
   dispose(target) {
     target.dispose();

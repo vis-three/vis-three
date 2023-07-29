@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { defineProcessor, Compiler, Rule, MODULETYPE, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { defineProcessor, MODULETYPE, Compiler, Rule, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, Path, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry } from "three";
 const transfromAnchor = function(geometry, config) {
   config.center && geometry.center();
@@ -201,7 +201,7 @@ const getCylinderGeometryConfig = function() {
 };
 const getEdgesGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
-    url: "",
+    target: "",
     thresholdAngle: 1
   });
 };
@@ -575,17 +575,24 @@ var CylinderGeometryProcessor = defineProcessor({
   ),
   dispose
 });
+const occupyGeometry = new EdgesGeometry(new BoxBufferGeometry(5, 5, 5));
 var EdgesGeometryProcessor = defineProcessor({
   type: "EdgesGeometry",
   config: getEdgesGeometryConfig,
   commands,
   create(config, engine) {
-    const geometry = engine.compilerManager.getObjectBySymbol(config.url);
+    const geometry = engine.compilerManager.getObjectfromModule(
+      MODULETYPE.GEOMETRY,
+      config.target
+    );
     if (!geometry || !(geometry instanceof BufferGeometry)) {
-      console.error(`engine rescoure can not found url: ${config.url}`);
-      return new EdgesGeometry(new BoxBufferGeometry(5, 5, 5));
+      console.error(`engine rescoure can not found url: ${config.target}`);
+      return occupyGeometry;
     }
-    return create(new EdgesGeometry(geometry), config);
+    return create(
+      new EdgesGeometry(geometry, config.thresholdAngle),
+      config
+    );
   },
   dispose(target) {
     target.dispose();

@@ -62,3 +62,4 @@ export class Bus {
 }
 
 export const compilerEvent = new Bus();
+export const configEvent = new Bus();

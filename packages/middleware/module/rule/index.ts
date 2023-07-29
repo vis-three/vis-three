@@ -1,6 +1,7 @@
 import { validate } from "uuid";
 import { BasicCompiler } from "../compiler";
 import { ProxyNotice } from "../dataContainer";
+import { Bus } from "../../utils";
 
 export type Rule<C extends BasicCompiler> = (
   input: ProxyNotice,

@@ -4,4 +4,4 @@ import { RenderManagerEngine } from "@vis-three/plugin-render-manager";
 export interface CSS2DAndRenderEngine extends CSS2DRendererEngine, RenderManagerEngine {
 }
 export declare const name: string;
-export declare const CSS2DRenderStrategy: Strategy<CSS2DAndRenderEngine>;
+export declare const CSS2DRenderStrategy: Strategy<CSS2DAndRenderEngine, object>;

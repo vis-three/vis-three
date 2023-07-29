@@ -27,6 +27,7 @@ import {
 } from "../plugin/DataSupportManagerPlugin";
 import {
   MappedEvent,
+  RESOURCE_EVENT,
   ResourceManager,
   ResourceManagerEngine,
   ResourceManagerPlugin,
@@ -208,8 +209,10 @@ export class EngineSupport
   }
 
   loadConfigAsync(
-    config: EngineSupportLoadOptions
-  ): Promise<MappedEvent | undefined> {
+    config: EngineSupportLoadOptions,
+    pretreat: (c: EngineSupportLoadOptions) => EngineSupportLoadOptions
+  ): Promise<MappedEvent> {
+    
     return new Promise((resolve, reject) => {
       const renderFlag = this.renderManager.hasRendering();
 
@@ -236,7 +239,12 @@ export class EngineSupport
         } else {
           this.renderManager.render();
         }
-        resolve(undefined);
+        resolve({
+          type: RESOURCE_EVENT.MAPPED,
+          configMap: this.resourceManager.configMap,
+          resourceMap: this.resourceManager.resourceMap,
+          resourceConfig: {} as { [key: string]: LoadOptions },
+        });
       }
     });
   }

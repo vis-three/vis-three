@@ -19,7 +19,7 @@ export interface CSS2DRendererEngine extends Engine {
   css2DRenderer: CSS2DRenderer;
 }
 
-export const name = transPkgName(pkgname);
+export const CSS2D_RENDERER_PLUGIN = transPkgName(pkgname);
 
 export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine, object> =
   function () {
@@ -29,7 +29,7 @@ export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine, object> =
     let renderFun: (event: RenderEvent) => void;
 
     return {
-      name,
+      name: CSS2D_RENDERER_PLUGIN,
       install(engine) {
         const css2DRenderer = new CSS2DRenderer();
 
@@ -37,6 +37,7 @@ export const CSS2DRendererPlugin: Plugin<CSS2DRendererEngine, object> =
 
         const domElement = css2DRenderer.domElement;
 
+        domElement.id = "vis-css2D";
         domElement.classList.add("vis-css2D");
         domElement.style.position = "absolute";
         domElement.style.top = "0";

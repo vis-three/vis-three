@@ -94,7 +94,7 @@ export const generateConfig = <GenerateConfig>function <C extends SymbolConfig>(
   }
   merge && recursion(initConfig, merge);
 
-  if (!options.observer) {
+  if (options.observer === false) {
     return initConfig;
   }
 
