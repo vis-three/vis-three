@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.6.4",
-    "@vis-three/middleware": "workspace:^0.6.15",
+    "@vis-three/middleware": "workspace:^0.6.16",
     "@vis-three/module-curve": "workspace:^0.6.1",
     "@vis-three/utils": "workspace:^0.6.1",
     "uuid": "^8.3.2"
