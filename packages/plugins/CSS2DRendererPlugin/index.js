@@ -14,8 +14,8 @@ export const CSS2DRendererPlugin = function () {
             const css2DRenderer = new CSS2DRenderer();
             engine.css2DRenderer = css2DRenderer;
             const domElement = css2DRenderer.domElement;
-            domElement.id = "vis-css2D-canvas";
-            domElement.classList.add("vis-css2D-canvas");
+            domElement.id = "vis-css2D";
+            domElement.classList.add("vis-css2D");
             domElement.style.position = "absolute";
             domElement.style.top = "0";
             domElement.style.left = "0";
