@@ -265,6 +265,24 @@ export interface LoadMaterialConfig extends MaterialConfig {
   url: string;
 }
 
+export interface MeshMatcapMaterialConfig extends MaterialConfig {
+  color: string;
+  bumpScale: number;
+  displacementScale: number;
+  displacementBias: number;
+  flatShading: boolean;
+  fog: boolean;
+  normalMapType: number;
+  normalSale: Vector2Config;
+
+  map: string;
+  alphaMap: string;
+  bumpMap: string;
+  displacementMap: string;
+  matcap: string;
+  normalMap: string;
+}
+
 /**
  * 所有材质配置类型
  */
@@ -277,42 +295,9 @@ export type MaterialAllType =
   | SpriteMaterialConfig
   | PointsMaterialConfig
   | ShaderMaterialConfig
-  | MeshPhysicalMaterialConfig;
+  | MeshPhysicalMaterialConfig
+  | MeshMatcapMaterialConfig;
 
-/**
- * 获取材质基础配置
- * @returns
- * @default
- * {
-    vid: "",
-    type: "Material",
-    alphaTest: 0,
-    colorWrite: true,
-    depthTest: true,
-    depthWrite: true,
-    name: "",
-    needsUpdate: false,
-    opacity: 1,
-    dithering: false,
-    shadowSide: null,
-    side: FrontSide,
-    toneMapped: true,
-    transparent: false,
-    visible: true,
-    blendDst: OneMinusSrcAlphaFactor,
-    blendDstAlpha: null,
-    blendEquation: AddEquation,
-    blendEquationAlpha: null,
-    blending: NormalBlending,
-    blendSrc: SrcAlphaFactor,
-    blendSrcAlpha: null,
-
-    polygonOffset: false,
-    polygonOffsetFactor: 0,
-    polygonOffsetUnits: 0,
-  }
- *
- */
 export const getMaterialConfig = function (): MaterialConfig {
   return {
     vid: "",
@@ -344,32 +329,6 @@ export const getMaterialConfig = function (): MaterialConfig {
   };
 };
 
-/**
- * 获取网格基础材质配置 - 会与`getMaterialConfig`合并
- * @returns 
- * @default
- * {
-    type: "MeshBasicMaterial",
-    color: "rgb(255, 255, 255)",
-    combine: MultiplyOperation,
-    aoMapIntensity: 1,
-    fog: true,
-    lightMapIntensity: 1,
-    reflectivity: 1,
-    refractionRatio: 0.98,
-    wireframe: false,
-    wireframeLinecap: "round",
-    wireframeLinejoin: "round",
-    wireframeLinewidth: 1,
-
-    map: "",
-    envMap: "",
-    alphaMap: "",
-    aoMap: "",
-    lightMap: "",
-    specularMap: "",
-  }
- */
 export const getMeshBasicMaterialConfig = function (): MeshBasicMaterialConfig {
   return Object.assign(getMaterialConfig(), {
     color: "rgb(255, 255, 255)",
@@ -393,43 +352,6 @@ export const getMeshBasicMaterialConfig = function (): MeshBasicMaterialConfig {
   });
 };
 
-/**
- * 获取标准网格配置 - 会与`getMaterialConfig`合并
- * @returns
- * @default
- * {  
-      type: "MeshStandardMaterial",
-      aoMapIntensity: 1,
-      bumpScale: 1,
-      color: "rgb(255, 255, 255)",
-      displacementScale: 1,
-      displacementBias: 0,
-      emissive: "rgb(0, 0, 0)",
-      emissiveIntensity: 1,
-      envMapIntensity: 1,
-      flatShading: false,
-      lightMapIntensity: 1,
-      metalness: 0,
-      normalMapType: TangentSpaceNormalMap,
-      refractionRatio: 0.98,
-      roughness: 1,
-      wireframe: false,
-      wireframeLinecap: "round",
-      wireframeLinejoin: "round",
-
-      roughnessMap: "",
-      normalMap: "",
-      metalnessMap: "",
-      map: "",
-      lightMap: "",
-      envMap: "",
-      emissiveMap: "",
-      displacementMap: "",
-      bumpMap: "",
-      alphaMap: "",
-      aoMap: "",
-    }
- */
 export const getMeshStandardMaterialConfig =
   function (): MeshStandardMaterialConfig {
     return Object.assign(getMaterialConfig(), {
@@ -465,41 +387,6 @@ export const getMeshStandardMaterialConfig =
     });
   };
 
-/**
-   * 获取物理网格材质 - 会与`getMeshStandardMaterialConfig`合并，也就是会合并基础标准网格默认值。
-   * @returns 
-   * @default
-   * {
-      type: "MeshPhysicalMaterial",
-      attenuationColor: "rgb(255, 255, 255)",
-      attenuationDistance: 0,
-      clearcoat: 0.0,
-      clearcoatNormalScale: {
-        x: 1,
-        y: 1,
-      },
-      clearcoatRoughness: 0,
-      ior: 1.5,
-      reflectivity: 0.5,
-      sheen: 0.0,
-      sheenRoughness: 1.0,
-      sheenColor: "rgb(255, 255, 255)",
-      specularIntensity: 0.0,
-      specularColor: "rgb(255, 255, 255)",
-      thickness: 0,
-      transmission: 0,
-
-      clearcoatMap: "",
-      clearcoatNormalMap: "",
-      clearcoatRoughnessMap: "",
-      sheenRoughnessMap: "",
-      sheenColorMap: "",
-      specularIntensityMap: "",
-      specularColorMap: "",
-      thicknessMap: "",
-      transmissionMap: "",
-    }
-   */
 export const getMeshPhysicalMaterialConfig =
   function (): MeshPhysicalMaterialConfig {
     return Object.assign(getMeshStandardMaterialConfig(), {
@@ -533,43 +420,6 @@ export const getMeshPhysicalMaterialConfig =
     });
   };
 
-/**
- * 获取phong网格材质 - 会与`getMaterialConfig`合并
- * @returns
- * @default
- * {
-    type: "MeshPhongMaterial",
-    aoMapIntensity: 1,
-    bumpScale: 1,
-    color: "rgb(255, 255, 255)",
-    displacementScale: 1,
-    displacementBias: 0,
-    emissive: "rgb(0, 0, 0)",
-    emissiveIntensity: 1,
-    envMapIntensity: 1,
-    flatShading: false,
-    lightMapIntensity: 1,
-    normalMapType: TangentSpaceNormalMap,
-    refractionRatio: 0.98,
-    wireframe: false,
-    wireframeLinecap: "round",
-    wireframeLinejoin: "round",
-    specular: "rgb(17, 17, 17)",
-    shininess: 30,
-    combine: MultiplyOperation,
-
-    normalMap: "",
-    map: "",
-    lightMap: "",
-    envMap: "",
-    emissiveMap: "",
-    displacementMap: "",
-    bumpMap: "",
-    alphaMap: "",
-    aoMap: "",
-    specularMap: "",
-  }
- */
 export const getMeshPhongMaterialConfig = function (): MeshPhongMaterialConfig {
   return Object.assign(getMaterialConfig(), {
     aoMapIntensity: 1,
@@ -603,19 +453,7 @@ export const getMeshPhongMaterialConfig = function (): MeshPhongMaterialConfig {
     specularMap: "",
   });
 };
-/**
- * 获取精灵材质配置 - 会与`getMaterialConfig`合并
- * @returns
- * @default
- * {
-    type: "SpriteMaterial",
-    color: "rgb(255, 255, 255)",
-    rotation: 0,
-    map: "",
-    alphaMap: "",
-    sizeAttenuation: true,
-  }
- */
+
 export const getSpriteMaterialConfig = function (): SpriteMaterialConfig {
   return Object.assign(getMaterialConfig(), {
     color: "rgb(255, 255, 255)",
@@ -626,18 +464,6 @@ export const getSpriteMaterialConfig = function (): SpriteMaterialConfig {
   });
 };
 
-/**
- * 获取基础线条材质配置 - 会与`getMaterialConfig`合并
- * @returns
- * @default
- * {
-    type: "LineBasicMaterial",
-    color: "rgb(255, 255, 255)",
-    linecap: "round",
-    linejoin: "round",
-    linewidth: 1,
-  }
- */
 export const getLineBasicMaterialConfig = function (): LineBasicMaterialConfig {
   return Object.assign(getMaterialConfig(), {
     color: "rgb(255, 255, 255)",
@@ -647,17 +473,6 @@ export const getLineBasicMaterialConfig = function (): LineBasicMaterialConfig {
   });
 };
 
-/**
- * 获取虚线条材质配置 - 会与`getLineBasicMaterialConfig`合并
- * @returns
- * @default
- * {
-    type: "LineDashedMaterial",
-    dashSize: 3,
-    gapSize: 1,
-    scale: 1,
-  }
- */
 export const getLineDashedMaterialConfig =
   function (): LineDashedMaterialConfig {
     return Object.assign(getLineBasicMaterialConfig(), {
@@ -667,19 +482,6 @@ export const getLineDashedMaterialConfig =
     });
   };
 
-/**
- * 获取点材质配置 - 会与`getMaterialConfig`合并
- * @returns
- * @default
- * {
-    type: "PointsMaterial",
-    map: "",
-    alphaMap: "",
-    color: "rgb(255, 255, 255)",
-    sizeAttenuation: true,
-    size: 1,
-  }
- */
 export const getPointsMaterialConfig = function (): PointsMaterialConfig {
   return Object.assign(getMaterialConfig(), {
     map: "",
@@ -690,19 +492,30 @@ export const getPointsMaterialConfig = function (): PointsMaterialConfig {
   });
 };
 
-/**
- * 获取着色器材质配置 - 会与`getMaterialConfig`合并。可以通过`@vis-three/middleware`的`ShaderGeneratorManager`中获取相关着色器配置
- * @returns
- * @default
- * {
-    type: "ShaderMaterial",
-    shader: "defaultShader",
-    uniforms: {},
-  }
- */
 export const getShaderMaterialConfig = function (): ShaderMaterialConfig {
   return Object.assign(getMaterialConfig(), {
     shader: "defaultShader",
     uniforms: {},
   });
 };
+
+export const getMeshMatcapMaterialConfig =
+  function (): MeshMatcapMaterialConfig {
+    return Object.assign(getMaterialConfig(), {
+      color: "rgb(255, 255, 255)",
+      bumpScale: 1,
+      displacementScale: 1,
+      displacementBias: 0,
+      flatShading: false,
+      fog: true,
+      normalMapType: TangentSpaceNormalMap,
+      normalSale: { x: 1, y: 1 },
+
+      map: "",
+      alphaMap: "",
+      bumpMap: "",
+      displacementMap: "",
+      matcap: "",
+      normalMap: "",
+    });
+  };

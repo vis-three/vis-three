@@ -10,6 +10,7 @@ import ShaderMaterialProcessor from "./processors/ShaderMaterialProcessor";
 import SpriteMaterialProcessor from "./processors/SpriteMaterialProcessor";
 import LineBasicMaterialProcessor from "./processors/LineBasicMaterialProcessor";
 import LineDashMaterialProcessor from "./processors/LineDashMaterialProcessor";
+import MeshMatcapMaterialProcessor from "./processors/MeshMatcapMaterialProcessor";
 
 export * from "./MaterialCompiler";
 export * from "./MaterialConfig";
@@ -28,6 +29,7 @@ export default {
     PointsMaterialProcessor,
     ShaderMaterialProcessor,
     SpriteMaterialProcessor,
+    MeshMatcapMaterialProcessor,
   ],
   lifeOrder: SUPPORT_LIFE_CYCLE.TWO,
 };

@@ -1,5 +1,5 @@
 import { Compiler, Rule, globalAntiShake, defineProcessor, ShaderGeneratorManager, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, Color, Texture, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, PointsMaterial, ShaderMaterial, SpriteMaterial, LineBasicMaterial, LineDashedMaterial } from "three";
+import { FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, Texture, Color, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, PointsMaterial, ShaderMaterial, SpriteMaterial, LineBasicMaterial, LineDashedMaterial, MeshMatcapMaterial } from "three";
 import { syncObject } from "@vis-three/utils";
 class MaterialCompiler extends Compiler {
   constructor() {
@@ -190,6 +190,24 @@ const getShaderMaterialConfig = function() {
   return Object.assign(getMaterialConfig(), {
     shader: "defaultShader",
     uniforms: {}
+  });
+};
+const getMeshMatcapMaterialConfig = function() {
+  return Object.assign(getMaterialConfig(), {
+    color: "rgb(255, 255, 255)",
+    bumpScale: 1,
+    displacementScale: 1,
+    displacementBias: 0,
+    flatShading: false,
+    fog: true,
+    normalMapType: TangentSpaceNormalMap,
+    normalSale: { x: 1, y: 1 },
+    map: "",
+    alphaMap: "",
+    bumpMap: "",
+    displacementMap: "",
+    matcap: "",
+    normalMap: ""
   });
 };
 const commonNeedUpdatesRegCommand = {
@@ -410,6 +428,21 @@ var LineDashMaterialProcessor = defineProcessor({
   },
   dispose
 });
+var MeshMatcapMaterialProcessor = defineProcessor({
+  type: "MeshMatcapMaterial",
+  config: getMeshMatcapMaterialConfig,
+  commands: {
+    set: {
+      color: colorSetHandler,
+      matcap: mapHandler,
+      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+    }
+  },
+  create(config, engine) {
+    return create(new MeshMatcapMaterial(), config, engine);
+  },
+  dispose
+});
 var index = {
   type: "material",
   compiler: MaterialCompiler,
@@ -423,8 +456,9 @@ var index = {
     MeshStandardMaterialProcessor,
     PointsMaterialProcessor,
     ShaderMaterialProcessor,
-    SpriteMaterialProcessor
+    SpriteMaterialProcessor,
+    MeshMatcapMaterialProcessor
   ],
   lifeOrder: SUPPORT_LIFE_CYCLE.TWO
 };
-export { MaterialCompiler, index as default, getLineBasicMaterialConfig, getLineDashedMaterialConfig, getMaterialConfig, getMeshBasicMaterialConfig, getMeshPhongMaterialConfig, getMeshPhysicalMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getShaderMaterialConfig, getSpriteMaterialConfig };
+export { MaterialCompiler, index as default, getLineBasicMaterialConfig, getLineDashedMaterialConfig, getMaterialConfig, getMeshBasicMaterialConfig, getMeshMatcapMaterialConfig, getMeshPhongMaterialConfig, getMeshPhysicalMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getShaderMaterialConfig, getSpriteMaterialConfig };
