@@ -27,7 +27,7 @@
     "vite": "^2.9.15"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.4",
+    "@vis-three/core": "workspace:^0.6.5",
     "@vis-three/middleware": "workspace:^0.6.16",
     "@vis-three/utils": "workspace:^0.6.1"
   },

@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@vis-three/convenient": "workspace:^0.6.1",
-    "@vis-three/core": "workspace:^0.6.4",
+    "@vis-three/core": "workspace:^0.6.5",
     "@vis-three/utils": "workspace:^0.6.1"
   },
   "files": [

@@ -37,7 +37,7 @@
     "@vis-three/module-helper": "workspace:^0.6.2",
     "@vis-three/module-light": "workspace:^0.6.3",
     "@vis-three/module-line": "workspace:^0.6.4",
-    "@vis-three/module-material": "workspace:^0.6.4",
+    "@vis-three/module-material": "workspace:^0.6.5",
     "@vis-three/module-mesh": "workspace:^0.6.2",
     "@vis-three/module-modifier": "workspace:^0.6.4",
     "@vis-three/module-object3d": "workspace:^0.6.3",

@@ -7,7 +7,7 @@ var __publicField = (obj, key, value) => {
 import { OrthographicCamera, AmbientLight, RectAreaLight, HemisphereLight, PerspectiveCamera, Scene } from "three";
 import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
 import { LightShadow } from "three/src/lights/LightShadow";
-const version = "0.6.4";
+const version = "0.6.5";
 if (!window.__THREE__) {
   console.error(
     `vis-three dependent on three.js module, pleace run 'npm i three' first.`
@@ -84,7 +84,9 @@ class EventDispatcher {
   once(type, listener) {
     const onceListener = function(event) {
       listener.call(this, event);
-      this.removeEventListener(type, onceListener);
+      Promise.resolve(() => {
+        this.removeEventListener(type, onceListener);
+      });
     };
     this.addEventListener(type, onceListener);
   }

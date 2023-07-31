@@ -31,7 +31,7 @@
     "@vis-three/module-bone": "workspace:^0.6.0",
     "@vis-three/module-css3d": "workspace:^0.6.4",
     "@vis-three/module-geometry": "workspace:^0.6.8",
-    "@vis-three/module-material": "workspace:^0.6.4",
+    "@vis-three/module-material": "workspace:^0.6.5",
     "@vis-three/module-skeleton": "workspace:^0.6.0",
     "@vis-three/module-skinned-mesh": "workspace:^0.6.0",
     "@vis-three/module-solid-object": "workspace:^0.6.0",

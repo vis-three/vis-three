@@ -14,7 +14,7 @@
     "docs": "npx typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.4",
+    "@vis-three/core": "workspace:^0.6.5",
     "@vis-three/plugin-pointer-manager": "workspace:^0.6.4",
     "@vis-three/utils": "workspace:^0.6.1"
   },

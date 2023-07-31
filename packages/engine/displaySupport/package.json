@@ -25,11 +25,11 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@vis-three/library-module": "workspace:^0.6.6",
+    "@vis-three/library-module": "workspace:^0.6.7",
     "@vis-three/library-parser": "workspace:^0.6.1",
     "@vis-three/middleware": "workspace:^0.6.16",
     "@vis-three/plugin-camera-adaptive": "workspace:^0.6.1",
-    "@vis-three/plugin-css2d-renderer": "workspace:^0.6.1",
+    "@vis-three/plugin-css2d-renderer": "workspace:^0.6.2",
     "@vis-three/plugin-css3d-renderer": "workspace:^0.6.2",
     "@vis-three/plugin-effect-composer": "workspace:^0.6.1",
     "@vis-three/plugin-orbit-controls": "workspace:^0.6.1",
