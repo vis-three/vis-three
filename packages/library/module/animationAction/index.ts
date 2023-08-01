@@ -7,7 +7,7 @@ export * from "./AnimationActionConfig";
 export * from "./AnimationActionCompiler";
 
 export default {
-  type: "animation-action",
+  type: "animationAction",
   compiler: AnimationActionCompiler,
   rule: AnimationActionRule,
   processors: [AnimationActionProcessor],

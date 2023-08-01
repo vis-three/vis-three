@@ -7,7 +7,7 @@ export * from "./SkinnedMeshConfig";
 export * from "./SkinnedMeshCompiler";
 
 export default {
-  type: "skinned-mesh",
+  type: "skinnedMesh",
   object: true,
   compiler: SkinnedMeshCompiler,
   rule: SkinnedMeshRule,

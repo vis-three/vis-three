@@ -48,7 +48,7 @@ var SkinnedMeshProcessor = defineProcessor({
   }
 });
 var index = {
-  type: "skinned-mesh",
+  type: "skinnedMesh",
   object: true,
   compiler: SkinnedMeshCompiler,
   rule: SkinnedMeshRule,

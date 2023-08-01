@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-skinned-mesh",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "vis-three skinned-mesh module",
   "main": "dist/vis-three.module-skinned-mesh.umd.js",
   "module": "dist/vis-three.module-skinned-mesh.es.js",
