@@ -711,8 +711,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/module-animation': workspace:^0.6.2
-      '@vis-three/module-animation-action': workspace:^0.6.1
-      '@vis-three/module-animation-clip': workspace:^0.6.1
+      '@vis-three/module-animation-action': workspace:^0.6.2
+      '@vis-three/module-animation-clip': workspace:^0.6.2
       '@vis-three/module-bone': workspace:^0.6.0
       '@vis-three/module-camera': workspace:^0.6.2
       '@vis-three/module-controls': workspace:^0.6.3
@@ -735,7 +735,7 @@ importers:
       '@vis-three/module-scene': workspace:^0.6.3
       '@vis-three/module-shape': workspace:^0.6.3
       '@vis-three/module-skeleton': workspace:^0.6.0
-      '@vis-three/module-skinned-mesh': workspace:^0.6.0
+      '@vis-three/module-skinned-mesh': workspace:^0.6.1
       '@vis-three/module-sprite': workspace:^0.6.2
       '@vis-three/module-texture': workspace:^0.6.2
       eslint: ^8.12.0
@@ -1940,13 +1940,13 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-animation-clip': workspace:^0.6.1
+      '@vis-three/module-animation-clip': workspace:^0.6.2
       '@vis-three/module-bone': workspace:^0.6.0
       '@vis-three/module-css3d': workspace:^0.6.4
       '@vis-three/module-geometry': workspace:^0.6.8
       '@vis-three/module-material': workspace:^0.6.5
       '@vis-three/module-skeleton': workspace:^0.6.0
-      '@vis-three/module-skinned-mesh': workspace:^0.6.0
+      '@vis-three/module-skinned-mesh': workspace:^0.6.1
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/module-texture': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.1
@@ -3737,7 +3737,7 @@ importers:
       nprogress: 0.2.0
       three: 0.141.0
       url-parse: 1.5.10
-      vis-three: 0.3.2_kavu2uz2ujvquqilopxcjb67y4
+      vis-three: 0.3.2_wi6e2bspxdrghhf23yony2eqyi
     devDependencies:
       '@rollup/plugin-alias': 3.1.9_rollup@2.79.1
       '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
@@ -6459,8 +6459,8 @@ packages:
   /@types/three/0.133.1:
     resolution: {integrity: sha512-XqBrP/+kbs+o0CYRhCVVE95v7FaL2bO5Z7+3VQJE0nEyjo+9LoLfeNgZITOnndKHxM+7ltEciAIR7uE0SZlsOg==}
 
-  /@types/three/0.154.0:
-    resolution: {integrity: sha512-IioqpGhch6FdLDh4zazRn3rXHj6Vn2nVOziJdXVbJFi9CaI65LtP9qqUtpzbsHK2Ezlox8NtsLNHSw3AQzucjA==}
+  /@types/three/0.155.0:
+    resolution: {integrity: sha512-IzdbqXsGsbG0flvq9D5L9pZRwySQQps2bGcizLYEsfvK3dM+B0sqKR6S+xAOXbouXemfDmHttrcQjVOM46YnAw==}
     dependencies:
       '@tweenjs/tween.js': 18.6.4
       '@types/stats.js': 0.17.0
@@ -8194,8 +8194,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001517
-      electron-to-chromium: 1.4.477
+      caniuse-lite: 1.0.30001518
+      electron-to-chromium: 1.4.479
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11_browserslist@4.21.10
     dev: true
@@ -8290,8 +8290,8 @@ packages:
     resolution: {integrity: sha512-xWC/0+hHHQgj3/vrKYY0AAzeIUgr7L9wlELIcAvZdDUHlhL/kNxMdnQLOSOQfP8R51ZzPhmHdyMkI0MMpmxCfg==}
     dev: true
 
-  /caniuse-lite/1.0.30001517:
-    resolution: {integrity: sha512-Vdhm5S11DaFVLlyiKu4hiUTkpZu+y1KA/rZZqVQfOD5YdDT/eQKlkt7NaE0WGOFgX32diqt9MiP9CAiFeRklaA==}
+  /caniuse-lite/1.0.30001518:
+    resolution: {integrity: sha512-rup09/e3I0BKjncL+FesTayKtPrdwKhUufQFd3riFw1hHg8JmIFoInYfB102cFcY/pPgGmdyl/iy+jgiDi2vdA==}
     dev: true
 
   /caseless/0.12.0:
@@ -8935,8 +8935,8 @@ packages:
     resolution: {integrity: sha512-m4HjHLGMPJddM0FZmPxZkk6whzeqK/B3zkzAB7KAopv2TkePzXQcM8aOfDS+1NOjD44lgA89yHRkNAQ/5uCQXQ==}
     dev: true
 
-  /electron-to-chromium/1.4.477:
-    resolution: {integrity: sha512-shUVy6Eawp33dFBFIoYbIwLHrX0IZ857AlH9ug2o4rvbWmpaCUdBpQ5Zw39HRrfzAFm4APJE9V+E2A/WB0YqJw==}
+  /electron-to-chromium/1.4.479:
+    resolution: {integrity: sha512-ABv1nHMIR8I5n3O3Een0gr6i0mfM+YcTZqjHy3pAYaOjgFG+BMquuKrSyfYf5CbEkLr9uM05RA3pOk4udNB/aQ==}
     dev: true
 
   /emoji-regex/8.0.0:
@@ -12547,13 +12547,13 @@ packages:
       three: 0.141.0
     dev: false
 
-  /three-csg-ts/3.1.11_kavu2uz2ujvquqilopxcjb67y4:
+  /three-csg-ts/3.1.11_wi6e2bspxdrghhf23yony2eqyi:
     resolution: {integrity: sha512-cR0b/u2wQRkQBooL1fZgsWPxjXBKfXlvAld+KItWWh3Qehxm/Jw5WyoCVdOD9PKZJj2RrAKvCFW6sZvYPik95w==}
     peerDependencies:
       '@types/three': '>= 0.125.0'
       three: '>= 0.125.0'
     dependencies:
-      '@types/three': 0.154.0
+      '@types/three': 0.155.0
       three: 0.141.0
     dev: false
 
@@ -12901,7 +12901,7 @@ packages:
       extsprintf: 1.3.0
     dev: true
 
-  /vis-three/0.3.2_kavu2uz2ujvquqilopxcjb67y4:
+  /vis-three/0.3.2_wi6e2bspxdrghhf23yony2eqyi:
     resolution: {integrity: sha512-NFA4p/6FjvCXewMQ+IlM8L+sPkjWv/huNXi+FDIwY75KwUSeROMdQYCyW5lIOib9NoTOc4jSPI6CGLr/+HPhww==}
     engines: {node: '>=14.15.0'}
     dependencies:
@@ -12910,7 +12910,7 @@ packages:
       '@types/uuid': 8.3.4
       keyboardjs: 2.7.0
       rxjs: 7.6.0
-      three-csg-ts: 3.1.11_kavu2uz2ujvquqilopxcjb67y4
+      three-csg-ts: 3.1.11_wi6e2bspxdrghhf23yony2eqyi
       uuid: 8.3.2
     transitivePeerDependencies:
       - '@types/three'
