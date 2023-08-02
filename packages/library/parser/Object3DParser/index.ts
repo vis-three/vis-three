@@ -325,12 +325,32 @@ export class Object3DParser extends Parser {
 
     // 解析children
     if (resource.children && resource.children.length) {
-      resource.children.forEach((object, i, arr) => {
-        const objectUrl = `${url}.children.${i}`;
+      // 如果有bone先解析bone
+      const cacheChildren: { index: number; object: Object3D; type: string }[] =
+        [];
+
+      resource.children.forEach((object, i) => {
+        if (object.type === "Bone") {
+          cacheChildren.unshift({
+            index: i,
+            object,
+            type: object.type,
+          });
+        } else {
+          cacheChildren.push({
+            index: i,
+            object,
+            type: object.type,
+          });
+        }
+      });
+
+      cacheChildren.forEach((item) => {
+        const objectUrl = `${url}.children.${item.index}`;
 
         this.parseObject3D({
           url: objectUrl,
-          resource: object,
+          resource: item.object,
 
           configMap,
           resourceMap,

@@ -31,7 +31,7 @@ export class Compiler<C extends SymbolConfig, O extends object> {
   weakMap: WeakMap<O, SymbolConfig["vid"]> = new WeakMap();
   engine!: EngineSupport;
 
-  private cacheCompile?: {
+  cacheCompile?: {
     target: O;
     config: C;
     processor: Processor<SymbolConfig, object, EngineSupport, any>;

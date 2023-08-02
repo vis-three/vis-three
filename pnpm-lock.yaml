@@ -1936,7 +1936,6 @@ importers:
     specifiers:
       '@types/node': ^18.11.12
       '@types/three': ^0.133.1
-      '@types/uuid': ^9.0.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/middleware': workspace:^0.6.16
@@ -1957,6 +1956,7 @@ importers:
       three: ^0.141.0
       typescript: ^4.3.2
       uuid: ^8.3.2
+      vite: ^2.9.15
     dependencies:
       '@vis-three/middleware': link:../../middleware
       '@vis-three/module-animation-clip': link:../module/animationClip
@@ -1973,7 +1973,6 @@ importers:
     devDependencies:
       '@types/node': 18.15.0
       '@types/three': 0.133.1
-      '@types/uuid': 9.0.1
       '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
       '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
       eslint: 8.36.0
@@ -1982,6 +1981,7 @@ importers:
       prettier: 2.8.4
       three: 0.141.0
       typescript: 4.9.5
+      vite: 2.9.16
 
   packages/library/shader:
     specifiers:
@@ -6480,10 +6480,6 @@ packages:
     resolution: {integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==}
     dev: false
 
-  /@types/uuid/9.0.1:
-    resolution: {integrity: sha512-rFT3ak0/2trgvp4yYZo5iKFEPsET7vKydKF+VRCxlQ9bpheehyAJH89dAkaLEq/j/RZXJIqcgsmPJKUP1Z28HA==}
-    dev: true
-
   /@types/web-bluetooth/0.0.17:
     resolution: {integrity: sha512-4p9vcSmxAayx72yn70joFoL44c9MO/0+iVEBIQXe3v2h2SiAsEIo/G5v6ObFWvNKRFjbrVadNf9LqEEZeQPzdA==}
     dev: true
@@ -10871,7 +10867,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /jsprim/2.0.2:
