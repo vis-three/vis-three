@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-animation-action",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "vis-three animation-action module",
   "main": "dist/vis-three.module-animation-action.umd.js",
   "module": "dist/vis-three.module-animation-action.es.js",

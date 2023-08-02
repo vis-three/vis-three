@@ -1,10 +1,26 @@
-import { Compiler, Rule, getSymbolConfig, defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { Compiler, Bus, Rule, getSymbolConfig, defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { validate } from "uuid";
-import { LoopRepeat, AnimationMixer, Object3D, AnimationClip } from "three";
+import { LoopRepeat, Object3D, AnimationMixer, AnimationClip } from "three";
 import { AnimationAction } from "three/src/animation/AnimationAction";
 class AnimationActionCompiler extends Compiler {
   constructor() {
     super();
+  }
+  updateAction(vid, action) {
+    const oldAction = this.map.get(vid);
+    if (!oldAction) {
+      console.warn(
+        `Animation action compiler update action can not found oldAction by:${vid}`
+      );
+      return;
+    }
+    this.map.delete(vid);
+    this.weakMap.delete(oldAction);
+    Bus.compilerEvent.dispose(oldAction);
+    this.map.set(vid, action);
+    this.weakMap.set(action, vid);
+    Bus.compilerEvent.create(action);
+    this.cacheCompile = void 0;
   }
 }
 const AnimationActionRule = function(input, compiler, validateFun = validate) {
@@ -25,40 +41,59 @@ const getAnimationActionConfig = function() {
     zeroSlopeAtStart: true
   });
 };
-const emptyAction = new AnimationAction(
-  new AnimationMixer(new Object3D()),
+const emptyObject = new Object3D();
+const getEmptyAction = () => new AnimationAction(
+  new AnimationMixer(emptyObject),
   new AnimationClip("empty", 1, [])
 );
 var AnimationActionProcessor = defineProcessor({
   type: "AnimationAction",
   config: getAnimationActionConfig,
   commands: {
-    add: {},
-    set: {},
-    delete: {}
+    set: {
+      clip({ target, config, value, engine, compiler }) {
+        let mixer = target.getMixer();
+        mixer.uncacheAction(target.getClip());
+        mixer = engine.getObjectBySymbol(config.mixer);
+        if (!mixer) {
+          console.warn(
+            `animation action processor can not found animation mixer in engine: ${config.mixer}`
+          );
+          return;
+        }
+        const clip = engine.getObjectBySymbol(value);
+        if (!clip) {
+          console.warn(
+            `animation action processor can not found animation clip in engine: ${value}`
+          );
+        }
+        const action = mixer.clipAction(clip);
+        action.play();
+        compiler.updateAction(config.vid, action);
+      }
+    }
   },
   create(config, engine) {
     if (!config.mixer) {
       console.warn(`animation action processor must have mixer`);
-      return emptyAction;
+      return getEmptyAction();
     }
     if (!config.clip) {
-      console.warn(`animation action processor must have clip`);
-      return emptyAction;
+      return getEmptyAction();
     }
     const mixer = engine.getObjectBySymbol(config.mixer);
     if (!mixer) {
       console.warn(
         `animation action processor can not found animation mixer in engine: ${config.mixer}`
       );
-      return emptyAction;
+      return getEmptyAction();
     }
     const clip = engine.getObjectBySymbol(config.clip);
     if (!clip) {
       console.warn(
         `animation action processor can not found animation clip in engine: ${config.clip}`
       );
-      return emptyAction;
+      return getEmptyAction();
     }
     const action = mixer.clipAction(clip);
     action.play();
