@@ -56,6 +56,11 @@ import {
   ProcessorMembers,
 } from "../module";
 import { Object3D, Event } from "three";
+import {
+  ModuleTrigger,
+  Trigger,
+  globalObjectModuleTrigger,
+} from "../utils/Trigger";
 
 export type EngineSupportLoadOptions = LoadOptions & {
   assets?: string[];
@@ -117,6 +122,7 @@ export class EngineSupport
   declare getObject3D: (vid: string) => Object3D<Event> | null;
 
   private moduleLifeCycle: Array<{ module: string; order: number }> = [];
+  private moduleTriggers: ModuleTrigger[] = [globalObjectModuleTrigger];
 
   private processorExpands: {
     processors: string[] | RegExp;
@@ -140,11 +146,18 @@ export class EngineSupport
 
   private loadLifeCycle(config: Omit<EngineSupportLoadOptions, "assets">) {
     const dataSupportManager = this.dataSupportManager;
+    const moduleTriggers = this.moduleTriggers;
 
     const loadCycle = this.moduleLifeCycle.sort((a, b) => a.order - b.order);
 
     for (const { module } of loadCycle) {
       config[module] && dataSupportManager.loadByModule(config[module], module);
+      for (const trigger of moduleTriggers) {
+        trigger.updateCondition(module);
+        if (trigger.test()) {
+          trigger.trig();
+        }
+      }
     }
   }
 
@@ -212,7 +225,6 @@ export class EngineSupport
     config: EngineSupportLoadOptions,
     pretreat: (c: EngineSupportLoadOptions) => EngineSupportLoadOptions
   ): Promise<MappedEvent> {
-    
     return new Promise((resolve, reject) => {
       const renderFlag = this.renderManager.hasRendering();
 
@@ -326,6 +338,10 @@ export class EngineSupport
     this.moduleLifeCycle.push({
       module: options.type,
       order: options.lifeOrder || 0,
+    });
+
+    this.moduleTriggers.forEach((trigger) => {
+      trigger.registerModule(options.type);
     });
 
     return this;

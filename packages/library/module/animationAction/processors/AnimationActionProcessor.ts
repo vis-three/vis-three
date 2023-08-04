@@ -6,6 +6,7 @@ import {
 } from "../AnimationActionConfig";
 import { AnimationClip, AnimationMixer, Object3D } from "three";
 import { AnimationAction } from "three/src/animation/AnimationAction";
+import { syncObject } from "@vis-three/utils";
 
 const emptyObject = new Object3D();
 
@@ -85,6 +86,11 @@ export default defineProcessor<
     }
 
     const action = mixer.clipAction(clip);
+
+    syncObject(config, action, {
+      clip: true,
+      mixer: true,
+    });
 
     action.play();
 

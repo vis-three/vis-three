@@ -50,12 +50,13 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     getObjectfromModules: (modules: string[] | Record<string, any>, vid: string) => object | null;
     getObject3D: (vid: string) => Object3D<Event> | null;
     private moduleLifeCycle;
+    private moduleTriggers;
     private processorExpands;
     constructor();
     private loadLifeCycle;
     private removeLifeCycle;
     loadConfig(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
-    loadConfigAsync(config: EngineSupportLoadOptions): Promise<MappedEvent>;
+    loadConfigAsync(config: EngineSupportLoadOptions, pretreat: (c: EngineSupportLoadOptions) => EngineSupportLoadOptions): Promise<MappedEvent>;
     removeConfig(config: EngineSupportLoadOptions): void;
     getObjectConfig<O, C extends SymbolConfig>(object: O): C | null;
     registModule<C extends Compiler<any, any>>(options: ModuleOptions<C>): this;

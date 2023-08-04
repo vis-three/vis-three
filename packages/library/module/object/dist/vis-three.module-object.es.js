@@ -1,4 +1,4 @@
-import { Compiler, Rule, globalAntiShake, OBJECTMODULE, EventGeneratorManager, Bus, COMPILER_EVENT, EVENTNAME, emptyHandler } from "@vis-three/middleware";
+import { Compiler, Rule, globalAntiShake, OBJECTMODULE, EventGeneratorManager, globalObjectModuleTrigger, Bus, COMPILER_EVENT, EVENTNAME, emptyHandler } from "@vis-three/middleware";
 import { validate } from "uuid";
 import { syncObject } from "@vis-three/utils";
 class ObjectCompiler extends Compiler {
@@ -166,10 +166,10 @@ const addChildrenHanlder = function({
   value,
   engine
 }) {
-  globalAntiShake.exec((finish) => {
+  globalObjectModuleTrigger.registerExec((immediate) => {
     const childrenConfig = engine.getConfigBySymbol(value);
     if (!childrenConfig) {
-      if (finish) {
+      if (!immediate) {
         console.warn(` can not foud object config in engine: ${value}`);
       }
       return false;
@@ -179,7 +179,7 @@ const addChildrenHanlder = function({
         childrenConfig.parent
       );
       if (!parentConfig) {
-        if (finish) {
+        if (!immediate) {
           console.warn(
             ` can not foud object parent config in engine: ${childrenConfig.parent}`
           );
@@ -194,7 +194,7 @@ const addChildrenHanlder = function({
       value
     );
     if (!childrenObject) {
-      if (finish) {
+      if (!immediate) {
         console.warn(`can not found this vid in engine: ${value}.`);
       }
       return false;

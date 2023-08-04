@@ -2,6 +2,7 @@ import { Compiler, Bus, Rule, getSymbolConfig, defineProcessor, SUPPORT_LIFE_CYC
 import { validate } from "uuid";
 import { LoopRepeat, Object3D, AnimationMixer, AnimationClip } from "three";
 import { AnimationAction } from "three/src/animation/AnimationAction";
+import { syncObject } from "@vis-three/utils";
 class AnimationActionCompiler extends Compiler {
   constructor() {
     super();
@@ -96,6 +97,10 @@ var AnimationActionProcessor = defineProcessor({
       return getEmptyAction();
     }
     const action = mixer.clipAction(clip);
+    syncObject(config, action, {
+      clip: true,
+      mixer: true
+    });
     action.play();
     return action;
   },

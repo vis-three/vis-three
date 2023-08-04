@@ -2,6 +2,7 @@ import {
   defineProcessor,
   EngineSupport,
   globalAntiShake,
+  globalObjectModuleTrigger,
 } from "@vis-three/middleware";
 import { SkeletonCompiler } from "../SkeletonCompiler";
 import { getSkeletonConfig, SkeletonConfig } from "../SkeletonConfig";
@@ -53,9 +54,9 @@ export default defineProcessor<
 
     const skeleton = new Skeleton(bones);
 
-    globalAntiShake.append(() => {
+    globalObjectModuleTrigger.registerExec(() => {
       skeleton.calculateInverses();
-      return true;
+      return false;
     });
 
     return skeleton;

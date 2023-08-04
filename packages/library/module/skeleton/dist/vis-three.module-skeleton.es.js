@@ -1,4 +1,4 @@
-import { Compiler, Rule, getSymbolConfig, defineProcessor, globalAntiShake, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { Compiler, Rule, getSymbolConfig, defineProcessor, globalObjectModuleTrigger, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { validate } from "uuid";
 import { Skeleton } from "three";
 class SkeletonCompiler extends Compiler {
@@ -52,9 +52,9 @@ var SkeletonProcessor = defineProcessor({
       }
     });
     const skeleton = new Skeleton(bones);
-    globalAntiShake.append(() => {
+    globalObjectModuleTrigger.registerExec(() => {
       skeleton.calculateInverses();
-      return true;
+      return false;
     });
     return skeleton;
   },

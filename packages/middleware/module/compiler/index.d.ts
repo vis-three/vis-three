@@ -20,7 +20,12 @@ export declare class Compiler<C extends SymbolConfig, O extends object> {
     map: Map<SymbolConfig["vid"], O>;
     weakMap: WeakMap<O, SymbolConfig["vid"]>;
     engine: EngineSupport;
-    private cacheCompile?;
+    cacheCompile?: {
+        target: O;
+        config: C;
+        processor: Processor<SymbolConfig, object, EngineSupport, any>;
+        vid: string;
+    };
     getMap(): Map<SymbolConfig["vid"], O>;
     useEngine(engine: EngineSupport): this;
     setTarget(target: CompilerTarget<C>): this;

@@ -6,6 +6,7 @@ import {
   EventGeneratorManager,
   EVENTNAME,
   globalAntiShake,
+  globalObjectModuleTrigger,
   MODULETYPE,
   ObjectEvent,
   OBJECTMODULE,
@@ -190,10 +191,10 @@ export const addChildrenHanlder = function <
   value,
   engine,
 }: ProcessParams<C, O, EngineSupport, ObjectCompiler<C, O>>) {
-  globalAntiShake.exec((finish) => {
+  globalObjectModuleTrigger.registerExec((immediate) => {
     const childrenConfig = engine.getConfigBySymbol(value) as ObjectConfig;
     if (!childrenConfig) {
-      if (finish) {
+      if (!immediate) {
         console.warn(` can not foud object config in engine: ${value}`);
       }
       return false;
@@ -206,7 +207,7 @@ export const addChildrenHanlder = function <
       ) as ObjectConfig;
 
       if (!parentConfig) {
-        if (finish) {
+        if (!immediate) {
           console.warn(
             ` can not foud object parent config in engine: ${childrenConfig.parent}`
           );
@@ -225,7 +226,7 @@ export const addChildrenHanlder = function <
     ) as Object3D;
 
     if (!childrenObject) {
-      if (finish) {
+      if (!immediate) {
         console.warn(`can not found this vid in engine: ${value}.`);
       }
       return false;

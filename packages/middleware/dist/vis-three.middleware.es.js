@@ -42,6 +42,25 @@ const installProcessor = function(processor, module) {
   CONFIGFACTORY[processor.type] = processor.config;
   CONFIGMODULE[processor.type] = module;
 };
+const globalOption = {
+  proxy: {
+    expand: void 0,
+    timing: "before",
+    toRaw: void 0
+  },
+  symbol: {
+    generator: v4,
+    validator: validate
+  }
+};
+const defineOption = function(options) {
+  if (options.proxy) {
+    Object.assign(globalOption.proxy, options.proxy);
+  }
+  if (options.symbol) {
+    Object.assign(globalOption.symbol, options.symbol);
+  }
+};
 const stringify = (key, value) => {
   if (value === Infinity) {
     return "Infinity";
@@ -90,25 +109,6 @@ var JSONHandler$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineP
   Pipeline,
   "default": JSONHandler
 }, Symbol.toStringTag, { value: "Module" }));
-const globalOption = {
-  proxy: {
-    expand: void 0,
-    timing: "before",
-    toRaw: void 0
-  },
-  symbol: {
-    generator: v4,
-    validator: validate
-  }
-};
-const defineOption = function(options) {
-  if (options.proxy) {
-    Object.assign(globalOption.proxy, options.proxy);
-  }
-  if (options.symbol) {
-    Object.assign(globalOption.symbol, options.symbol);
-  }
-};
 const generateConfig = function(type, merge, options = {
   observer: true,
   strict: true,
@@ -390,8 +390,62 @@ var Bus$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty(
   compilerEvent,
   configEvent
 }, Symbol.toStringTag, { value: "Module" }));
+class ModuleTrigger {
+  constructor() {
+    __publicField(this, "condition", {});
+  }
+  registerModule(module) {
+    this.condition[module] = false;
+    return this;
+  }
+  updateCondition(module) {
+    if (typeof this.condition[module] !== "undefined") {
+      this.condition[module] = true;
+    }
+    return this;
+  }
+  reset() {
+    Object.keys(this.condition).forEach((key) => {
+      this.condition[key] = false;
+    });
+  }
+  test() {
+    return !Object.values(this.condition).includes(false);
+  }
+  trig() {
+  }
+}
+class ObjectModuleTrigger extends ModuleTrigger {
+  constructor() {
+    super();
+    __publicField(this, "triggerList", []);
+  }
+  registerModule(module) {
+    if (OBJECTMODULE[module]) {
+      return super.registerModule(module);
+    }
+    return this;
+  }
+  registerExec(fun) {
+    if (!fun(true)) {
+      this.triggerList.push(fun);
+    }
+  }
+  trig() {
+    const list = this.triggerList;
+    for (const fun of list) {
+      fun();
+    }
+    this.reset();
+  }
+  reset() {
+    this.triggerList = [];
+    super.reset();
+  }
+}
+const globalObjectModuleTrigger = new ObjectModuleTrigger();
 const createSymbol = function() {
-  return v4();
+  return globalOption.symbol.generator();
 };
 var COMPILER_EVENT = /* @__PURE__ */ ((COMPILER_EVENT2) => {
   COMPILER_EVENT2["ADD"] = "compiler.add";
@@ -1765,15 +1819,23 @@ class EngineSupport extends Engine {
   constructor() {
     super();
     __publicField(this, "moduleLifeCycle", []);
+    __publicField(this, "moduleTriggers", [globalObjectModuleTrigger]);
     __publicField(this, "processorExpands", []);
     this.install(LoaderManagerPlugin()).install(PointerManagerPlugin()).install(EventManagerPlugin()).install(RenderManagerPlugin()).install(ResourceManagerPlugin()).install(DataSupportManagerPlugin()).install(CompilerManagerPlugin());
     this.exec(LoaderDataSupportStrategy()).exec(LoaderMappingStrategy()).exec(CompilerSupportStrategy());
   }
   loadLifeCycle(config) {
     const dataSupportManager = this.dataSupportManager;
+    const moduleTriggers = this.moduleTriggers;
     const loadCycle = this.moduleLifeCycle.sort((a, b) => a.order - b.order);
     for (const { module } of loadCycle) {
       config[module] && dataSupportManager.loadByModule(config[module], module);
+      for (const trigger of moduleTriggers) {
+        trigger.updateCondition(module);
+        if (trigger.test()) {
+          trigger.trig();
+        }
+      }
     }
   }
   removeLifeCycle(config) {
@@ -1820,7 +1882,7 @@ class EngineSupport extends Engine {
     }
     return this;
   }
-  loadConfigAsync(config) {
+  loadConfigAsync(config, pretreat) {
     return new Promise((resolve, reject) => {
       const renderFlag = this.renderManager.hasRendering();
       if (renderFlag) {
@@ -1914,6 +1976,9 @@ class EngineSupport extends Engine {
     this.moduleLifeCycle.push({
       module: options.type,
       order: options.lifeOrder || 0
+    });
+    this.moduleTriggers.forEach((trigger) => {
+      trigger.registerModule(options.type);
     });
     return this;
   }
@@ -2106,4 +2171,4 @@ __publicField(ShaderGeneratorManager, "register", function(shader) {
   _ShaderGeneratorManager.library.set(shader.name, shader);
 });
 const PLUGINS = [COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN];
-export { AniScriptGeneratorManager, AntiShake, Bus$1 as Bus, COMPILER_EVENT, COMPILER_MANAGER_PLUGIN, COMPILER_SUPPORT_STRATEGY, CONFIGFACTORY, CONFIGMODULE, CONFIGTYPE, Compiler, CompilerFactory, CompilerManager, CompilerManagerPlugin, CompilerSupportStrategy, DATA_SUPPORT_MANAGER_PLUGIN, DataContainer, DataSupport, DataSupportFactory, DataSupportManager, DataSupportManagerPlugin, EngineSupport, EventGeneratorManager, JSONHandler$1 as JSONHandler, LOADER_DATA_SUPPORT_STRATEGY, LOADER_MAPPING_STRATEGY, LoaderDataSupportStrategy, LoaderMappingStrategy, MODULETYPE, OBJECTMODULE, PLUGINS, Parser, Processor, ProcessorMembers, RESOURCE_EVENT, RESOURCE_MANAGER_PLUGIN, ResourceManager, ResourceManagerPlugin, Rule, SUPPORT_LIFE_CYCLE, ShaderGeneratorManager, template$1 as Template, Translater, createSymbol, defineEngineSupport, defineOption, defineProcessor, emptyHandler, generateConfig, getModule, getObserver, getSymbolConfig, globalAntiShake, globalOption, installProcessor, isObjectModule, isObjectType, observable, uniqueSymbol };
+export { AniScriptGeneratorManager, AntiShake, Bus$1 as Bus, COMPILER_EVENT, COMPILER_MANAGER_PLUGIN, COMPILER_SUPPORT_STRATEGY, CONFIGFACTORY, CONFIGMODULE, CONFIGTYPE, Compiler, CompilerFactory, CompilerManager, CompilerManagerPlugin, CompilerSupportStrategy, DATA_SUPPORT_MANAGER_PLUGIN, DataContainer, DataSupport, DataSupportFactory, DataSupportManager, DataSupportManagerPlugin, EngineSupport, EventGeneratorManager, JSONHandler$1 as JSONHandler, LOADER_DATA_SUPPORT_STRATEGY, LOADER_MAPPING_STRATEGY, LoaderDataSupportStrategy, LoaderMappingStrategy, MODULETYPE, ModuleTrigger, OBJECTMODULE, ObjectModuleTrigger, PLUGINS, Parser, Processor, ProcessorMembers, RESOURCE_EVENT, RESOURCE_MANAGER_PLUGIN, ResourceManager, ResourceManagerPlugin, Rule, SUPPORT_LIFE_CYCLE, ShaderGeneratorManager, template$1 as Template, Translater, createSymbol, defineEngineSupport, defineOption, defineProcessor, emptyHandler, generateConfig, getModule, getObserver, getSymbolConfig, globalAntiShake, globalObjectModuleTrigger, globalOption, installProcessor, isObjectModule, isObjectType, observable, uniqueSymbol };
