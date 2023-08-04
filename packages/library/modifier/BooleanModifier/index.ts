@@ -41,16 +41,21 @@ export class BooleanModifier extends Modifier {
   modify() {
     if (this._source && this.target) {
       const source = this._source;
-      const likeMesh = {
+      const likeMeshScoruce = {
         geometry: this.originalGeometry,
-        matrix: this.source.matrix,
+        matrix: this.source.matrixWorld,
       } as Mesh;
 
-      const csgSource = CSG.fromMesh(likeMesh);
-      const csgTarget = CSG.fromMesh(this.target);
+      const likeMeshTarget = {
+        geometry: this.target.geometry,
+        matrix: this.target.matrixWorld,
+      } as Mesh;
+
+      const csgSource = CSG.fromMesh(likeMeshScoruce);
+      const csgTarget = CSG.fromMesh(likeMeshTarget);
       const csgGeometry = CSG.toGeometry(
         csgSource[this.mode](csgTarget),
-        source.matrix
+        source.matrixWorld
       );
       this.modifiedGeometry.copy(csgGeometry);
     }
