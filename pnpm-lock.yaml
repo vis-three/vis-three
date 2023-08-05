@@ -184,8 +184,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/library-module': workspace:^0.6.7
-      '@vis-three/library-parser': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/library-parser': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/plugin-camera-adaptive': workspace:^0.6.1
       '@vis-three/plugin-css2d-renderer': workspace:^0.6.2
       '@vis-three/plugin-css3d-renderer': workspace:^0.6.2
@@ -324,8 +324,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/library-module': workspace:^0.6.7
-      '@vis-three/library-parser': workspace:^0.6.1
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/library-parser': workspace:^0.6.2
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/plugin-axes-helper': workspace:^0.6.1
       '@vis-three/plugin-camera-adaptive': workspace:^0.6.1
       '@vis-three/plugin-css2d-renderer': workspace:^0.6.2
@@ -420,8 +420,8 @@ importers:
       '@vis-three/engine-modeling-support': workspace:^0.6.5
       '@vis-three/library-animate-script': workspace:^0.6.0
       '@vis-three/library-event': workspace:^0.6.0
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/modifier-boolean': workspace:^0.6.1
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/modifier-boolean': workspace:^0.6.2
       '@vis-three/module-modifier': workspace:^0.6.4
       '@vis-three/module-pass': workspace:^0.6.2
       '@vis-three/plugin-axes-helper': workspace:^0.6.1
@@ -573,7 +573,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-prettier: ^4.0.0
@@ -601,7 +601,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/plugin-orbit-controls': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -631,7 +631,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/modifier-boolean': workspace:^0.6.1
+      '@vis-three/modifier-boolean': workspace:^0.6.2
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-prettier: ^4.0.0
@@ -710,8 +710,8 @@ importers:
       '@types/node': ^18.11.12
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/module-animation': workspace:^0.6.2
-      '@vis-three/module-animation-action': workspace:^0.6.2
+      '@vis-three/module-animation': workspace:^0.6.3
+      '@vis-three/module-animation-action': workspace:^0.6.4
       '@vis-three/module-animation-clip': workspace:^0.6.2
       '@vis-three/module-bone': workspace:^0.6.0
       '@vis-three/module-camera': workspace:^0.6.2
@@ -734,7 +734,7 @@ importers:
       '@vis-three/module-renderer': workspace:^0.6.2
       '@vis-three/module-scene': workspace:^0.6.3
       '@vis-three/module-shape': workspace:^0.6.3
-      '@vis-three/module-skeleton': workspace:^0.6.0
+      '@vis-three/module-skeleton': workspace:^0.6.1
       '@vis-three/module-skinned-mesh': workspace:^0.6.1
       '@vis-three/module-sprite': workspace:^0.6.2
       '@vis-three/module-texture': workspace:^0.6.2
@@ -789,7 +789,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -822,7 +822,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -857,7 +857,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -892,8 +892,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -929,8 +929,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -964,7 +964,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -999,7 +999,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1034,8 +1034,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1069,8 +1069,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1104,7 +1104,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1139,7 +1139,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1172,8 +1172,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1210,8 +1210,8 @@ importers:
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/convenient': workspace:^0.6.1
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
@@ -1250,8 +1250,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1285,8 +1285,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
@@ -1322,7 +1322,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1355,8 +1355,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
@@ -1393,7 +1393,7 @@ importers:
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
       '@vis-three/library-modifier': workspace:^0.6.0
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/modifier-base': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
@@ -1429,7 +1429,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1468,8 +1468,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1503,7 +1503,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/plugin-effect-composer': workspace:^0.6.1
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
@@ -1538,7 +1538,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/module-curve': workspace:^0.6.1
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
@@ -1575,8 +1575,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
@@ -1612,8 +1612,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1649,7 +1649,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1684,8 +1684,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1721,7 +1721,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1756,7 +1756,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1791,8 +1791,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
@@ -1830,8 +1830,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1867,8 +1867,8 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/middleware': workspace:^0.6.17
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
@@ -1905,7 +1905,7 @@ importers:
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/convenient': workspace:^0.6.1
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -1938,13 +1938,13 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/module-animation-clip': workspace:^0.6.2
       '@vis-three/module-bone': workspace:^0.6.0
       '@vis-three/module-css3d': workspace:^0.6.4
       '@vis-three/module-geometry': workspace:^0.6.8
       '@vis-three/module-material': workspace:^0.6.5
-      '@vis-three/module-skeleton': workspace:^0.6.0
+      '@vis-three/module-skeleton': workspace:^0.6.1
       '@vis-three/module-skinned-mesh': workspace:^0.6.1
       '@vis-three/module-solid-object': workspace:^0.6.0
       '@vis-three/module-texture': workspace:^0.6.2
@@ -1989,7 +1989,7 @@ importers:
       '@types/three': ^0.133.1
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-prettier: ^4.0.0
@@ -2501,7 +2501,7 @@ importers:
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/convenient': workspace:^0.6.1
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/module-path': workspace:^0.6.6
       '@vis-three/plugin-pointer-manager': workspace:^0.6.4
       '@vis-three/utils': workspace:^0.6.1
@@ -2694,7 +2694,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/plugin-selection': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
@@ -2944,7 +2944,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/module-renderer': workspace:^0.6.2
       '@vis-three/plugin-css3d-renderer': workspace:^0.6.2
       '@vis-three/utils': workspace:^0.6.1
@@ -2979,7 +2979,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/module-pass': workspace:^0.6.2
       '@vis-three/plugin-effect-composer': workspace:^0.6.1
       '@vis-three/utils': workspace:^0.6.1
@@ -3183,7 +3183,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/module-controls': workspace:^0.6.3
       '@vis-three/plugin-orbit-controls': workspace:^0.6.1
       '@vis-three/utils': workspace:^0.6.1
@@ -3286,7 +3286,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/module-controls': workspace:^0.6.3
       '@vis-three/module-path': workspace:^0.6.6
       '@vis-three/plugin-path-support-controls': workspace:^0.6.5
@@ -3424,7 +3424,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/plugin-event-manager': workspace:^0.6.2
       '@vis-three/plugin-selection': workspace:^0.6.2
       '@vis-three/plugin-selection-support': workspace:^0.6.1
@@ -3463,7 +3463,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/plugin-object-helper': workspace:^0.6.1
       '@vis-three/plugin-transform-controls': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.1
@@ -3498,9 +3498,9 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/module-controls': workspace:^0.6.3
-      '@vis-three/module-object': workspace:^0.6.3
+      '@vis-three/module-object': workspace:^0.6.4
       '@vis-three/plugin-transform-controls': workspace:^0.6.0
       '@vis-three/utils': workspace:^0.6.1
       eslint: ^8.12.0
@@ -3601,7 +3601,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/module-renderer': workspace:^0.6.2
       '@vis-three/plugin-webgl-renderer': workspace:^0.6.1
       '@vis-three/utils': workspace:^0.6.1
@@ -3770,7 +3770,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
-      '@vis-three/middleware': workspace:^0.6.16
+      '@vis-three/middleware': workspace:^0.6.17
       '@vitejs/plugin-vue': ^2.3.3
       babel-loader: ^8.2.5
       babel-plugin-istanbul: ^6.1.1
@@ -4435,7 +4435,7 @@ packages:
       '@babel/helper-plugin-utils': 7.22.5
       debug: 4.3.4
       lodash.debounce: 4.0.8
-      resolve: 1.22.2
+      resolve: 1.22.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8190,8 +8190,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001518
-      electron-to-chromium: 1.4.479
+      caniuse-lite: 1.0.30001519
+      electron-to-chromium: 1.4.485
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11_browserslist@4.21.10
     dev: true
@@ -8286,8 +8286,8 @@ packages:
     resolution: {integrity: sha512-xWC/0+hHHQgj3/vrKYY0AAzeIUgr7L9wlELIcAvZdDUHlhL/kNxMdnQLOSOQfP8R51ZzPhmHdyMkI0MMpmxCfg==}
     dev: true
 
-  /caniuse-lite/1.0.30001518:
-    resolution: {integrity: sha512-rup09/e3I0BKjncL+FesTayKtPrdwKhUufQFd3riFw1hHg8JmIFoInYfB102cFcY/pPgGmdyl/iy+jgiDi2vdA==}
+  /caniuse-lite/1.0.30001519:
+    resolution: {integrity: sha512-0QHgqR+Jv4bxHMp8kZ1Kn8CH55OikjKJ6JmKkZYP1F3D7w+lnFXF70nG5eNfsZS89jadi5Ywy5UCSKLAglIRkg==}
     dev: true
 
   /caseless/0.12.0:
@@ -8931,8 +8931,8 @@ packages:
     resolution: {integrity: sha512-m4HjHLGMPJddM0FZmPxZkk6whzeqK/B3zkzAB7KAopv2TkePzXQcM8aOfDS+1NOjD44lgA89yHRkNAQ/5uCQXQ==}
     dev: true
 
-  /electron-to-chromium/1.4.479:
-    resolution: {integrity: sha512-ABv1nHMIR8I5n3O3Een0gr6i0mfM+YcTZqjHy3pAYaOjgFG+BMquuKrSyfYf5CbEkLr9uM05RA3pOk4udNB/aQ==}
+  /electron-to-chromium/1.4.485:
+    resolution: {integrity: sha512-1ndQ5IBNEnFirPwvyud69GHL+31FkE09gH/CJ6m3KCbkx3i0EVOrjwz4UNxRmN9H8OVHbC6vMRZGN1yCvjSs9w==}
     dev: true
 
   /emoji-regex/8.0.0:
@@ -10569,6 +10569,12 @@ packages:
       has: 1.0.3
     dev: true
 
+  /is-core-module/2.13.0:
+    resolution: {integrity: sha512-Z7dk6Qo8pOCp3l4tsX2C5ZVas4V+UxwQodwZhLopL91TX8UyyHEXafPcyoeeWuLrwzHcr3igO78wNLwHJHsMCQ==}
+    dependencies:
+      has: 1.0.3
+    dev: true
+
   /is-docker/2.2.1:
     resolution: {integrity: sha512-F+i2BKsFrH66iaUFc0woD8sLy8getkwTwtOBjvs56Cx4CgJDeKQeqfz8wAYiSb8JOprWhHH5p77PbmYCvvUuXQ==}
     engines: {node: '>=8'}
@@ -10867,7 +10873,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.10
     dev: true
 
   /jsprim/2.0.2:
@@ -11893,6 +11899,15 @@ packages:
     hasBin: true
     dependencies:
       is-core-module: 2.12.1
+      path-parse: 1.0.7
+      supports-preserve-symlinks-flag: 1.0.0
+    dev: true
+
+  /resolve/1.22.4:
+    resolution: {integrity: sha512-PXNdCiPqDqeUou+w1C2eTQbNfxKSuMxqTCuvlmmMsk1NWHL5fRrhY6Pl0qEYYc6+QqGClco1Qj8XnjPego4wfg==}
+    hasBin: true
+    dependencies:
+      is-core-module: 2.13.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
     dev: true

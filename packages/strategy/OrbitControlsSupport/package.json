@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.6.5",
-    "@vis-three/middleware": "workspace:^0.6.16",
+    "@vis-three/middleware": "workspace:^0.6.17",
     "@vis-three/module-controls": "workspace:^0.6.3",
     "@vis-three/plugin-orbit-controls": "workspace:^0.6.1",
     "@vis-three/utils": "workspace:^0.6.1"
