@@ -11,6 +11,6 @@ export interface OrbitTargetMove extends BasicEventConfig {
     };
 }
 export declare const config: OrbitTargetMove;
-export interface OrbitSupportEngine extends EngineSupport, OrbitControlsEngine {
+export interface OrbitSupportEngine extends EngineSupport, Pick<OrbitControlsEngine, "orbitControls"> {
 }
 export declare const generator: EventGenerator<OrbitTargetMove>;

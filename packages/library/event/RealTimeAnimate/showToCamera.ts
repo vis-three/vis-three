@@ -3,13 +3,13 @@ import {
   BasicEventConfig,
   EngineSupport,
   EventGenerator,
-  ObjectConfig,
   ObjectEvent,
   RenderEvent,
   Vector3Config,
 } from "@vis-three/middleware";
 import { Euler, Matrix4, Object3D, Vector3 } from "three";
 import { timingFunction, TIMINGFUNCTION } from "./common";
+import { ObjectConfig } from "@vis-three/module-object";
 
 export interface ShowToCamera extends BasicEventConfig {
   params: {

@@ -3,13 +3,13 @@ import {
   BasicEventConfig,
   EngineSupport,
   EventGenerator,
-  MeshConfig,
   ObjectEvent,
   RenderEvent,
   Vector3Config,
 } from "@vis-three/middleware";
 import { Object3D } from "three";
 import { timingFunction, TIMINGFUNCTION } from "./common";
+import { MeshConfig } from "@vis-three/module-mesh";
 
 export interface MoveSpacing extends BasicEventConfig {
   params: {

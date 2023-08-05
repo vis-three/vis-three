@@ -3,6 +3,7 @@ import SceneExtend from "./SceneExtend";
 import { SceneRule } from "./SceneRule";
 export * from "./SceneCompiler";
 export * from "./SceneConfig";
+export { SceneEngineSupport } from "./SceneExtend";
 declare const _default: {
     type: string;
     object: boolean;

@@ -3,13 +3,13 @@ import {
   BasicEventConfig,
   EngineSupport,
   EventGenerator,
-  MaterialConfig,
-  MeshConfig,
   ObjectEvent,
   RenderEvent,
 } from "@vis-three/middleware";
 import { Material } from "three";
 import { timingFunction, TIMINGFUNCTION } from "./common";
+import { MaterialConfig } from "@vis-three/module-material";
+import { MeshConfig } from "@vis-three/module-mesh";
 
 export interface FadeObject extends BasicEventConfig {
   params: {

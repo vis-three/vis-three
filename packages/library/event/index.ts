@@ -1,19 +1,43 @@
-export * as addClass from "./basicEvent/addClass";
-export * as changeCamera from "./basicEvent/changeCamera";
-export * as changeScene from "./basicEvent/changeScene";
-export * as openWindow from "./basicEvent/openWindow";
-export * as switchAnimate from "./basicEvent/switchAnimate";
-export * as visibleObject from "./basicEvent/visibleObject";
+import * as addClass from "./basicEvent/addClass";
+import * as changeCamera from "./basicEvent/changeCamera";
+import * as changeScene from "./basicEvent/changeScene";
+import * as openWindow from "./basicEvent/openWindow";
+import * as switchAnimate from "./basicEvent/switchAnimate";
+import * as visibleObject from "./basicEvent/visibleObject";
 
-export * as colorChange from "./RealTimeAnimate/colorChange";
-export * as fadeObject from "./RealTimeAnimate/fadeObject";
-export * as focusObject from "./RealTimeAnimate/focusObject";
-export * as moveFromTo from "./RealTimeAnimate/moveFromTo";
-export * as moveSpacing from "./RealTimeAnimate/moveSpacing";
-export * as moveTo from "./RealTimeAnimate/moveTo";
-export * as moveToObject from "./RealTimeAnimate/moveToObject";
-export * as orbitTargetMove from "./RealTimeAnimate/orbitTargetMove";
-export * as rotationTo from "./RealTimeAnimate/rotationTo";
-export * as showToCamera from "./RealTimeAnimate/showToCamera";
-export * as upTo from "./RealTimeAnimate/upTo";
-export * as vector3To from "./RealTimeAnimate/vector3To";
+import * as colorChange from "./RealTimeAnimate/colorChange";
+import * as fadeObject from "./RealTimeAnimate/fadeObject";
+import * as focusObject from "./RealTimeAnimate/focusObject";
+import * as moveFromTo from "./RealTimeAnimate/moveFromTo";
+import * as moveSpacing from "./RealTimeAnimate/moveSpacing";
+import * as moveTo from "./RealTimeAnimate/moveTo";
+import * as moveToObject from "./RealTimeAnimate/moveToObject";
+import * as orbitTargetMove from "./RealTimeAnimate/orbitTargetMove";
+import * as rotationTo from "./RealTimeAnimate/rotationTo";
+import * as showToCamera from "./RealTimeAnimate/showToCamera";
+import * as upTo from "./RealTimeAnimate/upTo";
+import * as vector3To from "./RealTimeAnimate/vector3To";
+
+export { timingFunction, TIMINGFUNCTION } from "./RealTimeAnimate/common";
+export { Tween } from "@tweenjs/tween.js";
+
+export default {
+  addClass,
+  changeCamera,
+  changeScene,
+  openWindow,
+  switchAnimate,
+  visibleObject,
+  colorChange,
+  fadeObject,
+  focusObject,
+  moveFromTo,
+  moveSpacing,
+  moveTo,
+  moveToObject,
+  orbitTargetMove,
+  rotationTo,
+  showToCamera,
+  upTo,
+  vector3To,
+};

@@ -38,7 +38,7 @@ export const config: OrbitTargetMove = {
 
 export interface OrbitSupportEngine
   extends EngineSupport,
-    OrbitControlsEngine {}
+    Pick<OrbitControlsEngine, "orbitControls"> {}
 
 export const generator: EventGenerator<OrbitTargetMove> = function (
   engine: EngineSupport,

@@ -14,6 +14,6 @@ export interface FocusObject extends BasicEventConfig {
     };
 }
 export declare const config: FocusObject;
-export interface OrbitSupportEngine extends EngineSupport, OrbitControlsEngine {
+export interface OrbitSupportEngine extends EngineSupport, Pick<OrbitControlsEngine, "orbitControls"> {
 }
-export declare const generator: EventGenerator<FocusObject>;
+export declare const generator: EventGenerator<FocusObject, OrbitSupportEngine>;

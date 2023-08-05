@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-camera",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "vis-three camera module",
   "main": "dist/vis-three.module-camera.umd.js",
   "module": "dist/vis-three.module-camera.es.js",

@@ -4,6 +4,7 @@ import {
   EventGenerator,
   ObjectEvent,
 } from "@vis-three/middleware";
+import { SceneEngineSupport } from "@vis-three/module-scene";
 
 export interface ChangeScene extends BasicEventConfig {
   params: {
@@ -20,14 +21,12 @@ export const config: ChangeScene = {
   },
 };
 
-export const generator: EventGenerator<ChangeScene> = function (
-  engine: EngineSupport,
-  config: ChangeScene
-): (event?: ObjectEvent) => void {
-  const params = config.params;
-  return () => {
-    setTimeout(() => {
-      engine.setSceneBySymbol(params.scene);
-    }, params.delay);
+export const generator: EventGenerator<ChangeScene, SceneEngineSupport> =
+  function (engine, config): (event?: ObjectEvent) => void {
+    const params = config.params;
+    return () => {
+      setTimeout(() => {
+        engine.setSceneBySymbol(params.scene);
+      }, params.delay);
+    };
   };
-};

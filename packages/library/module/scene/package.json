@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-scene",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "vis-three scene module",
   "main": "dist/vis-three.module-scene.umd.js",
   "module": "dist/vis-three.module-scene.es.js",

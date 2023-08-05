@@ -5,10 +5,10 @@ export interface BasicEventConfig {
   name: string | Symbol;
 }
 
-export type EventGenerator<C extends BasicEventConfig> = (
-  engine: EngineSupport,
-  config: C
-) => (event?: ObjectEvent) => void;
+export type EventGenerator<
+  C extends BasicEventConfig = BasicEventConfig,
+  E extends EngineSupport = EngineSupport
+> = (engine: E, config: C) => (event?: ObjectEvent) => void;
 
 export class EventGeneratorManager {
   private static configLibrary = new Map<string | Symbol, unknown>();

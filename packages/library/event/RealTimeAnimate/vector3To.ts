@@ -1,5 +1,12 @@
 import { Tween } from "@tweenjs/tween.js";
-import { BasicEventConfig, EngineSupport, EventGenerator, ObjectEvent, RenderEvent, Vector3Config } from "@vis-three/middleware";
+import {
+  BasicEventConfig,
+  EngineSupport,
+  EventGenerator,
+  ObjectEvent,
+  RenderEvent,
+  Vector3Config,
+} from "@vis-three/middleware";
 import { timingFunction, TIMINGFUNCTION } from "./common";
 
 export interface Vector3To extends BasicEventConfig {

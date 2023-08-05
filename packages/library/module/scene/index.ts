@@ -6,6 +6,7 @@ import { SceneRule } from "./SceneRule";
 
 export * from "./SceneCompiler";
 export * from "./SceneConfig";
+export { SceneEngineSupport } from "./SceneExtend";
 
 export default {
   type: "scene",

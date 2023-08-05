@@ -7,8 +7,8 @@ import {
   RenderEvent,
   Vector3Config,
 } from "@vis-three/middleware";
-import { ObjectConfig } from "@vis-three/middleware/object/ObjectConfig";
 import { timingFunction, TIMINGFUNCTION } from "./common";
+import { ObjectConfig } from "@vis-three/module-object";
 
 export interface moveFromTo extends BasicEventConfig {
   params: {

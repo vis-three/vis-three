@@ -7,6 +7,7 @@ import PerspectiveCameraProcessor from "./processors/PerspectiveCameraProcessor"
 
 export * from "./CameraConfig";
 export * from "./CameraCompiler";
+export { CameraEngineSupport } from "./CameraExtend";
 
 export default {
   type: "camera",

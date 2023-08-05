@@ -1,4 +1,5 @@
 import { BasicEventConfig, EventGenerator } from "@vis-three/middleware";
+import { CameraEngineSupport } from "@vis-three/module-camera";
 export interface ChangeCamera extends BasicEventConfig {
     params: {
         camera: string;
@@ -6,4 +7,4 @@ export interface ChangeCamera extends BasicEventConfig {
     };
 }
 export declare const config: ChangeCamera;
-export declare const generator: EventGenerator<ChangeCamera>;
+export declare const generator: EventGenerator<ChangeCamera, CameraEngineSupport>;

@@ -1,4 +1,5 @@
 import { BasicEventConfig, EventGenerator } from "@vis-three/middleware";
+import { SceneEngineSupport } from "@vis-three/module-scene";
 export interface ChangeScene extends BasicEventConfig {
     params: {
         scene: string;
@@ -6,4 +7,4 @@ export interface ChangeScene extends BasicEventConfig {
     };
 }
 export declare const config: ChangeScene;
-export declare const generator: EventGenerator<ChangeScene>;
+export declare const generator: EventGenerator<ChangeScene, SceneEngineSupport>;

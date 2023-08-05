@@ -1,10 +1,10 @@
 import {
-  AnimationConfig,
   BasicEventConfig,
   EngineSupport,
   EventGenerator,
   ObjectEvent,
 } from "@vis-three/middleware";
+import { AnimationConfig } from "@vis-three/module-animation";
 
 export interface SwitchAnimate extends BasicEventConfig {
   params: {

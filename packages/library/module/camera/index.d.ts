@@ -4,6 +4,7 @@ import CameraExtend from "./CameraExtend";
 import { CameraRule } from "./CameraRule";
 export * from "./CameraConfig";
 export * from "./CameraCompiler";
+export { CameraEngineSupport } from "./CameraExtend";
 declare const _default: {
     type: string;
     object: boolean;

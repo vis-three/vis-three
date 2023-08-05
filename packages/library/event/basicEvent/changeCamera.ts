@@ -1,9 +1,10 @@
 import {
   BasicEventConfig,
-  EngineSupport,
   EventGenerator,
   ObjectEvent,
 } from "@vis-three/middleware";
+
+import { CameraEngineSupport } from "@vis-three/module-camera";
 
 export interface ChangeCamera extends BasicEventConfig {
   params: {
@@ -20,14 +21,15 @@ export const config: ChangeCamera = {
   },
 };
 
-export const generator: EventGenerator<ChangeCamera> = function (
-  engine: EngineSupport,
-  config: ChangeCamera
-): (event?: ObjectEvent) => void {
-  const params = config.params;
-  return () => {
-    setTimeout(() => {
-      engine.setCameraBySymbol(params.camera);
-    }, params.delay);
+export const generator: EventGenerator<ChangeCamera, CameraEngineSupport> =
+  function (
+    engine,
+    config
+  ): (event?: ObjectEvent) => void {
+    const params = config.params;
+    return () => {
+      setTimeout(() => {
+        engine.setCameraBySymbol(params.camera);
+      }, params.delay);
+    };
   };
-};
