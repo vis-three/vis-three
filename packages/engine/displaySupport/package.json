@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/engine-display-support",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -25,7 +25,7 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@vis-three/library-module": "workspace:^0.6.7",
+    "@vis-three/library-module": "workspace:^0.6.8",
     "@vis-three/library-parser": "workspace:^0.6.2",
     "@vis-three/middleware": "workspace:^0.6.17",
     "@vis-three/plugin-camera-adaptive": "workspace:^0.6.1",
