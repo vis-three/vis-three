@@ -18,16 +18,62 @@
 
   <body>
     <div id="app"></div>
+
+    <div id="element1">
+      <p>canvas P</p>
+      <img
+        src="/texture/Bricks_Color.jpg"
+        style="width: 50px; height: 50px"
+        alt=""
+      />
+
+      <div class="form">
+        <label for="element1-range">range</label>
+        <input id="element1-range" type="range" />
+      </div>
+    </div>
+
+    <div id="element2">
+      <h1>H1标题</h1>
+      <div>div测试</div>
+      <div class="form">
+        <label for="element1-text">测试2 input</label>
+        <input id="element1-text" type="text" />
+      </div>
+
+      <div class="form">
+        <label for="element1-range">测试2 range</label>
+        <input id="element1-range" type="range" />
+      </div>
+    </div>
+
+    <div id="element3">
+      <video
+        src="/video/1.mp4"
+        style="width: 192px; height: 108"
+        controls
+      ></video>
+    </div>
+
     <script type="module">
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
       import { generateConfig as G } from "@vis-three/middleware";
       import * as THREE from "three";
 
+      import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer-event";
+
       const engine = new ModelingEngineSupport()
+        .exec(MultiRendererEventStrategy())
         .setDom(document.getElementById("app"))
         .setStats(true)
         .setSize()
         .play();
+
+      engine.registerResources({
+        "examples.css3DObject": document.getElementById("element1"),
+        "examples.css3DObject2": document.getElementById("element2"),
+        "examples.css3DObject3": document.getElementById("element3"),
+      });
 
       G.injectEngine = engine;
 
@@ -64,6 +110,57 @@
       const mesh = G("Mesh", {
         geometry: boxGeometry.vid,
         material: meshStandardMaterial.vid,
+      });
+
+      const css3DObject = G("CSS3DPlane", {
+        element: "examples.css3DObject",
+        width: 200,
+        height: 200,
+        position: {
+          x: -50,
+          y: 10,
+        },
+        rotation: {
+          y: (Math.PI / 180) * 20,
+        },
+        scale: {
+          x: 0.1,
+          y: 0.1,
+          z: 0.1,
+        },
+      });
+
+      const css3DObject2 = G("CSS3DPlane", {
+        element: "examples.css3DObject2",
+        width: 200,
+        height: 220,
+        position: {
+          x: 50,
+          y: 10,
+        },
+        rotation: {
+          y: -(Math.PI / 180) * 20,
+        },
+        scale: {
+          x: 0.1,
+          y: 0.1,
+          z: 0.1,
+        },
+      });
+
+      const css3DObject3 = G("CSS2DPlane", {
+        element: "examples.css3DObject3",
+        width: 200,
+        height: 100,
+        position: {
+          z: -30,
+          y: 10,
+        },
+        scale: {
+          x: 0.5,
+          y: 0.5,
+          z: 0.5,
+        },
       });
 
       window.engine = engine;

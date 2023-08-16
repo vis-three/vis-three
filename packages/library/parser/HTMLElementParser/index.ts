@@ -8,6 +8,13 @@ import {
 import { CSS3DPlaneConfig } from "@vis-three/module-css3d/CSS3DConfig";
 
 export class HTMLElementParser extends Parser {
+  private type: "css2D" | "css3D";
+
+  constructor(type: "css2D" | "css3D" = "css3D") {
+    super();
+
+    this.type = type;
+  }
   selector: ResourceHanlder = (
     url: string,
     resource: HTMLElement,
@@ -21,7 +28,9 @@ export class HTMLElementParser extends Parser {
   };
 
   parse({ url, resource, configMap, resourceMap }: ParseParams): void {
-    const config = CONFIGFACTORY[CONFIGTYPE.CSS3DPLANE]() as CSS3DPlaneConfig;
+    const config = CONFIGFACTORY[
+      this.type === "css3D" ? CONFIGTYPE.CSS3DPLANE : CONFIGTYPE.CSS2DPLANE
+    ]() as CSS3DPlaneConfig;
     config.element = url;
 
     resourceMap.set(url, resource);

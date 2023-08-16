@@ -420,6 +420,8 @@ importers:
       '@vis-three/engine-modeling-support': workspace:^0.6.6
       '@vis-three/library-animate-script': workspace:^0.6.0
       '@vis-three/library-event': workspace:^0.6.0
+      '@vis-three/library-module': workspace:^0.6.8
+      '@vis-three/library-parser': workspace:^0.6.2
       '@vis-three/middleware': workspace:^0.6.17
       '@vis-three/modifier-boolean': workspace:^0.6.2
       '@vis-three/module-modifier': workspace:^0.6.4
@@ -457,6 +459,7 @@ importers:
       '@vis-three/strategy-grid-viewpoint': workspace:^0.6.1
       '@vis-three/strategy-helper-select-interact': workspace:^0.6.0
       '@vis-three/strategy-keyboard-move-render': workspace:^0.6.0
+      '@vis-three/strategy-multi-renderer-event': workspace:^0.6.0
       '@vis-three/strategy-orbit-controls-support': workspace:^0.6.2
       '@vis-three/strategy-orbit-render': workspace:^0.6.1
       '@vis-three/strategy-orbit-viewpoint': workspace:^0.6.1
@@ -498,6 +501,8 @@ importers:
       '@vis-three/engine-modeling-support': link:../engine/modelingSupport
       '@vis-three/library-animate-script': link:../library/aniScript
       '@vis-three/library-event': link:../library/event
+      '@vis-three/library-module': link:../library/module
+      '@vis-three/library-parser': link:../library/parser
       '@vis-three/middleware': link:../middleware
       '@vis-three/modifier-boolean': link:../library/modifier/BooleanModifier
       '@vis-three/module-modifier': link:../library/module/modifier
@@ -535,6 +540,7 @@ importers:
       '@vis-three/strategy-grid-viewpoint': link:../strategy/GridViewpointStrategy
       '@vis-three/strategy-helper-select-interact': link:../strategy/HelperSelectInteractStrategy
       '@vis-three/strategy-keyboard-move-render': link:../strategy/KeyboardMoveRenderStrategy
+      '@vis-three/strategy-multi-renderer-event': link:../strategy/MultiRendererEvent
       '@vis-three/strategy-orbit-controls-support': link:../strategy/OrbitControlsSupport
       '@vis-three/strategy-orbit-render': link:../strategy/OrbitRenderStrategy
       '@vis-three/strategy-orbit-viewpoint': link:../strategy/OrbitViewpointStrategy
@@ -3192,6 +3198,41 @@ importers:
       three: 0.141.0
       typescript: 4.9.3
 
+  packages/strategy/MultiRendererEvent:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.133.1
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      '@vis-three/core': workspace:^0.6.5
+      '@vis-three/plugin-css2d-renderer': workspace:^0.6.2
+      '@vis-three/plugin-css3d-renderer': workspace:^0.6.2
+      '@vis-three/utils': workspace:^0.6.1
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^4.3.2
+      vite: ^2.9.15
+    dependencies:
+      '@vis-three/core': link:../../core
+      '@vis-three/plugin-css2d-renderer': link:../../plugins/CSS2DRendererPlugin
+      '@vis-three/plugin-css3d-renderer': link:../../plugins/CSS3DRendererPlugin
+      '@vis-three/utils': link:../../utils
+    devDependencies:
+      '@types/node': 18.16.19
+      '@types/three': 0.133.1
+      '@typescript-eslint/eslint-plugin': 5.61.0_tiwiljqgmizmat2g4tqcn7wxxu
+      '@typescript-eslint/parser': 5.61.0_c6scop6gobf6637sntyzfiffg4
+      eslint: 8.44.0
+      eslint-config-prettier: 8.8.0_eslint@8.44.0
+      eslint-plugin-prettier: 4.2.1_qkgbdr345imkz5woyd5e5k6xse
+      prettier: 2.8.8
+      three: 0.141.0
+      typescript: 4.9.5
+      vite: 2.9.16
+
   packages/strategy/OrbitControlsSupport:
     specifiers:
       '@types/node': ^18.11.12
@@ -4313,7 +4354,7 @@ packages:
       debug: 4.3.4
       gensync: 1.0.0-beta.2
       json5: 2.2.1
-      semver: 6.3.0
+      semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4394,7 +4435,7 @@ packages:
       '@babel/helper-validator-option': 7.18.6
       browserslist: 4.21.4
       lru-cache: 5.1.1
-      semver: 6.3.0
+      semver: 6.3.1
     dev: true
 
   /@babel/helper-compilation-targets/7.22.9_@babel+core@7.22.9:
@@ -5989,7 +6030,7 @@ packages:
       eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
     dependencies:
       eslint: 8.36.0
-      eslint-visitor-keys: 3.3.0
+      eslint-visitor-keys: 3.4.1
     dev: true
 
   /@eslint-community/eslint-utils/4.4.0_eslint@8.39.0:
@@ -5999,7 +6040,7 @@ packages:
       eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
     dependencies:
       eslint: 8.39.0
-      eslint-visitor-keys: 3.3.0
+      eslint-visitor-keys: 3.4.1
     dev: true
 
   /@eslint-community/eslint-utils/4.4.0_eslint@8.44.0:
@@ -6009,7 +6050,7 @@ packages:
       eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
     dependencies:
       eslint: 8.44.0
-      eslint-visitor-keys: 3.3.0
+      eslint-visitor-keys: 3.4.1
     dev: true
 
   /@eslint-community/regexpp/4.4.1:
@@ -6033,9 +6074,9 @@ packages:
     dependencies:
       ajv: 6.12.6
       debug: 4.3.4
-      espree: 9.4.1
-      globals: 13.18.0
-      ignore: 5.2.1
+      espree: 9.6.0
+      globals: 13.20.0
+      ignore: 5.2.4
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       minimatch: 3.1.2
@@ -6050,8 +6091,8 @@ packages:
     dependencies:
       ajv: 6.12.6
       debug: 4.3.4
-      espree: 9.4.1
-      globals: 13.19.0
+      espree: 9.6.0
+      globals: 13.20.0
       ignore: 5.2.4
       import-fresh: 3.3.0
       js-yaml: 4.1.0
@@ -6489,7 +6530,7 @@ packages:
   /@types/through/0.0.30:
     resolution: {integrity: sha512-FvnCJljyxhPM3gkRgWmxmDZyAQSiBQQWLI0A0VFL0K7W1oRUrPJSqNO0NvTnLkBcotdlp3lKvaT0JrnyRDkzOg==}
     dependencies:
-      '@types/node': 18.16.19
+      '@types/node': 20.4.1
     dev: true
 
   /@types/uuid/8.3.4:
@@ -6508,7 +6549,7 @@ packages:
     resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
     requiresBuild: true
     dependencies:
-      '@types/node': 14.18.53
+      '@types/node': 20.4.1
     dev: true
     optional: true
 
@@ -7073,7 +7114,7 @@ packages:
       debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.5.0
+      semver: 7.5.4
       tsutils: 3.21.0_typescript@4.9.5
       typescript: 4.9.5
     transitivePeerDependencies:
@@ -7136,7 +7177,7 @@ packages:
       eslint: 8.29.0
       eslint-scope: 5.1.1
       eslint-utils: 3.0.0_eslint@8.29.0
-      semver: 7.3.8
+      semver: 7.5.4
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -7156,7 +7197,7 @@ packages:
       eslint: 8.30.0
       eslint-scope: 5.1.1
       eslint-utils: 3.0.0_eslint@8.30.0
-      semver: 7.3.8
+      semver: 7.5.4
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -7176,7 +7217,7 @@ packages:
       eslint: 8.36.0
       eslint-scope: 5.1.1
       eslint-utils: 3.0.0_eslint@8.36.0
-      semver: 7.3.8
+      semver: 7.5.4
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -7216,7 +7257,7 @@ packages:
       '@typescript-eslint/typescript-estree': 5.59.0_typescript@4.9.5
       eslint: 8.39.0
       eslint-scope: 5.1.1
-      semver: 7.5.0
+      semver: 7.5.4
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -9828,7 +9869,7 @@ packages:
     dependencies:
       acorn: 8.10.0
       acorn-jsx: 5.3.2_acorn@8.10.0
-      eslint-visitor-keys: 3.3.0
+      eslint-visitor-keys: 3.4.1
     dev: true
 
   /espree/9.5.0:
@@ -10736,7 +10777,7 @@ packages:
       '@babel/core': 7.20.5
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.0
-      semver: 6.3.0
+      semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -10749,7 +10790,7 @@ packages:
       '@babel/parser': 7.22.7
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.0
-      semver: 6.3.0
+      semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -11146,7 +11187,7 @@ packages:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
     engines: {node: '>=8'}
     dependencies:
-      semver: 6.3.0
+      semver: 6.3.1
     dev: true
 
   /mark.js/8.11.1:
@@ -12129,11 +12170,6 @@ packages:
     hasBin: true
     dev: true
     optional: true
-
-  /semver/6.3.0:
-    resolution: {integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==}
-    hasBin: true
-    dev: true
 
   /semver/6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
@@ -13145,7 +13181,7 @@ packages:
       espree: 9.6.0
       esquery: 1.5.0
       lodash: 4.17.21
-      semver: 7.3.8
+      semver: 7.5.4
     transitivePeerDependencies:
       - supports-color
     dev: true

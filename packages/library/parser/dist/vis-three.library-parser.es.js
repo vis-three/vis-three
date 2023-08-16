@@ -361,8 +361,9 @@ class TextureParser extends Parser {
   }
 }
 class HTMLElementParser extends Parser {
-  constructor() {
-    super(...arguments);
+  constructor(type = "css3D") {
+    super();
+    __publicField(this, "type");
     __publicField(this, "selector", (url, resource, parseMap) => {
       if (resource instanceof HTMLElement) {
         return parseMap.get(HTMLElementParser) || null;
@@ -370,9 +371,10 @@ class HTMLElementParser extends Parser {
         return null;
       }
     });
+    this.type = type;
   }
   parse({ url, resource, configMap, resourceMap }) {
-    const config = CONFIGFACTORY[CONFIGTYPE.CSS3DPLANE]();
+    const config = CONFIGFACTORY[this.type === "css3D" ? CONFIGTYPE.CSS3DPLANE : CONFIGTYPE.CSS2DPLANE]();
     config.element = url;
     resourceMap.set(url, resource);
     configMap.set(url, config);
