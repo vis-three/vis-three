@@ -1,9 +1,9 @@
 {
-  "name": "@vis-three/strategy-multi-renderer-event",
+  "name": "@vis-three/strategy-multi-renderer",
   "version": "0.6.0",
-  "description": "vis-three multi-renderer-event strategy",
-  "main": "dist/vis-three.strategy-multi-renderer-event.umd.js",
-  "module": "dist/vis-three.strategy-multi-renderer-event.es.js",
+  "description": "vis-three multi-renderer strategy",
+  "main": "dist/vis-three.strategy-multi-renderer.umd.js",
+  "module": "dist/vis-three.strategy-multi-renderer.es.js",
   "types": "index.d.ts",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",

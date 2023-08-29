@@ -2,7 +2,7 @@ import { ENGINE_EVENT } from "@vis-three/core";
 import { transPkgName } from "@vis-three/utils";
 import { CSS3D_RENDERER_PLUGIN } from "@vis-three/plugin-css3d-renderer";
 import { CSS2D_RENDERER_PLUGIN } from "@vis-three/plugin-css2d-renderer";
-const name = "@vis-three/strategy-multi-renderer-event";
+const name = "@vis-three/strategy-multi-renderer";
 const MULTI_RENDERER_EVENT = transPkgName(name);
 const MultiRendererEventStrategy = function() {
   let topDom;
