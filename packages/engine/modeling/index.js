@@ -26,6 +26,7 @@ import { StatsRenderStrategy } from "@vis-three/strategy-stats-render";
 import { GridViewpointStrategy } from "@vis-three/strategy-grid-viewpoint";
 import { TransformKeyboardStrategy } from "@vis-three/strategy-transform-keyboard";
 import { HelperSelectInteractStrategy } from "@vis-three/strategy-helper-select-interact";
+import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer";
 export class ModelingEngine extends Engine {
     constructor() {
         super();
@@ -60,6 +61,7 @@ export class ModelingEngine extends Engine {
             .exec(StatsRenderStrategy())
             .exec(GridViewpointStrategy())
             .exec(TransformKeyboardStrategy())
-            .exec(HelperSelectInteractStrategy());
+            .exec(HelperSelectInteractStrategy())
+            .exec(MultiRendererEventStrategy());
     }
 }

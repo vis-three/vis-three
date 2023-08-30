@@ -143,6 +143,7 @@ importers:
       '@vis-three/strategy-css2d-render': workspace:^0.6.1
       '@vis-three/strategy-css3d-render': workspace:^0.6.0
       '@vis-three/strategy-effect-render': workspace:^0.6.1
+      '@vis-three/strategy-multi-renderer': workspace:^0.6.0
       '@vis-three/strategy-orbit-render': workspace:^0.6.1
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
@@ -164,6 +165,7 @@ importers:
       '@vis-three/strategy-css2d-render': link:../../strategy/CSS2DRenderStrategy
       '@vis-three/strategy-css3d-render': link:../../strategy/CSS3DRenderStrategy
       '@vis-three/strategy-effect-render': link:../../strategy/EffectRenderStrategy
+      '@vis-three/strategy-multi-renderer': link:../../strategy/MultiRenderer
       '@vis-three/strategy-orbit-render': link:../../strategy/OrbitRenderStrategy
     devDependencies:
       '@types/node': 18.15.10
@@ -197,6 +199,7 @@ importers:
       '@vis-three/strategy-css3d-render': workspace:^0.6.0
       '@vis-three/strategy-css3d-renderer-support': workspace:^0.6.1
       '@vis-three/strategy-effect-render': workspace:^0.6.1
+      '@vis-three/strategy-multi-renderer': workspace:^0.6.0
       '@vis-three/strategy-orbit-controls-support': workspace:^0.6.2
       '@vis-three/strategy-orbit-render': workspace:^0.6.1
       '@vis-three/strategy-webgl-renderer-support': workspace:^0.6.1
@@ -221,6 +224,7 @@ importers:
       '@vis-three/strategy-css3d-render': link:../../strategy/CSS3DRenderStrategy
       '@vis-three/strategy-css3d-renderer-support': link:../../strategy/CSS3DRendererSupportStrategy
       '@vis-three/strategy-effect-render': link:../../strategy/EffectRenderStrategy
+      '@vis-three/strategy-multi-renderer': link:../../strategy/MultiRenderer
       '@vis-three/strategy-orbit-controls-support': link:../../strategy/OrbitControlsSupport
       '@vis-three/strategy-orbit-render': link:../../strategy/OrbitRenderStrategy
       '@vis-three/strategy-webgl-renderer-support': link:../../strategy/WebGLRendererSupportStrategy
@@ -265,6 +269,7 @@ importers:
       '@vis-three/strategy-effect-render': workspace:^0.6.1
       '@vis-three/strategy-grid-viewpoint': workspace:^0.6.1
       '@vis-three/strategy-helper-select-interact': workspace:^0.6.0
+      '@vis-three/strategy-multi-renderer': workspace:^0.6.0
       '@vis-three/strategy-orbit-render': workspace:^0.6.1
       '@vis-three/strategy-orbit-viewpoint': workspace:^0.6.1
       '@vis-three/strategy-stats-render': workspace:^0.6.0
@@ -300,6 +305,7 @@ importers:
       '@vis-three/strategy-effect-render': link:../../strategy/EffectRenderStrategy
       '@vis-three/strategy-grid-viewpoint': link:../../strategy/GridViewpointStrategy
       '@vis-three/strategy-helper-select-interact': link:../../strategy/HelperSelectInteractStrategy
+      '@vis-three/strategy-multi-renderer': link:../../strategy/MultiRenderer
       '@vis-three/strategy-orbit-render': link:../../strategy/OrbitRenderStrategy
       '@vis-three/strategy-orbit-viewpoint': link:../../strategy/OrbitViewpointStrategy
       '@vis-three/strategy-stats-render': link:../../strategy/StatsRenderStrategy
@@ -347,6 +353,7 @@ importers:
       '@vis-three/strategy-css3d-renderer-support': workspace:^0.6.1
       '@vis-three/strategy-effect-render': workspace:^0.6.1
       '@vis-three/strategy-grid-viewpoint': workspace:^0.6.1
+      '@vis-three/strategy-multi-renderer': workspace:^0.6.0
       '@vis-three/strategy-orbit-controls-support': workspace:^0.6.2
       '@vis-three/strategy-orbit-render': workspace:^0.6.1
       '@vis-three/strategy-orbit-viewpoint': workspace:^0.6.1
@@ -386,6 +393,7 @@ importers:
       '@vis-three/strategy-css3d-renderer-support': link:../../strategy/CSS3DRendererSupportStrategy
       '@vis-three/strategy-effect-render': link:../../strategy/EffectRenderStrategy
       '@vis-three/strategy-grid-viewpoint': link:../../strategy/GridViewpointStrategy
+      '@vis-three/strategy-multi-renderer': link:../../strategy/MultiRenderer
       '@vis-three/strategy-orbit-controls-support': link:../../strategy/OrbitControlsSupport
       '@vis-three/strategy-orbit-render': link:../../strategy/OrbitRenderStrategy
       '@vis-three/strategy-orbit-viewpoint': link:../../strategy/OrbitViewpointStrategy

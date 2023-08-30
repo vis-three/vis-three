@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/engine-display",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -38,6 +38,7 @@
     "@vis-three/strategy-css2d-render": "workspace:^0.6.1",
     "@vis-three/strategy-css3d-render": "workspace:^0.6.0",
     "@vis-three/strategy-effect-render": "workspace:^0.6.1",
+    "@vis-three/strategy-multi-renderer": "workspace:^0.6.0",
     "@vis-three/strategy-orbit-render": "workspace:^0.6.1"
   },
   "files": [

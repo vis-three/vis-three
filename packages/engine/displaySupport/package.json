@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/engine-display-support",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -39,6 +39,7 @@
     "@vis-three/strategy-css3d-render": "workspace:^0.6.0",
     "@vis-three/strategy-css3d-renderer-support": "workspace:^0.6.1",
     "@vis-three/strategy-effect-render": "workspace:^0.6.1",
+    "@vis-three/strategy-multi-renderer": "workspace:^0.6.0",
     "@vis-three/strategy-orbit-controls-support": "workspace:^0.6.2",
     "@vis-three/strategy-orbit-render": "workspace:^0.6.1",
     "@vis-three/strategy-webgl-renderer-support": "workspace:^0.6.1"

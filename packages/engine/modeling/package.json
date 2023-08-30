@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/engine-modeling",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -48,6 +48,7 @@
     "@vis-three/strategy-effect-render": "workspace:^0.6.1",
     "@vis-three/strategy-grid-viewpoint": "workspace:^0.6.1",
     "@vis-three/strategy-helper-select-interact": "workspace:^0.6.0",
+    "@vis-three/strategy-multi-renderer": "workspace:^0.6.0",
     "@vis-three/strategy-orbit-render": "workspace:^0.6.1",
     "@vis-three/strategy-orbit-viewpoint": "workspace:^0.6.1",
     "@vis-three/strategy-stats-render": "workspace:^0.6.0",

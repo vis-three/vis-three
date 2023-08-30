@@ -60,10 +60,7 @@
       import { generateConfig as G } from "@vis-three/middleware";
       import * as THREE from "three";
 
-      import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer-event";
-
       const engine = new ModelingEngineSupport()
-        .exec(MultiRendererEventStrategy())
         .setDom(document.getElementById("app"))
         .setStats(true)
         .setSize()

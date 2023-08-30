@@ -75,7 +75,6 @@
     "@vis-three/strategy-grid-viewpoint": "workspace:^0.6.1",
     "@vis-three/strategy-helper-select-interact": "workspace:^0.6.0",
     "@vis-three/strategy-keyboard-move-render": "workspace:^0.6.0",
-    "@vis-three/strategy-multi-renderer-event": "workspace:^0.6.0",
     "@vis-three/strategy-orbit-controls-support": "workspace:^0.6.2",
     "@vis-three/strategy-orbit-render": "workspace:^0.6.1",
     "@vis-three/strategy-orbit-viewpoint": "workspace:^0.6.1",

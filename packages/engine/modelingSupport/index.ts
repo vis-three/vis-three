@@ -90,6 +90,7 @@ import {
   Face,
   PathSketcher,
 } from "@vis-three/plugin-path-drawing/PathSketcher";
+import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer";
 
 export { VIEWPOINT };
 
@@ -188,6 +189,7 @@ export class ModelingEngineSupport
       .exec(WebGLRendererSupportStrategy())
       .exec(TransformControlsSupportStrategy())
       .exec(OrbitControlsSupportStrategy())
-      .exec(ComposerSupportStrategy());
+      .exec(ComposerSupportStrategy())
+      .exec(MultiRendererEventStrategy());
   }
 }

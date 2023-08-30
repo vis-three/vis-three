@@ -46,6 +46,7 @@ import { CSS2DRenderStrategy } from "@vis-three/strategy-css2d-render";
 import { CSS3DRenderStrategy } from "@vis-three/strategy-css3d-render";
 import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
 import { OrbitRenderStrategy } from "@vis-three/strategy-orbit-render";
+import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer";
 export class DisplayEngine
   extends Engine
   implements
@@ -101,6 +102,7 @@ export class DisplayEngine
     this.exec(CSS2DRenderStrategy())
       .exec(CSS3DRenderStrategy())
       .exec(EffectRenderStrategy())
-      .exec(OrbitRenderStrategy());
+      .exec(OrbitRenderStrategy())
+      .exec(MultiRendererEventStrategy());
   }
 }

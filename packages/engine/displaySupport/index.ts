@@ -38,6 +38,7 @@ import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 
 import * as moduleLibrary from "@vis-three/library-module";
 import * as parserLibrary from "@vis-three/library-parser";
+import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer";
 
 export class DisplayEngineSupport
   extends EngineSupport
@@ -88,6 +89,7 @@ export class DisplayEngineSupport
       .exec(CSS3DRendererSupportStrategy())
       .exec(WebGLRendererSupportStrategy())
       .exec(OrbitControlsSupportStrategy())
-      .exec(ComposerSupportStrategy());
+      .exec(ComposerSupportStrategy())
+      .exec(MultiRendererEventStrategy());
   }
 }

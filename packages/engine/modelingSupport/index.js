@@ -30,6 +30,7 @@ import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 import * as moduleLibrary from "@vis-three/library-module";
 import * as parserLibrary from "@vis-three/library-parser";
 import { PathDrawingPlugin, } from "@vis-three/plugin-path-drawing";
+import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer";
 export { VIEWPOINT };
 export class ModelingEngineSupport extends EngineSupport {
     constructor() {
@@ -73,6 +74,7 @@ export class ModelingEngineSupport extends EngineSupport {
             .exec(WebGLRendererSupportStrategy())
             .exec(TransformControlsSupportStrategy())
             .exec(OrbitControlsSupportStrategy())
-            .exec(ComposerSupportStrategy());
+            .exec(ComposerSupportStrategy())
+            .exec(MultiRendererEventStrategy());
     }
 }
