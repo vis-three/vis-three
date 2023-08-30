@@ -2,7 +2,7 @@
   <a href="https://shiotsukikaedesari.gitee.io/vis-three/" target="_blank" rel="noopener noreferrer">
     <img width="180" src="https://shiotsukikaedesari.gitee.io/vis-three/docs/favicon.ico" alt="vis-three logo">
   </a>
-  <p align="center">A web 3D development framework based on three.js</p>
+  <p align="center">A web 3D development framework for assembled based on three.js</p>
 
 </p>
 <br/>
@@ -28,7 +28,7 @@
 
 ## VIS-THREE
 
-基于 three.js 的前端 3D 开发框架。
+基于 three.js 的组装式前端 3D 开发框架。
 
 > 夫物速成则疾亡，晚就则善终。朝华之草，夕而零落；松柏之茂，隆寒不衰。是以大雅君子恶速成。——《群书治要》
 
@@ -46,25 +46,7 @@
 
 ## 赞助商
 
-## Packages
-
-`vis-three`所提供的主要模块。
-
-| package                                                                                           | Version                                                                                                        | download                                                                              |
-| ------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| [create-vis-three](https://img.shields.io/npm/v/create-vis-three?label=%20)                       | ![create-vis-three](https://img.shields.io/npm/v/create-vis-three?label=%20)                                   | <img alt="npm" src="https://img.shields.io/npm/dt/create-vis-three">                  |
-| [@vis-three/core](packages/core)                                                                  | ![@vis-three/core](https://img.shields.io/npm/v/@vis-three/core.svg?label=%20)                                 | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/core">                   |
-| [@vis-three/middleware](packages/middleware)                                                      | ![@vis-three/middleware](https://img.shields.io/npm/v/@vis-three/middleware.svg?label=%20)                     | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/middleware">             |
-| [@vis-three/convenient](packages/convenient)                                                      | ![@vis-three/convenient](https://img.shields.io/npm/v/@vis-three/convenient?label=%20)                         | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/convenient">             |
-| [@vis-three/utils](packages/utils)                                                                | ![@vis-three/utils](https://img.shields.io/npm/v/@vis-three/utils?label=%20)                                   | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/utils">                  |
-| [@vis-three/library-shader](packages/library/shader/)                                             | ![@vis-three/library-shader](https://img.shields.io/npm/v/@vis-three/library-shader?label=%20)                 | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-shader">         |
-| [@vis-three/library-event](packages/library/event/)                                               | ![@vis-three/library-event](https://img.shields.io/npm/v/@vis-three/library-event?label=%20)                   | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-event">          |
-| [@vis-three/library-animate-script](packages/library/aniScript/)                                  | ![@vis-three/library-animate-script](https://img.shields.io/npm/v/@vis-three/library-animate-script?label=%20) | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-animate-script"> |
-| [@vis-three/library-module](packages/library/module/)                                             | ![@vis-three/library-module](https://img.shields.io/npm/v/@vis-three/library-module?label=%20)                 | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-module">         |
-| [@vis-three/library-modifier](https://img.shields.io/npm/v/@vis-three/library-modifier?label=%20) | ![@vis-three/library-module](https://img.shields.io/npm/v/@vis-three/library-modifier?label=%20)               | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-modifier">       |
-| [@vis-three/library-parser](https://img.shields.io/npm/v/@vis-three/library-parser?label=%20)     | ![@vis-three/library-module](https://img.shields.io/npm/v/@vis-three/library-parser?label=%20)                 | <img alt="npm" src="https://img.shields.io/npm/dt/@vis-three/library-parser">         |
-
-## 主页、demo、文档在线地址
+## 主页、案例、文档在线地址
 
 ![website](/rm/website.png)
 
@@ -72,27 +54,47 @@
 
 - gitee: [https://shiotsukikaedesari.gitee.io/vis-three](https://shiotsukikaedesari.gitee.io/vis-three)
 
-> 目前的 demo 与版本为 0.4 版本，最新文档 0.6.x 版本正在进行中，不定时更新。
+> 文档内容不一定是最新版本内容，持续更新。
 
-## 关于 issue
+## 项目说明
 
-### 为何要特别的进行 issue 的管理？
+- 本项目使用的是`pnpm`进行项目开发管理，详情请参考:[https://www.pnpm.cn/](https://www.pnpm.cn/)
+- [/packages/docs](/packages/docs)为文档仓库。执行`pnpm run build`会自动更新到`website`目录。
+- [/packages/examples](/packages/examples)为例子仓库。执行`pnpm run build`会自动更新到`website`目录。
+- [/packages/website](/packages/website)为静态页面仓库。执行`pnpm run build`后会更新在线静态站点。
+- [/docs](/docs)为本项目的在线静态站点。需要通过`website`更新。
+- [/packages/create-vis-three](/packages/create-vis-three)为快速构建模块包的命令工具。
+- 其他部分为项目的核心部件和插件库部件。
+- 本仓库所有包都可通过`npm`下载。
 
-1、 项目人员较少，需要有一套平衡生活，工作，开源的模式。
+## 开源说明
 
-2、同一个问题会有很多人遇到，需要有一套避免重复提问与回答的模式。
+- 原生`three.js`开发复杂度太高，需要进行很多细节处理，暂时未发现一种较好的 3D 开发框架不管是在使用上还是在项目业务支持上有较好的效益，故进行相关框架的开源，促进 3D 相关项目更好的发展。
+- 发展需要互惠互利，群策群力，特别是对于国内开源市场社区的建立，需要我们根据自身的条件与环境，打造符合我们自己的开源模式，所以请大家丢掉以往的开源惯性思维，集思广益，共同进步。
 
-3、避免过强的依赖，需要有一套平衡 issue 难易与 issue 频率的模式。
+## 当下开源的问题
 
-### issue 流程
+1、排除掉公司企业的战略部署，一般的开源项目基本是在利他的初心上建立的，初期项目人员较少，需要有一套得以平衡生活，工作，开源的模式，进而可以细水长流。
 
-1、历史 issue 查找，避免重复提及。
+2、在当下的社会大环境下，生存压力与发展所衍生出的浮躁与贪婪，影响着每一个人，进而变成生活中各种各样的习惯，打破劣币驱逐良币的规律，需要每一个人的努力。
 
-2、没有相关 issue，进行 issue 的新增。
+3、项目中同一个问题会有很多人遇到，但是目前缺少提 issue、查 issue、补 issue 的习惯，所以需要有一套避免重复提问与回答的模式。
+
+4、人是有惰性的，再加上“免费”的开源项目与浮躁急于求成的风气，进而越来越剥夺了人们静下心来思考、理解、感悟的能力，导致没经过思考提炼的内容不断的剥夺大家的精力与时间，所以需要有一套平衡 issue “难易”与 issue 频率的模式。
+
+## 开源流程探索
+
+### 遇到了问题怎么办？
+
+1、首先去历史 issue 中开启全部查找,目前包括 2 个平台:[github](https://github.com/Shiotsukikaedesari/vis-three/issues)、[gitee](https://gitee.com/Shiotsukikaedesari/vis-three/issues)，这样可以避免重复提问。
+
+2、如果没有相关 issue，进行 issue 的新增，请尽量将问题描述详细，包括环境、版本，报错内容，你的疑问点，因为回答者难以站在提问者的环境下思考，所以请提问者尽量站在回答者的角度描述，问题请尽量精确，尽量将范围缩小，范围缩的越小说明你在问题的思考上越深，这样回答者回答起来就越能直入重点。
 
 3、等待开发组进行 issue 的分类。
 
-4、进入赞助、合作、通知群进行赞助协商与 issue 完成度确认。
+4、进入赞助、合作、通知群进行 issue 完成度确认。
+
+5、一个 issue 完成后请选择你的回报模式，你可以选择提交 pr 补全问题代码，或者补全项目文档，也可以选择资金赞助的模式，供开发组支持项目的完善。
 
 ### 关于 issue 分类
 
@@ -100,22 +102,22 @@
 
 <img src="/rm/github-label.png" height=550>
 
-开发组罗列以下几个标签作为付费赞助支持点：
+开发组罗列以下几个标签作为可付费赞助支持点：
 
 - 新增标签
 - 文档标签
 - 案例标签
 - 提问标签
 
-### 关于赞助模式
+### 关于付费赞助模式
 
 **开发与赞助额度**：由于不同需求工作量会不同，具体赞助额度可进入**下方 Q 群**中商讨，群内会有赞助标准与讨论空间。
 
-**多人赞助**：如果多人所提 issue 在功能需求上差不多，可进行 iusse 与赞助分摊合并，方便你我他。
+**多人赞助**：如果多人所提 issue 在功能需求上差不多，可进行 issue 与赞助分摊合并，方便大家。
 
 **赞助鸣谢**：赞助后的相关信息会计入上方的赞助名单中公开。
 
-**诚信与公益**：如果您非常需要一个功能，而暂时又无法达成赞助条件，我们可以为您提供帮助，因为我们相信人都是善良与真诚的。如果您提的需求或功能非常的有价值与富有建设性，我们会把它纳入开发核心流程，并不需要赞助费用，因为这个需求或功能已经非常有含金量。
+**诚信与公益**：如果您非常需要一个功能，而暂时又无法达成赞助条件，我们可以为您提供帮助，因为我们相信人都是善良与真诚的。如果您提的需求或功能非常的有价值与富有建设性，我们会把它纳入开发核心流程，并不需要赞助费用。
 
 ### 模式举例
 
@@ -129,7 +131,7 @@
 
 ## 贡献者与开发组
 
-**成为贡献者**：提交您的代码并通过审核。
+**成为贡献者**：提交您的代码 pr，并通过管理员的代码审核。
 
 **开发收益**：如果您完成了相关的 issue，并且这个 issue 是属于**付费赞助支持**部分的，您将收到此 issue 的**全额赞助费用**，收益模式可根据上方**赞助模式**和**模式举例**进行。
 
