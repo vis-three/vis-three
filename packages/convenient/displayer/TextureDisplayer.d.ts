@@ -1,10 +1,10 @@
-import { Texture } from "three";
+import { AmbientLight, Texture } from "three";
 export interface TextureDisplayerParameters {
     dom?: HTMLElement;
     texture?: Texture;
 }
 export declare class TextureDisplayer {
-    static ambientLight: any;
+    static ambientLight: AmbientLight;
     private dom?;
     private texture?;
     private renderer;
@@ -20,6 +20,6 @@ export declare class TextureDisplayer {
      * @param mine 图片格式
      * @returns DataURL
      */
-    getDataURL(mine: string): any;
+    getDataURL(mine: string): string;
     dispose(): void;
 }
