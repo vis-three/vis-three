@@ -55,7 +55,7 @@ __publicField(TextureCompiler, "replaceImage", new CanvasGenerator({
 }).getDom());
 const needUpdateRegCommand = {
   reg: new RegExp(
-    "wrapS|wrapT|format|encoding|anisotropy|magFilter|minFilter|mapping"
+    "wrapS|wrapT|format|encoding|anisotropy|magFilter|minFilter|mapping|flipY"
   ),
   handler({
     target,
