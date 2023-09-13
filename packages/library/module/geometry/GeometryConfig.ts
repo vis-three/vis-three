@@ -10,6 +10,7 @@ import {
   EdgesGeometryConfig,
   ExtrudeGeometryConfig,
   GeometryConfig,
+  LatheGeometryConfig,
   LineCurveGeometryConfig,
   LineShapeGeometryConfig,
   LineTubeGeometryConfig,
@@ -261,5 +262,15 @@ export const getPathGeometryConfig = function (): PathGeometryConfig {
     path: "",
     space: false,
     divisions: 36,
+  });
+};
+
+export const getLatheGeometryConfig = function (): LatheGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    path: "",
+    divisions: 32,
+    segments: 12,
+    phiStart: 0,
+    phiLength: Math.PI * 2,
   });
 };

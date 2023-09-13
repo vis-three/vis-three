@@ -212,6 +212,14 @@ export interface PathGeometryConfig extends GeometryConfig {
   divisions: number;
 }
 
+export interface LatheGeometryConfig extends GeometryConfig {
+  path: string; // vector2 path
+  divisions: number;
+  segments: number;
+  phiStart: number;
+  phiLength: number;
+}
+
 export type GeometryAllType =
   | BoxGeometryConfig
   | SphereGeometryConfig
@@ -233,4 +241,5 @@ export type GeometryAllType =
   | RingGeometryConfig
   | LineShapeGeometryConfig
   | ExtrudeGeometryConfig
-  | PathGeometryConfig;
+  | PathGeometryConfig
+  | LatheGeometryConfig;

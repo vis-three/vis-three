@@ -1,4 +1,4 @@
-import { BoxGeometryConfig, CircleGeometryConfig, ConeGeometryConfig, CubicBezierCurveGeometryConfig, CustomGeometryConfig, CylinderGeometryConfig, DodecahedronGeometryConfig, EdgesGeometryConfig, ExtrudeGeometryConfig, GeometryConfig, LineCurveGeometryConfig, LineShapeGeometryConfig, LineTubeGeometryConfig, LoadGeometryConfig, PathGeometryConfig, PlaneGeometryConfig, QuadraticBezierCurveGeometryConfig, RingGeometryConfig, ShapeGeometryConfig, SphereGeometryConfig, SplineCurveGeometryConfig, SplineTubeGeometryConfig, TorusGeometryConfig, TubeGeometryConfig } from "./GeometryInterface";
+import { BoxGeometryConfig, CircleGeometryConfig, ConeGeometryConfig, CubicBezierCurveGeometryConfig, CustomGeometryConfig, CylinderGeometryConfig, DodecahedronGeometryConfig, EdgesGeometryConfig, ExtrudeGeometryConfig, GeometryConfig, LatheGeometryConfig, LineCurveGeometryConfig, LineShapeGeometryConfig, LineTubeGeometryConfig, LoadGeometryConfig, PathGeometryConfig, PlaneGeometryConfig, QuadraticBezierCurveGeometryConfig, RingGeometryConfig, ShapeGeometryConfig, SphereGeometryConfig, SplineCurveGeometryConfig, SplineTubeGeometryConfig, TorusGeometryConfig, TubeGeometryConfig } from "./GeometryInterface";
 export declare const getGeometryConfig: () => GeometryConfig;
 export declare const getBoxGeometryConfig: () => BoxGeometryConfig;
 export declare const getSphereGeometryConfig: () => SphereGeometryConfig;
@@ -23,3 +23,4 @@ export declare const getShapeGeometryConfig: () => ShapeGeometryConfig;
 export declare const getLineShapeGeometryConfig: () => LineShapeGeometryConfig;
 export declare const getExtrudeGeometryConfig: () => ExtrudeGeometryConfig;
 export declare const getPathGeometryConfig: () => PathGeometryConfig;
+export declare const getLatheGeometryConfig: () => LatheGeometryConfig;

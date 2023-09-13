@@ -190,4 +190,11 @@ export interface PathGeometryConfig extends GeometryConfig {
     space: boolean;
     divisions: number;
 }
-export type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig | LineCurveGeometryConfig | SplineCurveGeometryConfig | CubicBezierCurveGeometryConfig | QuadraticBezierCurveGeometryConfig | CustomGeometryConfig | LineTubeGeometryConfig | SplineTubeGeometryConfig | TorusGeometryConfig | RingGeometryConfig | LineShapeGeometryConfig | ExtrudeGeometryConfig | PathGeometryConfig;
+export interface LatheGeometryConfig extends GeometryConfig {
+    path: string;
+    divisions: number;
+    segments: number;
+    phiStart: number;
+    phiLength: number;
+}
+export type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig | LineCurveGeometryConfig | SplineCurveGeometryConfig | CubicBezierCurveGeometryConfig | QuadraticBezierCurveGeometryConfig | CustomGeometryConfig | LineTubeGeometryConfig | SplineTubeGeometryConfig | TorusGeometryConfig | RingGeometryConfig | LineShapeGeometryConfig | ExtrudeGeometryConfig | PathGeometryConfig | LatheGeometryConfig;

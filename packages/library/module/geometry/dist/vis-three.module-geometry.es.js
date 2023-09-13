@@ -5,7 +5,7 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { defineProcessor, MODULETYPE, Compiler, Rule, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, Path, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry } from "three";
+import { Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, Path, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry, LatheGeometry } from "three";
 const transfromAnchor = function(geometry, config) {
   config.center && geometry.center();
   geometry.computeBoundingBox();
@@ -278,6 +278,15 @@ const getPathGeometryConfig = function() {
     path: "",
     space: false,
     divisions: 36
+  });
+};
+const getLatheGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    path: "",
+    divisions: 32,
+    segments: 12,
+    phiStart: 0,
+    phiLength: Math.PI * 2
   });
 };
 var BoxGeometryProcessor = defineProcessor({
@@ -785,12 +794,12 @@ var TorusGeometryProcessor = defineProcessor({
   ),
   dispose
 });
-const cacheBusMap$2 = /* @__PURE__ */ new WeakMap();
-const cacheBusObject$2 = function(geometry, object, fun) {
-  if (!cacheBusMap$2.has(geometry)) {
-    cacheBusMap$2.set(geometry, /* @__PURE__ */ new Set());
+const cacheBusMap$3 = /* @__PURE__ */ new WeakMap();
+const cacheBusObject$3 = function(geometry, object, fun) {
+  if (!cacheBusMap$3.has(geometry)) {
+    cacheBusMap$3.set(geometry, /* @__PURE__ */ new Set());
   }
-  const set = cacheBusMap$2.get(geometry);
+  const set = cacheBusMap$3.get(geometry);
   set.add({
     target: object,
     eventFun: fun
@@ -820,19 +829,19 @@ var ExtrudeGeometryProcessor = defineProcessor({
         config.shapes = config.shapes;
       };
       Bus.compilerEvent.on(shape, COMPILER_EVENT.UPDATE, eventFun);
-      cacheBusObject$2(geometry, shape, eventFun);
+      cacheBusObject$3(geometry, shape, eventFun);
     }
     if (extrudePath) {
       const eventFun = () => {
         config.options.extrudePath = config.options.extrudePath;
       };
       Bus.compilerEvent.on(extrudePath, COMPILER_EVENT.UPDATE, eventFun);
-      cacheBusObject$2(geometry, extrudePath, eventFun);
+      cacheBusObject$3(geometry, extrudePath, eventFun);
     }
     return create(geometry, config);
   },
   dispose(target, engine, compiler) {
-    const set = cacheBusMap$2.get(target);
+    const set = cacheBusMap$3.get(target);
     if (set) {
       set.forEach((params) => {
         Bus.compilerEvent.off(
@@ -842,13 +851,13 @@ var ExtrudeGeometryProcessor = defineProcessor({
         );
       });
     }
-    cacheBusMap$2.delete(target);
+    cacheBusMap$3.delete(target);
     dispose(target);
   }
 });
-const cacheBusMap$1 = /* @__PURE__ */ new WeakMap();
-const cacheBusObject$1 = function(geometry, object, fun) {
-  cacheBusMap$1.set(geometry, {
+const cacheBusMap$2 = /* @__PURE__ */ new WeakMap();
+const cacheBusObject$2 = function(geometry, object, fun) {
+  cacheBusMap$2.set(geometry, {
     target: object,
     eventFun: fun
   });
@@ -868,7 +877,46 @@ var PathGeometryProcessor = defineProcessor({
         config.path = config.path;
       };
       Bus.compilerEvent.on(path, COMPILER_EVENT.UPDATE, eventFun);
-      cacheBusObject$1(geometry, path, eventFun);
+      cacheBusObject$2(geometry, path, eventFun);
+    }
+    return create(geometry, config);
+  },
+  dispose(target, engine, compiler) {
+    const params = cacheBusMap$2.get(target);
+    if (params) {
+      Bus.compilerEvent.off(
+        params.target,
+        COMPILER_EVENT.UPDATE,
+        params.eventFun
+      );
+    }
+    cacheBusMap$2.delete(target);
+    dispose(target);
+  }
+});
+const cacheBusMap$1 = /* @__PURE__ */ new WeakMap();
+const cacheBusObject$1 = function(geometry, object, fun) {
+  cacheBusMap$1.set(geometry, {
+    target: object,
+    eventFun: fun
+  });
+};
+var ShapeGeometryProcessor = defineProcessor({
+  type: "ShapeGeometry",
+  config: getShapeGeometryConfig,
+  commands,
+  create(config, engine) {
+    const shape = engine.compilerManager.getObjectfromModule(
+      MODULETYPE.SHAPE,
+      config.shape
+    ) || void 0;
+    const geometry = new ShapeBufferGeometry(shape, config.curveSegments);
+    if (shape) {
+      const eventFun = () => {
+        config.shape = config.shape;
+      };
+      Bus.compilerEvent.on(shape, COMPILER_EVENT.UPDATE, eventFun);
+      cacheBusObject$1(geometry, shape, eventFun);
     }
     return create(geometry, config);
   },
@@ -892,26 +940,31 @@ const cacheBusObject = function(geometry, object, fun) {
     eventFun: fun
   });
 };
-var ShapeGeometryProcessor = defineProcessor({
-  type: "ShapeGeometry",
-  config: getShapeGeometryConfig,
+var LatheGeometryProcessor = defineProcessor({
+  type: "LatheGeometry",
+  config: getLatheGeometryConfig,
   commands,
   create(config, engine) {
-    const shape = engine.compilerManager.getObjectfromModule(
-      MODULETYPE.SHAPE,
-      config.shape
+    const path = engine.compilerManager.getObjectfromModule(
+      MODULETYPE.PATH,
+      config.path
     ) || void 0;
-    const geometry = new ShapeBufferGeometry(shape, config.curveSegments);
-    if (shape) {
+    const geometry = new LatheGeometry(
+      path ? path.getPoints(config.divisions) : void 0,
+      config.segments,
+      config.phiStart,
+      config.phiLength
+    );
+    if (path) {
       const eventFun = () => {
-        config.shape = config.shape;
+        config.path = config.path;
       };
-      Bus.compilerEvent.on(shape, COMPILER_EVENT.UPDATE, eventFun);
-      cacheBusObject(geometry, shape, eventFun);
+      Bus.compilerEvent.on(path, COMPILER_EVENT.UPDATE, eventFun);
+      cacheBusObject(geometry, path, eventFun);
     }
     return create(geometry, config);
   },
-  dispose(target, engine, compiler) {
+  dispose(target) {
     const params = cacheBusMap.get(target);
     if (params) {
       Bus.compilerEvent.off(
@@ -950,7 +1003,8 @@ var index = {
     TorusGeometryProcessor,
     ExtrudeGeometryProcessor,
     PathGeometryProcessor,
-    ShapeGeometryProcessor
+    ShapeGeometryProcessor,
+    LatheGeometryProcessor
   ]
 };
 export { CubicBezierCurveGeometry, CurveGeometry, GeometryCompiler, LineCurveGeometry, LineShapeGeometry, LineTubeGeometry, LoadGeometry, PathGeometry, QuadraticBezierCurveGeometry, SplineCurveGeometry, SplineTubeGeometry, index as default };

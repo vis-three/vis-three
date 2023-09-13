@@ -22,6 +22,7 @@ import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import ExtrudeGeometryProcessor from "./processors/ExtrudeGeometryProcessor";
 import PathGeometryProcessor from "./processors/PathGeometryProcessor";
 import ShapeGeometryProcessor from "./processors/ShapeGeometryProcessor";
+import LatheGeometryProcessor from "./processors/LatheGeometryProcessor";
 
 export * from "./GeometryInterface";
 export * from "./GeometryCompiler";
@@ -54,5 +55,6 @@ export default {
     ExtrudeGeometryProcessor,
     PathGeometryProcessor,
     ShapeGeometryProcessor,
+    LatheGeometryProcessor,
   ],
 };
