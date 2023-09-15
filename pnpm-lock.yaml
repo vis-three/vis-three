@@ -434,6 +434,7 @@ importers:
       '@vis-three/library-event': workspace:^0.6.1
       '@vis-three/library-module': workspace:^0.6.8
       '@vis-three/library-parser': workspace:^0.6.2
+      '@vis-three/library-shader': workspace:^0.6.0
       '@vis-three/middleware': workspace:^0.6.18
       '@vis-three/modifier-boolean': workspace:^0.6.2
       '@vis-three/module-modifier': workspace:^0.6.4
@@ -514,6 +515,7 @@ importers:
       '@vis-three/library-event': link:../library/event
       '@vis-three/library-module': link:../library/module
       '@vis-three/library-parser': link:../library/parser
+      '@vis-three/library-shader': link:../library/shader
       '@vis-three/middleware': link:../middleware
       '@vis-three/modifier-boolean': link:../library/modifier/BooleanModifier
       '@vis-three/module-modifier': link:../library/module/modifier

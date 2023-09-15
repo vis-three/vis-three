@@ -114,6 +114,18 @@ const generateConfig = function(type, merge, options = {
   strict: true,
   warn: true
 }) {
+  if (options.observer === void 0) {
+    options.observer = true;
+  }
+  if (options.strict === void 0) {
+    options.strict = true;
+  }
+  if (options.warn === void 0) {
+    options.warn = true;
+  }
+  if (options.handler === void 0) {
+    options.handler = globalOption.proxy.expand;
+  }
   if (!CONFIGFACTORY[type]) {
     console.error(`type: ${type} can not be found in configList.`);
     return {
@@ -139,9 +151,6 @@ const generateConfig = function(type, merge, options = {
     }
   };
   let initConfig = CONFIGFACTORY[type]();
-  if ([CONFIGTYPE.SCRIPTANIMATION, CONFIGTYPE.KEYFRAMEANIMATION].includes(type)) {
-    options.strict = false;
-  }
   if (initConfig.vid === "") {
     initConfig.vid = globalOption.symbol.generator();
   }
@@ -149,7 +158,6 @@ const generateConfig = function(type, merge, options = {
   if (options.observer === false) {
     return initConfig;
   }
-  !options.handler && (options.handler = globalOption.proxy.expand);
   if (options.handler && globalOption.proxy.timing === "before") {
     initConfig = options.handler(initConfig);
   }
@@ -2137,10 +2145,10 @@ const _ShaderGeneratorManager = class {
       _ShaderGeneratorManager.library.get(name)
     );
   }
-  static generateConfig(name) {
+  static generateConfig(name, uniforms) {
     if (!_ShaderGeneratorManager.library.has(name)) {
       console.warn(`con not found shader in shader library: ${name}`);
-      return {};
+      return { shader: name, uniforms: {} };
     }
     const shader = _ShaderGeneratorManager.library.get(name);
     const config = {
@@ -2148,6 +2156,24 @@ const _ShaderGeneratorManager = class {
       uniforms: {}
     };
     shader.uniforms && (config.uniforms = JSON.parse(JSON.stringify(shader.uniforms)));
+    if (uniforms) {
+      const recursion = (config2, merge) => {
+        for (const key in merge) {
+          if (config2[key] === void 0) {
+            continue;
+          }
+          if (typeof merge[key] === "object" && merge[key] !== null && !Array.isArray(merge[key])) {
+            if (config2[key] === null) {
+              config2[key] = { ...merge[key] };
+            }
+            recursion(config2[key], merge[key]);
+          } else {
+            config2[key] = merge[key];
+          }
+        }
+      };
+      recursion(config.uniforms, uniforms);
+    }
     return config;
   }
   static cloneShader(shader) {

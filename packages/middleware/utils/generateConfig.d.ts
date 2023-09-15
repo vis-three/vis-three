@@ -6,11 +6,11 @@ import { EngineSupport } from "../engine";
  */
 export interface GenerateOptions<C extends SymbolConfig> {
     /**是否生成响应式配置，默认为true */
-    observer: boolean;
+    observer?: boolean;
     /**严格模式，只允许合并CONFIGTYPE规定的属性，自定义扩展配置下关闭 */
-    strict: boolean;
+    strict?: boolean;
     /**控制台是否输出warn */
-    warn: boolean;
+    warn?: boolean;
     /**
      * 配置额外处理方法，不过建议使用 全局选项`defineOption`,除非特殊情况再使用此方法。
      */

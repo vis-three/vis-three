@@ -4,11 +4,13 @@ export interface Shader {
     defines?: {
         [key: string]: any;
     };
-    uniforms?: {
-        [uniform: string]: IUniform;
-    };
+    uniforms?: Record<string, IUniform>;
     vertexShader?: string;
     fragmentShader?: string;
+}
+export interface ShaderConfig {
+    shader: string;
+    uniforms: Record<string, IUniform>;
 }
 export declare class ShaderGeneratorManager {
     private static library;
@@ -28,9 +30,7 @@ export declare class ShaderGeneratorManager {
      * @param name
      * @returns
      */
-    static generateConfig(name: string): {
-        [key: string]: any;
-    };
+    static generateConfig(name: string, uniforms?: Record<string, IUniform>): ShaderConfig;
     /**
      * 克隆着色器
      * @param shader
