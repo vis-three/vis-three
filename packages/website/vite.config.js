@@ -4,7 +4,6 @@ import visualizer from "rollup-plugin-visualizer";
 import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
-  base: "/vis-three/",
   server: {
     open: "src/index.html",
   },

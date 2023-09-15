@@ -1,24 +1,16 @@
-import {
-  generateConfig,
-  ModelingEngineSupport,
-  CONFIGTYPE,
-  AniScriptLibrary,
-  DisplayEngineSupport,
-  EngineSupport,
-} from "vis-three";
 import { ReinhardToneMapping } from "three";
 import np from "nprogress";
-import { GeometryConfig } from "../../../src/middleware/geometry/GeometryConfig";
-import {
-  BeforeLoadEvent,
-  LoadedEvent,
-  LoadingEvent,
-} from "../../../src/manager/LoaderManager";
 import { ref } from "vue";
 import message, { MessageType } from "ant-design-vue/lib/message";
-import { SceneConfig } from "../../../src/middleware/scene/SceneConfig";
+import { DisplayEngineSupport } from "@vis-three/engine-display-support";
+import {
+  BeforeLoadEvent,
+  CONFIGTYPE,
+  LoadedEvent,
+  LoadingEvent,
+  generateConfig,
+} from "@vis-three/middleware";
 
-// export const engine = new ModelingEngineSupport();
 export const engine = new DisplayEngineSupport();
 
 engine.loaderManager.setPath(import.meta.env.BASE_URL);
@@ -70,7 +62,7 @@ engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
   });
 
   // 场景
-  const scene = generateConfig(CONFIGTYPE.SCENE) as SceneConfig;
+  const scene = generateConfig<SceneConfig>(CONFIGTYPE.SCENE);
 
   engine.setScene(scene.vid);
 

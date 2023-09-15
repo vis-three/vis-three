@@ -9,11 +9,11 @@ import { globalOption } from "../option";
  */
 export interface GenerateOptions<C extends SymbolConfig> {
   /**是否生成响应式配置，默认为true */
-  observer: boolean;
+  observer?: boolean;
   /**严格模式，只允许合并CONFIGTYPE规定的属性，自定义扩展配置下关闭 */
-  strict: boolean;
+  strict?: boolean;
   /**控制台是否输出warn */
-  warn: boolean;
+  warn?: boolean;
   /**
    * 配置额外处理方法，不过建议使用 全局选项`defineOption`,除非特殊情况再使用此方法。
    */
@@ -47,6 +47,22 @@ export const generateConfig = <GenerateConfig>function <C extends SymbolConfig>(
     warn: true,
   }
 ): C {
+  if (options.observer === undefined) {
+    options.observer = true;
+  }
+
+  if (options.strict === undefined) {
+    options.strict = true;
+  }
+
+  if (options.warn === undefined) {
+    options.warn = true;
+  }
+
+  if (options.handler === undefined) {
+    options.handler = globalOption.proxy.expand;
+  }
+
   if (!CONFIGFACTORY[type]) {
     console.error(`type: ${type} can not be found in configList.`);
     return {
@@ -81,24 +97,16 @@ export const generateConfig = <GenerateConfig>function <C extends SymbolConfig>(
 
   let initConfig = CONFIGFACTORY[type]() as C;
 
-  // animation
-  if (
-    [CONFIGTYPE.SCRIPTANIMATION, CONFIGTYPE.KEYFRAMEANIMATION].includes(type)
-  ) {
-    options.strict = false;
-  }
-
   // 自动生成uuid
   if (initConfig.vid === "") {
     initConfig.vid = globalOption.symbol.generator();
   }
+
   merge && recursion(initConfig, merge);
 
   if (options.observer === false) {
     return initConfig;
   }
-
-  !options.handler && (options.handler = globalOption.proxy.expand);
 
   if (options.handler && globalOption.proxy.timing === "before") {
     initConfig = options.handler(initConfig);

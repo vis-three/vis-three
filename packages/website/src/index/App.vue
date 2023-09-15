@@ -2,7 +2,9 @@
   <div class="App-container">
     <div class="ui">
       <div class="title">VIS-THREE</div>
-      <div class="intro">more convenient development for three.js</div>
+      <div class="intro">
+        A web 3D development framework for assembled based on three.js
+      </div>
       <div class="split-line"></div>
       <div class="operation">
         <a-button type="link" size="large" @click="jump(docs)">
