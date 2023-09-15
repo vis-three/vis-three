@@ -29,7 +29,7 @@
   "dependencies": {
     "@vis-three/core": "workspace:^0.6.5",
     "@vis-three/library-modifier": "workspace:^0.6.0",
-    "@vis-three/middleware": "workspace:^0.6.17",
+    "@vis-three/middleware": "workspace:^0.6.18",
     "@vis-three/modifier-base": "workspace:^0.6.0",
     "@vis-three/utils": "workspace:^0.6.1"
   },

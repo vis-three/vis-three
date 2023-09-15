@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.6.5",
-    "@vis-three/middleware": "workspace:^0.6.17",
+    "@vis-three/middleware": "workspace:^0.6.18",
     "@vis-three/module-controls": "workspace:^0.6.3",
     "@vis-three/module-path": "workspace:^0.6.6",
     "@vis-three/plugin-path-support-controls": "workspace:^0.6.5",

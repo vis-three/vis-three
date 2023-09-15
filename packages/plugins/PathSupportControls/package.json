@@ -28,9 +28,9 @@
     "vite": "^2.9.15"
   },
   "dependencies": {
-    "@vis-three/convenient": "workspace:^0.6.1",
+    "@vis-three/convenient": "workspace:^0.6.5",
     "@vis-three/core": "workspace:^0.6.5",
-    "@vis-three/middleware": "workspace:^0.6.17",
+    "@vis-three/middleware": "workspace:^0.6.18",
     "@vis-three/plugin-pointer-manager": "workspace:^0.6.4",
     "@vis-three/utils": "workspace:^0.6.1"
   },
