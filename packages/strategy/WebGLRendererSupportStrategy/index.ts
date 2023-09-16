@@ -14,6 +14,8 @@ import WebGLRendererProcessor, {
   WebGLRendererSupportEngine,
 } from "./WebGLRendererProcessor";
 
+export * from "./WebGLRendererProcessor";
+
 export const WEBGL_RENDERER_SUPPORT_STRATEGY = transPkgName(pkgname);
 
 export const WebGLRendererSupportStrategy: Strategy<

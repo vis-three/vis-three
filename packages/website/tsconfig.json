@@ -16,6 +16,7 @@
     "noImplicitAny": false,
     "declaration": true,
     "declarationDir": "/types",
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "types": ["vite/client"]
   }
 }

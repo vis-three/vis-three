@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/engine-display-support",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -17,6 +17,8 @@
     "@types/three": "^0.133.1",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
+    "@vis-three/module-camera": "workspace:^0.6.3",
+    "@vis-three/module-scene": "workspace:^0.6.4",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",

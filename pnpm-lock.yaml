@@ -192,6 +192,8 @@ importers:
       '@vis-three/library-module': workspace:^0.6.8
       '@vis-three/library-parser': workspace:^0.6.2
       '@vis-three/middleware': workspace:^0.6.18
+      '@vis-three/module-camera': workspace:^0.6.3
+      '@vis-three/module-scene': workspace:^0.6.4
       '@vis-three/plugin-camera-adaptive': workspace:^0.6.1
       '@vis-three/plugin-css2d-renderer': workspace:^0.6.2
       '@vis-three/plugin-css3d-renderer': workspace:^0.6.2
@@ -237,6 +239,8 @@ importers:
       '@types/three': 0.133.1
       '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
       '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
+      '@vis-three/module-camera': link:../../library/module/camera
+      '@vis-three/module-scene': link:../../library/module/scene
       eslint: 8.36.0
       eslint-config-prettier: 8.8.0_eslint@8.36.0
       eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
@@ -3776,11 +3780,22 @@ importers:
     specifiers:
       '@ant-design/icons-vue': ^6.1.0
       '@rollup/plugin-alias': ^3.1.9
+      '@types/three': ^0.141.0
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/engine-display-support': workspace:^0.6.6
+      '@vis-three/library-animate-script': workspace:^0.6.0
       '@vis-three/middleware': workspace:^0.6.18
+      '@vis-three/module-animation': workspace:^0.6.3
+      '@vis-three/module-camera': workspace:^0.6.3
+      '@vis-three/module-geometry': workspace:^0.6.9
+      '@vis-three/module-light': workspace:^0.6.3
+      '@vis-three/module-material': workspace:^0.6.5
+      '@vis-three/module-mesh': workspace:^0.6.2
       '@vis-three/module-scene': workspace:^0.6.4
+      '@vis-three/module-texture': workspace:^0.6.3
+      '@vis-three/strategy-orbit-controls-support': workspace:^0.6.2
+      '@vis-three/strategy-webgl-renderer-support': workspace:^0.6.1
       '@vitejs/plugin-vue': ^2.3.3
       ant-design-vue: ^3.2.6
       axios: ^0.27.2
@@ -3806,6 +3821,7 @@ importers:
     dependencies:
       '@ant-design/icons-vue': 6.1.0_vue@3.2.45
       '@vis-three/engine-display-support': link:../engine/displaySupport
+      '@vis-three/library-animate-script': link:../library/aniScript
       '@vis-three/middleware': link:../middleware
       ant-design-vue: 3.2.15_vue@3.2.45
       axios: 0.27.2
@@ -3814,9 +3830,19 @@ importers:
       url-parse: 1.5.10
     devDependencies:
       '@rollup/plugin-alias': 3.1.9_rollup@2.79.1
+      '@types/three': 0.141.0
       '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
       '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
+      '@vis-three/module-animation': link:../library/module/animation
+      '@vis-three/module-camera': link:../library/module/camera
+      '@vis-three/module-geometry': link:../library/module/geometry
+      '@vis-three/module-light': link:../library/module/light
+      '@vis-three/module-material': link:../library/module/material
+      '@vis-three/module-mesh': link:../library/module/mesh
       '@vis-three/module-scene': link:../library/module/scene
+      '@vis-three/module-texture': link:../library/module/texture
+      '@vis-three/strategy-orbit-controls-support': link:../strategy/OrbitControlsSupport
+      '@vis-three/strategy-webgl-renderer-support': link:../strategy/WebGLRendererSupportStrategy
       '@vitejs/plugin-vue': 2.3.4_vite@2.9.15+vue@3.2.45
       babel-loader: 8.3.0_3bgsefvk467r3fdwivttn2c4u4
       babel-plugin-istanbul: 6.1.1
@@ -6512,6 +6538,12 @@ packages:
   /@types/three/0.133.1:
     resolution: {integrity: sha512-XqBrP/+kbs+o0CYRhCVVE95v7FaL2bO5Z7+3VQJE0nEyjo+9LoLfeNgZITOnndKHxM+7ltEciAIR7uE0SZlsOg==}
 
+  /@types/three/0.141.0:
+    resolution: {integrity: sha512-OJdKDgTPVBUgc+s74DYoy4aLznbFFC38Xm4ElmU1YwGNgR7GGFVvFCX7lpVgOsT6S1zSJtGdajTsOYE8/xY9nA==}
+    dependencies:
+      '@types/webxr': 0.5.4
+    dev: true
+
   /@types/through/0.0.30:
     resolution: {integrity: sha512-FvnCJljyxhPM3gkRgWmxmDZyAQSiBQQWLI0A0VFL0K7W1oRUrPJSqNO0NvTnLkBcotdlp3lKvaT0JrnyRDkzOg==}
     dependencies:
@@ -6524,6 +6556,10 @@ packages:
 
   /@types/web-bluetooth/0.0.17:
     resolution: {integrity: sha512-4p9vcSmxAayx72yn70joFoL44c9MO/0+iVEBIQXe3v2h2SiAsEIo/G5v6ObFWvNKRFjbrVadNf9LqEEZeQPzdA==}
+    dev: true
+
+  /@types/webxr/0.5.4:
+    resolution: {integrity: sha512-41gfGLTtqXZhcmoDlLDHqMJDuwAMwhHwXf9Q2job3TUBsvkNfPNI/3IWVEtLH4tyY1ElWtfwIaoNeqeEX238/Q==}
     dev: true
 
   /@types/yauzl/2.10.0:
@@ -7335,7 +7371,7 @@ packages:
       vite: ^2.5.10
       vue: ^3.2.25
     dependencies:
-      vite: 2.9.15
+      vite: 2.9.15_less@4.1.3
       vue: 3.2.45
     dev: true
 

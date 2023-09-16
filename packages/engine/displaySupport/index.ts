@@ -19,6 +19,7 @@ import {
 import {
   OrbitControlsEngine,
   OrbitControlsPlugin,
+  VisOrbitControls,
 } from "@vis-three/plugin-orbit-controls";
 import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
 
@@ -39,6 +40,8 @@ import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 import * as moduleLibrary from "@vis-three/library-module";
 import * as parserLibrary from "@vis-three/library-parser";
 import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer";
+import { SceneEngineSupport } from "@vis-three/module-scene";
+import { CameraEngineSupport } from "@vis-three/module-camera";
 
 export class DisplayEngineSupport
   extends EngineSupport
@@ -47,15 +50,19 @@ export class DisplayEngineSupport
     EffectComposerEngine,
     OrbitControlsEngine,
     CSS2DRendererEngine,
-    CSS3DRendererEngine
+    CSS3DRendererEngine,
+    SceneEngineSupport,
+    CameraEngineSupport
 {
   declare webGLRenderer: WebGLRenderer;
-  declare getScreenshot: (params?: Screenshot | undefined) => Promise<string>;
   declare effectComposer: EffectComposer;
-  declare orbitControls;
+  declare orbitControls: VisOrbitControls;
   declare css2DRenderer: CSS2DRenderer;
   declare css3DRenderer: CSS3DRenderer;
 
+  declare getScreenshot: (params?: Screenshot | undefined) => Promise<string>;
+  declare setSceneBySymbol: (scene: string) => this;
+  declare setCameraBySymbol: (camera: string) => this;
   constructor() {
     super();
     for (const module of Object.values(moduleLibrary)) {
