@@ -89,7 +89,7 @@ const getModuleLibraryModules = function () {
 };
 
 export default defineConfig({
-  base: "/vis-three/docs",
+  base: "/docs",
   lang: "zh-cn",
   title: "VIS-THREE",
   description: "more convenient development for three.js",

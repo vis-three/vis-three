@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <title>glb</title>
+  </head>
+
+  <style></style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import loadingTips from "../common/loadingTips.js";
+
+      import * as THREE from "three";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+      import {
+        generateConfig,
+        Template,
+        globalAntiShake,
+        CONFIGTYPE,
+      } from "@vis-three/middleware";
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setStats(true)
+        .setSize()
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = true;
+
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
+      generateConfig("AmbientLight", {
+        intensity: 10,
+      });
+
+      generateConfig.autoInject = false;
+
+      engine.loaderManager
+        .getLoader("glb")
+        .dracoLoader.setDecoderPath(import.meta.env.BASE_URL + "/draco/gltf/");
+
+      engine.loadResourcesAsync(["model/glb/Soldier.glb"]).then((res) => {
+        console.log(res);
+
+        const template = Template.observable(
+          res.resourceConfig["model/glb/Soldier.glb"]
+        );
+
+        console.log(template);
+
+        engine.loadConfig(template);
+
+        const rootTemplate = res.configMap.get("model/glb/Soldier.glb.scene");
+
+        const root = engine.getConfigBySymbol(rootTemplate.vid);
+
+        root.scale.x = 10;
+        root.scale.y = 10;
+        root.scale.z = 10;
+        root.position.x = 20;
+
+        scene.children.push(root.vid);
+
+        const skinndMesh = engine.getObjectBySymbol(
+          template["skinned-mesh"][0].vid
+        );
+
+        globalAntiShake.append(() => {
+          const helper = new THREE.SkeletonHelper(skinndMesh.skeleton.bones[0]);
+          helper.material.linewidth = 2;
+          engine.scene.add(helper);
+
+          const mixer = generateConfig(CONFIGTYPE.MIXERANIMATION, {
+            target: root.vid,
+          });
+
+          const action = generateConfig(CONFIGTYPE.ANIMATIONACTION, {
+            mixer: mixer.vid,
+            clip: template["animation-clip"][1].vid,
+          });
+
+          engine.applyConfig(mixer, action);
+          return true;
+        });
+      });
+      window.engine = engine;
+    </script>
+  </body>
+</html>

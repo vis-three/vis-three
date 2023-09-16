@@ -65,7 +65,7 @@ fs.writeFileSync(
   JSON.stringify(routerJson)
 );
 export default defineConfig({
-  base: "/vis-three/examples/",
+  base: "/examples/",
   server: {
     open: "/index.html",
   },

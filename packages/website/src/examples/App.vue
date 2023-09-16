@@ -4,7 +4,7 @@
       <div class="sidebar-header">
         <div class="header-title">
           <a-image
-            :src="basePath + '/favicon.ico'"
+            :src="basePath + 'favicon.ico'"
             :preview="false"
             @click="toHome"
           ></a-image>
@@ -141,7 +141,7 @@ export default defineComponent({
       scroll,
       basePath: import.meta.env.BASE_URL,
       repoPrefix:
-        "https://github.com/Shiotsukikaedesari/vis-three/tree/main/packages/examples/",
+        "https://github.com/vis-three/vis-three/tree/main/packages/examples/",
       filterMenus,
       pageIndex,
       change,

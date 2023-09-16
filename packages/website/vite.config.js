@@ -8,7 +8,7 @@ export default defineConfig({
     open: "src/index.html",
   },
   build: {
-    outDir: path.resolve(__dirname, "../../docs"),
+    outDir: path.resolve(__dirname, "./dist"),
     rollupOptions: {
       input: {
         index: path.resolve(__dirname, "./index.html"),

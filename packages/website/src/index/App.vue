@@ -1,7 +1,10 @@
 <template>
   <div class="App-container">
     <div class="ui">
-      <div class="title">VIS-THREE</div>
+      <div class="title-header">
+        <span class="title">VIS-THREE</span>
+        <span class="version">0.6.X</span>
+      </div>
       <div class="intro">
         A web 3D development framework for assembled based on three.js
       </div>
@@ -10,8 +13,11 @@
         <a-button type="link" size="large" @click="jump(docs)">
           文档（docs）
         </a-button>
+        <a-button type="link" size="large" @click="jump(examples)">
+          例子（examples）
+        </a-button>
         <a-button type="link" size="large" @click="jump(demo)">
-          示例（demo）
+          演示（demo）
         </a-button>
         <a-button type="link" size="large" @click="jump(github)">
           <template #icon>
@@ -55,8 +61,9 @@ export default defineComponent({
     return {
       jump,
       docs: import.meta.env.BASE_URL + "docs/index.html",
-      demo: import.meta.env.BASE_URL + "examples.html",
-      github: "https://github.com/Shiotsukikaedesari/vis-three",
+      examples: import.meta.env.BASE_URL + "examples.html",
+      demo: "https://vis-three/github.io/exhibition-hall",
+      github: "https://github.com/vis-three",
       gitee: "https://gitee.com/Shiotsukikaedesari/vis-three",
       renderWindow,
     };
@@ -81,6 +88,9 @@ export default defineComponent({
   align-items: center;
   z-index: 10;
 }
+.title-header {
+  // display: flex;
+}
 
 .title {
   font-size: 110px;
@@ -98,6 +108,13 @@ export default defineComponent({
   color: transparent;
   text-shadow: 1px 1px 20px rgb(255, 255, 255);
   animation: hueColor 2s ease infinite;
+}
+
+.version {
+  color: white;
+  border-radius: 12px;
+  background-color: rgb(236, 65, 118);
+  padding: 2px 8px;
 }
 
 @keyframes hueColor {
@@ -157,8 +174,16 @@ export default defineComponent({
     font-size: 54px;
   }
 
+  .version {
+    font-size: 8px;
+    background-color: transparent;
+    color: rgb(236, 65, 118);
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
   .intro {
-    font-size: 14px;
+    font-size: 18px;
   }
 
   .split-line {

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>module-geometry</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true)
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = true;
+
+      const pointLight = generateConfig("PointLight", {
+        position: {
+          y: 50,
+        },
+        distance: 150,
+      });
+
+      const meshMaterial = generateConfig("MeshStandardMaterial");
+
+      const geometryTypeList = [
+        CONFIGTYPE.BOXGEOMETRY,
+        CONFIGTYPE.SPHEREGEOMETRY,
+        CONFIGTYPE.PLANEGEOMETRY,
+        CONFIGTYPE.CIRCLEGEOMETRY,
+        CONFIGTYPE.CONEGEOMETRY,
+        CONFIGTYPE.CYLINDERGEOMETRY,
+        CONFIGTYPE.RINGGEOMETRY,
+        CONFIGTYPE.TORUSGEOMETRY,
+      ];
+
+      const size = 15;
+
+      geometryTypeList.forEach((cofigType, i) => {
+        const geometry = generateConfig(cofigType);
+        const number = i + 1;
+        const mesh = generateConfig("Mesh", {
+          material: meshMaterial.vid,
+          geometry: geometry.vid,
+          position: {
+            x:
+              number % 2
+                ? -(Math.floor(number / 2) + 1) * size
+                : Math.floor(number / 2) * size,
+          },
+          scale: {
+            x: 2,
+            y: 2,
+            z: 2,
+          },
+        });
+
+        engine.applyConfig(geometry, mesh);
+        scene.children.push(mesh.vid);
+      });
+
+      // line
+      const lineMaterial = generateConfig("LineBasicMaterial", {
+        color: "white",
+      });
+
+      const lineCurveGeometry = generateConfig("LineCurveGeometry", {
+        path: [
+          { x: 0, y: 0, z: -5 },
+          { x: 0, y: 0, z: 5 },
+          { x: 0, y: 5, z: 5 },
+          { x: 0, y: 5, z: 10 },
+          { x: 10, y: 5, z: 10 },
+        ],
+      });
+
+      const splineCurveGeometry = generateConfig("SplineCurveGeometry", {
+        path: [
+          { x: 0, y: 0, z: -5 },
+          { x: 0, y: 0, z: 5 },
+          { x: 0, y: 5, z: 5 },
+          { x: 0, y: 5, z: 10 },
+          { x: 10, y: 5, z: 10 },
+        ],
+      });
+
+      const CubicBezierCureGeometry = generateConfig(
+        "CubicBezierCurveGeometry",
+        {
+          path: [
+            { x: 0, y: 0, z: -5 },
+            { x: 0, y: 20, z: 5 },
+            { x: 0, y: -15, z: 5 },
+            { x: 0, y: 5, z: 10 },
+            { x: 10, y: 5, z: 10 },
+            { x: 10, y: 0, z: 10 },
+            { x: 0, y: 0, z: 20 },
+            { x: 10, y: 0, z: 10 },
+          ],
+        }
+      );
+
+      const quadraticBezierCurveGeometry = generateConfig(
+        "QuadraticBezierCurveGeometry",
+        {
+          path: [
+            { x: 0, y: 0, z: -5 },
+            { x: 0, y: 0, z: 5 },
+            { x: 0, y: 5, z: 5 },
+            { x: 0, y: 5, z: 10 },
+            { x: 10, y: 5, z: 10 },
+          ],
+        }
+      );
+
+      const splineTubeGeometry = generateConfig("SplineTubeGeometry", {
+        path: [
+          { x: 0, y: 0, z: -5 },
+          { x: 0, y: 0, z: 5 },
+          { x: 0, y: 5, z: 5 },
+          { x: 0, y: 5, z: 10 },
+          { x: 10, y: 5, z: 10 },
+        ],
+        radialSegments: 8,
+      });
+
+      const lineTubeGeometry = generateConfig("LineTubeGeometry", {
+        path: [
+          { x: 0, y: 0, z: -5 },
+          { x: 0, y: 0, z: 5 },
+          { x: 0, y: 5, z: 5 },
+          { x: 0, y: 5, z: 10 },
+          { x: 10, y: 5, z: 10 },
+        ],
+        radialSegments: 8,
+      });
+
+      const lineCurveLine = generateConfig("Line", {
+        geometry: lineCurveGeometry.vid,
+        material: lineMaterial.vid,
+      });
+
+      const splineCurveLine = generateConfig("Line", {
+        geometry: splineCurveGeometry.vid,
+        material: lineMaterial.vid,
+        position: {
+          y: 10,
+        },
+      });
+
+      const CubicBezierCurveLine = generateConfig("Line", {
+        geometry: CubicBezierCureGeometry.vid,
+        material: lineMaterial.vid,
+        position: {
+          y: 20,
+        },
+      });
+
+      const quadraticBezierCurveLine = generateConfig("Line", {
+        geometry: quadraticBezierCurveGeometry.vid,
+        material: lineMaterial.vid,
+        position: {
+          y: 30,
+        },
+      });
+
+      const splineTubeMesh = generateConfig("Mesh", {
+        geometry: splineTubeGeometry.vid,
+        material: meshMaterial.vid,
+        position: {
+          y: -10,
+        },
+      });
+
+      const lineTubeMesh = generateConfig("Mesh", {
+        geometry: lineTubeGeometry.vid,
+        material: meshMaterial.vid,
+        position: {
+          y: -20,
+        },
+      });
+
+      const lineShapeGeometry = generateConfig("LineShapeGeometry", {
+        path: [
+          { x: -5, y: 5 },
+          { x: 0, y: 10 },
+          { x: 5, y: 5 },
+          { x: 5, y: -5 },
+          { x: -5, y: -5 },
+        ],
+      });
+
+      const lineShapeMesh = generateConfig("Mesh", {
+        geometry: lineShapeGeometry.vid,
+        material: meshMaterial.vid,
+        position: {
+          x: 15,
+          y: 20,
+        },
+      });
+
+      const path = generateConfig("Path", {
+        curves: [
+          {
+            curve: "line",
+            params: [0, 0, 10, 10],
+          },
+          {
+            curve: "line",
+            params: [10, 10, 15, 10],
+          },
+          {
+            curve: "line",
+            params: [15, 10, 15, 15],
+          },
+          {
+            curve: "line",
+            params: [15, 15, 0, 15],
+          },
+        ],
+      });
+
+      const latheGeometry = generateConfig("LatheGeometry", {
+        path: path.vid,
+      });
+
+      const latheMesh = generateConfig("Mesh", {
+        geometry: latheGeometry.vid,
+        material: meshMaterial.vid,
+        position: {
+          x: -15,
+          y: 20,
+        },
+      });
+    </script>
+  </body>
+</html>

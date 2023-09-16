@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSS3DRendererPlugin</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    body {
+      color: white;
+    }
+
+    #element1,
+    #element2 {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 4px rgb(170, 150, 241);
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      color: white;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <div id="element1">
+      <p>canvas P</p>
+      <img
+        src="/texture/Bricks_Color.jpg"
+        style="width: 50px; height: 50px"
+        alt=""
+      />
+
+      <div class="form">
+        <label for="element1-range">range</label>
+        <input id="element1-range" type="range" />
+      </div>
+    </div>
+
+    <div id="element2">
+      <h1>H1标题</h1>
+      <div>div测试</div>
+      <div class="form">
+        <label for="element1-text">测试2 input</label>
+        <input id="element1-text" type="text" />
+      </div>
+
+      <div class="form">
+        <label for="element1-range">测试2 range</label>
+        <input id="element1-range" type="range" />
+      </div>
+    </div>
+
+    <div id="element3">
+      <video
+        src="/video/1.mp4"
+        style="width: 192px; height: 108"
+        controls
+      ></video>
+    </div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { EngineSupport, generateConfig } from "@vis-three/middleware";
+
+      import { css3D, scene } from "@vis-three/library-module";
+      import { HTMLElementParser } from "@vis-three/library-parser";
+
+      import { OrbitControlsPlugin } from "@vis-three/plugin-orbit-controls";
+      import { OrbitRenderStrategy } from "@vis-three/strategy-orbit-render";
+
+      import { CSS3DRendererPlugin } from "@vis-three/plugin-css3d-renderer";
+
+      import { CSS3DRenderStrategy } from "@vis-three/strategy-css3d-render";
+
+      const engine = new EngineSupport()
+        .registModule(css3D)
+        .registModule(scene)
+        .install(CSS3DRendererPlugin())
+        .install(OrbitControlsPlugin())
+        .exec(CSS3DRenderStrategy())
+        .exec(OrbitRenderStrategy())
+        .setDom(document.getElementById("app"));
+
+      engine.resourceManager.addParser(new HTMLElementParser());
+
+      engine.registerResources({
+        "examples.css3DObject": document.getElementById("element1"),
+        "examples.css3DObject2": document.getElementById("element2"),
+        "examples.css3DObject3": document.getElementById("element3"),
+      });
+
+      const css3DObject = generateConfig("CSS3DPlane", {
+        element: "examples.css3DObject",
+        width: 200,
+        height: 220,
+        position: {
+          x: -50,
+          y: 10,
+        },
+        rotation: {
+          y: (Math.PI / 180) * 20,
+        },
+        scale: {
+          x: 0.1,
+          y: 0.1,
+          z: 0.1,
+        },
+      });
+
+      const css3DObject2 = generateConfig("CSS3DPlane", {
+        element: "examples.css3DObject2",
+        width: 200,
+        height: 220,
+        position: {
+          x: 50,
+          y: 10,
+        },
+        rotation: {
+          y: -(Math.PI / 180) * 20,
+        },
+        scale: {
+          x: 0.1,
+          y: 0.1,
+          z: 0.1,
+        },
+      });
+
+      const css3DObject3 = generateConfig("CSS3DPlane", {
+        element: "examples.css3DObject3",
+        width: 200,
+        height: 200,
+        position: {
+          z: -30,
+          y: 10,
+        },
+        scale: {
+          x: 0.5,
+          y: 0.5,
+          z: 0.5,
+        },
+      });
+
+      const scenec = generateConfig("Scene", {
+        children: [css3DObject.vid, css3DObject2.vid, css3DObject3.vid],
+      });
+
+      engine.applyConfig(css3DObject, css3DObject2, css3DObject3, scenec);
+
+      engine.setSceneBySymbol(scenec.vid).play();
+
+      engine.camera.position.set(0, 50, 100);
+      engine.camera.lookAt(0, 20, 0);
+
+      window.engine = engine;
+
+      setTimeout(() => {
+        engine.setSize().play();
+      }, 0);
+    </script>
+  </body>
+</html>

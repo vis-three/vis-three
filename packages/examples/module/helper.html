@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>helper</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true)
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = true;
+
+      const pointLight = generateConfig(CONFIGTYPE.POINTLIGHT, {
+        position: {
+          y: 20,
+          z: 15,
+        },
+      });
+
+      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {});
+
+      const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+        width: 20,
+        height: 10,
+        depth: 10,
+      });
+
+      const mesh = generateConfig(CONFIGTYPE.MESH, {
+        material: material.vid,
+        geometry: geometry.vid,
+      });
+
+      const lightHelper = generateConfig(CONFIGTYPE.OBJECTHELPER, {
+        target: pointLight.vid,
+        shape: true,
+      });
+
+      const meshHelper = generateConfig(CONFIGTYPE.OBJECTHELPER, {
+        target: mesh.vid,
+        shape: true,
+      });
+
+      const gui = new GUI();
+
+      gui.add(meshHelper, "shape");
+
+      gui.add(meshHelper, "boundingBox");
+
+      gui.add(meshHelper, "geometricOrigin");
+
+      gui.add(meshHelper, "localAxes");
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>
