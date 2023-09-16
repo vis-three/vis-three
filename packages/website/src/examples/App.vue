@@ -105,7 +105,7 @@ export default defineComponent({
     };
 
     const toHome = () => {
-      window.location.href = window.location.origin + "/vis-three/";
+      window.location.href = window.location.origin;
     };
 
     // 懒加载

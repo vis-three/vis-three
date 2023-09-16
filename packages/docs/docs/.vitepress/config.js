@@ -92,7 +92,7 @@ export default defineConfig({
   base: "/docs",
   lang: "zh-cn",
   title: "VIS-THREE",
-  description: "more convenient development for three.js",
+  description: "A web 3D development framework for assembled based on three.js",
   outDir: path.resolve(__dirname, "../../../website/public/docs"),
   head: [["link", { rel: "icon", href: "/favicon.ico" }]],
   markdown: {
@@ -111,10 +111,9 @@ export default defineConfig({
       { text: "开始", link: "/start/intro" },
       { text: "API", link: "/api/core/modules/engine" },
       { text: "库", link: "/library/engines/engine-display" },
-      // { text: "版本", link: "/version/version0-5-0" },
       {
         text: "主页",
-        link: "https://shiotsukikaedesari.gitee.io/vis-three/",
+        link: "https://vis-three.github.io",
       },
     ],
     sidebar: {
@@ -213,20 +212,20 @@ export default defineConfig({
       //   },
       // ],
     },
-    repo: "https://github.com/Shiotsukikaedesari/vis-three",
+    repo: "https://github.com/vis-three/vis-three",
     repoLabel: "github",
 
     lastUpdatedText: "更新日期",
     editLink: {
       pattern:
-        "https://github.com/Shiotsukikaedesari/vis-three/tree/main/packages/docs/docs/:path",
+        "https://github.com/vis-three/vis-three/tree/main/packages/docs/docs/:path",
       text: "在github上编辑此页",
     },
 
     socialLinks: [
       {
         icon: "github",
-        link: "https://github.com/Shiotsukikaedesari/vis-three",
+        link: "https://github.com/vis-three/vis-three",
       },
     ],
 

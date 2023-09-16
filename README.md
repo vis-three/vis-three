@@ -145,14 +145,7 @@
 
 - QQ 群： 1025827206
 
-## 衍生产品 Demo
-
-  <a href="https://github.com/Shiotsukikaedesari/three-vis-display-editor" target="_blank" rel="noopener noreferrer">
-    <img width="200" src="/rm/display-editor.png" alt="display-editor">
-    <p>全自定义 web3D 场景编辑器</p>
-  </a>
-
 ## 备注
 
 - gitee 仓库为 github 的同步备份仓库
-- github 地址：[https://github.com/Shiotsukikaedesari/vis-three](https://github.com/Shiotsukikaedesari/vis-three)
+- github 地址：[https://github.com/vis-three/vis-three](https://github.com/vis-three/vis-three)
