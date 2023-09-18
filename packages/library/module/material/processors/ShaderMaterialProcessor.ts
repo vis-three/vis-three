@@ -12,6 +12,17 @@ import {
   ShaderGeneratorManager,
 } from "@vis-three/middleware";
 
+const defaultShader = {
+  vertexShader: `
+  void main () {
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }`,
+  fragmentShader: `
+    void main () {
+      gl_FragColor = vec4(0.8,0.8,0.8,1.0);
+    }`,
+};
+
 export default defineProcessor<
   ShaderMaterialConfig,
   ShaderMaterial,
@@ -23,12 +34,18 @@ export default defineProcessor<
   commands: {
     set: {
       shader({ target, value }) {
-        const shader = ShaderGeneratorManager.getShader(value);
-        shader?.vertexShader && (target.vertexShader = shader.vertexShader);
-        shader?.fragmentShader &&
-          (target.fragmentShader = shader.fragmentShader);
-        shader?.uniforms && (target.uniforms = shader.uniforms);
-        shader?.defines && (target.defines = shader.defines);
+        target.vertexShader = defaultShader.vertexShader;
+        target.fragmentShader = defaultShader.fragmentShader;
+
+        if (value) {
+          const shader = ShaderGeneratorManager.getShader(value);
+          shader?.vertexShader && (target.vertexShader = shader.vertexShader);
+          shader?.fragmentShader &&
+            (target.fragmentShader = shader.fragmentShader);
+          shader?.uniforms && (target.uniforms = shader.uniforms);
+          shader?.defines && (target.defines = shader.defines);
+        }
+
         target.needsUpdate = true;
       },
       $reg: [commonNeedUpdatesRegCommand],
@@ -39,12 +56,17 @@ export default defineProcessor<
     engine: EngineSupport
   ): ShaderMaterial {
     const material = new ShaderMaterial();
+    material.vertexShader = defaultShader.vertexShader;
+    material.fragmentShader = defaultShader.fragmentShader;
 
-    const shader = ShaderGeneratorManager.getShader(config.shader);
-    shader?.vertexShader && (material.vertexShader = shader.vertexShader);
-    shader?.fragmentShader && (material.fragmentShader = shader.fragmentShader);
-    shader?.uniforms && (material.uniforms = shader.uniforms);
-    shader?.defines && (material.defines = shader.defines);
+    if (config.shader) {
+      const shader = ShaderGeneratorManager.getShader(config.shader);
+      shader?.vertexShader && (material.vertexShader = shader.vertexShader);
+      shader?.fragmentShader &&
+        (material.fragmentShader = shader.fragmentShader);
+      shader?.uniforms && (material.uniforms = shader.uniforms);
+      shader?.defines && (material.defines = shader.defines);
+    }
 
     syncObject(config, material, {
       type: true,

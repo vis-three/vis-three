@@ -99,7 +99,11 @@ export class MaterialDisplayer {
 
     this.material = material;
 
-    if (material.type.includes("Mesh")) {
+    if (
+      material.type.includes("Mesh") ||
+      material.type === "ShaderMaterial" ||
+      material.type === "RawShaderMaterial"
+    ) {
       this.object = new Mesh(MaterialDisplayer.geometry, material);
     } else if (material.type.includes("Line")) {
       this.object = new Line(MaterialDisplayer.geometry, material);

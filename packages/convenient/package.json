@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/convenient",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "vis-three convenient",
   "main": "dist/vis-three.convenient.umd.js",
   "module": "dist/vis-three.convenient.es.js",

@@ -326,7 +326,7 @@ const _MaterialDisplayer = class {
   setMaterial(material) {
     this.scene.remove(this.object);
     this.material = material;
-    if (material.type.includes("Mesh")) {
+    if (material.type.includes("Mesh") || material.type === "ShaderMaterial" || material.type === "RawShaderMaterial") {
       this.object = new Mesh(_MaterialDisplayer.geometry, material);
     } else if (material.type.includes("Line")) {
       this.object = new Line(_MaterialDisplayer.geometry, material);

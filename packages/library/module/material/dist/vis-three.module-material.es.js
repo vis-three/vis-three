@@ -188,7 +188,7 @@ const getPointsMaterialConfig = function() {
 };
 const getShaderMaterialConfig = function() {
   return Object.assign(getMaterialConfig(), {
-    shader: "defaultShader",
+    shader: "",
     uniforms: {}
   });
 };
@@ -354,17 +354,31 @@ var PointsMaterialProcessor = defineProcessor({
   },
   dispose
 });
+const defaultShader = {
+  vertexShader: `
+  void main () {
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }`,
+  fragmentShader: `
+    void main () {
+      gl_FragColor = vec4(0.8,0.8,0.8,1.0);
+    }`
+};
 var ShaderMaterialProcessor = defineProcessor({
   type: "ShaderMaterial",
   config: getShaderMaterialConfig,
   commands: {
     set: {
       shader({ target, value }) {
-        const shader = ShaderGeneratorManager.getShader(value);
-        (shader == null ? void 0 : shader.vertexShader) && (target.vertexShader = shader.vertexShader);
-        (shader == null ? void 0 : shader.fragmentShader) && (target.fragmentShader = shader.fragmentShader);
-        (shader == null ? void 0 : shader.uniforms) && (target.uniforms = shader.uniforms);
-        (shader == null ? void 0 : shader.defines) && (target.defines = shader.defines);
+        target.vertexShader = defaultShader.vertexShader;
+        target.fragmentShader = defaultShader.fragmentShader;
+        if (value) {
+          const shader = ShaderGeneratorManager.getShader(value);
+          (shader == null ? void 0 : shader.vertexShader) && (target.vertexShader = shader.vertexShader);
+          (shader == null ? void 0 : shader.fragmentShader) && (target.fragmentShader = shader.fragmentShader);
+          (shader == null ? void 0 : shader.uniforms) && (target.uniforms = shader.uniforms);
+          (shader == null ? void 0 : shader.defines) && (target.defines = shader.defines);
+        }
         target.needsUpdate = true;
       },
       $reg: [commonNeedUpdatesRegCommand]
@@ -372,11 +386,15 @@ var ShaderMaterialProcessor = defineProcessor({
   },
   create: function(config, engine) {
     const material = new ShaderMaterial();
-    const shader = ShaderGeneratorManager.getShader(config.shader);
-    (shader == null ? void 0 : shader.vertexShader) && (material.vertexShader = shader.vertexShader);
-    (shader == null ? void 0 : shader.fragmentShader) && (material.fragmentShader = shader.fragmentShader);
-    (shader == null ? void 0 : shader.uniforms) && (material.uniforms = shader.uniforms);
-    (shader == null ? void 0 : shader.defines) && (material.defines = shader.defines);
+    material.vertexShader = defaultShader.vertexShader;
+    material.fragmentShader = defaultShader.fragmentShader;
+    if (config.shader) {
+      const shader = ShaderGeneratorManager.getShader(config.shader);
+      (shader == null ? void 0 : shader.vertexShader) && (material.vertexShader = shader.vertexShader);
+      (shader == null ? void 0 : shader.fragmentShader) && (material.fragmentShader = shader.fragmentShader);
+      (shader == null ? void 0 : shader.uniforms) && (material.uniforms = shader.uniforms);
+      (shader == null ? void 0 : shader.defines) && (material.defines = shader.defines);
+    }
     syncObject(config, material, {
       type: true,
       shader: true
