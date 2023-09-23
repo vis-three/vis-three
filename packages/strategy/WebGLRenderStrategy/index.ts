@@ -6,12 +6,12 @@ import {
   RenderManagerEngine,
   RENDER_EVENT,
   RENDER_MANAGER_PLUGIN,
-} from "@vis-three/render-manager-plugin";
+} from "@vis-three/plugin-render-manager";
 import {
   Screenshot,
   WebGLRendererEngine,
   WEBGL_RENDERER_PLUGIN,
-} from "@vis-three/webgl-renderer-plugin";
+} from "@vis-three/plugin-webgl-renderer";
 
 export interface WebGLRenderEngine
   extends WebGLRendererEngine,

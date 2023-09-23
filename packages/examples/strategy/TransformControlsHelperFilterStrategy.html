@@ -48,16 +48,16 @@
       import * as THREE from "three";
       import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
       import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
-      import { PointerManagerPlugin } from "@vis-three/pointer-manager-plugin";
-      import { EventManagerPlugin } from "@vis-three/event-manager-plugin";
-      import { ObjectHelperPlugin } from "@vis-three/object-helper-plugin";
-      import { SelectionPlugin } from "@vis-three/selection-plugin";
-      import { TransformControlsPlugin } from "@vis-three/transform-controls-plugin";
-      import { TransSelectEventStrategy } from "@vis-three/trans-select-event-strategy";
-      import { HelperSelectInteractStrategy } from "@vis-three/helper-select-interact-strategy";
+      import { PointerManagerPlugin } from "@vis-three/plugin-pointer-manager";
+      import { EventManagerPlugin } from "@vis-three/plugin-event-manager";
+      import { ObjectHelperPlugin } from "@vis-three/plugin-object-helper";
+      import { SelectionPlugin } from "@vis-three/plugin-selection";
+      import { TransformControlsPlugin } from "@vis-three/plugin-transform-controls";
+      import { TransSelectEventStrategy } from "@vis-three/strategy-trans-select-event";
+      import { HelperSelectInteractStrategy } from "@vis-three/strategy-helper-select-interact";
       import { defineEngine } from "@vis-three/core";
 
-      import { TransformControlsHelperFilterStrategy } from "@vis-three/transform-controls-helper-filter-strategy";
+      import { TransformControlsHelperFilterStrategy } from "@vis-three/strategy-transform-controls-helper-filter";
 
       const engine = defineEngine({
         plugins: [

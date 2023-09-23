@@ -25,12 +25,12 @@
       import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
       import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
       import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
-      import { KeyboardMoveControlsPlugin } from "@vis-three/keyboard-move-controls-plugin";
+      import { KeyboardMoveControlsPlugin } from "@vis-three/plugin-keyboard-move-controls";
 
       import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
       import { defineEngine } from "@vis-three/core";
 
-      import { KeyboardMoveRenderStrategy } from "@vis-three/keyboard-move-render-strategy";
+      import { KeyboardMoveRenderStrategy } from "@vis-three/strategy-keyboard-move-render";
 
       const engine = defineEngine({
         plugins: [
@@ -40,7 +40,7 @@
             alpha: true,
           }),
           EffectComposerPlugin({
-            WebGLMultisampleRenderTarget: true,
+            MSAA: true,
           }),
           CameraAdaptivePlugin(),
           GridHelperPlugin(),

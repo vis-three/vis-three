@@ -19,10 +19,10 @@
       import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
       import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
       import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
-      import { OrbitControlsPlugin } from "@vis-three/orbit-controls-plugin";
+      import { OrbitControlsPlugin } from "@vis-three/plugin-orbit-controls";
       import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
 
-      import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
+      import { OrbitRenderStrategy } from "@vis-three/strategy-orbit-render";
       import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
 
       import {
@@ -30,11 +30,19 @@
         generateConfig,
       } from "@vis-three/middleware";
 
-      import PassModule from "@vis-three/module-pass";
+      import {
+        pass,
+        controls,
+        scene as sceneModule,
+        mesh as meshModule,
+        geometry as geometryModule,
+        material as materialModule,
+        light,
+      } from "@vis-three/library-module";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-      import { OrbitControlsSupportStrategy } from "@vis-three/orbit-controls-support-strategy";
+      import { OrbitControlsSupportStrategy } from "@vis-three/strategy-orbit-controls-support";
 
       const engine = defineEngineSupport({
         plugins: [
@@ -43,7 +51,7 @@
             alpha: true,
           }),
           EffectComposerPlugin({
-            WebGLMultisampleRenderTarget: true,
+            MSAA: true,
           }),
           CameraAdaptivePlugin(),
           OrbitControlsPlugin(),
@@ -56,7 +64,15 @@
           OrbitControlsSupportStrategy(),
         ],
 
-        modules: [PassModule],
+        modules: [
+          controls,
+          pass,
+          sceneModule,
+          meshModule,
+          geometryModule,
+          materialModule,
+          light,
+        ],
       })
         .setDom(document.getElementById("app"))
         .setSize()

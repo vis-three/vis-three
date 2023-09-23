@@ -50,10 +50,10 @@
     <script type="module">
       import * as THREE from "three";
       import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
-      import { StatsPlugin } from "@vis-three/stats-plugin";
+      import { StatsPlugin } from "@vis-three/plugin-stats";
       import { defineEngine } from "@vis-three/core";
 
-      import { StatsRenderStrategy } from "@vis-three/stats-render-strategy";
+      import { StatsRenderStrategy } from "@vis-three/strategy-stats-render";
 
       const engine = defineEngine({
         plugins: [

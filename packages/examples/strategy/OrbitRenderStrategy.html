@@ -20,13 +20,13 @@
       import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
       import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
       import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
-      import { OrbitControlsPlugin } from "@vis-three/orbit-controls-plugin";
+      import { OrbitControlsPlugin } from "@vis-three/plugin-orbit-controls";
       import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
       import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
 
       import { defineEngine } from "@vis-three/core";
 
-      import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
+      import { OrbitRenderStrategy } from "@vis-three/strategy-orbit-render";
 
       const engine = defineEngine({
         plugins: [
@@ -35,7 +35,7 @@
             alpha: true,
           }),
           EffectComposerPlugin({
-            WebGLMultisampleRenderTarget: true,
+            MSAA: true,
           }),
           RenderManagerPlugin(),
           CameraAdaptivePlugin(),

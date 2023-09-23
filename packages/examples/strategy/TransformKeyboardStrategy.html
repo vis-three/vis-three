@@ -38,16 +38,16 @@
       import * as THREE from "three";
       import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
       import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
-      import { PointerManagerPlugin } from "@vis-three/pointer-manager-plugin";
-      import { EventManagerPlugin } from "@vis-three/event-manager-plugin";
-      import { TransformControlsPlugin } from "@vis-three/transform-controls-plugin";
-      import { SelectionPlugin } from "@vis-three/selection-plugin";
-      import { KeyboardManagerPlugin } from "@vis-three/keyboard-manager-plugin";
-      import { TransSelectEventStrategy } from "@vis-three/trans-select-event-strategy";
+      import { PointerManagerPlugin } from "@vis-three/plugin-pointer-manager";
+      import { EventManagerPlugin } from "@vis-three/plugin-event-manager";
+      import { TransformControlsPlugin } from "@vis-three/plugin-transform-controls";
+      import { SelectionPlugin } from "@vis-three/plugin-selection";
+      import { KeyboardManagerPlugin } from "@vis-three/plugin-keyboard-manager";
+      import { TransSelectEventStrategy } from "@vis-three/strategy-trans-select-event";
 
       import { defineEngine } from "@vis-three/core";
 
-      import { TransformKeyboardStrategy } from "@vis-three/transform-keyboard-strategy";
+      import { TransformKeyboardStrategy } from "@vis-three/strategy-transform-keyboard";
 
       const engine = defineEngine({
         plugins: [

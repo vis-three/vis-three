@@ -20,12 +20,20 @@
       import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
       import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
       import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
-      import { TransformControlsPlugin } from "@vis-three/transform-controls-plugin";
-      import { SelectionPlugin } from "@vis-three/selection-plugin";
-      import { SelectionSupportPlugin } from "@vis-three/selection-support-plugin";
+      import { TransformControlsPlugin } from "@vis-three/plugin-transform-controls";
+      import { SelectionPlugin } from "@vis-three/plugin-selection";
+      import { SelectionSupportPlugin } from "@vis-three/plugin-selection-support";
       import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
 
-      import PassModule from "@vis-three/module-pass";
+      import {
+        pass,
+        controls,
+        scene as sceneModule,
+        mesh as meshModule,
+        geometry as geometryModule,
+        material as materialModule,
+        light,
+      } from "@vis-three/library-module";
 
       import {
         defineEngineSupport,
@@ -33,7 +41,7 @@
       } from "@vis-three/middleware";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-      import { TransSelectEventSupportStrategy } from "@vis-three/trans-select-event-support-strategy";
+      import { TransSelectEventSupportStrategy } from "@vis-three/strategy-trans-select-event-support";
 
       const engine = defineEngineSupport({
         plugins: [
@@ -42,7 +50,7 @@
             alpha: true,
           }),
           EffectComposerPlugin({
-            WebGLMultisampleRenderTarget: true,
+            MSAA: true,
           }),
           CameraAdaptivePlugin(),
           GridHelperPlugin(),
@@ -52,7 +60,15 @@
         ],
         strategy: [EffectRenderStrategy(), TransSelectEventSupportStrategy()],
 
-        modules: [PassModule],
+        modules: [
+          controls,
+          pass,
+          sceneModule,
+          meshModule,
+          geometryModule,
+          materialModule,
+          light,
+        ],
       })
         .setDom(document.getElementById("app"))
         .setSize()
