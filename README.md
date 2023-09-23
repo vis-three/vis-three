@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="https://shiotsukikaedesari.gitee.io/vis-three/" target="_blank" rel="noopener noreferrer">
-    <img width="180" src="https://shiotsukikaedesari.gitee.io/vis-three/docs/favicon.ico" alt="vis-three logo">
+  <a href="https://vis-three.github.io" target="_blank" rel="noopener noreferrer">
+    <img width="180" src="/rm/logo.png" alt="vis-three logo">
   </a>
   <p align="center">A web 3D development framework for assembled based on three.js</p>
 
