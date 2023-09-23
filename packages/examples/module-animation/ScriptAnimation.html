@@ -16,7 +16,7 @@
 
     <script type="module">
       import * as THREE from "three";
-      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
       import {
         generateConfig,
         AniScriptGeneratorManager,
@@ -24,8 +24,8 @@
       } from "@vis-three/middleware";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-      import { linearTime, sinWare } from "@vis-three/animate-script-library";
-      import { uvPulseShader } from "@vis-three/shader-library";
+      import { linearTime, sinWare } from "@vis-three/library-animate-script";
+      import { uvPulseShader } from "@vis-three/library-shader";
 
       AniScriptGeneratorManager.register(linearTime).register(sinWare);
       ShaderGeneratorManager.register(uvPulseShader);
