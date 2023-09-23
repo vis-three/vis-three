@@ -6,11 +6,11 @@ import {
   RenderManagerEngine,
   RENDER_MANAGER_PLUGIN,
   RENDER_EVENT,
-} from "@vis-three/render-manager-plugin";
+} from "@vis-three/plugin-render-manager";
 import {
   KeyboardMoveControlsEngine,
   KEYBOARD_MOVE_CONTROLS_PLUGIN,
-} from "@vis-three/keyboard-move-controls-plugin";
+} from "@vis-three/plugin-keyboard-move-controls";
 
 export interface KeyboardMoveRenderEngine
   extends KeyboardMoveControlsEngine,

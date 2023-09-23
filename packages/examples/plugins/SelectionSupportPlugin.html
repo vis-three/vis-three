@@ -66,6 +66,16 @@
         generateConfig,
       } from "@vis-three/middleware";
 
+      import {
+        scene as sceneModule,
+        mesh as meshModule,
+        material as materialModule,
+        geometry as geometryModule,
+        light as lightModule,
+        line as lineModule,
+        points as pointsModule,
+      } from "@vis-three/library-module";
+
       import { SelectionPlugin } from "@vis-three/plugin-selection";
       import { SelectionSupportPlugin } from "@vis-three/plugin-selection-support";
 
@@ -84,6 +94,15 @@
           SelectionSupportPlugin(),
         ],
         strategy: [EffectRenderStrategy(), TransSelectEventStrategy()],
+        modules: [
+          sceneModule,
+          meshModule,
+          materialModule,
+          geometryModule,
+          lightModule,
+          lineModule,
+          pointsModule,
+        ],
       })
         .setDom(document.getElementById("app"))
         .setSize()

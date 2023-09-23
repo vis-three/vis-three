@@ -1,7 +1,7 @@
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
-import { RENDER_MANAGER_PLUGIN, RENDER_EVENT, } from "@vis-three/render-manager-plugin";
-import { KEYBOARD_MOVE_CONTROLS_PLUGIN, } from "@vis-three/keyboard-move-controls-plugin";
+import { RENDER_MANAGER_PLUGIN, RENDER_EVENT, } from "@vis-three/plugin-render-manager";
+import { KEYBOARD_MOVE_CONTROLS_PLUGIN, } from "@vis-three/plugin-keyboard-move-controls";
 export const name = transPkgName(pkgname);
 export const KeyboardMoveRenderStrategy = function () {
     let renderFun;

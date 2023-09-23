@@ -6,11 +6,11 @@ import {
   RenderManagerEngine,
   RENDER_MANAGER_PLUGIN,
   RENDER_EVENT,
-} from "@vis-three/render-manager-plugin";
+} from "@vis-three/plugin-render-manager";
 import {
   FirstPersonControlsEngine,
   FIRST_PERSON_CONTROLS_PLUGIN,
-} from "@vis-three/first-person-controls-plugin";
+} from "@vis-three/plugin-first-person-controls";
 
 export interface FirstPersonRenderEngine
   extends FirstPersonControlsEngine,
