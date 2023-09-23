@@ -23,17 +23,17 @@
 
       import * as THREE from "three";
       import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
-      import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
-      import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+      import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
+      import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
       import { LoaderManagerPlugin } from "@vis-three/loader-manager-plugin";
       import { OrbitControlsPlugin } from "@vis-three/orbit-controls-plugin";
       import { KeyboardMoveControlsPlugin } from "@vis-three/keyboard-move-controls-plugin";
       import { StatsPlugin } from "@vis-three/stats-plugin";
       import { MeshBVHPlugin } from "@vis-three/mesh-bvh-plugin";
 
-      import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+      import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
       import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
       import { KeyboardMoveRenderStrategy } from "@vis-three/keyboard-move-render-strategy";
       import { StatsRenderStrategy } from "@vis-three/stats-render-strategy";

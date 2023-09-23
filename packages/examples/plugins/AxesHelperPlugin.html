@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GridHelperPlugin</title>
+    <title>AxesHelperPlugin</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -22,11 +22,11 @@
 
     <script type="module">
       import * as THREE from "three";
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
       import { defineEngine } from "@vis-three/core";
 
-      import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
+      import { AxesHelperPlugin } from "@vis-three/plugin-axes-helper";
 
       const engine = defineEngine({
         plugins: [
@@ -35,11 +35,8 @@
             alpha: true,
           }),
           CameraAdaptivePlugin(),
-          GridHelperPlugin({
-            range: 500,
-            spacing: 50,
-            axesColor: "rgb(130, 130, 130)",
-            cellColor: "rgb(70, 70, 70)",
+          AxesHelperPlugin({
+            length: 40,
           }),
         ],
       })
@@ -51,7 +48,7 @@
       let show = true;
       document.getElementById("operate").onclick = (event) => {
         show = !show;
-        engine.setGridHelper(show);
+        engine.setAxesHelper(show);
         engine.render();
       };
     </script>

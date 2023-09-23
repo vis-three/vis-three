@@ -18,13 +18,13 @@
       import * as THREE from "three";
       import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
-      import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
-      import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+      import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
+      import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
       import { defineEngine } from "@vis-three/core";
 
-      import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+      import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
 
       const engine = defineEngine({
         plugins: [

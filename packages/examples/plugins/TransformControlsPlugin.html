@@ -29,15 +29,15 @@
 
     <script type="module">
       import * as THREE from "three";
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
-      import { PointerManagerPlugin } from "@vis-three/pointer-manager-plugin";
-      import { EventManagerPlugin } from "@vis-three/event-manager-plugin";
-      import { TransSelectEventStrategy } from "@vis-three/trans-select-event-strategy";
-      import { SelectionPlugin } from "@vis-three/selection-plugin";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+      import { PointerManagerPlugin } from "@vis-three/plugin-pointer-manager";
+      import { EventManagerPlugin } from "@vis-three/plugin-event-manager";
+      import { TransSelectEventStrategy } from "@vis-three/strategy-trans-select-event";
+      import { SelectionPlugin } from "@vis-three/plugin-selection";
       import { defineEngine } from "@vis-three/core";
 
-      import { TransformControlsPlugin } from "@vis-three/transform-controls-plugin";
+      import { TransformControlsPlugin } from "@vis-three/plugin-transform-controls";
 
       const engine = defineEngine({
         plugins: [

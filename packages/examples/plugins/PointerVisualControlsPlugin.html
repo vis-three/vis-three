@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PointerLockControlsPlugin</title>
+    <title>PointerVisualControlsPlugin</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -12,25 +12,22 @@
   <style></style>
 
   <body>
-    <div id="button-position">
-      <div id="button-group">
-        <button id="lock">lock</button>
-      </div>
-    </div>
-
+    <div id="tips">鼠标左键旋转</div>
     <div id="app"></div>
 
     <script type="module">
       import * as THREE from "three";
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
-      import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
-      import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
-      import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
-      import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+      import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
+      import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
+      import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
+      import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
       import { defineEngine } from "@vis-three/core";
 
-      import { PointerLockControlsPlugin } from "@vis-three/pointer-lock-controls-plugin";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      import { PointerVisualControlsPlugin } from "@vis-three/plugin-pointer-visual-controls";
 
       const engine = defineEngine({
         plugins: [
@@ -40,11 +37,11 @@
             alpha: true,
           }),
           EffectComposerPlugin({
-            WebGLMultisampleRenderTarget: true,
+            MSAA: true,
           }),
           CameraAdaptivePlugin(),
           GridHelperPlugin(),
-          PointerLockControlsPlugin(),
+          PointerVisualControlsPlugin(),
         ],
         strategy: [EffectRenderStrategy()],
       })
@@ -74,11 +71,15 @@
       points.position.x = -10;
       scene.add(points);
 
-      window.engine = engine;
+      const controls = engine.pointerVisualControls;
 
-      document.getElementById("lock").onclick = () => {
-        engine.pointerLockControls.lock();
-      };
+      const gui = new GUI();
+
+      gui.add(controls, "minPolarAngle");
+      gui.add(controls, "maxPolarAngle");
+      gui.add(controls, "pointerSpeed");
+
+      window.engine = engine;
     </script>
   </body>
 </html>

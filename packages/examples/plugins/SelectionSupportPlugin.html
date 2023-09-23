@@ -54,20 +54,20 @@
 
     <script type="module">
       import * as THREE from "three";
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
-      import { TransformControlsPlugin } from "@vis-three/transform-controls-plugin";
-      import { TransSelectEventStrategy } from "@vis-three/trans-select-event-strategy";
-      import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+      import { TransformControlsPlugin } from "@vis-three/plugin-transform-controls";
+      import { TransSelectEventStrategy } from "@vis-three/strategy-trans-select-event";
+      import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
 
       import {
         defineEngineSupport,
         generateConfig,
       } from "@vis-three/middleware";
 
-      import { SelectionPlugin } from "@vis-three/selection-plugin";
-      import { SelectionSupportPlugin } from "@vis-three/selection-support-plugin";
+      import { SelectionPlugin } from "@vis-three/plugin-selection";
+      import { SelectionSupportPlugin } from "@vis-three/plugin-selection-support";
 
       const engine = defineEngineSupport({
         plugins: [
@@ -76,7 +76,7 @@
             alpha: true,
           }),
           EffectComposerPlugin({
-            WebGLMultisampleRenderTarget: true,
+            MSAA: true,
           }),
           CameraAdaptivePlugin(),
           TransformControlsPlugin(),

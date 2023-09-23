@@ -39,17 +39,26 @@ const recursion = (parentDir) => {
 
   routerJson.push(tempRouter);
 };
-
-recursion(path.resolve(__dirname, "./engine"));
-recursion(path.resolve(__dirname, "./plugins"));
-recursion(path.resolve(__dirname, "./shaderLibrary"));
-// recursion(path.resolve(__dirname, "./strategy"));
-// recursion(path.resolve(__dirname, "./convenient"));
-recursion(path.resolve(__dirname, "./middleware"));
-recursion(path.resolve(__dirname, "./modifier"));
-recursion(path.resolve(__dirname, "./module"));
-// recursion(path.resolve(__dirname, "./demo"));
-// recursion(path.resolve(__dirname, "./test"));
+[
+  "./engine",
+  "./plugins",
+  "./strategy",
+  "./middleware",
+  "./module",
+  "./module-animation",
+  "./module-camera",
+  "./module-controls",
+  "./module-geometry",
+  "./module-pass",
+  "./module-texture",
+  "./convenient",
+  "./modifier",
+  "./demo",
+  "./test",
+  "./shaderLibrary",
+].forEach((url) => {
+  recursion(path.resolve(__dirname, url));
+});
 
 // console.log(routerJson);
 // console.log(menusJson);

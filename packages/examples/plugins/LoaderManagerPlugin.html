@@ -36,11 +36,11 @@
 
     <script type="module">
       import * as THREE from "three";
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
       import { defineEngine } from "@vis-three/core";
 
-      import { LoaderManagerPlugin } from "@vis-three/loader-manager-plugin";
+      import { LoaderManagerPlugin } from "@vis-three/plugin-loader-manager";
 
       const engine = defineEngine({
         plugins: [

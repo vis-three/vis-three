@@ -20,16 +20,16 @@
       import * as THREE from "three";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
-      import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
-      import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
-      import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
-      import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
-      import { KeyboardMoveRenderStrategy } from "@vis-three/keyboard-move-render-strategy";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+      import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
+      import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
+      import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
+      import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
+      import { KeyboardMoveRenderStrategy } from "@vis-three/strategy-keyboard-move-render";
       import { defineEngine } from "@vis-three/core";
 
-      import { KeyboardMoveControlsPlugin } from "@vis-three/keyboard-move-controls-plugin";
+      import { KeyboardMoveControlsPlugin } from "@vis-three/plugin-keyboard-move-controls";
 
       const engine = defineEngine({
         plugins: [

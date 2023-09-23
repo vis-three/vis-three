@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OrbitControlsPlugin</title>
+    <title>ObjectHelperPlugin</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -17,16 +17,16 @@
   </style>
 
   <body>
-    <div id="tips">鼠标中键缩放，鼠标右键旋转，ctrl/shift + 鼠标右键平移</div>
     <div id="app"></div>
+    <button id="operate">tirggle</button>
 
     <script type="module">
       import * as THREE from "three";
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
       import { defineEngine } from "@vis-three/core";
 
-      import { OrbitControlsPlugin } from "@vis-three/orbit-controls-plugin";
+      import { ObjectHelperPlugin } from "@vis-three/plugin-object-helper";
 
       const engine = defineEngine({
         plugins: [
@@ -35,18 +35,13 @@
             alpha: true,
           }),
           CameraAdaptivePlugin(),
-
-          OrbitControlsPlugin(),
+          ObjectHelperPlugin(),
         ],
       })
         .setDom(document.getElementById("app"))
         .setSize();
 
       const scene = engine.scene;
-
-      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
-      pointLight.position.y = 30;
-      scene.add(pointLight);
 
       const box = new THREE.Mesh(
         new THREE.BoxBufferGeometry(10, 10, 10),
@@ -55,17 +50,44 @@
       box.position.x = 10;
       scene.add(box);
 
-      const line = new THREE.Line(box.geometry);
+      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 30, 0);
+      pointLight.position.y = 20;
+      scene.add(pointLight);
+
+      const line = new THREE.Line(
+        box.geometry,
+        new THREE.LineBasicMaterial({ color: "yellow" })
+      );
       scene.add(line);
 
-      const points = new THREE.Points(box.geometry);
+      const points = new THREE.Points(
+        box.geometry,
+        new THREE.PointsMaterial({ color: "blue" })
+      );
 
       points.position.x = -10;
       scene.add(points);
 
-      setInterval(() => {
+      const camera = new THREE.PerspectiveCamera(
+        (180 / Math.PI) * 45,
+        16 / 9,
+        5,
+        70
+      );
+      camera.position.set(0, 20, 50);
+      camera.lookAt(0, 0, 0);
+      scene.add(camera);
+
+      engine.render();
+
+      let show = true;
+      document.getElementById("operate").onclick = (event) => {
+        show = !show;
+        engine.setObjectHelper(show);
         engine.render();
-      }, 1000 / 60);
+      };
+
+      window.engine = engine;
     </script>
   </body>
 </html>

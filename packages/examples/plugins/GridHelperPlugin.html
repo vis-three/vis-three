@@ -4,31 +4,29 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CameraAdaptivePlugin</title>
+    <title>GridHelperPlugin</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
 
   <style>
     #app {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
     }
   </style>
 
   <body>
-    <div id="app" style="width: 160px; height: 90px"></div>
-    <button id="operate">size + 50</button>
+    <div id="app"></div>
+    <button id="operate">tirggle</button>
 
     <script type="module">
       import * as THREE from "three";
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
       import { defineEngine } from "@vis-three/core";
 
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
 
       const engine = defineEngine({
         plugins: [
@@ -36,9 +34,13 @@
             antialias: true,
             alpha: true,
           }),
-          GridHelperPlugin(),
-
           CameraAdaptivePlugin(),
+          GridHelperPlugin({
+            range: 500,
+            spacing: 50,
+            axesColor: "rgb(130, 130, 130)",
+            cellColor: "rgb(70, 70, 70)",
+          }),
         ],
       })
         .setDom(document.getElementById("app"))
@@ -46,12 +48,11 @@
 
       engine.render();
 
-      const app = document.getElementById("app");
-
+      let show = true;
       document.getElementById("operate").onclick = (event) => {
-        app.style.width = `${parseInt(app.style.width) + 50}px`;
-        app.style.height = `${parseInt(app.style.height) + 50}px`;
-        engine.setSize().render();
+        show = !show;
+        engine.setGridHelper(show);
+        engine.render();
       };
     </script>
   </body>

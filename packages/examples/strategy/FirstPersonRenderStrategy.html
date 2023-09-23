@@ -17,15 +17,15 @@
 
     <script type="module">
       import * as THREE from "three";
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
-      import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
-      import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
-      import { FirstPersonControlsPlugin } from "@vis-three/first-person-controls-plugin";
-      import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+      import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
+      import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
+      import { FirstPersonControlsPlugin } from "@vis-three/plugin-first-person-controls";
+      import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
       import { defineEngine } from "@vis-three/core";
 
-      import { FirstPersonRenderStrategy } from "@vis-three/first-person-render-strategy";
+      import { FirstPersonRenderStrategy } from "@vis-three/strategy-first-person-render";
 
       const engine = defineEngine({
         plugins: [

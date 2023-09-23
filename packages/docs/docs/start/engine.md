@@ -368,11 +368,11 @@ npm i @vis-three/grid-helper-plugin
 ```
 
 ```js
-import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
-import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
-import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
-import { GridHelperPlugin } from "@vis-three/grid-helper-plugin";
+import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
+import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
+import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
 import { Engine, defineEngine } from "@vis-three/core";
 
 // 类实例安装
@@ -428,12 +428,12 @@ npm i @vis-three/orbit-render-strategy
 ```
 
 ```js
-import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-import { EffectComposerPlugin } from "@vis-three/effect-composer-plugin";
+import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
 import { OrbitControlsPlugin } from "@vis-three/orbit-controls-plugin";
-import { RenderManagerPlugin } from "@vis-three/render-manager-plugin";
+import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
 
-import { EffectRenderStrategy } from "@vis-three/effect-render-strategy";
+import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
 import { OrbitRenderStrategy } from "@vis-three/orbit-render-strategy";
 import { Engine, defineEngine } from "@vis-three/core";
 

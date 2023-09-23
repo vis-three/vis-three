@@ -4,29 +4,31 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AxesHelperPlugin</title>
+    <title>CameraAdaptivePlugin</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
 
   <style>
     #app {
-      width: 100%;
-      height: 100%;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
   </style>
 
   <body>
-    <div id="app"></div>
-    <button id="operate">tirggle</button>
+    <div id="app" style="width: 160px; height: 90px"></div>
+    <button id="operate">size + 50</button>
 
     <script type="module">
       import * as THREE from "three";
-      import { WebGLRendererPlugin } from "@vis-three/webgl-renderer-plugin";
-      import { CameraAdaptivePlugin } from "@vis-three/camera-adaptive-plugin";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
       import { defineEngine } from "@vis-three/core";
 
-      import { AxesHelperPlugin } from "@vis-three/axes-helper-plugin";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
 
       const engine = defineEngine({
         plugins: [
@@ -34,10 +36,9 @@
             antialias: true,
             alpha: true,
           }),
+          GridHelperPlugin(),
+
           CameraAdaptivePlugin(),
-          AxesHelperPlugin({
-            length: 40,
-          }),
         ],
       })
         .setDom(document.getElementById("app"))
@@ -45,11 +46,12 @@
 
       engine.render();
 
-      let show = true;
+      const app = document.getElementById("app");
+
       document.getElementById("operate").onclick = (event) => {
-        show = !show;
-        engine.setAxesHelper(show);
-        engine.render();
+        app.style.width = `${parseInt(app.style.width) + 50}px`;
+        app.style.height = `${parseInt(app.style.height) + 50}px`;
+        engine.setSize().render();
       };
     </script>
   </body>
