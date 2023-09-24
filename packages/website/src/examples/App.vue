@@ -36,7 +36,11 @@
       </div>
     </div>
     <div class="iframe-main">
-      <iframe :src="getExampleUrl(currentExample)" frameborder="0"></iframe>
+      <iframe
+        :src="getExampleUrl(currentExample)"
+        frameborder="0"
+        @load="examplesLoad"
+      ></iframe>
       <a-button
         type="primary"
         size="large"
@@ -52,11 +56,44 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, ref } from "vue";
+import {
+  ComputedRef,
+  Ref,
+  computed,
+  defineComponent,
+  nextTick,
+  ref,
+  watch,
+} from "vue";
 import menus from "./assets/menus.json";
 import URLParse from "url-parse";
+import np from "nprogress";
 
-export default defineComponent({
+interface RawBulding {
+  filterText: Ref<string>;
+  currentExample: Ref<string>;
+  jump: (url: string) => void;
+  getExampleUrl: (url: string) => string;
+  getExamplePoster: (poster: string) => string;
+  toHome: () => void;
+  changeExample: (url: string) => void;
+  scroll: (event: UIEvent) => void;
+  basePath: string;
+  repoPrefix: string;
+  filterMenus: ComputedRef<
+    {
+      name: string;
+      url: string;
+      poster: string;
+    }[]
+  >;
+  pageIndex: Ref<number>;
+  change: () => void;
+  sidebarBox: Ref<HTMLElement | null>;
+  examplesLoad: () => void;
+}
+
+export default defineComponent<{}, RawBulding>({
   setup() {
     const query = new URLParse(window.location.href, true).query;
 
@@ -82,8 +119,18 @@ export default defineComponent({
       window.open(url);
     };
 
+    let cacheUrl = "";
+
     const getExampleUrl = (url: string) => {
-      return `${import.meta.env.BASE_URL}examples/${url}`;
+      const newUrl = `${import.meta.env.BASE_URL}examples/${url}`;
+
+      if (!np.isStarted() && newUrl !== cacheUrl) {
+        np.start();
+      }
+
+      cacheUrl = newUrl;
+
+      return newUrl;
     };
 
     const getExamplePoster = (poster: string) => {
@@ -130,6 +177,10 @@ export default defineComponent({
       });
     };
 
+    const examplesLoad = () => {
+      np.done();
+    };
+
     return {
       filterText,
       currentExample,
@@ -146,6 +197,7 @@ export default defineComponent({
       pageIndex,
       change,
       sidebarBox,
+      examplesLoad,
     };
   },
 });
