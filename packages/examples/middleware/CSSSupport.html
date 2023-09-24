@@ -11,7 +11,8 @@
 
   <style>
     #element1,
-    #element2 {
+    #element2,
+    #element3 {
       padding: 20px;
       background: rgba(0, 0, 0, 0.2);
       box-shadow: 0 0 4px rgb(170, 150, 241);
@@ -108,8 +109,13 @@
 
       const css3DPlane = generateConfig("CSS3DPlane", {
         element: "examples.element2",
-        width: 20,
-        height: 20,
+        width: 300,
+        height: 300,
+        scale: {
+          x: 0.1,
+          y: 0.1,
+          z: 0.1,
+        },
       });
 
       const css3DSprite = generateConfig("CSS3DSprite", {

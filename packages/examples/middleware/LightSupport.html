@@ -21,7 +21,7 @@
 
     <script type="module">
       import * as THREE from "three";
-      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
       import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
 
       const engine = new ModelingEngineSupport()
@@ -51,6 +51,10 @@
         intensity: 0.6,
       });
 
+      const pointLightHelper = generateConfig("ObjectHelper", {
+        target: pointLight.vid,
+      });
+
       const spotLight = generateConfig("SpotLight", {
         position: {
           x: 20,
@@ -58,6 +62,10 @@
         distance: 30,
         color: "rgb(0, 0, 255)",
         intensity: 0.6,
+      });
+
+      const spotLightHelper = generateConfig("ObjectHelper", {
+        target: spotLight.vid,
       });
 
       const directionalLight = generateConfig("DirectionalLight", {
@@ -70,6 +78,10 @@
         },
       });
 
+      const directionalLightHelper = generateConfig("ObjectHelper", {
+        target: directionalLight.vid,
+      });
+
       const hemisphereLight = generateConfig("HemisphereLight");
 
       const rectAreaLight = generateConfig("RectAreaLight", {
@@ -78,6 +90,10 @@
           y: 0,
           z: 20,
         },
+      });
+
+      const rectAreaLightHelper = generateConfig("ObjectHelper", {
+        target: rectAreaLight.vid,
       });
 
       const material = generateConfig("MeshStandardMaterial");

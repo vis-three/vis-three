@@ -21,13 +21,13 @@
 
     <script type="module">
       import * as THREE from "three";
-      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
       import {
         generateConfig,
         CONFIGTYPE,
         ShaderGeneratorManager,
       } from "@vis-three/middleware";
-      import { uvPulseShader } from "@vis-three/shader-library";
+      import { uvPulseShader } from "@vis-three/library-shader";
       import { CanvasGenerator } from "@vis-three/convenient";
 
       ShaderGeneratorManager.register(uvPulseShader);

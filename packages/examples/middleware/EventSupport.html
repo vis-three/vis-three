@@ -28,15 +28,11 @@
         createSymbol,
         EventGeneratorManager,
       } from "@vis-three/middleware";
-      import {
-        openWindow,
-        moveTo,
-        moveSpacing,
-      } from "@vis-three/library-event";
+      import eventLibrary from "@vis-three/library-event";
 
-      EventGeneratorManager.register(openWindow)
-        .register(moveTo)
-        .register(moveSpacing);
+      EventGeneratorManager.register(eventLibrary.openWindow)
+        .register(eventLibrary.moveTo)
+        .register(eventLibrary.moveSpacing);
 
       const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
