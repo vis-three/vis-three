@@ -47,6 +47,7 @@
 
       const material = generateConfig("ShaderMaterial", {
         shader: "uvPulseShader",
+        transparent: true,
       });
 
       const geometry = generateConfig("BoxGeometry", {
@@ -60,30 +61,52 @@
         geometry: geometry.vid,
       });
 
-      const animation = generateConfig("ScriptAnimation", {
-        target: material.vid,
-        attribute: ".uniforms.time.value",
-        script: AniScriptGeneratorManager.generateConfig("linearTime", {
-          multiply: 7,
-        }),
+      const meshHelper = generateConfig("ObjectHelper", {
+        target: mesh.vid,
       });
 
-      const animation2 = generateConfig("ScriptAnimation", {
-        target: mesh.vid,
-        attribute: ".rotation.y",
-        script: AniScriptGeneratorManager.generateConfig("linearTime", {
-          multiply: 1,
-        }),
-      });
+      const animation = generateConfig(
+        "ScriptAnimation",
+        {
+          target: material.vid,
+          attribute: ".uniforms.time.value",
+          script: AniScriptGeneratorManager.generateConfig("linearTime", {
+            multiply: 7,
+          }),
+        },
+        {
+          strict: false,
+        }
+      );
 
-      const animation3 = generateConfig("ScriptAnimation", {
-        target: mesh.vid,
-        attribute: ".position.y",
-        script: AniScriptGeneratorManager.generateConfig("sinWave", {
-          amplitude: 10,
-          wavelength: 0.5,
-        }),
-      });
+      const animation2 = generateConfig(
+        "ScriptAnimation",
+        {
+          target: mesh.vid,
+          attribute: ".rotation.y",
+          script: AniScriptGeneratorManager.generateConfig("linearTime", {
+            multiply: 1,
+          }),
+        },
+        {
+          strict: false,
+        }
+      );
+
+      const animation3 = generateConfig(
+        "ScriptAnimation",
+        {
+          target: mesh.vid,
+          attribute: ".position.y",
+          script: AniScriptGeneratorManager.generateConfig("sinWave", {
+            amplitude: 10,
+            wavelength: 0.5,
+          }),
+        },
+        {
+          strict: false,
+        }
+      );
 
       const scene = generateConfig("Scene", {
         children: [pointLight.vid, mesh.vid],

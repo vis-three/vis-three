@@ -53,13 +53,9 @@
         .dracoLoader.setDecoderPath(import.meta.env.BASE_URL + "/draco/gltf/");
 
       engine.loadResourcesAsync(["model/glb/Soldier.glb"]).then((res) => {
-        console.log(res);
-
         const template = Template.observable(
           res.resourceConfig["model/glb/Soldier.glb"]
         );
-
-        console.log(template);
 
         engine.loadConfig(template);
 
@@ -67,35 +63,35 @@
 
         const root = engine.getConfigBySymbol(rootTemplate.vid);
 
-        root.scale.x = 10;
-        root.scale.y = 10;
-        root.scale.z = 10;
-        root.position.x = 20;
+        root.scale.x = 20;
+        root.scale.y = 20;
+        root.scale.z = 20;
 
         scene.children.push(root.vid);
 
         const skinndMesh = engine.getObjectBySymbol(
-          template["skinned-mesh"][0].vid
+          template["skinnedMesh"][0].vid
         );
+
+        const mixer = generateConfig(CONFIGTYPE.MIXERANIMATION, {
+          target: root.vid,
+        });
+
+        const action = generateConfig(CONFIGTYPE.ANIMATIONACTION, {
+          mixer: mixer.vid,
+          clip: template["animationClip"][1].vid,
+        });
+
+        engine.applyConfig(mixer, action);
 
         globalAntiShake.append(() => {
           const helper = new THREE.SkeletonHelper(skinndMesh.skeleton.bones[0]);
           helper.material.linewidth = 2;
           engine.scene.add(helper);
-
-          const mixer = generateConfig(CONFIGTYPE.MIXERANIMATION, {
-            target: root.vid,
-          });
-
-          const action = generateConfig(CONFIGTYPE.ANIMATIONACTION, {
-            mixer: mixer.vid,
-            clip: template["animation-clip"][1].vid,
-          });
-
-          engine.applyConfig(mixer, action);
           return true;
         });
       });
+
       window.engine = engine;
     </script>
   </body>
