@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KeyboardManagerPlugin</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/examples/favicon.ico" />
+    <link rel="stylesheet" href="/examples/css/common.css" />
+    <script type="module" crossorigin src="/examples/assets/plugins/KeyboardManagerPlugin.9de118f7.js"></script>
+    <link rel="modulepreload" href="/examples/assets/modulepreload-polyfill.b7f2da20.js">
+    <link rel="modulepreload" href="/examples/assets/three.837c9bb0.js">
+    <link rel="modulepreload" href="/examples/assets/index.7d48aff8.js">
+    <link rel="modulepreload" href="/examples/assets/Antdv.a86c3c0d.js">
+    <link rel="modulepreload" href="/examples/assets/vis-three.plugin-keyboard-manager.es.9570acee.js">
+  </head>
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .box {
+      width: 100%;
+      height: 100%;
+      display: flex;
+    }
+
+    #app1,
+    #app2,
+    #app3 {
+      height: 100%;
+      width: 50%;
+      background: rgba(255, 0, 0, 0.486);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    #app2 {
+      background: rgba(4, 0, 255, 0.486);
+    }
+
+    #app3 {
+      background: rgba(0, 255, 42, 0.486);
+      height: 30%;
+      width: 100%;
+    }
+
+    .keyboard-message {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      background: black;
+      padding: 20px;
+    }
+  </style>
+
+  <body>
+    <div class="box">
+      <div id="app1" tabindex="1">点击此处替换Keyboard空间。</div>
+      <div id="app2" tabindex="1">点击此处替换Keyboard空间。</div>
+    </div>
+    <div id="app3" tabindex="1"></div>
+
+    <div class="keyboard-message">按键盘触发</div>
+
+    
+  </body>
+</html>
