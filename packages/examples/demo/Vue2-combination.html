@@ -93,9 +93,19 @@
 
     <script type="module">
       import Vue from "vue2/dist/vue.esm.browser.min.js";
-      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
-      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+      import {
+        generateConfig,
+        CONFIGTYPE,
+        defineOption,
+      } from "@vis-three/middleware";
       import * as THREE from "three";
+
+      defineOption({
+        proxy: {
+          expand: Vue.observable,
+        },
+      });
 
       const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("three"))
@@ -121,16 +131,10 @@
         color: "rgb(255, 0, 0)",
       });
 
-      const box = generateConfig(
-        CONFIGTYPE.MESH,
-        {
-          geometry: geometry.vid,
-          material: material.vid,
-        },
-        {
-          handler: (c) => Vue.observable(c),
-        }
-      );
+      const box = generateConfig(CONFIGTYPE.MESH, {
+        geometry: geometry.vid,
+        material: material.vid,
+      });
 
       new Vue({
         el: "#app",

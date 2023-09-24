@@ -124,7 +124,7 @@ export const observable = function (
   }
 
   return handler(JSONHandler.clone(object as EngineSupportLoadOptions), (c) => {
-    c = generateConfig(c.type, c);
+    c = generateConfig(c.type, c, { strict: false });
 
     if (obCallback) {
       return obCallback(c);

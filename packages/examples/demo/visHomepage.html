@@ -20,19 +20,20 @@
 
       import { ReinhardToneMapping } from "three";
 
-      import { DisplayEngineSupport } from "@vis-three/display-engine-support";
+      import { DisplayEngineSupport } from "@vis-three/engine-display-support";
+
       import {
         generateConfig,
         CONFIGTYPE,
         AniScriptGeneratorManager,
       } from "@vis-three/middleware";
-      import { linearTime } from "@vis-three/animate-script-library";
+      import { linearTime } from "@vis-three/library-animate-script";
 
       AniScriptGeneratorManager.register(linearTime);
 
-      export const engine = new DisplayEngineSupport().setDom(
-        document.getElementById("app")
-      );
+      export const engine = new DisplayEngineSupport()
+        .setDom(document.getElementById("app"))
+        .play();
 
       engine.loaderManager.setPath(import.meta.env.BASE_URL);
 
@@ -47,7 +48,7 @@
           content: `正在加载3D资源：${parseInt(
             ((event.loadSuccess / event.loadTotal) * 100).toString()
           )}
-      %`,
+            %`,
           key: "loading",
           duration: 0,
         });
@@ -232,21 +233,33 @@
         });
 
         // // 动画
-        generateConfig(CONFIGTYPE.SCRIPTANIMATION, {
-          target: threeMesh.vid,
-          attribute: ".rotation.z",
-          script: AniScriptGeneratorManager.generateConfig("linearTime", {
-            multiply: 0.2,
-          }),
-        });
+        generateConfig(
+          CONFIGTYPE.SCRIPTANIMATION,
+          {
+            target: threeMesh.vid,
+            attribute: ".rotation.z",
+            script: AniScriptGeneratorManager.generateConfig("linearTime", {
+              multiply: 0.2,
+            }),
+          },
+          {
+            strict: false,
+          }
+        );
 
-        generateConfig(CONFIGTYPE.SCRIPTANIMATION, {
-          target: visMesh.vid,
-          attribute: ".rotation.y",
-          script: AniScriptGeneratorManager.generateConfig("linearTime", {
-            multiply: 0.7,
-          }),
-        });
+        generateConfig(
+          CONFIGTYPE.SCRIPTANIMATION,
+          {
+            target: visMesh.vid,
+            attribute: ".rotation.y",
+            script: AniScriptGeneratorManager.generateConfig("linearTime", {
+              multiply: 0.7,
+            }),
+          },
+          {
+            strict: false,
+          }
+        );
       })();
 
       window.engine = engine;

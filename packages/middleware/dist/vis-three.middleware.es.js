@@ -262,7 +262,7 @@ const observable$1 = function(object, obCallback) {
     object = JSON.parse(object, JSONHandler.parse);
   }
   return handler(JSONHandler.clone(object), (c) => {
-    c = generateConfig(c.type, c);
+    c = generateConfig(c.type, c, { strict: false });
     if (obCallback) {
       return obCallback(c);
     } else {

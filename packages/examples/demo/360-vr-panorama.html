@@ -23,8 +23,8 @@
       import loadingTips from "../common/loadingTips.js";
 
       import * as THREE from "three";
-      import { PointerVisualControlsPlugin } from "@vis-three/pointer-visual-controls-plugin";
-      import { DisplayEngineSupport } from "@vis-three/display-engine-support";
+      import { PointerVisualControlsPlugin } from "@vis-three/plugin-pointer-visual-controls";
+      import { DisplayEngineSupport } from "@vis-three/engine-display-support";
       import {
         generateConfig,
         CONFIGTYPE,
@@ -32,11 +32,11 @@
         createSymbol,
       } from "@vis-three/middleware";
       import { CanvasGenerator } from "@vis-three/convenient";
-      import { moveTo } from "@vis-three/event-library";
+      import EventLibrary from "@vis-three/library-event";
 
-      import { AxesHelperPlugin } from "@vis-three/axes-helper-plugin";
+      import { AxesHelperPlugin } from "@vis-three/plugin-axes-helper";
 
-      EventGeneratorManager.register(moveTo);
+      EventGeneratorManager.register(EventLibrary.moveTo);
 
       const drawFun = (ctx, text) => {
         ctx.textBaseline = "middle";
@@ -65,7 +65,7 @@
 
       const engine = new DisplayEngineSupport()
         .rollback("OrbitControlsSupportStrategy")
-        .unistall("OrbitControlsPlugin")
+        .uninstall("OrbitControlsPlugin")
         .install(PointerVisualControlsPlugin())
         .install(AxesHelperPlugin())
         .setDom(document.getElementById("app"))

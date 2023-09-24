@@ -67,30 +67,23 @@
     <script type="module">
       import { DoubleSide } from "three";
       import { CanvasGenerator } from "@vis-three/convenient";
-      import { DisplayEngineSupport } from "@vis-three/display-engine-support";
+      import { DisplayEngineSupport } from "@vis-three/engine-display-support";
       import {
         generateConfig,
         EventGeneratorManager,
+        createSymbol,
       } from "@vis-three/middleware";
-      import {
-        focusObject,
-        moveTo,
-        moveFromTo,
-        fadeObject,
-        visibleObject,
-        addClass,
-      } from "@vis-three/event-library";
-      import { v4 } from "uuid";
+      import EventLibrary from "@vis-three/library-event";
       import { treeGraph } from "./AntdV-G6/tree.js";
       import { arcGraph } from "./AntdV-G6/arc.js";
       import { treeTips, arcTips } from "./AntdV-G6/tips.js";
 
-      EventGeneratorManager.register(focusObject)
-        .register(moveTo)
-        .register(moveFromTo)
-        .register(fadeObject)
-        .register(visibleObject)
-        .register(addClass);
+      EventGeneratorManager.register(EventLibrary.focusObject)
+        .register(EventLibrary.moveTo)
+        .register(EventLibrary.moveFromTo)
+        .register(EventLibrary.fadeObject)
+        .register(EventLibrary.visibleObject)
+        .register(EventLibrary.addClass);
 
       const generator = new CanvasGenerator({
         width: 256,
@@ -321,7 +314,7 @@
           [`dom${i}`]: dom,
         });
 
-        const c3Id = v4();
+        const c3Id = createSymbol();
 
         symbolList.push(c3Id);
 

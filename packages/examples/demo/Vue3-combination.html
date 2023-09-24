@@ -95,13 +95,26 @@
       import {
         createApp,
         reactive,
+        toRaw,
         ref,
         watch,
         computed,
       } from "vue3/dist/vue.esm-browser.js";
-      import { ModelingEngineSupport } from "@vis-three/modeling-engine-support";
-      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+      import {
+        generateConfig,
+        CONFIGTYPE,
+        defineOption,
+      } from "@vis-three/middleware";
       import * as THREE from "three";
+
+      defineOption({
+        proxy: {
+          expand: reactive,
+          timing: "after",
+          toRaw: toRaw,
+        },
+      });
 
       const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("three"))
@@ -127,16 +140,10 @@
 
       createApp({
         setup() {
-          const sphere = generateConfig(
-            CONFIGTYPE.MESH,
-            {
-              geometry: geometry.vid,
-              material: material.vid,
-            },
-            {
-              handler: (c) => reactive(c),
-            }
-          );
+          const sphere = generateConfig(CONFIGTYPE.MESH, {
+            geometry: geometry.vid,
+            material: material.vid,
+          });
 
           const watchAttr = ref(0);
           const computedAttr = computed(() => {
