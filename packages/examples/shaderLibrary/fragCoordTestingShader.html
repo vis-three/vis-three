@@ -27,46 +27,52 @@
         ShaderGeneratorManager,
       } from "@vis-three/middleware";
 
-      import { uvPulseShader } from "@vis-three/library-shader";
+      import { fragCoordTestingShader } from "@vis-three/library-shader";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-      const engine = new VIS.ModelingEngineSupport()
+      const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true);
-      console.log(uvPulseShader);
-      ShaderGeneratorManager.register(uvPulseShader);
 
-      VIS.generateConfig.injectEngine = engine;
+      ShaderGeneratorManager.register(fragCoordTestingShader);
 
-      const scene = VIS.generateConfig("Scene");
+      generateConfig.injectEngine = engine;
 
-      engine.setScene(scene.vid);
+      const scene = generateConfig("Scene");
 
-      VIS.generateConfig.injectScene = true;
+      engine.setSceneBySymbol(scene.vid);
 
-      const ambientLight = VIS.generateConfig("AmbientLight");
+      generateConfig.injectScene = true;
 
-      const material = VIS.generateConfig("ShaderMaterial", {
-        shader: "fragCoordTestingShader",
-        side: THREE.DoubleSide,
-        uniforms: {
-          resolution: {
-            value: {
-              x: window.innerWidth,
-              y: window.innerHeight,
-            },
-          },
+      const ambientLight = generateConfig("AmbientLight");
+
+      const material = generateConfig(
+        "ShaderMaterial",
+        {
+          ...ShaderGeneratorManager.generateConfig(
+            fragCoordTestingShader.name,
+            {
+              resolution: {
+                value: {
+                  x: window.innerWidth,
+                  y: window.innerHeight,
+                },
+              },
+            }
+          ),
+          side: THREE.DoubleSide,
         },
-      });
+        { strict: false }
+      );
 
-      const geometry = VIS.generateConfig("PlaneGeometry", {
+      const geometry = generateConfig("PlaneGeometry", {
         width: 100,
         height: 100,
       });
 
-      const mesh = VIS.generateConfig("Mesh", {
+      const mesh = generateConfig("Mesh", {
         material: material.vid,
         geometry: geometry.vid,
       });

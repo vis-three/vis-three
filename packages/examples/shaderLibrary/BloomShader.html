@@ -28,32 +28,40 @@
       } from "@vis-three/middleware";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-      const engine = new VIS.ModelingEngineSupport()
+      import { BloomShader } from "@vis-three/library-shader";
+
+      ShaderGeneratorManager.register(BloomShader);
+
+      const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setSize()
         .setStats(true);
 
-      VIS.generateConfig.injectEngine = engine;
+      generateConfig.injectEngine = engine;
 
-      const scene = VIS.generateConfig("Scene");
+      const scene = generateConfig("Scene");
 
-      engine.setScene(scene.vid);
+      engine.setSceneBySymbol(scene.vid);
 
-      VIS.generateConfig.injectScene = true;
+      generateConfig.injectScene = true;
 
-      const material = VIS.generateConfig("MeshBasicMaterial", {
+      const material = generateConfig("MeshBasicMaterial", {
         color: "rgb(200, 100, 200)",
       });
-      const material2 = VIS.generateConfig("ShaderMaterial", {
-        shader: "BloomShader",
-        transparent: true,
-        depthTest: 0,
-        uniforms: {
-          color: { value: { r: 0.5, g: 1, b: 1 } },
-        },
-      });
 
-      const geometry = VIS.generateConfig("SphereGeometry", {
+      const material2 = generateConfig(
+        "ShaderMaterial",
+        {
+          ...ShaderGeneratorManager.generateConfig(BloomShader.name, {
+            color: { value: { r: 0.5, g: 1, b: 1 } },
+          }),
+          transparent: true,
+          depthTest: 0,
+        },
+        { strict: false }
+      );
+
+      const geometry = generateConfig("SphereGeometry", {
         radius: 10,
         groups: [
           { start: 0, count: Infinity, materialIndex: 0 },
@@ -61,19 +69,19 @@
         ],
       });
 
-      const geometry2 = VIS.generateConfig("BoxGeometry", {
+      const geometry2 = generateConfig("BoxGeometry", {
         groups: [
           { start: 0, count: Infinity, materialIndex: 0 },
           { start: 0, count: Infinity, materialIndex: 1 },
         ],
       });
 
-      const mesh = VIS.generateConfig("Mesh", {
+      const mesh = generateConfig("Mesh", {
         material: [material.vid, material2.vid],
         geometry: geometry.vid,
       });
 
-      const mesh2 = VIS.generateConfig("Mesh", {
+      const mesh2 = generateConfig("Mesh", {
         material: [material.vid, material2.vid],
         geometry: geometry2.vid,
         position: {
@@ -81,19 +89,7 @@
         },
       });
 
-      // const animation = VIS.generateConfig("ScriptAnimation", {
-      //   target: material2.vid,
-      //   attribute: ".uniforms.extend.value",
-      //   script: VIS.AniScriptLibrary.generateConfig("sinWave", {
-      //     amplitude: 0.3,
-      //     speed: 5,
-      //   }),
-      // });
-
       engine.play();
-
-      window.engine = engine;
-      window.material = material;
 
       const gui = new GUI();
 
