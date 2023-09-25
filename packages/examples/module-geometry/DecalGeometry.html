@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DecalGeometry</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      const engine = new ModelingEngineSupport()
+        .uninstall("TransformControlsPlugin")
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true)
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      engine.setSceneBySymbol(scene.vid);
+
+      generateConfig.injectScene = true;
+
+      const pointLight = generateConfig("PointLight", {
+        position: {
+          x: 30,
+          y: 50,
+        },
+        distance: 300,
+      });
+
+      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL);
+
+      const geometry = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
+        radius: 5,
+        widthSegments: 128,
+        heightSegments: 128,
+      });
+
+      const mesh = generateConfig(CONFIGTYPE.MESH, {
+        material: material.vid,
+        geometry: geometry.vid,
+      });
+
+      const decalGeometry = generateConfig(CONFIGTYPE.DECALGEOMETRY, {
+        target: {
+          geometry: mesh.geometry,
+          position: {
+            x: mesh.position.x,
+            y: mesh.position.y,
+            z: mesh.position.z,
+          },
+          rotation: {
+            x: mesh.rotation.x,
+            y: mesh.rotation.y,
+            z: mesh.rotation.z,
+          },
+          scale: {
+            x: mesh.scale.x,
+            y: mesh.scale.y,
+            z: mesh.scale.z,
+          },
+        },
+        point: {
+          x: 0,
+          y: 0,
+          z: 5,
+        },
+        size: {
+          x: 2,
+          y: 2,
+          z: 2,
+        },
+      });
+
+      const material2 = generateConfig(CONFIGTYPE.MESHBASICMATERIAL, {
+        color: "rgb(255, 0, 0)",
+        polygonOffset: -1,
+        polygonOffsetUnits: -1,
+      });
+      const mesh2 = generateConfig(CONFIGTYPE.MESH, {
+        geometry: decalGeometry.vid,
+        material: material2.vid,
+        renderOrder: 1,
+      });
+
+      mesh.children.push(mesh2.vid);
+
+      const object3D = new THREE.Object3D();
+
+      engine.eventManager.addEventListener("click", (event) => {
+        if (event.intersections.length) {
+          const inter = event.intersections[0];
+          const point = inter.point;
+          decalGeometry.point.x = point.x;
+          decalGeometry.point.y = point.y;
+          decalGeometry.point.z = point.z;
+
+          const rotation = inter.face.normal.clone();
+          rotation.transformDirection(inter.object.matrixWorld);
+          rotation.multiplyScalar(10);
+          rotation.add(point);
+
+          object3D.lookAt(rotation);
+
+          decalGeometry.orientation.x = object3D.rotation.x;
+          decalGeometry.orientation.y = object3D.rotation.y;
+          decalGeometry.orientation.z = object3D.rotation.z;
+        }
+      });
+
+      const gui = new GUI();
+      console.log(engine);
+    </script>
+  </body>
+</html>

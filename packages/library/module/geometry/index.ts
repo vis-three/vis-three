@@ -23,6 +23,7 @@ import ExtrudeGeometryProcessor from "./processors/ExtrudeGeometryProcessor";
 import PathGeometryProcessor from "./processors/PathGeometryProcessor";
 import ShapeGeometryProcessor from "./processors/ShapeGeometryProcessor";
 import LatheGeometryProcessor from "./processors/LatheGeometryProcessor";
+import DecalGeometryProcessor from "./processors/DecalGeometryProcessor";
 
 export * from "./GeometryInterface";
 export * from "./GeometryCompiler";
@@ -56,5 +57,6 @@ export default {
     PathGeometryProcessor,
     ShapeGeometryProcessor,
     LatheGeometryProcessor,
+    DecalGeometryProcessor,
   ],
 };

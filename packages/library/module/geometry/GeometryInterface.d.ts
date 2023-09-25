@@ -197,4 +197,15 @@ export interface LatheGeometryConfig extends GeometryConfig {
     phiStart: number;
     phiLength: number;
 }
-export type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig | LineCurveGeometryConfig | SplineCurveGeometryConfig | CubicBezierCurveGeometryConfig | QuadraticBezierCurveGeometryConfig | CustomGeometryConfig | LineTubeGeometryConfig | SplineTubeGeometryConfig | TorusGeometryConfig | RingGeometryConfig | LineShapeGeometryConfig | ExtrudeGeometryConfig | PathGeometryConfig | LatheGeometryConfig;
+export interface DecalGeometryConfig extends GeometryConfig {
+    target: {
+        geometry: string;
+        position: Vector3Config;
+        rotation: Vector3Config;
+        scale: Vector3Config;
+    };
+    point: Vector3Config;
+    orientation: Vector3Config;
+    size: Vector3Config;
+}
+export type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig | LineCurveGeometryConfig | SplineCurveGeometryConfig | CubicBezierCurveGeometryConfig | QuadraticBezierCurveGeometryConfig | CustomGeometryConfig | LineTubeGeometryConfig | SplineTubeGeometryConfig | TorusGeometryConfig | RingGeometryConfig | LineShapeGeometryConfig | ExtrudeGeometryConfig | PathGeometryConfig | LatheGeometryConfig | DecalGeometryConfig;

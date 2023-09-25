@@ -220,6 +220,18 @@ export interface LatheGeometryConfig extends GeometryConfig {
   phiLength: number;
 }
 
+export interface DecalGeometryConfig extends GeometryConfig {
+  target: {
+    geometry: string;
+    position: Vector3Config;
+    rotation: Vector3Config;
+    scale: Vector3Config;
+  };
+  point: Vector3Config;
+  orientation: Vector3Config;
+  size: Vector3Config;
+}
+
 export type GeometryAllType =
   | BoxGeometryConfig
   | SphereGeometryConfig
@@ -242,4 +254,5 @@ export type GeometryAllType =
   | LineShapeGeometryConfig
   | ExtrudeGeometryConfig
   | PathGeometryConfig
-  | LatheGeometryConfig;
+  | LatheGeometryConfig
+  | DecalGeometryConfig;

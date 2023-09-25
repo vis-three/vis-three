@@ -5,7 +5,8 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { defineProcessor, MODULETYPE, Compiler, Rule, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, Path, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry, LatheGeometry } from "three";
+import { Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, Path, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry, LatheGeometry, Mesh } from "three";
+import { DecalGeometry } from "three/examples/jsm/geometries/DecalGeometry";
 const transfromAnchor = function(geometry, config) {
   config.center && geometry.center();
   geometry.computeBoundingBox();
@@ -287,6 +288,20 @@ const getLatheGeometryConfig = function() {
     segments: 12,
     phiStart: 0,
     phiLength: Math.PI * 2
+  });
+};
+const getDecalGeometryConfig = function() {
+  return Object.assign(getGeometryConfig(), {
+    center: false,
+    target: {
+      geometry: "",
+      position: { x: 0, y: 0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 0, y: 0, z: 0 }
+    },
+    point: { x: 0, y: 0, z: 0 },
+    orientation: { x: 0, y: 0, z: 0 },
+    size: { x: 0, y: 0, z: 0 }
   });
 };
 var BoxGeometryProcessor = defineProcessor({
@@ -977,6 +992,50 @@ var LatheGeometryProcessor = defineProcessor({
     dispose(target);
   }
 });
+const tempGeometry = new BufferGeometry();
+const tempMesh = new Mesh();
+var DecalGeometryProcessor = defineProcessor({
+  type: "DecalGeometry",
+  config: getDecalGeometryConfig,
+  commands,
+  create: (config, engine) => {
+    const geometry = config.target.geometry ? engine.getObjectBySymbol(config.target.geometry) || tempGeometry : tempGeometry;
+    tempMesh.geometry = geometry;
+    tempMesh.matrixWorld.compose(
+      new Vector3(
+        config.target.position.x,
+        config.target.position.y,
+        config.target.position.z
+      ),
+      new Quaternion().setFromEuler(
+        new Euler(
+          config.target.rotation.x,
+          config.target.rotation.y,
+          config.target.rotation.z
+        )
+      ),
+      new Vector3(
+        config.target.scale.x,
+        config.target.scale.y,
+        config.target.scale.z
+      )
+    );
+    return create(
+      new DecalGeometry(
+        tempMesh,
+        new Vector3(config.point.x, config.point.y, config.point.z),
+        new Euler(
+          config.orientation.x,
+          config.orientation.y,
+          config.orientation.z
+        ),
+        new Vector3(config.size.x, config.size.y, config.size.z)
+      ),
+      config
+    );
+  },
+  dispose
+});
 var index = {
   type: "geometry",
   compiler: GeometryCompiler,
@@ -1004,7 +1063,8 @@ var index = {
     ExtrudeGeometryProcessor,
     PathGeometryProcessor,
     ShapeGeometryProcessor,
-    LatheGeometryProcessor
+    LatheGeometryProcessor,
+    DecalGeometryProcessor
   ]
 };
 export { CubicBezierCurveGeometry, CurveGeometry, GeometryCompiler, LineCurveGeometry, LineShapeGeometry, LineTubeGeometry, LoadGeometry, PathGeometry, QuadraticBezierCurveGeometry, SplineCurveGeometry, SplineTubeGeometry, index as default };

@@ -6,6 +6,7 @@ import {
   CurveGeometryConfig,
   CustomGeometryConfig,
   CylinderGeometryConfig,
+  DecalGeometryConfig,
   DodecahedronGeometryConfig,
   EdgesGeometryConfig,
   ExtrudeGeometryConfig,
@@ -272,5 +273,20 @@ export const getLatheGeometryConfig = function (): LatheGeometryConfig {
     segments: 12,
     phiStart: 0,
     phiLength: Math.PI * 2,
+  });
+};
+
+export const getDecalGeometryConfig = function (): DecalGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    center: false,
+    target: {
+      geometry: "",
+      position: { x: 0, y: 0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 0, y: 0, z: 0 },
+    },
+    point: { x: 0, y: 0, z: 0 },
+    orientation: { x: 0, y: 0, z: 0 },
+    size: { x: 0, y: 0, z: 0 },
   });
 };
