@@ -14,6 +14,7 @@ export interface CloneResult {
  * @returns EngineSupportLoadOptions | CloneResult
  */
 export declare const clone: (object: EngineSupportLoadOptions, options?: {
+    filter?: string[] | undefined;
     detail?: boolean | undefined;
     fillName?: boolean | ((SymbolConfig: any) => string) | undefined;
 }) => EngineSupportLoadOptions | CloneResult;
@@ -24,19 +25,20 @@ export declare const clone: (object: EngineSupportLoadOptions, options?: {
  * @param options
  */
 export declare const handler: (object: EngineSupportLoadOptions, handler: (config: SymbolConfig) => SymbolConfig, options?: {
+    filter?: string[];
     clone?: boolean;
-    assets?: boolean;
 }) => EngineSupportLoadOptions;
 export declare const planish: (configs: LoadOptions) => Record<string, SymbolConfig>;
 export declare const observable: (object: EngineSupportLoadOptions | string, obCallback?: ((config: SymbolConfig) => SymbolConfig) | undefined) => EngineSupportLoadOptions;
 declare const _default: {
     clone: (object: EngineSupportLoadOptions, options?: {
+        filter?: string[] | undefined;
         detail?: boolean | undefined;
         fillName?: boolean | ((SymbolConfig: any) => string) | undefined;
     }) => CloneResult | EngineSupportLoadOptions;
     handler: (object: EngineSupportLoadOptions, handler: (config: SymbolConfig) => SymbolConfig, options?: {
+        filter?: string[] | undefined;
         clone?: boolean | undefined;
-        assets?: boolean | undefined;
     }) => EngineSupportLoadOptions;
     planish: (configs: LoadOptions) => Record<string, SymbolConfig>;
     observable: (object: string | EngineSupportLoadOptions, obCallback?: ((config: SymbolConfig) => SymbolConfig) | undefined) => EngineSupportLoadOptions;

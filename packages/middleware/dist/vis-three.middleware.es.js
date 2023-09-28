@@ -199,8 +199,9 @@ generateConfig.injectEngine = null;
 const clone = (object, options = {}) => {
   let jsonObject = JSON.stringify(object, JSONHandler.stringify);
   const detail = {};
+  !options.filter && (options.filter = ["assets"]);
   const modulekeys = Object.keys(object).filter(
-    (module) => module !== "assets"
+    (key) => !options.filter.includes(key)
   );
   for (const modulekey of modulekeys) {
     for (const config of object[modulekey]) {
@@ -235,11 +236,14 @@ const clone = (object, options = {}) => {
   return options.detail ? { config: newConfig, detail } : newConfig;
 };
 const handler = (object, handler2, options = {
-  clone: true,
-  assets: false
+  filter: ["assets"],
+  clone: true
 }) => {
   const config = options.clone ? JSONHandler.clone(object) : object;
-  const modulekeys = options.assets ? Object.keys(config) : Object.keys(config).filter((module) => module !== "assets");
+  !options.filter && (options.filter = ["assets"]);
+  const modulekeys = Object.keys(config).filter(
+    (key) => !options.filter.includes(key)
+  );
   for (const modulekey of modulekeys) {
     const module = config[modulekey];
     module.forEach((elem, i, arr) => {

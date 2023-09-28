@@ -21,6 +21,7 @@ export interface CloneResult {
 export const clone = (
   object: EngineSupportLoadOptions,
   options: {
+    filter?: string[];
     detail?: boolean;
     fillName?: boolean | ((SymbolConfig) => string);
   } = {}
@@ -28,8 +29,10 @@ export const clone = (
   let jsonObject = JSON.stringify(object, JSONHandler.stringify);
   const detail: Record<string, string> = {};
 
+  !options.filter && (options.filter = ["assets"]);
+
   const modulekeys = Object.keys(object).filter(
-    (module) => module !== "assets"
+    (key) => !options.filter!.includes(key)
   );
   // 遍历所有的vid替换新的vid
   for (const modulekey of modulekeys) {
@@ -78,18 +81,20 @@ export const handler = (
   object: EngineSupportLoadOptions,
   handler: (config: SymbolConfig) => SymbolConfig,
   options: {
+    filter?: string[];
     clone?: boolean;
-    assets?: boolean;
   } = {
+    filter: ["assets"],
     clone: true,
-    assets: false,
   }
 ) => {
   const config = options.clone ? JSONHandler.clone(object) : object;
 
-  const modulekeys = options.assets
-    ? Object.keys(config)
-    : Object.keys(config).filter((module) => module !== "assets");
+  !options.filter && (options.filter = ["assets"]);
+
+  const modulekeys = Object.keys(config).filter(
+    (key) => !options.filter!.includes(key)
+  );
 
   for (const modulekey of modulekeys) {
     const module = config[modulekey];
