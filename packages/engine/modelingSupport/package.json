@@ -25,9 +25,9 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@vis-three/library-module": "workspace:^0.6.8",
+    "@vis-three/library-module": "workspace:^0.6.9",
     "@vis-three/library-parser": "workspace:^0.6.2",
-    "@vis-three/middleware": "workspace:^0.6.18",
+    "@vis-three/middleware": "workspace:^0.6.21",
     "@vis-three/plugin-axes-helper": "workspace:^0.6.1",
     "@vis-three/plugin-camera-adaptive": "workspace:^0.6.1",
     "@vis-three/plugin-css2d-renderer": "workspace:^0.6.2",
