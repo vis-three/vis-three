@@ -62,7 +62,7 @@ export default defineComponent({
       jump,
       docs: import.meta.env.BASE_URL + "docs/index.html",
       examples: import.meta.env.BASE_URL + "examples.html",
-      demo: "https://vis-three/github.io/exhibition-hall",
+      demo: "https://vis-three.github.io/exhibition-hall/",
       github: "https://github.com/vis-three",
       gitee: "https://gitee.com/Shiotsukikaedesari/vis-three",
       renderWindow,

@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/library-module",
-  "version": "0.6.9",
+  "version": "0.6.10",
   "description": "vis-three module library",
   "main": "index.js",
   "module": "index.js",
