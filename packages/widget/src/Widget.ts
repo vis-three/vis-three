@@ -2,20 +2,16 @@ import { EventDispatcher } from "@vis-three/core";
 import {
   CONFIGFACTORY,
   CONFIGTYPE,
+  createSymbol,
   EngineSupport,
   EngineSupportLoadOptions,
   generateConfig,
   getModule,
   globalAntiShake,
-  GroupConfig,
-  Ignore,
   OBJECTMODULE,
+  SymbolConfig,
 } from "@vis-three/middleware";
-import { ObjectConfig } from "@vis-three/middleware/object/ObjectConfig";
-import { v4 } from "uuid";
-import { LoadUnit } from "../../plugins/LoaderManagerPlugin";
-import { Observer } from "./widget/Observer";
-import { createElement, onComputed, onEvent } from "./widget/render";
+import { createElement } from "./render";
 
 const lifetimes = [
   "beforeLoad",
@@ -41,20 +37,11 @@ export interface WidgetOptions {
   mixins?: Omit<WidgetOptions, "name" | "parent">[];
   name: string;
   input?: Record<string, any>;
-  load?: Array<LoadUnit>;
   resources?: () => Record<string, any>;
   parent: string;
-  render: (
-    e: (
-      type: CONFIGTYPE,
-      merge: any
-    ) => ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>,
-    c: () => any,
-    onComputed: (fun: () => any) => Symbol,
-    onEvent: (fun: (event?: ObjectEvent) => void) => void,
-    onResource: (url: string) => any
-  ) => Record<string, ReturnType<typeof CONFIGFACTORY[CONFIGTYPE]>>;
-  data?: (ignore: Ignore) => Record<string, any>;
+  render: (e: (type: string, merge: any) => SymbolConfig) => {
+    refs: Record<string, SymbolConfig>;
+  };
   computed?: Record<string, () => any>;
   watch?: Record<
     string,
@@ -77,6 +64,11 @@ export interface WidgetOptions {
 
 export class Widget extends EventDispatcher {
   private static components: Record<string, WidgetOptions> = {};
+  private static engine: EngineSupport;
+
+  static useEngine(engine: EngineSupport) {
+    Widget.engine = engine;
+  }
 
   static component = function (options: WidgetOptions) {
     if (Widget.components[options.name]) {
@@ -87,10 +79,12 @@ export class Widget extends EventDispatcher {
     Widget.components[options.name] = options;
   };
 
-  wid = v4();
+  wid = createSymbol();
   parent = "";
   name: string;
   observed: Record<string, any> = {};
+
+  refs: Record<string, SymbolConfig> = {};
 
   private options: WidgetOptions;
 
@@ -159,33 +153,8 @@ export class Widget extends EventDispatcher {
     }
   }
 
-  private createRender(engineSupport: EngineSupport) {
-    const render = this.options.render.call(
-      this.observed,
-      createElement,
-      () => {},
-      onComputed,
-      onEvent,
-      (url: string) => {
-        return planish(
-          handler(
-            clone(engineSupport.resourceManager.getResourceConfig(url), {
-              fillName: true,
-            }) as EngineSupportLoadOptions,
-            (config) => createElement(config.type as CONFIGTYPE, config)
-          )
-        );
-      }
-    );
-
-    for (const key in render) {
-      this.observed[key] = render[key];
-      this.render![key] = true;
-    }
-
-    for (const key in this.options.resources || {}) {
-      delete this.observed[key];
-    }
+  private createRender() {
+    this.options.render(createElement);
   }
 
   private createObserved() {

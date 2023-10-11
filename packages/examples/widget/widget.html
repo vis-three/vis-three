@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>widget</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <div id="element1">
+      <p>canvas P</p>
+      <img
+        src="/texture/Bricks_Color.jpg"
+        style="width: 50px; height: 50px"
+        alt=""
+      />
+
+      <div class="form">
+        <label for="element1-range">range</label>
+        <input id="element1-range" type="range" />
+      </div>
+    </div>
+
+    <div id="element2">
+      <h1>H1标题</h1>
+      <div>div测试</div>
+      <div class="form">
+        <label for="element1-text">测试2 input</label>
+        <input id="element1-text" type="text" />
+      </div>
+
+      <div class="form">
+        <label for="element1-range">测试2 range</label>
+        <input id="element1-range" type="range" />
+      </div>
+    </div>
+
+    <div id="element3">
+      <video
+        src="/video/1.mp4"
+        style="width: 192px; height: 108"
+        controls
+      ></video>
+    </div>
+
+    <script type="module">
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+      import { generateConfig as G } from "@vis-three/middleware";
+      import { Widget } from "@vis-three/widget";
+      import * as THREE from "three";
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setStats(true)
+        .setSize()
+        .play();
+
+      Widget.useEngine(engine);
+
+      const app = new Widget({
+        render(h) {
+          const material = h("MeshStandardMaterial", {
+            color: "rgb(255, 0, 0)",
+          });
+
+          const geometry = h("BoxGeometry", {
+            width: 20,
+            height: 40,
+            depth: 60,
+          });
+
+          const mesh = h("Mesh", {
+            geometry: boxGeometry.vid,
+            material: material.vid,
+          });
+
+          return {
+            refs: {
+              mesh,
+            },
+          };
+        },
+      });
+    </script>
+  </body>
+</html>
