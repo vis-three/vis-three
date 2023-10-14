@@ -70,6 +70,12 @@
       Widget.useEngine(engine);
 
       const app = new Widget({
+        data() {
+          return {
+            x: 10,
+          };
+        },
+
         render(h) {
           const material = h("MeshStandardMaterial", {
             color: "rgb(255, 0, 0)",
@@ -84,6 +90,10 @@
           const mesh = h("Mesh", {
             geometry: boxGeometry.vid,
             material: material.vid,
+            position: {
+              x: bind(() => this.x + 10),
+            },
+            click: [this.run],
           });
 
           return {

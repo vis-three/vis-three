@@ -1,13 +1,12 @@
-import { Subscription } from "rxjs";
-import { ReactNotice } from "../Observable";
-import { Observer } from "./Observer";
+import { Observer, ReactNotice } from "./Observer";
+import { SYMBOL_WIDGET_WATCHER } from "./utils";
 
 export class Watcher {
   static map = new Map<Symbol, Watcher>();
-  token = Symbol("VIS.RENDER.WATCHER");
+  token = Symbol(SYMBOL_WIDGET_WATCHER);
 
   private target: object = {};
-  private path = "";
+  private key = "";
   private dep: Record<string, boolean> = {};
   private ob!: Observer;
   private run: () => any;
@@ -18,9 +17,9 @@ export class Watcher {
     Watcher.map.set(this.token, this);
   }
 
-  init(path: string, target: object, ob: Observer) {
+  init(key: string, target: object, ob: Observer) {
     this.target = target;
-    this.path = path;
+    this.key = key;
     this.ob = ob;
   }
 
@@ -31,22 +30,13 @@ export class Watcher {
   }
 
   update() {
-    const path = this.path.split(".");
-    const key = path.pop()!;
-
-    let object = this.target;
-
-    for (const key of path) {
-      object = object[key];
-    }
-
     const sub = this.ob.subscribe((notice: ReactNotice) => {
       if (notice.operate === "get") {
         this.dep[notice.path] = true;
       }
     });
 
-    object[key] = this.run();
+    this.target[this.key] = this.run();
 
     sub.unsubscribe();
   }

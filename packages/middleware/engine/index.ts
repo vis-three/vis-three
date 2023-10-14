@@ -223,7 +223,7 @@ export class EngineSupport
 
   loadConfigAsync(
     config: EngineSupportLoadOptions,
-    pretreat: (c: EngineSupportLoadOptions) => EngineSupportLoadOptions
+    pretreat?: (c: EngineSupportLoadOptions) => EngineSupportLoadOptions
   ): Promise<MappedEvent> {
     return new Promise((resolve, reject) => {
       const renderFlag = this.renderManager.hasRendering();

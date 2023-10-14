@@ -3872,6 +3872,7 @@ importers:
       '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.5
       '@vis-three/middleware': workspace:^0.6.21
+      '@vis-three/utils': workspace:^0.6.1
       '@vitejs/plugin-vue': ^2.3.3
       babel-loader: ^8.2.5
       babel-plugin-istanbul: ^6.1.1
@@ -3896,6 +3897,7 @@ importers:
       '@types/uuid': 8.3.4
       '@vis-three/core': link:../core
       '@vis-three/middleware': link:../middleware
+      '@vis-three/utils': link:../utils
       keyboardjs: 2.7.0
       rxjs: 7.8.1
       three-csg-ts: 3.1.11_k5pfjr5sd5oogwxlz26np7hhai

@@ -1,6 +1,8 @@
 import { globalOption } from "../../option";
-import { Ignore, Observer } from "./Observer";
+import { Ignore, Observer, ReactNotice } from "./Observer";
 import { proxyWeak } from "./proxy";
+
+export { ReactNotice };
 
 /**
  * 将传入的数据进行代理并创建数据的观察者
