@@ -56,7 +56,7 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     private loadLifeCycle;
     private removeLifeCycle;
     loadConfig(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
-    loadConfigAsync(config: EngineSupportLoadOptions, pretreat: (c: EngineSupportLoadOptions) => EngineSupportLoadOptions): Promise<MappedEvent>;
+    loadConfigAsync(config: EngineSupportLoadOptions, pretreat?: (c: EngineSupportLoadOptions) => EngineSupportLoadOptions): Promise<MappedEvent>;
     removeConfig(config: EngineSupportLoadOptions): void;
     getObjectConfig<O, C extends SymbolConfig>(object: O): C | null;
     registModule<C extends Compiler<any, any>>(options: ModuleOptions<C>): this;

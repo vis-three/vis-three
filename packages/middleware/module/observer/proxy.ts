@@ -3,7 +3,9 @@ import {
   SYMBOL_KEY,
   cacheArray,
   getCacheArray,
+  getObserver,
   getPath,
+  hasObserver,
   updateArraySymbol,
 } from "../../utils/utils";
 import { Observer } from "./Observer";
@@ -38,16 +40,16 @@ export const proxySetter = function (
   target: any,
   key: string | symbol,
   value: any,
-  receiver: any,
-  observer: Observer<object>
+  receiver: any
 ): boolean {
   const path = getPath(target);
+  const observer = getObserver(target);
 
   if (typeof key === "symbol" || observer.isIgnore(extendPath(path, key))) {
     return Reflect.set(target, key, value, receiver);
   }
 
-  if (isObject(value) && !proxyWeak.has(value)) {
+  if (isObject(value) && !hasObserver(value)) {
     value = react(observer, value, target);
   }
 
@@ -140,10 +142,10 @@ export const proxySetter = function (
 
 export const proxyDeleter = function (
   target: any,
-  key: string | symbol,
-  observer: Observer<object>
+  key: string | symbol
 ): boolean {
   const path = getPath(target);
+  const observer = getObserver(target);
 
   if (typeof key === "symbol" || observer.isIgnore(path)) {
     return Reflect.deleteProperty(target, key);

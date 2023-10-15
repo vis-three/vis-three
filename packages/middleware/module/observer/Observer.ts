@@ -18,7 +18,6 @@ export interface ReactNotice {
 export class Observer<T extends object> extends Subject<ReactNotice> {
   private ignore: Ignore = {};
   target: T;
-  private rawMap = new WeakMap<object, object>();
 
   constructor(object: T, ignore?: Ignore) {
     super();
@@ -48,13 +47,5 @@ export class Observer<T extends object> extends Subject<ReactNotice> {
 
   mergeIgnore(ignore: Ignore) {
     this.ignore = Object.assign(this.ignore, ignore);
-  }
-
-  saveRaw(proxy: object, target: object) {
-    this.rawMap.set(proxy, target);
-  }
-
-  toRaw<T extends object>(object: T) {
-    return this.rawMap.get(object) as T | null;
   }
 }

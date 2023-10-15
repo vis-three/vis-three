@@ -235,7 +235,7 @@ const clone = (object, options = {}) => {
   }
   return options.detail ? { config: newConfig, detail } : newConfig;
 };
-const handler = (object, handler2, options = {
+const handler$1 = (object, handler2, options = {
   filter: ["assets"],
   clone: true
 }) => {
@@ -265,7 +265,7 @@ const observable$1 = function(object, obCallback) {
   if (typeof object === "string") {
     object = JSON.parse(object, JSONHandler.parse);
   }
-  return handler(JSONHandler.clone(object), (c) => {
+  return handler$1(JSONHandler.clone(object), (c) => {
     c = generateConfig(c.type, c, { strict: false });
     if (obCallback) {
       return obCallback(c);
@@ -276,14 +276,14 @@ const observable$1 = function(object, obCallback) {
 };
 var template = {
   clone,
-  handler,
+  handler: handler$1,
   planish,
   observable: observable$1
 };
 var template$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   clone,
-  handler,
+  handler: handler$1,
   planish,
   observable: observable$1,
   "default": template
@@ -655,6 +655,9 @@ const CompilerFactory = function(type, compiler, processors) {
     }
   };
 };
+const SYMBOL_FATHER = "vis.father";
+const SYMBOL_KEY = "vis.key";
+const SYMBOL_OB = "vis.observer";
 const arrayCache = /* @__PURE__ */ new WeakMap();
 const cacheArray = function(object) {
   if (Array.isArray(object)) {
@@ -664,8 +667,6 @@ const cacheArray = function(object) {
 const getCacheArray = function(object) {
   return arrayCache.get(object);
 };
-const SYMBOL_FATHER = "vis.father";
-const SYMBOL_KEY = "vis.key";
 const getPath = function(object) {
   let path = "";
   const recursion = (object2) => {
@@ -687,199 +688,11 @@ const updateArraySymbol = function(array) {
     }
   }
 };
-const proxyWeak = /* @__PURE__ */ new WeakMap();
-const arrayMethods = [
-  "push",
-  "pop",
-  "shift",
-  "unshift",
-  "splice",
-  "sort",
-  "reverse"
-];
-const arrayMutation = /* @__PURE__ */ new WeakSet();
-const proxyGetter = function(target, key, receiver) {
-  if (Array.isArray(target) && arrayMethods.includes(key)) {
-    arrayMutation.add(target);
-  }
-  return Reflect.get(target, key, receiver);
-};
-const proxySetter = function(target, key, value, receiver, observer) {
-  const path = getPath(target);
-  if (typeof key === "symbol" || observer.isIgnore(extendPath(path, key))) {
-    return Reflect.set(target, key, value, receiver);
-  }
-  if (isObject(value) && !proxyWeak.has(value)) {
-    value = react(observer, value, target);
-  }
-  if (target[key] === void 0) {
-    if (isObject(value)) {
-      value[Symbol.for(SYMBOL_KEY)] = key;
-      isArray(value) && cacheArray(value);
-    }
-    isArray(target) && arrayMutation.delete(target);
-    const result2 = Reflect.set(target, key, value);
-    isArray(target) && cacheArray(target);
-    observer.next({
-      operate: "add",
-      path,
-      key,
-      value
-    });
-    return result2;
-  }
-  const result = Reflect.set(target, key, value);
-  if (isArray(target)) {
-    if (arrayMutation.has(target) && key === "length") {
-      const oldValue = getCacheArray(target);
-      if (!oldValue) {
-        console.error("array value is not be cached:", target);
-        return result;
-      }
-      updateArraySymbol(target);
-      const num = Math.abs(oldValue.length - target.length);
-      const operate = oldValue.length >= target.length ? "delete" : "add";
-      const contrast = oldValue.length >= target.length ? target : oldValue;
-      let execNum = 0;
-      let index = 0;
-      for (const member of operate === "delete" ? oldValue : target) {
-        if (!contrast.includes(member)) {
-          observer.next({
-            operate,
-            path,
-            key: index.toString(),
-            value: member
-          });
-          execNum += 1;
-          if (execNum === num) {
-            break;
-          }
-        }
-        index += 1;
-      }
-      cacheArray(target);
-      arrayMutation.delete(target);
-      return result;
-    } else if (arrayMutation.has(target) || key === "length") {
-      return result;
-    }
-  }
-  observer.next({
-    operate: "set",
-    path,
-    key,
-    value
-  });
-  return result;
-};
-const proxyDeleter = function(target, key, observer) {
-  const path = getPath(target);
-  if (typeof key === "symbol" || observer.isIgnore(path)) {
-    return Reflect.deleteProperty(target, key);
-  }
-  const value = target[key];
-  const result = Reflect.deleteProperty(target, key);
-  if (isArray(target)) {
-    return result;
-  }
-  observer.next({
-    operate: "delete",
-    path,
-    key,
-    value
-  });
-  return result;
-};
-const react = function(observer, object, father) {
-  if (!isObject(object)) {
-    return object;
-  }
-  if (proxyWeak.has(object)) {
-    return object;
-  }
-  const path = father ? getPath(father) : "";
-  if (observer.isIgnore(path)) {
-    return object;
-  }
-  const handler2 = {
-    get: proxyGetter,
-    set: (target, key, value, receiver) => proxySetter(target, key, value, receiver, observer),
-    deleteProperty: (target, key) => proxyDeleter(target, key, observer)
-  };
-  father && (object[Symbol.for(SYMBOL_FATHER)] = father);
-  for (const key in object) {
-    const tempPath = extendPath(path, key);
-    if (observer.isIgnore(tempPath)) {
-      continue;
-    }
-    if (isObject(object[key])) {
-      if (isArray(object[key])) {
-        const rawArray = object[key];
-        object[key] = react(
-          observer,
-          object[key],
-          object
-        );
-        cacheArray(rawArray);
-      } else {
-        object[key] = react(
-          observer,
-          object[key],
-          object
-        );
-      }
-      object[key][Symbol.for(SYMBOL_KEY)] = key;
-    }
-  }
-  const proxy = new Proxy(object, handler2);
-  observer.saveRaw(proxy, object);
-  proxyWeak.set(proxy, observer);
-  return proxy;
-};
-class Observer extends Subject {
-  constructor(object, ignore) {
-    super();
-    __publicField(this, "ignore", {});
-    __publicField(this, "target");
-    __publicField(this, "rawMap", /* @__PURE__ */ new WeakMap());
-    ignore && (this.ignore = ignore);
-    this.target = react(this, object);
-  }
-  isIgnore(path) {
-    let ignore = this.ignore;
-    for (const key of path.split(".")) {
-      if (ignore[key] === void 0) {
-        return false;
-      }
-      if (typeof ignore[key] === "boolean" && ignore[key]) {
-        return true;
-      } else {
-        ignore = ignore[key];
-      }
-    }
-    return false;
-  }
-  setIgnore(ignore) {
-    this.ignore = ignore;
-  }
-  mergeIgnore(ignore) {
-    this.ignore = Object.assign(this.ignore, ignore);
-  }
-  saveRaw(proxy, target) {
-    this.rawMap.set(proxy, target);
-  }
-  toRaw(object) {
-    return this.rawMap.get(object);
-  }
-}
-const observable = function(object, ignore) {
-  const observer = new Observer(object, ignore);
-  return observer.target;
-};
 const getObserver = function(object) {
-  return proxyWeak.get(
-    globalOption.proxy.toRaw ? globalOption.proxy.toRaw(object) : object
-  );
+  return object[Symbol.for(SYMBOL_OB)];
+};
+const hasObserver = function(object) {
+  return Boolean(object[Symbol.for(SYMBOL_OB)]);
 };
 const containerGetter = function(target, key, receiver) {
   return Reflect.get(target, key, receiver);
@@ -1148,6 +961,188 @@ const DataSupportFactory = function(type, rule) {
     }
   };
 };
+const arrayMethods = [
+  "push",
+  "pop",
+  "shift",
+  "unshift",
+  "splice",
+  "sort",
+  "reverse"
+];
+const arrayMutation = /* @__PURE__ */ new WeakSet();
+const proxyGetter = function(target, key, receiver) {
+  if (Array.isArray(target) && arrayMethods.includes(key)) {
+    arrayMutation.add(target);
+  }
+  return Reflect.get(target, key, receiver);
+};
+const proxySetter = function(target, key, value, receiver) {
+  const path = getPath(target);
+  const observer = getObserver(target);
+  if (typeof key === "symbol" || observer.isIgnore(extendPath(path, key))) {
+    return Reflect.set(target, key, value, receiver);
+  }
+  if (isObject(value) && !hasObserver(value)) {
+    value = react(observer, value, target);
+  }
+  if (target[key] === void 0) {
+    if (isObject(value)) {
+      value[Symbol.for(SYMBOL_KEY)] = key;
+      isArray(value) && cacheArray(value);
+    }
+    isArray(target) && arrayMutation.delete(target);
+    const result2 = Reflect.set(target, key, value);
+    isArray(target) && cacheArray(target);
+    observer.next({
+      operate: "add",
+      path,
+      key,
+      value
+    });
+    return result2;
+  }
+  const result = Reflect.set(target, key, value);
+  if (isArray(target)) {
+    if (arrayMutation.has(target) && key === "length") {
+      const oldValue = getCacheArray(target);
+      if (!oldValue) {
+        console.error("array value is not be cached:", target);
+        return result;
+      }
+      updateArraySymbol(target);
+      const num = Math.abs(oldValue.length - target.length);
+      const operate = oldValue.length >= target.length ? "delete" : "add";
+      const contrast = oldValue.length >= target.length ? target : oldValue;
+      let execNum = 0;
+      let index = 0;
+      for (const member of operate === "delete" ? oldValue : target) {
+        if (!contrast.includes(member)) {
+          observer.next({
+            operate,
+            path,
+            key: index.toString(),
+            value: member
+          });
+          execNum += 1;
+          if (execNum === num) {
+            break;
+          }
+        }
+        index += 1;
+      }
+      cacheArray(target);
+      arrayMutation.delete(target);
+      return result;
+    } else if (arrayMutation.has(target) || key === "length") {
+      return result;
+    }
+  }
+  observer.next({
+    operate: "set",
+    path,
+    key,
+    value
+  });
+  return result;
+};
+const proxyDeleter = function(target, key) {
+  const path = getPath(target);
+  const observer = getObserver(target);
+  if (typeof key === "symbol" || observer.isIgnore(path)) {
+    return Reflect.deleteProperty(target, key);
+  }
+  const value = target[key];
+  const result = Reflect.deleteProperty(target, key);
+  if (isArray(target)) {
+    return result;
+  }
+  observer.next({
+    operate: "delete",
+    path,
+    key,
+    value
+  });
+  return result;
+};
+const handler = {
+  get: proxyGetter,
+  set: proxySetter,
+  deleteProperty: proxyDeleter
+};
+const react = function(observer, object, father) {
+  if (!isObject(object)) {
+    return object;
+  }
+  if (hasObserver(object)) {
+    return object;
+  }
+  const path = father ? getPath(father) : "";
+  if (observer.isIgnore(path)) {
+    return object;
+  }
+  father && (object[Symbol.for(SYMBOL_FATHER)] = father);
+  object[Symbol.for(SYMBOL_OB)] = observer;
+  for (const key in object) {
+    const tempPath = extendPath(path, key);
+    if (observer.isIgnore(tempPath)) {
+      continue;
+    }
+    if (isObject(object[key])) {
+      if (isArray(object[key])) {
+        const rawArray = object[key];
+        object[key] = react(
+          observer,
+          object[key],
+          object
+        );
+        cacheArray(rawArray);
+      } else {
+        object[key] = react(
+          observer,
+          object[key],
+          object
+        );
+      }
+      object[key][Symbol.for(SYMBOL_KEY)] = key;
+    }
+  }
+  const proxy = new Proxy(object, handler);
+  return proxy;
+};
+class Observer extends Subject {
+  constructor(object, ignore) {
+    super();
+    __publicField(this, "ignore", {});
+    __publicField(this, "target");
+    ignore && (this.ignore = ignore);
+    this.target = react(this, object);
+  }
+  isIgnore(path) {
+    let ignore = this.ignore;
+    for (const key of path.split(".")) {
+      if (ignore[key] === void 0) {
+        return false;
+      }
+      if (typeof ignore[key] === "boolean" && ignore[key]) {
+        return true;
+      } else {
+        ignore = ignore[key];
+      }
+    }
+    return false;
+  }
+  setIgnore(ignore) {
+    this.ignore = ignore;
+  }
+  mergeIgnore(ignore) {
+    this.ignore = Object.assign(this.ignore, ignore);
+  }
+}
+const observable = function(object, ignore) {
+  const observer = new Observer(object, ignore);
+  return observer.target;
+};
 class Processor {
   constructor(options) {
     __publicField(this, "type");
@@ -1283,7 +1278,8 @@ const getSymbolConfig = function() {
   return {
     vid: "",
     type: "",
-    name: ""
+    name: "",
+    alias: ""
   };
 };
 const uniqueSymbol = function(type) {

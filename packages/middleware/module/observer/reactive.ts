@@ -4,9 +4,17 @@ import { proxyDeleter, proxyGetter, proxySetter, proxyWeak } from "./proxy";
 import {
   SYMBOL_FATHER,
   SYMBOL_KEY,
+  SYMBOL_OB,
   cacheArray,
   getPath,
+  hasObserver,
 } from "../../utils/utils";
+
+const handler = {
+  get: proxyGetter,
+  set: proxySetter,
+  deleteProperty: proxyDeleter,
+};
 
 export const react = function <T extends object>(
   observer: Observer<object>,
@@ -17,7 +25,7 @@ export const react = function <T extends object>(
     return object;
   }
 
-  if (proxyWeak.has(object)) {
+  if (hasObserver(object)) {
     return object;
   }
 
@@ -27,15 +35,8 @@ export const react = function <T extends object>(
     return object;
   }
 
-  const handler = {
-    get: proxyGetter,
-    set: (target: any, key: string | symbol, value: any, receiver: any) =>
-      proxySetter(target, key, value, receiver, observer),
-    deleteProperty: (target: any, key: string | symbol) =>
-      proxyDeleter(target, key, observer),
-  };
-
   father && (object[Symbol.for(SYMBOL_FATHER)] = father);
+  object[Symbol.for(SYMBOL_OB)] = observer;
 
   for (const key in object) {
     // 判断是否需要忽略
@@ -70,10 +71,6 @@ export const react = function <T extends object>(
   }
 
   const proxy = new Proxy(object, handler);
-
-  observer.saveRaw(proxy, object);
-
-  proxyWeak.set(proxy, observer);
 
   return proxy;
 };

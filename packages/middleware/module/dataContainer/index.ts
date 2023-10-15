@@ -3,7 +3,7 @@ import { Subject, Subscription } from "rxjs";
 import { globalOption } from "../../option";
 import { SymbolConfig } from "../common";
 import { CompilerTarget } from "../compiler";
-import { getObserver } from "../observer";
+import { getObserver } from "../../utils/utils";
 
 export interface ProxyNotice {
   operate: "add" | "set" | "delete";

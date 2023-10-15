@@ -2,6 +2,7 @@ export interface SymbolConfig {
     vid: string;
     type: string;
     name: string;
+    alias: string;
 }
 export interface Vector3Config {
     x: number;

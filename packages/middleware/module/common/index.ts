@@ -2,6 +2,7 @@ export interface SymbolConfig {
   vid: string;
   type: string;
   name: string;
+  alias: string;
 }
 
 export interface Vector3Config {
@@ -20,6 +21,7 @@ export const getSymbolConfig = function (): SymbolConfig {
     vid: "",
     type: "",
     name: "",
+    alias: "",
   };
 };
 

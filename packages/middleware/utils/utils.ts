@@ -1,5 +1,9 @@
 import { isObject } from "@vis-three/utils";
 
+export const SYMBOL_FATHER = "vis.father";
+export const SYMBOL_KEY = "vis.key";
+export const SYMBOL_OB = "vis.observer";
+
 const arrayCache = new WeakMap<Array<any>, Array<any>>();
 
 export const cacheArray = function (object: Array<any>) {
@@ -11,9 +15,6 @@ export const cacheArray = function (object: Array<any>) {
 export const getCacheArray = function (object: Array<any>) {
   return arrayCache.get(object);
 };
-
-export const SYMBOL_FATHER = "vis.father";
-export const SYMBOL_KEY = "vis.key";
 
 export const getPath = function (object: { Symbol: string }) {
   let path = "";
@@ -39,4 +40,12 @@ export const updateArraySymbol = function (array: Array<any>) {
       array[index][Symbol.for(SYMBOL_KEY)] = index;
     }
   }
+};
+
+export const getObserver = function <T extends object>(object: T) {
+  return object[Symbol.for(SYMBOL_OB)];
+};
+
+export const hasObserver = function <T extends object>(object: T) {
+  return Boolean(object[Symbol.for(SYMBOL_OB)]);
 };
