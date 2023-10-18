@@ -121,7 +121,7 @@ export class EventDispatcher {
     const onceListener = function (this: EventDispatcher, event: C) {
       listener.call(this, event);
       // 防止影响当前列表的length导致出问题
-      Promise.resolve(() => {
+      Promise.resolve().then(() => {
         this.removeEventListener(type, onceListener);
       });
     };

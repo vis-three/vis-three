@@ -1,5 +1,6 @@
 import { Subject } from "rxjs";
 import { react } from "./reactive";
+import { globalOption } from "../../option";
 
 export interface Ignore {
   [key: string]: Ignore | boolean;
@@ -11,6 +12,7 @@ export interface ReactNotice {
   key: string;
   value: any;
 }
+
 /**
  * 观察者类
  * @internal
@@ -21,7 +23,14 @@ export class Observer<T extends object> extends Subject<ReactNotice> {
 
   constructor(object: T, ignore?: Ignore) {
     super();
-    ignore && (this.ignore = ignore);
+    if (ignore) {
+      this.ignore = ignore;
+    } else {
+      this.ignore = Object.assign(
+        { meta: true, alias: true },
+        globalOption.proxy.ignore || {}
+      );
+    }
     this.target = react(this, object);
   }
 

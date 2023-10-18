@@ -46,7 +46,8 @@ const globalOption = {
   proxy: {
     expand: void 0,
     timing: "before",
-    toRaw: void 0
+    toRaw: void 0,
+    ignore: {}
   },
   symbol: {
     generator: v4,
@@ -1115,7 +1116,14 @@ class Observer extends Subject {
     super();
     __publicField(this, "ignore", {});
     __publicField(this, "target");
-    ignore && (this.ignore = ignore);
+    if (ignore) {
+      this.ignore = ignore;
+    } else {
+      this.ignore = Object.assign(
+        { meta: true, alias: true },
+        globalOption.proxy.ignore || {}
+      );
+    }
     this.target = react(this, object);
   }
   isIgnore(path) {
@@ -1279,7 +1287,8 @@ const getSymbolConfig = function() {
     vid: "",
     type: "",
     name: "",
-    alias: ""
+    alias: "",
+    meta: {}
   };
 };
 const uniqueSymbol = function(type) {

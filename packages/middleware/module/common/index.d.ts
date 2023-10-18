@@ -3,6 +3,7 @@ export interface SymbolConfig {
     type: string;
     name: string;
     alias: string;
+    meta: Record<string, any>;
 }
 export interface Vector3Config {
     x: number;
