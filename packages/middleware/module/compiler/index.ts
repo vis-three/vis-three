@@ -185,9 +185,11 @@ export class Compiler<C extends SymbolConfig, O extends object> {
       ...notice,
     });
 
+    const router = notice.path.join(".");
+
     Bus.compilerEvent.emit(
       object,
-      `${COMPILER_EVENT.COMPILE}:${notice.path.join(".")}.${notice.key}`
+      `${COMPILER_EVENT.COMPILE}:${router ? router + "." : router}${notice.key}`
     );
 
     Bus.compilerEvent.emit(object, `${COMPILER_EVENT.UPDATE}`);

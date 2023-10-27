@@ -588,9 +588,10 @@ class Compiler {
       compiler: this,
       ...notice
     });
+    const router = notice.path.join(".");
     compilerEvent.emit(
       object,
-      `${"compiler.compile"}:${notice.path.join(".")}.${notice.key}`
+      `${"compiler.compile"}:${router ? router + "." : router}${notice.key}`
     );
     compilerEvent.emit(object, `${"compiler.update"}`);
     return this;
