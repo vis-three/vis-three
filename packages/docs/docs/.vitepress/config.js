@@ -121,7 +121,8 @@ export default defineConfig({
         {
           items: [
             { text: "介绍", link: "/start/intro" },
-            { text: "开始", link: "/start/start" },
+            { text: "安装", link: "/start/install" },
+            { text: "原生引擎构建", link: "/start/native" },
             { text: "配置化开发", link: "/start/middleware" },
             { text: "配置化与框架结合", link: "/start/combine" },
             { text: "自定义插件", link: "/start/plugin" },
