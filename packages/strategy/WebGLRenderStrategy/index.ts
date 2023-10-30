@@ -19,7 +19,7 @@ export interface WebGLRenderEngine
 
 export const WEBGL_RENDER_STRATEGY = transPkgName(pkgname);
 
-export const WebGLRendererStrategy: Strategy<WebGLRenderEngine> = function () {
+export const WebGLRenderStrategy: Strategy<WebGLRenderEngine> = function () {
   let renderFun: (event: RenderEvent) => void;
 
   return {

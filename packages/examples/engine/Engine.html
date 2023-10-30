@@ -25,24 +25,31 @@
       import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
       import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
       import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
-      import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
       import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
-      import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
+      import { OrbitControlsPlugin } from "@vis-three/plugin-orbit-controls";
+      import { PointerManagerPlugin } from "@vis-three/plugin-pointer-manager";
+      import { EventManagerPlugin } from "@vis-three/plugin-event-manager";
+      import { LoaderManagerPlugin } from "@vis-three/plugin-loader-manager";
+
+      import { WebGLRenderStrategy } from "@vis-three/strategy-webgl-render";
 
       const engine = defineEngine({
         plugins: [
-          RenderManagerPlugin(),
           WebGLRendererPlugin({
             antialias: true,
             alpha: true,
           }),
-          EffectComposerPlugin({
-            WebGLMultisampleRenderTarget: true,
-          }),
           CameraAdaptivePlugin(),
           GridHelperPlugin(),
+          RenderManagerPlugin(),
+          OrbitControlsPlugin(),
+          PointerManagerPlugin(),
+          EventManagerPlugin(),
+          LoaderManagerPlugin({
+            path: import.meta.env.BASE_URL,
+          }),
         ],
-        strategy: [EffectRenderStrategy()],
+        strategy: [WebGLRenderStrategy()],
       })
         .setDom(document.getElementById("app"))
         .setSize()
@@ -50,25 +57,37 @@
 
       const scene = engine.scene;
 
+      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
+      pointLight.position.y = 30;
+
       const box = new THREE.Mesh(
         new THREE.BoxBufferGeometry(10, 10, 10),
         new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
       );
       box.position.x = 10;
-      scene.add(box);
-
-      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
-      pointLight.position.y = 30;
-
-      scene.add(pointLight);
 
       const line = new THREE.Line(box.geometry);
-      scene.add(line);
 
       const points = new THREE.Points(box.geometry);
 
       points.position.x = -10;
-      scene.add(points);
+
+      scene.add(pointLight, box, line, points);
+
+      box.addEventListener("click", (event) => {
+        alert("hello vis-three");
+      });
+
+
+      engine.loaderManager.addEventListener("loaded", (event) => {
+        const model = event.resourceMap.get("/model/katana/katana.obj");
+
+        model.scale.set(20, 20, 20);
+
+        engine.scene.add(model);
+      });
+
+      engine.loaderManager.load(["/model/katana/katana.obj"]);
     </script>
   </body>
 </html>
