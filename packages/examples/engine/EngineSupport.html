@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EngineSupport</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import {
+        defineEngineSupport,
+        generateConfig,
+        CONFIGTYPE,
+      } from "@vis-three/middleware";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+      import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
+      import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
+
+      import { WebGLRenderStrategy } from "@vis-three/strategy-webgl-render";
+
+      import {
+        light,
+        geometry,
+        material,
+        line,
+        points,
+        mesh,
+        scene,
+      } from "@vis-three/library-module";
+
+      const engine = defineEngineSupport({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          CameraAdaptivePlugin(),
+          GridHelperPlugin(),
+        ],
+        strategy: [WebGLRenderStrategy()],
+        modules: [light, geometry, material, line, points, mesh, scene],
+      })
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      const defaultScene = generateConfig(CONFIGTYPE.SCENE);
+
+      engine.applyConfig(defaultScene).setSceneBySymbol(defaultScene.vid);
+
+      generateConfig.injectEngine = engine;
+      generateConfig.injectScene = true;
+      generateConfig.autoInject = true;
+
+      generateConfig(CONFIGTYPE.POINTLIGHT, {
+        color: "rgb(255, 255, 255)",
+        position: {
+          y: 30,
+        },
+      });
+
+      const commonGeometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+        width: 10,
+        height: 10,
+        depth: 10,
+      });
+
+      const boxMaterial = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+        color: "rgb(255, 105, 100)",
+      });
+
+      generateConfig(CONFIGTYPE.MESH, {
+        geometry: commonGeometry.vid,
+        material: boxMaterial.vid,
+        position: {
+          x: 10,
+        },
+      });
+
+      generateConfig(CONFIGTYPE.LINE, {
+        geometry: commonGeometry.vid,
+      });
+
+      const pointsMaterial = generateConfig(CONFIGTYPE.POINTSMATERIAL, {
+        color: "rgb(255, 255, 255)",
+      });
+
+      generateConfig(CONFIGTYPE.POINTS, {
+        geometry: commonGeometry.vid,
+        material: pointsMaterial.vid,
+        position: {
+          x: -10,
+        },
+      });
+    </script>
+  </body>
+</html>

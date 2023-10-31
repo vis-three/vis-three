@@ -2,8 +2,8 @@
 layout: home
 hero:
   name: VIS-THREE
-  text: A web 3D development framework based on three.js
-  tagline: 基于three.js的前端3D开发框架
+  text: 基于three.js的组装式前端3D开发框架
+  tagline: A web 3D development framework for assembled based on three.js
   image:
     src: /favicon.ico
     alt: Logo image

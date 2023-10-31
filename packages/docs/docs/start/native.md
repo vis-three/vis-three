@@ -7,6 +7,9 @@
 `vis-three`的引擎准备对比与原生`three.js`是十分高效的，我们先安装下面的依赖：
 
 ```
+npm i three
+npm i @types/three
+
 // vis-three的基础核心
 npm i @vis-three/core
 
@@ -23,7 +26,7 @@ npm i @vis-three/plugin-camera-adaptive
 安装完毕之后直接进行引擎构建，`vis-three`提供了两种引擎构建方式，一种是`类实例化`,一种是`函数式`构建，这两种构建模式对于不同场景各有优势：
 
 ```js
-import { Engine } from "@vis-three/core";
+import { Engine, defineEngine } from "@vis-three/core";
 import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
 import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
 import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
@@ -325,6 +328,53 @@ engine.scene.add(
 
 ## 业务插件
 
+对于不同的业务需求，官方提供的插件策略不可能全都能覆盖到，您可以根据自身的业务需求去编写相符的插件或者策略。
+
+```js
+// ./Plugin.js
+export const MyPlugin = function () {
+  return {
+    name: "MyPlugin",
+    install() {
+      // ...
+    },
+
+    dispose() {
+      // ...
+    },
+  };
+};
+```
+
+:::tip
+具体的自定义插件、策略开发流程介绍请查看文档：[自定义插件](./plugin.md)、[自定义策略](./strategy.md)
+:::
+
+如何引入插件呢？其实跟我们其他的插件引入方式一样。
+
+```js
+// import ...
+import { MyPlugin } from "./Plugin.js";
+
+const engine = new Engine().install(MyPlugin());
+```
+
 ## 引擎修改
 
-## 开发思维
+有时候我们会面对官方提供的预置引擎中有部分功能不需要的情况，或者说是影响了当前的效果的情况，那么我们在使用时，可以动态进行引擎修改。
+
+```js
+// import ...
+import { MyPlugin } from "./Plugin.js";
+
+const engine = new DisplayEngine()
+  .uninstall("LoaderManagerPlugin")
+  .rollback("EffectRenderStrategy")
+  .install(MyPlugin())
+  .setDom(document.getElementById("app"))
+  .play();
+```
+
+:::tip
+功能注销只用输入插件或者策略的`name`就行，如果直接注销插件，其所依赖的策略也会一同注销，不过不推荐这么做，在进行插件策略注销时希望**显式的按照依赖顺序级联注销**，方便进行问题排查。
+:::
