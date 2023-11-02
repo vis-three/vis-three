@@ -31,6 +31,7 @@
       import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
 
       import { WebGLRenderStrategy } from "@vis-three/strategy-webgl-render";
+      import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer-support";
 
       import {
         light,
@@ -40,6 +41,7 @@
         points,
         mesh,
         scene,
+        renderer,
       } from "@vis-three/library-module";
 
       const engine = defineEngineSupport({
@@ -51,8 +53,17 @@
           CameraAdaptivePlugin(),
           GridHelperPlugin(),
         ],
-        strategy: [WebGLRenderStrategy()],
-        modules: [light, geometry, material, line, points, mesh, scene],
+        strategy: [WebGLRenderStrategy(), WebGLRendererSupportStrategy()],
+        modules: [
+          light,
+          geometry,
+          material,
+          line,
+          points,
+          mesh,
+          scene,
+          renderer,
+        ],
       })
         .setDom(document.getElementById("app"))
         .setSize()
@@ -61,6 +72,15 @@
       const defaultScene = generateConfig(CONFIGTYPE.SCENE);
 
       engine.applyConfig(defaultScene).setSceneBySymbol(defaultScene.vid);
+
+      engine.applyConfig(
+        generateConfig(CONFIGTYPE.WEBGLRENDERER, {
+          clearColor: "rgba(255 ,255 ,255 , 1)",
+          shadowMap: {
+            enabled: true,
+          },
+        })
+      );
 
       generateConfig.injectEngine = engine;
       generateConfig.injectScene = true;

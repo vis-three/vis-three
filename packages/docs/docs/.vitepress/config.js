@@ -122,9 +122,9 @@ export default defineConfig({
           items: [
             { text: "介绍", link: "/start/intro" },
             { text: "安装", link: "/start/install" },
-            { text: "原生引擎构建", link: "/start/native" },
-            { text: "配置化引擎构建", link: "/start/config" },
-            { text: "配置化与框架结合", link: "/start/combine" },
+            { text: "原生化开发", link: "/start/native" },
+            { text: "配置化开发", link: "/start/config" },
+            { text: "配置化框架结合", link: "/start/combine" },
             { text: "自定义插件", link: "/start/plugin" },
             { text: "自定义策略", link: "/start/strategy" },
             { text: "自定义配置化模块", link: "/start/module" },

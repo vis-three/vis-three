@@ -237,6 +237,7 @@ defaultScene.children.push(pointLight.vid, box.vid, lineBox.vid, pointsBox.vid);
 如果我们是简单场景开发，上面既要手动生成配置，又要手动应用配置，又要注意应用顺序的过程比较繁琐，我们可以使用自动注入的相关功能简化操作。
 
 ```js
+// other code...
 const defaultScene = generateConfig(CONFIGTYPE.SCENE);
 
 engine.applyConfig(defaultScene).setSceneBySymbol(defaultScene.vid);
@@ -337,6 +338,51 @@ mesh.position.z = 10;
 :::
 
 ## 插件配置
+
+有部分配置是不在`module`包重的，比如`WebGLRenderer`的配置，因为这些配置需要对应的插件才能进行，所以这部分配置能力也变成了相关插件策略，这部分插件策略大多以`@vis-three/xxxx-support`进行，我们现在来配置一下`WebGLRenderer`。
+
+```
+npm i @vis-three/strategy-webgl-renderer-support
+```
+
+```js
+// import code...
+
+import {
+  //...,
+  renderer,
+} from "@vis-three/library-module";
+
+import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer-support";
+
+const engine = defineEngineSupport({
+  plugins: [
+    //...
+    WebGLRendererPlugin({
+      antialias: true,
+      alpha: true,
+    }),
+  ],
+  strategy: [WebGLRenderStrategy(), WebGLRendererSupportStrategy()],
+  modules: [
+    //...
+    renderer,
+  ],
+});
+
+engine.applyConfig(
+  generateConfig(CONFIGTYPE.WEBGLRENDERER, {
+    clearColor: "rgba(255 ,255 ,255 , 1)",
+    shadowMap: {
+      enabled: true,
+    },
+  })
+);
+```
+
+:::tip
+就算是引入插件的配置，也需要有相应的配置化模块作为基础，比如上方的: `import {renderer} from "@vis-three/library-module";`
+:::
 
 ## 物体动画
 
