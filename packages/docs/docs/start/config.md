@@ -2,6 +2,8 @@
 
 对比于原生的 three.js 和引擎构建，配置化引擎在继承了原生引擎**全部能力**的基础上，增加了配置化的全流程控制能力，配置化开发根据配置化去形成场景结构与可视化面，在运行期通过对配置的更改去影响 3D 场景，能够为复杂应用的构建保驾护航。
 
+> 代码案例查看：[https://vis-three.github.io/examples.html?example=engine/EngineSupport.html](https://vis-three.github.io/examples.html?example=engine/EngineSupport.html)
+
 ## 引擎准备
 
 配置化引擎与原生引擎一致，我们先安装下面的依赖：
@@ -217,7 +219,7 @@ defaultScene.children.push(pointLight.vid, box.vid, lineBox.vid, pointsBox.vid);
 
 通过上面的代码我们发现：
 
-1、不用再通过`import * as THREE from 'three'`然后`new`相关的对象就可以直接完成场景。
+1、不用再通过`import * as THREE from 'three'`然后`new`相关的对象就可以直接完成场景构建。
 
 2、配置化的形式可以在生成配置的时候将所有的属性初始完成。
 
@@ -339,7 +341,7 @@ mesh.position.z = 10;
 
 ## 插件配置
 
-有部分配置是不在`module`包重的，比如`WebGLRenderer`的配置，因为这些配置需要对应的插件才能进行，所以这部分配置能力也变成了相关插件策略，这部分插件策略大多以`@vis-three/xxxx-support`进行，我们现在来配置一下`WebGLRenderer`。
+有部分配置是不在`module`包中的，比如`WebGLRenderer`的配置，因为这些配置需要对应的插件才能进行，所以这部分配置能力也变成了相关插件策略，这部分插件策略大多以`@vis-three/xxxx-support`进行，我们现在来配置一下`WebGLRenderer`。
 
 ```
 npm i @vis-three/strategy-webgl-renderer-support
@@ -386,12 +388,379 @@ engine.applyConfig(
 
 ## 物体动画
 
+对于物体动画，按照原生的方式进行也可以实现，但是我们更希望利用配置化的优势去构建，这样在保存恢复场景的时候能够利用配置化的特性直接恢复。
+
+在`vis-three`官方提供的动画中，目前分为两个类型的动画，一个是`脚本动画-ScriptAnimation`，一个是`混合器动画-MixerAnimation`。
+
+对于一般性质的简单动画，或者说业务特征明显的动画，基本上使用`脚本动画`是十分方便高效的。但是对于脚本动画而言，需要预定的动画库与动画方法支持，我们要率先将需要的动画进行注册，再调用。
+
+我们可以先安装官方提供的脚本动画库。
+
+```
+npm i @vis-three/library-animate-script
+```
+
+```js
+// import ...
+
+import {
+  //...
+  animation,
+} from "@vis-three/library-module";
+
+import { AniScriptGeneratorManager } from "@vis-three/middleware";
+
+import { linearTime } from "@vis-three/library-animate-script";
+
+AniScriptGeneratorManager.register(linearTime);
+
+const engine = defineEngineSupport({
+  //...
+  modules: [
+    // ...,
+    animation,
+  ],
+});
+
+// ...
+const box = generateConfig(CONFIGTYPE.MESH, {
+  geometry: commonGeometry.vid,
+  material: boxMaterial.vid,
+  position: {
+    x: 10,
+  },
+});
+
+// ...
+
+generateConfig(
+  CONFIGTYPE.SCRIPTANIMATION,
+  {
+    target: box.vid,
+    attribute: ".rotation.y",
+    script: AniScriptGeneratorManager.generateConfig("linearTime", {
+      multiply: 1.5,
+    }),
+  },
+  {
+    strict: false,
+  }
+);
+```
+
+:::tip
+这里注意我们对于未知的配置环境需要将`generateConfig`的严格模式关闭，不然无法进行配置的合并。
+
+未知的配置环境就是不能提前的知道这个配置的全部，无法预先定义的配置。
+:::
+
 ## 物体事件
+
+对于物体事件，配置化的部分和物体动画的流程是一致的。我们需要把相关的事件方法率先进行注册。
+
+下面是点击线框会让立方体往 x 轴实时移动。
+
+```
+npm i @vis-three/library-event
+```
+
+```js
+// import ...
+import { EventGeneratorManager } from "@vis-three/middleware";
+
+import EventLibrary from "@vis-three/library-event";
+
+EventGeneratorManager.register(EventLibrary.moveSpacing);
+
+const engine = defineEngineSupport({
+  //...
+});
+
+// ...
+const box = generateConfig(CONFIGTYPE.MESH, {
+  geometry: commonGeometry.vid,
+  material: boxMaterial.vid,
+  position: {
+    x: 10,
+  },
+});
+
+const boxMoveEvent = EventGeneratorManager.generateConfig("moveSpacing", {
+  params: {
+    target: box.vid,
+    spacing: {
+      x: 10,
+      y: 0,
+      z: 0,
+    },
+  },
+});
+
+generateConfig(
+  CONFIGTYPE.LINE,
+  {
+    geometry: commonGeometry.vid,
+    click: [boxMoveEvent],
+  },
+  {
+    strict: false,
+  }
+);
+
+// ...
+```
 
 ## 模型导入
 
+对于模型导入的部分，我们需要预先安装资源的解析器，为什么要使用解析器呢？
+
+因为对于配置化开发，所有的物体对象都会以配置的形式进入引擎，那么对于不同的业务场景，我们可能会准备不同的配置模块而使用同一批模型等外部资源，那么我们可以通过安装不同的解析器去达成对应的业务需求。
+
+也就是说在配置化的外部资源应用过程中需要经历这么一个过程：
+
+`外部资源（模型等）加载` -> `解析器解析为对应的配置单` ->
+
+`配置单预处理` -> `配置单应用`
+
+但是对于通用的模型资源应用，官方准备了对应的解析器库可供选择使用：
+
+```
+npm i @vis-three/library-parser
+```
+
+```js
+// import ...
+import {
+  // ...
+  Template,
+} from "@vis-three/middleware";
+
+import * as ModuleLibrary from "@vis-three/library-module";
+
+const engine = defineEngineSupport({
+  //...
+  modules: Object.values(ModuleLibrary),
+});
+
+//...
+
+engine.loaderManager.setPath(import.meta.env.BASE_URL);
+engine.resourceManager.addParser(new GLTFResourceParser());
+
+//...
+
+const shoe = "model/glb/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf";
+
+engine.loadResourcesAsync([shoe]).then((res) => {
+  engine.loadConfig(Template.observable(res.resourceConfig[shoe]));
+
+  const rootTemplate = res.configMap.get(shoe + ".scene");
+
+  const root = engine.getConfigBySymbol(rootTemplate.vid);
+
+  root.scale.x = 50;
+  root.scale.y = 50;
+  root.scale.z = 50;
+});
+```
+
+:::tip
+
+- 对于解析器，我们需要注册进 `engine.resourceManager` 也就是配置化引擎的**资源管理器**中。
+
+- 对于加载完成后的物体，我们需要通过 url 去找的他的相关配置，因为有可能同时加载很多资源。
+
+- 对于拿到的配置单，我们需要将他们处理成可供 `engine` 使用的响应式对象，这里我么你可以直接使用提供的`Template`对象中的方法。
+
+- 其他的思路跟我们配置化开发的思路一样，你只用想方法找到相关的配置，就能够操作它。
+  :::
+
+## 生成资源
+
+什么叫生成资源？就是没有持久化的，而是在运行期生成的资源，最典型的就是`CanvasTexture`这类资源。
+
+生成资源有一个问题就是无法通过`Loader`进行资源访问的加载，`vis-three`将外部资源分为两类，一类是加载资源，一类是非加载资源。
+
+加载资源：需要通过 `loader` 加载，如果要使用需要提供相关的加载 `loader` 注入到 `loaderManger` 中。
+
+非加载资源：比如 `canvas` 和 `dom` 等等，一般是没有相关 `loader`，这种可以直接通过 `resourceManger` 进行资源注册。
+
+```js
+import {
+  //...
+  HTMLCanvasElementParser,
+} from "@vis-three/library-parser";
+
+import { CanvasGenerator } from "@vis-three/convenient";
+
+const engine = defineEngineSupport({
+  //...
+});
+
+engine.resourceManager.addParser(new HTMLCanvasElementParser());
+
+const textCanvas = new CanvasGenerator()
+  .draw((ctx) => {
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, 512, 512);
+    ctx.translate(256, 256);
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "black";
+    ctx.font = " bold 52px 微软雅黑";
+    ctx.fillText("Hello vis-three", 0, 0);
+  })
+  .preview()
+  .getDom();
+
+engine.registerResources({
+  textCanvas,
+});
+
+const canvasTexture = generateConfig(CONFIGTYPE.CANVASTEXTURE, {
+  url: "textCanvas",
+});
+
+const boxMaterial = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+  // color: "rgb(255, 105, 100)",
+  map: canvasTexture.vid,
+});
+
+const box = generateConfig(CONFIGTYPE.MESH, {
+  geometry: commonGeometry.vid,
+  material: boxMaterial.vid,
+  position: {
+    x: 10,
+  },
+});
+
+// ...
+```
+
+:::tip
+
+- 对于 canvas 资源等，官方已经通过`@vis-three/convenient`集成了便利的工具。
+- 生成的资源记得通过`engine.registerResources`进行注册，他们的`key`是在配置过程中的标识。
+  :::
+
 ## 配置保存
+
+配置化开发的一大特点就是，只要有相关的配置的，在哪里都能够复现当前的场景，那么首要的部分就是配置单的保存。
+
+```js
+// other code ...
+
+const json = engine.toJSON(); // 直接导出json配置单
+
+const jsObject = engine.exportConfig(); // 导出干净的js对象
+```
+
+::: tip
+有很多的需求是在保存之前需要对配置单进行统一的操作，可以直接操作`jsObject`对象，`exportConfig`导出的 js 对象是深拷贝对象，不会影响运行期的配置。
+:::
 
 ## 场景恢复
 
+如何通过配置单还原整个场景？我们只用调用几个`api`就能搞定！
+
+当然，如果是自建的`engine`，在导入前期别忘了将相关的`事件`、`动画`、`解析器`、`生成资源`等等提前准备好。
+
+```js
+import jsonConfig from "jsonConfig.json";
+import { generateConfig, Template, JSONHanlder } from "@vis-three/middleware";
+
+// import导入
+const config = Template.observable(JSONHanlder.clone(jsonConfig));
+
+// 接口获取
+axios.get("url").then((res) => {
+  const config = Template.observable(JSONHanlder.clone(jsonConfig));
+});
+
+engine.loadConfig(config, (res) => {
+  // do something
+});
+
+engine.loadConfigAsync(config).then((res) => {
+  // do something
+});
+```
+
+::: tip
+
+1. 在应用配置单之前，我们需要通过`JSONHanlder`处理一次，因为比如`Infinity`, `-Infinity`等的数字对象在普通的`json`化过程中会丢失，所以需要特殊处理。
+
+2. 有很多的需求是在导入配置完成之后，还会对配置进行相关处理，所以目前的加载函数不会对配置进行自动的响应式转译，需要手动进行，这里可以使用`Template`模板处理方法进行。
+   :::
+
+## 自定配置
+
+有事时候我们希望在生成的配置中加入我们自定义的一些数据或配置项，可以供 UI 获取或者其他方法调节，但是这些自定义的配置项又不希望被配置化机制捕获，进而触发默认的响应方法，`vis-three`生成的配置中有一个默认的被忽略属性`meta`，可以不会被配置化机制影响，我们可以在里面添加相关的属性方法。
+
+```js
+// code...
+const box = generateConfig(
+  CONFIGTYPE.MESH,
+  {
+    geometry: commonGeometry.vid,
+    material: boxMaterial.vid,
+    position: {
+      x: 10,
+    },
+    meta: {
+      userId: 123456,
+      status: 200,
+      data: {
+        title: "节点1",
+      },
+    },
+  },
+  {
+    strict: false,
+  }
+);
+
+console.log(box);
+// code...
+```
+
+我们可以通过 `console.log`的输出看到，`box.meta`下的数据是没有没`proxy`过的。
+
+:::tip
+注意关闭严格模式。
+:::
+
 ## 业务模块
+
+对于不同的业务需求，官方提供的配置化模块不可能全都能覆盖到，或者说使用起来不够便利，您可以根据自身的业务需求去编写相符的配置化模块。
+
+```js
+// ./MyModule.js
+
+const boardProcessor = defineProcessor({
+  type: "Board",
+  // ...
+});
+
+export default {
+  type: "board",
+  object: true,
+  //...
+  processor: [boardProcessor],
+};
+```
+
+```js
+import MyModule from "./MyModule.js";
+
+const engine = defineEngineSupport({
+  //...
+  modules: [MyModule],
+});
+
+const board = generateConfig(CONFIGTYPE.BOARD);
+```
+
+:::tip
+具体的自定义模块开发流程介绍请查看文档：[自定义配置化模块](./module.md)
+:::

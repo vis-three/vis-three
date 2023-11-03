@@ -1,4 +1,8 @@
-import { SymbolConfig, Vector2Config } from "@vis-three/middleware";
+import {
+  SymbolConfig,
+  Vector2Config,
+  getSymbolConfig,
+} from "@vis-three/middleware";
 import {
   ClampToEdgeWrapping,
   CubeReflectionMapping,
@@ -75,10 +79,7 @@ export type TextureAllType =
   | LoadTextureConfig;
 
 export const getTextureConfig = function (): TextureConfig {
-  return {
-    vid: "",
-    type: "Texture",
-    name: "",
+  return Object.assign(getSymbolConfig(), {
     mapping: UVMapping,
     wrapS: ClampToEdgeWrapping,
     wrapT: ClampToEdgeWrapping,
@@ -103,7 +104,7 @@ export const getTextureConfig = function (): TextureConfig {
     matrixAutoUpdate: true,
     encoding: LinearEncoding,
     needsUpdate: false,
-  };
+  });
 };
 
 export const getImageTextureConfig = function (): ImageTextureConfig {

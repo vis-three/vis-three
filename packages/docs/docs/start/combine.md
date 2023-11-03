@@ -147,13 +147,12 @@ defineOption({
   proxy: {
     expand: reactive,
     timing: "after",
-    toRaw: toRaw,
   },
 });
 ```
 
 :::warning
-这里注意，`vue3`的响应机制一定对应`timing`为`after`之时，这样子才能确保`vue3`的部分机制，比如说`array`对象的处理上不会出错，但是一旦对应`timing`为`after`，就需要告诉`vis-three`如何通过当前对象找到源对象，所以`toRaw`方法也必不可少。
+这里注意，`vue3`的响应机制一定对应`timing`为`after`之时，这样子才能确保`vue3`的部分机制，比如说`array`对象的处理上不会出错。
 :::
 
 ### component 中使用

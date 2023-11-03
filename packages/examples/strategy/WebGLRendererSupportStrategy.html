@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WebGLRendererSupportStrategy</title>
+    <title>WebGLRenderSupportStrategy</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -23,7 +23,7 @@
       import * as THREE from "three";
       import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
       import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
-      import { WebGLRendererStrategy } from "@vis-three/strategy-webgl-render";
+      import { WebGLRenderStrategy } from "@vis-three/strategy-webgl-render";
       import {
         defineEngineSupport,
         generateConfig,
@@ -51,7 +51,7 @@
           CameraAdaptivePlugin(),
         ],
 
-        strategy: [WebGLRendererStrategy(), WebGLRendererSupportStrategy()],
+        strategy: [WebGLRenderStrategy(), WebGLRendererSupportStrategy()],
         modules: [
           sceneModule,
           meshModule,

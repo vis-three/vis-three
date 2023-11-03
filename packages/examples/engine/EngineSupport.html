@@ -24,6 +24,9 @@
         defineEngineSupport,
         generateConfig,
         CONFIGTYPE,
+        AniScriptGeneratorManager,
+        EventGeneratorManager,
+        Template,
       } from "@vis-three/middleware";
       import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
       import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
@@ -33,16 +36,18 @@
       import { WebGLRenderStrategy } from "@vis-three/strategy-webgl-render";
       import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer-support";
 
+      import * as ModuleLibrary from "@vis-three/library-module";
+
+      import { linearTime } from "@vis-three/library-animate-script";
+      import EventLibrary from "@vis-three/library-event";
       import {
-        light,
-        geometry,
-        material,
-        line,
-        points,
-        mesh,
-        scene,
-        renderer,
-      } from "@vis-three/library-module";
+        GLTFResourceParser,
+        HTMLCanvasElementParser,
+      } from "@vis-three/library-parser";
+      import { CanvasGenerator } from "@vis-three/convenient";
+
+      AniScriptGeneratorManager.register(linearTime);
+      EventGeneratorManager.register(EventLibrary.moveSpacing);
 
       const engine = defineEngineSupport({
         plugins: [
@@ -54,20 +59,34 @@
           GridHelperPlugin(),
         ],
         strategy: [WebGLRenderStrategy(), WebGLRendererSupportStrategy()],
-        modules: [
-          light,
-          geometry,
-          material,
-          line,
-          points,
-          mesh,
-          scene,
-          renderer,
-        ],
+        modules: Object.values(ModuleLibrary),
       })
         .setDom(document.getElementById("app"))
         .setSize()
         .play();
+
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+      engine.resourceManager
+        .addParser(new GLTFResourceParser())
+        .addParser(new HTMLCanvasElementParser());
+
+      const textCanvas = new CanvasGenerator()
+        .draw((ctx) => {
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, 512, 512);
+          ctx.translate(256, 256);
+          ctx.textBaseline = "middle";
+          ctx.textAlign = "center";
+          ctx.fillStyle = "black";
+          ctx.font = " bold 52px 微软雅黑";
+          ctx.fillText("Hello vis-three", 0, 0);
+        })
+        .preview()
+        .getDom();
+
+      engine.registerResources({
+        textCanvas,
+      });
 
       const defaultScene = generateConfig(CONFIGTYPE.SCENE);
 
@@ -99,21 +118,59 @@
         depth: 10,
       });
 
-      const boxMaterial = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
-        color: "rgb(255, 105, 100)",
+      const canvasTexture = generateConfig(CONFIGTYPE.CANVASTEXTURE, {
+        url: "textCanvas",
       });
 
-      generateConfig(CONFIGTYPE.MESH, {
-        geometry: commonGeometry.vid,
-        material: boxMaterial.vid,
-        position: {
-          x: 10,
+      const boxMaterial = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+        // color: "rgb(255, 105, 100)",
+        map: canvasTexture.vid,
+      });
+
+      const box = generateConfig(
+        CONFIGTYPE.MESH,
+        {
+          geometry: commonGeometry.vid,
+          material: boxMaterial.vid,
+          position: {
+            x: 10,
+          },
+          meta: {
+            userId: 123456,
+            status: 200,
+            data: {
+              title: "节点1",
+            },
+          },
+        },
+        {
+          strict: false,
+        }
+      );
+
+      console.log(box);
+
+      const boxMoveEvent = EventGeneratorManager.generateConfig("moveSpacing", {
+        params: {
+          target: box.vid,
+          spacing: {
+            x: 10,
+            y: 0,
+            z: 0,
+          },
         },
       });
 
-      generateConfig(CONFIGTYPE.LINE, {
-        geometry: commonGeometry.vid,
-      });
+      generateConfig(
+        CONFIGTYPE.LINE,
+        {
+          geometry: commonGeometry.vid,
+          click: [boxMoveEvent],
+        },
+        {
+          strict: false,
+        }
+      );
 
       const pointsMaterial = generateConfig(CONFIGTYPE.POINTSMATERIAL, {
         color: "rgb(255, 255, 255)",
@@ -125,6 +182,41 @@
         position: {
           x: -10,
         },
+      });
+
+      generateConfig(
+        CONFIGTYPE.SCRIPTANIMATION,
+        {
+          target: box.vid,
+          attribute: ".rotation.y",
+          script: AniScriptGeneratorManager.generateConfig("linearTime", {
+            multiply: 1.5,
+          }),
+        },
+        {
+          strict: false,
+        }
+      );
+
+      const shoe = "model/glb/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf";
+
+      engine.loadResourcesAsync([shoe]).then((res) => {
+        engine.loadConfig(Template.observable(res.resourceConfig[shoe]));
+
+        const rootTemplate = res.configMap.get(shoe + ".scene");
+
+        const root = engine.getConfigBySymbol(rootTemplate.vid);
+
+        root.scale.x = 50;
+        root.scale.y = 50;
+        root.scale.z = 50;
+
+        const json = engine.toJSON(); // 直接导出json配置单
+
+        const jsObject = engine.exportConfig(); // 导出干净的js对象
+
+        console.log(json);
+        console.log(jsObject);
       });
     </script>
   </body>

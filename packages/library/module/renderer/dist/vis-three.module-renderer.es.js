@@ -1,4 +1,4 @@
-import { Rule, Compiler, uniqueSymbol } from "@vis-three/middleware";
+import { Rule, Compiler, uniqueSymbol, getSymbolConfig } from "@vis-three/middleware";
 import { validate } from "uuid";
 const validSymbols = [];
 const RendererRule = function(input, compiler) {
@@ -16,12 +16,7 @@ class RendererCompiler extends Compiler {
   }
 }
 const getRendererConfig = function() {
-  return {
-    vid: "",
-    type: "Renderer",
-    name: "",
-    size: null
-  };
+  return Object.assign(getSymbolConfig(), { size: null });
 };
 var index = {
   type: "renderer",

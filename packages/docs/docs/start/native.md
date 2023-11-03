@@ -2,6 +2,8 @@
 
 如果您已经有`three.js`相关项目的开发经验或者开发习惯，对于项目的开发需要更倾向于原生`three.js`的开发模式，本篇会引导您基于原生`three.js`的开发习惯下使用`vis-three`进行更高效的项目开发。
 
+> 代码案例查看：[https://vis-three.github.io/examples.html?example=engine/Engine.html](https://vis-three.github.io/examples.html?example=engine/Engine.html)
+
 ## 引擎准备
 
 `vis-three`的引擎准备对比与原生`three.js`是十分高效的，我们先安装下面的依赖：

@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-renderer",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "vis-three renderer module",
   "main": "dist/vis-three.module-renderer.umd.js",
   "module": "dist/vis-three.module-renderer.es.js",
