@@ -83,3 +83,18 @@ export const checkSameDirecton = function (vect1: Vector2, vect2: Vector2) {
 
   return Math.acos(MathUtils.clamp(theta, -1, 1)) < Math.PI / 2;
 };
+
+export const calcOperator = {
+  "+": (a: number, b: number) => a + b,
+  "-": (a: number, b: number) => a - b,
+  "*": (a: number, b: number) => a * b,
+  "/": (a: number, b: number) => a / b,
+};
+
+export const calc = function (
+  operate: keyof typeof calcOperator,
+  v1: number,
+  v2: number
+) {
+  return calcOperator[operate](v1, v2);
+};

@@ -15,3 +15,7 @@ export declare const isArray: (object: any) => boolean;
 export declare const typeOf: (object: any) => "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function" | "null" | "array" | "String" | "Number" | "Boolean";
 export declare const extendPath: (str1: string, str2: string) => string;
 export declare const transPkgName: (str: string) => string;
+export declare const getFinalReference: (object: Record<string, any>, attr: string) => {
+    reference: Record<string, any>;
+    key: string;
+} | null;

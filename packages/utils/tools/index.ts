@@ -122,3 +122,30 @@ export const transPkgName = function (str: string) {
     return (str += elem[0].toUpperCase() + elem.slice(1));
   }, "");
 };
+
+export const getFinalReference = function (
+  object: Record<string, any>,
+  attr: string
+) {
+  if (attr === "") {
+    console.error(`attr can not be empty`);
+    return null;
+  }
+
+  const list = attr.split(".");
+  let reference = object;
+
+  for (const key of list.slice(0, -1)) {
+    if (typeof reference[key] === "undefined") {
+      console.error(`object has not this attr: ${attr}`, object);
+      return null;
+    } else {
+      reference = reference[key];
+    }
+  }
+
+  return {
+    reference,
+    key: list.pop()!,
+  };
+};
