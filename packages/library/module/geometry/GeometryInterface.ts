@@ -202,6 +202,7 @@ export interface ExtrudeGeometryConfig extends GeometryConfig {
     bevelOffset: number;
     bevelSegments: number;
     extrudePath: string;
+    UVGenerator: string;
   };
 }
 

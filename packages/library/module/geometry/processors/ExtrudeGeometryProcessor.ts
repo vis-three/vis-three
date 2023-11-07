@@ -18,6 +18,7 @@ import { GeometryCompiler } from "../GeometryCompiler";
 import { getExtrudeGeometryConfig } from "../GeometryConfig";
 import { ExtrudeGeometryConfig } from "../GeometryInterface";
 import { BaseEvent } from "@vis-three/core";
+import ExtrudeUVGenerator from "../extends/ExtrudeUVGenerator";
 
 const cacheBusMap: WeakMap<
   ExtrudeBufferGeometry,
@@ -75,6 +76,8 @@ export default defineProcessor<
       shape,
       Object.assign({}, config.options, {
         extrudePath,
+        UVGenerator:
+          ExtrudeUVGenerator[config.options.UVGenerator || "default"],
       })
     );
 

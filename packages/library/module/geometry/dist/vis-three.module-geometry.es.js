@@ -4,8 +4,8 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { defineProcessor, MODULETYPE, Compiler, Rule, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, Vector2, TubeGeometry, Path, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry, LatheGeometry, Mesh } from "three";
+import { getSymbolConfig, defineProcessor, MODULETYPE, Compiler, Rule, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, Vector2, BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, TubeGeometry, Path, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry, LatheGeometry, Mesh } from "three";
 import { DecalGeometry } from "three/examples/jsm/geometries/DecalGeometry";
 const transfromAnchor = function(geometry, config) {
   config.center && geometry.center();
@@ -81,10 +81,7 @@ const dispose = function(target) {
   target.dispose();
 };
 const getGeometryConfig = function() {
-  return {
-    vid: "",
-    type: "Geometry",
-    name: "",
+  return Object.assign(getSymbolConfig(), {
     center: true,
     position: {
       x: 0,
@@ -102,7 +99,7 @@ const getGeometryConfig = function() {
       z: 1
     },
     groups: []
-  };
+  });
 };
 const getBoxGeometryConfig = function() {
   return Object.assign(getGeometryConfig(), {
@@ -269,7 +266,8 @@ const getExtrudeGeometryConfig = function() {
       bevelSize: 0.1,
       bevelOffset: 0,
       bevelSegments: 3,
-      extrudePath: ""
+      extrudePath: "",
+      UVGenerator: "default"
     }
   });
 };
@@ -354,6 +352,54 @@ var ConeGeometryProcessor = defineProcessor({
   ),
   dispose
 });
+const limit = function(number) {
+  return number > 1 ? 1 : number < 0 ? 0 : number;
+};
+const cover = {
+  generateTopUV(geometry, vertices, indexA, indexB, indexC) {
+    const a_x = vertices[indexA * 3];
+    const a_y = vertices[indexA * 3 + 1];
+    const b_x = vertices[indexB * 3];
+    const b_y = vertices[indexB * 3 + 1];
+    const c_x = vertices[indexC * 3];
+    const c_y = vertices[indexC * 3 + 1];
+    return [
+      new Vector2(limit(a_x), limit(a_y)),
+      new Vector2(limit(b_x), limit(b_y)),
+      new Vector2(limit(c_x), limit(c_y))
+    ];
+  },
+  generateSideWallUV(geometry, vertices, indexA, indexB, indexC, indexD) {
+    const a_x = vertices[indexA * 3];
+    const a_y = vertices[indexA * 3 + 1];
+    const a_z = vertices[indexA * 3 + 2];
+    const b_x = vertices[indexB * 3];
+    const b_y = vertices[indexB * 3 + 1];
+    const b_z = vertices[indexB * 3 + 2];
+    const c_x = vertices[indexC * 3];
+    const c_y = vertices[indexC * 3 + 1];
+    const c_z = vertices[indexC * 3 + 2];
+    const d_x = vertices[indexD * 3];
+    const d_y = vertices[indexD * 3 + 1];
+    const d_z = vertices[indexD * 3 + 2];
+    if (Math.abs(a_y - b_y) < Math.abs(a_x - b_x)) {
+      return [
+        new Vector2(limit(a_x), limit(1 - a_z)),
+        new Vector2(limit(b_x), limit(1 - b_z)),
+        new Vector2(limit(c_x), limit(1 - c_z)),
+        new Vector2(limit(d_x), limit(1 - d_z))
+      ];
+    } else {
+      return [
+        new Vector2(limit(a_y), limit(1 - a_z)),
+        new Vector2(limit(b_y), limit(1 - b_z)),
+        new Vector2(limit(c_y), limit(1 - c_z)),
+        new Vector2(limit(d_y), limit(1 - d_z))
+      ];
+    }
+  }
+};
+var ExtrudeUVGenerator = { default: void 0, cover };
 class LoadGeometry extends BufferGeometry {
   constructor(geometry) {
     super();
@@ -836,7 +882,8 @@ var ExtrudeGeometryProcessor = defineProcessor({
     const geometry = new ExtrudeBufferGeometry(
       shape,
       Object.assign({}, config.options, {
-        extrudePath
+        extrudePath,
+        UVGenerator: ExtrudeUVGenerator[config.options.UVGenerator || "default"]
       })
     );
     if (shape) {
@@ -1067,4 +1114,4 @@ var index = {
     DecalGeometryProcessor
   ]
 };
-export { CubicBezierCurveGeometry, CurveGeometry, GeometryCompiler, LineCurveGeometry, LineShapeGeometry, LineTubeGeometry, LoadGeometry, PathGeometry, QuadraticBezierCurveGeometry, SplineCurveGeometry, SplineTubeGeometry, index as default };
+export { CubicBezierCurveGeometry, CurveGeometry, ExtrudeUVGenerator, GeometryCompiler, LineCurveGeometry, LineShapeGeometry, LineTubeGeometry, LoadGeometry, PathGeometry, QuadraticBezierCurveGeometry, SplineCurveGeometry, SplineTubeGeometry, index as default };

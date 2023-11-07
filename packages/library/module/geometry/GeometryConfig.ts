@@ -1,3 +1,4 @@
+import { getSymbolConfig } from "@vis-three/middleware";
 import {
   BoxGeometryConfig,
   CircleGeometryConfig,
@@ -29,10 +30,7 @@ import {
 } from "./GeometryInterface";
 
 export const getGeometryConfig = function (): GeometryConfig {
-  return {
-    vid: "",
-    type: "Geometry",
-    name: "",
+  return Object.assign(getSymbolConfig(), {
     center: true,
     position: {
       x: 0, // percent
@@ -50,7 +48,7 @@ export const getGeometryConfig = function (): GeometryConfig {
       z: 1,
     },
     groups: [],
-  };
+  });
 };
 
 export const getBoxGeometryConfig = function (): BoxGeometryConfig {
@@ -253,6 +251,7 @@ export const getExtrudeGeometryConfig = function (): ExtrudeGeometryConfig {
       bevelOffset: 0,
       bevelSegments: 3,
       extrudePath: "",
+      UVGenerator: "default",
     },
   });
 };
