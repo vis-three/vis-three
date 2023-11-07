@@ -26,6 +26,7 @@ import skeleton from "@vis-three/module-skeleton";
 import skinnedMesh from "@vis-three/module-skinned-mesh";
 import animationClip from "@vis-three/module-animation-clip";
 import animationAction from "@vis-three/module-animation-action";
+import constraintor from "@vis-three/module-constraintor";
 
 export {
   animation,
@@ -56,4 +57,5 @@ export {
   skinnedMesh,
   animationClip,
   animationAction,
+  constraintor,
 };

@@ -784,6 +784,7 @@ importers:
       '@vis-three/module-animation-clip': workspace:^0.6.2
       '@vis-three/module-bone': workspace:^0.6.0
       '@vis-three/module-camera': workspace:^0.6.3
+      '@vis-three/module-constraintor': workspace:^0.6.0
       '@vis-three/module-controls': workspace:^0.6.3
       '@vis-three/module-css2d': workspace:^0.6.3
       '@vis-three/module-css3d': workspace:^0.6.4
@@ -818,6 +819,7 @@ importers:
       '@vis-three/module-animation-clip': link:animationClip
       '@vis-three/module-bone': link:bone
       '@vis-three/module-camera': link:camera
+      '@vis-three/module-constraintor': link:constraintor
       '@vis-three/module-controls': link:controls
       '@vis-three/module-css2d': link:css2D
       '@vis-three/module-css3d': link:css3D

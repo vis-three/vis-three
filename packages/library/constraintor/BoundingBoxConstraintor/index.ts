@@ -1,4 +1,4 @@
-import { getFinalReference, Math } from "@vis-three/utils";
+import { getFinalReference, MATH } from "@vis-three/utils";
 import { Constraintor } from "../constraintor";
 import { Box3 } from "three";
 
@@ -44,7 +44,7 @@ export class BoundingBoxConstraintor extends Constraintor {
     const offset = this.offset;
     const reference = this.reference;
 
-    this.target.object[this.target.key] = Math.calc(
+    this.target.object[this.target.key] = MATH.calc(
       offset.operate,
       reference[offset.position.direction === "+" ? "max" : "min"][
         offset.position.axes

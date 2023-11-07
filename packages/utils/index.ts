@@ -2,4 +2,4 @@ export * from "./pipleLine";
 export * from "./declare";
 export * from "./tools";
 export * from "./three";
-export * as Math from "./math";
+export * as MATH from "./math";

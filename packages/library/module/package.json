@@ -28,6 +28,7 @@
     "@vis-three/module-animation-clip": "workspace:^0.6.2",
     "@vis-three/module-bone": "workspace:^0.6.0",
     "@vis-three/module-camera": "workspace:^0.6.3",
+    "@vis-three/module-constraintor": "workspace:^0.6.0",
     "@vis-three/module-controls": "workspace:^0.6.3",
     "@vis-three/module-css2d": "workspace:^0.6.3",
     "@vis-three/module-css3d": "workspace:^0.6.4",

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>UNREALBLOOMPASS</title>
+    <title>BoundingBoxConstraintor</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -46,39 +46,52 @@
 
       generateConfig.injectScene = true;
 
-      const pointLight = generateConfig("PointLight", {
-        position: {
-          x: 30,
-          y: 50,
-        },
-        distance: 100,
-      });
-
-      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+      const material = generateConfig(CONFIGTYPE.MESHBASICMATERIAL, {
         color: "red",
       });
 
-      const geometry = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
+      const sphereGeometry = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
         radius: 10,
         widthSegments: 64,
         heightSegments: 64,
       });
 
-      const mesh = generateConfig(CONFIGTYPE.MESH, {
+      const sphere = generateConfig(CONFIGTYPE.MESH, {
         material: material.vid,
-        geometry: geometry.vid,
+        geometry: sphereGeometry.vid,
       });
 
-      const unrealBloom = generateConfig(CONFIGTYPE.UNREALBLOOMPASS, {
-        strength: 1,
+      const boxGeometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+        width: 20,
+        height: 20,
+        depth: 20,
+      });
+
+      const box = generateConfig(CONFIGTYPE.MESH, {
+        material: material.vid,
+        geometry: boxGeometry.vid,
+      });
+
+      const numberConstraintor = generateConfig(CONFIGTYPE.NUMBERCONSTRAINTOR, {
+        target: box.vid,
+        targetAttr: "position.x",
+        ref: sphere.vid,
+        refAttr: "position.x",
+        offset: {
+          operate: "+",
+          value: 20,
+        },
       });
 
       const gui = new GUI();
 
-      gui.add(unrealBloom, "strength", 0, 5, 0.1);
-      gui.add(unrealBloom, "threshold", 0, 1, 0.01);
-      gui.add(unrealBloom, "radius", 0, 5, 0.1);
-      gui.addColor(material, "color");
+      gui.add(numberConstraintor, "targetAttr", [
+        "position.x",
+        "position.y",
+        "position.z",
+      ]);
+      gui.add(numberConstraintor.offset, "value", 0, 100, 1);
+      gui.add(numberConstraintor.offset, "operate", ["+", "-", "*", "/"]);
     </script>
   </body>
 </html>

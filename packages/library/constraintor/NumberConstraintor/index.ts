@@ -1,4 +1,4 @@
-import { getFinalReference, Math } from "@vis-three/utils";
+import { getFinalReference, MATH } from "@vis-three/utils";
 import { Constraintor } from "../constraintor";
 
 export class NumberConstraintor extends Constraintor {
@@ -18,11 +18,18 @@ export class NumberConstraintor extends Constraintor {
     target: object,
     targetAttr: string,
     ref: object,
-    refAttr: string
+    refAttr: string,
+    offset: { operate: "+" | "-" | "*" | "/"; value: number } | null
   ) {
     super();
-    this.setTarget(target, targetAttr);
-    this.setReference(ref, refAttr);
+    if (target && targetAttr) {
+      this.setTarget(target, targetAttr);
+    }
+
+    if (ref && refAttr) {
+      this.setReference(ref, refAttr);
+    }
+    this.offset = offset;
   }
 
   setTarget(object: object, attr: string) {
@@ -46,7 +53,7 @@ export class NumberConstraintor extends Constraintor {
       this.target.object[this.target.key] =
         this.reference.object[this.reference.key];
     } else {
-      this.target.object[this.target.key] = Math.calc(
+      this.target.object[this.target.key] = MATH.calc(
         this.offset.operate,
         this.reference.object[this.reference.key],
         this.offset.value

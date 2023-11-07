@@ -51,6 +51,7 @@ const recursion = (parentDir) => {
   "./module-geometry",
   "./module-pass",
   "./module-texture",
+  "./module-constraintor",
   "./convenient",
   "./modifier",
   "./demo",
