@@ -61,6 +61,11 @@
         geometry: sphereGeometry.vid,
       });
 
+      const sphereHelper = generateConfig(CONFIGTYPE.OBJECTHELPER, {
+        target: sphere.vid,
+        boundingBox: true,
+      });
+
       const boxGeometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
         width: 20,
         height: 20,
@@ -72,11 +77,10 @@
         geometry: boxGeometry.vid,
       });
 
-      const numberConstraintor = generateConfig(CONFIGTYPE.NUMBERCONSTRAINTOR, {
+      const constraintor = generateConfig(CONFIGTYPE.BOUNDINGBOXCONSTRAINTOR, {
         target: box.vid,
         targetAttr: "position.x",
         ref: sphere.vid,
-        refAttr: "position.x",
         offset: {
           operate: "+",
           value: 20,
@@ -85,13 +89,13 @@
 
       const gui = new GUI();
 
-      gui.add(numberConstraintor, "targetAttr", [
+      gui.add(constraintor, "targetAttr", [
         "position.x",
         "position.y",
         "position.z",
       ]);
-      gui.add(numberConstraintor.offset, "value", 0, 100, 1);
-      gui.add(numberConstraintor.offset, "operate", ["+", "-", "*", "/"]);
+      gui.add(constraintor.offset, "value", 0, 100, 1);
+      gui.add(constraintor.offset, "operate", ["+", "-", "*", "/"]);
     </script>
   </body>
 </html>

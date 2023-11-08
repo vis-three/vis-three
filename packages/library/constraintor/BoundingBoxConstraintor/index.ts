@@ -1,6 +1,15 @@
 import { getFinalReference, MATH } from "@vis-three/utils";
 import { Constraintor } from "../constraintor";
-import { Box3 } from "three";
+import { Box3, BufferGeometry, Object3D } from "three";
+
+export interface Offset {
+  position: {
+    direction: "+" | "-";
+    axes: "x" | "y" | "z";
+  };
+  operate: "+" | "-" | "*" | "/";
+  value: number;
+}
 
 export class BoundingBoxConstraintor extends Constraintor {
   target: {
@@ -8,16 +17,9 @@ export class BoundingBoxConstraintor extends Constraintor {
     key: string;
   } = { object: {}, key: "" };
 
-  reference: Box3;
+  reference = new Object3D();
 
-  offset: {
-    position: {
-      direction: "+" | "-";
-      axes: "x" | "y" | "z";
-    };
-    operate: "+" | "-" | "*" | "/";
-    value: number;
-  } = {
+  offset: Offset = {
     position: {
       direction: "+",
       axes: "y",
@@ -26,10 +28,30 @@ export class BoundingBoxConstraintor extends Constraintor {
     value: 0,
   };
 
-  constructor(target: object, targetAttr: string, ref: Box3) {
+  private cacheBox = new Box3();
+  private _space: string = "world";
+
+  constructor(
+    target: object,
+    targetAttr: string,
+    space = "world",
+    ref?: Object3D,
+    offset?: Offset
+  ) {
     super();
+    this._space = space;
     this.setTarget(target, targetAttr);
-    this.reference = ref;
+    ref && this.setReference(ref);
+    offset && (this.offset = offset);
+  }
+
+  get space() {
+    return this._space;
+  }
+
+  set space(value) {
+    this._space = value;
+    this.updateBox();
   }
 
   setTarget(object: object, attr: string) {
@@ -40,13 +62,29 @@ export class BoundingBoxConstraintor extends Constraintor {
     };
   }
 
-  constrain(): void {
-    const offset = this.offset;
+  updateBox() {
     const reference = this.reference;
+
+    this.cacheBox.setFromObject(reference);
+
+    if (this.space === "local") {
+      this.cacheBox.applyMatrix4(reference.matrixWorld.invert());
+    }
+  }
+
+  setReference(object: Object3D) {
+    this.reference = object;
+    this.updateBox();
+  }
+
+  constrain(): void {
+    this.updateBox();
+    const offset = this.offset;
+    const box = this.cacheBox;
 
     this.target.object[this.target.key] = MATH.calc(
       offset.operate,
-      reference[offset.position.direction === "+" ? "max" : "min"][
+      box[offset.position.direction === "+" ? "max" : "min"][
         offset.position.axes
       ],
       offset.value
