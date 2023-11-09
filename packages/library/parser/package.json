@@ -31,12 +31,12 @@
     "@vis-three/module-bone": "workspace:^0.6.0",
     "@vis-three/module-css3d": "workspace:^0.6.4",
     "@vis-three/module-geometry": "workspace:^0.6.11",
-    "@vis-three/module-material": "workspace:^0.6.6",
+    "@vis-three/module-material": "workspace:^0.6.7",
     "@vis-three/module-skeleton": "workspace:^0.6.1",
     "@vis-three/module-skinned-mesh": "workspace:^0.6.1",
     "@vis-three/module-solid-object": "workspace:^0.6.0",
     "@vis-three/module-texture": "workspace:^0.6.3",
-    "@vis-three/utils": "workspace:^0.6.1",
+    "@vis-three/utils": "workspace:^0.6.2",
     "uuid": "^8.3.2"
   },
   "files": [

@@ -25,7 +25,7 @@
     "@vis-three/core": "workspace:^0.6.6",
     "@vis-three/plugin-keyboard-move-controls": "workspace:^0.6.0",
     "@vis-three/plugin-render-manager": "workspace:^0.6.1",
-    "@vis-three/utils": "workspace:^0.6.1"
+    "@vis-three/utils": "workspace:^0.6.2"
   },
   "files": [
     "**/*.js",

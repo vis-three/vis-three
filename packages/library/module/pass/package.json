@@ -30,7 +30,7 @@
     "@vis-three/core": "workspace:^0.6.6",
     "@vis-three/middleware": "workspace:^0.6.23",
     "@vis-three/plugin-effect-composer": "workspace:^0.6.1",
-    "@vis-three/utils": "workspace:^0.6.1"
+    "@vis-three/utils": "workspace:^0.6.2"
   },
   "files": [
     "dist",

@@ -27,7 +27,7 @@
     "@vis-three/plugin-object-helper": "workspace:^0.6.1",
     "@vis-three/plugin-selection": "workspace:^0.6.2",
     "@vis-three/plugin-transform-controls": "workspace:^0.6.0",
-    "@vis-three/utils": "workspace:^0.6.1"
+    "@vis-three/utils": "workspace:^0.6.2"
   },
   "files": [
     "**/*.js",
