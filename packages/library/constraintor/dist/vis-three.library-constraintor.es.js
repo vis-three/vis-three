@@ -1,5 +1,13 @@
 var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp = (obj, key, value) =>
+  key in obj
+    ? __defProp(obj, key, {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value,
+      })
+    : (obj[key] = value);
 var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
@@ -7,8 +15,7 @@ var __publicField = (obj, key, value) => {
 import { getFinalReference, MATH } from "@vis-three/utils";
 import { EventDispatcher } from "@vis-three/core";
 import { Object3D, Box3 } from "three";
-class Constraintor extends EventDispatcher {
-}
+class Constraintor extends EventDispatcher {}
 class BoundingBoxConstraintor extends Constraintor {
   constructor(target, targetAttr, space = "world", ref, offset) {
     super();
@@ -17,10 +24,10 @@ class BoundingBoxConstraintor extends Constraintor {
     __publicField(this, "offset", {
       position: {
         direction: "+",
-        axes: "y"
+        axes: "y",
       },
       operate: "+",
-      value: 0
+      value: 0,
     });
     __publicField(this, "cacheBox", new Box3());
     __publicField(this, "_space", "world");
@@ -55,9 +62,12 @@ class BoundingBoxConstraintor extends Constraintor {
     this.updateBox();
     const offset = this.offset;
     const box = this.cacheBox;
+
     this.target.object[this.target.key] = MATH.calc(
       offset.operate,
-      box[offset.position.direction === "+" ? "max" : "min"][offset.position.axes],
+      box[offset.position.direction === "+" ? "max" : "min"][
+        offset.position.axes
+      ],
       offset.value
     );
   }
@@ -86,7 +96,8 @@ class NumberConstraintor extends Constraintor {
   }
   constrain() {
     if (!this.offset) {
-      this.target.object[this.target.key] = this.reference.object[this.reference.key];
+      this.target.object[this.target.key] =
+        this.reference.object[this.reference.key];
     } else {
       this.target.object[this.target.key] = MATH.calc(
         this.offset.operate,

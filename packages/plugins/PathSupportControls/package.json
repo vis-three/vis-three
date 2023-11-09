@@ -29,8 +29,8 @@
   },
   "dependencies": {
     "@vis-three/convenient": "workspace:^0.6.6",
-    "@vis-three/core": "workspace:^0.6.5",
-    "@vis-three/middleware": "workspace:^0.6.21",
+    "@vis-three/core": "workspace:^0.6.6",
+    "@vis-three/middleware": "workspace:^0.6.23",
     "@vis-three/plugin-pointer-manager": "workspace:^0.6.4",
     "@vis-three/utils": "workspace:^0.6.1"
   },

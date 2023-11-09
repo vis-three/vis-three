@@ -26,11 +26,11 @@
     "vite": "^2.9.15"
   },
   "dependencies": {
-    "@vis-three/middleware": "workspace:^0.6.21",
+    "@vis-three/middleware": "workspace:^0.6.23",
     "@vis-three/module-animation-clip": "workspace:^0.6.2",
     "@vis-three/module-bone": "workspace:^0.6.0",
     "@vis-three/module-css3d": "workspace:^0.6.4",
-    "@vis-three/module-geometry": "workspace:^0.6.10",
+    "@vis-three/module-geometry": "workspace:^0.6.11",
     "@vis-three/module-material": "workspace:^0.6.6",
     "@vis-three/module-skeleton": "workspace:^0.6.1",
     "@vis-three/module-skinned-mesh": "workspace:^0.6.1",

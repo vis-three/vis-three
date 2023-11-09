@@ -22,9 +22,9 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.5",
-    "@vis-three/middleware": "workspace:^0.6.21",
-    "@vis-three/module-renderer": "workspace:^0.6.2",
+    "@vis-three/core": "workspace:^0.6.6",
+    "@vis-three/middleware": "workspace:^0.6.23",
+    "@vis-three/module-renderer": "workspace:^0.6.3",
     "@vis-three/plugin-css3d-renderer": "workspace:^0.6.2",
     "@vis-three/utils": "workspace:^0.6.1"
   },

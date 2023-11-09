@@ -22,7 +22,7 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.5",
+    "@vis-three/core": "workspace:^0.6.6",
     "@vis-three/plugin-render-manager": "workspace:^0.6.1",
     "@vis-three/plugin-webgl-renderer": "workspace:^0.6.1",
     "@vis-three/utils": "workspace:^0.6.1"
