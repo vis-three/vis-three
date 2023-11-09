@@ -2,12 +2,11 @@ import { defineProcessor, uniqueSymbol, COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MA
 import { ORBIT_CONTROLS_PLUGIN } from "@vis-three/plugin-orbit-controls";
 import { syncObject, transPkgName } from "@vis-three/utils";
 import { Vector3 } from "three";
+import { getControlsConfig } from "@vis-three/module-controls";
 const type = "OrbitControls";
 const getOrbitControlsConfig = function() {
-  return {
+  return Object.assign(getControlsConfig(), {
     vid: uniqueSymbol(type),
-    name: "",
-    type: "",
     autoRotate: false,
     autoRotateSpeed: 2,
     enableDamping: false,
@@ -29,7 +28,7 @@ const getOrbitControlsConfig = function() {
     zoomSpeed: 1,
     screenSpacePanning: true,
     target: null
-  };
+  });
 };
 var OrbitControlsProcessor = defineProcessor({
   type,

@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-object",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "vis-three object module",
   "main": "dist/vis-three.module-object.umd.js",
   "module": "dist/vis-three.module-object.es.js",

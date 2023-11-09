@@ -1,4 +1,4 @@
-import { Compiler, Rule, globalAntiShake, OBJECTMODULE, EventGeneratorManager, globalObjectModuleTrigger, Bus, COMPILER_EVENT, EVENTNAME, emptyHandler } from "@vis-three/middleware";
+import { Compiler, getSymbolConfig, Rule, globalAntiShake, OBJECTMODULE, EventGeneratorManager, globalObjectModuleTrigger, Bus, COMPILER_EVENT, EVENTNAME, emptyHandler } from "@vis-three/middleware";
 import { validate } from "uuid";
 import { syncObject } from "@vis-three/utils";
 class ObjectCompiler extends Compiler {
@@ -6,10 +6,8 @@ class ObjectCompiler extends Compiler {
     super();
   }
 }
-const getObjectConfig = () => {
-  return {
-    vid: "",
-    name: "",
+const getObjectConfig = function() {
+  return Object.assign(getSymbolConfig(), {
     type: "Object3D",
     castShadow: true,
     receiveShadow: true,
@@ -47,7 +45,7 @@ const getObjectConfig = () => {
     click: [],
     dblclick: [],
     contextmenu: []
-  };
+  });
 };
 const ObjectRule = function(input, compiler, validateFun = validate) {
   if (input.key === "parent") {

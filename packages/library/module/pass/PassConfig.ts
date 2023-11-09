@@ -1,4 +1,4 @@
-import { SymbolConfig } from "@vis-three/middleware";
+import { SymbolConfig, getSymbolConfig } from "@vis-three/middleware";
 
 /**
  * @todo width height 支持不同pass渲染不同区域
@@ -46,12 +46,12 @@ export type PassConfigAllType =
   | SSAOPassConfig;
 
 export const getPassConfig = function (): PassConfig {
-  return {
+  return Object.assign(getSymbolConfig(), {
     vid: "",
     name: "",
     type: "Pass",
     index: 0, // TODO: 顺序
-  };
+  });
 };
 
 export const getSMAAPassConfig = function (): SMAAPassConfig {

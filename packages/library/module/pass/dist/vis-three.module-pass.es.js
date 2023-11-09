@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { Compiler, Rule, defineProcessor, MODULETYPE } from "@vis-three/middleware";
+import { Compiler, Rule, getSymbolConfig, defineProcessor, MODULETYPE } from "@vis-three/middleware";
 import { Vector2, Color, MeshBasicMaterial, LineBasicMaterial, PointsMaterial, SpriteMaterial, WebGLRenderTarget, UniformsUtils, ShaderMaterial, Vector3, Scene, PerspectiveCamera, Mesh, Line, Points, Sprite, AdditiveBlending, Camera } from "three";
 import { Pass, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass";
 import { LuminosityHighPassShader } from "three/examples/jsm/shaders/LuminosityHighPassShader";
@@ -410,11 +410,12 @@ let SelectiveBloomPass = _SelectiveBloomPass;
 __publicField(SelectiveBloomPass, "BlurDirectionX", new Vector2(1, 0));
 __publicField(SelectiveBloomPass, "BlurDirectionY", new Vector2(0, 1));
 const getPassConfig = function() {
-  return {
+  return Object.assign(getSymbolConfig(), {
     vid: "",
+    name: "",
     type: "Pass",
     index: 0
-  };
+  });
 };
 const getSMAAPassConfig = function() {
   return Object.assign(getPassConfig(), {});

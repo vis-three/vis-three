@@ -1,4 +1,4 @@
-import { Rule, Compiler, uniqueSymbol, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { Rule, Compiler, uniqueSymbol, getSymbolConfig, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { validate } from "uuid";
 const validSymbols = [];
 const ControlsRule = function(input, compiler) {
@@ -15,6 +15,9 @@ class ControlsCompiler extends Compiler {
     return super.reigstProcessor(processor, fun);
   }
 }
+const getControlsConfig = function() {
+  return Object.assign(getSymbolConfig(), {});
+};
 var index = {
   type: "controls",
   compiler: ControlsCompiler,
@@ -22,4 +25,4 @@ var index = {
   processors: [],
   lifeOrder: SUPPORT_LIFE_CYCLE.NINE
 };
-export { ControlsCompiler, index as default };
+export { ControlsCompiler, index as default, getControlsConfig };

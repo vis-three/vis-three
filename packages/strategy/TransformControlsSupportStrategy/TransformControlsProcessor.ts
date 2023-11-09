@@ -3,8 +3,11 @@ import {
   EngineSupport,
   uniqueSymbol,
 } from "@vis-three/middleware";
-import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
-import { ControlsConfig } from "@vis-three/module-controls/ControlsConfig";
+import {
+  ControlsCompiler,
+  ControlsConfig,
+  getControlsConfig,
+} from "@vis-three/module-controls";
 import {
   TransformControlsEngine,
   VisTransformControls,
@@ -32,10 +35,8 @@ export interface TransformControlsConfig extends ControlsConfig {
 const type = "TransformControls";
 
 export const getTransformControlsConfig = function (): TransformControlsConfig {
-  return {
+  return Object.assign(getControlsConfig(), {
     vid: uniqueSymbol(type),
-    type: "",
-    name: "",
     axis: "XYZ",
     enabled: true,
     mode: "translate",
@@ -52,7 +53,7 @@ export const getTransformControlsConfig = function (): TransformControlsConfig {
     size: 1,
 
     space: "world",
-  };
+  });
 };
 
 export interface TransformControlsSupportEngine

@@ -1,4 +1,4 @@
-import { Compiler, Rule, globalAntiShake, defineProcessor, ShaderGeneratorManager, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { Compiler, Rule, getSymbolConfig, globalAntiShake, defineProcessor, ShaderGeneratorManager, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, Texture, Color, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, PointsMaterial, ShaderMaterial, SpriteMaterial, LineBasicMaterial, LineDashedMaterial, MeshMatcapMaterial } from "three";
 import { syncObject } from "@vis-three/utils";
 class MaterialCompiler extends Compiler {
@@ -10,8 +10,7 @@ const MaterialRule = function(notice, compiler) {
   Rule(notice, compiler);
 };
 const getMaterialConfig = function() {
-  return {
-    vid: "",
+  return Object.assign(getSymbolConfig(), {
     type: "Material",
     alphaTest: 0,
     colorWrite: true,
@@ -36,7 +35,7 @@ const getMaterialConfig = function() {
     polygonOffset: false,
     polygonOffsetFactor: 0,
     polygonOffsetUnits: 0
-  };
+  });
 };
 const getMeshBasicMaterialConfig = function() {
   return Object.assign(getMaterialConfig(), {

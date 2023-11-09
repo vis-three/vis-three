@@ -8,8 +8,11 @@ import {
   Vector3Config,
 } from "@vis-three/middleware";
 import { OrbitControlsEngine } from "@vis-three/plugin-orbit-controls";
-import { ControlsConfig } from "@vis-three/module-controls/ControlsConfig";
-import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
+import {
+  ControlsCompiler,
+  ControlsConfig,
+  getControlsConfig,
+} from "@vis-three/module-controls";
 
 export interface OrbitControlsConfig extends ControlsConfig {
   autoRotate: boolean;
@@ -38,10 +41,8 @@ export interface OrbitControlsConfig extends ControlsConfig {
 const type = "OrbitControls";
 
 export const getOrbitControlsConfig = function (): OrbitControlsConfig {
-  return {
+  return Object.assign(getControlsConfig(), {
     vid: uniqueSymbol(type),
-    name: "",
-    type: "",
     autoRotate: false,
     autoRotateSpeed: 2.0,
     enableDamping: false,
@@ -63,7 +64,7 @@ export const getOrbitControlsConfig = function (): OrbitControlsConfig {
     zoomSpeed: 1,
     screenSpacePanning: true,
     target: null,
-  };
+  });
 };
 
 export interface OrbitControlsSupportEngine

@@ -1,4 +1,8 @@
-import { SymbolConfig, Vector2Config } from "@vis-three/middleware";
+import {
+  SymbolConfig,
+  Vector2Config,
+  getSymbolConfig,
+} from "@vis-three/middleware";
 import {
   AddEquation,
   Blending,
@@ -299,8 +303,7 @@ export type MaterialAllType =
   | MeshMatcapMaterialConfig;
 
 export const getMaterialConfig = function (): MaterialConfig {
-  return {
-    vid: "",
+  return Object.assign(getSymbolConfig(), {
     type: "Material",
     alphaTest: 0,
     colorWrite: true,
@@ -326,7 +329,7 @@ export const getMaterialConfig = function (): MaterialConfig {
     polygonOffset: false,
     polygonOffsetFactor: 0,
     polygonOffsetUnits: 0,
-  };
+  });
 };
 
 export const getMeshBasicMaterialConfig = function (): MeshBasicMaterialConfig {

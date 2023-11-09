@@ -1,6 +1,5 @@
 import { EngineSupport } from "@vis-three/middleware";
-import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
-import { ControlsConfig } from "@vis-three/module-controls/ControlsConfig";
+import { ControlsCompiler, ControlsConfig } from "@vis-three/module-controls";
 import { TransformControlsEngine, VisTransformControls } from "@vis-three/plugin-transform-controls";
 export interface TransformControlsConfig extends ControlsConfig {
     axis: string;

@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-controls",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "vis-three controls module",
   "main": "dist/vis-three.module-controls.umd.js",
   "module": "dist/vis-three.module-controls.es.js",

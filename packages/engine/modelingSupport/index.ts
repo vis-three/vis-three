@@ -6,6 +6,7 @@ import {
   Object3D,
   Vector3,
   WebGLRenderer,
+  WebGLRendererParameters,
 } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
@@ -18,6 +19,7 @@ import {
 
 import {
   EffectComposerEngine,
+  EffectComposerParameters,
   EffectComposerPlugin,
 } from "@vis-three/plugin-effect-composer";
 import {
@@ -94,6 +96,11 @@ import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer";
 
 export { VIEWPOINT };
 
+export interface ModelingEngineSupportParameters {
+  WebGLRendererPlugin?: WebGLRendererParameters;
+  EffectComposerPlugin?: EffectComposerParameters;
+}
+
 export class ModelingEngineSupport
   extends EngineSupport
   implements
@@ -141,7 +148,7 @@ export class ModelingEngineSupport
   ) => PathDrawingEngine;
   declare drawPathByFace: (face: Face, offset: Vector3) => PathDrawingEngine;
 
-  constructor() {
+  constructor(params: ModelingEngineSupportParameters = {}) {
     super();
     for (const module of Object.values(moduleLibrary)) {
       this.registModule(module as ModuleOptions<any>);
@@ -152,17 +159,21 @@ export class ModelingEngineSupport
     }
 
     this.install(
-      WebGLRendererPlugin({
-        antialias: true,
-        alpha: true,
-      })
+      WebGLRendererPlugin(
+        params.WebGLRendererPlugin || {
+          antialias: true,
+          alpha: true,
+        }
+      )
     )
       .install(CSS2DRendererPlugin())
       .install(CSS3DRendererPlugin())
       .install(
-        EffectComposerPlugin({
-          MSAA: true,
-        })
+        EffectComposerPlugin(
+          params.EffectComposerPlugin || {
+            MSAA: true,
+          }
+        )
       )
       .install(OrbitControlsPlugin())
       .install(CameraAdaptivePlugin())

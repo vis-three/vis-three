@@ -1,2 +1,4 @@
 import { SymbolConfig } from "@vis-three/middleware";
-export type ControlsConfig = SymbolConfig;
+export interface ControlsConfig extends SymbolConfig {
+}
+export declare const getControlsConfig: () => ControlsConfig;

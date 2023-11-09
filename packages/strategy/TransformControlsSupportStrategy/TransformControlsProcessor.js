@@ -1,9 +1,9 @@
 import { defineProcessor, uniqueSymbol, } from "@vis-three/middleware";
+import { getControlsConfig, } from "@vis-three/module-controls";
 const type = "TransformControls";
 export const getTransformControlsConfig = function () {
-    return {
+    return Object.assign(getControlsConfig(), {
         vid: uniqueSymbol(type),
-        type: "",
         axis: "XYZ",
         enabled: true,
         mode: "translate",
@@ -16,7 +16,7 @@ export const getTransformControlsConfig = function () {
         showZ: true,
         size: 1,
         space: "world",
-    };
+    });
 };
 export default defineProcessor({
     type,

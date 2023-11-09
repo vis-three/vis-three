@@ -2,6 +2,7 @@ import {
   BasicEventConfig,
   SymbolConfig,
   Vector3Config,
+  getSymbolConfig,
 } from "@vis-three/middleware";
 
 export interface ObjectConfig extends SymbolConfig {
@@ -47,10 +48,8 @@ export interface ObjectConfig extends SymbolConfig {
   contextmenu: BasicEventConfig[];
 }
 
-export const getObjectConfig = (): ObjectConfig => {
-  return {
-    vid: "",
-    name: "",
+export const getObjectConfig = function (): ObjectConfig {
+  return Object.assign(getSymbolConfig(), {
     type: "Object3D",
     castShadow: true,
     receiveShadow: true,
@@ -88,5 +87,5 @@ export const getObjectConfig = (): ObjectConfig => {
     click: [],
     dblclick: [],
     contextmenu: [],
-  };
+  });
 };

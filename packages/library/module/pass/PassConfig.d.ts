@@ -16,12 +16,17 @@ export interface SelectiveBloomPassConfig extends PassConfig {
     strength: number;
     threshold: number;
     radius: number;
+    /**渲染场景 vid */
     renderScene: string;
+    /**渲染相机 vid */
     renderCamera: string;
+    /**发光物体 vid list */
     selectedObjects: string[];
 }
 export interface SSAOPassConfig extends PassConfig {
+    /**目标相机 vid */
     camera: string;
+    /**目标场景 vid */
     scene: string;
     kernelRadius: number;
     kernelSize: number;

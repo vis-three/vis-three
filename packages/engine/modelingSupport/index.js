@@ -33,7 +33,7 @@ import { PathDrawingPlugin, } from "@vis-three/plugin-path-drawing";
 import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer";
 export { VIEWPOINT };
 export class ModelingEngineSupport extends EngineSupport {
-    constructor() {
+    constructor(params = {}) {
         super();
         for (const module of Object.values(moduleLibrary)) {
             this.registModule(module);
@@ -41,13 +41,13 @@ export class ModelingEngineSupport extends EngineSupport {
         for (const parser of Object.values(parserLibrary)) {
             this.resourceManager.addParser(new parser());
         }
-        this.install(WebGLRendererPlugin({
+        this.install(WebGLRendererPlugin(params.WebGLRendererPlugin || {
             antialias: true,
             alpha: true,
         }))
             .install(CSS2DRendererPlugin())
             .install(CSS3DRendererPlugin())
-            .install(EffectComposerPlugin({
+            .install(EffectComposerPlugin(params.EffectComposerPlugin || {
             MSAA: true,
         }))
             .install(OrbitControlsPlugin())
