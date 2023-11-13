@@ -4,7 +4,11 @@ import {
   ProcessorCommands,
 } from "@vis-three/middleware";
 import { ReflectorCompiler } from "../ReflectorCompiler";
-import { getReflectorConfig, ReflectorConfig } from "../ReflectorConfig";
+import {
+  AdvReflectorConfig,
+  getAdvReflectorConfig,
+  ReflectorConfig,
+} from "../ReflectorConfig";
 import { Reflector } from "three/examples/jsm/objects/Reflector";
 import { BufferGeometry, Material } from "three";
 import {
@@ -27,17 +31,17 @@ const setSize = function (
 };
 
 export default defineProcessor<
-  ReflectorConfig,
+  AdvReflectorConfig,
   Reflector,
   EngineSupport,
   ReflectorCompiler
 >({
   type: "Reflector",
-  config: getReflectorConfig,
+  config: getAdvReflectorConfig,
   commands: {
     add: (<
       ProcessorCommands<
-        ReflectorConfig,
+        AdvReflectorConfig,
         Reflector,
         EngineSupport,
         ReflectorCompiler
@@ -46,7 +50,7 @@ export default defineProcessor<
     set: {
       ...(<
         ProcessorCommands<
-          ReflectorConfig,
+          AdvReflectorConfig,
           Reflector,
           EngineSupport,
           ReflectorCompiler
@@ -58,10 +62,17 @@ export default defineProcessor<
       textureWidth({ target, config, engine }) {
         setSize(target, config, engine);
       },
+      transparent({ target, value }) {
+        (<Material>target.material).transparent = value;
+        (<Material>target.material).needsUpdate = true;
+      },
+      opacity({ target, value }) {
+        (<Material>target.material).opacity = value;
+      },
     },
     delete: (<
       ProcessorCommands<
-        ReflectorConfig,
+        AdvReflectorConfig,
         Reflector,
         EngineSupport,
         ReflectorCompiler
@@ -82,13 +93,19 @@ export default defineProcessor<
       multisample: config.multisample,
     });
 
+    (<Material>reflector.material).transparent = config.transparent;
+    (<Material>reflector.material).opacity = config.opacity;
+    (<Material>reflector.material).needsUpdate = true;
+
     return objectCreate(
       reflector,
       config,
       {
         geometry: true,
         clipBias: true,
-        color: true
+        color: true,
+        transparent: true,
+        opacity: true,
       },
       engine
     );

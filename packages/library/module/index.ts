@@ -27,6 +27,7 @@ import skinnedMesh from "@vis-three/module-skinned-mesh";
 import animationClip from "@vis-three/module-animation-clip";
 import animationAction from "@vis-three/module-animation-action";
 import constraintor from "@vis-three/module-constraintor";
+import reflector from "@vis-three/module-reflector";
 
 export {
   animation,
@@ -58,4 +59,5 @@ export {
   animationClip,
   animationAction,
   constraintor,
+  reflector,
 };

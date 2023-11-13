@@ -12,7 +12,56 @@ import {
 import { NumberConstraintor } from "@vis-three/library-constraintor";
 import { commonRegCommand } from "./common";
 
-const cacheEventMap: WeakMap<NumberConstraintor, () => void> = new WeakMap();
+const cacheEventMap: WeakMap<
+  NumberConstraintor,
+  { object: string; attr: string; event: () => void }
+> = new WeakMap();
+
+const bindEvent = function (
+  constraintor: NumberConstraintor,
+  config: NumberConstraintorConfig,
+  engine: EngineSupport
+) {
+  constraintor.constrain();
+
+  const refObject = engine.getObjectBySymbol(config.ref)!;
+
+  if (refObject) {
+    const event = () => {
+      constraintor.constrain();
+    };
+
+    cacheEventMap.set(constraintor, {
+      object: config.ref,
+      attr: config.refAttr,
+      event,
+    });
+
+    Bus.compilerEvent.on(
+      refObject,
+      `${COMPILER_EVENT.COMPILE}:${config.refAttr}`,
+      event
+    );
+  }
+};
+
+const unbindEvent = function (
+  constraintor: NumberConstraintor,
+  engine: EngineSupport
+) {
+  const last = cacheEventMap.get(constraintor);
+  if (!last) {
+    return;
+  }
+
+  Bus.compilerEvent.off(
+    engine.getObjectBySymbol(last.object)!,
+    `${COMPILER_EVENT.COMPILE}:${last.attr}`,
+    last.event
+  );
+
+  cacheEventMap.delete(constraintor);
+};
 
 export default defineProcessor<
   NumberConstraintorConfig,
@@ -46,30 +95,32 @@ export default defineProcessor<
       },
       ref({ target, config, engine }) {
         if (config.ref && config.refAttr) {
+          unbindEvent(target, engine);
+
           target.setReference(
             engine.getConfigBySymbol(config.ref)!,
             config.refAttr
           );
 
-          target.constrain();
+          bindEvent(target, config, engine);
         }
       },
       refAttr({ target, config, engine }) {
         if (config.ref && config.refAttr) {
+          unbindEvent(target, engine);
+
           target.setReference(
             engine.getConfigBySymbol(config.ref)!,
             config.refAttr
           );
 
-          target.constrain();
+          bindEvent(target, config, engine);
         }
       },
       $reg: [commonRegCommand],
     },
   },
   create(config, engine) {
-    const refObject = engine.getObjectBySymbol(config.ref)!;
-
     const constraintor = new NumberConstraintor(
       engine.getConfigBySymbol(config.target)!,
       config.targetAttr,
@@ -78,25 +129,11 @@ export default defineProcessor<
       config.offset ? ({ ...config.offset } as unknown as null) : null
     );
 
-    if (refObject) {
-      constraintor.constrain();
-
-      const event = () => {
-        constraintor.constrain();
-      };
-
-      cacheEventMap.set(constraintor, event);
-
-      Bus.compilerEvent.on(
-        refObject,
-        `${COMPILER_EVENT.COMPILE}:${config.refAttr}`,
-        event
-      );
-    }
+    bindEvent(constraintor, config, engine);
 
     return constraintor;
   },
-  dispose(target) {
-    cacheEventMap.delete(target);
+  dispose(target, engine) {
+    unbindEvent(target, engine);
   },
 });

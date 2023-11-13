@@ -9,5 +9,5 @@ export default {
   compiler: ReflectorCompiler,
   rule: ReflectorRule,
   processors: [ReflectorProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.ZERO,
+  lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
 };
