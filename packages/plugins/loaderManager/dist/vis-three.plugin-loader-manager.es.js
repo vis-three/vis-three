@@ -14,6 +14,8 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
 import { DDSLoader } from "three/examples/jsm/loaders/DDSLoader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
+import { LUTCubeLoader } from "three/examples/jsm/loaders/LUTCubeLoader";
+import { LUT3dlLoader } from "three/examples/jsm/loaders/LUT3dlLoader";
 import { EventDispatcher } from "@vis-three/core";
 import { transPkgName } from "@vis-three/utils";
 const _VideoLoader = class extends Loader {
@@ -114,7 +116,9 @@ class LoaderManager extends EventDispatcher {
       gltf: gltfLoader,
       glb: gltfLoader,
       fbx: new FBXLoader(),
-      dds: new DDSLoader()
+      dds: new DDSLoader(),
+      cube: new LUTCubeLoader(),
+      "3dl": new LUT3dlLoader()
     };
     if (parameters) {
       this.loaderMap = Object.assign(this.loaderMap, parameters.loaderExtends);

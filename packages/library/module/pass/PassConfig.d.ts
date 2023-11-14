@@ -60,10 +60,23 @@ export interface SSRPassConfig extends PassConfig {
     fresnel: boolean;
     infiniteThick: boolean;
 }
-export type PassConfigAllType = SMAAPassConfig | UnrealBloomPassConfig | SelectiveBloomPassConfig | SSAOPassConfig;
+export interface FilmPassConfig extends PassConfig {
+    grayscale: boolean;
+    noiseIntensity: number;
+    scanlinesIntensity: number;
+    scanlinesCount: number;
+}
+export interface LUTPassConfig extends PassConfig {
+    lut: string;
+    intensity: number;
+    use2D: boolean;
+}
+export type PassConfigAllType = SMAAPassConfig | UnrealBloomPassConfig | SelectiveBloomPassConfig | SSAOPassConfig | SSRPassConfig | FilmPassConfig;
 export declare const getPassConfig: () => PassConfig;
 export declare const getSMAAPassConfig: () => SMAAPassConfig;
 export declare const getUnrealBloomPassConfig: () => UnrealBloomPassConfig;
 export declare const getSelectiveBloomPassConfig: () => SelectiveBloomPassConfig;
 export declare const getSSAOPassConfig: () => SSAOPassConfig;
 export declare const getSSRPassConfig: () => SSRPassConfig;
+export declare const getFilmPassConfig: () => FilmPassConfig;
+export declare const getLUTPassConfig: () => LUTPassConfig;

@@ -1,5 +1,7 @@
 import { PassCompiler } from "./PassCompiler";
 import { PassRule } from "./PassRule";
+import FilmPassProcessor from "./processors/FilmPassProcessor";
+import LUTPassProcessor from "./processors/LUTPassProcessor";
 import SelectiveBloomPassProcessor from "./processors/SelectiveBloomPassProcessor";
 import SMAAPassProcessor from "./processors/SMAAPassProcessor";
 import SSRPassProcessor from "./processors/SSRPassProcessor";
@@ -17,5 +19,7 @@ export default {
     SMAAPassProcessor,
     SelectiveBloomPassProcessor,
     SSRPassProcessor,
+    FilmPassProcessor,
+    LUTPassProcessor,
   ],
 };

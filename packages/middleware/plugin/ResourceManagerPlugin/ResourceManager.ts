@@ -2,7 +2,7 @@ import { BaseEvent, EventDispatcher } from "@vis-three/core";
 import { getModule } from "../../module";
 import { SymbolConfig } from "../../module/common";
 import { LoadOptions } from "../DataSupportManagerPlugin";
-import { Parser, ResourceHanlder } from "./Parser";
+import { DefaultParser, Parser, ResourceHanlder } from "./Parser";
 
 export interface MappedEvent extends BaseEvent {
   configMap: Map<string, SymbolConfig>;
@@ -24,6 +24,7 @@ export class ResourceManager extends EventDispatcher {
   resourceMap: Map<string, any> = new Map(); // 资源映射 mappingUrl -> resource
 
   private paserMap: Map<Function, Parser> = new Map();
+  private defalutParser = new DefaultParser();
 
   constructor(resources: { [key: string]: any } = {}) {
     super();
@@ -120,9 +121,16 @@ export class ResourceManager extends EventDispatcher {
 
       if (!parser) {
         console.warn(
-          `resouce manager can not found some handler to parser this resource:`,
+          `resouce manager can not found some handler to parser this resource, that will use default parser do it:`,
           resource
         );
+
+        this.defalutParser.parse({
+          url,
+          resource,
+          configMap,
+          resourceMap,
+        });
         continue;
       }
 

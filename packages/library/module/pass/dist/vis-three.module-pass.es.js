@@ -5,6 +5,8 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { Compiler, Rule, getSymbolConfig, defineProcessor, MODULETYPE } from "@vis-three/middleware";
+import { FilmPass } from "three/examples/jsm/postprocessing/FilmPass";
+import { LUTPass } from "three/examples/jsm/postprocessing/LUTPass";
 import { Vector2, Color, MeshBasicMaterial, LineBasicMaterial, PointsMaterial, SpriteMaterial, WebGLRenderTarget, UniformsUtils, ShaderMaterial, Vector3, Scene, PerspectiveCamera, Mesh, Line, Points, Sprite, AdditiveBlending, Camera, PlaneBufferGeometry } from "three";
 import { Pass, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass";
 import { LuminosityHighPassShader } from "three/examples/jsm/shaders/LuminosityHighPassShader";
@@ -47,6 +49,152 @@ class PassCompiler extends Compiler {
 const PassRule = function(input, compiler) {
   Rule(input, compiler);
 };
+const getPassConfig = function() {
+  return Object.assign(getSymbolConfig(), {
+    vid: "",
+    name: "",
+    type: "Pass",
+    index: 0
+  });
+};
+const getSMAAPassConfig = function() {
+  return Object.assign(getPassConfig(), {});
+};
+const getUnrealBloomPassConfig = function() {
+  return Object.assign(getPassConfig(), {
+    strength: 1.5,
+    threshold: 0,
+    radius: 0
+  });
+};
+const getSelectiveBloomPassConfig = function() {
+  return Object.assign(getPassConfig(), {
+    strength: 1,
+    threshold: 0,
+    radius: 0,
+    renderScene: "",
+    renderCamera: "",
+    selectedObjects: []
+  });
+};
+const getSSAOPassConfig = function() {
+  return Object.assign(getPassConfig(), {
+    camera: "",
+    scene: "",
+    kernelRadius: 8,
+    kernelSize: 32,
+    noiseTexture: "",
+    output: 0,
+    minDistance: 5e-3,
+    maxDistance: 0.1
+  });
+};
+const getSSRPassConfig = function() {
+  return Object.assign(getPassConfig(), {
+    renderer: "",
+    scene: "",
+    camera: "",
+    width: 0,
+    height: 0,
+    ground: true,
+    groudOption: {
+      geometry: "",
+      color: "rgb(127, 127, 127)",
+      textureWidth: 0,
+      textureHeight: 0,
+      clipBias: 0,
+      multisample: 4
+    },
+    selects: [],
+    opacity: 0.5,
+    output: 0,
+    maxDistance: 180,
+    thickness: 0.018,
+    bouncing: true,
+    distanceAttenuation: true,
+    fresnel: true,
+    infiniteThick: true
+  });
+};
+const getFilmPassConfig = function() {
+  return Object.assign(getPassConfig(), {
+    grayscale: false,
+    noiseIntensity: 0.5,
+    scanlinesIntensity: 0.05,
+    scanlinesCount: 4096
+  });
+};
+const getLUTPassConfig = function() {
+  return Object.assign(getPassConfig(), {
+    lut: "",
+    intensity: 1,
+    use2D: false
+  });
+};
+var FilmPassProcessor = defineProcessor({
+  type: "FilmPass",
+  config: getFilmPassConfig,
+  commands: {
+    set: {
+      noiseIntensity({ target, value }) {
+        target.uniforms.nIntensity.value = value;
+      },
+      grayscale({ target, value }) {
+        target.uniforms.grayscale.value = value ? 1 : 0;
+      },
+      scanlinesIntensity({ target, value }) {
+        target.uniforms.sIntensity.value = value;
+      },
+      scanlinesCount({ target, value }) {
+        target.uniforms.sCount.value = value;
+      }
+    }
+  },
+  create(config, engine) {
+    return new FilmPass(
+      config.noiseIntensity,
+      config.scanlinesIntensity,
+      config.scanlinesCount,
+      config.grayscale ? 1 : 0
+    );
+  },
+  dispose(target) {
+  }
+});
+const getResource = function(config, engine) {
+  if (config.lut) {
+    const resource = engine.resourceManager.resourceMap.get(config.lut);
+    if (!resource) {
+      console.warn(`LUT pass processor can not found resource: ${config.lut}`);
+    } else {
+      return config.use2D ? resource.texture : resource.texture3D;
+    }
+  }
+  return null;
+};
+var LUTPassProcessor = defineProcessor({
+  type: "LUTPass",
+  config: getLUTPassConfig,
+  commands: {
+    set: {
+      lut({ target, config, engine }) {
+        target.lut = getResource(config, engine);
+      },
+      use2D({ target, config, engine }) {
+        target.lut = getResource(config, engine);
+      }
+    }
+  },
+  create(config, engine) {
+    return new LUTPass({
+      intensity: config.intensity,
+      lut: getResource(config, engine)
+    });
+  },
+  dispose(pass) {
+    pass.lut = void 0;
+  }
+});
 const _SelectiveBloomPass = class extends Pass {
   constructor(resolution = new Vector2(256, 256), strength = 1, radius = 0, threshold = 0, renderScene = new Scene(), renderCamera = new PerspectiveCamera(), selectedObjects) {
     super();
@@ -411,73 +559,6 @@ const _SelectiveBloomPass = class extends Pass {
 let SelectiveBloomPass = _SelectiveBloomPass;
 __publicField(SelectiveBloomPass, "BlurDirectionX", new Vector2(1, 0));
 __publicField(SelectiveBloomPass, "BlurDirectionY", new Vector2(0, 1));
-const getPassConfig = function() {
-  return Object.assign(getSymbolConfig(), {
-    vid: "",
-    name: "",
-    type: "Pass",
-    index: 0
-  });
-};
-const getSMAAPassConfig = function() {
-  return Object.assign(getPassConfig(), {});
-};
-const getUnrealBloomPassConfig = function() {
-  return Object.assign(getPassConfig(), {
-    strength: 1.5,
-    threshold: 0,
-    radius: 0
-  });
-};
-const getSelectiveBloomPassConfig = function() {
-  return Object.assign(getPassConfig(), {
-    strength: 1,
-    threshold: 0,
-    radius: 0,
-    renderScene: "",
-    renderCamera: "",
-    selectedObjects: []
-  });
-};
-const getSSAOPassConfig = function() {
-  return Object.assign(getPassConfig(), {
-    camera: "",
-    scene: "",
-    kernelRadius: 8,
-    kernelSize: 32,
-    noiseTexture: "",
-    output: 0,
-    minDistance: 5e-3,
-    maxDistance: 0.1
-  });
-};
-const getSSRPassConfig = function() {
-  return Object.assign(getPassConfig(), {
-    renderer: "",
-    scene: "",
-    camera: "",
-    width: 0,
-    height: 0,
-    ground: true,
-    groudOption: {
-      geometry: "",
-      color: "rgb(127, 127, 127)",
-      textureWidth: 0,
-      textureHeight: 0,
-      clipBias: 0,
-      multisample: 4
-    },
-    selects: [],
-    opacity: 0.5,
-    output: 0,
-    maxDistance: 180,
-    thickness: 0.018,
-    bouncing: true,
-    distanceAttenuation: true,
-    fresnel: true,
-    infiniteThick: true
-  });
-};
 var SelectiveBloomPassProcessor = defineProcessor({
   type: "SelectiveBloomPass",
   config: getSelectiveBloomPassConfig,
@@ -736,7 +817,9 @@ var index = {
     UnrealBloomPassProcessor,
     SMAAPassProcessor,
     SelectiveBloomPassProcessor,
-    SSRPassProcessor
+    SSRPassProcessor,
+    FilmPassProcessor,
+    LUTPassProcessor
   ]
 };
-export { PassCompiler, index as default, getPassConfig, getSMAAPassConfig, getSSAOPassConfig, getSSRPassConfig, getSelectiveBloomPassConfig, getUnrealBloomPassConfig };
+export { PassCompiler, index as default, getFilmPassConfig, getLUTPassConfig, getPassConfig, getSMAAPassConfig, getSSAOPassConfig, getSSRPassConfig, getSelectiveBloomPassConfig, getUnrealBloomPassConfig };

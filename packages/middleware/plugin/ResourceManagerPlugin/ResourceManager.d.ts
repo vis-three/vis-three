@@ -20,6 +20,7 @@ export declare class ResourceManager extends EventDispatcher {
     configMap: Map<string, SymbolConfig>;
     resourceMap: Map<string, any>;
     private paserMap;
+    private defalutParser;
     constructor(resources?: {
         [key: string]: any;
     });

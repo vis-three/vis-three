@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/plugin-loader-manager",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "vis-three loader-manager plugin",
   "main": "dist/vis-three.plugin-loader-manager.umd.js",
   "module": "dist/vis-three.plugin-loader-manager.es.js",

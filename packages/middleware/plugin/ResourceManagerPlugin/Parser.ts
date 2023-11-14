@@ -17,3 +17,16 @@ export abstract class Parser {
   abstract selector: ResourceHanlder;
   abstract parse(params: ParseParams): void;
 }
+
+export class DefaultParser extends Parser {
+  selector: ResourceHanlder = (
+    url: string,
+    resource: HTMLCanvasElement,
+    parseMap: Map<Function, Parser>
+  ) => {
+    return parseMap.get(DefaultParser) || null;
+  };
+  parse({ url, resource, configMap, resourceMap }: ParseParams): void {
+    resourceMap.set(url, resource);
+  }
+}

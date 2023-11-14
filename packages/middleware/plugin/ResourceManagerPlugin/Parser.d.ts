@@ -10,3 +10,7 @@ export declare abstract class Parser {
     abstract selector: ResourceHanlder;
     abstract parse(params: ParseParams): void;
 }
+export declare class DefaultParser extends Parser {
+    selector: ResourceHanlder;
+    parse({ url, resource, configMap, resourceMap }: ParseParams): void;
+}

@@ -67,11 +67,26 @@ export interface SSRPassConfig extends PassConfig {
   infiniteThick: boolean;
 }
 
+export interface FilmPassConfig extends PassConfig {
+  grayscale: boolean;
+  noiseIntensity: number;
+  scanlinesIntensity: number;
+  scanlinesCount: number;
+}
+
+export interface LUTPassConfig extends PassConfig {
+  lut: string;
+  intensity: number;
+  use2D: boolean;
+}
+
 export type PassConfigAllType =
   | SMAAPassConfig
   | UnrealBloomPassConfig
   | SelectiveBloomPassConfig
-  | SSAOPassConfig;
+  | SSAOPassConfig
+  | SSRPassConfig
+  | FilmPassConfig;
 
 export const getPassConfig = function (): PassConfig {
   return Object.assign(getSymbolConfig(), {
@@ -146,5 +161,22 @@ export const getSSRPassConfig = function (): SSRPassConfig {
     distanceAttenuation: true,
     fresnel: true,
     infiniteThick: true,
+  });
+};
+
+export const getFilmPassConfig = function (): FilmPassConfig {
+  return Object.assign(getPassConfig(), {
+    grayscale: false,
+    noiseIntensity: 0.5,
+    scanlinesIntensity: 0.05,
+    scanlinesCount: 4096,
+  });
+};
+
+export const getLUTPassConfig = function (): LUTPassConfig {
+  return Object.assign(getPassConfig(), {
+    lut: "",
+    intensity: 1,
+    use2D: false,
   });
 };

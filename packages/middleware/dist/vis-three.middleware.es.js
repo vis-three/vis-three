@@ -1548,6 +1548,19 @@ const DataSupportManagerPlugin = function() {
     }
   };
 };
+class Parser {
+}
+class DefaultParser extends Parser {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "selector", (url, resource, parseMap) => {
+      return parseMap.get(DefaultParser) || null;
+    });
+  }
+  parse({ url, resource, configMap, resourceMap }) {
+    resourceMap.set(url, resource);
+  }
+}
 var RESOURCE_EVENT = /* @__PURE__ */ ((RESOURCE_EVENT2) => {
   RESOURCE_EVENT2["MAPPED"] = "mapped";
   return RESOURCE_EVENT2;
@@ -1558,6 +1571,7 @@ class ResourceManager extends EventDispatcher {
     __publicField(this, "configMap", /* @__PURE__ */ new Map());
     __publicField(this, "resourceMap", /* @__PURE__ */ new Map());
     __publicField(this, "paserMap", /* @__PURE__ */ new Map());
+    __publicField(this, "defalutParser", new DefaultParser());
     const map = /* @__PURE__ */ new Map();
     for (const key in resources) {
       if (map.has(key)) {
@@ -1619,9 +1633,15 @@ class ResourceManager extends EventDispatcher {
       }
       if (!parser) {
         console.warn(
-          `resouce manager can not found some handler to parser this resource:`,
+          `resouce manager can not found some handler to parser this resource, that will use default parser do it:`,
           resource
         );
+        this.defalutParser.parse({
+          url,
+          resource,
+          configMap,
+          resourceMap
+        });
         continue;
       }
       parser.parse({
@@ -1683,8 +1703,6 @@ class ResourceManager extends EventDispatcher {
     this.resourceMap.clear();
     this.configMap.clear();
   }
-}
-class Parser {
 }
 const RESOURCE_MANAGER_PLUGIN = "ResourceManagerPlugin";
 const ResourceManagerPlugin = function(params = {}) {
@@ -2207,4 +2225,4 @@ __publicField(ShaderGeneratorManager, "register", function(shader) {
   _ShaderGeneratorManager.library.set(shader.name, shader);
 });
 const PLUGINS = [COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN];
-export { AniScriptGeneratorManager, AntiShake, Bus$1 as Bus, COMPILER_EVENT, COMPILER_MANAGER_PLUGIN, COMPILER_SUPPORT_STRATEGY, CONFIGFACTORY, CONFIGMODULE, CONFIGTYPE, Compiler, CompilerFactory, CompilerManager, CompilerManagerPlugin, CompilerSupportStrategy, DATA_SUPPORT_MANAGER_PLUGIN, DataContainer, DataSupport, DataSupportFactory, DataSupportManager, DataSupportManagerPlugin, EngineSupport, EventGeneratorManager, JSONHandler$1 as JSONHandler, LOADER_DATA_SUPPORT_STRATEGY, LOADER_MAPPING_STRATEGY, LoaderDataSupportStrategy, LoaderMappingStrategy, MODULETYPE, ModuleTrigger, OBJECTMODULE, ObjectModuleTrigger, PLUGINS, Parser, Processor, ProcessorMembers, RESOURCE_EVENT, RESOURCE_MANAGER_PLUGIN, ResourceManager, ResourceManagerPlugin, Rule, SUPPORT_LIFE_CYCLE, ShaderGeneratorManager, template$1 as Template, Translater, createSymbol, defineEngineSupport, defineOption, defineProcessor, emptyHandler, generateConfig, getModule, getObserver, getSymbolConfig, globalAntiShake, globalObjectModuleTrigger, globalOption, installProcessor, isObjectModule, isObjectType, observable, uniqueSymbol };
+export { AniScriptGeneratorManager, AntiShake, Bus$1 as Bus, COMPILER_EVENT, COMPILER_MANAGER_PLUGIN, COMPILER_SUPPORT_STRATEGY, CONFIGFACTORY, CONFIGMODULE, CONFIGTYPE, Compiler, CompilerFactory, CompilerManager, CompilerManagerPlugin, CompilerSupportStrategy, DATA_SUPPORT_MANAGER_PLUGIN, DataContainer, DataSupport, DataSupportFactory, DataSupportManager, DataSupportManagerPlugin, DefaultParser, EngineSupport, EventGeneratorManager, JSONHandler$1 as JSONHandler, LOADER_DATA_SUPPORT_STRATEGY, LOADER_MAPPING_STRATEGY, LoaderDataSupportStrategy, LoaderMappingStrategy, MODULETYPE, ModuleTrigger, OBJECTMODULE, ObjectModuleTrigger, PLUGINS, Parser, Processor, ProcessorMembers, RESOURCE_EVENT, RESOURCE_MANAGER_PLUGIN, ResourceManager, ResourceManagerPlugin, Rule, SUPPORT_LIFE_CYCLE, ShaderGeneratorManager, template$1 as Template, Translater, createSymbol, defineEngineSupport, defineOption, defineProcessor, emptyHandler, generateConfig, getModule, getObserver, getSymbolConfig, globalAntiShake, globalObjectModuleTrigger, globalOption, installProcessor, isObjectModule, isObjectType, observable, uniqueSymbol };
