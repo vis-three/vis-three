@@ -39,6 +39,34 @@ export interface SSAOPassConfig extends PassConfig {
   maxDistance: number;
 }
 
+export interface SSRPassConfig extends PassConfig {
+  renderer: string;
+  scene: string;
+  camera: string;
+  width: number;
+  height: number;
+  ground: boolean;
+  groudOption: {
+    geometry: string;
+    color: string;
+    textureWidth: number;
+    textureHeight: number;
+
+    clipBias: number;
+    multisample: number;
+  };
+  selects: string[];
+
+  opacity: number;
+  output: number;
+  maxDistance: number;
+  thickness: number;
+  bouncing: boolean;
+  distanceAttenuation: boolean;
+  fresnel: boolean;
+  infiniteThick: boolean;
+}
+
 export type PassConfigAllType =
   | SMAAPassConfig
   | UnrealBloomPassConfig
@@ -88,5 +116,35 @@ export const getSSAOPassConfig = function (): SSAOPassConfig {
     output: 0,
     minDistance: 0.005,
     maxDistance: 0.1,
+  });
+};
+
+export const getSSRPassConfig = function (): SSRPassConfig {
+  return Object.assign(getPassConfig(), {
+    renderer: "",
+    scene: "",
+    camera: "",
+    width: 0,
+    height: 0,
+    ground: true,
+    groudOption: {
+      geometry: "",
+      color: "rgb(127, 127, 127)",
+      textureWidth: 0,
+      textureHeight: 0,
+
+      clipBias: 0,
+      multisample: 4,
+    },
+    selects: [],
+
+    opacity: 0.5,
+    output: 0,
+    maxDistance: 180,
+    thickness: 0.018,
+    bouncing: true,
+    distanceAttenuation: true,
+    fresnel: true,
+    infiniteThick: true,
   });
 };
