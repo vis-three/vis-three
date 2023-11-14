@@ -5,10 +5,12 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { Compiler, Rule, getSymbolConfig, defineProcessor, MODULETYPE } from "@vis-three/middleware";
-import { Vector2, Color, MeshBasicMaterial, LineBasicMaterial, PointsMaterial, SpriteMaterial, WebGLRenderTarget, UniformsUtils, ShaderMaterial, Vector3, Scene, PerspectiveCamera, Mesh, Line, Points, Sprite, AdditiveBlending, Camera } from "three";
+import { Vector2, Color, MeshBasicMaterial, LineBasicMaterial, PointsMaterial, SpriteMaterial, WebGLRenderTarget, UniformsUtils, ShaderMaterial, Vector3, Scene, PerspectiveCamera, Mesh, Line, Points, Sprite, AdditiveBlending, Camera, PlaneBufferGeometry } from "three";
 import { Pass, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass";
 import { LuminosityHighPassShader } from "three/examples/jsm/shaders/LuminosityHighPassShader";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
+import { SSRPass } from "three/examples/jsm/postprocessing/SSRPass";
+import { ReflectorForSSRPass } from "three/examples/jsm/objects/ReflectorForSSRPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 class PassCompiler extends Compiler {
   constructor() {
@@ -449,6 +451,33 @@ const getSSAOPassConfig = function() {
     maxDistance: 0.1
   });
 };
+const getSSRPassConfig = function() {
+  return Object.assign(getPassConfig(), {
+    renderer: "",
+    scene: "",
+    camera: "",
+    width: 0,
+    height: 0,
+    ground: true,
+    groudOption: {
+      geometry: "",
+      color: "rgb(127, 127, 127)",
+      textureWidth: 0,
+      textureHeight: 0,
+      clipBias: 0,
+      multisample: 4
+    },
+    selects: [],
+    opacity: 0.5,
+    output: 0,
+    maxDistance: 180,
+    thickness: 0.018,
+    bouncing: true,
+    distanceAttenuation: true,
+    fresnel: true,
+    infiniteThick: true
+  });
+};
 var SelectiveBloomPassProcessor = defineProcessor({
   type: "SelectiveBloomPass",
   config: getSelectiveBloomPassConfig,
@@ -556,6 +585,129 @@ var SMAAPassProcessor = defineProcessor({
   dispose(pass) {
   }
 });
+let defaultGroundGeometry = new PlaneBufferGeometry(
+  window.innerWidth,
+  window.innerHeight
+);
+const setDefaultGroundGeometry = function(config) {
+  const newGeometry = new PlaneBufferGeometry(
+    config.width ? config.width : window.innerWidth,
+    config.height ? config.height : window.innerHeight
+  );
+  defaultGroundGeometry.copy(newGeometry);
+  newGeometry.dispose();
+  return defaultGroundGeometry;
+};
+const generateGround = function(config, engine) {
+  const reflector = new ReflectorForSSRPass(
+    engine.getObjectBySymbol(config.groudOption.geometry) || setDefaultGroundGeometry(config),
+    {
+      color: config.groudOption.color,
+      clipBias: config.groudOption.clipBias,
+      textureHeight: config.groudOption.textureHeight || engine.dom.offsetWidth * window.devicePixelRatio,
+      textureWidth: config.groudOption.textureWidth || engine.dom.offsetHeight * window.devicePixelRatio,
+      multisample: config.groudOption.multisample,
+      useDepthTexture: true
+    }
+  );
+  reflector.material.depthWrite = false;
+  reflector.raycast = () => {
+  };
+  reflector.visible = false;
+  if (reflector.geometry === defaultGroundGeometry) {
+    reflector.rotation.x = -Math.PI / 2;
+  }
+  const scene = engine.getObjectBySymbol(config.scene);
+  scene.add(reflector);
+  return reflector;
+};
+const disposeGround = function(reflector) {
+  reflector.getRenderTarget().dispose();
+  reflector.material.dispose();
+};
+var SSRPassProcessor = defineProcessor({
+  type: "SSRPass",
+  config: getSSRPassConfig,
+  commands: {
+    set: {
+      ground({ target, config, value, engine }) {
+        if (value && !target.groundReflector) {
+          target.groundReflector = generateGround(config, engine);
+          return;
+        }
+        if (!value && target.groundReflector) {
+          disposeGround(target.groundReflector);
+          target.groundReflector = null;
+        }
+      },
+      groudOption: {
+        geometry({ target, config, value, engine }) {
+          if (config.ground) {
+            if (value) {
+              const geometry = engine.getObjectBySymbol(value);
+              if (!geometry) {
+                console.warn(
+                  `SSR pass processor: can not found geometry with: ${value}`
+                );
+                return;
+              }
+              target.groundReflector.geometry = geometry;
+            } else {
+              target.groundReflector.geometry = setDefaultGroundGeometry(config);
+            }
+          }
+        }
+      },
+      opacity({ target, value }) {
+        if (target.groundReflector) {
+          target.groundReflector.opacity = value;
+          target.opacity = value;
+        } else {
+          target.opacity = value;
+        }
+      },
+      maxDistance({ target, value }) {
+        if (target.groundReflector) {
+          target.groundReflector.maxDistance = value;
+          target.maxDistance = value;
+        } else {
+          target.maxDistance = value;
+        }
+      }
+    }
+  },
+  create(config, engine) {
+    const pixelRatio = window.devicePixelRatio;
+    const pass = new SSRPass({
+      renderer: engine.getObjectBySymbol(config.renderer),
+      scene: engine.getObjectBySymbol(config.scene),
+      camera: engine.getObjectBySymbol(config.camera),
+      width: config.width ? config.width : engine.dom.offsetWidth * pixelRatio,
+      height: config.height ? config.height : engine.dom.offsetHeight * pixelRatio,
+      groundReflector: config.ground ? generateGround(config, engine) : void 0,
+      selects: config.selects.map((vid) => engine.getObjectBySymbol(vid)),
+      bouncing: config.bouncing
+    });
+    pass.infiniteThick = config.infiniteThick;
+    pass.opacity = config.opacity;
+    pass.output = config.output;
+    pass.maxDistance = config.maxDistance;
+    pass.thickness = config.thickness;
+    if (pass.groundReflector) {
+      const reflector = pass.groundReflector;
+      reflector.opacity = pass.opacity;
+      reflector.maxDistance = pass.maxDistance;
+    }
+    return pass;
+  },
+  dispose(target) {
+    disposeGround(target.groundReflector);
+    target.groundReflector = null;
+    target.dispose();
+    defaultGroundGeometry.dispose();
+    defaultGroundGeometry = void 0;
+  }
+});
 var UnrealBloomPassProcessor = defineProcessor({
   type: "UnrealBloomPass",
   config: getUnrealBloomPassConfig,
@@ -583,7 +735,8 @@ var index = {
   processors: [
     UnrealBloomPassProcessor,
     SMAAPassProcessor,
-    SelectiveBloomPassProcessor
+    SelectiveBloomPassProcessor,
+    SSRPassProcessor
   ]
 };
-export { PassCompiler, index as default, getPassConfig, getSMAAPassConfig, getSSAOPassConfig, getSelectiveBloomPassConfig, getUnrealBloomPassConfig };
+export { PassCompiler, index as default, getPassConfig, getSMAAPassConfig, getSSAOPassConfig, getSSRPassConfig, getSelectiveBloomPassConfig, getUnrealBloomPassConfig };

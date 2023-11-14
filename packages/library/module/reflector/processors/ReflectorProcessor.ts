@@ -78,7 +78,6 @@ export default defineProcessor<
       textureWidth:
         config.textureWidth ||
         engine.dom.offsetHeight * window.devicePixelRatio,
-      //@ts-ignore
       multisample: config.multisample,
     });
 
@@ -88,7 +87,7 @@ export default defineProcessor<
       {
         geometry: true,
         clipBias: true,
-        color: true
+        color: true,
       },
       engine
     );

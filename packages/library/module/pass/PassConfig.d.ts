@@ -35,9 +35,35 @@ export interface SSAOPassConfig extends PassConfig {
     minDistance: number;
     maxDistance: number;
 }
+export interface SSRPassConfig extends PassConfig {
+    renderer: string;
+    scene: string;
+    camera: string;
+    width: number;
+    height: number;
+    ground: boolean;
+    groudOption: {
+        geometry: string;
+        color: string;
+        textureWidth: number;
+        textureHeight: number;
+        clipBias: number;
+        multisample: number;
+    };
+    selects: string[];
+    opacity: number;
+    output: number;
+    maxDistance: number;
+    thickness: number;
+    bouncing: boolean;
+    distanceAttenuation: boolean;
+    fresnel: boolean;
+    infiniteThick: boolean;
+}
 export type PassConfigAllType = SMAAPassConfig | UnrealBloomPassConfig | SelectiveBloomPassConfig | SSAOPassConfig;
 export declare const getPassConfig: () => PassConfig;
 export declare const getSMAAPassConfig: () => SMAAPassConfig;
 export declare const getUnrealBloomPassConfig: () => UnrealBloomPassConfig;
 export declare const getSelectiveBloomPassConfig: () => SelectiveBloomPassConfig;
 export declare const getSSAOPassConfig: () => SSAOPassConfig;
+export declare const getSSRPassConfig: () => SSRPassConfig;
