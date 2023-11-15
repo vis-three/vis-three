@@ -52,7 +52,9 @@ const generateGround = function (
     reflector.rotation.x = -Math.PI / 2;
   }
 
-  const scene = engine.getObjectBySymbol(config.scene);
+  const scene = config.scene
+    ? engine.getObjectBySymbol(config.scene)
+    : engine.scene;
 
   scene.add(reflector);
 
@@ -126,9 +128,15 @@ export default defineProcessor<
     const pixelRatio = window.devicePixelRatio;
 
     const pass = new SSRPass({
-      renderer: engine.getObjectBySymbol(config.renderer) as WebGLRenderer,
-      scene: engine.getObjectBySymbol(config.scene) as Scene,
-      camera: engine.getObjectBySymbol(config.camera) as Camera,
+      renderer: config.renderer
+        ? (engine.getObjectBySymbol(config.renderer) as WebGLRenderer)
+        : engine.webGLRenderer,
+      scene: config.scene
+        ? (engine.getObjectBySymbol(config.scene) as Scene)
+        : engine.scene,
+      camera: config.camera
+        ? (engine.getObjectBySymbol(config.camera) as Camera)
+        : engine.camera,
       width: config.width ? config.width : engine.dom.offsetWidth * pixelRatio,
       height: config.height
         ? config.height

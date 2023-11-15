@@ -698,7 +698,7 @@ const generateGround = function(config, engine) {
   if (reflector.geometry === defaultGroundGeometry) {
     reflector.rotation.x = -Math.PI / 2;
   }
-  const scene = engine.getObjectBySymbol(config.scene);
+  const scene = config.scene ? engine.getObjectBySymbol(config.scene) : engine.scene;
   scene.add(reflector);
   return reflector;
 };
@@ -760,9 +760,9 @@ var SSRPassProcessor = defineProcessor({
   create(config, engine) {
     const pixelRatio = window.devicePixelRatio;
     const pass = new SSRPass({
-      renderer: engine.getObjectBySymbol(config.renderer),
-      scene: engine.getObjectBySymbol(config.scene),
-      camera: engine.getObjectBySymbol(config.camera),
+      renderer: config.renderer ? engine.getObjectBySymbol(config.renderer) : engine.webGLRenderer,
+      scene: config.scene ? engine.getObjectBySymbol(config.scene) : engine.scene,
+      camera: config.camera ? engine.getObjectBySymbol(config.camera) : engine.camera,
       width: config.width ? config.width : engine.dom.offsetWidth * pixelRatio,
       height: config.height ? config.height : engine.dom.offsetHeight * pixelRatio,
       groundReflector: config.ground ? generateGround(config, engine) : void 0,

@@ -48,8 +48,8 @@
         far: 1000,
         position: {
           x: 100,
-          y: 100,
-          z: 100,
+          y: 200,
+          z: 200,
         },
       });
 
@@ -60,37 +60,42 @@
 
       generateConfig.injectScene = true;
 
-      const pointLight = generateConfig("PointLight", {
+      const directionalLight = generateConfig("DirectionalLight", {
         position: {
           x: 30,
           y: 50,
         },
-        distance: 100,
       });
 
       const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
         color: "red",
       });
 
-      const geometry = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
-        radius: 10,
-        widthSegments: 64,
-        heightSegments: 64,
+      const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+        height: 20,
+        width: 10,
       });
 
-      const mesh = generateConfig(CONFIGTYPE.MESH, {
-        material: material.vid,
-        geometry: geometry.vid,
-        position: {
-          y: 10,
-        },
-      });
+      const meshList = [];
+      for (let index = 0; index < 200; index += 1) {
+        const mesh = generateConfig(CONFIGTYPE.MESH, {
+          material: material.vid,
+          geometry: geometry.vid,
+          position: {
+            y: 10,
+            x: Math.random() * 100 * (Math.random() < 0.5 ? -1 : 1),
+            z: Math.random() * 100 * (Math.random() < 0.5 ? -1 : 1),
+          },
+        });
+
+        meshList.push(mesh.vid);
+      }
 
       const ssr = generateConfig(CONFIGTYPE.SSRPASS, {
         renderer: renderer.vid,
         scene: scene.vid,
         camera: camera.vid,
-        selects: [mesh.vid],
+        selects: meshList,
         opacity: 0.8,
         maxDistance: 20,
       });

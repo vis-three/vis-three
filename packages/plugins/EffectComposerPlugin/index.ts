@@ -1,5 +1,4 @@
 import {
-  Engine,
   ENGINE_EVENT,
   Plugin,
   RenderEvent,
@@ -7,12 +6,7 @@ import {
   SetSceneEvent,
   SetSizeEvent,
 } from "@vis-three/core";
-import {
-  RGBAFormat,
-  Vector2,
-  WebGLMultisampleRenderTarget,
-  WebGLRenderTarget,
-} from "three";
+import { RGBAFormat, Vector2, WebGLRenderTarget } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import {
@@ -21,9 +15,9 @@ import {
 } from "@vis-three/plugin-webgl-renderer";
 import { Optional, transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
+import { CopyShader } from "three/examples/jsm/shaders/CopyShader.js";
 export interface EffectComposerParameters {
-  /**如果three版本低于137需要支持MSAA请开启 */
-  WebGLMultisampleRenderTarget?: boolean;
   /**采样数 */
   samples?: number;
   /**渲染格式 */
@@ -53,36 +47,23 @@ export const EffectComposerPlugin: Plugin<
     install(engine) {
       let composer: EffectComposer;
 
-      if (params.WebGLMultisampleRenderTarget || params.MSAA) {
+      if (params.MSAA) {
         const renderer = engine.webGLRenderer;
         const pixelRatio = renderer.getPixelRatio();
         const size = renderer.getDrawingBufferSize(new Vector2());
 
-        if (Number(window.__THREE__) > 137) {
-          composer = new EffectComposer(
-            renderer,
-            new WebGLRenderTarget(
-              size.width * pixelRatio,
-              size.height * pixelRatio,
-              {
-                format: params.format || RGBAFormat,
-                // @ts-ignore
-                samples: params.samples || 4,
-              }
-            )
-          );
-        } else {
-          composer = new EffectComposer(
-            renderer,
-            new WebGLMultisampleRenderTarget(
-              size.width * pixelRatio,
-              size.height * pixelRatio,
-              {
-                format: params.format || RGBAFormat,
-              }
-            )
-          );
-        }
+        composer = new EffectComposer(
+          renderer,
+          new WebGLRenderTarget(
+            size.width * pixelRatio,
+            size.height * pixelRatio,
+            {
+              format: params.format || RGBAFormat,
+              // @ts-ignore
+              samples: params.samples || 4,
+            }
+          )
+        );
       } else {
         composer = new EffectComposer(engine.webGLRenderer);
       }
@@ -91,6 +72,11 @@ export const EffectComposerPlugin: Plugin<
 
       const renderPass = new RenderPass(engine.scene, engine.camera);
       composer.addPass(renderPass);
+
+      if (params.MSAA) {
+        const copyPass = new ShaderPass(CopyShader);
+        composer.addPass(copyPass);
+      }
 
       setCameraFun = (event) => {
         renderPass.camera = event.camera;

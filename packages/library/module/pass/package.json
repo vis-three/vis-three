@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-pass",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "vis-three pass module",
   "main": "dist/vis-three.module-pass.umd.js",
   "module": "dist/vis-three.module-pass.es.js",
