@@ -28,4 +28,5 @@ import animationClip from "@vis-three/module-animation-clip";
 import animationAction from "@vis-three/module-animation-action";
 import constraintor from "@vis-three/module-constraintor";
 import reflector from "@vis-three/module-reflector";
-export { animation, camera, controls, css2D, css3D, geometry, group, light, line, material, mesh, modifier, object3d, pass, points, renderer, scene, sprite, texture, path, shape, curve, helper, bone, skeleton, skinnedMesh, animationClip, animationAction, constraintor, reflector, };
+import water from "@vis-three/module-water";
+export { animation, camera, controls, css2D, css3D, geometry, group, light, line, material, mesh, modifier, object3d, pass, points, renderer, scene, sprite, texture, path, shape, curve, helper, bone, skeleton, skinnedMesh, animationClip, animationAction, constraintor, reflector, water, };
