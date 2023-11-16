@@ -29,6 +29,7 @@ import animationAction from "@vis-three/module-animation-action";
 import constraintor from "@vis-three/module-constraintor";
 import reflector from "@vis-three/module-reflector";
 import water from "@vis-three/module-water";
+import particle from "@vis-three/module-particle";
 
 export {
   animation,
@@ -62,4 +63,5 @@ export {
   constraintor,
   reflector,
   water,
+  particle,
 };

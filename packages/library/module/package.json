@@ -42,6 +42,7 @@
     "@vis-three/module-mesh": "workspace:^0.6.2",
     "@vis-three/module-modifier": "workspace:^0.6.4",
     "@vis-three/module-object3d": "workspace:^0.6.3",
+    "@vis-three/module-particle": "workspace:^0.6.0",
     "@vis-three/module-pass": "workspace:^0.6.3",
     "@vis-three/module-path": "workspace:^0.6.6",
     "@vis-three/module-points": "workspace:^0.6.2",

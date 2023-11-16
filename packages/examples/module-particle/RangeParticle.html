@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RangeParticle</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+
+      import {
+        generateConfig,
+        Template,
+        CONFIGTYPE,
+        createSymbol,
+      } from "@vis-three/middleware";
+
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .setStats(true)
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      const camera = generateConfig("PerspectiveCamera", {
+        near: 1,
+        far: 1000,
+        position: {
+          x: 100,
+          y: 200,
+          z: 200,
+        },
+      });
+
+      engine
+        .setSceneBySymbol(scene.vid)
+        .setCameraBySymbol(camera.vid)
+        .setSize();
+
+      generateConfig.injectScene = true;
+
+      const particle = generateConfig("RangeParticle", {
+        amount: 1000,
+      });
+      console.log(particle);
+
+      window.engine = engine;
+
+      const gui = new GUI();
+
+      engine.setSize();
+    </script>
+  </body>
+</html>

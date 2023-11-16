@@ -54,6 +54,7 @@ const recursion = (parentDir) => {
   "./module-constraintor",
   "./module-reflector",
   "./module-water",
+  "./module-particle",
   "./convenient",
   "./modifier",
   "./demo",
