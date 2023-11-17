@@ -7,7 +7,7 @@ var __publicField = (obj, key, value) => {
 import { defineProcessor, MODULETYPE, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { ObjectCompiler, ObjectRule, getObjectConfig, objectCreate } from "@vis-three/module-object";
 import { validate } from "uuid";
-import { Points, PointsMaterial, BufferAttribute } from "three";
+import { Points, BufferAttribute, ShaderMaterial, AdditiveBlending } from "three";
 class ParticleCompiler extends ObjectCompiler {
   constructor() {
     super();
@@ -28,12 +28,73 @@ const getRangeParticleConfig = function() {
     },
     amount: 200,
     size: 1,
-    colorMap: "",
     alphaMap: "",
-    sizeAttenuation: true,
-    opacity: 1
+    opacity: 1,
+    flicker: true,
+    time: 0
   });
 };
+const vertex = `
+varying vec3 vColor;
+uniform bool flicker;
+uniform float time;
+uniform float size;
+
+void main() {
+
+  vColor = color;
+  float positionX = position.x + sin(time  + color.r + position.y + color.b ) * 5.0;
+  float positionY = position.y + sin(time  + color.r + color.g + color.g ) * 5.0;
+  float positionZ = position.z + sin(time  + color.b + color.g + position.x ) * 5.0;
+
+  vec4 mvPosition = modelViewMatrix * vec4( positionX, positionY, positionZ, 1.0 );
+
+  float pointSize = size * ( 300.0 / -mvPosition.z );
+
+  if (flicker) {
+    pointSize = sin(time + position.x + color.g + color.b) * pointSize;
+  }
+
+  gl_PointSize = pointSize;
+
+  gl_Position = projectionMatrix * mvPosition;
+
+}
+`;
+const fragment = `
+uniform sampler2D alphaMap;
+uniform float opacity;
+varying vec3 vColor;
+
+void main() {
+
+  gl_FragColor = vec4( vColor, opacity );
+
+  gl_FragColor = gl_FragColor * texture2D( alphaMap, gl_PointCoord );
+
+  if (gl_FragColor.a < 0.01) {
+    discard;
+  }
+
+}
+`;
+class RangeParticleMaterial extends ShaderMaterial {
+  constructor(params) {
+    super();
+    this.uniforms = {
+      flicker: { value: params.flicker || false },
+      time: { value: params.time || 0 },
+      alphaMap: { value: params.alphaMap || null },
+      size: { value: params.size || 1 },
+      opacity: { value: params.opacity || 1 }
+    };
+    this.vertexShader = vertex;
+    this.fragmentShader = fragment;
+    this.vertexColors = true;
+    this.blending = AdditiveBlending;
+    this.transparent = true;
+  }
+}
 class RangeParticle extends Points {
   constructor(params) {
     super();
@@ -50,15 +111,12 @@ class RangeParticle extends Points {
     };
     Object.assign(this.range, params.range);
     this.amount = params.amount;
-    this.updateGeometry();
-    this.material = new PointsMaterial({
-      sizeAttenuation: params.sizeAttenuation,
+    this.resetGeometry();
+    this.material = new RangeParticleMaterial({
       size: params.size || 1,
-      map: params.colorMap || void 0,
-      alphaMap: params.alphaMap || void 0,
-      transparent: true,
+      alphaMap: params.alphaMap || null,
       opacity: params.opacity || 1,
-      alphaTest: 0.01
+      flicker: params.flicker
     });
   }
   updateGeometry() {
@@ -68,45 +126,81 @@ class RangeParticle extends Points {
     const getRandomNum = (min, max) => {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     };
+    const position = geometry.getAttribute("position");
+    const color = geometry.getAttribute("color");
+    for (let index2 = 0; index2 < amount; index2 += 1) {
+      position.setXYZ(
+        index2,
+        getRandomNum(range.left, range.right),
+        getRandomNum(range.bottom, range.top),
+        getRandomNum(range.back, range.front)
+      );
+      position.setXYZ(
+        index2,
+        getRandomNum(0, 1),
+        getRandomNum(0, 1),
+        getRandomNum(0, 1)
+      );
+    }
+    position.needsUpdate = true;
+    color.needsUpdate = true;
+  }
+  resetGeometry() {
+    const range = this.range;
+    const geometry = this.geometry;
+    const amount = this.amount;
+    const getRandomNum = (min, max) => {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
     const position = new Array(amount * 3);
+    const color = new Array(amount * 3);
     for (let index2 = 0; index2 < amount * 3; index2 += 3) {
       position[index2] = getRandomNum(range.left, range.right);
       position[index2 + 1] = getRandomNum(range.bottom, range.top);
       position[index2 + 2] = getRandomNum(range.back, range.front);
+      color[index2] = getRandomNum(0, 1);
+      color[index2 + 1] = getRandomNum(0, 1);
+      color[index2 + 2] = getRandomNum(0, 1);
     }
     geometry.setAttribute(
       "position",
       new BufferAttribute(new Float32Array(position), 3)
     );
-    const uv = new Array(amount * 2);
-    for (let index2 = 0; index2 < amount * 2; index2 += 2) {
-      uv[index2] = getRandomNum(0, 1);
-      uv[index2 + 1] = getRandomNum(0, 1);
-    }
-    geometry.setAttribute("uv", new BufferAttribute(new Float32Array(uv), 2));
+    geometry.setAttribute(
+      "color",
+      new BufferAttribute(new Float32Array(color), 3)
+    );
   }
 }
 var RangeParticleProcessor = defineProcessor({
   type: "RangeParticle",
   config: getRangeParticleConfig,
   commands: {
-    set: {}
+    set: {
+      range(params) {
+        Object.assign(params.target.range, params.config.range);
+        params.target.updateGeometry();
+      },
+      amount(params) {
+        params.target.amount = params.value;
+        params.target.resetGeometry();
+      },
+      time(params) {
+        params.target.material.uniforms.time.value = params.value;
+      }
+    }
   },
   create(config, engine) {
     const particle = new RangeParticle({
       range: { ...config.range },
       amount: config.amount,
       size: config.size,
-      sizeAttenuation: config.sizeAttenuation,
       opacity: config.opacity,
-      colorMap: engine.getObjectfromModule(
-        MODULETYPE.TEXTURE,
-        config.colorMap
-      ),
       alphaMap: engine.getObjectfromModule(
         MODULETYPE.TEXTURE,
-        config.colorMap
-      )
+        config.alphaMap
+      ),
+      flicker: config.flicker
     });
     return objectCreate(
       particle,
@@ -115,10 +209,9 @@ var RangeParticleProcessor = defineProcessor({
         range: true,
         amount: true,
         size: true,
-        colorMap: true,
         alphaMap: true,
-        sizeAttenuation: true,
-        opacity: true
+        opacity: true,
+        flicker: true
       },
       engine
     );

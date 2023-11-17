@@ -18,23 +18,32 @@ export default defineProcessor<
   type: "RangeParticle",
   config: getRangeParticleConfig,
   commands: {
-    set: {},
+    set: {
+      range(params) {
+        Object.assign(params.target.range, params.config.range);
+        params.target.updateGeometry();
+      },
+      amount(params) {
+        params.target.amount = params.value;
+        params.target.resetGeometry();
+      },
+      time(params) {
+        // @ts-ignore
+        params.target.material.uniforms.time.value = params.value;
+      },
+    },
   },
   create(config, engine) {
     const particle = new RangeParticle({
       range: { ...config.range },
       amount: config.amount,
       size: config.size,
-      sizeAttenuation: config.sizeAttenuation,
       opacity: config.opacity,
-      colorMap: engine.getObjectfromModule(
-        MODULETYPE.TEXTURE,
-        config.colorMap
-      ) as Texture,
       alphaMap: engine.getObjectfromModule(
         MODULETYPE.TEXTURE,
-        config.colorMap
+        config.alphaMap
       ) as Texture,
+      flicker: config.flicker,
     });
 
     return objectCreate(
@@ -44,10 +53,9 @@ export default defineProcessor<
         range: true,
         amount: true,
         size: true,
-        colorMap: true,
         alphaMap: true,
-        sizeAttenuation: true,
         opacity: true,
+        flicker: true,
       },
       engine
     );

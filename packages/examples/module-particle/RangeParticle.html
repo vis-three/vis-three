@@ -38,6 +38,8 @@
         .setStats(true)
         .play();
 
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
       generateConfig.injectEngine = engine;
 
       const scene = generateConfig("Scene");
@@ -59,16 +61,42 @@
 
       generateConfig.injectScene = true;
 
-      const particle = generateConfig("RangeParticle", {
-        amount: 1000,
-      });
-      console.log(particle);
+      engine
+        .loadResourcesAsync([
+          "/texture/water/waterdudv.jpg",
+          "/texture/sprites/spark1.png",
+        ])
+        .then(() => {
+          const texture = generateConfig("ImageTexture", {
+            url: "/texture/water/waterdudv.jpg",
+          });
 
-      window.engine = engine;
+          const texture2 = generateConfig("ImageTexture", {
+            url: "/texture/sprites/spark1.png",
+            flipY: true,
+            magFilter: THREE.LinearFilter,
+            minFilter: THREE.LinearMipmapLinearFilter,
+          });
 
-      const gui = new GUI();
+          const particle = generateConfig("RangeParticle", {
+            amount: 1000,
+            alphaMap: texture2.vid,
+            size: 10,
+            flicker: true,
+          });
 
-      engine.setSize();
+          console.log(particle)
+
+          window.engine = engine;
+
+          const gui = new GUI();
+
+          engine.setSize();
+
+          engine.renderManager.on("render", (event) => {
+            particle.time = event.total;
+          });
+        });
     </script>
   </body>
 </html>

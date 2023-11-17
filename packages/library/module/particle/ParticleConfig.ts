@@ -11,10 +11,10 @@ export interface RangeParticleConfig extends ObjectConfig {
   };
   amount: number;
   size: number;
-  colorMap: string;
   alphaMap: string;
-  sizeAttenuation: boolean;
   opacity: number;
+  flicker: boolean;
+  time: number;
 }
 
 export const getRangeParticleConfig = function (): RangeParticleConfig {
@@ -29,9 +29,9 @@ export const getRangeParticleConfig = function (): RangeParticleConfig {
     },
     amount: 200,
     size: 1,
-    colorMap: "",
     alphaMap: "",
-    sizeAttenuation: true,
     opacity: 1,
+    flicker: true,
+    time: 0,
   });
 };
