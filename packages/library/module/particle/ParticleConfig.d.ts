@@ -1,5 +1,5 @@
 import { ObjectConfig } from "@vis-three/module-object";
-export interface RangeParticleConfig extends ObjectConfig {
+export interface FloatParticleConfig extends ObjectConfig {
     range: {
         top: number;
         bottom: number;
@@ -14,5 +14,8 @@ export interface RangeParticleConfig extends ObjectConfig {
     opacity: number;
     flicker: boolean;
     time: number;
+    floatRange: number;
+    refColor: string;
+    colorRange: number;
 }
-export declare const getRangeParticleConfig: () => RangeParticleConfig;
+export declare const getFloatParticleConfig: () => FloatParticleConfig;

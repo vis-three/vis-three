@@ -1,5 +1,5 @@
-import { Points, ShaderMaterial, Texture } from "three";
-export interface RangeParticleParameters {
+import { Color, Points, ShaderMaterial, Texture } from "three";
+export interface FloatParticleParameters {
     range: {
         top: number;
         bottom: number;
@@ -13,6 +13,9 @@ export interface RangeParticleParameters {
     alphaMap: Texture;
     opacity: number;
     flicker: boolean;
+    floatRange: number;
+    refColor: Color;
+    colorRange: number;
 }
 export declare class RangeParticleMaterial extends ShaderMaterial {
     constructor(params: {
@@ -21,9 +24,10 @@ export declare class RangeParticleMaterial extends ShaderMaterial {
         alphaMap?: Texture;
         size?: number;
         opacity?: number;
+        floatRange?: number;
     });
 }
-export declare class RangeParticle extends Points {
+export declare class FloatParticle extends Points {
     range: {
         top: number;
         bottom: number;
@@ -33,7 +37,11 @@ export declare class RangeParticle extends Points {
         back: number;
     };
     amount: number;
-    constructor(params: RangeParticleParameters);
+    refColor: Color;
+    colorRange: number;
+    constructor(params: FloatParticleParameters);
+    private getRandomNum;
+    private getRandomColor;
     updateGeometry(): void;
     resetGeometry(): void;
 }

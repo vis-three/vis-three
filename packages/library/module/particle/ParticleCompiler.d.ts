@@ -1,6 +1,6 @@
 import { ObjectCompiler } from "@vis-three/module-object";
-import { RangeParticle } from "./extends/RangeParticle";
-import { RangeParticleConfig } from "./ParticleConfig";
-export declare class ParticleCompiler extends ObjectCompiler<RangeParticleConfig, RangeParticle> {
+import { FloatParticle } from "./extends/FloatParticle";
+import { FloatParticleConfig } from "./ParticleConfig";
+export declare class ParticleCompiler extends ObjectCompiler<FloatParticleConfig, FloatParticle> {
     constructor();
 }

@@ -1,16 +1,13 @@
 import {
   AdditiveBlending,
   BufferAttribute,
+  Color,
   Points,
-  PointsMaterial,
-  PointsMaterialParameters,
   ShaderMaterial,
   Texture,
-  UniformsLib,
-  UniformsUtils,
 } from "three";
 
-export interface RangeParticleParameters {
+export interface FloatParticleParameters {
   range: {
     top: number;
     bottom: number;
@@ -24,6 +21,9 @@ export interface RangeParticleParameters {
   alphaMap: Texture;
   opacity: number;
   flicker: boolean;
+  floatRange: number;
+  refColor: Color;
+  colorRange: number;
 }
 
 const vertex = `
@@ -31,20 +31,21 @@ varying vec3 vColor;
 uniform bool flicker;
 uniform float time;
 uniform float size;
+uniform float floatRange;
 
 void main() {
 
   vColor = color;
-  float positionX = position.x + sin(time  + color.r + position.y + color.b ) * 5.0;
-  float positionY = position.y + sin(time  + color.r + color.g + color.g ) * 5.0;
-  float positionZ = position.z + sin(time  + color.b + color.g + position.x ) * 5.0;
+  float positionX = position.x + sin(time  + color.r + position.y + color.b ) * floatRange;
+  float positionY = position.y + sin(time  + color.r + color.g + color.g ) * floatRange;
+  float positionZ = position.z + sin(time  + color.b + color.g + position.x ) * floatRange;
 
   vec4 mvPosition = modelViewMatrix * vec4( positionX, positionY, positionZ, 1.0 );
 
   float pointSize = size * ( 300.0 / -mvPosition.z );
 
   if (flicker) {
-    pointSize = sin(time + position.x + color.g + color.b) * pointSize;
+    pointSize = sin(time + position.x + color.g + color.b + position.z - position.y) * pointSize;
   }
 
   gl_PointSize = pointSize;
@@ -78,6 +79,7 @@ export class RangeParticleMaterial extends ShaderMaterial {
     alphaMap?: Texture;
     size?: number;
     opacity?: number;
+    floatRange?: number;
   }) {
     super();
 
@@ -87,6 +89,7 @@ export class RangeParticleMaterial extends ShaderMaterial {
       alphaMap: { value: params.alphaMap || null },
       size: { value: params.size || 1 },
       opacity: { value: params.opacity || 1 },
+      floatRange: { value: params.floatRange || 5 },
     };
     this.vertexShader = vertex;
     this.fragmentShader = fragment;
@@ -96,7 +99,7 @@ export class RangeParticleMaterial extends ShaderMaterial {
   }
 }
 
-export class RangeParticle extends Points {
+export class FloatParticle extends Points {
   range = {
     top: 100,
     bottom: -100,
@@ -108,11 +111,16 @@ export class RangeParticle extends Points {
 
   amount = 200;
 
-  constructor(params: RangeParticleParameters) {
+  refColor = new Color(1, 1, 1);
+  colorRange = 1;
+
+  constructor(params: FloatParticleParameters) {
     super();
     this.raycast = () => {};
 
     Object.assign(this.range, params.range);
+    this.refColor.setHex(params.refColor.getHex());
+    this.colorRange = params.colorRange;
     this.amount = params.amount;
     this.resetGeometry();
 
@@ -121,7 +129,22 @@ export class RangeParticle extends Points {
       alphaMap: params.alphaMap || null,
       opacity: params.opacity || 1,
       flicker: params.flicker,
+      floatRange: params.floatRange,
     });
+  }
+
+  private getRandomNum(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  private getRandomColor(key: string) {
+    const color = this.refColor;
+    const colorRange = this.colorRange;
+
+    return this.getRandomNum(
+      color[key] - color[key] * colorRange,
+      (1 - color[key]) * colorRange + color[key]
+    );
   }
 
   updateGeometry() {
@@ -129,26 +152,22 @@ export class RangeParticle extends Points {
     const geometry = this.geometry;
     const amount = this.amount;
 
-    const getRandomNum = (min: number, max: number) => {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-
     const position = geometry.getAttribute("position");
     const color = geometry.getAttribute("color");
 
     for (let index = 0; index < amount; index += 1) {
       position.setXYZ(
         index,
-        getRandomNum(range.left, range.right),
-        getRandomNum(range.bottom, range.top),
-        getRandomNum(range.back, range.front)
+        this.getRandomNum(range.left, range.right),
+        this.getRandomNum(range.bottom, range.top),
+        this.getRandomNum(range.back, range.front)
       );
 
-      position.setXYZ(
+      color.setXYZ(
         index,
-        getRandomNum(0, 1),
-        getRandomNum(0, 1),
-        getRandomNum(0, 1)
+        this.getRandomColor("r"),
+        this.getRandomColor("g"),
+        this.getRandomColor("b")
       );
     }
     position.needsUpdate = true;
@@ -160,21 +179,17 @@ export class RangeParticle extends Points {
     const geometry = this.geometry;
     const amount = this.amount;
 
-    const getRandomNum = (min: number, max: number) => {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-
     const position = new Array(amount * 3);
     const color = new Array(amount * 3);
 
     for (let index = 0; index < amount * 3; index += 3) {
-      position[index] = getRandomNum(range.left, range.right);
-      position[index + 1] = getRandomNum(range.bottom, range.top);
-      position[index + 2] = getRandomNum(range.back, range.front);
+      position[index] = this.getRandomNum(range.left, range.right);
+      position[index + 1] = this.getRandomNum(range.bottom, range.top);
+      position[index + 2] = this.getRandomNum(range.back, range.front);
 
-      color[index] = getRandomNum(0, 1);
-      color[index + 1] = getRandomNum(0, 1);
-      color[index + 2] = getRandomNum(0, 1);
+      color[index] = this.getRandomColor("r");
+      color[index + 1] = this.getRandomColor("g");
+      color[index + 2] = this.getRandomColor("b");
     }
 
     geometry.setAttribute(

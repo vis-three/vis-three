@@ -63,12 +63,12 @@
 
       engine
         .loadResourcesAsync([
-          "/texture/water/waterdudv.jpg",
+          "/texture/sprites/snowflake2.png",
           "/texture/sprites/spark1.png",
         ])
         .then(() => {
           const texture = generateConfig("ImageTexture", {
-            url: "/texture/water/waterdudv.jpg",
+            url: "/texture/sprites/snowflake2.png",
           });
 
           const texture2 = generateConfig("ImageTexture", {
@@ -78,18 +78,31 @@
             minFilter: THREE.LinearMipmapLinearFilter,
           });
 
-          const particle = generateConfig("RangeParticle", {
+          const particle = generateConfig("FloatParticle", {
             amount: 1000,
             alphaMap: texture2.vid,
             size: 10,
             flicker: true,
           });
 
-          console.log(particle)
-
           window.engine = engine;
 
           const gui = new GUI();
+
+          gui.add(particle, "flicker");
+          gui.add(particle.range, "top", -500, 500, 10);
+          gui.add(particle.range, "bottom", -500, 500, 10);
+          gui.add(particle.range, "right", -500, 500, 10);
+          gui.add(particle.range, "left", -500, 500, 10);
+          gui.add(particle.range, "front", -500, 500, 10);
+          gui.add(particle.range, "back", -500, 500, 10);
+          gui.add(particle, "amount", 100, 10000, 10);
+          gui.add(particle, "size", 1, 100, 1);
+          gui.add(particle, "opacity", 0, 1, 0.01);
+          gui.add(particle, "colorRange", 0, 1, 0.01);
+          gui.add(particle, "floatRange", 0, 50, 1);
+          gui.addColor(particle, "refColor");
+          gui.add(particle, "alphaMap", [texture.vid, texture2.vid]);
 
           engine.setSize();
 
