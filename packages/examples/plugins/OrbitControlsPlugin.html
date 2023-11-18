@@ -36,7 +36,11 @@
           }),
           CameraAdaptivePlugin(),
 
-          OrbitControlsPlugin(),
+          OrbitControlsPlugin({
+            keysDom: document.body,
+            minDistance: 50,
+            maxDistance: 200,
+          }),
         ],
       })
         .setDom(document.getElementById("app"))
