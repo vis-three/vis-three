@@ -75,6 +75,35 @@
         width: 10,
       });
 
+      const path = generateConfig(CONFIGTYPE.PATH, {
+        curves: [
+          {
+            curve: "line",
+            params: [-100, -100, 150, -100],
+          },
+          {
+            curve: "line",
+            params: [150, -100, 100, 0],
+          },
+          {
+            curve: "line",
+            params: [100, 0, 100, 100],
+          },
+        ],
+        autoClose: true,
+      });
+
+      const shape = generateConfig(CONFIGTYPE.SHAPE, {
+        shape: path.vid,
+      });
+
+      const shapeGeometry = generateConfig(CONFIGTYPE.EXTRUDEGEOMETRY, {
+        shapes: shape.vid,
+        options: {
+          bevelEnabled: false,
+        },
+      });
+
       for (let index = 0; index < 200; index += 1) {
         const mesh = generateConfig(CONFIGTYPE.MESH, {
           material: material.vid,
@@ -102,6 +131,8 @@
       window.engine = engine;
 
       const gui = new GUI();
+
+      gui.add(reflector, "geometry", [planeGeometry.vid, shapeGeometry.vid]);
 
       engine.setSize();
     </script>

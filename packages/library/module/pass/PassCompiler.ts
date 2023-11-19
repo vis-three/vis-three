@@ -34,7 +34,13 @@ export class PassCompiler extends Compiler<PassConfigAllType, Pass> {
 
   add(config: PassConfigAllType) {
     const pass = super.add(config);
-    pass && this.composer.addPass(pass);
+    if (pass) {
+      if (config.index < 0) {
+        this.composer.addPass(pass);
+      } else {
+        this.composer.insertPass(pass, config.index);
+      }
+    }
     return pass;
   }
 

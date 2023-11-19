@@ -38,6 +38,9 @@ var ReflectorProcessor = defineProcessor({
       },
       textureWidth({ target, config, engine }) {
         setSize(target, config, engine);
+      },
+      geometry(params) {
+        params.target.geometry = params.engine.getObjectBySymbol(params.value);
       }
     },
     delete: objectCommands.delete

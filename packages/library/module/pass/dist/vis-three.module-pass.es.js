@@ -32,7 +32,13 @@ class PassCompiler extends Compiler {
   }
   add(config) {
     const pass = super.add(config);
-    pass && this.composer.addPass(pass);
+    if (pass) {
+      if (config.index < 0) {
+        this.composer.addPass(pass);
+      } else {
+        this.composer.insertPass(pass, config.index);
+      }
+    }
     return pass;
   }
   remove(config) {
@@ -54,7 +60,7 @@ const getPassConfig = function() {
     vid: "",
     name: "",
     type: "Pass",
-    index: 0
+    index: -1
   });
 };
 const getSMAAPassConfig = function() {
@@ -113,7 +119,8 @@ const getSSRPassConfig = function() {
     bouncing: true,
     distanceAttenuation: true,
     fresnel: true,
-    infiniteThick: true
+    infiniteThick: true,
+    index: 0
   });
 };
 const getFilmPassConfig = function() {

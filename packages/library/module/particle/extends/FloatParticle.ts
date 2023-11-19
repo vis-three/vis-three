@@ -202,4 +202,10 @@ export class FloatParticle extends Points {
       new BufferAttribute(new Float32Array(color), 3)
     );
   }
+
+  dispose() {
+    this.geometry.dispose();
+    (<ShaderMaterial>this.material).dispose();
+    this.removeFromParent();
+  }
 }

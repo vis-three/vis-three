@@ -44,4 +44,5 @@ export declare class FloatParticle extends Points {
     private getRandomColor;
     updateGeometry(): void;
     resetGeometry(): void;
+    dispose(): void;
 }

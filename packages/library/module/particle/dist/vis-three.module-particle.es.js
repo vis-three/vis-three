@@ -186,6 +186,11 @@ class FloatParticle extends Points {
       new BufferAttribute(new Float32Array(color), 3)
     );
   }
+  dispose() {
+    this.geometry.dispose();
+    this.material.dispose();
+    this.removeFromParent();
+  }
 }
 var FloatParticleProcessor = defineProcessor({
   type: "FloatParticle",
@@ -263,7 +268,8 @@ var FloatParticleProcessor = defineProcessor({
       engine
     );
   },
-  dispose() {
+  dispose(target) {
+    target.dispose();
   }
 });
 var index = {

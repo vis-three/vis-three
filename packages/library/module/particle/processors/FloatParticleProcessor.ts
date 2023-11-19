@@ -98,5 +98,7 @@ export default defineProcessor<
       engine
     );
   },
-  dispose() {},
+  dispose(target) {
+    target.dispose();
+  },
 });

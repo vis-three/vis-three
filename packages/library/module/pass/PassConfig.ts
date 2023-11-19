@@ -93,7 +93,7 @@ export const getPassConfig = function (): PassConfig {
     vid: "",
     name: "",
     type: "Pass",
-    index: 0, // TODO: 顺序
+    index: -1, // TODO: 顺序
   });
 };
 
@@ -160,7 +160,7 @@ export const getSSRPassConfig = function (): SSRPassConfig {
     bouncing: true,
     distanceAttenuation: true,
     fresnel: true,
-    infiniteThick: true,
+    infiniteThick: true
   });
 };
 
