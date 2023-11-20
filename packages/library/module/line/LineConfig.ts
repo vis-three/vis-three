@@ -15,21 +15,34 @@ export interface LineConfig extends SolidObjectConfig {
   dashed: boolean;
 }
 
-/**
- * 获取直线物体配置 - 其他属性继承`getSolidObjectConfig`并会与之合并。
- * @returns
- * @example
- * {
-    type: "Line",
-    geometry: "",
-    material: "",
-    dashed: false,
-  }
- */
+export interface LineSegmentsConfig extends LineConfig {}
+
+export interface LineFatConfig extends SolidObjectConfig {}
+
+export interface LineSegmentsFatConfig extends SolidObjectConfig {}
+
 export const getLineConfig = function (): LineConfig {
   return Object.assign(getSolidObjectConfig(), {
     geometry: "",
     material: "",
     dashed: false,
+  });
+};
+
+export const getLineSegmentsConfig = function (): LineSegmentsConfig {
+  return getLineConfig();
+};
+
+export const getLineFatConfig = function (): LineFatConfig {
+  return Object.assign(getSolidObjectConfig(), {
+    geometry: "",
+    material: "",
+  });
+};
+
+export const getLineSegmentsFatConfig = function (): LineSegmentsFatConfig {
+  return Object.assign(getSolidObjectConfig(), {
+    geometry: "",
+    material: "",
   });
 };

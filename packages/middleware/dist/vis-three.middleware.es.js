@@ -1852,12 +1852,12 @@ var SUPPORT_LIFE_CYCLE = /* @__PURE__ */ ((SUPPORT_LIFE_CYCLE2) => {
   return SUPPORT_LIFE_CYCLE2;
 })(SUPPORT_LIFE_CYCLE || {});
 class EngineSupport extends Engine {
-  constructor() {
+  constructor(params = {}) {
     super();
     __publicField(this, "moduleLifeCycle", []);
     __publicField(this, "moduleTriggers", [globalObjectModuleTrigger]);
     __publicField(this, "processorExpands", []);
-    this.install(LoaderManagerPlugin()).install(PointerManagerPlugin()).install(EventManagerPlugin()).install(RenderManagerPlugin()).install(ResourceManagerPlugin()).install(DataSupportManagerPlugin()).install(CompilerManagerPlugin());
+    this.install(LoaderManagerPlugin(params.LoaderManagerPlugin)).install(PointerManagerPlugin(params.PointerManagerPlugin)).install(EventManagerPlugin(params.EventManagerPlugin)).install(RenderManagerPlugin(params.RenderManagerPlugin)).install(ResourceManagerPlugin(params.ResourceManagerPlugin)).install(DataSupportManagerPlugin(params.DataSupportManagerPlugin)).install(CompilerManagerPlugin(params.CompilerManagerPlugin));
     this.exec(LoaderDataSupportStrategy()).exec(LoaderMappingStrategy()).exec(CompilerSupportStrategy());
   }
   loadLifeCycle(config) {
@@ -2019,8 +2019,8 @@ class EngineSupport extends Engine {
     return this;
   }
 }
-const defineEngineSupport = function(options) {
-  const engine = new EngineSupport();
+const defineEngineSupport = function(options, params = {}) {
+  const engine = new EngineSupport(params);
   if (options.modules) {
     options.modules.forEach((module) => {
       engine.registModule(module);

@@ -1,28 +1,33 @@
 import { BaseEvent, Engine, EngineOptions } from "@vis-three/core";
 import {
   LoaderManager,
+  LoaderManagerParameters,
   LoaderManagerPlugin,
   LoadUnit,
 } from "@vis-three/plugin-loader-manager";
 import {
   PointerManager,
   PointerManagerEngine,
+  PointerManagerParameters,
   PointerManagerPlugin,
 } from "@vis-three/plugin-pointer-manager";
 import {
   EventManager,
   EventManagerEngine,
+  EventManagerParameters,
   EventManagerPlugin,
 } from "@vis-three/plugin-event-manager";
 import {
   RenderManager,
   RenderManagerEngine,
   RenderManagerPlugin,
+  RenderManagerPluginParams,
 } from "@vis-three/plugin-render-manager";
 import {
   DataSupportEngine,
   DataSupportManager,
   DataSupportManagerPlugin,
+  DataSupportPluginParameters,
   LoadOptions,
 } from "../plugin/DataSupportManagerPlugin";
 import {
@@ -31,6 +36,7 @@ import {
   ResourceManager,
   ResourceManagerEngine,
   ResourceManagerPlugin,
+  ResourceManagerPluginParameters,
 } from "../plugin/ResourceManagerPlugin";
 import { SymbolConfig } from "../module/common";
 import { LoaderDataSupportStrategy } from "../strategy/LoaderDataSuportStrategy";
@@ -42,6 +48,7 @@ import {
   CompilerManager,
   CompilerManagerEngine,
   CompilerManagerPlugin,
+  CompilerManagerPluginParameters,
 } from "../plugin/CompilerManagerPlugin";
 import { CompilerSupportStrategy } from "../strategy/CompilerSupportStrategy";
 import {
@@ -65,6 +72,16 @@ import {
 export type EngineSupportLoadOptions = LoadOptions & {
   assets?: string[];
 };
+
+export interface EngineSupportParameters {
+  LoaderManagerPlugin: LoaderManagerParameters;
+  PointerManagerPlugin: PointerManagerParameters;
+  EventManagerPlugin: EventManagerParameters;
+  RenderManagerPlugin: RenderManagerPluginParams;
+  ResourceManagerPlugin: ResourceManagerPluginParameters;
+  DataSupportManagerPlugin: DataSupportPluginParameters;
+  CompilerManagerPlugin: CompilerManagerPluginParameters;
+}
 
 export enum SUPPORT_LIFE_CYCLE {
   ZERO = 0,
@@ -129,15 +146,15 @@ export class EngineSupport
     command: ProcessorCommands<any, any, any, any>;
   }[] = [];
 
-  constructor() {
+  constructor(params: Partial<EngineSupportParameters> = {}) {
     super();
-    this.install(LoaderManagerPlugin())
-      .install(PointerManagerPlugin())
-      .install(EventManagerPlugin())
-      .install(RenderManagerPlugin())
-      .install(ResourceManagerPlugin())
-      .install(DataSupportManagerPlugin())
-      .install(CompilerManagerPlugin());
+    this.install(LoaderManagerPlugin(params.LoaderManagerPlugin))
+      .install(PointerManagerPlugin(params.PointerManagerPlugin))
+      .install(EventManagerPlugin(params.EventManagerPlugin))
+      .install(RenderManagerPlugin(params.RenderManagerPlugin))
+      .install(ResourceManagerPlugin(params.ResourceManagerPlugin))
+      .install(DataSupportManagerPlugin(params.DataSupportManagerPlugin))
+      .install(CompilerManagerPlugin(params.CompilerManagerPlugin));
 
     this.exec(LoaderDataSupportStrategy())
       .exec(LoaderMappingStrategy())
@@ -352,8 +369,11 @@ export interface EngineSupportOptions extends EngineOptions {
   modules: ModuleOptions<any>[];
 }
 
-export const defineEngineSupport = function (options: EngineSupportOptions) {
-  const engine = new EngineSupport();
+export const defineEngineSupport = function (
+  options: EngineSupportOptions,
+  params: Partial<EngineSupportParameters> = {}
+) {
+  const engine = new EngineSupport(params);
 
   if (options.modules) {
     options.modules.forEach((module) => {

@@ -1,18 +1,27 @@
 import { Engine, EngineOptions } from "@vis-three/core";
-import { LoaderManager, LoadUnit } from "@vis-three/plugin-loader-manager";
-import { PointerManager, PointerManagerEngine } from "@vis-three/plugin-pointer-manager";
-import { EventManager, EventManagerEngine } from "@vis-three/plugin-event-manager";
-import { RenderManager, RenderManagerEngine } from "@vis-three/plugin-render-manager";
-import { DataSupportEngine, DataSupportManager, LoadOptions } from "../plugin/DataSupportManagerPlugin";
-import { MappedEvent, ResourceManager, ResourceManagerEngine } from "../plugin/ResourceManagerPlugin";
+import { LoaderManager, LoaderManagerParameters, LoadUnit } from "@vis-three/plugin-loader-manager";
+import { PointerManager, PointerManagerEngine, PointerManagerParameters } from "@vis-three/plugin-pointer-manager";
+import { EventManager, EventManagerEngine, EventManagerParameters } from "@vis-three/plugin-event-manager";
+import { RenderManager, RenderManagerEngine, RenderManagerPluginParams } from "@vis-three/plugin-render-manager";
+import { DataSupportEngine, DataSupportManager, DataSupportPluginParameters, LoadOptions } from "../plugin/DataSupportManagerPlugin";
+import { MappedEvent, ResourceManager, ResourceManagerEngine, ResourceManagerPluginParameters } from "../plugin/ResourceManagerPlugin";
 import { SymbolConfig } from "../module/common";
 import { LoaderMappingEngine } from "../strategy/LoaderMappingStrategy";
-import { CompilerManager, CompilerManagerEngine } from "../plugin/CompilerManagerPlugin";
+import { CompilerManager, CompilerManagerEngine, CompilerManagerPluginParameters } from "../plugin/CompilerManagerPlugin";
 import { Compiler, ModuleOptions } from "../module";
 import { Object3D, Event } from "three";
 export type EngineSupportLoadOptions = LoadOptions & {
     assets?: string[];
 };
+export interface EngineSupportParameters {
+    LoaderManagerPlugin: LoaderManagerParameters;
+    PointerManagerPlugin: PointerManagerParameters;
+    EventManagerPlugin: EventManagerParameters;
+    RenderManagerPlugin: RenderManagerPluginParams;
+    ResourceManagerPlugin: ResourceManagerPluginParameters;
+    DataSupportManagerPlugin: DataSupportPluginParameters;
+    CompilerManagerPlugin: CompilerManagerPluginParameters;
+}
 export declare enum SUPPORT_LIFE_CYCLE {
     ZERO = 0,
     ONE = 100,
@@ -52,7 +61,7 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     private moduleLifeCycle;
     private moduleTriggers;
     private processorExpands;
-    constructor();
+    constructor(params?: Partial<EngineSupportParameters>);
     private loadLifeCycle;
     private removeLifeCycle;
     loadConfig(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
@@ -64,4 +73,4 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
 export interface EngineSupportOptions extends EngineOptions {
     modules: ModuleOptions<any>[];
 }
-export declare const defineEngineSupport: (options: EngineSupportOptions) => EngineSupport;
+export declare const defineEngineSupport: (options: EngineSupportOptions, params?: Partial<EngineSupportParameters>) => EngineSupport;

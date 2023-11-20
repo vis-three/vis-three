@@ -1,6 +1,11 @@
-import { EngineSupport, ModuleOptions } from "@vis-three/middleware";
+import {
+  EngineSupport,
+  EngineSupportParameters,
+  ModuleOptions,
+} from "@vis-three/middleware";
 import {
   AxesHelper,
+  Color,
   Event,
   GridHelper,
   Object3D,
@@ -93,12 +98,18 @@ import {
   PathSketcher,
 } from "@vis-three/plugin-path-drawing/PathSketcher";
 import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer";
+import {
+  SelectionPromptParameters,
+  SelectionPromptStrategy,
+} from "@vis-three/strategy-selection-prompt";
 
 export { VIEWPOINT };
 
-export interface ModelingEngineSupportParameters {
-  WebGLRendererPlugin?: WebGLRendererParameters;
-  EffectComposerPlugin?: EffectComposerParameters;
+export interface ModelingEngineSupportParameters
+  extends EngineSupportParameters {
+  WebGLRendererPlugin: WebGLRendererParameters;
+  EffectComposerPlugin: EffectComposerParameters;
+  SelectionPromptStrategy: SelectionPromptParameters;
 }
 
 export class ModelingEngineSupport
@@ -148,8 +159,8 @@ export class ModelingEngineSupport
   ) => PathDrawingEngine;
   declare drawPathByFace: (face: Face, offset: Vector3) => PathDrawingEngine;
 
-  constructor(params: ModelingEngineSupportParameters = {}) {
-    super();
+  constructor(params: Partial<ModelingEngineSupportParameters> = {}) {
+    super(params);
     for (const module of Object.values(moduleLibrary)) {
       this.registModule(module as ModuleOptions<any>);
     }
@@ -201,6 +212,16 @@ export class ModelingEngineSupport
       .exec(TransformControlsSupportStrategy())
       .exec(OrbitControlsSupportStrategy())
       .exec(ComposerSupportStrategy())
-      .exec(MultiRendererEventStrategy());
+      .exec(MultiRendererEventStrategy())
+      .exec(
+        SelectionPromptStrategy(
+          params.SelectionPromptStrategy || {
+            visibleEdgeColor: new Color("rgb(28, 255, 253)"),
+            edgeStrength: 7,
+            edgeThickness: 2,
+            downSampleRatio: 1.5,
+          }
+        )
+      );
   }
 }

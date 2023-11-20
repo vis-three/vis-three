@@ -10,5 +10,7 @@ export interface CompilerManagerEngine extends Engine {
     getObjectfromModules: (modules: string[] | Record<string, any>, vid: string) => object | null;
     getObject3D: (vid: string) => Object3D | null;
 }
+export interface CompilerManagerPluginParameters {
+}
 export declare const COMPILER_MANAGER_PLUGIN = "CompilerManagerPlugin";
 export declare const CompilerManagerPlugin: Plugin<CompilerManagerEngine, object>;

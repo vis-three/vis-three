@@ -18,6 +18,8 @@ export interface CompilerManagerEngine extends Engine {
   getObject3D: (vid: string) => Object3D | null;
 }
 
+export interface CompilerManagerPluginParameters {}
+
 export const COMPILER_MANAGER_PLUGIN = "CompilerManagerPlugin";
 
 export const CompilerManagerPlugin: Plugin<CompilerManagerEngine, object> =

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SelectionPrompt</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style></style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+      import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
+      import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
+      import { PointerManagerPlugin } from "@vis-three/plugin-pointer-manager";
+      import { EventManagerPlugin } from "@vis-three/plugin-event-manager";
+      import { SelectionPlugin } from "@vis-three/plugin-selection";
+      import { defineEngine } from "@vis-three/core";
+      import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
+      import { SelectionPromptStrategy } from "@vis-three/strategy-selection-prompt";
+
+      const engine = defineEngine({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          EffectComposerPlugin({
+            MSAA: true,
+          }),
+          CameraAdaptivePlugin(),
+          RenderManagerPlugin(),
+          PointerManagerPlugin(),
+          EventManagerPlugin(),
+          SelectionPlugin(),
+        ],
+
+        strategy: [
+          EffectRenderStrategy(),
+          SelectionPromptStrategy({
+            visibleEdgeColor: new THREE.Color("rgb(255, 0, 0)"),
+            pulsePeriod: 2,
+          }),
+        ],
+      })
+        .setDom(document.getElementById("app"))
+        .setSize();
+
+      const scene = engine.scene;
+
+      const box = new THREE.Mesh(
+        new THREE.BoxBufferGeometry(10, 10, 10),
+        new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
+      );
+
+      function getRandomNum(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      for (let index = 0; index < 20; index += 1) {
+        const copy = box.clone();
+        copy.position.x = getRandomNum(-50, 50);
+        copy.position.y = getRandomNum(-50, 50);
+        copy.position.z = getRandomNum(-50, 50);
+        scene.add(copy);
+      }
+
+      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
+      pointLight.position.y = 30;
+
+      scene.add(pointLight);
+
+      const line = new THREE.Line(box.geometry);
+      scene.add(line);
+
+      const points = new THREE.Points(box.geometry);
+
+      points.position.x = -10;
+      scene.add(points);
+
+      engine.play();
+
+      // engine.setSelectionBox([box]);
+
+      engine.renderManager.addEventListener("render", (event) => {
+        engine.camera.position.x = 100 * Math.sin(event.total / 2);
+        engine.camera.position.z = 100 * Math.cos(event.total / 2);
+        engine.camera.lookAt(0, 0, 0);
+      });
+
+      engine.eventManager.addEventListener("mousemove", (event) => {
+        engine.setSelectionBox(event.intersections.map((item) => item.object));
+      });
+    </script>
+  </body>
+</html>

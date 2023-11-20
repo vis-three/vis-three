@@ -1,4 +1,4 @@
-import { EngineSupport } from "@vis-three/middleware";
+import { EngineSupport, EngineSupportParameters } from "@vis-three/middleware";
 import { AxesHelper, Event, GridHelper, Object3D, Vector3, WebGLRenderer, WebGLRendererParameters } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
@@ -19,10 +19,12 @@ import { SelectionEngine } from "@vis-three/plugin-selection";
 import { VisStats } from "@vis-three/plugin-stats/VisStats";
 import { PathDrawingEngine } from "@vis-three/plugin-path-drawing";
 import { Face, PathSketcher } from "@vis-three/plugin-path-drawing/PathSketcher";
+import { SelectionPromptParameters } from "@vis-three/strategy-selection-prompt";
 export { VIEWPOINT };
-export interface ModelingEngineSupportParameters {
-    WebGLRendererPlugin?: WebGLRendererParameters;
-    EffectComposerPlugin?: EffectComposerParameters;
+export interface ModelingEngineSupportParameters extends EngineSupportParameters {
+    WebGLRendererPlugin: WebGLRendererParameters;
+    EffectComposerPlugin: EffectComposerParameters;
+    SelectionPromptStrategy: SelectionPromptParameters;
 }
 export declare class ModelingEngineSupport extends EngineSupport implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, KeyboardManagerEngine, StatsEngine, TransformControlsEngine, ViewpointEngine, GridHelperEngine, AxesHelperEngine, SelectionSupportEngine, CSS2DRendererEngine, CSS3DRendererEngine, PathDrawingEngine {
     webGLRenderer: WebGLRenderer;
@@ -48,5 +50,5 @@ export declare class ModelingEngineSupport extends EngineSupport implements WebG
     pathSketcher: PathSketcher;
     drawPathByPlane: (normal: Vector3, constant: number, offset: Vector3) => PathDrawingEngine;
     drawPathByFace: (face: Face, offset: Vector3) => PathDrawingEngine;
-    constructor(params?: ModelingEngineSupportParameters);
+    constructor(params?: Partial<ModelingEngineSupportParameters>);
 }

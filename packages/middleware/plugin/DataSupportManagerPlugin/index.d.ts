@@ -9,6 +9,8 @@ export interface DataSupportEngine extends Engine {
     toJSON: () => string;
     exportConfig: () => LoadOptions;
 }
+export interface DataSupportPluginParameters {
+}
 export * from "./DataSupportManager";
 export declare const DATA_SUPPORT_MANAGER_PLUGIN = "DataSupportManagerPlugin";
-export declare const DataSupportManagerPlugin: Plugin<DataSupportEngine, object>;
+export declare const DataSupportManagerPlugin: Plugin<DataSupportEngine, DataSupportPluginParameters>;

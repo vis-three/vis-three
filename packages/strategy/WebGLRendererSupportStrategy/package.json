@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^0.6.6",
-    "@vis-three/middleware": "workspace:^0.6.24",
+    "@vis-three/middleware": "workspace:^0.6.25",
     "@vis-three/module-renderer": "workspace:^0.6.3",
     "@vis-three/plugin-webgl-renderer": "workspace:^0.6.1",
     "@vis-three/utils": "workspace:^0.6.2"

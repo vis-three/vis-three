@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/engine-modeling-support",
-  "version": "0.6.9",
+  "version": "0.6.10",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -27,7 +27,7 @@
   "dependencies": {
     "@vis-three/library-module": "workspace:^0.6.13",
     "@vis-three/library-parser": "workspace:^0.6.2",
-    "@vis-three/middleware": "workspace:^0.6.24",
+    "@vis-three/middleware": "workspace:^0.6.25",
     "@vis-three/plugin-axes-helper": "workspace:^0.6.1",
     "@vis-three/plugin-camera-adaptive": "workspace:^0.6.1",
     "@vis-three/plugin-css2d-renderer": "workspace:^0.6.2",
@@ -53,6 +53,7 @@
     "@vis-three/strategy-orbit-controls-support": "workspace:^0.6.3",
     "@vis-three/strategy-orbit-render": "workspace:^0.6.1",
     "@vis-three/strategy-orbit-viewpoint": "workspace:^0.6.1",
+    "@vis-three/strategy-selection-prompt": "workspace:^0.6.1",
     "@vis-three/strategy-stats-render": "workspace:^0.6.0",
     "@vis-three/strategy-trans-select-event-support": "workspace:^0.6.0",
     "@vis-three/strategy-transform-controls-support": "workspace:^0.6.1",
