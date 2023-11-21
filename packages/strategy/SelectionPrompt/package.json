@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/strategy-selection-prompt",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "vis-three selection-prompt strategy",
   "main": "dist/vis-three.strategy-selection-prompt.umd.js",
   "module": "dist/vis-three.strategy-selection-prompt.es.js",

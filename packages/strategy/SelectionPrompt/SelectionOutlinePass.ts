@@ -69,6 +69,7 @@ export class SelectionOutlinePass extends Pass {
       depthTexture: { value: null },
       cameraNearFar: { value: new Vector2(0.5, 0.5) },
       textureMatrix: { value: null },
+      projectMatrix: { value: null },
     },
 
     vertexShader: `#include <morphtarget_pars_vertex>
@@ -93,15 +94,16 @@ export class SelectionOutlinePass extends Pass {
       }`,
 
     fragmentShader: `#include <packing>
+      #include <common>
       varying vec4 vPosition;
       varying vec4 projTexCoord;
       uniform sampler2D depthTexture;
       uniform vec2 cameraNearFar;
-
+      uniform mat4 projectMatrix;
       void main() {
 
         float depth = unpackRGBAToDepth(texture2DProj( depthTexture, projTexCoord ));
-        float viewZ = - DEPTH_TO_VIEW_Z( depth, cameraNearFar.x, cameraNearFar.y );
+        float viewZ = isPerspectiveMatrix(projectMatrix) ? - perspectiveDepthToViewZ( depth, cameraNearFar.x, cameraNearFar.y ) : - orthographicDepthToViewZ( depth, cameraNearFar.x, cameraNearFar.y ) ;
         float depthTest = (-vPosition.z > viewZ) ? 1.0 : 0.0;
         gl_FragColor = vec4(0.0, depthTest, 1.0, 1.0);
 
@@ -222,6 +224,9 @@ export class SelectionOutlinePass extends Pass {
     selected: Object3D[]
   ) {
     super();
+    this.renderScene.autoUpdate = false;
+    this.renderScene.matrixAutoUpdate = false;
+
     this.resolution.copy(resolution);
     this.renderCamera = camera;
     this.selected = selected;
@@ -236,16 +241,6 @@ export class SelectionOutlinePass extends Pass {
     );
     this.renderTargetMaskBuffer.texture.name = "OutlinePass.mask";
     this.renderTargetMaskBuffer.texture.generateMipmaps = false;
-
-    const type = (<PerspectiveCamera>camera).isPerspectiveCamera
-      ? "perspective"
-      : "orthographic";
-
-    this.prepareMaskMaterial.fragmentShader =
-      this.prepareMaskMaterial.fragmentShader.replace(
-        /DEPTH_TO_VIEW_Z/g,
-        type + "DepthToViewZ"
-      );
 
     this.renderTargetDepthBuffer = new WebGLRenderTarget(
       this.resolution.x,
@@ -458,6 +453,8 @@ export class SelectionOutlinePass extends Pass {
         this.renderCamera.near,
         this.renderCamera.far
       );
+      this.prepareMaskMaterial.uniforms["projectMatrix"].value =
+        this.renderCamera.projectionMatrix;
       this.prepareMaskMaterial.uniforms["depthTexture"].value =
         this.renderTargetDepthBuffer.texture;
       this.prepareMaskMaterial.uniforms["textureMatrix"].value =

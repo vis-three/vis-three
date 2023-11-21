@@ -10,15 +10,13 @@ export interface LineConfig extends SolidObjectConfig {
     /**是否为虚线，如果当前的使用材质是`LineDashedMaterial`请打开 */
     dashed: boolean;
 }
-/**
- * 获取直线物体配置 - 其他属性继承`getSolidObjectConfig`并会与之合并。
- * @returns
- * @example
- * {
-    type: "Line",
-    geometry: "",
-    material: "",
-    dashed: false,
-  }
- */
+export interface LineSegmentsConfig extends LineConfig {
+}
+export interface LineFatConfig extends SolidObjectConfig {
+}
+export interface LineSegmentsFatConfig extends SolidObjectConfig {
+}
 export declare const getLineConfig: () => LineConfig;
+export declare const getLineSegmentsConfig: () => LineSegmentsConfig;
+export declare const getLineFatConfig: () => LineFatConfig;
+export declare const getLineSegmentsFatConfig: () => LineSegmentsFatConfig;

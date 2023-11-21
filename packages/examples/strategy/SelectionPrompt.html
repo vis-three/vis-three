@@ -13,6 +13,13 @@
 
   <body>
     <div id="app"></div>
+    <div id="button-position">
+      <div id="button-group">
+        <p>change camera:</p>
+        <button id="perspectiveCamera">perspectiveCamera</button>
+        <button id="orthographicCamera">orthographicCamera</button>
+      </div>
+    </div>
 
     <script type="module">
       import * as THREE from "three";
@@ -39,7 +46,9 @@
           CameraAdaptivePlugin(),
           RenderManagerPlugin(),
           PointerManagerPlugin(),
-          EventManagerPlugin(),
+          EventManagerPlugin({
+            recursive: true,
+          }),
           SelectionPlugin(),
         ],
 
@@ -47,7 +56,6 @@
           EffectRenderStrategy(),
           SelectionPromptStrategy({
             visibleEdgeColor: new THREE.Color("rgb(255, 0, 0)"),
-            pulsePeriod: 2,
           }),
         ],
       })
@@ -65,12 +73,34 @@
         return Math.floor(Math.random() * (max - min + 1)) + min;
       }
 
-      for (let index = 0; index < 20; index += 1) {
+      for (let index = 0; index < 5; index += 1) {
         const copy = box.clone();
         copy.position.x = getRandomNum(-50, 50);
         copy.position.y = getRandomNum(-50, 50);
         copy.position.z = getRandomNum(-50, 50);
         scene.add(copy);
+      }
+
+      const box2 = box.clone();
+      box2.position.set(10, 10, 10);
+      for (let index = 0; index < 5; index += 1) {
+        const copy = box.clone();
+        copy.position.x = getRandomNum(-50, 50);
+        copy.position.y = getRandomNum(-50, 50);
+        copy.position.z = getRandomNum(-50, 50);
+        box2.add(copy);
+        scene.add(box2);
+      }
+
+      const box3 = box.clone();
+      box3.position.set(-10, -10, -10);
+      for (let index = 0; index < 5; index += 1) {
+        const copy = box.clone();
+        copy.position.x = getRandomNum(-50, 50);
+        copy.position.y = getRandomNum(-50, 50);
+        copy.position.z = getRandomNum(-50, 50);
+        box3.add(copy);
+        scene.add(box3);
       }
 
       const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 1, 300, 0);
@@ -88,7 +118,9 @@
 
       engine.play();
 
-      // engine.setSelectionBox([box]);
+      const orthographicCamera = new THREE.OrthographicCamera();
+      orthographicCamera.zoom = 12;
+      const perspectiveCamera = new THREE.PerspectiveCamera();
 
       engine.renderManager.addEventListener("render", (event) => {
         engine.camera.position.x = 100 * Math.sin(event.total / 2);
@@ -99,6 +131,15 @@
       engine.eventManager.addEventListener("mousemove", (event) => {
         engine.setSelectionBox(event.intersections.map((item) => item.object));
       });
+
+      document.getElementById("orthographicCamera").onclick = () => {
+        console.log(1);
+        engine.setCamera(orthographicCamera).setSize();
+      };
+
+      document.getElementById("perspectiveCamera").onclick = () => {
+        engine.setCamera(perspectiveCamera).setSize();
+      };
     </script>
   </body>
 </html>

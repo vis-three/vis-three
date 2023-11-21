@@ -7,7 +7,7 @@ declare const _default: {
     object: boolean;
     compiler: typeof LineCompiler;
     rule: import("@vis-three/middleware").Rule<LineCompiler>;
-    processors: import("@vis-three/middleware").Processor<import("./LineConfig").LineConfig, import("three").Line<import("three").BufferGeometry, import("three").Material | import("three").Material[]>, import("@vis-three/middleware").EngineSupport, LineCompiler>[];
+    processors: (import("@vis-three/middleware").Processor<import("./LineConfig").LineConfig, import("three").Line<import("three").BufferGeometry, import("three").Material | import("three").Material[]>, import("@vis-three/middleware").EngineSupport, LineCompiler> | import("@vis-three/middleware").Processor<import("./LineConfig").LineSegmentsConfig, import("three").LineSegments<import("three").BufferGeometry, import("three").Material | import("three").Material[]>, import("@vis-three/middleware").EngineSupport, LineCompiler>)[];
     lifeOrder: SUPPORT_LIFE_CYCLE;
 };
 export default _default;
