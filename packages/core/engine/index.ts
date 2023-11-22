@@ -310,8 +310,10 @@ export interface EngineOptions {
   strategy?: StrategyOptions<any>[];
 }
 
-export const defineEngine = function (options: EngineOptions) {
-  const engine = new Engine();
+export const defineEngine = function <E extends Engine = Engine>(
+  options: EngineOptions
+) {
+  const engine = new Engine() as E;
 
   if (options.plugins) {
     options.plugins.forEach((plugin) => {

@@ -73,4 +73,4 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
 export interface EngineSupportOptions extends EngineOptions {
     modules: ModuleOptions<any>[];
 }
-export declare const defineEngineSupport: (options: EngineSupportOptions, params?: Partial<EngineSupportParameters>) => EngineSupport;
+export declare const defineEngineSupport: <E extends EngineSupport = EngineSupport>(options: EngineSupportOptions, params?: Partial<EngineSupportParameters>) => E;

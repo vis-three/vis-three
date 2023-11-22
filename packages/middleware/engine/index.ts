@@ -369,11 +369,13 @@ export interface EngineSupportOptions extends EngineOptions {
   modules: ModuleOptions<any>[];
 }
 
-export const defineEngineSupport = function (
+export const defineEngineSupport = function <
+  E extends EngineSupport = EngineSupport
+>(
   options: EngineSupportOptions,
   params: Partial<EngineSupportParameters> = {}
 ) {
-  const engine = new EngineSupport(params);
+  const engine = new EngineSupport(params) as E;
 
   if (options.modules) {
     options.modules.forEach((module) => {
