@@ -285,7 +285,7 @@ export class Engine extends EventDispatcher {
    * @param delta
    * @returns
    */
-  render(delta: number): this {
+  render(delta: number = 0): this {
     this.dispatchEvent({
       type: ENGINE_EVENT.RENDER,
       delta,
