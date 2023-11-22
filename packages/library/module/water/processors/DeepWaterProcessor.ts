@@ -21,6 +21,38 @@ export default defineProcessor<
   config: getDeepWaterConfig,
   commands: {
     set: {
+      geometry({ value, target, engine }) {
+        const geometry = engine.getObjectfromModule(
+          MODULETYPE.GEOMETRY,
+          value
+        ) as BufferGeometry;
+
+        if (!geometry) {
+          console.warn(
+            `DeepWater processor: can not found geometry with:${value}`
+          );
+          return;
+        }
+
+        target.geometry = geometry;
+      },
+
+      waterNormals({ value, target, engine }) {
+        const texture = engine.getObjectfromModule(
+          MODULETYPE.TEXTURE,
+          value
+        ) as Texture;
+
+        if (!texture) {
+          console.warn(
+            `DeepWater processor: can not found texture with:${value}`
+          );
+          return;
+        }
+
+        target.material.uniforms.normalSampler.value = texture;
+      },
+
       time(params) {
         // @ts-ignore
         params.target.material.uniforms.time.value = params.value;

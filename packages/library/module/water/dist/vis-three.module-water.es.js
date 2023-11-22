@@ -38,6 +38,32 @@ var DeepWaterProcessor = defineProcessor({
   config: getDeepWaterConfig,
   commands: {
     set: {
+      geometry({ value, target, engine }) {
+        const geometry = engine.getObjectfromModule(
+          MODULETYPE.GEOMETRY,
+          value
+        );
+        if (!geometry) {
+          console.warn(
+            `DeepWater processor: can not found geometry with:${value}`
+          );
+          return;
+        }
+        target.geometry = geometry;
+      },
+      waterNormals({ value, target, engine }) {
+        const texture = engine.getObjectfromModule(
+          MODULETYPE.TEXTURE,
+          value
+        );
+        if (!texture) {
+          console.warn(
+            `DeepWater processor: can not found texture with:${value}`
+          );
+          return;
+        }
+        target.material.uniforms.normalSampler.value = texture;
+      },
       time(params) {
         params.target.material.uniforms.time.value = params.value;
       },

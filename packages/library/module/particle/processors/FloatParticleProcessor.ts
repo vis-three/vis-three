@@ -56,12 +56,17 @@ export default defineProcessor<
         params.target.updateGeometry();
       },
       alphaMap(params) {
-        //@ts-ignore
-        params.target.material.uniforms.alphaMap.value =
+        const texture =
           (params.engine.getObjectfromModule(
             MODULETYPE.TEXTURE,
             params.value
           ) as Texture) || null;
+        //@ts-ignore
+        params.target.material.uniforms.alphaMap.value = texture;
+        //@ts-ignore
+        params.target.material.uniforms.useAlphaMap.value = texture
+          ? true
+          : false;
       },
     },
   },

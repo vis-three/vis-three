@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-particle",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "vis-three particle module",
   "main": "dist/vis-three.module-particle.umd.js",
   "module": "dist/vis-three.module-particle.es.js",

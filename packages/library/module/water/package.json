@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-water",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "vis-three water module",
   "main": "dist/vis-three.module-water.umd.js",
   "module": "dist/vis-three.module-water.es.js",

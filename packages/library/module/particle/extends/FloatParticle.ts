@@ -58,13 +58,17 @@ void main() {
 const fragment = `
 uniform sampler2D alphaMap;
 uniform float opacity;
+uniform bool useAlphaMap;
 varying vec3 vColor;
 
 void main() {
 
   gl_FragColor = vec4( vColor, opacity );
 
-  gl_FragColor = gl_FragColor * texture2D( alphaMap, gl_PointCoord );
+  if (useAlphaMap) {  
+    gl_FragColor = gl_FragColor * texture2D( alphaMap, gl_PointCoord );
+  }
+
 
   if (gl_FragColor.a < 0.01) {
     discard;
@@ -80,6 +84,7 @@ export class RangeParticleMaterial extends ShaderMaterial {
     size?: number;
     opacity?: number;
     floatRange?: number;
+    useAlphaMap?: boolean;
   }) {
     super();
 
@@ -90,6 +95,7 @@ export class RangeParticleMaterial extends ShaderMaterial {
       size: { value: params.size || 1 },
       opacity: { value: params.opacity || 1 },
       floatRange: { value: params.floatRange || 5 },
+      useAlphaMap: { value: params.useAlphaMap || false },
     };
     this.vertexShader = vertex;
     this.fragmentShader = fragment;
@@ -130,6 +136,7 @@ export class FloatParticle extends Points {
       opacity: params.opacity || 1,
       flicker: params.flicker,
       floatRange: params.floatRange,
+      useAlphaMap: params.alphaMap ? true : false,
     });
   }
 

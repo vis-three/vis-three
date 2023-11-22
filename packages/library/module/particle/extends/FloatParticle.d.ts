@@ -25,6 +25,7 @@ export declare class RangeParticleMaterial extends ShaderMaterial {
         size?: number;
         opacity?: number;
         floatRange?: number;
+        useAlphaMap?: boolean;
     });
 }
 export declare class FloatParticle extends Points {

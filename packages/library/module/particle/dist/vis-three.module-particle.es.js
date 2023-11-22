@@ -68,13 +68,17 @@ void main() {
 const fragment = `
 uniform sampler2D alphaMap;
 uniform float opacity;
+uniform bool useAlphaMap;
 varying vec3 vColor;
 
 void main() {
 
   gl_FragColor = vec4( vColor, opacity );
 
-  gl_FragColor = gl_FragColor * texture2D( alphaMap, gl_PointCoord );
+  if (useAlphaMap) {  
+    gl_FragColor = gl_FragColor * texture2D( alphaMap, gl_PointCoord );
+  }
+
 
   if (gl_FragColor.a < 0.01) {
     discard;
@@ -91,7 +95,8 @@ class RangeParticleMaterial extends ShaderMaterial {
       alphaMap: { value: params.alphaMap || null },
       size: { value: params.size || 1 },
       opacity: { value: params.opacity || 1 },
-      floatRange: { value: params.floatRange || 5 }
+      floatRange: { value: params.floatRange || 5 },
+      useAlphaMap: { value: params.useAlphaMap || false }
     };
     this.vertexShader = vertex;
     this.fragmentShader = fragment;
@@ -126,7 +131,8 @@ class FloatParticle extends Points {
       alphaMap: params.alphaMap || null,
       opacity: params.opacity || 1,
       flicker: params.flicker,
-      floatRange: params.floatRange
+      floatRange: params.floatRange,
+      useAlphaMap: params.alphaMap ? true : false
     });
   }
   getRandomNum(min, max) {
@@ -229,10 +235,12 @@ var FloatParticleProcessor = defineProcessor({
         params.target.updateGeometry();
       },
       alphaMap(params) {
-        params.target.material.uniforms.alphaMap.value = params.engine.getObjectfromModule(
+        const texture = params.engine.getObjectfromModule(
           MODULETYPE.TEXTURE,
           params.value
         ) || null;
+        params.target.material.uniforms.alphaMap.value = texture;
+        params.target.material.uniforms.useAlphaMap.value = texture ? true : false;
       }
     }
   },
