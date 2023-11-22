@@ -1,5 +1,5 @@
 ---
-name: 特色
+name: feature
 about: 独特的idea和优化点
 title: ""
 labels: ""

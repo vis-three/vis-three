@@ -1,5 +1,5 @@
 ---
-name: 提问
+name: question
 about: 有些问题需要去解决。
 title: ""
 labels: ""
