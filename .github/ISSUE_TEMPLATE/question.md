@@ -1,6 +1,6 @@
 ---
-name: question
-about: Some issues need to be addressed
+name: 提问
+about: 有些问题需要去解决。
 title: ""
 labels: ""
 assignees: ""
