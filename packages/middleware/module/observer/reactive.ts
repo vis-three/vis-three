@@ -19,7 +19,8 @@ const handler = {
 export const react = function <T extends object>(
   observer: Observer<object>,
   object: T,
-  father?: { Symbol: string }
+  father?: { Symbol: string },
+  key?: string
 ): T {
   if (!isObject(object)) {
     return object;
@@ -68,6 +69,10 @@ export const react = function <T extends object>(
 
       object[key][Symbol.for(SYMBOL_KEY)] = key;
     }
+  }
+
+  if (key) {
+    object[Symbol.for(SYMBOL_KEY)] = key;
   }
 
   const proxy = new Proxy(object, handler);

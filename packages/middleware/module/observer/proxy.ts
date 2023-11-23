@@ -50,7 +50,7 @@ export const proxySetter = function (
   }
 
   if (isObject(value) && !hasObserver(value)) {
-    value = react(observer, value, target);
+    value = react(observer, value, target, key);
   }
 
   // 新增
@@ -78,16 +78,20 @@ export const proxySetter = function (
     return result;
   }
 
+  const oldValue = target[key];
+
   const result = Reflect.set(target, key, value);
 
   // array的length变更需要重新比对数组，找出真正的操作对象，并且更新缓存
   if (isArray(target)) {
     // 突变进行中，通过length更新通知
     if (arrayMutation.has(target) && key === "length") {
-      const oldValue = getCacheArray(target);
+      const cacheValue = getCacheArray(target);
 
-      if (!oldValue) {
-        console.error("array value is not be cached:", target);
+      if (!cacheValue) {
+        if (Array.isArray(oldValue)) {
+          console.error("array value is not be cached:", target);
+        }
         return result;
       }
 
@@ -95,15 +99,15 @@ export const proxySetter = function (
       updateArraySymbol(target);
 
       // 还原length变化场景
-      const num = Math.abs(oldValue.length - target.length);
+      const num = Math.abs(cacheValue.length - target.length);
       const operate: "add" | "set" | "delete" =
-        oldValue.length >= target.length ? "delete" : "add";
-      const contrast = oldValue.length >= target.length ? target : oldValue;
+        cacheValue.length >= target.length ? "delete" : "add";
+      const contrast = cacheValue.length >= target.length ? target : cacheValue;
 
       let execNum = 0;
       let index = 0;
 
-      for (const member of operate === "delete" ? oldValue : target) {
+      for (const member of operate === "delete" ? cacheValue : target) {
         // TODO: 这里用includes对array<boolean | number | string>类型重复值时会失效，目前来讲暂时用不到重复值，考虑后期换成diff
         if (!contrast.includes(member)) {
           observer.next({

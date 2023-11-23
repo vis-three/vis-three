@@ -986,7 +986,7 @@ const proxySetter = function(target, key, value, receiver) {
     return Reflect.set(target, key, value, receiver);
   }
   if (isObject(value) && !hasObserver(value)) {
-    value = react(observer, value, target);
+    value = react(observer, value, target, key);
   }
   if (target[key] === void 0) {
     if (isObject(value)) {
@@ -1004,21 +1004,24 @@ const proxySetter = function(target, key, value, receiver) {
     });
     return result2;
   }
+  const oldValue = target[key];
   const result = Reflect.set(target, key, value);
   if (isArray(target)) {
     if (arrayMutation.has(target) && key === "length") {
-      const oldValue = getCacheArray(target);
-      if (!oldValue) {
-        console.error("array value is not be cached:", target);
+      const cacheValue = getCacheArray(target);
+      if (!cacheValue) {
+        if (Array.isArray(oldValue)) {
+          console.error("array value is not be cached:", target);
+        }
         return result;
       }
       updateArraySymbol(target);
-      const num = Math.abs(oldValue.length - target.length);
-      const operate = oldValue.length >= target.length ? "delete" : "add";
-      const contrast = oldValue.length >= target.length ? target : oldValue;
+      const num = Math.abs(cacheValue.length - target.length);
+      const operate = cacheValue.length >= target.length ? "delete" : "add";
+      const contrast = cacheValue.length >= target.length ? target : cacheValue;
       let execNum = 0;
       let index = 0;
-      for (const member of operate === "delete" ? oldValue : target) {
+      for (const member of operate === "delete" ? cacheValue : target) {
         if (!contrast.includes(member)) {
           observer.next({
             operate,
@@ -1072,7 +1075,7 @@ const handler = {
   set: proxySetter,
   deleteProperty: proxyDeleter
 };
-const react = function(observer, object, father) {
+const react = function(observer, object, father, key) {
   if (!isObject(object)) {
     return object;
   }
@@ -1085,29 +1088,32 @@ const react = function(observer, object, father) {
   }
   father && (object[Symbol.for(SYMBOL_FATHER)] = father);
   object[Symbol.for(SYMBOL_OB)] = observer;
-  for (const key in object) {
-    const tempPath = extendPath(path, key);
+  for (const key2 in object) {
+    const tempPath = extendPath(path, key2);
     if (observer.isIgnore(tempPath)) {
       continue;
     }
-    if (isObject(object[key])) {
-      if (isArray(object[key])) {
-        const rawArray = object[key];
-        object[key] = react(
+    if (isObject(object[key2])) {
+      if (isArray(object[key2])) {
+        const rawArray = object[key2];
+        object[key2] = react(
           observer,
-          object[key],
+          object[key2],
           object
         );
         cacheArray(rawArray);
       } else {
-        object[key] = react(
+        object[key2] = react(
           observer,
-          object[key],
+          object[key2],
           object
         );
       }
-      object[key][Symbol.for(SYMBOL_KEY)] = key;
+      object[key2][Symbol.for(SYMBOL_KEY)] = key2;
     }
+  }
+  if (key) {
+    object[Symbol.for(SYMBOL_KEY)] = key;
   }
   const proxy = new Proxy(object, handler);
   return proxy;
