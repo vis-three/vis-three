@@ -9,3 +9,19 @@ body:
       placeholder: 我做了什么...希望实现什么 ...但是实际上是什么 ...我认为问题可能出现在哪里...
     validations:
       required: true
+ - type: textarea
+    id: error-screenshot
+    attributes:
+      label: 问题或报错截图
+      description: 如果有报错，包括浏览器报错，脚手架报错，IDE 报错，请提供报错的完整截图。
+ - type: textarea
+    id: system-info
+    attributes:
+      label: 运行环境
+      description: 包括操作系统环境，浏览器环境，使用的脚手架，还有node环境。
+      render: shell
+      placeholder: |
+        系统: windows@10
+        浏览器： chrome@131
+        脚手架： vite@2.9.15
+        node: 14.20.0
