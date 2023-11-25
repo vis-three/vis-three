@@ -18,4 +18,3 @@ body:
     id: error-screenshot
     attributes:
       label: 问题或报错截图
-      description: 如果有报错，包括浏览器报错，脚手架报错，IDE 报错，请提供报错的完整截图。
