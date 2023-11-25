@@ -19,7 +19,7 @@ body:
         1.
         2.
         3.
-  - type: 代码示例
+  - type: textarea
     id: code-example
     attributes:
       label: 代码示例
