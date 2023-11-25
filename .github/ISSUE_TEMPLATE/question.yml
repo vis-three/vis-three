@@ -1,10 +1,11 @@
 name: "question"
 description: "有些问题需要去解决。"
 body:
-  - type: markdown
+  - type: textarea
     id: question-description
     attributes:
       label: 问题描述
       description: 提出你的问题点，包括你对问题的思考，而不要一句话直接问为什么。
+      placeholder: 我做了什么...希望实现什么 ...但是实际上是什么 ...我认为问题可能出现在哪里...
     validations:
       required: true
