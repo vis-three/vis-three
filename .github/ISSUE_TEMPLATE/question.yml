@@ -1,4 +1,4 @@
-name: question
+name: "question"
 description: 有些问题需要去解决。
 body:
   - type: textarea
