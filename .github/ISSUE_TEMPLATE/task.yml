@@ -2,14 +2,14 @@ name: "task"
 description: "对于需求的开发任务拆解与发布。"
 body:
   - type: textarea
-      id: task-description
-      attributes:
-        label: 任务描述
-        description: 任务的具体描述，需要实现哪些功能。
-        placeholder: |
-          文字描述与代码示例。
-      validations:
-        required: true
+    id: task-description
+    attributes:
+      label: 任务描述
+      description: 任务的具体描述，需要实现哪些功能。
+      placeholder: |
+        文字描述与代码示例。
+    validations:
+      required: true
   - type: textarea
     id: task-step
     attributes:
