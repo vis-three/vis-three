@@ -6,7 +6,12 @@ body:
     attributes:
       label: 问题描述
       description: 提出你的问题点，包括你对问题的思考，而不要一句话直接问为什么。
-      placeholder: 我做了什么...希望实现什么 ...但是实际上是什么 ...我认为问题可能出现在哪里...
+      value: |
+        1. 我做了什么...
+        2. 希望实现什么 ...
+        3. 但是实际上是什么 ...
+        4. 我认为问题可能出现在哪里...
+      render: bash
     validations:
       required: true
  - type: textarea
@@ -19,9 +24,11 @@ body:
     attributes:
       label: 运行环境
       description: 包括操作系统环境，浏览器环境，使用的脚手架，还有node环境。
-      render: shell
-      placeholder: |
-        系统: windows@10
-        浏览器： chrome@131
-        脚手架： vite@2.9.15
-        node: 14.20.0
+      value: |
+        - 系统: windows@10
+        - 浏览器： chrome@131
+        - 脚手架： vite@2.9.15
+        - node: 14.20.0
+      render: bash
+    validations:
+      required: true
