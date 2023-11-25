@@ -25,10 +25,10 @@ body:
       label: 运行环境
       description: 包括操作系统环境，浏览器环境，使用的脚手架，还有node环境。
       value: |
-        - 系统: windows@10
-        - 浏览器： chrome@131
-        - 脚手架： vite@2.9.15
-        - node: 14.20.0
+        1. 系统: windows@10
+        2. 浏览器： chrome@131
+        3. 脚手架： vite@2.9.15
+        4. node: 14.20.0
       render: bash
     validations:
       required: true
