@@ -34,9 +34,11 @@
 ## 主页、文档、案例在线地址
 
 github 入口：[https://vis-three.github.io](https://vis-three.github.io)
+
 gitee 入口：[https://vis-three.gitee.io](https://vis-three.gitee.io)
 
 > gitee 的视频类资源访问会失效，如有需要请移步 github。
+
 > 文档内容不一定是最新版本内容，持续更新。
 
 ## 贡献者
@@ -96,7 +98,7 @@ issue 不只是用来提问讨论，也是一个文档，如果您有相关的�
 
 ## 贡献者与开发组
 
-可以阅读[贡献指南](/CONTRIBUTING.md),对本项目进行熟悉。
+可以阅读[贡献指南](/CONTRIBUTING.md)，对本项目进行熟悉。
 
 ### 如何快速上手入门？
 
