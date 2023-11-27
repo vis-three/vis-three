@@ -6,8 +6,8 @@ var __publicField = (obj, key, value) => {
 };
 import { ENGINE_EVENT } from "@vis-three/core";
 import { PLUGINS, POINTER_MANAGER_PLUGIN } from "@vis-three/middleware";
-import { getArcDetail, transPkgName } from "@vis-three/utils";
-import { CanvasTexture, Object3D, PointsMaterial, AlwaysDepth, Raycaster, Points, BufferGeometry, Plane, Vector3, Quaternion, BufferAttribute } from "three";
+import { transPkgName } from "@vis-three/utils";
+import { CanvasTexture, Object3D, PointsMaterial, AlwaysDepth, LineBasicMaterial, Raycaster, Points, BufferGeometry, LineSegments, Plane, Vector3, Quaternion, BufferAttribute, DynamicDrawUsage } from "three";
 import { CanvasGenerator } from "@vis-three/convenient";
 const name = "@vis-three/plugin-path-support-controls";
 const anchorTexture = new CanvasTexture(
@@ -42,7 +42,7 @@ const moveTexture = new CanvasTexture(
     ctx.closePath();
   }).getDom()
 );
-const switchTexture = new CanvasTexture(
+new CanvasTexture(
   new CanvasGenerator({ width: 32, height: 32 }).draw((ctx) => {
     ctx.beginPath();
     ctx.fillStyle = "rgba(0, 0, 0, 0)";
@@ -74,9 +74,9 @@ const _PathSupportControls = class extends Object3D {
       new BufferGeometry(),
       _PathSupportControls.moveMaterial
     ));
-    __publicField(this, "switchGizmo", new Points(
+    __publicField(this, "moveHelper", new LineSegments(
       new BufferGeometry(),
-      _PathSupportControls.switchMaterial
+      _PathSupportControls.moveHelperMaterial
     ));
     __publicField(this, "plane", new Plane());
     __publicField(this, "pointerManager");
@@ -84,37 +84,32 @@ const _PathSupportControls = class extends Object3D {
     __publicField(this, "cacheQuaternion", new Quaternion());
     __publicField(this, "cacheNormal", new Vector3());
     __publicField(this, "cachePosition", new Vector3());
-    __publicField(this, "cacheVertical", 0);
     __publicField(this, "cacheMouseDownPoistion", new Vector3());
     __publicField(this, "cacheMouseMoveDirection", new Vector3());
-    __publicField(this, "geometryIndexFunMap", {
-      arcVertical: [],
-      arcClockwise: [],
-      bezierCP1: [],
-      bezierCP2: [],
-      quadraticCP1: []
-    });
-    __publicField(this, "anchorArcUpdateIndexs", []);
-    __publicField(this, "arcVecticalDirectionsMap", {});
     __publicField(this, "cacheConfigIndex", 0);
+    __publicField(this, "moveCurveIndexMap", {});
+    __publicField(this, "helperRangeMap", {});
     __publicField(this, "currentGuizmo");
     __publicField(this, "currentIndex", 0);
     __publicField(this, "domElement");
     __publicField(this, "camera");
     __publicField(this, "config");
     __publicField(this, "object");
+    __publicField(this, "cacheObjectInvert");
     __publicField(this, "_pointerHover", this.pointerHover.bind(this));
     __publicField(this, "_pointerMove", this.pointerMove.bind(this));
     __publicField(this, "_pointerDown", this.pointerDown.bind(this));
     __publicField(this, "_pointerUp", this.pointerUp.bind(this));
     this.anchorGizmo.type = "PathSupportControlsAnchorGizmo";
     this.moveGizmo.type = "PathSupportControlsMoveGizmo";
-    this.switchGizmo.type = "PathSupportControlsSwitchGizmo";
-    this.add(this.anchorGizmo, this.moveGizmo, this.switchGizmo);
+    this.moveHelper.type = "PathSupportControlsMoveHelper";
+    this.moveHelper.raycast = () => {
+    };
+    this.add(this.anchorGizmo, this.moveGizmo, this.moveHelper);
     this.renderOrder = Infinity;
     this.matrixAutoUpdate = false;
-    config && this.setConfig(config);
     object && this.setObject(object);
+    config && this.setConfig(config);
     this.setDom(dom).setCamera(camera).connect();
   }
   setDom(dom) {
@@ -133,24 +128,19 @@ const _PathSupportControls = class extends Object3D {
     this.object = object;
     this.matrix = object.matrix;
     this.matrixWorld = object.matrixWorld;
+    this.cacheObjectInvert = object.matrixWorld.clone().invert();
+    object.parent.add(this);
     return this;
   }
   setConfig(config) {
-    this.geometryIndexFunMap = {
-      arcVertical: [],
-      arcClockwise: [],
-      bezierCP1: [],
-      bezierCP2: [],
-      quadraticCP1: []
-    };
-    this.arcVecticalDirectionsMap = {};
-    this.anchorArcUpdateIndexs = [];
     this.config = config;
+    this.moveCurveIndexMap = {};
+    this.helperRangeMap = {};
+    const moveCurveIndexMap = this.moveCurveIndexMap;
+    const helperRangeMap = this.helperRangeMap;
     const anchor = [];
-    const switchs = [];
     const move = [];
-    const geometryIndexFunMap = this.geometryIndexFunMap;
-    const arcVecticalDirectionsMap = this.arcVecticalDirectionsMap;
+    const helper = [];
     this.config.curves.forEach((segment, i, arr) => {
       if (i === arr.length - 1) {
         anchor.push(
@@ -165,31 +155,87 @@ const _PathSupportControls = class extends Object3D {
         anchor.push(segment.params[0], segment.params[1], 0);
       }
       if (segment.curve === "arc") {
-        this.anchorArcUpdateIndexs.push(i, i + 1);
-        const arcDetail = getArcDetail(
-          ...segment.params
-        );
-        move.push(arcDetail.center.x, arcDetail.center.y, 0);
-        geometryIndexFunMap.arcVertical.push(move.length / 3 - 1);
-        arcVecticalDirectionsMap[move.length / 3 - 1] = {
-          segment: i,
-          direction: new Vector3(
-            arcDetail.verticalDirection.x,
-            arcDetail.verticalDirection.y,
-            0
-          )
+        move.push(segment.params[2], segment.params[3], 0);
+        moveCurveIndexMap[move.length / 3 - 1] = {
+          segmentIndex: i,
+          type: "c1"
         };
-        const harf = arcDetail.mid.clone().sub(arcDetail.start).multiplyScalar(0.5);
-        const clockwisePosition = arcDetail.start.clone().add(harf);
-        switchs.push(clockwisePosition.x, clockwisePosition.y, 0);
-        geometryIndexFunMap.arcClockwise.push(i);
+      } else if (segment.curve === "bezier") {
+        move.push(segment.params[2], segment.params[3], 0);
+        helper.push(
+          segment.params[0],
+          segment.params[1],
+          0,
+          segment.params[2],
+          segment.params[3],
+          0
+        );
+        moveCurveIndexMap[move.length / 3 - 1] = {
+          segmentIndex: i,
+          type: "c1"
+        };
+        move.push(
+          segment.params[4],
+          segment.params[5],
+          0
+        );
+        helper.push(
+          segment.params[segment.params.length - 2],
+          segment.params[segment.params.length - 1],
+          0,
+          segment.params[4],
+          segment.params[5],
+          0
+        );
+        moveCurveIndexMap[move.length / 3 - 1] = {
+          segmentIndex: i,
+          type: "c2"
+        };
+        helperRangeMap[i] = {
+          startIndex: helper.length / 3 - 4,
+          previous: false
+        };
+        helperRangeMap[i + 1] = {
+          startIndex: helper.length / 3 - 4,
+          previous: true
+        };
+      } else if (segment.curve === "quadratic") {
+        move.push(segment.params[2], segment.params[3], 0);
+        helper.push(
+          segment.params[0],
+          segment.params[1],
+          0,
+          segment.params[2],
+          segment.params[3],
+          0,
+          segment.params[segment.params.length - 2],
+          segment.params[segment.params.length - 1],
+          0,
+          segment.params[2],
+          segment.params[3],
+          0
+        );
+        moveCurveIndexMap[move.length / 3 - 1] = {
+          segmentIndex: i,
+          type: "c1"
+        };
+        helperRangeMap[i] = {
+          startIndex: helper.length / 3 - 4,
+          previous: false
+        };
+        helperRangeMap[i + 1] = {
+          startIndex: helper.length / 3 - 4,
+          previous: true
+        };
       }
     });
     const updateGizmoGeometry = function(gizmo, position) {
       const geometry = gizmo.geometry;
       geometry.setAttribute(
         "position",
-        new BufferAttribute(new Float32Array(position), 3)
+        new BufferAttribute(new Float32Array(position), 3).setUsage(
+          DynamicDrawUsage
+        )
       );
       geometry.getAttribute("position").needsUpdate = true;
       geometry.computeBoundingBox();
@@ -197,11 +243,62 @@ const _PathSupportControls = class extends Object3D {
     };
     updateGizmoGeometry(this.anchorGizmo, anchor);
     updateGizmoGeometry(this.moveGizmo, move);
-    updateGizmoGeometry(this.switchGizmo, switchs);
+    updateGizmoGeometry(this.moveHelper, helper);
     return this;
   }
   update() {
     this.setConfig(this.config);
+  }
+  updateHelper(segmentIndex) {
+    const helperRangeMap = this.helperRangeMap;
+    if (helperRangeMap[segmentIndex] !== void 0) {
+      const { startIndex, previous } = helperRangeMap[segmentIndex];
+      const segment = previous ? this.config.curves[segmentIndex - 1] : this.config.curves[segmentIndex];
+      const position = this.moveHelper.geometry.getAttribute("position");
+      if (segment.curve === "bezier") {
+        position.setXYZ(startIndex, segment.params[0], segment.params[1], 0);
+        position.setXYZ(
+          startIndex + 1,
+          segment.params[2],
+          segment.params[3],
+          0
+        );
+        position.setXYZ(
+          startIndex + 2,
+          segment.params[segment.params.length - 2],
+          segment.params[segment.params.length - 1],
+          0
+        );
+        position.setXYZ(
+          startIndex + 3,
+          segment.params[4],
+          segment.params[5],
+          0
+        );
+      } else if (segment.curve === "quadratic") {
+        position.setXYZ(startIndex, segment.params[0], segment.params[1], 0);
+        position.setXYZ(
+          startIndex + 1,
+          segment.params[2],
+          segment.params[3],
+          0
+        );
+        position.setXYZ(
+          startIndex + 2,
+          segment.params[segment.params.length - 2],
+          segment.params[segment.params.length - 1],
+          0
+        );
+        position.setXYZ(
+          startIndex + 3,
+          segment.params[2],
+          segment.params[3],
+          0
+        );
+      }
+      position.needsUpdate = true;
+    }
+    return this;
   }
   use(pointerManager) {
     this.pointerManager = pointerManager;
@@ -231,7 +328,6 @@ const _PathSupportControls = class extends Object3D {
     };
     dispose(this.anchorGizmo);
     dispose(this.moveGizmo);
-    dispose(this.switchGizmo);
   }
   intersectPoint(event) {
     this.raycaster.setFromCamera(this.pointerManager.mouse, this.camera);
@@ -271,50 +367,14 @@ const _PathSupportControls = class extends Object3D {
     this.cacheQuaternion.setFromRotationMatrix(this.object.matrixWorld);
     this.cacheNormal.set(0, 0, 1).applyQuaternion(this.cacheQuaternion);
     this.cachePosition.setFromMatrixPosition(this.object.matrixWorld);
-    this.plane.set(this.cacheNormal, this.cachePosition.length());
+    this.plane.set(
+      this.cacheNormal,
+      this.cachePosition.projectOnVector(this.cacheNormal).length()
+    );
     const intersectPoint = this.intersectPoint(event);
     if (intersectPoint) {
       this.dragging = true;
-      if (this.currentGuizmo === this.switchGizmo) {
-        const configIndex = this.geometryIndexFunMap.arcClockwise[this.currentIndex];
-        const currentSegment = this.config.curves[configIndex];
-        this.dispatchEvent({
-          type: "mousedown",
-          index: configIndex,
-          config: this.config,
-          last: false,
-          object: this.object,
-          operate: "switch"
-        });
-        currentSegment.params[3] = !currentSegment.params[3];
-        this.dispatchEvent({
-          type: "changing",
-          index: configIndex,
-          config: this.config,
-          last: false,
-          object: this.object,
-          operate: "switch"
-        });
-        this.cacheConfigIndex = configIndex;
-        this.domElement.addEventListener("mouseup", this._pointerUp);
-        return;
-      }
       this.cacheMouseDownPoistion.copy(this.intersectPlane(event)).sub(this.cachePosition);
-      if (this.currentGuizmo === this.moveGizmo) {
-        if (this.geometryIndexFunMap.arcVertical.includes(this.currentIndex)) {
-          const message = this.arcVecticalDirectionsMap[this.currentIndex];
-          this.cacheVertical = this.config.curves[message.segment].params[2];
-          this.dispatchEvent({
-            type: "mousedown",
-            index: message.segment,
-            config: this.config,
-            last: false,
-            object: this.object,
-            operate: "move"
-          });
-          this.cacheConfigIndex = message.segment;
-        }
-      }
       const cacheConfigIndex = this.currentIndex === this.config.curves.length ? this.currentIndex - 1 : this.currentIndex;
       this.dispatchEvent({
         type: "mousedown",
@@ -322,7 +382,7 @@ const _PathSupportControls = class extends Object3D {
         config: this.config,
         last: this.currentIndex === this.config.curves.length ? true : false,
         object: this.object,
-        operate: "anchor"
+        operate: this.currentGuizmo === this.moveGizmo ? "move" : "anchor"
       });
       this.cacheConfigIndex = cacheConfigIndex;
       this.domElement.addEventListener("mousemove", this._pointerMove);
@@ -337,32 +397,30 @@ const _PathSupportControls = class extends Object3D {
     if (!vect) {
       return;
     }
-    vect.sub(this.cachePosition);
+    vect.sub(this.cachePosition).applyMatrix4(this.cacheObjectInvert);
     this.cacheMouseMoveDirection.copy(vect).sub(this.cacheMouseDownPoistion).normalize();
     const currentGuizmo = this.currentGuizmo;
     const currentIndex = this.currentIndex;
     const config = this.config;
     const cacheConfigIndex = this.cacheConfigIndex;
-    const geometryIndexFunMap = this.geometryIndexFunMap;
     if (currentGuizmo === this.anchorGizmo) {
       const length = config.curves.length;
       if (currentIndex !== config.curves.length) {
         const segment = config.curves[currentIndex];
         segment.params[0] = vect.x;
         segment.params[1] = vect.y;
+        this.updateHelper(currentIndex);
       } else {
         const segment = config.curves[length - 1];
         segment.params[segment.params.length - 2] = vect.x;
         segment.params[segment.params.length - 1] = vect.y;
+        this.updateHelper(length - 1);
       }
       const position = this.anchorGizmo.geometry.getAttribute("position");
       const array = position.array;
       array[currentIndex * 3] = vect.x;
       array[currentIndex * 3 + 1] = vect.y;
       position.needsUpdate = true;
-      if (this.anchorArcUpdateIndexs.includes(this.currentIndex)) {
-        this.update();
-      }
       this.dispatchEvent({
         type: "changing",
         index: cacheConfigIndex,
@@ -372,27 +430,30 @@ const _PathSupportControls = class extends Object3D {
         operate: "anchor"
       });
     } else if (currentGuizmo === this.moveGizmo) {
-      if (geometryIndexFunMap.arcVertical.includes(currentIndex)) {
-        const message = this.arcVecticalDirectionsMap[currentIndex];
-        const angle = this.cacheMouseMoveDirection.angleTo(message.direction);
-        config.curves[message.segment].params[2] = this.cacheVertical + vect.sub(this.cacheMouseDownPoistion).length() * Math.cos(angle);
-        const arcDetail = getArcDetail(
-          ...config.curves[message.segment].params
-        );
-        const position = this.moveGizmo.geometry.getAttribute("position");
-        const array = position.array;
-        array[currentIndex * 3] = arcDetail.center.x;
-        array[currentIndex * 3 + 1] = arcDetail.center.y;
-        position.needsUpdate = true;
-        this.dispatchEvent({
-          type: "changing",
-          index: message.segment,
-          config: this.config,
-          last: false,
-          object: this.object,
-          operate: "move"
-        });
+      const segmentIndex = this.moveCurveIndexMap[currentIndex].segmentIndex;
+      const segment = config.curves[segmentIndex];
+      const type = this.moveCurveIndexMap[currentIndex].type;
+      if (type === "c1") {
+        segment.params[2] = vect.x;
+        segment.params[3] = vect.y;
+      } else if (type === "c2") {
+        segment.params[4] = vect.x;
+        segment.params[5] = vect.y;
       }
+      const position = this.moveGizmo.geometry.getAttribute("position");
+      const array = position.array;
+      array[currentIndex * 3] = vect.x;
+      array[currentIndex * 3 + 1] = vect.y;
+      position.needsUpdate = true;
+      this.updateHelper(segmentIndex);
+      this.dispatchEvent({
+        type: "changing",
+        index: cacheConfigIndex,
+        config: this.config,
+        last: this.currentIndex === this.config.curves.length ? true : false,
+        object: this.object,
+        operate: "move"
+      });
     }
   }
   pointerUp(event) {
@@ -409,7 +470,7 @@ const _PathSupportControls = class extends Object3D {
       config: this.config,
       last: this.currentIndex === this.config.curves.length ? true : false,
       object: this.object,
-      operate: this.currentGuizmo === this.anchorGizmo ? "anchor" : this.currentGuizmo === this.moveGizmo ? "move" : "switch"
+      operate: this.currentGuizmo === this.anchorGizmo ? "anchor" : "move"
     });
   }
 };
@@ -430,13 +491,8 @@ __publicField(PathSupportControls, "moveMaterial", new PointsMaterial({
   sizeAttenuation: false,
   size: 15
 }));
-__publicField(PathSupportControls, "switchMaterial", new PointsMaterial({
-  map: switchTexture,
-  transparent: true,
-  depthFunc: AlwaysDepth,
-  alphaTest: 0.01,
-  sizeAttenuation: false,
-  size: 15
+__publicField(PathSupportControls, "moveHelperMaterial", new LineBasicMaterial({
+  color: "rgb(100, 100, 100)"
 }));
 const PATH_SUPPORT_CONTROLS_PLUGIN = transPkgName(name);
 const PathSupportControlsPlugin = function(params = {}) {

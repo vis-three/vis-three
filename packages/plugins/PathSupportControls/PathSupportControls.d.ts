@@ -1,5 +1,5 @@
 import { PathConfig } from "@vis-three/module-path";
-import { BaseEvent, Object3D, OrthographicCamera, PerspectiveCamera, PointsMaterial, Raycaster } from "three";
+import { BaseEvent, LineBasicMaterial, Object3D, OrthographicCamera, PerspectiveCamera, PointsMaterial, Raycaster } from "three";
 import { PointerManager } from "@vis-three/plugin-pointer-manager";
 export declare enum PATHSUPPORTCONTROLS_EVENT {
     MOUSEDOWN = "mousedown",
@@ -11,36 +11,35 @@ export interface ContolsEvent extends BaseEvent {
     config: PathConfig;
     last: boolean;
     object: Object3D;
-    operate: "anchor" | "move" | "switch";
+    operate: "anchor" | "move";
 }
 export declare class PathSupportControls extends Object3D<ContolsEvent> {
     static anchorMaterial: PointsMaterial;
     static moveMaterial: PointsMaterial;
-    static switchMaterial: PointsMaterial;
+    static moveHelperMaterial: LineBasicMaterial;
     dragging: boolean;
     raycaster: Raycaster;
     private anchorGizmo;
     private moveGizmo;
-    private switchGizmo;
+    private moveHelper;
     private plane;
     private pointerManager;
     private cachePlaneVector3;
     private cacheQuaternion;
     private cacheNormal;
     private cachePosition;
-    private cacheVertical;
     private cacheMouseDownPoistion;
     private cacheMouseMoveDirection;
-    private geometryIndexFunMap;
-    private anchorArcUpdateIndexs;
-    private arcVecticalDirectionsMap;
     private cacheConfigIndex;
+    private moveCurveIndexMap;
+    private helperRangeMap;
     private currentGuizmo?;
     private currentIndex;
     private domElement;
     private camera;
     private config;
     private object;
+    private cacheObjectInvert;
     private _pointerHover;
     private _pointerMove;
     private _pointerDown;
@@ -51,6 +50,7 @@ export declare class PathSupportControls extends Object3D<ContolsEvent> {
     setObject(object: Object3D): this;
     setConfig(config: PathConfig): this;
     update(): void;
+    private updateHelper;
     use(pointerManager: PointerManager): void;
     connect(): this;
     disconnect(): this;

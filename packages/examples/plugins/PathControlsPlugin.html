@@ -25,6 +25,8 @@
       import { PathSupportControlsPlugin } from "@vis-three/plugin-path-support-controls";
 
       const engine = new ModelingEngineSupport()
+        .rollback("SelectionPromptStrategy")
+        .uninstall("TransformControlsPlugin")
         .install(PathSupportControlsPlugin())
         .setDom(document.getElementById("app"))
         .setSize()
@@ -57,30 +59,28 @@
             params: [0, 0, 10, 10],
           },
           {
-            curve: "line",
-            params: [10, 10, 10, 0],
+            curve: "quadratic",
+            params: [10, 10, -15, 15, 15, 0],
           },
           {
             curve: "line",
-            params: [10, 0, -10, -10],
+            params: [15, 0, -10, -10],
           },
           {
             curve: "arc",
-            params: [-10, -10, -0, false, 10, -10],
+            params: [-10, -10, -19, -30, 10, -10],
           },
 
           {
             curve: "bezier",
-            params: [10, -10, 20, -10, 10, 10, 20, 10],
+            params: [10, -10, 15, -10, 10, 15, 20, 10],
           },
           {
             curve: "arc",
-            params: [20, 10, -0, true, 30, -10],
+            params: [20, 10, 40, 0, 30, -10],
           },
         ],
       });
-
-      window.drawPath = path;
 
       const geometry = generateConfig(CONFIGTYPE.PATHGEOMETRY, {
         path: path.vid,
@@ -94,7 +94,6 @@
         geometry: geometry.vid,
       });
 
-      window.line = line;
 
       engine.pathSupportControls
         .setObject(engine.getObjectBySymbol(line.vid))

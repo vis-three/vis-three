@@ -10,18 +10,18 @@ import {
   QuadraticBezierCurve,
   Vector2,
 } from "three";
-import { ArcCurve } from "@vis-three/module-curve";
+import { ArcCurve } from "../extends/ArcCurve";
 
 const pathCurveMap = {
   arc: (
     startX: number,
     startY: number,
-    vertical: number,
-    clockwise: boolean,
+    ctrlX: number,
+    ctrlY: number,
     endX: number,
     endY: number
   ) => {
-    return new ArcCurve(startX, startY, vertical, clockwise, endX, endY);
+    return new ArcCurve(startX, startY, ctrlX, ctrlY, endX, endY);
   },
   // ellipse: (
   //   startX: number,

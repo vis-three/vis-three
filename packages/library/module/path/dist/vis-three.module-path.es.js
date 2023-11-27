@@ -1,7 +1,12 @@
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 import { Compiler, Rule, getSymbolConfig, defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { validate } from "uuid";
-import { Path, LineCurve, Vector2, CubicBezierCurve, QuadraticBezierCurve } from "three";
-import { ArcCurve } from "@vis-three/module-curve";
+import { EllipseCurve, MathUtils, Vector2, Path, LineCurve, CubicBezierCurve, QuadraticBezierCurve } from "three";
 class PathCompiler extends Compiler {
   constructor() {
     super();
@@ -23,9 +28,75 @@ const getPathConfig = function() {
 const getPath3Config = function() {
   return Object.assign(getSymbolConfig(), {});
 };
+const _ArcCurve = class extends EllipseCurve {
+  constructor(startX, startY, ctX, ctY, endX, endY) {
+    super(0, 0, 1, 1, 0, Math.PI * 2, false, 0);
+    __publicField(this, "start", new Vector2());
+    __publicField(this, "end", new Vector2());
+    __publicField(this, "vertical", 0);
+    __publicField(this, "center", new Vector2());
+    __publicField(this, "mid", new Vector2());
+    const x1 = startX;
+    const x2 = ctX;
+    const x3 = endX;
+    const y1 = startY;
+    const y2 = ctY;
+    const y3 = endY;
+    const a = x1 - x2;
+    const b = y1 - y2;
+    const c = x1 - x3;
+    const d = y1 - y3;
+    const e = (x1 * x1 - x2 * x2 + (y1 * y1 - y2 * y2)) / 2;
+    const f = (x1 * x1 - x3 * x3 + (y1 * y1 - y3 * y3)) / 2;
+    const det = b * c - a * d;
+    const rx = -(d * e - b * f) / det;
+    const ry = -(a * f - c * e) / det;
+    const mx = (x3 + x1) / 2;
+    const my = (y3 + y1) / 2;
+    const direction = _ArcCurve.isLeft(
+      _ArcCurve.tempVector1.set(x1, y1),
+      _ArcCurve.tempVector2.set(x3, y3),
+      _ArcCurve.tempVector3.set(rx, ry)
+    );
+    const vertical = _ArcCurve.tempVector1.set(rx, ry).sub(_ArcCurve.tempVector2.set(mx, my)).length() * (direction ? -1 : 1);
+    this.start.set(startX, startY);
+    this.end.set(endX, endY);
+    this.vertical = vertical;
+    const start = this.start;
+    const end = this.end;
+    const center = this.center.copy(this.end).sub(this.start);
+    const mid = this.mid.set(mx, my);
+    center.set(-center.y, center.x).negate().normalize().multiplyScalar(vertical).add(mid);
+    this.aX = center.x;
+    this.aY = center.y;
+    const tempVector1 = _ArcCurve.tempVector1;
+    this.xRadius = tempVector1.copy(end).sub(center).length();
+    this.yRadius = this.xRadius;
+    this.aStartAngle = tempVector1.copy(start).sub(center).angle();
+    this.aEndAngle = tempVector1.copy(end).sub(center).angle();
+    const midPoint3 = _ArcCurve.tempVector2.set(x2, y2).sub(mid);
+    const midRadius = _ArcCurve.tempVector3.set(rx, ry).sub(mid);
+    this.aClockwise = (direction ? 1 : -1) * (_ArcCurve.isSameDirecton(midPoint3, midRadius) ? 1 : -1) < 0 ? false : true;
+  }
+};
+let ArcCurve = _ArcCurve;
+__publicField(ArcCurve, "isLeft", function(a, b, c) {
+  return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x) > 0;
+});
+__publicField(ArcCurve, "isSameDirecton", function(vect1, vect2) {
+  const denominator = Math.sqrt(vect1.lengthSq() * vect2.lengthSq());
+  if (denominator === 0) {
+    return false;
+  }
+  const theta = vect1.dot(vect2) / denominator;
+  return Math.acos(MathUtils.clamp(theta, -1, 1)) < Math.PI / 2;
+});
+__publicField(ArcCurve, "tempVector1", new Vector2());
+__publicField(ArcCurve, "tempVector2", new Vector2());
+__publicField(ArcCurve, "tempVector3", new Vector2());
 const pathCurveMap = {
-  arc: (startX, startY, vertical, clockwise, endX, endY) => {
-    return new ArcCurve(startX, startY, vertical, clockwise, endX, endY);
+  arc: (startX, startY, ctrlX, ctrlY, endX, endY) => {
+    return new ArcCurve(startX, startY, ctrlX, ctrlY, endX, endY);
   },
   line: (startX, startY, endX, endY) => new LineCurve(new Vector2(startX, startY), new Vector2(endX, endY)),
   bezier: (startX, startY, aCP1x, aCP1y, aCP2x, aCP2y, endX, endY) => new CubicBezierCurve(
