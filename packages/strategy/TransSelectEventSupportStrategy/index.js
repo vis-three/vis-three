@@ -50,6 +50,9 @@ export const TransSelectEventSupportStrategy = function () {
             // 与eventManager作用
             engine.eventManager.addFilterObject(engine.transformControls);
             clickFun = (event) => {
+                if (engine.selectionDisable) {
+                    return;
+                }
                 // 兼容transformControls事件
                 if (engine.transing) {
                     engine.transing = false;

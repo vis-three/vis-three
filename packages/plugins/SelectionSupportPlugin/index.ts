@@ -35,6 +35,10 @@ export const SelectionSupportPlugin: Plugin<SelectionSupportEngine, object> =
       ],
       install(engine) {
         engine.setSelectionBoxBySymbol = function (symbols: string[]) {
+          if (engine.selectionDisable) {
+            return this;
+          }
+
           this.selectionBox.clear();
           for (const vid of symbols) {
             const object = engine.getObjectBySymbol(vid);

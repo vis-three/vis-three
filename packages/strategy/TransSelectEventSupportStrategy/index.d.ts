@@ -6,4 +6,4 @@ import { SelectionSupportEngine } from "@vis-three/plugin-selection-support";
 export interface TransSelectEventSupportEngine extends SelectionSupportEngine, EventManagerEngine, TransformControlsEngine, EngineSupport {
 }
 export declare const name: string;
-export declare const TransSelectEventSupportStrategy: Strategy<TransSelectEventSupportEngine>;
+export declare const TransSelectEventSupportStrategy: Strategy<TransSelectEventSupportEngine, object>;

@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/plugin-selection-support",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "",
   "main": "index.js",
   "module": "index.js",

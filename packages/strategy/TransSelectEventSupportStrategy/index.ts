@@ -89,11 +89,16 @@ export const TransSelectEventSupportStrategy: Strategy<
       engine.eventManager.addFilterObject(engine.transformControls);
 
       clickFun = (event) => {
+        if (engine.selectionDisable) {
+          return;
+        }
+
         // 兼容transformControls事件
         if (engine.transing) {
           engine.transing = false;
           return;
         }
+
         const intersections = event.intersections;
         // ctrl多选
         if (!event.ctrlKey) {

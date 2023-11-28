@@ -8,6 +8,9 @@ export const SelectionPlugin = function () {
         install(engine) {
             engine.selectionBox = new Set();
             engine.setSelectionBox = function (objects) {
+                if (this.selectionDisable) {
+                    return this;
+                }
                 this.selectionBox.clear();
                 for (const object of objects) {
                     this.selectionBox.add(object);
@@ -23,6 +26,7 @@ export const SelectionPlugin = function () {
             engine.selectionBox.clear();
             delete engine.selectionBox;
             delete engine.setSelectionBox;
+            delete engine.selectionDisable;
         },
     };
 };

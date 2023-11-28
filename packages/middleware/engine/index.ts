@@ -111,7 +111,7 @@ export class EngineSupport
   declare renderManager: RenderManager;
   declare play: () => void;
   declare stop: () => void;
-  declare render: (delta: number) => this;
+  declare render: (delta?: number) => this;
   declare pointerManager: PointerManager;
   declare resourceManager: ResourceManager;
   declare registerResources: (

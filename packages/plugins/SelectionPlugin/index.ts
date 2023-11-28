@@ -8,6 +8,8 @@ export interface SelectionEngine extends Engine {
   selectionBox: Set<Object3D>;
   /**设置当前engine的选中物体 */
   setSelectionBox: (objects: Object3D[]) => SelectionEngine;
+
+  selectionDisable: boolean;
 }
 
 export interface SelectedEvent extends BaseEvent {
@@ -25,6 +27,10 @@ export const SelectionPlugin: Plugin<SelectionEngine, object> = function () {
       engine.selectionBox = new Set();
 
       engine.setSelectionBox = function (objects: Object3D[]) {
+        if (this.selectionDisable) {
+          return this;
+        }
+
         this.selectionBox.clear();
         for (const object of objects) {
           this.selectionBox.add(object);
@@ -37,11 +43,15 @@ export const SelectionPlugin: Plugin<SelectionEngine, object> = function () {
       };
     },
     dispose(
-      engine: Optional<SelectionEngine, "selectionBox" | "setSelectionBox">
+      engine: Optional<
+        SelectionEngine,
+        "selectionBox" | "setSelectionBox" | "selectionDisable"
+      >
     ) {
       engine.selectionBox!.clear();
       delete engine.selectionBox;
       delete engine.setSelectionBox;
+      delete engine.selectionDisable;
     },
   };
 };
