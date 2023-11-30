@@ -22,8 +22,8 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.6",
-    "@vis-three/middleware": "workspace:^0.6.25",
+    "@vis-three/core": "workspace:^0.6.7",
+    "@vis-three/middleware": "workspace:^0.6.26",
     "@vis-three/module-pass": "workspace:^0.6.4",
     "@vis-three/plugin-effect-composer": "workspace:^0.6.2",
     "@vis-three/utils": "workspace:^0.6.2"

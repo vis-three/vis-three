@@ -18,7 +18,7 @@
     "@types/three": "^0.141.0",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
-    "@vis-three/module-path": "workspace:^0.6.6",
+    "@vis-three/module-path": "workspace:^0.6.7",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -29,8 +29,8 @@
   },
   "dependencies": {
     "@vis-three/convenient": "workspace:^0.6.6",
-    "@vis-three/core": "workspace:^0.6.6",
-    "@vis-three/middleware": "workspace:^0.6.25",
+    "@vis-three/core": "workspace:^0.6.7",
+    "@vis-three/middleware": "workspace:^0.6.26",
     "@vis-three/plugin-pointer-manager": "workspace:^0.6.4",
     "@vis-three/utils": "workspace:^0.6.2"
   },

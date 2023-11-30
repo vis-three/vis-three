@@ -26,7 +26,7 @@
     "vite": "^2.9.15"
   },
   "dependencies": {
-    "@vis-three/middleware": "workspace:^0.6.25",
+    "@vis-three/middleware": "workspace:^0.6.26",
     "@vis-three/module-animation-clip": "workspace:^0.6.2",
     "@vis-three/module-bone": "workspace:^0.6.0",
     "@vis-three/module-css3d": "workspace:^0.6.4",

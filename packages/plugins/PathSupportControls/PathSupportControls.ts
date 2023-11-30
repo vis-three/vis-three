@@ -37,6 +37,7 @@ export enum PATHSUPPORTCONTROLS_EVENT {
   MOUSEDOWN = "mousedown",
   CHANGING = "changing",
   MOUSEUP = "mouseup",
+  CLICK = "click",
 }
 
 export interface ContolsEvent extends BaseEvent {

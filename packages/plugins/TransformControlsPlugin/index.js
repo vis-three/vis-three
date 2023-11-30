@@ -21,9 +21,11 @@ export const TransformControlsPlugin = function () {
             });
             engine.setTransformControls = function (show) {
                 if (show) {
+                    this.transformControls.connect();
                     this.scene.add(this.transformControls);
                 }
                 else {
+                    this.transformControls.disconnect();
                     this.scene.remove(this.transformControls);
                 }
                 return this;

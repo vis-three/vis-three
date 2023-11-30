@@ -42,6 +42,7 @@ export declare class ModelingEngineSupport extends EngineSupport implements WebG
     setGridHelper: (show: boolean) => GridHelperEngine;
     axesHelper: AxesHelper;
     setAxesHelper: (params: AxesHelperOptions) => AxesHelperEngine;
+    selectionDisable: boolean;
     selectionBox: Set<Object3D<Event>>;
     setSelectionBox: (objects: Object3D<Event>[]) => SelectionEngine;
     setSelectionBoxBySymbol: (symbols: string[]) => SelectionSupportEngine;

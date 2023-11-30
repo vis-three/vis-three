@@ -30,8 +30,8 @@
     "vite": "^2.9.15"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.6",
-    "@vis-three/middleware": "workspace:^0.6.25",
+    "@vis-three/core": "workspace:^0.6.7",
+    "@vis-three/middleware": "workspace:^0.6.26",
     "@vis-three/utils": "workspace:^0.6.2",
     "uuid": "^8.3.2"
   },

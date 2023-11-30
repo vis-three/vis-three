@@ -21,4 +21,7 @@ export declare class VisTransformControls extends TransformControls {
     getTarget(): Object3D;
     getTransObjectSet(): Set<Object3D>;
     setAttach(...object: Object3D[]): this;
+    connect(): void;
+    disconnect(): void;
+    dispose(): void;
 }

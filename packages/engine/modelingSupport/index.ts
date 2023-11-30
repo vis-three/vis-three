@@ -144,6 +144,7 @@ export class ModelingEngineSupport
   declare setGridHelper: (show: boolean) => GridHelperEngine;
   declare axesHelper: AxesHelper;
   declare setAxesHelper: (params: AxesHelperOptions) => AxesHelperEngine;
+  declare selectionDisable: boolean;
   declare selectionBox: Set<Object3D<Event>>;
   declare setSelectionBox: (objects: Object3D<Event>[]) => SelectionEngine;
   declare setSelectionBoxBySymbol: (
@@ -216,8 +217,8 @@ export class ModelingEngineSupport
       .exec(
         SelectionPromptStrategy(
           params.SelectionPromptStrategy || {
-            visibleEdgeColor: new Color("rgb(28, 255, 253)"),
-            edgeStrength: 7,
+            visibleEdgeColor: new Color("rgb(236, 65, 118)"),
+            edgeStrength: 5,
             edgeThickness: 2,
             downSampleRatio: 1.5,
           }

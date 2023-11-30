@@ -32,7 +32,16 @@ export const PATH_SUPPORT_CONTROLS_PLUGIN = transPkgName(pkgname);
 export const PathSupportControlsPlugin: Plugin<
   PathSupportControlsEngine,
   PathSupportControlsParameters
-> = function (params: PathSupportControlsParameters = {}) {
+> = function (
+  params: PathSupportControlsParameters = {
+    raycaster: {
+      params: {
+        Line: { threshold: 5 },
+        Points: { threshold: 5 },
+      },
+    },
+  }
+) {
   let setCameraFun: (event: SetCameraEvent) => void;
   let setDomFun: (event: SetDomEvent) => void;
 

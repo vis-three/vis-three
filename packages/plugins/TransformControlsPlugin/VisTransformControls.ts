@@ -123,14 +123,8 @@ export class VisTransformControls extends TransformControls {
     this.domElement.removeEventListener("pointermove", this._onPointerMove);
     // @ts-ignore
     this.domElement.removeEventListener("pointerup", this._onPointerUp);
-
-    // @ts-ignore
-    dom.addEventListener("pointerdown", this._onPointerDown);
-    // @ts-ignore
-    dom.addEventListener("pointermove", this._onPointerHover);
-    // @ts-ignore
-    dom.addEventListener("pointerup", this._onPointerUp);
     this.domElement = dom;
+    this.connect();
     return this;
   }
 
@@ -204,5 +198,28 @@ export class VisTransformControls extends TransformControls {
     });
 
     return this;
+  }
+
+  connect() {
+    // @ts-ignore
+    this.domElement.addEventListener("pointerdown", this._onPointerDown);
+    // @ts-ignore
+    this.domElement.addEventListener("pointermove", this._onPointerHover);
+    // @ts-ignore
+    this.domElement.addEventListener("pointerup", this._onPointerUp);
+  }
+
+  disconnect() {
+    // @ts-ignore
+    this.domElement.removeEventListener("pointerdown", this._onPointerDown);
+    // @ts-ignore
+    this.domElement.removeEventListener("pointermove", this._onPointerHover);
+    // @ts-ignore
+    this.domElement.removeEventListener("pointerup", this._onPointerUp);
+  }
+
+  dispose(): void {
+    this.disconnect();
+    super.dispose();
   }
 }

@@ -53,7 +53,7 @@
     "@ant-design/icons-vue": "^6.1.0",
     "@vis-three/engine-display-support": "workspace:^0.6.7",
     "@vis-three/library-animate-script": "workspace:^0.6.0",
-    "@vis-three/middleware": "workspace:^0.6.25",
+    "@vis-three/middleware": "workspace:^0.6.26",
     "ant-design-vue": "^3.2.6",
     "axios": "^0.27.2",
     "nprogress": "^0.2.0",

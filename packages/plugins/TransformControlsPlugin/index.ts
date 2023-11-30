@@ -51,8 +51,10 @@ export const TransformControlsPlugin: Plugin<TransformControlsEngine, object> =
 
         engine.setTransformControls = function (show: boolean) {
           if (show) {
+            this.transformControls.connect();
             this.scene.add(this.transformControls);
           } else {
+            this.transformControls.disconnect();
             this.scene.remove(this.transformControls);
           }
           return this;
