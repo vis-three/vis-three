@@ -2,7 +2,7 @@ import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { Easing, Tween } from "@tweenjs/tween.js";
 export { Tween } from "@tweenjs/tween.js";
 import { Color, Material, Object3D, Euler, Vector3, Matrix4 } from "three";
-const config$h = {
+const config$k = {
   name: "addClass",
   params: {
     target: "",
@@ -10,7 +10,7 @@ const config$h = {
     delay: 0
   }
 };
-const generator$h = function(engine, config2) {
+const generator$k = function(engine, config2) {
   const params = config2.params;
   const targets = [];
   if (params.target === "all") {
@@ -63,17 +63,17 @@ const generator$h = function(engine, config2) {
 };
 var addClass = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$h,
-  generator: generator$h
+  config: config$k,
+  generator: generator$k
 }, Symbol.toStringTag, { value: "Module" }));
-const config$g = {
+const config$j = {
   name: "changeCamera",
   params: {
     camera: "",
     delay: 0
   }
 };
-const generator$g = function(engine, config2) {
+const generator$j = function(engine, config2) {
   const params = config2.params;
   return () => {
     setTimeout(() => {
@@ -83,17 +83,17 @@ const generator$g = function(engine, config2) {
 };
 var changeCamera = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$g,
-  generator: generator$g
+  config: config$j,
+  generator: generator$j
 }, Symbol.toStringTag, { value: "Module" }));
-const config$f = {
+const config$i = {
   name: "changeScene",
   params: {
     scene: "Scene",
     delay: 0
   }
 };
-const generator$f = function(engine, config2) {
+const generator$i = function(engine, config2) {
   const params = config2.params;
   return () => {
     setTimeout(() => {
@@ -103,26 +103,26 @@ const generator$f = function(engine, config2) {
 };
 var changeScene = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$f,
-  generator: generator$f
+  config: config$i,
+  generator: generator$i
 }, Symbol.toStringTag, { value: "Module" }));
-const config$e = {
+const config$h = {
   name: "openWindow",
   params: {
     url: ""
   }
 };
-const generator$e = function(engine, config2) {
+const generator$h = function(engine, config2) {
   return () => {
     window.open(config2.params.url);
   };
 };
 var openWindow = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$e,
-  generator: generator$e
+  config: config$h,
+  generator: generator$h
 }, Symbol.toStringTag, { value: "Module" }));
-const config$d = {
+const config$g = {
   name: "switchAnimate",
   params: {
     target: "",
@@ -130,7 +130,7 @@ const config$d = {
     delay: 0
   }
 };
-const generator$d = function(engine, config2) {
+const generator$g = function(engine, config2) {
   const params = config2.params;
   const target = engine.getConfigBySymbol(params.target);
   if (!target) {
@@ -159,10 +159,10 @@ const generator$d = function(engine, config2) {
 };
 var switchAnimate = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$d,
-  generator: generator$d
+  config: config$g,
+  generator: generator$g
 }, Symbol.toStringTag, { value: "Module" }));
-const config$c = {
+const config$f = {
   name: "visibleObject",
   params: {
     target: "",
@@ -170,7 +170,7 @@ const config$c = {
     delay: 0
   }
 };
-const generator$c = function(engine, config2) {
+const generator$f = function(engine, config2) {
   const params = config2.params;
   const target = engine.getObjectBySymbol(params.target);
   if (!target) {
@@ -187,6 +187,90 @@ const generator$c = function(engine, config2) {
   };
 };
 var visibleObject = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  config: config$f,
+  generator: generator$f
+}, Symbol.toStringTag, { value: "Module" }));
+const config$e = {
+  name: "setPosition",
+  params: {
+    target: "",
+    position: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    delay: 0
+  }
+};
+const generator$e = function(engine, config2) {
+  const params = config2.params;
+  const target = engine.getConfigBySymbol(params.target);
+  if (!target) {
+    console.warn(
+      `basic event setPosition: can not found vid config: ${params.target}`
+    );
+    return () => {
+    };
+  }
+  return () => {
+    setTimeout(() => {
+      target.position.x = params.position.x;
+      target.position.y = params.position.y;
+      target.position.z = params.position.z;
+    }, params.delay);
+  };
+};
+var setPosition = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  config: config$e,
+  generator: generator$e
+}, Symbol.toStringTag, { value: "Module" }));
+const config$d = {
+  name: "setParent",
+  params: {
+    target: "",
+    parent: "",
+    delay: 0
+  }
+};
+const generator$d = function(engine, config2) {
+  const params = config2.params;
+  const parent = engine.getConfigBySymbol(params.parent);
+  if (!parent) {
+    console.warn(
+      `basic event setParent: can not found vid config: ${params.parent}`
+    );
+    return () => {
+    };
+  }
+  return () => {
+    setTimeout(() => {
+      parent.children.push(params.target);
+    }, params.delay);
+  };
+};
+var setParent = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  config: config$d,
+  generator: generator$d
+}, Symbol.toStringTag, { value: "Module" }));
+const config$c = {
+  name: "changeCursor",
+  params: {
+    cursor: "",
+    delay: 0
+  }
+};
+const generator$c = function(engine, config2) {
+  const params = config2.params;
+  return () => {
+    setTimeout(() => {
+      document.body.style.cursor = params.cursor;
+    }, params.delay);
+  };
+};
+var changeCursor = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   config: config$c,
   generator: generator$c
@@ -1220,6 +1304,9 @@ var index = {
   rotationTo,
   showToCamera,
   upTo,
-  vector3To
+  vector3To,
+  setPosition,
+  setParent,
+  changeCursor
 };
 export { TIMINGFUNCTION, index as default, timingFunction };

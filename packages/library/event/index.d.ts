@@ -4,6 +4,9 @@ import * as changeScene from "./basicEvent/changeScene";
 import * as openWindow from "./basicEvent/openWindow";
 import * as switchAnimate from "./basicEvent/switchAnimate";
 import * as visibleObject from "./basicEvent/visibleObject";
+import * as setPosition from "./basicEvent/setPosition";
+import * as setParent from "./basicEvent/setParent";
+import * as changeCursor from "./basicEvent/changeCursor";
 import * as colorChange from "./RealTimeAnimate/colorChange";
 import * as fadeObject from "./RealTimeAnimate/fadeObject";
 import * as focusObject from "./RealTimeAnimate/focusObject";
@@ -37,5 +40,8 @@ declare const _default: {
     showToCamera: typeof showToCamera;
     upTo: typeof upTo;
     vector3To: typeof vector3To;
+    setPosition: typeof setPosition;
+    setParent: typeof setParent;
+    changeCursor: typeof changeCursor;
 };
 export default _default;
