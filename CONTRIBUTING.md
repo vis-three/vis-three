@@ -24,6 +24,20 @@
 - [/packages/utils](/packages/utils)为官方提供的**工具库**。
 - [/packages/test](/packages/test)为官方的测试模块，在这里会对所有模板进行单元测试和 e2e 测试。
 
-## 包更新
+## 模块包更新
+
+由于本项目使用的是`monorepo`模式，再搭配`pnpm`进行仓库管理，在进行开发时需要注意更新流程与事项。
+
+### 代码更新
+
+当我们在进行模块修改时，可以通过[/packages/examples](/packages/examples)模块，实时修改验证内容，并且顺便提供演示例子。
+
+修改完成后确认无重大 bug，需要在当前模块包内执行`pnpm run build`打包。
+
+### 版本修改
+
+### 全局更新版本依赖
+
+### 测试
 
 ## 包发版

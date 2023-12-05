@@ -26,7 +26,7 @@
     "vite": "^2.9.15"
   },
   "dependencies": {
-    "@vis-three/middleware": "workspace:^0.6.26"
+    "@vis-three/middleware": "workspace:^0.6.27"
   },
   "files": [
     "dist",
