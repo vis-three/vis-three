@@ -12,6 +12,7 @@ export interface Vector3To extends BasicEventConfig {
         delay: number;
         duration: number;
         to: Partial<Vector3Config>;
+        compiling: boolean;
         timingFunction: TIMINGFUNCTION;
     };
 }

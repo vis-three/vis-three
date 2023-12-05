@@ -2113,9 +2113,7 @@ const _EventGeneratorManager = class {
   static generateConfig(name, merge) {
     if (!_EventGeneratorManager.configLibrary.has(name)) {
       console.warn(`event library can not found config by name: ${name}`);
-      return {
-        name: ""
-      };
+      return null;
     }
     const recursion = (config, merge2) => {
       for (const key in merge2) {
@@ -2148,8 +2146,28 @@ const _EventGeneratorManager = class {
   static has(name) {
     return _EventGeneratorManager.configLibrary.has(name);
   }
+  static useEngine(engine) {
+    _EventGeneratorManager.engine = engine;
+  }
+  static createEvent(name, merge, engine) {
+    if (!_EventGeneratorManager.engine && !engine) {
+      console.error(
+        `EventGenerator Manager createEvent must provide an engine, you can use 'useEngine' to set it.`
+      );
+      return null;
+    }
+    const config = _EventGeneratorManager.generateConfig(name, merge);
+    if (!config) {
+      return null;
+    }
+    return _EventGeneratorManager.generateEvent(
+      config,
+      engine || _EventGeneratorManager.engine
+    );
+  }
 };
 let EventGeneratorManager = _EventGeneratorManager;
+__publicField(EventGeneratorManager, "engine");
 __publicField(EventGeneratorManager, "configLibrary", /* @__PURE__ */ new Map());
 __publicField(EventGeneratorManager, "generatorLibrary", /* @__PURE__ */ new Map());
 __publicField(EventGeneratorManager, "register", function({

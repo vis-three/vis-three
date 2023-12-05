@@ -21,6 +21,7 @@ export interface Vector3To extends BasicEventConfig {
     delay: number;
     duration: number;
     to: Partial<Vector3Config>;
+    compiling: boolean;
     timingFunction: TIMINGFUNCTION;
   };
 }
@@ -38,6 +39,7 @@ export const config: Vector3To = {
     delay: 0,
     duration: 500,
     to: {},
+    compiling: false,
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
   },
 };
@@ -128,7 +130,7 @@ export const generator: EventGenerator<Vector3To> = function (
 
     animating = true;
 
-    const tween = new Tween(targetObject)
+    const tween = new Tween(params.compiling ? supportData : targetObject)
       .to(toObject)
       .duration(params.duration)
       .delay(params.delay)
@@ -143,9 +145,13 @@ export const generator: EventGenerator<Vector3To> = function (
 
     tween.onComplete(() => {
       renderManager.removeEventListener<RenderEvent>("render", renderFun);
-      supportData[props.x] = toObject.x;
-      supportData[props.y] = toObject.y;
-      supportData[props.z] = toObject.z;
+
+      if (!params.compiling) {
+        supportData[props.x] = toObject.x;
+        supportData[props.y] = toObject.y;
+        supportData[props.z] = toObject.z;
+      }
+
       animating = false;
     });
   };

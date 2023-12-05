@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/library-event",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "vis-three event library",
   "main": "dist/vis-three.library-event.umd.js",
   "module": "dist/vis-three.library-event.es.js",

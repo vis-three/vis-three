@@ -1199,6 +1199,7 @@ const config = {
     delay: 0,
     duration: 500,
     to: {},
+    compiling: false,
     timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
   }
 };
@@ -1267,16 +1268,18 @@ const generator = function(engine, config2) {
       return;
     }
     animating = true;
-    const tween = new Tween(targetObject).to(toObject).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+    const tween = new Tween(params.compiling ? supportData : targetObject).to(toObject).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
     const renderFun = (event) => {
       tween.update();
     };
     renderManager.addEventListener("render", renderFun);
     tween.onComplete(() => {
       renderManager.removeEventListener("render", renderFun);
-      supportData[props.x] = toObject.x;
-      supportData[props.y] = toObject.y;
-      supportData[props.z] = toObject.z;
+      if (!params.compiling) {
+        supportData[props.x] = toObject.x;
+        supportData[props.y] = toObject.y;
+        supportData[props.z] = toObject.z;
+      }
       animating = false;
     });
   };

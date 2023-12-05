@@ -40,7 +40,7 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     renderManager: RenderManager;
     play: () => void;
     stop: () => void;
-    render: (delta: number) => this;
+    render: (delta?: number) => this;
     pointerManager: PointerManager;
     resourceManager: ResourceManager;
     registerResources: (resourceMap: Record<string, unknown>) => ResourceManagerEngine;

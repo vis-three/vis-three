@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/engine-modeling-support",
-  "version": "0.6.10",
+  "version": "0.6.11",
   "description": "",
   "main": "index.js",
   "module": "index.js",

@@ -22,7 +22,6 @@ import * as upTo from "./RealTimeAnimate/upTo";
 import * as vector3To from "./RealTimeAnimate/vector3To";
 
 export { timingFunction, TIMINGFUNCTION } from "./RealTimeAnimate/common";
-export { Tween } from "@tweenjs/tween.js";
 
 export default {
   addClass,

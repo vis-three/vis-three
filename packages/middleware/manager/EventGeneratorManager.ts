@@ -1,5 +1,6 @@
 import { ObjectEvent } from "@vis-three/plugin-event-manager";
 import { EngineSupport } from "../engine";
+import { DeepPartial } from "@vis-three/utils";
 
 export interface BasicEventConfig {
   name: string | Symbol;
@@ -11,6 +12,7 @@ export type EventGenerator<
 > = (engine: E, config: C) => (event?: ObjectEvent) => void;
 
 export class EventGeneratorManager {
+  private static engine: EngineSupport;
   private static configLibrary = new Map<string | Symbol, unknown>();
   private static generatorLibrary = new Map<
     string | Symbol,
@@ -40,12 +42,13 @@ export class EventGeneratorManager {
     return EventGeneratorManager;
   };
 
-  static generateConfig(name: string, merge: object): BasicEventConfig {
+  static generateConfig<C extends BasicEventConfig = BasicEventConfig>(
+    name: string,
+    merge: DeepPartial<C>
+  ): C | null {
     if (!EventGeneratorManager.configLibrary.has(name)) {
       console.warn(`event library can not found config by name: ${name}`);
-      return {
-        name: "",
-      };
+      return null;
     }
 
     const recursion = (config: BasicEventConfig, merge: object) => {
@@ -68,7 +71,7 @@ export class EventGeneratorManager {
 
     recursion(template, merge);
 
-    return template;
+    return template as C;
   }
 
   static generateEvent(
@@ -90,5 +93,34 @@ export class EventGeneratorManager {
 
   static has(name: string): boolean {
     return EventGeneratorManager.configLibrary.has(name);
+  }
+
+  static useEngine(engine: EngineSupport) {
+    EventGeneratorManager.engine = engine;
+  }
+
+  static createEvent<C extends BasicEventConfig = BasicEventConfig>(
+    name: string,
+    merge: DeepPartial<C>,
+    engine?: EngineSupport
+  ): ((event?: ObjectEvent | undefined) => void) | null {
+    if (!EventGeneratorManager.engine && !engine) {
+      console.error(
+        `EventGenerator Manager createEvent must provide an engine, you can use 'useEngine' to set it.`
+      );
+
+      return null;
+    }
+
+    const config = EventGeneratorManager.generateConfig<C>(name, merge);
+
+    if (!config) {
+      return null;
+    }
+
+    return EventGeneratorManager.generateEvent(
+      config,
+      engine || EventGeneratorManager.engine
+    );
   }
 }

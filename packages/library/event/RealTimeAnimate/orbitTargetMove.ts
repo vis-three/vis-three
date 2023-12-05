@@ -9,7 +9,7 @@ import {
   RenderEvent,
   Vector3Config,
 } from "@vis-three/middleware";
-import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
+import { OrbitControlsEngine } from "@vis-three/plugin-orbit-controls";
 
 export interface OrbitTargetMove extends BasicEventConfig {
   params: {
