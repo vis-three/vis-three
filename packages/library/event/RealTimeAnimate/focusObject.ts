@@ -9,7 +9,7 @@ import {
 } from "@vis-three/middleware";
 import { Camera, Euler, Object3D, Vector3 } from "three";
 import { timingFunction, TIMINGFUNCTION } from "./common";
-import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
+import { OrbitControlsEngine } from "@vis-three/plugin-orbit-controls";
 import { CameraConfig } from "@vis-three/module-camera";
 
 export interface FocusObject extends BasicEventConfig {
