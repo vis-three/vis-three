@@ -56,53 +56,44 @@
     </div>
 
     <script type="module">
-      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig as G } from "@vis-three/middleware";
-      import { Widget } from "@vis-three/widget";
+      import { EngineWidget, reactive, h } from "@vis-three/widget";
       import * as THREE from "three";
 
-      const engine = new ModelingEngineSupport()
+      const engine = new EngineWidget()
         .setDom(document.getElementById("app"))
         .setStats(true)
         .setSize()
         .play();
 
-      Widget.useEngine(engine);
+      const widget = engine
+        .createWidget({
+          render() {
+            const material = h("MeshStandardMaterial", {
+              color: "rgb(255, 0, 0)",
+            });
 
-      const app = new Widget({
-        data() {
-          return {
-            x: 10,
-          };
-        },
+            const geometry = h("BoxGeometry", {
+              width: 20,
+              height: 40,
+              depth: 60,
+            });
 
-        render(h) {
-          const material = h("MeshStandardMaterial", {
-            color: "rgb(255, 0, 0)",
-          });
+            const mesh = h("Mesh", {
+              geometry: boxGeometry.vid,
+              material: material.vid,
+              position: {
+                x: this.data.x + 10,
+              },
+            });
 
-          const geometry = h("BoxGeometry", {
-            width: 20,
-            height: 40,
-            depth: 60,
-          });
-
-          const mesh = h("Mesh", {
-            geometry: boxGeometry.vid,
-            material: material.vid,
-            position: {
-              x: bind(() => this.x + 10),
-            },
-            click: [this.run],
-          });
-
-          return {
-            refs: {
-              mesh,
-            },
-          };
-        },
-      });
+            return [material, geometry, mesh];
+          },
+          setup() {
+            const data = reactive({ x: 10 });
+            return { data };
+          },
+        })
+        .mount();
     </script>
   </body>
 </html>

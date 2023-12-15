@@ -9,13 +9,13 @@ export * from "./CompilerManager";
 export interface CompilerManagerEngine extends Engine {
   compilerManager: CompilerManager;
   getObjectSymbol: (object: any) => string | null;
-  getObjectBySymbol: (vid: string) => any | null;
-  getObjectfromModule: (module: string, vid: string) => object | null;
-  getObjectfromModules: (
+  getObjectBySymbol: <O = any>(vid: string) => O | null;
+  getObjectfromModule: <O = any>(module: string, vid: string) => O | null;
+  getObjectfromModules: <O = any>(
     modules: string[] | Record<string, any>,
     vid: string
-  ) => object | null;
-  getObject3D: (vid: string) => Object3D | null;
+  ) => O | null;
+  getObject3D: <O extends Object3D = Object3D>(vid: string) => O | null;
 }
 
 export interface CompilerManagerPluginParameters {}
@@ -35,23 +35,26 @@ export const CompilerManagerPlugin: Plugin<CompilerManagerEngine, object> =
           return compilerManager.getObjectSymbol(object);
         };
 
-        engine.getObjectBySymbol = function (vid) {
-          return compilerManager.getObjectBySymbol(vid);
+        engine.getObjectBySymbol = function <O = any>(vid: string) {
+          return compilerManager.getObjectBySymbol(vid) as O;
         };
 
-        engine.getObjectfromModule = function (module, vid) {
-          return compilerManager.getObjectfromModule(module, vid);
+        engine.getObjectfromModule = function <O = any>(
+          module: string,
+          vid: string
+        ) {
+          return compilerManager.getObjectfromModule(module, vid) as O;
         };
 
-        engine.getObjectfromModules = function (modules, vid) {
-          return compilerManager.getObjectfromModules(modules, vid);
+        engine.getObjectfromModules = function <O = any>(
+          modules: string[] | Record<string, any>,
+          vid: string
+        ) {
+          return compilerManager.getObjectfromModules(modules, vid) as O;
         };
 
-        engine.getObject3D = function (vid) {
-          return compilerManager.getObjectfromModules(
-            OBJECTMODULE,
-            vid
-          ) as Object3D;
+        engine.getObject3D = function <O = Object3D>(vid: string) {
+          return compilerManager.getObjectfromModules(OBJECTMODULE, vid) as O;
         };
       },
       dispose(

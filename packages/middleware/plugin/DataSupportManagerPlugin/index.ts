@@ -6,8 +6,16 @@ import { DataSupportManager, LoadOptions } from "./DataSupportManager";
 export interface DataSupportEngine extends Engine {
   dataSupportManager: DataSupportManager;
   applyConfig: (...args: SymbolConfig[]) => DataSupportEngine;
-  getConfigBySymbol: (vid: string) => SymbolConfig | null;
+  getConfigBySymbol: <C extends SymbolConfig = any>(vid: string) => C | null;
   removeConfigBySymbol: (...args: string[]) => DataSupportEngine;
+  getConfigfromModule: <C extends SymbolConfig = any>(
+    module: string,
+    vid: string
+  ) => C | null;
+  getConfigfromModules: <C extends SymbolConfig = any>(
+    modules: string[] | Record<string, any>,
+    vid: string
+  ) => C | null;
   toJSON: () => string;
   exportConfig: () => LoadOptions;
 }
@@ -34,8 +42,24 @@ export const DataSupportManagerPlugin: Plugin<
         return engine;
       };
 
-      engine.getConfigBySymbol = function (vid: string) {
-        return dataSupportManager.getConfigBySymbol(vid);
+      engine.getConfigBySymbol = function <C extends SymbolConfig = any>(
+        vid: string
+      ) {
+        return dataSupportManager.getConfigBySymbol<C>(vid);
+      };
+
+      engine.getConfigfromModule = function <C extends SymbolConfig = any>(
+        module: string,
+        vid: string
+      ) {
+        return dataSupportManager.getConfigfromModule<C>(module, vid);
+      };
+
+      engine.getConfigfromModules = function <C extends SymbolConfig = any>(
+        modules: string[] | Record<string, any>,
+        vid: string
+      ) {
+        return dataSupportManager.getConfigfromModules<C>(modules, vid);
       };
 
       engine.removeConfigBySymbol = function (...vids) {

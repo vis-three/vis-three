@@ -63,6 +63,46 @@ export class DataSupportManager extends EventDispatcher {
     return null;
   }
 
+  getConfigfromModule<T extends SymbolConfig>(
+    module: string,
+    vid: string
+  ): T | null {
+    if (!this.dataSupportMap.has(module)) {
+      console.warn(`data support manager can not found this module: ${module}`);
+      return null;
+    }
+
+    const dataSupport = this.dataSupportMap.get(module)!;
+    return (dataSupport.getConfig(vid) as T) || null;
+  }
+
+  getConfigfromModules<T extends SymbolConfig>(
+    modules: string[] | Record<string, any>,
+    vid: string
+  ) {
+    if (!Array.isArray(modules)) {
+      modules = Object.keys(modules);
+    }
+
+    for (const module of modules as string[]) {
+      if (!this.dataSupportMap.has(module)) {
+        console.warn(
+          `data support manager can not found this module: ${module}`
+        );
+        continue;
+      }
+
+      const dataSupport = this.dataSupportMap.get(module)!;
+      const config = dataSupport.getConfig(vid) as T;
+
+      if (config) {
+        return config;
+      }
+    }
+
+    return null;
+  }
+
   /**
    * 通过vid标识移除相关配置对象
    * @param vid ...vid标识

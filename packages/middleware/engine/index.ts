@@ -119,7 +119,6 @@ export class EngineSupport
   ) => ResourceManagerEngine;
   declare dataSupportManager: DataSupportManager;
   declare applyConfig: (...args: SymbolConfig[]) => DataSupportEngine;
-  declare getConfigBySymbol: (vid: string) => SymbolConfig | null;
   declare removeConfigBySymbol: (...args: string[]) => DataSupportEngine;
   declare toJSON: () => string;
   declare exportConfig: () => LoadOptions;
@@ -130,14 +129,31 @@ export class EngineSupport
     urlList: LoadUnit[],
     callback: (err: Error | undefined, event?: MappedEvent | undefined) => void
   ) => this;
-  declare loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
-  declare getObjectfromModule: (module: string, vid: string) => object | null;
-  declare getObjectfromModules: (
+
+  declare getConfigBySymbol: <C extends SymbolConfig = any>(
+    vid: string
+  ) => C | null;
+  declare getConfigfromModule: <C extends SymbolConfig = any>(
+    module: string,
+    vid: string
+  ) => C | null;
+  declare getConfigfromModules: <C extends SymbolConfig = any>(
     modules: string[] | Record<string, any>,
     vid: string
-  ) => object | null;
-  declare getObject3D: (vid: string) => Object3D<Event> | null;
+  ) => C | null;
+  declare getObjectfromModule: <O = any>(
+    module: string,
+    vid: string
+  ) => O | null;
+  declare getObjectfromModules: <O = any>(
+    modules: string[] | Record<string, any>,
+    vid: string
+  ) => O | null;
+  declare getObject3D: <O extends Object3D<Event> = Object3D<Event>>(
+    vid: string
+  ) => O | null;
 
+  declare loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
   private moduleLifeCycle: Array<{ module: string; order: number }> = [];
   private moduleTriggers: ModuleTrigger[] = [globalObjectModuleTrigger];
 
