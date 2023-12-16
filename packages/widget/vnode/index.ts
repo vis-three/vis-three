@@ -1,14 +1,14 @@
-import {
-  SymbolConfig,
-  createSymbol,
-  generateConfig,
-  uniqueSymbol,
-} from "@vis-three/middleware";
-import { DeepPartial } from "@vis-three/utils";
+import { SymbolConfig } from "@vis-three/middleware";
 import { Component, ComponentInstance } from "../component";
 
-export interface VNode<NodeProps = Record<string, any>> {
-  type: string | Component;
+export type VNodeTypes = string | Component;
+
+export type Data = Record<string, any>;
+
+export type ElementData = SymbolConfig;
+
+export interface VNode<NodeProps = Data> {
+  type: VNodeTypes;
   props: NodeProps | null;
   component: ComponentInstance | null;
   el: string | null;
@@ -17,21 +17,20 @@ export interface VNode<NodeProps = Record<string, any>> {
   children: VNode[] | null;
 }
 
-// export const createVNode = function <
-//   NodeConfig extends SymbolConfig = SymbolConfig
-// >(
-//   type: string,
-//   props: Exclude<NodeConfig, "type" | "vid">,
-//   options?: Partial<{ ref: string; unique: boolean; meta: Record<string, any> }>
-// ): VNode<NodeConfig> {
-//   const vnode = generateConfig<NodeConfig>(
-//     type,
-//     Object.assign(props, {
-//       alias: options ? options.ref : "",
-//       vid: options?.unique ? uniqueSymbol(type) : createSymbol(),
-//       meta: options ? options.meta : {},
-//     }) as unknown as DeepPartial<NodeConfig>
-//   );
+export type ElementVNode<NodeProps extends ElementData = ElementData> =
+  VNode<NodeProps>;
 
-//   return vnode;
-// };
+export const createVNode = function <NodeProps = Data>(
+  type: VNodeTypes,
+  props: NodeProps | null = null
+): VNode<NodeProps> {
+  return {
+    type,
+    props,
+    component: null,
+    el: null,
+    key: null,
+    ref: null,
+    children: null,
+  };
+};

@@ -4,11 +4,14 @@ import { version } from "../package.json";
 import { EngineWidget } from "../engine";
 import { ObjectConfig } from "@vis-three/module-object";
 import { Scene } from "three";
+import { createVNode } from "../vnode";
+import { Renderer } from "../renderer";
 
 export class Widget<E extends EngineWidget = EngineWidget> {
   private wid = createSymbol();
   private version = version;
   components: Record<string, Component> = {};
+  renderer: Renderer<E>;
 
   root: Component;
   instance: ComponentInstance | null = null;
@@ -17,6 +20,7 @@ export class Widget<E extends EngineWidget = EngineWidget> {
   constructor(engine: E, component: Component) {
     this.engine = engine;
     this.root = component;
+    this.renderer = new Renderer(engine);
   }
 
   component(name: string | Component, component?: Component) {
@@ -75,7 +79,9 @@ export class Widget<E extends EngineWidget = EngineWidget> {
 
       hostConfig = config;
     }
+    const vnode = createVNode(this.root);
 
+    this.renderer.render(vnode);
     return this;
   }
 
