@@ -1,5 +1,5 @@
 import { OBJECTMODULE, createSymbol } from "@vis-three/middleware";
-import { ComponentInstance, Component } from "../component";
+import { Component, ComponentOptions } from "../component";
 import { version } from "../package.json";
 import { EngineWidget } from "../engine";
 import { ObjectConfig } from "@vis-three/module-object";
@@ -10,20 +10,20 @@ import { Renderer } from "../renderer";
 export class Widget<E extends EngineWidget = EngineWidget> {
   private wid = createSymbol();
   private version = version;
-  components: Record<string, Component> = {};
+  components: Record<string, ComponentOptions> = {};
   renderer: Renderer<E>;
 
-  root: Component;
-  instance: ComponentInstance | null = null;
+  root: ComponentOptions;
+  instance: Component | null = null;
   engine: E;
 
-  constructor(engine: E, component: Component) {
+  constructor(engine: E, component: ComponentOptions) {
     this.engine = engine;
     this.root = component;
     this.renderer = new Renderer(engine);
   }
 
-  component(name: string | Component, component?: Component) {
+  component(name: string | ComponentOptions, component?: ComponentOptions) {
     if (typeof name === "object") {
       component = name;
       if (!component.name) {

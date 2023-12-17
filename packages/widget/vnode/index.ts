@@ -1,7 +1,7 @@
 import { SymbolConfig } from "@vis-three/middleware";
-import { Component, ComponentInstance } from "../component";
+import { Component, ComponentOptions } from "../component";
 
-export type VNodeTypes = string | Component;
+export type VNodeTypes = string | ComponentOptions;
 
 export type Data = Record<string, any>;
 
@@ -10,7 +10,7 @@ export type ElementData = SymbolConfig;
 export interface VNode<NodeProps = Data> {
   type: VNodeTypes;
   props: NodeProps | null;
-  component: ComponentInstance | null;
+  component: Component | null;
   el: string | null;
   key: string | number | symbol | null;
   ref: string | null;

@@ -7,6 +7,7 @@ import { EngineWidget } from "../engine";
 import { Data, ElementData, VNode } from "../vnode";
 import { ObjectConfig } from "@vis-three/module-object";
 import { isArray, isObject } from "@vis-three/utils";
+import { Component, ComponentOptions } from "../component";
 
 export class Renderer<E extends EngineWidget = EngineWidget> {
   private engine: E;
@@ -36,7 +37,7 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
   }
 
   render(vnode: VNode) {
-    const engine = this.engine;
+    this.patch(null, vnode);
   }
 
   processElement(oldVn: VNode | null, newVn: VNode) {
@@ -136,5 +137,12 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
 
   processComponent(oldVn: VNode | null, newVn: VNode) {
     return this;
+  }
+
+  mountComponent(vnode: VNode) {
+    const component = (vnode.component = new Component(
+      vnode.type as ComponentOptions
+    ));
+    
   }
 }

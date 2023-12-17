@@ -1,14 +1,26 @@
 import { VNode } from "../vnode";
 
-export interface Component {
+export interface ComponentOptions<Props = {}, RawBindings = {}> {
   name?: string;
-  components?: Record<string, Component>;
-  setup: () => Record<string, any>;
+  props?: Props;
+  components?: Record<string, ComponentOptions>;
+  setup: () => RawBindings;
   render: () => VNode | VNode[];
 }
 
-export interface ComponentInstance {}
+export class Component<Props = {}, RawBindings = {}> {
+  name = "";
+  private options: ComponentOptions<Props, RawBindings>;
+  private setupState!: RawBindings;
 
-export const defineComponent = function (options: Component): Component {
-  return options;
+  constructor(options: ComponentOptions<Props, RawBindings>) {
+    options.name && (this.name = options.name);
+    this.options = options;
+  }
+}
+
+export const defineComponent = function <Props = {}, RawBindings = {}>(
+  options: ComponentOptions<Props, RawBindings>
+): Component<Props, RawBindings> {
+  return new Component<Props, RawBindings>(options);
 };
