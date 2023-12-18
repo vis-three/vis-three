@@ -7,6 +7,7 @@ export interface ComponentOptions<Engine extends EngineWidget = EngineWidget, Pr
     props?: Props;
     components?: Record<string, ComponentOptions>;
     engine: Engine;
+    el: string;
     setup: () => RawBindings;
     render: () => VNode | VNode[];
 }
@@ -14,6 +15,7 @@ export declare class Component<Engine extends EngineWidget = EngineWidget, Props
     cid: any;
     name: string;
     private options;
+    private el;
     private render;
     private engine;
     private renderer;

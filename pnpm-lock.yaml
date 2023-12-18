@@ -490,6 +490,7 @@ importers:
       '@vis-three/strategy-transform-keyboard': workspace:^0.6.0
       '@vis-three/strategy-webgl-render': workspace:^0.6.1
       '@vis-three/strategy-webgl-renderer-support': workspace:^0.6.1
+      '@vis-three/widget': workspace:^0.6.0
       '@vitejs/plugin-vue': ^2.3.3
       ant-design-vue: ^3.2.6
       axios: ^0.27.2
@@ -572,6 +573,7 @@ importers:
       '@vis-three/strategy-transform-keyboard': link:../strategy/TransformKeyboardStrategy
       '@vis-three/strategy-webgl-render': link:../strategy/WebGLRenderStrategy
       '@vis-three/strategy-webgl-renderer-support': link:../strategy/WebGLRendererSupportStrategy
+      '@vis-three/widget': link:../widget
       ant-design-vue: 3.2.15_vue@3.3.10
       axios: 0.27.2
       echarts: 5.4.1

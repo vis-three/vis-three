@@ -4,7 +4,7 @@ import {
   isObjectType,
 } from "@vis-three/middleware";
 import { EngineWidget } from "../engine";
-import { Data, ElementData, VNode } from "../vnode";
+import { Data, ElementData, VNode, isVNode } from "../vnode";
 import { ObjectConfig } from "@vis-three/module-object";
 import { isArray, isObject } from "@vis-three/utils";
 import { Component, ComponentOptions } from "../component";
@@ -78,7 +78,28 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
   mountElement(vnode: VNode) {
     const element = this.createElement(vnode);
     this.engine.applyConfig(element);
-    return this;
+
+    if (isObjectType(element.type)) {
+      if (!vnode.el) {
+        this.engine.scene.add(
+          this.engine.getObjectfromModules(OBJECTMODULE, element.vid)!
+        );
+      } else {
+        const parent = this.engine.getConfigfromModules<ObjectConfig>(
+          OBJECTMODULE,
+          vnode.el!
+        );
+
+        if (!parent) {
+          console.error(
+            `widget renderer: can not found parent config with: ${vnode.el!}`
+          );
+          return;
+        }
+
+        parent.children.push(element.vid);
+      }
+    }
   }
 
   patchElement(oldVn: VNode, newVn: VNode) {
@@ -131,10 +152,25 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
   }
 
   createElement(vnode: VNode) {
-    return generateConfig(vnode.type as string, vnode.props as any, {
+    const props = vnode.props;
+    const merge: Record<string, any> = {};
+
+    for (const key in props) {
+      if (isVNode(props[key])) {
+        merge[key] = (<VNode>props[key]).config!.vid;
+      } else {
+        merge[key] = props[key];
+      }
+    }
+
+    const config = generateConfig(vnode.type as string, merge, {
       strict: false,
       warn: false,
     });
+
+    vnode.config = config;
+
+    return config;
   }
 
   processComponent(oldVn: VNode | null, newVn: VNode) {

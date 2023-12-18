@@ -1,9 +1,7 @@
-import { OBJECTMODULE, createSymbol } from "@vis-three/middleware";
+import { createSymbol } from "@vis-three/middleware";
 import { Component, ComponentOptions } from "../component";
 import { version } from "../package.json";
 import { EngineWidget } from "../engine";
-import { ObjectConfig } from "@vis-three/module-object";
-import { Scene } from "three";
 import { createVNode } from "../vnode";
 import { Renderer } from "../renderer";
 
@@ -53,32 +51,7 @@ export class Widget<E extends EngineWidget = EngineWidget> {
     this.components[name as string] = component;
   }
 
-  mount(el?: string) {
-    let hostConfig: ObjectConfig;
-
-    if (el) {
-      const config = this.engine.getConfigfromModules(OBJECTMODULE, el);
-      if (!config) {
-        console.warn(`widget mount can not found object config with el:${el}`);
-        return this;
-      }
-
-      hostConfig = config;
-    } else {
-      const config = this.engine.getObjectConfig<Scene, ObjectConfig>(
-        this.engine.scene
-      );
-
-      if (!config) {
-        console.warn(
-          `widget mount can not found object config with object:`,
-          this.engine.scene
-        );
-        return this;
-      }
-
-      hostConfig = config;
-    }
+  mount() {
     const vnode = createVNode(this.root);
 
     this.renderer.render(vnode);

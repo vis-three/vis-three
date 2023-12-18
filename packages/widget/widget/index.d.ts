@@ -11,7 +11,7 @@ export declare class Widget<E extends EngineWidget = EngineWidget> {
     engine: E;
     constructor(engine: E, component: ComponentOptions);
     component(name: string | ComponentOptions, component?: ComponentOptions): void;
-    mount(el?: string): this;
+    mount(): this;
     unmount(): void;
     use(): void;
 }

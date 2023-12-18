@@ -6,7 +6,7 @@ import {
 } from "@vue/reactivity";
 import { VNode } from "../vnode";
 import { EngineWidget } from "../engine";
-import { createSymbol } from "@vis-three/middleware";
+import { CONFIGTYPE, createSymbol, uniqueSymbol } from "@vis-three/middleware";
 import { EventDispatcher } from "@vis-three/core";
 import { Renderer } from "../renderer";
 import { Widget } from "../widget";
@@ -20,6 +20,7 @@ export interface ComponentOptions<
   props?: Props;
   components?: Record<string, ComponentOptions>;
   engine: Engine;
+  el: string;
   setup: () => RawBindings;
   render: () => VNode | VNode[];
 }
@@ -32,6 +33,8 @@ export class Component<
   cid = createSymbol();
   name = "";
   private options: ComponentOptions<Engine, Props, RawBindings>;
+
+  private el = "";
 
   private render!: () => VNode | VNode[];
 
@@ -54,15 +57,28 @@ export class Component<
     super();
 
     options.name && (this.name = options.name);
+    this.el = options.el;
     this.options = options;
     this.renderer = renderer;
     this.engine = renderer.engine;
     this.ctx = renderer.context;
+    this.createSetup();
+    this.createRender();
+    this.createEffect();
   }
 
   private renderTree() {
-    const tree = this.render.call(this.setupState);
-    return Array.isArray(tree) ? tree : [tree];
+    let tree = this.render.call(this.setupState);
+
+    if (!Array.isArray(tree)) {
+      tree = [tree];
+    }
+
+    for (const vnode of tree) {
+      vnode.el = this.el;
+    }
+
+    return tree;
   }
 
   createSetup() {

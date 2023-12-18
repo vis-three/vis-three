@@ -4,8 +4,10 @@ export type VNodeTypes = string | ComponentOptions;
 export type Data = Record<string, any>;
 export type ElementData = SymbolConfig;
 export interface VNode<NodeProps = Data> {
+    _isVNode: true;
     type: VNodeTypes;
     props: NodeProps | null;
+    config: SymbolConfig | null;
     component: Component | null;
     el: string | null;
     key: string | number | symbol | null;
@@ -14,3 +16,4 @@ export interface VNode<NodeProps = Data> {
 }
 export type ElementVNode<NodeProps extends ElementData = ElementData> = VNode<NodeProps>;
 export declare const createVNode: <NodeProps = Data>(type: VNodeTypes, props?: NodeProps | null) => VNode<NodeProps>;
+export declare const isVNode: (object: any) => boolean;

@@ -56,44 +56,84 @@
     </div>
 
     <script type="module">
-      import { EngineWidget, reactive, h } from "@vis-three/widget";
-      import * as THREE from "three";
+      import {
+        defineEngineSupport,
+        generateConfig,
+        CONFIGTYPE,
+        AniScriptGeneratorManager,
+        EventGeneratorManager,
+        Template,
+      } from "@vis-three/middleware";
+      import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
+      import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
+      import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
+      import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
+      import { OrbitControlsPlugin } from "@vis-three/plugin-orbit-controls";
 
-      const engine = new EngineWidget()
+      import { WebGLRenderStrategy } from "@vis-three/strategy-webgl-render";
+      import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer-support";
+
+      import * as ModuleLibrary from "@vis-three/library-module";
+
+      import {
+        defineEngineWidget,
+        defineComponent,
+        reactive,
+        h,
+        ref,
+        computed,
+      } from "@vis-three/widget";
+
+      const engine = new defineEngineWidget({
+        plugins: [
+          WebGLRendererPlugin({
+            antialias: true,
+            alpha: true,
+          }),
+          CameraAdaptivePlugin(),
+          GridHelperPlugin(),
+          OrbitControlsPlugin(),
+        ],
+        strategy: [WebGLRenderStrategy(), WebGLRendererSupportStrategy()],
+        modules: Object.values(ModuleLibrary),
+      })
         .setDom(document.getElementById("app"))
-        .setStats(true)
         .setSize()
         .play();
 
-      const widget = engine
-        .createWidget({
-          render() {
-            const material = h("MeshStandardMaterial", {
-              color: "rgb(255, 0, 0)",
-            });
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
 
-            const geometry = h("BoxGeometry", {
-              width: 20,
-              height: 40,
-              depth: 60,
-            });
+      const root = defineComponent({
+        render() {
+          const material = h("MeshBasicMaterial", {
+            color: "rgb(255, 0, 0)",
+          });
 
-            const mesh = h("Mesh", {
-              geometry: boxGeometry.vid,
-              material: material.vid,
-              position: {
-                x: this.data.x + 10,
-              },
-            });
+          const geometry = h("BoxGeometry", {
+            width: this.width,
+            height: this.height,
+            depth: 60,
+          });
 
-            return [material, geometry, mesh];
-          },
-          setup() {
-            const data = reactive({ x: 10 });
-            return { data };
-          },
-        })
-        .mount();
+          const mesh = h("Mesh", {
+            geometry,
+            material,
+            position: {
+              x: this.data.x,
+            },
+          });
+
+          return [material, geometry, mesh];
+        },
+        setup() {
+          const data = reactive({ x: 20 });
+          const width = ref(20);
+          const height = computed(() => width.value + 20);
+          return { width, height, data };
+        },
+      });
+
+      engine.createWidget(root).mount();
     </script>
   </body>
 </html>

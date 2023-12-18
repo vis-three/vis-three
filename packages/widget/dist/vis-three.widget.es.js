@@ -12,8 +12,10 @@ import { EventDispatcher } from "@vis-three/core";
 const version = "0.6.0";
 const createVNode = function(type, props = null) {
   return {
+    _isVNode: true,
     type,
     props,
+    config: null,
     component: null,
     el: null,
     key: null,
@@ -21,12 +23,20 @@ const createVNode = function(type, props = null) {
     children: null
   };
 };
+const isVNode = function(object) {
+  if (typeof object === "object") {
+    return Boolean(object["_isVNode"]);
+  } else {
+    return false;
+  }
+};
 class Component extends EventDispatcher {
   constructor(options, renderer) {
     super();
     __publicField(this, "cid", createSymbol());
     __publicField(this, "name", "");
     __publicField(this, "options");
+    __publicField(this, "el", "");
     __publicField(this, "render");
     __publicField(this, "engine");
     __publicField(this, "renderer");
@@ -38,14 +48,24 @@ class Component extends EventDispatcher {
     __publicField(this, "subTree", null);
     __publicField(this, "ctx");
     options.name && (this.name = options.name);
+    this.el = options.el;
     this.options = options;
     this.renderer = renderer;
     this.engine = renderer.engine;
     this.ctx = renderer.context;
+    this.createSetup();
+    this.createRender();
+    this.createEffect();
   }
   renderTree() {
-    const tree = this.render.call(this.setupState);
-    return Array.isArray(tree) ? tree : [tree];
+    let tree = this.render.call(this.setupState);
+    if (!Array.isArray(tree)) {
+      tree = [tree];
+    }
+    for (const vnode of tree) {
+      vnode.el = this.el;
+    }
+    return tree;
   }
   createSetup() {
     const setupResult = this.options.setup();
@@ -142,7 +162,25 @@ class Renderer {
   mountElement(vnode) {
     const element = this.createElement(vnode);
     this.engine.applyConfig(element);
-    return this;
+    if (isObjectType(element.type)) {
+      if (!vnode.el) {
+        this.engine.scene.add(
+          this.engine.getObjectfromModules(OBJECTMODULE, element.vid)
+        );
+      } else {
+        const parent = this.engine.getConfigfromModules(
+          OBJECTMODULE,
+          vnode.el
+        );
+        if (!parent) {
+          console.error(
+            `widget renderer: can not found parent config with: ${vnode.el}`
+          );
+          return;
+        }
+        parent.children.push(element.vid);
+      }
+    }
   }
   patchElement(oldVn, newVn) {
     if (oldVn.type !== newVn.type) {
@@ -186,10 +224,22 @@ class Renderer {
     }
   }
   createElement(vnode) {
-    return generateConfig(vnode.type, vnode.props, {
+    var _a;
+    const props = vnode.props;
+    const merge = {};
+    for (const key in props) {
+      if (isVNode(props[key])) {
+        merge[key] = (_a = props[key].config) == null ? void 0 : _a.vid;
+      } else {
+        merge[key] = props[key];
+      }
+    }
+    const config = generateConfig(vnode.type, merge, {
       strict: false,
       warn: false
     });
+    vnode.config = config;
+    return config;
   }
   processComponent(oldVn, newVn) {
     if (oldVn === null) {
@@ -238,25 +288,7 @@ class Widget {
     }
     this.components[name] = component;
   }
-  mount(el) {
-    if (el) {
-      const config = this.engine.getConfigfromModules(OBJECTMODULE, el);
-      if (!config) {
-        console.warn(`widget mount can not found object config with el:${el}`);
-        return this;
-      }
-    } else {
-      const config = this.engine.getObjectConfig(
-        this.engine.scene
-      );
-      if (!config) {
-        console.warn(
-          `widget mount can not found object config with object:`,
-          this.engine.scene
-        );
-        return this;
-      }
-    }
+  mount() {
     const vnode = createVNode(this.root);
     this.renderer.render(vnode);
     return this;
@@ -274,7 +306,31 @@ class EngineWidget extends EngineSupport {
     return new Widget(this, component);
   }
 }
+const defineEngineWidget = function(options, params = {}) {
+  const engine = new EngineWidget();
+  if (options.modules) {
+    options.modules.forEach((module) => {
+      engine.registModule(module);
+    });
+  }
+  if (options.plugins) {
+    options.plugins.forEach((plugin) => {
+      engine.install(plugin);
+    });
+  }
+  if (options.strategy) {
+    options.strategy.forEach((strategy) => {
+      engine.exec(strategy);
+    });
+  }
+  if (options.wdigets) {
+    options.wdigets.forEach((widget) => {
+      engine.createWidget(widget);
+    });
+  }
+  return engine;
+};
 const h = function(type, props = null) {
   return createVNode(type, props);
 };
-export { EngineWidget, defineComponent, h };
+export { EngineWidget, defineComponent, defineEngineWidget, h };

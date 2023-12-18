@@ -8,8 +8,10 @@ export type Data = Record<string, any>;
 export type ElementData = SymbolConfig;
 
 export interface VNode<NodeProps = Data> {
+  _isVNode: true;
   type: VNodeTypes;
   props: NodeProps | null;
+  config: SymbolConfig | null;
   component: Component | null;
   el: string | null;
   key: string | number | symbol | null;
@@ -25,12 +27,22 @@ export const createVNode = function <NodeProps = Data>(
   props: NodeProps | null = null
 ): VNode<NodeProps> {
   return {
+    _isVNode: true,
     type,
     props,
+    config: null,
     component: null,
     el: null,
     key: null,
     ref: null,
     children: null,
   };
+};
+
+export const isVNode = function (object: any) {
+  if (typeof object === "object") {
+    return Boolean(object["_isVNode"]);
+  } else {
+    return false;
+  }
 };
