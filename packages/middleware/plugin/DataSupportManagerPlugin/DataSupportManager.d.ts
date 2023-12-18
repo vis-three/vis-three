@@ -22,6 +22,8 @@ export declare class DataSupportManager extends EventDispatcher {
      * @returns config || null
      */
     getConfigBySymbol<T extends SymbolConfig>(vid: string): T | null;
+    getConfigfromModule<T extends SymbolConfig>(module: string, vid: string): T | null;
+    getConfigfromModules<T extends SymbolConfig>(modules: string[] | Record<string, any>, vid: string): T | null;
     /**
      * 通过vid标识移除相关配置对象
      * @param vid ...vid标识

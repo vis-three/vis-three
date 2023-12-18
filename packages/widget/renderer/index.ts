@@ -8,12 +8,15 @@ import { Data, ElementData, VNode } from "../vnode";
 import { ObjectConfig } from "@vis-three/module-object";
 import { isArray, isObject } from "@vis-three/utils";
 import { Component, ComponentOptions } from "../component";
+import { Widget } from "../widget";
 
 export class Renderer<E extends EngineWidget = EngineWidget> {
-  private engine: E;
+  engine: E;
+  context: Widget<E>;
 
-  constructor(engine: E) {
-    this.engine = engine;
+  constructor(ctx: Widget<E>) {
+    this.context = ctx;
+    this.engine = ctx.engine;
   }
 
   private log(type: string, msg?: string, object?: any) {
@@ -26,13 +29,13 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
 
   patch(oldVn: VNode | null, newVn: VNode) {
     if (oldVn === newVn) {
-      return this;
+      return;
     }
 
     if (typeof newVn.type === "string") {
-      return this.processElement(oldVn, newVn);
+      this.processElement(oldVn, newVn);
     } else {
-      return this.processComponent(oldVn, newVn);
+      this.processComponent(oldVn, newVn);
     }
   }
 
@@ -42,9 +45,8 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
 
   processElement(oldVn: VNode | null, newVn: VNode) {
     if (oldVn === null) {
-      return this.mountElement(newVn);
+      this.mountElement(newVn);
     }
-    return this;
   }
 
   unmountElement(vnode: VNode) {
@@ -136,13 +138,12 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
   }
 
   processComponent(oldVn: VNode | null, newVn: VNode) {
-    return this;
+    if (oldVn === null) {
+      this.mountComponent(newVn);
+    }
   }
 
   mountComponent(vnode: VNode) {
-    const component = (vnode.component = new Component(
-      vnode.type as ComponentOptions
-    ));
-    
+    vnode.component = new Component(vnode.type as ComponentOptions, this);
   }
 }

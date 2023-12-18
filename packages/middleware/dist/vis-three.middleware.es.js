@@ -1396,10 +1396,7 @@ const CompilerManagerPlugin = function() {
         return compilerManager.getObjectfromModules(modules, vid);
       };
       engine.getObject3D = function(vid) {
-        return compilerManager.getObjectfromModules(
-          OBJECTMODULE,
-          vid
-        );
+        return compilerManager.getObjectfromModules(OBJECTMODULE, vid);
       };
     },
     dispose(engine) {
@@ -1442,6 +1439,33 @@ class DataSupportManager extends EventDispatcher {
   getConfigBySymbol(vid) {
     const dataSupportList = this.dataSupportMap.values();
     for (const dataSupport of dataSupportList) {
+      const config = dataSupport.getConfig(vid);
+      if (config) {
+        return config;
+      }
+    }
+    return null;
+  }
+  getConfigfromModule(module, vid) {
+    if (!this.dataSupportMap.has(module)) {
+      console.warn(`data support manager can not found this module: ${module}`);
+      return null;
+    }
+    const dataSupport = this.dataSupportMap.get(module);
+    return dataSupport.getConfig(vid) || null;
+  }
+  getConfigfromModules(modules, vid) {
+    if (!Array.isArray(modules)) {
+      modules = Object.keys(modules);
+    }
+    for (const module of modules) {
+      if (!this.dataSupportMap.has(module)) {
+        console.warn(
+          `data support manager can not found this module: ${module}`
+        );
+        continue;
+      }
+      const dataSupport = this.dataSupportMap.get(module);
       const config = dataSupport.getConfig(vid);
       if (config) {
         return config;
@@ -1532,6 +1556,12 @@ const DataSupportManagerPlugin = function() {
       };
       engine.getConfigBySymbol = function(vid) {
         return dataSupportManager.getConfigBySymbol(vid);
+      };
+      engine.getConfigfromModule = function(module, vid) {
+        return dataSupportManager.getConfigfromModule(module, vid);
+      };
+      engine.getConfigfromModules = function(modules, vid) {
+        return dataSupportManager.getConfigfromModules(modules, vid);
       };
       engine.removeConfigBySymbol = function(...vids) {
         dataSupportManager.removeConfigBySymbol(...vids);

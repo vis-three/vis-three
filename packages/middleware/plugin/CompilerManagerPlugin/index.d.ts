@@ -5,10 +5,10 @@ export * from "./CompilerManager";
 export interface CompilerManagerEngine extends Engine {
     compilerManager: CompilerManager;
     getObjectSymbol: (object: any) => string | null;
-    getObjectBySymbol: (vid: string) => any | null;
-    getObjectfromModule: (module: string, vid: string) => object | null;
-    getObjectfromModules: (modules: string[] | Record<string, any>, vid: string) => object | null;
-    getObject3D: (vid: string) => Object3D | null;
+    getObjectBySymbol: <O = any>(vid: string) => O | null;
+    getObjectfromModule: <O = any>(module: string, vid: string) => O | null;
+    getObjectfromModules: <O = any>(modules: string[] | Record<string, any>, vid: string) => O | null;
+    getObject3D: <O extends Object3D = Object3D>(vid: string) => O | null;
 }
 export interface CompilerManagerPluginParameters {
 }

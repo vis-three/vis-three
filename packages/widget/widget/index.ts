@@ -20,12 +20,12 @@ export class Widget<E extends EngineWidget = EngineWidget> {
   constructor(engine: E, component: ComponentOptions) {
     this.engine = engine;
     this.root = component;
-    this.renderer = new Renderer(engine);
+    this.renderer = new Renderer(this);
   }
 
   component(name: string | ComponentOptions, component?: ComponentOptions) {
     if (typeof name === "object") {
-      component = name;
+      component = name as ComponentOptions;
       if (!component.name) {
         console.error(
           `widget register component must be provide a name`,
@@ -45,12 +45,12 @@ export class Widget<E extends EngineWidget = EngineWidget> {
       return;
     }
 
-    if (this.components[name]) {
+    if (this.components[name as string]) {
       console.warn(`A component with this name already exists: ${name}`);
       return;
     }
 
-    this.components[name] = component;
+    this.components[name as string] = component;
   }
 
   mount(el?: string) {

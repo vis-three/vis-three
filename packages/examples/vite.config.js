@@ -45,6 +45,7 @@ const recursion = (parentDir) => {
   "./strategy",
   "./middleware",
   "./module",
+  "./widget",
   "./module-animation",
   "./module-camera",
   "./module-controls",

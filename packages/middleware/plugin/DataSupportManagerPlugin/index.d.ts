@@ -4,8 +4,10 @@ import { DataSupportManager, LoadOptions } from "./DataSupportManager";
 export interface DataSupportEngine extends Engine {
     dataSupportManager: DataSupportManager;
     applyConfig: (...args: SymbolConfig[]) => DataSupportEngine;
-    getConfigBySymbol: (vid: string) => SymbolConfig | null;
+    getConfigBySymbol: <C extends SymbolConfig = any>(vid: string) => C | null;
     removeConfigBySymbol: (...args: string[]) => DataSupportEngine;
+    getConfigfromModule: <C extends SymbolConfig = any>(module: string, vid: string) => C | null;
+    getConfigfromModules: <C extends SymbolConfig = any>(modules: string[] | Record<string, any>, vid: string) => C | null;
     toJSON: () => string;
     exportConfig: () => LoadOptions;
 }

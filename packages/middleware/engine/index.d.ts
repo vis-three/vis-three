@@ -46,7 +46,6 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     registerResources: (resourceMap: Record<string, unknown>) => ResourceManagerEngine;
     dataSupportManager: DataSupportManager;
     applyConfig: (...args: SymbolConfig[]) => DataSupportEngine;
-    getConfigBySymbol: (vid: string) => SymbolConfig | null;
     removeConfigBySymbol: (...args: string[]) => DataSupportEngine;
     toJSON: () => string;
     exportConfig: () => LoadOptions;
@@ -54,10 +53,13 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     getObjectSymbol: (object: any) => string | null;
     getObjectBySymbol: (vid: string) => any;
     loadResources: (urlList: LoadUnit[], callback: (err: Error | undefined, event?: MappedEvent | undefined) => void) => this;
+    getConfigBySymbol: <C extends SymbolConfig = any>(vid: string) => C | null;
+    getConfigfromModule: <C extends SymbolConfig = any>(module: string, vid: string) => C | null;
+    getConfigfromModules: <C extends SymbolConfig = any>(modules: string[] | Record<string, any>, vid: string) => C | null;
+    getObjectfromModule: <O = any>(module: string, vid: string) => O | null;
+    getObjectfromModules: <O = any>(modules: string[] | Record<string, any>, vid: string) => O | null;
+    getObject3D: <O extends Object3D<Event> = Object3D<Event>>(vid: string) => O | null;
     loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
-    getObjectfromModule: (module: string, vid: string) => object | null;
-    getObjectfromModules: (modules: string[] | Record<string, any>, vid: string) => object | null;
-    getObject3D: (vid: string) => Object3D<Event> | null;
     private moduleLifeCycle;
     private moduleTriggers;
     private processorExpands;

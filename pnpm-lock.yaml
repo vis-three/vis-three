@@ -3932,39 +3932,6 @@ importers:
       three: 0.141.0
       typescript: 4.9.3
 
-  packages/vue:
-    specifiers:
-      '@types/node': ^18.11.12
-      '@types/three': ^0.133.1
-      '@typescript-eslint/eslint-plugin': ^5.18.0
-      '@typescript-eslint/parser': ^5.18.0
-      '@vis-three/middleware': workspace:^0.6.27
-      '@vue/reactivity': ^3.3.11
-      '@vue/runtime-dom': ^3.3.11
-      eslint: ^8.12.0
-      eslint-config-prettier: ^8.5.0
-      eslint-plugin-prettier: ^4.0.0
-      prettier: ^2.6.2
-      three: ^0.141.0
-      typescript: ^4.3.2
-      vite: ^2.9.15
-    dependencies:
-      '@vis-three/middleware': link:../middleware
-      '@vue/reactivity': 3.3.11
-      '@vue/runtime-dom': 3.3.11
-    devDependencies:
-      '@types/node': 18.16.19
-      '@types/three': 0.133.1
-      '@typescript-eslint/eslint-plugin': 5.61.0_tiwiljqgmizmat2g4tqcn7wxxu
-      '@typescript-eslint/parser': 5.61.0_c6scop6gobf6637sntyzfiffg4
-      eslint: 8.44.0
-      eslint-config-prettier: 8.8.0_eslint@8.44.0
-      eslint-plugin-prettier: 4.2.1_qkgbdr345imkz5woyd5e5k6xse
-      prettier: 2.8.8
-      three: 0.141.0
-      typescript: 4.9.5
-      vite: 2.9.16
-
   packages/website:
     specifiers:
       '@ant-design/icons-vue': ^6.1.0
@@ -4052,7 +4019,7 @@ importers:
 
   packages/widget:
     specifiers:
-      '@rollup/plugin-alias': ^3.1.9
+      '@types/node': ^18.11.12
       '@types/three': ^0.141.0
       '@typescript-eslint/eslint-plugin': ^5.18.0
       '@typescript-eslint/parser': ^5.18.0
@@ -4060,21 +4027,14 @@ importers:
       '@vis-three/middleware': workspace:^0.6.27
       '@vis-three/module-object': workspace:^0.6.5
       '@vis-three/utils': workspace:^0.6.2
-      '@vitejs/plugin-vue': ^2.3.3
       '@vue/reactivity': ^3.3.11
-      babel-loader: ^8.2.5
-      babel-plugin-istanbul: ^6.1.1
-      esbuild-windows-64: ^0.15.13
       eslint: ^8.12.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-prettier: ^4.0.0
       prettier: ^2.6.2
-      rollup-plugin-visualizer: ^5.6.0
       three: ^0.141.0
       typescript: ^4.3.2
-      url-parse: ^1.5.10
       vite: ^2.9.15
-      webpack: ^5.74.0
     dependencies:
       '@vis-three/core': link:../core
       '@vis-three/middleware': link:../middleware
@@ -4082,24 +4042,17 @@ importers:
       '@vis-three/utils': link:../utils
       '@vue/reactivity': 3.3.11
     devDependencies:
-      '@rollup/plugin-alias': 3.1.9_rollup@2.79.1
+      '@types/node': 18.16.19
       '@types/three': 0.141.0
       '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
       '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
-      '@vitejs/plugin-vue': 2.3.4_vite@2.9.15+vue@3.3.10
-      babel-loader: 8.3.0_hesqqpfyu5viq55uq57ct7llmi
-      babel-plugin-istanbul: 6.1.1
-      esbuild-windows-64: 0.15.18
       eslint: 8.29.0
       eslint-config-prettier: 8.5.0_eslint@8.29.0
       eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
       prettier: 2.8.0
-      rollup-plugin-visualizer: 5.8.3_rollup@2.79.1
       three: 0.141.0
       typescript: 4.9.3
-      url-parse: 1.5.10
       vite: 2.9.15
-      webpack: 5.75.0
 
 packages:
 
@@ -6723,10 +6676,6 @@ packages:
     resolution: {integrity: sha512-JYM8x9EGF163bEyhdJBpR2QX1R5naCJHC8ucJylJ3w9/CVBaskdQ8WqBf8MmQrd1kRvp/a4TS8HJ+bxzR7ZJYQ==}
     dev: true
 
-  /@types/three/0.133.1:
-    resolution: {integrity: sha512-XqBrP/+kbs+o0CYRhCVVE95v7FaL2bO5Z7+3VQJE0nEyjo+9LoLfeNgZITOnndKHxM+7ltEciAIR7uE0SZlsOg==}
-    dev: true
-
   /@types/three/0.141.0:
     resolution: {integrity: sha512-OJdKDgTPVBUgc+s74DYoy4aLznbFFC38Xm4ElmU1YwGNgR7GGFVvFCX7lpVgOsT6S1zSJtGdajTsOYE8/xY9nA==}
     dependencies:
@@ -7597,7 +7546,7 @@ packages:
       '@volar/source-map': 0.37.9
       '@vue/compiler-core': 3.3.10
       '@vue/compiler-dom': 3.3.10
-      '@vue/shared': 3.3.10
+      '@vue/shared': 3.3.11
     dev: true
 
   /@volar/vue-typescript/0.37.9:
@@ -7607,7 +7556,7 @@ packages:
       '@volar/source-map': 0.37.9
       '@volar/vue-code-gen': 0.37.9
       '@vue/compiler-sfc': 3.3.10
-      '@vue/reactivity': 3.3.9
+      '@vue/reactivity': 3.3.11
     dev: true
 
   /@vue/compiler-core/3.2.45:
@@ -7762,18 +7711,11 @@ packages:
     resolution: {integrity: sha512-D5tcw091f0nuu+hXq5XANofD0OXnBmaRqMYl5B3fCR+mX+cXJIGNw/VNawBqkjLNWETrFW0i+xH9NvDbTPVh7g==}
     dependencies:
       '@vue/shared': 3.3.11
-    dev: false
 
   /@vue/reactivity/3.3.4:
     resolution: {integrity: sha512-kLTDLwd0B1jG08NBF3R5rqULtv/f8x3rOFByTDz4J53ttIQEDmALqKqXY0J+XQeN0aV2FBxY8nJDf88yvOPAqQ==}
     dependencies:
       '@vue/shared': 3.3.4
-    dev: true
-
-  /@vue/reactivity/3.3.9:
-    resolution: {integrity: sha512-VmpIqlNp+aYDg2X0xQhJqHx9YguOmz2UxuUJDckBdQCNkipJvfk9yA75woLWElCa0Jtyec3lAAt49GO0izsphw==}
-    dependencies:
-      '@vue/shared': 3.3.9
     dev: true
 
   /@vue/runtime-core/3.2.45:
@@ -7787,13 +7729,6 @@ packages:
     dependencies:
       '@vue/reactivity': 3.3.10
       '@vue/shared': 3.3.10
-
-  /@vue/runtime-core/3.3.11:
-    resolution: {integrity: sha512-g9ztHGwEbS5RyWaOpXuyIVFTschclnwhqEbdy5AwGhYOgc7m/q3NFwr50MirZwTTzX55JY8pSkeib9BX04NIpw==}
-    dependencies:
-      '@vue/reactivity': 3.3.11
-      '@vue/shared': 3.3.11
-    dev: false
 
   /@vue/runtime-core/3.3.4:
     resolution: {integrity: sha512-R+bqxMN6pWO7zGI4OMlmvePOdP2c93GsHFM/siJI7O2nxFRzj55pLwkpCedEY+bTMgp5miZ8CxfIZo3S+gFqvA==}
@@ -7815,14 +7750,6 @@ packages:
       '@vue/runtime-core': 3.3.10
       '@vue/shared': 3.3.10
       csstype: 3.1.2
-
-  /@vue/runtime-dom/3.3.11:
-    resolution: {integrity: sha512-OlhtV1PVpbgk+I2zl+Y5rQtDNcCDs12rsRg71XwaA2/Rbllw6mBLMi57VOn8G0AjOJ4Mdb4k56V37+g8ukShpQ==}
-    dependencies:
-      '@vue/runtime-core': 3.3.11
-      '@vue/shared': 3.3.11
-      csstype: 3.1.2
-    dev: false
 
   /@vue/runtime-dom/3.3.4:
     resolution: {integrity: sha512-Aj5bTJ3u5sFsUckRghsNjVTtxZQ1OyMWCr5dZRAPijF/0Vy4xEoRCwLyHXcj4D0UFbJ4lbx3gPTgg06K/GnPnQ==}
@@ -7868,14 +7795,9 @@ packages:
 
   /@vue/shared/3.3.11:
     resolution: {integrity: sha512-u2G8ZQ9IhMWTMXaWqZycnK4UthG1fA238CD+DP4Dm4WJi5hdUKKLg0RMRaRpDPNMdkTwIDkp7WtD0Rd9BH9fLw==}
-    dev: false
 
   /@vue/shared/3.3.4:
     resolution: {integrity: sha512-7OjdcV8vQ74eiz1TZLzZP4JwqM5fA94K6yntPS5Z25r9HDuGNzaGdgvwKYq6S+MxwF0TFRwe50fIR/MYnakdkQ==}
-    dev: true
-
-  /@vue/shared/3.3.9:
-    resolution: {integrity: sha512-ZE0VTIR0LmYgeyhurPTpy4KzKsuDyQbMSdM49eKkMnT5X4VfFBLysMzjIZhLEFQYjjOVVfbvUDHckwjDFiO2eA==}
     dev: true
 
   /@vueuse/core/10.1.2_vue@3.3.4:
@@ -11247,7 +11169,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /jsprim/2.0.2:
@@ -12122,6 +12044,7 @@ packages:
 
   /querystringify/2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
+    dev: false
 
   /queue-microtask/1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -13236,6 +13159,7 @@ packages:
     dependencies:
       querystringify: 2.2.0
       requires-port: 1.0.0
+    dev: false
 
   /util-deprecate/1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}

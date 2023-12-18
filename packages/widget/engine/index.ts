@@ -1,5 +1,5 @@
 import { EngineSupport, EngineSupportParameters } from "@vis-three/middleware";
-import { Component } from "../component";
+import { ComponentOptions } from "../component";
 import { Widget } from "../widget";
 
 export class EngineWidget extends EngineSupport {
@@ -7,7 +7,7 @@ export class EngineWidget extends EngineSupport {
     super(params);
   }
 
-  createWidget(component: Component): Widget {
+  createWidget(component: ComponentOptions): Widget {
     return new Widget(this, component);
   }
 }
