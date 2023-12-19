@@ -5,17 +5,24 @@ import { EngineWidget } from "../engine";
 import { createVNode } from "../vnode";
 import { Renderer } from "../renderer";
 
-export class Widget<E extends EngineWidget = EngineWidget> {
+export class Widget<
+  Engine extends EngineWidget = EngineWidget,
+  Props = {},
+  RawBindings = {}
+> {
   private wid = createSymbol();
   private version = version;
   components: Record<string, ComponentOptions> = {};
-  renderer: Renderer<E>;
+  renderer: Renderer<Engine>;
 
-  root: ComponentOptions;
+  root: ComponentOptions<Engine, Props, RawBindings>;
   instance: Component | null = null;
-  engine: E;
+  engine: Engine;
 
-  constructor(engine: E, component: ComponentOptions) {
+  constructor(
+    engine: Engine,
+    component: ComponentOptions<Engine, Props, RawBindings>
+  ) {
     this.engine = engine;
     this.root = component;
     this.renderer = new Renderer(this);
@@ -52,10 +59,17 @@ export class Widget<E extends EngineWidget = EngineWidget> {
   }
 
   mount() {
-    const vnode = createVNode(this.root);
+    const vnode = createVNode(this.root as ComponentOptions);
 
     this.renderer.render(vnode);
+
+    this.instance = vnode.component;
+
     return this;
+  }
+
+  getState() {
+    return this.instance?.getState(true);
   }
 
   unmount() {}

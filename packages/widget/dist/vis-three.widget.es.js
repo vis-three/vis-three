@@ -7,7 +7,7 @@ var __publicField = (obj, key, value) => {
 import { EffectScope, proxyRefs, ReactiveEffect } from "@vue/reactivity";
 export * from "@vue/reactivity";
 import { createSymbol, isObjectType, OBJECTMODULE, generateConfig, EngineSupport } from "@vis-three/middleware";
-import { isObject, isArray } from "@vis-three/utils";
+import { isObject } from "@vis-three/utils";
 import { EventDispatcher } from "@vis-three/core";
 const version = "0.6.0";
 const createVNode = function(type, props = null) {
@@ -19,6 +19,7 @@ const createVNode = function(type, props = null) {
     component: null,
     el: null,
     key: null,
+    index: null,
     ref: null,
     children: null
   };
@@ -29,6 +30,27 @@ const isVNode = function(object) {
   } else {
     return false;
   }
+};
+const h = function(type, props = null) {
+  const vnode = createVNode(type, props);
+  vnode.index = h.increase();
+  h.add(vnode);
+  return vnode;
+};
+h.index = -1;
+h.reset = function() {
+  h.index = -1;
+  h.el = null;
+  h.vnodes = [];
+};
+h.increase = function() {
+  h.index += 1;
+  return h.index;
+};
+h.add = function(vnode) {
+  vnode.el = h.el;
+  h.vnodes.push(vnode);
+  return h.vnodes;
 };
 class Component extends EventDispatcher {
   constructor(options, renderer) {
@@ -42,6 +64,7 @@ class Component extends EventDispatcher {
     __publicField(this, "renderer");
     __publicField(this, "isMounted", false);
     __publicField(this, "setupState");
+    __publicField(this, "rawSetupState");
     __publicField(this, "effect");
     __publicField(this, "scope", new EffectScope(true));
     __publicField(this, "update");
@@ -58,18 +81,16 @@ class Component extends EventDispatcher {
     this.createEffect();
   }
   renderTree() {
-    let tree = this.render.call(this.setupState);
-    if (!Array.isArray(tree)) {
-      tree = [tree];
-    }
-    for (const vnode of tree) {
-      vnode.el = this.el;
-    }
+    h.reset();
+    h.el = this.el;
+    this.render.call(this.setupState);
+    let tree = h.vnodes;
     return tree;
   }
   createSetup() {
     const setupResult = this.options.setup();
     this.setupState = proxyRefs(setupResult);
+    this.rawSetupState = setupResult;
   }
   createRender() {
     this.render = this.options.render;
@@ -99,8 +120,8 @@ class Component extends EventDispatcher {
     this.effect = effect;
     this.update = update;
   }
-  getState() {
-    return this.setupState;
+  getState(raw = false) {
+    return raw ? this.rawSetupState : this.setupState;
   }
 }
 const defineComponent = function(options) {
@@ -136,6 +157,8 @@ class Renderer {
   processElement(oldVn, newVn) {
     if (oldVn === null) {
       this.mountElement(newVn);
+    } else {
+      this.patchElement(oldVn, newVn);
     }
   }
   unmountElement(vnode) {
@@ -187,49 +210,39 @@ class Renderer {
       this.unmountElement(oldVn);
       this.mountElement(newVn);
     } else {
+      newVn.config = oldVn.config;
       const oldProps = oldVn.props;
       const newProps = newVn.props;
-      const config = this.engine.getConfigBySymbol(oldProps.vid);
+      const config = oldVn.config;
       if (!config) {
         console.error("widget renderer: can not found  config with: ", oldVn);
       }
-      const traverse = (props, config2) => {
-        for (const key in props) {
-          if (typeof config2[key] === "undefined") {
-            console.warn(
-              `widget renderer: config has not found this key: ${key}`,
-              { config: config2, vnode: newVn }
-            );
-            continue;
-          }
-          if (isObject(props[key])) {
-            if (isObject(config2[key])) {
-              if (isArray(props[key])) {
-                config2[key].splice(0, config2[key].length);
-                config2[key].push(...props[key]);
-              } else {
-                traverse(props[key], config2[key]);
-              }
-            } else {
-              config2[key] = props[key];
+      const traverse = (props1, props2, target) => {
+        for (const key in props1) {
+          if (isVNode(props1[key])) {
+            if (isVNode(props2[key]) && props2[key].config.vid !== props1[key].config.vid) {
+              target[key] = props2[key].config.vid;
+            } else if (!isVNode(props2[key])) {
+              target[key] = props2[key];
             }
+          } else if (isObject(props1[key])) {
+            traverse(props1[key], props2[key], target[key]);
           } else {
-            if (config2[key] !== props[key]) {
-              config2[key] = props[key];
+            if (props2[key] !== props1[key]) {
+              target[key] = props2[key];
             }
           }
         }
       };
-      traverse(newProps, config);
+      traverse(oldProps, newProps, config);
     }
   }
   createElement(vnode) {
-    var _a;
     const props = vnode.props;
     const merge = {};
     for (const key in props) {
       if (isVNode(props[key])) {
-        merge[key] = (_a = props[key].config) == null ? void 0 : _a.vid;
+        merge[key] = props[key].config.vid;
       } else {
         merge[key] = props[key];
       }
@@ -291,7 +304,12 @@ class Widget {
   mount() {
     const vnode = createVNode(this.root);
     this.renderer.render(vnode);
+    this.instance = vnode.component;
     return this;
+  }
+  getState() {
+    var _a;
+    return (_a = this.instance) == null ? void 0 : _a.getState(true);
   }
   unmount() {
   }
@@ -329,8 +347,5 @@ const defineEngineWidget = function(options, params = {}) {
     });
   }
   return engine;
-};
-const h = function(type, props = null) {
-  return createVNode(type, props);
 };
 export { EngineWidget, defineComponent, defineEngineWidget, h };

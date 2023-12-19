@@ -2,7 +2,6 @@ import {
   EngineSupport,
   EngineSupportOptions,
   EngineSupportParameters,
-  generateConfig,
 } from "@vis-three/middleware";
 import { ComponentOptions } from "../component";
 import { Widget } from "../widget";
@@ -12,8 +11,10 @@ export class EngineWidget extends EngineSupport {
     super(params);
   }
 
-  createWidget(component: ComponentOptions): Widget {
-    return new Widget(this, component);
+  createWidget<Props = {}, RawBindings = {}>(
+    component: ComponentOptions<typeof this, Props, RawBindings>
+  ) {
+    return new Widget<typeof this, Props, RawBindings>(this, component);
   }
 }
 
@@ -46,7 +47,7 @@ export const defineEngineWidget = function <
 
   if (options.wdigets) {
     options.wdigets.forEach((widget) => {
-      engine.createWidget(widget);
+      engine.createWidget(widget as any);
     });
   }
 

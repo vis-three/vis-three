@@ -3,7 +3,7 @@ import { ComponentOptions } from "../component";
 import { Widget } from "../widget";
 export declare class EngineWidget extends EngineSupport {
     constructor(params?: Partial<EngineSupportParameters>);
-    createWidget(component: ComponentOptions): Widget;
+    createWidget<Props = {}, RawBindings = {}>(component: ComponentOptions<typeof this, Props, RawBindings>): Widget<this, Props, RawBindings>;
 }
 export interface EngineWidgetOptions extends EngineSupportOptions {
     wdigets: ComponentOptions[];

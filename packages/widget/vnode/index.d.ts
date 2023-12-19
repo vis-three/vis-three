@@ -11,6 +11,7 @@ export interface VNode<NodeProps = Data> {
     component: Component | null;
     el: string | null;
     key: string | number | symbol | null;
+    index: string | number | symbol | null;
     ref: string | null;
     children: VNode[] | null;
 }

@@ -10,6 +10,7 @@ import { CONFIGTYPE, createSymbol, uniqueSymbol } from "@vis-three/middleware";
 import { EventDispatcher } from "@vis-three/core";
 import { Renderer } from "../renderer";
 import { Widget } from "../widget";
+import { h } from "../h";
 
 export interface ComponentOptions<
   Engine extends EngineWidget = EngineWidget,
@@ -43,6 +44,7 @@ export class Component<
 
   private isMounted = false;
   private setupState!: RawBindings;
+  private rawSetupState!: RawBindings;
   private effect!: ReactiveEffect;
   private scope = new EffectScope(true);
   private update!: () => void;
@@ -68,15 +70,12 @@ export class Component<
   }
 
   private renderTree() {
-    let tree = this.render.call(this.setupState);
+    h.reset();
+    h.el = this.el;
 
-    if (!Array.isArray(tree)) {
-      tree = [tree];
-    }
+    this.render.call(this.setupState);
 
-    for (const vnode of tree) {
-      vnode.el = this.el;
-    }
+    let tree = h.vnodes;
 
     return tree;
   }
@@ -84,6 +83,7 @@ export class Component<
   createSetup() {
     const setupResult = this.options.setup();
     this.setupState = proxyRefs<any>(setupResult);
+    this.rawSetupState = setupResult;
   }
 
   createRender() {
@@ -122,8 +122,8 @@ export class Component<
     this.update = update;
   }
 
-  getState() {
-    return this.setupState;
+  getState(raw = false) {
+    return raw ? this.rawSetupState : this.setupState;
   }
 }
 

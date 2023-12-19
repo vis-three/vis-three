@@ -21,6 +21,7 @@ export declare class Component<Engine extends EngineWidget = EngineWidget, Props
     private renderer;
     private isMounted;
     private setupState;
+    private rawSetupState;
     private effect;
     private scope;
     private update;
@@ -31,6 +32,6 @@ export declare class Component<Engine extends EngineWidget = EngineWidget, Props
     createSetup(): void;
     createRender(): void;
     createEffect(): void;
-    getState(): RawBindings;
+    getState(raw?: boolean): RawBindings;
 }
 export declare const defineComponent: <Engine extends EngineWidget = EngineWidget, Props = {}, RawBindings = {}>(options: ComponentOptions<Engine, Props, RawBindings>) => ComponentOptions<Engine, Props, RawBindings>;

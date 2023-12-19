@@ -1,17 +1,18 @@
 import { Component, ComponentOptions } from "../component";
 import { EngineWidget } from "../engine";
 import { Renderer } from "../renderer";
-export declare class Widget<E extends EngineWidget = EngineWidget> {
+export declare class Widget<Engine extends EngineWidget = EngineWidget, Props = {}, RawBindings = {}> {
     private wid;
     private version;
     components: Record<string, ComponentOptions>;
-    renderer: Renderer<E>;
-    root: ComponentOptions;
+    renderer: Renderer<Engine>;
+    root: ComponentOptions<Engine, Props, RawBindings>;
     instance: Component | null;
-    engine: E;
-    constructor(engine: E, component: ComponentOptions);
+    engine: Engine;
+    constructor(engine: Engine, component: ComponentOptions<Engine, Props, RawBindings>);
     component(name: string | ComponentOptions, component?: ComponentOptions): void;
     mount(): this;
+    getState(): {} | undefined;
     unmount(): void;
     use(): void;
 }

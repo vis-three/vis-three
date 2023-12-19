@@ -3,8 +3,8 @@ import { VNode } from "../vnode";
 import { Widget } from "../widget";
 export declare class Renderer<E extends EngineWidget = EngineWidget> {
     engine: E;
-    context: Widget<E>;
-    constructor(ctx: Widget<E>);
+    context: Widget<E, any, any>;
+    constructor(ctx: Widget<E, any, any>);
     private log;
     patch(oldVn: VNode | null, newVn: VNode): void;
     render(vnode: VNode): void;

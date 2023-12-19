@@ -12,9 +12,9 @@ import { Widget } from "../widget";
 
 export class Renderer<E extends EngineWidget = EngineWidget> {
   engine: E;
-  context: Widget<E>;
+  context: Widget<E, any, any>;
 
-  constructor(ctx: Widget<E>) {
+  constructor(ctx: Widget<E, any, any>) {
     this.context = ctx;
     this.engine = ctx.engine;
   }
@@ -46,6 +46,8 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
   processElement(oldVn: VNode | null, newVn: VNode) {
     if (oldVn === null) {
       this.mountElement(newVn);
+    } else {
+      this.patchElement(oldVn, newVn);
     }
   }
 
@@ -107,47 +109,39 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
       this.unmountElement(oldVn);
       this.mountElement(newVn);
     } else {
+      newVn.config = oldVn.config;
+
       const oldProps = oldVn.props! as ElementData;
       const newProps = newVn.props! as ElementData;
 
-      const config = this.engine.getConfigBySymbol(oldProps.vid)!;
+      const config = oldVn.config;
 
       if (!config) {
         console.error("widget renderer: can not found  config with: ", oldVn);
       }
 
-      const traverse = (props: object, config: object) => {
-        for (const key in props) {
-          if (typeof config[key] === "undefined") {
-            console.warn(
-              `widget renderer: config has not found this key: ${key}`,
-              { config, vnode: newVn }
-            );
-            continue;
-          }
-
-          if (isObject(props[key])) {
-            if (isObject(config[key])) {
-              if (isArray(props[key])) {
-                // TODO: pref
-
-                config[key].splice(0, config[key].length);
-                config[key].push(...props[key]);
-              } else {
-                traverse(props[key], config[key]);
-              }
-            } else {
-              config[key] = props[key];
+      const traverse = (props1: object, props2: object, target: object) => {
+        for (const key in props1) {
+          if (isVNode(props1[key])) {
+            if (
+              isVNode(props2[key]) &&
+              props2[key].config.vid !== props1[key].config.vid
+            ) {
+              target[key] = props2[key].config.vid;
+            } else if (!isVNode(props2[key])) {
+              target[key] = props2[key];
             }
+          } else if (isObject(props1[key])) {
+            traverse(props1[key], props2[key], target[key]);
           } else {
-            if (config[key] !== props[key]) {
-              config[key] = props[key];
+            if (props2[key] !== props1[key]) {
+              target[key] = props2[key];
             }
           }
         }
       };
 
-      traverse(newProps, config);
+      traverse(oldProps, newProps, config!);
     }
   }
 

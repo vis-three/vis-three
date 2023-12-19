@@ -103,19 +103,51 @@
 
       engine.loaderManager.setPath(import.meta.env.BASE_URL);
 
+      const sphereComponent = defineComponent({
+        render() {
+          const material = h("MeshBasicMaterial", {
+            color: "rgb(0, 0, 255)",
+          });
+
+          const geometry = h("SphereGeometry", {
+            radius: 10,
+          });
+
+          h("Mesh", {
+            geometry,
+            material,
+            position: {
+              x: this.data.x,
+            },
+          });
+        },
+        setup() {
+          const data = reactive({ x: -20 });
+          return { data };
+        },
+      });
+
       const root = defineComponent({
         render() {
           const material = h("MeshBasicMaterial", {
             color: "rgb(255, 0, 0)",
           });
 
-          const geometry = h("BoxGeometry", {
-            width: this.width,
-            height: this.height,
-            depth: 60,
-          });
+          let geometry;
 
-          const mesh = h("Mesh", {
+          if (this.isBox) {
+            geometry = h("BoxGeometry", {
+              width: this.width,
+              height: this.height,
+              depth: 60,
+            });
+          } else {
+            geometry = h("ConeGeometry", {
+              radius: 30,
+            });
+          }
+
+          h("Mesh", {
             geometry,
             material,
             position: {
@@ -123,17 +155,22 @@
             },
           });
 
-          return [material, geometry, mesh];
+          h(sphereComponent);
         },
         setup() {
           const data = reactive({ x: 20 });
           const width = ref(20);
           const height = computed(() => width.value + 20);
-          return { width, height, data };
+          const isBox = ref(true);
+          return { width, height, data, isBox };
         },
       });
 
-      engine.createWidget(root).mount();
+      const widget = engine.createWidget(root).mount();
+
+      console.log(widget);
+
+      window.widget = widget;
     </script>
   </body>
 </html>
