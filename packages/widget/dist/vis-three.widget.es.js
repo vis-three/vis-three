@@ -174,7 +174,7 @@ class Component extends EventDispatcher {
                   this.renderer.mountElement(vnode);
                 }
               } else if (next.scope === RENDER_SCOPE.VFOR) {
-                for (const key in next.keyMap.keys()) {
+                for (const key of next.keyMap.keys()) {
                   if (prev.keyMap.has(key)) {
                     this.renderer.patch(
                       prev.keyMap.get(key),

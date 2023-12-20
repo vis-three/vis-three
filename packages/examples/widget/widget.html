@@ -81,6 +81,7 @@
         reactive,
         h,
         vif,
+        vfor,
         ref,
         computed,
       } from "@vis-three/widget";
@@ -141,7 +142,7 @@
               geometry = h("BoxGeometry", {
                 width: this.width,
                 height: this.height,
-                depth: 60,
+                depth: 10,
               });
             } else {
               geometry = h("ConeGeometry", {
@@ -180,13 +181,32 @@
           });
 
           h(sphereComponent);
+
+          vfor(() => {
+            this.list.forEach((item) => {
+              h("Mesh", {
+                geometry,
+                material,
+                position: {
+                  x: item.position.x,
+                  z: 20,
+                },
+              });
+            });
+          });
         },
         setup() {
-          const data = reactive({ x: 20 });
-          const width = ref(20);
-          const height = computed(() => width.value + 20);
+          const data = reactive({ x: 5 });
+          const width = ref(5);
+          const height = computed(() => width.value + 5);
           const isBox = ref(true);
-          return { width, height, data, isBox };
+          const list = reactive([
+            { position: { x: -20 } },
+            { position: { x: 0 } },
+            { position: { x: 20 } },
+          ]);
+
+          return { width, height, data, isBox, list };
         },
       });
 
