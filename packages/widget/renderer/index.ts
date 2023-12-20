@@ -9,6 +9,7 @@ import { ObjectConfig } from "@vis-three/module-object";
 import { isArray, isObject } from "@vis-three/utils";
 import { Component, ComponentOptions } from "../component";
 import { Widget } from "../widget";
+import { Object3D } from "three";
 
 export class Renderer<E extends EngineWidget = EngineWidget> {
   engine: E;
@@ -27,12 +28,20 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
     }
   }
 
-  patch(oldVn: VNode | null, newVn: VNode) {
+  patch(oldVn: VNode | null, newVn: VNode | null) {
+    if (!oldVn && !newVn) {
+      console.error(`widget renderer: patch prarams all of null`);
+      return;
+    }
+
     if (oldVn === newVn) {
       return;
     }
 
-    if (typeof newVn.type === "string") {
+    if (
+      (newVn && typeof newVn.type === "string") ||
+      (oldVn && typeof oldVn.type === "string")
+    ) {
       this.processElement(oldVn, newVn);
     } else {
       this.processComponent(oldVn, newVn);
@@ -43,38 +52,60 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
     this.patch(null, vnode);
   }
 
-  processElement(oldVn: VNode | null, newVn: VNode) {
+  processElement(oldVn: VNode | null, newVn: VNode | null) {
+    if (!oldVn && !newVn) {
+      console.error(`widget renderer: processElement prarams all of null`);
+      return;
+    }
+
     if (oldVn === null) {
-      this.mountElement(newVn);
+      this.mountElement(newVn!);
+    } else if (newVn === null) {
+      this.unmountElement(oldVn!);
     } else {
-      this.patchElement(oldVn, newVn);
+      this.patchElement(oldVn!, newVn!);
     }
   }
 
   unmountElement(vnode: VNode) {
-    if (
-      isObjectType(vnode.type as string) &&
-      (<VNode<ObjectConfig>>vnode).props?.parent
-    ) {
-      const parentConfig = this.engine.getConfigfromModules<ObjectConfig>(
-        OBJECTMODULE,
-        (<VNode<ObjectConfig>>vnode).props!.parent
-      );
-
-      if (!parentConfig) {
-        console.error(
-          "widget renderer: can not found parent config with: ",
-          vnode
+    // object 根据vnode el去从父级移除
+    if (isObjectType(vnode.type as string)) {
+      if ((<VNode<ObjectConfig>>vnode).config!.parent) {
+        const parentConfig = this.engine.getConfigfromModules<ObjectConfig>(
+          OBJECTMODULE,
+          (<VNode<ObjectConfig>>vnode).config!.parent
         );
-        return;
-      }
 
-      parentConfig.children.splice(
-        parentConfig.children.indexOf((<VNode<ObjectConfig>>vnode).props!.vid),
-        1
-      );
+        if (!parentConfig) {
+          console.error(
+            "widget renderer: can not found parent config with: ",
+            vnode
+          );
+          return;
+        }
+
+        parentConfig.children.splice(
+          parentConfig.children.indexOf(
+            (<VNode<ObjectConfig>>vnode).config!.vid
+          ),
+          1
+        );
+      } else if (!vnode.el) {
+        const object = this.engine.getObjectBySymbol(
+          (<VNode<ObjectConfig>>vnode).config!.vid
+        ) as Object3D;
+
+        if (!object) {
+          console.error(
+            "widget renderer: can not found Three object with: ",
+            vnode
+          );
+        }
+
+        object.removeFromParent();
+      }
     }
-    this.engine.removeConfigBySymbol(vnode.props!.vid);
+    this.engine.removeConfigBySymbol(vnode.config!.vid);
   }
 
   mountElement(vnode: VNode) {
@@ -167,13 +198,26 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
     return config;
   }
 
-  processComponent(oldVn: VNode | null, newVn: VNode) {
+  processComponent(oldVn: VNode | null, newVn: VNode | null) {
+    if (!oldVn && !newVn) {
+      console.error(`widget renderer: processElement prarams all of null`);
+      return;
+    }
+
     if (oldVn === null) {
-      this.mountComponent(newVn);
+      this.mountComponent(newVn!);
+    } else if (newVn === null) {
+      this.unmountComponent(oldVn!);
+    } else {
+      this.patchComponent(oldVn, newVn);
     }
   }
 
   mountComponent(vnode: VNode) {
     vnode.component = new Component(vnode.type as ComponentOptions, this);
   }
+
+  unmountComponent(vnode: VNode) {}
+
+  patchComponent(oldVn: VNode, newVn: VNode) {}
 }

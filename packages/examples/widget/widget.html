@@ -80,6 +80,7 @@
         defineComponent,
         reactive,
         h,
+        vif,
         ref,
         computed,
       } from "@vis-three/widget";
@@ -135,24 +136,47 @@
 
           let geometry;
 
-          if (this.isBox) {
-            geometry = h("BoxGeometry", {
-              width: this.width,
-              height: this.height,
-              depth: 60,
-            });
-          } else {
-            geometry = h("ConeGeometry", {
-              radius: 30,
-            });
-          }
+          vif(() => {
+            if (this.isBox) {
+              geometry = h("BoxGeometry", {
+                width: this.width,
+                height: this.height,
+                depth: 60,
+              });
+            } else {
+              geometry = h("ConeGeometry", {
+                radius: 10,
+              });
+            }
+          });
 
-          h("Mesh", {
-            geometry,
-            material,
-            position: {
-              x: this.data.x,
-            },
+          vif(() => {
+            if (this.isBox) {
+              h("Mesh", {
+                geometry,
+                material,
+                position: {
+                  x: this.data.x,
+                },
+              });
+            } else {
+              h("Mesh", {
+                geometry,
+                material,
+                position: {
+                  x: this.data.x,
+                  y: this.data.x * 2,
+                },
+              });
+              h("Mesh", {
+                geometry,
+                material,
+                position: {
+                  x: this.data.x,
+                  z: this.data.x * 2,
+                },
+              });
+            }
           });
 
           h(sphereComponent);

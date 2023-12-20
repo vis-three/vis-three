@@ -6,13 +6,15 @@ export declare class Renderer<E extends EngineWidget = EngineWidget> {
     context: Widget<E, any, any>;
     constructor(ctx: Widget<E, any, any>);
     private log;
-    patch(oldVn: VNode | null, newVn: VNode): void;
+    patch(oldVn: VNode | null, newVn: VNode | null): void;
     render(vnode: VNode): void;
-    processElement(oldVn: VNode | null, newVn: VNode): void;
+    processElement(oldVn: VNode | null, newVn: VNode | null): void;
     unmountElement(vnode: VNode): void;
     mountElement(vnode: VNode): void;
     patchElement(oldVn: VNode, newVn: VNode): void;
     createElement(vnode: VNode): import("@vis-three/middleware").SymbolConfig;
-    processComponent(oldVn: VNode | null, newVn: VNode): void;
+    processComponent(oldVn: VNode | null, newVn: VNode | null): void;
     mountComponent(vnode: VNode): void;
+    unmountComponent(vnode: VNode): void;
+    patchComponent(oldVn: VNode, newVn: VNode): void;
 }

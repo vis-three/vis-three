@@ -23,7 +23,7 @@ export declare class Component<Engine extends EngineWidget = EngineWidget, Props
     private setupState;
     private rawSetupState;
     private effect;
-    private scope;
+    private effectScope;
     private update;
     private subTree;
     private ctx;

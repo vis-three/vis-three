@@ -19,7 +19,6 @@ const createVNode = function(type, props = null) {
     component: null,
     el: null,
     key: null,
-    index: null,
     ref: null,
     children: null
   };
@@ -31,26 +30,60 @@ const isVNode = function(object) {
     return false;
   }
 };
-const h = function(type, props = null) {
+var RENDER_SCOPE = /* @__PURE__ */ ((RENDER_SCOPE2) => {
+  RENDER_SCOPE2["STATIC"] = "static";
+  RENDER_SCOPE2["VIF"] = "vif";
+  RENDER_SCOPE2["VFOR"] = "vfor";
+  return RENDER_SCOPE2;
+})(RENDER_SCOPE || {});
+const _h = function(type, props = null) {
   const vnode = createVNode(type, props);
-  vnode.index = h.increase();
-  h.add(vnode);
+  _h.add(vnode);
   return vnode;
 };
-h.index = -1;
-h.reset = function() {
-  h.index = -1;
-  h.el = null;
-  h.vnodes = [];
+_h.reset = function() {
+  _h.el = null;
+  _h.scope = "static";
+  _h.vnodes = [];
 };
-h.increase = function() {
-  h.index += 1;
-  return h.index;
+_h.add = function(vnode) {
+  vnode.el = _h.el;
+  if (_h.scope !== "static") {
+    const scope = _h.vnodes[_h.vnodes.length - 1];
+    if (_h.scope === "vfor") {
+      if (!vnode.key) {
+        vnode.key = scope.vnodes.length;
+      }
+      scope.keyMap.set(vnode.key, vnode);
+    }
+    scope.vnodes.push(vnode);
+  } else {
+    _h.vnodes.push(vnode);
+  }
+  return _h.vnodes;
 };
-h.add = function(vnode) {
-  vnode.el = h.el;
-  h.vnodes.push(vnode);
-  return h.vnodes;
+const h = function(type, props = null) {
+  return _h(type, props);
+};
+const vif = function(fun) {
+  _h.scope = "vif";
+  _h.vnodes.push({
+    scope: _h.scope,
+    vnodes: [],
+    keyMap: /* @__PURE__ */ new Map()
+  });
+  fun();
+  _h.scope = "static";
+};
+const vfor = function(fun) {
+  _h.scope = "vfor";
+  _h.vnodes.push({
+    scope: _h.scope,
+    vnodes: [],
+    keyMap: /* @__PURE__ */ new Map()
+  });
+  fun();
+  _h.scope = "static";
 };
 class Component extends EventDispatcher {
   constructor(options, renderer) {
@@ -66,7 +99,7 @@ class Component extends EventDispatcher {
     __publicField(this, "setupState");
     __publicField(this, "rawSetupState");
     __publicField(this, "effect");
-    __publicField(this, "scope", new EffectScope(true));
+    __publicField(this, "effectScope", new EffectScope(true));
     __publicField(this, "update");
     __publicField(this, "subTree", null);
     __publicField(this, "ctx");
@@ -81,10 +114,10 @@ class Component extends EventDispatcher {
     this.createEffect();
   }
   renderTree() {
-    h.reset();
-    h.el = this.el;
+    _h.reset();
+    _h.el = this.el;
     this.render.call(this.setupState);
-    let tree = h.vnodes;
+    let tree = _h.vnodes;
     return tree;
   }
   createSetup() {
@@ -101,19 +134,72 @@ class Component extends EventDispatcher {
         if (!this.isMounted) {
           const subTree = this.subTree = this.renderTree();
           for (const vnode of subTree) {
-            this.renderer.patch(null, vnode);
+            if (isVNode(vnode)) {
+              this.renderer.patch(null, vnode);
+            } else {
+              for (const vn of vnode.vnodes) {
+                this.renderer.patch(null, vn);
+              }
+            }
           }
           this.isMounted = true;
         } else {
           const nextTree = this.renderTree();
           const prevTree = this.subTree;
-          for (let i = 0; i < nextTree.length; i += 1) {
-            this.renderer.patch(prevTree[i], nextTree[i]);
+          if (prevTree.length !== nextTree.length) {
+            console.error(`widget component render: tree render error`, {
+              nextTree,
+              prevTree
+            });
+            return;
           }
+          for (let i = 0; i < nextTree.length; i += 1) {
+            if (isVNode(prevTree[i]) && isVNode(nextTree[i])) {
+              this.renderer.patch(prevTree[i], nextTree[i]);
+            } else {
+              const next = nextTree[i];
+              const prev = prevTree[i];
+              if (next.scope !== prev.scope) {
+                console.error(`widget component render: tree render error`, {
+                  nextTree,
+                  prevTree
+                });
+                return;
+              }
+              if (next.scope === RENDER_SCOPE.VIF) {
+                for (const vnode of prev.vnodes) {
+                  this.renderer.unmountElement(vnode);
+                }
+                for (const vnode of next.vnodes) {
+                  this.renderer.mountElement(vnode);
+                }
+              } else if (next.scope === RENDER_SCOPE.VFOR) {
+                for (const key in next.keyMap.keys()) {
+                  if (prev.keyMap.has(key)) {
+                    this.renderer.patch(
+                      prev.keyMap.get(key),
+                      next.keyMap.get(key)
+                    );
+                    prev.keyMap.delete(key);
+                  } else {
+                    this.renderer.mountElement(next.keyMap.get(key));
+                  }
+                }
+                for (const vnode of prev.keyMap.values()) {
+                  this.renderer.unmountElement(vnode);
+                }
+              } else {
+                console.warn(
+                  `widget component render: unknow scope type: ${next.scope}`
+                );
+              }
+            }
+          }
+          this.subTree = nextTree;
         }
       },
       null,
-      this.scope
+      this.effectScope
     );
     const update = () => effect.run();
     update();
@@ -142,10 +228,14 @@ class Renderer {
     }
   }
   patch(oldVn, newVn) {
+    if (!oldVn && !newVn) {
+      console.error(`widget renderer: patch prarams all of null`);
+      return;
+    }
     if (oldVn === newVn) {
       return;
     }
-    if (typeof newVn.type === "string") {
+    if (newVn && typeof newVn.type === "string" || oldVn && typeof oldVn.type === "string") {
       this.processElement(oldVn, newVn);
     } else {
       this.processComponent(oldVn, newVn);
@@ -155,32 +245,52 @@ class Renderer {
     this.patch(null, vnode);
   }
   processElement(oldVn, newVn) {
+    if (!oldVn && !newVn) {
+      console.error(`widget renderer: processElement prarams all of null`);
+      return;
+    }
     if (oldVn === null) {
       this.mountElement(newVn);
+    } else if (newVn === null) {
+      this.unmountElement(oldVn);
     } else {
       this.patchElement(oldVn, newVn);
     }
   }
   unmountElement(vnode) {
-    var _a;
-    if (isObjectType(vnode.type) && ((_a = vnode.props) == null ? void 0 : _a.parent)) {
-      const parentConfig = this.engine.getConfigfromModules(
-        OBJECTMODULE,
-        vnode.props.parent
-      );
-      if (!parentConfig) {
-        console.error(
-          "widget renderer: can not found parent config with: ",
-          vnode
+    if (isObjectType(vnode.type)) {
+      if (vnode.config.parent) {
+        const parentConfig = this.engine.getConfigfromModules(
+          OBJECTMODULE,
+          vnode.config.parent
         );
-        return;
+        if (!parentConfig) {
+          console.error(
+            "widget renderer: can not found parent config with: ",
+            vnode
+          );
+          return;
+        }
+        parentConfig.children.splice(
+          parentConfig.children.indexOf(
+            vnode.config.vid
+          ),
+          1
+        );
+      } else if (!vnode.el) {
+        const object = this.engine.getObjectBySymbol(
+          vnode.config.vid
+        );
+        if (!object) {
+          console.error(
+            "widget renderer: can not found Three object with: ",
+            vnode
+          );
+        }
+        object.removeFromParent();
       }
-      parentConfig.children.splice(
-        parentConfig.children.indexOf(vnode.props.vid),
-        1
-      );
     }
-    this.engine.removeConfigBySymbol(vnode.props.vid);
+    this.engine.removeConfigBySymbol(vnode.config.vid);
   }
   mountElement(vnode) {
     const element = this.createElement(vnode);
@@ -255,12 +365,24 @@ class Renderer {
     return config;
   }
   processComponent(oldVn, newVn) {
+    if (!oldVn && !newVn) {
+      console.error(`widget renderer: processElement prarams all of null`);
+      return;
+    }
     if (oldVn === null) {
       this.mountComponent(newVn);
+    } else if (newVn === null) {
+      this.unmountComponent(oldVn);
+    } else {
+      this.patchComponent(oldVn, newVn);
     }
   }
   mountComponent(vnode) {
     vnode.component = new Component(vnode.type, this);
+  }
+  unmountComponent(vnode) {
+  }
+  patchComponent(oldVn, newVn) {
   }
 }
 class Widget {
@@ -348,4 +470,4 @@ const defineEngineWidget = function(options, params = {}) {
   }
   return engine;
 };
-export { EngineWidget, defineComponent, defineEngineWidget, h };
+export { EngineWidget, defineComponent, defineEngineWidget, h, vfor, vif };
