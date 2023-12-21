@@ -15,8 +15,8 @@ import { PropsOptions } from "./props";
 
 export interface ComponentOptions<
   Engine extends EngineWidget = EngineWidget,
-  Props extends Data = {},
-  RawBindings extends Data = {}
+  Props extends object = any,
+  RawBindings extends object = any
 > {
   name?: string;
   props?: PropsOptions<Props>;
@@ -29,8 +29,8 @@ export interface ComponentOptions<
 
 export class Component<
   Engine extends EngineWidget = EngineWidget,
-  Props = {},
-  RawBindings = {}
+  Props extends object = any,
+  RawBindings extends object = any
 > extends EventDispatcher {
   cid = createSymbol();
   name = "";
@@ -242,8 +242,8 @@ export class Component<
 
 export const defineComponent = function <
   Engine extends EngineWidget = EngineWidget,
-  Props = {},
-  RawBindings = {}
+  Props extends object = any,
+  RawBindings extends object = any
 >(
   options: ComponentOptions<Engine, Props, RawBindings>
 ): ComponentOptions<Engine, Props, RawBindings> {

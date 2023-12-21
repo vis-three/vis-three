@@ -27,7 +27,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.6.2",
     "rollup": "^3.20.2",
-    "typescript": "^4.3.2"
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "chalk": "^5.2.0",

@@ -7,8 +7,8 @@ import { Renderer } from "../renderer";
 
 export class Widget<
   Engine extends EngineWidget = EngineWidget,
-  Props extends Data = {},
-  RawBindings extends Data = {}
+  Props extends object = any,
+  RawBindings extends object = any
 > {
   private wid = createSymbol();
   private version = version;
