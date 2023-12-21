@@ -118,7 +118,7 @@
         },
         render() {
           const material = h("MeshBasicMaterial", {
-            color: "rgb(0, 0, 255)",
+            color: this.color,
           });
 
           const geometry = h("SphereGeometry", {
@@ -187,7 +187,7 @@
           });
 
           h(sphereComponent, {
-            color: "rgb(255, 255, 0)",
+            color: this.color,
           });
 
           vfor(() => {
@@ -214,7 +214,8 @@
             { position: { x: 20 } },
           ]);
 
-          return { width, height, data, isBox, list };
+          const color = ref("rgb(255, 255, 0)");
+          return { width, height, data, isBox, list, color };
         },
       });
 

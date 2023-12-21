@@ -70,6 +70,7 @@ export class Component<
     this.renderer = renderer;
     this.engine = renderer.engine;
     this.ctx = renderer.context;
+    this.createProps();
     this.createSetup();
     this.createRender();
     this.createEffect();
@@ -79,7 +80,7 @@ export class Component<
     _h.reset();
     _h.el = this.el;
 
-    this.render.call(this.setupState);
+    this.render.call({ ...this.setupState, ...this.props });
 
     let tree = _h.vnodes;
 
@@ -113,7 +114,7 @@ export class Component<
             : options.default;
       }
 
-      if (!(value instanceof options.type)) {
+      if (value.constructor !== options.type) {
         console.error(
           `widget component: component prop is not instance of type.`,
           {

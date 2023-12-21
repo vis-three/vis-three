@@ -11,7 +11,7 @@ export class EngineWidget extends EngineSupport {
     super(params);
   }
 
-  createWidget<Props = {}, RawBindings = {}>(
+  createWidget<Props extends object = {}, RawBindings extends object = {}>(
     component: ComponentOptions<typeof this, Props, RawBindings>
   ) {
     return new Widget<typeof this, Props, RawBindings>(this, component);

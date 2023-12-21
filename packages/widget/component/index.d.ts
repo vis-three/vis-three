@@ -2,24 +2,27 @@ import { VNode } from "../vnode";
 import { EngineWidget } from "../engine";
 import { EventDispatcher } from "@vis-three/core";
 import { Renderer } from "../renderer";
-export interface ComponentOptions<Engine extends EngineWidget = EngineWidget, Props = {}, RawBindings = {}> {
+import { PropsOptions } from "./props";
+export interface ComponentOptions<Engine extends EngineWidget = EngineWidget, Props extends object = any, RawBindings extends object = any> {
     name?: string;
-    props?: Props;
+    props?: PropsOptions<Props>;
     components?: Record<string, ComponentOptions>;
     engine: Engine;
     el: string;
-    setup: () => RawBindings;
+    setup: (props: Props) => RawBindings;
     render: () => VNode | VNode[];
 }
-export declare class Component<Engine extends EngineWidget = EngineWidget, Props = {}, RawBindings = {}> extends EventDispatcher {
+export declare class Component<Engine extends EngineWidget = EngineWidget, Props extends object = any, RawBindings extends object = any> extends EventDispatcher {
     cid: any;
     name: string;
     private options;
+    private vnode;
     private el;
     private render;
     private engine;
     private renderer;
     private isMounted;
+    private props;
     private setupState;
     private rawSetupState;
     private effect;
@@ -27,11 +30,12 @@ export declare class Component<Engine extends EngineWidget = EngineWidget, Props
     private update;
     private subTree;
     private ctx;
-    constructor(options: ComponentOptions<Engine, Props, RawBindings>, renderer: Renderer<Engine>);
+    constructor(vnode: VNode<Props>, renderer: Renderer<Engine>);
     private renderTree;
-    createSetup(): void;
-    createRender(): void;
-    createEffect(): void;
+    private createProps;
+    private createSetup;
+    private createRender;
+    private createEffect;
     getState(raw?: boolean): RawBindings;
 }
-export declare const defineComponent: <Engine extends EngineWidget = EngineWidget, Props = {}, RawBindings = {}>(options: ComponentOptions<Engine, Props, RawBindings>) => ComponentOptions<Engine, Props, RawBindings>;
+export declare const defineComponent: <Engine extends EngineWidget = EngineWidget, Props extends object = any, RawBindings extends object = any>(options: ComponentOptions<Engine, Props, RawBindings>) => ComponentOptions<Engine, Props, RawBindings>;

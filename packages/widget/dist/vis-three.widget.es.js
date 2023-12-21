@@ -4,10 +4,10 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { EffectScope, proxyRefs, ReactiveEffect } from "@vue/reactivity";
-export * from "@vue/reactivity";
 import { createSymbol, isObjectType, OBJECTMODULE, generateConfig, EngineSupport } from "@vis-three/middleware";
 import { isObject } from "@vis-three/utils";
+import { EffectScope, proxyRefs, ReactiveEffect } from "@vue/reactivity";
+export { computed, reactive, ref, shallowReactive, shallowReadonly, shallowRef, toRef, toRefs } from "@vue/reactivity";
 import { EventDispatcher } from "@vis-three/core";
 const version = "0.6.0";
 const createVNode = function(type, props = null) {
@@ -86,16 +86,18 @@ const vfor = function(fun) {
   _h.scope = "static";
 };
 class Component extends EventDispatcher {
-  constructor(options, renderer) {
+  constructor(vnode, renderer) {
     super();
     __publicField(this, "cid", createSymbol());
     __publicField(this, "name", "");
     __publicField(this, "options");
+    __publicField(this, "vnode");
     __publicField(this, "el", "");
     __publicField(this, "render");
     __publicField(this, "engine");
     __publicField(this, "renderer");
     __publicField(this, "isMounted", false);
+    __publicField(this, "props", Object.create(Object.prototype));
     __publicField(this, "setupState");
     __publicField(this, "rawSetupState");
     __publicField(this, "effect");
@@ -103,12 +105,15 @@ class Component extends EventDispatcher {
     __publicField(this, "update");
     __publicField(this, "subTree", null);
     __publicField(this, "ctx");
+    this.vnode = vnode;
+    const options = vnode.type;
     options.name && (this.name = options.name);
     this.el = options.el;
     this.options = options;
     this.renderer = renderer;
     this.engine = renderer.engine;
     this.ctx = renderer.context;
+    this.createProps();
     this.createSetup();
     this.createRender();
     this.createEffect();
@@ -116,12 +121,48 @@ class Component extends EventDispatcher {
   renderTree() {
     _h.reset();
     _h.el = this.el;
-    this.render.call(this.setupState);
+    this.render.call({ ...this.setupState, ...this.props });
     let tree = _h.vnodes;
     return tree;
   }
+  createProps() {
+    const propsOptions = this.options.props || {};
+    const props = this.props;
+    const inputProps = this.vnode.props || {};
+    for (const key in propsOptions) {
+      const options = propsOptions[key];
+      if (options.required && typeof inputProps[key] === "undefined") {
+        console.error(`widget component: component prop is required.`, {
+          component: this,
+          props: inputProps,
+          key
+        });
+        return;
+      }
+      let value;
+      if (typeof inputProps[key] !== "undefined") {
+        value = inputProps[key];
+      } else if (options.default) {
+        value = typeof options.default === "function" ? options.default() : options.default;
+      }
+      if (value.constructor !== options.type) {
+        console.error(
+          `widget component: component prop is not instance of type.`,
+          {
+            component: this,
+            props: inputProps,
+            key,
+            value,
+            type: options.type
+          }
+        );
+        return;
+      }
+      props[key] = value;
+    }
+  }
   createSetup() {
-    const setupResult = this.options.setup();
+    const setupResult = this.options.setup(this.props);
     this.setupState = proxyRefs(setupResult);
     this.rawSetupState = setupResult;
   }
@@ -378,7 +419,7 @@ class Renderer {
     }
   }
   mountComponent(vnode) {
-    vnode.component = new Component(vnode.type, this);
+    vnode.component = new Component(vnode, this);
   }
   unmountComponent(vnode) {
   }
