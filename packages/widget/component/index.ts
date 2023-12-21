@@ -4,25 +4,26 @@ import {
   ReactiveEffectRunner,
   proxyRefs,
 } from "@vue/reactivity";
-import { VNode, isVNode } from "../vnode";
+import { Data, VNode, isVNode } from "../vnode";
 import { EngineWidget } from "../engine";
-import { CONFIGTYPE, createSymbol, uniqueSymbol } from "@vis-three/middleware";
+import { createSymbol } from "@vis-three/middleware";
 import { EventDispatcher } from "@vis-three/core";
 import { Renderer } from "../renderer";
 import { Widget } from "../widget";
 import { RENDER_SCOPE, VNodeScpoe, _h } from "../h";
+import { PropsOptions } from "./props";
 
 export interface ComponentOptions<
   Engine extends EngineWidget = EngineWidget,
-  Props = {},
-  RawBindings = {}
+  Props extends Data = {},
+  RawBindings extends Data = {}
 > {
   name?: string;
-  props?: Props;
+  props?: PropsOptions<Props>;
   components?: Record<string, ComponentOptions>;
   engine: Engine;
   el: string;
-  setup: () => RawBindings;
+  setup: (props: Props) => RawBindings;
   render: () => VNode | VNode[];
 }
 
@@ -34,6 +35,7 @@ export class Component<
   cid = createSymbol();
   name = "";
   private options: ComponentOptions<Engine, Props, RawBindings>;
+  private vnode!: VNode<Props>;
 
   private el = "";
 
@@ -43,8 +45,11 @@ export class Component<
   private renderer: Renderer<Engine>;
 
   private isMounted = false;
+
+  private props: Props = Object.create(Object.prototype);
   private setupState!: RawBindings;
   private rawSetupState!: RawBindings;
+
   private effect!: ReactiveEffect;
   private effectScope = new EffectScope(true);
   private update!: () => void;
@@ -52,14 +57,15 @@ export class Component<
   private subTree: Array<VNode | VNodeScpoe> | null = null;
   private ctx!: Widget<Engine>;
 
-  constructor(
-    options: ComponentOptions<Engine, Props, RawBindings>,
-    renderer: Renderer<Engine>
-  ) {
+  constructor(vnode: VNode<Props>, renderer: Renderer<Engine>) {
     super();
+    this.vnode = vnode;
+
+    const options = vnode.type as ComponentOptions<Engine, Props, RawBindings>;
 
     options.name && (this.name = options.name);
     this.el = options.el;
+
     this.options = options;
     this.renderer = renderer;
     this.engine = renderer.engine;
@@ -80,17 +86,62 @@ export class Component<
     return tree;
   }
 
-  createSetup() {
-    const setupResult = this.options.setup();
+  private createProps() {
+    const propsOptions = this.options.props || {};
+    const props = this.props;
+    const inputProps = this.vnode.props || {};
+
+    for (const key in propsOptions) {
+      const options = propsOptions[key];
+      if (options.required && typeof inputProps[key] === "undefined") {
+        console.error(`widget component: component prop is required.`, {
+          component: this,
+          props: inputProps,
+          key,
+        });
+        return;
+      }
+
+      let value: any;
+
+      if (typeof inputProps[key] !== "undefined") {
+        value = inputProps[key];
+      } else if (options.default) {
+        value =
+          typeof options.default === "function"
+            ? options.default()
+            : options.default;
+      }
+
+      if (!(value instanceof options.type)) {
+        console.error(
+          `widget component: component prop is not instance of type.`,
+          {
+            component: this,
+            props: inputProps,
+            key,
+            value,
+            type: options.type,
+          }
+        );
+        return;
+      }
+
+      props[key] = value;
+    }
+  }
+
+  private createSetup() {
+    const setupResult = this.options.setup(this.props);
     this.setupState = proxyRefs<any>(setupResult);
     this.rawSetupState = setupResult;
   }
 
-  createRender() {
+  private createRender() {
     this.render = this.options.render;
   }
 
-  createEffect() {
+  private createEffect() {
     const effect = new ReactiveEffect(
       () => {
         if (!this.isMounted) {

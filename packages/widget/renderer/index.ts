@@ -214,7 +214,7 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
   }
 
   mountComponent(vnode: VNode) {
-    vnode.component = new Component(vnode.type as ComponentOptions, this);
+    vnode.component = new Component(vnode, this);
   }
 
   unmountComponent(vnode: VNode) {}

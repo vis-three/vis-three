@@ -106,6 +106,16 @@
       engine.loaderManager.setPath(import.meta.env.BASE_URL);
 
       const sphereComponent = defineComponent({
+        props: {
+          color: {
+            type: String,
+            default: "rgb(0, 0, 255)",
+          },
+        },
+        setup() {
+          const data = reactive({ x: -20 });
+          return { data };
+        },
         render() {
           const material = h("MeshBasicMaterial", {
             color: "rgb(0, 0, 255)",
@@ -122,10 +132,6 @@
               x: this.data.x,
             },
           });
-        },
-        setup() {
-          const data = reactive({ x: -20 });
-          return { data };
         },
       });
 
@@ -180,7 +186,9 @@
             }
           });
 
-          h(sphereComponent);
+          h(sphereComponent, {
+            color: "rgb(255, 255, 0)",
+          });
 
           vfor(() => {
             this.list.forEach((item) => {

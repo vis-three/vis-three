@@ -2,13 +2,13 @@ import { createSymbol } from "@vis-three/middleware";
 import { Component, ComponentOptions } from "../component";
 import { version } from "../package.json";
 import { EngineWidget } from "../engine";
-import { createVNode } from "../vnode";
+import { Data, createVNode } from "../vnode";
 import { Renderer } from "../renderer";
 
 export class Widget<
   Engine extends EngineWidget = EngineWidget,
-  Props = {},
-  RawBindings = {}
+  Props extends Data = {},
+  RawBindings extends Data = {}
 > {
   private wid = createSymbol();
   private version = version;
