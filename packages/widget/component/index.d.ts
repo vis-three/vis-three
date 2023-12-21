@@ -27,7 +27,7 @@ export declare class Component<Engine extends EngineWidget = EngineWidget, Props
     private rawSetupState;
     private effect;
     private effectScope;
-    private update;
+    update: () => void;
     private subTree;
     private ctx;
     constructor(vnode: VNode<Props>, renderer: Renderer<Engine>);
@@ -36,6 +36,7 @@ export declare class Component<Engine extends EngineWidget = EngineWidget, Props
     private createSetup;
     private createRender;
     private createEffect;
+    updateProps(newProps: Partial<Props>): void;
     getState(raw?: boolean): RawBindings;
 }
 export declare const defineComponent: <Engine extends EngineWidget = EngineWidget, Props extends object = any, RawBindings extends object = any>(options: ComponentOptions<Engine, Props, RawBindings>) => ComponentOptions<Engine, Props, RawBindings>;

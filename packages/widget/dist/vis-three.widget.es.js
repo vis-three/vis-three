@@ -247,6 +247,12 @@ class Component extends EventDispatcher {
     this.effect = effect;
     this.update = update;
   }
+  updateProps(newProps) {
+    const props = this.props;
+    for (const key in newProps) {
+      props[key] = newProps[key];
+    }
+  }
   getState(raw = false) {
     return raw ? this.rawSetupState : this.setupState;
   }
@@ -424,6 +430,22 @@ class Renderer {
   unmountComponent(vnode) {
   }
   patchComponent(oldVn, newVn) {
+    const component = oldVn.component;
+    newVn.component = component;
+    const oldProps = oldVn.props || {};
+    const newProps = newVn.props || {};
+    const updateProps = {};
+    let needUpdate = false;
+    for (const key in newProps) {
+      if (newProps[key] !== oldProps[key]) {
+        updateProps[key] = newProps[key];
+        needUpdate = true;
+      }
+    }
+    if (needUpdate) {
+      component.updateProps(updateProps);
+      component.update();
+    }
   }
 }
 class Widget {

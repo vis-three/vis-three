@@ -219,5 +219,26 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
 
   unmountComponent(vnode: VNode) {}
 
-  patchComponent(oldVn: VNode, newVn: VNode) {}
+  patchComponent(oldVn: VNode, newVn: VNode) {
+    const component = oldVn.component!;
+    newVn.component = component;
+
+    const oldProps = oldVn.props || {};
+    const newProps = newVn.props || {};
+
+    const updateProps: Record<string, any> = {};
+    let needUpdate = false;
+
+    for (const key in newProps) {
+      if (newProps[key] !== oldProps[key]) {
+        updateProps[key] = newProps[key];
+        needUpdate = true;
+      }
+    }
+
+    if (needUpdate) {
+      component.updateProps(updateProps);
+      component.update();
+    }
+  }
 }

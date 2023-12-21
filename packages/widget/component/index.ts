@@ -52,7 +52,7 @@ export class Component<
 
   private effect!: ReactiveEffect;
   private effectScope = new EffectScope(true);
-  private update!: () => void;
+  update!: () => void;
 
   private subTree: Array<VNode | VNodeScpoe> | null = null;
   private ctx!: Widget<Engine>;
@@ -234,6 +234,13 @@ export class Component<
 
     this.effect = effect;
     this.update = update;
+  }
+
+  updateProps(newProps: Partial<Props>) {
+    const props = this.props;
+    for (const key in newProps) {
+      props[key] = newProps[key]!;
+    }
   }
 
   getState(raw = false) {
