@@ -15,6 +15,11 @@ import { PropsOptions } from "./props";
 import { LifeCycleHooks } from "./hooks";
 import { queueJob, queuePostFlushCb } from "../scheduler";
 
+export interface RenderParams {
+  components: Record<string, ComponentOptions>;
+  resources: Record<string, string>;
+}
+
 export interface ComponentOptions<
   Engine extends EngineWidget = EngineWidget,
   Props extends object = any,
@@ -25,8 +30,10 @@ export interface ComponentOptions<
   components?: Record<string, ComponentOptions>;
   engine: Engine;
   el: string;
+  load: Record<string, string>;
+  resources?: Record<string, any>;
   setup: (props: Props) => RawBindings;
-  render: () => VNode | VNode[];
+  render: (params: RenderParams) => VNode | VNode[];
 }
 
 export class Component<
@@ -54,7 +61,7 @@ export class Component<
   private options: ComponentOptions<Engine, Props, RawBindings>;
   private el = "";
 
-  private render!: () => VNode | VNode[];
+  private render!: (params: RenderParams) => VNode | VNode[];
 
   private engine: Engine;
   private renderer: Renderer<Engine>;
@@ -72,6 +79,8 @@ export class Component<
   private subTree: Array<VNode | VNodeScpoe> | null = null;
   private ctx!: Widget<Engine>;
 
+  private cacheResources: Record<string, string> = {};
+
   constructor(vnode: VNode<Props>, renderer: Renderer<Engine>) {
     super();
     this.vnode = vnode;
@@ -85,6 +94,7 @@ export class Component<
     this.renderer = renderer;
     this.engine = renderer.engine;
     this.ctx = renderer.context;
+    this.createResources();
     this.createProps();
     this.createSetup();
     this.createRender();
@@ -95,11 +105,28 @@ export class Component<
     _h.reset();
     _h.el = this.el;
 
-    this.render.call({ ...this.setupState, ...this.props });
+    this.render.call(
+      { ...this.setupState, ...this.props },
+      {
+        components: this.options.components || {},
+        resources: this.cacheResources,
+      }
+    );
 
     let tree = _h.vnodes;
 
     return tree;
+  }
+
+  private createResources() {
+    if (!this.options.resources) {
+      return;
+    }
+    this.engine.registerResources(this.options.resources);
+
+    for (const key in this.options.resources) {
+      this.cacheResources[key] = key;
+    }
   }
 
   private createProps() {

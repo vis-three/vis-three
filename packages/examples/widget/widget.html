@@ -75,6 +75,8 @@
 
       import * as ModuleLibrary from "@vis-three/library-module";
 
+      import { CanvasGenerator } from "@vis-three/convenient";
+
       import {
         defineEngineWidget,
         defineComponent,
@@ -138,10 +140,35 @@
       });
 
       const root = defineComponent({
-        render() {
+        components: {
+          sphere: sphereComponent,
+        },
+        load: {
+          soldier: "/model/glb/Soldier.glb",
+        },
+        resources: {
+          text: new CanvasGenerator()
+            .draw((ctx) => {
+              ctx.fillStyle = "white";
+              ctx.fillRect(0, 0, 512, 512);
+              ctx.translate(256, 256);
+              ctx.textBaseline = "middle";
+              ctx.textAlign = "center";
+              ctx.fillStyle = "black";
+              ctx.font = " bold 52px 微软雅黑";
+              ctx.fillText("Hello vis-three", 0, 0);
+            })
+            .getDom(),
+        },
+        render({ components, resources }) {
+          const texture = h("CanvasTexture", {
+            url: resources.text,
+          });
+
           const material = h("MeshBasicMaterial", {
             ref: "box",
             color: "rgb(255, 0, 0)",
+            map: texture,
           });
 
           let geometry;
@@ -189,7 +216,7 @@
             }
           });
 
-          h(sphereComponent, {
+          h(components.sphere, {
             color: this.color,
             ref: "comp",
           });

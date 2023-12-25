@@ -4,14 +4,20 @@ import { EngineWidget } from "../engine";
 import { EventDispatcher } from "@vis-three/core";
 import { Renderer } from "../renderer";
 import { PropsOptions } from "./props";
+export interface RenderParams {
+    components: Record<string, ComponentOptions>;
+    resources: Record<string, string>;
+}
 export interface ComponentOptions<Engine extends EngineWidget = EngineWidget, Props extends object = any, RawBindings extends object = any> {
     name?: string;
     props?: PropsOptions<Props>;
     components?: Record<string, ComponentOptions>;
     engine: Engine;
     el: string;
+    load: Record<string, string>;
+    resources?: Record<string, any>;
     setup: (props: Props) => RawBindings;
-    render: () => VNode | VNode[];
+    render: (params: RenderParams) => VNode | VNode[];
 }
 export declare class Component<Engine extends EngineWidget = EngineWidget, Props extends object = any, RawBindings extends object = any> extends EventDispatcher {
     static currentComponent: Component | null;
@@ -34,8 +40,10 @@ export declare class Component<Engine extends EngineWidget = EngineWidget, Props
     update: () => void;
     private subTree;
     private ctx;
+    private cacheResources;
     constructor(vnode: VNode<Props>, renderer: Renderer<Engine>);
     private renderTree;
+    private createResources;
     private createProps;
     private createSetup;
     private createRender;
