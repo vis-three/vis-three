@@ -1,3 +1,4 @@
+import { EffectScope } from "@vue/reactivity";
 import { VNode } from "../vnode";
 import { EngineWidget } from "../engine";
 import { EventDispatcher } from "@vis-three/core";
@@ -13,20 +14,23 @@ export interface ComponentOptions<Engine extends EngineWidget = EngineWidget, Pr
     render: () => VNode | VNode[];
 }
 export declare class Component<Engine extends EngineWidget = EngineWidget, Props extends object = any, RawBindings extends object = any> extends EventDispatcher {
+    static currentComponent: Component | null;
+    static setCurrentComponent(component: Component): void;
+    static unsetCurrentComponent(): void;
     cid: any;
     name: string;
+    vnode: VNode<Props>;
     private options;
-    private vnode;
     private el;
     private render;
     private engine;
     private renderer;
-    private isMounted;
+    isMounted: boolean;
     private props;
     private setupState;
     private rawSetupState;
     private effect;
-    private effectScope;
+    scope: EffectScope;
     update: () => void;
     private subTree;
     private ctx;

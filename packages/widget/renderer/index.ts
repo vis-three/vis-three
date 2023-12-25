@@ -222,6 +222,7 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
   patchComponent(oldVn: VNode, newVn: VNode) {
     const component = oldVn.component!;
     newVn.component = component;
+    component.vnode = newVn;
 
     const oldProps = oldVn.props || {};
     const newProps = newVn.props || {};

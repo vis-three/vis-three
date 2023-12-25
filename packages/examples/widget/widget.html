@@ -84,6 +84,8 @@
         vfor,
         ref,
         computed,
+        onMounted,
+        watch,
       } from "@vis-three/widget";
 
       const engine = new defineEngineWidget({
@@ -160,6 +162,7 @@
           vif(() => {
             if (this.isBox) {
               h("Mesh", {
+                ref: "box",
                 geometry,
                 material,
                 position: {
@@ -215,6 +218,16 @@
           ]);
 
           const color = ref("rgb(255, 255, 0)");
+
+          watch(isBox, (newVal) => {
+            console.log("watch", newVal);
+          });
+
+          onMounted(() => {
+            list.push({ position: { x: 80 } });
+            console.log(list);
+          });
+
           return { width, height, data, isBox, list, color };
         },
       });

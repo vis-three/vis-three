@@ -1,5 +1,6 @@
 export * from "./engine";
 export { defineComponent } from "./component";
+export { onMounted } from "./component/hooks";
 export { h, vfor, vif } from "./h";
 export {
   ref,
@@ -11,3 +12,5 @@ export {
   shallowRef,
   shallowReadonly,
 } from "@vue/reactivity";
+
+export { watch, watchEffect } from "./watch";

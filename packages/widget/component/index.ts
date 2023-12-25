@@ -1,8 +1,8 @@
 import {
   EffectScope,
   ReactiveEffect,
-  ReactiveEffectRunner,
   proxyRefs,
+  shallowReactive,
 } from "@vue/reactivity";
 import { Data, VNode, isVNode } from "../vnode";
 import { EngineWidget } from "../engine";
@@ -12,6 +12,8 @@ import { Renderer } from "../renderer";
 import { Widget } from "../widget";
 import { RENDER_SCOPE, VNodeScpoe, _h } from "../h";
 import { PropsOptions } from "./props";
+import { LifeCycleHooks } from "./hooks";
+import { queueJob, queuePostFlushCb } from "../scheduler";
 
 export interface ComponentOptions<
   Engine extends EngineWidget = EngineWidget,
@@ -32,11 +34,24 @@ export class Component<
   Props extends object = any,
   RawBindings extends object = any
 > extends EventDispatcher {
+  static currentComponent: Component | null;
+
+  static setCurrentComponent(component: Component) {
+    Component.currentComponent = component;
+    component.scope.on();
+  }
+
+  static unsetCurrentComponent() {
+    Component.currentComponent && Component.currentComponent.scope.off();
+    Component.currentComponent = null;
+  }
+
   cid = createSymbol();
   name = "";
-  private options: ComponentOptions<Engine, Props, RawBindings>;
-  private vnode!: VNode<Props>;
 
+  vnode!: VNode<Props>;
+
+  private options: ComponentOptions<Engine, Props, RawBindings>;
   private el = "";
 
   private render!: () => VNode | VNode[];
@@ -44,14 +59,14 @@ export class Component<
   private engine: Engine;
   private renderer: Renderer<Engine>;
 
-  private isMounted = false;
+  isMounted = false;
 
-  private props: Props = Object.create(Object.prototype);
+  private props: Props = shallowReactive(Object.create(Object.prototype));
   private setupState!: RawBindings;
   private rawSetupState!: RawBindings;
 
   private effect!: ReactiveEffect;
-  private effectScope = new EffectScope(true);
+  scope = new EffectScope(true);
   update!: () => void;
 
   private subTree: Array<VNode | VNodeScpoe> | null = null;
@@ -133,9 +148,13 @@ export class Component<
   }
 
   private createSetup() {
+    Component.setCurrentComponent(this);
+
     const setupResult = this.options.setup(this.props);
     this.setupState = proxyRefs<any>(setupResult);
     this.rawSetupState = setupResult;
+
+    Component.unsetCurrentComponent();
   }
 
   private createRender() {
@@ -158,7 +177,11 @@ export class Component<
             }
           }
 
+          // TODO:收集ref to setupState
+
           this.isMounted = true;
+
+          queuePostFlushCb(() => this.emit(LifeCycleHooks.MOUNTED));
         } else {
           const nextTree = this.renderTree();
           const prevTree = this.subTree!;
@@ -224,8 +247,8 @@ export class Component<
           this.subTree = nextTree;
         }
       },
-      null,
-      this.effectScope
+      () => queueJob(update),
+      this.scope
     );
 
     const update = () => effect.run();
