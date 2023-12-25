@@ -24,7 +24,11 @@ export type ElementVNode<NodeProps extends ElementData = ElementData> =
 
 export const createVNode = function <NodeProps = Data>(
   type: VNodeTypes,
-  props: NodeProps | null = null
+  props: NodeProps | null = null,
+  options: {
+    key?: VNode["key"];
+    ref?: VNode["ref"];
+  } = {}
 ): VNode<NodeProps> {
   return {
     _isVNode: true,
@@ -33,8 +37,8 @@ export const createVNode = function <NodeProps = Data>(
     config: null,
     component: null,
     el: null,
-    key: null,
-    ref: null,
+    key: options.key || null,
+    ref: options.ref || null,
     children: null,
   };
 };

@@ -24,7 +24,10 @@ export interface H {
 }
 
 export const _h = <H>function (type: VNodeTypes, props: Data | null = null) {
-  const vnode = createVNode(type, props);
+  const vnode = createVNode(type, props, {
+    key: (props && props.key) || null,
+    ref: (props && props.ref) || null,
+  });
   _h.add(vnode);
   return vnode;
 };

@@ -15,5 +15,8 @@ export interface VNode<NodeProps = Data> {
     children: VNode[] | null;
 }
 export type ElementVNode<NodeProps extends ElementData = ElementData> = VNode<NodeProps>;
-export declare const createVNode: <NodeProps = Data>(type: VNodeTypes, props?: NodeProps | null) => VNode<NodeProps>;
+export declare const createVNode: <NodeProps = Data>(type: VNodeTypes, props?: NodeProps | null, options?: {
+    key?: VNode["key"];
+    ref?: VNode["ref"];
+}) => VNode<NodeProps>;
 export declare const isVNode: (object: any) => boolean;

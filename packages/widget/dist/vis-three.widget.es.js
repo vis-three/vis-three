@@ -10,7 +10,7 @@ import { shallowReactive, EffectScope, proxyRefs, ReactiveEffect, getCurrentScop
 export { computed, reactive, ref, shallowReactive, shallowReadonly, shallowRef, toRef, toRefs } from "@vue/reactivity";
 import { EventDispatcher } from "@vis-three/core";
 const version = "0.6.0";
-const createVNode = function(type, props = null) {
+const createVNode = function(type, props = null, options = {}) {
   return {
     _isVNode: true,
     type,
@@ -18,8 +18,8 @@ const createVNode = function(type, props = null) {
     config: null,
     component: null,
     el: null,
-    key: null,
-    ref: null,
+    key: options.key || null,
+    ref: options.ref || null,
     children: null
   };
 };
@@ -37,7 +37,10 @@ var RENDER_SCOPE = /* @__PURE__ */ ((RENDER_SCOPE2) => {
   return RENDER_SCOPE2;
 })(RENDER_SCOPE || {});
 const _h = function(type, props = null) {
-  const vnode = createVNode(type, props);
+  const vnode = createVNode(type, props, {
+    key: props && props.key || null,
+    ref: props && props.ref || null
+  });
   _h.add(vnode);
   return vnode;
 };
@@ -299,13 +302,24 @@ const _Component = class extends EventDispatcher {
     const effect = new ReactiveEffect(
       () => {
         if (!this.isMounted) {
+          const setupState = this.rawSetupState;
+          const matchRef = (vnode) => {
+            if (!vnode.ref) {
+              return;
+            }
+            if (typeof setupState[vnode.ref] !== "undefined") {
+              setupState[vnode.ref].value = vnode.component ? vnode.component : vnode.config || null;
+            }
+          };
           const subTree = this.subTree = this.renderTree();
           for (const vnode of subTree) {
             if (isVNode(vnode)) {
               this.renderer.patch(null, vnode);
+              matchRef(vnode);
             } else {
               for (const vn of vnode.vnodes) {
                 this.renderer.patch(null, vn);
+                matchRef(vn);
               }
             }
           }
@@ -380,7 +394,7 @@ const _Component = class extends EventDispatcher {
       props[key] = newProps[key];
     }
   }
-  getState(raw = false) {
+  getState(raw = true) {
     return raw ? this.rawSetupState : this.setupState;
   }
 };

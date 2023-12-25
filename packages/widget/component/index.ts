@@ -165,19 +165,32 @@ export class Component<
     const effect = new ReactiveEffect(
       () => {
         if (!this.isMounted) {
+          const setupState = this.rawSetupState;
+
+          const matchRef = (vnode: VNode) => {
+            if (!vnode.ref) {
+              return;
+            }
+            if (typeof setupState[vnode.ref] !== "undefined") {
+              setupState[vnode.ref].value = vnode.component
+                ? vnode.component
+                : vnode.config || null;
+            }
+          };
+
           const subTree = (this.subTree = this.renderTree());
 
           for (const vnode of subTree) {
             if (isVNode(vnode)) {
               this.renderer.patch(null, vnode as VNode);
+              matchRef(<VNode>vnode);
             } else {
               for (const vn of (<VNodeScpoe>vnode).vnodes) {
                 this.renderer.patch(null, vn);
+                matchRef(<VNode>vn);
               }
             }
           }
-
-          // TODO:收集ref to setupState
 
           this.isMounted = true;
 
@@ -266,7 +279,7 @@ export class Component<
     }
   }
 
-  getState(raw = false) {
+  getState(raw = true) {
     return raw ? this.rawSetupState : this.setupState;
   }
 }

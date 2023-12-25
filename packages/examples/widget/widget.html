@@ -140,6 +140,7 @@
       const root = defineComponent({
         render() {
           const material = h("MeshBasicMaterial", {
+            ref: "box",
             color: "rgb(255, 0, 0)",
           });
 
@@ -162,7 +163,6 @@
           vif(() => {
             if (this.isBox) {
               h("Mesh", {
-                ref: "box",
                 geometry,
                 material,
                 position: {
@@ -191,6 +191,7 @@
 
           h(sphereComponent, {
             color: this.color,
+            ref: "comp",
           });
 
           vfor(() => {
@@ -223,12 +224,18 @@
             console.log("watch", newVal);
           });
 
+          const box = ref();
+          const comp = ref();
+
           onMounted(() => {
             list.push({ position: { x: 80 } });
             console.log(list);
+            console.log(comp.value);
+
+            box.value.color = "rgb(255, 0, 255)";
           });
 
-          return { width, height, data, isBox, list, color };
+          return { width, height, data, isBox, list, color, box, comp };
         },
       });
 
@@ -237,6 +244,8 @@
       console.log(widget);
 
       window.widget = widget;
+
+      window.engine = engine;
     </script>
   </body>
 </html>
