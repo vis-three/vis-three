@@ -39,3 +39,7 @@ export type DeepArrayToObject<T> = T extends Function
   : T extends Array<any>
   ? ArrayToObject<T>
   : T;
+
+export type KeyEnum<T> = {
+  [P in keyof T]: P;
+};

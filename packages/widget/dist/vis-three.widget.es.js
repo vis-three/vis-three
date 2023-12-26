@@ -1,48 +1,10 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) =>
-  key in obj
-    ? __defProp(obj, key, {
-        enumerable: true,
-        configurable: true,
-        writable: true,
-        value,
-      })
-    : (obj[key] = value);
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-import {
-  createSymbol,
-  isObjectType,
-  OBJECTMODULE,
-  generateConfig,
-  EngineSupport,
-} from "@vis-three/middleware";
+import { createSymbol, isObjectType, OBJECTMODULE, generateConfig, EngineSupport } from "@vis-three/middleware";
 import { isObject as isObject$1 } from "@vis-three/utils";
-import {
-  shallowReactive,
-  EffectScope,
-  proxyRefs,
-  ReactiveEffect,
-  getCurrentScope,
-  isRef,
-  isShallow,
-  isReactive,
-} from "@vue/reactivity";
-export {
-  computed,
-  reactive,
-  ref,
-  shallowReactive,
-  shallowReadonly,
-  shallowRef,
-  toRef,
-  toRefs,
-} from "@vue/reactivity";
+import { shallowReactive, EffectScope, proxyRefs, ReactiveEffect, getCurrentScope, isRef, isShallow, isReactive } from "@vue/reactivity";
+export { computed, reactive, ref, shallowReactive, shallowReadonly, shallowRef, toRef, toRefs } from "@vue/reactivity";
 import { EventDispatcher } from "@vis-three/core";
 const version = "0.6.0";
-const createVNode = function (type, props = null, options = {}) {
+const createVNode = function(type, props = null, options = {}) {
   return {
     _isVNode: true,
     type,
@@ -52,10 +14,10 @@ const createVNode = function (type, props = null, options = {}) {
     el: null,
     key: options.key || null,
     ref: options.ref || null,
-    children: null,
+    children: null
   };
 };
-const isVNode = function (object) {
+const isVNode = function(object) {
   if (typeof object === "object") {
     return Boolean(object["_isVNode"]);
   } else {
@@ -68,20 +30,20 @@ var RENDER_SCOPE = /* @__PURE__ */ ((RENDER_SCOPE2) => {
   RENDER_SCOPE2["VFOR"] = "vfor";
   return RENDER_SCOPE2;
 })(RENDER_SCOPE || {});
-const _h = function (type, props = null) {
+const _h = function(type, props = null) {
   const vnode = createVNode(type, props, {
-    key: (props && props.key) || null,
-    ref: (props && props.ref) || null,
+    key: props && props.key || null,
+    ref: props && props.ref || null
   });
   _h.add(vnode);
   return vnode;
 };
-_h.reset = function () {
+_h.reset = function() {
   _h.el = null;
   _h.scope = "static";
   _h.vnodes = [];
 };
-_h.add = function (vnode) {
+_h.add = function(vnode) {
   vnode.el = _h.el;
   if (_h.scope !== "static") {
     const scope = _h.vnodes[_h.vnodes.length - 1];
@@ -97,25 +59,25 @@ _h.add = function (vnode) {
   }
   return _h.vnodes;
 };
-const h = function (type, props = null) {
+const h = function(type, props = null) {
   return _h(type, props);
 };
-const vif = function (fun) {
+const vif = function(fun) {
   _h.scope = "vif";
   _h.vnodes.push({
     scope: _h.scope,
     vnodes: [],
-    keyMap: /* @__PURE__ */ new Map(),
+    keyMap: /* @__PURE__ */ new Map()
   });
   fun();
   _h.scope = "static";
 };
-const vfor = function (fun) {
+const vfor = function(fun) {
   _h.scope = "vfor";
   _h.vnodes.push({
     scope: _h.scope,
     vnodes: [],
-    keyMap: /* @__PURE__ */ new Map(),
+    keyMap: /* @__PURE__ */ new Map()
   });
   fun();
   _h.scope = "static";
@@ -124,9 +86,9 @@ var LifeCycleHooks = /* @__PURE__ */ ((LifeCycleHooks2) => {
   LifeCycleHooks2["MOUNTED"] = "mounted";
   return LifeCycleHooks2;
 })(LifeCycleHooks || {});
-const onMounted = function (fn = () => {}) {
-  Component.currentComponent &&
-    Component.currentComponent.on("mounted", (event) => fn());
+const onMounted = function(fn = () => {
+}) {
+  Component.currentComponent && Component.currentComponent.on("mounted", (event) => fn());
 };
 let isFlushing = false;
 let isFlushPending = false;
@@ -140,10 +102,10 @@ function findInsertionIndex(id) {
   let start = flushIndex + 1;
   let end = queue.length;
   while (start < end) {
-    const middle = (start + end) >>> 1;
+    const middle = start + end >>> 1;
     const middleJob = queue[middle];
     const middleJobId = getId(middleJob);
-    if (middleJobId < id || (middleJobId === id && middleJob.pre)) {
+    if (middleJobId < id || middleJobId === id && middleJob.pre) {
       start = middle + 1;
     } else {
       end = middle;
@@ -152,13 +114,10 @@ function findInsertionIndex(id) {
   return start;
 }
 function queueJob(job) {
-  if (
-    !queue.length ||
-    !queue.includes(
-      job,
-      isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex
-    )
-  ) {
+  if (!queue.length || !queue.includes(
+    job,
+    isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex
+  )) {
     if (job.id == null) {
       queue.push(job);
     } else {
@@ -175,13 +134,10 @@ function queueFlush() {
 }
 function queuePostFlushCb(cb) {
   if (!Array.isArray(cb)) {
-    if (
-      !activePostFlushCbs ||
-      !activePostFlushCbs.includes(
-        cb,
-        cb.allowRecurse ? postFlushIndex + 1 : postFlushIndex
-      )
-    ) {
+    if (!activePostFlushCbs || !activePostFlushCbs.includes(
+      cb,
+      cb.allowRecurse ? postFlushIndex + 1 : postFlushIndex
+    )) {
       pendingPostFlushCbs.push(cb);
     }
   } else {
@@ -199,23 +155,21 @@ function flushPostFlushCbs() {
     }
     activePostFlushCbs = deduped;
     activePostFlushCbs.sort((a, b) => getId(a) - getId(b));
-    for (
-      postFlushIndex = 0;
-      postFlushIndex < activePostFlushCbs.length;
-      postFlushIndex++
-    ) {
+    for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
       activePostFlushCbs[postFlushIndex]();
     }
     activePostFlushCbs = null;
     postFlushIndex = 0;
   }
 }
-const getId = (job) => (job.id == null ? Infinity : job.id);
+const getId = (job) => job.id == null ? Infinity : job.id;
 const comparator = (a, b) => {
   const diff = getId(a) - getId(b);
   if (diff === 0) {
-    if (a.pre && !b.pre) return -1;
-    if (b.pre && !a.pre) return 1;
+    if (a.pre && !b.pre)
+      return -1;
+    if (b.pre && !a.pre)
+      return 1;
   }
   return diff;
 };
@@ -244,31 +198,20 @@ function flushJobs() {
     }
   }
 }
-const _Component = class extends EventDispatcher {
+class Component extends EventDispatcher {
   constructor(vnode, renderer) {
     super();
-    __publicField(this, "cid", createSymbol());
-    __publicField(this, "name", "");
-    __publicField(this, "vnode");
-    __publicField(this, "options");
-    __publicField(this, "el", "");
-    __publicField(this, "render");
-    __publicField(this, "engine");
-    __publicField(this, "renderer");
-    __publicField(this, "isMounted", false);
-    __publicField(
-      this,
-      "props",
-      shallowReactive(Object.create(Object.prototype))
+    this.cid = createSymbol();
+    this.name = "";
+    this.el = "";
+    this.isMounted = false;
+    this.props = shallowReactive(Object.create(Object.prototype));
+    this.scope = new EffectScope(true);
+    this.subTree = null;
+    this.cacheResources = Object.create(Object.prototype);
+    this.resourcesKeyEnum = Object.create(
+      Object.prototype
     );
-    __publicField(this, "setupState");
-    __publicField(this, "rawSetupState");
-    __publicField(this, "effect");
-    __publicField(this, "scope", new EffectScope(true));
-    __publicField(this, "update");
-    __publicField(this, "subTree", null);
-    __publicField(this, "ctx");
-    __publicField(this, "cacheResources", {});
     this.vnode = vnode;
     const options = vnode.type;
     options.name && (this.name = options.name);
@@ -277,19 +220,19 @@ const _Component = class extends EventDispatcher {
     this.renderer = renderer;
     this.engine = renderer.engine;
     this.ctx = renderer.context;
-    this.createResources();
     this.createProps();
     this.createSetup();
+    this.createResources();
     this.createRender();
     this.createEffect();
   }
   static setCurrentComponent(component) {
-    _Component.currentComponent = component;
+    Component.currentComponent = component;
     component.scope.on();
   }
   static unsetCurrentComponent() {
-    _Component.currentComponent && _Component.currentComponent.scope.off();
-    _Component.currentComponent = null;
+    Component.currentComponent && Component.currentComponent.scope.off();
+    Component.currentComponent = null;
   }
   renderTree() {
     _h.reset();
@@ -298,7 +241,7 @@ const _Component = class extends EventDispatcher {
       { ...this.setupState, ...this.props },
       {
         components: this.options.components || {},
-        resources: this.cacheResources,
+        resources: this.resourcesKeyEnum
       }
     );
     let tree = _h.vnodes;
@@ -308,9 +251,11 @@ const _Component = class extends EventDispatcher {
     if (!this.options.resources) {
       return;
     }
-    this.engine.registerResources(this.options.resources);
-    for (const key in this.options.resources) {
-      this.cacheResources[key] = key;
+    const resources = this.options.resources.call(this.setupState);
+    this.engine.registerResources(resources);
+    this.cacheResources = resources;
+    for (const key in resources) {
+      this.resourcesKeyEnum[key] = key;
     }
   }
   createProps() {
@@ -323,7 +268,7 @@ const _Component = class extends EventDispatcher {
         console.error(`widget component: component prop is required.`, {
           component: this,
           props: inputProps,
-          key,
+          key
         });
         return;
       }
@@ -331,10 +276,7 @@ const _Component = class extends EventDispatcher {
       if (typeof inputProps[key] !== "undefined") {
         value = inputProps[key];
       } else if (options.default) {
-        value =
-          typeof options.default === "function"
-            ? options.default()
-            : options.default;
+        value = typeof options.default === "function" ? options.default() : options.default;
       }
       if (value.constructor !== options.type) {
         console.error(
@@ -344,7 +286,7 @@ const _Component = class extends EventDispatcher {
             props: inputProps,
             key,
             value,
-            type: options.type,
+            type: options.type
           }
         );
         return;
@@ -353,11 +295,14 @@ const _Component = class extends EventDispatcher {
     }
   }
   createSetup() {
-    _Component.setCurrentComponent(this);
-    const setupResult = this.options.setup(this.props);
+    Component.setCurrentComponent(this);
+    const setupResult = this.options.setup({
+      engine: this.engine,
+      props: this.props
+    });
     this.setupState = proxyRefs(setupResult);
     this.rawSetupState = setupResult;
-    _Component.unsetCurrentComponent();
+    Component.unsetCurrentComponent();
   }
   createRender() {
     this.render = this.options.render;
@@ -372,12 +317,10 @@ const _Component = class extends EventDispatcher {
               return;
             }
             if (typeof setupState[vnode.ref] !== "undefined") {
-              setupState[vnode.ref].value = vnode.component
-                ? vnode.component
-                : vnode.config || null;
+              setupState[vnode.ref].value = vnode.component ? vnode.component : vnode.config || null;
             }
           };
-          const subTree = (this.subTree = this.renderTree());
+          const subTree = this.subTree = this.renderTree();
           for (const vnode of subTree) {
             if (isVNode(vnode)) {
               this.renderer.patch(null, vnode);
@@ -397,7 +340,7 @@ const _Component = class extends EventDispatcher {
           if (prevTree.length !== nextTree.length) {
             console.error(`widget component render: tree render error`, {
               nextTree,
-              prevTree,
+              prevTree
             });
             return;
           }
@@ -410,7 +353,7 @@ const _Component = class extends EventDispatcher {
               if (next.scope !== prev.scope) {
                 console.error(`widget component render: tree render error`, {
                   nextTree,
-                  prevTree,
+                  prevTree
                 });
                 return;
               }
@@ -463,16 +406,12 @@ const _Component = class extends EventDispatcher {
   getState(raw = true) {
     return raw ? this.rawSetupState : this.setupState;
   }
-};
-let Component = _Component;
-__publicField(Component, "currentComponent");
-const defineComponent = function (options) {
+}
+const defineComponent = function(options) {
   return options;
 };
 class Renderer {
   constructor(ctx) {
-    __publicField(this, "engine");
-    __publicField(this, "context");
     this.context = ctx;
     this.engine = ctx.engine;
   }
@@ -491,10 +430,7 @@ class Renderer {
     if (oldVn === newVn) {
       return;
     }
-    if (
-      (newVn && typeof newVn.type === "string") ||
-      (oldVn && typeof oldVn.type === "string")
-    ) {
+    if (newVn && typeof newVn.type === "string" || oldVn && typeof oldVn.type === "string") {
       this.processElement(oldVn, newVn);
     } else {
       this.processComponent(oldVn, newVn);
@@ -531,11 +467,15 @@ class Renderer {
           return;
         }
         parentConfig.children.splice(
-          parentConfig.children.indexOf(vnode.config.vid),
+          parentConfig.children.indexOf(
+            vnode.config.vid
+          ),
           1
         );
       } else if (!vnode.el) {
-        const object = this.engine.getObjectBySymbol(vnode.config.vid);
+        const object = this.engine.getObjectBySymbol(
+          vnode.config.vid
+        );
         if (!object) {
           console.error(
             "widget renderer: can not found Three object with: ",
@@ -556,7 +496,10 @@ class Renderer {
           this.engine.getObjectfromModules(OBJECTMODULE, element.vid)
         );
       } else {
-        const parent = this.engine.getConfigfromModules(OBJECTMODULE, vnode.el);
+        const parent = this.engine.getConfigfromModules(
+          OBJECTMODULE,
+          vnode.el
+        );
         if (!parent) {
           console.error(
             `widget renderer: can not found parent config with: ${vnode.el}`
@@ -582,10 +525,7 @@ class Renderer {
       const traverse2 = (props1, props2, target) => {
         for (const key in props1) {
           if (isVNode(props1[key])) {
-            if (
-              isVNode(props2[key]) &&
-              props2[key].config.vid !== props1[key].config.vid
-            ) {
+            if (isVNode(props2[key]) && props2[key].config.vid !== props1[key].config.vid) {
               target[key] = props2[key].config.vid;
             } else if (!isVNode(props2[key])) {
               target[key] = props2[key];
@@ -614,7 +554,7 @@ class Renderer {
     }
     const config = generateConfig(vnode.type, merge, {
       strict: false,
-      warn: false,
+      warn: false
     });
     vnode.config = config;
     return config;
@@ -635,7 +575,8 @@ class Renderer {
   mountComponent(vnode) {
     vnode.component = new Component(vnode, this);
   }
-  unmountComponent(vnode) {}
+  unmountComponent(vnode) {
+  }
   patchComponent(oldVn, newVn) {
     const component = oldVn.component;
     newVn.component = component;
@@ -658,13 +599,10 @@ class Renderer {
 }
 class Widget {
   constructor(engine, component) {
-    __publicField(this, "wid", createSymbol());
-    __publicField(this, "version", version);
-    __publicField(this, "components", {});
-    __publicField(this, "renderer");
-    __publicField(this, "root");
-    __publicField(this, "instance", null);
-    __publicField(this, "engine");
+    this.wid = createSymbol();
+    this.version = version;
+    this.components = {};
+    this.instance = null;
     this.engine = engine;
     this.root = component;
     this.renderer = new Renderer(this);
@@ -704,8 +642,10 @@ class Widget {
     var _a;
     return (_a = this.instance) == null ? void 0 : _a.getState(true);
   }
-  unmount() {}
-  use() {}
+  unmount() {
+  }
+  use() {
+  }
 }
 class EngineWidget extends EngineSupport {
   constructor(params = {}) {
@@ -715,7 +655,7 @@ class EngineWidget extends EngineSupport {
     return new Widget(this, component);
   }
 }
-const defineEngineWidget = function (options, params = {}) {
+const defineEngineWidget = function(options, params = {}) {
   const engine = new EngineWidget();
   if (options.modules) {
     options.modules.forEach((module) => {
@@ -740,7 +680,8 @@ const defineEngineWidget = function (options, params = {}) {
   return engine;
 };
 const EMPTY_OBJ = {};
-const NOOP = () => {};
+const NOOP = () => {
+};
 const remove = (arr, el) => {
   const i = arr.indexOf(el);
   if (i > -1) {
@@ -791,17 +732,9 @@ const INITIAL_WATCHER_VALUE = {};
 function watch(source, cb, options) {
   return doWatch(source, cb, options);
 }
-function doWatch(
-  source,
-  cb,
-  { immediate, deep, flush, onTrack, onTrigger } = EMPTY_OBJ
-) {
+function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EMPTY_OBJ) {
   var _a;
-  const instance =
-    getCurrentScope() ===
-    ((_a = Component.currentComponent) == null ? void 0 : _a.scope)
-      ? Component.currentComponent
-      : null;
+  const instance = getCurrentScope() === ((_a = Component.currentComponent) == null ? void 0 : _a.scope) ? Component.currentComponent : null;
   let getter;
   let forceTrigger = false;
   let isMultiSource = false;
@@ -814,16 +747,15 @@ function doWatch(
   } else if (isArray(source)) {
     isMultiSource = true;
     forceTrigger = source.some((s) => isReactive(s) || isShallow(s));
-    getter = () =>
-      source.map((s) => {
-        if (isRef(s)) {
-          return s.value;
-        } else if (isReactive(s)) {
-          return traverse(s);
-        } else if (isFunction(s)) {
-          return callWithErrorHandling(s);
-        }
-      });
+    getter = () => source.map((s) => {
+      if (isRef(s)) {
+        return s.value;
+      } else if (isReactive(s)) {
+        return traverse(s);
+      } else if (isFunction(s)) {
+        return callWithErrorHandling(s);
+      }
+    });
   } else if (isFunction(source)) {
     if (cb) {
       getter = () => callWithErrorHandling(source);
@@ -852,33 +784,21 @@ function doWatch(
       cleanup = effect.onStop = void 0;
     };
   };
-  let oldValue = isMultiSource
-    ? new Array(source.length).fill(INITIAL_WATCHER_VALUE)
-    : INITIAL_WATCHER_VALUE;
+  let oldValue = isMultiSource ? new Array(source.length).fill(INITIAL_WATCHER_VALUE) : INITIAL_WATCHER_VALUE;
   const job = () => {
     if (!effect.active) {
       return;
     }
     if (cb) {
       const newValue = effect.run();
-      if (
-        deep ||
-        forceTrigger ||
-        (isMultiSource
-          ? newValue.some((v, i) => hasChanged(v, oldValue[i]))
-          : hasChanged(newValue, oldValue))
-      ) {
+      if (deep || forceTrigger || (isMultiSource ? newValue.some((v, i) => hasChanged(v, oldValue[i])) : hasChanged(newValue, oldValue))) {
         if (cleanup) {
           cleanup();
         }
         callWithAsyncErrorHandling(cb, instance, [
           newValue,
-          oldValue === INITIAL_WATCHER_VALUE
-            ? void 0
-            : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE
-            ? []
-            : oldValue,
-          onCleanup,
+          oldValue === INITIAL_WATCHER_VALUE ? void 0 : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE ? [] : oldValue,
+          onCleanup
         ]);
         oldValue = newValue;
       }
@@ -894,7 +814,8 @@ function doWatch(
     scheduler = () => queuePostFlushCb(job);
   } else {
     job.pre = true;
-    if (instance) job.id = instance.cid;
+    if (instance)
+      job.id = instance.cid;
     scheduler = () => queueJob(job);
   }
   const effect = new ReactiveEffect(getter, scheduler);
@@ -943,14 +864,4 @@ function traverse(value, seen) {
   }
   return value;
 }
-export {
-  EngineWidget,
-  defineComponent,
-  defineEngineWidget,
-  h,
-  onMounted,
-  vfor,
-  vif,
-  watch,
-  watchEffect,
-};
+export { EngineWidget, defineComponent, defineEngineWidget, h, onMounted, vfor, vif, watch, watchEffect };

@@ -14,16 +14,26 @@ import { RENDER_SCOPE, VNodeScpoe, _h } from "../h";
 import { PropsOptions } from "./props";
 import { LifeCycleHooks } from "./hooks";
 import { queueJob, queuePostFlushCb } from "../scheduler";
+import { KeyEnum } from "@vis-three/utils";
 
-export interface RenderParams {
+export interface RenderParams<Resources extends object = any> {
   components: Record<string, ComponentOptions>;
-  resources: Record<string, string>;
+  resources: KeyEnum<Resources>;
+}
+
+export interface SetupParams<
+  Engine extends EngineWidget = any,
+  Props extends object = any
+> {
+  engine: Engine;
+  props: Props;
 }
 
 export interface ComponentOptions<
-  Engine extends EngineWidget = EngineWidget,
+  Engine extends EngineWidget = any,
   Props extends object = any,
-  RawBindings extends object = any
+  RawBindings extends object = any,
+  Resources extends object = any
 > {
   name?: string;
   props?: PropsOptions<Props>;
@@ -31,15 +41,15 @@ export interface ComponentOptions<
   engine: Engine;
   el: string;
   load: Record<string, string>;
-  resources?: Record<string, any>;
-  setup: (props: Props) => RawBindings;
-  render: (params: RenderParams) => VNode | VNode[];
+  resources?: () => Resources;
+  setup: (params: SetupParams<Engine, Props>) => RawBindings;
+  render: (params: RenderParams<Resources>) => VNode | VNode[];
 }
-
 export class Component<
-  Engine extends EngineWidget = EngineWidget,
+  Engine extends EngineWidget = any,
   Props extends object = any,
-  RawBindings extends object = any
+  RawBindings extends object = any,
+  Resources extends object = any
 > extends EventDispatcher {
   static currentComponent: Component | null;
 
@@ -58,7 +68,7 @@ export class Component<
 
   vnode!: VNode<Props>;
 
-  private options: ComponentOptions<Engine, Props, RawBindings>;
+  private options: ComponentOptions<Engine, Props, RawBindings, Resources>;
   private el = "";
 
   private render!: (params: RenderParams) => VNode | VNode[];
@@ -79,13 +89,21 @@ export class Component<
   private subTree: Array<VNode | VNodeScpoe> | null = null;
   private ctx!: Widget<Engine>;
 
-  private cacheResources: Record<string, string> = {};
+  private cacheResources: Resources = Object.create(Object.prototype);
+  private resourcesKeyEnum: KeyEnum<Resources> = Object.create(
+    Object.prototype
+  );
 
   constructor(vnode: VNode<Props>, renderer: Renderer<Engine>) {
     super();
     this.vnode = vnode;
 
-    const options = vnode.type as ComponentOptions<Engine, Props, RawBindings>;
+    const options = vnode.type as ComponentOptions<
+      Engine,
+      Props,
+      RawBindings,
+      Resources
+    >;
 
     options.name && (this.name = options.name);
     this.el = options.el;
@@ -94,9 +112,9 @@ export class Component<
     this.renderer = renderer;
     this.engine = renderer.engine;
     this.ctx = renderer.context;
-    this.createResources();
     this.createProps();
     this.createSetup();
+    this.createResources();
     this.createRender();
     this.createEffect();
   }
@@ -109,7 +127,7 @@ export class Component<
       { ...this.setupState, ...this.props },
       {
         components: this.options.components || {},
-        resources: this.cacheResources,
+        resources: this.resourcesKeyEnum,
       }
     );
 
@@ -122,10 +140,14 @@ export class Component<
     if (!this.options.resources) {
       return;
     }
-    this.engine.registerResources(this.options.resources);
 
-    for (const key in this.options.resources) {
-      this.cacheResources[key] = key;
+    const resources = this.options.resources.call(this.setupState);
+    this.engine.registerResources(resources as Record<string, unknown>);
+
+    this.cacheResources = resources;
+
+    for (const key in resources) {
+      this.resourcesKeyEnum[key] = key;
     }
   }
 
@@ -177,7 +199,10 @@ export class Component<
   private createSetup() {
     Component.setCurrentComponent(this);
 
-    const setupResult = this.options.setup(this.props);
+    const setupResult = this.options.setup({
+      engine: this.engine,
+      props: this.props,
+    });
     this.setupState = proxyRefs<any>(setupResult);
     this.rawSetupState = setupResult;
 
