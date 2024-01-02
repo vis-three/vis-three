@@ -28,7 +28,7 @@ export const createInvoker = function (fn: Function): Invoker {
 
 const eventOptionsReg = /Once$/;
 
-function parseName(name: string): [string, EventOptions] {
+export function parseName(name: string): [string, EventOptions] {
   let options: EventOptions = {};
   if (eventOptionsReg.test(name)) {
     options = {};

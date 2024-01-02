@@ -9,12 +9,14 @@ export interface RenderParams<Resources extends object = any> {
     components: Record<string, ComponentOptions>;
     resources: KeyEnum<Resources>;
 }
-export interface SetupParams<Engine extends EngineWidget = any, Props extends object = any> {
+export interface SetupParams<Engine extends EngineWidget = any, Props extends object = any, Emit extends object = any> {
     engine: Engine;
     props: Props;
+    emit: (type: keyof Emit, params: any) => void;
 }
-export interface ComponentOptions<Engine extends EngineWidget = any, Props extends object = any, RawBindings extends object = any, Resources extends object = any> {
+export interface ComponentOptions<Engine extends EngineWidget = any, Emit extends object = any, Props extends object = any, RawBindings extends object = any, Resources extends object = any> {
     name?: string;
+    emits?: Emit;
     props?: PropsOptions<Props>;
     components?: Record<string, ComponentOptions>;
     engine: Engine;
@@ -24,7 +26,7 @@ export interface ComponentOptions<Engine extends EngineWidget = any, Props exten
     setup: (params: SetupParams<Engine, Props>) => RawBindings;
     render: (params: RenderParams<Resources>) => VNode | VNode[];
 }
-export declare class Component<Engine extends EngineWidget = any, Props extends object = any, RawBindings extends object = any, Resources extends object = any> extends EventDispatcher {
+export declare class Component<Engine extends EngineWidget = any, Emit extends object = any, Props extends object = any, RawBindings extends object = any, Resources extends object = any> extends EventDispatcher {
     static currentComponent: Component | null;
     static setCurrentComponent(component: Component): void;
     static unsetCurrentComponent(): void;
@@ -57,4 +59,4 @@ export declare class Component<Engine extends EngineWidget = any, Props extends 
     updateProps(newProps: Partial<Props>): void;
     getState(raw?: boolean): RawBindings;
 }
-export declare const defineComponent: <Engine extends EngineWidget = EngineWidget, Props extends object = any, RawBindings extends object = any>(options: ComponentOptions<Engine, Props, RawBindings, any>) => ComponentOptions<Engine, Props, RawBindings, any>;
+export declare const defineComponent: <Engine extends EngineWidget = EngineWidget, Props extends object = any, RawBindings extends object = any>(options: ComponentOptions<Engine, Props, RawBindings, any, any>) => ComponentOptions<Engine, Props, RawBindings, any, any>;

@@ -212,6 +212,70 @@ function flushJobs() {
     }
   }
 }
+const EVENT_SYMBOL = Symbol.for("vis.widget.event");
+const createInvoker = function(fn) {
+  const invoker = function(event) {
+    invoker.value(event);
+  };
+  invoker.value = fn;
+  return invoker;
+};
+const eventOptionsReg = /Once$/;
+function parseName(name) {
+  let options = {};
+  if (eventOptionsReg.test(name)) {
+    options = {};
+    let m;
+    while (m = name.match(eventOptionsReg)) {
+      name = name.slice(0, name.length - m[0].length);
+      options[m[0].toLowerCase()] = true;
+    }
+  }
+  const event = name.slice(2).toLowerCase();
+  return [event, options];
+}
+const mountEvents = function(vnode, config, object) {
+  if (config[EVENT_SYMBOL]) {
+    console.error(`config has already create events`, config);
+    return;
+  }
+  const eventProps = getOnProps(vnode);
+  for (const key in eventProps) {
+    eventProps[key] = createInvoker(eventProps[key]);
+    const [name, options] = parseName(key);
+    object.addEventListener(name, eventProps[key]);
+  }
+  config[EVENT_SYMBOL] = eventProps;
+};
+const updateEvents = function(vnode) {
+  const props = vnode.props;
+  const config = vnode.config;
+  if (!config[EVENT_SYMBOL]) {
+    return;
+  }
+  const events = config[EVENT_SYMBOL];
+  for (const key in events) {
+    const invoker = events[key];
+    if (invoker && invoker.value !== props[key]) {
+      invoker.value = props[key];
+    }
+  }
+};
+const unmountEvents = function(vnode, object) {
+  const config = vnode.config;
+  if (!config[EVENT_SYMBOL]) {
+    return;
+  }
+  const events = config[EVENT_SYMBOL];
+  for (const key in events) {
+    const invoker = events[key];
+    if (invoker) {
+      const [name, options] = parseName(key);
+      object.removeEventListener(name, invoker);
+    }
+  }
+  config[EVENT_SYMBOL] = void 0;
+};
 class Component extends EventDispatcher {
   constructor(vnode, renderer) {
     super();
@@ -274,8 +338,25 @@ class Component extends EventDispatcher {
   }
   createProps() {
     const propsOptions = this.options.props || {};
+    const vnProps = this.vnode.props || {};
     const props = this.props;
-    const inputProps = this.vnode.props || {};
+    const emits = this.options.emits || {};
+    const inputProps = {};
+    for (const key in vnProps) {
+      if (isOnProp(key)) {
+        const [name, options] = parseName(key);
+        if (emits[name]) {
+          this[options.once ? "once" : "on"](name, vnProps[key]);
+        } else {
+          console.warn(
+            `widget Component: you not declare attribute  ${key}  in emits options`,
+            this.options
+          );
+        }
+      } else {
+        inputProps[key] = vnProps[key];
+      }
+    }
     for (const key in propsOptions) {
       const options = propsOptions[key];
       if (options.required && typeof inputProps[key] === "undefined") {
@@ -312,7 +393,8 @@ class Component extends EventDispatcher {
     Component.setCurrentComponent(this);
     const setupResult = this.options.setup({
       engine: this.engine,
-      props: this.props
+      props: this.props,
+      emit: this.emit.bind(this)
     });
     this.setupState = proxyRefs(setupResult);
     this.rawSetupState = setupResult;
@@ -423,70 +505,6 @@ class Component extends EventDispatcher {
 }
 const defineComponent = function(options) {
   return options;
-};
-const EVENT_SYMBOL = Symbol.for("vis.widget.event");
-const createInvoker = function(fn) {
-  const invoker = function(event) {
-    invoker.value(event);
-  };
-  invoker.value = fn;
-  return invoker;
-};
-const eventOptionsReg = /Once$/;
-function parseName(name) {
-  let options = {};
-  if (eventOptionsReg.test(name)) {
-    options = {};
-    let m;
-    while (m = name.match(eventOptionsReg)) {
-      name = name.slice(0, name.length - m[0].length);
-      options[m[0].toLowerCase()] = true;
-    }
-  }
-  const event = name.slice(2).toLowerCase();
-  return [event, options];
-}
-const mountEvents = function(vnode, config, object) {
-  if (config[EVENT_SYMBOL]) {
-    console.error(`config has already create events`, config);
-    return;
-  }
-  const eventProps = getOnProps(vnode);
-  for (const key in eventProps) {
-    eventProps[key] = createInvoker(eventProps[key]);
-    const [name, options] = parseName(key);
-    object.addEventListener(name, eventProps[key]);
-  }
-  config[EVENT_SYMBOL] = eventProps;
-};
-const updateEvents = function(vnode) {
-  const props = vnode.props;
-  const config = vnode.config;
-  if (!config[EVENT_SYMBOL]) {
-    return;
-  }
-  const events = config[EVENT_SYMBOL];
-  for (const key in events) {
-    const invoker = events[key];
-    if (invoker && invoker.value !== props[key]) {
-      invoker.value = props[key];
-    }
-  }
-};
-const unmountEvents = function(vnode, object) {
-  const config = vnode.config;
-  if (!config[EVENT_SYMBOL]) {
-    return;
-  }
-  const events = config[EVENT_SYMBOL];
-  for (const key in events) {
-    const invoker = events[key];
-    if (invoker) {
-      const [name, options] = parseName(key);
-      object.removeEventListener(name, invoker);
-    }
-  }
-  config[EVENT_SYMBOL] = void 0;
 };
 class Renderer {
   constructor(ctx) {

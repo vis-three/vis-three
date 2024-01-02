@@ -4,7 +4,7 @@ import {
   proxyRefs,
   shallowReactive,
 } from "@vue/reactivity";
-import { Data, VNode, isVNode } from "../vnode";
+import { Data, VNode, isOnProp, isVNode } from "../vnode";
 import { EngineWidget } from "../engine";
 import { createSymbol } from "@vis-three/middleware";
 import { EventDispatcher } from "@vis-three/core";
@@ -15,6 +15,7 @@ import { PropsOptions } from "./props";
 import { LifeCycleHooks } from "./hooks";
 import { queueJob, queuePostFlushCb } from "../scheduler";
 import { KeyEnum } from "@vis-three/utils";
+import { parseName } from "../renderer/events";
 
 export interface RenderParams<Resources extends object = any> {
   components: Record<string, ComponentOptions>;
@@ -23,19 +24,23 @@ export interface RenderParams<Resources extends object = any> {
 
 export interface SetupParams<
   Engine extends EngineWidget = any,
-  Props extends object = any
+  Props extends object = any,
+  Emit extends object = any
 > {
   engine: Engine;
   props: Props;
+  emit: (type: keyof Emit, params: any) => void;
 }
 
 export interface ComponentOptions<
   Engine extends EngineWidget = any,
+  Emit extends object = any,
   Props extends object = any,
   RawBindings extends object = any,
   Resources extends object = any
 > {
   name?: string;
+  emits?: Emit;
   props?: PropsOptions<Props>;
   components?: Record<string, ComponentOptions>;
   engine: Engine;
@@ -47,6 +52,7 @@ export interface ComponentOptions<
 }
 export class Component<
   Engine extends EngineWidget = any,
+  Emit extends object = any,
   Props extends object = any,
   RawBindings extends object = any,
   Resources extends object = any
@@ -68,7 +74,13 @@ export class Component<
 
   vnode!: VNode<Props>;
 
-  private options: ComponentOptions<Engine, Props, RawBindings, Resources>;
+  private options: ComponentOptions<
+    Engine,
+    Emit,
+    Props,
+    RawBindings,
+    Resources
+  >;
   private el = "";
 
   private render!: (params: RenderParams) => VNode | VNode[];
@@ -100,6 +112,7 @@ export class Component<
 
     const options = vnode.type as ComponentOptions<
       Engine,
+      Emit,
       Props,
       RawBindings,
       Resources
@@ -153,8 +166,26 @@ export class Component<
 
   private createProps() {
     const propsOptions = this.options.props || {};
+    const vnProps = this.vnode.props || {};
     const props = this.props;
-    const inputProps = this.vnode.props || {};
+    const emits = this.options.emits || {};
+    const inputProps: Data = {};
+
+    for (const key in vnProps) {
+      if (isOnProp(key)) {
+        const [name, options] = parseName(key);
+        if (emits[name]) {
+          this[options.once ? "once" : "on"](name, vnProps[key]);
+        } else {
+          console.warn(
+            `widget Component: you not declare attribute  ${key}  in emits options`,
+            this.options
+          );
+        }
+      } else {
+        inputProps[key] = vnProps[key];
+      }
+    }
 
     for (const key in propsOptions) {
       const options = propsOptions[key];
@@ -202,6 +233,7 @@ export class Component<
     const setupResult = this.options.setup({
       engine: this.engine,
       props: this.props,
+      emit: this.emit.bind(this) as any,
     });
     this.setupState = proxyRefs<any>(setupResult);
     this.rawSetupState = setupResult;

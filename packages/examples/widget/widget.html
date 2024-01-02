@@ -110,23 +110,28 @@
       engine.loaderManager.setPath(import.meta.env.BASE_URL);
 
       const sphereComponent = defineComponent({
+        emits: {
+          show: true,
+        },
         props: {
           color: {
             type: String,
             default: "rgb(0, 0, 255)",
           },
         },
-        setup() {
+        setup({ emit }) {
           const data = reactive({ x: -20 });
           const flag = ref(false);
           const hanlder = () => {
             console.log("click");
             flag.value = true;
+            emit("show", flag.value);
           };
 
           const hanlder2 = () => {
             console.log("2 click");
             flag.value = false;
+            emit("show", flag.value);
           };
           return {
             data,
@@ -201,6 +206,12 @@
             console.log(list);
             console.log(comp.value);
 
+            const childState = comp.value.getState();
+
+            console.log(childState);
+
+            childState.move();
+
             box.value.color = "rgb(255, 0, 255)";
 
             console.log(textGenerator);
@@ -232,6 +243,9 @@
             comp,
             texture,
             textGenerator,
+            showTest(bool) {
+              console.log("child", bool);
+            },
           };
         },
         resources() {
@@ -299,6 +313,7 @@
           h(components.sphere, {
             color: this.color,
             ref: "comp",
+            onShow: this.showTest,
           });
 
           vfor(() => {

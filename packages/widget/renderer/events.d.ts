@@ -13,6 +13,7 @@ export type EventConfig = SymbolConfig & {
     [EVENT_SYMBOL]?: Record<string, Invoker | undefined>;
 };
 export declare const createInvoker: (fn: Function) => Invoker;
+export declare function parseName(name: string): [string, EventOptions];
 export declare const mountEvents: (vnode: VNode, config: EventConfig, object: Object3D) => void;
 export declare const updateEvents: (vnode: VNode) => void;
 export declare const unmountEvents: (vnode: VNode, object: Object3D) => void;
