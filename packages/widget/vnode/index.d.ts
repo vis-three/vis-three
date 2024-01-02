@@ -20,3 +20,5 @@ export declare const createVNode: <NodeProps = Data>(type: VNodeTypes, props?: N
     ref?: VNode["ref"];
 }) => VNode<NodeProps>;
 export declare const isVNode: (object: any) => boolean;
+export declare const isOnProp: (key: string) => boolean;
+export declare const getOnProps: (vnode: VNode) => Record<string, Function>;

@@ -2,6 +2,32 @@ lockfileVersion: 5.4
 
 importers:
 
+  .:
+    specifiers:
+      '@types/node': ^18.11.12
+      '@types/three': ^0.141.0
+      '@typescript-eslint/eslint-plugin': ^5.18.0
+      '@typescript-eslint/parser': ^5.18.0
+      eslint: ^8.12.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.0.0
+      prettier: ^2.6.2
+      three: ^0.141.0
+      typescript: ^5.2.2
+      vite: ^2.9.15
+    devDependencies:
+      '@types/node': 18.16.19
+      '@types/three': 0.141.0
+      '@typescript-eslint/eslint-plugin': 5.61.0_wugomm36oswkk6zs5qost5dkqi
+      '@typescript-eslint/parser': 5.61.0_r6fjndk6k4skjcbozishmsan5a
+      eslint: 8.44.0
+      eslint-config-prettier: 8.8.0_eslint@8.44.0
+      eslint-plugin-prettier: 4.2.1_qkgbdr345imkz5woyd5e5k6xse
+      prettier: 2.8.8
+      three: 0.141.0
+      typescript: 5.3.3
+      vite: 2.9.16
+
   packages/convenient:
     specifiers:
       '@types/node': ^18.11.12
@@ -4021,40 +4047,19 @@ importers:
 
   packages/widget:
     specifiers:
-      '@types/node': ^18.11.12
-      '@types/three': ^0.141.0
-      '@typescript-eslint/eslint-plugin': ^5.18.0
-      '@typescript-eslint/parser': ^5.18.0
       '@vis-three/core': workspace:^0.6.7
       '@vis-three/middleware': workspace:^0.6.27
       '@vis-three/module-object': workspace:^0.6.5
       '@vis-three/utils': workspace:^0.6.2
       '@vue/reactivity': ^3.3.11
-      eslint: ^8.12.0
-      eslint-config-prettier: ^8.5.0
-      eslint-plugin-prettier: ^4.0.0
-      prettier: ^2.6.2
-      three: ^0.141.0
-      typescript: ^5.2.2
-      vite: ^2.9.15
+      '@vue/shared': ^3.4.3
     dependencies:
       '@vis-three/core': link:../core
       '@vis-three/middleware': link:../middleware
       '@vis-three/module-object': link:../library/module/object
       '@vis-three/utils': link:../utils
       '@vue/reactivity': 3.3.11
-    devDependencies:
-      '@types/node': 18.16.19
-      '@types/three': 0.141.0
-      '@typescript-eslint/eslint-plugin': 5.45.1_tqyjyk76byswted4k7tlyfikkq
-      '@typescript-eslint/parser': 5.45.1_um53oyuiiojrqdnanawgnvq3ka
-      eslint: 8.29.0
-      eslint-config-prettier: 8.5.0_eslint@8.29.0
-      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
-      prettier: 2.8.0
-      three: 0.141.0
-      typescript: 5.3.3
-      vite: 2.9.15
+      '@vue/shared': 3.4.3
 
 packages:
 
@@ -7803,6 +7808,10 @@ packages:
     resolution: {integrity: sha512-7OjdcV8vQ74eiz1TZLzZP4JwqM5fA94K6yntPS5Z25r9HDuGNzaGdgvwKYq6S+MxwF0TFRwe50fIR/MYnakdkQ==}
     dev: true
 
+  /@vue/shared/3.4.3:
+    resolution: {integrity: sha512-rIwlkkP1n4uKrRzivAKPZIEkHiuwY5mmhMJ2nZKCBLz8lTUlE73rQh4n1OnnMurXt1vcUNyH4ZPfdh8QweTjpQ==}
+    dev: false
+
   /@vueuse/core/10.1.2_vue@3.3.4:
     resolution: {integrity: sha512-roNn8WuerI56A5uiTyF/TEYX0Y+VKlhZAF94unUfdhbDUI+NfwQMn4FUnUscIRUhv3344qvAghopU4bzLPNFlA==}
     dependencies:
@@ -11160,7 +11169,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /jsprim/2.0.2:
@@ -13356,6 +13365,7 @@ packages:
 
   /vue/2.6.14:
     resolution: {integrity: sha512-x2284lgYvjOMj3Za7kqzRcUSxBboHqtgRE2zlos1qWaOye5yUmHn42LB1250NJBLRwEcdrB0JRwyPTEPhfQjiQ==}
+    deprecated: Vue 2 has reached EOL and is no longer actively maintained. See https://v2.vuejs.org/eol/ for more details.
     dev: false
 
   /vue/3.2.45:

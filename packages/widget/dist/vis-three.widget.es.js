@@ -1,8 +1,9 @@
 import { createSymbol, isObjectType, OBJECTMODULE, generateConfig, EngineSupport } from "@vis-three/middleware";
-import { isObject as isObject$1 } from "@vis-three/utils";
+import { isObject } from "@vis-three/utils";
 import { shallowReactive, EffectScope, proxyRefs, ReactiveEffect, getCurrentScope, isRef, isShallow, isReactive } from "@vue/reactivity";
 export { computed, reactive, ref, shallowReactive, shallowReadonly, shallowRef, toRef, toRefs } from "@vue/reactivity";
 import { EventDispatcher } from "@vis-three/core";
+import { isFunction, isPromise, isArray, EMPTY_OBJ, NOOP, hasChanged, remove, isObject as isObject$1, isSet, isMap, isPlainObject } from "@vue/shared";
 const version = "0.6.0";
 const createVNode = function(type, props = null, options = {}) {
   return {
@@ -23,6 +24,19 @@ const isVNode = function(object) {
   } else {
     return false;
   }
+};
+const isOnProp = function(key) {
+  return /^on[A-Z]/.test(key);
+};
+const getOnProps = function(vnode) {
+  const props = vnode.props;
+  const onProps = {};
+  for (const key in props) {
+    if (isOnProp(key)) {
+      onProps[key] = props[key];
+    }
+  }
+  return onProps;
 };
 var RENDER_SCOPE = /* @__PURE__ */ ((RENDER_SCOPE2) => {
   RENDER_SCOPE2["STATIC"] = "static";
@@ -410,6 +424,70 @@ class Component extends EventDispatcher {
 const defineComponent = function(options) {
   return options;
 };
+const EVENT_SYMBOL = Symbol.for("vis.widget.event");
+const createInvoker = function(fn) {
+  const invoker = function(event) {
+    invoker.value(event);
+  };
+  invoker.value = fn;
+  return invoker;
+};
+const eventOptionsReg = /Once$/;
+function parseName(name) {
+  let options = {};
+  if (eventOptionsReg.test(name)) {
+    options = {};
+    let m;
+    while (m = name.match(eventOptionsReg)) {
+      name = name.slice(0, name.length - m[0].length);
+      options[m[0].toLowerCase()] = true;
+    }
+  }
+  const event = name.slice(2).toLowerCase();
+  return [event, options];
+}
+const mountEvents = function(vnode, config, object) {
+  if (config[EVENT_SYMBOL]) {
+    console.error(`config has already create events`, config);
+    return;
+  }
+  const eventProps = getOnProps(vnode);
+  for (const key in eventProps) {
+    eventProps[key] = createInvoker(eventProps[key]);
+    const [name, options] = parseName(key);
+    object.addEventListener(name, eventProps[key]);
+  }
+  config[EVENT_SYMBOL] = eventProps;
+};
+const updateEvents = function(vnode) {
+  const props = vnode.props;
+  const config = vnode.config;
+  if (!config[EVENT_SYMBOL]) {
+    return;
+  }
+  const events = config[EVENT_SYMBOL];
+  for (const key in events) {
+    const invoker = events[key];
+    if (invoker && invoker.value !== props[key]) {
+      invoker.value = props[key];
+    }
+  }
+};
+const unmountEvents = function(vnode, object) {
+  const config = vnode.config;
+  if (!config[EVENT_SYMBOL]) {
+    return;
+  }
+  const events = config[EVENT_SYMBOL];
+  for (const key in events) {
+    const invoker = events[key];
+    if (invoker) {
+      const [name, options] = parseName(key);
+      object.removeEventListener(name, invoker);
+    }
+  }
+  config[EVENT_SYMBOL] = void 0;
+};
 class Renderer {
   constructor(ctx) {
     this.context = ctx;
@@ -473,22 +551,26 @@ class Renderer {
           1
         );
       } else if (!vnode.el) {
-        const object = this.engine.getObjectBySymbol(
+        const object2 = this.engine.getObjectBySymbol(
           vnode.config.vid
         );
-        if (!object) {
+        if (!object2) {
           console.error(
             "widget renderer: can not found Three object with: ",
             vnode
           );
         }
-        object.removeFromParent();
+        object2.removeFromParent();
       }
+      const object = this.engine.getObjectBySymbol(
+        vnode.config.vid
+      );
+      unmountEvents(vnode, object);
     }
     this.engine.removeConfigBySymbol(vnode.config.vid);
   }
   mountElement(vnode) {
-    const element = this.createElement(vnode);
+    const { element, onProps } = this.createElement(vnode);
     this.engine.applyConfig(element);
     if (isObjectType(element.type)) {
       if (!vnode.el) {
@@ -508,6 +590,8 @@ class Renderer {
         }
         parent.children.push(element.vid);
       }
+      const object = this.engine.getObjectBySymbol(element.vid);
+      mountEvents(vnode, element, object);
     }
   }
   patchElement(oldVn, newVn) {
@@ -516,11 +600,19 @@ class Renderer {
       this.mountElement(newVn);
     } else {
       newVn.config = oldVn.config;
-      const oldProps = oldVn.props;
-      const newProps = newVn.props;
       const config = oldVn.config;
       if (!config) {
         console.error("widget renderer: can not found  config with: ", oldVn);
+      }
+      let oldProps = {};
+      const newProps = newVn.props;
+      let hasEvent = false;
+      for (const key in oldVn.props) {
+        if (isOnProp(key)) {
+          hasEvent = true;
+          continue;
+        }
+        oldProps[key] = oldVn.props[key];
       }
       const traverse2 = (props1, props2, target) => {
         for (const key in props1) {
@@ -530,7 +622,7 @@ class Renderer {
             } else if (!isVNode(props2[key])) {
               target[key] = props2[key];
             }
-          } else if (isObject$1(props1[key])) {
+          } else if (isObject(props1[key])) {
             traverse2(props1[key], props2[key], target[key]);
           } else {
             if (props2[key] !== props1[key]) {
@@ -540,13 +632,20 @@ class Renderer {
         }
       };
       traverse2(oldProps, newProps, config);
+      hasEvent && updateEvents(newVn);
     }
   }
   createElement(vnode) {
     const props = vnode.props;
     const merge = {};
+    const onProps = {};
     for (const key in props) {
-      if (isVNode(props[key])) {
+      if (["ref", "index"].includes(key)) {
+        continue;
+      }
+      if (isOnProp(key)) {
+        onProps[key] = props[key];
+      } else if (isVNode(props[key])) {
         merge[key] = props[key].config.vid;
       } else {
         merge[key] = props[key];
@@ -557,7 +656,7 @@ class Renderer {
       warn: false
     });
     vnode.config = config;
-    return config;
+    return { element: config, onProps };
   }
   processComponent(oldVn, newVn) {
     if (!oldVn && !newVn) {
@@ -679,27 +778,6 @@ const defineEngineWidget = function(options, params = {}) {
   }
   return engine;
 };
-const EMPTY_OBJ = {};
-const NOOP = () => {
-};
-const remove = (arr, el) => {
-  const i = arr.indexOf(el);
-  if (i > -1) {
-    arr.splice(i, 1);
-  }
-};
-const isArray = Array.isArray;
-const isMap = (val) => toTypeString(val) === "[object Map]";
-const isSet = (val) => toTypeString(val) === "[object Set]";
-const isFunction = (val) => typeof val === "function";
-const isObject = (val) => val !== null && typeof val === "object";
-const isPromise = (val) => {
-  return isObject(val) && isFunction(val.then) && isFunction(val.catch);
-};
-const objectToString = Object.prototype.toString;
-const toTypeString = (value) => objectToString.call(value);
-const isPlainObject = (val) => toTypeString(val) === "[object Object]";
-const hasChanged = (value, oldValue) => !Object.is(value, oldValue);
 function callWithErrorHandling(fn, instance, args) {
   let res;
   try {
@@ -839,7 +917,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
   return unwatch;
 }
 function traverse(value, seen) {
-  if (!isObject(value) || value["__v_skip"]) {
+  if (!isObject$1(value) || value["__v_skip"]) {
     return value;
   }
   seen = seen || /* @__PURE__ */ new Set();

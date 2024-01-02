@@ -118,7 +118,25 @@
         },
         setup() {
           const data = reactive({ x: -20 });
-          return { data };
+          const flag = ref(false);
+          const hanlder = () => {
+            console.log("click");
+            flag.value = true;
+          };
+
+          const hanlder2 = () => {
+            console.log("2 click");
+            flag.value = false;
+          };
+          return {
+            data,
+            hanlder,
+            hanlder2,
+            flag,
+            move() {
+              console.log("move");
+            },
+          };
         },
         render() {
           const material = h("MeshBasicMaterial", {
@@ -135,6 +153,8 @@
             position: {
               x: this.data.x,
             },
+            onClick: this.flag ? this.hanlder2 : this.hanlder,
+            onMousemove: this.move,
           });
         },
       });
@@ -143,10 +163,7 @@
         components: {
           sphere: sphereComponent,
         },
-        load: {
-          soldier: "/model/glb/Soldier.glb",
-        },
-        setup({ resources }) {
+        setup() {
           const data = reactive({ x: 5 });
           const width = ref(5);
           const height = computed(() => width.value + 5);

@@ -50,3 +50,20 @@ export const isVNode = function (object: any) {
     return false;
   }
 };
+
+export const isOnProp = function (key: string) {
+  return /^on[A-Z]/.test(key);
+};
+
+export const getOnProps = function (vnode: VNode) {
+  const props = vnode.props;
+  const onProps: Record<string, Function> = {};
+
+  for (const key in props) {
+    if (isOnProp(key)) {
+      onProps[key] = props[key];
+    }
+  }
+
+  return onProps;
+};

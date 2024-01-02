@@ -4,12 +4,13 @@ import {
   isObjectType,
 } from "@vis-three/middleware";
 import { EngineWidget } from "../engine";
-import { Data, ElementData, VNode, isVNode } from "../vnode";
+import { Data, ElementData, VNode, isOnProp, isVNode } from "../vnode";
 import { ObjectConfig } from "@vis-three/module-object";
 import { isArray, isObject } from "@vis-three/utils";
 import { Component, ComponentOptions } from "../component";
 import { Widget } from "../widget";
 import { Object3D } from "three";
+import { mountEvents, unmountEvents, updateEvents } from "./events";
 
 export class Renderer<E extends EngineWidget = EngineWidget> {
   engine: E;
@@ -104,12 +105,18 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
 
         object.removeFromParent();
       }
+      const object = this.engine.getObjectBySymbol(
+        vnode.config!.vid
+      )! as Object3D;
+
+      unmountEvents(vnode, object);
     }
+
     this.engine.removeConfigBySymbol(vnode.config!.vid);
   }
 
   mountElement(vnode: VNode) {
-    const element = this.createElement(vnode);
+    const { element, onProps } = this.createElement(vnode);
     this.engine.applyConfig(element);
 
     if (isObjectType(element.type)) {
@@ -132,6 +139,10 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
 
         parent.children.push(element.vid);
       }
+
+      const object = this.engine.getObjectBySymbol(element.vid)! as Object3D;
+
+      mountEvents(vnode, element, object);
     }
   }
 
@@ -142,15 +153,27 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
     } else {
       newVn.config = oldVn.config;
 
-      const oldProps = oldVn.props! as ElementData;
-      const newProps = newVn.props! as ElementData;
-
       const config = oldVn.config;
 
       if (!config) {
         console.error("widget renderer: can not found  config with: ", oldVn);
       }
 
+      let oldProps = {}! as ElementData;
+      const newProps = newVn.props! as ElementData;
+
+      let hasEvent = false;
+      // 由于属性是一直存在的，所以新老props的属性都是对应的
+      for (const key in oldVn.props) {
+        if (isOnProp(key)) {
+          hasEvent = true;
+          continue;
+        }
+
+        oldProps[key] = oldVn.props[key];
+      }
+
+      // 这里是遍历props1的key，所以上面就只用清洗oldProps的属性就行
       const traverse = (props1: object, props2: object, target: object) => {
         for (const key in props1) {
           if (isVNode(props1[key])) {
@@ -173,15 +196,23 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
       };
 
       traverse(oldProps, newProps, config!);
+
+      hasEvent && updateEvents(newVn);
     }
   }
 
   createElement(vnode: VNode) {
     const props = vnode.props;
     const merge: Record<string, any> = {};
-
+    const onProps: Record<string, Function> = {};
     for (const key in props) {
-      if (isVNode(props[key])) {
+      if (["ref", "index"].includes(key)) {
+        continue;
+      }
+
+      if (isOnProp(key)) {
+        onProps[key] = props[key];
+      } else if (isVNode(props[key])) {
         merge[key] = (<VNode>props[key]).config!.vid;
       } else {
         merge[key] = props[key];
@@ -195,7 +226,7 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
 
     vnode.config = config;
 
-    return config;
+    return { element: config, onProps };
   }
 
   processComponent(oldVn: VNode | null, newVn: VNode | null) {

@@ -12,7 +12,10 @@ export declare class Renderer<E extends EngineWidget = EngineWidget> {
     unmountElement(vnode: VNode): void;
     mountElement(vnode: VNode): void;
     patchElement(oldVn: VNode, newVn: VNode): void;
-    createElement(vnode: VNode): import("@vis-three/middleware").SymbolConfig;
+    createElement(vnode: VNode): {
+        element: import("@vis-three/middleware").SymbolConfig;
+        onProps: Record<string, Function>;
+    };
     processComponent(oldVn: VNode | null, newVn: VNode | null): void;
     mountComponent(vnode: VNode): void;
     unmountComponent(vnode: VNode): void;
