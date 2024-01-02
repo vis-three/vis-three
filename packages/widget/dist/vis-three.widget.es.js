@@ -390,6 +390,9 @@ class Component extends EventDispatcher {
     }
   }
   createSetup() {
+    if (!this.options.setup) {
+      return;
+    }
     Component.setCurrentComponent(this);
     const setupResult = this.options.setup({
       engine: this.engine,

@@ -23,7 +23,7 @@ export interface ComponentOptions<Engine extends EngineWidget = any, Emit extend
     el: string;
     load: Record<string, string>;
     resources?: () => Resources;
-    setup: (params: SetupParams<Engine, Props>) => RawBindings;
+    setup?: (params: SetupParams<Engine, Props>) => RawBindings;
     render: (params: RenderParams<Resources>) => VNode | VNode[];
 }
 export declare class Component<Engine extends EngineWidget = any, Emit extends object = any, Props extends object = any, RawBindings extends object = any, Resources extends object = any> extends EventDispatcher {

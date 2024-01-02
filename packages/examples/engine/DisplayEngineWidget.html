@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DisplayEngineWidget</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+    <script type="module">
+      import { DisplayEngineWidget } from "@vis-three/engine-display-widget";
+      import { defineComponent, h } from "@vis-three/widget";
+
+      const engine = new DisplayEngineWidget()
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      const root = defineComponent({
+        setup({ engine }) {
+          return {
+            mouseEnter() {
+              engine.dom.style.cursor = "pointer";
+            },
+            mouseLeave() {
+              engine.dom.style.cursor = "unset";
+            },
+          };
+        },
+        render() {
+          h("PointLight", {
+            position: {
+              x: 30,
+              y: 50,
+            },
+            distance: 100,
+          });
+
+          h("Mesh", {
+            geometry: h("BoxGeometry", {
+              width: 20,
+              height: 40,
+              depth: 60,
+            }),
+            material: h("MeshStandardMaterial", {
+              color: "rgb(255, 0, 0)",
+            }),
+            onClick: () => {
+              alert("hello vis-three");
+            },
+            onMouseenter: this.mouseEnter,
+            onMouseleave: this.mouseLeave,
+          });
+        },
+      });
+
+      engine.createWidget(root).mount();
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>

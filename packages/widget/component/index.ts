@@ -47,7 +47,7 @@ export interface ComponentOptions<
   el: string;
   load: Record<string, string>;
   resources?: () => Resources;
-  setup: (params: SetupParams<Engine, Props>) => RawBindings;
+  setup?: (params: SetupParams<Engine, Props>) => RawBindings;
   render: (params: RenderParams<Resources>) => VNode | VNode[];
 }
 export class Component<
@@ -228,6 +228,10 @@ export class Component<
   }
 
   private createSetup() {
+    if (!this.options.setup) {
+      return;
+    }
+
     Component.setCurrentComponent(this);
 
     const setupResult = this.options.setup({

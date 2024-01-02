@@ -248,7 +248,9 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
     vnode.component = new Component(vnode, this);
   }
 
-  unmountComponent(vnode: VNode) {}
+  unmountComponent(vnode: VNode) {
+    //TODO:
+  }
 
   patchComponent(oldVn: VNode, newVn: VNode) {
     const component = oldVn.component!;

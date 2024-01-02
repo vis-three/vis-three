@@ -1,0 +1,45 @@
+{
+  "name": "@vis-three/engine-display-widget",
+  "version": "0.6.0",
+  "description": "",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "author": "Shiotsuki_",
+  "license": "MPL-2.0",
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc",
+    "lint": "npx eslint *.js src/**/*.ts --fix"
+  },
+  "devDependencies": {
+    "@vis-three/module-camera": "workspace:^0.6.3",
+    "@vis-three/module-scene": "workspace:^0.6.4"
+  },
+  "dependencies": {
+    "@vis-three/library-module": "workspace:^0.6.13",
+    "@vis-three/library-parser": "workspace:^0.6.2",
+    "@vis-three/widget": "workspace:^0.6.0",
+    "@vis-three/plugin-camera-adaptive": "workspace:^0.6.1",
+    "@vis-three/plugin-css2d-renderer": "workspace:^0.6.2",
+    "@vis-three/plugin-css3d-renderer": "workspace:^0.6.2",
+    "@vis-three/plugin-effect-composer": "workspace:^0.6.2",
+    "@vis-three/plugin-orbit-controls": "workspace:^0.6.2",
+    "@vis-three/plugin-webgl-renderer": "workspace:^0.6.1",
+    "@vis-three/strategy-composer-support": "workspace:^0.6.0",
+    "@vis-three/strategy-css2d-render": "workspace:^0.6.1",
+    "@vis-three/strategy-css3d-render": "workspace:^0.6.0",
+    "@vis-three/strategy-css3d-renderer-support": "workspace:^0.6.1",
+    "@vis-three/strategy-effect-render": "workspace:^0.6.1",
+    "@vis-three/strategy-multi-renderer": "workspace:^0.6.0",
+    "@vis-three/strategy-orbit-controls-support": "workspace:^0.6.3",
+    "@vis-three/strategy-orbit-render": "workspace:^0.6.1",
+    "@vis-three/strategy-webgl-renderer-support": "workspace:^0.6.1"
+  },
+  "files": [
+    "**/*.js",
+    "**/*.d.ts",
+    "package.json",
+    "LICENSE"
+  ]
+}

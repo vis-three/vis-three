@@ -31,6 +31,7 @@
     "@vis-three/core": "workspace:^0.6.7",
     "@vis-three/engine-display": "workspace:^0.6.1",
     "@vis-three/engine-display-support": "workspace:^0.6.8",
+    "@vis-three/engine-display-widget": "workspace:^0.6.0",
     "@vis-three/engine-modeling": "workspace:^0.6.1",
     "@vis-three/engine-modeling-support": "workspace:^0.6.11",
     "@vis-three/library-animate-script": "workspace:^0.6.0",
