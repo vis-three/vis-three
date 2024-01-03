@@ -11,6 +11,7 @@ import { Component, ComponentOptions } from "../component";
 import { Widget } from "../widget";
 import { Object3D } from "three";
 import { mountEvents, unmountEvents, updateEvents } from "./events";
+import { vnodePropConverter } from "./converter";
 
 export class Renderer<E extends EngineWidget = EngineWidget> {
   engine: E;
@@ -212,10 +213,8 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
 
       if (isOnProp(key)) {
         onProps[key] = props[key];
-      } else if (isVNode(props[key])) {
-        merge[key] = (<VNode>props[key]).config!.vid;
       } else {
-        merge[key] = props[key];
+        merge[key] = vnodePropConverter(props[key]);
       }
     }
 

@@ -400,7 +400,7 @@ class Component extends EventDispatcher {
       engine: this.engine,
       props: this.props,
       emit: this.emit.bind(this)
-    });
+    }) || {};
     this.setupState = proxyRefs(setupResult);
     this.rawSetupState = setupResult;
     Component.unsetCurrentComponent();
@@ -528,6 +528,20 @@ class Component extends EventDispatcher {
 }
 const defineComponent = function(options) {
   return options;
+};
+const vnodePropConverter = (object) => {
+  if (typeof object === "object") {
+    if (isVNode(object)) {
+      return object.config.vid;
+    } else {
+      for (const key in object) {
+        object[key] = vnodePropConverter(object[key]);
+      }
+      return object;
+    }
+  } else {
+    return object;
+  }
 };
 class Renderer {
   constructor(ctx) {
@@ -686,10 +700,8 @@ class Renderer {
       }
       if (isOnProp(key)) {
         onProps[key] = props[key];
-      } else if (isVNode(props[key])) {
-        merge[key] = props[key].config.vid;
       } else {
-        merge[key] = props[key];
+        merge[key] = vnodePropConverter(props[key]);
       }
     }
     const config = generateConfig(vnode.type, merge, {

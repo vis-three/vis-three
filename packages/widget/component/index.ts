@@ -234,11 +234,12 @@ export class Component<
 
     Component.setCurrentComponent(this);
 
-    const setupResult = this.options.setup({
-      engine: this.engine,
-      props: this.props,
-      emit: this.emit.bind(this) as any,
-    });
+    const setupResult =
+      this.options.setup({
+        engine: this.engine,
+        props: this.props,
+        emit: this.emit.bind(this) as any,
+      }) || {};
     this.setupState = proxyRefs<any>(setupResult);
     this.rawSetupState = setupResult;
 

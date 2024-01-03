@@ -118,8 +118,16 @@
             type: String,
             default: "rgb(0, 0, 255)",
           },
+          position: {
+            type: Object,
+            default: () => ({
+              x: 0,
+              y: 0,
+              z: 0,
+            }),
+          },
         },
-        setup({ emit }) {
+        setup({ props, emit }) {
           const data = reactive({ x: -20 });
           const flag = ref(false);
           const hanlder = () => {
@@ -156,7 +164,9 @@
             geometry,
             material,
             position: {
-              x: this.data.x,
+              x: this.data.x + this.position.x,
+              y: this.position.y,
+              z: this.position.z,
             },
             onClick: this.flag ? this.hanlder2 : this.hanlder,
             onMousemove: this.move,
@@ -283,11 +293,12 @@
 
           vif(() => {
             if (this.isBox) {
-              h("Mesh", {
-                geometry,
-                material,
+              h(components.sphere, {
+                color: this.color,
                 position: {
-                  x: this.data.x,
+                  x: 60,
+                  y: 20,
+                  z: 0,
                 },
               });
             } else {

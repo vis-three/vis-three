@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tips</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+    <div id="button-position">
+      <div id="button-group">
+        <button id="addPillar">addPillar</button>
+      </div>
+    </div>
+
+    <script type="module">
+      import { DisplayEngineWidget } from "@vis-three/engine-display-widget";
+      import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
+      import { CanvasGenerator } from "@vis-three/convenient";
+
+      import {
+        defineComponent,
+        h,
+        reactive,
+        vfor,
+        watch,
+      } from "@vis-three/widget";
+
+      const engine = new DisplayEngineWidget()
+        .install(GridHelperPlugin())
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      const tips = defineComponent({
+        props: {
+          title: {
+            type: String,
+            default: "实例1",
+          },
+          position: {
+            type: Object,
+            default: () => ({
+              x: 0,
+              y: 0,
+              z: 0,
+            }),
+          },
+        },
+        resources() {
+          return {
+            text: this.textGenerator.getDom(),
+          };
+        },
+        render({ resources }) {
+          const sprite = h("Sprite", {
+            material: h("SpriteMaterial", {
+              map: h("CanvasTexture", {
+                url: resources.text,
+                ref: "texture",
+              }),
+              sizeAttenuation: false,
+              transparent: true,
+              alphaTest: 0.01,
+            }),
+            scale: {
+              x: 0.16,
+              y: 0.09,
+            },
+            position: {
+              y: 25,
+            },
+          });
+
+          const mesh = h("Mesh", {
+            geometry: h("BoxGeometry", {
+              width: 5,
+              height: 20,
+              depth: 5,
+              position: {
+                y: 1,
+              },
+            }),
+            material: h("MeshBasicMaterial", {
+              transparent: true,
+              opacity: 0.6,
+              color: "rgb(100, 100, 225)",
+            }),
+          });
+
+          h("Group", {
+            position: {
+              x: this.position.x,
+              y: this.position.y,
+              z: this.position.z,
+            },
+            children: [sprite, mesh],
+          });
+        },
+        setup({ props }) {
+          const textGenerator = new CanvasGenerator({
+            width: 400,
+            height: 200,
+          });
+
+          const draw = () =>
+            textGenerator.draw((ctx) => {
+              ctx.fillStyle = "rgba(0, 0, 0, 0)";
+              ctx.fillRect(0, 0, 400, 200);
+              ctx.translate(200, 100);
+              ctx.textBaseline = "middle";
+              ctx.textAlign = "center";
+              ctx.fillStyle = "black";
+              ctx.font = "42px 微软雅黑";
+              ctx.fillStyle = "white";
+              ctx.fillText(props.title, 0, 0);
+              ctx.translate(-200, -100);
+            });
+
+          watch(
+            props.title,
+            () => {
+              draw();
+            },
+            {
+              immediate: true,
+            }
+          );
+          return {
+            textGenerator,
+          };
+        },
+      });
+
+      const root = defineComponent({
+        components: { tips },
+        render({ components }) {
+          vfor(() => {
+            this.list.forEach((item) => {
+              h(components.tips, {
+                title: item.title,
+                position: {
+                  x: item.position.x,
+                  y: item.position.y,
+                  z: item.position.z,
+                },
+              });
+            });
+          });
+        },
+        setup({ engine }) {
+          const list = reactive([
+            { position: { x: -20, y: 0, z: 0 }, title: "实例1" },
+            { position: { x: 0, y: 0, z: 0 }, title: "实例2" },
+            { position: { x: 20, y: 0, z: 0 }, title: "实例3" },
+          ]);
+          return {
+            list,
+            addPillar() {
+              list.push({
+                position: {
+                  x: Math.random() * 100 - 50,
+                  y: 0,
+                  z: Math.random() * 100 - 50,
+                },
+                title: `实例${list.length + 1}`,
+              });
+            },
+          };
+        },
+      });
+
+      const widget = engine.createWidget(root).mount();
+
+      document.getElementById("addPillar").onclick = () => {
+        widget.getState().addPillar();
+      };
+
+      window.widget = widget;
+      window.engine = engine;
+    </script>
+  </body>
+</html>
