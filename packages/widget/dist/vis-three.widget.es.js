@@ -460,10 +460,10 @@ class Component extends EventDispatcher {
               }
               if (next.scope === RENDER_SCOPE.VIF) {
                 for (const vnode of prev.vnodes) {
-                  this.renderer.unmountElement(vnode);
+                  this.renderer.patch(vnode, null);
                 }
                 for (const vnode of next.vnodes) {
-                  this.renderer.mountElement(vnode);
+                  this.renderer.patch(null, vnode);
                 }
               } else if (next.scope === RENDER_SCOPE.VFOR) {
                 for (const key of next.keyMap.keys()) {
@@ -474,7 +474,7 @@ class Component extends EventDispatcher {
                     );
                     prev.keyMap.delete(key);
                   } else {
-                    this.renderer.mountElement(next.keyMap.get(key));
+                    this.renderer.patch(null, next.keyMap.get(key));
                   }
                 }
                 for (const vnode of prev.keyMap.values()) {

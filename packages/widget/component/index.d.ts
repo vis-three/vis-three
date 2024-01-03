@@ -60,4 +60,4 @@ export declare class Component<Engine extends EngineWidget = any, Emit extends o
     updateProps(newProps: Partial<Props>): void;
     getState(raw?: boolean): RawBindings;
 }
-export declare const defineComponent: <Engine extends EngineWidget = EngineWidget, Props extends object = any, RawBindings extends object = any>(options: ComponentOptions<Engine, Props, RawBindings, any, any>) => ComponentOptions<Engine, Props, RawBindings, any, any>;
+export declare const defineComponent: <Engine extends EngineWidget = any, Emit extends object = any, Props extends object = any, RawBindings extends object = any, Resources extends object = any>(options: ComponentOptions<Engine, Emit, Props, RawBindings, Resources>) => ComponentOptions<Engine, Emit, Props, RawBindings, Resources>;

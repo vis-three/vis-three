@@ -314,13 +314,11 @@ export class Component<
 
               if (next.scope === RENDER_SCOPE.VIF) {
                 for (const vnode of prev.vnodes) {
-                  // TODO: component
-                  this.renderer.unmountElement(vnode);
+                  this.renderer.patch(vnode, null);
                 }
 
                 for (const vnode of next.vnodes) {
-                  // TODO: component
-                  this.renderer.mountElement(vnode);
+                  this.renderer.patch(null, vnode);
                 }
               } else if (next.scope === RENDER_SCOPE.VFOR) {
                 for (const key of next.keyMap.keys()) {
@@ -332,8 +330,7 @@ export class Component<
                     // prevTree是一次性的所有可以修改
                     prev.keyMap.delete(key);
                   } else {
-                    // TODO: component
-                    this.renderer.mountElement(next.keyMap.get(key)!);
+                    this.renderer.patch(null, next.keyMap.get(key)!);
                   }
                 }
 
@@ -396,11 +393,13 @@ export class Component<
 }
 
 export const defineComponent = function <
-  Engine extends EngineWidget = EngineWidget,
+  Engine extends EngineWidget = any,
+  Emit extends object = any,
   Props extends object = any,
-  RawBindings extends object = any
+  RawBindings extends object = any,
+  Resources extends object = any
 >(
-  options: ComponentOptions<Engine, Props, RawBindings>
-): ComponentOptions<Engine, Props, RawBindings> {
+  options: ComponentOptions<Engine, Emit, Props, RawBindings, Resources>
+): ComponentOptions<Engine, Emit, Props, RawBindings, Resources> {
   return options;
 };
