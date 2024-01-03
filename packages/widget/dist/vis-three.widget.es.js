@@ -98,6 +98,8 @@ const vfor = function(fun) {
 };
 var LifeCycleHooks = /* @__PURE__ */ ((LifeCycleHooks2) => {
   LifeCycleHooks2["MOUNTED"] = "mounted";
+  LifeCycleHooks2["BEFORE_DISTORY"] = "beforeDistory";
+  LifeCycleHooks2["UPDATE"] = "update";
   return LifeCycleHooks2;
 })(LifeCycleHooks || {});
 const onMounted = function(fn = () => {
@@ -496,6 +498,24 @@ class Component extends EventDispatcher {
     this.effect = effect;
     this.update = update;
   }
+  distory() {
+    this.emit(LifeCycleHooks.BEFORE_DISTORY);
+    this.scope.stop();
+    this.effect.active = false;
+    this.effect.stop();
+    const tree = this.subTree || [];
+    for (let i = 0; i < tree.length; i += 1) {
+      if (isVNode(tree[i])) {
+        this.renderer.patch(tree[i], null);
+        tree[i].config = null;
+      } else {
+        for (const vnode of tree[i].vnodes) {
+          this.renderer.patch(vnode, null);
+          vnode.config = null;
+        }
+      }
+    }
+  }
   updateProps(newProps) {
     const props = this.props;
     for (const key in newProps) {
@@ -696,6 +716,9 @@ class Renderer {
     vnode.component = new Component(vnode, this);
   }
   unmountComponent(vnode) {
+    var _a;
+    (_a = vnode.component) == null ? void 0 : _a.distory();
+    vnode.component = null;
   }
   patchComponent(oldVn, newVn) {
     const component = oldVn.component;
@@ -763,6 +786,8 @@ class Widget {
     return (_a = this.instance) == null ? void 0 : _a.getState(true);
   }
   unmount() {
+    var _a;
+    (_a = this.instance) == null ? void 0 : _a.distory();
   }
   use() {
   }

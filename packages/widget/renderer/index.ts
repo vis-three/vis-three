@@ -249,7 +249,8 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
   }
 
   unmountComponent(vnode: VNode) {
-    //TODO:
+    vnode.component?.distory();
+    vnode.component = null;
   }
 
   patchComponent(oldVn: VNode, newVn: VNode) {

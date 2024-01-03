@@ -72,7 +72,9 @@ export class Widget<
     return this.instance?.getState(true);
   }
 
-  unmount() {}
+  unmount() {
+    this.instance?.distory();
+  }
 
   use() {}
 }

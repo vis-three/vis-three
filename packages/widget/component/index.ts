@@ -314,10 +314,12 @@ export class Component<
 
               if (next.scope === RENDER_SCOPE.VIF) {
                 for (const vnode of prev.vnodes) {
+                  // TODO: component
                   this.renderer.unmountElement(vnode);
                 }
 
                 for (const vnode of next.vnodes) {
+                  // TODO: component
                   this.renderer.mountElement(vnode);
                 }
               } else if (next.scope === RENDER_SCOPE.VFOR) {
@@ -330,6 +332,7 @@ export class Component<
                     // prevTree是一次性的所有可以修改
                     prev.keyMap.delete(key);
                   } else {
+                    // TODO: component
                     this.renderer.mountElement(next.keyMap.get(key)!);
                   }
                 }
@@ -358,6 +361,26 @@ export class Component<
 
     this.effect = effect;
     this.update = update;
+  }
+
+  distory() {
+    this.emit(LifeCycleHooks.BEFORE_DISTORY);
+    this.scope.stop();
+    this.effect.active = false;
+    this.effect.stop();
+
+    const tree = this.subTree || [];
+    for (let i = 0; i < tree.length; i += 1) {
+      if (isVNode(tree[i])) {
+        this.renderer.patch(tree[i] as VNode, null);
+        (<VNode>tree[i]).config = null;
+      } else {
+        for (const vnode of (<VNodeScpoe>tree[i]).vnodes) {
+          this.renderer.patch(vnode, null);
+          vnode.config = null;
+        }
+      }
+    }
   }
 
   updateProps(newProps: Partial<Props>) {

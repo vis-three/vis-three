@@ -56,6 +56,7 @@ export declare class Component<Engine extends EngineWidget = any, Emit extends o
     private createSetup;
     private createRender;
     private createEffect;
+    distory(): void;
     updateProps(newProps: Partial<Props>): void;
     getState(raw?: boolean): RawBindings;
 }
