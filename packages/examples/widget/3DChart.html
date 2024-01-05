@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3DChart</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+    <div id="button-position">
+      <div id="button-group"></div>
+    </div>
+
+    <script type="module">
+      import { DisplayEngineWidget } from "@vis-three/engine-display-widget";
+      import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
+      import { CanvasGenerator } from "@vis-three/convenient";
+
+      import {
+        defineComponent,
+        h,
+        ref,
+        reactive,
+        vfor,
+        watch,
+      } from "@vis-three/widget";
+
+      const engine = new DisplayEngineWidget()
+        .install(GridHelperPlugin())
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      const label = defineComponent({
+        props: {
+          title: {
+            type: String,
+            default: "标签",
+          },
+          position: {
+            type: Object,
+            default: () => ({
+              x: 0,
+              y: 0,
+              z: 0,
+            }),
+          },
+        },
+        resources() {
+          return {
+            text: this.textGenerator.getDom(),
+          };
+        },
+        render({ resources }) {
+          const sprite = h("Sprite", {
+            material: h("SpriteMaterial", {
+              map: h("CanvasTexture", {
+                url: resources.text,
+                ref: "texture",
+              }),
+              sizeAttenuation: false,
+              transparent: true,
+              alphaTest: 0.01,
+            }),
+            scale: {
+              x: 0.16,
+              y: 0.09,
+            },
+            position: this.position,
+          });
+        },
+        setup({ props }) {
+          const textGenerator = new CanvasGenerator({
+            width: 400,
+            height: 200,
+          });
+
+          const draw = () =>
+            textGenerator.draw((ctx) => {
+              ctx.fillStyle = "rgba(0, 0, 0, 0)";
+              ctx.fillRect(0, 0, 400, 200);
+              ctx.translate(200, 100);
+              ctx.textBaseline = "middle";
+              ctx.textAlign = "center";
+              ctx.fillStyle = "black";
+              ctx.font = "42px 微软雅黑";
+              ctx.fillStyle = "white";
+              ctx.fillText(props.title, 0, 0);
+              ctx.translate(-200, -100);
+            });
+
+          watch(
+            props.title,
+            () => {
+              draw();
+            },
+            {
+              immediate: true,
+            }
+          );
+          return {
+            textGenerator,
+          };
+        },
+      });
+
+      const pillar = defineComponent({
+        props: {
+          initColor: {
+            type: String,
+            default: "rgb(200, 200, 200)",
+          },
+          value: {
+            type: Number,
+            default: 1,
+          },
+          position: {
+            type: Object,
+            default: () => ({
+              x: 0,
+              y: 0,
+              z: 0,
+            }),
+          },
+        },
+        render() {
+          h("Mesh", {
+            geometry: h("BoxGeometry", {
+              width: 5,
+              height: 1,
+              depth: 5,
+              position: {
+                y: 1,
+              },
+            }),
+            material: h("MeshStandardMaterial", {
+              color: this.color,
+              transparent: true,
+              opacity: 0.8,
+            }),
+            scale: {
+              y: this.value,
+            },
+            position: this.position,
+            onMouseenter: this.mouseEnter,
+            onMouseleave: this.mouseLeave,
+          });
+        },
+        setup({ engine, props }) {
+          const color = ref("");
+
+          watch(
+            props.initColor,
+            () => {
+              color.value = props.initColor;
+            },
+            {
+              immediate: true,
+            }
+          );
+
+          return {
+            color,
+            mouseEnter() {
+              engine.dom.style.cursor = "pointer";
+              color.value = "rgb(200, 200, 50)";
+            },
+            mouseLeave() {
+              engine.dom.style.cursor = "unset";
+              color.value = props.initColor;
+            },
+          };
+        },
+      });
+
+      const grid = defineComponent({
+        props: {
+          width: {
+            type: Number,
+            default: 50,
+          },
+          widthSegments: {
+            type: Number,
+            default: 6,
+          },
+          height: {
+            type: Number,
+            default: 50,
+          },
+          heightSegments: {
+            type: Number,
+            default: 6,
+          },
+          position: {
+            type: Object,
+            default: () => ({
+              x: 0,
+              y: 0,
+              z: 0,
+            }),
+          },
+          rotation: {
+            type: Object,
+            default: () => ({
+              x: 0,
+              y: 0,
+              z: 0,
+            }),
+          },
+        },
+        render() {
+          h("LineSegments", {
+            geometry: h("CustomGeometry", {
+              attribute: {
+                position: this.vertexs,
+              },
+              center: false,
+            }),
+            material: h("LineBasicMaterial"),
+            position: this.position,
+            rotation: this.rotation,
+          });
+        },
+        setup({ props }) {
+          const width = props.width;
+          const harfWidth = width / 2;
+          const height = props.height;
+          const harfHeight = height / 2;
+          const widthSegments = props.widthSegments;
+          const heightSegments = props.heightSegments;
+          const widthStep = width / widthSegments;
+          const heightStep = height / heightSegments;
+
+          const vertexs = [];
+
+          for (let index = 0; index <= widthSegments; index += 1) {
+            vertexs.push(
+              widthStep * index - harfWidth,
+              -harfHeight,
+              0,
+              widthStep * index - harfWidth,
+              harfHeight,
+              0
+            );
+          }
+
+          for (let index = 0; index <= heightSegments; index += 1) {
+            vertexs.push(
+              -harfWidth,
+              heightStep * index - harfHeight,
+              0,
+              harfWidth,
+              heightStep * index - harfHeight,
+              0
+            );
+          }
+
+          return {
+            vertexs,
+          };
+        },
+      });
+
+      const root = defineComponent({
+        components: { label, pillar, grid },
+        render({ components }) {
+          h("DirectionalLight", {
+            intensity: 1.5,
+            position: {
+              x: 5,
+              z: 10,
+              y: 10,
+            },
+          });
+
+          h(components.label, {
+            title: "生产力",
+            position: {
+              x: -15,
+              z: 30,
+            },
+          });
+          h(components.label, {
+            title: "创新力",
+            position: {
+              z: 30,
+            },
+          });
+          h(components.label, {
+            title: "稳健性",
+            position: {
+              z: 30,
+              x: 15,
+            },
+          });
+          h(components.label, {
+            title: "软件",
+            position: {
+              x: 30,
+              z: 15,
+            },
+          });
+          h(components.label, {
+            title: "贡献者",
+            position: {
+              x: 30,
+            },
+          });
+          h(components.label, {
+            title: "协作",
+            position: {
+              z: -15,
+              x: 30,
+            },
+          });
+
+          h(components.grid, {
+            position: {
+              x: 0,
+              y: 25,
+              z: -25,
+            },
+          });
+          h(components.grid, {
+            position: {
+              x: -25,
+              y: 25,
+              z: 0,
+            },
+            rotation: {
+              y: Math.PI / 2,
+            },
+          });
+          h(components.grid, {
+            widthSegments: 3,
+            heightSegments: 3,
+            rotation: {
+              x: Math.PI / 2,
+            },
+          });
+
+          h("Mesh", {
+            geometry: h("PlaneGeometry", {
+              width: 50,
+              height: 17,
+              rotation: {
+                x: -Math.PI / 2,
+              },
+            }),
+            material: h("MeshBasicMaterial", {
+              color: "rgb(250, 250, 200)",
+              transparent: true,
+              opacity: 0.9,
+            }),
+            position: {
+              z: 17,
+              y: -0.01,
+            },
+          });
+
+          h("Mesh", {
+            geometry: h("PlaneGeometry", {
+              width: 50,
+              height: 17,
+              rotation: {
+                x: -Math.PI / 2,
+              },
+            }),
+            material: h("MeshBasicMaterial", {
+              color: "rgb(255, 242, 242)",
+              transparent: true,
+              opacity: 0.9,
+            }),
+            position: {
+              z: 0,
+              y: -0.01,
+            },
+          });
+
+          h("Mesh", {
+            geometry: h("PlaneGeometry", {
+              width: 50,
+              height: 17,
+              rotation: {
+                x: -Math.PI / 2,
+              },
+            }),
+            material: h("MeshBasicMaterial", {
+              color: "rgb(200, 200, 200)",
+              transparent: true,
+              opacity: 0.9,
+            }),
+            position: {
+              z: -17,
+              y: -0.01,
+            },
+          });
+
+          vfor(() => {
+            this.pillars.forEach((item) => {
+              h(components.pillar, item);
+            });
+          });
+        },
+        setup({ engine }) {
+          return {
+            pillars: reactive([
+              {
+                initColor: "rgb(100, 100, 200)",
+                position: { x: -15, z: 15 },
+                value: 22,
+              },
+              {
+                initColor: "rgb(100, 100, 200)",
+                position: { x: 0, z: 15 },
+                value: 32,
+              },
+              {
+                initColor: "rgb(200, 50, 200)",
+                position: { x: 15, z: 15 },
+                value: 12,
+              },
+              {
+                initColor: "rgb(100, 100, 200)",
+                position: { x: -15, z: 0 },
+                value: 23,
+              },
+              {
+                initColor: "rgb(100, 100, 200)",
+                position: { x: 0, z: 0 },
+                value: 6,
+              },
+              {
+                initColor: "rgb(100, 100, 200)",
+                position: { x: 15, z: 0 },
+                value: 32,
+              },
+              {
+                initColor: "rgb(200, 200, 200)",
+                position: { x: -15, z: -15 },
+                value: 34,
+              },
+              {
+                initColor: "rgb(200, 200, 200)",
+                position: { x: 0, z: -15 },
+                value: 15,
+              },
+              {
+                initColor: "rgb(200, 200, 200)",
+                position: { x: 15, z: -15 },
+                value: 7,
+              },
+            ]),
+          };
+        },
+      });
+
+      const widget = engine.createWidget(root).mount();
+
+      window.widget = widget;
+      window.engine = engine;
+    </script>
+  </body>
+</html>
