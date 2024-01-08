@@ -4,7 +4,12 @@
   "packageManager": "pnpm@7.17.0",
   "type": "module",
   "scripts": {
-    "dev:examples": "pnpm run -C packages/examples dev"
+    "dev:examples": "pnpm run -C packages/examples dev",
+    "dev:docs": "pnpm run -C packages/docs dev",
+    "dev:website": "pnpm run -C packages/website dev",
+    "build:examples": "pnpm run -C packages/examples build",
+    "build:docs": "pnpm run -C packages/docs build",
+    "build:website": "pnpm run -C packages/website build"
   },
   "devDependencies": {
     "@types/node": "^18.11.12",

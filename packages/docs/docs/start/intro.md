@@ -125,6 +125,8 @@ generateConfig(CONFIGTYPE.MESH, {
 });
 ```
 
+### 工程组件化
+
 ## VIS-THREE 的优势
 
 ### 强大的兼容性

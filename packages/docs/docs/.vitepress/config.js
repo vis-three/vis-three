@@ -11,6 +11,7 @@ const getAPIModules = function (url) {
 
   files.forEach((file) => {
     const name = path.basename(file, path.extname(file));
+
     list.push({
       text: name,
       link: `/api/${url}/modules/${name}.md`,
@@ -124,11 +125,11 @@ export default defineConfig({
             { text: "安装", link: "/start/install" },
             { text: "原生化开发", link: "/start/native" },
             { text: "配置化开发", link: "/start/config" },
+            { text: "组件化开发-alpha", link: "/start/widget" },
             { text: "配置化框架结合", link: "/start/combine" },
             { text: "自定义插件", link: "/start/plugin" },
             { text: "自定义策略", link: "/start/strategy" },
             { text: "自定义配置化模块", link: "/start/module" },
-            // { text: "组件化开发-alpha", link: "/start/widget" },
             { text: "不只是three.js", link: "/start/more" },
             { text: "Q & A", link: "/start/qa" },
           ],
