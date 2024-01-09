@@ -7,7 +7,7 @@ import {
 import { Data, VNode, isOnProp, isVNode } from "../vnode";
 import { EngineWidget } from "../engine";
 import { createSymbol } from "@vis-three/middleware";
-import { EventDispatcher } from "@vis-three/core";
+import { ENGINE_EVENT, EventDispatcher, RenderEvent } from "@vis-three/core";
 import { Renderer } from "../renderer";
 import { Widget } from "../widget";
 import { RENDER_SCOPE, VNodeScpoe, _h } from "../h";
@@ -105,6 +105,8 @@ export class Component<
   private resourcesKeyEnum: KeyEnum<Resources> = Object.create(
     Object.prototype
   );
+
+  private cacheEvent: Record<string, Function> = {};
 
   constructor(vnode: VNode<Props>, renderer: Renderer<Engine>) {
     super();
@@ -267,16 +269,42 @@ export class Component<
             }
           };
 
+          const matchRaw = (vnode: VNode) => {
+            if (!vnode.raw) {
+              return;
+            }
+            if (typeof setupState[vnode.raw] !== "undefined") {
+              if (vnode.config) {
+                const raw = this.engine.getObjectBySymbol(vnode.config.vid);
+                if (!raw) {
+                  console.warn(`can not found raw object in engine`, {
+                    component: this,
+                    vnode,
+                  });
+                }
+                setupState[vnode.raw].value = raw || null;
+              } else {
+                console.warn(`component raw object is not a native config`, {
+                  component: this,
+                  vnode,
+                });
+                return;
+              }
+            }
+          };
+
           const subTree = (this.subTree = this.renderTree());
 
           for (const vnode of subTree) {
             if (isVNode(vnode)) {
               this.renderer.patch(null, vnode as VNode);
               matchRef(<VNode>vnode);
+              matchRaw(<VNode>vnode);
             } else {
               for (const vn of (<VNodeScpoe>vnode).vnodes) {
                 this.renderer.patch(null, vn);
                 matchRef(<VNode>vn);
+                matchRaw(<VNode>vn);
               }
             }
           }
@@ -284,6 +312,17 @@ export class Component<
           this.isMounted = true;
 
           queuePostFlushCb(() => this.emit(LifeCycleHooks.MOUNTED));
+
+          const frameEvent = (event: RenderEvent) => {
+            this.emit(LifeCycleHooks.FRAME, event);
+          };
+
+          this.engine.renderManager.addEventListener<RenderEvent>(
+            ENGINE_EVENT.RENDER,
+            frameEvent
+          );
+
+          this.cacheEvent[ENGINE_EVENT.RENDER] = frameEvent;
         } else {
           const nextTree = this.renderTree();
           const prevTree = this.subTree!;
@@ -362,6 +401,11 @@ export class Component<
   }
 
   distory() {
+    this.engine.removeEventListener<RenderEvent>(
+      ENGINE_EVENT.RENDER,
+      this.cacheEvent[ENGINE_EVENT.RENDER] as (event: RenderEvent) => void
+    );
+
     this.emit(LifeCycleHooks.BEFORE_DISTORY);
     this.scope.stop();
     this.effect.active = false;
@@ -372,10 +416,12 @@ export class Component<
       if (isVNode(tree[i])) {
         this.renderer.patch(tree[i] as VNode, null);
         (<VNode>tree[i]).config = null;
+        (<VNode>tree[i]).raw = null;
       } else {
         for (const vnode of (<VNodeScpoe>tree[i]).vnodes) {
           this.renderer.patch(vnode, null);
           vnode.config = null;
+          vnode.raw = null;
         }
       }
     }

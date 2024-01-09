@@ -27,6 +27,7 @@ export const _h = <H>function (type: VNodeTypes, props: Data | null = null) {
   const vnode = createVNode(type, props, {
     key: (props && props.key) || null,
     ref: (props && props.ref) || null,
+    raw: (props && props.raw) || null,
   });
   _h.add(vnode);
   return vnode;

@@ -2,7 +2,7 @@ import { createSymbol, isObjectType, OBJECTMODULE, generateConfig, EngineSupport
 import { isObject } from "@vis-three/utils";
 import { shallowReactive, EffectScope, proxyRefs, ReactiveEffect, getCurrentScope, isRef, isShallow, isReactive } from "@vue/reactivity";
 export { computed, reactive, ref, shallowReactive, shallowReadonly, shallowRef, toRef, toRefs } from "@vue/reactivity";
-import { EventDispatcher } from "@vis-three/core";
+import { EventDispatcher, ENGINE_EVENT } from "@vis-three/core";
 import { isFunction, isPromise, isArray, EMPTY_OBJ, NOOP, hasChanged, remove, isObject as isObject$1, isSet, isMap, isPlainObject } from "@vue/shared";
 const version = "0.6.0";
 const createVNode = function(type, props = null, options = {}) {
@@ -15,6 +15,7 @@ const createVNode = function(type, props = null, options = {}) {
     el: null,
     key: options.key || null,
     ref: options.ref || null,
+    raw: options.raw || null,
     children: null
   };
 };
@@ -47,7 +48,8 @@ var RENDER_SCOPE = /* @__PURE__ */ ((RENDER_SCOPE2) => {
 const _h = function(type, props = null) {
   const vnode = createVNode(type, props, {
     key: props && props.key || null,
-    ref: props && props.ref || null
+    ref: props && props.ref || null,
+    raw: props && props.raw || null
   });
   _h.add(vnode);
   return vnode;
@@ -100,11 +102,25 @@ var LifeCycleHooks = /* @__PURE__ */ ((LifeCycleHooks2) => {
   LifeCycleHooks2["MOUNTED"] = "mounted";
   LifeCycleHooks2["BEFORE_DISTORY"] = "beforeDistory";
   LifeCycleHooks2["UPDATE"] = "update";
+  LifeCycleHooks2["FRAME"] = "frame";
+  LifeCycleHooks2["CAMERA_CHANGE"] = "cameraChange";
+  LifeCycleHooks2["SCENE_CHANGE"] = "sceneCHange";
   return LifeCycleHooks2;
 })(LifeCycleHooks || {});
 const onMounted = function(fn = () => {
 }) {
   Component.currentComponent && Component.currentComponent.on("mounted", (event) => fn());
+};
+const onBeforeDistory = function(fn = () => {
+}) {
+  Component.currentComponent && Component.currentComponent.on(
+    "beforeDistory",
+    (event) => fn()
+  );
+};
+const onFrame = function(fn = () => {
+}) {
+  Component.currentComponent && Component.currentComponent.on("frame", (event) => fn(event));
 };
 let isFlushing = false;
 let isFlushPending = false;
@@ -292,6 +308,7 @@ class Component extends EventDispatcher {
     this.resourcesKeyEnum = Object.create(
       Object.prototype
     );
+    this.cacheEvent = {};
     this.vnode = vnode;
     const options = vnode.type;
     options.name && (this.name = options.name);
@@ -421,20 +438,53 @@ class Component extends EventDispatcher {
               setupState[vnode.ref].value = vnode.component ? vnode.component : vnode.config || null;
             }
           };
+          const matchRaw = (vnode) => {
+            if (!vnode.raw) {
+              return;
+            }
+            if (typeof setupState[vnode.raw] !== "undefined") {
+              if (vnode.config) {
+                const raw2 = this.engine.getObjectBySymbol(vnode.config.vid);
+                if (!raw2) {
+                  console.warn(`can not found raw object in engine`, {
+                    component: this,
+                    vnode
+                  });
+                }
+                setupState[vnode.raw].value = raw2 || null;
+              } else {
+                console.warn(`component raw object is not a native config`, {
+                  component: this,
+                  vnode
+                });
+                return;
+              }
+            }
+          };
           const subTree = this.subTree = this.renderTree();
           for (const vnode of subTree) {
             if (isVNode(vnode)) {
               this.renderer.patch(null, vnode);
               matchRef(vnode);
+              matchRaw(vnode);
             } else {
               for (const vn of vnode.vnodes) {
                 this.renderer.patch(null, vn);
                 matchRef(vn);
+                matchRaw(vn);
               }
             }
           }
           this.isMounted = true;
           queuePostFlushCb(() => this.emit(LifeCycleHooks.MOUNTED));
+          const frameEvent = (event) => {
+            this.emit(LifeCycleHooks.FRAME, event);
+          };
+          this.engine.renderManager.addEventListener(
+            ENGINE_EVENT.RENDER,
+            frameEvent
+          );
+          this.cacheEvent[ENGINE_EVENT.RENDER] = frameEvent;
         } else {
           const nextTree = this.renderTree();
           const prevTree = this.subTree;
@@ -499,6 +549,10 @@ class Component extends EventDispatcher {
     this.update = update;
   }
   distory() {
+    this.engine.removeEventListener(
+      ENGINE_EVENT.RENDER,
+      this.cacheEvent[ENGINE_EVENT.RENDER]
+    );
     this.emit(LifeCycleHooks.BEFORE_DISTORY);
     this.scope.stop();
     this.effect.active = false;
@@ -508,10 +562,12 @@ class Component extends EventDispatcher {
       if (isVNode(tree[i])) {
         this.renderer.patch(tree[i], null);
         tree[i].config = null;
+        tree[i].raw = null;
       } else {
         for (const vnode of tree[i].vnodes) {
           this.renderer.patch(vnode, null);
           vnode.config = null;
+          vnode.raw = null;
         }
       }
     }
@@ -522,8 +578,8 @@ class Component extends EventDispatcher {
       props[key] = newProps[key];
     }
   }
-  getState(raw = true) {
-    return raw ? this.rawSetupState : this.setupState;
+  getState(raw2 = true) {
+    return raw2 ? this.rawSetupState : this.setupState;
   }
 }
 const defineComponent = function(options) {
@@ -836,6 +892,11 @@ const defineEngineWidget = function(options, params = {}) {
   }
   return engine;
 };
+const raw = function(value) {
+  return {
+    value
+  };
+};
 function callWithErrorHandling(fn, instance, args) {
   let res;
   try {
@@ -1000,4 +1061,4 @@ function traverse(value, seen) {
   }
   return value;
 }
-export { EngineWidget, defineComponent, defineEngineWidget, h, onMounted, vfor, vif, watch, watchEffect };
+export { EngineWidget, defineComponent, defineEngineWidget, h, onBeforeDistory, onFrame, onMounted, raw, vfor, vif, watch, watchEffect };

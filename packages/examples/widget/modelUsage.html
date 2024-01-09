@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>modelUsage</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+    <div id="button-position"></div>
+
+    <script type="module">
+      import { DisplayEngineWidget } from "@vis-three/engine-display-widget";
+      import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
+      import { CanvasGenerator } from "@vis-three/convenient";
+
+      import {
+        defineComponent,
+        h,
+        ref,
+        raw,
+        onFrame,
+        onMounted,
+      } from "@vis-three/widget";
+
+      const engine = new DisplayEngineWidget()
+        .install(GridHelperPlugin())
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
+      engine.loadResourcesAsync(["model/katana/katana.obj"]).then(() => {
+        const root = defineComponent({
+          render() {
+            h("DirectionalLight", {
+              intensity: 2,
+              position: {
+                x: 5,
+                z: 10,
+                y: 10,
+              },
+            });
+
+            const material = h("MeshStandardMaterial", {
+              roughness: 0.2,
+              metalness: 0.5,
+            });
+
+            h("Mesh", {
+              raw: "box",
+              geometry: h("BoxGeometry", {
+                width: 0.5,
+                height: 1.5,
+                depth: 0.5,
+                position: {
+                  y: 1,
+                },
+              }),
+              material: h("MeshBasicMaterial", {
+                transparent: true,
+                opacity: 0,
+              }),
+              scale: { x: 15, y: 15, z: 15 },
+              rotation: { z: this.rotationZ },
+              children: [
+                h("Mesh", {
+                  geometry: h("LoadGeometry", {
+                    url: "model/katana/katana.obj.children.0.geometry",
+                    center: false,
+                  }),
+                  material,
+                }),
+                h("Mesh", {
+                  geometry: h("LoadGeometry", {
+                    url: "model/katana/katana.obj.children.0.geometry",
+                    center: false,
+                  }),
+                  material,
+                }),
+                h("Mesh", {
+                  geometry: h("LoadGeometry", {
+                    url: "model/katana/katana.obj.children.1.geometry",
+                    center: false,
+                  }),
+                  material,
+                }),
+                h("Mesh", {
+                  geometry: h("LoadGeometry", {
+                    url: "model/katana/katana.obj.children.2.geometry",
+                    center: false,
+                  }),
+                  material,
+                }),
+                h("Mesh", {
+                  geometry: h("LoadGeometry", {
+                    url: "model/katana/katana.obj.children.3.geometry",
+                    center: false,
+                  }),
+                  material,
+                }),
+                h("Mesh", {
+                  geometry: h("LoadGeometry", {
+                    url: "model/katana/katana.obj.children.4.geometry",
+                    center: false,
+                  }),
+                  material,
+                }),
+              ],
+              onMouseenter: this.enter,
+              onMouseleave: this.leave,
+            });
+          },
+          setup({ engine }) {
+            const rotationZ = ref(0);
+            const enter = () => {
+              rotationZ.value = Math.PI / 6;
+            };
+            const leave = () => {
+              rotationZ.value = 0;
+            };
+
+            const box = raw(null);
+
+            onFrame((e) => {
+              box.value && (box.value.rotation.y += e.delta * 2);
+            });
+
+            onMounted(() => {});
+
+            return {
+              rotationZ,
+              enter,
+              leave,
+              box,
+            };
+          },
+        });
+
+        const widget = engine.createWidget(root).mount();
+
+        window.widget = widget;
+      });
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>

@@ -16,6 +16,7 @@ export interface VNode<NodeProps = Data> {
   el: string | null;
   key: string | number | symbol | null;
   ref: string | null;
+  raw: any | null;
   children: VNode[] | null;
 }
 
@@ -28,6 +29,7 @@ export const createVNode = function <NodeProps = Data>(
   options: {
     key?: VNode["key"];
     ref?: VNode["ref"];
+    raw?: VNode["raw"];
   } = {}
 ): VNode<NodeProps> {
   return {
@@ -39,6 +41,7 @@ export const createVNode = function <NodeProps = Data>(
     el: null,
     key: options.key || null,
     ref: options.ref || null,
+    raw: options.raw || null,
     children: null,
   };
 };

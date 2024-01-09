@@ -12,12 +12,14 @@ export interface VNode<NodeProps = Data> {
     el: string | null;
     key: string | number | symbol | null;
     ref: string | null;
+    raw: any | null;
     children: VNode[] | null;
 }
 export type ElementVNode<NodeProps extends ElementData = ElementData> = VNode<NodeProps>;
 export declare const createVNode: <NodeProps = Data>(type: VNodeTypes, props?: NodeProps | null, options?: {
     key?: VNode["key"];
     ref?: VNode["ref"];
+    raw?: VNode["raw"];
 }) => VNode<NodeProps>;
 export declare const isVNode: (object: any) => boolean;
 export declare const isOnProp: (key: string) => boolean;

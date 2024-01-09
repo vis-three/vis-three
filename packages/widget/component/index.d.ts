@@ -49,6 +49,7 @@ export declare class Component<Engine extends EngineWidget = any, Emit extends o
     private ctx;
     private cacheResources;
     private resourcesKeyEnum;
+    private cacheEvent;
     constructor(vnode: VNode<Props>, renderer: Renderer<Engine>);
     private renderTree;
     private createResources;
