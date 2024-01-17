@@ -16,6 +16,9 @@ export interface SpotLightConfig extends LightConifg {
 }
 export interface DirectionalLightConfig extends LightConifg {
     shadow: {
+        bias: number;
+        normalBias: number;
+        radius: number;
         mapSize: {
             width: number;
             height: number;
@@ -23,6 +26,10 @@ export interface DirectionalLightConfig extends LightConifg {
         camera: {
             near: number;
             far: number;
+            top: number;
+            bottom: number;
+            left: number;
+            right: number;
         };
     };
 }

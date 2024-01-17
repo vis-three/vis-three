@@ -21,6 +21,9 @@ export interface SpotLightConfig extends LightConifg {
 
 export interface DirectionalLightConfig extends LightConifg {
   shadow: {
+    bias: number;
+    normalBias: number;
+    radius: number;
     mapSize: {
       width: number;
       height: number;
@@ -28,6 +31,10 @@ export interface DirectionalLightConfig extends LightConifg {
     camera: {
       near: number;
       far: number;
+      top: number;
+      bottom: number;
+      left: number;
+      right: number;
     };
   };
 }
@@ -82,6 +89,9 @@ export const getSpotLightConfig = function (): SpotLightConfig {
 export const getDirectionalLightConfig = function (): DirectionalLightConfig {
   return Object.assign(getLightConfig(), {
     shadow: {
+      bias: 0,
+      normalBias: 0,
+      radius: 1,
       mapSize: {
         width: 512,
         height: 512,
@@ -89,6 +99,10 @@ export const getDirectionalLightConfig = function (): DirectionalLightConfig {
       camera: {
         near: 0.5,
         far: 500,
+        top: window.innerHeight,
+        bottom: -window.innerHeight,
+        left: -window.innerWidth,
+        right: window.innerWidth,
       },
     },
   });

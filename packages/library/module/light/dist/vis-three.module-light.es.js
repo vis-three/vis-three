@@ -39,13 +39,20 @@ const getSpotLightConfig = function() {
 const getDirectionalLightConfig = function() {
   return Object.assign(getLightConfig(), {
     shadow: {
+      bias: 0,
+      normalBias: 0,
+      radius: 1,
       mapSize: {
         width: 512,
         height: 512
       },
       camera: {
         near: 0.5,
-        far: 500
+        far: 500,
+        top: window.innerHeight,
+        bottom: -window.innerHeight,
+        left: -window.innerWidth,
+        right: window.innerWidth
       }
     }
   });
