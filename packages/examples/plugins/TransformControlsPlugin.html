@@ -21,9 +21,11 @@
 
     <div id="button-position">
       <div id="button-group">
-        <button id="translate">translate</button>
-        <button id="rotate">rotate</button>
+        <button id="position">position</button>
+        <button id="rotation">rotation</button>
         <button id="scale">scale</button>
+        <button id="world">world</button>
+        <button id="local">local</button>
       </div>
     </div>
 
@@ -68,12 +70,14 @@
         new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
       );
       box.position.x = 10;
+      box.scale.set(0.5, 0.5, 0.5);
       scene.add(box);
 
       const box1 = new THREE.Mesh(box.geometry, box.material);
       box1.position.x = 10;
       box1.position.y = 10;
       box1.position.z = -10;
+      box1.scale.set(2, 2, 2);
       box.add(box1);
 
       const line = new THREE.Line(box.geometry);
@@ -92,20 +96,33 @@
 
       engine.addEventListener("selected", (event) => {
         engine.render();
+        console.log(engine);
       });
 
-      document.getElementById("translate").onclick = () => {
-        engine.transformControls.mode = "translate";
+      document.getElementById("position").onclick = () => {
+        engine.transformControls.mode = "position";
         engine.render();
       };
-      document.getElementById("rotate").onclick = () => {
-        engine.transformControls.mode = "rotate";
+      document.getElementById("rotation").onclick = () => {
+        engine.transformControls.mode = "rotation";
         engine.render();
       };
       document.getElementById("scale").onclick = () => {
         engine.transformControls.mode = "scale";
         engine.render();
       };
+      document.getElementById("world").onclick = () => {
+        engine.transformControls.space = "world";
+        engine.render();
+      };
+      document.getElementById("local").onclick = () => {
+        engine.transformControls.space = "local";
+        engine.render();
+      };
+
+      engine.transformControls.addEventListener("hover", (event) => {
+        engine.render();
+      });
 
       engine.transformControls.addEventListener("objectChange", (event) => {
         engine.render();

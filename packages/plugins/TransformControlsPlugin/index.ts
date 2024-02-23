@@ -8,14 +8,14 @@ import {
   SetDomEvent,
   SetSceneEvent,
 } from "@vis-three/core";
-import { TRANSFORM_EVENT, VisTransformControls } from "./VisTransformControls";
+import { TRANSFORM_EVENT, TransformControls } from "./TransformControls";
 
-export * from "./VisTransformControls";
+export * from "./TransformControls";
 export interface TransformControlsEngine extends Engine {
   /**是否处于变换控制器的变换状态 */
   transing: boolean;
   /**变换控制器 */
-  transformControls: VisTransformControls;
+  transformControls: TransformControls;
   /**设置变换控制器的显示隐藏 */
   setTransformControls: (show: boolean) => TransformControlsEngine;
 }
@@ -30,7 +30,7 @@ export const TransformControlsPlugin: Plugin<TransformControlsEngine, object> =
     return {
       name: TRANSFORM_CONTROLS_PLUGIN,
       install(engine) {
-        const transformControls = new VisTransformControls(
+        const transformControls = new TransformControls(
           engine.camera,
           engine.dom
         );
@@ -40,7 +40,7 @@ export const TransformControlsPlugin: Plugin<TransformControlsEngine, object> =
         engine.transformControls = transformControls;
 
         engine.scene.add(transformControls);
-        engine.scene.add(transformControls.target);
+        engine.scene.add(transformControls.object);
 
         engine.transformControls.addEventListener(
           TRANSFORM_EVENT.MOUSE_DOWN,
@@ -78,7 +78,7 @@ export const TransformControlsPlugin: Plugin<TransformControlsEngine, object> =
 
         setSceneFun = (event) => {
           const scene = event.scene;
-          scene.add(transformControls.target);
+          scene.add(transformControls.object);
           scene.add(transformControls);
         };
 

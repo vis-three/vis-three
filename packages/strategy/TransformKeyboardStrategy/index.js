@@ -34,7 +34,7 @@ export const TransformKeyboardStrategy = function () {
                 desp: "变换控制器模式：旋转",
                 keyup: (event) => {
                     event?.preventDefault();
-                    transformControls && (transformControls.mode = "rotate");
+                    transformControls && (transformControls.mode = "rotation");
                 },
             })
                 .register({
@@ -42,7 +42,7 @@ export const TransformKeyboardStrategy = function () {
                 desp: "变换控制器模式：移动",
                 keyup: (event) => {
                     event?.preventDefault();
-                    transformControls && (transformControls.mode = "translate");
+                    transformControls && (transformControls.mode = "position");
                 },
             })
                 .register({

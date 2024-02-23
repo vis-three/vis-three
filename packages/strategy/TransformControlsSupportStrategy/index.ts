@@ -4,6 +4,7 @@ import {
   CONFIGTYPE,
   DATA_SUPPORT_MANAGER_PLUGIN,
   MODULETYPE,
+  slientUpdate,
   uniqueSymbol,
 } from "@vis-three/middleware";
 import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
@@ -14,7 +15,6 @@ import {
   TRANSFORM_EVENT,
 } from "@vis-three/plugin-transform-controls";
 import { transPkgName } from "@vis-three/utils";
-import { Object3D } from "three";
 import { name as pkgname } from "./package.json";
 import TransformControlsProcessor, {
   TransformControlsSupportEngine,
@@ -50,29 +50,26 @@ export const TransformControlsSupportStrategy: Strategy<
         );
       });
 
-      const objectToConfig = (object: Object3D): ObjectConfig | null => {
-        const symbol = engine.compilerManager.getObjectSymbol(object);
-        if (!symbol) {
-          return null;
-        }
-
-        return engine.dataSupportManager.getConfigBySymbol(symbol);
-      };
-
       let config: ObjectConfig | null = null;
-      let mode: string;
       engine.transformControls.addEventListener(
         TRANSFORM_EVENT.CHANGED,
         (event) => {
           const e = event as unknown as ObjectChangedEvent;
 
           e.transObjectSet.forEach((object) => {
-            config = objectToConfig(object);
-            mode = e.mode;
+            config = engine.getObjectConfig(object);
             if (config) {
-              config[mode].x = object[mode].x;
-              config[mode].y = object[mode].y;
-              config[mode].z = object[mode].z;
+              slientUpdate(config, () => {
+                config!.position.x = object.position.x;
+                config!.position.y = object.position.y;
+                config!.position.z = object.position.z;
+                config!.rotation.x = object.rotation.x;
+                config!.rotation.y = object.rotation.y;
+                config!.rotation.z = object.rotation.z;
+                config!.scale.x = object.scale.x;
+                config!.scale.y = object.scale.y;
+                config!.scale.z = object.scale.z;
+              });
             }
           });
         }

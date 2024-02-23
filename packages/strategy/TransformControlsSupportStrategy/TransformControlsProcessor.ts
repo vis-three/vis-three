@@ -10,7 +10,7 @@ import {
 } from "@vis-three/module-controls";
 import {
   TransformControlsEngine,
-  VisTransformControls,
+  TransformControls,
 } from "@vis-three/plugin-transform-controls";
 
 export interface TransformControlsConfig extends ControlsConfig {
@@ -32,11 +32,9 @@ export interface TransformControlsConfig extends ControlsConfig {
   space: string;
 }
 
-const type = "TransformControls";
-
 export const getTransformControlsConfig = function (): TransformControlsConfig {
   return Object.assign(getControlsConfig(), {
-    vid: uniqueSymbol(type),
+    vid: uniqueSymbol("TransformControls"),
     axis: "XYZ",
     enabled: true,
     mode: "translate",
@@ -62,11 +60,11 @@ export interface TransformControlsSupportEngine
 
 export default defineProcessor<
   TransformControlsConfig,
-  VisTransformControls,
+  TransformControls,
   TransformControlsSupportEngine,
   ControlsCompiler
 >({
-  type,
+  type: "TransformControls",
   config: getTransformControlsConfig,
   commands: {
     set: {
@@ -74,13 +72,11 @@ export default defineProcessor<
         if (value) {
           target.translationSnap = config.translationSnap;
           target.rotationSnap = config.rotationSnap;
-          // @ts-ignore types 没写 源码有这个属性
           target.scaleSnap = config.scaleSnap;
         } else {
-          target.translationSnap = null;
-          target.rotationSnap = null;
-          // @ts-ignore types 没写 源码有这个属性
-          target.scaleSnap = null;
+          target.translationSnap = 0;
+          target.rotationSnap = 0;
+          target.scaleSnap = 0;
         }
       },
       translationSnap({ target, config, value }) {
@@ -104,19 +100,18 @@ export default defineProcessor<
   create(
     config: TransformControlsConfig,
     engine: TransformControlsSupportEngine
-  ): VisTransformControls {
+  ): TransformControls {
     let control = engine.transformControls;
 
     if (config.snapAllow) {
       control.translationSnap = config.translationSnap;
       control.rotationSnap = config.rotationSnap;
-      // @ts-ignore types 没写 源码有这个属性
       control.scaleSnap = config.scaleSnap;
     }
 
     return control;
   },
-  dispose(target: VisTransformControls) {
+  dispose(target: TransformControls) {
     target.dispose();
   },
 });

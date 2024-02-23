@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { syncObject, isObject, extendPath, isArray } from "@vis-three/utils";
+import { isObject, syncObject, extendPath, isArray } from "@vis-three/utils";
 import { v4, validate } from "uuid";
 import { EventDispatcher, ENGINE_EVENT, Engine } from "@vis-three/core";
 import { Subject } from "rxjs";
@@ -61,6 +61,45 @@ const defineOption = function(options) {
   if (options.symbol) {
     Object.assign(globalOption.symbol, options.symbol);
   }
+};
+const SYMBOL_FATHER = "vis.father";
+const SYMBOL_KEY = "vis.key";
+const SYMBOL_OB = "vis.observer";
+const arrayCache = /* @__PURE__ */ new WeakMap();
+const cacheArray = function(object) {
+  if (Array.isArray(object)) {
+    arrayCache.set(object, object.concat([]));
+  }
+};
+const getCacheArray = function(object) {
+  return arrayCache.get(object);
+};
+const getPath = function(object) {
+  let path = "";
+  const recursion = (object2) => {
+    if (object2[Symbol.for(SYMBOL_KEY)] !== void 0) {
+      path = `${object2[Symbol.for(SYMBOL_KEY)]}${path ? `.${path}` : ""}`;
+      if (object2[Symbol.for(SYMBOL_FATHER)]) {
+        recursion(object2[Symbol.for(SYMBOL_FATHER)]);
+      }
+    }
+  };
+  recursion(object);
+  return path;
+};
+const updateArraySymbol = function(array) {
+  if (array.length && isObject(array[0])) {
+    const length = array.length;
+    for (let index = 0; index < length; index += 1) {
+      array[index][Symbol.for(SYMBOL_KEY)] = index;
+    }
+  }
+};
+const getObserver = function(object) {
+  return object[Symbol.for(SYMBOL_OB)];
+};
+const hasObserver = function(object) {
+  return Boolean(object[Symbol.for(SYMBOL_OB)]);
 };
 const stringify = (key, value) => {
   if (value === Infinity) {
@@ -460,6 +499,16 @@ const globalObjectModuleTrigger = new ObjectModuleTrigger();
 const createSymbol = function() {
   return globalOption.symbol.generator();
 };
+const slientUpdate = function(config, fun) {
+  const ob = getObserver(config);
+  if (!ob) {
+    console.warn(`this object can not found it observer:`, config);
+    return;
+  }
+  ob.disable = true;
+  fun();
+  ob.disable = false;
+};
 var COMPILER_EVENT = /* @__PURE__ */ ((COMPILER_EVENT2) => {
   COMPILER_EVENT2["ADD"] = "compiler.add";
   COMPILER_EVENT2["REMOVE"] = "compiler.remove";
@@ -656,45 +705,6 @@ const CompilerFactory = function(type, compiler, processors) {
       }
     }
   };
-};
-const SYMBOL_FATHER = "vis.father";
-const SYMBOL_KEY = "vis.key";
-const SYMBOL_OB = "vis.observer";
-const arrayCache = /* @__PURE__ */ new WeakMap();
-const cacheArray = function(object) {
-  if (Array.isArray(object)) {
-    arrayCache.set(object, object.concat([]));
-  }
-};
-const getCacheArray = function(object) {
-  return arrayCache.get(object);
-};
-const getPath = function(object) {
-  let path = "";
-  const recursion = (object2) => {
-    if (object2[Symbol.for(SYMBOL_KEY)] !== void 0) {
-      path = `${object2[Symbol.for(SYMBOL_KEY)]}${path ? `.${path}` : ""}`;
-      if (object2[Symbol.for(SYMBOL_FATHER)]) {
-        recursion(object2[Symbol.for(SYMBOL_FATHER)]);
-      }
-    }
-  };
-  recursion(object);
-  return path;
-};
-const updateArraySymbol = function(array) {
-  if (array.length && isObject(array[0])) {
-    const length = array.length;
-    for (let index = 0; index < length; index += 1) {
-      array[index][Symbol.for(SYMBOL_KEY)] = index;
-    }
-  }
-};
-const getObserver = function(object) {
-  return object[Symbol.for(SYMBOL_OB)];
-};
-const hasObserver = function(object) {
-  return Boolean(object[Symbol.for(SYMBOL_OB)]);
 };
 const containerGetter = function(target, key, receiver) {
   return Reflect.get(target, key, receiver);
@@ -1123,6 +1133,7 @@ class Observer extends Subject {
     super();
     __publicField(this, "ignore", {});
     __publicField(this, "target");
+    __publicField(this, "disable", false);
     if (ignore) {
       this.ignore = ignore;
     } else {
@@ -1152,6 +1163,12 @@ class Observer extends Subject {
   }
   mergeIgnore(ignore) {
     this.ignore = Object.assign(this.ignore, ignore);
+  }
+  next(value) {
+    if (this.disable) {
+      return;
+    }
+    super.next(value);
   }
 }
 const observable = function(object, ignore) {
@@ -2279,4 +2296,4 @@ __publicField(ShaderGeneratorManager, "register", function(shader) {
   _ShaderGeneratorManager.library.set(shader.name, shader);
 });
 const PLUGINS = [COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN];
-export { AniScriptGeneratorManager, AntiShake, Bus$1 as Bus, COMPILER_EVENT, COMPILER_MANAGER_PLUGIN, COMPILER_SUPPORT_STRATEGY, CONFIGFACTORY, CONFIGMODULE, CONFIGTYPE, Compiler, CompilerFactory, CompilerManager, CompilerManagerPlugin, CompilerSupportStrategy, DATA_SUPPORT_MANAGER_PLUGIN, DataContainer, DataSupport, DataSupportFactory, DataSupportManager, DataSupportManagerPlugin, DefaultParser, EngineSupport, EventGeneratorManager, JSONHandler$1 as JSONHandler, LOADER_DATA_SUPPORT_STRATEGY, LOADER_MAPPING_STRATEGY, LoaderDataSupportStrategy, LoaderMappingStrategy, MODULETYPE, ModuleTrigger, OBJECTMODULE, ObjectModuleTrigger, PLUGINS, Parser, Processor, ProcessorMembers, RESOURCE_EVENT, RESOURCE_MANAGER_PLUGIN, ResourceManager, ResourceManagerPlugin, Rule, SUPPORT_LIFE_CYCLE, ShaderGeneratorManager, template$1 as Template, Translater, createSymbol, defineEngineSupport, defineOption, defineProcessor, emptyHandler, generateConfig, getModule, getObserver, getSymbolConfig, globalAntiShake, globalObjectModuleTrigger, globalOption, installProcessor, isObjectModule, isObjectType, observable, uniqueSymbol };
+export { AniScriptGeneratorManager, AntiShake, Bus$1 as Bus, COMPILER_EVENT, COMPILER_MANAGER_PLUGIN, COMPILER_SUPPORT_STRATEGY, CONFIGFACTORY, CONFIGMODULE, CONFIGTYPE, Compiler, CompilerFactory, CompilerManager, CompilerManagerPlugin, CompilerSupportStrategy, DATA_SUPPORT_MANAGER_PLUGIN, DataContainer, DataSupport, DataSupportFactory, DataSupportManager, DataSupportManagerPlugin, DefaultParser, EngineSupport, EventGeneratorManager, JSONHandler$1 as JSONHandler, LOADER_DATA_SUPPORT_STRATEGY, LOADER_MAPPING_STRATEGY, LoaderDataSupportStrategy, LoaderMappingStrategy, MODULETYPE, ModuleTrigger, OBJECTMODULE, ObjectModuleTrigger, PLUGINS, Parser, Processor, ProcessorMembers, RESOURCE_EVENT, RESOURCE_MANAGER_PLUGIN, ResourceManager, ResourceManagerPlugin, Rule, SUPPORT_LIFE_CYCLE, ShaderGeneratorManager, template$1 as Template, Translater, createSymbol, defineEngineSupport, defineOption, defineProcessor, emptyHandler, generateConfig, getModule, getObserver, getSymbolConfig, globalAntiShake, globalObjectModuleTrigger, globalOption, installProcessor, isObjectModule, isObjectType, observable, slientUpdate, uniqueSymbol };

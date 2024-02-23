@@ -1,3 +1,4 @@
+import { RenderEvent } from "@vis-three/middleware";
 import { Component } from ".";
 
 export enum LifeCycleHooks {
@@ -23,5 +24,7 @@ export const onBeforeDistory = function (fn: Function = () => {}) {
 
 export const onFrame = function (fn: Function = () => {}) {
   Component.currentComponent &&
-    Component.currentComponent.on(LifeCycleHooks.FRAME, (event) => fn(event));
+    Component.currentComponent.on<RenderEvent>(LifeCycleHooks.FRAME, (event) =>
+      fn(event.delta, event.total)
+    );
 };

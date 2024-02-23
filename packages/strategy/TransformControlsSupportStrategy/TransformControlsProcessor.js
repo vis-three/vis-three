@@ -1,9 +1,8 @@
 import { defineProcessor, uniqueSymbol, } from "@vis-three/middleware";
 import { getControlsConfig, } from "@vis-three/module-controls";
-const type = "TransformControls";
 export const getTransformControlsConfig = function () {
     return Object.assign(getControlsConfig(), {
-        vid: uniqueSymbol(type),
+        vid: uniqueSymbol("TransformControls"),
         axis: "XYZ",
         enabled: true,
         mode: "translate",
@@ -19,7 +18,7 @@ export const getTransformControlsConfig = function () {
     });
 };
 export default defineProcessor({
-    type,
+    type: "TransformControls",
     config: getTransformControlsConfig,
     commands: {
         set: {
@@ -27,14 +26,12 @@ export default defineProcessor({
                 if (value) {
                     target.translationSnap = config.translationSnap;
                     target.rotationSnap = config.rotationSnap;
-                    // @ts-ignore types 没写 源码有这个属性
                     target.scaleSnap = config.scaleSnap;
                 }
                 else {
-                    target.translationSnap = null;
-                    target.rotationSnap = null;
-                    // @ts-ignore types 没写 源码有这个属性
-                    target.scaleSnap = null;
+                    target.translationSnap = 0;
+                    target.rotationSnap = 0;
+                    target.scaleSnap = 0;
                 }
             },
             translationSnap({ target, config, value }) {
@@ -60,7 +57,6 @@ export default defineProcessor({
         if (config.snapAllow) {
             control.translationSnap = config.translationSnap;
             control.rotationSnap = config.rotationSnap;
-            // @ts-ignore types 没写 源码有这个属性
             control.scaleSnap = config.scaleSnap;
         }
         return control;

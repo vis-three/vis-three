@@ -32,6 +32,7 @@
         raw,
         onFrame,
         onMounted,
+        // animate,
       } from "@vis-three/widget";
 
       const engine = new DisplayEngineWidget()
@@ -125,6 +126,12 @@
           },
           setup({ engine }) {
             const rotationZ = ref(0);
+
+            const animation = animate({
+              target: rotationZ,
+              to: { value: Math.PI / 6 },
+            });
+            
             const enter = () => {
               rotationZ.value = Math.PI / 6;
             };
@@ -134,8 +141,8 @@
 
             const box = raw(null);
 
-            onFrame((e) => {
-              box.value && (box.value.rotation.y += e.delta * 2);
+            onFrame((delta) => {
+              box.value.rotation.y += delta * 2;
             });
 
             onMounted(() => {});

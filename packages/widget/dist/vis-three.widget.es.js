@@ -120,7 +120,10 @@ const onBeforeDistory = function(fn = () => {
 };
 const onFrame = function(fn = () => {
 }) {
-  Component.currentComponent && Component.currentComponent.on("frame", (event) => fn(event));
+  Component.currentComponent && Component.currentComponent.on(
+    "frame",
+    (event) => fn(event.delta, event.total)
+  );
 };
 let isFlushing = false;
 let isFlushPending = false;

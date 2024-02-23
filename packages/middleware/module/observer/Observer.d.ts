@@ -15,8 +15,10 @@ export interface ReactNotice {
 export declare class Observer<T extends object> extends Subject<ReactNotice> {
     private ignore;
     target: T;
+    disable: boolean;
     constructor(object: T, ignore?: Ignore);
     isIgnore(path: string): boolean;
     setIgnore(ignore: Ignore): void;
     mergeIgnore(ignore: Ignore): void;
+    next(value: ReactNotice): void;
 }

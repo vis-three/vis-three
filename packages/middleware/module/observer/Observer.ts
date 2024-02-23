@@ -20,6 +20,7 @@ export interface ReactNotice {
 export class Observer<T extends object> extends Subject<ReactNotice> {
   private ignore: Ignore = {};
   target: T;
+  disable = false;
 
   constructor(object: T, ignore?: Ignore) {
     super();
@@ -56,5 +57,13 @@ export class Observer<T extends object> extends Subject<ReactNotice> {
 
   mergeIgnore(ignore: Ignore) {
     this.ignore = Object.assign(this.ignore, ignore);
+  }
+
+  next(value: ReactNotice): void {
+    if (this.disable) {
+      return;
+    }
+
+    super.next(value);
   }
 }
