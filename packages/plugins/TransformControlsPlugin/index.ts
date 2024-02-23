@@ -32,15 +32,13 @@ export const TransformControlsPlugin: Plugin<TransformControlsEngine, object> =
       install(engine) {
         const transformControls = new TransformControls(
           engine.camera,
-          engine.dom
+          engine.dom,
+          engine.scene
         );
 
         transformControls.detach();
 
         engine.transformControls = transformControls;
-
-        engine.scene.add(transformControls);
-        engine.scene.add(transformControls.object);
 
         engine.transformControls.addEventListener(
           TRANSFORM_EVENT.MOUSE_DOWN,
@@ -51,11 +49,9 @@ export const TransformControlsPlugin: Plugin<TransformControlsEngine, object> =
 
         engine.setTransformControls = function (show: boolean) {
           if (show) {
-            this.transformControls.connect();
-            this.scene.add(this.transformControls);
+            this.transformControls.attach();
           } else {
-            this.transformControls.disconnect();
-            this.scene.remove(this.transformControls);
+            this.transformControls.detach();
           }
           return this;
         };
@@ -77,9 +73,7 @@ export const TransformControlsPlugin: Plugin<TransformControlsEngine, object> =
         engine.addEventListener<SetDomEvent>(ENGINE_EVENT.SETDOM, setDomFun);
 
         setSceneFun = (event) => {
-          const scene = event.scene;
-          scene.add(transformControls.object);
-          scene.add(transformControls);
+          transformControls.setScene(event.scene);
         };
 
         engine.addEventListener<SetSceneEvent>(

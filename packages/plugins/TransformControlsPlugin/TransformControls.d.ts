@@ -1,4 +1,4 @@
-import { BaseEvent, Camera, Object3D, Quaternion, Raycaster, Vector3 } from "three";
+import { BaseEvent, Camera, Object3D, Quaternion, Raycaster, Scene, Vector3 } from "three";
 import { TransformControlsGizmo } from "./TransformControlsGizmo";
 import { TransformControlsPlane } from "./TransformControlsPlane";
 export declare enum TRANSFORM_EVENT {
@@ -33,6 +33,7 @@ declare class TransformControls extends Object3D {
     showX: boolean;
     showY: boolean;
     showZ: boolean;
+    private cacheScene;
     private transObjectSet;
     private cacheObjects;
     worldPosition: Vector3;
@@ -74,8 +75,9 @@ declare class TransformControls extends Object3D {
         Y: Vector3;
         Z: Vector3;
     };
-    constructor(camera: Camera, domElement: HTMLElement);
+    constructor(camera: Camera, domElement: HTMLElement, scene: Scene);
     setDom(dom: HTMLElement): this;
+    setScene(scene: Scene): void;
     setCamera(camera: Camera): this;
     getTransObjectSet(): Set<Object3D>;
     connect(): void;

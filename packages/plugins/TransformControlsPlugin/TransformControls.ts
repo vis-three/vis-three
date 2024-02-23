@@ -6,6 +6,7 @@ import {
   Object3D,
   Quaternion,
   Raycaster,
+  Scene,
   Sprite,
   Vector3,
 } from "three";
@@ -48,6 +49,7 @@ class TransformControls extends Object3D {
   showY = true;
   showZ = true;
 
+  private cacheScene: Object3D | null = null;
   private transObjectSet = new Set<Object3D>();
   private cacheObjects: Map<
     Object3D,
@@ -104,7 +106,7 @@ class TransformControls extends Object3D {
     Z: new Vector3(0, 0, 1),
   };
 
-  constructor(camera: Camera, domElement: HTMLElement) {
+  constructor(camera: Camera, domElement: HTMLElement, scene: Scene) {
     super();
 
     if (domElement === undefined) {
@@ -116,6 +118,8 @@ class TransformControls extends Object3D {
 
     this.visible = false;
     this.domElement = domElement;
+
+    this.cacheScene = scene;
 
     const gizmo = new TransformControlsGizmo();
     this.gizmo = gizmo;
@@ -211,6 +215,10 @@ class TransformControls extends Object3D {
     return this;
   }
 
+  setScene(scene: Scene) {
+    this.cacheScene = scene;
+  }
+
   setCamera(camera: Camera) {
     this.camera = camera;
     return this;
@@ -296,13 +304,18 @@ class TransformControls extends Object3D {
   }
 
   attach() {
+    this.connect();
+    this.cacheScene?.add(this.object);
+    this.cacheScene?.add(this);
     this.visible = true;
     return this;
   }
 
   // Detatch
   detach() {
-    this.visible = false;
+    this.disconnect();
+    this.cacheScene?.remove(this);
+    this.cacheScene?.remove(this.object);
     this.axis = null;
     return this;
   }

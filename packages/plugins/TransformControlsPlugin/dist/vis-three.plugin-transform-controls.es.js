@@ -1094,7 +1094,7 @@ var TRANSFORM_EVENT = /* @__PURE__ */ ((TRANSFORM_EVENT2) => {
   return TRANSFORM_EVENT2;
 })(TRANSFORM_EVENT || {});
 class TransformControls extends Object3D {
-  constructor(camera, domElement) {
+  constructor(camera, domElement, scene) {
     super();
     this.object = new Object3D();
     this.enabled = true;
@@ -1109,6 +1109,7 @@ class TransformControls extends Object3D {
     this.showX = true;
     this.showY = true;
     this.showZ = true;
+    this.cacheScene = null;
     this.transObjectSet = /* @__PURE__ */ new Set();
     this.cacheObjects = /* @__PURE__ */ new Map();
     this.rotationAngle = 0;
@@ -1143,6 +1144,7 @@ class TransformControls extends Object3D {
     }
     this.visible = false;
     this.domElement = domElement;
+    this.cacheScene = scene;
     const gizmo = new TransformControlsGizmo();
     this.gizmo = gizmo;
     this.add(gizmo);
@@ -1215,6 +1217,9 @@ class TransformControls extends Object3D {
     this.domElement = dom;
     this.connect();
     return this;
+  }
+  setScene(scene) {
+    this.cacheScene = scene;
   }
   setCamera(camera) {
     this.camera = camera;
@@ -1289,11 +1294,18 @@ class TransformControls extends Object3D {
     });
   }
   attach() {
+    var _a, _b;
+    this.connect();
+    (_a = this.cacheScene) == null ? void 0 : _a.add(this.object);
+    (_b = this.cacheScene) == null ? void 0 : _b.add(this);
     this.visible = true;
     return this;
   }
   detach() {
-    this.visible = false;
+    var _a, _b;
+    this.disconnect();
+    (_a = this.cacheScene) == null ? void 0 : _a.remove(this);
+    (_b = this.cacheScene) == null ? void 0 : _b.remove(this.object);
     this.axis = null;
     return this;
   }
@@ -1683,12 +1695,11 @@ const TransformControlsPlugin = function() {
     install(engine) {
       const transformControls = new TransformControls(
         engine.camera,
-        engine.dom
+        engine.dom,
+        engine.scene
       );
       transformControls.detach();
       engine.transformControls = transformControls;
-      engine.scene.add(transformControls);
-      engine.scene.add(transformControls.object);
       engine.transformControls.addEventListener(
         TRANSFORM_EVENT.MOUSE_DOWN,
         () => {
@@ -1697,11 +1708,9 @@ const TransformControlsPlugin = function() {
       );
       engine.setTransformControls = function(show) {
         if (show) {
-          this.transformControls.connect();
-          this.scene.add(this.transformControls);
+          this.transformControls.attach();
         } else {
-          this.transformControls.disconnect();
-          this.scene.remove(this.transformControls);
+          this.transformControls.detach();
         }
         return this;
       };
@@ -1717,9 +1726,7 @@ const TransformControlsPlugin = function() {
       };
       engine.addEventListener(ENGINE_EVENT.SETDOM, setDomFun);
       setSceneFun = (event) => {
-        const scene = event.scene;
-        scene.add(transformControls.object);
-        scene.add(transformControls);
+        transformControls.setScene(event.scene);
       };
       engine.addEventListener(
         ENGINE_EVENT.SETSCENE,
