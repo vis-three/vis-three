@@ -10,7 +10,6 @@ import {
 import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
 import { ObjectConfig } from "@vis-three/module-object";
 import {
-  ObjectChangedEvent,
   TRANSFORM_CONTROLS_PLUGIN,
   TRANSFORM_EVENT,
 } from "@vis-three/plugin-transform-controls";
@@ -52,11 +51,10 @@ export const TransformControlsSupportStrategy: Strategy<
 
       let config: ObjectConfig | null = null;
       engine.transformControls.addEventListener(
-        TRANSFORM_EVENT.CHANGED,
+        TRANSFORM_EVENT.OBJECT_CHANGE,
         (event) => {
-          const e = event as unknown as ObjectChangedEvent;
-
-          e.transObjectSet.forEach((object) => {
+          console.log(1);
+          event.transObjectSet.forEach((object) => {
             config = engine.getObjectConfig(object);
             if (config) {
               slientUpdate(config, () => {

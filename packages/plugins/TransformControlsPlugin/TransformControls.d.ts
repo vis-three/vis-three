@@ -1,19 +1,12 @@
-import { BaseEvent, Camera, Object3D, Quaternion, Raycaster, Scene, Vector3 } from "three";
+import { Camera, Matrix4, Object3D, Quaternion, Raycaster, Scene, Vector3 } from "three";
 import { TransformControlsGizmo } from "./TransformControlsGizmo";
 import { TransformControlsPlane } from "./TransformControlsPlane";
 export declare enum TRANSFORM_EVENT {
     HOVER = "hover",
     CHANGE = "change",
-    CHANGED = "changed",
     MOUSE_DOWN = "mouseDown",
-    CHANGEING = "objectChange",
+    OBJECT_CHANGE = "objectChange",
     MOUSE_UP = "mouseUp"
-}
-export interface ObjectChangedEvent extends BaseEvent {
-    type: TRANSFORM_EVENT.CHANGED;
-    transObjectSet: Set<Object3D>;
-    mode: string;
-    target: Object3D;
 }
 declare class TransformControls extends Object3D {
     domElement: HTMLElement;
@@ -70,6 +63,7 @@ declare class TransformControls extends Object3D {
     _tempQuaternion: Quaternion;
     _tempVector: Vector3;
     _tempVector2: Vector3;
+    _tempMatrix: Matrix4;
     _unit: {
         X: Vector3;
         Y: Vector3;

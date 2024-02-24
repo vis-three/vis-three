@@ -16,17 +16,9 @@ import { TransformControlsPlane } from "./TransformControlsPlane";
 export enum TRANSFORM_EVENT {
   HOVER = "hover",
   CHANGE = "change",
-  CHANGED = "changed",
   MOUSE_DOWN = "mouseDown",
-  CHANGEING = "objectChange",
+  OBJECT_CHANGE = "objectChange",
   MOUSE_UP = "mouseUp",
-}
-
-export interface ObjectChangedEvent extends BaseEvent {
-  type: TRANSFORM_EVENT.CHANGED;
-  transObjectSet: Set<Object3D>;
-  mode: string;
-  target: Object3D;
 }
 
 class TransformControls extends Object3D {
@@ -99,6 +91,7 @@ class TransformControls extends Object3D {
   _tempQuaternion = new Quaternion();
   _tempVector = new Vector3();
   _tempVector2 = new Vector3();
+  _tempMatrix = new Matrix4();
 
   _unit = {
     X: new Vector3(1, 0, 0),
@@ -759,11 +752,6 @@ class TransformControls extends Object3D {
       mode: this.mode,
       transObjectSet: this.transObjectSet,
     });
-    this.dispatchEvent({
-      type: TRANSFORM_EVENT.CHANGEING,
-      mode: this.mode,
-      transObjectSet: this.transObjectSet,
-    });
   }
 
   pointerUp(pointer) {
@@ -778,6 +766,11 @@ class TransformControls extends Object3D {
 
       this.cacheObjects.clear();
 
+      this.dispatchEvent({
+        type: TRANSFORM_EVENT.OBJECT_CHANGE,
+        mode: this.mode,
+        transObjectSet: this.transObjectSet,
+      });
       this.dispatchEvent({ type: TRANSFORM_EVENT.MOUSE_UP, mode: this.mode });
     }
 

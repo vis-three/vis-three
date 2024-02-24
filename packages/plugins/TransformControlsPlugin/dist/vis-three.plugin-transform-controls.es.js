@@ -1087,9 +1087,8 @@ class TransformControlsPlane extends Mesh {
 var TRANSFORM_EVENT = /* @__PURE__ */ ((TRANSFORM_EVENT2) => {
   TRANSFORM_EVENT2["HOVER"] = "hover";
   TRANSFORM_EVENT2["CHANGE"] = "change";
-  TRANSFORM_EVENT2["CHANGED"] = "changed";
   TRANSFORM_EVENT2["MOUSE_DOWN"] = "mouseDown";
-  TRANSFORM_EVENT2["CHANGEING"] = "objectChange";
+  TRANSFORM_EVENT2["OBJECT_CHANGE"] = "objectChange";
   TRANSFORM_EVENT2["MOUSE_UP"] = "mouseUp";
   return TRANSFORM_EVENT2;
 })(TRANSFORM_EVENT || {});
@@ -1131,6 +1130,7 @@ class TransformControls extends Object3D {
     this._tempQuaternion = new Quaternion();
     this._tempVector = new Vector3();
     this._tempVector2 = new Vector3();
+    this._tempMatrix = new Matrix4();
     this._unit = {
       X: new Vector3(1, 0, 0),
       Y: new Vector3(0, 1, 0),
@@ -1608,11 +1608,6 @@ class TransformControls extends Object3D {
       mode: this.mode,
       transObjectSet: this.transObjectSet
     });
-    this.dispatchEvent({
-      type: "objectChange",
-      mode: this.mode,
-      transObjectSet: this.transObjectSet
-    });
   }
   pointerUp(pointer) {
     if (pointer.button !== 0)
@@ -1624,6 +1619,11 @@ class TransformControls extends Object3D {
         cacheTrans.parent.attach(object);
       });
       this.cacheObjects.clear();
+      this.dispatchEvent({
+        type: "objectChange",
+        mode: this.mode,
+        transObjectSet: this.transObjectSet
+      });
       this.dispatchEvent({ type: "mouseUp", mode: this.mode });
     }
     this.dragging = false;
@@ -1705,13 +1705,7 @@ const TransformControlsPlugin = function() {
         }
       );
       engine.setTransformControls = function(show) {
-        if (show) {
-          this.transformControls.attach();
-          this.transformControls.visible = true;
-        } else {
-          this.transformControls.detach();
-          this.transformControls.visible = false;
-        }
+        this.transformControls.visible = show;
         return this;
       };
       setCameraFun = (event) => {
