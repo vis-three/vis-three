@@ -22,11 +22,11 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.7",
-    "@vis-three/middleware": "workspace:^0.6.27",
-    "@vis-three/module-renderer": "workspace:^0.6.3",
-    "@vis-three/plugin-css3d-renderer": "workspace:^0.6.2",
-    "@vis-three/utils": "workspace:^0.6.2"
+    "@vis-three/core": "workspace:^",
+    "@vis-three/middleware": "workspace:^",
+    "@vis-three/module-renderer": "workspace:^",
+    "@vis-three/plugin-css3d-renderer": "workspace:^",
+    "@vis-three/utils": "workspace:^"
   },
   "files": [
     "**/*.js",

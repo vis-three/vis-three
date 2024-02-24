@@ -27,12 +27,12 @@
     "vite": "^2.9.15"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.7",
-    "@vis-three/middleware": "workspace:^0.6.27",
-    "@vis-three/module-controls": "workspace:^0.6.4",
-    "@vis-three/module-path": "workspace:^0.6.7",
-    "@vis-three/plugin-path-support-controls": "workspace:^0.6.6",
-    "@vis-three/utils": "workspace:^0.6.2"
+    "@vis-three/core": "workspace:^",
+    "@vis-three/middleware": "workspace:^",
+    "@vis-three/module-controls": "workspace:^",
+    "@vis-three/module-path": "workspace:^",
+    "@vis-three/plugin-path-support-controls": "workspace:^",
+    "@vis-three/utils": "workspace:^"
   },
   "files": [
     "dist",

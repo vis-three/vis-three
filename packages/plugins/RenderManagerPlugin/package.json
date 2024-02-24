@@ -14,8 +14,8 @@
     "docs": "npx typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.7",
-    "@vis-three/utils": "workspace:^0.6.2"
+    "@vis-three/core": "workspace:^",
+    "@vis-three/utils": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^18.11.12",

@@ -26,17 +26,17 @@
     "vite": "^2.9.15"
   },
   "dependencies": {
-    "@vis-three/middleware": "workspace:^0.6.27",
-    "@vis-three/module-animation-clip": "workspace:^0.6.2",
-    "@vis-three/module-bone": "workspace:^0.6.0",
-    "@vis-three/module-css3d": "workspace:^0.6.4",
-    "@vis-three/module-geometry": "workspace:^0.6.11",
-    "@vis-three/module-material": "workspace:^0.6.7",
-    "@vis-three/module-skeleton": "workspace:^0.6.1",
-    "@vis-three/module-skinned-mesh": "workspace:^0.6.1",
-    "@vis-three/module-solid-object": "workspace:^0.6.0",
-    "@vis-three/module-texture": "workspace:^0.6.3",
-    "@vis-three/utils": "workspace:^0.6.2",
+    "@vis-three/middleware": "workspace:^",
+    "@vis-three/module-animation-clip": "workspace:^",
+    "@vis-three/module-bone": "workspace:^",
+    "@vis-three/module-css3d": "workspace:^",
+    "@vis-three/module-geometry": "workspace:^",
+    "@vis-three/module-material": "workspace:^",
+    "@vis-three/module-skeleton": "workspace:^",
+    "@vis-three/module-skinned-mesh": "workspace:^",
+    "@vis-three/module-solid-object": "workspace:^",
+    "@vis-three/module-texture": "workspace:^",
+    "@vis-three/utils": "workspace:^",
     "uuid": "^8.3.2"
   },
   "files": [

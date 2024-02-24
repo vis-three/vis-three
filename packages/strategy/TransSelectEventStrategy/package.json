@@ -22,11 +22,11 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.7",
-    "@vis-three/plugin-event-manager": "workspace:^0.6.2",
-    "@vis-three/plugin-selection": "workspace:^0.6.3",
-    "@vis-three/plugin-transform-controls": "workspace:^0.6.1",
-    "@vis-three/utils": "workspace:^0.6.2"
+    "@vis-three/core": "workspace:^",
+    "@vis-three/plugin-event-manager": "workspace:^",
+    "@vis-three/plugin-selection": "workspace:^",
+    "@vis-three/plugin-transform-controls": "workspace:^",
+    "@vis-three/utils": "workspace:^"
   },
   "files": [
     "**/*.js",

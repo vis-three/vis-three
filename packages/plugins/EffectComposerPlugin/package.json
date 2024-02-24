@@ -25,9 +25,9 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@vis-three/core": "workspace:^0.6.7",
-    "@vis-three/plugin-webgl-renderer": "workspace:^0.6.1",
-    "@vis-three/utils": "workspace:^0.6.2"
+    "@vis-three/core": "workspace:^",
+    "@vis-three/plugin-webgl-renderer": "workspace:^",
+    "@vis-three/utils": "workspace:^"
   },
   "files": [
     "**/*.js",

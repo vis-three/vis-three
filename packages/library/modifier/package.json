@@ -26,7 +26,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@vis-three/modifier-boolean": "workspace:^0.6.2"
+    "@vis-three/modifier-boolean": "workspace:^"
   },
   "files": [
     "index.js",

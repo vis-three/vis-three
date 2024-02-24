@@ -25,7 +25,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@vis-three/middleware": "workspace:^0.6.27"
+    "@vis-three/middleware": "workspace:^"
   },
   "files": [
     "**/*.js",
