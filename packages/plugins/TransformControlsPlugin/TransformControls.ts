@@ -116,7 +116,6 @@ class TransformControls extends Object3D {
       domElement = document.body;
     }
 
-    this.visible = false;
     this.domElement = domElement;
 
     this.cacheScene = scene;
@@ -307,7 +306,6 @@ class TransformControls extends Object3D {
     this.connect();
     this.cacheScene?.add(this.object);
     this.cacheScene?.add(this);
-    this.visible = true;
     return this;
   }
 

@@ -712,7 +712,7 @@ class TransformControlsGizmo extends Object3D {
     this.picker["scale"].visible = false;
   }
   updateMatrixWorld(force) {
-    const space = this.mode === "scale" ? this.space : "local";
+    const space = this.mode === "scale" ? "local" : this.space;
     const quaternion = space === "local" ? this.worldQuaternion : this._identityQuaternion;
     this.gizmo["position"].visible = this.mode === "position";
     this.gizmo["rotation"].visible = this.mode === "rotation";
@@ -1142,7 +1142,6 @@ class TransformControls extends Object3D {
       );
       domElement = document.body;
     }
-    this.visible = false;
     this.domElement = domElement;
     this.cacheScene = scene;
     const gizmo = new TransformControlsGizmo();
@@ -1298,7 +1297,6 @@ class TransformControls extends Object3D {
     this.connect();
     (_a = this.cacheScene) == null ? void 0 : _a.add(this.object);
     (_b = this.cacheScene) == null ? void 0 : _b.add(this);
-    this.visible = true;
     return this;
   }
   detach() {
@@ -1709,8 +1707,10 @@ const TransformControlsPlugin = function() {
       engine.setTransformControls = function(show) {
         if (show) {
           this.transformControls.attach();
+          this.transformControls.visible = true;
         } else {
           this.transformControls.detach();
+          this.transformControls.visible = false;
         }
         return this;
       };

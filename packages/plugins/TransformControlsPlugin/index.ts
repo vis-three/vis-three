@@ -50,8 +50,10 @@ export const TransformControlsPlugin: Plugin<TransformControlsEngine, object> =
         engine.setTransformControls = function (show: boolean) {
           if (show) {
             this.transformControls.attach();
+            this.transformControls.visible = true;
           } else {
             this.transformControls.detach();
+            this.transformControls.visible = false;
           }
           return this;
         };

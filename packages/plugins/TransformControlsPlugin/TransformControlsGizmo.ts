@@ -832,7 +832,7 @@ export class TransformControlsGizmo extends Object3D {
   // updateMatrixWorld will update transformations and appearance of individual handles
 
   updateMatrixWorld(force) {
-    const space = this.mode === "scale" ? this.space : "local"; // scale always oriented to local rotation
+    const space = this.mode === "scale" ? "local" : this.space; // scale always oriented to local rotation
 
     const quaternion =
       space === "local" ? this.worldQuaternion : this._identityQuaternion;
