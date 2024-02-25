@@ -1309,6 +1309,7 @@ class TransformControls extends Object3D {
   }
   setAttach(...object) {
     this.transObjectSet.clear();
+    this.cacheObjects.clear();
     if (!object.length || !object[0]) {
       this.detach();
       return this;
@@ -1325,6 +1326,14 @@ class TransformControls extends Object3D {
       target.updateMatrix();
       target.updateMatrixWorld();
       this.transObjectSet.add(currentObject);
+      const virtual = new Object3D();
+      target.add(virtual);
+      virtual.matrixWorld.copy(currentObject.matrixWorld);
+      this.applyMatrixToMatrixWorld(virtual.matrixWorld, virtual);
+      this.cacheObjects.set(currentObject, {
+        matrixAutoUpdate: currentObject.matrixAutoUpdate,
+        virtual
+      });
       return this;
     }
     const xList = [];
@@ -1344,8 +1353,24 @@ class TransformControls extends Object3D {
     target.updateMatrixWorld();
     object.forEach((elem) => {
       this.transObjectSet.add(elem);
+      const virtual = new Object3D();
+      target.add(virtual);
+      virtual.matrixWorld.copy(elem.matrixWorld);
+      this.applyMatrixToMatrixWorld(virtual.matrixWorld, virtual);
+      this.cacheObjects.set(elem, {
+        matrixAutoUpdate: elem.matrixAutoUpdate,
+        virtual
+      });
     });
     return this;
+  }
+  applyMatrixToMatrixWorld(matrix, object) {
+    object.matrixWorld.copy(matrix);
+    object.matrix.multiplyMatrices(
+      this._tempMatrix.copy(object.parent.matrixWorld).invert(),
+      object.matrixWorld
+    );
+    object.matrix.decompose(object.position, object.quaternion, object.scale);
   }
   getMode() {
     return this.mode;
@@ -1437,12 +1462,7 @@ class TransformControls extends Object3D {
         this.pointStart.copy(planeIntersect.point).sub(this.worldPositionStart);
       }
       this.transObjectSet.forEach((object) => {
-        this.cacheObjects.set(object, {
-          matrixAutoUpdate: object.matrixAutoUpdate,
-          parent: object.parent
-        });
         object.matrixAutoUpdate = false;
-        this.object.attach(object);
       });
       this.dragging = true;
       this.dispatchEvent({ type: "mouseDown", mode: this.mode });
@@ -1603,8 +1623,17 @@ class TransformControls extends Object3D {
         object.quaternion.multiply(this._quaternionStart).normalize();
       }
     }
+    this.transObjectSet.forEach((elem) => {
+      const cache = this.cacheObjects.get(elem);
+      this.applyMatrixToMatrixWorld(cache.virtual.matrixWorld, elem);
+    });
     this.dispatchEvent({
       type: "change",
+      mode: this.mode,
+      transObjectSet: this.transObjectSet
+    });
+    this.dispatchEvent({
+      type: "objectChange",
       mode: this.mode,
       transObjectSet: this.transObjectSet
     });
@@ -1616,13 +1645,6 @@ class TransformControls extends Object3D {
       this.transObjectSet.forEach((object) => {
         const cacheTrans = this.cacheObjects.get(object);
         object.matrixAutoUpdate = cacheTrans.matrixAutoUpdate;
-        cacheTrans.parent.attach(object);
-      });
-      this.cacheObjects.clear();
-      this.dispatchEvent({
-        type: "objectChange",
-        mode: this.mode,
-        transObjectSet: this.transObjectSet
       });
       this.dispatchEvent({ type: "mouseUp", mode: this.mode });
     }

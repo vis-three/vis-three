@@ -1,8 +1,10 @@
 import {
   BaseEvent,
+  BoxBufferGeometry,
   Camera,
   Euler,
   Matrix4,
+  Mesh,
   Object3D,
   Quaternion,
   Raycaster,
@@ -46,7 +48,7 @@ class TransformControls extends Object3D {
   private cacheObjects: Map<
     Object3D,
     {
-      parent: Object3D;
+      virtual: Object3D;
       matrixAutoUpdate: boolean;
     }
   > = new Map();
@@ -313,6 +315,7 @@ class TransformControls extends Object3D {
 
   setAttach(...object: Object3D[]): this {
     this.transObjectSet.clear();
+    this.cacheObjects.clear();
 
     if (!object.length || !object[0]) {
       this.detach();
@@ -335,6 +338,17 @@ class TransformControls extends Object3D {
       target.updateMatrixWorld();
 
       this.transObjectSet.add(currentObject);
+
+      const virtual = new Object3D();
+      target.add(virtual);
+
+      virtual.matrixWorld.copy(currentObject.matrixWorld);
+      this.applyMatrixToMatrixWorld(virtual.matrixWorld, virtual);
+
+      this.cacheObjects.set(currentObject, {
+        matrixAutoUpdate: currentObject.matrixAutoUpdate,
+        virtual,
+      });
 
       return this;
     }
@@ -364,9 +378,28 @@ class TransformControls extends Object3D {
 
     object.forEach((elem) => {
       this.transObjectSet.add(elem);
+      const virtual = new Object3D();
+      target.add(virtual);
+
+      virtual.matrixWorld.copy(elem.matrixWorld);
+      this.applyMatrixToMatrixWorld(virtual.matrixWorld, virtual);
+
+      this.cacheObjects.set(elem, {
+        matrixAutoUpdate: elem.matrixAutoUpdate,
+        virtual,
+      });
     });
 
     return this;
+  }
+
+  applyMatrixToMatrixWorld(matrix: Matrix4, object: Object3D) {
+    object.matrixWorld.copy(matrix);
+    object.matrix.multiplyMatrices(
+      this._tempMatrix.copy(object.parent!.matrixWorld).invert(),
+      object.matrixWorld
+    );
+    object.matrix.decompose(object.position, object.quaternion, object.scale);
   }
 
   // TODO: deprecate
@@ -496,14 +529,7 @@ class TransformControls extends Object3D {
       }
 
       this.transObjectSet.forEach((object) => {
-        this.cacheObjects.set(object, {
-          matrixAutoUpdate: object.matrixAutoUpdate,
-          parent: object.parent!,
-        });
-
         object.matrixAutoUpdate = false;
-
-        this.object.attach(object);
       });
 
       this.dragging = true;
@@ -747,8 +773,18 @@ class TransformControls extends Object3D {
       }
     }
 
+    this.transObjectSet.forEach((elem) => {
+      const cache = this.cacheObjects.get(elem)!;
+      this.applyMatrixToMatrixWorld(cache.virtual.matrixWorld, elem);
+    });
+
     this.dispatchEvent({
       type: TRANSFORM_EVENT.CHANGE,
+      mode: this.mode,
+      transObjectSet: this.transObjectSet,
+    });
+    this.dispatchEvent({
+      type: TRANSFORM_EVENT.OBJECT_CHANGE,
       mode: this.mode,
       transObjectSet: this.transObjectSet,
     });
@@ -761,16 +797,8 @@ class TransformControls extends Object3D {
       this.transObjectSet.forEach((object) => {
         const cacheTrans = this.cacheObjects.get(object)!;
         object.matrixAutoUpdate = cacheTrans.matrixAutoUpdate;
-        cacheTrans.parent.attach(object);
       });
 
-      this.cacheObjects.clear();
-
-      this.dispatchEvent({
-        type: TRANSFORM_EVENT.OBJECT_CHANGE,
-        mode: this.mode,
-        transObjectSet: this.transObjectSet,
-      });
       this.dispatchEvent({ type: TRANSFORM_EVENT.MOUSE_UP, mode: this.mode });
     }
 

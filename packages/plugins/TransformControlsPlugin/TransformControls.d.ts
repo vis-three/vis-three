@@ -81,6 +81,7 @@ declare class TransformControls extends Object3D {
     attach(): this;
     detach(): this;
     setAttach(...object: Object3D[]): this;
+    applyMatrixToMatrixWorld(matrix: Matrix4, object: Object3D): void;
     getMode(): "position" | "scale" | "rotation";
     setMode(mode: any): void;
     setTranslationSnap(translationSnap: any): void;
