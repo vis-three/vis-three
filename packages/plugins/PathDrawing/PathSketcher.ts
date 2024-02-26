@@ -6,11 +6,13 @@ import {
 } from "@vis-three/core";
 import { PointerManagerEngine } from "@vis-three/plugin-pointer-manager";
 import {
+  Camera,
   Matrix4,
   Mesh,
   MeshBasicMaterial,
   Object3D,
   OrthographicCamera,
+  PerspectiveCamera,
   Plane,
   PlaneBufferGeometry,
   Quaternion,
@@ -39,7 +41,7 @@ export enum PATHSKETCHER_EVENT {
 }
 
 export class PathSketcher extends EventDispatcher {
-  camera = new OrthographicCamera(
+  camera: OrthographicCamera | PerspectiveCamera = new OrthographicCamera(
     -window.innerWidth,
     window.innerWidth,
     window.innerHeight,
@@ -68,7 +70,12 @@ export class PathSketcher extends EventDispatcher {
   private cachePoint = new Vector3();
   private cacheRelativePoint = new Vector3();
 
+  private _tempVector = new Vector3();
+  private _tempVector2 = new Vector3();
+  private _tempQuaternion = new Quaternion();
+
   begun = false;
+  autoPlane = false;
 
   private setScene = (event: SetSceneEvent) => {
     this.drawingBoard.parent && event.scene.add(this.drawingBoard);
@@ -84,6 +91,10 @@ export class PathSketcher extends EventDispatcher {
   };
 
   private cacheWriteFun = (event: MouseEvent) => {
+    if (this.autoPlane) {
+      this.autoCalcPlane();
+    }
+
     const point = this.engine.pointerManager.intersectPlane(
       this.camera,
       this.plane,
@@ -105,6 +116,9 @@ export class PathSketcher extends EventDispatcher {
   };
 
   private cacheMoveFun = (event: MouseEvent) => {
+    if (this.autoPlane) {
+      this.autoCalcPlane();
+    }
     const point = this.engine.pointerManager.intersectPlane(
       this.camera,
       this.plane,
@@ -135,6 +149,43 @@ export class PathSketcher extends EventDispatcher {
     engine.addEventListener(ENGINE_EVENT.SETSCENE, this.setScene);
   }
 
+  private autoCalcPlane() {
+    const plane = this.plane;
+    const camera = this.camera;
+    const _tempVector = this._tempVector.set(0, 0, 0);
+    const _tempQuaternion = this._tempQuaternion;
+
+    plane.normal
+      .set(0, 0, 1)
+      .applyQuaternion(camera.getWorldQuaternion(_tempQuaternion))
+      .normalize();
+
+    _tempVector.set(0, 0, 0).project(camera);
+
+    if (
+      _tempVector.x > 1 ||
+      _tempVector.x < -1 ||
+      _tempVector.y > 1 ||
+      _tempVector.y < -1 ||
+      _tempVector.z > 1 ||
+      _tempVector.z < -1
+    ) {
+      plane.constant = camera.getWorldPosition(_tempVector).length() + 50;
+    } else {
+      plane.constant = 0;
+    }
+  }
+
+  setCamera(camera: OrthographicCamera | PerspectiveCamera) {
+    this.camera = camera;
+    return this;
+  }
+
+  setAutoPlane(status: boolean) {
+    this.autoPlane = status;
+    return this;
+  }
+
   setDraingBoardSize(width: number, height: number) {
     const newGeometry = new PlaneBufferGeometry(width, height);
     this.drawingBoard.geometry.copy(newGeometry);
@@ -157,9 +208,11 @@ export class PathSketcher extends EventDispatcher {
       .multiplyScalar(this.plane.constant)
       .add(offset.multiplyScalar(scalar));
 
-    this.camera.zoom =
-      (this.camera.top - this.camera.bottom) /
-      (this.drawingBoard.geometry.parameters.height + this.boardOffset);
+    if (this.camera instanceof OrthographicCamera) {
+      this.camera.zoom =
+        (this.camera.top - this.camera.bottom) /
+        (this.drawingBoard.geometry.parameters.height + this.boardOffset);
+    }
 
     this.camera.updateProjectionMatrix();
 

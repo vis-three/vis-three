@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Path2</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <body>
+    <div id="button-position">
+      <div id="button-group">
+        <button id="line">line</button>
+        <button id="arc">arc</button>
+        <button id="cubic">cubic</button>
+        <button id="quadratic">quadratic</button>
+        <button id="end">end</button>
+      </div>
+    </div>
+    <div id="app"></div>
+    <script type="module">
+      import * as THREE from "three";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      const engine = new ModelingEngineSupport()
+        .uninstall("TransformControlsPlugin")
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      engine.setSceneBySymbol(scene.vid).setViewpoint("front");
+
+      generateConfig.injectScene = true;
+
+      const path = generateConfig(CONFIGTYPE.PATH, {
+        autoClose: false,
+      });
+
+      window.drawPath = path;
+
+      const geometry = generateConfig(CONFIGTYPE.PATHGEOMETRY, {
+        path: path.vid,
+        space: false,
+      });
+
+      const material = generateConfig(CONFIGTYPE.LINEBASICMATERIAL, {});
+
+      const line = generateConfig(CONFIGTYPE.LINE, {
+        material: material.vid,
+        geometry: geometry.vid,
+      });
+
+      const point = new THREE.Vector3();
+
+      const sketcher = engine.pathSketcher
+        .setSketcherByPlane()
+        .changeToDrawingView()
+        .beginDraw();
+
+      const gui = new GUI();
+
+      let getCurve = (event) => {
+        return {
+          curve: "line",
+          params: [
+            event.point.x,
+            event.point.y,
+            event.point.x + 1,
+            event.point.y + 1,
+          ],
+        };
+      };
+
+      sketcher.addEventListener("write", (event) => {
+        path.curves.push(getCurve(event));
+        gui.add(path.curves[path.curves.length - 1].params, "0", 1, 130);
+      });
+
+      sketcher.addEventListener("move", (event) => {
+        const lineParams = path.curves[path.curves.length - 1].params;
+        lineParams[lineParams.length - 2] = event.point.x;
+        lineParams[lineParams.length - 1] = event.point.y;
+      });
+
+      sketcher.addEventListener("end", (event) => {
+        path.curves.pop();
+      });
+
+      document.getElementById("line").onclick = (event) => {
+        if (path.curves.length) {
+          const lastCurve = path.curves.pop();
+          const params = lastCurve.params;
+
+          path.curves.push({
+            curve: "line",
+            params: [params[0], params[1], params[0] + 1, params[1] + 1],
+          });
+        }
+
+        getCurve = (event) => {
+          return {
+            curve: "line",
+            params: [
+              event.point.x,
+              event.point.y,
+              event.point.x + 1,
+              event.point.y + 1,
+            ],
+          };
+        };
+      };
+
+      document.getElementById("arc").onclick = (event) => {
+        if (path.curves.length) {
+          const lastCurve = path.curves.pop();
+          const params = lastCurve.params;
+
+          path.curves.push({
+            curve: "arc",
+            params: [
+              params[0],
+              params[1],
+              params[0] + 10,
+              params[1] + 5,
+              params[0] + 1,
+              params[1] + 1,
+            ],
+          });
+        }
+
+        getCurve = (event) => {
+          return {
+            curve: "arc",
+            params: [
+              event.point.x,
+              event.point.y,
+              event.point.x + 10,
+              event.point.y + 5,
+              event.point.x + 1,
+              event.point.y + 1,
+            ],
+          };
+        };
+      };
+
+      document.getElementById("cubic").onclick = (event) => {
+        if (path.curves.length) {
+          const lastCurve = path.curves.pop();
+          const params = lastCurve.params;
+
+          path.curves.push({
+            curve: "cubic",
+            params: [
+              params[0],
+              params[1],
+              params[0] + 10,
+              params[1] + 5,
+              params[0] + 30,
+              params[1] + 35,
+              params[0] + 1,
+              params[1] + 1,
+            ],
+          });
+        }
+
+        getCurve = (event) => {
+          return {
+            curve: "cubic",
+            params: [
+              event.point.x,
+              event.point.y,
+              event.point.x + 10,
+              event.point.y + 5,
+              event.point.x + 30,
+              event.point.y + 35,
+              event.point.x + 1,
+              event.point.y + 1,
+            ],
+          };
+        };
+      };
+
+      document.getElementById("quadratic").onclick = (event) => {
+        if (path.curves.length) {
+          const lastCurve = path.curves.pop();
+          const params = lastCurve.params;
+
+          path.curves.push({
+            curve: "quadratic",
+            params: [
+              params[0],
+              params[1],
+              params[0] + 30,
+              params[1] + 35,
+              params[0] + 1,
+              params[1] + 1,
+            ],
+          });
+        }
+
+        getCurve = (event) => {
+          return {
+            curve: "quadratic",
+            params: [
+              event.point.x,
+              event.point.y,
+              event.point.x + 30,
+              event.point.y + 35,
+              event.point.x + 1,
+              event.point.y + 1,
+            ],
+          };
+        };
+      };
+
+      const end = () => {
+        sketcher.endDraw();
+      };
+
+      document.getElementById("end").onclick = end;
+
+      document.addEventListener("keydown", (event) => {
+        if (event.keyCode === 13) {
+          end();
+        }
+      });
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>

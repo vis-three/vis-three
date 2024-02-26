@@ -36,7 +36,11 @@ export interface PathConfig extends SymbolConfig {
   autoClose: boolean;
 }
 
-export interface Path3Config extends SymbolConfig {}
+export interface Path3Config extends SymbolConfig {
+  curves: SegmentConfig[];
+  /**自动闭合路径，会在头尾之间添加一条直线line */
+  autoClose: boolean;
+}
 
 export const getPathConfig = function (): PathConfig {
   return Object.assign(getSymbolConfig(), {
@@ -46,5 +50,5 @@ export const getPathConfig = function (): PathConfig {
 };
 
 export const getPath3Config = function (): Path3Config {
-  return Object.assign(getSymbolConfig(), {});
+  return Object.assign(getSymbolConfig(), { curves: [], autoClose: false });
 };

@@ -29,6 +29,9 @@ export interface PathConfig extends SymbolConfig {
     autoClose: boolean;
 }
 export interface Path3Config extends SymbolConfig {
+    curves: SegmentConfig[];
+    /**自动闭合路径，会在头尾之间添加一条直线line */
+    autoClose: boolean;
 }
 export declare const getPathConfig: () => PathConfig;
 export declare const getPath3Config: () => Path3Config;

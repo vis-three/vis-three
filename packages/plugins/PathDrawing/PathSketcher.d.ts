@@ -1,6 +1,6 @@
 import { BaseEvent, EventDispatcher } from "@vis-three/core";
 import { PointerManagerEngine } from "@vis-three/plugin-pointer-manager";
-import { Matrix4, Mesh, MeshBasicMaterial, Object3D, OrthographicCamera, Plane, PlaneBufferGeometry, Vector3 } from "three";
+import { Matrix4, Mesh, MeshBasicMaterial, Object3D, OrthographicCamera, PerspectiveCamera, Plane, PlaneBufferGeometry, Vector3 } from "three";
 export interface Face {
     a: Vector3;
     b: Vector3;
@@ -19,7 +19,7 @@ export declare enum PATHSKETCHER_EVENT {
     MOVE = "move"
 }
 export declare class PathSketcher extends EventDispatcher {
-    camera: OrthographicCamera;
+    camera: OrthographicCamera | PerspectiveCamera;
     plane: Plane;
     boardOffset: number;
     drawingBoard: Mesh<PlaneBufferGeometry, MeshBasicMaterial>;
@@ -27,12 +27,19 @@ export declare class PathSketcher extends EventDispatcher {
     engine: PointerManagerEngine;
     private cachePoint;
     private cacheRelativePoint;
+    private _tempVector;
+    private _tempVector2;
+    private _tempQuaternion;
     begun: boolean;
+    autoPlane: boolean;
     private setScene;
     private cacheBeginWriteFun;
     private cacheWriteFun;
     private cacheMoveFun;
     constructor(engine: PointerManagerEngine);
+    private autoCalcPlane;
+    setCamera(camera: OrthographicCamera | PerspectiveCamera): this;
+    setAutoPlane(status: boolean): this;
     setDraingBoardSize(width: number, height: number): void;
     offsetCamera(offset: Vector3): this;
     setRelativeObject(object: Object3D): this;

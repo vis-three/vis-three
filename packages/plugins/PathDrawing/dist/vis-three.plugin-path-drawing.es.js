@@ -41,7 +41,11 @@ class PathSketcher extends EventDispatcher {
     __publicField(this, "engine");
     __publicField(this, "cachePoint", new Vector3());
     __publicField(this, "cacheRelativePoint", new Vector3());
+    __publicField(this, "_tempVector", new Vector3());
+    __publicField(this, "_tempVector2", new Vector3());
+    __publicField(this, "_tempQuaternion", new Quaternion());
     __publicField(this, "begun", false);
+    __publicField(this, "autoPlane", false);
     __publicField(this, "setScene", (event) => {
       this.drawingBoard.parent && event.scene.add(this.drawingBoard);
     });
@@ -54,6 +58,9 @@ class PathSketcher extends EventDispatcher {
       this.begun = true;
     });
     __publicField(this, "cacheWriteFun", (event) => {
+      if (this.autoPlane) {
+        this.autoCalcPlane();
+      }
       const point = this.engine.pointerManager.intersectPlane(
         this.camera,
         this.plane,
@@ -72,6 +79,9 @@ class PathSketcher extends EventDispatcher {
       });
     });
     __publicField(this, "cacheMoveFun", (event) => {
+      if (this.autoPlane) {
+        this.autoCalcPlane();
+      }
       const point = this.engine.pointerManager.intersectPlane(
         this.camera,
         this.plane,
@@ -96,6 +106,27 @@ class PathSketcher extends EventDispatcher {
     this.setDrawingBoardMatrix();
     engine.addEventListener(ENGINE_EVENT.SETSCENE, this.setScene);
   }
+  autoCalcPlane() {
+    const plane = this.plane;
+    const camera = this.camera;
+    const _tempVector = this._tempVector.set(0, 0, 0);
+    const _tempQuaternion = this._tempQuaternion;
+    plane.normal.set(0, 0, 1).applyQuaternion(camera.getWorldQuaternion(_tempQuaternion)).normalize();
+    _tempVector.set(0, 0, 0).project(camera);
+    if (_tempVector.x > 1 || _tempVector.x < -1 || _tempVector.y > 1 || _tempVector.y < -1 || _tempVector.z > 1 || _tempVector.z < -1) {
+      plane.constant = camera.getWorldPosition(_tempVector).length() + 50;
+    } else {
+      plane.constant = 0;
+    }
+  }
+  setCamera(camera) {
+    this.camera = camera;
+    return this;
+  }
+  setAutoPlane(status) {
+    this.autoPlane = status;
+    return this;
+  }
   setDraingBoardSize(width, height) {
     const newGeometry = new PlaneBufferGeometry(width, height);
     this.drawingBoard.geometry.copy(newGeometry);
@@ -110,7 +141,9 @@ class PathSketcher extends EventDispatcher {
       )
     );
     this.camera.position.copy(this.plane.normal).multiplyScalar(this.plane.constant).add(offset.multiplyScalar(scalar));
-    this.camera.zoom = (this.camera.top - this.camera.bottom) / (this.drawingBoard.geometry.parameters.height + this.boardOffset);
+    if (this.camera instanceof OrthographicCamera) {
+      this.camera.zoom = (this.camera.top - this.camera.bottom) / (this.drawingBoard.geometry.parameters.height + this.boardOffset);
+    }
     this.camera.updateProjectionMatrix();
     this.drawingBoard.position.add(offset);
     this.drawingBoard.updateMatrix();

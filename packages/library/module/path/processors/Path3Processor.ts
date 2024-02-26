@@ -1,96 +1,62 @@
 import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 import { PathCompiler } from "../PathCompiler";
-import { getPathConfig, PathConfig, SegmentConfig } from "../PathConfig";
+import { getPath3Config, PathConfig, SegmentConfig } from "../PathConfig";
 import {
-  CubicBezierCurve,
-  Curve,
-  EllipseCurve,
-  LineCurve,
+  CubicBezierCurve3,
+  LineCurve3,
   Path,
-  QuadraticBezierCurve,
-  Vector2,
+  QuadraticBezierCurve3,
+  Vector3,
 } from "three";
-import { ArcCurve } from "../extends/ArcCurve";
 
 const pathCurveMap = {
-  arc: (
+  line: (
     startX: number,
     startY: number,
-    ctrlX: number,
-    ctrlY: number,
+    startZ: number,
     endX: number,
-    endY: number
-  ) => {
-    return new ArcCurve(startX, startY, ctrlX, ctrlY, endX, endY);
-  },
-  // ellipse: (
-  //   startX: number,
-  //   startY: number,
-  //   aX: number,
-  //   aY: number,
-  //   xRadius: number,
-  //   yRadius: number,
-  //   aStartAngle: number,
-  //   aEndAngle: number,
-  //   aClockwise: boolean,
-  //   aRotation: number
-  // ) =>
-  //   new EllipseCurve(
-  //     startX + aX,
-  //     startY + aY,
-  //     xRadius,
-  //     yRadius,
-  //     aStartAngle,
-  //     aEndAngle,
-  //     aClockwise,
-  //     aRotation
-  //   ),
-  line: (startX: number, startY: number, endX: number, endY: number) =>
-    new LineCurve(new Vector2(startX, startY), new Vector2(endX, endY)),
-  bezier: (
-    startX: number,
-    startY: number,
-    aCP1x: number,
-    aCP1y: number,
-    aCP2x: number,
-    aCP2y: number,
-    endX: number,
-    endY: number
+    endY: number,
+    endZ: number
   ) =>
-    new CubicBezierCurve(
-      new Vector2(startX, startY),
-      new Vector2(aCP1x, aCP1y),
-      new Vector2(aCP2x, aCP2y),
-      new Vector2(endX, endY)
+    new LineCurve3(
+      new Vector3(startX, startY, startZ),
+      new Vector3(endX, endY, endZ)
     ),
   cubic: (
     startX: number,
     startY: number,
+    startZ: number,
     aCP1x: number,
     aCP1y: number,
+    aCP1z: number,
     aCP2x: number,
     aCP2y: number,
+    aCP2z: number,
     endX: number,
-    endY: number
+    endY: number,
+    endZ: number
   ) =>
-    new CubicBezierCurve(
-      new Vector2(startX, startY),
-      new Vector2(aCP1x, aCP1y),
-      new Vector2(aCP2x, aCP2y),
-      new Vector2(endX, endY)
+    new CubicBezierCurve3(
+      new Vector3(startX, startY, startZ),
+      new Vector3(aCP1x, aCP1y, aCP1z),
+      new Vector3(aCP2x, aCP2y, aCP2z),
+      new Vector3(endX, endY, endZ)
     ),
   quadratic: (
     startX: number,
     startY: number,
+    startZ: number,
     aCPx: number,
     aCPy: number,
+    aCPz: number,
     endX: number,
-    endY: number
+    endY: number,
+    endZ: number
   ) =>
-    new QuadraticBezierCurve(
-      new Vector2(startX, startY),
-      new Vector2(aCPx, aCPy),
-      new Vector2(endX, endY)
+    new QuadraticBezierCurve3(
+      new Vector3(startX, startY, startZ),
+      new Vector3(aCPx, aCPy, aCPz),
+      new Vector3(endX, endY, endZ)
     ),
 };
 
@@ -99,16 +65,23 @@ const getCurveExtrPoint = function (
   extr: "start" | "end"
 ) {
   return extr === "start"
-    ? { x: curve.params[0] as number, y: curve.params[1] as number }
+    ? {
+        x: curve.params[0],
+        y: curve.params[1],
+        z: curve.params[2],
+      }
     : {
-        x: curve.params[curve.params.length - 2] as number,
-        y: curve.params[curve.params.length - 1] as number,
+        x: curve.params[curve.params.length - 3],
+        y: curve.params[curve.params.length - 2],
+        z: curve.params[curve.params.length - 1],
       };
 };
 
 const generateCurve = function (segment: SegmentConfig) {
   if (!pathCurveMap[segment.curve]) {
-    console.warn(`path processor can not support this curve: ${segment.curve}`);
+    console.warn(
+      `path3 processor can not support this curve: ${segment.curve}`
+    );
     return null;
   }
   return pathCurveMap[segment.curve](...segment.params);
@@ -122,17 +95,20 @@ const syncExtrParams = function (
   if (extr === "start") {
     config.params[0] !== params[0] && (config.params[0] = params[0]);
     config.params[1] !== params[1] && (config.params[1] = params[1]);
+    config.params[2] !== params[2] && (config.params[2] = params[2]);
   } else {
     const range = config.params.length - 1;
-    config.params[range - 1] !== params[0] &&
-      (config.params[range - 1] = params[0]);
-    config.params[range] !== params[1] && (config.params[range] = params[1]);
+    config.params[range - 2] !== params[0] &&
+      (config.params[range - 2] = params[0]);
+    config.params[range - 1] !== params[1] &&
+      (config.params[range - 1] = params[1]);
+    config.params[range] !== params[2] && (config.params[range] = params[2]);
   }
 };
 
 export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
-  type: "Path",
-  config: getPathConfig,
+  type: "Path3",
+  config: getPath3Config,
   commands: {
     add: {
       curves({ target, config, value }) {
@@ -148,7 +124,7 @@ export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
           if (Number.isInteger(Number(key))) {
             return;
           }
-          console.warn(`path processor: set curves path error:`, path);
+          console.warn(`path3 processor: set curves path error:`, path);
           return;
         }
 
@@ -162,7 +138,7 @@ export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
         if (index - 1 >= 0) {
           syncExtrParams(
             config.curves[index - 1],
-            [startPoint.x, startPoint.y],
+            [startPoint.x, startPoint.y, startPoint.z],
             "end"
           );
         }
@@ -170,7 +146,7 @@ export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
         if (index + 1 <= config.curves.length - 1) {
           syncExtrParams(
             config.curves[index + 1],
-            [endPoint.x, endPoint.y],
+            [endPoint.x, endPoint.y, endPoint.z],
             "start"
           );
         }
@@ -190,7 +166,7 @@ export default defineProcessor<PathConfig, Path, EngineSupport, PathCompiler>({
           const endPoint = getCurveExtrPoint(config.curves[index - 1], "end");
           syncExtrParams(
             config.curves[index],
-            [endPoint.x, endPoint.y],
+            [endPoint.x, endPoint.y, endPoint.z],
             "start"
           );
         }

@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-path",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "description": "vis-three path module",
   "main": "dist/vis-three.module-path.umd.js",
   "module": "dist/vis-three.module-path.es.js",
@@ -30,8 +30,7 @@
     "@vis-three/core": "workspace:^",
     "@vis-three/middleware": "workspace:^",
     "@vis-three/module-curve": "workspace:^",
-    "@vis-three/utils": "workspace:^",
-    "uuid": "^8.3.2"
+    "@vis-three/utils": "workspace:^"
   },
   "files": [
     "dist",
