@@ -1,10 +1,11 @@
-import { PathConfig } from "@vis-three/module-path";
+import { Path3Config, PathConfig } from "@vis-three/module-path";
 import { BaseEvent, LineBasicMaterial, Object3D, OrthographicCamera, PerspectiveCamera, PointsMaterial, Raycaster } from "three";
 import { PointerManager } from "@vis-three/plugin-pointer-manager";
 export declare enum PATHSUPPORTCONTROLS_EVENT {
     MOUSEDOWN = "mousedown",
     CHANGING = "changing",
-    MOUSEUP = "mouseup"
+    MOUSEUP = "mouseup",
+    CLICK = "click"
 }
 export interface ContolsEvent extends BaseEvent {
     index: number;
@@ -40,15 +41,16 @@ export declare class PathSupportControls extends Object3D<ContolsEvent> {
     private config;
     private object;
     private cacheObjectInvert;
+    private pathType;
     private _pointerHover;
     private _pointerMove;
     private _pointerDown;
     private _pointerUp;
-    constructor(camera: PerspectiveCamera | OrthographicCamera, dom: HTMLElement, object?: Object3D, config?: PathConfig);
+    constructor(camera: PerspectiveCamera | OrthographicCamera, dom: HTMLElement, object?: Object3D, config?: PathConfig | Path3Config);
     setDom(dom: HTMLElement): this;
     setCamera(camera: PerspectiveCamera | OrthographicCamera): this;
     setObject(object: Object3D): this;
-    setConfig(config: PathConfig): this;
+    setConfig(config: PathConfig | Path3Config): this;
     update(): void;
     private updateHelper;
     use(pointerManager: PointerManager): void;

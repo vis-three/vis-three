@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/plugin-path-support-controls",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "description": "vis-three path-support-controls plugin",
   "main": "dist/vis-three.plugin-path-support-controls.umd.js",
   "module": "dist/vis-three.plugin-path-support-controls.es.js",

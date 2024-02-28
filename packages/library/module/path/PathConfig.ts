@@ -20,14 +20,11 @@ export type quadraticSegmentConfig = [
   number,
   number
 ];
+
 export interface SegmentConfig {
   /**路径名称：line, arc,  bezier, quadratic*/
   curve: string;
-  params:
-    | LineSegmentConfig
-    | ArcSegmentConfig
-    | bezierSegmentConfig
-    | quadraticSegmentConfig;
+  params: number[];
 }
 
 export interface PathConfig extends SymbolConfig {

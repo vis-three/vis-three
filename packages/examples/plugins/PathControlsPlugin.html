@@ -13,7 +13,8 @@
     <div id="app"></div>
     <div id="button-position">
       <div id="button-group">
-        <button id="deletePath">删2条</button>
+        <button id="path2">path2</button>
+        <button id="path3">path3</button>
       </div>
     </div>
     <script type="module">
@@ -37,7 +38,7 @@
       const camera = generateConfig(CONFIGTYPE.ORTHOGRAPHICCAMERA, {
         far: 1000,
         near: 0,
-        zoom: 20,
+        zoom: 10,
         position: {
           z: 100,
         },
@@ -56,34 +57,49 @@
         curves: [
           {
             curve: "line",
-            params: [0, 0, 10, 10],
+            params: [-20, 40, -10, 0],
           },
           {
             curve: "quadratic",
-            params: [10, 10, -15, 15, 15, 0],
-          },
-          {
-            curve: "line",
-            params: [15, 0, -10, -10],
+            params: [-10, 0, -5, 25, -25, 10],
           },
           {
             curve: "arc",
-            params: [-10, -10, -19, -30, 10, -10],
+            params: [-25, 10, -40, 0, -20, -10],
           },
 
           {
             curve: "bezier",
-            params: [10, -10, 15, -10, 10, 15, 20, 10],
+            params: [-20, -10, -15, -10, -10, -15, -20, -35],
+          },
+        ],
+      });
+
+      const path3 = generateConfig(CONFIGTYPE.PATH3, {
+        autoClose: false,
+        curves: [
+          {
+            curve: "line",
+            params: [20, 40, 10, 0, 20, -10],
           },
           {
-            curve: "arc",
-            params: [20, 10, 40, 0, 30, -10],
+            curve: "cubic",
+            params: [0, 20, -10, 20, 20, -10, 0, 20, 20, 20, -20, -20],
+          },
+          {
+            curve: "quadratic",
+            params: [20, -20, -20, 40, 20, -30, 40, -20, -10],
           },
         ],
       });
 
       const geometry = generateConfig(CONFIGTYPE.PATHGEOMETRY, {
         path: path.vid,
+        space: false,
+      });
+
+      const geometry3 = generateConfig(CONFIGTYPE.PATHGEOMETRY, {
+        path: path3.vid,
         space: false,
       });
 
@@ -94,6 +110,10 @@
         geometry: geometry.vid,
       });
 
+      const line3 = generateConfig(CONFIGTYPE.LINE, {
+        material: material.vid,
+        geometry: geometry3.vid,
+      });
 
       engine.pathSupportControls
         .setObject(engine.getObjectBySymbol(line.vid))
@@ -104,9 +124,16 @@
 
       window.engine = engine;
 
-      document.getElementById("deletePath").onclick = () => {
-        path.curves.splice(1, 2);
-        engine.pathSupportControls.update();
+      document.getElementById("path2").onclick = () => {
+        engine.pathSupportControls
+          .setObject(engine.getObjectBySymbol(line.vid))
+          .setConfig(path);
+      };
+
+      document.getElementById("path3").onclick = () => {
+        engine.pathSupportControls
+          .setObject(engine.getObjectBySymbol(line3.vid))
+          .setConfig(path3);
       };
     </script>
   </body>

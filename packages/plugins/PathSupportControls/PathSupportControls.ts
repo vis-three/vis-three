@@ -1,4 +1,8 @@
-import { PathConfig, bezierSegmentConfig } from "@vis-three/module-path";
+import {
+  Path3Config,
+  PathConfig,
+  bezierSegmentConfig,
+} from "@vis-three/module-path";
 import {
   AlwaysDepth,
   BaseEvent,
@@ -115,6 +119,7 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
   private config!: PathConfig;
   private object!: Object3D;
   private cacheObjectInvert!: Matrix4;
+  private pathType = 2;
 
   private _pointerHover = this.pointerHover.bind(this);
   private _pointerMove = this.pointerMove.bind(this);
@@ -125,7 +130,7 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
     camera: PerspectiveCamera | OrthographicCamera,
     dom: HTMLElement,
     object?: Object3D,
-    config?: PathConfig
+    config?: PathConfig | Path3Config
   ) {
     super();
 
@@ -174,7 +179,7 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
     return this;
   }
 
-  setConfig(config: PathConfig) {
+  setConfig(config: PathConfig | Path3Config) {
     this.config = config;
 
     this.moveCurveIndexMap = {};
@@ -187,106 +192,201 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
     const move: number[] = [];
     const helper: number[] = [];
 
-    this.config.curves.forEach((segment, i, arr) => {
-      // anchor
-      if (i === arr.length - 1) {
-        anchor.push(
-          segment.params[0],
-          segment.params[1],
-          0,
-          segment.params[segment.params.length - 2],
-          segment.params[segment.params.length - 1],
-          0
-        );
-      } else {
-        anchor.push(segment.params[0], segment.params[1], 0);
-      }
+    if (this.config.type === "Path") {
+      this.pathType = 2;
+      this.config.curves.forEach((segment, i, arr) => {
+        // anchor
+        if (i === arr.length - 1) {
+          anchor.push(
+            segment.params[0],
+            segment.params[1],
+            0,
+            segment.params[segment.params.length - 2],
+            segment.params[segment.params.length - 1],
+            0
+          );
+        } else {
+          anchor.push(segment.params[0], segment.params[1], 0);
+        }
 
-      // move
-      if (segment.curve === "arc") {
-        move.push(segment.params[2], segment.params[3], 0);
-        moveCurveIndexMap[move.length / 3 - 1] = {
-          segmentIndex: i,
-          type: "c1",
-        };
-      } else if (segment.curve === "bezier") {
-        move.push(segment.params[2], segment.params[3], 0);
+        // move
+        if (segment.curve === "arc") {
+          move.push(segment.params[2], segment.params[3], 0);
+          moveCurveIndexMap[move.length / 3 - 1] = {
+            segmentIndex: i,
+            type: "c1",
+          };
+        } else if (segment.curve === "bezier" || segment.curve === "cubic") {
+          move.push(segment.params[2], segment.params[3], 0);
 
-        helper.push(
-          segment.params[0],
-          segment.params[1],
-          0,
-          segment.params[2],
-          segment.params[3],
-          0
-        );
+          helper.push(
+            segment.params[0],
+            segment.params[1],
+            0,
+            segment.params[2],
+            segment.params[3],
+            0
+          );
 
-        moveCurveIndexMap[move.length / 3 - 1] = {
-          segmentIndex: i,
-          type: "c1",
-        };
+          moveCurveIndexMap[move.length / 3 - 1] = {
+            segmentIndex: i,
+            type: "c1",
+          };
 
-        move.push(
-          (<bezierSegmentConfig>(<unknown>segment.params))[4],
-          (<bezierSegmentConfig>(<unknown>segment.params))[5],
-          0
-        );
+          move.push(
+            (<bezierSegmentConfig>(<unknown>segment.params))[4],
+            (<bezierSegmentConfig>(<unknown>segment.params))[5],
+            0
+          );
 
-        helper.push(
-          segment.params[segment.params.length - 2],
-          segment.params[segment.params.length - 1],
-          0,
-          (<bezierSegmentConfig>(<unknown>segment.params))[4],
-          (<bezierSegmentConfig>(<unknown>segment.params))[5],
-          0
-        );
+          helper.push(
+            segment.params[segment.params.length - 2],
+            segment.params[segment.params.length - 1],
+            0,
+            (<bezierSegmentConfig>(<unknown>segment.params))[4],
+            (<bezierSegmentConfig>(<unknown>segment.params))[5],
+            0
+          );
 
-        moveCurveIndexMap[move.length / 3 - 1] = {
-          segmentIndex: i,
-          type: "c2",
-        };
+          moveCurveIndexMap[move.length / 3 - 1] = {
+            segmentIndex: i,
+            type: "c2",
+          };
 
-        helperRangeMap[i] = {
-          startIndex: helper.length / 3 - 4,
-          previous: false,
-        };
-        helperRangeMap[i + 1] = {
-          startIndex: helper.length / 3 - 4,
-          previous: true,
-        };
-      } else if (segment.curve === "quadratic") {
-        move.push(segment.params[2], segment.params[3], 0);
+          helperRangeMap[i] = {
+            startIndex: helper.length / 3 - 4,
+            previous: false,
+          };
+          helperRangeMap[i + 1] = {
+            startIndex: helper.length / 3 - 4,
+            previous: true,
+          };
+        } else if (segment.curve === "quadratic") {
+          move.push(segment.params[2], segment.params[3], 0);
 
-        helper.push(
-          segment.params[0],
-          segment.params[1],
-          0,
-          segment.params[2],
-          segment.params[3],
-          0,
-          segment.params[segment.params.length - 2],
-          segment.params[segment.params.length - 1],
-          0,
-          segment.params[2],
-          segment.params[3],
-          0
-        );
+          helper.push(
+            segment.params[0],
+            segment.params[1],
+            0,
+            segment.params[2],
+            segment.params[3],
+            0,
+            segment.params[segment.params.length - 2],
+            segment.params[segment.params.length - 1],
+            0,
+            segment.params[2],
+            segment.params[3],
+            0
+          );
 
-        moveCurveIndexMap[move.length / 3 - 1] = {
-          segmentIndex: i,
-          type: "c1",
-        };
+          moveCurveIndexMap[move.length / 3 - 1] = {
+            segmentIndex: i,
+            type: "c1",
+          };
 
-        helperRangeMap[i] = {
-          startIndex: helper.length / 3 - 4,
-          previous: false,
-        };
-        helperRangeMap[i + 1] = {
-          startIndex: helper.length / 3 - 4,
-          previous: true,
-        };
-      }
-    });
+          helperRangeMap[i] = {
+            startIndex: helper.length / 3 - 4,
+            previous: false,
+          };
+          helperRangeMap[i + 1] = {
+            startIndex: helper.length / 3 - 4,
+            previous: true,
+          };
+        }
+      });
+    } else if (this.config.type === "Path3") {
+      this.pathType = 3;
+      this.config.curves.forEach((segment, i, arr) => {
+        // anchor
+        if (i === arr.length - 1) {
+          anchor.push(
+            segment.params[0],
+            segment.params[1],
+            segment.params[2],
+            segment.params[segment.params.length - 3],
+            segment.params[segment.params.length - 2],
+            segment.params[segment.params.length - 1]
+          );
+        } else {
+          anchor.push(segment.params[0], segment.params[1], segment.params[2]);
+        }
+
+        // move
+        if (segment.curve === "cubic") {
+          move.push(segment.params[3], segment.params[4], segment.params[5]);
+
+          helper.push(
+            segment.params[0],
+            segment.params[1],
+            segment.params[2],
+            segment.params[3],
+            segment.params[4],
+            segment.params[5]
+          );
+
+          moveCurveIndexMap[move.length / 3 - 1] = {
+            segmentIndex: i,
+            type: "c1",
+          };
+
+          move.push(segment.params[6], segment.params[7], segment.params[8]);
+
+          helper.push(
+            segment.params[segment.params.length - 3],
+            segment.params[segment.params.length - 2],
+            segment.params[segment.params.length - 1],
+            segment.params[6],
+            segment.params[7],
+            segment.params[8]
+          );
+
+          moveCurveIndexMap[move.length / 3 - 1] = {
+            segmentIndex: i,
+            type: "c2",
+          };
+
+          helperRangeMap[i] = {
+            startIndex: helper.length / 3 - 4,
+            previous: false,
+          };
+          helperRangeMap[i + 1] = {
+            startIndex: helper.length / 3 - 4,
+            previous: true,
+          };
+        } else if (segment.curve === "quadratic") {
+          move.push(segment.params[3], segment.params[4], segment.params[5]);
+
+          helper.push(
+            segment.params[0],
+            segment.params[1],
+            segment.params[2],
+            segment.params[3],
+            segment.params[4],
+            segment.params[5],
+            segment.params[segment.params.length - 3],
+            segment.params[segment.params.length - 2],
+            segment.params[segment.params.length - 1],
+            segment.params[3],
+            segment.params[4],
+            segment.params[5]
+          );
+
+          moveCurveIndexMap[move.length / 3 - 1] = {
+            segmentIndex: i,
+            type: "c1",
+          };
+
+          helperRangeMap[i] = {
+            startIndex: helper.length / 3 - 4,
+            previous: false,
+          };
+          helperRangeMap[i + 1] = {
+            startIndex: helper.length / 3 - 4,
+            previous: true,
+          };
+        }
+      });
+    }
 
     const updateGizmoGeometry = function (
       gizmo: Points | LineSegments,
@@ -327,46 +427,100 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
 
       const position = this.moveHelper.geometry.getAttribute("position");
 
-      if (segment.curve === "bezier") {
-        position.setXYZ(startIndex, segment.params[0], segment.params[1], 0);
-        position.setXYZ(
-          startIndex + 1,
-          segment.params[2],
-          segment.params[3],
-          0
-        );
-        position.setXYZ(
-          startIndex + 2,
-          segment.params[segment.params.length - 2],
-          segment.params[segment.params.length - 1],
-          0
-        );
-        position.setXYZ(
-          startIndex + 3,
-          (<bezierSegmentConfig>(<unknown>segment.params))[4],
-          (<bezierSegmentConfig>(<unknown>segment.params))[5],
-          0
-        );
+      if (segment.curve === "bezier" || segment.curve === "cubic") {
+        if (this.pathType === 2) {
+          position.setXYZ(startIndex, segment.params[0], segment.params[1], 0);
+          position.setXYZ(
+            startIndex + 1,
+            segment.params[2],
+            segment.params[3],
+            0
+          );
+          position.setXYZ(
+            startIndex + 2,
+            segment.params[segment.params.length - 2],
+            segment.params[segment.params.length - 1],
+            0
+          );
+          position.setXYZ(
+            startIndex + 3,
+            segment.params[4],
+            segment.params[5],
+            0
+          );
+        } else if (this.pathType === 3) {
+          position.setXYZ(
+            startIndex,
+            segment.params[0],
+            segment.params[1],
+            segment.params[2]
+          );
+          position.setXYZ(
+            startIndex + 1,
+            segment.params[3],
+            segment.params[4],
+            segment.params[5]
+          );
+          position.setXYZ(
+            startIndex + 2,
+            segment.params[segment.params.length - 3],
+            segment.params[segment.params.length - 2],
+            segment.params[segment.params.length - 1]
+          );
+          position.setXYZ(
+            startIndex + 3,
+            segment.params[6],
+            segment.params[7],
+            segment.params[8]
+          );
+        }
       } else if (segment.curve === "quadratic") {
-        position.setXYZ(startIndex, segment.params[0], segment.params[1], 0);
-        position.setXYZ(
-          startIndex + 1,
-          segment.params[2],
-          segment.params[3],
-          0
-        );
-        position.setXYZ(
-          startIndex + 2,
-          segment.params[segment.params.length - 2],
-          segment.params[segment.params.length - 1],
-          0
-        );
-        position.setXYZ(
-          startIndex + 3,
-          segment.params[2],
-          segment.params[3],
-          0
-        );
+        if (this.pathType === 2) {
+          position.setXYZ(startIndex, segment.params[0], segment.params[1], 0);
+          position.setXYZ(
+            startIndex + 1,
+            segment.params[2],
+            segment.params[3],
+            0
+          );
+          position.setXYZ(
+            startIndex + 2,
+            segment.params[segment.params.length - 2],
+            segment.params[segment.params.length - 1],
+            0
+          );
+          position.setXYZ(
+            startIndex + 3,
+            segment.params[2],
+            segment.params[3],
+            0
+          );
+        } else if (this.pathType === 3) {
+          position.setXYZ(
+            startIndex,
+            segment.params[0],
+            segment.params[1],
+            segment.params[2]
+          );
+          position.setXYZ(
+            startIndex + 1,
+            segment.params[3],
+            segment.params[4],
+            segment.params[5]
+          );
+          position.setXYZ(
+            startIndex + 2,
+            segment.params[segment.params.length - 3],
+            segment.params[segment.params.length - 2],
+            segment.params[segment.params.length - 1]
+          );
+          position.setXYZ(
+            startIndex + 3,
+            segment.params[3],
+            segment.params[4],
+            segment.params[5]
+          );
+        }
       }
       position.needsUpdate = true;
     }
@@ -419,6 +573,7 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
       return {
         guizmo: this.currentGuizmo,
         index: this.currentIndex,
+        point: intersect[0].point,
       };
     }
 
@@ -452,17 +607,29 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
       return;
     }
 
-    this.cacheQuaternion.setFromRotationMatrix(this.object.matrixWorld);
-    this.cacheNormal.set(0, 0, 1).applyQuaternion(this.cacheQuaternion);
-    this.cachePosition.setFromMatrixPosition(this.object.matrixWorld);
-    this.plane.set(
-      this.cacheNormal,
-      this.cachePosition.projectOnVector(this.cacheNormal).length()
-    );
     const intersectPoint = this.intersectPoint(event);
 
     if (intersectPoint) {
       this.dragging = true;
+
+      if (this.pathType === 2) {
+        this.cacheQuaternion.setFromRotationMatrix(this.object.matrixWorld);
+        this.cacheNormal.set(0, 0, 1).applyQuaternion(this.cacheQuaternion);
+        this.cachePosition.setFromMatrixPosition(this.object.matrixWorld);
+        this.plane.set(
+          this.cacheNormal,
+          this.cachePosition.projectOnVector(this.cacheNormal).length()
+        );
+      } else if (this.pathType === 3) {
+        this.camera
+          .getWorldPosition(this.plane.normal)
+          .sub(intersectPoint.point)
+          .normalize();
+
+        this.plane.constant =
+          (intersectPoint.point.dot(this.plane.normal) > 0 ? 1 : -1) *
+          intersectPoint.point.projectOnVector(this.plane.normal).length();
+      }
 
       this.cacheMouseDownPoistion
         .copy(this.intersectPlane(event)!)
@@ -517,11 +684,22 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
         segment.params[0] = vect.x;
         segment.params[1] = vect.y;
 
+        if (this.pathType === 3) {
+          segment.params[2] = vect.z;
+        }
+
         this.updateHelper(currentIndex);
       } else {
         const segment = config.curves[length - 1];
-        segment.params[segment.params.length - 2] = vect.x;
-        segment.params[segment.params.length - 1] = vect.y;
+
+        if (this.pathType === 3) {
+          segment.params[segment.params.length - 3] = vect.x;
+          segment.params[segment.params.length - 2] = vect.y;
+          segment.params[segment.params.length - 1] = vect.z;
+        } else {
+          segment.params[segment.params.length - 2] = vect.x;
+          segment.params[segment.params.length - 1] = vect.y;
+        }
 
         this.updateHelper(length - 1);
       }
@@ -531,6 +709,10 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
 
       array[currentIndex * 3] = vect.x;
       array[currentIndex * 3 + 1] = vect.y;
+
+      if (this.pathType === 3) {
+        array[currentIndex * 3 + 2] = vect.z;
+      }
 
       position.needsUpdate = true;
 
@@ -549,11 +731,23 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
       const type = this.moveCurveIndexMap[currentIndex].type;
 
       if (type === "c1") {
-        segment.params[2] = vect.x;
-        segment.params[3] = vect.y;
+        if (this.pathType === 2) {
+          segment.params[2] = vect.x;
+          segment.params[3] = vect.y;
+        } else {
+          segment.params[3] = vect.x;
+          segment.params[4] = vect.y;
+          segment.params[5] = vect.z;
+        }
       } else if (type === "c2") {
-        segment.params[4] = vect.x;
-        segment.params[5] = vect.y;
+        if (this.pathType === 2) {
+          segment.params[4] = vect.x;
+          segment.params[5] = vect.y;
+        } else {
+          segment.params[6] = vect.x;
+          segment.params[7] = vect.y;
+          segment.params[8] = vect.z;
+        }
       }
 
       const position = this.moveGizmo.geometry.getAttribute("position");
@@ -561,6 +755,9 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
 
       array[currentIndex * 3] = vect.x;
       array[currentIndex * 3 + 1] = vect.y;
+      if (this.pathType === 3) {
+        array[currentIndex * 3 + 2] = vect.z;
+      }
 
       position.needsUpdate = true;
 
