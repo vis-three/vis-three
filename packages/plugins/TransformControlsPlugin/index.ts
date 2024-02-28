@@ -49,6 +49,7 @@ export const TransformControlsPlugin: Plugin<TransformControlsEngine, object> =
 
         engine.setTransformControls = function (show: boolean) {
           this.transformControls.visible = show;
+          this.transformControls.enabled = show;
           return this;
         };
 

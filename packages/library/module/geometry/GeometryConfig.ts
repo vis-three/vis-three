@@ -18,6 +18,7 @@ import {
   LineTubeGeometryConfig,
   LoadGeometryConfig,
   PathGeometryConfig,
+  PathTubeGeometryConfig,
   PlaneGeometryConfig,
   QuadraticBezierCurveGeometryConfig,
   RingGeometryConfig,
@@ -220,6 +221,17 @@ export const getSplineTubeGeometryConfig =
   function (): SplineTubeGeometryConfig {
     return Object.assign(getTubeGeometryConfig(), { center: false });
   };
+
+export const getPathTubeGeometryConfig = function (): PathTubeGeometryConfig {
+  return Object.assign(getGeometryConfig(), {
+    center: false,
+    path: "",
+    tubularSegments: 64,
+    radius: 1,
+    radialSegments: 8,
+    closed: false,
+  });
+};
 
 export const getShapeGeometryConfig = function (): ShapeGeometryConfig {
   return Object.assign(getGeometryConfig(), {

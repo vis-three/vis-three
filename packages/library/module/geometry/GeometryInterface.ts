@@ -175,6 +175,14 @@ export interface LineTubeGeometryConfig extends TubeGeometryConfig {}
 
 export interface SplineTubeGeometryConfig extends TubeGeometryConfig {}
 
+export interface PathTubeGeometryConfig extends GeometryConfig {
+  path: string;
+  tubularSegments: number;
+  radius: number;
+  radialSegments: number;
+  closed: boolean;
+}
+
 /**
  * 形状几何
  */
@@ -256,4 +264,5 @@ export type GeometryAllType =
   | ExtrudeGeometryConfig
   | PathGeometryConfig
   | LatheGeometryConfig
-  | DecalGeometryConfig;
+  | DecalGeometryConfig
+  | PathTubeGeometryConfig;

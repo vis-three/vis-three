@@ -1,4 +1,4 @@
-import { BoxGeometryConfig, CircleGeometryConfig, ConeGeometryConfig, CubicBezierCurveGeometryConfig, CustomGeometryConfig, CylinderGeometryConfig, DecalGeometryConfig, DodecahedronGeometryConfig, EdgesGeometryConfig, ExtrudeGeometryConfig, GeometryConfig, LatheGeometryConfig, LineCurveGeometryConfig, LineShapeGeometryConfig, LineTubeGeometryConfig, LoadGeometryConfig, PathGeometryConfig, PlaneGeometryConfig, QuadraticBezierCurveGeometryConfig, RingGeometryConfig, ShapeGeometryConfig, SphereGeometryConfig, SplineCurveGeometryConfig, SplineTubeGeometryConfig, TorusGeometryConfig, TubeGeometryConfig } from "./GeometryInterface";
+import { BoxGeometryConfig, CircleGeometryConfig, ConeGeometryConfig, CubicBezierCurveGeometryConfig, CustomGeometryConfig, CylinderGeometryConfig, DecalGeometryConfig, DodecahedronGeometryConfig, EdgesGeometryConfig, ExtrudeGeometryConfig, GeometryConfig, LatheGeometryConfig, LineCurveGeometryConfig, LineShapeGeometryConfig, LineTubeGeometryConfig, LoadGeometryConfig, PathGeometryConfig, PathTubeGeometryConfig, PlaneGeometryConfig, QuadraticBezierCurveGeometryConfig, RingGeometryConfig, ShapeGeometryConfig, SphereGeometryConfig, SplineCurveGeometryConfig, SplineTubeGeometryConfig, TorusGeometryConfig, TubeGeometryConfig } from "./GeometryInterface";
 export declare const getGeometryConfig: () => GeometryConfig;
 export declare const getBoxGeometryConfig: () => BoxGeometryConfig;
 export declare const getSphereGeometryConfig: () => SphereGeometryConfig;
@@ -19,6 +19,7 @@ export declare const getQuadraticBezierCurveGeometryConfig: () => QuadraticBezie
 export declare const getTubeGeometryConfig: () => TubeGeometryConfig;
 export declare const getLineTubeGeometryConfig: () => LineTubeGeometryConfig;
 export declare const getSplineTubeGeometryConfig: () => SplineTubeGeometryConfig;
+export declare const getPathTubeGeometryConfig: () => PathTubeGeometryConfig;
 export declare const getShapeGeometryConfig: () => ShapeGeometryConfig;
 export declare const getLineShapeGeometryConfig: () => LineShapeGeometryConfig;
 export declare const getExtrudeGeometryConfig: () => ExtrudeGeometryConfig;

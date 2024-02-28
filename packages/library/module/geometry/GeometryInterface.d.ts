@@ -157,6 +157,13 @@ export interface LineTubeGeometryConfig extends TubeGeometryConfig {
 }
 export interface SplineTubeGeometryConfig extends TubeGeometryConfig {
 }
+export interface PathTubeGeometryConfig extends GeometryConfig {
+    path: string;
+    tubularSegments: number;
+    radius: number;
+    radialSegments: number;
+    closed: boolean;
+}
 /**
  * 形状几何
  */
@@ -209,4 +216,4 @@ export interface DecalGeometryConfig extends GeometryConfig {
     orientation: Vector3Config;
     size: Vector3Config;
 }
-export type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig | LineCurveGeometryConfig | SplineCurveGeometryConfig | CubicBezierCurveGeometryConfig | QuadraticBezierCurveGeometryConfig | CustomGeometryConfig | LineTubeGeometryConfig | SplineTubeGeometryConfig | TorusGeometryConfig | RingGeometryConfig | LineShapeGeometryConfig | ExtrudeGeometryConfig | PathGeometryConfig | LatheGeometryConfig | DecalGeometryConfig;
+export type GeometryAllType = BoxGeometryConfig | SphereGeometryConfig | PlaneGeometryConfig | LoadGeometryConfig | CircleGeometryConfig | ConeGeometryConfig | CylinderGeometryConfig | DodecahedronGeometryConfig | EdgesGeometryConfig | LineCurveGeometryConfig | SplineCurveGeometryConfig | CubicBezierCurveGeometryConfig | QuadraticBezierCurveGeometryConfig | CustomGeometryConfig | LineTubeGeometryConfig | SplineTubeGeometryConfig | TorusGeometryConfig | RingGeometryConfig | LineShapeGeometryConfig | ExtrudeGeometryConfig | PathGeometryConfig | LatheGeometryConfig | DecalGeometryConfig | PathTubeGeometryConfig;

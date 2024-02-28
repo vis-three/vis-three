@@ -1728,6 +1728,7 @@ const TransformControlsPlugin = function() {
       );
       engine.setTransformControls = function(show) {
         this.transformControls.visible = show;
+        this.transformControls.enabled = show;
         return this;
       };
       setCameraFun = (event) => {
