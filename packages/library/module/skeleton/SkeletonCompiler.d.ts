@@ -1,5 +1,4 @@
 import { Compiler } from "@vis-three/middleware";
-import { SkeletonConfig } from "./SkeletonConfig";
-export declare class SkeletonCompiler extends Compiler<SkeletonConfig, object> {
+export declare class SkeletonCompiler extends Compiler<any, any> {
     constructor();
 }

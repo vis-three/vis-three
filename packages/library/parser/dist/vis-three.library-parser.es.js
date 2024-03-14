@@ -252,6 +252,19 @@ class Object3DParser extends Parser {
         config.children.push(configMap.get(objectUrl).vid);
       });
     }
+    if (resource.animations && resource.animations.length) {
+      if (Array.isArray(resource.animations)) {
+        resource.animations.forEach((elem, i) => {
+          const animationUrl = `${url}.animations.${i}`;
+          this.parseAnimation({
+            url: animationUrl,
+            resource: elem,
+            configMap,
+            resourceMap
+          });
+        });
+      }
+    }
   }
 }
 class FBXResourceParser extends Object3DParser {

@@ -1,7 +1,6 @@
 import { Compiler } from "@vis-three/middleware";
-import { AnimationClipConfig } from "./AnimationClipConfig";
 
-export class AnimationClipCompiler extends Compiler<AnimationClipConfig, object> {
+export class AnimationClipCompiler extends Compiler<any, any> {
   constructor() {
     super();
   }

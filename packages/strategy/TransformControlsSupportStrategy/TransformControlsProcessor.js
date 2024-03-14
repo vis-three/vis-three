@@ -5,7 +5,7 @@ export const getTransformControlsConfig = function () {
         vid: uniqueSymbol("TransformControls"),
         axis: "XYZ",
         enabled: true,
-        mode: "translate",
+        mode: "position",
         snapAllow: false,
         rotationSnap: (Math.PI / 180) * 10,
         translationSnap: 5,
@@ -46,7 +46,6 @@ export default defineProcessor({
             },
             scaleSnap({ target, config, value }) {
                 if (config.snapAllow) {
-                    // @ts-ignore types 没写 源码有这个属性
                     target.scaleSnap = value;
                 }
             },

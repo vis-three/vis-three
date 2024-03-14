@@ -360,5 +360,21 @@ export class Object3DParser extends Parser {
         config.children.push(configMap.get(objectUrl)!.vid);
       });
     }
+
+    // 解析动画
+    if (resource.animations && resource.animations.length) {
+      if (Array.isArray(resource.animations)) {
+        resource.animations.forEach((elem: AnimationClip, i: number) => {
+          const animationUrl = `${url}.animations.${i}`;
+
+          this.parseAnimation({
+            url: animationUrl,
+            resource: elem,
+            configMap,
+            resourceMap,
+          });
+        });
+      }
+    }
   }
 }

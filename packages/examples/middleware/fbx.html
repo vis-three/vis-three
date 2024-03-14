@@ -43,18 +43,25 @@
         intensity: 10,
       });
 
-      engine.loadResourcesAsync(["model/fbx/nurbs.fbx"]).then((res) => {
-        console.log(res);
-        const config = Template.observable(
-          res.resourceConfig["model/fbx/nurbs.fbx"]
-        );
-        console.log(config);
-        engine.loadConfig(config);
+      engine
+        .loadResourcesAsync([
+          "model/fbx/nurbs.fbx",
+          "model/fbx/saas-factory.fbx",
+        ])
+        .then((res) => {
+          console.log(res);
 
-        const root = res.configMap.get("model/fbx/nurbs.fbx");
+          console.log(engine);
+          const config = Template.observable(
+            res.resourceConfig["model/fbx/nurbs.fbx"]
+          );
+          console.log(config);
+          engine.loadConfig(config);
 
-        scene.children.push(root.vid);
-      });
+          const root = res.configMap.get("model/fbx/nurbs.fbx");
+
+          scene.children.push(root.vid);
+        });
 
       window.engine = engine;
     </script>

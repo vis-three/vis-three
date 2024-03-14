@@ -53,7 +53,6 @@ export const TransformControlsSupportStrategy: Strategy<
       engine.transformControls.addEventListener(
         TRANSFORM_EVENT.OBJECT_CHANGE,
         (event) => {
-          console.log(1);
           event.transObjectSet.forEach((object) => {
             config = engine.getObjectConfig(object);
             if (config) {
