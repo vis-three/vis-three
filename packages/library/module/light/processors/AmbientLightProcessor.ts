@@ -1,6 +1,11 @@
 import { AmbientLight } from "three";
 import { AmbientLightConfig, getAmbientLightConfig } from "../LightConfig";
-import { LightCommands, lightCommands, lightCreate } from "./common";
+import {
+  LightCommands,
+  WebGLRendererEngineSupport,
+  lightCommands,
+  lightCreate,
+} from "./common";
 import { LightCompiler } from "../LightCompiler";
 import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 import { objectDispose } from "@vis-three/module-object";
@@ -8,7 +13,7 @@ import { objectDispose } from "@vis-three/module-object";
 export default defineProcessor<
   AmbientLightConfig,
   AmbientLight,
-  EngineSupport,
+  WebGLRendererEngineSupport,
   LightCompiler
 >({
   type: "AmbientLight",

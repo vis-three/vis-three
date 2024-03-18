@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/library-parser",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "vis-three parser library",
   "main": "/dist/vis-three.library-parser.umd.js",
   "module": "/dist/vis-three.library-parser.es.js",

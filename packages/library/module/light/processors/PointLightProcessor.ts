@@ -1,6 +1,12 @@
 import { PointLight } from "three";
 import { getPointLightConfig, PointLightConfig } from "../LightConfig";
-import { LightCommands, lightCommands, lightCreate } from "./common";
+import {
+  LightCommands,
+  lightCommands,
+  ShadowCommands,
+  shadowLightCreate,
+  WebGLRendererEngineSupport,
+} from "./common";
 import { LightCompiler } from "../LightCompiler";
 import { defineProcessor, EngineSupport } from "@vis-three/middleware";
 import { objectDispose } from "@vis-three/module-object";
@@ -8,14 +14,19 @@ import { objectDispose } from "@vis-three/module-object";
 export default defineProcessor<
   PointLightConfig,
   PointLight,
-  EngineSupport,
+  WebGLRendererEngineSupport,
   LightCompiler
 >({
   type: "PointLight",
   config: getPointLightConfig,
-  commands: lightCommands as LightCommands<PointLightConfig, PointLight>,
-  create(config: PointLightConfig, engine: EngineSupport): PointLight {
-    return lightCreate(new PointLight(), config, {}, engine);
+  commands: {
+    set: {
+      ...(lightCommands as LightCommands<PointLightConfig, PointLight>).set,
+      ...(ShadowCommands as LightCommands<PointLightConfig, PointLight>).set,
+    },
+  },
+  create(config: PointLightConfig, engine): PointLight {
+    return shadowLightCreate(new PointLight(), config, {}, engine);
   },
 
   dispose: objectDispose,

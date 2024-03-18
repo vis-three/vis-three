@@ -2022,6 +2022,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^5.18.0
         version: 5.56.0(eslint@8.36.0)(typescript@5.3.3)
+      '@vis-three/plugin-webgl-renderer':
+        specifier: workspace:^
+        version: link:../../../plugins/WebGLRendererPlugin
       eslint:
         specifier: ^8.12.0
         version: 8.36.0
@@ -12878,7 +12881,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /jsprim@2.0.2:

@@ -1,37 +1,47 @@
 import { ObjectConfig } from "@vis-three/module-object";
+export interface PerspectiveCameraConfig {
+    fov: number;
+    aspect: number;
+    near: number;
+    far: number;
+}
+export interface OrthographicCameraConfig {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+    near: number;
+    far: number;
+}
+export interface LightShadowConfig<C = PerspectiveCameraConfig> {
+    bias: number;
+    normalBias: number;
+    radius: number;
+    mapSize: {
+        x: number;
+        y: number;
+    };
+    camera: C;
+}
 export interface LightConifg extends ObjectConfig {
     color: string;
     intensity: number;
 }
+export interface ShadowLightConfig<C = PerspectiveCameraConfig> extends LightConifg {
+    shadow: LightShadowConfig<C>;
+}
 export type AmbientLightConfig = LightConifg;
-export interface PointLightConfig extends LightConifg {
+export interface PointLightConfig extends ShadowLightConfig {
     distance: number;
     decay: number;
 }
-export interface SpotLightConfig extends LightConifg {
+export interface SpotLightConfig extends ShadowLightConfig {
     distance: number;
     angle: number;
     penumbra: number;
     decay: number;
 }
-export interface DirectionalLightConfig extends LightConifg {
-    shadow: {
-        bias: number;
-        normalBias: number;
-        radius: number;
-        mapSize: {
-            width: number;
-            height: number;
-        };
-        camera: {
-            near: number;
-            far: number;
-            top: number;
-            bottom: number;
-            left: number;
-            right: number;
-        };
-    };
+export interface DirectionalLightConfig extends ShadowLightConfig<OrthographicCameraConfig> {
 }
 export interface HemisphereLightConfig extends LightConifg {
     groundColor: string;
