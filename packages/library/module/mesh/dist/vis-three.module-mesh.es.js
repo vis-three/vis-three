@@ -10,7 +10,9 @@ class MeshCompiler extends SolidObjectCompiler {
 const getMeshConfig = function() {
   return Object.assign(getSolidObjectConfig(), {
     geometry: "",
-    material: ""
+    material: "",
+    morphTargetInfluences: [],
+    morphTargetDictionary: {}
   });
 };
 var MeshProcessor = defineProcessor({
@@ -18,7 +20,22 @@ var MeshProcessor = defineProcessor({
   config: getMeshConfig,
   commands: solidObjectCommands,
   create(config, engine) {
-    return solidObjectCreate(new Mesh(), config, {}, engine);
+    const mesh = new Mesh();
+    mesh.morphTargetInfluences = JSON.parse(
+      JSON.stringify(config.morphTargetInfluences)
+    );
+    mesh.morphTargetDictionary = JSON.parse(
+      JSON.stringify(config.morphTargetDictionary)
+    );
+    return solidObjectCreate(
+      mesh,
+      config,
+      {
+        morphTargetInfluences: true,
+        morphTargetDictionary: true
+      },
+      engine
+    );
   },
   dispose: solidObjectDispose
 });

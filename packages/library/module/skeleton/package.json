@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-skeleton",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "vis-three skeleton module",
   "main": "dist/vis-three.module-skeleton.umd.js",
   "module": "dist/vis-three.module-skeleton.es.js",

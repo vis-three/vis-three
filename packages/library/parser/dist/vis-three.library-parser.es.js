@@ -144,6 +144,11 @@ class Object3DParser extends Parser {
       }
       config.bones.push(boneConfigMap.get(bone).vid);
     }
+    if (resource.boneInverses.length) {
+      config.boneInverses = resource.boneInverses.map(
+        (matrix) => [].concat(matrix.elements)
+      );
+    }
     configMap.set(url, config);
   }
   parseObject3D({
@@ -179,6 +184,17 @@ class Object3DParser extends Parser {
     config.rotation.x = resource.rotation.x;
     config.rotation.y = resource.rotation.y;
     config.rotation.z = resource.rotation.z;
+    if (resource.isMesh && resource.morphTargetInfluences && resource.morphTargetInfluences.length) {
+      config.morphTargetInfluences = [
+        ...resource.morphTargetInfluences
+      ];
+      config.morphTargetDictionary = {
+        ...resource.morphTargetDictionary
+      };
+    }
+    if (resource.isSkinnedMesh) {
+      config.bindMatrix = [].concat(resource.bindMatrix.elements);
+    }
     configMap.set(url, config);
     if (resource.material) {
       if (Array.isArray(resource.material)) {

@@ -23,7 +23,10 @@
         generateConfig,
         Template,
         globalAntiShake,
+        CONFIGTYPE,
       } from "@vis-three/middleware";
+
+      window.test = {};
 
       const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
@@ -53,62 +56,70 @@
 
       engine
         .loadResourcesAsync([
-          "model/glb/IridescentDishWithOlives.glb",
-          "model/glb/Soldier.glb",
+          // "model/glb/IridescentDishWithOlives.glb",
+          // "model/glb/Soldier.glb",
+          "model/glb/RobotExpressive/RobotExpressive.glb",
         ])
         .then((res) => {
           console.log(res);
-          engine.loadConfig(
-            Template.observable(
-              res.resourceConfig["model/glb/IridescentDishWithOlives.glb"]
-            )
+
+          const template = Template.observable(
+            res.resourceConfig["model/glb/RobotExpressive/RobotExpressive.glb"]
           );
 
+          engine.loadConfig(template);
+
           const rootTemplate = res.configMap.get(
-            "model/glb/IridescentDishWithOlives.glb.scene"
+            "model/glb/RobotExpressive/RobotExpressive.glb.scene"
           );
 
           const root = engine.getConfigBySymbol(rootTemplate.vid);
 
-          root.scale.x = 50;
-          root.scale.y = 50;
-          root.scale.z = 50;
-          root.position.x = -50;
-
           scene.children.push(root.vid);
 
-          const template2 = Template.observable(
-            res.resourceConfig["model/glb/Soldier.glb"]
-          );
+          const rootMesh = engine.getObjectBySymbol(root.vid);
 
-          engine.loadConfig(template2);
 
-          const root2Template = res.configMap.get(
-            "model/glb/Soldier.glb.scene"
-          );
+          console.log(test);
 
-          const root2 = engine.getConfigBySymbol(root2Template.vid);
-          console.log(root2);
+          const mixer = generateConfig(CONFIGTYPE.MIXERANIMATION, {
+            target: root.vid,
+          });
 
-          root2.scale.x = 10;
-          root2.scale.y = 10;
-          root2.scale.z = 10;
-          root2.position.x = 20;
+          const action = generateConfig(CONFIGTYPE.ANIMATIONACTION, {
+            mixer: mixer.vid,
+            clip: template["animationClip"][2].vid,
+          });
 
-          scene.children.push(root2.vid);
+          engine.applyConfig(mixer, action);
 
-          const skinndMesh = engine.getObjectBySymbol(
-            template2["skinnedMesh"][0].vid
-          );
+          // const template2 = Template.observable(
+          //   res.resourceConfig["model/glb/Soldier.glb"]
+          // );
 
-          const helper = new THREE.SkeletonHelper(skinndMesh.skeleton.bones[0]);
-          helper.material.linewidth = 2;
-          engine.scene.add(helper);
+          // engine.loadConfig(template2);
 
-          // const bones = template2.bone;
-          // const bone1 = bones[2];
+          // const root2Template = res.configMap.get(
+          //   "model/glb/Soldier.glb.scene"
+          // );
 
-          // bone1.rotation.x = Math.PI / 3;
+          // const root2 = engine.getConfigBySymbol(root2Template.vid);
+          // console.log(root2);
+
+          // root2.scale.x = 10;
+          // root2.scale.y = 10;
+          // root2.scale.z = 10;
+          // root2.position.x = 20;
+
+          // scene.children.push(root2.vid);
+
+          // const skinndMesh = engine.getObjectBySymbol(
+          //   template2["skinnedMesh"][0].vid
+          // );
+
+          // const helper = new THREE.SkeletonHelper(skinndMesh.skeleton.bones[0]);
+          // helper.material.linewidth = 2;
+          // engine.scene.add(helper);
         });
       console.log(engine);
       window.engine = engine;

@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-mesh",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "vis-three mesh module",
   "main": "dist/vis-three.module-mesh.umd.js",
   "module": "dist/vis-three.module-mesh.es.js",

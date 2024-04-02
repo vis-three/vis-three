@@ -17,7 +17,24 @@ export default defineProcessor<MeshConfig, Mesh, EngineSupport, MeshCompiler>({
     (<unknown>solidObjectCommands)
   ),
   create(config: MeshConfig, engine: EngineSupport): Mesh {
-    return solidObjectCreate(new Mesh(), config, {}, engine);
+    const mesh = new Mesh();
+
+    mesh.morphTargetInfluences = JSON.parse(
+      JSON.stringify(config.morphTargetInfluences)
+    );
+    mesh.morphTargetDictionary = JSON.parse(
+      JSON.stringify(config.morphTargetDictionary)
+    );
+
+    return solidObjectCreate(
+      mesh,
+      config,
+      {
+        morphTargetInfluences: true,
+        morphTargetDictionary: true,
+      },
+      engine
+    );
   },
   dispose: solidObjectDispose,
 });

@@ -1,7 +1,7 @@
-import { defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { defineProcessor, globalObjectModuleTrigger, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
 import { SolidObjectCompiler, getSolidObjectConfig, solidObjectCreate } from "@vis-three/module-solid-object";
 import { ObjectRule } from "@vis-three/module-object";
-import { SkinnedMesh } from "three";
+import { SkinnedMesh, Matrix4 } from "three";
 class SkinnedMeshCompiler extends SolidObjectCompiler {
   constructor() {
     super();
@@ -13,7 +13,8 @@ const SkinnedMeshRule = function(input, compiler) {
 const getSkinnedMeshConfig = function() {
   return Object.assign(getSolidObjectConfig(), {
     skeleton: "",
-    bindMode: "attached"
+    bindMode: "attached",
+    bindMatrix: []
   });
 };
 var SkinnedMeshProcessor = defineProcessor({
@@ -40,7 +41,16 @@ var SkinnedMeshProcessor = defineProcessor({
           `skinnedMesh processor can not found skeleton in engine: ${config.skeleton}`
         );
       }
-      skinnedMesh.bind(skeleton);
+      globalObjectModuleTrigger.registerExec(() => {
+        if (config.bindMatrix.length) {
+          const matrix = new Matrix4();
+          matrix.elements = [].concat(config.bindMatrix);
+          skinnedMesh.bind(skeleton, matrix);
+        } else {
+          skinnedMesh.bind(skeleton, skinnedMesh.matrixWorld);
+        }
+        return false;
+      });
     }
     return skinnedMesh;
   },

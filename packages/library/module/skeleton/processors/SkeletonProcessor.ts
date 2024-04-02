@@ -6,7 +6,7 @@ import {
 } from "@vis-three/middleware";
 import { SkeletonCompiler } from "../SkeletonCompiler";
 import { getSkeletonConfig, SkeletonConfig } from "../SkeletonConfig";
-import { Bone, Skeleton } from "three";
+import { Bone, Matrix4, Skeleton } from "three";
 
 export default defineProcessor<
   SkeletonConfig,
@@ -52,12 +52,23 @@ export default defineProcessor<
       }
     });
 
-    const skeleton = new Skeleton(bones);
+    const skeleton = new Skeleton(
+      bones,
+      config.boneInverses.length
+        ? config.boneInverses.map((item) => {
+            const matrix = new Matrix4();
+            matrix.elements = (<number[]>[]).concat(item);
+            return matrix;
+          })
+        : []
+    );
 
-    globalObjectModuleTrigger.registerExec(() => {
-      skeleton.calculateInverses();
-      return false;
-    });
+    if (!config.boneInverses.length) {
+      globalObjectModuleTrigger.registerExec(() => {
+        skeleton.calculateInverses();
+        return false;
+      });
+    }
 
     return skeleton;
   },

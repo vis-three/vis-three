@@ -3,6 +3,7 @@ import {
   Bone,
   Color,
   Material,
+  Matrix4,
   Object3D,
   Texture,
   Vector3,
@@ -24,6 +25,7 @@ import { SkinnedMeshConfig } from "@vis-three/module-skinned-mesh";
 import { SkeletonConfig } from "@vis-three/module-skeleton";
 import { BoneConfig } from "@vis-three/module-bone";
 import { LoadAnimationClipConfig } from "@vis-three/module-animation-clip";
+import { MeshConfig } from "@vis-three/module-mesh";
 
 export class Object3DParser extends Parser {
   selector: ResourceHanlder = (
@@ -214,6 +216,12 @@ export class Object3DParser extends Parser {
       config.bones.push(boneConfigMap.get(bone)!.vid);
     }
 
+    if (resource.boneInverses.length) {
+      config.boneInverses = resource.boneInverses.map((matrix: Matrix4) =>
+        (<number[]>[]).concat(matrix.elements)
+      );
+    }
+
     configMap.set(url, config);
   }
 
@@ -255,6 +263,23 @@ export class Object3DParser extends Parser {
     config.rotation.x = resource.rotation.x;
     config.rotation.y = resource.rotation.y;
     config.rotation.z = resource.rotation.z;
+
+    if (
+      resource.isMesh &&
+      resource.morphTargetInfluences &&
+      resource.morphTargetInfluences.length
+    ) {
+      (<MeshConfig>(<unknown>config)).morphTargetInfluences = [
+        ...resource.morphTargetInfluences,
+      ];
+      (<MeshConfig>(<unknown>config)).morphTargetDictionary = {
+        ...resource.morphTargetDictionary,
+      };
+    }
+
+    if (resource.isSkinnedMesh) {
+      config.bindMatrix = [].concat(resource.bindMatrix.elements);
+    }
 
     configMap.set(url, config);
 
