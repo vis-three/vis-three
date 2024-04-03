@@ -56,70 +56,79 @@
 
       engine
         .loadResourcesAsync([
-          // "model/glb/IridescentDishWithOlives.glb",
-          // "model/glb/Soldier.glb",
+          "model/glb/IridescentDishWithOlives.glb",
+          "model/glb/Soldier.glb",
           "model/glb/RobotExpressive/RobotExpressive.glb",
+          "model/glb/LittlestTokyo.glb",
         ])
         .then((res) => {
-          console.log(res);
+          const applyModel = (url, rootSetting, ani) => {
+            const template = Template.observable(res.resourceConfig[url]);
 
-          const template = Template.observable(
-            res.resourceConfig["model/glb/RobotExpressive/RobotExpressive.glb"]
+            engine.loadConfig(template);
+
+            const rootTemplate = res.configMap.get(url + ".scene");
+
+            const root = engine.getConfigBySymbol(rootTemplate.vid);
+
+            rootSetting && rootSetting(root);
+
+            scene.children.push(root.vid);
+
+            if (ani !== undefined) {
+              const mixer = generateConfig(CONFIGTYPE.MIXERANIMATION, {
+                target: root.vid,
+              });
+
+              const action = generateConfig(CONFIGTYPE.ANIMATIONACTION, {
+                mixer: mixer.vid,
+                clip: template["animationClip"][ani].vid,
+              });
+
+              engine.applyConfig(mixer, action);
+            }
+          };
+
+          applyModel(
+            "model/glb/LittlestTokyo.glb",
+            (root) => {
+              root.position.y = 30;
+              root.position.z = -50;
+              root.scale.x = 0.2;
+              root.scale.y = 0.2;
+              root.scale.z = 0.2;
+            },
+            0
           );
 
-          engine.loadConfig(template);
+          applyModel("model/glb/IridescentDishWithOlives.glb", (root) => {
+            root.scale.x = 20;
+            root.scale.y = 20;
+            root.scale.z = 20;
+            root.position.x = 20;
+          });
 
-          const rootTemplate = res.configMap.get(
-            "model/glb/RobotExpressive/RobotExpressive.glb.scene"
+          applyModel(
+            "model/glb/RobotExpressive/RobotExpressive.glb",
+            (root) => {
+              root.scale.x = 5;
+              root.scale.y = 5;
+              root.scale.z = 5;
+              root.position.x = -20;
+            },
+            3
           );
 
-          const root = engine.getConfigBySymbol(rootTemplate.vid);
-
-          scene.children.push(root.vid);
-
-          const rootMesh = engine.getObjectBySymbol(root.vid);
-
-
-          console.log(test);
-
-          const mixer = generateConfig(CONFIGTYPE.MIXERANIMATION, {
-            target: root.vid,
-          });
-
-          const action = generateConfig(CONFIGTYPE.ANIMATIONACTION, {
-            mixer: mixer.vid,
-            clip: template["animationClip"][2].vid,
-          });
-
-          engine.applyConfig(mixer, action);
-
-          // const template2 = Template.observable(
-          //   res.resourceConfig["model/glb/Soldier.glb"]
-          // );
-
-          // engine.loadConfig(template2);
-
-          // const root2Template = res.configMap.get(
-          //   "model/glb/Soldier.glb.scene"
-          // );
-
-          // const root2 = engine.getConfigBySymbol(root2Template.vid);
-          // console.log(root2);
-
-          // root2.scale.x = 10;
-          // root2.scale.y = 10;
-          // root2.scale.z = 10;
-          // root2.position.x = 20;
-
-          // scene.children.push(root2.vid);
-
-          // const skinndMesh = engine.getObjectBySymbol(
-          //   template2["skinnedMesh"][0].vid
-          // );
-
-          // const helper = new THREE.SkeletonHelper(skinndMesh.skeleton.bones[0]);
-          // helper.material.linewidth = 2;
-          // engine.scene.add(helper);
+          applyModel(
+            "model/glb/Soldier.glb",
+            (root) => {
+              root.scale.x = 20;
+              root.scale.y = 20;
+              root.scale.z = 20;
+              root.position.x = 0;
+            },
+            1
+          );
         });
       console.log(engine);
       window.engine = engine;
