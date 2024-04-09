@@ -144,11 +144,11 @@ const shadowLightCreate = function(light, config, filter, engine) {
         config,
         engine.webGLRenderer.capabilities.maxTextureSize
       );
+      engine.renderManager.removeEventListener(
+        ENGINE_EVENT.RENDER,
+        shadowRenderFun
+      );
     }
-    engine.renderManager.removeEventListener(
-      ENGINE_EVENT.RENDER,
-      shadowRenderFun
-    );
   };
   engine.renderManager.addEventListener(
     ENGINE_EVENT.RENDER,
