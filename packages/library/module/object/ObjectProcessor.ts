@@ -276,6 +276,26 @@ export const removeChildrenHandler = function <
   Bus.compilerEvent.emit(childrenObject, `${COMPILER_EVENT.COMPILE}:parent`);
 };
 
+// 射线方法
+const emptyRaycast = function () {};
+
+export const raycastHandler = function <
+  C extends ObjectConfig,
+  O extends Object3D
+>({
+  target,
+  config,
+  value,
+  engine,
+}: ProcessParams<C, O, EngineSupport, ObjectCompiler<C, O>>) {
+  if (value) {
+    // @ts-ignore
+    delete target.raycast;
+  } else {
+    target.raycast = emptyRaycast;
+  }
+};
+
 export const objectCreate = function <
   C extends ObjectConfig,
   O extends Object3D
@@ -288,6 +308,9 @@ export const objectCreate = function <
       engine,
       value: config.lookAt,
     } as ProcessParams<C, O, EngineSupport, ObjectCompiler<C, O>>);
+
+  // raycast
+  !config.raycast && (object.raycast = emptyRaycast);
 
   // children
   config.children.forEach((vid) => {
@@ -320,6 +343,7 @@ export const objectCreate = function <
     lookAt: true,
     parent: true,
     children: true,
+    raycast: true,
     pointerdown: true,
     pointermove: true,
     pointerup: true,
@@ -367,6 +391,7 @@ export const objectCommands: ObjectCommands<ObjectConfig, Object3D> = {
     dblclick: updateEventHandler,
     contextmenu: updateEventHandler,
     parent: emptyHandler,
+    raycast: raycastHandler,
     children: {
       $reg: [
         {

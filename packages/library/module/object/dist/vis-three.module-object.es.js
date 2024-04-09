@@ -13,6 +13,7 @@ const getObjectConfig = function() {
     receiveShadow: true,
     lookAt: "",
     visible: true,
+    raycast: true,
     matrixAutoUpdate: true,
     renderOrder: 0,
     position: {
@@ -226,6 +227,20 @@ const removeChildrenHandler = function({
   childrenConfig.parent = "";
   Bus.compilerEvent.emit(childrenObject, `${COMPILER_EVENT.COMPILE}:parent`);
 };
+const emptyRaycast = function() {
+};
+const raycastHandler = function({
+  target,
+  config,
+  value,
+  engine
+}) {
+  if (value) {
+    delete target.raycast;
+  } else {
+    target.raycast = emptyRaycast;
+  }
+};
 const objectCreate = function(object, config, filter, engine) {
   !filter.lookAt && lookAtHandler({
     target: object,
@@ -233,6 +248,7 @@ const objectCreate = function(object, config, filter, engine) {
     engine,
     value: config.lookAt
   });
+  !config.raycast && (object.raycast = emptyRaycast);
   config.children.forEach((vid) => {
     addChildrenHanlder({
       target: object,
@@ -260,6 +276,7 @@ const objectCreate = function(object, config, filter, engine) {
     lookAt: true,
     parent: true,
     children: true,
+    raycast: true,
     pointerdown: true,
     pointermove: true,
     pointerup: true,
@@ -298,6 +315,7 @@ const objectCommands = {
     dblclick: updateEventHandler,
     contextmenu: updateEventHandler,
     parent: emptyHandler,
+    raycast: raycastHandler,
     children: {
       $reg: [
         {
@@ -319,4 +337,4 @@ const objectCommands = {
     children: removeChildrenHandler
   }
 };
-export { ObjectCompiler, ObjectRule, addChildrenHanlder, addEventHanlder, getObjectConfig, lookAtHandler, objectCommands, objectCreate, objectDispose, removeChildrenHandler, removeEventHandler, updateEventHandler };
+export { ObjectCompiler, ObjectRule, addChildrenHanlder, addEventHanlder, getObjectConfig, lookAtHandler, objectCommands, objectCreate, objectDispose, raycastHandler, removeChildrenHandler, removeEventHandler, updateEventHandler };

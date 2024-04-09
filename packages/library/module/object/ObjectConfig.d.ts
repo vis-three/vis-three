@@ -16,6 +16,8 @@ export interface ObjectConfig extends SymbolConfig {
     up: Vector3Config;
     /**物体是否可见 */
     visible: boolean;
+    /**是否会被射线选中 */
+    raycast: boolean;
     /**物体是否会自动更新世界矩阵 */
     matrixAutoUpdate: boolean;
     /**物体渲染顺序 */

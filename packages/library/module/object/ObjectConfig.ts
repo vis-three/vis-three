@@ -22,6 +22,8 @@ export interface ObjectConfig extends SymbolConfig {
   up: Vector3Config;
   /**物体是否可见 */
   visible: boolean;
+  /**是否会被射线选中 */
+  raycast: boolean;
   /**物体是否会自动更新世界矩阵 */
   matrixAutoUpdate: boolean;
   /**物体渲染顺序 */
@@ -55,6 +57,7 @@ export const getObjectConfig = function (): ObjectConfig {
     receiveShadow: true,
     lookAt: "",
     visible: true,
+    raycast: true,
     matrixAutoUpdate: true,
     renderOrder: 0,
     position: {
