@@ -607,6 +607,10 @@ export class PathSupportControls extends Object3D<ContolsEvent> {
       return;
     }
 
+    if (event.button !== 0) {
+      return;
+    }
+
     const intersectPoint = this.intersectPoint(event);
 
     if (intersectPoint) {

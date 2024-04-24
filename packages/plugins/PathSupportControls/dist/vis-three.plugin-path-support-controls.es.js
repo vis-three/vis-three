@@ -503,6 +503,9 @@ const _PathSupportControls = class extends Object3D {
     if (!this.visible) {
       return;
     }
+    if (event.button !== 0) {
+      return;
+    }
     const intersectPoint = this.intersectPoint(event);
     if (intersectPoint) {
       this.dragging = true;

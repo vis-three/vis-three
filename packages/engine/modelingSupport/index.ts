@@ -53,7 +53,7 @@ import {
 import {
   TransformControlsEngine,
   TransformControlsPlugin,
-  VisTransformControls,
+  TransformControls,
 } from "@vis-three/plugin-transform-controls";
 import { StatsEngine, StatsPlugin } from "@vis-three/plugin-stats";
 import {
@@ -137,7 +137,7 @@ export class ModelingEngineSupport
   declare stats: VisStats;
   declare setStats: (show: boolean) => StatsEngine;
   declare transing: boolean;
-  declare transformControls: VisTransformControls;
+  declare transformControls: TransformControls;
   declare setTransformControls: (show: boolean) => TransformControlsEngine;
   declare setViewpoint;
   declare gridHelper: GridHelper;
