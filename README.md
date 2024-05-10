@@ -49,11 +49,10 @@ gitee 入口：[https://vis-three.gitee.io](https://vis-three.gitee.io)
 
 ## 赞助者
 
-| 赞助者                                                                                                                                                         | issue |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| <a href="https://space.bilibili.com/672852044"><img src="https://i0.hdslb.com/bfs/face/member/noface.jpg@60w_60h_1c_1s.webp" /></a>                            | 开源  |
-| <a href="https://space.bilibili.com/318870619"><img src="https://i1.hdslb.com/bfs/face/5820ce47b61cc7f1ea4e383139b9030a98d81dc6.jpg@60w_60h_1c_1s.webp" /></a> | 开源  |
-| <a href="https://space.bilibili.com/18899105"><img src="https://i2.hdslb.com/bfs/face/a809a3b8407840ae00032360108261fcf503d38a.jpg@60w_60h_1c_1s.webp" /></a>  | 开源  |
+| 赞助者                                                                                                                                                        |                                                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <a href="https://space.bilibili.com/672852044"><img src="https://i0.hdslb.com/bfs/face/member/noface.jpg@60w_60h_1c_1s.webp" /></a>                           | <a href="https://space.bilibili.com/318870619"><img src="https://i1.hdslb.com/bfs/face/5820ce47b61cc7f1ea4e383139b9030a98d81dc6.jpg@60w_60h_1c_1s.webp" /></a> |
+| <a href="https://space.bilibili.com/18899105"><img src="https://i2.hdslb.com/bfs/face/a809a3b8407840ae00032360108261fcf503d38a.jpg@60w_60h_1c_1s.webp" /></a> | <a href="https://space.bilibili.com/184913597"><img src="https://i2.hdslb.com/bfs/face/500b0b3bf04cd89d2264ac75e4109afb83d0bc87.jpg@60w_60h_1c_1s.webp" /></a> |
 
 ## 赞助商
 
