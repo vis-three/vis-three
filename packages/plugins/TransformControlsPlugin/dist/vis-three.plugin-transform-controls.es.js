@@ -1461,8 +1461,12 @@ class TransformControls extends Object3D {
         );
         this.pointStart.copy(planeIntersect.point).sub(this.worldPositionStart);
       }
-      this.transObjectSet.forEach((object) => {
-        object.matrixAutoUpdate = false;
+      this.transObjectSet.forEach((elem) => {
+        elem.matrixAutoUpdate = false;
+        const cache = this.cacheObjects.get(elem);
+        const virtual = cache.virtual;
+        virtual.matrixWorld.copy(elem.matrixWorld);
+        this.applyMatrixToMatrixWorld(virtual.matrixWorld, virtual);
       });
       this.dragging = true;
       this.dispatchEvent({ type: "mouseDown", mode: this.mode });
