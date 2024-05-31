@@ -36,6 +36,7 @@ export interface LoadingEvent extends BaseEvent {
   loadTotal: number;
   loadSuccess: number;
   loadError: number;
+  loadProgress: number
 }
 
 export interface DetailEvent extends BaseEvent {
@@ -249,6 +250,7 @@ export class LoaderManager extends EventDispatcher {
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
           loadError: this.loadError,
+          loadProgress: (this.loadSuccess + this.loadError) / this.loadTotal,
         });
         this.checkLoaded();
         continue;
@@ -269,6 +271,7 @@ export class LoaderManager extends EventDispatcher {
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
           loadError: this.loadError,
+          loadProgress: (this.loadSuccess + this.loadError) / this.loadTotal,
         });
         continue;
       }
@@ -290,6 +293,7 @@ export class LoaderManager extends EventDispatcher {
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
           loadError: this.loadError,
+          loadProgress: (this.loadSuccess + this.loadError) / this.loadTotal,
         });
         continue;
       }
@@ -323,6 +327,7 @@ export class LoaderManager extends EventDispatcher {
             loadTotal: this.loadTotal,
             loadSuccess: this.loadSuccess,
             loadError: this.loadError,
+            loadProgress: (this.loadSuccess + this.loadError) / this.loadTotal,
           });
           this.checkLoaded();
         })
@@ -339,6 +344,7 @@ export class LoaderManager extends EventDispatcher {
             loadTotal: this.loadTotal,
             loadSuccess: this.loadSuccess,
             loadError: this.loadError,
+            loadProgress: (this.loadSuccess + this.loadError) / this.loadTotal,
           });
           this.checkLoaded();
         });
