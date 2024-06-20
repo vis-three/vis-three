@@ -214,7 +214,8 @@ class LoaderManager extends EventDispatcher {
           type: "loading",
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
-          loadError: this.loadError
+          loadError: this.loadError,
+          loadProgress: (this.loadSuccess + this.loadError) / this.loadTotal
         });
         this.checkLoaded();
         continue;
@@ -233,7 +234,8 @@ class LoaderManager extends EventDispatcher {
           type: "loading",
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
-          loadError: this.loadError
+          loadError: this.loadError,
+          loadProgress: (this.loadSuccess + this.loadError) / this.loadTotal
         });
         continue;
       }
@@ -252,7 +254,8 @@ class LoaderManager extends EventDispatcher {
           type: "loading",
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
-          loadError: this.loadError
+          loadError: this.loadError,
+          loadProgress: (this.loadSuccess + this.loadError) / this.loadTotal
         });
         continue;
       }
@@ -278,7 +281,8 @@ class LoaderManager extends EventDispatcher {
           type: "loading",
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
-          loadError: this.loadError
+          loadError: this.loadError,
+          loadProgress: (this.loadSuccess + this.loadError) / this.loadTotal
         });
         this.checkLoaded();
       }).catch((err) => {
@@ -293,7 +297,8 @@ class LoaderManager extends EventDispatcher {
           type: "loading",
           loadTotal: this.loadTotal,
           loadSuccess: this.loadSuccess,
-          loadError: this.loadError
+          loadError: this.loadError,
+          loadProgress: (this.loadSuccess + this.loadError) / this.loadTotal
         });
         this.checkLoaded();
       });

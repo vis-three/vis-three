@@ -20,6 +20,7 @@ export interface LoadingEvent extends BaseEvent {
     loadTotal: number;
     loadSuccess: number;
     loadError: number;
+    loadProgress: number;
 }
 export interface DetailEvent extends BaseEvent {
     detail: LoadDetail;
