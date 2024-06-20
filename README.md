@@ -8,11 +8,8 @@
 <br/>
 <p align="center">
    <img alt="NPM" src="https://img.shields.io/npm/l/vis-three?color=blue">
-   <img alt="version" src="https://img.shields.io/badge/version-0.6.X-g.svg">
+   <img alt="version" src="https://img.shields.io/badge/version-0.7.X-g.svg">
    <br/>
-    <a target="_black" href="https://space.bilibili.com/3048588">
-       <img alt="bilibili" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.swo.moe%2Fstats%2Fbilibili%2F3048588&query=count&color=282c34&label=bilibili&labelColor=FE7398&logo=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAD7ElEQVR4nO2dW9WrMBCFK6ESkFAJSKiESqgEHCABCZWAhEpAAhL2ecik5dDc%2FpXLBDLfWnlqy0xmJ5BMQnq5CIIgCIIgCIIgCIIgCEIBAHQAemYfrgCunD6wAKAHsEKxALgx+bCQD8%2FS9tmgVqeDr1lLigDgZvDhXso+K9TyTBQRwRJ8AHjntl0Flh5QRAQK%2FmKxPeayWx2OXpBNBKiHvi34b7T2MC4pAvW6twR%2FRwkRKPizBN8CgEcuESj4Lwm+BwBjahEk+H8EwJRKhOaCDzW8e1JLfkUUH1NgmR3XmHffHR1l+72BSs8d7w8U+JDAnZERQMcV+CtUi7dNqFqibB4J7vtrq7xKCuAasbTMXCL4T+5aVk6+2xHUrWdhruAR6HIJcOeu2UHI8zyAe2ytWfEdWz9PVvQ8YAmIQ5dDAB9LFsMVAv8oMO2zAGrC5WNIarRiAuKR9jYEd9pY08aa6uUzIHGRdkgKd8pY0yc1WjEBAqypDYoAG0QAZkQAZkQAZkQAZk4vANQenjsSzS3I%2FwcSbXU5jQBUkRtdf4Rar90v8kSv3+I3ffCCSpk8I%2Fw+lgDkdI%2Fv2rEp2CaiWm1AsDQLlDAD+dlFXLMeAaCSeLZdaSFE5VUQNot38cKuEeBgAsSuG0flVZBmEanbXfNQAsS0fgBYIn2fIu3%2FBBMHEyBmDXlFfA8IzeHb+Ems4WAChKykrVA9ZfsQTL57jXzRg4A5wC%2FA8N4ADiZAZwm2XjW75Qh2KOTfA0p4kygPw28OJcCVgn3nDnYo2EwEYRgGH0qAMyICMCMCMCMCMCMCMCMCMCMCfP3qwHDOQ4AAUekTk8FaBRihJnZdYbvtCGC7LvmkM63GjVDINPFrQgCq5ETXfmMzI90FXzPvfqt7x4rEu%2FZaEcCUxFvgz2zO+BUn6UkoaEEAsptiMSX5e8FoRYCN7cVgb4Vq7U%2FH50Pq4JNP7Qiw8UFnJwcK+tXy+Wj6PLEvPgHSHv5UgwA1IQIwwyFAyLJin9RoxYgAzAQIkPwNmf26busC+OIx5TDqo5nDT+F%2FSS%2F9CYzwb+No49zNy2evkYv0LywGGAXUvp6eSneycqOic0w20k7CNgKE7jJunSGLACTCxF27ylmQc98T5MQUH49swd+I0HPXslLKnT0N+wnkrTKi9JZL%2FL9i1SorMmdeQ4TQQ7OFMxIMzGD45w8nUL1im7efENZLJpgPSw0pfz0cdt4U3230Td%2FTvx2R6d2FrHhEWLkq5PELOMsRPHCPnAZGv1xJteL7jbJiaW3sB2nDvPC%2FosSYvjRQz4cJ6n7KO3rYQL7M+L6nVtfDVRAEQRAEQRAEQRAEIZ5%2FSAXmdfXaoQsAAAAASUVORK5CYII%3D&cacheSeconds=3600">
-    </a>
     <a target="_black" href="https://gitee.com/Shiotsukikaedesari/vis-three">
       <img src="https://gitee.com/Shiotsukikaedesari/vis-three/badge/star.svg?theme=dark" alt="gitee-starts" />
     </a>
@@ -31,13 +28,15 @@
 
 > 夫物速成则疾亡，晚就则善终。朝华之草，夕而零落；松柏之茂，隆寒不衰。是以大雅君子恶速成。——《群书治要》
 
+> 目前 main 分支正在进行`0.7.x`版本大更新，稳定版本和 npm 版本，请查看`0.6.x`分支。
+
 ## 主页、文档、案例在线地址
 
 github 入口：[https://vis-three.github.io](https://vis-three.github.io)
 
 gitee 入口：[https://vis-three.gitee.io](https://vis-three.gitee.io)
 
-> gitee 的视频类资源访问会失效，如有需要请移步 github。
+> gitee 的 pages 服务目前已暂停服务，gitee 的视频类静态资源访问会失效，如有需要请移步 github。
 
 > 文档内容不一定是最新版本内容，持续更新。
 
