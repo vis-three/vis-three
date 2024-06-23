@@ -1,327 +1,337 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-import { OrthographicCamera, AmbientLight, RectAreaLight, HemisphereLight, PerspectiveCamera, Scene } from "three";
-import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
-import { LightShadow } from "three/src/lights/LightShadow";
-const version = "0.6.7";
-if (!window.__THREE__) {
-  console.error(
-    `vis-three dependent on three.js module, pleace run 'npm i three' first.`
-  );
-}
-if (window.__VIS__) {
-  console.warn(`Duplicate vis-three frames are introduced`);
-} else {
-  window.__VIS__ = version;
-}
-const lightShadow = new LightShadow(
-  new OrthographicCamera(-256, 256, 256, -256)
-);
-lightShadow.autoUpdate = false;
-lightShadow.needsUpdate = false;
-AmbientLight.prototype.shadow = lightShadow;
-RectAreaLight.prototype.shadow = lightShadow;
-HemisphereLight.prototype.shadow = lightShadow;
-RectAreaLightUniformsLib.init();
-class EventDispatcher {
+import { PerspectiveCamera as l, Scene as h } from "three";
+import { RectAreaLightUniformsLib as c } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
+class u {
   constructor() {
-    __publicField(this, "listeners", /* @__PURE__ */ new Map());
+    this.listeners = /* @__PURE__ */ new Map();
   }
-  addEventListener(type, listener) {
-    const listeners = this.listeners;
-    if (!listeners.has(type)) {
-      listeners.set(type, []);
-    }
-    const array = listeners.get(type);
-    if (array.includes(listener)) {
+  /**
+   * 添加事件
+   * @param type
+   * @param listener
+   * @returns
+   */
+  addEventListener(e, s) {
+    const t = this.listeners;
+    t.has(e) || t.set(e, []);
+    const i = t.get(e);
+    i.includes(s) || i.push(s);
+  }
+  /**
+   * 是否有此事件
+   * @param type
+   * @param listener
+   * @returns
+   */
+  hasEventListener(e, s) {
+    const t = this.listeners;
+    return t.has(e) ? t.get(e).includes(s) : !1;
+  }
+  /**
+   * 移除事件
+   * @param type
+   * @param listener
+   * @returns
+   */
+  removeEventListener(e, s) {
+    const t = this.listeners;
+    if (!t.has(e) || !t.get(e).includes(s))
       return;
-    }
-    array.push(listener);
+    const i = t.get(e);
+    i.splice(i.indexOf(s), 1);
   }
-  hasEventListener(type, listener) {
-    const listeners = this.listeners;
-    if (!listeners.has(type)) {
-      return false;
-    }
-    return listeners.get(type).includes(listener);
+  /**
+   * 移除该类型的所有事件
+   * @param type
+   * @returns
+   */
+  removeEvent(e) {
+    const s = this.listeners;
+    s.has(e) && s.delete(e);
   }
-  removeEventListener(type, listener) {
-    const listeners = this.listeners;
-    if (!listeners.has(type)) {
-      return;
-    }
-    if (!listeners.get(type).includes(listener)) {
-      return;
-    }
-    const array = listeners.get(type);
-    array.splice(array.indexOf(listener), 1);
-  }
-  removeEvent(type) {
-    const listeners = this.listeners;
-    if (!listeners.has(type)) {
-      return;
-    }
-    listeners.delete(type);
-  }
-  dispatchEvent(event) {
-    var _a;
-    const type = event.type;
-    const listeners = this.listeners;
-    if (listeners.has(type)) {
+  /**
+   * 触发事件
+   * @param event
+   */
+  dispatchEvent(e) {
+    var i;
+    const s = e.type, t = this.listeners;
+    if (t.has(s))
       try {
-        (_a = listeners.get(type)) == null ? void 0 : _a.forEach((listener) => {
-          listener.call(this, event);
+        (i = t.get(s)) == null || i.forEach((r) => {
+          r.call(this, e);
         });
-      } catch (error) {
-        console.error(error);
+      } catch (r) {
+        console.error(r);
       }
-    }
   }
-  once(type, listener) {
-    const onceListener = function(event) {
-      listener.call(this, event);
-      Promise.resolve().then(() => {
-        this.removeEventListener(type, onceListener);
+  /**
+   * 一次性事件触发
+   * @param type
+   * @param listener
+   */
+  once(e, s) {
+    const t = function(i) {
+      s.call(this, i), Promise.resolve().then(() => {
+        this.removeEventListener(e, t);
       });
     };
-    this.addEventListener(type, onceListener);
+    this.addEventListener(e, t);
   }
-  emit(name, params = {}) {
-    var _a;
-    const listeners = this.listeners;
-    if (listeners.has(name)) {
+  /**
+   * 触发事件
+   * @param name
+   * @param params
+   */
+  emit(e, s = {}) {
+    var i;
+    const t = this.listeners;
+    if (t.has(e))
       try {
-        (_a = listeners.get(name)) == null ? void 0 : _a.forEach((listener) => {
-          listener.call(this, params);
+        (i = t.get(e)) == null || i.forEach((r) => {
+          r.call(this, s);
         });
-      } catch (error) {
-        console.error(error);
+      } catch (r) {
+        console.error(r);
       }
-    }
   }
-  on(type, listener) {
-    this.addEventListener(type, listener);
+  /**
+   * 订阅事件
+   * @param type
+   * @param listener
+   */
+  on(e, s) {
+    this.addEventListener(e, s);
   }
-  has(type, listener) {
-    return this.hasEventListener(type, listener);
+  /**
+   * 是否有此事件
+   * @param type
+   * @param listener
+   * @returns
+   */
+  has(e, s) {
+    return this.hasEventListener(e, s);
   }
-  off(type, listener) {
-    if (listener) {
-      this.removeEventListener(type, listener);
-    } else {
-      const listeners = this.listeners;
-      if (!listeners.has(type)) {
+  /**
+   * 移除事件
+   * @param type
+   * @param listener
+   * @returns
+   */
+  off(e, s) {
+    if (s)
+      this.removeEventListener(e, s);
+    else {
+      const t = this.listeners;
+      if (!t.has(e))
         return;
-      }
-      listeners.delete(type);
+      t.delete(e);
     }
   }
-  eventCount(type) {
-    if (!this.listeners.has(type)) {
-      return 0;
-    }
-    return this.listeners.get(type).length;
+  /**
+   * 获取事件数量
+   * @param type
+   * @returns
+   */
+  eventCount(e) {
+    return this.listeners.has(e) ? this.listeners.get(e).length : 0;
   }
-  popLatestEvent(type) {
-    if (!this.listeners.has(type)) {
-      return;
-    }
-    this.listeners.get(type).pop();
+  /**
+   * 销毁该类型的最后一个事件
+   * @param type
+   * @returns
+   */
+  popLatestEvent(e) {
+    this.listeners.has(e) && this.listeners.get(e).pop();
   }
+  /**
+   * 清空所有事件
+   */
   clear() {
     this.listeners.clear();
   }
+  /**
+   * 当前派发器是否使用
+   * @returns
+   */
   useful() {
-    return Boolean([...this.listeners.keys()].length);
+    return !![...this.listeners.keys()].length;
   }
 }
-var ENGINE_EVENT = /* @__PURE__ */ ((ENGINE_EVENT2) => {
-  ENGINE_EVENT2["SETDOM"] = "setDom";
-  ENGINE_EVENT2["SETSIZE"] = "setSize";
-  ENGINE_EVENT2["SETCAMERA"] = "setCamera";
-  ENGINE_EVENT2["SETSCENE"] = "setScene";
-  ENGINE_EVENT2["RENDER"] = "render";
-  ENGINE_EVENT2["DISPOSE"] = "dispose";
-  return ENGINE_EVENT2;
-})(ENGINE_EVENT || {});
-class Engine extends EventDispatcher {
+class f extends u {
   constructor() {
-    super();
-    __publicField(this, "pluginTables", /* @__PURE__ */ new Map());
-    __publicField(this, "strategyTables", /* @__PURE__ */ new Map());
-    __publicField(this, "dom", document.createElement("div"));
-    __publicField(this, "camera", new PerspectiveCamera());
-    __publicField(this, "scene", new Scene());
-    this.camera.position.set(50, 50, 50);
-    this.camera.lookAt(0, 0, 0);
+    super(...arguments), this.pluginTables = /* @__PURE__ */ new Map(), this.strategyTables = /* @__PURE__ */ new Map();
   }
-  install(plugin) {
-    if (this.pluginTables.has(plugin.name)) {
-      console.warn(`This plugin already exists`, plugin.name);
+  /**
+   * 安装插件
+   * @param plugin
+   * @returns
+   */
+  install(e) {
+    if (this.pluginTables.has(e.name))
+      return console.warn("This plugin already exists", e.name), this;
+    const s = (t) => this.pluginTables.has(t) ? !0 : (console.error(
+      `${e.name} must install this plugin before: ${t}`
+    ), !1);
+    if (e.deps)
+      if (Array.isArray(e.deps))
+        for (const t of e.deps)
+          s(t);
+      else
+        s(e.deps);
+    return e.install(this), this.pluginTables.set(e.name, e), this;
+  }
+  /**
+   * 卸载插件
+   * @param plugin
+   * @returns
+   */
+  uninstall(e) {
+    if (!this.pluginTables.has(e))
       return this;
-    }
-    const validateDep = (name) => {
-      if (!this.pluginTables.has(name)) {
-        console.error(
-          `${plugin.name} must install this plugin before: ${name}`
-        );
-        return false;
-      }
-      return true;
-    };
-    if (plugin.deps) {
-      if (Array.isArray(plugin.deps)) {
-        for (const name of plugin.deps) {
-          if (!validateDep(name))
-            ;
-        }
-      } else {
-        if (!validateDep(plugin.deps))
-          ;
-      }
-    }
-    plugin.install(this);
-    this.pluginTables.set(plugin.name, plugin);
-    return this;
+    for (const t of this.strategyTables.values())
+      t.condition.includes(e) && (console.info(
+        `engine auto rollback strategy: ${t.name} before uninstall plugin: ${e}.`
+      ), this.rollback(t.name));
+    for (const t of this.pluginTables.values())
+      t.deps && (Array.isArray(t.deps) && t.deps.includes(e) || t.deps === e) && (console.info(
+        `engine auto uninstall plugin: ${t.name} before uninstall plugin: ${e}.`
+      ), this.uninstall(t.name));
+    return this.pluginTables.get(e).dispose(this), this.pluginTables.delete(e), this;
   }
-  uninstall(name) {
-    if (!this.pluginTables.has(name)) {
-      return this;
-    }
-    for (const strategy of this.strategyTables.values()) {
-      if (strategy.condition.includes(name)) {
-        console.info(
-          `engine auto rollback strategy: ${strategy.name} before uninstall plugin: ${name}.`
-        );
-        this.rollback(strategy.name);
-      }
-    }
-    for (const plugin2 of this.pluginTables.values()) {
-      if (plugin2.deps) {
-        if (Array.isArray(plugin2.deps) && plugin2.deps.includes(name) || plugin2.deps === name) {
-          console.info(
-            `engine auto uninstall plugin: ${plugin2.name} before uninstall plugin: ${name}.`
-          );
-          this.uninstall(plugin2.name);
-        }
-      }
-    }
-    const plugin = this.pluginTables.get(name);
-    plugin.dispose(this);
-    this.pluginTables.delete(name);
-    return this;
+  /**
+   * 执行策略
+   * @returns
+   */
+  exec(e) {
+    const s = this.strategyTables;
+    if (s.has(e.name))
+      return console.warn("This strategy already exists", e.name), this;
+    const t = this.pluginTables;
+    for (const i of e.condition)
+      if (!t.has(i))
+        return console.warn(
+          `${e.name} does not meet the conditions for execution: ${i}`
+        ), this;
+    return e.exec(this), s.set(e.name, e), this;
   }
-  exec(strategy) {
-    const tables = this.strategyTables;
-    if (tables.has(strategy.name)) {
-      console.warn(`This strategy already exists`, strategy.name);
-      return this;
-    }
-    const plugins = this.pluginTables;
-    for (const plugin of strategy.condition) {
-      if (!plugins.has(plugin)) {
-        console.warn(
-          `${strategy.name} does not meet the conditions for execution: ${plugin}`
-        );
-        return this;
-      }
-    }
-    strategy.exec(this);
-    tables.set(strategy.name, strategy);
-    return this;
+  /**
+   * 回滚策略
+   * @returns
+   */
+  rollback(e) {
+    const s = this.strategyTables;
+    return s.has(e) ? (s.get(e).rollback(this), s.delete(e), this) : this;
   }
-  rollback(name) {
-    const tables = this.strategyTables;
-    if (!tables.has(name)) {
-      return this;
-    }
-    const strategy = tables.get(name);
-    strategy.rollback(this);
-    tables.delete(name);
-    return this;
+}
+var d = /* @__PURE__ */ ((n) => (n.SETDOM = "setDom", n.SETSIZE = "setSize", n.SETCAMERA = "setCamera", n.SETSCENE = "setScene", n.RENDER = "render", n.DISPOSE = "dispose", n))(d || {});
+const o = class o extends f {
+  constructor() {
+    super(), this.dom = document.createElement("div"), this.camera = new l(), this.scene = new h(), o.initFlag || o.init(), this.camera.position.set(50, 50, 50), this.camera.lookAt(0, 0, 0);
   }
-  setDom(dom) {
-    this.dom = dom;
-    this.dispatchEvent({
+  static init() {
+    c.init(), o.initFlag = !0;
+  }
+  /**
+   * 设置输出的dom
+   * @param dom HTMLElement
+   * @returns this
+   */
+  setDom(e) {
+    return this.dom = e, this.dispatchEvent({
       type: "setDom",
-      dom
-    });
-    return this;
+      dom: e
+    }), this;
   }
-  setSize(width, height) {
-    var _a, _b;
-    if (width && width <= 0 || height && height <= 0) {
-      console.warn(
-        `you must be input width and height bigger then zero, width: ${width}, height: ${height}`
-      );
-      return this;
-    }
-    !width && (width = ((_a = this.dom) == null ? void 0 : _a.offsetWidth) || window.innerWidth);
-    !height && (height = ((_b = this.dom) == null ? void 0 : _b.offsetHeight) || window.innerHeight);
-    this.dispatchEvent({ type: "setSize", width, height });
-    return this;
+  /**
+   * 设置引擎整体尺寸
+   * @param width number
+   * @param height number
+   * @returns this
+   */
+  setSize(e, s) {
+    var t, i;
+    return e && e <= 0 || s && s <= 0 ? (console.warn(
+      `you must be input width and height bigger then zero, width: ${e}, height: ${s}`
+    ), this) : (!e && (e = ((t = this.dom) == null ? void 0 : t.offsetWidth) || window.innerWidth), !s && (s = ((i = this.dom) == null ? void 0 : i.offsetHeight) || window.innerHeight), this.dispatchEvent({ type: "setSize", width: e, height: s }), this);
   }
-  setCamera(camera, options) {
-    this.dispatchEvent({
+  /**
+   * 设置当前相机
+   * @param camera
+   * @param options
+   * @returns
+   */
+  setCamera(e, s) {
+    return this.dispatchEvent({
       type: "setCamera",
-      camera,
+      camera: e,
       oldCamera: this.camera,
       options: Object.assign(
         {
-          orbitControls: true,
-          transformControls: true
+          orbitControls: !0,
+          transformControls: !0
         },
-        options || {}
+        s || {}
       )
-    });
-    this.camera = camera;
-    return this;
+    }), this.camera = e, this;
   }
-  setScene(scene) {
-    this.dispatchEvent({
+  /**
+   * 设置渲染场景
+   * @param scene
+   * @returns
+   */
+  setScene(e) {
+    return this.dispatchEvent({
       type: "setScene",
-      scene,
+      scene: e,
       oldScene: this.scene
-    });
-    this.scene = scene;
-    return this;
+    }), this.scene = e, this;
   }
-  render(delta = 0) {
-    this.dispatchEvent({
+  /**
+   * 渲染方法
+   * @param delta
+   * @returns
+   */
+  render(e = 0) {
+    return this.dispatchEvent({
       type: "render",
-      delta
-    });
-    return this;
+      delta: e
+    }), this;
   }
+  /**
+   * 清除引擎缓存
+   * @returns this
+   */
   dispose() {
-    this.dispatchEvent({
+    return this.dispatchEvent({
       type: "dispose"
-    });
-    return this;
+      /* DISPOSE */
+    }), this;
   }
-}
-const defineEngine = function(options) {
-  const engine = new Engine();
-  if (options.plugins) {
-    options.plugins.forEach((plugin) => {
-      engine.install(plugin);
-    });
-  }
-  if (options.strategy) {
-    options.strategy.forEach((strategy) => {
-      engine.exec(strategy);
-    });
-  }
-  return engine;
 };
-const definePlugin = function(options) {
-  return () => options;
+o.initFlag = !1;
+let a = o;
+const v = function(n) {
+  const e = new a();
+  return n.plugins && n.plugins.forEach((s) => {
+    e.install(s);
+  }), n.strategy && n.strategy.forEach((s) => {
+    e.exec(s);
+  }), e;
+}, b = function(n) {
+  return () => n;
+}, S = function(n) {
+  return () => n;
+}, p = "0.7.0";
+window.__THREE__ || console.error(
+  "vis-three dependent on three.js module, pleace run 'npm i three' first."
+);
+window.__VIS__ ? console.warn("Duplicate vis-three frames are introduced") : window.__VIS__ = p;
+export {
+  f as Base,
+  d as ENGINE_EVENT,
+  a as Engine,
+  u as EventDispatcher,
+  v as defineEngine,
+  b as definePlugin,
+  S as defineStrategy
 };
-const defineStrategy = function(options) {
-  return () => options;
-};
-export { ENGINE_EVENT, Engine, EventDispatcher, defineEngine, definePlugin, defineStrategy };

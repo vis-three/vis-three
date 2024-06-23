@@ -8,6 +8,7 @@
   "private": true,
   "scripts": {
     "dev": "vite serve",
+    "dev:force": "vite serve --force",
     "build": "vite build --emptyOutDir",
     "lint": "npx eslint ./src/**/*.vue --fix"
   },
@@ -19,7 +20,6 @@
     "esbuild-windows-64": "^0.15.13",
     "lite-server": "^2.6.1",
     "rollup-plugin-visualizer": "^5.6.0",
-    "typescript": "^5.2.2",
     "vue-tsc": "^0.37.0",
     "webpack": "^5.74.0"
   },

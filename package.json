@@ -1,30 +1,37 @@
 {
+  "name": "vis-three",
   "private": true,
   "version": "0.7.0",
+  "description": "A web 3D development framework for assembled based on three.js",
+  "main": "index.js",
   "packageManager": "pnpm@7.17.0",
   "type": "module",
   "scripts": {
     "dev:examples": "pnpm run -C packages/examples dev",
     "dev:docs": "pnpm run -C packages/docs dev",
     "dev:website": "pnpm run -C packages/website dev",
+    "build": "tsc -p ./tsconfig.json",
     "build:examples": "pnpm run -C packages/examples build",
     "build:docs": "pnpm run -C packages/docs build",
     "build:website": "pnpm run -C packages/website build"
   },
   "devDependencies": {
     "@types/node": "^18.11.12",
-    "@types/three": "^0.141.0",
+    "@types/three": "^0.165.0",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.6.2",
-    "three": "^0.141.0",
+    "three": "^0.165.0",
     "typescript": "^5.2.2",
-    "vite": "^2.9.15"
+    "vite": "^5.3.1"
   },
   "engines": {
-    "node": ">=14.15.0"
+    "node": "^18.0.0 || >=20.0.0"
+  },
+  "dependencies": {
+    "@vis-three/core": "workspace:^"
   }
 }
