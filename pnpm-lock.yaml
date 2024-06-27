@@ -5476,6 +5476,33 @@ importers:
         specifier: ^5.2.2
         version: 5.3.3
 
+  packages/tdom:
+    dependencies:
+      '@vis-three/core':
+        specifier: workspace:^
+        version: link:../core
+      '@vis-three/plugin-event-manager':
+        specifier: workspace:^
+        version: link:../plugins/EventManagerPlugin
+      '@vis-three/plugin-loader-manager':
+        specifier: workspace:^
+        version: link:../plugins/loaderManager
+      '@vis-three/plugin-pointer-manager':
+        specifier: workspace:^
+        version: link:../plugins/PointerManager
+      '@vis-three/plugin-render-manager':
+        specifier: workspace:^
+        version: link:../plugins/RenderManagerPlugin
+      '@vis-three/utils':
+        specifier: workspace:^
+        version: link:../utils
+      rxjs:
+        specifier: ^7.8.1
+        version: 7.8.1
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
+
   packages/test:
     devDependencies:
       '@cypress/code-coverage':
@@ -15182,7 +15209,7 @@ packages:
       typedoc: '>=0.24.0'
     dependencies:
       handlebars: 4.7.7
-      typedoc: 0.24.8(typescript@5.1.6)
+      typedoc: 0.24.8(typescript@5.3.3)
 
   /typedoc@0.24.8(typescript@5.1.6):
     resolution: {integrity: sha512-ahJ6Cpcvxwaxfu4KtjA8qZNqS43wYt6JL27wYiIgl1vd38WW/KWX11YuAeZhuz9v+ttrutSsgK+XO1CjL1kA3w==}
@@ -15196,6 +15223,7 @@ packages:
       minimatch: 9.0.1
       shiki: 0.14.2
       typescript: 5.1.6
+    dev: false
 
   /typedoc@0.24.8(typescript@5.3.3):
     resolution: {integrity: sha512-ahJ6Cpcvxwaxfu4KtjA8qZNqS43wYt6JL27wYiIgl1vd38WW/KWX11YuAeZhuz9v+ttrutSsgK+XO1CjL1kA3w==}
@@ -15209,7 +15237,6 @@ packages:
       minimatch: 9.0.1
       shiki: 0.14.2
       typescript: 5.3.3
-    dev: true
 
   /typescript@4.9.5:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
@@ -15221,6 +15248,7 @@ packages:
     resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
     engines: {node: '>=14.17'}
     hasBin: true
+    dev: false
 
   /typescript@5.3.3:
     resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
