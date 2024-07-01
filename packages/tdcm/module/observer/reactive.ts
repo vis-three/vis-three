@@ -1,6 +1,6 @@
 import { extendPath, isArray, isObject } from "@vis-three/utils";
 import { Observer } from "./Observer";
-import { proxyDeleter, proxyGetter, proxySetter, proxyWeak } from "./proxy";
+import { proxyDeleter, proxyGetter, proxySetter } from "./proxy";
 import {
   SYMBOL_FATHER,
   SYMBOL_KEY,
@@ -32,7 +32,7 @@ export const react = function <T extends object>(
 
   const path = father ? getPath(father) : "";
 
-  if (observer.isIgnore(path)) {
+  if (observer.ignore(path)) {
     return object;
   }
 
@@ -43,7 +43,7 @@ export const react = function <T extends object>(
     // 判断是否需要忽略
     const tempPath = extendPath(path, key);
 
-    if (observer.isIgnore(tempPath)) {
+    if (observer.ignore(tempPath)) {
       continue;
     }
 

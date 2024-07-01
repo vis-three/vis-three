@@ -1,10 +1,5 @@
 import { Subject } from "rxjs";
 import { react } from "./reactive";
-import { globalOption } from "../../option";
-
-export interface Ignore {
-  [key: string]: Ignore | boolean;
-}
 
 export interface ReactNotice {
   operate: "add" | "set" | "delete";
@@ -18,45 +13,29 @@ export interface ReactNotice {
  * @internal
  */
 export class Observer<T extends object> extends Subject<ReactNotice> {
-  private ignore: Ignore = {};
+  static IGNORE = {
+    vid: true,
+    type: true,
+    alias: true,
+    meta: true,
+  };
+
   target: T;
   disable = false;
 
-  constructor(object: T, ignore?: Ignore) {
+  constructor(object: T) {
     super();
-    if (ignore) {
-      this.ignore = ignore;
-    } else {
-      this.ignore = Object.assign(
-        { meta: true, alias: true },
-        globalOption.proxy.ignore || {}
-      );
-    }
+
     this.target = react(this, object);
   }
 
-  isIgnore(path: string): boolean {
-    let ignore = this.ignore;
-    for (const key of path.split(".")) {
-      if (ignore[key] === undefined) {
-        return false;
-      }
-
-      if (typeof ignore[key] === "boolean" && ignore[key]) {
-        return true;
-      } else {
-        ignore = ignore[key] as Ignore;
-      }
+  ignore(path: string): boolean {
+    const split = path.indexOf(".");
+    if (split === -1) {
+      return Observer.IGNORE[path];
     }
-    return false;
-  }
 
-  setIgnore(ignore: Ignore) {
-    this.ignore = ignore;
-  }
-
-  mergeIgnore(ignore: Ignore) {
-    this.ignore = Object.assign(this.ignore, ignore);
+    return Observer.IGNORE[path.slice(0, split)];
   }
 
   next(value: ReactNotice): void {
