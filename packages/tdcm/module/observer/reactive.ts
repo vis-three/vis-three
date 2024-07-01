@@ -8,7 +8,7 @@ import {
   cacheArray,
   getPath,
   hasObserver,
-} from "../../utils/utils";
+} from "../../utils/obTool";
 
 const handler = {
   get: proxyGetter,

@@ -1,14 +1,11 @@
-import { extendPath } from "@vis-three/utils";
 import { Subject, Subscription } from "rxjs";
 import { globalOption } from "../../option";
 import { BasicConfig } from "../common";
-import { getObserver } from "../../utils/utils";
+import { getObserver } from "../../utils/obTool";
+import { ObNotice } from "../observer/Observer";
 
-export interface ProxyNotice {
-  operate: "add" | "set" | "delete";
-  path: string;
-  key: string;
-  value: any;
+export interface CtnNotice extends ObNotice {
+  symbol: string;
 }
 
 const containerGetter = function (
@@ -37,9 +34,10 @@ const containerSetter = function (
 
     container.next({
       operate: "add",
-      path: key,
+      path: "",
       key,
       value,
+      symbol: key,
     });
 
     return result;
@@ -51,9 +49,10 @@ const containerSetter = function (
 
     container.next({
       operate: "set",
-      path: key,
+      path: "",
       key,
       value,
+      symbol: key,
     });
 
     return result;
@@ -74,9 +73,10 @@ const containerDeleter = function (
 
   container.next({
     operate: "delete",
-    path: key,
+    path: "",
     key,
     value,
+    symbol: key,
   });
 
   container.remove(value.vid);
@@ -84,7 +84,7 @@ const containerDeleter = function (
   return result;
 };
 
-export class Container<C extends BasicConfig> extends Subject<ProxyNotice> {
+export class Container<C extends BasicConfig> extends Subject<CtnNotice> {
   space: Record<string, C>;
 
   subscriptions = new Map<BasicConfig["vid"], Subscription>();
@@ -128,7 +128,7 @@ export class Container<C extends BasicConfig> extends Subject<ProxyNotice> {
     const observer = getObserver<C>(config);
 
     if (!observer) {
-      console.error("DataContainer: this config can not observer", config);
+      console.error("Container: this config can not observer", config);
       return;
     }
 
@@ -137,9 +137,10 @@ export class Container<C extends BasicConfig> extends Subject<ProxyNotice> {
       observer.subscribe((notice) => {
         this.next({
           operate: notice.operate,
-          path: extendPath(observer.target.vid, notice.path),
+          path: notice.path,
           key: notice.key,
           value: notice.value,
+          symbol: observer.target.vid,
         });
       })
     );

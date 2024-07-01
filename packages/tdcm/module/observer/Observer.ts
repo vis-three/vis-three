@@ -1,7 +1,7 @@
 import { Subject } from "rxjs";
 import { react } from "./reactive";
 
-export interface ReactNotice {
+export interface ObNotice {
   operate: "add" | "set" | "delete";
   path: string;
   key: string;
@@ -12,7 +12,7 @@ export interface ReactNotice {
  * 观察者类
  * @internal
  */
-export class Observer<T extends object> extends Subject<ReactNotice> {
+export class Observer<T extends object> extends Subject<ObNotice> {
   static IGNORE = {
     vid: true,
     type: true,
@@ -38,7 +38,7 @@ export class Observer<T extends object> extends Subject<ReactNotice> {
     return Observer.IGNORE[path.slice(0, split)];
   }
 
-  next(value: ReactNotice): void {
+  next(value: ObNotice): void {
     if (this.disable) {
       return;
     }

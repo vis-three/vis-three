@@ -1,5 +1,5 @@
 import { Observer } from "./Observer";
-import { getObserver } from "../../utils/utils";
+import { getObserver } from "../../utils/obTool";
 /**
  * 将传入的数据进行代理并创建数据的观察者
  * @internal
