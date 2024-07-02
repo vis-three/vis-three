@@ -2,11 +2,9 @@ import { syncObject } from "@vis-three/utils";
 import { BasicConfig } from "../common";
 import { EngineSupport } from "../../engine";
 import { installProcessor } from "../space";
-import { ProxyNotice } from "../container";
+import { CtnNotice } from "../container";
 import { Processor } from "../processor";
 import { Bus } from "../../utils";
-
-export type CompileNotice = Omit<ProxyNotice, "path"> & { path: string[] };
 
 export enum COMPILER_EVENT {
   ADD = "compiler.add",
@@ -129,7 +127,7 @@ export class Compiler {
     return this;
   }
 
-  compile(vid: BasicConfig["vid"], notice: CompileNotice): this {
+  compile(vid: BasicConfig["vid"], notice: CtnNotice): this {
     const cacheCompile = this.cacheCompile;
 
     let object: BasicConfig;
@@ -181,7 +179,7 @@ export class Compiler {
       ...notice,
     });
 
-    const router = notice.path.join(".");
+    const router = notice.path;
 
     Bus.compilerEvent.emit(
       object,

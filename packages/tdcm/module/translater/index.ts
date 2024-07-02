@@ -1,6 +1,6 @@
 import { BasicConfig } from "../common";
 import { Compiler } from "../compiler";
-import { ProxyNotice } from "../container";
+import { CtnNotice } from "../container";
 import { Rule } from "../rule";
 
 export class Translater<C extends Compiler = Compiler> {
@@ -26,7 +26,7 @@ export class Translater<C extends Compiler = Compiler> {
     return this;
   }
 
-  translate(notice: ProxyNotice): this {
+  translate(notice: CtnNotice): this {
     const rule = this.rule;
 
     for (const compiler of this.members) {

@@ -7,15 +7,16 @@ import {
 } from "@vis-three/utils";
 import { BasicConfig } from "../common";
 import { EngineSupport } from "../../engine";
-import { CompileNotice, Compiler } from "../compiler";
+import { Compiler } from "../compiler";
 import { CONFIGFACTORY, CONFIGTYPE } from "../space";
+import { CtnNotice } from "../container";
 
 export interface ProcessParams<
   S extends BasicConfig,
   T extends object,
   E extends EngineSupport = EngineSupport,
   C extends Compiler = Compiler
-> extends CompileNotice {
+> extends CtnNotice {
   config: S;
   target: T;
   compiler: C;
