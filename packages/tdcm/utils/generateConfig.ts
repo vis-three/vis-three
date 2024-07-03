@@ -1,5 +1,5 @@
 import { DeepPartial } from "@vis-three/utils";
-import { SymbolConfig } from "../module/common";
+import { BasicConfig } from "../module/common";
 import { EngineSupport } from "../engine";
 import { CONFIGFACTORY, CONFIGTYPE, isObjectType, observable } from "../module";
 import { globalOption } from "../option";
@@ -7,7 +7,7 @@ import { globalOption } from "../option";
 /**
  * 配置单生成的附加选项
  */
-export interface GenerateOptions<C extends SymbolConfig> {
+export interface GenerateOptions<C extends BasicConfig> {
   /**是否生成响应式配置，默认为true */
   observer?: boolean;
   /**严格模式，只允许合并CONFIGTYPE规定的属性，自定义扩展配置下关闭 */
@@ -21,7 +21,7 @@ export interface GenerateOptions<C extends SymbolConfig> {
 }
 
 export interface GenerateConfig {
-  <C extends SymbolConfig>(
+  <C extends BasicConfig>(
     type: string,
     merge?: DeepPartial<C>,
     options?: GenerateOptions<C>
@@ -38,7 +38,7 @@ export interface GenerateConfig {
  * @param options 函数的拓展选项
  * @returns config object
  */
-export const generateConfig = <GenerateConfig>function <C extends SymbolConfig>(
+export const generateConfig = <GenerateConfig>function <C extends BasicConfig>(
   type: string,
   merge: DeepPartial<C> | undefined,
   options: GenerateOptions<C> = {
@@ -130,7 +130,7 @@ export const generateConfig = <GenerateConfig>function <C extends SymbolConfig>(
         isObjectType(initConfig.type) &&
         initConfig.type !== CONFIGTYPE.SCENE
       ) {
-        let sceneConfig: SymbolConfig | null = null;
+        let sceneConfig: BasicConfig | null = null;
 
         if (typeof generateConfig.injectScene === "boolean") {
           sceneConfig = engine.getObjectConfig(engine.scene);
@@ -145,7 +145,7 @@ export const generateConfig = <GenerateConfig>function <C extends SymbolConfig>(
             engine.scene
           );
         } else {
-          (<SymbolConfig & { children: string[] }>sceneConfig).children.push(
+          (<BasicConfig & { children: string[] }>sceneConfig).children.push(
             initConfig.vid
           );
         }
