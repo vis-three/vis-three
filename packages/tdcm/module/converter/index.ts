@@ -1,7 +1,7 @@
 import { Compiler } from "../compiler";
 import { Rule } from "../rule";
 import { Translater } from "../translater";
-import { ProxyNotice, Container } from "../container";
+import { CtnNotice, Container } from "../container";
 import { BasicConfig } from "../common";
 import { JSONHandler } from "../../utils";
 import { CONFIGFACTORY } from "../space";
@@ -15,7 +15,7 @@ export class Converter<C extends BasicConfig, P extends Compiler = Compiler> {
   constructor(rule: Rule<P>, data: Array<C> = []) {
     this.translater = new Translater<P>().setRule(rule);
 
-    this.container.subscribe((notice: ProxyNotice) => {
+    this.container.subscribe((notice: CtnNotice) => {
       this.translater.translate(notice);
     });
 
