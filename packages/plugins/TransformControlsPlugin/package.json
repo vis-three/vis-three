@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/plugin-transform-controls",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "",
   "main": "dist/vis-three.plugin-transform-controls.umd.js",
   "module": "dist/vis-three.plugin-transform-controls.es.js",
