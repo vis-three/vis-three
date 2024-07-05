@@ -38,7 +38,7 @@ import {
   ResourceManagerPlugin,
   ResourceManagerPluginParameters,
 } from "../plugin/ResourceManagerPlugin";
-import { SymbolConfig } from "../module/common";
+import { BasicConfig } from "../module/common";
 import { LoaderDataSupportStrategy } from "../strategy/LoaderDataSuportStrategy";
 import {
   LoaderMappingEngine,
@@ -118,7 +118,7 @@ export class EngineSupport
     resourceMap: Record<string, unknown>
   ) => ResourceManagerEngine;
   declare dataSupportManager: DataSupportManager;
-  declare applyConfig: (...args: SymbolConfig[]) => DataSupportEngine;
+  declare applyConfig: (...args: BasicConfig[]) => DataSupportEngine;
   declare removeConfigBySymbol: (...args: string[]) => DataSupportEngine;
   declare toJSON: () => string;
   declare exportConfig: () => LoadOptions;
@@ -130,14 +130,14 @@ export class EngineSupport
     callback: (err: Error | undefined, event?: MappedEvent | undefined) => void
   ) => this;
 
-  declare getConfigBySymbol: <C extends SymbolConfig = any>(
+  declare getConfigBySymbol: <C extends BasicConfig = any>(
     vid: string
   ) => C | null;
-  declare getConfigfromModule: <C extends SymbolConfig = any>(
+  declare getConfigfromModule: <C extends BasicConfig = any>(
     module: string,
     vid: string
   ) => C | null;
-  declare getConfigfromModules: <C extends SymbolConfig = any>(
+  declare getConfigfromModules: <C extends BasicConfig = any>(
     modules: string[] | Record<string, any>,
     vid: string
   ) => C | null;
@@ -300,7 +300,7 @@ export class EngineSupport
     this.removeLifeCycle(config);
   }
 
-  getObjectConfig<O, C extends SymbolConfig>(object: O): C | null {
+  getObjectConfig<O, C extends BasicConfig>(object: O): C | null {
     const symbol = this.getObjectSymbol(object);
 
     if (symbol) {
@@ -310,7 +310,7 @@ export class EngineSupport
     }
   }
 
-  useModule<C extends Compiler<any, any>>(options: ModuleOptions<C>): this {
+  useModule<C extends Compiler = Compiler>(options: ModuleOptions<C>): this {
     if (MODULETYPE[options.type.toLocaleUpperCase()]) {
       console.warn(`module ${options.type} is already exist.`);
       return this;
@@ -386,7 +386,7 @@ export class EngineSupport
    * @deprecated
    * use useModule
    */
-  registModule<C extends Compiler<any, any>>(options: ModuleOptions<C>): this {
+  registModule<C extends Compiler = Compiler>(options: ModuleOptions<C>): this {
     return this.useModule(options);
   }
 }
@@ -405,7 +405,7 @@ export const defineEngineSupport = function <
 
   if (options.modules) {
     options.modules.forEach((module) => {
-      engine.registModule(module);
+      engine.useModule(module);
     });
   }
 
