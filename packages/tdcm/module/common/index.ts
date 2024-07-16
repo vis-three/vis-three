@@ -1,3 +1,5 @@
+import { globalOption } from "../../option";
+
 export interface BasicConfig {
   vid: string;
   type: string;
@@ -41,6 +43,10 @@ export const getSymbolConfig = getBasicConfig;
 
 export const uniqueSymbol = function (type: string) {
   return `DEFUALT-${type}`;
+};
+
+export const createSymbol = function () {
+  return globalOption.symbol.generator();
 };
 
 export const emptyHandler = function () {};

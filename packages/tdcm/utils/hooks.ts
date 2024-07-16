@@ -1,11 +1,11 @@
 import { BaseEvent, EventDispatcher } from "@vis-three/core";
 
-export class Bus {
-  map: WeakMap<object, EventDispatcher> = new WeakMap();
+export class Hook {
+  private map: WeakMap<object, EventDispatcher> = new WeakMap();
 
   create(object: object) {
     if (this.map.has(object)) {
-      console.warn(`object is exist.`, object);
+      console.warn(`Hook: object is exist.`, object);
       return;
     }
     this.map.set(object, new EventDispatcher());
@@ -60,6 +60,3 @@ export class Bus {
     eventDispatcher.off(type, callback);
   }
 }
-
-export const compilerEvent = new Bus();
-export const configEvent = new Bus();

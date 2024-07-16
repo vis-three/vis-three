@@ -164,6 +164,12 @@ export class EngineSupport
     command: ProcessorCommands<any, any, any, any>;
   }[] = [];
 
+  CONFIG_FACTORY: Record<string, () => BasicConfig> = {};
+  MODULE_TYPE: Record<string, string> = {};
+  CONFIG_TYPE: Record<string, string> = {};
+  OBJECT_MODULE: Record<string, boolean> = {};
+  CONFIG_MODULE: Record<string, string> = {};
+
   constructor(params: Partial<EngineSupportParameters> = {}) {
     super();
     this.install(LoaderManagerPlugin(params.LoaderManagerPlugin))

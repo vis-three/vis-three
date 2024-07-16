@@ -150,3 +150,7 @@ export class Ruler {
     return this;
   }
 }
+
+export const defineRule = function (rules: Rule[]) {
+  
+};

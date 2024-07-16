@@ -10,7 +10,9 @@ export interface ModuleOptions<
 > {
   type: string;
   compiler: Compiler;
+  //@deprecated use ruler
   rule: Ruler;
+  ruler: Ruler;
   processors: Processor<any, any, E, C>[];
   preload?: LoadUnit[];
   object?: boolean;
@@ -22,6 +24,13 @@ export interface ModuleOptions<
   }[];
 }
 
-export class Module {
-  
+export class Moduler {
+  module: ModuleOptions;
+
+  constructor(module: ModuleOptions) {
+    this.module = module;
+  }
+}
+
+export const defineModule = function(module: ModuleOptions) {
 }

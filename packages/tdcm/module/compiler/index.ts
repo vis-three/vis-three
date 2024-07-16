@@ -4,7 +4,7 @@ import { EngineSupport } from "../../engine";
 import { installProcessor } from "../space";
 import { CtnNotice } from "../container";
 import { Processor } from "../processor";
-import { Bus } from "../../utils";
+import { Hook } from "../../utils/hooks";
 
 export enum COMPILER_EVENT {
   ADD = "compiler.add",
@@ -14,6 +14,8 @@ export enum COMPILER_EVENT {
 }
 
 export class Compiler {
+  static hook = new Hook();
+
   MODULE: string = "";
 
   processors = new Map<
@@ -22,7 +24,7 @@ export class Compiler {
   >();
   target: Record<string, BasicConfig> = {};
   map: Map<BasicConfig["vid"], BasicConfig> = new Map();
-  weakMap: WeakMap<BasicConfig, BasicConfig["vid"]> = new WeakMap();
+  symbolMap: WeakMap<BasicConfig, BasicConfig["vid"]> = new WeakMap();
   engine!: EngineSupport;
 
   private cacheCompile?: {
@@ -63,7 +65,7 @@ export class Compiler {
 
     const object = processor.create(config, this.engine, this);
     this.map.set(config.vid, object);
-    this.weakMap.set(object, config.vid);
+    this.symbolMap.set(object, config.vid);
 
     Bus.compilerEvent.create(object);
 
@@ -92,7 +94,7 @@ export class Compiler {
     const object = this.map.get(vid)!;
     this.processors.get(config.type)!.dispose(object, this.engine, this);
     this.map.delete(vid);
-    this.weakMap.delete(object);
+    this.symbolMap.delete(object);
 
     Bus.compilerEvent.emit(object, COMPILER_EVENT.REMOVE);
 
@@ -181,12 +183,12 @@ export class Compiler {
 
     const router = notice.path;
 
-    Bus.compilerEvent.emit(
+    Compiler.hook.emit(
       object,
       `${COMPILER_EVENT.COMPILE}:${router ? router + "." : router}${notice.key}`
     );
 
-    Bus.compilerEvent.emit(object, `${COMPILER_EVENT.UPDATE}`);
+    Compiler.hook.emit(object, `${COMPILER_EVENT.UPDATE}`);
 
     return this;
   }
@@ -247,7 +249,7 @@ export class Compiler {
   }
 
   getObjectSymbol(object: BasicConfig): string | null {
-    return this.weakMap.get(object) || null;
+    return this.symbolMap.get(object) || null;
   }
   getObjectBySymbol(vid: string): BasicConfig | null {
     return this.map.get(vid) || null;

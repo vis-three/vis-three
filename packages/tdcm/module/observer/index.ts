@@ -12,3 +12,18 @@ export const observable = function <T extends object>(object: T) {
 };
 
 export { getObserver };
+
+//TODO:希望自动收集所有静默配置
+export const slientSync = function (config: any, fun: () => void) {
+  const ob = getObserver(config);
+  if (!ob) {
+    console.warn(`this object can not found it observer:`, config);
+    return;
+  }
+
+  ob.disable = true;
+
+  fun();
+
+  ob.disable = false;
+};
