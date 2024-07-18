@@ -83,6 +83,14 @@ export interface EngineSupportParameters {
   CompilerManagerPlugin: CompilerManagerPluginParameters;
 }
 
+export interface EngineSupportConstants {
+  CONFIG_FACTORY: Record<string, () => BasicConfig>;
+  MODULE_TYPE: Record<string, string>;
+  CONFIG_TYPE: Record<string, string>;
+  OBJECT_MODULE: Record<string, boolean>;
+  CONFIG_MODULE: Record<string, string>;
+}
+
 export enum SUPPORT_LIFE_CYCLE {
   ZERO = 0,
   ONE = 100,
@@ -164,11 +172,13 @@ export class EngineSupport
     command: ProcessorCommands<any, any, any, any>;
   }[] = [];
 
-  CONFIG_FACTORY: Record<string, () => BasicConfig> = {};
-  MODULE_TYPE: Record<string, string> = {};
-  CONFIG_TYPE: Record<string, string> = {};
-  OBJECT_MODULE: Record<string, boolean> = {};
-  CONFIG_MODULE: Record<string, string> = {};
+  constants: EngineSupportConstants = {
+    CONFIG_FACTORY: {},
+    MODULE_TYPE: {},
+    CONFIG_TYPE: {},
+    OBJECT_MODULE: {},
+    CONFIG_MODULE: {},
+  };
 
   constructor(params: Partial<EngineSupportParameters> = {}) {
     super();

@@ -13,7 +13,6 @@
     "build": "tsc -p ./tsconfig.json  && vite build",
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
-  "devDependencies": {},
   "dependencies": {
     "@vis-three/core": "workspace:^",
     "@vis-three/plugin-event-manager": "workspace:^",
@@ -21,8 +20,8 @@
     "@vis-three/plugin-pointer-manager": "workspace:^",
     "@vis-three/plugin-render-manager": "workspace:^",
     "@vis-three/utils": "workspace:^",
-    "rxjs": "^7.8.1",
-    "uuid": "^8.3.2"
+    "nanoid": "^5.0.7",
+    "rxjs": "^7.8.1"
   },
   "files": [
     "dist",

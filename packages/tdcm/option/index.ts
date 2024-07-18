@@ -1,5 +1,6 @@
 import { DeepPartial } from "@vis-three/utils";
-import { v4, validate } from "uuid";
+import { EngineSupport } from "../engine";
+import { nanoid } from "nanoid";
 
 export interface GlobalOption {
   proxy: {
@@ -9,8 +10,9 @@ export interface GlobalOption {
   };
   symbol: {
     generator: Function;
-    validator: Function;
+    validator: (id: string) => boolean;
   };
+  engine?: EngineSupport;
 }
 
 export const globalOption: GlobalOption = {
@@ -20,9 +22,10 @@ export const globalOption: GlobalOption = {
     toRaw: undefined,
   },
   symbol: {
-    generator: v4,
-    validator: validate,
+    generator: nanoid,
+    validator: (id) => id.length === 21,
   },
+  engine: undefined,
 };
 
 export const defineOption = function (options: DeepPartial<GlobalOption>) {
