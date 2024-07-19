@@ -1,30 +1,23 @@
 import { Compiler } from "../compiler";
-import { Translater } from "../translater";
 import { CtnNotice, Container } from "../container";
 import { BasicConfig } from "../common";
 import { JSONHandler } from "../../utils";
 import { CONFIGFACTORY } from "../space";
 import { Ruler } from "../ruler";
 
+export interface ConverterParameters {
+  ruler: Ruler;
+}
+
 export class Converter<C extends BasicConfig, P extends Compiler = Compiler> {
-  MODULE: string = "";
-
   container = new Container<C>();
-  // translater: Translater<P>;
-
   ruler: Ruler;
 
-  constructor(ruler: Ruler, data: Array<C> = []) {
-    // this.translater = new Translater<P>().setRule(rule);
-
-    this.ruler = ruler;
+  constructor(params: ConverterParameters) {
+    this.ruler = params.ruler;
     this.container.subscribe((notice: CtnNotice) => {
       this.ruler.execute(notice);
     });
-
-    for (const config of data) {
-      this.addConfig(config);
-    }
   }
 
   getData(): Record<string, C> {
@@ -52,7 +45,6 @@ export class Converter<C extends BasicConfig, P extends Compiler = Compiler> {
   addCompiler(compiler: P): this {
     compiler.setTarget(this.container.space);
     compiler.compileAll();
-    // this.translater.apply(compiler);
 
     this.ruler.link(compiler);
     return this;
@@ -195,23 +187,3 @@ export class Converter<C extends BasicConfig, P extends Compiler = Compiler> {
     return this;
   }
 }
-
-export interface DataSupportSimplifier<
-  C extends BasicConfig,
-  P extends Compiler = Compiler
-> {
-  new (data: Array<C>): Converter<C, P>;
-}
-
-export const DataSupportFactory = function <
-  C extends BasicConfig,
-  P extends Compiler = Compiler
->(type: string, ruler: Ruler): DataSupportSimplifier<C, P> {
-  return class extends Converter<C, P> {
-    MODULE = type;
-
-    constructor(data: Array<C> = []) {
-      super(ruler, data);
-    }
-  };
-};

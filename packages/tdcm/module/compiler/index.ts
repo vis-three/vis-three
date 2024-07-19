@@ -6,6 +6,10 @@ import { CtnNotice } from "../container";
 import { Processor } from "../processor";
 import { Hook } from "../../utils/hooks";
 
+export interface CompilerParameters {
+  processors: Processor<BasicConfig, object, EngineSupport, any>[];
+}
+
 export enum COMPILER_EVENT {
   ADD = "compiler.add",
   REMOVE = "compiler.remove",
@@ -16,8 +20,6 @@ export enum COMPILER_EVENT {
 export class Compiler {
   static hook = new Hook();
 
-  MODULE: string = "";
-
   processors = new Map<
     string,
     Processor<BasicConfig, object, EngineSupport, any>
@@ -26,6 +28,12 @@ export class Compiler {
   map: Map<BasicConfig["vid"], BasicConfig> = new Map();
   symbolMap: WeakMap<BasicConfig, BasicConfig["vid"]> = new WeakMap();
   engine!: EngineSupport;
+
+  constructor(params: CompilerParameters) {
+    for (const processor of params.processors) {
+      this.processors.set(processor.type, processor);
+    }
+  }
 
   private cacheCompile?: {
     target: any;
@@ -50,9 +58,7 @@ export class Compiler {
 
   add(config: BasicConfig): BasicConfig | null {
     if (!this.processors.has(config.type)) {
-      console.warn(
-        `${this.MODULE} compiler can not support this type: ${config.type}`
-      );
+      console.warn(`Compiler: can not support this type: ${config.type}`);
       return null;
     }
 
@@ -67,9 +73,9 @@ export class Compiler {
     this.map.set(config.vid, object);
     this.symbolMap.set(object, config.vid);
 
-    Bus.compilerEvent.create(object);
+    Compiler.hook.create(object);
 
-    Bus.compilerEvent.emit(object, COMPILER_EVENT.ADD);
+    Compiler.hook.emit(object, COMPILER_EVENT.ADD);
 
     return object;
   }
@@ -78,16 +84,12 @@ export class Compiler {
     const vid = config.vid;
 
     if (!this.map.has(vid)) {
-      console.warn(
-        `${this.MODULE} compiler can not found this vid object: ${vid}.`
-      );
+      console.warn(`Compiler: can not found this vid object: ${vid}.`);
       return this;
     }
 
     if (!this.processors.has(config.type)) {
-      console.warn(
-        `${this.MODULE} compiler can not support this type: ${config.type}`
-      );
+      console.warn(`Compiler: can not support this type: ${config.type}`);
       return this;
     }
 
@@ -96,9 +98,9 @@ export class Compiler {
     this.map.delete(vid);
     this.symbolMap.delete(object);
 
-    Bus.compilerEvent.emit(object, COMPILER_EVENT.REMOVE);
+    Compiler.hook.emit(object, COMPILER_EVENT.REMOVE);
 
-    Bus.compilerEvent.dispose(object);
+    Compiler.hook.dispose(object);
 
     if (this.cacheCompile && this.cacheCompile.vid === vid) {
       this.cacheCompile = undefined;
@@ -111,9 +113,7 @@ export class Compiler {
     const vid = config.vid;
 
     if (!this.map.has(vid)) {
-      console.warn(
-        `${this.MODULE} compiler can not found this vid object: ${vid}.`
-      );
+      console.warn(`Compiler: can not found this vid object: ${vid}.`);
       return this;
     }
 
@@ -142,16 +142,12 @@ export class Compiler {
       processor = cacheCompile.processor;
     } else {
       if (!this.map.has(vid)) {
-        console.warn(
-          `${this.MODULE} compiler set function: can not found object which vid is: '${vid}'`
-        );
+        console.warn(`Compiler: can not found object which vid is: '${vid}'`);
         return this;
       }
 
       if (!this.target[vid]) {
-        console.warn(
-          `${this.MODULE} compiler set function: can not found config which vid is: '${vid}'`
-        );
+        console.warn(`Compiler: can not found config which vid is: '${vid}'`);
         return this;
       }
       object = this.map.get(vid)!;
@@ -209,7 +205,7 @@ export class Compiler {
     for (const config of Object.values(this.target)) {
       if (!this.map.has(config.vid)) {
         console.warn(
-          `${this.MODULE} compiler set function: can not found object which vid is: '${config.vid}'`
+          `Compiler: can not found object which vid is: '${config.vid}'`
         );
         continue;
       }
@@ -217,9 +213,7 @@ export class Compiler {
       const object = this.map.get(config.vid)!;
 
       if (!this.processors.has(config.type)) {
-        console.warn(
-          `${this.MODULE}  can not support this type: ${config.type}`
-        );
+        console.warn(`Compiler: can not support this type: ${config.type}`);
         continue;
       }
 
@@ -231,49 +225,27 @@ export class Compiler {
     return this;
   }
 
-  reigstProcessor(
-    processor: Processor<any, any, any, any>,
-    fun: (compiler: Compiler) => void
-  ): this {
-    if (this.processors.has(processor.type)) {
-      console.warn(
-        `${this.MODULE} compiler has already exist this processor ${processor.type}, that will be cover.`
-      );
-      return this;
-    }
-    this.processors.set(processor.type, processor);
-    installProcessor(processor, this.MODULE);
-    fun(this);
-
-    return this;
-  }
-
   getObjectSymbol(object: BasicConfig): string | null {
     return this.symbolMap.get(object) || null;
   }
   getObjectBySymbol(vid: string): BasicConfig | null {
     return this.map.get(vid) || null;
   }
-}
 
-export interface CompilerSimplifier {
-  new (): Compiler;
-}
-
-export const CompilerFactory = function (
-  type: string,
-  compiler: typeof Compiler,
-  processors: Processor<any, any, any, any>[]
-): CompilerSimplifier {
-  return class extends compiler {
-    MODULE = type;
-
-    constructor() {
-      super();
-
-      for (const processor of processors) {
-        this.processors.set(processor.type, processor);
-      }
+  reigstProcessor(
+    processor: Processor<any, any, any, any>,
+    fun: (compiler: Compiler) => void
+  ): this {
+    if (this.processors.has(processor.type)) {
+      console.warn(
+        `Compiler: has already exist this processor ${processor.type}, that will be cover.`
+      );
+      return this;
     }
-  };
-};
+    this.processors.set(processor.type, processor);
+    // installProcessor(processor, this.MODULE);
+    fun(this);
+
+    return this;
+  }
+}

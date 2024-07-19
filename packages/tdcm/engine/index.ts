@@ -52,9 +52,6 @@ import {
 } from "../plugin/CompilerManagerPlugin";
 import { CompilerSupportStrategy } from "../strategy/CompilerSupportStrategy";
 import {
-  Compiler,
-  CompilerFactory,
-  DataSupportFactory,
   installProcessor,
   ModuleOptions,
   MODULETYPE,
@@ -326,8 +323,10 @@ export class EngineSupport
     }
   }
 
-  useModule<C extends Compiler = Compiler>(options: ModuleOptions<C>): this {
-    if (MODULETYPE[options.type.toLocaleUpperCase()]) {
+  useModule(options: ModuleOptions): this {
+    const constants = this.constants;
+
+    if (constants.MODULE_TYPE[options.type.toLocaleUpperCase()]) {
       console.warn(`module ${options.type} is already exist.`);
       return this;
     }
@@ -402,7 +401,7 @@ export class EngineSupport
    * @deprecated
    * use useModule
    */
-  registModule<C extends Compiler = Compiler>(options: ModuleOptions<C>): this {
+  registModule(options: ModuleOptions): this {
     return this.useModule(options);
   }
 }

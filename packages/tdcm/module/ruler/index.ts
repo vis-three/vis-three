@@ -38,6 +38,7 @@ export const DEFAULT_RULE: Record<string, Rule> = {
   },
 };
 
+// TODO: ruler 取代translater
 export class Ruler {
   rules: Rule[] = [];
 
@@ -45,8 +46,10 @@ export class Ruler {
 
   private pointer: number | null = null;
 
-  constructor(empty = false) {
-    if (!empty) {
+  constructor(rules?: Rule[]) {
+    if (rules) {
+      this.rules = rules;
+    } else {
       this.rules.push(
         DEFAULT_RULE.SYMBOL_VALIDATOR,
         DEFAULT_RULE.OPERATE_ADD,
@@ -151,6 +154,4 @@ export class Ruler {
   }
 }
 
-export const defineRule = function (rules: Rule[]) {
-  
-};
+export const defineRule = function (rules: Rule[]) {};
