@@ -54,6 +54,7 @@ import { CompilerSupportStrategy } from "../strategy/CompilerSupportStrategy";
 import {
   installProcessor,
   ModuleOptions,
+  Moduler,
   MODULETYPE,
   OBJECTMODULE,
   ProcessorCommands,
@@ -65,6 +66,7 @@ import {
   Trigger,
   globalObjectModuleTrigger,
 } from "../utils/Trigger";
+import { emunDecamelize } from "../utils/humps";
 
 export type EngineSupportLoadOptions = LoadOptions & {
   assets?: string[];
@@ -326,37 +328,25 @@ export class EngineSupport
   useModule(options: ModuleOptions): this {
     const constants = this.constants;
 
-    if (constants.MODULE_TYPE[options.type.toLocaleUpperCase()]) {
-      console.warn(`module ${options.type} is already exist.`);
+    const typeName = emunDecamelize(options.type);
+
+    if (constants.MODULE_TYPE[typeName]) {
+      console.warn(`Engine:module ${options.type} is already exist.`);
       return this;
     }
 
-    MODULETYPE[options.type.toLocaleUpperCase()] = options.type;
+    constants.MODULE_TYPE[typeName] = options.type;
 
     if (options.object) {
-      OBJECTMODULE[options.type] = true;
+      constants.OBJECT_MODULE[options.type] = true;
     }
 
-    const DataSupportClass = DataSupportFactory(options.type, options.rule);
+    const moduler = new Moduler(options);
 
-    const CompilerClass = CompilerFactory(
-      options.type,
-      options.compiler,
-      options.processors
-    );
+    moduler.compiler.useEngine(this);
 
-    for (const processor of options.processors) {
-      installProcessor(processor, options.type);
-    }
-
-    const compiler = new CompilerClass() as C;
-    const dataSupport = new DataSupportClass([]);
-
-    this.dataSupportManager.extend(dataSupport);
-    this.compilerManager.extend(compiler);
-
-    compiler.useEngine(this);
-    dataSupport.addCompiler(compiler);
+    this.dataSupportManager.extend(moduler.converter);
+    this.compilerManager.extend(moduler.compiler);
 
     if (options.extend) {
       options.extend(this);

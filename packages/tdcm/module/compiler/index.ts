@@ -5,8 +5,10 @@ import { installProcessor } from "../space";
 import { CtnNotice } from "../container";
 import { Processor } from "../processor";
 import { Hook } from "../../utils/hooks";
+import { emunDecamelize } from "../../utils/humps";
 
 export interface CompilerParameters {
+  module: string;
   processors: Processor<BasicConfig, object, EngineSupport, any>[];
 }
 
@@ -20,6 +22,8 @@ export enum COMPILER_EVENT {
 export class Compiler {
   static hook = new Hook();
 
+  MODULE = "";
+
   processors = new Map<
     string,
     Processor<BasicConfig, object, EngineSupport, any>
@@ -30,8 +34,10 @@ export class Compiler {
   engine!: EngineSupport;
 
   constructor(params: CompilerParameters) {
+    this.MODULE = params.module;
+
     for (const processor of params.processors) {
-      this.processors.set(processor.type, processor);
+      this.installProcessor(processor);
     }
   }
 
@@ -232,9 +238,9 @@ export class Compiler {
     return this.map.get(vid) || null;
   }
 
-  reigstProcessor(
+  installProcessor(
     processor: Processor<any, any, any, any>,
-    fun: (compiler: Compiler) => void
+    callback?: (compiler: Compiler) => void
   ): this {
     if (this.processors.has(processor.type)) {
       console.warn(
@@ -242,10 +248,30 @@ export class Compiler {
       );
       return this;
     }
+
+    const constants = this.engine.constants;
+
     this.processors.set(processor.type, processor);
-    // installProcessor(processor, this.MODULE);
-    fun(this);
+
+    constants.CONFIG_FACTORY[processor.type] = processor.config;
+    constants.CONFIG_TYPE[emunDecamelize(processor.type)] = processor.type;
+    constants.CONFIG_MODULE[processor.type] = this.MODULE;
+
+    callback && callback(this);
 
     return this;
+  }
+
+  /**
+   * @deprecated use installProcessor
+   * @param processor
+   * @param fun
+   * @returns
+   */
+  reigstProcessor(
+    processor: Processor<any, any, any, any>,
+    fun: (compiler: Compiler) => void
+  ): this {
+    return this.installProcessor(processor, fun);
   }
 }

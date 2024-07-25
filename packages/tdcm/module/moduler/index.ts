@@ -34,18 +34,22 @@ export class Moduler<
   type: string = "";
   converter: Converter<B, C>;
   compiler: C;
+  ruler: Ruler;
 
   constructor(module: ModuleOptions<C, E>) {
     this.module = module;
 
     this.type = module.type;
 
+    this.ruler = new Ruler(module.rule);
+
     this.compiler = new module.compiler({
+      module: module.type,
       processors: module.processors,
     });
 
     this.converter = new Converter<B, C>({
-      ruler: new Ruler(module.rule),
+      ruler: this.ruler,
     }).addCompiler(this.compiler);
   }
 }
