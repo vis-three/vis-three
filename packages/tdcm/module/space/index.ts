@@ -1,27 +1,46 @@
 import { BasicConfig } from "../common";
-import { Processor } from "../processor";
 
-export const CONFIGFACTORY: Record<string, () => BasicConfig> = {};
+export const CONFIG_FACTORY: Record<string, () => BasicConfig> = {};
 
-export const MODULETYPE: Record<string, string> = {};
+export const MODULE_TYPE: Record<string, string> = {};
 
-export const CONFIGTYPE: Record<string, string> = {};
+export const CONFIG_TYPE: Record<string, string> = {};
 
-export const OBJECTMODULE: Record<string, boolean> = {};
+export const OBJECT_MODULE: Record<string, boolean> = {};
 
-export const CONFIGMODULE: Record<string, string> = {};
+export const CONFIG_MODULE: Record<string, string> = {};
 
-export const ProcessorMembers: Record<
-  string,
-  Processor<any, any, any, any>
-> = {};
+/**
+ * @deprecated use CONFIG_FACTORY
+ */
+export const CONFIGFACTORY = CONFIG_FACTORY;
+
+/**
+ * @deprecated use MODULE_TYPE
+ */
+export const MODULETYPE = MODULE_TYPE;
+
+/**
+ * @deprecated use CONFIG_TYPE
+ */
+export const CONFIGTYPE = CONFIG_TYPE;
+
+/**
+ * @deprecated use OBJECT_MODULE
+ */
+export const OBJECTMODULE = OBJECT_MODULE;
+
+/**
+ * @deprecated use CONFIG_MODULE
+ */
+export const CONFIGMODULE = CONFIG_MODULE;
 
 export const getModule = (type: string): string | null => {
-  return CONFIGMODULE[type] || null;
+  return CONFIG_MODULE[type] || null;
 };
 
 export const isObjectModule = (module: string): boolean => {
-  return OBJECTMODULE[module];
+  return OBJECT_MODULE[module];
 };
 
 export const isObjectType = (type: string): boolean => {
@@ -31,14 +50,4 @@ export const isObjectType = (type: string): boolean => {
   } else {
     return false;
   }
-};
-
-export const installProcessor = function (
-  processor: Processor<any, any, any, any>,
-  module: string
-) {
-  ProcessorMembers[processor.type] = processor;
-  CONFIGTYPE[processor.type.toLocaleUpperCase()] = processor.type;
-  CONFIGFACTORY[processor.type] = processor.config;
-  CONFIGMODULE[processor.type] = module;
 };
