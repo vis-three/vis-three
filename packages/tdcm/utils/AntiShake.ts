@@ -60,4 +60,7 @@ export class AntiShake {
   }
 }
 
+/**
+ * @deprecated use AsyncScheduler
+ */
 export const globalAntiShake = new AntiShake();

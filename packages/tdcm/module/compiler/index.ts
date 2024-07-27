@@ -1,15 +1,15 @@
 import { syncObject } from "@vis-three/utils";
 import { BasicConfig } from "../common";
 import { EngineSupport } from "../../engine";
-import { installProcessor } from "../space";
 import { CtnNotice } from "../container";
 import { Processor } from "../processor";
 import { Hook } from "../../utils/hooks";
-import { emunDecamelize } from "../../utils/humps";
+import { emunCamelize, emunDecamelize } from "../../utils/humps";
+import { CONFIG_FACTORY, CONFIG_MODULE, CONFIG_TYPE } from "../space";
 
 export interface CompilerParameters {
   module: string;
-  processors: Processor<BasicConfig, object, EngineSupport, any>[];
+  processors: Processor<any, any, any, any>[];
 }
 
 export enum COMPILER_EVENT {
@@ -37,7 +37,7 @@ export class Compiler {
     this.MODULE = params.module;
 
     for (const processor of params.processors) {
-      this.installProcessor(processor);
+      this.useProcessor(processor);
     }
   }
 
@@ -238,7 +238,7 @@ export class Compiler {
     return this.map.get(vid) || null;
   }
 
-  installProcessor(
+  useProcessor(
     processor: Processor<any, any, any, any>,
     callback?: (compiler: Compiler) => void
   ): this {
@@ -249,29 +249,16 @@ export class Compiler {
       return this;
     }
 
-    const constants = this.engine.constants;
-
     this.processors.set(processor.type, processor);
 
-    constants.CONFIG_FACTORY[processor.type] = processor.config;
-    constants.CONFIG_TYPE[emunDecamelize(processor.type)] = processor.type;
-    constants.CONFIG_MODULE[processor.type] = this.MODULE;
+    CONFIG_FACTORY[processor.type] = processor.config;
+    CONFIG_TYPE[emunDecamelize(processor.type)] = processor.type;
+    // @deprecated
+    CONFIG_TYPE[emunCamelize(processor.type)] = processor.type;
+    CONFIG_MODULE[processor.type] = this.MODULE;
 
     callback && callback(this);
 
     return this;
-  }
-
-  /**
-   * @deprecated use installProcessor
-   * @param processor
-   * @param fun
-   * @returns
-   */
-  reigstProcessor(
-    processor: Processor<any, any, any, any>,
-    fun: (compiler: Compiler) => void
-  ): this {
-    return this.installProcessor(processor, fun);
   }
 }

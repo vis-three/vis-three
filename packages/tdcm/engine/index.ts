@@ -52,21 +52,16 @@ import {
 } from "../plugin/CompilerManagerPlugin";
 import { CompilerSupportStrategy } from "../strategy/CompilerSupportStrategy";
 import {
-  installProcessor,
+  MODULE_TYPE,
   ModuleOptions,
   Moduler,
-  MODULETYPE,
-  OBJECTMODULE,
+  OBJECT_MODULE,
   ProcessorCommands,
-  ProcessorMembers,
 } from "../module";
 import { Object3D, Event, Object3DEventMap } from "three";
-import {
-  ModuleTrigger,
-  Trigger,
-  globalObjectModuleTrigger,
-} from "../utils/Trigger";
+
 import { emunDecamelize } from "../utils/humps";
+import { Trigger, ObjectTrigger } from "../trigger";
 
 export type EngineSupportLoadOptions = LoadOptions & {
   assets?: string[];
@@ -80,14 +75,6 @@ export interface EngineSupportParameters {
   ResourceManagerPlugin: ResourceManagerPluginParameters;
   DataSupportManagerPlugin: DataSupportPluginParameters;
   CompilerManagerPlugin: CompilerManagerPluginParameters;
-}
-
-export interface EngineSupportConstants {
-  CONFIG_FACTORY: Record<string, () => BasicConfig>;
-  MODULE_TYPE: Record<string, string>;
-  CONFIG_TYPE: Record<string, string>;
-  OBJECT_MODULE: Record<string, boolean>;
-  CONFIG_MODULE: Record<string, string>;
 }
 
 export enum SUPPORT_LIFE_CYCLE {
@@ -164,20 +151,12 @@ export class EngineSupport
 
   declare loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
   private moduleLifeCycle: Array<{ module: string; order: number }> = [];
-  private moduleTriggers: ModuleTrigger[] = [globalObjectModuleTrigger];
+  private triggers: Trigger[] = [ObjectTrigger];
 
   private processorExpands: {
     processors: string[] | RegExp;
     command: ProcessorCommands<any, any, any, any>;
   }[] = [];
-
-  constants: EngineSupportConstants = {
-    CONFIG_FACTORY: {},
-    MODULE_TYPE: {},
-    CONFIG_TYPE: {},
-    OBJECT_MODULE: {},
-    CONFIG_MODULE: {},
-  };
 
   constructor(params: Partial<EngineSupportParameters> = {}) {
     super();
@@ -196,17 +175,14 @@ export class EngineSupport
 
   private loadLifeCycle(config: Omit<EngineSupportLoadOptions, "assets">) {
     const dataSupportManager = this.dataSupportManager;
-    const moduleTriggers = this.moduleTriggers;
+    const triggers = this.triggers;
 
     const loadCycle = this.moduleLifeCycle.sort((a, b) => a.order - b.order);
 
     for (const { module } of loadCycle) {
       config[module] && dataSupportManager.loadByModule(config[module], module);
-      for (const trigger of moduleTriggers) {
-        trigger.updateCondition(module);
-        if (trigger.test()) {
-          trigger.trig();
-        }
+      for (const trigger of triggers) {
+        trigger.reach(module);
       }
     }
   }
@@ -326,19 +302,17 @@ export class EngineSupport
   }
 
   useModule(options: ModuleOptions): this {
-    const constants = this.constants;
-
     const typeName = emunDecamelize(options.type);
 
-    if (constants.MODULE_TYPE[typeName]) {
+    if (MODULE_TYPE[typeName]) {
       console.warn(`Engine:module ${options.type} is already exist.`);
       return this;
     }
 
-    constants.MODULE_TYPE[typeName] = options.type;
+    MODULE_TYPE[typeName] = options.type;
 
     if (options.object) {
-      constants.OBJECT_MODULE[options.type] = true;
+      OBJECT_MODULE[options.type] = true;
     }
 
     const moduler = new Moduler(options);
@@ -354,38 +328,37 @@ export class EngineSupport
 
     options.processors.forEach((processor) => {});
 
-    if (options.expand) {
-      this.processorExpands.push(...options.expand);
-    }
-
-    //TODO:做层cache记录哪个processor 做了 哪些拓展
-    for (const config of this.processorExpands) {
-      if (Array.isArray(config.processors)) {
-        Object.values(ProcessorMembers).forEach((processor) => {
-          if ((<string[]>config.processors).includes(processor.type)) {
-            processor.expand(config.command);
-          }
-        });
-      } else {
-        Object.values(ProcessorMembers).forEach((processor) => {
-          if ((<RegExp>config.processors).test(processor.type)) {
-            processor.expand(config.command);
-          }
-        });
-      }
-    }
+    // if (options.expand) {
+    //   this.processorExpands.push(...options.expand);
+    // }
 
     this.moduleLifeCycle.push({
       module: options.type,
       order: options.lifeOrder || 0,
     });
 
-    this.moduleTriggers.forEach((trigger) => {
-      trigger.registerModule(options.type);
+    this.triggers.forEach((trigger) => {
+      trigger.add(options.type);
     });
 
     return this;
   }
+
+  addTrigger(trigger: Trigger) {
+    if (!this.triggers.includes(trigger)) {
+      this.triggers.push(trigger);
+    } else {
+      console.warn(
+        `EngineSupport: this trigger has already exist.`,
+        this.triggers
+      );
+    }
+
+    return this;
+  }
+
+  //TODO: module init
+  init() {}
 
   /**
    * @deprecated

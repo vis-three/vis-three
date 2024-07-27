@@ -8,7 +8,7 @@ import {
 import { BasicConfig } from "../common";
 import { EngineSupport } from "../../engine";
 import { Compiler } from "../compiler";
-import { CONFIGFACTORY, CONFIGTYPE } from "../space";
+import { CONFIG_FACTORY, CONFIG_TYPE } from "../space";
 import { CtnNotice } from "../container";
 
 export interface ProcessParams<
@@ -111,8 +111,8 @@ export class Processor<
       return c;
     };
 
-    CONFIGTYPE[this.type.toLocaleUpperCase()] = this.type;
-    CONFIGFACTORY[this.type] = this.config;
+    CONFIG_TYPE[this.type.toLocaleUpperCase()] = this.type;
+    CONFIG_FACTORY[this.type] = this.config;
   }
 
   process(params: ProcessParams<S, T, E, C>) {

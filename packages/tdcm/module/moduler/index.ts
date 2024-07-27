@@ -11,15 +11,15 @@ export interface ModuleOptions<
   E extends EngineSupport = EngineSupport
 > {
   type: string;
-  compiler: new (...args) => C;
-  rule: Rule[];
+  compiler?: new (...args) => C;
+  rule?: Rule[];
   processors: Processor<any, any, E, C>[];
   resources?: LoadUnit[];
   object?: boolean;
   extend?: (engine: E) => void;
   lifeOrder?: number;
   expand?: {
-    processors: string[] | RegExp;
+    module: string[] | RegExp;
     command: ProcessorCommands<any, any, any, any>;
   }[];
 }
@@ -43,10 +43,15 @@ export class Moduler<
 
     this.ruler = new Ruler(module.rule);
 
-    this.compiler = new module.compiler({
-      module: module.type,
-      processors: module.processors,
-    });
+    this.compiler = module.compiler
+      ? new module.compiler({
+          module: module.type,
+          processors: module.processors,
+        })
+      : (new Compiler({
+          module: module.type,
+          processors: module.processors,
+        }) as C);
 
     this.converter = new Converter<B, C>({
       ruler: this.ruler,
