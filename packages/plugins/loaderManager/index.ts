@@ -51,18 +51,18 @@ export const LoaderManagerPlugin: Plugin<
         urlList: Array<LoadUnit>,
         callback: (err: Error | undefined, event?: LoadedEvent) => void
       ) => {
-        const lodedFun = (event: LoadedEvent) => {
+        const loadedFun = (event: LoadedEvent) => {
           callback(undefined, event);
           loaderManager.removeEventListener<LoadedEvent>(
             LOADER_EVENT.LOADED,
-            lodedFun
+            loadedFun
           );
         };
 
         try {
           loaderManager.addEventListener<LoadedEvent>(
             LOADER_EVENT.LOADED,
-            lodedFun
+            loadedFun
           );
         } catch (error) {
           callback(error as Error);
@@ -76,18 +76,18 @@ export const LoaderManagerPlugin: Plugin<
         urlList: Array<LoadUnit>
       ): Promise<LoadedEvent> => {
         return new Promise((resolve, reject) => {
-          const lodedFun = (event: LoadedEvent) => {
+          const loadedFun = (event: LoadedEvent) => {
             resolve(event);
             loaderManager!.removeEventListener<LoadedEvent>(
               LOADER_EVENT.LOADED,
-              lodedFun
+              loadedFun
             );
           };
 
           try {
             loaderManager!.addEventListener<LoadedEvent>(
               LOADER_EVENT.LOADED,
-              lodedFun
+              loadedFun
             );
           } catch (error) {
             reject(error);

@@ -135,15 +135,15 @@ export class EventManager extends EventDispatcher {
 
   /**
    * 使用pointerManger
-   * @param pointerManager 
-   * @returns 
+   * @param pointerManager
+   * @returns
    */
   use(pointerManager: PointerManager): this {
     const mergeEvent = function (event, object) {
       return Object.assign({}, event, object);
     };
 
-    const genericEventHanlder = (event: VisPointerEvent, eventName: string) => {
+    const genericEventHandler = (event: VisPointerEvent, eventName: string) => {
       const intersections = this.intersectObject(event.mouse);
       if (intersections.length) {
         // 穿透事件
@@ -190,7 +190,7 @@ export class EventManager extends EventDispatcher {
 
     for (const name of genericEvents) {
       pointerManager.addEventListener<VisPointerEvent>(name, (event) => {
-        genericEventHanlder(event, name);
+        genericEventHandler(event, name);
       });
     }
 

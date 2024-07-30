@@ -6,4 +6,4 @@ export declare const EVENT_MANAGER_PLUGIN: string;
 export interface EventManagerEngine extends PointerManagerEngine {
     eventManager: EventManager;
 }
-export declare const EventManagerPlugin: Plugin<EventManagerEngine, EventManagerParameters>;
+export declare const EventManagerPlugin: Plugin<EventManagerEngine, Partial<EventManagerParameters>>;
