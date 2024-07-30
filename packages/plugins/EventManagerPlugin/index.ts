@@ -21,8 +21,8 @@ export interface EventManagerEngine extends PointerManagerEngine {
 
 export const EventManagerPlugin: Plugin<
   EventManagerEngine,
-  EventManagerParameters
-> = function (params?: EventManagerParameters) {
+  Partial<EventManagerParameters>
+> = function (params?: Partial<EventManagerParameters>) {
   let setCameraFun: ((event: SetCameraEvent) => void) | undefined;
   let setSceneFun: ((event: SetSceneEvent) => void) | undefined;
 
