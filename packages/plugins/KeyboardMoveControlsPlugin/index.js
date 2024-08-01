@@ -1,4 +1,4 @@
-import { ENGINE_EVENT, } from "@vis-three/core";
+import { ENGINE_EVENT } from "@vis-three/core";
 import { transPkgName } from "@vis-three/utils";
 import { KeyboardMoveControls, } from "./KeyboardMoveControls";
 import { name as pkgname } from "./package.json";
@@ -47,6 +47,8 @@ export const KeyboardMoveControlsPlugin = function (params = {}) {
             engine.removeEventListener(ENGINE_EVENT.SETDOM, setDomFun);
             engine.removeEventListener(ENGINE_EVENT.SETCAMERA, setCameraFun);
             engine.removeEventListener(ENGINE_EVENT.RENDER, renderFun);
+            engine.keyboardMoveControls?.dispose();
+            delete engine.keyboardMoveControls;
         },
     };
 };
