@@ -59,8 +59,8 @@ export const EffectComposerPlugin = function (params = {}) {
         },
         dispose(engine) {
             engine.removeEventListener(ENGINE_EVENT.SETCAMERA, setCameraFun);
-            engine.addEventListener(ENGINE_EVENT.SETSCENE, setSceneFun);
-            engine.addEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
+            engine.removeEventListener(ENGINE_EVENT.SETSCENE, setSceneFun);
+            engine.removeEventListener(ENGINE_EVENT.SETSIZE, setSizeFun);
             engine.removeEventListener(ENGINE_EVENT.RENDER, renderFun);
             delete engine.effectComposer;
         },
