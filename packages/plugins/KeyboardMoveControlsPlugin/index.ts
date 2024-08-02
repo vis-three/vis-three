@@ -4,8 +4,7 @@ import {
   Plugin,
   RenderEvent,
   SetCameraEvent,
-  SetDomEvent,
-  SetSizeEvent,
+  SetDomEvent
 } from "@vis-three/core";
 import { Optional, transPkgName } from "@vis-three/utils";
 import { Object3D, Vector3 } from "three";
@@ -124,6 +123,9 @@ export const KeyboardMoveControlsPlugin: Plugin<KeyboardMoveControlsEngine> =
         );
 
         engine.removeEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
+
+        engine.keyboardMoveControls?.dispose()
+        delete engine.keyboardMoveControls;
       },
     };
   };
