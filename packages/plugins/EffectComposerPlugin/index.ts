@@ -120,12 +120,12 @@ export const EffectComposerPlugin: Plugin<
         setCameraFun
       );
 
-      engine.addEventListener<SetSceneEvent>(
+      engine.removeEventListener<SetSceneEvent>(
         ENGINE_EVENT.SETSCENE,
         setSceneFun
       );
 
-      engine.addEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, setSizeFun);
+      engine.removeEventListener<SetSizeEvent>(ENGINE_EVENT.SETSIZE, setSizeFun);
 
       engine.removeEventListener<RenderEvent>(ENGINE_EVENT.RENDER, renderFun);
 
