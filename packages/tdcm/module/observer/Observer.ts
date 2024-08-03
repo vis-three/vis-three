@@ -1,5 +1,7 @@
 import { Subject } from "rxjs";
 import { react } from "./reactive";
+import { getModel } from "../../utils/obTool";
+import { MODEL_EVENT } from "../constant";
 
 export interface ObNotice {
   operate: "add" | "set" | "delete";
@@ -44,5 +46,11 @@ export class Observer<T extends object> extends Subject<ObNotice> {
     }
 
     super.next(value);
+
+    const model = getModel(this.target);
+
+    if (model) {
+      model.emit(MODEL_EVENT.NOTICED);
+    }
   }
 }

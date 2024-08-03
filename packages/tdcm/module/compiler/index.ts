@@ -2,57 +2,55 @@ import { syncObject } from "@vis-three/utils";
 import { BasicConfig } from "../common";
 import { EngineSupport } from "../../engine";
 import { CtnNotice } from "../container";
-import { Processor } from "../processor";
-import { Hook } from "../../utils/hooks";
 import { emunCamelize, emunDecamelize } from "../../utils/humps";
-import { CONFIG_FACTORY, CONFIG_MODULE, CONFIG_TYPE } from "../space";
+import {
+  CONFIG_FACTORY,
+  CONFIG_MODULE,
+  CONFIG_TYPE,
+  CONFIGTYPE,
+} from "../space";
+import { Model, ModelOption } from "../model";
+import { MODEL_EVENT } from "../constant";
 
-export interface CompilerParameters {
+export interface CompilerParameters<
+  E extends EngineSupport = EngineSupport,
+  M extends Model<any, any, E> = Model<any, any, E>
+> {
   module: string;
-  processors: Processor<any, any, any, any>[];
+  models: ModelOption<any, any, E, M>[];
 }
 
-export enum COMPILER_EVENT {
-  ADD = "compiler.add",
-  REMOVE = "compiler.remove",
-  COMPILE = "compiler.compile",
-  UPDATE = "compiler.update",
-}
-
-export class Compiler {
-  static hook = new Hook();
-
+export class Compiler<
+  E extends EngineSupport = EngineSupport,
+  M extends Model<any, any, E> = Model<any, any, E>
+> {
   MODULE = "";
 
-  processors = new Map<
-    string,
-    Processor<BasicConfig, object, EngineSupport, any>
-  >();
-  target: Record<string, BasicConfig> = {};
-  map: Map<BasicConfig["vid"], BasicConfig> = new Map();
-  symbolMap: WeakMap<BasicConfig, BasicConfig["vid"]> = new WeakMap();
-  engine!: EngineSupport;
+  builders = new Map<string, new (config: any, engine: E) => M>();
 
-  constructor(params: CompilerParameters) {
+  target: Record<string, BasicConfig> = {};
+  map: Map<BasicConfig["vid"], M> = new Map();
+  symbolMap: WeakMap<M["puppet"], BasicConfig["vid"]> = new WeakMap();
+
+  engine!: E;
+
+  constructor(params: CompilerParameters<E, M>) {
     this.MODULE = params.module;
 
-    for (const processor of params.processors) {
-      this.useProcessor(processor);
+    for (const option of params.models) {
+      this.useModel(option);
     }
   }
 
-  private cacheCompile?: {
-    target: any;
-    config: BasicConfig;
-    processor: Processor<BasicConfig, object, EngineSupport, any>;
-    vid: string;
-  };
-
-  getMap(): Map<BasicConfig["vid"], BasicConfig> {
-    return this.map;
+  /**
+   * @deprecated
+   * @returns
+   */
+  getMap() {
+    return null;
   }
 
-  useEngine(engine: EngineSupport): this {
+  useEngine(engine: E): this {
     this.engine = engine;
     return this;
   }
@@ -63,54 +61,56 @@ export class Compiler {
   }
 
   add(config: BasicConfig): BasicConfig | null {
-    if (!this.processors.has(config.type)) {
-      console.warn(`Compiler: can not support this type: ${config.type}`);
+    if (!this.builders.has(config.type)) {
+      console.warn(
+        `${this.MODULE} Compiler: can not support this type: ${config.type}`
+      );
       return null;
     }
 
-    const processor = this.processors.get(config.type)! as unknown as Processor<
-      BasicConfig,
-      BasicConfig,
-      EngineSupport,
-      any
-    >;
+    const Builder = this.builders.get(config.type)!;
 
-    const object = processor.create(config, this.engine, this);
-    this.map.set(config.vid, object);
-    this.symbolMap.set(object, config.vid);
+    const model = new Builder(config, this.engine);
 
-    Compiler.hook.create(object);
+    model.beforeCreate();
+    model.create();
 
-    Compiler.hook.emit(object, COMPILER_EVENT.ADD);
+    this.map.set(config.vid, model);
+    this.symbolMap.set(model.puppet, config.vid);
 
-    return object;
+    model.emit(MODEL_EVENT.COMPILED_ADD);
+    model.emit(MODEL_EVENT.COMPILED);
+
+    return model.puppet;
   }
 
   remove(config: BasicConfig): this {
     const vid = config.vid;
 
     if (!this.map.has(vid)) {
-      console.warn(`Compiler: can not found this vid object: ${vid}.`);
+      console.warn(
+        `${this.MODULE} Compiler: can not found this vid object: ${vid}.`
+      );
       return this;
     }
 
-    if (!this.processors.has(config.type)) {
-      console.warn(`Compiler: can not support this type: ${config.type}`);
+    if (!this.builders.has(config.type)) {
+      console.warn(
+        `${this.MODULE} Compiler: can not support this type: ${config.type}`
+      );
       return this;
     }
 
-    const object = this.map.get(vid)!;
-    this.processors.get(config.type)!.dispose(object, this.engine, this);
+    const model = this.map.get(vid)!;
+
     this.map.delete(vid);
-    this.symbolMap.delete(object);
+    this.symbolMap.delete(model.puppet);
 
-    Compiler.hook.emit(object, COMPILER_EVENT.REMOVE);
+    model.dispose();
+    model.disposed();
 
-    Compiler.hook.dispose(object);
-
-    if (this.cacheCompile && this.cacheCompile.vid === vid) {
-      this.cacheCompile = undefined;
-    }
+    model.emit(MODEL_EVENT.COMPILED_REMOVE);
+    model.emit(MODEL_EVENT.COMPILED);
 
     return this;
   }
@@ -119,7 +119,9 @@ export class Compiler {
     const vid = config.vid;
 
     if (!this.map.has(vid)) {
-      console.warn(`Compiler: can not found this vid object: ${vid}.`);
+      console.warn(
+        `${this.MODULE} Compiler: can not found this vid object: ${vid}.`
+      );
       return this;
     }
 
@@ -136,61 +138,26 @@ export class Compiler {
   }
 
   compile(vid: BasicConfig["vid"], notice: CtnNotice): this {
-    const cacheCompile = this.cacheCompile;
-
-    let object: BasicConfig;
-    let config: BasicConfig;
-    let processor: Processor<BasicConfig, object, EngineSupport, any>;
-
-    if (cacheCompile && cacheCompile.vid === vid) {
-      object = cacheCompile.target;
-      config = cacheCompile.config;
-      processor = cacheCompile.processor;
-    } else {
-      if (!this.map.has(vid)) {
-        console.warn(`Compiler: can not found object which vid is: '${vid}'`);
-        return this;
-      }
-
-      if (!this.target[vid]) {
-        console.warn(`Compiler: can not found config which vid is: '${vid}'`);
-        return this;
-      }
-      object = this.map.get(vid)!;
-      config = this.target[vid]!;
-
-      if (!this.processors.has(config.type)) {
-        console.warn(`PassCompiler can not support this type: ${config.type}`);
-        return this;
-      }
-
-      processor = this.processors.get(config.type)!;
-
-      this.cacheCompile = {
-        target: object,
-        config,
-        processor,
-        vid,
-      };
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.MODULE} Compiler: can not found model which vid is: '${vid}'`
+      );
+      return this;
     }
 
-    processor.process({
-      config,
-      target: object,
-      engine: this.engine,
-      processor,
-      compiler: this,
-      ...notice,
-    });
+    const model = this.map.get(vid)!;
+
+    model.process(notice);
 
     const router = notice.path;
 
-    Compiler.hook.emit(
-      object,
-      `${COMPILER_EVENT.COMPILE}:${router ? router + "." : router}${notice.key}`
+    model.emit(
+      `${MODEL_EVENT.COMPILED_ATTR}:${router ? router + "." : router}${
+        notice.key
+      }`
     );
-
-    Compiler.hook.emit(object, `${COMPILER_EVENT.UPDATE}`);
+    model.emit(MODEL_EVENT.COMPILED_UPDATE);
+    model.emit(MODEL_EVENT.COMPILED);
 
     return this;
   }
@@ -204,30 +171,14 @@ export class Compiler {
   }
 
   dispose(): this {
-    if (this.cacheCompile) {
-      this.cacheCompile = undefined;
-    }
-
-    for (const config of Object.values(this.target)) {
-      if (!this.map.has(config.vid)) {
-        console.warn(
-          `Compiler: can not found object which vid is: '${config.vid}'`
-        );
-        continue;
-      }
-
-      const object = this.map.get(config.vid)!;
-
-      if (!this.processors.has(config.type)) {
-        console.warn(`Compiler: can not support this type: ${config.type}`);
-        continue;
-      }
-
-      this.processors.get(config.type)!.dispose(object, this.engine, this);
+    for (const model of this.map.values()) {
+      model.dispose();
+      model.disposed();
     }
 
     this.map.clear();
     this.target = {} as Record<string, BasicConfig>;
+
     return this;
   }
 
@@ -235,30 +186,43 @@ export class Compiler {
     return this.symbolMap.get(object) || null;
   }
   getObjectBySymbol(vid: string): BasicConfig | null {
-    return this.map.get(vid) || null;
+    return this.map.get(vid)?.puppet || null;
   }
 
-  useProcessor(
-    processor: Processor<any, any, any, any>,
-    callback?: (compiler: Compiler) => void
-  ): this {
-    if (this.processors.has(processor.type)) {
+  useModel(
+    option: ModelOption<any, any, E, M>,
+    callback?: (compiler: this) => void
+  ) {
+    if (this.builders.has(option.type)) {
       console.warn(
-        `Compiler: has already exist this processor ${processor.type}, that will be cover.`
+        `${this.MODULE} Compiler: has already exist this model ${option.type}.`
       );
       return this;
     }
 
-    this.processors.set(processor.type, processor);
+    this.builders.set(option.type, option.model);
 
-    CONFIG_FACTORY[processor.type] = processor.config;
-    CONFIG_TYPE[emunDecamelize(processor.type)] = processor.type;
+    CONFIG_FACTORY[option.type] = option.config;
+    CONFIG_TYPE[emunDecamelize(option.type)] = option.type;
     // @deprecated
-    CONFIG_TYPE[emunCamelize(processor.type)] = processor.type;
-    CONFIG_MODULE[processor.type] = this.MODULE;
+    CONFIGTYPE[emunCamelize(option.type)] = option.type;
+    CONFIG_MODULE[option.type] = this.MODULE;
 
     callback && callback(this);
 
     return this;
+  }
+
+  /**
+   * @deprecated use useModel
+   * @param processor
+   * @param callback
+   * @returns
+   */
+  useProcessor(
+    processor: ModelOption<any, any, E, M>,
+    callback?: (compiler: this) => void
+  ): this {
+    return this.useModel(processor, callback);
   }
 }

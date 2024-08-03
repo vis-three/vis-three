@@ -1,6 +1,9 @@
 import { BasicConfig } from "../common";
+import { Model } from "../model";
 
 export const CONFIG_FACTORY: Record<string, () => BasicConfig> = {};
+
+export const CONFIG_MODEL: Record<string, typeof Model> = {};
 
 export const MODULE_TYPE: Record<string, string> = {};
 

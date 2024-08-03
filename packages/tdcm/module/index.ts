@@ -2,7 +2,7 @@ export * from "./compiler";
 export * from "./container";
 export * from "./converter";
 export * from "./observer";
-export * from "./processor";
+export * from "./model";
 export * from "./ruler";
 export * from "./translater";
 export * from "./common";

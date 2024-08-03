@@ -7,7 +7,7 @@ import {
   getPath,
   hasObserver,
   updateArraySymbol,
-} from "../../utils/utils";
+} from "../../utils/obTool";
 import { Observer } from "./Observer";
 import { react } from "./reactive";
 
@@ -43,9 +43,9 @@ export const proxySetter = function (
   receiver: any
 ): boolean {
   const path = getPath(target);
-  const observer = getObserver(target);
+  const observer = getObserver(target)!;
 
-  if (typeof key === "symbol" || observer.isIgnore(extendPath(path, key))) {
+  if (typeof key === "symbol" || observer.ignore(extendPath(path, key))) {
     return Reflect.set(target, key, value, receiver);
   }
 
@@ -149,9 +149,9 @@ export const proxyDeleter = function (
   key: string | symbol
 ): boolean {
   const path = getPath(target);
-  const observer = getObserver(target);
+  const observer = getObserver(target)!;
 
-  if (typeof key === "symbol" || observer.isIgnore(path)) {
+  if (typeof key === "symbol" || observer.ignore(path)) {
     return Reflect.deleteProperty(target, key);
   }
 

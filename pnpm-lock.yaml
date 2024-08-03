@@ -1287,6 +1287,9 @@ importers:
       '@vis-three/module-water':
         specifier: workspace:^
         version: link:water
+      '@vis-three/tdcm':
+        specifier: workspace:^
+        version: link:../../tdcm
     devDependencies:
       '@types/node':
         specifier: ^18.11.12
@@ -1569,6 +1572,9 @@ importers:
       '@vis-three/middleware':
         specifier: workspace:^
         version: link:../../../middleware
+      '@vis-three/tdcm':
+        specifier: workspace:^
+        version: link:../../../tdcm
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils

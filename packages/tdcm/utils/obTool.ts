@@ -1,9 +1,11 @@
 import { isObject } from "@vis-three/utils";
 import { Observer } from "../module/observer/Observer";
+import { Model } from "../module/model";
 
 export const SYMBOL_FATHER = "vis.father";
 export const SYMBOL_KEY = "vis.key";
 export const SYMBOL_OB = "vis.observer";
+export const SYMBOL_MODEL = "vis.model";
 
 const arrayCache = new WeakMap<Array<any>, Array<any>>();
 
@@ -51,4 +53,10 @@ export const getObserver = function <T extends object>(
 
 export const hasObserver = function <T extends object>(object: T) {
   return Boolean(object[Symbol.for(SYMBOL_OB)]);
+};
+
+export const getModel = function <T extends object>(
+  object: T
+): Model | undefined {
+  return object[Symbol.for(SYMBOL_MODEL)];
 };

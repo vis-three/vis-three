@@ -1,10 +1,10 @@
 import { LoadUnit } from "@vis-three/plugin-loader-manager";
 import { EngineSupport } from "../../engine";
 import { Compiler } from "../compiler";
-import { Processor, ProcessorCommands } from "../processor";
 import { Rule, Ruler } from "../ruler";
 import { Converter } from "../converter";
 import { BasicConfig } from "../common";
+import { ModelOption } from "../model";
 
 export interface ModuleOptions<
   C extends Compiler = Compiler,
@@ -13,15 +13,19 @@ export interface ModuleOptions<
   type: string;
   compiler?: new (...args) => C;
   rule?: Rule[];
-  processors: Processor<any, any, E, C>[];
+  /**
+   * @deprecated use models
+   */
+  processors: ModelOption<any, any, any, any>[];
+  models: ModelOption<any, any, any, any>[];
   resources?: LoadUnit[];
   object?: boolean;
   extend?: (engine: E) => void;
   lifeOrder?: number;
-  expand?: {
-    module: string[] | RegExp;
-    command: ProcessorCommands<any, any, any, any>;
-  }[];
+  // expand?: {
+  //   module: string[] | RegExp;
+  //   command: ProcessorCommands<any, any, any, any>;
+  // }[];
 }
 
 export class Moduler<
@@ -46,11 +50,11 @@ export class Moduler<
     this.compiler = module.compiler
       ? new module.compiler({
           module: module.type,
-          processors: module.processors,
+          models: module.models,
         })
       : (new Compiler({
           module: module.type,
-          processors: module.processors,
+          models: module.models,
         }) as C);
 
     this.converter = new Converter<B, C>({

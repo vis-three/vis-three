@@ -51,13 +51,7 @@ import {
   CompilerManagerPluginParameters,
 } from "../plugin/CompilerManagerPlugin";
 import { CompilerSupportStrategy } from "../strategy/CompilerSupportStrategy";
-import {
-  MODULE_TYPE,
-  ModuleOptions,
-  Moduler,
-  OBJECT_MODULE,
-  ProcessorCommands,
-} from "../module";
+import { MODULE_TYPE, ModuleOptions, Moduler, OBJECT_MODULE } from "../module";
 import { Object3D, Event, Object3DEventMap } from "three";
 
 import { emunDecamelize } from "../utils/humps";
@@ -151,12 +145,7 @@ export class EngineSupport
 
   declare loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
   private moduleLifeCycle: Array<{ module: string; order: number }> = [];
-  private triggers: Trigger[] = [ObjectTrigger];
-
-  private processorExpands: {
-    processors: string[] | RegExp;
-    command: ProcessorCommands<any, any, any, any>;
-  }[] = [];
+  private triggers: Record<string, Trigger> = { object: ObjectTrigger };
 
   constructor(params: Partial<EngineSupportParameters> = {}) {
     super();
@@ -181,8 +170,8 @@ export class EngineSupport
 
     for (const { module } of loadCycle) {
       config[module] && dataSupportManager.loadByModule(config[module], module);
-      for (const trigger of triggers) {
-        trigger.reach(module);
+      for (const key in triggers) {
+        triggers[key].reach(module);
       }
     }
   }
@@ -337,19 +326,19 @@ export class EngineSupport
       order: options.lifeOrder || 0,
     });
 
-    this.triggers.forEach((trigger) => {
+    Object.values(this.triggers).forEach((trigger) => {
       trigger.add(options.type);
     });
 
     return this;
   }
 
-  addTrigger(trigger: Trigger) {
-    if (!this.triggers.includes(trigger)) {
-      this.triggers.push(trigger);
+  addTrigger(name: string, trigger: Trigger) {
+    if (!this.triggers[name]) {
+      this.triggers[name] = trigger;
     } else {
       console.warn(
-        `EngineSupport: this trigger has already exist.`,
+        `EngineSupport: this trigger has already exist: ${name}.`,
         this.triggers
       );
     }

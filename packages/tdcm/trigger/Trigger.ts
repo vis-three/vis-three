@@ -18,7 +18,7 @@ export class Trigger {
   }
 
   reach(module: string): this {
-    if (typeof this.condition[module] === "undefined") {
+    if (this.condition[module] === undefined) {
       console.warn(`ModuleTrigger: can not set module condition: ${module}.`);
       return this;
     }
