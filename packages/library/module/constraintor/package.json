@@ -29,9 +29,8 @@
   "dependencies": {
     "@vis-three/core": "workspace:^",
     "@vis-three/library-constraintor": "workspace:^",
-    "@vis-three/middleware": "workspace:^",
-    "@vis-three/utils": "workspace:^",
-    "uuid": "^8.3.2"
+    "@vis-three/tdcm": "workspace:^",
+    "@vis-three/utils": "workspace:^"
   },
   "files": [
     "dist",

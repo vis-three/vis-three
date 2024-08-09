@@ -1,13 +1,9 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { ConstraintorCompiler } from "./ConstraintorCompiler";
-import { ConstraintorRule } from "./ConstraintorRule";
-import NumberConstraintorProcessor from "./processors/NumberConstraintorProcessor";
-import BoundingBoxConstraintorProcessor from "./processors/BoundingBoxConstraintorProcessor";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import NumberConstraintorModel from "./models/NumberConstraintorModel";
+import BoundingBoxConstraintorModel from "./models/BoundingBoxConstraintorModel";
 
-export default {
+export default defineModule({
   type: "constraintor",
-  compiler: ConstraintorCompiler,
-  rule: ConstraintorRule,
-  processors: [NumberConstraintorProcessor, BoundingBoxConstraintorProcessor],
+  models: [NumberConstraintorModel, BoundingBoxConstraintorModel],
   lifeOrder: SUPPORT_LIFE_CYCLE.NINE,
-};
+});

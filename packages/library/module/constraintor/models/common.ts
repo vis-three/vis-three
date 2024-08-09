@@ -1,4 +1,4 @@
-import { EngineSupport, ProcessParams } from "@vis-three/middleware";
+import { EngineSupport } from "@vis-three/tdcm";
 import { ConstraintorCompiler } from "../ConstraintorCompiler";
 
 export const commonRegCommand = {

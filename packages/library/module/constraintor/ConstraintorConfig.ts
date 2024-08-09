@@ -1,6 +1,6 @@
-import { SymbolConfig, getSymbolConfig } from "@vis-three/middleware";
+import { BasicConfig, getBasicConfig } from "@vis-three/tdcm";
 
-export interface ConstraintorConfig extends SymbolConfig {
+export interface ConstraintorConfig extends BasicConfig {
   target: string;
 }
 
@@ -29,7 +29,7 @@ export interface BoundingBoxConstraintorConfig extends ConstraintorConfig {
 }
 
 export const getConstraintorConfig = function (): ConstraintorConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     target: "",
   });
 };

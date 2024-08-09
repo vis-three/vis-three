@@ -54,7 +54,8 @@
     "@vis-three/module-skinned-mesh": "workspace:^",
     "@vis-three/module-sprite": "workspace:^",
     "@vis-three/module-texture": "workspace:^",
-    "@vis-three/module-water": "workspace:^"
+    "@vis-three/module-water": "workspace:^",
+    "@vis-three/tdcm": "workspace:^"
   },
   "files": [
     "index.js",
