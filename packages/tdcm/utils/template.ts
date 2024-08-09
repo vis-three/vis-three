@@ -1,6 +1,5 @@
 import JSONHandler from "./JSONHandler";
-import { v4 } from "uuid";
-import { SymbolConfig } from "../module/common";
+import { BasicConfig, createSymbol } from "../module";
 import { EngineSupportLoadOptions } from "../engine";
 import { LoadOptions } from "../plugin/DataSupportManagerPlugin";
 import { generateConfig } from "./generateConfig";
@@ -23,7 +22,7 @@ export const clone = (
   options: {
     filter?: string[];
     detail?: boolean;
-    fillName?: boolean | ((SymbolConfig) => string);
+    fillName?: boolean | ((BasicConfig) => string);
   } = {}
 ): EngineSupportLoadOptions | CloneResult => {
   let jsonObject = JSON.stringify(object, JSONHandler.stringify);
@@ -38,7 +37,7 @@ export const clone = (
   for (const modulekey of modulekeys) {
     for (const config of object[modulekey]) {
       const vid = config.vid;
-      const newVid = v4();
+      const newVid = createSymbol();
       jsonObject = jsonObject.replace(new RegExp(vid, "g"), newVid);
       if (options.detail) {
         detail[vid] = newVid;
@@ -79,7 +78,7 @@ export const clone = (
  */
 export const handler = (
   object: EngineSupportLoadOptions,
-  handler: (config: SymbolConfig) => SymbolConfig,
+  handler: (config: BasicConfig) => BasicConfig,
   options: {
     filter?: string[];
     clone?: boolean;
@@ -108,7 +107,7 @@ export const handler = (
 
 export const planish = function (
   configs: LoadOptions
-): Record<string, SymbolConfig> {
+): Record<string, BasicConfig> {
   const result = {};
 
   for (const module of Object.keys(configs)) {
@@ -122,7 +121,7 @@ export const planish = function (
 
 export const observable = function (
   object: EngineSupportLoadOptions | string,
-  obCallback?: (config: SymbolConfig) => SymbolConfig
+  obCallback?: (config: BasicConfig) => BasicConfig
 ) {
   if (typeof object === "string") {
     object = JSON.parse(object, JSONHandler.parse);

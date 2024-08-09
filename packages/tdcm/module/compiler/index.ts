@@ -12,29 +12,24 @@ import {
 import { Model, ModelOption } from "../model";
 import { MODEL_EVENT } from "../constant";
 
-export interface CompilerParameters<
-  E extends EngineSupport = EngineSupport,
-  M extends Model<any, any, E> = Model<any, any, E>
-> {
+export interface CompilerParameters<E extends EngineSupport = EngineSupport> {
   module: string;
-  models: ModelOption<any, any, E, M>[];
+  models: ModelOption<any, any, any, E>[];
 }
 
-export class Compiler<
-  E extends EngineSupport = EngineSupport,
-  M extends Model<any, any, E> = Model<any, any, E>
-> {
+export class Compiler<E extends EngineSupport = EngineSupport> {
   MODULE = "";
 
-  builders = new Map<string, new (config: any, engine: E) => M>();
+  builders = new Map<string, ModelOption<any, any, any, E>>();
 
   target: Record<string, BasicConfig> = {};
-  map: Map<BasicConfig["vid"], M> = new Map();
-  symbolMap: WeakMap<M["puppet"], BasicConfig["vid"]> = new WeakMap();
+  map: Map<BasicConfig["vid"], Model<any, any, E, this>> = new Map();
+  symbolMap: WeakMap<Model<any, any, E, this>["puppet"], BasicConfig["vid"]> =
+    new WeakMap();
 
   engine!: E;
 
-  constructor(params: CompilerParameters<E, M>) {
+  constructor(params: CompilerParameters<E>) {
     this.MODULE = params.module;
 
     for (const option of params.models) {
@@ -60,7 +55,7 @@ export class Compiler<
     return this;
   }
 
-  add(config: BasicConfig): BasicConfig | null {
+  add(config: BasicConfig): any | null {
     if (!this.builders.has(config.type)) {
       console.warn(
         `${this.MODULE} Compiler: can not support this type: ${config.type}`
@@ -68,11 +63,18 @@ export class Compiler<
       return null;
     }
 
-    const Builder = this.builders.get(config.type)!;
+    const option = this.builders.get(config.type)!;
 
-    const model = new Builder(config, this.engine);
+    const model = new Model({ config, engine: this.engine, compiler: this });
 
-    model.beforeCreate();
+    if (option.context) {
+      Object.assign(model, option.context({ model }));
+    }
+
+    model.createPuppet = option.create;
+    model.disposePuppet = option.dispose;
+    model.commands = option.commands;
+
     model.create();
 
     this.map.set(config.vid, model);
@@ -107,7 +109,6 @@ export class Compiler<
     this.symbolMap.delete(model.puppet);
 
     model.dispose();
-    model.disposed();
 
     model.emit(MODEL_EVENT.COMPILED_REMOVE);
     model.emit(MODEL_EVENT.COMPILED);
@@ -173,7 +174,6 @@ export class Compiler<
   dispose(): this {
     for (const model of this.map.values()) {
       model.dispose();
-      model.disposed();
     }
 
     this.map.clear();
@@ -182,15 +182,19 @@ export class Compiler<
     return this;
   }
 
-  getObjectSymbol(object: BasicConfig): string | null {
+  getObjectSymbol(object: object): string | null {
     return this.symbolMap.get(object) || null;
   }
   getObjectBySymbol(vid: string): BasicConfig | null {
     return this.map.get(vid)?.puppet || null;
   }
 
+  getModelBySymbol(vid: string): Model<any, any, E, this> | null {
+    return this.map.get(vid) || null;
+  }
+
   useModel(
-    option: ModelOption<any, any, E, M>,
+    option: ModelOption<any, any, any, E>,
     callback?: (compiler: this) => void
   ) {
     if (this.builders.has(option.type)) {
@@ -200,7 +204,7 @@ export class Compiler<
       return this;
     }
 
-    this.builders.set(option.type, option.model);
+    this.builders.set(option.type, option);
 
     CONFIG_FACTORY[option.type] = option.config;
     CONFIG_TYPE[emunDecamelize(option.type)] = option.type;
@@ -220,7 +224,7 @@ export class Compiler<
    * @returns
    */
   useProcessor(
-    processor: ModelOption<any, any, E, M>,
+    processor: ModelOption<any, any, any, E>,
     callback?: (compiler: this) => void
   ): this {
     return this.useModel(processor, callback);

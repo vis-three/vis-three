@@ -16,7 +16,7 @@ export interface ModuleOptions<
   /**
    * @deprecated use models
    */
-  processors: ModelOption<any, any, any, any>[];
+  processors?: ModelOption<any, any, any, any>[];
   models: ModelOption<any, any, any, any>[];
   resources?: LoadUnit[];
   object?: boolean;
@@ -58,6 +58,7 @@ export class Moduler<
         }) as C);
 
     this.converter = new Converter<B, C>({
+      module: module.type,
       ruler: this.ruler,
     }).addCompiler(this.compiler);
   }

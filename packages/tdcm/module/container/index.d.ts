@@ -1,14 +1,11 @@
 import { Subject, Subscription } from "rxjs";
-import { SymbolConfig } from "../common";
-import { CompilerTarget } from "../compiler";
-export interface ProxyNotice {
-    operate: "add" | "set" | "delete";
-    path: string;
-    key: string;
-    value: any;
+import { BasicConfig } from "../common";
+import { ObNotice } from "../observer/Observer";
+export interface CtnNotice extends ObNotice {
+    symbol: string;
 }
-export declare class DataContainer<C extends SymbolConfig> extends Subject<ProxyNotice> {
-    container: CompilerTarget<C>;
+export declare class Container<C extends BasicConfig> extends Subject<CtnNotice> {
+    space: Record<string, C>;
     subscriptions: Map<string, Subscription>;
     constructor();
     add(config: C): void;

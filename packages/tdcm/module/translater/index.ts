@@ -1,10 +1,10 @@
 import { BasicConfig } from "../common";
 import { Compiler } from "../compiler";
 import { CtnNotice } from "../container";
-import { Rule } from "../rule";
+import { Ruler } from "../ruler";
 
 export class Translater<C extends Compiler = Compiler> {
-  private rule: Rule<C> = () => {};
+  private ruler!: Ruler;
   private members: Array<C> = [];
 
   apply(compiler: C): this {
@@ -21,17 +21,17 @@ export class Translater<C extends Compiler = Compiler> {
     return this;
   }
 
-  setRule(rule: Rule<C>): this {
-    this.rule = rule;
+  setRuler(ruler: Ruler): this {
+    this.ruler = ruler;
     return this;
   }
 
   translate(notice: CtnNotice): this {
-    const rule = this.rule;
+    // const rule = this.rule;
 
-    for (const compiler of this.members) {
-      rule(notice, compiler);
-    }
+    // for (const compiler of this.members) {
+    //   rule(notice, compiler);
+    // }
     return this;
   }
 }

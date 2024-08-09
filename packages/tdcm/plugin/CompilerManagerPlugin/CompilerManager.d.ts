@@ -1,8 +1,8 @@
 import { EventDispatcher } from "@vis-three/core";
-import { SymbolConfig } from "../../module/common";
-import { BasicCompiler, Compiler } from "../../module";
+import { BasicConfig } from "../../module/common";
+import { Compiler } from "../../module";
 export declare class CompilerManager extends EventDispatcher {
-    compilerMap: Map<string, BasicCompiler>;
+    compilerMap: Map<string, Compiler<any, any>>;
     constructor();
     /**
      * 编译器扩展
@@ -15,14 +15,14 @@ export declare class CompilerManager extends EventDispatcher {
      * @param object three object
      * @returns vid or null
      */
-    getObjectSymbol<O extends object>(object: O): SymbolConfig["vid"] | null;
+    getObjectSymbol(object: object): BasicConfig["vid"] | null;
     /**
      * 通过vid标识获取相应的three对象
      * @param vid vid标识
      * @returns three object || null
      */
     getObjectBySymbol(vid: string): any | null;
-    getObjectfromModule(module: string, vid: string): object | null;
-    getObjectfromModules(modules: string[] | Record<string, any>, vid: string): object | null;
+    getObjectfromModule(module: string, vid: string): any;
+    getObjectfromModules(modules: string[] | Record<string, any>, vid: string): any;
     dispose(): this;
 }

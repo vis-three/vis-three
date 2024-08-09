@@ -1,10 +1,10 @@
 import { DeepPartial } from "@vis-three/utils";
-import { SymbolConfig } from "../module/common";
+import { BasicConfig } from "../module/common";
 import { EngineSupport } from "../engine";
 /**
  * 配置单生成的附加选项
  */
-export interface GenerateOptions<C extends SymbolConfig> {
+export interface GenerateOptions<C extends BasicConfig> {
     /**是否生成响应式配置，默认为true */
     observer?: boolean;
     /**严格模式，只允许合并CONFIGTYPE规定的属性，自定义扩展配置下关闭 */
@@ -17,7 +17,7 @@ export interface GenerateOptions<C extends SymbolConfig> {
     handler?: (c: C) => C;
 }
 export interface GenerateConfig {
-    <C extends SymbolConfig>(type: string, merge?: DeepPartial<C>, options?: GenerateOptions<C>): C;
+    <C extends BasicConfig>(type: string, merge?: DeepPartial<C>, options?: GenerateOptions<C>): C;
     autoInject: boolean;
     injectEngine: EngineSupport | null;
     injectScene: string | boolean;

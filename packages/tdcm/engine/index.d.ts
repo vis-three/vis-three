@@ -5,11 +5,12 @@ import { EventManager, EventManagerEngine, EventManagerParameters } from "@vis-t
 import { RenderManager, RenderManagerEngine, RenderManagerPluginParams } from "@vis-three/plugin-render-manager";
 import { DataSupportEngine, DataSupportManager, DataSupportPluginParameters, LoadOptions } from "../plugin/DataSupportManagerPlugin";
 import { MappedEvent, ResourceManager, ResourceManagerEngine, ResourceManagerPluginParameters } from "../plugin/ResourceManagerPlugin";
-import { SymbolConfig } from "../module/common";
+import { BasicConfig } from "../module/common";
 import { LoaderMappingEngine } from "../strategy/LoaderMappingStrategy";
 import { CompilerManager, CompilerManagerEngine, CompilerManagerPluginParameters } from "../plugin/CompilerManagerPlugin";
-import { Compiler, ModuleOptions } from "../module";
-import { Object3D, Event } from "three";
+import { ModuleOptions } from "../module";
+import { Object3D, Object3DEventMap } from "three";
+import { Trigger } from "../trigger";
 export type EngineSupportLoadOptions = LoadOptions & {
     assets?: string[];
 };
@@ -45,7 +46,7 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     resourceManager: ResourceManager;
     registerResources: (resourceMap: Record<string, unknown>) => ResourceManagerEngine;
     dataSupportManager: DataSupportManager;
-    applyConfig: (...args: SymbolConfig[]) => DataSupportEngine;
+    applyConfig: (...args: BasicConfig[]) => DataSupportEngine;
     removeConfigBySymbol: (...args: string[]) => DataSupportEngine;
     toJSON: () => string;
     exportConfig: () => LoadOptions;
@@ -53,24 +54,30 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     getObjectSymbol: (object: any) => string | null;
     getObjectBySymbol: (vid: string) => any;
     loadResources: (urlList: LoadUnit[], callback: (err: Error | undefined, event?: MappedEvent | undefined) => void) => this;
-    getConfigBySymbol: <C extends SymbolConfig = any>(vid: string) => C | null;
-    getConfigfromModule: <C extends SymbolConfig = any>(module: string, vid: string) => C | null;
-    getConfigfromModules: <C extends SymbolConfig = any>(modules: string[] | Record<string, any>, vid: string) => C | null;
+    getConfigBySymbol: <C extends BasicConfig = any>(vid: string) => C | null;
+    getConfigfromModule: <C extends BasicConfig = any>(module: string, vid: string) => C | null;
+    getConfigfromModules: <C extends BasicConfig = any>(modules: string[] | Record<string, any>, vid: string) => C | null;
     getObjectfromModule: <O = any>(module: string, vid: string) => O | null;
     getObjectfromModules: <O = any>(modules: string[] | Record<string, any>, vid: string) => O | null;
-    getObject3D: <O extends Object3D<Event> = Object3D<Event>>(vid: string) => O | null;
+    getObject3D: <O extends Object3D<Object3DEventMap> = Object3D<Object3DEventMap>>(vid: string) => O | null;
     loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
     private moduleLifeCycle;
-    private moduleTriggers;
-    private processorExpands;
+    private triggers;
     constructor(params?: Partial<EngineSupportParameters>);
     private loadLifeCycle;
     private removeLifeCycle;
     loadConfig(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
     loadConfigAsync(config: EngineSupportLoadOptions, pretreat?: (c: EngineSupportLoadOptions) => EngineSupportLoadOptions): Promise<MappedEvent>;
     removeConfig(config: EngineSupportLoadOptions): void;
-    getObjectConfig<O, C extends SymbolConfig>(object: O): C | null;
-    registModule<C extends Compiler<any, any>>(options: ModuleOptions<C>): this;
+    getObjectConfig<O, C extends BasicConfig>(object: O): C | null;
+    useModule(options: ModuleOptions): this;
+    addTrigger(name: string, trigger: Trigger): this;
+    init(): void;
+    /**
+     * @deprecated
+     * use useModule
+     */
+    registModule(options: ModuleOptions): this;
 }
 export interface EngineSupportOptions extends EngineOptions {
     modules: ModuleOptions<any>[];

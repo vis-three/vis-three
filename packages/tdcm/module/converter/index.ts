@@ -2,19 +2,23 @@ import { Compiler } from "../compiler";
 import { CtnNotice, Container } from "../container";
 import { BasicConfig } from "../common";
 import { JSONHandler } from "../../utils";
-import { CONFIGFACTORY } from "../space";
+import { CONFIG_FACTORY } from "../space";
 import { Ruler } from "../ruler";
 
 export interface ConverterParameters {
+  module: string;
   ruler: Ruler;
 }
 
 export class Converter<C extends BasicConfig, P extends Compiler = Compiler> {
+  MODULE = "";
+
   container = new Container<C>();
   ruler: Ruler;
 
   constructor(params: ConverterParameters) {
     this.ruler = params.ruler;
+    this.MODULE = params.module;
     this.container.subscribe((notice: CtnNotice) => {
       this.ruler.execute(notice);
     });
@@ -126,11 +130,11 @@ export class Converter<C extends BasicConfig, P extends Compiler = Compiler> {
 
       for (const config of Object.values(data)) {
         if (!cacheConfigTemplate[config.type]) {
-          if (!CONFIGFACTORY[config.type]) {
+          if (!CONFIG_FACTORY[config.type]) {
             console.error(`can not font some config with: ${config.type}`);
             continue;
           }
-          cacheConfigTemplate[config.type] = CONFIGFACTORY[config.type]();
+          cacheConfigTemplate[config.type] = CONFIG_FACTORY[config.type]();
         }
         const temp = {} as C;
         recursion(config, cacheConfigTemplate[config.type], temp);
@@ -166,11 +170,11 @@ export class Converter<C extends BasicConfig, P extends Compiler = Compiler> {
 
     for (const config of configs) {
       if (!cacheConfigTemplate[config.type]) {
-        if (!CONFIGFACTORY[config.type]) {
+        if (!CONFIG_FACTORY[config.type]) {
           console.error(`can not font some config with: ${config.type}`);
           continue;
         }
-        cacheConfigTemplate[config.type] = CONFIGFACTORY[config.type]();
+        cacheConfigTemplate[config.type] = CONFIG_FACTORY[config.type]();
       }
       restore(config, cacheConfigTemplate[config.type]);
       data[config.vid] = config;

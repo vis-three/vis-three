@@ -1,8 +1,5 @@
 import { Subject } from "rxjs";
-export interface Ignore {
-    [key: string]: Ignore | boolean;
-}
-export interface ReactNotice {
+export interface ObNotice {
     operate: "add" | "set" | "delete";
     path: string;
     key: string;
@@ -12,13 +9,16 @@ export interface ReactNotice {
  * 观察者类
  * @internal
  */
-export declare class Observer<T extends object> extends Subject<ReactNotice> {
-    private ignore;
+export declare class Observer<T extends object> extends Subject<ObNotice> {
+    static IGNORE: {
+        vid: boolean;
+        type: boolean;
+        alias: boolean;
+        meta: boolean;
+    };
     target: T;
     disable: boolean;
-    constructor(object: T, ignore?: Ignore);
-    isIgnore(path: string): boolean;
-    setIgnore(ignore: Ignore): void;
-    mergeIgnore(ignore: Ignore): void;
-    next(value: ReactNotice): void;
+    constructor(object: T);
+    ignore(path: string): boolean;
+    next(value: ObNotice): void;
 }

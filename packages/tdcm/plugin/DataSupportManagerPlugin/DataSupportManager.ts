@@ -1,12 +1,12 @@
 import { EventDispatcher } from "@vis-three/core";
-import { getModule, SymbolConfig } from "../../module";
-import { DataSupport } from "../../module";
+import { getModule, BasicConfig } from "../../module";
+import { Converter } from "../../module";
 import { JSONHandler } from "../../utils";
 
 export type LoadOptions = Record<string, Array<any>>;
 
 export class DataSupportManager extends EventDispatcher {
-  dataSupportMap: Map<string, DataSupport<any, any, any>> = new Map();
+  dataSupportMap: Map<string, Converter<any, any>> = new Map();
 
   constructor() {
     super();
@@ -16,7 +16,7 @@ export class DataSupportManager extends EventDispatcher {
    * 编译器扩展
    * @param compiler
    */
-  extend(dataSupport: DataSupport<any, any, any>, focus: boolean = false) {
+  extend(dataSupport: Converter<any, any>, focus: boolean = false) {
     if (this.dataSupportMap.has(dataSupport.MODULE)) {
       console.warn(
         "dataSupport manager has exist this dataSupport",
@@ -34,7 +34,7 @@ export class DataSupportManager extends EventDispatcher {
   /**
    * 获取该模块下的支持插件
    * @param type MODULETYPE
-   * @returns DataSupport
+   * @returns Converter
    */
   getDataSupport<D>(type: string): D | null {
     if (this.dataSupportMap.has(type)) {
@@ -50,7 +50,7 @@ export class DataSupportManager extends EventDispatcher {
    * @param vid vid标识
    * @returns config || null
    */
-  getConfigBySymbol<T extends SymbolConfig>(vid: string): T | null {
+  getConfigBySymbol<T extends BasicConfig>(vid: string): T | null {
     const dataSupportList = this.dataSupportMap.values();
 
     for (const dataSupport of dataSupportList) {
@@ -63,7 +63,7 @@ export class DataSupportManager extends EventDispatcher {
     return null;
   }
 
-  getConfigfromModule<T extends SymbolConfig>(
+  getConfigfromModule<T extends BasicConfig>(
     module: string,
     vid: string
   ): T | null {
@@ -76,7 +76,7 @@ export class DataSupportManager extends EventDispatcher {
     return (dataSupport.getConfig(vid) as T) || null;
   }
 
-  getConfigfromModules<T extends SymbolConfig>(
+  getConfigfromModules<T extends BasicConfig>(
     modules: string[] | Record<string, any>,
     vid: string
   ) {
@@ -143,7 +143,7 @@ export class DataSupportManager extends EventDispatcher {
    * @param config vis相关配置对象
    * @returns this
    */
-  applyConfig<T extends SymbolConfig>(...configs: T[]): this {
+  applyConfig<T extends BasicConfig>(...configs: T[]): this {
     for (const config of configs) {
       const module = getModule(config.type);
 
@@ -178,7 +178,7 @@ export class DataSupportManager extends EventDispatcher {
    * @param module
    * @returns
    */
-  loadByModule(config: SymbolConfig[], module: string): this {
+  loadByModule(config: BasicConfig[], module: string): this {
     const dataSupport = this.dataSupportMap.get(module);
 
     if (!dataSupport) {

@@ -1,9 +1,9 @@
 import { EventDispatcher } from "@vis-three/core";
-import { SymbolConfig } from "../../module/common";
-import { BasicCompiler, Compiler } from "../../module";
+import { BasicConfig } from "../../module/common";
+import { Compiler, Model } from "../../module";
 
 export class CompilerManager extends EventDispatcher {
-  compilerMap: Map<string, BasicCompiler> = new Map();
+  compilerMap: Map<string, Compiler<any, any>> = new Map();
 
   constructor() {
     super();
@@ -39,7 +39,7 @@ export class CompilerManager extends EventDispatcher {
    * @param object three object
    * @returns vid or null
    */
-  getObjectSymbol<O extends object>(object: O): SymbolConfig["vid"] | null {
+  getObjectSymbol(object: object): BasicConfig["vid"] | null {
     for (const compiler of this.compilerMap.values()) {
       const vid = compiler.getObjectSymbol(object);
       if (vid) {
@@ -60,6 +60,19 @@ export class CompilerManager extends EventDispatcher {
       const object = compiler.getObjectBySymbol(vid);
       if (object) {
         return object;
+      }
+    }
+    return null;
+  }
+
+  // TODO: getModelBySymbol
+  getModelBySymbol<M extends Model<any, any, any> = Model<any, any, any>>(
+    vid: string
+  ): M | null {
+    for (const compiler of this.compilerMap.values()) {
+      const model = compiler.getModelBySymbol(vid);
+      if (model) {
+        return model as M;
       }
     }
     return null;

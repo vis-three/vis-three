@@ -1,47 +1,40 @@
-import { SymbolConfig } from "../common";
+import { BasicConfig } from "../common";
 import { EngineSupport } from "../../engine";
-import { ProxyNotice } from "../dataContainer";
-import { Processor } from "../processor";
-export type CompilerTarget<C extends SymbolConfig> = Record<string, C>;
-export type BasicCompiler = Compiler<SymbolConfig, object>;
-export type CompileNotice = Omit<ProxyNotice, "path"> & {
-    path: string[];
-};
-export declare enum COMPILER_EVENT {
-    ADD = "compiler.add",
-    REMOVE = "compiler.remove",
-    COMPILE = "compiler.compile",
-    UPDATE = "compiler.update"
+import { CtnNotice } from "../container";
+import { Model, ModelOption } from "../model";
+export interface CompilerParameters<E extends EngineSupport = EngineSupport, M extends Model<any, any, E> = Model<any, any, E>> {
+    module: string;
+    models: ModelOption<any, any, E, M>[];
 }
-export declare class Compiler<C extends SymbolConfig, O extends object> {
+export declare class Compiler<E extends EngineSupport = EngineSupport, M extends Model<any, any, E> = Model<any, any, E>> {
     MODULE: string;
-    processors: Map<string, Processor<SymbolConfig, object, EngineSupport, any>>;
-    target: CompilerTarget<C>;
-    map: Map<SymbolConfig["vid"], O>;
-    weakMap: WeakMap<O, SymbolConfig["vid"]>;
-    engine: EngineSupport;
-    cacheCompile?: {
-        target: O;
-        config: C;
-        processor: Processor<SymbolConfig, object, EngineSupport, any>;
-        vid: string;
-    };
-    getMap(): Map<SymbolConfig["vid"], O>;
-    useEngine(engine: EngineSupport): this;
-    setTarget(target: CompilerTarget<C>): this;
-    add(config: C): O | null;
-    remove(config: C): this;
-    cover(config: C): this;
-    compile(vid: SymbolConfig["vid"], notice: CompileNotice): this;
+    builders: Map<string, new (config: any, engine: E) => M>;
+    target: Record<string, BasicConfig>;
+    map: Map<BasicConfig["vid"], M>;
+    symbolMap: WeakMap<M["puppet"], BasicConfig["vid"]>;
+    engine: E;
+    constructor(params: CompilerParameters<E, M>);
+    /**
+     * @deprecated
+     * @returns
+     */
+    getMap(): null;
+    useEngine(engine: E): this;
+    setTarget(target: Record<string, BasicConfig>): this;
+    add(config: BasicConfig): BasicConfig | null;
+    remove(config: BasicConfig): this;
+    cover(config: BasicConfig): this;
+    compile(vid: BasicConfig["vid"], notice: CtnNotice): this;
     compileAll(): this;
     dispose(): this;
-    reigstProcessor(processor: Processor<any, any, any, any>, fun: (compiler: Compiler<C, O>) => void): this;
-    getObjectSymbol(object: O): string | null;
-    getObjectBySymbol(vid: string): O | null;
+    getObjectSymbol(object: object): string | null;
+    getObjectBySymbol(vid: string): BasicConfig | null;
+    useModel(option: ModelOption<any, any, E, M>, callback?: (compiler: this) => void): this;
+    /**
+     * @deprecated use useModel
+     * @param processor
+     * @param callback
+     * @returns
+     */
+    useProcessor(processor: ModelOption<any, any, E, M>, callback?: (compiler: this) => void): this;
 }
-export interface CompilerSimplifier<C extends SymbolConfig, O extends object> {
-    new (): Compiler<C, O>;
-}
-export declare const CompilerFactory: <C extends SymbolConfig, O extends object>(type: string, compiler: {
-    new (): Compiler<C, O>;
-}, processors: Processor<any, any, any, any>[]) => CompilerSimplifier<C, O>;

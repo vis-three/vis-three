@@ -1,19 +1,19 @@
 import { EventDispatcher } from "@vis-three/core";
-import { SymbolConfig } from "../../module";
-import { DataSupport } from "../../module";
+import { BasicConfig } from "../../module";
+import { Converter } from "../../module";
 export type LoadOptions = Record<string, Array<any>>;
 export declare class DataSupportManager extends EventDispatcher {
-    dataSupportMap: Map<string, DataSupport<any, any, any>>;
+    dataSupportMap: Map<string, Converter<any, any>>;
     constructor();
     /**
      * 编译器扩展
      * @param compiler
      */
-    extend(dataSupport: DataSupport<any, any, any>, focus?: boolean): void;
+    extend(dataSupport: Converter<any, any>, focus?: boolean): void;
     /**
      * 获取该模块下的支持插件
      * @param type MODULETYPE
-     * @returns DataSupport
+     * @returns Converter
      */
     getDataSupport<D>(type: string): D | null;
     /**
@@ -21,9 +21,9 @@ export declare class DataSupportManager extends EventDispatcher {
      * @param vid vid标识
      * @returns config || null
      */
-    getConfigBySymbol<T extends SymbolConfig>(vid: string): T | null;
-    getConfigfromModule<T extends SymbolConfig>(module: string, vid: string): T | null;
-    getConfigfromModules<T extends SymbolConfig>(modules: string[] | Record<string, any>, vid: string): T | null;
+    getConfigBySymbol<T extends BasicConfig>(vid: string): T | null;
+    getConfigfromModule<T extends BasicConfig>(module: string, vid: string): T | null;
+    getConfigfromModules<T extends BasicConfig>(modules: string[] | Record<string, any>, vid: string): T | null;
     /**
      * 通过vid标识移除相关配置对象
      * @param vid ...vid标识
@@ -41,7 +41,7 @@ export declare class DataSupportManager extends EventDispatcher {
      * @param config vis相关配置对象
      * @returns this
      */
-    applyConfig<T extends SymbolConfig>(...configs: T[]): this;
+    applyConfig<T extends BasicConfig>(...configs: T[]): this;
     /**
      * 根据配置单加载对象
      * @param config 符合vis配置选项的配置单对象
@@ -54,7 +54,7 @@ export declare class DataSupportManager extends EventDispatcher {
      * @param module
      * @returns
      */
-    loadByModule(config: SymbolConfig[], module: string): this;
+    loadByModule(config: BasicConfig[], module: string): this;
     /**
      * 根据配置单移除相关对象
      * @param config  符合vis配置选项的配置单对象

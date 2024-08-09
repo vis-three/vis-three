@@ -6,4 +6,7 @@ export declare class AntiShake {
     append(fun: (finish: boolean) => boolean): void;
     nextTick(fun: () => boolean): void;
 }
+/**
+ * @deprecated use Scheduler
+ */
 export declare const globalAntiShake: AntiShake;
