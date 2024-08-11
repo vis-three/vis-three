@@ -34,10 +34,12 @@ footer: MPL-2.0 Licensed | Copyright (c) 2021 Shiotsukikaedesari
 import { onMounted } from 'vue'
 
 onMounted(() => {
-  const tagLineParagragh = document.querySelector('div.VPHero.has-image.VPHomeHero > div > div.main > p.tagline')
-  const docsReleaseTagSpan = document.createElement('samp')
-  docsReleaseTagSpan.classList.add('docs-cn-github-release-tag')
-  docsReleaseTagSpan.innerText = '0.6.X'
-  tagLineParagragh.appendChild(docsReleaseTagSpan)
+    const tagLineParagragh = document.querySelector('div.VPHero.has-image.VPHomeHero > div > div.main > p.tagline')
+    const docsReleaseTagSpan = document.createElement('samp')
+    docsReleaseTagSpan.classList.add('docs-cn-github-release-tag')
+    docsReleaseTagSpan.innerText = '0.6.X'
+    if(! document.querySelector('div.VPHero.has-image.VPHomeHero > div > div.main > p.tagline > samp')){
+    tagLineParagragh.appendChild(docsReleaseTagSpan)
+    }
 })
 </script>
