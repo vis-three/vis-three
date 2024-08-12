@@ -1,9 +1,8 @@
+import { AsyncScheduler } from "../scheduler";
+
 // engine hook
+export const toAsync = (fun: (finish: boolean) => boolean) => {
+  AsyncScheduler.exec(fun);
+};
 
-const toConfig = () => {};
-const toObject = () => {};
-const toPuppet = () => {};
-const toModel = () => {};
-
-const toAsync = () => {};
-const toTrigger = () => {};
+export const toTrigger = () => {};

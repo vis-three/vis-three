@@ -6,6 +6,7 @@ export * from "./utils";
 export * from "./engine";
 export * from "./manager";
 export * from "./option";
+export * from "./hooks";
 
 export * from "./plugin/CompilerManagerPlugin";
 export * from "./plugin/DataSupportManagerPlugin";

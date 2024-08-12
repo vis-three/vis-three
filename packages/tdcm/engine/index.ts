@@ -346,6 +346,18 @@ export class EngineSupport
     return this;
   }
 
+  getTrigger(name: string) {
+    if (!this.triggers[name]) {
+      console.warn(
+        `EngineSupport: not found this trigger: ${name}.`,
+        this.triggers
+      );
+      return null;
+    } else {
+      return this.triggers[name];
+    }
+  }
+
   //TODO: module init
   init() {}
 

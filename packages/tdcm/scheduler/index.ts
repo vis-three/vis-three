@@ -1,4 +1,4 @@
-export class Scheduler {
+export class AsyncScheduler {
   private static list: Array<Function> = [];
   private static timer?: number;
 
@@ -9,17 +9,17 @@ export class Scheduler {
       return;
     }
 
-    if (!Scheduler.list.includes(fun)) {
-      Scheduler.list.push(fun);
+    if (!AsyncScheduler.list.includes(fun)) {
+      AsyncScheduler.list.push(fun);
     }
 
     let cacheCount = 0;
 
     const autoSequential = () => {
-      Scheduler.timer && clearTimeout(Scheduler.timer);
-      Scheduler.timer = window.setTimeout(() => {
+      AsyncScheduler.timer && clearTimeout(AsyncScheduler.timer);
+      AsyncScheduler.timer = window.setTimeout(() => {
         const nextList: Array<Function> = [];
-        for (const fun of Scheduler.list) {
+        for (const fun of AsyncScheduler.list) {
           if (!fun(false)) {
             nextList.push(fun);
           }
@@ -30,32 +30,32 @@ export class Scheduler {
             for (const fun of nextList) {
               fun(true);
             }
-            Scheduler.list = [];
+            AsyncScheduler.list = [];
           } else {
             cacheCount = nextList.length;
-            Scheduler.list = nextList;
+            AsyncScheduler.list = nextList;
             autoSequential();
           }
         } else {
-          Scheduler.list = [];
+          AsyncScheduler.list = [];
         }
-      }, Scheduler.time);
+      }, AsyncScheduler.time);
     };
 
     autoSequential();
   }
 
   static append(fun: (finish: boolean) => boolean) {
-    if (Scheduler.list.length && !Scheduler.list.includes(fun)) {
-      Scheduler.list.push(fun);
+    if (AsyncScheduler.list.length && !AsyncScheduler.list.includes(fun)) {
+      AsyncScheduler.list.push(fun);
     } else {
-      Scheduler.exec(fun);
+      AsyncScheduler.exec(fun);
     }
   }
 
   static nextTick(fun: () => boolean) {
     window.setTimeout(() => {
       fun();
-    }, Scheduler.time);
+    }, AsyncScheduler.time);
   }
 }

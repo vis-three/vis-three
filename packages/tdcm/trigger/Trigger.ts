@@ -1,6 +1,6 @@
 export class Trigger {
   private condition: Record<string, boolean> = {};
-  private list: (() => void)[] = [];
+  private list: ((immediate: boolean) => boolean)[] = [];
   private validator: (module: string) => boolean = () => true;
 
   constructor(validator?: (module: string) => boolean) {
@@ -31,14 +31,16 @@ export class Trigger {
     return this;
   }
 
-  register(fun: () => boolean) {
-    this.list.push(fun);
+  register(fun: (immediate: boolean) => boolean) {
+    if (!fun(true)) {
+      this.list.push(fun);
+    }
   }
 
   trig() {
     const list = this.list;
     for (const fun of list) {
-      fun();
+      fun(false);
     }
     this.reset();
   }
