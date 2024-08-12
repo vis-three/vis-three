@@ -30,7 +30,8 @@
     "@vis-three/core": "workspace:^",
     "@vis-three/middleware": "workspace:^",
     "@vis-three/module-curve": "workspace:^",
-    "@vis-three/utils": "workspace:^"
+    "@vis-three/utils": "workspace:^",
+    "uuid": "^8.3.2"
   },
   "files": [
     "dist",
