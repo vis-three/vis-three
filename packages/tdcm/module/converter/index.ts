@@ -4,13 +4,18 @@ import { BasicConfig } from "../common";
 import { JSONHandler } from "../../utils";
 import { CONFIG_FACTORY } from "../space";
 import { Ruler } from "../ruler";
+import { EngineSupport } from "../../engine";
 
 export interface ConverterParameters {
   module: string;
   ruler: Ruler;
 }
 
-export class Converter<C extends BasicConfig, P extends Compiler = Compiler> {
+export class Converter<
+  C extends BasicConfig,
+  E extends EngineSupport = EngineSupport,
+  P extends Compiler<E> = Compiler<E>
+> {
   MODULE = "";
 
   container = new Container<C>();

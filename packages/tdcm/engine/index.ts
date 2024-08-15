@@ -129,14 +129,30 @@ export class EngineSupport
     modules: string[] | Record<string, any>,
     vid: string
   ) => C | null;
+  /**
+   * @deprecated use getObjectFromModule
+   */
   declare getObjectfromModule: <O = any>(
     module: string,
     vid: string
   ) => O | null;
+  /**
+   * @deprecated use getObjectFromModules
+   */
   declare getObjectfromModules: <O = any>(
     modules: string[] | Record<string, any>,
     vid: string
   ) => O | null;
+
+  declare getObjectFromModule: <O = any>(
+    module: string,
+    vid: string
+  ) => O | null;
+  declare getObjectFromModules: <O = any>(
+    modules: string[] | Record<string, any>,
+    vid: string
+  ) => O | null;
+
   declare getObject3D: <
     O extends Object3D<Object3DEventMap> = Object3D<Object3DEventMap>
   >(

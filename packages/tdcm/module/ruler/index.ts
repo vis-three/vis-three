@@ -60,7 +60,7 @@ export class Ruler {
     }
   }
 
-  link(compiler: Compiler) {
+  link(compiler: Compiler<any>) {
     this.compiler = compiler;
   }
 
@@ -154,4 +154,6 @@ export class Ruler {
   }
 }
 
-export const defineRule = function (rules: Rule[]) {};
+export const defineRule = function (rules: Rule[]) {
+  return rules;
+};
