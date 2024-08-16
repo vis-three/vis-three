@@ -5,15 +5,13 @@ import OrthographicCameraModel from "./models/OrthographicCameraModel";
 import PerspectiveCameraModel from "./models/PerspectiveCameraModel";
 
 export * from "./CameraConfig";
-export { CameraEngineSupport } from "./CameraExtend";
+export * from "./CameraExtend";
 
-export default defineModule<CameraEngineSupport>(
-  {
-    type: "camera",
-    object: true,
-    rule: ObjectRule,
-    extend: CameraExtend,
-    models: [OrthographicCameraModel, PerspectiveCameraModel],
-    lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
-  }
-);
+export default defineModule<CameraEngineSupport>({
+  type: "camera",
+  object: true,
+  rule: ObjectRule,
+  extend: CameraExtend,
+  models: [OrthographicCameraModel, PerspectiveCameraModel],
+  lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
+});
