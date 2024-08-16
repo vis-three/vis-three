@@ -1,5 +1,5 @@
-import { BasicEventConfig, SymbolConfig, Vector3Config } from "@vis-three/middleware";
-export interface ObjectConfig extends SymbolConfig {
+import { BasicConfig, BasicEventConfig, Vector3Config } from "@vis-three/tdcm";
+export interface ObjectConfig extends BasicConfig {
     /**造成阴影 */
     castShadow: boolean;
     /**接收阴影 */

@@ -1,11 +1,11 @@
 import {
+  BasicConfig,
   BasicEventConfig,
-  SymbolConfig,
+  getBasicConfig,
   Vector3Config,
-  getSymbolConfig,
-} from "@vis-three/middleware";
+} from "@vis-three/tdcm";
 
-export interface ObjectConfig extends SymbolConfig {
+export interface ObjectConfig extends BasicConfig {
   /**造成阴影 */
   castShadow: boolean;
   /**接收阴影 */
@@ -51,7 +51,7 @@ export interface ObjectConfig extends SymbolConfig {
 }
 
 export const getObjectConfig = function (): ObjectConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     type: "Object3D",
     castShadow: true,
     receiveShadow: true,
