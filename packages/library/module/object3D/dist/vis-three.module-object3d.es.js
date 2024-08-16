@@ -1,32 +1,34 @@
-import { defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { ObjectCompiler, getObjectConfig, objectCommands, objectCreate, objectDispose, ObjectRule } from "@vis-three/module-object";
-import { Object3D } from "three";
-class Object3DCompiler extends ObjectCompiler {
-  constructor() {
-    super();
-  }
-}
-const getObject3DConfig = function() {
-  return Object.assign(getObjectConfig(), {});
-};
-var Object3DProcessor = defineProcessor({
-  type: "Object3D",
-  config: getObject3DConfig,
-  commands: objectCommands,
-  create(config, engine) {
-    return objectCreate(new Object3D(), config, {}, engine);
-  },
-  dispose: objectDispose
-});
-const Object3DRule = function(notice, compiler) {
-  ObjectRule(notice, compiler);
-};
-var index = {
+import { defineModule as i, SUPPORT_LIFE_CYCLE as n } from "@vis-three/tdcm";
+import { getObjectConfig as f, ObjectRule as s, defineObjectModel as b } from "@vis-three/module-object";
+import { Object3D as d } from "three";
+const j = function() {
+  return Object.assign(f(), {});
+}, g = i({
   type: "object3D",
-  object: true,
-  compiler: Object3DCompiler,
-  rule: Object3DRule,
-  processors: [Object3DProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.THREE
+  object: !0,
+  rule: s,
+  models: [
+    b((t) => ({
+      type: "Object3D",
+      config: j,
+      create({ model: e, config: r, engine: c }) {
+        const o = new d();
+        return t.create({
+          model: e,
+          target: o,
+          config: r,
+          filter: {},
+          engine: c
+        }), o;
+      },
+      dispose({ target: e }) {
+        t.dispose({ target: e });
+      }
+    }))
+  ],
+  lifeOrder: n.THREE
+});
+export {
+  g as default,
+  j as getObject3DConfig
 };
-export { Object3DCompiler, index as default, getObject3DConfig };
