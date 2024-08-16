@@ -1,20 +1,19 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { CameraCompiler } from "./CameraCompiler";
-import CameraExtend from "./CameraExtend";
-import { CameraRule } from "./CameraRule";
-import OrthographicCameraProcessor from "./processors/OrthographicCameraProcessor";
-import PerspectiveCameraProcessor from "./processors/PerspectiveCameraProcessor";
+import CameraExtend, { CameraEngineSupport } from "./CameraExtend";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import { ObjectRule } from "@vis-three/module-object";
+import OrthographicCameraModel from "./models/OrthographicCameraModel";
+import PerspectiveCameraModel from "./models/PerspectiveCameraModel";
 
 export * from "./CameraConfig";
-export * from "./CameraCompiler";
 export { CameraEngineSupport } from "./CameraExtend";
 
-export default {
-  type: "camera",
-  object: true,
-  compiler: CameraCompiler,
-  rule: CameraRule,
-  processors: [OrthographicCameraProcessor, PerspectiveCameraProcessor],
-  extend: CameraExtend,
-  lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
-};
+export default defineModule<CameraEngineSupport>(
+  {
+    type: "camera",
+    object: true,
+    rule: ObjectRule,
+    extend: CameraExtend,
+    models: [OrthographicCameraModel, PerspectiveCameraModel],
+    lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
+  }
+);

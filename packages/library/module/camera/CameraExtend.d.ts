@@ -1,4 +1,4 @@
-import { EngineSupport } from "@vis-three/middleware";
+import { EngineSupport } from "@vis-three/tdcm";
 /**
  * 相机模块提供的引擎拓展支持
  */
