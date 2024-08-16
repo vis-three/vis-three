@@ -5,7 +5,7 @@ export declare class Trigger {
     constructor(validator?: (module: string) => boolean);
     add(module: string): this;
     reach(module: string): this;
-    register(fun: () => boolean): void;
+    register(fun: (immediate: boolean) => boolean): void;
     trig(): void;
     reset(): void;
     check(): boolean;

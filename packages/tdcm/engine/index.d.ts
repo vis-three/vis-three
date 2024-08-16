@@ -57,8 +57,16 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     getConfigBySymbol: <C extends BasicConfig = any>(vid: string) => C | null;
     getConfigfromModule: <C extends BasicConfig = any>(module: string, vid: string) => C | null;
     getConfigfromModules: <C extends BasicConfig = any>(modules: string[] | Record<string, any>, vid: string) => C | null;
+    /**
+     * @deprecated use getObjectFromModule
+     */
     getObjectfromModule: <O = any>(module: string, vid: string) => O | null;
+    /**
+     * @deprecated use getObjectFromModules
+     */
     getObjectfromModules: <O = any>(modules: string[] | Record<string, any>, vid: string) => O | null;
+    getObjectFromModule: <O = any>(module: string, vid: string) => O | null;
+    getObjectFromModules: <O = any>(modules: string[] | Record<string, any>, vid: string) => O | null;
     getObject3D: <O extends Object3D<Object3DEventMap> = Object3D<Object3DEventMap>>(vid: string) => O | null;
     loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
     private moduleLifeCycle;
@@ -72,6 +80,7 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     getObjectConfig<O, C extends BasicConfig>(object: O): C | null;
     useModule(options: ModuleOptions): this;
     addTrigger(name: string, trigger: Trigger): this;
+    getTrigger(name: string): Trigger | null;
     init(): void;
     /**
      * @deprecated

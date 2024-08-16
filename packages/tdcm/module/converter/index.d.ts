@@ -2,11 +2,12 @@ import { Compiler } from "../compiler";
 import { Container } from "../container";
 import { BasicConfig } from "../common";
 import { Ruler } from "../ruler";
+import { EngineSupport } from "../../engine";
 export interface ConverterParameters {
     module: string;
     ruler: Ruler;
 }
-export declare class Converter<C extends BasicConfig, P extends Compiler = Compiler> {
+export declare class Converter<C extends BasicConfig, E extends EngineSupport = EngineSupport, P extends Compiler<E> = Compiler<E>> {
     MODULE: string;
     container: Container<C>;
     ruler: Ruler;

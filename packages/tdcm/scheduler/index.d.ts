@@ -1,4 +1,4 @@
-export declare class Scheduler {
+export declare class AsyncScheduler {
     private static list;
     private static timer?;
     static time: number;

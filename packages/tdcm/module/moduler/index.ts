@@ -7,7 +7,6 @@ import { BasicConfig } from "../common";
 import { ModelOption } from "../model";
 
 export interface ModuleOptions<
-  C extends BasicConfig = BasicConfig,
   E extends EngineSupport = EngineSupport,
   O extends Compiler<E> = Compiler<E>
 > {
@@ -18,7 +17,7 @@ export interface ModuleOptions<
    * @deprecated use models
    */
   processors?: ModelOption<any, any, any, any>[];
-  models: ModelOption<C, any, any, E, O>[];
+  models: ModelOption<any, any, any, E, O>[];
   resources?: LoadUnit[];
   object?: boolean;
   extend?: (engine: E) => void;
@@ -30,18 +29,17 @@ export interface ModuleOptions<
 }
 
 export class Moduler<
-  C extends BasicConfig = BasicConfig,
   E extends EngineSupport = EngineSupport,
   O extends Compiler<E> = Compiler<E>
 > {
-  module: ModuleOptions<C, E, O>;
+  module: ModuleOptions<E, O>;
 
   type: string = "";
-  converter: Converter<C, E, O>;
+  converter: Converter<any, E, O>;
   compiler: O;
   ruler: Ruler;
 
-  constructor(module: ModuleOptions<C, E, O>) {
+  constructor(module: ModuleOptions<E, O>) {
     this.module = module;
 
     this.type = module.type;
@@ -58,7 +56,7 @@ export class Moduler<
           models: module.models as ModelOption<any, any, any, E, Compiler<E>>[],
         }) as O);
 
-    this.converter = new Converter<C, E, O>({
+    this.converter = new Converter<any, E, O>({
       module: module.type,
       ruler: this.ruler,
     }).addCompiler(this.compiler);
@@ -66,9 +64,8 @@ export class Moduler<
 }
 
 export const defineModule = function <
-  C extends BasicConfig = BasicConfig,
   E extends EngineSupport = EngineSupport,
   O extends Compiler<E> = Compiler<E>
->(module: ModuleOptions<C, E, O>) {
+>(module: ModuleOptions<E, O>) {
   return module;
 };

@@ -7,7 +7,7 @@ export declare class Ruler {
     compiler: Compiler;
     private pointer;
     constructor(rules?: Rule[]);
-    link(compiler: Compiler): void;
+    link(compiler: Compiler<any>): void;
     execute(input: CtnNotice): void;
     remove(rule: Rule): void;
     add(rule: Rule, index?: number): this;
@@ -18,4 +18,4 @@ export declare class Ruler {
     pop(): this;
     shift(): this;
 }
-export declare const defineRule: (rules: Rule[]) => void;
+export declare const defineRule: (rules: Rule[]) => Rule[];

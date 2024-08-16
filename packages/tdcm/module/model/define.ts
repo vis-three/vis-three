@@ -73,7 +73,7 @@ defineModel.extend = function <
     AP extends P = P,
     AD extends object = any,
     AE extends E = E,
-    AO extends O & Compiler<AE> = O & Compiler<AE>
+    AO extends Compiler<AE> = Compiler<AE>
   >(
     fun: (
       abstract: AbstractModelOption<C, P, D, E, O, R, I>
