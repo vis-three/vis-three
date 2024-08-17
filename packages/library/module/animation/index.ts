@@ -1,16 +1,14 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { AnimationCompiler } from "./AnimationCompiler";
-import { AnimationRule } from "./AnimationRule";
-import ScriptAnimationProcessor from "./processors/ScriptAnimationProcessor";
-import MixerAnimationProcessor from "./processors/MixerAnimationProcessor";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import AnimationRule from "./AnimationRule";
+import ScriptAnimationModel from "./models/ScriptAnimationModel";
+import MixerAnimationModel from "./models/MixerAnimationModel";
 
-export * from "./AnimationCompiler";
 export * from "./AnimationConfig";
+export * from "./AniScriptManager";
 
-export default {
+export default defineModule({
   type: "animation",
-  compiler: AnimationCompiler,
   rule: AnimationRule,
-  processors: [ScriptAnimationProcessor, MixerAnimationProcessor],
+  models: [ScriptAnimationModel, MixerAnimationModel],
   lifeOrder: SUPPORT_LIFE_CYCLE.NINE,
-};
+});

@@ -1,10 +1,7 @@
-import {
-  BasicAniScriptConfig,
-  getSymbolConfig,
-  SymbolConfig,
-} from "@vis-three/middleware";
+import { BasicConfig, getBasicConfig } from "@vis-three/tdcm";
+import { BasicAniScriptConfig } from "./AniScriptManager";
 
-export interface AnimationConfig extends SymbolConfig {
+export interface AnimationConfig extends BasicConfig {
   play: boolean;
 }
 
@@ -23,7 +20,7 @@ export interface MixerAnimationConfig extends AnimationConfig {
 export type AnimationAllType = ScriptAnimationConfig | MixerAnimationConfig;
 
 const getAnimationConfig = function (): AnimationConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     play: true,
   });
 };

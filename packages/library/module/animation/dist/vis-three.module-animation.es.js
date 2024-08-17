@@ -1,236 +1,220 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-import { Compiler, Rule, getSymbolConfig, defineProcessor, AniScriptGeneratorManager, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { AnimationObjectGroup, Object3D, AnimationMixer } from "three";
-class AnimationCompiler extends Compiler {
-  constructor() {
-    super();
-    __publicField(this, "scriptAniSymbol", "vis.scriptAni");
-  }
-  playAnimation(fun) {
-    this.engine.renderManager.addEventListener("render", fun);
-  }
-  stopAnimation(fun) {
-    this.engine.renderManager.removeEventListener("render", fun);
-  }
-  restoreAttribute(config) {
-    if (!config.target || !config.attribute) {
-      return this;
-    }
-    let target = this.engine.getObjectBySymbol(config.target);
-    let configure = this.engine.getConfigBySymbol(config.target);
-    if (!target || !configure) {
-      console.warn(
-        "AnimationCompiler: can not found object target or config in engine",
-        config.vid
-      );
-    }
-    const attirbuteList = config.attribute.split(".");
-    attirbuteList.shift();
-    const attribute = attirbuteList.pop();
-    for (const key of attirbuteList) {
-      if (target[key] && configure[key]) {
-        target = target[key];
-        configure = configure[key];
-      } else {
-        console.warn(
-          `AnimationCompiler: object and config attribute are not sync`
-        );
-        return this;
-      }
-    }
-    target[attribute] = configure[attribute];
-    return this;
-  }
-  cover(config) {
-    super.cover(config);
-    if (config.type === "ScriptAnimation") {
-      const fun = this.map.get(config.vid);
-      config[Symbol.for(this.scriptAniSymbol)] = fun;
-    }
-    return this;
-  }
-  remove(config) {
-    if (config.type === "ScriptAnimation") {
-      this.engine.removeEventListener(
-        "render",
-        config[Symbol.for(this.scriptAniSymbol)]
-      );
-      this.restoreAttribute(config);
-      delete config[Symbol.for(this.scriptAniSymbol)];
-    }
-    super.remove(config);
-    return this;
-  }
-  compile(vid, notice) {
-    const config = this.target[vid];
-    if (config.type === "ScriptAnimation") {
-      this.restoreAttribute(config);
-      super.compile(vid, notice);
-      const oldFun = this.map.get(vid);
-      const fun = config[Symbol.for(this.scriptAniSymbol)];
-      this.map.set(config.vid, fun);
-      this.weakMap.delete(oldFun);
-      this.weakMap.set(fun, vid);
-      return this;
-    }
-    super.compile(vid, notice);
-    return this;
-  }
-}
-const AnimationRule = function(notice, compiler) {
-  if (notice.key === "name" && notice.path.length === 1) {
-    return;
-  }
-  Rule(notice, compiler);
-};
-const getAnimationConfig = function() {
-  return Object.assign(getSymbolConfig(), {
-    play: true
+import { defineRule as p, DEFAULT_RULE as l, getBasicConfig as b, defineModel as E, defineModule as y, SUPPORT_LIFE_CYCLE as f } from "@vis-three/tdcm";
+import { ENGINE_EVENT as u } from "@vis-three/core";
+import { AnimationObjectGroup as A, Object3D as g, AnimationMixer as L } from "three";
+const R = p([
+  function(r) {
+    return !(r.key === "name" && r.path.length === 1);
+  },
+  l.SYMBOL_VALIDATOR,
+  l.OPERATE_ADD,
+  l.OPERATE_DELETE,
+  l.OPERATE_COVER,
+  l.OPERATE_COMPILE
+]), d = function() {
+  return Object.assign(b(), {
+    play: !0
   });
-};
-const getMixerAnimationConfig = function() {
-  return Object.assign(getAnimationConfig(), {
+}, h = function() {
+  return Object.assign(d(), {
     target: "",
     time: 0,
     timeScale: 1
   });
-};
-const getScriptAnimationConfig = function() {
-  return Object.assign(getAnimationConfig(), {
+}, v = function() {
+  return Object.assign(d(), {
     target: "",
     script: { name: "" },
     attribute: ""
   });
-};
-const createFunction = function(config, engine) {
-  let object = engine.compilerManager.getObjectBySymbol(
-    config.target
-  );
-  if (!object) {
-    console.warn(`can not found object in enigne: ${config.target}`);
-    return () => {
-    };
-  }
-  const attributeList = config.attribute.split(".");
-  attributeList.shift();
-  const attribute = attributeList.pop();
-  for (const key of attributeList) {
-    if (object[key] === void 0) {
-      console.warn(
-        `animaton processor: target object can not found key: ${key}`,
-        object
-      );
-      return () => {
+}, s = class s {
+  static generateConfig(e, t) {
+    if (!s.configLibrary.has(e))
+      return console.warn(`event library can not found config by name: ${e}`), {
+        name: ""
       };
-    }
-    object = object[key];
+    const n = (o, a) => {
+      for (const c in a)
+        o[c] !== void 0 && (typeof a[c] == "object" && a[c] !== null && !Array.isArray(a[c]) ? n(o[c], a[c]) : o[c] = a[c]);
+    }, i = JSON.parse(
+      JSON.stringify(s.configLibrary.get(e))
+    );
+    return n(i, t), i;
   }
-  return AniScriptGeneratorManager.generateScript(
-    engine,
-    object,
-    attribute,
-    config.script
-  );
+  static generateScript(e, t, n, i) {
+    return s.generatorLibrary.has(i.name) ? s.generatorLibrary.get(i.name)(
+      e,
+      t,
+      n,
+      i
+    ) : (console.error(
+      `event library can not found generator by name: ${i.name}`
+    ), () => {
+    });
+  }
+  static has(e) {
+    return s.configLibrary.has(e);
+  }
 };
-var ScriptAnimationProcessor = defineProcessor({
+s.configLibrary = /* @__PURE__ */ new Map(), s.generatorLibrary = /* @__PURE__ */ new Map(), s.register = function({
+  config: e,
+  generator: t
+}) {
+  return s.configLibrary.has(e.name) ? (console.warn(
+    `EventLibrary has already exist this event generator: ${e.name}, that will be cover.`
+  ), s) : (s.configLibrary.set(
+    e.name,
+    JSON.parse(JSON.stringify(e))
+  ), s.generatorLibrary.set(e.name, t), s);
+};
+let m = s;
+class w extends m {
+}
+const O = E({
   type: "ScriptAnimation",
-  config: getScriptAnimationConfig,
+  config: v,
+  context() {
+    return {
+      createFunction(r, e) {
+        let t = e.compilerManager.getObjectBySymbol(
+          r.target
+        );
+        if (!t)
+          return console.warn(`can not found object in enigne: ${r.target}`), () => {
+          };
+        const n = r.attribute.split(".");
+        n.shift();
+        const i = n.pop();
+        for (const o of n) {
+          if (t[o] === void 0)
+            return console.warn(
+              `animaton processor: target object can not found key: ${o}`,
+              t
+            ), () => {
+            };
+          t = t[o];
+        }
+        return m.generateScript(
+          e,
+          t,
+          i,
+          r.script
+        );
+      },
+      restoreAttribute(r, e) {
+        if (!r.target || !r.attribute)
+          return this;
+        let t = e.getObjectBySymbol(r.target), n = e.getConfigBySymbol(r.target);
+        (!t || !n) && console.warn(
+          "AnimationCompiler: can not found object target or config in engine",
+          r.vid
+        );
+        const i = r.attribute.split(".");
+        i.shift();
+        const o = i.pop();
+        for (const a of i)
+          if (t[a] && n[a])
+            t = t[a], n = n[a];
+          else
+            return console.warn(
+              "AnimationCompiler: object and config attribute are not sync"
+            ), this;
+        return t[o] = n[o], this;
+      }
+    };
+  },
   commands: {
     set: {
-      play({ target, compiler, value }) {
-        if (value) {
-          compiler.playAnimation(target);
-        } else {
-          compiler.stopAnimation(target);
-        }
+      play({ target: r, value: e, engine: t }) {
+        e ? t.renderManager.addEventListener(
+          u.RENDER,
+          r.scriptAni
+        ) : t.renderManager.removeEventListener(
+          u.RENDER,
+          r.scriptAni
+        );
       },
       $reg: [
         {
           reg: new RegExp(".*"),
-          handler({ config, engine, compiler }) {
-            const fun = config[Symbol.for(compiler.scriptAniSymbol)];
-            compiler.stopAnimation(fun);
-            const newFun = createFunction(config, engine);
-            config[Symbol.for(compiler.scriptAniSymbol)] = newFun;
-            config.play && compiler.playAnimation(fun);
+          handler({ model: r, target: e, config: t, engine: n }) {
+            n.renderManager.removeEventListener(
+              u.RENDER,
+              e.scriptAni
+            );
+            const i = r.createFunction(t, n);
+            e.scriptAni = i, t.play && n.renderManager.addEventListener(
+              u.RENDER,
+              i
+            );
           }
         }
       ]
     }
   },
-  create(config, engine, compiler) {
-    const fun = createFunction(config, engine);
-    config.play && compiler.playAnimation(fun);
-    config[Symbol.for(compiler.scriptAniSymbol)] = fun;
-    return fun;
+  create({ model: r, config: e, engine: t }) {
+    const n = r.createFunction(e, t);
+    return e.play && t.renderManager.addEventListener(
+      u.RENDER,
+      n
+    ), {
+      scriptAni: n
+    };
   },
-  dispose(target, engine, compiler) {
-    compiler.stopAnimation(target);
+  dispose({ model: r, target: e, config: t, engine: n }) {
+    n.renderManager.removeEventListener(
+      u.RENDER,
+      e.scriptAni
+    ), r.restoreAttribute(t, n);
   }
-});
-const cachePlayMap = /* @__PURE__ */ new WeakMap();
-var MixerAnimationProcessor = defineProcessor({
+}), x = E({
   type: "MixerAnimation",
-  config: getMixerAnimationConfig,
-  create(config, engine, compiler) {
-    let target;
-    if (Array.isArray(config.target)) {
-      target = new AnimationObjectGroup();
-      config.target.forEach((vid) => {
-        const object = engine.getObjectBySymbol(vid);
-        if (!object) {
-          console.warn(
-            `mixer animation processor can not found vid in engine: ${vid}`
-          );
-        } else {
-          target.add(object);
-        }
-      });
-    } else {
-      target = engine.getObjectBySymbol(config.target);
-      if (!target) {
-        console.warn(
-          `mixer animation processor can not found vid in engine: ${config.target}`
-        );
-        target = new Object3D();
-      }
-    }
-    const mixer = new AnimationMixer(target);
-    mixer.time = config.time;
-    mixer.timeScale = config.timeScale;
-    if (config.play) {
-      const fun = (event) => {
-        mixer.update(event.delta);
-      };
-      compiler.playAnimation(fun);
-      cachePlayMap.set(mixer, fun);
-    }
-    return mixer;
+  config: h,
+  context() {
+    return {
+      mixerAni: void 0
+    };
   },
-  dispose(target, engine, compiler) {
-    const fun = cachePlayMap.get(target);
-    if (fun) {
-      compiler.stopAnimation(fun);
-      cachePlayMap.delete(target);
+  create({ model: r, config: e, engine: t, compiler: n }) {
+    let i;
+    Array.isArray(e.target) ? (i = new A(), e.target.forEach((a) => {
+      const c = t.getObjectBySymbol(a);
+      c ? i.add(c) : console.warn(
+        `mixer animation processor can not found vid in engine: ${a}`
+      );
+    })) : (i = t.getObjectBySymbol(e.target), i || (console.warn(
+      `mixer animation processor can not found vid in engine: ${e.target}`
+    ), i = new g()));
+    const o = new L(i);
+    if (o.time = e.time, o.timeScale = e.timeScale, e.play) {
+      const a = (c) => {
+        o.update(c.delta);
+      };
+      t.renderManager.addEventListener(
+        u.RENDER,
+        a
+      ), r.mixerAni = a;
     }
-    target.uncacheRoot(target.getRoot());
-    target._actions.forEach((action) => {
-      const clip = action.getClip();
-      target.uncacheClip(clip);
-      target.uncacheAction(clip);
+    return o;
+  },
+  dispose({ model: r, target: e, engine: t }) {
+    r.mixerAni && (t.renderManager.removeEventListener(
+      u.RENDER,
+      r.mixerAni
+    ), r.mixerAni = void 0), e.uncacheRoot(e.getRoot()), e._actions.forEach((n) => {
+      const i = n.getClip();
+      e.uncacheClip(i), e.uncacheAction(i);
     });
   }
-});
-var index = {
+}), S = y({
   type: "animation",
-  compiler: AnimationCompiler,
-  rule: AnimationRule,
-  processors: [ScriptAnimationProcessor, MixerAnimationProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.NINE
+  rule: R,
+  models: [O, x],
+  lifeOrder: f.NINE
+});
+export {
+  w as AniScriptGeneratorManager,
+  m as AniScriptManager,
+  S as default,
+  h as getMixerAnimationConfig,
+  v as getScriptAnimationConfig
 };
-export { AnimationCompiler, index as default, getMixerAnimationConfig, getScriptAnimationConfig };

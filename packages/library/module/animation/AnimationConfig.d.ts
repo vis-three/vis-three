@@ -1,5 +1,6 @@
-import { BasicAniScriptConfig, SymbolConfig } from "@vis-three/middleware";
-export interface AnimationConfig extends SymbolConfig {
+import { BasicConfig } from "@vis-three/tdcm";
+import { BasicAniScriptConfig } from "./AniScriptManager";
+export interface AnimationConfig extends BasicConfig {
     play: boolean;
 }
 export interface ScriptAnimationConfig extends Omit<AnimationConfig, "target"> {
