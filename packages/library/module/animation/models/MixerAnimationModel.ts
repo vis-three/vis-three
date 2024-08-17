@@ -1,32 +1,26 @@
+import { defineModel, RenderEvent } from "@vis-three/tdcm";
 import {
-  EngineSupport,
-  RenderEvent,
-  defineProcessor,
-} from "@vis-three/middleware";
-import {
-  MixerAnimationConfig,
   getMixerAnimationConfig,
+  MixerAnimationConfig,
 } from "../AnimationConfig";
-import {
-  AnimationAction,
-  AnimationMixer,
-  AnimationObjectGroup,
-  Object3D,
-} from "three";
-import { AnimationCompiler } from "../AnimationCompiler";
+import { AnimationMixer, AnimationObjectGroup, Object3D } from "three";
+import { ENGINE_EVENT } from "@vis-three/core";
 
-const cachePlayMap: WeakMap<AnimationMixer, (render: RenderEvent) => void> =
-  new WeakMap();
-
-export default defineProcessor<
+export default defineModel<
   MixerAnimationConfig,
   AnimationMixer,
-  EngineSupport,
-  AnimationCompiler
+  {
+    mixerAni?: (event: RenderEvent) => void;
+  }
 >({
   type: "MixerAnimation",
   config: getMixerAnimationConfig,
-  create(config, engine, compiler) {
+  context() {
+    return {
+      mixerAni: undefined,
+    };
+  },
+  create({ model, config, engine, compiler }) {
     let target: Object3D | AnimationObjectGroup;
 
     if (Array.isArray(config.target)) {
@@ -61,19 +55,24 @@ export default defineProcessor<
         mixer.update(event.delta);
       };
 
-      compiler.playAnimation(fun);
+      engine.renderManager.addEventListener<RenderEvent>(
+        ENGINE_EVENT.RENDER,
+        fun
+      );
 
-      cachePlayMap.set(mixer, fun);
+      model.mixerAni = fun;
     }
 
     return mixer;
   },
-  dispose(target, engine, compiler) {
-    const fun = cachePlayMap.get(target);
+  dispose({ model, target, engine }) {
+    if (model.mixerAni) {
+      engine.renderManager.removeEventListener<RenderEvent>(
+        ENGINE_EVENT.RENDER,
+        model.mixerAni
+      );
 
-    if (fun) {
-      compiler.stopAnimation(fun);
-      cachePlayMap.delete(target);
+      model.mixerAni = undefined;
     }
 
     target.uncacheRoot(target.getRoot());
