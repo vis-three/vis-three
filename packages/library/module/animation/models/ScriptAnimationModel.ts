@@ -14,6 +14,7 @@ import { AniScriptManager } from "../AniScriptManager";
 export default defineModel<
   ScriptAnimationConfig,
   { scriptAni: (event: RenderEvent) => void },
+  {},
   {
     createFunction: (
       config: ScriptAnimationConfig,
@@ -27,82 +28,80 @@ export default defineModel<
 >({
   type: "ScriptAnimation",
   config: getScriptAnimationConfig,
-  context() {
-    return {
-      createFunction(
-        config: ScriptAnimationConfig,
-        engine: EngineSupport
-      ): (event: RenderEvent) => void {
-        let object = engine.compilerManager.getObjectBySymbol(
-          config.target as string
-        )!;
+  shared: {
+    createFunction(
+      config: ScriptAnimationConfig,
+      engine: EngineSupport
+    ): (event: RenderEvent) => void {
+      let object = engine.compilerManager.getObjectBySymbol(
+        config.target as string
+      )!;
 
-        if (!object) {
-          console.warn(`can not found object in enigne: ${config.target}`);
+      if (!object) {
+        console.warn(`can not found object in enigne: ${config.target}`);
+        return () => {};
+      }
+
+      const attributeList = config.attribute.split(".");
+      attributeList.shift();
+
+      const attribute = attributeList.pop()!;
+      for (const key of attributeList) {
+        if (object[key] === undefined) {
+          console.warn(
+            `animaton processor: target object can not found key: ${key}`,
+            object
+          );
           return () => {};
         }
 
-        const attributeList = config.attribute.split(".");
-        attributeList.shift();
+        object = object[key];
+      }
 
-        const attribute = attributeList.pop()!;
-        for (const key of attributeList) {
-          if (object[key] === undefined) {
-            console.warn(
-              `animaton processor: target object can not found key: ${key}`,
-              object
-            );
-            return () => {};
-          }
+      return AniScriptManager.generateScript(
+        engine,
+        object,
+        attribute,
+        config.script
+      );
+    },
+    restoreAttribute(config, engine) {
+      if (!config.target || !config.attribute) {
+        return this;
+      }
 
-          object = object[key];
-        }
+      let target = engine.getObjectBySymbol(config.target);
+      let configure = engine.getConfigBySymbol(config.target);
 
-        return AniScriptManager.generateScript(
-          engine,
-          object,
-          attribute,
-          config.script
+      if (!target || !configure) {
+        console.warn(
+          "AnimationCompiler: can not found object target or config in engine",
+          config.vid
         );
-      },
-      restoreAttribute(config, engine) {
-        if (!config.target || !config.attribute) {
+      }
+
+      const attirbuteList = config.attribute.split(".");
+
+      attirbuteList.shift();
+
+      const attribute = attirbuteList.pop()!;
+
+      for (const key of attirbuteList) {
+        if (target[key] && configure[key]) {
+          target = target[key];
+          configure = configure[key];
+        } else {
+          console.warn(
+            `AnimationCompiler: object and config attribute are not sync`
+          );
+
           return this;
         }
+      }
 
-        let target = engine.getObjectBySymbol(config.target);
-        let configure = engine.getConfigBySymbol(config.target);
-
-        if (!target || !configure) {
-          console.warn(
-            "AnimationCompiler: can not found object target or config in engine",
-            config.vid
-          );
-        }
-
-        const attirbuteList = config.attribute.split(".");
-
-        attirbuteList.shift();
-
-        const attribute = attirbuteList.pop()!;
-
-        for (const key of attirbuteList) {
-          if (target[key] && configure[key]) {
-            target = target[key];
-            configure = configure[key];
-          } else {
-            console.warn(
-              `AnimationCompiler: object and config attribute are not sync`
-            );
-
-            return this;
-          }
-        }
-
-        target[attribute] = configure[attribute];
-        return this;
-      },
-    };
+      target[attribute] = configure[attribute];
+      return this;
+    },
   },
   commands: {
     set: {

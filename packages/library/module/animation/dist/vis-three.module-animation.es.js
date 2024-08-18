@@ -1,4 +1,4 @@
-import { defineRule as p, DEFAULT_RULE as l, getBasicConfig as b, defineModel as E, defineModule as y, SUPPORT_LIFE_CYCLE as f } from "@vis-three/tdcm";
+import { defineRule as p, DEFAULT_RULE as l, getBasicConfig as b, defineModel as d, defineModule as y, SUPPORT_LIFE_CYCLE as f } from "@vis-three/tdcm";
 import { ENGINE_EVENT as u } from "@vis-three/core";
 import { AnimationObjectGroup as A, Object3D as g, AnimationMixer as L } from "three";
 const R = p([
@@ -10,18 +10,18 @@ const R = p([
   l.OPERATE_DELETE,
   l.OPERATE_COVER,
   l.OPERATE_COMPILE
-]), d = function() {
+]), E = function() {
   return Object.assign(b(), {
     play: !0
   });
 }, h = function() {
-  return Object.assign(d(), {
+  return Object.assign(E(), {
     target: "",
     time: 0,
     timeScale: 1
   });
 }, v = function() {
-  return Object.assign(d(), {
+  return Object.assign(E(), {
     target: "",
     script: { name: "" },
     attribute: ""
@@ -69,58 +69,56 @@ s.configLibrary = /* @__PURE__ */ new Map(), s.generatorLibrary = /* @__PURE__ *
 let m = s;
 class w extends m {
 }
-const O = E({
+const O = d({
   type: "ScriptAnimation",
   config: v,
-  context() {
-    return {
-      createFunction(r, e) {
-        let t = e.compilerManager.getObjectBySymbol(
-          r.target
-        );
-        if (!t)
-          return console.warn(`can not found object in enigne: ${r.target}`), () => {
+  shared: {
+    createFunction(r, e) {
+      let t = e.compilerManager.getObjectBySymbol(
+        r.target
+      );
+      if (!t)
+        return console.warn(`can not found object in enigne: ${r.target}`), () => {
+        };
+      const n = r.attribute.split(".");
+      n.shift();
+      const i = n.pop();
+      for (const o of n) {
+        if (t[o] === void 0)
+          return console.warn(
+            `animaton processor: target object can not found key: ${o}`,
+            t
+          ), () => {
           };
-        const n = r.attribute.split(".");
-        n.shift();
-        const i = n.pop();
-        for (const o of n) {
-          if (t[o] === void 0)
-            return console.warn(
-              `animaton processor: target object can not found key: ${o}`,
-              t
-            ), () => {
-            };
-          t = t[o];
-        }
-        return m.generateScript(
-          e,
-          t,
-          i,
-          r.script
-        );
-      },
-      restoreAttribute(r, e) {
-        if (!r.target || !r.attribute)
-          return this;
-        let t = e.getObjectBySymbol(r.target), n = e.getConfigBySymbol(r.target);
-        (!t || !n) && console.warn(
-          "AnimationCompiler: can not found object target or config in engine",
-          r.vid
-        );
-        const i = r.attribute.split(".");
-        i.shift();
-        const o = i.pop();
-        for (const a of i)
-          if (t[a] && n[a])
-            t = t[a], n = n[a];
-          else
-            return console.warn(
-              "AnimationCompiler: object and config attribute are not sync"
-            ), this;
-        return t[o] = n[o], this;
+        t = t[o];
       }
-    };
+      return m.generateScript(
+        e,
+        t,
+        i,
+        r.script
+      );
+    },
+    restoreAttribute(r, e) {
+      if (!r.target || !r.attribute)
+        return this;
+      let t = e.getObjectBySymbol(r.target), n = e.getConfigBySymbol(r.target);
+      (!t || !n) && console.warn(
+        "AnimationCompiler: can not found object target or config in engine",
+        r.vid
+      );
+      const i = r.attribute.split(".");
+      i.shift();
+      const o = i.pop();
+      for (const a of i)
+        if (t[a] && n[a])
+          t = t[a], n = n[a];
+        else
+          return console.warn(
+            "AnimationCompiler: object and config attribute are not sync"
+          ), this;
+      return t[o] = n[o], this;
+    }
   },
   commands: {
     set: {
@@ -166,7 +164,7 @@ const O = E({
       e.scriptAni
     ), r.restoreAttribute(t, n);
   }
-}), x = E({
+}), x = d({
   type: "MixerAnimation",
   config: h,
   context() {
