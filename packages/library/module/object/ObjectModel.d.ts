@@ -12,10 +12,11 @@ export interface ObjectModelContext {
 }
 export type ObjectCommandParameters = CommandParameters<ObjectConfig, Object3D, EngineSupport, Compiler<EngineSupport>, Model<ObjectConfig, Object3D> & ObjectModelContext>;
 export type ObjectCommandHandler = (this: Model<ObjectConfig, Object3D> & ObjectModelContext, params: ObjectCommandParameters) => void;
-export declare const defineObjectModel: <AC extends ObjectConfig = ObjectConfig, AP extends Object3D<import("three").Object3DEventMap> = Object3D<import("three").Object3DEventMap>, AD extends ObjectModelContext = ObjectModelContext, AE extends EngineSupport = EngineSupport, AO extends Compiler<EngineSupport> & Compiler<AE> = Compiler<EngineSupport> & Compiler<AE>>(fun: (abstract: import("@vis-three/tdcm").AbstractModelOption<ObjectConfig, Object3D<import("three").Object3DEventMap>, ObjectModelContext, EngineSupport, Compiler<EngineSupport>, (params: {
+export type ObjectModel = Model<ObjectConfig, Object3D> & ObjectModelContext;
+export declare const defineObjectModel: <ACf extends ObjectConfig = ObjectConfig, AObj extends Object3D<import("three").Object3DEventMap> = Object3D<import("three").Object3DEventMap>, ACtx extends object = object, ASrd extends object = object, AEg extends EngineSupport = EngineSupport, ACpl extends Compiler<AEg> = Compiler<AEg>>(fun: (abstract: import("@vis-three/tdcm").AbstractModelOption<ObjectConfig, Object3D<import("three").Object3DEventMap>, ObjectModelContext, {}, EngineSupport, Compiler<EngineSupport>, <I extends ObjectConfig = ObjectConfig>(params: {
     model: Model<ObjectConfig, Object3D> & ObjectModelContext;
     target: Object3D;
     config: ObjectConfig;
-    filter: IgnoreAttribute<ObjectConfig>;
+    filter: IgnoreAttribute<I>;
     engine: EngineSupport;
-}) => void, Function>) => import("@vis-three/tdcm").ModelOption<AC, AP, AD, AE, AO>) => import("@vis-three/tdcm").ModelOption<AC, AP, AD, AE, AO>;
+}) => void, Function>) => import("@vis-three/tdcm").ModelOption<ACf, AObj, ACtx, ASrd, AEg, ACpl>) => import("@vis-three/tdcm").ModelOption<ACf, AObj, ObjectModelContext & ACtx, {} & ASrd, AEg, ACpl>;

@@ -1,6 +1,10 @@
 import { SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
 import { defineModule } from "@vis-three/tdcm";
-import { defineObjectModel, ObjectRule } from "@vis-three/module-object";
+import {
+  defineObjectModel,
+  ObjectModel,
+  ObjectRule,
+} from "@vis-three/module-object";
 import { getObject3DConfig, Object3DConfig } from "./Object3DConfig";
 import { Object3D } from "three";
 
@@ -18,7 +22,7 @@ export default defineModule({
         const object = new Object3D();
 
         objectModel.create!({
-          model,
+          model: model as unknown as ObjectModel,
           target: object,
           config,
           filter: {},

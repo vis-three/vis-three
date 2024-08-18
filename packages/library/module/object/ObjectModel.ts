@@ -278,6 +278,7 @@ export const defineObjectModel = defineModel.extend<
   ObjectConfig,
   Object3D,
   ObjectModelContext,
+  {},
   EngineSupport,
   Compiler<EngineSupport>,
   <I extends ObjectConfig = ObjectConfig>(params: {

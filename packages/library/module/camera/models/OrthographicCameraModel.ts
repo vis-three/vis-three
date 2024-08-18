@@ -13,6 +13,7 @@ export default defineObjectModel<
   {
     updateFun: (event: SetSizeEvent) => void;
   },
+  {},
   CameraEngineSupport
 >((objectModel) => ({
   type: "OrthographicCamera",

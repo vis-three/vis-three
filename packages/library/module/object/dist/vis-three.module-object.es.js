@@ -1,20 +1,14 @@
-import { Compiler, getSymbolConfig, Rule, globalAntiShake, OBJECTMODULE, EventGeneratorManager, globalObjectModuleTrigger, Bus, COMPILER_EVENT, EVENTNAME, emptyHandler } from "@vis-three/middleware";
-import { validate } from "uuid";
-import { syncObject } from "@vis-three/utils";
-class ObjectCompiler extends Compiler {
-  constructor() {
-    super();
-  }
-}
-const getObjectConfig = function() {
-  return Object.assign(getSymbolConfig(), {
+import { getBasicConfig as M, defineRule as g, DEFAULT_RULE as f, defineModel as h, emptyHandler as O, EVENTNAME as x, OBJECT_MODULE as y, EventGeneratorManager as m, MODEL_EVENT as b } from "@vis-three/tdcm";
+import { syncObject as A } from "@vis-three/utils";
+const C = function() {
+  return Object.assign(M(), {
     type: "Object3D",
-    castShadow: true,
-    receiveShadow: true,
+    castShadow: !0,
+    receiveShadow: !0,
     lookAt: "",
-    visible: true,
-    raycast: true,
-    matrixAutoUpdate: true,
+    visible: !0,
+    raycast: !0,
+    matrixAutoUpdate: !0,
     renderOrder: 0,
     position: {
       x: 0,
@@ -47,294 +41,256 @@ const getObjectConfig = function() {
     dblclick: [],
     contextmenu: []
   });
-};
-const ObjectRule = function(input, compiler, validateFun = validate) {
-  if (input.key === "parent") {
-    return;
-  }
-  Rule(input, compiler, validateFun);
-};
-const objectCacheMap = /* @__PURE__ */ new WeakMap();
-const lookAtHandler = function({
-  target,
-  config,
-  value,
-  engine
+}, L = g([
+  function(n) {
+    return n.key !== "parent";
+  },
+  f.SYMBOL_VALIDATOR,
+  f.OPERATE_ADD,
+  f.OPERATE_DELETE,
+  f.OPERATE_COVER,
+  f.OPERATE_COMPILE
+]), E = function({
+  model: n,
+  target: r,
+  config: o,
+  value: e,
+  engine: c
 }) {
-  if (config.vid === value) {
-    console.warn(`can not set object lookAt itself.`);
+  if (o.vid === e) {
+    console.warn("can not set object lookAt itself.");
     return;
   }
-  let cacheData = objectCacheMap.get(target);
-  if (!cacheData) {
-    cacheData = { lookAtTarget: null, updateMatrixWorldFun: null };
-    objectCacheMap.set(target, cacheData);
-  }
-  if (!value) {
-    if (!cacheData.updateMatrixWorldFun) {
+  const t = n.cacheLookAt;
+  if (!e) {
+    if (!t.updateMatrixWorld)
       return;
-    }
-    target.updateMatrixWorld = cacheData.updateMatrixWorldFun;
-    cacheData.lookAtTarget = null;
-    cacheData.updateMatrixWorldFun = null;
+    r.updateMatrixWorld = t.updateMatrixWorld, t.target = null, t.updateMatrixWorld = null;
     return;
   }
-  globalAntiShake.exec((finish) => {
-    const lookAtTarget = engine.compilerManager.getObjectfromModules(
-      OBJECTMODULE,
-      value
+  n.toAsync((i) => {
+    const a = c.compilerManager.getObjectFromModules(
+      y,
+      e
     );
-    if (!lookAtTarget) {
-      if (finish) {
-        console.warn(
-          `lookAt handler can not found this vid mapping object: '${value}'`
-        );
-      }
-      return false;
-    }
-    const updateMatrixWorldFun = target.updateMatrixWorld;
-    cacheData.updateMatrixWorldFun = updateMatrixWorldFun;
-    cacheData.lookAtTarget = lookAtTarget.position;
-    target.updateMatrixWorld = (focus) => {
-      updateMatrixWorldFun.call(target, focus);
-      target.lookAt(cacheData.lookAtTarget);
-    };
-    return true;
+    if (!a)
+      return i && console.warn(
+        `lookAt handler can not found this vid mapping object: '${e}'`
+      ), !1;
+    const s = r.updateMatrixWorld;
+    return t.updateMatrixWorld = s, t.target = a.position, r.updateMatrixWorld = (p) => {
+      s.call(r, p), r.lookAt(t.target);
+    }, !0;
   });
-};
-const eventSymbol = "vis.event";
-const addEventHanlder = function({
-  target,
-  path,
-  value,
-  engine
+}, l = function({
+  model: n,
+  path: r,
+  value: o,
+  engine: e,
+  target: c
 }) {
-  const eventName = path[0];
-  if (!EventGeneratorManager.has(value.name)) {
+  const t = r[0];
+  if (!m.has(o.name)) {
     console.warn(
-      `EventGeneratorManager: can not support this event: ${value.name}`
+      `EventGeneratorManager: can not support this event: ${o.name}`
     );
     return;
   }
-  const fun = EventGeneratorManager.generateEvent(value, engine);
-  const symbol = Symbol.for(eventSymbol);
-  value[symbol] = fun;
-  target.addEventListener(eventName, fun);
-};
-const removeEventHandler = function({
-  target,
-  path,
-  value
+  const i = m.generateEvent(o, e), a = Symbol.for(n.eventSymbol);
+  o[a] = i, c.addEventListener(t, i);
+}, d = function({
+  model: n,
+  target: r,
+  path: o,
+  value: e
 }) {
-  const eventName = path[0];
-  const fun = value[Symbol.for(eventSymbol)];
-  if (!fun) {
-    console.warn(`event remove can not fun found event in config`, value);
+  const c = o[0], t = e[Symbol.for(n.eventSymbol)];
+  if (!t) {
+    console.warn("event remove can not fun found event in config", e);
     return;
   }
-  target.removeEventListener(eventName, fun);
-  delete value[Symbol.for(eventSymbol)];
-};
-const updateEventHandler = function({
-  target,
-  config,
-  path,
-  engine
+  r.removeEventListener(c, t), delete e[Symbol.for(n.eventSymbol)];
+}, u = function({
+  model: n,
+  target: r,
+  config: o,
+  path: e,
+  engine: c
 }) {
-  if (path.length < 2) {
+  if (e.length < 2)
+    return;
+  const t = e[0], i = o[e[0]][e[1]], a = i[Symbol.for(n.eventSymbol)];
+  if (!a) {
+    console.warn("event remove can not fun found event in config", i);
     return;
   }
-  const eventName = path[0];
-  const eventConfig = config[path[0]][path[1]];
-  const fun = eventConfig[Symbol.for(eventSymbol)];
-  if (!fun) {
-    console.warn(`event remove can not fun found event in config`, eventConfig);
-    return;
-  }
-  target.removeEventListener(eventName, fun);
-  const newFun = EventGeneratorManager.generateEvent(eventConfig, engine);
-  eventConfig[Symbol.for(eventSymbol)] = newFun;
-  target.addEventListener(
-    eventName,
-    newFun
-  );
-};
-const addChildrenHanlder = function({
-  target,
-  config,
-  value,
-  engine
+  r.removeEventListener(t, a);
+  const s = m.generateEvent(i, c);
+  i[Symbol.for(n.eventSymbol)] = s, r.addEventListener(t, s);
+}, v = function({
+  model: n,
+  target: r,
+  config: o,
+  value: e,
+  engine: c
 }) {
-  globalObjectModuleTrigger.registerExec((immediate) => {
-    const childrenConfig = engine.getConfigBySymbol(value);
-    if (!childrenConfig) {
-      if (!immediate) {
-        console.warn(` can not foud object config in engine: ${value}`);
-      }
-      return false;
+  n.toTrigger("object", (t) => {
+    var s;
+    const i = n.toConfig(e);
+    if (!i)
+      return t || console.warn(` can not foud object config in engine: ${e}`), !1;
+    if (i.parent && i.parent !== o.vid) {
+      const p = n.toConfig(i.parent);
+      if (!p)
+        return t || console.warn(
+          ` can not foud object parent config in engine: ${i.parent}`
+        ), !1;
+      p.children.splice(p.children.indexOf(e), 1);
     }
-    if (childrenConfig.parent && childrenConfig.parent !== config.vid) {
-      const parentConfig = engine.getConfigBySymbol(
-        childrenConfig.parent
-      );
-      if (!parentConfig) {
-        if (!immediate) {
-          console.warn(
-            ` can not foud object parent config in engine: ${childrenConfig.parent}`
-          );
-        }
-        return false;
-      }
-      parentConfig.children.splice(parentConfig.children.indexOf(value), 1);
-    }
-    childrenConfig.parent = config.vid;
-    const childrenObject = engine.compilerManager.getObjectfromModules(
-      OBJECTMODULE,
-      value
+    i.parent = o.vid;
+    const a = c.compilerManager.getObjectfromModules(
+      y,
+      e
     );
-    if (!childrenObject) {
-      if (!immediate) {
-        console.warn(`can not found this vid in engine: ${value}.`);
-      }
-      return false;
-    }
-    target.add(childrenObject);
-    childrenObject.updateMatrixWorld(true);
-    Bus.compilerEvent.emit(childrenObject, `${COMPILER_EVENT.COMPILE}:parent`);
-    return true;
+    return a ? (r.add(a), a.updateMatrixWorld(!0), (s = n.toModel(e)) == null || s.emit(`${b.COMPILED_ATTR}:parent`), !0) : (t || console.warn(`can not found this vid in engine: ${e}.`), !1);
   });
-};
-const removeChildrenHandler = function({
-  target,
-  config,
-  value,
-  engine
+}, k = function({
+  model: n,
+  target: r,
+  config: o,
+  value: e,
+  engine: c
 }) {
-  const childrenObject = engine.compilerManager.getObjectfromModules(
-    OBJECTMODULE,
-    value
+  var a;
+  const t = c.compilerManager.getObjectfromModules(
+    y,
+    e
   );
-  if (!childrenObject) {
-    console.warn(`can not found this vid in engine: ${value}.`);
+  if (!t) {
+    console.warn(`can not found this vid in engine: ${e}.`);
     return;
   }
-  target.remove(childrenObject);
-  const childrenConfig = engine.getConfigBySymbol(value);
-  if (!childrenConfig) {
-    console.warn(`can not found this vid in engine: ${value}.`);
+  r.remove(t);
+  const i = c.getConfigBySymbol(e);
+  if (!i) {
+    console.warn(`can not found this vid in engine: ${e}.`);
     return;
   }
-  childrenConfig.parent = "";
-  Bus.compilerEvent.emit(childrenObject, `${COMPILER_EVENT.COMPILE}:parent`);
-};
-const emptyRaycast = function() {
-};
-const raycastHandler = function({
-  target,
-  config,
-  value,
-  engine
+  i.parent = "", (a = n.toModel(e)) == null || a.emit(`${b.COMPILED_ATTR}:parent`);
+}, w = function({
+  model: n,
+  target: r,
+  config: o,
+  value: e,
+  engine: c
 }) {
-  if (value) {
-    delete target.raycast;
-  } else {
-    target.raycast = emptyRaycast;
-  }
-};
-const objectCreate = function(object, config, filter, engine) {
-  !filter.lookAt && lookAtHandler({
-    target: object,
-    config,
-    engine,
-    value: config.lookAt
-  });
-  !config.raycast && (object.raycast = emptyRaycast);
-  config.children.forEach((vid) => {
-    addChildrenHanlder({
-      target: object,
-      config,
-      value: vid,
-      engine
-    });
-  });
-  for (const eventName of Object.values(EVENTNAME)) {
-    globalAntiShake.nextTick(() => {
-      config[eventName].forEach((event, i) => {
-        addEventHanlder({
-          target: object,
-          path: [eventName, i.toString()],
-          value: event,
-          engine
-        });
+  e ? delete r.raycast : r.raycast = n.emptyRaycast;
+}, S = h.extend({
+  context() {
+    return {
+      cacheLookAt: {
+        target: null,
+        updateMatrixWorld: null
+      },
+      eventSymbol: "vis.event",
+      emptyRaycast: () => {
+      }
+    };
+  },
+  commands: {
+    add: {
+      pointerdown: l,
+      pointerup: l,
+      pointermove: l,
+      pointerenter: l,
+      pointerleave: l,
+      click: l,
+      dblclick: l,
+      contextmenu: l,
+      children: v
+    },
+    set: {
+      lookAt: E,
+      pointerdown: u,
+      pointerup: u,
+      pointermove: u,
+      pointerenter: u,
+      pointerleave: u,
+      click: u,
+      dblclick: u,
+      contextmenu: u,
+      parent: O,
+      raycast: w,
+      children: {
+        $reg: [
+          {
+            reg: new RegExp(".*"),
+            handler: v
+          }
+        ]
+      }
+    },
+    delete: {
+      pointerdown: d,
+      pointerup: d,
+      pointermove: d,
+      pointerenter: d,
+      pointerleave: d,
+      click: d,
+      dblclick: d,
+      contextmenu: d,
+      children: k
+    }
+  },
+  create({ model: n, target: r, config: o, engine: e, filter: c }) {
+    !c.lookAt && E.call(n, {
+      model: n,
+      target: r,
+      config: o,
+      value: o.lookAt,
+      engine: e
+    }), !o.raycast && (r.raycast = n.emptyRaycast), o.children.forEach((t) => {
+      v.call(n, {
+        target: r,
+        config: o,
+        value: t,
+        engine: e
       });
-      return true;
     });
-  }
-  syncObject(config, object, {
-    vid: true,
-    type: true,
-    lookAt: true,
-    parent: true,
-    children: true,
-    raycast: true,
-    pointerdown: true,
-    pointermove: true,
-    pointerup: true,
-    pointerenter: true,
-    pointerleave: true,
-    click: true,
-    dblclick: true,
-    contextmenu: true,
-    ...filter
-  });
-  return object;
-};
-const objectDispose = function(target) {
-  target._listener = {};
-};
-const objectCommands = {
-  add: {
-    pointerdown: addEventHanlder,
-    pointerup: addEventHanlder,
-    pointermove: addEventHanlder,
-    pointerenter: addEventHanlder,
-    pointerleave: addEventHanlder,
-    click: addEventHanlder,
-    dblclick: addEventHanlder,
-    contextmenu: addEventHanlder,
-    children: addChildrenHanlder
+    for (const t of Object.values(x))
+      n.asyncNextTick(() => (o[t].forEach((i, a) => {
+        l.call(n, {
+          model: n,
+          target: r,
+          path: [t, a.toString()],
+          value: i,
+          engine: e
+        });
+      }), !0));
+    A(o, r, {
+      vid: !0,
+      type: !0,
+      lookAt: !0,
+      parent: !0,
+      children: !0,
+      raycast: !0,
+      pointerdown: !0,
+      pointermove: !0,
+      pointerup: !0,
+      pointerenter: !0,
+      pointerleave: !0,
+      click: !0,
+      dblclick: !0,
+      contextmenu: !0,
+      ...c
+    });
   },
-  set: {
-    lookAt: lookAtHandler,
-    pointerdown: updateEventHandler,
-    pointerup: updateEventHandler,
-    pointermove: updateEventHandler,
-    pointerenter: updateEventHandler,
-    pointerleave: updateEventHandler,
-    click: updateEventHandler,
-    dblclick: updateEventHandler,
-    contextmenu: updateEventHandler,
-    parent: emptyHandler,
-    raycast: raycastHandler,
-    children: {
-      $reg: [
-        {
-          reg: new RegExp(".*"),
-          handler: addChildrenHanlder
-        }
-      ]
-    }
-  },
-  delete: {
-    pointerdown: removeEventHandler,
-    pointerup: removeEventHandler,
-    pointermove: removeEventHandler,
-    pointerenter: removeEventHandler,
-    pointerleave: removeEventHandler,
-    click: removeEventHandler,
-    dblclick: removeEventHandler,
-    contextmenu: removeEventHandler,
-    children: removeChildrenHandler
+  dispose({ target: n }) {
+    n._listener = {};
   }
+});
+export {
+  L as ObjectRule,
+  S as defineObjectModel,
+  C as getObjectConfig
 };
-export { ObjectCompiler, ObjectRule, addChildrenHanlder, addEventHanlder, getObjectConfig, lookAtHandler, objectCommands, objectCreate, objectDispose, raycastHandler, removeChildrenHandler, removeEventHandler, updateEventHandler };
