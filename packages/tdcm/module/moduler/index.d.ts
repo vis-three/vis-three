@@ -12,7 +12,7 @@ export interface ModuleOptions<E extends EngineSupport = EngineSupport, O extend
      * @deprecated use models
      */
     processors?: ModelOption<any, any, any, any>[];
-    models: ModelOption<any, any, any, E, O>[];
+    models: ModelOption<any, any, any, any, E, O>[];
     resources?: LoadUnit[];
     object?: boolean;
     extend?: (engine: E) => void;

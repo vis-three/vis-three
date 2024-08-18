@@ -121,11 +121,26 @@ export class EngineSupport
   declare getConfigBySymbol: <C extends BasicConfig = any>(
     vid: string
   ) => C | null;
+  /**
+   * @deprecated use getConfigFromModule
+   */
   declare getConfigfromModule: <C extends BasicConfig = any>(
     module: string,
     vid: string
   ) => C | null;
+  /**
+   * @deprecated use getConfigFromModules
+   */
   declare getConfigfromModules: <C extends BasicConfig = any>(
+    modules: string[] | Record<string, any>,
+    vid: string
+  ) => C | null;
+
+  declare getConfigFromModule: <C extends BasicConfig = any>(
+    module: string,
+    vid: string
+  ) => C | null;
+  declare getConfigFromModules: <C extends BasicConfig = any>(
     modules: string[] | Record<string, any>,
     vid: string
   ) => C | null;

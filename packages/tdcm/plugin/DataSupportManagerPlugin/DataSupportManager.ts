@@ -63,7 +63,20 @@ export class DataSupportManager extends EventDispatcher {
     return null;
   }
 
+  /**
+   * @deprecated use getConfigFromModule
+   * @param module
+   * @param vid
+   * @returns
+   */
   getConfigfromModule<T extends BasicConfig>(
+    module: string,
+    vid: string
+  ): T | null {
+    return this.getConfigFromModule<T>(module, vid);
+  }
+
+  getConfigFromModule<T extends BasicConfig>(
     module: string,
     vid: string
   ): T | null {
@@ -76,7 +89,20 @@ export class DataSupportManager extends EventDispatcher {
     return (dataSupport.getConfig(vid) as T) || null;
   }
 
+  /**
+   * @deprecated use getConfigFromModules
+   * @param modules
+   * @param vid
+   * @returns
+   */
   getConfigfromModules<T extends BasicConfig>(
+    modules: string[] | Record<string, any>,
+    vid: string
+  ) {
+    return this.getConfigFromModules<T>(modules, vid);
+  }
+
+  getConfigFromModules<T extends BasicConfig>(
     modules: string[] | Record<string, any>,
     vid: string
   ) {

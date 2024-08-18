@@ -17,7 +17,7 @@ export interface ModuleOptions<
    * @deprecated use models
    */
   processors?: ModelOption<any, any, any, any>[];
-  models: ModelOption<any, any, any, E, O>[];
+  models: ModelOption<any, any, any, any, E, O>[];
   resources?: LoadUnit[];
   object?: boolean;
   extend?: (engine: E) => void;
@@ -53,7 +53,14 @@ export class Moduler<
         })
       : (new Compiler<E>({
           module: module.type,
-          models: module.models as ModelOption<any, any, any, E, Compiler<E>>[],
+          models: module.models as ModelOption<
+            any,
+            any,
+            any,
+            any,
+            E,
+            Compiler<E>
+          >[],
         }) as O);
 
     this.converter = new Converter<any, E, O>({

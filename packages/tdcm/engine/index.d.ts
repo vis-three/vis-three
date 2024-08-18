@@ -55,8 +55,16 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     getObjectBySymbol: (vid: string) => any;
     loadResources: (urlList: LoadUnit[], callback: (err: Error | undefined, event?: MappedEvent | undefined) => void) => this;
     getConfigBySymbol: <C extends BasicConfig = any>(vid: string) => C | null;
+    /**
+     * @deprecated use getConfigFromModule
+     */
     getConfigfromModule: <C extends BasicConfig = any>(module: string, vid: string) => C | null;
+    /**
+     * @deprecated use getConfigFromModules
+     */
     getConfigfromModules: <C extends BasicConfig = any>(modules: string[] | Record<string, any>, vid: string) => C | null;
+    getConfigFromModule: <C extends BasicConfig = any>(module: string, vid: string) => C | null;
+    getConfigFromModules: <C extends BasicConfig = any>(modules: string[] | Record<string, any>, vid: string) => C | null;
     /**
      * @deprecated use getObjectFromModule
      */

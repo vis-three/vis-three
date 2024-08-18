@@ -4,92 +4,129 @@ import { Compiler } from "../compiler";
 import { Model, ModelCommands } from "./Model";
 
 export interface ModelOption<
-  C extends BasicConfig = BasicConfig,
-  P extends object = object,
-  D extends object = object,
-  E extends EngineSupport = EngineSupport,
-  O extends Compiler<E> = Compiler<E>
+  Cf extends BasicConfig = BasicConfig,
+  Obj extends object = object,
+  Ctx extends object = object,
+  Srd extends object = object,
+  Eg extends EngineSupport = EngineSupport,
+  Cpl extends Compiler<Eg> = Compiler<Eg>
 > {
   type: string;
-  config: () => C;
+  config: () => Cf;
+  shared?: Srd;
   context?: (
-    this: Model<C, P, E> & D,
-    params: { model: Model<C, P, E> & D }
-  ) => D;
-  commands?: ModelCommands<C, P, E, O, Model<C, P, E, O> & D>;
-  create: (
-    this: Model<C, P, E> & D,
-    params: { model: Model<C, P, E> & D; config: C; engine: E; compiler: O }
-  ) => P;
-  dispose: (
-    this: Model<C, P, E> & D,
+    this: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx,
     params: {
-      model: Model<C, P, E> & D;
-      target: P;
-      puppet: P;
-      config: C;
-      engine: E;
-      compiler: O;
+      model: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx;
+    }
+  ) => Ctx;
+  commands?: ModelCommands<
+    Cf,
+    Obj,
+    Eg,
+    Cpl,
+    Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx
+  >;
+  create: (
+    this: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx,
+    params: {
+      model: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx;
+      config: Cf;
+      engine: Eg;
+      compiler: Cpl;
+    }
+  ) => Obj;
+  dispose: (
+    this: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx,
+    params: {
+      model: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx;
+      target: Obj;
+      puppet: Obj;
+      config: Cf;
+      engine: Eg;
+      compiler: Cpl;
     }
   ) => void;
 }
 
 export const defineModel = function <
-  C extends BasicConfig = BasicConfig,
-  P extends object = object,
-  D extends object = any,
-  E extends EngineSupport = EngineSupport,
-  O extends Compiler<E> = Compiler<E>
->(option: ModelOption<C, P, D, E, O>) {
+  Cf extends BasicConfig = BasicConfig,
+  Obj extends object = object,
+  Ctx extends object = object,
+  Srd extends object = object,
+  Eg extends EngineSupport = EngineSupport,
+  Cpl extends Compiler<Eg> = Compiler<Eg>
+>(option: ModelOption<Cf, Obj, Ctx, Srd, Eg, Cpl>) {
   return option;
 };
 
 export interface AbstractModelOption<
-  C extends BasicConfig = BasicConfig,
-  P extends object = object,
-  D extends object = object,
-  E extends EngineSupport = EngineSupport,
-  O extends Compiler<E> = Compiler<E>,
-  R extends Function = Function,
-  I extends Function = Function
+  Cf extends BasicConfig = BasicConfig,
+  Obj extends object = object,
+  Ctx extends object = object,
+  Srd extends object = object,
+  Eg extends EngineSupport = EngineSupport,
+  Cpl extends Compiler<Eg> = Compiler<Eg>,
+  Cra extends Function = Function,
+  Dsp extends Function = Function
 > {
-  context?: (params: { model: Model<C, P, E> & D }) => D;
-  commands?: ModelCommands<C, P, E, O, Model<C, P, E, O> & D>;
-  create?: R;
-  dispose?: I;
+  context?: (params: {
+    model: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx;
+  }) => Ctx;
+  commands?: ModelCommands<
+    Cf,
+    Obj,
+    Eg,
+    Cpl,
+    Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx
+  >;
+  create?: Cra;
+  dispose?: Dsp;
 }
 
 defineModel.extend = function <
-  C extends BasicConfig = BasicConfig,
-  P extends object = object,
-  D extends object = any,
-  E extends EngineSupport = EngineSupport,
-  O extends Compiler<E> = Compiler<E>,
-  R extends Function = Function,
-  I extends Function = Function
->(abstract: AbstractModelOption<C, P, D, E, O, R, I>) {
+  Cf extends BasicConfig = BasicConfig,
+  Obj extends object = object,
+  Ctx extends object = object,
+  Srd extends object = object,
+  Eg extends EngineSupport = EngineSupport,
+  Cpl extends Compiler<Eg> = Compiler<Eg>,
+  Cra extends Function = Function,
+  Dsp extends Function = Function
+>(abstract: AbstractModelOption<Cf, Obj, Ctx, Srd, Eg, Cpl, Cra, Dsp>) {
   return function <
-    AC extends C = C,
-    AP extends P = P,
-    AD extends object = any,
-    AE extends E = E,
-    AO extends Compiler<AE> = Compiler<AE>
+    ACf extends Cf = Cf,
+    AObj extends Obj = Obj,
+    ACtx extends object = object,
+    ASrd extends object = object,
+    AEg extends Eg = Eg,
+    ACpl extends Compiler<AEg> = Compiler<AEg>
   >(
     fun: (
-      abstract: AbstractModelOption<C, P, D, E, O, R, I>
-    ) => ModelOption<AC, AP, AD, AE, AO>
-  ): ModelOption<AC, AP, D & AD, AE, AO> {
-    const option = fun(abstract) as ModelOption<AC, AP, D & AD, AE, AO>;
+      abstract: AbstractModelOption<Cf, Obj, Ctx, Srd, Eg, Cpl, Cra, Dsp>
+    ) => ModelOption<ACf, AObj, ACtx, ASrd, AEg, ACpl>
+  ): ModelOption<ACf, AObj, Ctx & ACtx, Srd & ASrd, AEg, ACpl> {
+    const option = fun(abstract) as ModelOption<
+      ACf,
+      AObj,
+      Ctx & ACtx,
+      Srd & ASrd,
+      AEg,
+      ACpl
+    >;
 
+    // TODO: deep merge
     option.commands = Object.assign({}, abstract.commands, option.commands);
 
     option.context = function (params) {
       return Object.assign(
         abstract.context
-          ? abstract.context(params as { model: Model<C, P, E> & D })
+          ? abstract.context(
+              params as { model: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx }
+            )
           : {},
         option.context ? option.context.call(this, params) : {}
-      ) as D & AD;
+      ) as Ctx & ACtx;
     };
 
     return option;
