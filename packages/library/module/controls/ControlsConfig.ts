@@ -1,7 +1,7 @@
-import { SymbolConfig, getSymbolConfig } from "@vis-three/middleware";
+import { BasicConfig, getBasicConfig } from "@vis-three/tdcm";
 
-export interface ControlsConfig extends SymbolConfig {}
+export interface ControlsConfig extends BasicConfig {}
 
 export const getControlsConfig = function (): ControlsConfig {
-  return Object.assign(getSymbolConfig(), {});
+  return Object.assign(getBasicConfig(), {});
 };

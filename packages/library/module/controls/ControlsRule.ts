@@ -1,14 +1,16 @@
-import { validate } from "uuid";
-import { ControlsCompiler } from "./ControlsCompiler";
-import { ProxyNotice, Rule } from "@vis-three/middleware";
+import { DEFAULT_RULE, defineRule, globalOption } from "@vis-three/tdcm";
 
 export const validSymbols: string[] = [];
 
-export const ControlsRule: Rule<ControlsCompiler> = function (
-  input: ProxyNotice,
-  compiler: ControlsCompiler
-) {
-  Rule(input, compiler, (vid) => {
-    return validate(vid) || validSymbols.includes(vid);
-  });
-};
+export default defineRule([
+  function (input) {
+    return (
+      globalOption.symbol.validator(input.symbol) ||
+      validSymbols.includes(input.symbol)
+    );
+  },
+  DEFAULT_RULE.OPERATE_ADD,
+  DEFAULT_RULE.OPERATE_DELETE,
+  DEFAULT_RULE.OPERATE_COVER,
+  DEFAULT_RULE.OPERATE_COMPILE,
+]);

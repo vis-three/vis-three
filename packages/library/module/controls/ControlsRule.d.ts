@@ -1,4 +1,3 @@
-import { ControlsCompiler } from "./ControlsCompiler";
-import { Rule } from "@vis-three/middleware";
 export declare const validSymbols: string[];
-export declare const ControlsRule: Rule<ControlsCompiler>;
+declare const _default: import("@vis-three/tdcm").Rule[];
+export default _default;

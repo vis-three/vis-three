@@ -1,17 +1,34 @@
-import { Compiler, Processor, uniqueSymbol } from "@vis-three/middleware";
-import { ControlsConfig } from "./ControlsConfig";
+import {
+  Compiler,
+  CompilerParameters,
+  ModelOption,
+  uniqueSymbol,
+} from "@vis-three/tdcm";
 import { validSymbols } from "./ControlsRule";
 
-export class ControlsCompiler extends Compiler<ControlsConfig, any> {
-  constructor() {
-    super();
+export class ControlsCompiler extends Compiler {
+  constructor(params: CompilerParameters) {
+    super(params);
   }
 
+  useModel(
+    option: ModelOption<any, any, any, any>,
+    callback?: (compiler: this) => void
+  ) {
+    validSymbols.push(uniqueSymbol(option.type));
+    return super.useModel(option, callback);
+  }
+
+  /**
+   * @deprecated
+   * @param processor
+   * @param fun
+   * @returns
+   */
   reigstProcessor(
-    processor: Processor<any, any, any, any>,
-    fun: (compiler: Compiler<ControlsConfig, any>) => void
-  ): this {
-    validSymbols.push(uniqueSymbol(processor.type));
-    return super.reigstProcessor(processor, fun);
+    option: ModelOption<any, any, any, any>,
+    callback?: (compiler: this) => void
+  ) {
+    return this.useModel(option, callback);
   }
 }

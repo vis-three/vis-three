@@ -1,14 +1,14 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
 import { ControlsCompiler } from "./ControlsCompiler";
-import { ControlsRule } from "./ControlsRule";
+import ControlsRule from "./ControlsRule";
 
 export * from "./ControlsCompiler";
 export * from "./ControlsConfig";
 
-export default {
+export default defineModule({
   type: "controls",
   compiler: ControlsCompiler,
   rule: ControlsRule,
-  processors: [],
+  models: [],
   lifeOrder: SUPPORT_LIFE_CYCLE.NINE,
-};
+});
