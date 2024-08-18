@@ -1,11 +1,3 @@
-import { AnimationActionCompiler } from "./AnimationActionCompiler";
 export * from "./AnimationActionConfig";
-export * from "./AnimationActionCompiler";
-declare const _default: {
-    type: string;
-    compiler: typeof AnimationActionCompiler;
-    rule: import("@vis-three/middleware").Rule<AnimationActionCompiler>;
-    processors: import("@vis-three/middleware").Processor<import("./AnimationActionConfig").AnimationActionConfig, import("three").AnimationAction, import("@vis-three/middleware").EngineSupport, AnimationActionCompiler>[];
-    lifeOrder: number;
-};
+declare const _default: import("@vis-three/tdcm").ModuleOptions<import("@vis-three/tdcm").EngineSupport, import("@vis-three/tdcm").Compiler<import("@vis-three/tdcm").EngineSupport>>;
 export default _default;

@@ -1,15 +1,10 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { AnimationActionCompiler } from "./AnimationActionCompiler";
-import { AnimationActionRule } from "./AnimationActionRule";
-import AnimationActionProcessor from "./processors/AnimationActionProcessor";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import AnimationActionModel from "./models/AnimationActionModel";
 
 export * from "./AnimationActionConfig";
-export * from "./AnimationActionCompiler";
 
-export default {
+export default defineModule({
   type: "animationAction",
-  compiler: AnimationActionCompiler,
-  rule: AnimationActionRule,
-  processors: [AnimationActionProcessor],
+  models: [AnimationActionModel],
   lifeOrder: SUPPORT_LIFE_CYCLE.NINE + 1,
-};
+});

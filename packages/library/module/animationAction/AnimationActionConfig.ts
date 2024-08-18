@@ -1,7 +1,7 @@
-import { SymbolConfig, getSymbolConfig } from "@vis-three/middleware";
+import { BasicConfig, getBasicConfig } from "@vis-three/tdcm";
 import { LoopRepeat } from "three";
 
-export interface AnimationActionConfig extends SymbolConfig {
+export interface AnimationActionConfig extends BasicConfig {
   mixer: string;
   clip: string;
   clampWhenFinished: boolean;
@@ -16,7 +16,7 @@ export interface AnimationActionConfig extends SymbolConfig {
 }
 
 export const getAnimationActionConfig = function (): AnimationActionConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     mixer: "",
     clip: "",
     clampWhenFinished: true,
