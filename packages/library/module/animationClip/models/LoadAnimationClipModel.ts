@@ -1,20 +1,14 @@
-import { EngineSupport, defineProcessor } from "@vis-three/middleware";
+import { defineModel } from "@vis-three/tdcm";
 import {
-  LoadAnimationClipConfig,
   getLoadAnimationClipConfig,
+  LoadAnimationClipConfig,
 } from "../AnimationClipConfig";
 import { AnimationClip } from "three";
-import { AnimationClipCompiler } from "../AnimationClipCompiler";
 
-export default defineProcessor<
-  LoadAnimationClipConfig,
-  AnimationClip,
-  EngineSupport,
-  AnimationClipCompiler
->({
+export default defineModel<LoadAnimationClipConfig, AnimationClip>({
   type: "LoadAnimationClip",
   config: getLoadAnimationClipConfig,
-  create(config, engine) {
+  create({ config, engine }) {
     if (!config.url) {
       console.warn(`load animation clip processor must have url`);
       return new AnimationClip();

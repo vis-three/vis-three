@@ -1,16 +1,12 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { AnimationClipCompiler } from "./AnimationClipCompiler";
-import { AnimationClipRule } from "./AnimationClipRule";
-import AnimationClipProcessor from "./processors/AnimationClipProcessor";
-import LoadAnimationClipProcessor from "./processors/LoadAnimationClipProcessor";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+
+import AnimationClipModel from "./models/AnimationClipModel";
+import LoadAnimationClipModel from "./models/LoadAnimationClipModel";
 
 export * from "./AnimationClipConfig";
-export * from "./AnimationClipCompiler";
 
-export default {
+export default defineModule({
   type: "animationClip",
-  compiler: AnimationClipCompiler,
-  rule: AnimationClipRule,
-  processors: [AnimationClipProcessor, LoadAnimationClipProcessor],
+  models: [AnimationClipModel, LoadAnimationClipModel],
   lifeOrder: SUPPORT_LIFE_CYCLE.ZERO,
-};
+});

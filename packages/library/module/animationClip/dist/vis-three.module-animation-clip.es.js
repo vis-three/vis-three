@@ -1,64 +1,42 @@
-import { Compiler, Rule, getSymbolConfig, defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { validate } from "uuid";
-import { AnimationClip } from "three";
-class AnimationClipCompiler extends Compiler {
-  constructor() {
-    super();
-  }
-}
-const AnimationClipRule = function(input, compiler, validateFun = validate) {
-  Rule(input, compiler, validateFun);
-};
-const getAnimationClipConfig = function() {
-  return Object.assign(getSymbolConfig(), {
+import { getBasicConfig as i, defineModel as t, defineModule as a, SUPPORT_LIFE_CYCLE as s } from "@vis-three/tdcm";
+import { AnimationClip as o } from "three";
+const l = function() {
+  return Object.assign(i(), {
     duration: -1,
     tracks: []
   });
-};
-const getLoadAnimationClipConfig = function() {
-  return Object.assign(getSymbolConfig(), {
+}, c = function() {
+  return Object.assign(i(), {
     url: ""
   });
-};
-var AnimationClipProcessor = defineProcessor({
+}, u = t({
   type: "AnimationClip",
-  config: getAnimationClipConfig,
-  commands: {
-    add: {},
-    set: {},
-    delete: {}
-  },
-  create(config, engine) {
+  config: l,
+  create() {
     return {};
   },
   dispose() {
   }
-});
-var LoadAnimationClipProcessor = defineProcessor({
+}), p = t({
   type: "LoadAnimationClip",
-  config: getLoadAnimationClipConfig,
-  create(config, engine) {
-    if (!config.url) {
-      console.warn(`load animation clip processor must have url`);
-      return new AnimationClip();
-    }
-    const resourceMap = engine.resourceManager.resourceMap;
-    if (!resourceMap.has(config.url)) {
-      console.warn(
-        `load animation clip processor can not found url in engine: ${config.url}`
-      );
-      return new AnimationClip();
-    }
-    return resourceMap.get(config.url);
+  config: c,
+  create({ config: n, engine: r }) {
+    if (!n.url)
+      return console.warn("load animation clip processor must have url"), new o();
+    const e = r.resourceManager.resourceMap;
+    return e.has(n.url) ? e.get(n.url) : (console.warn(
+      `load animation clip processor can not found url in engine: ${n.url}`
+    ), new o());
   },
-  dispose(target) {
+  dispose(n) {
   }
-});
-var index = {
+}), f = a({
   type: "animationClip",
-  compiler: AnimationClipCompiler,
-  rule: AnimationClipRule,
-  processors: [AnimationClipProcessor, LoadAnimationClipProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.ZERO
+  models: [u, p],
+  lifeOrder: s.ZERO
+});
+export {
+  f as default,
+  l as getAnimationClipConfig,
+  c as getLoadAnimationClipConfig
 };
-export { AnimationClipCompiler, index as default, getAnimationClipConfig, getLoadAnimationClipConfig };

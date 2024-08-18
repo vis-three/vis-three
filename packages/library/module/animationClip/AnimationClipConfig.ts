@@ -1,4 +1,4 @@
-import { SymbolConfig, getSymbolConfig } from "@vis-three/middleware";
+import { BasicConfig, getBasicConfig } from "@vis-three/tdcm";
 
 export interface BooleanKeyframeTrackConfig {
   type: "Boolean";
@@ -55,24 +55,24 @@ export type KeyframeTracks =
   | StringKeyframeTrackConfig
   | VectorKeyframeTrackConfig;
 
-export interface AnimationClipConfig extends SymbolConfig {
+export interface AnimationClipConfig extends BasicConfig {
   duration: number;
   tracks: KeyframeTracks[];
 }
 
-export interface LoadAnimationClipConfig extends SymbolConfig {
+export interface LoadAnimationClipConfig extends BasicConfig {
   url: string;
 }
 
 export const getAnimationClipConfig = function (): AnimationClipConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     duration: -1,
     tracks: [],
   });
 };
 
 export const getLoadAnimationClipConfig = function (): LoadAnimationClipConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     url: "",
   });
 };

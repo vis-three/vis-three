@@ -1,12 +1,3 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { AnimationClipCompiler } from "./AnimationClipCompiler";
 export * from "./AnimationClipConfig";
-export * from "./AnimationClipCompiler";
-declare const _default: {
-    type: string;
-    compiler: typeof AnimationClipCompiler;
-    rule: import("@vis-three/middleware").Rule<AnimationClipCompiler>;
-    processors: (import("@vis-three/middleware").Processor<import("./AnimationClipConfig").AnimationClipConfig, object, import("@vis-three/middleware").EngineSupport, AnimationClipCompiler> | import("@vis-three/middleware").Processor<import("./AnimationClipConfig").LoadAnimationClipConfig, import("three").AnimationClip, import("@vis-three/middleware").EngineSupport, AnimationClipCompiler>)[];
-    lifeOrder: SUPPORT_LIFE_CYCLE;
-};
+declare const _default: import("@vis-three/tdcm").ModuleOptions<import("@vis-three/tdcm").EngineSupport, import("@vis-three/tdcm").Compiler<import("@vis-three/tdcm").EngineSupport>>;
 export default _default;
