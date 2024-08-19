@@ -1,132 +1,93 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-import { Compiler, Rule, getSymbolConfig, defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { validate } from "uuid";
-import { EllipseCurve, Vector2, LineCurve } from "three";
-class CurveCompiler extends Compiler {
-  constructor() {
-    super();
-  }
-}
-const CurveRule = function(input, compiler, validateFun = validate) {
-  Rule(input, compiler, validateFun);
-};
-const getCurveConfig = function() {
-  return Object.assign(getSymbolConfig(), {
+import { getBasicConfig as C, defineModel as l, defineModule as v, SUPPORT_LIFE_CYCLE as w } from "@vis-three/tdcm";
+import { EllipseCurve as y, Vector2 as s, LineCurve as f } from "three";
+const h = function() {
+  return Object.assign(C(), {
     arcLengthDivisions: 200
   });
-};
-const getArcCurveConfig = function() {
-  return Object.assign(getCurveConfig(), {
+}, b = function() {
+  return Object.assign(h(), {
     startX: 0,
     startY: 0,
     vertical: 5,
-    clockwise: false,
+    clockwise: !1,
     endX: 10,
     endY: 10
   });
-};
-const getLineCurveConfig = function() {
-  return Object.assign(getCurveConfig(), {
+}, x = function() {
+  return Object.assign(h(), {
     startX: 0,
     startY: 0,
     endX: 10,
     endY: 10
   });
-};
-class ArcCurve extends EllipseCurve {
-  constructor(startX, startY, vertical, clockwise, endX, endY) {
-    super(0, 0, 1, 1, 0, Math.PI * 2, false, 0);
-    __publicField(this, "start", new Vector2());
-    __publicField(this, "end", new Vector2());
-    __publicField(this, "vertical", 0);
-    __publicField(this, "center", new Vector2());
-    __publicField(this, "tempVector", new Vector2());
-    this.start.set(startX, startY);
-    this.end.set(endX, endY);
-    this.vertical = vertical;
-    const tempVector = this.tempVector;
-    const start = this.start;
-    const end = this.end;
-    const mid = new Vector2((endX + startX) / 2, (endY + startY) / 2);
-    const center = this.center.copy(this.end).sub(this.start);
-    center.set(-center.y, center.x).negate().normalize().multiplyScalar(vertical).add(mid);
-    this.aX = center.x;
-    this.aY = center.y;
-    this.xRadius = tempVector.copy(end).sub(center).length();
-    this.yRadius = this.xRadius;
-    this.aStartAngle = tempVector.copy(start).sub(center).angle();
-    this.aEndAngle = tempVector.copy(end).sub(center).angle();
-    this.aClockwise = clockwise;
-  }
-}
-const commonRegCommand = {
+}, R = {
   reg: new RegExp(".*"),
   handler({
-    config,
-    target,
-    processor,
-    engine,
-    compiler
+    config: e,
+    target: r,
+    model: n,
+    engine: c,
+    compiler: i
   }) {
-    const newCurve = processor.create(config, engine, compiler);
-    compiler.map.set(config.vid, newCurve);
-    compiler.weakMap.set(newCurve, config.vid);
-    compiler.weakMap.delete(target);
-    processor.dispose(target, engine, compiler);
+    i.symbolMap.delete(r), n.dispose();
+    const a = n.create();
+    i.symbolMap.set(a, e.vid);
   }
+}, m = function() {
+  return R;
 };
-var ArcCurveProcessor = defineProcessor({
+class Y extends y {
+  constructor(r, n, c, i, a, d) {
+    super(0, 0, 1, 1, 0, Math.PI * 2, !1, 0), this.start = new s(), this.end = new s(), this.vertical = 0, this.center = new s(), this.tempVector = new s(), this.start.set(r, n), this.end.set(a, d), this.vertical = c;
+    const o = this.tempVector, p = this.start, u = this.end, g = new s((a + r) / 2, (d + n) / 2), t = this.center.copy(this.end).sub(this.start);
+    t.set(-t.y, t.x).negate().normalize().multiplyScalar(c).add(g), this.aX = t.x, this.aY = t.y, this.xRadius = o.copy(u).sub(t).length(), this.yRadius = this.xRadius, this.aStartAngle = o.copy(p).sub(t).angle(), this.aEndAngle = o.copy(u).sub(t).angle(), this.aClockwise = i;
+  }
+}
+const L = l({
   type: "ArcCurve",
-  config: getArcCurveConfig,
+  config: b,
   commands: {
-    add: {},
     set: {
-      $reg: [commonRegCommand]
-    },
-    delete: {}
+      $reg: [m()]
+    }
   },
-  create(config, engine) {
-    return new ArcCurve(
-      config.startX,
-      config.startY,
-      config.vertical,
-      config.clockwise,
-      config.endX,
-      config.endY
+  create({ config: e }) {
+    return new Y(
+      e.startX,
+      e.startY,
+      e.vertical,
+      e.clockwise,
+      e.endX,
+      e.endY
     );
   },
   dispose() {
   }
-});
-var LineCurveProcessor = defineProcessor({
+}), M = l({
   type: "LineCurve",
-  config: getLineCurveConfig,
+  config: x,
   commands: {
-    add: {},
     set: {
-      $reg: [commonRegCommand]
-    },
-    delete: {}
+      $reg: [m()]
+    }
   },
-  create(config, engine) {
-    return new LineCurve(
-      new Vector2(config.startX, config.startY),
-      new Vector2(config.endX, config.endY)
+  create({ config: e }) {
+    return new f(
+      new s(e.startX, e.startY),
+      new s(e.endX, e.endY)
     );
   },
   dispose() {
   }
-});
-var index = {
+}), E = v({
   type: "curve",
-  compiler: CurveCompiler,
-  rule: CurveRule,
-  processors: [ArcCurveProcessor, LineCurveProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.ZERO - 1
+  models: [L, M],
+  lifeOrder: w.ZERO - 1
+});
+export {
+  Y as ArcCurve,
+  E as default,
+  b as getArcCurveConfig,
+  h as getCurveConfig,
+  x as getLineCurveConfig
 };
-export { ArcCurve, CurveCompiler, index as default, getArcCurveConfig, getCurveConfig, getLineCurveConfig };

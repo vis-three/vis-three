@@ -1,10 +1,6 @@
-import {
-  SymbolConfig,
-  Vector2Config,
-  getSymbolConfig,
-} from "@vis-three/middleware";
+import { BasicConfig, Vector2Config, getBasicConfig } from "@vis-three/tdcm";
 
-export interface CurveConfig extends SymbolConfig {
+export interface CurveConfig extends BasicConfig {
   arcLengthDivisions: number;
 }
 
@@ -27,7 +23,7 @@ export interface LineCurveConfig extends CurveConfig {
 export type CurveAllType = LineCurveConfig | ArcCurveConfig;
 
 export const getCurveConfig = function (): CurveConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     arcLengthDivisions: 200,
   });
 };

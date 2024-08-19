@@ -1,5 +1,5 @@
-import { SymbolConfig } from "@vis-three/middleware";
-export interface CurveConfig extends SymbolConfig {
+import { BasicConfig } from "@vis-three/tdcm";
+export interface CurveConfig extends BasicConfig {
     arcLengthDivisions: number;
 }
 export interface ArcCurveConfig extends CurveConfig {
