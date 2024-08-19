@@ -1,274 +1,187 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-import { ObjectCompiler, ObjectRule, getObjectConfig, objectCommands, objectCreate, objectDispose } from "@vis-three/module-object";
-import { defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { PlaneBufferGeometry, Box3, Vector3, Quaternion, Matrix4 } from "three";
-import { CSS3DObject, CSS3DSprite as CSS3DSprite$1 } from "three/examples/jsm/renderers/CSS3DRenderer";
-class CSS3DCompiler extends ObjectCompiler {
-  constructor() {
-    super();
-  }
-}
-const CSS3DRule = function(notice, compiler) {
-  ObjectRule(notice, compiler);
-};
-const getCSS3DObjectConfig = function() {
-  return Object.assign(getObjectConfig(), {
+import { defineModule as p, SUPPORT_LIFE_CYCLE as m } from "@vis-three/tdcm";
+import { getObjectConfig as u, defineObjectModel as h, ObjectRule as l } from "@vis-three/module-object";
+import { PlaneGeometry as n, Box3 as a, Vector3 as r, Quaternion as g, Matrix4 as c } from "three";
+import { CSS3DObject as S, CSS3DSprite as x } from "three/examples/jsm/renderers/CSS3DRenderer.js";
+const d = function() {
+  return Object.assign(u(), {
     element: "",
     width: 50,
     height: 50
   });
-};
-const getCSS3DPlaneConfig = function() {
-  return Object.assign(getCSS3DObjectConfig(), {});
-};
-const getCSS3DSpriteConfig = function() {
-  return Object.assign(getCSS3DObjectConfig(), {
+}, y = function() {
+  return Object.assign(d(), {});
+}, w = function() {
+  return Object.assign(d(), {
     rotation2D: 0
   });
 };
-const getElement = function(element, engine) {
-  const resourceMap = engine.resourceManager.resourceMap;
-  if (!resourceMap.has(element)) {
-    console.warn(`css3D compiler: can not found resource element: ${element}`);
-    return document.createElement("div");
-  }
-  const resource = resourceMap.get(element);
-  if (resource instanceof HTMLElement) {
-    return resource;
-  } else {
-    console.warn(
-      `css3D compiler can not suport render this resource type.`,
-      resource.constructor,
-      element
-    );
-    return document.createElement("div");
-  }
-};
-class VisCSS3DObject extends CSS3DObject {
-  constructor(element = document.createElement("div")) {
-    const root = document.createElement("div");
-    const width = 50;
-    const height = 50;
-    root.style.width = `${width}px`;
-    root.style.height = `${height}px`;
-    root.appendChild(element);
-    super(root);
-    __publicField(this, "geometry");
-    __publicField(this, "_width");
-    __publicField(this, "_height");
-    this.geometry = new PlaneBufferGeometry(width, height);
-    this.geometry.computeBoundingBox();
-    this._width = width;
-    this._height = height;
+class f extends S {
+  constructor(e = document.createElement("div")) {
+    const t = document.createElement("div"), s = 50, i = 50;
+    t.style.width = `${s}px`, t.style.height = `${i}px`, t.appendChild(e), super(t), this.geometry = new n(s, i), this.geometry.computeBoundingBox(), this._width = s, this._height = i;
   }
   get width() {
     return this._width;
   }
-  set width(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(value, this._height);
-    this.geometry.computeBoundingBox();
-    this.element.style.width = `${value}px`;
-    this._width = value;
+  set width(e) {
+    this.geometry.dispose(), this.geometry = new n(e, this._height), this.geometry.computeBoundingBox(), this.element.style.width = `${e}px`, this._width = e;
   }
   get height() {
     return this._height;
   }
-  set height(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(this._width, value);
-    this.geometry.computeBoundingBox();
-    this.element.style.height = `${value}px`;
-    this._height = value;
+  set height(e) {
+    this.geometry.dispose(), this.geometry = new n(this._width, e), this.geometry.computeBoundingBox(), this.element.style.height = `${e}px`, this._height = e;
   }
 }
-class CSS3DPlane extends VisCSS3DObject {
-  constructor(element = document.createElement("div")) {
-    super(element);
-    __publicField(this, "cacheBox", new Box3());
-    this.type = "CSS3DPlane";
-    this.element.classList.add("vis-css3d", "vis-css3d-plane");
+class C extends f {
+  constructor(e = document.createElement("div")) {
+    super(e), this.cacheBox = new a(), this.type = "CSS3DPlane", this.element.classList.add("vis-css3d", "vis-css3d-plane");
   }
-  raycast(raycaster, intersects) {
-    const box = this.cacheBox.copy(this.geometry.boundingBox);
-    box.applyMatrix4(this.matrixWorld);
-    if (raycaster.ray.intersectsBox(box)) {
-      intersects.push({
-        distance: raycaster.ray.origin.distanceTo(this.position),
-        object: this,
-        point: this.position
-      });
-    }
+  raycast(e, t) {
+    const s = this.cacheBox.copy(this.geometry.boundingBox);
+    s.applyMatrix4(this.matrixWorld), e.ray.intersectsBox(s) && t.push({
+      distance: e.ray.origin.distanceTo(this.position),
+      object: this,
+      point: this.position
+    });
   }
 }
-var CSS3DPlaneProcessor = defineProcessor({
+const D = h((o) => ({
   type: "CSS3DPlane",
-  config: getCSS3DPlaneConfig,
+  config: y,
+  shared: {
+    getElement(e, t) {
+      const s = t.resourceManager.resourceMap;
+      if (!s.has(e))
+        return console.warn(
+          `css3D compiler: can not found resource element: ${e}`
+        ), document.createElement("div");
+      const i = s.get(e);
+      return i instanceof HTMLElement ? i : (console.warn(
+        "css3D compiler can not suport render this resource type.",
+        i.constructor,
+        e
+      ), document.createElement("div"));
+    }
+  },
   commands: {
-    add: objectCommands.add,
     set: {
-      element({ target, value, engine }) {
-        target.element.innerHTML = "";
-        target.element.appendChild(getElement(value, engine));
-      },
-      ...objectCommands.set
-    },
-    delete: objectCommands.delete
+      element({ model: e, target: t, value: s, engine: i }) {
+        t.element.innerHTML = "", t.element.appendChild(e.getElement(s, i));
+      }
+    }
   },
-  create(config, engine) {
-    return objectCreate(
-      new CSS3DPlane(getElement(config.element, engine)),
-      config,
-      {
-        element: true
+  create({ model: e, config: t, engine: s }) {
+    const i = new C(e.getElement(t.element, s));
+    return o.create({
+      model: e,
+      target: i,
+      config: t,
+      filter: {
+        element: !0
       },
-      engine
-    );
+      engine: s
+    }), i;
   },
-  dispose: objectDispose
-});
-var CSS3DObjectProcessor = defineProcessor({
-  type: "CSS3DObject",
-  config: getCSS3DObjectConfig,
-  commands: {
-    add: objectCommands.add,
-    set: {
-      element({ target, value, engine }) {
-        target.element = getElement(value, engine);
-      },
-      ...objectCommands.set
-    },
-    delete: objectCommands.delete
-  },
-  create(config, engine) {
-    return objectCreate(
-      new CSS3DObject(getElement(config.element, engine)),
-      config,
-      {
-        element: true
-      },
-      engine
-    );
-  },
-  dispose: objectDispose
-});
-class VisCSS3DSprite extends CSS3DSprite$1 {
-  constructor(element = document.createElement("div")) {
-    const root = document.createElement("div");
-    const width = 50;
-    const height = 50;
-    root.style.width = `${width}px`;
-    root.style.height = `${height}px`;
-    root.appendChild(element);
-    element.classList.add("vis-css3d", "vis-css3d-sprite");
-    super(root);
-    __publicField(this, "geometry");
-    __publicField(this, "_width");
-    __publicField(this, "_height");
-    __publicField(this, "cacheBox", new Box3());
-    __publicField(this, "cachePosition", new Vector3());
-    __publicField(this, "cacheQuaternion", new Quaternion());
-    __publicField(this, "cacheScale", new Vector3());
-    __publicField(this, "cacheMatrix4", new Matrix4());
-    __publicField(this, "rotateMatrix4", new Matrix4());
-    this.geometry = new PlaneBufferGeometry(width, height);
-    this.geometry.computeBoundingBox();
-    this._width = width;
-    this._height = height;
-    this.type = "CSS3DSprite";
+  dispose({ target: e }) {
+    o.dispose({ target: e });
+  }
+}));
+class E extends x {
+  constructor(e = document.createElement("div")) {
+    const t = document.createElement("div"), s = 50, i = 50;
+    t.style.width = `${s}px`, t.style.height = `${i}px`, t.appendChild(e), e.classList.add("vis-css3d", "vis-css3d-sprite"), super(t), this.cacheBox = new a(), this.cachePosition = new r(), this.cacheQuaternion = new g(), this.cacheScale = new r(), this.cacheMatrix4 = new c(), this.rotateMatrix4 = new c(), this.geometry = new n(s, i), this.geometry.computeBoundingBox(), this._width = s, this._height = i, this.type = "CSS3DSprite";
   }
   get width() {
     return this._width;
   }
-  set width(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(value, this._height);
-    this.geometry.computeBoundingBox();
-    this.element.style.width = `${value}px`;
-    this._width = value;
+  set width(e) {
+    this.geometry.dispose(), this.geometry = new n(e, this._height), this.geometry.computeBoundingBox(), this.element.style.width = `${e}px`, this._width = e;
   }
   get height() {
     return this._height;
   }
-  set height(value) {
-    this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(this._width, value);
-    this.geometry.computeBoundingBox();
-    this.element.style.height = `${value}px`;
-    this._height = value;
+  set height(e) {
+    this.geometry.dispose(), this.geometry = new n(this._width, e), this.geometry.computeBoundingBox(), this.element.style.height = `${e}px`, this._height = e;
   }
-  raycast(raycaster, intersects) {
-    const box = this.cacheBox.copy(this.geometry.boundingBox);
+  raycast(e, t) {
+    const s = this.cacheBox.copy(this.geometry.boundingBox);
     this.matrixWorld.decompose(
       this.cachePosition,
       this.cacheQuaternion,
       this.cacheScale
     );
-    const rotateMatrix4 = this.rotateMatrix4.lookAt(
+    const i = this.rotateMatrix4.lookAt(
       this.position,
-      raycaster.camera.position,
+      e.camera.position,
       this.up
     );
-    this.cacheQuaternion.setFromRotationMatrix(rotateMatrix4);
-    this.cacheMatrix4.compose(
+    this.cacheQuaternion.setFromRotationMatrix(i), this.cacheMatrix4.compose(
       this.cachePosition,
       this.cacheQuaternion,
       this.cacheScale
-    );
-    box.applyMatrix4(this.cacheMatrix4);
-    if (raycaster.ray.intersectsBox(box)) {
-      intersects.push({
-        distance: raycaster.ray.origin.distanceTo(this.position),
-        object: this,
-        point: this.position
-      });
-    }
+    ), s.applyMatrix4(this.cacheMatrix4), e.ray.intersectsBox(s) && t.push({
+      distance: e.ray.origin.distanceTo(this.position),
+      object: this,
+      point: this.position
+    });
   }
 }
-class CSS3DSprite extends VisCSS3DSprite {
-  constructor(element = document.createElement("div")) {
-    super(element);
-    this.type = "CSS3DSprite";
-    this.element.classList.add("vis-css3d", "vis-css3d-plane");
+class M extends E {
+  constructor(e = document.createElement("div")) {
+    super(e), this.type = "CSS3DSprite", this.element.classList.add("vis-css3d", "vis-css3d-plane");
   }
 }
-var CSS3DSpriteProcessor = defineProcessor({
+const B = h((o) => ({
   type: "CSS3DSprite",
-  config: getCSS3DSpriteConfig,
+  config: w,
+  shared: {
+    getElement(e, t) {
+      const s = t.resourceManager.resourceMap;
+      if (!s.has(e))
+        return console.warn(
+          `css3D compiler: can not found resource element: ${e}`
+        ), document.createElement("div");
+      const i = s.get(e);
+      return i instanceof HTMLElement ? i : (console.warn(
+        "css3D compiler can not suport render this resource type.",
+        i.constructor,
+        e
+      ), document.createElement("div"));
+    }
+  },
   commands: {
-    add: objectCommands.add,
     set: {
-      element({ target, value, engine }) {
-        target.element.innerHTML = "";
-        target.element.appendChild(getElement(value, engine));
-      },
-      ...objectCommands.set
-    },
-    delete: objectCommands.delete
+      element({ model: e, target: t, value: s, engine: i }) {
+        t.element.innerHTML = "", t.element.appendChild(e.getElement(s, i));
+      }
+    }
   },
-  create(config, engine) {
-    return objectCreate(
-      new CSS3DSprite(getElement(config.element, engine)),
-      config,
-      {
-        element: true
+  create({ model: e, config: t, engine: s }) {
+    const i = new M(e.getElement(t.element, s));
+    return o.create({
+      model: e,
+      target: i,
+      config: t,
+      filter: {
+        element: !0
       },
-      engine
-    );
+      engine: s
+    }), i;
   },
-  dispose: objectDispose
-});
-var index = {
+  dispose({ target: e }) {
+    o.dispose({ target: e });
+  }
+})), $ = p({
   type: "css3D",
-  object: true,
-  compiler: CSS3DCompiler,
-  rule: CSS3DRule,
-  processors: [CSS3DPlaneProcessor, CSS3DObjectProcessor, CSS3DSpriteProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.THREE
+  object: !0,
+  rule: l,
+  models: [D, B],
+  lifeOrder: m.THREE
+});
+export {
+  $ as default,
+  d as getCSS3DObjectConfig,
+  y as getCSS3DPlaneConfig,
+  w as getCSS3DSpriteConfig
 };
-export { CSS3DCompiler, index as default, getCSS3DObjectConfig, getCSS3DPlaneConfig, getCSS3DSpriteConfig };

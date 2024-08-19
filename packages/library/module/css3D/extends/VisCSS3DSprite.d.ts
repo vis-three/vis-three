@@ -1,5 +1,5 @@
 import { Intersection, Raycaster } from "three";
-import { CSS3DSprite } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS3DSprite } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 export declare class VisCSS3DSprite extends CSS3DSprite {
     private geometry;
     private _width;

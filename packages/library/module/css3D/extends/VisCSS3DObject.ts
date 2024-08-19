@@ -1,5 +1,5 @@
-import { BufferGeometry, PlaneBufferGeometry } from "three";
-import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { BufferGeometry, PlaneGeometry } from "three";
+import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 
 export class VisCSS3DObject extends CSS3DObject {
   protected geometry: BufferGeometry;
@@ -16,7 +16,7 @@ export class VisCSS3DObject extends CSS3DObject {
 
     super(root);
 
-    this.geometry = new PlaneBufferGeometry(width, height);
+    this.geometry = new PlaneGeometry(width, height);
     this.geometry.computeBoundingBox();
 
     this._width = width;
@@ -29,7 +29,7 @@ export class VisCSS3DObject extends CSS3DObject {
 
   set width(value) {
     this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(value, this._height);
+    this.geometry = new PlaneGeometry(value, this._height);
     this.geometry.computeBoundingBox();
     this.element.style.width = `${value}px`;
     this._width = value;
@@ -41,7 +41,7 @@ export class VisCSS3DObject extends CSS3DObject {
 
   set height(value) {
     this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(this._width, value);
+    this.geometry = new PlaneGeometry(this._width, value);
     this.geometry.computeBoundingBox();
     this.element.style.height = `${value}px`;
     this._height = value;

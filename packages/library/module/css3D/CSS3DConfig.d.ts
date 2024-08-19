@@ -7,6 +7,7 @@ export interface CSS3DObjectConfig extends ObjectConfig {
 export interface CSS3DPlaneConfig extends CSS3DObjectConfig {
 }
 export interface CSS3DSpriteConfig extends CSS3DObjectConfig {
+    /**旋转角度 */
     rotation2D: number;
 }
 export type CSS3DAllType = CSS3DObjectConfig | CSS3DSpriteConfig | CSS3DPlaneConfig;

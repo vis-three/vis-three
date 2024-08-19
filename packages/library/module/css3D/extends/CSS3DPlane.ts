@@ -6,6 +6,7 @@ export class CSS3DPlane extends VisCSS3DObject {
 
   constructor(element: HTMLElement = document.createElement("div")) {
     super(element);
+    //@ts-ignore
     this.type = "CSS3DPlane";
     this.element.classList.add("vis-css3d", "vis-css3d-plane");
   }

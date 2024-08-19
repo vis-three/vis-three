@@ -3,14 +3,13 @@ import {
   BufferGeometry,
   Intersection,
   Matrix4,
-  PerspectiveCamera,
-  PlaneBufferGeometry,
+  PlaneGeometry,
   Quaternion,
   Raycaster,
   Vector2,
   Vector3,
 } from "three";
-import { CSS3DSprite } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS3DSprite } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 
 export class VisCSS3DSprite extends CSS3DSprite {
   private geometry: BufferGeometry;
@@ -37,12 +36,13 @@ export class VisCSS3DSprite extends CSS3DSprite {
 
     super(root);
 
-    this.geometry = new PlaneBufferGeometry(width, height);
+    this.geometry = new PlaneGeometry(width, height);
     this.geometry.computeBoundingBox();
 
     this._width = width;
     this._height = height;
 
+    //@ts-ignore
     this.type = "CSS3DSprite";
   }
 
@@ -52,7 +52,7 @@ export class VisCSS3DSprite extends CSS3DSprite {
 
   set width(value) {
     this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(value, this._height);
+    this.geometry = new PlaneGeometry(value, this._height);
     this.geometry.computeBoundingBox();
     this.element.style.width = `${value}px`;
     this._width = value;
@@ -64,7 +64,7 @@ export class VisCSS3DSprite extends CSS3DSprite {
 
   set height(value) {
     this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(this._width, value);
+    this.geometry = new PlaneGeometry(this._width, value);
     this.geometry.computeBoundingBox();
     this.element.style.height = `${value}px`;
     this._height = value;
