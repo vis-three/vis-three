@@ -1,5 +1,5 @@
 import { BufferGeometry } from "three";
-import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
+import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 export declare class VisCSS2DObject extends CSS2DObject {
     protected geometry: BufferGeometry;
     protected _width: number;

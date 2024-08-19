@@ -24,6 +24,7 @@ export class CSS2DPlane extends VisCSS2DObject {
 
   constructor(element: HTMLElement = document.createElement("div")) {
     super(element);
+    //@ts-ignore
     this.type = "CSS2DPlane";
     this.element.classList.add("vis-css2d", "vis-css2d-plane");
 
