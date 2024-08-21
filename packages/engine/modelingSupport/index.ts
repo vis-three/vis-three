@@ -102,6 +102,8 @@ import {
   SelectionPromptParameters,
   SelectionPromptStrategy,
 } from "@vis-three/strategy-selection-prompt";
+import { CameraEngineSupport } from "@vis-three/library-module/camera";
+import { SceneEngineSupport } from "@vis-three/library-module/scene";
 
 export { VIEWPOINT };
 
@@ -127,7 +129,9 @@ export class ModelingEngineSupport
     SelectionSupportEngine,
     CSS2DRendererEngine,
     CSS3DRendererEngine,
-    PathDrawingEngine
+    PathDrawingEngine,
+    CameraEngineSupport,
+    SceneEngineSupport
 {
   declare webGLRenderer: WebGLRenderer;
   declare getScreenshot: (params?: Screenshot | undefined) => Promise<string>;
@@ -159,6 +163,8 @@ export class ModelingEngineSupport
     offset: Vector3
   ) => PathDrawingEngine;
   declare drawPathByFace: (face: Face, offset: Vector3) => PathDrawingEngine;
+  declare setSceneBySymbol: (scene: string) => this;
+  declare setCameraBySymbol: (camera: string) => this;
 
   constructor(params: Partial<ModelingEngineSupportParameters> = {}) {
     super(params);
