@@ -1,4 +1,4 @@
-import { getSymbolConfig } from "@vis-three/middleware";
+import { getBasicConfig } from "@vis-three/tdcm";
 import {
   BoxGeometryConfig,
   CircleGeometryConfig,
@@ -31,7 +31,7 @@ import {
 } from "./GeometryInterface";
 
 export const getGeometryConfig = function (): GeometryConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     center: true,
     position: {
       x: 0, // percent

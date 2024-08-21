@@ -1,4 +1,4 @@
-import { SymbolConfig, Vector3Config } from "@vis-three/middleware";
+import { BasicConfig, Vector3Config } from "@vis-three/tdcm";
 import { Vector2 } from "three";
 /**
  * 几何组配置
@@ -14,7 +14,7 @@ export interface GeometryGroup {
 /**
  * 几何配置基础
  */
-export interface GeometryConfig extends SymbolConfig {
+export interface GeometryConfig extends BasicConfig {
     /**是否居中几何，开启后会先居中几何，再进行其他几何运算，这对于几何中心不再原点的模型很有用。 */
     center: boolean;
     /**几何锚点中心位置 */

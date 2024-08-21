@@ -4,7 +4,7 @@ import { CurveGeometry } from "./CurveGeometry";
 export class SplineCurveGeometry extends CurveGeometry {
   constructor(path: Vector3[] = [], divisions = 36, space = true) {
     super(path, divisions, space);
-
+    //@ts-ignore
     this.type = "SplineCurveGeometry";
 
     if (!path.length) {

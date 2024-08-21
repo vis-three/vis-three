@@ -1,6 +1,6 @@
-import { Shape, ShapeBufferGeometry, Vector2 } from "three";
+import { Shape, ShapeGeometry, Vector2 } from "three";
 
-export class LineShapeGeometry extends ShapeBufferGeometry {
+export class LineShapeGeometry extends ShapeGeometry {
   constructor(path: Vector2[] = [new Vector2(0, 0)], curveSegments = 12) {
     const lineShape = new Shape();
 
@@ -13,7 +13,7 @@ export class LineShapeGeometry extends ShapeBufferGeometry {
       }
     }
     super(lineShape, curveSegments);
-
+    //@ts-ignore
     this.type = "LineShapeGeometry";
   }
 }

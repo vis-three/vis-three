@@ -1,92 +1,15 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-import { getSymbolConfig, defineProcessor, MODULETYPE, Compiler, Rule, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { Quaternion, Euler, BoxBufferGeometry, CircleBufferGeometry, ConeBufferGeometry, Vector2, BufferGeometry, CurvePath, CubicBezierCurve3, LineCurve3, QuadraticBezierCurve3, CatmullRomCurve3, ShapeBufferGeometry, Shape, TubeGeometry, Path, Vector3, Float32BufferAttribute, CylinderBufferGeometry, EdgesGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, TorusGeometry, ExtrudeBufferGeometry, LatheGeometry, Mesh } from "three";
-import { DecalGeometry } from "three/examples/jsm/geometries/DecalGeometry";
-const transfromAnchor = function(geometry, config) {
-  config.center && geometry.center();
-  geometry.computeBoundingBox();
-  const box = geometry.boundingBox;
-  const position = config.position;
-  const rotation = config.rotation;
-  const scale = config.scale;
-  const quaternion = new Quaternion().setFromEuler(
-    new Euler(rotation.x, rotation.y, rotation.z, "XYZ")
-  );
-  geometry.applyQuaternion(quaternion);
-  geometry.scale(scale.x, scale.y, scale.z);
-  config.center && geometry.center();
-  geometry.computeBoundingBox();
-  geometry.translate(
-    (box.max.x - box.min.x) / 2 * position.x,
-    (box.max.y - box.min.y) / 2 * position.y,
-    (box.max.z - box.min.z) / 2 * position.z
-  );
-  return geometry;
-};
-const commonRegCommand = {
-  reg: new RegExp(".*"),
-  handler({
-    config,
-    target,
-    processor,
-    engine,
-    compiler
-  }) {
-    const newGeometry = processor.create(config, engine, compiler);
-    target.copy(newGeometry);
-    target.uuid = newGeometry.uuid;
-    processor.dispose(newGeometry, engine, compiler);
-  }
-};
-const commands = {
-  add: {
-    groups({ target, value }) {
-      target.addGroup(value.start, value.count, value.materialIndex);
-    },
-    $reg: [commonRegCommand]
-  },
-  set: {
-    groups(params) {
-      const { path, target, config } = params;
-      if (path[1] !== void 0) {
-        target.groups.splice(Number(params.path[1]), 1);
-        const group = config.groups[path[1]];
-        target.addGroup(group.start, group.count, group.materialIndex);
-      } else {
-        console.warn(`geometry processor can not set group`, params);
-      }
-    },
-    $reg: [commonRegCommand]
-  },
-  delete: {
-    groups({ target, key }) {
-      target.groups.splice(Number(key), 1);
-    },
-    $reg: [commonRegCommand]
-  }
-};
-const create = function(target, config) {
-  target.clearGroups();
-  for (const group of config.groups) {
-    target.addGroup(group.start, group.count, group.materialIndex);
-  }
-  return transfromAnchor(target, config);
-};
-const dispose = function(target) {
-  target.dispose();
-};
-const getGeometryConfig = function() {
-  return Object.assign(getSymbolConfig(), {
-    center: true,
+import { getBasicConfig as U, defineModel as F, MODULE_TYPE as m, MODEL_EVENT as d, defineModule as R, SUPPORT_LIFE_CYCLE as Q } from "@vis-three/tdcm";
+import { Quaternion as V, Euler as H, BoxGeometry as b, CircleGeometry as $, Vector2 as l, BufferGeometry as y, CurvePath as C, CubicBezierCurve3 as Y, LineCurve3 as T, QuadraticBezierCurve3 as N, CatmullRomCurve3 as D, ShapeGeometry as _, Shape as W, TubeGeometry as S, Path as z, Vector3 as E, Float32BufferAttribute as g, EdgesGeometry as O, ExtrudeGeometry as k, LatheGeometry as q, PlaneGeometry as X, RingGeometry as Z, TorusGeometry as J } from "three";
+const h = function() {
+  return Object.assign(U(), {
+    center: !0,
     position: {
       x: 0,
+      // percent
       y: 0,
+      // percent
       z: 0
+      // percent
     },
     rotation: {
       x: 0,
@@ -100,9 +23,8 @@ const getGeometryConfig = function() {
     },
     groups: []
   });
-};
-const getBoxGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
+}, K = function() {
+  return Object.assign(h(), {
     width: 5,
     height: 5,
     depth: 5,
@@ -110,56 +32,30 @@ const getBoxGeometryConfig = function() {
     heightSegments: 1,
     depthSegments: 1
   });
-};
-const getSphereGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    radius: 3,
-    widthSegments: 32,
-    heightSegments: 32,
-    phiStart: 0,
-    phiLength: Math.PI * 2,
-    thetaStart: 0,
-    thetaLength: Math.PI
-  });
-};
-const getPlaneGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
+}, ee = function() {
+  return Object.assign(h(), {
     width: 5,
     height: 5,
     widthSegments: 1,
     heightSegments: 1
   });
-};
-const getCircleGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
+}, te = function() {
+  return Object.assign(h(), {
     radius: 3,
     segments: 8,
     thetaStart: 0,
     thetaLength: Math.PI * 2
   });
-};
-const getConeGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    radius: 3,
-    height: 5,
-    radialSegments: 8,
-    heightSegments: 1,
-    openEnded: false,
-    thetaStart: 0,
-    thetaLength: Math.PI * 2
-  });
-};
-const getTorusGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
+}, re = function() {
+  return Object.assign(h(), {
     radius: 3,
     tube: 0.4,
     radialSegments: 8,
     tubularSegments: 6,
     arc: Math.PI * 2
   });
-};
-const getRingGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
+}, ne = function() {
+  return Object.assign(h(), {
     innerRadius: 2,
     outerRadius: 3,
     thetaSegments: 8,
@@ -167,14 +63,12 @@ const getRingGeometryConfig = function() {
     thetaStart: 0,
     thetaLength: Math.PI * 2
   });
-};
-const getLoadGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
+}, se = function() {
+  return Object.assign(h(), {
     url: ""
   });
-};
-const getCustomGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
+}, oe = function() {
+  return Object.assign(h(), {
     attribute: {
       position: [],
       color: [],
@@ -184,94 +78,59 @@ const getCustomGeometryConfig = function() {
       uv2: []
     }
   });
-};
-const getCylinderGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    radiusTop: 3,
-    radiusBottom: 3,
-    height: 5,
-    radialSegments: 8,
-    heightSegments: 1,
-    openEnded: false,
-    thetaStart: 0,
-    thetaLength: Math.PI * 2
-  });
-};
-const getEdgesGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
+}, ae = function() {
+  return Object.assign(h(), {
     target: "",
     thresholdAngle: 1
   });
-};
-const getCurveGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    center: false,
+}, x = function() {
+  return Object.assign(h(), {
+    center: !1,
     path: [],
     divisions: 36,
-    space: true
+    space: !0
   });
-};
-const getLineCurveGeometryConfig = function() {
-  return Object.assign(getCurveGeometryConfig(), { center: false });
-};
-const getSplineCurveGeometryConfig = function() {
-  return Object.assign(getCurveGeometryConfig(), { center: false });
-};
-const getCubicBezierCurveGeometryConfig = function() {
-  return Object.assign(getCurveGeometryConfig(), { center: false });
-};
-const getQuadraticBezierCurveGeometryConfig = function() {
-  return Object.assign(getCurveGeometryConfig(), { center: false });
-};
-const getTubeGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    center: false,
+}, ue = function() {
+  return Object.assign(x(), { center: !1 });
+}, ce = function() {
+  return Object.assign(x(), { center: !1 });
+}, ie = function() {
+  return Object.assign(x(), { center: !1 });
+}, pe = function() {
+  return Object.assign(h(), {
+    center: !1,
     path: [],
     tubularSegments: 64,
     radius: 1,
     radialSegments: 8,
-    closed: false
+    closed: !1
   });
-};
-const getLineTubeGeometryConfig = function() {
-  return Object.assign(getTubeGeometryConfig(), { center: false });
-};
-const getSplineTubeGeometryConfig = function() {
-  return Object.assign(getTubeGeometryConfig(), { center: false });
-};
-const getPathTubeGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    center: false,
+}, he = function() {
+  return Object.assign(pe(), { center: !1 });
+}, le = function() {
+  return Object.assign(h(), {
+    center: !1,
     path: "",
     tubularSegments: 64,
     radius: 1,
     radialSegments: 8,
-    closed: false
+    closed: !1
   });
-};
-const getShapeGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    center: false,
+}, de = function() {
+  return Object.assign(h(), {
+    center: !1,
     shape: "",
     curveSegments: 12
   });
-};
-const getLineShapeGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    center: false,
-    path: [],
-    curveSegments: 12
-  });
-};
-const getExtrudeGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    center: false,
+}, me = function() {
+  return Object.assign(h(), {
+    center: !1,
     shapes: "",
     options: {
       curveSegments: 12,
       steps: 1,
       depth: 1,
-      bevelEnabled: true,
+      bevelEnabled: !0,
       bevelThickness: 0.2,
       bevelSize: 0.1,
       bevelOffset: 0,
@@ -280,916 +139,675 @@ const getExtrudeGeometryConfig = function() {
       UVGenerator: "default"
     }
   });
-};
-const getPathGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    center: false,
+}, ye = function() {
+  return Object.assign(h(), {
+    center: !1,
     path: "",
-    space: false,
+    space: !1,
     divisions: 36
   });
-};
-const getLatheGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
+}, ge = function() {
+  return Object.assign(h(), {
     path: "",
     divisions: 32,
     segments: 12,
     phiStart: 0,
     phiLength: Math.PI * 2
   });
-};
-const getDecalGeometryConfig = function() {
-  return Object.assign(getGeometryConfig(), {
-    center: false,
-    target: {
-      geometry: "",
-      position: { x: 0, y: 0, z: 0 },
-      rotation: { x: 0, y: 0, z: 0 },
-      scale: { x: 0, y: 0, z: 0 }
+}, Ge = function(r, e) {
+  e.center && r.center(), r.computeBoundingBox();
+  const t = r.boundingBox, s = e.position, n = e.rotation, o = e.scale, a = new V().setFromEuler(
+    new H(n.x, n.y, n.z, "XYZ")
+  );
+  return r.applyQuaternion(a), r.scale(o.x, o.y, o.z), e.center && r.center(), r.computeBoundingBox(), r.translate(
+    (t.max.x - t.min.x) / 2 * s.x,
+    (t.max.y - t.min.y) / 2 * s.y,
+    (t.max.z - t.min.z) / 2 * s.z
+  ), r;
+}, w = {
+  reg: new RegExp(".*"),
+  handler({
+    config: r,
+    target: e,
+    model: t,
+    engine: s,
+    compiler: n
+  }) {
+    const o = t.createPuppet({
+      model: t,
+      config: r,
+      engine: s,
+      compiler: n
+    });
+    e.copy(o), t.disposePuppet({
+      model: t,
+      target: o,
+      puppet: o,
+      config: r,
+      engine: s,
+      compiler: n
+    });
+  }
+}, p = F.extend({
+  commands: {
+    add: {
+      groups({ target: r, value: e }) {
+        r.addGroup(e.start, e.count, e.materialIndex);
+      },
+      $reg: [w]
     },
-    point: { x: 0, y: 0, z: 0 },
-    orientation: { x: 0, y: 0, z: 0 },
-    size: { x: 0, y: 0, z: 0 }
-  });
-};
-var BoxGeometryProcessor = defineProcessor({
-  type: "BoxGeometry",
-  config: getBoxGeometryConfig,
-  commands,
-  create: (config) => create(
-    new BoxBufferGeometry(
-      config.width,
-      config.height,
-      config.depth,
-      config.widthSegments,
-      config.heightSegments,
-      config.depthSegments
-    ),
-    config
-  ),
-  dispose
-});
-var CircleGeometryProcessor = defineProcessor({
-  type: "CircleGeometry",
-  config: getCircleGeometryConfig,
-  commands,
-  create: (config) => create(
-    new CircleBufferGeometry(
-      config.radius,
-      config.segments,
-      config.thetaStart,
-      config.thetaLength
-    ),
-    config
-  ),
-  dispose
-});
-var ConeGeometryProcessor = defineProcessor({
-  type: "ConeGeometry",
-  config: getConeGeometryConfig,
-  commands,
-  create: (config) => create(
-    new ConeBufferGeometry(
-      config.radius,
-      config.height,
-      config.radialSegments,
-      config.heightSegments,
-      config.openEnded,
-      config.thetaStart,
-      config.thetaLength
-    ),
-    config
-  ),
-  dispose
-});
-const limit = function(number) {
-  return number > 1 ? 1 : number < 0 ? 0 : number;
-};
-const cover = {
-  generateTopUV(geometry, vertices, indexA, indexB, indexC) {
-    const a_x = vertices[indexA * 3];
-    const a_y = vertices[indexA * 3 + 1];
-    const b_x = vertices[indexB * 3];
-    const b_y = vertices[indexB * 3 + 1];
-    const c_x = vertices[indexC * 3];
-    const c_y = vertices[indexC * 3 + 1];
+    set: {
+      groups(r) {
+        const { path: e, target: t, config: s } = r;
+        if (e[1] !== void 0) {
+          t.groups.splice(Number(r.path[1]), 1);
+          const n = s.groups[e[1]];
+          t.addGroup(n.start, n.count, n.materialIndex);
+        } else
+          console.warn("geometry processor can not set group", r);
+      },
+      $reg: [w]
+    },
+    delete: {
+      groups({ target: r, key: e }) {
+        r.groups.splice(Number(e), 1);
+      },
+      $reg: [w]
+    }
+  },
+  create(r, e) {
+    r.clearGroups();
+    for (const t of e.groups)
+      r.addGroup(t.start, t.count, t.materialIndex);
+    return Ge(r, e);
+  },
+  dispose(r) {
+    r.dispose();
+  }
+}), Pe = p(
+  (r) => ({
+    type: "BoxGeometry",
+    config: K,
+    create({ config: e }) {
+      return r.create(
+        new b(
+          e.width,
+          e.height,
+          e.depth,
+          e.widthSegments,
+          e.heightSegments,
+          e.depthSegments
+        ),
+        e
+      );
+    },
+    dispose({ target: e }) {
+      r.dispose(e);
+    }
+  })
+), Ce = p(
+  (r) => ({
+    type: "CircleGeometry",
+    config: te,
+    create({ config: e }) {
+      return r.create(
+        new $(
+          e.radius,
+          e.segments,
+          e.thetaStart,
+          e.thetaLength
+        ),
+        e
+      );
+    },
+    dispose({ target: e }) {
+      r.dispose(e);
+    }
+  })
+), c = function(r) {
+  return r > 1 ? 1 : r < 0 ? 0 : r;
+}, Ee = {
+  generateTopUV(r, e, t, s, n) {
+    const o = e[t * 3], a = e[t * 3 + 1], u = e[s * 3], i = e[s * 3 + 1], G = e[n * 3], P = e[n * 3 + 1];
     return [
-      new Vector2(limit(a_x), limit(a_y)),
-      new Vector2(limit(b_x), limit(b_y)),
-      new Vector2(limit(c_x), limit(c_y))
+      new l(c(o), c(a)),
+      new l(c(u), c(i)),
+      new l(c(G), c(P))
     ];
   },
-  generateSideWallUV(geometry, vertices, indexA, indexB, indexC, indexD) {
-    const a_x = vertices[indexA * 3];
-    const a_y = vertices[indexA * 3 + 1];
-    const a_z = vertices[indexA * 3 + 2];
-    const b_x = vertices[indexB * 3];
-    const b_y = vertices[indexB * 3 + 1];
-    const b_z = vertices[indexB * 3 + 2];
-    const c_x = vertices[indexC * 3];
-    const c_y = vertices[indexC * 3 + 1];
-    const c_z = vertices[indexC * 3 + 2];
-    const d_x = vertices[indexD * 3];
-    const d_y = vertices[indexD * 3 + 1];
-    const d_z = vertices[indexD * 3 + 2];
-    if (Math.abs(a_y - b_y) < Math.abs(a_x - b_x)) {
-      return [
-        new Vector2(limit(a_x), limit(1 - a_z)),
-        new Vector2(limit(b_x), limit(1 - b_z)),
-        new Vector2(limit(c_x), limit(1 - c_z)),
-        new Vector2(limit(d_x), limit(1 - d_z))
-      ];
-    } else {
-      return [
-        new Vector2(limit(a_y), limit(1 - a_z)),
-        new Vector2(limit(b_y), limit(1 - b_z)),
-        new Vector2(limit(c_y), limit(1 - c_z)),
-        new Vector2(limit(d_y), limit(1 - d_z))
-      ];
-    }
+  generateSideWallUV(r, e, t, s, n, o) {
+    const a = e[t * 3], u = e[t * 3 + 1], i = e[t * 3 + 2], G = e[s * 3], P = e[s * 3 + 1], L = e[s * 3 + 2], A = e[n * 3], j = e[n * 3 + 1], M = e[n * 3 + 2], B = e[o * 3], I = e[o * 3 + 1], f = e[o * 3 + 2];
+    return Math.abs(u - P) < Math.abs(a - G) ? [
+      new l(c(a), c(1 - i)),
+      new l(c(G), c(1 - L)),
+      new l(c(A), c(1 - M)),
+      new l(c(B), c(1 - f))
+    ] : [
+      new l(c(u), c(1 - i)),
+      new l(c(P), c(1 - L)),
+      new l(c(j), c(1 - M)),
+      new l(c(I), c(1 - f))
+    ];
   }
-};
-var ExtrudeUVGenerator = { default: void 0, cover };
-class LoadGeometry extends BufferGeometry {
-  constructor(geometry) {
-    super();
-    __publicField(this, "type", "LoadBufferGeometry");
-    geometry && this.copy(geometry);
+}, ve = { default: void 0, cover: Ee };
+class we extends y {
+  constructor(e) {
+    super(), this.type = "LoadBufferGeometry", e && this.copy(e);
   }
 }
-class CurveGeometry extends BufferGeometry {
-  constructor(path = [], divisions = 36, space = true) {
-    super();
-    __publicField(this, "parameters");
-    this.type = "CurveGeometry";
-    this.parameters = {
-      path: path.map((vector3) => vector3.clone()),
-      space,
-      divisions
+class v extends y {
+  constructor(e = [], t = 36, s = !0) {
+    super(), this.type = "CurveGeometry", this.parameters = {
+      path: e.map((n) => n.clone()),
+      space: s,
+      divisions: t
     };
   }
 }
-class CubicBezierCurveGeometry extends CurveGeometry {
-  constructor(path = [], divisions = 36, space = true) {
-    super(path, divisions, space);
-    this.type = "CubicBezierCurveGeometry";
-    const curvePath = new CurvePath();
-    if (path.length < 4) {
-      console.warn(`CubicBezierCurveGeometry path length at least 4.`);
+class be extends v {
+  constructor(e = [], t = 36, s = !0) {
+    super(e, t, s), this.type = "CubicBezierCurveGeometry";
+    const n = new C();
+    if (e.length < 4) {
+      console.warn("CubicBezierCurveGeometry path length at least 4.");
       return;
     }
-    const length = 4 + (path.length - 4) - (path.length - 4) % 3;
-    for (let i = 2; i < length; i += 3) {
-      curvePath.add(
-        new CubicBezierCurve3(path[i - 2], path[i - 1], path[i], path[i + 1])
+    const o = 4 + (e.length - 4) - (e.length - 4) % 3;
+    for (let u = 2; u < o; u += 3)
+      n.add(
+        new Y(e[u - 2], e[u - 1], e[u], e[u + 1])
       );
-    }
-    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
-      return sum += curve.arcLengthDivisions;
-    }, 0);
-    if (divisions > totalArcLengthDivisions) {
-      const mutily = Math.ceil(
-        (divisions - totalArcLengthDivisions) / curvePath.curves.length
+    const a = n.curves.reduce((u, i) => u += i.arcLengthDivisions, 0);
+    if (t > a) {
+      const u = Math.ceil(
+        (t - a) / n.curves.length
       );
-      curvePath.curves.forEach((curve) => {
-        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
-        curve.updateArcLengths();
+      n.curves.forEach((i) => {
+        i.arcLengthDivisions = i.arcLengthDivisions * (u + 1), i.updateArcLengths();
       });
     }
     this.setFromPoints(
-      space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions)
+      s ? n.getSpacedPoints(t) : n.getPoints(t)
     );
   }
 }
-class LineCurveGeometry extends CurveGeometry {
-  constructor(path = [], divisions = 36, space = true) {
-    super(path, divisions, space);
-    this.type = "LineCurveGeometry";
-    if (!path.length) {
-      console.warn(`LineCurveGeometry path length at least 1.`);
+class Ne extends v {
+  constructor(e = [], t = 36, s = !0) {
+    if (super(e, t, s), this.type = "LineCurveGeometry", !e.length) {
+      console.warn("LineCurveGeometry path length at least 1.");
       return;
     }
-    const curvePath = new CurvePath();
-    for (let i = 1; i < path.length; i += 1) {
-      curvePath.add(new LineCurve3(path[i - 1], path[i]));
-    }
-    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
-      return sum += curve.arcLengthDivisions;
-    }, 0);
-    if (divisions > totalArcLengthDivisions) {
-      const mutily = Math.ceil(
-        (divisions - totalArcLengthDivisions) / curvePath.curves.length
+    const n = new C();
+    for (let a = 1; a < e.length; a += 1)
+      n.add(new T(e[a - 1], e[a]));
+    const o = n.curves.reduce((a, u) => a += u.arcLengthDivisions, 0);
+    if (t > o) {
+      const a = Math.ceil(
+        (t - o) / n.curves.length
       );
-      curvePath.curves.forEach((curve) => {
-        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
-        curve.updateArcLengths();
+      n.curves.forEach((u) => {
+        u.arcLengthDivisions = u.arcLengthDivisions * (a + 1), u.updateArcLengths();
       });
     }
     this.setFromPoints(
-      space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions)
+      s ? n.getSpacedPoints(t) : n.getPoints(t)
     );
   }
 }
-class QuadraticBezierCurveGeometry extends CurveGeometry {
-  constructor(path = [], divisions = 36, space = true) {
-    super(path, divisions, space);
-    this.type = "QuadraticBezierCurveGeometry";
-    const curvePath = new CurvePath();
-    if (path.length < 3) {
-      console.warn(`QuadraticBezierCurveGeometry path length at least 3.`);
+class Se extends v {
+  constructor(e = [], t = 36, s = !0) {
+    super(e, t, s), this.type = "QuadraticBezierCurveGeometry";
+    const n = new C();
+    if (e.length < 3) {
+      console.warn("QuadraticBezierCurveGeometry path length at least 3.");
       return;
     }
-    const length = 3 + (path.length - 3) - (path.length - 3) % 2;
-    for (let i = 1; i < length; i += 2) {
-      curvePath.add(
-        new QuadraticBezierCurve3(path[i - 1], path[i], path[i + 1])
+    const o = 3 + (e.length - 3) - (e.length - 3) % 2;
+    for (let u = 1; u < o; u += 2)
+      n.add(
+        new N(e[u - 1], e[u], e[u + 1])
       );
-    }
-    const totalArcLengthDivisions = curvePath.curves.reduce((sum, curve) => {
-      return sum += curve.arcLengthDivisions;
-    }, 0);
-    if (divisions > totalArcLengthDivisions) {
-      const mutily = Math.ceil(
-        (divisions - totalArcLengthDivisions) / curvePath.curves.length
+    const a = n.curves.reduce((u, i) => u += i.arcLengthDivisions, 0);
+    if (t > a) {
+      const u = Math.ceil(
+        (t - a) / n.curves.length
       );
-      curvePath.curves.forEach((curve) => {
-        curve.arcLengthDivisions = curve.arcLengthDivisions * (mutily + 1);
-        curve.updateArcLengths();
+      n.curves.forEach((i) => {
+        i.arcLengthDivisions = i.arcLengthDivisions * (u + 1), i.updateArcLengths();
       });
     }
     this.setFromPoints(
-      space ? curvePath.getSpacedPoints(divisions) : curvePath.getPoints(divisions)
+      s ? n.getSpacedPoints(t) : n.getPoints(t)
     );
   }
 }
-class SplineCurveGeometry extends CurveGeometry {
-  constructor(path = [], divisions = 36, space = true) {
-    super(path, divisions, space);
-    this.type = "SplineCurveGeometry";
-    if (!path.length) {
-      console.warn(`SplineCurveGeometry path length at least 1.`);
+class xe extends v {
+  constructor(e = [], t = 36, s = !0) {
+    if (super(e, t, s), this.type = "SplineCurveGeometry", !e.length) {
+      console.warn("SplineCurveGeometry path length at least 1.");
       return;
     }
-    const splineCurve = new CatmullRomCurve3(path);
+    const n = new D(e);
     this.setFromPoints(
-      space ? splineCurve.getSpacedPoints(divisions) : splineCurve.getPoints(divisions)
+      s ? n.getSpacedPoints(t) : n.getPoints(t)
     );
   }
 }
-class LineShapeGeometry extends ShapeBufferGeometry {
-  constructor(path = [new Vector2(0, 0)], curveSegments = 12) {
-    const lineShape = new Shape();
-    const move = path[0];
-    if (move) {
-      lineShape.moveTo(move.x, move.y);
-      for (let i = 1; i < path.length; i += 1) {
-        lineShape.lineTo(path[i].x, path[i].y);
-      }
+class We extends _ {
+  constructor(e = [new l(0, 0)], t = 12) {
+    const s = new W(), n = e[0];
+    if (n) {
+      s.moveTo(n.x, n.y);
+      for (let o = 1; o < e.length; o += 1)
+        s.lineTo(e[o].x, e[o].y);
     }
-    super(lineShape, curveSegments);
-    this.type = "LineShapeGeometry";
+    super(s, t), this.type = "LineShapeGeometry";
   }
 }
-class LineTubeGeometry extends TubeGeometry {
-  constructor(path = [], tubularSegments = 64, radius = 1, radialSegments = 8, closed = false) {
-    if (!path.length) {
-      console.warn(`LineTubeGeometry path length at least 1.`);
+class Le extends S {
+  constructor(e = [], t = 64, s = 1, n = 8, o = !1) {
+    if (!e.length) {
+      console.warn("LineTubeGeometry path length at least 1.");
       return;
     }
-    const curvePath = new CurvePath();
-    for (let i = 1; i < path.length; i += 1) {
-      curvePath.add(new LineCurve3(path[i - 1], path[i]));
-    }
-    super(curvePath, tubularSegments, radius, radialSegments, closed);
-    this.type = "LineTubeGeometry";
+    const a = new C();
+    for (let u = 1; u < e.length; u += 1)
+      a.add(new T(e[u - 1], e[u]));
+    super(a, t, s, n, o), this.type = "LineTubeGeometry";
   }
 }
-class SplineTubeGeometry extends TubeGeometry {
-  constructor(path = [], tubularSegments = 64, radius = 1, radialSegments = 8, closed = false) {
-    if (!path.length) {
-      console.warn(`SplineTubeGeometry path length at least 1.`);
+class ke extends S {
+  constructor(e = [], t = 64, s = 1, n = 8, o = !1) {
+    if (!e.length) {
+      console.warn("SplineTubeGeometry path length at least 1.");
       return;
     }
-    const splineCurve = new CatmullRomCurve3(path);
-    super(splineCurve, tubularSegments, radius, radialSegments, closed);
-    this.type = "SplineTubeGeometry";
+    const a = new D(e);
+    super(a, t, s, n, o), this.type = "SplineTubeGeometry";
   }
 }
-class PathTubeGeometry extends TubeGeometry {
-  constructor(path = new Path(), tubularSegments = 64, radius = 1, radialSegments = 8, closed = false) {
-    super(path, tubularSegments, radius, radialSegments, closed);
-    this.type = "PathTubeGeometry";
+class Me extends S {
+  constructor(e = new z(), t = 64, s = 1, n = 8, o = !1) {
+    super(e, t, s, n, o), this.type = "PathTubeGeometry";
   }
 }
-class PathGeometry extends BufferGeometry {
-  constructor(path = new Path(), divisions = 36, space = true) {
-    super();
-    __publicField(this, "parameters");
-    this.type = "PathGeometry";
-    this.parameters = {
-      path,
-      space,
-      divisions
-    };
-    path.curves.length && this.setFromPoints(
-      space ? path.getSpacedPoints(divisions) : path.getPoints(divisions)
+class fe extends y {
+  constructor(e = new z(), t = 36, s = !0) {
+    super(), this.type = "PathGeometry", this.parameters = {
+      path: e,
+      space: s,
+      divisions: t
+    }, e.curves.length && this.setFromPoints(
+      s ? e.getSpacedPoints(t) : e.getPoints(t)
     );
   }
 }
-var CubicBezierCurveGeometryProcessor = defineProcessor({
+const Oe = p((r) => ({
   type: "CubicBezierCurveGeometry",
-  config: getCubicBezierCurveGeometryConfig,
-  commands,
-  create: (config) => create(
-    new CubicBezierCurveGeometry(
-      config.path.map(
-        (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
+  config: ce,
+  create({ config: e }) {
+    return r.create(
+      new be(
+        e.path.map(
+          (t) => new E(t.x, t.y, t.z)
+        ),
+        e.divisions,
+        e.space
       ),
-      config.divisions,
-      config.space
-    ),
-    config
-  ),
-  dispose
-});
-const generateGeometry = function(attribute) {
-  const geometry = new BufferGeometry();
-  attribute.position.length && geometry.setAttribute(
-    "position",
-    new Float32BufferAttribute(attribute.position, 3)
-  );
-  attribute.color.length && geometry.setAttribute(
-    "color",
-    new Float32BufferAttribute(attribute.color, 3)
-  );
-  attribute.normal.length && geometry.setAttribute(
-    "normal",
-    new Float32BufferAttribute(attribute.normal, 3)
-  );
-  attribute.uv.length && geometry.setAttribute("uv", new Float32BufferAttribute(attribute.uv, 2));
-  attribute.uv2.length && geometry.setAttribute("uv2", new Float32BufferAttribute(attribute.uv2, 2));
-  attribute.index.length && geometry.setIndex(attribute.index);
-  return geometry;
-};
-var CustomGeometryProcessor = defineProcessor({
+      e
+    );
+  },
+  dispose({ target: e }) {
+    r.dispose(e);
+  }
+})), Te = p((r) => ({
   type: "CustomGeometry",
-  config: getCustomGeometryConfig,
-  commands,
-  create(config) {
-    return create(generateGeometry(config.attribute), config);
+  config: oe,
+  shared: {
+    generateGeometry(e) {
+      const t = new y();
+      return e.position.length && t.setAttribute(
+        "position",
+        new g(e.position, 3)
+      ), e.color.length && t.setAttribute(
+        "color",
+        new g(e.color, 3)
+      ), e.normal.length && t.setAttribute(
+        "normal",
+        new g(e.normal, 3)
+      ), e.uv.length && t.setAttribute(
+        "uv",
+        new g(e.uv, 2)
+      ), e.uv2.length && t.setAttribute(
+        "uv2",
+        new g(e.uv2, 2)
+      ), e.index.length && t.setIndex(e.index), t;
+    }
   },
-  dispose(target) {
-    target.dispose();
+  create({ model: e, config: t }) {
+    return r.create(
+      e.generateGeometry(t.attribute),
+      t
+    );
+  },
+  dispose({ target: e }) {
+    r.dispose(e);
   }
-});
-var CylinderGeometryProcessor = defineProcessor({
-  type: "CylinderGeometry",
-  config: getCylinderGeometryConfig,
-  commands,
-  create: (config) => create(
-    new CylinderBufferGeometry(
-      config.radiusTop,
-      config.radiusBottom,
-      config.height,
-      config.radialSegments,
-      config.heightSegments,
-      config.openEnded,
-      config.thetaStart,
-      config.thetaLength
-    ),
-    config
-  ),
-  dispose
-});
-const occupyGeometry = new EdgesGeometry(new BoxBufferGeometry(5, 5, 5));
-var EdgesGeometryProcessor = defineProcessor({
+})), De = p((r) => ({
   type: "EdgesGeometry",
-  config: getEdgesGeometryConfig,
-  commands,
-  create(config, engine) {
-    const geometry = engine.compilerManager.getObjectfromModule(
-      MODULETYPE.GEOMETRY,
-      config.target
+  config: ae,
+  shared: {
+    occupyGeometry: new O(new b(5, 5, 5))
+  },
+  create({ model: e, config: t, engine: s }) {
+    const n = s.compilerManager.getObjectFromModule(
+      m.GEOMETRY,
+      t.target
     );
-    if (!geometry || !(geometry instanceof BufferGeometry)) {
-      console.error(`engine rescoure can not found url: ${config.target}`);
-      return occupyGeometry;
-    }
-    return create(
-      new EdgesGeometry(geometry, config.thresholdAngle),
-      config
+    return !n || !(n instanceof y) ? (console.error(`engine rescoure can not found url: ${t.target}`), e.occupyGeometry) : r.create(
+      new O(n, t.thresholdAngle),
+      t
     );
   },
-  dispose(target) {
-    target.dispose();
+  dispose({ target: e }) {
+    r.dispose(e);
   }
-});
-class GeometryCompiler extends Compiler {
-  constructor() {
-    super();
-  }
-}
-const GeometryRule = function(notice, compiler) {
-  Rule(notice, compiler);
-};
-var LineCurveGeometryProcessor = defineProcessor({
-  type: "LineCurveGeometry",
-  config: getLineCurveGeometryConfig,
-  commands,
-  create: (config) => create(
-    new LineCurveGeometry(
-      config.path.map(
-        (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
-      ),
-      config.divisions,
-      config.space
-    ),
-    config
-  ),
-  dispose
-});
-var LineShapeGeometryProcessor = defineProcessor({
-  type: "LineShapeGeometry",
-  config: getLineShapeGeometryConfig,
-  commands,
-  create: (config) => create(
-    new LineShapeGeometry(
-      config.path.map((vector2) => new Vector2(vector2.x, vector2.y)),
-      config.curveSegments
-    ),
-    config
-  ),
-  dispose
-});
-var LineTubeGeometryProcessor = defineProcessor({
-  type: "LineTubeGeometry",
-  config: getLineTubeGeometryConfig,
-  commands,
-  create: (config) => create(
-    new LineTubeGeometry(
-      config.path.map(
-        (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
-      ),
-      config.tubularSegments,
-      config.radius,
-      config.radialSegments,
-      config.closed
-    ),
-    config
-  ),
-  dispose
-});
-var LoadGeometryProcessor = defineProcessor({
-  type: "LoadGeometry",
-  config: getLoadGeometryConfig,
-  commands,
-  create(config, engine) {
-    const originGeometry = engine.resourceManager.resourceMap.get(config.url);
-    if (!originGeometry && !(originGeometry instanceof BufferGeometry)) {
-      console.error(`engine rescoure can not found url: ${config.url}`);
-      return new BoxBufferGeometry(5, 5, 5);
-    }
-    return create(new LoadGeometry(originGeometry), config);
-  },
-  dispose(target) {
-    target.dispose();
-  }
-});
-var PlaneGeometryProcessor = defineProcessor({
-  type: "PlaneGeometry",
-  config: getPlaneGeometryConfig,
-  commands,
-  create: (config) => create(
-    new PlaneBufferGeometry(
-      config.width,
-      config.height,
-      config.widthSegments,
-      config.heightSegments
-    ),
-    config
-  ),
-  dispose
-});
-var QuadraticBezierCurveGeometryProcessor = defineProcessor({
-  type: "QuadraticBezierCurveGeometry",
-  config: getQuadraticBezierCurveGeometryConfig,
-  commands,
-  create: (config) => create(
-    new QuadraticBezierCurveGeometry(
-      config.path.map(
-        (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
-      ),
-      config.divisions,
-      config.space
-    ),
-    config
-  ),
-  dispose
-});
-var RingGeometryProcessor = defineProcessor({
-  type: "RingGeometry",
-  config: getRingGeometryConfig,
-  commands,
-  create: (config) => create(
-    new RingBufferGeometry(
-      config.innerRadius,
-      config.outerRadius,
-      config.thetaSegments,
-      config.phiSegments,
-      config.thetaStart,
-      config.thetaLength
-    ),
-    config
-  ),
-  dispose
-});
-var SphereGeometryProcessor = defineProcessor({
-  type: "SphereGeometry",
-  config: getSphereGeometryConfig,
-  commands,
-  create: (config) => create(
-    new SphereBufferGeometry(
-      config.radius,
-      config.widthSegments,
-      config.heightSegments,
-      config.phiStart,
-      config.phiLength,
-      config.thetaStart,
-      config.thetaLength
-    ),
-    config
-  ),
-  dispose
-});
-var SplineCurveGeometryProcessor = defineProcessor({
-  type: "SplineCurveGeometry",
-  config: getSplineCurveGeometryConfig,
-  commands,
-  create: (config) => create(
-    new SplineCurveGeometry(
-      config.path.map(
-        (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
-      ),
-      config.divisions,
-      config.space
-    ),
-    config
-  ),
-  dispose
-});
-var SplineTubeGeometryProcessor = defineProcessor({
-  type: "SplineTubeGeometry",
-  config: getSplineTubeGeometryConfig,
-  commands,
-  create: (config) => create(
-    new SplineTubeGeometry(
-      config.path.map(
-        (vector3) => new Vector3(vector3.x, vector3.y, vector3.z)
-      ),
-      config.tubularSegments,
-      config.radius,
-      config.radialSegments,
-      config.closed
-    ),
-    config
-  ),
-  dispose
-});
-var TorusGeometryProcessor = defineProcessor({
-  type: "TorusGeometry",
-  config: getTorusGeometryConfig,
-  commands,
-  create: (config) => create(
-    new TorusGeometry(
-      config.radius,
-      config.tube,
-      config.radialSegments,
-      config.tubularSegments,
-      config.arc
-    ),
-    config
-  ),
-  dispose
-});
-const cacheBusMap$4 = /* @__PURE__ */ new WeakMap();
-const cacheBusObject$4 = function(geometry, object, fun) {
-  if (!cacheBusMap$4.has(geometry)) {
-    cacheBusMap$4.set(geometry, /* @__PURE__ */ new Set());
-  }
-  const set = cacheBusMap$4.get(geometry);
-  set.add({
-    target: object,
-    eventFun: fun
-  });
-};
-var ExtrudeGeometryProcessor = defineProcessor({
+})), _e = p((r) => ({
   type: "ExtrudeGeometry",
-  config: getExtrudeGeometryConfig,
-  commands,
-  create(config, engine) {
-    const shape = engine.compilerManager.getObjectfromModule(
-      MODULETYPE.SHAPE,
-      config.shapes
-    ) || void 0;
-    const extrudePath = engine.compilerManager.getObjectfromModule(
-      MODULETYPE.PATH,
-      config.options.extrudePath
-    ) || void 0;
-    const geometry = new ExtrudeBufferGeometry(
-      shape,
-      Object.assign({}, config.options, {
-        extrudePath,
-        UVGenerator: ExtrudeUVGenerator[config.options.UVGenerator || "default"]
+  config: me,
+  context({ model: e }) {
+    return {
+      shapeEvent: void 0,
+      pathEvent: void 0
+    };
+  },
+  create({ model: e, config: t, engine: s }) {
+    var u, i;
+    const n = s.compilerManager.getObjectFromModule(
+      m.SHAPE,
+      t.shapes
+    ) || void 0, o = s.compilerManager.getObjectFromModule(
+      m.PATH,
+      t.options.extrudePath
+    ) || void 0, a = new k(
+      n,
+      Object.assign({}, t.options, {
+        extrudePath: o,
+        UVGenerator: ve[t.options.UVGenerator || "default"]
       })
     );
-    if (shape) {
-      const eventFun = () => {
-        config.shapes = config.shapes;
-      };
-      Bus.compilerEvent.on(shape, COMPILER_EVENT.UPDATE, eventFun);
-      cacheBusObject$4(geometry, shape, eventFun);
-    }
-    if (extrudePath) {
-      const eventFun = () => {
-        config.options.extrudePath = config.options.extrudePath;
-      };
-      Bus.compilerEvent.on(extrudePath, COMPILER_EVENT.UPDATE, eventFun);
-      cacheBusObject$4(geometry, extrudePath, eventFun);
-    }
-    return create(geometry, config);
+    return n && (e.shapeEvent = () => {
+      t.shapes = t.shapes;
+    }, (u = e.toModel(t.shapes)) == null || u.on(d.COMPILED_UPDATE, e.shapeEvent)), o && (e.pathEvent = () => {
+      t.options.extrudePath = t.options.extrudePath;
+    }, (i = e.toModel(t.options.extrudePath)) == null || i.on(d.COMPILED_UPDATE, e.pathEvent)), r.create(a, t);
   },
-  dispose(target, engine, compiler) {
-    const set = cacheBusMap$4.get(target);
-    if (set) {
-      set.forEach((params) => {
-        Bus.compilerEvent.off(
-          params.target,
-          COMPILER_EVENT.UPDATE,
-          params.eventFun
-        );
-      });
-    }
-    cacheBusMap$4.delete(target);
-    dispose(target);
+  dispose({ model: e, config: t, target: s }) {
+    var n, o;
+    e.shapeEvent && ((n = e.toModel(t.shapes)) == null || n.off(d.COMPILED_UPDATE, e.shapeEvent)), e.pathEvent && ((o = e.toModel(t.options.extrudePath)) == null || o.off(d.COMPILED_UPDATE, e.pathEvent)), r.dispose(s);
   }
-});
-const cacheBusMap$3 = /* @__PURE__ */ new WeakMap();
-const cacheBusObject$3 = function(geometry, object, fun) {
-  cacheBusMap$3.set(geometry, {
-    target: object,
-    eventFun: fun
-  });
-};
-var PathGeometryProcessor = defineProcessor({
-  type: "PathGeometry",
-  config: getPathGeometryConfig,
-  commands,
-  create(config, engine) {
-    const path = engine.compilerManager.getObjectfromModule(
-      MODULETYPE.PATH,
-      config.path
-    ) || void 0;
-    const geometry = new PathGeometry(path, config.divisions, config.space);
-    if (path) {
-      const eventFun = () => {
-        config.path = config.path;
-      };
-      Bus.compilerEvent.on(path, COMPILER_EVENT.UPDATE, eventFun);
-      cacheBusObject$3(geometry, path, eventFun);
-    }
-    return create(geometry, config);
-  },
-  dispose(target, engine, compiler) {
-    const params = cacheBusMap$3.get(target);
-    if (params) {
-      Bus.compilerEvent.off(
-        params.target,
-        COMPILER_EVENT.UPDATE,
-        params.eventFun
-      );
-    }
-    cacheBusMap$3.delete(target);
-    dispose(target);
-  }
-});
-const cacheBusMap$2 = /* @__PURE__ */ new WeakMap();
-const cacheBusObject$2 = function(geometry, object, fun) {
-  cacheBusMap$2.set(geometry, {
-    target: object,
-    eventFun: fun
-  });
-};
-var ShapeGeometryProcessor = defineProcessor({
-  type: "ShapeGeometry",
-  config: getShapeGeometryConfig,
-  commands,
-  create(config, engine) {
-    const shape = engine.compilerManager.getObjectfromModule(
-      MODULETYPE.SHAPE,
-      config.shape
-    ) || void 0;
-    const geometry = new ShapeBufferGeometry(shape, config.curveSegments);
-    if (shape) {
-      const eventFun = () => {
-        config.shape = config.shape;
-      };
-      Bus.compilerEvent.on(shape, COMPILER_EVENT.UPDATE, eventFun);
-      cacheBusObject$2(geometry, shape, eventFun);
-    }
-    return create(geometry, config);
-  },
-  dispose(target, engine, compiler) {
-    const params = cacheBusMap$2.get(target);
-    if (params) {
-      Bus.compilerEvent.off(
-        params.target,
-        COMPILER_EVENT.UPDATE,
-        params.eventFun
-      );
-    }
-    cacheBusMap$2.delete(target);
-    dispose(target);
-  }
-});
-const cacheBusMap$1 = /* @__PURE__ */ new WeakMap();
-const cacheBusObject$1 = function(geometry, object, fun) {
-  cacheBusMap$1.set(geometry, {
-    target: object,
-    eventFun: fun
-  });
-};
-var LatheGeometryProcessor = defineProcessor({
+})), ze = p((r) => ({
   type: "LatheGeometry",
-  config: getLatheGeometryConfig,
-  commands,
-  create(config, engine) {
-    const path = engine.compilerManager.getObjectfromModule(
-      MODULETYPE.PATH,
-      config.path
-    ) || void 0;
-    const geometry = new LatheGeometry(
-      path ? path.getPoints(config.divisions) : void 0,
-      config.segments,
-      config.phiStart,
-      config.phiLength
-    );
-    if (path) {
-      const eventFun = () => {
-        config.path = config.path;
-      };
-      Bus.compilerEvent.on(path, COMPILER_EVENT.UPDATE, eventFun);
-      cacheBusObject$1(geometry, path, eventFun);
-    }
-    return create(geometry, config);
+  config: ge,
+  context({ model: e }) {
+    return {
+      pathEvent: void 0
+    };
   },
-  dispose(target) {
-    const params = cacheBusMap$1.get(target);
-    if (params) {
-      Bus.compilerEvent.off(
-        params.target,
-        COMPILER_EVENT.UPDATE,
-        params.eventFun
-      );
-    }
-    cacheBusMap$1.delete(target);
-    dispose(target);
-  }
-});
-const tempGeometry = new BufferGeometry();
-const tempMesh = new Mesh();
-var DecalGeometryProcessor = defineProcessor({
-  type: "DecalGeometry",
-  config: getDecalGeometryConfig,
-  commands,
-  create: (config, engine) => {
-    const geometry = config.target.geometry ? engine.getObjectBySymbol(config.target.geometry) || tempGeometry : tempGeometry;
-    tempMesh.geometry = geometry;
-    tempMesh.matrixWorld.compose(
-      new Vector3(
-        config.target.position.x,
-        config.target.position.y,
-        config.target.position.z
-      ),
-      new Quaternion().setFromEuler(
-        new Euler(
-          config.target.rotation.x,
-          config.target.rotation.y,
-          config.target.rotation.z
-        )
-      ),
-      new Vector3(
-        config.target.scale.x,
-        config.target.scale.y,
-        config.target.scale.z
-      )
+  create({ model: e, config: t, engine: s }) {
+    var a;
+    const n = s.compilerManager.getObjectFromModule(
+      m.PATH,
+      t.path
+    ) || void 0, o = new q(
+      n ? n.getPoints(t.divisions) : void 0,
+      t.segments,
+      t.phiStart,
+      t.phiLength
     );
-    return create(
-      new DecalGeometry(
-        tempMesh,
-        new Vector3(config.point.x, config.point.y, config.point.z),
-        new Euler(
-          config.orientation.x,
-          config.orientation.y,
-          config.orientation.z
+    return n && (e.pathEvent = () => {
+      t.path = t.path;
+    }, (a = e.toModel(t.path)) == null || a.on(d.COMPILED_UPDATE, e.pathEvent)), r.create(o, t);
+  },
+  dispose({ model: e, config: t, target: s }) {
+    var n;
+    e.pathEvent && ((n = e.toModel(t.path)) == null || n.off(d.COMPILED_UPDATE, e.pathEvent)), r.dispose(s);
+  }
+})), Ae = p(
+  (r) => ({
+    type: "LineTubeGeometry",
+    config: he,
+    create({ config: e }) {
+      return r.create(
+        new Le(
+          e.path.map(
+            (t) => new E(t.x, t.y, t.z)
+          ),
+          e.tubularSegments,
+          e.radius,
+          e.radialSegments,
+          e.closed
         ),
-        new Vector3(config.size.x, config.size.y, config.size.z)
-      ),
-      config
-    );
-  },
-  dispose
-});
-const cacheBusMap = /* @__PURE__ */ new WeakMap();
-const cacheBusObject = function(geometry, object, fun) {
-  cacheBusMap.set(geometry, {
-    target: object,
-    eventFun: fun
-  });
-};
-let restrictor = 0;
-var PathTubeGeometryProcessor = defineProcessor({
-  type: "PathTubeGeometry",
-  config: getPathTubeGeometryConfig,
-  commands,
-  create: (config, engine) => {
-    const path = engine.compilerManager.getObjectfromModule(
-      MODULETYPE.PATH,
-      config.path
-    ) || void 0;
-    const geometry = new PathTubeGeometry(
-      path,
-      config.tubularSegments,
-      config.radius,
-      config.radialSegments,
-      config.closed
-    );
-    if (path) {
-      const eventFun = () => {
-        if (restrictor) {
-          return;
-        }
-        restrictor = window.setTimeout(() => {
-          config.path = config.path;
-          restrictor = 0;
-        }, 1e3 / 30);
-      };
-      Bus.compilerEvent.on(path, COMPILER_EVENT.UPDATE, eventFun);
-      cacheBusObject(geometry, path, eventFun);
-    }
-    return create(
-      new PathTubeGeometry(
-        engine.getObjectBySymbol(config.path),
-        config.tubularSegments,
-        config.radius,
-        config.radialSegments,
-        config.closed
-      ),
-      config
-    );
-  },
-  dispose(target, engine, compiler) {
-    const params = cacheBusMap.get(target);
-    if (params) {
-      Bus.compilerEvent.off(
-        params.target,
-        COMPILER_EVENT.UPDATE,
-        params.eventFun
+        e
       );
+    },
+    dispose({ target: e }) {
+      r.dispose(e);
     }
-    cacheBusMap.delete(target);
-    dispose(target);
+  })
+), je = p(
+  (r) => ({
+    type: "LoadGeometry",
+    config: se,
+    create({ config: e, engine: t }) {
+      const s = t.resourceManager.resourceMap.get(
+        e.url
+      );
+      return !s && !(s instanceof y) ? (console.error(`engine rescoure can not found url: ${e.url}`), new b(5, 5, 5)) : r.create(
+        new we(s),
+        e
+      );
+    },
+    dispose({ target: e }) {
+      r.dispose(e);
+    }
+  })
+), Be = p((r) => ({
+  type: "PathGeometry",
+  config: ye,
+  create({ model: e, config: t, engine: s }) {
+    var a;
+    const n = s.compilerManager.getObjectFromModule(
+      m.PATH,
+      t.path
+    ) || void 0, o = new fe(n, t.divisions, t.space);
+    return n && (e.pathEvent = () => {
+      t.path = t.path;
+    }, (a = e.toModel(t.path)) == null || a.on(d.COMPILED_UPDATE, e.pathEvent)), r.create(o, t);
+  },
+  dispose({ model: e, config: t, target: s }) {
+    var n;
+    e.pathEvent && ((n = e.toModel(t.path)) == null || n.off(d.COMPILED_UPDATE, e.pathEvent)), r.dispose(s);
   }
-});
-var index = {
+})), Ie = p((r) => ({
+  type: "PathTubeGeometry",
+  config: le,
+  context() {
+    return {
+      pathEvent: void 0,
+      restrictor: 0
+    };
+  },
+  create({ model: e, config: t, engine: s }) {
+    var a;
+    const n = s.compilerManager.getObjectFromModule(
+      m.PATH,
+      t.path
+    ) || void 0, o = new Me(
+      n,
+      t.tubularSegments,
+      t.radius,
+      t.radialSegments,
+      t.closed
+    );
+    return n && (e.pathEvent = () => {
+      e.restrictor || (e.restrictor = window.setTimeout(() => {
+        t.path = t.path, e.restrictor = 0;
+      }, 1e3 / 30));
+    }, (a = e.toModel(t.path)) == null || a.on(d.COMPILED_UPDATE, e.pathEvent)), r.create(o, t);
+  },
+  dispose({ model: e, config: t, target: s }) {
+    var n;
+    window.clearTimeout(e.restrictor), e.pathEvent && ((n = e.toModel(t.path)) == null || n.off(d.COMPILED_UPDATE, e.pathEvent)), r.dispose(s);
+  }
+})), Ue = p(
+  (r) => ({
+    type: "PlaneGeometry",
+    config: ee,
+    create({ config: e }) {
+      return r.create(
+        new X(
+          e.width,
+          e.height,
+          e.widthSegments,
+          e.heightSegments
+        ),
+        e
+      );
+    },
+    dispose({ target: e }) {
+      r.dispose(e);
+    }
+  })
+), Fe = p((r) => ({
+  type: "QuadraticBezierCurveGeometry",
+  config: ie,
+  create({ config: e }) {
+    return r.create(
+      new Se(
+        e.path.map(
+          (t) => new E(t.x, t.y, t.z)
+        ),
+        e.divisions,
+        e.space
+      ),
+      e
+    );
+  },
+  dispose({ target: e }) {
+    r.dispose(e);
+  }
+})), Re = p(
+  (r) => ({
+    type: "RingGeometry",
+    config: ne,
+    create({ config: e }) {
+      return r.create(
+        new Z(
+          e.innerRadius,
+          e.outerRadius,
+          e.thetaSegments,
+          e.phiSegments,
+          e.thetaStart,
+          e.thetaLength
+        ),
+        e
+      );
+    },
+    dispose({ target: e }) {
+      r.dispose(e);
+    }
+  })
+), Qe = p((r) => ({
+  type: "ShapeGeometry",
+  config: de,
+  create({ model: e, config: t, engine: s }) {
+    var a;
+    const n = s.compilerManager.getObjectFromModule(
+      m.SHAPE,
+      t.shape
+    ) || void 0, o = new _(n, t.curveSegments);
+    return n && (e.shapeEvent = () => {
+      t.shape = t.shape;
+    }, (a = e.toModel(t.shape)) == null || a.on(d.COMPILED_UPDATE, e.shapeEvent)), r.create(o, t);
+  },
+  dispose({ model: e, config: t, target: s }) {
+    var n;
+    e.shapeEvent && ((n = e.toModel(t.shape)) == null || n.on(d.COMPILED_UPDATE, e.shapeEvent)), r.dispose(s);
+  }
+})), Ve = p((r) => ({
+  type: "SplineCurveGeometry",
+  config: ue,
+  create({ config: e }) {
+    return r.create(
+      new xe(
+        e.path.map(
+          (t) => new E(t.x, t.y, t.z)
+        ),
+        e.divisions,
+        e.space
+      ),
+      e
+    );
+  },
+  dispose({ target: e }) {
+    r.dispose(e);
+  }
+})), He = p(
+  (r) => ({
+    type: "TorusGeometry",
+    config: re,
+    create({ config: e }) {
+      return r.create(
+        new J(
+          e.radius,
+          e.tube,
+          e.radialSegments,
+          e.tubularSegments,
+          e.arc
+        ),
+        e
+      );
+    },
+    dispose({ target: e }) {
+      r.dispose(e);
+    }
+  })
+), qe = R({
   type: "geometry",
-  compiler: GeometryCompiler,
-  rule: GeometryRule,
-  lifeOrder: SUPPORT_LIFE_CYCLE.TWO,
-  processors: [
-    BoxGeometryProcessor,
-    CircleGeometryProcessor,
-    ConeGeometryProcessor,
-    CubicBezierCurveGeometryProcessor,
-    CustomGeometryProcessor,
-    CylinderGeometryProcessor,
-    EdgesGeometryProcessor,
-    LineCurveGeometryProcessor,
-    LineShapeGeometryProcessor,
-    LineTubeGeometryProcessor,
-    LoadGeometryProcessor,
-    PlaneGeometryProcessor,
-    QuadraticBezierCurveGeometryProcessor,
-    RingGeometryProcessor,
-    SphereGeometryProcessor,
-    SplineCurveGeometryProcessor,
-    SplineTubeGeometryProcessor,
-    TorusGeometryProcessor,
-    ExtrudeGeometryProcessor,
-    PathGeometryProcessor,
-    ShapeGeometryProcessor,
-    LatheGeometryProcessor,
-    DecalGeometryProcessor,
-    PathTubeGeometryProcessor
-  ]
+  models: [
+    Pe,
+    Ce,
+    Oe,
+    Te,
+    De,
+    _e,
+    ze,
+    Ae,
+    je,
+    Be,
+    Ie,
+    Ue,
+    Fe,
+    Re,
+    Qe,
+    Ve,
+    He
+  ],
+  lifeOrder: Q.TWO
+});
+export {
+  be as CubicBezierCurveGeometry,
+  v as CurveGeometry,
+  ve as ExtrudeUVGenerator,
+  Ne as LineCurveGeometry,
+  We as LineShapeGeometry,
+  Le as LineTubeGeometry,
+  we as LoadGeometry,
+  fe as PathGeometry,
+  Me as PathTubeGeometry,
+  Se as QuadraticBezierCurveGeometry,
+  xe as SplineCurveGeometry,
+  ke as SplineTubeGeometry,
+  qe as default
 };
-export { CubicBezierCurveGeometry, CurveGeometry, ExtrudeUVGenerator, GeometryCompiler, LineCurveGeometry, LineShapeGeometry, LineTubeGeometry, LoadGeometry, PathGeometry, PathTubeGeometry, QuadraticBezierCurveGeometry, SplineCurveGeometry, SplineTubeGeometry, index as default };

@@ -1,0 +1,5 @@
+import { Compiler, EngineSupport } from "@vis-three/tdcm";
+import { BufferGeometry } from "three";
+import { GeometryConfig } from "../GeometryInterface";
+export declare const transfromAnchor: <T extends BufferGeometry, C extends GeometryConfig>(geometry: T, config: C) => T;
+export declare const defineGeometryModel: <ACf extends GeometryConfig = GeometryConfig, AObj extends BufferGeometry<import("three").NormalBufferAttributes> = BufferGeometry<import("three").NormalBufferAttributes>, ACtx extends object = object, ASrd extends object = object, AEg extends EngineSupport = EngineSupport, ACpl extends Compiler<AEg> = Compiler<AEg>>(fun: (abstract: import("@vis-three/tdcm").AbstractModelOption<GeometryConfig, BufferGeometry<import("three").NormalBufferAttributes>, {}, {}, EngineSupport, Compiler<EngineSupport>, <C extends GeometryConfig, T extends BufferGeometry>(target: T, config: C) => T, Function>) => import("@vis-three/tdcm").ModelOption<ACf, AObj, ACtx, ASrd, AEg, ACpl>) => import("@vis-three/tdcm").ModelOption<ACf, AObj, ACtx, ASrd, AEg, ACpl>;

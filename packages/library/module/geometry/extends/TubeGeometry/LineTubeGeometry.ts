@@ -20,7 +20,7 @@ export class LineTubeGeometry extends TubeGeometry {
     }
 
     super(curvePath, tubularSegments, radius, radialSegments, closed);
-
+    //@ts-ignore
     this.type = "LineTubeGeometry";
   }
 }

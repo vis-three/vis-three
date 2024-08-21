@@ -16,7 +16,7 @@ export class SplineTubeGeometry extends TubeGeometry {
     const splineCurve = new CatmullRomCurve3(path);
 
     super(splineCurve, tubularSegments, radius, radialSegments, closed);
-
+    //@ts-ignore
     this.type = "SplineTubeGeometry";
   }
 }

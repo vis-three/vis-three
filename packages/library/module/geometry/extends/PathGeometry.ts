@@ -10,6 +10,7 @@ export class PathGeometry extends BufferGeometry {
   constructor(path: Path = new Path(), divisions = 36, space = true) {
     super();
 
+    //@ts-ignore
     this.type = "PathGeometry";
     this.parameters = {
       path,

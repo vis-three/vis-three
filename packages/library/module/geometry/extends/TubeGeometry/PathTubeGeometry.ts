@@ -10,7 +10,7 @@ export class PathTubeGeometry extends TubeGeometry {
   ) {
     //@ts-ignore
     super(path, tubularSegments, radius, radialSegments, closed);
-
+//@ts-ignore
     this.type = "PathTubeGeometry";
   }
 }

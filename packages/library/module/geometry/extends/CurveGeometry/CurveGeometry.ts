@@ -9,7 +9,7 @@ export abstract class CurveGeometry extends BufferGeometry {
 
   constructor(path: Vector3[] = [], divisions = 36, space = true) {
     super();
-
+    //@ts-ignore
     this.type = "CurveGeometry";
     this.parameters = {
       path: path.map((vector3) => vector3.clone()),

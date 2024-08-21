@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-geometry",
-  "version": "0.6.12",
+  "version": "0.7.0",
   "description": "",
   "author": "Shiotsuki_",
   "license": "MPL-2.0",
@@ -13,23 +13,9 @@
     "build": "tsc -p ./tsconfig.json  && vite build",
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
-  "devDependencies": {
-    "@types/node": "^18.11.12",
-    "@types/three": "^0.141.0",
-    "@typescript-eslint/eslint-plugin": "^5.18.0",
-    "@typescript-eslint/parser": "^5.18.0",
-    "eslint": "^8.12.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.6.2",
-    "three": "^0.141.0",
-    "typescript": "^5.2.2",
-    "vite": "^2.9.15"
-  },
+  "devDependencies": {},
   "dependencies": {
-    "@vis-three/core": "workspace:^",
-    "@vis-three/middleware": "workspace:^",
-    "@vis-three/utils": "workspace:^"
+    "@vis-three/tdcm": "workspace:^"
   },
   "files": [
     "dist",
