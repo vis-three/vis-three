@@ -10,7 +10,7 @@ import { SelectionSupportEngine } from "@vis-three/plugin-selection-support";
 import { AxesHelperEngine, AxesHelperOptions } from "@vis-three/plugin-axes-helper";
 import { GridHelperEngine } from "@vis-three/plugin-grid-helper";
 import { VIEWPOINT, ViewpointEngine } from "@vis-three/plugin-viewpoint";
-import { TransformControlsEngine, VisTransformControls } from "@vis-three/plugin-transform-controls";
+import { TransformControlsEngine, TransformControls } from "@vis-three/plugin-transform-controls";
 import { StatsEngine } from "@vis-three/plugin-stats";
 import { KeyboardManager, KeyboardManagerEngine } from "@vis-three/plugin-keyboard-manager";
 import { CSS2DRendererEngine } from "@vis-three/plugin-css2d-renderer";
@@ -20,13 +20,15 @@ import { VisStats } from "@vis-three/plugin-stats/VisStats";
 import { PathDrawingEngine } from "@vis-three/plugin-path-drawing";
 import { Face, PathSketcher } from "@vis-three/plugin-path-drawing/PathSketcher";
 import { SelectionPromptParameters } from "@vis-three/strategy-selection-prompt";
+import { CameraEngineSupport } from "@vis-three/library-module/camera";
+import { SceneEngineSupport } from "@vis-three/library-module/scene";
 export { VIEWPOINT };
 export interface ModelingEngineSupportParameters extends EngineSupportParameters {
     WebGLRendererPlugin: WebGLRendererParameters;
     EffectComposerPlugin: EffectComposerParameters;
     SelectionPromptStrategy: SelectionPromptParameters;
 }
-export declare class ModelingEngineSupport extends EngineSupport implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, KeyboardManagerEngine, StatsEngine, TransformControlsEngine, ViewpointEngine, GridHelperEngine, AxesHelperEngine, SelectionSupportEngine, CSS2DRendererEngine, CSS3DRendererEngine, PathDrawingEngine {
+export declare class ModelingEngineSupport extends EngineSupport implements WebGLRendererEngine, EffectComposerEngine, OrbitControlsEngine, KeyboardManagerEngine, StatsEngine, TransformControlsEngine, ViewpointEngine, GridHelperEngine, AxesHelperEngine, SelectionSupportEngine, CSS2DRendererEngine, CSS3DRendererEngine, PathDrawingEngine, CameraEngineSupport, SceneEngineSupport {
     webGLRenderer: WebGLRenderer;
     getScreenshot: (params?: Screenshot | undefined) => Promise<string>;
     effectComposer: EffectComposer;
@@ -35,7 +37,7 @@ export declare class ModelingEngineSupport extends EngineSupport implements WebG
     stats: VisStats;
     setStats: (show: boolean) => StatsEngine;
     transing: boolean;
-    transformControls: VisTransformControls;
+    transformControls: TransformControls;
     setTransformControls: (show: boolean) => TransformControlsEngine;
     setViewpoint: any;
     gridHelper: GridHelper;
@@ -51,5 +53,7 @@ export declare class ModelingEngineSupport extends EngineSupport implements WebG
     pathSketcher: PathSketcher;
     drawPathByPlane: (normal: Vector3, constant: number, offset: Vector3) => PathDrawingEngine;
     drawPathByFace: (face: Face, offset: Vector3) => PathDrawingEngine;
+    setSceneBySymbol: (scene: string) => this;
+    setCameraBySymbol: (camera: string) => this;
     constructor(params?: Partial<ModelingEngineSupportParameters>);
 }
