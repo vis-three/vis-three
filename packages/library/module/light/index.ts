@@ -1,29 +1,23 @@
-import { LightCompiler } from "./LightCompiler";
-import { LightRule } from "./LightRule";
-
-import AmbientLightProcessor from "./processors/AmbientLightProcessor";
-import DirectionalLightProcessor from "./processors/DirectionalLightProcessor";
-import HemisphereLightProcessor from "./processors/HemisphereLightProcessor";
-import PointLightProcessor from "./processors/PointLightProcessor";
-import RectAreaLightProcessor from "./processors/RectAreaLightProcessor";
-import SpotLightProcessor from "./processors/SpotLightProcessor";
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import AmbientLightModel from "./models/AmbientLightModel";
+import DirectionalLightModel from "./models/DirectionalLightModel";
+import HemisphereLightModel from "./models/HemisphereLightModel";
+import PointLightModel from "./models/PointLightModel";
+import RectAreaLightModel from "./models/RectAreaLightModel";
+import SpotLightModel from "./models/SpotLightModel";
 
 export * from "./LightConfig";
-export * from "./LightCompiler";
 
-export default {
+export default defineModule({
   type: "light",
   object: true,
-  compiler: LightCompiler,
-  rule: LightRule,
-  processors: [
-    AmbientLightProcessor,
-    PointLightProcessor,
-    DirectionalLightProcessor,
-    HemisphereLightProcessor,
-    RectAreaLightProcessor,
-    SpotLightProcessor,
+  models: [
+    AmbientLightModel,
+    DirectionalLightModel,
+    HemisphereLightModel,
+    PointLightModel,
+    RectAreaLightModel,
+    SpotLightModel,
   ],
   lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
-};
+});
