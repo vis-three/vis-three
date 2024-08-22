@@ -1,16 +1,35 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { GroupCompiler } from "./GroupCompiler";
-import GroupProcessor from "./processors/GroupProcessor";
-import { GroupRule } from "./GroupRule";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import { defineObjectModel, ObjectModel, ObjectRule } from "@vis-three/module-object";
+import { getGroupConfig, GroupConfig } from "./GroupConfig";
+import { Group } from "three";
 
-export * from "./GroupCompiler";
 export * from "./GroupConfig";
 
-export default {
+export default defineModule({
   type: "group",
   object: true,
-  compiler: GroupCompiler,
-  rule: GroupRule,
-  processors: [GroupProcessor],
+  rule: ObjectRule,
+  models: [
+    defineObjectModel<GroupConfig, Group>((objectModel) => ({
+      type: "Object3D",
+      config: getGroupConfig,
+      create({ model, config, engine }) {
+        const object = new Group();
+
+        objectModel.create!({
+          model: model as unknown as ObjectModel,
+          target: object,
+          config,
+          filter: {},
+          engine,
+        });
+
+        return object;
+      },
+      dispose({ target }) {
+        objectModel.dispose!({ target });
+      },
+    })),
+  ],
   lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
-};
+});

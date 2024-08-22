@@ -1,14 +1,3 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { GroupCompiler } from "./GroupCompiler";
-import { GroupRule } from "./GroupRule";
-export * from "./GroupCompiler";
 export * from "./GroupConfig";
-declare const _default: {
-    type: string;
-    object: boolean;
-    compiler: typeof GroupCompiler;
-    rule: GroupRule;
-    processors: import("@vis-three/middleware").Processor<import("./GroupConfig").GroupConfig, import("three").Group, import("@vis-three/middleware").EngineSupport, GroupCompiler>[];
-    lifeOrder: SUPPORT_LIFE_CYCLE;
-};
+declare const _default: import("@vis-three/tdcm").ModuleOptions<import("@vis-three/tdcm").EngineSupport, import("@vis-three/tdcm").Compiler<import("@vis-three/tdcm").EngineSupport>>;
 export default _default;
