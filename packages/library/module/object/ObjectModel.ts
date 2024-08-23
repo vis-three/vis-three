@@ -15,13 +15,15 @@ import { ObjectConfig } from "./ObjectConfig";
 import { Object3D, Vector3 } from "three";
 import { IgnoreAttribute, syncObject } from "@vis-three/utils";
 
+export interface ObjectModelShared {
+  eventSymbol: string;
+  emptyRaycast: () => void;
+}
 export interface ObjectModelContext {
   cacheLookAt: {
     target: Vector3 | null;
     updateMatrixWorld: ((focus: boolean) => void) | null;
   };
-  eventSymbol: string;
-  emptyRaycast: () => void;
 }
 
 export type ObjectCommandParameters = CommandParameters<
@@ -29,11 +31,15 @@ export type ObjectCommandParameters = CommandParameters<
   Object3D,
   EngineSupport,
   Compiler<EngineSupport>,
-  Model<ObjectConfig, Object3D> & ObjectModelContext
+  Model<ObjectConfig, Object3D> &
+    ObjectModelContext &
+    Readonly<ObjectModelShared>
 >;
 
 export type ObjectCommandHandler = (
-  this: Model<ObjectConfig, Object3D> & ObjectModelContext,
+  this: Model<ObjectConfig, Object3D> &
+    ObjectModelContext &
+    Readonly<ObjectModelShared>,
   params: ObjectCommandParameters
 ) => void;
 
@@ -205,7 +211,7 @@ const addChildrenHanlder: ObjectCommandHandler = function ({
 
     childrenConfig.parent = config.vid;
 
-    const childrenObject = engine.compilerManager.getObjectfromModules(
+    const childrenObject = engine.compilerManager.getObjectFromModules(
       OBJECT_MODULE,
       value
     ) as Object3D;
@@ -233,7 +239,7 @@ const removeChildrenHandler: ObjectCommandHandler = function ({
   value,
   engine,
 }) {
-  const childrenObject = engine.compilerManager.getObjectfromModules(
+  const childrenObject = engine.compilerManager.getObjectFromModules(
     OBJECT_MODULE,
     value
   ) as Object3D;
@@ -272,31 +278,37 @@ const raycastHandler: ObjectCommandHandler = function ({
   }
 };
 
-export type ObjectModel = Model<ObjectConfig, Object3D> & ObjectModelContext;
+export type ObjectModel = Model<ObjectConfig, Object3D> &
+  ObjectModelContext &
+  Readonly<ObjectModelShared>;
 
 export const defineObjectModel = defineModel.extend<
   ObjectConfig,
   Object3D,
   ObjectModelContext,
-  {},
+  ObjectModelShared,
   EngineSupport,
   Compiler<EngineSupport>,
   <I extends ObjectConfig = ObjectConfig>(params: {
-    model: Model<ObjectConfig, Object3D> & ObjectModelContext;
+    model: Model<ObjectConfig, Object3D> &
+      ObjectModelContext &
+      Readonly<ObjectModelShared>;
     target: Object3D;
     config: ObjectConfig;
     filter: IgnoreAttribute<I>;
     engine: EngineSupport;
   }) => void
 >({
+  shared: {
+    eventSymbol: "vis.event",
+    emptyRaycast: () => {},
+  },
   context() {
     return {
       cacheLookAt: {
         target: null,
         updateMatrixWorld: null,
       },
-      eventSymbol: "vis.event",
-      emptyRaycast: () => {},
     };
   },
   commands: {

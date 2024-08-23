@@ -1,7 +1,7 @@
-import { getBasicConfig as M, defineRule as g, DEFAULT_RULE as f, defineModel as h, emptyHandler as O, EVENTNAME as x, OBJECT_MODULE as y, EventGeneratorManager as m, MODEL_EVENT as b } from "@vis-three/tdcm";
+import { getBasicConfig as h, defineRule as M, DEFAULT_RULE as f, defineModel as g, emptyHandler as O, EVENTNAME as x, OBJECT_MODULE as y, EventGeneratorManager as m, MODEL_EVENT as b } from "@vis-three/tdcm";
 import { syncObject as A } from "@vis-three/utils";
 const C = function() {
-  return Object.assign(M(), {
+  return Object.assign(h(), {
     type: "Object3D",
     castShadow: !0,
     receiveShadow: !0,
@@ -41,7 +41,7 @@ const C = function() {
     dblclick: [],
     contextmenu: []
   });
-}, L = g([
+}, L = M([
   function(n) {
     return n.key !== "parent";
   },
@@ -148,7 +148,7 @@ const C = function() {
       p.children.splice(p.children.indexOf(e), 1);
     }
     i.parent = o.vid;
-    const a = c.compilerManager.getObjectfromModules(
+    const a = c.compilerManager.getObjectFromModules(
       y,
       e
     );
@@ -162,7 +162,7 @@ const C = function() {
   engine: c
 }) {
   var a;
-  const t = c.compilerManager.getObjectfromModules(
+  const t = c.compilerManager.getObjectFromModules(
     y,
     e
   );
@@ -185,15 +185,17 @@ const C = function() {
   engine: c
 }) {
   e ? delete r.raycast : r.raycast = n.emptyRaycast;
-}, S = h.extend({
+}, S = g.extend({
+  shared: {
+    eventSymbol: "vis.event",
+    emptyRaycast: () => {
+    }
+  },
   context() {
     return {
       cacheLookAt: {
         target: null,
         updateMatrixWorld: null
-      },
-      eventSymbol: "vis.event",
-      emptyRaycast: () => {
       }
     };
   },
