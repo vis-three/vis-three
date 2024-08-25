@@ -1,44 +1,47 @@
-import { syncObject } from "@vis-three/utils";
-import { ShaderMaterial } from "three";
+import { PointsMaterial, ShaderMaterial } from "three";
 import {
+  getPointsMaterialConfig,
   getShaderMaterialConfig,
+  PointsMaterialConfig,
   ShaderMaterialConfig,
 } from "../MaterialConfig";
-import { commonNeedUpdatesRegCommand, create, dispose } from "./common";
-import { MaterialCompiler } from "../MaterialCompiler";
 import {
-  defineProcessor,
-  EngineSupport,
-  ShaderGeneratorManager,
-} from "@vis-three/middleware";
+  defineMaterialModel,
+  getColorSetHandler,
+  MaterialModel,
+} from "./MaterialModel";
+import { ShaderManager } from "../ShaderManager";
+import { syncObject } from "@vis-three/utils";
 
-const defaultShader = {
-  vertexShader: `
+export default defineMaterialModel<
+  ShaderMaterialConfig,
+  ShaderMaterial,
+  {},
+  {
+    defaultVertexShader: string;
+    defaultFragmentShader: string;
+  }
+>((materialModel) => ({
+  type: "ShaderMaterial",
+  config: getShaderMaterialConfig,
+  shared: {
+    defaultVertexShader: `
   void main () {
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }`,
-  fragmentShader: `
+    defaultFragmentShader: `
     void main () {
       gl_FragColor = vec4(0.8,0.8,0.8,1.0);
     }`,
-};
-
-export default defineProcessor<
-  ShaderMaterialConfig,
-  ShaderMaterial,
-  EngineSupport,
-  MaterialCompiler
->({
-  type: "ShaderMaterial",
-  config: getShaderMaterialConfig,
+  },
   commands: {
     set: {
-      shader({ target, value }) {
-        target.vertexShader = defaultShader.vertexShader;
-        target.fragmentShader = defaultShader.fragmentShader;
+      shader({ model, target, value }) {
+        target.vertexShader = model.defaultVertexShader;
+        target.fragmentShader = model.defaultFragmentShader;
 
         if (value) {
-          const shader = ShaderGeneratorManager.getShader(value);
+          const shader = ShaderManager.getShader(value);
           shader?.vertexShader && (target.vertexShader = shader.vertexShader);
           shader?.fragmentShader &&
             (target.fragmentShader = shader.fragmentShader);
@@ -48,19 +51,15 @@ export default defineProcessor<
 
         target.needsUpdate = true;
       },
-      $reg: [commonNeedUpdatesRegCommand],
     },
   },
-  create: function (
-    config: ShaderMaterialConfig,
-    engine: EngineSupport
-  ): ShaderMaterial {
+  create({ model, config, engine }) {
     const material = new ShaderMaterial();
-    material.vertexShader = defaultShader.vertexShader;
-    material.fragmentShader = defaultShader.fragmentShader;
+    material.vertexShader = model.defaultVertexShader;
+    material.fragmentShader = model.defaultFragmentShader;
 
     if (config.shader) {
-      const shader = ShaderGeneratorManager.getShader(config.shader);
+      const shader = ShaderManager.getShader(config.shader);
       shader?.vertexShader && (material.vertexShader = shader.vertexShader);
       shader?.fragmentShader &&
         (material.fragmentShader = shader.fragmentShader);
@@ -76,5 +75,7 @@ export default defineProcessor<
     material.needsUpdate = true;
     return material;
   },
-  dispose,
-});
+  dispose({ target }) {
+    materialModel.dispose!({ target });
+  },
+}));

@@ -1,35 +1,31 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { MaterialCompiler } from "./MaterialCompiler";
-import { MaterialRule } from "./MaterialRule";
-import MeshBasicMaterialProcessor from "./processors/MeshBasicMaterialProcessor";
-import MeshPhongMaterialProcessor from "./processors/MeshPhongMaterialProcessor";
-import MeshPhysicalMaterialProcessor from "./processors/MeshPhysicalMaterialProcessor";
-import MeshStandardMaterialProcessor from "./processors/MeshStandardMaterialProcessor";
-import PointsMaterialProcessor from "./processors/PointsMaterialProcessor";
-import ShaderMaterialProcessor from "./processors/ShaderMaterialProcessor";
-import SpriteMaterialProcessor from "./processors/SpriteMaterialProcessor";
-import LineBasicMaterialProcessor from "./processors/LineBasicMaterialProcessor";
-import LineDashMaterialProcessor from "./processors/LineDashMaterialProcessor";
-import MeshMatcapMaterialProcessor from "./processors/MeshMatcapMaterialProcessor";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import LineBasicMaterialModel from "./models/LineBasicMaterialModel";
+import LineDashMaterialModel from "./models/LineDashMaterialModel";
+import MeshBasicMaterialModel from "./models/MeshBasicMaterialModel";
+import MeshMatcapMaterialModel from "./models/MeshMatcapMaterialModel";
+import MeshPhongMaterialModel from "./models/MeshPhongMaterialModel";
+import MeshPhysicalMaterialModel from "./models/MeshPhysicalMaterialModel";
+import MeshStandardMaterialModel from "./models/MeshStandardMaterialModel";
+import PointsMaterialModel from "./models/PointsMaterialModel";
+import ShaderMaterialModel from "./models/ShaderMaterialModel";
+import SpriteMaterialModel from "./models/SpriteMaterialModel";
 
-export * from "./MaterialCompiler";
 export * from "./MaterialConfig";
+export * from "./ShaderManager";
 
-export default {
+export default defineModule({
   type: "material",
-  compiler: MaterialCompiler,
-  rule: MaterialRule,
-  processors: [
-    LineBasicMaterialProcessor,
-    LineDashMaterialProcessor,
-    MeshBasicMaterialProcessor,
-    MeshPhongMaterialProcessor,
-    MeshPhysicalMaterialProcessor,
-    MeshStandardMaterialProcessor,
-    PointsMaterialProcessor,
-    ShaderMaterialProcessor,
-    SpriteMaterialProcessor,
-    MeshMatcapMaterialProcessor,
+  models: [
+    LineBasicMaterialModel,
+    LineDashMaterialModel,
+    MeshBasicMaterialModel,
+    MeshMatcapMaterialModel,
+    MeshPhongMaterialModel,
+    MeshPhysicalMaterialModel,
+    MeshStandardMaterialModel,
+    PointsMaterialModel,
+    ShaderMaterialModel,
+    SpriteMaterialModel,
   ],
   lifeOrder: SUPPORT_LIFE_CYCLE.TWO,
-};
+});

@@ -1,8 +1,4 @@
-import {
-  SymbolConfig,
-  Vector2Config,
-  getSymbolConfig,
-} from "@vis-three/middleware";
+import { BasicConfig, Vector2Config, getBasicConfig } from "@vis-three/tdcm";
 import {
   AddEquation,
   Blending,
@@ -18,7 +14,7 @@ import {
  * 材质配置基类
  * @see {@link https://threejs.org/docs/index.html#api/zh/materials/Material}
  */
-export interface MaterialConfig extends SymbolConfig {
+export interface MaterialConfig extends BasicConfig {
   /**设置运行alphaTest时要使用的alpha值。如果不透明度低于此值，则不会渲染材质。默认值为0。*/
   alphaTest: number;
   /**是否渲染材质的颜色。 这可以与网格的renderOrder属性结合使用，以创建遮挡其他对象的不可见对象。*/
@@ -303,7 +299,7 @@ export type MaterialAllType =
   | MeshMatcapMaterialConfig;
 
 export const getMaterialConfig = function (): MaterialConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     type: "Material",
     alphaTest: 0,
     colorWrite: true,

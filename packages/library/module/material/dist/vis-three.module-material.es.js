@@ -1,52 +1,43 @@
-import { Compiler, Rule, getSymbolConfig, globalAntiShake, defineProcessor, ShaderGeneratorManager, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { FrontSide, OneMinusSrcAlphaFactor, AddEquation, NormalBlending, SrcAlphaFactor, MultiplyOperation, TangentSpaceNormalMap, Texture, Color, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, PointsMaterial, ShaderMaterial, SpriteMaterial, LineBasicMaterial, LineDashedMaterial, MeshMatcapMaterial } from "three";
-import { syncObject } from "@vis-three/utils";
-class MaterialCompiler extends Compiler {
-  constructor() {
-    super();
-  }
-}
-const MaterialRule = function(notice, compiler) {
-  Rule(notice, compiler);
-};
-const getMaterialConfig = function() {
-  return Object.assign(getSymbolConfig(), {
+import { getBasicConfig as w, defineModel as v, MODULE_TYPE as C, defineModule as x, SUPPORT_LIFE_CYCLE as O } from "@vis-three/tdcm";
+import { FrontSide as j, OneMinusSrcAlphaFactor as L, AddEquation as P, NormalBlending as B, SrcAlphaFactor as I, MultiplyOperation as g, TangentSpaceNormalMap as M, Color as h, Texture as R, LineBasicMaterial as T, LineDashedMaterial as A, MeshBasicMaterial as U, MeshMatcapMaterial as E, MeshPhongMaterial as F, MeshPhysicalMaterial as D, MeshStandardMaterial as N, PointsMaterial as z, ShaderMaterial as $, SpriteMaterial as H } from "three";
+import { syncObject as S } from "@vis-three/utils";
+const d = function() {
+  return Object.assign(w(), {
     type: "Material",
     alphaTest: 0,
-    colorWrite: true,
-    depthTest: true,
-    depthWrite: true,
+    colorWrite: !0,
+    depthTest: !0,
+    depthWrite: !0,
     name: "",
-    needsUpdate: false,
+    needsUpdate: !1,
     opacity: 1,
-    dithering: false,
+    dithering: !1,
     shadowSide: null,
-    side: FrontSide,
-    toneMapped: true,
-    transparent: false,
-    visible: true,
-    blendDst: OneMinusSrcAlphaFactor,
+    side: j,
+    toneMapped: !0,
+    transparent: !1,
+    visible: !0,
+    blendDst: L,
     blendDstAlpha: null,
-    blendEquation: AddEquation,
+    blendEquation: P,
     blendEquationAlpha: null,
-    blending: NormalBlending,
-    blendSrc: SrcAlphaFactor,
+    blending: B,
+    blendSrc: I,
     blendSrcAlpha: null,
-    polygonOffset: false,
+    polygonOffset: !1,
     polygonOffsetFactor: 0,
     polygonOffsetUnits: 0
   });
-};
-const getMeshBasicMaterialConfig = function() {
-  return Object.assign(getMaterialConfig(), {
+}, J = function() {
+  return Object.assign(d(), {
     color: "rgb(255, 255, 255)",
-    combine: MultiplyOperation,
+    combine: g,
     aoMapIntensity: 1,
-    fog: true,
+    fog: !0,
     lightMapIntensity: 1,
     reflectivity: 1,
     refractionRatio: 0.98,
-    wireframe: false,
+    wireframe: !1,
     wireframeLinecap: "round",
     wireframeLinejoin: "round",
     wireframeLinewidth: 1,
@@ -57,9 +48,8 @@ const getMeshBasicMaterialConfig = function() {
     lightMap: "",
     specularMap: ""
   });
-};
-const getMeshStandardMaterialConfig = function() {
-  return Object.assign(getMaterialConfig(), {
+}, y = function() {
+  return Object.assign(d(), {
     aoMapIntensity: 1,
     bumpScale: 1,
     color: "rgb(255, 255, 255)",
@@ -68,13 +58,13 @@ const getMeshStandardMaterialConfig = function() {
     emissive: "rgb(0, 0, 0)",
     emissiveIntensity: 1,
     envMapIntensity: 1,
-    flatShading: false,
+    flatShading: !1,
     lightMapIntensity: 1,
     metalness: 0,
-    normalMapType: TangentSpaceNormalMap,
+    normalMapType: M,
     refractionRatio: 0.98,
     roughness: 1,
-    wireframe: false,
+    wireframe: !1,
     wireframeLinecap: "round",
     wireframeLinejoin: "round",
     roughnessMap: "",
@@ -89,9 +79,8 @@ const getMeshStandardMaterialConfig = function() {
     alphaMap: "",
     aoMap: ""
   });
-};
-const getMeshPhysicalMaterialConfig = function() {
-  return Object.assign(getMeshStandardMaterialConfig(), {
+}, V = function() {
+  return Object.assign(y(), {
     attenuationColor: "rgb(255, 255, 255)",
     attenuationDistance: 0,
     clearcoat: 0,
@@ -119,9 +108,8 @@ const getMeshPhysicalMaterialConfig = function() {
     thicknessMap: "",
     transmissionMap: ""
   });
-};
-const getMeshPhongMaterialConfig = function() {
-  return Object.assign(getMaterialConfig(), {
+}, W = function() {
+  return Object.assign(d(), {
     aoMapIntensity: 1,
     bumpScale: 1,
     color: "rgb(255, 255, 255)",
@@ -130,16 +118,16 @@ const getMeshPhongMaterialConfig = function() {
     emissive: "rgb(0, 0, 0)",
     emissiveIntensity: 1,
     envMapIntensity: 1,
-    flatShading: false,
+    flatShading: !1,
     lightMapIntensity: 1,
-    normalMapType: TangentSpaceNormalMap,
+    normalMapType: M,
     refractionRatio: 0.98,
-    wireframe: false,
+    wireframe: !1,
     wireframeLinecap: "round",
     wireframeLinejoin: "round",
     specular: "rgb(17, 17, 17)",
     shininess: 30,
-    combine: MultiplyOperation,
+    combine: g,
     normalMap: "",
     map: "",
     lightMap: "",
@@ -151,55 +139,49 @@ const getMeshPhongMaterialConfig = function() {
     aoMap: "",
     specularMap: ""
   });
-};
-const getSpriteMaterialConfig = function() {
-  return Object.assign(getMaterialConfig(), {
+}, q = function() {
+  return Object.assign(d(), {
     color: "rgb(255, 255, 255)",
     rotation: 0,
     map: "",
     alphaMap: "",
-    sizeAttenuation: true
+    sizeAttenuation: !0
   });
-};
-const getLineBasicMaterialConfig = function() {
-  return Object.assign(getMaterialConfig(), {
+}, b = function() {
+  return Object.assign(d(), {
     color: "rgb(255, 255, 255)",
     linecap: "round",
     linejoin: "round",
     linewidth: 1
   });
-};
-const getLineDashedMaterialConfig = function() {
-  return Object.assign(getLineBasicMaterialConfig(), {
+}, k = function() {
+  return Object.assign(b(), {
     dashSize: 3,
     gapSize: 1,
     scale: 1
   });
-};
-const getPointsMaterialConfig = function() {
-  return Object.assign(getMaterialConfig(), {
+}, Y = function() {
+  return Object.assign(d(), {
     map: "",
     alphaMap: "",
     color: "rgb(255, 255, 255)",
-    sizeAttenuation: true,
+    sizeAttenuation: !0,
     size: 1
   });
-};
-const getShaderMaterialConfig = function() {
-  return Object.assign(getMaterialConfig(), {
+}, X = function() {
+  return Object.assign(d(), {
     shader: "",
     uniforms: {}
   });
-};
-const getMeshMatcapMaterialConfig = function() {
-  return Object.assign(getMaterialConfig(), {
+}, G = function() {
+  return Object.assign(d(), {
     color: "rgb(255, 255, 255)",
     bumpScale: 1,
     displacementScale: 1,
     displacementBias: 0,
-    flatShading: false,
-    fog: true,
-    normalMapType: TangentSpaceNormalMap,
+    flatShading: !1,
+    fog: !0,
+    normalMapType: M,
     normalSale: { x: 1, y: 1 },
     map: "",
     alphaMap: "",
@@ -208,274 +190,373 @@ const getMeshMatcapMaterialConfig = function() {
     matcap: "",
     normalMap: ""
   });
-};
-const commonNeedUpdatesRegCommand = {
+}, K = {
   reg: new RegExp("transparent|sizeAttenuation"),
-  handler({
-    target,
-    key,
-    value
-  }) {
-    target[key] = value;
-    target.needsUpdate = true;
+  handler({ target: t, key: e, value: a }) {
+    t[e] = a, t.needsUpdate = !0;
   }
-};
-const mapHandler = function({
-  target,
-  key,
-  value,
-  engine
+}, m = function({
+  model: t,
+  target: e,
+  key: a,
+  value: r,
+  engine: n
 }) {
-  globalAntiShake.exec((finish) => {
-    if (!value) {
-      target[key] = null;
-      target.needsUpdate = true;
-      return true;
-    }
-    const texture = engine.compilerManager.getObjectBySymbol(value);
-    if (!(texture instanceof Texture)) {
-      finish && console.warn(
-        `this url resource is not instance of Texture: ${key}`,
-        value,
-        texture
-      );
-      target[key] = null;
-      return false;
-    }
-    target[key] = texture;
-    target.needsUpdate = true;
-    return true;
+  t.toAsync((i) => {
+    if (!r)
+      return e[a] = null, e.needsUpdate = !0, !0;
+    const p = n.compilerManager.getObjectFromModule(
+      C.TEXTURE,
+      r
+    );
+    return p instanceof R ? (e[a] = p, e.needsUpdate = !0, !0) : (i && console.warn(
+      `this url resource is not instance of Texture: ${a}`,
+      r,
+      p
+    ), e[a] = null, !1);
   });
-};
-const commonMapRegCommand = {
+}, Q = function() {
+  return m;
+}, Z = {
   reg: new RegExp("map$", "i"),
-  handler: mapHandler
-};
-const colorSetHandler = function({
-  target,
-  key,
-  value
+  handler: m
+}, _ = function({
+  model: t,
+  target: e,
+  key: a,
+  value: r
 }) {
-  target[key].copy(new Color(value));
-};
-const create = function(target, config, engine) {
-  const filter = {};
-  for (const key of Object.keys(config)) {
-    if (key.toLocaleLowerCase().endsWith("map") && config[key]) {
-      mapHandler({ target, key, value: config[key], engine });
-      filter[key] = true;
-    } else if (target[key] instanceof Color) {
-      target[key] = new Color(config[key]);
-      filter[key] = true;
+  e[a].copy(t.cacheColor.set(r));
+}, s = function() {
+  return _;
+}, l = v.extend({
+  commands: {
+    set: {
+      $reg: [Z, K]
     }
+  },
+  create({
+    model: t,
+    target: e,
+    config: a,
+    engine: r
+  }) {
+    const n = {};
+    for (const i of Object.keys(a))
+      i.toLocaleLowerCase().endsWith("map") && a[i] ? (m.call(t, {
+        target: e,
+        key: i,
+        value: a[i],
+        engine: r
+      }), n[i] = !0) : e[i] instanceof h && (e[i] = new h(a[i]), n[i] = !0);
+    return S(a, e, n), e.needsUpdate = !0, e;
+  },
+  dispose({ target: t }) {
+    t.dispose();
   }
-  syncObject(config, target, filter);
-  target.needsUpdate = true;
-  return target;
-};
-const dispose = function(target) {
-  target.dispose();
-};
-var MeshBasicMaterialProcessor = defineProcessor({
-  type: "MeshBasicMaterial",
-  config: getMeshBasicMaterialConfig,
+}), ee = l(
+  (t) => ({
+    type: "LineBasicMaterial",
+    config: b,
+    commands: {
+      set: {
+        color: s()
+      }
+    },
+    create({ model: e, config: a, engine: r }) {
+      return t.create({
+        model: e,
+        target: new T(),
+        config: a,
+        engine: r
+      });
+    },
+    dispose({ target: e }) {
+      t.dispose({ target: e });
+    }
+  })
+), ae = l((t) => ({
+  type: "LineDashedMaterial",
+  config: k,
   commands: {
     set: {
-      color: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+      color: s()
     }
   },
-  create: function(config, engine) {
-    return create(new MeshBasicMaterial(), config, engine);
+  create({ model: e, config: a, engine: r }) {
+    return t.create({
+      model: e,
+      target: new A(),
+      config: a,
+      engine: r
+    });
   },
-  dispose
-});
-var MeshPhongMaterialProcessor = defineProcessor({
-  type: "MeshPhongMaterial",
-  config: getMeshPhongMaterialConfig,
+  dispose({ target: e }) {
+    t.dispose({ target: e });
+  }
+})), te = l(
+  (t) => ({
+    type: "MeshBasicMaterial",
+    config: J,
+    commands: {
+      set: {
+        color: s()
+      }
+    },
+    create({ model: e, config: a, engine: r }) {
+      return t.create({
+        model: e,
+        target: new U(),
+        config: a,
+        engine: r
+      });
+    },
+    dispose({ target: e }) {
+      t.dispose({ target: e });
+    }
+  })
+), ne = l((t) => ({
+  type: "MeshMatcapMaterial",
+  config: G,
   commands: {
     set: {
-      color: colorSetHandler,
-      emissive: colorSetHandler,
-      specular: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+      color: s(),
+      matcap: Q()
     }
   },
-  create: function(config, engine) {
-    return create(new MeshPhongMaterial(), config, engine);
+  create({ model: e, config: a, engine: r }) {
+    return t.create({
+      model: e,
+      target: new E(),
+      config: a,
+      engine: r
+    });
   },
-  dispose
-});
-var MeshPhysicalMaterialProcessor = defineProcessor({
+  dispose({ target: e }) {
+    t.dispose({ target: e });
+  }
+})), re = l(
+  (t) => ({
+    type: "MeshPhongMaterial",
+    config: W,
+    commands: {
+      set: {
+        color: s(),
+        emissive: s(),
+        specular: s()
+      }
+    },
+    create({ model: e, config: a, engine: r }) {
+      return t.create({
+        model: e,
+        target: new F(),
+        config: a,
+        engine: r
+      });
+    },
+    dispose({ target: e }) {
+      t.dispose({ target: e });
+    }
+  })
+), ie = l((t) => ({
   type: "MeshPhysicalMaterial",
-  config: getMeshPhysicalMaterialConfig,
+  config: V,
   commands: {
     set: {
-      color: colorSetHandler,
-      emissive: colorSetHandler,
-      specularColor: colorSetHandler,
-      sheenColor: colorSetHandler,
-      attenuationColor: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+      color: s(),
+      emissive: s(),
+      specularColor: s(),
+      sheenColor: s(),
+      attenuationColor: s()
     }
   },
-  create: function(config, engine) {
-    return create(new MeshPhysicalMaterial(), config, engine);
+  create({ model: e, config: a, engine: r }) {
+    return t.create({
+      model: e,
+      target: new D(),
+      config: a,
+      engine: r
+    });
   },
-  dispose
-});
-var MeshStandardMaterialProcessor = defineProcessor({
+  dispose({ target: e }) {
+    t.dispose({ target: e });
+  }
+})), se = l((t) => ({
   type: "MeshStandardMaterial",
-  config: getMeshStandardMaterialConfig,
+  config: y,
   commands: {
     set: {
-      color: colorSetHandler,
-      emissive: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+      color: s(),
+      emissive: s()
     }
   },
-  create: function(config, engine) {
-    return create(new MeshStandardMaterial(), config, engine);
+  create({ model: e, config: a, engine: r }) {
+    return t.create({
+      model: e,
+      target: new N(),
+      config: a,
+      engine: r
+    });
   },
-  dispose
-});
-var PointsMaterialProcessor = defineProcessor({
-  type: "PointsMaterial",
-  config: getPointsMaterialConfig,
-  commands: {
-    set: {
-      color: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+  dispose({ target: e }) {
+    t.dispose({ target: e });
+  }
+})), oe = l(
+  (t) => ({
+    type: "PointsMaterial",
+    config: Y,
+    commands: {
+      set: {
+        color: s()
+      }
+    },
+    create({ model: e, config: a, engine: r }) {
+      return t.create({
+        model: e,
+        target: new z(),
+        config: a,
+        engine: r
+      });
+    },
+    dispose({ target: e }) {
+      t.dispose({ target: e });
     }
-  },
-  create: function(config, engine) {
-    return create(new PointsMaterial(), config, engine);
-  },
-  dispose
-});
-const defaultShader = {
-  vertexShader: `
+  })
+), c = class c {
+  /**
+   * 获取着色器文件
+   * @param name 文件名
+   * @returns shader | null
+   */
+  static getShader(e) {
+    return c.library.has(e) ? c.cloneShader(c.library.get(e)) : (console.warn(`con not found shader in shader library: ${e}`), null);
+  }
+  /**
+   * 获取该着色器文件对应的配置
+   * @param name
+   * @returns
+   */
+  static generateConfig(e, a) {
+    if (!c.library.has(e))
+      return console.warn(`con not found shader in shader library: ${e}`), { shader: e, uniforms: {} };
+    const r = c.library.get(e), n = {
+      shader: e,
+      uniforms: {}
+    };
+    if (r.uniforms && (n.uniforms = JSON.parse(JSON.stringify(r.uniforms))), a) {
+      const i = (p, u) => {
+        for (const o in u)
+          p[o] !== void 0 && (typeof u[o] == "object" && u[o] !== null && !Array.isArray(u[o]) ? (p[o] === null && (p[o] = { ...u[o] }), i(p[o], u[o])) : p[o] = u[o]);
+      };
+      i(n.uniforms, a);
+    }
+    return n;
+  }
+  /**
+   * 克隆着色器
+   * @param shader
+   * @returns
+   */
+  static cloneShader(e) {
+    const a = {
+      name: e.name
+    };
+    return e.vertexShader && (a.vertexShader = e.vertexShader), e.fragmentShader && (a.fragmentShader = e.fragmentShader), e.uniforms && (a.uniforms = JSON.parse(JSON.stringify(e.uniforms))), a;
+  }
+};
+c.library = /* @__PURE__ */ new Map(), c.register = function(e) {
+  c.library.has(e.name) && console.warn(
+    `shader library has exist shader: ${e.name} that will be cover.`
+  ), c.library.set(e.name, e);
+};
+let f = c;
+const ce = l((t) => ({
+  type: "ShaderMaterial",
+  config: X,
+  shared: {
+    defaultVertexShader: `
   void main () {
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }`,
-  fragmentShader: `
+    defaultFragmentShader: `
     void main () {
       gl_FragColor = vec4(0.8,0.8,0.8,1.0);
     }`
-};
-var ShaderMaterialProcessor = defineProcessor({
-  type: "ShaderMaterial",
-  config: getShaderMaterialConfig,
+  },
   commands: {
     set: {
-      shader({ target, value }) {
-        target.vertexShader = defaultShader.vertexShader;
-        target.fragmentShader = defaultShader.fragmentShader;
-        if (value) {
-          const shader = ShaderGeneratorManager.getShader(value);
-          (shader == null ? void 0 : shader.vertexShader) && (target.vertexShader = shader.vertexShader);
-          (shader == null ? void 0 : shader.fragmentShader) && (target.fragmentShader = shader.fragmentShader);
-          (shader == null ? void 0 : shader.uniforms) && (target.uniforms = shader.uniforms);
-          (shader == null ? void 0 : shader.defines) && (target.defines = shader.defines);
+      shader({ model: e, target: a, value: r }) {
+        if (a.vertexShader = e.defaultVertexShader, a.fragmentShader = e.defaultFragmentShader, r) {
+          const n = f.getShader(r);
+          n != null && n.vertexShader && (a.vertexShader = n.vertexShader), n != null && n.fragmentShader && (a.fragmentShader = n.fragmentShader), n != null && n.uniforms && (a.uniforms = n.uniforms), n != null && n.defines && (a.defines = n.defines);
         }
-        target.needsUpdate = true;
-      },
-      $reg: [commonNeedUpdatesRegCommand]
+        a.needsUpdate = !0;
+      }
     }
   },
-  create: function(config, engine) {
-    const material = new ShaderMaterial();
-    material.vertexShader = defaultShader.vertexShader;
-    material.fragmentShader = defaultShader.fragmentShader;
-    if (config.shader) {
-      const shader = ShaderGeneratorManager.getShader(config.shader);
-      (shader == null ? void 0 : shader.vertexShader) && (material.vertexShader = shader.vertexShader);
-      (shader == null ? void 0 : shader.fragmentShader) && (material.fragmentShader = shader.fragmentShader);
-      (shader == null ? void 0 : shader.uniforms) && (material.uniforms = shader.uniforms);
-      (shader == null ? void 0 : shader.defines) && (material.defines = shader.defines);
+  create({ model: e, config: a, engine: r }) {
+    const n = new $();
+    if (n.vertexShader = e.defaultVertexShader, n.fragmentShader = e.defaultFragmentShader, a.shader) {
+      const i = f.getShader(a.shader);
+      i != null && i.vertexShader && (n.vertexShader = i.vertexShader), i != null && i.fragmentShader && (n.fragmentShader = i.fragmentShader), i != null && i.uniforms && (n.uniforms = i.uniforms), i != null && i.defines && (n.defines = i.defines);
     }
-    syncObject(config, material, {
-      type: true,
-      shader: true
-    });
-    material.needsUpdate = true;
-    return material;
+    return S(a, n, {
+      type: !0,
+      shader: !0
+    }), n.needsUpdate = !0, n;
   },
-  dispose
-});
-var SpriteMaterialProcessor = defineProcessor({
-  type: "SpriteMaterial",
-  config: getSpriteMaterialConfig,
-  commands: {
-    set: {
-      color: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
+  dispose({ target: e }) {
+    t.dispose({ target: e });
+  }
+})), le = l(
+  (t) => ({
+    type: "SpriteMaterial",
+    config: q,
+    commands: {
+      set: {
+        color: s()
+      }
+    },
+    create({ model: e, config: a, engine: r }) {
+      return t.create({
+        model: e,
+        target: new H(),
+        config: a,
+        engine: r
+      });
+    },
+    dispose({ target: e }) {
+      t.dispose({ target: e });
     }
-  },
-  create: function(config, engine) {
-    return create(new SpriteMaterial(), config, engine);
-  },
-  dispose
-});
-var LineBasicMaterialProcessor = defineProcessor({
-  type: "LineBasicMaterial",
-  config: getLineBasicMaterialConfig,
-  commands: {
-    set: {
-      color: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
-    }
-  },
-  create: function(config, engine) {
-    return create(new LineBasicMaterial(), config, engine);
-  },
-  dispose
-});
-var LineDashMaterialProcessor = defineProcessor({
-  type: "LineDashedMaterial",
-  config: getLineDashedMaterialConfig,
-  commands: {
-    set: {
-      color: colorSetHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
-    }
-  },
-  create: function(config, engine) {
-    return create(new LineDashedMaterial(), config, engine);
-  },
-  dispose
-});
-var MeshMatcapMaterialProcessor = defineProcessor({
-  type: "MeshMatcapMaterial",
-  config: getMeshMatcapMaterialConfig,
-  commands: {
-    set: {
-      color: colorSetHandler,
-      matcap: mapHandler,
-      $reg: [commonMapRegCommand, commonNeedUpdatesRegCommand]
-    }
-  },
-  create(config, engine) {
-    return create(new MeshMatcapMaterial(), config, engine);
-  },
-  dispose
-});
-var index = {
+  })
+), fe = x({
   type: "material",
-  compiler: MaterialCompiler,
-  rule: MaterialRule,
-  processors: [
-    LineBasicMaterialProcessor,
-    LineDashMaterialProcessor,
-    MeshBasicMaterialProcessor,
-    MeshPhongMaterialProcessor,
-    MeshPhysicalMaterialProcessor,
-    MeshStandardMaterialProcessor,
-    PointsMaterialProcessor,
-    ShaderMaterialProcessor,
-    SpriteMaterialProcessor,
-    MeshMatcapMaterialProcessor
+  models: [
+    ee,
+    ae,
+    te,
+    ne,
+    re,
+    ie,
+    se,
+    oe,
+    ce,
+    le
   ],
-  lifeOrder: SUPPORT_LIFE_CYCLE.TWO
+  lifeOrder: O.TWO
+});
+export {
+  f as ShaderManager,
+  fe as default,
+  b as getLineBasicMaterialConfig,
+  k as getLineDashedMaterialConfig,
+  d as getMaterialConfig,
+  J as getMeshBasicMaterialConfig,
+  G as getMeshMatcapMaterialConfig,
+  W as getMeshPhongMaterialConfig,
+  V as getMeshPhysicalMaterialConfig,
+  y as getMeshStandardMaterialConfig,
+  Y as getPointsMaterialConfig,
+  X as getShaderMaterialConfig,
+  q as getSpriteMaterialConfig
 };
-export { MaterialCompiler, index as default, getLineBasicMaterialConfig, getLineDashedMaterialConfig, getMaterialConfig, getMeshBasicMaterialConfig, getMeshMatcapMaterialConfig, getMeshPhongMaterialConfig, getMeshPhysicalMaterialConfig, getMeshStandardMaterialConfig, getPointsMaterialConfig, getShaderMaterialConfig, getSpriteMaterialConfig };
