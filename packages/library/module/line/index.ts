@@ -1,17 +1,14 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { LineCompiler } from "./LineCompiler";
-import LineProcessor from "./processors/LineProcessor";
-import { LineRule } from "./LineRule";
-import LineSegmentsProcessor from "./processors/LineSegmentsProcessor";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import { ObjectRule } from "@vis-three/module-object";
+import LineModel from "./models/LineModel";
+import LineSegmentsModel from "./models/LineSegmentsModel";
 
-export * from "./LineCompiler";
 export * from "./LineConfig";
 
-export default {
+export default defineModule({
   type: "line",
   object: true,
-  compiler: LineCompiler,
-  rule: LineRule,
-  processors: [LineProcessor, LineSegmentsProcessor],
+  rule: ObjectRule,
+  models: [LineModel, LineSegmentsModel],
   lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
-};
+});

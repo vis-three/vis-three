@@ -1,211 +1,112 @@
-import { defineProcessor, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { SolidObjectCompiler, getSolidObjectConfig, solidObjectCommands, geometryHandler, solidObjectCreate, solidObjectDispose } from "@vis-three/module-solid-object";
-import { LineDashedMaterial, Line, LineSegments } from "three";
-import { ObjectRule } from "@vis-three/module-object";
-class LineCompiler extends SolidObjectCompiler {
-  constructor() {
-    super();
-  }
-}
-const getLineConfig = function() {
-  return Object.assign(getSolidObjectConfig(), {
+import { MODEL_EVENT as r, defineModule as f, SUPPORT_LIFE_CYCLE as g } from "@vis-three/tdcm";
+import { ObjectRule as u } from "@vis-three/module-object";
+import { getSolidObjectConfig as L, defineSolidObjectModel as E } from "@vis-three/module-solid-object";
+import { LineDashedMaterial as d, Line as m, LineSegments as h } from "three";
+const c = function() {
+  return Object.assign(L(), {
     geometry: "",
     material: "",
-    dashed: false
+    dashed: !1
   });
-};
-const getLineSegmentsConfig = function() {
-  return getLineConfig();
-};
-const getLineFatConfig = function() {
-  return Object.assign(getSolidObjectConfig(), {
+}, p = function() {
+  return c();
+}, l = function() {
+  return Object.assign(L(), {
     geometry: "",
     material: ""
   });
-};
-const getLineSegmentsFatConfig = function() {
-  return Object.assign(getSolidObjectConfig(), {
+}, v = function() {
+  return Object.assign(L(), {
     geometry: "",
     material: ""
   });
-};
-const cacheGeometryMap$1 = /* @__PURE__ */ new WeakMap();
-const cacheBusMap$1 = /* @__PURE__ */ new WeakMap();
-const cacheBusObject$1 = function(line, geometry, fun) {
-  if (!cacheBusMap$1.has(geometry)) {
-    cacheBusMap$1.set(geometry, fun);
-    Bus.compilerEvent.on(geometry, COMPILER_EVENT.UPDATE, fun);
-    cacheGeometryMap$1.set(line, geometry);
-  } else {
-    console.warn(`Line processor has already exist geometry cache`);
-  }
-};
-const cancelCacheBusObject$1 = function(line, geometry) {
-  if (!cacheBusMap$1.has(geometry)) {
-    console.warn(
-      `Line processor found an error can not found cache geometry:`,
-      geometry
-    );
-    return;
-  }
-  Bus.compilerEvent.off(
-    geometry,
-    COMPILER_EVENT.UPDATE,
-    cacheBusMap$1.get(geometry)
-  );
-  cacheBusMap$1.delete(geometry);
-  if (cacheGeometryMap$1.get(line) === geometry) {
-    cacheGeometryMap$1.delete(line);
-  }
-};
-const changeCacheBusObject$1 = function(line, geometry) {
-  const oldGeometry = cacheGeometryMap$1.get(line);
-  if (!oldGeometry) {
-    console.warn(`line processor can not change line geometry`);
-    return;
-  }
-  const fun = cacheBusMap$1.get(oldGeometry);
-  cancelCacheBusObject$1(line, oldGeometry);
-  cacheBusObject$1(line, geometry, fun);
-};
-var LineProcessor = defineProcessor({
+}, D = E((a) => ({
   type: "Line",
-  config: getLineConfig,
+  config: c,
+  context({ model: e }) {
+    return {
+      dashedLineEvent: () => {
+        e.puppet.computeLineDistances();
+      }
+    };
+  },
   commands: {
-    add: solidObjectCommands.add,
     set: {
-      ...solidObjectCommands.set,
-      dashed({ target, value }) {
-        if (target.material instanceof LineDashedMaterial && value) {
-          const fun = () => {
-            target.computeLineDistances();
-          };
-          cacheBusObject$1(target, target.geometry, fun);
-          fun();
+      dashed({ model: e, config: t, target: s, value: n }) {
+        var i, o;
+        if (s.material instanceof d && n) {
+          (i = e.toModel(t.geometry)) == null || i.on(r.COMPILED_UPDATE, e.dashedLineEvent), e.dashedLineEvent();
           return;
         }
-        if (!value) {
-          cancelCacheBusObject$1(target, target.geometry);
-        }
-      },
-      geometry(params) {
-        geometryHandler(params);
-        changeCacheBusObject$1(params.target, params.target.geometry);
+        n || (o = e.toModel(t.geometry)) == null || o.off(r.COMPILED_UPDATE, e.dashedLineEvent);
       }
-    },
-    delete: solidObjectCommands.delete
-  },
-  create(config, engine) {
-    const line = solidObjectCreate(
-      new Line(),
-      config,
-      { dashed: true },
-      engine
-    );
-    if (line.material instanceof LineDashedMaterial && config.dashed) {
-      const fun = () => {
-        line.computeLineDistances();
-      };
-      cacheBusObject$1(line, line.geometry, fun);
-      fun();
     }
-    return line;
   },
-  dispose: solidObjectDispose
-});
-const LineRule = function(notice, compiler) {
-  ObjectRule(notice, compiler);
-};
-const cacheGeometryMap = /* @__PURE__ */ new WeakMap();
-const cacheBusMap = /* @__PURE__ */ new WeakMap();
-const cacheBusObject = function(line, geometry, fun) {
-  if (!cacheBusMap.has(geometry)) {
-    cacheBusMap.set(geometry, fun);
-    Bus.compilerEvent.on(geometry, COMPILER_EVENT.UPDATE, fun);
-    cacheGeometryMap.set(line, geometry);
-  } else {
-    console.warn(`LineSegments processor has already exist geometry cache`);
+  create({ model: e, config: t, engine: s }) {
+    var i;
+    const n = new m();
+    return a.create({
+      model: e,
+      target: n,
+      engine: s,
+      config: t,
+      filter: {
+        dashed: !0
+      }
+    }), n.material instanceof d && t.dashed && ((i = e.toModel(t.geometry)) == null || i.on(r.COMPILED_UPDATE, e.dashedLineEvent), e.dashedLineEvent()), n;
+  },
+  dispose({ target: e }) {
+    a.dispose({ target: e });
   }
-};
-const cancelCacheBusObject = function(line, geometry) {
-  if (!cacheBusMap.has(geometry)) {
-    console.warn(
-      `LineSegments processor found an error can not found cache geometry:`,
-      geometry
-    );
-    return;
-  }
-  Bus.compilerEvent.off(
-    geometry,
-    COMPILER_EVENT.UPDATE,
-    cacheBusMap.get(geometry)
-  );
-  cacheBusMap.delete(geometry);
-  if (cacheGeometryMap.get(line) === geometry) {
-    cacheGeometryMap.delete(line);
-  }
-};
-const changeCacheBusObject = function(line, geometry) {
-  const oldGeometry = cacheGeometryMap.get(line);
-  if (!oldGeometry) {
-    console.warn(`line processor can not change line geometry`);
-    return;
-  }
-  const fun = cacheBusMap.get(oldGeometry);
-  cancelCacheBusObject(line, oldGeometry);
-  cacheBusObject(line, geometry, fun);
-};
-var LineSegmentsProcessor = defineProcessor({
+})), M = E((a) => ({
   type: "LineSegments",
-  config: getLineSegmentsConfig,
+  config: p,
+  context({ model: e }) {
+    return {
+      dashedLineEvent: () => {
+        e.puppet.computeLineDistances();
+      }
+    };
+  },
   commands: {
-    add: solidObjectCommands.add,
     set: {
-      ...solidObjectCommands.set,
-      dashed({ target, value }) {
-        if (target.material instanceof LineDashedMaterial && value) {
-          const fun = () => {
-            target.computeLineDistances();
-          };
-          cacheBusObject(target, target.geometry, fun);
-          fun();
+      dashed({ model: e, config: t, target: s, value: n }) {
+        var i, o;
+        if (s.material instanceof d && n) {
+          (i = e.toModel(t.geometry)) == null || i.on(r.COMPILED_UPDATE, e.dashedLineEvent), e.dashedLineEvent();
           return;
         }
-        if (!value) {
-          cancelCacheBusObject(target, target.geometry);
-        }
-      },
-      geometry(params) {
-        geometryHandler(params);
-        changeCacheBusObject(params.target, params.target.geometry);
+        n || (o = e.toModel(t.geometry)) == null || o.off(r.COMPILED_UPDATE, e.dashedLineEvent);
       }
-    },
-    delete: solidObjectCommands.delete
-  },
-  create(config, engine) {
-    const line = solidObjectCreate(
-      new LineSegments(),
-      config,
-      { dashed: true },
-      engine
-    );
-    if (line.material instanceof LineDashedMaterial && config.dashed) {
-      const fun = () => {
-        line.computeLineDistances();
-      };
-      cacheBusObject(line, line.geometry, fun);
-      fun();
     }
-    return line;
   },
-  dispose: solidObjectDispose
-});
-var index = {
+  create({ model: e, config: t, engine: s }) {
+    var i;
+    const n = new h();
+    return a.create({
+      model: e,
+      target: n,
+      engine: s,
+      config: t,
+      filter: {
+        dashed: !0
+      }
+    }), n.material instanceof d && t.dashed && ((i = e.toModel(t.geometry)) == null || i.on(r.COMPILED_UPDATE, e.dashedLineEvent), e.dashedLineEvent()), n;
+  },
+  dispose({ target: e }) {
+    a.dispose({ target: e });
+  }
+})), T = f({
   type: "line",
-  object: true,
-  compiler: LineCompiler,
-  rule: LineRule,
-  processors: [LineProcessor, LineSegmentsProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.THREE
+  object: !0,
+  rule: u,
+  models: [D, M],
+  lifeOrder: g.THREE
+});
+export {
+  T as default,
+  c as getLineConfig,
+  l as getLineFatConfig,
+  p as getLineSegmentsConfig,
+  v as getLineSegmentsFatConfig
 };
-export { LineCompiler, index as default, getLineConfig, getLineFatConfig, getLineSegmentsConfig, getLineSegmentsFatConfig };
