@@ -1,13 +1,10 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { ParticleCompiler } from "./ParticleCompiler";
-import { ParticleRule } from "./ParticleRule";
-import FloatParticleProcessor from "./processors/FloatParticleProcessor";
+import { SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import { defineModule } from "@vis-three/tdcm";
+import FloatParticleModel from "./models/FloatParticleModel";
 
-export default {
+export default defineModule({
   type: "particle",
   object: true,
-  compiler: ParticleCompiler,
-  rule: ParticleRule,
-  processors: [FloatParticleProcessor],
+  models: [FloatParticleModel],
   lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
-};
+});

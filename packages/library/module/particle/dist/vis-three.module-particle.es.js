@@ -1,23 +1,8 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-import { defineProcessor, MODULETYPE, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { ObjectCompiler, ObjectRule, getObjectConfig, objectCreate } from "@vis-three/module-object";
-import { validate } from "uuid";
-import { Points, Color, BufferAttribute, ShaderMaterial, AdditiveBlending } from "three";
-class ParticleCompiler extends ObjectCompiler {
-  constructor() {
-    super();
-  }
-}
-const ParticleRule = function(input, compiler, validateFun = validate) {
-  ObjectRule(input, compiler, validateFun);
-};
-const getFloatParticleConfig = function() {
-  return Object.assign(getObjectConfig(), {
+import { MODULE_TYPE as n, defineModule as g, SUPPORT_LIFE_CYCLE as c } from "@vis-three/tdcm";
+import { getObjectConfig as f, defineObjectModel as m } from "@vis-three/module-object";
+import { Points as h, Color as u, BufferAttribute as s, ShaderMaterial as p, AdditiveBlending as d } from "three";
+const R = function() {
+  return Object.assign(f(), {
     range: {
       top: 100,
       bottom: -100,
@@ -30,14 +15,13 @@ const getFloatParticleConfig = function() {
     size: 1,
     alphaMap: "",
     opacity: 1,
-    flicker: true,
+    flicker: !0,
     time: 0,
     floatRange: 5,
     refColor: "rgb(255, 255, 255)",
     colorRange: 0.5
   });
-};
-const vertex = `
+}, v = `
 varying vec3 vColor;
 uniform bool flicker;
 uniform float time;
@@ -64,8 +48,7 @@ void main() {
   gl_Position = projectionMatrix * mvPosition;
 
 }
-`;
-const fragment = `
+`, y = `
 uniform sampler2D alphaMap;
 uniform float opacity;
 uniform bool useAlphaMap;
@@ -86,206 +69,165 @@ void main() {
 
 }
 `;
-class RangeParticleMaterial extends ShaderMaterial {
-  constructor(params) {
-    super();
-    this.uniforms = {
-      flicker: { value: params.flicker || false },
-      time: { value: params.time || 0 },
-      alphaMap: { value: params.alphaMap || null },
-      size: { value: params.size || 1 },
-      opacity: { value: params.opacity || 1 },
-      floatRange: { value: params.floatRange || 5 },
-      useAlphaMap: { value: params.useAlphaMap || false }
-    };
-    this.vertexShader = vertex;
-    this.fragmentShader = fragment;
-    this.vertexColors = true;
-    this.blending = AdditiveBlending;
-    this.transparent = true;
+class C extends p {
+  constructor(t) {
+    super(), this.uniforms = {
+      flicker: { value: t.flicker || !1 },
+      time: { value: t.time || 0 },
+      alphaMap: { value: t.alphaMap || null },
+      size: { value: t.size || 1 },
+      opacity: { value: t.opacity || 1 },
+      floatRange: { value: t.floatRange || 5 },
+      useAlphaMap: { value: t.useAlphaMap || !1 }
+    }, this.vertexShader = v, this.fragmentShader = y, this.vertexColors = !0, this.blending = d, this.transparent = !0;
   }
 }
-class FloatParticle extends Points {
-  constructor(params) {
-    super();
-    __publicField(this, "range", {
+class M extends h {
+  constructor(t) {
+    super(), this.range = {
       top: 100,
       bottom: -100,
       left: -100,
       right: 100,
       front: 100,
       back: -100
-    });
-    __publicField(this, "amount", 200);
-    __publicField(this, "refColor", new Color(1, 1, 1));
-    __publicField(this, "colorRange", 1);
-    this.raycast = () => {
-    };
-    Object.assign(this.range, params.range);
-    this.refColor.setHex(params.refColor.getHex());
-    this.colorRange = params.colorRange;
-    this.amount = params.amount;
-    this.resetGeometry();
-    this.material = new RangeParticleMaterial({
-      size: params.size || 1,
-      alphaMap: params.alphaMap || null,
-      opacity: params.opacity || 1,
-      flicker: params.flicker,
-      floatRange: params.floatRange,
-      useAlphaMap: params.alphaMap ? true : false
+    }, this.amount = 200, this.refColor = new u(1, 1, 1), this.colorRange = 1, this.raycast = () => {
+    }, Object.assign(this.range, t.range), this.refColor.setHex(t.refColor.getHex()), this.colorRange = t.colorRange, this.amount = t.amount, this.resetGeometry(), this.material = new C({
+      size: t.size || 1,
+      alphaMap: t.alphaMap || null,
+      opacity: t.opacity || 1,
+      flicker: t.flicker,
+      floatRange: t.floatRange,
+      useAlphaMap: !!t.alphaMap
     });
   }
-  getRandomNum(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  getRandomNum(t, e) {
+    return Math.floor(Math.random() * (e - t + 1)) + t;
   }
-  getRandomColor(key) {
-    const color = this.refColor;
-    const colorRange = this.colorRange;
+  getRandomColor(t) {
+    const e = this.refColor, r = this.colorRange;
     return this.getRandomNum(
-      color[key] - color[key] * colorRange,
-      (1 - color[key]) * colorRange + color[key]
+      e[t] - e[t] * r,
+      (1 - e[t]) * r + e[t]
     );
   }
   updateGeometry() {
-    const range = this.range;
-    const geometry = this.geometry;
-    const amount = this.amount;
-    const position = geometry.getAttribute("position");
-    const color = geometry.getAttribute("color");
-    for (let index2 = 0; index2 < amount; index2 += 1) {
-      position.setXYZ(
-        index2,
-        this.getRandomNum(range.left, range.right),
-        this.getRandomNum(range.bottom, range.top),
-        this.getRandomNum(range.back, range.front)
-      );
-      color.setXYZ(
-        index2,
+    const t = this.range, e = this.geometry, r = this.amount, i = e.getAttribute("position"), a = e.getAttribute("color");
+    for (let o = 0; o < r; o += 1)
+      i.setXYZ(
+        o,
+        this.getRandomNum(t.left, t.right),
+        this.getRandomNum(t.bottom, t.top),
+        this.getRandomNum(t.back, t.front)
+      ), a.setXYZ(
+        o,
         this.getRandomColor("r"),
         this.getRandomColor("g"),
         this.getRandomColor("b")
       );
-    }
-    position.needsUpdate = true;
-    color.needsUpdate = true;
+    i.needsUpdate = !0, a.needsUpdate = !0;
   }
   resetGeometry() {
-    const range = this.range;
-    const geometry = this.geometry;
-    const amount = this.amount;
-    const position = new Array(amount * 3);
-    const color = new Array(amount * 3);
-    for (let index2 = 0; index2 < amount * 3; index2 += 3) {
-      position[index2] = this.getRandomNum(range.left, range.right);
-      position[index2 + 1] = this.getRandomNum(range.bottom, range.top);
-      position[index2 + 2] = this.getRandomNum(range.back, range.front);
-      color[index2] = this.getRandomColor("r");
-      color[index2 + 1] = this.getRandomColor("g");
-      color[index2 + 2] = this.getRandomColor("b");
-    }
-    geometry.setAttribute(
+    const t = this.range, e = this.geometry, r = this.amount, i = new Array(r * 3), a = new Array(r * 3);
+    for (let o = 0; o < r * 3; o += 3)
+      i[o] = this.getRandomNum(t.left, t.right), i[o + 1] = this.getRandomNum(t.bottom, t.top), i[o + 2] = this.getRandomNum(t.back, t.front), a[o] = this.getRandomColor("r"), a[o + 1] = this.getRandomColor("g"), a[o + 2] = this.getRandomColor("b");
+    e.setAttribute(
       "position",
-      new BufferAttribute(new Float32Array(position), 3)
-    );
-    geometry.setAttribute(
+      new s(new Float32Array(i), 3)
+    ), e.setAttribute(
       "color",
-      new BufferAttribute(new Float32Array(color), 3)
+      new s(new Float32Array(a), 3)
     );
   }
   dispose() {
-    this.geometry.dispose();
-    this.material.dispose();
-    this.removeFromParent();
+    this.geometry.dispose(), this.material.dispose(), this.removeFromParent();
   }
 }
-var FloatParticleProcessor = defineProcessor({
-  type: "FloatParticle",
-  config: getFloatParticleConfig,
-  commands: {
-    set: {
-      range(params) {
-        Object.assign(params.target.range, params.config.range);
-        params.target.updateGeometry();
-      },
-      amount(params) {
-        params.target.amount = params.value;
-        params.target.resetGeometry();
-      },
-      time(params) {
-        params.target.material.uniforms.time.value = params.value;
-      },
-      flicker(params) {
-        params.target.material.uniforms.flicker.value = params.value;
-      },
-      size(params) {
-        params.target.material.uniforms.size.value = params.value;
-      },
-      opacity(params) {
-        params.target.material.uniforms.opacity.value = params.value;
-      },
-      floatRange(params) {
-        params.target.material.uniforms.floatRange.value = params.value;
-      },
-      colorRange(params) {
-        params.target.colorRange = params.value;
-        params.target.updateGeometry();
-      },
-      refColor(params) {
-        params.target.refColor.setStyle(params.value);
-        params.target.updateGeometry();
-      },
-      alphaMap(params) {
-        const texture = params.engine.getObjectfromModule(
-          MODULETYPE.TEXTURE,
-          params.value
-        ) || null;
-        params.target.material.uniforms.alphaMap.value = texture;
-        params.target.material.uniforms.useAlphaMap.value = texture ? true : false;
+const b = m(
+  (l) => ({
+    type: "FloatParticle",
+    config: R,
+    commands: {
+      set: {
+        range(t) {
+          Object.assign(t.target.range, t.config.range), t.target.updateGeometry();
+        },
+        amount(t) {
+          t.target.amount = t.value, t.target.resetGeometry();
+        },
+        time(t) {
+          t.target.material.uniforms.time.value = t.value;
+        },
+        flicker(t) {
+          t.target.material.uniforms.flicker.value = t.value;
+        },
+        size(t) {
+          t.target.material.uniforms.size.value = t.value;
+        },
+        opacity(t) {
+          t.target.material.uniforms.opacity.value = t.value;
+        },
+        floatRange(t) {
+          t.target.material.uniforms.floatRange.value = t.value;
+        },
+        colorRange(t) {
+          t.target.colorRange = t.value, t.target.updateGeometry();
+        },
+        refColor(t) {
+          t.target.refColor.setStyle(t.value), t.target.updateGeometry();
+        },
+        alphaMap(t) {
+          const e = t.engine.getObjectFromModule(
+            n.TEXTURE,
+            t.value
+          ) || null;
+          t.target.material.uniforms.alphaMap.value = e, t.target.material.uniforms.useAlphaMap.value = !!e;
+        }
       }
+    },
+    create({ model: t, config: e, engine: r }) {
+      const i = new M({
+        range: { ...e.range },
+        amount: e.amount,
+        size: e.size,
+        opacity: e.opacity,
+        alphaMap: r.getObjectFromModule(
+          n.TEXTURE,
+          e.alphaMap
+        ),
+        flicker: e.flicker,
+        floatRange: e.floatRange,
+        refColor: new u(e.refColor),
+        colorRange: e.colorRange
+      });
+      return l.create({
+        model: t,
+        target: i,
+        config: e,
+        filter: {
+          range: !0,
+          amount: !0,
+          size: !0,
+          alphaMap: !0,
+          opacity: !0,
+          flicker: !0,
+          floatRange: !0,
+          refColor: !0,
+          colorRange: !0
+        },
+        engine: r
+      }), i;
+    },
+    dispose({ target: t }) {
+      t.dispose();
     }
-  },
-  create(config, engine) {
-    const particle = new FloatParticle({
-      range: { ...config.range },
-      amount: config.amount,
-      size: config.size,
-      opacity: config.opacity,
-      alphaMap: engine.getObjectfromModule(
-        MODULETYPE.TEXTURE,
-        config.alphaMap
-      ),
-      flicker: config.flicker,
-      floatRange: config.floatRange,
-      refColor: new Color(config.refColor),
-      colorRange: config.colorRange
-    });
-    return objectCreate(
-      particle,
-      config,
-      {
-        range: true,
-        amount: true,
-        size: true,
-        alphaMap: true,
-        opacity: true,
-        flicker: true,
-        floatRange: true,
-        refColor: true,
-        colorRange: true
-      },
-      engine
-    );
-  },
-  dispose(target) {
-    target.dispose();
-  }
-});
-var index = {
+  })
+), P = g({
   type: "particle",
-  object: true,
-  compiler: ParticleCompiler,
-  rule: ParticleRule,
-  processors: [FloatParticleProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.THREE
+  object: !0,
+  models: [b],
+  lifeOrder: c.THREE
+});
+export {
+  P as default
 };
-export { index as default };
