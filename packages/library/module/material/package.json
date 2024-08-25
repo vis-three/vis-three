@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-material",
-  "version": "0.6.7",
+  "version": "0.7.0",
   "description": "vis-three material module",
   "main": "dist/vis-three.module-material.umd.js",
   "module": "dist/vis-three.module-material.es.js",
