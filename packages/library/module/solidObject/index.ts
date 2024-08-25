@@ -17,6 +17,8 @@ import {
 } from "@vis-three/tdcm";
 import { IgnoreAttribute } from "@vis-three/utils";
 
+export * from "./SolidObjectConfig";
+
 export interface SolidObjectShared {
   replaceMaterial: ShaderMaterial;
   replaceGeometry: BoxGeometry;

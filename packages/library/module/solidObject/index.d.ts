@@ -2,6 +2,7 @@ import { SolidObjectConfig } from "./SolidObjectConfig";
 import { BoxGeometry, Object3D, ShaderMaterial } from "three";
 import { CommandParameters, Compiler, EngineSupport, Model } from "@vis-three/tdcm";
 import { IgnoreAttribute } from "@vis-three/utils";
+export * from "./SolidObjectConfig";
 export interface SolidObjectShared {
     replaceMaterial: ShaderMaterial;
     replaceGeometry: BoxGeometry;

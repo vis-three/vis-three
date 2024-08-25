@@ -1,7 +1,12 @@
-import { defineObjectModel as s } from "@vis-three/module-object";
-import { ShaderMaterial as p, BoxGeometry as y } from "three";
-import { MODULE_TYPE as m } from "@vis-three/tdcm";
-const n = function({
+import { getObjectConfig as s, defineObjectModel as p } from "@vis-three/module-object";
+import { ShaderMaterial as y, BoxGeometry as M } from "three";
+import { MODULE_TYPE as n } from "@vis-three/tdcm";
+const u = function() {
+  return Object.assign(s(), {
+    material: "",
+    geometry: ""
+  });
+}, m = function({
   model: r,
   target: a,
   value: t,
@@ -9,7 +14,7 @@ const n = function({
 }) {
   r.toAsync((i) => {
     const e = o.compilerManager.getObjectFromModule(
-      m.GEOMETRY,
+      n.GEOMETRY,
       t
     );
     return e ? (a.geometry = e, !0) : (i && console.warn(`can not found geometry by vid in engine: ${t}`), a.geometry = r.replaceGeometry, !1);
@@ -23,32 +28,32 @@ const n = function({
   r.toAsync((i) => {
     let e;
     return typeof t.material == "string" ? e = o.compilerManager.getObjectFromModule(
-      m.MATERIAL,
+      n.MATERIAL,
       t.material
     ) || r.replaceMaterial : e = t.material.map(
       (c) => o.compilerManager.getObjectFromModule(
-        m.MATERIAL,
+        n.MATERIAL,
         c
       ) || r.replaceMaterial
     ), a.material = e, !(Array.isArray(e) && e.length && e[0] === r.replaceMaterial || e === r.replaceMaterial);
   });
-}, u = s.extend((r) => ({
+}, O = p.extend((r) => ({
   shared: {
-    replaceMaterial: new p({
+    replaceMaterial: new y({
       fragmentShader: `
       void main () {
         gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
       }
       `
     }),
-    replaceGeometry: new y(10, 10, 10)
+    replaceGeometry: new M(10, 10, 10)
   },
   commands: {
     add: {
       material: l
     },
     set: {
-      geometry: n,
+      geometry: m,
       material: l
     },
     delete: {
@@ -56,7 +61,7 @@ const n = function({
     }
   },
   create({ model: a, target: t, config: o, filter: i, engine: e }) {
-    i.geometry || (t.geometry.dispose(), n.call(a, {
+    i.geometry || (t.geometry.dispose(), m.call(a, {
       model: a,
       target: t,
       value: o.geometry,
@@ -78,7 +83,8 @@ const n = function({
   }
 }));
 export {
-  u as defineSolidObjectModel,
-  n as geometryHandler,
+  O as defineSolidObjectModel,
+  m as geometryHandler,
+  u as getSolidObjectConfig,
   l as materialHandler
 };
