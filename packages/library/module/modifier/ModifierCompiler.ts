@@ -1,13 +1,12 @@
-import { Compiler } from "@vis-three/middleware";
+import { Compiler, CompilerParameters, EngineSupport } from "@vis-three/tdcm";
 import { Modifier } from "@vis-three/modifier-base";
-import { ModifierAllType } from "./ModifierConfig";
 
-export class ModifierCompiler extends Compiler<ModifierAllType, Modifier> {
+export class ModifierCompiler extends Compiler<EngineSupport> {
   cacheRenderFun: Map<Modifier, any> = new Map();
 
   sourceModifiers: Map<object, Modifier[]> = new Map();
-  constructor() {
-    super();
+  constructor(params: CompilerParameters) {
+    super(params);
   }
 
   integrateModifer(modifier: Modifier) {

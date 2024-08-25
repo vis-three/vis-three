@@ -1,6 +1,6 @@
-import { getSymbolConfig, SymbolConfig } from "@vis-three/middleware";
+import { getBasicConfig, BasicConfig } from "@vis-three/tdcm";
 
-export interface ModifierConfig extends SymbolConfig {
+export interface ModifierConfig extends BasicConfig {
   name: string;
   visible: boolean;
   source: string;
@@ -14,7 +14,7 @@ export interface BooleanModifierConfig extends ModifierConfig {
 export type ModifierAllType = BooleanModifierConfig;
 
 export const getModifierConfig = function (): ModifierConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     name: "",
     visible: true,
     source: "",

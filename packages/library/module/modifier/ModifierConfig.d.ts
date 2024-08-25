@@ -1,5 +1,5 @@
-import { SymbolConfig } from "@vis-three/middleware";
-export interface ModifierConfig extends SymbolConfig {
+import { BasicConfig } from "@vis-three/tdcm";
+export interface ModifierConfig extends BasicConfig {
     name: string;
     visible: boolean;
     source: string;

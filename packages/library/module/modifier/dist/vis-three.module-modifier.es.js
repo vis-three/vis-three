@@ -1,234 +1,175 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-import { getSymbolConfig, defineProcessor, globalAntiShake, Bus, COMPILER_EVENT, Compiler, Rule, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { BooleanModifier } from "@vis-three/library-modifier";
-import { syncObject } from "@vis-three/utils";
-const getModifierConfig = function() {
-  return Object.assign(getSymbolConfig(), {
+import { Compiler as y, getBasicConfig as g, defineModel as p, MODEL_EVENT as a, defineModule as h, SUPPORT_LIFE_CYCLE as l } from "@vis-three/tdcm";
+import { BooleanModifier as E } from "@vis-three/library-modifier";
+import { syncObject as O } from "@vis-three/utils";
+class T extends y {
+  constructor(r) {
+    super(r), this.cacheRenderFun = /* @__PURE__ */ new Map(), this.sourceModifiers = /* @__PURE__ */ new Map();
+  }
+  integrateModifer(r) {
+    this.sourceModifiers.has(r.source) || this.sourceModifiers.set(r.source, []);
+    const t = this.sourceModifiers.get(r.source);
+    t.includes(r) || t.push(r);
+  }
+  chainRender(r) {
+    if (!this.sourceModifiers.has(r.source)) {
+      console.error(
+        `${this.MODULE} compiler can not found modifier list`,
+        r
+      );
+      return;
+    }
+    const t = this.sourceModifiers.get(r.source);
+    t.includes(r) || console.error(
+      `${this.MODULE} compiler: can not found this modifier in source list`,
+      r
+    );
+    const i = t.slice(t.indexOf(r) + 1, t.length);
+    for (const n of i)
+      n.render();
+  }
+}
+const b = function() {
+  return Object.assign(g(), {
     name: "",
-    visible: true,
+    visible: !0,
     source: "",
     index: 0
   });
-};
-const getBooleanModifierConfig = function() {
-  return Object.assign(getModifierConfig(), {
+}, F = function() {
+  return Object.assign(b(), {
     target: "",
     mode: "subtract"
   });
-};
-const modifyKey = [
-  "position.x",
-  "position.y",
-  "position.z",
-  "rotation.x",
-  "rotation.y",
-  "rotation.z",
-  "scale.x",
-  "scale.y",
-  "scale.z",
-  "parent"
-];
-const cacheTarget = /* @__PURE__ */ new Map();
-var BooleanModifierProcessor = defineProcessor({
+}, C = p({
   type: "BooleanModifier",
-  config: getBooleanModifierConfig,
+  config: F,
+  shared: {
+    modifyKey: [
+      "position.x",
+      "position.y",
+      "position.z",
+      "rotation.x",
+      "rotation.y",
+      "rotation.z",
+      "scale.x",
+      "scale.y",
+      "scale.z",
+      "parent"
+    ]
+  },
+  context() {
+    return {
+      renderFun: () => {
+      },
+      cacheTarget: {}
+    };
+  },
   commands: {
     set: {
       source: () => {
       },
-      target: ({ target: modifier, config, engine, compiler }) => {
-        globalAntiShake.exec((finish) => {
-          if (config.target) {
-            const target = engine.compilerManager.getObjectBySymbol(
-              config.target
+      target: ({ model: e, target: r, config: t, engine: i }) => {
+        e.toAsync((n) => {
+          var f, c;
+          if (t.target) {
+            const o = i.compilerManager.getObjectBySymbol(
+              t.target
             );
-            if (!target) {
-              finish && console.warn(
-                `Boolean modifier processor can not found object by vid: ${config.target}`
-              );
-              return false;
-            }
-            modifier.target = target;
-            const renderFun = compiler.cacheRenderFun.get(modifier);
-            if (!renderFun) {
-              console.error(
-                `can not found cache render fun in ${compiler.MODULE} compiler`
-              );
-              return true;
-            }
-            const oldTarget = cacheTarget.get(modifier);
-            if (oldTarget) {
-              for (const key of modifyKey) {
-                Bus.compilerEvent.off(
-                  oldTarget,
-                  `${COMPILER_EVENT.COMPILE}:${key}`,
-                  renderFun
+            if (!o)
+              return n && console.warn(
+                `Boolean modifier processor can not found object by vid: ${t.target}`
+              ), !1;
+            r.target = o;
+            const s = e.cacheTarget;
+            if (s) {
+              const d = e.toModel(s);
+              for (const M of e.modifyKey)
+                d == null || d.off(
+                  `${a.COMPILED_ATTR}:${M}`,
+                  e.renderFun
                 );
-              }
-              Bus.compilerEvent.off(
-                oldTarget.geometry,
-                COMPILER_EVENT.UPDATE,
-                renderFun
-              );
+              (f = e.toModel(s.geometry)) == null || f.off(a.COMPILED_UPDATE, e.renderFun);
             }
-            for (const key of modifyKey) {
-              Bus.compilerEvent.on(
-                target,
-                `${COMPILER_EVENT.COMPILE}:${key}`,
-                renderFun
+            const u = e.toModel(t.target);
+            for (const d of e.modifyKey)
+              u == null || u.off(
+                `${a.COMPILED_ATTR}:${d}`,
+                e.renderFun
               );
-            }
-            Bus.compilerEvent.on(
-              target.geometry,
-              COMPILER_EVENT.UPDATE,
-              renderFun
-            );
-            cacheTarget.set(modifier, target);
-            renderFun();
-            return true;
+            return (c = e.toModel(o.geometry)) == null || c.off(a.COMPILED_UPDATE, e.renderFun), e.cacheTarget = o, e.renderFun(), !0;
           }
-          return true;
+          return !0;
         });
       },
       $reg: [
         {
           reg: new RegExp(".*"),
-          handler({ value, key, target: modifier, compiler }) {
-            modifier[key] = value;
-            const renderFun = compiler.cacheRenderFun.get(modifier);
-            if (!renderFun) {
-              console.error(
-                `can not found cache render fun in ${compiler.MODULE} compiler`
-              );
-              return;
-            }
-            renderFun();
+          handler({ model: e, value: r, key: t, target: i }) {
+            i[t] = r, e.renderFun();
           }
         }
       ]
     }
   },
-  create: function(config, engine, compiler) {
-    const modifier = new BooleanModifier({
-      mode: config.mode
+  create({ model: e, config: r, engine: t, compiler: i }) {
+    const n = new E({
+      mode: r.mode
     });
-    const renderFun = () => {
-      modifier.render();
-      compiler.chainRender(modifier);
-    };
-    compiler.cacheRenderFun.set(modifier, renderFun);
-    globalAntiShake.exec((finish) => {
-      if (config.source) {
-        const source = engine.compilerManager.getObjectBySymbol(
-          config.source
+    return e.renderFun = () => {
+      n.render(), i.chainRender(n);
+    }, e.toAsync((f) => {
+      var c;
+      if (r.source) {
+        const o = t.compilerManager.getObjectBySymbol(
+          r.source
         );
-        if (!source) {
-          finish && console.warn(
-            `Boolean modifier processor can not found object by vid: ${config.source}`
+        if (!o)
+          return f && console.warn(
+            `Boolean modifier processor can not found object by vid: ${r.source}`
+          ), !1;
+        const s = e.toModel(r.source);
+        for (const u of e.modifyKey)
+          s == null || s.on(
+            `${a.COMPILED_ATTR}:${u}`,
+            e.renderFun
           );
-          return false;
-        }
-        for (const key of modifyKey) {
-          Bus.compilerEvent.on(
-            source,
-            `${COMPILER_EVENT.COMPILE}:${key}`,
-            renderFun
-          );
-        }
-        Bus.compilerEvent.check(source.geometry) && Bus.compilerEvent.on(
-          source.geometry,
-          COMPILER_EVENT.UPDATE,
-          renderFun
-        );
-        modifier.source = source;
-        compiler.integrateModifer(modifier);
-        renderFun();
-        return true;
+        return (c = e.toModel(o.geometry)) == null || c.on(a.COMPILED_UPDATE, e.renderFun), n.source = o, i.integrateModifer(n), e.renderFun(), !0;
       }
-      return true;
-    });
-    globalAntiShake.exec((finish) => {
-      if (config.target) {
-        const target = engine.compilerManager.getObjectBySymbol(
-          config.target
+      return !0;
+    }), e.toAsync((f) => {
+      var c;
+      if (r.target) {
+        const o = t.compilerManager.getObjectBySymbol(
+          r.target
         );
-        if (!target) {
-          finish && console.warn(
-            `Boolean modifier processor can not found object by vid: ${config.target}`
+        if (!o)
+          return f && console.warn(
+            `Boolean modifier processor can not found object by vid: ${r.target}`
+          ), !1;
+        n.target = o;
+        const s = e.toModel(r.target);
+        for (const u of e.modifyKey)
+          s == null || s.on(
+            `${a.COMPILED_ATTR}:${u}`,
+            e.renderFun
           );
-          return false;
-        }
-        modifier.target = target;
-        for (const key of modifyKey) {
-          Bus.compilerEvent.on(
-            target,
-            `${COMPILER_EVENT.COMPILE}:${key}`,
-            renderFun
-          );
-        }
-        Bus.compilerEvent.on(target.geometry, COMPILER_EVENT.UPDATE, renderFun);
-        cacheTarget.set(modifier, target);
-        renderFun();
-        return true;
+        return (c = e.toModel(o.geometry)) == null || c.on(a.COMPILED_UPDATE, e.renderFun), e.cacheTarget = o, e.renderFun(), !0;
       }
-      return true;
-    });
-    syncObject(config, modifier, { target: true, source: true });
-    return modifier;
+      return !0;
+    }), O(r, n, { target: !0, source: !0 }), n;
   },
-  dispose: function(target, engine, compiler) {
-    target.dispose();
+  dispose({ target: e }) {
+    e.dispose();
   }
-});
-class ModifierCompiler extends Compiler {
-  constructor() {
-    super();
-    __publicField(this, "cacheRenderFun", /* @__PURE__ */ new Map());
-    __publicField(this, "sourceModifiers", /* @__PURE__ */ new Map());
-  }
-  integrateModifer(modifier) {
-    if (!this.sourceModifiers.has(modifier.source)) {
-      this.sourceModifiers.set(modifier.source, []);
-    }
-    const list = this.sourceModifiers.get(modifier.source);
-    if (!list.includes(modifier)) {
-      list.push(modifier);
-    }
-  }
-  chainRender(modifier) {
-    if (!this.sourceModifiers.has(modifier.source)) {
-      console.error(
-        `${this.MODULE} compiler can not found modifier list`,
-        modifier
-      );
-      return;
-    }
-    const list = this.sourceModifiers.get(modifier.source);
-    if (!list.includes(modifier)) {
-      console.error(
-        `${this.MODULE} compiler: can not found this modifier in source list`,
-        modifier
-      );
-    }
-    const renderList = list.slice(list.indexOf(modifier) + 1, list.length);
-    for (const modifier2 of renderList) {
-      modifier2.render();
-    }
-  }
-}
-const ModifierRule = function(notice, compiler) {
-  Rule(notice, compiler);
-};
-var index = {
+}), $ = h({
   type: "modifier",
-  compiler: ModifierCompiler,
-  rule: ModifierRule,
-  processors: [BooleanModifierProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.NINE
+  compiler: T,
+  models: [C],
+  lifeOrder: l.NINE
+});
+export {
+  T as ModifierCompiler,
+  $ as default,
+  F as getBooleanModifierConfig,
+  b as getModifierConfig
 };
-export { ModifierCompiler, index as default, getBooleanModifierConfig, getModifierConfig };

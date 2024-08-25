@@ -1,15 +1,14 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import BooleanModifierProcessor from "./processors/BooleanModifierProcessor";
+import { SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
 import { ModifierCompiler } from "./ModifierCompiler";
-import { ModifierRule } from "./ModifierRule";
+import { defineModule } from "@vis-three/tdcm";
+import BooleanModifierModel from "./models/BooleanModifierModel";
 
 export * from "./ModifierCompiler";
 export * from "./ModifierConfig";
 
-export default {
+export default defineModule({
   type: "modifier",
   compiler: ModifierCompiler,
-  rule: ModifierRule,
-  processors: [BooleanModifierProcessor],
+  models: [BooleanModifierModel],
   lifeOrder: SUPPORT_LIFE_CYCLE.NINE,
-};
+});
