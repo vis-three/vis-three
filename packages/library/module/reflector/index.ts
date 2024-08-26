@@ -1,13 +1,11 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { ReflectorCompiler } from "./ReflectorCompiler";
-import { ReflectorRule } from "./ReflectorRule";
-import ReflectorProcessor from "./processors/ReflectorProcessor";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import { ObjectRule } from "@vis-three/module-object";
+import ReflectorModel from "./models/ReflectorModel";
 
-export default {
+export default defineModule({
   type: "reflector",
   object: true,
-  compiler: ReflectorCompiler,
-  rule: ReflectorRule,
-  processors: [ReflectorProcessor],
+  rule: ObjectRule,
+  models: [ReflectorModel],
   lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
-};
+});
