@@ -1,36 +1,38 @@
-import { defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { SolidObjectCompiler, getSolidObjectConfig, solidObjectCommands, solidObjectCreate, solidObjectDispose } from "@vis-three/module-solid-object";
-import { Points } from "three";
-import { ObjectRule } from "@vis-three/module-object";
-class PointsCompiler extends SolidObjectCompiler {
-  constructor() {
-    super();
-  }
-}
-const getPointsConfig = function() {
-  return Object.assign(getSolidObjectConfig(), {
+import { defineModule as n, SUPPORT_LIFE_CYCLE as s } from "@vis-three/tdcm";
+import { getSolidObjectConfig as f, defineSolidObjectModel as m } from "@vis-three/module-solid-object";
+import { Points as c } from "three";
+import { ObjectRule as d } from "@vis-three/module-object";
+const p = function() {
+  return Object.assign(f(), {
     geometry: "",
     material: ""
   });
-};
-var PointsProcessor = defineProcessor({
-  type: "Points",
-  config: getPointsConfig,
-  commands: solidObjectCommands,
-  create(config, engine) {
-    return solidObjectCreate(new Points(), config, {}, engine);
-  },
-  dispose: solidObjectDispose
-});
-const PointsRule = function(notice, compiler) {
-  ObjectRule(notice, compiler);
-};
-var index = {
+}, O = n({
   type: "points",
-  object: true,
-  compiler: PointsCompiler,
-  rule: PointsRule,
-  processors: [PointsProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.THREE
+  object: !0,
+  models: [
+    m((t) => ({
+      type: "Points",
+      config: p,
+      create({ model: e, config: r, engine: i }) {
+        const o = new c();
+        return t.create({
+          model: e,
+          config: r,
+          engine: i,
+          target: o,
+          filter: {}
+        }), o;
+      },
+      dispose({ target: e }) {
+        t.dispose({ target: e });
+      }
+    }))
+  ],
+  rule: d,
+  lifeOrder: s.THREE
+});
+export {
+  O as default,
+  p as getPointsConfig
 };
-export { PointsCompiler, index as default, getPointsConfig };
