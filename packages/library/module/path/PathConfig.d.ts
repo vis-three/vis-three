@@ -1,4 +1,4 @@
-import { SymbolConfig } from "@vis-three/middleware";
+import { BasicConfig } from "@vis-three/tdcm";
 export type LineSegmentConfig = [number, number, number, number];
 export type ArcSegmentConfig = [number, number, number, number, number, number];
 export type bezierSegmentConfig = [
@@ -21,14 +21,14 @@ export type quadraticSegmentConfig = [
 export interface SegmentConfig {
     /**路径名称：line, arc,  bezier, quadratic*/
     curve: string;
-    params: LineSegmentConfig | ArcSegmentConfig | bezierSegmentConfig | quadraticSegmentConfig;
+    params: number[];
 }
-export interface PathConfig extends SymbolConfig {
+export interface PathConfig extends BasicConfig {
     curves: SegmentConfig[];
     /**自动闭合路径，会在头尾之间添加一条直线line */
     autoClose: boolean;
 }
-export interface Path3Config extends SymbolConfig {
+export interface Path3Config extends BasicConfig {
     curves: SegmentConfig[];
     /**自动闭合路径，会在头尾之间添加一条直线line */
     autoClose: boolean;

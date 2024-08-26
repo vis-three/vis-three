@@ -1,4 +1,4 @@
-import { SymbolConfig, getSymbolConfig } from "@vis-three/middleware";
+import { BasicConfig, getBasicConfig } from "@vis-three/tdcm";
 
 export type LineSegmentConfig = [number, number, number, number];
 export type ArcSegmentConfig = [number, number, number, number, number, number];
@@ -27,25 +27,25 @@ export interface SegmentConfig {
   params: number[];
 }
 
-export interface PathConfig extends SymbolConfig {
+export interface PathConfig extends BasicConfig {
   curves: SegmentConfig[];
   /**自动闭合路径，会在头尾之间添加一条直线line */
   autoClose: boolean;
 }
 
-export interface Path3Config extends SymbolConfig {
+export interface Path3Config extends BasicConfig {
   curves: SegmentConfig[];
   /**自动闭合路径，会在头尾之间添加一条直线line */
   autoClose: boolean;
 }
 
 export const getPathConfig = function (): PathConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     curves: [],
     autoClose: false,
   });
 };
 
 export const getPath3Config = function (): Path3Config {
-  return Object.assign(getSymbolConfig(), { curves: [], autoClose: false });
+  return Object.assign(getBasicConfig(), { curves: [], autoClose: false });
 };

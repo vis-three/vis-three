@@ -1,345 +1,283 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-import { Compiler, Rule, getSymbolConfig, defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { validate } from "uuid";
-import { EllipseCurve, MathUtils, Vector2, Path, LineCurve, CubicBezierCurve, QuadraticBezierCurve, LineCurve3, Vector3, CubicBezierCurve3, QuadraticBezierCurve3 } from "three";
-class PathCompiler extends Compiler {
-  constructor() {
-    super();
-  }
-  compile(vid, notice) {
-    super.compile(vid, notice);
-    return this;
-  }
-}
-const PathRule = function(input, compiler, validateFun = validate) {
-  Rule(input, compiler, validateFun);
-};
-const getPathConfig = function() {
-  return Object.assign(getSymbolConfig(), {
+import { getBasicConfig as O, defineModel as j, defineModule as $, SUPPORT_LIFE_CYCLE as k } from "@vis-three/tdcm";
+import { EllipseCurve as F, Vector2 as o, MathUtils as T, Path as Z, LineCurve as G, CubicBezierCurve as B, QuadraticBezierCurve as H, CurvePath as J, LineCurve3 as K, Vector3 as l, CubicBezierCurve3 as W, QuadraticBezierCurve3 as Y } from "three";
+const X = function() {
+  return Object.assign(O(), {
     curves: [],
-    autoClose: false
+    autoClose: !1
   });
-};
-const getPath3Config = function() {
-  return Object.assign(getSymbolConfig(), { curves: [], autoClose: false });
-};
-const _ArcCurve = class extends EllipseCurve {
-  constructor(startX, startY, ctX, ctY, endX, endY) {
-    super(0, 0, 1, 1, 0, Math.PI * 2, false, 0);
-    __publicField(this, "start", new Vector2());
-    __publicField(this, "end", new Vector2());
-    __publicField(this, "vertical", 0);
-    __publicField(this, "center", new Vector2());
-    __publicField(this, "mid", new Vector2());
-    const x1 = startX;
-    const x2 = ctX;
-    const x3 = endX;
-    const y1 = startY;
-    const y2 = ctY;
-    const y3 = endY;
-    const a = x1 - x2;
-    const b = y1 - y2;
-    const c = x1 - x3;
-    const d = y1 - y3;
-    const e = (x1 * x1 - x2 * x2 + (y1 * y1 - y2 * y2)) / 2;
-    const f = (x1 * x1 - x3 * x3 + (y1 * y1 - y3 * y3)) / 2;
-    const det = b * c - a * d;
-    const rx = -(d * e - b * f) / det;
-    const ry = -(a * f - c * e) / det;
-    const mx = (x3 + x1) / 2;
-    const my = (y3 + y1) / 2;
-    const direction = _ArcCurve.isLeft(
-      _ArcCurve.tempVector1.set(x1, y1),
-      _ArcCurve.tempVector2.set(x3, y3),
-      _ArcCurve.tempVector3.set(rx, ry)
-    );
-    const vertical = _ArcCurve.tempVector1.set(rx, ry).sub(_ArcCurve.tempVector2.set(mx, my)).length() * (direction ? -1 : 1);
-    this.start.set(startX, startY);
-    this.end.set(endX, endY);
-    this.vertical = vertical;
-    const start = this.start;
-    const end = this.end;
-    const center = this.center.copy(this.end).sub(this.start);
-    const mid = this.mid.set(mx, my);
-    center.set(-center.y, center.x).negate().normalize().multiplyScalar(vertical).add(mid);
-    this.aX = center.x;
-    this.aY = center.y;
-    const tempVector1 = _ArcCurve.tempVector1;
-    this.xRadius = tempVector1.copy(end).sub(center).length();
-    this.yRadius = this.xRadius;
-    this.aStartAngle = tempVector1.copy(start).sub(center).angle();
-    this.aEndAngle = tempVector1.copy(end).sub(center).angle();
-    const midPoint3 = _ArcCurve.tempVector2.set(x2, y2).sub(mid);
-    const midRadius = _ArcCurve.tempVector3.set(rx, ry).sub(mid);
-    this.aClockwise = (direction ? 1 : -1) * (_ArcCurve.isSameDirecton(midPoint3, midRadius) ? 1 : -1) < 0 ? false : true;
+}, A = function() {
+  return Object.assign(O(), { curves: [], autoClose: !1 });
+}, h = class h extends F {
+  constructor(t, r, s, a, n, c) {
+    super(0, 0, 1, 1, 0, Math.PI * 2, !1, 0), this.start = new o(), this.end = new o(), this.vertical = 0, this.center = new o(), this.mid = new o();
+    const u = t, i = s, p = n, v = r, x = a, d = c, w = u - i, g = v - x, V = u - p, z = v - d, M = (u * u - i * i + (v * v - x * x)) / 2, f = (u * u - p * p + (v * v - d * d)) / 2, N = g * V - w * z, y = -(z * M - g * f) / N, C = -(w * f - V * M) / N, I = (p + u) / 2, S = (d + v) / 2, L = h.isLeft(
+      h.tempVector1.set(u, v),
+      h.tempVector2.set(p, d),
+      h.tempVector3.set(y, C)
+    ), R = h.tempVector1.set(y, C).sub(h.tempVector2.set(I, S)).length() * (L ? -1 : 1);
+    this.start.set(t, r), this.end.set(n, c), this.vertical = R;
+    const D = this.start, q = this.end, m = this.center.copy(this.end).sub(this.start), P = this.mid.set(I, S);
+    m.set(-m.y, m.x).negate().normalize().multiplyScalar(R).add(P), this.aX = m.x, this.aY = m.y;
+    const b = h.tempVector1;
+    this.xRadius = b.copy(q).sub(m).length(), this.yRadius = this.xRadius, this.aStartAngle = b.copy(D).sub(m).angle(), this.aEndAngle = b.copy(q).sub(m).angle();
+    const Q = h.tempVector2.set(i, x).sub(P), U = h.tempVector3.set(y, C).sub(P);
+    this.aClockwise = !((L ? 1 : -1) * (h.isSameDirecton(Q, U) ? 1 : -1) < 0);
   }
 };
-let ArcCurve = _ArcCurve;
-__publicField(ArcCurve, "isLeft", function(a, b, c) {
-  return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x) > 0;
-});
-__publicField(ArcCurve, "isSameDirecton", function(vect1, vect2) {
-  const denominator = Math.sqrt(vect1.lengthSq() * vect2.lengthSq());
-  if (denominator === 0) {
-    return false;
-  }
-  const theta = vect1.dot(vect2) / denominator;
-  return Math.acos(MathUtils.clamp(theta, -1, 1)) < Math.PI / 2;
-});
-__publicField(ArcCurve, "tempVector1", new Vector2());
-__publicField(ArcCurve, "tempVector2", new Vector2());
-__publicField(ArcCurve, "tempVector3", new Vector2());
-const pathCurveMap$1 = {
-  arc: (startX, startY, ctrlX, ctrlY, endX, endY) => {
-    return new ArcCurve(startX, startY, ctrlX, ctrlY, endX, endY);
-  },
-  line: (startX, startY, endX, endY) => new LineCurve(new Vector2(startX, startY), new Vector2(endX, endY)),
-  bezier: (startX, startY, aCP1x, aCP1y, aCP2x, aCP2y, endX, endY) => new CubicBezierCurve(
-    new Vector2(startX, startY),
-    new Vector2(aCP1x, aCP1y),
-    new Vector2(aCP2x, aCP2y),
-    new Vector2(endX, endY)
-  ),
-  cubic: (startX, startY, aCP1x, aCP1y, aCP2x, aCP2y, endX, endY) => new CubicBezierCurve(
-    new Vector2(startX, startY),
-    new Vector2(aCP1x, aCP1y),
-    new Vector2(aCP2x, aCP2y),
-    new Vector2(endX, endY)
-  ),
-  quadratic: (startX, startY, aCPx, aCPy, endX, endY) => new QuadraticBezierCurve(
-    new Vector2(startX, startY),
-    new Vector2(aCPx, aCPy),
-    new Vector2(endX, endY)
-  )
-};
-const getCurveExtrPoint$1 = function(curve, extr) {
-  return extr === "start" ? { x: curve.params[0], y: curve.params[1] } : {
-    x: curve.params[curve.params.length - 2],
-    y: curve.params[curve.params.length - 1]
-  };
-};
-const generateCurve$1 = function(segment) {
-  if (!pathCurveMap$1[segment.curve]) {
-    console.warn(`path processor can not support this curve: ${segment.curve}`);
-    return null;
-  }
-  return pathCurveMap$1[segment.curve](...segment.params);
-};
-const syncExtrParams$1 = function(config, params, extr) {
-  if (extr === "start") {
-    config.params[0] !== params[0] && (config.params[0] = params[0]);
-    config.params[1] !== params[1] && (config.params[1] = params[1]);
-  } else {
-    const range = config.params.length - 1;
-    config.params[range - 1] !== params[0] && (config.params[range - 1] = params[0]);
-    config.params[range] !== params[1] && (config.params[range] = params[1]);
-  }
-};
-var PathProcessor = defineProcessor({
+h.isLeft = function(t, r, s) {
+  return (r.x - t.x) * (s.y - t.y) - (r.y - t.y) * (s.x - t.x) > 0;
+}, h.isSameDirecton = function(t, r) {
+  const s = Math.sqrt(t.lengthSq() * r.lengthSq());
+  if (s === 0)
+    return !1;
+  const a = t.dot(r) / s;
+  return Math.acos(T.clamp(a, -1, 1)) < Math.PI / 2;
+}, h.tempVector1 = new o(), h.tempVector2 = new o(), h.tempVector3 = new o();
+let E = h;
+const _ = j({
   type: "Path",
-  config: getPathConfig,
+  config: X,
+  shared: {
+    getCurveExtrPoint(e, t) {
+      return t === "start" ? { x: e.params[0], y: e.params[1] } : {
+        x: e.params[e.params.length - 2],
+        y: e.params[e.params.length - 1]
+      };
+    },
+    generateCurve(e) {
+      const t = {
+        arc: (r, s, a, n, c, u) => new E(r, s, a, n, c, u),
+        // ellipse: (
+        //   startX: number,
+        //   startY: number,
+        //   aX: number,
+        //   aY: number,
+        //   xRadius: number,
+        //   yRadius: number,
+        //   aStartAngle: number,
+        //   aEndAngle: number,
+        //   aClockwise: boolean,
+        //   aRotation: number
+        // ) =>
+        //   new EllipseCurve(
+        //     startX + aX,
+        //     startY + aY,
+        //     xRadius,
+        //     yRadius,
+        //     aStartAngle,
+        //     aEndAngle,
+        //     aClockwise,
+        //     aRotation
+        //   ),
+        line: (r, s, a, n) => new G(new o(r, s), new o(a, n)),
+        bezier: (r, s, a, n, c, u, i, p) => new B(
+          new o(r, s),
+          new o(a, n),
+          new o(c, u),
+          new o(i, p)
+        ),
+        cubic: (r, s, a, n, c, u, i, p) => new B(
+          new o(r, s),
+          new o(a, n),
+          new o(c, u),
+          new o(i, p)
+        ),
+        quadratic: (r, s, a, n, c, u) => new H(
+          new o(r, s),
+          new o(a, n),
+          new o(c, u)
+        )
+      };
+      return t[e.curve] ? t[e.curve](...e.params) : (console.warn(
+        `path processor can not support this curve: ${e.curve}`
+      ), null);
+    },
+    syncExtrParams(e, t, r) {
+      if (r === "start")
+        e.params[0] !== t[0] && (e.params[0] = t[0]), e.params[1] !== t[1] && (e.params[1] = t[1]);
+      else {
+        const s = e.params.length - 1;
+        e.params[s - 1] !== t[0] && (e.params[s - 1] = t[0]), e.params[s] !== t[1] && (e.params[s] = t[1]);
+      }
+    }
+  },
   commands: {
     add: {
-      curves({ target, config, value }) {
-        const curve = generateCurve$1(value);
-        curve && target.curves.push(curve);
+      curves({ model: e, target: t, config: r, value: s }) {
+        const a = e.generateCurve(s);
+        a && t.curves.push(a);
       }
     },
     set: {
-      curves({ target, config, path, key }) {
-        let index2 = Number(path[1]);
-        if (!Number.isInteger(index2)) {
-          if (Number.isInteger(Number(key))) {
+      curves({ model: e, target: t, config: r, path: s, key: a }) {
+        let n = Number(s[1]);
+        if (!Number.isInteger(n)) {
+          if (Number.isInteger(Number(a)))
             return;
-          }
-          console.warn(`path processor: set curves path error:`, path);
+          console.warn("path processor: set curves path error:", s);
           return;
         }
-        const currentCurve = generateCurve$1(config.curves[index2]);
-        target.curves[index2] = currentCurve;
-        const startPoint = getCurveExtrPoint$1(config.curves[index2], "start");
-        const endPoint = getCurveExtrPoint$1(config.curves[index2], "end");
-        if (index2 - 1 >= 0) {
-          syncExtrParams$1(
-            config.curves[index2 - 1],
-            [startPoint.x, startPoint.y],
-            "end"
-          );
-        }
-        if (index2 + 1 <= config.curves.length - 1) {
-          syncExtrParams$1(
-            config.curves[index2 + 1],
-            [endPoint.x, endPoint.y],
-            "start"
-          );
-        }
+        const c = e.generateCurve(r.curves[n]);
+        t.curves[n] = c;
+        const u = e.getCurveExtrPoint(
+          r.curves[n],
+          "start"
+        ), i = e.getCurveExtrPoint(r.curves[n], "end");
+        n - 1 >= 0 && e.syncExtrParams(
+          r.curves[n - 1],
+          [u.x, u.y],
+          "end"
+        ), n + 1 <= r.curves.length - 1 && e.syncExtrParams(
+          r.curves[n + 1],
+          [i.x, i.y],
+          "start"
+        );
       }
     },
     delete: {
-      curves({ target, config, key }) {
-        const index2 = Number(key);
-        if (target.curves.length - 1 < index2) {
-          return;
-        }
-        target.curves.splice(index2, 1);
-        if (index2 <= config.curves.length - 1 && index2 - 1 >= 0) {
-          const endPoint = getCurveExtrPoint$1(config.curves[index2 - 1], "end");
-          syncExtrParams$1(
-            config.curves[index2],
-            [endPoint.x, endPoint.y],
+      curves({ model: e, target: t, config: r, key: s }) {
+        const a = Number(s);
+        if (!(t.curves.length - 1 < a) && (t.curves.splice(a, 1), a <= r.curves.length - 1 && a - 1 >= 0)) {
+          const n = e.getCurveExtrPoint(
+            r.curves[a - 1],
+            "end"
+          );
+          e.syncExtrParams(
+            r.curves[a],
+            [n.x, n.y],
             "start"
           );
         }
       }
     }
   },
-  create(config, engine) {
-    const path = new Path();
-    if (config.curves.length) {
-      for (const segment of config.curves) {
-        const curve = generateCurve$1(segment);
-        curve && path.curves.push(curve);
+  create({ model: e, config: t, engine: r }) {
+    const s = new Z();
+    if (t.curves.length)
+      for (const a of t.curves) {
+        const n = e.generateCurve(a);
+        n && s.curves.push(n);
       }
-    }
-    path.autoClose = config.autoClose;
-    return path;
+    return s.autoClose = t.autoClose, s;
   },
-  dispose(target) {
-    target.curves = [];
+  dispose({ target: e }) {
+    e.curves = [];
   }
-});
-const pathCurveMap = {
-  line: (startX, startY, startZ, endX, endY, endZ) => new LineCurve3(
-    new Vector3(startX, startY, startZ),
-    new Vector3(endX, endY, endZ)
-  ),
-  cubic: (startX, startY, startZ, aCP1x, aCP1y, aCP1z, aCP2x, aCP2y, aCP2z, endX, endY, endZ) => new CubicBezierCurve3(
-    new Vector3(startX, startY, startZ),
-    new Vector3(aCP1x, aCP1y, aCP1z),
-    new Vector3(aCP2x, aCP2y, aCP2z),
-    new Vector3(endX, endY, endZ)
-  ),
-  quadratic: (startX, startY, startZ, aCPx, aCPy, aCPz, endX, endY, endZ) => new QuadraticBezierCurve3(
-    new Vector3(startX, startY, startZ),
-    new Vector3(aCPx, aCPy, aCPz),
-    new Vector3(endX, endY, endZ)
-  )
-};
-const getCurveExtrPoint = function(curve, extr) {
-  return extr === "start" ? {
-    x: curve.params[0],
-    y: curve.params[1],
-    z: curve.params[2]
-  } : {
-    x: curve.params[curve.params.length - 3],
-    y: curve.params[curve.params.length - 2],
-    z: curve.params[curve.params.length - 1]
-  };
-};
-const generateCurve = function(segment) {
-  if (!pathCurveMap[segment.curve]) {
-    console.warn(
-      `path3 processor can not support this curve: ${segment.curve}`
-    );
-    return null;
-  }
-  return pathCurveMap[segment.curve](...segment.params);
-};
-const syncExtrParams = function(config, params, extr) {
-  if (extr === "start") {
-    config.params[0] !== params[0] && (config.params[0] = params[0]);
-    config.params[1] !== params[1] && (config.params[1] = params[1]);
-    config.params[2] !== params[2] && (config.params[2] = params[2]);
-  } else {
-    const range = config.params.length - 1;
-    config.params[range - 2] !== params[0] && (config.params[range - 2] = params[0]);
-    config.params[range - 1] !== params[1] && (config.params[range - 1] = params[1]);
-    config.params[range] !== params[2] && (config.params[range] = params[2]);
-  }
-};
-var Path3Processor = defineProcessor({
+}), ee = j({
   type: "Path3",
-  config: getPath3Config,
+  config: A,
+  shared: {
+    getCurveExtrPoint(e, t) {
+      return t === "start" ? {
+        x: e.params[0],
+        y: e.params[1],
+        z: e.params[2]
+      } : {
+        x: e.params[e.params.length - 3],
+        y: e.params[e.params.length - 2],
+        z: e.params[e.params.length - 1]
+      };
+    },
+    generateCurve(e) {
+      const t = {
+        line: (r, s, a, n, c, u) => new K(
+          new l(r, s, a),
+          new l(n, c, u)
+        ),
+        cubic: (r, s, a, n, c, u, i, p, v, x, d, w) => new W(
+          new l(r, s, a),
+          new l(n, c, u),
+          new l(i, p, v),
+          new l(x, d, w)
+        ),
+        quadratic: (r, s, a, n, c, u, i, p, v) => new Y(
+          new l(r, s, a),
+          new l(n, c, u),
+          new l(i, p, v)
+        )
+      };
+      return t[e.curve] ? t[e.curve](...e.params) : (console.warn(
+        `path processor can not support this curve: ${e.curve}`
+      ), null);
+    },
+    syncExtrParams(e, t, r) {
+      if (r === "start")
+        e.params[0] !== t[0] && (e.params[0] = t[0]), e.params[1] !== t[1] && (e.params[1] = t[1]), e.params[2] !== t[2] && (e.params[2] = t[2]);
+      else {
+        const s = e.params.length - 1;
+        e.params[s - 2] !== t[0] && (e.params[s - 2] = t[0]), e.params[s - 1] !== t[1] && (e.params[s - 1] = t[1]), e.params[s] !== t[2] && (e.params[s] = t[2]);
+      }
+    }
+  },
   commands: {
     add: {
-      curves({ target, config, value }) {
-        const curve = generateCurve(value);
-        curve && target.curves.push(curve);
+      curves({ model: e, target: t, config: r, value: s }) {
+        const a = e.generateCurve(s);
+        a && t.curves.push(a);
       }
     },
     set: {
-      curves({ target, config, path, key }) {
-        let index2 = Number(path[1]);
-        if (!Number.isInteger(index2)) {
-          if (Number.isInteger(Number(key))) {
+      curves({ model: e, target: t, config: r, path: s, key: a }) {
+        let n = Number(s[1]);
+        if (!Number.isInteger(n)) {
+          if (Number.isInteger(Number(a)))
             return;
-          }
-          console.warn(`path3 processor: set curves path error:`, path);
+          console.warn("path3 processor: set curves path error:", s);
           return;
         }
-        const currentCurve = generateCurve(config.curves[index2]);
-        target.curves[index2] = currentCurve;
-        const startPoint = getCurveExtrPoint(config.curves[index2], "start");
-        const endPoint = getCurveExtrPoint(config.curves[index2], "end");
-        if (index2 - 1 >= 0) {
-          syncExtrParams(
-            config.curves[index2 - 1],
-            [startPoint.x, startPoint.y, startPoint.z],
-            "end"
-          );
-        }
-        if (index2 + 1 <= config.curves.length - 1) {
-          syncExtrParams(
-            config.curves[index2 + 1],
-            [endPoint.x, endPoint.y, endPoint.z],
-            "start"
-          );
-        }
+        const c = e.generateCurve(r.curves[n]);
+        t.curves[n] = c;
+        const u = e.getCurveExtrPoint(
+          r.curves[n],
+          "start"
+        ), i = e.getCurveExtrPoint(r.curves[n], "end");
+        n - 1 >= 0 && e.syncExtrParams(
+          r.curves[n - 1],
+          [u.x, u.y, u.z],
+          "end"
+        ), n + 1 <= r.curves.length - 1 && e.syncExtrParams(
+          r.curves[n + 1],
+          [i.x, i.y, i.z],
+          "start"
+        );
       }
     },
     delete: {
-      curves({ target, config, key }) {
-        const index2 = Number(key);
-        if (target.curves.length - 1 < index2) {
-          return;
-        }
-        target.curves.splice(index2, 1);
-        if (index2 <= config.curves.length - 1 && index2 - 1 >= 0) {
-          const endPoint = getCurveExtrPoint(config.curves[index2 - 1], "end");
-          syncExtrParams(
-            config.curves[index2],
-            [endPoint.x, endPoint.y, endPoint.z],
+      curves({ model: e, target: t, config: r, key: s }) {
+        const a = Number(s);
+        if (!(t.curves.length - 1 < a) && (t.curves.splice(a, 1), a <= r.curves.length - 1 && a - 1 >= 0)) {
+          const n = e.getCurveExtrPoint(
+            r.curves[a - 1],
+            "end"
+          );
+          e.syncExtrParams(
+            r.curves[a],
+            [n.x, n.y, n.z],
             "start"
           );
         }
       }
     }
   },
-  create(config, engine) {
-    const path = new Path();
-    if (config.curves.length) {
-      for (const segment of config.curves) {
-        const curve = generateCurve(segment);
-        curve && path.curves.push(curve);
+  create({ model: e, config: t, engine: r }) {
+    const s = new J();
+    if (t.curves.length)
+      for (const a of t.curves) {
+        const n = e.generateCurve(a);
+        n && s.curves.push(n);
       }
-    }
-    path.autoClose = config.autoClose;
-    return path;
+    return s.autoClose = t.autoClose, s;
   },
-  dispose(target) {
-    target.curves = [];
+  dispose({ target: e }) {
+    e.curves = [];
   }
-});
-var index = {
+}), re = $({
   type: "path",
-  compiler: PathCompiler,
-  rule: PathRule,
-  processors: [PathProcessor, Path3Processor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.ZERO
+  models: [_, ee],
+  lifeOrder: k.ZERO
+});
+export {
+  re as default,
+  A as getPath3Config,
+  X as getPathConfig
 };
-export { PathCompiler, index as default, getPath3Config, getPathConfig };

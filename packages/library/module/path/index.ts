@@ -1,16 +1,10 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { PathCompiler } from "./PathCompiler";
-import { PathRule } from "./PathRule";
-import PathProcessor from "./processors/PathProcessor";
-import Path3Processor from "./processors/Path3Processor";
-
-export * from "./PathCompiler";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
 export * from "./PathConfig";
+import PathModel from "./models/PathModel";
+import Path3Model from "./models/Path3Model";
 
-export default {
+export default defineModule({
   type: "path",
-  compiler: PathCompiler,
-  rule: PathRule,
-  processors: [PathProcessor, Path3Processor],
+  models: [PathModel, Path3Model],
   lifeOrder: SUPPORT_LIFE_CYCLE.ZERO,
-};
+});
