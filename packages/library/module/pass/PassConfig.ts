@@ -1,9 +1,9 @@
-import { SymbolConfig, getSymbolConfig } from "@vis-three/middleware";
+import { BasicConfig, getBasicConfig } from "@vis-three/tdcm";
 
 /**
  * @todo width height 支持不同pass渲染不同区域
  */
-export interface PassConfig extends SymbolConfig {
+export interface PassConfig extends BasicConfig {
   index: number;
 }
 
@@ -53,7 +53,6 @@ export interface SSRPassConfig extends PassConfig {
     textureHeight: number;
 
     clipBias: number;
-    multisample: number;
   };
   selects: string[];
 
@@ -69,9 +68,7 @@ export interface SSRPassConfig extends PassConfig {
 
 export interface FilmPassConfig extends PassConfig {
   grayscale: boolean;
-  noiseIntensity: number;
-  scanlinesIntensity: number;
-  scanlinesCount: number;
+  intensity: number;
 }
 
 export interface LUTPassConfig extends PassConfig {
@@ -89,7 +86,7 @@ export type PassConfigAllType =
   | FilmPassConfig;
 
 export const getPassConfig = function (): PassConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     vid: "",
     name: "",
     type: "Pass",
@@ -160,16 +157,14 @@ export const getSSRPassConfig = function (): SSRPassConfig {
     bouncing: true,
     distanceAttenuation: true,
     fresnel: true,
-    infiniteThick: true
+    infiniteThick: true,
   });
 };
 
 export const getFilmPassConfig = function (): FilmPassConfig {
   return Object.assign(getPassConfig(), {
     grayscale: false,
-    noiseIntensity: 0.5,
-    scanlinesIntensity: 0.05,
-    scanlinesCount: 4096,
+    intensity: 0.5,
   });
 };
 

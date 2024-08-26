@@ -1,21 +1,22 @@
-import { defineProcessor, MODULETYPE } from "@vis-three/middleware";
-import { Camera, Object3D, Scene, Vector2 } from "three";
-import { SelectiveBloomPass } from "../extends/SelectiveBloomPass";
-import { ComposerSupportEngine, PassCompiler } from "../PassCompiler";
+import { defineModel, MODULE_TYPE } from "@vis-three/tdcm";
 import {
   getSelectiveBloomPassConfig,
   SelectiveBloomPassConfig,
 } from "../PassConfig";
+import { ComposerEngineSupport, PassCompiler } from "../PassCompiler";
+import { SelectiveBloomPass } from "../extends/SelectiveBloomPass";
+import { Camera, Object3D, Scene, Vector2 } from "three";
 
-export default defineProcessor<
+export default defineModel<
   SelectiveBloomPassConfig,
   SelectiveBloomPass,
-  ComposerSupportEngine,
+  {},
+  {},
+  ComposerEngineSupport,
   PassCompiler
 >({
   type: "SelectiveBloomPass",
   config: getSelectiveBloomPassConfig,
-
   commands: {
     add: {
       selectedObjects({ target, engine, value }) {
@@ -82,8 +83,7 @@ export default defineProcessor<
       },
     },
   },
-
-  create(config, engine): SelectiveBloomPass {
+  create({ config, engine }) {
     const objects: Object3D[] = [];
     for (const vid of config.selectedObjects) {
       const object = engine.getObject3D(vid);
@@ -105,13 +105,13 @@ export default defineProcessor<
       config.radius,
       config.threshold,
       ((config.renderScene &&
-        engine.getObjectfromModule(
-          MODULETYPE.SCENE,
+        engine.getObjectFromModule(
+          MODULE_TYPE.SCENE,
           config.renderScene
         )) as Scene) || undefined,
       ((config.renderCamera &&
-        engine.getObjectfromModule(
-          MODULETYPE.CAMERA,
+        engine.getObjectFromModule(
+          MODULE_TYPE.CAMERA,
           config.renderCamera
         )) as Camera) || undefined,
       objects
@@ -119,8 +119,7 @@ export default defineProcessor<
 
     return pass;
   },
-
-  dispose(target: SelectiveBloomPass) {
+  dispose({ target }) {
     target.dispose();
   },
 });

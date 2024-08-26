@@ -1,18 +1,20 @@
-import { defineProcessor } from "@vis-three/middleware";
-import { Vector2 } from "three";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
-import { ComposerSupportEngine, PassCompiler } from "../PassCompiler";
+import { defineModel } from "@vis-three/tdcm";
 import { getUnrealBloomPassConfig, UnrealBloomPassConfig } from "../PassConfig";
+import { ComposerEngineSupport, PassCompiler } from "../PassCompiler";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { Vector2 } from "three";
 
-export default defineProcessor<
+export default defineModel<
   UnrealBloomPassConfig,
   UnrealBloomPass,
-  ComposerSupportEngine,
+  {},
+  {},
+  ComposerEngineSupport,
   PassCompiler
 >({
   type: "UnrealBloomPass",
   config: getUnrealBloomPassConfig,
-  create(config, engine): UnrealBloomPass {
+  create({ config, engine }) {
     const pixelRatio = window.devicePixelRatio;
 
     const pass = new UnrealBloomPass(
@@ -31,7 +33,7 @@ export default defineProcessor<
 
     return pass;
   },
-  dispose(pass) {
-    pass.dispose();
+  dispose({ target }) {
+    target.dispose();
   },
 });

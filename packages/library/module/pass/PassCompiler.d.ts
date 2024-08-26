@@ -1,13 +1,12 @@
-import { Pass } from "three/examples/jsm/postprocessing/EffectComposer";
 import { PassConfigAllType } from "./PassConfig";
-import { Compiler, EngineSupport } from "@vis-three/middleware";
+import { Compiler, CompilerParameters, EngineSupport } from "@vis-three/tdcm";
 import { EffectComposerEngine } from "@vis-three/plugin-effect-composer";
-export interface ComposerSupportEngine extends EngineSupport, EffectComposerEngine {
+export interface ComposerEngineSupport extends EngineSupport, EffectComposerEngine {
 }
-export declare class PassCompiler extends Compiler<PassConfigAllType, Pass> {
+export declare class PassCompiler extends Compiler<ComposerEngineSupport> {
     private composer;
-    constructor();
-    useEngine(engine: ComposerSupportEngine): this;
-    add(config: PassConfigAllType): Pass | null;
+    constructor(params: CompilerParameters<ComposerEngineSupport>);
+    useEngine(engine: any): this;
+    add(config: PassConfigAllType): any;
     remove(config: PassConfigAllType): this;
 }

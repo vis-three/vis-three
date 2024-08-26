@@ -1,23 +1,23 @@
 import {
   EffectComposer,
   Pass,
-} from "three/examples/jsm/postprocessing/EffectComposer";
+} from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { PassConfigAllType } from "./PassConfig";
-import { Compiler, EngineSupport } from "@vis-three/middleware";
+import { Compiler, CompilerParameters, EngineSupport } from "@vis-three/tdcm";
 import { EffectComposerEngine } from "@vis-three/plugin-effect-composer";
 
-export interface ComposerSupportEngine
+export interface ComposerEngineSupport
   extends EngineSupport,
     EffectComposerEngine {}
 
-export class PassCompiler extends Compiler<PassConfigAllType, Pass> {
+export class PassCompiler extends Compiler<ComposerEngineSupport> {
   private composer!: EffectComposer;
 
-  constructor() {
-    super();
+  constructor(params: CompilerParameters<ComposerEngineSupport>) {
+    super(params);
   }
 
-  useEngine(engine: ComposerSupportEngine): this {
+  useEngine(engine): this {
     super.useEngine(engine);
 
     if (!engine.effectComposer) {
@@ -50,8 +50,8 @@ export class PassCompiler extends Compiler<PassConfigAllType, Pass> {
       return this;
     }
 
-    const pass = this.map.get(config.vid)!;
-    this.composer.removePass(pass);
+    const model = this.map.get(config.vid)!;
+    this.composer.removePass(model.puppet);
 
     super.remove(config);
     return this;

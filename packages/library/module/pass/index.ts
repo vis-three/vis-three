@@ -1,25 +1,24 @@
-import { PassCompiler } from "./PassCompiler";
-import { PassRule } from "./PassRule";
-import FilmPassProcessor from "./processors/FilmPassProcessor";
-import LUTPassProcessor from "./processors/LUTPassProcessor";
-import SelectiveBloomPassProcessor from "./processors/SelectiveBloomPassProcessor";
-import SMAAPassProcessor from "./processors/SMAAPassProcessor";
-import SSRPassProcessor from "./processors/SSRPassProcessor";
-import UnrealBloomPassProcessor from "./processors/UnrealBloomPassProcessor";
+import { defineModule } from "@vis-three/tdcm";
+import { ComposerEngineSupport, PassCompiler } from "./PassCompiler";
+import FilmPassModel from "./models/FilmPassModel";
+import LUTPassModel from "./models/LUTPassModel";
+import SelectiveBloomPassModel from "./models/SelectiveBloomPassModel";
+import SMAAPassModel from "./models/SMAAPassModel";
+import SSRPassModel from "./models/SSRPassModel";
+import UnrealBloomPassModel from "./models/UnrealBloomPassModel";
 
 export * from "./PassCompiler";
 export * from "./PassConfig";
 
-export default {
+export default defineModule<ComposerEngineSupport, PassCompiler>({
   type: "pass",
   compiler: PassCompiler,
-  rule: PassRule,
-  processors: [
-    UnrealBloomPassProcessor,
-    SMAAPassProcessor,
-    SelectiveBloomPassProcessor,
-    SSRPassProcessor,
-    FilmPassProcessor,
-    LUTPassProcessor,
+  models: [
+    FilmPassModel,
+    LUTPassModel,
+    SelectiveBloomPassModel,
+    SMAAPassModel,
+    SSRPassModel,
+    UnrealBloomPassModel,
   ],
-};
+});

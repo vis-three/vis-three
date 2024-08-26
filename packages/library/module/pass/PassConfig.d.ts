@@ -1,8 +1,8 @@
-import { SymbolConfig } from "@vis-three/middleware";
+import { BasicConfig } from "@vis-three/tdcm";
 /**
  * @todo width height 支持不同pass渲染不同区域
  */
-export interface PassConfig extends SymbolConfig {
+export interface PassConfig extends BasicConfig {
     index: number;
 }
 export interface SMAAPassConfig extends PassConfig {
@@ -48,7 +48,6 @@ export interface SSRPassConfig extends PassConfig {
         textureWidth: number;
         textureHeight: number;
         clipBias: number;
-        multisample: number;
     };
     selects: string[];
     opacity: number;
@@ -62,9 +61,7 @@ export interface SSRPassConfig extends PassConfig {
 }
 export interface FilmPassConfig extends PassConfig {
     grayscale: boolean;
-    noiseIntensity: number;
-    scanlinesIntensity: number;
-    scanlinesCount: number;
+    intensity: number;
 }
 export interface LUTPassConfig extends PassConfig {
     lut: string;

@@ -1,18 +1,19 @@
-import { defineProcessor } from "@vis-three/middleware";
-import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
-import { ComposerSupportEngine, PassCompiler } from "../PassCompiler";
-
+import { defineModel } from "@vis-three/tdcm";
 import { getSMAAPassConfig, SMAAPassConfig } from "../PassConfig";
+import { ComposerEngineSupport, PassCompiler } from "../PassCompiler";
+import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass.js";
 
-export default defineProcessor<
+export default defineModel<
   SMAAPassConfig,
   SMAAPass,
-  ComposerSupportEngine,
+  {},
+  {},
+  ComposerEngineSupport,
   PassCompiler
 >({
   type: "SMAAPass",
   config: getSMAAPassConfig,
-  create(config, engine): SMAAPass {
+  create({ config, engine }) {
     const pixelRatio = window.devicePixelRatio;
 
     const pass = new SMAAPass(
@@ -25,7 +26,5 @@ export default defineProcessor<
     );
     return pass;
   },
-  dispose(pass) {
-    // pass.dispose();
-  },
+  dispose(target) {},
 });

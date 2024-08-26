@@ -8,7 +8,6 @@ import {
   Material,
   Mesh,
   MeshBasicMaterial,
-  MeshStandardMaterial,
   Object3D,
   PerspectiveCamera,
   Points,
@@ -24,8 +23,11 @@ import {
   WebGLRenderer,
   WebGLRenderTarget,
 } from "three";
-import { FullScreenQuad, Pass } from "three/examples/jsm/postprocessing/Pass";
-import { LuminosityHighPassShader } from "three/examples/jsm/shaders/LuminosityHighPassShader";
+import {
+  FullScreenQuad,
+  Pass,
+} from "three/examples/jsm/postprocessing/Pass.js";
+import { LuminosityHighPassShader } from "three/examples/jsm/shaders/LuminosityHighPassShader.js";
 
 export class SelectiveBloomPass extends Pass {
   static BlurDirectionX = new Vector2(1.0, 0.0);

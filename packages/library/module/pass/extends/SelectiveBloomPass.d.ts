@@ -1,5 +1,5 @@
 import { Camera, Object3D, Scene, ShaderMaterial, Vector2, WebGLRenderer, WebGLRenderTarget } from "three";
-import { Pass } from "three/examples/jsm/postprocessing/Pass";
+import { Pass } from "three/examples/jsm/postprocessing/Pass.js";
 export declare class SelectiveBloomPass extends Pass {
     static BlurDirectionX: Vector2;
     static BlurDirectionY: Vector2;
