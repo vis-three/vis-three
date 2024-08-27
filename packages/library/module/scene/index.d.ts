@@ -1,16 +1,5 @@
-import { SceneCompiler } from "./SceneCompiler";
-import SceneExtend from "./SceneExtend";
-import { SceneRule } from "./SceneRule";
-export * from "./SceneCompiler";
+import { SceneEngineSupport } from "./SceneExtend";
 export * from "./SceneConfig";
-export { SceneEngineSupport } from "./SceneExtend";
-declare const _default: {
-    type: string;
-    object: boolean;
-    compiler: typeof SceneCompiler;
-    rule: SceneRule;
-    processors: import("@vis-three/middleware").Processor<import("./SceneConfig").SceneConfig, import("three").Scene, import("@vis-three/middleware").EngineSupport, SceneCompiler>[];
-    extend: typeof SceneExtend;
-    lifeOrder: number;
-};
+export * from "./SceneExtend";
+declare const _default: import("@vis-three/tdcm").ModuleOptions<SceneEngineSupport, import("@vis-three/tdcm").Compiler<SceneEngineSupport>>;
 export default _default;

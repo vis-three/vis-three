@@ -1,19 +1,24 @@
-import { ProxyNotice, uniqueSymbol } from "@vis-three/middleware";
 import { ObjectRule } from "@vis-three/module-object";
-import { Scene } from "three";
-import { validate } from "uuid";
-import { SceneCompiler } from "./SceneCompiler";
-import { SceneConfig } from "./SceneConfig";
 
-export type SceneRule = ObjectRule<SceneCompiler, SceneConfig, Scene>;
+import {
+  DEFAULT_RULE,
+  defineRule,
+  globalOption,
+  uniqueSymbol,
+} from "@vis-three/tdcm";
 
 const symbolList = [uniqueSymbol("Scene")];
 
-export const SceneRule: SceneRule = function (
-  input: ProxyNotice,
-  compiler: SceneCompiler
-) {
-  ObjectRule(input, compiler, (vid) => {
-    return validate(vid) || symbolList.includes(vid);
-  });
-};
+export default defineRule([
+  ObjectRule[0],
+  function (input) {
+    return (
+      globalOption.symbol.validator(input.symbol) ||
+      symbolList.includes(input.symbol)
+    );
+  },
+  DEFAULT_RULE.OPERATE_ADD,
+  DEFAULT_RULE.OPERATE_DELETE,
+  DEFAULT_RULE.OPERATE_COVER,
+  DEFAULT_RULE.OPERATE_COMPILE,
+]);

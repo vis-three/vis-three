@@ -1,19 +1,16 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { SceneCompiler } from "./SceneCompiler";
-import SceneExtend from "./SceneExtend";
-import SceneProcessor from "./processors/SceneProcessor";
-import { SceneRule } from "./SceneRule";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import SceneExtend, { SceneEngineSupport } from "./SceneExtend";
+import SceneRule from "./SceneRule";
+import SceneModel from "./models/SceneModel";
 
-export * from "./SceneCompiler";
 export * from "./SceneConfig";
-export { SceneEngineSupport } from "./SceneExtend";
+export * from "./SceneExtend";
 
-export default {
+export default defineModule<SceneEngineSupport>({
   type: "scene",
   object: true,
-  compiler: SceneCompiler,
   rule: SceneRule,
-  processors: [SceneProcessor],
+  models: [SceneModel],
   extend: SceneExtend,
   lifeOrder: SUPPORT_LIFE_CYCLE.THREE + 1,
-};
+});

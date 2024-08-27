@@ -1,6 +1,2 @@
-import { ObjectRule } from "@vis-three/module-object";
-import { Scene } from "three";
-import { SceneCompiler } from "./SceneCompiler";
-import { SceneConfig } from "./SceneConfig";
-export type SceneRule = ObjectRule<SceneCompiler, SceneConfig, Scene>;
-export declare const SceneRule: SceneRule;
+declare const _default: import("@vis-three/tdcm").Rule[];
+export default _default;

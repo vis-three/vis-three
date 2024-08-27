@@ -1,28 +1,24 @@
-import { MODULETYPE, uniqueSymbol, defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { ObjectCompiler, getObjectConfig, objectCommands, objectCreate, objectDispose, ObjectRule } from "@vis-three/module-object";
-import { Fog, Color, FogExp2, Scene } from "three";
-import { validate } from "uuid";
-class SceneCompiler extends ObjectCompiler {
-  constructor() {
-    super();
-  }
-}
-function SceneExtend(engine) {
-  engine.setSceneBySymbol = function(scene) {
-    const compiler = this.compilerManager.getCompiler(
-      MODULETYPE.SCENE
-    );
-    if (compiler.map.has(scene)) {
-      this.setScene(compiler.map.get(scene));
-    } else {
-      console.warn("can not found scene", scene);
-    }
-    return this;
+import { MODULE_TYPE as g, uniqueSymbol as u, defineRule as m, globalOption as d, DEFAULT_RULE as c, defineModule as p, SUPPORT_LIFE_CYCLE as E } from "@vis-three/tdcm";
+import { ObjectRule as a, getObjectConfig as b, defineObjectModel as y } from "@vis-three/module-object";
+import { Color as i, Fog as l, FogExp2 as f, Scene as O } from "three";
+function S(s) {
+  s.setSceneBySymbol = function(e) {
+    const o = this.compilerManager.getCompiler(g.SCENE);
+    return o.map.has(e) ? this.setScene(o.map.get(e).puppet) : console.warn("can not found scene", e), this;
   };
 }
-const getSceneConfig = function() {
-  return Object.assign(getObjectConfig(), {
-    vid: uniqueSymbol("Scene"),
+const w = [u("Scene")], R = m([
+  a[0],
+  function(s) {
+    return d.symbol.validator(s.symbol) || w.includes(s.symbol);
+  },
+  c.OPERATE_ADD,
+  c.OPERATE_DELETE,
+  c.OPERATE_COVER,
+  c.OPERATE_COMPILE
+]), T = function() {
+  return Object.assign(b(), {
+    vid: u("Scene"),
     background: "",
     environment: "",
     fog: {
@@ -33,132 +29,88 @@ const getSceneConfig = function() {
       density: 3e-3
     }
   });
-};
-const setBackground = function(scene, value, engine) {
-  if (!value) {
-    scene.background = null;
-    return;
-  }
-  if (validate(value)) {
-    const texture = engine.compilerManager.getObjectfromModule(
-      MODULETYPE.TEXTURE,
-      value
-    );
-    if (texture) {
-      scene.background = texture;
-    } else {
-      console.warn(`engine can not found this vid texture : '${value}'`);
-    }
-  } else {
-    scene.background = new Color(value);
-  }
-};
-const setEnvironment = function(scene, value, engine) {
-  if (!value) {
-    scene.environment = null;
-    return;
-  }
-  if (validate(value)) {
-    const texture = engine.compilerManager.getObjectfromModule(
-      MODULETYPE.TEXTURE,
-      value
-    );
-    if (texture) {
-      scene.environment = texture;
-    } else {
-      console.warn(`engine can not found this vid texture : '${value}'`);
-    }
-  } else {
-    console.warn(`scene environment is illeage: ${value}`);
-  }
-};
-var SceneProcessor = defineProcessor({
+}, x = y((s) => ({
   type: "Scene",
-  config: getSceneConfig,
+  config: T,
+  shared: {
+    setBackground(e, o, t) {
+      if (!o) {
+        e.background = null;
+        return;
+      }
+      if (d.symbol.validator(o)) {
+        const n = t.compilerManager.getObjectFromModule(
+          g.TEXTURE,
+          o
+        );
+        n ? e.background = n : console.warn(`engine can not found this vid texture : '${o}'`);
+      } else
+        e.background = new i(o);
+    },
+    setEnvironment(e, o, t) {
+      if (!o) {
+        e.environment = null;
+        return;
+      }
+      if (d.symbol.validator(o)) {
+        const n = t.compilerManager.getObjectFromModule(
+          g.TEXTURE,
+          o
+        );
+        n ? e.environment = n : console.warn(`engine can not found this vid texture : '${o}'`);
+      } else
+        console.warn(`scene environment is illeage: ${o}`);
+    }
+  },
   commands: {
-    add: objectCommands.add,
     set: {
-      ...objectCommands.set,
       lookAt() {
       },
-      fog({ target, config, key, value }) {
-        const fog = config.fog;
-        if (!fog.type) {
-          target.fog = null;
-        } else if (fog.type === "Fog") {
-          if (!target.fog || !(target.fog instanceof Fog)) {
-            target.fog = new Fog(fog.color, fog.near, fog.far);
-          } else {
-            if (key === "color") {
-              target.fog.color.copy(new Color(fog.color));
-            } else {
-              target.fog[key] && (target.fog[key] = value);
-            }
-          }
-        } else if (fog.type === "FogExp2") {
-          if (!target.fog || !(target.fog instanceof FogExp2)) {
-            target.fog = new FogExp2(fog.color, fog.density);
-          } else {
-            if (key === "color") {
-              target.fog.color.copy(new Color(fog.color));
-            } else {
-              target.fog[key] && (target.fog[key] = value);
-            }
-          }
-        }
+      fog({ target: e, config: o, key: t, value: n }) {
+        const r = o.fog;
+        r.type ? r.type === "Fog" ? !e.fog || !(e.fog instanceof l) ? e.fog = new l(r.color, r.near, r.far) : t === "color" ? e.fog.color.copy(new i(r.color)) : e.fog[t] && (e.fog[t] = n) : r.type === "FogExp2" && (!e.fog || !(e.fog instanceof f) ? e.fog = new f(r.color, r.density) : t === "color" ? e.fog.color.copy(new i(r.color)) : e.fog[t] && (e.fog[t] = n)) : e.fog = null;
       },
-      background({ target, value, engine }) {
-        setBackground(target, value, engine);
+      background({ model: e, target: o, value: t, engine: n }) {
+        e.setBackground(o, t, n);
       },
-      environment({ target, value, engine }) {
-        setEnvironment(target, value, engine);
-      }
-    },
-    delete: objectCommands.delete
-  },
-  create(config, engine) {
-    const scene = new Scene();
-    setBackground(scene, config.background, engine);
-    setEnvironment(scene, config.environment, engine);
-    if (config.fog.type) {
-      const fog = config.fog;
-      if (fog.type === "Fog") {
-        scene.fog = new Fog(fog.color, fog.near, fog.far);
-      } else if (fog.type === "FogExp2") {
-        scene.fog = new FogExp2(fog.color, fog.density);
-      } else {
-        console.warn(
-          `scene processor can not support this type fog:'${config.type}'`
-        );
+      environment({ model: e, target: o, value: t, engine: n }) {
+        e.setEnvironment(o, t, n);
       }
     }
-    return objectCreate(
-      scene,
-      config,
-      {
-        lookAt: true,
-        background: true,
-        environment: true,
-        fog: true
-      },
-      engine
-    );
   },
-  dispose: objectDispose
-});
-const symbolList = [uniqueSymbol("Scene")];
-const SceneRule = function(input, compiler) {
-  ObjectRule(input, compiler, (vid) => {
-    return validate(vid) || symbolList.includes(vid);
-  });
-};
-var index = {
+  create({ model: e, config: o, engine: t }) {
+    const n = new O();
+    if (e.setBackground(n, o.background, t), e.setEnvironment(n, o.environment, t), o.fog.type) {
+      const r = o.fog;
+      r.type === "Fog" ? n.fog = new l(r.color, r.near, r.far) : r.type === "FogExp2" ? n.fog = new f(r.color, r.density) : console.warn(
+        `scene model: can not support this type fog:'${o.type}'`
+      );
+    }
+    return s.create({
+      model: e,
+      config: o,
+      target: n,
+      engine: t,
+      filter: {
+        lookAt: !0,
+        background: !0,
+        environment: !0,
+        fog: !0
+      }
+    }), n;
+  },
+  dispose({ target: e }) {
+    s.dispose({ target: e });
+  }
+})), h = p({
   type: "scene",
-  object: true,
-  compiler: SceneCompiler,
-  rule: SceneRule,
-  processors: [SceneProcessor],
-  extend: SceneExtend,
-  lifeOrder: SUPPORT_LIFE_CYCLE.THREE + 1
+  object: !0,
+  rule: R,
+  models: [x],
+  extend: S,
+  lifeOrder: E.THREE + 1
+});
+export {
+  h as default,
+  T as getSceneConfig
 };
-export { SceneCompiler, index as default, getSceneConfig };
