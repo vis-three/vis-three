@@ -1,15 +1,10 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { ShapeCompiler } from "./ShapeCompiler";
-import { ShapeRule } from "./ShapeRule";
-import ShapeProcessor from "./processors/ShapeProcessor";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import ShapeModel from "./models/ShapeModel";
 
-export * from "./ShapeCompiler";
 export * from "./ShapeConfig";
 
-export default {
+export default defineModule({
   type: "shape",
-  compiler: ShapeCompiler,
-  rule: ShapeRule,
-  processors: [ShapeProcessor],
+  models: [ShapeModel],
   lifeOrder: SUPPORT_LIFE_CYCLE.ONE,
-};
+});

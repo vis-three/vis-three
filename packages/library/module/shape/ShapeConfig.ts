@@ -1,6 +1,6 @@
-import { getSymbolConfig, SymbolConfig } from "@vis-three/middleware";
+import { getBasicConfig, BasicConfig } from "@vis-three/tdcm";
 
-export interface ShapeConfig extends SymbolConfig {
+export interface ShapeConfig extends BasicConfig {
   /**路径vid标识 */
   shape: string;
   /**路径vid标识 */
@@ -8,7 +8,7 @@ export interface ShapeConfig extends SymbolConfig {
 }
 
 export const getShapeConfig = function (): ShapeConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     shape: "",
     holes: [],
   });

@@ -1,168 +1,126 @@
-import { Compiler, Rule, getSymbolConfig, defineProcessor, MODULETYPE, Bus, COMPILER_EVENT, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { validate } from "uuid";
-import { Shape } from "three";
-class ShapeCompiler extends Compiler {
-  constructor() {
-    super();
-  }
-}
-const ShapeRule = function(input, compiler, validateFun = validate) {
-  Rule(input, compiler, validateFun);
-};
-const getShapeConfig = function() {
-  return Object.assign(getSymbolConfig(), {
+import { getBasicConfig as M, defineModel as E, MODULE_TYPE as l, MODEL_EVENT as c, defineModule as u, SUPPORT_LIFE_CYCLE as i } from "@vis-three/tdcm";
+import { Shape as P } from "three";
+const f = function() {
+  return Object.assign(M(), {
     shape: "",
     holes: []
   });
-};
-const cacheBusMap = /* @__PURE__ */ new WeakMap();
-const cacheBusObject = function(shape, object, fun) {
-  if (!cacheBusMap.has(shape)) {
-    cacheBusMap.set(shape, /* @__PURE__ */ new Set());
-  }
-  const set = cacheBusMap.get(shape);
-  set.add({
-    target: object,
-    eventFun: fun
-  });
-  Bus.compilerEvent.on(object, COMPILER_EVENT.UPDATE, fun);
-};
-const cancelCacheBusObject = function(shape, object) {
-  if (!cacheBusMap.has(shape)) {
-    console.warn(
-      `shape processor found an error can not found cache shape:`,
-      shape
-    );
-    return;
-  }
-  const set = cacheBusMap.get(shape);
-  for (const params of set.values()) {
-    if (params.target === object) {
-      Bus.compilerEvent.off(object, COMPILER_EVENT.UPDATE, params.eventFun);
-      set.delete(params);
-      break;
-    }
-  }
-};
-var ShapeProcessor = defineProcessor({
+}, m = E({
   type: "Shape",
-  config: getShapeConfig,
+  config: f,
+  context() {
+    return {
+      pathEventMap: /* @__PURE__ */ new Map()
+    };
+  },
   commands: {
     add: {
-      holes({ target, engine, config, value }) {
-        const path = engine.compilerManager.getObjectfromModule(
-          MODULETYPE.PATH,
-          value
+      holes({ model: t, target: e, engine: n, config: o, value: s }) {
+        var p;
+        const h = n.compilerManager.getObjectFromModule(
+          l.PATH,
+          s
         );
-        if (!path) {
-          console.warn(`shape processor can not found path: ${value}`);
+        if (!h) {
+          console.warn(`shape model: can not found path: ${s}`);
           return;
         }
-        target.holes.push(path);
-        const index2 = config.holes.length - 1;
-        cacheBusObject(target, path, () => {
-          config.holes[index2] = config.holes[index2];
-        });
+        e.holes.push(h);
+        const a = o.holes.length - 1, r = () => {
+          o.holes[a] = o.holes[a];
+        };
+        (p = t.toModel(s)) == null || p.on(c.COMPILED_UPDATE, r), t.pathEventMap.set(h, r);
       }
     },
     set: {
-      shape({ target, engine, value }) {
-        const path = engine.compilerManager.getObjectfromModule(
-          MODULETYPE.PATH,
-          value
+      shape({ model: t, target: e, engine: n, value: o }) {
+        const s = n.compilerManager.getObjectFromModule(
+          l.PATH,
+          o
         );
-        if (!path) {
-          console.warn(`shape processor can not found path: ${value}`);
-        } else {
-          target.curves = path.curves;
-        }
+        s ? e.curves = s.curves : console.warn(`shape model: can not found path: ${o}`);
       },
-      holes({ target, engine, path, value }) {
-        const index2 = Number(path[1]);
-        if (!Number.isInteger(index2)) {
-          console.warn(`shape processor: delete holes error:`, path);
+      holes({ target: t, engine: e, path: n, value: o }) {
+        const s = Number(n[1]);
+        if (!Number.isInteger(s)) {
+          console.warn("shape model: delete holes error:", n);
           return;
         }
-        const curvePath = engine.compilerManager.getObjectfromModule(
-          MODULETYPE.PATH,
-          value
+        const h = e.compilerManager.getObjectFromModule(
+          l.PATH,
+          o
         );
-        if (!curvePath) {
-          console.warn(`shape processor can not found path: ${value}`);
+        if (!h) {
+          console.warn(`shape model: can not found path: ${o}`);
           return;
         }
-        target.holes[index2] = curvePath;
+        t.holes[s] = h;
       }
     },
     delete: {
-      holes({ target, path }) {
-        const index2 = Number(path[1]);
-        if (!Number.isInteger(index2)) {
-          console.warn(`shape processor: delete holes error:`, path);
+      holes({ model: t, target: e, path: n }) {
+        var s;
+        const o = Number(n[1]);
+        if (!Number.isInteger(o)) {
+          console.warn("shape processor: delete holes error:", n);
           return;
         }
-        cancelCacheBusObject(target, target.holes[index2]);
-        target.holes.splice(index2, 1);
+        (s = t.toModel(e.holes[o])) == null || s.off(
+          c.COMPILED_UPDATE,
+          t.pathEventMap.get(e.holes[o])
+        ), t.pathEventMap.delete(e.holes[o]), e.holes.splice(o, 1);
       }
     }
   },
-  create(config, engine) {
-    const shape = new Shape();
-    if (config.shape) {
-      const path = engine.compilerManager.getObjectfromModule(
-        MODULETYPE.PATH,
-        config.shape
+  create({ model: t, config: e, engine: n }) {
+    var s, h;
+    const o = new P();
+    if (e.shape) {
+      const a = n.compilerManager.getObjectFromModule(
+        l.PATH,
+        e.shape
       );
-      if (!path) {
-        console.warn(`shape processor can not found path: ${config.shape}`);
-      } else {
-        shape.curves = path.curves;
-        cacheBusObject(shape, path, () => {
-          config.shape = config.shape;
-        });
+      if (!a)
+        console.warn(`shape processor can not found path: ${e.shape}`);
+      else {
+        o.curves = a.curves;
+        const r = () => {
+          e.shape = e.shape;
+        };
+        (s = t.toModel(e.shape)) == null || s.on(c.COMPILED_UPDATE, r), t.pathEventMap.set(a, r);
       }
     }
-    if (config.holes.length) {
-      for (let index2 = 0; index2 < config.holes.length; index2 += 1) {
-        const vid = config.holes[index2];
-        const path = engine.compilerManager.getObjectfromModule(
-          MODULETYPE.PATH,
-          vid
+    if (e.holes.length)
+      for (let a = 0; a < e.holes.length; a += 1) {
+        const r = e.holes[a], p = n.compilerManager.getObjectFromModule(
+          l.PATH,
+          r
         );
-        if (!path) {
-          console.warn(`shape processor can not found path: ${vid}`);
-        } else {
-          shape.holes.push(path);
-          cacheBusObject(shape, path, () => {
-            config.holes[index2] = config.holes[index2];
-          });
+        if (!p)
+          console.warn(`shape processor can not found path: ${r}`);
+        else {
+          o.holes.push(p);
+          const d = () => {
+            e.holes[a] = e.holes[a];
+          };
+          (h = t.toModel(e.shape)) == null || h.on(c.COMPILED_UPDATE, d), t.pathEventMap.set(p, d);
         }
       }
-    }
-    return shape;
+    return o;
   },
-  dispose(target) {
-    target.curves = [];
-    target.holes = [];
-    const set = cacheBusMap.get(target);
-    if (!target) {
-      console.warn(
-        `shape processor found an error can not found cache shape:`,
-        target
-      );
-      return;
-    }
-    set.forEach((params) => {
-      cancelCacheBusObject(target, params.target);
-    });
-    cacheBusMap.delete(target);
+  dispose({ model: t, target: e }) {
+    var n;
+    e.curves = [], e.holes = [];
+    for (const [o, s] of t.pathEventMap.entries())
+      (n = t.toModel(o)) == null || n.off(c.COMPILED_UPDATE, s);
+    t.pathEventMap.clear();
   }
-});
-var index = {
+}), T = u({
   type: "shape",
-  compiler: ShapeCompiler,
-  rule: ShapeRule,
-  processors: [ShapeProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.ONE
+  models: [m],
+  lifeOrder: i.ONE
+});
+export {
+  T as default,
+  f as getShapeConfig
 };
-export { ShapeCompiler, index as default, getShapeConfig };
