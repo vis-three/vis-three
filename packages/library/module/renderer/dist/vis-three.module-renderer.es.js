@@ -1,27 +1,31 @@
-import { Rule, Compiler, uniqueSymbol, getSymbolConfig } from "@vis-three/middleware";
-import { validate } from "uuid";
-const validSymbols = [];
-const RendererRule = function(input, compiler) {
-  Rule(input, compiler, (vid) => {
-    return validate(vid) || validSymbols.includes(vid);
-  });
-};
-class RendererCompiler extends Compiler {
-  constructor() {
-    super();
+import { defineRule as s, globalOption as t, DEFAULT_RULE as r, Compiler as u, uniqueSymbol as i, getBasicConfig as d, defineModule as E } from "@vis-three/tdcm";
+const n = [], c = s([
+  function(o) {
+    return t.symbol.validator(o.symbol) || n.includes(o.symbol);
+  },
+  r.OPERATE_ADD,
+  r.OPERATE_DELETE,
+  r.OPERATE_COVER,
+  r.OPERATE_COMPILE
+]);
+class m extends u {
+  constructor(e) {
+    super(e);
   }
-  reigstProcessor(processor, fun) {
-    validSymbols.push(uniqueSymbol(processor.type));
-    return super.reigstProcessor(processor, fun);
+  useModel(e, l) {
+    return n.push(i(e.type)), super.useModel(e, l);
   }
 }
-const getRendererConfig = function() {
-  return Object.assign(getSymbolConfig(), { size: null });
-};
-var index = {
+const a = function() {
+  return Object.assign(d(), { size: null });
+}, p = E({
   type: "renderer",
-  compiler: RendererCompiler,
-  rule: RendererRule,
-  processors: []
+  compiler: m,
+  rule: c,
+  models: []
+});
+export {
+  m as RendererCompiler,
+  p as default,
+  a as getRendererConfig
 };
-export { RendererCompiler, index as default, getRendererConfig };

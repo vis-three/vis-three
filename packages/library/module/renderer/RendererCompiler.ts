@@ -1,17 +1,29 @@
-import { Compiler, Processor, uniqueSymbol } from "@vis-three/middleware";
-import { RendererConfig } from "./RendererConfig";
+import {
+  Compiler,
+  CompilerParameters,
+  EngineSupport,
+  ModelOption,
+  uniqueSymbol,
+} from "@vis-three/tdcm";
 import { validSymbols } from "./RendererRule";
 
-export class RendererCompiler extends Compiler<any, any> {
-  constructor() {
-    super();
+export class RendererCompiler extends Compiler<EngineSupport> {
+  constructor(params: CompilerParameters) {
+    super(params);
   }
 
-  reigstProcessor(
-    processor: Processor<any, any, any, any>,
-    fun: (compiler: Compiler<RendererConfig, any>) => void
+  useModel(
+    option: ModelOption<
+      any,
+      any,
+      any,
+      any,
+      EngineSupport,
+      Compiler<EngineSupport>
+    >,
+    callback?: ((compiler: this) => void) | undefined
   ): this {
-    validSymbols.push(uniqueSymbol(processor.type));
-    return super.reigstProcessor(processor, fun);
+    validSymbols.push(uniqueSymbol(option.type));
+    return super.useModel(option, callback);
   }
 }

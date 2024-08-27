@@ -1,6 +1,5 @@
-import { Compiler, Processor } from "@vis-three/middleware";
-import { RendererConfig } from "./RendererConfig";
-export declare class RendererCompiler extends Compiler<any, any> {
-    constructor();
-    reigstProcessor(processor: Processor<any, any, any, any>, fun: (compiler: Compiler<RendererConfig, any>) => void): this;
+import { Compiler, CompilerParameters, EngineSupport, ModelOption } from "@vis-three/tdcm";
+export declare class RendererCompiler extends Compiler<EngineSupport> {
+    constructor(params: CompilerParameters);
+    useModel(option: ModelOption<any, any, any, any, EngineSupport, Compiler<EngineSupport>>, callback?: ((compiler: this) => void) | undefined): this;
 }

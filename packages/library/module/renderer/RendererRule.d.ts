@@ -1,4 +1,3 @@
-import { Rule } from "@vis-three/middleware";
-import { RendererCompiler } from "./RendererCompiler";
 export declare const validSymbols: string[];
-export declare const RendererRule: Rule<RendererCompiler>;
+declare const _default: import("@vis-three/tdcm").Rule[];
+export default _default;
