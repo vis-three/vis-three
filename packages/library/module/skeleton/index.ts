@@ -1,16 +1,11 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { SkeletonCompiler } from "./SkeletonCompiler";
-import { SkeletonRule } from "./SkeletonRule";
-import SkeletonProcessor from "./processors/SkeletonProcessor";
-import LoadSkeletonProcessor from "./processors/LoadSkeletonProcessor";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import SkeletonModel from "./models/SkeletonModel";
+import LoadSkeletonModel from "./models/LoadSkeletonModel";
 
-export * from "./SkeletonCompiler";
 export * from "./SkeletonConfig";
 
-export default {
+export default defineModule({
   type: "skeleton",
-  compiler: SkeletonCompiler,
-  rule: SkeletonRule,
-  processors: [SkeletonProcessor, LoadSkeletonProcessor],
+  models: [SkeletonModel, LoadSkeletonModel],
   lifeOrder: SUPPORT_LIFE_CYCLE.THREE - 1,
-};
+});

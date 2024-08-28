@@ -1,23 +1,40 @@
-import { SymbolConfig, getSymbolConfig } from "@vis-three/middleware";
+import { BasicConfig, getBasicConfig } from "@vis-three/tdcm";
 
-export interface SkeletonConfig extends SymbolConfig {
+export interface SkeletonConfig extends BasicConfig {
   bones: string[];
-  boneInverses: [number, number,number,number,number,number,number,number,number,number,number,number,number,number,number,number][];
+  boneInverses: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ][];
 }
 
-export interface LoadSkeletonConfig extends SymbolConfig {
+export interface LoadSkeletonConfig extends BasicConfig {
   url: string;
 }
 
 export const getSkeletonConfig = function (): SkeletonConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     bones: [],
     boneInverses: [],
   });
 };
 
 export const getLoadSkeletonConfig = function (): LoadSkeletonConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     url: "",
   });
 };

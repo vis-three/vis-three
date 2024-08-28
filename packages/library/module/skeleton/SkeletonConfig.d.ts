@@ -1,9 +1,26 @@
-import { SymbolConfig } from "@vis-three/middleware";
-export interface SkeletonConfig extends SymbolConfig {
+import { BasicConfig } from "@vis-three/tdcm";
+export interface SkeletonConfig extends BasicConfig {
     bones: string[];
-    boneInverses: [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number][];
+    boneInverses: [
+        number,
+        number,
+        number,
+        number,
+        number,
+        number,
+        number,
+        number,
+        number,
+        number,
+        number,
+        number,
+        number,
+        number,
+        number,
+        number
+    ][];
 }
-export interface LoadSkeletonConfig extends SymbolConfig {
+export interface LoadSkeletonConfig extends BasicConfig {
     url: string;
 }
 export declare const getSkeletonConfig: () => SkeletonConfig;

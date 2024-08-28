@@ -1,131 +1,81 @@
-import {
-  Compiler,
-  Rule,
-  getSymbolConfig,
-  defineProcessor,
-  globalObjectModuleTrigger,
-  SUPPORT_LIFE_CYCLE,
-} from "@vis-three/middleware";
-import { validate } from "uuid";
-import { Skeleton, Matrix4, Bone } from "three";
-class SkeletonCompiler extends Compiler {
-  constructor() {
-    super();
-  }
-}
-const SkeletonRule = function (input, compiler, validateFun = validate) {
-  Rule(input, compiler, validateFun);
-};
-const getSkeletonConfig = function () {
-  return Object.assign(getSymbolConfig(), {
+import { getBasicConfig as i, defineModel as b, defineModule as a, SUPPORT_LIFE_CYCLE as d } from "@vis-three/tdcm";
+import { Skeleton as c, Matrix4 as u, Bone as f } from "three";
+const p = function() {
+  return Object.assign(i(), {
     bones: [],
-    boneInverses: [],
+    boneInverses: []
   });
-};
-const getLoadSkeletonConfig = function () {
-  return Object.assign(getSymbolConfig(), {
-    url: "",
+}, m = function() {
+  return Object.assign(i(), {
+    url: ""
   });
-};
-var SkeletonProcessor = defineProcessor({
+}, k = b({
   type: "Skeleton",
-  config: getSkeletonConfig,
+  config: p,
   commands: {
     add: {
-      bones({ target, value, engine }) {
-        const bone = engine.getObjectBySymbol(value);
-        if (bone) {
-          target.bones.push(bone);
-          target.boneInverses = [];
-          target.init();
-        } else {
-          console.warn(
-            `skeleton processor can not found bone in engine: ${value}`
-          );
-        }
-      },
+      bones({ target: e, value: n, engine: o }) {
+        const s = o.getObjectBySymbol(n);
+        s ? (e.bones.push(s), e.boneInverses = [], e.init()) : console.warn(
+          `skeleton processor can not found bone in engine: ${n}`
+        );
+      }
     },
     set: {},
     delete: {
-      bones({ target, value, engine }) {
-        target.bones.splice(value, 1);
-        target.boneInverses = [];
-        target.init();
-      },
-    },
-  },
-  create(config, engine) {
-    const bones = [];
-    config.bones.forEach((vid) => {
-      const bone = engine.getObjectBySymbol(vid);
-      if (bone) {
-        bones.push(bone);
-      } else {
-        console.warn(`skeleton processor can not found bone in engine: ${vid}`);
+      bones({ target: e, value: n, engine: o }) {
+        e.bones.splice(n, 1), e.boneInverses = [], e.init();
       }
-    });
-    const skeleton = new Skeleton(
-      bones,
-      config.boneInverses.length
-        ? config.boneInverses.map((item) => {
-            const matrix = new Matrix4();
-            matrix.elements = [].concat(item);
-            return matrix;
-          })
-        : []
-    );
-
-    if (!config.boneInverses.length) {
-      globalObjectModuleTrigger.registerExec(() => {
-        skeleton.calculateInverses();
-        return false;
-      });
     }
-    return skeleton;
   },
-  dispose(target) {
-    target.bones = [];
-    target.boneInverses = [];
-    target.dispose();
+  create({ model: e, config: n, engine: o }) {
+    const s = [];
+    n.bones.forEach((r) => {
+      const t = o.getObjectBySymbol(r);
+      t ? s.push(t) : console.warn(`skeleton processor can not found bone in engine: ${r}`);
+    });
+    const l = new c(
+      s,
+      n.boneInverses.length ? n.boneInverses.map((r) => {
+        const t = new u();
+        return t.elements = [].concat(
+          r
+        ), t;
+      }) : []
+    );
+    return n.boneInverses.length || e.toTrigger("object", () => (l.calculateInverses(), !1)), l;
   },
-});
-var LoadSkeletonProcessor = defineProcessor({
+  dispose({ target: e }) {
+    e.bones = [], e.boneInverses = [], e.dispose();
+  }
+}), g = b({
   type: "LoadSkeleton",
-  config: getLoadSkeletonConfig,
+  config: m,
   commands: {
     set: {
-      url() {},
-    },
-  },
-  create(config, engine) {
-    const target = engine.resourceManager.resourceMap.get(config.url);
-    if (!target && !(target instanceof Skeleton)) {
-      console.error(
-        `LoadSkeletonProcessor: engine rescoure can not found url: ${config.url}`
-      );
-      return new Skeleton([new Bone()]);
+      url() {
+      }
     }
-    return new Skeleton(
-      [].concat(target.bones),
-      [].concat(target.boneInverses)
+  },
+  create({ config: e, engine: n }) {
+    const o = n.resourceManager.resourceMap.get(e.url);
+    return !o && !(o instanceof c) ? (console.error(
+      `LoadSkeletonProcessor: engine rescoure can not found url: ${e.url}`
+    ), new c([new f()])) : new c(
+      [].concat(o.bones),
+      [].concat(o.boneInverses)
     );
   },
-  dispose(target) {
-    target.bones = [];
-    target.boneInverses = [];
-    target.dispose();
-  },
-});
-var index = {
+  dispose({ target: e }) {
+    e.bones = [], e.boneInverses = [], e.dispose();
+  }
+}), v = a({
   type: "skeleton",
-  compiler: SkeletonCompiler,
-  rule: SkeletonRule,
-  processors: [SkeletonProcessor, LoadSkeletonProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.THREE - 1,
-};
+  models: [k, g],
+  lifeOrder: d.THREE - 1
+});
 export {
-  SkeletonCompiler,
-  index as default,
-  getLoadSkeletonConfig,
-  getSkeletonConfig,
+  v as default,
+  m as getLoadSkeletonConfig,
+  p as getSkeletonConfig
 };

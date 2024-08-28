@@ -1,19 +1,8 @@
-import {
-  defineProcessor,
-  EngineSupport,
-  globalAntiShake,
-  globalObjectModuleTrigger,
-} from "@vis-three/middleware";
-import { SkeletonCompiler } from "../SkeletonCompiler";
+import { defineModel } from "@vis-three/tdcm";
 import { getSkeletonConfig, SkeletonConfig } from "../SkeletonConfig";
-import { Bone, Matrix4, Skeleton } from "three";
+import { Bone, Matrix4, Matrix4Tuple, Skeleton } from "three";
 
-export default defineProcessor<
-  SkeletonConfig,
-  Skeleton,
-  EngineSupport,
-  SkeletonCompiler
->({
+export default defineModel<SkeletonConfig, Skeleton>({
   type: "Skeleton",
   config: getSkeletonConfig,
   commands: {
@@ -40,7 +29,7 @@ export default defineProcessor<
       },
     },
   },
-  create(config, engine) {
+  create({ model, config, engine }) {
     const bones: Bone[] = [];
     config.bones.forEach((vid) => {
       const bone = engine.getObjectBySymbol(vid) as Bone;
@@ -57,14 +46,16 @@ export default defineProcessor<
       config.boneInverses.length
         ? config.boneInverses.map((item) => {
             const matrix = new Matrix4();
-            matrix.elements = (<number[]>[]).concat(item);
+            matrix.elements = (<number[]>[]).concat(
+              item
+            ) as unknown as Matrix4Tuple;
             return matrix;
           })
         : []
     );
 
     if (!config.boneInverses.length) {
-      globalObjectModuleTrigger.registerExec(() => {
+      model.toTrigger("object", () => {
         skeleton.calculateInverses();
         return false;
       });
@@ -72,7 +63,7 @@ export default defineProcessor<
 
     return skeleton;
   },
-  dispose(target) {
+  dispose({target}) {
     target.bones = [];
     target.boneInverses = [];
     target.dispose();
