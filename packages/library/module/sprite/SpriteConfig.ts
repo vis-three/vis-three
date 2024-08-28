@@ -1,4 +1,4 @@
-import { Vector2Config } from "@vis-three/middleware";
+import { Vector2Config } from "@vis-three/tdcm";
 import {
   getSolidObjectConfig,
   SolidObjectConfig,
