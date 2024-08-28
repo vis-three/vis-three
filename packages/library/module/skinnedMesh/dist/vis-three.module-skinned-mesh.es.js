@@ -1,68 +1,60 @@
-import { defineProcessor, globalObjectModuleTrigger, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { SolidObjectCompiler, getSolidObjectConfig, solidObjectCreate } from "@vis-three/module-solid-object";
-import { ObjectRule } from "@vis-three/module-object";
-import { SkinnedMesh, Matrix4 } from "three";
-class SkinnedMeshCompiler extends SolidObjectCompiler {
-  constructor() {
-    super();
-  }
-}
-const SkinnedMeshRule = function(input, compiler) {
-  ObjectRule(input, compiler);
-};
-const getSkinnedMeshConfig = function() {
-  return Object.assign(getSolidObjectConfig(), {
+import { ObjectRule as d } from "@vis-three/module-object";
+import { defineModule as l, SUPPORT_LIFE_CYCLE as a } from "@vis-three/tdcm";
+import { getSolidObjectConfig as c, defineSolidObjectModel as M } from "@vis-three/module-solid-object";
+import { SkinnedMesh as b, Matrix4 as k } from "three";
+const m = function() {
+  return Object.assign(c(), {
     skeleton: "",
     bindMode: "attached",
     bindMatrix: []
   });
-};
-var SkinnedMeshProcessor = defineProcessor({
-  type: "SkinnedMesh",
-  config: getSkinnedMeshConfig,
-  commands: {
-    add: {},
-    set: {},
-    delete: {}
-  },
-  create(config, engine) {
-    const skinnedMesh = solidObjectCreate(
-      new SkinnedMesh(),
-      config,
-      {
-        skeleton: true
-      },
-      engine
-    );
-    if (config.skeleton) {
-      const skeleton = engine.getObjectBySymbol(config.skeleton);
-      if (!skeleton) {
-        console.warn(
-          `skinnedMesh processor can not found skeleton in engine: ${config.skeleton}`
-        );
-      }
-      globalObjectModuleTrigger.registerExec(() => {
-        if (config.bindMatrix.length) {
-          const matrix = new Matrix4();
-          matrix.elements = [].concat(config.bindMatrix);
-          skinnedMesh.bind(skeleton, matrix);
-        } else {
-          skinnedMesh.bind(skeleton, skinnedMesh.matrixWorld);
+}, f = M(
+  (r) => ({
+    type: "SkinnedMesh",
+    config: m,
+    commands: {
+      add: {},
+      set: {},
+      delete: {}
+    },
+    create({ model: o, config: e, engine: s }) {
+      const t = new b();
+      if (r.create({
+        model: o,
+        target: t,
+        config: e,
+        engine: s,
+        filter: {
+          skeleton: !0
         }
-        return false;
-      });
+      }), e.skeleton) {
+        const n = s.getObjectBySymbol(e.skeleton);
+        n || console.warn(
+          `skinnedMesh processor can not found skeleton in engine: ${e.skeleton}`
+        ), o.toTrigger("object", () => {
+          if (e.bindMatrix.length) {
+            const i = new k();
+            i.elements = [].concat(
+              e.bindMatrix
+            ), t.bind(n, i);
+          } else
+            t.bind(n, t.matrixWorld);
+          return !1;
+        });
+      }
+      return t;
+    },
+    dispose() {
     }
-    return skinnedMesh;
-  },
-  dispose() {
-  }
-});
-var index = {
+  })
+), S = l({
   type: "skinnedMesh",
-  object: true,
-  compiler: SkinnedMeshCompiler,
-  rule: SkinnedMeshRule,
-  processors: [SkinnedMeshProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.THREE
+  object: !0,
+  rule: d,
+  models: [f],
+  lifeOrder: a.THREE
+});
+export {
+  S as default,
+  m as getSkinnedMeshConfig
 };
-export { SkinnedMeshCompiler, index as default, getSkinnedMeshConfig };

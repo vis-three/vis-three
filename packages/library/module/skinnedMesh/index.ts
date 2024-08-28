@@ -1,16 +1,13 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { SkinnedMeshCompiler } from "./SkinnedMeshCompiler";
-import { SkinnedMeshRule } from "./SkinnedMeshRule";
-import SkinnedMeshProcessor from "./processors/SkinnedMeshProcessor";
+import { ObjectRule } from "@vis-three/module-object";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import SkinnedMeshModel from "./models/SkinnedMeshModel";
 
 export * from "./SkinnedMeshConfig";
-export * from "./SkinnedMeshCompiler";
 
-export default {
+export default defineModule({
   type: "skinnedMesh",
   object: true,
-  compiler: SkinnedMeshCompiler,
-  rule: SkinnedMeshRule,
-  processors: [SkinnedMeshProcessor],
+  rule: ObjectRule,
+  models: [SkinnedMeshModel],
   lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
-};
+});
