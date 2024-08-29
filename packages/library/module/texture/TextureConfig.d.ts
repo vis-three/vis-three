@@ -1,5 +1,5 @@
-import { SymbolConfig, Vector2Config } from "@vis-three/middleware";
-export interface TextureConfig extends SymbolConfig {
+import { BasicConfig, Vector2Config } from "@vis-three/tdcm";
+export interface TextureConfig extends BasicConfig {
     name: string;
     mapping: number;
     wrapS: number;
@@ -13,7 +13,6 @@ export interface TextureConfig extends SymbolConfig {
     rotation: number;
     center: Vector2Config;
     matrixAutoUpdate: boolean;
-    encoding: number;
     needsUpdate: boolean;
     flipY: boolean;
 }

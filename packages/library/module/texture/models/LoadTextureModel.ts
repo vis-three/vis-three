@@ -1,36 +1,26 @@
-import { CompressedTexture, Texture } from "three";
 import { getLoadTextureConfig, LoadTextureConfig } from "../TextureConfig";
-import { needUpdateRegCommand } from "./common";
+import { defineTextureModel, TextureModelShared } from "./TextureModel";
 import { syncObject } from "@vis-three/utils";
-import { TextureCompiler } from "../TextureCompiler";
-import {
-  defineProcessor,
-  EngineSupport,
-  MODULETYPE,
-} from "@vis-three/middleware";
 import { LoadTexture } from "../extends/LoadTexture";
+import { Texture } from "three";
 
-export default defineProcessor<
+export default defineTextureModel<
   LoadTextureConfig,
   LoadTexture,
-  EngineSupport,
-  TextureCompiler
->({
+  {},
+  TextureModelShared
+>(() => ({
   type: "LoadTexture",
   config: getLoadTextureConfig,
   commands: {
     set: {
-      // 当前的LoadTexture是一次性的
-      url({}) {},
-      $reg: [needUpdateRegCommand],
+      url() {},
     },
   },
-  create(config: LoadTextureConfig, engine: EngineSupport): LoadTexture {
+  create({ model, config, engine }) {
     let texture: LoadTexture;
 
-    const resource = engine.compilerManager
-      .getCompiler<TextureCompiler>(MODULETYPE.TEXTURE)!
-      .getResource(config.url, Texture);
+    const resource = model.getResource(config.url, engine, Texture);
 
     if (resource instanceof Texture) {
       texture = new LoadTexture(resource);
@@ -49,7 +39,7 @@ export default defineProcessor<
     return texture;
   },
 
-  dispose(target): void {
+  dispose({ target }) {
     target.dispose();
   },
-});
+}));

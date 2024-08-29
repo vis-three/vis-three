@@ -1,6 +1,6 @@
-import { EngineSupport } from "@vis-three/middleware";
+import { EngineSupport } from "@vis-three/tdcm";
 import { LoadTextureConfig } from "./TextureConfig";
-export interface TextureModuleEngine extends EngineSupport {
+export interface TextureEngineSupport extends EngineSupport {
     generateLoadTextureConfig: (url: string) => LoadTextureConfig | null;
 }
-export default function (engine: TextureModuleEngine): void;
+export default function (engine: TextureEngineSupport): void;

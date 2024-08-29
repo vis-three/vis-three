@@ -1,33 +1,29 @@
 import {
-  CONFIGTYPE,
+  CONFIG_TYPE,
   EngineSupport,
-  MODULETYPE,
   generateConfig,
-} from "@vis-three/middleware";
+} from "@vis-three/tdcm";
 import { LoadTextureConfig } from "./TextureConfig";
-import { TextureCompiler } from "./TextureCompiler";
 import { Texture } from "three";
+import { getResource } from "./models/TextureModel";
 
-export interface TextureModuleEngine extends EngineSupport {
+export interface TextureEngineSupport extends EngineSupport {
   generateLoadTextureConfig: (url: string) => LoadTextureConfig | null;
 }
 
-export default function (engine: TextureModuleEngine) {
+export default function (engine: TextureEngineSupport) {
   engine.generateLoadTextureConfig = function (url: string) {
-    const resource = this.compilerManager
-      .getCompiler<TextureCompiler>(MODULETYPE.TEXTURE)!
-      .getResource(url, Texture);
+    const resource = getResource(url, this, Texture);
 
     if (resource instanceof HTMLCanvasElement) {
       return null;
     }
 
-    return generateConfig<LoadTextureConfig>(CONFIGTYPE.LOADTEXTURE, {
+    return generateConfig<LoadTextureConfig>(CONFIG_TYPE.LOADTEXTURE, {
       url,
       flipY: resource.flipY,
       format: resource.format,
       mapping: resource.mapping,
-      encoding: resource.encoding,
       minFilter: resource.minFilter,
       magFilter: resource.magFilter,
     });

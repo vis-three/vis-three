@@ -1,19 +1,14 @@
-import {
-  SymbolConfig,
-  Vector2Config,
-  getSymbolConfig,
-} from "@vis-three/middleware";
+import { BasicConfig, Vector2Config, getBasicConfig } from "@vis-three/tdcm";
 import {
   ClampToEdgeWrapping,
   CubeReflectionMapping,
-  LinearEncoding,
   LinearFilter,
   LinearMipmapLinearFilter,
   RGBAFormat,
   UVMapping,
 } from "three";
 
-export interface TextureConfig extends SymbolConfig {
+export interface TextureConfig extends BasicConfig {
   name: string;
   mapping: number;
   wrapS: number;
@@ -27,7 +22,6 @@ export interface TextureConfig extends SymbolConfig {
   rotation: number;
   center: Vector2Config;
   matrixAutoUpdate: boolean;
-  encoding: number;
   needsUpdate: boolean;
   flipY: boolean;
 }
@@ -79,7 +73,7 @@ export type TextureAllType =
   | LoadTextureConfig;
 
 export const getTextureConfig = function (): TextureConfig {
-  return Object.assign(getSymbolConfig(), {
+  return Object.assign(getBasicConfig(), {
     mapping: UVMapping,
     wrapS: ClampToEdgeWrapping,
     wrapT: ClampToEdgeWrapping,
@@ -102,7 +96,6 @@ export const getTextureConfig = function (): TextureConfig {
       y: 0,
     },
     matrixAutoUpdate: true,
-    encoding: LinearEncoding,
     needsUpdate: false,
   });
 };

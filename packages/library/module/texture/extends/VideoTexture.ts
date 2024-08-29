@@ -1,5 +1,6 @@
 import {
   LinearFilter,
+  MagnificationTextureFilter,
   Mapping,
   PixelFormat,
   RGBFormat,
@@ -17,7 +18,7 @@ export class VideoTexture extends Texture {
     mapping?: Mapping,
     wrapS?: Wrapping,
     wrapT?: Wrapping,
-    magFilter?: TextureFilter,
+    magFilter?: MagnificationTextureFilter,
     minFilter?: TextureFilter,
     format?: PixelFormat,
     type?: TextureDataType,

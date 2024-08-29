@@ -1,26 +1,22 @@
-import CanvasTextureProcessor from "./processors/CanvasTextureProcessor";
-import CubeTextureProcessor from "./processors/CubeTextureProcessor";
-import ImageTextureProcessor from "./processors/ImageTextureProcessor";
-import LoadTextureProcessor from "./processors/LoadTextureProcessor";
-import { TextureCompiler } from "./TextureCompiler";
-import { TextureRule } from "./TextureRule";
-import VideoTextureProcessor from "./processors/VideoTextureProcessor";
+import CanvasTextureModel from "./models/CanvasTextureModel";
+import CubeTextureModel from "./models/CubeTextureModel";
+import ImageTextureModel from "./models/ImageTextureModel";
+import LoadTextureModel from "./models/LoadTextureModel";
+import VideoTextureModel from "./models/VideoTextureModel";
 import TextureExtend from "./TextureExtend";
+import { defineModule } from "@vis-three/tdcm";
 
-export * from "./TextureCompiler";
 export * from "./TextureConfig";
 export * from "./TextureExtend";
 
-export default {
+export default defineModule({
   type: "texture",
-  compiler: TextureCompiler,
-  rule: TextureRule,
-  processors: [
-    CanvasTextureProcessor,
-    CubeTextureProcessor,
-    ImageTextureProcessor,
-    LoadTextureProcessor,
-    VideoTextureProcessor,
+  models: [
+    CanvasTextureModel,
+    CubeTextureModel,
+    ImageTextureModel,
+    LoadTextureModel,
+    VideoTextureModel,
   ],
   extend: TextureExtend,
-};
+});

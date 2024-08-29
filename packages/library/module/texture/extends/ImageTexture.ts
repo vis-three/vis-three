@@ -1,9 +1,9 @@
 import {
+  MagnificationTextureFilter,
   Mapping,
   PixelFormat,
   Texture,
   TextureDataType,
-  TextureEncoding,
   TextureFilter,
   Wrapping,
 } from "three";
@@ -14,12 +14,11 @@ export class ImageTexture extends Texture {
     mapping?: Mapping,
     wrapS?: Wrapping,
     wrapT?: Wrapping,
-    magFilter?: TextureFilter,
+    magFilter?: MagnificationTextureFilter,
     minFilter?: TextureFilter,
     format?: PixelFormat,
     type?: TextureDataType,
-    anisotropy?: number,
-    encoding?: TextureEncoding
+    anisotropy?: number
   ) {
     super(
       image,
@@ -30,8 +29,7 @@ export class ImageTexture extends Texture {
       minFilter,
       format,
       type,
-      anisotropy,
-      encoding
+      anisotropy
     );
   }
 }
