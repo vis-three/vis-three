@@ -1,13 +1,11 @@
-import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { WaterCompiler } from "./WaterCompiler";
-import { WaterRule } from "./WaterRule";
-import DeepWaterProcessor from "./processors/DeepWaterProcessor";
+import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
+import { ObjectRule } from "@vis-three/module-object";
+import DeepWaterModel from "./models/DeepWaterModel";
 
-export default {
+export default defineModule({
   type: "water",
   object: true,
-  compiler: WaterCompiler,
-  rule: WaterRule,
-  processors: [DeepWaterProcessor],
+  rule: ObjectRule,
+  models: [DeepWaterModel],
   lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
-};
+});

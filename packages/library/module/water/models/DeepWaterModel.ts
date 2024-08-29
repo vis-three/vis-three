@@ -1,29 +1,17 @@
-import {
-  defineProcessor,
-  EngineSupport,
-  MODULETYPE,
-} from "@vis-three/middleware";
-import { WaterCompiler } from "../WaterCompiler";
+import { defineObjectModel, ObjectModel } from "@vis-three/module-object";
 import { DeepWaterConfig, getDeepWaterConfig } from "../WaterConfig";
-import { Water as DeepWater } from "three/examples/jsm/objects/Water";
+import { Water as DeepWater } from "three/examples/jsm/objects/Water.js";
 import { BufferGeometry, Color, Texture, Vector3 } from "three";
-import { objectCreate, objectDispose } from "@vis-three/module-object";
+import { MODULE_TYPE } from "@vis-three/tdcm";
 
-const cacheColor = new Color();
-
-export default defineProcessor<
-  DeepWaterConfig,
-  DeepWater,
-  EngineSupport,
-  WaterCompiler
->({
+export default defineObjectModel<DeepWaterConfig, DeepWater>((objectModel) => ({
   type: "DeepWater",
   config: getDeepWaterConfig,
   commands: {
     set: {
       geometry({ value, target, engine }) {
-        const geometry = engine.getObjectfromModule(
-          MODULETYPE.GEOMETRY,
+        const geometry = engine.getObjectFromModule(
+          MODULE_TYPE.GEOMETRY,
           value
         ) as BufferGeometry;
 
@@ -38,8 +26,8 @@ export default defineProcessor<
       },
 
       waterNormals({ value, target, engine }) {
-        const texture = engine.getObjectfromModule(
-          MODULETYPE.TEXTURE,
+        const texture = engine.getObjectFromModule(
+          MODULE_TYPE.TEXTURE,
           value
         ) as Texture;
 
@@ -90,17 +78,17 @@ export default defineProcessor<
       },
     },
   },
-  create(config, engine) {
+  create({ model, config, engine }) {
     const water = new DeepWater(
-      engine.getObjectfromModule(
-        MODULETYPE.GEOMETRY,
+      engine.getObjectFromModule(
+        MODULE_TYPE.GEOMETRY,
         config.geometry
       ) as BufferGeometry,
       {
         textureWidth: config.textureWidth || 512,
         textureHeight: config.textureHeight || 512,
-        waterNormals: engine.getObjectfromModule(
-          MODULETYPE.TEXTURE,
+        waterNormals: engine.getObjectFromModule(
+          MODULE_TYPE.TEXTURE,
           config.waterNormals
         ) as Texture,
         waterColor: config.waterColor,
@@ -117,10 +105,12 @@ export default defineProcessor<
         fog: config.fog,
       }
     );
-    return objectCreate(
-      water,
+
+    objectModel.create!<DeepWaterConfig>({
+      model: model as unknown as ObjectModel,
+      target: water,
       config,
-      {
+      filter: {
         geometry: true,
         textureWidth: true,
         textureHeight: true,
@@ -134,14 +124,16 @@ export default defineProcessor<
         eye: true,
         fog: true,
       },
-      engine
-    );
+      engine,
+    });
+
+    return water;
   },
-  dispose(target) {
+  dispose({ target }) {
     target.onBeforeRender = () => {};
     target.material.dispose();
     target.geometry = null as unknown as BufferGeometry;
 
-    objectDispose(target);
+    objectModel.dispose!({ target });
   },
-});
+}));

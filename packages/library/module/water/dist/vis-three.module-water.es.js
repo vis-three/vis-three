@@ -1,18 +1,9 @@
-import { defineProcessor, MODULETYPE, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { ObjectCompiler, ObjectRule, getObjectConfig, objectCreate, objectDispose } from "@vis-three/module-object";
-import { validate } from "uuid";
-import { Water } from "three/examples/jsm/objects/Water";
-import { Color, Vector3 } from "three";
-class WaterCompiler extends ObjectCompiler {
-  constructor() {
-    super();
-  }
-}
-const WaterRule = function(input, compiler, validateFun = validate) {
-  ObjectRule(input, compiler, validateFun);
-};
-const getDeepWaterConfig = function() {
-  return Object.assign(getObjectConfig(), {
+import { MODULE_TYPE as a, defineModule as i, SUPPORT_LIFE_CYCLE as n } from "@vis-three/tdcm";
+import { getObjectConfig as s, defineObjectModel as m, ObjectRule as d } from "@vis-three/module-object";
+import { Water as y } from "three/examples/jsm/objects/Water.js";
+import { Vector3 as l } from "three";
+const c = function() {
+  return Object.assign(s(), {
     geometry: "",
     textureWidth: 512,
     textureHeight: 512,
@@ -29,132 +20,128 @@ const getDeepWaterConfig = function() {
       y: 0,
       z: 0
     },
-    fog: false
+    fog: !1
   });
-};
-new Color();
-var DeepWaterProcessor = defineProcessor({
+}, w = m((u) => ({
   type: "DeepWater",
-  config: getDeepWaterConfig,
+  config: c,
   commands: {
     set: {
-      geometry({ value, target, engine }) {
-        const geometry = engine.getObjectfromModule(
-          MODULETYPE.GEOMETRY,
-          value
+      geometry({ value: e, target: t, engine: o }) {
+        const r = o.getObjectFromModule(
+          a.GEOMETRY,
+          e
         );
-        if (!geometry) {
+        if (!r) {
           console.warn(
-            `DeepWater processor: can not found geometry with:${value}`
+            `DeepWater processor: can not found geometry with:${e}`
           );
           return;
         }
-        target.geometry = geometry;
+        t.geometry = r;
       },
-      waterNormals({ value, target, engine }) {
-        const texture = engine.getObjectfromModule(
-          MODULETYPE.TEXTURE,
-          value
+      waterNormals({ value: e, target: t, engine: o }) {
+        const r = o.getObjectFromModule(
+          a.TEXTURE,
+          e
         );
-        if (!texture) {
+        if (!r) {
           console.warn(
-            `DeepWater processor: can not found texture with:${value}`
+            `DeepWater processor: can not found texture with:${e}`
           );
           return;
         }
-        target.material.uniforms.normalSampler.value = texture;
+        t.material.uniforms.normalSampler.value = r;
       },
-      time(params) {
-        params.target.material.uniforms.time.value = params.value;
+      time(e) {
+        e.target.material.uniforms.time.value = e.value;
       },
-      size(params) {
-        params.target.material.uniforms.size.value = params.value;
+      size(e) {
+        e.target.material.uniforms.size.value = e.value;
       },
-      alpha(params) {
-        params.target.material.uniforms.alpha.value = params.value;
+      alpha(e) {
+        e.target.material.uniforms.alpha.value = e.value;
       },
-      distortionScale(params) {
-        params.target.material.uniforms.distortionScale.value = params.value;
+      distortionScale(e) {
+        e.target.material.uniforms.distortionScale.value = e.value;
       },
-      waterColor(params) {
-        params.target.material.uniforms.waterColor.value.setStyle(
-          params.value
+      waterColor(e) {
+        e.target.material.uniforms.waterColor.value.setStyle(
+          e.value
         );
       },
-      sunColor(params) {
-        params.target.material.uniforms.waterColor.value.setStyle(
-          params.value
+      sunColor(e) {
+        e.target.material.uniforms.waterColor.value.setStyle(
+          e.value
         );
       },
-      sunDirection(params) {
-        params.target.material.uniforms.sunDirection.value[params.key] = params.value;
+      sunDirection(e) {
+        e.target.material.uniforms.sunDirection.value[e.key] = e.value;
       },
-      eye(params) {
-        params.target.material.uniforms.eye.value[params.key] = params.value;
+      eye(e) {
+        e.target.material.uniforms.eye.value[e.key] = e.value;
       }
     }
   },
-  create(config, engine) {
-    const water = new Water(
-      engine.getObjectfromModule(
-        MODULETYPE.GEOMETRY,
-        config.geometry
+  create({ model: e, config: t, engine: o }) {
+    const r = new y(
+      o.getObjectFromModule(
+        a.GEOMETRY,
+        t.geometry
       ),
       {
-        textureWidth: config.textureWidth || 512,
-        textureHeight: config.textureHeight || 512,
-        waterNormals: engine.getObjectfromModule(
-          MODULETYPE.TEXTURE,
-          config.waterNormals
+        textureWidth: t.textureWidth || 512,
+        textureHeight: t.textureHeight || 512,
+        waterNormals: o.getObjectFromModule(
+          a.TEXTURE,
+          t.waterNormals
         ),
-        waterColor: config.waterColor,
-        sunColor: config.sunColor,
-        sunDirection: new Vector3(
-          config.sunDirection.x,
-          config.sunDirection.y,
-          config.sunDirection.z
+        waterColor: t.waterColor,
+        sunColor: t.sunColor,
+        sunDirection: new l(
+          t.sunDirection.x,
+          t.sunDirection.y,
+          t.sunDirection.z
         ),
-        alpha: config.alpha,
-        time: config.time,
-        distortionScale: config.distortionScale,
-        eye: new Vector3(config.eye.x, config.eye.y, config.eye.z),
-        fog: config.fog
+        alpha: t.alpha,
+        time: t.time,
+        distortionScale: t.distortionScale,
+        eye: new l(t.eye.x, t.eye.y, t.eye.z),
+        fog: t.fog
       }
     );
-    return objectCreate(
-      water,
-      config,
-      {
-        geometry: true,
-        textureWidth: true,
-        textureHeight: true,
-        waterNormals: true,
-        waterColor: true,
-        sunColor: true,
-        sunDirection: true,
-        alpha: true,
-        time: true,
-        distortionScale: true,
-        eye: true,
-        fog: true
+    return u.create({
+      model: e,
+      target: r,
+      config: t,
+      filter: {
+        geometry: !0,
+        textureWidth: !0,
+        textureHeight: !0,
+        waterNormals: !0,
+        waterColor: !0,
+        sunColor: !0,
+        sunDirection: !0,
+        alpha: !0,
+        time: !0,
+        distortionScale: !0,
+        eye: !0,
+        fog: !0
       },
-      engine
-    );
+      engine: o
+    }), r;
   },
-  dispose(target) {
-    target.onBeforeRender = () => {
-    };
-    target.material.dispose();
-    target.geometry = null;
-    objectDispose(target);
+  dispose({ target: e }) {
+    e.onBeforeRender = () => {
+    }, e.material.dispose(), e.geometry = null, u.dispose({ target: e });
   }
-});
-var index = {
+})), C = i({
   type: "water",
-  object: true,
-  compiler: WaterCompiler,
-  rule: WaterRule,
-  processors: [DeepWaterProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.THREE
+  object: !0,
+  rule: d,
+  models: [w],
+  lifeOrder: n.THREE
+});
+export {
+  C as default
 };
-export { index as default };

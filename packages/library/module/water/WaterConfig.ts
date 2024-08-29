@@ -1,4 +1,4 @@
-import { Vector3Config } from "@vis-three/middleware";
+import { Vector3Config } from "@vis-three/tdcm";
 import { ObjectConfig, getObjectConfig } from "@vis-three/module-object";
 
 export interface DeepWaterConfig extends ObjectConfig {

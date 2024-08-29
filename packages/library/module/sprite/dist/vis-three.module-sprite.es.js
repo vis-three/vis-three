@@ -1,14 +1,14 @@
-import { defineProcessor, MODULETYPE, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { SolidObjectCompiler, getSolidObjectConfig, solidObjectCommands, solidObjectCreate, solidObjectDispose } from "@vis-three/module-solid-object";
-import { SpriteMaterial, Sprite } from "three";
-import { ObjectRule } from "@vis-three/module-object";
-class SpriteCompiler extends SolidObjectCompiler {
-  constructor() {
-    super();
-  }
-}
-const getSpriteConfig = function() {
-  return Object.assign(getSolidObjectConfig(), {
+import { defineRule as c, MODULE_TYPE as n, defineModule as p, SUPPORT_LIFE_CYCLE as m } from "@vis-three/tdcm";
+import { ObjectRule as s } from "@vis-three/module-object";
+import { getSolidObjectConfig as f, defineSolidObjectModel as u } from "@vis-three/module-solid-object";
+import { SpriteMaterial as l, Sprite as d } from "three";
+const M = c([
+  function(a) {
+    return a.key !== "geometry";
+  },
+  ...s
+]), g = function() {
+  return Object.assign(f(), {
     type: "Sprite",
     material: "",
     center: {
@@ -16,69 +16,55 @@ const getSpriteConfig = function() {
       y: 0.5
     }
   });
-};
-const spriteReplaceMaterial = new SpriteMaterial({
-  color: "rgb(123, 123, 123)"
-});
-var SpriteProcessor = defineProcessor({
+}, R = u((a) => ({
   type: "Sprite",
-  config: getSpriteConfig,
+  config: g,
+  shared: {
+    spriteReplaceMaterial: new l({
+      color: "rgb(123, 123, 123)"
+    })
+  },
   commands: {
-    add: solidObjectCommands.add,
     set: {
       lookAt() {
       },
-      ...solidObjectCommands.set,
-      material({ target, engine, value }) {
-        const material = engine.compilerManager.getObjectfromModule(
-          MODULETYPE.MATERIAL,
-          value
+      material({ model: t, target: i, engine: o, value: r }) {
+        const e = o.compilerManager.getObjectFromModule(
+          n.MATERIAL,
+          r
         );
-        if (material && material instanceof SpriteMaterial) {
-          target.material = material;
-        } else {
-          target.material = spriteReplaceMaterial;
-        }
+        e && e instanceof l ? i.material = e : i.material = t.spriteReplaceMaterial;
       }
-    },
-    delete: solidObjectCommands.add
-  },
-  create(config, engine) {
-    const sprite = new Sprite();
-    const material = engine.compilerManager.getObjectfromModule(
-      MODULETYPE.MATERIAL,
-      config.material
-    );
-    if (material && material instanceof SpriteMaterial) {
-      sprite.material = material;
-    } else {
-      sprite.material = spriteReplaceMaterial;
     }
-    return solidObjectCreate(
-      sprite,
-      config,
-      {
-        geometry: true,
-        material: true,
-        lookAt: true
-      },
-      engine
-    );
   },
-  dispose: solidObjectDispose
-});
-const SpriteRule = function(notice, compiler) {
-  if (notice.key === "geometry") {
-    return;
+  create({ model: t, config: i, engine: o }) {
+    const r = new d(), e = o.compilerManager.getObjectFromModule(
+      n.MATERIAL,
+      i.material
+    );
+    return e && e instanceof l ? r.material = e : r.material = t.spriteReplaceMaterial, a.create({
+      model: t,
+      target: r,
+      config: i,
+      engine: o,
+      filter: {
+        geometry: !0,
+        material: !0,
+        lookAt: !0
+      }
+    }), r;
+  },
+  dispose({ target: t }) {
+    a.dispose({ target: t });
   }
-  ObjectRule(notice, compiler);
-};
-var index = {
+})), y = p({
   type: "sprite",
-  object: true,
-  compiler: SpriteCompiler,
-  rule: SpriteRule,
-  processors: [SpriteProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.THREE
+  object: !0,
+  rule: M,
+  models: [R],
+  lifeOrder: m.THREE
+});
+export {
+  y as default,
+  g as getSpriteConfig
 };
-export { SpriteCompiler, index as default, getSpriteConfig };
