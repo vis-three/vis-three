@@ -13,9 +13,10 @@ import { AniScriptManager } from "../AniScriptManager";
 
 export default defineModel<
   ScriptAnimationConfig,
-  { scriptAni: (event: RenderEvent) => void },
+  (event: RenderEvent) => void,
   {},
   {
+    eventSymbol: string;
     createFunction: (
       config: ScriptAnimationConfig,
       engine: EngineSupport
@@ -29,6 +30,7 @@ export default defineModel<
   type: "ScriptAnimation",
   config: getScriptAnimationConfig,
   shared: {
+    eventSymbol: "vis.event",
     createFunction(
       config: ScriptAnimationConfig,
       engine: EngineSupport
@@ -109,33 +111,37 @@ export default defineModel<
         if (value) {
           engine.renderManager.addEventListener<RenderEvent>(
             ENGINE_EVENT.RENDER,
-            target.scriptAni
+            target
           );
         } else {
           engine.renderManager.removeEventListener<RenderEvent>(
             ENGINE_EVENT.RENDER,
-            target.scriptAni
+            target
           );
         }
       },
       $reg: [
         {
           reg: new RegExp(".*"),
-          handler({ model, target, config, engine }) {
+          handler({ model, target, config, engine, compiler }) {
             engine.renderManager.removeEventListener<RenderEvent>(
               ENGINE_EVENT.RENDER,
-              target.scriptAni
+              target
             );
 
-            const newFun = model.createFunction(config, engine);
+            compiler.symbolMap.delete(target);
 
-            target.scriptAni = newFun;
+            const newFun = model.createFunction(config, engine);
 
             config.play &&
               engine.renderManager.addEventListener<RenderEvent>(
                 ENGINE_EVENT.RENDER,
                 newFun
               );
+
+            model.puppet = newFun;
+
+            compiler.symbolMap.set(newFun, config.vid);
           },
         },
       ],
@@ -150,14 +156,12 @@ export default defineModel<
         fun
       );
 
-    return {
-      scriptAni: fun,
-    };
+    return fun;
   },
   dispose({ model, target, config, engine }) {
     engine.renderManager.removeEventListener<RenderEvent>(
       ENGINE_EVENT.RENDER,
-      target.scriptAni
+      target
     );
     model.restoreAttribute(config, engine);
   },

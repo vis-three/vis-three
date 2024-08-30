@@ -1,13 +1,13 @@
-import { getBasicConfig as r, defineModel as m, defineModule as l, SUPPORT_LIFE_CYCLE as p } from "@vis-three/tdcm";
-import { LoopRepeat as s } from "three";
-import { syncObject as d } from "@vis-three/utils";
-const u = function() {
-  return Object.assign(r(), {
+import { getBasicConfig as l, defineModel as p, defineModule as s, SUPPORT_LIFE_CYCLE as d } from "@vis-three/tdcm";
+import { LoopRepeat as u } from "three";
+import { syncObject as x } from "@vis-three/utils";
+const y = function() {
+  return Object.assign(l(), {
     mixer: "",
     clip: "",
     clampWhenFinished: !0,
     enabled: !0,
-    loop: s,
+    loop: u,
     paused: !1,
     repetitions: 1 / 0,
     timeScale: 1,
@@ -15,66 +15,60 @@ const u = function() {
     zeroSlopeAtEnd: !0,
     zeroSlopeAtStart: !0
   });
-}, f = m(
-  {
-    type: "AnimationAction",
-    config: u,
-    commands: {
-      set: {
-        clip({ target: n, config: i, value: o, engine: t }) {
-          n.action && n.action.getMixer().uncacheAction(n.action.getClip());
-          const e = t.getObjectBySymbol(
-            i.mixer
+}, f = p({
+  type: "AnimationAction",
+  config: y,
+  commands: {
+    set: {
+      clip({ model: n, target: e, config: i, value: o, engine: t, compiler: a }) {
+        e.getMixer().uncacheAction(e.getClip()), a.symbolMap.delete(e);
+        const r = t.getObjectBySymbol(i.mixer);
+        if (!r) {
+          console.warn(
+            `animation action model can not found animation mixer in engine: ${i.mixer}`
           );
-          if (!e) {
-            console.warn(
-              `animation action model can not found animation mixer in engine: ${i.mixer}`
-            );
-            return;
-          }
-          const c = t.getObjectBySymbol(o);
-          c || console.warn(
-            `animation action model can not found animation clip in engine: ${o}`
-          );
-          const a = e.clipAction(c);
-          a.play(), n.action = a;
+          return;
         }
-      }
-    },
-    create({ config: n, engine: i }) {
-      if (!n.mixer)
-        return console.warn("animation action model must have mixer"), {};
-      if (!n.clip)
-        return {};
-      const o = i.getObjectBySymbol(n.mixer);
-      if (!o)
-        return console.warn(
-          `animation action model can not found animation mixer in engine: ${n.mixer}`
-        ), {};
-      const t = i.getObjectBySymbol(n.clip);
-      if (!t)
-        return console.warn(
-          `animation action model can not found animation clip in engine: ${n.clip}`
-        ), {};
-      const e = o.clipAction(t);
-      return d(n, e, {
-        clip: !0,
-        mixer: !0
-      }), e.play(), { action: e };
-    },
-    dispose({ target: n }) {
-      if (n.action) {
-        const i = n.action.getMixer();
-        i.uncacheAction(n.action.getClip()), i.uncacheClip(n.action.getClip());
+        const m = t.getObjectBySymbol(o);
+        m || console.warn(
+          `animation action model can not found animation clip in engine: ${o}`
+        );
+        const c = r.clipAction(m);
+        c.play(), n.puppet = c, a.symbolMap.set(c, i.vid);
       }
     }
+  },
+  create({ config: n, engine: e }) {
+    if (!n.mixer)
+      return console.warn("animation action model must have mixer"), {};
+    if (!n.clip)
+      return {};
+    const i = e.getObjectBySymbol(n.mixer);
+    if (!i)
+      return console.warn(
+        `animation action model can not found animation mixer in engine: ${n.mixer}`
+      ), {};
+    const o = e.getObjectBySymbol(n.clip);
+    if (!o)
+      return console.warn(
+        `animation action model can not found animation clip in engine: ${n.clip}`
+      ), {};
+    const t = i.clipAction(o);
+    return x(n, t, {
+      clip: !0,
+      mixer: !0
+    }), t.play(), t;
+  },
+  dispose({ target: n }) {
+    const e = n.getMixer();
+    e.uncacheAction(n.getClip()), e.uncacheClip(n.getClip());
   }
-), b = l({
+}), C = s({
   type: "animationAction",
   models: [f],
-  lifeOrder: p.NINE + 1
+  lifeOrder: d.NINE + 1
 });
 export {
-  b as default,
-  u as getAnimationActionConfig
+  C as default,
+  y as getAnimationActionConfig
 };
