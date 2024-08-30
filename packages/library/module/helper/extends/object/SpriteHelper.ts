@@ -5,7 +5,7 @@ import {
   LineSegments,
   Matrix4,
   PerspectiveCamera,
-  PlaneBufferGeometry,
+  PlaneGeometry,
   Raycaster,
   ShaderMaterial,
   Sprite,
@@ -85,7 +85,7 @@ export class SpriteHelper extends LineSegments implements VisHelper {
 
   constructor(target: Sprite) {
     super();
-    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(1, 1));
+    this.geometry = new EdgesGeometry(new PlaneGeometry(1, 1));
     this.geometry.computeBoundingBox();
 
     this.material = new CSS2DHelperMaterial();

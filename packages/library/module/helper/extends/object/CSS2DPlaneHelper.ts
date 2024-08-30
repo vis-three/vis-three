@@ -5,7 +5,7 @@ import {
   LineSegments,
   Matrix4,
   PerspectiveCamera,
-  PlaneBufferGeometry,
+  PlaneGeometry,
   Raycaster,
   ShaderMaterial,
   Vector2,
@@ -71,7 +71,7 @@ export class CSS2DPlaneHelper extends LineSegments implements VisHelper {
 
   constructor(target: CSS2DPlane) {
     super();
-    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(1, 1));
+    this.geometry = new EdgesGeometry(new PlaneGeometry(1, 1));
     this.geometry.computeBoundingBox();
 
     this.material = new CSS2DHelperMaterial();

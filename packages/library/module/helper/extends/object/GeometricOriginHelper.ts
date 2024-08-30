@@ -8,7 +8,6 @@ import {
   Points,
   PointsMaterial,
 } from "three";
-import { SolidObject3D } from "@vis-three/module-solid-object";
 import { VisHelper } from "../common";
 import { CanvasGenerator } from "@vis-three/convenient";
 
@@ -33,12 +32,12 @@ export class GeometricOriginHelper extends Points implements VisHelper {
       .get()
   );
 
-  target: SolidObject3D;
+  target: Object3D;
 
   //@ts-ignore
   type = "GeometricOriginHelper";
 
-  constructor(target: SolidObject3D) {
+  constructor(target: Object3D) {
     super();
     this.target = target;
 

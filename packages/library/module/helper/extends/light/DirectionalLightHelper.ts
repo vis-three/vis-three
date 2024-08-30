@@ -1,5 +1,4 @@
 import {
-  BoxBufferGeometry,
   BufferGeometry,
   Color,
   DirectionalLight,
@@ -9,16 +8,10 @@ import {
   Line,
   LineBasicMaterial,
   LineSegments,
-  Mesh,
   MeshBasicMaterial,
-  Object3D,
-  OctahedronBufferGeometry,
-  PlaneBufferGeometry,
-  PointLight,
-  Points,
+  PlaneGeometry,
   Raycaster,
   Sphere,
-  SphereBufferGeometry,
   Vector3,
 } from "three";
 import { getHelperLineMaterial, VisHelper } from "../common";
@@ -54,7 +47,7 @@ export class DirectionalLightHelper extends LineSegments implements VisHelper {
       .copy(directionalLight.color)
       .multiplyScalar(directionalLight.intensity);
 
-    const planeGemetry = new PlaneBufferGeometry(20, 20);
+    const planeGemetry = new PlaneGeometry(20, 20);
     planeGemetry.dispose();
 
     const shape = new LineSegments(

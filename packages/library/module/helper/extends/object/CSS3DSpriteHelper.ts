@@ -6,7 +6,7 @@ import {
   EdgesGeometry,
   Intersection,
   LineSegments,
-  PlaneBufferGeometry,
+  PlaneGeometry,
   Raycaster,
   ShaderMaterial,
 } from "three";
@@ -68,7 +68,7 @@ export class CSS3DSpriteHelper extends LineSegments implements VisHelper {
 
   constructor(target: CSS3DSprite) {
     super();
-    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(1, 1));
+    this.geometry = new EdgesGeometry(new PlaneGeometry(1, 1));
     this.geometry.computeBoundingBox();
 
     this.material = new CSS3DSpriteHelperMaterial();
@@ -83,7 +83,7 @@ export class CSS3DSpriteHelper extends LineSegments implements VisHelper {
     const observer = new MutationObserver(() => {
       this.geometry.dispose();
       this.geometry = new EdgesGeometry(
-        new PlaneBufferGeometry(target.width, target.height)
+        new PlaneGeometry(target.width, target.height)
       );
       this.geometry.computeBoundingBox();
     });

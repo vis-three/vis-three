@@ -1,5 +1,5 @@
-import { SymbolConfig } from "@vis-three/middleware";
-export interface HelperConfig extends SymbolConfig {
+import { BasicConfig } from "@vis-three/tdcm";
+export interface HelperConfig extends BasicConfig {
 }
 export interface ObjectHelperConfig extends HelperConfig {
     target: string;

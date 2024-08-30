@@ -3,10 +3,10 @@ import {
   Intersection,
   LineBasicMaterial,
   LineSegments,
-  PlaneBufferGeometry,
+  PlaneGeometry,
   Raycaster,
 } from "three";
-import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import { getHelperLineMaterial, VisHelper } from "../common";
 
 export class CSS3DObjectHelper extends LineSegments implements VisHelper {
@@ -21,7 +21,7 @@ export class CSS3DObjectHelper extends LineSegments implements VisHelper {
     const width = boundingBox.width;
     const height = boundingBox.height;
 
-    this.geometry = new EdgesGeometry(new PlaneBufferGeometry(width, height));
+    this.geometry = new EdgesGeometry(new PlaneGeometry(width, height));
     this.geometry.computeBoundingBox();
 
     this.material = getHelperLineMaterial();

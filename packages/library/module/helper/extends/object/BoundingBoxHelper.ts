@@ -4,19 +4,19 @@ import {
   BufferGeometry,
   LineBasicMaterial,
   LineSegments,
+  Object3D,
 } from "three";
 import { VisHelper } from "../common";
-import { SolidObject3D } from "@vis-three/module-solid-object";
 
 export class BoundingBoxHelper extends LineSegments implements VisHelper {
-  target: SolidObject3D;
+  target: Object3D;
 
   type = "BoundingBoxHelper";
 
   private cacheBox = new Box3();
   private compareBox = new Box3();
 
-  constructor(target: SolidObject3D) {
+  constructor(target: Object3D) {
     const indices = new Uint16Array([
       0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7,
     ]);

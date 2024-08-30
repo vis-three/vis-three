@@ -1,12 +1,11 @@
-import { LineSegments } from "three";
+import { LineSegments, Object3D } from "three";
 import { VisHelper } from "../../common";
-import { SolidObject3D } from "@vis-three/module-solid-object";
 export declare class BoundingBoxHelper extends LineSegments implements VisHelper {
-    target: SolidObject3D;
+    target: Object3D;
     type: string;
     private cacheBox;
     private compareBox;
-    constructor(target: SolidObject3D);
+    constructor(target: Object3D);
     update(): void;
     dispose(): void;
 }

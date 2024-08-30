@@ -1,5 +1,5 @@
 import { Intersection, LineSegments, Raycaster } from "three";
-import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import { VisHelper } from "../common";
 export declare class CSS3DObjectHelper extends LineSegments implements VisHelper {
     target: CSS3DObject;

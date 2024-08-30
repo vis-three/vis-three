@@ -3,18 +3,14 @@ import {
   Color,
   Float32BufferAttribute,
   Intersection,
-  Line,
   LineBasicMaterial,
   LineSegments,
   Mesh,
   MeshBasicMaterial,
-  Object3D,
-  OctahedronBufferGeometry,
+  OctahedronGeometry,
   PointLight,
-  Points,
   Raycaster,
   Sphere,
-  SphereBufferGeometry,
   Vector3,
 } from "three";
 import { getHelperLineMaterial, VisHelper } from "../common";
@@ -51,7 +47,7 @@ export class PointLightHelper extends LineSegments implements VisHelper {
       .copy(pointLight.color)
       .multiplyScalar(pointLight.intensity);
     const shape = new Mesh(
-      new OctahedronBufferGeometry(pointLight.distance, 0),
+      new OctahedronGeometry(pointLight.distance, 0),
       new MeshBasicMaterial({
         color,
         wireframe: true,
@@ -80,7 +76,7 @@ export class PointLightHelper extends LineSegments implements VisHelper {
       const shape = this.shape;
       if (light.distance !== this.cacheDistance) {
         shape.geometry.dispose();
-        shape.geometry = new OctahedronBufferGeometry(light.distance, 0);
+        shape.geometry = new OctahedronGeometry(light.distance, 0);
         this.cacheDistance = light.distance;
       }
 

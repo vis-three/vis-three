@@ -7,7 +7,7 @@ import {
   LineSegments,
   MeshBasicMaterial,
   Object3D,
-  PlaneBufferGeometry,
+  PlaneGeometry,
   Raycaster,
   RectAreaLight,
   Vector3,
@@ -50,8 +50,8 @@ export class RectAreaLightHelper extends LineSegments implements VisHelper {
 
       if (
         target.width !==
-          (<PlaneBufferGeometry>this.geometry).parameters.width ||
-        target.height !== (<PlaneBufferGeometry>this.geometry).parameters.height
+          (<PlaneGeometry>this.geometry).parameters.width ||
+        target.height !== (<PlaneGeometry>this.geometry).parameters.height
       ) {
         this.generateShape();
       }
@@ -70,7 +70,7 @@ export class RectAreaLightHelper extends LineSegments implements VisHelper {
 
   private generateShape() {
     this.geometry.dispose();
-    this.geometry = new PlaneBufferGeometry(
+    this.geometry = new PlaneGeometry(
       this.target.width,
       this.target.height,
       4,
