@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/library-module",
-  "version": "0.6.14",
+  "version": "0.7.0",
   "description": "vis-three module library",
   "main": "index.js",
   "module": "index.js",
@@ -12,16 +12,7 @@
     "build": "tsc",
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
-  "devDependencies": {
-    "@types/node": "^18.11.12",
-    "@typescript-eslint/eslint-plugin": "^5.18.0",
-    "@typescript-eslint/parser": "^5.18.0",
-    "eslint": "^8.12.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.6.2",
-    "typescript": "^5.2.2"
-  },
+  "devDependencies": {},
   "dependencies": {
     "@vis-three/module-animation": "workspace:^",
     "@vis-three/module-animation-action": "workspace:^",
