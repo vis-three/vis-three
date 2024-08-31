@@ -1,7 +1,7 @@
 import { BasicConfig } from "../common";
-import { Model } from "../model";
+import { ModelOption } from "../model";
 export declare const CONFIG_FACTORY: Record<string, () => BasicConfig>;
-export declare const CONFIG_MODEL: Record<string, typeof Model>;
+export declare const CONFIG_MODEL: Record<string, ModelOption<any, any, any, any, any>>;
 export declare const MODULE_TYPE: Record<string, string>;
 export declare const CONFIG_TYPE: Record<string, string>;
 export declare const OBJECT_MODULE: Record<string, boolean>;

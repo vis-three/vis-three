@@ -30,8 +30,8 @@ export declare class CompilerManager extends EventDispatcher {
      * @param vid
      * @returns
      */
-    getObjectfromModule(module: string, vid: string): Model<any, any, any, Compiler<any>> | null;
-    getObjectFromModule(module: string, vid: string): Model<any, any, any, Compiler<any>> | null;
+    getObjectfromModule(module: string, vid: string): any;
+    getObjectFromModule(module: string, vid: string): any;
     /**
      * @deprecated use getObjectFromModules
      * @param modules

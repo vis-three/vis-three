@@ -14,9 +14,9 @@ export interface CloneResult {
  * @returns EngineSupportLoadOptions | CloneResult
  */
 export declare const clone: (object: EngineSupportLoadOptions, options?: {
-    filter?: string[] | undefined;
-    detail?: boolean | undefined;
-    fillName?: boolean | ((BasicConfig: any) => string) | undefined;
+    filter?: string[];
+    detail?: boolean;
+    fillName?: boolean | ((BasicConfig: any) => string);
 }) => EngineSupportLoadOptions | CloneResult;
 /**
  * 对配置单中的每个配置项做处理
@@ -29,18 +29,18 @@ export declare const handler: (object: EngineSupportLoadOptions, handler: (confi
     clone?: boolean;
 }) => EngineSupportLoadOptions;
 export declare const planish: (configs: LoadOptions) => Record<string, BasicConfig>;
-export declare const observable: (object: EngineSupportLoadOptions | string, obCallback?: ((config: BasicConfig) => BasicConfig) | undefined) => EngineSupportLoadOptions;
+export declare const observable: (object: EngineSupportLoadOptions | string, obCallback?: (config: BasicConfig) => BasicConfig) => EngineSupportLoadOptions;
 declare const _default: {
     clone: (object: EngineSupportLoadOptions, options?: {
-        filter?: string[] | undefined;
-        detail?: boolean | undefined;
-        fillName?: boolean | ((BasicConfig: any) => string) | undefined;
-    }) => CloneResult | EngineSupportLoadOptions;
+        filter?: string[];
+        detail?: boolean;
+        fillName?: boolean | ((BasicConfig: any) => string);
+    }) => EngineSupportLoadOptions | CloneResult;
     handler: (object: EngineSupportLoadOptions, handler: (config: BasicConfig) => BasicConfig, options?: {
-        filter?: string[] | undefined;
-        clone?: boolean | undefined;
+        filter?: string[];
+        clone?: boolean;
     }) => EngineSupportLoadOptions;
     planish: (configs: LoadOptions) => Record<string, BasicConfig>;
-    observable: (object: string | EngineSupportLoadOptions, obCallback?: ((config: BasicConfig) => BasicConfig) | undefined) => EngineSupportLoadOptions;
+    observable: (object: EngineSupportLoadOptions | string, obCallback?: (config: BasicConfig) => BasicConfig) => EngineSupportLoadOptions;
 };
 export default _default;

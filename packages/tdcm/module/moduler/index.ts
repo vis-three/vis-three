@@ -3,7 +3,6 @@ import { EngineSupport } from "../../engine";
 import { Compiler } from "../compiler";
 import { Rule, Ruler } from "../ruler";
 import { Converter } from "../converter";
-import { BasicConfig } from "../common";
 import { ModelOption } from "../model";
 
 export interface ModuleOptions<
@@ -13,19 +12,11 @@ export interface ModuleOptions<
   type: string;
   compiler?: new (...args) => O;
   rule?: Rule[];
-  /**
-   * @deprecated use models
-   */
-  processors?: ModelOption<any, any, any, any>[];
   models: ModelOption<any, any, any, any, E, O>[];
   resources?: LoadUnit[];
   object?: boolean;
   extend?: (engine: E) => void;
   lifeOrder?: number;
-  // expand?: {
-  //   module: string[] | RegExp;
-  //   command: ProcessorCommands<any, any, any, any>;
-  // }[];
 }
 
 export class Moduler<

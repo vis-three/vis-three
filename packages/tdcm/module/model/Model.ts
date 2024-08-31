@@ -125,8 +125,18 @@ export class Model<
     return this.engine.getConfigBySymbol<CO>(vid);
   }
 
-  toModel<MO extends Model<any, any, any>>(vid: string) {
-    return this.engine.compilerManager.getModelBySymbol<MO>(vid);
+  toModel<MO extends Model<any, any, any>>(vid: string | object) {
+    if (typeof vid === "string") {
+      return this.engine.compilerManager.getModelBySymbol<MO>(vid);
+    } else {
+      const symbol = this.engine.getObjectSymbol(vid);
+      if (symbol) {
+        return this.engine.compilerManager.getModelBySymbol<MO>(symbol);
+      } else {
+        console.warn(`Model: can not found object symbol:`, vid);
+        return null;
+      }
+    }
   }
 
   toObject<OB extends object>(vid: string) {

@@ -1,5 +1,5 @@
 import { ObjectEvent } from "@vis-three/plugin-event-manager";
-import { EngineSupport } from "../engine";
+import { EngineSupport } from "@vis-three/tdcm";
 import { DeepPartial } from "@vis-three/utils";
 
 export interface BasicEventConfig {
@@ -11,7 +11,7 @@ export type EventGenerator<
   E extends EngineSupport = EngineSupport
 > = (engine: E, config: C) => (event?: ObjectEvent) => void;
 
-export class EventGeneratorManager {
+export class EventManager {
   private static engine: EngineSupport;
   private static configLibrary = new Map<string | Symbol, unknown>();
   private static generatorLibrary = new Map<
@@ -25,28 +25,28 @@ export class EventGeneratorManager {
   }: {
     config: C;
     generator: EventGenerator<C>;
-  }): EventGeneratorManager {
-    if (EventGeneratorManager.configLibrary.has(config.name)) {
+  }): EventManager {
+    if (EventManager.configLibrary.has(config.name)) {
       console.warn(
-        `EventGeneratorManager has already exist this event generator: ${config.name}, that will be cover.`
+        `EventManager has already exist this event generator: ${config.name}, that will be cover.`
       );
-      return EventGeneratorManager;
+      return EventManager;
     }
 
-    EventGeneratorManager.configLibrary.set(
+    EventManager.configLibrary.set(
       config.name,
       JSON.parse(JSON.stringify(config))
     );
 
-    EventGeneratorManager.generatorLibrary.set(config.name, generator);
-    return EventGeneratorManager;
+    EventManager.generatorLibrary.set(config.name, generator);
+    return EventManager;
   };
 
   static generateConfig<C extends BasicEventConfig = BasicEventConfig>(
     name: string,
     merge: DeepPartial<C>
   ): C | null {
-    if (!EventGeneratorManager.configLibrary.has(name)) {
+    if (!EventManager.configLibrary.has(name)) {
       console.warn(`event library can not found config by name: ${name}`);
       return null;
     }
@@ -66,7 +66,7 @@ export class EventGeneratorManager {
     };
 
     const template = JSON.parse(
-      JSON.stringify(EventGeneratorManager.configLibrary.get(name)!)
+      JSON.stringify(EventManager.configLibrary.get(name)!)
     );
 
     recursion(template, merge);
@@ -78,25 +78,22 @@ export class EventGeneratorManager {
     config: BasicEventConfig,
     engine: EngineSupport
   ): (event?: ObjectEvent) => void {
-    if (!EventGeneratorManager.generatorLibrary.has(config.name)) {
+    if (!EventManager.generatorLibrary.has(config.name)) {
       console.error(
         `event library can not found generator by name: ${config.name}`
       );
       return () => {};
     }
 
-    return EventGeneratorManager.generatorLibrary.get(config.name)!(
-      engine,
-      config
-    );
+    return EventManager.generatorLibrary.get(config.name)!(engine, config);
   }
 
   static has(name: string): boolean {
-    return EventGeneratorManager.configLibrary.has(name);
+    return EventManager.configLibrary.has(name);
   }
 
   static useEngine(engine: EngineSupport) {
-    EventGeneratorManager.engine = engine;
+    EventManager.engine = engine;
   }
 
   static createEvent<C extends BasicEventConfig = BasicEventConfig>(
@@ -104,7 +101,7 @@ export class EventGeneratorManager {
     merge: DeepPartial<C>,
     engine?: EngineSupport
   ): ((event?: ObjectEvent | undefined) => void) | null {
-    if (!EventGeneratorManager.engine && !engine) {
+    if (!EventManager.engine && !engine) {
       console.error(
         `EventGenerator Manager createEvent must provide an engine, you can use 'useEngine' to set it.`
       );
@@ -112,15 +109,12 @@ export class EventGeneratorManager {
       return null;
     }
 
-    const config = EventGeneratorManager.generateConfig<C>(name, merge);
+    const config = EventManager.generateConfig<C>(name, merge);
 
     if (!config) {
       return null;
     }
 
-    return EventGeneratorManager.generateEvent(
-      config,
-      engine || EventGeneratorManager.engine
-    );
+    return EventManager.generateEvent(config, engine || EventManager.engine);
   }
 }

@@ -4,7 +4,6 @@ import { DATA_SUPPORT_MANAGER_PLUGIN } from "./plugin/DataSupportManagerPlugin";
 export * from "./module";
 export * from "./utils";
 export * from "./engine";
-export * from "./manager";
 export * from "./option";
 export * from "./hooks";
 

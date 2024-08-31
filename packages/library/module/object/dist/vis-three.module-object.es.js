@@ -1,5 +1,5 @@
-import { getBasicConfig as h, defineRule as M, DEFAULT_RULE as f, defineModel as g, emptyHandler as O, EVENTNAME as x, OBJECT_MODULE as y, EventGeneratorManager as m, MODEL_EVENT as b } from "@vis-three/tdcm";
-import { syncObject as A } from "@vis-three/utils";
+import { getBasicConfig as h, defineRule as O, DEFAULT_RULE as y, defineModel as M, emptyHandler as x, EVENTNAME as A, OBJECT_MODULE as m, MODEL_EVENT as E } from "@vis-three/tdcm";
+import { syncObject as L } from "@vis-three/utils";
 const C = function() {
   return Object.assign(h(), {
     type: "Object3D",
@@ -41,151 +41,196 @@ const C = function() {
     dblclick: [],
     contextmenu: []
   });
-}, L = M([
-  function(n) {
-    return n.key !== "parent";
+}, T = O([
+  function(t) {
+    return t.key !== "parent";
   },
-  f.SYMBOL_VALIDATOR,
-  f.OPERATE_ADD,
-  f.OPERATE_DELETE,
-  f.OPERATE_COVER,
-  f.OPERATE_COMPILE
-]), E = function({
-  model: n,
-  target: r,
-  config: o,
-  value: e,
+  y.SYMBOL_VALIDATOR,
+  y.OPERATE_ADD,
+  y.OPERATE_DELETE,
+  y.OPERATE_COVER,
+  y.OPERATE_COMPILE
+]), s = class s {
+  static generateConfig(e, r) {
+    if (!s.configLibrary.has(e))
+      return console.warn(`event library can not found config by name: ${e}`), null;
+    const n = (o, i) => {
+      for (const a in i)
+        typeof i[a] == "object" && i[a] !== null && !Array.isArray(i[a]) ? n(o[a], i[a]) : o[a] = i[a];
+    }, c = JSON.parse(
+      JSON.stringify(s.configLibrary.get(e))
+    );
+    return n(c, r), c;
+  }
+  static generateEvent(e, r) {
+    return s.generatorLibrary.has(e.name) ? s.generatorLibrary.get(e.name)(r, e) : (console.error(
+      `event library can not found generator by name: ${e.name}`
+    ), () => {
+    });
+  }
+  static has(e) {
+    return s.configLibrary.has(e);
+  }
+  static useEngine(e) {
+    s.engine = e;
+  }
+  static createEvent(e, r, n) {
+    if (!s.engine && !n)
+      return console.error(
+        "EventGenerator Manager createEvent must provide an engine, you can use 'useEngine' to set it."
+      ), null;
+    const c = s.generateConfig(e, r);
+    return c ? s.generateEvent(c, n || s.engine) : null;
+  }
+};
+s.configLibrary = /* @__PURE__ */ new Map(), s.generatorLibrary = /* @__PURE__ */ new Map(), s.register = function({
+  config: e,
+  generator: r
+}) {
+  return s.configLibrary.has(e.name) ? (console.warn(
+    `EventManager has already exist this event generator: ${e.name}, that will be cover.`
+  ), s) : (s.configLibrary.set(
+    e.name,
+    JSON.parse(JSON.stringify(e))
+  ), s.generatorLibrary.set(e.name, r), s);
+};
+let b = s;
+const g = function({
+  model: t,
+  target: e,
+  config: r,
+  value: n,
   engine: c
 }) {
-  if (o.vid === e) {
+  if (r.vid === n) {
     console.warn("can not set object lookAt itself.");
     return;
   }
-  const t = n.cacheLookAt;
-  if (!e) {
-    if (!t.updateMatrixWorld)
+  const o = t.cacheLookAt;
+  if (!n) {
+    if (!o.updateMatrixWorld)
       return;
-    r.updateMatrixWorld = t.updateMatrixWorld, t.target = null, t.updateMatrixWorld = null;
+    e.updateMatrixWorld = o.updateMatrixWorld, o.target = null, o.updateMatrixWorld = null;
     return;
   }
-  n.toAsync((i) => {
+  t.toAsync((i) => {
     const a = c.compilerManager.getObjectFromModules(
-      y,
-      e
+      m,
+      n
     );
     if (!a)
       return i && console.warn(
-        `lookAt handler can not found this vid mapping object: '${e}'`
+        `lookAt handler can not found this vid mapping object: '${n}'`
       ), !1;
-    const s = r.updateMatrixWorld;
-    return t.updateMatrixWorld = s, t.target = a.position, r.updateMatrixWorld = (p) => {
-      s.call(r, p), r.lookAt(t.target);
+    const u = e.updateMatrixWorld;
+    return o.updateMatrixWorld = u, o.target = a.position, e.updateMatrixWorld = (p) => {
+      u.call(e, p), e.lookAt(o.target);
     }, !0;
   });
 }, l = function({
-  model: n,
-  path: r,
-  value: o,
-  engine: e,
+  model: t,
+  path: e,
+  value: r,
+  engine: n,
   target: c
 }) {
-  const t = r[0];
-  if (!m.has(o.name)) {
+  const o = e[0];
+  if (!b.has(r.name)) {
     console.warn(
-      `EventGeneratorManager: can not support this event: ${o.name}`
+      `EventManager: can not support this event: ${r.name}`
     );
     return;
   }
-  const i = m.generateEvent(o, e), a = Symbol.for(n.eventSymbol);
-  o[a] = i, c.addEventListener(t, i);
+  const i = b.generateEvent(r, n), a = Symbol.for(t.eventSymbol);
+  r[a] = i, c.addEventListener(o, i);
 }, d = function({
-  model: n,
-  target: r,
-  path: o,
-  value: e
+  model: t,
+  target: e,
+  path: r,
+  value: n
 }) {
-  const c = o[0], t = e[Symbol.for(n.eventSymbol)];
-  if (!t) {
-    console.warn("event remove can not fun found event in config", e);
+  const c = r[0], o = n[Symbol.for(t.eventSymbol)];
+  if (!o) {
+    console.warn("event remove can not fun found event in config", n);
     return;
   }
-  r.removeEventListener(c, t), delete e[Symbol.for(n.eventSymbol)];
-}, u = function({
-  model: n,
-  target: r,
-  config: o,
-  path: e,
+  e.removeEventListener(c, o), delete n[Symbol.for(t.eventSymbol)];
+}, f = function({
+  model: t,
+  target: e,
+  config: r,
+  path: n,
   engine: c
 }) {
-  if (e.length < 2)
+  if (n.length < 2)
     return;
-  const t = e[0], i = o[e[0]][e[1]], a = i[Symbol.for(n.eventSymbol)];
+  const o = n[0], i = r[n[0]][n[1]], a = i[Symbol.for(t.eventSymbol)];
   if (!a) {
     console.warn("event remove can not fun found event in config", i);
     return;
   }
-  r.removeEventListener(t, a);
-  const s = m.generateEvent(i, c);
-  i[Symbol.for(n.eventSymbol)] = s, r.addEventListener(t, s);
+  e.removeEventListener(o, a);
+  const u = b.generateEvent(i, c);
+  i[Symbol.for(t.eventSymbol)] = u, e.addEventListener(o, u);
 }, v = function({
-  model: n,
-  target: r,
-  config: o,
-  value: e,
+  model: t,
+  target: e,
+  config: r,
+  value: n,
   engine: c
 }) {
-  n.toTrigger("object", (t) => {
-    var s;
-    const i = n.toConfig(e);
+  t.toTrigger("object", (o) => {
+    var u;
+    const i = t.toConfig(n);
     if (!i)
-      return t || console.warn(` can not foud object config in engine: ${e}`), !1;
-    if (i.parent && i.parent !== o.vid) {
-      const p = n.toConfig(i.parent);
+      return o || console.warn(` can not foud object config in engine: ${n}`), !1;
+    if (i.parent && i.parent !== r.vid) {
+      const p = t.toConfig(i.parent);
       if (!p)
-        return t || console.warn(
+        return o || console.warn(
           ` can not foud object parent config in engine: ${i.parent}`
         ), !1;
-      p.children.splice(p.children.indexOf(e), 1);
+      p.children.splice(p.children.indexOf(n), 1);
     }
-    i.parent = o.vid;
+    i.parent = r.vid;
     const a = c.compilerManager.getObjectFromModules(
-      y,
-      e
+      m,
+      n
     );
-    return a ? (r.add(a), a.updateMatrixWorld(!0), (s = n.toModel(e)) == null || s.emit(`${b.COMPILED_ATTR}:parent`), !0) : (t || console.warn(`can not found this vid in engine: ${e}.`), !1);
+    return a ? (e.add(a), a.updateMatrixWorld(!0), (u = t.toModel(n)) == null || u.emit(`${E.COMPILED_ATTR}:parent`), !0) : (o || console.warn(`can not found this vid in engine: ${n}.`), !1);
   });
 }, k = function({
-  model: n,
-  target: r,
-  config: o,
-  value: e,
+  model: t,
+  target: e,
+  config: r,
+  value: n,
   engine: c
 }) {
   var a;
-  const t = c.compilerManager.getObjectFromModules(
-    y,
-    e
+  const o = c.compilerManager.getObjectFromModules(
+    m,
+    n
   );
-  if (!t) {
-    console.warn(`can not found this vid in engine: ${e}.`);
+  if (!o) {
+    console.warn(`can not found this vid in engine: ${n}.`);
     return;
   }
-  r.remove(t);
-  const i = c.getConfigBySymbol(e);
+  e.remove(o);
+  const i = c.getConfigBySymbol(n);
   if (!i) {
-    console.warn(`can not found this vid in engine: ${e}.`);
+    console.warn(`can not found this vid in engine: ${n}.`);
     return;
   }
-  i.parent = "", (a = n.toModel(e)) == null || a.emit(`${b.COMPILED_ATTR}:parent`);
+  i.parent = "", (a = t.toModel(n)) == null || a.emit(`${E.COMPILED_ATTR}:parent`);
 }, w = function({
-  model: n,
-  target: r,
-  config: o,
-  value: e,
+  model: t,
+  target: e,
+  config: r,
+  value: n,
   engine: c
 }) {
-  e ? delete r.raycast : r.raycast = n.emptyRaycast;
-}, S = g.extend({
+  n ? delete e.raycast : e.raycast = t.emptyRaycast;
+}, R = M.extend({
   shared: {
     eventSymbol: "vis.event",
     emptyRaycast: () => {
@@ -212,16 +257,16 @@ const C = function() {
       children: v
     },
     set: {
-      lookAt: E,
-      pointerdown: u,
-      pointerup: u,
-      pointermove: u,
-      pointerenter: u,
-      pointerleave: u,
-      click: u,
-      dblclick: u,
-      contextmenu: u,
-      parent: O,
+      lookAt: g,
+      pointerdown: f,
+      pointerup: f,
+      pointermove: f,
+      pointerenter: f,
+      pointerleave: f,
+      click: f,
+      dblclick: f,
+      contextmenu: f,
+      parent: x,
       raycast: w,
       children: {
         $reg: [
@@ -244,32 +289,32 @@ const C = function() {
       children: k
     }
   },
-  create({ model: n, target: r, config: o, engine: e, filter: c }) {
-    !c.lookAt && E.call(n, {
-      model: n,
-      target: r,
-      config: o,
-      value: o.lookAt,
-      engine: e
-    }), !o.raycast && (r.raycast = n.emptyRaycast), o.children.forEach((t) => {
-      v.call(n, {
-        target: r,
-        config: o,
-        value: t,
-        engine: e
+  create({ model: t, target: e, config: r, engine: n, filter: c }) {
+    !c.lookAt && g.call(t, {
+      model: t,
+      target: e,
+      config: r,
+      value: r.lookAt,
+      engine: n
+    }), !r.raycast && (e.raycast = t.emptyRaycast), r.children.forEach((o) => {
+      v.call(t, {
+        target: e,
+        config: r,
+        value: o,
+        engine: n
       });
     });
-    for (const t of Object.values(x))
-      n.asyncNextTick(() => (o[t].forEach((i, a) => {
-        l.call(n, {
-          model: n,
-          target: r,
-          path: [t, a.toString()],
+    for (const o of Object.values(A))
+      t.asyncNextTick(() => (r[o].forEach((i, a) => {
+        l.call(t, {
+          model: t,
+          target: e,
+          path: [o, a.toString()],
           value: i,
-          engine: e
+          engine: n
         });
       }), !0));
-    A(o, r, {
+    L(r, e, {
       vid: !0,
       type: !0,
       lookAt: !0,
@@ -287,12 +332,13 @@ const C = function() {
       ...c
     });
   },
-  dispose({ target: n }) {
-    n._listener = {};
+  dispose({ target: t }) {
+    t._listener = {};
   }
 });
 export {
-  L as ObjectRule,
-  S as defineObjectModel,
+  b as EventManager,
+  T as ObjectRule,
+  R as defineObjectModel,
   C as getObjectConfig
 };

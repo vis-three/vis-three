@@ -8,10 +8,6 @@ export interface ModuleOptions<E extends EngineSupport = EngineSupport, O extend
     type: string;
     compiler?: new (...args: any[]) => O;
     rule?: Rule[];
-    /**
-     * @deprecated use models
-     */
-    processors?: ModelOption<any, any, any, any>[];
     models: ModelOption<any, any, any, any, E, O>[];
     resources?: LoadUnit[];
     object?: boolean;

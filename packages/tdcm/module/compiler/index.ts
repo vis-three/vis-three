@@ -5,6 +5,7 @@ import { CtnNotice } from "../container";
 import { emunCamelize, emunDecamelize } from "../../utils/humps";
 import {
   CONFIG_FACTORY,
+  CONFIG_MODEL,
   CONFIG_MODULE,
   CONFIG_TYPE,
   CONFIGTYPE,
@@ -254,11 +255,17 @@ export class Compiler<E extends EngineSupport = EngineSupport> {
       Builder,
     });
 
-    CONFIG_FACTORY[option.type] = option.config;
+    Object.defineProperty(CONFIG_FACTORY, option.type, {
+      get() {
+        return option.config;
+      },
+    });
+
     CONFIG_TYPE[emunDecamelize(option.type)] = option.type;
     // @deprecated
     CONFIGTYPE[emunCamelize(option.type)] = option.type;
     CONFIG_MODULE[option.type] = this.MODULE;
+    CONFIG_MODEL[option.type] = option;
 
     callback && callback(this);
 

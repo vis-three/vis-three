@@ -98,7 +98,7 @@ export class CompilerManager extends EventDispatcher {
     }
 
     const compiler = this.compilerMap.get(module)!;
-    return compiler.map.get(vid) || null;
+    return compiler.map.get(vid)?.puppet || null;
   }
 
   /**
@@ -131,7 +131,7 @@ export class CompilerManager extends EventDispatcher {
       const compiler = this.compilerMap.get(module)!;
 
       if (compiler.map.has(vid)) {
-        return compiler.map.get(vid)! as unknown as O;
+        return compiler.map.get(vid)?.puppet! as unknown as O;
       }
     }
 

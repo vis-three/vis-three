@@ -53,7 +53,7 @@ export declare class Model<C extends BasicConfig = BasicConfig, P extends object
     }) => void;
     constructor(params: ModelParameters<C, P, E, O>);
     toConfig<CO extends BasicConfig>(vid: string): CO | null;
-    toModel<MO extends Model<any, any, any>>(vid: string): MO | null;
+    toModel<MO extends Model<any, any, any>>(vid: string | object): MO | null;
     toObject<OB extends object>(vid: string): OB;
     toPuppet<OB extends object>(vid: string): OB;
     toAsync(fun: (finish: boolean) => boolean): void;
