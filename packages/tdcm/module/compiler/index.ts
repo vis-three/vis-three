@@ -1,4 +1,4 @@
-import { syncObject } from "@vis-three/utils";
+import { objectDeepMerge, syncObject } from "@vis-three/utils";
 import { BasicConfig } from "../common";
 import { EngineSupport } from "../../engine";
 import { CtnNotice } from "../container";
@@ -247,6 +247,42 @@ export class Compiler<E extends EngineSupport = EngineSupport> {
 
       for (const key in option.shared) {
         Builder.prototype[key] = option.shared[key];
+      }
+    }
+
+    if (option.expand) {
+      const expendModel = function (target, merge) {
+        if (!target) {
+          console.error(
+            `Compiler: model expend error, can not found model witch has not been registered.`,
+            merge.models,
+            CONFIG_MODEL
+          );
+        } else {
+          target.config = function () {
+            return Object.assign(target.config(), merge.config());
+          };
+          !target.commands && (target.commands = {});
+          target.commands = objectDeepMerge(target.commands, merge.commands, {
+            fresh: false,
+          });
+        }
+      };
+
+      for (const rule of option.expand) {
+        if (typeof rule.models === "string") {
+          expendModel(CONFIG_MODEL[rule.models], rule);
+        } else if (Array.isArray(rule.models)) {
+          for (const key in rule.models) {
+            expendModel(CONFIG_MODEL[key], rule);
+          }
+        } else if (rule.models instanceof RegExp) {
+          for (const key in CONFIG_MODEL) {
+            if (rule.models.test(key)) {
+              expendModel(CONFIG_MODEL[key], rule);
+            }
+          }
+        }
       }
     }
 

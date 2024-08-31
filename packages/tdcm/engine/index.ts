@@ -346,12 +346,6 @@ export class EngineSupport
       options.extend(this);
     }
 
-    // options.processors.forEach((processor) => {});
-
-    // if (options.expand) {
-    //   this.processorExpands.push(...options.expand);
-    // }
-
     this.moduleLifeCycle.push({
       module: options.type,
       order: options.lifeOrder || 0,

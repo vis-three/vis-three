@@ -1,3 +1,4 @@
+import { objectDeepMerge } from "@vis-three/utils";
 import { EngineSupport } from "../../engine";
 import { BasicConfig } from "../common";
 import { Compiler } from "../compiler";
@@ -125,8 +126,10 @@ defineModel.extend = function <
 
     option.shared = Object.assign({}, abstract.shared, option.shared);
 
-    // TODO: deep merge
-    option.commands = Object.assign({}, abstract.commands, option.commands);
+    option.commands = objectDeepMerge(
+      option.commands,
+      abstract.commands
+    );
 
     option.context = function (params) {
       return Object.assign(
@@ -173,11 +176,9 @@ defineModel.extend = function <
       abstractOption.shared
     );
 
-    // TODO: deep merge
-    abstractOption.commands = Object.assign(
-      {},
-      abstract.commands,
-      abstractOption.commands
+    abstractOption.commands = objectDeepMerge(
+      abstractOption.commands,
+      abstract.commands
     );
 
     abstractOption.context = function (params) {

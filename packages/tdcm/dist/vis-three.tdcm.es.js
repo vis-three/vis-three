@@ -1,49 +1,49 @@
-import { isObject as v, syncObject as de, extendPath as te, isArray as g } from "@vis-three/utils";
-import { EventDispatcher as R, ENGINE_EVENT as ge, Engine as me } from "@vis-three/core";
-import { Subject as re } from "rxjs";
-import { nanoid as ye } from "nanoid";
-import { LOADER_MANAGER_PLUGIN as se, LOADER_EVENT as T, LoaderManagerPlugin as Me } from "@vis-three/plugin-loader-manager";
+import { isObject as C, objectDeepMerge as $, syncObject as me, extendPath as se, isArray as m } from "@vis-three/utils";
+import { EventDispatcher as j, ENGINE_EVENT as ye, Engine as Me } from "@vis-three/core";
+import { Subject as oe } from "rxjs";
+import { nanoid as Oe } from "nanoid";
+import { LOADER_MANAGER_PLUGIN as ne, LOADER_EVENT as L, LoaderManagerPlugin as be } from "@vis-three/plugin-loader-manager";
 export * from "@vis-three/plugin-loader-manager";
-import { PointerManagerPlugin as Oe } from "@vis-three/plugin-pointer-manager";
+import { PointerManagerPlugin as Se } from "@vis-three/plugin-pointer-manager";
 export * from "@vis-three/plugin-pointer-manager";
-import { EventManagerPlugin as be } from "@vis-three/plugin-event-manager";
+import { EventManagerPlugin as xe } from "@vis-three/plugin-event-manager";
 export * from "@vis-three/plugin-event-manager";
-import { RenderManagerPlugin as Se } from "@vis-three/plugin-render-manager";
+import { RenderManagerPlugin as Ee } from "@vis-three/plugin-render-manager";
 export * from "@vis-three/plugin-render-manager";
-const xe = function(r) {
+const ve = function(r) {
   return r = r.replace(/[\-_\s]+(.)?/g, function(e, t) {
     return t ? t.toUpperCase() : "";
   }), r.slice(0, 1).toLowerCase() + r.slice(1);
-}, Ee = function(r) {
-  return xe(r).toUpperCase();
-}, oe = function(r) {
+}, Ce = function(r) {
+  return ve(r).toUpperCase();
+}, ie = function(r) {
   const e = /(?=[A-Z])/;
   return r.split(e).map((t) => t.toUpperCase()).join("_");
-}, m = {}, ve = {}, L = {}, ne = {}, j = {}, G = {}, K = m, yt = L, ie = ne, Ce = j, Mt = G, k = (r) => G[r] || null, we = (r) => j[r], Ae = (r) => {
-  const e = k(r);
-  return e ? we(e) : !1;
-}, $ = "vis.father", y = "vis.key", J = "vis.observer", B = "vis.model", ae = /* @__PURE__ */ new WeakMap(), w = function(r) {
-  Array.isArray(r) && ae.set(r, r.concat([]));
-}, De = function(r) {
-  return ae.get(r);
-}, U = function(r) {
+}, y = {}, g = {}, B = {}, ae = {}, P = {}, J = {}, Y = y, Mt = B, ce = ae, we = P, Ot = J, U = (r) => J[r] || null, Ae = (r) => P[r], De = (r) => {
+  const e = U(r);
+  return e ? Ae(e) : !1;
+}, I = "vis.father", M = "vis.key", F = "vis.observer", G = "vis.model", le = /* @__PURE__ */ new WeakMap(), A = function(r) {
+  Array.isArray(r) && le.set(r, r.concat([]));
+}, Re = function(r) {
+  return le.get(r);
+}, V = function(r) {
   let e = "";
   const t = (s) => {
-    s[Symbol.for(y)] !== void 0 && (e = `${s[Symbol.for(y)]}${e ? `.${e}` : ""}`, s[Symbol.for($)] && t(s[Symbol.for($)]));
+    s[Symbol.for(M)] !== void 0 && (e = `${s[Symbol.for(M)]}${e ? `.${e}` : ""}`, s[Symbol.for(I)] && t(s[Symbol.for(I)]));
   };
   return t(r), e;
-}, Re = function(r) {
-  if (r.length && v(r[0])) {
+}, je = function(r) {
+  if (r.length && C(r[0])) {
     const e = r.length;
     for (let t = 0; t < e; t += 1)
-      r[t][Symbol.for(y)] = t;
+      r[t][Symbol.for(M)] = t;
   }
-}, P = function(r) {
-  return r[Symbol.for(J)];
-}, ce = function(r) {
-  return !!r[Symbol.for(J)];
-}, je = function(r) {
-  return r[Symbol.for(B)];
+}, N = function(r) {
+  return r[Symbol.for(F)];
+}, ue = function(r) {
+  return !!r[Symbol.for(F)];
+}, Pe = function(r) {
+  return r[Symbol.for(G)];
 }, u = class u {
   static exec(e) {
     if (e(!1))
@@ -78,8 +78,8 @@ const xe = function(r) {
   }
 };
 u.list = [], u.time = 0;
-let C = u;
-class Q extends R {
+let w = u;
+class _ extends j {
   constructor(e) {
     super(), this.config = e.config, this.engine = e.engine, this.compiler = e.compiler;
   }
@@ -101,10 +101,10 @@ class Q extends R {
     return this.toObject(e);
   }
   toAsync(e) {
-    C.exec(e);
+    w.exec(e);
   }
   asyncNextTick(e) {
-    C.nextTick(e);
+    w.nextTick(e);
   }
   toTrigger(e, t) {
     const s = this.engine.getTrigger(e);
@@ -191,7 +191,7 @@ class Q extends R {
     delete t[e.key];
   }
   create() {
-    this.config[Symbol.for(B)] = this, this.puppet = this.createPuppet.call(this, {
+    this.config[Symbol.for(G)] = this, this.puppet = this.createPuppet.call(this, {
       model: this,
       config: this.config,
       engine: this.engine,
@@ -206,16 +206,19 @@ class Q extends R {
       config: this.config,
       engine: this.engine,
       compiler: this.compiler
-    }), this.config[Symbol.for(B)] = void 0, this.clear();
+    }), this.config[Symbol.for(G)] = void 0, this.clear();
   }
 }
-const A = function(r) {
+const D = function(r) {
   return r;
 };
-A.extend = function(r) {
+D.extend = function(r) {
   const e = function(t) {
     const s = t(r);
-    return s.shared = Object.assign({}, r.shared, s.shared), s.commands = Object.assign({}, r.commands, s.commands), s.context = function(o) {
+    return s.shared = Object.assign({}, r.shared, s.shared), s.commands = $(
+      s.commands,
+      r.commands
+    ), s.context = function(o) {
       return Object.assign(
         r.context ? r.context(
           o
@@ -230,10 +233,9 @@ A.extend = function(r) {
       {},
       r.shared,
       s.shared
-    ), s.commands = Object.assign(
-      {},
-      r.commands,
-      s.commands
+    ), s.commands = $(
+      s.commands,
+      r.commands
     ), s.context = function(o) {
       return Object.assign(
         r.context ? r.context(
@@ -241,15 +243,15 @@ A.extend = function(r) {
         ) : {},
         s.context ? s.context.call(this, o) : {}
       );
-    }, A.extend(s);
+    }, D.extend(s);
   }, e;
 };
-A.expand = function(r) {
+D.expand = function(r) {
   return r;
 };
-const Ot = A;
+const bt = D;
 var d = /* @__PURE__ */ ((r) => (r.COMPILED_ADD = "compiledAdd", r.COMPILED_REMOVE = "compiledRemove", r.COMPILED_ATTR = "compiledAttr", r.COMPILED_UPDATE = "compiledUpdate", r.COMPILED = "compiled", r.NOTICED = "noticed", r))(d || {});
-class Pe {
+class Ne {
   constructor(e) {
     this.MODULE = "", this.builders = /* @__PURE__ */ new Map(), this.target = {}, this.map = /* @__PURE__ */ new Map(), this.symbolMap = /* @__PURE__ */ new WeakMap(), this.MODULE = e.module;
     for (const t of e.models)
@@ -273,7 +275,7 @@ class Pe {
       return console.warn(
         `${this.MODULE} Compiler: can not support this type: ${e.type}`
       ), null;
-    const { option: t, Builder: s } = this.builders.get(e.type), o = s ? new s({ config: e, engine: this.engine, compiler: this }) : new Q({
+    const { option: t, Builder: s } = this.builders.get(e.type), o = s ? new s({ config: e, engine: this.engine, compiler: this }) : new _({
       config: e,
       engine: this.engine,
       compiler: this
@@ -296,7 +298,7 @@ class Pe {
   cover(e) {
     const t = e.vid;
     return this.map.has(t) ? (Promise.resolve().then(() => {
-      de(e, e, {
+      me(e, e, {
         vid: !0,
         type: !0
       });
@@ -344,7 +346,7 @@ class Pe {
       ), this;
     let s;
     if (e.shared) {
-      s = class extends Q {
+      s = class extends _ {
         constructor(o) {
           super(o);
         }
@@ -352,14 +354,36 @@ class Pe {
       for (const o in e.shared)
         s.prototype[o] = e.shared[o];
     }
+    if (e.expand) {
+      const o = function(n, i) {
+        n ? (n.config = function() {
+          return Object.assign(n.config(), i.config());
+        }, !n.commands && (n.commands = {}), n.commands = $(n.commands, i.commands, {
+          fresh: !1
+        })) : console.error(
+          "Compiler: model expend error, can not found model witch has not been registered.",
+          i.models,
+          g
+        );
+      };
+      for (const n of e.expand)
+        if (typeof n.models == "string")
+          o(g[n.models], n);
+        else if (Array.isArray(n.models))
+          for (const i in n.models)
+            o(g[i], n);
+        else if (n.models instanceof RegExp)
+          for (const i in g)
+            n.models.test(i) && o(g[i], n);
+    }
     return this.builders.set(e.type, {
       option: e,
       Builder: s
-    }), Object.defineProperty(m, e.type, {
+    }), Object.defineProperty(y, e.type, {
       get() {
         return e.config;
       }
-    }), ne[oe(e.type)] = e.type, ie[Ee(e.type)] = e.type, G[e.type] = this.MODULE, ve[e.type] = e, t && t(this), this;
+    }), ae[ie(e.type)] = e.type, ce[Ce(e.type)] = e.type, J[e.type] = this.MODULE, g[e.type] = e, t && t(this), this;
   }
   /**
    * @deprecated use useModel
@@ -378,15 +402,15 @@ const h = {
     toRaw: void 0
   },
   symbol: {
-    generator: ye,
+    generator: Oe,
     validator: (r) => r.length === 21
   },
   engine: void 0
-}, bt = function(r) {
+}, St = function(r) {
   r.proxy && Object.assign(h.proxy, r.proxy), r.symbol && Object.assign(h.symbol, r.symbol);
-}, Y = function(r, e, t) {
+}, ee = function(r, e, t) {
   return Reflect.get(r, e, t);
-}, _ = function(r, e, t, s, o) {
+}, te = function(r, e, t, s, o) {
   if (typeof e == "symbol")
     return Reflect.set(r, e, t, s);
   if (r[e] === void 0) {
@@ -408,7 +432,7 @@ const h = {
       symbol: e
     }), n;
   }
-}, ee = function(r, e, t) {
+}, re = function(r, e, t) {
   if (typeof e == "symbol")
     return Reflect.deleteProperty(r, e);
   const s = r[e], o = Reflect.deleteProperty(r, e);
@@ -420,27 +444,27 @@ const h = {
     symbol: e
   }), t.remove(s.vid), o;
 };
-class Ne extends re {
+class Te extends oe {
   constructor() {
     super(), this.subscriptions = /* @__PURE__ */ new Map();
     const e = h.proxy.expand ? (t = {}) => h.proxy.expand(t) : (t = {}) => t;
     h.proxy.timing === "before" ? this.space = new Proxy(e(), {
-      get: Y,
-      set: (t, s, o, n) => _(t, s, o, n, this),
-      deleteProperty: (t, s) => ee(t, s, this)
+      get: ee,
+      set: (t, s, o, n) => te(t, s, o, n, this),
+      deleteProperty: (t, s) => re(t, s, this)
     }) : this.space = e(
       new Proxy(
         {},
         {
-          get: Y,
-          set: (t, s, o, n) => _(t, s, o, n, this),
-          deleteProperty: (t, s) => ee(t, s, this)
+          get: ee,
+          set: (t, s, o, n) => te(t, s, o, n, this),
+          deleteProperty: (t, s) => re(t, s, this)
         }
       )
     );
   }
   add(e) {
-    const t = P(e);
+    const t = N(e);
     if (!t) {
       console.error("Container: this config can not observer", e);
       return;
@@ -462,22 +486,22 @@ class Ne extends re {
     this.subscriptions.delete(e);
   }
 }
-const M = (r, e) => e === 1 / 0 ? "Infinity" : e === -1 / 0 ? "-Infinity" : e, F = (r, e) => e === "Infinity" ? 1 / 0 : e === "-Infinity" ? -1 / 0 : e, x = (r) => JSON.parse(JSON.stringify(r, M), F), O = {
-  stringify: M,
-  parse: F,
-  clone: x
-}, St = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const O = (r, e) => e === 1 / 0 ? "Infinity" : e === -1 / 0 ? "-Infinity" : e, H = (r, e) => e === "Infinity" ? 1 / 0 : e === "-Infinity" ? -1 / 0 : e, E = (r) => JSON.parse(JSON.stringify(r, O), H), b = {
+  stringify: O,
+  parse: H,
+  clone: E
+}, xt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  clone: x,
-  default: O,
-  parse: F,
-  stringify: M
-}, Symbol.toStringTag, { value: "Module" })), f = function(r, e, t = {
+  clone: E,
+  default: b,
+  parse: H,
+  stringify: O
+}, Symbol.toStringTag, { value: "Module" })), p = function(r, e, t = {
   observer: !0,
   strict: !0,
   warn: !0
 }) {
-  if (t.observer === void 0 && (t.observer = !0), t.strict === void 0 && (t.strict = !0), t.warn === void 0 && (t.warn = !0), t.handler === void 0 && (t.handler = h.proxy.expand), !K[r])
+  if (t.observer === void 0 && (t.observer = !0), t.strict === void 0 && (t.strict = !0), t.warn === void 0 && (t.warn = !0), t.handler === void 0 && (t.handler = h.proxy.expand), !Y[r])
     return console.error(`type: ${r} can not be found in configList.`), {
       vid: "",
       type: r
@@ -491,16 +515,16 @@ const M = (r, e) => e === 1 / 0 ? "Infinity" : e === -1 / 0 ? "-Infinity" : e, F
       typeof a[c] == "object" && a[c] !== null && !Array.isArray(a[c]) ? (i[c] === null && (i[c] = { ...a[c] }), s(i[c], a[c])) : i[c] = a[c];
     }
   };
-  let o = K[r]();
+  let o = Y[r]();
   if (o.vid === "" && (o.vid = h.symbol.generator()), e && s(o, e), t.observer === !1)
     return o;
   t.handler && h.proxy.timing === "before" && (o = t.handler(o));
-  let n = Ue(o);
-  if (t.handler && h.proxy.timing === "after" && (n = t.handler(n)), f.autoInject && f.injectEngine) {
-    const i = f.injectEngine;
-    if (i.applyConfig(n), f.injectScene && Ae(o.type) && o.type !== ie.SCENE) {
+  let n = Fe(o);
+  if (t.handler && h.proxy.timing === "after" && (n = t.handler(n)), p.autoInject && p.injectEngine) {
+    const i = p.injectEngine;
+    if (i.applyConfig(n), p.injectScene && De(o.type) && o.type !== ce.SCENE) {
       let a = null;
-      typeof f.injectScene == "boolean" ? a = i.getObjectConfig(i.scene) : typeof f.injectScene == "string" && (a = i.getConfigBySymbol(f.injectScene)), a ? a.children.push(
+      typeof p.injectScene == "boolean" ? a = i.getObjectConfig(i.scene) : typeof p.injectScene == "string" && (a = i.getConfigBySymbol(p.injectScene)), a ? a.children.push(
         o.vid
       ) : console.warn(
         "current engine scene can not found it config",
@@ -512,11 +536,11 @@ const M = (r, e) => e === 1 / 0 ? "Infinity" : e === -1 / 0 ? "-Infinity" : e, F
   }
   return n;
 };
-f.autoInject = !0;
-f.injectScene = !1;
-f.injectEngine = null;
-const le = (r, e = {}) => {
-  let t = JSON.stringify(r, O.stringify);
+p.autoInject = !0;
+p.injectScene = !1;
+p.injectEngine = null;
+const fe = (r, e = {}) => {
+  let t = JSON.stringify(r, b.stringify);
   const s = {};
   !e.filter && (e.filter = ["assets"]);
   const o = Object.keys(r).filter(
@@ -524,10 +548,10 @@ const le = (r, e = {}) => {
   );
   for (const i of o)
     for (const a of r[i]) {
-      const c = a.vid, l = He();
+      const c = a.vid, l = We();
       t = t.replace(new RegExp(c, "g"), l), e.detail && (s[c] = l);
     }
-  const n = JSON.parse(t, O.parse);
+  const n = JSON.parse(t, b.parse);
   if (e.fillName)
     if (typeof e.fillName == "function")
       for (const i of o)
@@ -538,11 +562,11 @@ const le = (r, e = {}) => {
         for (const a of n[i])
           a.name || (a.name = `${a.type}-${a.vid.slice(-2)}`);
   return e.detail ? { config: n, detail: s } : n;
-}, V = (r, e, t = {
+}, W = (r, e, t = {
   filter: ["assets"],
   clone: !0
 }) => {
-  const s = t.clone ? O.clone(r) : r;
+  const s = t.clone ? b.clone(r) : r;
   !t.filter && (t.filter = ["assets"]);
   const o = Object.keys(s).filter(
     (n) => !t.filter.includes(n)
@@ -552,28 +576,28 @@ const le = (r, e = {}) => {
       l[c] = e(a);
     });
   return s;
-}, ue = function(r) {
+}, pe = function(r) {
   const e = {};
   for (const t of Object.keys(r))
     for (const s of r[t])
       e[s.name] = s;
   return e;
-}, pe = function(r, e) {
-  return typeof r == "string" && (r = JSON.parse(r, O.parse)), V(O.clone(r), (t) => (t = f(t.type, t, { strict: !1 }), e ? e(t) : t));
-}, Te = {
-  clone: le,
-  handler: V,
-  planish: ue,
-  observable: pe
-}, xt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, he = function(r, e) {
+  return typeof r == "string" && (r = JSON.parse(r, b.parse)), W(b.clone(r), (t) => (t = p(t.type, t, { strict: !1 }), e ? e(t) : t));
+}, Le = {
+  clone: fe,
+  handler: W,
+  planish: pe,
+  observable: he
+}, Et = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  clone: le,
-  default: Te,
-  handler: V,
-  observable: pe,
-  planish: ue
+  clone: fe,
+  default: Le,
+  handler: W,
+  observable: he,
+  planish: pe
 }, Symbol.toStringTag, { value: "Module" }));
-class Le {
+class $e {
   constructor() {
     this.list = [], this.time = 0;
   }
@@ -609,10 +633,10 @@ class Le {
     }, this.time);
   }
 }
-const Et = new Le();
-class $e {
+const vt = new $e();
+class Be {
   constructor(e) {
-    this.MODULE = "", this.container = new Ne(), this.ruler = e.ruler, this.MODULE = e.module, this.container.subscribe((t) => {
+    this.MODULE = "", this.container = new Te(), this.ruler = e.ruler, this.MODULE = e.module, this.container.subscribe((t) => {
       this.ruler.execute(t);
     });
   }
@@ -640,7 +664,7 @@ class $e {
    * @returns json config
    */
   toJSON(e = !0) {
-    return JSON.stringify(e ? this.exportConfig() : Object.values(this.container.space), M);
+    return JSON.stringify(e ? this.exportConfig() : Object.values(this.container.space), O);
   }
   /**
    * 导出配置单
@@ -659,28 +683,28 @@ class $e {
             if (Array.isArray(i[l])) {
               if (!i[l].length)
                 continue;
-              c[l] = i[l].map((p) => typeof p == "object" && p !== null ? x(p) : p);
+              c[l] = i[l].map((f) => typeof f == "object" && f !== null ? E(f) : f);
               continue;
             }
-            c[l] = {}, a[l] ? (n(i[l], a[l], c[l]), Object.keys(c[l]).length === 0 && delete c[l]) : c[l] = x(i[l]);
+            c[l] = {}, a[l] ? (n(i[l], a[l], c[l]), Object.keys(c[l]).length === 0 && delete c[l]) : c[l] = E(i[l]);
           } else
             a[l] !== i[l] && (c[l] = i[l]);
         }
       };
       for (const i of Object.values(t)) {
         if (!o[i.type]) {
-          if (!m[i.type]) {
+          if (!y[i.type]) {
             console.error(`can not font some config with: ${i.type}`);
             continue;
           }
-          o[i.type] = m[i.type]();
+          o[i.type] = y[i.type]();
         }
         const a = {};
         n(i, o[i.type], a), s.push(a);
       }
       return s;
     } else
-      return Object.values(x(this.container.space));
+      return Object.values(E(this.container.space));
   }
   /**
    * 加载配置
@@ -694,11 +718,11 @@ class $e {
     };
     for (const n of e) {
       if (!s[n.type]) {
-        if (!m[n.type]) {
+        if (!y[n.type]) {
           console.error(`can not font some config with: ${n.type}`);
           continue;
         }
-        s[n.type] = m[n.type]();
+        s[n.type] = y[n.type]();
       }
       o(n, s[n.type]), t[n.vid] = n;
     }
@@ -711,7 +735,7 @@ class $e {
     return this;
   }
 }
-const Be = [
+const Ie = [
   "push",
   "pop",
   "shift",
@@ -719,16 +743,16 @@ const Be = [
   "splice",
   "sort",
   "reverse"
-], S = /* @__PURE__ */ new WeakSet(), Ie = function(r, e, t) {
-  return Array.isArray(r) && Be.includes(e) && S.add(r), Reflect.get(r, e, t);
-}, Ge = function(r, e, t, s) {
-  const o = U(r), n = P(r);
-  if (typeof e == "symbol" || n.ignore(te(o, e)))
+], x = /* @__PURE__ */ new WeakSet(), Ge = function(r, e, t) {
+  return Array.isArray(r) && Ie.includes(e) && x.add(r), Reflect.get(r, e, t);
+}, ke = function(r, e, t, s) {
+  const o = V(r), n = N(r);
+  if (typeof e == "symbol" || n.ignore(se(o, e)))
     return Reflect.set(r, e, t, s);
-  if (v(t) && !ce(t) && (t = D(n, t, r, e)), r[e] === void 0) {
-    v(t) && (t[Symbol.for(y)] = e, g(t) && w(t)), g(r) && S.delete(r);
+  if (C(t) && !ue(t) && (t = R(n, t, r, e)), r[e] === void 0) {
+    C(t) && (t[Symbol.for(M)] = e, m(t) && A(t)), m(r) && x.delete(r);
     const c = Reflect.set(r, e, t);
-    return g(r) && w(r), n.next({
+    return m(r) && A(r), n.next({
       operate: "add",
       path: o,
       key: e,
@@ -736,26 +760,26 @@ const Be = [
     }), c;
   }
   const i = r[e], a = Reflect.set(r, e, t);
-  if (g(r)) {
-    if (S.has(r) && e === "length") {
-      const c = De(r);
+  if (m(r)) {
+    if (x.has(r) && e === "length") {
+      const c = Re(r);
       if (!c)
         return Array.isArray(i) && console.error("array value is not be cached:", r), a;
-      Re(r);
-      const l = Math.abs(c.length - r.length), p = c.length >= r.length ? "delete" : "add", he = c.length >= r.length ? r : c;
-      let q = 0, Z = 0;
-      for (const X of p === "delete" ? c : r) {
-        if (!he.includes(X) && (n.next({
-          operate: p,
+      je(r);
+      const l = Math.abs(c.length - r.length), f = c.length >= r.length ? "delete" : "add", ge = c.length >= r.length ? r : c;
+      let X = 0, K = 0;
+      for (const Q of f === "delete" ? c : r) {
+        if (!ge.includes(Q) && (n.next({
+          operate: f,
           path: o,
-          key: Z.toString(),
-          value: X
-        }), q += 1, q === l))
+          key: K.toString(),
+          value: Q
+        }), X += 1, X === l))
           break;
-        Z += 1;
+        K += 1;
       }
-      return w(r), S.delete(r), a;
-    } else if (S.has(r) || e === "length")
+      return A(r), x.delete(r), a;
+    } else if (x.has(r) || e === "length")
       return a;
   }
   return n.next({
@@ -764,81 +788,81 @@ const Be = [
     key: e,
     value: t
   }), a;
-}, ke = function(r, e) {
-  const t = U(r), s = P(r);
+}, Je = function(r, e) {
+  const t = V(r), s = N(r);
   if (typeof e == "symbol" || s.ignore(t))
     return Reflect.deleteProperty(r, e);
   const o = r[e], n = Reflect.deleteProperty(r, e);
-  return g(r) || s.next({
+  return m(r) || s.next({
     operate: "delete",
     path: t,
     key: e,
     value: o
   }), n;
-}, Je = {
-  get: Ie,
-  set: Ge,
-  deleteProperty: ke
-}, D = function(r, e, t, s) {
-  if (!v(e) || ce(e))
+}, Ue = {
+  get: Ge,
+  set: ke,
+  deleteProperty: Je
+}, R = function(r, e, t, s) {
+  if (!C(e) || ue(e))
     return e;
-  const o = t ? U(t) : "";
+  const o = t ? V(t) : "";
   if (r.ignore(o))
     return e;
-  t && (e[Symbol.for($)] = t), e[Symbol.for(J)] = r;
+  t && (e[Symbol.for(I)] = t), e[Symbol.for(F)] = r;
   for (const i in e) {
-    const a = te(o, i);
-    if (!r.ignore(a) && v(e[i])) {
-      if (g(e[i])) {
+    const a = se(o, i);
+    if (!r.ignore(a) && C(e[i])) {
+      if (m(e[i])) {
         const c = e[i];
-        e[i] = D(
+        e[i] = R(
           r,
           e[i],
           e
-        ), w(c);
+        ), A(c);
       } else
-        e[i] = D(
+        e[i] = R(
           r,
           e[i],
           e
         );
-      e[i][Symbol.for(y)] = i;
+      e[i][Symbol.for(M)] = i;
     }
   }
-  return s && (e[Symbol.for(y)] = s), new Proxy(e, Je);
-}, E = class E extends re {
+  return s && (e[Symbol.for(M)] = s), new Proxy(e, Ue);
+}, v = class v extends oe {
   constructor(e) {
-    super(), this.disable = !1, this.target = D(this, e);
+    super(), this.disable = !1, this.target = R(this, e);
   }
   ignore(e) {
     const t = e.indexOf(".");
-    return t === -1 ? E.IGNORE[e] : E.IGNORE[e.slice(0, t)];
+    return t === -1 ? v.IGNORE[e] : v.IGNORE[e.slice(0, t)];
   }
   next(e) {
     if (this.disable)
       return;
     super.next(e);
-    const t = je(this.target);
+    const t = Pe(this.target);
     t && t.emit(d.NOTICED);
   }
 };
-E.IGNORE = {
+v.IGNORE = {
   vid: !0,
   type: !0,
   alias: !0,
   meta: !0
 };
-let I = E;
-const Ue = function(r) {
-  return new I(r).target;
-}, vt = function(r, e) {
-  const t = P(r);
+let k = v;
+const Fe = function(r) {
+  return new k(r).target;
+}, Ct = function(r, e) {
+  const t = N(r);
   if (!t) {
     console.warn("this object can not found it observer:", r);
     return;
   }
   t.disable = !0, e(), t.disable = !1;
-}, b = {
+}, S = {
   SYMBOL_VALIDATOR(r) {
     return !h.symbol.validator(r.symbol);
   },
@@ -855,14 +879,14 @@ const Ue = function(r) {
     return e.compile(r.symbol, r), !1;
   }
 };
-class Fe {
+class Ve {
   constructor(e) {
     this.rules = [], this.pointer = null, e ? this.rules = e : this.rules.push(
-      b.SYMBOL_VALIDATOR,
-      b.OPERATE_ADD,
-      b.OPERATE_DELETE,
-      b.OPERATE_COVER,
-      b.OPERATE_COMPILE
+      S.SYMBOL_VALIDATOR,
+      S.OPERATE_ADD,
+      S.OPERATE_DELETE,
+      S.OPERATE_COVER,
+      S.OPERATE_COMPILE
     );
   }
   link(e) {
@@ -904,9 +928,9 @@ class Fe {
     return this.rules.shift(), this;
   }
 }
-const Ct = function(r) {
+const wt = function(r) {
   return r;
-}, Ve = function() {
+}, He = function() {
   return {
     vid: "",
     type: "",
@@ -914,30 +938,30 @@ const Ct = function(r) {
     alias: "",
     meta: {}
   };
-}, wt = Ve, At = function(r) {
+}, At = He, Dt = function(r) {
   return `DEFUALT-${r}`;
-}, He = function() {
+}, We = function() {
   return h.symbol.generator();
-}, Dt = function() {
+}, Rt = function() {
 };
-class We {
+class ze {
   constructor(e) {
-    this.type = "", this.module = e, this.type = e.type, this.ruler = new Fe(e.rule), this.compiler = e.compiler ? new e.compiler({
+    this.type = "", this.module = e, this.type = e.type, this.ruler = new Ve(e.rule), this.compiler = e.compiler ? new e.compiler({
       module: e.type,
       models: e.models
-    }) : new Pe({
+    }) : new Ne({
       module: e.type,
       models: e.models
-    }), this.converter = new $e({
+    }), this.converter = new Be({
       module: e.type,
       ruler: this.ruler
     }).addCompiler(this.compiler);
   }
 }
-const Rt = function(r) {
+const jt = function(r) {
   return r;
 };
-class ze extends R {
+class qe extends j {
   constructor() {
     super(), this.compilerMap = /* @__PURE__ */ new Map();
   }
@@ -1028,11 +1052,11 @@ class ze extends R {
     return this.compilerMap.clear(), this;
   }
 }
-const H = "CompilerManagerPlugin", qe = function() {
+const z = "CompilerManagerPlugin", Ze = function() {
   return {
-    name: H,
+    name: z,
     install(r) {
-      const e = new ze();
+      const e = new qe();
       r.compilerManager = e, r.getObjectSymbol = function(t) {
         return e.getObjectSymbol(t);
       }, r.getObjectBySymbol = function(t) {
@@ -1042,7 +1066,7 @@ const H = "CompilerManagerPlugin", qe = function() {
       }, r.getObjectfromModules = function(t, s) {
         return e.getObjectfromModules(t, s);
       }, r.getObject3D = function(t) {
-        return e.getObjectfromModules(Ce, t);
+        return e.getObjectfromModules(we, t);
       };
     },
     dispose(r) {
@@ -1050,7 +1074,7 @@ const H = "CompilerManagerPlugin", qe = function() {
     }
   };
 };
-class Ze extends R {
+class Xe extends j {
   constructor() {
     super(), this.dataSupportMap = /* @__PURE__ */ new Map();
   }
@@ -1155,7 +1179,7 @@ class Ze extends R {
    */
   applyConfig(...e) {
     for (const t of e) {
-      const s = k(t.type);
+      const s = U(t.type);
       s ? this.dataSupportMap.get(s).addConfig(t) : console.warn(
         `dataSupportManager can not found this config module: ${t.type}`
       );
@@ -1201,7 +1225,7 @@ class Ze extends R {
   toJSON(e = {}, t = !0) {
     return JSON.stringify(
       this.exportConfig(e, t),
-      M
+      O
     );
   }
   /**
@@ -1216,11 +1240,11 @@ class Ze extends R {
     }), e;
   }
 }
-const N = "DataSupportManagerPlugin", Xe = function() {
+const T = "DataSupportManagerPlugin", Ke = function() {
   return {
-    name: N,
+    name: T,
     install(r) {
-      const e = new Ze();
+      const e = new Xe();
       r.dataSupportManager = e, r.applyConfig = function(...t) {
         return e.applyConfig(...t), r;
       }, r.getConfigBySymbol = function(t) {
@@ -1242,20 +1266,20 @@ const N = "DataSupportManagerPlugin", Xe = function() {
     }
   };
 };
-class Ke {
+class Qe {
 }
-class W extends Ke {
+class q extends Qe {
   constructor() {
-    super(...arguments), this.selector = (e, t, s) => s.get(W) || null;
+    super(...arguments), this.selector = (e, t, s) => s.get(q) || null;
   }
   parse({ url: e, resource: t, configMap: s, resourceMap: o }) {
     o.set(e, t);
   }
 }
-var z = /* @__PURE__ */ ((r) => (r.MAPPED = "mapped", r))(z || {});
-class Qe extends R {
+var Z = /* @__PURE__ */ ((r) => (r.MAPPED = "mapped", r))(Z || {});
+class Ye extends j {
   constructor(e = {}) {
-    super(), this.configMap = /* @__PURE__ */ new Map(), this.resourceMap = /* @__PURE__ */ new Map(), this.paserMap = /* @__PURE__ */ new Map(), this.defalutParser = new W();
+    super(), this.configMap = /* @__PURE__ */ new Map(), this.resourceMap = /* @__PURE__ */ new Map(), this.paserMap = /* @__PURE__ */ new Map(), this.defalutParser = new q();
     const t = /* @__PURE__ */ new Map();
     for (const s in e)
       t.has(s) && console.warn(
@@ -1290,8 +1314,8 @@ class Qe extends R {
         continue;
       }
       if (t != null && t.selector && t.selector[a]) {
-        const p = t.selector[a](a, c, this.paserMap);
-        if (!p) {
+        const f = t.selector[a](a, c, this.paserMap);
+        if (!f) {
           console.warn(
             "resource manager hanlder can not found this resource parser: ",
             c,
@@ -1299,7 +1323,7 @@ class Qe extends R {
           );
           continue;
         }
-        p.parse({
+        f.parse({
           url: a,
           resource: c,
           configMap: s,
@@ -1308,8 +1332,8 @@ class Qe extends R {
         continue;
       }
       let l = null;
-      for (const p of n)
-        if (l = p.selector(a, c, this.paserMap), l)
+      for (const f of n)
+        if (l = f.selector(a, c, this.paserMap), l)
           break;
       if (!l) {
         console.warn(
@@ -1349,7 +1373,7 @@ class Qe extends R {
       if (!n)
         console.error(`unknow error: can not found config by url: ${o}`);
       else {
-        const i = k(n.type);
+        const i = U(n.type);
         i ? (!s[i] && (s[i] = []), s[i].push(n)) : console.error(
           `unknow error: can not found module by type: ${n.type}`,
           n
@@ -1387,11 +1411,11 @@ class Qe extends R {
     }), this.resourceMap.clear(), this.configMap.clear();
   }
 }
-const fe = "ResourceManagerPlugin", Ye = function(r = {}) {
+const de = "ResourceManagerPlugin", _e = function(r = {}) {
   return {
-    name: fe,
+    name: de,
     install(e) {
-      const t = new Qe(r.resources);
+      const t = new Ye(r.resources);
       e.resourceManager = t, e.registerResources = (s) => {
         const o = /* @__PURE__ */ new Map();
         return Object.keys(s).forEach((n) => {
@@ -1400,16 +1424,16 @@ const fe = "ResourceManagerPlugin", Ye = function(r = {}) {
       };
     },
     dispose(e) {
-      e.addEventListener(ge.DISPOSE, () => {
+      e.addEventListener(ye.DISPOSE, () => {
         e.resourceManager.dispose();
       });
     }
   };
-}, _e = "LoaderDataSupportStrategy", et = function() {
+}, et = "LoaderDataSupportStrategy", tt = function() {
   let r, e;
   return {
-    name: _e,
-    condition: [N, se],
+    name: et,
+    condition: [T, ne],
     exec(t) {
       r = t.toJSON, t.toJSON = function() {
         const s = {
@@ -1427,22 +1451,22 @@ const fe = "ResourceManagerPlugin", Ye = function(r = {}) {
       t.toJSON = r, t.exportConfig = e;
     }
   };
-}, tt = "LoaderMappingStrategy", rt = function() {
+}, rt = "LoaderMappingStrategy", st = function() {
   let r, e;
   return {
-    name: tt,
-    condition: [fe, se],
+    name: rt,
+    condition: [de, ne],
     exec(t) {
       r = t.loadResources, t.loadResources = (s, o) => {
         const n = (i) => {
           o(void 0, i), t.resourceManager.removeEventListener(
-            T.LOADED,
+            L.LOADED,
             n
           );
         };
         try {
           t.resourceManager.addEventListener(
-            T.LOADED,
+            L.LOADED,
             n
           );
         } catch (i) {
@@ -1452,10 +1476,10 @@ const fe = "ResourceManagerPlugin", Ye = function(r = {}) {
       }, e = t.loadResourcesAsync, t.loadResourcesAsync = (s) => new Promise((o, n) => {
         try {
           t.loaderManager.once(
-            T.LOADED,
+            L.LOADED,
             (i) => {
               t.resourceManager.once(
-                z.MAPPED,
+                Z.MAPPED,
                 (c) => {
                   o(c);
                 }
@@ -1476,10 +1500,10 @@ const fe = "ResourceManagerPlugin", Ye = function(r = {}) {
       t.loadResources = r, t.loadResourcesAsync = e;
     }
   };
-}, st = "CompilerSupportStrategy", ot = function() {
+}, ot = "CompilerSupportStrategy", nt = function() {
   return {
-    name: st,
-    condition: [H, N],
+    name: ot,
+    condition: [z, T],
     exec(r) {
       r.compilerManager.compilerMap.forEach((e, t) => {
         var s;
@@ -1490,7 +1514,7 @@ const fe = "ResourceManagerPlugin", Ye = function(r = {}) {
     }
   };
 };
-class nt {
+class it {
   constructor(e) {
     this.condition = {}, this.list = [], this.validator = () => !0, e && (this.validator = e);
   }
@@ -1518,11 +1542,11 @@ class nt {
     return !Object.values(this.condition).includes(!1);
   }
 }
-const it = new nt((r) => !!j[r]);
-var at = /* @__PURE__ */ ((r) => (r[r.ZERO = 0] = "ZERO", r[r.ONE = 100] = "ONE", r[r.TWO = 200] = "TWO", r[r.THREE = 300] = "THREE", r[r.FOUR = 400] = "FOUR", r[r.FIVE = 500] = "FIVE", r[r.SIX = 600] = "SIX", r[r.SEVEN = 700] = "SEVEN", r[r.EIGHT = 800] = "EIGHT", r[r.NINE = 900] = "NINE", r))(at || {});
-class ct extends me {
+const at = new it((r) => !!P[r]);
+var ct = /* @__PURE__ */ ((r) => (r[r.ZERO = 0] = "ZERO", r[r.ONE = 100] = "ONE", r[r.TWO = 200] = "TWO", r[r.THREE = 300] = "THREE", r[r.FOUR = 400] = "FOUR", r[r.FIVE = 500] = "FIVE", r[r.SIX = 600] = "SIX", r[r.SEVEN = 700] = "SEVEN", r[r.EIGHT = 800] = "EIGHT", r[r.NINE = 900] = "NINE", r))(ct || {});
+class lt extends Me {
   constructor(e = {}) {
-    super(), this.moduleLifeCycle = [], this.triggers = { object: it }, this.install(Me(e.LoaderManagerPlugin)).install(Oe(e.PointerManagerPlugin)).install(be(e.EventManagerPlugin)).install(Se(e.RenderManagerPlugin)).install(Ye(e.ResourceManagerPlugin)).install(Xe(e.DataSupportManagerPlugin)).install(qe(e.CompilerManagerPlugin)), this.exec(et()).exec(rt()).exec(ot());
+    super(), this.moduleLifeCycle = [], this.triggers = { object: at }, this.install(be(e.LoaderManagerPlugin)).install(Se(e.PointerManagerPlugin)).install(xe(e.EventManagerPlugin)).install(Ee(e.RenderManagerPlugin)).install(_e(e.ResourceManagerPlugin)).install(Ke(e.DataSupportManagerPlugin)).install(Ze(e.CompilerManagerPlugin)), this.exec(tt()).exec(st()).exec(nt());
   }
   loadLifeCycle(e) {
     const t = this.dataSupportManager, s = this.triggers, o = this.moduleLifeCycle.sort((n, i) => n.order - i.order);
@@ -1558,7 +1582,7 @@ class ct extends me {
       n && this.renderManager.stop(), e.assets && e.assets.length ? this.loadResourcesAsync(e.assets).then((i) => {
         delete e.assets, this.loadLifeCycle(e), n ? this.renderManager.play() : this.renderManager.render(), s(i);
       }) : (this.loadLifeCycle(e), n ? this.renderManager.play() : this.renderManager.render(), s({
-        type: z.MAPPED,
+        type: Z.MAPPED,
         configMap: this.resourceManager.configMap,
         resourceMap: this.resourceManager.resourceMap,
         resourceConfig: {}
@@ -1573,11 +1597,11 @@ class ct extends me {
     return t ? this.getConfigBySymbol(t) : null;
   }
   useModule(e) {
-    const t = oe(e.type);
-    if (L[t])
+    const t = ie(e.type);
+    if (B[t])
       return console.warn(`Engine:module ${e.type} is already exist.`), this;
-    L[t] = e.type, e.object && (j[e.type] = !0);
-    const s = new We(e);
+    B[t] = e.type, e.object && (P[e.type] = !0);
+    const s = new ze(e);
     return s.compiler.useEngine(this), this.dataSupportManager.extend(s.converter), this.compilerManager.extend(s.compiler), e.extend && e.extend(this), this.moduleLifeCycle.push({
       module: e.type,
       order: e.lifeOrder || 0
@@ -1608,8 +1632,8 @@ class ct extends me {
     return this.useModule(e);
   }
 }
-const jt = function(r, e = {}) {
-  const t = new ct(e);
+const Pt = function(r, e = {}) {
+  const t = new lt(e);
   return r.modules && r.modules.forEach((s) => {
     t.useModule(s);
   }), r.plugins && r.plugins.forEach((s) => {
@@ -1617,74 +1641,74 @@ const jt = function(r, e = {}) {
   }), r.strategy && r.strategy.forEach((s) => {
     t.exec(s);
   }), t;
-}, Pt = (r) => {
-  C.exec(r);
-}, Nt = () => {
-}, Tt = [H, N];
+}, Nt = (r) => {
+  w.exec(r);
+}, Tt = () => {
+}, Lt = [z, T];
 export {
-  Le as AntiShake,
-  H as COMPILER_MANAGER_PLUGIN,
-  st as COMPILER_SUPPORT_STRATEGY,
-  K as CONFIGFACTORY,
-  Mt as CONFIGMODULE,
-  ie as CONFIGTYPE,
-  m as CONFIG_FACTORY,
-  ve as CONFIG_MODEL,
-  G as CONFIG_MODULE,
-  ne as CONFIG_TYPE,
-  Pe as Compiler,
-  ze as CompilerManager,
-  qe as CompilerManagerPlugin,
-  ot as CompilerSupportStrategy,
-  Ne as Container,
-  $e as Converter,
-  N as DATA_SUPPORT_MANAGER_PLUGIN,
-  b as DEFAULT_RULE,
-  Ze as DataSupportManager,
-  Xe as DataSupportManagerPlugin,
-  W as DefaultParser,
-  ct as EngineSupport,
-  St as JSONHandler,
-  _e as LOADER_DATA_SUPPORT_STRATEGY,
-  tt as LOADER_MAPPING_STRATEGY,
-  et as LoaderDataSupportStrategy,
-  rt as LoaderMappingStrategy,
+  $e as AntiShake,
+  z as COMPILER_MANAGER_PLUGIN,
+  ot as COMPILER_SUPPORT_STRATEGY,
+  Y as CONFIGFACTORY,
+  Ot as CONFIGMODULE,
+  ce as CONFIGTYPE,
+  y as CONFIG_FACTORY,
+  g as CONFIG_MODEL,
+  J as CONFIG_MODULE,
+  ae as CONFIG_TYPE,
+  Ne as Compiler,
+  qe as CompilerManager,
+  Ze as CompilerManagerPlugin,
+  nt as CompilerSupportStrategy,
+  Te as Container,
+  Be as Converter,
+  T as DATA_SUPPORT_MANAGER_PLUGIN,
+  S as DEFAULT_RULE,
+  Xe as DataSupportManager,
+  Ke as DataSupportManagerPlugin,
+  q as DefaultParser,
+  lt as EngineSupport,
+  xt as JSONHandler,
+  et as LOADER_DATA_SUPPORT_STRATEGY,
+  rt as LOADER_MAPPING_STRATEGY,
+  tt as LoaderDataSupportStrategy,
+  st as LoaderMappingStrategy,
   d as MODEL_EVENT,
-  yt as MODULETYPE,
-  L as MODULE_TYPE,
-  Q as Model,
-  We as Moduler,
-  Ce as OBJECTMODULE,
-  j as OBJECT_MODULE,
-  Tt as PLUGINS,
-  Ke as Parser,
-  z as RESOURCE_EVENT,
-  fe as RESOURCE_MANAGER_PLUGIN,
-  Qe as ResourceManager,
-  Ye as ResourceManagerPlugin,
-  Fe as Ruler,
-  at as SUPPORT_LIFE_CYCLE,
-  xt as Template,
-  He as createSymbol,
-  jt as defineEngineSupport,
-  A as defineModel,
-  Rt as defineModule,
-  bt as defineOption,
-  Ot as defineProcessor,
-  Ct as defineRule,
-  Dt as emptyHandler,
-  f as generateConfig,
-  Ve as getBasicConfig,
-  k as getModule,
-  P as getObserver,
-  wt as getSymbolConfig,
-  Et as globalAntiShake,
+  Mt as MODULETYPE,
+  B as MODULE_TYPE,
+  _ as Model,
+  ze as Moduler,
+  we as OBJECTMODULE,
+  P as OBJECT_MODULE,
+  Lt as PLUGINS,
+  Qe as Parser,
+  Z as RESOURCE_EVENT,
+  de as RESOURCE_MANAGER_PLUGIN,
+  Ye as ResourceManager,
+  _e as ResourceManagerPlugin,
+  Ve as Ruler,
+  ct as SUPPORT_LIFE_CYCLE,
+  Et as Template,
+  We as createSymbol,
+  Pt as defineEngineSupport,
+  D as defineModel,
+  jt as defineModule,
+  St as defineOption,
+  bt as defineProcessor,
+  wt as defineRule,
+  Rt as emptyHandler,
+  p as generateConfig,
+  He as getBasicConfig,
+  U as getModule,
+  N as getObserver,
+  At as getSymbolConfig,
+  vt as globalAntiShake,
   h as globalOption,
-  we as isObjectModule,
-  Ae as isObjectType,
-  Ue as observable,
-  vt as slientSync,
-  Pt as toAsync,
-  Nt as toTrigger,
-  At as uniqueSymbol
+  Ae as isObjectModule,
+  De as isObjectType,
+  Fe as observable,
+  Ct as slientSync,
+  Nt as toAsync,
+  Tt as toTrigger,
+  Dt as uniqueSymbol
 };
