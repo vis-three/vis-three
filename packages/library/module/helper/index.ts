@@ -3,6 +3,8 @@ import ObjectHelperModel from "./models/ObjectHelperModel";
 
 export * from "./HelperConfig";
 
+export * from "./extends";
+
 export default defineModule({
   type: "helper",
   models: [ObjectHelperModel],

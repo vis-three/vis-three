@@ -1133,6 +1133,22 @@ const Ae = _({
   lifeOrder: Y.FOUR
 });
 export {
+  ne as BoundingBoxHelper,
+  de as CSS2DPlaneHelper,
+  me as CSS3DPlaneHelper,
+  ye as CSS3DSpriteHelper,
+  N as CameraHelper,
+  se as DirectionalLightHelper,
+  D as GeometricOriginHelper,
+  O as GroupHelper,
+  j as LineHelper,
+  he as LocalAxesHelper,
+  fe as MeshHelper,
+  oe as PointLightHelper,
+  z as PointsHelper,
+  re as RectAreaLightHelper,
+  ae as SpotLightHelper,
+  Me as SpriteHelper,
   Oe as default,
   Pe as getHelperConfig,
   Se as getObjectHelperConfig
