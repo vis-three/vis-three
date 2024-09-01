@@ -1,0 +1,25 @@
+{
+  "name": "@vis-three/plugin-camera-adaptive",
+  "version": "0.7.0",
+  "description": "",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "author": "Shiotsuki_",
+  "license": "MPL-2.0",
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc",
+    "lint": "npx eslint *.js src/**/*.ts --fix"
+  },
+  "dependencies": {
+    "@vis-three/core": "workspace:^"
+  },
+  "devDependencies": {},
+  "files": [
+    "**/*.js",
+    "**/*.d.ts",
+    "package.json",
+    "LICENSE"
+  ]
+}

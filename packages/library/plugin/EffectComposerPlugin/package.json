@@ -1,0 +1,28 @@
+{
+  "name": "@vis-three/plugin-effect-composer",
+  "version": "0.7.0",
+  "description": "",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "author": "Shiotsuki_",
+  "license": "MPL-2.0",
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc",
+    "lint": "npx eslint *.js src/**/*.ts --fix"
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+    "@vis-three/core": "workspace:^",
+    "@vis-three/plugin-webgl-renderer": "workspace:^",
+    "@vis-three/utils": "workspace:^"
+  },
+  "files": [
+    "**/*.js",
+    "**/*.d.ts",
+    "package.json",
+    "LICENSE"
+  ]
+}

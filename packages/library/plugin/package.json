@@ -1,0 +1,23 @@
+{
+  "name": "@vis-three/library-plugin",
+  "version": "0.7.0",
+  "description": "vis-three plugin library",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "author": "Shiotsuki_",
+  "license": "MPL-2.0",
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc",
+    "lint": "npx eslint *.js src/**/*.ts --fix"
+  },
+  "devDependencies": {},
+  "dependencies": {},
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "package.json",
+    "LICENSE"
+  ]
+}
