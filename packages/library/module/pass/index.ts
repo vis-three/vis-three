@@ -1,5 +1,5 @@
 import { defineModule } from "@vis-three/tdcm";
-import { ComposerEngineSupport, PassCompiler } from "./PassCompiler";
+import { PassModuleEngine, PassCompiler } from "./PassCompiler";
 import FilmPassModel from "./models/FilmPassModel";
 import LUTPassModel from "./models/LUTPassModel";
 import SelectiveBloomPassModel from "./models/SelectiveBloomPassModel";
@@ -10,7 +10,7 @@ import UnrealBloomPassModel from "./models/UnrealBloomPassModel";
 export * from "./PassCompiler";
 export * from "./PassConfig";
 
-export default defineModule<ComposerEngineSupport, PassCompiler>({
+export default defineModule<PassModuleEngine, PassCompiler>({
   type: "pass",
   compiler: PassCompiler,
   models: [

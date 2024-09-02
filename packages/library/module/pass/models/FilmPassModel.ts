@@ -1,14 +1,14 @@
 import { defineModel } from "@vis-three/tdcm";
 import { FilmPassConfig, getFilmPassConfig } from "../PassConfig";
 import { FilmPass } from "three/examples/jsm/postprocessing/FilmPass.js";
-import { ComposerEngineSupport, PassCompiler } from "../PassCompiler";
+import { PassModuleEngine, PassCompiler } from "../PassCompiler";
 
 export default defineModel<
   FilmPassConfig,
   FilmPass,
   {},
   {},
-  ComposerEngineSupport,
+  PassModuleEngine,
   PassCompiler
 >({
   type: "FilmPass",

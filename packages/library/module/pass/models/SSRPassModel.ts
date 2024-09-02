@@ -1,6 +1,6 @@
 import { defineModel } from "@vis-three/tdcm";
 import { getSSRPassConfig, SSRPassConfig } from "../PassConfig";
-import { ComposerEngineSupport, PassCompiler } from "../PassCompiler";
+import { PassModuleEngine, PassCompiler } from "../PassCompiler";
 import { SSRPass } from "three/examples/jsm/postprocessing/SSRPass.js";
 import { Camera, Color, PlaneGeometry, Scene, WebGLRenderer } from "three";
 import { ReflectorForSSRPass } from "three/examples/jsm/objects/ReflectorForSSRPass.js";
@@ -14,11 +14,11 @@ export default defineModel<
     setDefaultGroundGeometry: (config: SSRPassConfig) => PlaneGeometry;
     generateGround: (
       config: SSRPassConfig,
-      engine: ComposerEngineSupport
+      engine: PassModuleEngine
     ) => ReflectorForSSRPass;
     disposeGround: (reflector: ReflectorForSSRPass) => void;
   },
-  ComposerEngineSupport,
+  PassModuleEngine,
   PassCompiler
 >({
   type: "SSRPass",
@@ -39,7 +39,7 @@ export default defineModel<
 
       return this.defaultGroundGeometry;
     },
-    generateGround(config: SSRPassConfig, engine: ComposerEngineSupport) {
+    generateGround(config: SSRPassConfig, engine) {
       const reflector = new ReflectorForSSRPass(
         engine.getObjectBySymbol(config.groudOption.geometry) ||
           this.setDefaultGroundGeometry(config),

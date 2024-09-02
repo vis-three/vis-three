@@ -1,5 +1,5 @@
 import { SelectiveBloomPassConfig } from "../PassConfig";
-import { ComposerEngineSupport, PassCompiler } from "../PassCompiler";
+import { PassModuleEngine, PassCompiler } from "../PassCompiler";
 import { SelectiveBloomPass } from "../extends/SelectiveBloomPass";
-declare const _default: import("@vis-three/tdcm").ModelOption<SelectiveBloomPassConfig, SelectiveBloomPass, {}, {}, ComposerEngineSupport, PassCompiler>;
+declare const _default: import("@vis-three/tdcm").ModelOption<SelectiveBloomPassConfig, SelectiveBloomPass, {}, {}, PassModuleEngine, PassCompiler>;
 export default _default;

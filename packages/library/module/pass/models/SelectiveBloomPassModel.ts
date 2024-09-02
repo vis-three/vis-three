@@ -3,7 +3,7 @@ import {
   getSelectiveBloomPassConfig,
   SelectiveBloomPassConfig,
 } from "../PassConfig";
-import { ComposerEngineSupport, PassCompiler } from "../PassCompiler";
+import { PassModuleEngine, PassCompiler } from "../PassCompiler";
 import { SelectiveBloomPass } from "../extends/SelectiveBloomPass";
 import { Camera, Object3D, Scene, Vector2 } from "three";
 
@@ -12,7 +12,7 @@ export default defineModel<
   SelectiveBloomPass,
   {},
   {},
-  ComposerEngineSupport,
+  PassModuleEngine,
   PassCompiler
 >({
   type: "SelectiveBloomPass",

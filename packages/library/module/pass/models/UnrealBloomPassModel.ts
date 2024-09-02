@@ -1,6 +1,6 @@
 import { defineModel } from "@vis-three/tdcm";
 import { getUnrealBloomPassConfig, UnrealBloomPassConfig } from "../PassConfig";
-import { ComposerEngineSupport, PassCompiler } from "../PassCompiler";
+import { PassModuleEngine, PassCompiler } from "../PassCompiler";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { Vector2 } from "three";
 
@@ -9,7 +9,7 @@ export default defineModel<
   UnrealBloomPass,
   {},
   {},
-  ComposerEngineSupport,
+  PassModuleEngine,
   PassCompiler
 >({
   type: "UnrealBloomPass",

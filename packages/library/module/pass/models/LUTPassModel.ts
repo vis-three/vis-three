@@ -1,6 +1,6 @@
 import { defineModel } from "@vis-three/tdcm";
 import { getLUTPassConfig, LUTPassConfig } from "../PassConfig";
-import { ComposerEngineSupport, PassCompiler } from "../PassCompiler";
+import { PassModuleEngine, PassCompiler } from "../PassCompiler";
 import { LUTPass } from "three/examples/jsm/postprocessing/LUTPass.js";
 import { Data3DTexture, DataTexture } from "three";
 
@@ -11,10 +11,10 @@ export default defineModel<
   {
     getResource: (
       config: LUTPassConfig,
-      engine: ComposerEngineSupport
+      engine: PassModuleEngine
     ) => DataTexture | Data3DTexture | undefined;
   },
-  ComposerEngineSupport,
+  PassModuleEngine,
   PassCompiler
 >({
   type: "LUTPass",

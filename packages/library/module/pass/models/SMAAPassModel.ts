@@ -1,6 +1,6 @@
 import { defineModel } from "@vis-three/tdcm";
 import { getSMAAPassConfig, SMAAPassConfig } from "../PassConfig";
-import { ComposerEngineSupport, PassCompiler } from "../PassCompiler";
+import { PassModuleEngine, PassCompiler } from "../PassCompiler";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass.js";
 
 export default defineModel<
@@ -8,7 +8,7 @@ export default defineModel<
   SMAAPass,
   {},
   {},
-  ComposerEngineSupport,
+  PassModuleEngine,
   PassCompiler
 >({
   type: "SMAAPass",

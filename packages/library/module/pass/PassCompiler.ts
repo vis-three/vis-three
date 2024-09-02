@@ -6,14 +6,12 @@ import { PassConfigAllType } from "./PassConfig";
 import { Compiler, CompilerParameters, EngineSupport } from "@vis-three/tdcm";
 import { EffectComposerEngine } from "@vis-three/plugin-effect-composer";
 
-export interface ComposerEngineSupport
-  extends EngineSupport,
-    EffectComposerEngine {}
+export interface PassModuleEngine extends EngineSupport, EffectComposerEngine {}
 
-export class PassCompiler extends Compiler<ComposerEngineSupport> {
+export class PassCompiler extends Compiler<PassModuleEngine> {
   private composer!: EffectComposer;
 
-  constructor(params: CompilerParameters<ComposerEngineSupport>) {
+  constructor(params: CompilerParameters<PassModuleEngine>) {
     super(params);
   }
 
