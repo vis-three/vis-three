@@ -15,7 +15,7 @@ export interface PointerVisualControlsEngine extends Engine {
   pointerVisualControls: PointerVisualControls;
 }
 
-export interface PointerLockControlsPluginParams {
+export interface PointerVisualControlsPluginParams {
   /**触发控制器的鼠标键 */
   pointerButton?: MOUSE_BUTTON;
   /**最小极角 */
@@ -29,7 +29,7 @@ export interface PointerLockControlsPluginParams {
 export const POINTER_VISUAL_CONTROLS_PLUGIN = transPkgName(pkgname);
 
 export const PointerVisualControlsPlugin: Plugin<PointerVisualControlsEngine> =
-  function (params: PointerLockControlsPluginParams = {}) {
+  function (params: PointerVisualControlsPluginParams = {}) {
     let setDomFun: (event: SetDomEvent) => void;
     let setCameraFun: (event: SetCameraEvent) => void;
 

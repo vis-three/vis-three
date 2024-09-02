@@ -4,7 +4,7 @@ export * from "./PointerVisualControls";
 export interface PointerVisualControlsEngine extends Engine {
     pointerVisualControls: PointerVisualControls;
 }
-export interface PointerLockControlsPluginParams {
+export interface PointerVisualControlsPluginParams {
     /**触发控制器的鼠标键 */
     pointerButton?: MOUSE_BUTTON;
     /**最小极角 */

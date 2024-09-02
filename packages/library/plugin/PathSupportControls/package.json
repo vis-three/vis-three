@@ -13,12 +13,12 @@
     "build": "tsc -p ./tsconfig.json  && vite build",
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
-  "devDependencies": {},
   "dependencies": {
     "@vis-three/convenient": "workspace:^",
     "@vis-three/core": "workspace:^",
-    "@vis-three/tdcm": "workspace:^",
+    "@vis-three/module-path": "workspace:^",
     "@vis-three/plugin-pointer-manager": "workspace:^",
+    "@vis-three/tdcm": "workspace:^",
     "@vis-three/utils": "workspace:^"
   },
   "files": [
