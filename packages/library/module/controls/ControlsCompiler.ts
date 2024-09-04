@@ -6,13 +6,13 @@ import {
 } from "@vis-three/tdcm";
 import { validSymbols } from "./ControlsRule";
 
-export class ControlsCompiler extends Compiler {
+export class ControlsCompiler extends Compiler<any> {
   constructor(params: CompilerParameters) {
     super(params);
   }
 
   useModel(
-    option: ModelOption<any, any, any, any>,
+    option: ModelOption<any, any, any, any, any, any>,
     callback?: (compiler: this) => void
   ) {
     validSymbols.push(uniqueSymbol(option.type));

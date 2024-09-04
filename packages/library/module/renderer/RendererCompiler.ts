@@ -7,20 +7,13 @@ import {
 } from "@vis-three/tdcm";
 import { validSymbols } from "./RendererRule";
 
-export class RendererCompiler extends Compiler<EngineSupport> {
+export class RendererCompiler extends Compiler<any> {
   constructor(params: CompilerParameters) {
     super(params);
   }
 
   useModel(
-    option: ModelOption<
-      any,
-      any,
-      any,
-      any,
-      EngineSupport,
-      Compiler<EngineSupport>
-    >,
+    option: ModelOption<any, any, any, any, any, Compiler<any>>,
     callback?: ((compiler: this) => void) | undefined
   ): this {
     validSymbols.push(uniqueSymbol(option.type));
