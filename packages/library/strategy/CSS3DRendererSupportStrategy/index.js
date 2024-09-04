@@ -1,8 +1,9 @@
-import { COMPILER_MANAGER_PLUGIN, CONFIGTYPE, DATA_SUPPORT_MANAGER_PLUGIN, MODULETYPE, uniqueSymbol, } from "@vis-three/middleware";
+import { COMPILER_MANAGER_PLUGIN, CONFIG_TYPE, DATA_SUPPORT_MANAGER_PLUGIN, generateConfig, MODULE_TYPE } from "@vis-three/tdcm";
 import { CSS3D_RENDERER_PLUGIN } from "@vis-three/plugin-css3d-renderer";
 import { transPkgName } from "@vis-three/utils";
-import CSS3DRendererProcessor from "./CSS3DRendererProcessor";
+import { getCSS3DRenderereConfig, } from "./CSS3DRendererModel";
 import { name as pkgname } from "./package.json";
+import CSS3DRendererModel from "./CSS3DRendererModel";
 export const CSS3D_RENDERER_SUPPORT_STRATEGY = transPkgName(pkgname);
 export const CSS3DRendererSupportStrategy = function () {
     return {
@@ -13,10 +14,10 @@ export const CSS3DRendererSupportStrategy = function () {
             CSS3D_RENDERER_PLUGIN,
         ],
         exec(engine) {
-            const compiler = engine.compilerManager.getCompiler(MODULETYPE.RENDERER);
-            compiler.reigstProcessor(CSS3DRendererProcessor, (compiler) => {
-                compiler.map.set(uniqueSymbol(CONFIGTYPE.CSS3DRENDERER), engine.css3DRenderer);
-                compiler.weakMap.set(engine.css3DRenderer, uniqueSymbol(CONFIGTYPE.CSS3DRENDERER));
+            const compiler = engine.compilerManager.getCompiler(MODULE_TYPE.RENDERER);
+            compiler.useModel(CSS3DRendererModel, (compiler) => {
+                const originConfig = generateConfig(CONFIG_TYPE.CSS3DRENDERER, getCSS3DRenderereConfig());
+                engine.applyConfig(originConfig);
             });
         },
         rollback() { },

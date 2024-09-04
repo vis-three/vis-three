@@ -1,8 +1,4 @@
-import {
-  defineProcessor,
-  EngineSupport,
-  uniqueSymbol,
-} from "@vis-three/middleware";
+import { defineModel, EngineSupport, uniqueSymbol } from "@vis-three/tdcm";
 import {
   ControlsCompiler,
   ControlsConfig,
@@ -58,9 +54,11 @@ export interface TransformControlsSupportEngine
   extends EngineSupport,
     TransformControlsEngine {}
 
-export default defineProcessor<
+export default defineModel<
   TransformControlsConfig,
   TransformControls,
+  {},
+  {},
   TransformControlsSupportEngine,
   ControlsCompiler
 >({
@@ -96,10 +94,7 @@ export default defineProcessor<
       },
     },
   },
-  create(
-    config: TransformControlsConfig,
-    engine: TransformControlsSupportEngine
-  ): TransformControls {
+  create({ config, engine }) {
     let control = engine.transformControls;
 
     if (config.snapAllow) {
@@ -110,7 +105,7 @@ export default defineProcessor<
 
     return control;
   },
-  dispose(target: TransformControls) {
+  dispose({ target }) {
     target.dispose();
   },
 });

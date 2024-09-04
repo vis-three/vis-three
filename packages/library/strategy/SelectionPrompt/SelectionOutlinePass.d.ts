@@ -1,5 +1,5 @@
 import { Color, Matrix4, MeshDepthMaterial, Object3D, OrthographicCamera, PerspectiveCamera, Scene, ShaderMaterial, Texture, Vector2, WebGLRenderTarget, WebGLRenderer } from "three";
-import { FullScreenQuad, Pass } from "three/examples/jsm/postprocessing/Pass";
+import { FullScreenQuad, Pass } from "three/examples/jsm/postprocessing/Pass.js";
 export declare class SelectionOutlinePass extends Pass {
     static BlurDirectionX: Vector2;
     static BlurDirectionY: Vector2;

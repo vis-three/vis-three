@@ -1,8 +1,9 @@
-import { COMPILER_MANAGER_PLUGIN, CONFIGTYPE, DATA_SUPPORT_MANAGER_PLUGIN, MODULETYPE, uniqueSymbol, } from "@vis-three/middleware";
+import { COMPILER_MANAGER_PLUGIN, CONFIG_TYPE, DATA_SUPPORT_MANAGER_PLUGIN, generateConfig, MODULE_TYPE, } from "@vis-three/tdcm";
 import { transPkgName } from "@vis-three/utils";
 import { WEBGL_RENDERER_PLUGIN } from "@vis-three/plugin-webgl-renderer";
 import { name as pkgname } from "./package.json";
-import WebGLRendererProcessor from "./WebGLRendererProcessor";
+import WebGLRendererModel, { getWebGLRendererConfig, } from "./WebGLRendererModel";
+export * from "./WebGLRendererModel";
 export const WEBGL_RENDERER_SUPPORT_STRATEGY = transPkgName(pkgname);
 export const WebGLRendererSupportStrategy = function () {
     return {
@@ -13,10 +14,10 @@ export const WebGLRendererSupportStrategy = function () {
             WEBGL_RENDERER_PLUGIN,
         ],
         exec(engine) {
-            const compiler = engine.compilerManager.getCompiler(MODULETYPE.RENDERER);
-            compiler.reigstProcessor(WebGLRendererProcessor, (compiler) => {
-                compiler.map.set(uniqueSymbol(CONFIGTYPE.WEBGLRENDERER), engine.webGLRenderer);
-                compiler.weakMap.set(engine.webGLRenderer, uniqueSymbol(CONFIGTYPE.WEBGLRENDERER));
+            const compiler = engine.compilerManager.getCompiler(MODULE_TYPE.RENDERER);
+            compiler.useModel(WebGLRendererModel, (compiler) => {
+                const originConfig = generateConfig(CONFIG_TYPE.WEBGLRENDERER, getWebGLRendererConfig());
+                engine.applyConfig(originConfig);
             });
         },
         rollback() { },

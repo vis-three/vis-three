@@ -1,13 +1,12 @@
 import {
-  defineProcessor,
+  defineModel,
   EngineSupport,
   uniqueSymbol,
-} from "@vis-three/middleware";
-import { RendererCompiler } from "@vis-three/module-renderer";
+} from "@vis-three/tdcm";
 import { getRendererConfig, RendererConfig } from "@vis-three/module-renderer";
 import { CSS3DRendererEngine } from "@vis-three/plugin-css3d-renderer";
 import { syncObject } from "@vis-three/utils";
-import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 
 export interface CSS3DRendererConfig extends RendererConfig {}
 
@@ -21,11 +20,12 @@ export interface CSS3DRendererSupportEngine
   extends EngineSupport,
     CSS3DRendererEngine {}
 
-export default defineProcessor<
+export default defineModel<
   CSS3DRendererConfig,
   CSS3DRenderer,
-  CSS3DRendererSupportEngine,
-  RendererCompiler
+  {},
+  {},
+  CSS3DRendererSupportEngine
 >({
   type: "CSS3DRenderer",
   config: getCSS3DRenderereConfig,
@@ -43,10 +43,7 @@ export default defineProcessor<
       },
     },
   },
-  create(
-    config: CSS3DRendererConfig,
-    engine: CSS3DRendererSupportEngine
-  ): CSS3DRenderer {
+  create({ config, engine }) {
     let renderer = engine.css3DRenderer;
 
     if (config.size) {
@@ -59,5 +56,5 @@ export default defineProcessor<
 
     return renderer;
   },
-  dispose(target: CSS3DRenderer) {},
+  dispose({ target }) {},
 });

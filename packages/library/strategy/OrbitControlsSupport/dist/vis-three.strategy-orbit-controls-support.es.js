@@ -1,111 +1,90 @@
-import { defineProcessor, uniqueSymbol, COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN, MODULETYPE, CONFIGTYPE } from "@vis-three/middleware";
-import { ORBIT_CONTROLS_PLUGIN } from "@vis-three/plugin-orbit-controls";
-import { syncObject, transPkgName } from "@vis-three/utils";
-import { Vector3 } from "three";
-import { getControlsConfig } from "@vis-three/module-controls";
-const type = "OrbitControls";
-const getOrbitControlsConfig = function() {
-  return Object.assign(getControlsConfig(), {
-    vid: uniqueSymbol(type),
-    autoRotate: false,
+import { defineModel as m, uniqueSymbol as g, COMPILER_MANAGER_PLUGIN as p, DATA_SUPPORT_MANAGER_PLUGIN as c, MODULE_TYPE as u, generateConfig as O, CONFIG_TYPE as f } from "@vis-three/tdcm";
+import { ORBIT_CONTROLS_PLUGIN as C } from "@vis-three/plugin-orbit-controls";
+import { syncObject as P, transPkgName as R } from "@vis-three/utils";
+import { Vector3 as a } from "three";
+import { getControlsConfig as b } from "@vis-three/module-controls";
+const d = "@vis-three/strategy-orbit-controls-support", i = "OrbitControls", s = function() {
+  return Object.assign(b(), {
+    vid: g(i),
+    autoRotate: !1,
     autoRotateSpeed: 2,
-    enableDamping: false,
+    enableDamping: !1,
     dampingFactor: 0.05,
-    enabled: true,
-    enablePan: true,
-    enableRotate: true,
-    enableZoom: true,
-    maxAzimuthAngle: Infinity,
-    maxDistance: Infinity,
+    enabled: !0,
+    enablePan: !0,
+    enableRotate: !0,
+    enableZoom: !0,
+    maxAzimuthAngle: 1 / 0,
+    maxDistance: 1 / 0,
     maxPolarAngle: Math.PI,
-    maxZoom: Infinity,
-    minAzimuthAngle: -Infinity,
+    maxZoom: 1 / 0,
+    minAzimuthAngle: -1 / 0,
     minDistance: 0,
     minPolarAngle: 0,
     minZoom: 0,
     panSpeed: 1,
     rotateSpeed: 1,
     zoomSpeed: 1,
-    screenSpacePanning: true,
+    screenSpacePanning: !0,
     target: null
   });
-};
-var OrbitControlsProcessor = defineProcessor({
-  type,
-  config: getOrbitControlsConfig,
+}, y = m({
+  type: i,
+  config: s,
   commands: {
     set: {
-      target({ target, config, path, key, value }) {
-        const targetConfig = config.target;
-        if (!config.type) {
-          config.target = new Vector3(0, 0, 0);
+      target({ target: t, config: e, path: o, key: r, value: l }) {
+        const n = e.target;
+        if (!e.type) {
+          e.target = new a(0, 0, 0);
           return;
         }
-        if (typeof config.target === "string")
-          ;
-        else {
-          if (path.length > 1) {
-            target.target[key] = value;
-          } else {
-            target.target = new Vector3(
-              targetConfig.x,
-              targetConfig.y,
-              targetConfig.z
-            );
-          }
-        }
+        typeof e.target == "string" || (o.length > 1 ? t.target[r] = l : t.target = new a(
+          n.x,
+          n.y,
+          n.z
+        ));
       }
     }
   },
-  create(config, engine) {
-    let controls = engine.orbitControls;
-    if (config.target) {
-      if (typeof config.target === "string")
-        ;
-      else {
-        controls.target = new Vector3(
-          config.target.x,
-          config.target.y,
-          config.target.z
-        );
-      }
-    }
-    syncObject(config, controls, {
-      target: true
-    });
-    return controls;
+  create({ config: t, engine: e }) {
+    let o = e.orbitControls;
+    return t.target && (typeof t.target == "string" || (o.target = new a(
+      t.target.x,
+      t.target.y,
+      t.target.z
+    ))), P(t, o, {
+      target: !0
+    }), o;
   },
-  dispose(target) {
-    target.dispose();
+  dispose({ target: t }) {
+    t.dispose();
   }
-});
-const name = "@vis-three/strategy-orbit-controls-support";
-const ORBIT_CONTROLS_SUPPORT_STRATEGY = transPkgName(name);
-const OrbitControlsSupportStrategy = function() {
+}), S = R(d), L = function() {
   return {
-    name: ORBIT_CONTROLS_SUPPORT_STRATEGY,
+    name: S,
     condition: [
-      COMPILER_MANAGER_PLUGIN,
-      DATA_SUPPORT_MANAGER_PLUGIN,
-      ORBIT_CONTROLS_PLUGIN
+      p,
+      c,
+      C
     ],
-    exec(engine) {
-      const compiler = engine.compilerManager.getCompiler(
-        MODULETYPE.CONTROLS
-      );
-      compiler.reigstProcessor(OrbitControlsProcessor, (compiler2) => {
-        compiler2.map.set(
-          uniqueSymbol(CONFIGTYPE.ORBITCONTROLS),
-          engine.orbitControls
+    exec(t) {
+      t.compilerManager.getCompiler(
+        u.CONTROLS
+      ).useModel(y, (o) => {
+        const r = O(
+          f.ORBITCONTROLS,
+          s()
         );
-        compiler2.weakMap.set(
-          engine.orbitControls,
-          uniqueSymbol(CONFIGTYPE.ORBITCONTROLS)
-        );
+        t.applyConfig(r);
       });
     },
     rollback() {
     }
   };
 };
-export { ORBIT_CONTROLS_SUPPORT_STRATEGY, OrbitControlsSupportStrategy, getOrbitControlsConfig };
+export {
+  S as ORBIT_CONTROLS_SUPPORT_STRATEGY,
+  L as OrbitControlsSupportStrategy,
+  s as getOrbitControlsConfig
+};

@@ -3,7 +3,7 @@ import { name as pkgname } from "./package.json";
 import { SELECTED, SELECTION_PLUGIN, } from "@vis-three/plugin-selection";
 import { EVENT_MANAGER_PLUGIN, } from "@vis-three/plugin-event-manager";
 import { TRANSFORM_CONTROLS_PLUGIN, } from "@vis-three/plugin-transform-controls";
-import { COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN, } from "@vis-three/middleware";
+import { COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN, } from "@vis-three/tdcm";
 import { SELECTION_SUPPORT_PLUGIN, } from "@vis-three/plugin-selection-support";
 export const name = transPkgName(pkgname);
 export const TransSelectEventSupportStrategy = function () {

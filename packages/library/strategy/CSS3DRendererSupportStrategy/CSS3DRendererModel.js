@@ -1,4 +1,4 @@
-import { defineProcessor, uniqueSymbol, } from "@vis-three/middleware";
+import { defineModel, uniqueSymbol, } from "@vis-three/tdcm";
 import { getRendererConfig } from "@vis-three/module-renderer";
 import { syncObject } from "@vis-three/utils";
 export const getCSS3DRenderereConfig = function () {
@@ -6,7 +6,7 @@ export const getCSS3DRenderereConfig = function () {
         vid: uniqueSymbol("CSS3DRenderer"), // WebGLRenderer or vid
     });
 };
-export default defineProcessor({
+export default defineModel({
     type: "CSS3DRenderer",
     config: getCSS3DRenderereConfig,
     commands: {
@@ -21,7 +21,7 @@ export default defineProcessor({
             },
         },
     },
-    create(config, engine) {
+    create({ config, engine }) {
         let renderer = engine.css3DRenderer;
         if (config.size) {
             renderer.setSize(config.size.x, config.size.y);
@@ -31,5 +31,5 @@ export default defineProcessor({
         });
         return renderer;
     },
-    dispose(target) { },
+    dispose({ target }) { },
 });

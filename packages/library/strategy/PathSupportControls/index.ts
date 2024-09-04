@@ -2,21 +2,24 @@ import { Strategy } from "@vis-three/core";
 import { transPkgName } from "@vis-three/utils";
 
 import { name as pkgname } from "./package.json";
-import PathSupportControlsProcessor, {
-  PathSupportControlsEngineSupport,
-} from "./PathSupportControlsProcessor";
 import {
-  CONFIGTYPE,
-  MODULETYPE,
+  getPathSupportControlsConfig,
+  PathSupportControlsEngineSupport,
+} from "./PathSupportControlsModel";
+import {
+  CONFIG_TYPE,
+  generateConfig,
+  MODULE_TYPE,
   PLUGINS,
   uniqueSymbol,
-} from "@vis-three/middleware";
+} from "@vis-three/tdcm";
 import { PATH_SUPPORT_CONTROLS_PLUGIN } from "@vis-three/plugin-path-support-controls";
 import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
+import PathSupportControlsModel from "./PathSupportControlsModel";
 
 export const PATH_SUPPORT_CONTROLS_STRATEGY = transPkgName(pkgname);
 
-export * from "./PathSupportControlsProcessor";
+export * from "./PathSupportControlsModel";
 
 export const PathSupportControlsStrategy: Strategy<
   PathSupportControlsEngineSupport,
@@ -27,19 +30,16 @@ export const PathSupportControlsStrategy: Strategy<
     condition: [...PLUGINS, PATH_SUPPORT_CONTROLS_PLUGIN],
     exec(engine) {
       const compiler = engine.compilerManager.getCompiler<ControlsCompiler>(
-        MODULETYPE.CONTROLS
+        MODULE_TYPE.CONTROLS
       )!;
 
-      compiler.reigstProcessor(PathSupportControlsProcessor, (compiler) => {
-        compiler.map.set(
-          uniqueSymbol(CONFIGTYPE.PATHSUPPORTCONTROLS),
-          engine.pathSupportControls
+      compiler.useModel(PathSupportControlsModel, (compiler) => {
+        const originConfig = generateConfig(
+          CONFIG_TYPE.PATHSUPPORTCONTROLS,
+          getPathSupportControlsConfig()
         );
 
-        compiler.weakMap.set(
-          engine.pathSupportControls,
-          uniqueSymbol(CONFIGTYPE.PATHSUPPORTCONTROLS)
-        );
+        engine.applyConfig(originConfig);
       });
     },
     rollback(engine) {},

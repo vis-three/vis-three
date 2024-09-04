@@ -20,7 +20,7 @@ import {
   COMPILER_MANAGER_PLUGIN,
   DATA_SUPPORT_MANAGER_PLUGIN,
   EngineSupport,
-} from "@vis-three/middleware";
+} from "@vis-three/tdcm";
 import { Object3D } from "three";
 import {
   SelectionSupportEngine,

@@ -1,12 +1,13 @@
-import { defineProcessor, uniqueSymbol, } from "@vis-three/middleware";
+import { defineModel, uniqueSymbol } from "@vis-three/tdcm";
 import { getRendererConfig, } from "@vis-three/module-renderer";
 import { syncObject } from "@vis-three/utils";
-import { LinearEncoding, NoToneMapping, PCFShadowMap, } from "three";
+import { NoToneMapping, PCFShadowMap, SRGBColorSpace, } from "three";
 export const getWebGLRendererConfig = function () {
     return Object.assign(getRendererConfig(), {
-        vid: uniqueSymbol("WebGLRenderer"),
+        vid: uniqueSymbol("WebGLRenderer"), // WebGLRenderer or vid
         clearColor: "rgba(0, 0, 0, 0)",
-        outputEncoding: LinearEncoding,
+        outputEncoding: 0,
+        outputColorSpace: SRGBColorSpace,
         physicallyCorrectLights: false,
         shadowMap: {
             enabled: false,
@@ -22,7 +23,7 @@ export const getWebGLRendererConfig = function () {
         scissor: null,
     });
 };
-export default defineProcessor({
+export default defineModel({
     type: "WebGLRenderer",
     config: getWebGLRendererConfig,
     commands: {
@@ -69,7 +70,7 @@ export default defineProcessor({
             },
         },
     },
-    create(config, engine) {
+    create({ config, engine }) {
         let renderer = engine.webGLRenderer;
         if (config.size) {
             renderer.setSize(config.size.x, config.size.y);
@@ -99,8 +100,8 @@ export default defineProcessor({
         });
         return renderer;
     },
-    dispose(renderer) {
-        renderer.clear();
-        renderer.dispose();
+    dispose({ target }) {
+        target.clear();
+        target.dispose();
     },
 });

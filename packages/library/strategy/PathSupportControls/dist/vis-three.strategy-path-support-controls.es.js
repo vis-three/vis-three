@@ -1,120 +1,87 @@
-import { transPkgName } from "@vis-three/utils";
-import { defineProcessor, uniqueSymbol, PLUGINS, MODULETYPE, CONFIGTYPE } from "@vis-three/middleware";
-import { PATH_SUPPORT_CONTROLS_PLUGIN } from "@vis-three/plugin-path-support-controls";
-const name = "@vis-three/strategy-path-support-controls";
-const type = "PathSupportControls";
-const getPathSupportControlsConfig = function() {
-  return {
-    vid: uniqueSymbol(type),
+import { transPkgName as i } from "@vis-three/utils";
+import { getBasicConfig as r, defineModel as p, uniqueSymbol as l, PLUGINS as f, MODULE_TYPE as b, generateConfig as C, CONFIG_TYPE as a } from "@vis-three/tdcm";
+import { PATH_SUPPORT_CONTROLS_PLUGIN as m } from "@vis-three/plugin-path-support-controls";
+const S = "@vis-three/strategy-path-support-controls", u = function() {
+  return Object.assign(r(), {});
+}, c = "PathSupportControls", s = function() {
+  return Object.assign(u(), {
+    vid: l(c),
     name: "",
-    type,
+    type: c,
     object: "",
     config: null,
-    visible: false
-  };
-};
-var PathSupportControlsProcessor = defineProcessor({
-  type,
-  config: getPathSupportControlsConfig,
+    visible: !1
+  });
+}, g = p({
+  type: c,
+  config: s,
   commands: {
     set: {
-      config({ target, value, engine }) {
-        if (!value) {
-          target.disconnect();
+      config({ target: o, value: n, engine: e }) {
+        if (!n) {
+          o.disconnect();
           return;
         }
-        const conf = engine.getConfigBySymbol(value);
-        if (!conf) {
-          console.warn(
-            `pathSupportControls processor can not found config in engine: ${value}`
-          );
-        } else {
-          target.setConfig(conf);
-        }
-        target.connect();
+        const t = e.getConfigBySymbol(n);
+        t ? o.setConfig(t) : console.warn(
+          `pathSupportControls processor can not found config in engine: ${n}`
+        ), o.connect();
       },
-      object({ target, value, engine }) {
-        if (!value) {
-          target.disconnect();
+      object({ target: o, value: n, engine: e }) {
+        if (!n) {
+          o.disconnect();
           return;
         }
-        const object = engine.getObjectBySymbol(value);
-        if (!object) {
-          console.warn(
-            `pathSupportControls processor can not found object in engine: ${value}`
-          );
-        } else {
-          target.setObject(object);
-        }
-        target.connect();
+        const t = e.getObjectBySymbol(n);
+        t ? o.setObject(t) : console.warn(
+          `pathSupportControls processor can not found object in engine: ${n}`
+        ), o.connect();
       },
-      visible({ target, value }) {
-        if (value) {
-          target.connect();
-        } else {
-          target.disconnect();
-        }
-        target.visible = value;
+      visible({ target: o, value: n }) {
+        n ? o.connect() : o.disconnect(), o.visible = n;
       }
     }
   },
-  create(config, engine) {
-    const controls = engine.pathSupportControls;
-    if (config.config) {
-      const conf = engine.getConfigBySymbol(config.config);
-      if (!conf) {
-        console.warn(
-          `pathSupportControls processor can not found config in engine: ${config.config}`
-        );
-      } else {
-        controls.setConfig(conf);
-      }
-    }
-    if (config.object) {
-      const object = engine.getObjectBySymbol(config.object);
-      if (!object) {
-        console.warn(
-          `pathSupportControls processor can not found object in engine: ${config.object}`
-        );
-      } else {
-        controls.setObject(object);
-      }
-    }
-    if (config.object && config.config) {
-      controls.connect();
-    }
-    controls.visible = config.visible;
-    engine.scene.add(controls);
-    return controls;
-  },
-  dispose(target) {
-    target.removeFromParent();
-    target.disconnect();
-    target.dispose();
-  }
-});
-const PATH_SUPPORT_CONTROLS_STRATEGY = transPkgName(name);
-const PathSupportControlsStrategy = function() {
-  return {
-    name: PATH_SUPPORT_CONTROLS_STRATEGY,
-    condition: [...PLUGINS, PATH_SUPPORT_CONTROLS_PLUGIN],
-    exec(engine) {
-      const compiler = engine.compilerManager.getCompiler(
-        MODULETYPE.CONTROLS
+  create({ config: o, engine: n }) {
+    const e = n.pathSupportControls;
+    if (o.config) {
+      const t = n.getConfigBySymbol(o.config);
+      t ? e.setConfig(t) : console.warn(
+        `pathSupportControls processor can not found config in engine: ${o.config}`
       );
-      compiler.reigstProcessor(PathSupportControlsProcessor, (compiler2) => {
-        compiler2.map.set(
-          uniqueSymbol(CONFIGTYPE.PATHSUPPORTCONTROLS),
-          engine.pathSupportControls
+    }
+    if (o.object) {
+      const t = n.getObjectBySymbol(o.object);
+      t ? e.setObject(t) : console.warn(
+        `pathSupportControls processor can not found object in engine: ${o.object}`
+      );
+    }
+    return o.object && o.config && e.connect(), e.visible = o.visible, n.scene.add(e), e;
+  },
+  dispose({ target: o }) {
+    o.removeFromParent(), o.disconnect(), o.dispose();
+  }
+}), d = i(S), T = function() {
+  return {
+    name: d,
+    condition: [...f, m],
+    exec(o) {
+      o.compilerManager.getCompiler(
+        b.CONTROLS
+      ).useModel(g, (e) => {
+        const t = C(
+          a.PATHSUPPORTCONTROLS,
+          s()
         );
-        compiler2.weakMap.set(
-          engine.pathSupportControls,
-          uniqueSymbol(CONFIGTYPE.PATHSUPPORTCONTROLS)
-        );
+        o.applyConfig(t);
       });
     },
-    rollback(engine) {
+    rollback(o) {
     }
   };
 };
-export { PATH_SUPPORT_CONTROLS_STRATEGY, PathSupportControlsStrategy, getPathSupportControlsConfig };
+export {
+  d as PATH_SUPPORT_CONTROLS_STRATEGY,
+  T as PathSupportControlsStrategy,
+  s as getPathSupportControlsConfig
+};

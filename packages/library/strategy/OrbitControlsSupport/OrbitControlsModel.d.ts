@@ -1,6 +1,5 @@
-import { VisOrbitControls } from "@vis-three/plugin-orbit-controls";
-import { EngineSupport, Vector3Config } from "@vis-three/middleware";
-import { OrbitControlsEngine } from "@vis-three/plugin-orbit-controls";
+import { OrbitControlsEngine, VisOrbitControls } from "@vis-three/plugin-orbit-controls";
+import { EngineSupport, Vector3Config } from "@vis-three/tdcm";
 import { ControlsCompiler, ControlsConfig } from "@vis-three/module-controls";
 export interface OrbitControlsConfig extends ControlsConfig {
     autoRotate: boolean;
@@ -28,5 +27,5 @@ export interface OrbitControlsConfig extends ControlsConfig {
 export declare const getOrbitControlsConfig: () => OrbitControlsConfig;
 export interface OrbitControlsSupportEngine extends EngineSupport, OrbitControlsEngine {
 }
-declare const _default: import("@vis-three/middleware").Processor<OrbitControlsConfig, VisOrbitControls, OrbitControlsSupportEngine, ControlsCompiler>;
+declare const _default: import("@vis-three/tdcm").ModelOption<OrbitControlsConfig, VisOrbitControls, {}, {}, OrbitControlsSupportEngine, ControlsCompiler>;
 export default _default;

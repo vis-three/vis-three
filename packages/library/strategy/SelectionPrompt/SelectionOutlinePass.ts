@@ -19,7 +19,10 @@ import {
   WebGLRenderTarget,
   WebGLRenderer,
 } from "three";
-import { FullScreenQuad, Pass } from "three/examples/jsm/postprocessing/Pass";
+import {
+  FullScreenQuad,
+  Pass,
+} from "three/examples/jsm/postprocessing/Pass.js";
 import { CopyShader } from "three/examples/jsm/shaders/CopyShader.js";
 
 export class SelectionOutlinePass extends Pass {
@@ -224,7 +227,7 @@ export class SelectionOutlinePass extends Pass {
     selected: Object3D[]
   ) {
     super();
-    this.renderScene.autoUpdate = false;
+    // this.renderScene.autoUpdate = false;
     this.renderScene.matrixAutoUpdate = false;
 
     this.resolution.copy(resolution);

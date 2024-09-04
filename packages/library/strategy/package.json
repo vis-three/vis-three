@@ -1,0 +1,46 @@
+{
+  "name": "@vis-three/library-strategy",
+  "version": "0.7.0",
+  "description": "vis-three strategy library",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "author": "Shiotsuki_",
+  "license": "MPL-2.0",
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc",
+    "lint": "npx eslint *.js src/**/*.ts --fix"
+  },
+  "dependencies": {
+    "@vis-three/strategy-composer-support": "workspace:^",
+    "@vis-three/strategy-css2d-render": "workspace:^",
+    "@vis-three/strategy-css3d-renderer-support": "workspace:^",
+    "@vis-three/strategy-css3d-render": "workspace:^",
+    "@vis-three/strategy-effect-render": "workspace:^",
+    "@vis-three/strategy-first-person-render": "workspace:^",
+    "@vis-three/strategy-grid-viewpoint": "workspace:^",
+    "@vis-three/strategy-helper-select-interact": "workspace:^",
+    "@vis-three/strategy-keyboard-move-render": "workspace:^",
+    "@vis-three/strategy-multi-renderer": "workspace:^",
+    "@vis-three/strategy-orbit-controls-support": "workspace:^",
+    "@vis-three/strategy-orbit-render": "workspace:^",
+    "@vis-three/strategy-orbit-viewpoint": "workspace:^",
+    "@vis-three/strategy-path-support-controls": "workspace:^",
+    "@vis-three/strategy-selection-prompt": "workspace:^",
+    "@vis-three/strategy-stats-render": "workspace:^",
+    "@vis-three/strategy-transform-controls-helper-filter": "workspace:^",
+    "@vis-three/strategy-transform-controls-support": "workspace:^",
+    "@vis-three/strategy-transform-keyboard": "workspace:^",
+    "@vis-three/strategy-trans-select-event": "workspace:^",
+    "@vis-three/strategy-trans-select-event-support": "workspace:^",
+    "@vis-three/strategy-webgl-renderer-support": "workspace:^",
+    "@vis-three/strategy-webgl-render": "workspace:^"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "package.json",
+    "LICENSE"
+  ]
+}

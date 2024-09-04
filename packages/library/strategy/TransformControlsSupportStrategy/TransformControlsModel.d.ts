@@ -1,4 +1,4 @@
-import { EngineSupport } from "@vis-three/middleware";
+import { EngineSupport } from "@vis-three/tdcm";
 import { ControlsCompiler, ControlsConfig } from "@vis-three/module-controls";
 import { TransformControlsEngine, TransformControls } from "@vis-three/plugin-transform-controls";
 export interface TransformControlsConfig extends ControlsConfig {
@@ -18,5 +18,5 @@ export interface TransformControlsConfig extends ControlsConfig {
 export declare const getTransformControlsConfig: () => TransformControlsConfig;
 export interface TransformControlsSupportEngine extends EngineSupport, TransformControlsEngine {
 }
-declare const _default: import("@vis-three/middleware").Processor<TransformControlsConfig, TransformControls, TransformControlsSupportEngine, ControlsCompiler>;
+declare const _default: import("@vis-three/tdcm").ModelOption<TransformControlsConfig, TransformControls, {}, {}, TransformControlsSupportEngine, ControlsCompiler>;
 export default _default;

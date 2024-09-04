@@ -1,31 +1,24 @@
-import { ENGINE_EVENT } from "@vis-three/core";
-import { transPkgName } from "@vis-three/utils";
-import { CSS3D_RENDERER_PLUGIN } from "@vis-three/plugin-css3d-renderer";
-import { CSS2D_RENDERER_PLUGIN } from "@vis-three/plugin-css2d-renderer";
-const name = "@vis-three/strategy-multi-renderer";
-const MULTI_RENDERER_EVENT = transPkgName(name);
-const MultiRendererEventStrategy = function() {
-  let topDom;
-  let bottomDom;
-  let setDomFun;
+import { ENGINE_EVENT as c } from "@vis-three/core";
+import { transPkgName as d } from "@vis-three/utils";
+import { CSS3D_RENDERER_PLUGIN as D } from "@vis-three/plugin-css3d-renderer";
+import { CSS2D_RENDERER_PLUGIN as l } from "@vis-three/plugin-css2d-renderer";
+const N = "@vis-three/strategy-multi-renderer", R = d(N), S = function() {
+  let n, m, t;
   return {
-    name: MULTI_RENDERER_EVENT,
-    condition: [CSS3D_RENDERER_PLUGIN, CSS2D_RENDERER_PLUGIN],
-    exec(engine) {
-      const c3Dom = engine.css3DRenderer.domElement;
-      const c2Dom = engine.css2DRenderer.domElement;
-      const c3ZIndex = Number(c3Dom.style.zIndex);
-      const c2ZIndex = Number(c2Dom.style.zIndex);
-      topDom = c3ZIndex > c2ZIndex ? c3Dom : c2Dom;
-      bottomDom = c3ZIndex > c2ZIndex ? c2Dom : c3Dom;
-      setDomFun = (event) => {
-        topDom.appendChild(bottomDom);
-      };
-      engine.addEventListener(ENGINE_EVENT.SETDOM, setDomFun);
+    name: R,
+    condition: [D, l],
+    exec(e) {
+      const o = e.css3DRenderer.domElement, r = e.css2DRenderer.domElement, E = Number(o.style.zIndex), s = Number(r.style.zIndex);
+      n = E > s ? o : r, m = E > s ? r : o, t = (i) => {
+        n.appendChild(m);
+      }, e.addEventListener(c.SETDOM, t);
     },
-    rollback(engine) {
-      engine.removeEventListener(ENGINE_EVENT.SETDOM, setDomFun);
+    rollback(e) {
+      e.removeEventListener(c.SETDOM, t);
     }
   };
 };
-export { MULTI_RENDERER_EVENT, MultiRendererEventStrategy };
+export {
+  R as MULTI_RENDERER_EVENT,
+  S as MultiRendererEventStrategy
+};

@@ -1,22 +1,24 @@
 import { Strategy } from "@vis-three/core";
 import {
   COMPILER_MANAGER_PLUGIN,
-  CONFIGTYPE,
+  CONFIG_TYPE,
   DATA_SUPPORT_MANAGER_PLUGIN,
-  MODULETYPE,
+  generateConfig,
+  MODULE_TYPE,
   uniqueSymbol,
-} from "@vis-three/middleware";
-import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
+} from "@vis-three/tdcm";
 import { ORBIT_CONTROLS_PLUGIN } from "@vis-three/plugin-orbit-controls";
 import { transPkgName } from "@vis-three/utils";
-import OrbitControlsProcessor, {
-  OrbitControlsSupportEngine,
-} from "./OrbitControlsProcessor";
 import { name as pkgname } from "./package.json";
+import OrbitControlsModel, {
+  getOrbitControlsConfig,
+  OrbitControlsSupportEngine,
+} from "./OrbitControlsModel";
+import { ControlsCompiler } from "@vis-three/module-controls";
 
 export const ORBIT_CONTROLS_SUPPORT_STRATEGY = transPkgName(pkgname);
 
-export * from "./OrbitControlsProcessor";
+export * from "./OrbitControlsModel";
 
 export const OrbitControlsSupportStrategy: Strategy<
   OrbitControlsSupportEngine,
@@ -31,19 +33,16 @@ export const OrbitControlsSupportStrategy: Strategy<
     ],
     exec(engine) {
       const compiler = engine.compilerManager.getCompiler<ControlsCompiler>(
-        MODULETYPE.CONTROLS
+        MODULE_TYPE.CONTROLS
       )!;
 
-      compiler.reigstProcessor(OrbitControlsProcessor, (compiler) => {
-        compiler.map.set(
-          uniqueSymbol(CONFIGTYPE.ORBITCONTROLS),
-          engine.orbitControls
+      compiler.useModel(OrbitControlsModel, (compiler) => {
+        const originConfig = generateConfig(
+          CONFIG_TYPE.ORBITCONTROLS,
+          getOrbitControlsConfig()
         );
 
-        compiler.weakMap.set(
-          engine.orbitControls,
-          uniqueSymbol(CONFIGTYPE.ORBITCONTROLS)
-        );
+        engine.applyConfig(originConfig);
       });
     },
     rollback() {},

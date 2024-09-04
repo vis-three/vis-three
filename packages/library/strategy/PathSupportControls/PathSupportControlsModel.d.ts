@@ -1,4 +1,4 @@
-import { EngineSupport } from "@vis-three/middleware";
+import { EngineSupport } from "@vis-three/tdcm";
 import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
 import { ControlsConfig } from "@vis-three/module-controls/ControlsConfig";
 import { PathSupportControlsEngine } from "@vis-three/plugin-path-support-controls";
@@ -11,5 +11,5 @@ export interface PathSupportControlsConfig extends ControlsConfig {
 export declare const getPathSupportControlsConfig: () => PathSupportControlsConfig;
 export interface PathSupportControlsEngineSupport extends EngineSupport, PathSupportControlsEngine {
 }
-declare const _default: import("@vis-three/middleware").Processor<PathSupportControlsConfig, PathSupportControls, PathSupportControlsEngineSupport, ControlsCompiler>;
+declare const _default: import("@vis-three/tdcm").ModelOption<PathSupportControlsConfig, PathSupportControls, {}, {}, PathSupportControlsEngineSupport, ControlsCompiler>;
 export default _default;

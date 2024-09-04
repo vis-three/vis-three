@@ -1,7 +1,7 @@
 import { Strategy } from "@vis-three/core";
 import { EventManagerEngine } from "@vis-three/plugin-event-manager";
 import { TransformControlsEngine } from "@vis-three/plugin-transform-controls";
-import { EngineSupport } from "@vis-three/middleware";
+import { EngineSupport } from "@vis-three/tdcm";
 import { SelectionSupportEngine } from "@vis-three/plugin-selection-support";
 export interface TransSelectEventSupportEngine extends SelectionSupportEngine, EventManagerEngine, TransformControlsEngine, EngineSupport {
 }

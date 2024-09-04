@@ -1,18 +1,21 @@
 import { Strategy } from "@vis-three/core";
-import { EngineSupport, MODULETYPE, PLUGINS } from "@vis-three/middleware";
-import { PassCompiler } from "@vis-three/module-pass/PassCompiler";
+import { EngineSupport, MODULE_TYPE, PLUGINS } from "@vis-three/tdcm";
+import PassModule, {
+  PassCompiler,
+  PassModuleEngine,
+} from "@vis-three/module-pass";
 import {
   EffectComposerEngine,
   EFFECT_COMPOSER_PLUGIN,
 } from "@vis-three/plugin-effect-composer";
 import { transPkgName } from "@vis-three/utils";
-import PassModule from "@vis-three/module-pass";
 
 import { name as pkgname } from "./package.json";
 
 export interface ComposerSupportEngine
   extends EngineSupport,
-    EffectComposerEngine {}
+    EffectComposerEngine,
+    PassModuleEngine {}
 
 export const name = transPkgName(pkgname);
 
@@ -23,11 +26,11 @@ export const ComposerSupportStrategy: Strategy<ComposerSupportEngine, object> =
       condition: [...PLUGINS, EFFECT_COMPOSER_PLUGIN],
       exec(engine) {
         const compiler = engine.compilerManager.getCompiler<PassCompiler>(
-          MODULETYPE.PASS
+          MODULE_TYPE.PASS
         )!;
 
         if (!compiler) {
-          engine.registModule(PassModule);
+          engine.useModule(PassModule);
         }
 
         compiler.useEngine(engine);

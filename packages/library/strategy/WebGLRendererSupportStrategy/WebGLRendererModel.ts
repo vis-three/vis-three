@@ -1,8 +1,4 @@
-import {
-  defineProcessor,
-  EngineSupport,
-  uniqueSymbol,
-} from "@vis-three/middleware";
+import { defineModel, EngineSupport, uniqueSymbol } from "@vis-three/tdcm";
 import {
   getRendererConfig,
   RendererConfig,
@@ -12,9 +8,9 @@ import {
 import { syncObject } from "@vis-three/utils";
 import { WebGLRendererEngine } from "@vis-three/plugin-webgl-renderer";
 import {
-  LinearEncoding,
   NoToneMapping,
   PCFShadowMap,
+  SRGBColorSpace,
   WebGLRenderer,
 } from "three";
 
@@ -37,7 +33,9 @@ export type WebGLRendererScissor = WebGLRendererViewPort;
 export interface WebGLRendererConfig extends RendererConfig {
   clearColor: string;
   pixelRatio: number;
+  /**@deprecated use outputColorSpace */
   outputEncoding: number;
+  outputColorSpace: string;
   physicallyCorrectLights: boolean;
   shadowMap: ShadowMapConfig;
   toneMapping: number;
@@ -51,7 +49,8 @@ export const getWebGLRendererConfig = function (): WebGLRendererConfig {
   return Object.assign(getRendererConfig(), {
     vid: uniqueSymbol("WebGLRenderer"), // WebGLRenderer or vid
     clearColor: "rgba(0, 0, 0, 0)",
-    outputEncoding: LinearEncoding,
+    outputEncoding: 0,
+    outputColorSpace: SRGBColorSpace,
     physicallyCorrectLights: false,
     shadowMap: {
       enabled: false,
@@ -72,9 +71,11 @@ export interface WebGLRendererSupportEngine
   extends EngineSupport,
     WebGLRendererEngine {}
 
-export default defineProcessor<
+export default defineModel<
   WebGLRendererConfig,
   WebGLRenderer,
+  {},
+  {},
   WebGLRendererSupportEngine,
   RendererCompiler
 >({
@@ -144,10 +145,7 @@ export default defineProcessor<
       },
     },
   },
-  create(
-    config: WebGLRendererConfig,
-    engine: WebGLRendererSupportEngine
-  ): WebGLRenderer {
+  create({ config, engine }): WebGLRenderer {
     let renderer = engine.webGLRenderer;
 
     if (config.size) {
@@ -187,8 +185,8 @@ export default defineProcessor<
 
     return renderer;
   },
-  dispose(renderer: WebGLRenderer) {
-    renderer.clear();
-    renderer.dispose();
+  dispose({ target }) {
+    target.clear();
+    target.dispose();
   },
 });

@@ -1,10 +1,9 @@
-import {
-  EngineSupport,
-  defineProcessor,
-  uniqueSymbol,
-} from "@vis-three/middleware";
+import { defineModel, EngineSupport, uniqueSymbol } from "@vis-three/tdcm";
 import { ControlsCompiler } from "@vis-three/module-controls/ControlsCompiler";
-import { ControlsConfig } from "@vis-three/module-controls/ControlsConfig";
+import {
+  ControlsConfig,
+  getControlsConfig,
+} from "@vis-three/module-controls/ControlsConfig";
 import { PathConfig } from "@vis-three/module-path";
 import { PathSupportControlsEngine } from "@vis-three/plugin-path-support-controls";
 import { PathSupportControls } from "@vis-three/plugin-path-support-controls/PathSupportControls";
@@ -20,23 +19,25 @@ const type = "PathSupportControls";
 
 export const getPathSupportControlsConfig =
   function (): PathSupportControlsConfig {
-    return {
+    return Object.assign(getControlsConfig(), {
       vid: uniqueSymbol(type),
       name: "",
       type,
       object: "",
       config: null,
       visible: false,
-    };
+    });
   };
 
 export interface PathSupportControlsEngineSupport
   extends EngineSupport,
     PathSupportControlsEngine {}
 
-export default defineProcessor<
+export default defineModel<
   PathSupportControlsConfig,
   PathSupportControls,
+  {},
+  {},
   PathSupportControlsEngineSupport,
   ControlsCompiler
 >({
@@ -90,7 +91,7 @@ export default defineProcessor<
       },
     },
   },
-  create(config, engine) {
+  create({ config, engine }) {
     const controls = engine.pathSupportControls;
 
     if (config.config) {
@@ -127,7 +128,7 @@ export default defineProcessor<
 
     return controls;
   },
-  dispose(target) {
+  dispose({target}) {
     target.removeFromParent();
     target.disconnect();
     target.dispose();

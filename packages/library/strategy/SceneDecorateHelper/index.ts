@@ -1,7 +1,8 @@
-import { Engine, Strategy } from "@vis-three/core";
+import { BaseEvent, Engine, SetSceneEvent, Strategy } from "@vis-three/core";
 import { transPkgName } from "@vis-three/utils";
 
 import { name as pkgname } from "./package.json";
+import { Object3D, Scene } from "three";
 
 export interface AfterAddEvent extends BaseEvent {
   objects: Object3D[];

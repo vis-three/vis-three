@@ -1,13 +1,15 @@
 import { Vector3 } from "three";
-import { VisOrbitControls } from "@vis-three/plugin-orbit-controls";
+import {
+  OrbitControlsEngine,
+  VisOrbitControls,
+} from "@vis-three/plugin-orbit-controls";
 import { syncObject } from "@vis-three/utils";
 import {
-  defineProcessor,
+  defineModel,
   EngineSupport,
   uniqueSymbol,
   Vector3Config,
-} from "@vis-three/middleware";
-import { OrbitControlsEngine } from "@vis-three/plugin-orbit-controls";
+} from "@vis-three/tdcm";
 import {
   ControlsCompiler,
   ControlsConfig,
@@ -37,7 +39,6 @@ export interface OrbitControlsConfig extends ControlsConfig {
   screenSpacePanning: boolean;
   target: string | Vector3Config | null;
 }
-
 
 const type = "OrbitControls";
 
@@ -72,9 +73,11 @@ export interface OrbitControlsSupportEngine
   extends EngineSupport,
     OrbitControlsEngine {}
 
-export default defineProcessor<
+export default defineModel<
   OrbitControlsConfig,
   VisOrbitControls,
+  {},
+  {},
   OrbitControlsSupportEngine,
   ControlsCompiler
 >({
@@ -106,10 +109,7 @@ export default defineProcessor<
       },
     },
   },
-  create(
-    config: OrbitControlsConfig,
-    engine: OrbitControlsSupportEngine
-  ): VisOrbitControls {
+  create({ config, engine }) {
     let controls = engine.orbitControls;
 
     if (config.target) {
@@ -130,7 +130,7 @@ export default defineProcessor<
 
     return controls;
   },
-  dispose(target: VisOrbitControls) {
+  dispose({ target }) {
     target.dispose();
   },
 });

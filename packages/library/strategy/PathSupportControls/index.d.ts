@@ -1,5 +1,5 @@
 import { Strategy } from "@vis-three/core";
-import { PathSupportControlsEngineSupport } from "./PathSupportControlsProcessor";
+import { PathSupportControlsEngineSupport } from "./PathSupportControlsModel";
 export declare const PATH_SUPPORT_CONTROLS_STRATEGY: string;
-export * from "./PathSupportControlsProcessor";
+export * from "./PathSupportControlsModel";
 export declare const PathSupportControlsStrategy: Strategy<PathSupportControlsEngineSupport, object>;

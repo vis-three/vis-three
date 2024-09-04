@@ -1,5 +1,4 @@
 import { ENGINE_EVENT, SetDomEvent, Strategy } from "@vis-three/core";
-import { EngineSupport } from "@vis-three/middleware";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
 import {
@@ -12,8 +11,7 @@ import {
 } from "@vis-three/plugin-css2d-renderer";
 
 export interface MultiRendererEventEngine
-  extends EngineSupport,
-    CSS3DRendererEngine,
+  extends CSS3DRendererEngine,
     CSS2DRendererEngine {}
 
 export const MULTI_RENDERER_EVENT = transPkgName(pkgname);
