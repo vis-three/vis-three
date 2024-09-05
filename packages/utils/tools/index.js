@@ -102,3 +102,61 @@ export const getFinalReference = function (object, attr) {
         key: list.pop(),
     };
 };
+export const objectDeepMerge = function (target, merge, option = { cover: false, fresh: true }) {
+    if (!isObject(target)) {
+        console.warn(`target is not a object: ${target}`);
+        target = {};
+    }
+    if (!isObject(merge)) {
+        console.warn(`merge is not a object: ${merge}`);
+        return target;
+    }
+    const recursiveObject = (obj1, obj2) => {
+        for (const key in obj2) {
+            if (Array.isArray(obj2[key])) {
+                if (!obj1[key]) {
+                    obj1[key] = [].concat(obj2[key]);
+                }
+                else if (!Array.isArray(obj1[key])) {
+                    console.error(`can not merge this key in object: ${key}`, obj1, obj2);
+                    return;
+                }
+                else {
+                    obj1[key] = Array.from(new Set([].concat(obj1[key], obj2[key])));
+                }
+            }
+            else if (isObject(obj2[key])) {
+                if (!obj1[key]) {
+                    obj1[key] = {};
+                    recursiveObject(obj1[key], obj2[key]);
+                }
+                else if (!isObject(obj1[key])) {
+                    console.error(`can not merge this key in object: ${key}`, obj1, obj2);
+                }
+                else {
+                    recursiveObject(obj1[key], obj2[key]);
+                }
+            }
+            else {
+                if (!obj1[key]) {
+                    obj1[key] = obj2[key];
+                }
+                else {
+                    if (option.cover) {
+                        obj1[key] = obj2[key];
+                    }
+                }
+            }
+        }
+    };
+    if (option.fresh) {
+        const fresh = {};
+        recursiveObject(fresh, target);
+        recursiveObject(fresh, merge);
+        return fresh;
+    }
+    else {
+        recursiveObject(target, merge);
+        return target;
+    }
+};

@@ -1,4 +1,4 @@
-import { AmbientLight, BoxBufferGeometry, Material, Mesh, MeshStandardMaterial, PointLight, SphereBufferGeometry } from "three";
+import { AmbientLight, BoxGeometry, Material, Mesh, MeshStandardMaterial, PointLight, SphereGeometry } from "three";
 export interface MaterialDisplayerParameters {
     dom?: HTMLElement;
     material?: Material;
@@ -6,8 +6,8 @@ export interface MaterialDisplayerParameters {
 export declare class MaterialDisplayer {
     static ambientLight: AmbientLight;
     static pointLight: PointLight;
-    static geometry: SphereBufferGeometry;
-    static plane: Mesh<BoxBufferGeometry, MeshStandardMaterial>;
+    static geometry: SphereGeometry;
+    static plane: Mesh<BoxGeometry, MeshStandardMaterial, import("three").Object3DEventMap>;
     static dispose: () => void;
     private material?;
     private dom?;

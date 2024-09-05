@@ -1,8 +1,13 @@
-import { BufferGeometry, BuiltinShaderAttributeName } from "three";
-
+import { BufferGeometry } from "three";
+/**
+ * 删除几何的重复点
+ * @param geometry
+ * @param name
+ * @returns
+ */
 export const AttrDeduplicate = function (
   geometry: BufferGeometry,
-  name: BuiltinShaderAttributeName | (string & {})
+  name: string
 ) {
   const attr = geometry.getAttribute(name);
   if (!attr) {

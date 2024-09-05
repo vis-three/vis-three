@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/examples",
-  "version": "0.5.1",
+  "version": "0.7.0",
   "description": "vis-three examples",
   "main": "index.js",
   "author": "Shiotsuki_",
@@ -88,12 +88,13 @@
     "@vis-three/strategy-transform-keyboard": "workspace:^",
     "@vis-three/strategy-webgl-render": "workspace:^",
     "@vis-three/strategy-webgl-renderer-support": "workspace:^",
+    "@vis-three/tdcm": "workspace:^",
     "@vis-three/widget": "workspace:^",
     "ant-design-vue": "^3.2.6",
     "axios": "^0.27.2",
     "echarts": "^5.4.1",
     "nprogress": "^0.2.0",
-    "three": "^0.141.0",
+    "three": "^0.167.1",
     "uuid": "^8.3.2",
     "vue2": "npm:vue@2.6.14",
     "vue3": "npm:vue@^3.2.45"

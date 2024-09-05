@@ -18,7 +18,6 @@
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.9",
-    "@types/three": "^0.141.0",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
     "@vis-three/module-animation": "workspace:^",
@@ -57,7 +56,7 @@
     "ant-design-vue": "^3.2.6",
     "axios": "^0.27.2",
     "nprogress": "^0.2.0",
-    "three": "^0.141.0",
+    "three": "^0.167.1",
     "url-parse": "^1.5.10"
   },
   "engines": {

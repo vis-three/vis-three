@@ -1,193 +1,229 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-import { PointLight, Mesh, BoxBufferGeometry, MeshStandardMaterial, AmbientLight, SphereBufferGeometry, WebGLRenderer, PCFSoftShadowMap, Scene, PerspectiveCamera, Vector3, Object3D, Line, Points, Sprite } from "three";
-class CanvasGenerator {
-  constructor(parameters) {
-    __publicField(this, "canvas");
+import { PointLight as S, Mesh as w, BoxGeometry as p, MeshStandardMaterial as P, AmbientLight as g, SphereGeometry as E, WebGLRenderer as v, PCFSoftShadowMap as x, Scene as L, PerspectiveCamera as b, Vector3 as y, Object3D as R, Line as z, Points as j, Sprite as C } from "three";
+class H {
+  constructor(t) {
     this.canvas = document.createElement("canvas");
-    const devicePixelRatio2 = window.devicePixelRatio;
-    this.canvas.width = ((parameters == null ? void 0 : parameters.width) || 512) * devicePixelRatio2;
-    this.canvas.height = ((parameters == null ? void 0 : parameters.height) || 512) * devicePixelRatio2;
-    this.canvas.style.backgroundColor = (parameters == null ? void 0 : parameters.bgColor) || "rgb(255, 255, 255)";
-    const ctx = this.canvas.getContext("2d");
-    ctx && ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    const e = window.devicePixelRatio;
+    this.canvas.width = ((t == null ? void 0 : t.width) || 512) * e, this.canvas.height = ((t == null ? void 0 : t.height) || 512) * e, this.canvas.style.backgroundColor = (t == null ? void 0 : t.bgColor) || "rgb(255, 255, 255)";
+    const i = this.canvas.getContext("2d");
+    i && i.scale(window.devicePixelRatio, window.devicePixelRatio);
   }
+  /**
+   * @deprecated use getDom
+   */
   get() {
     return this.canvas;
   }
+  /**
+   * 获取canvas dom
+   * @returns HTMLCanvasElement
+   */
   getDom() {
     return this.canvas;
   }
-  clear(x = 0, y = 0, width, height) {
-    !width && (width = this.canvas.width);
-    !height && (height = this.canvas.height);
-    const ctx = this.canvas.getContext("2d");
-    if (ctx) {
-      ctx.clearRect(x, y, width, height);
-      return this;
-    } else {
-      console.warn(`you browser can not support canvas 2d`);
-      return this;
-    }
+  /**
+   * 清空画布
+   * @param x position x px
+   * @param y  position z px
+   * @param width width px
+   * @param height height px
+   * @returns this
+   */
+  clear(t = 0, e = 0, i, s) {
+    !i && (i = this.canvas.width), !s && (s = this.canvas.height);
+    const o = this.canvas.getContext("2d");
+    return o ? (o.clearRect(t, e, i, s), this) : (console.warn("you browser can not support canvas 2d"), this);
   }
-  draw(fun) {
-    const ctx = this.canvas.getContext("2d");
-    if (ctx) {
-      fun(ctx);
-      return this;
-    } else {
-      console.warn(`you browser can not support canvas 2d`);
-      return this;
-    }
+  /**
+   * canvas绘制
+   * @param fun callback(ctx)
+   * @returns this
+   */
+  draw(t) {
+    const e = this.canvas.getContext("2d");
+    return e ? (t(e), this) : (console.warn("you browser can not support canvas 2d"), this);
   }
-  preview(parameters) {
-    const canvas = this.canvas;
-    canvas.style.position = "fixed";
-    canvas.style.top = (parameters == null ? void 0 : parameters.top) || "5%";
-    canvas.style.left = (parameters == null ? void 0 : parameters.left) || "5%";
-    canvas.style.right = (parameters == null ? void 0 : parameters.right) || "unset";
-    canvas.style.bottom = (parameters == null ? void 0 : parameters.bottom) || "unset";
-    if (parameters == null ? void 0 : parameters.scale) {
-      canvas.style.transform = `scale(${parameters.scale})`;
-    }
-    document.body.appendChild(this.canvas);
-    return this;
+  /**
+   * canvas预览
+   * @param parameters style position
+   * @returns this
+   */
+  preview(t) {
+    const e = this.canvas;
+    return e.style.position = "fixed", e.style.top = (t == null ? void 0 : t.top) || "5%", e.style.left = (t == null ? void 0 : t.left) || "5%", e.style.right = (t == null ? void 0 : t.right) || "unset", e.style.bottom = (t == null ? void 0 : t.bottom) || "unset", t != null && t.scale && (e.style.transform = `scale(${t.scale})`), document.body.appendChild(this.canvas), this;
   }
-  setSize(width, height) {
-    this.canvas.width = width * devicePixelRatio;
-    this.canvas.height = height * devicePixelRatio;
-    return this;
+  /**
+   * 设置canvas画布大小
+   * @param width
+   * @param height
+   * @returns
+   */
+  setSize(t, e) {
+    return this.canvas.width = t * devicePixelRatio, this.canvas.height = e * devicePixelRatio, this;
   }
 }
-class EventDispatcher {
+class M {
   constructor() {
-    __publicField(this, "listeners", /* @__PURE__ */ new Map());
+    this.listeners = /* @__PURE__ */ new Map();
   }
-  addEventListener(type, listener) {
-    const listeners = this.listeners;
-    if (!listeners.has(type)) {
-      listeners.set(type, []);
-    }
-    const array = listeners.get(type);
-    if (array.includes(listener)) {
+  /**
+   * 添加事件
+   * @param type
+   * @param listener
+   * @returns
+   */
+  addEventListener(t, e) {
+    const i = this.listeners;
+    i.has(t) || i.set(t, []);
+    const s = i.get(t);
+    s.includes(e) || s.push(e);
+  }
+  /**
+   * 是否有此事件
+   * @param type
+   * @param listener
+   * @returns
+   */
+  hasEventListener(t, e) {
+    const i = this.listeners;
+    return i.has(t) ? i.get(t).includes(e) : !1;
+  }
+  /**
+   * 移除事件
+   * @param type
+   * @param listener
+   * @returns
+   */
+  removeEventListener(t, e) {
+    const i = this.listeners;
+    if (!i.has(t) || !i.get(t).includes(e))
       return;
-    }
-    array.push(listener);
+    const s = i.get(t);
+    s.splice(s.indexOf(e), 1);
   }
-  hasEventListener(type, listener) {
-    const listeners = this.listeners;
-    if (!listeners.has(type)) {
-      return false;
-    }
-    return listeners.get(type).includes(listener);
+  /**
+   * 移除该类型的所有事件
+   * @param type
+   * @returns
+   */
+  removeEvent(t) {
+    const e = this.listeners;
+    e.has(t) && e.delete(t);
   }
-  removeEventListener(type, listener) {
-    const listeners = this.listeners;
-    if (!listeners.has(type)) {
-      return;
-    }
-    if (!listeners.get(type).includes(listener)) {
-      return;
-    }
-    const array = listeners.get(type);
-    array.splice(array.indexOf(listener), 1);
-  }
-  removeEvent(type) {
-    const listeners = this.listeners;
-    if (!listeners.has(type)) {
-      return;
-    }
-    listeners.delete(type);
-  }
-  dispatchEvent(event) {
-    var _a;
-    const type = event.type;
-    const listeners = this.listeners;
-    if (listeners.has(type)) {
+  /**
+   * 触发事件
+   * @param event
+   */
+  dispatchEvent(t) {
+    var s;
+    const e = t.type, i = this.listeners;
+    if (i.has(e))
       try {
-        (_a = listeners.get(type)) == null ? void 0 : _a.forEach((listener) => {
-          listener.call(this, event);
+        (s = i.get(e)) == null || s.forEach((o) => {
+          o.call(this, t);
         });
-      } catch (error) {
-        console.error(error);
+      } catch (o) {
+        console.error(o);
       }
-    }
   }
-  once(type, listener) {
-    const onceListener = function(event) {
-      listener.call(this, event);
-      Promise.resolve(() => {
-        this.removeEventListener(type, onceListener);
+  /**
+   * 一次性事件触发
+   * @param type
+   * @param listener
+   */
+  once(t, e) {
+    const i = function(s) {
+      e.call(this, s), Promise.resolve(() => {
+        this.removeEventListener(t, i);
       });
     };
-    this.addEventListener(type, onceListener);
+    this.addEventListener(t, i);
   }
-  emit(name, params = {}) {
-    var _a;
-    const listeners = this.listeners;
-    if (listeners.has(name)) {
+  /**
+   * 触发事件
+   * @param name
+   * @param params
+   */
+  emit(t, e = {}) {
+    var s;
+    const i = this.listeners;
+    if (i.has(t))
       try {
-        (_a = listeners.get(name)) == null ? void 0 : _a.forEach((listener) => {
-          listener.call(this, params);
+        (s = i.get(t)) == null || s.forEach((o) => {
+          o.call(this, e);
         });
-      } catch (error) {
-        console.error(error);
+      } catch (o) {
+        console.error(o);
       }
-    }
   }
-  on(type, listener) {
-    this.addEventListener(type, listener);
+  /**
+   * 订阅事件
+   * @param type
+   * @param listener
+   */
+  on(t, e) {
+    this.addEventListener(t, e);
   }
-  has(type, listener) {
-    return this.hasEventListener(type, listener);
+  /**
+   * 是否有此事件
+   * @param type
+   * @param listener
+   * @returns
+   */
+  has(t, e) {
+    return this.hasEventListener(t, e);
   }
-  off(type, listener) {
-    if (listener) {
-      this.removeEventListener(type, listener);
-    } else {
-      const listeners = this.listeners;
-      if (!listeners.has(type)) {
+  /**
+   * 移除事件
+   * @param type
+   * @param listener
+   * @returns
+   */
+  off(t, e) {
+    if (e)
+      this.removeEventListener(t, e);
+    else {
+      const i = this.listeners;
+      if (!i.has(t))
         return;
-      }
-      listeners.delete(type);
+      i.delete(t);
     }
   }
-  eventCount(type) {
-    if (!this.listeners.has(type)) {
-      return 0;
-    }
-    return this.listeners.get(type).length;
+  /**
+   * 获取事件数量
+   * @param type
+   * @returns
+   */
+  eventCount(t) {
+    return this.listeners.has(t) ? this.listeners.get(t).length : 0;
   }
-  popLatestEvent(type) {
-    if (!this.listeners.has(type)) {
-      return;
-    }
-    this.listeners.get(type).pop();
+  /**
+   * 销毁该类型的最后一个事件
+   * @param type
+   * @returns
+   */
+  popLatestEvent(t) {
+    this.listeners.has(t) && this.listeners.get(t).pop();
   }
+  /**
+   * 清空所有事件
+   */
   clear() {
     this.listeners.clear();
   }
+  /**
+   * 当前派发器是否使用
+   * @returns
+   */
   useful() {
-    return Boolean([...this.listeners.keys()].length);
+    return !![...this.listeners.keys()].length;
   }
 }
-var RECT_EVENT = /* @__PURE__ */ ((RECT_EVENT2) => {
-  RECT_EVENT2["RELOAD"] = "reload";
-  RECT_EVENT2["UPDATE"] = "update";
-  return RECT_EVENT2;
-})(RECT_EVENT || {});
-const _CanvasReactor = class extends EventDispatcher {
-  constructor(config) {
-    super();
-    __publicField(this, "canvas");
-    __publicField(this, "data");
-    this.data = new Proxy(config, {
-      get: _CanvasReactor.proxyGetter,
-      set: _CanvasReactor.proxySetter.bind(this)
+var m = /* @__PURE__ */ ((h) => (h.RELOAD = "reload", h.UPDATE = "update", h))(m || {});
+const r = class r extends M {
+  constructor(t) {
+    super(), this.data = new Proxy(t, {
+      get: r.proxyGetter,
+      set: r.proxySetter.bind(this)
     });
   }
   setSize() {
@@ -197,25 +233,20 @@ const _CanvasReactor = class extends EventDispatcher {
     return this;
   }
 };
-let CanvasReactor = _CanvasReactor;
-__publicField(CanvasReactor, "proxyGetter", function(target, property, value) {
-  return Reflect.get(target, property, value);
-});
-__publicField(CanvasReactor, "proxySetter", function(target, property, value, receiver) {
-  const result = Reflect.set(target, property, value, receiver);
-  if (property === "width" || property === "height") {
-    this.setSize();
-    this.dispatchEvent({
-      type: "reload"
-    });
-  }
-  this.draw();
-  this.dispatchEvent({
+r.proxyGetter = function(t, e, i) {
+  return Reflect.get(t, e, i);
+}, r.proxySetter = function(t, e, i, s) {
+  const o = Reflect.set(t, e, i, s);
+  return (e === "width" || e === "height") && (this.setSize(), this.dispatchEvent({
+    type: "reload"
+    /* RELOAD */
+  })), this.draw(), this.dispatchEvent({
     type: "update"
-  });
-  return result;
-});
-class Action {
+    /* UPDATE */
+  }), o;
+};
+let u = r;
+class W {
   next() {
     console.warn(
       `this action can not set next function: ${this.constructor.name}`
@@ -227,241 +258,181 @@ class Action {
     );
   }
 }
-class History {
-  constructor(step) {
-    __publicField(this, "actionList", []);
-    __publicField(this, "index", -1);
-    __publicField(this, "step", 50);
-    this.step = step || 50;
+class A {
+  constructor(t) {
+    this.actionList = [], this.index = -1, this.step = 50, this.step = t || 50;
   }
-  do(command) {
-    this.actionList[this.index][command]();
+  do(t) {
+    this.actionList[this.index][t]();
   }
-  apply(action, exec = false) {
-    const actionList = this.actionList;
-    if (this.index === actionList.length - 1 && actionList.length >= this.step) {
-      actionList.shift();
-      this.index = this.actionList.length - 1;
-    } else if (this.index !== -1) {
-      actionList.splice(this.index + 1, actionList.length - 1);
-    } else if (this.index === -1) {
-      this.actionList = [];
-    }
-    this.actionList.push(action);
-    if (exec) {
-      this.redo();
-    } else {
-      this.index += 1;
-    }
+  /**
+   * 注册动作
+   * @param action new class extends BasicAction
+   * @param exec 是否立即执行动作的next
+   */
+  apply(t, e = !1) {
+    const i = this.actionList;
+    this.index === i.length - 1 && i.length >= this.step ? (i.shift(), this.index = this.actionList.length - 1) : this.index !== -1 ? i.splice(this.index + 1, i.length - 1) : this.index === -1 && (this.actionList = []), this.actionList.push(t), e ? this.redo() : this.index += 1;
   }
   redo() {
-    this.index += 1;
-    if (this.index > this.actionList.length - 1) {
+    if (this.index += 1, this.index > this.actionList.length - 1) {
       this.index = this.actionList.length - 1;
       return;
     }
     this.do("next");
   }
   undo() {
-    if (this.index < 0) {
-      return;
-    }
-    this.do("prev");
-    this.index -= 1;
+    this.index < 0 || (this.do("prev"), this.index -= 1);
   }
   clear() {
     this.actionList = [];
   }
 }
-const pointLight = new PointLight("rgb(255, 255, 255)", 0.5, 200, 1);
-pointLight.position.set(-30, 5, 20);
-pointLight.castShadow = true;
-const plane = new Mesh(
-  new BoxBufferGeometry(80, 2, 80),
-  new MeshStandardMaterial({
+const l = new S("rgb(255, 255, 255)", 0.5, 200, 1);
+l.position.set(-30, 5, 20);
+l.castShadow = !0;
+const d = new w(
+  new p(80, 2, 80),
+  new P({
     color: "rgb(255, 255, 255)"
   })
 );
-plane.position.set(0, -11, 0);
-plane.receiveShadow = true;
-plane.castShadow = true;
-const _MaterialDisplayer = class {
-  constructor(parameters) {
-    __publicField(this, "material");
-    __publicField(this, "dom");
-    __publicField(this, "renderer");
-    __publicField(this, "scene");
-    __publicField(this, "camera");
-    __publicField(this, "object");
-    const renderer = new WebGLRenderer({
-      antialias: true,
-      preserveDrawingBuffer: true
+d.position.set(0, -11, 0);
+d.receiveShadow = !0;
+d.castShadow = !0;
+const n = class n {
+  constructor(t) {
+    const e = new v({
+      antialias: !0,
+      preserveDrawingBuffer: !0
     });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setClearColor("rgb(150, 150, 150)");
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = PCFSoftShadowMap;
-    const scene = new Scene();
-    const camera = new PerspectiveCamera(
+    e.setPixelRatio(window.devicePixelRatio), e.setClearColor("rgb(150, 150, 150)"), e.shadowMap.enabled = !0, e.shadowMap.type = x;
+    const i = new L(), s = new b(
       45,
       window.innerWidth / window.innerHeight,
       1,
       500
     );
-    camera.position.set(0, 0, 35);
-    camera.up.x = 0;
-    camera.up.y = 1;
-    camera.up.z = 0;
-    camera.lookAt(new Vector3(0, 0, 0));
-    scene.add(_MaterialDisplayer.ambientLight);
-    scene.add(_MaterialDisplayer.pointLight);
-    scene.add(_MaterialDisplayer.plane);
-    this.scene = scene;
-    this.renderer = renderer;
-    this.camera = camera;
-    this.object = new Object3D();
-    (parameters == null ? void 0 : parameters.material) && this.setMaterial(parameters.material);
-    (parameters == null ? void 0 : parameters.dom) && this.setDom(parameters.dom);
+    s.position.set(0, 0, 35), s.up.x = 0, s.up.y = 1, s.up.z = 0, s.lookAt(new y(0, 0, 0)), i.add(n.ambientLight), i.add(n.pointLight), i.add(n.plane), this.scene = i, this.renderer = e, this.camera = s, this.object = new R(), t != null && t.material && this.setMaterial(t.material), t != null && t.dom && this.setDom(t.dom);
   }
-  setMaterial(material) {
-    this.scene.remove(this.object);
-    this.material = material;
-    if (material.type.includes("Mesh") || material.type === "ShaderMaterial" || material.type === "RawShaderMaterial") {
-      this.object = new Mesh(_MaterialDisplayer.geometry, material);
-    } else if (material.type.includes("Line")) {
-      this.object = new Line(_MaterialDisplayer.geometry, material);
-    } else if (material.type.includes("Points")) {
-      this.object = new Points(_MaterialDisplayer.geometry, material);
-    } else if (material.type.includes("Sprite")) {
-      this.object = new Sprite(material);
-    } else {
-      console.warn(
-        `material displayer can not support this type material: '${material.type}'`
-      );
-      return this;
-    }
-    this.object.castShadow = true;
-    this.object.receiveShadow = true;
-    this.scene.add(this.object);
-    return this;
+  // 设置展示的材质
+  setMaterial(t) {
+    if (this.scene.remove(this.object), this.material = t, t.type.includes("Mesh") || t.type === "ShaderMaterial" || t.type === "RawShaderMaterial")
+      this.object = new w(n.geometry, t);
+    else if (t.type.includes("Line"))
+      this.object = new z(n.geometry, t);
+    else if (t.type.includes("Points"))
+      this.object = new j(n.geometry, t);
+    else if (t.type.includes("Sprite"))
+      this.object = new C(t);
+    else
+      return console.warn(
+        `material displayer can not support this type material: '${t.type}'`
+      ), this;
+    return this.object.castShadow = !0, this.object.receiveShadow = !0, this.scene.add(this.object), this;
   }
-  setDom(dom) {
-    this.dom = dom;
-    this.setSize();
-    dom.appendChild(this.renderer.domElement);
-    return this;
+  // 设置目标dom对象
+  setDom(t) {
+    return this.dom = t, this.setSize(), t.appendChild(this.renderer.domElement), this;
   }
-  setSize(width, height) {
-    if (width && height) {
-      this.camera.aspect = width / height;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(width, height, true);
-    } else {
-      if (!this.dom) {
-        console.warn(
-          `material displayer must set dom before setSize with empty parameters`
-        );
-        return this;
-      }
-      const dom = this.dom;
-      this.camera.aspect = dom.offsetWidth / dom.offsetHeight;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(dom.offsetWidth, dom.offsetHeight, true);
+  // 设置尺寸
+  setSize(t, e) {
+    if (t && e)
+      this.camera.aspect = t / e, this.camera.updateProjectionMatrix(), this.renderer.setSize(t, e, !0);
+    else {
+      if (!this.dom)
+        return console.warn(
+          "material displayer must set dom before setSize with empty parameters"
+        ), this;
+      const i = this.dom;
+      this.camera.aspect = i.offsetWidth / i.offsetHeight, this.camera.updateProjectionMatrix(), this.renderer.setSize(i.offsetWidth, i.offsetHeight, !0);
     }
     return this;
   }
+  // 渲染方法
   render() {
     this.renderer.render(this.scene, this.camera);
   }
-  getDataURL(mine) {
-    return this.renderer.domElement.toDataURL(mine || "image/png");
+  /**
+   * 导出图片dataURL
+   * @param mine 图片格式
+   * @returns DataURL
+   */
+  getDataURL(t) {
+    return this.renderer.domElement.toDataURL(t || "image/png");
   }
+  // 内存销毁
   dispose() {
     this.renderer.dispose();
   }
 };
-let MaterialDisplayer = _MaterialDisplayer;
-__publicField(MaterialDisplayer, "ambientLight", new AmbientLight("rgb(255, 255, 255)", 0.7));
-__publicField(MaterialDisplayer, "pointLight", pointLight);
-__publicField(MaterialDisplayer, "geometry", new SphereBufferGeometry(10, 12, 12));
-__publicField(MaterialDisplayer, "plane", plane);
-__publicField(MaterialDisplayer, "dispose", () => {
-  _MaterialDisplayer.geometry.dispose();
-  _MaterialDisplayer.plane.geometry.dispose();
-});
-const _TextureDisplayer = class {
-  constructor(parameters) {
-    __publicField(this, "dom");
-    __publicField(this, "texture");
-    __publicField(this, "renderer");
-    __publicField(this, "scene");
-    __publicField(this, "camera");
-    const renderer = new WebGLRenderer({
-      antialias: true,
-      preserveDrawingBuffer: true
+n.ambientLight = new g("rgb(255, 255, 255)", 0.7), n.pointLight = l, n.geometry = new E(10, 12, 12), n.plane = d, n.dispose = () => {
+  n.geometry.dispose(), n.plane.geometry.dispose();
+};
+let a = n;
+const c = class c {
+  constructor(t) {
+    const e = new v({
+      antialias: !0,
+      preserveDrawingBuffer: !0
     });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setClearColor("rgb(150, 150, 150)");
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = PCFSoftShadowMap;
-    const scene = new Scene();
-    const camera = new PerspectiveCamera(
+    e.setPixelRatio(window.devicePixelRatio), e.setClearColor("rgb(150, 150, 150)"), e.shadowMap.enabled = !0, e.shadowMap.type = x;
+    const i = new L(), s = new b(
       45,
       window.innerWidth / window.innerHeight,
       1,
       500
     );
-    camera.position.set(0, 0, 35);
-    camera.up.x = 0;
-    camera.up.y = 1;
-    camera.up.z = 0;
-    camera.lookAt(new Vector3(0, 0, 0));
-    scene.add(_TextureDisplayer.ambientLight);
-    this.scene = scene;
-    this.renderer = renderer;
-    this.camera = camera;
-    (parameters == null ? void 0 : parameters.texture) && this.setTexture(parameters.texture);
-    (parameters == null ? void 0 : parameters.dom) && this.setDom(parameters.dom);
+    s.position.set(0, 0, 35), s.up.x = 0, s.up.y = 1, s.up.z = 0, s.lookAt(new y(0, 0, 0)), i.add(c.ambientLight), this.scene = i, this.renderer = e, this.camera = s, t != null && t.texture && this.setTexture(t.texture), t != null && t.dom && this.setDom(t.dom);
   }
-  setTexture(texture) {
-    this.scene.background = texture;
-    return this;
+  // 设置贴图
+  setTexture(t) {
+    return this.scene.background = t, this;
   }
-  setDom(dom) {
-    this.dom = dom;
-    this.setSize();
-    dom.appendChild(this.renderer.domElement);
-    return this;
+  // 设置dom
+  setDom(t) {
+    return this.dom = t, this.setSize(), t.appendChild(this.renderer.domElement), this;
   }
-  setSize(width, height) {
-    if (width && height) {
-      this.camera.aspect = width / height;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(width, height, true);
-    } else {
-      if (!this.dom) {
-        console.warn(
-          `texture displayer must set dom before setSize with empty parameters`
-        );
-        return this;
-      }
-      const dom = this.dom;
-      this.camera.aspect = dom.offsetWidth / dom.offsetHeight;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(dom.offsetWidth, dom.offsetHeight, true);
+  // 设置尺寸
+  setSize(t, e) {
+    if (t && e)
+      this.camera.aspect = t / e, this.camera.updateProjectionMatrix(), this.renderer.setSize(t, e, !0);
+    else {
+      if (!this.dom)
+        return console.warn(
+          "texture displayer must set dom before setSize with empty parameters"
+        ), this;
+      const i = this.dom;
+      this.camera.aspect = i.offsetWidth / i.offsetHeight, this.camera.updateProjectionMatrix(), this.renderer.setSize(i.offsetWidth, i.offsetHeight, !0);
     }
     return this;
   }
+  // 渲染方法
   render() {
     this.renderer.render(this.scene, this.camera);
   }
-  getDataURL(mine) {
-    return this.renderer.domElement.toDataURL(mine || "image/png");
+  /**
+   * 导出图片dataURL
+   * @param mine 图片格式
+   * @returns DataURL
+   */
+  getDataURL(t) {
+    return this.renderer.domElement.toDataURL(t || "image/png");
   }
+  // 销毁内存
   dispose() {
     this.renderer.dispose();
   }
 };
-let TextureDisplayer = _TextureDisplayer;
-__publicField(TextureDisplayer, "ambientLight", new AmbientLight("rgb(255, 255, 255)", 1));
-export { Action, CanvasGenerator, CanvasReactor, EventDispatcher, History, MaterialDisplayer, RECT_EVENT, TextureDisplayer };
+c.ambientLight = new g("rgb(255, 255, 255)", 1);
+let f = c;
+export {
+  W as Action,
+  H as CanvasGenerator,
+  u as CanvasReactor,
+  M as EventDispatcher,
+  A as History,
+  a as MaterialDisplayer,
+  m as RECT_EVENT,
+  f as TextureDisplayer
+};

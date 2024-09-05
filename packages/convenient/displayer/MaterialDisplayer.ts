@@ -1,6 +1,6 @@
 import {
   AmbientLight,
-  BoxBufferGeometry,
+  BoxGeometry,
   Line,
   Material,
   Mesh,
@@ -11,7 +11,7 @@ import {
   PointLight,
   Points,
   Scene,
-  SphereBufferGeometry,
+  SphereGeometry,
   Sprite,
   SpriteMaterial,
   Vector3,
@@ -28,7 +28,7 @@ pointLight.position.set(-30, 5, 20);
 pointLight.castShadow = true;
 
 const plane = new Mesh(
-  new BoxBufferGeometry(80, 2, 80),
+  new BoxGeometry(80, 2, 80),
   new MeshStandardMaterial({
     color: "rgb(255, 255, 255)",
   })
@@ -40,7 +40,7 @@ plane.castShadow = true;
 export class MaterialDisplayer {
   public static ambientLight = new AmbientLight("rgb(255, 255, 255)", 0.7);
   public static pointLight = pointLight;
-  public static geometry = new SphereBufferGeometry(10, 12, 12);
+  public static geometry = new SphereGeometry(10, 12, 12);
   public static plane = plane;
 
   public static dispose = () => {

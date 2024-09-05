@@ -209,7 +209,7 @@ importers:
     dependencies:
       '@vis-three/library-module':
         specifier: workspace:^
-        version: link:../../library/plugin
+        version: link:../../library/module
       '@vis-three/library-parser':
         specifier: workspace:^
         version: link:../../library/parser
@@ -303,7 +303,7 @@ importers:
     dependencies:
       '@vis-three/library-module':
         specifier: workspace:^
-        version: link:../../library/plugin
+        version: link:../../library/module
       '@vis-three/library-parser':
         specifier: workspace:^
         version: link:../../library/parser
@@ -488,7 +488,7 @@ importers:
     dependencies:
       '@vis-three/library-module':
         specifier: workspace:^
-        version: link:../../library/plugin
+        version: link:../../library/module
       '@vis-three/library-parser':
         specifier: workspace:^
         version: link:../../library/parser
@@ -660,7 +660,7 @@ importers:
         version: link:../library/event
       '@vis-three/library-module':
         specifier: workspace:^
-        version: link:../library/plugin
+        version: link:../library/module
       '@vis-three/library-parser':
         specifier: workspace:^
         version: link:../library/parser
@@ -1699,105 +1699,84 @@ importers:
 
   packages/library/plugin:
     dependencies:
-      '@vis-three/module-animation':
+      '@vis-three/plugin-axes-helper':
         specifier: workspace:^
-        version: link:../module/animation
-      '@vis-three/module-animation-action':
+        version: link:AxesHelperPlugin
+      '@vis-three/plugin-camera-adaptive':
         specifier: workspace:^
-        version: link:../module/animationAction
-      '@vis-three/module-animation-clip':
+        version: link:CameraAdaptivePlugin
+      '@vis-three/plugin-css2d-renderer':
         specifier: workspace:^
-        version: link:../module/animationClip
-      '@vis-three/module-bone':
+        version: link:CSS2DRendererPlugin
+      '@vis-three/plugin-css3d-renderer':
         specifier: workspace:^
-        version: link:../module/bone
-      '@vis-three/module-camera':
+        version: link:CSS3DRendererPlugin
+      '@vis-three/plugin-effect-composer':
         specifier: workspace:^
-        version: link:../module/camera
-      '@vis-three/module-constraintor':
+        version: link:EffectComposerPlugin
+      '@vis-three/plugin-event-manager':
         specifier: workspace:^
-        version: link:../module/constraintor
-      '@vis-three/module-controls':
+        version: link:EventManagerPlugin
+      '@vis-three/plugin-first-person-controls':
         specifier: workspace:^
-        version: link:../module/controls
-      '@vis-three/module-css2d':
+        version: link:FirstPersonControlsPlugin
+      '@vis-three/plugin-grid-helper':
         specifier: workspace:^
-        version: link:../module/css2D
-      '@vis-three/module-css3d':
+        version: link:GridHelperPlugin
+      '@vis-three/plugin-keyboard-manager':
         specifier: workspace:^
-        version: link:../module/css3D
-      '@vis-three/module-curve':
+        version: link:KeyboardManager
+      '@vis-three/plugin-keyboard-move-controls':
         specifier: workspace:^
-        version: link:../module/curve
-      '@vis-three/module-geometry':
+        version: link:KeyboardMoveControlsPlugin
+      '@vis-three/plugin-loader-manager':
         specifier: workspace:^
-        version: link:../module/geometry
-      '@vis-three/module-group':
+        version: link:loaderManager
+      '@vis-three/plugin-mesh-bvh':
         specifier: workspace:^
-        version: link:../module/group
-      '@vis-three/module-helper':
+        version: link:MeshBVHPlugin
+      '@vis-three/plugin-object-helper':
         specifier: workspace:^
-        version: link:../module/helper
-      '@vis-three/module-light':
+        version: link:ObjectHelper
+      '@vis-three/plugin-orbit-controls':
         specifier: workspace:^
-        version: link:../module/light
-      '@vis-three/module-line':
+        version: link:OrbitControls
+      '@vis-three/plugin-path-drawing':
         specifier: workspace:^
-        version: link:../module/line
-      '@vis-three/module-material':
+        version: link:PathDrawing
+      '@vis-three/plugin-path-support-controls':
         specifier: workspace:^
-        version: link:../module/material
-      '@vis-three/module-mesh':
+        version: link:PathSupportControls
+      '@vis-three/plugin-pointer-lock-controls':
         specifier: workspace:^
-        version: link:../module/mesh
-      '@vis-three/module-modifier':
+        version: link:PointerLockControlsPlugin
+      '@vis-three/plugin-pointer-manager':
         specifier: workspace:^
-        version: link:../module/modifier
-      '@vis-three/module-object3d':
+        version: link:PointerManager
+      '@vis-three/plugin-pointer-visual-controls':
         specifier: workspace:^
-        version: link:../module/object3D
-      '@vis-three/module-particle':
+        version: link:PointerVisualControlsPlugin
+      '@vis-three/plugin-render-manager':
         specifier: workspace:^
-        version: link:../module/particle
-      '@vis-three/module-pass':
+        version: link:RenderManagerPlugin
+      '@vis-three/plugin-selection':
         specifier: workspace:^
-        version: link:../module/pass
-      '@vis-three/module-path':
+        version: link:SelectionPlugin
+      '@vis-three/plugin-selection-support':
         specifier: workspace:^
-        version: link:../module/path
-      '@vis-three/module-points':
+        version: link:SelectionSupportPlugin
+      '@vis-three/plugin-stats':
         specifier: workspace:^
-        version: link:../module/points
-      '@vis-three/module-reflector':
+        version: link:StatsPlugin
+      '@vis-three/plugin-transform-controls':
         specifier: workspace:^
-        version: link:../module/reflector
-      '@vis-three/module-renderer':
+        version: link:TransformControlsPlugin
+      '@vis-three/plugin-viewpoint':
         specifier: workspace:^
-        version: link:../module/renderer
-      '@vis-three/module-scene':
+        version: link:ViewpointPlugin
+      '@vis-three/plugin-webgl-renderer':
         specifier: workspace:^
-        version: link:../module/scene
-      '@vis-three/module-shape':
-        specifier: workspace:^
-        version: link:../module/shape
-      '@vis-three/module-skeleton':
-        specifier: workspace:^
-        version: link:../module/skeleton
-      '@vis-three/module-skinned-mesh':
-        specifier: workspace:^
-        version: link:../module/skinnedMesh
-      '@vis-three/module-sprite':
-        specifier: workspace:^
-        version: link:../module/sprite
-      '@vis-three/module-texture':
-        specifier: workspace:^
-        version: link:../module/texture
-      '@vis-three/module-water':
-        specifier: workspace:^
-        version: link:../module/water
-      '@vis-three/tdcm':
-        specifier: workspace:^
-        version: link:../../tdcm
+        version: link:WebGLRendererPlugin
 
   packages/library/plugin/AxesHelperPlugin:
     dependencies:
@@ -1951,6 +1930,9 @@ importers:
       '@vis-three/core':
         specifier: workspace:^
         version: link:../../../core
+      '@vis-three/module-path':
+        specifier: workspace:^
+        version: link:../../module/path
       '@vis-three/plugin-pointer-manager':
         specifier: workspace:^
         version: link:../PointerManager
@@ -2106,6 +2088,78 @@ importers:
         specifier: ^2.9.15
         version: 2.9.18(less@4.2.0)
 
+  packages/library/strategy:
+    dependencies:
+      '@vis-three/strategy-composer-support':
+        specifier: workspace:^
+        version: link:ComposerSupport
+      '@vis-three/strategy-css2d-render':
+        specifier: workspace:^
+        version: link:CSS2DRenderStrategy
+      '@vis-three/strategy-css3d-render':
+        specifier: workspace:^
+        version: link:CSS3DRenderStrategy
+      '@vis-three/strategy-css3d-renderer-support':
+        specifier: workspace:^
+        version: link:CSS3DRendererSupportStrategy
+      '@vis-three/strategy-effect-render':
+        specifier: workspace:^
+        version: link:EffectRenderStrategy
+      '@vis-three/strategy-first-person-render':
+        specifier: workspace:^
+        version: link:FirstPersonRenderStrategy
+      '@vis-three/strategy-grid-viewpoint':
+        specifier: workspace:^
+        version: link:GridViewpointStrategy
+      '@vis-three/strategy-helper-select-interact':
+        specifier: workspace:^
+        version: link:HelperSelectInteractStrategy
+      '@vis-three/strategy-keyboard-move-render':
+        specifier: workspace:^
+        version: link:KeyboardMoveRenderStrategy
+      '@vis-three/strategy-multi-renderer':
+        specifier: workspace:^
+        version: link:MultiRenderer
+      '@vis-three/strategy-orbit-controls-support':
+        specifier: workspace:^
+        version: link:OrbitControlsSupport
+      '@vis-three/strategy-orbit-render':
+        specifier: workspace:^
+        version: link:OrbitRenderStrategy
+      '@vis-three/strategy-orbit-viewpoint':
+        specifier: workspace:^
+        version: link:OrbitViewpointStrategy
+      '@vis-three/strategy-path-support-controls':
+        specifier: workspace:^
+        version: link:PathSupportControls
+      '@vis-three/strategy-selection-prompt':
+        specifier: workspace:^
+        version: link:SelectionPrompt
+      '@vis-three/strategy-stats-render':
+        specifier: workspace:^
+        version: link:StatsRenderStrategy
+      '@vis-three/strategy-trans-select-event':
+        specifier: workspace:^
+        version: link:TransSelectEventStrategy
+      '@vis-three/strategy-trans-select-event-support':
+        specifier: workspace:^
+        version: link:TransSelectEventSupportStrategy
+      '@vis-three/strategy-transform-controls-helper-filter':
+        specifier: workspace:^
+        version: link:TransformControlsHelperFilterStrategy
+      '@vis-three/strategy-transform-controls-support':
+        specifier: workspace:^
+        version: link:TransformControlsSupportStrategy
+      '@vis-three/strategy-transform-keyboard':
+        specifier: workspace:^
+        version: link:TransformKeyboardStrategy
+      '@vis-three/strategy-webgl-render':
+        specifier: workspace:^
+        version: link:WebGLRenderStrategy
+      '@vis-three/strategy-webgl-renderer-support':
+        specifier: workspace:^
+        version: link:WebGLRendererSupportStrategy
+
   packages/library/strategy/CSS2DRenderStrategy:
     dependencies:
       '@vis-three/core':
@@ -2120,37 +2174,6 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/CSS3DRenderStrategy:
     dependencies:
@@ -2166,135 +2189,42 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/CSS3DRendererSupportStrategy:
     dependencies:
       '@vis-three/core':
         specifier: workspace:^
         version: link:../../../core
-      '@vis-three/middleware':
-        specifier: workspace:^
-        version: link:../../../middleware
       '@vis-three/module-renderer':
         specifier: workspace:^
         version: link:../../module/renderer
       '@vis-three/plugin-css3d-renderer':
         specifier: workspace:^
         version: link:../../plugin/CSS3DRendererPlugin
+      '@vis-three/tdcm':
+        specifier: workspace:^
+        version: link:../../../tdcm
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/ComposerSupport:
     dependencies:
       '@vis-three/core':
         specifier: workspace:^
         version: link:../../../core
-      '@vis-three/middleware':
-        specifier: workspace:^
-        version: link:../../../middleware
       '@vis-three/module-pass':
         specifier: workspace:^
         version: link:../../module/pass
       '@vis-three/plugin-effect-composer':
         specifier: workspace:^
         version: link:../../plugin/EffectComposerPlugin
+      '@vis-three/tdcm':
+        specifier: workspace:^
+        version: link:../../../tdcm
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/EffectRenderStrategy:
     dependencies:
@@ -2310,37 +2240,6 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/FirstPersonRenderStrategy:
     dependencies:
@@ -2356,37 +2255,6 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/GridViewpointStrategy:
     dependencies:
@@ -2402,37 +2270,6 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/HelperSelectInteractStrategy:
     dependencies:
@@ -2454,37 +2291,6 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/KeyboardMoveRenderStrategy:
     dependencies:
@@ -2500,37 +2306,6 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/MultiRenderer:
     dependencies:
@@ -2546,92 +2321,24 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
-      vite:
-        specifier: ^2.9.15
-        version: 2.9.18(less@4.2.0)
 
   packages/library/strategy/OrbitControlsSupport:
     dependencies:
       '@vis-three/core':
         specifier: workspace:^
         version: link:../../../core
-      '@vis-three/middleware':
-        specifier: workspace:^
-        version: link:../../../middleware
       '@vis-three/module-controls':
         specifier: workspace:^
         version: link:../../module/controls
       '@vis-three/plugin-orbit-controls':
         specifier: workspace:^
         version: link:../../plugin/OrbitControls
+      '@vis-three/tdcm':
+        specifier: workspace:^
+        version: link:../../../tdcm
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
-      vite:
-        specifier: ^2.9.15
-        version: 2.9.18(less@4.2.0)
 
   packages/library/strategy/OrbitRenderStrategy:
     dependencies:
@@ -2647,37 +2354,6 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/OrbitViewpointStrategy:
     dependencies:
@@ -2693,46 +2369,12 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/PathSupportControls:
     dependencies:
       '@vis-three/core':
         specifier: workspace:^
         version: link:../../../core
-      '@vis-three/middleware':
-        specifier: workspace:^
-        version: link:../../../middleware
       '@vis-three/module-controls':
         specifier: workspace:^
         version: link:../../module/controls
@@ -2742,43 +2384,12 @@ importers:
       '@vis-three/plugin-path-support-controls':
         specifier: workspace:^
         version: link:../../plugin/PathSupportControls
+      '@vis-three/tdcm':
+        specifier: workspace:^
+        version: link:../../../tdcm
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
-      vite:
-        specifier: ^2.9.15
-        version: 2.9.18(less@4.2.0)
 
   packages/library/strategy/SceneDecorateHelper:
     dependencies:
@@ -2788,40 +2399,6 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
-      vite:
-        specifier: ^2.9.15
-        version: 2.9.18(less@4.2.0)
 
   packages/library/strategy/SelectionPrompt:
     dependencies:
@@ -2837,40 +2414,6 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
-      vite:
-        specifier: ^2.9.15
-        version: 2.9.18(less@4.2.0)
 
   packages/library/strategy/StatsRenderStrategy:
     dependencies:
@@ -2886,37 +2429,6 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/TransSelectEventStrategy:
     dependencies:
@@ -2935,46 +2447,12 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/TransSelectEventSupportStrategy:
     dependencies:
       '@vis-three/core':
         specifier: workspace:^
         version: link:../../../core
-      '@vis-three/middleware':
-        specifier: workspace:^
-        version: link:../../../middleware
       '@vis-three/plugin-event-manager':
         specifier: workspace:^
         version: link:../../plugin/EventManagerPlugin
@@ -2987,98 +2465,36 @@ importers:
       '@vis-three/plugin-transform-controls':
         specifier: workspace:^
         version: link:../../plugin/TransformControlsPlugin
+      '@vis-three/tdcm':
+        specifier: workspace:^
+        version: link:../../../tdcm
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/TransformControlsHelperFilterStrategy:
     dependencies:
       '@vis-three/core':
         specifier: workspace:^
         version: link:../../../core
-      '@vis-three/middleware':
-        specifier: workspace:^
-        version: link:../../../middleware
       '@vis-three/plugin-object-helper':
         specifier: workspace:^
         version: link:../../plugin/ObjectHelper
       '@vis-three/plugin-transform-controls':
         specifier: workspace:^
         version: link:../../plugin/TransformControlsPlugin
+      '@vis-three/tdcm':
+        specifier: workspace:^
+        version: link:../../../tdcm
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/TransformControlsSupportStrategy:
     dependencies:
       '@vis-three/core':
         specifier: workspace:^
         version: link:../../../core
-      '@vis-three/middleware':
-        specifier: workspace:^
-        version: link:../../../middleware
       '@vis-three/module-controls':
         specifier: workspace:^
         version: link:../../module/controls
@@ -3088,40 +2504,12 @@ importers:
       '@vis-three/plugin-transform-controls':
         specifier: workspace:^
         version: link:../../plugin/TransformControlsPlugin
+      '@vis-three/tdcm':
+        specifier: workspace:^
+        version: link:../../../tdcm
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/TransformKeyboardStrategy:
     dependencies:
@@ -3137,37 +2525,6 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/WebGLRenderStrategy:
     dependencies:
@@ -3183,86 +2540,24 @@ importers:
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/strategy/WebGLRendererSupportStrategy:
     dependencies:
       '@vis-three/core':
         specifier: workspace:^
         version: link:../../../core
-      '@vis-three/middleware':
-        specifier: workspace:^
-        version: link:../../../middleware
       '@vis-three/module-renderer':
         specifier: workspace:^
         version: link:../../module/renderer
       '@vis-three/plugin-webgl-renderer':
         specifier: workspace:^
         version: link:../../plugin/WebGLRendererPlugin
+      '@vis-three/tdcm':
+        specifier: workspace:^
+        version: link:../../../tdcm
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../../../utils
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/middleware:
     dependencies:
@@ -3302,21 +2597,6 @@ importers:
       '@cypress/code-coverage':
         specifier: ^3.10.0
         version: 3.12.45(@babel/core@7.25.2)(@babel/preset-env@7.25.3)(babel-loader@8.3.0)(cypress@9.7.0)(webpack@5.93.0)
-      '@rollup/plugin-alias':
-        specifier: ^3.1.9
-        version: 3.1.9(rollup@2.79.1)
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      '@vitejs/plugin-vue':
-        specifier: ^2.3.3
-        version: 2.3.4(vite@2.9.18)(vue@3.4.38)
       babel-loader:
         specifier: ^8.2.5
         version: 8.3.0(@babel/core@7.25.2)(webpack@5.93.0)
@@ -3329,39 +2609,9 @@ importers:
       esbuild-windows-64:
         specifier: ^0.15.13
         version: 0.15.18
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      eslint-plugin-vue:
-        specifier: ^9.1.0
-        version: 9.27.0(eslint@8.57.0)
       lite-server:
         specifier: ^2.6.1
         version: 2.6.1
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
-      vite:
-        specifier: ^2.9.15
-        version: 2.9.18(less@4.2.0)
-      vue:
-        specifier: ^3.2.21
-        version: 3.4.38(typescript@5.5.4)
-      vue-tsc:
-        specifier: ^0.37.0
-        version: 0.37.9(typescript@5.5.4)
       webpack:
         specifier: ^5.74.0
         version: 5.93.0
