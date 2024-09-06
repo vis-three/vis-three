@@ -1,10 +1,10 @@
 import {
-  CONFIGFACTORY,
-  CONFIGTYPE,
+  CONFIG_FACTORY,
+  CONFIG_TYPE,
   ParseParams,
   Parser,
   ResourceHanlder,
-} from "@vis-three/middleware";
+} from "@vis-three/tdcm";
 import { VideoTextureConfig } from "@vis-three/module-texture/TextureConfig";
 
 export class HTMLVideoElementParser extends Parser {
@@ -21,8 +21,8 @@ export class HTMLVideoElementParser extends Parser {
   };
 
   parse({ url, resource, configMap, resourceMap }: ParseParams): void {
-    const config = CONFIGFACTORY[
-      CONFIGTYPE.VIDEOTEXTURE
+    const config = CONFIG_FACTORY[
+      CONFIG_TYPE.VIDEOTEXTURE
     ]() as VideoTextureConfig;
     config.url = url;
 

@@ -1,5 +1,5 @@
-import { ParseParams, Parser, ResourceHanlder } from "@vis-three/middleware";
-import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
+import { ParseParams, Parser, ResourceHanlder } from "@vis-three/tdcm";
+import { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Object3DParser } from "../Object3DParser";
 import { AnimationClip } from "three";
 

@@ -1,10 +1,10 @@
 import {
-  CONFIGFACTORY,
-  CONFIGTYPE,
+  CONFIG_FACTORY,
+  CONFIG_TYPE,
   ParseParams,
   Parser,
   ResourceHanlder,
-} from "@vis-three/middleware";
+} from "@vis-three/tdcm";
 import { CSS3DPlaneConfig } from "@vis-three/module-css3d/CSS3DConfig";
 
 export class HTMLElementParser extends Parser {
@@ -28,8 +28,8 @@ export class HTMLElementParser extends Parser {
   };
 
   parse({ url, resource, configMap, resourceMap }: ParseParams): void {
-    const config = CONFIGFACTORY[
-      this.type === "css3D" ? CONFIGTYPE.CSS3DPLANE : CONFIGTYPE.CSS2DPLANE
+    const config = CONFIG_FACTORY[
+      this.type === "css3D" ? CONFIG_TYPE.CSS3DPLANE : CONFIG_TYPE.CSS2DPLANE
     ]() as CSS3DPlaneConfig;
     config.element = url;
 

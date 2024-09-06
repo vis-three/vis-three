@@ -1,10 +1,10 @@
 import {
-  CONFIGFACTORY,
-  CONFIGTYPE,
+  CONFIG_FACTORY,
+  CONFIG_TYPE,
   ParseParams,
   Parser,
   ResourceHanlder,
-} from "@vis-three/middleware";
+} from "@vis-three/tdcm";
 import { CanvasTextureConfig } from "@vis-three/module-texture/TextureConfig";
 
 export class HTMLCanvasElementParser extends Parser {
@@ -21,8 +21,8 @@ export class HTMLCanvasElementParser extends Parser {
   };
 
   parse({ url, resource, configMap, resourceMap }: ParseParams): void {
-    const config = CONFIGFACTORY[
-      CONFIGTYPE.CANVASTEXTURE
+    const config = CONFIG_FACTORY[
+      CONFIG_TYPE.CANVASTEXTURE
     ]() as CanvasTextureConfig;
     config.url = url;
 

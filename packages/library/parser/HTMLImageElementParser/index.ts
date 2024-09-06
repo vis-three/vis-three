@@ -1,10 +1,10 @@
 import {
-  CONFIGFACTORY,
-  CONFIGTYPE,
+  CONFIG_FACTORY,
+  CONFIG_TYPE,
   ParseParams,
   Parser,
   ResourceHanlder,
-} from "@vis-three/middleware";
+} from "@vis-three/tdcm";
 import { ImageTextureConfig } from "@vis-three/module-texture/TextureConfig";
 
 export class HTMLImageElementParser extends Parser {
@@ -21,8 +21,8 @@ export class HTMLImageElementParser extends Parser {
   };
 
   parse({ url, resource, configMap, resourceMap }: ParseParams): void {
-    const config = CONFIGFACTORY[
-      CONFIGTYPE.IMAGETEXTURE
+    const config = CONFIG_FACTORY[
+      CONFIG_TYPE.IMAGETEXTURE
     ]() as ImageTextureConfig;
     config.url = url;
 

@@ -8,15 +8,15 @@ import {
   Texture,
   Vector3,
 } from "three";
-import { v4 } from "uuid";
 import { syncObject } from "@vis-three/utils";
 import {
-  CONFIGFACTORY,
-  CONFIGTYPE,
+  CONFIG_FACTORY,
+  CONFIG_TYPE,
+  createSymbol,
   ParseParams,
   Parser,
   ResourceHanlder,
-} from "@vis-three/middleware";
+} from "@vis-three/tdcm";
 import { LoadTextureConfig } from "@vis-three/module-texture/TextureConfig";
 import { LoadGeometryConfig } from "@vis-three/module-geometry/GeometryInterface";
 import { SolidObjectConfig } from "@vis-three/module-solid-object";
@@ -47,11 +47,11 @@ export class Object3DParser extends Parser {
   parseAnimation({ url, resource, configMap, resourceMap }: ParseParams) {
     resourceMap.set(url, resource);
 
-    const config = CONFIGFACTORY[
-      CONFIGTYPE.LOADANIMATIONCLIP
+    const config = CONFIG_FACTORY[
+      CONFIG_TYPE.LOADANIMATIONCLIP
     ]() as LoadAnimationClipConfig;
 
-    config.vid = v4();
+    config.vid = createSymbol();
     config.url = url;
     config.name = resource.name;
 
@@ -94,10 +94,12 @@ export class Object3DParser extends Parser {
   private parseTexture({ url, resource, configMap, resourceMap }: ParseParams) {
     resourceMap.set(url, resource);
 
-    const config = CONFIGFACTORY[CONFIGTYPE.LOADTEXTURE]() as LoadTextureConfig;
+    const config = CONFIG_FACTORY[
+      CONFIG_TYPE.LOADTEXTURE
+    ]() as LoadTextureConfig;
     configMap.set(url, config);
 
-    config.vid = v4();
+    config.vid = createSymbol();
     config.url = url;
 
     syncObject<LoadTextureConfig, Texture>(
@@ -119,7 +121,7 @@ export class Object3DParser extends Parser {
   }: ParseParams) {
     resourceMap.set(url, resource);
 
-    if (!CONFIGFACTORY[resource.type]) {
+    if (!CONFIG_FACTORY[resource.type]) {
       console.warn(
         `can not found support config in vis for this resource`,
         resource
@@ -127,10 +129,10 @@ export class Object3DParser extends Parser {
       return;
     }
 
-    const config = CONFIGFACTORY[resource.type]();
+    const config = CONFIG_FACTORY[resource.type]();
     configMap.set(url, config);
 
-    config.vid = v4();
+    config.vid = createSymbol();
 
     syncObject<MaterialConfig, Material>(
       this.attributeEnhance(resource),
@@ -179,10 +181,10 @@ export class Object3DParser extends Parser {
     const box = resource.boundingBox!;
     const center = box.getCenter(new Vector3());
 
-    const config = CONFIGFACTORY[
-      CONFIGTYPE.LOADGEOMETRY
+    const config = CONFIG_FACTORY[
+      CONFIG_TYPE.LOADGEOMETRY
     ]() as LoadGeometryConfig;
-    config.vid = v4();
+    config.vid = createSymbol();
     config.url = url;
     config.position.x = (center.x / (box.max.x - box.min.x)) * 2;
     config.position.y = (center.y / (box.max.y - box.min.y)) * 2;
@@ -197,8 +199,8 @@ export class Object3DParser extends Parser {
     configMap,
     resourceMap,
   }: ParseParams) {
-    const config = CONFIGFACTORY[CONFIGTYPE.SKELETON]() as SkeletonConfig;
-    config.vid = v4();
+    const config = CONFIG_FACTORY[CONFIG_TYPE.SKELETON]() as SkeletonConfig;
+    config.vid = createSymbol();
 
     const boneConfigMap: WeakMap<Bone, BoneConfig> = new WeakMap();
 
@@ -233,7 +235,7 @@ export class Object3DParser extends Parser {
   }: ParseParams) {
     resourceMap.set(url, resource);
 
-    if (!CONFIGFACTORY[resource.type]) {
+    if (!CONFIG_FACTORY[resource.type]) {
       console.warn(
         `can not found support config in middleware module for this resource`,
         resource
@@ -241,8 +243,8 @@ export class Object3DParser extends Parser {
       return;
     }
 
-    const config = CONFIGFACTORY[resource.type]() as SkinnedMeshConfig;
-    config.vid = v4();
+    const config = CONFIG_FACTORY[resource.type]() as SkinnedMeshConfig;
+    config.vid = createSymbol();
 
     // 将一般属性同步到配置
     syncObject<SkinnedMeshConfig, Object3D>(

@@ -1,4 +1,4 @@
-import { ParseParams, Parser, ResourceHanlder } from "@vis-three/middleware";
+import { ParseParams, Parser, ResourceHanlder } from "@vis-three/tdcm";
 export declare class HTMLElementParser extends Parser {
     private type;
     constructor(type?: "css2D" | "css3D");

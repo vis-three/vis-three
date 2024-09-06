@@ -1,4 +1,4 @@
-import { ParseParams, Parser, ResourceHanlder } from "@vis-three/middleware";
+import { ParseParams, Parser, ResourceHanlder } from "@vis-three/tdcm";
 export declare class Object3DParser extends Parser {
     selector: ResourceHanlder;
     parse(params: ParseParams): void;
