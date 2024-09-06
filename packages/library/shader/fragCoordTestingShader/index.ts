@@ -1,4 +1,5 @@
-import { Shader } from "@vis-three/middleware";
+import { Shader } from "@vis-three/module-material";
+
 
 export const fragCoordTestingShader: Shader = {
   name: "fragCoordTestingShader",

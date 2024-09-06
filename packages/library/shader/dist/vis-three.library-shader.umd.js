@@ -1,4 +1,4 @@
-(function(e,o){typeof exports=="object"&&typeof module!="undefined"?o(exports):typeof define=="function"&&define.amd?define(["exports"],o):(e=typeof globalThis!="undefined"?globalThis:e||self,o((e["vis-three"]=e["vis-three"]||{},e["vis-three"]["library-shader"]={})))})(this,function(e){"use strict";const o={name:"BloomShader",uniforms:{brightness:{value:.8},extend:{value:5},specular:{value:.9},outFade:{value:2},inFade:{value:.3},color:{value:{r:1,g:1,b:1}}},vertexShader:`
+(function(e,o){typeof exports=="object"&&typeof module<"u"?o(exports):typeof define=="function"&&define.amd?define(["exports"],o):(e=typeof globalThis<"u"?globalThis:e||self,o((e["vis-three"]=e["vis-three"]||{},e["vis-three"]["library-shader"]={})))})(this,function(e){"use strict";const o={name:"BloomShader",uniforms:{brightness:{value:.8},extend:{value:5},specular:{value:.9},outFade:{value:2},inFade:{value:.3},color:{value:{r:1,g:1,b:1}}},vertexShader:`
   uniform float extend;
 
   varying vec3 vNormal;
@@ -69,7 +69,7 @@
     varying vec2 vUv;
 
     void main () {
-      // \u6839\u636EuTime\u6C42\u51FA\u767E\u5206\u6BD4
+      // 根据uTime求出百分比
       float deg = mod(degrees(time), 360.0);
       if (deg > 0.0 && deg < 180.0) {
         discard;
@@ -78,7 +78,7 @@
       float percent = cos(time);
       float distancePercent = distance(center, vUv);
 
-      // \u4ECE\u5916\u5411\u91CC
+      // 从外向里
       if (distancePercent > 0.5) {
         discard;
       }
@@ -95,4 +95,4 @@
 
       // float opacity = distancePercent;
       gl_FragColor = vec4(color, opacity);
-    }`};e.BloomShader=o,e.colorMixShader=i,e.fragCoordTestingShader=r,e.uvPulseShader=t,Object.defineProperties(e,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}})});
+    }`};e.BloomShader=o,e.colorMixShader=i,e.fragCoordTestingShader=r,e.uvPulseShader=t,Object.defineProperty(e,Symbol.toStringTag,{value:"Module"})});

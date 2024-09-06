@@ -1,4 +1,4 @@
-const BloomShader = {
+const e = {
   name: "BloomShader",
   uniforms: {
     brightness: { value: 0.8 },
@@ -51,8 +51,7 @@ const BloomShader = {
 
       gl_FragColor = vec4(color, present * brightness);
     }`
-};
-const colorMixShader = {
+}, o = {
   name: "colorMixShader",
   uniforms: {
     colorA: {
@@ -85,8 +84,7 @@ const colorMixShader = {
     void main () {
       gl_FragColor = vec4(mix(colorA, colorB, percent), 1.0);
     }`
-};
-const fragCoordTestingShader = {
+}, r = {
   name: "fragCoordTestingShader",
   uniforms: {
     resolution: {
@@ -107,8 +105,7 @@ const fragCoordTestingShader = {
       vec2 st = gl_FragCoord.xy / resolution;
       gl_FragColor = vec4(st.x,st.y,0.0,1.0);
     }`
-};
-const uvPulseShader = {
+}, i = {
   name: "uvPulseShader",
   uniforms: {
     time: { value: 0 },
@@ -145,7 +142,7 @@ const uvPulseShader = {
     varying vec2 vUv;
 
     void main () {
-      // \u6839\u636EuTime\u6C42\u51FA\u767E\u5206\u6BD4
+      // 根据uTime求出百分比
       float deg = mod(degrees(time), 360.0);
       if (deg > 0.0 && deg < 180.0) {
         discard;
@@ -154,7 +151,7 @@ const uvPulseShader = {
       float percent = cos(time);
       float distancePercent = distance(center, vUv);
 
-      // \u4ECE\u5916\u5411\u91CC
+      // 从外向里
       if (distancePercent > 0.5) {
         discard;
       }
@@ -173,4 +170,9 @@ const uvPulseShader = {
       gl_FragColor = vec4(color, opacity);
     }`
 };
-export { BloomShader, colorMixShader, fragCoordTestingShader, uvPulseShader };
+export {
+  e as BloomShader,
+  o as colorMixShader,
+  r as fragCoordTestingShader,
+  i as uvPulseShader
+};
